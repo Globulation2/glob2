@@ -1,0 +1,174 @@
+
+Running 8 tests using 1 worker
+
+(node:3865598) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [chromium] › tests/artwork-memory.spec.js:7:3 › serial high-resolution startup fits the browser heap on a many-core device (2.1m)
+(node:3876727) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  2 [chromium] › tests/artwork-memory.spec.js:7:3 › threaded high-resolution startup fits the browser heap on a many-core device (1.9m)
+(node:3883368) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  3 [chromium] › tests/recording.spec.js:22:2 › serial recording segments full framebuffer and exports OPFS files (1.1m)
+(node:3887855) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  4 [chromium] › tests/recording.spec.js:22:2 › threaded recording segments full framebuffer and exports OPFS files (24.4s)
+  ✓  5 [chromium] › tests/rendering.spec.js:7:1 › WebGL2 draws a playable match and resizes its drawing buffer (41.3s)
+  ✘  6 [chromium] › tests/rendering.spec.js:84:1 › WebGL context restoration keeps the match and can recover repeatedly (serial) (1.6m)
+
+
+  1) [chromium] › tests/artwork-memory.spec.js:7:3 › serial high-resolution startup fits the browser heap on a many-core device 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+    Call Log:
+    - Timeout 60000ms exceeded while waiting on the predicate
+
+       at main-menu.js:186
+
+      184 | exports.clickCustomGameStart = async page => {
+      185 |   await expect.poll(() => page.evaluate(() => glob2Diagnostics.snapshot().customGameReady),
+    > 186 |     {timeout: 60000}).toBe(true);
+          |                       ^
+      187 |   return exports.clickControl(page, 'start');
+      188 | };
+      189 | // The AI profile picker behind a colony's info button on the Players & Teams tab.
+        at clickCustomGameStart (/home/bradley/.codex/worktrees/a8c9/glob2/browser/tests/main-menu.js:186:23)
+        at /home/bradley/.codex/worktrees/a8c9/glob2/browser/tests/artwork-memory.spec.js:30:11
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../artifacts/browser-fixes/merge-validation/browser-x11-results/artwork-memory-serial-high-da4d8--heap-on-a-many-core-device-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../artifacts/browser-fixes/merge-validation/browser-x11-results/artwork-memory-serial-high-da4d8--heap-on-a-many-core-device-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../artifacts/browser-fixes/merge-validation/browser-x11-results/artwork-memory-serial-high-da4d8--heap-on-a-many-core-device-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../artifacts/browser-fixes/merge-validation/browser-x11-results/artwork-memory-serial-high-da4d8--heap-on-a-many-core-device-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [chromium] › tests/artwork-memory.spec.js:7:3 › threaded high-resolution startup fits the browser heap on a many-core device 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+    Call Log:
+    - Timeout 60000ms exceeded while waiting on the predicate
+
+       at main-menu.js:186
+
+      184 | exports.clickCustomGameStart = async page => {
+      185 |   await expect.poll(() => page.evaluate(() => glob2Diagnostics.snapshot().customGameReady),
+    > 186 |     {timeout: 60000}).toBe(true);
+          |                       ^
+      187 |   return exports.clickControl(page, 'start');
+      188 | };
+      189 | // The AI profile picker behind a colony's info button on the Players & Teams tab.
+        at clickCustomGameStart (/home/bradley/.codex/worktrees/a8c9/glob2/browser/tests/main-menu.js:186:23)
+        at /home/bradley/.codex/worktrees/a8c9/glob2/browser/tests/artwork-memory.spec.js:30:11
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../artifacts/browser-fixes/merge-validation/browser-x11-results/artwork-memory-threaded-hi-08839--heap-on-a-many-core-device-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../artifacts/browser-fixes/merge-validation/browser-x11-results/artwork-memory-threaded-hi-08839--heap-on-a-many-core-device-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../artifacts/browser-fixes/merge-validation/browser-x11-results/artwork-memory-threaded-hi-08839--heap-on-a-many-core-device-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../artifacts/browser-fixes/merge-validation/browser-x11-results/artwork-memory-threaded-hi-08839--heap-on-a-many-core-device-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [chromium] › tests/recording.spec.js:22:2 › serial recording segments full framebuffer and exports OPFS files 
+
+    Error: control "nav.1" is not available
+
+    control "nav.1" is not available
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+    Call Log:
+    - Timeout 30000ms exceeded while waiting on the predicate
+
+       at main-menu.js:21
+
+      19 |     found = await page.evaluate(key => glob2Diagnostics.snapshot().controls[key] || null, key);
+      20 |     return Boolean(found && (!enabled || found.enabled) && current(page, found));
+    > 21 |   }, {timeout, message: `control "${key}" is not available`}).toBe(true);
+         |                                                               ^
+      22 |   await settled(page);
+      23 |   return (await page.evaluate(key => glob2Diagnostics.snapshot().controls[key] || null, key)) || found;
+      24 | }
+        at control (/home/bradley/.codex/worktrees/a8c9/glob2/browser/tests/main-menu.js:21:63)
+        at controlOnScreen (/home/bradley/.codex/worktrees/a8c9/glob2/browser/tests/main-menu.js:73:22)
+        at clickPublishedControl (/home/bradley/.codex/worktrees/a8c9/glob2/browser/tests/main-menu.js:110:24)
+        at /home/bradley/.codex/worktrees/a8c9/glob2/browser/tests/recording.spec.js:26:46
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../artifacts/browser-fixes/merge-validation/browser-x11-results/recording-serial-recording-6c834-ffer-and-exports-OPFS-files-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../artifacts/browser-fixes/merge-validation/browser-x11-results/recording-serial-recording-6c834-ffer-and-exports-OPFS-files-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../artifacts/browser-fixes/merge-validation/browser-x11-results/recording-serial-recording-6c834-ffer-and-exports-OPFS-files-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../artifacts/browser-fixes/merge-validation/browser-x11-results/recording-serial-recording-6c834-ffer-and-exports-OPFS-files-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4) [chromium] › tests/rendering.spec.js:84:1 › WebGL context restoration keeps the match and can recover repeatedly (serial) 
+
+    Error: expect(received).toContain(expected) // indexOf
+
+    Expected substring: "CustomGameScreen"
+    Received string:    "14MainMenuScreen"
+
+    Call Log:
+    - Timeout 60000ms exceeded while waiting on the predicate
+
+      3 | const {clickMainMenu,clickSettingsDone,clickCustomGameStart,clickControl,control}=require('./main-menu');
+      4 | const state = page => page.evaluate(() => glob2Diagnostics.snapshot());
+    > 5 | const screen = (page, name) => expect.poll(async () => (await state(page)).screen).toContain(name);
+        |                                                                                    ^
+      6 |
+      7 | test('WebGL2 draws a playable match and resizes its drawing buffer', async ({page}, info) => {
+      8 |   test.setTimeout(120000);
+        at screen (/home/bradley/.codex/worktrees/a8c9/glob2/browser/tests/rendering.spec.js:5:84)
+        at /home/bradley/.codex/worktrees/a8c9/glob2/browser/tests/rendering.spec.js:90:45
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../artifacts/browser-fixes/merge-validation/browser-x11-results/rendering-WebGL-context-re-c6a52--recover-repeatedly-serial--chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../artifacts/browser-fixes/merge-validation/browser-x11-results/rendering-WebGL-context-re-c6a52--recover-repeatedly-serial--chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../artifacts/browser-fixes/merge-validation/browser-x11-results/rendering-WebGL-context-re-c6a52--recover-repeatedly-serial--chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../artifacts/browser-fixes/merge-validation/browser-x11-results/rendering-WebGL-context-re-c6a52--recover-repeatedly-serial--chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4 failed
+    [chromium] › tests/artwork-memory.spec.js:7:3 › serial high-resolution startup fits the browser heap on a many-core device 
+    [chromium] › tests/artwork-memory.spec.js:7:3 › threaded high-resolution startup fits the browser heap on a many-core device 
+    [chromium] › tests/recording.spec.js:22:2 › serial recording segments full framebuffer and exports OPFS files 
+    [chromium] › tests/rendering.spec.js:84:1 › WebGL context restoration keeps the match and can recover repeatedly (serial) 
+  2 did not run
+  2 passed (10.0m)

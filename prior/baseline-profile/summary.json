@@ -1,0 +1,926 @@
+{
+  "url": "http://127.0.0.1:8772/?threads=serial&renderer=webgl2",
+  "seconds": 10,
+  "viewport": {
+    "width": 1200,
+    "height": 900
+  },
+  "host": {
+    "platform": "linux",
+    "arch": "x64",
+    "cpu": "AMD Ryzen Threadripper 2950X 16-Core Processor",
+    "logicalCPUs": 32
+  },
+  "fixture": "games/cross-replay.game.gz",
+  "fixture_sha256": "28e1b5b701b877d13e02547c4d874712e1973c2457210915c83c5f4cf376e09f",
+  "angle": "gl",
+  "gpu": {
+    "devices": [
+      {
+        "vendorId": 4318,
+        "deviceId": 7812,
+        "vendorString": "",
+        "deviceString": "",
+        "driverVendor": "NVIDIA",
+        "driverVersion": "580.178.04"
+      },
+      {
+        "vendorId": 4318,
+        "deviceId": 7812,
+        "vendorString": "",
+        "deviceString": "",
+        "driverVendor": "",
+        "driverVersion": ""
+      }
+    ],
+    "auxAttributes": {
+      "amdSwitchable": false,
+      "canSupportThreadedTextureMailbox": false,
+      "directRenderingVersion": "",
+      "displayType": "ANGLE_OPENGL",
+      "glExtensions": "GL_AMD_performance_monitor GL_ANGLE_blob_cache GL_ANGLE_client_arrays GL_ANGLE_clip_cull_distance GL_ANGLE_compressed_texture_etc GL_ANGLE_depth_texture GL_ANGLE_framebuffer_blit GL_ANGLE_framebuffer_multisample GL_ANGLE_get_serialized_context_string GL_ANGLE_get_tex_level_parameter GL_ANGLE_instanced_arrays GL_ANGLE_memory_size GL_ANGLE_polygon_mode GL_ANGLE_program_binary_readiness_query GL_ANGLE_program_cache_control GL_ANGLE_renderability_validation GL_ANGLE_request_extension GL_ANGLE_robust_client_memory GL_ANGLE_shader_pixel_local_storage GL_ANGLE_stencil_texturing GL_ANGLE_texture_compression_dxt3 GL_ANGLE_texture_compression_dxt5 GL_ANGLE_texture_multisample GL_ANGLE_translated_shader_source GL_ARM_rgba8 GL_CHROMIUM_bind_generates_resource GL_CHROMIUM_bind_uniform_location GL_CHROMIUM_copy_texture GL_CHROMIUM_lose_context GL_EXT_EGL_image_array GL_EXT_EGL_image_external_wrap_modes GL_EXT_blend_func_extended GL_EXT_blend_minmax GL_EXT_clear_texture GL_EXT_clip_control GL_EXT_clip_cull_distance GL_EXT_color_buffer_float GL_EXT_color_buffer_half_float GL_EXT_compressed_ETC1_RGB8_sub_texture GL_EXT_conservative_depth GL_EXT_debug_label GL_EXT_debug_marker GL_EXT_depth_clamp GL_EXT_discard_framebuffer GL_EXT_disjoint_timer_query GL_EXT_draw_buffers_indexed GL_EXT_float_blend GL_EXT_frag_depth GL_EXT_instanced_arrays GL_EXT_map_buffer_range GL_EXT_memory_object GL_EXT_memory_object_fd GL_EXT_multisample_compatibility GL_EXT_multisampled_render_to_texture GL_EXT_multisampled_render_to_texture2 GL_EXT_occlusion_query_boolean GL_EXT_polygon_offset_clamp GL_EXT_read_format_bgra GL_EXT_render_snorm GL_EXT_robustness GL_EXT_sRGB GL_EXT_sRGB_write_control GL_EXT_semaphore GL_EXT_semaphore_fd GL_EXT_shader_texture_lod GL_EXT_shadow_samplers GL_EXT_texture_border_clamp GL_EXT_texture_compression_bptc GL_EXT_texture_compression_dxt1 GL_EXT_texture_compression_rgtc GL_EXT_texture_compression_s3tc_srgb GL_EXT_texture_filter_anisotropic GL_EXT_texture_format_BGRA8888 GL_EXT_texture_mirror_clamp_to_edge GL_EXT_texture_norm16 GL_EXT_texture_rg GL_EXT_texture_sRGB_R8 GL_EXT_texture_sRGB_decode GL_EXT_texture_shadow_lod GL_EXT_texture_storage GL_EXT_unpack_subimage GL_KHR_blend_equation_advanced GL_KHR_blend_equation_advanced_coherent GL_KHR_debug GL_KHR_parallel_shader_compile GL_KHR_robustness GL_KHR_texture_compression_astc_hdr GL_KHR_texture_compression_astc_ldr GL_KHR_texture_compression_astc_sliced_3d GL_NV_fence GL_NV_framebuffer_blit GL_NV_pack_subimage GL_NV_pixel_buffer_object GL_NV_polygon_mode GL_NV_read_depth GL_NV_read_stencil GL_NV_robustness_video_memory_purge GL_NV_shader_noperspective_interpolation GL_OES_EGL_image GL_OES_EGL_image_external GL_OES_EGL_image_external_essl3 GL_OES_EGL_sync GL_OES_compressed_ETC1_RGB8_texture GL_OES_depth24 GL_OES_depth32 GL_OES_depth_texture GL_OES_draw_buffers_indexed GL_OES_element_index_uint GL_OES_fbo_render_mipmap GL_OES_get_program_binary GL_OES_mapbuffer GL_OES_packed_depth_stencil GL_OES_rgb8_rgba8 GL_OES_sample_variables GL_OES_shader_multisample_interpolation GL_OES_standard_derivatives GL_OES_surfaceless_context GL_OES_texture_3D GL_OES_texture_border_clamp GL_OES_texture_float GL_OES_texture_float_linear GL_OES_texture_half_float GL_OES_texture_half_float_linear GL_OES_texture_npot GL_OES_texture_stencil8 GL_OES_texture_storage_multisample_2d_array GL_OES_vertex_array_object ",
+      "glImplementationParts": "(gl=egl-angle,angle=opengl)",
+      "glRenderer": "ANGLE (NVIDIA Corporation, NVIDIA GeForce RTX 2070 SUPER/PCIe/SSE2, OpenGL ES 3.2 NVIDIA 580.178.04)",
+      "glResetNotificationStrategy": 33362,
+      "glVendor": "Google Inc. (NVIDIA Corporation)",
+      "glVersion": "OpenGL ES 3.0 (ANGLE 2.1.28646 git hash: a6bc9eff8444)",
+      "glWsExtensions": "EGL_EXT_create_context_robustness EGL_KHR_create_context EGL_KHR_image EGL_KHR_image_base EGL_KHR_gl_colorspace EGL_KHR_gl_texture_2D_image EGL_KHR_gl_texture_cubemap_image EGL_KHR_gl_texture_3D_image EGL_KHR_gl_renderbuffer_image EGL_KHR_get_all_proc_addresses EGL_KHR_fence_sync EGL_KHR_wait_sync EGL_ANGLE_create_context_webgl_compatibility EGL_CHROMIUM_create_context_bind_generates_resource EGL_KHR_swap_buffers_with_damage EGL_EXT_pixel_format_float EGL_KHR_surfaceless_context EGL_ANGLE_display_texture_share_group EGL_ANGLE_display_semaphore_share_group EGL_ANGLE_create_context_client_arrays EGL_ANGLE_program_cache_control EGL_ANGLE_robust_resource_initialization EGL_ANGLE_create_context_extensions_enabled EGL_ANDROID_blob_cache EGL_ANDROID_recordable EGL_ANDROID_native_fence_sync EGL_ANGLE_create_context_backwards_compatible EGL_KHR_no_config_context EGL_KHR_create_context_no_error EGL_EXT_image_dma_buf_import EGL_EXT_image_dma_buf_import_modifiers EGL_NV_robustness_video_memory_purge EGL_KHR_reusable_sync EGL_ANGLE_external_context_and_surface EGL_EXT_buffer_age EGL_ANGLE_context_virtualization EGL_ANGLE_memory_usage_report EGL_ANGLE_create_context_passthrough_shaders ",
+      "glWsVendor": "Google Inc. (NVIDIA Corporation)",
+      "glWsVersion": "1.5 (ANGLE 2.1.28646 git hash: a6bc9eff8444)",
+      "hardwareSupportsVulkan": true,
+      "inProcessGpu": false,
+      "initializationTime": 1.657645,
+      "isAsan": false,
+      "isClangCoverage": false,
+      "jpegDecodeAcceleratorSupported": false,
+      "maxMsaaSamples": "8",
+      "optimus": false,
+      "passthroughCmdDecoder": true,
+      "pixelShaderVersion": "3.00",
+      "processCrashCount": 0,
+      "sandboxed": false,
+      "skiaBackendType": "GaneshGL",
+      "subpixelFontRendering": true,
+      "targetCpuBits": 64,
+      "vertexShaderVersion": "3.00",
+      "visibilityCallbackCallCount": 0
+    },
+    "featureStatus": {
+      "2d_canvas": "enabled",
+      "direct_rendering_display_compositor": "disabled_off_ok",
+      "gpu_compositing": "enabled",
+      "multiple_raster_threads": "enabled_on",
+      "opengl": "enabled_on",
+      "rasterization": "enabled",
+      "raw_draw": "disabled_off_ok",
+      "skia_graphite": "disabled_off",
+      "trees_in_viz": "disabled_off",
+      "video_decode": "enabled",
+      "video_encode": "disabled_software",
+      "vulkan": "disabled_off",
+      "webgl": "enabled",
+      "webgpu": "enabled",
+      "webgpu_on_vk_via_gl_interop": "enabled",
+      "webnn": "disabled_off"
+    },
+    "driverBugWorkarounds": [
+      "disable_discard_framebuffer",
+      "disable_rgb_to_yuv_conversion",
+      "enable_webgl_timer_query_extensions",
+      "exit_on_context_lost",
+      "force_cube_complete",
+      "init_gl_position_in_vertex_shader",
+      "unpack_overlapping_rows_separately_unpack_buffer",
+      "disabled_extension_GL_KHR_blend_equation_advanced",
+      "disabled_extension_GL_KHR_blend_equation_advanced_coherent"
+    ],
+    "videoDecoding": [],
+    "videoEncoding": []
+  },
+  "browser": "153.0.8010.12",
+  "errors": [],
+  "records": [
+    {
+      "mode": "normal",
+      "elapsed_ms": 10018.466648999995,
+      "hostLoadBefore": [
+        57,
+        50.67,
+        49.73
+      ],
+      "hostLoadAfter": [
+        59.21,
+        51.46,
+        50.01
+      ],
+      "cpu_core_percent": 76.35899053238445,
+      "processCPU": [
+        {
+          "type": "browser",
+          "id": 3272468,
+          "cpuTime": 2.8,
+          "seconds": 0.1499999999999999
+        },
+        {
+          "type": "renderer",
+          "id": 3272741,
+          "cpuTime": 0.04,
+          "seconds": 0
+        },
+        {
+          "type": "renderer",
+          "id": 3272711,
+          "cpuTime": 45.16,
+          "seconds": 5.289999999999999
+        },
+        {
+          "type": "renderer",
+          "id": 3272700,
+          "cpuTime": 0.76,
+          "seconds": 0.010000000000000009
+        },
+        {
+          "type": "GPU",
+          "id": 3272564,
+          "cpuTime": 10.15,
+          "seconds": 2.17
+        },
+        {
+          "type": "network.mojom.NetworkService",
+          "id": 3272580,
+          "cpuTime": 0.82,
+          "seconds": 0.029999999999999916
+        },
+        {
+          "type": "storage.mojom.StorageService",
+          "id": 3272630,
+          "cpuTime": 0.01,
+          "seconds": 0
+        }
+      ],
+      "ticks_per_second": 19.464056410215644,
+      "host_match_frames_per_second": 12.676590585114806,
+      "rendering": [
+        {
+          "id": "page",
+          "frames": 128,
+          "fps": 11.024745779815909,
+          "interval_ms": {
+            "p50": 45.394999980926514,
+            "p95": 90.57999992370605,
+            "p99": 502.8699998855591,
+            "max": 4822.535000324249
+          }
+        }
+      ],
+      "before": {
+        "version": 1,
+        "executionMode": "serial",
+        "threadFallback": "serial requested",
+        "workerCount": 0,
+        "renderer": "webgl2",
+        "renderContext": {
+          "width": 1200,
+          "height": 900,
+          "error": null
+        },
+        "contextLost": false,
+        "contextRestores": 0,
+        "screen": "match",
+        "screenClass": "17GameSessionScreen",
+        "roomCanStart": false,
+        "customGameReady": false,
+        "tick": 167,
+        "frames": 90,
+        "loop": 417,
+        "paused": false,
+        "torus": false,
+        "torusSettled": false,
+        "width": 1200,
+        "height": 900,
+        "restore": "ready",
+        "watchReplay": "none",
+        "import": "succeeded",
+        "persisting": false,
+        "persistence": "persisted",
+        "audio": "inactive",
+        "assets": {
+          "core": "ready",
+          "game": "ready",
+          "skins": "idle",
+          "font-cjk": "ready",
+          "menu-music": "ready",
+          "translations": "ready",
+          "music": "ready",
+          "music-sets": "ready",
+          "hd": "ready"
+        },
+        "opened": [],
+        "controls": {}
+      },
+      "after": {
+        "version": 1,
+        "executionMode": "serial",
+        "threadFallback": "serial requested",
+        "workerCount": 0,
+        "renderer": "webgl2",
+        "renderContext": {
+          "width": 1200,
+          "height": 900,
+          "error": null
+        },
+        "contextLost": false,
+        "contextRestores": 0,
+        "screen": "match",
+        "screenClass": "17GameSessionScreen",
+        "roomCanStart": false,
+        "customGameReady": false,
+        "tick": 362,
+        "frames": 217,
+        "loop": 545,
+        "paused": false,
+        "torus": false,
+        "torusSettled": false,
+        "width": 1200,
+        "height": 900,
+        "restore": "ready",
+        "watchReplay": "none",
+        "import": "succeeded",
+        "persisting": false,
+        "persistence": "persisted",
+        "audio": "inactive",
+        "assets": {
+          "core": "ready",
+          "game": "ready",
+          "skins": "idle",
+          "font-cjk": "ready",
+          "menu-music": "ready",
+          "translations": "ready",
+          "music": "ready",
+          "music-sets": "ready",
+          "hd": "ready"
+        },
+        "opened": [],
+        "controls": {}
+      },
+      "hotByThread": [
+        {
+          "id": "page",
+          "hot": [
+            {
+              "name": "(program)",
+              "url": "",
+              "ms": 967.037,
+              "percent": 8.605395510024145
+            },
+            {
+              "name": "UpsampleBgraLinePair_C",
+              "url": "http://127.0.0.1:8772/index.wasm",
+              "ms": 483.041,
+              "percent": 4.298448614228383
+            },
+            {
+              "name": "GAGCore::AssetImage::prepareUpload(bool)",
+              "url": "http://127.0.0.1:8772/index.wasm",
+              "ms": 466.818,
+              "percent": 4.1540846122728
+            },
+            {
+              "name": "texImage2D",
+              "url": "",
+              "ms": 461.408,
+              "percent": 4.105942514597912
+            },
+            {
+              "name": "FilterLoop26_C",
+              "url": "http://127.0.0.1:8772/index.wasm",
+              "ms": 350.015,
+              "percent": 3.114686934875399
+            },
+            {
+              "name": "GAGCore::AssetImage::prepareUpload(bool)",
+              "url": "http://127.0.0.1:8772/index.wasm",
+              "ms": 316.847,
+              "percent": 2.8195340521248107
+            },
+            {
+              "name": "(idle)",
+              "url": "",
+              "ms": 310.755,
+              "percent": 2.7653230245766744
+            },
+            {
+              "name": "GetCoeffsFast",
+              "url": "http://127.0.0.1:8772/index.wasm",
+              "ms": 281.517,
+              "percent": 2.5051421277525754
+            },
+            {
+              "name": "FilterLoop24_C",
+              "url": "http://127.0.0.1:8772/index.wasm",
+              "ms": 246.442,
+              "percent": 2.193019378039693
+            },
+            {
+              "name": "DecodeImageData",
+              "url": "http://127.0.0.1:8772/index.wasm",
+              "ms": 228.929,
+              "percent": 2.0371760219250326
+            },
+            {
+              "name": "Blit_3or4_to_3or4__inversed_rgb",
+              "url": "http://127.0.0.1:8772/index.wasm",
+              "ms": 200.038,
+              "percent": 1.780082982382484
+            },
+            {
+              "name": "TerrainVisual::Compositor::prepare(bool, int)",
+              "url": "http://127.0.0.1:8772/index.wasm",
+              "ms": 198.937,
+              "percent": 1.7702854870885742
+            },
+            {
+              "name": "Blit_3or4_to_3or4__inversed_rgb",
+              "url": "http://127.0.0.1:8772/index.wasm",
+              "ms": 174.322,
+              "percent": 1.5512433920299111
+            },
+            {
+              "name": "GAGCore::Sprite::createHighResolutionAtlas()",
+              "url": "http://127.0.0.1:8772/index.wasm",
+              "ms": 148.015,
+              "percent": 1.3171446557021333
+            },
+            {
+              "name": "texImage2D",
+              "url": "",
+              "ms": 143.545,
+              "percent": 1.277367358732309
+            },
+            {
+              "name": "GetCoeffsFast",
+              "url": "http://127.0.0.1:8772/index.wasm",
+              "ms": 137.985,
+              "percent": 1.2278904524342726
+            },
+            {
+              "name": "SDL_memset4",
+              "url": "http://127.0.0.1:8772/index.wasm",
+              "ms": 126.559,
+              "percent": 1.126213630246977
+            },
+            {
+              "name": "DecodeInto",
+              "url": "http://127.0.0.1:8772/index.wasm",
+              "ms": 119.369,
+              "percent": 1.0622318035773939
+            },
+            {
+              "name": "ExtractAlphaRows",
+              "url": "http://127.0.0.1:8772/index.wasm",
+              "ms": 117.111,
+              "percent": 1.0421384844369324
+            },
+            {
+              "name": "TransformOne_C",
+              "url": "http://127.0.0.1:8772/index.wasm",
+              "ms": 113.684,
+              "percent": 1.011642556760067
+            },
+            {
+              "name": "SDL_CreateSurface",
+              "url": "http://127.0.0.1:8772/index.wasm",
+              "ms": 111.198,
+              "percent": 0.9895203285124199
+            },
+            {
+              "name": "(garbage collector)",
+              "url": "",
+              "ms": 103.303,
+              "percent": 0.919264901314039
+            },
+            {
+              "name": "texSubImage2D",
+              "url": "",
+              "ms": 81.413,
+              "percent": 0.7244718295759064
+            },
+            {
+              "name": "UpsampleBgraLinePair_C",
+              "url": "http://127.0.0.1:8772/index.wasm",
+              "ms": 75.233,
+              "percent": 0.6694777143021896
+            },
+            {
+              "name": "DispatchAlpha_C",
+              "url": "http://127.0.0.1:8772/index.wasm",
+              "ms": 73.852,
+              "percent": 0.6571885762450694
+            },
+            {
+              "name": "Blit_3or4_to_3or4__inversed_rgb",
+              "url": "http://127.0.0.1:8772/index.wasm",
+              "ms": 73.691,
+              "percent": 0.6557558816562234
+            },
+            {
+              "name": "bufferSubData",
+              "url": "",
+              "ms": 72.317,
+              "percent": 0.6435290346681835
+            },
+            {
+              "name": "GAGCore::AssetImage::prepareUpload(bool)",
+              "url": "http://127.0.0.1:8772/index.wasm",
+              "ms": 69.12,
+              "percent": 0.6150798135468125
+            },
+            {
+              "name": "SDL_BlitCopy",
+              "url": "http://127.0.0.1:8772/index.wasm",
+              "ms": 67.235,
+              "percent": 0.5983057185159135
+            },
+            {
+              "name": "SDL_CreateSurface",
+              "url": "http://127.0.0.1:8772/index.wasm",
+              "ms": 65.637,
+              "percent": 0.5840855573173052
+            },
+            {
+              "name": "drawElements",
+              "url": "",
+              "ms": 63.04,
+              "percent": 0.5609755706885281
+            },
+            {
+              "name": "requestAnimationFrame",
+              "url": "",
+              "ms": 63.037,
+              "percent": 0.5609488745160651
+            },
+            {
+              "name": "TerrainVisual::Compositor::prepareMaterial(unsigned int, bool, int, std::__2::vector<TerrainVisual::Compositor::Texture, std::__2::allocator<TerrainVisual::Compositor::Texture>>&)",
+              "url": "http://127.0.0.1:8772/index.wasm",
+              "ms": 61.802,
+              "percent": 0.5499589501854761
+            },
+            {
+              "name": "GetLargeValue",
+              "url": "http://127.0.0.1:8772/index.wasm",
+              "ms": 60.58,
+              "percent": 0.5390847092688933
+            },
+            {
+              "name": "Renderer.prepare",
+              "url": "http://127.0.0.1:8772/index.js",
+              "ms": 56.57,
+              "percent": 0.5034008254100577
+            },
+            {
+              "name": "ReconstructRow",
+              "url": "http://127.0.0.1:8772/index.wasm",
+              "ms": 54.961,
+              "percent": 0.4890827782457518
+            },
+            {
+              "name": "GAGCore::GraphicContext::setUITransform(float, float, float, SDL_Rect const*)",
+              "url": "http://127.0.0.1:8772/index.wasm",
+              "ms": 47.07,
+              "percent": 0.4188629459439882
+            },
+            {
+              "name": "NewNicowar::update_farming(AISharedRuntime::Runtime&)",
+              "url": "http://127.0.0.1:8772/index.wasm",
+              "ms": 45.953,
+              "percent": 0.4089230710636093
+            },
+            {
+              "name": "TerrainVisual::PreparedCoverage::at(int, int) const",
+              "url": "http://127.0.0.1:8772/index.wasm",
+              "ms": 45.434,
+              "percent": 0.40430463322751564
+            },
+            {
+              "name": "ErrnoError",
+              "url": "http://127.0.0.1:8772/index.js",
+              "ms": 45.044,
+              "percent": 0.4008341308073296
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "paused",
+      "elapsed_ms": 10017.764123999994,
+      "hostLoadBefore": [
+        59.21,
+        51.46,
+        50.01
+      ],
+      "hostLoadAfter": [
+        61.44,
+        52.2,
+        50.26
+      ],
+      "cpu_core_percent": 79.55867099032527,
+      "processCPU": [
+        {
+          "type": "browser",
+          "id": 3272468,
+          "cpuTime": 2.94,
+          "seconds": 0.10000000000000009
+        },
+        {
+          "type": "renderer",
+          "id": 3272741,
+          "cpuTime": 0.04,
+          "seconds": 0
+        },
+        {
+          "type": "renderer",
+          "id": 3272711,
+          "cpuTime": 51.83,
+          "seconds": 5.269999999999996
+        },
+        {
+          "type": "renderer",
+          "id": 3272700,
+          "cpuTime": 0.76,
+          "seconds": 0
+        },
+        {
+          "type": "GPU",
+          "id": 3272564,
+          "cpuTime": 13.24,
+          "seconds": 2.59
+        },
+        {
+          "type": "network.mojom.NetworkService",
+          "id": 3272580,
+          "cpuTime": 0.82,
+          "seconds": 0
+        },
+        {
+          "type": "storage.mojom.StorageService",
+          "id": 3272630,
+          "cpuTime": 0.02,
+          "seconds": 0.01
+        }
+      ],
+      "ticks_per_second": 0,
+      "host_match_frames_per_second": 16.87003186620449,
+      "rendering": [
+        {
+          "id": "page",
+          "frames": 172,
+          "fps": 16.27996203240369,
+          "interval_ms": {
+            "p50": 57.125,
+            "p95": 109.875,
+            "p99": 173.13000011444092,
+            "max": 189.76500034332275
+          }
+        }
+      ],
+      "before": {
+        "version": 1,
+        "executionMode": "serial",
+        "threadFallback": "serial requested",
+        "workerCount": 0,
+        "renderer": "webgl2",
+        "renderContext": {
+          "width": 1200,
+          "height": 900,
+          "error": null
+        },
+        "contextLost": false,
+        "contextRestores": 0,
+        "screen": "match",
+        "screenClass": "17GameSessionScreen",
+        "roomCanStart": false,
+        "customGameReady": false,
+        "tick": 405,
+        "frames": 235,
+        "loop": 563,
+        "paused": true,
+        "torus": false,
+        "torusSettled": false,
+        "width": 1200,
+        "height": 900,
+        "restore": "ready",
+        "watchReplay": "none",
+        "import": "succeeded",
+        "persisting": false,
+        "persistence": "persisted",
+        "audio": "inactive",
+        "assets": {
+          "core": "ready",
+          "game": "ready",
+          "skins": "idle",
+          "font-cjk": "ready",
+          "menu-music": "ready",
+          "translations": "ready",
+          "music": "ready",
+          "music-sets": "ready",
+          "hd": "ready"
+        },
+        "opened": [],
+        "controls": {}
+      },
+      "after": {
+        "version": 1,
+        "executionMode": "serial",
+        "threadFallback": "serial requested",
+        "workerCount": 0,
+        "renderer": "webgl2",
+        "renderContext": {
+          "width": 1200,
+          "height": 900,
+          "error": null
+        },
+        "contextLost": false,
+        "contextRestores": 0,
+        "screen": "match",
+        "screenClass": "17GameSessionScreen",
+        "roomCanStart": false,
+        "customGameReady": false,
+        "tick": 405,
+        "frames": 404,
+        "loop": 817,
+        "paused": true,
+        "torus": false,
+        "torusSettled": false,
+        "width": 1200,
+        "height": 900,
+        "restore": "ready",
+        "watchReplay": "none",
+        "import": "succeeded",
+        "persisting": false,
+        "persistence": "persisted",
+        "audio": "inactive",
+        "assets": {
+          "core": "ready",
+          "game": "ready",
+          "skins": "idle",
+          "font-cjk": "ready",
+          "menu-music": "ready",
+          "translations": "ready",
+          "music": "ready",
+          "music-sets": "ready",
+          "hd": "ready"
+        },
+        "opened": [],
+        "controls": {}
+      },
+      "hotByThread": [
+        {
+          "id": "page",
+          "hot": [
+            {
+              "name": "(program)",
+              "url": "",
+              "ms": 1176.451,
+              "percent": 11.443213181885607
+            },
+            {
+              "name": "(idle)",
+              "url": "",
+              "ms": 692.944,
+              "percent": 6.740192252043255
+            },
+            {
+              "name": "GAGCore::AssetImage::prepareUpload(bool)",
+              "url": "http://127.0.0.1:8772/index.wasm",
+              "ms": 262.693,
+              "percent": 2.555186744190005
+            },
+            {
+              "name": "UpsampleBgraLinePair_C",
+              "url": "http://127.0.0.1:8772/index.wasm",
+              "ms": 188.826,
+              "percent": 1.836690327334272
+            },
+            {
+              "name": "nlohmann::json_abi_v3_12_0::basic_json<std::__2::map, std::__2::vector, std::__2::basic_string<char, std::__2::char_traits<char>, std::__2::allocator<char>>, bool, long long, unsigned long long, double, std::__2::allocator, nlohmann::json_abi_v3_12_0::adl_serializer, std::__2::vector<unsigned char, std::__2::allocator<unsigned char>>, void>::json_value::destroy(nlohmann::json_abi_v3_12_0::detail::value_t)",
+              "url": "http://127.0.0.1:8772/index.wasm",
+              "ms": 183.885,
+              "percent": 1.788629748243688
+            },
+            {
+              "name": "Online::Sha256::hex(std::__2::basic_string_view<char, std::__2::char_traits<char>>)",
+              "url": "http://127.0.0.1:8772/index.wasm",
+              "ms": 170.661,
+              "percent": 1.6600013131305762
+            },
+            {
+              "name": "Renderer.prepare",
+              "url": "http://127.0.0.1:8772/index.js",
+              "ms": 162.629,
+              "percent": 1.5818749072905496
+            },
+            {
+              "name": "bufferSubData",
+              "url": "",
+              "ms": 155.127,
+              "percent": 1.508903754823931
+            },
+            {
+              "name": "nlohmann::json_abi_v3_12_0::detail::serializer<nlohmann::json_abi_v3_12_0::basic_json<std::__2::map, std::__2::vector, std::__2::basic_string<char, std::__2::char_traits<char>, std::__2::allocator<char>>, bool, long long, unsigned long long, double, std::__2::allocator, nlohmann::json_abi_v3_12_0::adl_serializer, std::__2::vector<unsigned char, std::__2::allocator<unsigned char>>, void>>::dump_escaped(std::__2::basic_string<char, std::__2::char_traits<char>, std::__2::allocator<char>> const&, bool)",
+              "url": "http://127.0.0.1:8772/index.wasm",
+              "ms": 154.635,
+              "percent": 1.5041181233905032
+            },
+            {
+              "name": "texImage2D",
+              "url": "",
+              "ms": 152.751,
+              "percent": 1.4857926566820108
+            },
+            {
+              "name": "GetCoeffsFast",
+              "url": "http://127.0.0.1:8772/index.wasm",
+              "ms": 132.41,
+              "percent": 1.2879379229678696
+            },
+            {
+              "name": "nlohmann::json_abi_v3_12_0::detail::serializer<nlohmann::json_abi_v3_12_0::basic_json<std::__2::map, std::__2::vector, std::__2::basic_string<char, std::__2::char_traits<char>, std::__2::allocator<char>>, bool, long long, unsigned long long, double, std::__2::allocator, nlohmann::json_abi_v3_12_0::adl_serializer, std::__2::vector<unsigned char, std::__2::allocator<unsigned char>>, void>>::dump_escaped(std::__2::basic_string<char, std::__2::char_traits<char>, std::__2::allocator<char>> const&, bool)",
+              "url": "http://127.0.0.1:8772/index.wasm",
+              "ms": 117.718,
+              "percent": 1.1450304086997332
+            },
+            {
+              "name": "requestAnimationFrame",
+              "url": "",
+              "ms": 117.688,
+              "percent": 1.144738601905012
+            },
+            {
+              "name": "nlohmann::json_abi_v3_12_0::detail::serializer<nlohmann::json_abi_v3_12_0::basic_json<std::__2::map, std::__2::vector, std::__2::basic_string<char, std::__2::char_traits<char>, std::__2::allocator<char>>, bool, long long, unsigned long long, double, std::__2::allocator, nlohmann::json_abi_v3_12_0::adl_serializer, std::__2::vector<unsigned char, std::__2::allocator<unsigned char>>, void>>::dump(nlohmann::json_abi_v3_12_0::basic_json<std::__2::map, std::__2::vector, std::__2::basic_string<char, std::__2::char_traits<char>, std::__2::allocator<char>>, bool, long long, unsigned long long, double, std::__2::allocator, nlohmann::json_abi_v3_12_0::adl_serializer, std::__2::vector<unsigned char, std::__2::allocator<unsigned char>>, void> const&, bool, bool, unsigned int, unsigned int)",
+              "url": "http://127.0.0.1:8772/index.wasm",
+              "ms": 115.309,
+              "percent": 1.1215983230836197
+            },
+            {
+              "name": "(garbage collector)",
+              "url": "",
+              "ms": 113.461,
+              "percent": 1.1036230245287928
+            },
+            {
+              "name": "ErrnoError",
+              "url": "http://127.0.0.1:8772/index.js",
+              "ms": 87.178,
+              "percent": 0.8479710916735362
+            },
+            {
+              "name": "GAGCore::Toolkit::pollAssets(unsigned int)",
+              "url": "http://127.0.0.1:8772/index.wasm",
+              "ms": 83.059,
+              "percent": 0.8079060187583135
+            },
+            {
+              "name": "FilterLoop24_C",
+              "url": "http://127.0.0.1:8772/index.wasm",
+              "ms": 74.693,
+              "percent": 0.7265308306037239
+            },
+            {
+              "name": "nlohmann::json_abi_v3_12_0::basic_json<std::__2::map, std::__2::vector, std::__2::basic_string<char, std::__2::char_traits<char>, std::__2::allocator<char>>, bool, long long, unsigned long long, double, std::__2::allocator, nlohmann::json_abi_v3_12_0::adl_serializer, std::__2::vector<unsigned char, std::__2::allocator<unsigned char>>, void>::operator[](std::__2::basic_string<char, std::__2::char_traits<char>, std::__2::allocator<char>>)",
+              "url": "http://127.0.0.1:8772/index.wasm",
+              "ms": 69.24,
+              "percent": 0.6734900822165644
+            },
+            {
+              "name": "Minimap::computeColors(int, int)",
+              "url": "http://127.0.0.1:8772/index.wasm",
+              "ms": 65.574,
+              "percent": 0.6378312919016319
+            },
+            {
+              "name": "GameGUI::drawAll(int)",
+              "url": "http://127.0.0.1:8772/index.wasm",
+              "ms": 62.262,
+              "percent": 0.6056158217644098
+            },
+            {
+              "name": "TransformOne_C",
+              "url": "http://127.0.0.1:8772/index.wasm",
+              "ms": 61.872,
+              "percent": 0.601822333433034
+            },
+            {
+              "name": "nlohmann::json_abi_v3_12_0::detail::serializer<nlohmann::json_abi_v3_12_0::basic_json<std::__2::map, std::__2::vector, std::__2::basic_string<char, std::__2::char_traits<char>, std::__2::allocator<char>>, bool, long long, unsigned long long, double, std::__2::allocator, nlohmann::json_abi_v3_12_0::adl_serializer, std::__2::vector<unsigned char, std::__2::allocator<unsigned char>>, void>>::dump(nlohmann::json_abi_v3_12_0::basic_json<std::__2::map, std::__2::vector, std::__2::basic_string<char, std::__2::char_traits<char>, std::__2::allocator<char>>, bool, long long, unsigned long long, double, std::__2::allocator, nlohmann::json_abi_v3_12_0::adl_serializer, std::__2::vector<unsigned char, std::__2::allocator<unsigned char>>, void> const&, bool, bool, unsigned int, unsigned int)",
+              "url": "http://127.0.0.1:8772/index.wasm",
+              "ms": 61.693,
+              "percent": 0.6000812195578641
+            },
+            {
+              "name": "TerrainVisual::Compositor::prepareMaterial(unsigned int, bool, int, std::__2::vector<TerrainVisual::Compositor::Texture, std::__2::allocator<TerrainVisual::Compositor::Texture>>&)",
+              "url": "http://127.0.0.1:8772/index.wasm",
+              "ms": 61.663,
+              "percent": 0.5997894127631429
+            },
+            {
+              "name": "prepareClientAttributes",
+              "url": "http://127.0.0.1:8772/index.js",
+              "ms": 55.529,
+              "percent": 0.5401246501358118
+            },
+            {
+              "name": "nlohmann::json_abi_v3_12_0::basic_json<std::__2::map, std::__2::vector, std::__2::basic_string<char, std::__2::char_traits<char>, std::__2::allocator<char>>, bool, long long, unsigned long long, double, std::__2::allocator, nlohmann::json_abi_v3_12_0::adl_serializer, std::__2::vector<unsigned char, std::__2::allocator<unsigned char>>, void>::json_value::destroy(nlohmann::json_abi_v3_12_0::detail::value_t)",
+              "url": "http://127.0.0.1:8772/index.wasm",
+              "ms": 53.169,
+              "percent": 0.5171691822844094
+            },
+            {
+              "name": "FilterLoop26_C",
+              "url": "http://127.0.0.1:8772/index.wasm",
+              "ms": 52.359,
+              "percent": 0.5092903988269367
+            },
+            {
+              "name": "DecodeImageData",
+              "url": "http://127.0.0.1:8772/index.wasm",
+              "ms": 52.036,
+              "percent": 0.506148612337105
+            },
+            {
+              "name": "bufferSubData",
+              "url": "",
+              "ms": 51.266,
+              "percent": 0.4986589046059271
+            },
+            {
+              "name": "getRenderer",
+              "url": "http://127.0.0.1:8772/index.js",
+              "ms": 50.168,
+              "percent": 0.48797877591913064
+            },
+            {
+              "name": "BuildingsTypes::snapshotJson() const",
+              "url": "http://127.0.0.1:8772/index.wasm",
+              "ms": 49.981,
+              "percent": 0.4861598468987017
+            },
+            {
+              "name": "DecodeInto",
+              "url": "http://127.0.0.1:8772/index.wasm",
+              "ms": 48.902,
+              "percent": 0.47566452918189533
+            },
+            {
+              "name": "ReconstructRow",
+              "url": "http://127.0.0.1:8772/index.wasm",
+              "ms": 48.364,
+              "percent": 0.4704314606632282
+            },
+            {
+              "name": "ExtractAlphaRows",
+              "url": "http://127.0.0.1:8772/index.wasm",
+              "ms": 47.338,
+              "percent": 0.46045166828376266
+            },
+            {
+              "name": "bindBuffer",
+              "url": "",
+              "ms": 44.878,
+              "percent": 0.436523511116623
+            },
+            {
+              "name": "bufferSubData",
+              "url": "",
+              "ms": 41.528,
+              "percent": 0.4039384190394207
+            },
+            {
+              "name": "Blit_3or4_to_3or4__inversed_rgb",
+              "url": "http://127.0.0.1:8772/index.wasm",
+              "ms": 39.7,
+              "percent": 0.3861576583477413
+            },
+            {
+              "name": "BuildingType::BuildingType(BuildingType const&)",
+              "url": "http://127.0.0.1:8772/index.wasm",
+              "ms": 39.587,
+              "percent": 0.38505851942095803
+            },
+            {
+              "name": "Game::drawSceneMap(PresentationFrame const&, int, int, int, int, int, int, int, int, int, Game::ViewState&, unsigned int, std::__2::set<unsigned short, std::__2::less<unsigned short>, std::__2::allocator<unsigned short>>*, std::__2::unordered_map<unsigned short, BuildingGuiState, std::__2::hash<unsigned short>, std::__2::equal_to<unsigned short>, std::__2::allocator<std::__2::pair<unsigned short const, BuildingGuiState>>> const*, bool, int, bool)",
+              "url": "http://127.0.0.1:8772/index.wasm",
+              "ms": 39.174,
+              "percent": 0.38104131254696266
+            },
+            {
+              "name": "GetLargeValue",
+              "url": "http://127.0.0.1:8772/index.wasm",
+              "ms": 38.874,
+              "percent": 0.3781232445997505
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

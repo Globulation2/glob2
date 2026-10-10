@@ -1,0 +1,114 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="74" failures="0" errors="2" skipped="0"><testsuite name="AISavePortability"><testcase classname="AISavePortability" name="runtime initialisation; area order serialisation and Maxima reserved telemetry" time="1.11197" status="run" />
+  </testsuite><testsuite name="AITargetTelemetrySave"><testcase classname="AITargetTelemetrySave" name="Cortex flag targets carry the team that owns each building" time="1.22693" status="run" />
+  <testcase classname="AITargetTelemetrySave" name="Cortex records its committed target until the offense stands down, across saves" time="2.35044" status="run" />
+  <testcase classname="AITargetTelemetrySave" name="Numbi reports the highest-numbered enemy its attack searches" time="1.11853" status="run" />
+  <testcase classname="AITargetTelemetrySave" name="target fields are declared in schema version 2" time="2.76141" status="run" />
+  <testcase classname="AITargetTelemetrySave" name="target telemetry names only real enemies and leaves the simulation unchanged" time="120.106"><error message="timeout" type="timeout">GLOB2_TEST_BUILD compiler=15.2.0 platform=Linux pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": false, "flags": {"CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/home/bradley/.codex/worktrees/a8c9/glob2=.", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC", "LINKFLAGS": "-Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -Wl,-rpath,/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/build/sdl3-ci-current/prefix/lib -Wl,--enable-new-dtags"}, "revision": "4bc7fa4a73df53ac156224030994caefea9faeb6", "sourceStatus": [], "sourceTreeSha256": "5fa4e9bff3fea79b4aecf4c161a616df2ad39e0ac22c42f76471ac9681aec8da"}
+
+[run_tests] timeout process group:
+3823899 3823614 3823899 Rs   /home/bradley/.codex/worktrees/a8c9/glob2/build/browser-fix-merge-native/test/glob2-engine-tests -r=junit -o=/tmp/glob2-test-syfiq_p8/junit.xml --no-breaks=true -tc=target telemetry names only real enemies and leaves the simulation unchanged -ts=AITargetTelemetrySave
+  thread 3823899: 0
+
+[run_tests] killed after 120s
+</error></testcase></testsuite><testsuite name="EnteringUnitSave"><testcase classname="EnteringUnitSave" name="generated fixtures round-trip through binary saves [save-format]" time="48.7864" status="run" />
+  <testcase classname="EnteringUnitSave" name="the retained fixture loads [save-format]" time="1.02057" status="run" />
+  </testsuite><testsuite name="LegacyRoundTripSave"><testcase classname="LegacyRoundTripSave" name="a format-143 save with live round-trip fields plays on greedily [golden][save-format]" time="19.9101" status="run" />
+  </testsuite><testsuite name="RuntimeBuildingOrderSaveLoad"><testcase classname="RuntimeBuildingOrderSaveLoad" name="Pre96StreamLeavesSentinel" time="0.000102" status="run" />
+  <testcase classname="RuntimeBuildingOrderSaveLoad" name="RoundTripCurrentVersion" time="0.000108" status="run" />
+  <testcase classname="RuntimeBuildingOrderSaveLoad" name="UnregisteredOrderRoundTrips" time="0" status="run" />
+  </testsuite><testsuite name="RuntimeContinuation"><testcase classname="RuntimeContinuation" name="flat building relationships resolve captured unit incarnations" time="1.09411" status="run" />
+  <testcase classname="RuntimeContinuation" name="gradient manager state survives binary and text round trips [save-format]" time="3.58685" status="run" />
+  <testcase classname="RuntimeContinuation" name="irrigation heuristics require a positive enabled fertility contribution" time="0" status="run" />
+  <testcase classname="RuntimeContinuation" name="position entities retain historical binary and text payloads" time="0.000339" status="run" />
+  <testcase classname="RuntimeContinuation" name="queued orders preserve selection incarnations through save and slot replacement" time="1.36514" status="run" />
+  <testcase classname="RuntimeContinuation" name="recurring input tracking and provider lookup preserve composite membership" time="1.40441" status="run" />
+  <testcase classname="RuntimeContinuation" name="runtime owner helpers and decisions release their full observation leases" time="1.09442" status="run" />
+  <testcase classname="RuntimeContinuation" name="static material fields invalidate on source edits and preserve continuation" time="1.66208" status="run" />
+  <testcase classname="RuntimeContinuation" name="terrain weighted influence retains obstacles and sub-tile trail costs" time="0.00034" status="run" />
+  </testsuite><testsuite name="SavegameSafety"><testcase classname="SavegameSafety" name="autosave defaults; atomic and background writes; truncated and malformed loads; imports and campaign progress [save-format][writes-preferences]" time="120.223"><error message="timeout" type="timeout">GLOB2_TEST_BUILD compiler=15.2.0 platform=Linux pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": false, "flags": {"CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/home/bradley/.codex/worktrees/a8c9/glob2=.", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC", "LINKFLAGS": "-Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -Wl,-rpath,/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/build/sdl3-ci-current/prefix/lib -Wl,--enable-new-dtags"}, "revision": "4bc7fa4a73df53ac156224030994caefea9faeb6", "sourceStatus": [], "sourceTreeSha256": "5fa4e9bff3fea79b4aecf4c161a616df2ad39e0ac22c42f76471ac9681aec8da"}
+PASS pending construction binary/text round trips, queue order, staffing, delayed placement, empty queue and invalid reference
+PASS binary human saved game continues RNG and 700 simulation steps and measurements across header replacement
+PASS binary AI saved game continues RNG and 700 simulation steps and measurements across header replacement
+PASS binary + text routing human saved game continues RNG and 700 simulation steps and measurements across header replacement
+PASS binary + text routing AI saved game continues RNG and 700 simulation steps and measurements across header replacement
+FileManager::writeAtomically: /tmp/glob2-test-dcg89her/profile/atomic.game: injected serialization failure
+FileManager::writeAtomically: /tmp/glob2-test-dcg89her/profile/directory.game: File replacement failed: iostream error
+FileManager::writeAtomically: cannot create temporary file for /tmp/glob2-test-dcg89her/profile/missing/save.game
+PASS atomic creation/replacement, close drains pending writes, temporary-name collision, seek, serialization/open/rename failure, temporary cleanup
+PASS injected short write and buffered flush failure preserve previous bytes
+PASS chunked boundary reads/writes, seeks, gaps, overreads, capacity bound and ownership transfer
+FileManager::writeGzipAtomically: /tmp/glob2-test-dcg89her/profile/atomic.game.gz: injected serialization failure
+FileManager::writeGzipAtomically: /tmp/glob2-test-dcg89her/profile/atomic.game.gz: std::bad_alloc
+PASS gzip deterministic encoding, round trip, size limit, corruption rejection and failed atomic replacement
+FileManager::writeAtomically: cannot create temporary file for /tmp/glob2-test-dcg89her/profile/missing/save.game
+BackgroundFileWriter: /tmp/glob2-test-dcg89her/profile/missing/save.game was not replaced; the previous file is kept
+BackgroundFileWriter: std::bad_alloc
+BackgroundFileWriter: /tmp/glob2-test-dcg89her/profile/background.game was not replaced; the previous file is kept
+BackgroundFileWriter: injected chunk finalization failure
+BackgroundFileWriter: /tmp/glob2-test-dcg89her/profile/background.game was not replaced; the previous file is kept
+BackgroundFileWriter: injected snapshot failure
+BackgroundFileWriter: /tmp/glob2-test-dcg89her/profile/background.game was not replaced; the previous file is kept
+BackgroundFileWriter: /tmp/glob2-test-dcg89her/profile/background.game was not replaced; the previous file is kept
+PASS background writes keep the newest snapshot with its finish step, finish on destruction and continue after a failure
+
+[run_tests] timeout process group:
+3828875 3823614 3828875 Rs   /home/bradley/.codex/worktrees/a8c9/glob2/build/browser-fix-merge-native/test/glob2-engine-tests -r=junit -o=/tmp/glob2-test-dcg89her/junit.xml --no-breaks=true -tc=autosave defaults; atomic and background writes; truncated and malformed loads; imports and campaign progress [save-format][writes-preferences] -ts=SavegameSafety
+  thread 3828875: 0
+
+[run_tests] killed after 120s
+</error></testcase></testsuite><testsuite name="SharedWorkerLifecycle"><testcase classname="SharedWorkerLifecycle" name="background saves finish on a worker and remain readable after teardown" time="0.669635" status="run" />
+  <testcase classname="SharedWorkerLifecycle" name="no-AI completed ticks agree across shared worker counts [artifacts]" time="7.09547" status="run" />
+  <testcase classname="SharedWorkerLifecycle" name="pending gradient work survives a save and continues at the same deadlines" time="3.11548" status="run" />
+  <testcase classname="SharedWorkerLifecycle" name="resource catalog import drains deferred material preparation before replacing stocks" time="1.47477" status="run" />
+  </testsuite><testsuite name="TeamStatsSave"><testcase classname="TeamStatsSave" name="32 sampling phases; ring wrap; repeated loads; text streams and corruption controls [save-format]" time="103.871" status="run" />
+  <testcase classname="TeamStatsSave" name="AI telemetry continues across a save [save-format]" time="33.2888" status="run" />
+  <testcase classname="TeamStatsSave" name="Compact team histories preserve samples across two batch boundaries" time="4.20561" status="run" />
+  <testcase classname="TeamStatsSave" name="Compact telemetry retains every sample across chunk boundaries" time="11.8361" status="run" />
+  <testcase classname="TeamStatsSave" name="Delayed observation telemetry saves remain readable" time="1.12906" status="run" />
+  <testcase classname="TeamStatsSave" name="Editor building deletion clears ability lists before save and slot reuse" time="3.92263" status="run" />
+  <testcase classname="TeamStatsSave" name="Sparse variant reset accepts refreshed diagnostics and restored snapshots" time="12.6659" status="run" />
+  <testcase classname="TeamStatsSave" name="Sparse variant snapshot reset clears vanished types without clearing history" time="4.50524" status="run" />
+  <testcase classname="TeamStatsSave" name="clearing telemetry counts operations once by configured primary material" time="2.66064" status="run" />
+  <testcase classname="TeamStatsSave" name="combat deaths are attributed by place and assignment" time="0.694215" status="run" />
+  <testcase classname="TeamStatsSave" name="defence snapshot counts warriors by place and enemy warriors at home" time="0.906411" status="run" />
+  <testcase classname="TeamStatsSave" name="every live worker-tick lands in exactly one labour bucket" time="0.707843" status="run" />
+  <testcase classname="TeamStatsSave" name="labour, combat and defence measurements survive a save [save-format]" time="2.75606" status="run" />
+  <testcase classname="TeamStatsSave" name="legacy version 84 fixture replays the golden trace [save-format][golden]" time="1.15114" status="run" />
+  <testcase classname="TeamStatsSave" name="legacy version 88 fixture replays the golden trace [save-format][golden]" time="0.964521" status="run" />
+  <testcase classname="TeamStatsSave" name="older saves load with labour coverage starting at the loaded tick [save-format]" time="1.20599" status="run" />
+  <testcase classname="TeamStatsSave" name="place lookup agrees with a brute-force scan of every building tile" time="1.00248" status="run" />
+  <testcase classname="TeamStatsSave" name="places: own buildings first, then enemies; allies, flags and new buildings do not count" time="0.743176" status="run" />
+  </testsuite><testsuite name="WorldSnapshot"><testcase classname="WorldSnapshot" name="AI boundary validates each captured map array before fast reads" time="0.530073" status="run" />
+  <testcase classname="WorldSnapshot" name="AI fast scalar reads preserve checked values and frozen lease isolation" time="1.02124" status="run" />
+  <testcase classname="WorldSnapshot" name="a retained consumer leaves the newest free buffer to absorb only later changes" time="0.715875" status="run" />
+  <testcase classname="WorldSnapshot" name="building snapshots copy shared scalar records and freeze selected stock" time="0.889067" status="run" />
+  <testcase classname="WorldSnapshot" name="capture requirements exclude arrays that no scheduled consumer requests" time="0.785798" status="run" />
+  <testcase classname="WorldSnapshot" name="capture verification rejects writes that bypass the change trackers" time="0.867589" status="run" />
+  <testcase classname="WorldSnapshot" name="catalog refresh survives intervening projections and rules reuse independently" time="1.01588" status="run" />
+  <testcase classname="WorldSnapshot" name="component leases and weak control blocks outlive the owning store" time="0.769663" status="run" />
+  <testcase classname="WorldSnapshot" name="component mutation generations preserve isolation and reuse unchanged arrays" time="0.822938" status="run" />
+  <testcase classname="WorldSnapshot" name="coordinate wrapping preserves signed edges for power of two and general dimensions" time="0.000641" status="run" />
+  <testcase classname="WorldSnapshot" name="explicit observation boundaries refresh paused state and retain old leases" time="0.830886" status="run" />
+  <testcase classname="WorldSnapshot" name="farm paint queries match frozen growth and resource inputs" time="0.797351" status="run" />
+  <testcase classname="WorldSnapshot" name="flat relationship ranges preserve every building list in order" time="0.955615" status="run" />
+  <testcase classname="WorldSnapshot" name="map snapshots bulk copy authoritative records without translation" time="0.813281" status="run" />
+  <testcase classname="WorldSnapshot" name="memory metrics distinguish held epochs from reusable high water capacity" time="0.73402" status="run" />
+  <testcase classname="WorldSnapshot" name="narrow component queries preserve combined tile values and projection defaults" time="0.855998" status="run" />
+  <testcase classname="WorldSnapshot" name="no-op map writes reuse components while changed values remain isolated" time="0.788779" status="run" />
+  <testcase classname="WorldSnapshot" name="on-demand construction feasibility matches live helpers and remains frozen" time="1.2499" status="run" />
+  <testcase classname="WorldSnapshot" name="outcome reasons survive the read boundary without changing simulation state" time="1.06152" status="run" />
+  <testcase classname="WorldSnapshot" name="pooled captures never overwrite a held worker projection" time="0.871743" status="run" />
+  <testcase classname="WorldSnapshot" name="projected terrain lease cannot retain unrelated world components" time="0.943097" status="run" />
+  <testcase classname="WorldSnapshot" name="resource copy metrics include multi-material stock sidecars" time="0.780786" status="run" />
+  <testcase classname="WorldSnapshot" name="reused buffers copy sparse chunks and refresh dense changes contiguously" time="0.689809" status="run" />
+  <testcase classname="WorldSnapshot" name="same tick component expansion preserves narrow leases and captures arrays once" time="0.802426" status="run" />
+  <testcase classname="WorldSnapshot" name="shared entity indices preserve empty slots and canonical record addresses" time="0.841066" status="run" />
+  <testcase classname="WorldSnapshot" name="snapshot capability tables share authoritative immutable catalog data" time="0.816063" status="run" />
+  <testcase classname="WorldSnapshot" name="unit snapshots share authoritative scalar state and remain frozen" time="0.772716" status="run" />
+  <testcase classname="WorldSnapshot" name="vertex changes preserve retained terrain and reuse unchanged versions" time="0.751044" status="run" />
+  <testcase classname="WorldSnapshot" name="warm component buffers stop allocating at a fixed population" time="0.80752" status="run" />
+  <testcase classname="WorldSnapshot" name="worker final lease release synchronizes owner buffer reuse" time="0.048963" status="run" />
+  </testsuite></testsuites>

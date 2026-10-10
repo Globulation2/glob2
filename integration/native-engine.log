@@ -1,0 +1,123 @@
+PASS RuntimeBuildingOrderSaveLoad/RoundTripCurrentVersion (0.0s)
+PASS RuntimeBuildingOrderSaveLoad/UnregisteredOrderRoundTrips (0.0s)
+PASS RuntimeBuildingOrderSaveLoad/Pre96StreamLeavesSentinel (0.0s)
+PASS RuntimeContinuation/terrain weighted influence retains obstacles and sub-tile trail costs (0.0s)
+PASS RuntimeContinuation/irrigation heuristics require a positive enabled fertility contribution (0.1s)
+PASS RuntimeContinuation/position entities retain historical binary and text payloads (0.1s)
+PASS AISavePortability/runtime initialisation; area order serialisation and Maxima reserved telemetry (1.2s)
+PASS RuntimeContinuation/runtime owner helpers and decisions release their full observation leases (1.2s)
+PASS RuntimeContinuation/recurring input tracking and provider lookup preserve composite membership (1.5s)
+PASS RuntimeContinuation/flat building relationships resolve captured unit incarnations (1.2s)
+PASS RuntimeContinuation/queued orders preserve selection incarnations through save and slot replacement (1.4s)
+PASS RuntimeContinuation/static material fields invalidate on source edits and preserve continuation (1.7s)
+PASS RuntimeContinuation/gradient manager state survives binary and text round trips [save-format] (3.6s)
+PASS AITargetTelemetrySave/Cortex flag targets carry the team that owns each building (1.3s)
+PASS AITargetTelemetrySave/Numbi reports the highest-numbered enemy its attack searches (1.2s)
+PASS AITargetTelemetrySave/target fields are declared in schema version 2 (2.8s)
+PASS AITargetTelemetrySave/Cortex records its committed target until the offense stands down, across saves (2.4s)
+PASS WorldSnapshot/outcome reasons survive the read boundary without changing simulation state (1.1s)
+PASS WorldSnapshot/shared entity indices preserve empty slots and canonical record addresses (0.9s)
+PASS WorldSnapshot/snapshot capability tables share authoritative immutable catalog data (0.9s)
+PASS WorldSnapshot/unit snapshots share authoritative scalar state and remain frozen (0.8s)
+PASS WorldSnapshot/on-demand construction feasibility matches live helpers and remains frozen (1.3s)
+PASS WorldSnapshot/coordinate wrapping preserves signed edges for power of two and general dimensions (0.1s)
+PASS WorldSnapshot/map snapshots bulk copy authoritative records without translation (0.9s)
+PASS WorldSnapshot/narrow component queries preserve combined tile values and projection defaults (0.9s)
+PASS WorldSnapshot/AI boundary validates each captured map array before fast reads (0.6s)
+PASS WorldSnapshot/worker final lease release synchronizes owner buffer reuse (0.1s)
+PASS WorldSnapshot/AI fast scalar reads preserve checked values and frozen lease isolation (1.1s)
+PASS WorldSnapshot/component leases and weak control blocks outlive the owning store (0.8s)
+PASS WorldSnapshot/catalog refresh survives intervening projections and rules reuse independently (1.1s)
+PASS WorldSnapshot/component mutation generations preserve isolation and reuse unchanged arrays (0.9s)
+PASS WorldSnapshot/projected terrain lease cannot retain unrelated world components (1.0s)
+PASS WorldSnapshot/no-op map writes reuse components while changed values remain isolated (0.9s)
+PASS WorldSnapshot/vertex changes preserve retained terrain and reuse unchanged versions (0.8s)
+PASS WorldSnapshot/capture requirements exclude arrays that no scheduled consumer requests (0.9s)
+PASS WorldSnapshot/warm component buffers stop allocating at a fixed population (0.9s)
+PASS WorldSnapshot/pooled captures never overwrite a held worker projection (0.9s)
+PASS WorldSnapshot/building snapshots copy shared scalar records and freeze selected stock (1.0s)
+PASS WorldSnapshot/flat relationship ranges preserve every building list in order (1.0s)
+PASS WorldSnapshot/farm paint queries match frozen growth and resource inputs (0.9s)
+PASS WorldSnapshot/memory metrics distinguish held epochs from reusable high water capacity (0.8s)
+PASS WorldSnapshot/reused buffers copy sparse chunks and refresh dense changes contiguously (0.8s)
+PASS WorldSnapshot/a retained consumer leaves the newest free buffer to absorb only later changes (0.8s)
+PASS WorldSnapshot/resource copy metrics include multi-material stock sidecars (0.8s)
+PASS WorldSnapshot/capture verification rejects writes that bypass the change trackers (1.0s)
+PASS WorldSnapshot/same tick component expansion preserves narrow leases and captures arrays once (0.9s)
+PASS WorldSnapshot/explicit observation boundaries refresh paused state and retain old leases (0.9s)
+PASS SharedWorkerLifecycle/background saves finish on a worker and remain readable after teardown (0.7s)
+PASS SharedWorkerLifecycle/resource catalog import drains deferred material preparation before replacing stocks (1.6s)
+PASS TeamStatsSave/every live worker-tick lands in exactly one labour bucket (0.8s)
+PASS TeamStatsSave/places: own buildings first, then enemies; allies, flags and new buildings do not count (0.8s)
+PASS SharedWorkerLifecycle/pending gradient work survives a save and continues at the same deadlines (3.2s)
+PASS TeamStatsSave/combat deaths are attributed by place and assignment (0.8s)
+PASS TeamStatsSave/place lookup agrees with a brute-force scan of every building tile (1.1s)
+PASS TeamStatsSave/defence snapshot counts warriors by place and enemy warriors at home (1.0s)
+PASS TeamStatsSave/older saves load with labour coverage starting at the loaded tick [save-format] (1.3s)
+PASS TeamStatsSave/labour, combat and defence measurements survive a save [save-format] (2.8s)
+PASS SharedWorkerLifecycle/no-AI completed ticks agree across shared worker counts [artifacts] (7.2s)
+PASS TeamStatsSave/legacy version 88 fixture replays the golden trace [save-format][golden] (1.0s)
+PASS TeamStatsSave/clearing telemetry counts operations once by configured primary material (2.7s)
+PASS TeamStatsSave/legacy version 84 fixture replays the golden trace [save-format][golden] (1.2s)
+PASS TeamStatsSave/Editor building deletion clears ability lists before save and slot reuse (4.0s)
+PASS TeamStatsSave/Compact telemetry retains every sample across chunk boundaries (11.9s)
+PASS TeamStatsSave/Compact team histories preserve samples across two batch boundaries (4.3s)
+PASS TeamStatsSave/Sparse variant snapshot reset clears vanished types without clearing history (4.6s)
+PASS TeamStatsSave/AI telemetry continues across a save [save-format] (33.4s)
+PASS TeamStatsSave/Delayed observation telemetry saves remain readable (1.2s)
+PASS TeamStatsSave/Sparse variant reset accepts refreshed diagnostics and restored snapshots (12.7s)
+PASS EnteringUnitSave/the retained fixture loads [save-format] (1.1s)
+PASS LegacyRoundTripSave/a format-143 save with live round-trip fields plays on greedily [golden][save-format] (20.0s)
+PASS EnteringUnitSave/generated fixtures round-trip through binary saves [save-format] (48.9s)
+TIMEOUT AITargetTelemetrySave/target telemetry names only real enemies and leaves the simulation unchanged (120.1s)
+PASS TeamStatsSave/32 sampling phases; ring wrap; repeated loads; text streams and corruption controls [save-format] (103.9s)
+TIMEOUT SavegameSafety/autosave defaults; atomic and background writes; truncated and malformed loads; imports and campaign progress [save-format][writes-preferences] (120.2s)
+
+===== TIMEOUT AITargetTelemetrySave/target telemetry names only real enemies and leaves the simulation unchanged =====
+GLOB2_TEST_BUILD compiler=15.2.0 platform=Linux pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": false, "flags": {"CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/home/bradley/.codex/worktrees/a8c9/glob2=.", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC", "LINKFLAGS": "-Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -Wl,-rpath,/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/build/sdl3-ci-current/prefix/lib -Wl,--enable-new-dtags"}, "revision": "4bc7fa4a73df53ac156224030994caefea9faeb6", "sourceStatus": [], "sourceTreeSha256": "5fa4e9bff3fea79b4aecf4c161a616df2ad39e0ac22c42f76471ac9681aec8da"}
+
+[run_tests] timeout process group:
+3823899 3823614 3823899 Rs   /home/bradley/.codex/worktrees/a8c9/glob2/build/browser-fix-merge-native/test/glob2-engine-tests -r=junit -o=/tmp/glob2-test-syfiq_p8/junit.xml --no-breaks=true -tc=target telemetry names only real enemies and leaves the simulation unchanged -ts=AITargetTelemetrySave
+  thread 3823899: 0
+
+[run_tests] killed after 120s
+
+
+===== TIMEOUT SavegameSafety/autosave defaults; atomic and background writes; truncated and malformed loads; imports and campaign progress [save-format][writes-preferences] =====
+GLOB2_TEST_BUILD compiler=15.2.0 platform=Linux pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": false, "flags": {"CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/home/bradley/.codex/worktrees/a8c9/glob2=.", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC", "LINKFLAGS": "-Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -Wl,-rpath,/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/build/sdl3-ci-current/prefix/lib -Wl,--enable-new-dtags"}, "revision": "4bc7fa4a73df53ac156224030994caefea9faeb6", "sourceStatus": [], "sourceTreeSha256": "5fa4e9bff3fea79b4aecf4c161a616df2ad39e0ac22c42f76471ac9681aec8da"}
+PASS pending construction binary/text round trips, queue order, staffing, delayed placement, empty queue and invalid reference
+PASS binary human saved game continues RNG and 700 simulation steps and measurements across header replacement
+PASS binary AI saved game continues RNG and 700 simulation steps and measurements across header replacement
+PASS binary + text routing human saved game continues RNG and 700 simulation steps and measurements across header replacement
+PASS binary + text routing AI saved game continues RNG and 700 simulation steps and measurements across header replacement
+FileManager::writeAtomically: /tmp/glob2-test-dcg89her/profile/atomic.game: injected serialization failure
+FileManager::writeAtomically: /tmp/glob2-test-dcg89her/profile/directory.game: File replacement failed: iostream error
+FileManager::writeAtomically: cannot create temporary file for /tmp/glob2-test-dcg89her/profile/missing/save.game
+PASS atomic creation/replacement, close drains pending writes, temporary-name collision, seek, serialization/open/rename failure, temporary cleanup
+PASS injected short write and buffered flush failure preserve previous bytes
+PASS chunked boundary reads/writes, seeks, gaps, overreads, capacity bound and ownership transfer
+FileManager::writeGzipAtomically: /tmp/glob2-test-dcg89her/profile/atomic.game.gz: injected serialization failure
+FileManager::writeGzipAtomically: /tmp/glob2-test-dcg89her/profile/atomic.game.gz: std::bad_alloc
+PASS gzip deterministic encoding, round trip, size limit, corruption rejection and failed atomic replacement
+FileManager::writeAtomically: cannot create temporary file for /tmp/glob2-test-dcg89her/profile/missing/save.game
+BackgroundFileWriter: /tmp/glob2-test-dcg89her/profile/missing/save.game was not replaced; the previous file is kept
+BackgroundFileWriter: std::bad_alloc
+BackgroundFileWriter: /tmp/glob2-test-dcg89her/profile/background.game was not replaced; the previous file is kept
+BackgroundFileWriter: injected chunk finalization failure
+BackgroundFileWriter: /tmp/glob2-test-dcg89her/profile/background.game was not replaced; the previous file is kept
+BackgroundFileWriter: injected snapshot failure
+BackgroundFileWriter: /tmp/glob2-test-dcg89her/profile/background.game was not replaced; the previous file is kept
+BackgroundFileWriter: /tmp/glob2-test-dcg89her/profile/background.game was not replaced; the previous file is kept
+PASS background writes keep the newest snapshot with its finish step, finish on destruction and continue after a failure
+
+[run_tests] timeout process group:
+3828875 3823614 3828875 Rs   /home/bradley/.codex/worktrees/a8c9/glob2/build/browser-fix-merge-native/test/glob2-engine-tests -r=junit -o=/tmp/glob2-test-dcg89her/junit.xml --no-breaks=true -tc=autosave defaults; atomic and background writes; truncated and malformed loads; imports and campaign progress [save-format][writes-preferences] -ts=SavegameSafety
+  thread 3828875: 0
+
+[run_tests] killed after 120s
+
+
+72 passed, 2 failed, 0 skipped (558.1s of test time)
+[run_tests] JUnit report: /home/bradley/.codex/worktrees/a8c9/glob2/artifacts/browser-fixes/merge-validation/native-engine.xml (74 cases)

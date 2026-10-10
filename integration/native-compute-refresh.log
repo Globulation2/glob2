@@ -1,0 +1,4 @@
+PASS glob2-unit-tests ComputeExecutor (15 cases) (0.2s)
+
+1 passed, 0 failed, 0 skipped (0.2s of test time)
+[run_tests] JUnit report: artifacts/browser-fixes/merge-validation/native-compute-refresh.xml (15 cases)

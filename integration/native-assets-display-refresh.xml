@@ -1,0 +1,5 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="3" failures="0" errors="0" skipped="0"><testsuite name="SpriteLoad"><testcase classname="SpriteLoad" name="variable frame atlas admission accounts for maximum sized padded cells [display]" time="0.442118" status="run" />
+  </testsuite><testsuite name="SpriteSheets"><testcase classname="SpriteSheets" name="independently encoded lossy HD atlases keep exact frame alpha [display]" time="0.446295" status="run" />
+  <testcase classname="SpriteSheets" name="portable HD uses standalone frames without requesting GL atlases [display]" time="0.348949" status="run" />
+  </testsuite></testsuites>

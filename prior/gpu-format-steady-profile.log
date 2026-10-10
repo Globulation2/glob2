@@ -1,0 +1,7 @@
+ready { executionMode: 'serial', renderer: 'webgl2' }
+match loaded
+page.waitForFunction: Timeout 120000ms exceeded.
+    at /home/bradley/.codex/worktrees/a8c9/glob2/artifacts/browser-fixes/profile-steady.cjs:100:69 {
+  log: [],
+  name: 'TimeoutError'
+}

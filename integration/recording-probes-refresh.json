@@ -1,0 +1,104 @@
+[
+  {
+    "file": "browser-gpu-refresh-results/recording-serial-recording-6c834-ffer-and-exports-OPFS-files-chromium/recording.mp4",
+    "sha256": "644e7f6d036d8493d453e817503797e44093b1ab7b978a6120eecf2ed984d85e",
+    "bytes": 448344,
+    "duration_seconds": "2.200000",
+    "video": {
+      "codec_name": "h264",
+      "width": 1200,
+      "height": 900,
+      "avg_frame_rate": "210/11"
+    },
+    "audio": {
+      "codec_name": "aac",
+      "sample_rate": "48000",
+      "channels": 2
+    }
+  },
+  {
+    "file": "browser-gpu-refresh-results/recording-threaded-recordi-34116-ffer-and-exports-OPFS-files-chromium/recording.mp4",
+    "sha256": "6e5adf5774f5d2188db13566b8b8f67262fd36ff9053b7b0adfd36062e1cf513",
+    "bytes": 393046,
+    "duration_seconds": "1.933333",
+    "video": {
+      "codec_name": "h264",
+      "width": 1200,
+      "height": 900,
+      "avg_frame_rate": "390/29"
+    },
+    "audio": {
+      "codec_name": "aac",
+      "sample_rate": "48000",
+      "channels": 2
+    }
+  },
+  {
+    "file": "recording-matrix-refresh-results/recording-serial-recording-6c834-ffer-and-exports-OPFS-files-firefox/recording.mp4",
+    "sha256": "18cc7467943e638e0a5bc4a4dfebbcbc06f6db8b7fc68bfc09346cd21461b67b",
+    "bytes": 443222,
+    "duration_seconds": "2.200000",
+    "video": {
+      "codec_name": "h264",
+      "width": 1200,
+      "height": 900,
+      "avg_frame_rate": "265/11"
+    },
+    "audio": {
+      "codec_name": "aac",
+      "sample_rate": "48000",
+      "channels": 2
+    }
+  },
+  {
+    "file": "recording-matrix-refresh-results/recording-threaded-recordi-34116-ffer-and-exports-OPFS-files-firefox/recording.mp4",
+    "sha256": "f80792cdfcfe7d6fa315348090a1fee0bf9ea752e169293ac525c7f172963f6f",
+    "bytes": 425301,
+    "duration_seconds": "1.900000",
+    "video": {
+      "codec_name": "h264",
+      "width": 1200,
+      "height": 900,
+      "avg_frame_rate": "350/19"
+    },
+    "audio": {
+      "codec_name": "aac",
+      "sample_rate": "48000",
+      "channels": 2
+    }
+  },
+  {
+    "file": "recording-matrix-refresh-results/recording-serial-recording-6c834-ffer-and-exports-OPFS-files-webkit/recording.mp4",
+    "sha256": "1c58baf84530e00bfff0f3a3fb038faab17307fd803ed06767f5fd31a7f8482a",
+    "bytes": 205422,
+    "duration_seconds": "2.733000",
+    "video": {
+      "codec_name": "h264",
+      "width": 1200,
+      "height": 900,
+      "avg_frame_rate": "130/21"
+    },
+    "audio": {
+      "codec_name": "aac",
+      "sample_rate": "48000",
+      "channels": 2
+    }
+  },
+  {
+    "file": "recording-matrix-refresh-results/recording-threaded-recordi-34116-ffer-and-exports-OPFS-files-webkit/recording.mp4",
+    "sha256": "cb94474e79e8e46f39c458498e0e38b4ca1e678728c59b75d820ddce524e8082",
+    "bytes": 193399,
+    "duration_seconds": "2.500000",
+    "video": {
+      "codec_name": "h264",
+      "width": 1200,
+      "height": 900,
+      "avg_frame_rate": "13/2"
+    },
+    "audio": {
+      "codec_name": "aac",
+      "sample_rate": "48000",
+      "channels": 2
+    }
+  }
+]

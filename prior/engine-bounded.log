@@ -1,0 +1,17 @@
+
+Running 10 tests using 1 worker
+
+(node:3503057) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [chromium] › tests/determinism.spec.js:10:1 › WebAssembly produces a complete per-tick simulation trace (serial/1) (5.7s)
+  ✓   2 [chromium] › tests/determinism.spec.js:10:1 › WebAssembly produces a complete per-tick simulation trace (threaded/1) (7.0s)
+  ✓   3 [chromium] › tests/determinism.spec.js:10:1 › WebAssembly produces a complete per-tick simulation trace (threaded/2) (7.1s)
+  ✓   4 [chromium] › tests/determinism.spec.js:10:1 › WebAssembly produces a complete per-tick simulation trace (threaded/4) (6.2s)
+  ✓   5 [chromium] › tests/determinism.spec.js:10:1 › WebAssembly produces a complete per-tick simulation trace (threaded/auto) (6.8s)
+  ✓   6 [chromium] › tests/determinism.spec.js:64:1 › WebAssembly verifies the committed match record (serial) (5.7s)
+  ✓   7 [chromium] › tests/determinism.spec.js:64:1 › WebAssembly verifies the committed match record (threaded) (5.4s)
+  ✓   8 [chromium] › tests/image-assets.spec.js:4:1 › WebAssembly decodes exact WebP and normalized PNG pixels (1.6s)
+  ✓   9 [chromium] › tests/threading.spec.js:8:1 › threaded runtime executes shared compute, gradients and save lifecycle tests (1.1m)
+  ✓  10 [chromium] › tests/threading.spec.js:8:1 › serial runtime executes shared compute, gradients and save lifecycle tests (56.3s)
+
+  10 passed (2.8m)

@@ -1,0 +1,58 @@
+[
+  {
+    "file": "artifacts/browser-fixes/tracked-final-browser-results/recording-serial-recording-6c834-ffer-and-exports-OPFS-files-chromium/recording.mp4",
+    "sha256": "9d13a206baa058fb37a63ca0a60bf1b3b6b51a346034047af6885c8c996bab25",
+    "probe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "h264",
+          "codec_type": "video",
+          "width": 1200,
+          "height": 900
+        },
+        {
+          "codec_name": "aac",
+          "codec_type": "audio",
+          "sample_rate": "48000"
+        },
+        {
+          "codec_name": "bin_data",
+          "codec_type": "data"
+        }
+      ],
+      "format": {
+        "duration": "2.400000"
+      }
+    }
+  },
+  {
+    "file": "artifacts/browser-fixes/tracked-final-browser-results/recording-threaded-recordi-34116-ffer-and-exports-OPFS-files-chromium/recording.mp4",
+    "sha256": "a3ffbd8fb29091f7f24c48623a7b064bc5359a0e5d50ca4459b93702c566cb1d",
+    "probe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "h264",
+          "codec_type": "video",
+          "width": 1200,
+          "height": 900
+        },
+        {
+          "codec_name": "aac",
+          "codec_type": "audio",
+          "sample_rate": "48000"
+        },
+        {
+          "codec_name": "bin_data",
+          "codec_type": "data"
+        }
+      ],
+      "format": {
+        "duration": "1.933000"
+      }
+    }
+  }
+]

@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="28" failures="0" errors="0" skipped="0"><testsuite name="SpriteLoad"><testcase classname="SpriteLoad" name="variable frame atlas admission accounts for maximum sized padded cells [display]" time="0.589494" status="run" />
+  <testcase classname="SpriteLoad" name="ready sprite pixels publish before unrelated cooperative work" time="0.002014" status="run" />
+    <testcase classname="SpriteLoad" name="source frames prepare in parallel without a graphic context" time="0.003517" status="run" />
+    <testcase classname="SpriteLoad" name="sheet tiles retain frame order and malformed sheets fall back to WebP frames" time="0.003982" status="run" />
+  </testsuite><testsuite name="SpriteSheets"><testcase classname="SpriteSheets" name="independently encoded lossy HD atlases keep exact frame alpha [display]" time="0.509648" status="run" />
+  <testcase classname="SpriteSheets" name="portable HD uses standalone frames without requesting GL atlases [display]" time="0.533744" status="run" />
+  <testcase classname="SpriteSheets" name="sheet tiles load as the frames they were packed from" time="0.009744" status="run" />
+    <testcase classname="SpriteSheets" name="PNG artwork cannot enter the WebP sprite path" time="0.008526" status="run" />
+    <testcase classname="SpriteSheets" name="Q90 sheet tiles preserve exact frame alpha" time="0.00661" status="run" />
+    <testcase classname="SpriteSheets" name="sprites without an index still load one file per frame" time="0.006107" status="run" />
+    <testcase classname="SpriteSheets" name="an index the sheets cannot satisfy falls back to the frames" time="0.027136" status="run" />
+  </testsuite><testsuite name="AssetLoader"><testcase classname="AssetLoader" name="WebP requests deduplicate and preserve alpha and invisible RGB in both execution modes" time="0.002598" status="run" />
+    <testcase classname="AssetLoader" name="read backpressure yields to decoders and retained metadata cannot stall images" time="0.00427" status="run" />
+    <testcase classname="AssetLoader" name="dependency continuations do not block workers and preparation overlaps" time="0.001778" status="run" />
+    <testcase classname="AssetLoader" name="exclusive transfer refuses copied subscriptions and borrowed payloads" time="0.000182" status="run" />
+    <testcase classname="AssetLoader" name="retained continuation inputs survive cancellation of the caller subscription" time="0.002484" status="run" />
+    <testcase classname="AssetLoader" name="unique completed requests do not accumulate expired cache metadata" time="0.008514" status="run" />
+    <testcase classname="AssetLoader" name="reader workers overlap independently of CPU preparation" time="0.001471" status="run" />
+    <testcase classname="AssetLoader" name="finalizers run only on the owner thread and expired owners cancel publication" time="0.001434" status="run" />
+    <testcase classname="AssetLoader" name="nonpositive polling budgets do not start cooperative work or finalizers" time="0.000127" status="run" />
+    <testcase classname="AssetLoader" name="failures cancellation invalidation and shutdown leave usable handles" time="0.001265" status="run" />
+  </testsuite><testsuite name="ImageAssets"><testcase classname="ImageAssets" name="prepared image adoption separates shared pixels and transfers exclusive pixels" time="0.000226" status="run" />
+    <testcase classname="ImageAssets" name="mip preparation preserves padded alpha weighted integer filtering" time="0.000378" status="run" />
+    <testcase classname="ImageAssets" name="WebP decoder preserves exact RGBA including transparent RGB" time="0.000174" status="run" />
+    <testcase classname="ImageAssets" name="Q90 lossy WebP preserves dimensions and exact alpha" time="0.000179" status="run" />
+    <testcase classname="ImageAssets" name="16-bit RGBA rounds normalized channels to the exporter reference" time="0.000143" status="run" />
+    <testcase classname="ImageAssets" name="Native PNG and JPEG loading and saving remain available" time="0.000526" status="run" />
+    <testcase classname="ImageAssets" name="WebP artwork lookup preserves directories without PNG alternatives" time="0.000551" status="run" />
+  </testsuite></testsuites>

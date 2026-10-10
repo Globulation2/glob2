@@ -1,0 +1,9 @@
+{
+  "unique_cases": 76,
+  "passed": 76,
+  "initial_timeout_retries": [
+    "AITargetTelemetrySave/target telemetry names only real enemies and leaves the simulation unchanged",
+    "SavegameSafety/autosave defaults; atomic and background writes; truncated and malformed loads; imports and campaign progress"
+  ],
+  "retry_timeout_seconds": 600
+}

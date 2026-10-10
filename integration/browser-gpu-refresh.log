@@ -1,0 +1,15 @@
+
+Running 8 tests using 1 worker
+
+(node:3902332) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › tests/artwork-memory.spec.js:7:3 › serial high-resolution startup fits the browser heap on a many-core device (28.3s)
+  ✓  2 [chromium] › tests/artwork-memory.spec.js:7:3 › threaded high-resolution startup fits the browser heap on a many-core device (36.2s)
+  ✓  3 [chromium] › tests/recording.spec.js:22:2 › serial recording segments full framebuffer and exports OPFS files (30.0s)
+  ✓  4 [chromium] › tests/recording.spec.js:22:2 › threaded recording segments full framebuffer and exports OPFS files (32.3s)
+  ✓  5 [chromium] › tests/rendering.spec.js:7:1 › WebGL2 draws a playable match and resizes its drawing buffer (47.0s)
+  ✓  6 [chromium] › tests/rendering.spec.js:84:1 › WebGL context restoration keeps the match and can recover repeatedly (serial) (39.0s)
+  ✓  7 [chromium] › tests/rendering.spec.js:84:1 › WebGL context restoration keeps the match and can recover repeatedly (threaded) (37.2s)
+  ✓  8 [chromium] › tests/rendering.spec.js:138:1 › WebGL context restoration retains settings, editor and confirmation controls (34.8s)
+
+  8 passed (4.8m)

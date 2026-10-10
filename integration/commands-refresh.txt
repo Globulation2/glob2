@@ -1,0 +1,46 @@
+Revision: 3574fe1aea5a46690d41cb02fe0deea0fb8b2cbe
+Integrated base: a8f4f1c91f871b7bae1775420d12e99504639c0e
+Run from repository root unless specified. Output logs and JUnit/artifact paths are under artifacts/browser-fixes/merge-validation/.
+
+Build browser:
+CCACHE=1 scons --build=build/browser-fix-merge-web target=web release=1 web_profile=1 -j12 web-package web-tests
+Build native:
+GLOB2_SDL3_PREFIX=/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/build/sdl3-ci-current/prefix python3 tools/dev_build.py --build=build/browser-fix-merge-native optimized_assets=1 unit-tests engine-tests build/browser-fix-merge-native/src/glob2 -j12
+Build contracts:
+/home/bradley/.local/share/glob2/development/caches/asset-encoder-runtime-assets-v1-py3.14/venv/bin/python -m unittest discover -s test/build_system -v
+Deployment:
+python3 -m unittest discover -s test/deployment -v
+Native assets:
+SDL_VIDEO_DRIVER=dummy python3 test/run_tests.py --build-dir build/browser-fix-merge-native --binary unit --filter 'SpriteSheets/*' --filter 'SpriteLoad/*' --filter 'AssetLoader/*' --filter 'ImageAssets/*' --exclude-tag display --junit artifacts/browser-fixes/merge-validation/native-assets-refresh.xml --artifacts artifacts/browser-fixes/merge-validation/native-assets-refresh
+Native asset display:
+env -u DISPLAY -u WAYLAND_DISPLAY SDL_VIDEO_DRIVER=x11 python3 test/run_tests.py --build-dir build/browser-fix-merge-native --binary unit --filter 'SpriteSheets/*' --filter 'SpriteLoad/*' --filter 'AssetLoader/*' --filter 'ImageAssets/*' --tag display --junit artifacts/browser-fixes/merge-validation/native-assets-display-refresh.xml --artifacts artifacts/browser-fixes/merge-validation/native-assets-display-refresh
+Native compute:
+SDL_VIDEO_DRIVER=dummy python3 test/run_tests.py --build-dir build/browser-fix-merge-native --binary unit --filter 'ComputeExecutor/*' --junit artifacts/browser-fixes/merge-validation/native-compute-refresh.xml --artifacts artifacts/browser-fixes/merge-validation/native-compute-refresh
+Native saves/editor:
+SDL_VIDEO_DRIVER=dummy python3 test/run_tests.py --build-dir build/browser-fix-merge-native --binary engine --filter 'ComputeExecutor/*' --filter 'HighResolutionIntegration/*' --filter 'TeamStatsSave/*' --exclude-tag display -j4 --timeout 600 --junit artifacts/browser-fixes/merge-validation/native-engine-refresh.xml --artifacts artifacts/browser-fixes/merge-validation/native-engine-refresh
+The binary's inventory selected 18 TeamStatsSave cases; ComputeExecutor is tested with the unit binary above, and HighResolutionIntegration requires display and is selected below.
+Native HD integration:
+env -u DISPLAY -u WAYLAND_DISPLAY SDL_VIDEO_DRIVER=x11 python3 test/run_tests.py --build-dir build/browser-fix-merge-native --binary engine --filter 'HighResolutionIntegration/*' --tag display -j1 --timeout 600 --junit artifacts/browser-fixes/merge-validation/native-engine-display-refresh.xml --artifacts artifacts/browser-fixes/merge-validation/native-engine-display-refresh
+Native checksum/replay:
+GLOB2_REPLAY_PATH=$PWD/artifacts/browser-fixes/merge-validation/native-determinism-refresh/native.replay GLOB2_CHECKSUM_SIDECAR=1 build/browser-fix-merge-native/src/glob2 game repeat games/cross-replay.game.gz --ticks 1500 --runs 1
+build/browser-fix-merge-native/src/glob2 match verify test/fixtures/multiplayer/FourSquares1.g2mr --map-file maps/FourSquares1.map.gz --output-dir artifacts/browser-fixes/merge-validation/native-determinism-refresh/verify-match
+Install:
+python3 deploy/install-web-client.py build/browser-fix-merge-web artifacts/browser-fixes/installed-merge
+Serve compiled harnesses:
+python3 browser/serve.py 8776 --bind 127.0.0.1 --directory build/browser-fix-merge-web
+Serve installed game:
+python3 browser/serve.py 8777 --bind 127.0.0.1 --directory artifacts/browser-fixes/installed-merge
+Browser engine and shared worker lifecycle:
+bash artifacts/browser-fixes/merge-validation/run-browser-engine-refresh.sh
+Script above includes exact Playwright invocation, environment and working directory. 24 tests across three engines, then two 156-case harnesses.
+Actual NVIDIA GPU installed game (cwd browser):
+GLOB2_TEST_URL=http://127.0.0.1:8777 GLOB2_TEST_RENDERER=webgl2 ./node_modules/.bin/playwright test --config ../artifacts/browser-fixes/merge-validation/playwright-gpu-headless.config.cjs artwork-memory.spec.js rendering.spec.js recording.spec.js --project chromium --grep 'high-resolution startup|draws a playable|recover repeatedly|retains settings, editor|segments full framebuffer' --reporter list --output ../artifacts/browser-fixes/merge-validation/browser-gpu-refresh-results
+Recording Firefox/WebKit installed game (cwd browser):
+GLOB2_TEST_URL=http://127.0.0.1:8777 ./node_modules/.bin/playwright test recording.spec.js --project firefox --project webkit --grep 'segments full framebuffer' --reporter list --output ../artifacts/browser-fixes/merge-validation/recording-matrix-refresh-results
+GPU environment:
+node artifacts/browser-fixes/merge-validation/probe-gpu.cjs
+Trace comparisons:
+python3 artifacts/browser-fixes/merge-validation/compare-traces-refresh.py
+Unchanged JavaScript coverage from previous integrated revision 4bc7fa4a73df53ac156224030994caefea9faeb6:
+node --test browser/unit/*.test.js
+(cwd browser) GLOB2_TEST_URL=http://127.0.0.1:8776 GLOB2_TEST_BUILD_DIR=/home/bradley/.codex/worktrees/a8c9/glob2/build/browser-fix-merge-web ./node_modules/.bin/playwright test mipmap.spec.js --project chromium --project firefox --project webkit --reporter list --output ../artifacts/browser-fixes/merge-validation/mipmap-results

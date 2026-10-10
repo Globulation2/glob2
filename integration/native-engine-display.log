@@ -1,0 +1,5 @@
+PASS HighResolutionIntegration/HD artwork; cursor scaling and replay fixture in software rendering [display:1024x768][artifacts] (8.6s)
+PASS HighResolutionIntegration/HD artwork; cursor scaling and replay fixture in OpenGL [display:1024x768][artifacts][writes-preferences] (204.1s)
+
+2 passed, 0 failed, 0 skipped (212.7s of test time)
+[run_tests] JUnit report: artifacts/browser-fixes/merge-validation/native-engine-display.xml (2 cases)

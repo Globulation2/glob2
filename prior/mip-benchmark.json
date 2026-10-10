@@ -1,0 +1,29 @@
+{
+  "results": [
+    {
+      "mode": 0,
+      "size": 2048,
+      "iterations": 5,
+      "before_ms": 58.284,
+      "after_ms": 51.608,
+      "hash": 3326929964
+    },
+    {
+      "mode": 1,
+      "size": 2048,
+      "iterations": 5,
+      "before_ms": 35.296,
+      "after_ms": 18.273,
+      "hash": 1350056228
+    },
+    {
+      "mode": 2,
+      "size": 2048,
+      "iterations": 5,
+      "before_ms": 35.619,
+      "after_ms": 35.184,
+      "hash": 1878604842
+    }
+  ],
+  "browser": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.8010.12 Safari/537.36"
+}

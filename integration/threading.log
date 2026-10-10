@@ -1,0 +1,9 @@
+
+Running 2 tests using 1 worker
+
+(node:3861122) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › tests/threading.spec.js:8:1 › threaded runtime executes shared compute, gradients and save lifecycle tests (1.2m)
+  ✓  2 [chromium] › tests/threading.spec.js:8:1 › serial runtime executes shared compute, gradients and save lifecycle tests (1.1m)
+
+  2 passed (2.4m)

@@ -1,0 +1,5 @@
+nox::running 1 times 1500 steps:
+nox::game started
+nox::gui.game.checkSum() = 8587b46c
+automaticEndingGame ended: 1500 ticks, 0 minutes, 50 seconds
+GLOB2_GAME_END ticks=1500 winner_team=-1 seed=42 map="SmallForTwo" orders=43 players=team0:local,team1:Nicowar,team0:Econo

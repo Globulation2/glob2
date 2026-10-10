@@ -1,0 +1,1561 @@
+diff --git a/browser/ApplicationHost.cpp b/browser/ApplicationHost.cpp
+index 98a87e20c..975bae8dc 100644
+--- a/browser/ApplicationHost.cpp
++++ b/browser/ApplicationHost.cpp
+@@ -10,6 +10,7 @@
+ #include <set>
+ #include <cstdlib>
+ #include <GraphicContext.h>
++#include <Toolkit.h>
+ #include <emscripten.h>
+ #include <stdexcept>
+ 
+@@ -65,6 +66,7 @@ void publishDiagnostics(bool hostTurn = false) {
+         if (imported) Module.importState = imported;
+         if ($2) Module.glob2Tick = $3 >>> 0;
+         Module.glob2Frames = (Module.glob2Frames || 0) + $4;
++        Module.glob2ArtworkReady = !!$15;
+         if ($5 >= 0) Module.glob2Paused = !!$5;
+         if ($6 >= 0) Module.glob2Torus = !!$6;
+         if ($14 >= 0) Module.glob2TorusSettled = !!$14;
+@@ -78,7 +80,8 @@ void publishDiagnostics(bool hostTurn = false) {
+         }
+     }, d.screen.c_str(), d.import.c_str(), d.hasTick, d.tick, d.frames,
+        d.paused, d.torus, d.room, d.custom, d.screenClass.c_str(), hostTurn,
+-       dimensions[0], dimensions[1], dimensions[2], d.torusSettled);
++       dimensions[0], dimensions[1], dimensions[2], d.torusSettled,
++       Toolkit::pollAssets(0));
+     for (const auto &[owner, json] : d.controls) {
+         MAIN_THREAD_EM_ASM({
+             Module.glob2Controls ||= new Map();
+@@ -186,6 +189,7 @@ void scheduledFrame(void* opaque)
+             // Forget their handles rather than deleting them in the new context.
+             GL.textures.fill(null);
+             GL.buffers.fill(null);
++            Module.glob2ForgetMipmaps(GLctx);
+             GLImmediate.currentRenderer = null;
+             GLImmediate.lastRenderer = null;
+             GLImmediate.lastArrayBuffer = null;
+diff --git a/browser/shell.html b/browser/shell.html
+index f2da1d4d5..87e086b8d 100644
+--- a/browser/shell.html
++++ b/browser/shell.html
+@@ -564,6 +564,8 @@ Object.defineProperty(window, 'glob2Diagnostics', {value: Object.freeze({
+     return Object.freeze({version:1, executionMode:Module.executionMode || 'loading', threadFallback:Module.threadFallback || null, workerCount:Module.glob2ApplicationStarted ? (Module._glob2_worker_count?.() || 0) : 0, renderer:Module.renderer || 'loading', renderContext:Module.glob2RenderContext || null, contextLost:Boolean(Module.gpuLost), contextRestores:Module.gpuRestores || 0, screen:Module.glob2Screen || 'loading',
+       screenClass:Module.glob2ScreenClass || '', roomCanStart:Boolean(Module.glob2RoomCanStart), customGameReady:Boolean(Module.glob2CustomGameReady), tick:Module.glob2Tick || 0, frames:Module.glob2Frames || 0, loop:Module.glob2Loop || 0,
+       paused:Boolean(Module.glob2Paused), torus:Module.glob2Screen === 'match' && Boolean(Module.glob2Torus), torusSettled:Module.glob2Screen === 'match' && Boolean(Module.glob2TorusSettled), width:Module.glob2RenderContext?.width || canvas.width, height:Module.glob2RenderContext?.height || canvas.height,
++      heapBytes:typeof HEAPU8 === 'undefined' ? 0 : HEAPU8.buffer.byteLength,
++      artworkReady:Boolean(Module.glob2ArtworkReady),
+       restore:Module.storageRestore || 'restoring',
+       watchReplay:watchReplay ? watchReplay.status : 'none',
+       import:Module.importState || 'idle',
+diff --git a/browser/tests/determinism.spec.js b/browser/tests/determinism.spec.js
+index e132e69cf..f3a20afb2 100644
+--- a/browser/tests/determinism.spec.js
++++ b/browser/tests/determinism.spec.js
+@@ -6,7 +6,7 @@ const {openRuntimeHost} = require('./runtime-host');
+ 
+ // Run the compiled engine with the same fixture and orders as the native CI
+ // lanes. A minimal host supplies CLI arguments without changing the game shell.
+-for (const [variant, threads] of [['serial',1], ['threaded',1], ['threaded',2], ['threaded',4]]) {
++for (const [variant, threads] of [['serial',1], ['threaded',1], ['threaded',2], ['threaded',4], ['threaded','auto']]) {
+ test(`WebAssembly produces a complete per-tick simulation trace (${variant}/${threads})`, async ({page}, info) => {
+   const root = path.resolve(__dirname, '../..');
+   const fixture = fs.readFileSync(path.join(root, 'games/cross-replay.game.gz'));
+diff --git a/browser/tests/rendering.spec.js b/browser/tests/rendering.spec.js
+index 900cd4c06..ebf22b257 100644
+--- a/browser/tests/rendering.spec.js
++++ b/browser/tests/rendering.spec.js
+@@ -8,7 +8,7 @@ test('WebGL2 draws a playable match and resizes its drawing buffer', async ({pag
+   test.setTimeout(120000);
+   const errors = [];
+   page.on('pageerror', error => errors.push(String(error)));
+-  page.on('console', message => { if (/GL_INVALID|GL_INVALID_OPERATION|WebGL:.*(INVALID|error)|Aborted/.test(message.text())) errors.push(message.text()); });
++  page.on('console', message => { if (/GL_INVALID|GL_INVALID_OPERATION|WebGL:.*(INVALID|error)|GPU mip preparation failed|Aborted/.test(message.text())) errors.push(message.text()); });
+   await page.goto('/?renderer=webgl2&gl-errors=1');
+   await screen(page, 'MainMenuScreen');
+   expect((await state(page)).renderer).toBe('webgl2');
+@@ -80,14 +80,17 @@ for (const [reason, stub] of Object.entries(fallbacks)) {
+ }
+ 
+ 
+-test('WebGL context restoration keeps the match and can recover repeatedly', async ({page}, info) => {
+-  test.setTimeout(120000);
++for (const variant of ['serial', 'threaded']) {
++test(`WebGL context restoration keeps the match and can recover repeatedly (${variant})`, async ({page}, info) => {
++  test.setTimeout(240000);
+   const errors = [];
+   page.on('pageerror', error => errors.push(String(error)));
+-  await page.goto('/?renderer=webgl2&gl-errors=1'); await screen(page,'MainMenuScreen');
++  await page.goto(`/?renderer=webgl2&gl-errors=1&threads=${variant}`); await screen(page,'MainMenuScreen');
++  await expect.poll(async () => (await state(page)).assets.hd, {timeout:120000}).toBe('ready');
+   await clickMainMenu(page,'custom'); await screen(page,'CustomGameScreen');
+   await clickCustomGameStart(page); // The lobby prepares its selected generated landscape.
+   await expect.poll(async () => (await state(page)).tick, {timeout:60000}).toBeGreaterThan(25);
++  await expect.poll(async () => (await state(page)).artworkReady, {timeout:120000}).toBe(true);
+   for (let count=1; count<=2; ++count) {
+     await page.evaluate(() => {
+       Module._glob2_context_action(0);
+@@ -105,7 +108,7 @@ test('WebGL context restoration keeps the match and can recover repeatedly', asy
+     await page.waitForTimeout(250);
+     expect((await state(page)).tick).toBe(paused);
+     await page.evaluate(() => Module._glob2_context_action(1));
+-    await expect.poll(async () => (await state(page)).contextRestores).toBe(count);
++    await expect.poll(async () => (await state(page)).contextRestores, {timeout:60000}).toBe(count);
+     if (count === 1) {
+       // Restoring the GPU must not resume a tab that is still hidden.
+       const restored = await state(page);
+@@ -130,6 +133,7 @@ test('WebGL context restoration keeps the match and can recover repeatedly', asy
+   await clickControl(page,'quit'); await screen(page,'EndGameScreen');
+   expect(errors).toEqual([]);
+ });
++}
+ 
+ test('WebGL context restoration retains settings, editor and confirmation controls', async ({page}, info) => {
+   const errors = [];
+diff --git a/browser/tests/threading.spec.js b/browser/tests/threading.spec.js
+index 4ba3b1e06..f3a4fa9ce 100644
+--- a/browser/tests/threading.spec.js
++++ b/browser/tests/threading.spec.js
+@@ -6,6 +6,8 @@ const {openRuntimeHost} = require('./runtime-host');
+ const screen=(page,name)=>expect.poll(()=>page.evaluate(()=>glob2Diagnostics.snapshot().screen)).toContain(name);
+ for (const variant of ['threaded','serial']) {
+ test(`${variant} runtime executes shared compute, gradients and save lifecycle tests`,async({page},info)=>{
++  // This compiled corpus includes millions of assertions and save/load cycles.
++  test.setTimeout(300000);
+   const evidence=path.resolve(__dirname,'../../artifacts/browser-determinism/worker-lifecycle');
+   fs.mkdirSync(evidence,{recursive:true});
+   const log=path.join(evidence,`${info.project.name}-${variant}.log`);
+diff --git a/browser/webgl-shaders.js b/browser/webgl-shaders.js
+index 7386aedc7..69e814a93 100644
+--- a/browser/webgl-shaders.js
++++ b/browser/webgl-shaders.js
+@@ -8,3 +8,205 @@ GL.getSource = (...args) => {
+   const prefix = '#extension GL_OES_standard_derivatives : enable\n';
+   return source.startsWith(prefix + '#version 300 es') ? source.slice(prefix.length) : source;
+ };
++
++// Generated HD terrain changes during animation. Preparing its entire mip
++// chain on the application thread is much slower than the drawing itself.
++// Integer arithmetic matches AssetImage::prepareUpload, including transparent
++// RGB and rounding; ordinary gl.generateMipmap would filter straight alpha.
++const glob2MipPipelines = new WeakMap();
++const glob2MipContexts = new WeakMap();
++const glob2MipCapabilities = gl => [gl.BLEND,gl.DEPTH_TEST,gl.STENCIL_TEST,gl.SCISSOR_TEST,gl.CULL_FACE,gl.DITHER,gl.RASTERIZER_DISCARD];
++const glob2MipPixelStores = gl => [gl.UNPACK_ALIGNMENT,gl.UNPACK_ROW_LENGTH,gl.UNPACK_SKIP_ROWS,gl.UNPACK_SKIP_PIXELS,
++  gl.UNPACK_FLIP_Y_WEBGL,gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL];
++// Reading CURRENT_PROGRAM can synchronize the browser's GPU process. Track the
++// setters used by both SDL and our raw WebGL passes instead of querying state
++// for every animated terrain upload. Context restoration invalidates the mirror.
++function glob2MipState(gl) {
++  let context = glob2MipContexts.get(gl);
++  if (!context) {
++    const methods = ['activeTexture','bindTexture','bindSampler','useProgram','bindVertexArray',
++      'bindFramebuffer','viewport','colorMask','pixelStorei','bindBuffer','enable','disable',
++      'deleteTexture','deleteSampler','deleteVertexArray','deleteFramebuffer','deleteBuffer','deleteProgram'];
++    context = {originals:Object.fromEntries(methods.map(name => [name,gl[name]])), state:null};
++    glob2MipContexts.set(gl,context);
++    for (const name of methods) gl[name] = function(...args) {
++      const state = glob2MipState(gl);
++      const result = context.originals[name].apply(this,args);
++      if (this !== gl) return result;
++      const [a,b] = args;
++      switch (name) {
++        case 'activeTexture': state.active=a; break;
++        case 'bindTexture': if (a===gl.TEXTURE_2D && state.active===gl.TEXTURE0) state.texture=b; break;
++        case 'bindSampler': if (a===0) state.sampler=b; break;
++        case 'useProgram': state.program=a; break;
++        case 'bindVertexArray': state.vao=a; break;
++        case 'bindFramebuffer':
++          if (a===gl.FRAMEBUFFER || a===gl.DRAW_FRAMEBUFFER) state.draw=b;
++          if (a===gl.FRAMEBUFFER || a===gl.READ_FRAMEBUFFER) state.read=b;
++          break;
++        case 'viewport': state.viewport=args; break;
++        case 'colorMask': state.mask=args; break;
++        case 'pixelStorei': state.pixelStore.set(a,b); break;
++        case 'bindBuffer': if (a===gl.PIXEL_UNPACK_BUFFER) state.unpackBuffer=b; break;
++        case 'enable': state.enabled.add(a); break;
++        case 'disable': state.enabled.delete(a); break;
++        case 'deleteTexture': if (state.texture===a) state.texture=null; break;
++        case 'deleteSampler': if (state.sampler===a) state.sampler=null; break;
++        case 'deleteVertexArray': if (state.vao===a) state.vao=null; break;
++        case 'deleteFramebuffer':
++          if (state.draw===a) state.draw=null;
++          if (state.read===a) state.read=null;
++          break;
++        case 'deleteBuffer': if (state.unpackBuffer===a) state.unpackBuffer=null; break;
++        // A current program remains bound until useProgram replaces it.
++        // Temporarily switching away would destroy a deletion-pending program.
++        case 'deleteProgram': if (a) state.deletedPrograms.add(a); break;
++      }
++      return result;
++    };
++  }
++  if (!context.state) {
++    const active=gl.getParameter(gl.ACTIVE_TEXTURE);
++    context.originals.activeTexture.call(gl,gl.TEXTURE0);
++    try {
++      context.state = {active,texture:gl.getParameter(gl.TEXTURE_BINDING_2D),sampler:gl.getParameter(gl.SAMPLER_BINDING),
++        program:gl.getParameter(gl.CURRENT_PROGRAM),vao:gl.getParameter(gl.VERTEX_ARRAY_BINDING),
++        draw:gl.getParameter(gl.DRAW_FRAMEBUFFER_BINDING),read:gl.getParameter(gl.READ_FRAMEBUFFER_BINDING),
++        viewport:gl.getParameter(gl.VIEWPORT),mask:gl.getParameter(gl.COLOR_WRITEMASK),
++        unpackBuffer:gl.getParameter(gl.PIXEL_UNPACK_BUFFER_BINDING),
++        pixelStore:new Map(glob2MipPixelStores(gl).map(name=>[name,gl.getParameter(name)])),
++        enabled:new Set(glob2MipCapabilities(gl).filter(cap=>gl.isEnabled(cap))),deletedPrograms:new WeakSet()};
++      const program=context.state.program;
++      if (program && gl.getProgramParameter(program,gl.DELETE_STATUS)) context.state.deletedPrograms.add(program);
++    } finally { context.originals.activeTexture.call(gl,active); }
++  }
++  return context.state;
++}
++Module.glob2ForgetMipmaps = gl => {
++  glob2MipPipelines.delete(gl);
++  const context=glob2MipContexts.get(gl);
++  if (context) context.state=null;
++};
++Module.glob2GenerateMipmaps = (gl, texture, pixels, width, height, bgra = false) => {
++  const state=glob2MipState(gl);
++  if (state.program && state.deletedPrograms.has(state.program)) return false;
++  let pipeline = glob2MipPipelines.get(gl);
++  if (!pipeline) {
++    const shader = (type, source) => {
++      const value = gl.createShader(type);
++      gl.shaderSource(value, source); gl.compileShader(value);
++      if (!gl.getShaderParameter(value, gl.COMPILE_STATUS)) {
++        const error = gl.getShaderInfoLog(value); gl.deleteShader(value);
++        throw new Error(error);
++      }
++      return value;
++    };
++    const vertex = shader(gl.VERTEX_SHADER, `#version 300 es
++      void main() {
++        vec2 p = vec2(float((gl_VertexID << 1) & 2), float(gl_VertexID & 2));
++        gl_Position = vec4(p * 2.0 - 1.0, 0.0, 1.0);
++      }`);
++    const fragment = shader(gl.FRAGMENT_SHADER, `#version 300 es
++      precision highp float;
++      precision highp int;
++      uniform highp sampler2D source;
++      uniform int level;
++      uniform ivec2 extent;
++      uniform bool convertBase;
++      out vec4 color;
++      uvec4 samplePixel(ivec2 p) {
++        return uvec4(round(texelFetch(source, min(p, extent - 1), level) * 255.0));
++      }
++      void main() {
++        if (convertBase) {
++          color = texelFetch(source, ivec2(gl_FragCoord.xy), 0).bgra;
++          return;
++        }
++        ivec2 p = ivec2(gl_FragCoord.xy) * 2;
++        uvec4 a = samplePixel(p), b = samplePixel(p + ivec2(1, 0));
++        uvec4 c = samplePixel(p + ivec2(0, 1)), d = samplePixel(p + ivec2(1, 1));
++        uint alpha = a.a + b.a + c.a + d.a;
++        uvec3 sum = a.rgb * a.a + b.rgb * b.a + c.rgb * c.a + d.rgb * d.a;
++        uvec3 rgb = alpha == 0u ? uvec3(0) : (sum + uvec3(alpha / 2u)) / alpha;
++        color = vec4(vec3(rgb), float((alpha + 2u) / 4u)) / 255.0;
++      }`);
++    const program = gl.createProgram();
++    gl.attachShader(program, vertex); gl.attachShader(program, fragment); gl.linkProgram(program);
++    gl.deleteShader(vertex); gl.deleteShader(fragment);
++    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
++      const error = gl.getProgramInfoLog(program); gl.deleteProgram(program);
++      throw new Error(error);
++    }
++    pipeline = {program, framebuffer:gl.createFramebuffer(), temporary:gl.createTexture(),
++      vao:gl.createVertexArray(), source:gl.getUniformLocation(program,'source'),
++      level:gl.getUniformLocation(program,'level'), extent:gl.getUniformLocation(program,'extent'),
++      convertBase:gl.getUniformLocation(program,'convertBase')};
++    glob2MipPipelines.set(gl, pipeline);
++  }
++  const active = state.active;
++  gl.activeTexture(gl.TEXTURE0);
++  const saved = {texture:state.texture,sampler:state.sampler,program:state.program,vao:state.vao,
++    draw:state.draw,read:state.read,viewport:state.viewport,mask:state.mask,
++    unpack:state.pixelStore.get(gl.UNPACK_ALIGNMENT),rowLength:state.pixelStore.get(gl.UNPACK_ROW_LENGTH),
++    skipRows:state.pixelStore.get(gl.UNPACK_SKIP_ROWS),skipPixels:state.pixelStore.get(gl.UNPACK_SKIP_PIXELS),
++    flip:state.pixelStore.get(gl.UNPACK_FLIP_Y_WEBGL),premultiply:state.pixelStore.get(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL),
++    unpackBuffer:state.unpackBuffer};
++  const capabilities = glob2MipCapabilities(gl);
++  const enabled = capabilities.map(cap => state.enabled.has(cap));
++  try {
++    capabilities.forEach(cap => gl.disable(cap));
++    gl.colorMask(true,true,true,true); gl.bindSampler(0,null);
++    gl.pixelStorei(gl.UNPACK_ALIGNMENT,1);
++    gl.pixelStorei(gl.UNPACK_ROW_LENGTH,0); gl.pixelStorei(gl.UNPACK_SKIP_ROWS,0); gl.pixelStorei(gl.UNPACK_SKIP_PIXELS,0);
++    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,false); gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL,false);
++    gl.bindBuffer(gl.PIXEL_UNPACK_BUFFER,null);
++    gl.bindTexture(gl.TEXTURE_2D,texture);
++    gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA8,width,height,0,gl.RGBA,gl.UNSIGNED_BYTE,bgra ? null : pixels);
++    gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.NEAREST);
++    gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAX_LEVEL,0);
++    gl.useProgram(pipeline.program); gl.bindVertexArray(pipeline.vao);
++    gl.uniform1i(pipeline.source,0);
++    gl.bindFramebuffer(gl.FRAMEBUFFER,pipeline.framebuffer);
++    if (bgra) {
++      // DrawableSurface stores BGRA bytes. Convert on the GPU before reducing,
++      // rather than copying/converting an entire terrain page on the CPU.
++      gl.bindTexture(gl.TEXTURE_2D,pipeline.temporary);
++      gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA8,width,height,0,gl.RGBA,gl.UNSIGNED_BYTE,pixels);
++      gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.NEAREST);
++      gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAX_LEVEL,0);
++      gl.framebufferTexture2D(gl.FRAMEBUFFER,gl.COLOR_ATTACHMENT0,gl.TEXTURE_2D,texture,0);
++      gl.uniform1i(pipeline.convertBase,1);gl.viewport(0,0,width,height);gl.drawArrays(gl.TRIANGLES,0,3);
++      gl.bindTexture(gl.TEXTURE_2D,texture);
++    }
++    gl.uniform1i(pipeline.convertBase,0);
++    let mip = 0;
++    while (width > 1 || height > 1) {
++      const w = Math.max(1,width >> 1), h = Math.max(1,height >> 1);
++      gl.bindTexture(gl.TEXTURE_2D,pipeline.temporary);
++      gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA8,w,h,0,gl.RGBA,gl.UNSIGNED_BYTE,null);
++      gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.NEAREST);
++      gl.framebufferTexture2D(gl.FRAMEBUFFER,gl.COLOR_ATTACHMENT0,gl.TEXTURE_2D,pipeline.temporary,0);
++      gl.bindTexture(gl.TEXTURE_2D,texture);
++      gl.uniform1i(pipeline.level,mip); gl.uniform2i(pipeline.extent,width,height);
++      gl.viewport(0,0,w,h); gl.drawArrays(gl.TRIANGLES,0,3);
++      ++mip;
++      gl.texImage2D(gl.TEXTURE_2D,mip,gl.RGBA8,w,h,0,gl.RGBA,gl.UNSIGNED_BYTE,null);
++      gl.copyTexSubImage2D(gl.TEXTURE_2D,mip,0,0,0,0,w,h);
++      gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAX_LEVEL,mip);
++      width=w; height=h;
++    }
++    gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR_MIPMAP_LINEAR);
++    return true;
++  } finally {
++    gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER,saved.draw); gl.bindFramebuffer(gl.READ_FRAMEBUFFER,saved.read);
++    gl.useProgram(saved.program); gl.bindVertexArray(saved.vao);
++    gl.viewport(...saved.viewport); gl.colorMask(...saved.mask);
++    capabilities.forEach((cap,i) => enabled[i] ? gl.enable(cap) : gl.disable(cap));
++    gl.pixelStorei(gl.UNPACK_ALIGNMENT,saved.unpack);
++    gl.pixelStorei(gl.UNPACK_ROW_LENGTH,saved.rowLength); gl.pixelStorei(gl.UNPACK_SKIP_ROWS,saved.skipRows);
++    gl.pixelStorei(gl.UNPACK_SKIP_PIXELS,saved.skipPixels); gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,saved.flip);
++    gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL,saved.premultiply); gl.bindBuffer(gl.PIXEL_UNPACK_BUFFER,saved.unpackBuffer);
++    gl.bindTexture(gl.TEXTURE_2D,saved.texture); gl.bindSampler(0,saved.sampler);
++    gl.activeTexture(active);
++  }
++};
+diff --git a/deploy/README.md b/deploy/README.md
+index 5e855a84b..6506e6467 100644
+--- a/deploy/README.md
++++ b/deploy/README.md
+@@ -21,6 +21,10 @@ explains how to run, configure, upgrade and back it up.
+ `.github/workflows/server-image.yml` publishes the default service images for a `server-v*` tag
+ in the release mirror only ([details](../docs/hosting/upgrades.md#images)).
+ Deployment script tests: `python3 -m unittest discover -s test/deployment -v`.
++The web installer validates and installs the game runtimes and their music,
++recording, and Hive workers, translation catalogs, and licence notices before
++replacing the launcher. An incomplete worker runtime leaves the served release
++untouched; compressed copies are updated with their corresponding runtime files.
+ Whole-stack smoke test: `test/deployment/platform_stack_smoke.py` (see the
+ hosting guide).
+ 
+diff --git a/deploy/install-web-client.py b/deploy/install-web-client.py
+index 08c5d1bfc..b3a3ab19c 100755
+--- a/deploy/install-web-client.py
++++ b/deploy/install-web-client.py
+@@ -18,6 +18,12 @@ import sys
+ 
+ # Runtimes before the loader that picks one, and the page last.
+ ENTRY_FILES = ('threaded/index.wasm', 'threaded/index.js', 'index.wasm', 'index.js', 'loader.js')
++WORKER_RUNTIMES = (
++    ('music-worker.js', 'music-output.js', 'music-runtime.js', 'music-runtime.wasm'),
++    ('recording-worker.js', 'recording-storage.js', 'recording-video.js',
++     'recording-runtime.js', 'recording-runtime.wasm'),
++    ('hive-worker.js', 'hive-runtime.js', 'hive-runtime.wasm'),
++)
+ ENCODINGS = ('', '.br', '.gz')
+ RECORD = '.installed-assets.json'
+ 
+@@ -38,6 +44,28 @@ def localization_files(release):
+     return names
+ 
+ 
++def entry_files(release):
++    """Validate the runtime closure before replacing any served file."""
++    names = list(ENTRY_FILES)
++    runtimes = b''.join((release / name).read_bytes()
++                        for name in ('index.js', 'threaded/index.js'))
++    for group in WORKER_RUNTIMES:
++        if group[0].encode() in runtimes or any((release / name).exists() for name in group):
++            names.extend(group)
++    names.extend(localization_files(release))
++    names.extend(path.relative_to(release).as_posix()
++                 for path in sorted((release / 'licenses').rglob('*'))
++                 if path.is_file() and path.suffix not in ('.br', '.gz'))
++    names.append('studio.html')
++    names.extend(name for name in ('generator-studio.html', 'set-preview.html')
++                 if (release / name).is_file())
++    names.append('index.html')
++    for name in names:
++        if not (release / name).is_file():
++            raise FileNotFoundError(f'install-web-client: {release / name} is missing')
++    return names
++
++
+ def copy(source, target):
+     temporary = target.with_name('.' + target.name + '.new')
+     shutil.copyfile(source, temporary)
+@@ -48,7 +76,7 @@ def main():
+     if len(sys.argv) != 3:
+         sys.exit(__doc__.strip().splitlines()[2].strip())
+     release, served = Path(sys.argv[1]), Path(sys.argv[2])
+-    localization = localization_files(release)
++    entries = entry_files(release)
+     (served / 'assets').mkdir(parents=True, exist_ok=True)
+     current = sorted(p.name for p in (release / 'assets').iterdir()
+                      if p.is_file() and not p.name.startswith('.'))
+@@ -57,9 +85,7 @@ def main():
+         if not target.is_file() or target.stat().st_size != (release / 'assets' / name).stat().st_size:
+             copy(release / 'assets' / name, target)
+     (served / 'threaded').mkdir(exist_ok=True)
+-    for name in ENTRY_FILES + localization + ('studio.html',) + (('generator-studio.html',) if (release / 'generator-studio.html').is_file() else ()) + (('set-preview.html',) if (release / 'set-preview.html').is_file() else ()) + ('index.html',):
+-        if not (release / name).is_file():
+-            sys.exit(f'install-web-client: {release / name} is missing')
++    for name in entries:
+         for suffix in ENCODINGS[1:]:
+             if not (release / (name + suffix)).is_file():
+                 (served / (name + suffix)).unlink(missing_ok=True)
+diff --git a/docs/browser/implementation.md b/docs/browser/implementation.md
+index 25f1c8ef8..97e9988d7 100644
+--- a/docs/browser/implementation.md
++++ b/docs/browser/implementation.md
+@@ -46,6 +46,29 @@ application pthread instead of proxying them to the UI, where the transferred
+ canvas cannot create a context. This adapter is included only in the threaded
+ runtime and must be checked when upgrading the SDK or SDL port.
+ 
++Generated power-of-two HD surfaces prepare their mip chain in WebGL2, using an
++integer shader that matches the shared alpha-weighted CPU filter. Animated
++terrain therefore avoids preparing the complete chain on the application thread.
++Its BGRA-to-RGBA conversion also runs in the GPU pass. The application host
++invalidates the cached pipeline and GL state mirror during context restoration.
++Tracked GL setters and object deletion preserve renderer state without repeating
++driver state queries on every upload. A deletion-pending current program retains
++the CPU path, since switching away would destroy it before it could be restored.
++Authored sprites retain worker-prepared mips; non-power-of-two surfaces and shader
++initialization failures retain the CPU fallback. The GPU pass restores renderer
++state and recreates its cached resources after context loss.
++Context recovery discards lost texture handles and restores textures when they
++are next drawn. It does not synchronously upload every unused HD animation frame
++before allowing the application to resume.
++
++Automatic browser compute sizing uses at most eight participants, including the
++application owner. The SDK prewarms at most sixteen pthread realms to cover the
++application, compute pool and asset decoders. Each pthread reserves an 8 MiB
++stack in the shared 2 GiB Wasm heap; unlimited hardware sizing can crowd
++out artwork and game state on many-core devices. Explicit `--compute-threads`
++overrides remain available. Pool sizing changes work placement, not match rules
++or simulation deadlines. Native automatic sizing continues to follow hardware.
++
+ Both runtimes include `browser/canvas-size.js`. It preserves software canvas
+ pixels when SDL repeats an unchanged size request, while retaining SDK viewport,
+ context-loss and offscreen ownership handling. Threaded startup and gameplay
+@@ -89,6 +112,14 @@ and the other files with revalidation. The
+ [browser README](../../browser/README.md#game-data-and-loading) describes the core
+ and optional packages and how the page loads them.
+ 
++Deployments also install both runtime variants, the music/recording/Hive worker
++scripts and codec runtimes, translation catalogs and licence notices. The host
++installer validates this runtime closure before replacing the served launcher.
++The read-only diagnostics include `heapBytes` for the current Wasm memory size;
++it is an allocation high-water mark, not the size of currently live objects.
++`artworkReady` confirms that sprite preparation and HD publication have finished;
++an HD package being downloaded and mounted does not establish that readiness.
++
+ C++ exceptions use native WebAssembly exception handling (`-fwasm-exceptions`),
+ which needs Chrome 95, Firefox 100 or Safari 15.2 or later; it makes the module
+ smaller and faster than Emscripten's JavaScript-based handling.
+diff --git a/docs/development/package-size.md b/docs/development/package-size.md
+index e766e48ab..ae6fa6344 100644
+--- a/docs/development/package-size.md
++++ b/docs/development/package-size.md
+@@ -48,6 +48,28 @@ when a continuation captures inputs owned by its caller. Cancelling the caller
+ then leaves those inputs valid until preparation finishes. New source
+ mounts and pack changes invalidate future requests while existing consumers retain
+ valid data. HD reloads prepare on workers and publish during frame polling.
++HD preparation adopts ready frames while other frames decode, and retires each
++matching prefetch subscription as its frame or atlas is adopted. The completed
++sprite still publishes atomically. Exclusively owned surfaces and upload buffers
++move into the drawable;
++independent consumers keep isolated copies. This avoids retaining the complete
++decoded mip chain alongside already published artwork during large sprite loads.
++Ready sprite pixels take priority over additional cooperative reads and decodes,
++and native preparation queues before optional HD work so adoption can begin early.
++Production HD loads prefetch eight frames at a time and defer packed atlases until
++frame adoption finishes; ready output cannot accumulate for an entire unit sheet
++while the application is busy with map generation or other work.
++Authored HD uploads consume the prepared mip chain directly, without an unused level-zero
++RGBA conversion. Mip filtering skips invisible footprints and averages opaque
++ones directly, preserving the alpha-weighted integer results for every pixel.
++WebGL2 prepares generated power-of-two HD surfaces on the GPU with the same
++integer alpha-weighted filter, including BGRA-to-RGBA conversion. This avoids
++rebuilding terrain mip chains on the application thread during animation. Arbitrary-sized surfaces and a failed shader
++initialization retain the CPU path. The GPU pass restores the renderer's program,
++framebuffer, texture/sampler bindings, viewport, pixel-store state and draw flags;
++its context-owned resources are recreated after context restoration.
++Browser restoration drops lost texture handles and recreates textures as needed
++by drawing, rather than rebuilding every resident HD frame in one blocking turn.
+ Polling shares one deadline across cooperative work, sprite adoption and HD reloads;
+ a single decode or upload remains indivisible and can exceed that deadline.
+ Startup update turns advance preparation separately from progress painting; the
+diff --git a/libgag/include/SDLGraphicContext.h b/libgag/include/SDLGraphicContext.h
+index 9370d0dcf..0d51e0cf7 100644
+--- a/libgag/include/SDLGraphicContext.h
++++ b/libgag/include/SDLGraphicContext.h
+@@ -18,6 +18,7 @@
+ #include <valarray>
+ #include <memory>
+ #include <optional>
++#include <span>
+ #include <cstdint>
+ 
+ #include <set>
+@@ -775,7 +776,7 @@ namespace GAGCore
+ 		std::vector <DrawableSurface *> images;
+ 		std::vector <RotatedImage *> rotated;
+ 		std::unique_ptr<Sprite> highResolutionAtlas;
+-		void createHighResolutionAtlas();
++		void createHighResolutionAtlas(std::span<AssetLoader::Handle<AssetImage>> inputs = {});
+ 		std::vector <DrawableSurface *> experimentImages;
+ 		std::vector <RotatedImage *> experimentRotated;
+ 
+@@ -860,7 +861,8 @@ namespace GAGCore
+ 		void applyTeamHueShift(DrawableSurface &surface);
+ 		DrawableSurface *getColoredSurface(int index, bool experiment);
+ 		DrawableSurface *prepareDrawSurface(unsigned index, bool teamColor, bool experiment);
+-        void appendHighResolutionFrame(size_t index, Sprite& target);
++        void appendHighResolutionFrame(size_t index, Sprite& target,
++            std::span<AssetLoader::Handle<AssetImage>> inputs = {});
+ 
+ 	public:
+ 		//! Opt into batching variable-size frames; callers must finishDrawingSprite.
+diff --git a/libgag/src/AssetLoader.cpp b/libgag/src/AssetLoader.cpp
+index c63ed7587..be78f0388 100644
+--- a/libgag/src/AssetLoader.cpp
++++ b/libgag/src/AssetLoader.cpp
+@@ -113,21 +113,27 @@ void AssetImage::prepareUpload(bool highResolution) {
+         level = {nextWidth, nextHeight, std::vector<unsigned char>(size_t(nextWidth) * nextHeight * 4)};
+         const auto &input = mips.back().pixels;
+         for (int y = 0; y < nextHeight; ++y) for (int x = 0; x < nextWidth; ++x) {
+-            unsigned sum[4] = {};
+             const auto *top = input.data() + (size_t(y * 2) * width + x * 2) * 4;
+             const auto *bottom = top + (height > 1 ? width * 4 : 0);
+             const int right = width > 1 ? 4 : 0;
++            const unsigned alpha = top[3] + top[right + 3] + bottom[3] + bottom[right + 3];
++            // Most generated terrain footprints are opaque or undiscovered.
++            // Keep exactly the weighted filter's rounding without multiplying
++            // every channel by 255 or processing invisible RGB.
++            if (!alpha) continue; // The output was initialized to zero.
++            auto *pixel = level.pixels.data() + (size_t(y) * nextWidth + x) * 4;
++            pixel[3] = (alpha + 2) / 4;
++            if (alpha == 4u * 255) {
++                for (int c = 0; c < 3; ++c)
++                    pixel[c] = (unsigned(top[c]) + top[right + c] + bottom[c] + bottom[right + c] + 2) / 4;
++                continue;
++            }
++            unsigned sum[3] = {};
+             for (const auto *pixel : {top, top + right, bottom, bottom + right}) {
+-                sum[3] += pixel[3]; for (int c = 0; c < 3; ++c) sum[c] += pixel[c] * pixel[3];
++                for (int c = 0; c < 3; ++c) sum[c] += pixel[c] * pixel[3];
+             }
+-            auto *pixel = level.pixels.data() + (size_t(y) * nextWidth + x) * 4;
+-            pixel[3] = (sum[3] + 2) / 4;
+-            // Opaque footprints use a constant denominator, preserving the
+-            // alpha-weighted rounding without three divisions on the render
+-            // thread when a generated/animated surface prepares its mips.
+             for (int c = 0; c < 3; ++c)
+-                pixel[c] = sum[3] == 4u * 255 ? (sum[c] + 2u * 255) / (4u * 255)
+-                    : (sum[3] ? (sum[c] + sum[3] / 2) / sum[3] : 0);
++                pixel[c] = (sum[c] + alpha / 2) / alpha;
+         }
+         width = nextWidth; height = nextHeight;
+     }
+diff --git a/libgag/src/DrawableSurface.cpp b/libgag/src/DrawableSurface.cpp
+index a3e6ef313..c6eef990e 100644
+--- a/libgag/src/DrawableSurface.cpp
++++ b/libgag/src/DrawableSurface.cpp
+@@ -16,6 +16,7 @@
+ #include <AssetLoader.h>
+ #ifdef GLOB2_WEBGL2
+ #include <set>
++#include <emscripten.h>
+ #endif
+ 
+ namespace GAGCore
+@@ -212,6 +213,11 @@ namespace GAGCore
+ 		}
+ 		if (_gc && (_gc->optionFlags & GraphicContext::USEGPU))
+ 		{
++#ifdef GLOB2_WEBGL2
++            // Context restoration discards lost handles. Recreate a texture
++            // when it is actually used instead of uploading every HD frame.
++            if (!texture) allocateTexture();
++#endif
+ 			glState.setTexture(texture);
+ 
+ 			void *pixelsPtr;
+@@ -221,7 +227,17 @@ namespace GAGCore
+ #elif SDL_BYTEORDER == SDL_BIG_ENDIAN
+             std::valarray<Uint32> tempPixels;
+ #endif
+-            if (preparedUploadRevision == pixelRevision && !preparedUploadPixels.empty()) {
++            if (highResolutionSampling && !glState.isTextureSRectangle) {
++                // The HD branch uploads its prepared mip chain, including
++                // level zero. Converting this surface here would create an
++                // unused full-size RGBA copy on every terrain animation update.
++                pixelsPtr = nullptr;
++#if defined(GLOB2_WEBGL2) || SDL_BYTEORDER == SDL_BIG_ENDIAN
++                pixelFormat = GL_RGBA;
++#else
++                pixelFormat = GL_BGRA;
++#endif
++            } else if (preparedUploadRevision == pixelRevision && !preparedUploadPixels.empty()) {
+                 pixelsPtr = preparedUploadPixels.data(); pixelFormat = GL_RGBA;
+             } else {
+ 			#if defined(GLOB2_WEBGL2)
+@@ -260,6 +276,36 @@ namespace GAGCore
+                     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_LINEAR);
+                     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
+                     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
++#ifdef GLOB2_WEBGL2
++                    if ((preparedUploadRevision != pixelRevision || preparedMips.empty()) &&
++                        sdlsurface->w > 0 && sdlsurface->h > 0 &&
++                        sdlsurface->pitch == sdlsurface->w * 4 &&
++                        !(sdlsurface->w & (sdlsurface->w - 1)) && !(sdlsurface->h & (sdlsurface->h - 1))) {
++                        const bool generated = EM_ASM_INT({
++                            try {
++                                return Module.glob2GenerateMipmaps(GLctx, GL.textures[$0],
++                                    HEAPU8.subarray($1, $1 + $2 * $3 * 4), $2, $3, true);
++                            } catch (error) {
++                                console.warn('GPU mip preparation failed; using CPU: ' + error);
++                                return false;
++                            }
++                        }, texture, sdlsurface->pixels, sdlsurface->w, sdlsurface->h);
++                        if (generated) {
++                            glState.allocatedTextureBytes -= gpuBytes; gpuBytes = 0;
++                            int w = sdlsurface->w, h = sdlsurface->h;
++                            for (;;) {
++                                gpuBytes += size_t(w) * h * 4;
++                                if (w == 1 && h == 1) break;
++                                w = std::max(1, w / 2); h = std::max(1, h / 2);
++                            }
++                            glState.allocatedTextureBytes += gpuBytes;
++                            glUploadedRevision = pixelRevision;
++                            std::vector<unsigned char>().swap(preparedUploadPixels);
++                            std::vector<AssetImage::Mip>().swap(preparedMips);
++                            return;
++                        }
++                    }
++#endif
+                     AssetImage fallback(nullptr);
+                     const auto *levels = &preparedMips;
+                     if (preparedUploadRevision != pixelRevision || preparedMips.empty()) {
+@@ -466,14 +512,11 @@ void GraphicContext::restoreBrowserContext()
+     // CPU surfaces, including sprite atlases, remain the source of truth.
+     // Rebuild GPU objects without touching game, camera, or UI state.
+     glState.allocatedTextureCount = 0;
++    glState.allocatedTextureBytes = 0;
+     for (auto* surface : gpuSurfaces) {
+-        glDeleteTextures(1, &surface->texture);
+         surface->texture = 0;
+-        if (surface->textureInfo) continue;
+-        glGenTextures(1, &surface->texture);
+-        ++glState.allocatedTextureCount;
+-        surface->initTextureSize();
+-        surface->uploadToTexture();
++        surface->gpuBytes = 0;
++        surface->glUploadedRevision = 0;
+     }
+     _gc->setClipRect();
+ }
+diff --git a/libgag/src/GraphicContextCompound.cpp b/libgag/src/GraphicContextCompound.cpp
+index b5e1a1309..faf81e389 100644
+--- a/libgag/src/GraphicContextCompound.cpp
++++ b/libgag/src/GraphicContextCompound.cpp
+@@ -304,6 +304,10 @@ SpriteDrawBatch::~SpriteDrawBatch() noexcept(false)
+ 		#ifdef HAVE_OPENGL
+ 		if (_gc->optionFlags & GraphicContext::USEGPU)
+ 		{
++#ifdef GLOB2_WEBGL2
++            if (surface->textureInfo && surface->textureInfo->sprite)
++                const_cast<DrawableSurface*>(surface->textureInfo->sprite->atlas.get())->prepareTexture();
++#endif
+ 			// upload
+ 			if (surface->glUploadedRevision != surface->contentRevision())
+ 			{
+@@ -440,6 +444,11 @@ SpriteDrawBatch::~SpriteDrawBatch() noexcept(false)
+ 			glEnableClientState(GL_VERTEX_ARRAY);
+ 			glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+ 			glColor4ub(255, 255, 255, alpha);
++#ifdef GLOB2_WEBGL2
++            // Atlas pixels remain immutable; only its owner-thread GPU cache
++            // changes when a lost texture is needed again.
++            const_cast<DrawableSurface*>(sprite->atlas.get())->prepareTexture();
++#endif
+ 			glState.setTexture(sprite->atlas->texture);
+ #ifdef GLOB2_WEBGL2
+             // The compatibility renderer packs client arrays into its own GPU buffer.
+diff --git a/libgag/src/GraphicContextSkinMesh.cpp b/libgag/src/GraphicContextSkinMesh.cpp
+index 478f68932..5afd7ea88 100644
+--- a/libgag/src/GraphicContextSkinMesh.cpp
++++ b/libgag/src/GraphicContextSkinMesh.cpp
+@@ -638,6 +638,10 @@ void GraphicContext::prepareSkinMeshes(const std::vector<SkinMeshRequest> &reque
+ 	unsigned boundPage = ~0u;
+ 	for (const auto &[key, request] : unique)
+ 	{
++#ifdef GLOB2_WEBGL2
++        request.texture->prepareTexture();
++        request.material->prepareTexture();
++#endif
+ 		if (!request.texture->texture || !request.material->texture)
+ 			continue;
+ 		const unsigned slot = r.slots.reserve(key);
+diff --git a/libgag/src/ImageAssetTest.cpp b/libgag/src/ImageAssetTest.cpp
+index 7a97ff438..8ee5b8f10 100644
+--- a/libgag/src/ImageAssetTest.cpp
++++ b/libgag/src/ImageAssetTest.cpp
+@@ -42,14 +42,15 @@ TEST_CASE("prepared image adoption separates shared pixels and transfers exclusi
+     CHECK_THROWS_AS(GAGCore::DrawableSurface::fromAssetImage(missing, true, false), std::runtime_error);
+ }
+ TEST_CASE("mip preparation preserves padded alpha weighted integer filtering") {
+-    for (const auto size : {std::pair<int, int>{7, 5}, {1, 9}, {9, 1}, {8, 8}}) {
++    for (const auto size : {std::pair<int, int>{7, 5}, {1, 9}, {9, 1}, {8, 8}}) for (int alphaMode : {0, 1, 2}) {
+         auto *surface = SDL_CreateSurface(size.first, size.second, SDL_PIXELFORMAT_ARGB8888);
+         REQUIRE(surface != nullptr);
+         for (int y = 0; y < surface->h; ++y) for (int x = 0; x < surface->w; ++x) {
+             auto *p = static_cast<unsigned char*>(surface->pixels) + y * surface->pitch + x * 4;
+             p[0] = (x * 37 + y * 11) % 256; p[1] = (x * 19 + y * 43) % 256;
+             p[2] = (x * 53 + y * 17) % 256;
+-            p[3] = x < surface->w / 2 ? 255 : (x * 71 + y * 23) % 256;
++            p[3] = alphaMode == 0 ? 0 : alphaMode == 1 ? 255 :
++                (x < surface->w / 2 ? 255 : (x * 71 + y * 23) % 256);
+         }
+         GAGCore::AssetImage image(surface);
+         image.prepareUpload(true);
+diff --git a/libgag/src/Sprite.cpp b/libgag/src/Sprite.cpp
+index 3829399fc..eeab0776b 100644
+--- a/libgag/src/Sprite.cpp
++++ b/libgag/src/Sprite.cpp
+@@ -2,6 +2,7 @@
+ // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
+ 
+ #include "GraphicContextPrivate.h"
++#include "SpriteHighResolution.h"
+ #include <math.h>
+ #include <Toolkit.h>
+ #include <FileManager.h>
+@@ -46,7 +47,12 @@ namespace GAGCore
+     static std::string packDirectory, packText;
+     static bool packRead=false;
+     static size_t packGeneration = 0;
+-    struct PackEntry { int width, height, scale; std::string base, team; };
++    struct PackEntry {
++        int width, height, scale;
++        std::string base, team;
++        size_t prefetchOffset = 0; // frame's position in each sprite's input vector
++        bool prefetched = false;
++    };
+     static std::unordered_map<std::string, PackEntry> packEntries;
+     static AssetLoader::Handle<AssetLoader::Bytes> packSource;
+     struct HighResolutionReload {
+@@ -55,6 +61,30 @@ namespace GAGCore
+         size_t frame = 0;
+     };
+     static std::map<Sprite*, HighResolutionReload> pendingHighResolution;
++    // Retire the matching prefetch subscription as each image is published.
++    // Holding it until the whole sprite finishes prevents exclusive adoption
++    // and retains the decoded surface, upload copy and mip chain alongside
++    // the drawable. Independent consumers still receive isolated pixels.
++    static std::shared_ptr<const AssetImage> consumeHighResolutionImage(
++        const std::string& path, bool mipmaps,
++        std::span<AssetLoader::Handle<AssetImage>> inputs, bool& exclusive)
++    {
++        auto& loader = Toolkit::assets();
++        auto handle = loader.requestImage(path, AssetLoader::Priority::Required, mipmaps);
++        exclusive = false;
++        if (!loader.wait(handle)) return {};
++        const auto* result = handle.dependency().subscription->result.get();
++        for (auto& input : inputs) {
++            const auto dependency = input.dependency();
++            if (dependency.subscription && dependency.subscription->result.get() == result) {
++                input = {};
++                break;
++            }
++        }
++        auto image = handle.take();
++        exclusive = bool(image);
++        return image ? image : handle.get();
++    }
+     // Source decoding and standalone frame preparation work with either texture
+     // backend. Only packing those frames into the legacy atlas requires GL.
+     static bool highResolutionFramesSupported()
+@@ -385,7 +415,7 @@ namespace GAGCore
+             prepared->fileName = sprite->fileName;
+             prepared->dynamicTeamColor = sprite->dynamicTeamColor;
+             pendingHighResolution.emplace(sprite, HighResolutionReload{
+-                prefetchHighResolution(sprite->fileName, sprite->images.size()), std::move(prepared)});
++                prefetchHighResolutionIncremental(sprite->fileName, sprite->images.size()), std::move(prepared)});
+         }
+     }
+     bool Sprite::pollHighResolution(unsigned budgetMs)
+@@ -398,14 +428,19 @@ namespace GAGCore
+             if (std::chrono::steady_clock::now() >= deadline) break;
+             auto *sprite = it->first;
+             auto &reload = it->second;
+-            if (std::any_of(reload.inputs.begin(), reload.inputs.end(), [](const auto& handle) { return handle.pending(); })) { ++it; continue; }
+             // Read native dimensions from the live sprite, but build every HD
+             // layer and its atlas in a private target until publication.
+             while (reload.frame < sprite->images.size()) {
+-                sprite->appendHighResolutionFrame(reload.frame++, *reload.prepared);
++                if (!highResolutionFrameReady(sprite->fileName, reload.frame, reload.inputs)) break;
++                sprite->appendHighResolutionFrame(reload.frame++, *reload.prepared, reload.inputs);
+                 if (std::chrono::steady_clock::now() >= deadline) return false;
+             }
+-            reload.prepared->createHighResolutionAtlas();
++            if (reload.frame < sprite->images.size() ||
++                !highResolutionAtlasReady(sprite->fileName, reload.inputs) ||
++                std::any_of(reload.inputs.begin(), reload.inputs.end(), [](const auto& handle) { return handle.pending(); })) {
++                ++it; continue;
++            }
++            reload.prepared->createHighResolutionAtlas(reload.inputs);
+             sprite->clearTeamColorCache();
+             sprite->highResolutionAtlas.swap(reload.prepared->highResolutionAtlas);
+             sprite->experimentImages.swap(reload.prepared->experimentImages);
+@@ -430,7 +465,7 @@ namespace GAGCore
+     {
+         for(auto sprite:loadedSprites)gc->finishDrawingSprite(sprite,255);
+     }
+-    void Sprite::createHighResolutionAtlas()
++    void Sprite::createHighResolutionAtlas(std::span<AssetLoader::Handle<AssetImage>> inputs)
+     {
+ #ifdef HAVE_OPENGL
+         // Portable renderers retain standalone HD sources. Never query GL or
+@@ -461,20 +496,23 @@ namespace GAGCore
+         std::vector<std::unique_ptr<DrawableSurface>> levels;
+         for(int mip=0;mip<4;++mip)
+         {
+-            auto s=Toolkit::assets().loadImageSurface(directory+"/"+prefix+"-atlas-mip"+std::to_string(mip)+".webp");
++            bool exclusive = false;
++            auto image = consumeHighResolutionImage(
++                directory+"/"+prefix+"-atlas-mip"+std::to_string(mip)+".webp", false, inputs, exclusive);
++            auto* s = image ? image->surface : nullptr;
+             // A missing optional atlas keeps valid individual HD sources.
+             if(!s) return;
+             if (!mip) {
+                 atlasW=s->w; atlasH=s->h; columns=atlasW/256;
+                 if (!columns || atlasW%256 || atlasH%256 || count>columns*(atlasH/256) ||
+-                    atlasW>maxSize || atlasH>maxSize) { SDL_DestroySurface(s); return; }
++                    atlasW>maxSize || atlasH>maxSize) return;
+                 for(int i=0;i<count;++i)
+                     if (experimentImages[i]->getW()+border>256 || experimentImages[i]->getH()+border>256) {
+-                        SDL_DestroySurface(s); return;
++                        return;
+                     }
+             }
+-            if(s->w!=(atlasW>>mip)||s->h!=(atlasH>>mip)){SDL_DestroySurface(s);reject();return;}
+-            levels.emplace_back(new DrawableSurface(s, DrawableSurface::AdoptPixels{}));
++            if(s->w!=(atlasW>>mip)||s->h!=(atlasH>>mip)){reject();return;}
++            levels.push_back(DrawableSurface::fromAssetImage(*image, exclusive));
+         }
+         // The atlas must correspond to this pack's validated frame layers.
+         for(int i=0;i<count;++i)for(int y=0;y<experimentImages[i]->getH();++y)
+@@ -532,7 +570,8 @@ namespace GAGCore
+ #endif
+     }
+ 
+-    std::vector<AssetLoader::Handle<AssetImage>> Sprite::prefetchHighResolution(const std::string& name, size_t frames)
++    static std::vector<AssetLoader::Handle<AssetImage>> highResolutionInputs(
++        const std::string& name, size_t frames, bool incremental)
+     {
+         std::vector<AssetLoader::Handle<AssetImage>> handles;
+         const char *overrideDir = std::getenv("GLOB2_EXPERIMENT_TEXTURE_DIR");
+@@ -540,21 +579,92 @@ namespace GAGCore
+         const std::string directory = overrideDir ? overrideDir : "data/highres/v1";
+         if (!readPack(directory)) return handles;
+         const auto prefix = name.substr(name.find_last_of('/') + 1);
++        size_t firstFrame = frames;
+         for (size_t i = 0; i < frames; ++i) {
+             auto found = packEntries.find(prefix + std::to_string(i));
+             if (found == packEntries.end()) continue;
++            found->second.prefetchOffset = handles.size();
++            found->second.prefetched = true;
+             for (const auto &file : {found->second.base, found->second.team}) {
+                 if (file == "-" || file.find_first_of("/\\:") != std::string::npos || file.find("..") != std::string::npos) continue;
+-                handles.push_back(Toolkit::assets().requestImage(directory + '/' + file, AssetLoader::Priority::Required, true));
++                firstFrame = std::min(firstFrame, i);
++                handles.push_back(incremental ? AssetLoader::Handle<AssetImage>{} :
++                    Toolkit::assets().requestImage(directory + '/' + file, AssetLoader::Priority::Required, true));
+             }
+         }
+         if ((_gc->getOptionFlags() & GraphicContext::USEGPU) &&
+             (prefix == "terrain" || prefix == "ressource"))
+             for (int mip = 0; mip < 4; ++mip)
+-                handles.push_back(Toolkit::assets().requestImage(directory + '/' + prefix + "-atlas-mip" + std::to_string(mip) + ".webp"));
++                handles.push_back(incremental ? AssetLoader::Handle<AssetImage>{} :
++                    Toolkit::assets().requestImage(directory + '/' + prefix + "-atlas-mip" + std::to_string(mip) + ".webp"));
++        if (incremental && firstFrame < frames) highResolutionFrameReady(name, firstFrame, handles);
+         return handles;
+     }
+-    void Sprite::appendHighResolutionFrame(size_t index, Sprite& target)
++    std::vector<AssetLoader::Handle<AssetImage>> Sprite::prefetchHighResolution(const std::string& name, size_t frames)
++    {
++        return highResolutionInputs(name, frames, false);
++    }
++    std::vector<AssetLoader::Handle<AssetImage>> prefetchHighResolutionIncremental(const std::string& name, size_t frames)
++    {
++        return highResolutionInputs(name, frames, true);
++    }
++    bool highResolutionFrameReady(const std::string& name, size_t index,
++        std::span<AssetLoader::Handle<AssetImage>> inputs)
++    {
++        const char* overrideDir = std::getenv("GLOB2_EXPERIMENT_TEXTURE_DIR");
++        if ((!highResolutionEnabled && !overrideDir) || !highResolutionFramesSupported()) return true;
++        const std::string directory = overrideDir ? overrideDir : "data/highres/v1";
++        if (!readPack(directory)) return true;
++        const auto prefix = name.substr(name.find_last_of('/') + 1);
++        const auto found = packEntries.find(prefix + std::to_string(index));
++        if (found == packEntries.end()) return true;
++        const bool atlas = (_gc->getOptionFlags() & GraphicContext::USEGPU) &&
++            (prefix == "terrain" || prefix == "ressource");
++        const auto frameInputs = inputs.size() - (atlas && inputs.size() >= 4 ? 4 : 0);
++        // Bound decoded output even while the application is busy generating a
++        // map or uploading textures. Scratch admission alone does not limit
++        // ready images held by prefetch subscriptions.
++        for (size_t frame = index; frame < index + 8; ++frame) {
++            auto entry = packEntries.find(prefix + std::to_string(frame));
++            if (entry == packEntries.end()) continue;
++            if (!entry->second.prefetched || entry->second.prefetchOffset >= frameInputs) break;
++            auto slot = entry->second.prefetchOffset;
++            for (const auto& file : {entry->second.base, entry->second.team}) {
++                if (file == "-" || file.find_first_of("/\\:") != std::string::npos || file.find("..") != std::string::npos) continue;
++                if (slot >= frameInputs) break;
++                auto& input = inputs[slot++];
++                if (!input.dependency().subscription)
++                    input = Toolkit::assets().requestImage(directory + '/' + file, AssetLoader::Priority::Required, true);
++            }
++        }
++        auto offset = found->second.prefetchOffset;
++        for (const auto& file : {found->second.base, found->second.team}) {
++            if (file == "-" || file.find_first_of("/\\:") != std::string::npos || file.find("..") != std::string::npos) continue;
++            // Consult the original subscription, including terminal failures;
++            // requesting a failed image again would endlessly restart decoding.
++            if (offset < inputs.size() && inputs[offset++].pending()) return false;
++        }
++        return true;
++    }
++    bool highResolutionAtlasReady(const std::string& name,
++        std::span<AssetLoader::Handle<AssetImage>> inputs)
++    {
++        const auto prefix = name.substr(name.find_last_of('/') + 1);
++        if (!_gc || !(_gc->getOptionFlags() & GraphicContext::USEGPU) ||
++            (prefix != "terrain" && prefix != "ressource") || inputs.size() < 4) return true;
++        const char* overrideDir = std::getenv("GLOB2_EXPERIMENT_TEXTURE_DIR");
++        const std::string directory = overrideDir ? overrideDir : "data/highres/v1";
++        bool ready = true;
++        for (size_t mip = 0; mip < 4; ++mip) {
++            auto& input = inputs[inputs.size() - 4 + mip];
++            if (!input.dependency().subscription)
++                input = Toolkit::assets().requestImage(directory + '/' + prefix + "-atlas-mip" + std::to_string(mip) + ".webp");
++            ready = ready && !input.pending();
++        }
++        return ready;
++    }
++    void Sprite::appendHighResolutionFrame(size_t index, Sprite& target,
++        std::span<AssetLoader::Handle<AssetImage>> inputs)
+     {
+         assert(target.experimentImages.size() == index && target.experimentRotated.size() == index);
+         target.experimentImages.push_back(nullptr); target.experimentRotated.push_back(nullptr);
+@@ -570,13 +680,14 @@ namespace GAGCore
+             if (name == "-" || name.find_first_of("/\\:") != std::string::npos || name.find("..") != std::string::npos) return nullptr;
+             // A partial pack may have no usable prepacked atlas. Every accepted
+             // layer needs a ready standalone texture for that fallback.
+-            auto handle = Toolkit::assets().requestImage(directory + '/' + name, AssetLoader::Priority::Required, true);
+-            auto decoded = Toolkit::assets().wait(handle); if (!decoded) return nullptr;
++            bool exclusive = false;
++            auto decoded = consumeHighResolutionImage(directory + '/' + name, true, inputs, exclusive);
++            if (!decoded) return nullptr;
+             auto *surface = decoded->surface;
+             const int width = dynamicTeamColor ? highResolutionTextureSize : (original ? original->getW() : entry.width) * entry.scale;
+             const int height = dynamicTeamColor ? highResolutionTextureSize : (original ? original->getH() : entry.height) * entry.scale;
+             if (surface->w != width || surface->h != height) return nullptr;
+-            auto result = DrawableSurface::fromAssetImage(*decoded);
++            auto result = DrawableSurface::fromAssetImage(*decoded, exclusive);
+             result->highResolutionSampling = true;
+             result->prepareTexture();
+             return result.release();
+diff --git a/libgag/src/SpriteLoad.cpp b/libgag/src/SpriteLoad.cpp
+index aba91aec7..3517f04a0 100644
+--- a/libgag/src/SpriteLoad.cpp
++++ b/libgag/src/SpriteLoad.cpp
+@@ -1,6 +1,7 @@
+ // SPDX-License-Identifier: GPL-3.0-or-later
+ #include <SpriteLoad.h>
+ #include "GraphicContextPrivate.h"
++#include "SpriteHighResolution.h"
+ #include <Toolkit.h>
+ #include <algorithm>
+ #include <cstring>
+@@ -200,15 +201,16 @@ bool SpriteLoad::pollUntil(std::chrono::steady_clock::time_point deadline) {
+     if (impl->complete) return true;
+     if (std::chrono::steady_clock::now() >= deadline) return false;
+     auto &loader = Toolkit::assets();
+-    loader.poll(std::chrono::ceil<std::chrono::milliseconds>(deadline - std::chrono::steady_clock::now()));
+-    if (std::chrono::steady_clock::now() >= deadline) return false;
++    auto advanceInputs = [&] {
++        if (std::chrono::steady_clock::now() < deadline)
++            loader.poll(std::chrono::ceil<std::chrono::milliseconds>(deadline - std::chrono::steady_clock::now()));
++    };
+     if (!impl->sources) {
+-        if (impl->discovery.pending()) return false;
++        if (impl->discovery.pending()) { advanceInputs(); return false; }
+         impl->sources = impl->discovery.get();
+         if (!impl->sources || !impl->sources->frames) {
+             impl->failure = "No frames for sprite: " + impl->name; impl->complete = true; return true;
+         }
+-        impl->highResolution = Sprite::prefetchHighResolution(impl->name, impl->sources->frames);
+         std::vector<AssetLoader::Dependency> dependencies;
+         for (const auto &source : impl->sources->entries) {
+             impl->images.push_back(loader.requestImage(source.path));
+@@ -219,9 +221,12 @@ bool SpriteLoad::pollUntil(std::chrono::steady_clock::time_point deadline) {
+             [sources = impl->sources, images = impl->images, maximum = impl->maxTextureSize, variable = impl->variableAtlas] {
+                 return preparedLayout(*sources, images, maximum, variable).workingBytes;
+             });
++        // Establish native preparation before queuing the optional HD frames,
++        // so the private sprite can consume their output as decoding proceeds.
++        impl->highResolution = prefetchHighResolutionIncremental(impl->name, impl->sources->frames);
+     }
+     if (!impl->pixels) {
+-        if (impl->prepared.pending()) return false;
++        if (impl->prepared.pending()) { advanceInputs(); return false; }
+         impl->pixels = impl->prepared.take();
+         if (!impl->pixels) impl->pixels = impl->prepared.get();
+         if (!impl->pixels) {
+@@ -240,8 +245,10 @@ bool SpriteLoad::pollUntil(std::chrono::steady_clock::time_point deadline) {
+         impl->sprite->fileName = impl->name;
+         impl->sprite->dynamicTeamColor = impl->name == "data/gfx/unit";
+     }
+-    if (std::any_of(impl->highResolution.begin(), impl->highResolution.end(), [](const auto& handle) { return handle.pending(); })) return false;
+     while (impl->frame < impl->sources->frames && std::chrono::steady_clock::now() < deadline) {
++        if (!highResolutionFrameReady(impl->name, impl->frame, impl->highResolution)) {
++            advanceInputs(); return false;
++        }
+         auto adopt = [&](const std::shared_ptr<const AssetImage>& image) -> DrawableSurface* {
+             if (!image) return nullptr;
+             // Prepared frames can be shared by several requests; isolate mutable
+@@ -255,9 +262,13 @@ bool SpriteLoad::pollUntil(std::chrono::steady_clock::time_point deadline) {
+         impl->sprite->images.push_back(adopt(impl->pixels->images[frame]));
+         auto *rotated = adopt(impl->pixels->rotated[frame]);
+         impl->sprite->rotated.push_back(rotated ? new Sprite::RotatedImage(rotated) : nullptr);
+-        impl->sprite->appendHighResolutionFrame(frame, *impl->sprite);
++        impl->sprite->appendHighResolutionFrame(frame, *impl->sprite, impl->highResolution);
+     }
+     if (impl->frame != impl->sources->frames || std::chrono::steady_clock::now() >= deadline) return false;
++    if (!highResolutionAtlasReady(impl->name, impl->highResolution) ||
++        std::any_of(impl->highResolution.begin(), impl->highResolution.end(), [](const auto& handle) { return handle.pending(); })) {
++        advanceInputs(); return false;
++    }
+     const bool uncolored = std::all_of(impl->sprite->rotated.begin(), impl->sprite->rotated.end(), [](auto p) { return !p; });
+ #ifdef HAVE_OPENGL
+     if (impl->pixels->atlas) {
+@@ -276,7 +287,7 @@ bool SpriteLoad::pollUntil(std::chrono::steady_clock::time_point deadline) {
+     } else
+ #endif
+     if (uncolored) impl->sprite->createTextureAtlas(impl->variableAtlas);
+-    impl->sprite->recomputeBlockCompleteHD(); impl->sprite->createHighResolutionAtlas();
++    impl->sprite->recomputeBlockCompleteHD(); impl->sprite->createHighResolutionAtlas(impl->highResolution);
+     impl->sprite->registerLoaded();
+     impl->pixels.reset(); impl->sources.reset(); impl->prepared = {}; impl->images.clear(); impl->highResolution.clear();
+     impl->complete = true;
+diff --git a/libgag/src/SpriteLoadTest.cpp b/libgag/src/SpriteLoadTest.cpp
+index b2db67fe7..c07e22f28 100644
+--- a/libgag/src/SpriteLoadTest.cpp
++++ b/libgag/src/SpriteLoadTest.cpp
+@@ -1,5 +1,6 @@
+ // SPDX-License-Identifier: GPL-3.0-or-later
+ #include "Glob2Test.h"
++#include "ScopedEnvironment.h"
+ #include <SpriteLoad.h>
+ #include <Toolkit.h>
+ #include <GraphicContext.h>
+@@ -52,6 +53,25 @@ std::unique_ptr<GAGCore::Sprite> finish(GAGCore::SpriteLoad& load) {
+ }
+ }
+ TEST_SUITE("SpriteLoad") {
++TEST_CASE("ready sprite pixels publish before unrelated cooperative work") {
++    glob2test::ScopedEnvironment cpu("GLOB2_ASSET_THREADS", "0"), io("GLOB2_ASSET_IO_THREADS", "0");
++    glob2test::ToolkitScope toolkit;
++    glob2test::TempDir temp("ready-sprite");
++    image(temp.path / "ready0.webp");
++    GAGCore::Toolkit::getFileManager()->addDir(temp.path.string());
++    auto& loader = GAGCore::Toolkit::assets();
++    GAGCore::SpriteLoad loading("ready");
++    loader.poll(std::chrono::seconds(1));
++    CHECK_FALSE(loading.poll(std::chrono::milliseconds(20)));
++    loader.poll(std::chrono::seconds(1));
++    auto unrelated = loader.request<int>("unrelated-background", {}, [] {
++        std::this_thread::sleep_for(std::chrono::milliseconds(100));
++        return std::make_shared<const int>(7);
++    }, 0, GAGCore::AssetLoader::Priority::Background);
++    CHECK(loading.poll(std::chrono::milliseconds(20)));
++    REQUIRE(loading.take());
++    CHECK(unrelated.pending());
++}
+ TEST_CASE("source frames prepare in parallel without a graphic context") {
+     glob2test::ToolkitScope toolkit;
+     glob2test::TempDir temp("sprite-load");
+diff --git a/libgag/src/SpriteSheetTest.cpp b/libgag/src/SpriteSheetTest.cpp
+index 6c5f83eaa..ac07484ab 100644
+--- a/libgag/src/SpriteSheetTest.cpp
++++ b/libgag/src/SpriteSheetTest.cpp
+@@ -5,6 +5,7 @@
+ #include "LossyAlphaFixture.h"
+ #include "SpritePatternFixture.h"
+ #include "ScopedEnvironment.h"
++#include "SpriteHighResolution.h"
+ #include <FileManager.h>
+ #include <GraphicContext.h>
+ #include <Toolkit.h>
+@@ -124,6 +125,33 @@ TEST_CASE("portable HD uses standalone frames without requesting GL atlases [dis
+     REQUIRE(sprite.load("data/gfx/terrain"));
+     // Each requested frame contributes its base image; no four GL atlas mips.
+     CHECK(GAGCore::Sprite::prefetchHighResolution("data/gfx/terrain", 16).size() == 16);
++    {
++        auto inputs = GAGCore::prefetchHighResolutionIncremental("data/gfx/terrain", 16);
++        CHECK(std::count_if(inputs.begin(), inputs.end(), [](const auto& input) {
++            return bool(input.dependency().subscription);
++        }) == 8);
++        GAGCore::highResolutionFrameReady("data/gfx/terrain", 8, inputs);
++        CHECK(inputs[8].dependency().subscription != nullptr);
++    }
++    for (bool shared : {false, true}) {
++        auto inputs = GAGCore::Sprite::prefetchHighResolution("data/gfx/terrain", 1);
++        REQUIRE(GAGCore::Toolkit::assets().wait(inputs.front()));
++        std::weak_ptr<const GAGCore::AssetImage> decoded = inputs.front().get();
++        auto* pixels = inputs.front().get()->surface;
++        auto independent = shared ? inputs.front().retain() : GAGCore::AssetLoader::Handle<GAGCore::AssetImage>{};
++        GAGCore::Sprite prepared;
++        sprite.appendHighResolutionFrame(0, prepared, inputs);
++        REQUIRE(prepared.experimentImages[0]);
++        CHECK(inputs.front().state() == GAGCore::AssetLoader::State::Cancelled);
++        if (shared) {
++            REQUIRE(independent.get());
++            CHECK(independent.get()->surface == pixels);
++            CHECK(prepared.experimentImages[0]->getSDLSurface() != pixels);
++        } else {
++            CHECK(decoded.expired());
++            CHECK(prepared.experimentImages[0]->getSDLSurface() == pixels);
++        }
++    }
+     for (unsigned i = 0; i < 16; ++i) {
+         REQUIRE(sprite.baseFrame(i));
+         CHECK(sprite.baseFrame(i)->getW() == 16);
+@@ -134,6 +162,23 @@ TEST_CASE("portable HD uses standalone frames without requesting GL atlases [dis
+ #ifdef HAVE_OPENGL
+     CHECK(sprite.highResolutionAtlas == nullptr);
+ #endif
++    // A failed optional frame is terminal for this prefetch, rather than
++    // restarting its decode on every readiness poll and hanging publication.
++    std::ofstream missing(hd / "frames.txt");
++    missing << "GLOB2_HIGHRES 1\n";
++    for (int i = 0; i < 16; ++i) missing << "terrain" << i << " 4 2 4 missing.webp -\n";
++    missing.close();
++    GAGCore::Sprite::requestHighResolution(true);
++    const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(10);
++    bool complete = false;
++    while (std::chrono::steady_clock::now() < deadline) {
++        GAGCore::Toolkit::assets().poll();
++        if ((complete = GAGCore::Sprite::pollHighResolution(1))) break;
++        SDL_Delay(1);
++    }
++    REQUIRE(complete);
++    REQUIRE(sprite.baseFrame(0));
++    CHECK(sprite.baseFrame(0)->getW() == 4);
+ }
+ 
+ #ifdef HAVE_OPENGL
+diff --git a/libgag/src/Toolkit.cpp b/libgag/src/Toolkit.cpp
+index de7085554..66c65919c 100644
+--- a/libgag/src/Toolkit.cpp
++++ b/libgag/src/Toolkit.cpp
+@@ -96,7 +96,9 @@ namespace GAGCore
+             return std::max(std::chrono::milliseconds::zero(),
+                 std::chrono::ceil<std::chrono::milliseconds>(deadline - std::chrono::steady_clock::now()));
+         };
+-        if (remaining().count()) assets().poll(remaining());
++        // Consume ready HD output before more reads/decodes can spend this
++        // turn's whole budget and leave large prepared buffers accumulating.
++        Sprite::pollHighResolutionUntil(deadline);
+         for (auto it = loadingSprites.begin(); it != loadingSprites.end() && remaining().count();) {
+             if (it->second->pollUntil(deadline)) {
+                 auto sprite = it->second->take();
+@@ -106,6 +108,7 @@ namespace GAGCore
+                 it = loadingSprites.erase(it);
+             } else ++it;
+         }
++        if (remaining().count()) assets().poll(remaining());
+         const bool reloaded = Sprite::pollHighResolutionUntil(deadline);
+         return loadingSprites.empty() && reloaded;
+     }
+@@ -179,4 +182,3 @@ namespace GAGCore
+ 		fontMap.erase(it);
+ 	}
+ }
+-
+diff --git a/scons/web_build.py b/scons/web_build.py
+index ad0a344b9..6af403e3e 100644
+--- a/scons/web_build.py
++++ b/scons/web_build.py
+@@ -70,7 +70,7 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
+         env.Append(CCFLAGS=['-pthread'], LINKFLAGS=['-pthread', '-sOFFSCREENCANVAS_SUPPORT=1',
+             '-sDEFAULT_PTHREAD_STACK_SIZE=8388608',
+             '-sPTHREAD_POOL_SIZE_STRICT=0',
+-            "'-sPTHREAD_POOL_SIZE=Math.max(navigator.hardwareConcurrency||1,1)'",
++            "'-sPTHREAD_POOL_SIZE=Math.min(2*Math.max(navigator.hardwareConcurrency||1,1),16)'",
+             '-sALLOW_BLOCKING_ON_MAIN_THREAD=0',
+             '--js-library', 'browser/threaded-egl.js'])
+     config = output / 'include/glob2/BuildConfig.h'
+diff --git a/src/common/ComputeExecutorHarness.cpp b/src/common/ComputeExecutorHarness.cpp
+index 50bac3c42..ee5535149 100644
+--- a/src/common/ComputeExecutorHarness.cpp
++++ b/src/common/ComputeExecutorHarness.cpp
+@@ -18,12 +18,17 @@
+ 
+ TEST_SUITE("ComputeExecutor")
+ {
+-TEST_CASE("automatic sizing follows hardware and supports unknown CPU counts")
++TEST_CASE("automatic sizing respects platform limits and supports unknown CPU counts")
+ {
+     CHECK(defaultComputeThreadCount(0) == 1);
+     CHECK(defaultComputeThreadCount(1) == 1);
++#ifdef __EMSCRIPTEN__
++    CHECK(defaultComputeThreadCount(12) == 8);
++    CHECK(defaultComputeThreadCount(128) == 8);
++#else
+     CHECK(defaultComputeThreadCount(12) == 12);
+     CHECK(defaultComputeThreadCount(128) == 128);
++#endif
+ }
+ TEST_CASE("thread configuration accepts auto and rejects malformed or overflowing overrides")
+ {
+@@ -34,7 +39,11 @@ TEST_CASE("thread configuration accepts auto and rejects malformed or overflowin
+     CHECK(parseComputeThreadCount("128") == 128);
+     CHECK(parseComputeThreadCount(std::to_string(std::numeric_limits<unsigned>::max())) == std::numeric_limits<unsigned>::max());
+     CHECK(resolveComputeThreadCount(0, 0) == 1);
++#ifdef __EMSCRIPTEN__
++    CHECK(resolveComputeThreadCount(0, 128) == 8);
++#else
+     CHECK(resolveComputeThreadCount(0, 128) == 128);
++#endif
+     CHECK(resolveComputeThreadCount(65, 8) == 65);
+     for (const auto value : {"", "0", "-1", "+1", " 1", "1 ", "1x", "1.5", "999999999999999999999"})
+         CHECK_THROWS_AS(parseComputeThreadCount(value), std::invalid_argument);
+diff --git a/src/common/ComputeThreads.h b/src/common/ComputeThreads.h
+index 49b1114ee..07d54fd8b 100644
+--- a/src/common/ComputeThreads.h
++++ b/src/common/ComputeThreads.h
+@@ -2,6 +2,7 @@
+ #pragma once
+ 
+ #include <charconv>
++#include <algorithm>
+ #include <stdexcept>
+ #include <string_view>
+ #include <thread>
+@@ -11,7 +12,13 @@
+ // and match deadlines are independent of this local execution setting.
+ inline unsigned defaultComputeThreadCount(unsigned hardware = std::thread::hardware_concurrency())
+ {
++#ifdef __EMSCRIPTEN__
++    // Browser workers share a bounded Wasm heap with artwork and encoders;
++    // logical CPU counts on large hosts are not a useful allocation budget.
++    return std::min(hardware ? hardware : 1, 8u);
++#else
+     return hardware ? hardware : 1;
++#endif
+ }
+ 
+ // Zero represents automatic sizing in application configuration. The explicit
+diff --git a/browser/tests/artwork-memory.spec.js b/browser/tests/artwork-memory.spec.js
+new file mode 100644
+index 000000000..b64cd2c69
+--- /dev/null
++++ b/browser/tests/artwork-memory.spec.js
+@@ -0,0 +1,53 @@
++// SPDX-License-Identifier: GPL-3.0-or-later
++const {test, expect} = require('@playwright/test');
++const fs = require('node:fs');
++const {clickMainMenu, clickCustomGameStart} = require('./main-menu');
++
++for (const variant of ['serial', 'threaded']) {
++  test(`${variant} high-resolution startup fits the browser heap on a many-core device`, async ({page}, info) => {
++    test.setTimeout(240000);
++    const errors = [];
++    page.on('pageerror', error => errors.push(String(error)));
++    page.on('console', message => {
++      if (/Cannot enlarge memory|Failed to grow the heap|Native allocation failed|Pthread .*error|GL_INVALID|GPU mip preparation failed/.test(message.text()))
++        errors.push(message.text());
++    });
++    // Apply the same CPU report to the UI and every application/decoder realm.
++    // Automatic sizing must retain working pools without allocating a stack
++    // for every logical core on a workstation or server.
++    await page.context().route('**/index.js', async route => {
++      const response = await route.fetch();
++      await route.fulfill({response, body:
++        'Object.defineProperty(navigator,"hardwareConcurrency",{get:()=>64});\n' + await response.text()});
++    });
++    await page.goto(`/?renderer=webgl2&gl-errors=1&threads=${variant}`);
++    const state = () => page.evaluate(() => glob2Diagnostics.snapshot());
++    await expect.poll(async () => (await state()).screen).toContain('MainMenuScreen');
++    // A warm optional package reproduces the large first-match allocations;
++    // starting before it arrives would accidentally test original artwork.
++    await expect.poll(async () => (await state()).assets.hd, {timeout:120000}).toBe('ready');
++    await clickMainMenu(page, 'custom');
++    await clickCustomGameStart(page);
++    await expect.poll(async () => (await state()).frames, {timeout:120000}).toBeGreaterThan(30);
++    await expect.poll(async () => (await state()).artworkReady, {timeout:120000}).toBe(true);
++    const readyFrames = (await state()).frames;
++    await expect.poll(async () => (await state()).frames).toBeGreaterThan(readyFrames + 5);
++    const result = await state();
++    const evidence = info.outputPath('artwork-memory.json');
++    fs.writeFileSync(evidence, JSON.stringify(result, null, 2) + '\n');
++    await info.attach('artwork-memory', {path:evidence, contentType:'application/json'});
++    expect(result.executionMode).toBe(variant);
++    if (variant === 'serial') expect(result.workerCount).toBe(0);
++    else {
++      // Seven compute workers and eight asset decoders; the asynchronous
++      // SoundMixer loader may also be active while music changes.
++      expect(result.workerCount).toBeGreaterThanOrEqual(15);
++      expect(result.workerCount).toBeLessThanOrEqual(16);
++    }
++    expect(result.heapBytes).toBeGreaterThan(0);
++    expect(result.heapBytes).toBeLessThan(1536 * 1024 * 1024);
++    expect(result.renderContext.error).toBe(0);
++    expect(errors).toEqual([]);
++    await page.screenshot({path:info.outputPath('high-resolution-match.png')});
++  });
++}
+diff --git a/browser/tests/mipmap.spec.js b/browser/tests/mipmap.spec.js
+new file mode 100644
+index 000000000..d6b8d08f1
+--- /dev/null
++++ b/browser/tests/mipmap.spec.js
+@@ -0,0 +1,109 @@
++// SPDX-License-Identifier: GPL-3.0-or-later
++const {test,expect}=require('@playwright/test');
++const fs=require('node:fs');
++const path=require('node:path');
++const {openRuntimeHost}=require('./runtime-host');
++test('WebGL2 mip preparation matches integer CPU filtering and preserves renderer state',async({page})=>{
++  await openRuntimeHost(page,'<canvas id="mips"></canvas><script>var GL={getSource:s=>s},Module={};</script>');
++  await page.addScriptTag({content:fs.readFileSync(path.resolve(__dirname,'../webgl-shaders.js'),'utf8')});
++  const results=await page.evaluate(()=>{
++    const gl=document.querySelector('canvas').getContext('webgl2',{antialias:false});
++    if(!gl)throw Error('WebGL2 unavailable');
++    const program=gl.createProgram();
++    for(const [type,source] of [[gl.VERTEX_SHADER,'#version 300 es\nvoid main(){gl_Position=vec4(0,0,0,1);}'],
++      [gl.FRAGMENT_SHADER,'#version 300 es\nprecision highp float;out vec4 c;void main(){c=vec4(1);}']]){
++      const shader=gl.createShader(type);gl.shaderSource(shader,source);gl.compileShader(shader);
++      if(!gl.getShaderParameter(shader,gl.COMPILE_STATUS))throw Error(gl.getShaderInfoLog(shader));
++      gl.attachShader(program,shader);gl.deleteShader(shader);
++    }
++    gl.linkProgram(program);if(!gl.getProgramParameter(program,gl.LINK_STATUS))throw Error(gl.getProgramInfoLog(program));
++    const vao=gl.createVertexArray(),draw=gl.createFramebuffer(),read=gl.createFramebuffer();
++    let stateQueries=0;
++    const getParameter=gl.getParameter.bind(gl);
++    gl.getParameter=name=>{++stateQueries;return getParameter(name);};
++    const results=[];
++    for(const [width,height] of [[8,4],[1,8],[8,1],[1,1]]) for(const mode of [0,1,2]) for(const shared of [false,true]) for(const bgra of [false,true]){
++      let pixels=new Uint8Array(shared?new SharedArrayBuffer(width*height*4):new ArrayBuffer(width*height*4));
++      for(let i=0;i<pixels.length/4;i++){
++        pixels.set([(i*37+19)%256,(i*71+23)%256,(i*53+11)%256,
++          mode===0?0:mode===1?255:(i*43)%256],i*4);
++      }
++      const texture=gl.createTexture(),savedTexture=gl.createTexture(),sampler=gl.createSampler();
++      const unpackBuffer=gl.createBuffer();gl.bindBuffer(gl.PIXEL_UNPACK_BUFFER,unpackBuffer);
++      gl.bufferData(gl.PIXEL_UNPACK_BUFFER,16,gl.STATIC_DRAW);
++      gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,savedTexture);gl.bindSampler(0,sampler);
++      gl.activeTexture(gl.TEXTURE3);gl.viewport(3,5,7,9);gl.colorMask(false,true,false,true);
++      gl.useProgram(program);gl.bindVertexArray(vao);gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER,draw);gl.bindFramebuffer(gl.READ_FRAMEBUFFER,read);
++      gl.enable(gl.BLEND);gl.enable(gl.SCISSOR_TEST);gl.enable(gl.DITHER);gl.enable(gl.RASTERIZER_DISCARD);
++      gl.pixelStorei(gl.UNPACK_ALIGNMENT,8);gl.pixelStorei(gl.UNPACK_ROW_LENGTH,13);
++      gl.pixelStorei(gl.UNPACK_SKIP_ROWS,2);gl.pixelStorei(gl.UNPACK_SKIP_PIXELS,3);
++      gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,true);gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL,true);
++      const upload=new Uint8Array(shared?new SharedArrayBuffer(pixels.length):new ArrayBuffer(pixels.length));
++      upload.set(pixels);
++      if(bgra)for(let i=0;i<upload.length;i+=4){upload[i]=pixels[i+2];upload[i+2]=pixels[i];}
++      const beforeQueries=stateQueries;
++      Module.glob2GenerateMipmaps(gl,texture,upload,width,height,bgra);
++      const uploadQueries=stateQueries-beforeQueries;
++      const preserved=gl.getParameter(gl.ACTIVE_TEXTURE)===gl.TEXTURE3 &&
++        gl.getParameter(gl.CURRENT_PROGRAM)===program&&gl.getParameter(gl.VERTEX_ARRAY_BINDING)===vao&&
++        gl.getParameter(gl.DRAW_FRAMEBUFFER_BINDING)===draw&&gl.getParameter(gl.READ_FRAMEBUFFER_BINDING)===read&&
++        String(gl.getParameter(gl.VIEWPORT))==='3,5,7,9' && String(gl.getParameter(gl.COLOR_WRITEMASK))==='false,true,false,true' &&
++        gl.isEnabled(gl.BLEND)&&gl.isEnabled(gl.SCISSOR_TEST)&&gl.isEnabled(gl.DITHER)&&gl.isEnabled(gl.RASTERIZER_DISCARD)&&
++        gl.getParameter(gl.UNPACK_ALIGNMENT)===8&&gl.getParameter(gl.UNPACK_ROW_LENGTH)===13&&
++        gl.getParameter(gl.UNPACK_SKIP_ROWS)===2&&gl.getParameter(gl.UNPACK_SKIP_PIXELS)===3&&
++        gl.getParameter(gl.UNPACK_FLIP_Y_WEBGL)&&gl.getParameter(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL);
++      gl.activeTexture(gl.TEXTURE0);
++      const bindings=gl.getParameter(gl.TEXTURE_BINDING_2D)===savedTexture&&gl.getParameter(gl.SAMPLER_BINDING)===sampler&&
++        gl.getParameter(gl.PIXEL_UNPACK_BUFFER_BINDING)===unpackBuffer;
++      const framebuffer=gl.createFramebuffer();gl.bindFramebuffer(gl.FRAMEBUFFER,framebuffer);
++      let w=width,h=height,mip=0,matches=true;
++      for(;;){
++        gl.framebufferTexture2D(gl.FRAMEBUFFER,gl.COLOR_ATTACHMENT0,gl.TEXTURE_2D,texture,mip);
++        if(gl.checkFramebufferStatus(gl.FRAMEBUFFER)!==gl.FRAMEBUFFER_COMPLETE)throw Error('Incomplete mip '+mip+' error '+gl.getError());
++        const actual=new Uint8Array(w*h*4);gl.readPixels(0,0,w,h,gl.RGBA,gl.UNSIGNED_BYTE,actual);
++        matches=matches&&actual.every((v,i)=>v===pixels[i]);
++        if(w===1&&h===1)break;
++        const nw=Math.max(1,w/2),nh=Math.max(1,h/2),next=new Uint8Array(nw*nh*4);
++        // Independent CPU reference, as used by ImageAssets' padded-filter test.
++        for(let y=0;y<nh;y++)for(let x=0;x<nw;x++){
++          let alpha=0,rgb=[0,0,0];
++          for(let dy=0;dy<2;dy++)for(let dx=0;dx<2;dx++){
++            const i=(Math.min(h-1,y*2+dy)*w+Math.min(w-1,x*2+dx))*4;
++            alpha+=pixels[i+3];for(let c=0;c<3;c++)rgb[c]+=pixels[i+c]*pixels[i+3];
++          }
++          const i=(y*nw+x)*4;next[i+3]=Math.floor((alpha+2)/4);
++          for(let c=0;c<3;c++)next[i+c]=alpha?Math.floor((rgb[c]+Math.floor(alpha/2))/alpha):0;
++        }
++        pixels=next;w=nw;h=nh;++mip;
++      }
++      results.push({width,height,mode,shared,bgra,matches,preserved,bindings,uploadQueries,error:gl.getError()});
++      gl.deleteFramebuffer(framebuffer);
++      gl.deleteSampler(sampler);gl.deleteTexture(texture);gl.deleteTexture(savedTexture);
++      gl.deleteBuffer(unpackBuffer);
++      // Deletion implicitly unbinds objects, without a separate setter call.
++      const empty=gl.createTexture(),queries=stateQueries;
++      Module.glob2GenerateMipmaps(gl,empty,new Uint8Array(4),1,1);
++      if(stateQueries!==queries || gl.getParameter(gl.TEXTURE_BINDING_2D)!==null ||
++        gl.getParameter(gl.SAMPLER_BINDING)!==null || gl.getParameter(gl.PIXEL_UNPACK_BUFFER_BINDING)!==null ||
++        gl.getParameter(gl.DRAW_FRAMEBUFFER_BINDING)!==null || gl.getParameter(gl.READ_FRAMEBUFFER_BINDING)!==null ||
++        gl.getError()!==0)throw Error('Deleted binding retained');
++      gl.deleteTexture(empty);
++    }
++    gl.deleteVertexArray(vao);gl.deleteFramebuffer(draw);gl.deleteFramebuffer(read);
++    const unused=gl.createTexture();
++    Module.glob2ForgetMipmaps(gl);
++    const queries=stateQueries;
++    Module.glob2GenerateMipmaps(gl,unused,new Uint8Array(4),1,1);
++    if(stateQueries===queries || gl.getParameter(gl.VERTEX_ARRAY_BINDING)!==null ||
++      gl.getParameter(gl.CURRENT_PROGRAM)!==program || gl.getError()!==0)throw Error('State mirror was not reset');
++    gl.deleteProgram(program);
++    if(Module.glob2GenerateMipmaps(gl,unused,new Uint8Array(4),1,1)!==false ||
++      gl.getParameter(gl.CURRENT_PROGRAM)!==program || gl.getError()!==0)throw Error('Pending program deletion changed');
++    gl.useProgram(null);gl.deleteTexture(unused);
++    return results;
++  });
++  expect(results).toHaveLength(48);
++  expect(results[0].uploadQueries).toBeGreaterThan(0);
++  for(const result of results.slice(1)) expect(result.uploadQueries).toBe(0);
++  for(const result of results){expect(result.matches,JSON.stringify(result)).toBe(true);expect(result.preserved).toBe(true);expect(result.bindings).toBe(true);expect(result.error).toBe(0);}
++});
+diff --git a/libgag/src/SpriteHighResolution.h b/libgag/src/SpriteHighResolution.h
+new file mode 100644
+index 000000000..a3d06929b
+--- /dev/null
++++ b/libgag/src/SpriteHighResolution.h
+@@ -0,0 +1,18 @@
++// SPDX-License-Identifier: GPL-3.0-or-later
++#pragma once
++
++#include <cstddef>
++#include <string>
++#include <span>
++#include <AssetLoader.h>
++
++namespace GAGCore {
++std::vector<AssetLoader::Handle<AssetImage>> prefetchHighResolutionIncremental(
++    const std::string& name, size_t frames);
++// Adopt ready HD frames into a private sprite while other frames decode.
++// Publication still waits for the complete sprite and its optional atlas.
++bool highResolutionFrameReady(const std::string& name, size_t index,
++    std::span<AssetLoader::Handle<AssetImage>> inputs);
++bool highResolutionAtlasReady(const std::string& name,
++    std::span<AssetLoader::Handle<AssetImage>> inputs);
++}
+diff --git a/test/deployment/test_install_web_client.py b/test/deployment/test_install_web_client.py
+new file mode 100644
+index 000000000..ff9093a15
+--- /dev/null
++++ b/test/deployment/test_install_web_client.py
+@@ -0,0 +1,79 @@
++"""The served game must include every worker and encoder its runtimes reference."""
++import importlib.util
++from pathlib import Path
++import subprocess
++import sys
++import tempfile
++import unittest
++
++ROOT = Path(__file__).resolve().parents[2]
++SCRIPT = ROOT / 'deploy/install-web-client.py'
++spec = importlib.util.spec_from_file_location('install_web_client', SCRIPT)
++installer = importlib.util.module_from_spec(spec)
++spec.loader.exec_module(installer)
++
++
++class InstallWebRuntimeTests(unittest.TestCase):
++    def setUp(self):
++        self.temporary = tempfile.TemporaryDirectory()
++        self.addCleanup(self.temporary.cleanup)
++        self.release = Path(self.temporary.name) / 'release'
++        self.served = Path(self.temporary.name) / 'served'
++        self.served.mkdir()
++        (self.served / 'index.html').write_text('previous launcher')
++        for name in (*installer.ENTRY_FILES, 'index.html', 'studio.html',
++                     'assets/core.0123456789abcdef.data'):
++            self.write(name, name)
++
++    def write(self, name, text):
++        path = self.release / name
++        path.parent.mkdir(parents=True, exist_ok=True)
++        path.write_text(text)
++
++    def run_installer(self):
++        return subprocess.run([sys.executable, str(SCRIPT), str(self.release), str(self.served)],
++                              capture_output=True, text=True)
++
++    def test_installs_workers_encoders_notices_and_compressed_copies(self):
++        support = [name for group in installer.WORKER_RUNTIMES for name in group]
++        support += ['licenses/recording/FFmpeg.txt', 'licenses/opus/opus.txt']
++        for name in support:
++            self.write(name, 'new ' + name)
++            self.write(name + '.br', 'compressed ' + name)
++        result = self.run_installer()
++        self.assertEqual(result.returncode, 0, result.stderr)
++        for name in support:
++            self.assertEqual((self.served / name).read_text(), 'new ' + name)
++            self.assertEqual((self.served / (name + '.br')).read_text(), 'compressed ' + name)
++        self.assertEqual((self.served / 'index.html').read_text(), 'index.html')
++
++    def test_referenced_missing_worker_leaves_previous_release_untouched(self):
++        for group in installer.WORKER_RUNTIMES:
++            with self.subTest(worker=group[0]):
++                self.write('threaded/index.js', 'new Worker("' + group[0] + '")')
++                result = self.run_installer()
++                self.assertNotEqual(result.returncode, 0)
++                self.assertIn(group[0], result.stderr)
++                self.assertEqual(sorted(p.name for p in self.served.iterdir()), ['index.html'])
++                self.assertEqual((self.served / 'index.html').read_text(), 'previous launcher')
++
++    def test_partial_encoder_runtime_leaves_previous_release_untouched(self):
++        self.write('recording-worker.js', 'worker')
++        result = self.run_installer()
++        self.assertNotEqual(result.returncode, 0)
++        self.assertIn('recording-storage.js', result.stderr)
++        self.assertEqual(sorted(p.name for p in self.served.iterdir()), ['index.html'])
++
++    def test_removes_stale_worker_compression_on_upgrade(self):
++        for name in installer.WORKER_RUNTIMES[0]:
++            self.write(name, 'current')
++            (self.served / (name + '.br')).write_text('previous compressed runtime')
++        result = self.run_installer()
++        self.assertEqual(result.returncode, 0, result.stderr)
++        for name in installer.WORKER_RUNTIMES[0]:
++            self.assertEqual((self.served / name).read_text(), 'current')
++            self.assertFalse((self.served / (name + '.br')).exists())
++
++
++if __name__ == '__main__':
++    unittest.main()

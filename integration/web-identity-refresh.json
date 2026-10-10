@@ -1,0 +1,15 @@
+{
+  "client_features": {
+    "authoring_links": false,
+    "commander": false,
+    "community_ai": true,
+    "community_generators": true
+  },
+  "client_profile": "free",
+  "distribution": "browser",
+  "mode": "release",
+  "native_wss": false,
+  "role": "client",
+  "target": "web",
+  "toolchain": "emscripten"
+}

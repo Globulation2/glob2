@@ -1,0 +1,13 @@
+
+Running 4 tests using 1 worker
+
+(node:3875486) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [firefox] › tests/recording.spec.js:22:2 › serial recording segments full framebuffer and exports OPFS files (44.9s)
+  ✓  2 [firefox] › tests/recording.spec.js:22:2 › threaded recording segments full framebuffer and exports OPFS files (35.2s)
+(node:3879519) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  3 [webkit] › tests/recording.spec.js:22:2 › serial recording segments full framebuffer and exports OPFS files (42.1s)
+  ✓  4 [webkit] › tests/recording.spec.js:22:2 › threaded recording segments full framebuffer and exports OPFS files (53.3s)
+
+  4 passed (3.1m)

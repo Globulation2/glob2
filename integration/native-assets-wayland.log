@@ -1,0 +1,37 @@
+PASS glob2-unit-tests ImageAssets (7 cases) (0.1s)
+PASS glob2-unit-tests AssetLoader (10 cases) (0.1s)
+PASS glob2-unit-tests SpriteLoad (3 cases) (0.1s)
+PASS glob2-unit-tests SpriteSheets (5 cases) (0.2s)
+FAIL SpriteLoad/variable frame atlas admission accounts for maximum sized padded cells [display] (0.9s)
+FAIL SpriteSheets/independently encoded lossy HD atlases keep exact frame alpha [display] (1.1s)
+FAIL SpriteSheets/portable HD uses standalone frames without requesting GL atlases [display] (1.1s)
+
+===== FAIL SpriteLoad/variable frame atlas admission accounts for maximum sized padded cells [display] =====
+GLOB2_TEST_BUILD compiler=15.2.0 platform=Linux pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": false, "flags": {"CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/home/bradley/.codex/worktrees/a8c9/glob2=.", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC", "LINKFLAGS": "-Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -Wl,-rpath,/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/build/sdl3-ci-current/prefix/lib -Wl,--enable-new-dtags"}, "revision": "4bc7fa4a73df53ac156224030994caefea9faeb6", "sourceStatus": [], "sourceTreeSha256": "5fa4e9bff3fea79b4aecf4c161a616df2ad39e0ac22c42f76471ac9681aec8da"}
+libdecor-gtk-WARNING: Failed to initialize GTK
+Failed to load plugin 'libdecor-gtk.so': failed to init
+No plugins found, falling back on no decorations
+Toolkit : Initialisation Error : The video driver did not add any displays
+
+
+===== FAIL SpriteSheets/independently encoded lossy HD atlases keep exact frame alpha [display] =====
+GLOB2_TEST_BUILD compiler=15.2.0 platform=Linux pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": false, "flags": {"CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/home/bradley/.codex/worktrees/a8c9/glob2=.", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC", "LINKFLAGS": "-Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -Wl,-rpath,/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/build/sdl3-ci-current/prefix/lib -Wl,--enable-new-dtags"}, "revision": "4bc7fa4a73df53ac156224030994caefea9faeb6", "sourceStatus": [], "sourceTreeSha256": "5fa4e9bff3fea79b4aecf4c161a616df2ad39e0ac22c42f76471ac9681aec8da"}
+libdecor-gtk-WARNING: Failed to initialize GTK
+Failed to load plugin 'libdecor-gtk.so': failed to init
+No plugins found, falling back on no decorations
+Toolkit : Initialisation Error : The video driver did not add any displays
+
+
+===== FAIL SpriteSheets/portable HD uses standalone frames without requesting GL atlases [display] =====
+GLOB2_TEST_BUILD compiler=15.2.0 platform=Linux pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": false, "flags": {"CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/home/bradley/.codex/worktrees/a8c9/glob2=.", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC", "LINKFLAGS": "-Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -Wl,-rpath,/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/build/sdl3-ci-current/prefix/lib -Wl,--enable-new-dtags"}, "revision": "4bc7fa4a73df53ac156224030994caefea9faeb6", "sourceStatus": [], "sourceTreeSha256": "5fa4e9bff3fea79b4aecf4c161a616df2ad39e0ac22c42f76471ac9681aec8da"}
+libdecor-gtk-WARNING: Failed to initialize GTK
+Failed to load plugin 'libdecor-gtk.so': failed to init
+No plugins found, falling back on no decorations
+Toolkit : Initialisation Error : The video driver did not add any displays
+
+
+4 passed, 3 failed, 0 skipped (3.6s of test time)
+[run_tests] JUnit report: artifacts/browser-fixes/merge-validation/native-assets.xml (28 cases)

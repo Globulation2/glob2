@@ -1,0 +1,34 @@
+
+Running 8 tests using 1 worker
+
+(node:3849654) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [chromium] › tests/artwork-memory.spec.js:7:3 › serial high-resolution startup fits the browser heap on a many-core device (30ms)
+(node:3856295) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  2 [chromium] › tests/artwork-memory.spec.js:7:3 › threaded high-resolution startup fits the browser heap on a many-core device (29ms)
+
+
+  1) [chromium] › tests/artwork-memory.spec.js:7:3 › serial high-resolution startup fits the browser heap on a many-core device 
+
+    TimeoutError: browserType.launch: Timeout 180000ms exceeded.
+    Call log:
+      - <launching> /home/bradley/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome --disable-field-trial-config --disable-background-networking --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-back-forward-cache --disable-breakpad --disable-client-side-phishing-detection --disable-component-extensions-with-background-pages --disable-component-update --no-default-browser-check --disable-default-apps --disable-dev-shm-usage --disable-edgeupdater --disable-extensions --disable-features=AvoidUnnecessaryBeforeUnloadCheckSync,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,BlockOriginHeaderModificationOnRedirect,Translate,AutoDeElevate,OptimizationHints,msForceBrowserSignIn,msEdgeUpdateLaunchServicesPreferredVersion --enable-features=CDPScreenshotNewSurface --allow-pre-commit-input --disable-hang-monitor --disable-ipc-flooding-protection --disable-popup-blocking --disable-prompt-on-repost --disable-renderer-backgrounding --disable-updater-scheduler --force-color-profile=srgb --metrics-recording-only --no-first-run --password-store=basic --use-mock-keychain --no-service-autorun --export-tagged-pdf --disable-search-engine-choice-screen --unsafely-disable-devtools-self-xss-warnings --edge-skip-compat-layer-relaunch --disable-infobars --disable-search-engine-choice-screen --disable-sync --enable-unsafe-swiftshader --no-sandbox --use-angle=gl --user-data-dir=/tmp/playwright_chromiumdev_profile-wu5ynM --remote-debugging-pipe --no-startup-window
+      - <launched> pid=3849831
+
+
+    Error Context: ../artifacts/browser-fixes/merge-validation/browser-results/artwork-memory-serial-high-da4d8--heap-on-a-many-core-device-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../artifacts/browser-fixes/merge-validation/browser-results/artwork-memory-serial-high-da4d8--heap-on-a-many-core-device-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../artifacts/browser-fixes/merge-validation/browser-results/artwork-memory-serial-high-da4d8--heap-on-a-many-core-device-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [chromium] › tests/artwork-memory.spec.js:7:3 › serial high-resolution startup fits the browser heap on a many-core device 
+  1 interrupted
+    [chromium] › tests/artwork-memory.spec.js:7:3 › threaded high-resolution startup fits the browser heap on a many-core device 
+  6 did not run

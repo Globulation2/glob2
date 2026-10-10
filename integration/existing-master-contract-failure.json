@@ -1,0 +1,41 @@
+{
+  "failure": "test_warm_dependency_setup_can_run_during_an_active_build times out after 15 seconds",
+  "cause": "Fixture publishes under the full application identity; mobile/dependencies.py normalizes to dependency_identity, so it misses the fixture and begins a cold build.",
+  "master": "aaa73b56543e7a5070f51379e955ec493e22d082",
+  "unchanged_from_master": {
+    "test/build_system/test_dev_store.py": true,
+    "mobile/dependencies.py": true,
+    "scons/build_layout.py": true,
+    "scons/dev_store.py": true,
+    "scons/client_features.py": true,
+    "scons/dev_build.py": true
+  },
+  "fixture_identity": {
+    "target": "android",
+    "role": "client",
+    "toolchain": "android",
+    "mode": "release",
+    "arch": "arm64-v8a",
+    "environment": "device",
+    "api": "24",
+    "client_profile": "free",
+    "distribution": "google_play",
+    "client_features": {
+      "commander": false,
+      "authoring_links": false,
+      "community_ai": true,
+      "community_generators": true
+    }
+  },
+  "actual_dependency_identity": {
+    "target": "android",
+    "role": "client",
+    "toolchain": "android",
+    "mode": "release",
+    "arch": "arm64-v8a",
+    "environment": "device",
+    "api": "24"
+  },
+  "hosted_run": "https://github.com/Globulation2/glob2/actions/runs/38089882089",
+  "hosted_failure": "The same warm-setup fixture misses the dependency prefix, starts a cold vcpkg build, and fails because the fake fixture lacks the build inputs."
+}

@@ -1,0 +1,10 @@
+PASS glob2-unit-tests ImageAssets (7 cases) (0.0s)
+PASS glob2-unit-tests SpriteLoad (3 cases) (0.0s)
+PASS glob2-unit-tests AssetLoader (10 cases) (0.1s)
+PASS glob2-unit-tests SpriteSheets (5 cases) (0.1s)
+PASS SpriteSheets/independently encoded lossy HD atlases keep exact frame alpha [display] (0.6s)
+PASS SpriteSheets/portable HD uses standalone frames without requesting GL atlases [display] (0.6s)
+PASS SpriteLoad/variable frame atlas admission accounts for maximum sized padded cells [display] (0.7s)
+
+7 passed, 0 failed, 0 skipped (2.1s of test time)
+[run_tests] JUnit report: artifacts/browser-fixes/native-assets-lazy-final.xml (28 cases)

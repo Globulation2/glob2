@@ -1,0 +1,273 @@
+{
+  "base_commit": "e43fe50bf9ffa59722fa3ee935405bb164d8d0bb",
+  "checked_master": "aaa73b56543e7a5070f51379e955ec493e22d082",
+  "branch": "codex/browser-runtime-fixes",
+  "patch_sha256": "b1a1aa37f165c41aeef520afcb835aa214bf01c93d5576c4ab0bf84cfa09d680",
+  "source_sha256": {
+    "browser/tests/artwork-memory.spec.js": "138516069dce51919ec9c0979e8bfd32cb63c258c3331b24970d0493af14960f",
+    "browser/tests/mipmap.spec.js": "74ba5679945454f8243ff38020e7698f5d776c66bebb74b35b2bcb435912619e",
+    "libgag/src/SpriteHighResolution.h": "e792761fd58be923dbbf300c73e28b31512e5073e55e507c78800e3ed78e2b1f",
+    "test/deployment/test_install_web_client.py": "481dbee036c8c877312bf6f4e0aa5b44e3363cdd73d187266d5725d4ba3f91de",
+    "browser/ApplicationHost.cpp": "fab85d1156becd3f37108bb95503992c49a67f119f825f4461edd571909e2000",
+    "browser/shell.html": "488faee74f66ff8cc6982b21757dd0baa9f6bb6b118b2b09584eb77a891ffc47",
+    "browser/tests/determinism.spec.js": "6832ad265a81f70cc6956341da499e59d96caeba1f2fe2414b29d3aaeff0b2e6",
+    "browser/tests/rendering.spec.js": "8023579739b5dfc9bf61a1b49fea011e76fe03fdb38742e3f45133a33ec8dc7d",
+    "browser/tests/threading.spec.js": "ea26694dde55597ded100d102362f406fe8e134493ac95e6d795309603ce35a4",
+    "browser/webgl-shaders.js": "6d466099f05f7c5cba495746cd96371ff289f45915a48000bfadd52ed00324e1",
+    "deploy/README.md": "736e5da83a5866a6d649cdf1f4a717d4c0c950f1c0d79cbdda550aace19e35b0",
+    "deploy/install-web-client.py": "7dafdaefbb64c9ad0b0dd564abfa710ba866b3d85b13993f07258912ee21f9f5",
+    "docs/browser/implementation.md": "d5a7e53f43a613b9ac82116894c98d187b830ebd66d48148121850aae32dd183",
+    "docs/development/package-size.md": "1f7b1a54be7bb198130b814770db0dd36cc942aa86f9e2e82a716622163968f8",
+    "libgag/include/SDLGraphicContext.h": "4e65d67f0430bce01c2e3dba98e705501b40a76a4fe100d20e38f266cb713f82",
+    "libgag/src/AssetLoader.cpp": "ace8eff94fe1f977b4cf492f37f26cd9086c019b6a3343d84a145e43e6549177",
+    "libgag/src/DrawableSurface.cpp": "b45c6ea7ef8cb2cf461b175cde2b567c3d47ddf27cc56a8677bd49078bae03d1",
+    "libgag/src/GraphicContextCompound.cpp": "379420d6298007bf9ef317e3345bdea3c5eda319a04ff3a34cf519a022f0f26f",
+    "libgag/src/GraphicContextSkinMesh.cpp": "07f5d7635b7dc873b822c4e1b1c7e7e41ef4736fd787c240549effd599c1805a",
+    "libgag/src/ImageAssetTest.cpp": "73bbed95d6eb00c75f5f04565f7550709b72bcc92873796706b8a23d57efdbc1",
+    "libgag/src/Sprite.cpp": "623fa3fcd308248fb91d6f4e1a15bfb166c5ebc813408dfa440d69d4f1650be9",
+    "libgag/src/SpriteLoad.cpp": "1cdeb615ad8fc1a64ee76f994464b3fbb6562f87dadcc1735b352151e80b7b9d",
+    "libgag/src/SpriteLoadTest.cpp": "22eb1b4a4cec3a230bf258b5dd1d8610b6046c16f21f4e624c70035a99ca3241",
+    "libgag/src/SpriteSheetTest.cpp": "378f2bb6953219ed3b8991551e44c21ddfafdafe1c5916891a21f58c52761184",
+    "libgag/src/Toolkit.cpp": "b247ec247588754741690c03e9f82f33690a430f30d9712bf248ac5ea6333f28",
+    "scons/web_build.py": "d5954bf72777ed316e4f0f1fc59fc0ddca344945d3a0d808c757627fc4cf5fa9",
+    "src/common/ComputeExecutorHarness.cpp": "c407b522a0dd493b54b34347ed46aacbb370e3cd75a8eec3b06a3a41f3f0e0dd",
+    "src/common/ComputeThreads.h": "4ecd07185fc2491415a222dd2abfec1e84dd401dcf93f93c6a3e841521947d26"
+  },
+  "host": {
+    "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.43",
+    "compiler": "GCC 15.2.0 native; Emscripten 4.0.15 / clang 22 browser",
+    "cpu": "AMD Threadripper 2950X, 32 logical CPUs",
+    "gpu": "NVIDIA RTX 2070 SUPER; headed Chromium ANGLE OpenGL"
+  },
+  "builds": {
+    "browser": "CCACHE=1 scons target=web release=1 web_profile=1 -j12 web-package web-tests",
+    "native": "GLOB2_SDL3_PREFIX=<SDL 3.4.16 / image 3.4.6 native prefix> python3 tools/dev_build.py --build=build/browser-fix-native optimized_assets=1 unit-tests build/browser-fix-native/src/glob2 -j12",
+    "native_optimization": "-O0 -g1; correctness checks only",
+    "browser_optimization": "-O2 release; function names retained for CPU profiles",
+    "browser_log": "build-tracked-state.log",
+    "native_log": "build-native-lazy-final.log"
+  },
+  "results": {
+    "deployment_tests": {
+      "passed": 42,
+      "log": "deployment-all.log",
+      "command": "python3 -m unittest discover -s test/deployment -v"
+    },
+    "browser_js_unit_tests": {
+      "passed": 87,
+      "log": "browser-js-unit-final.log",
+      "command": "node --test browser/unit/*.test.js"
+    },
+    "native_asset_tests": {
+      "passed_cases": 28,
+      "junit": "native-assets-lazy-final.xml",
+      "command": "python3 test/run_tests.py --build-dir build/browser-fix-native --binary unit --filter 'SpriteSheets/*' --filter 'SpriteLoad/*' --filter 'AssetLoader/*' --filter 'ImageAssets/*' --junit artifacts/browser-fixes/native-assets-lazy-final.xml"
+    },
+    "browser_simulation_and_pixels": {
+      "passed": 24,
+      "engines": [
+        "Chromium",
+        "Firefox",
+        "WebKit"
+      ],
+      "log": "upload-engine.log",
+      "command": "GLOB2_TEST_URL=http://127.0.0.1:8773 browser/node_modules/.bin/playwright test image-assets.spec.js determinism.spec.js --grep 'WebAssembly decodes|per-tick simulation|verifies the committed' --project chromium --project firefox --project webkit --reporter list --output ../artifacts/browser-fixes/upload-engine-results (cwd browser)",
+      "byte_identical_native_comparisons": "trace-comparisons-final.json"
+    },
+    "gpu_memory_recording": {
+      "passed": 8,
+      "log": "tracked-final-browser.log",
+      "command": "GLOB2_TEST_URL=http://127.0.0.1:8775 GLOB2_TEST_RENDERER=webgl2 GLOB2_CHROMIUM_ANGLE=gl browser/node_modules/.bin/playwright test artwork-memory.spec.js rendering.spec.js recording.spec.js --project chromium --headed --grep 'high-resolution startup|draws a playable|recover repeatedly|retains settings, editor|segments full framebuffer' --reporter list --output ../artifacts/browser-fixes/tracked-final-browser-results (cwd browser)",
+      "memory": [
+        {
+          "variant": "serial",
+          "heap_bytes": 800587776,
+          "workers": 0,
+          "artwork_ready": true,
+          "evidence": "artifacts/browser-fixes/tracked-final-browser-results/artwork-memory-serial-high-da4d8--heap-on-a-many-core-device-chromium/artwork-memory.json"
+        },
+        {
+          "variant": "threaded",
+          "heap_bytes": 1153826816,
+          "workers": 15,
+          "artwork_ready": true,
+          "evidence": "artifacts/browser-fixes/tracked-final-browser-results/artwork-memory-threaded-hi-08839--heap-on-a-many-core-device-chromium/artwork-memory.json"
+        }
+      ]
+    },
+    "shared_worker_lifecycle": {
+      "variants": [
+        "serial",
+        "threaded"
+      ],
+      "cases_per_variant": 156,
+      "log": "engine-bounded.log",
+      "coverage": [
+        "distinct-thread overlapping compute",
+        "barriers and reconfiguration",
+        "gradients",
+        "simulation reads",
+        "snapshots",
+        "save/load lifecycle"
+      ],
+      "revision_note": "After final HD window fix; before arithmetic-equivalent mip optimization."
+    },
+    "recording_browser_matrix": {
+      "engines": [
+        "Chromium",
+        "Firefox",
+        "WebKit"
+      ],
+      "variants": [
+        "serial",
+        "threaded"
+      ],
+      "coverage": "Live music PCM, segmented H.264/AAC MP4, full framebuffer resize, OPFS persistence and downloadable export",
+      "logs": [
+        "recording-installed-matrix.log",
+        "webkit-recording-final.log",
+        "tracked-final-browser.log"
+      ],
+      "revision_note": "Auxiliary packaging tested in both variants across all three engines. Final browser graphics changes retested in Chromium; earlier WebKit serial navigation timeout retained, retry passes."
+    },
+    "mip_kernel_benchmark": {
+      "file": "mip-benchmark.json",
+      "size": 2048,
+      "iterations": 5,
+      "byte_identical": true,
+      "note": "Focused scalar Wasm preparation benchmark, not whole-game FPS."
+    },
+    "gpu_mip_pixels_and_state": {
+      "passed": 3,
+      "cases_per_engine": 48,
+      "engines": [
+        "Chromium",
+        "Firefox",
+        "WebKit"
+      ],
+      "log": "tracked-final-mipmap.log",
+      "coverage": [
+        "all mip pixels versus integer CPU reference",
+        "opaque, transparent and mixed alpha",
+        "one-pixel dimensions",
+        "RGBA and BGRA",
+        "ArrayBuffer and SharedArrayBuffer",
+        "renderer GL state preservation",
+        "zero state queries on warm uploads",
+        "implicit deletion unbinds",
+        "non-null pixel unpack buffer",
+        "deletion-pending current program fallback",
+        "state mirror invalidation"
+      ]
+    },
+    "final_browser_traces": {
+      "passed": 4,
+      "log": "gpu-format-engine.log",
+      "comparisons": "trace-comparisons-gpu-format.json",
+      "note": "Final simulation and compute code; subsequent browser-only lazy graphics restoration preserves match state, as verified by repeated live recovery."
+    },
+    "upstream_integration": {
+      "master": "aaa73b56543e7a5070f51379e955ec493e22d082",
+      "clean_three_way_merges": "integration/merge-check.json",
+      "overlapping_artwork_tests": "integration/tests.xml",
+      "result": "integration/result.json",
+      "coverage": "28 native asset cases with the upstream Sprite cache changes merged temporarily; browser build-option merge checked statically. Unrelated master changes were not merged."
+    },
+    "context_restoration": {
+      "log": "tracked-final-browser.log",
+      "coverage": "HD-ready serial and threaded matches, twice each; visibility suspension and resize; settings, editor and confirmation controls. Recreates textures on demand instead of synchronously rebuilding all resident frames."
+    },
+    "recording_probes": "recording-final-probes.json",
+    "profiling": {
+      "final": "tracked-final-steady-profile/summary.json",
+      "note": "Diagnostic profile of a generated default match on actual NVIDIA hardware; host load recorded. No paired native/mobile or whole-game speedup claim. A saved-fixture HD-readiness timeout is retained in gpu-format-steady-profile.log; the final profile uses the generated default workload also exercised by the HD-memory tests.",
+      "command": "GLOB2_CHROMIUM_ANGLE=gl GLOB2_PROFILE_HEADED=1 GLOB2_PROFILE_ARTWORK_READY=1 GLOB2_PROFILE_SECONDS=10 GLOB2_PROFILE_MODES=normal,paused node artifacts/browser-fixes/profile-steady.cjs 'http://127.0.0.1:8775/?threads=threaded&renderer=webgl2' artifacts/browser-fixes/tracked-final-steady-profile",
+      "errors": [],
+      "previous": "lazy-final-steady-profile/summary.json",
+      "previous_measurements": [
+        {
+          "mode": "normal",
+          "frames_per_second": 30.27131724278067,
+          "ticks_per_second": 30.670938592520347,
+          "heap_bytes": 1052442624,
+          "artwork_ready": true,
+          "host_load_before": [
+            19.9,
+            25.84,
+            31.65
+          ],
+          "host_load_after": [
+            19.84,
+            25.63,
+            31.52
+          ]
+        },
+        {
+          "mode": "paused",
+          "frames_per_second": 21.175329544674327,
+          "ticks_per_second": 0,
+          "heap_bytes": 1052442624,
+          "artwork_ready": true,
+          "host_load_before": [
+            19.84,
+            25.63,
+            31.52
+          ],
+          "host_load_after": [
+            20.56,
+            25.59,
+            31.45
+          ]
+        }
+      ],
+      "measurements": [
+        {
+          "mode": "normal",
+          "frames_per_second": 33.56715091422143,
+          "ticks_per_second": 30.769888338036306,
+          "heap_bytes": 1058144256,
+          "artwork_ready": true,
+          "host_load_before": [
+            21.78,
+            26.22,
+            27.71
+          ],
+          "host_load_after": [
+            22.95,
+            26.33,
+            27.73
+          ]
+        },
+        {
+          "mode": "paused",
+          "frames_per_second": 21.177057316118688,
+          "ticks_per_second": 0,
+          "heap_bytes": 1058144256,
+          "artwork_ready": true,
+          "host_load_before": [
+            22.95,
+            26.33,
+            27.73
+          ],
+          "host_load_after": [
+            22.18,
+            26.06,
+            27.63
+          ]
+        }
+      ],
+      "map_seed_log": [
+        "Map generation: fingerprint revision 5 seed 2474434180 [complete]: "
+      ]
+    }
+  },
+  "limitations": [
+    "Not deployed to production; working tree changes are uncommitted.",
+    "No desktop/mobile FPS parity claim; unrelated host compilation load affects profiles.",
+    "Physical Safari/iOS, Android, Windows, and big-endian hosts were not tested.",
+    "Browser application worker still owns both simulation and rendering; compute and asset pools run concurrently.",
+    "Modern WebGL2 still uses the existing legacy GL compatibility layer for some draws.",
+    "One clang frontend crash during an incremental build was retained; a clean retry completed.",
+    "Current master also changes shared build/release identity, game rules and UI. Overlapping Sprite changes were integration-tested locally; a complete build of the latest master plus these fixes was not run."
+  ]
+}

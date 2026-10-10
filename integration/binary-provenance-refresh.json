@@ -1,0 +1,19 @@
+{
+  "tested_commit": "3574fe1aea5a46690d41cb02fe0deea0fb8b2cbe",
+  "source_clean": true,
+  "environment": "Linux-7.0.0-31-generic-x86_64-with-glibc2.43",
+  "binary_sha256": {
+    "build/browser-fix-merge-web/index.js": "2629ece9ef46ee4b9afbffe648abdf58d6adb8fbb5aed777e8d52e48d860e141",
+    "build/browser-fix-merge-web/index.wasm": "6ce6d4419491b5cd2e22f4db58c9be9e0de4e9faedae3559fc1ecc13908d4b84",
+    "build/browser-fix-merge-web/threaded/index.js": "7a5506bdef5e6c082147923fa3d851c33ec8ab6e1d9d8ee4b60a0259611c81aa",
+    "build/browser-fix-merge-web/threaded/index.wasm": "d5c63a5957c52576e35cdd80edbf28c46a5db997c232b40285a40f0b801657b6",
+    "build/browser-fix-merge-web/script-tests.js": "d97c42632018fbc9251daa11c7a3b7e4af2d944573811e662cb4b599af3fbfb0",
+    "build/browser-fix-merge-web/script-tests.wasm": "360fd21d275c9f5a4d8e974822591e6124c71285756dc18f1e696dcceb82ac5a",
+    "build/browser-fix-merge-web/threaded/script-tests.js": "6e301e9060a32ee3edcd566a826e0bbbc141e26079c023195ed6b8687955c155",
+    "build/browser-fix-merge-web/threaded/script-tests.wasm": "d32c44b1f458c4dee7c9c56163690b6b528f8a21adf5783a88a839c56177fd52",
+    "build/browser-fix-merge-native/src/glob2": "6e7e814fb2301b62a8fc42de533b446589dea3cf7c2713f45ef27be32c715fe1",
+    "build/browser-fix-merge-native/test/glob2-unit-tests": "d0be9daa3949b37e9c3e915ad85a1b22808c88887e7d51ccc1134604f471a0eb",
+    "build/browser-fix-merge-native/test/glob2-engine-tests": "e28948f0c4bf2f26f08ad32de8dfb7180284a816012ef29436f81d2f79e52892"
+  },
+  "native_test_provenance_header": "#pragma once\n// Generated test evidence identity; compiled into the producer.\n#define GLOB2_TEST_PROVENANCE_JSON \"{\\\"compiler\\\": \\\"g++\\\", \\\"dirty\\\": false, \\\"flags\\\": {\\\"CCFLAGS\\\": \\\"-O0 -g1 -fdebug-prefix-map=/home/bradley/.codex/worktrees/a8c9/glob2=.\\\", \\\"CPPDEFINES\\\": \\\"GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\\\\\\\\\\\\\"https://app.glob2online.com\\\\\\\\\\\\\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\\\\\\\\\\\\\"https://glob2online.com\\\\\\\\\\\\\\\" HAVE_CONFIG_H SDL_MAIN_HANDLED\\\", \\\"CXXFLAGS\\\": \\\"-std=gnu++20 -Wall -fPIC\\\", \\\"LINKFLAGS\\\": \\\"-Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -Wl,-rpath,/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/build/sdl3-ci-current/prefix/lib -Wl,--enable-new-dtags\\\"}, \\\"revision\\\": \\\"3574fe1aea5a46690d41cb02fe0deea0fb8b2cbe\\\", \\\"sourceStatus\\\": [], \\\"sourceTreeSha256\\\": \\\"ec509e452f9c64d547f8e759e6bbb36b8324a8245ef7c42d0e278c326cb7d5b7\\\"}\"\n"
+}

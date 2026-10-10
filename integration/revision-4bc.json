@@ -1,0 +1,52 @@
+{
+  "tested_commit": "4bc7fa4a73df53ac156224030994caefea9faeb6",
+  "base_commit": "aaa73b56543e7a5070f51379e955ec493e22d082",
+  "integration": "actual merge of origin/master into the PR branch",
+  "browser_build": "CCACHE=1 scons --build=build/browser-fix-merge-web target=web release=1 web_profile=1 -j12 web-package web-tests",
+  "native_build": "GLOB2_SDL3_PREFIX=<SDL 3.4.16/image 3.4.6 prefix> python3 tools/dev_build.py --build=build/browser-fix-merge-native optimized_assets=1 unit-tests engine-tests build/browser-fix-merge-native/src/glob2 -j12",
+  "native_flags": "-O0 -g1 correctness only",
+  "browser_flags": "-O2 release, profiling names retained",
+  "status": "validation in progress",
+  "browser_profile": "free (current default browser distribution)",
+  "changed_source_sha256": {
+    "browser/ApplicationHost.cpp": "e69a5008c109ced866522cf98552d665d66b3cf2a7681014aaa1667c231de07b",
+    "browser/shell.html": "488faee74f66ff8cc6982b21757dd0baa9f6bb6b118b2b09584eb77a891ffc47",
+    "browser/tests/artwork-memory.spec.js": "138516069dce51919ec9c0979e8bfd32cb63c258c3331b24970d0493af14960f",
+    "browser/tests/determinism.spec.js": "6832ad265a81f70cc6956341da499e59d96caeba1f2fe2414b29d3aaeff0b2e6",
+    "browser/tests/mipmap.spec.js": "74ba5679945454f8243ff38020e7698f5d776c66bebb74b35b2bcb435912619e",
+    "browser/tests/rendering.spec.js": "8023579739b5dfc9bf61a1b49fea011e76fe03fdb38742e3f45133a33ec8dc7d",
+    "browser/tests/threading.spec.js": "ea26694dde55597ded100d102362f406fe8e134493ac95e6d795309603ce35a4",
+    "browser/webgl-shaders.js": "6d466099f05f7c5cba495746cd96371ff289f45915a48000bfadd52ed00324e1",
+    "deploy/README.md": "736e5da83a5866a6d649cdf1f4a717d4c0c950f1c0d79cbdda550aace19e35b0",
+    "deploy/install-web-client.py": "7dafdaefbb64c9ad0b0dd564abfa710ba866b3d85b13993f07258912ee21f9f5",
+    "docs/browser/implementation.md": "d5a7e53f43a613b9ac82116894c98d187b830ebd66d48148121850aae32dd183",
+    "docs/development/package-size.md": "1f7b1a54be7bb198130b814770db0dd36cc942aa86f9e2e82a716622163968f8",
+    "libgag/include/ApplicationHost.h": "a594d2740bad4dc18d58d6aa1c1cda31be5424db1a49bc8d478a3e1abc4efd78",
+    "libgag/include/SDLGraphicContext.h": "4e65d67f0430bce01c2e3dba98e705501b40a76a4fe100d20e38f266cb713f82",
+    "libgag/src/ApplicationHost.cpp": "5140c51abb48ef36c87aaa27c3f7653425bb27c7dbba9d3c1729b45899db095c",
+    "libgag/src/AssetLoader.cpp": "ace8eff94fe1f977b4cf492f37f26cd9086c019b6a3343d84a145e43e6549177",
+    "libgag/src/DrawableSurface.cpp": "473d048303891806a8e4a3947f6ae5e8d68943a164cf34e850398f5a6312179c",
+    "libgag/src/GraphicContextCompound.cpp": "379420d6298007bf9ef317e3345bdea3c5eda319a04ff3a34cf519a022f0f26f",
+    "libgag/src/GraphicContextSkinMesh.cpp": "07f5d7635b7dc873b822c4e1b1c7e7e41ef4736fd787c240549effd599c1805a",
+    "libgag/src/ImageAssetTest.cpp": "73bbed95d6eb00c75f5f04565f7550709b72bcc92873796706b8a23d57efdbc1",
+    "libgag/src/Sprite.cpp": "80ae0809eeb2950f6a3c502b8bebfbcd973c0e61730e403145fd765f35d289dc",
+    "libgag/src/SpriteHighResolution.h": "e792761fd58be923dbbf300c73e28b31512e5073e55e507c78800e3ed78e2b1f",
+    "libgag/src/SpriteLoad.cpp": "1cdeb615ad8fc1a64ee76f994464b3fbb6562f87dadcc1735b352151e80b7b9d",
+    "libgag/src/SpriteLoadTest.cpp": "22eb1b4a4cec3a230bf258b5dd1d8610b6046c16f21f4e624c70035a99ca3241",
+    "libgag/src/SpriteSheetTest.cpp": "b3db2a877b418d57dd2a125f46bfc85774b0172695ecf94a7fc89ef125634de5",
+    "libgag/src/Toolkit.cpp": "b247ec247588754741690c03e9f82f33690a430f30d9712bf248ac5ea6333f28",
+    "scons/web_build.py": "e4e85bcf9f8ca8b4084ff0233a51edcac72dc0dc68bdfd1b5e116ea8b3e20f61",
+    "src/common/ComputeExecutorHarness.cpp": "c407b522a0dd493b54b34347ed46aacbb370e3cd75a8eec3b06a3a41f3f0e0dd",
+    "src/common/ComputeThreads.h": "4ecd07185fc2491415a222dd2abfec1e84dd401dcf93f93c6a3e841521947d26",
+    "test/deployment/test_install_web_client.py": "481dbee036c8c877312bf6f4e0aa5b44e3363cdd73d187266d5725d4ba3f91de"
+  },
+  "source_clean": true,
+  "builds_completed": {
+    "native": true,
+    "browser": true
+  },
+  "native_renderer_test_environment": {
+    "headless": "SDL_VIDEO_DRIVER=dummy",
+    "display": "SDL_VIDEO_DRIVER=x11, Xvfb/Openbox; DISPLAY and WAYLAND_DISPLAY unset before runner"
+  }
+}

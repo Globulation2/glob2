@@ -1,0 +1,6 @@
+PASS SpriteSheets/portable HD uses standalone frames without requesting GL atlases [display] (0.9s)
+PASS SpriteLoad/variable frame atlas admission accounts for maximum sized padded cells [display] (1.0s)
+PASS SpriteSheets/independently encoded lossy HD atlases keep exact frame alpha [display] (1.0s)
+
+3 passed, 0 failed, 0 skipped (2.9s of test time)
+[run_tests] JUnit report: artifacts/browser-fixes/merge-validation/native-assets-display-refresh.xml (3 cases)

@@ -1,0 +1,14 @@
+
+Running 3 tests using 1 worker
+
+(node:3726578) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › tests/mipmap.spec.js:6:1 › WebGL2 mip preparation matches integer CPU filtering and preserves renderer state (685ms)
+(node:3726822) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 [firefox] › tests/mipmap.spec.js:6:1 › WebGL2 mip preparation matches integer CPU filtering and preserves renderer state (2.0s)
+(node:3727646) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  3 [webkit] › tests/mipmap.spec.js:6:1 › WebGL2 mip preparation matches integer CPU filtering and preserves renderer state (1.3s)
+
+  3 passed (8.3s)

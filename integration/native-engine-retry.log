@@ -1,0 +1,8 @@
+PASS AITargetTelemetrySave/target fields are declared in schema version 2 (2.9s)
+PASS AITargetTelemetrySave/Cortex flag targets carry the team that owns each building (1.3s)
+PASS AITargetTelemetrySave/Cortex records its committed target until the offense stands down, across saves (2.0s)
+PASS AITargetTelemetrySave/Numbi reports the highest-numbered enemy its attack searches (1.2s)
+PASS AITargetTelemetrySave/target telemetry names only real enemies and leaves the simulation unchanged (234.5s)
+
+5 passed, 0 failed, 0 skipped (241.9s of test time)
+[run_tests] JUnit report: artifacts/browser-fixes/merge-validation/native-engine-retry.xml (5 cases)

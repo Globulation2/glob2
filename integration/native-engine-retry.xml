@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="5" failures="0" errors="0" skipped="0"><testsuite name="AITargetTelemetrySave"><testcase classname="AITargetTelemetrySave" name="Cortex flag targets carry the team that owns each building" time="1.19832" status="run" />
+  <testcase classname="AITargetTelemetrySave" name="Cortex records its committed target until the offense stands down, across saves" time="1.88244" status="run" />
+  <testcase classname="AITargetTelemetrySave" name="Numbi reports the highest-numbered enemy its attack searches" time="1.11952" status="run" />
+  <testcase classname="AITargetTelemetrySave" name="target fields are declared in schema version 2" time="2.87519" status="run" />
+  <testcase classname="AITargetTelemetrySave" name="target telemetry names only real enemies and leaves the simulation unchanged" time="234.44" status="run" />
+  </testsuite></testsuites>

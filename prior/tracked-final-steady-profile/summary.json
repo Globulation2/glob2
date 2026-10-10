@@ -1,0 +1,4212 @@
+{
+  "url": "http://127.0.0.1:8775/?threads=threaded&renderer=webgl2",
+  "seconds": 10,
+  "viewport": {
+    "width": 1200,
+    "height": 900
+  },
+  "host": {
+    "platform": "linux",
+    "arch": "x64",
+    "cpu": "AMD Ryzen Threadripper 2950X 16-Core Processor",
+    "logicalCPUs": 32
+  },
+  "fixture": "generated custom game",
+  "fixture_sha256": null,
+  "angle": "gl",
+  "gpu": {
+    "devices": [
+      {
+        "vendorId": 4318,
+        "deviceId": 7812,
+        "vendorString": "",
+        "deviceString": "",
+        "driverVendor": "NVIDIA",
+        "driverVersion": "580.178.04"
+      },
+      {
+        "vendorId": 4318,
+        "deviceId": 7812,
+        "vendorString": "",
+        "deviceString": "",
+        "driverVendor": "",
+        "driverVersion": ""
+      }
+    ],
+    "auxAttributes": {
+      "amdSwitchable": false,
+      "canSupportThreadedTextureMailbox": false,
+      "directRenderingVersion": "",
+      "displayType": "ANGLE_OPENGL",
+      "glExtensions": "GL_AMD_performance_monitor GL_ANGLE_blob_cache GL_ANGLE_client_arrays GL_ANGLE_clip_cull_distance GL_ANGLE_compressed_texture_etc GL_ANGLE_depth_texture GL_ANGLE_framebuffer_blit GL_ANGLE_framebuffer_multisample GL_ANGLE_get_serialized_context_string GL_ANGLE_get_tex_level_parameter GL_ANGLE_instanced_arrays GL_ANGLE_memory_size GL_ANGLE_polygon_mode GL_ANGLE_program_binary_readiness_query GL_ANGLE_program_cache_control GL_ANGLE_renderability_validation GL_ANGLE_request_extension GL_ANGLE_robust_client_memory GL_ANGLE_shader_pixel_local_storage GL_ANGLE_stencil_texturing GL_ANGLE_texture_compression_dxt3 GL_ANGLE_texture_compression_dxt5 GL_ANGLE_texture_multisample GL_ANGLE_translated_shader_source GL_ARM_rgba8 GL_CHROMIUM_bind_generates_resource GL_CHROMIUM_bind_uniform_location GL_CHROMIUM_copy_texture GL_CHROMIUM_lose_context GL_EXT_EGL_image_array GL_EXT_EGL_image_external_wrap_modes GL_EXT_blend_func_extended GL_EXT_blend_minmax GL_EXT_clear_texture GL_EXT_clip_control GL_EXT_clip_cull_distance GL_EXT_color_buffer_float GL_EXT_color_buffer_half_float GL_EXT_compressed_ETC1_RGB8_sub_texture GL_EXT_conservative_depth GL_EXT_debug_label GL_EXT_debug_marker GL_EXT_depth_clamp GL_EXT_discard_framebuffer GL_EXT_disjoint_timer_query GL_EXT_draw_buffers_indexed GL_EXT_float_blend GL_EXT_frag_depth GL_EXT_instanced_arrays GL_EXT_map_buffer_range GL_EXT_memory_object GL_EXT_memory_object_fd GL_EXT_multisample_compatibility GL_EXT_multisampled_render_to_texture GL_EXT_multisampled_render_to_texture2 GL_EXT_occlusion_query_boolean GL_EXT_polygon_offset_clamp GL_EXT_read_format_bgra GL_EXT_render_snorm GL_EXT_robustness GL_EXT_sRGB GL_EXT_sRGB_write_control GL_EXT_semaphore GL_EXT_semaphore_fd GL_EXT_shader_texture_lod GL_EXT_shadow_samplers GL_EXT_texture_border_clamp GL_EXT_texture_compression_bptc GL_EXT_texture_compression_dxt1 GL_EXT_texture_compression_rgtc GL_EXT_texture_compression_s3tc_srgb GL_EXT_texture_filter_anisotropic GL_EXT_texture_format_BGRA8888 GL_EXT_texture_mirror_clamp_to_edge GL_EXT_texture_norm16 GL_EXT_texture_rg GL_EXT_texture_sRGB_R8 GL_EXT_texture_sRGB_decode GL_EXT_texture_shadow_lod GL_EXT_texture_storage GL_EXT_unpack_subimage GL_KHR_blend_equation_advanced GL_KHR_blend_equation_advanced_coherent GL_KHR_debug GL_KHR_parallel_shader_compile GL_KHR_robustness GL_KHR_texture_compression_astc_hdr GL_KHR_texture_compression_astc_ldr GL_KHR_texture_compression_astc_sliced_3d GL_NV_fence GL_NV_framebuffer_blit GL_NV_pack_subimage GL_NV_pixel_buffer_object GL_NV_polygon_mode GL_NV_read_depth GL_NV_read_stencil GL_NV_robustness_video_memory_purge GL_NV_shader_noperspective_interpolation GL_OES_EGL_image GL_OES_EGL_image_external GL_OES_EGL_image_external_essl3 GL_OES_EGL_sync GL_OES_compressed_ETC1_RGB8_texture GL_OES_depth24 GL_OES_depth32 GL_OES_depth_texture GL_OES_draw_buffers_indexed GL_OES_element_index_uint GL_OES_fbo_render_mipmap GL_OES_get_program_binary GL_OES_mapbuffer GL_OES_packed_depth_stencil GL_OES_rgb8_rgba8 GL_OES_sample_variables GL_OES_shader_multisample_interpolation GL_OES_standard_derivatives GL_OES_surfaceless_context GL_OES_texture_3D GL_OES_texture_border_clamp GL_OES_texture_float GL_OES_texture_float_linear GL_OES_texture_half_float GL_OES_texture_half_float_linear GL_OES_texture_npot GL_OES_texture_stencil8 GL_OES_texture_storage_multisample_2d_array GL_OES_vertex_array_object ",
+      "glImplementationParts": "(gl=egl-angle,angle=opengl)",
+      "glRenderer": "ANGLE (NVIDIA Corporation, NVIDIA GeForce RTX 2070 SUPER/PCIe/SSE2, OpenGL ES 3.2 NVIDIA 580.178.04)",
+      "glResetNotificationStrategy": 33362,
+      "glVendor": "Google Inc. (NVIDIA Corporation)",
+      "glVersion": "OpenGL ES 3.0 (ANGLE 2.1.28646 git hash: a6bc9eff8444)",
+      "glWsExtensions": "EGL_EXT_create_context_robustness EGL_KHR_create_context EGL_KHR_image EGL_KHR_image_base EGL_KHR_gl_colorspace EGL_KHR_gl_texture_2D_image EGL_KHR_gl_texture_cubemap_image EGL_KHR_gl_texture_3D_image EGL_KHR_gl_renderbuffer_image EGL_KHR_get_all_proc_addresses EGL_KHR_fence_sync EGL_KHR_wait_sync EGL_ANGLE_create_context_webgl_compatibility EGL_CHROMIUM_create_context_bind_generates_resource EGL_KHR_swap_buffers_with_damage EGL_EXT_pixel_format_float EGL_KHR_surfaceless_context EGL_ANGLE_display_texture_share_group EGL_ANGLE_display_semaphore_share_group EGL_ANGLE_create_context_client_arrays EGL_ANGLE_program_cache_control EGL_ANGLE_robust_resource_initialization EGL_ANGLE_create_context_extensions_enabled EGL_ANDROID_blob_cache EGL_ANDROID_recordable EGL_ANDROID_native_fence_sync EGL_ANGLE_create_context_backwards_compatible EGL_KHR_no_config_context EGL_KHR_create_context_no_error EGL_EXT_image_dma_buf_import EGL_EXT_image_dma_buf_import_modifiers EGL_NV_robustness_video_memory_purge EGL_KHR_reusable_sync EGL_ANGLE_external_context_and_surface EGL_EXT_buffer_age EGL_ANGLE_context_virtualization EGL_ANGLE_memory_usage_report EGL_ANGLE_create_context_passthrough_shaders ",
+      "glWsVendor": "Google Inc. (NVIDIA Corporation)",
+      "glWsVersion": "1.5 (ANGLE 2.1.28646 git hash: a6bc9eff8444)",
+      "hardwareSupportsVulkan": true,
+      "inProcessGpu": false,
+      "initializationTime": 1.079421,
+      "isAsan": false,
+      "isClangCoverage": false,
+      "jpegDecodeAcceleratorSupported": false,
+      "maxMsaaSamples": "8",
+      "optimus": false,
+      "passthroughCmdDecoder": true,
+      "pixelShaderVersion": "3.00",
+      "processCrashCount": 0,
+      "sandboxed": false,
+      "skiaBackendType": "GaneshGL",
+      "subpixelFontRendering": true,
+      "targetCpuBits": 64,
+      "vertexShaderVersion": "3.00",
+      "visibilityCallbackCallCount": 0
+    },
+    "featureStatus": {
+      "2d_canvas": "enabled",
+      "direct_rendering_display_compositor": "disabled_off_ok",
+      "gpu_compositing": "enabled",
+      "multiple_raster_threads": "enabled_on",
+      "opengl": "enabled_on",
+      "rasterization": "enabled",
+      "raw_draw": "disabled_off_ok",
+      "skia_graphite": "disabled_off",
+      "trees_in_viz": "disabled_off",
+      "video_decode": "enabled",
+      "video_encode": "disabled_software",
+      "vulkan": "disabled_off",
+      "webgl": "enabled",
+      "webgpu": "enabled",
+      "webgpu_on_vk_via_gl_interop": "enabled",
+      "webnn": "disabled_off"
+    },
+    "driverBugWorkarounds": [
+      "disable_discard_framebuffer",
+      "disable_rgb_to_yuv_conversion",
+      "enable_webgl_timer_query_extensions",
+      "exit_on_context_lost",
+      "force_cube_complete",
+      "init_gl_position_in_vertex_shader",
+      "unpack_overlapping_rows_separately_unpack_buffer",
+      "disabled_extension_GL_KHR_blend_equation_advanced",
+      "disabled_extension_GL_KHR_blend_equation_advanced_coherent"
+    ],
+    "videoDecoding": [],
+    "videoEncoding": []
+  },
+  "browser": "153.0.8010.12",
+  "errors": [],
+  "records": [
+    {
+      "mode": "normal",
+      "elapsed_ms": 10009.786080999998,
+      "hostLoadBefore": [
+        21.78,
+        26.22,
+        27.71
+      ],
+      "hostLoadAfter": [
+        22.95,
+        26.33,
+        27.73
+      ],
+      "cpu_core_percent": 252.85255644016203,
+      "processCPU": [
+        {
+          "type": "browser",
+          "id": 3751322,
+          "cpuTime": 3.55,
+          "seconds": 0.11999999999999966
+        },
+        {
+          "type": "renderer",
+          "id": 3751455,
+          "cpuTime": 0.03,
+          "seconds": 0
+        },
+        {
+          "type": "renderer",
+          "id": 3751418,
+          "cpuTime": 123.04,
+          "seconds": 21.450000000000003
+        },
+        {
+          "type": "renderer",
+          "id": 3751409,
+          "cpuTime": 0.7,
+          "seconds": 0
+        },
+        {
+          "type": "GPU",
+          "id": 3751371,
+          "cpuTime": 28.94,
+          "seconds": 3.710000000000001
+        },
+        {
+          "type": "network.mojom.NetworkService",
+          "id": 3751374,
+          "cpuTime": 0.92,
+          "seconds": 0.020000000000000018
+        },
+        {
+          "type": "storage.mojom.StorageService",
+          "id": 3751388,
+          "cpuTime": 0.02,
+          "seconds": 0.01
+        }
+      ],
+      "ticks_per_second": 30.769888338036306,
+      "host_match_frames_per_second": 33.56715091422143,
+      "rendering": [],
+      "before": {
+        "version": 1,
+        "executionMode": "threaded",
+        "threadFallback": null,
+        "workerCount": 15,
+        "renderer": "webgl2",
+        "renderContext": {
+          "width": 1200,
+          "height": 900,
+          "error": null
+        },
+        "contextLost": false,
+        "contextRestores": 0,
+        "screen": "match",
+        "screenClass": "17GameSessionScreen",
+        "roomCanStart": false,
+        "customGameReady": false,
+        "tick": 1487,
+        "frames": 2283,
+        "loop": 2844,
+        "paused": false,
+        "torus": false,
+        "torusSettled": false,
+        "width": 1200,
+        "height": 900,
+        "heapBytes": 1058144256,
+        "artworkReady": true,
+        "restore": "ready",
+        "watchReplay": "none",
+        "import": "idle",
+        "persisting": false,
+        "persistence": "persisted",
+        "audio": "inactive",
+        "assets": {
+          "core": "ready",
+          "game": "ready",
+          "skins": "idle",
+          "font-cjk": "ready",
+          "menu-music": "ready",
+          "translations": "ready",
+          "music": "ready",
+          "music-sets": "ready",
+          "hd": "ready"
+        },
+        "opened": [],
+        "controls": {}
+      },
+      "after": {
+        "version": 1,
+        "executionMode": "threaded",
+        "threadFallback": null,
+        "workerCount": 15,
+        "renderer": "webgl2",
+        "renderContext": {
+          "width": 1200,
+          "height": 900,
+          "error": null
+        },
+        "contextLost": false,
+        "contextRestores": 0,
+        "screen": "match",
+        "screenClass": "17GameSessionScreen",
+        "roomCanStart": false,
+        "customGameReady": false,
+        "tick": 1795,
+        "frames": 2619,
+        "loop": 3186,
+        "paused": false,
+        "torus": false,
+        "torusSettled": false,
+        "width": 1200,
+        "height": 900,
+        "heapBytes": 1058144256,
+        "artworkReady": true,
+        "restore": "ready",
+        "watchReplay": "none",
+        "import": "idle",
+        "persisting": false,
+        "persistence": "persisted",
+        "audio": "inactive",
+        "assets": {
+          "core": "ready",
+          "game": "ready",
+          "skins": "idle",
+          "font-cjk": "ready",
+          "menu-music": "ready",
+          "translations": "ready",
+          "music": "ready",
+          "music-sets": "ready",
+          "hd": "ready"
+        },
+        "opened": [],
+        "controls": {}
+      },
+      "hotByThread": [
+        {
+          "id": "page",
+          "hot": [
+            {
+              "name": "(idle)",
+              "url": "",
+              "ms": 9834.529,
+              "percent": 96.02832810237862
+            },
+            {
+              "name": "(program)",
+              "url": "",
+              "ms": 274.106,
+              "percent": 2.6764821073617857
+            },
+            {
+              "name": "emscripten_futex_wake",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 67.249,
+              "percent": 0.6566464989382674
+            },
+            {
+              "name": "__emscripten_thread_mailbox_await",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 14.948,
+              "percent": 0.14595833196224808
+            },
+            {
+              "name": "__emscripten_receive_on_main_thread_js",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 8.486,
+              "percent": 0.08286074424883845
+            },
+            {
+              "name": "_emscripten_get_device_pixel_ratio",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 5.356,
+              "percent": 0.0522981553378245
+            },
+            {
+              "name": "growMemViews",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 5.301,
+              "percent": 0.051761113040666114
+            },
+            {
+              "name": "growMemViews",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 5.216,
+              "percent": 0.05093113858142132
+            },
+            {
+              "name": "checkMailbox",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 4.079,
+              "percent": 0.03982900963834693
+            },
+            {
+              "name": "2322272",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 3.27,
+              "percent": 0.03192960566741713
+            },
+            {
+              "name": "em_task_queue_execute",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 3.168,
+              "percent": 0.03093363631632338
+            },
+            {
+              "name": "findStringEnd",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 2.741,
+              "percent": 0.026764235209293684
+            },
+            {
+              "name": "wasm-to-js",
+              "url": "",
+              "ms": 2.135,
+              "percent": 0.02084700553514849
+            },
+            {
+              "name": "",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 2.112,
+              "percent": 0.020622424210882253
+            },
+            {
+              "name": "call_then_finish_task",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 2.094,
+              "percent": 0.020446664913630418
+            },
+            {
+              "name": "get buffer",
+              "url": "",
+              "ms": 1.722,
+              "percent": 0.01681430610375911
+            },
+            {
+              "name": "_emscripten_check_mailbox",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.143,
+              "percent": 0.011160715375491674
+            },
+            {
+              "name": "js-to-wasm::i",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.124,
+              "percent": 0.010975191672836957
+            },
+            {
+              "name": "call_then_finish_task",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.062,
+              "percent": 0.010369798537858407
+            }
+          ]
+        },
+        {
+          "id": "677025C1C28B53D2C96B0AC8B4E79B40",
+          "hot": [
+            {
+              "name": "__pthread_cond_timedwait",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 9709.96,
+              "percent": 94.80767193481189
+            },
+            {
+              "name": "void gradient_kernel::propagateTerrainField<gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)::$_0>(unsigned short*, int, int, field::Grid, GradientWorkspace&, gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)::$_0, bool, CellRuleTable const&, unsigned int)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 124.193,
+              "percent": 1.21261562360711
+            },
+            {
+              "name": "__timedwait_cp",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 85.414,
+              "percent": 0.8339789752625163
+            },
+            {
+              "name": "SceneExtractor::prepareChunk(SceneInputs const&, PresentationFrame&, unsigned long)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 71.042,
+              "percent": 0.69365132601915
+            },
+            {
+              "name": "__timedwait_cp",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 41.57,
+              "percent": 0.4058878638357038
+            },
+            {
+              "name": "_emscripten_get_now",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 35.977,
+              "percent": 0.351278029281143
+            },
+            {
+              "name": "emscripten_futex_wake",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 19.521,
+              "percent": 0.19060228505982135
+            },
+            {
+              "name": "emscripten_futex_wake",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 19.3,
+              "percent": 0.1884444496518904
+            },
+            {
+              "name": "gradient_preparation::seed(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, gradient_preparation::CrowdingScratch&)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 18.557,
+              "percent": 0.1811898265383487
+            },
+            {
+              "name": "emscripten_futex_wake",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 13.501,
+              "percent": 0.13182323910622654
+            },
+            {
+              "name": "_clock_time_get",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 10.718,
+              "percent": 0.10465013530409124
+            },
+            {
+              "name": "ComputeExecutor::executePresentation(std::__2::shared_ptr<ComputeExecutor::Presentation> const&, unsigned long)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 7.11,
+              "percent": 0.0694217635764218
+            },
+            {
+              "name": "now",
+              "url": "",
+              "ms": 7.01,
+              "percent": 0.06844536746423584
+            },
+            {
+              "name": "emscripten_futex_wake",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 6.425,
+              "percent": 0.06273345020794796
+            },
+            {
+              "name": "gradient_preparation::MaterialSeedCache::trySeed(SimulationSnapshot::Handle const&, int, int, int, unsigned short*, unsigned short const*)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 5.52,
+              "percent": 0.05389706539266502
+            },
+            {
+              "name": "ComputeExecutor::pick(bool, ComputeExecutor::Slot const*) const",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 5.259,
+              "percent": 0.05134867153985966
+            },
+            {
+              "name": "__timedwait_cp",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 5.021,
+              "percent": 0.049024848792857074
+            },
+            {
+              "name": "emscripten_futex_wake",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 4.109,
+              "percent": 0.040120116249721116
+            },
+            {
+              "name": "wasm-to-js",
+              "url": "",
+              "ms": 3.903,
+              "percent": 0.03810874025861804
+            },
+            {
+              "name": "WinProbability::permille(std::__2::vector<WinProbability::Slot, std::__2::allocator<WinProbability::Slot>> const&)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 3.425,
+              "percent": 0.033441566842369146
+            },
+            {
+              "name": "growMemViews",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 3.146,
+              "percent": 0.030717421689370316
+            },
+            {
+              "name": "(garbage collector)",
+              "url": "",
+              "ms": 2.448,
+              "percent": 0.023902176826312314
+            },
+            {
+              "name": "AI::decide(AIEngine::DecisionContext const&)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 2.426,
+              "percent": 0.0236873696816314
+            },
+            {
+              "name": "WinProbability::winProbabilityTermFixed(std::__2::vector<WinProbability::Slot, std::__2::allocator<WinProbability::Slot>> const&, unsigned long, int)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 2.225,
+              "percent": 0.02172481349613762
+            },
+            {
+              "name": "__pthread_mutex_timedlock",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 2.214,
+              "percent": 0.021617409923797164
+            },
+            {
+              "name": "ResourceGrowth::calculate(MapState::View const&, MersenneTwister&, ResourceGrowth::Batch&)::$_1::operator()(unsigned long, Resource const&) const",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 2.144,
+              "percent": 0.02093393264526699
+            },
+            {
+              "name": "__pthread_mutex_timedlock",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 2.084,
+              "percent": 0.020348094977955415
+            },
+            {
+              "name": "__timedwait_cp",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 2.04,
+              "percent": 0.019918480688593594
+            },
+            {
+              "name": "checkWasiClock",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 1.958,
+              "percent": 0.019117835876601107
+            },
+            {
+              "name": "_emscripten_get_now",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 1.871,
+              "percent": 0.01826837125899932
+            },
+            {
+              "name": "PresentationFrame::operator=(PresentationFrame&&)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.152,
+              "percent": 0.011248083212382265
+            },
+            {
+              "name": "ComputeExecutor::execute(ComputeExecutor::Claim const&, unsigned long)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.108,
+              "percent": 0.010818468923020443
+            },
+            {
+              "name": "emscripten_builtin_free",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.086,
+              "percent": 0.01060366177833953
+            },
+            {
+              "name": "operator new(unsigned long)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.08,
+              "percent": 0.010545078011608373
+            },
+            {
+              "name": "ResourceGrowth::Pipeline::run(void*, unsigned long)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.079,
+              "percent": 0.010535314050486513
+            },
+            {
+              "name": "bigintToI53Checked",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 1.076,
+              "percent": 0.010506022167120935
+            },
+            {
+              "name": "std::__2::chrono::steady_clock::now()",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.065,
+              "percent": 0.010398618594780478
+            },
+            {
+              "name": "_emscripten_get_now",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 1.06,
+              "percent": 0.010349798789171182
+            },
+            {
+              "name": "get buffer",
+              "url": "",
+              "ms": 1.052,
+              "percent": 0.010271687100196304
+            },
+            {
+              "name": "now",
+              "url": "",
+              "ms": 1.048,
+              "percent": 0.010232631255708866
+            }
+          ]
+        },
+        {
+          "id": "452016A1F08E722E997B83482CA5FB49",
+          "hot": [
+            {
+              "name": "__pthread_cond_timedwait",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 10144.022,
+              "percent": 99.04812845920738
+            },
+            {
+              "name": "__timedwait_cp",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 16.77,
+              "percent": 0.16374541717879829
+            },
+            {
+              "name": "void gradient_kernel::propagateTerrainField<gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)::$_0>(unsigned short*, int, int, field::Grid, GradientWorkspace&, gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)::$_0, bool, CellRuleTable const&, unsigned int)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 12.779,
+              "percent": 0.12477654657888272
+            },
+            {
+              "name": "_emscripten_get_now",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 12.442,
+              "percent": 0.12148601553599334
+            },
+            {
+              "name": "emscripten_futex_wake",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 10.641,
+              "percent": 0.10390071462132335
+            },
+            {
+              "name": "ResourceGrowth::Pipeline::run(void*, unsigned long)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 9.319,
+              "percent": 0.0909924593136089
+            },
+            {
+              "name": "__timedwait_cp",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 4.736,
+              "percent": 0.04624318996772741
+            },
+            {
+              "name": "gradient_preparation::seed(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, gradient_preparation::CrowdingScratch&)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 4.498,
+              "percent": 0.04391931344485597
+            },
+            {
+              "name": "gradient_preparation::MaterialSeedCache::trySeed(SimulationSnapshot::Handle const&, int, int, int, unsigned short*, unsigned short const*)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 3.749,
+              "percent": 0.03660593732876057
+            },
+            {
+              "name": "_emscripten_get_now",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 3.196,
+              "percent": 0.03120634187855929
+            },
+            {
+              "name": "AINumbi::decide()",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 2.905,
+              "percent": 0.028364963440930768
+            },
+            {
+              "name": "(anonymous namespace)::buildScheduled(BuildingGradientPipeline<building_gradient::Job>::Job&)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 2.131,
+              "percent": 0.020807482648063157
+            },
+            {
+              "name": "emscripten_builtin_malloc",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.516,
+              "percent": 0.014802507599466797
+            },
+            {
+              "name": "emscripten_futex_wake",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.12,
+              "percent": 0.010935889519394995
+            },
+            {
+              "name": "emscripten_builtin_free",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.109,
+              "percent": 0.010828483461615223
+            },
+            {
+              "name": "ComputeExecutor::execute(ComputeExecutor::Claim const&, unsigned long)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.068,
+              "percent": 0.0104281517917088
+            },
+            {
+              "name": "std::__2::__function::__func<ComputeExecutor::configure(unsigned int, std::__2::function<std::__2::thread (std::__2::function<void ()>)> const&)::'lambda'(), std::__2::allocator<ComputeExecutor::configure(unsigned int, std::__2::function<std::__2::thread (std::__2::function<void ()>)> const&)::'lambda'()>, void ()>::operator()()",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.064,
+              "percent": 0.010389095043425245
+            },
+            {
+              "name": "wasm-to-js",
+              "url": "",
+              "ms": 1.051,
+              "percent": 0.010262160611503696
+            },
+            {
+              "name": "__timedwait_cp",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.051,
+              "percent": 0.010262160611503696
+            },
+            {
+              "name": "now",
+              "url": "",
+              "ms": 1.045,
+              "percent": 0.010203575489078366
+            },
+            {
+              "name": "ComputeExecutor::pick(bool, ComputeExecutor::Slot const*) const",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.039,
+              "percent": 0.010144990366653036
+            },
+            {
+              "name": "AI::decide(AIEngine::DecisionContext const&)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.035,
+              "percent": 0.010105933618369482
+            },
+            {
+              "name": "void std::__2::__introsort<std::__2::_ClassicAlgPolicy, std::__2::__less<void, void>&, std::__2::pair<int, int>*, false>(std::__2::pair<int, int>*, std::__2::pair<int, int>*, std::__2::__less<void, void>&, std::__2::iterator_traits<std::__2::pair<int, int>*>::difference_type, bool)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.033,
+              "percent": 0.010086405244227705
+            },
+            {
+              "name": "ResourceGrowth::calculate(MapState::View const&, MersenneTwister&, ResourceGrowth::Batch&)::$_1::operator()(unsigned long, Resource const&) const",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.024,
+              "percent": 0.00999852756058971
+            }
+          ]
+        },
+        {
+          "id": "C21FF35A721469ACEB6C04ED009D301B",
+          "hot": [
+            {
+              "name": "__pthread_cond_timedwait",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 10153.15,
+              "percent": 99.1388918968506
+            },
+            {
+              "name": "__timedwait_cp",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 20.146,
+              "percent": 0.1967125587777145
+            },
+            {
+              "name": "void gradient_kernel::propagateTerrainField<gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)::$_0>(unsigned short*, int, int, field::Grid, GradientWorkspace&, gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)::$_0, bool, CellRuleTable const&, unsigned int)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 15.037,
+              "percent": 0.14682650383899995
+            },
+            {
+              "name": "emscripten_futex_wake",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 11.417,
+              "percent": 0.1114795633656888
+            },
+            {
+              "name": "_emscripten_get_now",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 9.9,
+              "percent": 0.09666704715076808
+            },
+            {
+              "name": "gradient_preparation::seed(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, gradient_preparation::CrowdingScratch&)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 7.067,
+              "percent": 0.06900464870853314
+            },
+            {
+              "name": "emscripten_futex_wake",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 2.77,
+              "percent": 0.027047244505820967
+            },
+            {
+              "name": "ResourceGrowth::Pipeline::run(void*, unsigned long)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 2.407,
+              "percent": 0.023502786110292804
+            },
+            {
+              "name": "_clock_time_get",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 2.254,
+              "percent": 0.022008840836144572
+            },
+            {
+              "name": "ComputeExecutor::pick(bool, ComputeExecutor::Slot const*) const",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 2.131,
+              "percent": 0.020807826007907756
+            },
+            {
+              "name": "gradient_preparation::MaterialSeedCache::trySeed(SimulationSnapshot::Handle const&, int, int, int, unsigned short*, unsigned short const*)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 2.054,
+              "percent": 0.020055971196735113
+            },
+            {
+              "name": "std::__2::condition_variable::wait(std::__2::unique_lock<std::__2::mutex>&)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 2.02,
+              "percent": 0.019723983358035508
+            },
+            {
+              "name": "__timedwait_cp",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.313,
+              "percent": 0.01282058918272308
+            },
+            {
+              "name": "growMemViews",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 1.073,
+              "percent": 0.010477145615431732
+            },
+            {
+              "name": "emscripten_futex_wake",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.051,
+              "percent": 0.010262329955096692
+            },
+            {
+              "name": "__timedwait_cp",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.048,
+              "percent": 0.01023303691050555
+            },
+            {
+              "name": "(anonymous namespace)::buildScheduled(BuildingGradientPipeline<building_gradient::Job>::Job&)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.046,
+              "percent": 0.010213508214111456
+            },
+            {
+              "name": "emscripten_futex_wake",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.037,
+              "percent": 0.01012562908033803
+            },
+            {
+              "name": "now",
+              "url": "",
+              "ms": 1.027,
+              "percent": 0.010027985598367557
+            },
+            {
+              "name": "ComputeExecutor::execute(ComputeExecutor::Claim const&, unsigned long)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 0.982,
+              "percent": 0.00958858992950043
+            },
+            {
+              "name": "growMemViews",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 0.684,
+              "percent": 0.00667881416678034
+            }
+          ]
+        },
+        {
+          "id": "00C4A269ACC6437A9238348C4E64F4C5",
+          "hot": [
+            {
+              "name": "__pthread_cond_timedwait",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 10147.565,
+              "percent": 99.10598622691985
+            },
+            {
+              "name": "emscripten_futex_wake",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 19.876,
+              "percent": 0.1941185478729389
+            },
+            {
+              "name": "__timedwait_cp",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 19.423,
+              "percent": 0.18969433262910504
+            },
+            {
+              "name": "void gradient_kernel::propagateTerrainField<gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)::$_0>(unsigned short*, int, int, field::Grid, GradientWorkspace&, gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)::$_0, bool, CellRuleTable const&, unsigned int)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 13.934,
+              "percent": 0.13608612628605002
+            },
+            {
+              "name": "_emscripten_get_now",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 12.378,
+              "percent": 0.12088948407985699
+            },
+            {
+              "name": "ResourceGrowth::Pipeline::run(void*, unsigned long)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 3.274,
+              "percent": 0.031975454102233944
+            },
+            {
+              "name": "__timedwait_cp",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 2.73,
+              "percent": 0.02666248921780656
+            },
+            {
+              "name": "wasm-to-js",
+              "url": "",
+              "ms": 2.483,
+              "percent": 0.024250168764766915
+            },
+            {
+              "name": "gradient_preparation::MaterialSeedCache::trySeed(SimulationSnapshot::Handle const&, int, int, int, unsigned short*, unsigned short const*)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 2.074,
+              "percent": 0.020255678621879415
+            },
+            {
+              "name": "_emscripten_get_now",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 1.705,
+              "percent": 0.016651847661670396
+            },
+            {
+              "name": "AINumbi::getOrder(AIEngine::DecisionContext const&)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.448,
+              "percent": 0.014141862412961134
+            },
+            {
+              "name": "emscripten_builtin_free",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.227,
+              "percent": 0.011983470428662508
+            },
+            {
+              "name": "wasm-to-js",
+              "url": "",
+              "ms": 1.08,
+              "percent": 0.010547797932319077
+            },
+            {
+              "name": "wasm-to-js",
+              "url": "",
+              "ms": 1.073,
+              "percent": 0.010479432575350342
+            },
+            {
+              "name": "bigintToI53Checked",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 1.05,
+              "percent": 0.010254803545310215
+            },
+            {
+              "name": "emscripten_futex_wake",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.047,
+              "percent": 0.010225504106609329
+            },
+            {
+              "name": "_emscripten_get_now",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 1.045,
+              "percent": 0.010205971147475405
+            },
+            {
+              "name": "ComputeExecutor::pick(bool, ComputeExecutor::Slot const*) const",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.041,
+              "percent": 0.010166905229207556
+            },
+            {
+              "name": "a_cas_51900",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.039,
+              "percent": 0.010147372270073632
+            },
+            {
+              "name": "AI::decide(AIEngine::DecisionContext const&)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.035,
+              "percent": 0.010108306351805783
+            },
+            {
+              "name": "gradient_preparation::seed(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, gradient_preparation::CrowdingScratch&)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.033,
+              "percent": 0.010088773392671859
+            },
+            {
+              "name": "_emscripten_get_now",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 1.012,
+              "percent": 0.009883677321765654
+            }
+          ]
+        },
+        {
+          "id": "C2FB65640641247463B44B6E04E65107",
+          "hot": [
+            {
+              "name": "__pthread_cond_timedwait",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 10136.742,
+              "percent": 98.95701512976761
+            },
+            {
+              "name": "__timedwait_cp",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 20.138,
+              "percent": 0.19659140685274026
+            },
+            {
+              "name": "void gradient_kernel::propagateTerrainField<gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)::$_0>(unsigned short*, int, int, field::Grid, GradientWorkspace&, gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)::$_0, bool, CellRuleTable const&, unsigned int)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 18.209,
+              "percent": 0.17776010166757114
+            },
+            {
+              "name": "emscripten_futex_wake",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 16.883,
+              "percent": 0.16481540976734602
+            },
+            {
+              "name": "_emscripten_get_now",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 14.821,
+              "percent": 0.1446857305077199
+            },
+            {
+              "name": "ResourceGrowth::Pipeline::run(void*, unsigned long)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 6.169,
+              "percent": 0.06022308019041388
+            },
+            {
+              "name": "gradient_preparation::seed(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, gradient_preparation::CrowdingScratch&)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 4.877,
+              "percent": 0.0476103034671176
+            },
+            {
+              "name": "ComputeExecutor::execute(ComputeExecutor::Claim const&, unsigned long)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 3.288,
+              "percent": 0.032098150051236965
+            },
+            {
+              "name": "std::__2::condition_variable::wait(std::__2::unique_lock<std::__2::mutex>&)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 2.274,
+              "percent": 0.022199268009888338
+            },
+            {
+              "name": "gradient_preparation::MaterialSeedCache::trySeed(SimulationSnapshot::Handle const&, int, int, int, unsigned short*, unsigned short const*)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 2.178,
+              "percent": 0.021262095745618645
+            },
+            {
+              "name": "__timedwait_cp",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.322,
+              "percent": 0.012905643055880555
+            },
+            {
+              "name": "__timedwait_cp",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.246,
+              "percent": 0.012163715013333716
+            },
+            {
+              "name": "emscripten_builtin_malloc",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.098,
+              "percent": 0.010718907772584607
+            },
+            {
+              "name": "emscripten_futex_wake",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.088,
+              "percent": 0.01062128566172318
+            },
+            {
+              "name": "AI::decide(AIEngine::DecisionContext const&)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.053,
+              "percent": 0.010279608273708189
+            },
+            {
+              "name": "_clock_time_get",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 1.041,
+              "percent": 0.010162461740674478
+            },
+            {
+              "name": "(anonymous namespace)::buildScheduled(BuildingGradientPipeline<building_gradient::Job>::Job&)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.039,
+              "percent": 0.010142937318502191
+            },
+            {
+              "name": "emscripten_futex_wake",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.034,
+              "percent": 0.010094126263071478
+            },
+            {
+              "name": "_emscripten_get_now",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 1.033,
+              "percent": 0.010084364051985336
+            },
+            {
+              "name": "__timedwait_cp",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.033,
+              "percent": 0.010084364051985336
+            },
+            {
+              "name": "ComputeExecutor::pick(bool, ComputeExecutor::Slot const*) const",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.032,
+              "percent": 0.010074601840899193
+            },
+            {
+              "name": "wasm-to-js",
+              "url": "",
+              "ms": 1.03,
+              "percent": 0.010055077418726908
+            },
+            {
+              "name": "SimulationSnapshot::Handle::~Handle()",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.021,
+              "percent": 0.009967217518951625
+            },
+            {
+              "name": "std::__2::__function::__func<ComputeExecutor::configure(unsigned int, std::__2::function<std::__2::thread (std::__2::function<void ()>)> const&)::'lambda'(), std::__2::allocator<ComputeExecutor::configure(unsigned int, std::__2::function<std::__2::thread (std::__2::function<void ()>)> const&)::'lambda'()>, void ()>::operator()()",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.014,
+              "percent": 0.009898882041348625
+            }
+          ]
+        },
+        {
+          "id": "FFB65E7C6BCCDB987A0A4B581B52F442",
+          "hot": [
+            {
+              "name": "__pthread_cond_timedwait",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 10146.614,
+              "percent": 99.09072717899248
+            },
+            {
+              "name": "__timedwait_cp",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 27.668,
+              "percent": 0.27020267446740004
+            },
+            {
+              "name": "void gradient_kernel::propagateTerrainField<gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)::$_0>(unsigned short*, int, int, field::Grid, GradientWorkspace&, gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)::$_0, bool, CellRuleTable const&, unsigned int)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 17.344,
+              "percent": 0.1693796149328678
+            },
+            {
+              "name": "emscripten_futex_wake",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 16.244,
+              "percent": 0.15863713474224542
+            },
+            {
+              "name": "_emscripten_get_now",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 5.899,
+              "percent": 0.057608991494983115
+            },
+            {
+              "name": "ResourceGrowth::Pipeline::run(void*, unsigned long)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 3.39,
+              "percent": 0.033106370769281704
+            },
+            {
+              "name": "gradient_preparation::seed(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, gradient_preparation::CrowdingScratch&)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 3.261,
+              "percent": 0.03184657081965417
+            },
+            {
+              "name": "gradient_preparation::MaterialSeedCache::trySeed(SimulationSnapshot::Handle const&, int, int, int, unsigned short*, unsigned short const*)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 2.233,
+              "percent": 0.021807234786963434
+            },
+            {
+              "name": "__timedwait_cp",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 2.169,
+              "percent": 0.021182217757690858
+            },
+            {
+              "name": "ComputeExecutor::pick(bool, ComputeExecutor::Slot const*) const",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 2.144,
+              "percent": 0.02093807048063126
+            },
+            {
+              "name": "wasm-to-js",
+              "url": "",
+              "ms": 2.046,
+              "percent": 0.01998101315455763
+            },
+            {
+              "name": "std::__2::__function::__func<AIEngine::Pipeline::prepare(Game&, std::__2::span<unsigned int const, 4294967295ul>, bool, std::__2::shared_ptr<GameDiagnostics::Session> const&, SimulationSnapshot::Handle const&)::$_0, std::__2::allocator<AIEngine::Pipeline::prepare(Game&, std::__2::span<unsigned int const, 4294967295ul>, bool, std::__2::shared_ptr<GameDiagnostics::Session> const&, SimulationSnapshot::Handle const&)::$_0>, AIEngine::Command (AIEngine::AIWorldView const&)>::destroy_deallocate()",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.94,
+              "percent": 0.01894582869982493
+            },
+            {
+              "name": "emscripten_futex_wake",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.328,
+              "percent": 0.012969103357405929
+            },
+            {
+              "name": "__timedwait_cp",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.212,
+              "percent": 0.011836259991849387
+            },
+            {
+              "name": "__timedwait_cp",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.118,
+              "percent": 0.010918266230105294
+            },
+            {
+              "name": "std::__2::__function::__func<ComputeExecutor::configure(unsigned int, std::__2::function<std::__2::thread (std::__2::function<void ()>)> const&)::'lambda'(), std::__2::allocator<ComputeExecutor::configure(unsigned int, std::__2::function<std::__2::thread (std::__2::function<void ()>)> const&)::'lambda'()>, void ()>::operator()()",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.08,
+              "percent": 0.010547162368974702
+            },
+            {
+              "name": "emscripten_futex_wait",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.056,
+              "percent": 0.010312780982997486
+            },
+            {
+              "name": "AINumbi::getOrder(AIEngine::DecisionContext const&)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.038,
+              "percent": 0.010136994943514574
+            },
+            {
+              "name": "wasm-to-js",
+              "url": "",
+              "ms": 1.034,
+              "percent": 0.010097931379185038
+            }
+          ]
+        },
+        {
+          "id": "FF68DD503EB8858ACC499CF3594D514A",
+          "hot": [
+            {
+              "name": "__pthread_cond_timedwait",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 10205.802,
+              "percent": 99.65114587371222
+            },
+            {
+              "name": "_emscripten_get_now",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 13.393,
+              "percent": 0.1307714765274329
+            },
+            {
+              "name": "_emscripten_get_now",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 4.78,
+              "percent": 0.046672713940202296
+            },
+            {
+              "name": "_clock_time_get",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 2.453,
+              "percent": 0.023951499434166575
+            },
+            {
+              "name": "lock",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 2.172,
+              "percent": 0.02120776876111284
+            },
+            {
+              "name": "wasm-to-js",
+              "url": "",
+              "ms": 2.122,
+              "percent": 0.02071956045629901
+            },
+            {
+              "name": "wasm-to-js",
+              "url": "",
+              "ms": 1.833,
+              "percent": 0.017897716454475063
+            },
+            {
+              "name": "void* std::__2::__thread_proxy[abi:ne200100]<std::__2::tuple<std::__2::unique_ptr<std::__2::__thread_struct, std::__2::default_delete<std::__2::__thread_struct>>, GAGCore::ThreadSupport::launch(std::__2::function<void ()>)::'lambda'()>>(void*)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.09,
+              "percent": 0.010642941044941527
+            },
+            {
+              "name": "lock",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.079,
+              "percent": 0.010535535217882485
+            },
+            {
+              "name": "now",
+              "url": "",
+              "ms": 1.06,
+              "percent": 0.010350016062053229
+            },
+            {
+              "name": "__pthread_mutex_timedlock",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.058,
+              "percent": 0.010330487729860675
+            },
+            {
+              "name": "std::__2::chrono::steady_clock::now()",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.026,
+              "percent": 0.010018034414779824
+            }
+          ]
+        },
+        {
+          "id": "B9C0AFC8B6DDB98E18CC7BA037B667BD",
+          "hot": [
+            {
+              "name": "__pthread_cond_timedwait",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 10214.619,
+              "percent": 99.74741430703722
+            },
+            {
+              "name": "_emscripten_get_now",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 6.21,
+              "percent": 0.060641659062046376
+            },
+            {
+              "name": "__timedwait_cp",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 3.291,
+              "percent": 0.032137149754137624
+            },
+            {
+              "name": "_emscripten_get_now",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 2.182,
+              "percent": 0.021307584552880062
+            },
+            {
+              "name": "growMemViews",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 2.172,
+              "percent": 0.02120993292798144
+            },
+            {
+              "name": "std::__2::chrono::steady_clock::now()",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 2.13,
+              "percent": 0.020799796103407212
+            },
+            {
+              "name": "get buffer",
+              "url": "",
+              "ms": 1.142,
+              "percent": 0.01115181556342302
+            },
+            {
+              "name": "wasm-to-js",
+              "url": "",
+              "ms": 1.124,
+              "percent": 0.010976042638605495
+            },
+            {
+              "name": "now",
+              "url": "",
+              "ms": 1.09,
+              "percent": 0.010644027113950169
+            },
+            {
+              "name": "wasm-to-js",
+              "url": "",
+              "ms": 1.077,
+              "percent": 0.010517080001581957
+            },
+            {
+              "name": "__pthread_mutex_timedlock",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.039,
+              "percent": 0.01014600382696718
+            },
+            {
+              "name": "bigintToI53Checked",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 1.024,
+              "percent": 0.009999526389619241
+            },
+            {
+              "name": "_emscripten_date_now",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 1.013,
+              "percent": 0.009892109602230754
+            }
+          ]
+        },
+        {
+          "id": "28F167266F5F92877DDAD0446589A250",
+          "hot": [
+            {
+              "name": "__pthread_cond_timedwait",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 10186.279,
+              "percent": 99.50709874710064
+            },
+            {
+              "name": "_emscripten_get_now",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 10.099,
+              "percent": 0.09865449299464205
+            },
+            {
+              "name": "wasm-to-js",
+              "url": "",
+              "ms": 7.631,
+              "percent": 0.07454524567205797
+            },
+            {
+              "name": "_emscripten_get_now",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 6.527,
+              "percent": 0.06376055805287935
+            },
+            {
+              "name": "wasm-to-js",
+              "url": "",
+              "ms": 3.21,
+              "percent": 0.031357651501416076
+            },
+            {
+              "name": "std::__2::chrono::system_clock::now()",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 3.176,
+              "percent": 0.03102551438270949
+            },
+            {
+              "name": "__timedwait_cp",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 2.622,
+              "percent": 0.025613633095549208
+            },
+            {
+              "name": "growMemViews",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 2.14,
+              "percent": 0.02090510100094405
+            },
+            {
+              "name": "void* std::__2::__thread_proxy[abi:ne200100]<std::__2::tuple<std::__2::unique_ptr<std::__2::__thread_struct, std::__2::default_delete<std::__2::__thread_struct>>, GAGCore::ThreadSupport::launch(std::__2::function<void ()>)::'lambda'()>>(void*)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 2.092,
+              "percent": 0.020436201539240632
+            },
+            {
+              "name": "get buffer",
+              "url": "",
+              "ms": 2.076,
+              "percent": 0.020279901718672826
+            },
+            {
+              "name": "_emscripten_date_now",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 2.06,
+              "percent": 0.020123601898105022
+            },
+            {
+              "name": "emscripten_futex_wake",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.219,
+              "percent": 0.011908092579509718
+            },
+            {
+              "name": "auto std::__2::chrono::operator<=>[abi:ne200100]<long long, std::__2::ratio<1ll, 1000000000ll>, long long, std::__2::ratio<1ll, 1000000000ll>>(std::__2::chrono::duration<T, std::__2::ratio<1ll, 1000000000ll>> const&, std::__2::chrono::duration<T1, std::__2::ratio<1ll, 1000000000ll>> const&)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.151,
+              "percent": 0.011243818342096543
+            },
+            {
+              "name": "now",
+              "url": "",
+              "ms": 1.061,
+              "percent": 0.010364631851402635
+            },
+            {
+              "name": "wasm-to-js",
+              "url": "",
+              "ms": 1.026,
+              "percent": 0.01002272599391056
+            },
+            {
+              "name": "_clock_time_get",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 1.023,
+              "percent": 0.009993419777554096
+            }
+          ]
+        },
+        {
+          "id": "CC82E745BD08D214071631B0D5A1B261",
+          "hot": [
+            {
+              "name": "__pthread_cond_timedwait",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 10208.569,
+              "percent": 99.70017390889916
+            },
+            {
+              "name": "_emscripten_get_now",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 12.356,
+              "percent": 0.12067267692644856
+            },
+            {
+              "name": "wasm-to-js",
+              "url": "",
+              "ms": 3.174,
+              "percent": 0.03099830661739622
+            },
+            {
+              "name": "_clock_time_get",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 2.345,
+              "percent": 0.02290202552545499
+            },
+            {
+              "name": "std::__2::chrono::steady_clock::now()",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 2.151,
+              "percent": 0.021007359021430142
+            },
+            {
+              "name": "__timedwait_cp",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 2.105,
+              "percent": 0.02055810820088817
+            },
+            {
+              "name": "__pthread_mutex_timedlock",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.774,
+              "percent": 0.017325455557423094
+            },
+            {
+              "name": "growMemViews",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 1.44,
+              "percent": 0.014063503947400932
+            },
+            {
+              "name": "now",
+              "url": "",
+              "ms": 1.079,
+              "percent": 0.010537861638365004
+            },
+            {
+              "name": "emscripten_futex_wake",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.072,
+              "percent": 0.010469497383065138
+            },
+            {
+              "name": "std::__2::chrono::duration<long long, std::__2::ratio<1ll, 1ll>>::duration[abi:ne200100]<long long, 0>(long long const&)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.056,
+              "percent": 0.010313236228094018
+            },
+            {
+              "name": "_emscripten_date_now",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 1.03,
+              "percent": 0.010059311851265944
+            }
+          ]
+        },
+        {
+          "id": "62142D93C57322928D2EE7EE8CA389A8",
+          "hot": [
+            {
+              "name": "__pthread_cond_timedwait",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 10194.765,
+              "percent": 99.61096599851034
+            },
+            {
+              "name": "_emscripten_get_now",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 15.222,
+              "percent": 0.14873105210657867
+            },
+            {
+              "name": "_emscripten_get_now",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 3.493,
+              "percent": 0.03412938937119165
+            },
+            {
+              "name": "void* std::__2::__thread_proxy[abi:ne200100]<std::__2::tuple<std::__2::unique_ptr<std::__2::__thread_struct, std::__2::default_delete<std::__2::__thread_struct>>, GAGCore::ThreadSupport::launch(std::__2::function<void ()>)::'lambda'()>>(void*)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 3.274,
+              "percent": 0.031989585113450174
+            },
+            {
+              "name": "get buffer",
+              "url": "",
+              "ms": 2.363,
+              "percent": 0.023088390233073536
+            },
+            {
+              "name": "wasm-to-js",
+              "url": "",
+              "ms": 2.236,
+              "percent": 0.02184749917949743
+            },
+            {
+              "name": "_clock_time_get",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 2.215,
+              "percent": 0.02164231246985099
+            },
+            {
+              "name": "__pthread_mutex_timedlock",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.088,
+              "percent": 0.010630625718825226
+            },
+            {
+              "name": "__timedwait_cp",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.074,
+              "percent": 0.010493834579060932
+            },
+            {
+              "name": "wasm-to-js",
+              "url": "",
+              "ms": 1.058,
+              "percent": 0.010337501847901736
+            },
+            {
+              "name": "wasm-to-js",
+              "url": "",
+              "ms": 1.058,
+              "percent": 0.010337501847901736
+            },
+            {
+              "name": "growMemViews",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 1.046,
+              "percent": 0.01022025229953234
+            },
+            {
+              "name": "_clock_time_get",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 1.032,
+              "percent": 0.010083461159768044
+            },
+            {
+              "name": "get buffer",
+              "url": "",
+              "ms": 1.028,
+              "percent": 0.010044377976978247
+            },
+            {
+              "name": "GAGCore::AssetLoader::Impl::take(bool)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.025,
+              "percent": 0.010015065589885897
+            },
+            {
+              "name": "bigintToI53Checked",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 1.01,
+              "percent": 0.009868503654424153
+            },
+            {
+              "name": "_emscripten_date_now",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 0.998,
+              "percent": 0.009751254106054756
+            }
+          ]
+        },
+        {
+          "id": "314B4C0AFD8E350309773ED49D80C31A",
+          "hot": [
+            {
+              "name": "__pthread_cond_timedwait",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 10192.261,
+              "percent": 99.54356848499292
+            },
+            {
+              "name": "_emscripten_get_now",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 10.491,
+              "percent": 0.102461227884182
+            },
+            {
+              "name": "_emscripten_get_now",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 6.262,
+              "percent": 0.061158346107210715
+            },
+            {
+              "name": "wasm-to-js",
+              "url": "",
+              "ms": 4.663,
+              "percent": 0.045541579031926474
+            },
+            {
+              "name": "wasm-to-js",
+              "url": "",
+              "ms": 3.379,
+              "percent": 0.033001285770722616
+            },
+            {
+              "name": "bigintToI53Checked",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 3.21,
+              "percent": 0.031350733153009645
+            },
+            {
+              "name": "growMemViews",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 3.128,
+              "percent": 0.030549873302995068
+            },
+            {
+              "name": "__timedwait_cp",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 2.23,
+              "percent": 0.02177948128698178
+            },
+            {
+              "name": "void* std::__2::__thread_proxy[abi:ne200100]<std::__2::tuple<std::__2::unique_ptr<std::__2::__thread_struct, std::__2::default_delete<std::__2::__thread_struct>>, GAGCore::ThreadSupport::launch(std::__2::function<void ()>)::'lambda'()>>(void*)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 2.078,
+              "percent": 0.020294960589393785
+            },
+            {
+              "name": "wasm-to-js",
+              "url": "",
+              "ms": 2.051,
+              "percent": 0.02003126283390118
+            },
+            {
+              "name": "now",
+              "url": "",
+              "ms": 1.173,
+              "percent": 0.011456202488623151
+            },
+            {
+              "name": "emscripten_futex_wait",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.126,
+              "percent": 0.010997173062395284
+            },
+            {
+              "name": "_clock_time_get",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 1.119,
+              "percent": 0.010928806977637942
+            },
+            {
+              "name": "auto std::__2::chrono::operator<=>[abi:ne200100]<long long, std::__2::ratio<1ll, 1000000000ll>, long long, std::__2::ratio<1ll, 1000000000ll>>(std::__2::chrono::duration<T, std::__2::ratio<1ll, 1000000000ll>> const&, std::__2::chrono::duration<T1, std::__2::ratio<1ll, 1000000000ll>> const&)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.052,
+              "percent": 0.010274445880674813
+            },
+            {
+              "name": "now",
+              "url": "",
+              "ms": 1.044,
+              "percent": 0.010196313212380707
+            },
+            {
+              "name": "std::__2::chrono::system_clock::now()",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.031,
+              "percent": 0.010069347626402787
+            },
+            {
+              "name": "std::__2::chrono::steady_clock::now()",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.021,
+              "percent": 0.009971681791035155
+            }
+          ]
+        },
+        {
+          "id": "AD4429C4B11FCED682550CD947DB5047",
+          "hot": [
+            {
+              "name": "__pthread_cond_timedwait",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 10198.124,
+              "percent": 99.58692144124878
+            },
+            {
+              "name": "_emscripten_get_now",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 15.71,
+              "percent": 0.1534116015692708
+            },
+            {
+              "name": "_emscripten_get_now",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 5.576,
+              "percent": 0.05445086507640064
+            },
+            {
+              "name": "wasm-to-js",
+              "url": "",
+              "ms": 3.126,
+              "percent": 0.030526076798570372
+            },
+            {
+              "name": "wasm-to-js",
+              "url": "",
+              "ms": 2.23,
+              "percent": 0.02177643994267816
+            },
+            {
+              "name": "void* std::__2::__thread_proxy[abi:ne200100]<std::__2::tuple<std::__2::unique_ptr<std::__2::__thread_struct, std::__2::default_delete<std::__2::__thread_struct>>, GAGCore::ThreadSupport::launch(std::__2::function<void ()>)::'lambda'()>>(void*)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 2.112,
+              "percent": 0.020624144017460214
+            },
+            {
+              "name": "bigintToI53Checked",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 2.044,
+              "percent": 0.019960109077504107
+            },
+            {
+              "name": "std::__2::chrono::system_clock::now()",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.189,
+              "percent": 0.011610846229526607
+            },
+            {
+              "name": "lock",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.172,
+              "percent": 0.01144483749453758
+            },
+            {
+              "name": "_clock_time_get",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 1.066,
+              "percent": 0.010409724205782475
+            },
+            {
+              "name": "wasm-to-js",
+              "url": "",
+              "ms": 1.053,
+              "percent": 0.010282776349614395
+            },
+            {
+              "name": "_clock_time_get",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 1.052,
+              "percent": 0.010273011129909158
+            },
+            {
+              "name": "now",
+              "url": "",
+              "ms": 1.042,
+              "percent": 0.01017535893285679
+            },
+            {
+              "name": "bigintToI53Checked",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 1.036,
+              "percent": 0.01011676761462537
+            },
+            {
+              "name": "std::__2::common_type<std::__2::chrono::duration<long long, std::__2::ratio<1ll, 1000000000ll>>, std::__2::chrono::duration<long long, std::__2::ratio<1ll, 1ll>>>::type std::__2::chrono::operator-[abi:ne200100]<long long, std::__2::ratio<1ll, 1000000000ll>, long long, std::__2::ratio<1ll, 1ll>>(std::__2::chrono::duration<long long, std::__2::ratio<1ll, 1000000000ll>> const&, std::__2::chrono::duration<long long, std::__2::ratio<1ll, 1ll>> const&)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.016,
+              "percent": 0.009921463220520633
+            }
+          ]
+        },
+        {
+          "id": "4A0878D154FB4833BAED6C2321AEDBAA",
+          "hot": [
+            {
+              "name": "__pthread_cond_timedwait",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 10184.088,
+              "percent": 99.53101399276295
+            },
+            {
+              "name": "_emscripten_get_now",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 19.093,
+              "percent": 0.18659949228284586
+            },
+            {
+              "name": "now",
+              "url": "",
+              "ms": 5.221,
+              "percent": 0.05102581832130824
+            },
+            {
+              "name": "bigintToI53Checked",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 2.276,
+              "percent": 0.022243777532905105
+            },
+            {
+              "name": "growMemViews",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 2.218,
+              "percent": 0.02167693258698749
+            },
+            {
+              "name": "__timedwait_cp",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 2.156,
+              "percent": 0.021070994886179
+            },
+            {
+              "name": "_emscripten_get_now",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 2.128,
+              "percent": 0.02079734560194291
+            },
+            {
+              "name": "wasm-to-js",
+              "url": "",
+              "ms": 2.089,
+              "percent": 0.020416191241756927
+            },
+            {
+              "name": "void* std::__2::__thread_proxy[abi:ne200100]<std::__2::tuple<std::__2::unique_ptr<std::__2::__thread_struct, std::__2::default_delete<std::__2::__thread_struct>>, GAGCore::ThreadSupport::launch(std::__2::function<void ()>)::'lambda'()>>(void*)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.984,
+              "percent": 0.019390006425871586
+            },
+            {
+              "name": "now",
+              "url": "",
+              "ms": 1.188,
+              "percent": 0.011610548202588429
+            },
+            {
+              "name": "(garbage collector)",
+              "url": "",
+              "ms": 1.13,
+              "percent": 0.011043703256670812
+            },
+            {
+              "name": "_clock_time_get",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 1.094,
+              "percent": 0.01069186846265298
+            },
+            {
+              "name": "std::__2::common_type<std::__2::chrono::duration<long long, std::__2::ratio<1ll, 1000000000ll>>, std::__2::chrono::duration<long long, std::__2::ratio<1ll, 1ll>>>::type std::__2::chrono::operator-[abi:ne200100]<long long, std::__2::ratio<1ll, 1000000000ll>, long long, std::__2::ratio<1ll, 1ll>>(std::__2::chrono::duration<long long, std::__2::ratio<1ll, 1000000000ll>> const&, std::__2::chrono::duration<long long, std::__2::ratio<1ll, 1ll>> const&)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.067,
+              "percent": 0.010427992367139607
+            },
+            {
+              "name": "_clock_time_get",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 1.057,
+              "percent": 0.010330260479912432
+            },
+            {
+              "name": "_emscripten_date_now",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 1.054,
+              "percent": 0.01030094091374428
+            },
+            {
+              "name": "wasm-to-js",
+              "url": "",
+              "ms": 1.033,
+              "percent": 0.010095703950567211
+            },
+            {
+              "name": "get buffer",
+              "url": "",
+              "ms": 1.025,
+              "percent": 0.010017518440785472
+            },
+            {
+              "name": "__pthread_mutex_timedlock",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 0.987,
+              "percent": 0.009646137269322204
+            },
+            {
+              "name": "wasm-to-js",
+              "url": "",
+              "ms": 0.357,
+              "percent": 0.003489028374010159
+            }
+          ]
+        },
+        {
+          "id": "040CEC5954DBE07FC33DF206ADB57900",
+          "hot": [
+            {
+              "name": "TerrainVisual::Compositor::prepare(bool, int)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 2886.624,
+              "percent": 28.188352407136968
+            },
+            {
+              "name": "(idle)",
+              "url": "",
+              "ms": 1099.064,
+              "percent": 10.732538546758283
+            },
+            {
+              "name": "Blit_3or4_to_3or4__inversed_rgb",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 493.899,
+              "percent": 4.823003988580619
+            },
+            {
+              "name": "TerrainVisual::Compositor::prepareMaterial(unsigned int, bool, int, std::__2::vector<TerrainVisual::Compositor::Texture, std::__2::allocator<TerrainVisual::Compositor::Texture>>&)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 483.916,
+              "percent": 4.725518371444322
+            },
+            {
+              "name": "TerrainVisual::Compositor::compose(TerrainVisual::Recipe const&, SDL_Surface*, int, int, int, TerrainVisual::Compositor::CellMask const*) const",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 390.167,
+              "percent": 3.810044153182198
+            },
+            {
+              "name": "TerrainVisual::Compositor::prepare(bool, int)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 195.22,
+              "percent": 1.9063550212709652
+            },
+            {
+              "name": "(program)",
+              "url": "",
+              "ms": 192.554,
+              "percent": 1.8803210980729916
+            },
+            {
+              "name": "Blit_3or4_to_3or4__inversed_rgb",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 149.315,
+              "percent": 1.4580852371738253
+            },
+            {
+              "name": "texSubImage2D",
+              "url": "",
+              "ms": 147.696,
+              "percent": 1.4422754391027377
+            },
+            {
+              "name": "Renderer.prepare",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 98.288,
+              "percent": 0.9597982908036093
+            },
+            {
+              "name": "SDL_CreateSurface",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 89.532,
+              "percent": 0.874294528042373
+            },
+            {
+              "name": "Minimap::computeColors(int, int)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 76.874,
+              "percent": 0.7506871012456929
+            },
+            {
+              "name": "bufferSubData",
+              "url": "",
+              "ms": 66.021,
+              "percent": 0.6447057927432148
+            },
+            {
+              "name": "__pthread_cond_timedwait",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 57.68,
+              "percent": 0.5632545724152713
+            },
+            {
+              "name": "(garbage collector)",
+              "url": "",
+              "ms": 54.98,
+              "percent": 0.5368886336926425
+            },
+            {
+              "name": "__pthread_cond_timedwait",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 53.497,
+              "percent": 0.5224068977201763
+            },
+            {
+              "name": "__pthread_cond_timedwait",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 52.257,
+              "percent": 0.5102980962327468
+            },
+            {
+              "name": "SoftwareTerrainCache::prepareAtResolution(SceneMap const&, GAGCore::Sprite&, int, int, int, int, int, int, unsigned int, bool, int, int, bool, int)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 51.719,
+              "percent": 0.5050444388132007
+            },
+            {
+              "name": "TerrainVisual::Compositor::readTexture(TerrainVisual::Compositor::Texture&, GAGCore::DrawableSurface*)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 51.366,
+              "percent": 0.5015973364542793
+            },
+            {
+              "name": "flush",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 46.217,
+              "percent": 0.45131651479397705
+            },
+            {
+              "name": "Renderer.prepare",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 44.479,
+              "percent": 0.43434466238659597
+            },
+            {
+              "name": "SimulationSnapshot::capture(Game const&, std::__2::shared_ptr<std::__2::vector<SimulationSnapshot::BuildingKindView, std::__2::allocator<SimulationSnapshot::BuildingKindView>> const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 42.684,
+              "percent": 0.41681619571729267
+            },
+            {
+              "name": "bufferSubData",
+              "url": "",
+              "ms": 41.169,
+              "percent": 0.40202197454515093
+            },
+            {
+              "name": "__pthread_cond_timedwait",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 38.82,
+              "percent": 0.37908360785646383
+            },
+            {
+              "name": "Game::drawSceneMap(PresentationFrame const&, int, int, int, int, int, int, int, int, int, Game::ViewState&, unsigned int, std::__2::set<unsigned short, std::__2::less<unsigned short>, std::__2::allocator<unsigned short>>*, std::__2::unordered_map<unsigned short, BuildingGuiState, std::__2::hash<unsigned short>, std::__2::equal_to<unsigned short>, std::__2::allocator<std::__2::pair<unsigned short const, BuildingGuiState>>> const*, bool, int, bool)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 37.057,
+              "percent": 0.36186762638683617
+            },
+            {
+              "name": "Renderer.prepare",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 35.929,
+              "percent": 0.35085252309827125
+            },
+            {
+              "name": "Renderer.prepare",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 35.774,
+              "percent": 0.34933892291234253
+            },
+            {
+              "name": "bindBuffer",
+              "url": "",
+              "ms": 29.47,
+              "percent": 0.2877793385762491
+            },
+            {
+              "name": "Game::prepareSceneMapFrame(PresentationFrame const&, int, Game::ViewState&, unsigned int, bool)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 27.964,
+              "percent": 0.27307300386651606
+            },
+            {
+              "name": "SceneMap::isMapPartiallyDiscovered(int, int, int, int, unsigned int) const",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 27.934,
+              "percent": 0.27278004899182023
+            },
+            {
+              "name": "_glEnd",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 27.657,
+              "percent": 0.2700750989821283
+            },
+            {
+              "name": "prepareClientAttributes",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 26.028,
+              "percent": 0.2541676492861422
+            },
+            {
+              "name": "__pthread_cond_timedwait",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 25.85,
+              "percent": 0.2524294503629467
+            },
+            {
+              "name": "GAGCore::GraphicContext::setUITransform(float, float, float, SDL_Rect const*)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 24.366,
+              "percent": 0.23793794922799066
+            },
+            {
+              "name": "_glTexCoord2i",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 24.327,
+              "percent": 0.23755710789088602
+            },
+            {
+              "name": "__pthread_cond_timedwait",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 22.842,
+              "percent": 0.22305584159344016
+            },
+            {
+              "name": "vertexAttribPointer",
+              "url": "",
+              "ms": 22.528,
+              "percent": 0.21998958057162332
+            },
+            {
+              "name": "SceneMap::isMapDiscovered(int, int, unsigned int) const",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 22.281,
+              "percent": 0.21757758543662728
+            },
+            {
+              "name": "bufferSubData",
+              "url": "",
+              "ms": 22.268,
+              "percent": 0.21745063832425907
+            },
+            {
+              "name": "do_proxy",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 21.8,
+              "percent": 0.21288054227900338
+            }
+          ]
+        },
+        {
+          "id": "CDC7835CD77408DAFF7D3DEBBA5F2D06",
+          "hot": [
+            {
+              "name": "__pthread_cond_timedwait",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 10152.626,
+              "percent": 99.15723500417427
+            },
+            {
+              "name": "__timedwait_cp",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 26.918,
+              "percent": 0.2628989240657898
+            },
+            {
+              "name": "emscripten_futex_wake",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 10.453,
+              "percent": 0.10209088540232189
+            },
+            {
+              "name": "_emscripten_get_now",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 9.594,
+              "percent": 0.09370132541374497
+            },
+            {
+              "name": "void gradient_kernel::propagateTerrainField<gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)::$_0>(unsigned short*, int, int, field::Grid, GradientWorkspace&, gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)::$_0, bool, CellRuleTable const&, unsigned int)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 9.017,
+              "percent": 0.0880659632328266
+            },
+            {
+              "name": "emscripten_futex_wake",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 4.025,
+              "percent": 0.039310802041934906
+            },
+            {
+              "name": "ResourceGrowth::Pipeline::run(void*, unsigned long)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 3.638,
+              "percent": 0.03553110505057371
+            },
+            {
+              "name": "gradient_preparation::seed(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, gradient_preparation::CrowdingScratch&)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 3.634,
+              "percent": 0.03549203841500409
+            },
+            {
+              "name": "emscripten_builtin_free",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 2.792,
+              "percent": 0.027268511627598076
+            },
+            {
+              "name": "__timedwait_cp",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 2.23,
+              "percent": 0.0217796493300658
+            },
+            {
+              "name": "__timedwait_cp",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 2.104,
+              "percent": 0.020549050309622622
+            },
+            {
+              "name": "gradient_preparation::MaterialSeedCache::trySeed(SimulationSnapshot::Handle const&, int, int, int, unsigned short*, unsigned short const*)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 2.091,
+              "percent": 0.020422083744021338
+            },
+            {
+              "name": "(anonymous namespace)::buildScheduled(BuildingGradientPipeline<building_gradient::Job>::Job&)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.228,
+              "percent": 0.0119934571198748
+            },
+            {
+              "name": "__timedwait_cp",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.201,
+              "percent": 0.011729757329779832
+            },
+            {
+              "name": "now",
+              "url": "",
+              "ms": 1.077,
+              "percent": 0.010518691627121464
+            },
+            {
+              "name": "wasm-to-js",
+              "url": "",
+              "ms": 1.045,
+              "percent": 0.010206158542564467
+            },
+            {
+              "name": "ComputeExecutor::pick(bool, ComputeExecutor::Slot const*) const",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.005,
+              "percent": 0.009815492186868219
+            },
+            {
+              "name": "get buffer",
+              "url": "",
+              "ms": 0.659,
+              "percent": 0.006436228210095678
+            }
+          ]
+        },
+        {
+          "id": "110680356DB8F00E690BA76B43E8ED9B",
+          "hot": [
+            {
+              "name": "(idle)",
+              "url": "",
+              "ms": 10231.877,
+              "percent": 99.96336326050178
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "paused",
+      "elapsed_ms": 10010.833744999996,
+      "hostLoadBefore": [
+        22.95,
+        26.33,
+        27.73
+      ],
+      "hostLoadAfter": [
+        22.18,
+        26.06,
+        27.63
+      ],
+      "cpu_core_percent": 180.90401320514576,
+      "processCPU": [
+        {
+          "type": "browser",
+          "id": 3751322,
+          "cpuTime": 3.74,
+          "seconds": 0.08000000000000007
+        },
+        {
+          "type": "renderer",
+          "id": 3751455,
+          "cpuTime": 0.03,
+          "seconds": 0
+        },
+        {
+          "type": "renderer",
+          "id": 3751418,
+          "cpuTime": 140.98,
+          "seconds": 15.939999999999984
+        },
+        {
+          "type": "renderer",
+          "id": 3751409,
+          "cpuTime": 0.7,
+          "seconds": 0
+        },
+        {
+          "type": "GPU",
+          "id": 3751371,
+          "cpuTime": 31.34,
+          "seconds": 2.09
+        },
+        {
+          "type": "network.mojom.NetworkService",
+          "id": 3751374,
+          "cpuTime": 0.92,
+          "seconds": 0
+        },
+        {
+          "type": "storage.mojom.StorageService",
+          "id": 3751388,
+          "cpuTime": 0.02,
+          "seconds": 0
+        }
+      ],
+      "ticks_per_second": 0,
+      "host_match_frames_per_second": 21.177057316118688,
+      "rendering": [],
+      "before": {
+        "version": 1,
+        "executionMode": "threaded",
+        "threadFallback": null,
+        "workerCount": 15,
+        "renderer": "webgl2",
+        "renderContext": {
+          "width": 1200,
+          "height": 900,
+          "error": null
+        },
+        "contextLost": false,
+        "contextRestores": 0,
+        "screen": "match",
+        "screenClass": "17GameSessionScreen",
+        "roomCanStart": false,
+        "customGameReady": false,
+        "tick": 1802,
+        "frames": 2651,
+        "loop": 3262,
+        "paused": true,
+        "torus": false,
+        "torusSettled": false,
+        "width": 1200,
+        "height": 900,
+        "heapBytes": 1058144256,
+        "artworkReady": true,
+        "restore": "ready",
+        "watchReplay": "none",
+        "import": "idle",
+        "persisting": false,
+        "persistence": "persisted",
+        "audio": "inactive",
+        "assets": {
+          "core": "ready",
+          "game": "ready",
+          "skins": "idle",
+          "font-cjk": "ready",
+          "menu-music": "ready",
+          "translations": "ready",
+          "music": "ready",
+          "music-sets": "ready",
+          "hd": "ready"
+        },
+        "opened": [],
+        "controls": {}
+      },
+      "after": {
+        "version": 1,
+        "executionMode": "threaded",
+        "threadFallback": null,
+        "workerCount": 15,
+        "renderer": "webgl2",
+        "renderContext": {
+          "width": 1200,
+          "height": 900,
+          "error": null
+        },
+        "contextLost": false,
+        "contextRestores": 0,
+        "screen": "match",
+        "screenClass": "17GameSessionScreen",
+        "roomCanStart": false,
+        "customGameReady": false,
+        "tick": 1802,
+        "frames": 2863,
+        "loop": 3894,
+        "paused": true,
+        "torus": false,
+        "torusSettled": false,
+        "width": 1200,
+        "height": 900,
+        "heapBytes": 1058144256,
+        "artworkReady": true,
+        "restore": "ready",
+        "watchReplay": "none",
+        "import": "idle",
+        "persisting": false,
+        "persistence": "persisted",
+        "audio": "inactive",
+        "assets": {
+          "core": "ready",
+          "game": "ready",
+          "skins": "idle",
+          "font-cjk": "ready",
+          "menu-music": "ready",
+          "translations": "ready",
+          "music": "ready",
+          "music-sets": "ready",
+          "hd": "ready"
+        },
+        "opened": [],
+        "controls": {}
+      },
+      "hotByThread": [
+        {
+          "id": "page",
+          "hot": [
+            {
+              "name": "(idle)",
+              "url": "",
+              "ms": 9817.317,
+              "percent": 96.41852637335246
+            },
+            {
+              "name": "(program)",
+              "url": "",
+              "ms": 218.37,
+              "percent": 2.1446708509207735
+            },
+            {
+              "name": "__private_cond_signal",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 39.726,
+              "percent": 0.39015979403617096
+            },
+            {
+              "name": "__emscripten_thread_mailbox_await",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 24.086,
+              "percent": 0.23655512256847439
+            },
+            {
+              "name": "__private_cond_signal",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 13.988,
+              "percent": 0.13737993251215727
+            },
+            {
+              "name": "__emscripten_receive_on_main_thread_js",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 11.165,
+              "percent": 0.10965448573764912
+            },
+            {
+              "name": "",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 7.316,
+              "percent": 0.0718524153745312
+            },
+            {
+              "name": "2322272",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 6.654,
+              "percent": 0.06535073426765044
+            },
+            {
+              "name": "wasm-to-js",
+              "url": "",
+              "ms": 4.196,
+              "percent": 0.0412100512454255
+            },
+            {
+              "name": "checkMailbox",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 4.154,
+              "percent": 0.040797557882149074
+            },
+            {
+              "name": "__emscripten_thread_mailbox_await",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 3.233,
+              "percent": 0.03175216770173037
+            },
+            {
+              "name": "__emscripten_receive_on_main_thread_js",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 3.012,
+              "percent": 0.029581666909252048
+            },
+            {
+              "name": "call_with_ctx",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 2.427,
+              "percent": 0.02383622363504473
+            },
+            {
+              "name": "call_with_ctx",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 2.167,
+              "percent": 0.021282693290952587
+            },
+            {
+              "name": "growMemViews",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 2.163,
+              "percent": 0.021243408208735784
+            },
+            {
+              "name": "growMemViews",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 2.148,
+              "percent": 0.021096089150422777
+            },
+            {
+              "name": "em_task_queue_execute",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 2.101,
+              "percent": 0.02063448943437535
+            },
+            {
+              "name": "_emscripten_check_mailbox",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 2.097,
+              "percent": 0.020595204352158548
+            },
+            {
+              "name": "growMemViews",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 2.08,
+              "percent": 0.02042824275273714
+            },
+            {
+              "name": "2322272",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 2.08,
+              "percent": 0.02042824275273714
+            },
+            {
+              "name": "get buffer",
+              "url": "",
+              "ms": 2.068,
+              "percent": 0.02031038750608673
+            },
+            {
+              "name": "wasm-to-js",
+              "url": "",
+              "ms": 1.125,
+              "percent": 0.011048929373475616
+            },
+            {
+              "name": "js-to-wasm::",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.066,
+              "percent": 0.010469474410777784
+            },
+            {
+              "name": "2318828",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 1.066,
+              "percent": 0.010469474410777784
+            },
+            {
+              "name": "growMemViews",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 1.048,
+              "percent": 0.010292691540802174
+            },
+            {
+              "name": "js-to-wasm::i",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.043,
+              "percent": 0.010243585188031172
+            },
+            {
+              "name": "_emscripten_get_device_pixel_ratio",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 1.038,
+              "percent": 0.010194478835260168
+            },
+            {
+              "name": "2323526",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 1.031,
+              "percent": 0.010125729941380765
+            },
+            {
+              "name": "2318828",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 1.027,
+              "percent": 0.010086444859163962
+            }
+          ]
+        },
+        {
+          "id": "677025C1C28B53D2C96B0AC8B4E79B40",
+          "hot": [
+            {
+              "name": "__pthread_cond_timedwait",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 9926.035,
+              "percent": 97.49571652910973
+            },
+            {
+              "name": "__timedwait_cp",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 71.046,
+              "percent": 0.6978295640230091
+            },
+            {
+              "name": "__timedwait_cp",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 55.085,
+              "percent": 0.5410570832166126
+            },
+            {
+              "name": "_emscripten_get_now",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 32.914,
+              "percent": 0.3232886055548986
+            },
+            {
+              "name": "emscripten_futex_wake",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 24.651,
+              "percent": 0.24212758751697772
+            },
+            {
+              "name": "emscripten_futex_wake",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 15.933,
+              "percent": 0.15649745859835323
+            },
+            {
+              "name": "emscripten_futex_wake",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 14.805,
+              "percent": 0.1454179925028946
+            },
+            {
+              "name": "ComputeExecutor::pick(bool, ComputeExecutor::Slot const*) const",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 6.431,
+              "percent": 0.06316670785451639
+            },
+            {
+              "name": "growMemViews",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 5.466,
+              "percent": 0.053688263898738396
+            },
+            {
+              "name": "ComputeExecutor::executePresentation(std::__2::shared_ptr<ComputeExecutor::Presentation> const&, unsigned long)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 5.447,
+              "percent": 0.05350164168613759
+            },
+            {
+              "name": "_clock_time_get",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 4.168,
+              "percent": 0.040939020111588294
+            },
+            {
+              "name": "SceneExtractor::prepareChunk(SceneInputs const&, PresentationFrame&, unsigned long)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 3.05,
+              "percent": 0.02995777623328798
+            },
+            {
+              "name": "bigintToI53Checked",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 2.12,
+              "percent": 0.020823110037564103
+            },
+            {
+              "name": "wasm-to-js",
+              "url": "",
+              "ms": 2.063,
+              "percent": 0.020263243399761672
+            },
+            {
+              "name": "__pthread_mutex_timedlock",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 2.047,
+              "percent": 0.02010608785230836
+            },
+            {
+              "name": "get buffer",
+              "url": "",
+              "ms": 1.062,
+              "percent": 0.010431199462213717
+            },
+            {
+              "name": "__pthread_mutex_trylock_owner",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.054,
+              "percent": 0.01035262168848706
+            },
+            {
+              "name": "_emscripten_get_now",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 1.052,
+              "percent": 0.010332977245055395
+            },
+            {
+              "name": "emscripten_builtin_malloc",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.049,
+              "percent": 0.0103035105799079
+            },
+            {
+              "name": "emscripten_futex_wake",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.043,
+              "percent": 0.010244577249612906
+            },
+            {
+              "name": "emscripten_builtin_free",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.042,
+              "percent": 0.010234755027897073
+            },
+            {
+              "name": "SimulationSnapshot::Handle::~Handle()",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.029,
+              "percent": 0.010107066145591256
+            },
+            {
+              "name": "__pthread_mutex_trylock_owner",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.029,
+              "percent": 0.010107066145591256
+            },
+            {
+              "name": "now",
+              "url": "",
+              "ms": 1.024,
+              "percent": 0.010057955037012095
+            }
+          ]
+        },
+        {
+          "id": "452016A1F08E722E997B83482CA5FB49",
+          "hot": [
+            {
+              "name": "__pthread_cond_timedwait",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 10123.371,
+              "percent": 99.4133032966828
+            },
+            {
+              "name": "__timedwait_cp",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 30.8,
+              "percent": 0.30246147666995804
+            },
+            {
+              "name": "emscripten_futex_wake",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 15.721,
+              "percent": 0.15438301541326008
+            },
+            {
+              "name": "_emscripten_get_now",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 11.349,
+              "percent": 0.11144919801062837
+            },
+            {
+              "name": "__pthread_mutex_trylock_owner",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.047,
+              "percent": 0.010281726171215783
+            }
+          ]
+        },
+        {
+          "id": "C21FF35A721469ACEB6C04ED009D301B",
+          "hot": [
+            {
+              "name": "__pthread_cond_timedwait",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 10134.106,
+              "percent": 99.48341611914874
+            },
+            {
+              "name": "__timedwait_cp",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 23.035,
+              "percent": 0.22612754300227286
+            },
+            {
+              "name": "emscripten_futex_wake",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 13.957,
+              "percent": 0.1370115961659528
+            },
+            {
+              "name": "_emscripten_get_now",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 3.43,
+              "percent": 0.0336712599304448
+            },
+            {
+              "name": "__timedwait_cp",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 2.113,
+              "percent": 0.020742674120416867
+            },
+            {
+              "name": "wasm-to-js",
+              "url": "",
+              "ms": 2.058,
+              "percent": 0.02020275595826688
+            },
+            {
+              "name": "now",
+              "url": "",
+              "ms": 1.372,
+              "percent": 0.01346850397217792
+            },
+            {
+              "name": "ComputeExecutor::pick(bool, ComputeExecutor::Slot const*) const",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.042,
+              "percent": 0.010228994999277981
+            }
+          ]
+        },
+        {
+          "id": "00C4A269ACC6437A9238348C4E64F4C5",
+          "hot": [
+            {
+              "name": "__pthread_cond_timedwait",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 10140.269,
+              "percent": 99.58945483684016
+            },
+            {
+              "name": "__timedwait_cp",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 19.366,
+              "percent": 0.19019706305328257
+            },
+            {
+              "name": "_emscripten_get_now",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 9.467,
+              "percent": 0.09297715562973387
+            },
+            {
+              "name": "emscripten_futex_wake",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 8.428,
+              "percent": 0.08277294471822089
+            },
+            {
+              "name": "now",
+              "url": "",
+              "ms": 1.099,
+              "percent": 0.010793481993987275
+            },
+            {
+              "name": "wasm-to-js",
+              "url": "",
+              "ms": 1.042,
+              "percent": 0.010233674465636706
+            },
+            {
+              "name": "std::__2::__function::__func<ComputeExecutor::configure(unsigned int, std::__2::function<std::__2::thread (std::__2::function<void ()>)> const&)::'lambda'(), std::__2::allocator<ComputeExecutor::configure(unsigned int, std::__2::function<std::__2::thread (std::__2::function<void ()>)> const&)::'lambda'()>, void ()>::operator()()",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.03,
+              "percent": 0.010115820249141849
+            }
+          ]
+        },
+        {
+          "id": "C2FB65640641247463B44B6E04E65107",
+          "hot": [
+            {
+              "name": "__pthread_cond_timedwait",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 10143.771,
+              "percent": 99.59749684946094
+            },
+            {
+              "name": "__timedwait_cp",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 15.921,
+              "percent": 0.1563217217088465
+            },
+            {
+              "name": "emscripten_futex_wake",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 10.603,
+              "percent": 0.10410647668355627
+            },
+            {
+              "name": "_emscripten_get_now",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 8.397,
+              "percent": 0.08244667402733397
+            },
+            {
+              "name": "now",
+              "url": "",
+              "ms": 1.098,
+              "percent": 0.01078080839371355
+            },
+            {
+              "name": "std::__2::__function::__func<ComputeExecutor::configure(unsigned int, std::__2::function<std::__2::thread (std::__2::function<void ()>)> const&)::'lambda'(), std::__2::allocator<ComputeExecutor::configure(unsigned int, std::__2::function<std::__2::thread (std::__2::function<void ()>)> const&)::'lambda'()>, void ()>::operator()()",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.051,
+              "percent": 0.010319334810376087
+            }
+          ]
+        },
+        {
+          "id": "FFB65E7C6BCCDB987A0A4B581B52F442",
+          "hot": [
+            {
+              "name": "__pthread_cond_timedwait",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 10126.871,
+              "percent": 99.46080107281925
+            },
+            {
+              "name": "__timedwait_cp",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 18.208,
+              "percent": 0.17882940011123802
+            },
+            {
+              "name": "emscripten_futex_wake",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 17.882,
+              "percent": 0.17562759956003723
+            },
+            {
+              "name": "_emscripten_get_now",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 15.225,
+              "percent": 0.14953194292034264
+            },
+            {
+              "name": "ComputeExecutor::pick(bool, ComputeExecutor::Slot const*) const",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.078,
+              "percent": 0.0105875490619461
+            }
+          ]
+        },
+        {
+          "id": "FF68DD503EB8858ACC499CF3594D514A",
+          "hot": [
+            {
+              "name": "__pthread_cond_timedwait",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 10143.237,
+              "percent": 99.59447350483644
+            },
+            {
+              "name": "_emscripten_get_now",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 10.702,
+              "percent": 0.10508085884700906
+            },
+            {
+              "name": "wasm-to-js",
+              "url": "",
+              "ms": 5.314,
+              "percent": 0.05217713361175539
+            },
+            {
+              "name": "wasm-to-js",
+              "url": "",
+              "ms": 4.144,
+              "percent": 0.04068913091590409
+            },
+            {
+              "name": "bigintToI53Checked",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 3.381,
+              "percent": 0.03319738214929337
+            },
+            {
+              "name": "__pthread_mutex_timedlock",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 2.281,
+              "percent": 0.02239669585404856
+            },
+            {
+              "name": "now",
+              "url": "",
+              "ms": 2.168,
+              "percent": 0.02128717080735523
+            },
+            {
+              "name": "__timedwait_cp",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 2.102,
+              "percent": 0.02063912962964054
+            },
+            {
+              "name": "_emscripten_date_now",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 1.063,
+              "percent": 0.010437390483495668
+            },
+            {
+              "name": "bigintToI53Checked",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 1.053,
+              "percent": 0.010339202426266169
+            },
+            {
+              "name": "_emscripten_get_now",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 1.036,
+              "percent": 0.010172282728976023
+            },
+            {
+              "name": "std::__2::chrono::system_clock::now()",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.025,
+              "percent": 0.010064275866023575
+            },
+            {
+              "name": "emscripten_futex_wake",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.023,
+              "percent": 0.010044638254577675
+            },
+            {
+              "name": "void* std::__2::__thread_proxy[abi:ne200100]<std::__2::tuple<std::__2::unique_ptr<std::__2::__thread_struct, std::__2::default_delete<std::__2::__thread_struct>>, GAGCore::ThreadSupport::launch(std::__2::function<void ()>)::'lambda'()>>(void*)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 0.986,
+              "percent": 0.009681342442828532
+            }
+          ]
+        },
+        {
+          "id": "B9C0AFC8B6DDB98E18CC7BA037B667BD",
+          "hot": [
+            {
+              "name": "__pthread_cond_timedwait",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 10139.941,
+              "percent": 99.5934227099469
+            },
+            {
+              "name": "_emscripten_get_now",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 17.548,
+              "percent": 0.1723545907924068
+            },
+            {
+              "name": "void* std::__2::__thread_proxy[abi:ne200100]<std::__2::tuple<std::__2::unique_ptr<std::__2::__thread_struct, std::__2::default_delete<std::__2::__thread_struct>>, GAGCore::ThreadSupport::launch(std::__2::function<void ()>)::'lambda'()>>(void*)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 7.103,
+              "percent": 0.06976491100971424
+            },
+            {
+              "name": "__timedwait_cp",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 4.154,
+              "percent": 0.04080014646407898
+            },
+            {
+              "name": "std::__2::common_type<std::__2::chrono::duration<long long, std::__2::ratio<1ll, 1000000000ll>>, std::__2::chrono::duration<long long, std::__2::ratio<1ll, 1ll>>>::type std::__2::chrono::operator-[abi:ne200100]<long long, std::__2::ratio<1ll, 1000000000ll>, long long, std::__2::ratio<1ll, 1ll>>(std::__2::chrono::duration<long long, std::__2::ratio<1ll, 1000000000ll>> const&, std::__2::chrono::duration<long long, std::__2::ratio<1ll, 1ll>> const&)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 2.053,
+              "percent": 0.02016434778304144
+            },
+            {
+              "name": "emscripten_futex_wake",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.178,
+              "percent": 0.011570190788320904
+            },
+            {
+              "name": "_emscripten_get_now",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 1.115,
+              "percent": 0.010951411484701025
+            },
+            {
+              "name": "wasm-to-js",
+              "url": "",
+              "ms": 1.077,
+              "percent": 0.010578179523787447
+            },
+            {
+              "name": "wasm-to-js",
+              "url": "",
+              "ms": 1.042,
+              "percent": 0.010234413243998626
+            },
+            {
+              "name": "_emscripten_date_now",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 1.032,
+              "percent": 0.010136194306916107
+            },
+            {
+              "name": "auto std::__2::chrono::operator<=>[abi:ne200100]<long long, std::__2::ratio<1ll, 1000000000ll>, long long, std::__2::ratio<1ll, 1000000000ll>>(std::__2::chrono::duration<T, std::__2::ratio<1ll, 1000000000ll>> const&, std::__2::chrono::duration<T1, std::__2::ratio<1ll, 1000000000ll>> const&)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.029,
+              "percent": 0.01010672862579135
+            },
+            {
+              "name": "now",
+              "url": "",
+              "ms": 0.978,
+              "percent": 0.009605812046670496
+            }
+          ]
+        },
+        {
+          "id": "28F167266F5F92877DDAD0446589A250",
+          "hot": [
+            {
+              "name": "__pthread_cond_timedwait",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 10132.342,
+              "percent": 99.52177726615088
+            },
+            {
+              "name": "_emscripten_get_now",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 11.475,
+              "percent": 0.11270961778916279
+            },
+            {
+              "name": "GAGCore::AssetLoader::Impl::take(bool)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 4.117,
+              "percent": 0.040437951759301365
+            },
+            {
+              "name": "__timedwait_cp",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 3.475,
+              "percent": 0.0341321064764567
+            },
+            {
+              "name": "growMemViews",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 3.113,
+              "percent": 0.030576474089556754
+            },
+            {
+              "name": "lock",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 2.2,
+              "percent": 0.021608815610994172
+            },
+            {
+              "name": "_emscripten_date_now",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 2.112,
+              "percent": 0.020744462986554406
+            },
+            {
+              "name": "now",
+              "url": "",
+              "ms": 2.103,
+              "percent": 0.02065606328632761
+            },
+            {
+              "name": "std::__2::chrono::steady_clock::now()",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 2.094,
+              "percent": 0.020567663586100817
+            },
+            {
+              "name": "wasm-to-js",
+              "url": "",
+              "ms": 2.088,
+              "percent": 0.020508730452616288
+            },
+            {
+              "name": "std::__2::chrono::duration<long long, std::__2::ratio<1ll, 1ll>> std::__2::chrono::duration_cast[abi:ne200100]<std::__2::chrono::duration<long long, std::__2::ratio<1ll, 1ll>>, long long, std::__2::ratio<1ll, 1000000000ll>, 0>(std::__2::chrono::duration<long long, std::__2::ratio<1ll, 1000000000ll>> const&)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 2.069,
+              "percent": 0.02032210886324861
+            },
+            {
+              "name": "_emscripten_get_now",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 1.159,
+              "percent": 0.011383916951428293
+            },
+            {
+              "name": "wasm-to-js",
+              "url": "",
+              "ms": 1.091,
+              "percent": 0.010716008105270292
+            },
+            {
+              "name": "bigintToI53Checked",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 1.06,
+              "percent": 0.010411520248933557
+            },
+            {
+              "name": "get buffer",
+              "url": "",
+              "ms": 1.032,
+              "percent": 0.010136498959339085
+            },
+            {
+              "name": "_clock_time_get",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 1.032,
+              "percent": 0.010136498959339085
+            },
+            {
+              "name": "__pthread_mutex_timedlock",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.03,
+              "percent": 0.010116854581510909
+            },
+            {
+              "name": "bigintToI53Checked",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 1.027,
+              "percent": 0.010087388014768644
+            },
+            {
+              "name": "void* std::__2::__thread_proxy[abi:ne200100]<std::__2::tuple<std::__2::unique_ptr<std::__2::__thread_struct, std::__2::default_delete<std::__2::__thread_struct>>, GAGCore::ThreadSupport::launch(std::__2::function<void ()>)::'lambda'()>>(void*)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.023,
+              "percent": 0.01004809925911229
+            },
+            {
+              "name": "_clock_time_get",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 0.077,
+              "percent": 0.000756308546384796
+            }
+          ]
+        },
+        {
+          "id": "CC82E745BD08D214071631B0D5A1B261",
+          "hot": [
+            {
+              "name": "__pthread_cond_timedwait",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 10130.327,
+              "percent": 99.51853445858016
+            },
+            {
+              "name": "_emscripten_get_now",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 17.77,
+              "percent": 0.1745693260769341
+            },
+            {
+              "name": "bigintToI53Checked",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 5.555,
+              "percent": 0.054571334066255986
+            },
+            {
+              "name": "__timedwait_cp",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 3.321,
+              "percent": 0.03262491456958346
+            },
+            {
+              "name": "wasm-to-js",
+              "url": "",
+              "ms": 3.116,
+              "percent": 0.030611030954177075
+            },
+            {
+              "name": "wasm-to-js",
+              "url": "",
+              "ms": 2.093,
+              "percent": 0.020561260522173497
+            },
+            {
+              "name": "void* std::__2::__thread_proxy[abi:ne200100]<std::__2::tuple<std::__2::unique_ptr<std::__2::__thread_struct, std::__2::default_delete<std::__2::__thread_struct>>, GAGCore::ThreadSupport::launch(std::__2::function<void ()>)::'lambda'()>>(void*)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 2.032,
+              "percent": 0.01996200734880867
+            },
+            {
+              "name": "get buffer",
+              "url": "",
+              "ms": 2.029,
+              "percent": 0.019932535881266138
+            },
+            {
+              "name": "emscripten_futex_wake",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 2.001,
+              "percent": 0.019657468850869168
+            },
+            {
+              "name": "now",
+              "url": "",
+              "ms": 1.272,
+              "percent": 0.012495902238033773
+            },
+            {
+              "name": "(garbage collector)",
+              "url": "",
+              "ms": 1.056,
+              "percent": 0.010373956574971435
+            },
+            {
+              "name": "auto std::__2::chrono::operator<=>[abi:ne200100]<long long, std::__2::ratio<1ll, 1000000000ll>, long long, std::__2::ratio<1ll, 1000000000ll>>(std::__2::chrono::duration<T, std::__2::ratio<1ll, 1000000000ll>> const&, std::__2::chrono::duration<T1, std::__2::ratio<1ll, 1000000000ll>> const&)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.054,
+              "percent": 0.01035430892994308
+            },
+            {
+              "name": "std::__2::chrono::system_clock::now()",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.034,
+              "percent": 0.01015783247965953
+            },
+            {
+              "name": "_emscripten_date_now",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 1.027,
+              "percent": 0.010089065722060288
+            },
+            {
+              "name": "unlock",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.022,
+              "percent": 0.0100399466094894
+            },
+            {
+              "name": "growMemViews",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 1.021,
+              "percent": 0.010030122786975222
+            },
+            {
+              "name": "std::__2::chrono::steady_clock::now()",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 0.955,
+              "percent": 0.009381750501039508
+            }
+          ]
+        },
+        {
+          "id": "62142D93C57322928D2EE7EE8CA389A8",
+          "hot": [
+            {
+              "name": "__pthread_cond_timedwait",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 10137.92,
+              "percent": 99.61223827262486
+            },
+            {
+              "name": "_emscripten_get_now",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 14.274,
+              "percent": 0.14025215124043663
+            },
+            {
+              "name": "void* std::__2::__thread_proxy[abi:ne200100]<std::__2::tuple<std::__2::unique_ptr<std::__2::__thread_struct, std::__2::default_delete<std::__2::__thread_struct>>, GAGCore::ThreadSupport::launch(std::__2::function<void ()>)::'lambda'()>>(void*)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 5.434,
+              "percent": 0.05339289546311705
+            },
+            {
+              "name": "wasm-to-js",
+              "url": "",
+              "ms": 4.797,
+              "percent": 0.04713391967916313
+            },
+            {
+              "name": "growMemViews",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 3.096,
+              "percent": 0.030420390937396093
+            },
+            {
+              "name": "__timedwait_cp",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 2.151,
+              "percent": 0.02113509719196996
+            },
+            {
+              "name": "__pthread_mutex_timedlock",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 2.123,
+              "percent": 0.020859977377290666
+            },
+            {
+              "name": "bigintToI53Checked",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 2.101,
+              "percent": 0.02064381180861408
+            },
+            {
+              "name": "_emscripten_get_now",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 2.082,
+              "percent": 0.020457123362938846
+            },
+            {
+              "name": "wasm-to-js",
+              "url": "",
+              "ms": 1.025,
+              "percent": 0.010071350358795542
+            },
+            {
+              "name": "std::__2::chrono::steady_clock::now()",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.021,
+              "percent": 0.01003204752812707
+            },
+            {
+              "name": "_emscripten_date_now",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 1.008,
+              "percent": 0.009904313328454543
+            }
+          ]
+        },
+        {
+          "id": "314B4C0AFD8E350309773ED49D80C31A",
+          "hot": [
+            {
+              "name": "__pthread_cond_timedwait",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 10139.325,
+              "percent": 99.64706473176005
+            },
+            {
+              "name": "_emscripten_get_now",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 11.422,
+              "percent": 0.11225291361763859
+            },
+            {
+              "name": "wasm-to-js",
+              "url": "",
+              "ms": 3.119,
+              "percent": 0.030652848675662297
+            },
+            {
+              "name": "std::__2::chrono::steady_clock::now()",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 2.172,
+              "percent": 0.021345940148617668
+            },
+            {
+              "name": "bigintToI53Checked",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 2.108,
+              "percent": 0.0207169621700212
+            },
+            {
+              "name": "wasm-to-js",
+              "url": "",
+              "ms": 2.105,
+              "percent": 0.02068747882727449
+            },
+            {
+              "name": "void* std::__2::__thread_proxy[abi:ne200100]<std::__2::tuple<std::__2::unique_ptr<std::__2::__thread_struct, std::__2::default_delete<std::__2::__thread_struct>>, GAGCore::ThreadSupport::launch(std::__2::function<void ()>)::'lambda'()>>(void*)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 2.066,
+              "percent": 0.020304195371567267
+            },
+            {
+              "name": "_emscripten_get_now",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 2.045,
+              "percent": 0.0200978119723403
+            },
+            {
+              "name": "std::__2::operator>[abi:ne200100](std::__2::strong_ordering, std::__2::_CmpUnspecifiedParam)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.082,
+              "percent": 0.010633658950646555
+            },
+            {
+              "name": "GAGCore::AssetLoader::Impl::take(bool)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.057,
+              "percent": 0.01038796442775731
+            },
+            {
+              "name": "__pthread_mutex_timedlock",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.048,
+              "percent": 0.01029951439951718
+            },
+            {
+              "name": "_emscripten_date_now",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 1.036,
+              "percent": 0.010181581028530343
+            },
+            {
+              "name": "__timedwait_cp",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.035,
+              "percent": 0.010171753247614773
+            },
+            {
+              "name": "_emscripten_date_now",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 1.034,
+              "percent": 0.010161925466699202
+            },
+            {
+              "name": "unlock",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.017,
+              "percent": 0.009994853191134516
+            },
+            {
+              "name": "std::__2::common_type<std::__2::chrono::duration<long long, std::__2::ratio<1ll, 1000000000ll>>, std::__2::chrono::duration<long long, std::__2::ratio<1ll, 1ll>>>::type std::__2::chrono::operator-[abi:ne200100]<long long, std::__2::ratio<1ll, 1000000000ll>, long long, std::__2::ratio<1ll, 1ll>>(std::__2::chrono::duration<long long, std::__2::ratio<1ll, 1000000000ll>> const&, std::__2::chrono::duration<long long, std::__2::ratio<1ll, 1ll>> const&)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.011,
+              "percent": 0.009935886505641096
+            },
+            {
+              "name": "growMemViews",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 0.881,
+              "percent": 0.00865827498661702
+            }
+          ]
+        },
+        {
+          "id": "AD4429C4B11FCED682550CD947DB5047",
+          "hot": [
+            {
+              "name": "__pthread_cond_timedwait",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 10131.017,
+              "percent": 99.56183432077687
+            },
+            {
+              "name": "_emscripten_get_now",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 14.485,
+              "percent": 0.14235028626804722
+            },
+            {
+              "name": "wasm-to-js",
+              "url": "",
+              "ms": 3.081,
+              "percent": 0.0302783039000244
+            },
+            {
+              "name": "bigintToI53Checked",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 2.832,
+              "percent": 0.027831274470908506
+            },
+            {
+              "name": "now",
+              "url": "",
+              "ms": 2.167,
+              "percent": 0.021296035232506613
+            },
+            {
+              "name": "void* std::__2::__thread_proxy[abi:ne200100]<std::__2::tuple<std::__2::unique_ptr<std::__2::__thread_struct, std::__2::default_delete<std::__2::__thread_struct>>, GAGCore::ThreadSupport::launch(std::__2::function<void ()>)::'lambda'()>>(void*)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 2.149,
+              "percent": 0.021119141538835585
+            },
+            {
+              "name": "get buffer",
+              "url": "",
+              "ms": 2.141,
+              "percent": 0.02104052211942624
+            },
+            {
+              "name": "_emscripten_get_now",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 2.094,
+              "percent": 0.02057863303039633
+            },
+            {
+              "name": "_emscripten_date_now",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 2.072,
+              "percent": 0.02036242962702063
+            },
+            {
+              "name": "std::__2::common_type<std::__2::chrono::duration<long long, std::__2::ratio<1ll, 1000000000ll>>, std::__2::chrono::duration<long long, std::__2::ratio<1ll, 1ll>>>::type std::__2::chrono::operator-[abi:ne200100]<long long, std::__2::ratio<1ll, 1000000000ll>, long long, std::__2::ratio<1ll, 1ll>>(std::__2::chrono::duration<long long, std::__2::ratio<1ll, 1000000000ll>> const&, std::__2::chrono::duration<long long, std::__2::ratio<1ll, 1ll>> const&)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 2.054,
+              "percent": 0.0201855359333496
+            },
+            {
+              "name": "growMemViews",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 1.049,
+              "percent": 0.010308971370050503
+            },
+            {
+              "name": "wasm-to-js",
+              "url": "",
+              "ms": 1.045,
+              "percent": 0.01026966166034583
+            },
+            {
+              "name": "wasm-to-js",
+              "url": "",
+              "ms": 1.042,
+              "percent": 0.010240179378067324
+            },
+            {
+              "name": "_clock_time_get",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 1.037,
+              "percent": 0.010191042240936483
+            },
+            {
+              "name": "growMemViews",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 1.037,
+              "percent": 0.010191042240936483
+            },
+            {
+              "name": "auto std::__2::chrono::operator<=>[abi:ne200100]<long long, std::__2::ratio<1ll, 1000000000ll>, long long, std::__2::ratio<1ll, 1000000000ll>>(std::__2::chrono::duration<T, std::__2::ratio<1ll, 1000000000ll>> const&, std::__2::chrono::duration<T1, std::__2::ratio<1ll, 1000000000ll>> const&)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.009,
+              "percent": 0.009915874273003772
+            },
+            {
+              "name": "_emscripten_get_now",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 1.007,
+              "percent": 0.009896219418151435
+            }
+          ]
+        },
+        {
+          "id": "4A0878D154FB4833BAED6C2321AEDBAA",
+          "hot": [
+            {
+              "name": "__pthread_cond_timedwait",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 10140.141,
+              "percent": 99.66927755915496
+            },
+            {
+              "name": "_emscripten_get_now",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 15.708,
+              "percent": 0.15439676942354214
+            },
+            {
+              "name": "wasm-to-js",
+              "url": "",
+              "ms": 3.38,
+              "percent": 0.033222630548228445
+            },
+            {
+              "name": "_emscripten_get_now",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 3.123,
+              "percent": 0.030696531124886815
+            },
+            {
+              "name": "now",
+              "url": "",
+              "ms": 2.015,
+              "percent": 0.019805798980674652
+            },
+            {
+              "name": "now",
+              "url": "",
+              "ms": 1.055,
+              "percent": 0.010369785570526927
+            },
+            {
+              "name": "growMemViews",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 1.046,
+              "percent": 0.010281322944806793
+            },
+            {
+              "name": "wasm-to-js",
+              "url": "",
+              "ms": 1.044,
+              "percent": 0.01026166458353565
+            },
+            {
+              "name": "_clock_time_get",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 1.03,
+              "percent": 0.010124056054637664
+            },
+            {
+              "name": "__pthread_mutex_timedlock",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.029,
+              "percent": 0.010114226874002092
+            },
+            {
+              "name": "bigintToI53Checked",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 1.026,
+              "percent": 0.010084739332095381
+            },
+            {
+              "name": "wasm-to-js",
+              "url": "",
+              "ms": 1.022,
+              "percent": 0.010045422609553099
+            },
+            {
+              "name": "__timedwait_cp",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.015,
+              "percent": 0.009976618345104105
+            }
+          ]
+        },
+        {
+          "id": "040CEC5954DBE07FC33DF206ADB57900",
+          "hot": [
+            {
+              "name": "(idle)",
+              "url": "",
+              "ms": 6660.17,
+              "percent": 65.41631708463615
+            },
+            {
+              "name": "Online::Sha256::hex(std::__2::basic_string_view<char, std::__2::char_traits<char>>)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 140.042,
+              "percent": 1.3754952016489992
+            },
+            {
+              "name": "(program)",
+              "url": "",
+              "ms": 117.378,
+              "percent": 1.1528889603058812
+            },
+            {
+              "name": "nlohmann::json_abi_v3_12_0::detail::serializer<nlohmann::json_abi_v3_12_0::basic_json<std::__2::map, std::__2::vector, std::__2::basic_string<char, std::__2::char_traits<char>, std::__2::allocator<char>>, bool, long long, unsigned long long, double, std::__2::allocator, nlohmann::json_abi_v3_12_0::adl_serializer, std::__2::vector<unsigned char, std::__2::allocator<unsigned char>>, void>>::dump_escaped(std::__2::basic_string<char, std::__2::char_traits<char>, std::__2::allocator<char>> const&, bool)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 107.369,
+              "percent": 1.0545803709305164
+            },
+            {
+              "name": "nlohmann::json_abi_v3_12_0::basic_json<std::__2::map, std::__2::vector, std::__2::basic_string<char, std::__2::char_traits<char>, std::__2::allocator<char>>, bool, long long, unsigned long long, double, std::__2::allocator, nlohmann::json_abi_v3_12_0::adl_serializer, std::__2::vector<unsigned char, std::__2::allocator<unsigned char>>, void>::json_value::destroy(nlohmann::json_abi_v3_12_0::detail::value_t)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 83.052,
+              "percent": 0.8157383319814961
+            },
+            {
+              "name": "__pthread_cond_timedwait",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 66.314,
+              "percent": 0.651337375945443
+            },
+            {
+              "name": "nlohmann::json_abi_v3_12_0::detail::serializer<nlohmann::json_abi_v3_12_0::basic_json<std::__2::map, std::__2::vector, std::__2::basic_string<char, std::__2::char_traits<char>, std::__2::allocator<char>>, bool, long long, unsigned long long, double, std::__2::allocator, nlohmann::json_abi_v3_12_0::adl_serializer, std::__2::vector<unsigned char, std::__2::allocator<unsigned char>>, void>>::dump_escaped(std::__2::basic_string<char, std::__2::char_traits<char>, std::__2::allocator<char>> const&, bool)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 57.395,
+              "percent": 0.563734787411236
+            },
+            {
+              "name": "Renderer.prepare",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 52.176,
+              "percent": 0.5124736696222432
+            },
+            {
+              "name": "__pthread_cond_timedwait",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 45.824,
+              "percent": 0.45008420416991857
+            },
+            {
+              "name": "Minimap::computeColors(int, int)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 45.275,
+              "percent": 0.44469191567285843
+            },
+            {
+              "name": "nlohmann::json_abi_v3_12_0::basic_json<std::__2::map, std::__2::vector, std::__2::basic_string<char, std::__2::char_traits<char>, std::__2::allocator<char>>, bool, long long, unsigned long long, double, std::__2::allocator, nlohmann::json_abi_v3_12_0::adl_serializer, std::__2::vector<unsigned char, std::__2::allocator<unsigned char>>, void>::operator[](std::__2::basic_string<char, std::__2::char_traits<char>, std::__2::allocator<char>>)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 38.584,
+              "percent": 0.37897278573874255
+            },
+            {
+              "name": "bufferSubData",
+              "url": "",
+              "ms": 33.611,
+              "percent": 0.3301278846533505
+            },
+            {
+              "name": "__pthread_cond_timedwait",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 33.298,
+              "percent": 0.3270535926686878
+            },
+            {
+              "name": "nlohmann::json_abi_v3_12_0::detail::serializer<nlohmann::json_abi_v3_12_0::basic_json<std::__2::map, std::__2::vector, std::__2::basic_string<char, std::__2::char_traits<char>, std::__2::allocator<char>>, bool, long long, unsigned long long, double, std::__2::allocator, nlohmann::json_abi_v3_12_0::adl_serializer, std::__2::vector<unsigned char, std::__2::allocator<unsigned char>>, void>>::dump(nlohmann::json_abi_v3_12_0::basic_json<std::__2::map, std::__2::vector, std::__2::basic_string<char, std::__2::char_traits<char>, std::__2::allocator<char>>, bool, long long, unsigned long long, double, std::__2::allocator, nlohmann::json_abi_v3_12_0::adl_serializer, std::__2::vector<unsigned char, std::__2::allocator<unsigned char>>, void> const&, bool, bool, unsigned int, unsigned int)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 32.753,
+              "percent": 0.32170059224810893
+            },
+            {
+              "name": "nlohmann::json_abi_v3_12_0::detail::serializer<nlohmann::json_abi_v3_12_0::basic_json<std::__2::map, std::__2::vector, std::__2::basic_string<char, std::__2::char_traits<char>, std::__2::allocator<char>>, bool, long long, unsigned long long, double, std::__2::allocator, nlohmann::json_abi_v3_12_0::adl_serializer, std::__2::vector<unsigned char, std::__2::allocator<unsigned char>>, void>>::dump(nlohmann::json_abi_v3_12_0::basic_json<std::__2::map, std::__2::vector, std::__2::basic_string<char, std::__2::char_traits<char>, std::__2::allocator<char>>, bool, long long, unsigned long long, double, std::__2::allocator, nlohmann::json_abi_v3_12_0::adl_serializer, std::__2::vector<unsigned char, std::__2::allocator<unsigned char>>, void> const&, bool, bool, unsigned int, unsigned int)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 32.16,
+              "percent": 0.3158761349097543
+            },
+            {
+              "name": "SceneMap::isMapPartiallyDiscovered(int, int, int, int, unsigned int) const",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 25.359,
+              "percent": 0.24907658287240234
+            },
+            {
+              "name": "(garbage collector)",
+              "url": "",
+              "ms": 25.188,
+              "percent": 0.24739701760282623
+            },
+            {
+              "name": "TerrainVisual::Compositor::prepareMaterial(unsigned int, bool, int, std::__2::vector<TerrainVisual::Compositor::Texture, std::__2::allocator<TerrainVisual::Compositor::Texture>>&)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 25.133,
+              "percent": 0.24685680655120817
+            },
+            {
+              "name": "__pthread_cond_timedwait",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 24.248,
+              "percent": 0.23816431962971774
+            },
+            {
+              "name": "__pthread_cond_timedwait",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 23.774,
+              "percent": 0.23350868256668217
+            },
+            {
+              "name": "nlohmann::json_abi_v3_12_0::basic_json<std::__2::map, std::__2::vector, std::__2::basic_string<char, std::__2::char_traits<char>, std::__2::allocator<char>>, bool, long long, unsigned long long, double, std::__2::allocator, nlohmann::json_abi_v3_12_0::adl_serializer, std::__2::vector<unsigned char, std::__2::allocator<unsigned char>>, void>::json_value::destroy(nlohmann::json_abi_v3_12_0::detail::value_t)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 23.091,
+              "percent": 0.22680024350749803
+            },
+            {
+              "name": "__pthread_cond_timedwait",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 21.561,
+              "percent": 0.21177255425339592
+            },
+            {
+              "name": "nlohmann::json_abi_v3_12_0::basic_json<std::__2::map, std::__2::vector, std::__2::basic_string<char, std::__2::char_traits<char>, std::__2::allocator<char>>, bool, long long, unsigned long long, double, std::__2::allocator, nlohmann::json_abi_v3_12_0::adl_serializer, std::__2::vector<unsigned char, std::__2::allocator<unsigned char>>, void>::basic_json(std::initializer_list<nlohmann::json_abi_v3_12_0::detail::json_ref<nlohmann::json_abi_v3_12_0::basic_json<std::__2::map, std::__2::vector, std::__2::basic_string<char, std::__2::char_traits<char>, std::__2::allocator<char>>, bool, long long, unsigned long long, double, std::__2::allocator, nlohmann::json_abi_v3_12_0::adl_serializer, std::__2::vector<unsigned char, std::__2::allocator<unsigned char>>, void>>>, bool, nlohmann::json_abi_v3_12_0::detail::value_t)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 21.548,
+              "percent": 0.21164486800483165
+            },
+            {
+              "name": "vertexAttribPointer",
+              "url": "",
+              "ms": 21.421,
+              "percent": 0.21039747157654998
+            },
+            {
+              "name": "Game::drawSceneMap(PresentationFrame const&, int, int, int, int, int, int, int, int, int, Game::ViewState&, unsigned int, std::__2::set<unsigned short, std::__2::less<unsigned short>, std::__2::allocator<unsigned short>>*, std::__2::unordered_map<unsigned short, BuildingGuiState, std::__2::hash<unsigned short>, std::__2::equal_to<unsigned short>, std::__2::allocator<std::__2::pair<unsigned short const, BuildingGuiState>>> const*, bool, int, bool)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 20.845,
+              "percent": 0.20473998856324094
+            },
+            {
+              "name": "__pthread_cond_timedwait",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 20.313,
+              "percent": 0.19951467439122633
+            },
+            {
+              "name": "emscripten_builtin_free",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 20.075,
+              "percent": 0.19717703384058824
+            },
+            {
+              "name": "flush",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 18.751,
+              "percent": 0.18417268052527372
+            },
+            {
+              "name": "emscripten_builtin_free",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 18.232,
+              "percent": 0.1790750526018234
+            },
+            {
+              "name": "SimulationSnapshot::capture(Game const&, std::__2::shared_ptr<std::__2::vector<SimulationSnapshot::BuildingKindView, std::__2::allocator<SimulationSnapshot::BuildingKindView>> const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 17.981,
+              "percent": 0.17660972580262102
+            },
+            {
+              "name": "nlohmann::json_abi_v3_12_0::basic_json<std::__2::map, std::__2::vector, std::__2::basic_string<char, std::__2::char_traits<char>, std::__2::allocator<char>>, bool, long long, unsigned long long, double, std::__2::allocator, nlohmann::json_abi_v3_12_0::adl_serializer, std::__2::vector<unsigned char, std::__2::allocator<unsigned char>>, void>::basic_json(std::initializer_list<nlohmann::json_abi_v3_12_0::detail::json_ref<nlohmann::json_abi_v3_12_0::basic_json<std::__2::map, std::__2::vector, std::__2::basic_string<char, std::__2::char_traits<char>, std::__2::allocator<char>>, bool, long long, unsigned long long, double, std::__2::allocator, nlohmann::json_abi_v3_12_0::adl_serializer, std::__2::vector<unsigned char, std::__2::allocator<unsigned char>>, void>>>, bool, nlohmann::json_abi_v3_12_0::detail::value_t)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 17.891,
+              "percent": 0.17572574408179148
+            },
+            {
+              "name": "Renderer.prepare",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 16.991,
+              "percent": 0.16688592687349613
+            },
+            {
+              "name": "GAGCore::GraphicContext::setUITransform(float, float, float, SDL_Rect const*)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 16.843,
+              "percent": 0.16543226804368755
+            },
+            {
+              "name": "__pthread_cond_timedwait",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 16.706,
+              "percent": 0.1640866514242026
+            },
+            {
+              "name": "_glBegin",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 16.241,
+              "percent": 0.15951941253325
+            },
+            {
+              "name": "bufferSubData",
+              "url": "",
+              "ms": 16.192,
+              "percent": 0.1590381335963539
+            },
+            {
+              "name": "emscripten_builtin_free",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 16.05,
+              "percent": 0.1576434068812673
+            },
+            {
+              "name": "drawElements",
+              "url": "",
+              "ms": 16.043,
+              "percent": 0.15757465274742502
+            },
+            {
+              "name": "nlohmann::json_abi_v3_12_0::basic_json<std::__2::map, std::__2::vector, std::__2::basic_string<char, std::__2::char_traits<char>, std::__2::allocator<char>>, bool, long long, unsigned long long, double, std::__2::allocator, nlohmann::json_abi_v3_12_0::adl_serializer, std::__2::vector<unsigned char, std::__2::allocator<unsigned char>>, void>& nlohmann::json_abi_v3_12_0::basic_json<std::__2::map, std::__2::vector, std::__2::basic_string<char, std::__2::char_traits<char>, std::__2::allocator<char>>, bool, long long, unsigned long long, double, std::__2::allocator, nlohmann::json_abi_v3_12_0::adl_serializer, std::__2::vector<unsigned char, std::__2::allocator<unsigned char>>, void>::operator[]<char const>(char const*)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 15.746,
+              "percent": 0.15465751306868755
+            },
+            {
+              "name": "BuildingsTypes::snapshotJson() const",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 15.626,
+              "percent": 0.15347887077424816
+            }
+          ]
+        },
+        {
+          "id": "CDC7835CD77408DAFF7D3DEBBA5F2D06",
+          "hot": [
+            {
+              "name": "__pthread_cond_timedwait",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 10127.891,
+              "percent": 99.53402870970453
+            },
+            {
+              "name": "__timedwait_cp",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 26.121,
+              "percent": 0.2567097497323176
+            },
+            {
+              "name": "emscripten_futex_wake",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 11.587,
+              "percent": 0.1138737364629365
+            },
+            {
+              "name": "_emscripten_get_now",
+              "url": "http://127.0.0.1:8775/threaded/index.js",
+              "ms": 6.851,
+              "percent": 0.06732967709567428
+            },
+            {
+              "name": "now",
+              "url": "",
+              "ms": 1.036,
+              "percent": 0.010181512986588608
+            },
+            {
+              "name": "std::__2::condition_variable::wait(std::__2::unique_lock<std::__2::mutex>&)",
+              "url": "http://127.0.0.1:8775/threaded/index.wasm",
+              "ms": 1.027,
+              "percent": 0.010093063549446429
+            }
+          ]
+        },
+        {
+          "id": "110680356DB8F00E690BA76B43E8ED9B",
+          "hot": [
+            {
+              "name": "(idle)",
+              "url": "",
+              "ms": 10174.339,
+              "percent": 99.97828340432498
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

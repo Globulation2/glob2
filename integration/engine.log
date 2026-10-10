@@ -1,0 +1,35 @@
+
+Running 24 tests using 1 worker
+
+(node:3853280) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [chromium] › tests/determinism.spec.js:10:1 › WebAssembly produces a complete per-tick simulation trace (serial/1) (6.5s)
+  ✓   2 [chromium] › tests/determinism.spec.js:10:1 › WebAssembly produces a complete per-tick simulation trace (threaded/1) (7.8s)
+  ✓   3 [chromium] › tests/determinism.spec.js:10:1 › WebAssembly produces a complete per-tick simulation trace (threaded/2) (6.8s)
+  ✓   4 [chromium] › tests/determinism.spec.js:10:1 › WebAssembly produces a complete per-tick simulation trace (threaded/4) (7.4s)
+  ✓   5 [chromium] › tests/determinism.spec.js:10:1 › WebAssembly produces a complete per-tick simulation trace (threaded/auto) (8.4s)
+  ✓   6 [chromium] › tests/determinism.spec.js:64:1 › WebAssembly verifies the committed match record (serial) (6.2s)
+  ✓   7 [chromium] › tests/determinism.spec.js:64:1 › WebAssembly verifies the committed match record (threaded) (6.0s)
+  ✓   8 [chromium] › tests/image-assets.spec.js:4:1 › WebAssembly decodes exact WebP and normalized PNG pixels (1.6s)
+(node:3855793) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   9 [firefox] › tests/determinism.spec.js:10:1 › WebAssembly produces a complete per-tick simulation trace (serial/1) (5.9s)
+  ✓  10 [firefox] › tests/determinism.spec.js:10:1 › WebAssembly produces a complete per-tick simulation trace (threaded/1) (6.0s)
+  ✓  11 [firefox] › tests/determinism.spec.js:10:1 › WebAssembly produces a complete per-tick simulation trace (threaded/2) (5.4s)
+  ✓  12 [firefox] › tests/determinism.spec.js:10:1 › WebAssembly produces a complete per-tick simulation trace (threaded/4) (5.6s)
+  ✓  13 [firefox] › tests/determinism.spec.js:10:1 › WebAssembly produces a complete per-tick simulation trace (threaded/auto) (6.1s)
+  ✓  14 [firefox] › tests/determinism.spec.js:64:1 › WebAssembly verifies the committed match record (serial) (4.2s)
+  ✓  15 [firefox] › tests/determinism.spec.js:64:1 › WebAssembly verifies the committed match record (threaded) (4.3s)
+  ✓  16 [firefox] › tests/image-assets.spec.js:4:1 › WebAssembly decodes exact WebP and normalized PNG pixels (3.2s)
+(node:3858332) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  17 [webkit] › tests/determinism.spec.js:10:1 › WebAssembly produces a complete per-tick simulation trace (serial/1) (5.5s)
+  ✓  18 [webkit] › tests/determinism.spec.js:10:1 › WebAssembly produces a complete per-tick simulation trace (threaded/1) (7.3s)
+  ✓  19 [webkit] › tests/determinism.spec.js:10:1 › WebAssembly produces a complete per-tick simulation trace (threaded/2) (6.5s)
+  ✓  20 [webkit] › tests/determinism.spec.js:10:1 › WebAssembly produces a complete per-tick simulation trace (threaded/4) (6.3s)
+  ✓  21 [webkit] › tests/determinism.spec.js:10:1 › WebAssembly produces a complete per-tick simulation trace (threaded/auto) (6.7s)
+  ✓  22 [webkit] › tests/determinism.spec.js:64:1 › WebAssembly verifies the committed match record (serial) (5.9s)
+  ✓  23 [webkit] › tests/determinism.spec.js:64:1 › WebAssembly verifies the committed match record (threaded) (6.0s)
+  ✓  24 [webkit] › tests/image-assets.spec.js:4:1 › WebAssembly decodes exact WebP and normalized PNG pixels (3.4s)
+
+  24 passed (2.4m)

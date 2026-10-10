@@ -1,0 +1,64 @@
+
+Running 6 tests using 1 worker
+
+(node:3335862) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › browser/tests/recording.spec.js:22:2 › serial recording segments full framebuffer and exports OPFS files (2.1m)
+  ✓  2 [chromium] › browser/tests/recording.spec.js:22:2 › threaded recording segments full framebuffer and exports OPFS files (1.4m)
+(node:3343493) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  3 [firefox] › browser/tests/recording.spec.js:22:2 › serial recording segments full framebuffer and exports OPFS files (2.6m)
+  ✓  4 [firefox] › browser/tests/recording.spec.js:22:2 › threaded recording segments full framebuffer and exports OPFS files (1.5m)
+(node:3356980) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  5 [webkit] › browser/tests/recording.spec.js:22:2 › serial recording segments full framebuffer and exports OPFS files (3.8m)
+(node:3377889) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  6 [webkit] › browser/tests/recording.spec.js:22:2 › threaded recording segments full framebuffer and exports OPFS files (2.0m)
+
+
+  1) [webkit] › browser/tests/recording.spec.js:22:2 › serial recording segments full framebuffer and exports OPFS files 
+
+    Error: control "audio.mute" is not available
+
+    Test timeout of 180000ms exceeded
+
+       at main-menu.js:21
+
+      19 |     found = await page.evaluate(key => glob2Diagnostics.snapshot().controls[key] || null, key);
+      20 |     return Boolean(found && (!enabled || found.enabled) && current(page, found));
+    > 21 |   }, {timeout, message: `control "${key}" is not available`}).toBe(true);
+         |                                                               ^
+      22 |   await settled(page);
+      23 |   return (await page.evaluate(key => glob2Diagnostics.snapshot().controls[key] || null, key)) || found;
+      24 | }
+        at control (/home/bradley/.codex/worktrees/a8c9/glob2/browser/tests/main-menu.js:21:63)
+        at controlOnScreen (/home/bradley/.codex/worktrees/a8c9/glob2/browser/tests/main-menu.js:73:22)
+        at clickPublishedControl (/home/bradley/.codex/worktrees/a8c9/glob2/browser/tests/main-menu.js:110:24)
+        at /home/bradley/.codex/worktrees/a8c9/glob2/browser/tests/recording.spec.js:27:9
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    build/browser-test-results/recording-serial-recording-6c834-ffer-and-exports-OPFS-files-webkit/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: screenshot (image/png) ──────────────────────────────────────────────────────────
+    build/browser-test-results/recording-serial-recording-6c834-ffer-and-exports-OPFS-files-webkit/test-failed-2.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #3: screenshot (image/png) ──────────────────────────────────────────────────────────
+    build/browser-test-results/recording-serial-recording-6c834-ffer-and-exports-OPFS-files-webkit/test-failed-3.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: build/browser-test-results/recording-serial-recording-6c834-ffer-and-exports-OPFS-files-webkit/error-context.md
+
+    attachment #5: trace (application/zip) ─────────────────────────────────────────────────────────
+    build/browser-test-results/recording-serial-recording-6c834-ffer-and-exports-OPFS-files-webkit/trace.zip
+    Usage:
+
+        npx playwright show-trace build/browser-test-results/recording-serial-recording-6c834-ffer-and-exports-OPFS-files-webkit/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [webkit] › browser/tests/recording.spec.js:22:2 › serial recording segments full framebuffer and exports OPFS files 
+  5 passed (14.9m)

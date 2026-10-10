@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="15" failures="0" errors="0" skipped="0"><testsuite name="ComputeExecutor"><testcase classname="ComputeExecutor" name="automatic sizing respects platform limits and supports unknown CPU counts" time="0" status="run" />
+    <testcase classname="ComputeExecutor" name="thread configuration accepts auto and rejects malformed or overflowing overrides" time="0.00028" status="run" />
+    <testcase classname="ComputeExecutor" name="supported platforms execute jobs concurrently on distinct threads" time="0.000592" status="run" />
+    <testcase classname="ComputeExecutor" name="exclusive slots; nested batches; reuse; errors; barriers and reconfiguration" time="0.041234" status="run" />
+    <testcase classname="ComputeExecutor" name="deferred batches complete with lanes and isolated errors" time="0.09949" status="run" />
+    <testcase classname="ComputeExecutor" name="lane groups run in index order and the horizon is bounded" time="0.002907" status="run" />
+    <testcase classname="ComputeExecutor" name="workers run deferred batches earliest due first and the owner only waits" time="0.001168" status="run" />
+    <testcase classname="ComputeExecutor" name="without workers the owner runs the jobs due no later than the join" time="0" status="run" />
+    <testcase classname="ComputeExecutor" name="a lane keeps submission order: a lane job due before a live earlier one is rejected" time="0.005511" status="run" />
+    <testcase classname="ComputeExecutor" name="the slot count covers every producer's horizon" time="0" status="run" />
+    <testcase classname="ComputeExecutor" name="presentation cannot delay simulation barriers with spare workers or run on the simulation owner" time="0.001342" status="run" />
+    <testcase classname="ComputeExecutor" name="with one worker the owner waits through its presentation chunk and never runs the join itself" time="0.02058" status="run" />
+    <testcase classname="ComputeExecutor" name="presentation progresses before a continuous simulation backlog drains" time="0.012358" status="run" />
+    <testcase classname="ComputeExecutor" name="presentation replacement, chunk pumping, cancellation and errors retain no captures" time="0.000178" status="run" />
+    <testcase classname="ComputeExecutor" name="resumable presentation yields without advancing or retaining canceled inputs" time="0" status="run" />
+  </testsuite></testsuites>

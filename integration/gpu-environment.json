@@ -1,0 +1,13 @@
+{
+  "channel": "chromium",
+  "version": "153.0.8010.12",
+  "headless": true,
+  "args": [
+    "--use-angle=vulkan",
+    "--ozone-platform=x11",
+    "--enable-gpu",
+    "--enable-features=Vulkan"
+  ],
+  "renderer": "ANGLE (NVIDIA, Vulkan 1.4.312 (NVIDIA NVIDIA GeForce RTX 2070 SUPER (0x00001E84)), NVIDIA)",
+  "vendor": "Google Inc. (NVIDIA)"
+}

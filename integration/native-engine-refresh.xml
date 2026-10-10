@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="18" failures="0" errors="0" skipped="0"><testsuite name="TeamStatsSave"><testcase classname="TeamStatsSave" name="32 sampling phases; ring wrap; repeated loads; text streams and corruption controls [save-format]" time="69.6295" status="run" />
+  <testcase classname="TeamStatsSave" name="AI telemetry continues across a save [save-format]" time="23.6291" status="run" />
+  <testcase classname="TeamStatsSave" name="Compact team histories preserve samples across two batch boundaries" time="2.95829" status="run" />
+  <testcase classname="TeamStatsSave" name="Compact telemetry retains every sample across chunk boundaries" time="7.82172" status="run" />
+  <testcase classname="TeamStatsSave" name="Delayed observation telemetry saves remain readable" time="0.559234" status="run" />
+  <testcase classname="TeamStatsSave" name="Editor building deletion clears ability lists before save and slot reuse" time="2.61252" status="run" />
+  <testcase classname="TeamStatsSave" name="Sparse variant reset accepts refreshed diagnostics and restored snapshots" time="8.04122" status="run" />
+  <testcase classname="TeamStatsSave" name="Sparse variant snapshot reset clears vanished types without clearing history" time="2.61096" status="run" />
+  <testcase classname="TeamStatsSave" name="clearing telemetry counts operations once by configured primary material" time="2.33289" status="run" />
+  <testcase classname="TeamStatsSave" name="combat deaths are attributed by place and assignment" time="0.603469" status="run" />
+  <testcase classname="TeamStatsSave" name="defence snapshot counts warriors by place and enemy warriors at home" time="0.562699" status="run" />
+  <testcase classname="TeamStatsSave" name="every live worker-tick lands in exactly one labour bucket" time="0.556291" status="run" />
+  <testcase classname="TeamStatsSave" name="labour, combat and defence measurements survive a save [save-format]" time="2.26229" status="run" />
+  <testcase classname="TeamStatsSave" name="legacy version 84 fixture replays the golden trace [save-format][golden]" time="0.664833" status="run" />
+  <testcase classname="TeamStatsSave" name="legacy version 88 fixture replays the golden trace [save-format][golden]" time="0.630219" status="run" />
+  <testcase classname="TeamStatsSave" name="older saves load with labour coverage starting at the loaded tick [save-format]" time="1.49267" status="run" />
+  <testcase classname="TeamStatsSave" name="place lookup agrees with a brute-force scan of every building tile" time="0.645951" status="run" />
+  <testcase classname="TeamStatsSave" name="places: own buildings first, then enemies; allies, flags and new buildings do not count" time="0.561319" status="run" />
+  </testsuite></testsuites>
