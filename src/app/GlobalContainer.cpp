@@ -118,8 +118,8 @@ GlobalContainer::GlobalContainer(const char *profileName, const std::string& bui
 GlobalContainer::~GlobalContainer(void)
 {
 	GAGCore::Recording::recorder().shutdown();
-	// unlink GUI style
-	if (!runNoX)
+	// Commands and interrupted loading can finish before a heap-owned style exists.
+	if (!runNoX && Style::style != &defaultStyle)
 		delete Style::style;
 	Style::style = &defaultStyle;
 
