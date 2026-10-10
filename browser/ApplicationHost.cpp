@@ -16,6 +16,19 @@
 
 namespace GAGCore::ApplicationHost
 {
+bool prepareOpenGLMipmaps(unsigned texture, const void* pixels, int width, int height)
+{
+    return EM_ASM_INT({
+        try {
+            return Module.glob2GenerateMipmaps(GLctx, GL.textures[$0],
+                HEAPU8.subarray($1, $1 + $2 * $3 * 4), $2, $3, true);
+        } catch (error) {
+            console.warn('GPU mip preparation failed; using CPU: ' + error);
+            return false;
+        }
+    }, texture, pixels, width, height);
+}
+
 void initializeOpenGLContext()
 {
     // SDL3 uses the HTML5 context API, bypassing Browser.createContext and the

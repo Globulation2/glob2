@@ -35,6 +35,10 @@ void wait(std::uint32_t milliseconds);
 // Initialize host compatibility state after a new OpenGL context is current.
 void initializeOpenGLContext();
 
+// Optional host acceleration for tightly packed BGRA pixels. Returning false
+// leaves texture preparation to the shared integer CPU implementation.
+bool prepareOpenGLMipmaps(unsigned texture, const void* pixels, int width, int height);
+
 // Consume the newest host viewport request at an application frame boundary.
 bool takeViewportSize(int &width, int &height);
 // Read current host points, safe areas, keyboard occlusion and input capabilities.

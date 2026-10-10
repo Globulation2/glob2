@@ -14,9 +14,9 @@
 #include <SurfaceRaster.h>
 #include <stdexcept>
 #include <AssetLoader.h>
+#include <ApplicationHost.h>
 #ifdef GLOB2_WEBGL2
 #include <set>
-#include <emscripten.h>
 #endif
 
 namespace GAGCore
@@ -281,15 +281,8 @@ namespace GAGCore
                         sdlsurface->w > 0 && sdlsurface->h > 0 &&
                         sdlsurface->pitch == sdlsurface->w * 4 &&
                         !(sdlsurface->w & (sdlsurface->w - 1)) && !(sdlsurface->h & (sdlsurface->h - 1))) {
-                        const bool generated = EM_ASM_INT({
-                            try {
-                                return Module.glob2GenerateMipmaps(GLctx, GL.textures[$0],
-                                    HEAPU8.subarray($1, $1 + $2 * $3 * 4), $2, $3, true);
-                            } catch (error) {
-                                console.warn('GPU mip preparation failed; using CPU: ' + error);
-                                return false;
-                            }
-                        }, texture, sdlsurface->pixels, sdlsurface->w, sdlsurface->h);
+                        const bool generated = ApplicationHost::prepareOpenGLMipmaps(
+                            texture, sdlsurface->pixels, sdlsurface->w, sdlsurface->h);
                         if (generated) {
                             glState.allocatedTextureBytes -= gpuBytes; gpuBytes = 0;
                             int w = sdlsurface->w, h = sdlsurface->h;
