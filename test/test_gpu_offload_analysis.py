@@ -29,6 +29,14 @@ class OffloadAnalysisTest(unittest.TestCase):
     def test_outlier_is_retained(self):
         self.assertGreater(paired_interval([.6] * 9 + [10])['upper_one_sided95'], .7)
 
+    def test_contamination_preserves_statistics_but_prevents_acceptance(self):
+        rows = [r for n in range(5) for r in (self.row('cpu', n), self.row('gpu', n, 60))]
+        rows[0]['resource_contaminated'] = True
+        result = summarize(rows, 'cpu', ['gpu'])['map-early']['gpu']
+        self.assertAlmostEqual(result['metrics']['cpu_per_tick']['ratio'], .6)
+        self.assertFalse(result['qualified'])
+        self.assertTrue(result['resource_contaminated'])
+
     def test_duplicate_pair_is_rejected(self):
         with self.assertRaises(ValueError): summarize([self.row('cpu', 0)] * 2, 'cpu', ['gpu'])
 

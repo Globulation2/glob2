@@ -91,7 +91,7 @@ def execute(variant, scenario, output, warmup, *, extra_args=()):
                peak_rss_bytes=usage.ru_maxrss * (1 if platform.system() == 'Darwin' else 1024),
                valid=process.returncode == 0, errors=[],
                resources_before=resources_before, resources_after=resource_snapshot())
-    row['resource_contaminated'] = any(s.get('active_compiler_detected', False) for s in
+    row['resource_contaminated'] = any(not s.get('inventory_available', False) or s.get('active_compiler_detected', False) for s in
                                         (row['resources_before'], row['resources_after']))
     if process.returncode:
         row['errors'].append('process failure'); return row
