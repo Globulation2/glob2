@@ -701,3 +701,19 @@ may reject the required transaction before cost-plane creation. Existing
 `GLOB2_OPENCL_PROBE_COLD_COSTS=1` separately reach `CostsReserve` before applying
 host/subset pressure and verify cancellation and complete lease release. Neither
 case supplies allocator-size or performance qualification by itself.
+
+
+Owned accepted captures carry an explicit readonly private-cost permission.
+`CaptureProbeReplay` sets it only after immutable original/golden/cost storage
+and CPU admission exist. It permits a proven scalar or chunked private cold cost
+plane even when the development cold/uniform flags were latched off during an
+earlier forced run. It never permits compiler/device initialization, changes
+required cache contents or exposes a pending optional plane to required work.
+Legacy optional inputs keep permission false and retain their existing gates.
+Fresh-process native activation uses
+`GLOB2_TEST_OPENCL_CAPTURE_PRIVATE_COSTS=1` with
+`GLOB2_OPENCL_PROBE_COLD_COSTS=0 GLOB2_OPENCL_UNIFORM_METADATA=0`, parity/direct/API
+CPU diagnostics disabled, and the desired epoch/check configuration. The case
+requires all six plans and exact72 completed arrays (24 scalar,48 weighted),
+unchanged originals, one private cost upload each and no initialization CPU change.
+This receipt tests ownership/exactness; it does not qualify live promotion.

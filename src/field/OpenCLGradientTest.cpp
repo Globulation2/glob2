@@ -1757,3 +1757,72 @@ TEST_CASE("isolated required host admission pressure preserves seeds and device 
     CHECK(openCLStatus().budgetDeclines>before.budgetDeclines);
     CHECK(openCLStatus().hostBytes<=OpenCLHostBudget);
 }
+
+
+TEST_CASE("owned captured private costs work with diagnostic preparation flags disabled" * doctest::test_suite("OpenCLGradient"))
+{
+    using namespace gradient_kernel;
+    const auto* enabled=std::getenv("GLOB2_TEST_OPENCL_CAPTURE_PRIVATE_COSTS");
+    if(!enabled || std::strcmp(enabled,"1"))return;
+    if constexpr(!GAGCore::ThreadSupport::available)return;
+    REQUIRE(initializeOpenCL());const auto configured=openCLStatus();
+    REQUIRE_FALSE(configured.probeColdCosts);REQUIRE_FALSE(configured.uniformMetadata);
+    REQUIRE_FALSE(configured.parityBound);REQUIRE_FALSE(configured.directSeedUpload);REQUIRE(configured.apiCpuMode==0);
+    std::thread coordinator([] {
+        struct Owner {
+            struct Lease {std::size_t bytes=0;~Lease(){releaseOpenCLProbeBytes(bytes);}} lease;
+            std::vector<std::uint16_t> seeds;
+            std::vector<EntrySteps> costs;
+            unsigned calls=0;
+            explicit Owner(std::size_t cells):seeds(cells,1),costs(cells,LAND_STEPS){}
+        };
+        const auto baseline=openCLProbeBytes(),initializationCpu=openCLStatus().initializationThreadCPUNs;
+        unsigned completed=0,scalar=0,weighted=0;
+        for(unsigned plan=1;plan<unsigned(Plan::Count);++plan) {
+            REQUIRE((readyPlans.load()&(1u<<plan))!=0);
+            unsigned shape=0;
+            for(auto dimensions:{std::pair{1,1},std::pair{1,17},std::pair{17,1},std::pair{9,7}}) {
+                const field::Grid grid(dimensions.first,dimensions.second);
+                const int cap=std::array{0,1,23,700}[shape++];
+                for(unsigned mode=0;mode<3;++mode) {
+                    const auto bytes=sizeof(Owner)+512+grid.cells()*(sizeof(std::uint16_t)+sizeof(EntrySteps));
+                    REQUIRE(reserveOpenCLProbeBytes(bytes));
+                    struct Guard {std::size_t bytes;~Guard(){if(bytes)releaseOpenCLProbeBytes(bytes);}} admission{bytes};
+                    auto owner=std::make_shared<Owner>(grid.cells());owner->lease.bytes=bytes;admission.bytes=0;
+                    for(std::size_t i=0;i<grid.cells();++i) {
+                        if(mode && i%3==0)owner->costs[i]={19,29};
+                        if(i%7==2)owner->seeds[i]=0;
+                    }
+                    owner->seeds[0]=mode==2 ? 65001 : 65535;
+                    owner->seeds.back()=65017; // Arbitrary nonmax/deferred source, including singleton.
+                    const auto original=owner->seeds,expected=oracle(original,grid,owner->costs,cap);
+                    BackendSession session;
+                    OpenCLProbeInput input{owner->seeds.data(),cap,grid,session,owner.get(),
+                        [](void* value,std::size_t cell){auto& o=*static_cast<Owner*>(value);++o.calls;return o.costs[cell];},
+                        {owner,917442,mode+1,true,bytes,mode ? 0u : LAND_STEPS.cardinal|(LAND_STEPS.diagonal<<16)}};
+                    const auto reserved=openCLProbeBytes();
+                    auto control=beginOpenCLProbe(input,Plan(plan),owner);REQUIRE(bool(control));
+                    CHECK(control->advance()==OpenCLProbeProgress::Declined);control.reset();
+                    CHECK(openCLProbeBytes()==reserved);CHECK(owner->calls==0);CHECK(owner->seeds==original);
+                    input.capturedPrivateCosts=true;
+                    auto probe=beginOpenCLProbe(input,Plan(plan),owner);REQUIRE(bool(probe));
+                    auto progress=OpenCLProbeProgress::Pending;
+                    for(unsigned attempt=0;attempt<1000000 && progress==OpenCLProbeProgress::Pending;++attempt) {
+                        progress=probe->advance(64);if(progress==OpenCLProbeProgress::Pending)std::this_thread::yield();
+                    }
+                    REQUIRE(progress==OpenCLProbeProgress::Complete);
+                    CHECK(std::vector<std::uint16_t>(probe->result().begin(),probe->result().end())==expected);
+                    CHECK(owner->seeds==original);CHECK_FALSE(session.failed.load());
+                    CHECK(probe->metrics().coldCostPlane);CHECK(probe->metrics().costUploads==1);
+                    CHECK(probe->metrics().dispatches>0);CHECK(probe->metrics().invalidCpuClocks==0);
+                    CHECK(owner->calls==(mode ? grid.cells() : 0));
+                    CHECK(probe->metrics().costCellsPrepared==(mode ? grid.cells() : 0));
+                    probe.reset();CHECK(openCLProbeBytes()==reserved);
+                    ++completed;mode ? ++weighted : ++scalar;
+                }
+            }
+        }
+        CHECK(completed==72);CHECK(scalar==24);CHECK(weighted==48);
+        CHECK(openCLProbeBytes()==baseline);CHECK(openCLStatus().initializationThreadCPUNs==initializationCpu);
+    });coordinator.join();
+}
