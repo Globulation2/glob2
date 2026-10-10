@@ -5,6 +5,7 @@
 #include "ThreadCpuClock.h"
 #include "BenchmarkDiagnostics.h"
 #include "io/BenchmarkMapImport.h"
+#include "io/BenchmarkFixtureAdmission.h"
 #include <utility>
 #include "scripting/javascript/ScriptCommand.h"
 #include "scripting/javascript/ScriptRuntime.h"
@@ -325,6 +326,14 @@ struct HeadlessRunner
 		auto mapFile=one(options,"--map-file"); auto saved=one(options,"--load-game");
         const auto largeMapEnvironment=std::getenv("GLOB2_BENCHMARK_LARGE_MAPS");
         const bool largeMapImport=!saved.empty() && largeMapEnvironment && std::string(largeMapEnvironment)=="1";
+        const auto stressMapEnvironment=std::getenv("GLOB2_BENCHMARK_2048_MAPS");
+        const bool stressMapImport=largeMapImport && stressMapEnvironment && std::string(stressMapEnvironment)=="1";
+        const int benchmarkMapMaximumExponent=stressMapImport ? ScopedBenchmarkMapImport::StressMaximumExponent
+            : ScopedBenchmarkMapImport::MaximumExponent;
+        const auto fixtureMemoryBudget=stressMapImport
+            ? benchmark_fixture::parseMemoryBudget(std::getenv("GLOB2_BENCHMARK_FIXTURE_MEMORY_MIB")) : 0;
+        if(stressMapImport && !benchmark_fixture::memoryAdmission(fixtureMemoryBudget,benchmark_fixture::availableMemoryMiB()))
+            throw std::invalid_argument("2048 benchmark import requires an explicit memory budget of at least 8192 MiB and 2048 MiB available headroom");
 		std::vector<std::string> forkSettings;
 		if(saved.empty() && options.count("--fork-rule"))
 			throw std::invalid_argument("--fork-rule requires --load-game");
@@ -339,7 +348,7 @@ struct HeadlessRunner
 			for(const auto &key : {"--player","--ai-param","--ai-script","--map-script","--alliance","--win-condition","--game-seed","--experiment","--rule","--ai-order-delay"})
 				if(options.count(key)) throw std::invalid_argument(std::string(key)+" cannot override a saved game");
 			{
-                const ScopedBenchmarkMapImport fixtureImport(largeMapImport);
+                const ScopedBenchmarkMapImport fixtureImport(largeMapImport,benchmarkMapMaximumExponent);
                 if(engine.initCustom(saved)!=Engine::EE_NO_ERROR) throw std::invalid_argument("cannot load saved game");
             }
 			if(globals.automaticEndingSteps <= int(engine.gui.game.stepCounter)) throw std::invalid_argument("tick limit must exceed the saved tick");
@@ -611,6 +620,8 @@ struct HeadlessRunner
 			<< ",\"initialChecksum\":" << initialChecksum
 			<< ",\"finalChecksum\":" << game.checkSum(nullptr, nullptr, nullptr, true)
 			<< ",\"benchmark_large_map_import_enabled\":" << largeMapImport
+            << ",\"benchmark_map_maximum_exponent\":" << (largeMapImport ? benchmarkMapMaximumExponent : 0)
+            << ",\"benchmark_fixture_memory_budget_mib\":" << fixtureMemoryBudget
             << ",\"benchmark_diagnostics_enabled\":" << benchmarkDiagnostics
             << ",\"benchmark_setup_cpu_ns\":" << setupCpu
 			<< ",\"benchmark_run_cpu_ns\":" << runCpu

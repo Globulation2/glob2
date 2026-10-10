@@ -70,7 +70,18 @@ Development fixtures can construct 1024² games through the `GpuOffloadFixture`
 engine harness. `GLOB2_BENCHMARK_LARGE_MAPS=1` enables a bounded, synchronous
 headless saved-game import scope for these fixtures. Ordinary loader, generator,
 lobby and network dimension limits remain unchanged. The scope supports at
-most exponent ten in each dimension and does not admit 2048² fixtures yet.
+most exponent ten in each dimension by default. A separate explicit
+`GLOB2_BENCHMARK_2048_MAPS=1` admits exponent eleven only for saved-game imports.
+Both 2048 imports and the separately gated
+`GLOB2_GPU_OFFLOAD_2048_FIXTURES=1` bounded Numbi/Castor writer require
+`GLOB2_BENCHMARK_FIXTURE_MEMORY_MIB` of at least 8192 and a supported Linux
+available-memory reading with 2048 MiB additional headroom before construction.
+This is a conservative development preflight, not a hard allocation bound or
+memory reservation; the evidence owner must also serialize heavy work and check
+any container limits. `GLOB2_GPU_OFFLOAD_POPULATION_STRESS=1` adds a separately
+named 1024 fixture with 1024 initial units while retaining existing files.
+Fixtures use existing bounded orders; their coverage does not repair the original
+mixed-AI 1024 continuation's unsupported wide-brush orders.
 
 Automatic selection requires valid, monotonic preparation and coordinator thread CPU clocks.
 Unavailable or reversed measurements contribute zero learning credits and demote

@@ -6,6 +6,7 @@
 #include "StreamBackend.h"
 #include "BuildingType.h"
 #include "io/BenchmarkMapImport.h"
+#include "io/BenchmarkFixtureAdmission.h"
 #include <cstdlib>
 #include <filesystem>
 #include <string>
@@ -13,23 +14,17 @@
 #include <thread>
 #include <vector>
 
-TEST_SUITE("GpuOffloadFixture")
-{
-TEST_CASE("write 1024 real-game stress fixtures [benchmark][artifacts]")
-{
-    if (!std::getenv("GLOB2_GPU_OFFLOAD_FIXTURES")) return;
+namespace {
+struct Controllers {std::string suffix;unsigned seed;AI::ImplementationID even,odd;int units=64;};
+void writeFixtures(int exponent,const std::vector<Controllers>& controllers) {
+    REQUIRE(exponent==10 || exponent==11);
+    const int dimension=1<<exponent;
+    REQUIRE(std::uint64_t(dimension)*dimension<=std::uint64_t(2048)*2048);
     glob2test::HeadlessGlobals globals;
-    struct Controllers {std::string suffix;unsigned seed;AI::ImplementationID even,odd;};
-    std::vector<Controllers> controllers{{"",91003,AI::MAXIMA,AI::NICOWAR}};
-    // Retain the mixed-AI fixtures and their known wide-brush failure. These
-    // separately named stress games use controllers which do not generate
-    // full-map area brushes; they do not extend the production order codec.
-    if(const auto* bounded=std::getenv("GLOB2_GPU_OFFLOAD_BOUNDED_AI_FIXTURES");bounded && std::string(bounded)=="1")
-        for(unsigned seed:{91003u,91004u})
-            controllers.push_back({"-bounded-ai-seed"+std::to_string(seed),seed,AI::NUMBI,AI::CASTOR});
     for(const auto& controller:controllers)
     for (const std::string layout : {"open", "corridors"}) {
-        glob2test::HeadlessGame world({.wDec=10,.hDec=10,.teams=4,.discovered=true,
+        REQUIRE(controller.units==64 || controller.units==256);
+        glob2test::HeadlessGame world({.wDec=exponent,.hDec=exponent,.teams=4,.discovered=true,
             .clearImmobile=true,.loadDefaultRace=true,.header=true,.seed=controller.seed});
         auto& map=world.game.map;
         if (layout=="corridors") {
@@ -54,8 +49,8 @@ TEST_CASE("write 1024 real-game stress fixtures [benchmark][artifacts]")
                 for(int material=0;material<MaterialCount;++material)
                     building->materials[material]=building->type->maxMaterial[material];
             }
-            for(int unit=0;unit<64;++unit)
-                world.addUnit(unit<48 ? WORKER : unit<60 ? WARRIOR : EXPLORER,
+            for(int unit=0;unit<controller.units;++unit)
+                world.addUnit(unit<controller.units*3/4 ? WORKER : unit<controller.units*15/16 ? WARRIOR : EXPLORER,
                     x+unit%16,y+24+unit/16,team);
             for(int material=0;material<MaterialCount;++material)
                 for(int dy=0;dy<6;++dy) for(int dx=0;dx<6;++dx) {
@@ -74,7 +69,7 @@ TEST_CASE("write 1024 real-game stress fixtures [benchmark][artifacts]")
                 BasePlayer::playerTypeFromImplementationID(player%2 ? controller.odd : controller.even));
         world.game.setGameHeader(header,true);
         world.game.setWaitingOnMask(0);
-        const auto path=glob2test::artifactDir()/("gpu-1024-"+layout+controller.suffix+".game");
+        const auto path=glob2test::artifactDir()/("gpu-"+std::to_string(dimension)+"-"+layout+controller.suffix+".game");
         REQUIRE(globalContainer->fileManager->writeAtomically(path.string(),
             [&](GAGCore::OutputStream& output){world.gui.save(&output,"gpu-offload-stress");}));
         GameGUI restored;
@@ -82,17 +77,49 @@ TEST_CASE("write 1024 real-game stress fixtures [benchmark][artifacts]")
         CHECK_FALSE(restored.game.load(&input));
         GAGCore::BinaryInputStream allowedInput(glob2OpenMapOrSaveInputStreamBackend(*globalContainer->fileManager,path.string()));
         {
-            const ScopedBenchmarkMapImport fixtureImport(true);
+            const ScopedBenchmarkMapImport fixtureImport(true,exponent);
             REQUIRE(restored.game.load(&allowedInput));
         }
-        CHECK_FALSE(ScopedBenchmarkMapImport::allows(10,10,Map::MIN_SUPPORTED_SIZE_EXPONENT));
-        CHECK_FALSE(Map::supportedDimensions(10,10));
-        CHECK(restored.game.map.getW()==1024);
-        CHECK(restored.game.map.getH()==1024);
+        CHECK_FALSE(ScopedBenchmarkMapImport::allows(exponent,exponent,Map::MIN_SUPPORTED_SIZE_EXPONENT));
+        CHECK_FALSE(Map::supportedDimensions(exponent,exponent));
+        CHECK(restored.game.map.getW()==dimension);
+        CHECK(restored.game.map.getH()==dimension);
         CHECK(restored.game.teamsCount()==4);
         CHECK(restored.game.checkSum(nullptr,nullptr,nullptr,true)==world.game.checkSum(nullptr,nullptr,nullptr,true));
-        MESSAGE("Constructed 1024 stress fixture: " << path);
+        MESSAGE("Constructed stress fixture " << dimension << " population " << controller.units*4 << ": " << path);
     }
+}
+}
+
+TEST_SUITE("GpuOffloadFixture") {
+TEST_CASE("write 1024 real-game stress fixtures [benchmark][artifacts]") {
+    if(!std::getenv("GLOB2_GPU_OFFLOAD_FIXTURES")) return;
+    std::vector<Controllers> controllers{{"",91003,AI::MAXIMA,AI::NICOWAR}};
+    // Preserve mixed-AI fixtures and their known wide-brush failure separately.
+    if(const auto* bounded=std::getenv("GLOB2_GPU_OFFLOAD_BOUNDED_AI_FIXTURES");bounded && std::string(bounded)=="1")
+        for(unsigned seed:{91003u,91004u})
+            controllers.push_back({"-bounded-ai-seed"+std::to_string(seed),seed,AI::NUMBI,AI::CASTOR});
+    if(const auto* stress=std::getenv("GLOB2_GPU_OFFLOAD_POPULATION_STRESS");stress && std::string(stress)=="1")
+        controllers.push_back({"-bounded-ai-seed91005-population1024",91005,AI::NUMBI,AI::CASTOR,256});
+    writeFixtures(10,controllers);
+}
+TEST_CASE("write 2048 bounded-AI stress fixtures after explicit memory admission [benchmark][artifacts]") {
+    const auto* enabled=std::getenv("GLOB2_GPU_OFFLOAD_2048_FIXTURES");
+    if(!enabled || std::string(enabled)!="1") return;
+    const auto budget=benchmark_fixture::parseMemoryBudget(std::getenv("GLOB2_BENCHMARK_FIXTURE_MEMORY_MIB"));
+    const auto available=benchmark_fixture::availableMemoryMiB();
+    MESSAGE("2048 fixture preflight memory budget MiB " << budget << ", available MiB " << available);
+    REQUIRE(benchmark_fixture::memoryAdmission(budget,available));
+    writeFixtures(11,{{"-bounded-ai-seed92003-population1024",92003,AI::NUMBI,AI::CASTOR,256}});
+}
+TEST_CASE("2048 fixture memory admission rejects missing malformed and insufficient budgets") {
+    using namespace benchmark_fixture;
+    CHECK(parseMemoryBudget(nullptr)==0);CHECK(parseMemoryBudget("")==0);
+    for(const char* invalid:{"-1","+8192","8192x","18446744073709551616"}) CHECK(parseMemoryBudget(invalid)==0);
+    CHECK(parseMemoryBudget("8192")==8192);
+    CHECK_FALSE(memoryAdmission(0,65536));CHECK_FALSE(memoryAdmission(8191,65536));
+    CHECK_FALSE(memoryAdmission(8192,0));CHECK_FALSE(memoryAdmission(8192,10239));
+    CHECK(memoryAdmission(8192,10240));CHECK_FALSE(memoryAdmission(UINT64_MAX,UINT64_MAX));
 }
 }
 
@@ -130,5 +157,33 @@ TEST_CASE("scoped fixture import rejects malformed dimensions before sizing stor
         const ScopedBenchmarkMapImport scope(true);
         CHECK_FALSE(loaded.load(&input,header));
         CHECK(loaded.getW()==0); CHECK(loaded.getH()==0);
+    }
+}
+
+TEST_CASE("2048 benchmark scope is explicit bounded nested and confined to its thread" * doctest::test_suite("GpuOffloadFixture")) {
+    CHECK_FALSE(Map::supportedDimensions(11,11));
+    {const ScopedBenchmarkMapImport ordinary(true);
+     CHECK_FALSE(ScopedBenchmarkMapImport::allows(11,11,Map::MIN_SUPPORTED_SIZE_EXPONENT));
+     {const ScopedBenchmarkMapImport stress(true,11);
+      CHECK(ScopedBenchmarkMapImport::allows(11,11,Map::MIN_SUPPORTED_SIZE_EXPONENT));
+      CHECK_FALSE(ScopedBenchmarkMapImport::allows(12,11,Map::MIN_SUPPORTED_SIZE_EXPONENT));
+      CHECK_FALSE(ScopedBenchmarkMapImport::allows(11,12,Map::MIN_SUPPORTED_SIZE_EXPONENT));
+      CHECK_FALSE(ScopedBenchmarkMapImport::allows(3,11,Map::MIN_SUPPORTED_SIZE_EXPONENT));
+      if constexpr(GAGCore::ThreadSupport::available) {
+          bool inherited=true;auto worker=GAGCore::ThreadSupport::launch([&]{inherited=ScopedBenchmarkMapImport::allows(11,11,Map::MIN_SUPPORTED_SIZE_EXPONENT);});
+          worker.join();CHECK_FALSE(inherited);
+      }
+      {const ScopedBenchmarkMapImport invalid(true,12);
+       CHECK_FALSE(ScopedBenchmarkMapImport::allows(10,10,Map::MIN_SUPPORTED_SIZE_EXPONENT));}
+      CHECK(ScopedBenchmarkMapImport::allows(11,11,Map::MIN_SUPPORTED_SIZE_EXPONENT));}
+     CHECK_FALSE(ScopedBenchmarkMapImport::allows(11,11,Map::MIN_SUPPORTED_SIZE_EXPONENT));}
+    CHECK_FALSE(ScopedBenchmarkMapImport::allows(11,11,Map::MIN_SUPPORTED_SIZE_EXPONENT));
+    for(const auto [width,height]:std::vector<std::pair<int,int>>{{12,11},{11,12},{3,11},{11,3}}) {
+        auto* backend=new GAGCore::MemoryStreamBackend;GAGCore::BinaryOutputStream output(backend);
+        output.writeEnterSection("Map");output.write("MapB",4,"signatureStart");
+        output.writeSint32(width,"wDec");output.writeSint32(height,"hDec");output.writeLeaveSection();output.flush();
+        GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(backend->getBuffer(),backend->getPosition()));
+        MapHeader header;Map loaded;const ScopedBenchmarkMapImport stress(true,11);
+        CHECK_FALSE(loaded.load(&input,header));CHECK(loaded.getW()==0);CHECK(loaded.getH()==0);
     }
 }
