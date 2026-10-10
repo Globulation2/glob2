@@ -340,6 +340,7 @@ unwinding works. Failed drain checks those same sentinels, requires exit code 86
 exact fatal receipt/stderr markers, and absence of the destructor marker. The
 shared lock precedes compilation, source/binary hashes and all subprocess
 outputs/return codes are retained, and a completion receipt requires both cases.
+
 ### Optional CPU reference clock guard
 
 The optional resumable production CPU reference requires nonzero, nondecreasing
@@ -351,4 +352,6 @@ the full reserved optional CPU credit. Setup callers can request a declined
 metrics receipt. A failed or unmeasured setup also requires conservative charge
 from the surrounding capture reservation. Recovery never reruns required CPU
 work and never mutates captured original seeds.
+Create and advance the reference on the same background producer: native thread
+CPU clock values cannot be compared across different workers.
 

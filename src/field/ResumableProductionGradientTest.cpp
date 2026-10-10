@@ -142,7 +142,7 @@ struct ScriptedProductionClock {
     Production::Clock hook(){return {this,read};}
 };
 }
-TEST_CASE("production probe setup clock failures decline without optional allocation or seed mutation" * doctest::test_suite("GradientProbe"))
+TEST_CASE("production probe setup clock failures release leases without seed mutation" * doctest::test_suite("GradientProbe"))
 {
     const auto before=openCLProbeBytes();
     Production::Input input;input.grid={17,5};

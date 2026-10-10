@@ -38,6 +38,8 @@ public:
     };
     // Deterministic correctness/chunk tests may inject a clock. The production
     // broker must use the default native clock for all accounting/qualification.
+    // Creation and advances must stay on one actual producer: absolute native
+    // thread CPU clocks from different worker threads are incomparable.
     struct Clock {void* context=nullptr;std::uint64_t (*read)(void*)=nullptr;};
     struct Metrics {
         // This is paid optional work, including cold copy, allocation, clocks
