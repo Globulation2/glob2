@@ -2,6 +2,44 @@
 
 Measure individual field kernels and integrated game behavior separately; kernel speed alone does not establish an engine improvement.
 
+## Whole-process GPU offload qualification
+
+Use release binaries and retained identical saves/orders to measure CPU consumed
+per fixed simulation tick. Include every process thread: worker elapsed time
+includes device waits and is not a substitute for process CPU. Separate startup,
+fresh-storage dispatch and warmed gameplay. Run builds and timed experiments
+under one exclusive resource lock, selecting one GPU explicitly.
+
+`test/benchmark_gpu_offload.py` consumes a frozen JSON manifest with binary hashes,
+source revisions, build flags, environment overrides and hashed loaded-game
+fixtures. It retains every sample and failure, rotates paired execution order,
+and uses five screening rounds or ten confirmation rounds:
+
+```sh
+python3 test/benchmark_gpu_offload.py artifacts/offload/config.json \
+  --output artifacts/offload/screen --lock artifacts/offload/resources.lock
+python3 test/benchmark_gpu_offload.py artifacts/offload/confirmation.json \
+  --stage confirm --output artifacts/offload/confirmation \
+  --lock artifacts/offload/resources.lock
+```
+
+Freeze the confirmation manifest before measurement. Use independent games and
+sealed kernel holdouts for final acceptance; do not tune against their results.
+The runner's per-scenario intervals are screening evidence. Final acceptance also
+requires an aggregate analysis that weights workload strata equally and clusters
+phase windows by game, normal rendering/frame tails, per-tick checksums,
+save/replay continuation, failure injection and removal ablations. A kernel win or
+a headless-only pass does not establish an integrated benefit.
+
+The selectors remain `GLOB2_GRADIENT_BACKEND=cpu|opencl|automatic`. Forced OpenCL
+experiments can select `GLOB2_GRADIENT_PLAN=cpu|jacobi4|colored2|colored4|colored8|frozen8|frozen16`
+(default `frozen8`), `GLOB2_OPENCL_DEVICE=N` (zero-based GPU ordinal), and
+`GLOB2_OPENCL_CHECK_INTERVAL=1..32` (default 8). Retain these overrides with each
+sample; a requested backend does not prove that a field actually executed there.
+Check execution counters over the measured warm window and distinguish fallback
+from completed accelerator work. Tracked accelerator host/device payload limits
+are 64/128 MiB; driver memory must be measured separately through RSS/device tools.
+
 ## Terrain gradient benchmarks
 
 `TerrainHazardBenchmark` provides opt-in CPU and wall-time measurements for idle
