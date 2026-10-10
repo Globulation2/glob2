@@ -5,7 +5,9 @@
 #include "GradientSeedShape.h"
 #include "OpenCLGradient.h"
 #include "GradientCpuCapture.h"
+#include "GradientCpuCaptureGroup.h"
 #include "CaptureProbeReplay.h"
+#include "CaptureBatchProbeReplay.h"
 #include <condition_variable>
 #include <deque>
 #include <functional>
@@ -80,6 +82,18 @@ private:
 class GradientDeviceService : public std::enable_shared_from_this<GradientDeviceService>
 {
 public:
+    class GroupCapture {
+        friend class GradientDeviceService;
+        std::unique_ptr<GradientCpuCaptureGroup::Member> member;
+        std::shared_ptr<GradientCpuCaptureGroup::Record> record;
+        std::weak_ptr<GradientDeviceState> registration;
+        GradientCpuCapture::Receipt retired;
+    public:
+        ~GroupCapture();
+        bool complete(std::span<const std::uint16_t>,const GradientCpuCapture::RequiredReceipt&) noexcept;
+        GradientCpuCapture::Receipt callingReceipt() const noexcept;
+        GradientCpuCapture::Receipt retire() noexcept;
+    };
     struct Hooks {
         // Test adapters must own captured state: cancellation can return before
         // an initializer exits. Each registration copies these callbacks.
@@ -88,6 +102,7 @@ public:
         std::function<OpenCLStatus()> status; // Owned fake configuration, tests only.
         std::function<std::uint64_t()> cpuClock; // Empty native default; owned test clock.
         CaptureProbeReplay::Hooks probe; // Empty production default; fully owned test backend.
+        CaptureBatchProbeReplay::Hooks batchProbe; // Same owned, diagnostic-only test contract.
     };
     struct Metrics {
         std::uint64_t submitted=0, completed=0, executed=0, trivial=0, fallbacks=0, declined=0;
@@ -154,6 +169,8 @@ public:
     std::unique_ptr<GradientCpuCapture> beginCapture(std::shared_ptr<BackendSession>,
         GradientCpuCapture::Input,GradientCpuCapture::Receipt&) noexcept;
     bool submitCapture(std::shared_ptr<GradientCpuCapture::Record>,std::shared_ptr<BackendSession>) noexcept;
+    std::unique_ptr<GroupCapture> beginGroupCapture(std::shared_ptr<BackendSession>,
+        GradientCpuCaptureGroup::Input,GradientCpuCapture::Receipt&) noexcept;
     bool learningActive() const noexcept;
     GradientBatchChoice acceptedBatchChoice(const std::shared_ptr<BackendSession>&,
         const WorkloadKey&) const noexcept;

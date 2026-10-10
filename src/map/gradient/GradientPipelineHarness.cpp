@@ -1810,3 +1810,116 @@ TEST_CASE("gradient reconfiguration preserves credit ticks and relative saved de
     for(unsigned i=0;i<2;++i){pipeline.advance();CHECK(slot[0]==41);}
     pipeline.advance();CHECK(slot[0]==68);
 }
+
+TEST_CASE("worker group capture replays already ready fields and canceled members never hold required tickets" * doctest::test_suite("GradientPipeline"))
+{
+    using namespace gradient_kernel;
+    if constexpr(!GAGCore::ThreadSupport::available)return;if(!glob2::threadCpuNs())return;
+    PipelineEnvironment tuning("GLOB2_GRADIENT_TUNING","1"),envelope("GLOB2_GRADIENT_CPU_ENVELOPE","1"),
+        crossDue("GLOB2_GRADIENT_CROSS_DUE","0"),batch("GLOB2_GRADIENT_BATCH","2");
+    struct Gate {
+        std::promise<void> entered,release;std::shared_future<void> released=release.get_future().share();
+        std::atomic<bool> opened{false};void open(){if(!opened.exchange(true))release.set_value();}
+    };
+    struct Driver {
+        std::atomic<unsigned> begins{0},fields{0};
+        struct Work final : CaptureBatchProbeReplay::Probe {
+            std::shared_ptr<const void> owner;
+            std::array<std::vector<std::uint16_t>,8> output;
+            OpenCLProbeProgress advance() noexcept override{return OpenCLProbeProgress::Complete;}
+            void cancel() noexcept override{}
+            bool waitingForEvent() const noexcept override{return false;}
+            std::span<const std::uint16_t> result(unsigned field) const noexcept override{return output[field];}
+        };
+        static bool ready(const void*)noexcept{return true;}
+        static bool reap(const void*)noexcept{return true;}
+        static std::unique_ptr<CaptureBatchProbeReplay::Probe> begin(std::span<const OpenCLProbeInput> requests,
+            Plan,std::shared_ptr<const void> owner,const void* value) {
+            auto& driver=*const_cast<Driver*>(static_cast<const Driver*>(value));
+            ++driver.begins;driver.fields=unsigned(requests.size());
+            auto work=std::make_unique<Work>();work->owner=std::move(owner);
+            GradientWorkspace scratch;
+            for(unsigned i=0;i<requests.size();++i) {
+                const auto& request=requests[i];work->output[i].assign(request.gradient,request.gradient+request.grid.cells());
+                propagateFieldCPU(work->output[i].data(),0,request.limit,request.grid,scratch,[](std::size_t){return false;});
+            }
+            return work;
+        }
+    };
+    for(unsigned scenario=0;scenario<2;++scenario) {
+        const auto baseline=openCLProbeBytes();const unsigned slots=scenario?3:2;
+        auto driver=std::make_shared<Driver>();GradientDeviceService::Hooks hooks;hooks.initialize=[]{return true;};
+        hooks.batchProbe={driver,sizeof(Driver)+sizeof(Driver::Work)+4096,&Driver::ready,&Driver::begin,&Driver::reap};
+        auto service=std::make_shared<GradientDeviceService>(std::move(hooks));service->configure(slots,Backend::Automatic);
+        auto until=std::chrono::steady_clock::now()+std::chrono::seconds(5);
+        while(!service->metrics().ready && std::chrono::steady_clock::now()<until)std::this_thread::yield();REQUIRE(service->metrics().ready);
+        for(unsigned i=1;i<=17;++i)service->recordCadence({i,monotonicNs(),1000000000});
+        while(!service->metrics().cadenceFloorNs && std::chrono::steady_clock::now()<until)std::this_thread::yield();REQUIRE(service->metrics().cadenceFloorNs>0);
+        auto session=std::make_shared<BackendSession>();session->configureLearning(true);auto policy=session->learningPolicy();
+        WorkloadKey key{9,1,BUCKETS,slots,1,Family::Clear,255,255};key.limit=COST_LIMIT;
+        REQUIRE(policy->qualify(key,Plan::Frozen8,true));auto pair=key;pair.batch=2;REQUIRE(policy->qualify(pair,Plan::Frozen8,true));
+        // Synthetic funding tests service ownership only; it cannot authorize
+        // native coverage, performance inference, or a production GPU choice.
+        policy->observeAccepted(key,Plan::CPU,1000000000000ull,1);
+        auto gate=std::make_shared<Gate>();auto entered=gate->entered.get_future();
+        auto blocker=std::make_shared<GradientDeviceService>(GradientDeviceService::Hooks{[]{return true;},
+            [gate](std::span<const BackendRequest> requests,Plan){gate->entered.set_value();gate->released.wait();
+                for(const auto& request:requests)if(request.executedOnDevice)*request.executedOnDevice=true;return true;}});
+        blocker->configure(2,Backend::OpenCL);
+        while(!blocker->metrics().ready && std::chrono::steady_clock::now()<until)std::this_thread::yield();REQUIRE(blocker->metrics().ready);
+        ComputeExecutor executor;executor.configure(slots);auto held=std::make_shared<OwnedGradientField>();
+        held->session=std::make_shared<BackendSession>();held->decision={Plan::Frozen8,0,held->session->currentGeneration()};held->due=100;
+        held->data=std::make_unique<std::uint16_t[]>(1);held->data[0]=77;held->costAt=[](const auto&,std::size_t){return LAND_STEPS;};
+        struct Block {ComputeExecutor* executor;std::shared_ptr<GradientDeviceService> service;std::shared_ptr<OwnedGradientField> field;} block{&executor,blocker,held};
+        const ComputeExecutor::Group heldGroup{1,{[](void* value,std::size_t){auto& c=*static_cast<Block*>(value);
+            c.field->completion=c.executor->defer();if(!c.service->submit(c.field))c.service->recoverOnWorker(c.field);},&block},ComputeExecutor::NoLane};
+        auto heldTicket=executor.submit(std::span(&heldGroup,1));
+        struct Work {
+            std::shared_ptr<GradientDeviceService> service;std::shared_ptr<BackendSession> session;
+            WorkloadKey key;std::shared_ptr<int> source=std::make_shared<int>(7);
+            std::array<std::array<std::uint16_t,9>,2> output{};
+            std::atomic<unsigned> required{0};std::atomic<bool> captured{false},release{false};bool pending=false;
+        } work{service,session,key};work.pending=scenario!=0;
+        const ComputeExecutor::Group captureGroup{scenario?1u:2u,{[](void* value,std::size_t index){auto& work=*static_cast<Work*>(value);
+            auto& seeds=work.output[index];seeds.fill(GRADIENT_UNREACHABLE);seeds[0]=GRADIENT_AT_GOAL-unsigned(index);
+            GradientCpuCaptureGroup::Input input;input.original=seeds;input.key=work.key;input.sourceIdentity=work.source;
+            input.weakSourceBytes=sizeof(int)+256;input.revision=21;input.variant=0;input.tick=1;input.due=100;
+            input.requiredGeneration=work.session->currentGeneration();input.scalarClassic=true;
+            GradientCpuCapture::Receipt receipt;std::unique_ptr<GradientDeviceService::GroupCapture> capture;
+            for(unsigned i=0;i<CpuSavingPolicy::ProbePeriod && !capture;++i)capture=work.service->beginGroupCapture(work.session,input,receipt);
+            REQUIRE(bool(capture));work.captured=true;
+            while(work.pending && !work.release.load())std::this_thread::sleep_for(std::chrono::microseconds(100));
+            GradientWorkspace scratch;const auto start=glob2::threadCpuNs();
+            propagateFieldCPU(seeds.data(),0,COST_LIMIT,field::Grid(9,1),scratch,[](std::size_t){return false;});
+            const auto end=glob2::threadCpuNs();++work.required;
+            capture->complete(seeds,{input.requiredGeneration,end-start,true,start && end>start});capture->retire();
+        },&work},ComputeExecutor::NoLane};
+        ComputeExecutor::Batch captureTicket;
+        struct Drain {ComputeExecutor& executor;ComputeExecutor::Batch& held;ComputeExecutor::Batch& captured;
+            std::shared_ptr<Gate> gate;Work& work;~Drain(){work.release=true;gate->open();try{executor.join(captured);executor.join(held);}catch(...){}}
+        } drain{executor,heldTicket,captureTicket,gate,work}; // Before borrowed worker contexts unwind.
+        REQUIRE(entered.wait_for(std::chrono::seconds(5))==std::future_status::ready);
+        captureTicket=executor.submit(std::span(&captureGroup,1));
+        if(scenario) {
+            until=std::chrono::steady_clock::now()+std::chrono::seconds(5);
+            while(!work.captured && std::chrono::steady_clock::now()<until)std::this_thread::yield();REQUIRE(work.captured);
+            std::atomic<unsigned> other{0};const ComputeExecutor::Group unrelated{1,{[](void* p,std::size_t){++*static_cast<std::atomic<unsigned>*>(p);},&other},ComputeExecutor::NoLane};
+            auto ticket=executor.submit(std::span(&unrelated,1));executor.join(ticket);CHECK(other==1);
+            auto stopped=std::async(std::launch::async,[service]{service->stop();});
+            const auto result=stopped.wait_for(std::chrono::milliseconds(100));
+            if(result!=std::future_status::ready){work.release=true;gate->open();}CHECK(result==std::future_status::ready);stopped.get();
+            CHECK(policy->metrics().canceled==0);CHECK(policy->metrics().admitted==1);work.release=true;
+        }
+        executor.join(captureTicket);CHECK(work.required==(scenario?1u:2u));CHECK(driver->begins==0);
+        // Required CPU results are complete before the optional broker can run.
+        CHECK(work.output[0][0]==GRADIENT_AT_GOAL);gate->open();executor.join(heldTicket);
+        until=std::chrono::steady_clock::now()+std::chrono::seconds(5);
+        while(!service->metrics().probeRetired && !service->metrics().probesCanceled && std::chrono::steady_clock::now()<until)
+            std::this_thread::sleep_for(std::chrono::milliseconds(1));
+        if(!scenario){CHECK(driver->begins==1);CHECK(driver->fields==2);CHECK(service->metrics().probesExact==1);}
+        else CHECK(driver->begins==0);
+        CHECK(policy->metrics().promoted==0);service->stop();blocker->stop();
+        while(openCLProbeBytes()!=baseline && std::chrono::steady_clock::now()<until)std::this_thread::sleep_for(std::chrono::milliseconds(1));
+        CHECK(openCLProbeBytes()==baseline);
+    }
+}

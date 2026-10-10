@@ -214,13 +214,19 @@ public:
             return !record->canceled && !record->closed;
         }
     public:
-        ~Member() {
+        ~Member() {retire();}
+        // Explicit worker-only retirement exposes its disjoint paid receipt to
+        // the caller before the wrapper is freed. Destruction is idempotent.
+        void retire() noexcept {
             if(!record)return;
             std::uint64_t start=0,end=0;now(start);
             auto& slot=record->slots[index];
             if(slot.status.load()!=Record::Status::Complete)slot.status=Record::Status::Canceled;
             now(end);record->account(start,end);
+            if(start && end>=start && end-start<=UINT64_MAX-paidCallingCpu)paidCallingCpu+=end-start;
+            else callingClockValid=false;
             record->workers.fetch_sub(1,std::memory_order_release);
+            record.reset();
         }
         Member(const Member&)=delete;
         // Same worker only. Other members can update the aggregate concurrently;
@@ -250,7 +256,7 @@ public:
         constexpr auto fixed=sizeof(Record)+sizeof(Settlement)+sizeof(CpuSavingPolicy)+1024;
         const auto base=fixed+PrechargedProbeStorage::metadataBytes();
         if(weakBytes>OpenCLProbeBudget-base || clockBytes>OpenCLProbeBudget-base-weakBytes || capacity>8 || !capacity)return 0;
-        const auto overhead=base+weakBytes+clockBytes+capacity*(sizeof(Member)+128);
+        const auto overhead=base+weakBytes+clockBytes+capacity*(sizeof(Member)+256);
         if(overhead>OpenCLProbeBudget || cells>(OpenCLProbeBudget-overhead)/(capacity*4))return 0;
         return overhead+cells*capacity*4;
     }

@@ -236,6 +236,7 @@ private:
                 cpuReasons[unsigned(reason)].fetch_add(1,std::memory_order_relaxed);
                 gradient_kernel::GradientCpuCapture::Receipt captureReceipt;
                 std::unique_ptr<gradient_kernel::GradientCpuCapture> capture;
+                std::unique_ptr<gradient_kernel::GradientDeviceService::GroupCapture> groupCapture;
                 if(learningEnabled && deviceService && executor->slot() && job.snapshotLease &&
                    job.snapshotLease->terrain && job.snapshotLease->terrain->rules) {
                     gradient_kernel::GradientCpuCapture::Input input;
@@ -248,22 +249,36 @@ private:
                         const auto& terrain=*static_cast<Job*>(value)->snapshotLease->terrain;
                         return terrain.rules->swimming(terrain.cellRules[cell]);
                     };
-                    capture=deviceService->beginCapture(backendSession,input,captureReceipt);
+                    const bool scalarGroup=!input.modifiedCosts && !gradient_kernel::weightedClass(job.swim) &&
+                        (key.family==gradient_kernel::Family::Clear || key.family==gradient_kernel::Family::Guard);
+                    if(scalarGroup) {
+                        gradient_kernel::GradientCpuCaptureGroup::Input group;
+                        group.original=input.original;group.key=key;group.sourceIdentity=job.snapshotLease->terrain;
+                        group.weakSourceBytes=sizeof(SimulationSnapshot::Terrain)+256;
+                        group.revision=job.snapshotLease->terrain->revision;group.variant=std::uint64_t(job.swim);
+                        group.tick=input.tick;group.due=input.due;group.optionalExpiry=input.due;
+                        group.requiredGeneration=input.requiredGeneration;group.commonPreparationCpuNs=input.commonPreparationCpuNs;
+                        group.scalarClassic=true;
+                        groupCapture=deviceService->beginGroupCapture(backendSession,group,captureReceipt);
+                    }else capture=deviceService->beginCapture(backendSession,input,captureReceipt);
                 }
                 // If required propagation throws, pay capture disposal on this
                 // worker without including required execution in the bracket.
                 struct CaptureCleanup {
                     std::unique_ptr<gradient_kernel::GradientCpuCapture>& capture;
+                    std::unique_ptr<gradient_kernel::GradientDeviceService::GroupCapture>& group;
                     gradient_kernel::BackendSession& session;
                     std::uint64_t tick;
                     ~CaptureCleanup() {
-                        if(!capture)return;
+                        if(!capture && !group)return;
+                        const auto before=group?group->callingReceipt():gradient_kernel::GradientCpuCapture::Receipt{};
                         const auto started=glob2::threadCpuNs();capture.reset();
+                        const auto paid=group?group->retire():gradient_kernel::GradientCpuCapture::Receipt{};group.reset();
                         const auto policy=session.learningPolicy();const auto ended=glob2::threadCpuNs();
-                        if(policy)policy->recordTuningOverhead(tick,glob2::threadCpuDeltaNs(started,ended),
-                            started && ended && ended>=started);
+                        const auto charge=gradient_kernel::GradientCpuCapture::unrecordedCallingCpu(started,ended,before.optionalCpuNs,paid);
+                        if(policy)policy->recordTuningOverhead(tick,charge.ns,charge.clockValid);
                     }
-                } captureCleanup{capture,*backendSession,job.due-delay};
+                } captureCleanup{capture,groupCapture,*backendSession,job.due-delay};
                 const auto cpuStart=cpuNow();
                 if(diagnostics)handoffCpu.fetch_add(glob2::threadCpuDeltaNs(handoffStart,cpuStart),std::memory_order_relaxed);
                 work(job,scratch.propagation);
@@ -284,6 +299,16 @@ private:
                     const auto charge=gradient_kernel::GradientCpuCapture::unrecordedCallingCpu(
                         optionalStarted,glob2::threadCpuNs(),recordedBefore,captureReceipt);
                     if(policy)policy->recordTuningOverhead(captureCleanup.tick,charge.ns,charge.clockValid);
+                }
+                if(groupCapture) {
+                    const auto before=groupCapture->callingReceipt();
+                    const auto optionalStarted=glob2::threadCpuNs();
+                    groupCapture->complete(std::span(job.data.get(),cells),
+                        {backendSession->currentGeneration(),consumed,true,measured});
+                    const auto paid=groupCapture->retire();groupCapture.reset();
+                    const auto charge=gradient_kernel::GradientCpuCapture::unrecordedCallingCpu(
+                        optionalStarted,glob2::threadCpuNs(),before.optionalCpuNs,paid);
+                    if(auto policy=backendSession->learningPolicy())policy->recordTuningOverhead(captureCleanup.tick,charge.ns,charge.clockValid);
                 }
                 if(learningEnabled && deviceService && executor->slot()) deviceService->recordAccepted(backendSession,key,
                     gradient_kernel::Plan::CPU,measured ? glob2::threadCpuDeltaNs(preparationCpu,preparedCpu)+consumed : 0,

@@ -999,3 +999,31 @@ reference sums, indexed exact comparison, cleanup and full debt. Device setup
 belongs to the background coordinator. Synthetic funding and packing clocks
 keep this API/storage test ineligible for inference; it is separate from real
 production Auto learning and mode-wide performance qualification.
+
+### Production ready-only group attachment
+
+With automatic tuning enabled, classic scalar Clear/Guard CPU jobs can enroll
+owned original seeds in a process-wide optional group before required propagation.
+The worker chooses a declared capacity of eight, four, two or one only when both
+the complete storage promise and predictable CPU reserve fit; it then performs
+one sampled admission. Compatible membership uses the same weak terrain control
+identity, revision and movement semantics, preserving each original required due.
+No terrain graph is retained through a borrowed snapshot. Other field classes
+continue through the existing singleton capture or exact CPU path.
+
+A collecting group sleeps until a worker completes or cancels a member. At its
+next broker turn it freezes the largest declared already-ready subset; it never
+waits to fill. The actual selected required CPU receipts are summed as the paired
+reference. Unused and late members, all clones, replay and cleanup remain paid
+optional expense, and their aliases retain the global admission until settlement.
+Required jobs publish through their original executor tickets independently of
+optional replay, cancellation and the fixed accounting tails.
+
+Native replay uses the pre-admitted future ledger and exact indexed output
+comparison. Without a qualified required-only allowance, an authenticated native
+receipt can use only complete probe debt as its candidate CPU cost. Fake backend
+hooks cannot authorize inference. Terminal rows include the frozen batch key and
+actual native batch/retired field counts. The hardware-free attachment case proves
+ready membership, independent CPU progress and nonjoining cancellation; native
+compilation, real automatic promotion and required GPU activation remain separate
+evidence gates.
