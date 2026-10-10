@@ -126,6 +126,9 @@ constexpr const char *source = R"CL(
 #define SIDE_X (CORE_X+2*HALO)
 #define SIDE_Y (CORE_Y+2*HALO)
 #define PATCH (SIDE_X*SIDE_Y)
+// Storage padding only: logical geometry and lane assignment are unchanged.
+#define LOCAL_X (FROZEN_HALO?(CORE_X+8):SIDE_X)
+#define LOCAL_PATCH (LOCAL_X*SIDE_Y)
 inline int wrap(int x,uint size){if((size&(size-1))==0)return x&(size-1);x%=(int)size;return x<0?x+size:x;}
 __kernel void propagate(__global const ushort *a,__global ushort *b,
  __global const uint *c0,__global const uint *c1,__global const uint *c2,__global const uint *c3,
@@ -150,17 +153,18 @@ __kernel void propagate(__global const ushort *a,__global ushort *b,
   for(uint o=lid;o<CORE_X*CORE_Y;o+=WG){uint x=gx*CORE_X+o%CORE_X,y=gy*CORE_Y+o/CORE_X;
   if(x<w&&y<h){uint i=base+y*w+x;b[i]=a[i];}}return;
  }
- __local uint c[PATCH],flags[WG];
+ __local uint c[LOCAL_PATCH],flags[WG];
 #if COLOR_RELAXATION
- __local ushort v[PATCH];
+ __local ushort v[LOCAL_PATCH];
  __local uint firstSweepChanged;
 #else
- __local ushort storage[2][PATCH];
+ __local ushort storage[2][LOCAL_PATCH];
  __local ushort *v=storage[0],*next=storage[1];
 #endif
  for(uint j=lid;j<PATCH;j+=WG){
   int sx=wrap(gx*CORE_X+(int)(j%SIDE_X)-HALO,w),sy=wrap(gy*CORE_Y+(int)(j/SIDE_X)-HALO,h);
-  v[j]=a[base+sy*w+sx];if(!uniform)c[j]=costs[sy*w+sx];
+  uint localIndex=(j/SIDE_X)*LOCAL_X+j%SIDE_X;
+  v[localIndex]=a[base+sy*w+sx];if(!uniform)c[localIndex]=costs[sy*w+sx];
  }
  barrier(CLK_LOCAL_MEM_FENCE);
 #if COLOR_RELAXATION
@@ -171,10 +175,10 @@ __kernel void propagate(__global const ushort *a,__global ushort *b,
  for(uint round=0;round<STEPS;round++){
  uint localChanged=0;
  for(uint color=0;color<4;color++){
-  for(uint q=lid;q<UPDATE_X*UPDATE_Y/4;q+=WG){int sx=FIRST_CELL+(q%(UPDATE_X/2))*2+(color&1),sy=FIRST_CELL+(q/(UPDATE_X/2))*2+(color>>1);uint j=sy*SIDE_X+sx;uint val=v[j];
+  for(uint q=lid;q<UPDATE_X*UPDATE_Y/4;q+=WG){int sx=FIRST_CELL+(q%(UPDATE_X/2))*2+(color&1),sy=FIRST_CELL+(q/(UPDATE_X/2))*2+(color>>1);uint j=sy*LOCAL_X+sx;uint val=v[j];
    int best=0; if(val)for(int dy=-1;dy<=1;dy++)for(int dx=-1;dx<=1;dx++){
     if((dx||dy)&&(FROZEN_HALO||(sx+dx>=0&&sx+dx<SIDE_X&&sy+dy>=0&&sy+dy<SIDE_Y))){
-     uint k=j+dy*SIDE_X+dx,src=v[k],step=(dx&&dy)?(uniform?diagonal:c[k]>>16):(uniform?cardinal:c[k]&65535);
+     uint k=j+dy*LOCAL_X+dx,src=v[k],step=(dx&&dy)?(uniform?diagonal:c[k]>>16):(uniform?cardinal:c[k]&65535);
      best=max(best,(int)src-(int)step);
     }
    }
@@ -208,7 +212,7 @@ __kernel void propagate(__global const ushort *a,__global ushort *b,
    uint val=v[j];
    int best=0; if(val)for(int dy=-1;dy<=1;dy++)for(int dx=-1;dx<=1;dx++){
     if((dx||dy)&&(FROZEN_HALO||(sx+dx>=0&&sx+dx<SIDE_X&&sy+dy>=0&&sy+dy<SIDE_Y))){
-     uint k=j+dy*SIDE_X+dx,src=v[k],step=(dx&&dy)?(uniform?diagonal:c[k]>>16):(uniform?cardinal:c[k]&65535);
+     uint k=j+dy*LOCAL_X+dx,src=v[k],step=(dx&&dy)?(uniform?diagonal:c[k]>>16):(uniform?cardinal:c[k]&65535);
      best=max(best,(int)src-(int)step);
     }
    }
@@ -221,7 +225,7 @@ __kernel void propagate(__global const ushort *a,__global ushort *b,
 #endif
  flags[lid]=0;
  for(uint o=lid;o<CORE_X*CORE_Y;o+=WG){uint x=gx*CORE_X+o%CORE_X,y=gy*CORE_Y+o/CORE_X;
- uint j=(o/CORE_X+HALO)*SIDE_X+o%CORE_X+HALO;
+ uint j=(o/CORE_X+HALO)*LOCAL_X+o%CORE_X+HALO;
  if(x<w&&y<h){uint i=base+y*w+x;b[i]=v[j];flags[lid]|=(a[i]!=v[j]);}}
  barrier(CLK_LOCAL_MEM_FENCE);
  if(lid<8){uint v=flags[lid];for(uint z=8;z<WG;z+=8)v|=flags[lid+z];flags[lid]=v;}barrier(CLK_LOCAL_MEM_FENCE);
