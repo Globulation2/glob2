@@ -11,6 +11,7 @@ import subprocess
 import sys
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scons'))
 from build_layout import build_identity, default_directory, BuildLock, PACKAGE_VERSION
+from dev_build import dependency_identity
 import official_instance
 from mobile_toolchain import ROOT, LOCK, discover
 from mobile_artifacts import verify_android_shared_library, verify_android_symbols, verify_android_archive_symbols
@@ -135,7 +136,9 @@ def main():
     outputs={abi:ROOT/default_directory(build_identity(dict(base_options,arch=abi,
              amazon=int(args.amazon_apk)))) for abi in arches}
     dependency_outputs={abi:ROOT/default_directory(build_identity(dict(base_options,arch=abi))) for abi in arches}
-    prefixes={abi:dependency_prefix(ROOT, build_identity(dict(base_options,arch=abi)), discover(build_identity(dict(base_options,arch=abi)), {'android_sdk':str(sdk)})['fingerprint']) for abi in arches}
+    dependency_identities={abi:dependency_identity(build_identity(dict(base_options,arch=abi))) for abi in arches}
+    dependency_toolchains={abi:discover(dependency_identities[abi], {'android_sdk':str(sdk)})['fingerprint'] for abi in arches}
+    prefixes={abi:dependency_prefix(ROOT, dependency_identities[abi], dependency_toolchains[abi]) for abi in arches}
     for abi in arches:
         subprocess.run(['scons','target=android','arch='+abi,'release='+str(int(args.release)),
             'china='+str(int(args.china)),'amazon='+str(int(args.amazon_apk)),
@@ -183,7 +186,7 @@ def main():
             raise ValueError('Amazon APK needs matching native libraries in both ARM ABIs')
         java=prefixes[args.arch]/'share/glob2/sdl-java'
         from dependencies import validate_bundle
-        validate_bundle(prefixes[args.arch], build_identity(dict(base_options,arch=args.arch)), discover(build_identity(dict(base_options,arch=args.arch)), {'android_sdk':str(sdk)})['fingerprint'])
+        validate_bundle(prefixes[args.arch], dependency_identities[args.arch], dependency_toolchains[args.arch])
         if not java.is_dir(): raise ValueError('Dependency bundle lacks pinned SDL Java sources; rebuild dependencies')
         shutil.copytree(java,generated/'java')
         sys.path.insert(0, str(ROOT))
