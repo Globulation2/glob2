@@ -79,6 +79,7 @@ struct GradientDeviceState
     CaptureProbeReplay::Receipt probeResult;
     std::uint64_t probeGeneration=0,probeDue=0,probeSlack=0,probeAdmissionNs=0,probeReservedCpuNs=0;
     WorkloadKey probeKey;
+    Plan probePlan=Plan::CPU;
     std::uint64_t pendingProbeSchedulerCpuNs=0;
     std::uint64_t optionalReadyNs=0;
     std::size_t observationRead=0,observationWritten=0;
@@ -340,6 +341,7 @@ class DeviceBroker
             state->probeGeneration=capture.record->requiredGeneration();
             state->probeDue=capture.record->due();state->probeSession=capture.session;
             state->probeKey=capture.record->key();state->probeReservedCpuNs=capture.record->reservedCpuNs();
+            state->probePlan=Plan::CPU;
             state->probeAdmissionNs=monotonicNs();
             CaptureProbeAccounting::Receipt attempted;
             // This protocol is experimental while tuning is opt-in. The
@@ -375,6 +377,7 @@ class DeviceBroker
             if(!accounting.failed())state->probe=CaptureProbeReplay::begin(std::move(state->activeCapture->record),admission,attempted,
                 CaptureProbeReplay::Clock{},state->hooks.probe);
             state->probeResult=attempted;
+            if(state->probe)if(auto authorization=state->probe->authorization())state->probePlan=authorization->plan;
             if(!state->probe) {
                 if(auto token=GradientCpuCapture::takeSettlement(state->activeCapture->record))state->settlement.emplace(std::move(*token));
                 // A failed adapter may have consumed its record and performed
@@ -434,7 +437,15 @@ class DeviceBroker
             auto policy=state->probePolicy.lock();
             if(state->totals.diagnostics) {
                 const auto& r=result.receipt;
-                std::fprintf(stderr,"gradient_probe ticket=%llu policy_gen=%llu required_gen=%llu admission=%llu device_terminal=%llu cleanup=%llu tail1=%llu tail2=%llu process_begin=%llu process_end=%llu process_cpu=%llu known_inner=%llu unknown_upper=%llu capture_cpu=%llu calling_cpu=%llu closing_cpu=%llu alternative_cpu=%llu comparison_cpu=%llu elapsed=%llu slack=%llu reserve_cpu=%llu charge_cpu=%llu retired_allowance=%llu exact=%u inference=%u omitted=%zu churn=%u invalid=%llu overshoots=%llu\n",
+                const auto& replay=state->probeResult;const auto& native=replay.nativeMetrics;const auto& key=state->probeKey;
+                const char* reason=!replay.clockValid || r.invalidClocks ? "clock" : replay.overshoots || r.overshoots ? "overshoot" :
+                    replay.executionFailed ? "driver" : replay.budgetCanceled ? "budget" : replay.requiredCanceled ? "required" :
+                    replay.explicitCanceled ? "explicit" : replay.firstMismatch!=SIZE_MAX ? "mismatch" :
+                    replay.setupDeclined ? "setup" : !r.inferenceEligible ? "accounting" : "complete";
+                std::fprintf(stderr,"gradient_probe ticket=%llu policy_gen=%llu required_gen=%llu admission=%llu device_terminal=%llu cleanup=%llu tail1=%llu tail2=%llu process_begin=%llu process_end=%llu process_cpu=%llu known_inner=%llu unknown_upper=%llu capture_cpu=%llu calling_cpu=%llu closing_cpu=%llu alternative_cpu=%llu comparison_cpu=%llu elapsed=%llu slack=%llu reserve_cpu=%llu charge_cpu=%llu retired_allowance=%llu exact=%u inference=%u omitted=%zu churn=%u invalid=%llu overshoots=%llu"
+                    " width=%u height=%u family=%u swim=%llu limit=%u cpu_buckets=%u threads=%u batch=%u plan=%u seed_density=%u blocker_density=%u movement_modifiers=%u due_tick=%llu"
+                    " accepted_reference_cpu=%llu common_preparation_cpu=%llu authorization_reserve_cpu=%llu reason=%s budget_canceled=%u required_canceled=%u explicit_canceled=%u setup_declined=%u execution_failed=%u"
+                    " native_metrics=%u native_stage=%u native_dispatches=%llu native_checks=%llu native_copied_cells=%llu native_cost_cells=%llu native_cost_bytes=%llu native_cost_uploads=%llu native_setup_cpu=%llu native_cpu=%llu\n",
                     (unsigned long long)r.ticketId,(unsigned long long)r.policyGeneration,(unsigned long long)r.requiredGeneration,
                     (unsigned long long)state->probeAdmissionNs,(unsigned long long)r.deviceTerminalNs,(unsigned long long)r.cleanupNs,
                     (unsigned long long)r.firstTailNs,(unsigned long long)r.secondTailNs,
@@ -445,7 +456,16 @@ class DeviceBroker
                     (unsigned long long)state->probeResult.elapsedNs,(unsigned long long)state->probeSlack,
                     (unsigned long long)state->probeReservedCpuNs,(unsigned long long)result.outcome.actualProbeCpuNs,
                     (unsigned long long)retirementAllowance,unsigned(state->probeResult.exact),unsigned(r.inferenceEligible),
-                    r.omittedThreads,unsigned(r.churn),(unsigned long long)r.invalidClocks,(unsigned long long)r.overshoots);
+                    r.omittedThreads,unsigned(r.churn),(unsigned long long)r.invalidClocks,(unsigned long long)r.overshoots,
+                    key.width,key.height,unsigned(key.family),(unsigned long long)key.movement,key.limit,key.cpuBuckets,key.threads,key.batch,
+                    unsigned(state->probePlan),unsigned(key.seedDensity),unsigned(key.blockerDensity),unsigned(key.movementModifiers),
+                    (unsigned long long)state->probeDue,(unsigned long long)replay.acceptedReferenceCpuNs,
+                    (unsigned long long)replay.commonPreparationCpuNs,(unsigned long long)replay.reservedCpuNs,reason,
+                    unsigned(replay.budgetCanceled),unsigned(replay.requiredCanceled),unsigned(replay.explicitCanceled),
+                    unsigned(replay.setupDeclined),unsigned(replay.executionFailed),unsigned(replay.nativeMetricsAvailable),unsigned(native.stage),
+                    (unsigned long long)native.dispatches,(unsigned long long)native.hostChecks,(unsigned long long)native.copiedCells,
+                    (unsigned long long)native.costCellsPrepared,(unsigned long long)native.costPreparedBytes,(unsigned long long)native.costUploads,
+                    (unsigned long long)native.setupCpuNs,(unsigned long long)native.threadCpuNs);
             }
             // Publication never waits for this settlement or diagnostic row.
             state->settlement->settle(result.outcome,result.authorization);state->settlement.reset();state->probeSession.reset();state->probePolicy.reset();
