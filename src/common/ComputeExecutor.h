@@ -161,6 +161,10 @@ private:
 	std::condition_variable presentationDone;
 	std::shared_ptr<WorkerOnly> maintenance;
 	bool maintenanceRunning = false;
+	// Optional observations do not wake the pool. Returning workers and normal
+	// required-work wakeups provide opportunities; idle tail samples may remain
+	// pending until another opportunity or lifecycle disposal. Registration still
+	// wakes workers, allowing asynchronous backend preparation before first work.
 	bool maintenanceClaimable(std::size_t worker) const
 	{
 		return worker != presentationWorker && maintenance && !maintenanceRunning && !presentation && !presentationPending && maintenance->pending();
@@ -232,7 +236,6 @@ private:
 			{
 				std::lock_guard<std::mutex> lock(mutex);
 				if (++runDone == count) runFinished.notify_all();
-				if (maintenance && maintenance->pending()) ready.notify_all();
 			}
 		}
 		workerMetrics[slot].activeNs += std::chrono::duration_cast<std::chrono::nanoseconds>(Clock::now() - started).count();
@@ -322,9 +325,6 @@ private:
 			if (thread) ++totals.workerJobs; else ++totals.ownerJobs;
 			if (group.lane != NoLane) { ++laneCompleted[group.lane]; ready.notify_all(); }
 			if (++slot.completed == slot.total) slotDone.notify_all();
-			// Publish optional notifications at the existing scheduler boundary.
-			// No extra producer lock, and no lost CV wake between predicate and wait.
-			if (maintenance && maintenance->pending()) ready.notify_all();
 		}
 	}
 	void worker(std::size_t slot)
@@ -372,7 +372,6 @@ private:
 					active = nullptr; activeSlot = 0;
 					lock.lock();
 					maintenanceRunning = false;
-					ready.notify_all();
 					continue;
 				}
 				const auto work = claimPresentation();
