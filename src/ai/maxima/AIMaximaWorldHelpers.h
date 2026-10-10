@@ -40,10 +40,13 @@ namespace WorldHelpers
 
     // This strategy deliberately estimates both attack abilities at their
     // lower level. Using mixed cached levels would change stock training decisions.
-    inline int unlearned_warrior_damage_rate(const AIEngine::AIWorldView& world,
+    namespace detail
+    {
+    // The caller has already established an effective melee role. Keep this
+    // internal seam separate from the checked entry point used by other callers.
+    inline int unlearned_eligible_damage_rate(const AIEngine::AIWorldView& world,
         const AIEngine::UnitView& unit, int referenceArmour)
     {
-        if (!AIEngine::ObservationQueries::matchesStrategyUnitRole(world,unit,WARRIOR)) return 0;
         const int level=std::clamp(std::min(unit.level[ATTACK_SPEED],unit.level[ATTACK_STRENGTH]),0,NB_UNIT_LEVELS-1);
         // Imported historical race tables used this private, fixed strategy
         // calibration even when their cached ability tables differed.
@@ -53,6 +56,14 @@ namespace WorldHelpers
         }
         const auto& performance=world.unitCatalog().levels(unit.typeNum)[level].performance;
         return Labour::combatDamageRate(performance[ATTACK_SPEED],performance[ATTACK_STRENGTH],referenceArmour);
+    }
+    }
+
+    inline int unlearned_warrior_damage_rate(const AIEngine::AIWorldView& world,
+        const AIEngine::UnitView& unit, int referenceArmour)
+    {
+        if (!AIEngine::ObservationQueries::matchesStrategyUnitRole(world,unit,WARRIOR)) return 0;
+        return detail::unlearned_eligible_damage_rate(world,unit,referenceArmour);
     }
 
     inline bool unlearned_reference_candidate(const AIEngine::AIWorldView& world,unsigned id)

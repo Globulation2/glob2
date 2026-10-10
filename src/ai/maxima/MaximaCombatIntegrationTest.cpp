@@ -1530,6 +1530,8 @@ TEST_SUITE("Maxima.Combat")
                     const int expected=variant==0?stockRates[common]:variant==2?0:
                         levels[common].performance[ATTACK_SPEED]*(levels[common].performance[ATTACK_STRENGTH]-armour);
                     CHECK(AIMaxima::WorldHelpers::unlearned_warrior_damage_rate(*view,unit,armour)==expected);
+                    if(variant!=2)
+                        CHECK(AIMaxima::WorldHelpers::detail::unlearned_eligible_damage_rate(*view,unit,armour)==expected);
                 }
             const int first=variant==2?0:levels[1].performance[ATTACK_SPEED]*(levels[1].performance[ATTACK_STRENGTH]-armour);
             const int second=variant==2?0:levels[2].performance[ATTACK_SPEED]*(levels[2].performance[ATTACK_STRENGTH]-armour);
@@ -1604,6 +1606,57 @@ TEST_SUITE("Maxima.Combat")
         CHECK(ai.offense_diagnostics.eligibleWarriors==9);
     }
 
+    TEST_CASE("active offense credits only returning recipients or continuing members")
+    {
+        glob2test::HeadlessGlobals globals;
+        for(int scenario=0;scenario<7;++scenario) {
+            combat_regressions::Fixture f([](Game& game) {
+                auto units=nlohmann::json::parse(UnitCatalog::builtins()->serialize());
+                auto denied=units["units"][WARRIOR];denied["key"]="fixture:denied-recovery";
+                denied["behaviors"]["recruitDefend"]=false;units["units"].push_back(denied);
+                auto excluded=units["units"][WARRIOR];excluded["key"]="fixture:excluded-recovery";
+                units["units"].push_back(excluded);
+                auto stationary=units["units"][WARRIOR];stationary["key"]="fixture:stationary-recovery";
+                units["units"].push_back(stationary);
+                game.gameHeader.setUnitCatalog(UnitCatalog::deserialize(units.dump()));
+                auto buildings=nlohmann::json::parse(game.buildingsTypes.snapshotJson());
+                for(std::size_t type=0;type<game.buildingsTypes.size();++type)
+                    if(game.buildingsTypes.get(type)->runtimeAttractionRoles&4)
+                        buildings["variants"][type]["semantics"]["attractionUnits"]["defend"]=
+                            {"warrior","fixture:denied-recovery","fixture:stationary-recovery"};
+                game.buildingsTypes.loadSnapshotJson(buildings.dump());game.configureBuildingCatalog();
+            });
+            f.building(20,20,0);auto* target=f.building(35,30,1);
+            auto* flag=f.building(12,10,0,"warflag");
+            auto* otherFlag=f.building(16,10,0,"warflag");
+            auto* denied=f.game.addUnit(9,0,0,3,3,0,0,0);REQUIRE(denied);
+            auto* excluded=f.game.addUnit(10,0,0,4,3,0,0,0);REQUIRE(excluded);
+            auto* stationary=f.game.addUnit(scenario==4?12:11,scenario==4?10:0,0,5,3,0,0,0);REQUIRE(stationary);
+            stationary->performance[WALK]=stationary->performance[SWIM]=stationary->performance[FLY]=0;
+            for(auto* unit:{denied,excluded,stationary})unit->medical=Unit::MED_DAMAGED;
+            auto& ai=*f.ai;auto& context=ai.context;context.initialize();f.remember(target);
+            ai.tactical_mission.flagId=f.id(flag);
+            if(scenario==1)f.attach(denied,flag); // Current member bypasses changed recruitment policy.
+            if(scenario==2) {
+                f.attach(excluded,otherFlag);ai.attack_flags.push_back(f.id(otherFlag));
+            }
+            if(scenario==3 || scenario==4)f.attach(stationary,flag);
+            if(scenario==5) {
+                auto* stock=f.warrior(15,0,3);stock->medical=Unit::MED_DAMAGED;
+                f.attach(stock,otherFlag); // Service transition may retain a different flag.
+            }
+            if(scenario==6) {
+                f.attach(denied,flag);denied->performance[ATTACK_SPEED]=0;
+            }
+            ai.plan_offense(context);
+            CHECK(ai.offense_diagnostics.eligibleWarriors==0);
+            const bool returns=scenario==1 || scenario==2 || scenario==4 || scenario==5;
+            if(returns)CHECK(ai.offense_diagnostics.gate=="open");
+            else CHECK(ai.offense_diagnostics.gate==
+                "blocked: 0 eligible warriors, 0 training reservations; 0 deployable is below 1");
+        }
+    }
+
     TEST_CASE("stationary effective melee triggers local defense while inactive attacks do not")
     {
         glob2test::HeadlessGlobals globals;
@@ -1637,7 +1690,7 @@ TEST_SUITE("Maxima.Combat")
         auto* live=world.addUnit(WARRIOR,10,10); REQUIRE(live);
         const auto view=AIEngine::AIWorldView::capture(world.game,AIEngine::AIWorldView::captureCatalog(world.game));
         auto unit=*view->unitSlots(0)[Unit::GIDtoID(live->gid)];
-        REQUIRE(unit.capabilityFlags&UnitRuntimeTraits::LegacyPerformancePolicies);
+        REQUIRE((unit.capabilityFlags&UnitRuntimeTraits::LegacyPerformancePolicies)!=0);
         constexpr int oldRates[]={36,64,110,168};
         for (int level=0;level<4;++level) {
             unit.level[ATTACK_SPEED]=3;unit.level[ATTACK_STRENGTH]=level;
