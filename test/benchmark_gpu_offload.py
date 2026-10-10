@@ -6,12 +6,14 @@ must have separately retained build receipts; a binary hash alone cannot prove t
 No sealed qualification inputs are generated or consumed by this development tool.
 """
 import argparse
+import csv
 import fcntl
 import hashlib
 import json
 import os
 from pathlib import Path
 import platform
+import shutil
 import subprocess
 import time
 from gpu_offload_analysis import summarize, cpu_ceiling, aggregate_cpu
@@ -51,6 +53,8 @@ def validate(config):
         for path, expected in s['fixture_sha256'].items():
             if sha(path) != expected: raise ValueError('fixture changed: ' + path)
     if config['warmup_ticks'] < 0: raise ValueError('nonnegative warmup required')
+    if 'gpu_uuid' in config and (not isinstance(config['gpu_uuid'], str) or not config['gpu_uuid'].startswith('GPU-')):
+        raise ValueError('GPU monitor identity must be an explicit NVIDIA UUID')
     if config.get('reservation') and not partition_snapshot(config['reservation'])['valid']:
         raise ValueError('exclusive benchmark partition validation failed')
     for path, digest in config.get('reservation_receipts', {}).items():
@@ -85,11 +89,42 @@ def partition_snapshot(expected):
     return result
 
 
-def resource_snapshot(benchmark_cpus=None, reservation=None):
+def gpu_snapshot(selected_uuid=None):
+    """NVIDIA boundary observations only; never evidence of interval-wide isolation."""
+    result = {'available': False, 'selected_uuid': selected_uuid,
+              'note': 'Before/after observations exclude graphics contexts and cannot prove isolation throughout the interval.'}
+    executable = shutil.which('nvidia-smi')
+    if not executable:
+        return result
+    requests = {
+        'devices': ('--query-gpu', ('index', 'uuid', 'name', 'driver_version', 'utilization.gpu',
+                     'utilization.memory', 'memory.used', 'memory.total', 'temperature.gpu',
+                     'power.draw', 'clocks.sm', 'clocks.mem')),
+        'compute_processes': ('--query-compute-apps', ('gpu_uuid', 'pid', 'used_gpu_memory'))}
+    try:
+        for name, (option, fields) in requests.items():
+            command = [executable, option+'='+','.join(fields), '--format=csv,noheader,nounits']
+            completed = subprocess.run(command, capture_output=True, text=True, timeout=10, check=False)
+            if completed.returncode:
+                raise ValueError(f'{name} query failed: exit {completed.returncode}')
+            rows = list(csv.reader(completed.stdout.splitlines(), skipinitialspace=True))
+            if any(len(row) != len(fields) for row in rows):
+                raise ValueError('malformed GPU observation')
+            result[name] = [dict(zip(fields, (value.strip() for value in row))) for row in rows]
+        result['available'] = True
+        result['selected_device_found'] = selected_uuid is None or any(d['uuid'] == selected_uuid for d in result['devices'])
+        result['selected_compute_processes'] = [p for p in result['compute_processes'] if p['gpu_uuid'] == selected_uuid]
+    except (OSError, ValueError, subprocess.SubprocessError) as error:
+        result['error'] = str(error)
+    return result
+
+
+def resource_snapshot(benchmark_cpus=None, reservation=None, gpu_uuid=None):
     """Read-only inventory outside the timed window; command names exclude args."""
     if benchmark_cpus is None and hasattr(os, 'sched_getaffinity'):
         benchmark_cpus = sorted(os.sched_getaffinity(0))
-    snapshot = {'monotonic_ns': time.monotonic_ns(), 'benchmark_cpus': benchmark_cpus}
+    snapshot = {'monotonic_ns': time.monotonic_ns(), 'benchmark_cpus': benchmark_cpus,
+                'gpu': gpu_snapshot(gpu_uuid)}
     if reservation: snapshot['reservation'] = partition_snapshot(reservation)
     load = Path('/proc/loadavg')
     if load.exists(): snapshot['loadavg'] = load.read_text().strip()
@@ -117,7 +152,7 @@ def resource_snapshot(benchmark_cpus=None, reservation=None):
     return snapshot
 
 
-def execute(variant, scenario, output, warmup, *, extra_args=(), reservation=None):
+def execute(variant, scenario, output, warmup, *, extra_args=(), reservation=None, gpu_uuid=None):
     output.mkdir(parents=True, exist_ok=False)
     threads = str(variant.get('compute_threads', '8'))
     command = [variant['binary'], 'game', 'run', *scenario['args'], *extra_args, '--compute-threads', threads,
@@ -125,7 +160,7 @@ def execute(variant, scenario, output, warmup, *, extra_args=(), reservation=Non
     affinity = variant.get('cpu_affinity')
     if affinity: command = ['taskset', '--cpu-list', ','.join(map(str, affinity)), *command]
     env = dict(os.environ, **variant.get('env', {}))
-    resources_before = resource_snapshot(affinity, reservation)
+    resources_before = resource_snapshot(affinity, reservation, gpu_uuid)
     started = time.monotonic_ns()
     with (output / 'engine.log').open('w') as log:
         process = subprocess.Popen(command, cwd=ROOT, env=env, stdout=log, stderr=subprocess.STDOUT)
@@ -140,10 +175,14 @@ def execute(variant, scenario, output, warmup, *, extra_args=(), reservation=Non
                process_cpu_ns=round((usage.ru_utime + usage.ru_stime) * 1e9),
                peak_rss_bytes=usage.ru_maxrss * (1 if platform.system() == 'Darwin' else 1024),
                valid=process.returncode == 0, errors=[],
-               resources_before=resources_before, resources_after=resource_snapshot(affinity, reservation))
+               resources_before=resources_before, resources_after=resource_snapshot(affinity, reservation, gpu_uuid))
     row['resource_contaminated'] = any(not s.get('inventory_available', False) or s.get('active_compiler_detected', False) or
                                         (reservation is not None and not s.get('reservation', {}).get('valid', False)) for s in
                                         (row['resources_before'], row['resources_after']))
+    if gpu_uuid:
+        row['resource_contaminated'] |= any(not s['gpu'].get('available') or not s['gpu'].get('selected_device_found') or
+            any(p['pid'] != str(process.pid) for p in s['gpu'].get('selected_compute_processes', ())) for s in
+            (row['resources_before'], row['resources_after']))
     if process.returncode:
         row['errors'].append('process failure'); return row
     try:
@@ -204,7 +243,7 @@ def main():
                         dest = output / scenario['id'] / str(n) / variant['id']
                         row = dict(scenario=scenario['id'], phase=scenario.get('phase'), group=scenario.get('group'),
                                    map_id=scenario.get('map_id'), control=scenario.get('control', False),
-                                   round=n, variant=variant['id'], **execute(variant, scenario, dest, 0 if args.cold else config['warmup_ticks'], reservation=config.get('reservation')))
+                                   round=n, variant=variant['id'], **execute(variant, scenario, dest, 0 if args.cold else config['warmup_ticks'], reservation=config.get('reservation'), gpu_uuid=config.get('gpu_uuid')))
                         if 'result' in row:
                             signature = tuple(row['result'][k] for k in ('initialChecksum', 'finalChecksum', 'ticks', 'benchmark_measured_ticks'))
                             if reference is None: reference = signature
