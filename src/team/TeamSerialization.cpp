@@ -243,8 +243,16 @@ GAGCore::CooperativeTask Team::loadTask(GAGCore::InputStream *stream, BuildingsT
 					const bool validService=purpose==FEED ? interaction.has(BuildingUnitInteraction::Feeds) :
 						purpose==HEAL ? interaction.has(BuildingUnitInteraction::Heals) :
 						purpose>=0 && purpose<NB_ABILITY && (interaction.trainingMask & (1u<<purpose));
-					if (visits[id] || unit->attachedBuilding!=building || unit->activity!=Unit::ACT_UPGRADING
-						|| !validService || (unit->serviceResourcesReserved && unit->displacement==Unit::DIS_EXITING_BUILDING))
+					// Historical saves could retain an unassigned occupancy entry
+					// in unitsInside (the format-88 entering-animation reproducer
+					// has ACT_RANDOM and purpose -1). Preserve that opaque entry
+					// through current resaves only with private migration provenance.
+					// Authored catalogs and all declared visits stay strictly checked.
+					const bool legacyOpaqueVisit=unit->hasCapability(UnitRuntimeTraits::LegacyPerformancePolicies)
+						&& unit->activity==Unit::ACT_RANDOM && purpose==-1 && !unit->serviceResourcesReserved;
+					if (visits[id] || unit->attachedBuilding!=building
+						|| (!legacyOpaqueVisit && (unit->activity!=Unit::ACT_UPGRADING || !validService))
+						|| (unit->serviceResourcesReserved && unit->displacement==Unit::DIS_EXITING_BUILDING))
 						throw std::runtime_error("Invalid saved building service membership");
 					visits[id]=true;
 				}

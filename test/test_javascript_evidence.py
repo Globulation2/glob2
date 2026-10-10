@@ -11,7 +11,7 @@ from unittest.mock import patch
 
 from build_provenance import build_issues, source_identity
 from check_javascript_evidence import provenance_issues, inventory
-from check_javascript import save_header
+from check_javascript import save_header, header_checksum_delta, continuation_matches
 
 ROOT = Path(__file__).resolve().parents[1]
 spec = importlib.util.spec_from_file_location('android_device_tests', ROOT / 'mobile/android_device_tests.py')
@@ -170,15 +170,39 @@ class AndroidRetrievalTests(unittest.TestCase):
 
 
 class SaveHeaderTests(unittest.TestCase):
+    def test_header_delta_uses_executed_152_or_153_protocol(self):
+        before, after = (0, 125, 2, 2), (0, 153, 2, 2)
+        self.assertEqual(header_checksum_delta(before, after, 152), 0x72000000)
+        self.assertEqual(header_checksum_delta(before, after, 153), 0x39000000)
+        self.assertEqual(header_checksum_delta(after, after, 153), 0)
+        with self.assertRaises(AssertionError):
+            header_checksum_delta(before, after, 154)
+
+    def test_current_continuation_retains_every_entity_and_aggregate_bit(self):
+        expected = {tick: struct.pack('<III', tick, 0x12345678, 0x87654321)
+                    for tick in range(128, 256)}
+        actual = {tick: struct.pack('<III', tick, 0x12345678 ^ 0x39000000, 0x87654321)
+                  for tick in expected}
+        with patch('check_javascript.save_header', side_effect=lambda path:
+                   (0, 125 if path == 'initial' else 153, 2, 2)):
+            self.assertTrue(continuation_matches(expected, actual, 'initial', 'saved', 128))
+            for offset in (0, 4, 8):
+                changed = dict(actual)
+                record = bytearray(changed[128]); record[offset] ^= 1
+                changed[128] = bytes(record)
+                self.assertFalse(continuation_matches(expected, changed, 'initial', 'saved', 128))
+
     @staticmethod
-    def fixture(version, resource_declarations=None, required=(), ai_delay=0, building_gradient_delay=4):
+    def fixture(version, resource_declarations=None, required=(), ai_delay=0, building_gradient_delay=4,
+                terrain_required=('ice-terrain',)):
         def text(value):
             encoded = value.encode('utf8')
             return struct.pack('>I', len(encoded)) + encoded
         result = text('Resource header fixture')
         result += struct.pack('>IIII', 0, version, 2, 0) + b'\1' + bytes(20)
         if version >= 134:
-            result += struct.pack('>I', 1) + text('ice-terrain')
+            result += struct.pack('>I', len(terrain_required))
+            result += b''.join(text(key) for key in terrain_required)
         if version >= 140:
             declarations = resource_declarations or []
             result += struct.pack('>I', len(declarations))
@@ -202,7 +226,7 @@ class SaveHeaderTests(unittest.TestCase):
             return save_header(path)
 
     def test_legacy_and_resource_headers_have_correct_player_offsets(self):
-        for version in (125, 137, 138, 139, 140, 142, 143, 146, 147, 148):
+        for version in (125, 137, 138, 139, 140, 142, 143, 146, 147, 148, 152, 153):
             self.assertEqual(self.parse(self.fixture(version)), (0, version, 2, 3))
         declarations = [('custom-crops', 'Custom crops', 'Enable experimental multi-material crops.')]
         self.assertEqual(self.parse(self.fixture(140, declarations, ['custom-crops'])), (0, 140, 2, 3))
@@ -223,6 +247,36 @@ class SaveHeaderTests(unittest.TestCase):
                                       ([('key', 'Label', 'Help')] * 65, [])]:
             with self.assertRaises(AssertionError):
                 self.parse(self.fixture(140, declarations, required))
+
+    def test_current_header_counts_do_not_depend_on_later_unit_definitions(self):
+        # Format 153 adds its catalog after the GameHeader player records;
+        # MapHeader and the player-count prefix retain their established layout.
+        raw = gzip.decompress(self.fixture(153, [('custom-crops', 'Crops', 'Help')], ['custom-crops']))
+        self.assertEqual(self.parse(gzip.compress(raw + b'unit metadata follows player records')),
+                         (0, 153, 2, 3))
+
+    def test_current_header_rejects_every_truncated_prefix(self):
+        raw = gzip.decompress(self.fixture(153, [('custom-crops', 'Crops', 'Help')], ['custom-crops']))
+        for end in range(len(raw)):
+            with self.subTest(end=end), self.assertRaises(AssertionError):
+                self.parse(gzip.compress(raw[:end]))
+
+    def test_current_header_rejects_invalid_counts_delays_and_unknown_layouts(self):
+        for options in (dict(terrain_required=['ice-terrain'] * 65),
+                        dict(terrain_required=['x' * 129]), dict(ai_delay=9),
+                        dict(building_gradient_delay=0), dict(building_gradient_delay=9)):
+            with self.subTest(options=options), self.assertRaises(AssertionError):
+                self.parse(self.fixture(153, **options))
+        raw = gzip.decompress(self.fixture(153))
+        name_length = struct.unpack_from('>I', raw)[0]
+        for offset, values in ((0, (1024 * 1024 + 1,)), (4 + name_length + 8, (0, 33)),
+                               (len(raw) - 4, (0, 33))):
+            for value in values:
+                malformed = raw[:offset] + struct.pack('>I', value) + raw[offset + 4:]
+                with self.subTest(offset=offset, value=value), self.assertRaises(AssertionError):
+                    self.parse(gzip.compress(malformed))
+        with self.assertRaises(AssertionError):
+            self.parse(self.fixture(154))
 
 
 if __name__ == '__main__':

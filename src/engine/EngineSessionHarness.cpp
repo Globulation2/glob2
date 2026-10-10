@@ -300,6 +300,27 @@ TEST_SUITE("EngineSession")
         CHECK(work->status() == ComputeExecutor::Presentation::Status::Canceled);
     }
 
+    TEST_CASE("a retained version-152 stock replay preserves recorded simulation checksums [save-format]")
+    {
+        glob2test::HeadlessGlobals globals({.loadStrings=true});
+        REQUIRE(NET_Init());
+        struct NetworkScope {~NetworkScope(){NET_Quit();}} network;
+        globals->automaticEndingGame=false;
+        const auto path=glob2test::inflated("unit-catalog/legacy152-stock.replay.gz");
+        Engine engine; REQUIRE(engine.loadReplayTask(path.string()).run());
+        auto& reader=*globals->replayReader;
+        REQUIRE(reader.formatVersion()==152);
+        REQUIRE(reader.getNumStepsTotal()==128);
+        engine.beginSession(0);
+        for(unsigned tick=0;tick<128;++tick) {
+            reader.setCheckSum(engine.gui.game.checkSum(nullptr,nullptr,nullptr,false,true));
+            REQUIRE(engine.stepSession(tick*40,{}));
+            REQUIRE(reader.isValid());
+            CHECK(engine.gui.game.stepCounter==tick+1);
+        }
+        engine.gui.isRunning=false; engine.finishSession();
+    }
+
     TEST_CASE("external replay retains recorded simulation checksums [benchmark][artifacts]")
     {
         const char* path=SDL_getenv_unsafe("GLOB2_REFERENCE_REPLAY");REQUIRE(path);
@@ -310,6 +331,7 @@ TEST_SUITE("EngineSession")
         Engine engine;REQUIRE(engine.loadReplayTask(path).run());
         auto& reader=*globals->replayReader;
         const auto ticks=reader.getNumStepsTotal();REQUIRE(ticks>0);
+        const auto initialTick=engine.gui.game.stepCounter;
         engine.beginSession(0);
         std::ofstream trace(glob2test::artifactDir()/"external-replay.checksums.txt");
         for(unsigned tick=0;tick<ticks;++tick) {
@@ -318,7 +340,7 @@ TEST_SUITE("EngineSession")
             reader.setCheckSum(checksum);
             REQUIRE(engine.stepSession(tick*40,{}));
             REQUIRE(reader.isValid());
-            CHECK(engine.gui.game.stepCounter==tick+1);
+            CHECK(engine.gui.game.stepCounter==initialTick+tick+1);
         }
         engine.gui.isRunning=false;engine.finishSession();
     }

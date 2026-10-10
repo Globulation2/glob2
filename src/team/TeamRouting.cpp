@@ -47,7 +47,7 @@ Sint32 starvationLimitedTravelDistance(const Unit *unit)
 
 Building *Team::findNearestHeal(Unit *unit)
 {
-	if (unit->hungry < 0)
+	if (unit->hungriness > 0 && unit->hungry < 0)
 		return NULL;
 	if (unit->performance[FLY])
 	{
@@ -308,7 +308,11 @@ int Team::maxBuildLevel(void)
 	for (int i=0; i<Unit::MAX_COUNT; i++)
 	{
 		Unit *u=myUnits[i];
-		if (u && u->performance[BUILD])
+		if (u && u->hasCapability(UnitRuntimeTraits::Construct)
+            && u->hasCapability(UnitRuntimeTraits::Transport)
+            && (u->performance[FLY]>0 || u->performance[WALK]>0 || u->performance[SWIM]>0)
+            && u->performance[BUILD]>0 && u->performance[HARVEST]>0
+            && (!u->hasCapability(UnitRuntimeTraits::ExtendedCargo) || u->runtimeTraits().cargoCapacity>0))
 		{
 			int unitLevel=u->workerLevel();
 			if (unitLevel>maxLevel)

@@ -150,6 +150,13 @@ class ChangedPathsTest(unittest.TestCase):
                      "test/fixtures/javascript/profile1-initial.game.gz",
                      "test/check_javascript_corpus.py", "test/check_javascript.py",
                      "test/check_javascript_evidence.py", "test/build_provenance.py",
+                     "test/check_telemetry_simulation.py", "test/test_javascript_evidence.py",
+                     "src/unit/types/UnitCatalogTest.cpp", "src/unit/UnitCustomizationTest.cpp",
+                     "test/fixtures/unit-catalog/ablation-checksums.txt",
+                     "test/maxima/fixtures/save-continuation/expected-units-30000-30512.json",
+                     "test/maxima/fixtures/save-continuation/expected-resources-30000-30512.json",
+                     "test/maxima/check_save_continuation_fixture.py",
+                     "test/fixtures/resources/seeded-compositions-units.trace",
                      "test/support/TestMain.cpp", "libgag/src/ImageAssetTest.cpp"):
             with self.subTest(path=path):
                 self.assert_jobs(

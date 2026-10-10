@@ -22,6 +22,7 @@
 #include "AIMaximaRuntime.h"
 #include "AIMaximaDefense.h"
 #include "AIMaximaFarming.h"
+#include "AIMaximaFeedingDemand.h"
 #include "AIMaximaFruit.h"
 #include "AIMaximaPlacement.h"
 #include "AIMaximaRecon.h"
@@ -632,6 +633,7 @@ private:
     int feeding_capacity_for_type(int concreteType) const;
     int aggregate_feeding_capacity(const std::vector<long long>& rates) const;
     long long recipient_meal_rate(const AIEngine::UnitView& unit) const;
+    long long base_recipient_meal_rate(unsigned unit) const;
     long long birth_food_acreage() const;
 	const std::vector<AIMaximaPlacement::BuildingProfile>&
 		collect_building_profiles() const;
@@ -656,6 +658,12 @@ private:
 	mutable std::vector<int> development_profile_index;
 	mutable std::vector<int> development_feeding_visit_rate; // planned visits/tick, not headcount
     mutable std::vector<int> development_feeding_pause;
+    // Immutable admission rows compiled once with the building profiles. Only
+    // rates and the demand workspace change during candidate retirement checks.
+    mutable std::vector<FeedingCapacity> development_feeding_providers;
+    mutable std::vector<unsigned> development_feeding_provider_types;
+    mutable std::vector<int> development_feeding_provider_index;
+    mutable std::vector<int> development_feeding_demand;
 	mutable bool development_profiles_initialized=false;
 	AIMaximaPlacement::Planner development_planner;
 	bool development_planner_initialized;

@@ -80,7 +80,7 @@ if args.engine_binary:
     if len(traces) != 1:
         raise RuntimeError(f'Expected one resource composition trace, got {traces}')
     trace = traces[0].read_bytes().replace(b'\r\n', b'\n')
-    committed = root / 'test/fixtures/resources/seeded-compositions.trace'
+    committed = root / 'test/fixtures/resources/seeded-compositions-units.trace'
     if len(trace.splitlines()) != 150 or trace != committed.read_bytes().replace(b'\r\n', b'\n'):
         raise RuntimeError('Incomplete or changed resource composition trace')
     producer = json.loads((resources / 'cases/build-provenance.json').read_text())

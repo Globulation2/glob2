@@ -12,7 +12,7 @@ subnormal Math results. These are compatibility fixtures, not benchmarks.
 Changing them requires explaining the intended profile or simulation change.
 
 Run `python3 test/check_javascript.py /absolute/path/to/glob2 --output artifacts/js-check`
-with a fresh output directory. It compares against the current resource trace, compares
+with a fresh output directory. It compares against the current unit-era trace, compares
 replays and saves at one and four compute workers, and checks resumed state and
 ticks from several saved checkpoints, including scenario-callback boundaries. The saved payload comparison excludes only
 the existing MapHeader SHA1, which depends on save history; scripts, RNG state,
@@ -115,17 +115,28 @@ Canonical terrain IDs now participate in the map checksum, and property-based
 ecology can change subsequent simulation behavior. Both checkers still load the
 original version-125 saves, then compare complete current traces, one/four-worker
 execution and saved continuations; the native suite also checks replay playback.
-The native fixture runner's `--update-fixtures` option now rewrites only the
-resource traces described below. Historical traces, initial saves and numeric/data goldens remain intact.
+The native fixture runner's `--update-fixtures` option rewrites only the
+unit-era traces described below. Historical traces, initial saves and numeric/data goldens remain intact.
 MapHeader version normalization and the final-save SHA1 exclusion described above
 remain unchanged.
 
 `profile1-256-resources.checksums.gz` and
-`realistic-profile1-256-resources.checksums.gz` are the current SIM_REVISION 40
-complete-trace baselines. Private entity, map and story RNG state participates in
+`realistic-profile1-256-resources.checksums.gz` retain the SIM_REVISION 40
+resource-era complete-trace baselines. Private entity, map and story RNG state participates in
 the checksums, alongside resource registries and material-gradient caches. Old
 saves initialize missing streams once and adopt the new trajectories. Historical
 traces and original version-125 saves remain unchanged as migration inputs.
 The Python checker compares complete current checksums, exact one/four-worker
 replay and save output, and every existing saved continuation boundary. It does
 not exclude RNG, registry or cache state from those comparisons.
+
+`profile1-256-units.checksums.gz` and
+`realistic-profile1-256-units.checksums.gz` are the format-153 unit-era current
+complete-trace references. They include resolved unit-catalog identity, assigned
+job purpose and extended cargo state. Native and Python fixture runners select
+these files; updating fixtures preserves all resource-era references and the
+original saves. Complete checks, worker parity, saved continuation boundaries
+and the existing narrow MapHeader version/SHA1 adjustments remain unchanged.
+The header-prefix parser bounds every count and byte range through the player
+count. Format 153 adds unit definitions later in GameHeader; it adds no
+MapHeader metadata or player-count offset.

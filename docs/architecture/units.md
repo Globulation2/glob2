@@ -139,6 +139,11 @@ by unit ID. Identical complete rows are shared, and compilation rejects more
 than 16 MiB of unique interaction storage. The hot building runtime record
 remains 64 bytes. Default statistics
 and production counters remain inline; additional counters use bounded sidecars.
+Statistics reuse team-owned sampling buffers and compile level qualification
+rows once per immutable catalog; replacing a catalog invalidates these derived
+rows even when its number of definitions is unchanged. Live catalog setup rejects
+resizing while projectiles retain launch-time damage rows. Save loading replaces
+the discarded game's sectors before restoring its own projectile rows.
 
 ## Presentation and persistence
 
@@ -158,6 +163,9 @@ Historical tables with zero health remain loadable and can be saved again;
 developer-authored definitions require positive health. The private migration
 policy also retains historical AI feeding calibration when an old map saved a
 different hunger clock. Newly authored definitions use their configured clock.
+Legacy resaves also preserve unreserved inside-list entries with no declared
+service (`ACT_RANDOM`, purpose `-1`) only under private migration provenance.
+Authored visits retain strict membership, assignment and reservation validation.
 
 Current checksums include catalog identity and extended authoritative state.
 Version-152 replay playback uses a representation adapter for its historical

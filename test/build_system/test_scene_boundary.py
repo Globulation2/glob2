@@ -23,7 +23,7 @@ SCENE_INCLUDES = {
     'Scene.h', 'SceneEntities.h', 'SceneMap.h', 'ScenePanels.h',
     'sim/presentation/PresentationRequest.h', 'sim/snapshot/WorldSnapshot.h',
     'sim/snapshot/Requirements.h',
-    'sim/ClientRequests.h', 'sim/EntityRef.h', 'BitArray.h', 'Ressource.h', 'UnitConsts.h',
+    'sim/ClientRequests.h', 'sim/EntityRef.h', 'BitArray.h', 'Ressource.h', 'UnitConsts.h', 'unit/UnitConsts.h',
     'SDLGraphicContext.h', 'SDL_stdinc.h', 'SDL3/SDL_stdinc.h', 'AITelemetryValue.h',
     *TERRAIN_HEADERS, *FIELD_HEADERS,
     *(f'field/{name}' for name in FIELD_HEADERS), 'map/TerrainProperties.h',

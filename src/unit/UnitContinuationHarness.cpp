@@ -10,9 +10,14 @@
 #include <BinaryStream.h>
 #include <StreamBackend.h>
 #include <vector>
+#include <algorithm>
 
 namespace
 {
+struct UnitActivityAccess : Unit
+{
+    static void run(Unit& unit) { const auto activity=&UnitActivityAccess::handleActivity; (unit.*activity)(); }
+};
 static std::vector<Uint32> state(Game& game)
 {
     std::vector<Uint32> result, buildings, units;
@@ -143,6 +148,63 @@ static void checkContinuation(int checkpoint, bool hazards = false)
 
 TEST_SUITE("UnitContinuation")
 {
+    TEST_CASE("medical abort clears every working purpose before idle or service continuation")
+    {
+        glob2test::HeadlessGlobals globals;
+        for (auto purpose : {UnitJobPurpose::Transport,UnitJobPurpose::Clear,UnitJobPurpose::Explore,UnitJobPurpose::Defend})
+            for (int medical : {Unit::MED_HUNGRY,Unit::MED_DAMAGED})
+                for (bool serviceAvailable : {false,true})
+        {
+            CAPTURE(int(purpose)); CAPTURE(medical); CAPTURE(serviceAvailable);
+            glob2test::HeadlessGame world({.clearImmobile=true,.header=true,.seed=4921});
+            const int type=purpose==UnitJobPurpose::Explore?EXPLORER:purpose==UnitJobPurpose::Defend?WARRIOR:WORKER;
+            auto* unit=world.addUnit(type,8,8); REQUIRE(unit);
+            auto* work=world.addBuilding(purpose==UnitJobPurpose::Transport?"inn":
+                purpose==UnitJobPurpose::Clear?"clearingflag":purpose==UnitJobPurpose::Explore?"explorationflag":"warflag",16,16);
+            REQUIRE(work);
+            unit->destinationPurpose=purpose==UnitJobPurpose::Transport?WHEAT:UNIT_DEST_PURPOSE_NONE;
+            work->unitsWorking.push_back(unit);
+            unit->subscriptionSuccess(work,false,purpose!=UnitJobPurpose::Transport,purpose);
+            REQUIRE(unit->jobPurpose==purpose);
+            Building* service=nullptr;
+            if (serviceAvailable) {
+                service=world.addBuilding(medical==Unit::MED_HUNGRY?"inn":"hospital",10,8);
+                REQUIRE(service);
+                if (medical==Unit::MED_HUNGRY) service->materials[WHEAT]=20;
+                world.team->addToStaticAbilitiesLists(service);
+                service->update();
+                REQUIRE((medical==Unit::MED_HUNGRY?world.team->findNearestFood(unit):world.team->findNearestHeal(unit))==service);
+            }
+            unit->medical=Unit::Medical(medical);
+            unit->needToRecheckMedical=true;
+            const auto random=unit->entityRandom;
+            UnitActivityAccess::run(*unit);
+            CHECK(unit->jobPurpose==UnitJobPurpose::None);
+            CHECK(work->unitsWorking.empty()); CHECK(work->unitsInside.empty());
+            CHECK(unit->entityRandom==random);
+            if (serviceAvailable) {
+                CHECK(unit->activity==Unit::ACT_UPGRADING);
+                CHECK(unit->attachedBuilding==service);
+                CHECK(unit->destinationPurpose==(medical==Unit::MED_HUNGRY?FEED:HEAL));
+                REQUIRE(std::find(service->unitsInside.begin(),service->unitsInside.end(),unit)!=service->unitsInside.end());
+            } else {
+                CHECK(unit->activity==Unit::ACT_RANDOM);
+                CHECK_FALSE(unit->attachedBuilding); CHECK_FALSE(unit->targetBuilding);
+            }
+            auto* storage=new GAGCore::MemoryStreamBackend;
+            GAGCore::BinaryOutputStream output(storage);
+            world.game.save(&output,false,"medical assignment abort");
+            const auto bytes=storage->takeContents();
+            GameGUI resumed;
+            GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
+            input.seekFromStart(0); REQUIRE(resumed.game.load(&input));
+            auto* restored=resumed.game.teams[0]->myUnits[Unit::GIDtoID(unit->gid)]; REQUIRE(restored);
+            CHECK(restored->jobPurpose==UnitJobPurpose::None);
+            CHECK(restored->activity==unit->activity);
+            CHECK(restored->entityRandom==random);
+        }
+    }
+
     TEST_CASE("hazard routes and idle escape preserve per-tick state across save load")
     {
         glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.loadStrings = true});

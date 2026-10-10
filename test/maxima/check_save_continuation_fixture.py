@@ -12,11 +12,11 @@ import tempfile
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "test"))
-from check_javascript import complete_ticks, save_header
+from check_javascript import complete_ticks, save_header, header_checksum_delta
 from compare_save_continuation import compare
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures/save-continuation"
-EXPECTED = FIXTURES / "expected-resources-30000-30512.json"
+EXPECTED = FIXTURES / "expected-units-30000-30512.json"
 
 
 def run(binary, saved, output, stop_tick, workers, checkpoint=False):
@@ -45,12 +45,7 @@ def check(binary, output, workers, update_fixtures):
     # Exactly the same header-version contribution used by the JavaScript
     # checker; all entity bytes and the rest of the aggregate remain covered.
     before, after = save_header(checkpoint), save_header(current)
-    assert before[0] == after[0] and before[2:] == after[2:]
-    assert after[1] >= before[1]
-    delta = before[0] ^ before[1] ^ after[0] ^ after[1]
-    rotations = (before[2] + before[3] + 5) % 32
-    if rotations:
-        delta = ((delta >> rotations) | (delta << (32 - rotations))) & 0xffffffff
+    delta = header_checksum_delta(before, after)
     for tick, record in resumed.items():
         expected = actual[tick]
         assert record[:4] == expected[:4] and record[8:] == expected[8:], f"continuation diverges at {tick}"
@@ -72,7 +67,7 @@ def check(binary, output, workers, update_fixtures):
         "continuationChecksumAdjustment": "MapHeader format-version contribution only",
     }
     (output / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
-    print(f"PASS: v115 checkpoint matches all {len(hashes)} complete resource state hashes")
+    print(f"PASS: v115 checkpoint matches all {len(hashes)} complete checksum-record hashes")
     print(f"PASS: save/reload at tick 30256 preserves all {count} complete continuation records")
 
 
@@ -81,7 +76,7 @@ def main():
     parser.add_argument("binary", type=Path)
     parser.add_argument("--output", type=Path, help="Retain traces, commands, logs and manifest")
     parser.add_argument("--parallel-ai", action="store_true")
-    parser.add_argument("--update-fixtures", action="store_true", help="Regenerate only the resource baseline")
+    parser.add_argument("--update-fixtures", action="store_true", help="Regenerate only the current unit-era baseline")
     args = parser.parse_args()
     if args.parallel_ai and args.update_fixtures:
         parser.error("generate fixtures serially, then verify --parallel-ai without --update-fixtures")

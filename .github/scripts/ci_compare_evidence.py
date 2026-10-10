@@ -108,7 +108,7 @@ def main():
     browsers = {'chromium', 'firefox', 'webkit'}
     print(f'{validate_traces(args.traces, native, browsers)} exact native/browser traces match')
     resource_count = validate_resource_compositions(args.traces, native, browsers,
-        Path('test/fixtures/resources/seeded-compositions.trace'))
+        Path('test/fixtures/resources/seeded-compositions-units.trace'))
     print(f'{resource_count} exact native/browser resource composition traces match')
     resource_producer = json.loads(native_composition_manifest(
         args.traces, native[0], 'resources').read_text())['producer']

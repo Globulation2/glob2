@@ -27,7 +27,7 @@ std::shared_ptr<Order> order(const AIEngine::AIWorldView &world, int team, const
 		if (!bt->semantics.placeable || !world.catalog->at(t).available)
 			throw std::runtime_error("Creation requires an available placeable building variant");
 		std::optional<Sint32> range;
-		if (bt->zonable[WORKER] || bt->zonable[EXPLORER] || bt->zonable[WARRIOR])
+		if (bt->resolvedType.runtimeAttractionRoles!=0)
 			range = number("range", 0, bt->maximumRange);
 		return std::make_shared<OrderCreate>(
 			team, number("x", 0, world.width - 1), number("y", 0, world.height - 1), t,
@@ -131,25 +131,25 @@ std::shared_ptr<Order> order(const AIEngine::AIWorldView &world, int team, const
 			gid, number("receiveMask", 0, (1 << MaterialSlotCount) - 1),
 			number("sendMask", 0, (1 << MaterialSlotCount) - 1));
 	}
-	if (!(world.catalog->at(b->typeNum).zonable[WORKER] || world.catalog->at(b->typeNum).zonable[EXPLORER] || world.catalog->at(b->typeNum).zonable[WARRIOR]))
+	if (world.catalog->at(b->typeNum).resolvedType.runtimeAttractionRoles==0)
 		throw std::runtime_error("Flag order requires a flag");
 	if (type == "range")
 		return std::make_shared<OrderModifyFlag>(gid, number("range", 0, world.catalog->at(b->typeNum).maximumRange));
 	if (type == "minimumLevel")
 	{
-		if (!world.catalog->at(b->typeNum).zonable[WARRIOR])
-			throw std::runtime_error("Minimum combat level requires warrior attraction");
+		if (!(world.catalog->at(b->typeNum).resolvedType.runtimeAttractionRoles&4u))
+			throw std::runtime_error("Minimum combat level requires combat attraction");
 		return std::make_shared<OrderModifyMinLevelToFlag>(gid, number("level", 0, 3));
 	}
 	if (type == "workerMinimumLevel")
 	{
-		if (!world.catalog->at(b->typeNum).zonable[WORKER])throw std::runtime_error("Minimum construction level requires worker attraction");
+		if (!(world.catalog->at(b->typeNum).resolvedType.runtimeAttractionRoles&1u))throw std::runtime_error("Minimum construction level requires clearing attraction");
 		return std::make_shared<OrderModifyMinLevelToFlag>(gid, number("workerMinimumLevel",0,3), 2);
 	}
 	if (type == "requireBombing")
 	{
-		if (!world.catalog->at(b->typeNum).zonable[EXPLORER] || d.get("requireBombing").kind != Value::Boolean)
-			throw std::runtime_error("Bombing requirement needs explorer attraction and a boolean");
+		if (!(world.catalog->at(b->typeNum).resolvedType.runtimeAttractionRoles&2u) || d.get("requireBombing").kind != Value::Boolean)
+			throw std::runtime_error("Bombing requirement needs exploration attraction and a boolean");
 		return std::make_shared<OrderModifyMinLevelToFlag>(gid, d.get("requireBombing").number != 0, 1);
 	}
 	if (type == "moveFlag" && !world.catalog->at(b->typeNum).semantics.relocatable)
@@ -159,8 +159,8 @@ std::shared_ptr<Order> order(const AIEngine::AIWorldView &world, int team, const
 											   number("y", 0, world.height - 1), false);
 	if (type == "clearingResources" || type == "clearingMaterials")
 	{
-		if (!world.catalog->at(b->typeNum).zonable[WORKER])
-			throw std::runtime_error("Building does not attract resource-clearing workers");
+		if (!(world.catalog->at(b->typeNum).resolvedType.runtimeAttractionRoles&1u))
+			throw std::runtime_error("Building does not support resource clearing");
 		const auto &a = d.get(type == "clearingMaterials" ? "materials" : "resources");
 		if (a.kind != Value::Array || a.items.size() != BASIC_COUNT && a.items.size() != MaterialCount)
 			throw std::runtime_error("Clearing requires twelve material booleans (or five legacy booleans)");
