@@ -186,14 +186,14 @@ private:
                         const bool valid=preparationClockValid&&cpuStart>=preparedCpu&&cpuEnd>=cpuStart;
                         deviceService->recordAccepted(backendSession,key,decision.plan,
                             valid?glob2::threadCpuDeltaNs(preparationCpu,cpuEnd):0,
-                            job.snapshotLease?job.snapshotLease->tick:job.due-delay,true);
+                            job.due-delay,true);
                     }
                 }else {
                 job.requiredControl.store(job.deviceField->requiredControl,std::memory_order_release);
                 if(job.cancelGPU.load(std::memory_order_acquire) && job.deviceField->requiredControl)job.deviceField->requiredControl->requestCancel();
                 job.deviceField->workload=key;
                 job.deviceField->seedShape=job.seedShape;job.deviceField->publicationTick=job.due;
-                job.deviceField->tick=job.snapshotLease ? job.snapshotLease->tick : job.due-delay;
+                job.deviceField->tick=job.due-delay;
                 const auto ownedCpuEnd=cpuNow();
                 job.deviceField->preparationCpuClockValid=preparationClockValid && preparationCpu && ownedCpuEnd>=preparedCpu;
                 job.deviceField->seedCpuNs=glob2::threadCpuDeltaNs(preparationCpu,ownedCpuEnd);
@@ -249,7 +249,7 @@ private:
                         if(policy)policy->recordTuningOverhead(tick,glob2::threadCpuDeltaNs(started,ended),
                             started && ended && ended>=started);
                     }
-                } captureCleanup{capture,*backendSession,job.snapshotLease ? job.snapshotLease->tick : job.due-delay};
+                } captureCleanup{capture,*backendSession,job.due-delay};
                 const auto cpuStart=cpuNow();
                 if(diagnostics)handoffCpu.fetch_add(glob2::threadCpuDeltaNs(handoffStart,cpuStart),std::memory_order_relaxed);
                 work(job,scratch.propagation);
@@ -273,7 +273,7 @@ private:
                 }
                 if(learningEnabled && deviceService && executor->slot()) deviceService->recordAccepted(backendSession,key,
                     gradient_kernel::Plan::CPU,measured ? glob2::threadCpuDeltaNs(preparationCpu,preparedCpu)+consumed : 0,
-                    job.snapshotLease ? job.snapshotLease->tick : job.due-delay,!measured);
+                    job.due-delay,!measured);
                 cpuFields.fetch_add(1,std::memory_order_relaxed);
             }
 		}

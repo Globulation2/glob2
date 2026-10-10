@@ -780,3 +780,9 @@ optional expenses. Fused seed counts continue to belong to required preparation;
 there is no new scan or per-cell clock. Their incremental instruction cost must
 pass the complete tuning-on/off process CPU gate (or a classification ablation
 when material), independently of the optional probe credit budget.
+
+Policy credits, captures, observations and cadence use the pipeline's local tick
+namespace. A loaded snapshot's game tick is immutable simulation input, not a
+policy-credit timestamp. Mixing those clocks after load/reconfiguration would
+exclude all fresh rolling credits and prevent capture admission; saved-game
+activation checks must cover a nonzero game tick with a freshly configured pipeline.
