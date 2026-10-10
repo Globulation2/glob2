@@ -35,6 +35,7 @@ struct OwnedGradientField
     // Published before the completion ticket resolves; owner reads after join.
     std::uint64_t deviceStartedWallNs=0,deviceCompletedWallNs=0,fallbackCleanupCpuNs=0;
     bool diagnostics=false;
+    unsigned executedBatchCount=1;
     bool executedGPU = false;
     GradientFallbackReason fallbackReason=GradientFallbackReason::None;
     std::size_t reservedHostBytes = 0, retainedInputBytes = 0;
@@ -65,6 +66,7 @@ public:
         std::uint64_t submitted=0, completed=0, executed=0, trivial=0, fallbacks=0, declined=0;
         std::uint64_t batches=0, maxBatch=0, initializationNs=0, hostCpuNs=0;
         std::uint64_t stale=0, budgetDeclines=0, observationDrops=0;
+        std::uint64_t publicationStalls=0;
         std::uint64_t batchPreparationCpuNs=0,batchSubmissionCpuNs=0,batchCompletionCpuNs=0;
         std::size_t queued=0, retainedHostBytes=0;
         bool running=false, ready=false;
@@ -94,6 +96,6 @@ public:
     // Required workers submit bounded metadata only; learning runs when the
     // coordinator has no required device work. Overflow drops optional learning.
     void recordAccepted(std::shared_ptr<BackendSession>,const WorkloadKey&,Plan,
-                        std::uint64_t hostCpuNs,std::uint64_t tick,bool failed=false) noexcept;
+                        std::uint64_t hostCpuNs,std::uint64_t tick,bool failed=false,bool publicationStall=false) noexcept;
 };
 }

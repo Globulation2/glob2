@@ -565,6 +565,7 @@ std::vector<std::pair<std::string,Uint64>> Map::adaptiveGradientMetrics() const
         {"fallback_reason_shutdown",device.fallbackReasons[unsigned(gradient_kernel::GradientFallbackReason::Shutdown)]},
         {"coordinator_fallbacks",device.fallbacks},{"coordinator_declined",device.declined},
         {"coordinator_stale",device.stale},{"coordinator_budget_declines",device.budgetDeclines},
+        {"coordinator_publication_stalls",device.publicationStalls},
         {"coordinator_retained_host_bytes",device.retainedHostBytes},{"coordinator_observation_drops",device.observationDrops},
         {"coordinator_batches",device.batches},{"coordinator_max_batch",device.maxBatch},
         {"coordinator_queued",device.queued},{"thread_cpu_clock_available",glob2::threadCpuNs()!=0},

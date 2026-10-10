@@ -13,6 +13,8 @@
 #include <array>
 #include <stdexcept>
 #include <future>
+#include <Environment.h>
+#include <string>
 
 // Standalone harnesses own an executor; production uses Map's shared executor.
 class TestGradientPipeline : public GradientPipeline
@@ -765,6 +767,66 @@ TEST_CASE("one-slot device configuration creates no driver activity" * doctest::
     GradientDeviceService service({[&]{++initialized;return true;},{}});
     service.configure(1,Backend::OpenCL);service.stop();
     CHECK(initialized==0);CHECK_FALSE(service.metrics().running);
+}
+
+TEST_CASE("fixed-due GPU stalls demote accepted policy in background without diagnostic clocks" * doctest::test_suite("GradientPipeline"))
+{
+    using namespace gradient_kernel;
+    if constexpr(!GAGCore::ThreadSupport::available)return;
+    struct Diagnostics {
+        std::string previous=std::getenv("GLOB2_GRADIENT_DIAGNOSTICS") ? std::getenv("GLOB2_GRADIENT_DIAGNOSTICS") : "";
+        Diagnostics(){GAGCore::setProcessEnvironment("GLOB2_GRADIENT_DIAGNOSTICS","0",1);}
+        ~Diagnostics(){GAGCore::setProcessEnvironment("GLOB2_GRADIENT_DIAGNOSTICS",previous.c_str(),1);}
+    } diagnostics;
+    struct Restore {Backend mode=backend();unsigned mask=readyPlans.load();~Restore(){setBackend(mode);readyPlans=mask;}} restore;
+    const auto plan=requestedOpenCLPlan();readyPlans=1u<<unsigned(plan);setBackend(Backend::OpenCL);
+    for(const bool stalled:{false,true}) {
+        struct Gate {
+            std::promise<void> entered,release;std::shared_future<void> released=release.get_future().share();
+            std::atomic<bool> opened{false};void open(){if(!opened.exchange(true))release.set_value();}
+        };
+        auto gate=std::make_shared<Gate>();
+        struct Release {std::shared_ptr<Gate> gate;~Release(){gate->open();}} cleanup{gate};
+        auto entered=gate->entered.get_future();
+        auto service=std::make_shared<GradientDeviceService>(GradientDeviceService::Hooks{
+            []{return true;},[gate](std::span<const BackendRequest> requests,Plan){
+                gate->entered.set_value();gate->released.wait();
+                for(const auto& r:requests){r.gradient[0]=99;if(r.executedOnDevice)*r.executedOnDevice=true;}return true;
+            }});
+        service->configure(2,Backend::OpenCL);
+        const auto until=std::chrono::steady_clock::now()+std::chrono::seconds(5);
+        while(!service->metrics().ready && std::chrono::steady_clock::now()<until)std::this_thread::yield();
+        REQUIRE(service->metrics().ready);
+        TestGradientPipeline pipeline;pipeline.configure(1,1,1,[](auto&,auto&){FAIL("CPU path unexpected");});
+        pipeline.setDeviceService(service);auto session=pipeline.session();session->configureLearning(true);
+        const auto policy=session->learningPolicy();WorkloadKey key;
+        key.width=key.height=1;key.cpuBuckets=64;key.threads=2;key.family=Family::Materials;key.limit=COST_LIMIT;
+        policy->observeAccepted(key,Plan::CPU,1000000000,1);REQUIRE(policy->qualify(key,plan,true));
+        for(unsigned pair=0;pair<8;++pair) {
+            std::optional<CpuSavingPolicy::ProbeTicket> ticket;
+            for(unsigned i=0;i<CpuSavingPolicy::ProbePeriod && !ticket;++i)
+                ticket=policy->beginProbe(key,plan,1,1000000,100000000,1000000,false);
+            REQUIRE(ticket);policy->finishProbe(*ticket,1000000,600000,1000000,1000000,100000000,true,true);
+        }
+        REQUIRE(policy->lookup(key).plan==plan);
+        pipeline.setAsyncWork([](auto& job,PlanDecision decision){
+            auto field=std::make_shared<OwnedGradientField>();field->session=job.owner->session();field->decision=decision;
+            field->data=std::move(job.data);field->due=job.executorDue;
+            field->costAt=[](const auto&,std::size_t){return LAND_STEPS;};field->cpu=[](auto&){FAIL("CPU recovery unexpected");};return field;
+        });
+        auto* published=new std::uint16_t[1]{};pipeline.advance();pipeline.submit(&published,0,[](auto& job){job.data[0]=77;});
+        const auto entry=entered.wait_for(std::chrono::seconds(5));if(entry!=std::future_status::ready)gate->open();
+        REQUIRE(entry==std::future_status::ready);
+        if(!stalled) {gate->open();pipeline.finish();}
+        auto release=std::async(std::launch::async,[gate]{std::this_thread::sleep_for(std::chrono::milliseconds(20));gate->open();});
+        pipeline.advance();release.get();CHECK(published[0]==99);
+        if(stalled) {
+            const auto stop=std::chrono::steady_clock::now()+std::chrono::seconds(5);
+            while(policy->lookup(key).plan!=Plan::CPU && std::chrono::steady_clock::now()<stop)std::this_thread::yield();
+            CHECK(policy->lookup(key).plan==Plan::CPU);CHECK(service->metrics().publicationStalls==1);
+        } else {CHECK(policy->lookup(key).plan==plan);CHECK(service->metrics().publicationStalls==0);}
+        pipeline.reset();service->stop();delete[] published;
+    }
 }
 
 TEST_CASE("device registration stop and reconfigure never join a slow optional initializer" * doctest::test_suite("GradientPipeline"))

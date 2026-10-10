@@ -22,7 +22,7 @@ struct GradientDeviceState
         WorkloadKey key;
         Plan plan=Plan::CPU;
         std::uint64_t generation=0,cpuNs=0,tick=0;
-        bool failed=false;
+        bool failed=false,publicationStall=false;
     };
     mutable std::mutex mutex;
     GradientDeviceService::Hooks hooks;
@@ -61,13 +61,18 @@ void fallbackField(const std::shared_ptr<OwnedGradientField>& field) noexcept
     field->completion->resume({&recoverField,field.get()});
 }
 bool observe(const std::shared_ptr<GradientDeviceState>& state,std::shared_ptr<BackendSession> session,
-    const WorkloadKey& key,Plan plan,std::uint64_t cpuNs,std::uint64_t tick,bool failure=false) noexcept
+    const WorkloadKey& key,Plan plan,std::uint64_t cpuNs,std::uint64_t tick,bool failure=false,bool publicationStall=false) noexcept
 {
     std::lock_guard lock(state->mutex);
     if(!state->started || state->canceled || !session || !session->learningPolicy()) return false;
-    if(state->observationWritten-state->observationRead==state->observations.size()) {++state->totals.observationDrops;return false;}
+    if(state->observationWritten-state->observationRead==state->observations.size()) {
+        ++state->totals.observationDrops;
+        if(!publicationStall)return false;
+        ++state->observationRead; // Retain a stall demotion instead of an older optional sample.
+    }
+    if(publicationStall)++state->totals.publicationStalls;
     state->observations[state->observationWritten++%state->observations.size()]={
-        session,key,plan,session->currentGeneration(),cpuNs,tick,failure};return true;
+        session,key,plan,session->currentGeneration(),cpuNs,tick,failure,publicationStall};return true;
 }
 
 // The broker is process-owned. Only process exit joins its thread. Holding the
@@ -122,6 +127,7 @@ class DeviceBroker
         }
         const std::span fields(held.data(),count);bool handled=false,submissionStarted=false;
         const bool diagnostics=state->totals.diagnostics;
+        const bool trackCompletion=diagnostics || bool(fields.front()->session->learningPolicy());
         std::uint64_t preparationEnd=cpuStart,submissionEnd=cpuStart;
         const bool stale=std::any_of(fields.begin(),fields.end(),[](const auto& field) {
             return field->decision.generation!=field->session->currentGeneration() || field->session->failed.load();
@@ -135,8 +141,8 @@ class DeviceBroker
                         nullptr,field->identity,field->family});
                     requests.back().cpuBuckets=field->cpuBuckets;requests.back().executedOnDevice=&field->executedGPU;
                 }
-                if(diagnostics) {
-                    preparationEnd=glob2::threadCpuNs();
+                if(diagnostics)preparationEnd=glob2::threadCpuNs();
+                if(trackCompletion) {
                     const auto stamp=monotonicNs();for(const auto& field:fields) field->deviceStartedWallNs=stamp;
                 }
                 submissionStarted=true;
@@ -150,11 +156,12 @@ class DeviceBroker
         }
         if(diagnostics && submissionEnd<preparationEnd) submissionEnd=glob2::threadCpuNs();
         const auto elapsed=monotonicNs()-started,consumed=glob2::threadCpuNs()-cpuStart;
-        if(diagnostics) {
+        if(trackCompletion) {
             const auto stamp=monotonicNs();for(const auto& field:fields)field->deviceCompletedWallNs=stamp;
         }
         std::size_t cells=0;for(const auto& field:fields) cells+=field->grid.cells();
         for(const auto& field:fields) {
+            field->executedBatchCount=unsigned(count);
             field->serviceNs=elapsed;field->hostCpuNs=(consumed/cells)*field->grid.cells()+(consumed%cells)*field->grid.cells()/cells;
             if(handled) {
                 field->inputs.reset();field->identity={};
@@ -226,7 +233,7 @@ class DeviceBroker
                     selected->observationRead++%selected->observations.size()]);}
                 if(observation.session->currentGeneration()==observation.generation)
                     if(auto policy=observation.session->learningPolicy()) policy->observeAccepted(
-                        observation.key,observation.plan,observation.cpuNs,observation.tick,observation.failed);
+                        observation.key,observation.plan,observation.cpuNs,observation.tick,observation.failed,observation.publicationStall);
             }
             brokerCpuNs=glob2::threadCpuNs()-cpuStart;
         }
@@ -318,8 +325,8 @@ bool GradientDeviceService::submit(const std::shared_ptr<OwnedGradientField>& fi
 }
 void GradientDeviceService::fallback(const std::shared_ptr<OwnedGradientField>& field) noexcept {fallbackField(field);}
 void GradientDeviceService::recordAccepted(std::shared_ptr<BackendSession> session,const WorkloadKey& key,
-    Plan plan,std::uint64_t cpuNs,std::uint64_t tick,bool failed) noexcept {
-    if(auto current=state()) if(observe(current,std::move(session),key,plan,cpuNs,tick,failed)) broker().notify();
+    Plan plan,std::uint64_t cpuNs,std::uint64_t tick,bool failed,bool publicationStall) noexcept {
+    if(auto current=state()) if(observe(current,std::move(session),key,plan,cpuNs,tick,failed,publicationStall)) broker().notify();
 }
 GradientDeviceService::Metrics GradientDeviceService::metrics() const {
     auto current=state();Metrics out;

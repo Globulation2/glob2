@@ -194,9 +194,11 @@ private:
 	}
 	void wait(Job &job, bool publication = false) {
 		const auto start = Clock::now();
-        const auto waitStart=diagnostics ? gradient_kernel::monotonicNs() : 0;
+        const bool learningEnabled=bool(backendSession->learningPolicy());
+        const bool trackStalls=diagnostics || learningEnabled;
+        const auto waitStart=trackStalls ? gradient_kernel::monotonicNs() : 0;
         const auto joinCpuStart=diagnostics ? glob2::threadCpuNs() : 0;
-        const bool incomplete=diagnostics && publication && executor && !executor->finished(job.batch);
+        const bool incomplete=trackStalls && publication && executor && !executor->finished(job.batch);
 		if (executor) executor->join(job.batch);
         const auto joined=diagnostics ? gradient_kernel::monotonicNs() : 0;
         const auto completionCpuStart=diagnostics ? glob2::threadCpuNs() : 0;
@@ -204,7 +206,14 @@ private:
         // not an exclusive overhead to add to propagation accounting.
         if(diagnostics)metrics.ownerJoinCpuNs+=glob2::threadCpuDeltaNs(joinCpuStart,completionCpuStart);
         if(job.deviceField) {
-            if(incomplete && job.deviceField->executedGPU) {
+            if(incomplete && job.deviceField->executedGPU && job.deviceField->deviceCompletedWallNs>waitStart) {
+                if(learningEnabled && deviceService) {
+                    auto key=job.deviceField->workload;key.batch=job.deviceField->executedBatchCount;
+                    deviceService->recordAccepted(job.deviceField->session,key,job.deviceField->decision.plan,
+                        0,job.deviceField->tick,false,true);
+                }
+            }
+            if(diagnostics && incomplete && job.deviceField->executedGPU) {
                 const auto waited=joined-waitStart;
                 const auto from=std::max(waitStart,job.deviceField->deviceStartedWallNs);
                 const auto until=std::min(joined,job.deviceField->deviceCompletedWallNs);
