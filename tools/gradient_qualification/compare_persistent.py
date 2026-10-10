@@ -26,8 +26,9 @@ class PersistentComparison(Comparison):
         self.variants=('persistent',)
         self.threads,self.pops,self.epochs=threads,pops,epochs
         self.directory=directory
+        self.fatal_receipt=str(directory/'fatal-native.json').encode()
         self.persistent=ctypes.CDLL(str(directory/'persistent.so'))
-        self.persistent.run_persistent.argtypes=[ctypes.c_void_p]*5+[ctypes.c_uint32]*6+[ctypes.c_void_p]
+        self.persistent.run_persistent.argtypes=[ctypes.c_void_p]*5+[ctypes.c_uint32]*6+[ctypes.c_void_p,ctypes.c_char_p]
         started=time.perf_counter_ns();cpu_started=time.process_time_ns()
         cl=self.gpu.cl
         self.persistent_program=cl.Program(self.gpu.ctx,(HERE/'persistent.cl').read_text()).build(['-cl-std=CL1.2'])
@@ -77,7 +78,7 @@ class PersistentComparison(Comparison):
             ('seeds','values','costs','first','second','stamp','metadata')],np.uintp)
         result=self.persistent.run_persistent(self.gpu.queue.int_ptr,self.persistent_kernel.int_ptr,
             buffers.ctypes.data,field['seeds'].ctypes.data,output.ctypes.data,field['width'],field['height'],
-            field['cap'],self.threads,self.pops,self.epochs,metrics.ctypes.data)
+            field['cap'],self.threads,self.pops,self.epochs,metrics.ctypes.data,self.fatal_receipt)
         details=dict(zip(('device_status','rounds','pops','frontier_highwater','updates','initial_frontier',
             'remaining_frontier','error_bits','dispatches','host_checks','argument_updates','device_workspace_bytes',
             'seed_uploaded_bytes','metadata_readback_bytes','field_readback_bytes','device_completion_observed'),map(int,metrics)))

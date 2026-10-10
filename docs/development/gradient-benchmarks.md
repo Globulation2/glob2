@@ -321,3 +321,11 @@ screens give no eligibility evidence for 512-square maps: include `--max-size
 512` before any target CPU-benefit claim. Single-group underutilization can
 outweigh fewer host commands, particularly for singleton fields; prune the
 candidate if target-size completion and publication slack fail.
+
+The persistent prototype has a development-process-only fatal safeguard: if an
+OpenCL error is followed by a failed emergency `clFinish`, it writes an explicit
+stderr marker and best-effort `fatal-native.json`, then terminates without stack
+unwinding with exit code 86. This prevents borrowed stack/output storage from
+expiring while driver completion is unknown. It is not production recovery;
+retain the external process return code, freeze and partial result files and
+reject the entire run. Normal successful execution adds no safety `Finish`.

@@ -5,6 +5,8 @@
 #include <array>
 #include <cstddef>
 #include <cstdint>
+#include <cstdio>
+#include <cstdlib>
 #include <limits>
 using Handle=void*;using UInt=std::uint32_t;
 extern "C" {
@@ -14,9 +16,22 @@ int clEnqueueWriteBuffer(Handle,Handle,UInt,std::size_t,std::size_t,const void*,
 int clEnqueueReadBuffer(Handle,Handle,UInt,std::size_t,std::size_t,void*,UInt,const Handle*,Handle*);
 int clEnqueueNDRangeKernel(Handle,Handle,UInt,const std::size_t*,const std::size_t*,const std::size_t*,UInt,const Handle*,Handle*);
 }
-#define CHECK(call) do {const int error=(call);if(error){clFinish(queue);return error;}}while(false)
+// Driver failure is never completion proof. In this isolated process only,
+// failed emergency drain must not return/unwind while borrowed stack metadata
+// or caller output may still be used. Preserve an explicit best-effort receipt
+// and stop the whole diagnostic process without C++/Python stack destruction.
+[[noreturn]] static void fatalDrain(int apiError,int drainError,const char* receipt) noexcept {
+ std::fprintf(stderr,"PERSISTENT_FATAL_DRAIN: API error %d; clFinish error %d; non-unwinding process exit 86\n",apiError,drainError);
+ std::fflush(stderr);
+ if(receipt)if(auto* file=std::fopen(receipt,"w")){
+  std::fprintf(file,"{\"schema\":\"glob2-persistent-fatal-drain-v1\",\"api_error\":%d,\"drain_error\":%d,\"exit_code\":86,\"completed\":false,\"safe_recovery\":false}\n",apiError,drainError);
+  std::fflush(file);std::fclose(file);
+ }
+ std::_Exit(86);
+}
+#define CHECK(call) do {const int error=(call);if(error){const int drain=clFinish(queue);if(drain)fatalDrain(error,drain,fatalReceipt);return error;}}while(false)
 extern "C" int run_persistent(Handle queue,Handle kernel,Handle* buffers,const std::uint16_t* seeds,UInt* output,
- UInt width,UInt height,UInt cap,UInt threads,UInt popLimit,UInt epochLimit,std::uint64_t* metrics)
+ UInt width,UInt height,UInt cap,UInt threads,UInt popLimit,UInt epochLimit,std::uint64_t* metrics,const char* fatalReceipt)
 {
  std::fill_n(metrics,16,0);
  if(!width || !height || width>std::numeric_limits<UInt>::max()/height || cap>UInt(std::numeric_limits<int>::max()) ||
