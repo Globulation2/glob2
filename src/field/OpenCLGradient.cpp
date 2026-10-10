@@ -387,7 +387,8 @@ struct Device
         std::promise<void> completed;
         std::shared_future<void> ready = completed.get_future().share();
         std::atomic<bool> published{false};
-        Plane(API& api, const BackendRequest& r, std::span<const std::uint8_t> mask,bool scalar,bool reserveOnly=false)
+        template<class Request>
+        Plane(API& api, const Request& r, std::span<const std::uint8_t> mask,bool scalar,bool reserveOnly=false)
             : api(&api), identity(r.identity), width(r.grid.width()), height(r.grid.height()) {
             const auto count=scalar ? std::size_t(1) : r.grid.cells();
             if(count>OpenCLHostBudget/sizeof(UInt)) throw BudgetExceeded();
@@ -1335,7 +1336,7 @@ struct OpenCLProbe::Impl
         ~AdmissionLease(){if(owns)parent->optionalLifetime.release();}
     } admission;
     Phase phase=Phase::Costs;
-    BackendRequest request;
+    OpenCLProbeInput request;
     Plan plan;
     BudgetLease objectLease{hostBudget};
     std::shared_ptr<const void> keepAlive;
@@ -1351,7 +1352,7 @@ struct OpenCLProbe::Impl
     bool completionUnknown=false,untrackedCommand=false;
     static constexpr std::size_t controlBytes=256+sizeof(OpenCLBorrowedLifetime);
     static constexpr std::size_t objectBytes() {return sizeof(OpenCLProbe)+sizeof(Impl)+sizeof(Runtime)+controlBytes;}
-    Impl(const BackendRequest& r,Plan p,std::shared_ptr<const void> owner,OpenCLProbeClock clockValue,
+    Impl(const OpenCLProbeInput& r,Plan p,std::shared_ptr<const void> owner,OpenCLProbeClock clockValue,
          BudgetLease& objectAdmission,BudgetLease& laneAdmission,BudgetLease& subsetAdmission)
         :request(r),plan(p),keepAlive(std::move(owner)),clock(std::move(clockValue)),generation(r.session.currentGeneration()) {
         admission.parent=runtime().shared;
@@ -1732,6 +1733,10 @@ OpenCLProbeProgress OpenCLProbe::advance(std::size_t copyCells,std::uint64_t cpu
 #endif
 }
 std::unique_ptr<OpenCLProbe> beginOpenCLProbe(const BackendRequest& request,Plan plan,std::shared_ptr<const void> keepAlive,OpenCLProbeClock clock) {
+    return beginOpenCLProbe(OpenCLProbeInput{request.gradient,request.limit,request.grid,request.session,
+        request.context,request.costAt,request.identity,request.operation},plan,std::move(keepAlive),std::move(clock));
+}
+std::unique_ptr<OpenCLProbe> beginOpenCLProbe(const OpenCLProbeInput& request,Plan plan,std::shared_ptr<const void> keepAlive,OpenCLProbeClock clock) {
 #if !defined(SDL_PLATFORM_EMSCRIPTEN) && !defined(SDL_PLATFORM_ANDROID) && !defined(SDL_PLATFORM_IOS)
     auto& device=*runtime().shared;
     if(clock.read && !clock.owner) {++device.threadCPUInvalidMeasurements;return {};}

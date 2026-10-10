@@ -1,8 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "OpenCLBorrowedLifetime.h"
 #include "OpenCLGradient.h"
+#include "GradientBackend.h"
 #include "Glob2Test.h"
 #include <array>
+#include <type_traits>
+
+static_assert(std::is_same_v<decltype(gradient_kernel::OpenCLProbeInput::gradient),const std::uint16_t*>);
 
 namespace
 {

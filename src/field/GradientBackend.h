@@ -56,6 +56,20 @@ struct BackendRequest
     // Retains true when later readback/session failure causes CPU fallback.
     bool* deviceExecutionObserved = nullptr;
 };
+// Optional replay reads immutable seeds and never invokes required CPU recovery
+// or publishes output into that storage. Its owner pins the session, cost
+// context and complete retained graph until positive transfer completion.
+struct OpenCLProbeInput
+{
+    const std::uint16_t* gradient;
+    int limit;
+    field::Grid grid;
+    BackendSession& session;
+    void* context;
+    EntrySteps (*costAt)(void*,std::size_t);
+    CostIdentity identity;
+    Operation operation=Operation::CompleteField;
+};
 inline bool alreadyFixedGradient(std::span<const std::uint16_t> seeds) {
     const auto source=std::find_if(seeds.begin(),seeds.end(),[](auto value){return value>1;});
     if(source==seeds.end()) return true;
