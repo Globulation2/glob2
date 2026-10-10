@@ -355,3 +355,44 @@ work and never mutates captured original seeds.
 Create and advance the reference on the same background producer: native thread
 CPU clock values cannot be compared across different workers.
 
+### Isolated accepted CPU capture primitive
+
+`GradientCpuCapture` is an unattached worker-side interface; required scheduling
+and automatic learning do not call it. After normal seeding, admission reserves
+the policy's sampled global opportunity and CPU credits before cloning. The
+shared 16 MiB probe subset of the 64 MiB host budget reserves both original and
+golden ushort arrays, exact classic cost input, retained policy/clock payload,
+holder and control storage before the first allocation. Fixed arrays avoid
+vector-capacity guesses; tracked payload/control allowances do not claim driver
+or allocator RSS. Caller input is borrowed only during copying.
+
+The first implementation accepts only the actual classic CPU path. Unweighted
+classes need no cost scan or water lookup; weighted classes clone the supplied
+byte water plane unchanged. Modified terrain and CellRule indirection decline.
+Those future views need bounded deep copies of the used rule and movement
+metadata. Existing terrain capacity estimates omit transitive object graphs and
+must not be passed as proof of complete retained ownership.
+
+Copying uses 16 KiB blocks with guarded clocks, measured 500 us block limits and
+a separate capture CPU limit within the full reservation. Allocation, driver,
+callback and block overshoots remain measured declines, not hard latency
+guarantees. Invalid clocks stop optional copying permanently and require full
+reserved charge. Rejected admission returns an optional-work receipt too; future
+attachment must record/exclude this cost rather than count it as accepted work.
+
+The required job runs exactly once between the original and golden clones. Its
+reference is a guarded propagation-only CPU span, excluding preparation and
+capture. Clone gold before publication or reuse of the job's mutable array;
+`complete` then binds that reference in policy-owned state. Common preparation
+is added once to both alternatives. Future accepted-job credits must sum the
+disjoint required spans, not a wall-to-wall CPU bracket containing capture.
+
+The immutable record holds storage and the global admission slot until its last
+alias is released. An explicit one-time worker-to-background producer handoff
+starts a separate thread CPU clock namespace; implicit migration is invalid.
+Cleanup is measured and reaps admission after releasing captured storage. This
+primitive only authorizes metadata and cancels on disposal; no GPU dispatch or
+promotion is attached. Any future device adapter must retain aliases through
+terminal event reaping and include private cost preparation, driver work and all
+cleanup in conservative accounting. Device/compiler initialization must already
+be qualified and prepared under its own tested accounting contract.
