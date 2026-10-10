@@ -296,6 +296,12 @@ static void publicReadsResolveTheirInputs()
 	Building *centre = world.place(20, 20);
 	for (int swim = 0; swim < SWIM_CLASS_COUNT; ++swim)
 	{
+        // Water-only callers need water outside the inn's occupied grass island.
+        // Retain the original all-grass setup for walking/swimming classes0-6.
+        if(swim==SWIM_CLASS_COUNT-1)
+            for(int y=0;y<map.getH();++y)
+                for(int x=0;x<map.getW();++x)
+                    if(map.getBuilding(x,y)==NOGBID) map.paintCell(x,y,WATER);
 		const Uint16 *full = map.buildingGradient(centre, swim);
 		require(full != nullptr, "public field is reachable");
 		std::vector<Uint16> expected(full, full + map.getW() * map.getH());
