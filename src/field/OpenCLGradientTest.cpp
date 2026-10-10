@@ -1028,7 +1028,7 @@ TEST_CASE("optional device advances preserve seeds interleave required work and 
 {
     using namespace gradient_kernel;
     if(!initializeOpenCL() || !(readyPlans.load()&(1u<<unsigned(Plan::Frozen8)))) return;
-    if(openCLStatus().activeEpoch || openCLStatus().parityBound || openCLStatus().directSeedUpload) return; // Required-only experimental modes.
+    if(openCLStatus().activeEpoch || openCLStatus().parityBound || openCLStatus().directSeedUpload || openCLStatus().apiCpuMode) return; // Required-only experimental modes.
     std::thread coordinator([&] {
         for(auto dimensions:{std::pair{1,17},std::pair{17,1},std::pair{7,13}})
         for(int cap:{0,40,700}) {
@@ -1267,6 +1267,7 @@ TEST_CASE("opt-in API CPU scopes observe real required commands without changing
     CHECK(after.apiCpu.reconciliationErrors==before.apiCpu.reconciliationErrors);
     if(initial.apiCpuMode==1)CHECK(categoryCpu==after.apiCpu.coveredNs-before.apiCpu.coveredNs);
     else {CHECK(categoryCpu==0);CHECK(after.apiCpu.coveredNs==before.apiCpu.coveredNs);}
+    CHECK_FALSE(beginOpenCLProbe(request,requestedOpenCLPlan(),owner)); // Unqualified diagnostic overhead.
 }
 TEST_CASE("isolated direct seed upload rollback preserves originals after device work")
 {
