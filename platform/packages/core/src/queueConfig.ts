@@ -33,7 +33,7 @@ export const RATED_AIS: readonly Exclude<AiId, 'none'>[] = [
 
 /**
  * 128x128 generators whose homes are fair by construction (the `fairness:` tag
- * in each generator's registration; see docs/map-generators/ADDING_A_GENERATOR.md):
+ * in each generator's registration; see docs/map-generators/adding-a-generator.md):
  * exact symmetry (Symmetric Arena, Sierpinski Gardens), solved fairness (Even
  * Ground's catchments, Marchland's rope), and the repeated-wedge and
  * stamped-lattice sets. Emoji (a novelty) and The Gauntlet are left out, as

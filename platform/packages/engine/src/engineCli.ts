@@ -3,7 +3,7 @@
 // module that reads engine output formats, so a change in the engine's CLI or
 // result files is a change here only. Functions are pure; engine.ts spawns.
 //
-// Commands used (see docs/tools/tournaments.md and docs/map-generators/CLI.md):
+// Commands used (see docs/tools/tournaments.md and docs/map-generators/cli.md):
 //   --headless-catalog                       existing; JSON on stdout
 //   --sim-version                            ASSUMED (being added on the engine
 //                                            integration branch): JSON on stdout
@@ -443,7 +443,7 @@ export function savedPlayers(
     });
 }
 
-/** Reads a map report (docs/map-generators/REPORT.md, schema_version 2). */
+/** Reads a map report (docs/map-generators/report-format.md, schema_version 2). */
 export function parseMapReport(text: string): ReportMap {
   const report = object(parseJson(text, 'map report'), 'map report');
   if (report['schema_version'] !== 2) {

@@ -35,7 +35,7 @@ using namespace MapGeneration;
 // the centre and the layout is fair for any colony count. The design is a pure function of the
 // request, so validateWorld rebuilds it and checks the finished world.
 //
-// GAME RULES BEHIND IT (docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md): every thread is land in
+// GAME RULES BEHIND IT (docs/map-generators/game-rules-for-map-design.md): every thread is land in
 // water, so wheat and wood regrow along its whole length, which is why threads carry fields, and
 // why a sand road runs down their middle: growth refuses where its probe finds sand, and nothing
 // grows on sand itself, so the road stays a lane and a thread never grows shut. Buildings need pure

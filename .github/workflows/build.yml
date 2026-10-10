@@ -22,7 +22,7 @@ on:
         type: boolean
         default: false
 
-# Superseded runs: see "CI run cancellation" in docs/development/reference.md.
+# Superseded runs: see "CI run cancellation" in docs/development/verification.md.
 # A newer revision of the same pull request (or non-default branch) cancels
 # this run. Default-branch runs finish once started; the newest pending
 # revision replaces older pending work, so not every master commit is verified.
@@ -87,6 +87,12 @@ jobs:
           python3 test/check_sim_revision.py --base "$BASE_SHA"
       - name: Check private RNG ownership
         run: python3 test/check_entity_random.py
+      - name: Check documentation links and navigation
+        run: |
+          python3 -m venv artifacts/docs-venv
+          artifacts/docs-venv/bin/python -m pip install -r tools/docs/requirements.txt
+          artifacts/docs-venv/bin/python -m unittest discover -s test -p test_check_docs.py -v
+          artifacts/docs-venv/bin/python tools/check_docs.py
       - name: Verify pinned scripting vendors once
         run: python3 tools/javascript/verify-vendor.py
       - name: Select checks for changed paths

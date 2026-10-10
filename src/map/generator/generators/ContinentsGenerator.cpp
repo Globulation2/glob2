@@ -45,7 +45,7 @@ using namespace MapGeneration;
 // is that every colony can start (water in reach, a starter kit, room to build, a walk to every
 // rival) and that the continent looks like itself.
 //
-// WHY IT PLAYS (docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md):
+// WHY IT PLAYS (docs/map-generators/game-rules-for-map-design.md):
 // - Wheat and wood regrow only within the growth probe's reach of pure water, so the fertile ground
 //   is the coasts, the lakeshores and the river banks, as it is on Earth: the interior is finite
 //   reserves and then desert. A colony holds its coast and fights for the next.

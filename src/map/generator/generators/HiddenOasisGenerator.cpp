@@ -37,7 +37,7 @@ using namespace MapGeneration;
 // sandstone plateau. Inside the plateau lies a hidden basin with a green pond, the only algae in the
 // world, and one winding slot canyon, the gorge, is the only way in.
 //
-// WHY IT PLAYS (docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md). Algae is the gate to everything past
+// WHY IT PLAYS (docs/map-generators/game-rules-for-map-design.md). Algae is the gate to everything past
 // the opening: even a level-0 school costs 2 of it (and its upgrades 12 and 10, a level-2 pool 8, the
 // top tower 2), and a worker may only work on a building of its own build level or below
 // (Building::canUnitWorkHere), which it raises only at a school. So without algae a colony upgrades

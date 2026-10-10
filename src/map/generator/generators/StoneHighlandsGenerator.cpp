@@ -38,7 +38,7 @@ using namespace MapGeneration;
 // valleys, one each while they last, and ponds fill the basins around them. The whole design is a
 // pure function of the request, so validateWorld rebuilds it and checks the finished world.
 //
-// WHY IT PLAYS WELL (docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md). Stone blocks movement and
+// WHY IT PLAYS WELL (docs/map-generators/game-rules-for-map-design.md). Stone blocks movement and
 // can never be cleared, so ridges are permanent walls, and the passes are the only doors: a valley
 // is a room whose passes are worth holding, and loopiness (30% of spare ridgelines by default)
 // makes sure a held pass can be flanked. Stone is also the upgrade resource, so every colony's

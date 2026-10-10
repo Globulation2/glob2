@@ -79,7 +79,7 @@ simulation version (see [verifying a match record](../development/headless-repla
 so a job runner can probe a binary without passing it flags it may not know.
 Game and generation commands require `--output-dir DIR`; an existing
 `result.json` is rejected. Building-family composition writes JSON to stdout; see
-[portable building families](../features/building-catalogs.md#portable-building-families).
+[portable building families](../features/building-family-packages.md#portable-building-families).
 Values are separate ordinary arguments, not JSON.
 
 ```sh
@@ -298,11 +298,11 @@ outbound SSH sessions. No port or service is opened on the coordinator.
 
 ```json
 [
-  {"name":"therig.local","directory":"/home/bradley/glob2-workers","slots":1},
-  {"name":"devlaptop.local","directory":"/home/bradley/glob2-workers","slots":1},
-  {"name":"pharaoh-dev-1.local","directory":"/home/bradley/glob2-workers","slots":1},
-  {"name":"pharaoh-dev-2.local","directory":"/home/bradley/glob2-workers","slots":1},
-  {"name":"pharaoh-dev-3.local","directory":"/home/bradley/glob2-workers","slots":1}
+  {"name":"worker-1.example","directory":"/srv/glob2-workers","slots":1},
+  {"name":"worker-2.example","directory":"/srv/glob2-workers","slots":1},
+  {"name":"worker-3.example","directory":"/srv/glob2-workers","slots":1},
+  {"name":"worker-4.example","directory":"/srv/glob2-workers","slots":1},
+  {"name":"worker-5.example","directory":"/srv/glob2-workers","slots":1}
 ]
 ```
 
@@ -474,7 +474,7 @@ unsupported combinations remain reported failures rather than being filtered out
   exact map artifacts. format defaults to 1v1 for two players, otherwise ffa;
   alliances is optional. Paired effects, raw pairs, intervals, configurations and
   failure rates are exported. No automatic best-variant selection occurs.
-* `gradient_depth`: data for the [building-field depth model](../building-gradient-depth-model.md).
+* `gradient_depth`: data for the [building-field depth model](../ai/architecture/building-gradient-depth-model.md).
   `sample_games` (default 48) independently drawn games; each draws a map size
   first, then a format that size admits, then AIs and a generator, all from
   `sample_seed`. `sizes` defaults to 64x64 (duels only, since four colonies do not
@@ -560,7 +560,7 @@ ignored `artifacts/` workspace or in pull-request attachments.
 ## Map-generation telemetry
 
 Structured generation results now embed `map_report`, the complete native
-[version-2 report](../map-generators/REPORT.md), including every final-map measurement
+[version-2 report](../map-generators/report-format.md), including every final-map measurement
 and the bounded, ordered internal trace. Collection is automatic, independent of
 map-file output. Failures from the generation service retain its failure report;
 argument errors and crashes may only have diagnostics. Root/chosen seeds remain
@@ -583,7 +583,7 @@ above. Both use the same production report serializer.
 ## Ending decided games early
 
 `"win_probability_permille": 970` in an experiment design turns on the optional
-[win probability](../win-probability-model.md) winning condition for its games, so a
+[win probability](../ai/architecture/win-probability-model.md) winning condition for its games, so a
 match that is already decided is not played out. It is off by default, because it
 changes the outcome that gets measured and so must be asked for.
 
@@ -720,4 +720,8 @@ Custom JavaScript generator jobs may use a namespaced string `generator` ID. Att
 the frozen portable package as an input named `generator-package` (or numbered
 `generator-package-*` inputs for several packages). The adapter supplies them through
 `--generator-package`; package artifacts therefore participate in job identity and
-travel with the request. See [generator authoring](../map-generators/JAVASCRIPT.md).
+travel with the request. See [generator authoring](../map-generators/javascript.md).
+
+## Related guides
+
+See [AI evaluation](../ai/README.md), [map-generator verification](../map-generators/verification.md), and the [tools index](README.md).

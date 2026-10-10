@@ -1,6 +1,6 @@
 """Drawing reads the shared immutable world snapshot, never live simulation state.
 
-See "Scene renderer" in docs/development/reference.md. Render passes are still
+See "Scene renderer" in docs/architecture/rendering.md. Render passes are still
 Game member functions, so this checks what drawing code reads rather than what
 it includes; the Scene types themselves must stay plain presentation data.
 """

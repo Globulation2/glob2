@@ -103,7 +103,7 @@ archive's contents against its manifest so it cannot contain a half-written summ
 ## Analyze the returned observations
 
 Every generated result contains `result.map_report`, the complete version-2 native
-[map report](../../../../docs/map-generators/REPORT.md). It includes all final-world
+[map report](../../../../docs/map-generators/report-format.md). It includes all final-world
 measurements and `generation.telemetry` records with sequence, subject and original
 JSON types. Service-level failures retain partial telemetry without analyzing the
 invalid world; parsing errors/crashes may have no report. Logs and exit categories

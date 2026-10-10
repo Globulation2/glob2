@@ -19,4 +19,4 @@ for the pinned PNG/JPEG/WebP SDL_image build. Assets are exported to smaller ver
 encodings, dylib aliases retain one canonical copy, and the release executable is
 stripped after its matching dSYM is retained under the build's `symbols/` directory.
 Keep that directory with release evidence; it is not included in the app or DMG.
-See [release asset and bundle sizes](../docs/development/reference.md#release-asset-and-bundle-sizes).
+See [release asset and bundle sizes](../docs/development/package-size.md#release-asset-and-bundle-sizes).

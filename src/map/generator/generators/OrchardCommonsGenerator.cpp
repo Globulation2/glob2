@@ -20,7 +20,7 @@ using namespace MapGeneration;
 
 // Fruit is permanent geography: three separate varieties, renewable where planted, never
 // spreading. The shared valley supplies diets; ordinary homes supply survival. See
-// docs/map-generators/ORCHARD_COMMONS.md for the conversion and containment contracts.
+// docs/map-generators/orchard-commons.md for the conversion and containment contracts.
 namespace
 {
 struct Plot

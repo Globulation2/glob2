@@ -51,7 +51,7 @@ using namespace MapGeneration;
 // (channelCoreFault), every riffle is open from bank to bank (fordFault), and every colony can
 // walk to colony 0 and onto the bar it was promised.
 //
-// WHY IT PLAYS WELL (docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md). Wheat and wood regrow
+// WHY IT PLAYS WELL (docs/map-generators/game-rules-for-map-design.md). Wheat and wood regrow
 // only within fifteen tiles of water, so a bar with channels on every side is the richest ground
 // on the map, the terrace's own bank strip is middling, and the terrace behind a home, where the
 // town is built, never grows anything: the town cannot be overgrown, and every colony's food comes

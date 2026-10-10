@@ -17,7 +17,7 @@ namespace MapGeneration
 // Heuristic search over a caller-owned arrangement. Construct hard guarantees where possible,
 // search the remaining coupled choices, and validate the finished world independently. A lower
 // objective is evidence about the stated preferences, not proof of feasibility or gameplay balance.
-// See docs/map-generators/CONSTRAINT_SEARCH.md for composition with the rest of the toolkit.
+// See docs/map-generators/constraint-search.md for composition with the rest of the toolkit.
 
 /// Geometric cooling over attempted moves, including draws that cannot produce a candidate.
 /// Temperatures use the objective's units. Named streams and draw order are part of map identity;

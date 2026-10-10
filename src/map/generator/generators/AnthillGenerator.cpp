@@ -35,7 +35,7 @@ using namespace MapGeneration;
 // seeds; every queen chamber is grown to hold the same number of building sites (Room.h), so no
 // colony starts with more room than another.
 //
-// WHY IT PLAYS WELL (docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md). Buildings need pure grass
+// WHY IT PLAYS WELL (docs/map-generators/game-rules-for-map-design.md). Buildings need pure grass
 // and stone is never cleared, so the map's building room is fixed at generation and the fight is
 // over chambers; tunnels a column wide are closed by one building or one tower; the ponds in the
 // farm chambers are the only water, so a colony that wants its fields to regrow holds a farm

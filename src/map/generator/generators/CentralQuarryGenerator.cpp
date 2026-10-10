@@ -40,7 +40,7 @@ using namespace MapGeneration;
 // in the middle of the map. In the lake stands an island, and on the island is the only stone in the
 // world: a small grey outcrop that every colony wants and only one can hold.
 //
-// WHY IT PLAYS (docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md). Stone never runs out and is never
+// WHY IT PLAYS (docs/map-generators/game-rules-for-map-design.md). Stone never runs out and is never
 // cleared, so a quarry of a handful of tiles is a permanent site whose output is limited only by how
 // many workers can stand beside it. Everything a colony needs to start and grow is stone-free (level-0
 // inns, hospitals, schools, pools, barracks and swarms, and the towers themselves), but a tower fires

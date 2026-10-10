@@ -484,7 +484,7 @@ public:
 	std::string missionBriefing;
 	///The front-end that owns this game, or null. Simulation code must not use
 	///it; it remains for the torus renderer and GUI-side helpers (see
-	///docs/development/reference.md, "Simulation/client boundary").
+	///docs/architecture/rendering.md, "Simulation/client boundary").
 	GameGUI *gui;
 	MapEdit *edit;
 	///Client channels (all null without a GameGUI). Scripts send presentation

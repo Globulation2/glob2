@@ -76,7 +76,7 @@ namespace Turn
 		JitterBufferConfig jitter;
 		DelayControllerConfig delay;
 
-		// Order pacing (docs/multiplayer/turn-protocol.md#order-pacing). The relay gives a
+		// Order pacing (docs/multiplayer/turn-wire.md#order-pacing). The relay gives a
 		// seat at most one order per tick, so the session sends at most that many: a
 		// credit of `orderBurst` orders refilled at one per tick. Orders beyond it wait
 		// in a local queue, where a later order with the same target replaces an earlier
