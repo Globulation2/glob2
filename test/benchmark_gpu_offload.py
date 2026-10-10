@@ -45,12 +45,37 @@ def validate(config):
     if config['warmup_ticks'] < 0: raise ValueError('nonnegative warmup required')
 
 
+def resource_snapshot():
+    """Read-only inventory outside the timed window; command names exclude args."""
+    snapshot = {'monotonic_ns': time.monotonic_ns()}
+    load = Path('/proc/loadavg')
+    if load.exists(): snapshot['loadavg'] = load.read_text().strip()
+    listing = subprocess.run(['ps', '-eo', 'pid,comm,stat,pcpu', '--sort=-pcpu'],
+                             capture_output=True, text=True, check=False)
+    if listing.returncode:
+        snapshot['inventory_available'] = False; return snapshot
+    processes = []
+    for line in listing.stdout.splitlines()[1:]:
+        parts = line.split()
+        if len(parts) != 4: continue
+        pid, name, state, cpu = parts
+        try: processes.append(dict(pid=int(pid), command=name, state=state, lifetime_cpu_percent=float(cpu)))
+        except ValueError: continue
+    compilers = [p for p in processes if p['command'] in ('cc1', 'cc1plus', 'gcc', 'g++', 'nvcc', 'ptxas') or
+                 (p['command'].startswith('clang') and not p['command'].startswith('clangd'))]
+    snapshot.update(inventory_available=True, compilers=compilers,
+                    active_compiler_detected=any(p['state'].startswith(('R', 'D')) for p in compilers),
+                    top_cpu_commands=processes[:10])
+    return snapshot
+
+
 def execute(variant, scenario, output, warmup, *, extra_args=()):
     output.mkdir(parents=True, exist_ok=False)
     threads = str(variant.get('compute_threads', '8'))
     command = [variant['binary'], 'game', 'run', *scenario['args'], *extra_args, '--compute-threads', threads,
                '--benchmark-warmup', str(warmup), '--output-dir', str(output)]
     env = dict(os.environ, **variant.get('env', {}))
+    resources_before = resource_snapshot()
     started = time.monotonic_ns()
     with (output / 'engine.log').open('w') as log:
         process = subprocess.Popen(command, cwd=ROOT, env=env, stdout=log, stderr=subprocess.STDOUT)
@@ -64,7 +89,10 @@ def execute(variant, scenario, output, warmup, *, extra_args=()):
                process_wall_ns=time.monotonic_ns() - started,
                process_cpu_ns=round((usage.ru_utime + usage.ru_stime) * 1e9),
                peak_rss_bytes=usage.ru_maxrss * (1 if platform.system() == 'Darwin' else 1024),
-               valid=process.returncode == 0, errors=[])
+               valid=process.returncode == 0, errors=[],
+               resources_before=resources_before, resources_after=resource_snapshot())
+    row['resource_contaminated'] = any(s.get('active_compiler_detected', False) for s in
+                                        (row['resources_before'], row['resources_after']))
     if process.returncode:
         row['errors'].append('process failure'); return row
     try:
