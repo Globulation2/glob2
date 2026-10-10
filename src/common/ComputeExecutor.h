@@ -92,25 +92,33 @@ public:
 	// A suspended deferred job keeps its batch and lane incomplete while its
 	// worker runs other work. Resolution is one-shot, including early resolution
 	// before the invoking callback returns. No completion retains game inputs.
+	struct CompletionLifetime {
+		std::mutex mutex;
+		ComputeExecutor* executor;
+		explicit CompletionLifetime(ComputeExecutor* executor):executor(executor) {}
+	};
 	class Completion
 	{
 		friend class ComputeExecutor;
 		std::atomic<ComputeExecutor*> owner;
+		std::shared_ptr<CompletionLifetime> lifetime;
 		std::size_t slot, index;
 		std::uint64_t serial;
 		bool running = true, resolved = false;
 		Job continuation;
 		std::exception_ptr error;
 		Completion(ComputeExecutor* owner, std::size_t slot, std::size_t index, std::uint64_t serial)
-			: owner(owner), slot(slot), index(index), serial(serial) {}
+			: owner(owner), lifetime(owner->completionLifetime), slot(slot), index(index), serial(serial) {}
 	public:
 		bool complete(std::exception_ptr error = {}) {
-			auto* target = owner.load(std::memory_order_acquire);
+			std::lock_guard lock(lifetime->mutex);
+			auto* target = lifetime->executor == owner.load(std::memory_order_acquire) ? lifetime->executor : nullptr;
 			return target && target->resolve(*this, {}, error);
 		}
 		bool resume(Job continuation) {
 			if (!continuation.invoke) throw std::invalid_argument("Completion needs a nonempty continuation");
-			auto* target = owner.load(std::memory_order_acquire);
+			std::lock_guard lock(lifetime->mutex);
+			auto* target = lifetime->executor == owner.load(std::memory_order_acquire) ? lifetime->executor : nullptr;
 			return target && target->resolve(*this, continuation, {});
 		}
 	};
@@ -162,6 +170,7 @@ private:
 		std::exception_ptr error;
 	};
 	struct Claim { std::size_t slot = 0, index = 0; bool valid = false; };
+	std::shared_ptr<CompletionLifetime> completionLifetime = std::make_shared<CompletionLifetime>(this);
 	std::vector<std::thread> workers;
 	mutable std::mutex mutex;
 	std::condition_variable ready, runFinished, slotDone;
@@ -368,7 +377,7 @@ private:
 			const auto g = this->group(slot, claim.index);
 			group = slot.groups[g]; offset = claim.index - slot.starts[g];
 			if (slot.continuations[claim.index].invoke) { group.job = slot.continuations[claim.index]; offset = 0; }
-			assert(group.lane == NoLane || laneCompleted[group.lane] == slot.laneBases[g] + offset);
+			assert(group.lane == NoLane || laneCompleted[group.lane] == slot.laneBases[g] + (claim.index - slot.starts[g]));
 		}
 		auto *previous = active;
 		const auto previousSlot = activeSlot;
@@ -472,7 +481,11 @@ public:
 	ComputeExecutor() = default;
 	ComputeExecutor(const ComputeExecutor &) = delete;
 	ComputeExecutor &operator=(const ComputeExecutor &) = delete;
-	~ComputeExecutor() { stop(); }
+	~ComputeExecutor() {
+		stop();
+		std::lock_guard lock(completionLifetime->mutex);
+		completionLifetime->executor = nullptr;
+	}
 	// Configure only between batches; pending deferred work is joined first.
 	// Thread creation failure retains a usable serial executor; caller reports
 	// the actual thread count.

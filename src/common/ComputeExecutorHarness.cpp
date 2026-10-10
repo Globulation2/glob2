@@ -728,3 +728,38 @@ TEST_CASE("early asynchronous completion cannot release an invoking callback's i
     CHECK_THROWS_AS(executor.join(batch), std::runtime_error);
     CHECK_FALSE(context.finishedInside);
 }
+
+TEST_CASE("continuation of a nonzero lane-group index keeps its original sequence" * doctest::test_suite("ComputeExecutor"))
+{
+    if constexpr (!GAGCore::ThreadSupport::available) return;
+    ComputeExecutor executor; executor.configure(2);
+    struct Context { ComputeExecutor& executor; std::vector<unsigned> order; } context{executor};
+    const ComputeExecutor::Group group{3, {[](void* value,std::size_t index) {
+        auto& state=*static_cast<Context*>(value);
+        if(index==1) {
+            auto ticket=state.executor.defer();
+            ticket->resume({[](void* value,std::size_t index) {
+                auto& state=*static_cast<Context*>(value);
+                CHECK(index==0); state.order.push_back(1);
+            },value});
+        } else state.order.push_back(unsigned(index));
+    },&context},12};
+    auto batch=executor.submit(std::span(&group,1)); executor.join(batch);
+    CHECK(context.order==std::vector<unsigned>{0,1,2});
+}
+
+TEST_CASE("retained completion tickets can be resolved after executor destruction" * doctest::test_suite("ComputeExecutor"))
+{
+    if constexpr (!GAGCore::ThreadSupport::available) return;
+    ComputeExecutor::CompletionTicket ticket;
+    {
+        ComputeExecutor executor; executor.configure(2);
+        struct Context { ComputeExecutor& executor; ComputeExecutor::CompletionTicket& ticket; } context{executor,ticket};
+        const ComputeExecutor::Group group{1,{[](void* value,std::size_t) {
+            auto& state=*static_cast<Context*>(value);
+            state.ticket=state.executor.defer(); state.ticket->complete();
+        },&context}};
+        auto batch=executor.submit(std::span(&group,1)); executor.join(batch);
+    }
+    CHECK_FALSE(ticket->complete());
+}
