@@ -1,0 +1,9 @@
+/Users/bradley/.codex/worktrees/eb29/glob2/tools/artwork/terrain_studio.py:66: DeprecationWarning: Image.Image.getdata is deprecated and will be removed in Pillow 14 (2027-10-15). Use get_flattened_data instead.
+  values = list(alpha.getdata())
+/Users/bradley/.codex/worktrees/eb29/glob2/tools/artwork/terrain_studio.py:100: DeprecationWarning: Image.Image.getdata is deprecated and will be removed in Pillow 14 (2027-10-15). Use get_flattened_data instead.
+  for r, g, b, a in copy.getdata()]
+......
+----------------------------------------------------------------------
+Ran 6 tests in 0.685s
+
+OK

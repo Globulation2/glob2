@@ -1,0 +1,590 @@
+{
+  "title": "Arctic Tundra",
+  "terrainCount": 5,
+  "resourceCount": 5,
+  "zeroDamage": true,
+  "noResourceAnimation": true,
+  "packageSha256": "7d763d898de15bff6f845f16f659a2719094e5b47e2f075bbbc6f666deee2588",
+  "terrains": [
+    {
+      "key": "s935fc1833a02412b81b9d853d5a24819c7697defaadd448f9aad8673ab6fdeb7:settled-snow",
+      "base": "ice",
+      "name": "Settled Snow",
+      "appearance": "ice",
+      "properties": {
+        "flyable": true,
+        "growthQ8": 0,
+        "walkable": true,
+        "buildable": true,
+        "shoreline": false,
+        "swimmable": false,
+        "airSpeedQ8": 256,
+        "airHealthQ8": 0,
+        "fertilityQ8": 0,
+        "inhibitionQ8": 0,
+        "groundSpeedQ8": 256,
+        "resourcesGrow": false,
+        "groundHealthQ8": 0,
+        "shoreSupportQ8": 0,
+        "fertilitySource": false,
+        "projectileBlocks": false,
+        "nonGrowingResources": false
+      },
+      "allowedResourceKeys": []
+    },
+    {
+      "key": "s935fc1833a02412b81b9d853d5a24819c7697defaadd448f9aad8673ab6fdeb7:lichen-tundra",
+      "base": "moss",
+      "name": "Lichen Tundra",
+      "appearance": "moss",
+      "properties": {
+        "flyable": true,
+        "growthQ8": 256,
+        "walkable": true,
+        "buildable": true,
+        "shoreline": false,
+        "swimmable": false,
+        "airSpeedQ8": 256,
+        "airHealthQ8": 0,
+        "fertilityQ8": 320,
+        "farmMaterial": "food",
+        "inhibitionQ8": 0,
+        "groundSpeedQ8": 256,
+        "resourcesGrow": true,
+        "groundHealthQ8": 0,
+        "shoreSupportQ8": 0,
+        "fertilitySource": true,
+        "projectileBlocks": false,
+        "nonGrowingResources": false
+      },
+      "allowedResourceKeys": [
+        "s935fc1833a02412b81b9d853d5a24819c7697defaadd448f9aad8673ab6fdeb7:arctic-seed-grass",
+        "s935fc1833a02412b81b9d853d5a24819c7697defaadd448f9aad8673ab6fdeb7:dwarf-willow",
+        "s935fc1833a02412b81b9d853d5a24819c7697defaadd448f9aad8673ab6fdeb7:cloudberry-patch"
+      ]
+    },
+    {
+      "key": "s935fc1833a02412b81b9d853d5a24819c7697defaadd448f9aad8673ab6fdeb7:deep-snow",
+      "base": "deep_snow",
+      "name": "Deep Snow",
+      "appearance": "deep_snow",
+      "properties": {
+        "flyable": true,
+        "growthQ8": 0,
+        "walkable": true,
+        "buildable": false,
+        "shoreline": false,
+        "swimmable": false,
+        "airSpeedQ8": 256,
+        "airHealthQ8": 0,
+        "fertilityQ8": 0,
+        "inhibitionQ8": 0,
+        "groundSpeedQ8": 192,
+        "resourcesGrow": false,
+        "groundHealthQ8": 0,
+        "shoreSupportQ8": 0,
+        "fertilitySource": false,
+        "projectileBlocks": false,
+        "nonGrowingResources": false
+      },
+      "allowedResourceKeys": []
+    },
+    {
+      "key": "s935fc1833a02412b81b9d853d5a24819c7697defaadd448f9aad8673ab6fdeb7:frozen-gravel",
+      "base": "gravel",
+      "name": "Frozen Gravel",
+      "appearance": "gravel",
+      "properties": {
+        "flyable": true,
+        "growthQ8": 0,
+        "walkable": true,
+        "buildable": true,
+        "shoreline": false,
+        "swimmable": false,
+        "airSpeedQ8": 256,
+        "airHealthQ8": 0,
+        "fertilityQ8": 0,
+        "inhibitionQ8": 0,
+        "groundSpeedQ8": 256,
+        "resourcesGrow": false,
+        "groundHealthQ8": 0,
+        "shoreSupportQ8": 0,
+        "fertilitySource": false,
+        "projectileBlocks": false,
+        "nonGrowingResources": true
+      },
+      "allowedResourceKeys": [
+        "s935fc1833a02412b81b9d853d5a24819c7697defaadd448f9aad8673ab6fdeb7:tundra-stone",
+        "s935fc1833a02412b81b9d853d5a24819c7697defaadd448f9aad8673ab6fdeb7:iron-bearing-rock"
+      ]
+    },
+    {
+      "key": "s935fc1833a02412b81b9d853d5a24819c7697defaadd448f9aad8673ab6fdeb7:meltwater",
+      "base": "water",
+      "name": "Meltwater",
+      "appearance": "water",
+      "properties": {
+        "flyable": true,
+        "growthQ8": 0,
+        "walkable": false,
+        "buildable": false,
+        "shoreline": true,
+        "swimmable": true,
+        "airSpeedQ8": 256,
+        "airHealthQ8": 0,
+        "fertilityQ8": 0,
+        "inhibitionQ8": 0,
+        "groundSpeedQ8": 256,
+        "resourcesGrow": false,
+        "groundHealthQ8": 0,
+        "shoreSupportQ8": 256,
+        "fertilitySource": false,
+        "projectileBlocks": false,
+        "nonGrowingResources": false
+      },
+      "allowedResourceKeys": []
+    }
+  ],
+  "resources": [
+    {
+      "key": "s935fc1833a02412b81b9d853d5a24819c7697defaadd448f9aad8673ab6fdeb7:arctic-seed-grass",
+      "yields": {
+        "food": {
+          "initial": 2,
+          "capacity": 5,
+          "growthRate": 196608,
+          "consumption": "one",
+          "seedReserve": 1,
+          "destroysDeposit": false,
+          "placementMaximum": 4
+        }
+      },
+      "properties": {
+        "ecology": "land",
+        "farmable": true,
+        "blocksAir": false,
+        "clearable": true,
+        "growthRate": 98304,
+        "spreadRate": 131072,
+        "habitatMask": 1,
+        "blocksGround": true,
+        "blocksBuilding": true,
+        "primaryMaterial": "food",
+        "smoothPlacement": true,
+        "clearConsumption": "one",
+        "visibleToHarvest": false,
+        "persistsWhenEmpty": false,
+        "stockBranchDivisor": 8,
+        "stockDependentGrowth": true,
+        "requiresGrowthTerrain": true,
+        "requiresPermanentDepositsTerrain": false
+      },
+      "presentation": {
+        "name": "Arctic Seed Grass",
+        "levels": [
+          {
+            "stock": 0,
+            "variants": [
+              {
+                "frame": 0,
+                "weight": 1
+              },
+              {
+                "frame": 1,
+                "weight": 1
+              }
+            ]
+          },
+          {
+            "stock": 2,
+            "variants": [
+              {
+                "frame": 2,
+                "weight": 1
+              },
+              {
+                "frame": 3,
+                "weight": 1
+              }
+            ]
+          },
+          {
+            "stock": 5,
+            "variants": [
+              {
+                "frame": 4,
+                "weight": 1
+              },
+              {
+                "frame": 5,
+                "weight": 1
+              }
+            ]
+          }
+        ],
+        "sprite": "data/sets/c1ceb67de7479a5e758c252a0fb16219a23ab78e0a96ef06baa7c15a3c93397b",
+        "minimap": [
+          103,
+          96,
+          44
+        ],
+        "animationTicks": 8,
+        "animationFrames": 1,
+        "animationStride": 6
+      },
+      "requiredExperiment": ""
+    },
+    {
+      "key": "s935fc1833a02412b81b9d853d5a24819c7697defaadd448f9aad8673ab6fdeb7:dwarf-willow",
+      "yields": {
+        "wood": {
+          "initial": 2,
+          "capacity": 3,
+          "growthRate": 131072,
+          "consumption": "one",
+          "seedReserve": 1,
+          "destroysDeposit": false,
+          "placementMaximum": 2
+        }
+      },
+      "properties": {
+        "ecology": "land",
+        "farmable": false,
+        "blocksAir": false,
+        "clearable": true,
+        "growthRate": 98304,
+        "spreadRate": 65536,
+        "habitatMask": 1,
+        "blocksGround": false,
+        "blocksBuilding": true,
+        "primaryMaterial": "wood",
+        "smoothPlacement": true,
+        "clearConsumption": "all",
+        "visibleToHarvest": false,
+        "persistsWhenEmpty": false,
+        "stockBranchDivisor": 8,
+        "stockDependentGrowth": true,
+        "requiresGrowthTerrain": true,
+        "requiresPermanentDepositsTerrain": false
+      },
+      "presentation": {
+        "name": "Dwarf Willow",
+        "levels": [
+          {
+            "stock": 0,
+            "variants": [
+              {
+                "frame": 0,
+                "weight": 1
+              },
+              {
+                "frame": 1,
+                "weight": 1
+              }
+            ]
+          },
+          {
+            "stock": 1,
+            "variants": [
+              {
+                "frame": 2,
+                "weight": 1
+              },
+              {
+                "frame": 3,
+                "weight": 1
+              }
+            ]
+          },
+          {
+            "stock": 3,
+            "variants": [
+              {
+                "frame": 4,
+                "weight": 1
+              },
+              {
+                "frame": 5,
+                "weight": 1
+              }
+            ]
+          }
+        ],
+        "sprite": "data/sets/a843db185e74d776d83e4447aa17da7728d0978ac8775381b77dd5074583735d",
+        "minimap": [
+          130,
+          115,
+          96
+        ],
+        "animationTicks": 8,
+        "animationFrames": 1,
+        "animationStride": 6
+      },
+      "requiredExperiment": ""
+    },
+    {
+      "key": "s935fc1833a02412b81b9d853d5a24819c7697defaadd448f9aad8673ab6fdeb7:tundra-stone",
+      "yields": {
+        "stone": {
+          "initial": 3,
+          "capacity": 5,
+          "growthRate": 196608,
+          "consumption": "infinite",
+          "seedReserve": 1,
+          "destroysDeposit": false,
+          "placementMaximum": 4
+        }
+      },
+      "properties": {
+        "ecology": "none",
+        "farmable": false,
+        "blocksAir": false,
+        "clearable": false,
+        "growthRate": 0,
+        "spreadRate": 0,
+        "habitatMask": 1,
+        "blocksGround": true,
+        "blocksBuilding": true,
+        "primaryMaterial": "stone",
+        "smoothPlacement": true,
+        "clearConsumption": "all",
+        "visibleToHarvest": false,
+        "persistsWhenEmpty": true,
+        "stockBranchDivisor": 8,
+        "stockDependentGrowth": true,
+        "requiresGrowthTerrain": false,
+        "requiresPermanentDepositsTerrain": true
+      },
+      "presentation": {
+        "name": "Tundra Stone",
+        "levels": [
+          {
+            "stock": 0,
+            "variants": [
+              {
+                "frame": 0,
+                "weight": 1
+              },
+              {
+                "frame": 1,
+                "weight": 1
+              }
+            ]
+          },
+          {
+            "stock": 2,
+            "variants": [
+              {
+                "frame": 2,
+                "weight": 1
+              },
+              {
+                "frame": 3,
+                "weight": 1
+              }
+            ]
+          },
+          {
+            "stock": 5,
+            "variants": [
+              {
+                "frame": 4,
+                "weight": 1
+              },
+              {
+                "frame": 5,
+                "weight": 1
+              }
+            ]
+          }
+        ],
+        "sprite": "data/sets/9ce879ae109989639d9777e5e21f4e7e2f94ba41ca4138778fe4bd71c8102695",
+        "minimap": [
+          107,
+          104,
+          101
+        ],
+        "animationTicks": 8,
+        "animationFrames": 1,
+        "animationStride": 6
+      },
+      "requiredExperiment": ""
+    },
+    {
+      "key": "s935fc1833a02412b81b9d853d5a24819c7697defaadd448f9aad8673ab6fdeb7:iron-bearing-rock",
+      "yields": {
+        "metal": {
+          "initial": 3,
+          "capacity": 5,
+          "growthRate": 196608,
+          "consumption": "one",
+          "seedReserve": 1,
+          "destroysDeposit": false,
+          "placementMaximum": 0
+        }
+      },
+      "properties": {
+        "ecology": "none",
+        "farmable": false,
+        "blocksAir": false,
+        "clearable": true,
+        "growthRate": 0,
+        "spreadRate": 0,
+        "habitatMask": 1,
+        "blocksGround": true,
+        "blocksBuilding": true,
+        "primaryMaterial": "metal",
+        "smoothPlacement": false,
+        "clearConsumption": "all",
+        "visibleToHarvest": false,
+        "persistsWhenEmpty": false,
+        "stockBranchDivisor": 8,
+        "stockDependentGrowth": true,
+        "requiresGrowthTerrain": false,
+        "requiresPermanentDepositsTerrain": true
+      },
+      "presentation": {
+        "name": "Iron-bearing Rock",
+        "levels": [
+          {
+            "stock": 0,
+            "variants": [
+              {
+                "frame": 0,
+                "weight": 1
+              },
+              {
+                "frame": 1,
+                "weight": 1
+              }
+            ]
+          },
+          {
+            "stock": 2,
+            "variants": [
+              {
+                "frame": 2,
+                "weight": 1
+              },
+              {
+                "frame": 3,
+                "weight": 1
+              }
+            ]
+          },
+          {
+            "stock": 5,
+            "variants": [
+              {
+                "frame": 4,
+                "weight": 1
+              },
+              {
+                "frame": 5,
+                "weight": 1
+              }
+            ]
+          }
+        ],
+        "sprite": "data/sets/25158f5c44539bb31068694ea924ed1471e1ba60555b7813fedccb5666e73a3c",
+        "minimap": [
+          85,
+          68,
+          62
+        ],
+        "animationTicks": 8,
+        "animationFrames": 1,
+        "animationStride": 6
+      },
+      "requiredExperiment": ""
+    },
+    {
+      "key": "s935fc1833a02412b81b9d853d5a24819c7697defaadd448f9aad8673ab6fdeb7:cloudberry-patch",
+      "yields": {
+        "cherries": {
+          "initial": 2,
+          "capacity": 4,
+          "growthRate": 196608,
+          "consumption": "one",
+          "seedReserve": 1,
+          "destroysDeposit": false,
+          "placementMaximum": 3
+        }
+      },
+      "properties": {
+        "ecology": "land",
+        "farmable": false,
+        "blocksAir": false,
+        "clearable": false,
+        "growthRate": 131072,
+        "spreadRate": 65536,
+        "habitatMask": 1,
+        "blocksGround": true,
+        "blocksBuilding": true,
+        "primaryMaterial": "cherries",
+        "smoothPlacement": false,
+        "clearConsumption": "all",
+        "visibleToHarvest": true,
+        "persistsWhenEmpty": true,
+        "stockBranchDivisor": 8,
+        "stockDependentGrowth": true,
+        "requiresGrowthTerrain": true,
+        "requiresPermanentDepositsTerrain": false
+      },
+      "presentation": {
+        "name": "Cloudberry Patch",
+        "levels": [
+          {
+            "stock": 0,
+            "variants": [
+              {
+                "frame": 0,
+                "weight": 1
+              },
+              {
+                "frame": 1,
+                "weight": 1
+              }
+            ]
+          },
+          {
+            "stock": 2,
+            "variants": [
+              {
+                "frame": 2,
+                "weight": 1
+              },
+              {
+                "frame": 3,
+                "weight": 1
+              }
+            ]
+          },
+          {
+            "stock": 4,
+            "variants": [
+              {
+                "frame": 4,
+                "weight": 1
+              },
+              {
+                "frame": 5,
+                "weight": 1
+              }
+            ]
+          }
+        ],
+        "sprite": "data/sets/9c24e52497b876e764f3966f28e16ed6bc6daf98960a8b460425be8b04c9ad7b",
+        "minimap": [
+          101,
+          89,
+          31
+        ],
+        "animationTicks": 8,
+        "animationFrames": 1,
+        "animationStride": 6
+      },
+      "requiredExperiment": ""
+    }
+  ]
+}
