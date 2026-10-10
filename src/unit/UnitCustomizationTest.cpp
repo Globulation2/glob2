@@ -2554,8 +2554,6 @@ TEST_SUITE("UnitCustomization")
         }
     }
 
-// Prospective insertion inside existing UnitCustomization suite; no new includes.
-// Not applied, compiled, executed or measured.
     TEST_CASE("enemy tower live index matches full slot oracle across lifecycle and save continuation [save-format]")
     {
         glob2test::HeadlessGlobals globals;
@@ -2568,6 +2566,10 @@ TEST_SUITE("UnitCustomization")
         const int towerType=game.buildingsTypes.getTypeNum("defencetower",0,false);
         const int siteType=game.buildingsTypes.getTypeNum("defencetower",0,true);
         REQUIRE(towerType>=0); REQUIRE(siteType>=0);
+        // Range-bearing sites must have valid projectile clocks and storage
+        // bounds even though this fixture gives them no ammunition or damage.
+        for(const char* field:{"shootSpeed","shootRhythm","multiplierStoneToBullets","maxBullets"})
+            buildings["variants"][siteType]["properties"][field]=buildings["variants"][towerType]["properties"][field];
         for(const int type:{towerType,siteType}) {
             buildings["variants"][type]["properties"]["shootingRange"]=3;
             // The original avoidance predicate cares about range even without
