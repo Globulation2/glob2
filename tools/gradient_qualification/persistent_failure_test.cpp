@@ -14,9 +14,10 @@ const std::uint16_t* observedSeeds=nullptr;
 const UInt* observedOutput=nullptr;
 const std::uint16_t original[]{65535,65001,0,1};
 struct Unwind {
- const char* path;
- ~Unwind(){if(auto* file=std::fopen(path,"w")){std::fputs("destructor unwound\n",file);std::fclose(file);}}
+ const char* path=nullptr;
+ ~Unwind(){if(path)if(auto* file=std::fopen(path,"w")){std::fputs("destructor unwound\n",file);std::fclose(file);}}
 };
+Unwind staticSentinel; // Also detects std::exit/global teardown instead of _Exit.
 }
 extern "C" int clSetKernelArg(Handle,UInt,std::size_t,const void*){return 0;}
 extern "C" int clEnqueueWriteBuffer(Handle,Handle,UInt blocking,std::size_t,std::size_t bytes,const void* source,
@@ -50,6 +51,7 @@ extern "C" int clFinish(Handle){
 int main(int argc,char** argv){
  if(argc!=4 || (std::strcmp(argv[1],"drained") && std::strcmp(argv[1],"fatal")))return 64;
  failDrain=std::strcmp(argv[1],"fatal")==0;
+ staticSentinel.path=argv[3];
  Unwind sentinel{argv[3]};
  std::uint16_t seeds[4];std::copy(std::begin(original),std::end(original),seeds);
  UInt output[]{0xDEADBEEFu,0xDEADBEEFu,0xDEADBEEFu,0xDEADBEEFu};
