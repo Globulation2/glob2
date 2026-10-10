@@ -1,0 +1,22 @@
+{
+  "archive_sha256": "50dd0472599438f870afbe528229d5c2dd4b443654c06b2614975ee9ce5f8136",
+  "archive_bytes": 125265332,
+  "parts": [
+    {
+      "path": "artifacts/unit-foundation/evidence/paired-tournament-release16-evidence.tar.gz.part00",
+      "bytes": 50331648,
+      "sha256": "3fb22ba9aab06a3a4d08ee2fbbbfe852fabe3f179ecd5d7cc5dafcf0af0d5564"
+    },
+    {
+      "path": "artifacts/unit-foundation/evidence/paired-tournament-release16-evidence.tar.gz.part01",
+      "bytes": 50331648,
+      "sha256": "79e0c3ea5e4528c4b130e1c37e8386f5fbe0321b3247067b4b1d1ea035d7dd20"
+    },
+    {
+      "path": "artifacts/unit-foundation/evidence/paired-tournament-release16-evidence.tar.gz.part02",
+      "bytes": 24602036,
+      "sha256": "a06504ed32b0e1429c87c854353083c83edf994077d83fad55271994d628be93"
+    }
+  ],
+  "restore": "Concatenate parts in listed order; verify whole archive SHA256; extract tar.gz."
+}
