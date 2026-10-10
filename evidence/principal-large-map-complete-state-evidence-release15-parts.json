@@ -1,0 +1,26 @@
+{
+  "archive_sha256": "efcd9a6be219523fb524784b982bcf8ec8f0217b82005c32bc3788461153c0a1",
+  "parts": [
+    {
+      "path": "artifacts/unit-foundation/evidence/principal-large-map-complete-state-evidence-release15.tar.part00",
+      "bytes": 50331648,
+      "sha256": "1ef17b69ff2beeba31f2370276111a217ddfddaf46f2d187f1531a2817bc8753"
+    },
+    {
+      "path": "artifacts/unit-foundation/evidence/principal-large-map-complete-state-evidence-release15.tar.part01",
+      "bytes": 50331648,
+      "sha256": "bb28cb754e8030fd137bef4318ea6abb422e62d450adadeb91f9208562be6d80"
+    },
+    {
+      "path": "artifacts/unit-foundation/evidence/principal-large-map-complete-state-evidence-release15.tar.part02",
+      "bytes": 50331648,
+      "sha256": "c8d2362fe06e81346e4cfef95d66ae8194a6c419eb912060daf1102b4a659c72"
+    },
+    {
+      "path": "artifacts/unit-foundation/evidence/principal-large-map-complete-state-evidence-release15.tar.part03",
+      "bytes": 44865536,
+      "sha256": "22165aa12247b014997bd28169c5ae63bd85c1328d4b6ac4dfc6ae9e605d36a3"
+    }
+  ],
+  "restore": "Concatenate parts in index order into the named tar archive; verify archive SHA256; extract tar."
+}
