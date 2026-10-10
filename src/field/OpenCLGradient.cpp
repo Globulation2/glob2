@@ -809,17 +809,15 @@ struct Runtime
     }
     static bool alreadyFixed(const BackendRequest& request)
     {
-        bool source = false, improvable = false;
-        for (std::size_t i = 0; i < request.grid.cells(); ++i)
-        {
-            const auto value = request.gradient[i];
-            source |= value > 1;
-            improvable |= value != 0 && value != 65535;
-            if (source && improvable) return false;
-        }
-        // Without a source no legal path can start. With only forbidden cells
-        // and maximal goals, no cell can improve, regardless of positive costs.
-        return true;
+        const auto* begin = request.gradient;
+        const auto* end = begin + request.grid.cells();
+        const auto* source = std::find_if(begin, end, [](auto value) { return value > 1; });
+        // Without a source no legal path can start.
+        if (source == end) return true;
+        if (*source != 65535) return false;
+        // With only forbidden cells and maximal goals, no cell can improve,
+        // regardless of positive costs.
+        return std::none_of(begin, end, [](auto value) { return value != 0 && value != 65535; });
     }
     // A map normally keeps the same dimensions and cap, but generic callers can
     // share a session across unlike fields. Do not reuse their old placement.
