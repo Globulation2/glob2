@@ -1549,8 +1549,11 @@ struct OpenCLProbe::Impl
     std::shared_ptr<Device::Plane> costs;
     std::uint64_t generation,lastCpuClock=0;
     std::size_t copied=0,tileCount=0,costCharge=0;
-    UInt round=0,pitch=0,rows=0,flags=0,windowEnd=0;
-    std::array<UInt,8> descriptor{};
+    UInt round=0,pitch=0,rows=0,windowEnd=0;
+    unsigned fieldCount=1,liveFields=1;
+    std::array<const std::uint16_t*,8> originals{};
+    std::array<UInt,8> flags{};
+    std::array<UInt,64> descriptor{};
     Handle a=nullptr,b=nullptr,active=nullptr,nextActive=nullptr,event=nullptr;
     bool privateScalar=false,privateCosts=false,source=false,onlyZerosAndMax=true,borrowedTransfers=false;
     bool completionUnknown=false,untrackedCommand=false;
@@ -1562,6 +1565,7 @@ struct OpenCLProbe::Impl
         admission.parent=runtime().shared;
         objectAdmission.transferTo(objectLease);
         lane=Runtime::registeredLane(runtime().shared,laneAdmission,&subsetAdmission);
+        originals[0]=r.gradient;
         measured.activeEpoch=lane->shared->status.activeEpoch;
         measured.checkInterval=measured.activeEpoch ? lane->shared->status.checkInterval : 1;
 
@@ -1644,6 +1648,7 @@ struct OpenCLProbe::Impl
         if(event && !canQueueEpochDispatch() && !readyEvent()) return progress;
         if(cancelled) {progress=OpenCLProbeProgress::Declined;return progress;}
         const auto n=request.grid.cells();
+        const auto total=n*fieldCount;
         auto& api=lane->api;
         switch(phase) {
         case Phase::Costs: {
@@ -1728,20 +1733,22 @@ struct OpenCLProbe::Impl
             costs->published.store(true);costs->completed.set_value();
             phase=Phase::Upload;break;
         case Phase::Reserve:
-            if(n>(OpenCLProbeBudget-objectBytes()-costCharge)/sizeof(std::uint16_t)) throw BudgetExceeded();
-            lane->optionalSubsetLease.resize(objectBytes()-256+costCharge+n*sizeof(std::uint16_t));
-            lane->valuesLease.resize(n*sizeof(std::uint16_t));
-            lane->values.reserve(n); // No full-plane value initialization.
+            if(total>(OpenCLProbeBudget-objectBytes()-costCharge)/sizeof(std::uint16_t)) throw BudgetExceeded();
+            lane->optionalSubsetLease.resize(objectBytes()-256+costCharge+total*sizeof(std::uint16_t));
+            lane->valuesLease.resize(total*sizeof(std::uint16_t));
+            lane->values.reserve(total); // No full-plane value initialization.
             lane->valuesLease.resize(lane->values.capacity()*sizeof(std::uint16_t));
             lane->optionalSubsetLease.resize(objectBytes()-256+costCharge+lane->valuesLease.bytes);
             phase=Phase::Copy;break;
         case Phase::Copy: {
-            const auto stop=copied+std::min(copyCells,n-copied);
+            const auto stop=copied+std::min(copyCells,total-copied);
             while(copied<stop) {
-                const auto end=copied+std::min<std::size_t>(64,stop-copied);
-                lane->values.insert(lane->values.end(),request.gradient+copied,request.gradient+end);
+                const auto field=unsigned(copied/n),offset=copied%n;
+                const auto end=copied+std::min({std::size_t(64),stop-copied,n-offset});
+                const auto* original=originals[field];
+                lane->values.insert(lane->values.end(),original+offset,original+offset+end-copied);
                 for(auto i=copied;i<end;++i) {
-                    const auto value=request.gradient[i];source=source||value>1;
+                    const auto value=original[offset+i-copied];source=source||value>1;
                     onlyZerosAndMax=onlyZerosAndMax&&(value==0||value==65535);
                 }
                 copied=end;
@@ -1749,8 +1756,8 @@ struct OpenCLProbe::Impl
                 if(!now || now<started) {invalidClock();progress=OpenCLProbeProgress::Declined;return progress;}
                 if(now-started>=cpuBudget) break;
             }
-            if(copied==n) {
-                if(!source||onlyZerosAndMax) {++lane->shared->noopFields;progress=OpenCLProbeProgress::Complete;}
+            if(copied==total) {
+                if(!source||onlyZerosAndMax) {lane->shared->noopFields+=fieldCount;progress=OpenCLProbeProgress::Complete;}
                 else phase=Phase::Queue;
             }
             break;
@@ -1762,29 +1769,32 @@ struct OpenCLProbe::Impl
             const auto& variant=lane->variants[lane->selectedVariant];
             pitch=(UInt(request.grid.width())+variant.tileWidth-1)/variant.tileWidth;
             rows=(UInt(request.grid.height())+variant.tileHeight-1)/variant.tileHeight;
-            tileCount=std::size_t(pitch)*rows;
-            if(n>std::numeric_limits<UInt>::max() || tileCount>std::numeric_limits<UInt>::max()) throw BudgetExceeded();
-            lane->deviceLease.resize(n*2*sizeof(std::uint16_t)+288+tileCount*2*sizeof(UInt));
+            tileCount=std::size_t(pitch)*rows*fieldCount;
+            if(total>std::numeric_limits<UInt>::max() || tileCount>std::numeric_limits<UInt>::max()) throw BudgetExceeded();
+            lane->deviceLease.resize(total*2*sizeof(std::uint16_t)+288+tileCount*2*sizeof(UInt));
             Int error=0;
             for(auto* buffer:{&lane->first,&lane->second}) {
-                *buffer=api.CreateBuffer(lane->context,1,n*sizeof(std::uint16_t),nullptr,&error);check(error);
+                *buffer=api.CreateBuffer(lane->context,1,total*sizeof(std::uint16_t),nullptr,&error);check(error);
             }
             lane->changed=api.CreateBuffer(lane->context,1,8*sizeof(UInt),nullptr,&error);check(error);
             lane->descriptors=api.CreateBuffer(lane->context,1,64*sizeof(UInt),nullptr,&error);check(error);
             for(auto* buffer:{&lane->tilesFirst,&lane->tilesSecond}) {
                 *buffer=api.CreateBuffer(lane->context,1,tileCount*sizeof(UInt),nullptr,&error);check(error);
             }
-            lane->capacity=n;lane->tileCapacity=tileCount;
+            lane->capacity=total;lane->tileCapacity=tileCount;
             if(privateCosts) {
                 costs->storage=Device::Plane::Storage::create(api,lane->shared->deviceBudget,lane->optionalObjectLease.backing);
                 const auto bytes=costs->data.size()*sizeof(UInt);
                 costs->storage->deviceLease.resize(bytes);
                 costs->buffer=costs->storage->buffer=api.CreateBuffer(lane->context,1,bytes,nullptr,&error);check(error);
             }
-            descriptor={UInt(request.grid.width()),UInt(request.grid.height()),0,0,UInt(request.limit),
-                costs->uniform?3u:1u,pitch,rows};
+            for(unsigned field=0;field<fieldCount;++field) {
+                const std::array<UInt,8> one{UInt(request.grid.width()),UInt(request.grid.height()),UInt(n*field),field,
+                    UInt(request.limit),costs->uniform?3u:1u,pitch,rows};
+                std::copy(one.begin(),one.end(),descriptor.begin()+8*field);
+            }
             a=lane->first;b=lane->second;active=lane->tilesFirst;nextActive=lane->tilesSecond;
-            ++lane->status.batches;lane->status.maxBatchFields=std::max<std::uint64_t>(lane->status.maxBatchFields,1);
+            ++lane->status.batches;lane->status.maxBatchFields=std::max<std::uint64_t>(lane->status.maxBatchFields,fieldCount);
             phase=privateCosts && privateCostPermission() ? Phase::CostsUpload : Phase::Upload;break;
         }
         case Phase::Upload: {
@@ -1794,9 +1804,9 @@ struct OpenCLProbe::Impl
                 borrowedTransfers=true;
                 ++lane->status.costUploads;++lane->status.uniformMetadataHits;
             }
-            submitEvent([&](Handle* done){return api.EnqueueWriteBuffer(lane->queue,a,0,0,n*sizeof(std::uint16_t),lane->values.data(),0,nullptr,done);});
+            submitEvent([&](Handle* done){return api.EnqueueWriteBuffer(lane->queue,a,0,0,total*sizeof(std::uint16_t),lane->values.data(),0,nullptr,done);});
             borrowedTransfers=true;
-            submitEvent([&](Handle* done){return api.EnqueueWriteBuffer(lane->queue,lane->descriptors,0,0,sizeof descriptor,descriptor.data(),0,nullptr,done);});
+            submitEvent([&](Handle* done){return api.EnqueueWriteBuffer(lane->queue,lane->descriptors,0,0,8*fieldCount*sizeof(UInt),descriptor.data(),0,nullptr,done);});
             const UInt one=1;
             submitEvent([&](Handle* done){return api.EnqueueFillBuffer(lane->queue,active,&one,sizeof one,0,tileCount*sizeof(UInt),0,nullptr,done);});
             ++lane->status.tileMaskInitializations;++measured.tileMaskInitializations;
@@ -1819,7 +1829,7 @@ struct OpenCLProbe::Impl
                 const auto before=lane->status.kernelArgumentUpdates;
                 for(unsigned i=0;i<8;++i)lane->argument(2+i,costs->buffer);
                 lane->argument(10,lane->changed);lane->argument(11,lane->descriptors);
-                lane->argument(14,UInt(tileCount));lane->argument(15,pitch);
+                lane->argument(14,pitch*rows);lane->argument(15,pitch);
                 measured.kernelArgumentUpdates+=lane->status.kernelArgumentUpdates-before;
                 windowEnd=std::min<UInt>(65536,measured.checkInterval);
             }
@@ -1829,7 +1839,7 @@ struct OpenCLProbe::Impl
             const bool queuedWithoutPoll=event && canQueueEpochDispatch();
             const UInt zero=0;
             if(!measured.activeEpoch || round+1==windowEnd)
-                submitEvent([&](Handle* done){return api.EnqueueFillBuffer(lane->queue,lane->changed,&zero,sizeof zero,0,sizeof zero,0,nullptr,done);});
+                submitEvent([&](Handle* done){return api.EnqueueFillBuffer(lane->queue,lane->changed,&zero,sizeof zero,0,fieldCount*sizeof(UInt),0,nullptr,done);});
             if(!measured.activeEpoch){
                 submitEvent([&](Handle* done){return api.EnqueueFillBuffer(lane->queue,nextActive,&zero,sizeof zero,0,tileCount*sizeof zero,0,nullptr,done);});
                 ++lane->status.tileMaskClears;++measured.tileMaskClears;
@@ -1839,13 +1849,13 @@ struct OpenCLProbe::Impl
             if(!measured.activeEpoch){
                 for(unsigned i=0;i<8;++i) lane->argument(2+i,costs->buffer);
                 lane->argument(10,lane->changed);lane->argument(11,lane->descriptors);
-                lane->argument(14,UInt(tileCount));lane->argument(15,pitch);
+                lane->argument(14,pitch*rows);lane->argument(15,pitch);
             }
             lane->argument(12,active);lane->argument(13,nextActive);
             if(measured.activeEpoch)lane->argument(16,round+1);
             measured.kernelArgumentUpdates+=lane->status.kernelArgumentUpdates-before;
             const auto threads=lane->variants[lane->selectedVariant].threads;
-            const std::size_t global[]{std::size_t(pitch)*threads,rows,1},local[]{threads,1,1};
+            const std::size_t global[]{std::size_t(pitch)*threads,rows,fieldCount},local[]{threads,1,1};
             submitEvent([&](Handle* done){return api.EnqueueNDRangeKernel(lane->queue,lane->kernel,3,nullptr,global,local,0,nullptr,done);});
             std::swap(a,b);std::swap(active,nextActive);++round;
             ++lane->status.dispatches;++measured.dispatches;
@@ -1859,23 +1869,34 @@ struct OpenCLProbe::Impl
             // Yielded event polls add optional lifecycle cost, but kernel and
             // convergence-check counts mirror the required epoch check window.
             if(measured.activeEpoch && round<windowEnd){phase=Phase::Dispatch;break;}
-            submitEvent([&](Handle* done){return api.EnqueueReadBuffer(lane->queue,lane->changed,0,0,sizeof flags,&flags,0,nullptr,done);});
+            submitEvent([&](Handle* done){return api.EnqueueReadBuffer(lane->queue,lane->changed,0,0,fieldCount*sizeof(UInt),flags.data(),0,nullptr,done);});
             borrowedTransfers=true;
             flush();phase=Phase::CheckWait;break;
-        case Phase::CheckWait:
+        case Phase::CheckWait: {
             ++lane->status.hostChecks;++measured.hostChecks;
-            if(flags){
+            bool retired=false;
+            for(unsigned field=0;field<fieldCount;++field)if((descriptor[field*8+5]&1u) && !flags[field]) {
+                descriptor[field*8+5]=0;--liveFields;retired=true;
+                ++lane->status.retiredFields;++measured.retiredFields;
+            }
+            if(liveFields){
                 if(measured.activeEpoch)windowEnd=std::min<UInt>(65536,round+measured.checkInterval);
-                phase=Phase::Dispatch;
+                if(retired) {
+                    submitEvent([&](Handle* done){return api.EnqueueWriteBuffer(lane->queue,lane->descriptors,0,0,
+                        8*fieldCount*sizeof(UInt),descriptor.data(),0,nullptr,done);});
+                    borrowedTransfers=true;flush();phase=Phase::RetireWait;
+                }else phase=Phase::Dispatch;
             }
             else {
-                submitEvent([&](Handle* done){return api.EnqueueReadBuffer(lane->queue,a,0,0,n*sizeof(std::uint16_t),lane->values.data(),0,nullptr,done);});
+                submitEvent([&](Handle* done){return api.EnqueueReadBuffer(lane->queue,a,0,0,total*sizeof(std::uint16_t),lane->values.data(),0,nullptr,done);});
                 borrowedTransfers=true;
                 flush();phase=Phase::OutputWait;
             }
             break;
+        }
+        case Phase::RetireWait:phase=Phase::Dispatch;break;
         case Phase::OutputWait:
-            ++lane->status.fields;++lane->status.retiredFields;
+            lane->status.fields+=fieldCount;
             progress=OpenCLProbeProgress::Complete;break;
         }
         return progress;
@@ -2032,7 +2053,13 @@ std::shared_ptr<OpenCLProbeBatchStorage> OpenCLProbeBatchStorage::adopt(std::siz
 #endif
 }
 std::unique_ptr<OpenCLProbe> beginOpenCLProbe(const OpenCLProbeInput& request,Plan plan,std::shared_ptr<const void> keepAlive,OpenCLProbeClock clock) {
+    return OpenCLProbe::begin(std::span(&request,1),plan,std::move(keepAlive),std::move(clock),{});
+}
+std::unique_ptr<OpenCLProbe> OpenCLProbe::begin(std::span<const OpenCLProbeInput> requests,Plan plan,
+    std::shared_ptr<const void> keepAlive,OpenCLProbeClock clock,std::shared_ptr<OpenCLProbeBatchStorage> future) {
 #if !defined(SDL_PLATFORM_EMSCRIPTEN) && !defined(SDL_PLATFORM_ANDROID) && !defined(SDL_PLATFORM_IOS)
+    if(requests.empty() || requests.size()>8)return {};
+    const auto& request=requests.front();
     auto& device=*runtime().shared;
     if(clock.read && !clock.owner) {++device.threadCPUInvalidMeasurements;return {};}
     const auto started=clock.read ? clock.read(clock.owner.get()) : threadCPUClock();
@@ -2062,6 +2089,20 @@ std::unique_ptr<OpenCLProbe> beginOpenCLProbe(const OpenCLProbeInput& request,Pl
         request.limit<0 || request.session.failed.load() ||
         plan==Plan::CPU || unsigned(plan)>=PLANS.size() || !(readyPlans.load()&(1u<<unsigned(plan))) ||
         device.status.parityBound || device.status.directSeedUpload || device.status.apiCpuMode) return {};
+    if(request.grid.cells()>UINT32_MAX/requests.size())return {};
+    for(const auto& input:requests) {
+        if(!input.gradient || &input.session!=&request.session || input.grid.width()!=request.grid.width() ||
+           input.grid.height()!=request.grid.height() || input.limit!=request.limit || input.operation!=Operation::CompleteField ||
+           input.identity.owner.get()!=request.identity.owner.get() ||
+           input.identity.owner.owner_before(request.identity.owner) || request.identity.owner.owner_before(input.identity.owner) ||
+           input.identity.variant!=request.identity.variant || input.identity.revision!=request.identity.revision ||
+           !input.identity.allCells || input.identity.packedUniformCost!=request.identity.packedUniformCost)return {};
+        // This first batch implementation is homogeneous scalar classic. A
+        // callback/cold pack must not implicitly establish batch compatibility.
+        if(requests.size()>1 && (!(input.identity.packedUniformCost&65535u) || !(input.identity.packedUniformCost>>16) ||
+            (!input.capturedPrivateCosts && !device.status.uniformMetadata)))return {};
+    }
+    if(future && !PrechargedProbeCostOwner::matches(request.identity.owner,request.identity.prechargedOwner))return {};
     // A caller-supplied readiness flag/mask is never permission to perform
     // device/compiler initialization inside an optional CPU reservation.
     {std::lock_guard lock(device.failureMutex);
@@ -2073,12 +2114,14 @@ std::unique_ptr<OpenCLProbe> beginOpenCLProbe(const OpenCLProbeInput& request,Pl
         // Reserve fixed objects/control storage before any shared allocation or
         // constructor. Local guards retain admission if construction throws;
         // successful construction transfers the leases without changing totals.
-        BudgetLease objectAdmission{hostBudget},laneAdmission{hostBudget},subsetAdmission{probeBudget};
+        BudgetLease objectAdmission{hostBudget,future},laneAdmission{hostBudget,future},subsetAdmission{probeBudget,future,1};
         objectAdmission.resize(sizeof(OpenCLProbe)+sizeof(OpenCLProbe::Impl)+OpenCLProbe::Impl::controlBytes-256);
         laneAdmission.resize(sizeof(Runtime)+256);
         subsetAdmission.resize(OpenCLProbe::Impl::objectBytes());
         auto state=std::make_shared<OpenCLProbe::Impl>(request,plan,std::move(keepAlive),clock,
             objectAdmission,laneAdmission,subsetAdmission);
+        state->fieldCount=state->liveFields=unsigned(requests.size());state->measured.batchFields=state->fieldCount;
+        for(unsigned field=0;field<state->fieldCount;++field)state->originals[field]=requests[field].gradient;
         state->admission.owns=true;admission.transferred=true;
         auto value=std::unique_ptr<OpenCLProbe>(new OpenCLProbe(std::move(state)));
         admitted=value->state.get();timer.finish();
@@ -2098,6 +2141,44 @@ bool reapOpenCLProbeQuarantine() noexcept {
     return false;
 #endif
 }
+OpenCLProbeBatch::OpenCLProbeBatch(std::unique_ptr<OpenCLProbe> value,unsigned count,std::size_t size,
+    std::shared_ptr<OpenCLProbeBatchStorage> backing,std::size_t charge)
+    :future(std::move(backing)),probe(std::move(value)),fields(count),cells(size),wrapperCharge(charge) {}
+OpenCLProbeBatch::~OpenCLProbeBatch() {
+    probe.reset();
+    if(wrapperCharge){if(future)future->releasePaired(wrapperCharge);else releaseOpenCLProbeBytes(wrapperCharge);}
+}
+std::unique_ptr<OpenCLProbeBatch> OpenCLProbeBatch::begin(std::span<const OpenCLProbeInput> requests,Plan plan,
+    std::shared_ptr<const void> keepAlive,OpenCLProbeClock clock,std::shared_ptr<OpenCLProbeBatchStorage> future) {
+    if(requests.empty() || requests.size()>8)return {};
+    constexpr auto bytes=sizeof(OpenCLProbeBatch);
+    if(future ? !future->reservePaired(bytes) : !reserveOpenCLProbeBytes(bytes))return {};
+    struct Return {std::shared_ptr<OpenCLProbeBatchStorage> owner;std::size_t bytes;
+        ~Return(){if(bytes){if(owner)owner->releasePaired(bytes);else releaseOpenCLProbeBytes(bytes);}}
+    } reserved{future,bytes};
+    try {
+        auto native=OpenCLProbe::begin(requests,plan,std::move(keepAlive),std::move(clock),future);
+        if(!native)return {};
+        auto result=std::unique_ptr<OpenCLProbeBatch>(new OpenCLProbeBatch(std::move(native),unsigned(requests.size()),
+            requests.front().grid.cells(),std::move(future),bytes));
+        reserved.bytes=0;return result;
+    }catch(...){return {};}
+}
+std::unique_ptr<OpenCLProbeBatch> beginOpenCLProbeBatch(std::span<const OpenCLProbeInput> requests,Plan plan,
+    std::shared_ptr<const void> keepAlive,OpenCLProbeClock clock,std::shared_ptr<OpenCLProbeBatchStorage> future) {
+    return OpenCLProbeBatch::begin(requests,plan,std::move(keepAlive),std::move(clock),std::move(future));
+}
+OpenCLProbeProgress OpenCLProbeBatch::advance(std::size_t copyCells,std::uint64_t cpuBudgetNs) noexcept {
+    return probe->advance(copyCells,cpuBudgetNs);
+}
+void OpenCLProbeBatch::cancel() noexcept {probe->cancel();}
+std::span<const std::uint16_t> OpenCLProbeBatch::result(unsigned index) const noexcept {
+    const auto flat=probe->result();
+    if(index>=fields || flat.size()!=cells*fields)return {};
+    return flat.subspan(cells*index,cells);
+}
+OpenCLProbe::Metrics OpenCLProbeBatch::metrics() const noexcept {return probe->metrics();}
+bool OpenCLProbeBatch::waitingForEvent() const noexcept {return probe->waitingForEvent();}
 bool reapOpenCLRequiredQuarantine() noexcept {
 #if !defined(SDL_PLATFORM_EMSCRIPTEN) && !defined(SDL_PLATFORM_ANDROID) && !defined(SDL_PLATFORM_IOS)
     try {auto device=runtime().shared;const bool reaped=device->requiredLifetime.tryReap(&Runtime::RequiredTransaction::terminalProof);

@@ -86,6 +86,7 @@ class PrechargedProbeCostOwner
 {
     friend class CaptureProbeReplay;
     friend class CaptureBatchProbeReplay;
+    friend struct OpenCLProbeBatchStorageTests;
     std::shared_ptr<PrechargedProbeStorage> metadataCredit; // Destroyed last.
     std::array<std::shared_ptr<PrechargedProbeStorage>,2> payloadCredits;
     std::shared_ptr<const void> payload;

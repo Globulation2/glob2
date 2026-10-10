@@ -26,6 +26,7 @@ class OpenCLProbeBatchStorage
     friend class PrechargedProbeStorage;
     friend class OpenCLProbeBudgetLease;
     friend class OpenCLProbe;
+    friend class OpenCLProbeBatch;
     friend struct OpenCLProbeBatchStorageTests;
 public:
     struct Estimate {

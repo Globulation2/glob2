@@ -1842,3 +1842,90 @@ TEST_CASE("owned captured private costs work with diagnostic preparation flags d
         CHECK(openCLProbeBytes()==baseline);CHECK(openCLStatus().initializationThreadCPUNs==initializationCpu);
     });coordinator.join();
 }
+
+TEST_CASE("isolated native probe batches share one dispatch and preserve indexed exact retirement" * doctest::test_suite("OpenCLGradient"))
+{
+    using namespace gradient_kernel;
+    const auto* enabled=std::getenv("GLOB2_TEST_OPENCL_PROBE_BATCH");
+    if(!enabled || std::strcmp(enabled,"1"))return;
+    if constexpr(!GAGCore::ThreadSupport::available)return;
+    struct Capture {
+        struct Lease {std::size_t bytes=0;~Lease(){releaseOpenCLProbeBytes(bytes);}} lease;
+        BackendSession session;
+        std::shared_ptr<ProbeClock> clock=std::make_shared<ProbeClock>();
+        std::array<std::vector<std::uint16_t>,8> seeds;
+    };
+    std::thread coordinator([&] {
+        REQUIRE(initializeOpenCL());const auto configured=openCLStatus();
+        REQUIRE_FALSE(configured.parityBound);REQUIRE_FALSE(configured.directSeedUpload);REQUIRE(configured.apiCpuMode==0);
+        const auto baseline=openCLProbeBytes(),initializationCpu=openCLStatus().initializationThreadCPUNs;
+        auto requiredCostOwner=std::make_shared<int>(1);
+        unsigned completed=0,canceled=0;
+        for(unsigned plan=1;plan<unsigned(Plan::Count);++plan) {
+            REQUIRE((readyPlans.load()&(1u<<plan))!=0);
+            for(unsigned count:{2u,4u,8u})for(auto dimensions:{std::pair{1,17},std::pair{17,1},std::pair{9,7},std::pair{33,19}}) {
+                const field::Grid grid(dimensions.first,dimensions.second);
+                const auto bytes=sizeof(Capture)+sizeof(ProbeClock)+1024+count*grid.cells()*sizeof(std::uint16_t);
+                REQUIRE(reserveOpenCLProbeBytes(bytes));
+                struct Return {std::size_t bytes;~Return(){if(bytes)releaseOpenCLProbeBytes(bytes);}} reserved{bytes};
+                auto owner=std::make_shared<Capture>();owner->lease.bytes=bytes;reserved.bytes=0;
+                std::array<std::vector<std::uint16_t>,8> originals,expected;
+                std::vector<OpenCLProbeInput> inputs;inputs.reserve(count);
+                for(unsigned field=0;field<count;++field) {
+                    auto& seeds=owner->seeds[field];seeds.assign(grid.cells(),1);
+                    for(std::size_t i=0;i<grid.cells();++i)if((i+field)%11==3)seeds[i]=0;
+                    if(field==0)seeds.assign(grid.cells(),0); // Immediate retirement in a mixed batch.
+                    else {seeds[field%grid.cells()]=field%2 ? 65535 : 65001;seeds.back()=65017;}
+                    originals[field]=seeds;
+                    expected[field]=oracle(seeds,grid,std::vector<EntrySteps>(grid.cells(),LAND_STEPS),700);
+                    inputs.push_back(OpenCLProbeInput{seeds.data(),700,grid,owner->session,owner.get(),
+                        [](void*,std::size_t){FAIL("scalar batch must not scan costs");return LAND_STEPS;},
+                        {owner,9911,21,true,bytes,LAND_STEPS.cardinal|(LAND_STEPS.diagonal<<16)}});
+                    inputs.back().capturedPrivateCosts=true;
+                }
+                const auto admitted=openCLProbeBytes();
+                auto probe=beginOpenCLProbeBatch(inputs,Plan(plan),owner,{owner->clock,ProbeClock::read});REQUIRE(bool(probe));
+                auto progress=OpenCLProbeProgress::Pending;bool interleaved=false,oneKernelPerAdvance=true;
+                for(unsigned attempt=0;attempt<1000000 && progress==OpenCLProbeProgress::Pending;++attempt) {
+                    const auto before=probe->metrics().dispatches;progress=probe->advance(64);
+                    oneKernelPerAdvance=oneKernelPerAdvance && probe->metrics().dispatches<=before+1;
+                    if(!interleaved && probe->metrics().dispatches) {
+                        auto required=originals[1];
+                        BackendRequest request{required.data(),700,grid,owner->session,nullptr,
+                            [](void*,std::size_t){return LAND_STEPS;},{requiredCostOwner,9911,21,true,sizeof(int)+256,LAND_STEPS.cardinal|(LAND_STEPS.diagonal<<16)}};
+                        REQUIRE(executeOpenCLDevice(std::span(&request,1),Plan(plan)));
+                        CHECK(required==expected[1]);interleaved=true;
+                    }
+                    if(progress==OpenCLProbeProgress::Pending)std::this_thread::yield();
+                }
+                REQUIRE(progress==OpenCLProbeProgress::Complete);CHECK(interleaved);CHECK(oneKernelPerAdvance);
+                CHECK(probe->count()==count);CHECK(probe->metrics().batchFields==count);
+                CHECK(probe->metrics().retiredFields==count);CHECK(probe->metrics().dispatches>0);
+                CHECK(probe->metrics().invalidCpuClocks==0);CHECK(probe->result(count).empty());
+                for(unsigned field=0;field<count;++field) {
+                    const auto actual=probe->result(field);
+                    CHECK(std::vector<std::uint16_t>(actual.begin(),actual.end())==expected[field]);
+                    CHECK(owner->seeds[field]==originals[field]);
+                }
+                probe.reset();CHECK(openCLProbeBytes()==admitted);
+                // Cancellation after real submission keeps originals immutable
+                // and never submits another kernel while the event is reaped.
+                auto canceledProbe=beginOpenCLProbeBatch(inputs,Plan(plan),owner,{owner->clock,ProbeClock::read});REQUIRE(bool(canceledProbe));
+                progress=OpenCLProbeProgress::Pending;
+                for(unsigned attempt=0;attempt<1000000 && !canceledProbe->metrics().dispatches && progress==OpenCLProbeProgress::Pending;++attempt)
+                    progress=canceledProbe->advance(64);
+                REQUIRE(canceledProbe->metrics().dispatches>0);const auto dispatched=canceledProbe->metrics().dispatches;
+                canceledProbe->cancel();
+                for(unsigned attempt=0;attempt<1000000 && progress==OpenCLProbeProgress::Pending;++attempt) {
+                    progress=canceledProbe->advance();if(progress==OpenCLProbeProgress::Pending)std::this_thread::yield();
+                }
+                CHECK(progress==OpenCLProbeProgress::Declined);CHECK(canceledProbe->metrics().dispatches==dispatched);
+                CHECK(canceledProbe->result(0).empty());for(unsigned field=0;field<count;++field)CHECK(owner->seeds[field]==originals[field]);
+                canceledProbe.reset();CHECK(openCLProbeBytes()==admitted);inputs.clear();owner.reset();CHECK(openCLProbeBytes()==baseline);
+                ++completed;++canceled;
+            }
+        }
+        CHECK(completed==72);CHECK(canceled==72);CHECK(openCLProbeBytes()==baseline);
+        CHECK(openCLStatus().initializationThreadCPUNs==initializationCpu);
+    });coordinator.join();
+}

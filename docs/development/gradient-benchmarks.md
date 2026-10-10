@@ -898,3 +898,31 @@ diagnostic owner graphs require an explicit retained-byte allowance. Hardware-
 free tests prove subdivision, rollback and weak-credit retention using real host
 credits and explicitly synthetic device bookkeeping; they do not qualify device
 allocation, batch dispatch, or live automatic execution.
+
+`beginOpenCLProbeBatch` executes two, four or eight homogeneous scalar fields in
+one real three-dimensional dispatch per advance. Originals remain immutable;
+owned flattened values supply uploads and indexed readback. Per-field flags
+retire a converged field only after its two pingpong regions agree, and an
+updated owned descriptor receives positive transfer proof before reuse. A
+prepaid group retains its full future admission through native payloads and
+escaped weak controls. This API does not initialize a device or compile a plan.
+
+Run `isolated native probe batches share one dispatch and preserve indexed exact
+retirement` alone in a fresh native subprocess with
+`GLOB2_TEST_OPENCL_PROBE_BATCH=1`. Set parity, direct upload and API CPU modes to
+zero; separately cover active epoch zero/one and check intervals one/eight/32.
+The 72 rows cover all six plans, thin/odd shapes, two/four/eight fields, mixed
+retirement, arbitrary original seeds and caps, required-lane interleaving, and
+cancellation after actual submission. A fully activated successful case has
+2,534 successful assertions; polling does not add variable assertions.
+
+Run `isolated native batch storage transfers whole promises before real 512
+clones` alone with `GLOB2_TEST_OPENCL_BATCH_STORAGE=1` and the same excluded
+required diagnostic modes. Its 49 assertions cover actual initialized-device
+pre-admission, rejection under tracked device-budget pressure before cloning,
+two 512-square exact production-CPU arrays, local credit return, and retained
+global promise through an escaped weak holder. Tracked pressure is not driver
+out-of-memory proof. Initialization and dispatch in both fixtures belong to the
+background coordinator. These tests establish exactness and ownership only;
+native release CPU, process accounting and live promotion require separate
+evidence.

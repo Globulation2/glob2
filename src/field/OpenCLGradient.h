@@ -11,6 +11,7 @@ namespace gradient_kernel
 struct BackendRequest;
 struct OpenCLProbeInput;
 class OpenCLProbeBatchStorage;
+class OpenCLProbeBatch;
 enum class Plan : unsigned;
 inline constexpr std::size_t OpenCLHostBudget = 64 * 1024 * 1024;
 inline constexpr std::size_t OpenCLDeviceBudget = 128 * 1024 * 1024;
@@ -146,7 +147,7 @@ struct OpenCLProbeClock {
 class OpenCLProbe
 {
 public:
-    enum class Stage {Costs,Reserve,Copy,Queue,Buffers,Upload,InitialWait,Dispatch,KernelWait,CheckWait,OutputWait,CostsReserve,CostsPack,CostsUpload,CostsWait};
+    enum class Stage {Costs,Reserve,Copy,Queue,Buffers,Upload,InitialWait,Dispatch,KernelWait,CheckWait,OutputWait,CostsReserve,CostsPack,CostsUpload,CostsWait,RetireWait};
     struct Metrics {
         std::uint64_t threadCpuNs=0,maxAdvanceCpuNs=0,overshoots=0,dispatches=0,setupCpuNs=0;
         std::uint64_t hostChecks=0,tileMaskInitializations=0,tileMaskClears=0,kernelArgumentUpdates=0;
@@ -161,6 +162,7 @@ public:
         // Successful active-epoch dispatches replacing an older in-order event
         // without polling it. At most checkInterval kernels remain queued.
         std::uint64_t queuedWindowDispatches=0;
+        unsigned batchFields=1,retiredFields=0;
     };
     ~OpenCLProbe();
     OpenCLProbe(const OpenCLProbe&)=delete;
@@ -186,6 +188,9 @@ private:
     struct Impl;
     std::shared_ptr<Impl> state;
     explicit OpenCLProbe(std::shared_ptr<Impl>);
+    static std::unique_ptr<OpenCLProbe> begin(std::span<const OpenCLProbeInput>,Plan,
+        std::shared_ptr<const void>,OpenCLProbeClock,std::shared_ptr<OpenCLProbeBatchStorage>);
+    friend class OpenCLProbeBatch;
     friend std::unique_ptr<OpenCLProbe> beginOpenCLProbe(const BackendRequest&,Plan,std::shared_ptr<const void>,OpenCLProbeClock);
     friend std::unique_ptr<OpenCLProbe> beginOpenCLProbe(const OpenCLProbeInput&,Plan,std::shared_ptr<const void>,OpenCLProbeClock);
     friend bool reapOpenCLProbeQuarantine() noexcept;
@@ -196,4 +201,35 @@ private:
 // the heap-owned graph and disables GPU admissions; it never blocks on Finish.
 std::unique_ptr<OpenCLProbe> beginOpenCLProbe(const BackendRequest&,Plan,std::shared_ptr<const void> keepAlive,OpenCLProbeClock clock={});
 std::unique_ptr<OpenCLProbe> beginOpenCLProbe(const OpenCLProbeInput&,Plan,std::shared_ptr<const void> keepAlive,OpenCLProbeClock clock={});
+
+// Real flattened native batch: one multi-field kernel per advance, individual
+// convergence/retirement flags, indexed exact outputs. Classic scalar inputs
+// must have identical shape, cap, session and immutable owned cost identity.
+// Generic diagnostic calls retain direct budgets; trusted owned group calls
+// pass the future reservation admitted before original/golden capture clones.
+class OpenCLProbeBatch
+{
+    std::shared_ptr<OpenCLProbeBatchStorage> future; // Destroyed after the probe.
+    std::unique_ptr<OpenCLProbe> probe;
+    unsigned fields=0;
+    std::size_t cells=0,wrapperCharge=0;
+    OpenCLProbeBatch(std::unique_ptr<OpenCLProbe>,unsigned,std::size_t,
+        std::shared_ptr<OpenCLProbeBatchStorage>,std::size_t);
+    static std::unique_ptr<OpenCLProbeBatch> begin(std::span<const OpenCLProbeInput>,Plan,
+        std::shared_ptr<const void>,OpenCLProbeClock,std::shared_ptr<OpenCLProbeBatchStorage>);
+    friend std::unique_ptr<OpenCLProbeBatch> beginOpenCLProbeBatch(std::span<const OpenCLProbeInput>,Plan,
+        std::shared_ptr<const void>,OpenCLProbeClock,std::shared_ptr<OpenCLProbeBatchStorage>);
+public:
+    ~OpenCLProbeBatch();
+    OpenCLProbeBatch(const OpenCLProbeBatch&)=delete;
+    OpenCLProbeBatch& operator=(const OpenCLProbeBatch&)=delete;
+    OpenCLProbeProgress advance(std::size_t copyCells=4096,std::uint64_t cpuBudgetNs=500000) noexcept;
+    void cancel() noexcept;
+    unsigned count() const noexcept {return fields;}
+    std::span<const std::uint16_t> result(unsigned index) const noexcept;
+    OpenCLProbe::Metrics metrics() const noexcept;
+    bool waitingForEvent() const noexcept;
+};
+std::unique_ptr<OpenCLProbeBatch> beginOpenCLProbeBatch(std::span<const OpenCLProbeInput>,Plan,
+    std::shared_ptr<const void> keepAlive,OpenCLProbeClock clock={},std::shared_ptr<OpenCLProbeBatchStorage> future={});
 } // namespace gradient_kernel
