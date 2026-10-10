@@ -45,6 +45,11 @@ candidate because CPU savings can trade against publication latency.
 `GLOB2_OPENCL_PROFILE=1` collects device upload/kernel/check/readback event time,
 separate from host waiting time; use it for diagnosis rather than comparing
 instrumented times to ordinary release samples.
+`GLOB2_GRADIENT_WORKER_NOOP=1` screens finishing already-fixed seeds on their
+preparation worker through the existing validated callback, avoiding an owned
+GPU request and coordinator wakeup. It is off by default. Retain its CPU scan
+cost in process measurements, and distinguish `cpu_reason_trivial` from actual
+device execution; bypassed fields are never counted as GPU completions.
 
 ## Terrain gradient benchmarks
 

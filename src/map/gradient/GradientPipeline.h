@@ -9,6 +9,8 @@
 #include <atomic>
 #include <algorithm>
 #include <chrono>
+#include <cstdlib>
+#include <cstring>
 #include <cstdint>
 #include <deque>
 #include <exception>
@@ -27,7 +29,7 @@
 class GradientPipeline
 {
 public:
-    enum class CPUReason : unsigned {ExplicitCPU,OwnerExcluded,Unavailable,AutomaticPolicy,FailedSession,Count};
+    enum class CPUReason : unsigned {ExplicitCPU,OwnerExcluded,Unavailable,AutomaticPolicy,FailedSession,Trivial,Count};
 	struct Job {
 		std::optional<SimulationSnapshot::Handle> snapshotLease;
 		std::uint16_t **slot = nullptr;
@@ -99,6 +101,7 @@ private:
 	std::atomic<std::uint64_t> activeNs{0}, seedCpu{0}, propagationCpu{0}, cpuFields{0}, gpuFields{0}, selectedGpu{0}, requestedGpu{0};
     std::atomic<std::uint64_t> ownedInputCpu{0},handoffCpu{0},cleanupCpu{0};
     bool diagnostics=false;
+    bool workerNoopBypass=false;
     std::array<std::atomic<std::uint64_t>,unsigned(CPUReason::Count)> cpuReasons{};
 	using Clock = std::chrono::steady_clock;
 	static std::uint64_t ns(Clock::time_point start) {
@@ -137,7 +140,17 @@ private:
                 : backendSession->choose(family,1,choice);
             const bool selectedGPU = decision.plan != gradient_kernel::Plan::CPU;
             if(selectedGPU) selectedGpu.fetch_add(1,std::memory_order_relaxed);
-            if (selectedGPU && deviceService && asyncWork && executor->slot()) {
+            if(selectedGPU && workerNoopBypass && gradient_kernel::alreadyFixedGradient(std::span(job.data.get(),cells))) {
+                // Use the existing callback even for exact fixed seeds: it
+                // retains movement/queue validation and the shared CPU shortcut.
+                // Avoid constructing an accelerator DTO and waking the broker.
+                const auto cpuStart=glob2::threadCpuNs();
+                if(diagnostics)handoffCpu.fetch_add(glob2::threadCpuDeltaNs(handoffStart,cpuStart),std::memory_order_relaxed);
+                work(job,scratch.propagation);
+                propagationCpu.fetch_add(glob2::threadCpuDeltaNs(cpuStart,glob2::threadCpuNs()),std::memory_order_relaxed);
+                cpuReasons[unsigned(CPUReason::Trivial)].fetch_add(1,std::memory_order_relaxed);
+                cpuFields.fetch_add(1,std::memory_order_relaxed);
+            } else if (selectedGPU && deviceService && asyncWork && executor->slot()) {
                 const auto ownedStart=diagnostics ? glob2::threadCpuNs() : 0;
                 job.deviceField=asyncWork(job,decision);
                 job.deviceField->workload=key;
@@ -256,6 +269,12 @@ public:
 		reset(); batchWork = {}; asyncWork = {}; metrics = {}; activeNs = 0; seedCpu=0; propagationCpu=0; cpuFields=0; gpuFields=0; selectedGpu=0; requestedGpu=0;
         for(auto& reason:cpuReasons) reason=0; cells = size; work = std::move(callback);
         diagnostics=gradient_kernel::gradientDiagnosticsRequested();ownedInputCpu=0;handoffCpu=0;cleanupCpu=0;
+        workerNoopBypass=false;
+        if(const auto* value=std::getenv("GLOB2_GRADIENT_WORKER_NOOP");value && *value) {
+            if(std::strcmp(value,"0") && std::strcmp(value,"1"))
+                throw std::invalid_argument("GLOB2_GRADIENT_WORKER_NOOP must be 0 or 1");
+            workerNoopBypass=std::strcmp(value,"1")==0;
+        }
 		executor = &target; shared = sharedExecution;
 		resizeWorkspaces(); delay = ticks;
 	}
@@ -268,6 +287,7 @@ public:
     std::uint64_t requiredSeedCpuNs() const { return seedCpu.load(); }
     std::uint64_t requiredPropagationCpuNs() const { return propagationCpu.load(); }
     bool diagnosticsEnabled() const {return diagnostics;}
+    bool workerNoopEnabled() const {return workerNoopBypass;}
     std::uint64_t requiredOwnedInputCpuNs() const {return ownedInputCpu.load();}
     std::uint64_t requiredHandoffCpuNs() const {return handoffCpu.load();}
     std::uint64_t requiredCleanupCpuNs() const {return cleanupCpu.load();}

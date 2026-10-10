@@ -533,6 +533,8 @@ std::vector<std::pair<std::string,Uint64>> Map::adaptiveGradientMetrics() const
         {"cpu_reason_unavailable",gradientRuntime->pipeline.cpuReason(GradientPipeline::CPUReason::Unavailable)},
         {"cpu_reason_automatic_policy",gradientRuntime->pipeline.cpuReason(GradientPipeline::CPUReason::AutomaticPolicy)},
         {"cpu_reason_failed_session",gradientRuntime->pipeline.cpuReason(GradientPipeline::CPUReason::FailedSession)},
+        {"cpu_reason_trivial",gradientRuntime->pipeline.cpuReason(GradientPipeline::CPUReason::Trivial)},
+        {"worker_noop_bypass",gradientRuntime->pipeline.workerNoopEnabled()},
         {"required_seed_cpu_ns",gradientRuntime->pipeline.requiredSeedCpuNs()},
         {"required_propagation_cpu_ns",gradientRuntime->pipeline.requiredPropagationCpuNs()},
         {"required_owned_input_cpu_ns",gradientRuntime->pipeline.requiredOwnedInputCpuNs()},

@@ -658,6 +658,42 @@ TEST_CASE("GradientPipeline/CPU and unknown automatic fields keep their original
     }
 }
 
+TEST_CASE("optional worker fixed-field bypass preserves validation and publication without device handoff" * doctest::test_suite("GradientPipeline"))
+{
+    using namespace gradient_kernel;
+    if constexpr(!GAGCore::ThreadSupport::available)return;
+    struct Restore {
+        Backend mode=backend();unsigned mask=readyPlans.load();decltype(batchAccelerator) provider=batchAccelerator;
+        std::string option=std::getenv("GLOB2_GRADIENT_WORKER_NOOP") ? std::getenv("GLOB2_GRADIENT_WORKER_NOOP") : "";
+        ~Restore(){setBackend(mode);readyPlans=mask;batchAccelerator=provider;GAGCore::setProcessEnvironment("GLOB2_GRADIENT_WORKER_NOOP",option.c_str(),1);}
+    } restore;
+    GAGCore::setProcessEnvironment("GLOB2_GRADIENT_WORKER_NOOP","1",1);
+    readyPlans=1u<<unsigned(requestedOpenCLPlan());setBackend(Backend::OpenCL);
+    batchAccelerator=[](std::span<const BackendRequest>,Plan){return false;};
+    const std::array<std::array<std::uint16_t,4>,3> inputs{{{{0,1,0,1}},{{0,65535,0,65535}},{{0,64000,1,0}}}};
+    for(const auto& input:inputs) for(bool invalid:{false,true}) {
+        if(invalid && !alreadyFixedGradient(input))continue;
+        TestGradientPipeline pipeline;std::atomic<unsigned> validations{0},batches{0};
+        std::thread::id prepared,validated;const auto owner=std::this_thread::get_id();
+        pipeline.configure(1,2,4,[&](auto& job,auto&){
+            ++validations;validated=std::this_thread::get_id();CHECK(alreadyFixedGradient(std::span(job.data.get(),4)));
+            if(invalid)throw std::runtime_error("validated fixed input rejected");
+        });
+        pipeline.setBatchWork([&](auto jobs,auto){++batches;jobs.front()->data[1]=63000;});
+        auto* field=new std::uint16_t[4]{7,7,7,7};
+        pipeline.advance();pipeline.submit(&field,0,[&](auto& job){prepared=std::this_thread::get_id();std::copy(input.begin(),input.end(),job.data.get());});
+        if(invalid)CHECK_THROWS_AS(pipeline.finish(),std::runtime_error);else CHECK_NOTHROW(pipeline.finish());
+        CHECK(field[1]==7);pipeline.advance();CHECK(field[1]==7);
+        if(invalid)CHECK_THROWS_AS(pipeline.advance(),std::runtime_error);
+        else {pipeline.advance();CHECK(field[1]==(alreadyFixedGradient(input)?input[1]:63000));}
+        CHECK(validations==unsigned(alreadyFixedGradient(input)));CHECK(batches==unsigned(!alreadyFixedGradient(input)));
+        if(alreadyFixedGradient(input)){CHECK(prepared==validated);CHECK(validated!=owner);}
+        CHECK(pipeline.cpuReason(GradientPipeline::CPUReason::Trivial)==unsigned(alreadyFixedGradient(input)&&!invalid));
+        CHECK(pipeline.gpuCompleteFields()==0);
+        pipeline.reset();delete[] field;
+    }
+}
+
 TEST_CASE("owned GPU service initializes with two slots and leaves the sole worker free until fixed publication" * doctest::test_suite("GradientPipeline"))
 {
     using namespace gradient_kernel;
