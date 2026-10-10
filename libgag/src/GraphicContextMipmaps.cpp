@@ -123,7 +123,7 @@ struct State
 		samplers = epoxy_gl_version() >= 33 || epoxy_has_gl_extension("GL_ARB_sampler_objects");
 		if (samplers)
 		{
-			glGetIntegeri_v(GL_SAMPLER_BINDING, 0, &sampler);
+			glGetIntegerv(GL_SAMPLER_BINDING, &sampler);
 			glBindSampler(0, 0);
 		}
 #endif
