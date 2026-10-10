@@ -1,0 +1,81 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="79" failures="0" errors="0" skipped="0"><testsuite name="src/map/gradient/GradientPipelineHarness.cpp"><testcase classname="src/map/gradient/GradientPipelineHarness.cpp" name="GradientPipeline/worker GPU submissions finish ahead of deadlines and preserve errors and immutable leases" time="0.009611" status="run" />
+    <testcase classname="src/map/gradient/GradientPipelineHarness.cpp" name="GradientPipeline/CPU and unknown automatic fields keep their original worker" time="0.000477" status="run" />
+  </testsuite><testsuite name="ComputeExecutor"><testcase classname="ComputeExecutor" name="automatic sizing follows hardware and supports unknown CPU counts" time="0" status="run" />
+    <testcase classname="ComputeExecutor" name="thread configuration accepts auto and rejects malformed or overflowing overrides" time="0.000288" status="run" />
+    <testcase classname="ComputeExecutor" name="supported platforms execute jobs concurrently on distinct threads" time="0.000443" status="run" />
+    <testcase classname="ComputeExecutor" name="exclusive slots; nested batches; reuse; errors; barriers and reconfiguration" time="0.022319" status="run" />
+    <testcase classname="ComputeExecutor" name="deferred batches complete with lanes and isolated errors" time="0.097594" status="run" />
+    <testcase classname="ComputeExecutor" name="lane groups run in index order and the horizon is bounded" time="0.002149" status="run" />
+    <testcase classname="ComputeExecutor" name="workers run deferred batches earliest due first and the owner only waits" time="0.000798" status="run" />
+    <testcase classname="ComputeExecutor" name="without workers the owner runs the jobs due no later than the join" time="0" status="run" />
+    <testcase classname="ComputeExecutor" name="a lane keeps submission order: a lane job due before a live earlier one is rejected" time="0.005386" status="run" />
+    <testcase classname="ComputeExecutor" name="the slot count covers every producer's horizon" time="0" status="run" />
+    <testcase classname="ComputeExecutor" name="presentation cannot delay simulation barriers with spare workers or run on the simulation owner" time="0.00105" status="run" />
+    <testcase classname="ComputeExecutor" name="with one worker the owner waits through its presentation chunk and never runs the join itself" time="0.020377" status="run" />
+    <testcase classname="ComputeExecutor" name="presentation progresses before a continuous simulation backlog drains" time="0.005355" status="run" />
+    <testcase classname="ComputeExecutor" name="presentation replacement, chunk pumping, cancellation and errors retain no captures" time="0" status="run" />
+    <testcase classname="ComputeExecutor" name="resumable presentation yields without advancing or retaining canceled inputs" time="0" status="run" />
+    <testcase classname="ComputeExecutor" name="worker only maintenance never uses the owner including creation failure" time="0" status="run" />
+    <testcase classname="ComputeExecutor" name="worker only maintenance yields to required jobs and cannot delay their completed join" time="0.000315" status="run" />
+    <testcase classname="ComputeExecutor" name="suspended device work releases the only worker and preserves lane completion" time="0.000255" status="run" />
+    <testcase classname="ComputeExecutor" name="early device failure resumes exactly once on the worker at its original lane position" time="0.000158" status="run" />
+    <testcase classname="ComputeExecutor" name="early asynchronous completion cannot release an invoking callback's inputs" time="0.000173" status="run" />
+    <testcase classname="ComputeExecutor" name="continuation of a nonzero lane-group index keeps its original sequence" time="0.000243" status="run" />
+    <testcase classname="ComputeExecutor" name="retained completion tickets can be resolved after executor destruction" time="0.000174" status="run" />
+  </testsuite><testsuite name="GradientPipeline"><testcase classname="GradientPipeline" name="fixed publication; supersession; bounded buffers; scheduling stress; fallback; exceptions and teardown" time="0.940082" status="run" />
+    <testcase classname="GradientPipeline" name="reservation is invalidatable before preparation and seed failures cannot strand it" time="0.000374" status="run" />
+    <testcase classname="GradientPipeline" name="projected terrain leases end at completion including failed work" time="0" status="run" />
+    <testcase classname="GradientPipeline" name="gradient, building and AI batches share the maximum deferred horizon" time="0.015211" status="run" />
+    <testcase classname="GradientPipeline" name="building pipeline admits several jobs per tick, publishes in reservation order at fixed deadlines, supersedes, survives slow and failing workers" time="1.24097" status="run" />
+    <testcase classname="GradientPipeline" name="building pipeline pending results survive a save-style round trip" time="0.002541" status="run" />
+    <testcase classname="GradientPipeline" name="owner-only preparation computes at submission and errors surface at the deadline" time="0.000163" status="run" />
+    <testcase classname="GradientPipeline" name="shared preparation executes off the owner and retains its deadline" time="0.000245" status="run" />
+    <testcase classname="GradientPipeline" name="backend selection is shared across owner and resized worker scratch" time="0.000838" status="run" />
+    <testcase classname="GradientPipeline" name="owned GPU service initializes with two slots and leaves the sole worker free until fixed publication" time="0.00039" status="run" />
+    <testcase classname="GradientPipeline" name="GPU decline recovers original seeds exactly once on a worker and retains inputs until recovery" time="0.000266" status="run" />
+    <testcase classname="GradientPipeline" name="one-slot device configuration creates no driver activity" time="0" status="run" />
+    <testcase classname="GradientPipeline" name="device registration stop and reconfigure never join a slow optional initializer" time="0.000171" status="run" />
+    <testcase classname="GradientPipeline" name="two device registrations share exactly one process coordinator" time="0" status="run" />
+  </testsuite><testsuite name="GradientProbe"><testcase classname="GradientProbe" name="resumable probe reference preserves arbitrary seeds and agrees with an independent oracle" time="0.012617" status="run" />
+    <testcase classname="GradientProbe" name="resumable probe reference matches original production CPU propagation including deferred sources" time="0.007461" status="run" />
+    <testcase classname="GradientProbe" name="probe chunks check CPU every at most 64 entries and pause within a large source layer" time="0.000887" status="run" />
+    <testcase classname="GradientProbe" name="probe cancellation and invalid input release bounded retained leases" time="0.000209" status="run" />
+    <testcase classname="GradientProbe" name="probe admission counts every simultaneous source and output lease" time="0" status="run" />
+  </testsuite><testsuite name="OpenCLGradient"><testcase classname="OpenCLGradient" name="CPU saving policy requires paired qualified background evidence" time="0.000319" status="run" />
+    <testcase classname="OpenCLGradient" name="probe credits expire and cancellation is not a required dependency" time="0" status="run" />
+    <testcase classname="OpenCLGradient" name="CPU saving workload tables and qualified alternatives are bounded" time="0" status="run" />
+    <testcase classname="OpenCLGradient" name="paused probes survive credit window rotation without underflow" time="0" status="run" />
+    <testcase classname="OpenCLGradient" name="CPU saving promotion requires both per field savings and deadline slack" time="0" status="run" />
+    <testcase classname="OpenCLGradient" name="optional probe ownership is global across map policies" time="0" status="run" />
+    <testcase classname="OpenCLGradient" name="accepted reference is frozen and shared preparation reduces apparent savings" time="0.00102" status="run" />
+    <testcase classname="OpenCLGradient" name="probe costs cannot exceed predictable caps or falsify accepted reference" time="0" status="run" />
+    <testcase classname="OpenCLGradient" name="generation invalidation retains global probe slot until background reaping" time="0" status="run" />
+    <testcase classname="OpenCLGradient" name="full fields agree with heap oracle across costs caps seeds and wrapping" time="1.60289" status="run" />
+    <testcase classname="OpenCLGradient" name="custom prepared costs preserve forbidden and deferred seeds" time="0.001082" status="run" />
+    <testcase classname="OpenCLGradient" name="frozen halos retain the full global convergence budget" time="0.238301" status="run" />
+    <testcase classname="OpenCLGradient" name="immutable identities skip cost callbacks and invalidate every cost dependency" time="0.002653" status="run" />
+    <testcase classname="OpenCLGradient" name="uniform cost aliases coexist with varied planes and invalidate on revision" time="0.002407" status="run" />
+    <testcase classname="OpenCLGradient" name="explicit scheduler batches span chunks and retire mixed fields exactly" time="0.00382" status="run" />
+    <testcase classname="OpenCLGradient" name="independent GPU lanes finish while another lane prepares different terrain" time="0.001725" status="run" />
+    <testcase classname="OpenCLGradient" name="independent lanes keep mutable buffers and kernel arguments private across mixed grids" time="0.014775" status="run" />
+    <testcase classname="OpenCLGradient" name="gradient policy rejects invalid families before eligibility or indexing" time="0.000286" status="run" />
+    <testcase classname="OpenCLGradient" name="direct gradient groups validate bounds and homogeneity before work" time="0" status="run" />
+    <testcase classname="OpenCLGradient" name="gradient batches reject invalid later families before executing any group" time="0" status="run" />
+    <testcase classname="OpenCLGradient" name="malformed optional observations are dropped before profile processing" time="0.000453" status="run" />
+    <testcase classname="OpenCLGradient" name="established plans execute once without calibration and unknown work never scans costs" time="0.000155" status="run" />
+    <testcase classname="OpenCLGradient" name="declined established plans preserve original seeds and recover exactly once" time="0.000166" status="run" />
+    <testcase classname="OpenCLGradient" name="executor reconfiguration preserves pending established plan preparation" time="0" status="run" />
+    <testcase classname="OpenCLGradient" name="passive buffers are bounded worker only and reject retired decisions and configurations" time="0.000704" status="run" />
+    <testcase classname="OpenCLGradient" name="every compiled explicit kernel matches the independent oracle without tournaments" time="0.00201" status="run" />
+    <testcase classname="OpenCLGradient" name="device service calls preserve exact fields and release lane buffer budgets" time="0.00627" status="run" />
+    <testcase classname="OpenCLGradient" name="immutable owner budget rejection preserves seeds and healthy device state" time="0.000715" status="run" />
+    <testcase classname="OpenCLGradient" name="trivial gradient work is shared by CPU and reports no device dispatch" time="0" status="run" />
+    <testcase classname="OpenCLGradient" name="uniform metadata uses scalar costs only with a complete immutable proof" time="0.001789" status="run" />
+    <testcase classname="OpenCLGradient" name="shared offload host reservations are bounded and recover after release" time="0" status="run" />
+    <testcase classname="OpenCLGradient" name="optional reference reservations share a bounded subset of total host storage" time="0" status="run" />
+    <testcase classname="OpenCLGradient" name="optional device advances preserve seeds interleave required work and release storage" time="0.010461" status="run" />
+    <testcase classname="OpenCLGradient" name="worker initialization failure leaves CPU available without inline retries" time="0.000285" status="run" />
+  </testsuite><testsuite name="PerformanceTelemetry"><testcase classname="PerformanceTelemetry" name="moments; nesting; work/sleep/present separation; budgets; jitter; sampling; identity; capture and disabled control" time="0.000305" status="run" />
+    <testcase classname="PerformanceTelemetry" name="a bound simulation collector is absorbed with thread attribution, actors and budget" time="0.00049" status="run" />
+  </testsuite></testsuites>

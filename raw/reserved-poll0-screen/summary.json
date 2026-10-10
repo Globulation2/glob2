@@ -1,0 +1,136 @@
+{
+  "scenarios": {
+    "512-open-early": {
+      "candidate-cpu": {
+        "metrics": {
+          "cpu_per_tick": {
+            "ratio": 1.0106460707385425,
+            "lower95": 0.9989772562270172,
+            "upper95": 1.0224511858827956,
+            "upper_one_sided95": 1.0203152806995024,
+            "pairs": 5,
+            "noninferiority": {
+              "upper_excess_ns": -166318.500043248,
+              "pass": true,
+              "point_nonworsening": false
+            }
+          },
+          "wall_per_tick": {
+            "ratio": 1.0129331980623975,
+            "lower95": 0.9961539069718662,
+            "upper95": 1.0299951207899982,
+            "upper_one_sided95": 1.0277649674304639,
+            "pairs": 5,
+            "noninferiority": {
+              "upper_excess_ns": 13517.850571428518,
+              "pass": false,
+              "point_nonworsening": false
+            }
+          },
+          "tick_p99": {
+            "ratio": 1.0261479120647021,
+            "lower95": 0.9765675516744299,
+            "upper95": 1.0684663551914921,
+            "upper_one_sided95": 1.06569139104015,
+            "pairs": 5,
+            "noninferiority": {
+              "upper_excess_ns": 329373.3499999993,
+              "pass": false,
+              "point_nonworsening": false
+            }
+          },
+          "publication_wait_per_tick": {
+            "ratio": 1.0326926126623768,
+            "lower95": 0.9914895902596083,
+            "upper95": 1.0721204346516482,
+            "upper_one_sided95": 1.067855011587998,
+            "pairs": 5,
+            "noninferiority": {
+              "upper_excess_ns": 4707.875269252219,
+              "pass": false,
+              "point_nonworsening": false
+            }
+          }
+        },
+        "noninferiority_pass": false,
+        "resource_contaminated": false,
+        "cpu_target_pass": false,
+        "qualified": false,
+        "scope": "this retained scenario; independent holdouts and rendered guards required separately"
+      },
+      "candidate-gpu-poll0": {
+        "metrics": {
+          "cpu_per_tick": {
+            "ratio": 0.758054895555167,
+            "lower95": 0.7515729532697456,
+            "upper95": 0.7645927413634718,
+            "upper_one_sided95": 0.7640148109452687,
+            "pairs": 5,
+            "noninferiority": {
+              "upper_excess_ns": -1598755.2914215962,
+              "pass": true,
+              "point_nonworsening": true
+            }
+          },
+          "wall_per_tick": {
+            "ratio": 1.0167622926406659,
+            "lower95": 1.0061466665740226,
+            "upper95": 1.0291024491640755,
+            "upper_one_sided95": 1.027276431292468,
+            "pairs": 5,
+            "noninferiority": {
+              "upper_excess_ns": 12551.184087611502,
+              "pass": false,
+              "point_nonworsening": false
+            }
+          },
+          "tick_p99": {
+            "ratio": 1.2040199075532225,
+            "lower95": 1.1502272372920965,
+            "upper95": 1.2696354905673695,
+            "upper_one_sided95": 1.2574986001391608,
+            "pairs": 5,
+            "noninferiority": {
+              "upper_excess_ns": 4309024.199999999,
+              "pass": false,
+              "point_nonworsening": false
+            }
+          },
+          "publication_wait_per_tick": {
+            "ratio": 0.23486336529957907,
+            "lower95": 0.21603966905583602,
+            "upper95": 0.255327184127407,
+            "upper_one_sided95": 0.2523379126529892,
+            "pairs": 5,
+            "noninferiority": {
+              "upper_excess_ns": -201058.65517857147,
+              "pass": true,
+              "point_nonworsening": true
+            }
+          }
+        },
+        "noninferiority_pass": false,
+        "resource_contaminated": false,
+        "cpu_target_pass": false,
+        "qualified": false,
+        "scope": "this retained scenario; independent holdouts and rendered guards required separately"
+      }
+    }
+  },
+  "aggregate_cpu": {
+    "candidate-cpu": {
+      "available": false,
+      "errors": [
+        "at least two independent maps per stratum required for development estimate",
+        "required phases missing; absent phases cannot be treated as wins"
+      ]
+    },
+    "candidate-gpu-poll0": {
+      "available": false,
+      "errors": [
+        "at least two independent maps per stratum required for development estimate",
+        "required phases missing; absent phases cannot be treated as wins"
+      ]
+    }
+  }
+}

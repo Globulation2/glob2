@@ -1,0 +1,266 @@
+{
+  "resource_contaminated": true,
+  "note": "Externalcompilers observed; exploratory only. No acceptance claim.",
+  "scenarios": {
+    "512-open-early": {
+      "candidate-gpu-poll0": {
+        "metrics": {
+          "cpu_per_tick": {
+            "ratio": 0.6985411806085852,
+            "lower95": 0.6145798377842009,
+            "upper95": 0.7929266353956251,
+            "upper_one_sided95": 0.7851155249208353,
+            "pairs": 5,
+            "noninferiority": {
+              "upper_excess_ns": -1768530.6170689182,
+              "pass": true,
+              "point_nonworsening": true
+            }
+          },
+          "wall_per_tick": {
+            "ratio": 0.8845527470463357,
+            "lower95": 0.7714853010596547,
+            "upper95": 1.0123637491553232,
+            "upper_one_sided95": 1.001547645905294,
+            "pairs": 5,
+            "noninferiority": {
+              "upper_excess_ns": -40044.19635602688,
+              "pass": true,
+              "point_nonworsening": true
+            }
+          },
+          "tick_p99": {
+            "ratio": 0.9966697329099615,
+            "lower95": 0.8503517883339551,
+            "upper95": 1.151992339982145,
+            "upper_one_sided95": 1.1249422286624917,
+            "pairs": 5,
+            "noninferiority": {
+              "upper_excess_ns": 2040650.120000001,
+              "pass": false,
+              "point_nonworsening": false
+            }
+          },
+          "publication_wait_per_tick": {
+            "ratio": 0.242131387097126,
+            "lower95": 0.1992885078032678,
+            "upper95": 0.2995929847703111,
+            "upper_one_sided95": 0.28573429045496834,
+            "pairs": 5,
+            "noninferiority": {
+              "upper_excess_ns": -197533.94930664066,
+              "pass": true,
+              "point_nonworsening": true
+            }
+          }
+        },
+        "noninferiority_pass": false,
+        "resource_contaminated": true,
+        "cpu_target_pass": false,
+        "qualified": false,
+        "scope": "this retained scenario; independent holdouts and rendered guards required separately"
+      },
+      "candidate-gpu-poll1": {
+        "metrics": {
+          "cpu_per_tick": {
+            "ratio": 0.7331160779610191,
+            "lower95": 0.6393110215219165,
+            "upper95": 0.8406849963035122,
+            "upper_one_sided95": 0.8300970456154201,
+            "pairs": 5,
+            "noninferiority": {
+              "upper_excess_ns": -1465204.4023897885,
+              "pass": true,
+              "point_nonworsening": true
+            }
+          },
+          "wall_per_tick": {
+            "ratio": 0.9488002657835244,
+            "lower95": 0.8344823170570183,
+            "upper95": 1.0787789338972613,
+            "upper_one_sided95": 1.0619971748368373,
+            "pairs": 5,
+            "noninferiority": {
+              "upper_excess_ns": 92544.55904799094,
+              "pass": false,
+              "point_nonworsening": true
+            }
+          },
+          "tick_p99": {
+            "ratio": 0.979062695878688,
+            "lower95": 0.848398039891025,
+            "upper95": 1.134030718546599,
+            "upper_one_sided95": 1.1158849676592484,
+            "pairs": 5,
+            "noninferiority": {
+              "upper_excess_ns": 2248710.5100000007,
+              "pass": false,
+              "point_nonworsening": true
+            }
+          },
+          "publication_wait_per_tick": {
+            "ratio": 0.5721401859874952,
+            "lower95": 0.4668843460288358,
+            "upper95": 0.7050086466013342,
+            "upper_one_sided95": 0.6875164693368288,
+            "pairs": 5,
+            "noninferiority": {
+              "upper_excess_ns": -95140.61157784598,
+              "pass": true,
+              "point_nonworsening": true
+            }
+          }
+        },
+        "noninferiority_pass": false,
+        "resource_contaminated": true,
+        "cpu_target_pass": false,
+        "qualified": false,
+        "scope": "this retained scenario; independent holdouts and rendered guards required separately"
+      },
+      "candidate-gpu-poll10": {
+        "metrics": {
+          "cpu_per_tick": {
+            "ratio": 0.7681558955955654,
+            "lower95": 0.6705270099212065,
+            "upper95": 0.8436858338811052,
+            "upper_one_sided95": 0.8367369586772813,
+            "pairs": 5,
+            "noninferiority": {
+              "upper_excess_ns": -1404145.40592913,
+              "pass": true,
+              "point_nonworsening": true
+            }
+          },
+          "wall_per_tick": {
+            "ratio": 1.0039916431078735,
+            "lower95": 0.8824702734412693,
+            "upper95": 1.1101015296880798,
+            "upper_one_sided95": 1.0969025196570468,
+            "pairs": 5,
+            "noninferiority": {
+              "upper_excess_ns": 171717.7848738837,
+              "pass": false,
+              "point_nonworsening": false
+            }
+          },
+          "tick_p99": {
+            "ratio": 1.0609590184106352,
+            "lower95": 0.9445557969110034,
+            "upper95": 1.1488929635692595,
+            "upper_one_sided95": 1.1418476075369421,
+            "pairs": 5,
+            "noninferiority": {
+              "upper_excess_ns": 2696755.6400000006,
+              "pass": false,
+              "point_nonworsening": false
+            }
+          },
+          "publication_wait_per_tick": {
+            "ratio": 0.5505065642480238,
+            "lower95": 0.4760980973668992,
+            "upper95": 0.7076745475377775,
+            "upper_one_sided95": 0.6964273154990503,
+            "pairs": 5,
+            "noninferiority": {
+              "upper_excess_ns": -96267.34606026787,
+              "pass": true,
+              "point_nonworsening": true
+            }
+          }
+        },
+        "noninferiority_pass": false,
+        "resource_contaminated": true,
+        "cpu_target_pass": false,
+        "qualified": false,
+        "scope": "this retained scenario; independent holdouts and rendered guards required separately"
+      },
+      "candidate-gpu-poll100": {
+        "metrics": {
+          "cpu_per_tick": {
+            "ratio": 0.7966472519498256,
+            "lower95": 0.7641257598979961,
+            "upper95": 0.830166797036325,
+            "upper_one_sided95": 0.822997363871064,
+            "pairs": 5,
+            "noninferiority": {
+              "upper_excess_ns": -1546549.8926074225,
+              "pass": true,
+              "point_nonworsening": true
+            }
+          },
+          "wall_per_tick": {
+            "ratio": 1.0347928748980093,
+            "lower95": 0.9790608742971972,
+            "upper95": 1.1000973344313212,
+            "upper_one_sided95": 1.0843518016803857,
+            "pairs": 5,
+            "noninferiority": {
+              "upper_excess_ns": 161260.81554687503,
+              "pass": false,
+              "point_nonworsening": false
+            }
+          },
+          "tick_p99": {
+            "ratio": 1.0150913234395822,
+            "lower95": 0.9346343351859979,
+            "upper95": 1.1168207398130428,
+            "upper_one_sided95": 1.099256635706345,
+            "pairs": 5,
+            "noninferiority": {
+              "upper_excess_ns": 2013902.3300000012,
+              "pass": false,
+              "point_nonworsening": false
+            }
+          },
+          "publication_wait_per_tick": {
+            "ratio": 0.6939740113842189,
+            "lower95": 0.6649773572256606,
+            "upper95": 0.7320573802202758,
+            "upper_one_sided95": 0.7246919457548459,
+            "pairs": 5,
+            "noninferiority": {
+              "upper_excess_ns": -86317.86002929689,
+              "pass": true,
+              "point_nonworsening": true
+            }
+          }
+        },
+        "noninferiority_pass": false,
+        "resource_contaminated": true,
+        "cpu_target_pass": false,
+        "qualified": false,
+        "scope": "this retained scenario; independent holdouts and rendered guards required separately"
+      }
+    }
+  },
+  "aggregate_cpu": {
+    "candidate-gpu-poll0": {
+      "available": false,
+      "errors": [
+        "at least two independent maps per stratum required for development estimate",
+        "resource contamination prevents acceptance"
+      ]
+    },
+    "candidate-gpu-poll1": {
+      "available": false,
+      "errors": [
+        "at least two independent maps per stratum required for development estimate",
+        "resource contamination prevents acceptance"
+      ]
+    },
+    "candidate-gpu-poll10": {
+      "available": false,
+      "errors": [
+        "at least two independent maps per stratum required for development estimate",
+        "resource contamination prevents acceptance"
+      ]
+    },
+    "candidate-gpu-poll100": {
+      "available": false,
+      "errors": [
+        "at least two independent maps per stratum required for development estimate",
+        "resource contamination prevents acceptance"
+      ]
+    }
+  }
+}

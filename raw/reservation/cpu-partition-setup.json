@@ -1,0 +1,17 @@
+{
+  "time_ns": 1791649836484415435,
+  "group": "/sys/fs/cgroup/codex-gpu1045-benchmark",
+  "partition": {
+    "cpuset.cpus": "8-15,24-31",
+    "cpuset.cpus.effective": "8-15,24-31",
+    "cpuset.cpus.exclusive.effective": "8-15,24-31",
+    "cpuset.cpus.partition": "root",
+    "cpuset.mems.effective": "0",
+    "cgroup.procs": ""
+  },
+  "outside": {
+    "/sys/fs/cgroup/user.slice": "0-7,16-23",
+    "/sys/fs/cgroup/system.slice": "0-7,16-23",
+    "/sys/fs/cgroup/init.scope": "0-7,16-23"
+  }
+}

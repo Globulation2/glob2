@@ -1,0 +1,9 @@
+PASS glob2-unit-tests PerformanceTelemetry (2 cases) (0.0s)
+PASS glob2-unit-tests ComputeExecutor (22 cases) (0.2s)
+PASS glob2-unit-tests OpenCLGradient (34 cases) (2.1s)
+PASS glob2-unit-tests GradientProbe (5 cases) (0.1s)
+PASS glob2-unit-tests GradientPipeline (14 cases) (2.3s)
+PASS glob2-unit-tests (2 cases) (0.0s)
+
+6 passed, 0 failed, 0 skipped (4.7s of test time)
+[run_tests] JUnit report: artifacts/gpu-offload/native-second-unit/junit.xml (79 cases)

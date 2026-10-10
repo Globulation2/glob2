@@ -1,0 +1,61 @@
+{
+  "512-open-early": {
+    "candidate-gpu-poll0": {
+      "metrics": {
+        "cpu_per_tick": {
+          "ratio": 0.7500696015185699,
+          "lower95": 0.7391270828455369,
+          "upper95": 0.7620030012832322,
+          "upper_one_sided95": 0.760130842897501,
+          "pairs": 5,
+          "noninferiority": {
+            "upper_excess_ns": -1629960.7327050786,
+            "pass": true,
+            "point_nonworsening": true
+          }
+        },
+        "wall_per_tick": {
+          "ratio": 1.0037802044454591,
+          "lower95": 0.9877111772527885,
+          "upper95": 1.0194190822217992,
+          "upper_one_sided95": 1.0181726141496186,
+          "pairs": 5,
+          "noninferiority": {
+            "upper_excess_ns": -3411.789174665138,
+            "pass": true,
+            "point_nonworsening": false
+          }
+        },
+        "tick_p99": {
+          "ratio": 1.1733395287338508,
+          "lower95": 1.124886889026839,
+          "upper95": 1.20952766276473,
+          "upper_one_sided95": 1.2074717196141689,
+          "pairs": 5,
+          "noninferiority": {
+            "upper_excess_ns": 3387603.839999999,
+            "pass": false,
+            "point_nonworsening": false
+          }
+        },
+        "publication_wait_per_tick": {
+          "ratio": 0.22742814504509687,
+          "lower95": 0.2110583689950551,
+          "upper95": 0.24797799769075962,
+          "upper_one_sided95": 0.24441994155834923,
+          "pairs": 5,
+          "noninferiority": {
+            "upper_excess_ns": -209660.65974888395,
+            "pass": true,
+            "point_nonworsening": true
+          }
+        }
+      },
+      "noninferiority_pass": false,
+      "resource_contaminated": false,
+      "cpu_target_pass": false,
+      "qualified": false,
+      "scope": "this retained scenario; independent holdouts and rendered guards required separately"
+    }
+  }
+}

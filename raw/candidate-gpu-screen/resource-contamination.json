@@ -1,0 +1,195 @@
+{
+  "resource_contaminated": true,
+  "scope": "Entire exploratory screen conservatively excluded from acceptance",
+  "reason": "More than12 external C++compiler processes observed during timed rounds; CPUcache and bandwidth contention uncontrolled",
+  "observation": {
+    "monotonic_ns": 2916819042857788,
+    "loadavg": "17.35 15.09 11.28 29/3338 2705638",
+    "inventory_available": true,
+    "compilers": [
+      {
+        "pid": 2705598,
+        "command": "clang++",
+        "state": "R",
+        "lifetime_cpu_percent": 131.0
+      },
+      {
+        "pid": 2705497,
+        "command": "cc1plus",
+        "state": "R",
+        "lifetime_cpu_percent": 102.0
+      },
+      {
+        "pid": 2705494,
+        "command": "cc1plus",
+        "state": "R",
+        "lifetime_cpu_percent": 102.0
+      },
+      {
+        "pid": 2705487,
+        "command": "clang++",
+        "state": "R",
+        "lifetime_cpu_percent": 102.0
+      },
+      {
+        "pid": 2705482,
+        "command": "clang++",
+        "state": "R",
+        "lifetime_cpu_percent": 101.0
+      },
+      {
+        "pid": 2705455,
+        "command": "clang++-18",
+        "state": "R",
+        "lifetime_cpu_percent": 101.0
+      },
+      {
+        "pid": 2705423,
+        "command": "cc1plus",
+        "state": "R",
+        "lifetime_cpu_percent": 101.0
+      },
+      {
+        "pid": 2705102,
+        "command": "clang++-18",
+        "state": "R",
+        "lifetime_cpu_percent": 100.0
+      },
+      {
+        "pid": 2705015,
+        "command": "clang++-18",
+        "state": "R",
+        "lifetime_cpu_percent": 100.0
+      },
+      {
+        "pid": 2704850,
+        "command": "clang++",
+        "state": "R",
+        "lifetime_cpu_percent": 100.0
+      },
+      {
+        "pid": 2704942,
+        "command": "clang++-18",
+        "state": "R",
+        "lifetime_cpu_percent": 100.0
+      },
+      {
+        "pid": 2704265,
+        "command": "clang++-18",
+        "state": "R",
+        "lifetime_cpu_percent": 100.0
+      },
+      {
+        "pid": 2704201,
+        "command": "clang++-18",
+        "state": "R",
+        "lifetime_cpu_percent": 100.0
+      },
+      {
+        "pid": 2704333,
+        "command": "clang++-18",
+        "state": "R",
+        "lifetime_cpu_percent": 100.0
+      },
+      {
+        "pid": 2704292,
+        "command": "clang++-18",
+        "state": "R",
+        "lifetime_cpu_percent": 100.0
+      },
+      {
+        "pid": 2704477,
+        "command": "clang++-18",
+        "state": "R",
+        "lifetime_cpu_percent": 100.0
+      },
+      {
+        "pid": 2704855,
+        "command": "clang++-18",
+        "state": "R",
+        "lifetime_cpu_percent": 100.0
+      },
+      {
+        "pid": 2705107,
+        "command": "cc1plus",
+        "state": "R",
+        "lifetime_cpu_percent": 100.0
+      },
+      {
+        "pid": 2705106,
+        "command": "g++",
+        "state": "S",
+        "lifetime_cpu_percent": 0.0
+      },
+      {
+        "pid": 2705422,
+        "command": "g++",
+        "state": "S",
+        "lifetime_cpu_percent": 0.0
+      }
+    ],
+    "active_compiler_detected": true,
+    "top_cpu_commands": [
+      {
+        "pid": 2704665,
+        "command": "glob2",
+        "state": "Sl",
+        "lifetime_cpu_percent": 226.0
+      },
+      {
+        "pid": 2705598,
+        "command": "clang++",
+        "state": "R",
+        "lifetime_cpu_percent": 131.0
+      },
+      {
+        "pid": 2705497,
+        "command": "cc1plus",
+        "state": "R",
+        "lifetime_cpu_percent": 102.0
+      },
+      {
+        "pid": 2705494,
+        "command": "cc1plus",
+        "state": "R",
+        "lifetime_cpu_percent": 102.0
+      },
+      {
+        "pid": 2705487,
+        "command": "clang++",
+        "state": "R",
+        "lifetime_cpu_percent": 102.0
+      },
+      {
+        "pid": 2705482,
+        "command": "clang++",
+        "state": "R",
+        "lifetime_cpu_percent": 101.0
+      },
+      {
+        "pid": 2705455,
+        "command": "clang++-18",
+        "state": "R",
+        "lifetime_cpu_percent": 101.0
+      },
+      {
+        "pid": 2705423,
+        "command": "cc1plus",
+        "state": "R",
+        "lifetime_cpu_percent": 101.0
+      },
+      {
+        "pid": 2705102,
+        "command": "clang++-18",
+        "state": "R",
+        "lifetime_cpu_percent": 100.0
+      },
+      {
+        "pid": 2705015,
+        "command": "clang++-18",
+        "state": "R",
+        "lifetime_cpu_percent": 100.0
+      }
+    ]
+  }
+}

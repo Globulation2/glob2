@@ -1,0 +1,56 @@
+{
+  "configuration": {
+    "control": "candidate-cpu",
+    "variants": [
+      {
+        "id": "candidate-cpu",
+        "binary": "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/candidates/51c4069bc/glob2",
+        "sha256": "a32d60ae916b6ac8d86d8597d0e26c8c07fbf2cb986eceb9c1e1c88dd7ca0157",
+        "source_revision": "51c4069bc3c1395aca37b8a69a94faebeff956f2",
+        "build_flags": "release=1 server=0",
+        "compute_threads": 8,
+        "env": {
+          "GLOB2_GRADIENT_BACKEND": "cpu"
+        }
+      },
+      {
+        "id": "candidate-gpu-poll0",
+        "binary": "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/candidates/51c4069bc/glob2",
+        "sha256": "a32d60ae916b6ac8d86d8597d0e26c8c07fbf2cb986eceb9c1e1c88dd7ca0157",
+        "source_revision": "51c4069bc3c1395aca37b8a69a94faebeff956f2",
+        "build_flags": "release=1 server=0",
+        "compute_threads": 8,
+        "env": {
+          "GLOB2_GRADIENT_BACKEND": "opencl",
+          "GLOB2_GRADIENT_PLAN": "frozen8",
+          "GLOB2_OPENCL_DEVICE": "0",
+          "GLOB2_OPENCL_CHECK_INTERVAL": "8",
+          "GLOB2_OPENCL_POLL_US": "0"
+        },
+        "require_gpu": true
+      }
+    ],
+    "scenarios": [
+      {
+        "id": "512-open-early",
+        "args": [
+          "--load-game",
+          "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/fixtures/512-open/initial.game.gz",
+          "--ticks",
+          "2048"
+        ],
+        "fixture_sha256": {
+          "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/fixtures/512-open/initial.game.gz": "397bec44126f4611773829fd9093bf8d66bbf1b0c7410c9302baf5945ee522f7"
+        },
+        "phase": "early",
+        "group": "open-512",
+        "map_id": "open-512-91001"
+      }
+    ],
+    "warmup_ticks": 0
+  },
+  "config_sha256": "a27bb8f3f0e22968e5cd3f100991939059fca93aa0485700013f1b8f2c869df0",
+  "verifier_sha256": "8028b8fded3067497d325892bfe114c410c7de189fef45e1c9ef01c3608f3689",
+  "runner_sha256": "dbd2a2c9db6d0c8f1f12b4d4856b830ec5778277d54c1827dfe283a9688d9827",
+  "note": "Untimed exactness verification only"
+}

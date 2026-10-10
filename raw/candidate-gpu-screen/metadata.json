@@ -1,0 +1,109 @@
+{
+  "schema": 1,
+  "configuration": {
+    "control": "candidate-cpu",
+    "variants": [
+      {
+        "id": "candidate-cpu",
+        "binary": "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/candidates/3f394a366/glob2",
+        "sha256": "02057ab221a5afbaa47960f53201fa5dbe976e20f7bab64b9a2e848d0caf82bf",
+        "source_revision": "3f394a366cc2ba47eae32853178d0cf89dcc8ac6",
+        "build_flags": "release=1 server=0",
+        "compute_threads": 8,
+        "env": {
+          "GLOB2_GRADIENT_BACKEND": "cpu"
+        }
+      },
+      {
+        "id": "candidate-gpu-poll0",
+        "binary": "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/candidates/3f394a366/glob2",
+        "sha256": "02057ab221a5afbaa47960f53201fa5dbe976e20f7bab64b9a2e848d0caf82bf",
+        "source_revision": "3f394a366cc2ba47eae32853178d0cf89dcc8ac6",
+        "build_flags": "release=1 server=0",
+        "compute_threads": 8,
+        "env": {
+          "GLOB2_GRADIENT_BACKEND": "opencl",
+          "GLOB2_GRADIENT_PLAN": "frozen8",
+          "GLOB2_OPENCL_DEVICE": "0",
+          "GLOB2_OPENCL_CHECK_INTERVAL": "8",
+          "GLOB2_OPENCL_POLL_US": "0"
+        },
+        "require_gpu": true
+      },
+      {
+        "id": "candidate-gpu-poll1",
+        "binary": "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/candidates/3f394a366/glob2",
+        "sha256": "02057ab221a5afbaa47960f53201fa5dbe976e20f7bab64b9a2e848d0caf82bf",
+        "source_revision": "3f394a366cc2ba47eae32853178d0cf89dcc8ac6",
+        "build_flags": "release=1 server=0",
+        "compute_threads": 8,
+        "env": {
+          "GLOB2_GRADIENT_BACKEND": "opencl",
+          "GLOB2_GRADIENT_PLAN": "frozen8",
+          "GLOB2_OPENCL_DEVICE": "0",
+          "GLOB2_OPENCL_CHECK_INTERVAL": "8",
+          "GLOB2_OPENCL_POLL_US": "1"
+        },
+        "require_gpu": true
+      },
+      {
+        "id": "candidate-gpu-poll10",
+        "binary": "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/candidates/3f394a366/glob2",
+        "sha256": "02057ab221a5afbaa47960f53201fa5dbe976e20f7bab64b9a2e848d0caf82bf",
+        "source_revision": "3f394a366cc2ba47eae32853178d0cf89dcc8ac6",
+        "build_flags": "release=1 server=0",
+        "compute_threads": 8,
+        "env": {
+          "GLOB2_GRADIENT_BACKEND": "opencl",
+          "GLOB2_GRADIENT_PLAN": "frozen8",
+          "GLOB2_OPENCL_DEVICE": "0",
+          "GLOB2_OPENCL_CHECK_INTERVAL": "8",
+          "GLOB2_OPENCL_POLL_US": "10"
+        },
+        "require_gpu": true
+      },
+      {
+        "id": "candidate-gpu-poll100",
+        "binary": "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/candidates/3f394a366/glob2",
+        "sha256": "02057ab221a5afbaa47960f53201fa5dbe976e20f7bab64b9a2e848d0caf82bf",
+        "source_revision": "3f394a366cc2ba47eae32853178d0cf89dcc8ac6",
+        "build_flags": "release=1 server=0",
+        "compute_threads": 8,
+        "env": {
+          "GLOB2_GRADIENT_BACKEND": "opencl",
+          "GLOB2_GRADIENT_PLAN": "frozen8",
+          "GLOB2_OPENCL_DEVICE": "0",
+          "GLOB2_OPENCL_CHECK_INTERVAL": "8",
+          "GLOB2_OPENCL_POLL_US": "100"
+        },
+        "require_gpu": true
+      }
+    ],
+    "scenarios": [
+      {
+        "id": "512-open-early",
+        "args": [
+          "--load-game",
+          "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/fixtures/512-open/initial.game.gz",
+          "--ticks",
+          "8192"
+        ],
+        "fixture_sha256": {
+          "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/fixtures/512-open/initial.game.gz": "397bec44126f4611773829fd9093bf8d66bbf1b0c7410c9302baf5945ee522f7"
+        },
+        "phase": "early",
+        "group": "open-512",
+        "map_id": "open-512-91001"
+      }
+    ],
+    "warmup_ticks": 1024
+  },
+  "config_sha256": "37a8eab4ee6e8434e9a596834a15f2869119ea674665fbb80071ead430aab51b",
+  "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.43",
+  "rounds": 5,
+  "cold": false,
+  "runner_sha256": "6df1343ef1ba44da693d4e6b32db31298279e898ad11c61d0b78bac7cd7f6a2e",
+  "analysis_sha256": "32e205e3e93314df664f818bb2726d1d7b6a3dfaeee18a13b710f094c0a09a35",
+  "lock": "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/gpu-offload-resource.lock",
+  "note": "CPU is all-thread process work. p99 uses benchmark loop. Rendered guard and independent holdouts required separately."
+}

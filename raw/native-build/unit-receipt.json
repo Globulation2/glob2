@@ -1,0 +1,8 @@
+{
+  "native_source_revision": "51c4069bc",
+  "integration_revision": "53bb009eaa639dae6a51eb5269f69f646f30f095",
+  "artifact": "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/candidates/51c4069bc/glob2-unit-tests",
+  "sha256": "b5fcfaf08d90c16648e049ccab25c80a3dcb6cb3b2e321626b1d1d5d2b39353e",
+  "build_flags": "release=1 server=0 unit-tests engine-tests",
+  "note": "Unit binary linked and tested79selected cases while first engine graph continues. Only Python diagnostic tools changed during frozen native build; all source diff retained. Same pinned dependencies as PR and3f candidates."
+}

@@ -1,0 +1,122 @@
+[
+  {
+    "pid": 2702855,
+    "name": "scons",
+    "affinity": "0-7,16-23"
+  },
+  {
+    "pid": 2702856,
+    "name": "scons",
+    "affinity": "0-7,16-23"
+  },
+  {
+    "pid": 2702857,
+    "name": "scons",
+    "affinity": "0-7,16-23"
+  },
+  {
+    "pid": 2702858,
+    "name": "scons",
+    "affinity": "0-7,16-23"
+  },
+  {
+    "pid": 2702859,
+    "name": "scons",
+    "affinity": "0-7,16-23"
+  },
+  {
+    "pid": 2702860,
+    "name": "scons",
+    "affinity": "0-7,16-23"
+  },
+  {
+    "pid": 2710132,
+    "name": "clang++-18",
+    "affinity": "0-7,16-23"
+  },
+  {
+    "pid": 2712612,
+    "name": "clang++-18",
+    "affinity": "0-7,16-23"
+  },
+  {
+    "pid": 2713636,
+    "name": "clang++-18",
+    "affinity": "0-7,16-23"
+  },
+  {
+    "pid": 2714197,
+    "name": "clang++-18",
+    "affinity": "0-7,16-23"
+  },
+  {
+    "pid": 2714446,
+    "name": "clang++-18",
+    "affinity": "0-7,16-23"
+  },
+  {
+    "pid": 2714521,
+    "name": "clang++",
+    "affinity": "0-7,16-23"
+  },
+  {
+    "pid": 2714538,
+    "name": "cc1plus",
+    "affinity": "0-7,16-23"
+  },
+  {
+    "pid": 2714564,
+    "name": "cc1plus",
+    "affinity": "0-7,16-23"
+  },
+  {
+    "pid": 2714569,
+    "name": "cc1plus",
+    "affinity": "0-7,16-23"
+  },
+  {
+    "pid": 2714571,
+    "name": "clang++-18",
+    "affinity": "0-7,16-23"
+  },
+  {
+    "pid": 2714608,
+    "name": "clang++",
+    "affinity": "0-7,16-23"
+  },
+  {
+    "pid": 2714640,
+    "name": "clang++",
+    "affinity": "0-7,16-23"
+  },
+  {
+    "pid": 2714644,
+    "name": "clang++-18",
+    "affinity": "0-7,16-23"
+  },
+  {
+    "pid": 2714736,
+    "name": "clang++-18",
+    "affinity": "0-7,16-23"
+  },
+  {
+    "pid": 2714739,
+    "name": "clang++",
+    "affinity": "0-7,16-23"
+  },
+  {
+    "pid": 2714744,
+    "name": "cc1plus",
+    "affinity": "0-7,16-23"
+  },
+  {
+    "pid": 2714745,
+    "name": "clang++-18",
+    "affinity": "0-7,16-23"
+  },
+  {
+    "pid": 2714771,
+    "name": "clang++-18",
+    "affinity": "0-7,16-23"
+  }
+]
