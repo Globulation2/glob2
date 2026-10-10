@@ -187,8 +187,12 @@ def stage_windows(args):
     verify_manifest(args.output, "windows")
 
 
-def dependencies(binary):
-    result = subprocess.run(["ldd", str(binary)], capture_output=True, text=True, check=True)
+def dependencies(binary, library_path=None):
+    env = os.environ.copy()
+    if library_path is not None:
+        previous = env.get("LD_LIBRARY_PATH")
+        env["LD_LIBRARY_PATH"] = str(library_path) + (":" + previous if previous else "")
+    result = subprocess.run(["ldd", str(binary)], capture_output=True, text=True, check=True, env=env)
     if "not found" in result.stdout:
         raise ValueError(f"unresolved library in {binary}: {result.stdout}")
     return [(name, Path(path)) for name, path in LIBRARY_PATTERN.findall(result.stdout)]
@@ -223,7 +227,7 @@ def stage_linux(args):
     seen = set()
     while queue:
         binary = queue.pop()
-        for name, path in dependencies(binary):
+        for name, path in dependencies(binary, stage / "usr/lib/glob2"):
             if name in seen or name.startswith(SYSTEM_LIBRARY_PREFIXES):
                 continue
             if not path.is_file():
