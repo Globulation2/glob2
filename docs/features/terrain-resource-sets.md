@@ -147,3 +147,9 @@ the current draft content. Candidates can also be downloaded. Complete normal se
 publication to share a release or import the downloaded package into the map editor.
 
 Related: [features and content](README.md).
+
+Provider HTTP rejections stop the request and return its credit; they do not run
+design repairs. The bounded provider reason and HTTP status explain configuration
+errors such as unsupported transparent backgrounds. Configure an image model
+that accepts transparent PNG output for resources and raised decorations, as well
+as opaque terrain output. Verify both modes against the deployed provider account.
