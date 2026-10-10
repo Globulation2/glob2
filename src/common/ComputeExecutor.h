@@ -19,6 +19,7 @@
 #include <ThreadSupport.h>
 #include <vector>
 #include <utility>
+#include "ThreadCpuClock.h"
 
 // One executor for the simulation's parallel work. Two shapes of work share
 // its threads:
@@ -172,6 +173,7 @@ private:
 	struct Claim { std::size_t slot = 0, index = 0; bool valid = false; };
 	std::shared_ptr<CompletionLifetime> completionLifetime = std::make_shared<CompletionLifetime>(this);
 	std::vector<std::thread> workers;
+    std::vector<std::uint64_t> nativeThreadIds{glob2::nativeThreadId()};
 	mutable std::mutex mutex;
 	std::condition_variable ready, runFinished, slotDone;
 	bool stopping = false;
@@ -411,6 +413,7 @@ private:
 	{
 		std::size_t seen = 0, simulationClaims = 0;
 		std::unique_lock<std::mutex> lock(mutex);
+		nativeThreadIds[slot]=glob2::nativeThreadId();
 		for (;;)
 		{
 			ready.wait(lock, [&] { return stopping || generation != seen || claimable(false) || presentationClaimable(slot) || maintenanceClaimable(slot); });
@@ -497,6 +500,7 @@ public:
 	{
 		assert(!active && threads >= 1);
 		stop();
+        nativeThreadIds.assign(threads,0);nativeThreadIds[0]=glob2::nativeThreadId();
 		presentationWorker = threads > 1 ? threads - 1 : 0;
 		if constexpr (GAGCore::ThreadSupport::available)
 		{
@@ -506,9 +510,9 @@ public:
 				for (unsigned i = 1; i < threads; ++i)
 					workers.push_back(launch([this, i] { worker(i); }));
 			}
-			catch (...) { stop(); presentationWorker = 0; }
+			catch (...) { stop(); presentationWorker = 0; nativeThreadIds.resize(1); }
 		}
-		else presentationWorker = 0;
+		else {presentationWorker = 0;nativeThreadIds.resize(1);}
 		workerMetrics.assign(threadCount(), {});
 		totals = {};
 		presentationTotals = {};
@@ -583,6 +587,9 @@ public:
 	}
 	PresentationMetrics presentationMetrics() const { std::lock_guard<std::mutex> lock(mutex); return presentationTotals; }
 	std::size_t threadCount() const { return workers.size() + 1; }
+    // Startup identities only. Slot zero identifies the configure caller;
+    // actual worker slots are 1..N-1. Zero means unsupported/not started yet.
+    std::vector<std::uint64_t> threadIds() const {std::lock_guard lock(mutex);return nativeThreadIds;}
 	std::size_t slot() const { return active == this ? activeSlot : 0; }
 	static std::size_t workerSlot() { return active ? activeSlot : 0; }
 	static std::size_t executionThreads() { return active ? active->threadCount() : 1; }

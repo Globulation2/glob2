@@ -18,6 +18,25 @@
 
 TEST_SUITE("ComputeExecutor")
 {
+TEST_CASE("startup thread identities distinguish pool slots and reset on reconfiguration")
+{
+    const auto owner=glob2::nativeThreadId();
+    if(!owner || !GAGCore::ThreadSupport::available)return;
+    ComputeExecutor executor;executor.configure(3);
+    const auto until=std::chrono::steady_clock::now()+std::chrono::seconds(5);
+    auto ids=executor.threadIds();
+    REQUIRE(ids.size()==3);
+    while((ids[1]==0 || ids[2]==0) && std::chrono::steady_clock::now()<until) {
+        std::this_thread::yield();ids=executor.threadIds();
+    }
+    REQUIRE(ids[1]!=0);REQUIRE(ids[2]!=0);
+    CHECK(ids[0]==owner);CHECK(ids[1]!=owner);CHECK(ids[2]!=owner);CHECK(ids[1]!=ids[2]);
+    CHECK(executor.threadIds()==ids);
+    executor.configure(1);CHECK(executor.threadIds()==std::vector<std::uint64_t>{owner});
+    executor.configure(3,[](auto)->std::thread{throw std::runtime_error("launch failed");});
+    CHECK(executor.threadIds()==std::vector<std::uint64_t>{owner});
+}
+
 TEST_CASE("automatic sizing follows hardware and supports unknown CPU counts")
 {
     CHECK(defaultComputeThreadCount(0) == 1);

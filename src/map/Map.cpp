@@ -525,7 +525,7 @@ std::vector<std::pair<std::string,Uint64>> Map::adaptiveGradientMetrics() const
 {
     const auto m=gradientRuntime->backendSession->metrics();
     const auto device=gradientRuntime->deviceService->metrics();
-    return {{"cpu_diagnostics_enabled",1},
+    auto result=std::vector<std::pair<std::string,Uint64>>{{"cpu_diagnostics_enabled",1},
         {"gradient_stage_diagnostics_enabled",gradientRuntime->pipeline.diagnosticsEnabled()},
         {"gpu_requested_fields",gradientRuntime->pipeline.gpuRequestedFields()},
         {"cpu_reason_explicit",gradientRuntime->pipeline.cpuReason(GradientPipeline::CPUReason::ExplicitCPU)},
@@ -576,6 +576,14 @@ std::vector<std::pair<std::string,Uint64>> Map::adaptiveGradientMetrics() const
         {"retained_bytes",m.retainedBytes},{"retained_input_bytes",0},{"probe_dispatches",0},
         {"backend_initialization_ns",gradient_kernel::backendPreparationNs.load()},
         {"ready_plan_mask",gradient_kernel::readyPlans.load()}};
+    if(gradientRuntime->pipeline.diagnosticsEnabled()) {
+        result.emplace_back("coordinator_tid",device.coordinatorThreadId);
+        const auto ids=compute.threadIds();
+        if(!ids.empty())result.emplace_back("compute_config_owner_tid",ids.front());
+        for(std::size_t slot=1;slot<ids.size();++slot)
+            result.emplace_back("compute_worker_tid_"+std::to_string(slot),ids[slot]);
+    }
+    return result;
 }
 
 void Map::configureCompute(unsigned threads)

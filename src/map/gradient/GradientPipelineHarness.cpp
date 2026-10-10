@@ -809,6 +809,11 @@ TEST_CASE("two device registrations share exactly one process coordinator" * doc
     REQUIRE(first.metrics().ready);REQUIRE(second.metrics().ready);
     CHECK(ids->first==ids->second);CHECK(ids->first!=std::this_thread::get_id());
     CHECK(first.metrics().coordinatorThreads==1);CHECK(second.metrics().coordinatorThreads==1);
+    if(glob2::nativeThreadId()) {
+        CHECK(first.metrics().coordinatorThreadId!=0);
+        CHECK(first.metrics().coordinatorThreadId==second.metrics().coordinatorThreadId);
+        CHECK(first.metrics().coordinatorThreadId!=glob2::nativeThreadId());
+    }
     first.stop();CHECK_FALSE(first.metrics().running);CHECK(second.metrics().ready);
     second.stop();
 }

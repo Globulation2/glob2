@@ -70,6 +70,7 @@ public:
         bool running=false, ready=false;
         unsigned configuredMaxBatch=8, deviceConcurrency=1;
         unsigned coordinatorThreads=0;
+        std::uint64_t coordinatorThreadId=0;
         bool diagnostics=false;
         std::array<std::uint64_t,unsigned(GradientFallbackReason::Count)> fallbackReasons{};
     };

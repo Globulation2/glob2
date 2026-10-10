@@ -39,6 +39,7 @@ namespace
 {
 std::atomic<std::uint64_t> brokerCpuNs{0};
 std::atomic<unsigned> brokerThreads{0};
+std::atomic<std::uint64_t> brokerThreadId{0};
 void recoverField(void* context,std::size_t) noexcept
 {
     auto& field=*static_cast<OwnedGradientField*>(context);
@@ -182,7 +183,7 @@ class DeviceBroker
         }
     }
     void run() noexcept {
-        brokerThreads=1;const auto cpuStart=glob2::threadCpuNs();
+        brokerThreadId=glob2::nativeThreadId();brokerThreads=1;const auto cpuStart=glob2::threadCpuNs();
         for(;;) {
             std::shared_ptr<GradientDeviceState> selected;
             enum class Work {Initialize,Required,Observation};Work work=Work::Initialize;
@@ -327,6 +328,7 @@ GradientDeviceService::Metrics GradientDeviceService::metrics() const {
         out.running=current->started && !current->canceled;out.ready=out.running && current->initialized;
         out.retainedHostBytes=current->retained->load();
     }
-    out.hostCpuNs=brokerCpuNs.load();out.coordinatorThreads=brokerThreads.load();return out;
+    out.hostCpuNs=brokerCpuNs.load();out.coordinatorThreads=brokerThreads.load();
+    out.coordinatorThreadId=brokerThreadId.load();return out;
 }
 }
