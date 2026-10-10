@@ -500,7 +500,7 @@ public:
 	{
 		assert(!active && threads >= 1);
 		stop();
-        nativeThreadIds.assign(threads,0);nativeThreadIds[0]=glob2::nativeThreadId();
+        {std::lock_guard lock(mutex);nativeThreadIds.assign(threads,0);nativeThreadIds[0]=glob2::nativeThreadId();}
 		presentationWorker = threads > 1 ? threads - 1 : 0;
 		if constexpr (GAGCore::ThreadSupport::available)
 		{
@@ -510,9 +510,9 @@ public:
 				for (unsigned i = 1; i < threads; ++i)
 					workers.push_back(launch([this, i] { worker(i); }));
 			}
-			catch (...) { stop(); presentationWorker = 0; nativeThreadIds.resize(1); }
+			catch (...) { stop(); presentationWorker = 0; std::lock_guard lock(mutex); nativeThreadIds.resize(1); }
 		}
-		else {presentationWorker = 0;nativeThreadIds.resize(1);}
+		else {presentationWorker = 0;std::lock_guard lock(mutex);nativeThreadIds.resize(1);}
 		workerMetrics.assign(threadCount(), {});
 		totals = {};
 		presentationTotals = {};

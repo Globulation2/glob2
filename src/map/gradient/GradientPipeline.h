@@ -200,7 +200,9 @@ private:
 		if (executor) executor->join(job.batch);
         const auto joined=diagnostics ? gradient_kernel::monotonicNs() : 0;
         const auto completionCpuStart=diagnostics ? glob2::threadCpuNs() : 0;
-        if(diagnostics)metrics.ownerJoinCpuNs+=completionCpuStart-joinCpuStart;
+        // join may execute required work in serial mode: its CPU is inclusive,
+        // not an exclusive overhead to add to propagation accounting.
+        if(diagnostics)metrics.ownerJoinCpuNs+=glob2::threadCpuDeltaNs(joinCpuStart,completionCpuStart);
         if(job.deviceField) {
             if(incomplete && job.deviceField->executedGPU) {
                 const auto waited=joined-waitStart;
@@ -222,7 +224,7 @@ private:
         const auto waited=ns(start);
 		metrics.waitNs += waited;
         if(publication) {metrics.publicationWaitNs += waited;metrics.lastPublicationWaitNs+=waited;}
-        if(diagnostics)metrics.ownerCompletionCpuNs+=glob2::threadCpuNs()-completionCpuStart;
+        if(diagnostics)metrics.ownerCompletionCpuNs+=glob2::threadCpuDeltaNs(completionCpuStart,glob2::threadCpuNs());
 		if (!job.done) throw std::logic_error("Unprepared gradient reservation");
 	}
 public:

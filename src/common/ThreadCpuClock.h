@@ -46,4 +46,8 @@ inline std::uint64_t threadCpuNs() noexcept
     return 0;
 #endif
 }
+inline std::uint64_t threadCpuDeltaNs(std::uint64_t start,std::uint64_t end) noexcept
+{
+    return start && end>=start ? end-start : 0;
+}
 }
