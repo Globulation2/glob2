@@ -76,7 +76,7 @@ embedded building catalog without changing the turn-message frame size.
 | `mapReady` | guest → host | `hash` |
 | `chat` | both | `text` (guest → host); `from`, `text` (host → all) |
 | `start` | host → guest | `setup` (with the seed), `seat`, `ticket`, `mapName`, `mapBytes` |
-| `leave` | guest → host | |
+| `leave` | guest → host |  |
 | `closed` | host → all | `reason`: `host-left` or `cancelled` |
 
 The room state is the `MatchSetup` the match will start from, so starting needs no
@@ -120,4 +120,7 @@ Turn games replace the "waiting for X" box (`GameGUIDraw.cpp`) with connection l
 from `TurnMatchPresenter::notice`, whenever there is something to report: the local
 connection being lost or everyone loading, a rejoin or catch-up of more than 25 turns,
 and other players who are reconnecting, lagging, catching up or not yet connected. The
-always-on connection panel of the multiplayer revamp will replace this box.
+shared [connection panel](connection-quality.md#in-game-panel) presents per-seat
+quality and state alongside these notices.
+
+[Multiplayer index](README.md) · [Documentation index](../README.md).

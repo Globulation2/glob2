@@ -1,5 +1,7 @@
 # iPhone and iPad App Store page
 
+Maintained iOS listing copy and submission checklist.
+
 This is the maintained English (U.S.) listing copy and submission checklist for
 Globulation 2. Keep claims aligned with the iOS build being submitted. TestFlight
 approval is separate from App Store review; the store version remains on manual
@@ -89,8 +91,8 @@ final set has been reviewed, then place only the selected store assets in
   selecting the build in App Store Connect.
 - Complete the App Privacy questionnaire from an audit of actual data collection,
   including optional online accounts, chat, shared maps, and colony-skin
-  purchases. Use the maintained [privacy policy](privacy-policy.md) and the
-  account-deletion URL documented in [mobile development](development.md).
+  purchases. Use the maintained [privacy policy](../mobile/privacy-policy.md) and the
+  account-deletion URL documented in [mobile development](../mobile/development.md).
   Verify that the published policy is reachable before submitting the store version.
 - Assess the age-rating questions against current gameplay combat, multiplayer
   chat, and shared maps; do not answer all content questions “none” based only on
@@ -102,3 +104,5 @@ final set has been reviewed, then place only the selected store assets in
   network features. Keep the version on **manual release**.
 - Review final screenshots and copy on the App Store Connect page, then submit
   the App Store version separately from the TestFlight beta review.
+
+[Release index](README.md) · [Documentation index](../README.md).

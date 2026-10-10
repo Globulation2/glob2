@@ -202,3 +202,5 @@ The account’s **Download my data** export includes its Hive credit wallet, led
 purchases, provider usage, sessions, events, operations and standing programs.
 Rows are restricted to the account that owns the session. Internal client, lease
 and run capabilities are excluded.
+
+[Multiplayer index](README.md) · [Documentation index](../README.md).

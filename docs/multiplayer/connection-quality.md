@@ -80,7 +80,7 @@ sends it with every `Presence` broadcast, but only to clients that said version 
 answer `Welcome` in the client's version. A version-2 client that an older relay
 refuses with `Reject(1)` retries once with version 1 and then plays without other
 players' Ping. Replays, match records, saves and the simulation are unchanged
-([turn protocol](turn-protocol.md#framing-and-versioning)).
+([turn protocol](turn-wire.md#framing-and-versioning)).
 
 `Presence.lagTicks` is the lag the seat's last `Ping` reported, and no longer grows
 between pings. Clients ping every 500 ms. Once a second passes without a ping, the
@@ -99,3 +99,5 @@ extra time counts as lag, so a silent client still turns *slow* after two second
 
 Changing a threshold changes how connections are labelled and how the game feels to
 read. Call it out in the pull request.
+
+[Multiplayer index](README.md) · [Documentation index](../README.md).

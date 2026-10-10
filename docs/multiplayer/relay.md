@@ -75,7 +75,7 @@ secrets.
 | `GLOB2_RELAY_PLATFORM_URL` | unset | Platform origin for `/internal/v1` calls; unset disables them |
 | `GLOB2_RELAY_PLATFORM_CA` | system store | Extra trust anchors for HTTPS calls to the platform |
 | `GLOB2_RELAY_KEY` (`_FILE`) | required with a platform | Bearer token for `/internal/v1` calls |
-| `GLOB2_RELAY_ID` | host name | `relayId`, `[A-Za-z0-9._-]{1,64}`; the compose image's entrypoint sets a stable `relay-<n>` claimed on the spool volume ([hosting](../hosting/README.md#scaling)) |
+| `GLOB2_RELAY_ID` | host name | `relayId`, `[A-Za-z0-9._-]{1,64}`; the compose image's entrypoint sets a stable `relay-<n>` claimed on the spool volume ([hosting](../hosting/scaling.md#scaling)) |
 | `GLOB2_RELAY_PUBLIC_URL` | required with a platform | The `wss://` URL clients use, sent at registration |
 | `GLOB2_RELAY_REGION` | `default` | Region id, `^[a-z0-9][a-z0-9-]{0,31}$` |
 | `GLOB2_RELAY_SPOOL_DIR` | unset | Directory where records wait until they are uploaded |
@@ -128,7 +128,7 @@ The first frame must be `Hello`. Reading pauses while the relay verifies the tic
 so frames that follow the `Hello` wait in the socket and reach the match in order.
 
 1. **Protocol version.** A different version gets `Reject(1)`.
-2. **Ticket.** See [tickets](#tickets). A refused ticket gets `Reject(2)` with the
+2. **Ticket.** See [tickets](relay.md#tickets). A refused ticket gets `Reject(2)` with the
    reason in the detail, for example `Ticket refused: expired`.
 3. **Admission.** The ticket's `matchId` names the match:
    - The first valid ticket for an unknown `matchId` creates the match. The
@@ -347,7 +347,9 @@ tests cover:
 - **TLS.** WSS clients and HTTPS platform calls, with a private CA from
   `deploy/provision_tls.py`.
 
-CI runs both in the native-programs job.
+Requested hosted native-program verification covers both suites. Choose focused
+local verification from the affected relay boundaries; see
+[verification policy](../../AGENTS.md#validation-and-ci-feedback).
 
 ## Limits and follow-ups
 
@@ -355,10 +357,12 @@ CI runs both in the native-programs job.
   replica is reached at `/relay/<relay id>`, its id being its container's host name,
   and Caddy rewrites the path to `/relay` (see the
   [self-hosting guide](../hosting/README.md)).
-- The setup lookup endpoint and the idempotent upload behaviour are relay-side
-  assumptions that the platform API must implement (see [platform calls](#platform-calls)).
+- The setup lookup endpoint and idempotent upload behavior are contracts shared
+  with the platform API (see [platform calls](relay.md#platform-calls)).
 - A refused new match uses `Reject(5)` (match over) with an explanatory detail. A
   dedicated "relay unavailable" reason would let clients ask for another relay
   automatically; it needs a turn protocol version bump.
-- The relay has been run on macOS (clang) and Linux (g++-13). It does not build on
-  Windows, and is not meant to.
+- Published relay images target Linux amd64 and arm64. The self-hosting workflow
+  uses these Linux containers; it does not provide a Windows relay deployment.
+
+[Multiplayer index](README.md) · [Documentation index](../README.md).

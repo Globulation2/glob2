@@ -33,7 +33,7 @@ lost connections behave.
 ## Running two instances
 
 Build the client (`scons -j3 release=1 server=0`, see the
-[development reference](../development/reference.md)). The binary is
+[development reference](../development/README.md)). The binary is
 `build/<platform>/client/release/src/glob2`; run it from the repository root.
 
 **On one machine.** Give each instance its own profile, so settings, map caches and
@@ -112,7 +112,7 @@ These are from a quiet machine. On a heavily loaded one (load average around 60)
 engines' threads were descheduled often enough that each client measured more than
 10 ms of jitter and kept a two-tick buffer: host 140 / 162 ms and guest 193 / 241 ms on
 loopback, guest 261 / 292 ms at +50 ms. Before the latency work (see
-[measured delay](turn-protocol.md#measured-delay)) the same loaded machine measured
+[measured delay](turn-timing.md#measured-delay)) the same loaded machine measured
 197 / 238, 279 / 383 and 455 / 505 ms. The host's delay does not depend on the guest's
 link.
 
@@ -124,3 +124,5 @@ to the host and about a tick. It keeps running for everyone when one connection 
 bad. Whether it feels right is what this playtest decides. In particular, note any
 small hitches on Wi-Fi: a client with under 10 ms of jitter holds no buffer and absorbs
 a late bundle as a short wait.
+
+[Multiplayer index](README.md) · [Documentation index](../README.md).

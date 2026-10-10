@@ -159,7 +159,7 @@ provisional (±177 display points per standard deviation). `ratings.seed_source`
 records the seed.
 
 | AI | Doc Elo | Seed μ | Seed σ | Initial display |
-| --- | ---: | ---: | ---: | ---: |
+| --- | --- | --- | --- | --- |
 | Maxima | 1873 | 37.65 | 6 | 1785 |
 | Cabino | 1680 | 31.11 | 6 | 1592 |
 | Nicowar | 1653 | 30.19 | 6 | 1565 |
@@ -194,7 +194,7 @@ rejects map pools whose team count does not fit the mode.
 
 The default pool contains every generator registered with a `fairness:` tag, at
 128×128 (`width`/`height` 7) with five candidate rolls. These are generators whose
-homes are fair by construction ([adding a generator](../map-generators/ADDING_A_GENERATOR.md)):
+homes are fair by construction ([adding a generator](../map-generators/adding-a-generator.md)):
 
 - **Exact symmetry:** Symmetric Arena, Sierpiński Gardens.
 - **Solved fairness:** Even Ground (catchment), Marchland (rope).
@@ -362,7 +362,7 @@ The production starter is `PlatformMatchStarter`; its MatchSetup comes from
 index) writes the rows a real starter would through the same builder, with a
 placeholder map.
 
-**Match intake** (M4) sets `match_participants.quit_tick` from the relay's
+**Match intake** sets `match_participants.quit_tick` from the relay's
 `RelayMatchEnded` report. It may mark a seat `outcome = 'abandoned'`. Ratings read
 both fields.
 
@@ -370,7 +370,7 @@ both fields.
 
 `platform/packages/play/test/ratings.test.ts` and
 `platform/apps/worker/test/matchmaker.test.ts` run against a
-real Postgres; see [architecture](architecture.md#working-on-the-platform) for the
+real Postgres; see [architecture](platform-development.md#working-on-the-platform) for the
 test database. They cover:
 
 - the published OpenSkill 2v2 vector;
@@ -387,3 +387,5 @@ test database. They cover:
 - accept, decline, timeout and leave;
 - start failure;
 - leader failover after the leader's database session is terminated.
+
+[Multiplayer index](README.md) · [Documentation index](../README.md).
