@@ -981,7 +981,7 @@ TEST_CASE("offline batch manifest binds exact configuration seed class and measu
         {"backend",{{"device",backend.device},{"platform",backend.platform},{"platform_vendor",backend.platformVendor},
             {"platform_version",backend.platformVersion},{"device_vendor",backend.deviceVendor},{"driver_version",backend.driverVersion},
             {"device_version",backend.deviceVersion},{"opencl_c_version",backend.openCLCVersion},{"check_interval",backend.checkInterval},{"poll_micros",backend.pollMicros},
-            {"active_epoch",false},{"uniform_metadata",false},{"device_profiling",false},{"parity_bound",false}}},
+            {"active_epoch",false},{"uniform_metadata",false},{"device_profiling",false},{"parity_bound",false},{"direct_seed_upload",false}}},
         {"profiles",Json::array({entry})}};
     const auto text=manifest.dump();const auto parsed=GradientBatchManifest::parse(text,backend,false,nativeIdentity);
     REQUIRE(parsed.count==1);CHECK(parsed.bounds[0].workload.batch==2);CHECK(parsed.bounds[0].costRevision==11);
@@ -997,6 +997,12 @@ TEST_CASE("offline batch manifest binds exact configuration seed class and measu
     CHECK_THROWS_AS(GradientBatchManifest::parse(changed.dump(),backend,false,nativeIdentity),std::invalid_argument);
     changed=manifest;changed["backend"]["driver_version"]="different";
     CHECK_THROWS_AS(GradientBatchManifest::parse(changed.dump(),backend,false,nativeIdentity),std::invalid_argument);
+    changed=manifest;changed["backend"]["direct_seed_upload"]=true;
+    CHECK_THROWS_AS(GradientBatchManifest::parse(changed.dump(),backend,false,nativeIdentity),std::invalid_argument);
+    auto directBackend=backend;directBackend.directSeedUpload=true;
+    CHECK(GradientBatchManifest::parse(changed.dump(),directBackend,false,nativeIdentity).count==1);
+    changed=manifest;changed["backend"].erase("direct_seed_upload");
+    CHECK_THROWS(GradientBatchManifest::parse(changed.dump(),backend,false,nativeIdentity));
     changed=manifest;changed["profiles"].push_back(entry);
     CHECK_THROWS_AS(GradientBatchManifest::parse(changed.dump(),backend,false,nativeIdentity),std::invalid_argument);
     CHECK_THROWS_AS(GradientBatchManifest::parse(std::string(GradientBatchManifest::MaxBytes+1,' '),backend,false,nativeIdentity),std::invalid_argument);
@@ -1026,7 +1032,7 @@ TEST_CASE("ready cross-due batches need exact profile cadence seed metadata and 
             {"platform_version",backend.platformVersion},{"device_vendor",backend.deviceVendor},{"driver_version",backend.driverVersion},
             {"device_version",backend.deviceVersion},{"opencl_c_version",backend.openCLCVersion},{"check_interval",backend.checkInterval},{"poll_micros",backend.pollMicros},
             {"active_epoch",backend.activeEpoch},{"uniform_metadata",backend.uniformMetadata},{"device_profiling",backend.deviceProfiling},
-            {"parity_bound",backend.parityBound}}},{"profiles",Json::array({entry})}};
+            {"parity_bound",backend.parityBound},{"direct_seed_upload",backend.directSeedUpload}}},{"profiles",Json::array({entry})}};
     {std::ofstream out(path);out<<manifest.dump();REQUIRE(bool(out));}
     const auto pathString=path.string();Environment profile("GLOB2_GRADIENT_BATCH_PROFILE",pathString.c_str());
     for(unsigned scenario=0;scenario<4;++scenario) {

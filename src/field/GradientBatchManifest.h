@@ -80,7 +80,8 @@ struct GradientBatchManifest
            config.at("active_epoch").get<bool>()!=backend.activeEpoch ||
            config.at("uniform_metadata").get<bool>()!=backend.uniformMetadata ||
            config.at("device_profiling").get<bool>()!=backend.deviceProfiling ||
-           config.at("parity_bound").get<bool>()!=parityBound)
+           config.at("parity_bound").get<bool>()!=parityBound ||
+           config.at("direct_seed_upload").get<bool>()!=backend.directSeedUpload)
             throw std::invalid_argument("batch manifest backend configuration");
         const auto& profiles=root.at("profiles");
         if(!profiles.is_array() || profiles.empty() || profiles.size()>MaxProfiles)
