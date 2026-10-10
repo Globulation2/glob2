@@ -10,6 +10,12 @@ on:
         required: true
         type: string
 
+      upload:
+        description: Upload the tested candidate to Epic Dev
+        required: true
+        type: boolean
+        default: false
+
 permissions:
   contents: read
 
@@ -147,6 +153,7 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
   upload-dev:
+    if: ${{ inputs.upload }}
     needs: [preflight, smoke-test]
     runs-on: windows-2022
     environment: epic-dev

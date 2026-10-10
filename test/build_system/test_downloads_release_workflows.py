@@ -98,6 +98,16 @@ class ReleaseWorkflowTests(unittest.TestCase):
                         self.assertEqual(result.returncode,0,result.stderr)
                         self.assertEqual(result.stdout.splitlines(),expected)
 
+    def test_epic_build_only_skips_credential_bearing_upload(self):
+        text=(ROOT/'.github/workflows/epic-windows-release.yml').read_text()
+        inputs=text.split('    inputs:',1)[1].split('\npermissions:',1)[0]
+        self.assertIn('      upload:',inputs)
+        self.assertIn('        type: boolean\n        default: false',inputs)
+        upload=text.split('\n  upload-dev:',1)[1]
+        self.assertIn('    if: ${{ inputs.upload }}',upload)
+        self.assertIn('    needs: [preflight, smoke-test]',upload)
+        self.assertIn('    environment: epic-dev',upload)
+
     def test_epic_smoke_uses_tag_cli_and_rejects_unknown_versions(self):
         text=(ROOT/'.github/workflows/epic-windows-release.yml').read_text()
         selector='if test -f src/app/cli/CommandLine.h; then'+text.split('if test -f src/app/cli/CommandLine.h; then',1)[1].split('fi',1)[0]+'fi'
