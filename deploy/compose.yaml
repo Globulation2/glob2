@@ -194,6 +194,7 @@ services:
       context: ..
       dockerfile: deploy/Dockerfile
       target: music-worker
+      args: {JOBS: '${GLOB2_BUILD_JOBS:-4}', GLOB2_DESIGN_SYSTEM_SHA: '${GLOB2_DESIGN_SYSTEM_SHA:-}'}
     environment:
       <<: *platform-environment
       DATABASE_URL: postgres://glob2_worker@postgres:5432/glob2
@@ -229,6 +230,7 @@ services:
       context: ..
       dockerfile: deploy/Dockerfile
       target: ai-music-worker
+      args: {JOBS: '${GLOB2_BUILD_JOBS:-4}', GLOB2_DESIGN_SYSTEM_SHA: '${GLOB2_DESIGN_SYSTEM_SHA:-}'}
     environment:
       <<: *platform-environment
       DATABASE_URL: postgres://glob2_worker@postgres:5432/glob2

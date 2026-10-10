@@ -124,8 +124,8 @@ export class Pipeline {
       throw Error('Base archive does not match the saved request.');
     const reference = (
       await Promise.all(
-        ['building-catalogs', 'building-semantics', 'building-authoring'].map((name) =>
-          readFile(join(this.root, 'docs/features', name + '.md'), 'utf8'),
+        ['building-catalogs', 'building-semantics', 'building-authoring', 'resource-catalogs'].map(
+          (name) => readFile(join(this.root, 'docs/features', name + '.md'), 'utf8'),
         ),
       )
     ).join('\n\n');

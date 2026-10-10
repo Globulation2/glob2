@@ -203,8 +203,9 @@ class StoreTests(unittest.TestCase):
 
     def test_warm_dependency_setup_can_run_during_an_active_build(self):
         from build_layout import build_identity
+        from dev_build import dependency_identity
 
-        identity = build_identity({"target": "android", "release": 1})
+        identity = dependency_identity(build_identity({"target": "android", "release": 1}))
         prefix = store.dependency_prefix(self.a, identity, "compiler")
         prefix.mkdir(parents=True)
         (prefix / "lib.a").write_bytes(b"validated archive")
