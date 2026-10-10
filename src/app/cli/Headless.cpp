@@ -2,6 +2,9 @@
 #include <Environment.h>
 #include "Headless.h"
 #include "ResourceGrowth.h"
+#include "ThreadCpuClock.h"
+#include "BenchmarkDiagnostics.h"
+#include "io/BenchmarkMapImport.h"
 #include <utility>
 #include "scripting/javascript/ScriptCommand.h"
 #include "scripting/javascript/ScriptRuntime.h"
@@ -267,6 +270,10 @@ struct HeadlessRunner
 	{
 		const auto setupStart = std::chrono::steady_clock::now();
 		const bool benchmark=options.count("--benchmark-warmup")!=0;
+        const auto diagnosticEnvironment=std::getenv("GLOB2_BENCHMARK_DIAGNOSTICS");
+        const bool benchmarkDiagnostics=benchmark && diagnosticEnvironment && std::string(diagnosticEnvironment)=="1";
+        const bool diagnosticCpuAvailable=benchmarkDiagnostics && glob2::threadCpuNs()!=0;
+        if(diagnosticCpuAvailable) PerformanceTelemetry::setDiagnosticCpuClock(glob2::threadCpuNs);
 		const auto setupCpuStart=benchmark?processCpuNs():0;
 		const unsigned benchmarkWarmup=integer(one(options,"--benchmark-warmup","0"),0,std::numeric_limits<int>::max());
 		const auto fields = one(options,"--diagnostic-fields");
@@ -316,6 +323,8 @@ struct HeadlessRunner
 			else throw std::invalid_argument("unknown save request: " + save);
 		}
 		auto mapFile=one(options,"--map-file"); auto saved=one(options,"--load-game");
+        const auto largeMapEnvironment=std::getenv("GLOB2_BENCHMARK_LARGE_MAPS");
+        const bool largeMapImport=!saved.empty() && largeMapEnvironment && std::string(largeMapEnvironment)=="1";
 		std::vector<std::string> forkSettings;
 		if(saved.empty() && options.count("--fork-rule"))
 			throw std::invalid_argument("--fork-rule requires --load-game");
@@ -329,7 +338,10 @@ struct HeadlessRunner
 		{
 			for(const auto &key : {"--player","--ai-param","--ai-script","--map-script","--alliance","--win-condition","--game-seed","--experiment","--rule","--ai-order-delay"})
 				if(options.count(key)) throw std::invalid_argument(std::string(key)+" cannot override a saved game");
-			if(engine.initCustom(saved)!=Engine::EE_NO_ERROR) throw std::invalid_argument("cannot load saved game");
+			{
+                const ScopedBenchmarkMapImport fixtureImport(largeMapImport);
+                if(engine.initCustom(saved)!=Engine::EE_NO_ERROR) throw std::invalid_argument("cannot load saved game");
+            }
 			if(globals.automaticEndingSteps <= int(engine.gui.game.stepCounter)) throw std::invalid_argument("tick limit must exceed the saved tick");
 			// An explicit fork, never a silent continuation: the loaded match's
 			// rules change before its first tick, the recorded replay starts
@@ -485,10 +497,17 @@ struct HeadlessRunner
         auto measuredGradientEnd=initialGradientPolicy;
         auto measuredOpenCLStart=gradient_kernel::openCLStatus();
         auto measuredOpenCLEnd=measuredOpenCLStart;
+        nlohmann::json diagnosticThreadsStart,diagnosticThreadsEnd,diagnosticScopesStart,diagnosticScopesEnd;
+        struct TailTick { Uint64 tick,wall,publicationWait,buildingWait,gpuPublicationWait,gpuOverlapWait; };
+        std::vector<TailTick> diagnosticTicks;
         const auto startMeasurement=[&] {
             measuredGradientStart=engine.gui.game.map.adaptiveGradientMetrics();
             measuredOpenCLStart=gradient_kernel::openCLStatus();
             publicationWaitStart=engine.gui.game.map.gradientPipelineStatus().publicationWaitNs;
+            if(benchmarkDiagnostics) {
+                diagnosticThreadsStart=benchmark_diagnostics::threads();
+                diagnosticScopesStart=benchmark_diagnostics::ownerScopes();
+            }
             measureWallStart=std::chrono::steady_clock::now();
             measureStart=processCpuNs();
         };
@@ -502,16 +521,25 @@ struct HeadlessRunner
 			if(start>=uint64_t(globals.automaticEndingSteps)) throw std::invalid_argument("benchmark warmup must leave measured ticks");
 			setupCpu=processCpuNs()-setupCpuStart;
 			engine.prepareRun(); engine.beginSession(SDL_GetTicks());
-			if(benchmarkWarmup==0) startMeasurement();
+			if(benchmarkDiagnostics) diagnosticTicks.reserve(std::min<std::uint64_t>(globals.automaticEndingSteps-start,1048576));
+            if(benchmarkWarmup==0) startMeasurement();
 			while(engine.gui.isRunning)
 			{
                 const auto beforeTick=engine.gui.game.stepCounter;
                 const auto tickStart=std::chrono::steady_clock::now();
+                const auto publicationBefore=benchmarkDiagnostics ? engine.gui.game.map.gradientPipelineStatus().publicationWaitNs : 0;
+                const auto buildingBefore=benchmarkDiagnostics ? engine.gui.game.map.buildingGradientPipelineStatus().waitNs : 0;
 				engine.stepSession(SDL_GetTicks()); engine.drawSession();
                 if(beforeTick>=start && engine.gui.game.stepCounter>beforeTick) {
                     const auto duration=Uint64(std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now()-tickStart).count());
                     ++tickHistogram[std::min<unsigned>(std::bit_width(duration),63)];
                     tickDurations.push_back(duration);
+                    if(benchmarkDiagnostics) {
+                        const auto p=engine.gui.game.map.gradientPipelineStatus();
+                        const auto b=engine.gui.game.map.buildingGradientPipelineStatus();
+                        diagnosticTicks.push_back({beforeTick,duration,p.publicationWaitNs-publicationBefore,b.waitNs-buildingBefore,
+                            p.lastGpuPublicationWaitNs,p.lastGpuDeviceOverlapWaitNs});
+                    }
                 }
 				if(!measureStart && engine.gui.game.stepCounter>=start) startMeasurement();
 			}
@@ -523,9 +551,24 @@ struct HeadlessRunner
             measuredGradientEnd=engine.gui.game.map.adaptiveGradientMetrics();
             measuredOpenCLEnd=gradient_kernel::openCLStatus();
 			measuredTicks=engine.gui.game.stepCounter-start;
+            if(benchmarkDiagnostics) {
+                diagnosticScopesEnd=benchmark_diagnostics::ownerScopes();
+                diagnosticThreadsEnd=benchmark_diagnostics::threads();
+            }
 		}
 		else { engine.run(); engine.gui.game.map.finishGradientPipeline(); engine.gui.game.map.finishResourceGrowth(); }
-		if (engine.diagnostics) engine.diagnostics->finish();
+		if(benchmarkDiagnostics) {
+            nlohmann::json records=nlohmann::json::array();
+            for(const auto& t:diagnosticTicks) records.push_back({{"tick",t.tick},{"wall_ns",t.wall},
+                {"publication_wait_ns",t.publicationWait},{"building_wait_ns",t.buildingWait},
+                {"gpu_publication_wait_ns",t.gpuPublicationWait},{"gpu_backend_overlap_wait_ns",t.gpuOverlapWait}});
+            const nlohmann::json report={{"version",1},{"diagnostic_only",true},{"cpu_clock_available",diagnosticCpuAvailable},
+                {"note","CPU clock calls and per-tick record overhead are included; boundary proc scans and JSON writes excluded. Nested inclusive CPU scopes cannot be added. Backend overlap is not physical kernel time."},
+                {"threads_at_start",diagnosticThreadsStart},{"threads_at_end",diagnosticThreadsEnd},
+                {"owner_scopes_at_start",diagnosticScopesStart},{"owner_scopes_at_end",diagnosticScopesEnd},{"ticks",records}};
+            Headless::writeJson((output/"benchmark-diagnostics.json").string(),report.dump());
+        }
+        if (engine.diagnostics) engine.diagnostics->finish();
 		const auto runEnd = std::chrono::steady_clock::now();
 		const auto saveCpuStart=benchmark?processCpuNs():0;
 		if(final) engine.saveInitialGameStateOrExit((output/"final.game").string(),"final",engine.gui.game.mapHeader.getMapName());
@@ -554,7 +597,9 @@ struct HeadlessRunner
 		result << "{\"schema_version\":1,\"job_type\":\"game\",\"status\":\"completed\",\"ticks\":" << game.stepCounter
 			<< ",\"initialChecksum\":" << initialChecksum
 			<< ",\"finalChecksum\":" << game.checkSum(nullptr, nullptr, nullptr, true)
-			<< ",\"benchmark_setup_cpu_ns\":" << setupCpu
+			<< ",\"benchmark_large_map_import_enabled\":" << largeMapImport
+            << ",\"benchmark_diagnostics_enabled\":" << benchmarkDiagnostics
+            << ",\"benchmark_setup_cpu_ns\":" << setupCpu
 			<< ",\"benchmark_run_cpu_ns\":" << runCpu
             << ",\"benchmark_run_wall_ns\":" << measuredWallNs
             << ",\"benchmark_publication_wait_ns\":" << (benchmark ? pipelineResult.publicationWaitNs-publicationWaitStart : 0)
@@ -660,7 +705,11 @@ struct HeadlessRunner
             const std::map<std::string,Uint64> values={
                 {"fields",status.fields},{"batches",status.batches},{"dispatches",status.dispatches},
                 {"host_checks",status.hostChecks},{"cost_uploads",status.costUploads},
-                {"cost_cache_hits",status.costCacheHits},{"execution_lanes",status.executionLanes},
+                {"cost_cache_hits",status.costCacheHits},{"cost_identity_hits",status.costIdentityHits},
+                {"noop_fields",status.noopFields},{"max_batch_fields",status.maxBatchFields},
+                {"uniform_metadata",status.uniformMetadata},{"uniform_metadata_hits",status.uniformMetadataHits},
+                {"active_epoch",status.activeEpoch},{"tile_mask_initializations",status.tileMaskInitializations},
+                {"tile_mask_clears",status.tileMaskClears},{"execution_lanes",status.executionLanes},
                 {"max_concurrent_batches",status.maxConcurrentBatches},
                 {"host_bytes",status.hostBytes},{"peak_host_bytes",status.peakHostBytes},
                 {"device_bytes",status.deviceBytes},{"peak_device_bytes",status.peakDeviceBytes},

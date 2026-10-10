@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <PerformanceTelemetry.h>
 #include <algorithm>
+#include <atomic>
 #include <chrono>
 #include <cmath>
 #include <cstdlib>
@@ -23,6 +24,7 @@ constexpr Descriptor descriptors[] = {
 #undef PERF_SCOPE
 };
 thread_local Scope *top = nullptr;
+std::atomic<Clock> diagnosticClock{nullptr};
 unsigned index(Id id)
 {
 	return static_cast<unsigned>(id);
@@ -35,6 +37,8 @@ void printBudget(std::ostream &out, const char *name, const Budget &b)
 }
 void printMetric(std::ostream &out, const Metric &m, unsigned stride)
 {
+	if (m.cpuSamples) out << " cpu_observed_ns=" << m.cpu << " cpu_observed_self_ns=" << m.cpuSelf
+		<< " cpu_samples=" << m.cpuSamples << " cpu_self_complete=" << m.cpuSelfComplete;
 	out << " calls=" << m.calls << " samples=" << m.time.count << " stride=" << stride;
 	if (!m.time.count)
 	{
@@ -56,6 +60,12 @@ void printMetric(std::ostream &out, const Metric &m, unsigned stride)
 		out << " self_ns=na";
 }
 } // namespace
+Clock diagnosticCpuClock() { return diagnosticClock.load(std::memory_order_relaxed); }
+void setDiagnosticCpuClock(Clock clock) {
+	diagnosticClock.store(clock,std::memory_order_relaxed);
+	collector().cpuClock=clock;
+}
+const char *scopeName(Id id) { return descriptors[index(id)].name; }
 std::uint64_t now()
 {
 	return std::chrono::duration_cast<std::chrono::nanoseconds>(
@@ -92,8 +102,9 @@ void Metric::merge(const Metric &b)
 {
 	calls += b.calls;
 	self += b.self;
+	cpu += b.cpu; cpuSelf += b.cpuSelf; cpuSamples += b.cpuSamples;
 	time.merge(b.time);
-	selfComplete &= b.selfComplete;
+	selfComplete &= b.selfComplete; cpuSelfComplete &= b.cpuSelfComplete;
 }
 void Budget::add(std::uint64_t duration, std::uint64_t budget)
 {
@@ -416,6 +427,7 @@ Scope::Scope(Id scope, int actor) : id(scope), actorIndex(actor)
 	}
 	++c->depth;
 	start = c->clock();
+	if (c->cpuClock) cpuStart = c->cpuClock();
 	top = this;
 }
 Scope::~Scope()
@@ -426,12 +438,17 @@ void Scope::stop()
 {
 	if (!c)
 		return;
+	const auto cpuEnd = c->cpuClock ? c->cpuClock() : 0;
+    const bool cpuMeasured = c->cpuClock && cpuStart && cpuEnd>=cpuStart;
+    const auto cpuElapsed = cpuMeasured ? cpuEnd-cpuStart : 0;
 	const auto elapsed = c->clock() - start;
 	const auto duration = id == Id::Work ? elapsed - std::min(elapsed, excluded) : elapsed;
 	auto &m = c->window[index(id)];
 	m.time.add(duration);
 	m.self += elapsed - std::min(elapsed, children);
 	m.selfComplete &= complete;
+    m.cpuSelfComplete &= cpuComplete && cpuMeasured && complete;
+	if (cpuMeasured) { m.cpu+=cpuElapsed; m.cpuSelf+=cpuElapsed-std::min(cpuElapsed,cpuChildren); ++m.cpuSamples; }
 	if (actorIndex >= 0)
 	{
 		auto &a = c->actors[unsigned(actorIndex)].window;
@@ -439,6 +456,8 @@ void Scope::stop()
 		a.time.add(duration);
 		a.self += elapsed - std::min(elapsed, children);
 		a.selfComplete &= complete;
+        a.cpuSelfComplete &= cpuComplete && cpuMeasured && complete;
+		if (cpuMeasured) { a.cpu+=cpuElapsed; a.cpuSelf+=cpuElapsed-std::min(cpuElapsed,cpuChildren); ++a.cpuSamples; }
 	}
 	if (id == Id::Work)
 	{
@@ -457,6 +476,8 @@ void Scope::stop()
 	if (parent)
 	{
 		parent->children += elapsed;
+		parent->cpuChildren += cpuElapsed;
+        parent->cpuComplete &= cpuComplete && (!c->cpuClock || cpuMeasured);
 		parent->complete &= complete;
 	}
 	--c->depth;

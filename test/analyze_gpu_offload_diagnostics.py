@@ -51,7 +51,7 @@ def analyze(result, diagnostics):
                     publication_majority_ticks=sum(2*t['publication_wait_ns'] >= t['wall_ns'] for t in tails),
                     gpu_publication_majority_ticks=sum(2*t['gpu_publication_wait_ns'] >= t['wall_ns'] for t in tails),
                     largest_examples=tails[:10]),
-                note='Thread quantization and boundary scan time limit reconciliation; unmatched threads remain unallocated. Inclusive scopes overlap and must not be summed. Backend overlap includes host driver work and waits, not physical GPU kernel duration.')
+                note='Thread quantization and boundary scan time limit reconciliation; unmatched threads remain unallocated. Inclusive scopes and component counters may overlap (owner join includes propagation) and must not be summed. Backend overlap includes host driver work and waits, not physical GPU kernel duration.')
 
 
 def main():

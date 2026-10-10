@@ -26,8 +26,10 @@ struct Moments
 struct Metric
 {
 	std::uint64_t calls = 0, self = 0;
+	// Optional diagnostics: nested inclusive CPU must never be summed as a ceiling.
+	std::uint64_t cpu = 0, cpuSelf = 0, cpuSamples = 0;
 	Moments time;
-	bool selfComplete = true;
+	bool selfComplete = true, cpuSelfComplete = true;
 	void merge(const Metric &other);
 };
 struct Budget
@@ -44,6 +46,10 @@ struct Actor
 };
 using Clock = std::uint64_t (*)();
 std::uint64_t now();
+//! Configure before launching workers; null disables diagnostic CPU clocks.
+Clock diagnosticCpuClock();
+void setDiagnosticCpuClock(Clock clock);
+const char *scopeName(Id id);
 struct Collector
 {
 	static constexpr unsigned MaxActors = 128;
@@ -60,6 +66,7 @@ struct Collector
 	bool enabled = true, output = false, described = false, running = false;
 	std::string mode = "startup";
 	Clock clock = now;
+	Clock cpuClock = diagnosticCpuClock();
 	//! Per scope: 1 = measured on this collector's thread, 2 = absorbed from the
 	//! simulation thread (see absorb); exported as the record's thread attribution.
 	std::array<std::uint8_t, ScopeCount> threads{};
@@ -89,9 +96,9 @@ class Scope
 	Collector *c = nullptr;
 	Scope *parent = nullptr;
 	Id id;
-	std::uint64_t start = 0, children = 0, excluded = 0;
+	std::uint64_t start = 0, children = 0, excluded = 0, cpuStart = 0, cpuChildren = 0;
 	int actorIndex = -1;
-	bool complete = true;
+	bool complete = true, cpuComplete = true;
 
   public:
 	explicit Scope(Id id, int actor = -1);

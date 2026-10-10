@@ -5,10 +5,12 @@
 #include "BinaryStream.h"
 #include "StreamBackend.h"
 #include "BuildingType.h"
+#include "io/BenchmarkMapImport.h"
 #include <cstdlib>
 #include <filesystem>
 #include <string>
 #include <tuple>
+#include <thread>
 #include <vector>
 
 TEST_SUITE("GpuOffloadFixture")
@@ -68,7 +70,14 @@ TEST_CASE("write 1024 real-game stress fixtures [benchmark][artifacts]")
             [&](GAGCore::OutputStream& output){world.gui.save(&output,"gpu-offload-stress");}));
         GameGUI restored;
         GAGCore::BinaryInputStream input(glob2OpenMapOrSaveInputStreamBackend(*globalContainer->fileManager,path.string()));
-        REQUIRE(restored.game.load(&input));
+        CHECK_FALSE(restored.game.load(&input));
+        GAGCore::BinaryInputStream allowedInput(glob2OpenMapOrSaveInputStreamBackend(*globalContainer->fileManager,path.string()));
+        {
+            const ScopedBenchmarkMapImport fixtureImport(true);
+            REQUIRE(restored.game.load(&allowedInput));
+        }
+        CHECK_FALSE(ScopedBenchmarkMapImport::allows(10,10,Map::MIN_SUPPORTED_SIZE_EXPONENT));
+        CHECK_FALSE(Map::supportedDimensions(10,10));
         CHECK(restored.game.map.getW()==1024);
         CHECK(restored.game.map.getH()==1024);
         CHECK(restored.game.teamsCount()==4);
@@ -76,4 +85,39 @@ TEST_CASE("write 1024 real-game stress fixtures [benchmark][artifacts]")
         MESSAGE("Constructed 1024 stress fixture: " << path);
     }
 }
+}
+
+TEST_CASE("large fixture import bounds and thread scope never widen ordinary readers" * doctest::test_suite("GpuOffloadFixture"))
+{
+    CHECK_FALSE(ScopedBenchmarkMapImport::allows(10,10,Map::MIN_SUPPORTED_SIZE_EXPONENT));
+    {
+        const ScopedBenchmarkMapImport outer(true);
+        CHECK(ScopedBenchmarkMapImport::allows(10,10,Map::MIN_SUPPORTED_SIZE_EXPONENT));
+        CHECK_FALSE(ScopedBenchmarkMapImport::allows(11,10,Map::MIN_SUPPORTED_SIZE_EXPONENT));
+        CHECK_FALSE(ScopedBenchmarkMapImport::allows(10,11,Map::MIN_SUPPORTED_SIZE_EXPONENT));
+        CHECK_FALSE(ScopedBenchmarkMapImport::allows(3,10,Map::MIN_SUPPORTED_SIZE_EXPONENT));
+        { const ScopedBenchmarkMapImport inner(false);
+          CHECK_FALSE(ScopedBenchmarkMapImport::allows(10,10,Map::MIN_SUPPORTED_SIZE_EXPONENT)); }
+        CHECK(ScopedBenchmarkMapImport::allows(10,10,Map::MIN_SUPPORTED_SIZE_EXPONENT));
+        bool otherThreadAllowed=true;
+        std::thread worker([&]{otherThreadAllowed=ScopedBenchmarkMapImport::allows(10,10,Map::MIN_SUPPORTED_SIZE_EXPONENT);});
+        worker.join(); CHECK_FALSE(otherThreadAllowed);
+    }
+    CHECK_FALSE(ScopedBenchmarkMapImport::allows(10,10,Map::MIN_SUPPORTED_SIZE_EXPONENT));
+}
+
+TEST_CASE("scoped fixture import rejects malformed dimensions before sizing storage" * doctest::test_suite("GpuOffloadFixture"))
+{
+    for(const auto [width,height]:std::vector<std::pair<int,int>>{{11,10},{10,11},{3,10},{10,3}}) {
+        auto* backend=new GAGCore::MemoryStreamBackend;
+        GAGCore::BinaryOutputStream output(backend);
+        output.writeEnterSection("Map"); output.write("MapB",4,"signatureStart");
+        output.writeSint32(width,"wDec"); output.writeSint32(height,"hDec");
+        output.writeLeaveSection(); output.flush();
+        GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(backend->getBuffer(),backend->getPosition()));
+        MapHeader header; Map loaded;
+        const ScopedBenchmarkMapImport scope(true);
+        CHECK_FALSE(loaded.load(&input,header));
+        CHECK(loaded.getW()==0); CHECK(loaded.getH()==0);
+    }
 }

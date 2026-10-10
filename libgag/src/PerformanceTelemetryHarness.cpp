@@ -190,3 +190,42 @@ TEST_CASE("a bound simulation collector is absorbed with thread attribution, act
 	main.clock = originalClock;
 }
 }
+
+namespace {
+std::uint64_t cpuTimeNs=0;
+unsigned cpuReads=0;
+std::uint64_t fakeCpuClock() { ++cpuReads; return cpuTimeNs; }
+}
+TEST_CASE("diagnostic CPU scope nesting and merging preserve disjoint self work" * doctest::test_suite("PerformanceTelemetry"))
+{
+    auto& c=collector();
+    const auto oldWall=c.clock,oldCpu=diagnosticCpuClock();
+    setDiagnosticCpuClock(fakeCpuClock); c.reset(); c.clock=fakeClock;
+    timeNs=0; cpuTimeNs=1; cpuReads=0;
+    {
+        Scope parent(Id::Tasks); cpuTimeNs+=3; timeNs+=5;
+        { Scope child(Id::Units); cpuTimeNs+=12; timeNs+=30; }
+        cpuTimeNs+=5; timeNs+=10;
+    }
+    CHECK(metric(Id::Tasks).cpu==20);
+    CHECK(metric(Id::Tasks).cpuSelf==8);
+    CHECK(metric(Id::Units).cpu==12);
+    CHECK(metric(Id::Tasks).cpuSamples==1);
+    CHECK(metric(Id::Tasks).cpuSelfComplete);
+    Metric merged; merged.merge(metric(Id::Tasks)); merged.merge(metric(Id::Tasks));
+    CHECK(merged.cpu==40); CHECK(merged.cpuSelf==16); CHECK(merged.cpuSamples==2);
+    setDiagnosticCpuClock(nullptr); c.reset();
+    const auto reads=cpuReads;
+    { Scope disabledCpu(Id::Tasks); cpuTimeNs+=99; ++timeNs; }
+    CHECK(cpuReads==reads); CHECK(metric(Id::Tasks).cpuSamples==0);
+    setDiagnosticCpuClock(fakeCpuClock); c.reset(); cpuTimeNs=1;
+    {
+        Scope parent(Id::Tasks); cpuTimeNs=0;
+        { Scope failedClock(Id::Units); cpuTimeNs=15; }
+        cpuTimeNs=20;
+    }
+    CHECK(metric(Id::Units).cpuSamples==0);
+    CHECK_FALSE(metric(Id::Tasks).cpuSelfComplete);
+    CHECK(metric(Id::Tasks).selfComplete); // CPU failure does not invalidate wall coverage.
+    setDiagnosticCpuClock(oldCpu); c.clock=oldWall; c.reset();
+}
