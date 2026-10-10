@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Glob2Test.h"
+#include "ScopedEnvironment.h"
 #include <algorithm>
 #include <memory>
 #include <utility>
@@ -20,11 +21,7 @@
 #include "field/GradientBatchManifest.h"
 
 namespace {
-struct PipelineEnvironment {
-    const char* key;std::string previous;
-    PipelineEnvironment(const char* key,const char* value):key(key),previous(std::getenv(key)?std::getenv(key):""){GAGCore::setProcessEnvironment(key,value,1);}
-    ~PipelineEnvironment(){GAGCore::setProcessEnvironment(key,previous.c_str(),1);}
-};
+using PipelineEnvironment = glob2test::ScopedEnvironment;
 }
 
 // Standalone harnesses own an executor; production uses Map's shared executor.
