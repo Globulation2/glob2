@@ -646,3 +646,85 @@ TEST_CASE("worker only maintenance yields to required jobs and cannot delay thei
     executor.join(a);executor.join(b);
     CHECK(executor.threadCount()==3);
 }
+
+TEST_CASE("suspended device work releases the only worker and preserves lane completion" * doctest::test_suite("ComputeExecutor"))
+{
+    if constexpr (!GAGCore::ThreadSupport::available) return;
+    ComputeExecutor executor; executor.configure(2);
+    struct Context {
+        ComputeExecutor& executor;
+        std::mutex mutex;
+        std::condition_variable ready;
+        ComputeExecutor::CompletionTicket ticket;
+    } context{executor};
+    const ComputeExecutor::Group device{1, {[](void* value, std::size_t) {
+        auto& state = *static_cast<Context*>(value);
+        auto ticket = state.executor.defer();
+        { std::lock_guard lock(state.mutex); state.ticket = std::move(ticket); }
+        state.ready.notify_one();
+    }, &context}, 9};
+    auto first = executor.submit(std::span(&device, 1), 10);
+    ComputeExecutor::CompletionTicket ticket;
+    {
+        std::unique_lock lock(context.mutex);
+        REQUIRE(context.ready.wait_for(lock, std::chrono::seconds(5), [&] { return bool(context.ticket); }));
+        ticket = context.ticket;
+    }
+    std::atomic<unsigned> unrelated{0}, successor{0};
+    auto increment = [](void* value, std::size_t) { ++*static_cast<std::atomic<unsigned>*>(value); };
+    const ComputeExecutor::Group next{1, {increment, &successor}, 9}, other{1, {increment, &unrelated}};
+    auto second = executor.submit(std::span(&next, 1), 11);
+    auto loose = executor.submit(std::span(&other, 1), 11);
+    executor.join(loose);
+    CHECK(unrelated == 1); CHECK(successor == 0); CHECK_FALSE(executor.finished(first));
+    CHECK(ticket->complete()); CHECK_FALSE(ticket->complete());
+    executor.join(first); executor.join(second);
+    CHECK(successor == 1); CHECK_FALSE(ticket->complete());
+}
+
+TEST_CASE("early device failure resumes exactly once on the worker at its original lane position" * doctest::test_suite("ComputeExecutor"))
+{
+    if constexpr (!GAGCore::ThreadSupport::available) return;
+    ComputeExecutor executor; executor.configure(2);
+    struct Context {
+        ComputeExecutor& executor;
+        std::atomic<unsigned> recovered{0}, successor{0};
+        std::atomic<bool> resumed{false}, duplicate{false}, worker{false};
+    } context{executor};
+    const ComputeExecutor::Group first{1, {[](void* value, std::size_t) {
+        auto& state = *static_cast<Context*>(value);
+        auto ticket = state.executor.defer();
+        const ComputeExecutor::Job recover{[](void* value, std::size_t) {
+            auto& state = *static_cast<Context*>(value);
+            state.worker = ComputeExecutor::workerSlot() != 0;
+            ++state.recovered;
+        }, value};
+        state.resumed = ticket->resume(recover);
+        state.duplicate = ticket->resume(recover);
+    }, &context}, 10};
+    const ComputeExecutor::Group next{1, {[](void* value, std::size_t) {
+        auto& state = *static_cast<Context*>(value);
+        if (state.recovered == 1) ++state.successor;
+    }, &context}, 10};
+    auto a = executor.submit(std::span(&first, 1), 3);
+    auto b = executor.submit(std::span(&next, 1), 4);
+    executor.join(a); executor.join(b);
+    CHECK(context.resumed); CHECK_FALSE(context.duplicate); CHECK(context.worker);
+    CHECK(context.recovered == 1); CHECK(context.successor == 1);
+}
+
+TEST_CASE("early asynchronous completion cannot release an invoking callback's inputs" * doctest::test_suite("ComputeExecutor"))
+{
+    if constexpr (!GAGCore::ThreadSupport::available) return;
+    ComputeExecutor executor; executor.configure(2);
+    struct Context { ComputeExecutor& executor; std::atomic<bool> finishedInside{true}; } context{executor};
+    const ComputeExecutor::Group group{1, {[](void* value, std::size_t) {
+        auto& state = *static_cast<Context*>(value);
+        auto ticket = state.executor.defer();
+        if (!ticket->complete(std::make_exception_ptr(std::runtime_error("device failure")))) return;
+        state.finishedInside = state.executor.liveBatches() == 0;
+    }, &context}};
+    auto batch = executor.submit(std::span(&group, 1));
+    CHECK_THROWS_AS(executor.join(batch), std::runtime_error);
+    CHECK_FALSE(context.finishedInside);
+}
