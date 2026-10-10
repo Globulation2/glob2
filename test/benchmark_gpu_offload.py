@@ -221,24 +221,42 @@ def execute(variant, scenario, output, warmup, *, extra_args=(), reservation=Non
     return row
 
 
+def campaign_summary(rows, control, candidates, scenarios, *, rounds, stage):
+    summary = dict(stage=stage, diagnostic_only=stage == 'diagnose',
+                   scenarios=summarize(rows, control, candidates, minimum_pairs=rounds,
+                                       confirmation=stage == 'confirm'),
+                   aggregate_cpu=aggregate_cpu(rows, control, candidates,
+                         expected_scenarios=scenarios, expected_rounds=range(rounds), minimum_pairs=rounds))
+    if stage == 'diagnose':
+        for scenario in summary['scenarios'].values():
+            for result in scenario.values():
+                result['qualified'] = False
+                result['cpu_target_pass'] = False
+                result['diagnostic_only'] = True
+                result['admission_reason'] = 'short diagnostic stage cannot qualify a candidate'
+    return summary
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('config', type=Path)
     parser.add_argument('--output', required=True, type=Path)
     parser.add_argument('--lock', required=True, type=Path, help='one shared path for all builds and campaigns')
-    parser.add_argument('--stage', choices=['screen', 'confirm'], default='screen')
+    parser.add_argument('--stage', choices=['diagnose', 'screen', 'confirm'], default='screen',
+                        help='diagnose: two paired repeats, no admission; screen: five; confirm: ten')
     parser.add_argument('--cold', action='store_true', help='fresh process and no simulation warmup; retain separately')
     args = parser.parse_args()
     config = json.loads(args.config.read_text())
     validate(config)
-    rounds = 5 if args.stage == 'screen' else 10
+    rounds = {'diagnose': 2, 'screen': 5, 'confirm': 10}[args.stage]
     output = args.output.resolve()
     output.mkdir(parents=True, exist_ok=False)
     args.lock.parent.mkdir(parents=True, exist_ok=True)
     with args.lock.open('a') as lock:
         fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
         metadata = dict(schema=1, configuration=config, config_sha256=sha(args.config),
-                        platform=platform.platform(), rounds=rounds, cold=args.cold,
+                        platform=platform.platform(), rounds=rounds, cold=args.cold, stage=args.stage,
+                        diagnostic_only=args.stage == 'diagnose',
                         runner_sha256=sha(__file__), analysis_sha256=sha(Path(__file__).with_name('gpu_offload_analysis.py')),
                         lock=str(args.lock.resolve()),
                         note='CPU is all-thread process work. p99 uses benchmark loop. Rendered guard and independent holdouts required separately.')
@@ -251,7 +269,8 @@ def main():
                     reference = None
                     for variant in order:
                         dest = output / scenario['id'] / str(n) / variant['id']
-                        row = dict(scenario=scenario['id'], phase=scenario.get('phase'), group=scenario.get('group'),
+                        row = dict(campaign_stage=args.stage, diagnostic_stage=args.stage == 'diagnose',
+                                   scenario=scenario['id'], phase=scenario.get('phase'), group=scenario.get('group'),
                                    map_id=scenario.get('map_id'), control=scenario.get('control', False),
                                    round=n, variant=variant['id'], **execute(variant, scenario, dest, 0 if args.cold else config['warmup_ticks'], reservation=config.get('reservation'), gpu_uuid=config.get('gpu_uuid')))
                         if 'result' in row:
@@ -265,9 +284,8 @@ def main():
                         if 'paired simulation mismatch' in row['errors']:
                             raise RuntimeError('simulation diverged; retained evidence, campaign stopped')
         candidates = [v['id'] for v in config['variants'] if v['id'] != config['control']]
-        summary = dict(scenarios=summarize(rows, config['control'], candidates, minimum_pairs=rounds, confirmation=args.stage == 'confirm'),
-                       aggregate_cpu=aggregate_cpu(rows, config['control'], candidates,
-                           expected_scenarios=config['scenarios'], expected_rounds=range(rounds), minimum_pairs=rounds))
+        summary = campaign_summary(rows, config['control'], candidates, config['scenarios'],
+                                   rounds=rounds, stage=args.stage)
         (output / 'summary.json').write_text(json.dumps(summary, indent=2) + '\n')
 
 

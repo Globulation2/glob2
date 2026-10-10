@@ -1,7 +1,7 @@
 import subprocess
 import unittest
 from unittest.mock import patch
-from benchmark_gpu_offload import gpu_snapshot, round_order
+from benchmark_gpu_offload import gpu_snapshot, round_order, campaign_summary
 
 
 class ExperimentOrderTest(unittest.TestCase):
@@ -20,6 +20,24 @@ class ExperimentOrderTest(unittest.TestCase):
             for position in range(3):
                 self.assertEqual(sum(order[position] == variant for order in orders), 2)
         self.assertEqual(round_order(variants, -1), variants)
+
+    @patch('benchmark_gpu_offload.aggregate_cpu', return_value={'gpu': {'available': False}})
+    @patch('benchmark_gpu_offload.summarize', return_value={'map': {'gpu': {'qualified': True, 'cpu_target_pass': True}}})
+    def test_short_diagnostic_stage_cannot_admit_even_a_clean_cpu_win(self, summarize_mock, _):
+        result = campaign_summary([], 'cpu', ['gpu'], [], rounds=2, stage='diagnose')
+        self.assertFalse(result['scenarios']['map']['gpu']['qualified'])
+        self.assertFalse(result['scenarios']['map']['gpu']['cpu_target_pass'])
+        self.assertTrue(result['diagnostic_only'])
+        self.assertEqual(summarize_mock.call_args.kwargs['minimum_pairs'], 2)
+
+    @patch('benchmark_gpu_offload.aggregate_cpu', return_value={'gpu': {'available': True}})
+    @patch('benchmark_gpu_offload.summarize', return_value={'map': {'gpu': {'qualified': True}}})
+    def test_confirmation_keeps_ten_round_guard_and_confirmation_mode(self, summarize_mock, _):
+        result = campaign_summary([], 'cpu', ['gpu'], [], rounds=10, stage='confirm')
+        self.assertTrue(result['scenarios']['map']['gpu']['qualified'])
+        self.assertFalse(result['diagnostic_only'])
+        self.assertTrue(summarize_mock.call_args.kwargs['confirmation'])
+        self.assertEqual(summarize_mock.call_args.kwargs['minimum_pairs'], 10)
 
 
 class GPUResourcesTest(unittest.TestCase):

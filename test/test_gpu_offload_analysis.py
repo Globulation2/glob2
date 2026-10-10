@@ -45,6 +45,15 @@ class OffloadAnalysisTest(unittest.TestCase):
         self.assertFalse(result['qualified'])
         self.assertTrue(result['diagnostic_only'])
 
+    def test_diagnostic_stage_rows_never_qualify_in_standalone_analysis(self):
+        rows = [r for n in range(5) for r in (self.row('cpu', n), self.row('gpu', n, 60))]
+        for row in rows: row['diagnostic_stage'] = True
+        result = summarize(rows, 'cpu', ['gpu'])['map-early']['gpu']
+        self.assertFalse(result['qualified']);self.assertTrue(result['diagnostic_only'])
+        roster, rows = self.aggregate_fixture()
+        rows[0]['diagnostic_stage'] = True
+        self.assertFalse(self.aggregate(roster, rows)['available'])
+
     def test_duplicate_pair_is_rejected(self):
         with self.assertRaises(ValueError): summarize([self.row('cpu', 0)] * 2, 'cpu', ['gpu'])
 

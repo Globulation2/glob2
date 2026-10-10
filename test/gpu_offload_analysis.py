@@ -101,7 +101,7 @@ def summarize(rows, control, candidates, *, minimum_pairs=5, confirmation=False)
             if confirmation:
                 passing = passing and all(metrics[k]['noninferiority']['point_nonworsening'] for k in ('wall_per_tick', 'tick_p99'))
             contaminated = any(r.get('resource_contaminated', False) for pair in matched for r in pair)
-            diagnostic = any(r['result'].get('benchmark_diagnostics_enabled', False) for pair in matched for r in pair)
+            diagnostic = any(r.get('diagnostic_stage', False) or r['result'].get('benchmark_diagnostics_enabled', False) for pair in matched for r in pair)
             scenario_result[candidate] = {'metrics': metrics, 'noninferiority_pass': passing,
                 'diagnostic_only': diagnostic,
                 'resource_contaminated': contaminated,
@@ -172,7 +172,7 @@ def aggregate_cpu(rows, control, candidates, *, expected_scenarios=None,
                     errors.append('invalid paired sample'); continue
                 if b.get('resource_contaminated', False) or c.get('resource_contaminated', False):
                     errors.append('resource contamination prevents acceptance'); continue
-                if b['result'].get('benchmark_diagnostics_enabled') or c['result'].get('benchmark_diagnostics_enabled'):
+                if any(r.get('diagnostic_stage', False) or r['result'].get('benchmark_diagnostics_enabled') for r in (b, c)):
                     errors.append('diagnostic instrumentation prevents acceptance'); continue
                 signature = ('initialChecksum', 'finalChecksum', 'ticks', 'benchmark_measured_ticks')
                 if any(k not in r['result'] for r in (b, c) for k in signature) or any(b['result'][k] != c['result'][k] for k in signature):
