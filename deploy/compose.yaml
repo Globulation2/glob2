@@ -41,6 +41,7 @@ x-platform-image: &platform-image
     args: {JOBS: '${GLOB2_BUILD_JOBS:-4}', GLOB2_DESIGN_SYSTEM_SHA: '${GLOB2_DESIGN_SYSTEM_SHA:-}'}
 
 x-platform-environment: &platform-environment
+  # Engine-derived authoring images do not inherit the platform image's default.
   BLOB_STORE: fs
   # Engine-derived authoring images do not inherit the platform image's default.
   BLOB_DIR: /var/lib/glob2/blobs

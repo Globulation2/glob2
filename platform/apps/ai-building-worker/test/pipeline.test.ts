@@ -21,6 +21,7 @@ import {
   Attempts,
   OpenAIBuildings,
   ProviderUncertain,
+  ProviderRejected,
   type BuildingProvider,
 } from '../src/provider.ts';
 let database: TestDatabase, studio: BuildingAiStudio, blobs: AgentBlobs, directory: string;
@@ -152,6 +153,18 @@ it('answers questions without images or a credit charge', async () => {
   expect(p.image).not.toHaveBeenCalled();
   expect((await studio.credits.balance(f.account)).balance).toBe(3);
 });
+it('returns a provider rejection without spending a design repair call and releases the credit', async () => {
+  const f = await fixture(),
+    p = await provider();
+  p.image.mockRejectedValue(
+    new ProviderRejected('Provider refused this request (HTTP 400): unsupported background'),
+  );
+  await pipeline(p).tick();
+  expect(p.text).toHaveBeenCalledTimes(1);
+  expect(p.image).toHaveBeenCalledTimes(1);
+  expect((await studio.request(f.id))?.error).toContain('unsupported background');
+  expect(await studio.credits.balance(f.account)).toMatchObject({ balance: 3, reserved: 0 });
+});
 it('keeps stock camera references when all four player reference slots are used', async () => {
   const hashes = await Promise.all(
     [0, 1, 2, 3].map(async (n) => {
@@ -187,7 +200,7 @@ it('creates the finished structure first and reuses its source for construction 
           next: 'building',
           previous: '',
           propertiesJson: '{"isBuildingSite":1,"width":2,"height":2}',
-          semanticsJson: '{"placeable":true,"constructionCost":{"wood":3}}',
+          semanticsJson: '{"placeable":true,"constructionCost":{"wood":3},"assignmentLimit":6}',
         },
         {
           ...entry,
@@ -316,7 +329,7 @@ it.runIf(!!process.env['BUILDING_NATIVE_BINARY'])(
             next: 'building',
             previous: '',
             propertiesJson: '{"width":2,"height":2,"isBuildingSite":1,"hpInit":1,"hpMax":200}',
-            semanticsJson: '{"placeable":true,"constructionCost":{"wood":3}}',
+            semanticsJson: '{"placeable":true,"constructionCost":{"wood":3},"assignmentLimit":6}',
             presentationJson: '{"displayName":"Mushroom hospital construction"}',
           },
         ],
