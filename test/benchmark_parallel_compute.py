@@ -23,12 +23,20 @@ def digest(path):
     path = Path(path)
     if not path.exists() and Path(str(path)+".gz").exists():
         path = Path(str(path)+".gz")
-    return hashlib.sha256(path.read_bytes()).hexdigest()
+    value = hashlib.sha256()
+    with path.open('rb') as stream:
+        for chunk in iter(lambda: stream.read(1024 * 1024), b''):
+            value.update(chunk)
+    return value.hexdigest()
 
 
 def execute(binary, args, output, *, cwd=ROOT):
     output.mkdir(parents=True, exist_ok=False)
     command = [str(binary), 'game', 'run', *args, '--output-dir', str(output)]
+    runner_peak_rss = None
+    if platform.system() == 'Linux':
+        import resource
+        runner_peak_rss = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss * 1024
     started = time.perf_counter()
     with (output / 'engine.log').open('w') as log:
         process = subprocess.Popen(command, cwd=cwd, stdout=log, stderr=subprocess.STDOUT)
@@ -45,9 +53,17 @@ def execute(binary, args, output, *, cwd=ROOT):
     if process.returncode:
         raise RuntimeError(f"exit {process.returncode}: {output / 'engine.log'}")
     result = json.loads((output / 'result.json').read_text())
+    peak_rss = usage.ru_maxrss * (1 if platform.system() == "Darwin" else 1024)
+    # Linux carries the pre-exec runner's high-water mark into the child.
+    # A higher engine peak is measurable; a result at that floor is censored.
+    if runner_peak_rss is not None and peak_rss <= runner_peak_rss:
+        report = dict(status='censored', runner_peak_rss_bytes=runner_peak_rss,
+                      reported_child_peak_rss_bytes=peak_rss)
+        (output / 'rss-censored.json').write_text(json.dumps(report, indent=2) + '\n')
+        raise RuntimeError('Child peak RSS is censored by inherited runner memory: ' + str(output))
     return dict(command=command, wall_s=wall, cpu_s=usage.ru_utime + usage.ru_stime,
                 user_s=usage.ru_utime, system_s=usage.ru_stime,
-                peak_rss_bytes=usage.ru_maxrss * (1 if platform.system() == "Darwin" else 1024), result=result)
+                peak_rss_bytes=peak_rss, runner_peak_rss_bytes=runner_peak_rss, result=result)
 
 
 def summarize(rows):

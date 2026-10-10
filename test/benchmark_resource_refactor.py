@@ -47,7 +47,7 @@ METRIC_DESCRIPTIONS = {
     'wall_s': 'Whole child-process wall time from launch through wait4 completion.',
     'owner_cpu_s': 'Owner thread CPU over the measured simulation window, including final pipeline drain.',
     'owner_tick_s': 'Sum of elapsed owner tick calls that advance the simulation, including waits on their critical path.',
-    'peak_rss_bytes': 'Whole child-process peak resident memory; includes setup and does not isolate resource/cache allocations.',
+    'peak_rss_bytes': 'Whole child-process peak resident memory; includes setup and does not isolate resource/cache allocations. Linux results at the inherited runner high-water mark are rejected as censored.',
 }
 RUNNER_INPUTS = (Path(__file__).resolve(), Path(benchmark_parallel_compute.__file__).resolve())
 CATALOG_SUFFIXES = {'.json', '.txt', '.js', '.sgsl'}
