@@ -45,7 +45,7 @@ def main():
                 for variant in config['variants']:
                     directory = output / scenario['id'] / variant['id']
                     row = dict(scenario=scenario['id'], variant=variant['id'],
-                               **execute(variant, scenario, directory, 0, extra_args=('--telemetry', 'checksums')))
+                               **execute(variant, scenario, directory, 0, extra_args=('--telemetry', 'checksums'), reservation=config.get('reservation')))
                     row['timing_eligible'] = False
                     try:
                         if not row['valid']: raise ValueError('; '.join(row['errors']))

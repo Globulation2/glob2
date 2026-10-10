@@ -35,6 +35,8 @@ def validate(config):
     counts = {str(v.get('compute_threads', '8')) for v in config['variants']}
     if len(counts) != 1 or any(v != 'auto' and (not v.isdecimal() or int(v) <= 0) for v in counts):
         raise ValueError('paired variants require the same positive executor budget or auto')
+    if any('cpu_affinity' in v and not v['cpu_affinity'] for v in config['variants']):
+        raise ValueError('explicit CPU affinity must be nonempty')
     affinity_sets = {tuple(v.get('cpu_affinity', ())) for v in config['variants']}
     if len(affinity_sets) != 1:
         raise ValueError('paired variants require identical CPU affinity')
@@ -49,13 +51,46 @@ def validate(config):
         for path, expected in s['fixture_sha256'].items():
             if sha(path) != expected: raise ValueError('fixture changed: ' + path)
     if config['warmup_ticks'] < 0: raise ValueError('nonnegative warmup required')
+    if config.get('reservation') and not partition_snapshot(config['reservation'])['valid']:
+        raise ValueError('exclusive benchmark partition validation failed')
+    for path, digest in config.get('reservation_receipts', {}).items():
+        if sha(path) != digest: raise ValueError('reservation receipt changed: ' + path)
 
 
-def resource_snapshot(benchmark_cpus=None):
+def expand_cpus(text):
+    cpus = set()
+    for part in text.strip().split(','):
+        if not part: continue
+        bounds = list(map(int, part.split('-')))
+        cpus.update(range(bounds[0], bounds[-1]+1))
+    return cpus
+
+
+def partition_snapshot(expected):
+    result = {'valid': False, 'group': expected['group']}
+    try:
+        group = Path(expected['group'])
+        result['files'] = {name: (group / name).read_text().strip() for name in
+            ('cpuset.cpus.effective', 'cpuset.cpus.exclusive.effective', 'cpuset.cpus.partition', 'cpuset.mems.effective')}
+        result['process_cgroup'] = Path('/proc/self/cgroup').read_text().strip()
+        result['process_affinity'] = sorted(os.sched_getaffinity(0))
+        desired = set(expected['cpus']); files = result['files']
+        process_group = '0::/' + str(group.relative_to('/sys/fs/cgroup'))
+        result['valid'] = (files['cpuset.cpus.partition'] == 'root' and
+            expand_cpus(files['cpuset.cpus.effective']) == desired and
+            expand_cpus(files['cpuset.cpus.exclusive.effective']) == desired and
+            expand_cpus(files['cpuset.mems.effective']) == set(expected.get('memory_nodes', [0])) and
+            set(result['process_affinity']) == desired and process_group in result['process_cgroup'].splitlines())
+    except (OSError, ValueError, AttributeError) as error: result['error'] = str(error)
+    return result
+
+
+def resource_snapshot(benchmark_cpus=None, reservation=None):
     """Read-only inventory outside the timed window; command names exclude args."""
     if benchmark_cpus is None and hasattr(os, 'sched_getaffinity'):
         benchmark_cpus = sorted(os.sched_getaffinity(0))
     snapshot = {'monotonic_ns': time.monotonic_ns(), 'benchmark_cpus': benchmark_cpus}
+    if reservation: snapshot['reservation'] = partition_snapshot(reservation)
     load = Path('/proc/loadavg')
     if load.exists(): snapshot['loadavg'] = load.read_text().strip()
     listing = subprocess.run(['ps', '-eo', 'pid,comm,stat,pcpu', '--sort=-pcpu'],
@@ -82,7 +117,7 @@ def resource_snapshot(benchmark_cpus=None):
     return snapshot
 
 
-def execute(variant, scenario, output, warmup, *, extra_args=()):
+def execute(variant, scenario, output, warmup, *, extra_args=(), reservation=None):
     output.mkdir(parents=True, exist_ok=False)
     threads = str(variant.get('compute_threads', '8'))
     command = [variant['binary'], 'game', 'run', *scenario['args'], *extra_args, '--compute-threads', threads,
@@ -90,7 +125,7 @@ def execute(variant, scenario, output, warmup, *, extra_args=()):
     affinity = variant.get('cpu_affinity')
     if affinity: command = ['taskset', '--cpu-list', ','.join(map(str, affinity)), *command]
     env = dict(os.environ, **variant.get('env', {}))
-    resources_before = resource_snapshot(affinity)
+    resources_before = resource_snapshot(affinity, reservation)
     started = time.monotonic_ns()
     with (output / 'engine.log').open('w') as log:
         process = subprocess.Popen(command, cwd=ROOT, env=env, stdout=log, stderr=subprocess.STDOUT)
@@ -105,8 +140,9 @@ def execute(variant, scenario, output, warmup, *, extra_args=()):
                process_cpu_ns=round((usage.ru_utime + usage.ru_stime) * 1e9),
                peak_rss_bytes=usage.ru_maxrss * (1 if platform.system() == 'Darwin' else 1024),
                valid=process.returncode == 0, errors=[],
-               resources_before=resources_before, resources_after=resource_snapshot(affinity))
-    row['resource_contaminated'] = any(not s.get('inventory_available', False) or s.get('active_compiler_detected', False) for s in
+               resources_before=resources_before, resources_after=resource_snapshot(affinity, reservation))
+    row['resource_contaminated'] = any(not s.get('inventory_available', False) or s.get('active_compiler_detected', False) or
+                                        (reservation is not None and not s.get('reservation', {}).get('valid', False)) for s in
                                         (row['resources_before'], row['resources_after']))
     if process.returncode:
         row['errors'].append('process failure'); return row
@@ -168,7 +204,7 @@ def main():
                         dest = output / scenario['id'] / str(n) / variant['id']
                         row = dict(scenario=scenario['id'], phase=scenario.get('phase'), group=scenario.get('group'),
                                    map_id=scenario.get('map_id'), control=scenario.get('control', False),
-                                   round=n, variant=variant['id'], **execute(variant, scenario, dest, 0 if args.cold else config['warmup_ticks']))
+                                   round=n, variant=variant['id'], **execute(variant, scenario, dest, 0 if args.cold else config['warmup_ticks'], reservation=config.get('reservation')))
                         if 'result' in row:
                             signature = tuple(row['result'][k] for k in ('initialChecksum', 'finalChecksum', 'ticks', 'benchmark_measured_ticks'))
                             if reference is None: reference = signature
