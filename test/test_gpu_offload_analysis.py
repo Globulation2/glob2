@@ -192,4 +192,48 @@ class OffloadAnalysisTest(unittest.TestCase):
         self.assertIn('phases', result['weighting'])
 
 
+    def test_geometric_pass_arithmetic_primary_fail(self):
+        roster, rows = self.aggregate_fixture()
+        for row in rows:
+            if row['variant'] == 'gpu':
+                row['result']['benchmark_run_cpu_ns'] = {'early': 20, 'middle': 60, 'late': 160}[row['phase']]
+        result = self.aggregate(roster, rows)
+        self.assertAlmostEqual(result['primary_ratio'], .8)
+        self.assertTrue(result['legacy_geometric_cpu_target_pass'])
+        self.assertFalse(result['cpu_target_pass'])
+        self.assertFalse(result['qualifying_evidence'])
+
+    def test_offsetting_phases_cluster_whole_game(self):
+        roster, rows = self.aggregate_fixture()
+        for row in rows:
+            if row['variant'] == 'gpu':
+                phases = (20, 140, 80) if row['map_id'].endswith('-1') else (140, 20, 80)
+                row['result']['benchmark_run_cpu_ns'] = phases[('early', 'middle', 'late').index(row['phase'])]
+        result = self.aggregate(roster, rows)
+        for key in ('primary_ratio', 'primary_lower95', 'primary_upper95', 'primary_upper_one_sided95'):
+            self.assertAlmostEqual(result[key], .8)
+
+    def test_unequal_stratum_populations_keep_equal_weight(self):
+        import copy
+        roster, rows = self.aggregate_fixture()
+        for mid in (3, 4):
+            for scenario in list(roster):
+                if scenario['map_id'] == 'corridors-1':
+                    new = dict(scenario, id=scenario['id'].replace('-1-', '-' + str(mid) + '-'),
+                               map_id='corridors-' + str(mid))
+                    roster.append(new)
+                    for row in list(rows):
+                        if row['scenario'] == scenario['id']:
+                            addition = copy.deepcopy(row)
+                            addition.update(scenario=new['id'], map_id=new['map_id'])
+                            rows.append(addition)
+        for row in rows:
+            if row['variant'] == 'gpu':
+                row['result']['benchmark_run_cpu_ns'] = 20 if row['group'] == 'open' else 140
+        result = self.aggregate(roster, rows)
+        self.assertEqual(result['maps_per_stratum'], {'open': 2, 'corridors': 4})
+        self.assertAlmostEqual(result['primary_ratio'], .8)
+        self.assertAlmostEqual(result['primary_upper_one_sided95'], .8)
+
+
 if __name__ == '__main__': unittest.main()
