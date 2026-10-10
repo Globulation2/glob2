@@ -805,7 +805,7 @@ transfer retains its policy ticket until positive background proof. These fake
 backends do not establish actual OpenCL event or performance qualification.
 
 Run `isolated process shutdown abandons unresolved optional proof without joining
-it` alone in a fresh engine-test subprocess with
+it` alone in a fresh `glob2-unit-tests` subprocess with
 `GLOB2_TEST_CAPTURE_SHUTDOWN=1` and an external timeout. It deliberately leaves
 the fake borrowed graph unresolved. Successful normal process exit, without
 forced termination, is part of the required result; an in-process test return

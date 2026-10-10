@@ -1615,7 +1615,7 @@ TEST_CASE("failed optional accounting admission cancels capture before backend e
 
 TEST_CASE("isolated process shutdown abandons unresolved optional proof without joining it" * doctest::test_suite("GradientPipeline"))
 {
-    // Run this case alone in a fresh engine-test subprocess with an external
+    // Run this case alone in a fresh glob2-unit-tests subprocess with an external
     // timeout. Successful process exit is part of the proof; a same-process
     // helper cannot safely destroy the globally owned broker before other tests.
     const auto* enabled=std::getenv("GLOB2_TEST_CAPTURE_SHUTDOWN");if(!enabled || std::strcmp(enabled,"1"))return;
