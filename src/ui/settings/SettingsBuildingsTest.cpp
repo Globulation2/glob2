@@ -63,7 +63,7 @@ TEST_CASE("version one preferences import only into known stock catalogs")
     REQUIRE(inheritedFingerprint=="2c785bf450d48ee267480a599a0fcad53b3ca26f89758793f68ef90657734f71");
     CHECK(settings.buildingAssignment(inheritedFingerprint,*globals->buildingsTypes.getByType("inn",0,false))==11);
     CHECK(settings.buildingAssignment(inheritedFingerprint,*globals->buildingsTypes.getByType("inn",1,true))==13);
-    CHECK(settings.buildingRadius(inheritedFingerprint,*globals->buildingsTypes.getByType("warflag",0,false))==9);
+    CHECK(settings.buildingRadius(inheritedFingerprint,*globals->buildingsTypes.getByType("warflag",0,false))==std::min(9,globals->buildingsTypes.getByType("warflag",0,false)->maxUnitStayRange));
     auto custom=nlohmann::json::parse(globals->buildingsTypes.snapshotJson());
     custom["variants"][globals->buildingsTypes.getTypeNum("inn",0,false)]["properties"]["hpMax"]=999;
     BuildingsTypes authored; authored.loadSnapshotJson(custom.dump());

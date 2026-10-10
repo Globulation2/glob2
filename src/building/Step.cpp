@@ -576,7 +576,8 @@ bool Building::subscribeForFlagingStep()
             // assignment and consumes one building seat after selection.
             Unit* possibleUnits[Unit::MAX_COUNT]{};
             Uint8 possibleJobs[Unit::MAX_COUNT]{};
-            int distances[3][Unit::MAX_COUNT]{};
+            // Successful qualification writes its distance; reads require the matching job bit.
+            int distances[3][Unit::MAX_COUNT];
             for (int n=0;n<Unit::MAX_COUNT;++n) {
                 Unit* unit=owner->myUnits[n];
                 if (!unit || unit->attachedBuilding==this) continue;
