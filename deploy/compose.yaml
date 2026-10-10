@@ -41,6 +41,8 @@ x-platform-image: &platform-image
     args: {JOBS: '${GLOB2_BUILD_JOBS:-4}'}
 
 x-platform-environment: &platform-environment
+  BLOB_STORE: fs
+  BLOB_DIR: /var/lib/glob2/blobs
   PUBLIC_ORIGIN: ${GLOB2_PUBLIC_ORIGIN:-https://localhost:8443}
   LOG_LEVEL: ${LOG_LEVEL:-info}
   INSTANCE_CONFIG: /etc/glob2/instance.yaml
@@ -128,6 +130,8 @@ services:
       MAP_STRIPE_WEBHOOK_SECRET: ${MAP_STRIPE_WEBHOOK_SECRET:-}
       TERRAIN_STRIPE_SECRET_KEY: ${TERRAIN_STRIPE_SECRET_KEY:-}
       TERRAIN_STRIPE_WEBHOOK_SECRET: ${TERRAIN_STRIPE_WEBHOOK_SECRET:-}
+      BUILDING_STRIPE_SECRET_KEY: ${BUILDING_STRIPE_SECRET_KEY:-}
+      BUILDING_STRIPE_WEBHOOK_SECRET: ${BUILDING_STRIPE_WEBHOOK_SECRET:-}
       MUSIC_STRIPE_SECRET_KEY: ${MUSIC_STRIPE_SECRET_KEY:-}
       MUSIC_STRIPE_WEBHOOK_SECRET: ${MUSIC_STRIPE_WEBHOOK_SECRET:-}
     # Provider secrets named in instance.yaml (`clientSecretEnv: …`) come from .env.

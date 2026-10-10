@@ -135,6 +135,10 @@ it('delivers normalized artwork in a validated immutable archive and charges one
   expect(t.revisions[0]?.report.valid).toBe(true);
   expect(t.revisions[0]?.package.sprites).toHaveLength(2);
   expect(p.image).toHaveBeenCalledTimes(1);
+  const designPrompt = p.text.mock.calls[0]?.[1];
+  expect(designPrompt).toContain('suppliesDirectStockMaterials');
+  expect(designPrompt).toContain('the first twelve positions use that fixed material order');
+  expect(designPrompt).toContain('completed placeable variant needs instant placement');
   expect(await studio.credits.balance(f.account)).toMatchObject({ balance: 2, reserved: 0 });
 });
 it('answers questions without images or a credit charge', async () => {
@@ -230,7 +234,13 @@ it('resumes a completed design stage after a restart', async () => {
   const f = await fixture(),
     row = (await studio.claim())!,
     p = await provider();
-  const reference = await readFile(resolve(root, 'docs/features/building-catalogs.md'), 'utf8'),
+  const reference = (
+      await Promise.all(
+        ['building-catalogs', 'building-semantics', 'building-authoring'].map((name) =>
+          readFile(resolve(root, 'docs/features', name + '.md'), 'utf8'),
+        ),
+      )
+    ).join('\n\n'),
     examples = await Promise.all(
       ['inn', 'hospital', 'defencetower', 'swarm'].map((name) =>
         readFile(resolve(root, 'data/buildings', name + '.json'), 'utf8'),
