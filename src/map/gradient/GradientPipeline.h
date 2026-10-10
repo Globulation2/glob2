@@ -115,14 +115,18 @@ private:
             const auto choice = gradient_kernel::backend();
             if(choice==gradient_kernel::Backend::OpenCL) requestedGpu.fetch_add(1,std::memory_order_relaxed);
             const auto family=gradient_preparation::backendFamily(job.request.kind);
+            const bool learningEnabled=bool(backendSession->learningPolicy());
             gradient_kernel::WorkloadKey key;
-            key.width=job.snapshotLease ? job.snapshotLease->width : unsigned(cells);
-            key.height=job.snapshotLease ? job.snapshotLease->height : 1;
-            key.family=family; key.cpuBuckets=job.request.terrainBuckets;
-            key.threads=unsigned(executor->threadCount()); key.limit=gradient_kernel::COST_LIMIT;
-            key.movement=unsigned(job.request.swim);
-            key.movementModifiers=job.snapshotLease && job.snapshotLease->terrain && job.snapshotLease->terrain->movementModifiers;
-            const auto decision = asyncWork && deviceService ? backendSession->chooseWorkload(key,choice)
+            if(learningEnabled || choice==gradient_kernel::Backend::OpenCL) {
+                key.width=job.snapshotLease ? job.snapshotLease->width : unsigned(cells);
+                key.height=job.snapshotLease ? job.snapshotLease->height : 1;
+                key.family=family; key.cpuBuckets=job.request.terrainBuckets;
+                key.threads=unsigned(executor->threadCount()); key.limit=gradient_kernel::COST_LIMIT;
+                key.movement=unsigned(job.request.swim);
+                key.movementModifiers=job.snapshotLease && job.snapshotLease->terrain && job.snapshotLease->terrain->movementModifiers;
+            }
+            const auto decision = choice==gradient_kernel::Backend::CPU ? gradient_kernel::PlanDecision{}
+                : asyncWork && deviceService ? backendSession->chooseWorkload(key,choice)
                 : backendSession->choose(family,1,choice);
             const bool selectedGPU = decision.plan != gradient_kernel::Plan::CPU;
             if(selectedGPU) selectedGpu.fetch_add(1,std::memory_order_relaxed);
@@ -150,7 +154,7 @@ private:
                 work(job,scratch.propagation);
                 const auto consumed=glob2::threadCpuNs()-cpuStart;
                 propagationCpu.fetch_add(consumed,std::memory_order_relaxed);
-                if(deviceService && executor->slot()) deviceService->recordAccepted(backendSession,key,
+                if(learningEnabled && deviceService && executor->slot()) deviceService->recordAccepted(backendSession,key,
                     gradient_kernel::Plan::CPU,glob2::threadCpuNs()-preparationCpu,
                     job.snapshotLease ? job.snapshotLease->tick : job.due-delay);
                 cpuFields.fetch_add(1,std::memory_order_relaxed);
