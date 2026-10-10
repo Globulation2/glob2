@@ -41,6 +41,15 @@ void edit(Fixture& f,int x,int y,bool add,bool mixed=false) {
 void player(Fixture& f){f.game.players[0]=new Player();f.game.players[0]->setTeam(f.game.teams[0]);f.game.gameHeader.setNumberOfPlayers(1);}
 }
 
+// A water-only caller must reach the same test building over water. Existing
+// walking/swimming variants keep their original grass setup and assertions.
+static void prepareMovementTerrain(Map& map,int swim)
+{
+ if(swim==SWIM_CLASS_COUNT-1)
+  for(int y=0;y<map.getH();++y)for(int x=0;x<map.getW();++x)
+   if(map.getBuilding(x,y)==NOGBID)map.paintCell(x,y,WATER);
+}
+
 TEST_SUITE("MapGradientInvalidation")
 {
  TEST_CASE("forbidden painting refreshes routes across passable resources")
@@ -50,6 +59,7 @@ TEST_SUITE("MapGradientInvalidation")
    Fixture f(0); player(f); auto& map=f.game.map;
    auto* building=f.game.addBuilding(8,8,globals->buildingsTypes.getTypeNum("inn",0,false),0);
    REQUIRE(building);
+   prepareMovementTerrain(map,swim);
    using Json=nlohmann::json;
    const auto cottonId=*map.resourceRegistry().find("cotton");
    auto definition=Json::parse(map.resourceRegistry().serialize())["resources"][resourceIndex(cottonId)];
@@ -63,6 +73,7 @@ TEST_SUITE("MapGradientInvalidation")
    map.buildingGradient(building,swim); map.finishBuildingGradient(building,swim);
    edit(f,20,20,true);
    const auto* gradient=map.buildingGradient(building,swim); map.finishBuildingGradient(building,swim);
+   REQUIRE(gradient!=nullptr);
    REQUIRE(gradient[map.coordToIndex(20,20)]==GRADIENT_FORBIDDEN);
    const std::vector<Uint16> actual(gradient,gradient+map.getW()*map.getH());
    map.updateGlobalGradient(building,swim); map.finishBuildingGradient(building,swim);
@@ -79,13 +90,14 @@ TEST_SUITE("MapGradientInvalidation")
 	  for(int team=0;team<2;++team)for(const char* kind:{"inn","warflag","explorationflag","clearingflag"}){
 	   int x=team?42:8,y=8+int(bs.size()%4)*10;auto* b=f.game.addBuilding(x,y,globals->buildingsTypes.getTypeNum(kind,0,false),team);REQUIRE(b);b->unitStayRange=32;b->clearingMaterials[WHEAT]=b->clearingMaterials[WOOD]=true;bs.push_back(b);
 	  }
+	  prepareMovementTerrain(m,swim);
 	  if(resource!=NO_RES_TYPE)m.setResourceByIndex(20,20,resource,1);
 	  m.setResourceByIndex(25,24,WHEAT,1);m.addGuardArea(26,26,0);if(selected)m.addClearArea(20,20,0);
 	  if(!add){m.addForbidden(20,20,0);if(mixed)m.addForbidden(21,20,0);}
 	  for(auto* b:bs){m.buildingGradient(b,swim);m.updateGlobalGradient(b,swim);m.finishBuildingGradient(b,swim);}
 	  m.getForbiddenGradient(0,swim);m.getGuardAreasGradient(0,swim);m.getClearAreasGradient(0,swim);
 	  edit(f,20,20,add,mixed);
-	  for(auto* b:bs){auto* g=m.buildingGradient(b,swim);m.finishBuildingGradient(b,swim);std::vector<Uint16> before(g,g+n);m.updateGlobalGradient(b,swim);m.finishBuildingGradient(b,swim);REQUIRE(std::equal(before.begin(),before.end(),b->globalGradient[b->routeSlot(swim, BuildingRoute::Automatic)]));++checks;}
+	  for(auto* b:bs){auto* g=m.buildingGradient(b,swim);m.finishBuildingGradient(b,swim);REQUIRE(g!=nullptr);std::vector<Uint16> before(g,g+n);m.updateGlobalGradient(b,swim);m.finishBuildingGradient(b,swim);REQUIRE(std::equal(before.begin(),before.end(),b->globalGradient[b->routeSlot(swim, BuildingRoute::Automatic)]));++checks;}
 	  auto area=[&](auto get,auto update){const Uint16* g=(m.*get)(0,swim);std::vector<Uint16> before(g,g+n);(m.*update)(0,swim);REQUIRE(std::equal(before.begin(),before.end(),(m.*get)(0,swim)));++checks;};
 	  area(&Map::getForbiddenGradient,static_cast<void(Map::*)(int,int)>(&Map::updateForbiddenGradient));
 	  area(&Map::getGuardAreasGradient,static_cast<void(Map::*)(int,int)>(&Map::updateGuardAreasGradient));
