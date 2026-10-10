@@ -1,0 +1,9 @@
+tar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'
+tar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'
+test_every_blob_writer_uses_its_writable_shared_volume (test_blob_mounts.BlobMountTests.test_every_blob_writer_uses_its_writable_shared_volume) ... ok
+test_every_node_image_uses_the_resolved_design_revision (test_blob_mounts.BlobMountTests.test_every_node_image_uses_the_resolved_design_revision) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.337s
+
+OK
