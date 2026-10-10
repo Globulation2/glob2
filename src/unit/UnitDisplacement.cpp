@@ -506,9 +506,9 @@ bool Unit::locationIsInEnemyGuardTowerRange(int x, int y)const
 		Team *t = owner->game->teams[i];
 		if((t)&&(owner->enemies & t->me))
 		{
-			for(int j=0;j<Building::MAX_COUNT;j++)
+			// The live index contains every occupied slot in the original slot order.
+			for(Building *b : t->liveBuildings.entries())
 			{
-				Building *b = t->myBuildings[j];
 				if((b)&&(b->runtime->shootingRange>0)&&(owner->map->warpDistMax(b->posX,b->posY,x,y) <= b->runtime->shootingRange + 1)
                     && b->hasClearShotTo(x,y)) return true;
 			}

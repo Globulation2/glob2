@@ -2554,4 +2554,158 @@ TEST_SUITE("UnitCustomization")
         }
     }
 
+// Prospective insertion inside existing UnitCustomization suite; no new includes.
+// Not applied, compiled, executed or measured.
+    TEST_CASE("enemy tower live index matches full slot oracle across lifecycle and save continuation [save-format]")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.teams=3,.discovered=true,.clearImmobile=true,.header=true,.seed=4921});
+        auto& game=world.game;
+        game.map.game=nullptr;
+        game.map.importTerrainDefinitions(R"({"schemaVersion":1,"terrains":[{"key":"fixture:shot-blocker","name":"Shot blocker","base":"grass","properties":{"projectileBlocks":true},"appearance":"grass"}]})");
+        game.map.setGame(&game);
+        auto buildings=nlohmann::json::parse(game.buildingsTypes.snapshotJson());
+        const int towerType=game.buildingsTypes.getTypeNum("defencetower",0,false);
+        const int siteType=game.buildingsTypes.getTypeNum("defencetower",0,true);
+        REQUIRE(towerType>=0); REQUIRE(siteType>=0);
+        for(const int type:{towerType,siteType}) {
+            buildings["variants"][type]["properties"]["shootingRange"]=3;
+            // The original avoidance predicate cares about range even without
+            // launchable ammunition or damaging shots. Preserve that policy.
+            buildings["variants"][type]["semantics"]["projectileDamage"]={0,0,0};
+        }
+        game.buildingsTypes.loadSnapshotJson(buildings.dump()); game.configureBuildingCatalog();
+        game.gameHeader.setHungerDisabled(true); game.gameHeader.setResourceGrowthDisabled(true);
+        auto* observer=world.addUnit(EXPLORER,28,28); REQUIRE(observer);
+        world.addUnit(WORKER,28,24,1); world.addUnit(WORKER,26,24,2);
+        auto* gap=world.addBuilding("inn",8,20,0,1); REQUIRE(gap);
+        auto* tower=world.addBuilding("defencetower",8,8,0,1); REQUIRE(tower);
+        auto* other=world.addBuilding("defencetower",22,8,0,2); REQUIRE(other);
+        auto* friendly=world.addBuilding("defencetower",8,26,0,0); REQUIRE(friendly);
+        auto* wrapped=world.addBuilding("defencetower",30,4,0,1); REQUIRE(wrapped);
+        auto* site=game.addBuilding(20,20,siteType,1); REQUIRE(site);
+        game.map.setBuilding(site->posX,site->posY,site->type->width,site->type->height,site->gid);
+        REQUIRE(site->type->isBuildingSite); REQUIRE(site->runtime->shootingRange==3);
+        REQUIRE(tower->bullets==0); REQUIRE(tower->runtime->interaction(observer->typeNum).projectileDamage==0);
+        const auto reference=[](const Unit& unit,int x,int y) {
+            // Retain the exact original full fixed-slot oracle, including its
+            // non-ALIVE, zero-damage, range+1 and null-slot behavior.
+            for(int team=0;team<Team::MAX_COUNT;++team) {
+                const Team* enemy=unit.owner->game->teams[team];
+                if(enemy && (unit.owner->enemies&enemy->me))
+                    for(int slot=0;slot<Building::MAX_COUNT;++slot) {
+                        const Building* building=enemy->myBuildings[slot];
+                        if(building && building->runtime->shootingRange>0 &&
+                            unit.owner->map->warpDistMax(building->posX,building->posY,x,y)<=building->runtime->shootingRange+1 &&
+                            building->hasClearShotTo(x,y))return true;
+                    }
+            }
+            return false;
+        };
+        const auto audit=[&](Game& candidate,Unit& unit) {
+            const auto state=continuationAudit(candidate);
+            const auto random=candidate.syncRandom; const auto entity=unit.entityRandom.exportState();
+            for(int team=0;team<candidate.teamsCount();++team) {
+                REQUIRE(candidate.teams[team]->liveBuildings.matches(candidate.teams[team]->myBuildings,Building::MAX_COUNT));
+                REQUIRE(std::is_sorted(candidate.teams[team]->liveBuildings.slots().begin(),candidate.teams[team]->liveBuildings.slots().end()));
+            }
+            std::vector<Uint8> truth;
+            for(int y=0;y<candidate.map.getH();++y)for(int x=0;x<candidate.map.getW();++x) {
+                CAPTURE(x); CAPTURE(y);
+                const bool expected=reference(unit,x,y);
+                REQUIRE(unit.locationIsInEnemyGuardTowerRange(x,y)==expected);
+                truth.push_back(expected);
+            }
+            REQUIRE(candidate.syncRandom==random); REQUIRE(unit.entityRandom.exportState()==entity);
+            REQUIRE(continuationAudit(candidate)==state);
+            return truth;
+        };
+        observer->owner->enemies=game.teams[1]->me;
+        auto truth=audit(game,*observer);
+        REQUIRE(std::find(truth.begin(),truth.end(),Uint8(1))!=truth.end());
+        REQUIRE(std::find(truth.begin(),truth.end(),Uint8(0))!=truth.end());
+        CHECK(observer->locationIsInEnemyGuardTowerRange(12,8)); // Exact range+1 boundary.
+        CHECK_FALSE(observer->locationIsInEnemyGuardTowerRange(13,8));
+        CHECK_FALSE(observer->locationIsInEnemyGuardTowerRange(22,8)); // Nonenemy tower.
+        CHECK_FALSE(observer->locationIsInEnemyGuardTowerRange(8,26)); // Friendly tower.
+        CHECK(observer->locationIsInEnemyGuardTowerRange(20,20)); // Range-bearing site.
+        CHECK(observer->locationIsInEnemyGuardTowerRange(0,4)); // Wrapped range/footprint.
+        observer->owner->enemies|=game.teams[2]->me;
+        CHECK(observer->locationIsInEnemyGuardTowerRange(22,8)); audit(game,*observer);
+        const auto blocker=game.map.terrainRegistry().find("fixture:shot-blocker"); REQUIRE(blocker);
+        game.map.paintCell(12,8,*blocker); REQUIRE(game.map.terrainPropertiesAt(12,8).projectileBlocks);
+        CHECK_FALSE(observer->locationIsInEnemyGuardTowerRange(12,8)); audit(game,*observer);
+        // Actual deletion leaves a gap; publication reuses it ahead of the
+        // older tower. The live index must continue to visit ascending slots.
+        const auto gapGid=gap->gid;
+        gap->kill(); audit(game,*observer);
+        game.teams[1]->syncStep();
+        REQUIRE(game.teams[1]->myBuildings[Building::GIDtoID(gapGid)]==nullptr);
+        audit(game,*observer);
+        auto* reused=world.addBuilding("inn",8,20,0,1); REQUIRE(reused); CHECK(reused->gid==gapGid);
+        audit(game,*observer);
+        const auto towerGid=tower->gid;
+        tower->kill(); REQUIRE(tower->buildingState==Building::DEAD);
+        REQUIRE(game.teams[1]->myBuildings[Building::GIDtoID(towerGid)]==tower);
+        CHECK(observer->locationIsInEnemyGuardTowerRange(8,8)); // DEAD still published until collection.
+        audit(game,*observer);
+        auto* memory=new GAGCore::MemoryStreamBackend;
+        GAGCore::BinaryOutputStream output(memory); game.save(&output,false,"tower live slot continuation");
+        const auto bytes=memory->takeContents();
+        GameGUI resumed;
+        GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
+        input.seekFromStart(0); REQUIRE(resumed.game.load(&input)); resumed.game.setWaitingOnMask(0);
+        auto* loaded=resumed.game.teams[0]->myUnits[Unit::GIDtoID(observer->gid)]; REQUIRE(loaded);
+        REQUIRE(audit(game,*observer)==audit(resumed.game,*loaded));
+        REQUIRE(continuationAudit(game)==continuationAudit(resumed.game));
+        for(int tick=0;tick<16;++tick) {
+            CAPTURE(tick);
+            game.syncStep(0); resumed.game.syncStep(0);
+            REQUIRE(audit(game,*observer)==audit(resumed.game,*loaded));
+            REQUIRE(continuationAudit(game)==continuationAudit(resumed.game));
+            REQUIRE(game.syncRandom==resumed.game.syncRandom);
+        }
+        CHECK(game.teams[1]->myBuildings[Building::GIDtoID(towerGid)]==nullptr);
+        CHECK(resumed.game.teams[1]->myBuildings[Building::GIDtoID(towerGid)]==nullptr);
+    }
+
+    TEST_CASE("enemy tower live index retains last slot and full occupied table oracle")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.teams=2,.discovered=true,.clearImmobile=true,.header=true,.seed=4921});
+        auto definitions=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());
+        const int towerType=world.game.buildingsTypes.getTypeNum("defencetower",0,false); REQUIRE(towerType>=0);
+        definitions["variants"][towerType]["properties"]["shootingRange"]=3;
+        world.game.buildingsTypes.loadSnapshotJson(definitions.dump()); world.game.configureBuildingCatalog();
+        auto* observer=world.addUnit(EXPLORER,28,28); REQUIRE(observer);
+        auto* enemy=world.game.teams[1]; observer->owner->enemies=enemy->me;
+        const int filler=world.game.buildingsTypes.getTypeNum("warflag",0,false); REQUIRE(filler>=0);
+        REQUIRE(world.game.buildingsTypes.get(filler)->isVirtual);
+        REQUIRE(world.game.buildingsTypes.getRuntime(filler)->shootingRange==0);
+        // Actual Game publication fills every slot. Virtual zero-range flags
+        // occupy no map footprint; the final physical tower must be observed.
+        for(int slot=0;slot<Building::MAX_COUNT-1;++slot) {
+            auto* flag=world.game.addBuilding(slot&31,(slot>>5)&31,filler,1); REQUIRE(flag);
+            REQUIRE(Building::GIDtoID(flag->gid)==slot);
+        }
+        auto* tower=world.addBuilding("defencetower",8,8,0,1); REQUIRE(tower);
+        REQUIRE(Building::GIDtoID(tower->gid)==Building::MAX_COUNT-1);
+        REQUIRE(enemy->liveBuildings.size()==Building::MAX_COUNT);
+        REQUIRE(enemy->liveBuildings.matches(enemy->myBuildings,Building::MAX_COUNT));
+        const auto random=world.game.syncRandom; const auto entity=observer->entityRandom.exportState();
+        int positives=0,negatives=0;
+        const std::array<std::array<int,2>,8> points={{{8,8},{24,24},{31,31},{16,16},{7,8},{8,7},{0,8},{8,0}}};
+        for(const auto& point:points) {
+            const int x=point[0],y=point[1]; bool expected=false;
+            for(int slot=0;slot<Building::MAX_COUNT;++slot) {
+                const auto* building=enemy->myBuildings[slot];
+                if(building && building->runtime->shootingRange>0 && world.game.map.warpDistMax(building->posX,building->posY,x,y)<=building->runtime->shootingRange+1 && building->hasClearShotTo(x,y)) { expected=true; break; }
+            }
+            CHECK(observer->locationIsInEnemyGuardTowerRange(x,y)==expected);
+            positives+=expected;negatives+=!expected;
+        }
+        CHECK(positives>0); CHECK(negatives>0);
+        CHECK(world.game.syncRandom==random); CHECK(observer->entityRandom.exportState()==entity);
+    }
+
 }
