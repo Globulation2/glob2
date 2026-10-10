@@ -528,6 +528,7 @@ std::vector<std::pair<std::string,Uint64>> Map::adaptiveGradientMetrics() const
     return {{"required_seed_cpu_ns",gradientRuntime->pipeline.requiredSeedCpuNs()},
         {"required_propagation_cpu_ns",gradientRuntime->pipeline.requiredPropagationCpuNs()},
         {"cpu_complete_fields",gradientRuntime->pipeline.cpuCompleteFields()},
+        {"gpu_selected_fields",gradientRuntime->pipeline.gpuSelectedFields()},
         {"gpu_complete_fields",gradientRuntime->pipeline.gpuCompleteFields()},
         {"coordinator_cpu_ns",device.hostCpuNs},{"coordinator_initialization_ns",device.initializationNs},
         {"coordinator_running",device.running},{"coordinator_ready",device.ready},

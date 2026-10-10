@@ -91,7 +91,7 @@ private:
     BatchWork batchWork;
     AsyncWork asyncWork;
     std::shared_ptr<gradient_kernel::GradientDeviceService> deviceService;
-	std::atomic<std::uint64_t> activeNs{0}, seedCpu{0}, propagationCpu{0}, cpuFields{0}, gpuFields{0};
+	std::atomic<std::uint64_t> activeNs{0}, seedCpu{0}, propagationCpu{0}, cpuFields{0}, gpuFields{0}, selectedGpu{0};
 	using Clock = std::chrono::steady_clock;
 	static std::uint64_t ns(Clock::time_point start) {
 		return std::chrono::duration_cast<std::chrono::nanoseconds>(Clock::now()-start).count();
@@ -121,6 +121,7 @@ private:
             const auto decision = asyncWork && deviceService ? backendSession->chooseWorkload(key,choice)
                 : backendSession->choose(family,1,choice);
             const bool selectedGPU = decision.plan != gradient_kernel::Plan::CPU;
+            if(selectedGPU) selectedGpu.fetch_add(1,std::memory_order_relaxed);
             if (selectedGPU && deviceService && asyncWork && executor->slot()) {
                 job.deviceField=asyncWork(job,decision);
                 job.deviceField->workload=key;
@@ -129,13 +130,7 @@ private:
                 job.deviceField->completion=executor->defer();
                 if(!deviceService->submit(job.deviceField)) {
                     // Admission failure still uses the original batch and worker.
-                    job.deviceField->completion->resume({[](void* value,std::size_t) {
-                        auto& owned=*static_cast<gradient_kernel::OwnedGradientField*>(value);
-                        const auto cpuStart=glob2::threadCpuNs();
-                        try { owned.cpu(owned); } catch(...) { owned.error=std::current_exception(); }
-                        owned.fallbackCpuNs=glob2::threadCpuNs()-cpuStart;
-                        owned.inputs.reset(); owned.identity={};
-                    },job.deviceField.get()});
+                    deviceService->recoverOnWorker(job.deviceField);
                 }
             } else if (selectedGPU && batchWork && gradient_kernel::canBatch(*backendSession)) {
                 const std::array jobs{&job};
@@ -199,7 +194,7 @@ public:
 		delay = 0; tick = 0; lastSubmission = 0;
 	}
 	void configure(ComputeExecutor& target, bool sharedExecution, unsigned ticks, std::size_t size, Work callback) {
-		reset(); batchWork = {}; asyncWork = {}; metrics = {}; activeNs = 0; seedCpu=0; propagationCpu=0; cpuFields=0; gpuFields=0; cells = size; work = std::move(callback);
+		reset(); batchWork = {}; asyncWork = {}; metrics = {}; activeNs = 0; seedCpu=0; propagationCpu=0; cpuFields=0; gpuFields=0; selectedGpu=0; cells = size; work = std::move(callback);
 		executor = &target; shared = sharedExecution;
 		resizeWorkspaces(); delay = ticks;
 	}
@@ -212,6 +207,7 @@ public:
     std::uint64_t requiredSeedCpuNs() const { return seedCpu.load(); }
     std::uint64_t requiredPropagationCpuNs() const { return propagationCpu.load(); }
     std::uint64_t cpuCompleteFields() const { return cpuFields.load(); }
+    std::uint64_t gpuSelectedFields() const { return selectedGpu.load(); }
     std::uint64_t gpuCompleteFields() const { return gpuFields.load(); }
 	// Share the game choice with all previous work drained.
     void setBackendSession(std::shared_ptr<gradient_kernel::BackendSession> session) {

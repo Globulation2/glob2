@@ -47,6 +47,7 @@ bool GradientDeviceService::submit(const std::shared_ptr<OwnedGradientField>& fi
 {
     try {
         std::lock_guard lock(mutex);
+        if(field) field->observer=weak_from_this();
         if(!started || stopping || !initialized || !field || !field->session || !field->data || !field->completion || !field->cpu || !field->costAt) {
             ++totals.declined; return false;
         }
@@ -85,6 +86,8 @@ void GradientDeviceService::recover(void* context,std::size_t) noexcept
     field.fallbackCpuNs=glob2::threadCpuNs()-cpuStart;
     // The executor completes the original batch after this callback returns.
     field.inputs.reset(); field.identity={};
+    if(auto service=field.observer.lock()) service->recordAccepted(field.session,field.workload,
+        field.decision.plan,field.seedCpuNs+field.hostCpuNs+field.fallbackCpuNs,field.tick,true);
 }
 void GradientDeviceService::fallback(const std::shared_ptr<OwnedGradientField>& field) noexcept
 {
@@ -169,7 +172,9 @@ void GradientDeviceService::run() noexcept
         }
         if(handled) {
             auto key=fields.front()->workload; key.batch=unsigned(fields.size());
-            std::uint64_t cpu=consumed; for(const auto& field:fields) cpu+=field->seedCpuNs;
+            // Train from the actual homogeneous batch total, including final
+            // ticket delivery, rather than inferred per-field attribution.
+            std::uint64_t cpu=glob2::threadCpuNs()-workCpu; for(const auto& field:fields) cpu+=field->seedCpuNs;
             recordAccepted(fields.front()->session,key,fields.front()->decision.plan,cpu,fields.front()->tick);
         }
         {

@@ -9,6 +9,7 @@
 
 namespace gradient_kernel
 {
+class GradientDeviceService;
 // The device service borrows neither a Map, a pipeline job nor a worker's
 // scratch. Seeds move into this holder and stay unchanged on GPU decline.
 struct OwnedGradientField
@@ -32,6 +33,7 @@ struct OwnedGradientField
     std::size_t reservedHostBytes = 0, retainedInputBytes = 0;
     std::atomic<bool> admitted{false};
     std::shared_ptr<std::atomic<std::size_t>> serviceRetained;
+    std::weak_ptr<GradientDeviceService> observer;
     WorkloadKey workload;
     std::uint64_t tick=0, seedCpuNs=0;
     ~OwnedGradientField();
@@ -42,7 +44,7 @@ private:
 
 // One extra, mostly sleeping native thread owns all driver activity for this
 // Map. CPU recovery is a continuation on the original executor batch.
-class GradientDeviceService
+class GradientDeviceService : public std::enable_shared_from_this<GradientDeviceService>
 {
 public:
     struct Hooks {
@@ -88,6 +90,7 @@ public:
     void configure(unsigned computeThreads, Backend mode);
     void stop() noexcept;
     bool submit(const std::shared_ptr<OwnedGradientField>&) noexcept;
+    void recoverOnWorker(const std::shared_ptr<OwnedGradientField>& field) noexcept { fallback(field); }
     Metrics metrics() const;
     // Required workers submit bounded metadata only; learning runs when the
     // coordinator has no required device work. Overflow drops optional learning.
