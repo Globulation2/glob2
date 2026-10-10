@@ -1306,6 +1306,7 @@ struct OpenCLProbe::Impl
     Plan plan;
     BudgetLease objectLease{hostBudget};
     std::shared_ptr<const void> keepAlive;
+    OpenCLProbeClock clock;
     std::shared_ptr<Runtime> lane;
     std::shared_ptr<Device::Plane> costs;
     std::uint64_t generation;
@@ -1315,8 +1316,8 @@ struct OpenCLProbe::Impl
     Handle a=nullptr,b=nullptr,active=nullptr,nextActive=nullptr,event=nullptr;
     bool privateScalar=false,source=false,onlyZerosAndMax=true,borrowedTransfers=false;
     static constexpr std::size_t objectBytes() {return sizeof(OpenCLProbe)+sizeof(Impl)+sizeof(Runtime);}
-    Impl(const BackendRequest& r,Plan p,std::shared_ptr<const void> owner)
-        :request(r),plan(p),keepAlive(std::move(owner)),generation(r.session.currentGeneration()) {
+    Impl(const BackendRequest& r,Plan p,std::shared_ptr<const void> owner,OpenCLProbeClock clockValue)
+        :request(r),plan(p),keepAlive(std::move(owner)),clock(std::move(clockValue)),generation(r.session.currentGeneration()) {
         objectLease.resize(sizeof(OpenCLProbe)+sizeof(Impl));
         lane=std::make_shared<Runtime>(runtime().shared,true);
         measured.activeEpoch=lane->shared->status.activeEpoch;
@@ -1333,6 +1334,10 @@ struct OpenCLProbe::Impl
         // persistent descriptor, flags, cost data or staging storage.
         if(event || borrowedTransfers) lane->api.Finish(lane->queue);
         if(event) lane->api.ReleaseEvent(event);
+    }
+    std::uint64_t clockNow() const noexcept {return clock.read ? clock.read(clock.owner.get()) : threadCPUClock();}
+    void invalidClock() noexcept {
+        ++measured.invalidCpuClocks;++lane->shared->threadCPUInvalidMeasurements;cancelled=true;
     }
     bool readyEvent() {
         Int state=0;
@@ -1402,8 +1407,9 @@ struct OpenCLProbe::Impl
                     onlyZerosAndMax=onlyZerosAndMax&&(value==0||value==65535);
                 }
                 copied=end;
-                const auto now=threadCPUClock();
-                if(!started || (now>=started && now-started>=cpuBudget)) break;
+                const auto now=clockNow();
+                if(!now || now<started) {invalidClock();progress=OpenCLProbeProgress::Declined;return progress;}
+                if(now-started>=cpuBudget) break;
             }
             if(copied==n) {
                 if(!source||onlyZerosAndMax) {++lane->shared->noopFields;progress=OpenCLProbeProgress::Complete;}
@@ -1532,7 +1538,7 @@ struct OpenCLProbe::Impl
         return progress;
     }
 #else
-    Impl(const BackendRequest&,Plan,std::shared_ptr<const void>) {progress=OpenCLProbeProgress::Declined;}
+    Impl(const BackendRequest&,Plan,std::shared_ptr<const void>,OpenCLProbeClock) {progress=OpenCLProbeProgress::Declined;}
 #endif
 };
 OpenCLProbe::OpenCLProbe(std::unique_ptr<Impl> value):state(std::move(value)) {}
@@ -1553,53 +1559,69 @@ std::span<const std::uint16_t> OpenCLProbe::result() const noexcept {
 }
 OpenCLProbeProgress OpenCLProbe::advance(std::size_t copyCells,std::uint64_t cpuBudgetNs) noexcept {
 #if !defined(SDL_PLATFORM_EMSCRIPTEN) && !defined(SDL_PLATFORM_ANDROID) && !defined(SDL_PLATFORM_IOS)
-    const auto started=threadCPUClock();
+    if(state->progress!=OpenCLProbeProgress::Pending) return state->progress;
+    const auto started=state->clockNow();
+    std::unique_lock lock(state->lane->mutex);
     auto& device=*state->lane->shared;
-    struct CPU {
-        Impl& state;Device& device;std::uint64_t started,budget;
-        ~CPU() {
-            if(!started) return;
-            const auto ended=threadCPUClock();if(ended<started) return;
-            const auto elapsed=ended-started;
-            device.threadCPUAvailable.store(true);device.threadCPUNs+=elapsed;
-            state.measured.threadCpuNs+=elapsed;state.measured.maxAdvanceCpuNs=std::max(state.measured.maxAdvanceCpuNs,elapsed);
-            if(elapsed>budget) ++state.measured.overshoots;
-        }
-    } timer{*state,device,started,std::max<std::uint64_t>(1,std::min<std::uint64_t>(cpuBudgetNs,500000))};
-    std::lock_guard lock(state->lane->mutex);
-    try {return state->step(std::max<std::size_t>(1,std::min<std::size_t>(copyCells,4096)),started,timer.budget);}
+    const auto budget=std::max<std::uint64_t>(1,std::min<std::uint64_t>(cpuBudgetNs,500000));
+    if(!started) state->invalidClock();
+    try {state->step(std::max<std::size_t>(1,std::min<std::size_t>(copyCells,4096)),started,budget);}
     catch(const BudgetExceeded&) {++state->lane->status.budgetDeclines;state->cancelled=true;}
     catch(const std::bad_alloc&) {++state->lane->status.budgetDeclines;state->cancelled=true;}
     catch(...) {
         device.fail("OpenCL optional execution failed");readyPlans.store(0,std::memory_order_release);
         state->cancelled=true;
     }
-    // A failed enqueue/flush may follow earlier borrowed transfers. Preserve
-    // state until their trailing event is complete; emergency drain if no
-    // trailing event was created. Allocation declines never poison the device.
-    if(state->event) return OpenCLProbeProgress::Pending;
-    if(state->borrowedTransfers) {state->lane->api.Finish(state->lane->queue);state->borrowedTransfers=false;}
-    state->progress=OpenCLProbeProgress::Declined;return state->progress;
+    // Reconcile canceled/failed operations before sampling the endpoint so
+    // exceptional safety drains remain part of calling-thread CPU expense.
+    if(state->cancelled && !state->event) {
+        if(state->borrowedTransfers) {state->lane->api.Finish(state->lane->queue);state->borrowedTransfers=false;}
+        state->progress=OpenCLProbeProgress::Declined;
+    }
+    lock.unlock();
+    const auto ended=state->clockNow();
+    if(!ended || (started && ended<started)) state->invalidClock();
+    else if(started) {
+        const auto elapsed=ended-started;
+        device.threadCPUAvailable.store(true);device.threadCPUNs+=elapsed;
+        state->measured.threadCpuNs+=elapsed;
+        state->measured.maxAdvanceCpuNs=std::max(state->measured.maxAdvanceCpuNs,elapsed);
+        if(elapsed>budget) ++state->measured.overshoots;
+    }
+    if(state->cancelled) {
+        // Invalid clocks stop new optional commands. Pending events are reaped
+        // on later coordinator advances before captured storage is released.
+        if(state->event) return OpenCLProbeProgress::Pending;
+        state->progress=OpenCLProbeProgress::Declined;
+    }
+    return state->progress;
 #else
     return OpenCLProbeProgress::Declined;
 #endif
 }
-std::unique_ptr<OpenCLProbe> beginOpenCLProbe(const BackendRequest& request,Plan plan,std::shared_ptr<const void> keepAlive) {
+std::unique_ptr<OpenCLProbe> beginOpenCLProbe(const BackendRequest& request,Plan plan,std::shared_ptr<const void> keepAlive,OpenCLProbeClock clock) {
 #if !defined(SDL_PLATFORM_EMSCRIPTEN) && !defined(SDL_PLATFORM_ANDROID) && !defined(SDL_PLATFORM_IOS)
-    const auto started=threadCPUClock();
     auto& device=*runtime().shared;
+    if(clock.read && !clock.owner) {++device.threadCPUInvalidMeasurements;return {};}
+    const auto started=clock.read ? clock.read(clock.owner.get()) : threadCPUClock();
+    if(!started) {++device.threadCPUInvalidMeasurements;return {};}
     OpenCLProbe::Impl* admitted=nullptr;
     struct CPU {
-        Device& device;OpenCLProbe::Impl*& admitted;std::uint64_t started;
-        ~CPU() {
-            const auto ended=threadCPUClock();if(!started || ended<started) return;
+        Device& device;OpenCLProbe::Impl*& admitted;const OpenCLProbeClock& clock;
+        std::uint64_t started;bool finished=false,valid=false;
+        void finish() noexcept {
+            if(finished) return;finished=true;
+            const auto ended=clock.read ? clock.read(clock.owner.get()) : threadCPUClock();
+            if(!ended || ended<started) {++device.threadCPUInvalidMeasurements;return;}
+            valid=true;
             const auto elapsed=ended-started;device.threadCPUAvailable.store(true);device.threadCPUNs+=elapsed;
             if(admitted) {
                 admitted->measured.setupCpuNs+=elapsed;admitted->measured.threadCpuNs+=elapsed;
                 if(elapsed>500000) ++admitted->measured.overshoots;
             }
         }
-    } timer{device,admitted,started};
+        ~CPU() {finish();}
+    } timer{device,admitted,clock,started};
     // These required-only configurations have no matching yieldable probe yet.
     // It cannot provide live automatic-promotion evidence.
     if(!keepAlive || !request.gradient || !request.identity.owner || !request.identity.allCells ||
@@ -1608,8 +1630,10 @@ std::unique_ptr<OpenCLProbe> beginOpenCLProbe(const BackendRequest& request,Plan
         plan==Plan::CPU || unsigned(plan)>=PLANS.size() || !(readyPlans.load()&(1u<<unsigned(plan))) ||
         device.status.parityBound || device.status.directSeedUpload || device.status.apiCpuMode) return {};
     try {
-        auto value=std::unique_ptr<OpenCLProbe>(new OpenCLProbe(std::make_unique<OpenCLProbe::Impl>(request,plan,std::move(keepAlive))));
-        admitted=value->state.get();return value;
+        auto value=std::unique_ptr<OpenCLProbe>(new OpenCLProbe(std::make_unique<OpenCLProbe::Impl>(request,plan,std::move(keepAlive),clock)));
+        admitted=value->state.get();timer.finish();
+        if(!timer.valid) {admitted=nullptr;return {};}
+        return value;
     }
     catch(...) {return {};}
 #else

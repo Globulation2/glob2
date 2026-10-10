@@ -54,8 +54,9 @@ device execution; bypassed fields are never counted as GPU completions.
 epoch stamps; `GLOB2_OPENCL_PARITY_BOUND=1` retains opposite ping-pong bindings
 on two private kernel handles. Screen each separately before combining. Both
 default to zero, retain inactive buffer copies and original-seed recovery, and
-decline live optional probes because their yielding implementations have not
-been qualified. Check `active_epoch`, `tile_mask_clears`, `parity_bound`, and
+keep live capture and promotion disabled. The isolated epoch yielding
+implementation uses the same initialized program/check windows; parity still
+declines optional probes. Neither supplies qualified live promotion evidence. Check `active_epoch`, `tile_mask_clears`, `parity_bound`, and
 `kernel_argument_updates` in the warm-window OpenCL counters.
 
 `GLOB2_BENCHMARK_DIAGNOSTICS=1` enables optional thread inventories, per-tick
@@ -449,3 +450,12 @@ batch timing; it also excludes asynchronous driver CPU outside the calling
 thread. Capture and live promotion remain disabled until calibration, full
 process CPU, device contention and tick-tail gates pass. Unknown cost planes
 still decline; this candidate does not warm them synchronously or on the owner.
+
+Optional probe clocks must be nonzero and monotonic at setup, advance endpoints,
+and each 64-entry copy checkpoint. An invalid measurement cancels new optional
+commands and polls pending transfers before releasing captured storage. The
+`invalidCpuClocks` probe counter makes missing expense explicit: future learning
+callers must conservatively charge the full optional reservation or supply a
+known external CPU measurement, and must never promote or settle it as zero.
+The appended owned clock callback exists for correctness diagnostics; callers
+charge and retain its captured allocation through the shared probe storage lease.

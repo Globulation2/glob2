@@ -21,6 +21,16 @@ struct AttributionClock {
         return clock.at<clock.values.size() ? clock.values[clock.at++] : 0;
     }
 };
+struct ProbeClock {
+    mutable std::uint64_t next=1000;
+    mutable unsigned reads=0;
+    unsigned failRead=~0u;
+    std::uint64_t invalidValue=0;
+    static std::uint64_t read(const void* value) noexcept {
+        auto& clock=*static_cast<const ProbeClock*>(value);
+        return clock.reads++==clock.failRead ? clock.invalidValue : ++clock.next;
+    }
+};
 void onWorker(const std::function<void()>& function)
 {
     if constexpr(!GAGCore::ThreadSupport::available) { function(); return; }
@@ -1087,6 +1097,100 @@ TEST_CASE("optional device advances preserve seeds interleave required work and 
         }
     });
     coordinator.join();
+}
+TEST_CASE("optional probe clocks reject invalid setup before driver initialization")
+{
+#if !defined(SDL_PLATFORM_EMSCRIPTEN) && !defined(SDL_PLATFORM_ANDROID) && !defined(SDL_PLATFORM_IOS)
+    using namespace gradient_kernel;
+    BackendSession session;std::uint16_t original=77;
+    auto clock=std::make_shared<ProbeClock>();
+    BackendRequest request{&original,100,{1,1},session,nullptr,[](void*,std::size_t){return LAND_STEPS;},nullptr,{clock,381721,1,true}};
+    const auto reserved=openCLProbeBytes();
+    const auto invalid=openCLStatus().threadCPUInvalidMeasurements;
+    clock->failRead=0;
+    CHECK_FALSE(beginOpenCLProbe(request,Plan::Frozen8,clock,{clock,ProbeClock::read}));
+    CHECK(clock->reads==1);CHECK(openCLProbeBytes()==reserved);CHECK(original==77);
+    CHECK_FALSE(beginOpenCLProbe(request,Plan::Frozen8,clock,{{},ProbeClock::read}));
+    CHECK(clock->reads==1);CHECK(openCLProbeBytes()==reserved);
+    // An invalid setup endpoint must also be diagnosed when validation declines
+    // before plan readiness. No initialization/driver work is needed here.
+    clock->failRead=clock->reads+1;clock->invalidValue=1;
+    CHECK_FALSE(beginOpenCLProbe(request,Plan::CPU,clock,{clock,ProbeClock::read}));
+    CHECK(openCLStatus().threadCPUInvalidMeasurements==invalid+3);
+    CHECK(openCLProbeBytes()==reserved);CHECK_FALSE(session.failed.load());
+#endif
+}
+TEST_CASE("owned optional probe clocks cancel invalid copy and pending transfer measurements")
+{
+    using namespace gradient_kernel;
+    const auto* enabled=std::getenv("GLOB2_TEST_OPENCL_PROBE_CLOCK");
+    if(!enabled || std::strcmp(enabled,"1"))return;
+    REQUIRE(initializeOpenCL());const auto status=openCLStatus();
+    REQUIRE_FALSE(status.parityBound);REQUIRE_FALSE(status.directSeedUpload);REQUIRE(status.apiCpuMode==0);
+    REQUIRE((readyPlans.load()&(1u<<unsigned(Plan::Frozen8)))!=0);
+    struct Capture {
+        std::vector<std::uint16_t> seeds=std::vector<std::uint16_t>(257,1);
+        std::shared_ptr<std::vector<EntrySteps>> costs=std::make_shared<std::vector<EntrySteps>>(257,LAND_STEPS);
+        BackendSession session;
+        std::shared_ptr<ProbeClock> clock=std::make_shared<ProbeClock>();
+        std::size_t reservation=0;
+        ~Capture(){if(reservation)releaseOpenCLProbeBytes(reservation);}
+    };
+    std::thread coordinator([] {
+        const auto baseline=openCLProbeBytes();
+        auto owner=std::make_shared<Capture>();owner->seeds[0]=65535;owner->seeds.back()=65000;
+        const auto original=owner->seeds;
+        const auto bytes=sizeof(Capture)+owner->seeds.capacity()*sizeof(std::uint16_t)+sizeof(ProbeClock)+128;
+        REQUIRE(reserveOpenCLProbeBytes(bytes));owner->reservation=bytes;
+        BackendRequest request{owner->seeds.data(),700,{1,257},owner->session,owner->costs.get(),
+            [](void* value,std::size_t i){return (*static_cast<std::vector<EntrySteps>*>(value))[i];},nullptr,
+            {owner->costs,381722,1,true,sizeof(std::vector<EntrySteps>)+owner->costs->capacity()*sizeof(EntrySteps)}};
+        auto warm=original;request.gradient=warm.data();
+        REQUIRE(executeOpenCLDevice(std::span(&request,1),Plan::Frozen8));
+        request.gradient=owner->seeds.data();const auto reserved=openCLProbeBytes();
+        // Valid start, bad setup end: the newly allocated private lane is freed
+        // before admission returns, and the healthy device/session stay usable.
+        owner->clock->failRead=owner->clock->reads+1;owner->clock->invalidValue=1;
+        CHECK_FALSE(beginOpenCLProbe(request,Plan::Frozen8,owner,{owner->clock,ProbeClock::read}));
+        CHECK(openCLProbeBytes()==reserved);CHECK(owner->seeds==original);
+        for(unsigned scenario=0;scenario<5;++scenario){
+            owner->clock->failRead=~0u;
+            auto probe=beginOpenCLProbe(request,Plan::Frozen8,owner,{owner->clock,ProbeClock::read});REQUIRE(probe);
+            const auto target=scenario==4 ? OpenCLProbe::Stage::Dispatch : OpenCLProbe::Stage::Copy;
+            for(unsigned attempt=0;attempt<100000 && probe->metrics().stage!=target;++attempt)
+                REQUIRE(probe->advance()==OpenCLProbeProgress::Pending);
+            REQUIRE(probe->metrics().stage==target);
+            const auto reads=owner->clock->reads;
+            // Cases: bad start; zero/reversed first 64-cell checkpoint; bad
+            // copy endpoint; bad endpoint after enqueue with pending event.
+            const auto offset=scenario==0 ? 0u : scenario==3 ? 2u : 1u;
+            owner->clock->failRead=reads+offset;
+            owner->clock->invalidValue=scenario==2 ? 1 : 0;
+            auto progress=probe->advance(scenario==3 ? 64 : 4096);
+            if(scenario==4){CHECK(progress==OpenCLProbeProgress::Pending);CHECK(probe->metrics().dispatches==1);}
+            else {CHECK(progress==OpenCLProbeProgress::Declined);CHECK(probe->metrics().dispatches==0);}
+            if(scenario==1 || scenario==2) CHECK(owner->clock->reads==reads+3);
+            REQUIRE(probe->metrics().invalidCpuClocks>0);
+            for(unsigned attempt=0;attempt<1000000 && progress==OpenCLProbeProgress::Pending;++attempt){
+                progress=probe->advance();if(progress==OpenCLProbeProgress::Pending)std::this_thread::yield();
+            }
+            CHECK(progress==OpenCLProbeProgress::Declined);CHECK(probe->result().empty());
+            CHECK(owner->seeds==original);CHECK_FALSE(owner->session.failed.load());
+            probe.reset();CHECK(openCLProbeBytes()==reserved);
+        }
+        // A recovered clock supplies another exact optional result; invalid
+        // measurements do not trigger CPU recovery or quarantine the device.
+        owner->clock->failRead=~0u;
+        auto recovered=beginOpenCLProbe(request,Plan::Frozen8,owner,{owner->clock,ProbeClock::read});REQUIRE(recovered);
+        auto progress=OpenCLProbeProgress::Pending;
+        for(unsigned attempt=0;attempt<1000000 && progress==OpenCLProbeProgress::Pending;++attempt){
+            progress=recovered->advance();if(progress==OpenCLProbeProgress::Pending)std::this_thread::yield();
+        }
+        CHECK(progress==OpenCLProbeProgress::Complete);
+        CHECK(std::vector<std::uint16_t>(recovered->result().begin(),recovered->result().end())==warm);
+        CHECK(recovered->metrics().invalidCpuClocks==0);recovered.reset();owner.reset();
+        CHECK(openCLProbeBytes()==baseline);
+    });coordinator.join();
 }
 TEST_CASE("isolated epoch probes mirror required windows and preserve exact owned cancellation")
 {

@@ -52,7 +52,7 @@ struct OpenCLStatus
     std::uint64_t uniformMetadataHits = 0;
     std::uint64_t probeBytes = 0, peakProbeBytes = 0;
     // Experimental command-reduction ablation. Not qualified for automatic
-    // promotion: the optional yielding probe intentionally declines this mode.
+    // promotion: its matching isolated yielding probe still needs qualification.
     bool activeEpoch = false;
     std::uint64_t tileMaskInitializations = 0, tileMaskClears = 0;
     // Independent required-only ablation: two lane-private kernel instances
@@ -114,6 +114,12 @@ enum class OpenCLProbeProgress { Pending, Complete, Declined };
 // Required-only parity-binding/direct-seed/API-CPU ablations are also declined; their
 // results cannot supply automatic-promotion evidence until yielding counterparts
 // have been independently implemented and qualified.
+// Optional owned clock injection is for correctness diagnostics. Its owner
+// must be retained and charged by the caller like other captured probe payload.
+struct OpenCLProbeClock {
+    std::shared_ptr<const void> owner;
+    std::uint64_t (*read)(const void*) noexcept = nullptr;
+};
 class OpenCLProbe
 {
 public:
@@ -121,6 +127,7 @@ public:
     struct Metrics {
         std::uint64_t threadCpuNs=0,maxAdvanceCpuNs=0,overshoots=0,dispatches=0,setupCpuNs=0;
         std::uint64_t hostChecks=0,tileMaskInitializations=0,tileMaskClears=0,kernelArgumentUpdates=0;
+        std::uint64_t invalidCpuClocks=0;
         unsigned checkInterval=1;
         bool activeEpoch=false;
         Stage stage=Stage::Costs;
@@ -133,6 +140,9 @@ public:
     // Copy phases check CPU time at most every64 entries. Probe results never
     // overwrite the original seeds. Valid only at Complete.
     std::span<const std::uint16_t> result() const noexcept;
+    // Invalid clock measurements decline the optional result; a future learning
+    // caller must conservatively charge its full reservation or use a known
+    // external measurement, never settle missing CPU expense as zero.
     // Read from the same coordinator that advances the probe. Cancellation is
     // independently atomic; metrics and result do not supply concurrent reads.
     Metrics metrics() const noexcept;
@@ -140,9 +150,9 @@ private:
     struct Impl;
     std::unique_ptr<Impl> state;
     explicit OpenCLProbe(std::unique_ptr<Impl>);
-    friend std::unique_ptr<OpenCLProbe> beginOpenCLProbe(const BackendRequest&,Plan,std::shared_ptr<const void>);
+    friend std::unique_ptr<OpenCLProbe> beginOpenCLProbe(const BackendRequest&,Plan,std::shared_ptr<const void>,OpenCLProbeClock);
 };
 // Cancellation parks pending events: call advance until terminal before normal
 // destruction. A premature destructor defensively drains on its calling thread.
-std::unique_ptr<OpenCLProbe> beginOpenCLProbe(const BackendRequest&,Plan,std::shared_ptr<const void> keepAlive);
+std::unique_ptr<OpenCLProbe> beginOpenCLProbe(const BackendRequest&,Plan,std::shared_ptr<const void> keepAlive,OpenCLProbeClock clock={});
 } // namespace gradient_kernel
