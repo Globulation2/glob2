@@ -1872,3 +1872,35 @@ TEST_CASE("JavaScript building clearing materials retain full fixed slots and le
     for(unsigned m=0;m<MaterialCount;++m)
         CHECK(descriptor.get("clearingMaterials").items[m].number==((m%2)!=0));
 }
+
+TEST_CASE("JavaScript flag orders use explicit custom attraction roles" * doctest::test_suite("JavaScriptIntegration"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.discovered=true,.clearImmobile=true,.header=true});
+    auto units=nlohmann::json::parse(world.game.unitCatalog().serialize());
+    auto hybrid=units["units"][WORKER]; hybrid["key"]="fixture:script-flag-hybrid";
+    hybrid["behaviors"]["clear"]=true; hybrid["behaviors"]["explore"]=true;
+    hybrid["behaviors"]["melee"]=true;
+    units["units"].push_back(hybrid);
+    world.game.gameHeader.setUnitCatalog(UnitCatalog::deserialize(units.dump()));
+    auto buildings=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());
+    const int type=world.game.buildingsTypes.getFinishedTypeNum("clearingflag");
+    auto& flag=buildings["variants"][type]; flag["properties"]["zonable"]={0,0,0};
+    for(const auto* role:{"clear","explore","defend"})
+        flag["semantics"]["attractionUnits"][role]={"fixture:script-flag-hybrid"};
+    world.game.buildingsTypes.loadSnapshotJson(buildings.dump()); world.game.configureBuildingCatalog();
+    auto* building=world.addBuilding("clearingflag",8,8); REQUIRE(building);
+    CHECK(building->type->zonable[WORKER]==0); CHECK(building->runtime->attractionRoles==7);
+    auto reference=Value::object().set("id",building->gid).set("generation",building->scriptIdentity);
+    auto command=[&](const char* name){return Value::object().set("type",name).set("building",reference);};
+    CHECK_NOTHROW(order(world.game,0,command("range").set("range",9)));
+    CHECK_NOTHROW(order(world.game,0,command("minimumLevel").set("level",1)));
+    CHECK_NOTHROW(order(world.game,0,command("workerMinimumLevel").set("workerMinimumLevel",1)));
+    CHECK_NOTHROW(order(world.game,0,command("requireBombing").set("requireBombing",true)));
+    auto materials=Value::array(); for(unsigned m=0;m<MaterialCount;++m)materials.items.emplace_back(true);
+    CHECK_NOTHROW(order(world.game,0,command("clearingMaterials").set("materials",materials)));
+    const auto create=order(world.game,0,Value::object().set("type","create").set("buildingType",type)
+        .set("x",20).set("y",20).set("workers",1).set("futureWorkers",1).set("range",9));
+    const auto* parsed=dynamic_cast<const OrderCreate*>(create.get()); REQUIRE(parsed);
+    CHECK(parsed->flagRadius==9);
+}

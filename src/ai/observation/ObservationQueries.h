@@ -110,7 +110,8 @@ inline int maxBuildLevel(const AIEngine::AIWorldView& world, unsigned team)
 {
     int result=0;
     for(const auto& unit:world.units)
-        if(unit.team==int(team) && unit.performance[BUILD]!=0)
+        if(unit.team==int(team) && (unit.capabilityFlags&UnitRuntimeTraits::Construct)
+            && matchesStrategyUnitRole(world,unit,WORKER))
             result=std::max(result,int(unit.constructionLevel));
     return result;
 }

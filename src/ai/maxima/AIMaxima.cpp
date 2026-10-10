@@ -4065,9 +4065,13 @@ Maxima::collect_building_profiles() const
  using namespace AIMaximaPlacement;using namespace AIMaximaBuildings;
  if(development_profiles_initialized)return development_building_profiles;
  const auto& game=context.observation();
+ development_feeding_providers.clear();
+ development_feeding_provider_types.clear();
  development_profile_index.assign(game.catalog->size(),-1);
  development_feeding_visit_rate.assign(game.catalog->size(),0);
  development_feeding_pause.assign(game.unitTypeCount(),INT_MAX);
+ development_feeding_provider_index.assign(game.catalog->size(),-1);
+ development_feeding_demand.resize(game.unitTypeCount());
  std::vector<FeedingEstimate> operations(game.catalog->size());
  for(size_t id=0;id<game.catalog->size();++id) {
   // Recipe/seat ceilings describe potential work. A separate shared hauling
@@ -4076,6 +4080,16 @@ Maxima::collect_building_profiles() const
   operations[id]=operatingEstimate(*(&game.catalog->at(id).resolvedType),strategy,*game.configuration,false);
   development_feeding_visit_rate[id]=int(std::min<long long>(INT_MAX,
       operatingEstimate(*(&game.catalog->at(id).resolvedType),strategy,*game.configuration,true).visitsPerTick));
+  const auto& semantic=game.catalog->at(id).resolvedType.semantics;
+  if(semantic.feeding.enabled) {
+   FeedingCapacity provider{0,std::vector<Uint8>(game.unitTypeCount())};
+   for(unsigned unit=0;unit<game.unitTypeCount();++unit)
+    provider.admitted[unit]=semantic.feeding.units.matches(unit,semantic.feeding.unitMask)
+        && semantic.admittedUnits.matches(unit,semantic.admittedUnitMask);
+   development_feeding_provider_index[id]=int(development_feeding_providers.size());
+   development_feeding_provider_types.push_back(unsigned(id));
+   development_feeding_providers.push_back(std::move(provider));
+  }
  }
  development_profiles_initialized=true;
  for(size_t root=0;root<game.catalog->size();++root) {
@@ -4170,32 +4184,42 @@ long long Maxima::recipient_meal_rate(const AIEngine::UnitView& unit) const
 {
  if(context.observation().configuration->isHungerDisabled())return 0;
  const int action=unit.performance[FLY]>0?FLY:unit.performance[WALK]>0?WALK:SWIM;
+ if(unit.performance[action]<=0)return 0;
  return recipientMealRate(context.observation().unitTraits(unit.typeNum).foodCapacity,unit.trigHungry,unit.hungriness,
      unit.performance[action],action,strategy.farming.management_radius,development_feeding_pause[unit.typeNum]);
+}
+
+long long Maxima::base_recipient_meal_rate(unsigned unit) const
+{
+ const auto& world=context.observation();
+ const auto& base=world.unitType(unit,0);
+ const auto& traits=world.unitTraits(unit);
+ const int action=traits.has(UnitRuntimeTraits::Fly) && base.performance[FLY]>0 ? FLY
+     : traits.has(UnitRuntimeTraits::Walk) && base.performance[WALK]>0 ? WALK
+     : traits.has(UnitRuntimeTraits::Swim) && base.performance[SWIM]>0 ? SWIM : STOP_WALK;
+ if(action==STOP_WALK)return 0;
+ const int trigger=static_cast<long long>(traits.foodCapacity)*traits.hungerTriggerNumerator/traits.hungerTriggerDenominator;
+ return recipientMealRate(traits.foodCapacity,trigger,traits.hungerRate,
+     base.performance[action],action,strategy.farming.management_radius,development_feeding_pause[unit]);
 }
 
 int Maxima::feeding_capacity_for_type(int type) const
 {
  collect_building_profiles();
- const auto* definition=&context.observation().catalog->at(type).resolvedType;
- if(!definition || size_t(type)>=development_feeding_visit_rate.size())return 0;
+ if(type<0 || size_t(type)>=development_feeding_provider_index.size())return 0;
+ const int provider=development_feeding_provider_index[type];
+ if(provider<0)return 0;
  const auto& world=context.observation();
- const auto& semantic=definition->semantics;
  const auto& populations=world.teams[context.teamNumber()].statistics.numberUnitPerType;
- auto admitted=[&](unsigned unit){return semantic.feeding.enabled && semantic.feeding.units.matches(unit,semantic.feeding.unitMask) && semantic.admittedUnits.matches(unit,semantic.admittedUnitMask);};
+ const auto& admitted=development_feeding_providers[provider].admitted;
  long long demand=0,population=0;
- for(unsigned unit=0;unit<world.unitTypeCount();++unit)if(admitted(unit)) {
+ for(unsigned unit=0;unit<world.unitTypeCount();++unit)if(admitted[unit]) {
      population+=populations[unit];if(unit<snapshot.feeding_demand.size())demand+=snapshot.feeding_demand[unit];
  }
  if(!demand) {
      population=0;
-     for(unsigned unit=0;unit<world.unitTypeCount();++unit)if(admitted(unit)) {
-         const auto& base=world.unitType(unit,0);
-         const auto& traits=world.unitTraits(unit);
-         const int action=base.performance[FLY]>0?FLY:base.performance[WALK]>0?WALK:SWIM;
-         const int trigger=static_cast<long long>(traits.foodCapacity)*traits.hungerTriggerNumerator/traits.hungerTriggerDenominator;
-         const long long rate=recipientMealRate(traits.foodCapacity,trigger,traits.hungerRate,
-             base.performance[action],action,strategy.farming.management_radius,development_feeding_pause[unit]);
+     for(unsigned unit=0;unit<world.unitTypeCount();++unit)if(admitted[unit]) {
+         const long long rate=base_recipient_meal_rate(unit);
          const int count=std::max(1,populations[unit]);
          demand+=rate*count;population+=count;
      }
@@ -4207,30 +4231,26 @@ int Maxima::feeding_capacity_for_type(int type) const
 
 int Maxima::aggregate_feeding_capacity(const std::vector<long long>& rates) const
 {
+ collect_building_profiles();
  const auto& world=context.observation();
- std::vector<int> demand=snapshot.feeding_demand;demand.resize(world.unitTypeCount());
+ auto& demand=development_feeding_demand;
+ std::fill(demand.begin(),demand.end(),0);
+ std::copy_n(snapshot.feeding_demand.begin(),std::min(demand.size(),snapshot.feeding_demand.size()),demand.begin());
  if(std::all_of(demand.begin(),demand.end(),[](int rate){return rate==0;}) && !world.configuration->isHungerDisabled()) {
      const auto& population=world.teams[context.teamNumber()].statistics.numberUnitPerType;
+     const bool none=std::all_of(population.begin(),population.end(),[](int count){return !count;});
+     const int legacyCounts[3]={snapshot.workers,snapshot.explorers,snapshot.warriors};
      for(unsigned unit=0;unit<world.unitTypeCount();++unit) {
-         const auto& base=world.unitType(unit,0);const auto& traits=world.unitTraits(unit);
-         const int action=base.performance[FLY]>0?FLY:base.performance[WALK]>0?WALK:SWIM;
-         const int trigger=static_cast<long long>(traits.foodCapacity)*traits.hungerTriggerNumerator/traits.hungerTriggerDenominator;
-         const long long rate=recipientMealRate(traits.foodCapacity,trigger,traits.hungerRate,
-             base.performance[action],action,strategy.farming.management_radius,development_feeding_pause[unit]);
-         const int legacyCounts[3]={snapshot.workers,snapshot.explorers,snapshot.warriors};
-         const bool none=std::all_of(population.begin(),population.end(),[](int count){return !count;});
+         const long long rate=base_recipient_meal_rate(unit);
          const int count=population[unit] ? population[unit] : none && unit<3 ? (legacyCounts[unit] ? legacyCounts[unit] : unit==WORKER && !(snapshot.workers+snapshot.explorers+snapshot.warriors) ? snapshot.population : 0) : 0;
          demand[unit]=int(std::min<long long>(INT_MAX,(rate*count+MealRatePrecision/2)/MealRatePrecision));
      }
  }
- std::vector<FeedingCapacity> providers;
- for(unsigned id=0;id<rates.size();++id)if(rates[id]>0) {
-     const auto& semantic=world.catalog->at(id).resolvedType.semantics;
-     FeedingCapacity provider{rates[id],std::vector<Uint8>(world.unitTypeCount())};
-     for(unsigned unit=0;unit<world.unitTypeCount();++unit)provider.admitted[unit]=semantic.feeding.enabled && semantic.feeding.units.matches(unit,semantic.feeding.unitMask) && semantic.admittedUnits.matches(unit,semantic.admittedUnitMask);
-     providers.push_back(std::move(provider));
+ for(unsigned index=0;index<development_feeding_providers.size();++index) {
+     const unsigned type=development_feeding_provider_types[index];
+     development_feeding_providers[index].rate=type<rates.size()?rates[type]:0;
  }
- return feedingPopulationCapacity(demand,snapshot.population,providers);
+ return feedingPopulationCapacity(demand,snapshot.population,development_feeding_providers);
 }
 
 long long Maxima::birth_food_acreage() const
@@ -6090,7 +6110,13 @@ std::optional<Uint64> AIMaxima::Maxima::retainedQueryVectorBytes() const
 {
     Uint64 bytes = context.get_gradient_manager().retainedVectorBytes()
         + development_planner.retainedQueryVectorBytes()
-        + fertility_cache.values().capacity() * sizeof(uint32_t);
+        + fertility_cache.values().capacity() * sizeof(uint32_t)
+        + development_feeding_providers.capacity() * sizeof(FeedingCapacity)
+        + development_feeding_provider_types.capacity() * sizeof(unsigned)
+        + development_feeding_provider_index.capacity() * sizeof(int)
+        + development_feeding_demand.capacity() * sizeof(int);
+    for(const auto& provider:development_feeding_providers)
+        bytes+=provider.admitted.capacity()*sizeof(Uint8);
     for (const auto* mask : {&farming_shoreline_mask, &farming_cardinal_shoreline_mask,
             &applied_farm_protection_mask, &applied_maintenance_clearing_mask,
             &maintenance_circulation_mask, &wood_firebreak_mask, &farm_protection_mask,

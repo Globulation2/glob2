@@ -145,7 +145,7 @@ ENGINE_TESTS = [
     '#src/map/generator/CombGeneratorTest.cpp',
     '#src/map/generator/OrchardCommonsConversionTest.cpp',
     'PortableGameHarness.cpp',
-    '#src/team/stats/TeamStatsSaveHarness.cpp',
+    ('#src/team/stats/TeamStatsSaveHarness.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/team/stats/TeamLabourStatsTest.cpp',
     ('#src/engine/EngineSessionHarness.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/net/turn/TurnNetConnectionTest.cpp',

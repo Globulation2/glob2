@@ -10,6 +10,16 @@ private campaign data. The original tournament saves use a different,
 Maxima-enabled format; this fixture isolates the same invariant for the
 upstream engine without requiring that research branch.
 
+The retained format-88 record has zero health and movement tables and cached
+movement values, despite an in-flight animation and air occupancy. It exercises
+loading and preservation of the pending entry; it is not a playable historical
+game. The pre-catalog engine asserts when that animation completes at tick 8.
+The current harness verifies an immediate current-format resave/reload without
+repairing its caches and compares the original and resumed simulation states
+for 64 ticks. Saving the later invalid occupancy is outside this fixture's
+scope. The generated cases use valid service admissions and cover ordinary
+entry persistence separately.
+
 `EnteringUnitSaveHarness --load` reads its argument as a raw, uncompressed
 file (it does not itself decompress `.gz`), so the commands below first inflate
 the checked-in fixture to a temporary raw file — matching what CI does.

@@ -507,8 +507,9 @@ void TeamStats::step(Team *team, bool reloaded)
 	if (smoothedIndex)
 		return;
 	
-	TeamSmoothedStat maxStat;
-    maxStat.configureUnits(unitTypeCount);
+	configureSamplingCatalog(team->race.getCatalog());
+    auto& maxStat=samplingMaxima;
+    maxStat.reset();
 	for (int i=0; i<STATS_SMOOTH_SIZE; i++)
 	{
 		TeamSmoothedStat &smoothedStat=smoothedStats[i];
@@ -537,10 +538,8 @@ void TeamStats::step(Team *team, bool reloaded)
 
 	stat.reset();
 	stat.buildingCountByVariant.resize(team->game->buildingsTypes.size(),0);
-    // Stock counters stay inline. Custom rows allocate only at this infrequent
-    // sampling boundary, never for individual units or stock matches.
-    UnitStatistics<std::array<int,4>> eligible;
-    eligible.resize(unitTypeCount);
+    auto& eligible=samplingEligibility;
+    eligible.clear();
 
 	for (Unit *u : team->liveUnits.entries())
 	{
@@ -642,19 +641,8 @@ void TeamStats::step(Team *team, bool reloaded)
 	stat.totalFree=maxStat.totalFree;
     stat.idleCarriers=stat.idleDefenders=0;
     for (unsigned unit=0;unit<unitTypeCount;++unit) {
-        const auto& traits=team->race.getRuntime(unit);
-        bool alwaysCarrier=traits.has(UnitRuntimeTraits::Transport) && traits.cargoCapacity>0;
-        bool alwaysDefender=traits.has(UnitRuntimeTraits::Melee) || traits.has(UnitRuntimeTraits::GuardIdle);
-        for (const auto& level:team->race.getCatalog()->levels(unit)) {
-            const auto& p=level.performance;
-            const bool mobile=(traits.has(UnitRuntimeTraits::Fly) && p[FLY]>0)
-                || (traits.has(UnitRuntimeTraits::Walk) && p[WALK]>0)
-                || (traits.has(UnitRuntimeTraits::Swim) && p[SWIM]>0);
-            alwaysCarrier &= mobile && p[BUILD]>0 && p[HARVEST]>0;
-            alwaysDefender &= mobile && ((traits.has(UnitRuntimeTraits::Melee) && p[ATTACK_SPEED]>0 && p[ATTACK_STRENGTH]>0)
-                || (traits.has(UnitRuntimeTraits::GuardIdle) && ((traits.has(UnitRuntimeTraits::MagicAir) && p[MAGIC_ATTACK_AIR]>0)
-                    || (traits.has(UnitRuntimeTraits::MagicGround) && p[MAGIC_ATTACK_GROUND]>0))));
-        }
+        const auto& qualification=samplingQualifications[unit];
+        const bool alwaysCarrier=qualification[0], alwaysDefender=qualification[1];
         // Historical smoothing is safe only when every level and live cached
         // state qualifies. Otherwise a type's free count includes unusable units.
         const auto& counts=eligible[unit];
@@ -676,6 +664,7 @@ size_t TeamStats::displayCapacityBytes() const
     bytes += measurementHistory.capacity() * sizeof(GameplayMeasurements);
     for (const auto& sample : measurementHistory) bytes += sample.variants.capacity() * sizeof(sample.variants[0])+sample.unitCapacityBytes();
     bytes+=measurements.unitCapacityBytes();
+    bytes+=samplingMaxima.isFree.extraCapacityBytes()+samplingEligibility.extraCapacityBytes()+samplingQualifications.extraCapacityBytes();
     for(const auto& sample:smoothedStats)bytes+=sample.isFree.extraCapacityBytes();
     return bytes;
 }
@@ -989,8 +978,19 @@ bool TeamStats::load(GAGCore::InputStream *stream, Sint32 versionMinor)
                 stat.scouts=stat.numberUnitPerType[EXPLORER];
                 stat.meleeUnits=stat.numberUnitPerType[WARRIOR];
                 stat.idleCarriers=stat.isFree[WORKER];stat.idleDefenders=stat.isFree[WARRIOR];
-                for(unsigned level=0;level<NB_UNIT_LEVELS;++level)
-                    stat.rangedUnits+=std::max(stat.upgradeStatePerType[EXPLORER][MAGIC_ATTACK_AIR][level],stat.upgradeStatePerType[EXPLORER][MAGIC_ATTACK_GROUND][level]);
+                // Levels belong to each ability independently. The same
+                // explorer may occur in AIR level 0 and GROUND level 3, so
+                // per-level maxima double-count it. Historical histograms
+                // contain no joint membership: the larger ability total is
+                // exact for stock explorers (all have AIR) and a conservative
+                // reconstruction for modified legacy tables. New samples
+                // count the union directly from cached unit capabilities.
+                Sint64 air=0,ground=0;
+                for(unsigned level=0;level<NB_UNIT_LEVELS;++level) {
+                    air+=stat.upgradeStatePerType[EXPLORER][MAGIC_ATTACK_AIR][level];
+                    ground+=stat.upgradeStatePerType[EXPLORER][MAGIC_ATTACK_GROUND][level];
+                }
+                stat.rangedUnits=int(std::clamp<Sint64>(std::max(air,ground),0,INT_MAX));
             }
             if (versionMinor < FILE_FORMAT_VERSION_BUILDING_CATALOG)
                 std::copy_n(stats[i].upgradeStatePerType[WORKER][BUILD].begin(), NB_UNIT_LEVELS, stats[i].workersByConstructionLevel);
@@ -1676,10 +1676,36 @@ void TeamStat::configureUnits(std::size_t count)
 {
     numberUnitPerType.resize(count); isFree.resize(count); upgradeStatePerType.resize(count);
 }
+void TeamStats::configureSamplingCatalog(const std::shared_ptr<const UnitCatalog>& catalog)
+{
+    if (samplingCatalog==catalog) return;
+    for (unsigned unit=0;unit<unitTypeCount;++unit) {
+        const auto& traits=catalog->runtime(unit);
+        bool alwaysCarrier=traits.has(UnitRuntimeTraits::Transport) && traits.cargoCapacity>0;
+        bool alwaysDefender=traits.has(UnitRuntimeTraits::Melee) || traits.has(UnitRuntimeTraits::GuardIdle);
+        for (const auto& level:catalog->levels(unit)) {
+            const auto& p=level.performance;
+            const bool mobile=(traits.has(UnitRuntimeTraits::Fly) && p[FLY]>0)
+                || (traits.has(UnitRuntimeTraits::Walk) && p[WALK]>0)
+                || (traits.has(UnitRuntimeTraits::Swim) && p[SWIM]>0);
+            alwaysCarrier &= mobile && p[BUILD]>0 && p[HARVEST]>0;
+            alwaysDefender &= mobile && ((traits.has(UnitRuntimeTraits::Melee) && p[ATTACK_SPEED]>0 && p[ATTACK_STRENGTH]>0)
+                || (traits.has(UnitRuntimeTraits::GuardIdle) && ((traits.has(UnitRuntimeTraits::MagicAir) && p[MAGIC_ATTACK_AIR]>0)
+                    || (traits.has(UnitRuntimeTraits::MagicGround) && p[MAGIC_ATTACK_GROUND]>0))));
+        }
+        samplingQualifications[unit]={Uint8(alwaysCarrier),Uint8(alwaysDefender)};
+    }
+    samplingCatalog=catalog;
+}
+
 void TeamStats::configureUnits(std::size_t count)
 {
     if (unitTypeCount==count && measurements.births.size()==count && stats[0].numberUnitPerType.size()==count) return;
     unitTypeCount=count;
+    samplingMaxima.configureUnits(count);
+    samplingEligibility.resize(count);
+    samplingQualifications.resize(count);
+    samplingCatalog.reset();
     for (auto& stat:stats) stat.configureUnits(count);
     for (auto& stat:smoothedStats) stat.configureUnits(count);
     measurements.configureUnits(count);

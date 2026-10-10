@@ -94,6 +94,8 @@ void Unit::handleActivity(void)
 			ownExchangeBuilding=NULL;
 		}
 		setTargetBuilding(NULL);
+		// Medical service replaces the assignment even when no service is available.
+		jobPurpose=UnitJobPurpose::None;
 
 		if (medical==MED_HUNGRY)
 		{

@@ -701,6 +701,10 @@ bool Unit::deliverCargo(Building& building)
 bool Unit::continueCargoCollection()
 {
 	if (!performance[HARVEST] || runtimeTraits().cargoCapacity<=1 || !attachedBuilding || carriedPacketCount()>=unsigned(runtimeTraits().cargoCapacity)) return false;
+	// The completed harvest marked a ground carrier immobile. Route planning
+	// runs before handleAction clears that mark, so a newly seeded field would
+	// otherwise reject the carrier's own starting tile. The later clear is a no-op.
+	if (!performance[FLY]) owner->map->clearImmobileUnit(posX,posY);
 	int wished[MaterialSlotCount]; attachedBuilding->computeWishedMaterials(wished);
 	const auto subtract=[&](int material,WideMaterialPacket packet) {
 		const Uint64 multiplier=attachedBuilding->type->materialMultiplier[material];

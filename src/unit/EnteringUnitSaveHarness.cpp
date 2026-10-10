@@ -114,6 +114,32 @@ TEST_SUITE("EnteringUnitSave")
 	                ++cases;
 	            }
 	}
+	TEST_CASE("authored catalogs reject unassigned indoor service membership [save-format]")
+	{
+		glob2test::HeadlessGlobals globals;
+		glob2test::HeadlessGame world({.clearImmobile=true,.header=true,.seed=731});
+		auto* inn=world.addBuilding("inn",8,8);
+		auto* unit=world.addUnit(EXPLORER,7,8);
+		REQUIRE(inn); REQUIRE(unit);
+		REQUIRE_FALSE(unit->hasCapability(UnitRuntimeTraits::LegacyPerformancePolicies));
+		unit->attachedBuilding=inn;
+		unit->activity=Unit::ACT_RANDOM;
+		unit->destinationPurpose=-1;
+		unit->serviceResourcesReserved=false;
+		unit->displacement=Unit::DIS_ENTERING_BUILDING;
+		unit->movement=Unit::MOV_ENTERING_BUILDING;
+		unit->action=FLY;
+		unit->posX=8; unit->posY=8; unit->dx=1; unit->dy=0;
+		inn->unitsInside.push_back(unit);
+		auto* bytes=new GAGCore::MemoryStreamBackend;
+		GAGCore::BinaryOutputStream writer(bytes);
+		world.game.save(&writer,false,"invalid authored unassigned indoor visit");
+		auto* copy=new GAGCore::MemoryStreamBackend(*bytes);
+		copy->seekFromStart(0);
+		GAGCore::BinaryInputStream input(copy);
+		glob2test::HeadlessGame restored({.header=true});
+		CHECK_THROWS_WITH(restored.game.load(&input),"Invalid saved building service membership");
+	}
 	TEST_CASE("the retained fixture loads [save-format]")
 	{
 		glob2test::HeadlessGlobals globals;
@@ -135,6 +161,10 @@ TEST_SUITE("EnteringUnitSave")
 	        // zero-valued race tables. A current resave must retain that catalog
 	        // and every cached entry value rather than replacing them with defaults.
 	        const auto catalogDigest=loaded.unitCatalog().digest();
+	        REQUIRE(unit->hasCapability(UnitRuntimeTraits::LegacyPerformancePolicies));
+	        REQUIRE(unit->activity==Unit::ACT_RANDOM);
+	        REQUIRE(unit->destinationPurpose==-1);
+	        REQUIRE_FALSE(unit->serviceResourcesReserved);
 	        const auto originalUnit=static_cast<const UnitState&>(*unit);
 	        auto* currentBytes=new GAGCore::MemoryStreamBackend;
 	        GAGCore::BinaryOutputStream currentWriter(currentBytes);
@@ -168,5 +198,9 @@ TEST_SUITE("EnteringUnitSave")
 	            loaded.syncStep(0); continued.syncStep(0);
 	            CHECK(state(loaded)==state(continued));
 	        }
+	        // This synthetic fixture has zero FLY/WALK/SWIM caches despite its
+	        // air occupancy. The pre-catalog engine asserted at its first action
+	        // completion (tick 8); later occupancy is not a valid save oracle.
+	        // Compare continuation state without repairing those historical caches.
 	}
 }

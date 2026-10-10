@@ -171,7 +171,11 @@ void Unit::handleMagic(void)
 		if (hasUsedMagicAction)
 		{
 			++owner->stats.measurements.shots[GameplayMeasurements::MAGIC];
-			magicActionTimeout = race->getUnitType(typeNum, level[magicLevel])->magicActionCooldown;
+			// Historical replays indexed an idle/movement level using the magic
+			// level as an ability index. Keep that quirk only for imported tables.
+			const int cooldownLevel=hasCapability(UnitRuntimeTraits::LegacyPerformancePolicies)
+				? level[magicLevel] : magicLevel;
+			magicActionTimeout = race->getUnitType(typeNum, cooldownLevel)->magicActionCooldown;
 		}
 	}
 }
@@ -182,7 +186,7 @@ void Unit::handleMedical(void)
 	if (hasCapability(UnitRuntimeTraits::ServiceRebound) && displacement == DIS_EXITING_BUILDING)
 	{
 		medical=MED_FREE;
-		if (!owner->game->gameHeader.isHungerDisabled() && (destinationPurpose == HEAL) && (hungry < ((Sint64(foodCapacity()) * runtimeTraits().reboundNumerator) / runtimeTraits().reboundDenominator)))
+		if (!owner->game->gameHeader.isHungerDisabled() && hungriness > 0 && (destinationPurpose == HEAL) && (hungry < ((Sint64(foodCapacity()) * runtimeTraits().reboundNumerator) / runtimeTraits().reboundDenominator)))
 		{
 			needToRecheckMedical = 1;
 			medical = MED_HUNGRY;
@@ -247,6 +251,7 @@ void Unit::resolveDeath()
 			}
 			setTargetBuilding(NULL);
 
+			jobPurpose=UnitJobPurpose::None;
 			activity=ACT_RANDOM;
 			validTarget=false;
 

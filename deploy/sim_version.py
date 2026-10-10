@@ -78,7 +78,8 @@ def sim_data_files(root):
             raise ValueError('invalid default building catalog filename')
         seen.add(name)
     resources = ('data/resources/registry.json',) if (Path(root) / 'data/resources/registry.json').exists() else ()
-    return tuple(sorted((*SIM_DATA_FILES, *resources, 'data/buildings/manifest.json',
+    units = ('data/units/registry.json',) if (Path(root) / 'data/units/registry.json').exists() else ()
+    return tuple(sorted((*SIM_DATA_FILES, *resources, *units, 'data/buildings/manifest.json',
                          *(f'data/buildings/{name}' for name in names))))
 
 

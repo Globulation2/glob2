@@ -19,6 +19,8 @@
 #include "BuildingType.h"
 #include "map/Map.h"
 #include "Ressource.h"
+#include <array>
+#include <vector>
 
 // The frozen header (CortexTypes.h) deliberately carries no heavy engine
 // includes, so its CORTEX_* size constants are hand-mirrored copies of the
@@ -82,6 +84,17 @@ namespace Cortex
 		int maxBuildLevel, Uint16 offenseFlagGid, bool& warFlagFound,
 		Sint32& warFlagX, Sint32& warFlagY, Sint32& warFlagRange)
 	{
+        // Support depends on the team census and immutable building type, not
+        // the particular inn. Use inline storage for the stock catalog and
+        // resolve each live feeding type at most once during this observation.
+        std::array<int,64> inlineSupport;
+        inlineSupport.fill(-1);
+        std::vector<int> extendedSupport;
+        int* support=inlineSupport.data();
+        if(game->catalog->size()>inlineSupport.size()) {
+            extendedSupport.assign(game->catalog->size(),-1);
+            support=extendedSupport.data();
+        }
 		obs.hasModelProjection = 1;
 		for (int i = 0; i < ::Building::MAX_COUNT; i++)
 		{
@@ -131,8 +144,11 @@ namespace Cortex
 					                                    bt->width, bt->height,
 					                                    CORTEX_WHEAT_MIN_TILES_RADIUS)
 					   >= CORTEX_WHEAT_MIN_TILES;
-				if (innHasWheat)
-					obs.feedCapacity += configuredInnSupport(*game,*team,*bt);
+                if (innHasWheat) {
+                    int& capacity=support[b->typeNum];
+                    if(capacity<0) capacity=configuredInnSupport(*game,*team,*bt);
+                    obs.feedCapacity+=capacity;
+                }
 			}
 			if ((roles & (1u << Cortex::CORTEX_BUILD_SWARM))
 			 && b->buildingState == ::Building::ALIVE

@@ -115,6 +115,27 @@ class CheckSimRevisionTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             sim_version.sim_data_files(self.root)
 
+    def test_unit_catalog_is_hashed_and_historical_keys_copy_its_bytes(self):
+        directory = self.root / 'data/buildings'
+        directory.mkdir(parents=True)
+        (directory / 'manifest.json').write_text(json.dumps({'files': []}))
+        legacy = sim_version.sim_version_key(self.root)
+        self.commit('pre-unit-catalog')
+        before = self.git('rev-parse', 'HEAD').stdout.decode().strip()
+        self.assertEqual(checker.key_at(self.root, before, sim_version), legacy)
+        units = self.root / 'data/units/registry.json'
+        units.parent.mkdir(parents=True)
+        units.write_text('{"schemaVersion":1,"units":[]}')
+        self.assertIn('data/units/registry.json', sim_version.sim_data_files(self.root))
+        key = sim_version.sim_version_key(self.root)
+        self.assertNotEqual(key, legacy)
+        self.commit('unit-catalog')
+        after = self.git('rev-parse', 'HEAD').stdout.decode().strip()
+        self.assertEqual(checker.key_at(self.root, after, sim_version), key)
+        self.assertEqual(checker.key_at(self.root, before, sim_version), legacy)
+        units.write_text('{"schemaVersion":1,"units":[{"key":"worker"}]}')
+        self.assertNotEqual(sim_version.sim_version_key(self.root), key)
+
 
 if __name__ == '__main__':
     unittest.main()

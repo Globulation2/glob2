@@ -13,6 +13,7 @@
 #include "AITelemetry.h"
 
 class Map;
+class UnitCatalog;
 
 //! Number of "long level" slots for the per-building-type histogram. The
 //! long level is `(type->level << 1) + 1 - isBuildingSite` (see
@@ -364,6 +365,14 @@ public:
 private:
     mutable std::weak_ptr<const TeamStats> displaySnapshot;
     mutable std::weak_ptr<const TeamStats> historySnapshot;
+    // Sampling scratch and immutable qualification rows are derived live state.
+    // Custom catalogs allocate these once; snapshots and saves omit them.
+    TeamSmoothedStat samplingMaxima;
+    UnitStatistics<std::array<int,4>> samplingEligibility;
+    UnitStatistics<std::array<Uint8,2>> samplingQualifications;
+    std::shared_ptr<const UnitCatalog> samplingCatalog;
+    void configureSamplingCatalog(const std::shared_ptr<const UnitCatalog>& catalog);
+
 	// Derived reset index for the live per-variant count, never serialized.
 	// Counts are maintained by begin/observe; cold refresh/import rebuilds this
 	// index when replacing externally supplied diagnostic measurements.

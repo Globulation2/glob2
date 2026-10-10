@@ -15,6 +15,7 @@
 #include "UnitCatalog.h"
 #include "FileFormatVersions.h"
 #include <cstdio>
+#include <fstream>
 #include "TurnTestSupport.h"
 #include <BinaryStream.h>
 #include <StreamBackend.h>
@@ -220,14 +221,29 @@ TEST_SUITE("MatchSetup")
     {
         glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.loadStrings=true});
         globals->structuredHeadless=true;
-        const auto path=glob2test::inflated("entering-explorer/reproducer.game.gz").string();
+        // The retained fixture contains only Game state. A real saved client
+        // additionally writes this legacy GUI tail, even when match loading
+        // discards its local viewport and preferences.
+        const auto gameOnly=glob2test::inflated("entering-explorer/reproducer.game.gz");
+        auto* tail=new GAGCore::MemoryStreamBackend;
+        GAGCore::BinaryOutputStream guiTail(tail);
+        guiTail.writeUint32(0xffffffffu,"chatMask");
+        for(const auto* field:{"localPlayer","localTeamNo","viewportX","viewportY"})guiTail.writeSint32(0,field);
+        guiTail.writeUint32(0,"hiddenGUIElements");
+        guiTail.writeUint32(0,"buildingsChoiceMask"); guiTail.writeUint32(0,"flagsChoiceMask");
+        guiTail.writeUint32(0,"size"); // empty legacy default-assignment map
+        guiTail.flush();
+        const auto path=(glob2test::artifactDir()/"legacy88-complete.game").string();
+        {std::ofstream output(path,std::ios::binary); output<<glob2test::readFile(gameOnly)<<tail->takeContents();}
+
         FILE* file=std::fopen(path.c_str(),"rb"); REQUIRE(file);
         GAGCore::BinaryInputStream input(new GAGCore::FileStreamBackend(file));
         GameGUI fixture; REQUIRE(fixture.game.load(&input));
         const auto recovered=fixture.game.gameHeader.getUnitCatalog();
         REQUIRE(fixture.game.mapHeader.getVersionMinor()<FILE_FORMAT_VERSION_UNIT_CATALOG);
         MatchSetup prototype; prototype.simVersion=currentSimVersion(); prototype.seed=77;
-        prototype.map.kind=MapSource::Kind::Catalog; prototype.map.hash=sha256Hex(glob2test::readFile(path));
+        prototype.map.kind=MapSource::Kind::Upload; prototype.map.format=MapSource::Format::Save;
+        prototype.map.hash=sha256Hex(glob2test::readFile(path));
         prototype.teams={{0,0}}; SetupSeat seat; seat.seat=0; seat.team=0; seat.name="Legacy client";
         prototype.seats.push_back(seat);
         auto mismatch=UnitCatalog::fromJson(R"({"schemaVersion":1,"units":[{"key":"worker","behaviors":{"foodCapacity":90000}}]})");

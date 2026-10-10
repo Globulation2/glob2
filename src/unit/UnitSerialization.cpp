@@ -200,7 +200,8 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 		if (purpose>unsigned(UnitJobPurpose::Defend)) throw std::runtime_error("Invalid unit job purpose");
 		jobPurpose=UnitJobPurpose(purpose);
 		if ((activity==ACT_FLAG && (jobPurpose==UnitJobPurpose::None || jobPurpose==UnitJobPurpose::Transport))
-			|| (activity==ACT_FILLING && jobPurpose!=UnitJobPurpose::Transport))
+			|| (activity==ACT_FILLING && jobPurpose!=UnitJobPurpose::Transport)
+			|| ((activity==ACT_RANDOM || activity==ACT_UPGRADING) && jobPurpose!=UnitJobPurpose::None))
 			throw std::runtime_error("Saved unit assignment does not match its activity");
 		regenerationRemainder=stream->readUint8("regenerationRemainder");
 		widePrimaryCargo=readState("widePrimaryCargo",1)!=0;

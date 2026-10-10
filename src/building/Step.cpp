@@ -594,7 +594,7 @@ bool Building::subscribeForFlagingStep()
 					if (!unit || !(possibleJobs[n]&(1u<<role))) continue;
 					Sint64 timeLeft=(unit->hungriness>0 ? (Sint64(unit->hungry)-(role == 0 ? unit->trigHungry : 0))/unit->hungriness : INT_MAX);
 					Sint64 hp=(Sint64(unit->hp)*16)/std::max(1,unit->runtimeTraits().flagRankingHealth);
-					if (role == 1) { timeLeft=std::clamp<Sint64>(timeLeft,-1000000000,1000000000); timeLeft*=timeLeft; hp*=hp; }
+					if (role == 1) { timeLeft=std::clamp<Sint64>(timeLeft,-1000000000,1000000000); timeLeft*=timeLeft; hp=std::clamp<Sint64>(hp,-1000000000,1000000000); hp*=hp; }
 					const Sint64 value=distances[role][n]-(role == 0 ? 1 : 2)*(timeLeft+hp);
 					const Sint64 level=role == 0 ? unit->workerLevel() : role == 1 ? unit->level[MAGIC_ATTACK_GROUND] : Sint64(unit->performance[ATTACK_SPEED])*unit->getRealAttackStrength();
 					if ((role == 2 ? level>bestLevel : level<bestLevel) || (level==bestLevel && value<bestValue))

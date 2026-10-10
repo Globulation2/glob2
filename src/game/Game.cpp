@@ -71,15 +71,15 @@ bool Game::isUnitTypeAvailable(int type) const
 void Game::configureUnitCatalog()
 {
     const auto& catalog = unitCatalog();
-    unitAvailability.resize(catalog.size());
-    waterOnlyUnits=false;
+    std::vector<Uint8> availability(catalog.size());
+    bool hasWaterOnlyUnits=false;
     for (unsigned id=0; id<catalog.size(); ++id) {
         const auto& gate = catalog.definition(id).requiredExperiment;
-        unitAvailability[id] = gate.empty() || gameHeader.getExperiments().has(gate);
+        availability[id] = gate.empty() || gameHeader.getExperiments().has(gate);
         const auto& traits=catalog.runtime(id);
         if (traits.has(UnitRuntimeTraits::Swim) && !traits.has(UnitRuntimeTraits::Fly))
             for (const auto& level:catalog.levels(id))
-                waterOnlyUnits |= level.performance[SWIM]>0 && (!traits.has(UnitRuntimeTraits::Walk) || level.performance[WALK]==0);
+                hasWaterOnlyUnits |= level.performance[SWIM]>0 && (!traits.has(UnitRuntimeTraits::Walk) || level.performance[WALK]==0);
     }
     // Entering a service changes logical coordinates before clearing the old
     // occupied cell. Locate that cell before moving between occupancy planes.
@@ -97,7 +97,7 @@ void Game::configureUnitCatalog()
             Unit* unit=team->myUnits[slot];
             if (!unit) continue;
             if (!catalog.valid(unit->typeNum)) throw std::runtime_error("Unit catalog removes a live unit definition");
-            if (!isUnitTypeAvailable(unit->typeNum))
+            if (!availability[unit->typeNum])
                 throw std::runtime_error("Unit experiment disables a live unit definition");
             if (team->race.getCatalog()==gameHeader.getUnitCatalog()) continue;
             const auto& traits=catalog.runtime(unit->typeNum);
@@ -116,11 +116,15 @@ void Game::configureUnitCatalog()
                 throw std::runtime_error("Unit catalog material-kind limit is smaller than a live inventory");
             const bool oldFlight=unit->performance[FLY]!=0;
             const bool newFlight=traits.has(UnitRuntimeTraits::Fly) && catalog.levels(unit->typeNum)[unit->level[FLY]].performance[FLY];
+            const bool swims=traits.has(UnitRuntimeTraits::Swim) && catalog.levels(unit->typeNum)[unit->level[SWIM]].performance[SWIM]>0;
+            const bool walks=traits.has(UnitRuntimeTraits::Walk) && catalog.levels(unit->typeNum)[unit->level[WALK]].performance[WALK]>0;
+            const bool inService=unit->displacement==Unit::DIS_ENTERING_BUILDING || unit->displacement==Unit::DIS_INSIDE ||
+                (unit->displacement==Unit::DIS_EXITING_BUILDING && unit->attachedBuilding);
+            if (!unit->isDead && inService && !newFlight && !swims && !walks)
+                throw std::runtime_error("Unit catalog cannot remove movement during an interior service");
             if (!unit->isDead && unit->insideTimeout>=0 && unit->displacement!=Unit::DIS_INSIDE) {
                 const auto [x,y]=occupiedCell(*unit,oldFlight);
                 const auto& terrain=map.terrainPropertiesAt(x,y);
-                const bool swims=traits.has(UnitRuntimeTraits::Swim) && catalog.levels(unit->typeNum)[unit->level[SWIM]].performance[SWIM]>0;
-                const bool walks=traits.has(UnitRuntimeTraits::Walk) && catalog.levels(unit->typeNum)[unit->level[WALK]].performance[WALK]>0;
                 if (newFlight ? (!terrain.flyable || map.resourceBlocksAir(map.coordToIndex(x,y))) :
                     !((terrain.walkable && (walks || !swims)) || (terrain.swimmable && swims)))
                     throw std::runtime_error("Unit catalog movement change conflicts with terrain");
@@ -130,6 +134,18 @@ void Game::configureUnitCatalog()
             }
         }
     }
+    // Projectiles retain their launch-time damage row. Resizing a live catalog
+    // would make that row ambiguous (or unindexable for newly added targets).
+    // During load, clearGame has removed the teams but old map sectors have not
+    // yet been replaced; those stale projectiles belong to the discarded game.
+    if (std::any_of(std::begin(teams),std::end(teams),[](const Team* team) { return team!=nullptr; }))
+        for (int sector=0;sector<map.getSectorW()*map.getSectorH();++sector)
+            for (const Bullet* bullet:map.getSector(sector)->bullets)
+                if (bullet->unitDamage.size()!=catalog.size())
+                    throw std::runtime_error("Unit catalog cannot resize while projectiles are in flight");
+    // Publish derived gates only after every live unit has accepted the change.
+    unitAvailability=std::move(availability);
+    waterOnlyUnits=hasWaterOnlyUnits;
     for (Team* team : teams) if (team && team->race.getCatalog()!=gameHeader.getUnitCatalog()) {
         team->race.setCatalog(gameHeader.getUnitCatalog());
         team->stats.configureUnits(catalog.size());

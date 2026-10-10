@@ -271,7 +271,7 @@ void Unit::handleMovementAttackingAround()
 							if (((owner->sharedVisionExchange & tm)==0))
 							{
 								int attackStrength=u->getRealAttackStrength();
-								int newQuality=((x*x+y*y)<<Q8_FIXED_POINT_SHIFT)/(1+attackStrength);
+								int newQuality=Uint32((x*x+y*y)<<Q8_FIXED_POINT_SHIFT)/(Uint32(attackStrength)+1u);
 								tryAcquireAttackTarget(x, y, newQuality, quality);
 							}
 						}
@@ -589,6 +589,7 @@ void Unit::handleMovementExitingBuilding()
 		exitFound=attachedBuilding->findGroundExit(&posX, &posY, &dx, &dy, performance[SWIM],performance[WALK]>0);
 	if (exitFound)
 	{
+		jobPurpose=UnitJobPurpose::None;
 		activity=ACT_RANDOM;
 		movement=MOV_EXITING_BUILDING;
 		attachedBuilding->removeUnitFromInside(this);

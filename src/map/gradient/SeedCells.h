@@ -126,14 +126,15 @@ struct BuildingSeedResult
 };
 // Mirrors Map::updateGlobalGradient's seeding for every route. Run supplies the
 // owner's chunk barrier or one worker's range, as for the other seeders.
-template<class Run>
-BuildingSeedResult buildingCells(const MapState::View& view, const BuildingSeed& b, Uint16* out, Run run)
+template<bool WaterOnly, class Run>
+BuildingSeedResult buildingCellsForMovement(const MapState::View& view, const BuildingSeed& b, Uint16* out, Run run)
 {
     BuildingSeedResult result;
     const bool canSwim=b.swim>0;
     const auto closed=[&](size_t i) {
         const auto& p=view.terrainProperties(i);
-        return !gradient_kernel::terrainAllowsGround(p,b.swim);
+        if constexpr (WaterOnly) return !p.swimmable;
+        else return !p.walkable && !(canSwim && p.swimmable);
     };
     if (b.route==BuildingRoute::Footprint)
     {
@@ -213,5 +214,15 @@ BuildingSeedResult buildingCells(const MapState::View& view, const BuildingSeed&
         }
     });
     return result;
+}
+
+template<class Run>
+BuildingSeedResult buildingCells(const MapState::View& view, const BuildingSeed& b, Uint16* out, Run run)
+{
+    // Select the movement policy once per field, outside every cell loop.
+    // The ordinary walking/swimming path retains its original predicate.
+    if (b.swim==WATER_ONLY_CLASS)
+        return buildingCellsForMovement<true>(view,b,out,run);
+    return buildingCellsForMovement<false>(view,b,out,run);
 }
 }

@@ -191,6 +191,7 @@ void Unit::handleDisplacement(void)
 					{
 						if (verbose)
 							printf("guid=(%d) The building doesn't need me any more.\n", gid);
+						jobPurpose=UnitJobPurpose::None;
 						activity=ACT_RANDOM;
 						displacement=DIS_RANDOM;
 						validTarget=false;

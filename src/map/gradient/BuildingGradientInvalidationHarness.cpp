@@ -472,7 +472,7 @@ void scheduledKernelsMatchSynchronous(KernelTerrain config)
 				const auto result = buildBuilding(seed, snapshot, inputs, actual.data(), search, gradient_kernel::COST_LIMIT);
 				INFO(what);
 				REQUIRE(result.locked == b->locked[access]);
-				if (route == BuildingRoute::Clearing) { REQUIRE(int(result.resourceState) == b->anyResourceToClear[swim > 0]); ++clearing; }
+				if (route == BuildingRoute::Clearing) { REQUIRE(int(result.resourceState) == b->anyResourceToClear[swimAccessVariant(swim)]); ++clearing; }
 				requireSameCells(actual, expected, what + " full");
 				if (result.locked) { ++locked; continue; }
 				REQUIRE(search.complete());

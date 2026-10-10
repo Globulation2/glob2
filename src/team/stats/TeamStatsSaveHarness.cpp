@@ -1298,6 +1298,70 @@ TEST_CASE("clearing telemetry counts operations once by configured primary mater
 
 TEST_SUITE("TeamStatsSave")
 {
+    TEST_CASE("retained format152 magic levels count each explorer once through migration and current continuation [save-format]")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.clearImmobile=true,.header=true,.seed=713});
+        auto* explorer=world.addUnit(EXPLORER,8,8); REQUIRE(explorer);
+        REQUIRE(explorer->performance[MAGIC_ATTACK_AIR]>0);
+        world.game.stepCounter=28672;
+        const auto path=glob2test::inflated("unit-catalog/legacy152-team3-ranged-stats.bin.gz");
+        FILE* file=std::fopen(path.string().c_str(),"rb"); REQUIRE(file);
+        GAGCore::BinaryInputStream legacy(new GAGCore::FileStreamBackend(file));
+        auto& stats=world.team->stats;
+        REQUIRE(stats.load(&legacy,152));
+        REQUIRE(legacy.getPosition()==345648);
+        // This retained game's explorer has positive air damage at all levels.
+        // Its one ground-trained explorer is already in the air histogram.
+        const auto& divergent=stats.stats[0];
+        REQUIRE(divergent.numberUnitPerType[EXPLORER]==32);
+        REQUIRE((divergent.upgradeStatePerType[EXPLORER][MAGIC_ATTACK_AIR]==std::array<int,4>{32,0,0,0}));
+        REQUIRE((divergent.upgradeStatePerType[EXPLORER][MAGIC_ATTACK_GROUND]==std::array<int,4>{0,0,0,1}));
+        for(const auto& row:stats.stats) CHECK(row.rangedUnits==row.numberUnitPerType[EXPLORER]);
+        // The legacy record has no ranged field; importing into a populated
+        // object must replace its derived counters instead of accumulating them.
+        TeamStats repeatedHistorical;
+        for(int pass=0;pass<2;++pass) {
+            FILE* retained=std::fopen(path.string().c_str(),"rb"); REQUIRE(retained);
+            GAGCore::BinaryInputStream again(new GAGCore::FileStreamBackend(retained));
+            REQUIRE(repeatedHistorical.load(&again,152));
+            for(const auto& row:repeatedHistorical.stats)
+                CHECK(row.rangedUnits==row.numberUnitPerType[EXPLORER]);
+        }
+        const auto wire=[](TeamStats& value) {
+            auto* bytes=new GAGCore::MemoryStreamBackend;
+            GAGCore::BinaryOutputStream output(bytes); value.save(&output);
+            return bytes->takeContents();
+        };
+        const auto migrated=wire(stats);
+        auto restored=roundTrip(world.game);
+        REQUIRE(wire(restored->game.teams[0]->stats)==migrated);
+        const auto components=[](Game& game) {
+            std::vector<Uint32> state,buildings,units;
+            game.checkSum(&state,&buildings,&units,true);
+            state.insert(state.end(),buildings.begin(),buildings.end());
+            state.insert(state.end(),units.begin(),units.end());
+            return state;
+        };
+        REQUIRE(components(restored->game)==components(world.game));
+        const auto phase=stats.smoothedIndex;
+        const auto index=stats.statsIndex;
+        for(int tick=1;tick<=32;++tick) {
+            world.game.syncStep(0); restored->game.syncStep(0);
+            CHECK(components(restored->game)==components(world.game));
+            CHECK(wire(restored->game.teams[0]->stats)==wire(stats));
+            CHECK(restored->game.syncRandom==world.game.syncRandom);
+            if(tick<32-phase) CHECK(stats.statsIndex==index);
+            if(tick==32-phase) {
+                CHECK(stats.statsIndex==(index+1)%TeamStats::STATS_SIZE);
+                CHECK(stats.getLatestStat()->rangedUnits==1);
+            }
+        }
+        auto repeated=roundTrip(world.game);
+        CHECK(wire(repeated->game.teams[0]->stats)==wire(stats));
+        CHECK(components(repeated->game)==components(world.game));
+    }
+
 	TEST_CASE("32 sampling phases; ring wrap; repeated loads; text streams and corruption controls [save-format]")
 	{
 		glob2test::HeadlessGlobals globals;

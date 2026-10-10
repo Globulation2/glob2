@@ -156,18 +156,20 @@ def select(paths, labels=(), known=False):
                 add(path, *FLAGS)
             elif name in TRANSPORT_HARNESSES:
                 add(path, 'native', 'browser', 'windows', 'compatibility', 'cross_platform', 'deployment')
-            elif name.startswith('Script'):
+            elif name.startswith('Script') or name in {'UnitCatalogTest.cpp', 'UnitCustomizationTest.cpp'}:
                 add(path, 'native', 'browser', 'windows', 'compatibility', 'cross_platform')
             elif name.startswith('MapGenerator'):
                 add(path, 'native', 'map_generators', 'compatibility')
             else:
                 add(path, 'native')
-        elif path.startswith(('scons/', 'libusl/', 'data/terrain/', 'data/resources/')) or path in {'SConstruct', 'vcpkg.json', 'libgag/include/AudioFormat.h', 'tools/image_encoding.json', 'tools/terrain_tileset.py', 'tools/test_terrain_tileset.py'} or unclassified(path):
+        elif path.startswith(('scons/', 'libusl/', 'data/terrain/', 'data/resources/', 'data/units/')) or path in {'SConstruct', 'vcpkg.json', 'libgag/include/AudioFormat.h', 'tools/image_encoding.json', 'tools/terrain_tileset.py', 'tools/test_terrain_tileset.py'} or unclassified(path):
             add(path, *FLAGS)
-        elif path.startswith(('test/fixtures/', 'test/support/', '.github/')) or path in {
+        elif path.startswith(('test/fixtures/', 'test/maxima/fixtures/', 'test/support/', '.github/')) or path in {
             'test/run_tests.py', 'test/ci_native_shard_plan.py', 'test/ci-native-auxiliary.json',
             'test/ci-compatibility.json', 'test/build_ci_timing_profile.py', 'test/run-browser-determinism.py',
             'test/check_javascript.py', 'test/check_javascript_corpus.py', 'test/check_javascript_evidence.py',
+            'test/check_telemetry_simulation.py', 'test/test_javascript_evidence.py',
+            'test/maxima/check_save_continuation_fixture.py',
             'test/build_provenance.py'} or path.startswith('test/ci-timings/'):
             add(path, *FLAGS)
         elif path.startswith(('mobile/',)):

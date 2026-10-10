@@ -102,7 +102,7 @@ because it includes the save header/version. Run the retained late-game regressi
 with `python3 test/maxima/check_save_continuation_fixture.py build/native-tests/src/glob2`.
 
 The retained Maxima format-115 checkpoint compares all 512 ticks from 30000
-through 30511 against the current terrain simulation's complete-record hashes.
+through 30511 against the current unit-era simulation's complete checksum-record hashes.
 Its midpoint reload also compares complete records, adjusting only the known
 save-format contribution to the aggregate checksum. Its compressed save, expected
 per-tick hashes, and reproduction commands are in
@@ -193,3 +193,10 @@ the immutable copy and its lightweight in-memory representation; encoding includ
 final array/history packing, offset relocation and hashing. The benchmark flattens
 the finished output for section-independent measurement, so its process peak is
 not an isolated allocation bound for the production writer.
+
+Historical unit statistics store separate per-ability level histograms, which do
+not encode the overlap of air and ground magic recipients. Migration uses the
+larger ability total for the new ranged-unit counter. This is exact for stock
+explorers, whose air magic is enabled at every level; modified historical tables
+with disjoint recipients retain a conservative historical count until the next
+live sample counts each capable unit once. Existing stored counters are retained.

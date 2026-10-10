@@ -1,5 +1,6 @@
 #include "MaximaObservationFixture.h"
 #include "EngineFixtures.h"
+#include "AI.h"
 #include <algorithm>
 #include "Version.h"
 #include "AIMaximaBuildings.h"
@@ -559,7 +560,8 @@ void armyBirthsMatchPlatformChecksums()
         f.game.syncStep(0);REQUIRE(f.game.stepCounter==unsigned(tick));
         // Normalize the header to 115; the fixture uses eight-tick publication. With one
         // team and no players, the header version is rotated six times.
-        const Uint32 checksum=f.game.checkSum(nullptr,nullptr,nullptr,true)
+        // Keep the released stock trace; the adapter removes only catalog-era representation.
+        const Uint32 checksum=f.game.checkSum(nullptr,nullptr,nullptr,true,true)
             ^ std::rotr(Uint32(f.game.mapHeader.getVersionMinor()^115),6);
         if(record)output<<tick<<' '<<checksum<<'\n';
         else {
@@ -1270,6 +1272,141 @@ TEST_CASE("projectile profiles reserve ammunition workers and cache nominal feed
     REQUIRE(capacity>0);
     for(int read=0;read<100;++read)CHECK(glob2test::withMaximaObservation(ai.context,[&]() -> decltype(auto) {return ai.feeding_capacity(inn,1);})==capacity);
     CHECK(ai.development_feeding_visit_rate.data()==cached);
+}
+
+TEST_CASE("feeding fallback uses enabled movement and retains compiled admissions" * doctest::test_suite("Maxima.Economy"))
+{
+    glob2test::HeadlessGlobals globals;
+    for(bool walking:{true,false}) {
+        CAPTURE(walking);
+        Fixture f;
+        auto units=nlohmann::json::parse(f.game.unitCatalog().serialize());
+        auto& explorer=units["units"][EXPLORER];
+        explorer["behaviors"]["fly"]=false;
+        explorer["behaviors"]["walk"]=walking;
+        explorer["behaviors"]["swim"]=false;
+        for(auto& level:explorer["levels"])level["performance"][WALK]=8;
+        f.game.gameHeader.setUnitCatalog(UnitCatalog::deserialize(units.dump()));
+        f.game.configureBuildingCatalog();
+        const int inn=f.game.buildingsTypes.getFinishedTypeNum("inn");
+        auto buildings=nlohmann::json::parse(f.game.buildingsTypes.snapshotJson());
+        buildings["variants"][inn]["semantics"]["feeding"]["unitMask"]=1u<<EXPLORER;
+        f.game.buildingsTypes.loadSnapshotJson(buildings.dump());
+        f.game.configureBuildingCatalog();
+        auto* stat=f.player.team->stats.getLatestStat();
+        stat->totalUnit=stat->numberUnitPerType[EXPLORER]=10;
+        auto& ai=*f.ai;ai.ensure_strategy();
+        ai.snapshot.population=ai.snapshot.explorers=10;
+        ai.snapshot.feeding_demand.assign(3,0);
+        glob2test::withMaximaObservation(ai.context,[&] {
+            ai.collect_building_profiles();
+            const auto& world=ai.context.observation();
+            const auto& traits=world.unitTraits(EXPLORER);
+            REQUIRE(world.unitType(EXPLORER,0).performance[FLY]>0);
+            const long long expected=walking?AIMaxima::recipientMealRate(traits.foodCapacity,
+                static_cast<long long>(traits.foodCapacity)*traits.hungerTriggerNumerator/traits.hungerTriggerDenominator,
+                traits.hungerRate,8,WALK,ai.strategy.farming.management_radius,ai.development_feeding_pause[EXPLORER]):0;
+            CHECK(ai.base_recipient_meal_rate(EXPLORER)==expected);
+            const long long singleDemand=(expected*10+AIMaxima::MealRatePrecision/2)/AIMaxima::MealRatePrecision;
+            const int visitRate=ai.development_feeding_visit_rate[inn];
+            CHECK(ai.feeding_capacity_for_type(inn)==(singleDemand
+                ?int(std::min<long long>(1000000,static_cast<long long>(visitRate)*10/singleDemand)):0));
+            std::vector<long long> rates(world.catalog->size());rates[inn]=visitRate;
+            const auto* providers=ai.development_feeding_providers.data();
+            const auto* demand=ai.development_feeding_demand.data();
+            std::vector<const Uint8*> rows;
+            for(const auto& provider:ai.development_feeding_providers)rows.push_back(provider.admitted.data());
+            for(int iteration=0;iteration<4;++iteration) {
+                rates[inn]=iteration%2?visitRate:0;
+                const std::vector<int> expectedDemand{0,int(singleDemand),0};
+                const std::vector<AIMaxima::FeedingCapacity> expectedProviders{{rates[inn],{0,1,0}}};
+                CHECK(ai.aggregate_feeding_capacity(rates)==AIMaxima::feedingPopulationCapacity(expectedDemand,10,expectedProviders));
+                CHECK(ai.development_feeding_providers.data()==providers);
+                CHECK(ai.development_feeding_demand.data()==demand);
+                for(unsigned row=0;row<rows.size();++row)
+                    CHECK(ai.development_feeding_providers[row].admitted.data()==rows[row]);
+            }
+        });
+    }
+}
+
+TEST_CASE("legacy planner rebuild replaces feeding providers without duplicating capacity" * doctest::test_suite("Maxima.Economy"))
+{
+    glob2test::HeadlessGlobals globals;
+    Fixture fixture;
+    auto& ai=*fixture.ai;
+    ai.ensure_strategy();
+    fixture.player.team->stats.getLatestStat()->totalUnit=10;
+    fixture.player.team->stats.getLatestStat()->numberUnitPerType[WORKER]=10;
+    ai.snapshot.population=ai.snapshot.workers=10;
+    ai.snapshot.feeding_demand={10,0,0};
+    const int inn=fixture.game.buildingsTypes.getFinishedTypeNum("inn");
+    REQUIRE(inn>=0);
+    glob2test::withMaximaObservation(ai.context,[&] {
+        ai.configure_development_planner();
+        std::vector<long long> rates(ai.context.observation().catalog->size());
+        rates[inn]=10;
+        const int capacity=ai.aggregate_feeding_capacity(rates);
+        REQUIRE(capacity==10);
+        const auto types=ai.development_feeding_provider_types;
+        const auto indexes=ai.development_feeding_provider_index;
+        const auto providers=ai.development_feeding_providers;
+        REQUIRE_FALSE(providers.empty());
+        for(int rebuild=0;rebuild<2;++rebuild) {
+            CAPTURE(rebuild);
+            // Maxima::loadState repeats this cold initialization after reading
+            // pre-catalog saves and discarding their old family projection.
+            ai.development_planner.reset();
+            ai.development_building_profiles.clear();
+            ai.development_profiles_initialized=false;
+            ai.configure_development_planner();
+            REQUIRE(ai.development_feeding_provider_types==types);
+            REQUIRE(ai.development_feeding_provider_index==indexes);
+            REQUIRE(ai.development_feeding_providers.size()==providers.size());
+            CHECK(ai.aggregate_feeding_capacity(rates)==capacity);
+            for(unsigned row=0;row<providers.size();++row) {
+                CHECK(ai.development_feeding_providers[row].admitted==providers[row].admitted);
+                CHECK(ai.development_feeding_providers[row].rate==providers[row].rate);
+            }
+        }
+    });
+}
+
+TEST_CASE("retained Maxima save compiles each feeding admission row once [save-format]" * doctest::test_suite("Maxima.Economy"))
+{
+    glob2test::HeadlessGlobals globals;
+    const auto bytes=glob2test::readFile(glob2test::inflated("team-limit/pre-v127-maxima.game.gz"));
+    GameGUI legacy;
+    GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
+    input.seekFromStart(0);
+    REQUIRE(legacy.game.load(&input));
+    REQUIRE(legacy.game.mapHeader.getVersionMinor()==126);
+    int maximaPlayers=0;
+    for(int player=0;player<legacy.game.gameHeader.getNumberOfPlayers();++player) {
+        auto* controller=legacy.game.players[player]->ai;
+        if(!controller || controller->implementationID!=AI::MAXIMA)continue;
+        ++maximaPlayers;
+        auto& ai=*static_cast<AIMaxima::Maxima*>(controller->aiImplementation);
+        glob2test::withMaximaObservation(ai.context,[&] {
+            ai.collect_building_profiles();
+            const auto& world=ai.context.observation();
+            std::vector<unsigned> expectedTypes;
+            for(unsigned type=0;type<world.catalog->size();++type)
+                if(world.catalog->at(type).resolvedType.semantics.feeding.enabled)expectedTypes.push_back(type);
+            REQUIRE_FALSE(expectedTypes.empty());
+            REQUIRE(ai.development_feeding_provider_types==expectedTypes);
+            REQUIRE(ai.development_feeding_providers.size()==expectedTypes.size());
+            for(unsigned row=0;row<expectedTypes.size();++row) {
+                const auto& semantics=world.catalog->at(expectedTypes[row]).resolvedType.semantics;
+                REQUIRE(ai.development_feeding_providers[row].admitted.size()==world.unitTypeCount());
+                for(unsigned type=0;type<world.unitTypeCount();++type)
+                    CHECK(bool(ai.development_feeding_providers[row].admitted[type])==
+                        (semantics.feeding.units.matches(type,semantics.feeding.unitMask)
+                            && semantics.admittedUnits.matches(type,semantics.admittedUnitMask)));
+            }
+        });
+    }
+    REQUIRE(maximaPlayers>0);
 }
 
 TEST_CASE("feeding budget scaling handles maximum seats without overflowing intermediate products" * doctest::test_suite("Maxima.Economy"))

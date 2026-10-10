@@ -1327,7 +1327,7 @@ TEST_CASE("frozen seeded resource compositions preserve invariants and exact sim
         }
     }
     glob2test::writeFile(glob2test::artifactDir()/"seeded-compositions.trace",trace.str());
-    glob2test::expectGolden("resources/seeded-compositions.trace",trace.str());
+    glob2test::expectGolden("resources/seeded-compositions-units.trace",trace.str());
 }
 
 TEST_CASE("legacy resource saves ignore reordered modified installed defaults in a fresh process" * doctest::test_suite("RuntimeResources"))
