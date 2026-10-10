@@ -60,14 +60,28 @@ jobs:
           mkdir -p metadata config logs tmp unsigned repo build srclibs
           cp fdroid/metadata/org.globulation2.glob2.yml metadata/
           python3 - <<'PY'
+          import json
           import os
+          import re
           from pathlib import Path
           path = Path('metadata/org.globulation2.glob2.yml')
           text = path.read_text()
-          tag = 'commit: v' + __import__('json').loads(Path('mobile/android-release.json').read_text())['versionName']
-          if text.count(tag) != 3:
-              raise ValueError('Expected three release-tag recipe entries')
-          path.write_text(text.replace(tag, 'commit: ' + os.environ['SOURCE_COMMIT']))
+          identity = json.loads(Path('mobile/android-release.json').read_text())
+          codes = re.findall(r'^    versionCode: (\d+)$', text, re.M)
+          if len(codes) != 3 or sorted(int(code) % 10 for code in codes) != [1, 2, 3]:
+              raise ValueError('Expected exactly one recipe entry for each ABI')
+          replacements = (
+              (r'^(  - versionName: ).+$', lambda m: m[1] + identity['versionName'], 3),
+              (r'^(    versionCode: )(\d+)$', lambda m: m[1] + str(10 * identity['versionCodeBase'] + int(m[2]) % 10), 3),
+              (r'^(    commit: ).+$', lambda m: m[1] + os.environ['SOURCE_COMMIT'], 3),
+              (r'^(CurrentVersion: ).+$', lambda m: m[1] + identity['versionName'], 1),
+              (r'^(CurrentVersionCode: )\d+$', lambda m: m[1] + str(10 * identity['versionCodeBase'] + 3), 1),
+          )
+          for pattern, replacement, expected in replacements:
+              text, count = re.subn(pattern, replacement, text, flags=re.M)
+              if count != expected:
+                  raise ValueError('Unexpected recipe structure: ' + pattern)
+          path.write_text(text)
           PY
           git clone --depth 1 --filter=blob:none --sparse \
             https://gitlab.com/fdroid/fdroiddata.git "$RUNNER_TEMP/fdroiddata-config"
