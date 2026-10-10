@@ -33,12 +33,22 @@ the release workflows, every job runs only when the owner dispatches it from
 the mirror using the [release mirror procedure](../releases/releasing.md#the-release-mirror), then run **Actions → App signing fingerprints → Run
 workflow** and approve its three environments. The run summary lists:
 
-| Job (environment) | Reports |
-| --- | --- |
-| `android-play` (`google-play-internal`) | The upload key's certificate SHA-256, read with `keytool -list` from the keystore secret decoded to a private runner directory and then shredded. The Play App Signing certificate: the latest **internal** release's version code (from a Play edit that is deleted, never committed), then `generatedapks.list` and one downloaded generated APK, whose signer `apksigner` reports. If generated APKs are unavailable it falls back to a `systemapks.variants` APK, which Play signs with the same key. |
-| `android-amazon` (`amazon-appstore`) | The Amazon key's certificate SHA-256, compared with `GLOB2_AMAZON_CERT_SHA256`. The Fire edition has no invite links, so it is not needed for app links. |
-| `ios` (`ios-testflight`) | The `org.globulation2.glob2` App ID's Team ID (its `seedId`) and capabilities, and each provisioning profile's state and whether it carries the associated-domains and multicast entitlements. It enables `ASSOCIATED_DOMAINS` when missing, unless the dispatch input is unchecked; a second run changes nothing. |
-| `report` | The `appLinks` block for `instance.yaml` with the Play App Signing certificate and the App ID. |
+### `android-play` (`google-play-internal`)
+
+The upload key's certificate SHA-256, read with `keytool -list` from the keystore secret decoded to a private runner directory and then shredded. The Play App Signing certificate: the latest **internal** release's version code (from a Play edit that is deleted, never committed), then `generatedapks.list` and one downloaded generated APK, whose signer `apksigner` reports. If generated APKs are unavailable it falls back to a `systemapks.variants` APK, which Play signs with the same key.
+
+### `android-amazon` (`amazon-appstore`)
+
+The Amazon key's certificate SHA-256, compared with `GLOB2_AMAZON_CERT_SHA256`. The Fire edition has no invite links, so it is not needed for app links.
+
+### `ios` (`ios-testflight`)
+
+The `org.globulation2.glob2` App ID's Team ID (its `seedId`) and capabilities, and each provisioning profile's state and whether it carries the associated-domains and multicast entitlements. It enables `ASSOCIATED_DOMAINS` when missing, unless the dispatch input is unchecked; a second run changes nothing.
+
+### `report`
+
+The `appLinks` block for `instance.yaml` with the Play App Signing certificate and the App ID.
+
 
 It prints only certificate fingerprints and App ID metadata, never keys,
 passwords or tokens. Play's Workload Identity provider must accept this

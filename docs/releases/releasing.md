@@ -27,4 +27,15 @@ through a normal pull request, and reaches the mirror with the next sync.
 Configure release credentials only as restricted GitHub environment secrets in
 the mirror.
 
+Keep the release mirror public and owner-controlled: disable pull requests,
+issues, projects, wiki and discussions; leave `genixpro` as its only
+collaborator; restrict creation, updates and deletion of every mirror branch to
+that user, while `master` also blocks force pushes and deletion. Restrict Actions
+execution to `genixpro`, allow only the pinned actions
+needed by the mirror workflows, and keep the default `GITHUB_TOKEN` read-only.
+Enable secret scanning and push protection. Public repositories remain readable
+and forkable, so never put credentials in code, workflow inputs, logs or
+artifacts. Only the mirror's restricted environments hold release credentials.
+
+
 [Release index](README.md) · [Documentation index](../README.md).

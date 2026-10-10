@@ -339,12 +339,10 @@ load without them and allocate them on first use. Run
 `MarketFetch` also checks the three market levels: existing type IDs 49–50
 remain stable, higher-level sites and buildings append as IDs 51–54, and their
 stock and type IDs survive binary/text game saves. Level 2 accepts wood and
-wheat in addition to fruit; level 3 accepts all eight resource types. Costs and
-reuse of the level-1 artwork remain provisional while the feature is draft.
+wheat in addition to fruit; level 3 accepts all eight resource types. The experiment’s current gameplay and asset constraints are described in [Markets V2](../../features/markets-v2.md).
 
 `MarketsV2` checks both sides of the `markets-v2` experiment: disabled fetch
-entry points and construction gates, per-tick legacy market deliveries against
-master, all level/resource/swim-class combinations, upgrade cancellation and
+entry points and construction gates, per-tick deliveries against a retained legacy-market reference, all level/resource/swim-class combinations, upgrade cancellation and
 completion and repair with shared stock, legacy travelling workers, forbidden
 routes, and binary/text continuation. Simulation traces compare every checksum
 part except the MapHeader part, which includes the deliberately changed file-format

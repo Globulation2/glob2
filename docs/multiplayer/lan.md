@@ -22,8 +22,8 @@ which is the shared `RoomScreen` on the `LanRoom` backend.
 
 ## Connection and discovery
 
-The host listens on a pinned WSS endpoint (the `/yog` path is kept from the former
-YOG LAN server so pairing strings stay compatible):
+The host listens on a pinned WSS endpoint. Its `/yog` path is retained for pairing
+string compatibility:
 `wss://<address>:7489/yog#sha256=<fingerprint>`, with a session-only certificate from
 `provisionLanIdentity`. `GLOB2_LAN_ADDRESS` picks the advertised address. Discovery is
 unchanged: `NetBroadcaster` announces the endpoint without the fingerprint, so a guest

@@ -41,7 +41,7 @@ Store Connect if testers should receive every processed build without another
 manual step.
 
 App Store Connect's App Privacy answers and privacy policy URL follow the same
-[privacy policy](../mobile/privacy-policy.md) as Play's Data safety form (above). Universal
+[privacy policy](../mobile/privacy-policy.md) as [Play's Data safety form](google-play.md#google-play-internal-testing). Universal
 links for invites need the Associated Domains capability on the App ID and the
 official instance's `apple-app-site-association` file
 ([mobile app links](../hosting/networking.md#mobile-app-links)).

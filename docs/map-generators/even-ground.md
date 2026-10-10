@@ -13,12 +13,10 @@ search over terrain mostly rediscovers noise. That is this generator's main find
 and it is the reason [the toolkit's own guidance](../../src/map/generator/shared/Solve.h) says to
 point a search at a decision rather than at a landscape.
 
-> **These figures predate the stream rename and describe different maps.** Renaming the
-> generator's random streams moved every map it makes, so the numbers below — control
-> correlations, fairness scores, refusal rates, river rates and the tournament — were measured
-> on the previous maps. Revision 2 also corrects the crop-clustering objective. Treat the historical conclusions
-> as hypotheses until remeasured. Keep new checks and results in the ignored
-> `artifacts/even-ground/` workspace or in pull-request attachments.
+Search objectives and random-stream names determine the generated maps. Reproduce
+measurements against the current source and hold out seeds before treating objective
+scores as evidence of playability. Keep new results in ignored `artifacts/` or
+pull-request attachments.
 
 ## The play contract
 

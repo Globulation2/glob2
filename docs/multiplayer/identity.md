@@ -95,11 +95,18 @@ secrets stay in the environment and are referenced by variable name (see
 `platform/instance.example.yaml`). Every provider's redirect URI is
 `<PUBLIC_ORIGIN>/auth/<id>/callback`; register exactly that with the provider.
 
-| Kind | Notes |
-| --- | --- |
-| `oidc` | Generic OpenID Connect, authorization code with PKCE (S256), state and nonce, via `openid-client`. `preset: google` fills in `https://accounts.google.com`; `preset: microsoft` fills in `https://login.microsoftonline.com/<tenant>/v2.0` (`tenant` defaults to `common`; the ID token's issuer is checked against its own `tid`). Any other issuer is set with `issuer`. The client secret is optional (public clients). The identity is the issuer's `sub`. |
-| `apple` | Sign in with Apple: the client secret is a fresh ES256 JWT (5 minutes, `iss` team id, `sub` Services ID, `aud` Apple) signed with the operator's `.p8` key from the environment. The response arrives by `form_post`, a cross-site POST to the callback, protected by `state`; the name comes from the first sign-in's `user` field. Apple does not document PKCE for this flow, so it is not used. |
-| local | Username and password, off by default (`auth.local.enabled`, with `allowRegistration`), for self-hosted instances without single sign-on. Usernames are 3-32 of `A-Z a-z 0-9 . _ -`, compared case-insensitively (the identity's subject is the lowercase form). Passwords have 10-256 characters and are hashed with argon2id (19 MiB, 2 passes, 1 lane; PHC strings, so the cost can rise later). Unknown usernames take as long as wrong passwords. |
+### `oidc`
+
+Generic OpenID Connect, authorization code with PKCE (S256), state and nonce, via `openid-client`. `preset: google` fills in `https://accounts.google.com`; `preset: microsoft` fills in `https://login.microsoftonline.com/<tenant>/v2.0` (`tenant` defaults to `common`; the ID token's issuer is checked against its own `tid`). Any other issuer is set with `issuer`. The client secret is optional (public clients). The identity is the issuer's `sub`.
+
+### `apple`
+
+Sign in with Apple: the client secret is a fresh ES256 JWT (5 minutes, `iss` team id, `sub` Services ID, `aud` Apple) signed with the operator's `.p8` key from the environment. The response arrives by `form_post`, a cross-site POST to the callback, protected by `state`; the name comes from the first sign-in's `user` field. Apple does not document PKCE for this flow, so it is not used.
+
+### local
+
+Username and password, off by default (`auth.local.enabled`, with `allowRegistration`), for self-hosted instances without single sign-on. Usernames are 3-32 of `A-Z a-z 0-9 . _ -`, compared case-insensitively (the identity's subject is the lowercase form). Passwords have 10-256 characters and are hashed with argon2id (19 MiB, 2 passes, 1 lane; PHC strings, so the cost can rise later). Unknown usernames take as long as wrong passwords.
+
 
 Provider flows keep their state server-side (`auth_flows`: hash of `state`,
 PKCE verifier, nonce, purpose, the attempt and browser binding), consumed once

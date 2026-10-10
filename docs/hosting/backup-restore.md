@@ -8,23 +8,26 @@ Back up the database and the blob volume together, plus the keys:
 
 ```sh
 cd deploy
-docker compose exec -T postgres pg_dump -U glob2 -Fc glob2 > glob2-$(date +%F).dump
-docker compose run --rm --no-deps -T platform-worker tar czf - -C /var/lib/glob2 blobs > blobs-$(date +%F).tar.gz
-docker compose run --rm --no-deps -T init tar czf - -C /var/lib/glob2 keys relay engine-agent db > keys-$(date +%F).tar.gz
+backup_date=$(date +%F)
+docker compose exec -T postgres pg_dump -U glob2 -Fc glob2 > "glob2-$backup_date.dump"
+docker compose run --rm --no-deps -T platform-worker tar czf - -C /var/lib/glob2 blobs > "blobs-$backup_date.tar.gz"
+docker compose run --rm --no-deps -T init tar czf - -C /var/lib/glob2 keys relay engine-agent db > "keys-$backup_date.tar.gz"
 ```
 
 `pg_dump` is consistent while the stack runs. Blobs are content-addressed and never
 rewritten, so a blob archive taken right after the dump holds everything the dump
 refers to. Store `keys-*.tar.gz` encrypted: it can sign tokens for any account.
 
-To restore into a fresh stack (same `.env` and `instance.yaml`), replace the
-sample filenames below with the database, blob and key archives you created:
+To restore into a fresh stack (same `.env` and `instance.yaml`),
+set `backup_date` to the date recorded in the database, blob and key archives
+you created:
 
 ```sh
+backup_date=YYYY-MM-DD
 docker compose up -d --wait postgres
-docker compose run --rm --no-deps -T init sh -c 'rm -f /var/lib/glob2/keys/*.pem /var/lib/glob2/relay/relay.key /var/lib/glob2/engine-agent/agent.key /var/lib/glob2/db/*/password; tar xzf - -C /var/lib/glob2' < keys-2026-10-01.tar.gz
-docker compose run --rm --no-deps -T platform-worker tar xzf - -C /var/lib/glob2 < blobs-2026-10-01.tar.gz
-docker compose exec -T postgres pg_restore -U glob2 -d glob2 --clean --if-exists --no-owner < glob2-2026-10-01.dump
+docker compose run --rm --no-deps -T init sh -c 'rm -f /var/lib/glob2/keys/*.pem /var/lib/glob2/relay/relay.key /var/lib/glob2/engine-agent/agent.key /var/lib/glob2/db/*/password; tar xzf - -C /var/lib/glob2' < "keys-$backup_date.tar.gz"
+docker compose run --rm --no-deps -T platform-worker tar xzf - -C /var/lib/glob2 < "blobs-$backup_date.tar.gz"
+docker compose exec -T postgres pg_restore -U glob2 -d glob2 --clean --if-exists --no-owner < "glob2-$backup_date.dump"
 docker compose up -d --wait
 ```
 
@@ -35,6 +38,9 @@ separate host or project (`docker compose -p glob2-restore …` with other ports
 before relying on it.
 
 ### Scheduled backups
+
+Run the setup and helper-script commands in this section from the repository root.
+If you followed the manual archive procedure above, run `cd ..` first.
 
 `deploy/backup-to-gcs.sh <env-file>` backs the database up to a Google Cloud
 Storage bucket, and a systemd timer runs it every day at 03:17 UTC (plus up to ten
@@ -104,7 +110,7 @@ the live one and never writes to `glob2`:
 
 ```sh
 deploy/restore-backup.sh /opt/glob2/config/staging.env \
-    gs://BUCKET/daily/glob2-20261003T031700Z.dump glob2_restore_20261003
+    gs://BUCKET/daily/glob2-BACKUP_TIMESTAMP.dump glob2_restore_check
 ```
 
 It creates the database, restores the dump into it, applies newer migrations, and
@@ -115,14 +121,15 @@ with `platform admin delete`, the same scrub as the original deletion. The one g
 is a deletion made after the newest backup when the live database is also lost:
 nothing records it, so such an account comes back and has to be deleted again.
 
-Check the restored database (`docker compose exec postgres psql -U glob2 -d
-glob2_restore_20261003`), then drop it, or put it into service:
+For the following Compose commands, change to `deploy/` first (`cd deploy`
+from the repository root). Check the restored database (`docker compose exec postgres psql -U glob2 -d
+glob2_restore_check`), then drop it, or put it into service:
 
 ```sh
 docker compose stop platform-api platform-worker relay engine-agent
 docker compose exec -T postgres psql -U glob2 -d postgres \
     -c 'ALTER DATABASE glob2 RENAME TO glob2_replaced' \
-    -c 'ALTER DATABASE glob2_restore_20261003 RENAME TO glob2'
+    -c 'ALTER DATABASE glob2_restore_check RENAME TO glob2'
 docker compose up -d --wait       # init hands the objects to glob2_migrator and re-grants
 ```
 

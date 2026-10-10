@@ -5,8 +5,10 @@ Upgrade images, retain simulation versions and drain active matches safely.
 ## Upgrades
 
 Before every upgrade, take a [backup](backup-restore.md#backups-and-restore) and read the release
-notes for migrations and sim-version changes. `deploy/update-host.sh` (below)
+notes for migrations and sim-version changes. `deploy/update-host.sh`
 takes the database dump and a copy of the served web client itself.
+
+Run the manual Compose upgrade from `deploy/`:
 
 ```sh
 git pull                       # or set new GLOB2_*_IMAGE digests in .env
@@ -14,7 +16,7 @@ docker compose build           # skip with prebuilt images: docker compose pull
 docker compose up -d --wait
 ```
 
-On a single host, `deploy/update-host.sh <env-file> [git-ref]` does all of this in
+From the repository root, `deploy/update-host.sh <env-file> [git-ref]` does all of this on a single host in
 one command, in an order that never leaves a half-upgraded instance:
 
 1. **Backup.** A `pg_dump` and an archive of `GLOB2_WEB_CLIENT_DIR` go to
@@ -61,6 +63,9 @@ a few seconds. Caddy keeps WebSockets open across its own configuration reloads.
 
 ### Upgrading to database roles
 
+Run the Compose commands below from `deploy/`; invoke `deploy/update-host.sh`
+from the repository root instead.
+
 Instances deployed before the [database roles](stack.md#database-roles) have every object
 owned by the superuser and every service connected as it. The upgrade is the usual
 `up` (or `deploy/update-host.sh`) with the new `compose.yaml`; nothing in `.env`
@@ -87,6 +92,8 @@ older release take jobs from graphile-worker, where newer releases no longer put
 them, so roll back the API and worker together with the agents.
 
 ### Draining relays
+
+Run this procedure from `deploy/`.
 
 A plain `up -d` with a new relay image replaces the relays at once and drains each
 for up to `GLOB2_RELAY_DRAIN_SECONDS` while new matches have no relay. Replace them
@@ -121,6 +128,9 @@ An upgrade that changes the sim version therefore needs care:
   version keeps running, and finished matches of the old version are verified only
   by an old-version agent. Keep one running until those matches are verified and
   old clients have updated.
+
+The file and build paths in this section are relative to the repository root.
+Run the worktree and image-build commands from that root.
 
 To serve an additional (older) version, add a second agent service in
 `deploy/compose.override.yaml`, which Compose merges automatically:
@@ -212,7 +222,7 @@ workflow take effect.
 
 **What it deploys.** The host can only check out public commits, so:
 
-- A push to the mirror's `master` (when enabled, below) and a dispatch with
+- A push to the mirror's `master` (when `AUTO_DEPLOY_ONLINE=true`) and a dispatch with
   `ref` = `master` deploy the newest public `master` commit that the mirror's
   `master` contains (their merge base).
 - A dispatch with another `ref` deploys that public branch, tag or full commit id.
@@ -239,10 +249,8 @@ out, does not stop the deploy on the host; check it there with
 `sh /opt/glob2/src/deploy/online-deploy.sh status /opt/glob2/config/staging.env gh-<run>-<attempt>`.
 
 One deploy runs at a time (concurrency group `deploy-online`). A run in progress
-is never cancelled; a newer request replaces one that is still waiting. The job
-waits on a GitHub-hosted runner for the whole deploy (30–50 minutes when the images
-and the web client are rebuilt); standard runners are free for public repositories
-such as the mirror, otherwise this is about 50 runner minutes per deploy.
+is never cancelled; a newer request replaces one that is still waiting. The job waits on a GitHub-hosted runner for the whole deployment. Record runner
+usage and deployment duration from the run rather than relying on an old estimate.
 
 **Trigger, enable and disable.**
 

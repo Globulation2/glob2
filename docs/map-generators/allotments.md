@@ -4,8 +4,6 @@ Villages among allotment gardens. The map is parcelled by sand lanes into warped
 (`squareTessellation`, `warpCorners`), most of them garden sites - rows of narrow plots side by
 side, each tended differently, with a ditch across the rows - and the rest commons (meadow round a
 pond) and woodlots. Every colony's village is an open green behind its own block of plots.
-Revision 1 tiled one sand-ringed lot over the whole map (316 4x4 build sites on a 256 map) and
-staked a premade city out in construction sites; revision 2 (2026-09-16) rebuilds it.
 
 - **The village.** One stencil stamped at every lattice site, turned by one quarter turn drawn per
   map: a square of
@@ -13,8 +11,8 @@ staked a premade city out in construction sites; revision 2 (2026-09-16) rebuild
   sites) and its back a block of plots nine tiles wide either side of a ditch four corners wide,
   planted in a fixed pattern (wheat, wheat, wood, wheat, wheat, fruit, wheat, wood, wheat) over
   75% of each plot, unscaled. Village plots are wide whatever `strip-width` says because Numbi
-  breeds only on a large contiguous wheat block by its swarm: plots four wide held its villages at
-  13 colonists. A lane round the village's margin closes off the
+  estimates food from a contiguous wheat block by its swarm; narrow strips can constrain
+  its opening even when total food is abundant. A lane round the village's margin closes off the
   parcels it cuts into.
 - **The parcels.** `site-size` (28-48, 36) is the tiling's pitch. Each parcel draws its kind
   (commons by `commons`: Few 12%, Some 25%, Many 40%; woodlots 15%; the rest garden sites; a parcel
@@ -32,12 +30,6 @@ staked a premade city out in construction sites; revision 2 (2026-09-16) rebuild
 - **Checked, not assumed.** A flood of every plot's pure grass at once, labelled by plot, never
   reaches another plot or grass outside the plots; every colony walkable from the first; wheat
   within 24 and wood within 32 of every colony.
-- **Played.** Rotation tournaments as The Glacis'. Nicowar (revision 1 then the rebuild with plots
-  four wide in the village): peak 118 to 100, births 82 to 97, wheat 998 to 995, eliminations 18
-  to 12 of 96. Numbi with those village plots stalled at 13 units; with the nine-wide village plots
-  it peaked at 31 (births 27, 2 eliminations of 96), one start at 9. The village's wider plots and
-  the single facing per map came after the Nicowar run and were measured only with Numbi and the
-  sweeps respectively.
 
 ## Implementation source
 

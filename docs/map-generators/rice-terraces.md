@@ -8,14 +8,10 @@ terraces join into a single stretch of landscape. The contours sway together alo
 so the terraces meander rather than run ruled. Sand stairs climb straight across the terraces and
 carry on across the valley as roads that ford the river.
 
-This map replaced an earlier generator of the same name on 2026-09-16. That one drew
-concentric crop and water rings round point summits and is now [Hills](hills.md). A
-maintainer found that the rings did not read as rice terraces, however lobed, because real
-terraces are not rings round a point. They are many narrow strips following the contour of a
-long slope, stacked and winding across whole hillsides. This design starts from those signatures
-and borrows Rain shadow's slanted stripe field for the geometry. The
-[tuning playbook](../../.agents/skills/glob2-map-design/references/tuning-playbook.md)
-records the lesson as "model the real thing, not the nearest primitive".
+Terraces are narrow strips following the contour of a long slope, stacked and
+winding across whole hillsides. This design uses those signatures and Rain shadow's
+slanted stripe field. For crop and water rings around point summits, see
+[Hills](hills.md).
 
 ## Play contract
 

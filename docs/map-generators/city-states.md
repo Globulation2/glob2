@@ -10,9 +10,7 @@ three fruits stands round the central lake; once swimming pools let armies cross
 causeways stop being the only way in.
 
 City states stays round on a rectangular map, in a circle on the shorter side: stretching it gives
-the homes different shapes (deep and narrow along the long axis, wide and shallow across it), and
-fairness falls from about 0.97 to 0.65–0.8, because a home's fields and fertility depend on its
-shape.
+the homes different shapes (deep and narrow along the long axis, wide and shallow across it), which changes field area and fertility. Keeping a circle preserves comparable home geometry.
 
 - **Geometry.** A pure function of the request (`geometryFor`). The commons' radius is
   `commons-size` percent of half the shorter side, the strait `strait-width` percent of the shorter
@@ -47,8 +45,7 @@ shape.
   around each causeway; every channel bows sideways by the same random amount. One home layout
   and one heart layout are drawn per map. Homes: Lakeland (one lake), Riverside (a creek from the
   lake towards one flank with a sand ford), Highland (two stone ridges out to the sea with a pass
-  each) and Marsh (four ponds); Barrens, both flanks of the home under sand, was dropped
-  2026-09-14 ("that one is just a giant desert"). Hearts: a
+  each) and Marsh (four ponds). Hearts: a
   lake with the orchard on its shore, a stone crag with a gap towards every landing, an island in
   the lake reached by a ford from every landing, a delta of rivers from the lake to the strait
   between the landings with a ford each, and a belt of forest round the orchard. `sand` adds
@@ -64,12 +61,9 @@ shape.
   on the central lake's shore. Algae seeds every shallows. `guaranteeStartingResources` runs with the
   walls' stone protected, causeways and approaches are cleared, and a cheapest-walk pass keeps a
   way open from every swarm to its causeway and from every landing to the heart.
-- **The archipelago** (2026-09-14: "WAY more islands out filling the no mans land", each with "the
-  10x4 little sand building plots", "in the area outside the circle ... where the torus wraps", and
-  bigger, since the plot "is taking up too much of the space"). The design circle sits on the
-  shorter side, so the sea outside it - a square's four corners, which the torus joins into one
-  ocean round the point across the map from the centre, and a rectangle's bands - held nothing.
-  Round islets of radius 11 now dot it: one on the wrap point, then `islands` (0-4, 2) rings of
+- **The archipelago.** The sea outside the design circle includes the corners that
+  wrap into one ocean and, on rectangular maps, the outer bands.
+  Round islets of radius 11 dot it:  Round islets of radius 11 now dot it: one on the wrap point, then `islands` (0-4, 2) rings of
   eight, sixteen and so on at equal angles round it, at least two radii plus the moat apart, so the
   set has the map's own four-fold symmetry with mirrors; on a rectangle the two points across the
   wrap on each axis get the same rings. An islet whose disc and three tiles of water round it do not

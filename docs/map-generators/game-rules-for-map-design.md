@@ -211,7 +211,7 @@ Consequences a generator has to design around:
   structural check (`validateGeneratedWorld`) refuses a generated world with even one no-growth
   tile, and the toolkit no longer has a helper that sets it. A frozen tile is invisible to the
   player, stops farmland regrowing where they expect it to, and hides an overgrowth problem the
-  design should have solved (the fractal maps used it and were stripped of it on 2026-09-16).
+  design should solve.
   Contain crops with terrain instead, which players can see and reason about:
   - **Sand.** A deposit cannot occupy sand, so a sand cap or aisle contains a plot permanently.
     One row of sand *corners* is enough: the two tile rows either side of it are no longer pure
@@ -336,8 +336,7 @@ These are judgement rules rather than engine rules, learned from playtesting on 
 ## Buildings and units placed by a generator
 
 A landscape may grant a colony buildings or units beyond its swarm and workers (Hills' inn,
-Plantations' pools and inns; until 2026-09-16 The Glacis, Allotments and Caravanserai started whole
-premade bases, which the shipped AIs barely grew beyond, so their revision 2 dropped them). The engine rules
+Plantations' pools and inns). The engine rules
 it rests on, each verified in the source:
 
 - **A building is raised with `Game::addBuilding`, which checks no room.** `checkRoomForBuilding`
@@ -365,18 +364,15 @@ it rests on, each verified in the source:
 - **A fed unit walks 264 tiles before it is hungry** (`HUNGRY_MAX` 150000 over 425 per completed
   move at level 0) and 352 before it starves, at 16 ticks a tile. Those are walked tiles, detours
   included: a map that forces long detours round rows, walls or crops can starve an army on its way
-  to a base that looks close (Polder, until 2026-09-16, when its rows under crop were crossed only at
-  the ditches). Keep colony-to-rival walks well inside that budget, with crossings through every kind
+  to a base that looks close. Keep colony-to-rival walks well inside that budget, with crossings through every kind
   of linear obstacle and forward inn ground on the way. On a map of short walks, inn spacing is about
   supply throughput (an inn feeds 4, 7 or 17 at once) and forward feeding, not survival.
-- **Every AI adopts what it finds** (Econo and Nicowar through the shared AI runtime's `BuildingRegister::initiate`, Numbi,
-  Castor and Cortex by reading `myBuildings` live), but their openings drift: Cortex sets the first
-  swarm's workers to 4 and tracks at most 24 sites and 16 inns; Nicowar does not count pre-placed
-  sites towards its own cap and, in the first headless plays of premade bases, bred warriors it
-  could not feed. Keep granted sites under a dozen and regrowing food within a short walk of the
-  swarm. In rotation tournaments of the premade bases (2026-09-16, 45,000 ticks), a finished base
-  of fifty-odd units bred 14 to 15 births a colony with Nicowar and 4 to 9 with Numbi, and
-  Caravanserai's starved; only Allotments' base of sites, which Nicowar had to build out, bred
-  (82 births). Grant a start, not a population.
+- **Controller adoption needs verification.** Granted buildings enter the team's
+  canonical building/service lists, but controllers differ in opening assumptions,
+  internal caps and placement/food heuristics. Cortex uses bounded observations;
+  native and legacy-runtime controllers have their own registration paths. Test
+  every intended AI with granted sites and completed buildings, including supply,
+  training, worker assignment and reproduction. Nearby regrowing food and usable
+  town room matter more than a large premade population.
 
 Related: [map generators](README.md).

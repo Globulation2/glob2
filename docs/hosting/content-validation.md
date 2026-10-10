@@ -20,7 +20,7 @@ stock catalog and simulation version, so a new engine does not silently replace
 old validation. Keep agents for simulation versions the instance still supports.
 
 Format 145 maps, saves and replays include custom building artwork alongside their catalog.
-The earlier terrain/resource asset bundle retains its format-144 loading gate.
+The terrain/resource asset bundle retains its format-144 loading gate.
 Network protocol 62 prevents mixed header layouts in one match. The save-support
 floor remains 58. Authors share generated maps through the existing map library;
 server-side room generation does not read a player's locally installed families.

@@ -915,7 +915,7 @@ shared_ptr<Order> AICortex::decide()
 		// ask decide() to fill the per-cycle eligibility mask + chosen class index
 		// and record one CSV row. The trace is a pure read-out of the decision
 		// decide() makes anyway — passing &trace does not change the action — so it
-		// touches no RNG/order/sync state, like the worker trace. See DECIDE_CONTRACT.md.
+		// touches no RNG/order/sync state, like the worker trace. See tools/cortex-ml/training.md.
 		Cortex::CortexAction action;
 		if (getenv("GLOB2_CORTEX_DECIDE_TRACE"))
 		{
@@ -971,9 +971,9 @@ shared_ptr<Order> AICortex::decide()
 		translateAction(tune, obs);
 
 		// TRAINING TRACE (gated): record this cycle's per-swarm (state, hand-action)
-		// pairs for the ML worker-tuning pilot. Pure read of obs + the tune action we
+		// pairs for the ML worker tuning. Pure read of obs + the tune action we
 		// just computed; writing a file touches no RNG/order/sync state. See
-		// docs/AI/cortex/PILOT.md.
+		// tools/cortex-ml/training.md.
 		if (getenv("GLOB2_CORTEX_TRACE"))
 			dumpWorkerTrace(obs, tune);
 

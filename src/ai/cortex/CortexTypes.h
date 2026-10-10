@@ -7,7 +7,7 @@
 
 // AICortex shared data types: the Observation and Action structs that sit
 // between the three layers (observation -> policy -> action). See
-// docs/AI/cortex/README.md for the design rationale.
+// docs/ai/development.md for the design rationale.
 //
 // Both structs are deliberately POD (no pointers, no std::string, no virtuals)
 // so that a future ML policy can serialize an Observation straight to a tensor

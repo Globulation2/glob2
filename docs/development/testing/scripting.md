@@ -7,12 +7,11 @@ Focused regression scenarios and commands. Start with the [native test guide](..
 See the [scripting guide](../../scripting/javascript.md) and
 [API reference](../../scripting/javascript-api.md) for the public boundary.
 
-Current saves use format 127, with counted generation tables for sixteen teams.
+Format 127 introduced counted generation tables for sixteen teams.
 Version-gated loading preserves released format 124's experiment-header layout
 and remaps the twelve-team generation tables stored by formats 125 and 126.
 Formats 58–124 receive scripting identities on load; later formats validate their
-stored identities and generation tables. The minimum save version remains 58,
-the network protocol is 50, and the replay minimum is 127. Draft JavaScript
+stored identities and generation tables. The current save, network and replay gates live in [Version.h](../../../src/app/Version.h) and [ReplayReader.h](../../../src/replay/ReplayReader.h). Draft JavaScript
 fixtures use format 125; released historical fixtures remain unchanged.
 
 Build `unit-tests engine-tests` with SCons and run

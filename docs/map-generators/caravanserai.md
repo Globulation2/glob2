@@ -4,10 +4,7 @@ Oasis towns on a desert trade route. Sand dunes in long bands with scrub in the 
 and scattered oases, each an irregular pool ringed with green, palms and grain; every colony's
 home is a large oasis town round a lake with a ring of fields and a palm grove; half way between
 neighbours stands a caravanserai, a square walled courtyard with a well, in an oasis of its own
-with orchards and a quarry. Revision 1 was flat sand with perfect circles in straight lines, 28
-water tiles and 80 of wood on a whole 256 map, and 67 of 96 Nicowar and 70 of 96 Numbi colonies
-starved out in a rotation tournament; revision 2
-(2026-09-16) rebuilds it.
+with orchards and a quarry.
 
 - **The home oasis.** One stencil stamped at every lattice site, turned by one quarter turn drawn
   per map: an outline of
@@ -16,9 +13,8 @@ starved out in a rotation tournament; revision 2
   grove in the back of the ring between two sand spokes. Wheat on 55% of the ring (never below
   60) nearest the town's swarm, a solid arc, and palms on 60% of the grove (never below 30)
   nearest the water, scaled by the amounts. The swarm stands on the town tile farthest from any
-  other kind of ground: set a fixed distance forward it stood against the field ring's path, and
-  Numbi, which searches for a first building only when its swarm's surroundings are open, never
-  built a thing.
+  other kind of ground. This preserves open swarm surroundings for Numbi's
+  initial placement search rather than placing the swarm against the field path.
 - **Caravanserais.** One at the midpoint of every pair among each colony's `caravanserais`
   (1-3, 2) nearest neighbours (`nearestPairs`, `midpointAcross`), wherever its oasis of radius 14
   keeps clear of the homes and the other caravanserais: a wall at Chebyshev 6 with three-tile gates
@@ -40,13 +36,6 @@ starved out in a rotation tournament; revision 2
   walkable from the first; every colony's walk to its nearest caravanserai gate within 32 steps of
   every other's (a lattice that is not exact leaves neighbours at unequal distances); wheat within
   24 and wood within 32 of every colony.
-- **Played.** Rotation tournaments as The Glacis'. Nicowar: peak 62 to 120 units, births 14 to
-  135, wheat 127 to 1,301, eliminations 67 to 11 of 96, combat deaths 12 to 32 (the caravanserais
-  are fought over). Numbi on the first rebuild built nothing (one building a colony, no wood
-  harvested, 72 of 96 eliminated) because its swarm stood against the field ring's path; with the
-  swarm on the widest town tile and the wheat as an arc nearest it, Numbi peaked at 31 with 6
-  eliminations of 96. The swarm, lake and wheat changes came after the Nicowar run, and the single
-  facing per map after both.
 
 ## Implementation source
 

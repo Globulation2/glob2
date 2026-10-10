@@ -171,7 +171,7 @@ namespace Cortex
 	// Cortex paints a checkerboard `forbidden` pattern over its food so
 	// workers harvest one half while the protected half stays full and reseeds it
 	// (forbidden blocks harvest, MapGradientMaterial.cpp, but NOT growth,
-	// MapStep.cpp:80). See docs/AI/cortex/food-protection-plan.md and the
+	// MapStep.cpp). See docs/ai/engine-mechanics.md#food-protection and the
 	// geometry core in CortexFoodSources.h/.cpp.
 
 	/// Open margin N range. The open margin is DISABLED: every reachable row of

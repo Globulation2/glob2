@@ -12,24 +12,20 @@ These are headless map-operation tests; they do not drive editor mouse events.
 
 ## Map generator golden maps and colony sweep
 
-From the repository root, `scons -j8 release=1 server=0 map-generator-golden-test` builds
+From the repository root, `scons --build=build/native-tests -j8 release=1 map-generator-golden-test` builds
 `build/native-tests/src/MapGeneratorGoldenTest`. Run it as `./build/native-tests/src/MapGeneratorGoldenTest <profile>`
 to compare this platform's rows of `test/map-generator-golden.txt` against fresh rolls, with
 `--update` after a revision bump, `--print` to bootstrap a platform's rows from a log, and
 `--sweep` to roll every playable landscape at the lobby's colony counts and sizes. A platform
 with no rows reports and passes, so a new machine can run the check before its rows exist;
 `--require-rows` makes that a failure instead, which is what CI runs, so the table must carry
-rows for every platform running that check in CI (`linux-x86_64` today). The current
+rows for every platform running that check in CI for the selected platform. The current
 table records vertex terrain (save format 146): every generated map changed when terrain
 moved to map vertices, without individual generator recipe revisions. The complete
 pre-resource-epoch table, including historical `macos-arm64` rows, is retained in
 `test/fixtures/map-generators/pre-resource-epoch-golden.txt`. The current table includes
 native macOS arm64 rows; Linux hashes must not be used to bootstrap macOS coverage.
-The five separately verified explicit-design topology comparisons below do
-not establish topology equivalence for every changed golden. The five explicit-design full
-hashes include simulation-revision-40 map-owned placement stocks; their historical
-topology references remain unchanged. The framework reference under
-`docs/map-generators/` describes the remaining rules it enforces.
+Golden hashes establish behavior for their retained inputs. Compare topology separately when a serialized-format or resource-state change moves a complete map hash. See the [generator framework](../../map-generators/map-generator-framework.md).
 
 `MapGeneratorGoldenTest <profile> --telemetry` compares telemetry enabled/disabled and repeated
 attempts for all registered generators at three seeds, including complete serialized worlds and
@@ -63,7 +59,7 @@ profiling tool, not a timing threshold in CI.
 
 ## Map generator profiling fixture
 
-`scons -j8 release=1 server=0 map-generator-profile-fixture` builds
+`scons --build=build/native-tests -j8 release=1 map-generator-profile-fixture` builds
 `build/native-tests/src/MapGeneratorProfileFixture <profile-dir> <seed> <rounds>`, which round-robins every
 registered generator for `rounds` passes with parameters (shared and generator-specific) drawn
 at random the same way `GenerationRequest::randomizeControls` does, and prints a per-generator
@@ -85,7 +81,7 @@ signal something changed, not just an optimization's timing.
 
 ## Map subclass test pattern
 
-Pattern used by `MapQueryTest.cpp` (commit `2d42c340`). Lets you write tests against `Map`'s predicates with a minimal link surface — no `globalContainer`, no real `Sector` array, no transitive pull of `Bullet` / `Team` / `Building` / `Unit` into the test binary.
+Pattern used by `MapQueryTest.cpp`. Lets you write tests against `Map`'s predicates with a minimal link surface — no `globalContainer`, no real `Sector` array, no transitive pull of `Bullet` / `Team` / `Building` / `Unit` into the test binary.
 
 ### The fixture: subclass `Map`, bypass `setSize`
 
@@ -156,7 +152,7 @@ advanced repetition dialog across desktop/touch viewports, safe insets and text 
 
 ## Map CLI
 
-Build the normal client with `scons release=1 server=0`, then run
+Build the normal client with `scons --build=build/native-tests release=1`, then run
 `python3 test/test_map_cli.py build/native-tests/src/glob2` (use `.exe` on Windows).
 The test uses a disposable profile and the shared `MapPreview` software renderer
 with an invalid video driver, proving PNG export requires no display.
@@ -197,7 +193,7 @@ Linux and Windows CI run the native conversion suite.
 
 ### Map JSON reports
 
-Build `scons release=1 server=0 map-report-test`, then run
+Build `scons --build=build/native-tests release=1 map-report-test`, then run
 `python3 test/test_map_report.py build/native-tests/src/glob2 build/native-tests/test/MapReportHarness`
 (add `.exe` to both binaries on Windows). The suite runs without graphics, checks
 the [published report contract](../../map-generators/report-format.md), recomputes fairness

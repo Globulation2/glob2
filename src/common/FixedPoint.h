@@ -12,9 +12,7 @@
 // TypeSteps.cpp, Update.cpp, Minimap.cpp, Step.cpp, TeamRouting.cpp,
 // UnitMovement.cpp.
 //
-// NOTE FOR PORTERS: The Rust port replaces this with the `I16F16` type
-// from the `fixed` crate (see docs/rust/determinism.md); raw shifts stay
-// only on the C++ side.
+// Numeric portability and simulation ownership: docs/architecture/simulation.md.
 
 #pragma once
 

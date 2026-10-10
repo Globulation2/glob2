@@ -16,7 +16,7 @@ python3 mobile/android.py build --arch arm64-v8a --release --amazon-apk \
   --version-code "$(python3 mobile/amazon_release.py version-code)"
 ```
 
-Fire OS 5/6 support is a separate release milestone: lower the Android API
+Supporting Fire OS 5/6 requires a separate compatibility change: lower the Android API
 floor only after updating the build identity and native dependency triplets,
 auditing platform API use, and playing on representative older tablets. Do not
 select those devices in the store until they pass.
@@ -29,7 +29,7 @@ the packaged asset index, alignment and both native build IDs. It derives
 `PACKAGE_VERSION` in `scons/build_layout.py`. The four version components map
 to one increasing Android `versionCode`; never reuse or lower a code already
 submitted to Amazon. A release build remains unsigned until the separate
-release workflow signs it. The local `sign` command above is for developer
+release workflow signs it. The [local Android `sign` command](../mobile/android.md#android) is for developer
 installs and must not be used as a store identity.
 
 The public `.github/workflows/amazon-appstore.yml` runs only when mirrored to

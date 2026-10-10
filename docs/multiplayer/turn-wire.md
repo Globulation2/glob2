@@ -183,13 +183,9 @@ of valid orders run as before.
 
 ### Order pacing
 
-The relay gives each seat at most one order per tick (below), 25 a second. The
-engine hands `TurnSession` every order the GUI queues, every frame. A flag drag adds
-a move for every cell the pointer crosses, about 100 a second, and a held key repeats
-about 30 times a second. Sent as they come, those orders queued up at the relay
-behind each other, a 10 s drag built about 10 s of input delay, and from 250 ticks of
-backlog the relay refused the client and threw the player out of the match. The
-session therefore paces and coalesces its own orders:
+The relay sequences at most one order per seat per tick: 30 orders/s at the
+default rate. GUI interactions can produce orders faster than this, so the
+session paces submission and coalesces unsent absolute-setting orders:
 
 - **Credit.** It sends at most what the relay sequences: a credit of `orderBurst` (4)
   orders, refilled at one per tick. A click that makes a few orders at once still sends
@@ -204,7 +200,7 @@ session therefore paces and coalesces its own orders:
   pointer with the usual delay. Orders that must all execute (creating, deleting and
   upgrading buildings, brush strokes, which are already one order per stroke, chat,
   alliances, map marks) wait their turn unmerged.
-- **Bounded queue.** The queue holds at most `maxQueuedOrders` (250, ten seconds) of
+- **Bounded queue.** The queue holds at most `maxQueuedOrders` (250 orders, about 8.33 s at the default rate) of
   them; beyond it a new order is dropped. While more than a second of orders waits, or
   for two seconds after a drop, the HUD shows "Too many actions: some are still
   waiting to be sent" (`TurnSession::tooManyActions()`).
@@ -228,18 +224,15 @@ satisfies all of these:
 - `t ≥ nextFreeTick[seat]`, so a seat gets at most one order per tick;
 - `bytes[t] + size ≤ 30,000`.
 
-Then `nextFreeTick[seat] = t + 1`. The relay's own clock plays no part: no client can
-run a tick before the relay broadcasts a horizon above it, so the first unbroadcast
-tick is the earliest safe one, and it rides in the very next bundle. (The first
-version also required `t ≥ R + 1`, where `R` is the relay tick in progress. With
-bundles every tick that is the same tick; with longer intervals or a coarse relay
-timer it cost up to `bundleInterval` ticks.) A seat whose queue reaches more than 250
-ticks (10 s) ahead of `R` is flooding: the order is dropped and counted
-(`flood_rejections` in the relay's network summary), and the connection stays open. A
-dropped order never enters a bundle, so every client still executes the same log. A
-paced client never gets near this limit; before pacing, a long drag reached it, and
-the relay then closed the connection with `Reject(7)`, which ended the match for that
-player.
+Then `nextFreeTick[seat] = t + 1`. The relay's clock does not impose another
+minimum execution tick: clients can only execute authorized horizons, so the
+first unbroadcast tick is safe and travels in the next bundle.
+
+A seat whose queue reaches more than `maxAheadTicks` (default 250, about 8.33 s
+at 30 ticks/s) ahead of the relay tick is flooding. The relay drops the order,
+counts `flood_rejections` in its network summary, and keeps the connection open.
+A dropped order never enters a bundle, so every client retains the same log.
+
 
 ### Bundles
 
@@ -249,7 +242,7 @@ entry below `R + 1`, and sets `sentHorizon = R + 1`. A bundle is split at tick
 boundaries when it would exceed 60,000 bytes. The per-tick byte budget means a single
 tick always fits.
 
-The default `bundleInterval` is 1: a bundle every tick, 25 per second. An empty bundle
+The default `bundleInterval` is 1: a bundle every tick, 30 per second at the default rate. An empty bundle
 is 11 bytes before framing, so this costs well under 2 KB/s per client, and it removes
 up to a tick of waiting for every order and a tick of buffer (see below). Longer
 intervals still work. Flushing a bundle early when an order arrives would not help:

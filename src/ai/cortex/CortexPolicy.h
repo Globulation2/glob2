@@ -17,7 +17,7 @@ class AICortex;
 // pointer — its entire input is the CortexObservation, its entire output is a
 // CortexAction. That isolation is what lets v0 (hand rules, here) be swapped for
 // a behavior tree or a neural net later without rewriting observation or action
-// code (see docs/AI/cortex/README.md).
+// code (see docs/ai/development.md).
 //
 // DECISION MODEL — utility selection. Every candidate decision is a function
 // that SCORES itself from the observation (a ScoredAction: a score plus the
@@ -169,7 +169,7 @@ namespace Cortex
 	/// failed gate is exactly a decline); chosen is the winning candidate's class
 	/// index, or -1 when nothing was eligible (the initial NoOp held). This is
 	/// the per-cycle ML training label (eligibility mask + the hand rule's
-	/// choice); see DECIDE_CONTRACT.md. failedGates is the cycle's failed-gate
+	/// choice); see tools/cortex-ml/training.md. failedGates is the cycle's failed-gate
 	/// bitmask (CortexGate bits): AND it with a candidate's candidateGates[] mask
 	/// to see whether — and why — that candidate was vetoed rather than scored out.
 	struct DecideTrace
@@ -192,7 +192,7 @@ namespace Cortex
 	  AITelemetry::Sink telemetry;
 	  /// Number of features in the decide() feature vector (the ML decision-net
 	  /// input width). The single source of truth for the trace CSV columns and
-	  /// the future inference path; see docs/AI/cortex/DECIDE_CONTRACT.md for the
+	  /// the inference path; see tools/cortex-ml/training.md for the
 	  /// fixed idx order. extractDecideFeatures fills exactly this many.
 	  static const int NUM_DECIDE_FEATURES = 48;
 
@@ -207,7 +207,7 @@ namespace Cortex
 	  /// and the winning class index (the ML training label) — a pure read-out of
 	  /// the decision already made. Behaviour is byte-identical to the trace ==
 	  /// nullptr path (the trace is determinism-neutral: no RNG, no orders, no
-	  /// persisted state). See DecideTrace and docs/AI/cortex/DECIDE_CONTRACT.md.
+	  /// persisted state). See DecideTrace and tools/cortex-ml/training.md.
 	  CortexAction decide(const CortexObservation &obs, DecideTrace *trace = nullptr);
 
 	  /// War-flag management decision, evaluated EVERY decision cycle in PARALLEL
@@ -219,14 +219,14 @@ namespace Cortex
 	  /// exactly: serious-defense > blitz-offense > defense > retire > offense.
 	  /// Split out of decide() so a busy economy never preempts a war-flag move; the
 	  /// action layer drains the combat orders alongside the economy ones, exactly
-	  /// like tuneWorkers() / wantFoodSourceProtection(). The 19-class DECIDE_CONTRACT
+	  /// like tuneWorkers() / wantFoodSourceProtection(). The 19-class candidate array
 	  /// trace/ML mask still EVALUATES these three (training continuity); only the
 	  /// SELECTION moved here — decide() no longer acts on them.
 	  CortexAction decideCombat(const CortexObservation &obs) const;
 
 	  /// Fill `features` with the 48-element decision feature vector in the EXACT
-	  /// idx order of docs/AI/cortex/DECIDE_CONTRACT.md. SINGLE SOURCE OF TRUTH:
-	  /// the trace CSV columns and the future decision-net inference path both
+	  /// idx order of tools/cortex-ml/training.md. SINGLE SOURCE OF TRUTH:
+	  /// the trace CSV columns and the decision-net inference path both
 	  /// reuse this. Pure function of the observation (raw colony state — no
 	  /// derived judgment booleans); reuses computeFacts for the building counts
 	  /// and the fillable/unfillable open-job partition.
@@ -356,7 +356,7 @@ namespace Cortex
 		/// Offense (plant the war flag on the nearest known enemy).
 		ScoredAction scoreOffense(const CortexObservation& obs, const DecideFacts& f) const;
 
-		// --- ML swarm worker-cap policy (effort B pilot) ----------------------
+		// --- ML swarm worker-cap policy (optional model) ----------------------
 		// When GLOB2_CORTEX_POLICY=ml and a net loads from GLOB2_CORTEX_NET,
 		// tuneWorkers() picks each SWARM's worker cap from swarmNet_ instead of the
 		// hand rule (inn/site caps stay hand-coded). The net is integer/I16F16 and
@@ -367,12 +367,12 @@ namespace Cortex
 		bool mlSwarmCaps_;
 		CortexNet swarmNet_;
 
-		// --- ML decision-selection policy (DECIDE pilot) ----------------------
+		// --- ML decision-selection policy (optional decision model) ----------------------
 		// When GLOB2_CORTEX_POLICY=ml-decide and a net loads from
 		// GLOB2_CORTEX_DECISION_NET, decide() selects among the eligible candidates
 		// with decisionNet_'s learned utility scores instead of the hand SCORE_*
 		// argmax. The hand decline gates (eligibility) are unchanged — only the
-		// selection among eligible candidates is learned (DECIDE_CONTRACT.md). The
+		// selection among eligible candidates is learned (tools/cortex-ml/training.md). The
 		// net is integer/I16F16 and the choice is a pure function of the observation,
 		// so orders stay deterministic in lockstep — every client must load the SAME
 		// blob. Loaded once in the ctor; mlDecide_ stays false (→ hand argmax) if

@@ -74,20 +74,15 @@ permanent lanes do not grow with abundance.
 
 ### Garden beds and the open land
 
-Until 2026-09-16 the land between the design's features carried nothing: deposits
-lived only inside objective courts and contained plots, and both maps measured
-around 1,400–1,900 resource tiles against a 7,800 median across the 48 playable
-landscapes, third and sixth lowest of all of them. Four things now fill it, and
-none of them may touch a home module, a crossing, an objective court or an existing
-plot:
+Four resource treatments fill the land between design features. None may touch a
+home module, crossing, objective court or existing plot:
 
 - **Bank plots** sit against the water, sharing the shore's own sand as their cap on
   that side, because how fast a crop regrows depends on how much water is near it and
   a plot laid a dozen tiles inland was not worth the walk. They slide along the bank
   and retry two tiles smaller before reporting an omission, instead of refusing on the
   first blocked box, and a site that would leave fewer than forty crop tiles is passed
-  over rather than stamped. Gardens proposes all four banks of every smaller lake (was
-  two); Hilbert proposes one plot on each bank of every segment, large and square-ish,
+  over rather than stamped. Gardens proposes all four banks of every smaller lake; Hilbert proposes one plot on each bank of every segment, large and square-ish,
   since a plot's sand rim is set by its perimeter and many small plots cost a tenth of
   the map in rim alone. Three banks in four carry food.
 - **Garden beds** are the home module at a quarter scale — a square pool, a ring of
@@ -183,13 +178,12 @@ one 50,000-tick game per map (map seed 3001, game seed 19, four AIs) took wood f
 
 The home module's rim is straight-edged, two corners of sand on every side, including
 beyond each water strip, so it is the same width as the paths that meet it. A
-ragged, frayed rim was tried so colonies would not all open inside an identical stamped box,
-and removed: it is exactly what a formal garden should not have, and a path cannot meet it
-flush.
+formal, straight rim lets garden paths meet the home module flush and preserves the
+intended square geometry.
 
 ### Home gardens
 
-Since revision 8 a map draws its homes in one of four formal garden designs
+A map draws its homes in one of four formal garden designs
 (`HomeDesign`, from the `fractal-home-design` stream, recorded as `fractal.homes.design`).
 Every home on the map gets the same design; the next map may draw another. All four are
 tidy and square, mostly wheat with a little timber, and all keep the same 24×24
@@ -199,7 +193,7 @@ therefore the same for every design.
 
 | Design | Drawing |
 | --- | --- |
-| Parterre | Long canals north and south of the court, crops on their inner banks, timber bays at the ends of the north bed (the only design before revision 8) |
+| Parterre | Long canals north and south of the court, crops on their inner banks, timber bays at the ends of the north bed |
 | Horseshoe | One canal bent round the north, east and west, crops inside the bend, timber at the tips of its arms, a causeway north across it, and open lawn to the south |
 | Cloister | A canal all the way round, crops on its inner bank, timber in the southern corners, a causeway across it on each side, and the quarry as a well in a corner of the court |
 | Four beds | A short north canal feeding the wheat along the apron, and a square pool bed in each corner of the module, one of them timber |
@@ -214,7 +208,7 @@ within the 48-step check, where the open parterre had passed. Each design's crop
 checked on the design itself: a flood over pure grass from its crops must stay inside the
 home's reservation, or the map fails. The opening quarry's tiles are held like an objective
 court, so a garden path running in to meet the court across open lawn cannot pave them
-first. Before revision 8 a path could, and some parterre maps failed their quarry check.
+first.
 
 ### Home and start policy
 

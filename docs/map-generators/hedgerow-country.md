@@ -37,9 +37,7 @@ It uses shared primitives without changing their behavior for other generators.
    between the same pair of cells on a two-cell-wide torus.
 2. **Connected routes first.** `carveSpanningTree` opens a winding connected graph
    through all fields. The gateways control then opens that percentage of the
-   boundaries the tree left closed (until revision 7 it counted extra boundaries
-   per 100 fields, so its default opened four lane stubs on a 256 map and its
-   maximum twelve, and a maintainer found it seemed to do nothing). Selected boundaries carry
+   boundaries the tree left closed. Selected boundaries carry
    wood even when they have a gateway; unselected boundaries stay broadly open.
    Therefore lowering wooded share can shorten journeys beyond the marked lanes.
 3. **Solid hedges, deliberate entrances.** `traceSealedPath` closes diagonal leaks;
@@ -81,12 +79,10 @@ partly empty, and does not model buildings or exact initial worker positions.
 Final reports independently measure actual worker routes and exclusive territory.
 It improves selected layouts without promising symmetry or a global fairness floor.
 
-The farm enlargement follows actual mirror games: increasing starter food with a
-36-water-tile pond encouraged Maxima to expand and then starve. The selected pond
-instead increases renewable water exposure and harvest frontage. The swarm moves
+The farm pond provides renewable water exposure and harvest frontage, rather
+than relying only on finite opening stock. The swarm moves
 farther north to retain a complete dry footprint outside the larger enclosure.
-This makes Hedgerow Country's economy faster than revision 1; it does not change
-any other map or the simulation's crop-growth rules.
+The generator uses the shared simulation crop-growth rules.
 
 Every field has one farm pond in one of the shared centrepiece designs
 (`shared/Centrepieces.h`: square, round, diamond, cross, moat round a sand plinth,
@@ -95,8 +91,8 @@ so the growth envelope above holds for each. Every home field draws the same des
 since a design's water sets how fast its crops regrow; every other field draws its
 own. Two to four rough sand blotches of radius 2 to 4 break up each field's open
 ground, clear of the plot, three tiles from any hedge or lane and off the swarm's
-apron (revision 7, 2026-09-16: a maintainer found the countryside "boring and
-monotonous" though it played well). Algae is seeded in the ponds, which had none.
+apron. The variation stays outside protected paths and construction ground.
+Algae is seeded in the ponds.
 
 A 48 field gets a smaller village so the pond's growth reach still clears its
 hedges: a pond of radius 4 in a plot of 11, the swarm 16 north of the centre. Its

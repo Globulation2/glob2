@@ -69,7 +69,7 @@ oscillating:
 
 `DelayController` holds the buffer at the target by nudging the client's tick rate. It
 keeps an exponential moving average of the buffer level with a time constant of about
-20 ticks (0.8 s). With `B > 1` the level saws between `L` and `L + B − 1` as bundles
+20 ticks (about 0.67 s at the default 30 ticks/s). With `B > 1` the level saws between `L` and `L + B − 1` as bundles
 arrive, so the controller first averages each bundle period (the mean of a whole period
 does not depend on where it starts), feeds those means to the average with the same
 per-tick time constant, and aims at `target + (B − 1) / 2`:
@@ -82,10 +82,10 @@ interval   = P / multiplier
 ```
 
 A client with too much buffered runs up to 5% fast, and one with too little runs up to
-5% slow. Over 10 s that moves the buffer by up to 12.5 ticks, which absorbs drift and
+5% slow. Over 10 s that moves the buffer by up to 15 ticks at the default rate, which absorbs drift and
 new jitter without a visible change in game speed.
 
-**Catch-up.** When the instantaneous buffer exceeds `target + 25` (one second behind),
+**Catch-up.** When the instantaneous buffer exceeds `target + 25` (about 0.83 s beyond the target at 30 ticks/s),
 the controller enters catch-up mode. The engine then runs ticks at uncapped speed with
 rendering skipped, reusing the replay fast-forward path (`REPLAY_FAST_FORWARD_MS`) with
 the `MAX_CATCHUP_MS` cap lifted. Catch-up ends when the buffer drops to `target + 2`, and
@@ -98,59 +98,30 @@ the long ones (over half a tick), which are visible hitches.
 
 ### Measured delay
 
-Click (or submission) to execution, before and after the latency work (relay assigns
-the first unbroadcast tick, one-tick bundles by default, orders flushed at once, the
-buffer target and schedule changes above, connection polling between frames).
+Measure both order submission-to-execution and click-to-execution. The latter
+includes frame pickup; report it separately from uplink, relay wait, downlink and
+buffer wait. Record tick rate, bundle interval, link profile, seed, source revision,
+compiler/build flags and machine load alongside mean, median, p95 and stall counts.
 
-Simulated network (`TurnHarness`, "input delay and stalls per link profile"): two
-humans and an AI, submission to execution, 60 s per run, five network seeds per row.
+The benchmark cases produce review evidence under `artifacts/tests/`:
 
-Before, LAN used one-tick bundles and online relays two-tick bundles; after, both use
-one. Delay is mean / p95 in ms; stalls are counted over the five 60 s runs (long: over
-half a tick).
+| Harness | Case | Measures |
+| --- | --- | --- |
+| `TurnHarness` | `input delay and stalls per link profile` | Simulated transport with latency, jitter and TCP-style retransmission delay; multiple network seeds per profile |
+| `TurnEngineHarness` | `input delay and stalls of real engines per link profile` | Real engine execution over simulated links, including frame pickup |
+| `LanMatchHarness` | `LAN input delay on loopback and delayed links` | Host/guest execution over loopback WSS with optional guest-link delay and a per-stage breakdown |
 
-| Measured link (one way) | Before, 1-tick bundles | Before, 2-tick bundles | After | Stalls before (1 / 2-tick) | Stalls after |
-| --- | --- | --- | --- | --- | --- |
-| loopback | 120 / 120 | 160 / 160 | 40 / 40 | 0 / 0 | 0 |
-| 15 ms | 160 / 160 | 160 / 160 | 80 / 80 | 0 / 0 | 0 |
-| 25 ms | 160 / 160 | 200 / 200 | 80 / 80 | 0 / 0 | 0 |
-| 50 ms | 200 / 200 | 240 / 240 | 120 / 120 | 0 / 0 | 0 |
-| 30 ms, 80 ms jitter | 346 / 376 | 367 / 400 | 299 / 320 | 0 / 0 | 0 |
-| 60 ms, 80 ms jitter | 407 / 440 | 425 / 472 | 358 / 400 | 0 / 0 | 0 |
-| 30 ms, 80 ms jitter, 3% loss | 515 / 607 | 499 / 599 | 476 / 559 | 0 / 7 (3 long, 170 ms) | 1 (10 ms) |
-| 120 ms, 3% loss | 561 / 617 | 554 / 651 | 509 / 590 | 0 / 17 (12 long, 495 ms) | 4 (35 ms) |
+Select the benchmark suites through the [test runner](../development/testing/README.md).
+Compare the same link profiles, seeds and build inputs when changing pacing or
+buffering. Simulated clocks isolate protocol behavior; real-time LAN runs also
+reflect thread scheduling and host load. Use release builds for representative
+performance measurements and attach generated reports to the change being
+reviewed. Historical before/after tables belong with their original evidence,
+rather than serving as current latency guarantees.
 
-Add about half a frame (20 ms) of pickup for a click. Real engines on the same
-simulated network (`TurnEngineHarness`, "input delay and stalls of real engines per
-link profile"; click to execution, where the bot's click waits a whole tick for
-pickup; before is the then-default two-tick bundles):
-
-| Measured link (one way) | Before | After | Stalls before | Stalls after |
-| --- | --- | --- | --- | --- |
-| 15 ms | 240 / 240 | 120 / 120 | 0 | 0 |
-| 50 ms | 320 / 320 | 200 / 200 | 0 | 0 |
-| 60 ms, 80 ms jitter | 466 / 480 | 409 / 440 | 0 | 0 |
-| 120 ms, 3% loss | 621 / 680 | 537 / 600 | 0 | 1 (5 ms) |
-| 120 ms, 20 ms jitter, 3% loss | 675 / 795 | 606 / 640 | 0 | 0 |
-
-LAN, real engines over loopback WSS (`LanMatchHarness`, "LAN input delay ..."): host
-and one guest, FourSquares1 with a Nicowar AI, clicks at random moments, 25 s per run,
-macOS arm64 on a shared, loaded machine (real-time numbers vary by a tick or so from
-run to run).
-
-| Guest link (one way) | Bundles | Host before | Host after | Guest before | Guest after |
-| --- | --- | --- | --- | --- | --- |
-| loopback | 1 tick (LAN) | 197 / 238 | 140 / 162 | 279 / 383 | 193 / 241 |
-| +25 ms | 1 tick (LAN) | 237 / 289 | 149 / 201 | 274 / 318 | 221 / 262 |
-| +50 ms | 1 tick (LAN) | 281 / 347 | 140 / 160 | 455 / 505 | 261 / 292 |
-| loopback | 2 ticks | 369 / 568 | 163 / 197 | 365 / 620 | 194 / 257 |
-| +50 ms | 2 ticks | 248 / 298 | 159 / 197 | 378 / 434 | 250 / 309 |
-
-No run stalled more than once. On that machine (load average around 60 on 8 cores)
-the engines' threads were descheduled often enough that every client measured over
-10 ms of jitter and held a two-tick buffer. In a quieter run of the same code (load
-about 25), the host held no buffer and measured 59 / 76 ms on loopback, and the guest
-87 / 144 ms on loopback and 164 / 262 ms at +50 ms.
+See the [LAN playtest](lan-playtest.md#baseline-input-delay) for subjective gameplay
+checks and the [verification guide](turn-verification.md#testing) for regression
+coverage.
 
 
 ## Presence, reconnect and grace
@@ -159,7 +130,8 @@ The relay keeps a presence state per human seat and broadcasts a full `Presence`
 snapshot when any state changes, and at least every 25 ticks. `lagTicks` is
 `R − executedTick` when the seat's last `Ping` arrived. Once no `Ping` has come for a
 second (clients ping every 500 ms), the extra time counts as lag. A connected seat whose
-lag exceeds 50 ticks (2 s) is shown as lagging. Version-2 clients also receive
+lag exceeds `lagThresholdTicks` (default 50, about 1.67 s at 30 ticks/s) is
+shown as lagging. Version-2 clients also receive
 `SeatLatency` with every `Presence`: each connected human seat's round trip as the
 relay measures it on its transport (the online relay's WebSocket ping, smoothed with
 weight ¼; 0 when not measured, as on a LAN host). The connection panel shows it as

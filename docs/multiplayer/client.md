@@ -109,8 +109,7 @@ attempt fails locally as `expired` one minute after its expiry.
 
 ## Online screens
 
-The quick-match, profile and map screens (multiplayer mock-up groups 3 and 7)
-build on the client with the `Glob2UI::Screen` pattern. They are reached from
+The quick-match, profile and map screens use the `Glob2UI::Screen` pattern. They are reached from
 the online hub; the map chooser of the editor menu and the editor's own menu
 also offer **Share online…**.
 
@@ -262,14 +261,31 @@ out. "Forget" drops everything remembered about an instance.
 ## Play screens
 
 The play path is built from these screens (`Glob2UI::Screen` pattern,
-`docs/development/ui-framework.md`), following the approved multiplayer
-mock-ups:
+`docs/development/ui-framework.md`), with shared presentation behavior:
 
 ### Online hub
 
 Implementation: `src/online/screens/OnlineHubScreen.*`.
 
-"Play online" on the main menu. Starts the client (a guest is created on first contact) and shows the account chip with browser sign-in and the confirmation code, offline and update-required banners, and invite links (`takePendingJoin`) with the trust prompt for other instances. A sidebar (tabs on phones: Play, Rooms, Ranks) picks a section. **Play**: one Quick match card (queue choice from `InstanceInfo.queues`, the queue's map pool drawn by `MapPictures`, one primary Find match), players online and searching that queue (`GET /api/v1/stats`), Play with friends (Create room, Join by code, and Show in Open rooms: new rooms are invite-only unless it is on) and the last match (`GET /api/v1/players/{id}/matches`, with `match.updated` summaries merged over them; its map's picture when the map is cached). **Rooms**: public rooms (`GET /api/v1/rooms`, with the catalog map's preview when the server has one) with filters, and an empty state offering Create room (a public room) or Quick match. **Leaderboard**: where the player stands (`PlayerProfile.ratings[].rank`), then the top 50 of the first rated queue (`GET /api/v1/leaderboards/{queue}`, fetched only while shown) with the player's row highlighted. Maps, Profile & history and Online settings open their own screens.
+The main menu's **Play online** entry starts the client, creating a guest on
+first contact. The account chip presents sign-in and confirmation codes; banners
+explain offline/update-required states. Invite links use `takePendingJoin` and
+ask for trust when changing instance.
+
+A sidebar, or phone tabs, selects the panes:
+
+- **Play:** queue choice from `InstanceInfo.queues`, its map pool, primary Find
+  match action, players online/searching from `GET /api/v1/stats`, Create room,
+  Join by code and the last match. Rooms start invite-only unless Show in Open
+  rooms is selected.
+- **Rooms:** `GET /api/v1/rooms`, filters and available map previews, with Create
+  room or Quick match actions when empty.
+- **Leaderboard:** the player's rank and the top 50 of the first rated queue,
+  fetched while shown and highlighting the player's row.
+
+Maps, Profile & history and Online settings open their own screens. Recent match
+summaries combine the REST history with `match.updated` events.
+
 
 ### Room
 
@@ -285,21 +301,45 @@ From `match.start` to the first tick: seat confirmed, map download by hash, engi
 
 ### In-game connection HUD
 
-Implementation: `src/net/ConnectionOverlay.*`.
+Implementation: `src/net/ConnectionOverlay.*`, using the snapshot produced by
+`src/net/turn/TurnMatchPresenter.*` from the read-only turn session.
 
-Every turn game (online and LAN) shows a permanent panel with each player's state and latency where the "waiting for players" notice was, details on click or tap, one-line notices when a player drops or returns, and centre cards for this client's reconnect (with the grace time and Leave match), catch-up progress (with Leave match, and "can't keep up" once the gap has not shrunk for 15 s) and desync rejoin. The reconnect card also shows when the socket still looks open but nothing has arrived from the relay for 1.5 s, or the horizon has not moved for 1.5 s (`TurnSession::linkStalled()`); after 5 s of silence the session drops the link and reconnects. After a gap or a reconnect the delay estimate starts over: in-flight pings, jitter samples, the buffer target and seat round trips are forgotten, and the backlog's arrival spread is ignored for a second. A player who left stays in the panel as Left; the message list starts below the panel. In every turn game the in-game menu has no Load or Save, and Leave match asks for confirmation, saying what leaving costs. Presentation only: it reads the snapshot `TurnMatchPresenter` (`src/net/turn/TurnMatchPresenter.*`) builds from the read-only `TurnSession`. Rows show each player's Ping (the relay's round trip to them, `SeatLatency`) or, once they fall a second behind, how far Behind they are (`Presence.lagTicks`); the footer shows your own Delay. Names, units, words and thresholds are in [connection quality](connection-quality.md).
+Online and LAN games share a permanent per-seat connection panel, details view
+and notices for disconnects and returns. Centre cards present local reconnect
+with its grace countdown, catch-up progress and desync rejoin. The menu's Leave
+match action explains the consequence and asks for confirmation; turn matches
+do not expose Load or Save actions.
+
+[Connection quality](connection-quality.md) owns names, thresholds, units and
+presentation. [Turn timing and recovery](turn-timing.md) owns stalled-link detection,
+connection retry and buffering resets, and [engine integration](turn-engine.md)
+describes session teardown.
+
 
 ### Results
 
 Implementation: `src/game/screens/EndGameScreen.*`.
 
-A turn match this colony wins goes straight here (not to the classic "You have won!" dialog). Online matches add the outcome banner, with the reason (the opponent who left, the prestige goal, the fight; `EndGameScreen::describe`), and the rating card, which `match.updated` updates live and `GET /api/v1/matches/{id}` re-reads every 10 s while it is open. The card says where the result is: waiting for the other players to leave (the match still runs on the relay), recording or verifying (it ended; the verifier replays it), then verified, unverifiable, unrated room match or draw; after 45 s of waiting or 60 s of verifying it says that it is taking longer and that the result will appear in the history. Whoever left sees Defeat ("You left the match. It counts as a loss.") at once with "Final result after the match ends" instead of waiting for the others. A link opens `<origin>/matches/<id>`. Room matches return to the room; quick matches offer **Rematch** (`Online::requestRematch` → `match.rematch`, an unrated room with the same players; it reads "Join X's rematch" after `match.rematchOffered`).; the primary action, **Find another match**, searches the same queue again.
+The results screen opens when the local colony wins or leaves a turn match.
+Online matches add an outcome banner and rating card. `match.updated` refreshes
+it live; while open, the screen also rereads `GET /api/v1/matches/{id}` every
+10 seconds. It distinguishes a match still running, record collection,
+verification, verified/unverifiable outcomes, unrated room games and draws.
+After 45 seconds waiting or 60 seconds verifying, the card explains that the
+final result will appear in history.
+
+A player who leaves sees Defeat immediately, with the final result pending the
+match's end. A link opens `<origin>/matches/<id>`. Room games return to the room.
+Quick-match results offer **Find another match** for the same queue and **Rematch**
+through `Online::requestRematch`/`match.rematch`, creating an unrated room with the
+same players. A received `match.rematchOffered` names the inviter.
+
 
 ### Settings › Online
 
 Implementation: `src/ui/settings/SettingsScreenOnline.cpp`.
 
-See above.
+See [instances and stored credentials](#instances-and-stored-credentials).
 
 
 Quick-match cards start the shared search (`Online::quickMatch()`), shown as
@@ -328,12 +368,14 @@ game's session is gone until it is written (at most 3 s, and the shutdown screen
 waits for it), so closing the window does not leave the seat in reconnect
 grace.
 
-A client that stops reading for a while (a backgrounded phone app, a long
-reload) is not disconnected. The native WebSocket keeps at most 4096 unread
-messages or 1 MiB. When that limit is reached it stops reading, and TCP flow
-control holds the rest at the relay until the game drains the queue. The
-browser cannot pause a WebSocket, so it queues up to 16384 messages or 4 MiB,
-about eleven minutes of bundles at 25 per second.
+During backgrounding or a long reload, the native WebSocket buffers at most
+4096 unread messages or 1 MiB. At the cap it stops reading, allowing TCP flow
+control to hold traffic at the relay until the client drains its queue. The
+browser cannot pause WebSocket reads and instead queues up to 16384 messages or
+4 MiB. These are message/byte limits, not a guaranteed duration: bundle size,
+presence traffic and the relay's outgoing backlog also affect how long a paused
+client can remain connected. Recovery follows the turn session's reconnect path.
+
 
 **End-to-end check.** `OnlinePlayHarness` (`scons release=1 server=0
 online-play-test`) drives the real screens against a live instance. In a room

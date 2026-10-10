@@ -37,8 +37,8 @@ fallback only when the ordinary clearing geometry cannot fit; Old Growth does no
 has its own furnishing and final validation. Common crop
 repairs are deliberately avoided because they could insert renewable wheat; trail and room
 repairs can only remove resources. Numeric ID 47 is additive; save, replay and network formats
-are unchanged. Revision 2 records the geometry fallback; its previously playable golden
-fingerprints are unchanged. Generated maps use the existing full-world serializer.
+are unchanged. The geometry fallback applies only to requests the ordinary layout
+cannot fit. Generated maps use the existing full-world serializer.
 
 Telemetry records home geometry, requested/placed lakes, starting deposits, eligible dry field
 area, effective coverage, ambient deposits and the final total number of food rations. Default
@@ -96,9 +96,8 @@ Existing arithmetic and stream names are preserved for Old Growth compatibility.
   Mixed beach tiles are excluded. This supports final-world habitat validation after repairs.
 - `capResourceStock`: caps existing stocks without refilling, creating deposits, changing sprites
   or drawing RNG. Returns tile count and remaining stock from the same pass for telemetry. It
-  does not disable growth; callers must establish dryness separately. Locust capped its wheat
-  at one harvest with it until revision 4 and now sets three to five per tile itself; the
-  primitive stays for a finite crop that wants a cap.
+  does not disable growth; callers must establish dryness separately. Locust sets three to five wheat stock per tile directly; the primitive is
+  available to finite-crop designs that need a cap.
 - `startingAccessFailure`: read-only supply and room validator. Callers supply `MaterialId` values through `MaterialAccessRule`,
   names and travel budgets; it supports stone or fruit targets as well as wheat and wood. It
   floods from actual workers with the engine's non-swimmer predicate and reports the first

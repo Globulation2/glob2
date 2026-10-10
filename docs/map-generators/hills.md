@@ -18,10 +18,8 @@ Beyond the summit's cap the bands lobe in and out by up to four tiles, the same 
 for every band at a heading so their widths hold; the summit and its cap stay round.
 Every stair carries on past the outer cap as a three-corner sand road across the valley to the
 edge of the hill's ground (where another hill becomes the nearest) and four tiles past it, so it
-fords the valley river there (revision 7: "at least one sand road connecting from each of the
-spokes outwards to the edges of your square"). Between every two stairs, just beyond the outer
-cap's furthest lobe, a small wild patch of four crop tiles alternates wheat and wood (revision 7:
-"a couple small seeds of wheat and wood on the outside of each of the rings"). They lie within the
+fords the valley river and connects each stair to the neighboring valley. Between every two stairs, just beyond the outer
+cap's furthest lobe, a small wild patch of four crop tiles alternates wheat and wood. They lie within the
 growth probe of the hill's outer water band and spread into the commons over a long game; the
 amounts scale them to nothing.
 The open valleys offer fruit, quarry outcrops and expansion room. Optional vacant

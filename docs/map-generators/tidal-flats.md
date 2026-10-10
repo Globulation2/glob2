@@ -18,13 +18,10 @@ on its island's edge, and expansion means taking another island whole.
   pond's two sides and a quarry towards the map's centre, then scaled ambient farmland on its
   fertile ground and an outcrop. Every neutral island is an oasis: a pond, and every other tile
   of it under unscaled wheat, so taking one means clearing it first, with one prize inside, a
-  fruit grove or a stone deposit in turn. Since 2026-09-14 ("more of those pond + wheat or pond +
-  wood oases, especially on smaller maps with more players", and "a few more of the random green
-  patches"), `extra-islands` defaults to six per wedge (was three) and `sandbars` to eight (was
-  three); an oasis is 30 to 45 percent of a home island's radius, never under 3.5 tiles, rounder
-  than a home island, and keeps three tiles of sand from other features and four from a home island
-  (every feature used to keep eight); sandbars, the green patches a forward post stands on, are 3.5
-  to 5 tiles and keep the same gaps; and the scatter tries 240 times per feature (was 80). A 128 map
+  fruit grove or a stone deposit in turn. `extra-islands` defaults to six per wedge
+  and `sandbars` to eight; an oasis is 30 to 45 percent of a home island's radius, never under 3.5 tiles, rounder
+  than a home island, and keeps three tiles of sand from other features and four from a home island; sandbars, the green patches a forward post stands on, are 3.5
+  to 5 tiles and keep the same gaps; and the scatter tries 240 times per feature. A 128 map
   with six colonies is the limit: its home islands nearly touch, and only an oasis or two of the
   smallest size fits between them and the central island. With `central-island` (on) an island at
   the centre carries a pond, the orchard of all three fruits and a quarry. Algae seeds every pool

@@ -456,7 +456,7 @@ namespace Cortex
 		// must NOT copy enemy ground truth here — that would be a fog-of-war cheat
 		// baked into the observation surface (see AIImplementation.h:45-48: the
 		// engine does NOT fog AI reads, so gating is OUR job, and
-		// docs/AI/cortex/README.md). We expose only which enemy teams exist and
+		// docs/ai/development.md). We expose only which enemy teams exist and
 		// are alive (public, shown in the UI) plus VISIBILITY-GATED intel: each
 		// enemy entity is counted only if we can legitimately see it. We iterate
 		// the enemy's OWN entity arrays by index (never a std::set) and gate each

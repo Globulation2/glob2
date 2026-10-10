@@ -5,16 +5,11 @@ the courtyard of a bastioned star fort: an angular stone trace of arrowhead bast
 following every salient and re-entrant, a pale covered way, and the glacis itself - a broad ring
 of bare, cleared grass with a sand foot - standing out against the woods that crowd up to it.
 Sand tracks leave four gates over causeways; between the forts run meandering streams, crossed by
-the country roads at contested fords. Revision 1 (premade compounds on a plain of bare grass with
-straight wadis) read as neither a fortress nor a landscape, and Nicowar colonies on it bred 15
-times a game from their premade 48 and declined; revision 2 (2026-09-16) keeps the name and the idea of the killing ground and rebuilds
-everything else.
+the country roads at contested fords.
 
 - **The fort.** One stencil (`turnStencilTile`/`turnStencilVertex`, `Orbits.h`) stamped at every
   colony of a lattice (`latticeSites`, `dealStarts`) turned by one quarter turn drawn per map, so
-  every fort is an exact translation of every other (a facing per colony was identical tile for
-  tile but not for Numbi, whose scans run along the map's axes: its colonies reached 60 units in
-  one facing and 20 to 30 in the others). `fort-size` (20-36, 30) is the bastion tip radius;
+  every fort is an exact translation of every other to avoid orientation differences in axis-scanning AI heuristics. `fort-size` (20-36, 30) is the bastion tip radius;
   `bastions` (Mixed, Four-pointed, Five-pointed, Six-pointed; Mixed draws one per map) chooses the
   trace, whose curtain radius is 0.62 to 0.68 of the tip (a slender 0.56 trace read best but left a
   courtyard too small to grow a town in). Outwards from the trace: a wall 2.2 tiles thick, a berm
@@ -31,14 +26,10 @@ everything else.
   bastion (forts under 26 have no arc: the right half is all wood). Where a line meets the wall at a slant, any
   diagonal of grass it could not close becomes wall. Wheat is planted over 75% of each wheat
   garden, nearest the swarm first (a solid band from the garden line back), and wood over 45% of
-  the wood garden, scaled by the amounts, never below 40 wheat and 20 wood. The first rebuild had
-  two bastion gardens and then two equal halves; Nicowar colonies capped at 28 and then 42 units
-  and starved (30,000-tick games, seed 7), which is why wheat has three quarters of the gardens and
-  two cisterns. The cisterns stand at the back and the wheat is a band because Numbi breeds only
-  while the wheat block nearest its swarm measures about three tiles a colonist (`estimateFood`
-  scans one contiguous rectangle from the nearest wheat tile): with the cistern in the middle of
-  the patch, the forts facing two of the four ways scanned into the water and their Numbi colonies
-  stalled at 15 while the other two reached 60.
+  the wood garden, scaled by the amounts, never below 40 wheat and 20 wood. Renewable water exposure and harvest frontage support the food-heavy layout.
+  Cisterns stay at the back so they do not interrupt the contiguous wheat rectangle
+  nearest the swarm: Numbi's `estimateFood` scans that rectangle rather than the
+  entire food inventory, making patch continuity and orientation relevant.
 - **The country.** Every tile belongs to its nearest fort; along every boundary of more than 24
   tiles between two forts' country runs a stream, the boundary walk displaced by two sine waves of
   wavelength and phase drawn per stream and tapered to nothing at its ends, three corners wide.
@@ -57,14 +48,6 @@ everything else.
   joining a glacis to grass a crop could spread from; the gardens sealed from the town (a flood of
   the finished grass); every colony with the same number of towers; every colony walkable from the
   first; wheat within 24 and wood within 32 of every colony (`startingAccessFailure`).
-- **Played.** Rotation tournaments (six 256x256 maps, four colonies, every cyclic rotation, 45,000
-  ticks), revision 1 then the rebuild, per colony-game. Nicowar: peak units 64 to 107, births 15 to
-  105, wheat harvested 324 to 1,085, eliminations 33 to 11 of 96, combat deaths 11 to 14; no start
-  peaked under 51. Numbi (after the cisterns moved and the wheat became a band): peak 54 to 37,
-  births 9 to 35, eliminations 2 to 14 of 96; the premade base held 52 units it never grew, the
-  rebuild grows from four workers. That Numbi run still had a facing per colony, and its forts
-  facing one way reached 60 while the rest reached 20 to 30; the single facing per map that
-  followed has passed the sweeps and contracts but no tournament yet.
 
 ## Implementation source
 

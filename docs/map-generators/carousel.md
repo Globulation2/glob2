@@ -7,8 +7,7 @@ plaza. The court and that home are parted by a thin wall of stone that no unit c
 shoots over, so every colony's towers, in its own home against that wall, cover its neighbour's only
 way out. The concept depends on the lanes being tight, so they default narrow and every wall is a
 single line of stone with no water beside it. Inside the ring the sea stays: the plaza is an island
-in a lagoon with algae in it, and the spokes cross the lagoon between bands of stone (2026-09-14:
-farms reaching in towards the plaza made it "hard to know where you are on the map").
+in a lagoon with algae in it, and the spokes cross the lagoon between bands of stone to keep the lagoon distinct from the outer farmland.
 
 - **Geometry** (`geometryFor`, `drawLanes`). Designed once in the wedge's frame and turned for every
   colony; round on a rectangular map. The homes' outer edge is `kRingShare` of the half side (a little
@@ -23,13 +22,12 @@ farms reaching in towards the plaza made it "hard to know where you are on the m
   home; the plaza with its pond. A ring too crowded for a wall between a lane and another home, or for
   two colonies' lanes to stay apart, is refused.
 - **Farms** (`claimFarmFields`, `layFarmRows`). `growFarmFields` grows every colony one field out
-  beyond the ring (the inward field towards the plaza went with the lagoon, 2026-09-14), shared out
+  beyond the ring, shared out
   by equal yield for the colony's row angle, so a colony whose rows fall on the diagonal gets more
   ground, and kept only where every colony's field has room. Once the walls stand (below), `layFarm`
   lays rows along the colony's axis at `bestFarmRows` widths over the whole walled field, keeping
   three tiles of land round the water (six against open sea), with a sand cap closing the crop rows,
-  a sand bridge clean across the whole farm, water and crop rows alike, every 16 tiles (2026-09-14:
-  "so they go clean across the whole farm"; `water-crossings` and `crop-crossings`, both on, switch
+  a sand bridge clean across the whole farm, water and crop rows alike, every 16 tiles (`water-crossings` and `crop-crossings`, both on, switch
   each half) and, with `farm-plots` (on), a 10x4 building plot.
   `plantFarm` plants wheat along the water with one small woodlot. The farms are the homes' only
   water.
@@ -49,13 +47,13 @@ farms reaching in towards the plaza made it "hard to know where you are on the m
   court, down the spoke and across the plaza to its pond, so the way in can never be fully overgrown.
   Roads keep `kRoadSeaGap` from water and never touch a wall tile.
 - **Homes and prizes** (`furnish`). Scattered farmland on every home's fertile ground
-  (`furnishGround`) and no starter kit of wheat and wood blocks (2026-09-14: "there's already too
-  much food on this map"; the farm feeds the home, and `secureStartingCrops` is the backstop);
+  (`furnishGround`) and no starter kit of wheat and wood blocks: the farm feeds the home, and
+  `secureStartingCrops` supplies missing opening crops;
   nothing is planted within six steps of a lane. One grove of one fruit per court, and on the plaza
   only fruit: an orchard of the three fruits between every two spokes' arrivals, with no wheat or
   wood to smother it. Algae seeds the lagoon's shallows.
 - **Starting towers** (`planTowers`). `starting-towers` sets their level (0 none, when every site is
-  an open pad; default 1 since 2026-09-14, so players upgrade their own) and `tower-count` how many
+  an open pad; default 1, leaving upgrades to players) and `tower-count` how many
   (default 3), with three open pads. Every
   site stands in the colony's own home, directly against stone and within six tiles of a wall, chosen
   for how much of the previous colony's elbow (its court and lanes within twelve tiles) it covers

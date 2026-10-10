@@ -1,14 +1,14 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 # Copyright (C) 2026 The Globulation 2 Authors
 #
-# Cortex DECIDE pilot — decision-selection behavior-cloning trainer. Fits the
+# Cortex optional decision model — decision-selection behavior-cloning trainer. Fits the
 # numpy MLP to reproduce the hand rule's chosen decision class, applies the
 # contract's eval-time masking (mask by eligibility -> argmax ties->lowest),
 # reports BC parity metrics, and exports the cortex-decide-mlp-f32-v1 JSON.
 #
 #   python3 train_decide_bc.py --data <dir> --out <weights.json> [--epochs N]
 #
-# See docs/AI/cortex/DECIDE_CONTRACT.md (binding spec) and DECIDE_PILOT.md.
+# See tools/cortex-ml/training.md (binding spec) and decide_reward.py.
 # Sibling of train_bc.py (worker-cap).
 
 import argparse

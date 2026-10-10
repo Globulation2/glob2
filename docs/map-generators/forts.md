@@ -11,8 +11,7 @@ shallow moat runs all the way round each fort, broken only where the gate roads 
 and narrows round any tower that stands out past the wall (a beach may not touch stone).
 
 Every fort on a map is built to one design, so the colonies start alike, and the design
-changes from map to map. Before revision 7 every fort had its yard on the left and its
-plots on the right. The design combines:
+changes from map to map. The design combines:
 
 | Part | Choices |
 | --- | --- |

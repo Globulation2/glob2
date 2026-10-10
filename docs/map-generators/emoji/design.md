@@ -80,7 +80,7 @@ the first land beyond the first water and stops there, drawing nothing over the 
 own land. A crossing with no water to cross, or one that would only lead out into a
 lake (an inverse or filled face's eyes and mouth), is not laid at all, so no single
 colony gets a private causeway to a facial island, and the drawing keeps its look
-(maintainer review 2026-09-16). `emoji.crossings.placed` counts the ones laid. Flying and swimming units can take additional routes. Some
+. `emoji.crossings.placed` counts the ones laid. Flying and swimming units can take additional routes. Some
 facial features are deliberately offshore and may need swimming.
 
 The final validator checks every terrain corner against the pre-settlement design,
@@ -90,7 +90,7 @@ obstructions can be cleared along existing land; no emergency terrain is painted
 At non-default resource amounts, the shared cramped-start repair clears deposits
 to seek 48 nearby building origins, then rechecks the crop guarantee.
 The final minimum remains 32 origins. This addresses crowded high-abundance starts
-without changing the standard-abundance maps tested in the balance tournament.
+while keeping the standard-abundance layout policy.
 Narrow shorelines offer less expansion room than broad mainland starts. Crops can
 spread into initial construction clearings later, so colonies must manage space.
 
@@ -102,36 +102,18 @@ blocked, the glyph becomes unreadable, or a start repeatedly dominates games.
 
 ## Balance validation
 
-Revision 9 retains the opening policy selected through five experimental candidates
-and 320 additional AI tournament runs. On three retained problem maps, non-growing
-openings before combat fell from 16/96 colonies to 0/96. A separate sixteen-map
-fresh-seed check remained at 0/256. These are fixed-map rotations, not independent
-samples of every possible map. Gameplay used four colonies/four workers at 256×256
-and default abundance; the supported extremes received generation checks.
+Opening crop targets and room guards protect the initial economy, but do not
+promise equivalent military exposure. Grass-ink outlines can expose rim starts;
+enlarging the drawing alone does not address who reaches those starts first. Dry
+land outside the bypass has finite supplies, so expansion there can exhaust food.
 
-A later rotation tournament (six 256×256 maps, four colonies, every cyclic team
-rotation, four Nicowars, 45,000 ticks) found the filled and water-ink variants healthy and
-every grass-ink outline map with a rim start that was eliminated in three or four rotations
-whoever played it, and one such map with a start winning every rotation. Drawing the inverse
-outline at a quarter of the radius instead of 0.19 (16 corners at 256 rather than 12) was tried
-on six pinned seeds and changed nothing: 36 eliminations against 32 in 96 colony-games, the
-same position bias, the doomed starts still doomed. The width therefore stays as drawn; the
-exposure of a rim start is the inverse outline's character, and the lobby's start scorer does
-not see it. A four-Maxima run was even but showed Maxima starving in the hundreds on the dry
-plain outside the bypass, where nothing regrows; Nicowar does not expand there.
-
-Nicowar's strongest-position win counts decreased on all three matched full-game
-cases. Maxima's late-game balance remains less conclusive: 18/24 revised matches
-reached the 90,000-tick cap. Larger populations and longer competing economies are
-an intended change in feel; all capped matches still recorded late combat. Human
-play and longer matches are needed to judge final resolution and fun.
-
-Published review artifacts, screenshots and the complete evidence archive are on the
-[Emoji evidence branch](https://github.com/Globulation2/glob2/tree/evidence/emoji-map-generator).
-The tournament used engine/AI base `b28b4333f`; later AI changes on master were
-not part of these measurements. The final
-non-default resource repair passed all 64 extreme-setting generation cases and left
-the 19 standard-setting gameplay maps byte-identical to the tested candidate.
+Check filled, outline, inverse and water-ink variants separately, including complete
+seat rotations and resource extremes. Distinguish generation checks from populated
+play, and capped matches from decisive outcomes. Human play and long matches are
+needed to assess resolution and feel. Historical review artifacts are available on
+the [Emoji evidence branch](https://github.com/Globulation2/glob2/tree/evidence/emoji-map-generator);
+reproduce new measurements against the current engine and AI rather than treating
+those archived cohorts as current balance claims.
 
 ## Reproduction
 

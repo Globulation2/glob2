@@ -11,9 +11,7 @@ is a meeting at a known place.
 - **Territories.** The ground outside the outer wall is shared out by `balancedTerritories` from every
   colony's frontage (its wedge's arc just outside the wall): every tile goes to the colony whose frontage
   is nearest by steps less a weight per colony, and the weights are tuned until the areas are equal, so
-  every border is a smooth curve of equal weighted distance between two frontages. (Until 2026-09-13
-  the territories were grown a tile at a time with `territory-roughness` noise and smoothed by a
-  majority filter, which left every border ragged; the control is gone.)
+  every border is a smooth curve of equal weighted distance between two frontages.
 - **Homes.** Every swarm stands the same number of steps from its ramp (`siteAtDepth`), four tenths
   of the way to the shallowest territory's far end; the wheat and wood kit (no stone clump: the
   territory is walled in stone) faces the nearest sea; scattered fields by `furnishGround`.
@@ -25,13 +23,11 @@ is a meeting at a known place.
   territories.
 - **Prizes.** Orchards of the three fruits in the pit and on the innermost terrace, and an outcrop on
   every terrace, the same at every colony's angle.
-- **Starting towers.** `tower-count` towers (default 3, at `starting-towers` level, default 1 since
-  2026-09-14) and three open pads per colony in its own territory, each directly against the
+- **Starting towers.** `tower-count` towers (default 3, at `starting-towers` level, default 1) and three open pads per colony in its own territory, each directly against the
   arena's outer wall within 18 steps of the colony's ramp mouth and clear of the ramp itself,
   covering the most of the arena (terraces, pit and ramps) over the stone (`chooseTowerSites`,
-  `settleStartingTowers`). Until 2026-09-14 they stood along the border walls covering the
-  neighbours' territories, which "make no sense": the starting towers hold the door, and a colony
-  that wants towers on its borders builds them.
+  `settleStartingTowers`). The starting towers protect the arena entrance; border
+  defenses require further construction.
 - **Checked, not assumed.** Every designed stone present, every ramp walkable, territories within
   `kAreaTolerance` percent, every colony's seas the same size, no territory reaching another or the
   arena with the outer ramps shut, and even walks to the ramps and to the pit.

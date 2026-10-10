@@ -1,9 +1,9 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 # Copyright (C) 2026 The Globulation 2 Authors
 #
-# Cortex ML pilot — shared helpers for the offline-RL trainers (AWR, CQL).
-# The contract's eval-time action mask (ML_CONTRACT.md step 3) and a small value
-# baseline MLP. numpy-only, deterministic. See PILOT.md / ML_CONTRACT.md.
+# Cortex ML tools — shared helpers for the offline-RL trainers (AWR, CQL).
+# The contract's eval-time action mask (tools/cortex-ml-infer/format.md) and a small value
+# baseline MLP. numpy-only, deterministic. See reward.py / tools/cortex-ml-infer/format.md.
 
 import numpy as np
 
@@ -14,7 +14,7 @@ F_MAXBUILDLEVEL = FEATURE_NAMES.index("maxBuildLevel")  # 15
 
 
 def valid_action_mask(X, consts):
-    """Contract step 3 eval-time mask. Returns a (N, 20) bool array: class k
+    """Eval-time worker-cap mask. Returns a (N, 20) bool array: class k
     (0-based; action k+1) is valid iff WORKER_MIN <= k+1 <= swarmWorkerCap(row),
     where swarmWorkerCap = LATE if maxBuildLevel >= CAP_LIFT && freeWorkers > 0
     else base. Mirrors train_bc.masked_argmax / int_ref.swarm_worker_cap."""
@@ -32,7 +32,7 @@ def valid_action_mask(X, consts):
 
 
 def masked_argmax_actions(logits, X, consts):
-    """Masked argmax (ties -> lowest class index, contract step 4). Returns the
+    """Masked argmax (ties -> lowest class index, runtime action mask). Returns the
     chosen ACTIONS (1..20). Used for offline policy inspection."""
     mask = valid_action_mask(X, consts)
     masked = np.where(mask, logits, -np.inf)

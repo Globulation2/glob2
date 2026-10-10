@@ -90,7 +90,7 @@ Choosing **SGSL** and pressing OK clears an active JavaScript map runtime and
 reactivates the legacy script. Released maps can pair USL and SGSL; editing either
 legacy payload preserves the other and retains their existing execution behavior.
 
-To replace a map's USL script from the command line, write a new map:
+To attach a JavaScript scenario script from the command line, write a new map:
 
 ```sh
 glob2 --attach-map-script input.map /absolute/path/to/source.js output.map
@@ -320,13 +320,12 @@ parsing dependencies fail the build. There are currently no exceptions.
 The numeric corpus covers every exposed Math method, coercion, parsing and
 formatting, signed zero, subnormals, overflow/underflow, large arguments, rounding
 boundaries and fixed-seed vectors. It compares finite result bits and observable
-non-finite behavior. This is executed evidence for the tested vectors and builds,
-not a proof covering all possible scripts or inputs.
+non-finite behavior. The vectors do not prove equivalence for all possible
+scripts or inputs.
 
-Profile 1 remains unpublished while these defects are corrected. The former
-platform-dependent `hypot` result is intentionally replaced by the pinned result;
-its ARM64/x86-64 reproducer is retained as a regression. Released save, replay and
-network acceptance gates remain independent of this draft profile.
+The former platform-dependent `hypot` result is replaced by the pinned result;
+its ARM64/x86-64 reproducer remains a regression case. Save, replay and network
+acceptance have independent version gates.
 
 ## Hive Mind host
 

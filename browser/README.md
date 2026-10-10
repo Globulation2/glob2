@@ -368,7 +368,7 @@ this flag for error assertions, and omit it from performance measurements.
 The browser steps simulation on the application host even in its threaded
 runtime; background AI/gradient workers do not enable the native separate
 simulation runner. Local match presentation uses animation-frame callbacks
-independently of the 25 Hz simulation clock. Each callback consumes input once
+independently of the 30 Hz default simulation clock. Each callback consumes input once
 and advances due ticks within a six-millisecond work budget, always allowing
 one due tick to finish. Accelerated play batches ticks instead of scheduling a
 nested timer per tick. An individual expensive tick can exceed the budget; it

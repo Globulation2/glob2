@@ -172,20 +172,14 @@ or map-array capture. `Game::drawMap` requires an explicitly supplied frame;
 ### Simulation tick rate
 
 Normal speed is 30 simulation ticks per second, independently of render FPS.
-Per-tick movement, production, combat, hunger and AI rules retain their existing
-values, so normal play progresses 20% faster than the former 25 TPS clock.
-Speed presets scale relative to this new normal. Engine deadlines accumulate
+Speed presets scale relative to that rate. Engine deadlines accumulate
 nanoseconds before rounding host waits to milliseconds; the relay advertises
 30,000 millihertz and clients use its negotiated interval. Game clocks,
 statistics rates and newly configured minute-based winning conditions use 30 TPS.
 Autosaves retain approximately one-minute real-time spacing, and camera panning
 retains its presentation cadence.
 
-Save bytes and the supported save/replay format floors are unchanged. Existing
-saves retain their tick counters, pending orders and timers and resume at the new
-pace; existing replays play their recorded ticks faster. The simulation revision
-separates online matches from older engines, including the changed conversion of
-new minute-based winning conditions to ticks.
+Saved tick counters, pending orders and timers resume through the selected game-speed configuration. Sim-version admission prevents incompatible engines from sharing an online match.
 
 ### Target render FPS
 
@@ -194,9 +188,7 @@ local drawing ceiling for games, replays, menus, dialogs and the editor. Presets
 are 25, 30, 60, 90, 120, 144, 165 and 240 FPS, plus Unlimited. The default is
 60 FPS, including profiles without the new `targetRenderFps` preference; `0`
 means Unlimited. Unsupported or malformed values load as 60. Changes apply at
-once and are independent of graphics detail presets. The previous threaded
-native game loop capped drawing at approximately 120 FPS. The lower default
-reduces rendering work and can reduce camera and interpolated animation smoothness.
+once and are independent of graphics detail presets. Lower render ceilings reduce drawing work and can reduce camera and interpolated animation smoothness.
 
 `RenderFramePacer` uses nanosecond drawing-start deadlines associated with the
 graphics context. Screen hosts skip painting while still dispatching input,
@@ -313,7 +305,7 @@ simulation, saves and replays are unaffected.
   on. `Game::drawMap` updates it once per frame from the drawn Scene, and resets it while
   the fade is not drawn (setting off, or `DRAW_WHOLE_MAP`), so it is `active()` exactly when
   the frame draws the fog faded. A tile changing state fades linearly from wherever it had
-  reached, into the fog over `FogFade::DARKEN_TICKS` (37.5, or 1.5 seconds at normal speed)
+  reached, into the fog over `FogFade::DARKEN_TICKS` (37.5, or 1.25 seconds at normal speed)
   and out of it over `FogFade::REVEAL_TICKS` (4). A new map, other visible teams, a step back in time, a jump
   forward of more than `FogFade::SETTLE_JUMP_TICKS` (64) or a reset settle every tile
   without fading.
@@ -338,3 +330,25 @@ simulation, saves and replays are unaffected.
 
 
 See [adaptive zoom detail](zoom-detail.md).
+
+## Clouds, bars and resource batches
+
+Cloud patches in the flat game and editor views use a coarser, world-anchored
+lattice when zooming out to half size or smaller. Patches retain at most their configured
+1:1 size on screen; normal zoom keeps the original sampling. The field and animation
+time remain unchanged, but distant clouds have less fine detail. The torus view
+retains its separate sampling budget.
+
+Point bars batch opaque fills within each bar using bounded OpenGL or SDL geometry
+submissions. OpenGL outlines and translucent fills preserve their original order;
+software surfaces retain their existing path. Full-map terrain and resource passes
+skip fog discovery queries when `DRAW_WHOLE_MAP` already makes every tile visible.
+
+Flat-map resources use a bounded OpenGL/portable SDL sprite batch, including
+standalone frames from partial HD packs. Draws sharing a texture and alpha can join an earlier run
+only when their rectangles do not overlap intervening runs. Conservative bounds
+preserve the order of overlapping artwork while reducing draw submissions and
+texture switches without changing sampling or allocating another texture atlas.
+OpenGL texture uploads flush pending draws, and the scope flushes before leaving
+the resource pass. Software surfaces and dynamic team-color sprites retain their
+existing paths; cache-backed team-color surfaces cannot be deferred safely.

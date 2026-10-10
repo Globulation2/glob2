@@ -1,13 +1,16 @@
-# Cortex ML — BC trainer (numpy-only)
+# Cortex training tools
 
 Behavior-cloning tooling for optional Cortex worker-tuning policies. Start with
 [AI development](../../docs/ai/development.md). The maintained inference contract is
-[the quantized format](../cortex-ml-infer/FORMAT.md), with feature extraction and
+[the quantized format](../cortex-ml-infer/format.md), with feature extraction and
 policy gates in `src/ai/cortex/`. Training uses seeded NumPy operations.
 
 The default native controller does not require a trained model. Optional runtime
 selection is controlled by `GLOB2_CORTEX_POLICY` and `GLOB2_CORTEX_NET`; see
 `CortexPolicy.cpp` for the corresponding decision-policy mode.
+
+For trace compatibility, reward definitions and the current 19-candidate runtime
+versus 18-class training boundary, read [the training reference](training.md).
 
 ## Files
 
@@ -19,7 +22,7 @@ selection is controlled by `GLOB2_CORTEX_POLICY` and `GLOB2_CORTEX_NET`; see
   by default — those are governed by a hard C++ clamp (cap 1) that bypasses the
   net, so the net should learn buffer control, not memorise that rule. Also
   provides `TraceFile.transitions()`: the per-file gid-join into `(s_t, a_t,
-  s_{t+1})` tuples for the LATER RL reward step (BC does not use it). Joins never
+  s_{t+1})` tuples for offline reinforcement learning (BC does not use it). Joins never
   cross files — gid is unique only within one game+team file.
 - `mlp.py` — numpy MLP `16 → Dense(32) → ReLU → Dense(32) → ReLU → Dense(20)`,
   manual forward + backprop, softmax cross-entropy for TRAINING only (inference is

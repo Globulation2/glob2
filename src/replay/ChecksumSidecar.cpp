@@ -20,8 +20,7 @@ ChecksumSidecarWriter::~ChecksumSidecarWriter()
 }
 
 // The on-disk sidecar format is canonically little-endian (see
-// docs/replay-verification.md); the Rust reader in
-// glob2-sim/src/cross_replay/sidecar.rs decodes with from_le_bytes.
+// docs/development/headless-replays.md).
 // SDL_SwapLE* is a no-op on little-endian hosts, so sidecars written
 // before this conversion existed remain valid there.
 // All writes funnel through here so a single short write flips the sticky

@@ -62,7 +62,7 @@ one relay would. Its contract is in
 - **New matches refused.** A draining or full relay refuses a new match with
   `Reject(5)`, and still admits reconnects to its running matches.
 - **Timing and threads.** Each match sleeps until `TurnSequencer::nextWakeMicros()`:
-  the next bundle while anyone is connected (25 wakes a second), the earliest grace
+  the next bundle while anyone is connected (30 wakes/s with default one-tick bundles), the earliest grace
   expiry (at most a second away) while nobody is, and at once when an event left a
   presence change to broadcast. An update after a long sleep broadcasts the whole gap
   in one bundle. Every sequencer runs on one event-loop thread. The sequencer's own
@@ -102,8 +102,8 @@ majority repairs. It also checks that a stalled client never stalls the others, 
 each client's buffer follows its own link's jitter, and that each player's input delay
 follows their own connection. A regression case requires the mean and p95 input delay
 to stay within bounds on loopback (60 / 80 ms) and at 50 ms one way (150 / 170 ms),
-with no long stalls. A `[benchmark]` case writes the delay and stall table above
-(`turn-delay-profiles.txt`). Summaries are written under `artifacts/tests/`.
+with no long stalls. A `[benchmark]` case writes `turn-delay-profiles.txt`; see
+[measurement methodology](turn-timing.md#measured-delay). Summaries are written under `artifacts/tests/`.
 
 The relay's own tests (`glob2-relay-tests` and `test/relay_service/`) run this protocol over
 real WebSockets against `glob2-relay`; see [relay.md](relay.md#tests).

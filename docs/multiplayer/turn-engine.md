@@ -89,7 +89,7 @@ the session (presence, latency, buffer) for a connection HUD.
   the `Quit` is written (at most 3 s; the shutdown screen waits for it), so closing the
   window still tells the relay the seat left. The in-game Quit menu and the end-of-game
   dialog's Quit queue the usual `PlayerQuitsGameOrder`; in a turn match the engine
-  sends `Quit` in its place (with the reason above), and the relay sequences the
+  sends `Quit` in its place (with `GameFinished` or `PlayerQuit` as described for session teardown), and the relay sequences the
   same quit order and marks the seat left. Submitting the order itself would leave
   the seat before the `Quit` could say the game was decided, and every finished
   match would be reported as abandoned.
@@ -129,7 +129,7 @@ changing the protocol or the record: see [network telemetry](../development/netw
    is `AI::NONE`) and their `aiConfig`. Each team's ally-team number is
    `alliance + 1`. The rules set the `GameHeader` setters of the same names, starting
    from the default winning conditions with prestige and the sudden-death timer
-   (`minutes × 60 × 25` ticks) toggled.
+   (`minutes × 60 × GAME_TICKS_PER_SECOND` ticks, with 30 ticks/s by default) toggled.
 
 **Seats, players and teams.** A human or AI seat is a player: seat `s` is
 `BasePlayer` `s`, and that number is what tickets (`seat`, `humanSeats`), the relay,

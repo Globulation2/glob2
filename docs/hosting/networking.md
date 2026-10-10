@@ -80,8 +80,7 @@ checks the redirects.
 `glob2online.com` is the public website, **Globulation 2 Online**: an Astro site
 in the separate
 [Globulation2/glob2-online-website](https://github.com/Globulation2/glob2-online-website)
-repository on Firebase Hosting (project `pharaoh-418820`), with the redirects
-above in its `firebase.json`.
+repository on Firebase Hosting (project `pharaoh-418820`), with the [app-route redirects](#separate-public-website-and-app) in its `firebase.json`.
 `app.glob2online.com` runs this stack and is the official instance origin
 (`scons/official_instance.py`; its former origin is `https://glob2online.com`).
 Website releases never restart platform services or matches. Public rating
@@ -174,15 +173,16 @@ after a change, allow a day or reinstall the app.
 
 The apps take the domain from `scons/official_instance.py`: the Android build fills
 the App Link host (`officialInstanceHost` in `AndroidManifest.xml`) from it, and
-`mobile/ios.py` writes `applinks:<host>` into the iOS entitlements, both currently
+`mobile/ios.py` writes `applinks:<host>` into the iOS entitlements, both using the default host
 `app.glob2online.com`. The Amazon and China editions leave online play out, so they
 declare neither invite links nor associated domains.
 
 #### Setting up the official instance
 
-`app.glob2online.com` serves the iOS file already (Team ID `CL2MNNYQX3`, also in
-Apple's CDN); `assetlinks.json` answers 404 until the Play app-signing SHA-256 is
-added. The values the maintainer supplies:
+Configure the official instance with its registered application identities.
+The workflow records Apple Team ID `CL2MNNYQX3`; confirm it against the account
+before updating the association files. Android associations require the Play
+app-signing certificate. Supply these values:
 
 | Value | Where it comes from |
 | --- | --- |

@@ -40,8 +40,7 @@ the bars this map, and which bars join which is redrawn every seed.
   a stone clump behind) and its promised bar an unscaled wheat and wood clump; every bar's grass
   is furnished a third under crops in patches along its shores (`furnishGround`, 2:1 wheat to
   wood), the bank strips at a quarter of that, the dry terraces get finite woodlots and stone
-  outcrops and, so the plain behind the moraine is not one sheet of grass (a maintainer's first look
-  found it bland), patches of sand: `dry-patches` (0 to 30, 12) percent of each terrace's inland
+  outcrops and patches of sand to break up the dry plain behind the moraine: `dry-patches` (0 to 30, 12) percent of each terrace's inland
   grass where a period-18 noise peaks (`sprinkleSand`, rounded patches rather than speckle), eight
   steps or more from water so the bank strip and the moraine's contour keep their grass, two tiles
   off the bluffs and hummocks (a sand corner spoils the tiles round it and stone stands on pure
@@ -55,19 +54,13 @@ the bars this map, and which bars join which is redrawn every seed.
   tile, every channel's core outside its riffles, every riffle open across with walkable land at
   both ends (`fordFault`, `fordLandingWalkable`), every colony walking to colony 0, and every
   colony walking onto its promised bar and standing beside wheat and wood.
-- **Played, and bimodal.** A rotation tournament (six 256×256 maps, four colonies, every cyclic
-  team rotation, four Nicowars, 45,000 ticks) split the starts: on four maps every colony grew to
-  66 to 155 units, while on two maps three of the four starts stalled at 15 to 25 units (peaks of
-  26 to 44, nine to eighteen buildings) with almost no starvation, no trapped units, and a fifth
-  of the harvest of the start that thrived. The start metrics do not separate the two (wheat two
-  to five steps away, comparable fertility and room), so this is an AI stall on the dry terrace
-  rather than a geometry defect the generator can measure; the defaults stand, and the retained
-  maps are the material for a follow-up with other AIs and human play.
-- **Played again with the dry patches.** The same protocol on revision 2 (12% of the terraces'
-  inland grass in sand patches): the same economy within noise (pooled per-start units 58 to 96
-  against 62 to 103, wheat harvested per colony 218 against 239, births 102 against 109), the same
-  bimodal stalls on the same maps, and no significant position bias. The patches cost the terrace
-  nothing a colony uses; they are the look of a dry plain.
+## Playtest focus
+
+Dry terraces can produce AI opening stalls even when nearby resources, town room
+and geometry checks pass. Compare multiple controllers and complete seat rotations,
+and inspect hauling and construction rather than treating a low unit peak as proof
+of a disconnected start. Inland sand patches add visual variation while preserving
+bank crops and town building room.
 
 ## Implementation source
 

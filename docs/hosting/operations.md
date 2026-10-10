@@ -4,6 +4,8 @@ Health checks, retention and whole-stack verification. Run destructive tests on 
 
 ## Operations
 
+Run the Compose commands in this section from `deploy/`.
+
 - Logs: `docker compose logs -f platform-api relay`; Compose keeps up to 100 MB per
   container (local driver, five 20 MB files).
 - Relay metrics are Prometheus text at `http://<relay>:7495/metrics` on the backend
@@ -47,6 +49,9 @@ states these periods to players; change it together with `maintenance.ts`.
 
 ## Testing a deployment
 
+Run the Python commands below from the repository root. The `--psql` command
+passed to `live_match_e2e.py` needs an explicit Compose file when run there:
+
 ```sh
 python3 test/deployment/platform_stack_smoke.py --log-dir artifacts/platform-stack
 ```
@@ -87,7 +92,7 @@ reported the match, uploaded its record and the verify-match job judged it
 ```sh
 python3 test/deployment/live_match_e2e.py --origin https://play.example.org \
     --glob2 build/linux/client/release/src/glob2 --out artifacts/live-e2e \
-    --psql "docker compose -p glob2-platform exec -T postgres psql -U glob2 -d glob2 -At"
+    --psql "docker compose -f deploy/compose.yaml -p glob2-platform exec -T postgres psql -U glob2 -d glob2 -At"
 ```
 
 `--mode queue --queue <id>` plays a rated quick match instead: two new local

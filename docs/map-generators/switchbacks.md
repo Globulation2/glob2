@@ -19,11 +19,9 @@ next leg up. Every home reaches a walled wheat farm on either flank.
   (`growFarmFields` with no gap), joined to the home with no coast between. Then every tile of sea left
   is filled to its nearest field (`fillToNearest`, the whole map as its reach), so the farms always
   grow to fill the available space, and a single line of stone stands on every border between one
-  colony's ground and another's (`labelBorders`): nothing but stone parts two colonies, as on Carousel
-  (third play, 2026-09-13; before this the fields kept three tiles of water from each other and the
-  mountains, which on a 256x128 map took over half the sea). Rows run across the axis at `bestFarmRows`
+  colony's ground and another's (`labelBorders`): stone separates the colonies without wasting farmland on intervening water. Rows run across the axis at `bestFarmRows`
   widths (`layFarm`, rim 3), with a sand cap, a sand bridge clean across the whole farm every 16
-  tiles (2026-09-14; before, only the water rows; `water-crossings` and `crop-crossings`, both on, switch
+  tiles (`water-crossings` and `crop-crossings`, both on, switch
   each half) and a 10x4 building plot under `farm-plots` (on);
   wheat with one woodlot (`plantFarm`).
 - **Walls.** The mountains' rock, the border lines between colonies, and a sealed coast on whatever sea a
@@ -31,11 +29,11 @@ next leg up. Every home reaches a walled wheat farm on either flank.
   before the fill, so the mountains' inner ends join round the plateau and nothing outside the trails
   comes near it.
 - **Homes and plateau.** Round homes (`stampRoundHome`) whose farms are their water on every size of
-  map (128 maps had two home ponds instead until 2026-09-13), with no starter kit of wheat and wood
-  blocks since 2026-09-14 (the farms on either flank feed the home; `secureStartingCrops` is the
-  backstop). The plateau has a pond and only fruit, an orchard of the three fruits between every
+  map, with no starter kit of wheat and wood blocks: the farms on either flank feed
+  the home, and `secureStartingCrops` supplies missing opening crops. The plateau has a pond and only fruit, an orchard of the three fruits between every
   two summits, so nothing overgrows it.
-  2026-09-14) and four open pads per colony, all on its trail
+- **Starting towers.** `tower-count` (default 3) towers at `starting-towers` level
+  (default 1; zero omits towers), and four open pads per colony, all on its trail
   beside the walkway down its middle, each directly against stone on the inner side of a wall - the side
   towards the middle of the map - so it shoots across the stone at the next leg up, where attackers
   coming down from the plateau pass (`chooseTowerSites` counting the colony's own trail). A trail too

@@ -548,7 +548,8 @@ python3 test/run_tests.py --filter 'TournamentCompatibility/*'
 python3 test/tournament_cli_integration.py --output artifacts/tournament-cli
 ```
 
-CI runs these with the production Linux binary and retains CLI evidence. The
+Hosted native verification runs these with the production Linux binary and retains
+CLI evidence when selected by the coverage policy. The
 opt-in `test/tournament_reliability_pilot.py --help` describes the localhost/five-host
 pilot; it intentionally kills only its own processes and simulates connection loss
 by withholding coordinator contact, without rebooting hosts or changing networking.
@@ -587,8 +588,8 @@ above. Both use the same production report serializer.
 match that is already decided is not played out. It is off by default, because it
 changes the outcome that gets measured and so must be asked for.
 
-Historical calibration is described in the model guide; it has not been rerun
-against current AI and game rules. The threshold accepts 0 (off) or 501–1000.
+Calibration and its limits are described in the model guide. Evaluate the model
+against the AI and game rules in the cohort you intend to measure. The threshold accepts 0 (off) or 501–1000.
 Experiment `rules` also pass through the shared `--rule` interface. Games it ended report a `termination`
 of `win_probability` rather than `engine_end`, and `observations()` carries the
 raw termination through, so analysis can pool, exclude or compare them but can
@@ -721,6 +722,10 @@ the frozen portable package as an input named `generator-package` (or numbered
 `generator-package-*` inputs for several packages). The adapter supplies them through
 `--generator-package`; package artifacts therefore participate in job identity and
 travel with the request. See [generator authoring](../map-generators/javascript.md).
+
+## Related guides
+
+See [AI evaluation](../ai/README.md), [map-generator verification](../map-generators/verification.md), and the [tools index](README.md).
 
 ## Related guides
 

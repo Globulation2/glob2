@@ -48,15 +48,10 @@
 
 ### Keeping the approaches open
 
-Initial revision-1 playtesting found an important distinction between a ford and
-an accessible ford. In the retained 256×256 seed 51001 Numbi mirror, all four
-colonies had armies and attack flags at 45,000 ticks, but all twelve directed
-colony pairs were unreachable on foot and there had been no melee combat. Bank
-vegetation separated the towns from the otherwise intact crossings. Maxima could
-clear routes, which hid the problem in advanced-AI-only testing.
-
-Revision 2 connects both ends of every fitted ford to the protected town rim on
-that island with a three-corner-wide sand approach. Island labels are computed
+A ford must have usable approaches as well as a dry crossing. Bank vegetation can
+otherwise isolate towns from an intact crossing, especially for controllers that do
+not clear their own routes. Both ends of every fitted ford connect to the protected
+town rim on that island with a three-corner-wide sand approach. Island labels are computed
 before fords are laid, so the nearest-clearing search cannot cross a river to
 service the wrong bank. Shared Dijkstra routing uses cardinal/diagonal costs
 10/14 and blocks water and town footprints. Widening never paints water or the
@@ -66,7 +61,7 @@ require workers to clear vegetation before an army can leave home.
 
 The regression test fills the grass reachable by existing crops, conservatively
 ignoring fertility, then verifies colony connectivity and usable island clearings.
-It fails against revision 1 and passes with the approaches. Actual buildings and
+Actual buildings and
 combat can still change access later; this is a crop-containment guarantee, not
 an unlimited traffic-capacity claim.
 
@@ -79,14 +74,8 @@ not immunity from cross-channel fire.
 
 ### Keeping resource repairs out of towns
 
-The revision-2 bulk sweep generated every supported request, but ten extreme-resource
-maps invoked the emergency crop guarantee. Seed 711038 (128×128, four colonies,
-eight workers, rejoining frequency 3, wheat/stone/fruit 300%, wood/algae 0%) exposed
-the consequence: ambient resources occupied the wood kit's bank sites, and the
-fallback planted wood inside a protected town. The initial map passed its room and
-connectivity checks, but the crop-saturation regression then trapped the colony.
-
-Revision 3 plants guaranteed bank kits before ambient decoration, giving starter
+Ambient resources can occupy bank kit sites and force emergency crop repair into
+a protected town. Guaranteed bank kits are planted before ambient decoration, giving starter
 supplies priority without taking town space or changing terrain. The validator also
 rejects wheat or wood inside any town plot, even when today's free-building count
 looks sufficient. Regression fixtures include the small seed and related 256×256

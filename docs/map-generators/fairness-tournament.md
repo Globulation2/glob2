@@ -119,50 +119,23 @@ own team-index bias with no map effect at all.
 Before blaming the maps for a win-rate skew by colony index, ask whether the placement code hands
 any index a better start. `tools/colony_start_metrics.py` rolls every playable generator over a
 range of seeds with the study tool's `quality` output and averages each colony's measured start by
-its index. On 2026-09-12, at 256x256 with 4 colonies over 40 seeds of every playable generator
-(680 maps), the pooled means were flat to the last digit that matters:
-
-| Colony | Start score | Wheat distance | Wood distance | Room | Isolation | Nearest rival | Build sites |
-| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| 0 | 0.673 | 3.9 | 6.6 | 0.811 | 0.996 | 84.3 | 875 |
-| 1 | 0.669 | 3.8 | 6.2 | 0.803 | 0.994 | 86.0 | 890 |
-| 2 | 0.672 | 4.0 | 6.3 | 0.804 | 0.994 | 82.6 | 891 |
-| 3 | 0.669 | 3.8 | 6.3 | 0.798 | 0.994 | 84.5 | 888 |
-
-So the skew a partial tournament run found (colonies 2 and 3 winning about twice as often as 0
-and 1, pooled over two of the four rotations) is not in what colonies are given: not in their
-resources, their room, or how far their nearest rival stands. What remains is how the games
-unfold from equal starts, which only full-rotation tournament games can separate from the team
-index. Per generator the table is noisier, and two of the older generators do show an ordering
-effect in nearest-rival distance (Islands' later colonies and Rugged archipelago's colony 0 sit
-closer to a rival); the script prints the per-generator tables for that.
+its index. Compare pooled means and per-generator tables: a flat pooled mean can
+hide one landscape's ordering effect. Generation measurements describe what a start
+is given; complete rotations describe how games unfold from it.
 
 ## What a full-rotation run says
 
-The `smoke` preset played in full on 2026-09-12 (Symmetric arena, Contested commons, Watershed
-and Crater lakes; three 128x128 maps each; every rotation twice; 96 games, 82 decided by
-elimination) separates the two questions the partial run could not:
+Separate wins by engine team index from wins by generator colony index. Incomplete
+rotations confound them, especially when a few maps are dominated by one start.
+Use symmetric baselines, independent maps and uncertainty estimates before claiming
+an engine-index effect.
 
-- **No engine team-index bias is detectable.** Pooled over all rotations, wins by team index were
-  28 / 21 / 23 / 24 (p 0.80); on the Symmetric arena baseline 9 / 2 / 7 / 6 (p 0.21).
-- **No colony-index skew replicates.** Pooled per generator, wins by the generator's colony index
-  were 8 / 8 / 7 / 1 for Contested commons, 7 / 9 / 4 / 4 for Watershed and 1 / 8 / 6 / 9 for
-  Crater lakes: no shared pattern, and nothing like colonies 2 and 3 winning twice as often. The
-  partial run's skew came from two rotations of unevenly dominated maps.
-- **Individual maps are grossly unfair, and that is the real defect.** On seven of the nine
-  asymmetric maps one start won seven or eight of its eight games whichever team played it
-  (Contested commons: start 0, start 1 and start 2 on its three maps; Watershed and Crater lakes
-  one map each at 8 of 8). Position bias was 29 to 35 percentage points against a 14-point floor
-  for a fair map; Symmetric arena, identical starts by construction, sat at 0.
-- **The start scorer only partly sees it.** Within-map rank correlation between start score and
-  win share was 0.68 for Crater lakes, 0.59 for Contested commons and -0.17 for Watershed; the
-  scorer's favourite won 71%, 62% and 17% of those generators' games. Whatever makes a start
-  dominate is only partly resources, room and distance.
-
-So the work ahead is per-map, not per-index: find what a dominant start has that the scorer does
-not measure (expansion room in the direction of the commons or the delta, who is reachable first,
-chokepoints), teach the scorer, and let the lobby's best-of-five reject the lopsided rolls. The
-run's `summary.md`, `games.csv` and `colonies.csv` are the material for that.
+Inspect individual maps as well as pooled results. A start that wins regardless of
+which team occupies it suggests position bias; low rank correlation between start
+score and win share suggests missing predictors. Expansion toward the commons,
+first contact and chokepoints can matter beyond resources, room and rival distance.
+Keep run tables and retained maps as review evidence; record the engine/AI source
+revision before generalizing a result.
 
 ## Adjudication
 
@@ -228,32 +201,12 @@ colony index (does the generator favour a colony it places early or late?) and w
 
 ## Cost
 
-Measured with a release build on an 8-core arm64 Mac shared with another build: four Nicowar
-colonies, three games at a time and the default 90,000-tick cap (60 minutes of game time), on one
-Symmetric arena and one Contested commons map, every rotation once.
-
-| Map | Games | Wall time per game: mean / median / range | Seconds per 1,000 ticks | Reached the cap |
-| --- | ---: | --- | ---: | ---: |
-| 128x128 | 8 | 26.9 / 24.1 / 9.3-59.3 s | 0.38 | 4 of 8 |
-| 256x256 | 8 | 288.7 / 279.6 / 233.2-357.4 s | 3.21 | 8 of 8 |
-
-Generating a map with its five lobby rolls and every rotation check takes about a second, so games
-are the whole cost. A run takes about `games x mean time per game / jobs`:
-
-| Run | Games | Projected wall time at 3 jobs |
-| --- | ---: | --- |
-| `smoke` (4 generators x 3 maps x 4 rotations x 2 seeds, 128x128) | 96 | about 15 minutes |
-| `standard` (15 generators x 12 maps x 4 rotations x 3 seeds, 128x128) | 2,160 | about 5.5 hours |
-| `standard --size 256` | 2,160 | about 58 hours |
-| `standard --size 256 --map-seeds 2001-2004 --games-per-rotation 1` | 240 | about 6.5 hours |
-
-Game length varies by generator (a map where colonies stall reaches the cap sooner in wall time
-than one they build out), and the machine was shared, so treat these as rough.
-
-The presets use 128x128 because at 256x256 no game finished within 90,000 ticks. Every 256x256
-result is then an adjudication: colonies were almost all still alive, several often shared the
-same prestige, and population decided. A higher `--tick-cap` gets more games won outright, at a
-proportional cost in wall time.
+Estimate wall time from `games × mean seconds per game / jobs` using a pilot on
+current hardware and the intended maps/controllers. Population, map size, tick cap
+and simultaneous workloads can change cost substantially. At normal simulation
+speed, 90,000 ticks represent 50 minutes of game time; headless wall time differs.
+Inspect the cap share and raise the tick budget when adjudication dominates rather
+than claiming every capped outcome is an outright victory.
 
 ## Limits
 

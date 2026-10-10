@@ -27,7 +27,7 @@ auth:
       }
 ```
 
-On a single host, `deploy/configure-signin.py` makes both edits and restarts the
+From the repository root on a single host, `deploy/configure-signin.py` makes both edits and restarts the
 services in one step, taking the secret from standard input so that it stays out
 of the command line and the shell history:
 
@@ -118,7 +118,8 @@ with that JWKS and refetch it when they meet an unknown key id. The keys are
 `<kid>.pem` files in the `signing-keys` volume; `init` creates the first one
 (`k<yyyymmdd>`) when the volume holds none, and never replaces a key.
 
-To rotate (for example yearly, or at once if a key may have leaked):
+Run the rotation procedures below from `deploy/`, where the deployment `.env`
+and Compose file live. To rotate (for example yearly, or at once if a key may have leaked):
 
 ```sh
 # 1. Keep the current key signing while the new one is published.

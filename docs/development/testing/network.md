@@ -27,7 +27,7 @@ Switches the online and LAN tests use:
 - `GLOB2_LAN_ADDRESS=<ip>`: the address a LAN host advertises and puts in its
   certificate, for machines with several interfaces.
 - `GLOB2_LAN_DELAY_BUNDLE=1`: only the one-tick-bundle rows of the LAN input delay
-  benchmark (below).
+  benchmark in [LAN session verification](#real-lan-session-regression).
 
 ## Real LAN session regression
 
@@ -48,7 +48,7 @@ create databases, and is skipped otherwise (see `docs/multiplayer/client.md`).
 From the repository root:
 
 ```sh
-scons -j2 release=1 server=0 lan-test
+scons --build=build/native-tests -j2 release=1 lan-test
 python3 test/run_lan_session_test.py build/native-tests/src/LANSessionHarness
 ```
 

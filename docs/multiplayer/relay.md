@@ -162,18 +162,21 @@ each bundle leaves on its tick boundary; the earliest grace expiry, at most a se
 away, while nobody is connected; the load-barrier deadline before the first tick; and
 at once when an event (a connection, a disconnect, a quit) left a presence change to
 broadcast, which cuts the current sleep short. Grace expiry, arbitration timeouts and
-the presence refresh all fall on those wakes. A running match therefore wakes 25 times
-a second (it used to wake every 10 ms, 100 times a second), and an empty one about once
-a second. At the default bundle interval of 1 the relay sends each client 25 bundles
-per second; client-to-relay frame limits are unaffected.
+the presence refresh all fall on those wakes. With the default 30 ticks/s and
+one-tick bundles, a running match wakes and sends each client a bundle about
+30 times/s; an empty match wakes about once/s. Client frame limits are separate.
 
-The sequencer's cost per update no longer grows with the length of the match: it
-keeps the ticks still waiting for checksum reports in their own set, and a rejoin
-clears a seat's reports only from those, instead of walking every report since tick 0.
-A benchmark of one 60-minute four-player match (reports every 25 ticks, an order
-every 0.3 s on average) on an M-series Mac spent 13.9 s of CPU in `update` before
-(630 ms in the last minute alone, on a thread every match shares) and 36 ms after, with
-90,000 wakes instead of 360,000.
+Arbitration tracks pending checksum-report ticks, and a rejoin clears the seat's
+reports from that pending set. Its per-update work does not require scanning
+all historical reports. The `TurnProtocolTest` case `arbitration stays incremental
+over a long match and the record keeps every report` checks incremental
+arbitration and record completeness across a large tick range.
+
+To evaluate throughput changes, record source revision, tick rate, bundle and
+checksum intervals, player count, order frequency, wall duration and CPU time.
+Compare the same workload/build inputs and retain profiler traces under
+`artifacts/`; an old machine's before/after timings are not a capacity guarantee.
+
 
 ## Tickets
 

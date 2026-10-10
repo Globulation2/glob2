@@ -59,29 +59,13 @@ that the continent looks like itself.
 - **Checked, not assumed.** The design rebuilt from the request, the mainland off the map's seam,
   and every colony's walk from the first.
 
-Verified 2026-09-15: a local matrix of 624 requests (every size and shape from 64 to 512 on each
-axis, 2 to 12 colonies, every continent, and 240 random draws over every control) generated 562;
-all 62 refusals were requests with a 64-tile side that the continent cannot hold (40 of them
-Oceania, 12 Asia), refused up front, and every combination with both sides at 128 or more
-generated for every continent and colony count. At 256x256 with four colonies fairness (weakest
-over strongest) runs 0.78 to 0.97 by continent and seed, the worst colony's building sites within
-its catchment 54 at the tenth percentile and 167 at the median, and its mean fertility 1055 and
-1886. In 56 four-colony games of Nicowar against Maxima across the continents on the pre-tuning
-build, no colony of 224 failed to grow past twelve units, while the colonies eliminated first had
-started with the least building room or the least fertile ground, which is what the site scoring,
-the home clearings and the fertility floor above answer; a confirmation run of 28 games on the
-tuned build had the worst colony's building sites per map at 61 to 310 (25 to 58 before), peak
-units and buildings up, and more games decided by elimination. Linux and macOS produce identical
-golden rows. Nobody has played it by hand yet.
+## Playtest focus
 
-- **Played, as a toy plays.** A rotation tournament (six 256×256 maps, four colonies, every
-  cyclic team rotation, four Nicowars, 45,000 ticks) shows the geography deciding: pooled
-  per-start peaks from 90 to 200 units, a root-mean-square position bias of 38 points, and on
-  four of six maps one start that never passed about 30 units and was eliminated in every
-  rotation by a rival 55 to 120 tiles away (more combat than starvation deaths). The start
-  metrics (fertility 0.3 to 0.9, 180 to 500 sites) do not flag those starts, so what dooms
-  them is who reaches them first, not what they hold. That is the contract the map states; the
-  retained maps are the material for anyone who wants to move the never-grow starts.
+Geography changes when neighboring colonies make contact. Resource and building-room
+scores do not capture every vulnerable start: compare complete seat rotations and
+inspect first contact alongside local fertility and expansion. Recheck small maps,
+rectangles, each continent shape and control extremes; request acceptance is defined
+by the current validators, not a historical successful sweep.
 
 ## Implementation source
 

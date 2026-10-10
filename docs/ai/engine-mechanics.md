@@ -74,6 +74,25 @@ matter. See [gameplay measurements](gameplay-statistics.md) and [Maxima food cap
 Sources: [construction transitions](../../src/building/Construction.cpp),
 [site completion](../../src/building/Update.cpp), [stock inn values](../../src/building/types/BuildingTypesColony.cpp).
 
+## Food protection
+
+Cortex's food-source reconciliation paints a checkerboard of forbidden harvest
+cells over reachable food. Workers can harvest the open parity while protected
+cells retain stock and seed regrowth. Forbidden areas affect harvest/path gradients;
+resource growth does not consult that team mask. The currently configured open
+margin is zero, so no rows near a consumer are exempted from the checkerboard.
+
+The pure scan uses fixed neighbor order, `(x + y) & 1` parity and explicit inputs.
+The world wrapper derives consumer seeds and region ownership, reconciles added
+and removed forbidden cells, and returns brush changes. The action layer translates
+those changes into orders. This is controller policy rather than a universal map
+guarantee; inspect resolved food resources and region reachability for custom sets.
+
+Sources: [scan and reconciliation](../../src/ai/cortex/CortexFoodSources.cpp),
+[tuning](../../src/ai/cortex/CortexConstants.h),
+[harvest gradients](../../src/map/gradient/MapGradientMaterial.cpp),
+[growth](../../src/map/MapStep.cpp) and [action binding](../../src/ai/cortex/AICortex.cpp).
+
 ## Observations and strategy
 
 Use immutable decision inputs and controller-private queries, not live simulation

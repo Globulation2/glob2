@@ -100,8 +100,8 @@ radius 14. Sand approach roads reach that ring. Wheat occupies the northern half
 and the southeast quarter; wood occupies the southwest quarter, within reach of
 the western town. Permanent sand spokes connect the east, west and south banks
 to the ring, providing harvesting access and separating the three growing areas.
-Grass lanes in revision 1 could fill with crops and let faster-growing wood
-spread around the shore into wheat. Water takes precedence where spokes cross
+Sand lanes prevent crops from closing the approach and keep faster-growing wood
+from spreading around the shore into wheat. Water takes precedence where spokes cross
 the pond.
 
 Each valley's pond is one of the shared centrepiece designs
@@ -112,9 +112,7 @@ from the centre than the rough round pond the saddle clearance was measured agai
 Every home valley draws the same design, since a design's water sets how fast its
 crops regrow. Two to four rough sand blotches of radius 2 to 4 break up each valley's
 open ground, clear of the farm ring, three tiles from any ridge, saddle or lane, and
-off the home swarm's apron (revision 5, 2026-09-16: a maintainer asked for "a few
-different designs and patterns for each square" and "some terrain variety to break
-up the monotony").
+off the home swarm's apron. This adds variety without changing the farm envelope.
 
 The nominal 3:1 allocation is a production heuristic: wheat has an additional one-in-three
 growth gate in the engine, while wood does not. Equal growing areas and shorter

@@ -22,15 +22,8 @@ directly to an existing Partner Center branch; neither is retained as a public
 artifact. Keep credentials out of workflow logs and artifacts.
 The workflow does not submit a listing for certification or publish it to retail.
 
-Keep the release mirror public and owner-controlled: disable pull requests,
-issues, projects, wiki and discussions; leave `genixpro` as its only
-collaborator; restrict creation, updates and deletion of every mirror branch to
-that user, while `master` also blocks force pushes and deletion. Restrict Actions
-execution to `genixpro`, allow only the pinned actions
-needed by the mirror workflows, and keep the default `GITHUB_TOKEN` read-only.
-Enable secret scanning and push protection. Public repositories remain readable
-and forkable, so never put credentials in code, workflow inputs, logs or
-artifacts. Only the mirror's restricted environments hold release credentials.
+Follow the shared [release mirror policy](releasing.md#the-release-mirror) for
+repository hardening and credential storage.
 
 The maintained Store identity is recorded below. Confirm it against the
 configured release environment and the [Globulation 2 PC game product](https://partner.microsoft.com/en-US/dashboard/products/9PH4FCRMX19F/setup)
@@ -101,8 +94,7 @@ and advance the Partner Center submission through its listing, age rating and
 certification steps. Keep the corresponding GPL source available with each
 distributed version.
 
-The Store package uses original MSIXVC, supported by the currently released
-GDK. A future MSIXVC2 migration needs its own Partner Center package branch.
+The repository packages the Store build as original MSIXVC. A future MSIXVC2 migration needs its own Partner Center package branch.
 See Microsoft's [PC packaging guide](https://learn.microsoft.com/en-us/gaming/gdk/docs/features/common/packaging/overviews/packaging-getting-started-for-pc),
 [MakePkg reference](https://learn.microsoft.com/en-us/gaming/gdk/docs/features/common/packaging/deployment/makepkg),
 and [Package Uploader setup](https://github.com/microsoft/PackageUploader).

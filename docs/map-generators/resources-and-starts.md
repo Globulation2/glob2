@@ -13,7 +13,7 @@ exactly what it was. Fairness placements (starter kits, 1:1 guaranteed wheat and
 reachability backstop) stay unscaled wherever a generator has them, so an amount of 0 empties the
 ambient layer but still leaves every colony a start.
 
-Audited 2026-09-14 for consistency: every landscape carries `wheat-amount`, `wood-amount`,
+Every landscape carries `wheat-amount`, `wood-amount`,
 `stone-amount`, `algae-amount` and `fruit-amount` as percentages, with these exceptions, each
 because the landscape has no such layer or names it differently: Anthill has no `stone-amount`
 (its only stone is its walls); Old growth has no `wood-amount` (its `forest-density` is the wood
@@ -42,9 +42,9 @@ were counts of their own until that audit and are percentages since.
 | Spider web | The threads' standing wheat and wood, the share of knots carrying stone, whether the dew drops and the hub carry fruit and stone, and the shallows' algae; every pad's kit is unscaled | Spiral (on): off, the capture threads are closed rings; Sand roads (on): off, the threads are grass from shore to shore |
 | Coral | The branches' standing wheat and wood, the share of forks carrying stone, the tips' fruit groves and the shallows' algae; every pad's kit is unscaled | Sand roads (on): off, the branches are grass from shore to shore |
 | Plantations | Every neutral plantation's crop cover (the wheat and wood shares of its band), the orchard and rock islets' counts, and the sea's algae; every home island's cover, every colony's granted pools and inns and the rock islet beside every colony are unscaled | Outpost inns (on): an inn on each granted island; Causeways (off): sand causeways join a colony's own islands, so no unit need swim to work them |
-| Carousel | Every home's ambient fields, the farms' wheat and woodlots, the courts' and the plaza orchard's fruit, and the lagoon's algae; the walls' stone and the starting towers are unscaled (a home has no kit since 2026-09-14) | Sand roads (on): off, the corridors and spokes are grass from wall to wall |
+| Carousel | Every home's ambient fields, the farms' wheat and woodlots, the courts' and the plaza orchard's fruit, and the lagoon's algae; the walls' stone and the starting towers are unscaled (homes have no separate kit) | Sand roads (on): off, the corridors and spokes are grass from wall to wall |
 | Amphitheatre | Every territory's ambient fields and grove, the arena's groves and terrace outcrops, and the bays' algae; every home's kit, the walls' stone and the starting towers are unscaled | None |
-| Switchbacks | Every home's ambient fields and grove, the farms' wheat and woodlots, the plateau's orchard, and the algae; the mountains' stone and the starting towers are unscaled (a home has no kit since 2026-09-14) | Sand roads (on): off, the trails are grass from wall to wall |
+| Switchbacks | Every home's ambient fields and grove, the farms' wheat and woodlots, the plateau's orchard, and the algae; the mountains' stone and the starting towers are unscaled (homes have no separate kit) | Sand roads (on): off, the trails are grass from wall to wall |
 | The Glacis | The wadi banks' wheat and wood, the plain's outcrops, the groves beside the fords and the wadis' algae; every compound's well-side kit, quarry, walls, stock and starting towers are unscaled | Garrison (on): off, a compound starts with its colonists only |
 | Allotments | The field lots' wheat and wood, the woodlots, the quarry and grove lots and the ditches' algae; every city's sites, wood stacks, stock and home fields are unscaled | Garrison (on) |
 | Caravanserai | The outposts' quarry, orchard and algae; every capital's fields, stock and towers, and the oases' and outposts' wheat, are unscaled | Garrison (on) |
@@ -66,9 +66,8 @@ tiles where a 4x4 building fits within 24 steps, and the caller then re-runs the
 the clearing took the nearest crop too. A colony that already has the room is untouched.
 `reopenCrampedStarts` runs that pair at any non-default amount and never at the defaults;
 `openStartsBuriedByResources` runs it whatever the amounts are, which is what the landscapes on
-the legacy core call, since nothing in them budgets a colony's room and the defaults bury one too
-(a 512-tile fjord continent with four colonies sealed two of them onto nine tiles and four until
-2026-09-16). Concrete islands and Isles need it differently:
+the legacy core call because default abundance can also bury a start when no
+explicit home-room budget exists. Concrete islands and Isles need it differently:
 their colonies' fields can cover every building site the start search looks at, so at a non-default
 amount that search widens its window out from the default field rather than failing.
 
@@ -212,9 +211,7 @@ or touches the menu's live colony. Named generation streams remain request-owned
 
 The structural check after generation (`validateGeneratedWorld`) requires every colony to hold a
 swarm and exactly as many WORKER units as the lobby's shared "Starting workers" control (1 to 8).
-Until 2026-09-16 three landscapes (The Glacis, Allotments, Caravanserai) started premade bases of
-thirty-odd colonists and owned that count through a definition hook; their revision 2 dropped the
-premade bases, and the hook with them, because the shipped AIs barely grew a finished base (see
-those sections).
+Grant additional non-worker units only when the landscape explicitly requires
+them; the shared worker count remains authoritative.
 
 Related: [map generators](README.md).

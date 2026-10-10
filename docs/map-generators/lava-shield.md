@@ -138,10 +138,10 @@ remain authoritative.
 | Lava roots at lake radius + rim width + 5 | Separates the useful rim budget from the fixed circuit cost. Thick root lobes form a broken crown of lava; the openings admit approaches. |
 | Angular interval weights `0.65 + U[0,1)` | Unequal green wedge sizes with a lower bound. The weights normalize to a full turn; no complete branch is copied into another sector. |
 | Primary steps 3; angular memory 0.72; angular noise 0.055 radians | Bends persist over several steps instead of alternating in a noisy zigzag. Heading stays within 30% of the smaller adjacent angular interval. Radius always increases. |
-| Width `clamp(shorter/70, 2, 5)`, roots ×1.8 | Thick roots taper to legible, raster-safe fingers. Width does not grow without bound on large maps. The flows are drawn on corners half a tile thinner than this, because a tile takes lava from any corner: the walls cover the same tiles the stone tongues of revision 4 did. |
+| Width `clamp(shorter/70, 2, 5)`, roots ×1.8 | Thick roots taper to legible, raster-safe fingers. Width does not grow without bound on large maps. The flows are drawn on corners half a tile thinner than this, because a tile takes lava from any corner; this preserves the intended wall footprint. |
 | Ford: 2.5 tiles either side, along the flow, of a point 40–65% down each long tongue | A crossing about five tiles long through the whole width of the flow, filled with scree (slow, unbuildable, walkable). No crust stone within four corners of a ford. |
 | Flow girth: ±25% over 18-tile noise; primary toes ×1.35 over the last three points; corner strokes at least 1.25 | Flows swell, narrow and spread at their toes instead of reading as constant-width tubes; the thinnest stretch is still a wall two pure tiles across. |
-| Margins along the flows: 12-tile noise cells; crust below 0.62, bare to 0.70, scree to 0.85, ash above; reaches 3, 3 and 4 corners at 256-tile sides, halved at 128 | Stretches of stone crust on the grass, bare grass up to the flow, scree aprons and dirt or clay ash, measured from live lava and cooled branches alike. Laid after the towns, their rings and roads, which they never touch. The crust gives about 40% of the tiles of the old full-width stone tongues; over twelve default seeds the worst-placed colony's nearest stone is a median 26.5 steps away (revision 4: 33.5). |
+| Margins along the flows: 12-tile noise cells; crust below 0.62, bare to 0.70, scree to 0.85, ash above; reaches 3, 3 and 4 corners at 256-tile sides, halved at 128 | Stretches of stone crust on the grass, bare grass up to the flow, scree aprons and dirt or clay ash, measured from live lava and cooled branches alike. Laid after the towns, their rings and roads, which they never touch. The crust provides accessible stone while retaining breaks and varied ground along the flows. |
 | Upper-slope ash: from the lava roots a third of the way to the coast, where a 9-tile noise exceeds a threshold rising from 0.45 to 1 | Dirt and clay patches that thin out downhill give the cone a slope. Laid with the margins, after the towns. |
 | Deep water about 10 steps from any land, ±4 by 20-tile noise | The far sea reads dark and swims slowly; algae stay in the shallow band; no island or islet sits in a ruled ring of shallows. |
 | Short-flow setback 12–22 × `sqrt(shorter/128)` | Broad coastal detours remain useful as size grows. A conservative minimum coastline radius protects the gap against a later bend. Long flows end beyond the maximum coastline radius. |
@@ -151,7 +151,7 @@ remain authoritative.
 
 ### Town selection, crops and room
 
-Every town on a map is drawn to one plan (revision 4). The plan is one of seven shapes, each
+Every town on a map is drawn to one plan. The plan is one of seven shapes, each
 about 250 clear tiles: a 16×16 square, rectangles of 18×14, 19×13 and 22×11, a 17×17
 square with rounded corners, a 17×17 octagon and a 20×16 oval, turned either way. Its
 edge frays. Round the town, stretches of the boundary sit a corner inside or outside the
@@ -178,15 +178,9 @@ are dealt to team indices before placement. Four proposals are fully materialize
 A proposal must have wheat within 24 steps, wood within 32, at least 48 reachable
 4×4 building origins, and a map fairness of at least 0.80. Origins overlap;
 48 does not mean 48 separate buildings. The winning proposal maximizes the shared
-map score, which since revision 3 is the
-[fitted fairness model](fairness-model.md)'s fairness: how evenly the towns share
-the chance of winning, rather than the weakest town's quality gated by a
-worst-over-best ratio. That changes which proposal wins on some seeds, which is
-what the revision bump records. The 0.80 floor is the old 0.65 restated on the new
-scale — a different quantity, not a comparable number — and sits below the 0.84
-minimum observed over forty default 256×256 four-colony seeds, so it does not
-reject anything the generator produces at its defaults. Ties keep the earlier
-proposal.
+map score, the [fitted fairness model](fairness-model.md)'s estimate of how evenly
+the towns share the chance of winning. Its 0.80 floor is a model-scale criterion,
+not a ratio of weakest to strongest raw town quality. Ties keep the earlier proposal.
 
 Each town leaves its plan's pure grass inside the frayed two-corner sand ring. An
 approach begins two corners beyond the plain ring and reaches the crater circuit,
@@ -207,9 +201,8 @@ This shortfall tolerance preserves usable harvest edges without moving water or
 rock. Final walking access is checked separately; straight-line distance is not
 accepted as a substitute.
 
-The broad 2026-09-15 control sweep isolated rare failures at this stage: the
-single highest-fertility seed can lie on an isolated grass island beside stone or
-sand. A field below its acceptance floor now makes up to three bounded secondary
+The single highest-fertility seed can lie on an isolated grass island beside stone
+or sand. A field below its acceptance floor makes up to three bounded secondary
 patch attempts. `seedForPatchCapacity` ranks legal clear ground by the number of
 eligible tiles in its 5×5 neighbourhood, then fertility. This local density probe
 costs work only after a shortfall, and avoids a full map-component search for

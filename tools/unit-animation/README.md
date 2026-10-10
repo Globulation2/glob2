@@ -1,8 +1,9 @@
 # Core unit animation sprites
 
 The game uses 32 poses for each of eight directions in seven animation sets.
-It still advances simulation and rendering on its existing schedule (25 Hz at
-normal speed). This asset change does not increase the display refresh rate.
+Normal simulation speed is 30 ticks per second, defined in
+[src/engine/EngineTiming.h](../../src/engine/EngineTiming.h). Sprite pose count
+does not set the display refresh rate.
 
 `render.py` records the seven source files, legacy action bases, native output
 sizes, and presence of a separate shadow pass. The order is explorer flight,
@@ -116,7 +117,8 @@ a power of two, unlike 152 or 160 (38 or 40 × 4), which the engine's texture
 uploader would otherwise round up to 256 per texture, wasting most of the
 allocation. This is 4× per axis for the 32px-native explorer set, ~3.37× for the
 38px-native worker sets, and 3.2× for the 40px-native warrior sets -- same 32
-poses and normal 25 FPS cadence throughout. Software and the classic-artwork
+poses throughout. Normal simulation speed is 30 ticks per second; rendering
+uses the engine’s display scheduling. Software and the classic-artwork
 option use native sprites. `frames.txt`'s `scale` column is `4` for every other
 frame category; unit rows carry a `0` sentinel instead, since a fractional ratio
 can't round-trip through that column's integer parsing -- every consumer of a
