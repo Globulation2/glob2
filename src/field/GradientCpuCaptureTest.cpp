@@ -2,6 +2,7 @@
 #include "GradientCpuCapture.h"
 #include "GradientPropagation.h"
 #include "Glob2Test.h"
+#include "ThreadSupport.h"
 #include <stdexcept>
 #include <vector>
 
@@ -186,6 +187,7 @@ TEST_CASE("capture CPU clock failures stop optional copies and pay reserved cred
 
 TEST_CASE("capture producer handoff resets thread clock floor exactly once" * doctest::test_suite("OpenCLGradient"))
 {
+    if constexpr(!GAGCore::ThreadSupport::available)return;
     const auto baseline=openCLProbeBytes();
     CaptureFixture fixture;GradientCpuCapture::Receipt receipt;
     auto capture=fixture.begin(receipt);REQUIRE(bool(capture));
