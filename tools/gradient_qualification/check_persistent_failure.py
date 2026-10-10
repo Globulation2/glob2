@@ -45,12 +45,13 @@ def check_locked(args):
         receipt=directory/f'{scenario}-native.json';unwound=directory/f'{scenario}-unwound.txt'
         result=subprocess.run([str(executable),scenario,str(receipt),str(unwound)],capture_output=True,text=True)
         row=dict(scenario=scenario,returncode=result.returncode,stdout=result.stdout,stderr=result.stderr,
-            fatal_receipt_exists=receipt.exists(),destructor_sentinel_exists=unwound.exists())
+            fatal_receipt_exists=receipt.exists(),destructor_sentinel_exists=unwound.exists(),
+            destructor_markers=unwound.read_text().splitlines() if unwound.exists() else [])
         if receipt.exists():row['fatal_receipt']=json.loads(receipt.read_text())
         records.append(row)
         (directory/'results.json').write_text(json.dumps(records,indent=2))
         if scenario=='drained':
-            if result.returncode!=0 or not unwound.exists() or receipt.exists() or 'seeds/output intact' not in result.stdout:
+            if result.returncode!=0 or row['destructor_markers']!=['stack destructor unwound','static destructor unwound'] or receipt.exists() or 'seeds/output intact' not in result.stdout:
                 raise RuntimeError(f'successful drain lifetime proof failed: {row}')
         else:
             expected=dict(schema='glob2-persistent-fatal-drain-v1',api_error=-17,drain_error=-42,

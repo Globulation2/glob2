@@ -14,10 +14,10 @@ const std::uint16_t* observedSeeds=nullptr;
 const UInt* observedOutput=nullptr;
 const std::uint16_t original[]{65535,65001,0,1};
 struct Unwind {
- const char* path=nullptr;
- ~Unwind(){if(path)if(auto* file=std::fopen(path,"w")){std::fputs("destructor unwound\n",file);std::fclose(file);}}
+ const char* path=nullptr;const char* kind="stack";
+ ~Unwind(){if(path)if(auto* file=std::fopen(path,"a")){std::fprintf(file,"%s destructor unwound\n",kind);std::fclose(file);}}
 };
-Unwind staticSentinel; // Also detects std::exit/global teardown instead of _Exit.
+Unwind staticSentinel{nullptr,"static"}; // Also detects std::exit/global teardown instead of _Exit.
 }
 extern "C" int clSetKernelArg(Handle,UInt,std::size_t,const void*){return 0;}
 extern "C" int clEnqueueWriteBuffer(Handle,Handle,UInt blocking,std::size_t,std::size_t bytes,const void* source,
