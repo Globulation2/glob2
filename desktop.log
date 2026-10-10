@@ -1,0 +1,9 @@
+Settings::load("preferences.txt") : error, can't open file.
+CAPTURE main-menu 1280 800
+CAPTURE discord-community 1280 800
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+CAPTURE online-hub 1280 800
+CAPTURE online-discord-community 1280 800
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.

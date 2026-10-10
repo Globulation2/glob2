@@ -1,0 +1,3 @@
+{"case": "phone-portrait", "exit": 0, "captures": 5, "discord": true}
+{"case": "phone-landscape", "exit": 0, "captures": 5, "discord": true}
+{"case": "desktop", "exit": 0, "captures": 4, "discord": true}

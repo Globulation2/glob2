@@ -1,0 +1,17 @@
+Settings::load("preferences.txt") : error, can't open file.
+CAPTURE main-menu 320 568
+CAPTURE discord-community 320 568
+CAPTURE main-more 320 568
+CAPTURE campaign-menu 320 568
+CAPTURE campaign-select 320 568
+CAPTURE campaign-saves 320 568
+CAPTURE tutorial-missions 320 568
+CAPTURE campaign-editor 320 568
+CAPTURE campaign-editor-maps 320 568
+CAPTURE campaign-map-entry 320 568
+CAPTURE campaign-description-editing 320 568
+CAPTURE editor-menu 320 568
+CAPTURE new-map 320 568
+CAPTURE new-map-generated 320 568
+CAPTURE new-map-parameters 320 568
+Editor landscape previews did not settle

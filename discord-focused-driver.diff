@@ -1,0 +1,43 @@
+diff --git a/tools/MobileGalleryHarness.cpp b/artifacts/DiscordFocusedGallery.cpp
+index f09be4efd..cd1b038ad 100644
+--- a/tools/MobileGalleryHarness.cpp
++++ b/artifacts/DiscordFocusedGallery.cpp
+@@ -189,8 +189,7 @@ struct MobileGallerySetup
+ 			return;
+ 		}
+ 		captureMenus(stack);
+-		captureSettings(stack);
+-		captureLobby(stack);
++
+ 	}
+ 
+   private:
+@@ -316,6 +315,18 @@ struct MobileGallerySetup
+ 			stackShot(stack, "main-more");
+ 			press(stack, *mainScreen, "menu/back");
+ 		}
++		auto hub = OnlineUIFixtures::hubFixture(stack);
++		auto *hubScreen = dynamic_cast<GAGGUI::ui::UIScreen *>(hub.get());
++		if (!hubScreen) throw std::runtime_error("Hub fixture must be a UI screen");
++		stack.push(std::move(hub));
++		frame(stack);
++		hubScreen->host().scrollIntoView("hub/discord");
++		stackShot(stack, "online-hub");
++		press(stack, *hubScreen, "hub/discord");
++		stackShot(stack, "online-discord-community");
++		press(stack, *hubScreen, "discord/back");
++		if (!hubScreen->host().find("hub/discord")) throw std::runtime_error("Discord Back did not restore the hub");
++		return;
+ 		screenShot(stack, "campaign-menu", std::make_unique<CampaignMainMenu>(stack));
+ 		screenShot(stack, "campaign-select", std::make_unique<CampaignSelectorScreen>());
+ 		screenShot(stack, "campaign-saves", std::make_unique<CampaignSelectorScreen>(true));
+@@ -1709,8 +1720,7 @@ int main(int argc, char **argv)
+ 			FrontendTheme theme;
+ 			if (!SDL_getenv_unsafe("GLOB2_GALLERY_GAME_ONLY"))
+ 				MobileGallerySetup::run();
+-			if (!SDL_getenv_unsafe("GLOB2_GALLERY_GENERATORS_ONLY"))
+-				MobileGalleryGameplay::run();
++
+ 		}
+ 		globals.reset();
+ 		globalContainer = nullptr;
