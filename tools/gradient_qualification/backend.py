@@ -123,4 +123,3 @@ class Runner:
         return out, dict(total_ns=elapsed, preparation_ns=prep_ns,
                          local_steps=steps if not frontier else 0,
                          execution_ns=int(stats[0]*1e6),dispatches=int(stats[2]))
-
