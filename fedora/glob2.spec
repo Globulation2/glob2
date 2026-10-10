@@ -1,5 +1,5 @@
 Name:           glob2
-Version:        0.11.0.1
+Version:        0.11.0.2
 Release:        1%{?dist}
 Summary:        Real time strategy game with automatic unit task assignment
 License:        GPL-3.0-or-later
