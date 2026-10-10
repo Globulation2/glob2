@@ -13,6 +13,28 @@ export class ProviderRejected extends Error {
     this.usage = usage;
   }
 }
+async function rejectionDetails(response: Response): Promise<string> {
+  const reader = response.body?.getReader();
+  if (!reader) return '';
+  const chunks: Uint8Array[] = [];
+  let size = 0;
+  try {
+    for (;;) {
+      const part = await reader.read();
+      if (part.done) break;
+      size += part.value.length;
+      if (size > 16384) return '';
+      chunks.push(part.value);
+    }
+    const error = JSON.parse(Buffer.concat(chunks).toString())?.error;
+    if (typeof error?.message !== 'string') return '';
+    return ': ' + error.message.replace(/\p{Cc}/gu, ' ').slice(0, 500);
+  } catch {
+    return '';
+  } finally {
+    await reader.cancel().catch(() => undefined);
+  }
+}
 export class Attempts {
   readonly studio: BuildingAiStudio;
   readonly dailyBudget: number;
@@ -220,10 +242,13 @@ export class OpenAIBuildings implements BuildingProvider {
       throw new ProviderUncertain('Provider request interrupted; reconciliation required.');
     }
     if (!response.ok) {
-      await response.body?.cancel();
-      if (response.status >= 500 || response.status === 408)
+      if (response.status >= 500 || response.status === 408) {
+        await response.body?.cancel();
         throw new ProviderUncertain('Provider outcome unknown.');
-      throw new ProviderRejected('Provider refused this request.');
+      }
+      throw new ProviderRejected(
+        `Provider refused this request (HTTP ${response.status})${await rejectionDetails(response)}`,
+      );
     }
     const reader = response.body?.getReader();
     if (!reader) throw new ProviderUncertain('Missing provider response.');
