@@ -21,3 +21,5 @@ new skin. Runtime output and its source/content hashes are generated under
 This source was recovered from the `codex/glob-3d` experiment. It is a generated
 interpretation of the original swarm sprite, not an original Blender model.
 Camera alignment and simplified silhouette still need in-game review.
+
+Related: [artwork production](../../../docs/assets/artwork-workflow.md).

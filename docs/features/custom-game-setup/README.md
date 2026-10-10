@@ -1,5 +1,12 @@
 # Custom-game setup
 
+## On this page
+
+- [Behavior](#behavior)
+- [AI behavior and rule corrections](#ai-behavior-and-rule-corrections)
+- [Adding or tweaking a ruleset](#adding-or-tweaking-a-ruleset)
+- [Reproduce verification](#reproduce-verification)
+
 The native lobby has Map, Players & Teams, and Game Rules tabs. The fixed footer
 keeps the match summary and launch action available while dense content scrolls.
 
@@ -249,5 +256,5 @@ SDL event loops through human, shared-control and AI-only launches.
 
 The Linux workflow runs the headless harness and native compact UI checks under
 Xvfb. macOS desktop event injection was unreliable during development; see
-[the automation guide](../../../test/LOBBY_AUTOMATION.md) for the working SDL approach
+[the automation guide](../../development/testing/lobby-automation.md) for the working SDL approach
 and the distinction between game-side input coverage and physical OS input.

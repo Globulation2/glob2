@@ -58,3 +58,5 @@ resource eligibility, pickup, depletion, upgrades and continuation. For playtest
 compare the same map and seed with `--experiment markets-v2` enabled and disabled;
 look for supply throughput, worker travel, starvation, and gradient CPU/memory cost.
 Automated checks do not establish balanced costs or replace human playtesting.
+
+Related: [features and content](README.md).

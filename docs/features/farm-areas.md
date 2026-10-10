@@ -1,15 +1,19 @@
 # Farm areas
 
-Farm areas are an [experimental feature](experimental-features.md) with the key
-`farm-areas`, off by default. A game that carries it offers a fourth painted area
-next to forbidden, guard and clearing areas: a per-team bitmask on every tile
-(`Tile::farmArea`), painted with the same brush and add/remove modes, and saved
-with the map from format 130. Without the experiment the brush has three zones,
-the farm order is refused, and a farm mask that reaches the game some other way
-(a map or save made with it) is inert.
+## On this page
 
-A farm area changes **where a harvest takes its resource from**, and makes the
-farm keep itself clear of what it does not grow.
+- [What players see](#what-players-see)
+- [The rule](#the-rule)
+- [Why](#why)
+- [Keeping the farm clear](#keeping-the-farm-clear)
+- [Which resources](#which-resources)
+- [Which ground](#which-ground)
+- [What it does not change](#what-it-does-not-change)
+- [Artwork](#artwork)
+- [AIs](#ais)
+- [Scripts](#scripts)
+- [Compatibility](#compatibility)
+- [Where it lives](#where-it-lives)
 
 ## What players see
 
@@ -136,7 +140,7 @@ Without the experiment every AI farms exactly as before.
 JavaScript AIs and map scripts see the experiment through
 `ctx.game.experiments()`, paint and erase farms with the `farmArea` order (same
 fields as the other area orders), and read `farmArea: true` on own-team farm
-tiles. See the [JavaScript API](../development/javascript-api.md).
+tiles. See the [JavaScript API](../scripting/javascript-api.md).
 
 ## Compatibility
 
@@ -165,3 +169,5 @@ farm order or this experiment.
 
 Design discussion: [Globulation2/glob2#271](https://github.com/Globulation2/glob2/pull/271)
 and the original [pull request #277](https://github.com/Globulation2/glob2/pull/277).
+
+Related: [features and content](README.md).

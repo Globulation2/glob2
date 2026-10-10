@@ -1,7 +1,7 @@
 # AI artwork pipeline
 
-Part 3 adds the approved AI-derived finals. It does not change the 60 recovered
-original frames. Historical trial galleries, model weights and intermediate
+This pipeline stages AI-derived sprite candidates and reproduces reviewed finals.
+Begin with the [artwork workflow](../../../docs/assets/artwork-workflow.md). Historical trial galleries, model weights and intermediate
 inference images are excluded from Git.
 
 ## Approved sources and runtime build
@@ -35,7 +35,7 @@ materials (`data/gfx/terrain-<name>N.png`) are produced by
 `tools/artwork/terrain_synth.py` (procedural originals) and
 `tools/artwork/export_material.py` (image-generated materials with stored
 prompts), both validated by `tools/artwork/validate_material.py`; see
-[terrain materials](../../../docs/assets/terrain-materials.md#material-production).
+[terrain materials](../../../docs/assets/terrain-production.md#material-production).
 They need only Pillow, not this pipeline's model tooling.
 
 ## Generate a future sprite candidate

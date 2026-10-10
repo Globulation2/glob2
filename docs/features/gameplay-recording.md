@@ -217,3 +217,5 @@ realtime recording with no encoder-pressure drops and less than 5% game FPS
 regression. Report devices and resolutions that miss those targets; recording
 retains the selected full resolution and frame rate. Mobile hardware and sustained
 thermal qualification require physical devices.
+
+Related: [features and content](README.md).

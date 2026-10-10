@@ -1,7 +1,12 @@
 # Guard-area balancing
 
-An [experiment](experimental-features.md) (`guard-area-balancing`, **Settings →
-Experiments → Guard-area balancing**). Off, the game plays exactly as before.
+## On this page
+
+- [Why](#why)
+- [Mechanism](#mechanism)
+- [Tuning](#tuning)
+- [Measurements](#measurements)
+- [Feel](#feel)
 
 ## Why
 
@@ -142,3 +147,5 @@ An over-full area empties as a trickle over a couple of thousand ticks, not at
 once. Warrush, which paints guard areas on the enemy buildings it has found,
 spreads its attack across them instead of massing on the nearest. These are the
 effects a maintainer should look at in play with the experiment on.
+
+Related: [features and content](README.md).

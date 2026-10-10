@@ -20,7 +20,7 @@ Changing maps resets the view; repeated updates for the same shared thumbnail do
 not. Focus loss, release outside the preview, tab changes in custom setup, and
 window resizing end a drag.
 
-The normal executable also exports this same widget through the [map CLI](../map-generators/CLI.md).
+The normal executable also exports this same widget through the [map CLI](../map-generators/cli.md).
 PNG exports show the full map without transitions, with 2× retained-pixel scale by
 default and optional 4×/8× scales; these options do not change in-game zoom limits.
 
@@ -122,3 +122,5 @@ This improves pre-game inspection without changing in-game pacing or balance.
 
 Generated captures, map fixtures, logs and baseline reproductions belong in the
 ignored `artifacts/map-preview/` workspace or in pull-request attachments.
+
+Related: [features and content](README.md).

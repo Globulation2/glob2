@@ -1,8 +1,13 @@
 # Cortex ML — BC trainer (numpy-only)
 
-Behavior-cloning trainer for the Cortex swarm worker-tuning net (effort B pilot).
-Binding spec: `docs/AI/cortex/ML_CONTRACT.md`. Context: `docs/AI/cortex/PILOT.md`.
-numpy only — no PyTorch/TensorFlow, fully deterministic (seeded).
+Behavior-cloning tooling for optional Cortex worker-tuning policies. Start with
+[AI development](../../docs/ai/development.md). The maintained inference contract is
+[the quantized format](../cortex-ml-infer/FORMAT.md), with feature extraction and
+policy gates in `src/ai/cortex/`. Training uses seeded NumPy operations.
+
+The default native controller does not require a trained model. Optional runtime
+selection is controlled by `GLOB2_CORTEX_POLICY` and `GLOB2_CORTEX_NET`; see
+`CortexPolicy.cpp` for the corresponding decision-policy mode.
 
 ## Files
 
@@ -27,12 +32,11 @@ numpy only — no PyTorch/TensorFlow, fully deterministic (seeded).
 ## Run
 
 ```bash
-python3 train_bc.py --data <dir> --out <weights.json> [--epochs N]
+python3 tools/cortex-ml/train_bc.py --data artifacts/cortex-corpus --out artifacts/cortex-weights.json --epochs 200
 ```
 
 `--data` is a directory (globbed for `*.team*.csv`), a glob, or a single file.
-Prefer `glob2/.tmp/corpus/` once the corpus exists; otherwise the sample traces in
-`glob2/.tmp/` work. Scratch output goes under `glob2/.tmp/`, never `/tmp`.
+Keep corpora, exported candidates and metrics under ignored `artifacts/`.
 
 Flags: `--epochs` (default 200), `--lr`, `--batch-size`, `--val-frac`,
 `--include-wheat-starved` (keep the hard-clamp rows in training, for revisiting).

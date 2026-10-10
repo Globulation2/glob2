@@ -1,5 +1,6 @@
 # High-resolution artwork pack
 
+The current [manifest](../../../data/highres/v1/manifest.json) registers 3,441 frames.
 The pack contains the organized artist originals, 60 verified original-derived
 world frames, and 1,792 unit animation poses rendered from the original Blender
 rigs. The pack also includes reviewed AI-enhanced sprites, original-based terrain and generated water,
@@ -79,3 +80,5 @@ cover explorer flight, worker walk/swim/harvest-build, and warrior walk/swim/fig
 The classic artwork setting and software backend retain native unit textures.
 See [the unit pipeline](../../../tools/unit-animation/README.md) for reproducible
 render settings, layer mapping, CPU limits and validation.
+
+Related: [artwork workflow](../artwork-workflow.md), [asset production](../README.md) and the [generated inventory](ASSET-PROVENANCE.md).
