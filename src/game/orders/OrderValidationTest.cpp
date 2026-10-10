@@ -56,12 +56,12 @@ struct Fixture
 	Building* ownFlag = nullptr;
 	Building* foreignFlag = nullptr;
 
-	Fixture(std::function<void(nlohmann::json&)> configure = {})
+	Fixture(std::function<void(nlohmann::json&, Game&)> configure = {})
 	{
         if(configure)
         {
             auto catalog=nlohmann::json::parse(game.game.buildingsTypes.snapshotJson());
-            configure(catalog);
+            configure(catalog, game.game);
             game.game.buildingsTypes.loadSnapshotJson(catalog.dump());
             game.game.configureBuildingCatalog();
         }
@@ -142,7 +142,7 @@ TEST_SUITE("OrderValidation")
 
 	GLOB2_TEST_CASE("catalog stage limits independently bound construction and completed staffing", "[orders]")
 	{
-        Fixture f([](nlohmann::json& catalog) {
+        Fixture f([](nlohmann::json& catalog, Game&) {
             const std::map<std::string,int> caps={{"inn.0.site",30},{"inn.0.finished",40},
                 {"inn.1.site",3},{"inn.1.finished",7}};
             for(auto& variant : catalog["variants"])
@@ -165,15 +165,14 @@ TEST_SUITE("OrderValidation")
 
     GLOB2_TEST_CASE("built-in ratio orders preserve a producer's explicit custom preferences", "[orders]")
     {
-        Fixture f;
-        f.game.game.gameHeader.setUnitCatalog(UnitCatalog::fromJson(
-            R"({"schemaVersion":1,"units":[{"key":"fixture:carrier","extends":"worker"}]})"));
-        auto catalog=nlohmann::json::parse(f.game.game.buildingsTypes.snapshotJson());
-        auto& producer=catalog["variants"][1]["semantics"]["production"];
-        producer["recipes"]={{"fixture:carrier",{{"enabled",true},{"duration",1},{"cost",nlohmann::json::object()}}}};
-        producer["fallbackUnit"]=3;
-        producer["initialRatios"]={{"fixture:carrier",7}};
-        f.game.game.buildingsTypes.loadSnapshotJson(catalog.dump());f.game.game.configureBuildingCatalog();
+        Fixture f([](nlohmann::json& catalog, Game& game) {
+            game.gameHeader.setUnitCatalog(UnitCatalog::fromJson(
+                R"({"schemaVersion":1,"units":[{"key":"fixture:carrier","extends":"worker"}]})"));
+            auto& producer=catalog["variants"][1]["semantics"]["production"];
+            producer["recipes"]={{"fixture:carrier",{{"enabled",true},{"duration",1},{"cost",nlohmann::json::object()}}}};
+            producer["fallbackUnit"]=3;
+            producer["initialRatios"]={{"fixture:carrier",7}};
+        });
         Building* swarm=f.game.addBuilding("swarm",20,20);
         REQUIRE(swarm);
         REQUIRE(swarm->productionRatio(3)==7);
