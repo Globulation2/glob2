@@ -172,7 +172,7 @@ public:
         const auto observed=std::max(explicitCpu,captured.optionalCpuNs);
         if(overflow || measured.unknownUpperCpuNs>UINT64_MAX-observed)invalid();
         totals.totalUpperCpuNs=observed>UINT64_MAX-measured.unknownUpperCpuNs?UINT64_MAX:observed+measured.unknownUpperCpuNs;
-        totals.splitCandidate=candidate!=nullptr;totals.candidateUpperCpuNs=totals.totalUpperCpuNs;
+        totals.splitCandidate=false;totals.candidateUpperCpuNs=totals.totalUpperCpuNs;
         totals.nativeCoverageComplete=false;totals.candidateCallingCpuNs=totals.requiredOnlyAllowanceCpuNs=0;
         totals.requiredAllowanceCalibration=0;totals.administrationCpuNs=0;
         bool validCandidate=false;
@@ -183,17 +183,25 @@ public:
             const bool candidateIdentity=candidate->ticketId==ticket.id && candidate->policyGeneration==ticket.generation &&
                 candidate->requiredGeneration==totals.requiredGeneration;
             totals.nativeCoverageComplete=candidateIdentity && candidate->nativeCoverageComplete && nativeBackend;
-            auto upper=candidate->callingCpuNs;
-            const bool overflow=measured.unknownUpperCpuNs>UINT64_MAX-upper;
-            if(!overflow)upper+=measured.unknownUpperCpuNs;
-            const bool allowanceOverflow=candidate->requiredOnlyAllowanceCpuNs>UINT64_MAX-upper;
-            if(!allowanceOverflow)upper+=candidate->requiredOnlyAllowanceCpuNs;
-            validCandidate=totals.nativeCoverageComplete && candidate->callingCpuNs && candidate->requiredOnlyAllowanceCpuNs &&
-                candidate->calibrationIdentity && !overflow && !allowanceOverflow && upper<=totals.totalUpperCpuNs;
+            // Positive native identity/coverage without a calibration may
+            // authorize only the full paid workflow as the candidate. This is
+            // conservative inference, never a fabricated required-only bound.
+            validCandidate=totals.nativeCoverageComplete && candidate->callingCpuNs &&
+                candidate->callingCpuNs<=totals.totalUpperCpuNs;
+            const bool calibrated=candidate->requiredOnlyAllowanceCpuNs && candidate->calibrationIdentity;
+            if(validCandidate && calibrated) {
+                auto upper=candidate->callingCpuNs;
+                const bool overflow=measured.unknownUpperCpuNs>UINT64_MAX-upper;
+                if(!overflow)upper+=measured.unknownUpperCpuNs;
+                const bool allowanceOverflow=candidate->requiredOnlyAllowanceCpuNs>UINT64_MAX-upper;
+                if(!allowanceOverflow)upper+=candidate->requiredOnlyAllowanceCpuNs;
+                validCandidate=!overflow && !allowanceOverflow && upper<=totals.totalUpperCpuNs;
+                if(validCandidate) {
+                    totals.splitCandidate=true;totals.candidateUpperCpuNs=upper;
+                    totals.administrationCpuNs=totals.totalUpperCpuNs-upper;
+                }
+            } else if(candidate->requiredOnlyAllowanceCpuNs || candidate->calibrationIdentity)validCandidate=false;
             if(!validCandidate)invalid();
-            totals.candidateUpperCpuNs=overflow||allowanceOverflow?UINT64_MAX:upper;
-            if(upper<=totals.totalUpperCpuNs && !overflow && !allowanceOverflow)
-                totals.administrationCpuNs=totals.totalUpperCpuNs-upper;
         }
         const bool identity=token.probeTicket().id==ticket.id && token.probeTicket().generation==ticket.generation &&
             currentRequiredGeneration==totals.requiredGeneration && token.requiredGeneration()==totals.requiredGeneration;
@@ -205,7 +213,7 @@ public:
         result.authorization=CaptureSettlementAuthorization(totals.inferenceEligible,ticket.id,ticket.generation,
             totals.requiredGeneration,totals.totalUpperCpuNs);
         result.authorization.minimumAlternativeCpuNs=totals.candidateUpperCpuNs;
-        result.authorization.splitCandidate=validCandidate;
+        result.authorization.splitCandidate=totals.splitCandidate;
         result.outcome={totals.candidateUpperCpuNs,elapsedNs,totals.totalUpperCpuNs,slackNs,exact,success,totals.inferenceEligible};
         result.receipt=totals;return result;
     }

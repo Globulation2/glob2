@@ -162,7 +162,7 @@ TEST_CASE("capture accounting rejects absent native coverage without forgiving o
     f.owner->clocks.processCpu=1100;tails(*accounting,*f.token);REQUIRE(accounting->tailFinished());
     RequiredCandidateReceipt absent;
     auto result=accounting->finishResult(*f.token,91,true,true,true,500000001,f.input.slackNs,&absent);
-    CHECK(result.receipt.splitCandidate);CHECK_FALSE(result.receipt.nativeCoverageComplete);
+    CHECK_FALSE(result.receipt.splitCandidate);CHECK_FALSE(result.receipt.nativeCoverageComplete);
     CHECK_FALSE(result.authorization.permitsInference());CHECK_FALSE(result.outcome.clockValid);
     CHECK(result.outcome.actualProbeCpuNs>0);CHECK(result.outcome.actualProbeCpuNs==result.receipt.totalUpperCpuNs);
     result=CaptureProbeAccounting::close(accounting,result);

@@ -208,13 +208,17 @@ public:
         const auto& native=r.nativeMetrics;
         const bool complete=progress==Progress::ReadyToSettle && r.exact && r.nativeBackend && r.nativeClock &&
             (!state || (state->producer==std::this_thread::get_id() && !state->canceled.load(std::memory_order_acquire))) &&
-            r.requiredAllowanceQualified && r.requiredOnlyAllowanceCpuNs && r.requiredAllowanceCalibration && r.nativeMetricsAvailable &&
+            r.nativeMetricsAvailable &&
             r.clockValid && !r.invalidClocks && !r.overshoots && !r.executionFailed && !r.quarantined &&
             !r.budgetCanceled && !r.requiredCanceled && !r.explicitCanceled &&
             native.dispatches && native.hostChecks && !native.invalidCpuClocks && !native.overshoots &&
             !native.executionFailed && native.stage==OpenCLProbe::Stage::OutputWait;
-        return RequiredCandidateReceipt(std::max(r.alternativeCallingCpuNs,native.threadCpuNs),r.requiredOnlyAllowanceCpuNs,complete,
-            r.ticketId,r.policyGeneration,r.requiredGeneration,r.requiredAllowanceCalibration);
+        // Missing calibration authenticates only complete-debt inference. It
+        // never authorizes omitting oracle, capture or administrative expense.
+        const bool calibrated=r.requiredAllowanceQualified && r.requiredOnlyAllowanceCpuNs && r.requiredAllowanceCalibration;
+        return RequiredCandidateReceipt(std::max(r.alternativeCallingCpuNs,native.threadCpuNs),
+            calibrated?r.requiredOnlyAllowanceCpuNs:0,complete,r.ticketId,r.policyGeneration,r.requiredGeneration,
+            calibrated?r.requiredAllowanceCalibration:0);
     }
     // No event queries or allocations. Zero requests another bounded broker
     // turn, with required EDF reconsidered first; it never loops within advance.

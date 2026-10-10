@@ -965,10 +965,17 @@ completion/readback and exact comparison with valid producer clocks. It includes
 all measured native calling CPU, including fresh queue/all-kernel setup until
 separately calibrated, plus all unknown process CPU and an allowance frozen
 before execution for required-only preparation, scheduling and output commit.
-Injected backends and missing calibration cannot attest that receipt. Private
-identity-bound settlement floors independently protect complete debt and the
-required-path upper bound; final probe-only metadata destruction increases debt.
-The legacy accounting overload keeps both bounds equal. The explicit split is
+Injected backends cannot attest native coverage. Missing or unqualified
+calibration permits only an authenticated complete-debt candidate: both private
+floors remain equal and closing/retirement work increases both. It cannot omit
+capture, oracle comparison, sampler or other learning expense. Run `isolated
+native replay authenticates full debt without required calibration` alone with
+`GLOB2_TEST_OPENCL_FULL_DEBT_RECEIPT=1`; its 37 assertions prove real native
+coverage without a calibration, using synthetic funding only for API admission.
+Private identity-bound settlement floors independently protect complete debt
+and a calibrated required-path upper bound; final probe-only metadata destruction
+increases debt only for that authenticated split. The legacy accounting overload
+also keeps both bounds equal. The explicit split is
 unattached until native accounting, calibration, tuning-on/off total CPU and
 promotion-enabled responsiveness gates pass; it never waives complete-mode
 overhead or deadline checks.

@@ -471,3 +471,59 @@ TEST_CASE("isolated real native replay attests exact identity bound candidate co
         CHECK(openCLProbeBytes()==baseline);CHECK(openCLStatus().initializationThreadCPUNs==initializationCpu);
     });coordinator.join();
 }
+
+TEST_CASE("isolated native replay authenticates full debt without required calibration" * doctest::test_suite("OpenCLGradient"))
+{
+    const auto* enabled=std::getenv("GLOB2_TEST_OPENCL_FULL_DEBT_RECEIPT");
+    if(!enabled || std::strcmp(enabled,"1"))return;
+    if constexpr(!GAGCore::ThreadSupport::available)return;
+    std::thread coordinator([] {
+        REQUIRE(initializeOpenCL());const auto configured=openCLStatus();
+        REQUIRE_FALSE(configured.parityBound);REQUIRE_FALSE(configured.directSeedUpload);REQUIRE(configured.apiCpuMode==0);
+        REQUIRE((readyPlans.load()&(1u<<unsigned(Plan::Frozen8)))!=0);REQUIRE(glob2::threadCpuNs()!=0);
+        const auto baseline=openCLProbeBytes(),initializationCpu=configured.initializationThreadCPUNs;
+        auto policy=std::make_shared<CpuSavingPolicy>();
+        std::array<std::uint16_t,9> seeds{65535,1,1,0,1,1,1,65300,1};const auto original=seeds;
+        GradientCpuCapture::Input input;input.original=seeds;
+        input.key={9,1,BUCKETS,3,1,Family::Materials,255,255};input.key.limit=COST_LIMIT;
+        input.tick=1;input.due=17;input.requiredGeneration=91;input.alternativeReady=true;
+        input.reservedCpuNs=8000000;input.captureCpuLimitNs=2000000;
+        input.slackNs=100000000;input.conservativeElapsedNs=1000000;
+        REQUIRE(policy->qualify(input.key,Plan::Frozen8,true));
+        // Synthetic credits only enable the isolated API gate. All capture,
+        // eager reference and native producer clocks are real thread CPU clocks.
+        policy->observeAccepted(input.key,Plan::CPU,100000000000ull,1);
+        GradientCpuCapture::Receipt captured;std::unique_ptr<GradientCpuCapture> capture;
+        for(unsigned i=0;i<CpuSavingPolicy::ProbePeriod && !capture;++i)
+            capture=GradientCpuCapture::begin(policy,input,captured);
+        REQUIRE(bool(capture));GradientWorkspace workspace;
+        const auto start=glob2::threadCpuNs();
+        propagateFieldCPU(seeds.data(),0,COST_LIMIT,field::Grid(9,1),workspace,[](std::size_t){return false;});
+        const auto end=glob2::threadCpuNs();REQUIRE(start!=0);REQUIRE(end>=start);REQUIRE(end-start>0);
+        auto record=capture->complete(seeds,{91,end-start,true,true},captured);REQUIRE(bool(record));
+        CHECK(std::equal(record->original().begin(),record->original().end(),original.begin()));
+        CaptureProbeReplay::Admission admission{91,1,input.slackNs,false};
+        // No required-only calibration. Native coverage may authenticate only
+        // full-debt mode after separate complete outer accounting qualification.
+        CaptureProbeReplay::Receipt attempted;
+        auto replay=CaptureProbeReplay::begin(std::move(record),admission,attempted);REQUIRE(bool(replay));
+        CHECK(attempted.nativeClock);
+        auto progress=CaptureProbeReplay::Progress::Pending;
+        for(unsigned i=0;i<1000000 && progress==CaptureProbeReplay::Progress::Pending;++i) {
+            progress=replay->advance(admission);
+            if(progress==CaptureProbeReplay::Progress::Pending)std::this_thread::yield();
+        }
+        REQUIRE(progress==CaptureProbeReplay::Progress::ReadyToSettle);
+        const auto receipt=replay->receipt();CHECK(receipt.exact);CHECK(receipt.nativeBackend);CHECK(receipt.nativeMetricsAvailable);
+        CHECK(receipt.nativeMetrics.dispatches>0);CHECK(receipt.clockValid);CHECK(receipt.nativeMetrics.invalidCpuClocks==0);
+        CHECK(receipt.overshoots==0);CHECK(receipt.comparedCells==seeds.size());
+        const auto candidate=replay->candidateReceipt();CHECK(candidate.complete());
+        CHECK(candidate.nativeCallingCpuNs()>=receipt.nativeMetrics.threadCpuNs);
+        CHECK(candidate.requiredAllowanceCpuNs()==0);CHECK(candidate.calibration()==0);
+        CHECK(receipt.acceptedReferenceCpuNs==end-start);CHECK(receipt.commonPreparationCpuNs==0);
+        auto token=replay->takeSettlement();REQUIRE(bool(token));CHECK(replay->candidateReceipt().complete());
+        token->cleanup();replay.reset();CHECK_FALSE(token->settle({},{}));token.reset();
+        CHECK(policy->metrics().probeCpuNs>=input.reservedCpuNs);CHECK(policy->metrics().promoted==0);
+        CHECK(openCLProbeBytes()==baseline);CHECK(openCLStatus().initializationThreadCPUNs==initializationCpu);
+    });coordinator.join();
+}
