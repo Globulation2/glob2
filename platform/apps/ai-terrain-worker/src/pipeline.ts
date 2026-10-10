@@ -5,6 +5,8 @@ import { createHash } from 'node:crypto';
 import {
   type TerrainStudio,
   validatePlan,
+  preparePlan,
+  validateRepairScope,
   assemble,
   plannerPrompt,
   entryKey,
@@ -118,7 +120,24 @@ export class Pipeline {
           signal,
         ),
     );
-    let plan = validatePlan(JSON.parse(planned.text), row.input.base);
+    let plan = await preparePlan(planned.text, row.input.base, async (proposal, error, repair) => {
+      await this.studio.text(row, `Design repair ${repair + 1}: ${error}`, repair + 1);
+      const fixed = await attempts.run(
+        row,
+        `design-repair:${repair}`,
+        textModel,
+        { error, plan: proposal },
+        () =>
+          this.provider.text(
+            textModel,
+            plannerPrompt(row.input.base, row.input.messages, proposal.brief) +
+              `\nRepair this proposed plan without changing its action or entry scope: ${JSON.stringify(proposal)}\nValidation error: ${error}`,
+            cfg.maxOutputTokens ?? 16000,
+            signal,
+          ),
+      );
+      return fixed.text;
+    });
     if (plan.action === 'discuss') {
       await this.studio.stage(row, 'prepare', 'complete');
       await this.studio.finish(row, { text: plan.text, brief: plan.brief });
@@ -317,24 +336,7 @@ export class Pipeline {
       );
       const next = validatePlan(JSON.parse(fixed.text), row.input.base);
       // Repairs cannot delete extra entries, expand scope or turn a build into discussion.
-      const keys = new Set(plan.entries.map((e) => entryKey(row.input.base, e.key)));
-      if (
-        next.action !== 'build' ||
-        next.entries.length !== plan.entries.length ||
-        next.entries.some(
-          (e) =>
-            !keys.has(entryKey(row.input.base, e.key)) ||
-            e.operation !==
-              plan.entries.find(
-                (v) => entryKey(row.input.base, v.key) === entryKey(row.input.base, e.key),
-              )?.operation ||
-            e.kind !==
-              plan.entries.find(
-                (v) => entryKey(row.input.base, v.key) === entryKey(row.input.base, e.key),
-              )?.kind,
-        )
-      )
-        throw Error('Repair changed the requested scope.');
+      validateRepairScope(plan, next, row.input.base);
       plan = next;
     }
   }
