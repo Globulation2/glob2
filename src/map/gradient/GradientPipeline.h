@@ -154,6 +154,12 @@ private:
                 : backendSession->choose(family,1,choice);
             if(choice==gradient_kernel::Backend::Automatic && (!preparationClockValid ||
                 (backendSession->learningPolicy() && !learningEnabled)))decision={};
+            gradient_kernel::GradientBatchChoice batchChoice;
+            if(decision.plan==gradient_kernel::Plan::CPU && choice==gradient_kernel::Backend::Automatic &&
+               learningEnabled && preparationClockValid && deviceService && asyncWork && executor->slot()) {
+                batchChoice=deviceService->acceptedBatchChoice(backendSession,key);
+                if(batchChoice)decision=batchChoice.decision;
+            }
             const bool selectedGPU = decision.plan != gradient_kernel::Plan::CPU;
             if(selectedGPU) selectedGpu.fetch_add(1,std::memory_order_relaxed);
             if(selectedGPU && workerNoopBypass && gradient_kernel::alreadyFixedGradient(std::span(job.data.get(),cells))) {
@@ -186,7 +192,11 @@ private:
                     cpuFields.fetch_add(1,std::memory_order_relaxed);
                     if(learningEnabled) {
                         const bool valid=preparationClockValid&&cpuStart>=preparedCpu&&cpuEnd>=cpuStart;
-                        deviceService->recordAccepted(backendSession,key,decision.plan,
+                        if(batchChoice) {
+                            auto offered=key;offered.batch=batchChoice.minimumCount;
+                            deviceService->recordBatchOfferFallback(backendSession,offered,decision.plan,decision.version,
+                                glob2::threadCpuDeltaNs(preparationCpu,cpuEnd),job.due-delay,valid);
+                        }else deviceService->recordAccepted(backendSession,key,decision.plan,
                             valid?glob2::threadCpuDeltaNs(preparationCpu,cpuEnd):0,
                             job.due-delay,true);
                     }
@@ -194,13 +204,15 @@ private:
                 job.requiredControl.store(job.deviceField->requiredControl,std::memory_order_release);
                 if(job.cancelGPU.load(std::memory_order_acquire) && job.deviceField->requiredControl)job.deviceField->requiredControl->requestCancel();
                 job.deviceField->workload=key;
+                if(batchChoice){job.deviceField->minimumBatchCount=batchChoice.minimumCount;
+                    job.deviceField->offeredBatchElapsedNs=batchChoice.maximumElapsedNs;}
                 job.deviceField->seedShape=job.seedShape;job.deviceField->publicationTick=job.due;
                 job.deviceField->tick=job.due-delay;
+                job.deviceField->completion=executor->defer();
                 const auto ownedCpuEnd=cpuNow();
                 job.deviceField->preparationCpuClockValid=preparationClockValid && preparationCpu && ownedCpuEnd>=preparedCpu;
                 job.deviceField->seedCpuNs=glob2::threadCpuDeltaNs(preparationCpu,ownedCpuEnd);
                 const auto ownedEnd=diagnostics ? ownedCpuEnd : 0;
-                job.deviceField->completion=executor->defer();
                 if(!deviceService->submit(job.deviceField)) {
                     // Admission failure still uses the original batch and worker.
                     deviceService->recoverOnWorker(job.deviceField);

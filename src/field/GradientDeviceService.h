@@ -17,9 +17,16 @@ namespace gradient_kernel
 class GradientDeviceService;
 struct GradientDeviceState;
 bool gradientDiagnosticsRequested() noexcept;
-enum class GradientFallbackReason : unsigned {None,Unavailable,InvalidRequest,StaleGeneration,Duplicate,MemoryBudget,BackendDecline,DriverFailure,Shutdown,CpuClockUnavailable,Cancellation,Count};
+enum class GradientFallbackReason : unsigned {None,Unavailable,InvalidRequest,StaleGeneration,Duplicate,MemoryBudget,BackendDecline,DriverFailure,Shutdown,CpuClockUnavailable,Cancellation,BatchNotReady,Count};
 // The device service borrows neither a Map, a pipeline job nor a worker's
 // scratch. Seeds move into this holder and stay unchanged on GPU decline.
+struct GradientBatchChoice
+{
+    PlanDecision decision;
+    unsigned minimumCount=1;
+    std::uint64_t maximumElapsedNs=0;
+    explicit operator bool() const noexcept {return minimumCount>1 && decision.plan!=Plan::CPU && maximumElapsedNs;}
+};
 struct OwnedGradientField
 {
     std::shared_ptr<OpenCLRequiredControl> requiredControl=makeOpenCLRequiredControl();
@@ -30,6 +37,10 @@ struct OwnedGradientField
     CostIdentity identity;
     Family family = Family::Generic;
     PlanDecision decision;
+    // An independently accepted batch can win while singleton stays CPU.
+    // Such an offer must fall back immediately unless enough fields are ready.
+    unsigned minimumBatchCount=1;
+    std::uint64_t offeredBatchElapsedNs=0;
     int limit = COST_LIMIT;
     unsigned cpuBuckets = 64;
     std::uint64_t due = 0;
@@ -144,5 +155,9 @@ public:
         GradientCpuCapture::Input,GradientCpuCapture::Receipt&) noexcept;
     bool submitCapture(std::shared_ptr<GradientCpuCapture::Record>,std::shared_ptr<BackendSession>) noexcept;
     bool learningActive() const noexcept;
+    GradientBatchChoice acceptedBatchChoice(const std::shared_ptr<BackendSession>&,
+        const WorkloadKey&) const noexcept;
+    void recordBatchOfferFallback(std::shared_ptr<BackendSession>,const WorkloadKey&,Plan,
+        std::uint64_t version,std::uint64_t hostCpuNs,std::uint64_t tick,bool clockValid) noexcept;
 };
 }

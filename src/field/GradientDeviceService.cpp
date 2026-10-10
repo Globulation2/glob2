@@ -54,7 +54,8 @@ struct GradientDeviceState
         WorkloadKey key;
         Plan plan=Plan::CPU;
         std::uint64_t generation=0,cpuNs=0,tick=0;
-        bool failed=false,publicationStall=false;
+        bool failed=false,publicationStall=false,batchOfferFallback=false;
+        std::uint64_t offerVersion=0;
     };
     mutable std::mutex mutex;
     GradientDeviceService::Hooks hooks;
@@ -184,15 +185,30 @@ void recoverField(void* context,std::size_t) noexcept
     try {field.cpu(field);} catch(...) {field.error=std::current_exception();}
     const auto cpuEnd=serviceCpuNow(field.executionState.get());
     field.fallbackCpuNs=glob2::threadCpuDeltaNs(cpuStart,cpuEnd);
-    const auto cleanupStart=field.diagnostics ? serviceCpuNow(field.executionState.get()) : 0;
+    const bool batchOffer=field.minimumBatchCount>1 && field.executedBatchCount<field.minimumBatchCount &&
+        (field.fallbackReason==GradientFallbackReason::BatchNotReady ||
+         field.fallbackReason==GradientFallbackReason::MemoryBudget || field.fallbackReason==GradientFallbackReason::Unavailable);
+    const bool measureCleanup=field.diagnostics || batchOffer;
+    const auto cleanupStart=measureCleanup ? serviceCpuNow(field.executionState.get()) : 0;
     field.inputs.reset();field.identity={};
-    if(field.diagnostics)field.fallbackCleanupCpuNs=glob2::threadCpuDeltaNs(cleanupStart,serviceCpuNow(field.executionState.get()));
+    const auto cleanupEnd=measureCleanup ? serviceCpuNow(field.executionState.get()) : 0;
+    if(measureCleanup)field.fallbackCleanupCpuNs=glob2::threadCpuDeltaNs(cleanupStart,cleanupEnd);
     bool measured=field.preparationCpuClockValid && field.hostCpuClockValid && validCpuInterval(cpuStart,cpuEnd);
+    if(batchOffer)measured=measured && validCpuInterval(cleanupStart,cleanupEnd) && cleanupStart>=cpuEnd;
     auto cpu=field.seedCpuNs;
     for(const auto part:{field.hostCpuNs,field.fallbackCpuNs}){if(part>UINT64_MAX-cpu)measured=false;else cpu+=part;}
+    if(batchOffer){if(field.fallbackCleanupCpuNs>UINT64_MAX-cpu)measured=false;else cpu+=field.fallbackCleanupCpuNs;}
     if(!measured && field.executionState){std::lock_guard lock(field.executionState->mutex);++field.executionState->totals.clockInvalidMeasurements;}
-    if(auto service=field.observer.lock()) service->recordAccepted(field.session,field.workload,
-        field.decision.plan,measured ? cpu : 0,field.tick,true);
+    if(auto service=field.observer.lock()) {
+        auto key=field.workload;
+        if(batchOffer) {
+            key.batch=field.minimumBatchCount;
+            service->recordBatchOfferFallback(field.session,key,field.decision.plan,field.decision.version,cpu,field.tick,measured && !field.error);
+        }else {
+            key.batch=std::max(field.executedBatchCount,field.minimumBatchCount);
+            service->recordAccepted(field.session,key,field.decision.plan,measured ? cpu : 0,field.tick,true);
+        }
+    }
 }
 void fallbackField(const std::shared_ptr<OwnedGradientField>& field) noexcept
 {
@@ -203,7 +219,7 @@ void fallbackField(const std::shared_ptr<OwnedGradientField>& field) noexcept
     field->completion->resume({&recoverField,field.get()});
 }
 bool observe(const std::shared_ptr<GradientDeviceState>& state,std::shared_ptr<BackendSession> session,
-    const WorkloadKey& key,Plan plan,std::uint64_t cpuNs,std::uint64_t tick,bool failure=false,bool publicationStall=false) noexcept
+    const WorkloadKey& key,Plan plan,std::uint64_t cpuNs,std::uint64_t tick,bool failure=false,bool publicationStall=false,bool batchOfferFallback=false,std::uint64_t offerVersion=0) noexcept
 {
     std::lock_guard lock(state->mutex);
     if(!state->initialized || !state->started || state->canceled || !session || !session->learningPolicy()) return false;
@@ -214,7 +230,7 @@ bool observe(const std::shared_ptr<GradientDeviceState>& state,std::shared_ptr<B
     }
     if(publicationStall)++state->totals.publicationStalls;
     state->observations[state->observationWritten++%state->observations.size()]={
-        session,key,plan,session->currentGeneration(),cpuNs,tick,failure,publicationStall};return true;
+        session,key,plan,session->currentGeneration(),cpuNs,tick,failure,publicationStall,batchOfferFallback,offerVersion};return true;
 }
 
 // The broker is process-owned. Only process exit joins its thread. Holding the
@@ -461,7 +477,7 @@ class DeviceBroker
     }
     void execute(const std::shared_ptr<GradientDeviceState>& state) noexcept {
         const auto started=monotonicNs(),cpuStart=serviceCpuNow(state.get());
-        std::array<std::shared_ptr<OwnedGradientField>,8> held;std::size_t count=0;bool canceled=false;
+        std::array<std::shared_ptr<OwnedGradientField>,8> held;std::size_t count=0;bool canceled=false,batchNotReady=false;std::uint64_t batchVersion=0;
         {
             std::lock_guard lock(state->mutex);canceled=state->canceled;
             const auto earlier=[](const auto& a,const auto& b) {
@@ -478,7 +494,7 @@ class DeviceBroker
                     held[count++]=field;state->queue.erase(next);
                 }
             } else {
-                if(state->totals.crossDueRequested)cadenceLocked(*state);
+                if(state->totals.crossDueRequested || state->mode==Backend::Automatic)cadenceLocked(*state);
                 auto first=earliest->field;
                 // Gather only already-ready compatible entries. Never wait for a
                 // second field, and never extrapolate a batch bound from singleton.
@@ -488,8 +504,8 @@ class DeviceBroker
                     auto& queued=state->queue[i];const auto& field=queued.field;
                     if(field->session!=first->session || field->decision.plan!=first->decision.plan ||
                        !(field->workload==first->workload) ||
-                       (field->due!=first->due && !state->totals.crossDueRequested))continue;
-                    if(state->totals.crossDueRequested && (field->identity.owner!=first->identity.owner ||
+                       (field->due!=first->due && !state->totals.crossDueRequested && state->mode!=Backend::Automatic))continue;
+                    if((state->totals.crossDueRequested || state->mode==Backend::Automatic) && (field->identity.owner!=first->identity.owner ||
                        field->identity.revision!=first->identity.revision || field->identity.variant!=first->identity.variant ||
                        !knownBatchShape(*field,state->computeThreads)))continue;
                     std::size_t insert=available;
@@ -500,31 +516,57 @@ class DeviceBroker
                     candidates[insert]=&queued;indices[insert]=i;
                 }
                 count=1;
-                for(std::size_t n=available;n>1;--n) {
-                    auto key=first->workload;key.batch=unsigned(n);
-                    if(state->totals.crossDueRequested && state->mode!=Backend::OpenCL)continue; // Development forced mode only.
+                for(const unsigned n:{8u,4u,2u}) {
+                    if(n>available || n>state->maximumBatch)continue;
+                    auto key=first->workload;key.batch=n;
+                    const GradientBatchBound* bound=nullptr;GradientBatchBound measured;std::uint64_t candidateVersion=0;
                     if(state->mode==Backend::Automatic) {
                         const auto policy=first->session->learningPolicy();
-                        if(!policy || policy->lookup(key).plan!=first->decision.plan)continue;
-                    }
-                    if(state->totals.crossDueRequested) {
-                        if(!state->totals.crossDueReady || !knownBatchShape(*first,state->computeThreads))continue;
-                        const GradientBatchBound* bound=nullptr;
+                        if(!policy || !state->batching || !knownBatchShape(*first,state->computeThreads))continue;
+                        const auto choice=policy->lookup(key);
+                        if(choice.plan!=first->decision.plan || !choice.maximumElapsedNs)continue;
+                        bool qualified=true;
+                        for(unsigned i=0;i<n;++i) {
+                            const auto& field=candidates[i]->field;
+                            auto offered=field->workload;offered.batch=field->minimumBatchCount;
+                            const auto current=policy->lookup(offered);
+                            qualified=qualified && field->minimumBatchCount<=n && current.plan==field->decision.plan &&
+                                current.version==field->decision.version && (!field->offeredBatchElapsedNs ||
+                                current.maximumElapsedNs==field->offeredBatchElapsedNs);
+                        }
+                        if(!qualified)continue;
+                        candidateVersion=choice.version;
+                        measured={key,choice.plan,first->identity.revision,first->identity.variant,choice.maximumElapsedNs,500000};
+                        bound=&measured;
+                    }else if(state->totals.crossDueRequested) {
+                        if(state->mode!=Backend::OpenCL || !state->totals.crossDueReady || !knownBatchShape(*first,state->computeThreads))continue;
                         for(unsigned i=0;i<state->batching->manifest.count;++i) {
                             const auto& entry=state->batching->manifest.bounds[i];
                             if(entry.workload==key && entry.plan==first->decision.plan &&
                                entry.costRevision==first->identity.revision && entry.costVariant==first->identity.variant){bound=&entry;break;}
                         }
-                        if(!bound)continue;
-                        const auto now=monotonicNs();bool fits=true;
-                        for(std::size_t i=0;i<n;++i) {
-                            const auto& field=candidates[i]->field;
-                            fits=fits && state->batching->cadence.fits(field->publicationTick,field->cadenceRevision,field->cadenceFloorNs,*bound,now);
-                        }
-                        if(!fits)continue;
                     }
-                    count=n;break;
+                    if(!bound)continue;
+                    const auto now=monotonicNs();bool fits=true;
+                    for(unsigned i=0;i<n;++i) {
+                        const auto& field=candidates[i]->field;
+                        fits=fits && state->batching->cadence.fits(field->publicationTick,field->cadenceRevision,field->cadenceFloorNs,*bound,now);
+                    }
+                    if(!fits)continue;
+                    count=n;
+                    if(state->mode==Backend::Automatic)batchVersion=candidateVersion;
+                    // Polling can return to untouched-seed CPU recovery before
+                    // the estimated publication boundary. Actual due keys and
+                    // original completion tickets remain unchanged.
+                    for(unsigned i=0;i<n;++i)if(auto control=candidates[i]->field->requiredControl) {
+                        const auto& field=candidates[i]->field;const auto latest=state->batching->cadence.last();
+                        const auto floor=std::min(state->batching->cadence.floorNs(),field->cadenceFloorNs);
+                        const auto due=latest.startedNs+(field->publicationTick-latest.tick)*floor;
+                        control->setDeadlineNs(due-bound->completionMarginNs);
+                    }
+                    break;
                 }
+                batchNotReady=count<first->minimumBatchCount;
                 if(count==1) {held[0]=first;state->queue.erase(earliest);}
                 else {
                     for(std::size_t i=0;i<count;++i)held[i]=candidates[i]->field;
@@ -542,15 +584,25 @@ class DeviceBroker
         const bool diagnostics=state->totals.diagnostics;
         const bool trackCompletion=diagnostics || bool(fields.front()->session->learningPolicy());
         std::uint64_t preparationEnd=cpuStart,submissionEnd=cpuStart;
-        const auto envelopeSetupStarted=state->totals.cpuEnvelopeRequested ? glob2::threadCpuNs() : 0;
-        auto envelope=state->totals.cpuEnvelopeRequested ? beginBatchCpuEnvelope() : nullptr;
-        const auto envelopeSetupCpu=state->totals.cpuEnvelopeRequested ? glob2::threadCpuDeltaNs(envelopeSetupStarted,glob2::threadCpuNs()) : 0;
+        // An insufficient ready batch submits no driver work. Its exact CPU
+        // continuation pays the calling coordinator CPU, without initializing
+        // optional diagnostic registry/envelope storage on that required path.
+        const bool envelopeRequested=state->totals.cpuEnvelopeRequested && !batchNotReady;
+        const auto envelopeSetupStarted=envelopeRequested ? glob2::threadCpuNs() : 0;
+        auto envelope=envelopeRequested ? beginBatchCpuEnvelope() : nullptr;
+        const auto envelopeSetupCpu=envelopeRequested ? glob2::threadCpuDeltaNs(envelopeSetupStarted,glob2::threadCpuNs()) : 0;
         const bool missingPreparationClock=std::any_of(fields.begin(),fields.end(),[](const auto& field){return !field->preparationCpuClockValid;});
         const bool clockUnavailable=state->mode==Backend::Automatic && (state->automaticClockUnavailable || !cpuStart || missingPreparationClock);
-        const bool stale=std::any_of(fields.begin(),fields.end(),[](const auto& field) {
-            return field->decision.generation!=field->session->currentGeneration() || field->session->failed.load();
+        const bool stale=std::any_of(fields.begin(),fields.end(),[&](const auto& field) {
+            if(field->decision.generation!=field->session->currentGeneration() || field->session->failed.load())return true;
+            if(state->mode==Backend::Automatic && !batchNotReady) {
+                const auto policy=field->session->learningPolicy();if(!policy)return true;
+                auto key=field->workload;key.batch=unsigned(count);const auto choice=policy->lookup(key);
+                return choice.plan!=field->decision.plan || choice.version!=(count>1?batchVersion:field->decision.version);
+            }
+            return false;
         });
-        if(!canceled && !stale && !clockUnavailable) {
+        if(!canceled && !stale && !clockUnavailable && !batchNotReady) {
             try {
                 std::vector<BackendRequest> requests;requests.reserve(count);
                 for(const auto& field:fields) {
@@ -591,14 +643,13 @@ class DeviceBroker
                 field->completion->complete();
             }
             else {
-                field->fallbackReason=canceled ? GradientFallbackReason::Shutdown : stale ? GradientFallbackReason::StaleGeneration
+                field->fallbackReason=canceled ? GradientFallbackReason::Shutdown : batchNotReady ? GradientFallbackReason::BatchNotReady : stale ? GradientFallbackReason::StaleGeneration
                     : clockUnavailable ? GradientFallbackReason::CpuClockUnavailable
                     : field->requiredControl && field->requiredControl->shouldCancel(monotonicNs()) ? GradientFallbackReason::Cancellation
                     : field->session->failed.load() ? GradientFallbackReason::DriverFailure : GradientFallbackReason::BackendDecline;
-                fallbackField(field);
             }
         }
-        const auto envelopeFinishStarted=state->totals.cpuEnvelopeRequested ? glob2::threadCpuNs() : 0;
+        const auto envelopeFinishStarted=envelopeRequested ? glob2::threadCpuNs() : 0;
         if(envelope)finishBatchCpuEnvelope(envelope->envelope);
         // Retain only bounded scalar metadata; release optional storage before
         // publishing telemetry. The original completion ticket is already done.
@@ -606,7 +657,7 @@ class DeviceBroker
         if(envelope){const auto& result=envelope->envelope.metrics();envelopeResult={true,result.valid,result.churn,
             result.processCpuNs,result.knownInnerCpuNs,result.unknownUpperCpuNs,result.samplerCpuNs,result.omittedThreads,result.maxResolutionNs};}
         envelope.reset();
-        const auto envelopeFinishCpu=state->totals.cpuEnvelopeRequested ? glob2::threadCpuDeltaNs(envelopeFinishStarted,glob2::threadCpuNs()) : 0;
+        const auto envelopeFinishCpu=envelopeRequested ? glob2::threadCpuDeltaNs(envelopeFinishStarted,glob2::threadCpuNs()) : 0;
         if(handled && std::any_of(fields.begin(),fields.end(),[](const auto& field){return field->executedGPU;})) {
             auto key=fields.front()->workload;key.batch=unsigned(count);
             const auto observationEnd=serviceCpuNow(state.get());
@@ -620,12 +671,13 @@ class DeviceBroker
             observe(state,fields.front()->session,key,fields.front()->decision.plan,measured ? cpu : 0,fields.front()->tick,!measured);
             if(!measured){batchTimingInvalid=true;if(state->mode==Backend::Automatic)state->automaticClockUnavailable=true;}
         }
+        {
         std::lock_guard lock(state->mutex);
         if(batchTimingInvalid){++state->totals.clockInvalidMeasurements;
             if(state->mode==Backend::Automatic)state->automaticClockUnavailable=true;}
         state->totals.automaticClockUnavailable=state->automaticClockUnavailable;
         if(state->automaticClockUnavailable)state->learningAvailable.store(false,std::memory_order_release);
-        if(state->totals.cpuEnvelopeRequested) {
+        if(envelopeRequested) {
             state->totals.cpuEnvelopeLifecycleNs+=envelopeSetupCpu+envelopeFinishCpu;
             state->totals.cpuEnvelopeSetupOvershoots+=envelopeSetupCpu>500000;
             state->totals.cpuEnvelopeFinishOvershoots+=envelopeFinishCpu>500000;
@@ -657,6 +709,20 @@ class DeviceBroker
         if(handled) {
             state->totals.completed+=count;
             for(const auto& field:fields) field->executedGPU ? ++state->totals.executed : ++state->totals.trivial;
+        }
+        }
+        if(!handled) {
+            // Freeze failed-offer CPU after coordinator cleanup, before any
+            // worker continuation can read it. Attribution among fields is
+            // diagnostic; batch offer demotion sums only actual paid receipts.
+            const auto finishedCpu=serviceCpuNow(state.get());
+            const bool valid=hostClockValid && validCpuInterval(cpuStart,finishedCpu) && finishedCpu>=cpuEnd;
+            const auto completeCpu=glob2::threadCpuDeltaNs(cpuStart,finishedCpu);
+            for(const auto& field:fields) {
+                field->hostCpuClockValid=valid;
+                field->hostCpuNs=(completeCpu/cells)*field->grid.cells()+(completeCpu%cells)*field->grid.cells()/cells;
+                fallbackField(field);
+            }
         }
     }
     void run() noexcept {
@@ -730,7 +796,16 @@ class DeviceBroker
                                 selected->totals.tuningStartupClockValid);
                             selected->startupCharged=true;
                         }
-                        policy->observeAccepted(observation.key,observation.plan,observation.cpuNs,observation.tick,observation.failed,observation.publicationStall);
+                        if(observation.batchOfferFallback)
+                            policy->observeBatchOfferFallback(observation.key,observation.plan,observation.offerVersion,
+                                observation.cpuNs,observation.tick,!observation.failed);
+                        else {
+                            policy->observeAccepted(observation.key,observation.plan,observation.cpuNs,observation.tick,observation.failed,observation.publicationStall);
+                            if(observation.key.batch>1 && (observation.failed || observation.publicationStall)) {
+                                auto singleton=observation.key;singleton.batch=1;
+                                policy->observeBatchFailure(singleton,observation.key.batch,observation.tick);
+                            }
+                        }
                         // Frozen8 has an offline exactness corpus covering the
                         // supported classic complete-field representation.
                         if(observation.key.cpuBuckets==BUCKETS && !observation.key.movementModifiers &&
@@ -834,22 +909,31 @@ void GradientDeviceService::stop() noexcept {
 }
 bool GradientDeviceService::submit(const std::shared_ptr<OwnedGradientField>& field) noexcept {
     try {
-        auto current=state();if(!current) return false;std::unique_lock lock(current->mutex);
+        auto current=state();if(!current) return false;const auto admissionStart=glob2::threadCpuNs();std::unique_lock lock(current->mutex);
         if(field) {field->observer=weak_from_this();field->executionState=current;field->diagnostics=current->totals.diagnostics;}
+        // Freeze the actual worker admission cost before queued fields become
+        // visible to the coordinator. A decline has no coordinator/device work.
+        const auto finishAdmission=[&](bool queued) {
+            if(!field)return;
+            const auto end=glob2::threadCpuNs(),cpu=glob2::threadCpuDeltaNs(admissionStart,end);
+            field->preparationCpuClockValid=field->preparationCpuClockValid && validCpuInterval(admissionStart,end) && cpu<=UINT64_MAX-field->seedCpuNs;
+            if(field->preparationCpuClockValid)field->seedCpuNs+=cpu;
+            if(!queued){field->hostCpuClockValid=field->preparationCpuClockValid;field->hostCpuNs=0;}
+        };
         if(!field || !field->session || !field->data || !field->completion || !field->cpu || !field->costAt) {
             if(field) field->fallbackReason=GradientFallbackReason::InvalidRequest;
-            ++current->totals.declined;return false;
+            ++current->totals.declined;finishAdmission(false);return false;
         }
         if(!current->started || current->canceled || !current->initialized) {
             field->fallbackReason=current->canceled ? GradientFallbackReason::Shutdown : GradientFallbackReason::Unavailable;
-            ++current->totals.declined;return false;
+            ++current->totals.declined;finishAdmission(false);return false;
         }
         if(field->requiredControl && field->requiredControl->shouldCancel(monotonicNs())) {
-            field->fallbackReason=GradientFallbackReason::Cancellation;++current->totals.declined;return false;
+            field->fallbackReason=GradientFallbackReason::Cancellation;++current->totals.declined;finishAdmission(false);return false;
         }
         if(field->decision.plan==Plan::CPU || field->decision.generation!=field->session->currentGeneration()) {
             field->fallbackReason=GradientFallbackReason::StaleGeneration;
-            ++current->totals.stale;++current->totals.declined;return false;
+            ++current->totals.stale;++current->totals.declined;finishAdmission(false);return false;
         }
         bool unused=false;
         if(!field->admitted.compare_exchange_strong(unused,true)) {
@@ -858,7 +942,7 @@ bool GradientDeviceService::submit(const std::shared_ptr<OwnedGradientField>& fi
         const auto cells=field->grid.cells();
         const auto declineBudget=[&] {
             field->admitted=false;field->fallbackReason=GradientFallbackReason::MemoryBudget;
-            ++current->totals.budgetDeclines;++current->totals.declined;return false;
+            ++current->totals.budgetDeclines;++current->totals.declined;finishAdmission(false);return false;
         };
         if(current->queue.full() || cells>(OpenCLHostBudget-sizeof(OwnedGradientField))/sizeof(std::uint16_t)) return declineBudget();
         const auto sessionBytes=field->session->metrics().retainedBytes+128;
@@ -872,6 +956,7 @@ bool GradientDeviceService::submit(const std::shared_ptr<OwnedGradientField>& fi
             field->reservedHostBytes=0;current->retained.fetch_sub(bytes);releaseOpenCLHostBytes(bytes);return declineBudget();
         }
         if(current->batching){field->cadenceRevision=current->batching->cadence.version();field->cadenceFloorNs=current->batching->cadence.floorNs();}
+        finishAdmission(true);
         ++current->totals.submitted;lock.unlock();broker().notify();return true;
     } catch(...) {return false;}
 }
@@ -884,6 +969,32 @@ bool GradientDeviceService::learningActive() const noexcept {
     if(auto current=state())return current->learningAvailable.load(std::memory_order_acquire) &&
         (!current->nativeBackend || readyPlans.load(std::memory_order_acquire)!=0);
     return false;
+}
+GradientBatchChoice GradientDeviceService::acceptedBatchChoice(const std::shared_ptr<BackendSession>& session,
+    const WorkloadKey& singleton) const noexcept {
+    if(!ComputeExecutor::workerSlot() || !session || singleton.batch!=1 || singleton.movement || singleton.movementModifiers ||
+       singleton.cpuBuckets!=BUCKETS || singleton.seedDensity>16 || singleton.blockerDensity>16 ||
+       (singleton.family!=Family::Clear && singleton.family!=Family::Guard))return {};
+    auto current=state();const auto policy=session->learningPolicy();if(!current || !policy)return {};
+    unsigned maximum=1;
+    {std::lock_guard lock(current->mutex);
+        if(current->mode!=Backend::Automatic || !current->learningAvailable.load(std::memory_order_acquire) ||
+           current->canceled || !current->started || !current->batching)return {};
+        maximum=current->maximumBatch;
+    }
+    const auto generation=session->currentGeneration();
+    for(const unsigned count:{2u,4u,8u})if(count<=maximum) {
+        auto key=singleton;key.batch=count;const auto choice=policy->lookup(key);
+        if(choice.plan==Plan::CPU || !choice.maximumElapsedNs ||
+           (current->nativeBackend && !(readyPlans.load(std::memory_order_acquire)&(1u<<unsigned(choice.plan)))))continue;
+        if(session->failed.load() || session->currentGeneration()!=generation)return {};
+        return {{choice.plan,choice.version,generation},count,choice.maximumElapsedNs};
+    }
+    return {};
+}
+void GradientDeviceService::recordBatchOfferFallback(std::shared_ptr<BackendSession> session,const WorkloadKey& key,
+    Plan plan,std::uint64_t version,std::uint64_t cpuNs,std::uint64_t tick,bool clockValid) noexcept {
+    if(auto current=state())if(observe(current,std::move(session),key,plan,clockValid?cpuNs:0,tick,!clockValid,false,true,version))broker().notify();
 }
 std::unique_ptr<GradientCpuCapture> GradientDeviceService::beginCapture(std::shared_ptr<BackendSession> session,
     GradientCpuCapture::Input input,GradientCpuCapture::Receipt& receipt) noexcept {

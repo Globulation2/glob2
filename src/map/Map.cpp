@@ -599,6 +599,7 @@ std::vector<std::pair<std::string,Uint64>> Map::adaptiveGradientMetrics() const
         {"fallback_reason_driver",device.fallbackReasons[unsigned(gradient_kernel::GradientFallbackReason::DriverFailure)]},
         {"fallback_reason_shutdown",device.fallbackReasons[unsigned(gradient_kernel::GradientFallbackReason::Shutdown)]},
         {"fallback_reason_cancellation",device.fallbackReasons[unsigned(gradient_kernel::GradientFallbackReason::Cancellation)]},
+        {"fallback_reason_batch_not_ready",device.fallbackReasons[unsigned(gradient_kernel::GradientFallbackReason::BatchNotReady)]},
         {"coordinator_fallbacks",device.fallbacks},{"coordinator_declined",device.declined},
         {"coordinator_stale",device.stale},{"coordinator_budget_declines",device.budgetDeclines},
         {"coordinator_publication_stalls",device.publicationStalls},

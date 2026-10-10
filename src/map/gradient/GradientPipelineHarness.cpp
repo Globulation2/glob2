@@ -1252,6 +1252,98 @@ TEST_CASE("ready cross-due batches need exact profile cadence seed metadata and 
     }
 }
 
+TEST_CASE("accepted batch-only offers execute ready members or recover without waiting to fill" * doctest::test_suite("GradientPipeline"))
+{
+    using namespace gradient_kernel;
+    if constexpr(!GAGCore::ThreadSupport::available)return;
+    PipelineEnvironment tuning("GLOB2_GRADIENT_TUNING","1"),crossDue("GLOB2_GRADIENT_CROSS_DUE","0"),batch("GLOB2_GRADIENT_BATCH","8");
+    const auto plan=requestedOpenCLPlan();
+    for(unsigned scenario=0;scenario<3;++scenario) {
+        auto session=std::make_shared<BackendSession>();session->configureLearning(true);
+        const auto policy=session->learningPolicy();
+        WorkloadKey singleton{1,1,64,3,1,Family::Clear,16,0};
+        auto accepted=singleton;accepted.batch=2;
+        policy->observeAccepted(singleton,Plan::CPU,1000000000000ull,1);
+        REQUIRE(policy->qualify(accepted,plan,true));
+        for(unsigned pair=0;pair<256 && policy->lookup(accepted).plan==Plan::CPU;++pair) {
+            std::optional<CpuSavingPolicy::ProbeTicket> ticket;
+            for(unsigned attempt=0;attempt<CpuSavingPolicy::ProbePeriod && !ticket;++attempt)
+                ticket=policy->beginAcceptedCapture(accepted,plan,1,1000000,100000000,1000000,false,0,session->currentGeneration(),true);
+            REQUIRE(bool(ticket));
+            REQUIRE(policy->bindAcceptedReference(*ticket,session->currentGeneration(),1000000,true,true));
+            REQUIRE(bool(policy->authorizeOptionalExecution(*ticket,session->currentGeneration(),1,100000000,false)));
+            policy->finishAcceptedCapture(*ticket,{100000,1000000,600000,100000000,true,true,true});
+        }
+        REQUIRE(policy->lookup(accepted).plan==plan);CHECK(policy->lookup(singleton).plan==Plan::CPU);
+        struct Gate {std::promise<void> entered,release;std::shared_future<void> released=release.get_future().share();
+            std::atomic<bool> opened{false};void open(){if(!opened.exchange(true))release.set_value();}};
+        auto gate=std::make_shared<Gate>();auto entered=gate->entered.get_future();
+        auto blocker=std::make_shared<GradientDeviceService>(GradientDeviceService::Hooks{[]{return true;},
+            [gate](std::span<const BackendRequest> requests,Plan){gate->entered.set_value();gate->released.wait();
+                for(const auto& request:requests)request.gradient[0]=99;return true;}});
+        std::atomic<unsigned> calls{0},actualCount{0},recoveries{0};
+        auto service=std::make_shared<GradientDeviceService>(GradientDeviceService::Hooks{[]{return true;},
+            [&calls,&actualCount](std::span<const BackendRequest> requests,Plan){++calls;actualCount=unsigned(requests.size());
+                for(const auto& request:requests){request.gradient[0]=99;if(request.executedOnDevice)*request.executedOnDevice=true;}return true;}});
+        blocker->configure(3,Backend::OpenCL);service->configure(3,Backend::Automatic);
+        auto until=std::chrono::steady_clock::now()+std::chrono::seconds(5);
+        while((!service->metrics().ready || !blocker->metrics().ready) && std::chrono::steady_clock::now()<until)std::this_thread::yield();
+        REQUIRE(service->metrics().ready);REQUIRE(blocker->metrics().ready);
+        for(unsigned tick=1;tick<=17;++tick)service->recordCadence({tick,monotonicNs(),1000000000ull});
+        while(!service->metrics().cadenceFloorNs && std::chrono::steady_clock::now()<until)std::this_thread::yield();
+        REQUIRE(service->metrics().cadenceFloorNs==1000000000ull);
+        ComputeExecutor executor;executor.configure(3);auto costOwner=std::make_shared<int>(0);
+        struct Context {ComputeExecutor* executor;std::shared_ptr<GradientDeviceService> service;
+            std::shared_ptr<OwnedGradientField> field;std::atomic<unsigned>* recoveries;bool choose=false;};
+        std::array<Context,3> contexts;
+        for(unsigned i=0;i<contexts.size();++i) {
+            auto field=std::make_shared<OwnedGradientField>();field->session=session;field->decision={plan,0,session->currentGeneration()};
+            field->data=std::make_unique<std::uint16_t[]>(1);field->data[0]=77;field->grid={1,1};field->limit=65534;
+            field->preparationCpuClockValid=true;field->family=Family::Clear;field->workload=singleton;field->seedShape={1,1,0,true};
+            field->identity={costOwner,7,42,true};field->costAt=[](const auto&,std::size_t){return LAND_STEPS;};
+            field->due=10+i;field->publicationTick=20+i;
+            field->inputs=std::make_shared<std::atomic<unsigned>*>(&recoveries);
+            field->cpu=[](auto& value){auto counter=static_cast<std::atomic<unsigned>* const*>(value.inputs.get());
+                (*counter)->fetch_add(1);value.data[0]=88;};
+            contexts[i]={&executor,i?service:blocker,field,&recoveries,bool(i)};
+        }
+        std::array<ComputeExecutor::Batch,2> tickets;
+        struct Drain {ComputeExecutor& executor;std::array<ComputeExecutor::Batch,2>& tickets;std::shared_ptr<Gate> gate;
+            ~Drain(){gate->open();for(auto& ticket:tickets)try{executor.join(ticket);}catch(...){}}
+        } drain{executor,tickets,gate};
+        const auto invoke=+[](void* value,std::size_t index){auto& context=static_cast<Context*>(value)[index];
+            if(context.choose){const auto choice=context.service->acceptedBatchChoice(context.field->session,context.field->workload);
+                REQUIRE(bool(choice));CHECK(choice.minimumCount==2);context.field->decision=choice.decision;
+                context.field->minimumBatchCount=choice.minimumCount;context.field->offeredBatchElapsedNs=choice.maximumElapsedNs;}
+            context.field->completion=context.executor->defer();REQUIRE(context.service->submit(context.field));};
+        const ComputeExecutor::Group first{1,{invoke,contexts.data()},ComputeExecutor::NoLane};
+        tickets[0]=executor.submit(std::span(&first,1),10);
+        const auto enteredStatus=entered.wait_for(std::chrono::seconds(5));if(enteredStatus!=std::future_status::ready)gate->open();
+        REQUIRE(enteredStatus==std::future_status::ready);
+        const unsigned count=scenario==1?1:2;
+        const ComputeExecutor::Group group{count,{invoke,contexts.data()+1},ComputeExecutor::NoLane};
+        tickets[1]=executor.submit(std::span(&group,1),11);
+        until=std::chrono::steady_clock::now()+std::chrono::seconds(5);
+        while(service->metrics().submitted<count && std::chrono::steady_clock::now()<until)std::this_thread::yield();
+        REQUIRE(service->metrics().submitted==count);CHECK_FALSE(executor.finished(tickets[1]));
+        // Deferred accelerator fields leave workers free for independent work.
+        std::atomic<unsigned> unrelated{0};const ComputeExecutor::Group independent{1,{+[](void* value,std::size_t){
+            static_cast<std::atomic<unsigned>*>(value)->fetch_add(1);},&unrelated},ComputeExecutor::NoLane};
+        auto independentTicket=executor.submit(std::span(&independent,1),9);executor.join(independentTicket);CHECK(unrelated.load()==1);
+        const auto windows=service->metrics().cpuEnvelopeWindows;
+        if(scenario==2)service->recordCadence({18,monotonicNs(),100});
+        gate->open();for(auto& ticket:tickets)executor.join(ticket);
+        CHECK(calls.load()==(scenario==0?1u:0u));CHECK(actualCount.load()==(scenario==0?2u:0u));
+        CHECK(recoveries.load()==(scenario==0?0u:count));
+        for(unsigned i=1;i<=count;++i){CHECK(contexts[i].field->data[0]==(scenario==0?99:88));
+            CHECK(contexts[i].field->due==10+i);CHECK(contexts[i].field->publicationTick==20+i);
+            CHECK(contexts[i].field->fallbackReason==(scenario==0?GradientFallbackReason::None:GradientFallbackReason::BatchNotReady));}
+        if(scenario!=0)CHECK(service->metrics().cpuEnvelopeWindows==windows);
+        CHECK(service->metrics().crossDueBatches==(scenario==0?1u:0u));
+        service->stop();blocker->stop();
+    }
+}
+
 TEST_CASE("CPU envelope bridge initializes on CPU worker and deduplicates actual owner aliases" * doctest::test_suite("GradientPipeline"))
 {
     if constexpr(!GAGCore::ThreadSupport::available)return;
