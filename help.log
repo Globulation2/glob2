@@ -1,0 +1,24 @@
+usage: platform_stack_smoke.py [-h] [--no-build] [--keep] [--tag TAG]
+                               [--jobs JOBS] [--log-dir LOG_DIR]
+                               [--attach PROJECT] [--env-file ENV_FILE]
+                               [--sim-version SIM_VERSION] [--website ORIGIN]
+                               [--match-e2e]
+
+Smoke test of the self-hosted platform stack (deploy/compose.yaml).
+
+options:
+  -h, --help            show this help message and exit
+  --no-build            use already built images with --tag
+  --keep                leave the project running
+  --tag TAG             image tag to build and run (default: smoke)
+  --jobs JOBS           C++ build jobs
+  --log-dir LOG_DIR     write compose logs and results.json here
+  --attach PROJECT      check this running Compose project instead
+  --env-file ENV_FILE   with --attach: the deployment's env file
+  --sim-version SIM_VERSION
+                        with --attach: expected sim version key (default: this
+                        checkout)
+  --website ORIGIN      with --attach: separately hosted public website whose
+                        old app paths redirect here
+  --match-e2e           also play a rated quick match through relay,
+                        verification and ratings

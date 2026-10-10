@@ -1,0 +1,14 @@
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/test/deployment/platform_stack_smoke.py", line 716, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/test/deployment/platform_stack_smoke.py", line 695, in main
+    parser.add_argument('info', 'sim-version', '--format', 'json', help='with --attach: expected sim version key (default: this checkout)')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/argparse.py", line 1535, in add_argument
+    kwargs = self._get_optional_kwargs(*args, **kwargs)
+  File "/usr/lib/python3.14/argparse.py", line 1680, in _get_optional_kwargs
+    raise ValueError(
+        f'invalid option string {option_string!r}: '
+        f'must start with a character {self.prefix_chars!r}')
+ValueError: invalid option string 'info': must start with a character '-'
