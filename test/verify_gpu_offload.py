@@ -37,7 +37,8 @@ def main():
     with args.lock.open('a') as lock:
         fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
         (output / 'metadata.json').write_text(json.dumps(dict(configuration=config,
-            config_sha256=sha(args.config), note='Untimed exactness verification only'), indent=2)+'\n')
+            config_sha256=sha(args.config), verifier_sha256=sha(__file__),
+            runner_sha256=sha(Path(__file__).with_name('benchmark_gpu_offload.py')), note='Untimed exactness verification only'), indent=2)+'\n')
         with (output / 'verification.jsonl').open('w') as stream:
             for scenario in config['scenarios']:
                 expected = None

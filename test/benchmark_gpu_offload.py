@@ -67,7 +67,14 @@ def execute(variant, scenario, output, warmup, *, extra_args=()):
                valid=process.returncode == 0, errors=[])
     if process.returncode:
         row['errors'].append('process failure'); return row
-    result = json.loads((output / 'result.json').read_text())
+    try:
+        result = json.loads((output / 'result.json').read_text())
+    except (OSError, ValueError) as error:
+        row['valid'] = False; row['errors'].append('missing or malformed result: ' + str(error)); return row
+    required = ('benchmark_measured_ticks', 'compute_threads', 'ticks', 'initialChecksum', 'finalChecksum',
+                'benchmark_run_cpu_ns', 'benchmark_run_wall_ns', 'benchmark_publication_wait_ns', 'tick_p99_ns')
+    if not isinstance(result, dict) or any(k not in result for k in required):
+        row['valid'] = False; row['errors'].append('incomplete result metrics'); return row
     row['result'] = result
     row['cpu_ceiling'] = cpu_ceiling(result)
     if result['benchmark_measured_ticks'] <= 0 or (threads != 'auto' and result['compute_threads'] != int(threads)):
@@ -76,9 +83,9 @@ def execute(variant, scenario, output, warmup, *, extra_args=()):
         row['errors'].append('game ended before fixed tick endpoint')
     if variant.get('require_gpu'):
         start, end = result.get('benchmark_opencl_at_start'), result.get('benchmark_opencl_at_end')
-        if not start or not end:
+        if not start or not end or any(k not in snap for snap in (start, end) for k in ('available', 'fields', 'dispatches')):
             row['errors'].append('GPU execution counters unavailable')
-        elif (warmup and (not start['available'] or not result.get('benchmark_gradient_at_start', {}).get('ready_plan_mask'))) or end['fields'] <= start['fields']:
+        elif (warmup and (not start['available'] or not result.get('benchmark_gradient_at_start', {}).get('ready_plan_mask'))) or end['fields'] <= start['fields'] or end['dispatches'] <= start['dispatches']:
             row['errors'].append('backend not warm or no actual measured GPU execution')
     row['valid'] = not row['errors']
     return row
@@ -102,6 +109,7 @@ def main():
         fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
         metadata = dict(schema=1, configuration=config, config_sha256=sha(args.config),
                         platform=platform.platform(), rounds=rounds, cold=args.cold,
+                        runner_sha256=sha(__file__), analysis_sha256=sha(Path(__file__).with_name('gpu_offload_analysis.py')),
                         lock=str(args.lock.resolve()),
                         note='CPU is all-thread process work. p99 uses benchmark loop. Rendered guard and independent holdouts required separately.')
         (output / 'metadata.json').write_text(json.dumps(metadata, indent=2) + '\n')
