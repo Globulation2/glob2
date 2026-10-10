@@ -2,6 +2,7 @@
 #include <Environment.h>
 #include <PerformanceTelemetry.h>
 #include <nlohmann/json.hpp>
+#include "map/gradient/GradientRuntime.h"
 #include "EngineFixtures.h"
 #include "ScopedEnvironment.h"
 #include <vector>
@@ -131,6 +132,74 @@ TEST_SUITE("EngineSession")
         }
     }
 
+
+    TEST_CASE("rendered CPU boundaries belong to the actual simulation thread [display][artifacts]")
+    {
+        if constexpr(!GAGCore::ThreadSupport::available)return;
+        glob2test::ScopedEnvironment warm("GLOB2_RENDERED_CPU_WARMUP_TICKS","2");
+        glob2test::ScopedEnvironment measure("GLOB2_RENDERED_CPU_MEASURE_TICKS","3");
+        glob2test::HeadlessGlobals globals({.display=true,.loadStrings=true,.width=640,.height=480});
+        REQUIRE(NET_Init());struct NetworkScope{~NetworkScope(){NET_Quit();}} network;
+        const auto previous=PerformanceTelemetry::diagnosticCpuClock();
+        struct RestoreClock{PerformanceTelemetry::Clock clock;~RestoreClock(){PerformanceTelemetry::setDiagnosticCpuClock(clock);}} restore{previous};
+        const auto sentinel=+[]()->std::uint64_t{return 777;};
+        PerformanceTelemetry::setDiagnosticCpuClock(sentinel);
+        const auto output=glob2test::artifactDir()/"rendered-cpu-threaded-endpoints.json";
+        const auto outputString=output.string();const auto presentationTid=glob2::nativeThreadId();
+        Uint32 serialChecksum=0;
+        for(bool threaded:{false,true}){
+            glob2test::ScopedEnvironment threadMode("GLOB2_SIM_THREAD",threaded?"1":"0");
+            glob2test::ScopedEnvironment path("GLOB2_RENDERED_CPU_DIAGNOSTICS_PATH",threaded?outputString.c_str():"");
+            Engine engine;REQUIRE(engine.initCustom("games/gd-small-2ai.game")==Engine::EE_NO_ERROR);
+            const auto initial=engine.gui.game.stepCounter;
+            globalContainer->runNoX=false;globalContainer->runNoXGameName="games/gd-small-2ai.game";
+            globalContainer->runNoXCountRuns=1;globalContainer->automaticEndingGame=true;
+            globalContainer->automaticEndingSteps=int(initial+6);globalContainer->computeThreads=2;
+            globalContainer->settings.autosaveGames=false;
+            // Match the normal first-step pipeline configuration before
+            // installing an independent existing owner callback; otherwise
+            // first-step lazy configuration would replace the test hook.
+            if(!engine.gui.game.map.gradientPipelineEnabled())engine.gui.game.map.configureGradientPipeline(2,8);
+            engine.gui.game.map.getClearAreasGradient(0,0);
+            engine.beginSession(SDL_GetTicks());
+            auto simulationTid=std::make_shared<std::atomic<Uint64>>(0);
+            auto& pipeline=engine.gui.game.map.gradientRuntime->pipeline;
+            const auto deadline=pipeline.deadline;
+            pipeline.deadline=[simulationTid,deadline](unsigned remaining){
+                simulationTid->store(glob2::nativeThreadId(),std::memory_order_relaxed);
+                return deadline(remaining);};
+            if(threaded){
+                REQUIRE(engine.startSimulationThread(SDL_GetTicks()));
+                const auto deadline=std::chrono::steady_clock::now()+std::chrono::seconds(20);
+                while(!engine.runner->ended()&&std::chrono::steady_clock::now()<deadline){
+                    engine.threadedClientFrame(SDL_GetTicks(),{});engine.drawSession();SDL_Delay(1);
+                }
+                REQUIRE(engine.runner->ended());engine.runner->rethrowFailure();
+                engine.stopSimulationThread();
+                CHECK(engine.gui.game.stepCounter==initial+6);CHECK_FALSE(engine.gui.isRunning);
+                const auto& w=engine.renderedCpu->window;
+                CHECK(w.endpoints[0].tick==initial+2);CHECK(w.endpoints[1].tick==initial+5);
+                if(presentationTid){
+                    const auto actualSimulationTid=simulationTid->load(std::memory_order_relaxed);
+                    REQUIRE(actualSimulationTid!=0);CHECK(actualSimulationTid!=presentationTid);
+                    CHECK(w.endpoints[0].ownerTid==actualSimulationTid);CHECK(w.endpoints[1].ownerTid==actualSimulationTid);
+                    CHECK_FALSE(w.ownerChanged);CHECK(w.ownerValid());
+                }
+                CHECK(engine.gui.game.checkSum()==serialChecksum);
+            }else{
+                const auto now=SDL_GetTicks();for(unsigned i=0;i<6;++i)engine.stepSession(now+i*40,{});
+                REQUIRE(engine.gui.game.stepCounter==initial+6);serialChecksum=engine.gui.game.checkSum();
+                if(presentationTid)CHECK(simulationTid->load(std::memory_order_relaxed)==presentationTid);
+            }
+            // Restore the production callback; the test closure owns its TID
+            // holder even if an assertion unwinds before the runner is stopped.
+            pipeline.deadline=deadline;
+            CHECK_FALSE(engine.finishSession());CHECK(PerformanceTelemetry::diagnosticCpuClock()==sentinel);
+        }
+        std::ifstream stream(output);REQUIRE(bool(stream));nlohmann::json report;stream>>report;
+        CHECK(report["start"]["captured"].get<bool>());CHECK(report["end"]["captured"].get<bool>());
+        if(presentationTid)CHECK(report["start"]["owner_tid"].get<Uint64>()!=presentationTid);
+    }
 
     TEST_CASE("eliminated prestige leaders cannot make every survivor lose")
     {

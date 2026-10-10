@@ -45,7 +45,7 @@ public:
         :ticks(r),process(process),owner(owner),wall(wall),tid(tid){}
     template<class Metadata> void onTick(std::uint64_t tick,Metadata&& metadata) {
         const auto identity=currentOwnerIdentity();
-        if(!ownerIdentity){ownerIdentity=identity;ownerTid=tid();}
+        if(!ownerIdentity)ownerIdentity=identity;
         if(ownerIdentity!=identity)ownerChanged=true;
         for(unsigned i=0;i<2;++i) {
             auto& e=endpoints[i];const auto expected=i?ticks.end:ticks.start;
@@ -53,11 +53,11 @@ public:
             if(tick!=expected){missedBoundary=true;continue;}
             e.tick=tick;
             if(!i) {
-                e.counters=metadata();e.ownerTid=ownerTid;
+                e.counters=metadata();e.ownerTid=tid();
                 e.ownerCpuNs=owner();e.wallNs=wall();e.processCpuNs=process();
             } else {
                 e.processCpuNs=process();e.wallNs=wall();e.ownerCpuNs=owner();
-                e.ownerTid=ownerChanged?0:ownerTid;e.counters=metadata();
+                e.ownerTid=tid();e.counters=metadata();
             }
             e.captured=true;
         }
@@ -69,7 +69,6 @@ public:
 private:
     Clock process,owner,wall,tid;
     const void* ownerIdentity=nullptr;
-    std::uint64_t ownerTid=0;
     static const void* currentOwnerIdentity(){static thread_local const unsigned char identity=0;return &identity;}
     bool valid(std::uint64_t Endpoint::* member)const noexcept {
         return endpoints[0].captured&&endpoints[1].captured&&endpoints[0].*member
