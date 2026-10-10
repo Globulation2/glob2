@@ -97,6 +97,7 @@ struct API
     SDL_SharedObject *library = nullptr;
 #define CL_FUNCTION(name, result, ...) result(CL_CALL *name)(__VA_ARGS__) = nullptr
     CL_FUNCTION(GetPlatformIDs, Int, UInt, Handle *, UInt *);
+    CL_FUNCTION(GetPlatformInfo, Int, Handle, UInt, std::size_t, void *, std::size_t *);
     CL_FUNCTION(GetDeviceIDs, Int, Handle, Bits, UInt, Handle *, UInt *);
     CL_FUNCTION(GetDeviceInfo, Int, Handle, UInt, std::size_t, void *, std::size_t *);
     CL_FUNCTION(CreateContext, Handle, const std::intptr_t *, UInt, const Handle *,
@@ -150,6 +151,7 @@ struct API
     if (!name)                                                                                               \
     throw std::runtime_error("Missing OpenCL function: cl" #name)
         LOAD(GetPlatformIDs);
+        LOAD(GetPlatformInfo);
         LOAD(GetDeviceIDs);
         LOAD(GetDeviceInfo);
         LOAD(CreateContext);
@@ -480,6 +482,26 @@ struct Device
             std::vector<char> name(bytes);
             check(api.GetDeviceInfo(device, 0x102B, bytes, name.data(), nullptr));
             status.device = name.data();
+            // Fingerprints are captured once on the initialization coordinator.
+            // A malformed/unsupported optional query leaves metadata empty and
+            // therefore cannot qualify a matching offline batch manifest.
+            const auto infoString=[](auto query,Handle object,UInt key) {
+                std::size_t size=0;
+                if(query(object,key,0,nullptr,&size) || !size || size>2048)return std::string{};
+                std::array<char,2048> value{};
+                if(query(object,key,size,value.data(),nullptr) || value[size-1]!=0)return std::string{};
+                return std::string(value.data(),size-1);
+            };
+            Handle platform=nullptr;
+            if(!api.GetDeviceInfo(device,0x1031 /* CL_DEVICE_PLATFORM */,sizeof platform,&platform,nullptr) && platform) {
+                status.platform=infoString(api.GetPlatformInfo,platform,0x0902);
+                status.platformVendor=infoString(api.GetPlatformInfo,platform,0x0903);
+                status.platformVersion=infoString(api.GetPlatformInfo,platform,0x0901);
+            }
+            status.deviceVendor=infoString(api.GetDeviceInfo,device,0x102C);
+            status.driverVersion=infoString(api.GetDeviceInfo,device,0x102D);
+            status.deviceVersion=infoString(api.GetDeviceInfo,device,0x102F);
+            status.openCLCVersion=infoString(api.GetDeviceInfo,device,0x103D);
             Int error = 0;
             context = api.CreateContext(nullptr, 1, &device, nullptr, nullptr, &error);
             check(error);

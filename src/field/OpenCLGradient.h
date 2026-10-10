@@ -25,6 +25,10 @@ struct OpenCLStatus
 {
     bool available = false;
     std::string device, error;
+    // Immutable initialization metadata. Empty values decline exact offline
+    // configuration matching; status queries never call into the driver.
+    std::string platform, platformVendor, platformVersion;
+    std::string deviceVendor, driverVersion, deviceVersion, openCLCVersion;
     std::uint64_t fields = 0, calibrations = 0, cpuSelections = 0;
     std::uint64_t batches = 0, maxBatchFields = 0, costUploads = 0, costCacheHits = 0;
     std::uint64_t dispatches = 0, hostChecks = 0;
