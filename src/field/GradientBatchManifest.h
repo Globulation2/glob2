@@ -45,6 +45,9 @@ struct GradientBatchManifest
     // a caller cannot turn singleton latency into a batch bound.
     static GradientBatchManifest parse(std::string_view input,const OpenCLStatus& backend,bool parityBound,std::string_view nativeBuildIdentity) {
         if(input.empty() || input.size()>MaxBytes)throw std::invalid_argument("batch manifest size");
+        // Instrumented and empty-control brackets perturb CPU/cadence. These
+        // diagnostic configurations cannot borrow an ordinary batch profile.
+        if(backend.apiCpuMode)throw std::invalid_argument("batch manifest API CPU diagnostics unsupported");
         unsigned depth=0;bool quoted=false,escaped=false;
         for(const char c:input) {
             if(quoted){if(escaped)escaped=false;else if(c=='\\')escaped=true;else if(c=='\"')quoted=false;continue;}

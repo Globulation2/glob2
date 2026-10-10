@@ -995,6 +995,8 @@ TEST_CASE("offline batch manifest binds exact configuration seed class and measu
         {"profiles",Json::array({entry})}};
     const auto text=manifest.dump();const auto parsed=GradientBatchManifest::parse(text,backend,false,nativeIdentity);
     REQUIRE(parsed.count==1);CHECK(parsed.bounds[0].workload.batch==2);CHECK(parsed.bounds[0].costRevision==11);
+    for(unsigned mode:{1u,2u}){auto diagnosticBackend=backend;diagnosticBackend.apiCpuMode=mode;
+        CHECK_THROWS_AS(GradientBatchManifest::parse(text,diagnosticBackend,false,nativeIdentity),std::invalid_argument);}
     CHECK(parsed.hash==gradientManifestHash(text));CHECK(parsed.sourceHash==gradientManifestHash("immutable offline fixture"));
     CHECK_THROWS_AS(GradientBatchManifest::parse(text,backend,false,std::string(64,'b')),std::invalid_argument);
     auto changed=manifest;changed["profiles"][0]["batch"]=1u;
