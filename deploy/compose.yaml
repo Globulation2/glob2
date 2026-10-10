@@ -44,6 +44,8 @@ x-platform-environment: &platform-environment
   PUBLIC_ORIGIN: ${GLOB2_PUBLIC_ORIGIN:-https://localhost:8443}
   LOG_LEVEL: ${LOG_LEVEL:-info}
   INSTANCE_CONFIG: /etc/glob2/instance.yaml
+  # Engine-derived authoring images do not inherit the platform image's default.
+  BLOB_DIR: /var/lib/glob2/blobs
   SHUTDOWN_GRACE_SECONDS: ${SHUTDOWN_GRACE_SECONDS:-25}
   JWT_KEYS_DIR: /var/lib/glob2/keys
   JWT_ACTIVE_KID: ${JWT_ACTIVE_KID:-}

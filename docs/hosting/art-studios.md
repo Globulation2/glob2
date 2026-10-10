@@ -39,6 +39,10 @@ when its exact validated package is saved privately. Provider-call limits pause
 work until capacity becomes available; they include anonymous daily totals so
 account deletion cannot reset service capacity.
 
+Authoring workers share the API's blob volume. Compose explicitly sets
+`BLOB_DIR=/var/lib/glob2/blobs` for these services; engine-derived worker images
+otherwise fall back to a relative directory on their read-only root filesystem.
+
 Requests and provider stages are durable, with leases and heartbeats. Completed
 stages are reused after restarts. Ambiguous provider outcomes retain the reservation
 and require operator reconciliation; they never dispatch a duplicate automatically.
