@@ -1,0 +1,5 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="3" failures="0" errors="0" skipped="0"><testsuite name="JavaScriptLifecycle"><testcase classname="JavaScriptLifecycle" name="Scripting editor deletion and reuse never revive a reference" time="2.18786" status="run" />
+  </testsuite><testsuite name="TeamLiveLists"><testcase classname="TeamLiveLists" name="live slot lists follow every slot assignment and order the snapshot records" time="1.2574" status="run" />
+  </testsuite><testsuite name="TeamStatsSave"><testcase classname="TeamStatsSave" name="Editor building deletion clears ability lists before save and slot reuse" time="3.86926" status="run" />
+  </testsuite></testsuites>

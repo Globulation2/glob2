@@ -1,0 +1,23 @@
+PASS TeamLiveLists/live slot lists follow every slot assignment and order the snapshot records (2.6s)
+PASS JavaScriptLifecycle/Scripting editor deletion and reuse never revive a reference (4.4s)
+PASS EditorTerrainPaint/the smallest brush paints one vertex and lays a beach around water [display] (35.2s)
+PASS EditorTerrainPaint/terrain strokes remove only what the new terrain disallows [display] (36.1s)
+FAIL TeamStatsSave/Editor building deletion clears ability lists before save and slot reuse (36.8s)
+PASS EditorTerrainPaint/Del reverts only vertices of the selected terrain to grass [display] (36.8s)
+PASS EditorTerrainPaint/a resource stroke that places nothing explains where the resource grows [display] (21.8s)
+PASS EditorTerrainPaint/every terrain brush paints exactly the vertices its hover preview shows [display] (67.8s)
+
+===== FAIL TeamStatsSave/Editor building deletion clears ability lists before save and slot reuse =====
+GLOB2_TEST_BUILD compiler=Apple LLVM 21.0.0 (clang-2100.3.34.2) platform=macOS pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": true, "flags": {"CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/Users/bradley/.codex/worktrees/eb29/glob2=.", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H GL_SILENCE_DEPRECATION SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC", "LINKFLAGS": "-Wall -Wl,-rpath,/opt/homebrew/lib"}, "revision": "f05d16e5364cca6bc2d3a5077ed3f2a094777343", "sourceStatus": ["?? .playwright-mcp/"], "sourceTreeSha256": "88acd8e88932cbf0cda40af5a40420629e31f85294089064d211b50c1fa0567c"}
+Invariant failed: building
+
+[failure] Editor building deletion clears ability lists before save and slot reuse: false
+src/team/stats/TeamStatsSaveHarness.cpp:46:
+REQUIRE( static_cast<bool>(ok) ) is NOT correct!
+  values: REQUIRE( false )
+  logged: binary game save loads
+
+
+7 passed, 1 failed, 0 skipped (241.7s of test time)
+[run_tests] JUnit report: artifacts/terrain-studio/editor-native-tests.xml (8 cases)

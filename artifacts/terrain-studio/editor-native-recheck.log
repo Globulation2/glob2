@@ -1,0 +1,6 @@
+PASS TeamLiveLists/live slot lists follow every slot assignment and order the snapshot records (1.9s)
+PASS JavaScriptLifecycle/Scripting editor deletion and reuse never revive a reference (2.8s)
+PASS TeamStatsSave/Editor building deletion clears ability lists before save and slot reuse (4.5s)
+
+3 passed, 0 failed, 0 skipped (9.2s of test time)
+[run_tests] JUnit report: artifacts/terrain-studio/editor-native-recheck.xml (3 cases)
