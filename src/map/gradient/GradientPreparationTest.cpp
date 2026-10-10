@@ -12,6 +12,9 @@
 
 #include <algorithm>
 #include <array>
+#include <cstdlib>
+#include <cstring>
+#include <functional>
 #include <vector>
 
 namespace
@@ -1328,6 +1331,13 @@ TEST_CASE("GradientPreparation/minimal GPU views release source graphs and recov
     const auto previous=backend();struct Restore {Backend value;~Restore(){setBackend(value);}} restore{previous};
     setBackend(Backend::CPU);
     glob2test::HeadlessGlobals globals;
+    const auto* activation=std::getenv("GLOB2_TEST_OPENCL_MINIMAL_COSTS");
+    const bool nativeRequired=activation && !std::strcmp(activation,"1");
+    ComputeExecutor nativeExecutor;
+    if(nativeRequired) {
+        REQUIRE(GAGCore::ThreadSupport::available);
+        nativeExecutor.configure(2,[](auto work){return GAGCore::ThreadSupport::launch(std::move(work));});
+    }
     for(bool modified:{false,true})for(int swim:{0,1,3,6})for(unsigned ring:{64u,128u,256u}) {
         CAPTURE(modified);CAPTURE(swim);CAPTURE(ring);
         glob2test::HeadlessGame world({.wDec=4,.hDec=4,.teams=1,.discovered=true,.clearImmobile=true,.header=true});
@@ -1366,6 +1376,33 @@ TEST_CASE("GradientPreparation/minimal GPU views release source graphs and recov
         // Original seeds have remained untouched throughout view construction.
         CHECK(std::equal(original.begin(),original.end(),owned->data.get()));
         owned->cpu(*owned);CHECK(std::vector<Uint16>(owned->data.get(),owned->data.get()+map.size)==expected);
+        if(nativeRequired) {
+            // The simulation/catalog owners are already gone. Exercise both
+            // distinct cost owners at the same revision on a background worker,
+            // with explicit proof that a real device result was committed.
+            for(const auto& candidate:{owned,replaced}) {
+                std::copy(original.begin(),original.end(),candidate->data.get());
+                bool handled=false,executed=false,observed=false;
+                std::function<void()> work=[&] {
+                    REQUIRE(ComputeExecutor::workerSlot()!=0);
+                    REQUIRE(initializeOpenCL());
+                    REQUIRE((readyPlans.load()&(1u<<unsigned(Plan::Frozen8)))!=0);
+                    BackendRequest native{candidate->data.get(),COST_LIMIT,candidate->grid,*session,candidate.get(),
+                        [](void* context,std::size_t cell){auto& field=*static_cast<OwnedGradientField*>(context);return field.costAt(field,cell);},
+                        [](void* context,Uint16*){auto& field=*static_cast<OwnedGradientField*>(context);field.cpu(field);},candidate->identity};
+                    native.family=candidate->family;native.cpuBuckets=ring;
+                    native.executedOnDevice=&executed;native.deviceExecutionObserved=&observed;
+                    native.requiredControl=candidate->requiredControl;
+                    handled=executeOpenCLDevice(std::span(&native,1),Plan::Frozen8);
+                };
+                const ComputeExecutor::Group group{1,{[](void* context,std::size_t){(*static_cast<std::function<void()>*>(context))();},&work}};
+                auto ticket=nativeExecutor.submit(std::span(&group,1));nativeExecutor.join(ticket);
+                REQUIRE(handled);REQUIRE(executed);REQUIRE(observed);
+                CHECK(std::vector<Uint16>(candidate->data.get(),candidate->data.get()+map.size)==expected);
+                CHECK(openCLStatus().hostBytes<=OpenCLHostBudget);
+                CHECK(openCLStatus().deviceBytes<=OpenCLDeviceBudget);
+            }
+        }
     }
 }
 

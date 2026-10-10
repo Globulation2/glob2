@@ -738,3 +738,16 @@ copy costs belong to the existing owned-input preparation diagnostics.
 Fixed counters distinguish budget, allocation and representation declines;
 nullable admission has its own `cpu_reason_owned_input_decline` counter. Measure
 premature pressure from duplicate charges alongside fresh/warm copy cost.
+
+Run `GradientPreparation/minimal GPU views release source graphs and recover
+exact CPU fields` alone in a fresh engine-test process with
+`GLOB2_TEST_OPENCL_MINIMAL_COSTS=1` for native view qualification. Initialization
+and device execution run on a background worker with two compute slots. The
+fixture covers classic/modified terrain, four movement classes and three CPU
+queue sizes, with two distinct source owners at each revision. After releasing
+the original terrain and cell-rule graphs it requires actual device execution
+and committed arrays identical to the indirect CPU oracle, within tracked
+budgets. Normal execution without the override checks CPU recovery only. Pair
+this array-level proof with weighted gameplay and own-save continuation;
+readiness or generic gameplay field counters alone do not prove weighted GPU
+execution.
