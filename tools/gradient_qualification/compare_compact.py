@@ -8,6 +8,7 @@ capacity and the immutable cost representation, never a previously solved field.
 """
 import argparse
 import ctypes
+import fcntl
 import hashlib
 import json
 from pathlib import Path
@@ -117,6 +118,7 @@ def verify_edges(runner,output):
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output',type=Path,required=True)
+    parser.add_argument('--lock',type=Path,required=True,help='shared build/measurement lock used by the campaign owner')
     parser.add_argument('--device',type=int,default=0)
     parser.add_argument('--max-size',type=int,choices=(64,128,256,512,1024),default=512)
     parser.add_argument('--repeats',type=int,default=5)
@@ -124,6 +126,17 @@ def main():
     args=parser.parse_args()
     if args.device<0 or args.repeats<1:parser.error('device must be nonnegative and repeats positive')
     cases=[] if args.edges_only else [case for case in manifest('development') if case['width']<=args.max_size]
+    # Compilation and device setup can disturb somebody else's timing window,
+    # so the shared campaign lock precedes every heavy operation, including setup.
+    with open(args.lock,'a') as shared_lock:
+        fcntl.flock(shared_lock,fcntl.LOCK_EX)
+        run_locked(args,cases)
+
+
+def run_locked(args,cases):
+    subprocess.run(['git','diff','--quiet'],cwd=ROOT,check=True)
+    subprocess.run(['git','diff','--cached','--quiet'],cwd=ROOT,check=True)
+    revision=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip()
     args.output.mkdir(parents=True,exist_ok=False)
     directory=args.output.resolve();initial=provenance()
     commands=compile_native(directory)
@@ -132,11 +145,15 @@ def main():
              str(HERE/'cpu.cpp'),'-o',str(directory/'cpu.so')]
     subprocess.run(command,check=True,capture_output=True,text=True);commands.append(command)
     # This is a development roster, distinct from sealed qualification admission.
-    import fcntl
     with open(f'/tmp/glob2-gpu-optimization-gpu{args.device}.lock','w') as lock:
         fcntl.flock(lock,fcntl.LOCK_EX)
         runner=Comparison(directory,args.device)
         freeze=dict(schema=1,purpose='development screening only; no production admission',
+            revision=revision,
+            hypothesis='Compact vertex worklists reduce sparse-source field work versus dense tiled sweeps and must beat exact production CPU.',
+            configuration=dict(max_size=args.max_size,device_index=args.device,compact_workgroup=128,
+                compact_host_check_dispatches=1,list_capacity='cells',deduplication='per-dispatch epoch',
+                cost_preparation='paid cold, immutable warm',campaign_lock=str(args.lock.resolve())),
             sources=initial,corpus=cases,repeats=args.repeats,plans=['cpu','Frozen8','compact'],
             commands=commands,cpu_cost_limit=runner.cpu.cpu_cost_limit(),
             device=runner.gpu.device.name,driver=runner.gpu.device.driver_version,edges_only=args.edges_only)
