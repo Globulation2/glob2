@@ -253,7 +253,8 @@ struct LanPlayer
 	{
 		RngScope scope(rng);
 		engine = std::make_unique<Engine>();
-		REQUIRE(room->initGame(*engine).run());
+		const bool initialized=room->initGame(*engine).run();
+		REQUIRE_MESSAGE(initialized, engine->getInitializationDiagnostic());
 		room->gameStarted(true);
 		auto* lockstep = engine->turnLockstep();
 		REQUIRE(lockstep);
@@ -613,7 +614,9 @@ TEST_SUITE("LanMatchHarness")
             authored.game.configureBuildingCatalog();
             const auto units = UnitCatalog::fromJson(R"({"schemaVersion":1,"experiments":[{"key":"network-fixture","label":"Network fixture","help":"Embedded-only experiment"}],"units":[{"key":"network.carrier","extends":"worker","requiredExperiment":"network-fixture","behaviors":{"cargoCapacity":4,"cargoKinds":2}}]})");
             authored.game.gameHeader.setUnitCatalog(units);
-            authored.game.configureUnitCatalog();
+            // Compile the building interaction and production widths against
+            // the newly installed unit catalog before constructing entities.
+            authored.game.configureBuildingCatalog();
             auto* building=authored.game.addBuilding(4,4,customID,0,0,0);REQUIRE(building);
             authored.game.map.setBuilding(4,4,1,1,building->gid);
             REQUIRE(authored.addUnit(WORKER,12,12,0));REQUIRE(authored.addUnit(WORKER,20,20,1));
@@ -846,6 +849,30 @@ TEST_SUITE("LanMatchHarness")
 		REQUIRE(endpoint.find("127.0.0.1:" + std::to_string(port) + "/yog#sha256=") != std::string::npos);
 		const fs::path cacheA = m.directory / "cache-a", cacheB = m.directory / "cache-b";
 		auto& host = m.hostSide();
+        REQUIRE(host.mapHeader().getVersionMinor()<FILE_FORMAT_VERSION_UNIT_CATALOG);
+        CHECK(host.state().setup.unitCatalogSnapshot.empty());
+        CHECK(host.state().setup.unitCatalogHash.empty());
+        // Old lobby headers carry implicit definitions. Both supported
+        // sentinels inherit the map's authority while ordinary rules update.
+        for(const auto& sentinel : {UnitCatalog::availableDefaults(),UnitCatalog::legacyMigration()}) {
+            auto options=host.state().setup.toGameHeader(host.mapHeader());
+            options.setUnitCatalog(sentinel);
+            for(bool hungerDisabled : {true,false}) {
+                options.setHungerDisabled(hungerDisabled);
+                host.applyOptions(options);
+                CHECK(host.state().setup.rules.hungerDisabled==hungerDisabled);
+                CHECK(host.state().setup.unitCatalogSnapshot.empty());
+                CHECK(host.state().setup.unitCatalogHash.empty());
+            }
+        }
+        // Explicit authored definitions cannot replace a room's map rules.
+        auto rejected=host.state().setup.toGameHeader(host.mapHeader());
+        rejected.setUnitCatalog(UnitCatalog::fromJson(R"({"schemaVersion":1,"units":[{"key":"worker","behaviors":{"foodCapacity":90000}}]})"));
+        rejected.setHungerDisabled(true);
+        host.applyOptions(rejected);
+        CHECK_FALSE(host.state().setup.rules.hungerDisabled);
+        CHECK(host.state().setup.unitCatalogSnapshot.empty());
+        CHECK(host.state().setup.unitCatalogHash.empty());
 		// The room: both guests join (A first, so it takes seat 1) and download the map
 		// by content hash.
 		m.players.push_back(std::make_unique<LanPlayer>("Guest A", guestRoom(endpoint, "Guest A", cacheA), 102));

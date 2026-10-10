@@ -349,6 +349,8 @@ BuildingsTypes::BuildingsTypes(const BuildingsTypes& other)
 	  startingBuildingKey_(other.startingBuildingKey_), startingBuildingId_(other.startingBuildingId_), stockSupplyMask_(other.stockSupplyMask_), directSupplyMask_(other.directSupplyMask_), extraDirectSupplyMask_(other.extraDirectSupplyMask_), usesMarketRouting_(other.usesMarketRouting_), usesOverlaySuppliers_(other.usesOverlaySuppliers_)
 {
     unitFlags_=other.unitFlags_; unitCount_=other.unitCount_; unitAvailable_=other.unitAvailable_; unitExperiments_=other.unitExperiments_;
+    unitTrainingAbilities_=other.unitTrainingAbilities_;
+    unitConstructionTrainingAbilities_=other.unitConstructionTrainingAbilities_;
     compileRuntimeTraits();
 }
 
@@ -363,11 +365,40 @@ BuildingsTypes& BuildingsTypes::operator=(const BuildingsTypes& other)
 }
 
 
+void BuildingsTypes::compileUnitTrainingAbilities(const UnitCatalog& catalog)
+{
+    unitFlags_.resize(catalog.size());
+    unitTrainingAbilities_.resize(catalog.size());
+    unitConstructionTrainingAbilities_.resize(catalog.size());
+    for (unsigned unit=0;unit<catalog.size();++unit) {
+        const auto& traits=catalog.runtime(unit);
+        unitFlags_[unit]=traits.flags;
+        auto abilities=traits.learnableMask;
+        // Historical units retain cached ability policies, including unusual
+        // Race tables that do not follow the built-in job capabilities.
+        if (!traits.has(UnitRuntimeTraits::LegacyPerformancePolicies)) {
+            for (const auto [ability,flag]: {
+                std::pair{WALK,UnitRuntimeTraits::Walk}, {SWIM,UnitRuntimeTraits::Swim},
+                {FLY,UnitRuntimeTraits::Fly}, {ATTACK_SPEED,UnitRuntimeTraits::Melee},
+                {ATTACK_STRENGTH,UnitRuntimeTraits::Melee}, {MAGIC_ATTACK_AIR,UnitRuntimeTraits::MagicAir},
+                {MAGIC_ATTACK_GROUND,UnitRuntimeTraits::MagicGround}, {MAGIC_CREATE_WOOD,UnitRuntimeTraits::MagicCreateWood},
+                {MAGIC_CREATE_WHEAT,UnitRuntimeTraits::MagicCreateWheat}, {MAGIC_CREATE_ALGA,UnitRuntimeTraits::MagicCreateAlga}})
+                if (!traits.has(flag)) abilities&=~(1u<<ability);
+            if (!traits.has(UnitRuntimeTraits::Construct) && !traits.has(UnitRuntimeTraits::Transport)) abilities&=~(1u<<BUILD);
+            if (!traits.has(UnitRuntimeTraits::Clear) && !traits.has(UnitRuntimeTraits::Transport)) abilities&=~(1u<<HARVEST);
+        }
+        unitTrainingAbilities_[unit]=abilities;
+        // Qualification may accompany any learnable course, even when its
+        // ability is inactive. This mirrors Unit::needsTraining/applyTraining.
+        unitConstructionTrainingAbilities_[unit]=traits.has(UnitRuntimeTraits::LearnConstruction) ? traits.learnableMask : 0;
+    }
+}
+
 void BuildingsTypes::configureUnits(const UnitCatalog& catalog)
 {
     unitCount_=catalog.size(); unitAvailable_.assign(unitCount_,1); unitExperiments_.resize(unitCount_);
-    unitFlags_.resize(unitCount_);
-    for (unsigned unit=0;unit<unitCount_;++unit) {unitExperiments_[unit]=catalog.definition(unit).requiredExperiment;unitFlags_[unit]=catalog.runtime(unit).flags;}
+    compileUnitTrainingAbilities(catalog);
+    for (unsigned unit=0;unit<unitCount_;++unit) unitExperiments_[unit]=catalog.definition(unit).requiredExperiment;
     const auto resolve=[&](BuildingUnitSelection& selection,unsigned legacyMask,bool defaultRow=false) {
         // Unspecified service selectors use their legacy policy in matches().
         // Only attraction needs an explicit capability-derived default row.
@@ -454,6 +485,7 @@ void BuildingsTypes::configureUnits(const UnitCatalog& catalog)
 
 void BuildingsTypes::compileRuntimeTraits()
 {
+    if (unitTrainingAbilities_.empty()) compileUnitTrainingAbilities(*UnitCatalog::legacyMigration());
     runtimeTypes_.resize(entries_->size());
     BuildingUnitInteractionPool pool;
     std::vector<std::size_t> offsets(entries_->size());
@@ -482,11 +514,15 @@ void BuildingsTypes::compileRuntimeTraits()
                 { row.flags|=BuildingUnitInteraction::Clear<<role; hot.attractionRoles|=1u<<role; }
             if (unit<s.production.recipes.size() && s.production.recipes[unit].enabled && (unitAvailable_.empty() || unitAvailable_[unit]))
             { row.flags|=BuildingUnitInteraction::Produces; s.production.enabledUnits.push_back(unit); }
-            const auto flags=unitFlags_.empty()?UnitCatalog::legacyMigration()->runtime(unit).flags:unitFlags_[unit];
+            const auto flags=unitFlags_[unit];
             b.runtimeFlyingAttractions|=(flags&UnitRuntimeTraits::Fly) && (row.flags&(BuildingUnitInteraction::Clear|BuildingUnitInteraction::Explore|BuildingUnitInteraction::Defend));
-            if(flags&UnitRuntimeTraits::LearnConstruction)for(unsigned ability=0;ability<NB_ABILITY;++ability)
-                b.runtimeConstructionTraining|=(row.trainingMask&(1u<<ability)) && s.training[ability].constructionLevel>0;
-            b.runtimeTrainingAbilities|=row.trainingMask;
+            for(unsigned ability=0;ability<NB_ABILITY;++ability) {
+                const auto bit=1u<<ability;
+                if ((row.trainingMask&bit) && s.training[ability].targetLevel>0)
+                    b.runtimeTrainingAbilities|=unitTrainingAbilities_[unit]&bit;
+                b.runtimeConstructionTraining|=(row.trainingMask&unitConstructionTrainingAbilities_[unit]&bit)
+                    && s.training[ability].constructionLevel>0;
+            }
             b.runtimeFeeds|=row.has(BuildingUnitInteraction::Feeds);
             b.runtimeHeals|=row.has(BuildingUnitInteraction::Heals);
             if (unit<NB_UNIT_TYPE) row.projectileDamage=s.projectileDamage[unit];

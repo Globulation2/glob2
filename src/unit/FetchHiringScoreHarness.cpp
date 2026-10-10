@@ -245,7 +245,7 @@ TEST_SUITE("FetchHiringScore")
         auto* inn=world.addBuilding("inn",8,8,0,0);
         REQUIRE(inn); inn->materials[WHEAT]=0;
         for(int slot : {Unit::MAX_COUNT-1,3}) {
-            auto* unit=new Unit(6,8,Unit::GIDfrom(0,slot),WORKER,world.team,0);
+            auto* unit=new Unit(6,8,Unit::GIDfrom(slot,world.team->teamNumber),WORKER,world.team,0);
             world.team->myUnits[slot]=unit; world.team->attachUnit(slot);
             unit->activity=Unit::ACT_RANDOM; unit->medical=Unit::MED_FREE;
             unit->carriedMaterial=WHEAT; unit->destinationPurpose=-1;

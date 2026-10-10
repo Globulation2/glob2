@@ -568,17 +568,27 @@ TEST_CASE("both format 144 and 145 lineages and compact growth saves retain cont
         CHECK(restored.game.map.gradientRuntime->growth.count() == pending);
         CHECK((restored.game.gameHeader.getBuildingArtwork() ? restored.game.gameHeader.getBuildingArtwork()->bytes() : std::string{}) == artwork);
         CHECK(restored.game.map.frozenAssetBundle()->serialize() == original.game.map.frozenAssetBundle()->serialize());
-        // Save version is the only intentional header checksum difference.
-        const auto headerDelta = std::rotr(original.game.mapHeader.checkSum() ^ restored.game.mapHeader.checkSum(),
-            4 + original.game.mapHeader.getNumberOfTeams() + original.game.gameHeader.getNumberOfPlayers());
+        const auto components=[](Game& game) {
+            std::vector<Uint32> state,buildings,units;
+            game.checkSum(&state,&buildings,&units,true);
+            // Normalize only the saved header version through its current
+            // writer. Keep every other header field and all current unit,
+            // building, catalog and pending-work checksum components.
+            auto* bytes=new GAGCore::MemoryStreamBackend;
+            GAGCore::BinaryOutputStream output(bytes); game.mapHeader.save(&output);
+            GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(*bytes));
+            input.seekFromStart(0);
+            MapHeader canonical; REQUIRE(canonical.load(&input));
+            state.front()=canonical.checkSum();
+            return std::tuple(std::move(state),std::move(buildings),std::move(units));
+        };
         original.game.map.configureCompute(1);
         original.game.map.setResourceGrowthDelay(8);
         restored.game.map.configureCompute(4);
         restored.game.map.setResourceGrowthDelay(8);
         for (unsigned tick = 0; tick < 24; ++tick)
         {
-            CHECK((original.game.checkSum(nullptr, nullptr, nullptr, true) ^ headerDelta) ==
-                restored.game.checkSum(nullptr, nullptr, nullptr, true));
+            CHECK(components(original.game)==components(restored.game));
             original.step();
             restored.step();
         }

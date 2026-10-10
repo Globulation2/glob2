@@ -748,8 +748,10 @@ MatchSetup MatchSetup::fromGameHeader(GameHeader header, const MapHeader& mapHea
 	MatchSetup setup;
 	setup.simVersion = simVersion;
 	setup.buildingCatalogSnapshot = header.getBuildingCatalogSnapshot();
-    if(header.getUnitCatalogSnapshot()!=UnitCatalog::availableDefaults()->serialize() ||
-       !header.getUnitCatalog()->experiments().empty())
+    const bool migrationPlaceholder=mapHeader.getVersionMinor()<FILE_FORMAT_VERSION_UNIT_CATALOG &&
+        header.getUnitCatalog()->digest()==UnitCatalog::legacyMigration()->digest();
+    if(!migrationPlaceholder && (header.getUnitCatalogSnapshot()!=UnitCatalog::availableDefaults()->serialize() ||
+       !header.getUnitCatalog()->experiments().empty()))
     {
         setup.unitCatalogSnapshot=header.getUnitCatalogSnapshot();
         setup.unitCatalogHash=header.getUnitCatalog()->digest();

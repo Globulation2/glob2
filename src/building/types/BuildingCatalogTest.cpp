@@ -556,6 +556,7 @@ std::string artworkFixture(const nlohmann::json& sprites,const std::map<std::str
 }
 TEST_SUITE("BuildingArtwork") {
 TEST_CASE("portable bundle verifies image bytes and catalog frame references") {
+    glob2test::HeadlessGlobals globals;
     const unsigned char webp[]={82,73,70,70,58,0,0,0,87,69,66,80,86,80,56,76,45,0,0,0,47,1,64,0,16,31,32,32,33,238,240,127,159,220,16,18,144,41,81,245,144,144,128,88,66,247,127,138,67,2,1,66,58,229,98,156,66,169,23,23,104,136,232,127,4,0};
     const std::string image(reinterpret_cast<const char*>(webp),sizeof(webp));
     const auto hash=Online::Sha256::hex(image);
@@ -564,7 +565,10 @@ TEST_CASE("portable bundle verifies image bytes and catalog frame references") {
         {"imageHash",hash},{"width",2},{"height",2}
     }})}});
     package["variants"][0]["properties"]["gameSprite"]="package:kitchen";
-    BuildingsTypes catalog; catalog.initLegacy();catalog.composePackages({package.dump()});
+    // The release is authored against the same installed base that the
+    // library verifies, including inherited unit production costs.
+    BuildingsTypes catalog=globalContainer->buildingsTypes;
+    catalog.composePackages({package.dump()});
 	CHECK_THROWS(BuildingArtwork::decode({}, catalog));
 	const auto bytes = artworkFixture(package["sprites"], {{hash, image}});
 	const auto artwork = BuildingArtwork::decode(bytes, catalog);
@@ -594,13 +598,12 @@ TEST_CASE("portable bundle verifies image bytes and catalog frame references") {
 			}
 			backend.seekFromStart(0);
 			GameHeader restored;
+			auto inputBackend=std::make_unique<GAGCore::MemoryStreamBackend>(backend);
 			std::unique_ptr<GAGCore::InputStream> stream;
 			if (text)
-				stream = std::make_unique<GAGCore::TextInputStream>(
-					new GAGCore::MemoryStreamBackend(backend));
+				stream = std::make_unique<GAGCore::TextInputStream>(inputBackend.get());
 			else
-				stream = std::make_unique<GAGCore::BinaryInputStream>(
-					new GAGCore::MemoryStreamBackend(backend));
+				stream = std::make_unique<GAGCore::BinaryInputStream>(inputBackend.release());
 			REQUIRE((withoutPlayerInfo ? restored.loadWithoutPlayerInfo(stream.get(), VERSION_MINOR)
 									   : restored.load(stream.get(), VERSION_MINOR)));
 			REQUIRE(restored.getBuildingArtwork());
@@ -613,7 +616,6 @@ TEST_CASE("portable bundle verifies image bytes and catalog frame references") {
 	CHECK_FALSE(retained.getBuildingArtwork());
 	CHECK_THROWS(header.setBuildingArtwork({}));
 	{
-		glob2test::HeadlessGlobals globals;
 		Online::MemoryStorage storage;
 		BuildingLibrary library(storage);
 		const auto releaseHash = Online::Sha256::hex("artwork-release");

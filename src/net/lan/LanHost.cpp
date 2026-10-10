@@ -18,6 +18,7 @@
 
 #include "AINames.h"
 #include "GameHeader.h"
+#include "FileFormatVersions.h"
 #include "UnitCatalog.h"
 #include "BuildingType.h"
 #include "MapCache.h"
@@ -191,8 +192,10 @@ LanHost::LanHost(Options selected) : options(std::move(selected))
 		header.setBuildingCatalogSnapshot(legacy.snapshotJson());
 	}
 	setup.buildingCatalogSnapshot = header.getBuildingCatalogSnapshot();
-    if (header.getUnitCatalogSnapshot() != UnitCatalog::availableDefaults()->serialize() ||
-        !header.getUnitCatalog()->experiments().empty())
+    const bool migrationPlaceholder=options.map.getVersionMinor()<FILE_FORMAT_VERSION_UNIT_CATALOG &&
+        header.getUnitCatalog()->digest()==UnitCatalog::legacyMigration()->digest();
+    if (!migrationPlaceholder && (header.getUnitCatalogSnapshot() != UnitCatalog::availableDefaults()->serialize() ||
+        !header.getUnitCatalog()->experiments().empty()))
     {
         setup.unitCatalogSnapshot = header.getUnitCatalogSnapshot();
         setup.unitCatalogHash = header.getUnitCatalog()->digest();
@@ -789,6 +792,12 @@ void LanHost::applyOptions(const GameHeader& header)
 			throw std::invalid_argument("options cannot change the map building catalog");
         const auto unitSnapshot = room.setup.unitCatalogSnapshot.empty()
             ? UnitCatalog::availableDefaults()->serialize() : room.setup.unitCatalogSnapshot;
+        // Legacy option headers have implicit unit definitions; the room's
+        // setup carries the authority recovered from its map, if specified.
+        if (options.map.getVersionMinor()<FILE_FORMAT_VERSION_UNIT_CATALOG &&
+            (catalogHeader.getUnitCatalog()->digest()==UnitCatalog::legacyMigration()->digest() ||
+             catalogHeader.getUnitCatalog()->digest()==UnitCatalog::availableDefaults()->digest()))
+            catalogHeader.setUnitCatalog(UnitCatalog::deserialize(unitSnapshot));
         if (catalogHeader.getUnitCatalogSnapshot() != unitSnapshot)
             throw std::invalid_argument("options cannot change the map unit catalog");
 		const auto edited =
