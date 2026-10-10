@@ -137,7 +137,8 @@ private:
             const auto choice = gradient_kernel::backend();
             if(choice==gradient_kernel::Backend::OpenCL) requestedGpu.fetch_add(1,std::memory_order_relaxed);
             const auto family=gradient_preparation::backendFamily(job.request.kind);
-            const bool learningEnabled=bool(backendSession->learningPolicy());
+            const bool learningEnabled=bool(backendSession->learningPolicy()) &&
+                (choice!=gradient_kernel::Backend::Automatic || (deviceService && deviceService->learningActive()));
             gradient_kernel::WorkloadKey key;
             if(learningEnabled || choice==gradient_kernel::Backend::OpenCL) {
                 key.width=job.snapshotLease ? job.snapshotLease->width : unsigned(cells);
@@ -151,7 +152,8 @@ private:
             auto decision = choice==gradient_kernel::Backend::CPU ? gradient_kernel::PlanDecision{}
                 : asyncWork && deviceService ? backendSession->chooseWorkload(key,choice)
                 : backendSession->choose(family,1,choice);
-            if(choice==gradient_kernel::Backend::Automatic && !preparationClockValid)decision={};
+            if(choice==gradient_kernel::Backend::Automatic && (!preparationClockValid ||
+                (backendSession->learningPolicy() && !learningEnabled)))decision={};
             const bool selectedGPU = decision.plan != gradient_kernel::Plan::CPU;
             if(selectedGPU) selectedGpu.fetch_add(1,std::memory_order_relaxed);
             if(selectedGPU && workerNoopBypass && gradient_kernel::alreadyFixedGradient(std::span(job.data.get(),cells))) {
@@ -296,7 +298,8 @@ private:
 	}
 	void wait(Job &job, bool publication = false) {
 		const auto start = Clock::now();
-        const bool learningEnabled=bool(backendSession->learningPolicy());
+        const bool learningEnabled=bool(backendSession->learningPolicy()) &&
+            (gradient_kernel::backend()!=gradient_kernel::Backend::Automatic || (deviceService && deviceService->learningActive()));
         const bool trackStalls=diagnostics || learningEnabled;
         const auto waitStart=trackStalls ? gradient_kernel::monotonicNs() : 0;
         const auto joinCpuStart=diagnostics ? glob2::threadCpuNs() : 0;
@@ -393,7 +396,7 @@ public:
         refreshDeviceConfiguration();
     }
     void refreshDeviceConfiguration() noexcept {
-        crossDueTiming=deviceService && (deviceService->crossDueRequested() || deviceService->learningActive());
+        crossDueTiming=deviceService && deviceService->crossDueRequested();
         cadenceStartedNs=cadenceOwnerCpuNs=cadenceWaitNs=0;
     }
     std::shared_ptr<gradient_kernel::BackendSession> session() const { return backendSession; }
@@ -449,7 +452,7 @@ public:
 	void advance() {
         if(cpuEnvelopeTiming && !cpuEnvelopeOwnerRegistered)
             cpuEnvelopeOwnerRegistered=glob2::registerCpuEnvelopeThread(glob2::CpuThreadRole::Owner);
-        if(crossDueTiming && executor) {
+        if((crossDueTiming || (deviceService && deviceService->learningActive())) && executor) {
             const auto started=gradient_kernel::monotonicNs(),ownerCpu=glob2::threadCpuNs();
             const auto totals=executor->metrics();const auto waited=totals.waitNs+totals.joinWaitNs;
             const auto elapsed=started>=cadenceStartedNs ? started-cadenceStartedNs : 0;
@@ -484,7 +487,7 @@ public:
 		else { job = std::move(spare.back()); spare.pop_back(); }
 		job->slot=slot; job->swim=swim; job->due=tick+delay;
 		job->deviceField.reset();
-        job->seedShape={};job->captureSeedShape=crossDueTiming;
+        job->seedShape={};job->captureSeedShape=crossDueTiming || (deviceService && deviceService->learningActive());
         job->cancelGPU=false;job->requiredControl.store({});
         job->done=false; job->superseded=false; job->cpuOnly=false; job->error=nullptr;  job->owner=this; job->preparationNs=0;
 		auto *ptr=job.get(); pending.push_back(std::move(job));

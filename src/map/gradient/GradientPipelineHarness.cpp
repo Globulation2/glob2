@@ -987,6 +987,66 @@ TEST_CASE("device registration stop and reconfigure never join a slow optional i
     CHECK_FALSE(metrics.running);CHECK_FALSE(metrics.ready);
 }
 
+TEST_CASE("automatic learning follows background readiness without cached CPU fallback classification" * doctest::test_suite("GradientPipeline"))
+{
+    using namespace gradient_kernel;
+    if constexpr(!GAGCore::ThreadSupport::available)return;
+    if(!glob2::threadCpuNs())return;
+    PipelineEnvironment tuning("GLOB2_GRADIENT_TUNING","1"),crossDue("GLOB2_GRADIENT_CROSS_DUE","0");
+    struct Restore {Backend mode=backend();~Restore(){setBackend(mode);}} restore;
+    setBackend(Backend::Automatic);
+    for(bool succeeds : {false,true}) {
+        struct Gate {
+            std::promise<void> entered,release;
+            std::shared_future<void> released=release.get_future().share();
+            std::atomic<bool> opened{false};
+            void open(){if(!opened.exchange(true))release.set_value();}
+        };
+        auto gate=std::make_shared<Gate>();
+        struct Release {std::shared_ptr<Gate> gate;~Release(){gate->open();}} release{gate};
+        auto entered=gate->entered.get_future();
+        auto service=std::make_shared<GradientDeviceService>(GradientDeviceService::Hooks{
+            [gate,succeeds]{gate->entered.set_value();gate->released.wait();return succeeds;},
+            [](auto,auto){FAIL("unknown automatic classes must stay on CPU");return false;}});
+        service->configure(2,Backend::Automatic);
+        REQUIRE(entered.wait_for(std::chrono::seconds(5))==std::future_status::ready);
+        CHECK_FALSE(service->learningActive());
+        struct Field {std::uint16_t* data=new std::uint16_t[1]{};~Field(){delete[] data;}} field;
+        TestGradientPipeline pipeline;
+        pipeline.configure(0,1,1,[](auto& job,auto&){job.data[0]=77;});
+        pipeline.session()->configureLearning(true);pipeline.setDeviceService(service);
+        auto policy=pipeline.session()->learningPolicy();
+        WorkloadKey key{1,1,BUCKETS,2,1,Family::Clear,0,0};key.limit=COST_LIMIT;
+        auto submit=[&](bool expectedShape){
+            pipeline.advance();pipeline.submit(&field.data,0,[&](auto& job){
+                CHECK(job.captureSeedShape==expectedShape);job.data[0]=1;});
+            pipeline.advance();CHECK(field.data[0]==77);
+        };
+        submit(false);
+        service->recordAccepted(pipeline.session(),key,Plan::CPU,300,1);
+        CHECK(policy->metrics().acceptedCpuNs==0);
+        gate->open();
+        const auto until=std::chrono::steady_clock::now()+std::chrono::seconds(5);
+        while(!service->metrics().initializationNs &&
+              std::chrono::steady_clock::now()<until)std::this_thread::yield();
+        REQUIRE(service->metrics().initializationNs>0);
+        if(succeeds){REQUIRE(service->metrics().ready);REQUIRE(service->metrics().tuningStartupClockValid);}
+        else CHECK_FALSE(service->metrics().ready);
+        CHECK(service->learningActive()==succeeds);
+        // No refresh call: reserve must observe the changed background state.
+        submit(succeeds);
+        service->recordAccepted(pipeline.session(),key,Plan::CPU,300,2);
+        if(succeeds) {
+            while(policy->metrics().acceptedCpuNs!=300 && std::chrono::steady_clock::now()<until)std::this_thread::yield();
+            CHECK(policy->metrics().acceptedCpuNs==300);
+        } else CHECK(policy->metrics().acceptedCpuNs==0);
+        service->stop();CHECK_FALSE(service->learningActive());submit(false);
+        service->recordAccepted(pipeline.session(),key,Plan::CPU,100,3);
+        CHECK(policy->metrics().acceptedCpuNs==(succeeds ? 300 : 0));
+        pipeline.reset();
+    }
+}
+
 TEST_CASE("two device registrations share exactly one process coordinator" * doctest::test_suite("GradientPipeline"))
 {
     using namespace gradient_kernel;
@@ -1257,7 +1317,7 @@ TEST_CASE("invalid CPU clocks preserve exact execution without fabricated automa
     if constexpr(!GAGCore::ThreadSupport::available)return;
     if(!glob2::threadCpuNs())return; // Offline qualification itself needs a native clock.
     PipelineEnvironment diagnostics("GLOB2_GRADIENT_DIAGNOSTICS","1");
-    PipelineEnvironment tuning("GLOB2_GRADIENT_TUNING","0");
+    PipelineEnvironment tuning("GLOB2_GRADIENT_TUNING","1");
     PipelineEnvironment noop("GLOB2_GRADIENT_WORKER_NOOP","0");
     struct Restore {Backend mode=backend();unsigned mask=readyPlans.load();~Restore(){setBackend(mode);readyPlans=mask;}} restore;
     const auto plan=requestedOpenCLPlan();readyPlans=1u<<unsigned(plan);

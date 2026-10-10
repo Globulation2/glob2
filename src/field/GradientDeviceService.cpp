@@ -68,7 +68,8 @@ struct GradientDeviceState
     struct Capture {std::shared_ptr<GradientCpuCapture::Record> record;std::weak_ptr<BackendSession> session;};
     std::optional<Capture> capture;
     std::optional<Capture> activeCapture; // Coordinator-only after metadata handoff.
-    std::atomic<bool> optionalBusy{false};
+    std::atomic<bool> optionalBusy{false},learningAvailable{false};
+    bool nativeBackend=true; // Immutable before registration publication; fake hooks only in tests.
     std::unique_ptr<CaptureProbeReplay> probe;
     std::optional<GradientCpuCapture::Settlement> settlement;
     std::unique_ptr<CaptureProbeAccounting> probeAccounting;
@@ -205,7 +206,7 @@ bool observe(const std::shared_ptr<GradientDeviceState>& state,std::shared_ptr<B
     const WorkloadKey& key,Plan plan,std::uint64_t cpuNs,std::uint64_t tick,bool failure=false,bool publicationStall=false) noexcept
 {
     std::lock_guard lock(state->mutex);
-    if(!state->started || state->canceled || !session || !session->learningPolicy()) return false;
+    if(!state->initialized || !state->started || state->canceled || !session || !session->learningPolicy()) return false;
     if(state->observationWritten-state->observationRead==state->observations.size()) {
         ++state->totals.observationDrops;
         if(!publicationStall && !failure)return false;
@@ -306,6 +307,8 @@ class DeviceBroker
         state->totals.tuningStartupClockValid=startupBegin.valid && startupEnd.valid && startupBegin.ns && startupEnd.ns && startupEnd.ns>=startupBegin.ns;
         if(state->totals.automaticTuning)state->totals.tuningStartupUpperCpuNs=state->totals.tuningStartupClockValid?
             startupEnd.ns-startupBegin.ns:UINT64_MAX;
+        state->learningAvailable.store(state->totals.automaticTuning && state->started &&
+            state->totals.tuningStartupClockValid && !state->automaticClockUnavailable,std::memory_order_release);
     }
     void advanceProbe(const std::shared_ptr<GradientDeviceState>& state) noexcept {
         const auto stepStart=glob2::threadCpuNs();
@@ -621,6 +624,7 @@ class DeviceBroker
         if(batchTimingInvalid){++state->totals.clockInvalidMeasurements;
             if(state->mode==Backend::Automatic)state->automaticClockUnavailable=true;}
         state->totals.automaticClockUnavailable=state->automaticClockUnavailable;
+        if(state->automaticClockUnavailable)state->learningAvailable.store(false,std::memory_order_release);
         if(state->totals.cpuEnvelopeRequested) {
             state->totals.cpuEnvelopeLifecycleNs+=envelopeSetupCpu+envelopeFinishCpu;
             state->totals.cpuEnvelopeSetupOvershoots+=envelopeSetupCpu>500000;
@@ -668,7 +672,7 @@ class DeviceBroker
                 else wake.wait_for(lock,wait,[&]{return pending();});
                 for(auto at=registrations.begin();at!=registrations.end();) {
                     auto state=*at;std::lock_guard stateLock(state->mutex);
-                    if(stopping) state->canceled=true;
+                    if(stopping) {state->canceled=true;state->learningAvailable.store(false,std::memory_order_release);}
                     if((state->canceled || (state->initialized && !state->started)) && state->queue.empty() && !state->optionalBusy.load()) {
                         // Destroy retained observations/hooks on the background thread.
                         for(auto& observation:state->observations) observation={};
@@ -775,7 +779,7 @@ void GradientDeviceService::configure(unsigned computeThreads,Backend mode) {
     if(ownedBytes && !reserveOpenCLHostBytes(ownedBytes))return;
     std::shared_ptr<GradientDeviceState> next;
     try {next=std::make_shared<GradientDeviceState>();}catch(...){releaseOpenCLHostBytes(ownedBytes);throw;}
-    next->storageLease.bytes=ownedBytes;next->hooks=hooks;next->cpuClock=hooks.cpuClock;
+    next->storageLease.bytes=ownedBytes;next->hooks=hooks;next->cpuClock=hooks.cpuClock;next->nativeBackend=!hooks.initialize;
     next->totals.diagnostics=gradientDiagnosticsRequested();
     next->totals.automaticTuning=computeThreads>=2 && mode==Backend::Automatic && learningRequested();
     next->totals.cpuEnvelopeRequested=glob2::cpuEnvelopeRequested();
@@ -823,7 +827,7 @@ void GradientDeviceService::configure(unsigned computeThreads,Backend mode) {
 }
 void GradientDeviceService::stop() noexcept {
     if(auto current=state()) {
-        bool registered=false;{std::lock_guard lock(current->mutex);registered=current->started;current->canceled=true;
+        bool registered=false;{std::lock_guard lock(current->mutex);registered=current->started;current->canceled=true;current->learningAvailable.store(false,std::memory_order_release);
             for(const auto& control:current->activeControls)if(control)control->requestCancel();}
         if(registered) broker().notify();
     }
@@ -877,7 +881,8 @@ void GradientDeviceService::recordAccepted(std::shared_ptr<BackendSession> sessi
     if(auto current=state()) if(observe(current,std::move(session),key,plan,cpuNs,tick,failed,publicationStall)) broker().notify();
 }
 bool GradientDeviceService::learningActive() const noexcept {
-    if(auto current=state()){std::lock_guard lock(current->mutex);return current->totals.automaticTuning;}
+    if(auto current=state())return current->learningAvailable.load(std::memory_order_acquire) &&
+        (!current->nativeBackend || readyPlans.load(std::memory_order_acquire)!=0);
     return false;
 }
 std::unique_ptr<GradientCpuCapture> GradientDeviceService::beginCapture(std::shared_ptr<BackendSession> session,

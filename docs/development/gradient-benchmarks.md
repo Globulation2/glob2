@@ -730,6 +730,14 @@ CPU propagation. The coordinator alone replays, compares, samples process CPU,
 retires storage and trains/promotes plans. Required scheduling and presentation
 never join optional replay or its post-cleanup accounting tails.
 
+Automatic classification, cadence samples and accepted CPU credits activate only
+after background initialization succeeds with valid startup accounting. Pending,
+failed, stopped or quarantined native devices leave required jobs on CPU and do
+not keep fused seed counting enabled. An atomic availability snapshot changes
+worker admission and the next owner's seed preparation without driver queries,
+initialization or joins on the owner. Explicit forced cross-due diagnostics remain
+separate. This guard does not enable tuning by default or qualify its overhead.
+
 The service has fixed64 ready-request slots,64 registrations,64 observation slots
 and128 cadence slots. Requests beyond those limits decline to the original CPU
 continuation. Its byte counter aliases the leased State so an escaped required
