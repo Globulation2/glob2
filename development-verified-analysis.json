@@ -1,0 +1,3713 @@
+{
+  "split": "development",
+  "sources": {
+    "tools/gradient_qualification/analyze.py": "720c2e018d886b9974dbf4cdc1778e4f2f5bff60a6408fcbd34d41594af1bf64",
+    "tools/gradient_qualification/check_edges.py": "69ad4795cd1bd34b738ca3a6c302620ba7bab523dfa93dd6931b5e15b7078f92",
+    "tools/gradient_qualification/corpus.py": "74bf60462dd80270e4e231ac95e51fb3b75105ae80f2ca5038af104827992bb0",
+    "tools/gradient_qualification/frontier.cl": "86680ac82e8336de8470ed9448bcbba08bbf92d67dd2f7891b027ab25fbb6bb2",
+    "tools/gradient_qualification/global.cl": "6cbc881ed6ca5e1d87316fe25452b8bce5b7ae0a5879fd74898b425182147962",
+    "tools/gradient_qualification/native.cpp": "f9f36927b37de973279491325054268f8c794f9a83f8618c89c8ab7f0275964b",
+    "tools/gradient_qualification/oracle.cpp": "1dcc06a3c232691c822f854cd76860c44df791188ffcef6adf273792abfdcc18",
+    "tools/gradient_qualification/protocol.json": "ca162901ead1c9050b95a223ed480a7ebbb0c3817937655627aab31d43510d4d",
+    "tools/gradient_qualification/requirements.txt": "842cd6a070bcafebedd4317849bd482abcfa2f6c02c538863c86abcc3a1ae670",
+    "tools/gradient_qualification/run.py": "1aa3112f01cc6b3fb0e013727185d4509ed0359b57d4267240c87a74e22a314b",
+    "tools/gradient_qualification/test_qualification.py": "c09095b0a326bfd51fe9922fe7b734bdd09bff5b0b04928ae19816fc8914f2b4",
+    "src/field/OpenCLGradient.cpp": "97bb4007758dd7ae96c1a612646bc8561fb4b07b9e09f8f241f4c2feadc6457e"
+  },
+  "corpus_sha256": "c217b97adb786a0706caf1125b838fcb9c672b670355eed39c25371eebbca372",
+  "layouts": 40,
+  "records": 6480,
+  "executions": 6000,
+  "semantic_skips": 480,
+  "dimensions": {
+    "64x64": 8,
+    "128x128": 8,
+    "256x256": 8,
+    "512x512": 8,
+    "1024x1024": 8
+  },
+  "exact": true,
+  "screen_survivors": [],
+  "summary": {
+    "global": {
+      "independent_class_maps": 24,
+      "winning_maps": 0,
+      "win_fraction": 0.0,
+      "minimum_maps": 1,
+      "passes_screen": false
+    },
+    "frontier": {
+      "independent_class_maps": 24,
+      "winning_maps": 0,
+      "win_fraction": 0.0,
+      "minimum_maps": 1,
+      "passes_screen": false
+    },
+    "bounded": {
+      "independent_class_maps": 24,
+      "winning_maps": 0,
+      "win_fraction": 0.0,
+      "minimum_maps": 1,
+      "passes_screen": false
+    }
+  },
+  "comparisons": {
+    "global": {
+      "development-256x256-000": [
+        {
+          "stage": 1,
+          "win": false,
+          "versus": {
+            "Jacobi4": {
+              "win": false,
+              "warm_advantage_fraction": -0.15911366240450098,
+              "cold_advantage_fraction": 0.10297802524492766,
+              "noise_ns": 79590.0,
+              "required_advantage_ns": 79590.0
+            },
+            "Colored2": {
+              "win": false,
+              "warm_advantage_fraction": -0.08401626213073785,
+              "cold_advantage_fraction": 0.09979878734042624,
+              "noise_ns": 79590.0,
+              "required_advantage_ns": 79590.0
+            },
+            "Colored4": {
+              "win": false,
+              "warm_advantage_fraction": -0.11841708967229612,
+              "cold_advantage_fraction": 0.09402718548301528,
+              "noise_ns": 79590.0,
+              "required_advantage_ns": 79590.0
+            },
+            "Colored8": {
+              "win": false,
+              "warm_advantage_fraction": 0.1033046899386886,
+              "cold_advantage_fraction": 0.14268410179941338,
+              "noise_ns": 79590.0,
+              "required_advantage_ns": 79590.0
+            },
+            "Frozen8": {
+              "win": false,
+              "warm_advantage_fraction": -0.18838226742484263,
+              "cold_advantage_fraction": 0.03433780021512259,
+              "noise_ns": 79590.0,
+              "required_advantage_ns": 79590.0
+            },
+            "Frozen16": {
+              "win": false,
+              "warm_advantage_fraction": -0.10218338714581493,
+              "cold_advantage_fraction": 0.4275425270140152,
+              "noise_ns": 79590.0,
+              "required_advantage_ns": 79590.0
+            }
+          }
+        }
+      ],
+      "development-256x256-001": [
+        {
+          "stage": 1,
+          "win": false,
+          "versus": {
+            "Jacobi4": {
+              "win": false,
+              "warm_advantage_fraction": -0.03696942209551832,
+              "cold_advantage_fraction": -0.5694220901599879,
+              "noise_ns": 22587.0,
+              "required_advantage_ns": 22587.0
+            },
+            "Colored2": {
+              "win": false,
+              "warm_advantage_fraction": -0.046944924368648486,
+              "cold_advantage_fraction": -0.4584744011232867,
+              "noise_ns": 17457.0,
+              "required_advantage_ns": 17457.0
+            },
+            "Colored4": {
+              "win": false,
+              "warm_advantage_fraction": -0.040781430505933025,
+              "cold_advantage_fraction": -0.6867976974332689,
+              "noise_ns": 33867.0,
+              "required_advantage_ns": 33867.0
+            },
+            "Colored8": {
+              "win": true,
+              "warm_advantage_fraction": 0.17184922292094065,
+              "cold_advantage_fraction": 0.1270877036375809,
+              "noise_ns": 13167.0,
+              "required_advantage_ns": 16426.9
+            },
+            "Frozen8": {
+              "win": false,
+              "warm_advantage_fraction": -0.01644139600564858,
+              "cold_advantage_fraction": 0.022086471536166954,
+              "noise_ns": 54957.0,
+              "required_advantage_ns": 54957.0
+            },
+            "Frozen16": {
+              "win": false,
+              "warm_advantage_fraction": -0.05991865928055536,
+              "cold_advantage_fraction": -0.576437587657784,
+              "noise_ns": 34473.0,
+              "required_advantage_ns": 34473.0
+            }
+          }
+        }
+      ],
+      "development-256x256-002": [
+        {
+          "stage": 1,
+          "win": false,
+          "versus": {
+            "Jacobi4": {
+              "win": false,
+              "warm_advantage_fraction": -0.05992291853650811,
+              "cold_advantage_fraction": -0.91294297037394,
+              "noise_ns": 68100.0,
+              "required_advantage_ns": 68100.0
+            },
+            "Colored2": {
+              "win": false,
+              "warm_advantage_fraction": -0.04072252237722764,
+              "cold_advantage_fraction": -1.1980129122686387,
+              "noise_ns": 68100.0,
+              "required_advantage_ns": 68100.0
+            },
+            "Colored4": {
+              "win": false,
+              "warm_advantage_fraction": 0.011110259750210712,
+              "cold_advantage_fraction": -0.023741869525955545,
+              "noise_ns": 104940.0,
+              "required_advantage_ns": 104940.0
+            },
+            "Colored8": {
+              "win": false,
+              "warm_advantage_fraction": 0.0714821628621643,
+              "cold_advantage_fraction": -1.0327409522528417,
+              "noise_ns": 68100.0,
+              "required_advantage_ns": 68100.0
+            },
+            "Frozen8": {
+              "win": false,
+              "warm_advantage_fraction": -0.013208769209632784,
+              "cold_advantage_fraction": -0.11769204972671488,
+              "noise_ns": 100587.0,
+              "required_advantage_ns": 100587.0
+            },
+            "Frozen16": {
+              "win": false,
+              "warm_advantage_fraction": 0.04343820974222956,
+              "cold_advantage_fraction": -1.350793549778499,
+              "noise_ns": 118980.0,
+              "required_advantage_ns": 118980.0
+            }
+          }
+        }
+      ],
+      "development-256x256-003": [
+        {
+          "stage": 1,
+          "win": false,
+          "versus": {
+            "Jacobi4": {
+              "win": false,
+              "warm_advantage_fraction": -0.038587268895488074,
+              "cold_advantage_fraction": -0.035751054197751986,
+              "noise_ns": 109830.0,
+              "required_advantage_ns": 109830.0
+            },
+            "Colored2": {
+              "win": false,
+              "warm_advantage_fraction": -0.02739214896590936,
+              "cold_advantage_fraction": 0.14941816528796403,
+              "noise_ns": 109830.0,
+              "required_advantage_ns": 109830.0
+            },
+            "Colored4": {
+              "win": false,
+              "warm_advantage_fraction": 0.023282133285286367,
+              "cold_advantage_fraction": 0.2891826888178048,
+              "noise_ns": 109830.0,
+              "required_advantage_ns": 109830.0
+            },
+            "Colored8": {
+              "win": false,
+              "warm_advantage_fraction": 0.10784643987687624,
+              "cold_advantage_fraction": -0.0016707697133777509,
+              "noise_ns": 109830.0,
+              "required_advantage_ns": 109830.0
+            },
+            "Frozen8": {
+              "win": false,
+              "warm_advantage_fraction": -0.07275639439964379,
+              "cold_advantage_fraction": 0.0214843880113784,
+              "noise_ns": 109830.0,
+              "required_advantage_ns": 109830.0
+            },
+            "Frozen16": {
+              "win": false,
+              "warm_advantage_fraction": -0.03684908908334529,
+              "cold_advantage_fraction": -0.07309179441003659,
+              "noise_ns": 109830.0,
+              "required_advantage_ns": 109830.0
+            }
+          }
+        }
+      ],
+      "development-256x256-004": [
+        {
+          "stage": 1,
+          "win": false,
+          "versus": {
+            "Jacobi4": {
+              "win": false,
+              "warm_advantage_fraction": 0.033582562412875425,
+              "cold_advantage_fraction": 0.08200787224036746,
+              "noise_ns": 36360.0,
+              "required_advantage_ns": 36360.0
+            },
+            "Colored2": {
+              "win": false,
+              "warm_advantage_fraction": -0.016628778311021303,
+              "cold_advantage_fraction": 0.13726902864892354,
+              "noise_ns": 36420.0,
+              "required_advantage_ns": 36420.0
+            },
+            "Colored4": {
+              "win": false,
+              "warm_advantage_fraction": -0.03359869885293614,
+              "cold_advantage_fraction": 0.4215939764171047,
+              "noise_ns": 27627.0,
+              "required_advantage_ns": 27627.0
+            },
+            "Colored8": {
+              "win": true,
+              "warm_advantage_fraction": 0.17743267754196032,
+              "cold_advantage_fraction": 0.17645868972213233,
+              "noise_ns": 27627.0,
+              "required_advantage_ns": 27627.0
+            },
+            "Frozen8": {
+              "win": false,
+              "warm_advantage_fraction": 0.024604675898188478,
+              "cold_advantage_fraction": 0.05033799318904293,
+              "noise_ns": 27627.0,
+              "required_advantage_ns": 27627.0
+            },
+            "Frozen16": {
+              "win": false,
+              "warm_advantage_fraction": -0.00020709078860172298,
+              "cold_advantage_fraction": 0.3852281143268021,
+              "noise_ns": 29130.0,
+              "required_advantage_ns": 29130.0
+            }
+          }
+        }
+      ],
+      "development-256x256-005": [
+        {
+          "stage": 1,
+          "win": false,
+          "versus": {
+            "Jacobi4": {
+              "win": false,
+              "warm_advantage_fraction": -0.10922545656702198,
+              "cold_advantage_fraction": 0.10847275527969606,
+              "noise_ns": 65277.0,
+              "required_advantage_ns": 65277.0
+            },
+            "Colored2": {
+              "win": false,
+              "warm_advantage_fraction": 0.023595010528410464,
+              "cold_advantage_fraction": 0.11218474666941664,
+              "noise_ns": 69780.0,
+              "required_advantage_ns": 69780.0
+            },
+            "Colored4": {
+              "win": false,
+              "warm_advantage_fraction": -0.04296741980752505,
+              "cold_advantage_fraction": 0.5095136698025196,
+              "noise_ns": 30087.0,
+              "required_advantage_ns": 30087.0
+            },
+            "Colored8": {
+              "win": false,
+              "warm_advantage_fraction": -0.03671627568037221,
+              "cold_advantage_fraction": -0.05711207227340122,
+              "noise_ns": 51540.0,
+              "required_advantage_ns": 51540.0
+            },
+            "Frozen8": {
+              "win": false,
+              "warm_advantage_fraction": 0.05608261831430215,
+              "cold_advantage_fraction": 0.12473105981178953,
+              "noise_ns": 148050.0,
+              "required_advantage_ns": 148050.0
+            },
+            "Frozen16": {
+              "win": false,
+              "warm_advantage_fraction": -0.06888702661008698,
+              "cold_advantage_fraction": 0.7921611395745909,
+              "noise_ns": 30087.0,
+              "required_advantage_ns": 30087.0
+            }
+          }
+        }
+      ],
+      "development-256x256-006": [
+        {
+          "stage": 1,
+          "win": false,
+          "versus": {
+            "Jacobi4": {
+              "win": false,
+              "warm_advantage_fraction": 0.03938789170963903,
+              "cold_advantage_fraction": 0.055490388272031455,
+              "noise_ns": 25050.0,
+              "required_advantage_ns": 25050.0
+            },
+            "Colored2": {
+              "win": false,
+              "warm_advantage_fraction": 0.036880763590266215,
+              "cold_advantage_fraction": 0.3472020671681573,
+              "noise_ns": 23730.0,
+              "required_advantage_ns": 23730.0
+            },
+            "Colored4": {
+              "win": false,
+              "warm_advantage_fraction": 0.05412901985554609,
+              "cold_advantage_fraction": -0.04866522488091392,
+              "noise_ns": 17133.0,
+              "required_advantage_ns": 17133.0
+            },
+            "Colored8": {
+              "win": false,
+              "warm_advantage_fraction": 0.16271267932050662,
+              "cold_advantage_fraction": -0.0377012810981626,
+              "noise_ns": 29790.0,
+              "required_advantage_ns": 29790.0
+            },
+            "Frozen8": {
+              "win": false,
+              "warm_advantage_fraction": 0.038911350332374244,
+              "cold_advantage_fraction": -0.10113919492451506,
+              "noise_ns": 40290.0,
+              "required_advantage_ns": 40290.0
+            },
+            "Frozen16": {
+              "win": false,
+              "warm_advantage_fraction": 0.00311949264828846,
+              "cold_advantage_fraction": -0.07518098637063896,
+              "noise_ns": 24780.0,
+              "required_advantage_ns": 24780.0
+            }
+          }
+        }
+      ],
+      "development-256x256-007": [
+        {
+          "stage": 1,
+          "win": false,
+          "versus": {
+            "Jacobi4": {
+              "win": false,
+              "warm_advantage_fraction": 0.0013916705492258076,
+              "cold_advantage_fraction": -0.4950723057731212,
+              "noise_ns": 37593.0,
+              "required_advantage_ns": 37593.0
+            },
+            "Colored2": {
+              "win": false,
+              "warm_advantage_fraction": -0.0017298517790159875,
+              "cold_advantage_fraction": -0.519528468675812,
+              "noise_ns": 15660.0,
+              "required_advantage_ns": 16475.4
+            },
+            "Colored4": {
+              "win": false,
+              "warm_advantage_fraction": -0.0007913479293062516,
+              "cold_advantage_fraction": -0.4968766424868189,
+              "noise_ns": 23163.0,
+              "required_advantage_ns": 23163.0
+            },
+            "Colored8": {
+              "win": true,
+              "warm_advantage_fraction": 0.17054783677223348,
+              "cold_advantage_fraction": 0.054506440250553796,
+              "noise_ns": 14523.0,
+              "required_advantage_ns": 19897.350000000002
+            },
+            "Frozen8": {
+              "win": false,
+              "warm_advantage_fraction": -0.004962733826968044,
+              "cold_advantage_fraction": -0.6425914426444965,
+              "noise_ns": 43500.0,
+              "required_advantage_ns": 43500.0
+            },
+            "Frozen16": {
+              "win": false,
+              "warm_advantage_fraction": -0.02160335254319123,
+              "cold_advantage_fraction": 0.030507007004038737,
+              "noise_ns": 25200.0,
+              "required_advantage_ns": 25200.0
+            }
+          }
+        }
+      ],
+      "development-512x512-000": [
+        {
+          "stage": 1,
+          "win": false,
+          "versus": {
+            "Jacobi4": {
+              "win": false,
+              "warm_advantage_fraction": 0.0974485182642038,
+              "cold_advantage_fraction": 0.15684380147983315,
+              "noise_ns": 127800.0,
+              "required_advantage_ns": 127800.0
+            },
+            "Colored2": {
+              "win": false,
+              "warm_advantage_fraction": -0.01582380181376885,
+              "cold_advantage_fraction": -0.32858454808534504,
+              "noise_ns": 127800.0,
+              "required_advantage_ns": 127800.0
+            },
+            "Colored4": {
+              "win": false,
+              "warm_advantage_fraction": 0.16221957176123133,
+              "cold_advantage_fraction": -0.06662255442830596,
+              "noise_ns": 127800.0,
+              "required_advantage_ns": 127800.0
+            },
+            "Colored8": {
+              "win": false,
+              "warm_advantage_fraction": 0.30988902681695973,
+              "cold_advantage_fraction": -0.08917188948464906,
+              "noise_ns": 127800.0,
+              "required_advantage_ns": 127800.0
+            },
+            "Frozen8": {
+              "win": false,
+              "warm_advantage_fraction": -0.022647230105101637,
+              "cold_advantage_fraction": -0.13293792518803824,
+              "noise_ns": 127800.0,
+              "required_advantage_ns": 127800.0
+            },
+            "Frozen16": {
+              "win": false,
+              "warm_advantage_fraction": -0.039234350879719944,
+              "cold_advantage_fraction": 0.27987126056341544,
+              "noise_ns": 127800.0,
+              "required_advantage_ns": 127800.0
+            }
+          }
+        }
+      ],
+      "development-512x512-001": [
+        {
+          "stage": 1,
+          "win": false,
+          "versus": {
+            "Jacobi4": {
+              "win": false,
+              "warm_advantage_fraction": -0.0772637085756263,
+              "cold_advantage_fraction": -0.17259109359718544,
+              "noise_ns": 82620.0,
+              "required_advantage_ns": 82620.0
+            },
+            "Colored2": {
+              "win": false,
+              "warm_advantage_fraction": -0.19842512468399387,
+              "cold_advantage_fraction": -0.21810417678959493,
+              "noise_ns": 82620.0,
+              "required_advantage_ns": 82620.0
+            },
+            "Colored4": {
+              "win": false,
+              "warm_advantage_fraction": -0.12631825268531624,
+              "cold_advantage_fraction": -0.1463719314601619,
+              "noise_ns": 82620.0,
+              "required_advantage_ns": 82620.0
+            },
+            "Colored8": {
+              "win": false,
+              "warm_advantage_fraction": 0.07474629541179453,
+              "cold_advantage_fraction": -0.05033999163289645,
+              "noise_ns": 82620.0,
+              "required_advantage_ns": 82620.0
+            },
+            "Frozen8": {
+              "win": false,
+              "warm_advantage_fraction": -0.23733964603053942,
+              "cold_advantage_fraction": -0.18928790350119945,
+              "noise_ns": 82620.0,
+              "required_advantage_ns": 82620.0
+            },
+            "Frozen16": {
+              "win": false,
+              "warm_advantage_fraction": -0.2661750798062057,
+              "cold_advantage_fraction": -0.17264831425661445,
+              "noise_ns": 82620.0,
+              "required_advantage_ns": 82620.0
+            }
+          }
+        }
+      ],
+      "development-512x512-002": [
+        {
+          "stage": 1,
+          "win": false,
+          "versus": {
+            "Jacobi4": {
+              "win": true,
+              "warm_advantage_fraction": 0.09648706856992517,
+              "cold_advantage_fraction": 0.06891944852785843,
+              "noise_ns": 27510.0,
+              "required_advantage_ns": 32687.800000000003
+            },
+            "Colored2": {
+              "win": false,
+              "warm_advantage_fraction": 0.04209776918635954,
+              "cold_advantage_fraction": -0.0004304940036098879,
+              "noise_ns": 23100.0,
+              "required_advantage_ns": 30831.800000000003
+            },
+            "Colored4": {
+              "win": false,
+              "warm_advantage_fraction": 0.08198002875237984,
+              "cold_advantage_fraction": 0.012110639725278845,
+              "noise_ns": 35067.0,
+              "required_advantage_ns": 35067.0
+            },
+            "Colored8": {
+              "win": true,
+              "warm_advantage_fraction": 0.2839358753973238,
+              "cold_advantage_fraction": 0.24518835271614248,
+              "noise_ns": 63507.0,
+              "required_advantage_ns": 63507.0
+            },
+            "Frozen8": {
+              "win": false,
+              "warm_advantage_fraction": -0.00993560918227423,
+              "cold_advantage_fraction": 0.14040355876337748,
+              "noise_ns": 19413.0,
+              "required_advantage_ns": 29243.300000000003
+            },
+            "Frozen16": {
+              "win": false,
+              "warm_advantage_fraction": 0.0011819891236708963,
+              "cold_advantage_fraction": -0.041143916548961344,
+              "noise_ns": 48360.0,
+              "required_advantage_ns": 48360.0
+            }
+          }
+        }
+      ],
+      "development-512x512-003": [
+        {
+          "stage": 1,
+          "win": false,
+          "versus": {
+            "Jacobi4": {
+              "win": false,
+              "warm_advantage_fraction": -0.09358106484707239,
+              "cold_advantage_fraction": -0.05851175396918665,
+              "noise_ns": 72150.0,
+              "required_advantage_ns": 72150.0
+            },
+            "Colored2": {
+              "win": false,
+              "warm_advantage_fraction": -0.14882121420064204,
+              "cold_advantage_fraction": -0.021247311704499543,
+              "noise_ns": 72150.0,
+              "required_advantage_ns": 72150.0
+            },
+            "Colored4": {
+              "win": false,
+              "warm_advantage_fraction": -0.05636826492794407,
+              "cold_advantage_fraction": 0.06880863907934968,
+              "noise_ns": 72150.0,
+              "required_advantage_ns": 72150.0
+            },
+            "Colored8": {
+              "win": true,
+              "warm_advantage_fraction": 0.14116315134647475,
+              "cold_advantage_fraction": 0.1087822351364553,
+              "noise_ns": 72150.0,
+              "required_advantage_ns": 72150.0
+            },
+            "Frozen8": {
+              "win": false,
+              "warm_advantage_fraction": -0.19547552759793557,
+              "cold_advantage_fraction": -0.06931319459524037,
+              "noise_ns": 72150.0,
+              "required_advantage_ns": 72150.0
+            },
+            "Frozen16": {
+              "win": false,
+              "warm_advantage_fraction": -0.2063473395109378,
+              "cold_advantage_fraction": -0.09585950452042527,
+              "noise_ns": 72150.0,
+              "required_advantage_ns": 72150.0
+            }
+          }
+        }
+      ],
+      "development-512x512-004": [
+        {
+          "stage": 1,
+          "win": false,
+          "versus": {
+            "Jacobi4": {
+              "win": false,
+              "warm_advantage_fraction": -0.09676399608317848,
+              "cold_advantage_fraction": -0.046077195091584505,
+              "noise_ns": 78207.0,
+              "required_advantage_ns": 78207.0
+            },
+            "Colored2": {
+              "win": false,
+              "warm_advantage_fraction": -0.10088753916069196,
+              "cold_advantage_fraction": -0.053595936360492265,
+              "noise_ns": 78207.0,
+              "required_advantage_ns": 78207.0
+            },
+            "Colored4": {
+              "win": false,
+              "warm_advantage_fraction": -0.03502797726892377,
+              "cold_advantage_fraction": -0.034302789645350974,
+              "noise_ns": 78207.0,
+              "required_advantage_ns": 78207.0
+            },
+            "Colored8": {
+              "win": true,
+              "warm_advantage_fraction": 0.21496720728834848,
+              "cold_advantage_fraction": 0.11502015392278311,
+              "noise_ns": 112377.0,
+              "required_advantage_ns": 112377.0
+            },
+            "Frozen8": {
+              "win": false,
+              "warm_advantage_fraction": -0.1564119823880228,
+              "cold_advantage_fraction": -0.04353175732584219,
+              "noise_ns": 78207.0,
+              "required_advantage_ns": 78207.0
+            },
+            "Frozen16": {
+              "win": false,
+              "warm_advantage_fraction": -0.143288174172475,
+              "cold_advantage_fraction": 0.1409209632810651,
+              "noise_ns": 78207.0,
+              "required_advantage_ns": 78207.0
+            }
+          }
+        }
+      ],
+      "development-512x512-005": [
+        {
+          "stage": 1,
+          "win": false,
+          "versus": {
+            "Jacobi4": {
+              "win": false,
+              "warm_advantage_fraction": 0.07537152363341765,
+              "cold_advantage_fraction": 0.022745649579560524,
+              "noise_ns": 17700.0,
+              "required_advantage_ns": 32339.800000000003
+            },
+            "Colored2": {
+              "win": false,
+              "warm_advantage_fraction": -6.688896098032461e-05,
+              "cold_advantage_fraction": 0.0008196970867965535,
+              "noise_ns": 18630.0,
+              "required_advantage_ns": 29900.300000000003
+            },
+            "Colored4": {
+              "win": true,
+              "warm_advantage_fraction": 0.05211387706323721,
+              "cold_advantage_fraction": 0.13815350014814018,
+              "noise_ns": 29670.0,
+              "required_advantage_ns": 31546.300000000003
+            },
+            "Colored8": {
+              "win": true,
+              "warm_advantage_fraction": 0.29442009450268114,
+              "cold_advantage_fraction": 0.18232223854852106,
+              "noise_ns": 17700.0,
+              "required_advantage_ns": 42379.75
+            },
+            "Frozen8": {
+              "win": false,
+              "warm_advantage_fraction": -0.018494991365597954,
+              "cold_advantage_fraction": -0.0172782417666265,
+              "noise_ns": 17700.0,
+              "required_advantage_ns": 29359.300000000003
+            },
+            "Frozen16": {
+              "win": false,
+              "warm_advantage_fraction": 0.009309783887116386,
+              "cold_advantage_fraction": -0.027511114750466026,
+              "noise_ns": 35880.0,
+              "required_advantage_ns": 35880.0
+            }
+          }
+        }
+      ],
+      "development-512x512-006": [
+        {
+          "stage": 1,
+          "win": false,
+          "versus": {
+            "Jacobi4": {
+              "win": false,
+              "warm_advantage_fraction": -0.06663147431613588,
+              "cold_advantage_fraction": 0.024293963660156126,
+              "noise_ns": 85800.0,
+              "required_advantage_ns": 85800.0
+            },
+            "Colored2": {
+              "win": false,
+              "warm_advantage_fraction": -0.14010108407265567,
+              "cold_advantage_fraction": 0.12887104058011314,
+              "noise_ns": 31353.0,
+              "required_advantage_ns": 33318.8
+            },
+            "Colored4": {
+              "win": false,
+              "warm_advantage_fraction": -0.07164307527382237,
+              "cold_advantage_fraction": -0.13918252290345315,
+              "noise_ns": 31353.0,
+              "required_advantage_ns": 35447.25
+            },
+            "Colored8": {
+              "win": true,
+              "warm_advantage_fraction": 0.18955787820795916,
+              "cold_advantage_fraction": 0.2601275335997759,
+              "noise_ns": 31353.0,
+              "required_advantage_ns": 46871.700000000004
+            },
+            "Frozen8": {
+              "win": false,
+              "warm_advantage_fraction": -0.1671098616647848,
+              "cold_advantage_fraction": 0.06463859405893616,
+              "noise_ns": 31353.0,
+              "required_advantage_ns": 32547.75
+            },
+            "Frozen16": {
+              "win": false,
+              "warm_advantage_fraction": -0.20498147490229915,
+              "cold_advantage_fraction": 0.1379898766469646,
+              "noise_ns": 31353.0,
+              "required_advantage_ns": 31524.800000000003
+            }
+          }
+        }
+      ],
+      "development-512x512-007": [
+        {
+          "stage": 1,
+          "win": false,
+          "versus": {
+            "Jacobi4": {
+              "win": false,
+              "warm_advantage_fraction": -0.08507532786589111,
+              "cold_advantage_fraction": -0.03429341796683003,
+              "noise_ns": 25170.0,
+              "required_advantage_ns": 34598.75
+            },
+            "Colored2": {
+              "win": false,
+              "warm_advantage_fraction": -0.09024314101307546,
+              "cold_advantage_fraction": -0.06012931530826098,
+              "noise_ns": 25170.0,
+              "required_advantage_ns": 34434.75
+            },
+            "Colored4": {
+              "win": false,
+              "warm_advantage_fraction": -0.040663556505420605,
+              "cold_advantage_fraction": -0.048098754750355945,
+              "noise_ns": 62220.0,
+              "required_advantage_ns": 62220.0
+            },
+            "Colored8": {
+              "win": true,
+              "warm_advantage_fraction": 0.21693500783226644,
+              "cold_advantage_fraction": 0.11771382570981744,
+              "noise_ns": 25170.0,
+              "required_advantage_ns": 47942.700000000004
+            },
+            "Frozen8": {
+              "win": false,
+              "warm_advantage_fraction": -0.1435940941200123,
+              "cold_advantage_fraction": -0.09508363931571956,
+              "noise_ns": 27237.0,
+              "required_advantage_ns": 32828.3
+            },
+            "Frozen16": {
+              "win": false,
+              "warm_advantage_fraction": -0.1435766765766644,
+              "cold_advantage_fraction": 0.05164077438627892,
+              "noise_ns": 31740.0,
+              "required_advantage_ns": 32828.8
+            }
+          }
+        }
+      ],
+      "development-1024x1024-000": [
+        {
+          "stage": 1,
+          "win": false,
+          "versus": {
+            "Jacobi4": {
+              "win": false,
+              "warm_advantage_fraction": 0.161302568256382,
+              "cold_advantage_fraction": 0.01791887546070797,
+              "noise_ns": 74640.0,
+              "required_advantage_ns": 90617.90000000001
+            },
+            "Colored2": {
+              "win": false,
+              "warm_advantage_fraction": 0.035146852525406405,
+              "cold_advantage_fraction": -0.07649291402437122,
+              "noise_ns": 74640.0,
+              "required_advantage_ns": 78769.5
+            },
+            "Colored4": {
+              "win": true,
+              "warm_advantage_fraction": 0.1794666387401092,
+              "cold_advantage_fraction": 0.48249697058020047,
+              "noise_ns": 74640.0,
+              "required_advantage_ns": 92623.90000000001
+            },
+            "Colored8": {
+              "win": true,
+              "warm_advantage_fraction": 0.450798716042103,
+              "cold_advantage_fraction": 0.40109258824593147,
+              "noise_ns": 74640.0,
+              "required_advantage_ns": 138384.6
+            },
+            "Frozen8": {
+              "win": false,
+              "warm_advantage_fraction": -0.01532994449157354,
+              "cold_advantage_fraction": 0.1666271289473294,
+              "noise_ns": 74640.0,
+              "required_advantage_ns": 74853.5
+            },
+            "Frozen16": {
+              "win": false,
+              "warm_advantage_fraction": -0.031073570879609498,
+              "cold_advantage_fraction": -0.05138879536191732,
+              "noise_ns": 74640.0,
+              "required_advantage_ns": 74640.0
+            }
+          }
+        }
+      ],
+      "development-1024x1024-001": [
+        {
+          "stage": 1,
+          "win": false,
+          "versus": {
+            "Jacobi4": {
+              "win": false,
+              "warm_advantage_fraction": 0.021024868922298354,
+              "cold_advantage_fraction": 0.015745255876228915,
+              "noise_ns": 73383.0,
+              "required_advantage_ns": 89631.95000000001
+            },
+            "Colored2": {
+              "win": false,
+              "warm_advantage_fraction": -0.06604832042395331,
+              "cold_advantage_fraction": -0.03500617894356489,
+              "noise_ns": 73383.0,
+              "required_advantage_ns": 82310.95000000001
+            },
+            "Colored4": {
+              "win": false,
+              "warm_advantage_fraction": 0.059532013817510686,
+              "cold_advantage_fraction": 0.03521790018229399,
+              "noise_ns": 73383.0,
+              "required_advantage_ns": 93301.90000000001
+            },
+            "Colored8": {
+              "win": true,
+              "warm_advantage_fraction": 0.37001326779845006,
+              "cold_advantage_fraction": 0.21836443151805476,
+              "noise_ns": 79800.0,
+              "required_advantage_ns": 139284.6
+            },
+            "Frozen8": {
+              "win": false,
+              "warm_advantage_fraction": -0.11315713858923689,
+              "cold_advantage_fraction": -0.01618967414075591,
+              "noise_ns": 73383.0,
+              "required_advantage_ns": 78827.55
+            },
+            "Frozen16": {
+              "win": false,
+              "warm_advantage_fraction": -0.1389116749951327,
+              "cold_advantage_fraction": -0.05353292702049551,
+              "noise_ns": 73383.0,
+              "required_advantage_ns": 77045.0
+            }
+          }
+        }
+      ],
+      "development-1024x1024-002": [
+        {
+          "stage": 1,
+          "win": false,
+          "versus": {
+            "Jacobi4": {
+              "win": true,
+              "warm_advantage_fraction": 0.1398293737562342,
+              "cold_advantage_fraction": 0.09536893407682473,
+              "noise_ns": 96210.0,
+              "required_advantage_ns": 96210.0
+            },
+            "Colored2": {
+              "win": false,
+              "warm_advantage_fraction": 0.027532599917645235,
+              "cold_advantage_fraction": 0.039186351254687904,
+              "noise_ns": 96210.0,
+              "required_advantage_ns": 96210.0
+            },
+            "Colored4": {
+              "win": false,
+              "warm_advantage_fraction": 0.051667128262460886,
+              "cold_advantage_fraction": 0.030764956028107197,
+              "noise_ns": 96210.0,
+              "required_advantage_ns": 96210.0
+            },
+            "Colored8": {
+              "win": true,
+              "warm_advantage_fraction": 0.19348678531177887,
+              "cold_advantage_fraction": 0.10793984960721187,
+              "noise_ns": 96210.0,
+              "required_advantage_ns": 96210.0
+            },
+            "Frozen8": {
+              "win": false,
+              "warm_advantage_fraction": 0.009295409383553067,
+              "cold_advantage_fraction": 0.010120224286051745,
+              "noise_ns": 96210.0,
+              "required_advantage_ns": 96210.0
+            },
+            "Frozen16": {
+              "win": false,
+              "warm_advantage_fraction": -0.015945087382415863,
+              "cold_advantage_fraction": 0.052478498417802485,
+              "noise_ns": 96210.0,
+              "required_advantage_ns": 96210.0
+            }
+          }
+        }
+      ],
+      "development-1024x1024-003": [
+        {
+          "stage": 1,
+          "win": false,
+          "versus": {
+            "Jacobi4": {
+              "win": false,
+              "warm_advantage_fraction": -0.12153482350753968,
+              "cold_advantage_fraction": -0.23710579014233113,
+              "noise_ns": 19653.0,
+              "required_advantage_ns": 88213.40000000001
+            },
+            "Colored2": {
+              "win": false,
+              "warm_advantage_fraction": -0.15190752548829894,
+              "cold_advantage_fraction": -0.6260058805432922,
+              "noise_ns": 22170.0,
+              "required_advantage_ns": 85887.45000000001
+            },
+            "Colored4": {
+              "win": false,
+              "warm_advantage_fraction": -0.06072040651456858,
+              "cold_advantage_fraction": -0.49630705161845656,
+              "noise_ns": 42453.0,
+              "required_advantage_ns": 93270.95000000001
+            },
+            "Colored8": {
+              "win": true,
+              "warm_advantage_fraction": 0.2826507894442042,
+              "cold_advantage_fraction": 0.14340072971119736,
+              "noise_ns": 40470.0,
+              "required_advantage_ns": 137916.65
+            },
+            "Frozen8": {
+              "win": false,
+              "warm_advantage_fraction": -0.28648297205570655,
+              "cold_advantage_fraction": -0.6992039366627449,
+              "noise_ns": 22347.0,
+              "required_advantage_ns": 76903.0
+            },
+            "Frozen16": {
+              "win": false,
+              "warm_advantage_fraction": -0.308940900500175,
+              "cold_advantage_fraction": -0.7209426113128694,
+              "noise_ns": 19653.0,
+              "required_advantage_ns": 75583.55
+            }
+          }
+        }
+      ],
+      "development-1024x1024-004": [
+        {
+          "stage": 1,
+          "win": false,
+          "versus": {
+            "Jacobi4": {
+              "win": false,
+              "warm_advantage_fraction": 0.11142263834020069,
+              "cold_advantage_fraction": 0.02149182040412067,
+              "noise_ns": 37290.0,
+              "required_advantage_ns": 90075.95000000001
+            },
+            "Colored2": {
+              "win": false,
+              "warm_advantage_fraction": 0.007441142368194247,
+              "cold_advantage_fraction": -0.011927419033159397,
+              "noise_ns": 37290.0,
+              "required_advantage_ns": 80639.5
+            },
+            "Colored4": {
+              "win": true,
+              "warm_advantage_fraction": 0.13200049017800403,
+              "cold_advantage_fraction": 0.07390526857249345,
+              "noise_ns": 37290.0,
+              "required_advantage_ns": 92211.40000000001
+            },
+            "Colored8": {
+              "win": true,
+              "warm_advantage_fraction": 0.4116050743162453,
+              "cold_advantage_fraction": 0.23542690585983933,
+              "noise_ns": 58263.0,
+              "required_advantage_ns": 136030.15
+            },
+            "Frozen8": {
+              "win": false,
+              "warm_advantage_fraction": -0.056640351687811064,
+              "cold_advantage_fraction": -0.05565764559324594,
+              "noise_ns": 53370.0,
+              "required_advantage_ns": 75749.0
+            },
+            "Frozen16": {
+              "win": false,
+              "warm_advantage_fraction": -0.06884510119311121,
+              "cold_advantage_fraction": -0.1019513453107539,
+              "noise_ns": 40947.0,
+              "required_advantage_ns": 74884.05
+            }
+          }
+        }
+      ],
+      "development-1024x1024-005": [
+        {
+          "stage": 1,
+          "win": false,
+          "versus": {
+            "Jacobi4": {
+              "win": false,
+              "warm_advantage_fraction": -0.11571030357214244,
+              "cold_advantage_fraction": -0.03365449681308545,
+              "noise_ns": 310167.0,
+              "required_advantage_ns": 310167.0
+            },
+            "Colored2": {
+              "win": false,
+              "warm_advantage_fraction": -0.258889628719507,
+              "cold_advantage_fraction": -0.17167484136259337,
+              "noise_ns": 310167.0,
+              "required_advantage_ns": 310167.0
+            },
+            "Colored4": {
+              "win": false,
+              "warm_advantage_fraction": -0.16536352187888204,
+              "cold_advantage_fraction": -0.06844362310181021,
+              "noise_ns": 310167.0,
+              "required_advantage_ns": 310167.0
+            },
+            "Colored8": {
+              "win": true,
+              "warm_advantage_fraction": 0.14158077979581488,
+              "cold_advantage_fraction": 0.09375459050656425,
+              "noise_ns": 310167.0,
+              "required_advantage_ns": 310167.0
+            },
+            "Frozen8": {
+              "win": false,
+              "warm_advantage_fraction": -0.33322042050258155,
+              "cold_advantage_fraction": -0.1931873274536672,
+              "noise_ns": 310167.0,
+              "required_advantage_ns": 310167.0
+            },
+            "Frozen16": {
+              "win": false,
+              "warm_advantage_fraction": -0.5048254995683367,
+              "cold_advantage_fraction": -0.2426216605395008,
+              "noise_ns": 310167.0,
+              "required_advantage_ns": 310167.0
+            }
+          }
+        }
+      ],
+      "development-1024x1024-006": [
+        {
+          "stage": 1,
+          "win": false,
+          "versus": {
+            "Jacobi4": {
+              "win": true,
+              "warm_advantage_fraction": 0.08031821178058414,
+              "cold_advantage_fraction": 0.07487179267655797,
+              "noise_ns": 130980.0,
+              "required_advantage_ns": 130980.0
+            },
+            "Colored2": {
+              "win": false,
+              "warm_advantage_fraction": -0.02668336439888164,
+              "cold_advantage_fraction": -0.034348892423285655,
+              "noise_ns": 230217.0,
+              "required_advantage_ns": 230217.0
+            },
+            "Colored4": {
+              "win": false,
+              "warm_advantage_fraction": 0.10456149818044705,
+              "cold_advantage_fraction": 0.06280359261766831,
+              "noise_ns": 202620.0,
+              "required_advantage_ns": 202620.0
+            },
+            "Colored8": {
+              "win": true,
+              "warm_advantage_fraction": 0.3806188856403913,
+              "cold_advantage_fraction": 0.2431953530414685,
+              "noise_ns": 191127.0,
+              "required_advantage_ns": 191127.0
+            },
+            "Frozen8": {
+              "win": false,
+              "warm_advantage_fraction": -0.004870586446733305,
+              "cold_advantage_fraction": -0.031962704458018194,
+              "noise_ns": 256947.0,
+              "required_advantage_ns": 256947.0
+            },
+            "Frozen16": {
+              "win": false,
+              "warm_advantage_fraction": -0.06176350505665732,
+              "cold_advantage_fraction": 0.10087820342471773,
+              "noise_ns": 39327.0,
+              "required_advantage_ns": 74703.5
+            }
+          }
+        }
+      ],
+      "development-1024x1024-007": [
+        {
+          "stage": 1,
+          "win": false,
+          "versus": {
+            "Jacobi4": {
+              "win": false,
+              "warm_advantage_fraction": -0.40672435028256815,
+              "cold_advantage_fraction": -0.33511896943447234,
+              "noise_ns": 218697.0,
+              "required_advantage_ns": 218697.0
+            },
+            "Colored2": {
+              "win": false,
+              "warm_advantage_fraction": -0.49760395853339107,
+              "cold_advantage_fraction": -0.31404059497875175,
+              "noise_ns": 218697.0,
+              "required_advantage_ns": 218697.0
+            },
+            "Colored4": {
+              "win": false,
+              "warm_advantage_fraction": -0.3380138675197494,
+              "cold_advantage_fraction": 0.1677358140589246,
+              "noise_ns": 218697.0,
+              "required_advantage_ns": 218697.0
+            },
+            "Colored8": {
+              "win": false,
+              "warm_advantage_fraction": -0.01799088756801915,
+              "cold_advantage_fraction": 0.06525298986064662,
+              "noise_ns": 218697.0,
+              "required_advantage_ns": 218697.0
+            },
+            "Frozen8": {
+              "win": false,
+              "warm_advantage_fraction": -0.7028488248751652,
+              "cold_advantage_fraction": 0.3905038651131526,
+              "noise_ns": 218697.0,
+              "required_advantage_ns": 218697.0
+            },
+            "Frozen16": {
+              "win": false,
+              "warm_advantage_fraction": -0.714232386329687,
+              "cold_advantage_fraction": -0.2935719927036074,
+              "noise_ns": 218697.0,
+              "required_advantage_ns": 218697.0
+            }
+          }
+        }
+      ]
+    },
+    "frontier": {
+      "development-256x256-000": [
+        {
+          "stage": 0,
+          "win": false,
+          "versus": {
+            "Jacobi4": {
+              "win": false,
+              "warm_advantage_fraction": -0.9814466521848765,
+              "cold_advantage_fraction": -0.9281509804168186,
+              "noise_ns": 15897.0,
+              "required_advantage_ns": 21613.350000000002
+            },
+            "Colored2": {
+              "win": false,
+              "warm_advantage_fraction": -1.3158540805952716,
+              "cold_advantage_fraction": -1.3996618904783429,
+              "noise_ns": 23970.0,
+              "required_advantage_ns": 23970.0
+            },
+            "Colored4": {
+              "win": false,
+              "warm_advantage_fraction": -1.046007543708361,
+              "cold_advantage_fraction": -1.1200741258064293,
+              "noise_ns": 57000.0,
+              "required_advantage_ns": 57000.0
+            },
+            "Colored8": {
+              "win": false,
+              "warm_advantage_fraction": -1.342455038725769,
+              "cold_advantage_fraction": -0.5725347642951936,
+              "noise_ns": 62160.0,
+              "required_advantage_ns": 62160.0
+            },
+            "Frozen8": {
+              "win": false,
+              "warm_advantage_fraction": -1.3028469875274575,
+              "cold_advantage_fraction": -1.120803697881811,
+              "noise_ns": 15897.0,
+              "required_advantage_ns": 18596.850000000002
+            },
+            "Frozen16": {
+              "win": false,
+              "warm_advantage_fraction": -2.0104035597044825,
+              "cold_advantage_fraction": -1.7730753837700703,
+              "noise_ns": 19500.0,
+              "required_advantage_ns": 19500.0
+            }
+          }
+        }
+      ],
+      "development-256x256-001": [
+        {
+          "stage": 0,
+          "win": false,
+          "versus": {
+            "Jacobi4": {
+              "win": false,
+              "warm_advantage_fraction": -1.0980968317754236,
+              "cold_advantage_fraction": -0.9956668179232682,
+              "noise_ns": 18927.0,
+              "required_advantage_ns": 28654.850000000002
+            },
+            "Colored2": {
+              "win": false,
+              "warm_advantage_fraction": -1.4532181818552772,
+              "cold_advantage_fraction": -1.4165952085390656,
+              "noise_ns": 34620.0,
+              "required_advantage_ns": 34620.0
+            },
+            "Colored4": {
+              "win": false,
+              "warm_advantage_fraction": -1.49739442163222,
+              "cold_advantage_fraction": -1.3953543675542157,
+              "noise_ns": 65520.0,
+              "required_advantage_ns": 65520.0
+            },
+            "Colored8": {
+              "win": false,
+              "warm_advantage_fraction": -1.5810774550988822,
+              "cold_advantage_fraction": -1.4447868515665125,
+              "noise_ns": 30360.0,
+              "required_advantage_ns": 30360.0
+            },
+            "Frozen8": {
+              "win": false,
+              "warm_advantage_fraction": -1.9162343536647772,
+              "cold_advantage_fraction": -0.5695468030114613,
+              "noise_ns": 25830.0,
+              "required_advantage_ns": 25830.0
+            },
+            "Frozen16": {
+              "win": false,
+              "warm_advantage_fraction": -1.7354487484274297,
+              "cold_advantage_fraction": -1.5805598529625662,
+              "noise_ns": 21627.0,
+              "required_advantage_ns": 21978.350000000002
+            }
+          }
+        }
+      ],
+      "development-256x256-002": [
+        {
+          "stage": 0,
+          "win": false,
+          "versus": {
+            "Jacobi4": {
+              "win": false,
+              "warm_advantage_fraction": -1.1456764906312427,
+              "cold_advantage_fraction": -0.7726467659525843,
+              "noise_ns": 34470.0,
+              "required_advantage_ns": 34470.0
+            },
+            "Colored2": {
+              "win": false,
+              "warm_advantage_fraction": -1.2772357149536189,
+              "cold_advantage_fraction": -0.36874031032179183,
+              "noise_ns": 33900.0,
+              "required_advantage_ns": 33900.0
+            },
+            "Colored4": {
+              "win": false,
+              "warm_advantage_fraction": -1.4716051837445658,
+              "cold_advantage_fraction": -1.0259780844408237,
+              "noise_ns": 24870.0,
+              "required_advantage_ns": 24870.0
+            },
+            "Colored8": {
+              "win": false,
+              "warm_advantage_fraction": -1.7455222283830327,
+              "cold_advantage_fraction": -1.193565926444645,
+              "noise_ns": 55347.0,
+              "required_advantage_ns": 55347.0
+            },
+            "Frozen8": {
+              "win": false,
+              "warm_advantage_fraction": -1.800284878222773,
+              "cold_advantage_fraction": -0.49682795853315337,
+              "noise_ns": 20133.0,
+              "required_advantage_ns": 21307.350000000002
+            },
+            "Frozen16": {
+              "win": false,
+              "warm_advantage_fraction": -1.7392766471244474,
+              "cold_advantage_fraction": -0.5330329464774151,
+              "noise_ns": 20133.0,
+              "required_advantage_ns": 21781.9
+            }
+          }
+        }
+      ],
+      "development-256x256-003": [
+        {
+          "stage": 0,
+          "win": false,
+          "versus": {
+            "Jacobi4": {
+              "win": false,
+              "warm_advantage_fraction": -0.8565998295373245,
+              "cold_advantage_fraction": -0.3144030671418012,
+              "noise_ns": 39027.0,
+              "required_advantage_ns": 39027.0
+            },
+            "Colored2": {
+              "win": false,
+              "warm_advantage_fraction": -1.0120685819079147,
+              "cold_advantage_fraction": -1.0532232123859468,
+              "noise_ns": 39027.0,
+              "required_advantage_ns": 39027.0
+            },
+            "Colored4": {
+              "win": false,
+              "warm_advantage_fraction": -1.2059045281847345,
+              "cold_advantage_fraction": -0.5950157694200864,
+              "noise_ns": 45420.0,
+              "required_advantage_ns": 45420.0
+            },
+            "Colored8": {
+              "win": false,
+              "warm_advantage_fraction": -0.95060754678339,
+              "cold_advantage_fraction": -0.866270859848835,
+              "noise_ns": 39027.0,
+              "required_advantage_ns": 39027.0
+            },
+            "Frozen8": {
+              "win": false,
+              "warm_advantage_fraction": -1.5448808691351288,
+              "cold_advantage_fraction": -0.9652862636572743,
+              "noise_ns": 39027.0,
+              "required_advantage_ns": 39027.0
+            },
+            "Frozen16": {
+              "win": false,
+              "warm_advantage_fraction": -1.3771041983070829,
+              "cold_advantage_fraction": -1.2191069942982367,
+              "noise_ns": 39027.0,
+              "required_advantage_ns": 39027.0
+            }
+          }
+        }
+      ],
+      "development-256x256-004": [
+        {
+          "stage": 0,
+          "win": false,
+          "versus": {
+            "Jacobi4": {
+              "win": false,
+              "warm_advantage_fraction": -0.9632948934653613,
+              "cold_advantage_fraction": -0.6053390394618253,
+              "noise_ns": 76410.0,
+              "required_advantage_ns": 76410.0
+            },
+            "Colored2": {
+              "win": false,
+              "warm_advantage_fraction": -1.11350536350929,
+              "cold_advantage_fraction": -0.16159793869361083,
+              "noise_ns": 101700.0,
+              "required_advantage_ns": 101700.0
+            },
+            "Colored4": {
+              "win": false,
+              "warm_advantage_fraction": -0.9621498217994197,
+              "cold_advantage_fraction": -0.5980200719494068,
+              "noise_ns": 89220.0,
+              "required_advantage_ns": 89220.0
+            },
+            "Colored8": {
+              "win": false,
+              "warm_advantage_fraction": -1.2105116183020523,
+              "cold_advantage_fraction": -0.7195745244713105,
+              "noise_ns": 60387.0,
+              "required_advantage_ns": 60387.0
+            },
+            "Frozen8": {
+              "win": false,
+              "warm_advantage_fraction": -1.6351533563843477,
+              "cold_advantage_fraction": -0.3547041315329982,
+              "noise_ns": 60387.0,
+              "required_advantage_ns": 60387.0
+            },
+            "Frozen16": {
+              "win": false,
+              "warm_advantage_fraction": -1.8515732371086584,
+              "cold_advantage_fraction": -1.1226175918497692,
+              "noise_ns": 60387.0,
+              "required_advantage_ns": 60387.0
+            }
+          }
+        }
+      ],
+      "development-256x256-005": [
+        {
+          "stage": 0,
+          "win": false,
+          "versus": {
+            "Jacobi4": {
+              "win": false,
+              "warm_advantage_fraction": -1.0973773050485485,
+              "cold_advantage_fraction": -1.1405627095320647,
+              "noise_ns": 14820.0,
+              "required_advantage_ns": 28703.300000000003
+            },
+            "Colored2": {
+              "win": false,
+              "warm_advantage_fraction": -1.328312000727094,
+              "cold_advantage_fraction": -1.2989208549703264,
+              "noise_ns": 28917.0,
+              "required_advantage_ns": 28917.0
+            },
+            "Colored4": {
+              "win": false,
+              "warm_advantage_fraction": -1.5108763427293979,
+              "cold_advantage_fraction": -0.7061337198674371,
+              "noise_ns": 56220.0,
+              "required_advantage_ns": 56220.0
+            },
+            "Colored8": {
+              "win": false,
+              "warm_advantage_fraction": -1.6719653275397954,
+              "cold_advantage_fraction": -1.4708711103082477,
+              "noise_ns": 41103.0,
+              "required_advantage_ns": 41103.0
+            },
+            "Frozen8": {
+              "win": false,
+              "warm_advantage_fraction": -1.5960904466921237,
+              "cold_advantage_fraction": -1.1959293941147,
+              "noise_ns": 67800.0,
+              "required_advantage_ns": 67800.0
+            },
+            "Frozen16": {
+              "win": false,
+              "warm_advantage_fraction": -1.5500151429473046,
+              "cold_advantage_fraction": -0.7945922224459189,
+              "noise_ns": 26280.0,
+              "required_advantage_ns": 26280.0
+            }
+          }
+        }
+      ],
+      "development-256x256-006": [
+        {
+          "stage": 0,
+          "win": false,
+          "versus": {
+            "Jacobi4": {
+              "win": false,
+              "warm_advantage_fraction": -0.9894814158992606,
+              "cold_advantage_fraction": -0.422964901021869,
+              "noise_ns": 37020.0,
+              "required_advantage_ns": 37020.0
+            },
+            "Colored2": {
+              "win": false,
+              "warm_advantage_fraction": -1.2177901479814426,
+              "cold_advantage_fraction": -1.0442097398197925,
+              "noise_ns": 57210.0,
+              "required_advantage_ns": 57210.0
+            },
+            "Colored4": {
+              "win": false,
+              "warm_advantage_fraction": -1.7371243698685137,
+              "cold_advantage_fraction": -1.2406840596608852,
+              "noise_ns": 37020.0,
+              "required_advantage_ns": 37020.0
+            },
+            "Colored8": {
+              "win": false,
+              "warm_advantage_fraction": -1.8736832244887154,
+              "cold_advantage_fraction": -1.1860632037973742,
+              "noise_ns": 54150.0,
+              "required_advantage_ns": 54150.0
+            },
+            "Frozen8": {
+              "win": false,
+              "warm_advantage_fraction": -2.1236008030510627,
+              "cold_advantage_fraction": 0.4137308718891907,
+              "noise_ns": 37020.0,
+              "required_advantage_ns": 37020.0
+            },
+            "Frozen16": {
+              "win": false,
+              "warm_advantage_fraction": -1.825636692383319,
+              "cold_advantage_fraction": -0.5975645602342804,
+              "noise_ns": 37020.0,
+              "required_advantage_ns": 37020.0
+            }
+          }
+        }
+      ],
+      "development-256x256-007": [
+        {
+          "stage": 0,
+          "win": false,
+          "versus": {
+            "Jacobi4": {
+              "win": false,
+              "warm_advantage_fraction": -0.9811300199183123,
+              "cold_advantage_fraction": -1.0363063574111913,
+              "noise_ns": 29220.0,
+              "required_advantage_ns": 29220.0
+            },
+            "Colored2": {
+              "win": false,
+              "warm_advantage_fraction": -1.1706729848853734,
+              "cold_advantage_fraction": -0.49535080933111164,
+              "noise_ns": 29220.0,
+              "required_advantage_ns": 29220.0
+            },
+            "Colored4": {
+              "win": false,
+              "warm_advantage_fraction": -1.3838172477844806,
+              "cold_advantage_fraction": -1.3944910884754265,
+              "noise_ns": 34470.0,
+              "required_advantage_ns": 34470.0
+            },
+            "Colored8": {
+              "win": false,
+              "warm_advantage_fraction": -1.191795837426773,
+              "cold_advantage_fraction": -0.6407859479905879,
+              "noise_ns": 36693.0,
+              "required_advantage_ns": 36693.0
+            },
+            "Frozen8": {
+              "win": false,
+              "warm_advantage_fraction": -1.6642027659450958,
+              "cold_advantage_fraction": -1.54002014454978,
+              "noise_ns": 54417.0,
+              "required_advantage_ns": 54417.0
+            },
+            "Frozen16": {
+              "win": false,
+              "warm_advantage_fraction": -1.6056444265410788,
+              "cold_advantage_fraction": -1.5163103344682556,
+              "noise_ns": 58860.0,
+              "required_advantage_ns": 58860.0
+            }
+          }
+        }
+      ],
+      "development-512x512-000": [
+        {
+          "stage": 0,
+          "win": false,
+          "versus": {
+            "Jacobi4": {
+              "win": false,
+              "warm_advantage_fraction": -0.8636254854546109,
+              "cold_advantage_fraction": -0.5632816305857021,
+              "noise_ns": 90450.0,
+              "required_advantage_ns": 90450.0
+            },
+            "Colored2": {
+              "win": false,
+              "warm_advantage_fraction": -1.3182121207244941,
+              "cold_advantage_fraction": -0.7872503714005753,
+              "noise_ns": 90450.0,
+              "required_advantage_ns": 90450.0
+            },
+            "Colored4": {
+              "win": false,
+              "warm_advantage_fraction": -1.1044780012813369,
+              "cold_advantage_fraction": -0.6316144554950284,
+              "noise_ns": 90450.0,
+              "required_advantage_ns": 90450.0
+            },
+            "Colored8": {
+              "win": false,
+              "warm_advantage_fraction": -0.9345354337959109,
+              "cold_advantage_fraction": -0.3258520233209025,
+              "noise_ns": 90450.0,
+              "required_advantage_ns": 90450.0
+            },
+            "Frozen8": {
+              "win": false,
+              "warm_advantage_fraction": -1.859577261500682,
+              "cold_advantage_fraction": -1.0309473643376883,
+              "noise_ns": 90450.0,
+              "required_advantage_ns": 90450.0
+            },
+            "Frozen16": {
+              "win": false,
+              "warm_advantage_fraction": -1.81452450195089,
+              "cold_advantage_fraction": -0.9539172863738147,
+              "noise_ns": 90450.0,
+              "required_advantage_ns": 90450.0
+            }
+          }
+        }
+      ],
+      "development-512x512-001": [
+        {
+          "stage": 0,
+          "win": false,
+          "versus": {
+            "Jacobi4": {
+              "win": false,
+              "warm_advantage_fraction": -0.6232272213513422,
+              "cold_advantage_fraction": -0.3513406956900466,
+              "noise_ns": 78930.0,
+              "required_advantage_ns": 91924.90000000001
+            },
+            "Colored2": {
+              "win": false,
+              "warm_advantage_fraction": -1.160812279478474,
+              "cold_advantage_fraction": -0.8293191755213203,
+              "noise_ns": 164880.0,
+              "required_advantage_ns": 164880.0
+            },
+            "Colored4": {
+              "win": false,
+              "warm_advantage_fraction": -1.5843845773475136,
+              "cold_advantage_fraction": -1.0532323256352087,
+              "noise_ns": 96720.0,
+              "required_advantage_ns": 96720.0
+            },
+            "Colored8": {
+              "win": false,
+              "warm_advantage_fraction": -1.3414134313322432,
+              "cold_advantage_fraction": -0.8838559134333733,
+              "noise_ns": 13050.0,
+              "required_advantage_ns": 63728.600000000006
+            },
+            "Frozen8": {
+              "win": false,
+              "warm_advantage_fraction": -2.0350644886369413,
+              "cold_advantage_fraction": -0.9493380583592717,
+              "noise_ns": 43920.0,
+              "required_advantage_ns": 49163.700000000004
+            },
+            "Frozen16": {
+              "win": false,
+              "warm_advantage_fraction": -2.4127932574375746,
+              "cold_advantage_fraction": -1.3732906717327318,
+              "noise_ns": 55800.0,
+              "required_advantage_ns": 55800.0
+            }
+          }
+        },
+        {
+          "stage": 2,
+          "win": false,
+          "versus": {
+            "Jacobi4": {
+              "win": false,
+              "warm_advantage_fraction": -0.8593796217437982,
+              "cold_advantage_fraction": -0.687103811783932,
+              "noise_ns": 137277.0,
+              "required_advantage_ns": 142837.05000000002
+            },
+            "Colored2": {
+              "win": false,
+              "warm_advantage_fraction": -1.5631767420067295,
+              "cold_advantage_fraction": -1.049243265517781,
+              "noise_ns": 137277.0,
+              "required_advantage_ns": 137277.0
+            },
+            "Colored4": {
+              "win": false,
+              "warm_advantage_fraction": -1.8066298984771036,
+              "cold_advantage_fraction": -1.3651518852119386,
+              "noise_ns": 137277.0,
+              "required_advantage_ns": 137277.0
+            },
+            "Colored8": {
+              "win": false,
+              "warm_advantage_fraction": -1.4143886082381913,
+              "cold_advantage_fraction": -1.077417400375319,
+              "noise_ns": 137277.0,
+              "required_advantage_ns": 137277.0
+            },
+            "Frozen8": {
+              "win": false,
+              "warm_advantage_fraction": -2.590969719463413,
+              "cold_advantage_fraction": -1.766317797354617,
+              "noise_ns": 137277.0,
+              "required_advantage_ns": 137277.0
+            },
+            "Frozen16": {
+              "win": false,
+              "warm_advantage_fraction": -2.9921851337162853,
+              "cold_advantage_fraction": -1.9921720944718966,
+              "noise_ns": 137277.0,
+              "required_advantage_ns": 137277.0
+            }
+          }
+        }
+      ],
+      "development-512x512-002": [
+        {
+          "stage": 0,
+          "win": false,
+          "versus": {
+            "Jacobi4": {
+              "win": false,
+              "warm_advantage_fraction": -0.7703005139080051,
+              "cold_advantage_fraction": -0.4595470961818858,
+              "noise_ns": 49770.0,
+              "required_advantage_ns": 56634.65
+            },
+            "Colored2": {
+              "win": false,
+              "warm_advantage_fraction": -1.2015572900255047,
+              "cold_advantage_fraction": -0.702568457304297,
+              "noise_ns": 42450.0,
+              "required_advantage_ns": 45540.65
+            },
+            "Colored4": {
+              "win": false,
+              "warm_advantage_fraction": -1.2789162343234135,
+              "cold_advantage_fraction": -0.6723175458945805,
+              "noise_ns": 42450.0,
+              "required_advantage_ns": 43994.75
+            },
+            "Colored8": {
+              "win": false,
+              "warm_advantage_fraction": -1.1222400497854694,
+              "cold_advantage_fraction": -0.6492728750844707,
+              "noise_ns": 42450.0,
+              "required_advantage_ns": 47242.700000000004
+            },
+            "Frozen8": {
+              "win": false,
+              "warm_advantage_fraction": -1.6018840626723327,
+              "cold_advantage_fraction": -0.6269502914603887,
+              "noise_ns": 61470.0,
+              "required_advantage_ns": 61470.0
+            },
+            "Frozen16": {
+              "win": false,
+              "warm_advantage_fraction": -2.0584616839478604,
+              "cold_advantage_fraction": -1.037050965795621,
+              "noise_ns": 42450.0,
+              "required_advantage_ns": 42450.0
+            }
+          }
+        }
+      ],
+      "development-512x512-003": [
+        {
+          "stage": 0,
+          "win": false,
+          "versus": {
+            "Jacobi4": {
+              "win": false,
+              "warm_advantage_fraction": -0.8552326312072724,
+              "cold_advantage_fraction": -0.43907740058281514,
+              "noise_ns": 51900.0,
+              "required_advantage_ns": 51900.0
+            },
+            "Colored2": {
+              "win": false,
+              "warm_advantage_fraction": -1.2494971911641097,
+              "cold_advantage_fraction": -0.5571648429159562,
+              "noise_ns": 51900.0,
+              "required_advantage_ns": 51900.0
+            },
+            "Colored4": {
+              "win": false,
+              "warm_advantage_fraction": -1.1027850476798806,
+              "cold_advantage_fraction": -0.6633104265055434,
+              "noise_ns": 51900.0,
+              "required_advantage_ns": 51900.0
+            },
+            "Colored8": {
+              "win": false,
+              "warm_advantage_fraction": -0.9119283256102726,
+              "cold_advantage_fraction": 0.2626924974386418,
+              "noise_ns": 51900.0,
+              "required_advantage_ns": 51900.0
+            },
+            "Frozen8": {
+              "win": false,
+              "warm_advantage_fraction": -1.4086659803293125,
+              "cold_advantage_fraction": 0.11466945057883003,
+              "noise_ns": 52050.0,
+              "required_advantage_ns": 52050.0
+            },
+            "Frozen16": {
+              "win": false,
+              "warm_advantage_fraction": -1.4183114797792324,
+              "cold_advantage_fraction": -0.7857038741770119,
+              "noise_ns": 51900.0,
+              "required_advantage_ns": 51900.0
+            }
+          }
+        }
+      ],
+      "development-512x512-004": [
+        {
+          "stage": 0,
+          "win": false,
+          "versus": {
+            "Jacobi4": {
+              "win": false,
+              "warm_advantage_fraction": -1.0184299786506734,
+              "cold_advantage_fraction": -0.666245001956061,
+              "noise_ns": 332700.0,
+              "required_advantage_ns": 332700.0
+            },
+            "Colored2": {
+              "win": false,
+              "warm_advantage_fraction": -1.2743388559124396,
+              "cold_advantage_fraction": -0.7665415452739588,
+              "noise_ns": 332700.0,
+              "required_advantage_ns": 332700.0
+            },
+            "Colored4": {
+              "win": false,
+              "warm_advantage_fraction": -1.3229725232055027,
+              "cold_advantage_fraction": -0.7975373062132682,
+              "noise_ns": 332700.0,
+              "required_advantage_ns": 332700.0
+            },
+            "Colored8": {
+              "win": false,
+              "warm_advantage_fraction": -1.1896290995434613,
+              "cold_advantage_fraction": -0.7849757342906325,
+              "noise_ns": 332700.0,
+              "required_advantage_ns": 332700.0
+            },
+            "Frozen8": {
+              "win": false,
+              "warm_advantage_fraction": -1.8757996647164565,
+              "cold_advantage_fraction": -0.843221077209901,
+              "noise_ns": 332700.0,
+              "required_advantage_ns": 332700.0
+            },
+            "Frozen16": {
+              "win": false,
+              "warm_advantage_fraction": -2.131541557613214,
+              "cold_advantage_fraction": -0.8994051802348612,
+              "noise_ns": 332700.0,
+              "required_advantage_ns": 332700.0
+            }
+          }
+        }
+      ],
+      "development-512x512-005": [
+        {
+          "stage": 0,
+          "win": false,
+          "versus": {
+            "Jacobi4": {
+              "win": false,
+              "warm_advantage_fraction": -0.7280259853865504,
+              "cold_advantage_fraction": -0.3114865863294616,
+              "noise_ns": 140907.0,
+              "required_advantage_ns": 140907.0
+            },
+            "Colored2": {
+              "win": false,
+              "warm_advantage_fraction": -1.180125563251274,
+              "cold_advantage_fraction": -0.6419523116360583,
+              "noise_ns": 140907.0,
+              "required_advantage_ns": 140907.0
+            },
+            "Colored4": {
+              "win": false,
+              "warm_advantage_fraction": -1.3073399844263234,
+              "cold_advantage_fraction": -0.7878921846539849,
+              "noise_ns": 140907.0,
+              "required_advantage_ns": 140907.0
+            },
+            "Colored8": {
+              "win": false,
+              "warm_advantage_fraction": -0.8846890230219985,
+              "cold_advantage_fraction": -0.5745616038600744,
+              "noise_ns": 140907.0,
+              "required_advantage_ns": 140907.0
+            },
+            "Frozen8": {
+              "win": false,
+              "warm_advantage_fraction": -1.6611940893885948,
+              "cold_advantage_fraction": -0.9686547835673206,
+              "noise_ns": 231090.0,
+              "required_advantage_ns": 231090.0
+            },
+            "Frozen16": {
+              "win": false,
+              "warm_advantage_fraction": -1.8788629764568807,
+              "cold_advantage_fraction": -0.9648836392319062,
+              "noise_ns": 140907.0,
+              "required_advantage_ns": 140907.0
+            }
+          }
+        }
+      ],
+      "development-512x512-006": [
+        {
+          "stage": 0,
+          "win": false,
+          "versus": {
+            "Jacobi4": {
+              "win": false,
+              "warm_advantage_fraction": -0.8102915913273577,
+              "cold_advantage_fraction": -0.5631378279270653,
+              "noise_ns": 74517.0,
+              "required_advantage_ns": 74517.0
+            },
+            "Colored2": {
+              "win": false,
+              "warm_advantage_fraction": -1.2903801964290447,
+              "cold_advantage_fraction": -0.7757953849738995,
+              "noise_ns": 49203.0,
+              "required_advantage_ns": 49203.0
+            },
+            "Colored4": {
+              "win": false,
+              "warm_advantage_fraction": -1.3450551331671614,
+              "cold_advantage_fraction": -0.5405781278167232,
+              "noise_ns": 31830.0,
+              "required_advantage_ns": 47902.200000000004
+            },
+            "Colored8": {
+              "win": false,
+              "warm_advantage_fraction": -1.1255057932664334,
+              "cold_advantage_fraction": -0.6837237751340184,
+              "noise_ns": 41400.0,
+              "required_advantage_ns": 52850.15
+            },
+            "Frozen8": {
+              "win": false,
+              "warm_advantage_fraction": -1.7783437521254954,
+              "cold_advantage_fraction": -0.9454804439814279,
+              "noise_ns": 31830.0,
+              "required_advantage_ns": 40431.75
+            },
+            "Frozen16": {
+              "win": false,
+              "warm_advantage_fraction": -2.211422183977381,
+              "cold_advantage_fraction": -1.1324612965232954,
+              "noise_ns": 31830.0,
+              "required_advantage_ns": 34979.3
+            }
+          }
+        }
+      ],
+      "development-512x512-007": [
+        {
+          "stage": 0,
+          "win": false,
+          "versus": {
+            "Jacobi4": {
+              "win": false,
+              "warm_advantage_fraction": -0.7759829129076176,
+              "cold_advantage_fraction": -0.4692381056769482,
+              "noise_ns": 59187.0,
+              "required_advantage_ns": 62948.100000000006
+            },
+            "Colored2": {
+              "win": false,
+              "warm_advantage_fraction": -1.2122614113426267,
+              "cold_advantage_fraction": -0.4041850757956038,
+              "noise_ns": 59187.0,
+              "required_advantage_ns": 59187.0
+            },
+            "Colored4": {
+              "win": false,
+              "warm_advantage_fraction": -1.2614653891551777,
+              "cold_advantage_fraction": -0.692292971398768,
+              "noise_ns": 59187.0,
+              "required_advantage_ns": 59187.0
+            },
+            "Colored8": {
+              "win": false,
+              "warm_advantage_fraction": -0.9742949908300463,
+              "cold_advantage_fraction": -0.6408238706700734,
+              "noise_ns": 59187.0,
+              "required_advantage_ns": 59187.0
+            },
+            "Frozen8": {
+              "win": false,
+              "warm_advantage_fraction": -1.6556307122199194,
+              "cold_advantage_fraction": -0.9128848268589889,
+              "noise_ns": 62280.0,
+              "required_advantage_ns": 62280.0
+            },
+            "Frozen16": {
+              "win": false,
+              "warm_advantage_fraction": -1.6373715164654732,
+              "cold_advantage_fraction": -0.8262251262068171,
+              "noise_ns": 59187.0,
+              "required_advantage_ns": 59187.0
+            }
+          }
+        }
+      ],
+      "development-1024x1024-000": [
+        {
+          "stage": 0,
+          "win": false,
+          "versus": {
+            "Jacobi4": {
+              "win": false,
+              "warm_advantage_fraction": -1.5375405830305484,
+              "cold_advantage_fraction": -0.5086272040478971,
+              "noise_ns": 46413.0,
+              "required_advantage_ns": 175812.40000000002
+            },
+            "Colored2": {
+              "win": false,
+              "warm_advantage_fraction": -2.501011542095532,
+              "cold_advantage_fraction": -1.2251989713235858,
+              "noise_ns": 32280.0,
+              "required_advantage_ns": 127429.20000000001
+            },
+            "Colored4": {
+              "win": false,
+              "warm_advantage_fraction": -2.5732309094564276,
+              "cold_advantage_fraction": -1.2383029842801918,
+              "noise_ns": 32280.0,
+              "required_advantage_ns": 124853.70000000001
+            },
+            "Colored8": {
+              "win": false,
+              "warm_advantage_fraction": -1.8317962975305233,
+              "cold_advantage_fraction": -0.9408540343942204,
+              "noise_ns": 32280.0,
+              "required_advantage_ns": 157543.5
+            },
+            "Frozen8": {
+              "win": false,
+              "warm_advantage_fraction": -3.653702022148659,
+              "cold_advantage_fraction": -1.3891208908163009,
+              "noise_ns": 35037.0,
+              "required_advantage_ns": 95865.85
+            },
+            "Frozen16": {
+              "win": false,
+              "warm_advantage_fraction": -4.274199659642181,
+              "cold_advantage_fraction": -1.7060786077852788,
+              "noise_ns": 52230.0,
+              "required_advantage_ns": 84587.45000000001
+            }
+          }
+        }
+      ],
+      "development-1024x1024-001": [
+        {
+          "stage": 0,
+          "win": false,
+          "versus": {
+            "Jacobi4": {
+              "win": false,
+              "warm_advantage_fraction": -0.9834875903945381,
+              "cold_advantage_fraction": -0.5699234600820601,
+              "noise_ns": 187977.0,
+              "required_advantage_ns": 200606.7
+            },
+            "Colored2": {
+              "win": false,
+              "warm_advantage_fraction": -1.9078862075593177,
+              "cold_advantage_fraction": -1.0183482469040706,
+              "noise_ns": 187977.0,
+              "required_advantage_ns": 187977.0
+            },
+            "Colored4": {
+              "win": false,
+              "warm_advantage_fraction": -2.017449066917223,
+              "cold_advantage_fraction": -1.0426790300464823,
+              "noise_ns": 187977.0,
+              "required_advantage_ns": 187977.0
+            },
+            "Colored8": {
+              "win": false,
+              "warm_advantage_fraction": -1.3665433735448527,
+              "cold_advantage_fraction": -0.776606776072866,
+              "noise_ns": 187977.0,
+              "required_advantage_ns": 187977.0
+            },
+            "Frozen8": {
+              "win": false,
+              "warm_advantage_fraction": -3.058602248699241,
+              "cold_advantage_fraction": -1.313725042420125,
+              "noise_ns": 187977.0,
+              "required_advantage_ns": 187977.0
+            },
+            "Frozen16": {
+              "win": false,
+              "warm_advantage_fraction": -3.30673424944583,
+              "cold_advantage_fraction": -1.4033220131927737,
+              "noise_ns": 187977.0,
+              "required_advantage_ns": 187977.0
+            }
+          }
+        }
+      ],
+      "development-1024x1024-002": [
+        {
+          "stage": 0,
+          "win": false,
+          "versus": {
+            "Jacobi4": {
+              "win": false,
+              "warm_advantage_fraction": -1.1839708573915129,
+              "cold_advantage_fraction": -0.7685250727160662,
+              "noise_ns": 89133.0,
+              "required_advantage_ns": 211882.2
+            },
+            "Colored2": {
+              "win": false,
+              "warm_advantage_fraction": -2.1442634268084655,
+              "cold_advantage_fraction": -1.2061746965772175,
+              "noise_ns": 89133.0,
+              "required_advantage_ns": 147171.05000000002
+            },
+            "Colored4": {
+              "win": false,
+              "warm_advantage_fraction": -2.391396707576444,
+              "cold_advantage_fraction": -1.3692683187214694,
+              "noise_ns": 89133.0,
+              "required_advantage_ns": 136446.6
+            },
+            "Colored8": {
+              "win": false,
+              "warm_advantage_fraction": -1.7884165012327327,
+              "cold_advantage_fraction": -1.074553184254021,
+              "noise_ns": 89133.0,
+              "required_advantage_ns": 165952.45
+            },
+            "Frozen8": {
+              "win": false,
+              "warm_advantage_fraction": -3.379734297722275,
+              "cold_advantage_fraction": -1.749903689869908,
+              "noise_ns": 89133.0,
+              "required_advantage_ns": 105655.85
+            },
+            "Frozen16": {
+              "win": false,
+              "warm_advantage_fraction": -3.9489066824662795,
+              "cold_advantage_fraction": -1.8097628186458525,
+              "noise_ns": 89133.0,
+              "required_advantage_ns": 93504.40000000001
+            }
+          }
+        }
+      ],
+      "development-1024x1024-003": [
+        {
+          "stage": 0,
+          "win": false,
+          "versus": {
+            "Jacobi4": {
+              "win": false,
+              "warm_advantage_fraction": -1.38556426908747,
+              "cold_advantage_fraction": -0.7519611372399234,
+              "noise_ns": 84843.0,
+              "required_advantage_ns": 175104.40000000002
+            },
+            "Colored2": {
+              "win": false,
+              "warm_advantage_fraction": -2.3204861301556337,
+              "cold_advantage_fraction": -1.1933300966933265,
+              "noise_ns": 84843.0,
+              "required_advantage_ns": 125801.70000000001
+            },
+            "Colored4": {
+              "win": false,
+              "warm_advantage_fraction": -2.3057837374130665,
+              "cold_advantage_fraction": -0.562826159445369,
+              "noise_ns": 84843.0,
+              "required_advantage_ns": 126361.20000000001
+            },
+            "Colored8": {
+              "win": false,
+              "warm_advantage_fraction": -1.5876172208079653,
+              "cold_advantage_fraction": -0.9425273741840388,
+              "noise_ns": 84843.0,
+              "required_advantage_ns": 161431.45
+            },
+            "Frozen8": {
+              "win": false,
+              "warm_advantage_fraction": -3.2834204172748698,
+              "cold_advantage_fraction": -1.6151178767794168,
+              "noise_ns": 84843.0,
+              "required_advantage_ns": 97520.85
+            },
+            "Frozen16": {
+              "win": false,
+              "warm_advantage_fraction": -3.4707841586404933,
+              "cold_advantage_fraction": -1.6243757025833838,
+              "noise_ns": 84843.0,
+              "required_advantage_ns": 93433.90000000001
+            }
+          }
+        }
+      ],
+      "development-1024x1024-004": [
+        {
+          "stage": 0,
+          "win": false,
+          "versus": {
+            "Jacobi4": {
+              "win": false,
+              "warm_advantage_fraction": -1.6465928839888124,
+              "cold_advantage_fraction": -0.8824387599521663,
+              "noise_ns": 272817.0,
+              "required_advantage_ns": 272817.0
+            },
+            "Colored2": {
+              "win": false,
+              "warm_advantage_fraction": -2.5686416048882514,
+              "cold_advantage_fraction": -1.3495147516100396,
+              "noise_ns": 272817.0,
+              "required_advantage_ns": 272817.0
+            },
+            "Colored4": {
+              "win": false,
+              "warm_advantage_fraction": -2.3674104292082307,
+              "cold_advantage_fraction": -1.2727396783818912,
+              "noise_ns": 272817.0,
+              "required_advantage_ns": 272817.0
+            },
+            "Colored8": {
+              "win": false,
+              "warm_advantage_fraction": -1.711932231801643,
+              "cold_advantage_fraction": -0.9374556159772753,
+              "noise_ns": 272817.0,
+              "required_advantage_ns": 272817.0
+            },
+            "Frozen8": {
+              "win": false,
+              "warm_advantage_fraction": -3.3661177645780236,
+              "cold_advantage_fraction": -1.5749099638885904,
+              "noise_ns": 272817.0,
+              "required_advantage_ns": 272817.0
+            },
+            "Frozen16": {
+              "win": false,
+              "warm_advantage_fraction": -4.04955034800771,
+              "cold_advantage_fraction": -1.7253261120251147,
+              "noise_ns": 272817.0,
+              "required_advantage_ns": 272817.0
+            }
+          }
+        }
+      ],
+      "development-1024x1024-005": [
+        {
+          "stage": 0,
+          "win": false,
+          "versus": {
+            "Jacobi4": {
+              "win": false,
+              "warm_advantage_fraction": -1.026479712216183,
+              "cold_advantage_fraction": -0.5817349746349849,
+              "noise_ns": 471237.0,
+              "required_advantage_ns": 471237.0
+            },
+            "Colored2": {
+              "win": false,
+              "warm_advantage_fraction": -1.9376661680868819,
+              "cold_advantage_fraction": -0.9852443888375987,
+              "noise_ns": 471237.0,
+              "required_advantage_ns": 471237.0
+            },
+            "Colored4": {
+              "win": false,
+              "warm_advantage_fraction": -2.071981312358007,
+              "cold_advantage_fraction": -1.0606935321005118,
+              "noise_ns": 471237.0,
+              "required_advantage_ns": 471237.0
+            },
+            "Colored8": {
+              "win": false,
+              "warm_advantage_fraction": -1.438224319846044,
+              "cold_advantage_fraction": -0.7098854426155471,
+              "noise_ns": 471237.0,
+              "required_advantage_ns": 471237.0
+            },
+            "Frozen8": {
+              "win": false,
+              "warm_advantage_fraction": -3.0662609885105803,
+              "cold_advantage_fraction": -1.4004327278053321,
+              "noise_ns": 471237.0,
+              "required_advantage_ns": 471237.0
+            },
+            "Frozen16": {
+              "win": false,
+              "warm_advantage_fraction": -3.325062392321208,
+              "cold_advantage_fraction": -1.455859286296194,
+              "noise_ns": 471237.0,
+              "required_advantage_ns": 471237.0
+            }
+          }
+        }
+      ],
+      "development-1024x1024-006": [
+        {
+          "stage": 0,
+          "win": false,
+          "versus": {
+            "Jacobi4": {
+              "win": false,
+              "warm_advantage_fraction": -1.605869088348081,
+              "cold_advantage_fraction": -0.8216118420746176,
+              "noise_ns": 397737.0,
+              "required_advantage_ns": 397737.0
+            },
+            "Colored2": {
+              "win": false,
+              "warm_advantage_fraction": -2.5621075716318398,
+              "cold_advantage_fraction": -1.2577108701671462,
+              "noise_ns": 397737.0,
+              "required_advantage_ns": 397737.0
+            },
+            "Colored4": {
+              "win": false,
+              "warm_advantage_fraction": -2.5606452142621294,
+              "cold_advantage_fraction": -1.2503734691218722,
+              "noise_ns": 397737.0,
+              "required_advantage_ns": 397737.0
+            },
+            "Colored8": {
+              "win": false,
+              "warm_advantage_fraction": -1.934703349022915,
+              "cold_advantage_fraction": -0.9937659425379337,
+              "noise_ns": 397737.0,
+              "required_advantage_ns": 397737.0
+            },
+            "Frozen8": {
+              "win": false,
+              "warm_advantage_fraction": -3.548426205417988,
+              "cold_advantage_fraction": -1.602378481917692,
+              "noise_ns": 397737.0,
+              "required_advantage_ns": 397737.0
+            },
+            "Frozen16": {
+              "win": false,
+              "warm_advantage_fraction": -4.329662008628021,
+              "cold_advantage_fraction": -1.7178256231883413,
+              "noise_ns": 397737.0,
+              "required_advantage_ns": 397737.0
+            }
+          }
+        }
+      ],
+      "development-1024x1024-007": [
+        {
+          "stage": 0,
+          "win": false,
+          "versus": {
+            "Jacobi4": {
+              "win": false,
+              "warm_advantage_fraction": -1.4304088452179298,
+              "cold_advantage_fraction": -0.8373174120947787,
+              "noise_ns": 184710.0,
+              "required_advantage_ns": 184710.0
+            },
+            "Colored2": {
+              "win": false,
+              "warm_advantage_fraction": -2.2887313043124773,
+              "cold_advantage_fraction": -1.1727625237632173,
+              "noise_ns": 184710.0,
+              "required_advantage_ns": 184710.0
+            },
+            "Colored4": {
+              "win": false,
+              "warm_advantage_fraction": -2.240099617097264,
+              "cold_advantage_fraction": -1.1678305875282582,
+              "noise_ns": 184710.0,
+              "required_advantage_ns": 184710.0
+            },
+            "Colored8": {
+              "win": false,
+              "warm_advantage_fraction": -1.6549699593567768,
+              "cold_advantage_fraction": -0.7603033152543299,
+              "noise_ns": 184710.0,
+              "required_advantage_ns": 184710.0
+            },
+            "Frozen8": {
+              "win": false,
+              "warm_advantage_fraction": -3.1509459840143035,
+              "cold_advantage_fraction": -1.5829962870699938,
+              "noise_ns": 184710.0,
+              "required_advantage_ns": 184710.0
+            },
+            "Frozen16": {
+              "win": false,
+              "warm_advantage_fraction": -3.621955440023995,
+              "cold_advantage_fraction": -1.9393994211791437,
+              "noise_ns": 184710.0,
+              "required_advantage_ns": 184710.0
+            }
+          }
+        }
+      ]
+    },
+    "bounded": {
+      "development-256x256-000": [
+        {
+          "stage": 1,
+          "win": false,
+          "versus": {
+            "Jacobi4": {
+              "win": false,
+              "warm_advantage_fraction": 0.188165923737814,
+              "cold_advantage_fraction": -0.5593023333787834,
+              "noise_ns": 44070.0,
+              "required_advantage_ns": 44070.0
+            },
+            "Colored2": {
+              "win": false,
+              "warm_advantage_fraction": 0.24076355118227968,
+              "cold_advantage_fraction": -0.5648288346489546,
+              "noise_ns": 40200.0,
+              "required_advantage_ns": 40200.0
+            },
+            "Colored4": {
+              "win": false,
+              "warm_advantage_fraction": 0.21666948262310015,
+              "cold_advantage_fraction": -0.5748616682883441,
+              "noise_ns": 40200.0,
+              "required_advantage_ns": 40200.0
+            },
+            "Colored8": {
+              "win": false,
+              "warm_advantage_fraction": 0.37196167007285513,
+              "cold_advantage_fraction": -0.49028086059086046,
+              "noise_ns": 40200.0,
+              "required_advantage_ns": 40200.0
+            },
+            "Frozen8": {
+              "win": false,
+              "warm_advantage_fraction": 0.1676664233946977,
+              "cold_advantage_fraction": -0.6786203278814756,
+              "noise_ns": 40200.0,
+              "required_advantage_ns": 40200.0
+            },
+            "Frozen16": {
+              "win": false,
+              "warm_advantage_fraction": 0.22803943996409284,
+              "cold_advantage_fraction": 0.0048914090082379375,
+              "noise_ns": 40200.0,
+              "required_advantage_ns": 40200.0
+            }
+          }
+        }
+      ],
+      "development-256x256-001": [
+        {
+          "stage": 1,
+          "win": false,
+          "versus": {
+            "Jacobi4": {
+              "win": false,
+              "warm_advantage_fraction": 0.1947183273051578,
+              "cold_advantage_fraction": -0.08450836623425456,
+              "noise_ns": 35460.0,
+              "required_advantage_ns": 35460.0
+            },
+            "Colored2": {
+              "win": false,
+              "warm_advantage_fraction": 0.18697162910431392,
+              "cold_advantage_fraction": -0.007840847834285385,
+              "noise_ns": 35460.0,
+              "required_advantage_ns": 35460.0
+            },
+            "Colored4": {
+              "win": false,
+              "warm_advantage_fraction": 0.1917580273737845,
+              "cold_advantage_fraction": -0.16561773055237944,
+              "noise_ns": 35460.0,
+              "required_advantage_ns": 35460.0
+            },
+            "Colored8": {
+              "win": true,
+              "warm_advantage_fraction": 0.3568810913806013,
+              "cold_advantage_fraction": 0.3967966334045334,
+              "noise_ns": 35460.0,
+              "required_advantage_ns": 35460.0
+            },
+            "Frozen8": {
+              "win": true,
+              "warm_advantage_fraction": 0.21065982262270339,
+              "cold_advantage_fraction": 0.32423825959747193,
+              "noise_ns": 54957.0,
+              "required_advantage_ns": 54957.0
+            },
+            "Frozen16": {
+              "win": false,
+              "warm_advantage_fraction": 0.17689658665046085,
+              "cold_advantage_fraction": -0.08935624353721756,
+              "noise_ns": 35460.0,
+              "required_advantage_ns": 35460.0
+            }
+          }
+        }
+      ],
+      "development-256x256-002": [
+        {
+          "stage": 1,
+          "win": false,
+          "versus": {
+            "Jacobi4": {
+              "win": false,
+              "warm_advantage_fraction": 0.10048747866180947,
+              "cold_advantage_fraction": 0.06615551703552394,
+              "noise_ns": 34290.0,
+              "required_advantage_ns": 34290.0
+            },
+            "Colored2": {
+              "win": false,
+              "warm_advantage_fraction": 0.11678205674657574,
+              "cold_advantage_fraction": -0.07300754042108673,
+              "noise_ns": 59580.0,
+              "required_advantage_ns": 59580.0
+            },
+            "Colored4": {
+              "win": false,
+              "warm_advantage_fraction": 0.16077038431647273,
+              "cold_advantage_fraction": 0.5002382655193995,
+              "noise_ns": 104940.0,
+              "required_advantage_ns": 104940.0
+            },
+            "Colored8": {
+              "win": false,
+              "warm_advantage_fraction": 0.21200550890572165,
+              "cold_advantage_fraction": 0.007673541262863117,
+              "noise_ns": 33213.0,
+              "required_advantage_ns": 33213.0
+            },
+            "Frozen8": {
+              "win": false,
+              "warm_advantage_fraction": 0.14013183534880852,
+              "cold_advantage_fraction": 0.45437445315658403,
+              "noise_ns": 100587.0,
+              "required_advantage_ns": 100587.0
+            },
+            "Frozen16": {
+              "win": false,
+              "warm_advantage_fraction": 0.18820577164366373,
+              "cold_advantage_fraction": -0.1475907128689768,
+              "noise_ns": 118980.0,
+              "required_advantage_ns": 118980.0
+            }
+          }
+        }
+      ],
+      "development-256x256-003": [
+        {
+          "stage": 1,
+          "win": false,
+          "versus": {
+            "Jacobi4": {
+              "win": false,
+              "warm_advantage_fraction": 0.2718741019254718,
+              "cold_advantage_fraction": -0.5191641868926904,
+              "noise_ns": 66207.0,
+              "required_advantage_ns": 66207.0
+            },
+            "Colored2": {
+              "win": false,
+              "warm_advantage_fraction": 0.2797227026130629,
+              "cold_advantage_fraction": -0.24757146621189266,
+              "noise_ns": 66207.0,
+              "required_advantage_ns": 66207.0
+            },
+            "Colored4": {
+              "win": false,
+              "warm_advantage_fraction": 0.3152490934888854,
+              "cold_advantage_fraction": -0.04257504561050324,
+              "noise_ns": 66207.0,
+              "required_advantage_ns": 66207.0
+            },
+            "Colored8": {
+              "win": false,
+              "warm_advantage_fraction": 0.37453487863771834,
+              "cold_advantage_fraction": -0.4691777085222894,
+              "noise_ns": 66207.0,
+              "required_advantage_ns": 66207.0
+            },
+            "Frozen8": {
+              "win": false,
+              "warm_advantage_fraction": 0.24791903725325284,
+              "cold_advantage_fraction": -0.4352154101353017,
+              "noise_ns": 66207.0,
+              "required_advantage_ns": 66207.0
+            },
+            "Frozen16": {
+              "win": false,
+              "warm_advantage_fraction": 0.2730926935399034,
+              "cold_advantage_fraction": -0.573932864185039,
+              "noise_ns": 66207.0,
+              "required_advantage_ns": 66207.0
+            }
+          }
+        }
+      ],
+      "development-256x256-004": [
+        {
+          "stage": 1,
+          "win": false,
+          "versus": {
+            "Jacobi4": {
+              "win": false,
+              "warm_advantage_fraction": 0.1762167425914933,
+              "cold_advantage_fraction": -0.058620919201094294,
+              "noise_ns": 36360.0,
+              "required_advantage_ns": 36360.0
+            },
+            "Colored2": {
+              "win": false,
+              "warm_advantage_fraction": 0.1334161264067806,
+              "cold_advantage_fraction": 0.0051057887131797965,
+              "noise_ns": 36420.0,
+              "required_advantage_ns": 36420.0
+            },
+            "Colored4": {
+              "win": true,
+              "warm_advantage_fraction": 0.11895080751012954,
+              "cold_advantage_fraction": 0.3329869637867933,
+              "noise_ns": 11823.0,
+              "required_advantage_ns": 14018.400000000001
+            },
+            "Colored8": {
+              "win": true,
+              "warm_advantage_fraction": 0.2988359253697874,
+              "cold_advantage_fraction": 0.05029898130596267,
+              "noise_ns": 20313.0,
+              "required_advantage_ns": 20313.0
+            },
+            "Frozen8": {
+              "win": false,
+              "warm_advantage_fraction": 0.16856390820537331,
+              "cold_advantage_fraction": -0.09514236144278551,
+              "noise_ns": 13353.0,
+              "required_advantage_ns": 14854.900000000001
+            },
+            "Frozen16": {
+              "win": true,
+              "warm_advantage_fraction": 0.14741412635299314,
+              "cold_advantage_fraction": 0.29105015279525437,
+              "noise_ns": 29130.0,
+              "required_advantage_ns": 29130.0
+            }
+          }
+        }
+      ],
+      "development-256x256-005": [
+        {
+          "stage": 1,
+          "win": false,
+          "versus": {
+            "Jacobi4": {
+              "win": false,
+              "warm_advantage_fraction": 0.22710129248201297,
+              "cold_advantage_fraction": -1.188624463616535,
+              "noise_ns": 65277.0,
+              "required_advantage_ns": 65277.0
+            },
+            "Colored2": {
+              "win": false,
+              "warm_advantage_fraction": 0.3196494455578636,
+              "cold_advantage_fraction": -1.1795118367031252,
+              "noise_ns": 69780.0,
+              "required_advantage_ns": 69780.0
+            },
+            "Colored4": {
+              "win": false,
+              "warm_advantage_fraction": 0.2732693196138355,
+              "cold_advantage_fraction": -0.20410272114172584,
+              "noise_ns": 27810.0,
+              "required_advantage_ns": 27810.0
+            },
+            "Colored8": {
+              "win": false,
+              "warm_advantage_fraction": 0.2776250627928085,
+              "cold_advantage_fraction": -1.5951212998406816,
+              "noise_ns": 51540.0,
+              "required_advantage_ns": 51540.0
+            },
+            "Frozen8": {
+              "win": false,
+              "warm_advantage_fraction": 0.3422865297677587,
+              "cold_advantage_fraction": -1.1487116923057372,
+              "noise_ns": 148050.0,
+              "required_advantage_ns": 148050.0
+            },
+            "Frozen16": {
+              "win": true,
+              "warm_advantage_fraction": 0.2552087617006804,
+              "cold_advantage_fraction": 0.4897730640189897,
+              "noise_ns": 13317.0,
+              "required_advantage_ns": 22493.350000000002
+            }
+          }
+        }
+      ],
+      "development-256x256-006": [
+        {
+          "stage": 1,
+          "win": false,
+          "versus": {
+            "Jacobi4": {
+              "win": false,
+              "warm_advantage_fraction": 0.0872359678698929,
+              "cold_advantage_fraction": -0.49510531211557995,
+              "noise_ns": 27270.0,
+              "required_advantage_ns": 27270.0
+            },
+            "Colored2": {
+              "win": false,
+              "warm_advantage_fraction": 0.08485371976833785,
+              "cold_advantage_fraction": -0.03334221801022725,
+              "noise_ns": 27270.0,
+              "required_advantage_ns": 27270.0
+            },
+            "Colored4": {
+              "win": false,
+              "warm_advantage_fraction": 0.10124284062163391,
+              "cold_advantage_fraction": -0.6599777587037408,
+              "noise_ns": 27270.0,
+              "required_advantage_ns": 27270.0
+            },
+            "Colored8": {
+              "win": false,
+              "warm_advantage_fraction": 0.20441794947287673,
+              "cold_advantage_fraction": -0.6426224556048781,
+              "noise_ns": 29790.0,
+              "required_advantage_ns": 29790.0
+            },
+            "Frozen8": {
+              "win": false,
+              "warm_advantage_fraction": 0.0867831630122036,
+              "cold_advantage_fraction": -0.7430410863669195,
+              "noise_ns": 40290.0,
+              "required_advantage_ns": 40290.0
+            },
+            "Frozen16": {
+              "win": false,
+              "warm_advantage_fraction": 0.05277409727671508,
+              "cold_advantage_fraction": -0.7019507099218334,
+              "noise_ns": 27270.0,
+              "required_advantage_ns": 27270.0
+            }
+          }
+        }
+      ],
+      "development-256x256-007": [
+        {
+          "stage": 1,
+          "win": false,
+          "versus": {
+            "Jacobi4": {
+              "win": false,
+              "warm_advantage_fraction": 0.16276494684423576,
+              "cold_advantage_fraction": 0.008285989178827377,
+              "noise_ns": 37593.0,
+              "required_advantage_ns": 37593.0
+            },
+            "Colored2": {
+              "win": false,
+              "warm_advantage_fraction": 0.16014785680469062,
+              "cold_advantage_fraction": -0.007936316128996276,
+              "noise_ns": 23400.0,
+              "required_advantage_ns": 23400.0
+            },
+            "Colored4": {
+              "win": false,
+              "warm_advantage_fraction": 0.16093470015190242,
+              "cold_advantage_fraction": 0.007089133352989761,
+              "noise_ns": 23400.0,
+              "required_advantage_ns": 23400.0
+            },
+            "Colored8": {
+              "win": true,
+              "warm_advantage_fraction": 0.3045857865494651,
+              "cold_advantage_fraction": 0.3728335367299606,
+              "noise_ns": 23400.0,
+              "required_advantage_ns": 23400.0
+            },
+            "Frozen8": {
+              "win": false,
+              "warm_advantage_fraction": 0.15743740257209665,
+              "cold_advantage_fraction": -0.08956666606378126,
+              "noise_ns": 43500.0,
+              "required_advantage_ns": 43500.0
+            },
+            "Frozen16": {
+              "win": true,
+              "warm_advantage_fraction": 0.14348587734990623,
+              "cold_advantage_fraction": 0.35691419014690096,
+              "noise_ns": 25200.0,
+              "required_advantage_ns": 25200.0
+            }
+          }
+        }
+      ],
+      "development-512x512-000": [
+        {
+          "stage": 1,
+          "win": false,
+          "versus": {
+            "Jacobi4": {
+              "win": false,
+              "warm_advantage_fraction": 0.2124371987409155,
+              "cold_advantage_fraction": -0.04703858117198544,
+              "noise_ns": 84630.0,
+              "required_advantage_ns": 84630.0
+            },
+            "Colored2": {
+              "win": false,
+              "warm_advantage_fraction": 0.1135962267731381,
+              "cold_advantage_fraction": -0.6498476588748353,
+              "noise_ns": 39210.0,
+              "required_advantage_ns": 39210.0
+            },
+            "Colored4": {
+              "win": false,
+              "warm_advantage_fraction": 0.2689561601130863,
+              "cold_advantage_fraction": -0.3245410138652269,
+              "noise_ns": 82500.0,
+              "required_advantage_ns": 82500.0
+            },
+            "Colored8": {
+              "win": false,
+              "warm_advantage_fraction": 0.39781193403572684,
+              "cold_advantage_fraction": -0.35254297106509497,
+              "noise_ns": 55083.0,
+              "required_advantage_ns": 55083.0
+            },
+            "Frozen8": {
+              "win": false,
+              "warm_advantage_fraction": 0.10764213062675825,
+              "cold_advantage_fraction": -0.406892008653654,
+              "noise_ns": 57150.0,
+              "required_advantage_ns": 57150.0
+            },
+            "Frozen16": {
+              "win": true,
+              "warm_advantage_fraction": 0.09316827559861349,
+              "cold_advantage_fraction": 0.1057379701125242,
+              "noise_ns": 18630.0,
+              "required_advantage_ns": 31936.300000000003
+            }
+          }
+        }
+      ],
+      "development-512x512-001": [
+        {
+          "stage": 1,
+          "win": false,
+          "versus": {
+            "Jacobi4": {
+              "win": false,
+              "warm_advantage_fraction": 0.10072842362536644,
+              "cold_advantage_fraction": -0.3662746481278681,
+              "noise_ns": 27210.0,
+              "required_advantage_ns": 36414.25
+            },
+            "Colored2": {
+              "win": false,
+              "warm_advantage_fraction": -0.0004139584972237285,
+              "cold_advantage_fraction": -0.41930538668922135,
+              "noise_ns": 20310.0,
+              "required_advantage_ns": 32732.75
+            },
+            "Colored4": {
+              "win": false,
+              "warm_advantage_fraction": 0.05977897284679413,
+              "cold_advantage_fraction": -0.3357247175352046,
+              "noise_ns": 26340.0,
+              "required_advantage_ns": 34828.3
+            },
+            "Colored8": {
+              "win": false,
+              "warm_advantage_fraction": 0.22762240030190994,
+              "cold_advantage_fraction": -0.2238306348383713,
+              "noise_ns": 38760.0,
+              "required_advantage_ns": 42396.75
+            },
+            "Frozen8": {
+              "win": false,
+              "warm_advantage_fraction": -0.03289878340740554,
+              "cold_advantage_fraction": -0.3857293652931524,
+              "noise_ns": 20310.0,
+              "required_advantage_ns": 31703.300000000003
+            },
+            "Frozen16": {
+              "win": false,
+              "warm_advantage_fraction": -0.056969849554408626,
+              "cold_advantage_fraction": -0.36634132024976457,
+              "noise_ns": 38580.0,
+              "required_advantage_ns": 38580.0
+            }
+          }
+        }
+      ],
+      "development-512x512-002": [
+        {
+          "stage": 1,
+          "win": false,
+          "versus": {
+            "Jacobi4": {
+              "win": false,
+              "warm_advantage_fraction": 0.182436566547764,
+              "cold_advantage_fraction": -0.06722141201460996,
+              "noise_ns": 27510.0,
+              "required_advantage_ns": 32687.800000000003
+            },
+            "Colored2": {
+              "win": false,
+              "warm_advantage_fraction": 0.13322121964984204,
+              "cold_advantage_fraction": -0.1467115737138796,
+              "noise_ns": 23100.0,
+              "required_advantage_ns": 30831.800000000003
+            },
+            "Colored4": {
+              "win": false,
+              "warm_advantage_fraction": 0.16930955433811246,
+              "cold_advantage_fraction": -0.13233669881691518,
+              "noise_ns": 35067.0,
+              "required_advantage_ns": 35067.0
+            },
+            "Colored8": {
+              "win": true,
+              "warm_advantage_fraction": 0.3520537184171542,
+              "cold_advantage_fraction": 0.13482120236999207,
+              "noise_ns": 63507.0,
+              "required_advantage_ns": 63507.0
+            },
+            "Frozen8": {
+              "win": false,
+              "warm_advantage_fraction": 0.08613767940006771,
+              "cold_advantage_fraction": 0.014714971407357889,
+              "noise_ns": 16140.0,
+              "required_advantage_ns": 29243.300000000003
+            },
+            "Frozen16": {
+              "win": false,
+              "warm_advantage_fraction": 0.09619768133979059,
+              "cold_advantage_fraction": -0.193378036919558,
+              "noise_ns": 48360.0,
+              "required_advantage_ns": 48360.0
+            }
+          }
+        }
+      ],
+      "development-512x512-003": [
+        {
+          "stage": 1,
+          "win": false,
+          "versus": {
+            "Jacobi4": {
+              "win": false,
+              "warm_advantage_fraction": 0.18441561951899282,
+              "cold_advantage_fraction": -0.10892522175826824,
+              "noise_ns": 54087.0,
+              "required_advantage_ns": 54087.0
+            },
+            "Colored2": {
+              "win": false,
+              "warm_advantage_fraction": 0.1432179393136304,
+              "cold_advantage_fraction": -0.0698859954604852,
+              "noise_ns": 54087.0,
+              "required_advantage_ns": 54087.0
+            },
+            "Colored4": {
+              "win": false,
+              "warm_advantage_fraction": 0.21216864061967378,
+              "cold_advantage_fraction": 0.024459026991234114,
+              "noise_ns": 54087.0,
+              "required_advantage_ns": 54087.0
+            },
+            "Colored8": {
+              "win": true,
+              "warm_advantage_fraction": 0.3594860576327753,
+              "cold_advantage_fraction": 0.06633643525418634,
+              "noise_ns": 54087.0,
+              "required_advantage_ns": 54087.0
+            },
+            "Frozen8": {
+              "win": false,
+              "warm_advantage_fraction": 0.10842350979027407,
+              "cold_advantage_fraction": -0.12024109982635824,
+              "noise_ns": 54087.0,
+              "required_advantage_ns": 54087.0
+            },
+            "Frozen16": {
+              "win": false,
+              "warm_advantage_fraction": 0.10031539575209629,
+              "cold_advantage_fraction": -0.1480517240449971,
+              "noise_ns": 54087.0,
+              "required_advantage_ns": 54087.0
+            }
+          }
+        }
+      ],
+      "development-512x512-004": [
+        {
+          "stage": 1,
+          "win": false,
+          "versus": {
+            "Jacobi4": {
+              "win": false,
+              "warm_advantage_fraction": 0.1466942180620986,
+              "cold_advantage_fraction": -0.14954144225177882,
+              "noise_ns": 57957.0,
+              "required_advantage_ns": 57957.0
+            },
+            "Colored2": {
+              "win": false,
+              "warm_advantage_fraction": 0.14348601359634458,
+              "cold_advantage_fraction": -0.1578038388729206,
+              "noise_ns": 46533.0,
+              "required_advantage_ns": 46533.0
+            },
+            "Colored4": {
+              "win": false,
+              "warm_advantage_fraction": 0.194726157473096,
+              "cold_advantage_fraction": -0.13660246692392503,
+              "noise_ns": 18027.0,
+              "required_advantage_ns": 34358.25
+            },
+            "Colored8": {
+              "win": false,
+              "warm_advantage_fraction": 0.38922774323008763,
+              "cold_advantage_fraction": 0.027489545325291007,
+              "noise_ns": 112377.0,
+              "required_advantage_ns": 112377.0
+            },
+            "Frozen8": {
+              "win": false,
+              "warm_advantage_fraction": 0.1002868124792695,
+              "cold_advantage_fraction": -0.14674424314054363,
+              "noise_ns": 16890.0,
+              "required_advantage_ns": 30751.800000000003
+            },
+            "Frozen16": {
+              "win": true,
+              "warm_advantage_fraction": 0.11049741518993852,
+              "cold_advantage_fraction": 0.055952123311804804,
+              "noise_ns": 37710.0,
+              "required_advantage_ns": 37710.0
+            }
+          }
+        }
+      ],
+      "development-512x512-005": [
+        {
+          "stage": 1,
+          "win": false,
+          "versus": {
+            "Jacobi4": {
+              "win": false,
+              "warm_advantage_fraction": 0.1428719410757024,
+              "cold_advantage_fraction": -0.1150636672034304,
+              "noise_ns": 23163.0,
+              "required_advantage_ns": 32339.800000000003
+            },
+            "Colored2": {
+              "win": false,
+              "warm_advantage_fraction": 0.07294073972501948,
+              "cold_advantage_fraction": -0.14008154815017787,
+              "noise_ns": 23163.0,
+              "required_advantage_ns": 29900.300000000003
+            },
+            "Colored4": {
+              "win": false,
+              "warm_advantage_fraction": 0.1213121665615302,
+              "cold_advantage_fraction": 0.016618633339618067,
+              "noise_ns": 29670.0,
+              "required_advantage_ns": 31546.300000000003
+            },
+            "Colored8": {
+              "win": true,
+              "warm_advantage_fraction": 0.34592936484995784,
+              "cold_advantage_fraction": 0.06701590749377116,
+              "noise_ns": 23163.0,
+              "required_advantage_ns": 42379.75
+            },
+            "Frozen8": {
+              "win": false,
+              "warm_advantage_fraction": 0.05585793939228796,
+              "cold_advantage_fraction": -0.16073160108474835,
+              "noise_ns": 23163.0,
+              "required_advantage_ns": 29359.300000000003
+            },
+            "Frozen16": {
+              "win": false,
+              "warm_advantage_fraction": 0.0816328897105353,
+              "cold_advantage_fraction": -0.17240748144330392,
+              "noise_ns": 35880.0,
+              "required_advantage_ns": 35880.0
+            }
+          }
+        }
+      ],
+      "development-512x512-006": [
+        {
+          "stage": 1,
+          "win": false,
+          "versus": {
+            "Jacobi4": {
+              "win": false,
+              "warm_advantage_fraction": 0.08030594881759318,
+              "cold_advantage_fraction": -0.7672447667087773,
+              "noise_ns": 85800.0,
+              "required_advantage_ns": 85800.0
+            },
+            "Colored2": {
+              "win": false,
+              "warm_advantage_fraction": 0.01695739342353266,
+              "cold_advantage_fraction": -0.5778298353450404,
+              "noise_ns": 26040.0,
+              "required_advantage_ns": 33318.8
+            },
+            "Colored4": {
+              "win": false,
+              "warm_advantage_fraction": 0.0759847378851674,
+              "cold_advantage_fraction": -1.0633410852713179,
+              "noise_ns": 29577.0,
+              "required_advantage_ns": 35447.25
+            },
+            "Colored8": {
+              "win": false,
+              "warm_advantage_fraction": 0.3012030713628906,
+              "cold_advantage_fraction": -0.34009188790371453,
+              "noise_ns": 29640.0,
+              "required_advantage_ns": 46871.700000000004
+            },
+            "Frozen8": {
+              "win": false,
+              "warm_advantage_fraction": -0.006330698742616617,
+              "cold_advantage_fraction": -0.6941706703298038,
+              "noise_ns": 30213.0,
+              "required_advantage_ns": 32547.75
+            },
+            "Frozen16": {
+              "win": false,
+              "warm_advantage_fraction": -0.038985179921839315,
+              "cold_advantage_fraction": -0.5613133696090372,
+              "noise_ns": 22590.0,
+              "required_advantage_ns": 31524.800000000003
+            }
+          }
+        }
+      ],
+      "development-512x512-007": [
+        {
+          "stage": 1,
+          "win": false,
+          "versus": {
+            "Jacobi4": {
+              "win": false,
+              "warm_advantage_fraction": 0.13572600166190976,
+              "cold_advantage_fraction": -0.09496692833771012,
+              "noise_ns": 21687.0,
+              "required_advantage_ns": 34598.75
+            },
+            "Colored2": {
+              "win": false,
+              "warm_advantage_fraction": 0.1316097837213861,
+              "cold_advantage_fraction": -0.12231840584049193,
+              "noise_ns": 21687.0,
+              "required_advantage_ns": 34434.75
+            },
+            "Colored4": {
+              "win": false,
+              "warm_advantage_fraction": 0.17110044822912077,
+              "cold_advantage_fraction": -0.10958211098311467,
+              "noise_ns": 62220.0,
+              "required_advantage_ns": 62220.0
+            },
+            "Colored8": {
+              "win": true,
+              "warm_advantage_fraction": 0.3762804347690055,
+              "cold_advantage_fraction": 0.06595733338763941,
+              "noise_ns": 21687.0,
+              "required_advantage_ns": 47942.700000000004
+            },
+            "Frozen8": {
+              "win": false,
+              "warm_advantage_fraction": 0.08911518415513445,
+              "cold_advantage_fraction": -0.15932321330200033,
+              "noise_ns": 27237.0,
+              "required_advantage_ns": 32828.3
+            },
+            "Frozen16": {
+              "win": false,
+              "warm_advantage_fraction": 0.08912905741300321,
+              "cold_advantage_fraction": -0.003991681850080156,
+              "noise_ns": 31740.0,
+              "required_advantage_ns": 32828.8
+            }
+          }
+        }
+      ],
+      "development-1024x1024-000": [
+        {
+          "stage": 1,
+          "win": false,
+          "versus": {
+            "Jacobi4": {
+              "win": false,
+              "warm_advantage_fraction": 0.2761303230377221,
+              "cold_advantage_fraction": -0.49878467446797997,
+              "noise_ns": 68517.0,
+              "required_advantage_ns": 90617.90000000001
+            },
+            "Colored2": {
+              "win": false,
+              "warm_advantage_fraction": 0.16724684046490076,
+              "cold_advantage_fraction": -0.642869454873178,
+              "noise_ns": 52953.0,
+              "required_advantage_ns": 78769.5
+            },
+            "Colored4": {
+              "win": true,
+              "warm_advantage_fraction": 0.29180751404335165,
+              "cold_advantage_fraction": 0.21022246522760074,
+              "noise_ns": 52953.0,
+              "required_advantage_ns": 92623.90000000001
+            },
+            "Colored8": {
+              "win": true,
+              "warm_advantage_fraction": 0.525990970093493,
+              "cold_advantage_fraction": 0.0859886950954542,
+              "noise_ns": 52953.0,
+              "required_advantage_ns": 138384.6
+            },
+            "Frozen8": {
+              "win": false,
+              "warm_advantage_fraction": 0.12368092340371525,
+              "cold_advantage_fraction": -0.2718363646761543,
+              "noise_ns": 52953.0,
+              "required_advantage_ns": 74853.5
+            },
+            "Frozen16": {
+              "win": false,
+              "warm_advantage_fraction": 0.11009278861709755,
+              "cold_advantage_fraction": -0.6045572753829529,
+              "noise_ns": 53190.0,
+              "required_advantage_ns": 73710.55
+            }
+          }
+        }
+      ],
+      "development-1024x1024-001": [
+        {
+          "stage": 1,
+          "win": false,
+          "versus": {
+            "Jacobi4": {
+              "win": false,
+              "warm_advantage_fraction": 0.23276744509072936,
+              "cold_advantage_fraction": -0.4037796800591151,
+              "noise_ns": 17787.0,
+              "required_advantage_ns": 89631.95000000001
+            },
+            "Colored2": {
+              "win": false,
+              "warm_advantage_fraction": 0.16452731987663852,
+              "cold_advantage_fraction": -0.4761632101962197,
+              "noise_ns": 35910.0,
+              "required_advantage_ns": 82310.95000000001
+            },
+            "Colored4": {
+              "win": false,
+              "warm_advantage_fraction": 0.26294587784385953,
+              "cold_advantage_fraction": -0.37600709114646713,
+              "noise_ns": 28230.0,
+              "required_advantage_ns": 93301.90000000001
+            },
+            "Colored8": {
+              "win": false,
+              "warm_advantage_fraction": 0.5062731271080938,
+              "cold_advantage_fraction": -0.11479689053795404,
+              "noise_ns": 79800.0,
+              "required_advantage_ns": 139284.6
+            },
+            "Frozen8": {
+              "win": false,
+              "warm_advantage_fraction": 0.12760767016100336,
+              "cold_advantage_fraction": -0.44932643115134635,
+              "noise_ns": 20193.0,
+              "required_advantage_ns": 78827.55
+            },
+            "Frozen16": {
+              "win": false,
+              "warm_advantage_fraction": 0.10742358361996236,
+              "cold_advantage_fraction": -0.5025867277288911,
+              "noise_ns": 54870.0,
+              "required_advantage_ns": 77045.0
+            }
+          }
+        }
+      ],
+      "development-1024x1024-002": [
+        {
+          "stage": 1,
+          "win": false,
+          "versus": {
+            "Jacobi4": {
+              "win": false,
+              "warm_advantage_fraction": 0.21571382944746087,
+              "cold_advantage_fraction": -0.41848546246321905,
+              "noise_ns": 74337.0,
+              "required_advantage_ns": 81406.0
+            },
+            "Colored2": {
+              "win": false,
+              "warm_advantage_fraction": 0.1133239035046604,
+              "cold_advantage_fraction": -0.5065812398235832,
+              "noise_ns": 26070.0,
+              "required_advantage_ns": 72005.55
+            },
+            "Colored4": {
+              "win": false,
+              "warm_advantage_fraction": 0.13532927806192066,
+              "cold_advantage_fraction": -0.5197862105044998,
+              "noise_ns": 26070.0,
+              "required_advantage_ns": 73838.05
+            },
+            "Colored8": {
+              "win": false,
+              "warm_advantage_fraction": 0.2646375714896982,
+              "cold_advantage_fraction": -0.39877393408285106,
+              "noise_ns": 80760.0,
+              "required_advantage_ns": 86821.95000000001
+            },
+            "Frozen8": {
+              "win": false,
+              "warm_advantage_fraction": 0.09669560222439005,
+              "cold_advantage_fraction": -0.5521576964678677,
+              "noise_ns": 67620.0,
+              "required_advantage_ns": 70680.05
+            },
+            "Frozen16": {
+              "win": false,
+              "warm_advantage_fraction": 0.07368182804115544,
+              "cold_advantage_fraction": -0.4857388011477031,
+              "noise_ns": 68400.0,
+              "required_advantage_ns": 68924.05
+            }
+          }
+        }
+      ],
+      "development-1024x1024-003": [
+        {
+          "stage": 1,
+          "win": false,
+          "versus": {
+            "Jacobi4": {
+              "win": false,
+              "warm_advantage_fraction": 0.22260620268575976,
+              "cold_advantage_fraction": -0.19241704528326264,
+              "noise_ns": 11130.0,
+              "required_advantage_ns": 88213.40000000001
+            },
+            "Colored2": {
+              "win": false,
+              "warm_advantage_fraction": 0.2015533119215904,
+              "cold_advantage_fraction": -0.5672686549042594,
+              "noise_ns": 22170.0,
+              "required_advantage_ns": 85887.45000000001
+            },
+            "Colored4": {
+              "win": false,
+              "warm_advantage_fraction": 0.26475982071588205,
+              "cold_advantage_fraction": -0.44225501775568643,
+              "noise_ns": 42453.0,
+              "required_advantage_ns": 93270.95000000001
+            },
+            "Colored8": {
+              "win": true,
+              "warm_advantage_fraction": 0.5027681574342184,
+              "cold_advantage_fraction": 0.17434419997981224,
+              "noise_ns": 40470.0,
+              "required_advantage_ns": 137916.65
+            },
+            "Frozen8": {
+              "win": false,
+              "warm_advantage_fraction": 0.10827210902045434,
+              "cold_advantage_fraction": -0.6378225319404295,
+              "noise_ns": 22347.0,
+              "required_advantage_ns": 76903.0
+            },
+            "Frozen16": {
+              "win": false,
+              "warm_advantage_fraction": 0.09270535718420211,
+              "cold_advantage_fraction": -0.6587759268733667,
+              "noise_ns": 11130.0,
+              "required_advantage_ns": 75583.55
+            }
+          }
+        }
+      ],
+      "development-1024x1024-004": [
+        {
+          "stage": 1,
+          "win": false,
+          "versus": {
+            "Jacobi4": {
+              "win": false,
+              "warm_advantage_fraction": 0.27053725217441504,
+              "cold_advantage_fraction": -0.470162701819603,
+              "noise_ns": 22647.0,
+              "required_advantage_ns": 90075.95000000001
+            },
+            "Colored2": {
+              "win": false,
+              "warm_advantage_fraction": 0.18517537931162767,
+              "cold_advantage_fraction": -0.5203735435564183,
+              "noise_ns": 11610.0,
+              "required_advantage_ns": 80639.5
+            },
+            "Colored4": {
+              "win": false,
+              "warm_advantage_fraction": 0.2874302960371494,
+              "cold_advantage_fraction": -0.3914139512442929,
+              "noise_ns": 23190.0,
+              "required_advantage_ns": 92211.40000000001
+            },
+            "Colored8": {
+              "win": false,
+              "warm_advantage_fraction": 0.5169670106222775,
+              "cold_advantage_fraction": -0.148735257669384,
+              "noise_ns": 58263.0,
+              "required_advantage_ns": 136030.15
+            },
+            "Frozen8": {
+              "win": false,
+              "warm_advantage_fraction": 0.13256874678213573,
+              "cold_advantage_fraction": -0.5860761604290866,
+              "noise_ns": 53370.0,
+              "required_advantage_ns": 75749.0
+            },
+            "Frozen16": {
+              "win": false,
+              "warm_advantage_fraction": 0.12254946146742865,
+              "cold_advantage_fraction": -0.6556302756353848,
+              "noise_ns": 40947.0,
+              "required_advantage_ns": 74884.05
+            }
+          }
+        }
+      ],
+      "development-1024x1024-005": [
+        {
+          "stage": 1,
+          "win": false,
+          "versus": {
+            "Jacobi4": {
+              "win": false,
+              "warm_advantage_fraction": 0.1955279167893239,
+              "cold_advantage_fraction": -0.33853806943343684,
+              "noise_ns": 255930.0,
+              "required_advantage_ns": 255930.0
+            },
+            "Colored2": {
+              "win": false,
+              "warm_advantage_fraction": 0.09228985435930241,
+              "cold_advantage_fraction": -0.5172684731664392,
+              "noise_ns": 255930.0,
+              "required_advantage_ns": 255930.0
+            },
+            "Colored4": {
+              "win": false,
+              "warm_advantage_fraction": 0.15972594575665752,
+              "cold_advantage_fraction": -0.38358849013334917,
+              "noise_ns": 255930.0,
+              "required_advantage_ns": 255930.0
+            },
+            "Colored8": {
+              "win": false,
+              "warm_advantage_fraction": 0.38104515470122485,
+              "cold_advantage_fraction": -0.173548786945984,
+              "noise_ns": 255930.0,
+              "required_advantage_ns": 255930.0
+            },
+            "Frozen8": {
+              "win": false,
+              "warm_advantage_fraction": 0.038694358538408545,
+              "cold_advantage_fraction": -0.5451262164354327,
+              "noise_ns": 255930.0,
+              "required_advantage_ns": 255930.0
+            },
+            "Frozen16": {
+              "win": false,
+              "warm_advantage_fraction": -0.0850398178007045,
+              "cold_advantage_fraction": -0.6091415493889994,
+              "noise_ns": 255930.0,
+              "required_advantage_ns": 255930.0
+            }
+          }
+        }
+      ],
+      "development-1024x1024-006": [
+        {
+          "stage": 1,
+          "win": false,
+          "versus": {
+            "Jacobi4": {
+              "win": false,
+              "warm_advantage_fraction": 0.15636890257865868,
+              "cold_advantage_fraction": -0.5006019751205021,
+              "noise_ns": 224877.0,
+              "required_advantage_ns": 224877.0
+            },
+            "Colored2": {
+              "win": false,
+              "warm_advantage_fraction": 0.05821554312933623,
+              "cold_advantage_fraction": -0.6777631236914896,
+              "noise_ns": 230217.0,
+              "required_advantage_ns": 230217.0
+            },
+            "Colored4": {
+              "win": false,
+              "warm_advantage_fraction": 0.17860745353465166,
+              "cold_advantage_fraction": -0.5201771698893582,
+              "noise_ns": 224877.0,
+              "required_advantage_ns": 224877.0
+            },
+            "Colored8": {
+              "win": false,
+              "warm_advantage_fraction": 0.43183699414021015,
+              "cold_advantage_fraction": -0.22757315041989404,
+              "noise_ns": 224877.0,
+              "required_advantage_ns": 224877.0
+            },
+            "Frozen8": {
+              "win": false,
+              "warm_advantage_fraction": 0.07822457020511066,
+              "cold_advantage_fraction": -0.6738926132634823,
+              "noise_ns": 256947.0,
+              "required_advantage_ns": 256947.0
+            },
+            "Frozen16": {
+              "win": false,
+              "warm_advantage_fraction": 0.02603626336115443,
+              "cold_advantage_fraction": -0.45841833935461124,
+              "noise_ns": 224877.0,
+              "required_advantage_ns": 224877.0
+            }
+          }
+        }
+      ],
+      "development-1024x1024-007": [
+        {
+          "stage": 1,
+          "win": false,
+          "versus": {
+            "Jacobi4": {
+              "win": false,
+              "warm_advantage_fraction": 0.18147230608726722,
+              "cold_advantage_fraction": -0.4828688532133502,
+              "noise_ns": 78210.0,
+              "required_advantage_ns": 102992.85
+            },
+            "Colored2": {
+              "win": false,
+              "warm_advantage_fraction": 0.12859238249008453,
+              "cold_advantage_fraction": -0.4594578571356032,
+              "noise_ns": 213537.0,
+              "required_advantage_ns": 213537.0
+            },
+            "Colored4": {
+              "win": true,
+              "warm_advantage_fraction": 0.2214527279745996,
+              "cold_advantage_fraction": 0.07563395680031458,
+              "noise_ns": 78210.0,
+              "required_advantage_ns": 108281.8
+            },
+            "Colored8": {
+              "win": false,
+              "warm_advantage_fraction": 0.4076638159722966,
+              "cold_advantage_fraction": -0.038190048005291966,
+              "noise_ns": 167547.0,
+              "required_advantage_ns": 167547.0
+            },
+            "Frozen8": {
+              "win": false,
+              "warm_advantage_fraction": 0.009166990372280064,
+              "cold_advantage_fraction": 0.3230544578656835,
+              "noise_ns": 81810.0,
+              "required_advantage_ns": 85082.45000000001
+            },
+            "Frozen16": {
+              "win": false,
+              "warm_advantage_fraction": 0.002543261776118423,
+              "cold_advantage_fraction": -0.43672411319405774,
+              "noise_ns": 78210.0,
+              "required_advantage_ns": 84517.45000000001
+            }
+          }
+        }
+      ]
+    }
+  },
+  "kernel_qualified": [],
+  "admitted": [],
+  "reason": "Offline timings cannot establish selectability, competitive coverage or integrated benefit; no production admission"
+}
