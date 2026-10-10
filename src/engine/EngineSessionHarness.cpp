@@ -121,6 +121,10 @@ TEST_SUITE("EngineSession")
         CHECK(report["start"]["captured"].get<bool>());CHECK(report["end"]["captured"].get<bool>());
         CHECK(report["requested_end_tick"].get<Uint32>()-report["requested_start_tick"].get<Uint32>()==3);
         CHECK(report["post_stop_backend_totals"].contains("scope"));
+        CHECK(report["rendering_identity"]["backend"].is_string());
+        CHECK(report["rendering_identity"]["gl_identity_available"].is_boolean());
+        CHECK(report["rendering_identity"]["gl_vendor"].is_string());
+        CHECK(report["rendering_identity"]["gl_renderer"].is_string());
         // Cancellation also restores a previously configured clock, and never
         // writes incomplete evidence from the simulation owner's failure path.
         {

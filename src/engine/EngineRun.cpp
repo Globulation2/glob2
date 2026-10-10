@@ -974,6 +974,10 @@ void Engine::finishRenderedCpuDiagnostics()
     report["process_cpu_delta_ns"]=w.processValid()?Json(end.processCpuNs-start.processCpuNs):Json(nullptr);
     report["owner_cpu_delta_ns"]=w.ownerValid()?Json(end.ownerCpuNs-start.ownerCpuNs):Json(nullptr);
     report["wall_delta_ns"]=w.wallValid()?Json(end.wallNs-start.wallNs):Json(nullptr);
+    const auto rendering=globalContainer->gfx->renderingIdentity();
+    report["rendering_identity"]={{"scope","presentation context after simulation stop; outside measured interval"},
+        {"backend",rendering.backend},{"gl_identity_available",rendering.glIdentityAvailable},
+        {"gl_vendor",rendering.glVendor},{"gl_renderer",rendering.glRenderer}};
     // Whole-process/session counters, never asserted as warm-window dispatches.
     const auto backend=gradient_kernel::openCLStatus();
     report["post_stop_backend_totals"]={{"scope","process lifetime at post-stop status sampling; outside measured interval"},
@@ -1017,15 +1021,19 @@ void Engine::beginSession(Uint64 now)
 		perf.reset();
 	if (perf.output)
 	{
+		// beginSession runs before the simulation thread starts. The accessor
+		// also checks the presentation thread and current context before GL reads.
+		const auto rendering = globalContainer->runNoX ? GraphicContext::RenderingIdentity{}
+			: globalContainer->gfx->renderingIdentity();
 		std::ostringstream metadata;
 		metadata << "version=" << VERSION_MINOR << " platform=" << std::quoted(SDL_GetPlatform())
 				 << " map_w=" << gui.game.map.getW() << " map_h=" << gui.game.map.getH()
 				 << " players=" << gui.game.gameHeader.getNumberOfPlayers()
 				 << " teams=" << gui.game.mapHeader.getNumberOfTeams() << " renderer="
-				 << (globalContainer->runNoX ? "headless"
-					 : (globalContainer->gfx->getOptionFlags() & GraphicContext::USEGPU)
-						 ? "opengl"
-						 : "software")
+				 << (globalContainer->runNoX ? "headless" : rendering.backend)
+				 << " gl_identity_available=" << (rendering.glIdentityAvailable ? 1 : 0)
+				 << " gl_vendor=" << std::quoted(rendering.glVendor)
+				 << " gl_renderer=" << std::quoted(rendering.glRenderer)
 				 << " width=" << (globalContainer->runNoX ? 0 : globalContainer->gfx->getW())
 				 << " height=" << (globalContainer->runNoX ? 0 : globalContainer->gfx->getH());
 #ifdef __VERSION__

@@ -621,5 +621,10 @@ produce invalid evidence and null CPU deltas. Warm committed GPU field counts
 are scalar pipeline observations; backend dispatch and coordinator totals are
 separately sampled after stop and explicitly describe cumulative process/session
 activity outside the measured window. They do not establish warm dispatch counts.
+Normal performance metadata and the post-stop `rendering_identity` object report
+the actual backend plus `gl_identity_available`, `gl_vendor` and `gl_renderer`.
+GL strings are read only on the presentation thread while its context is current;
+otherwise they are unavailable. An `opengl` backend alone does not establish
+hardware presentation: software implementations such as llvmpipe also use GL.
 Use matching assets, checksums/replay, renderer settings and external resource
 controls for comparisons; this diagnostic alone never qualifies automatic mode.
