@@ -409,7 +409,7 @@ struct Device
     OpenCLStatus retired;
     std::uint64_t retiredSequence = 0;
     std::atomic<std::uint64_t> sequence{0}, active{0}, maximumActive{0};
-    std::atomic<std::uint64_t> noopFields{0}, threadCPUNs{0};
+    std::atomic<std::uint64_t> noopFields{0}, threadCPUNs{0},threadCPUInvalidMeasurements{0};
     std::atomic<bool> threadCPUAvailable{false};
     void evictUnusedPlanes() {
         std::lock_guard lock(cacheMutex);
@@ -426,7 +426,9 @@ struct Device
         std::scoped_lock lock(initialization, failureMutex);
         if(probed) return;
         const auto started=threadCPUClock();probe();
-        if(started) {status.threadCPUAvailable=true;status.initializationThreadCPUNs+=threadCPUClock()-started;}
+        const auto end=threadCPUClock();
+        if(started && end>=started){status.threadCPUAvailable=true;status.initializationThreadCPUNs+=end-started;}
+        else ++status.threadCPUInvalidMeasurements;
     }
     void probe()
     {
@@ -695,6 +697,7 @@ struct Runtime
         out.probeBytes=probeBudget.current.load();out.peakProbeBytes=probeBudget.peak.load();
         out.deviceBytes=shared->deviceBudget.current.load();out.peakDeviceBytes=shared->deviceBudget.peak.load();
         out.noopFields=shared->noopFields.load();out.threadCPUNs=shared->threadCPUNs.load();
+        out.threadCPUInvalidMeasurements+=shared->threadCPUInvalidMeasurements.load();
         out.threadCPUAvailable=out.threadCPUAvailable || shared->threadCPUAvailable.load();
         out.executionLanes=live.size();out.maxConcurrentBatches=shared->maximumActive.load();
         return out;
@@ -1086,11 +1089,13 @@ struct Runtime
     bool batch(std::span<const BackendRequest> input, Plan plan)
     {
         struct CPUTimer {
-            Device& device;std::uint64_t start;
-            explicit CPUTimer(Device& device):device(device),start(backendCPUDepth++ ? 0 : threadCPUClock()) {}
+            Device& device;bool outer;std::uint64_t start;
+            explicit CPUTimer(Device& device):device(device),outer(backendCPUDepth++==0),start(outer ? threadCPUClock() : 0) {}
             ~CPUTimer(){
                 --backendCPUDepth;
-                if(start) {device.threadCPUAvailable.store(true);device.threadCPUNs+=threadCPUClock()-start;}
+                if(outer){const auto end=threadCPUClock();
+                    if(start && end>=start){device.threadCPUAvailable.store(true);device.threadCPUNs+=end-start;}
+                    else ++device.threadCPUInvalidMeasurements;}
             }
         } cpuTimer{*shared};
         for(const auto& request:input) {

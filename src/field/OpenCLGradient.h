@@ -70,6 +70,7 @@ struct OpenCLStatus
     std::string deviceUUIDHex;
     unsigned deviceOrdinal = 0;
     bool deviceOrdinalKnown = false;
+    std::uint64_t threadCPUInvalidMeasurements = 0;
 };
 // Status only: never initializes or compiles. Worker-only maintenance publishes
 // readiness; required callers keep using CPU until a selected plan is ready.
