@@ -266,7 +266,8 @@ def main():
                             raise RuntimeError('simulation diverged; retained evidence, campaign stopped')
         candidates = [v['id'] for v in config['variants'] if v['id'] != config['control']]
         summary = dict(scenarios=summarize(rows, config['control'], candidates, minimum_pairs=rounds, confirmation=args.stage == 'confirm'),
-                       aggregate_cpu=aggregate_cpu(rows, config['control'], candidates))
+                       aggregate_cpu=aggregate_cpu(rows, config['control'], candidates,
+                           expected_scenarios=config['scenarios'], expected_rounds=range(rounds), minimum_pairs=rounds))
         (output / 'summary.json').write_text(json.dumps(summary, indent=2) + '\n')
 
 

@@ -29,10 +29,11 @@ def measurement(result):
 
 
 def cpu_ceiling(result):
-    """Ideal CPU-removal ceiling for observed exact required-work diagnostics.
+    """Observed completed-job CPU removal estimate, not an exact window ceiling.
 
-    This is an upper bound before GPU host work, transfers and classification,
-    never a promised improvement. Existing elapsed worker timings are excluded.
+    Phase counters report full job lifetimes at completion. Jobs straddling the
+    endpoints are not clipped to the process-CPU window, so these deltas cannot
+    establish a bound or the achievable saving after accelerator host work.
     """
     total = result.get('benchmark_run_cpu_ns', 0)
     start, end = result.get('benchmark_gradient_at_start', {}), result.get('benchmark_gradient_at_end', {})
@@ -50,9 +51,11 @@ def cpu_ceiling(result):
         return {'available': False, 'reason': 'counter interval or overlap mismatch'}
     fraction = sum(delta.values()) / total
     return {'available': True, 'process_cpu_ns': total, **delta,
-            'ideal_cpu_removal_fraction': fraction,
-            'periodic_only_can_reach_30_percent': fraction >= .30,
-            'note': 'before accelerator host work; expand measured eligibility when this ceiling is below target'}
+            'observed_cpu_removal_fraction': fraction,
+            'observed_fraction_at_least_30_percent': fraction >= .30,
+            'exact_window_ceiling_established': False, 'qualifying_evidence': False,
+            'counter_semantics': 'completed job lifetime deltas; not time intersection',
+            'note': 'approximate removal estimate before accelerator host work; boundary-straddling jobs prevent an exact ceiling'}
 
 
 def noninferiority(pairs, limit, *, draws=5000, seed=1045):
@@ -109,42 +112,97 @@ def summarize(rows, control, candidates, *, minimum_pairs=5, confirmation=False)
     return output
 
 
-def aggregate_cpu(rows, control, candidates, *, required_phases=('early', 'middle', 'late'), draws=5000):
-    """Equal-stratum CPU ratios, clustering phases/rounds inside independent maps."""
+def aggregate_cpu(rows, control, candidates, *, expected_scenarios=None,
+                  expected_rounds=None, minimum_pairs=5,
+                  required_phases=('early', 'middle', 'late'), draws=5000):
+    """Validate declared coverage, then cluster equal phase means by whole map.
+
+    Small-map control scenarios are checked against the complete protocol but
+    excluded from the primary large-map average only when declared as controls.
+    The roster must be independent of available rows, never inferred from them.
+    """
+    def unavailable(*errors):
+        return {c: {'available': False, 'errors': sorted(set(errors))} for c in candidates}
+    if not expected_scenarios or expected_rounds is None:
+        return unavailable('explicit expected scenario roster and paired rounds required')
+    rounds = list(expected_rounds)
+    if (minimum_pairs < 5 or len(rounds) < minimum_pairs or len(set(rounds)) != len(rounds)
+            or any(type(n) is not int or n < 0 for n in rounds)):
+        return unavailable('invalid or insufficient declared paired rounds')
+    variants = [control, *candidates]
+    if len(variants) != len(set(variants)):
+        return unavailable('distinct control and candidate identities required')
+    roster = {s['id']: s for s in expected_scenarios}
+    if len(roster) != len(expected_scenarios):
+        return unavailable('duplicate expected scenario identity')
+    names = ('map_id', 'group', 'phase')
+    if any(any(not s.get(k) for k in names) for s in roster.values()):
+        return unavailable('declared map, stratum and phase identities required')
+    selected = [r for r in rows if r['round'] >= 0]
+    index = {(r['scenario'], r['round'], r['variant']): r for r in selected}
+    if len(index) != len(selected):
+        return unavailable('duplicate paired observation')
+    expected = {(s, n, v) for s in roster for n in rounds for v in variants}
+    if set(index) != expected:
+        return unavailable('observed scenario/round/variant roster differs from declared protocol')
+    map_roster = {}
+    for s in roster.values():
+        if s.get('control', False):
+            continue
+        m = map_roster.setdefault(s['map_id'], {'stratum': s['group'], 'phases': {}})
+        if m['stratum'] != s['group'] or s['phase'] in m['phases']:
+            return unavailable('map appears in multiple strata or duplicate map phase')
+        m['phases'][s['phase']] = s['id']
+    if not map_roster or any(set(m['phases']) != set(required_phases) for m in map_roster.values()):
+        return unavailable('declared primary maps require every phase exactly once')
+    if any(len([m for m in map_roster.values() if m['stratum'] == g]) < 2
+           for g in {m['stratum'] for m in map_roster.values()}):
+        return unavailable('at least two declared independent maps per stratum required')
     output = {}
-    selected = [r for r in rows if r['round'] >= 0 and not r.get('control', False)]
-    if any(not r.get('map_id') or not r.get('group') for r in selected):
-        return {'available': False, 'reason': 'independent map and stratum identities required'}
     for candidate in candidates:
-        pair_index = {(r['scenario'], r['round'], r['variant']): r for r in selected}
-        maps = {}
         errors = []
-        for scenario, n in sorted({(r['scenario'], r['round']) for r in selected}):
-            b, c = pair_index.get((scenario, n, control)), pair_index.get((scenario, n, candidate))
-            if not b or not c or not b.get('valid', True) or not c.get('valid', True):
-                errors.append('missing or invalid paired sample'); continue
-            if b.get('resource_contaminated', False) or c.get('resource_contaminated', False):
-                errors.append('resource contamination prevents acceptance'); continue
-            if b['result'].get('benchmark_diagnostics_enabled') or c['result'].get('benchmark_diagnostics_enabled'):
-                errors.append('diagnostic instrumentation prevents acceptance'); continue
-            m = maps.setdefault(b['map_id'], {'stratum': b['group'], 'phases': set(), 'logs': []})
-            if m['stratum'] != b['group']: raise ValueError('map appears in multiple strata')
-            m['phases'].add(b.get('phase'))
-            m['logs'].append(math.log(measurement(c['result'])['cpu_per_tick'] / measurement(b['result'])['cpu_per_tick']))
-        if any(set(required_phases) != m['phases'] for m in maps.values()):
-            errors.append('required phases missing; absent phases cannot be treated as wins')
-        strata = {}
-        for m in maps.values(): strata.setdefault(m['stratum'], []).append(statistics.mean(m['logs']))
-        if not strata or any(len(values) < 2 for values in strata.values()):
-            errors.append('at least two independent maps per stratum required for development estimate')
+        phase_logs = {m: {p: [] for p in required_phases} for m in map_roster}
+        for sid, scenario in roster.items():
+            for n in rounds:
+                b, c = index[sid, n, control], index[sid, n, candidate]
+                if any(any(r.get(k) != scenario[k] for k in names)
+                       or bool(r.get('control', False)) != bool(scenario.get('control', False)) for r in (b, c)):
+                    errors.append('paired map/stratum/phase/control identity mismatch'); continue
+                if not b.get('valid', False) or not c.get('valid', False):
+                    errors.append('invalid paired sample'); continue
+                if b.get('resource_contaminated', False) or c.get('resource_contaminated', False):
+                    errors.append('resource contamination prevents acceptance'); continue
+                if b['result'].get('benchmark_diagnostics_enabled') or c['result'].get('benchmark_diagnostics_enabled'):
+                    errors.append('diagnostic instrumentation prevents acceptance'); continue
+                signature = ('initialChecksum', 'finalChecksum', 'ticks', 'benchmark_measured_ticks')
+                if any(k not in r['result'] for r in (b, c) for k in signature) or any(b['result'][k] != c['result'][k] for k in signature):
+                    errors.append('paired fixed simulation window identity mismatch'); continue
+                try:
+                    cpu_values = [measurement(r['result'])['cpu_per_tick'] for r in (b, c)]
+                    if any(not math.isfinite(v) or v <= 0 for v in cpu_values):
+                        raise ValueError('invalid CPU value')
+                    ratio = cpu_values[1] / cpu_values[0]
+                    if not math.isfinite(ratio) or ratio <= 0:
+                        raise ValueError('invalid ratio')
+                except (KeyError, ValueError, ZeroDivisionError):
+                    errors.append('positive finite paired CPU measurements required'); continue
+                if not scenario.get('control', False):
+                    phase_logs[scenario['map_id']][scenario['phase']].append(math.log(ratio))
         if errors:
             output[candidate] = {'available': False, 'errors': sorted(set(errors))}; continue
+        strata = {}
+        for mid, m in map_roster.items():
+            # Average repetitions within phase, phases within map, maps within
+            # stratum and finally strata. Resample only independent whole maps.
+            value = statistics.mean(statistics.mean(phase_logs[mid][p]) for p in required_phases)
+            strata.setdefault(m['stratum'], []).append(value)
         rng = random.Random(1045)
         boot = sorted(math.exp(statistics.mean(statistics.mean(rng.choices(v, k=len(v))) for v in strata.values())) for _ in range(draws))
         upper = boot[int(.95 * (draws - 1))]
         output[candidate] = {'available': True,
             'ratio': math.exp(statistics.mean(statistics.mean(v) for v in strata.values())),
             'upper_one_sided95': upper, 'cpu_target_pass': upper <= .7,
-            'independent_maps': len(maps), 'maps_per_stratum': {g: len(v) for g, v in strata.items()},
-            'note': 'equal strata; phases and repetitions clustered by independent map; held-out confirmation required'}
+            'independent_maps': len(map_roster), 'maps_per_stratum': {g: len(v) for g, v in strata.items()},
+            'rounds_per_phase': len(rounds), 'weighting': 'equal strata, maps, phases; paired rounds within phase',
+            'note': 'complete declared coverage; phases and repetitions clustered by independent map; held-out confirmation and rendered guards required'}
     return output

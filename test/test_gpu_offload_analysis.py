@@ -5,7 +5,7 @@ from gpu_offload_analysis import paired_interval, summarize, cpu_ceiling, aggreg
 class OffloadAnalysisTest(unittest.TestCase):
     def row(self, variant, n, cpu=100, wait=10):
         return dict(scenario='map-early', variant=variant, round=n, valid=True,
-                    result=dict(benchmark_measured_ticks=10, benchmark_run_cpu_ns=cpu,
+                    result=dict(initialChecksum=123, finalChecksum=456, ticks=10, benchmark_measured_ticks=10, benchmark_run_cpu_ns=cpu,
                                 benchmark_run_wall_ns=100, tick_p99_ns=20,
                                 benchmark_publication_wait_ns=wait))
 
@@ -62,8 +62,10 @@ class OffloadAnalysisTest(unittest.TestCase):
         result['benchmark_gradient_at_start'] = dict(required_seed_cpu_ns=10, required_propagation_cpu_ns=20, thread_cpu_clock_available=1, cpu_diagnostics_enabled=1)
         result['benchmark_gradient_at_end'] = dict(required_seed_cpu_ns=20, required_propagation_cpu_ns=30, thread_cpu_clock_available=1, cpu_diagnostics_enabled=1)
         ceiling = cpu_ceiling(result)
-        self.assertEqual(ceiling['ideal_cpu_removal_fraction'], .2)
-        self.assertFalse(ceiling['periodic_only_can_reach_30_percent'])
+        self.assertEqual(ceiling['observed_cpu_removal_fraction'], .2)
+        self.assertFalse(ceiling['observed_fraction_at_least_30_percent'])
+        self.assertFalse(ceiling['exact_window_ceiling_established'])
+        self.assertFalse(ceiling['qualifying_evidence'])
 
     def test_confirmation_rejects_positive_point_latency_regression(self):
         rows = [r for n in range(10) for r in (self.row('cpu', n), self.row('gpu', n, 60))]
@@ -80,10 +82,87 @@ class OffloadAnalysisTest(unittest.TestCase):
                         r = self.row(v, n, cpu)
                         r.update(scenario=m+'-'+phase, map_id=m, group='open-512', phase=phase)
                         rows.append(r)
-        summary = aggregate_cpu(rows, 'cpu', ['gpu'])['gpu']
+        roster = [dict(id=m+'-'+phase, map_id=m, group='open-512', phase=phase)
+                  for m in ('map1', 'map2') for phase in ('early', 'middle', 'late')]
+        summary = aggregate_cpu(rows, 'cpu', ['gpu'], expected_scenarios=roster, expected_rounds=range(5))['gpu']
         self.assertEqual(summary['independent_maps'], 2)
         self.assertAlmostEqual(summary['ratio'], .6)
         self.assertTrue(summary['cpu_target_pass'])
+
+    def aggregate_fixture(self):
+        roster = [dict(id=f'{group}-{m}-{phase}', map_id=f'{group}-{m}', group=group, phase=phase)
+                  for group in ('open', 'corridors') for m in (1, 2)
+                  for phase in ('early', 'middle', 'late')]
+        rows = []
+        for scenario in roster:
+            for n in range(5):
+                for variant, cpu in (('cpu', 100), ('gpu', 60)):
+                    row = self.row(variant, n, cpu)
+                    row.update(scenario=scenario['id'], **{k: scenario[k] for k in ('map_id', 'group', 'phase')})
+                    rows.append(row)
+        return roster, rows
+
+    def aggregate(self, roster, rows, rounds=range(5)):
+        return aggregate_cpu(rows, 'cpu', ['gpu'], expected_scenarios=roster,
+                             expected_rounds=rounds, draws=100)['gpu']
+
+    def test_aggregate_requires_independently_declared_roster(self):
+        _, rows = self.aggregate_fixture()
+        self.assertFalse(aggregate_cpu(rows, 'cpu', ['gpu'])['gpu']['available'])
+
+    def test_aggregate_duplicate_and_missing_pairs_cannot_pass(self):
+        roster, rows = self.aggregate_fixture()
+        for broken in (rows + [rows[0]], rows[:-1]):
+            self.assertFalse(self.aggregate(roster, broken)['available'])
+
+    def test_aggregate_missing_entire_stratum_or_phase_cannot_pass(self):
+        roster, rows = self.aggregate_fixture()
+        for broken in ([r for r in rows if r['group'] != 'corridors'],
+                       [r for r in rows if r['phase'] != 'late']):
+            self.assertFalse(self.aggregate(roster, broken)['available'])
+
+    def test_aggregate_pair_identity_must_match_protocol(self):
+        import copy
+        roster, rows = self.aggregate_fixture()
+        for key, value in (('map_id', 'different-map'), ('group', 'different-stratum'),
+                           ('phase', 'late'), ('control', True)):
+            broken = copy.deepcopy(rows); broken[1][key] = value
+            self.assertFalse(self.aggregate(roster, broken)['available'], key)
+
+    def test_aggregate_rejects_extra_round_and_insufficient_protocol(self):
+        roster, rows = self.aggregate_fixture()
+        extra = dict(rows[0], round=5)
+        self.assertFalse(self.aggregate(roster, rows + [extra])['available'])
+        self.assertFalse(self.aggregate(roster, [r for r in rows if r['round'] == 0], range(1))['available'])
+
+    def test_aggregate_controls_are_required_but_not_primary_weight(self):
+        roster, rows = self.aggregate_fixture()
+        control = dict(id='small', map_id='small', group='small-control', phase='early', control=True)
+        roster.append(control)
+        for n in range(5):
+            for variant in ('cpu', 'gpu'):
+                row = self.row(variant, n, 100);row.update(scenario='small', **{k:control[k] for k in ('map_id','group','phase','control')});rows.append(row)
+        result = self.aggregate(roster, rows)
+        self.assertTrue(result['available']);self.assertAlmostEqual(result['ratio'], .6)
+        self.assertEqual(result['independent_maps'], 4)
+        self.assertFalse(self.aggregate(roster, rows[:-1])['available'])
+
+    def test_aggregate_fixed_tick_signature_and_cpu_validity(self):
+        import copy
+        roster, rows = self.aggregate_fixture()
+        for key, value in (('finalChecksum', 999), ('benchmark_measured_ticks', 9), ('benchmark_run_cpu_ns', -1)):
+            broken = copy.deepcopy(rows);broken[1]['result'][key] = value
+            self.assertFalse(self.aggregate(roster, broken)['available'], key)
+        broken = copy.deepcopy(rows);broken[0]['result']['benchmark_run_cpu_ns']=-100;broken[1]['result']['benchmark_run_cpu_ns']=-60
+        self.assertFalse(self.aggregate(roster, broken)['available'])
+
+    def test_aggregate_exact_phase_coverage_is_predeclared(self):
+        roster, rows = self.aggregate_fixture()
+        self.assertFalse(self.aggregate(roster + [dict(roster[0])], rows)['available'])
+        self.assertFalse(self.aggregate([s for s in roster if s['phase'] != 'late'], [r for r in rows if r['phase'] != 'late'])['available'])
+        result = self.aggregate(roster, rows)
+        self.assertEqual(result['rounds_per_phase'], 5)
+        self.assertIn('phases', result['weighting'])
 
 
 if __name__ == '__main__': unittest.main()
