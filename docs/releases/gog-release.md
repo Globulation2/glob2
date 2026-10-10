@@ -111,3 +111,7 @@ GOG documents [Staging and Master](https://docs.gog.com/build-branches/),
 [offline installers](https://docs.gog.com/offline-installers/).
 
 [Release index](README.md) · [Documentation index](../README.md).
+
+For a build-only retry, select `platforms` as `windows`, `linux`, `macos`, or
+`windows-linux` to retain successful depots from earlier trials. The default is
+`all`. Staging requires `all` and the complete platform validation set.
