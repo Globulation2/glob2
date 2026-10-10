@@ -14,6 +14,9 @@ public:
     struct Admission {
         std::uint64_t requiredGeneration=0,tick=0,slackNs=0;
         bool requiredBacklog=false;
+        std::uint64_t requiredOnlyAllowanceCpuNs=0;
+        bool requiredAllowanceQualified=false;
+        std::uint64_t requiredAllowanceCalibration=0;
     };
     struct Receipt {
         std::uint64_t attemptedCallingCpuNs=0,backgroundCallingCpuNs=0;
@@ -27,6 +30,10 @@ public:
         std::uint64_t acceptedReferenceCpuNs=0,commonPreparationCpuNs=0,reservedCpuNs=0;
         OpenCLProbe::Metrics nativeMetrics;
         bool nativeMetricsAvailable=false,budgetCanceled=false,requiredCanceled=false,explicitCanceled=false;
+        std::uint64_t requiredOnlyAllowanceCpuNs=0;
+        bool requiredAllowanceQualified=false,nativeClock=false;
+        std::uint64_t ticketId=0,policyGeneration=0,requiredGeneration=0;
+        std::uint64_t requiredAllowanceCalibration=0,captureCpuLimitNs=0;
     };
     struct Clock {
         std::shared_ptr<const void> owner;
@@ -90,6 +97,7 @@ private:
             :record(std::move(captured)),clock(std::move(timer)),hooks(std::move(backend)) {
             lease.bytes=bytes;session.setExternalInitialization(true);
             receipt.reservedBytes=bytes;receipt.nativeBackend=!hooks.begin;
+            receipt.nativeClock=!clock.read;
         }
         ~State() {
             // Premature disposal/quarantine may leave this as the last holder.
@@ -195,6 +203,19 @@ public:
     const WorkloadKey& key() const noexcept {return workload;}
     std::uint64_t requiredGeneration() const noexcept {return generation;}
     std::uint64_t due() const noexcept {return deadline;}
+    RequiredCandidateReceipt candidateReceipt() const noexcept {
+        const auto r=receipt();
+        const auto& native=r.nativeMetrics;
+        const bool complete=progress==Progress::ReadyToSettle && r.exact && r.nativeBackend && r.nativeClock &&
+            (!state || (state->producer==std::this_thread::get_id() && !state->canceled.load(std::memory_order_acquire))) &&
+            r.requiredAllowanceQualified && r.requiredOnlyAllowanceCpuNs && r.requiredAllowanceCalibration && r.nativeMetricsAvailable &&
+            r.clockValid && !r.invalidClocks && !r.overshoots && !r.executionFailed && !r.quarantined &&
+            !r.budgetCanceled && !r.requiredCanceled && !r.explicitCanceled &&
+            native.dispatches && native.hostChecks && !native.invalidCpuClocks && !native.overshoots &&
+            !native.executionFailed && native.stage==OpenCLProbe::Stage::OutputWait;
+        return RequiredCandidateReceipt(std::max(r.alternativeCallingCpuNs,native.threadCpuNs),r.requiredOnlyAllowanceCpuNs,complete,
+            r.ticketId,r.policyGeneration,r.requiredGeneration,r.requiredAllowanceCalibration);
+    }
     // No event queries or allocations. Zero requests another bounded broker
     // turn, with required EDF reconsidered first; it never loops within advance.
     std::uint64_t nextAdvanceDelayNs() const noexcept {
@@ -254,9 +275,16 @@ public:
                 admission.slackNs,admission.requiredBacklog);
             if(!authorization) {payload->receipt.setupDeclined=true;return {};}
             payload->authorization=*authorization;
+            payload->receipt.requiredOnlyAllowanceCpuNs=admission.requiredOnlyAllowanceCpuNs;
+            payload->receipt.requiredAllowanceQualified=admission.requiredAllowanceQualified;
+            payload->receipt.requiredAllowanceCalibration=admission.requiredAllowanceCalibration;
             payload->receipt.acceptedReferenceCpuNs=authorization->acceptedReferenceCpuNs;
             payload->receipt.commonPreparationCpuNs=authorization->commonPreparationCpuNs;
             payload->receipt.reservedCpuNs=authorization->reservedCpuNs;
+            payload->receipt.captureCpuLimitNs=payload->record->captureLimit;
+            const auto ticket=payload->record->probeTicket();
+            payload->receipt.ticketId=ticket.id;payload->receipt.policyGeneration=ticket.generation;
+            payload->receipt.requiredGeneration=payload->record->requiredGeneration();
             const auto& record=*payload->record;
             auto costOwner=PrechargedProbeCostOwner::create(payload,record.storageCredit,payload->storageCredit);
             const auto retained=payload->receipt.reservedBytes+record.receipt().reservedBytes+

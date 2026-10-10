@@ -418,7 +418,7 @@ public:
             cleanup();
             const bool complete=producer==std::this_thread::get_id() && authorization.permitsInference() && authorization.ticketId==ticket.id &&
                 authorization.policyGeneration==ticket.generation && authorization.requiredGeneration==generation &&
-                outcome.actualProbeCpuNs>=authorization.minimumCpuNs && outcome.alternativeCpuNs>=authorization.minimumCpuNs &&
+                outcome.actualProbeCpuNs>=authorization.minimumCpuNs && outcome.alternativeCpuNs>=authorization.minimumAlternativeCpuNs &&
                 outcome.clockValid && totals.clockValid && !totals.requiresFullReservedCharge && outcome.actualProbeCpuNs>=totals.optionalCpuNs;
             outcome.actualProbeCpuNs=std::max(outcome.actualProbeCpuNs,totals.optionalCpuNs);
             bool promoted=false;

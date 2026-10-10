@@ -85,10 +85,13 @@ struct Fixture {
         driver->output=seeds;record=capture->complete(seeds,{91,1000000,true,true},receipt);REQUIRE(bool(record));
     }
     CaptureProbeReplay::Admission admission() const {return {91,1,100000000,false};}
-    std::unique_ptr<CaptureProbeReplay> begin(CaptureProbeReplay::Receipt& receipt) {
+    std::unique_ptr<CaptureProbeReplay> begin(CaptureProbeReplay::Receipt& receipt,
+        std::uint64_t allowance=0,bool calibrated=false) {
         const auto bytes=sizeof(Driver)+sizeof(Driver::Work)+256+
             (driver->original.capacity()+driver->output.capacity())*sizeof(std::uint16_t);
-        return CaptureProbeReplay::begin(std::move(record),admission(),receipt,
+        auto offered=admission();offered.requiredOnlyAllowanceCpuNs=allowance;offered.requiredAllowanceQualified=calibrated;
+        offered.requiredAllowanceCalibration=calibrated?42:0;
+        return CaptureProbeReplay::begin(std::move(record),offered,receipt,
             {timer,&Timer::read,sizeof(Timer)},{driver,bytes,&Driver::isReady,&Driver::begin,&Driver::reap});
     }
 };
@@ -390,4 +393,23 @@ TEST_CASE("replay terminal diagnostics freeze reference and distinguish budget r
         replay.reset();token.reset();CHECK(openCLProbeBytes()==baseline);
         CHECK(fixture.policy->metrics().probeCpuNs>=fixture.input.reservedCpuNs);
     }
+}
+
+TEST_CASE("injected replay cannot attest deployed native candidate coverage" * doctest::test_suite("OpenCLGradient"))
+{
+    const auto baseline=openCLProbeBytes();Fixture fixture;CaptureProbeReplay::Receipt attempted;
+    fixture.driver->provideMetrics=true;
+    auto replay=fixture.begin(attempted,15000,true);REQUIRE(bool(replay));
+    CHECK(attempted.requiredOnlyAllowanceCpuNs==15000);CHECK(attempted.requiredAllowanceQualified);
+    CHECK(attempted.requiredAllowanceCalibration==42);CHECK(attempted.captureCpuLimitNs==fixture.input.captureCpuLimitNs);
+    CHECK_FALSE(attempted.nativeClock);CHECK_FALSE(attempted.nativeBackend);
+    CHECK(replay->advance(fixture.admission())==CaptureProbeReplay::Progress::Pending);
+    CHECK(replay->advance(fixture.admission())==CaptureProbeReplay::Progress::ReadyToSettle);
+    CHECK(replay->receipt().exact);CHECK_FALSE(replay->candidateReceipt().complete());
+    // Changing later Admission does not rewrite the pre-alternative calibration.
+    auto changed=fixture.admission();changed.requiredOnlyAllowanceCpuNs=1;changed.requiredAllowanceQualified=false;
+    replay->advance(changed);CHECK(replay->receipt().requiredOnlyAllowanceCpuNs==15000);
+    auto token=replay->takeSettlement();REQUIRE(bool(token));CHECK_FALSE(replay->candidateReceipt().complete());
+    replay.reset();token.reset();CHECK(openCLProbeBytes()==baseline);
+    CHECK(fixture.policy->metrics().probeCpuNs>=fixture.input.reservedCpuNs);
 }

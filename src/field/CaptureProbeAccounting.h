@@ -22,6 +22,9 @@ public:
         std::size_t reservedBytes=0,omittedThreads=0;
         bool clockValid=true,validEnvelope=false,churn=false,cleanupComplete=false,wrapperDestroyed=false;
         bool releaseQualified=false,nativeBackend=false,inferenceEligible=false;
+        std::uint64_t candidateUpperCpuNs=0,candidateCallingCpuNs=0,requiredOnlyAllowanceCpuNs=0;
+        std::uint64_t requiredAllowanceCalibration=0,administrationCpuNs=0;
+        bool splitCandidate=false,nativeCoverageComplete=false;
     };
     struct FinishResult {
         CaptureSettlementAuthorization authorization;
@@ -149,7 +152,8 @@ public:
     }
     Receipt receipt() const noexcept {return totals;}
     template<class CaptureToken> FinishResult finishResult(const CaptureToken& token,std::uint64_t currentRequiredGeneration,
-        bool nativeBackend,bool success,bool exact,std::uint64_t elapsedNs,std::uint64_t slackNs) noexcept {
+        bool nativeBackend,bool success,bool exact,std::uint64_t elapsedNs,std::uint64_t slackNs,
+        const RequiredCandidateReceipt* candidate=nullptr) noexcept {
         FinishResult result;totals.nativeBackend=nativeBackend;
         const glob2::ProcessCpuEnvelopeResult unavailable{};
         const auto& measured=envelope?envelope->metrics():unavailable;
@@ -168,6 +172,29 @@ public:
         const auto observed=std::max(explicitCpu,captured.optionalCpuNs);
         if(overflow || measured.unknownUpperCpuNs>UINT64_MAX-observed)invalid();
         totals.totalUpperCpuNs=observed>UINT64_MAX-measured.unknownUpperCpuNs?UINT64_MAX:observed+measured.unknownUpperCpuNs;
+        totals.splitCandidate=candidate!=nullptr;totals.candidateUpperCpuNs=totals.totalUpperCpuNs;
+        totals.nativeCoverageComplete=false;totals.candidateCallingCpuNs=totals.requiredOnlyAllowanceCpuNs=0;
+        totals.requiredAllowanceCalibration=0;totals.administrationCpuNs=0;
+        bool validCandidate=false;
+        if(candidate) {
+            totals.candidateCallingCpuNs=candidate->callingCpuNs;
+            totals.requiredOnlyAllowanceCpuNs=candidate->requiredOnlyAllowanceCpuNs;
+            totals.requiredAllowanceCalibration=candidate->calibrationIdentity;
+            const bool candidateIdentity=candidate->ticketId==ticket.id && candidate->policyGeneration==ticket.generation &&
+                candidate->requiredGeneration==totals.requiredGeneration;
+            totals.nativeCoverageComplete=candidateIdentity && candidate->nativeCoverageComplete && nativeBackend;
+            auto upper=candidate->callingCpuNs;
+            const bool overflow=measured.unknownUpperCpuNs>UINT64_MAX-upper;
+            if(!overflow)upper+=measured.unknownUpperCpuNs;
+            const bool allowanceOverflow=candidate->requiredOnlyAllowanceCpuNs>UINT64_MAX-upper;
+            if(!allowanceOverflow)upper+=candidate->requiredOnlyAllowanceCpuNs;
+            validCandidate=totals.nativeCoverageComplete && candidate->callingCpuNs && candidate->requiredOnlyAllowanceCpuNs &&
+                candidate->calibrationIdentity && !overflow && !allowanceOverflow && upper<=totals.totalUpperCpuNs;
+            if(!validCandidate)invalid();
+            totals.candidateUpperCpuNs=overflow||allowanceOverflow?UINT64_MAX:upper;
+            if(upper<=totals.totalUpperCpuNs && !overflow && !allowanceOverflow)
+                totals.administrationCpuNs=totals.totalUpperCpuNs-upper;
+        }
         const bool identity=token.probeTicket().id==ticket.id && token.probeTicket().generation==ticket.generation &&
             currentRequiredGeneration==totals.requiredGeneration && token.requiredGeneration()==totals.requiredGeneration;
         totals.inferenceEligible=sameProducer() && identity && tailFinished() && tails==2 &&
@@ -177,7 +204,9 @@ public:
             nativeBackend && totals.releaseQualified && success && exact && elapsedNs && slackNs;
         result.authorization=CaptureSettlementAuthorization(totals.inferenceEligible,ticket.id,ticket.generation,
             totals.requiredGeneration,totals.totalUpperCpuNs);
-        result.outcome={totals.totalUpperCpuNs,elapsedNs,totals.totalUpperCpuNs,slackNs,exact,success,totals.inferenceEligible};
+        result.authorization.minimumAlternativeCpuNs=totals.candidateUpperCpuNs;
+        result.authorization.splitCandidate=validCandidate;
+        result.outcome={totals.candidateUpperCpuNs,elapsedNs,totals.totalUpperCpuNs,slackNs,exact,success,totals.inferenceEligible};
         result.receipt=totals;return result;
     }
     // The final envelope endpoint precedes destruction of its own metadata.
@@ -186,6 +215,10 @@ public:
     // This does not extend the empirical process tail or claim causal proof.
     static FinishResult close(std::unique_ptr<CaptureProbeAccounting>& accounting,FinishResult result,
         std::uint64_t closingStartedCpuNs=0) noexcept {
+        // A caller may conservatively add outer expense, but cannot rewrite
+        // either private authorization floor downward before closing cleanup.
+        result.outcome.actualProbeCpuNs=std::max(result.outcome.actualProbeCpuNs,result.authorization.minimumCpuNs);
+        result.outcome.alternativeCpuNs=std::max(result.outcome.alternativeCpuNs,result.authorization.minimumAlternativeCpuNs);
         if(accounting && !accounting->sameProducer()) {
             result.authorization=CaptureSettlementAuthorization(false);result.outcome.clockValid=false;
             result.receipt.clockValid=false;result.receipt.inferenceEligible=false;++result.receipt.invalidClocks;
@@ -199,13 +232,19 @@ public:
             ++result.receipt.overshoots;result.receipt.inferenceEligible=false;
             result.authorization=CaptureSettlementAuthorization(false);result.outcome.clockValid=false;
         }
-        if(!valid || cost>UINT64_MAX-result.outcome.actualProbeCpuNs || cost>UINT64_MAX-result.outcome.alternativeCpuNs) {
+        if(!valid || cost>UINT64_MAX-result.outcome.actualProbeCpuNs ||
+           (!result.authorization.splitCandidate && cost>UINT64_MAX-result.outcome.alternativeCpuNs)) {
             result.authorization=CaptureSettlementAuthorization(false);result.outcome.clockValid=false;
             result.receipt.clockValid=false;result.receipt.inferenceEligible=false;++result.receipt.invalidClocks;
         } else {
-            result.outcome.actualProbeCpuNs+=cost;result.outcome.alternativeCpuNs+=cost;
+            result.outcome.actualProbeCpuNs+=cost;
+            if(!result.authorization.splitCandidate)result.outcome.alternativeCpuNs+=cost;
             result.receipt.totalUpperCpuNs=result.outcome.actualProbeCpuNs;
+            result.receipt.candidateUpperCpuNs=result.outcome.alternativeCpuNs;
+            result.receipt.administrationCpuNs=result.outcome.actualProbeCpuNs>=result.outcome.alternativeCpuNs?
+                result.outcome.actualProbeCpuNs-result.outcome.alternativeCpuNs:0;
             result.authorization.minimumCpuNs=result.outcome.actualProbeCpuNs;
+            result.authorization.minimumAlternativeCpuNs=result.outcome.alternativeCpuNs;
         }
         return result;
     }

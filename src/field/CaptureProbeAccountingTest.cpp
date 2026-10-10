@@ -142,10 +142,34 @@ TEST_CASE("capture accounting requires native qualified identity and pre-reserve
     result=accounting->finishResult(*f.token,91,true,true,true,500000001,f.input.slackNs);
     // Synthetic envelope can test the friend gate; this is not release evidence.
     CHECK(result.authorization.permitsInference());CHECK(result.outcome.clockValid);
+    CHECK(result.outcome.alternativeCpuNs==result.outcome.actualProbeCpuNs);CHECK_FALSE(result.receipt.splitCandidate);
+    const auto floor=result.outcome.actualProbeCpuNs;
+    result.outcome.actualProbeCpuNs=0;result.outcome.alternativeCpuNs=0; // Cannot lower the private frozen floors.
+    result.receipt.splitCandidate=true; // Nor forge a debt-only cleanup mode.
     result=CaptureProbeAccounting::close(accounting,result);CHECK_FALSE(accounting);
+    CHECK(result.outcome.actualProbeCpuNs>=floor);CHECK(result.outcome.alternativeCpuNs>=floor);
     CHECK(result.outcome.actualProbeCpuNs==result.receipt.totalUpperCpuNs);
+    CHECK(result.outcome.alternativeCpuNs==result.outcome.actualProbeCpuNs);
     CHECK_FALSE(f.token->settle(result.outcome,result.authorization)); // A single pair cannot promote.
     CHECK(f.policy->metrics().promoted==0);
+}
+
+TEST_CASE("capture accounting rejects absent native coverage without forgiving optional debt" * doctest::test_suite("OpenCLGradient"))
+{
+    if(!glob2::threadCpuNs())return;
+    const auto baseline=openCLProbeBytes();Fixture f;
+    auto accounting=f.begin(true);REQUIRE(bool(accounting));running(*accounting);
+    f.owner->clocks.processCpu=1100;tails(*accounting,*f.token);REQUIRE(accounting->tailFinished());
+    RequiredCandidateReceipt absent;
+    auto result=accounting->finishResult(*f.token,91,true,true,true,500000001,f.input.slackNs,&absent);
+    CHECK(result.receipt.splitCandidate);CHECK_FALSE(result.receipt.nativeCoverageComplete);
+    CHECK_FALSE(result.authorization.permitsInference());CHECK_FALSE(result.outcome.clockValid);
+    CHECK(result.outcome.actualProbeCpuNs>0);CHECK(result.outcome.actualProbeCpuNs==result.receipt.totalUpperCpuNs);
+    result=CaptureProbeAccounting::close(accounting,result);
+    CHECK_FALSE(f.token->settle(result.outcome,result.authorization));f.token.reset();
+    CHECK(f.policy->metrics().probeCpuNs>=f.input.reservedCpuNs);CHECK(f.policy->metrics().promoted==0);
+    // Fixture still owns the charged registry; only capture/adapter credits end.
+    CHECK(openCLProbeBytes()==baseline);
 }
 
 

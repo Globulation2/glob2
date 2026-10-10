@@ -13,15 +13,39 @@ namespace gradient_kernel
 // The production accounting bridge owns qualification of complete process /
 // driver-tail coverage. Diagnostics cannot manufacture this authorization.
 class CaptureProbeAccounting;
+class CaptureProbeReplay;
+class CaptureBatchProbeReplay;
+// Only actual native replay can attest coverage. Complete optional debt is
+// independently authorized by the outer process envelope and settlement token.
+class RequiredCandidateReceipt {
+    friend class CaptureProbeReplay;
+    friend class CaptureBatchProbeReplay;
+    friend class CaptureProbeAccounting;
+    std::uint64_t callingCpuNs=0,requiredOnlyAllowanceCpuNs=0;
+    std::uint64_t ticketId=0,policyGeneration=0,requiredGeneration=0;
+    std::uint64_t calibrationIdentity=0;
+    bool nativeCoverageComplete=false;
+    RequiredCandidateReceipt(std::uint64_t cpu,std::uint64_t allowance,bool complete,
+        std::uint64_t id,std::uint64_t policyGen,std::uint64_t requiredGen,std::uint64_t calibration)
+        :callingCpuNs(cpu),requiredOnlyAllowanceCpuNs(allowance),ticketId(id),policyGeneration(policyGen),
+         requiredGeneration(requiredGen),calibrationIdentity(calibration),nativeCoverageComplete(complete) {}
+public:
+    RequiredCandidateReceipt()=default;
+    std::uint64_t nativeCallingCpuNs() const noexcept {return callingCpuNs;}
+    std::uint64_t requiredAllowanceCpuNs() const noexcept {return requiredOnlyAllowanceCpuNs;}
+    bool complete() const noexcept {return nativeCoverageComplete;}
+    std::uint64_t calibration() const noexcept {return calibrationIdentity;}
+};
 class CaptureSettlementAuthorization {
     friend class CaptureProbeAccounting;
     friend class GradientCpuCapture;
     friend class GradientCpuCaptureGroup;
     bool qualified=false;
-    std::uint64_t ticketId=0,policyGeneration=0,requiredGeneration=0,minimumCpuNs=0;
+    bool splitCandidate=false;
+    std::uint64_t ticketId=0,policyGeneration=0,requiredGeneration=0,minimumCpuNs=0,minimumAlternativeCpuNs=0;
     explicit CaptureSettlementAuthorization(bool value):qualified(value) {}
     CaptureSettlementAuthorization(bool value,std::uint64_t id,std::uint64_t policyGen,std::uint64_t requiredGen,std::uint64_t cpu)
-        :qualified(value),ticketId(id),policyGeneration(policyGen),requiredGeneration(requiredGen),minimumCpuNs(cpu) {}
+        :qualified(value),ticketId(id),policyGeneration(policyGen),requiredGeneration(requiredGen),minimumCpuNs(cpu),minimumAlternativeCpuNs(cpu) {}
 public:
     CaptureSettlementAuthorization()=default;
     bool permitsInference() const noexcept {return qualified;}
@@ -257,7 +281,7 @@ public:
             cleanup();
             const bool complete=authorization.permitsInference() && authorization.ticketId==ticket.id &&
                 authorization.policyGeneration==ticket.generation && authorization.requiredGeneration==requiredGen &&
-                outcome.actualProbeCpuNs>=authorization.minimumCpuNs && outcome.alternativeCpuNs>=authorization.minimumCpuNs && outcome.clockValid &&
+                outcome.actualProbeCpuNs>=authorization.minimumCpuNs && outcome.alternativeCpuNs>=authorization.minimumAlternativeCpuNs && outcome.clockValid &&
                 totals.clockValid && !totals.requiresFullReservedCharge &&
                 outcome.actualProbeCpuNs>=totals.optionalCpuNs;
             outcome.actualProbeCpuNs=std::max(outcome.actualProbeCpuNs,totals.optionalCpuNs);

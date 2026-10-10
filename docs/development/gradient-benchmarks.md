@@ -934,3 +934,24 @@ checks after native storage is destroyed. Budget, required-priority/deadline,
 explicit cancellation, clock invalidity, block overshoot and backend failure
 remain distinct diagnostic causes. These scalars introduce no extra CPU clock
 reads or driver queries and do not qualify incomplete or overspent pairs.
+
+Learning debt and the CPU upper bound for deployed GPU execution are separate
+receipts. Debt always includes capture, golden cloning, exact comparison,
+registry/sampler work, coordinator scheduling, both post-terminal tail intervals,
+cleanup, unknown process CPU and settlement statistics. The optional reservation
+and rolling/cumulative one-percent limits apply to that complete debt. Reaching
+the reservation before comparison invalidates the pair; changing its cost model
+does not forgive overspending.
+
+The explicit required-path receipt can only be created after real native
+completion/readback and exact comparison with valid producer clocks. It includes
+all measured native calling CPU, including fresh queue/all-kernel setup until
+separately calibrated, plus all unknown process CPU and an allowance frozen
+before execution for required-only preparation, scheduling and output commit.
+Injected backends and missing calibration cannot attest that receipt. Private
+identity-bound settlement floors independently protect complete debt and the
+required-path upper bound; final probe-only metadata destruction increases debt.
+The legacy accounting overload keeps both bounds equal. The explicit split is
+unattached until native accounting, calibration, tuning-on/off total CPU and
+promotion-enabled responsiveness gates pass; it never waives complete-mode
+overhead or deadline checks.
