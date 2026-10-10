@@ -319,6 +319,8 @@ bool Game::removeUnitAndBuildingAndFlags(int x, int y, unsigned flags)
 			if (!b->type->isVirtual)
 				map.setBuilding(b->posX, b->posY, b->type->width, b->type->height, NOGBID);
 			teams[team]->removeFromAbilitiesLists(b);
+			for (auto &entry : teams[team]->buildingsNeedingUnits)
+				entry.second.erase(std::remove(entry.second.begin(), entry.second.end(), b), entry.second.end());
 			teams[team]->buildingsTryToBuildingSiteRoom.remove(b);
 			teams[team]->buildingsWaitingForDestruction.remove(b);
 			teams[team]->buildingsToBeDestroyed.remove(b);
@@ -340,6 +342,8 @@ bool Game::removeUnitAndBuildingAndFlags(int x, int y, unsigned flags)
 					// This also removes the virtual-building list entry; do not
 					// use its iterator after removing the ability references.
 					teams[ti]->removeFromAbilitiesLists(b);
+					for (auto &entry : teams[ti]->buildingsNeedingUnits)
+						entry.second.erase(std::remove(entry.second.begin(), entry.second.end(), b), entry.second.end());
 					teams[ti]->buildingsTryToBuildingSiteRoom.remove(b);
 					teams[ti]->buildingsWaitingForDestruction.remove(b);
 					teams[ti]->buildingsToBeDestroyed.remove(b);
