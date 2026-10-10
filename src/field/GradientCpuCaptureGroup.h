@@ -44,7 +44,8 @@ public:
         std::weak_ptr<const void> source;
         Clock clock;
         WorkloadKey workload;
-        std::uint64_t costRevision=0,costVariant=0,generation=0,expiry=0,reservedCpu=0,captureLimit=0;
+        std::uint64_t costRevision=0,costVariant=0,generation=0,reservedCpu=0,captureLimit=0;
+        std::atomic<std::uint64_t> expiry{0};
         unsigned capacity=0,selectedCount=0;
         std::array<unsigned,8> selected{};
         enum class Status {Empty,Copying,Required,Complete,Canceled};
@@ -57,6 +58,7 @@ public:
         std::size_t cells=0;
         mutable std::mutex mutex;
         Receipt totals;
+        std::uint64_t backgroundCpu=0; // Stable coordinator namespace only.
         std::atomic<unsigned> workers{0};
         std::atomic<bool> closed{false},canceled{false};
         bool bound=false,handedOff=false,delegatedSettlement=false,payloadCleaned=false;
@@ -65,18 +67,19 @@ public:
         explicit Record(std::shared_ptr<CpuSavingPolicy> p,CpuSavingPolicy::ProbeTicket t,
             const Input& input,std::size_t bytes,Clock timer):rawLease(bytes),policy(std::move(p)),ticket(t),source(input.sourceIdentity),clock(std::move(timer)),
             workload(input.key),costRevision(input.revision),costVariant(input.variant),generation(input.requiredGeneration),
-            expiry(input.optionalExpiry),reservedCpu(input.reservedCpuNs),captureLimit(input.captureCpuLimitNs),
+            reservedCpu(input.reservedCpuNs),captureLimit(input.captureCpuLimitNs),expiry(input.optionalExpiry),
             capacity(input.maximumMembers),cells(input.original.size()) {totals.reservedBytes=bytes;}
         std::uint64_t readClock() noexcept {
             try {return clock.read?clock.read(clock.owner.get()):glob2::threadCpuNs();}
             catch(...) {return 0;}
         }
-        void account(std::uint64_t start,std::uint64_t end,bool oversized=false) noexcept {
+        void account(std::uint64_t start,std::uint64_t end,bool oversized=false,bool background=false) noexcept {
             std::lock_guard lock(mutex);
             if(!start || !end || end<start || end-start>UINT64_MAX-totals.optionalCpuNs) {
                 totals.clockValid=false;totals.requiresFullReservedCharge=true;++totals.invalidClocks;canceled=true;return;
             }
             totals.optionalCpuNs+=end-start;
+            if(background)backgroundCpu+=end-start; // Bounded by the total above.
             if(oversized || end-start>GradientCpuCapture::MaxBlockCpuNs || totals.optionalCpuNs>captureLimit) {
                 ++totals.overshoots;totals.requiresFullReservedCharge=true;canceled=true;
             }
@@ -100,7 +103,7 @@ public:
             if(payloadCleaned)return;payloadCleaned=true;
             std::uint64_t start=0,end=0;backgroundClock(start);
             for(auto& slot:slots){slot.original.reset();slot.golden.reset();}
-            source.reset();backgroundClock(end);account(start,end);
+            source.reset();backgroundClock(end);account(start,end,false,true);
         }
     public:
         ~Record() {
@@ -120,11 +123,16 @@ public:
         const WorkloadKey& key() const noexcept {return workload;}
         int maxCost() const noexcept {return int(workload.limit);}
         int swim() const noexcept {return int(workload.movement);}
-        std::uint64_t due() const noexcept {return expiry;}
+        std::uint64_t due() const noexcept {return expiry.load(std::memory_order_relaxed);}
         std::uint64_t requiredGeneration() const noexcept {return generation;}
         CpuSavingPolicy::ProbeTicket probeTicket() const noexcept {return ticket;}
         std::uint64_t reservedCpuNs() const noexcept {return reservedCpu;}
         Receipt receipt() const noexcept {std::lock_guard lock(mutex);return totals;}
+        // An enclosing replay bracket may subtract only this producer's owned
+        // work, never concurrent late members' aggregate optional CPU.
+        Receipt backgroundCallingReceipt() const noexcept {
+            std::lock_guard lock(mutex);auto value=totals;value.optionalCpuNs=backgroundCpu;return value;
+        }
         bool workerAliasesGone() const noexcept {return workers.load(std::memory_order_acquire)==0;}
         bool isClosed() const noexcept {return closed.load(std::memory_order_acquire);}
         bool captureValid() const noexcept {
@@ -141,7 +149,7 @@ public:
             handedOff=true;producer=std::this_thread::get_id();backgroundFloor=0;
             std::uint64_t start=0;if(!backgroundClock(start))return false;
             {std::lock_guard lock(mutex);closed=true;}
-            if(bound || canceled || currentGeneration!=generation){std::uint64_t end=0;backgroundClock(end);account(start,end);return false;}
+            if(bound || canceled || currentGeneration!=generation){std::uint64_t end=0;backgroundClock(end);account(start,end,false,true);return false;}
             std::array<unsigned,8> ready{};unsigned n=0;
             for(unsigned i=0;i<capacity;++i)if(slots[i].status.load(std::memory_order_acquire)==Status::Complete)ready[n++]=i;
             unsigned take=n>=8?8:n>=4?4:n>=2?2:n>=1?1:0;
@@ -159,7 +167,7 @@ public:
             if(valid){selected=ready;selectedCount=take;workload=key;bound=true;
                 std::lock_guard lock(mutex);totals.referenceBound=true;}
             else canceled=true;
-            std::uint64_t end=0;backgroundClock(end);account(start,end);return valid && !canceled;
+            std::uint64_t end=0;backgroundClock(end);account(start,end,false,true);return valid && !canceled;
         }
         bool adoptProducer() noexcept {
             if(!handedOff || !bound || canceled || producer!=std::this_thread::get_id())return false;
@@ -170,7 +178,7 @@ public:
             std::uint64_t start=0,end=0;if(!backgroundClock(start))return {};
             std::optional<CpuSavingPolicy::ProbeAuthorization> result;
             try {result=policy->authorizeOptionalExecution(ticket,currentGeneration,tick,slack,backlog);}catch(...) {account(0,0);}
-            if(!backgroundClock(end))return {};account(start,end);return canceled?std::optional<CpuSavingPolicy::ProbeAuthorization>{}:result;
+            if(!backgroundClock(end))return {};account(start,end,false,true);return canceled?std::optional<CpuSavingPolicy::ProbeAuthorization>{}:result;
         }
     };
     class Member {
@@ -328,13 +336,14 @@ private:
     }
 public:
     static std::unique_ptr<Member> enroll(const std::shared_ptr<Record>& record,const Input& input,Receipt& receipt) noexcept {
-        if(!record)return {};
+        if(!record || input.due<=input.tick || input.optionalExpiry<=input.tick)return {};
         const auto started=record->readClock();unsigned index=record->capacity;
         {std::lock_guard lock(record->mutex);
             if(record->closed || record->canceled || !record->same(input))return {};
             for(unsigned i=0;i<record->capacity;++i)if(record->slots[i].status==Record::Status::Empty) {
                 index=i;record->slots[i].status=Record::Status::Copying;record->slots[i].tick=input.tick;
                 record->slots[i].due=input.due;record->slots[i].preparation=input.commonPreparationCpuNs;
+                record->expiry.store(std::min(record->due(),input.optionalExpiry),std::memory_order_relaxed);
                 record->workers.fetch_add(1,std::memory_order_relaxed);break;
             }
         }

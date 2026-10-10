@@ -111,11 +111,15 @@ TEST_CASE("closing ready membership never waits for or changes a late required f
     REQUIRE(record->freezeReady(91));REQUIRE(record->adoptProducer());
     const auto selected=std::vector<std::uint16_t>(record->expected(0).begin(),record->expected(0).end());
     const auto paidBefore=record->receipt().optionalCpuNs;
+    const auto backgroundBefore=record->backgroundCallingReceipt().optionalCpuNs;
     auto lateField=original;unsigned requiredRuns=0;++requiredRuns;const auto lateCpu=fixture.propagate(lateField);
     CHECK_FALSE(late->complete(lateField,{91,lateCpu,true,true},fixture.receipt));
+    CHECK(record->receipt().optionalCpuNs>paidBefore);
+    CHECK(record->backgroundCallingReceipt().optionalCpuNs==backgroundBefore);
     CHECK(requiredRuns==1);CHECK(std::equal(selected.begin(),selected.end(),record->expected(0).begin()));
     CHECK(record->publicationDue(0)==17);CHECK(record->publicationDue(1)==17);
     auto authorization=record->authorize(91,1,100000000,false);REQUIRE(bool(authorization));
+    CHECK(record->backgroundCallingReceipt().optionalCpuNs>backgroundBefore);
     CHECK(authorization->acceptedReferenceCpuNs==cpu[0]+cpu[1]);
     CHECK(record->receipt().optionalCpuNs>paidBefore);
     CHECK_FALSE(GradientCpuCaptureGroup::takeSettlement(record));CHECK(fixture.policy->metrics().probeCpuNs==0);
@@ -131,6 +135,10 @@ TEST_CASE("group enrollment distinguishes weak controls and cancellation retains
     auto input=fixture.input;input.sourceIdentity=foreign;
     CHECK_FALSE(GradientCpuCaptureGroup::enroll(record,input,fixture.receipt));
     input=fixture.input;++input.revision;CHECK_FALSE(GradientCpuCaptureGroup::enroll(record,input,fixture.receipt));
+    input=fixture.input;input.due=input.tick;const auto calls=fixture.clock->calls;
+    CHECK_FALSE(GradientCpuCaptureGroup::enroll(record,input,fixture.receipt));CHECK(fixture.clock->calls==calls);
+    input=fixture.input;input.optionalExpiry=input.tick;
+    CHECK_FALSE(GradientCpuCaptureGroup::enroll(record,input,fixture.receipt));CHECK(fixture.clock->calls==calls);
     auto member=GradientCpuCaptureGroup::enroll(record,fixture.input,fixture.receipt);REQUIRE(bool(member));
     fixture.policy->invalidate();record->requestCancel();CHECK_FALSE(record->freezeReady(92));
     CHECK_FALSE(GradientCpuCaptureGroup::takeSettlement(record));
