@@ -1,8 +1,8 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 # Copyright (C) 2026 The Globulation 2 Authors
 #
-# Cortex ML pilot — trajectory CSV loader + gid-join utility for the BC trainer.
-# See docs/AI/cortex/ML_CONTRACT.md (the binding spec) and PILOT.md.
+# Cortex ML tools — trajectory CSV loader + gid-join utility for the BC trainer.
+# See tools/cortex-ml-infer/format.md (the binding spec) and reward.py.
 #
 # numpy-only, dependency-light, deterministic.
 
@@ -11,7 +11,7 @@ import os
 import re
 import numpy as np
 
-# Feature order is the contract's exact index order (ML_CONTRACT.md "Feature
+# Feature order is the contract's exact index order (tools/cortex-ml-infer/format.md "Feature
 # vector"). These are exactly the trace CSV columns minus the metadata
 # (tick, team, swarm_index, gid) and the label (desired).
 FEATURE_NAMES = [
@@ -66,7 +66,7 @@ def load_constants(header_path=None):
 
 
 def swarm_worker_cap(max_build_level, free_workers, consts):
-    """swarmWorkerCap(obs) per ML_CONTRACT.md step 3:
+    """swarmWorkerCap(obs) per tools/cortex-ml-infer/format.md:
     late cap if maxBuildLevel >= CAP_LIFT && freeWorkers > 0 else base cap."""
     if (max_build_level >= consts["CORTEX_SWARM_CAP_LIFT_BUILDLEVEL"]
             and free_workers > 0):

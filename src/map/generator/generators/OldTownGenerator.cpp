@@ -36,7 +36,7 @@ using namespace MapGeneration;
 // street fires over the block into the next street. The fields outside are where the food is; the
 // streets are where the fight is.
 //
-// WHY IT PLAYS WELL (docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md). Stone blocks are permanent
+// WHY IT PLAYS WELL (docs/map-generators/game-rules-for-map-design.md). Stone blocks are permanent
 // and unbuildable, so the city's shape is fixed and only the streets can change hands; crops regrow
 // near water, and the only water inside the city is the fountains, so a colony that wants to eat
 // must farm the plazas or go out to the fields. A block stops walking but not shooting, so the

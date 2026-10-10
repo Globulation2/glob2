@@ -245,11 +245,12 @@ int runMapCommand(const Cli::Request &cli)
 {
 	try
 	{
-        const auto &mode = cli.command;
-        const auto source = cli.positionals.empty() ? std::string() : cli.positionals.at(0);
+		const auto &mode = cli.command;
+		const auto source = cli.positionals.empty() ? std::string() : cli.positionals.at(0);
 		if (mode == "map inspect-package")
 		{
-			if (samePath(source, cli.get("--output")) || samePath(source, cli.get("--report-file")) ||
+			if (samePath(source, cli.get("--output")) ||
+				samePath(source, cli.get("--report-file")) ||
 				samePath(cli.get("--output"), cli.get("--report-file")))
 				throw std::invalid_argument("Input and output paths must be distinct");
 			const auto package = MapGeneration::JavaScript::Package::load(source);
@@ -285,7 +286,8 @@ int runMapCommand(const Cli::Request &cli)
 			metadata["packageHash"] = package->hash;
 			for (const auto &path : {cli.get("--output"), cli.get("--report-file")})
 				parentDirectory(path);
-			std::ofstream canonical(cli.get("--output"), std::ios::binary), report(cli.get("--report-file"), std::ios::binary);
+			std::ofstream canonical(cli.get("--output"), std::ios::binary),
+				report(cli.get("--report-file"), std::ios::binary);
 			canonical << package->canonical;
 			report << metadata.dump();
 			canonical.close();
@@ -296,11 +298,11 @@ int runMapCommand(const Cli::Request &cli)
 		}
 		if (mode == "map validate-set")
 		{
-            const auto reportPath = cli.get("--report-file");
-            const auto previewPath = cli.get("--preview");
-            const bool gallery = cli.get("--gallery") == "1";
-            const auto phase = unsigned(std::stoul(cli.get("--phase")));
-            const auto variation = unsigned(std::stoul(cli.get("--variation")));
+			const auto reportPath = cli.get("--report-file");
+			const auto previewPath = cli.get("--preview");
+			const bool gallery = cli.get("--gallery") == "1";
+			const auto phase = unsigned(std::stoul(cli.get("--phase")));
+			const auto variation = unsigned(std::stoul(cli.get("--variation")));
 			if (reportPath.empty() || samePath(source, reportPath) ||
 				samePath(source, previewPath) || samePath(reportPath, previewPath))
 				throw std::invalid_argument("Set input and output paths must be distinct");
@@ -434,9 +436,9 @@ int runMapCommand(const Cli::Request &cli)
 		}
 		if (mode == "map generators")
 		{
-            catalog(source,cli.get("--format")=="json");
-            return 0;
-        }
+			catalog(source, cli.get("--format") == "json");
+			return 0;
+		}
 		const bool render = mode == "map render";
 		const bool generate = mode == "map generate";
 		const bool importing = mode == "map import-image";
@@ -449,8 +451,8 @@ int runMapCommand(const Cli::Request &cli)
 		std::vector<std::string> directories;
 		int previewSize = 0, previewScale = Cli::DefaultPreviewScale, imageSeamWidth = -1;
 		bool sizeSpecified = false, scaleSpecified = false;
-        for (const auto &[arg, value] : cli.occurrences)
-        {
+		for (const auto &[arg, value] : cli.occurrences)
+		{
 			if (arg == "--output")
 				output = value;
 			else if (arg == "--render-max-pixels" && render)
@@ -505,7 +507,7 @@ int runMapCommand(const Cli::Request &cli)
 			else if (arg == "--data-dir")
 				directories.push_back(value);
 			else if (arg != "--generator-package")
-                throw std::invalid_argument("Unknown option for " + mode + ": " + arg);
+				throw std::invalid_argument("Unknown option for " + mode + ": " + arg);
 		}
 		if (!writesMap && !exporting && !render)
 		{

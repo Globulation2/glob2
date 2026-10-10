@@ -198,10 +198,10 @@ node browser/benchmarks/recording.cjs http://127.0.0.1:8770 artifacts/recording-
 GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons release=1 software-render-benchmark
 PROFILE_SAVE=games/gd-bigarena-long.game.gz PROFILE_RECORD=off PROFILE_SECONDS=20 \
   PROFILE_PAN=1 PROFILE_AUDIO=1 PROFILE_WARMUP=240 \
-  build/darwin/client/release/test/SoftwareRenderBenchmark -s 1920x1080
+  build/darwin/client/release/test/SoftwareRenderBenchmark --window-size 1920x1080
 PROFILE_SAVE=games/gd-bigarena-long.game.gz PROFILE_RECORD=artifacts/qualification.mp4 \
   PROFILE_SECONDS=20 PROFILE_PAN=1 PROFILE_AUDIO=1 PROFILE_WARMUP=240 \
-  build/darwin/client/release/test/SoftwareRenderBenchmark -s 1920x1080
+  build/darwin/client/release/test/SoftwareRenderBenchmark --window-size 1920x1080
 ```
 
 The browser fixture runs recorded/unrecorded pairs in both runtimes at 720p,
@@ -217,3 +217,5 @@ realtime recording with no encoder-pressure drops and less than 5% game FPS
 regression. Report devices and resolutions that miss those targets; recording
 retains the selected full resolution and frame rate. Mobile hardware and sustained
 thermal qualification require physical devices.
+
+Related: [features and content](README.md).

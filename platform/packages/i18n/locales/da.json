@@ -2910,5 +2910,9 @@
   "Presentation": "Præsentation",
   "{value0} source": "{value0}-kilde",
   "{value0} decor source": "{value0}-dekorationskilde",
-  "Your draft changed while the design was loading. Your changes were kept; try opening the design again.": "Din kladde blev ændret, mens designet blev indlæst. Dine ændringer er bevaret; prøv at åbne designet igen."
+  "Your draft changed while the design was loading. Your changes were kept; try opening the design again.": "Din kladde blev ændret, mens designet blev indlæst. Dine ændringer er bevaret; prøv at åbne designet igen.",
+  "More filters": "Flere filtre",
+  "Clear filters": "Ryd filtre",
+  "No results match these filters.": "Ingen resultater matcher disse filtre.",
+  "Results: {value0}": "Resultater: {value0}"
 }

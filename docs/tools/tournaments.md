@@ -85,7 +85,7 @@ simulation version (see [verifying a match record](../development/headless-repla
 so a job runner can probe a binary without passing it flags it may not know.
 Game and generation commands require `--output-dir DIR`; an existing
 `result.json` is rejected. Building-family composition writes JSON to stdout; see
-[portable building families](../features/building-catalogs.md#portable-building-families).
+[portable building families](../features/building-family-packages.md#portable-building-families).
 Values are separate ordinary arguments, not JSON.
 
 ```sh
@@ -148,7 +148,7 @@ Game options:
 | `--rule name=value` | Repeatable custom rules, using the names and ranges in [headless rules](../development/headless-replays.md#glob2_test_rules). New games only; effective values are recorded in `resolved.rules`. Tournament game configurations accept the equivalent `rules` object, e.g. `{"noUpgrades": 1, "peaceful": 1}` |
 | `--ticks N` | Absolute tick limit, default 90000; must exceed saved tick |
 | `--compute-threads auto\|N` | Shared executor participants including the owner; default `auto` uses reported logical CPUs; explicit N is a positive unsigned integer |
-| `--write-replay/false` | false |
+| `--write-replay` | Boolean switch; absent by default; writes `game.replay` when present |
 | `--save initial/final/every:N` | Repeatable opt-in saves; checkpoints are diagnostics, not automatic recovery |
 | `--telemetry NAME` | Repeatable checksums, team-timeline, maxima, gradient-stats ([building field statistics](../development/performance-telemetry.md#building-field-statistics)); default none |
 | `--profile NAME` | Optional isolated profile name |
@@ -304,11 +304,11 @@ outbound SSH sessions. No port or service is opened on the coordinator.
 
 ```json
 [
-  {"name":"therig.local","directory":"/home/bradley/glob2-workers","slots":1},
-  {"name":"devlaptop.local","directory":"/home/bradley/glob2-workers","slots":1},
-  {"name":"pharaoh-dev-1.local","directory":"/home/bradley/glob2-workers","slots":1},
-  {"name":"pharaoh-dev-2.local","directory":"/home/bradley/glob2-workers","slots":1},
-  {"name":"pharaoh-dev-3.local","directory":"/home/bradley/glob2-workers","slots":1}
+  {"name":"worker-1.example","directory":"/srv/glob2-workers","slots":1},
+  {"name":"worker-2.example","directory":"/srv/glob2-workers","slots":1},
+  {"name":"worker-3.example","directory":"/srv/glob2-workers","slots":1},
+  {"name":"worker-4.example","directory":"/srv/glob2-workers","slots":1},
+  {"name":"worker-5.example","directory":"/srv/glob2-workers","slots":1}
 ]
 ```
 
@@ -480,7 +480,7 @@ unsupported combinations remain reported failures rather than being filtered out
   exact map artifacts. format defaults to 1v1 for two players, otherwise ffa;
   alliances is optional. Paired effects, raw pairs, intervals, configurations and
   failure rates are exported. No automatic best-variant selection occurs.
-* `gradient_depth`: data for the [building-field depth model](../building-gradient-depth-model.md).
+* `gradient_depth`: data for the [building-field depth model](../ai/architecture/building-gradient-depth-model.md).
   `sample_games` (default 48) independently drawn games; each draws a map size
   first, then a format that size admits, then AIs and a generator, all from
   `sample_seed`. `sizes` defaults to 64x64 (duels only, since four colonies do not
@@ -554,7 +554,8 @@ python3 test/run_tests.py --filter 'TournamentCompatibility/*'
 python3 test/tournament_cli_integration.py --output artifacts/tournament-cli
 ```
 
-CI runs these with the production Linux binary and retains CLI evidence. The
+Hosted native verification runs these with the production Linux binary and retains
+CLI evidence when selected by the coverage policy. The
 opt-in `test/tournament_reliability_pilot.py --help` describes the localhost/five-host
 pilot; it intentionally kills only its own processes and simulates connection loss
 by withholding coordinator contact, without rebooting hosts or changing networking.
@@ -566,7 +567,7 @@ ignored `artifacts/` workspace or in pull-request attachments.
 ## Map-generation telemetry
 
 Structured generation results now embed `map_report`, the complete native
-[version-2 report](../map-generators/REPORT.md), including every final-map measurement
+[version-2 report](../map-generators/report-format.md), including every final-map measurement
 and the bounded, ordered internal trace. Collection is automatic, independent of
 map-file output. Failures from the generation service retain its failure report;
 argument errors and crashes may only have diagnostics. Root/chosen seeds remain
@@ -589,12 +590,12 @@ above. Both use the same production report serializer.
 ## Ending decided games early
 
 `"win_probability_permille": 970` in an experiment design turns on the optional
-[win probability](../win-probability-model.md) winning condition for its games, so a
+[win probability](../ai/architecture/win-probability-model.md) winning condition for its games, so a
 match that is already decided is not played out. It is off by default, because it
 changes the outcome that gets measured and so must be asked for.
 
-Historical calibration is described in the model guide; it has not been rerun
-against current AI and game rules. The threshold accepts 0 (off) or 501–1000.
+Calibration and its limits are described in the model guide. Evaluate the model
+against the AI and game rules in the cohort you intend to measure. The threshold accepts 0 (off) or 501–1000.
 Experiment `rules` also pass through the shared `--rule` interface. Games it ended report a `termination`
 of `win_probability` rather than `engine_end`, and `observations()` carries the
 raw termination through, so analysis can pool, exclude or compare them but can
@@ -726,4 +727,12 @@ Custom JavaScript generator jobs may use a namespaced string `generator` ID. Att
 the frozen portable package as an input named `generator-package` (or numbered
 `generator-package-*` inputs for several packages). The adapter supplies them through
 `--generator-package`; package artifacts therefore participate in job identity and
-travel with the request. See [generator authoring](../map-generators/JAVASCRIPT.md).
+travel with the request. See [generator authoring](../map-generators/javascript.md).
+
+## Related guides
+
+See [AI evaluation](../ai/README.md), [map-generator verification](../map-generators/verification.md), and the [tools index](README.md).
+
+## Related guides
+
+See [AI evaluation](../ai/README.md), [map-generator verification](../map-generators/verification.md), and the [tools index](README.md).

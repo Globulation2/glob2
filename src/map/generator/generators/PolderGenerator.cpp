@@ -37,7 +37,7 @@ using namespace MapGeneration;
 // has no seam; the villages sit on a lattice (Orbits.h). Fairness is statistical: every village sees
 // the same rows, but which dyke it stands beside is where it fell.
 //
-// WHY IT PLAYS WELL (docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md). Crops block movement and
+// WHY IT PLAYS WELL (docs/map-generators/game-rules-for-map-design.md). Crops block movement and
 // building, so a field is a wall until it is harvested and a village is the only room to build;
 // water within a few tiles of every crop keeps every field regrowing, so the map never runs short;
 // sand beside a ditch is where everyone walks. Swimming turns every ditch into a road: the second

@@ -1,8 +1,11 @@
 # A fun experiment: an explorable toroidal world
 
-Glob2's map wraps in both directions. This experiment makes that topology
-visible: the live map unfolds into a 3D torus against a star field, then returns
-to the familiar 2D view at the camera's current map position.
+## On this page
+
+- [Try it](#try-it)
+- [Rendering and interaction](#rendering-and-interaction)
+- [Performance](#performance)
+- [Validation and remaining limits](#validation-and-remaining-limits)
 
 ## Try it
 
@@ -56,7 +59,7 @@ The two views share the 2D camera's zoom. Folding shows the focused landscape on
 the ring at the size it had on the flat map, and zooming on the ring, about its
 focus, carries back to 2D. Fully zoomed out the whole ring is in view. The ring
 draws the map as the 2D view does at that zoom, including the strategic overview
-when zoomed out (see [Adaptive zoom detail](../development/reference.md#adaptive-zoom-detail)).
+when zoomed out (see [Adaptive zoom detail](../architecture/zoom-detail.md#adaptive-zoom-detail)).
 Only an automatic fold pulls back by itself, to the whole ring fitted to the
 playable area; the tilt adapts to the window.
 
@@ -163,9 +166,9 @@ A loaded-game benchmark is available with
 Run from the repository root:
 
 ```sh
-GLOB2_USER_DIR="$PWD/experiment/test-profile" SDL_AUDIODRIVER=dummy \
+GLOB2_USER_DIR="$PWD/artifacts/torus/profile" SDL_AUDIODRIVER=dummy \
   GLOB2_BENCH_MAP=maps/Oazis.map GLOB2_BENCH_FRAMES=100 \
-  build/<toolchain>/client/release/test/torus-render-benchmark -g -F -m -s 1280x800
+  build/<toolchain>/client/release/test/torus-render-benchmark --renderer gpu --no-fullscreen --mute --window-size 1280x800
 ```
 
 The benchmark compares 2D and the torus with and without clouds on the same
@@ -184,40 +187,6 @@ capture, not the current native-resolution tiled capture. On the Apple M3,
 Oazis (256 × 256) took about 130 ms per torus frame before those optimizations.
 CPU sampling identified whole-world cloud noise generation first,
 then individual resource draws and redundant state changes in sprite batching.
-Optimized runs measured 12–16 ms with clouds, depending on concurrent desktop
-load; ordinary 2D remained around 2 ms. The overview's color texture fell from
-256 MiB to 64 MiB, and cloud-noise evaluations fell from about 3.15 million to
-132,100 per frame with default settings. Geometry and the live map still update
-on every rendered frame. That capped capture received 16 texture pixels per
-tile; normal 2D retained its native detail.
-
-The GPU integration check compares all resource frames before and after atlas
-creation at three scales and two opacity levels, including frame dimensions.
-On macOS, the maximum pixel difference was zero.
-
-The map-proportioned geometry was additionally checked with synthetic 64 × 128,
-512 × 64, 64 × 512 and 128 × 128 terrain grids. Rendering, viewport fitting,
-picking and changing map dimensions passed. A 150-frame Oazis run with this
-geometry measured 16.64 ms median and 17.87 ms p95 with clouds on the M3;
-concurrent desktop load affects these rendering-only measurements.
-
-### Earlier cloud submission benchmark
-
-Clouds now sample a periodic world-coordinate field driven by elapsed time,
-so capture cadence and viewport changes do not change their position or speed.
-The existing cloud triangles are submitted in batches instead of thousands of
-individual GL calls. On an Apple M3, the standalone benchmark measured:
-
-| Cloud grid | Previous submission | Batched submission |
-| --- | ---: | ---: |
-| 128 × 128 | 26.66 ms | 2.46 ms |
-| 256 × 256 | 85.90 ms | 13.58 ms |
-| 512 × 512 | 247.05 ms | 22.37 ms |
-
-These are cloud-rendering measurements, not whole-game FPS. Maximum pixel
-channel difference was 1/255. Live samples also identified cloud submission as
-the original dominant hotspot; changing maps makes those samples unsuitable
-for a controlled frame-rate comparison.
 
 ## Validation and remaining limits
 
@@ -261,7 +230,7 @@ The OpenGL cases need a display with compatibility OpenGL; the runner opens an X
 screen on Linux. The software case renders a loaded game through software and
 checks that torus inputs stay inactive. The same binary can be built with
 `opengl=0`, including a run with
-`-g` requested to exercise the software fallback. The GPU tests cover native
+`--renderer gpu` requested to exercise the software fallback. The GPU tests cover native
 tiled pixel comparisons (including gutters and fog), progressive allocation
 fallback, cloud transitions, both navigation axes,
 picking, return to 2D, and repeated teardown and recreation. The CPU
@@ -270,13 +239,8 @@ and perspective-correct picking equivalence. No desktop input is generated.
 Browser torus checks wait for the overview transition to settle before recording
 screenshots, and cover toggling, context loss and software fallback.
 
-The fixed-axis navigation and elevated cloud layer were adapted from Giszmo's
-`feat/torus-pan` branch (through `b838f8de`), whose implementation was authored by
-Bob. This draft tracks master through merge commits. The AI trainer/refactoring
-and fullscreen-scaling work has now landed in master and is included through
-that base, with torus integration adapted to the split GUI/render modules and
-separate viewer and pending-building state. Native testing on Giszmo's Wayland
-setup is still needed to verify the combined behavior.
+The fixed-axis navigation and elevated cloud layer adapt Giszmo's `feat/torus-pan`
+work authored by Bob. Native Wayland integration still needs a platform play check.
 
 ### Navigation experiment
 
@@ -284,5 +248,5 @@ Movement-triggered folding from `feat/torus-pan` interrupted ordinary scrolling
 in playtesting, so explicit mode switching remains the default. The main-menu
 setting supports the automatic behavior for players who prefer it. Both modes
 share the fixed-axis geometry, rendering fixes and large-map optimizations.
-This preference does not require rebasing onto the separate fullscreen-scaling
-or AI trainer/refactoring PRs.
+
+Related: [features and content](README.md).

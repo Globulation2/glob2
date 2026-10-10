@@ -38,7 +38,7 @@ using namespace MapGeneration;
 // exactly at their slant (Patterns.h), the homes sit on a lattice (Orbits.h) snapped to the middle
 // of their valleys, and fairness comes from every valley being the same valley.
 //
-// WHY IT PLAYS WELL (docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md). Stone is a wall no unit
+// WHY IT PLAYS WELL (docs/map-generators/game-rules-for-map-design.md). Stone is a wall no unit
 // crosses and nobody clears, so the passes are doors worth holding, and being staggered no straight
 // road runs across the map. Crops regrow only near water and never beside sand, so the windward
 // pools decide where the fields are and the lee sand is a desert even though it is walkable: an

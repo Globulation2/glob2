@@ -21,3 +21,5 @@ The HD terrain atlas covers 272 legacy connected tiles. Catalogue materials
 (`terrain-<name>N`) ship standalone 4x frames rendered by terrain_synth.py from
 the same source the classic tiles are downsampled from; ice and cobblestone use
 native fallback.
+
+Related: [artwork production](../../../../docs/assets/artwork-workflow.md).

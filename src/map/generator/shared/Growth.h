@@ -220,6 +220,6 @@ DryStartWatering waterDrySite(TerrainSketch &sketch, const Torus &t, int site, i
 // Generated maps may not disable resource growth anywhere: no-growth zones are for
 // hand-made scenarios such as the tutorial, and validateGeneratedWorld refuses any generated
 // world that has one. Contain crops with terrain — sand, or ground the water probe cannot
-// reach — as docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md describes.
+// reach — as docs/map-generators/game-rules-for-map-design.md describes.
 
 } // namespace MapGeneration

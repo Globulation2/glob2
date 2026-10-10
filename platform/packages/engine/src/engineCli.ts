@@ -434,7 +434,7 @@ export function savedPlayers(
     });
 }
 
-/** Reads a map report (docs/map-generators/REPORT.md, schema_version 2). */
+/** Reads a map report (docs/map-generators/report-format.md, schema_version 2). */
 export function parseMapReport(text: string): ReportMap {
   const report = object(parseJson(text, 'map report'), 'map report');
   if (report['schema_version'] !== 2) {

@@ -1,2 +1,9 @@
-This package uses quilt for its patch management, see
-/usr/share/doc/quilt/README.source if you are unfamiliar with it.
+# Debian source packaging
+
+The package uses quilt for patch management. `debian/rules` includes
+`/usr/share/quilt/quilt.make`; use the quilt documentation installed by your Debian
+build environment for its patch workflow. Dependency declarations are in
+`debian/control`; the build and installation steps are in `debian/rules`.
+
+See [contributing](../CONTRIBUTING.md) and [releases](../docs/releases/README.md)
+for the repository's compatibility and distribution requirements.

@@ -14,7 +14,7 @@ start-quality score. For every generator and map seed the tournament:
    start equally often, so a start that keeps winning is the map's doing and a team index that
    keeps winning is the engine's own processing-order bias.
 
-See docs/map-generators/FAIRNESS_TOURNAMENT.md for the metrics and how to read the report.
+See docs/map-generators/fairness-tournament.md for the metrics and how to read the report.
 
   python3 tools/map_fairness_tournament.py run smoke
   python3 tools/map_fairness_tournament.py run standard --jobs 3

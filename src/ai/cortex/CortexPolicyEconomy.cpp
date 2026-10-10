@@ -407,9 +407,9 @@ namespace Cortex
 			int desired = t.maxUnitWorking;
 			if (mlSwarmCaps_)
 			{
-				// Effort-B pilot: the learned net picks the absolute cap. It applies
+				// Learned worker policy: the learned net picks the absolute cap. It applies
 				// the SAME food-starved clamp + [WORKER_MIN..swarmWorkerCap] mask +
-				// argmax internally (ML_CONTRACT.md), so we hand it the 16 features in
+				// argmax internally (tools/cortex-ml-infer/format.md), so we hand it the 16 features in
 				// the contract's exact order and use its choice directly. Integer/
 				// I16F16 → deterministic. Inn/site caps below stay hand-coded.
 				const int features[CortexNet::NUM_FEATURES] = {

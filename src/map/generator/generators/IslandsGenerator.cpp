@@ -18,7 +18,7 @@ using namespace MapGeneration;
 // coasts, and the balanced start search picks the sites. So two colonies can share an island.
 //
 // Game rules: water blocks ground units until a colony trains swimmers, so the channels are a
-// timer on first contact rather than a wall (docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md).
+// timer on first contact rather than a wall (docs/map-generators/game-rules-for-map-design.md).
 // Wheat and wood lie on the grass just above the shore, where they can regrow.
 static bool generate(Game &game, GenerationContext &context)
 {

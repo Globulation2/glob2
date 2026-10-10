@@ -78,3 +78,5 @@ GLOB2_TEST_URL=http://127.0.0.1:8770 GLOB2_ANGLE=metal node benchmarks/rendering
 Omit `GLOB2_ANGLE` to use Chromium's default hardware backend. The benchmark
 starts a custom map and samples six seconds after warmup; it is a local comparison,
 not a portable release threshold.
+
+Related: [browser guide and decision index](README.md).

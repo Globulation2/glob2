@@ -2883,5 +2883,9 @@
   "Presentation": "Tampilan",
   "{value0} source": "Sumber {value0}",
   "{value0} decor source": "Sumber dekorasi {value0}",
-  "Your draft changed while the design was loading. Your changes were kept; try opening the design again.": "Draf Anda berubah saat desain sedang dimuat. Perubahan Anda tetap tersimpan; coba buka desain kembali."
+  "Your draft changed while the design was loading. Your changes were kept; try opening the design again.": "Draf Anda berubah saat desain sedang dimuat. Perubahan Anda tetap tersimpan; coba buka desain kembali.",
+  "More filters": "Filter lainnya",
+  "Clear filters": "Hapus filter",
+  "No results match these filters.": "Tidak ada hasil yang cocok dengan filter ini.",
+  "Results: {value0}": "Hasil: {value0}"
 }

@@ -660,7 +660,7 @@ def emit_header(model, path, provenance):
     add('//')
     for line in provenance:
         add(f'// {line}')
-    add('// See docs/win-probability-model.md.')
+    add('// See docs/ai/architecture/win-probability-model.md.')
     add('#pragma once')
     add('#include "WinProbability.h"')
     add('#include <cstddef>')

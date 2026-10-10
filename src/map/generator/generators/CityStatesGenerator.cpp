@@ -76,7 +76,7 @@ using namespace MapGeneration;
 // finished world. Terrain is written straight to the map's vertices with an order-independent
 // beach pass, as Ring world does.
 //
-// GAME RULES BEHIND IT (docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md): stone can never be
+// GAME RULES BEHIND IT (docs/map-generators/game-rules-for-map-design.md): stone can never be
 // cleared, so a stone wall is permanent, which is what makes the causeway the only door; water
 // stops ground units until they swim, which makes the strait a timer rather than a wall forever;
 // wheat and wood regrow only near water, which is why every home has its lake and its fields

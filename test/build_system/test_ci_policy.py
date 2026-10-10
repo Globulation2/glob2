@@ -23,6 +23,15 @@ import ci_run_metrics as metrics
 
 
 class PolicyTest(unittest.TestCase):
+    def test_documentation_checker_is_cheap_contributor_tooling(self):
+        paths = ['INSTALL', 'AUTHORS', 'tools/README', 'debian/README.Debian', 'debian/README.source',
+                 'tools/check_docs.py', 'tools/docs/navigation.json',
+                 'tools/docs/requirements.txt', 'test/test_check_docs.py']
+        for path in paths:
+            with self.subTest(path=path):
+                self.assertTrue(policy.cheap_path(path))
+                self.assertFalse(any(selector.classify([path]).values()))
+
     def select(self, paths, labels=()):
         return policy.select(paths, labels, known=True)[0]
 

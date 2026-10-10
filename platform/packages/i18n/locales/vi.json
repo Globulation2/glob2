@@ -2883,5 +2883,9 @@
   "Presentation": "Trình bày",
   "{value0} source": "Nguồn {value0}",
   "{value0} decor source": "Nguồn đồ trang trí {value0}",
-  "Your draft changed while the design was loading. Your changes were kept; try opening the design again.": "Bản nháp của bạn đã thay đổi trong khi thiết kế đang được tải. Các thay đổi của bạn đã được giữ lại; hãy thử mở lại thiết kế."
+  "Your draft changed while the design was loading. Your changes were kept; try opening the design again.": "Bản nháp của bạn đã thay đổi trong khi thiết kế đang được tải. Các thay đổi của bạn đã được giữ lại; hãy thử mở lại thiết kế.",
+  "More filters": "Thêm bộ lọc",
+  "Clear filters": "Xóa bộ lọc",
+  "No results match these filters.": "Không có kết quả phù hợp với các bộ lọc này.",
+  "Results: {value0}": "Kết quả: {value0}"
 }

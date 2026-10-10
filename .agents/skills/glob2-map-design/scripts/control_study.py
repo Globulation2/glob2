@@ -19,7 +19,7 @@ The default --domain search samples registered playable search envelopes; --doma
 retains the full experimental domains for compatibility and extreme-value studies.
 
 Metrics: terrain shares, resource tiles, 4x4 building sites, mean fertility, generation seconds, and the
-mean of every numeric telemetry key the generator records (docs/map-generators/TELEMETRY.md): give a
+mean of every numeric telemetry key the generator records (docs/map-generators/telemetry.md): give a
 control a telemetry measure of what it places and the report shows whether it moved.
 """
 import argparse, collections, hashlib, json, math, os, random, re, statistics as st, sys, time

@@ -1,9 +1,9 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 # Copyright (C) 2026 The Globulation 2 Authors
 #
-# Cortex DECIDE pilot — trajectory CSV loader for the decision-selection BC
+# Cortex optional decision model — trajectory CSV loader for the decision-selection BC
 # trainer. Sibling of dataset.py (worker-cap). See
-# docs/AI/cortex/DECIDE_CONTRACT.md (the binding spec) and DECIDE_PILOT.md.
+# tools/cortex-ml/training.md (the binding spec) and decide_reward.py.
 #
 # numpy-only, dependency-light, deterministic.
 
@@ -11,7 +11,7 @@ import glob as _glob
 import os
 import numpy as np
 
-# Feature order is the DECIDE_CONTRACT.md exact index order (48 features). These
+# Feature order is the tools/cortex-ml/training.md exact index order (48 features). These
 # are exactly the trace CSV columns minus the metadata (tick, team) and the
 # labels (eligible_mask, chosen). NOTE the CSV repeats a `tick` column at index
 # 49 — that is the FEATURE `tick` (DECIDE idx 47), distinct from the leading
@@ -30,7 +30,7 @@ FEATURE_NAMES = [
     "algaeDiscovered", "swimLandReach", "swimWaterReach", "tick",
 ]
 NUM_FEATURES = len(FEATURE_NAMES)  # 48
-NUM_CLASSES = 18                   # decide() candidate count
+NUM_CLASSES = 18                   # model width; runtime has 19 candidates (training.md)
 LABEL_MASK = "eligible_mask"
 LABEL_CHOSEN = "chosen"
 META_NAMES = ["tick", "team"]

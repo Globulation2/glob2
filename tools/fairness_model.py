@@ -1060,7 +1060,7 @@ def fairness_distribution(model, dataset):
 # Final model
 # ---------------------------------------------------------------------------
 # Screened on the played tournament and checked by hand; `fit --mode explore`
-# is what produced this list, and `docs/map-generators/FAIRNESS_MODEL.md`
+# is what produced this list, and `docs/map-generators/fairness-model.md`
 # records why each measurement is in it.
 FINAL_FEATURES = [
     # Food a colony will actually get: the wheat no rival reaches sooner, weighted by how far
@@ -1080,7 +1080,7 @@ FINAL_FEATURES = [
     ('rivals_within_threat', 'identity'),
     # Wood standing within 48 steps, which comes out NEGATIVE. Wood is a supply, so the
     # sign is the surprise of this fit. A direct test of the obvious reading -- that forest
-    # overgrows the base -- found no effect (docs/map-generators/FAIRNESS_MODEL.md), so
+    # overgrows the base -- found no effect (docs/map-generators/fairness-model.md), so
     # this stays a measured association without a demonstrated mechanism.
     ('band48_wood_amount', 'identity'),
 ]
@@ -1338,7 +1338,7 @@ def emit_header(model, path, provenance):
 // Fitted on {provenance['games']} free-for-all games over {provenance['maps']} randomly drawn maps,
 // the same AI in every slot ({', '.join(provenance['ais'])}), at {provenance['revision']}.
 // Cross-validated McFadden R2 {provenance['cv_r2']:.4f}, {provenance['train_r2']:.4f} in sample.
-// See docs/map-generators/FAIRNESS_MODEL.md.
+// See docs/map-generators/fairness-model.md.
 #pragma once
 #include "Ressource.h"
 #include "StartQuality.h"

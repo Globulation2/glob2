@@ -1,8 +1,27 @@
-This directory contains the source of mksprite, a utility to create sprite for glob2 from a bunch of images. This utility requires Magick++, freely available at:
-http://studio.imagemagick.org/Magick++/
+# Contributor tools
 
-Steph, 2 Jan 2005
+This directory contains build, content-production, evaluation, and release helpers.
+Start with the [tool guide](../docs/tools/README.md) or the relevant topic in the
+[documentation index](../docs/README.md). Run commands from the repository root
+unless a tool's guide says otherwise.
 
-world_atlas.py bakes real geography (Natural Earth coasts, lakes, rivers, deserts and ranges; the
-Köppen-Geiger climate classes) into src/map/generator/shared/WorldAtlasData.cpp for the Continents
-map generator. See docs/map-generators/WORLD_ATLAS.md.
+## Common workflows
+
+- `dev_build.py`: routine development builds; see [development](../docs/development/README.md).
+- `check_docs.py`: Markdown links and navigation; see [documentation maintenance](../docs/development/documentation.md).
+- `tournaments/`: local and SSH evaluation; see [distributed tournaments](../docs/tools/tournaments.md).
+- `artwork/` and `unit-animation/`: reviewed asset inputs and rendering; see [assets](../docs/assets/README.md).
+- `music/`: soundtrack production and validation; see [music pipeline](../docs/assets/music-pipeline.md).
+- `world_atlas.py`: geography inputs for the Continents generator; see [world atlas](../docs/map-generators/world-atlas.md).
+- `release/`: package helpers; see [releases](../docs/releases/README.md).
+
+## Legacy sprite utility
+
+`mksprite.cpp` packs images into sprite sheets. Its explicit `scons mksprite` target
+uses `Magick++-config` from an installed ImageMagick development environment, as
+declared in `tools/SConscript`. Current artwork workflows are documented under
+[assets](../docs/assets/README.md).
+
+This extensionless README is retained because source-distribution packaging names
+it explicitly. Contributor dependencies are pinned in `requirements-dev.txt`;
+individual workflows document isolated or hardware-specific environments.

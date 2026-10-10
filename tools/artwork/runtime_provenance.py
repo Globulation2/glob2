@@ -25,9 +25,11 @@ def render():
         original = recipe.startswith('recovered original')
         authored = recipe.startswith('hand-authored SVG')
         procedural = recipe.startswith('procedural terrain')
+        resource = recipe.startswith('procedural resource painter')
         category = ('Recovered original' if original
                     else 'Hand-authored vector' if authored
-                    else 'Procedural terrain synthesis' if procedural else CATEGORIES[recipe])
+                    else 'Procedural terrain synthesis' if procedural
+                    else 'Procedural resource painting' if resource else CATEGORIES[recipe])
         sources = frame.get('sources', [])
         if original or authored:
             require(sources, 'Missing provenance sources: ' + frame['id'])
@@ -62,7 +64,7 @@ def render():
     lines += ['| %s | %d |' % item for item in sorted(counts.items())]
     lines += ['', f'Total: **{len(rows)} frames**. Source/output SHA-256 hashes, native sizes and selected layers are retained in '
               '[the pack manifest](../../../data/highres/v1/manifest.json). '
-              'See [original export recipes](../../../datasrc/gfx/RECOVERED-RUNTIME.md) for limitations.', '',
+              'See [original export recipes](../../../datasrc/gfx/recovered-runtime.md) for limitations.', '',
               '| Frame | Source category | Logical canvas | Native canvas/source | Recipe |',
               '| --- | --- | --- | --- | --- |']
     lines += ['| `%s` | %s | %s | %s | %s |' % row for row in sorted(rows)]

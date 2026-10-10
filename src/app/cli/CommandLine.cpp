@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "CommandLine.h"
 #include "RecordingDefaults.h"
-#include "../../map/preview/MapRender.h"
+#include "MapRender.h"
 #ifdef HAVE_CONFIG_H
 #include <glob2/BuildConfig.h>
 #endif
@@ -1123,8 +1123,10 @@ std::string completion(const std::string &shell)
 	}
 	else if (shell == "fish")
 	{
-		out << "function __glob2_path\n  set -l path ''\n  set -l words (commandline -opc)\n  for "
-			   "word in $words[2..-1]\n    switch \"$path|$word\"\n";
+		out << "function __glob2_path\n  set -l path ''\n  set -l words (commandline -opc)\n"
+			   "  if test (count $words) -ge 2; and test \"$words[2]\" = help\n"
+			   "    set -e words[2]\n  end\n  for word in $words[2..-1]\n    switch "
+			   "\"$path|$word\"\n";
 		for (const auto &[parent, kids] : children)
 			for (const auto &kid : kids)
 				out << "      case '" << parent << "|" << kid << "'\n        set path '" << parent

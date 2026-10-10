@@ -2883,5 +2883,9 @@
   "Presentation": "表示",
   "{value0} source": "{value0}のソース",
   "{value0} decor source": "{value0}の装飾ソース",
-  "Your draft changed while the design was loading. Your changes were kept; try opening the design again.": "デザインの読み込み中に下書きが変更されました。変更内容は保持されています。デザインをもう一度開いてみてください。"
+  "Your draft changed while the design was loading. Your changes were kept; try opening the design again.": "デザインの読み込み中に下書きが変更されました。変更内容は保持されています。デザインをもう一度開いてみてください。",
+  "More filters": "その他のフィルター",
+  "Clear filters": "フィルターをクリア",
+  "No results match these filters.": "これらのフィルターに一致する結果はありません。",
+  "Results: {value0}": "結果: {value0}"
 }

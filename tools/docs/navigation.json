@@ -1,0 +1,33 @@
+{
+  "categories": [
+    "development",
+    "architecture",
+    "features",
+    "ai",
+    "map-generators",
+    "assets",
+    "scripting",
+    "multiplayer",
+    "browser",
+    "mobile",
+    "hosting",
+    "releases",
+    "tools"
+  ],
+  "excluded": {
+    "test/fixtures/**": "Fixture descriptions and embedded example links.",
+    "test/data/**": "Test inputs.",
+    "test/maxima/fixtures/**": "Fixture descriptions.",
+    "fastlane/**": "Store metadata, maintained by release workflows.",
+    "browser/tests/fixtures/**": "Fixture regeneration instructions; reviewed with browser fixture contracts.",
+    "third_party/*/**": "Upstream-owned documentation."
+  },
+  "structure_exempt": {
+    "docs/assets/high-resolution/ASSET-PROVENANCE.md": "Generator-owned inventory; validate with runtime_provenance.py --check.",
+    "docs/mobile/privacy-policy.md": "Published policy; preserve wording and path.",
+    "docs/mobile/amazon-privacy-policy.md": "Published policy; preserve wording and path.",
+    ".agents/skills/**": "Skill format is owned by agent tooling."
+  },
+  "reachability_exempt": {},
+  "ignored_targets": {}
+}

@@ -39,7 +39,7 @@ using namespace MapGeneration;
 // lobby keeping the best-scoring of several seeds and from the shared backstops at the end of
 // generate(). Newer generators design structure first and texture second; this one is all texture.
 //
-// GAME RULES IT LEANS ON (docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md):
+// GAME RULES IT LEANS ON (docs/map-generators/game-rules-for-map-design.md):
 // - Grass may not touch water, so Map::layBeaches turns every grass corner beside water, and every
 //   water corner beside grass, into sand after painting. Heavy smoothing leaves long coasts and so
 //   a lot of that forced sand.

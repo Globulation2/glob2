@@ -43,7 +43,7 @@ using namespace MapGeneration;
 // and rock islets of stone among them; one rock islet lies beside every colony's islands, so stone is
 // a short swim away and never a long one.
 //
-// WHY IT PLAYS WELL (docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md). Buildings need pure grass and
+// WHY IT PLAYS WELL (docs/map-generators/game-rules-for-map-design.md). Buildings need pure grass and
 // crops spread only onto pure grass, so the sand ring keeps every plot open however the fields grow;
 // pure water stops a unit that cannot swim, so the straits between islands are a timing rule (the
 // pools are the clock) and a swimming army lands on a beach with no forward base behind it; a tower

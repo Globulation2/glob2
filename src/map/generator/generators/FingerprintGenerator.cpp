@@ -36,7 +36,7 @@ using namespace MapGeneration;
 // seeds. Where the bands close a colony off, the cheapest way through is opened as a ford (or a
 // gap cut in the stone), so every colony can be walked to from the first.
 //
-// WHY IT PLAYS WELL (docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md). Wheat and wood regrow only
+// WHY IT PLAYS WELL (docs/map-generators/game-rules-for-map-design.md). Wheat and wood regrow only
 // near water, so a water fingerprint is fertile everywhere and the fight is over the corridors, not
 // the fields; a stone fingerprint is the opposite, its pools the only fertile ground. Corridors that
 // fork and dead-end give ambushes and cul-de-sacs no grid has, and reads as country rather than as

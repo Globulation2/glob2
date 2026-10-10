@@ -44,7 +44,7 @@ Map output is gzip-compressed; `.gz` is appended unless present. Loading a bare
 `.map` or `.game` path prefers its existing `.gz` sibling. A preview is the lobby's
 overview representation; `map render` exports the full game view. Categorical
 image import/export preserves geography and colony markers, not a complete save.
-See the [map CLI guide](../map-generators/CLI.md) for configuration and image rules.
+See the [map CLI guide](../map-generators/cli.md) for configuration and image rules.
 
 Structured map studies retain candidate-search, rotations, and job artifacts:
 
@@ -115,7 +115,7 @@ engine-affecting tuning/diagnostic environment overrides. Their explicit options
 control match setup and telemetry. Developer random-game and repeated-game modes
 retain their existing environment-driven diagnostics; their command help identifies
 applicable variables. For profiles, tuning, and platform environment switches, see
-[the development reference](../development/reference.md) and the relevant domain guide.
+[development environment](../development/README.md) and the relevant domain guide.
 
 Native, browser, and mobile builds share command definitions. Capability metadata
 identifies platform restrictions; native skin exporting requires OpenGL. Help and

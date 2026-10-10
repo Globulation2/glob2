@@ -3,7 +3,7 @@ import { statusLabel } from '../i18n.tsx';
 import { t, useLocale, RichMessage } from '../i18n.tsx';
 /* DOM nodes are present during pointer events; model catalogs are nonempty. */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import {
   SWARM_MESHES,
   type SwarmMeshId,
@@ -22,6 +22,7 @@ import { PatternDialog } from '../skins/PatternDialog.tsx';
 import { applyCoverage } from '../skins/paint.ts';
 import { useSkinDocument } from '../skins/useSkinDocument.ts';
 import { useToolboxLayout } from '../skins/useToolboxLayout.ts';
+import { SkinWorkspaceContext } from '../skins/workspace.ts';
 import { SkinLibrary } from '../skins/SkinLibrary.tsx';
 import { ColorPicker } from '../skins/ColorPicker.tsx';
 import { CopyPaintDialog } from '../skins/CopyPaintDialog.tsx';
@@ -54,6 +55,10 @@ function SkinStudio() {
     new URLSearchParams(window.location.search).has('purchase') ? 'shop' : null,
   );
   const [library, setLibrary] = useState(account?.kind === 'registered');
+  const setWorkspace = useContext(SkinWorkspaceContext);
+  useEffect(() => {
+    setWorkspace(!library);
+  }, [library, setWorkspace]);
   const [deleting, setDeleting] = useState<SkinDesign | null>(null);
   const [collectionBusy, setCollectionBusy] = useState(false);
   const [dismissedConflict, setDismissedConflict] = useState<string | null>(null);
@@ -247,7 +252,7 @@ function SkinStudio() {
   };
   return (
     <div
-      className="skin-studio"
+      className={library ? 'skin-library-shell' : 'skin-studio'}
       data-toolbox={collapsed ? 'collapsed' : 'expanded'}
       data-mode={finalView ? 'final' : 'paint'}
     >

@@ -60,6 +60,7 @@ TEST_SUITE("CommandLine")
 			{"play", "--unknown"},
 			{"play", "extra"},
 			{"play", "--window-size", "1x2junk"},
+			{"map", "preview", "x", "--output", "a.png", "--preview", "b.png"},
 			{"play", "--username"},
 			{"play", "--fullscreen", "--no-fullscreen"},
 			{"play", "--fullscreen=true"},

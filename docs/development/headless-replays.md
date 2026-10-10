@@ -75,7 +75,7 @@ reservations; Cortex releases matching rejected action latches. Runtime, Maxima,
 Cabino and Cortex discard queued commands whose selected target incarnation has
 disappeared. These fixes can change trajectories. Replay/network acceptance remains governed by the engine's
 replay and simulation version gates. See the
-[AI engine contract](reference.md#ai-observations-and-delayed-orders).
+[AI engine contract](../architecture/ai-observations.md#ai-observations-and-delayed-orders).
 
 Headless runs and scripted `dev random-games --display` runs default autosaving off for that
 process. Normal-play preferences are preserved. Use explicit initial saves or
@@ -92,7 +92,7 @@ raw file of the same name exist, and legacy raw `.map`/`.game` files (no `.gz`
 suffix) keep loading unchanged. Replays are unaffected and stay uncompressed.
 
 For optional JavaScript controllers and map scripts, see
-[JavaScript scripting](javascript.md).
+[JavaScript scripting](../scripting/javascript.md).
 
 Format 149 preserves embedded artwork, vertex terrain, scheduled building fields
 and typed delayed growth proposals. The loader also distinguishes released
@@ -243,7 +243,7 @@ verification results. Headless `online turn-client` also accepts this setting an
 reports sizing in its result telemetry.
 
 `match verify` replays a relay match record (the format is in the
-[turn protocol](../multiplayer/turn-protocol.md#match-record)) headlessly and judges the
+[turn protocol](../multiplayer/turn-verification.md#match-record)) headlessly and judges the
 checksums the live clients reported. Input and output paths are relative to the caller’s working directory on every
 platform, including macOS bundles. `--output-dir` selects the structured job directory.
 
@@ -280,7 +280,7 @@ engine or I/O failure; both write a `result.json` with `status` and `diagnostic`
 `info sim-version --format json` prints this build's simulation version as JSON,
 `{"versionMinor": ..., "netProtocol": ..., "dataHash": "<64 hex>"}`. Engine agents
 partition verification jobs by it; the definition of the data hash is in the
-[turn protocol](../multiplayer/turn-protocol.md#simulation-version).
+[turn protocol](../multiplayer/turn-engine.md#simulation-version).
 
 CI verifies `test/fixtures/multiplayer/FourSquares1.g2mr` on Linux, Windows, macOS and in
 three browsers (`test/run-browser-determinism.py` and `browser/tests/determinism.spec.js`)
@@ -289,7 +289,7 @@ compares seven traces: two Linux builds, Windows, macOS and three browsers. The 
 `FourSquares1.verify-trace.txt` is the expected trace, and CI fails when the platforms
 agree on a different one; the engine test that checks it also regenerates both files
 under `--update-fixtures`. A change that moves the trace changed the simulation and
-must bump `SIM_REVISION` ([simulation version](../multiplayer/turn-protocol.md#simulation-version)).
+must bump `SIM_REVISION` ([simulation version](../multiplayer/turn-engine.md#simulation-version)).
 
 ## AI-Trainer Dataset Output
 
@@ -387,7 +387,7 @@ GLOB2_TEAM_RESULT team=0 result=undecided alive=1 eliminated_tick=-1 start=17,29
 
 The lines only read game state. `tools/map_fairness_tournament.py` uses
 them together with `GLOB2_TEST_MAX_TICKS`; see
-[Map fairness tournament](../map-generators/FAIRNESS_TOURNAMENT.md).
+[Map fairness tournament](../map-generators/fairness-tournament.md).
 
 The `ReplayWriter` records live during gameplay:
 - At game start: writes the full game state header via `GameGUI::save()`, then replay version (`VERSION_MAJOR`, `VERSION_MINOR`)
@@ -494,7 +494,7 @@ floor 140 and network protocol 59. Hazard routing raised the floor to 142 and
 network protocol to 60. Engine snapshots and scheduled AI decisions raise the floor to 143 and
 network protocol to 61; supported saves still load back to format 58. LAN and
 online sim-version gates reject clients using the older boundary. See the
-[phase contract](reference.md) before adding new parallel work.
+[phase contract](../architecture/simulation.md) before adding new parallel work.
 
 ### Probability-based early victory
 
@@ -502,7 +502,7 @@ Structured `game run` runs accept `--win-probability PERMILLE` (501–1000).
 This appends the optional rule after existing winning conditions; omit it to play
 the game out. Evaluation begins at tick 5120 and repeats every 512 ticks. Results
 called by the model report `termination: "win_probability"`. See the
-[model guide](../win-probability-model.md) for calibration and its limits.
+[model guide](../ai/architecture/win-probability-model.md) for calibration and its limits.
 
 Format 132 preserves legacy AI clocks, Nicowar explorer phase latches, Cabino
 specialist/cache state and queued order envelopes, and Cortex learned policy

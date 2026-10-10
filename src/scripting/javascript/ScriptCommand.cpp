@@ -37,8 +37,8 @@ std::string readSource(const std::string &path)
 } // namespace Script
 int runScriptCommand(const Cli::Request &request)
 {
-    const auto &command=request.command;
-    if(command=="ai check" && request.get("--format")=="json")
+	const auto &command = request.command;
+	if (command == "ai check" && request.get("--format") == "json")
 	{
 		nlohmann::json report{{"valid", false}};
 		std::string stage = "syntax";
@@ -47,10 +47,17 @@ int runScriptCommand(const Cli::Request &request)
 			const auto source = Script::readSource(request.positionals.at(0));
 			auto metadata = Script::inspectAI(source, &stage);
 			report["valid"] = true;
-			report["metadata"] = {{"apiVersion", metadata.apiVersion}, {"name", metadata.name},
-				{"description", metadata.description}, {"version", metadata.version}, {"author", metadata.author}};
+			report["metadata"] = {{"apiVersion", metadata.apiVersion},
+								  {"name", metadata.name},
+								  {"description", metadata.description},
+								  {"version", metadata.version},
+								  {"author", metadata.author}};
 		}
-		catch (const std::exception &e) { report["failedCheck"] = stage; report["message"] = std::string(e.what()).substr(0, 2000); }
+		catch (const std::exception &e)
+		{
+			report["failedCheck"] = stage;
+			report["message"] = std::string(e.what()).substr(0, 2000);
+		}
 		std::cout << report.dump() << '\n';
 		return report["valid"] == true ? 0 : 2;
 	}
@@ -81,9 +88,10 @@ int runScriptCommand(const Cli::Request &request)
 		for (const auto &directory : request.all("--data-dir"))
 			globals.fileManager->addDir(directory);
 		globals.load();
-		GameGUI gui;
-		GAGCore::BinaryInputStream input(
-			glob2OpenMapOrSaveInputStreamBackend(*Toolkit::getFileManager(), request.positionals.at(0)));
+		// Loading a map for conversion must not persist GUI preferences on destruction.
+		GameGUI gui(false);
+		GAGCore::BinaryInputStream input(glob2OpenMapOrSaveInputStreamBackend(
+			*Toolkit::getFileManager(), request.positionals.at(0)));
 		if (!gui.load(&input))
 			throw std::invalid_argument("Cannot load input map");
 		auto &script = gui.game.mapscript;
@@ -95,7 +103,8 @@ int runScriptCommand(const Cli::Request &request)
 		std::string bytes;
 		{
 			GAGCore::BinaryOutputStream stream(memory);
-			gui.game.save(&stream, true, std::filesystem::path(request.positionals.at(2)).stem().string());
+			gui.game.save(&stream, true,
+						  std::filesystem::path(request.positionals.at(2)).stem().string());
 			bytes = memory->takeContents();
 		}
 		if (!GAGCore::writeGzipAtomicToPath(output, bytes))
@@ -106,6 +115,6 @@ int runScriptCommand(const Cli::Request &request)
 	catch (const std::exception &ex)
 	{
 		std::cerr << ex.what() << '\n';
-		return dynamic_cast<const std::invalid_argument*>(&ex) ? 2 : 3;
+		return dynamic_cast<const std::invalid_argument *>(&ex) ? 2 : 3;
 	}
 }

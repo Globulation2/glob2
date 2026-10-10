@@ -1,17 +1,12 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: GPL-3.0-or-later
 # Copyright (C) 2026 The Globulation 2 Authors
-"""numpy integer reference for Cortex I16F16 inference.
+"""Integer reference evaluator for Cortex model blobs; see format.md.
 
-Loads a cortex-i16f16-v1 blob (FORMAT.md), runs the integer forward pass
-(I16F16 matmul via int64 intermediate >>16, integer ReLU) and the ML_CONTRACT.md
-inference rule (wheat-starved clamp -> mask -> argmax ties-to-lowest -> idx+1).
-
-This is the authority the C++ CortexNet must match bit-for-bit. Uses Python ints
-(arbitrary precision) for the int64-equivalent accumulation; values are checked to
-stay within int64 so the C++ int64_t path is exact.
-
-Constants below mirror glob2/src/ai/cortex/CortexConstants.h. Keep in sync.
+Python integers evaluate the shared products, ReLU and full-width masked argmax.
+Completed accumulators are checked against signed 64-bit bounds; product ranges
+still need validation against the C++ evaluator. Constants below mirror
+src/ai/cortex/CortexConstants.h and must stay synchronized.
 """
 import struct
 
@@ -68,7 +63,7 @@ class CortexNet:
         return cls(arch, layers)
 
     def forward(self, features):
-        """Run the integer forward pass on RAW integer features -> 20 I16F16 logits."""
+        """Run the integer forward pass on RAW integer features -> architecture-sized I16F16 logits."""
         # Convert raw int inputs to I16F16 (x << 16).
         acts = [int(x) << FRAC_BITS for x in features]
         if len(acts) != self.layers[0][0]:
@@ -92,7 +87,7 @@ class CortexNet:
         return acts
 
 
-# --- decision net (DECIDE_CONTRACT.md) ------------------------------------
+# --- decision net (tools/cortex-ml-infer/format.md) ------------------------------------
 NUM_DECIDE_LOGITS = 18
 
 
@@ -110,7 +105,7 @@ def forward_decide_logits_i32(net, features):
 
 
 def score_decision(net, features, eligible_mask):
-    """DECIDE_CONTRACT.md inference rule, mirroring CortexNet::scoreDecision:
+    """tools/cortex-ml-infer/format.md inference rule, mirroring CortexNet::scoreDecision:
       0. eligible_mask == 0  -> -1 (NoOp; never run the net).
       1. integer forward pass -> 18 I16F16 logits (full Sint64 precision).
       2. mask every class k whose eligible_mask bit k is 0.

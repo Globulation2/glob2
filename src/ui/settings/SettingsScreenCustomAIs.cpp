@@ -523,13 +523,13 @@ Glob2UI::Element SettingsScreen::buildCustomAILibrary(const Glob2UI::Presentatio
 							 []
 							 {
 								 AH::openUrl("https://github.com/Globulation2/glob2/blob/master/"
-											 "docs/development/javascript.md");
+											 "docs/scripting/javascript.md");
 							 }),
 			 Glob2UI::button("ais/api", customAIText("JavaScript API reference"),
 							 []
 							 {
 								 AH::openUrl("https://github.com/Globulation2/glob2/blob/master/"
-											 "docs/development/javascript-api.md");
+											 "docs/scripting/javascript-api.md");
 							 }),
 			 Glob2UI::button(
 				 "ais/starter", customAIText("Starter project"),

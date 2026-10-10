@@ -99,7 +99,9 @@ test('custom definitions and PNG mappings survive save and reload', async ({
   await expect(page.getByRole('combobox', { name: 'Spritesheet', exact: true })).toHaveValue(
     'data/sets/' + hash,
   );
+  await page.getByRole('button', { name: 'Review & publish', exact: true }).click();
   await expect(page.getByRole('button', { name: 'Publish this release' })).toBeDisabled();
+  await page.getByRole('dialog').getByRole('button', { name: 'Close panel', exact: true }).click();
   if (process.env['SET_E2E_ENGINE'] === '1') {
     test.setTimeout(180000);
     await page.getByRole('button', { name: 'Resources', exact: true }).click();

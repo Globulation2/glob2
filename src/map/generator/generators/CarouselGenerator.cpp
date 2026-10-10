@@ -65,7 +65,7 @@ using namespace MapGeneration;
 // swimmer can land but never walk in. The design is a pure
 // function of the request, so validateWorld rebuilds it and checks the finished world against it.
 //
-// GAME RULES BEHIND IT (docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md): stone can never be cleared, so
+// GAME RULES BEHIND IT (docs/map-generators/game-rules-for-map-design.md): stone can never be cleared, so
 // the walls are permanent; a defence tower scans square rings round its footprint with no line of sight
 // (BuildingUtils::turretScanTile), so a wall stops walking but not shooting; stone stands only on pure
 // grass and grass may never touch water, so a wall never runs along water; wheat and wood regrow only

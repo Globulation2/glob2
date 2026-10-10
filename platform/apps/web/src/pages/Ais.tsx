@@ -14,8 +14,18 @@ import {
 import { aiApi } from '../aiApi.ts';
 import { aiBrowseUrl, aiReturnUrl, readAiBrowse, type AiBrowseState } from '../aiBrowse.ts';
 import { ApiError } from '../api.ts';
-import { Loaded, ErrorNotice, Empty } from '../components/common.tsx';
-import { GameArt } from '../art.tsx';
+import {
+  LibraryHeader,
+  LibraryNav,
+  LibraryFilters,
+  LibraryField,
+  LibraryGrid,
+  LibraryCard,
+  LibraryResults,
+  LibraryEmpty,
+  useLibrarySearch,
+} from '../components/library.tsx';
+import { Loaded, ErrorNotice } from '../components/common.tsx';
 import { Link, useRouter } from '../router.tsx';
 import { useLoad, useSession } from '../state.tsx';
 import { date } from '../format.ts';
@@ -155,13 +165,13 @@ export function Ais({ view = 'discover' }: { view?: 'discover' | 'mine' | 'favou
     navigate(aiBrowseUrl(location.path, { ...browse, focus: '', cursor: '', ...update }), {
       replace: true,
     });
-  useEffect(() => {
-    if (search.trim() === query) return;
-    const timer = setTimeout(() => updateBrowse({ query: search.trim(), pages: 1 }), 250);
-    return () => clearTimeout(timer);
-    // URL changes are authoritative; typing is debounced without adding history entries.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [search, query, location.path, location.search.toString()]);
+  const applySearch = useLibrarySearch(search, query, (value) =>
+    updateBrowse({ query: value, pages: 1 }),
+  );
+  const reset = () => {
+    setSearch('');
+    updateBrowse({ query: '', tags: [], sort: 'likes', pages: 1 });
+  };
   const load = useLoad(
     async (signal) => {
       let cursor: string | undefined = browse.cursor || undefined;
@@ -196,25 +206,26 @@ export function Ais({ view = 'discover' }: { view?: 'discover' | 'mine' | 'favou
     }
   }, [load.status, browse.focus]);
   return (
-    <div className="ai-library">
-      <header className="page-head">
-        <GameArt name="swarm" size={80} />
-        <div className="grow">
-          <p className="caption">{t('COMMUNITY · LOCAL PLAY')}</p>
-          <h1>{t('AI Library')}</h1>
-          <p className="sub">{t('Discover a new opponent. Find a new way to play.')}</p>
-        </div>
-        <Link className="btn" to="/ai-studio">
-          {t('Build in AI Studio')}
-        </Link>
-        <Link className="btn primary" to="/ais/new">
-          {t('Share your AI')}
-        </Link>
-      </header>
-      <nav className="seg" aria-label={t('AI library views')}>
+    <div className="ai-library library-page">
+      <LibraryHeader
+        art="swarm"
+        title={t('AI Library')}
+        description={t('Discover a new opponent. Find a new way to play.')}
+        actions={
+          <>
+            <Link className="btn primary" to="/ais/new">
+              {t('Share your AI')}
+            </Link>
+            <Link className="btn" to="/ai-studio">
+              {t('Build in AI Studio')}
+            </Link>
+          </>
+        }
+      />
+      <LibraryNav label={t('AI library views')}>
         {(
           [
-            ['discover', '/ais', t('Discover')],
+            ['discover', '/ais', t('Browse')],
             ['favourites', '/ais/favourites', t('Favourites')],
             ['mine', '/ais/mine', t('My AIs')],
           ] as const
@@ -228,7 +239,7 @@ export function Ais({ view = 'discover' }: { view?: 'discover' | 'mine' | 'favou
             {label}
           </Link>
         ))}
-      </nav>
+      </LibraryNav>
       <Learn />
       {!account && view !== 'discover' ? (
         <div className="notice">
@@ -239,59 +250,54 @@ export function Ais({ view = 'discover' }: { view?: 'discover' | 'mine' | 'favou
         </div>
       ) : (
         <>
-          <form
-            className="filters"
-            role="search"
+          <LibraryFilters
             onSubmit={(e) => {
               e.preventDefault();
-              updateBrowse({ query: search.trim(), pages: 1 });
+              applySearch();
             }}
           >
-            <input
-              type="search"
-              maxLength={128}
-              placeholder={t('Search names, descriptions, authors…')}
-              aria-label={t('Search AIs')}
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-            <select
-              aria-label={t('Sort AIs')}
-              value={sort}
-              onChange={(e) => {
-                updateBrowse({ sort: e.target.value, pages: 1 });
-              }}
-            >
-              <option value="likes">{t('Most liked')}</option>
-              <option value="newest">{t('Newest')}</option>
-              <option value="updated">{t('Recently updated')}</option>
-              <option value="downloads">{t('Most downloaded')}</option>
-            </select>
-            <button
-              type="button"
-              onClick={() => {
-                setSearch('');
-                updateBrowse({ query: '', tags: [], sort: 'likes', pages: 1 });
-              }}
-            >
+            <LibraryField label={t('Search AIs')} search>
+              <input
+                type="search"
+                maxLength={128}
+                placeholder={t('Search names, descriptions, authors…')}
+                aria-label={t('Search AIs')}
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </LibraryField>
+            <LibraryField label={t('Sort')}>
+              <select
+                aria-label={t('Sort AIs')}
+                value={sort}
+                onChange={(e) => {
+                  updateBrowse({ sort: e.target.value, pages: 1 });
+                }}
+              >
+                <option value="likes">{t('Most liked')}</option>
+                <option value="newest">{t('Newest')}</option>
+                <option value="updated">{t('Recently updated')}</option>
+                <option value="downloads">{t('Most downloaded')}</option>
+              </select>
+            </LibraryField>
+            <button type="button" onClick={reset}>
               {t('Reset filters')}
             </button>
-          </form>
+          </LibraryFilters>
           <Tags
             value={tags}
             onChange={(v) => {
               updateBrowse({ tags: v, pages: 1 });
             }}
           />
-          {load.status === 'error' && <button onClick={load.reload}>{t('Try again')}</button>}
-          <Loaded load={load}>
+          <LibraryResults count={(data) => data.items.length} load={load} retry={load.reload}>
             {(data) =>
               data.items.length ? (
                 <>
-                  <div className="ai-grid">
+                  <LibraryGrid>
                     {data.items.map((ai) => (
-                      <Link
-                        className="ai-card card"
+                      <LibraryCard
+                        className="ai-card"
                         id={'ai-card-' + ai.id}
                         key={ai.id}
                         to={
@@ -346,9 +352,9 @@ export function Ais({ view = 'discover' }: { view?: 'discover' | 'mine' | 'favou
                           </span>
                           {ai.favourited && <span aria-label={t('Favourited')}>{t('★')}</span>}
                         </footer>
-                      </Link>
+                      </LibraryCard>
                     ))}
-                  </div>
+                  </LibraryGrid>
                   {data.cursor && (
                     <button
                       onClick={() =>
@@ -369,7 +375,22 @@ export function Ais({ view = 'discover' }: { view?: 'discover' | 'mine' | 'favou
                   )}
                 </>
               ) : (
-                <Empty art="swarm">
+                <LibraryEmpty
+                  art="swarm"
+                  action={
+                    query || tags.length ? (
+                      <button onClick={reset}>{t('Clear filters')}</button>
+                    ) : view === 'favourites' ? (
+                      <Link className="btn" to="/ais">
+                        {t('Browse')}
+                      </Link>
+                    ) : (
+                      <Link className="btn primary" to="/ais/new">
+                        {t('Share your AI')}
+                      </Link>
+                    )
+                  }
+                >
                   {query || tags.length
                     ? t('No AIs match these filters.')
                     : view === 'mine'
@@ -377,10 +398,10 @@ export function Ais({ view = 'discover' }: { view?: 'discover' | 'mine' | 'favou
                       : view === 'favourites'
                         ? t('Favourite an AI to keep it close.')
                         : t('A new library is taking shape. Share the first AI.')}
-                </Empty>
+                </LibraryEmpty>
               )
             }
-          </Loaded>
+          </LibraryResults>
         </>
       )}
     </div>

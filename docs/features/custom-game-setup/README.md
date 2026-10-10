@@ -1,5 +1,12 @@
 # Custom-game setup
 
+## On this page
+
+- [Behavior](#behavior)
+- [AI behavior and rule corrections](#ai-behavior-and-rule-corrections)
+- [Adding or tweaking a ruleset](#adding-or-tweaking-a-ruleset)
+- [Reproduce verification](#reproduce-verification)
+
 The native lobby has Map, Players & Teams, and Game Rules tabs. The fixed footer
 keeps the match summary and launch action available while dense content scrolls.
 
@@ -10,7 +17,7 @@ uses two controller slots for one colony. Individual landscapes can impose lower
 limits when their homes, resources or routes need more room.
 
 - Start on a random map with four colonies in a free-for-all: you plus three Numbi AIs
-  (since 2026-09-14; the premade library, a tab away, preselects FourSquares1 the first time
+  (the premade library, a tab away, preselects FourSquares1 the first time
   it is opened). A saved lobby restores whichever mode it was left in.
 - Unix map libraries separate installed and user roots. Windows/shared-root
   installations show one combined library so shipped maps remain accessible.
@@ -249,5 +256,5 @@ SDL event loops through human, shared-control and AI-only launches.
 
 The Linux workflow runs the headless harness and native compact UI checks under
 Xvfb. macOS desktop event injection was unreliable during development; see
-[the automation guide](../../../test/LOBBY_AUTOMATION.md) for the working SDL approach
+[the automation guide](../../development/testing/lobby-automation.md) for the working SDL approach
 and the distinction between game-side input coverage and physical OS input.

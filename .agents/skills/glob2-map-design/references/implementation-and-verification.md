@@ -1,6 +1,6 @@
 # Implementing and verifying the design
 
-Source anchors: [adding a generator](../../../../docs/map-generators/ADDING_A_GENERATOR.md), [framework](../../../../docs/map-generators/MAP_GENERATOR_FRAMEWORK.md), [development conventions](../../../../docs/development/reference.md). Consult these for full interfaces; the guidance below connects them to design decisions.
+Source anchors: [adding a generator](../../../../docs/map-generators/adding-a-generator.md), [framework](../../../../docs/map-generators/map-generator-framework.md), [development conventions](../../../../docs/development/conventions.md). Consult these for full interfaces; the guidance below connects them to design decisions.
 
 ## Worked design: a city around contested gardens
 
@@ -29,7 +29,7 @@ Validate post-furnishing home capacity, protected-wall continuity, exits, target
 | Renewable plots and growth containment | `Growth`, `Farmland`, `Planting`, `Resources` | Choose water and dry buffers before planting; stock only terrain that can sustain the intended role. |
 | Homes and finite building capacity | `Homes`, `Room`, `Territories`, `Settlements` | Measure complete footprints, fair regional capacity, and space for all starting workers. |
 | Fronts, shortcuts and defense | `Channels`, `Roads`, `Contact`, `Walls`, `Towers` | Measure actual entry costs and firing envelopes; preserve structural boundaries during repairs. |
-| Coupled placement preferences | `Solve`, `Rivers` | Construct hard requirements first; search cheap decisions over shared geometry/costs, then validate the finished world. See [search integration](../../../../docs/map-generators/CONSTRAINT_SEARCH.md). |
+| Coupled placement preferences | `Solve`, `Rivers` | Construct hard requirements first; search cheap decisions over shared geometry/costs, then validate the finished world. See [search integration](../../../../docs/map-generators/constraint-search.md). |
 | Ordered generation and start selection | `Pipeline`, `Terrain`, `BalancedStarts`, `StartQuality` | Select the composition appropriate to the map and score the finished colony. |
 
 All modules are under [shared/](../../../../src/map/generator/shared/). Read implementations as well as declarations. `shared/legacy/` explains older generators but its area-grid representation does not compose directly with current tile masks; use the current toolkit for new designs.
@@ -138,7 +138,7 @@ For exact claims, transform terrain **vertices** and final **tiles** correctly, 
 
 For asymmetric landscapes, [BalancedStarts.cpp](../../../../src/map/generator/shared/BalancedStarts.cpp) is an instructive bounded search. It floods distances from gathering neighbors, considers legal swarm footprints, shortlists at most 900 sites, re-scores after modeling the starting colony, and seeks a narrow resource-cost window containing mutually separated starts. This is a heuristic, not an optimal global placement solver, and its legacy placement model is not a drop-in replacement for arbitrary settlement geometry.
 
-Use [StartQuality](../../../../src/map/generator/shared/StartQuality.h) to compare *finished* colonies on wheat/wood access, fertility, resource depth, room, and isolation. What those measurements are worth is fitted to real games ([FairnessModel.h](../../../../src/map/generator/shared/FairnessModel.h), [the method](../../../../docs/map-generators/FAIRNESS_MODEL.md)) and is the same for every generator, so a concept that needs a different bar states it in `validateWorld` rather than by retuning the score. The score is the map's fairness: 1 when every colony is equally likely to win, 0 when one would take the map. It says nothing about whether the starts are any good, so keep absolute viability checks. Reachable wheat can coexist with no building space.
+Use [StartQuality](../../../../src/map/generator/shared/StartQuality.h) to compare *finished* colonies on wheat/wood access, fertility, resource depth, room, and isolation. What those measurements are worth is fitted to real games ([FairnessModel.h](../../../../src/map/generator/shared/FairnessModel.h), [the method](../../../../docs/map-generators/fairness-model.md)) and is the same for every generator, so a concept that needs a different bar states it in `validateWorld` rather than by retuning the score. The score is the map's fairness: 1 when every colony is equally likely to win, 0 when one would take the map. It says nothing about whether the starts are any good, so keep absolute viability checks. Reachable wheat can coexist with no building space.
 
 Also measure nearest rival, access to contested targets, number of fronts, expansion capacity and walking versus swimming/clearing costs. `Contact` supplies comparative costs; these are not time estimates. In particular its generic water-first `StepCosts` model is different from the report's engine swimming predicate when algae occupies water. Use the actual movement predicate for a gameplay reachability claim. Deal home sites with `dealStarts` before any home/kit/tower arrays are indexed by team: random assignment avoids persistent index bias but does not repair an unfair map.
 
@@ -204,7 +204,7 @@ build/src/glob2 map generators canals
 build/src/glob2 map generate canals --seed 7 --width 128 --height 256 --teams 4 --output artifacts/map-design/canals-7.map --preview artifacts/map-design/canals-7.png --report-file artifacts/map-design/canals-7.json
 ```
 
-Use disposable test profiles, following the [test README](../../../../test/README.md). For intentional output changes, bump the affected revision and run `MapGeneratorGoldenTest <disposable-profile> --update`, then inspect the diff and rerun comparison. A golden hash proves reproducibility of a known snapshot, not quality. Without `--require-rows`, a platform with no baseline rows can report that fact and pass; obtain the affected platform's rows from an actual run rather than treating that as coverage. `--performance` times every generator at its own defaults (256x256, seed 42) and asserts identical bytes, outcomes and telemetry with the internal performance collector on and off; for a broader load, `MapGeneratorProfileFixture <profile-dir> <seed> <rounds> [generator-id...]` (see the [framework doc](../../../../docs/map-generators/MAP_GENERATOR_FRAMEWORK.md)) round-robins every generator at randomly drawn parameters, which is also a fixed-seed/round-count way to compare a shared primitive's before/after cost, and a target for an external sampling profiler.
+Use disposable test profiles, following the [test README](../../../../test/README.md). For intentional output changes, bump the affected revision and run `MapGeneratorGoldenTest <disposable-profile> --update`, then inspect the diff and rerun comparison. A golden hash proves reproducibility of a known snapshot, not quality. Without `--require-rows`, a platform with no baseline rows can report that fact and pass; obtain the affected platform's rows from an actual run rather than treating that as coverage. `--performance` times every generator at its own defaults (256x256, seed 42) and asserts identical bytes, outcomes and telemetry with the internal performance collector on and off; for a broader load, `MapGeneratorProfileFixture <profile-dir> <seed> <rounds> [generator-id...]` (see the [framework doc](../../../../docs/map-generators/map-generator-framework.md)) round-robins every generator at randomly drawn parameters, which is also a fixed-seed/round-count way to compare a shared primitive's before/after cost, and a target for an external sampling profiler.
 
 The current golden `--sweep` is deliberately small: selected square sizes/counts, three or five seeds, passing an accepted cell if at least one succeeds. It skips invalid combinations and does not cover rectangles, all controls, 64-tile maps or every team count. Inspect success rates and supplement it. A cell surviving only one of five trials is a warning even though the harness passes.
 
@@ -225,9 +225,9 @@ python3 tools/map_generator_study.py --configs artifacts/map-design/configs.json
 
 The study runner saves configs, repeatability rows and per-seed metrics, but does not make every failure a failing process exit; inspect CSV statuses and tails. Its 12-second external timeout is a measurement limit, not permission to introduce wall-clock decisions in generation or simulation. Tune against worst-colony room/access as well as averages and scores.
 
-Use [report metric definitions](../../../../docs/map-generators/REPORT.md) when interpreting JSON: 4×4 sites are overlapping anchors, terrain and underlying terrain differ, unreachable costs are `null`, static fertility is not yield per tick, and saved-game reports describe the current snapshot. Retain JSON beside `.map`: saved maps do not preserve the whole generation request. Preview mosaics across seeds/settings expose visual variety and seams; inspect actual game views for building access and fighting scale.
+Use [report metric definitions](../../../../docs/map-generators/report-format.md) when interpreting JSON: 4×4 sites are overlapping anchors, terrain and underlying terrain differ, unreachable costs are `null`, static fertility is not yield per tick, and saved-game reports describe the current snapshot. Retain JSON beside `.map`: saved maps do not preserve the whole generation request. Preview mosaics across seeds/settings expose visual variety and seams; inspect actual game views for building access and fighting scale.
 
-For fairness, use [the tournament](../../../../docs/map-generators/FAIRNESS_TOURNAMENT.md) with selected generators and a bounded budget, for example starting from `python3 tools/map_fairness_tournament.py run smoke --help`. Full cyclic team rotations over an unchanged map separate start position from team-index effects when seats have equivalent roles. For deliberate role asymmetry, preserve roles and alliances and rotate comparable seats; see [asymmetric sieges](asymmetric-sieges.md). Use multiple map seeds and engine seeds. Read decisive-game results, cap share and uncertainty, not just pooled winners. The existing study documents examples where start scores missed dominant positions; regard that as a reason to measure expansion/fronts, not evidence that today's revised generator still has the same result.
+For fairness, use [the tournament](../../../../docs/map-generators/fairness-tournament.md) with selected generators and a bounded budget, for example starting from `python3 tools/map_fairness_tournament.py run smoke --help`. Full cyclic team rotations over an unchanged map separate start position from team-index effects when seats have equivalent roles. For deliberate role asymmetry, preserve roles and alliances and rotate comparable seats; see [asymmetric sieges](asymmetric-sieges.md). Use multiple map seeds and engine seeds. Read decisive-game results, cap share and uncertainty, not just pooled winners. The existing study documents examples where start scores missed dominant positions; regard that as a reason to measure expansion/fronts, not evidence that today's revised generator still has the same result.
 
 Watch AI colonies through expansion and late resource growth; include each of the newer AIs (Nicowar, Cortex, Cabino, Maxima) rather than relying only on Nicowar's habits, and don't tune for the older Numbi, Castor or Warrush ([which AIs to play](tuning-playbook.md#which-ais-to-play)). Retain maps, settings, saves/replays and relevant tick observations. Human play should answer whether the intended choices happen, remain legible and offer counterplay. If tests pass but play stalls, revise the geometry/resource policy instead of merely loosening acceptance thresholds.
 
@@ -294,7 +294,7 @@ Lessons from rebuilding, reviewing and profiling generators, grouped by the job 
 
 ## Internal telemetry is part of implementation and tuning
 
-Follow [the telemetry contract](../../../../docs/map-generators/TELEMETRY.md). Instrument decisions
+Follow [the telemetry contract](../../../../docs/map-generators/telemetry.md). Instrument decisions
 where they occur, with typed scalar measurements, named choices and fallback events. Record both
 a budget and its achieved amount; record the local colony/feature subject. The service retains
 only the actual attempt's trace, including failures; validation reconstructions are uncollected.
@@ -323,7 +323,7 @@ and reanalyze the complete returned reports with map-level statistical weighting
 
 ## Recursive layouts
 
-See [fractal geometry and worked examples](../../../../docs/map-generators/FRACTAL_MAPS.md).
+See [fractal geometry and worked examples](../../../../docs/map-generators/fractal-maps.md).
 Use `RecursiveGeometry` for integer region trees and rectangular Hilbert paths, and
 `HierarchicalCrossings` for coarse travel-benefit selection. Preserve stop reasons and
 region IDs through design; check beaches, seam routes and final engine movement afterward.

@@ -11,6 +11,17 @@ import { MusicValidation } from './Validation.tsx';
 import { MOODS, MusicPlayer } from './Player.tsx';
 import { useMusicCatalogue } from './useMusicCatalogue.ts';
 
+import {
+  LibraryHeader,
+  LibraryNav,
+  LibraryFilters,
+  LibraryField,
+  LibraryGrid,
+  LibraryCard,
+  LibraryResults,
+  LibraryEmpty,
+  useLibrarySearch,
+} from '../components/library.tsx';
 import { Cover } from './Cover.tsx';
 function errorText(error: unknown) {
   return error instanceof Error ? error.message : String(error);
@@ -51,6 +62,10 @@ export function MusicLibrary() {
     [licence, setLicence] = useState(''),
     [ai, setAi] = useState(''),
     [tag, setTag] = useState('');
+  const [appliedQuery, setAppliedQuery] = useState('');
+  const [appliedTag, setAppliedTag] = useState('');
+  const applySearch = useLibrarySearch(query, appliedQuery, setAppliedQuery);
+  const applyTag = useLibrarySearch(tag, appliedTag, setAppliedTag);
   const [min, setMin] = useState(10),
     [max, setMax] = useState(900),
     [mine, setMine] = useState(false);
@@ -59,16 +74,16 @@ export function MusicLibrary() {
     [notice, setNotice] = useState(''),
     [busy, setBusy] = useState(false);
   const filters = new URLSearchParams({
-    q: query,
+    q: appliedQuery,
     sort,
     license: licence,
     ai,
-    tag,
+    tag: appliedTag,
     min: String(min),
     max: String(max),
     mine: mine ? '1' : '0',
   }).toString();
-  const { items, setItems, next, loading, error, more } = useMusicCatalogue(filters);
+  const { items, setItems, next, loading, error, more, reload } = useMusicCatalogue(filters);
   async function downloadSelected() {
     setBusy(true);
     setNotice('');
@@ -105,179 +120,252 @@ export function MusicLibrary() {
       setNotice(errorText(e));
     }
   }
+  const reset = () => {
+    setQuery('');
+    setAppliedQuery('');
+    setTag('');
+    setAppliedTag('');
+    setSort('likes');
+    setLicence('');
+    setAi('');
+    setMin(10);
+    setMax(900);
+  };
+  const filtered = Boolean(
+    appliedQuery || licence || ai || appliedTag || min !== 10 || max !== 900,
+  );
+  const activeExtra =
+    Number(Boolean(ai)) + Number(Boolean(appliedTag)) + Number(min !== 10) + Number(max !== 900);
   return (
-    <main className="music-library">
-      <div className="music-heading">
-        <div>
-          <p className="eyebrow">{t('COMMUNITY SOUNDTRACKS')}</p>
-          <h1>{t('Music for your colony')}</h1>
-          <p>{t('Three moods. One shared rhythm. Find your next soundtrack.')}</p>
-        </div>
-        <Link to="/music-studio" className="button">
-          {t('Build in AI Music Studio')}
-        </Link>
-        <Link to="/music/new" className="button">
-          {t('Share music')}
-        </Link>
-      </div>
-      <div className="music-filters">
-        <label>
-          {t('Search')}
+    <section className="music-library library-page">
+      <LibraryHeader
+        art="inn"
+        title={t('Music for your colony')}
+        description={t('Three moods. One shared rhythm. Find your next soundtrack.')}
+        actions={
+          <>
+            <Link to="/music/new" className="btn primary">
+              {t('Share music')}
+            </Link>
+            <Link to="/music-studio" className="btn">
+              {t('Build in AI Music Studio')}
+            </Link>
+          </>
+        }
+      />
+      {account && (
+        <LibraryNav label={t('Music')}>
+          <button className={!mine ? 'on' : ''} aria-pressed={!mine} onClick={() => setMine(false)}>
+            {t('Browse')}
+          </button>
+          <button className={mine ? 'on' : ''} aria-pressed={mine} onClick={() => setMine(true)}>
+            {t(' My releases and uploads').trim()}
+          </button>
+        </LibraryNav>
+      )}
+      <LibraryFilters
+        onSubmit={(event) => {
+          event.preventDefault();
+          applySearch();
+          applyTag();
+        }}
+        activeExtra={activeExtra}
+        extra={
+          <>
+            <LibraryField label={t('AI disclosure')}>
+              <select value={ai} onChange={(e) => setAi(e.target.value)}>
+                <option value="">{t('All music')}</option>
+                <option value="false">{t('Not AI-generated')}</option>
+                <option value="true">{t('AI-generated')}</option>
+              </select>
+            </LibraryField>
+            <LibraryField label={t('Tag')}>
+              <input
+                value={tag}
+                onChange={(e) => setTag(e.target.value)}
+                placeholder={t('forest')}
+              />
+            </LibraryField>
+            <LibraryField label={t('Minimum seconds')}>
+              <input
+                type="number"
+                min="10"
+                max="900"
+                value={min}
+                onChange={(e) => setMin(+e.target.value)}
+              />
+            </LibraryField>
+            <LibraryField label={t('Maximum seconds')}>
+              <input
+                type="number"
+                min="10"
+                max="900"
+                value={max}
+                onChange={(e) => setMax(+e.target.value)}
+              />
+            </LibraryField>
+          </>
+        }
+      >
+        <LibraryField label={t('Search')} search>
           <input
             type="search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder={t('Title, artist, description…')}
           />
-        </label>
-        <label>
-          {t('Sort')}
+        </LibraryField>
+        <LibraryField label={t('Sort')}>
           <select value={sort} onChange={(e) => setSort(e.target.value)}>
             <option value="likes">{t('Most liked')}</option>
             <option value="recent">{t('Newest')}</option>
             <option value="downloads">{t('Most downloaded')}</option>
           </select>
-        </label>
-        <label>
-          {t('Licence')}
+        </LibraryField>
+        <LibraryField label={t('Licence')}>
           <select value={licence} onChange={(e) => setLicence(e.target.value)}>
             <option value="">{t('All open licences')}</option>
             <option>{t('CC0-1.0')}</option>
             <option>{t('CC-BY-4.0')}</option>
             <option>{t('CC-BY-SA-4.0')}</option>
           </select>
-        </label>
-        <label>
-          {t('AI disclosure')}
-          <select value={ai} onChange={(e) => setAi(e.target.value)}>
-            <option value="">{t('All music')}</option>
-            <option value="false">{t('Not AI-generated')}</option>
-            <option value="true">{t('AI-generated')}</option>
-          </select>
-        </label>
-        <label>
-          {t('Tag')}
-          <input value={tag} onChange={(e) => setTag(e.target.value)} placeholder={t('forest')} />
-        </label>
-        <label>
-          {t('Minimum seconds')}
-          <input
-            type="number"
-            min="10"
-            max="900"
-            value={min}
-            onChange={(e) => setMin(+e.target.value)}
-          />
-        </label>
-        <label>
-          {t('Maximum seconds')}
-          <input
-            type="number"
-            min="10"
-            max="900"
-            value={max}
-            onChange={(e) => setMax(+e.target.value)}
-          />
-        </label>
-        {account && (
-          <label>
-            <input type="checkbox" checked={mine} onChange={(e) => setMine(e.target.checked)} />{' '}
-            {t(' My releases and uploads')}
-          </label>
+        </LibraryField>
+        <button type="button" onClick={reset}>
+          {t('Reset filters')}
+        </button>
+      </LibraryFilters>
+      {notice && <p role="alert">{notice}</p>}
+      {busy && <p role="status">{t('Loading…')}</p>}
+      <LibraryResults
+        count={(data) => data.length}
+        busy={loading}
+        load={
+          error
+            ? { status: 'error', error: new Error(error) }
+            : loading && !items.length
+              ? { status: 'loading' }
+              : { status: 'ready', data: items }
+        }
+        retry={reload}
+      >
+        {(releases) => (
+          <>
+            <LibraryGrid>
+              {releases.map((release) => (
+                <LibraryCard key={release.id}>
+                  <Link to={`/music/${release.id}`} aria-labelledby={`music-title-${release.id}`}>
+                    <Cover release={release} />
+                    <h2 id={`music-title-${release.id}`}>{release.metadata.title}</h2>
+                  </Link>
+                  <div className="music-card-body">
+                    <p className="library-metadata">
+                      <RichMessage
+                        source={'{slot0} · {slot1} seconds'}
+                        slots={{
+                          slot0: release.metadata.artist,
+                          slot1: Math.round(release.frames / 48000),
+                        }}
+                        singular={'{slot0} · {slot1} second'}
+                        count={Number(Math.round(release.frames / 48000))}
+                      />
+                    </p>
+                    <p className="library-description">{release.metadata.description}</p>
+                    <p className="library-metadata">
+                      {release.metadata.license}
+                      {release.metadata.aiGenerated ? t(' · AI-generated') : ''}
+                    </p>
+                    {release.status !== 'published' && (
+                      <p>
+                        <RichMessage
+                          source={'Status: {slot0}'}
+                          slots={{ slot0: statusLabel(release.status) }}
+                        />
+                      </p>
+                    )}
+                    <div className="music-card-actions">
+                      <button
+                        id={`music-preview-${release.id}`}
+                        aria-labelledby={`music-preview-${release.id} music-title-${release.id}`}
+                        disabled={!release.tracks.length}
+                        onClick={(event) => {
+                          event.currentTarget.focus();
+                          setPreview(release);
+                        }}
+                      >
+                        {t('Preview')}
+                      </button>
+                      <button
+                        disabled={account?.kind !== 'registered' || release.status !== 'published'}
+                        aria-label={t('{value0} {value1} · {value2} likes', {
+                          value0: release.liked ? 'Unlike' : 'Like',
+                          value1: release.metadata.title,
+                          value2: release.likes,
+                        })}
+                        title={
+                          account?.kind !== 'registered'
+                            ? t('Sign in with a registered account to like music')
+                            : undefined
+                        }
+                        aria-pressed={release.liked}
+                        onClick={() => void like(release)}
+                      >
+                        <RichMessage source={'♥ {slot0}'} slots={{ slot0: release.likes }} />
+                      </button>
+                      {release.tracks.length > 0 && (
+                        <a
+                          id={`music-download-${release.id}`}
+                          aria-labelledby={`music-download-${release.id} music-title-${release.id}`}
+                          href={`/api/v1/music/${release.id}/download`}
+                          download
+                        >
+                          {t('Download ZIP')}
+                        </a>
+                      )}
+                    </div>
+                    {release.status === 'published' && (
+                      <label className="library-checkbox">
+                        <input
+                          type="checkbox"
+                          aria-labelledby={`music-select-${release.id} music-title-${release.id}`}
+                          checked={selected.has(release.id)}
+                          disabled={!selected.has(release.id) && selected.size >= 10}
+                          onChange={(e) =>
+                            setSelected((old) => {
+                              const value = new Map(old);
+                              if (e.target.checked) value.set(release.id, release.metadata.title);
+                              else value.delete(release.id);
+                              return value;
+                            })
+                          }
+                        />{' '}
+                        <span id={`music-select-${release.id}`}>{t('Select for download')}</span>
+                      </label>
+                    )}
+                  </div>
+                </LibraryCard>
+              ))}
+            </LibraryGrid>
+            {!busy && !loading && !items.length && (
+              <LibraryEmpty
+                art="inn"
+                action={
+                  filtered ? (
+                    <button onClick={reset}>{t('Clear filters')}</button>
+                  ) : (
+                    <Link className="btn primary" to="/music/new">
+                      {t('Share music')}
+                    </Link>
+                  )
+                }
+              >
+                {filtered
+                  ? t('No results match these filters.')
+                  : t('No music found. Try different filters, or share the first set.')}
+              </LibraryEmpty>
+            )}
+          </>
         )}
-      </div>
-      {(notice || error) && <p role="alert">{notice || error}</p>}
-      {(busy || loading) && <p role="status">{t('Loading…')}</p>}
-      <div className="music-grid">
-        {items.map((release) => (
-          <article key={release.id} className="music-card">
-            <Cover release={release} />
-            <div className="music-card-body">
-              <Link to={`/music/${release.id}`}>
-                <h2>{release.metadata.title}</h2>
-              </Link>
-              <p>
-                <RichMessage
-                  source={'{slot0} · {slot1} seconds'}
-                  slots={{
-                    slot0: release.metadata.artist,
-                    slot1: Math.round(release.frames / 48000),
-                  }}
-                  singular={'{slot0} · {slot1} second'}
-                  count={Number(Math.round(release.frames / 48000))}
-                />
-              </p>
-              <p className="music-description">{release.metadata.description}</p>
-              <p>
-                {release.metadata.license}
-                {release.metadata.aiGenerated ? t(' · AI-generated') : ''}
-              </p>
-              {release.status !== 'published' && (
-                <p>
-                  <RichMessage
-                    source={'Status: {slot0}'}
-                    slots={{ slot0: statusLabel(release.status) }}
-                  />
-                </p>
-              )}
-              <div className="music-card-actions">
-                <button
-                  disabled={!release.tracks.length}
-                  onClick={(event) => {
-                    event.currentTarget.focus();
-                    setPreview(release);
-                  }}
-                >
-                  {t('Preview')}
-                </button>
-                <button
-                  disabled={account?.kind !== 'registered' || release.status !== 'published'}
-                  aria-label={t('{value0} {value1} · {value2} likes', {
-                    value0: release.liked ? 'Unlike' : 'Like',
-                    value1: release.metadata.title,
-                    value2: release.likes,
-                  })}
-                  title={
-                    account?.kind !== 'registered'
-                      ? t('Sign in with a registered account to like music')
-                      : undefined
-                  }
-                  aria-pressed={release.liked}
-                  onClick={() => void like(release)}
-                >
-                  <RichMessage source={'♥ {slot0}'} slots={{ slot0: release.likes }} />
-                </button>
-                {release.tracks.length > 0 && (
-                  <a href={`/api/v1/music/${release.id}/download`} download>
-                    {t('Download ZIP')}
-                  </a>
-                )}
-              </div>
-              {release.status === 'published' && (
-                <label>
-                  <input
-                    type="checkbox"
-                    checked={selected.has(release.id)}
-                    disabled={!selected.has(release.id) && selected.size >= 10}
-                    onChange={(e) =>
-                      setSelected((old) => {
-                        const value = new Map(old);
-                        if (e.target.checked) value.set(release.id, release.metadata.title);
-                        else value.delete(release.id);
-                        return value;
-                      })
-                    }
-                  />{' '}
-                  {t('Select for download')}
-                </label>
-              )}
-            </div>
-          </article>
-        ))}
-      </div>
-      {!busy && !loading && !items.length && (
-        <p>{t('No music found. Try different filters, or share the first set.')}</p>
-      )}
+      </LibraryResults>
       {next && (
         <button onClick={() => void more()} disabled={busy || loading}>
           {t('Load more')}
@@ -300,7 +388,7 @@ export function MusicLibrary() {
       {preview && (
         <PreviewDialog key={preview.id} release={preview} close={() => setPreview(null)} />
       )}
-    </main>
+    </section>
   );
 }
 
