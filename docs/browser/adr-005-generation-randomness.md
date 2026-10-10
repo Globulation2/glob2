@@ -52,3 +52,5 @@ bit-identical maps across platforms: floating-point terrain generation needs
 separate qualification. Online rooms and LAN hosts distribute the selected map file (checked by its hash)
 rather than asking clients to independently regenerate it, so all clients start
 with the same map bytes.
+
+Related: [browser guide and decision index](README.md).

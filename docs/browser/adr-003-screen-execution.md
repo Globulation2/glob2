@@ -115,3 +115,5 @@ Interpreter lifetime fixes discovered by repeated loading are recorded in
 [ADR 007](adr-007-script-lifetimes.md). Cooperative generation decisions are
 recorded in [ADR 004](adr-004-cooperative-loading.md) and
 [ADR 005](adr-005-generation-randomness.md).
+
+Related: [browser guide and decision index](README.md).

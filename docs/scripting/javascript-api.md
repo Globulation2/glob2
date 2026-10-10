@@ -32,11 +32,11 @@ entity objects, pathfinding queries or direct mutation methods.
   below; unused arguments are not a versioning or extension mechanism.
 
 AI decisions use an immutable observation for `ctx.tick`. A match-wide engine delay
-of 0–8 ticks (default 0) schedules returned orders at `ctx.tick + delay`; profile 2
+of 0–8 ticks (default 8) schedules returned orders at `ctx.tick + delay`; profile 2
 actions retain their IDs while awaiting execution receipts. An accepted order may
 still have an effect that completes later. Account for outstanding intents before
 issuing duplicate commands. Map-script callbacks keep their existing cadence.
-See [engine scheduling](reference.md#ai-observations-and-delayed-orders) for
+See [engine scheduling](../architecture/ai-observations.md#ai-observations-and-delayed-orders) for
 continuation and lifecycle details.
 
 ## Context
@@ -69,7 +69,7 @@ ctx.game.rules()
 ```
 
 `rules()` returns a detached read-only snapshot of effective match settings in
-both AI API profiles. Keys and numeric ranges match [headless custom rules](headless-replays.md#glob2_test_rules):
+both AI API profiles. Keys and numeric ranges match [headless custom rules](../development/headless-replays.md#glob2_test_rules):
 `noGrowth`, `scarcity`, `instantConstruction`, `stockpile`, `noHunger`,
 `noUpgrades`, `glassCannon`, `fearless`, `noPermadeath`, `peaceful`, `fortress`,
 `suddenDeathTick` and `winProbabilityPermille`. Experiments remain available through
@@ -489,9 +489,7 @@ There are no spawn, terrain-write, objective-create or gameplay-order effects.
 
 Profile 1 is stored in AI source configuration (`glob2-js/1\n`) and saved runtime
 state; unsupported stored profiles are rejected. `ctx` has no runtime API-version
-property and there is no negotiation mechanism. Save format and network protocol
-versions are separate engine compatibility gates: current saves use format 125
-with minimum 58, the network protocol is 48, and replay acceptance starts at 123.
+property and there is no negotiation mechanism. Save format, replay acceptance and network protocol versions are separate engine compatibility gates. The current values live in [Version.h](../../src/app/Version.h) and [ReplayReader.h](../../src/replay/ReplayReader.h); profile numbers do not substitute for those gates.
 See the [guide](javascript.md) for released-format loading behavior.
 
 When changing the exposed contract, update this reference, the declarations,

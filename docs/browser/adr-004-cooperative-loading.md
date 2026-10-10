@@ -165,3 +165,5 @@ starts, so cancellation destroys partially loaded objects with their owner.
 The synchronous adapter drains the same parser and preserves serialization order.
 Native tests cancel in each stage, including a fixture containing real units and
 buildings, and check scheduled-load continuation against the session checksum.
+
+Related: [browser guide and decision index](README.md).

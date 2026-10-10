@@ -9,7 +9,7 @@ ticks. The replay reader's current minimum accepted format is 152.
 Re-record when the accepted replay floor changes, using an isolated profile:
 
 ```sh
-GLOB2_USER_DATA_DIR=/tmp/glob2-browser-fixture-profile \
+GLOB2_USER_DATA_DIR="$PWD/artifacts/browser-fixture-profile" \
 GLOB2_TEST_SEED=42 \
 GLOB2_REPLAY_PATH="$PWD/browser/tests/fixtures/cross-replay.replay" \
 SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy \

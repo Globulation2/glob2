@@ -12,7 +12,7 @@ or permission prompt. Review embedded sources before using files from an untrust
 origin. Capability restrictions and resource limits support predictable execution
 and reliability; they do not protect the process against malicious scripts.
 
-Map/save/replay readers also apply [untrusted-file validation](reference.md#untrusted-maps-saved-games-and-replays). Embedded USL cannot load arbitrary local files; these reader checks do not turn either legacy interpreter into a hostile-code sandbox.
+Map/save/replay readers also apply [untrusted-file validation](../development/untrusted-inputs.md#untrusted-maps-saved-games-and-replays). Embedded USL cannot load arbitrary local files; these reader checks do not turn either legacy interpreter into a hostile-code sandbox.
 
 Use **Settings → Custom AIs** to import a bundled JavaScript AI, then select its
 library entry in local game setup. Desktop authors can link a development file.
@@ -158,7 +158,7 @@ one. AI observation history is recorded during simulation, even between decision
 and disabled/eliminated controllers stop recording it.
 
 AI callbacks read a frozen view of their logical `ctx.tick`. The match-wide order
-delay is 0–8 ticks, default 0, and applies to every AI controller. Returned orders
+delay is 0–8 ticks, default 8, and applies to every AI controller. Returned orders
 execute at the engine's scheduled deadline rather than immediately during the
 callback. Account for outstanding actions and execution receipts before issuing
 another command for the same intent. Acceptance of an action is distinct from
@@ -170,7 +170,7 @@ the ordered decision stream. Unpolled replica/replay controllers receive a froze
 post-step observation after an owner barrier. Scripts do not retain an engine
 world snapshot between callbacks. Saves preserve pending orders and their
 remaining deadlines along with script state, action IDs and RNG. See the
-[engine contract](reference.md#ai-observations-and-delayed-orders).
+[engine contract](../architecture/ai-observations.md#ai-observations-and-delayed-orders).
 
 Query arguments and returned results use a restricted data format:
 
@@ -217,7 +217,7 @@ for scheduling. Exception messages are diagnostics, not stable API identifiers.
 There is no injected `console` or logging API in profile 1.
 
 Procedural map generators use a separate disposable host with the native shared
-toolkit and package-local modules. See [JavaScript map generators](../map-generators/JAVASCRIPT.md)
+toolkit and package-local modules. See [JavaScript map generators](../map-generators/javascript.md)
 for its manifest, authoring API and limits. The scenario and AI profiles below retain
 their existing restrictions.
 

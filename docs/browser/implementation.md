@@ -54,68 +54,7 @@ lifetime to the replacement gameplay loop, and terminal completion releases it.
 
 ### Music playback
 
-Both game runtimes use a separate Wasm decoder worker and an AudioWorklet. The
-application sends assets and controls through `browser/Audio.cpp` and the UI host
-in `browser/audio.js`; ongoing playback never calls the application mixer or
-waits for its event loop.
-
-| Owner | Responsibilities | Must not do |
-| --- | --- | --- |
-| Application / UI host | Validate and transfer compressed assets, coalesce controls, activate and suspend the device, forward capture | Forward ongoing music PCM between worker and worklet |
-| Decoder worker | Own `Music::Producer`, decode/seek/transition, publish prepared blocks | Access game Wasm or its filesystem during playback |
-| AudioWorklet | Consume prepared PCM, resample continuously to the device rate, apply gain and recovery ramps, publish bounded capture/diagnostics | Decode, perform I/O, wait for locks or allocate unbounded queues |
-
-The worker runs the same `Music::Producer` as native playback. It prepares
-1,024-frame 48 kHz stereo blocks, maintaining a 24-block (512 ms) target with a
-20-block (427 ms) refill threshold and a hard 48-block capacity. Volume and mute are
-applied at consumption, so they do not wait for the prepared queue to drain.
-The half-second target rounds up to whole blocks; the refill threshold retains
-a 400 ms producer-stall cushion when at least 20 blocks remain queued.
-
-Isolated browsers with SharedArrayBuffer use an atomic ring; other browsers use
-a direct MessageChannel with recycled transferable buffers. Shared transport has
-64 physical slots for wraparound and the same 48-block logical capacity. Each
-transferable buffer is a credit: the worker can publish it again only after the
-worklet returns it, including when a generation change discards stale PCM.
-The consumer alone advances the read cursor; resets never overwrite it from the
-producer. Control delivery has one command in flight and coalesces repeated mood
-and preview requests while preserving order between different controls.
-
-Some WebKit builds delay MessagePort delivery during page long tasks. Those
-builds can tolerate buffered stalls but cannot cover an arbitrary multi-second
-UI blockage without shared transport. Genuine starvation enters explicit refill
-mode, fades out once, and waits for the target before fading back in. It never
-loops stale audio. Generations separate replacements, preview sessions and seeks;
-a failed replacement retains the previous valid music. Preview pause freezes the
-consumer and retains its partial block, so resume continues at the next sample.
-Reset preserves the consumed timeline: the worker briefly pauses consumption and
-requests that position before replacing prepared PCM. Generation checks reject
-stale replies; a one-second acknowledgement timeout rejects only that reset and
-releases the control queue. It never seeks to a guessed decoder-ahead cursor.
-
-The UI owns device lifecycle. Activation starts in the initiating gesture before
-asynchronous worklet loading, and a refused activation may be retried by a later
-gesture. Hidden tabs suspend both context and production; visible tabs refill
-before audible consumption resumes. Teardown closes the context and terminates
-the worker. Initialization failure reports unavailable audio without stopping the
-game. Package `music-worker.js`, `music-output.js`, `music-runtime.js` and
-`music-runtime.wasm` with both game runtimes. The static packager includes these
-files and Opus license notices, versions worker/worklet/Wasm URLs together, and
-checks all gzip sidecars; a partial backend cannot produce a release package.
-
-Recording receives bounded copies of consumed, gain-adjusted 48 kHz PCM after
-starvation handling. Its timestamps follow consumption rather than the decoder's
-look-ahead. Eight capture buffers provide credits; if recording cannot return
-them in time, capture drops samples without blocking playback. Credits are
-returned even if the recording bridge fails.
-
-`Module.glob2Music.status` reports queued, consumed and starvation frames,
-underruns, maximum render time, command latency, captured frames and dropped
-capture frames. `.transport` identifies the selected transport. Compare counters
-over an observation interval; startup/refill and actual starvation are different
-states. These counters establish application supply, not hardware continuity.
-See [audio verification](../../test/README.md#audio-buffering-and-cpu-contention)
-for deterministic, browser and contention tests.
+The application host transfers assets and controls to a separate decoder worker and AudioWorklet. Ongoing playback does not wait for the game loop. See [music playback](audio.md) for ownership, bounds and lifecycle.
 
 ### Network and storage adapters
 
@@ -161,62 +100,25 @@ platform and relay check it at admission (see the
 
 ## Verification
 
-CI builds native client, relay and browser identities. Native
-harnesses cover screen/session ownership, loading and generation cancellation,
-save safety, transports, and deterministic replay. Chromium runs the complete
-browser behavior suite; Firefox and WebKit run focused startup, gameplay, and
-viewport compatibility checks. Focused Chromium runs cover WebGL2 and real-window
-visibility in addition to the software-renderer suite. Persistence, import/export,
-context recovery and online links remain in the complete suite.
-Manual workflow runs accept `browser_only` when a follow-up changes only the web
-host or its tests. Pull requests select native, browser, map-generator, and
-self-hosting deployment jobs from changed paths. AI, GUI, rendering, and networking
-changes skip the map-generator sweep; browser shell, AI, GUI, and rendering changes
-skip the deployment check.
-Shared build, data, and cross-platform fixture changes still run every platform
-job and the checksum comparison. An unreadable diff also runs every job. Pushes
-to `master` run the full workflow and refresh compiler caches. A final check
-verifies that every selected job succeeded.
+Build and run the [browser test suite](../../browser/README.md#automated-tests). Native harnesses cover screen/session ownership, cooperative cancellation, save continuation and transports; browser tests cover actual host integration. Chromium, Firefox and WebKit coverage complements manual qualification on shipping browsers and physical devices.
 
-The operational commands live in [the browser README](../../browser/README.md).
-WebKit automation is not a substitute for manual testing in shipping Safari, and
-Chromium automation is not a substitute for shipping Edge qualification.
-
-CI retains the same 1,500-tick `games/cross-replay.game.gz` trace from two Linux
-compiler environments, Windows, and serial/threaded WebAssembly, then compares every byte in a
-separate comparison job. The fixture uses seed 42. Run a native trace locally with
-`python3 test/run-browser-determinism.py BINARY OUTPUT`; the browser counterpart
-is `browser/tests/determinism.spec.js`. Artifacts include logs, fixture hashes,
-and trace hashes. This scenario complements the save-continuation harnesses;
-it does not establish equivalence for every game or generator.
+Hosted coverage follows the [CI selection policy](../development/verification.md#hosted-verification-and-regression-detection); a cheap-only PR result does not establish engine or browser verification. Compare per-tick traces across affected native and serial/threaded Wasm configurations for simulation changes. The retained seed-42 fixture runs for 1,500 ticks using `test/run-browser-determinism.py` and `browser/tests/determinism.spec.js`. That scenario establishes equivalence for its inputs, not all maps or games.
 
 ## Compressed release assets
 
 The release build preloads the shared verified runtime export, including WebP
-support. The pinned Emscripten SDK's standard SDL_image port lacks WebP, so
-`browser/ports/` supplies checksum-pinned libwebp 1.6.0 and SDL_image 2.8.12 ports
-with PNG/JPEG/WebP loading. Their recipes participate in the managed port cache
-identity; source/debug images remain PNG. Codec notices ship with runtime data.
+support. The shared dependency helper in `scons/sdl3_dependencies.py` builds SDL3_image and its pinned WebP dependency. Versions and archive hashes live in `scons/sdl3-versions.json`; browser builds do not use the SDL2 image port. Source artwork remains PNG; the runtime export uses WebP. Codec notices ship with runtime data.
 `browser/package-static.py` creates deterministic gzip sidecars for the
-versioned serial and threaded JS/WASM, the capability loader, shared data file,
+versioned serial and threaded JS/WASM, the capability loader, content-addressed data packages,
 and HTML entry point. Both runtime binaries and the loader participate in the
 package identity; the loader selects versioned URLs from the entry point.
-Packaging verifies both runtime asset payloads are identical before retaining
-one shared data file. Its packaging policy
+The packager retains shared `assets/*.data` packages under their content-addressed names. Its packaging policy
 participates in the version identity so changing transfer representation does
 not overwrite an older immutable URL. `--verify DIRECTORY` checks file coverage,
 SHA-256 and each sidecar's decompressed bytes before publication.
 Generated directories use mode 0755 and files 0644 so the unprivileged web
 service can serve a read-only mount even with a restrictive packaging umask.
 The generated `package.json` marker records ownership and package identity.
-Static export directories use mode 0755 and files 0644 so an unprivileged
-server can read the payload even when the build uses a private umask.
-Packaging refuses to replace an unmarked directory, even if it contains HTML;
-remove an older generated `build/browser-static` once before repackaging it.
-
-Static exports use `0755` directories and `0644` files so the web container can
-read the public package as its separate user, including threaded assets and gzip
-sidecars, regardless of the packager's umask.
 
 Caddy serves gzip sidecars through content negotiation and retains original files
 for uncompressed requests. The Google Cloud Storage publisher uploads gzip bytes

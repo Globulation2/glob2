@@ -1,12 +1,7 @@
 # Native lobby automation on macOS
 
-During the custom-game redesign, desktop automation moved the mouse pointer to
-Glob2 controls but clicks did not activate them. Screenshots and application
-activation worked, so pointer movement alone was not evidence that the game
-received an input event. Repeated attempts and requests for manual clicks did
-not provide dependable interaction coverage. The exact macOS injection failure
-was not established; do not assume that this is a game UI defect or a specific
-permission failure.
+Use deterministic SDL event injection to verify the real custom-game screens,
+then separately check packaged application input on the target platform.
 
 ## Reliable approach for this SDL application
 
@@ -17,7 +12,7 @@ state. Drive controls through their keys (`host().bounds("start")`) and render
 screenshots with `paintFrame` / `printScreen` from the production screens. This
 exercises compiled application code, not an HTML mockup.
 
-From the isolated worktree:
+Run from the repository root:
 
 ```sh
 scons --build=build/native-tests -j8 release=1 engine-tests build/native-tests/src/glob2
@@ -37,8 +32,7 @@ SDL injection verifies game-side input handling, layout, rendering and launch
 behavior. It does not verify delivery of physical mouse/keyboard input through
 macOS, accessibility permissions, Retina/window coordinate translation, or
 bundle relocation. Separately smoke-test the packaged app's launch and inspect
-its window. If desktop injection fails again, switch promptly to SDL automation
-and report the remaining platform-input coverage honestly.
+its window. Report physical platform-input coverage separately from injected-event coverage.
 
 Random previews now run automatically after a 500 ms edit debounce. The UI driver
 allows the timer to run after selecting Random; it must not click a Generate
@@ -66,3 +60,7 @@ list overflows the window; capture those at a larger size. These are static
 rendering checks. Use the custom setup harness above for
 interaction coverage. Font coverage and placeholder checks do not establish
 linguistic accuracy; translation changes also need a wording review.
+
+## Related guides
+
+See [native tests](../../../test/README.md), [custom-game setup](../../features/custom-game-setup/README.md), and [testing overview](README.md).
