@@ -27,7 +27,7 @@ import {
   ProviderRejected,
   type TerrainProvider,
 } from './provider.ts';
-import { imagePrompt, processArtwork } from './artwork.ts';
+import { imagePrompt, processArtwork, prepareArtwork, ArtworkError } from './artwork.ts';
 export interface Validator {
   validateSet(
     bytes: Uint8Array,
@@ -200,44 +200,59 @@ export class Pipeline {
           const imageReferences = sheet
             ? [Buffer.from(sheet.png, 'base64url'), ...references].slice(0, 4)
             : references;
-          const original = await attempts.run(
-            row,
-            `art:${key}:${createHash('sha256').update(entry.artPrompt).digest('hex')}`,
-            imageModel,
-            {
-              prompt: entry.artPrompt,
-              kind: entry.kind,
-              references: row.input.submission.references,
-            },
-            async () => {
-              const result = await this.provider.image(
+          let sourceForDecor: Uint8Array | undefined;
+          const processed: EntryArtwork = await prepareArtwork(
+            async (attempt, reason) => {
+              const prompt =
+                entry.artPrompt +
+                (reason
+                  ? `\nCorrect only this image: ${reason}. Respect the exact frame layout and leave fully transparent padding around every object.`
+                  : '');
+              const original = await attempts.run(
+                row,
+                `art:${key}:${createHash('sha256').update(entry.artPrompt).digest('hex')}${attempt ? `:image-repair:${attempt}` : ''}`,
                 imageModel,
-                imagePrompt(entry.kind, entry.artPrompt),
-                imageReferences,
-                entry.kind === 'resource',
-                signal,
+                { prompt, kind: entry.kind, references: row.input.submission.references },
+                async () => {
+                  const result = await this.provider.image(
+                    imageModel,
+                    imagePrompt(entry.kind, prompt),
+                    imageReferences,
+                    entry.kind === 'resource',
+                    signal,
+                  );
+                  return {
+                    hash: await this.blobs.write(result.bytes, 'image/png'),
+                    usage: result.usage,
+                    responseId: result.responseId,
+                  };
+                },
               );
-              const hash = await this.blobs.write(result.bytes, 'image/png');
-              return { hash, usage: result.usage, responseId: result.responseId };
+              await this.studio.artifact(row, {
+                stage: 'artwork',
+                kind: 'source',
+                label: entry.name + ' source',
+                hash: original.hash,
+              });
+              sourceForDecor = await this.blobs.read(original.hash, 16 * 1024 * 1024);
+              return sourceForDecor;
             },
-          );
-          await this.studio.artifact(row, {
-            stage: 'artwork',
-            kind: 'source',
-            label: entry.name + ' source',
-            hash: original.hash,
-          });
-          const source = await this.blobs.read(original.hash, 16 * 1024 * 1024);
-          const processed: EntryArtwork = await processArtwork(
-            source,
-            entry.kind,
-            entry.animationFrames,
-            this.root,
-            this.python,
-            signal,
+            (source) =>
+              processArtwork(
+                source,
+                entry.kind,
+                entry.animationFrames,
+                this.root,
+                this.python,
+                signal,
+              ),
+            (attempt, reason) =>
+              this.studio.text(row, `${entry.name}: image repair ${attempt}: ${reason}`, attempt),
           );
           art[key] = processed;
           if (entry.decorPrompt) {
+            const decorSource = sourceForDecor;
+            if (!decorSource) throw Error('Terrain source for decoration is missing.');
             const decor = await attempts.run(
               row,
               `decor:${key}:${createHash('sha256').update(entry.decorPrompt).digest('hex')}`,
@@ -247,7 +262,7 @@ export class Pipeline {
                 const result = await this.provider.image(
                   imageModel,
                   imagePrompt('decor', entry.decorPrompt),
-                  [source, ...references].slice(0, 4),
+                  [decorSource, ...references].slice(0, 4),
                   true,
                   signal,
                 );
@@ -329,6 +344,7 @@ export class Pipeline {
           e instanceof ProviderUncertain ||
           e instanceof ProviderBudget ||
           e instanceof ProviderRejected ||
+          e instanceof ArtworkError ||
           signal.aborted
         )
           throw e;
