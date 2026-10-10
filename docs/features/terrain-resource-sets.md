@@ -153,3 +153,8 @@ design repairs. The bounded provider reason and HTTP status explain configuratio
 errors such as unsupported transparent backgrounds. Configure an image model
 that accepts transparent PNG output for resources and raised decorations, as well
 as opaque terrain output. Verify both modes against the deployed provider account.
+
+Malformed source images receive at most two journalled image corrections for the
+affected entry. Those corrections keep the plan and gameplay definitions intact.
+Known conversion errors show a concise explanation; subprocess paths and Python
+tracebacks stay out of the creator conversation.

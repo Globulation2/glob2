@@ -3,15 +3,18 @@
 """Builds the web app's artwork from the game's own data (GPL-3.0, see
 docs/assets/source-attribution.md and platform/apps/web/art/README.md).
 
-    python3 platform/apps/web/art/build_art.py
+    python3 platform/apps/web/art/build_art.py --design-system ../glob2-design-system
 
-Writes compressed WebP/PNG files to platform/apps/web/src/art/ (imported by
-the app, so Vite fingerprints them) and the few the server-rendered sign-in
-and invite pages need to platform/apps/api/src/web/static/. Needs Pillow.
+Writes compressed WebP/PNG files to the shared design-system assets directory.
+Consumers import the package rather than keeping independent copies. Needs Pillow.
 The outputs are committed; rerun this after changing a source sprite.
 """
 from __future__ import annotations
 
+import argparse
+import json
+import hashlib
+import subprocess
 import colorsys
 import os
 import shutil
@@ -22,9 +25,7 @@ from PIL import Image, ImageFilter
 REPO = Path(__file__).resolve().parents[4]
 GFX = REPO / "data/gfx"
 HIGHRES = REPO / "data/highres/v1"
-OUT = REPO / "platform/apps/web/src/art"
-STATIC = REPO / "platform/apps/api/src/web/static"
-PUBLIC = REPO / "platform/apps/web/public"
+OUT = STATIC = PUBLIC = Path()  # assigned only after an explicit destination
 
 # Unit sprite atlas layout (src/unit/render/UnitSkin.cpp, src/unit/render/UnitAnimation.h):
 # frame = actionBase * 4 + direction * 32 + pose; direction 3 moves east, 7 west.
@@ -143,6 +144,13 @@ def fit(image: Image.Image, size: int) -> Image.Image:
 
 
 def main() -> None:
+    global OUT, STATIC, PUBLIC
+    parser = argparse.ArgumentParser(description="Refresh reusable artwork in the shared theme checkout")
+    parser.add_argument("--design-system", required=True, type=Path)
+    args = parser.parse_args()
+    OUT = STATIC = PUBLIC = args.design_system.resolve() / "assets"
+    if not (args.design_system / "package.json").exists():
+        parser.error("destination must be the design-system checkout")
     OUT.mkdir(parents=True, exist_ok=True)
     STATIC.mkdir(parents=True, exist_ok=True)
 
@@ -204,17 +212,25 @@ def main() -> None:
     shutil.copy(REPO / "data/icons/glob2-icon-64x64.png", STATIC / "glob-64.png")
 
     # Fonts for the server-rendered pages: the game font and the body font.
-    shutil.copy(PUBLIC / "fonts/glob2-sans.woff2", STATIC / "glob2-sans.woff2")
+    # Glob2 Sans is retained in the theme checkout; font regeneration is a separate asset change.
+    if not (STATIC / "glob2-sans.woff2").exists():
+        raise FileNotFoundError("theme checkout must contain assets/glob2-sans.woff2")
     nunito = REPO / "platform/node_modules/@fontsource-variable/nunito/files/nunito-latin-wght-normal.woff2"
     if nunito.exists():
         shutil.copy(nunito, STATIC / "nunito.woff2")
         shutil.copy(nunito.parents[1] / "LICENSE", STATIC / "LICENSE-Nunito.txt")
-        shutil.copy(nunito.parents[1] / "LICENSE", PUBLIC / "fonts/LICENSE-Nunito.txt")
+
     else:
         print("note: run npm ci in platform/ to copy the Nunito font")
 
-    for path in sorted(list(OUT.iterdir()) + list(STATIC.iterdir())):
-        print(f"{os.path.getsize(path):>8}  {path.relative_to(REPO)}")
+    provenance = STATIC / "provenance.json"
+    info = json.loads(provenance.read_text()) if provenance.exists() else {}
+    info.update(repository="https://github.com/Globulation2/glob2", revision=subprocess.check_output(["git", "-C", str(REPO), "rev-parse", "HEAD"], text=True).strip())
+    info["files"] = {path.name: hashlib.sha256(path.read_bytes()).hexdigest() for path in sorted(STATIC.iterdir()) if path.is_file() and path.name != "provenance.json"}
+    provenance.write_text(json.dumps(info, indent=2) + "\n")
+    for path in sorted(OUT.iterdir()):
+        if path.is_file():
+            print(f"{os.path.getsize(path):>8}  {path.name}")
 
 
 if __name__ == "__main__":

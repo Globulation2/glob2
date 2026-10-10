@@ -16,6 +16,7 @@ Build, test and understand the Android and iOS clients.
 
 - [Store releases](../releases/README.md).
 - [Unified website, game and online service privacy policy](privacy-policy.md).
+- [Unified website, game and online service terms](terms.md).
 - [Fire tablet privacy section](privacy-policy.md#fire-tablet-edition).
 
 [Documentation index](../README.md).

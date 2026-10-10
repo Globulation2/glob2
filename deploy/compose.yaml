@@ -38,11 +38,12 @@ x-platform-image: &platform-image
     context: ..
     dockerfile: deploy/Dockerfile
     target: platform
-    args: {JOBS: '${GLOB2_BUILD_JOBS:-4}'}
+    args: {JOBS: '${GLOB2_BUILD_JOBS:-4}', GLOB2_DESIGN_SYSTEM_SHA: '${GLOB2_DESIGN_SYSTEM_SHA:-}'}
 
 x-platform-environment: &platform-environment
   # Engine-derived authoring images do not inherit the platform image's default.
   BLOB_STORE: fs
+  # Engine-derived authoring images do not inherit the platform image's default.
   BLOB_DIR: /var/lib/glob2/blobs
   PUBLIC_ORIGIN: ${GLOB2_PUBLIC_ORIGIN:-https://localhost:8443}
   LOG_LEVEL: ${LOG_LEVEL:-info}
@@ -255,7 +256,7 @@ services:
       context: ..
       dockerfile: deploy/Dockerfile
       target: skin-render-worker
-      args: {JOBS: '${GLOB2_BUILD_JOBS:-4}'}
+      args: {JOBS: '${GLOB2_BUILD_JOBS:-4}', GLOB2_DESIGN_SYSTEM_SHA: '${GLOB2_DESIGN_SYSTEM_SHA:-}'}
     environment:
       <<: *platform-environment
       DATABASE_URL: postgres://glob2_worker@postgres:5432/glob2
@@ -283,7 +284,7 @@ services:
       context: ..
       dockerfile: deploy/Dockerfile
       target: ai-map-worker
-      args: {JOBS: '${GLOB2_BUILD_JOBS:-4}'}
+      args: {JOBS: '${GLOB2_BUILD_JOBS:-4}', GLOB2_DESIGN_SYSTEM_SHA: '${GLOB2_DESIGN_SYSTEM_SHA:-}'}
     command: [node, apps/ai-map-worker/src/main.ts]
     environment:
       <<: *platform-environment
@@ -311,7 +312,7 @@ services:
       context: ..
       dockerfile: deploy/Dockerfile
       target: ai-terrain-worker
-      args: {JOBS: '${GLOB2_BUILD_JOBS:-4}'}
+      args: {JOBS: '${GLOB2_BUILD_JOBS:-4}', GLOB2_DESIGN_SYSTEM_SHA: '${GLOB2_DESIGN_SYSTEM_SHA:-}'}
     command: [node, apps/ai-terrain-worker/src/main.ts]
     environment:
       <<: *platform-environment
@@ -339,7 +340,7 @@ services:
       context: ..
       dockerfile: deploy/Dockerfile
       target: ai-building-worker
-      args: {JOBS: '${GLOB2_BUILD_JOBS:-4}'}
+      args: {JOBS: '${GLOB2_BUILD_JOBS:-4}', GLOB2_DESIGN_SYSTEM_SHA: '${GLOB2_DESIGN_SYSTEM_SHA:-}'}
     command: [node, apps/ai-building-worker/src/main.ts]
     environment:
       <<: *platform-environment
@@ -374,6 +375,7 @@ services:
       dockerfile: deploy/Dockerfile
       target: engine-agent
       args:
+        GLOB2_DESIGN_SYSTEM_SHA: ${GLOB2_DESIGN_SYSTEM_SHA:-}
         JOBS: '${GLOB2_BUILD_JOBS:-4}'
         GLOB2_SIM_VERSION: ${GLOB2_SIM_VERSION:-}
     # Engine scratch (generated maps, verification replays) lives here.
@@ -404,7 +406,7 @@ services:
       context: ..
       dockerfile: deploy/Dockerfile
       target: relay
-      args: {JOBS: '${GLOB2_BUILD_JOBS:-4}'}
+      args: {JOBS: '${GLOB2_BUILD_JOBS:-4}', GLOB2_DESIGN_SYSTEM_SHA: '${GLOB2_DESIGN_SYSTEM_SHA:-}'}
     environment:
       # Each replica registers wss://<origin host>/relay/<container id> under a
       # stable relay id relay-<n> claimed on the spool volume (relay-entrypoint.sh).
@@ -445,6 +447,7 @@ services:
       dockerfile: deploy/Dockerfile
       target: caddy
       args:
+        GLOB2_DESIGN_SYSTEM_SHA: ${GLOB2_DESIGN_SYSTEM_SHA:-}
         GLOB2_WEBSITE_URL: ${GLOB2_WEBSITE_URL:-}
         GLOB2_DOWNLOAD_URL: ${GLOB2_DOWNLOAD_URL:-}
     # Permit standard HTTP/TLS ports only within this network namespace.

@@ -133,6 +133,19 @@ fi
 
 # ------------------------------------------------------------------- 2. build
 phase=build
+# Resolve the shared theme once for every Node image in this deployment.
+GLOB2_DESIGN_SYSTEM_SHA=${GLOB2_DESIGN_SYSTEM_SHA:-$(setting GLOB2_DESIGN_SYSTEM_SHA)}
+if [ -z "$GLOB2_DESIGN_SYSTEM_SHA" ]; then
+ GLOB2_DESIGN_SYSTEM_SHA=$(git ls-remote https://github.com/Globulation2/glob2-design-system.git refs/heads/main | cut -f1)
+fi
+case "$GLOB2_DESIGN_SYSTEM_SHA" in
+ *[!a-f0-9]*|'') echo "Invalid design-system SHA" >&2; exit 1 ;;
+esac
+[ "${#GLOB2_DESIGN_SYSTEM_SHA}" -eq 40 ] || { echo "Design-system SHA must have 40 characters" >&2; exit 1; }
+export GLOB2_DESIGN_SYSTEM_SHA
+echo "design system: $GLOB2_DESIGN_SYSTEM_SHA"
+echo "$GLOB2_DESIGN_SYSTEM_SHA" > "$backup/target-design-system-revision"
+
 # The images running now, kept as :previous for a rollback.
 images=$(compose config --images | sort -u)
 for image in $images; do
