@@ -35,17 +35,35 @@ public:
     static constexpr unsigned MaxProfiles=64, MaxAlternatives=2, WindowTicks=256;
     static constexpr unsigned ProbePeriod=128, MinimumPairs=8, CooldownRequests=64;
     struct Choice { Plan plan=Plan(0); std::uint64_t version=0; };
+    enum class ProbeKind { PaidCpuReplay, AcceptedCpuCapture };
+    enum class CapturePhase { AwaitingAcceptedReference, ReferenceBound, Running, Reaping };
     struct ProbeTicket {
-        std::uint64_t id=0, generation=0, tick=0, reservedCpuNs=0;
-        unsigned profile=0, alternative=0;
-        std::uint64_t commonPreparationCpuNs=0, acceptedReferenceCpuNs=0;
+        std::uint64_t id=0, generation=0;
         explicit operator bool() const { return id!=0; }
+    };
+    struct ProbeAuthorization {
+        Plan plan=Plan(0);
+        std::uint64_t acceptedReferenceCpuNs=0, commonPreparationCpuNs=0, reservedCpuNs=0;
+    };
+    struct ProbeOutcome {
+        std::uint64_t alternativeCpuNs=0, elapsedNs=0, actualProbeCpuNs=0, slackNs=0;
+        bool exact=false, success=false, clockValid=false;
     };
     struct Metrics {
         std::uint64_t acceptedCpuNs=0, probeCpuNs=0, admitted=0, canceled=0, promoted=0, demoted=0;
         unsigned profiles=0;
     };
 private:
+    struct Reservation {
+        std::uint64_t id=0, generation=0, tick=0, reservedCpuNs=0;
+        unsigned profile=0, alternative=0;
+        std::uint64_t commonPreparationCpuNs=0, acceptedReferenceCpuNs=0;
+        ProbeKind kind=ProbeKind::PaidCpuReplay;
+        CapturePhase phase=CapturePhase::Running;
+        std::uint64_t requiredGeneration=0, conservativeElapsedNs=0;
+        bool requiresFullReservedCharge=false;
+        ProbeTicket ticket() const { return {id,generation}; }
+    };
     struct Alternative {
         Plan plan=Plan(0);
         bool qualified=false;
@@ -67,8 +85,9 @@ private:
     std::array<Credit,WindowTicks> credits;
     mutable std::mutex background;
     std::atomic<std::uint64_t> generation{1};
-    std::uint64_t nextTicket=1, latestTick=0;
-    std::optional<ProbeTicket> active;
+    inline static std::atomic<std::uint64_t> nextTicket{1};
+    std::uint64_t latestTick=0;
+    std::optional<Reservation> active;
     inline static std::atomic<bool> globalProbeBusy{false};
     inline static std::atomic<std::uint64_t> nextConfidenceEpoch{1};
     inline static std::atomic<std::uint64_t> globalProbeOpportunities{0};
@@ -91,7 +110,7 @@ private:
         if(slot.tick!=tick) slot={tick,0,0};
         return slot;
     }
-    void settleCredit(const ProbeTicket& ticket,std::uint64_t actualCpuNs) {
+    void settleCredit(const Reservation& ticket,std::uint64_t actualCpuNs) {
         // An experiment can be paused across a whole rolling window. Never
         // recreate its expired slot and subtract a reservation from zero.
         auto& reserved=credits[ticket.tick%WindowTicks];
@@ -111,6 +130,40 @@ private:
             alternative.epoch=nextConfidenceEpoch.fetch_add(1,std::memory_order_relaxed);
             alternative.maximumElapsed=0;
         }
+    }
+    bool matches(const ProbeTicket& ticket) const {
+        return active && active->id==ticket.id && active->generation==ticket.generation;
+    }
+    std::optional<ProbeTicket> beginReservation(const WorkloadKey& key, Plan plan, std::uint64_t tick,
+        std::uint64_t reserveCpuNs, std::uint64_t slackNs, std::uint64_t conservativeElapsedNs,
+        bool backlog, std::uint64_t commonPreparationCpuNs, ProbeKind kind,
+        std::uint64_t requiredGeneration) {
+        // Rejected sampling opportunities take no policy lock or profile scan.
+        // The caller accounts admission/capture CPU separately from required work.
+        if((globalProbeOpportunities.fetch_add(1,std::memory_order_relaxed)+1)%ProbePeriod ||
+           backlog || !reserveCpuNs || !conservativeElapsedNs || !slackNs ||
+           conservativeElapsedNs>slackNs/2) return {};
+        std::lock_guard lock(background);
+        latestTick=std::max(latestTick,tick);
+        if(active) return {};
+        const auto index=findOrCreate(key);
+        if(index==MaxProfiles || profiles[index].cooldown) return {};
+        unsigned alternative=MaxAlternatives;
+        for(unsigned i=0;i<MaxAlternatives;++i)
+            if(profiles[index].alternatives[i].qualified && profiles[index].alternatives[i].plan==plan) alternative=i;
+        if(alternative==MaxAlternatives) return {};
+        std::uint64_t accepted=0, probes=0;
+        for(const auto& c:credits) if(c.tick<=tick && tick-c.tick<WindowTicks) { accepted+=c.accepted; probes+=c.probes; }
+        if(probes>accepted/100 || reserveCpuNs>accepted/100-probes) return {};
+        bool available=false;
+        if(!globalProbeBusy.compare_exchange_strong(available,true,std::memory_order_acq_rel)) return {};
+        credit(tick).probes+=reserveCpuNs;
+        active=Reservation{nextTicket.fetch_add(1,std::memory_order_relaxed),generation.load(std::memory_order_acquire),tick,reserveCpuNs,
+            index,alternative,commonPreparationCpuNs,0,kind,
+            kind==ProbeKind::AcceptedCpuCapture ? CapturePhase::AwaitingAcceptedReference : CapturePhase::Running,
+            requiredGeneration,conservativeElapsedNs,false};
+        ++totals.admitted;
+        return active->ticket();
     }
 public:
     ~CpuSavingPolicy() {
@@ -163,43 +216,71 @@ public:
     std::optional<ProbeTicket> beginProbe(const WorkloadKey& key, Plan plan, std::uint64_t tick,
                                          std::uint64_t reserveCpuNs, std::uint64_t slackNs,
                                          std::uint64_t conservativeElapsedNs, bool backlog,
-                                         std::uint64_t commonPreparationCpuNs=0,
-                                         std::uint64_t acceptedReferenceCpuNs=0) {
-        std::lock_guard lock(background);
-        latestTick=std::max(latestTick,tick);
-        if((globalProbeOpportunities.fetch_add(1,std::memory_order_relaxed)+1)%ProbePeriod || active || backlog || !reserveCpuNs ||
-           conservativeElapsedNs>slackNs/2) return {};
-        const auto index=findOrCreate(key);
-        if(index==MaxProfiles || profiles[index].cooldown) return {};
-        unsigned alternative=MaxAlternatives;
-        for(unsigned i=0;i<MaxAlternatives;++i)
-            if(profiles[index].alternatives[i].qualified && profiles[index].alternatives[i].plan==plan) alternative=i;
-        if(alternative==MaxAlternatives) return {};
-        std::uint64_t accepted=0, probes=0;
-        for(const auto& c:credits) if(c.tick<=tick && tick-c.tick<WindowTicks) { accepted+=c.accepted; probes+=c.probes; }
-        if(probes>accepted/100 || reserveCpuNs>accepted/100-probes) return {};
-        bool available=false;
-        if(!globalProbeBusy.compare_exchange_strong(available,true,std::memory_order_acq_rel)) return {};
-        credit(tick).probes+=reserveCpuNs;
-        active=ProbeTicket{nextTicket++,generation.load(std::memory_order_acquire),tick,reserveCpuNs,index,alternative,commonPreparationCpuNs,acceptedReferenceCpuNs};
-        ++totals.admitted;
-        return active;
+                                         std::uint64_t commonPreparationCpuNs=0) {
+        return beginReservation(key,plan,tick,reserveCpuNs,slackNs,conservativeElapsedNs,backlog,
+            commonPreparationCpuNs,ProbeKind::PaidCpuReplay,0);
     }
-    bool finishProbe(const ProbeTicket& ticket, std::uint64_t referenceCpuNs, std::uint64_t alternativeCpuNs,
-                     std::uint64_t elapsedNs, std::uint64_t actualProbeCpuNs, std::uint64_t slackNs,
-                     bool exact, bool success) {
+    // A required CPU job has not propagated yet. Admission precedes both seed
+    // and golden clones. Its session generation is distinct from policy generation.
+    std::optional<ProbeTicket> beginAcceptedCapture(const WorkloadKey& key, Plan plan, std::uint64_t tick,
+        std::uint64_t reserveCpuNs, std::uint64_t slackNs, std::uint64_t conservativeElapsedNs,
+        bool backlog, std::uint64_t commonPreparationCpuNs, std::uint64_t requiredGeneration,
+        bool alternativeReady) {
+        if(!alternativeReady || !requiredGeneration)return {};
+        return beginReservation(key,plan,tick,reserveCpuNs,slackNs,conservativeElapsedNs,backlog,
+            commonPreparationCpuNs,ProbeKind::AcceptedCpuCapture,requiredGeneration);
+    }
+    bool bindAcceptedReference(const ProbeTicket& ticket,std::uint64_t requiredGeneration,
+        std::uint64_t propagationCpuNs,bool successful,bool clockValid) {
+        std::lock_guard lock(background);
+        if(!matches(ticket) || active->kind!=ProbeKind::AcceptedCpuCapture ||
+           active->phase!=CapturePhase::AwaitingAcceptedReference)return false;
+        if(!clockValid || !propagationCpuNs)active->requiresFullReservedCharge=true;
+        if(!successful || !clockValid || !propagationCpuNs ||
+           active->requiredGeneration!=requiredGeneration ||
+           active->generation!=generation.load(std::memory_order_acquire)) {
+            active->phase=CapturePhase::Reaping;
+            return false;
+        }
+        active->acceptedReferenceCpuNs=propagationCpuNs;
+        active->phase=CapturePhase::ReferenceBound;
+        return true;
+    }
+    std::optional<ProbeAuthorization> authorizeOptionalExecution(const ProbeTicket& ticket,
+        std::uint64_t requiredGeneration,std::uint64_t currentTick,std::uint64_t slackNs,bool backlog) {
+        std::lock_guard lock(background);
+        if(!matches(ticket) || active->kind!=ProbeKind::AcceptedCpuCapture ||
+           active->phase!=CapturePhase::ReferenceBound || active->requiresFullReservedCharge ||
+           active->requiredGeneration!=requiredGeneration ||
+           active->generation!=generation.load(std::memory_order_acquire) || currentTick<active->tick ||
+           backlog || !slackNs || !active->conservativeElapsedNs ||
+           active->conservativeElapsedNs>slackNs/2)return {};
+        latestTick=std::max(latestTick,currentTick);
+        active->phase=CapturePhase::Running;
+        return ProbeAuthorization{profiles[active->profile].alternatives[active->alternative].plan,
+            active->acceptedReferenceCpuNs,active->commonPreparationCpuNs,active->reservedCpuNs};
+    }
+private:
+    bool finish(const ProbeTicket& ticket, std::uint64_t referenceCpuNs, std::uint64_t alternativeCpuNs,
+                std::uint64_t elapsedNs, std::uint64_t actualProbeCpuNs, std::uint64_t slackNs,
+                bool exact,bool success,bool clockValid,ProbeKind kind) {
         const auto accountingStart=glob2::threadCpuNs();
         std::lock_guard lock(background);
-        if(!active || active->id!=ticket.id) return false;
-        // The reservation and captured accepted reference are predictable before
-        // probe execution. Caller-modified ticket fields never affect inference.
+        if(!matches(ticket))return false;
+        const bool phaseValid=active->kind==kind && active->phase==CapturePhase::Running;
+        if(kind==ProbeKind::AcceptedCpuCapture)referenceCpuNs=active->acceptedReferenceCpuNs;
+        if(!clockValid)active->requiresFullReservedCharge=true;
+        active->phase=CapturePhase::Reaping;
         const auto reservation=*active;
         auto& profile=profiles[reservation.profile];
         auto settle=[&](bool promoted) {
             const auto now=glob2::threadCpuNs();
-            const auto accountingCpu=now>=accountingStart ? now-accountingStart : 0;
-            const auto actual=actualProbeCpuNs>UINT64_MAX-accountingCpu ? UINT64_MAX : actualProbeCpuNs+accountingCpu;
-            if(!accountingStart || !now || actual>reservation.reservedCpuNs) {
+            const bool accountingValid=accountingStart && now && now>=accountingStart;
+            const auto accountingCpu=accountingValid ? now-accountingStart : 0;
+            auto actual=actualProbeCpuNs>UINT64_MAX-accountingCpu ? UINT64_MAX : actualProbeCpuNs+accountingCpu;
+            if(!accountingValid || reservation.requiresFullReservedCharge)
+                actual=std::max(actual,reservation.reservedCpuNs);
+            if(!accountingValid || reservation.requiresFullReservedCharge || actual>reservation.reservedCpuNs) {
                 demote(profile); promoted=false;
             }
             settleCredit(reservation,actual);
@@ -211,13 +292,15 @@ public:
             actualProbeCpuNs=std::max(actualProbeCpuNs,reservation.reservedCpuNs);
             return settle(false);
         }
+        if(!phaseValid){++totals.canceled;return settle(false);}
+        if(reservation.requiresFullReservedCharge){demote(profile);return settle(false);}
         // A reference already measured on this immutable accepted job is free
-        // to optional accounting, but must match the value frozen at admission.
+        // to optional accounting, but must match the value frozen at binding.
         // Otherwise both reference and alternative CPU must be paid by credits.
-        const bool acceptedReference=reservation.acceptedReferenceCpuNs!=0;
+        const bool acceptedReference=reservation.kind==ProbeKind::AcceptedCpuCapture;
         const bool validReference=acceptedReference ? referenceCpuNs==reservation.acceptedReferenceCpuNs :
             referenceCpuNs<=actualProbeCpuNs && alternativeCpuNs<=actualProbeCpuNs-referenceCpuNs;
-        if(!success || !exact || !referenceCpuNs || !alternativeCpuNs || !validReference ||
+        if(!success || !exact || !referenceCpuNs || !alternativeCpuNs || !elapsedNs || !slackNs || !validReference ||
            alternativeCpuNs>actualProbeCpuNs || actualProbeCpuNs>reservation.reservedCpuNs) {
             demote(profile); return settle(false);
         }
@@ -253,12 +336,28 @@ public:
         if(!settle(true)) return false;
         publish(profile,alternative.plan); ++totals.promoted; return true;
     }
-
-    void cancelProbe(const ProbeTicket& ticket, std::uint64_t actualCpuNs) {
+public:
+    bool finishProbe(const ProbeTicket& ticket,std::uint64_t referenceCpuNs,std::uint64_t alternativeCpuNs,
+        std::uint64_t elapsedNs,std::uint64_t actualProbeCpuNs,std::uint64_t slackNs,bool exact,bool success) {
+        return finish(ticket,referenceCpuNs,alternativeCpuNs,elapsedNs,actualProbeCpuNs,slackNs,
+            exact,success,true,ProbeKind::PaidCpuReplay);
+    }
+    bool finishAcceptedCapture(const ProbeTicket& ticket,const ProbeOutcome& outcome) {
+        return finish(ticket,0,outcome.alternativeCpuNs,outcome.elapsedNs,outcome.actualProbeCpuNs,
+            outcome.slackNs,outcome.exact,outcome.success,outcome.clockValid,ProbeKind::AcceptedCpuCapture);
+    }
+    void cancelProbe(const ProbeTicket& ticket, std::uint64_t actualCpuNs,bool clockValid=true) {
+        const auto started=glob2::threadCpuNs();
         std::lock_guard lock(background);
-        if(!active || active->id!=ticket.id) return;
-        settleCredit(*active,active->generation!=generation.load(std::memory_order_acquire) ?
-            std::max(actualCpuNs,active->reservedCpuNs) : actualCpuNs);
+        if(!matches(ticket))return;
+        const auto ended=glob2::threadCpuNs();
+        const bool accountingValid=started && ended && ended>=started;
+        const auto overhead=accountingValid ? ended-started : 0;
+        const auto actual=actualCpuNs>UINT64_MAX-overhead ? UINT64_MAX : actualCpuNs+overhead;
+        const bool full=!clockValid || !accountingValid || active->requiresFullReservedCharge ||
+            active->generation!=generation.load(std::memory_order_acquire);
+        active->phase=CapturePhase::Reaping;
+        settleCredit(*active,full ? std::max(actual,active->reservedCpuNs) : actual);
         ++totals.canceled; active.reset(); globalProbeBusy.store(false,std::memory_order_release);
     }
     // Owner-side cancellation is bounded metadata only. The background holder

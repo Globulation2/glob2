@@ -14,6 +14,157 @@ std::optional<CpuSavingPolicy::ProbeTicket> nextProbe(CpuSavingPolicy& policy, c
         if(auto ticket=policy.beginProbe(key,Plan::Frozen8,tick,reserve,100000000,1000000,false)) return ticket;
     return {};
 }
+std::optional<CpuSavingPolicy::ProbeTicket> nextAcceptedProbe(CpuSavingPolicy& policy,const WorkloadKey& key,
+    std::uint64_t commonPreparation=0,std::uint64_t reference=1000000,std::uint64_t reserve=300000) {
+    for(unsigned i=0;i<CpuSavingPolicy::ProbePeriod;++i) {
+        auto ticket=policy.beginAcceptedCapture(key,Plan::Frozen8,1,reserve,100000000,1000000,false,
+            commonPreparation,41,true);
+        if(!ticket)continue;
+        if(policy.bindAcceptedReference(*ticket,41,reference,true,true) &&
+           policy.authorizeOptionalExecution(*ticket,41,1,100000000,false))return ticket;
+        policy.cancelProbe(*ticket,0);return {};
+    }
+    return {};
+}
+std::optional<CpuSavingPolicy::ProbeTicket> admitCapture(CpuSavingPolicy& policy,const WorkloadKey& key,
+    std::uint64_t requiredGeneration=41,bool ready=true) {
+    for(unsigned i=0;i<CpuSavingPolicy::ProbePeriod;++i)
+        if(auto ticket=policy.beginAcceptedCapture(key,Plan::Frozen8,1,300000,100000000,1000000,false,
+            20000,requiredGeneration,ready))return ticket;
+    return {};
+}
+}
+
+TEST_CASE("accepted capture binds and authorizes exactly once without mutable reference tickets" * doctest::test_suite("OpenCLGradient"))
+{
+    CpuSavingPolicy policy;const auto key=workload();
+    REQUIRE(policy.qualify(key,Plan::Frozen8,true));
+    policy.observeAccepted(key,Plan::CPU,1000000000,1);
+    CHECK_FALSE(admitCapture(policy,key,41,false));
+    CHECK_FALSE(admitCapture(policy,key,0,true));
+    auto ticket=admitCapture(policy,key);REQUIRE(ticket);
+    CHECK_FALSE(policy.authorizeOptionalExecution(*ticket,41,1,100000000,false));
+    REQUIRE(policy.bindAcceptedReference(*ticket,41,1000000,true,true));
+    CHECK_FALSE(policy.bindAcceptedReference(*ticket,41,2000000,true,true));
+    CHECK_FALSE(policy.authorizeOptionalExecution(*ticket,42,1,100000000,false));
+    CHECK_FALSE(policy.authorizeOptionalExecution(*ticket,41,0,100000000,false));
+    CHECK_FALSE(policy.authorizeOptionalExecution(*ticket,41,1,100000000,true));
+    CHECK_FALSE(policy.authorizeOptionalExecution(*ticket,41,1,0,false));
+    CHECK_FALSE(policy.authorizeOptionalExecution(*ticket,41,1,1000,false));
+    auto authorization=policy.authorizeOptionalExecution(*ticket,41,1,100000000,false);
+    REQUIRE(bool(authorization));
+    CHECK(authorization->plan==Plan::Frozen8);
+    CHECK(authorization->acceptedReferenceCpuNs==1000000);
+    CHECK(authorization->commonPreparationCpuNs==20000);
+    CHECK(authorization->reservedCpuNs==300000);
+    CHECK_FALSE(policy.authorizeOptionalExecution(*ticket,41,1,100000000,false));
+    CHECK_FALSE(policy.finishAcceptedCapture(*ticket,{100000,1000000,200000,100000000,true,true,true}));
+    CHECK(policy.lookup(key).plan==Plan::CPU); // One observation cannot promote.
+    CHECK(policy.metrics().probeCpuNs>=200000);
+}
+
+TEST_CASE("unbound captured work pays expense and cannot supply paired inference" * doctest::test_suite("OpenCLGradient"))
+{
+    CpuSavingPolicy first,second;const auto key=workload();
+    for(auto* policy:{&first,&second}) {
+        REQUIRE(policy->qualify(key,Plan::Frozen8,true));
+        policy->observeAccepted(key,Plan::CPU,1000000000,1);
+    }
+    auto ticket=admitCapture(first,key);REQUIRE(ticket);
+    CHECK_FALSE(admitCapture(second,key));
+    CHECK_FALSE(first.finishAcceptedCapture(*ticket,{1,1,100000,100000000,true,true,true}));
+    CHECK(first.metrics().probeCpuNs>=100000);
+    CHECK(first.metrics().canceled==1);CHECK(first.lookup(key).plan==Plan::CPU);
+    ticket=admitCapture(second,key);REQUIRE(ticket);second.cancelProbe(*ticket,1000);
+}
+
+TEST_CASE("invalid captured clocks and stale generations retain full reserved credit until reaping" * doctest::test_suite("OpenCLGradient"))
+{
+    const auto key=workload();
+    for(unsigned scenario=0;scenario<4;++scenario) {
+        CAPTURE(scenario);
+        CpuSavingPolicy first,second;
+        for(auto* policy:{&first,&second}) {
+            REQUIRE(policy->qualify(key,Plan::Frozen8,true));
+            policy->observeAccepted(key,Plan::CPU,1000000000,1);
+        }
+        auto ticket=admitCapture(first,key);REQUIRE(ticket);
+        if(scenario==0)CHECK_FALSE(first.bindAcceptedReference(*ticket,41,1000000,true,false));
+        if(scenario==1)CHECK_FALSE(first.bindAcceptedReference(*ticket,41,0,true,true));
+        if(scenario>=2) {
+            REQUIRE(first.bindAcceptedReference(*ticket,41,1000000,true,true));
+            REQUIRE(bool(first.authorizeOptionalExecution(*ticket,41,1,100000000,false)));
+        }
+        if(scenario==3)first.invalidate();
+        CHECK_FALSE(admitCapture(second,key));
+        CHECK_FALSE(first.finishAcceptedCapture(*ticket,{1,1,1,100000000,true,true,scenario!=2}));
+        CHECK(first.metrics().probeCpuNs>=300000);
+        CHECK(first.lookup(key).plan==Plan::CPU);
+        ticket=admitCapture(second,key);REQUIRE(ticket);second.cancelProbe(*ticket,0);
+    }
+}
+
+TEST_CASE("captured reference belongs to the required session generation" * doctest::test_suite("OpenCLGradient"))
+{
+    CpuSavingPolicy policy;const auto key=workload();
+    REQUIRE(policy.qualify(key,Plan::Frozen8,true));
+    policy.observeAccepted(key,Plan::CPU,1000000000,1);
+    auto ticket=admitCapture(policy,key,4242);REQUIRE(ticket);
+    CHECK_FALSE(policy.bindAcceptedReference(*ticket,4243,1000000,true,true));
+    CHECK_FALSE(policy.bindAcceptedReference(*ticket,4242,1000000,true,true));
+    CHECK_FALSE(policy.authorizeOptionalExecution(*ticket,4242,1,100000000,false));
+    policy.cancelProbe(*ticket,100000);
+    CHECK(policy.metrics().probeCpuNs>=100000);CHECK(policy.lookup(key).plan==Plan::CPU);
+}
+
+TEST_CASE("stale tickets cannot control a later capture owned by another policy" * doctest::test_suite("OpenCLGradient"))
+{
+    CpuSavingPolicy first,second;const auto key=workload();
+    for(auto* policy:{&first,&second}) {
+        REQUIRE(policy->qualify(key,Plan::Frozen8,true));
+        policy->observeAccepted(key,Plan::CPU,1000000000,1);
+    }
+    auto old=admitCapture(first,key);REQUIRE(old);first.cancelProbe(*old,0);
+    auto current=admitCapture(second,key);REQUIRE(current);
+    CHECK(old->id!=current->id);
+    CHECK_FALSE(second.bindAcceptedReference(*old,41,1000000,true,true));
+    CHECK_FALSE(second.authorizeOptionalExecution(*old,41,1,100000000,false));
+    CHECK_FALSE(second.finishAcceptedCapture(*old,{1,1,1,100000000,true,true,true}));
+    second.cancelProbe(*old,0);
+    CHECK(second.metrics().probeCpuNs==0);CHECK_FALSE(admitCapture(first,key));
+    REQUIRE(second.bindAcceptedReference(*current,41,1000000,true,true));
+    REQUIRE(bool(second.authorizeOptionalExecution(*current,41,1,100000000,false)));
+    second.cancelProbe(*current,100000);
+    CHECK(second.metrics().probeCpuNs>=100000);
+}
+
+TEST_CASE("unknown completion bounds cannot admit optional work" * doctest::test_suite("OpenCLGradient"))
+{
+    CpuSavingPolicy policy;const auto key=workload();
+    REQUIRE(policy.qualify(key,Plan::Frozen8,true));
+    policy.observeAccepted(key,Plan::CPU,1000000000,1);
+    for(unsigned i=0;i<CpuSavingPolicy::ProbePeriod;++i) {
+        CHECK_FALSE(policy.beginAcceptedCapture(key,Plan::Frozen8,1,300000,100000000,0,false,0,41,true));
+        CHECK_FALSE(policy.beginProbe(key,Plan::Frozen8,1,300000,0,1000000,false));
+    }
+    CHECK(policy.metrics().admitted==0);
+    auto ticket=admitCapture(policy,key);REQUIRE(ticket);policy.cancelProbe(*ticket,0);
+}
+
+TEST_CASE("zero measured completion or final slack cannot train captured work" * doctest::test_suite("OpenCLGradient"))
+{
+    const auto key=workload();
+    for(unsigned scenario=0;scenario<2;++scenario) {
+        CAPTURE(scenario);
+        CpuSavingPolicy policy;REQUIRE(policy.qualify(key,Plan::Frozen8,true));
+        policy.observeAccepted(key,Plan::CPU,1000000000,1);
+        auto ticket=nextAcceptedProbe(policy,key);REQUIRE(ticket);
+        CHECK_FALSE(policy.finishAcceptedCapture(*ticket,
+            {100000,scenario==0 ? 0u : 1000000u,200000,scenario==1 ? 0u : 100000000u,true,true,true}));
+        CHECK(policy.lookup(key).plan==Plan::CPU);
+        CHECK(policy.metrics().probeCpuNs>=200000);
+        CHECK(policy.metrics().promoted==0);
+    }
 }
 
 TEST_CASE("CPU saving policy requires paired qualified background evidence" * doctest::test_suite("OpenCLGradient"))
@@ -81,9 +232,11 @@ TEST_CASE("paused probes survive credit window rotation without underflow" * doc
     policy.observeAccepted(key,Plan::CPU,200000000,1);
     auto ticket=nextProbe(policy,key); REQUIRE(ticket);
     policy.observeAccepted(key,Plan::CPU,300000000,257); // same ring slot
-    // A copied ticket cannot change the internal reservation or profile index.
-    ticket->profile=9999; ticket->alternative=9999; ticket->reservedCpuNs=UINT64_MAX;
-    ticket->tick=9999;
+    // Tickets expose identity only, never mutable reservation/profile fields.
+    static_assert(sizeof(CpuSavingPolicy::ProbeTicket)==2*sizeof(std::uint64_t));
+    auto forged=*ticket;++forged.id;++forged.generation;
+    CHECK_FALSE(policy.finishProbe(forged,600000,300000,1000000,1000000,100000000,true,true));
+    CHECK(policy.metrics().probeCpuNs==0);
     CHECK_FALSE(policy.finishProbe(*ticket,600000,300000,1000000,1000000,100000000,true,true));
     CHECK(policy.metrics().probeCpuNs>=1000000);
     ticket=nextProbe(policy,key,257); REQUIRE(ticket); // expired reservation charged in new slot
@@ -124,13 +277,11 @@ TEST_CASE("accepted reference is frozen and shared preparation reduces apparent 
     REQUIRE(policy.qualify(key,Plan::Frozen8,true));
     policy.observeAccepted(key,Plan::CPU,100000000000ull,1);
     for(unsigned pair=0;pair<256;++pair) {
-        std::optional<CpuSavingPolicy::ProbeTicket> ticket;
-        for(unsigned i=0;i<CpuSavingPolicy::ProbePeriod && !ticket;++i)
-            ticket=policy.beginProbe(key,Plan::Frozen8,1,300000,100000000,1000000,false,10000000,1000000);
+        auto ticket=nextAcceptedProbe(policy,key,10000000);
         REQUIRE(ticket);
         // Paid alternative is much cheaper than propagation, but preparation
         // means total field savings are below the required ten percent.
-        CHECK_FALSE(policy.finishProbe(*ticket,1000000,100000,1000000,200000,100000000,true,true));
+        CHECK_FALSE(policy.finishAcceptedCapture(*ticket,{100000,1000000,200000,100000000,true,true,true}));
     }
     CHECK(policy.lookup(key).plan==Plan::CPU);
 }
@@ -144,12 +295,9 @@ TEST_CASE("probe costs cannot exceed predictable caps or falsify accepted refere
     CHECK_FALSE(policy.finishProbe(*ticket,1000000,600000,1000000,1000000,100000000,true,true));
     CHECK_FALSE(nextProbe(policy,key));
     for(unsigned i=0;i<64;++i) policy.observeAccepted(key,Plan::CPU,1000000,1);
-    // A fresh admission freezes the measured accepted reference internally.
-    ticket.reset();
-    for(unsigned i=0;i<CpuSavingPolicy::ProbePeriod && !ticket;++i)
-        ticket=policy.beginProbe(key,Plan::Frozen8,1,300000,100000000,1000000,false,0,1000000);
+    // The paid replay API cannot inject a different reference into a capture.
+    ticket=nextAcceptedProbe(policy,key);
     REQUIRE(ticket);
-    ticket->acceptedReferenceCpuNs=2000000;
     CHECK_FALSE(policy.finishProbe(*ticket,2000000,100000,1000000,200000,100000000,true,true));
     CHECK(policy.lookup(key).plan==Plan::CPU);
 }
@@ -165,6 +313,6 @@ TEST_CASE("generation invalidation retains global probe slot until background re
     first.invalidate();
     CHECK_FALSE(nextProbe(second,key));
     first.cancelProbe(*ticket,0); // terminal background reaping, no owner join
-    CHECK(first.metrics().probeCpuNs>=ticket->reservedCpuNs);
+    CHECK(first.metrics().probeCpuNs>=1200000);
     REQUIRE(nextProbe(second,key));
 }

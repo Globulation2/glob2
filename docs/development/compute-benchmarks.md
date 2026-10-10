@@ -102,9 +102,22 @@ Online comparisons use one global probe at most every 128 eligible requests and
 reserve at most one percent of accepted-gradient CPU over 256 ticks. Preparation
 shared by the accepted and counterfactual plans is included in both field costs,
 while only newly performed work spends optional CPU credits. An accepted CPU
-reference from the same immutable job must be frozen before admission; the
+reference from the same immutable job must be bound before optional execution; the
 independent resumable heap reference verifies arrays and cannot supply a faster
 or slower production CPU timing substitute.
+
+Accepted CPU capture has a separate policy-owned state from a paid CPU replay.
+Admission reserves optional CPU before copying original seeds and golden output;
+only a successful, valid propagation measurement can bind the accepted reference
+once. The required session generation is checked separately from the policy
+generation. One-shot execution authorization also checks current backlog and
+deadline slack. Preparation is added once to each alternative, while capture
+work is excluded from accepted CPU credits. Unbound captures cannot train or
+promote a plan. Unavailable/reversed timing charges the full reserved credit;
+cancellation keeps the global probe slot until background cleanup settles it.
+Initialized device/program readiness is required: admission never authorizes
+unreserved compiler startup. These interfaces do not enable live capture or
+promotion; worker ownership and complete accounting must be qualified first.
 
 Promotion is checked only at 8, 16, 32 and subsequent doubling sample counts.
 Separate conditional Hoeffding bounds test ten percent and ten microseconds per

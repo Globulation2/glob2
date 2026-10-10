@@ -867,9 +867,11 @@ TEST_CASE("fixed-due GPU stalls demote accepted policy in background without dia
         for(unsigned pair=0;pair<256;++pair) {
             std::optional<CpuSavingPolicy::ProbeTicket> ticket;
             for(unsigned i=0;i<CpuSavingPolicy::ProbePeriod && !ticket;++i)
-                ticket=policy->beginProbe(key,plan,1,1000000,100000000,1000000,false,0,1000000);
+                ticket=policy->beginAcceptedCapture(key,plan,1,1000000,100000000,1000000,false,0,41,true);
             REQUIRE(ticket);
-            if(policy->finishProbe(*ticket,1000000,600000,1000000,600000,100000000,true,true))break;
+            REQUIRE(policy->bindAcceptedReference(*ticket,41,1000000,true,true));
+            REQUIRE(bool(policy->authorizeOptionalExecution(*ticket,41,1,100000000,false)));
+            if(policy->finishAcceptedCapture(*ticket,{600000,1000000,600000,100000000,true,true,true}))break;
         }
         REQUIRE(policy->lookup(key).plan==plan);
         pipeline.setAsyncWork([gate,phase](auto& job,PlanDecision decision){
@@ -1232,9 +1234,11 @@ TEST_CASE("invalid CPU clocks preserve exact execution without fabricated automa
         for(unsigned pair=0;pair<256;++pair){
             std::optional<CpuSavingPolicy::ProbeTicket> ticket;
             for(unsigned i=0;i<CpuSavingPolicy::ProbePeriod && !ticket;++i)
-                ticket=policy->beginProbe(key,plan,1,1000000,100000000,1000000,false,0,1000000);
+                ticket=policy->beginAcceptedCapture(key,plan,1,1000000,100000000,1000000,false,0,41,true);
             REQUIRE(ticket);
-            if(policy->finishProbe(*ticket,1000000,600000,1000000,600000,100000000,true,true))break;
+            REQUIRE(policy->bindAcceptedReference(*ticket,41,1000000,true,true));
+            REQUIRE(bool(policy->authorizeOptionalExecution(*ticket,41,1,100000000,false)));
+            if(policy->finishAcceptedCapture(*ticket,{600000,1000000,600000,100000000,true,true,true}))break;
         }
         REQUIRE(policy->lookup(key).plan==plan);const auto credits=policy->metrics().acceptedCpuNs;
         pipeline.setAsyncWork([counts](auto& job,PlanDecision decision){
