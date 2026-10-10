@@ -356,6 +356,7 @@ UNIT_TESTS = [
 # object; entries with `defines` are compiled again for the unit binary only.
 UNIT_PRODUCTION_SOURCES = [
     '#src/field/OpenCLGradient.cpp',
+    '#src/field/GradientDeviceService.cpp',
     '#src/app/cli/CommandLine.cpp',
     '#src/map/TerrainRegistry.cpp',
     '#src/map/CellRules.cpp',
