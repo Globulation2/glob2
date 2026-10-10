@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 #pragma once
 #include "ui/FrontendUI.h"
+#include "ui/DiscordCommunity.h"
 #include <memory>
 
 class MainMenuScreen : public Glob2UI::Screen
@@ -25,10 +26,17 @@ class MainMenuScreen : public Glob2UI::Screen
 	~MainMenuScreen() override;
 	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;
 
+	void openCommunity() { community.open(); invalidate(); }
+
   protected:
 	void onEscape() override
 	{
-		if (more)
+		if (community.visible)
+		{
+			community.visible = false;
+			invalidate();
+		}
+		else if (more)
 			showMore(false);
 		else
 			endExecute(QUIT);
@@ -36,6 +44,7 @@ class MainMenuScreen : public Glob2UI::Screen
 	bool panel() const override { return false; }
 
   private:
+	Glob2UI::DiscordCommunity community;
 	std::unique_ptr<GAGCore::DrawableSurface> wordmark;
 	void loadWordmark(int width);
 	void showMore(bool value);
