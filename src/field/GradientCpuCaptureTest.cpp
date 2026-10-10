@@ -9,7 +9,7 @@ namespace
 {
 using namespace gradient_kernel;
 struct CaptureClock {
-    std::uint64_t value=100,calls=0;
+    std::uint64_t value=100,calls=0,step=100;
     unsigned failAt=0;
     bool throwing=false,reversing=false;
     static std::uint64_t read(const void* context) {
@@ -19,7 +19,7 @@ struct CaptureClock {
             if(clock.throwing)throw std::runtime_error("capture clock failure");
             return clock.reversing?clock.value-50:0;
         }
-        return clock.value+=100;
+        return clock.value+=clock.step;
     }
 };
 struct CaptureFixture {
@@ -151,6 +151,8 @@ TEST_CASE("capture CPU clock failures stop optional copies and pay reserved cred
 {
     const auto baseline=openCLProbeBytes();
     for(const unsigned failure:{1u,2u,4u,7u})for(const unsigned mode:{0u,1u,2u}) {
+        // A positive first endpoint has no same-producer floor to reverse.
+        if(failure==1 && mode==2)continue;
         CaptureFixture fixture(32768,1);GradientCpuCapture::Receipt receipt;
         const auto original=fixture.seeds;
         // Sampling rejections use two reads. Position failures relative to an
@@ -198,4 +200,23 @@ TEST_CASE("capture producer handoff resets thread clock floor exactly once" * do
     // an implicit incomparable-clock migration or a free optional allocation.
     record.reset();capture.reset();CHECK(openCLProbeBytes()==baseline);
     CHECK(fixture.policy->metrics().probeCpuNs>=fixture.input.reservedCpuNs);
+}
+
+TEST_CASE("capture allocation overshoot declines before copying seeds" * doctest::test_suite("OpenCLGradient"))
+{
+    const auto baseline=openCLProbeBytes();
+    CaptureFixture fixture(32768,1);GradientCpuCapture::Receipt receipt;
+    const auto original=fixture.seeds;
+    std::optional<CpuSavingPolicy::ProbeTicket> ticket;
+    for(unsigned i=0;i<CpuSavingPolicy::ProbePeriod;++i)
+        if((ticket=fixture.policy->beginAcceptedCapture(fixture.input.key,fixture.input.alternative,1,
+            fixture.input.reservedCpuNs,100000000,1000000,false,0,91,true)))break;
+    REQUIRE(bool(ticket));fixture.policy->cancelProbe(*ticket,0);
+    for(unsigned i=0;i<CpuSavingPolicy::ProbePeriod-1;++i)
+        CHECK_FALSE(GradientCpuCapture::begin(fixture.policy,fixture.input,receipt,fixture.timer()));
+    fixture.clock->step=GradientCpuCapture::MaxBlockCpuNs+1;
+    CHECK_FALSE(GradientCpuCapture::begin(fixture.policy,fixture.input,receipt,fixture.timer()));
+    CHECK(receipt.clockValid);CHECK(receipt.overshoots==1);CHECK(receipt.copiedBytes==0);
+    CHECK(fixture.seeds==original);CHECK(openCLProbeBytes()==baseline);
+    CHECK(fixture.policy->metrics().probeCpuNs>=receipt.optionalCpuNs);
 }
