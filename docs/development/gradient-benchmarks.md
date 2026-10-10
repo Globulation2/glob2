@@ -786,3 +786,19 @@ namespace. A loaded snapshot's game tick is immutable simulation input, not a
 policy-credit timestamp. Mixing those clocks after load/reconfiguration would
 exclude all fresh rolling credits and prevent capture admission; saved-game
 activation checks must cover a nonzero game tick with a freshly configured pipeline.
+### Service lifecycle source fixtures
+
+The service's replay hook is empty in production. Injected lifecycle fixtures
+declare their complete retained owner graph and reserve that allowance with the
+registration before copying the hook. They exercise one active plus 64 queued
+required fields with two exact CPU recoveries, accounting admission pressure
+before backend entry, and map/session destruction while an independent optional
+transfer retains its policy ticket until positive background proof. These fake
+backends do not establish actual OpenCL event or performance qualification.
+
+Run `isolated process shutdown abandons unresolved optional proof without joining
+it` alone in a fresh engine-test subprocess with
+`GLOB2_TEST_CAPTURE_SHUTDOWN=1` and an external timeout. It deliberately leaves
+the fake borrowed graph unresolved. Successful normal process exit, without
+forced termination, is part of the required result; an in-process test return
+alone does not validate the broker's shutdown path.

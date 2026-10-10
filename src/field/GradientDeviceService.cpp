@@ -353,7 +353,8 @@ class DeviceBroker
         }else if(state->activeCapture && !state->probe && !state->settlement) {
             CaptureProbeReplay::Receipt attempted;
             state->probeSlack=admission.slackNs;
-            if(!accounting.failed())state->probe=CaptureProbeReplay::begin(std::move(state->activeCapture->record),admission,attempted);
+            if(!accounting.failed())state->probe=CaptureProbeReplay::begin(std::move(state->activeCapture->record),admission,attempted,
+                CaptureProbeReplay::Clock{},state->hooks.probe);
             state->probeResult=attempted;
             if(!state->probe) {
                 if(auto token=GradientCpuCapture::takeSettlement(state->activeCapture->record))state->settlement.emplace(std::move(*token));
@@ -769,10 +770,12 @@ std::shared_ptr<GradientDeviceState> GradientDeviceService::state() const {std::
 void GradientDeviceService::configure(unsigned computeThreads,Backend mode) {
     stop();const auto bytes=mode!=Backend::CPU && computeThreads>=2?
         sizeof(GradientDeviceState)+128+64*(sizeof(BackendSession)+128)+8*sizeof(BackendRequest):0;
-    if(bytes && !reserveOpenCLHostBytes(bytes))return;
+    if(hooks.probe.retainedBytes>OpenCLHostBudget-bytes)return;
+    const auto ownedBytes=bytes?bytes+hooks.probe.retainedBytes:0;
+    if(ownedBytes && !reserveOpenCLHostBytes(ownedBytes))return;
     std::shared_ptr<GradientDeviceState> next;
-    try {next=std::make_shared<GradientDeviceState>();}catch(...){releaseOpenCLHostBytes(bytes);throw;}
-    next->storageLease.bytes=bytes;next->hooks=hooks;next->cpuClock=hooks.cpuClock;
+    try {next=std::make_shared<GradientDeviceState>();}catch(...){releaseOpenCLHostBytes(ownedBytes);throw;}
+    next->storageLease.bytes=ownedBytes;next->hooks=hooks;next->cpuClock=hooks.cpuClock;
     next->totals.diagnostics=gradientDiagnosticsRequested();
     next->totals.automaticTuning=computeThreads>=2 && mode==Backend::Automatic && learningRequested();
     next->totals.cpuEnvelopeRequested=glob2::cpuEnvelopeRequested();

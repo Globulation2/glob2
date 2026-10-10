@@ -5,6 +5,7 @@
 #include "GradientSeedShape.h"
 #include "OpenCLGradient.h"
 #include "GradientCpuCapture.h"
+#include "CaptureProbeReplay.h"
 #include <condition_variable>
 #include <deque>
 #include <functional>
@@ -75,6 +76,7 @@ public:
         std::function<bool(std::span<const BackendRequest>,Plan)> execute;
         std::function<OpenCLStatus()> status; // Owned fake configuration, tests only.
         std::function<std::uint64_t()> cpuClock; // Empty native default; owned test clock.
+        CaptureProbeReplay::Hooks probe; // Empty production default; fully owned test backend.
     };
     struct Metrics {
         std::uint64_t submitted=0, completed=0, executed=0, trivial=0, fallbacks=0, declined=0;

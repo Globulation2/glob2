@@ -1399,3 +1399,182 @@ TEST_CASE("pending required GPU work cancels at publication and drains through o
         pipeline.reset();service->stop();delete[] published;
     }
 }
+
+TEST_CASE("bounded required device queue recovers excess fields exactly once" * doctest::test_suite("GradientPipeline"))
+{
+    using namespace gradient_kernel;
+    if constexpr(!GAGCore::ThreadSupport::available)return;
+    PipelineEnvironment crossDue("GLOB2_GRADIENT_CROSS_DUE","0"),batch("GLOB2_GRADIENT_BATCH","8");
+    struct Gate {
+        std::promise<void> entered,release;std::shared_future<void> released=release.get_future().share();
+        std::atomic<bool> opened{false};std::atomic<unsigned> cpu{0},jobs{0},calls{0};
+        void open(){if(!opened.exchange(true))release.set_value();}
+    };
+    auto gate=std::make_shared<Gate>();struct Release{std::shared_ptr<Gate> value;~Release(){value->open();}} cleanup{gate};
+    auto entered=gate->entered.get_future();
+    auto service=std::make_shared<GradientDeviceService>(GradientDeviceService::Hooks{[]{return true;},
+        [gate](std::span<const BackendRequest> requests,Plan){
+            if(gate->calls.fetch_add(1)==0){gate->entered.set_value();gate->released.wait();}
+            for(const auto& request:requests){CHECK(request.gradient[0]==77);request.gradient[0]=177;
+                if(request.executedOnDevice)*request.executedOnDevice=true;}return true;
+        }});
+    service->configure(2,Backend::OpenCL);
+    const auto readyUntil=std::chrono::steady_clock::now()+std::chrono::seconds(5);
+    while(!service->metrics().ready && std::chrono::steady_clock::now()<readyUntil)std::this_thread::yield();
+    REQUIRE(service->metrics().ready);
+    ComputeExecutor executor;executor.configure(2);auto session=std::make_shared<BackendSession>();
+    struct Context {std::shared_ptr<OwnedGradientField> field;std::shared_ptr<GradientDeviceService> service;
+        ComputeExecutor* executor;std::shared_ptr<Gate> gate;};
+    std::array<Context,67> contexts;
+    for(unsigned i=0;i<contexts.size();++i){
+        auto field=std::make_shared<OwnedGradientField>();field->session=session;
+        field->decision={Plan::Frozen8,0,session->currentGeneration()};field->due=1000;
+        field->data=std::make_unique<std::uint16_t[]>(1);field->data[0]=77;field->inputs=gate;
+        field->costAt=[](const auto&,std::size_t){return LAND_STEPS;};
+        field->cpu=[](auto& value){CHECK(value.data[0]==77);value.data[0]=177;
+            ++const_cast<Gate*>(static_cast<const Gate*>(value.inputs.get()))->cpu;};
+        contexts[i]={field,service,&executor,gate};
+    }
+    struct BatchContext {std::array<Context,67>* jobs;std::future<void>* entered;} batchContext{&contexts,&entered};
+    const ComputeExecutor::Group group{67,{[](void* value,std::size_t index){auto& batch=*static_cast<BatchContext*>(value);
+        auto& c=(*batch.jobs)[index];c.field->completion=c.executor->defer();
+        if(!c.service->submit(c.field))c.service->recoverOnWorker(c.field);
+        if(!index){const auto result=batch.entered->wait_for(std::chrono::seconds(5));
+            if(result!=std::future_status::ready)c.gate->open();REQUIRE(result==std::future_status::ready);}
+        ++c.gate->jobs;},&batchContext},ComputeExecutor::NoLane};
+    auto ticket=executor.submit(std::span(&group,1),1000);
+    struct Drain {ComputeExecutor& executor;ComputeExecutor::Batch& ticket;std::shared_ptr<Gate> gate;
+        ~Drain(){gate->open();try{executor.join(ticket);}catch(...){}}
+    } drain{executor,ticket,gate}; // Join before borrowed Contexts unwind on assertion failure.
+    const auto filledUntil=std::chrono::steady_clock::now()+std::chrono::seconds(5);
+    while(gate->jobs<contexts.size() && std::chrono::steady_clock::now()<filledUntil)std::this_thread::yield();
+    if(gate->jobs!=contexts.size())gate->open();
+    REQUIRE(gate->jobs==contexts.size());CHECK(service->metrics().submitted==65);CHECK(service->metrics().queued==64);
+    CHECK(service->metrics().budgetDeclines==2);gate->open();
+    executor.join(ticket);
+    CHECK(gate->cpu==2);for(const auto& context:contexts)CHECK(context.field->data[0]==177);
+    const auto doneUntil=std::chrono::steady_clock::now()+std::chrono::seconds(5);
+    while(service->metrics().completed!=65 && std::chrono::steady_clock::now()<doneUntil)std::this_thread::yield();
+    CHECK(service->metrics().completed==65);CHECK(service->metrics().fallbacks==2);service->stop();
+}
+
+namespace {
+struct ServiceProbeDriver {
+    std::atomic<unsigned> commands{0},polls{0};std::atomic<bool> terminal{false};
+    std::shared_ptr<const void> borrowed; // Accessed only by the coordinator.
+    struct Work final : gradient_kernel::CaptureProbeReplay::Probe {
+        ServiceProbeDriver& driver;std::shared_ptr<const void> owner;
+        Work(ServiceProbeDriver& d,std::shared_ptr<const void> o):driver(d),owner(std::move(o)){}
+        gradient_kernel::OpenCLProbeProgress advance() noexcept override {
+            driver.borrowed=owner;++driver.commands;return gradient_kernel::OpenCLProbeProgress::Quarantined;
+        }
+        void cancel() noexcept override {}
+        std::span<const std::uint16_t> result() const noexcept override{return {};}
+    };
+    static bool ready(const void*)noexcept{return true;}
+    static std::unique_ptr<gradient_kernel::CaptureProbeReplay::Probe> begin(const gradient_kernel::OpenCLProbeInput&,
+        gradient_kernel::Plan,std::shared_ptr<const void> owner,const void* context){
+        return std::make_unique<Work>(*const_cast<ServiceProbeDriver*>(static_cast<const ServiceProbeDriver*>(context)),std::move(owner));
+    }
+    static bool reap(const void* context)noexcept {
+        auto& driver=*const_cast<ServiceProbeDriver*>(static_cast<const ServiceProbeDriver*>(context));++driver.polls;
+        if(!driver.terminal)return false;driver.borrowed.reset();return true;
+    }
+};
+std::shared_ptr<gradient_kernel::GradientCpuCapture::Record> serviceCapture(
+    const std::shared_ptr<gradient_kernel::BackendSession>& session)
+{
+    using namespace gradient_kernel;
+    auto policy=session->learningPolicy();REQUIRE(bool(policy));
+    std::array<std::uint16_t,3> seeds{65535,1,0};GradientCpuCapture::Input input;
+    input.original=seeds;input.key={3,1,BUCKETS,2,1,Family::Clear,255,255};input.key.limit=COST_LIMIT;
+    input.tick=1;input.due=100;input.requiredGeneration=session->currentGeneration();input.alternativeReady=true;
+    input.reservedCpuNs=5000000;input.captureCpuLimitNs=200000;input.slackNs=100000000000ull;input.conservativeElapsedNs=1000000;
+    policy->qualify(input.key,input.alternative,true);policy->observeAccepted(input.key,Plan::CPU,1000000000000ull,1);
+    GradientCpuCapture::Receipt receipt;std::unique_ptr<GradientCpuCapture> capture;
+    for(unsigned i=0;i<CpuSavingPolicy::ProbePeriod && !capture;++i)capture=GradientCpuCapture::begin(policy,input,receipt);
+    REQUIRE(bool(capture));GradientWorkspace workspace;
+    propagateFieldCPU(seeds.data(),0,COST_LIMIT,field::Grid(3,1),workspace,[](std::size_t){return false;});
+    auto record=capture->complete(seeds,{input.requiredGeneration,1000000,true,true},receipt);REQUIRE(bool(record));return record;
+}
+}
+
+TEST_CASE("canceled map leaves optional transfer and policy admission owned until background proof" * doctest::test_suite("GradientPipeline"))
+{
+    using namespace gradient_kernel;
+    if constexpr(!GAGCore::ThreadSupport::available)return;if(!glob2::threadCpuNs())return;
+    PipelineEnvironment tuning("GLOB2_GRADIENT_TUNING","1"),crossDue("GLOB2_GRADIENT_CROSS_DUE","0");
+    const auto baseline=openCLProbeBytes();auto driver=std::make_shared<ServiceProbeDriver>();
+    struct Unblock {std::shared_ptr<ServiceProbeDriver> value;~Unblock(){value->terminal=true;}} cleanup{driver};
+    GradientDeviceService::Hooks hooks;hooks.initialize=[]{return true;};
+    hooks.probe={driver,sizeof(ServiceProbeDriver)+sizeof(ServiceProbeDriver::Work)+256,
+        &ServiceProbeDriver::ready,&ServiceProbeDriver::begin,&ServiceProbeDriver::reap};
+    auto service=std::make_shared<GradientDeviceService>(std::move(hooks));service->configure(2,Backend::Automatic);
+    const auto until=std::chrono::steady_clock::now()+std::chrono::seconds(5);
+    while(!service->metrics().ready && std::chrono::steady_clock::now()<until)std::this_thread::yield();REQUIRE(service->metrics().ready);
+    for(unsigned i=1;i<=17;++i)service->recordCadence({i,monotonicNs(),1000000000});
+    while(!service->metrics().cadenceFloorNs && std::chrono::steady_clock::now()<until)std::this_thread::yield();REQUIRE(service->metrics().cadenceFloorNs>0);
+    auto session=std::make_shared<BackendSession>();session->configureLearning(true);
+    auto policy=session->learningPolicy();auto record=serviceCapture(session);std::weak_ptr<BackendSession> weakSession=session;
+    REQUIRE(service->submitCapture(std::move(record),session));
+    while(!driver->commands && std::chrono::steady_clock::now()<until)std::this_thread::yield();REQUIRE(driver->commands==1);
+    auto stopped=std::async(std::launch::async,[service]{service->stop();});
+    const auto stopResult=stopped.wait_for(std::chrono::milliseconds(100));
+    if(stopResult!=std::future_status::ready)driver->terminal=true; // Unblock a regressed join before future teardown.
+    CHECK(stopResult==std::future_status::ready);stopped.get();session.reset();CHECK(weakSession.expired());
+    CHECK(openCLProbeBytes()>baseline);CHECK(policy->metrics().probeCpuNs==0);
+    const auto polls=driver->polls.load();const auto reapUntil=std::chrono::steady_clock::now()+std::chrono::seconds(5);
+    while(driver->polls==polls && std::chrono::steady_clock::now()<reapUntil)std::this_thread::yield();CHECK(driver->polls>polls);
+    CHECK(openCLProbeBytes()>baseline);driver->terminal=true;
+    while((openCLProbeBytes()!=baseline || !service->metrics().probeRetired) && std::chrono::steady_clock::now()<reapUntil)std::this_thread::yield();
+    CHECK(openCLProbeBytes()==baseline);CHECK(policy->metrics().probeCpuNs>=5000000);CHECK(policy->metrics().promoted==0);
+}
+
+TEST_CASE("failed optional accounting admission cancels capture before backend entry" * doctest::test_suite("GradientPipeline"))
+{
+    using namespace gradient_kernel;
+    if constexpr(!GAGCore::ThreadSupport::available)return;if(!glob2::threadCpuNs())return;
+    PipelineEnvironment tuning("GLOB2_GRADIENT_TUNING","1"),crossDue("GLOB2_GRADIENT_CROSS_DUE","0");
+    const auto baseline=openCLProbeBytes();auto driver=std::make_shared<ServiceProbeDriver>();
+    GradientDeviceService::Hooks hooks;hooks.initialize=[]{return true;};
+    hooks.probe={driver,sizeof(ServiceProbeDriver)+sizeof(ServiceProbeDriver::Work)+256,
+        &ServiceProbeDriver::ready,&ServiceProbeDriver::begin,&ServiceProbeDriver::reap};
+    auto service=std::make_shared<GradientDeviceService>(std::move(hooks));service->configure(2,Backend::Automatic);
+    const auto until=std::chrono::steady_clock::now()+std::chrono::seconds(5);
+    while(!service->metrics().ready && std::chrono::steady_clock::now()<until)std::this_thread::yield();REQUIRE(service->metrics().ready);
+    auto session=std::make_shared<BackendSession>();session->configureLearning(true);auto policy=session->learningPolicy();
+    auto record=serviceCapture(session);const auto bytes=OpenCLProbeBudget-openCLProbeBytes();
+    REQUIRE(reserveOpenCLProbeBytes(bytes));
+    struct Pressure{std::size_t bytes;~Pressure(){releaseOpenCLProbeBytes(bytes);}} pressure{bytes};
+    REQUIRE(service->submitCapture(std::move(record),session));
+    while(!service->metrics().probesCanceled && std::chrono::steady_clock::now()<until)std::this_thread::yield();
+    REQUIRE(service->metrics().probesCanceled==1);CHECK(service->metrics().probesStarted==0);CHECK(driver->commands==0);
+    CHECK(policy->metrics().probeCpuNs>=5000000);CHECK(policy->metrics().promoted==0);
+    CHECK(openCLProbeBytes()==baseline+bytes);service->stop();
+}
+
+TEST_CASE("isolated process shutdown abandons unresolved optional proof without joining it" * doctest::test_suite("GradientPipeline"))
+{
+    // Run this case alone in a fresh engine-test subprocess with an external
+    // timeout. Successful process exit is part of the proof; a same-process
+    // helper cannot safely destroy the globally owned broker before other tests.
+    const auto* enabled=std::getenv("GLOB2_TEST_CAPTURE_SHUTDOWN");if(!enabled || std::strcmp(enabled,"1"))return;
+    using namespace gradient_kernel;
+    if constexpr(!GAGCore::ThreadSupport::available)return;REQUIRE(glob2::threadCpuNs()!=0);
+    PipelineEnvironment tuning("GLOB2_GRADIENT_TUNING","1"),crossDue("GLOB2_GRADIENT_CROSS_DUE","0");
+    auto driver=std::make_shared<ServiceProbeDriver>();GradientDeviceService::Hooks hooks;hooks.initialize=[]{return true;};
+    hooks.probe={driver,sizeof(ServiceProbeDriver)+sizeof(ServiceProbeDriver::Work)+256,
+        &ServiceProbeDriver::ready,&ServiceProbeDriver::begin,&ServiceProbeDriver::reap};
+    auto service=std::make_shared<GradientDeviceService>(std::move(hooks));service->configure(2,Backend::Automatic);
+    const auto until=std::chrono::steady_clock::now()+std::chrono::seconds(5);
+    while(!service->metrics().ready && std::chrono::steady_clock::now()<until)std::this_thread::yield();REQUIRE(service->metrics().ready);
+    for(unsigned i=1;i<=17;++i)service->recordCadence({i,monotonicNs(),1000000000});
+    while(!service->metrics().cadenceFloorNs && std::chrono::steady_clock::now()<until)std::this_thread::yield();REQUIRE(service->metrics().cadenceFloorNs>0);
+    auto session=std::make_shared<BackendSession>();session->configureLearning(true);
+    auto record=serviceCapture(session);REQUIRE(service->submitCapture(std::move(record),session));
+    while(!driver->commands && std::chrono::steady_clock::now()<until)std::this_thread::yield();REQUIRE(driver->commands==1);
+    service->stop();CHECK_FALSE(driver->terminal);CHECK(openCLProbeBytes()>0);
+    // Intentionally leave the fake borrowed graph unresolved. The broker's
+    // exit-only path must release its registration while that graph remains
+    // retained, rather than waiting for a nonexistent positive event proof.
+}
