@@ -1095,7 +1095,7 @@ TEST_CASE("ready cross-due batches need exact profile cadence seed metadata and 
         if(service->metrics().submitted!=3)gate->open();
         REQUIRE(service->metrics().submitted==3);
         if(scenario==2)service->recordCadence({18,monotonicNs(),100});
-        gate->open();for(const auto& ticket:tickets)executor.join(ticket);
+        gate->open();for(auto& ticket:tickets)executor.join(ticket);
         for(const auto& field:fields)CHECK(field->data[0]==99);
         // Unknown seed shape, faster cadence, and unaccepted automatic batch2
         // each remain singleton although batch1 jobs were selected for GPU.
@@ -1136,10 +1136,10 @@ TEST_CASE("CPU envelope bridge initializes on CPU worker and deduplicates actual
         for(std::size_t i=0;i<live.metrics().threadCount;++i){
             const auto& thread=live.metrics().threads[i];
             if(thread.tid==glob2::nativeThreadId()){
-                ++owners;CHECK(thread.roles&(1u<<unsigned(glob2::CpuThreadRole::Owner)));
-                CHECK(thread.roles&(1u<<unsigned(glob2::CpuThreadRole::OtherOwned)));
+                ++owners;CHECK((thread.roles&(1u<<unsigned(glob2::CpuThreadRole::Owner)))!=0);
+                CHECK((thread.roles&(1u<<unsigned(glob2::CpuThreadRole::OtherOwned)))!=0);
             }
-            if(thread.tid==ids[1]){++workers;CHECK(thread.roles&(1u<<unsigned(glob2::CpuThreadRole::Worker)));}
+            if(thread.tid==ids[1]){++workers;CHECK((thread.roles&(1u<<unsigned(glob2::CpuThreadRole::Worker)))!=0);}
         }
         CHECK(owners==1);CHECK(workers==1);
         CHECK(live.metrics().processCpuNs==live.metrics().knownInnerCpuNs+live.metrics().unknownUpperCpuNs);
