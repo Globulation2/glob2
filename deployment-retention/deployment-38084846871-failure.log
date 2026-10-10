@@ -1,0 +1,29 @@
+Deploy to app.glob2online.com	Start the deploy on the host	﻿2026-10-10T20:43:46.2069611Z ##[group]Run python3 deploy/online_remote.py run --key "$KEY" -- start "$ENV_FILE" "$COMMIT" "$RUN"
+Deploy to app.glob2online.com	Start the deploy on the host	2026-10-10T20:43:46.2070161Z ^[[36;1mpython3 deploy/online_remote.py run --key "$KEY" -- start "$ENV_FILE" "$COMMIT" "$RUN"^[[0m
+Deploy to app.glob2online.com	Start the deploy on the host	2026-10-10T20:43:46.2125760Z shell: /usr/bin/bash -e {0}
+Deploy to app.glob2online.com	Start the deploy on the host	2026-10-10T20:43:46.2126122Z env:
+Deploy to app.glob2online.com	Start the deploy on the host	2026-10-10T20:43:46.2126310Z   GLOB2_ONLINE_PROJECT: pharaoh-418820
+Deploy to app.glob2online.com	Start the deploy on the host	2026-10-10T20:43:46.2126563Z   GLOB2_ONLINE_ZONE: northamerica-northeast2-a
+Deploy to app.glob2online.com	Start the deploy on the host	2026-10-10T20:43:46.2126807Z   GLOB2_ONLINE_INSTANCE: glob2-staging
+Deploy to app.glob2online.com	Start the deploy on the host	2026-10-10T20:43:46.2127024Z   GLOB2_ONLINE_SSH_USER: bradley
+Deploy to app.glob2online.com	Start the deploy on the host	2026-10-10T20:43:46.2127247Z   ENV_FILE: /opt/glob2/config/production.env
+Deploy to app.glob2online.com	Start the deploy on the host	2026-10-10T20:43:46.2127502Z   WEBSITE: https://glob2online.com
+Deploy to app.glob2online.com	Start the deploy on the host	2026-10-10T20:43:46.2127738Z   COMMIT: b602ee96896aa8d8b5fda16ca297851f8166827c
+Deploy to app.glob2online.com	Start the deploy on the host	2026-10-10T20:43:46.2127973Z   RUN: gh-38084846871-1
+Deploy to app.glob2online.com	Start the deploy on the host	2026-10-10T20:43:46.2128365Z   CLOUDSDK_AUTH_CREDENTIAL_FILE_OVERRIDE: /home/runner/work/glob2-release/glob2-release/gha-creds-b3b93b9e0fe1f982.json
+Deploy to app.glob2online.com	Start the deploy on the host	2026-10-10T20:43:46.2128998Z   GOOGLE_APPLICATION_CREDENTIALS: /home/runner/work/glob2-release/glob2-release/gha-creds-b3b93b9e0fe1f982.json
+Deploy to app.glob2online.com	Start the deploy on the host	2026-10-10T20:43:46.2129522Z   GOOGLE_GHA_CREDS_PATH: /home/runner/work/glob2-release/glob2-release/gha-creds-b3b93b9e0fe1f982.json
+Deploy to app.glob2online.com	Start the deploy on the host	2026-10-10T20:43:46.2129891Z   CLOUDSDK_CORE_PROJECT: pharaoh-418820
+Deploy to app.glob2online.com	Start the deploy on the host	2026-10-10T20:43:46.2130120Z   CLOUDSDK_PROJECT: pharaoh-418820
+Deploy to app.glob2online.com	Start the deploy on the host	2026-10-10T20:43:46.2130330Z   GCLOUD_PROJECT: pharaoh-418820
+Deploy to app.glob2online.com	Start the deploy on the host	2026-10-10T20:43:46.2130531Z   GCP_PROJECT: pharaoh-418820
+Deploy to app.glob2online.com	Start the deploy on the host	2026-10-10T20:43:46.2130741Z   GOOGLE_CLOUD_PROJECT: pharaoh-418820
+Deploy to app.glob2online.com	Start the deploy on the host	2026-10-10T20:43:46.2131168Z   CLOUDSDK_METRICS_ENVIRONMENT: github-actions-setup-gcloud
+Deploy to app.glob2online.com	Start the deploy on the host	2026-10-10T20:43:46.2131457Z   CLOUDSDK_METRICS_ENVIRONMENT_VERSION: 3.0.1
+Deploy to app.glob2online.com	Start the deploy on the host	2026-10-10T20:43:46.2131708Z   KEY: /home/runner/work/_temp/online-deploy-key
+Deploy to app.glob2online.com	Start the deploy on the host	2026-10-10T20:43:46.2131938Z ##[endgroup]
+Deploy to app.glob2online.com	Start the deploy on the host	2026-10-10T20:43:48.7090035Z error: Your local changes to the following files would be overwritten by checkout:
+Deploy to app.glob2online.com	Start the deploy on the host	2026-10-10T20:43:48.7090449Z 	deploy/compose.yaml
+Deploy to app.glob2online.com	Start the deploy on the host	2026-10-10T20:43:48.7090841Z Please commit your changes or stash them before you switch branches.
+Deploy to app.glob2online.com	Start the deploy on the host	2026-10-10T20:43:48.7091344Z Aborting
+Deploy to app.glob2online.com	Start the deploy on the host	2026-10-10T20:43:48.7208746Z ##[error]Process completed with exit code 1.
