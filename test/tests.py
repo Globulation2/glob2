@@ -248,6 +248,7 @@ UNIT_TESTS = [
     '#src/hud/GhostBuildingOverlapTest.cpp',
     '#src/ai/shared_runtime/GradientBFSTest.cpp',
     '#src/field/FieldTraversalTest.cpp',
+    '#src/field/ResumableGradientReferenceTest.cpp',
     '#src/field/OpenCLGradientTest.cpp',
     '#src/field/CpuSavingPolicyTest.cpp',
     ('#src/map/gradient/GradientTest.cpp', dict(cxxflags=['-fno-access-control'])),
