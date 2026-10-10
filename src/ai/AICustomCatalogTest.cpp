@@ -1092,4 +1092,59 @@ TEST_CASE("independent nonmonotonic worker clocks retain keyed course eligibilit
     CHECK(maxima.observe_labour(maxima.context).trainable==0);
 }
 
+
+TEST_CASE("always airborne carriers retain keyed flight course planning and independent levels")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.clearImmobile=true,.loadDefaultRace=true,.header=true});
+    auto& game=world.game;
+    const auto stockView=AIEngine::AIWorldView::capture(game,AIEngine::AIWorldView::captureCatalog(game));
+    const auto stockProjection=AIEngine::ObservationQueries::workerTrainingProjection(*stockView,false);
+    for (const auto& courses:stockProjection.courseMasks)
+        if (!courses.empty()) CHECK((courses[WORKER]&(1u<<FLY))==0);
+
+    auto units=nlohmann::json::parse(game.unitCatalog().serialize());
+    auto& worker=units["units"][WORKER];
+    worker["behaviors"]["walk"]=false;worker["behaviors"]["swim"]=false;
+    worker["behaviors"]["fly"]=true;
+    worker["behaviors"]["learnableMask"]=worker["behaviors"]["learnableMask"].get<unsigned>()|(1u<<FLY);
+    // Flight remains active at every level: training changes its clock, never altitude.
+    for (int level=0;level<NB_UNIT_LEVELS;++level)
+        worker["levels"][level]["performance"][FLY]=8*(level+1);
+    game.gameHeader.setUnitCatalog(UnitCatalog::deserialize(units.dump()));
+    auto buildings=nlohmann::json::parse(game.buildingsTypes.snapshotJson());
+    const int school=game.buildingsTypes.getTypeNum("school",0,false);
+    auto& semantics=buildings["variants"][school]["semantics"];
+    semantics["admittedUnits"]={"worker"};
+    semantics["training"]=nlohmann::json::object();
+    semantics["training"]["fly"]={{"enabled",true},{"unitMask",1},{"units",{"worker"}},
+        {"targetLevel",1},{"constructionLevel",0},{"duration",32},{"cost",nlohmann::json::object()}};
+    game.buildingsTypes.loadSnapshotJson(buildings.dump());game.configureBuildingCatalog();
+    auto* provider=world.addBuilding("school",4,4);REQUIRE(provider);
+    auto* carrier=world.addUnit(WORKER,10,10);REQUIRE(carrier);
+    REQUIRE(carrier->performance[FLY]==8);
+    REQUIRE(carrier->performance[WALK]==0);REQUIRE(carrier->performance[SWIM]==0);
+    const auto& course=provider->type->semantics.training[FLY];
+    REQUIRE(carrier->needsTraining(course,FLY));
+    const auto view=AIEngine::AIWorldView::capture(game,AIEngine::AIWorldView::captureCatalog(game));
+    const auto projection=AIEngine::ObservationQueries::workerTrainingProjection(*view,false);
+    CHECK(projection.labourProviders[school]==1);
+    CHECK((projection.courseMasks[school][WORKER]&(1u<<FLY))!=0);
+    CHECK(projection.constructionLevels[school]==0);
+    AIMaxima::Maxima maxima(game.players[0]);
+    const auto labour=maxima.observe_labour(maxima.context);
+    CHECK(labour.workers==1);CHECK(labour.idle==1);CHECK(labour.trainable==1);
+    CHECK(labour.trainingSlots==provider->maxUnitInside);
+    carrier->canLearn[FLY]=false;
+    CHECK_FALSE(carrier->needsTraining(course,FLY));
+    CHECK(maxima.observe_labour(maxima.context).trainable==0);
+    carrier->canLearn[FLY]=true;
+    carrier->applyTraining(course,FLY);
+    CHECK(carrier->level[FLY]==1);CHECK(carrier->performance[FLY]==16);
+    CHECK(carrier->level[BUILD]==0);CHECK(carrier->level[HARVEST]==0);
+    CHECK(carrier->performance[WALK]==0);CHECK(carrier->performance[SWIM]==0);
+    CHECK_FALSE(carrier->needsTraining(course,FLY));
+    CHECK(maxima.observe_labour(maxima.context).trainable==0);
+}
+
 }

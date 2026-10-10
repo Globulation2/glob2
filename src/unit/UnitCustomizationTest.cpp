@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
 #include "UnitCatalog.h"
+#include "gradient/GradientRuntime.h"
 #include "FileFormatVersions.h"
 #include "ai/maxima/AIMaximaWorldHelpers.h"
 #include "UnitTiming.h"
@@ -1835,6 +1836,201 @@ TEST_SUITE("UnitCustomization")
             }
     }
 
+
+    TEST_CASE("active water-only cargo preserves queued and pending gradient deadlines [save-format]")
+    {
+        glob2test::HeadlessGlobals globals;
+        // Fixture-local extension includes memberships omitted by the shared helper.
+        // Serializing each building covers its private ordered unitsHarvesting and
+        // pending orders through its existing save and saveCrossRef traversals.
+        const auto authoritativeAudit=[](Game& value) {
+            auto result=continuationAudit(value);
+            const auto append=[&](const auto& list) {
+                result.first.push_back(Uint32(list.size()));
+                for (const auto* entity : list) result.first.push_back(entity->gid);
+            };
+            for (int teamId=0;teamId<value.teamsCount();++teamId) {
+                auto* team=value.teams[teamId];
+                append(team->liveUnits.entries()); append(team->liveBuildings.entries());
+                append(team->canExchange); append(team->stockSuppliers); append(team->directStockSuppliers);
+                append(team->combatFlags); append(team->swarms); append(team->turrets);
+                append(team->clearingFlags); append(team->virtualBuildings);
+                append(team->buildingsWaitingForDestruction); append(team->buildingsToBeDestroyed);
+                append(team->buildingsTryToBuildingSiteRoom);
+                result.first.push_back(Uint32(team->buildingsNeedingUnits.size()));
+                for (const auto& [priority,list] : team->buildingsNeedingUnits) {
+                    result.first.push_back(Uint32(priority)); append(list);
+                }
+                for (auto* building : team->liveBuildings.entries()) {
+                    auto* storage=new GAGCore::MemoryStreamBackend;
+                    GAGCore::BinaryOutputStream output(storage); building->save(&output);
+                    building->saveCrossRef(&output); output.flush();
+                    result.second.push_back(storage->takeContents());
+                }
+                for (auto* unit : team->liveUnits.entries()) {
+                    auto* storage=new GAGCore::MemoryStreamBackend;
+                    GAGCore::BinaryOutputStream output(storage); unit->saveCrossRef(&output); output.flush();
+                    result.second.push_back(storage->takeContents());
+                }
+            }
+            return result;
+        };
+        enum class Boundary { Queued, PendingAtCapture, PendingHalfway };
+        for (unsigned threads : {1u, 4u})
+            for (auto boundary : {Boundary::Queued, Boundary::PendingAtCapture, Boundary::PendingHalfway})
+                for (bool superseded : {false, true}) {
+            CAPTURE(threads); CAPTURE(int(boundary)); CAPTURE(superseded);
+            glob2test::HeadlessGame world({.discovered=true,.clearImmobile=true,.header=true,.seed=4921});
+            configure(world);
+            auto& game=world.game; auto& map=game.map;
+            game.gameHeader.setHungerDisabled(true);
+            game.gameHeader.setResourceGrowthDisabled(true);
+            game.gameHeader.setBuildingGradientDelay(4);
+            auto definitions=nlohmann::json::parse(game.unitCatalog().serialize());
+            const auto type=*game.unitCatalog().find("swimmer");
+            definitions["units"][type]["behaviors"]["cargoCapacity"]=3;
+            definitions["units"][type]["behaviors"]["cargoKinds"]=3;
+            game.gameHeader.setUnitCatalog(UnitCatalog::deserialize(definitions.dump()));
+            game.configureBuildingCatalog();
+            auto buildings=nlohmann::json::parse(game.buildingsTypes.snapshotJson());
+            for (auto& variant : buildings["variants"])
+                if (variant["semantics"]["feeding"]["enabled"].get<bool>()) {
+                    variant["properties"]["maxMaterial"][ALGA]=3;
+                    variant["semantics"]["replenishMaterials"].push_back("algae");
+                }
+            // Install all catalogs before publishing buildings or units.
+            game.buildingsTypes.loadSnapshotJson(buildings.dump()); game.configureBuildingCatalog();
+            auto* inn=world.addBuilding("inn",10,8); REQUIRE(inn);
+            const int shore=inn->posY+inn->type->height, y=shore+1;
+            for (int row=shore;row<=shore+2;++row)
+                for (int x=4;x<=14;++x) map.paintCell(x,row,WATER);
+            deposit(map,7,y,ALGA,3);
+            auto* unit=world.addUnit(type,5,y); REQUIRE(unit);
+            const auto unitId=Unit::GIDtoID(unit->gid), buildingId=Building::GIDtoID(inn->gid);
+            REQUIRE(game.hasWaterOnlyUnits()); REQUIRE(unit->swimClass()==WATER_ONLY_CLASS);
+            unit->receiveCarriedMaterial(STONE,{1,2});
+            unit->destinationPurpose=ALGA;
+            unit->subscriptionSuccess(inn,false,false,UnitJobPurpose::Transport);
+            inn->unitsWorking.push_back(unit); inn->updateCallLists();
+            REQUIRE(map.materialAvailable(0,MaterialId::Algae,WATER_ONLY_CLASS,5,y));
+            REQUIRE(map.buildingGradient(inn,WATER_ONLY_CLASS));
+            const int slot=inn->routeSlot(WATER_ONLY_CLASS,BuildingRoute::Footprint);
+            const auto probe=map.coordToIndex(13,y);
+            REQUIRE(inn->globalGradient[slot][probe]!=GRADIENT_FORBIDDEN);
+            map.configureCompute(threads);
+            map.configureGradientPipeline(threads>1?threads-1:0,4);
+            map.advanceGradientPipeline(); // one deterministic admission boundary
+            map.addForbidden(13,y,0); // serving field must lag the captured refresh
+            REQUIRE(map.requestBuildingRefresh(inn,slot));
+            REQUIRE(map.buildingGradientPipelineStatus().queued==1);
+            REQUIRE(inn->refreshRequested.test(slot));
+            if (boundary!=Boundary::Queued) {
+                map.stagePeriodicGradientPreparation(); map.preparePendingGradient();
+                REQUIRE(map.buildingGradientPipelineStatus().pending==1);
+                REQUIRE(map.buildingGradientPipelineStatus().queued==0);
+                if (boundary==Boundary::PendingHalfway)
+                    for (int tick=0;tick<2;++tick) game.syncStep(0);
+            }
+            if (superseded) {
+                // A newer synchronous lifetime invalidates queued or pending work.
+                map.updateGlobalGradient(inn,WATER_ONLY_CLASS,BuildingRoute::Footprint);
+                map.finishBuildingGradient(inn,WATER_ONLY_CLASS,BuildingRoute::Footprint);
+                REQUIRE_FALSE(inn->refreshRequested.test(slot));
+            }
+            const auto runtimeBytes=[](Map& value) {
+                auto* memory=new GAGCore::MemoryStreamBackend;
+                GAGCore::BinaryOutputStream output(memory);
+                value.saveRuntimeState(&output); output.flush();
+                return memory->takeContents();
+            };
+            auto* memory=new GAGCore::MemoryStreamBackend;
+            GAGCore::BinaryOutputStream output(memory);
+            game.save(&output,false,"active class7 queued/pending carrier"); output.flush();
+            const auto checkpoint=memory->takeContents();
+            const auto baselineRuntime=runtimeBytes(map);
+            const auto statusAtSave=map.buildingGradientPipelineStatus();
+            if (boundary==Boundary::Queued) REQUIRE(statusAtSave.queued==1);
+            else REQUIRE(statusAtSave.pending==1);
+            if (boundary!=Boundary::Queued) {
+                bool actualClass7=false;
+                map.gradientRuntime->buildings.visitPending([&](auto& job,unsigned remaining) {
+                    const auto& p=job.payload;
+                    if (p.buildingId==buildingId && p.swim==WATER_ONLY_CLASS && p.slot==slot) {
+                        actualClass7=true;
+                        REQUIRE(remaining==(boundary==Boundary::PendingHalfway?2u:4u));
+                        REQUIRE((job.superseded || p.epoch!=inn->refreshEpoch[slot])==superseded);
+                    }
+                });
+                REQUIRE(actualClass7); // never substitute an inactive/null class7 row
+            }
+            GameGUI resumed;
+            GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(checkpoint.data(),checkpoint.size()));
+            input.seekFromStart(0); REQUIRE(resumed.game.load(&input)); resumed.game.setWaitingOnMask(0);
+            auto& restored=resumed.game; restored.map.configureCompute(threads);
+            restored.map.setGradientWorkerCount(threads>1?threads-1:0); // loader defaults to shared2
+            auto* restoredInn=restored.teams[0]->myBuildings[buildingId]; REQUIRE(restoredInn);
+            auto* restoredUnit=restored.teams[0]->myUnits[unitId]; REQUIRE(restoredUnit);
+            REQUIRE(restoredUnit->swimClass()==WATER_ONLY_CLASS);
+            REQUIRE(authoritativeAudit(restored)==authoritativeAudit(game));
+            REQUIRE(runtimeBytes(restored.map)==baselineRuntime);
+            REQUIRE(restoredInn->refreshRequested.test(slot)==inn->refreshRequested.test(slot));
+            if (boundary!=Boundary::Queued) {
+                bool reboundClass7=false;
+                restored.map.gradientRuntime->buildings.visitPending([&](auto& job,unsigned remaining) {
+                    const auto& payload=job.payload;
+                    if (payload.buildingId==buildingId && payload.slot==slot) {
+                        reboundClass7=true;
+                        REQUIRE(payload.swim==WATER_ONLY_CLASS);
+                        REQUIRE(remaining==(boundary==Boundary::PendingHalfway?2u:4u));
+                        REQUIRE(job.superseded==superseded);
+                        if (!superseded) REQUIRE(payload.epoch==restoredInn->refreshEpoch[slot]);
+                    }
+                });
+                REQUIRE(reboundClass7);
+            }
+            const int advancesUntilPublication=boundary==Boundary::Queued?5:
+                boundary==Boundary::PendingHalfway?2:4;
+            const auto resumedStatus=restored.map.buildingGradientPipelineStatus();
+            REQUIRE(resumedStatus.pending==statusAtSave.pending); REQUIRE(resumedStatus.queued==statusAtSave.queued);
+            const auto originalPublished=statusAtSave.published, originalDiscarded=statusAtSave.discarded;
+            const auto restoredPublished=resumedStatus.published, restoredDiscarded=resumedStatus.discarded;
+            for (int tick=0;tick<512;++tick) {
+                CAPTURE(tick);
+                game.syncStep(0); restored.syncStep(0);
+                REQUIRE(authoritativeAudit(restored)==authoritativeAudit(game));
+                // Publish at the original fixed deadline, never at save/load or
+                // worker completion. The newer synchronous result is already live
+                // in the superseded branch, so only the unsuperseded case is timed.
+                if (!superseded && tick<advancesUntilPublication) {
+                    const bool due=tick+1==advancesUntilPublication;
+                    REQUIRE((inn->globalGradient[slot][probe]==GRADIENT_FORBIDDEN)==due);
+                    REQUIRE((restoredInn->globalGradient[slot][probe]==GRADIENT_FORBIDDEN)==due);
+                }
+                REQUIRE(runtimeBytes(restored.map)==runtimeBytes(map));
+                REQUIRE(restored.syncRandom==game.syncRandom);
+                REQUIRE(restored.map.worldRandom.streams==map.worldRandom.streams);
+                REQUIRE(restored.map.worldRandom.initialized==map.worldRandom.initialized);
+                REQUIRE(restored.unitCargo.entries()==game.unitCargo.entries());
+                const auto lhs=map.buildingGradientPipelineStatus(), rhs=restored.map.buildingGradientPipelineStatus();
+                REQUIRE(lhs.pending==rhs.pending); REQUIRE(lhs.queued==rhs.queued);
+                REQUIRE(lhs.published-originalPublished==rhs.published-restoredPublished);
+                REQUIRE(lhs.discarded-originalDiscarded==rhs.discarded-restoredDiscarded);
+            }
+            REQUIRE(inn->materials[ALGA]==3); REQUIRE(restoredInn->materials[ALGA]==3);
+            REQUIRE(unit->hasCarriedMaterial(STONE)); REQUIRE(restoredUnit->hasCarriedMaterial(STONE));
+            REQUIRE(world.team->stats.measurements.harvested[ALGA]==3);
+            REQUIRE(restored.teams[0]->stats.measurements.harvested[ALGA]==3);
+            REQUIRE(world.team->stats.measurements.materialSpillageEvents==0);
+            REQUIRE(unit->integrity()); REQUIRE(restoredUnit->integrity());
+            // Check the selected row actually publishes the new passability value.
+            map.finishBuildingGradient(inn,WATER_ONLY_CLASS,BuildingRoute::Footprint);
+            restored.map.finishBuildingGradient(restoredInn,WATER_ONLY_CLASS,BuildingRoute::Footprint);
+            REQUIRE(inn->globalGradient[slot]);
+            REQUIRE(inn->globalGradient[slot][probe]==GRADIENT_FORBIDDEN);
+            REQUIRE(restoredInn->globalGradient[slot]);
+            REQUIRE(restoredInn->globalGradient[slot][probe]==GRADIENT_FORBIDDEN);
+        }
+    }
 
     TEST_CASE("custom carriers resume actual pickup and delivery including active water only fields")
     {

@@ -182,7 +182,7 @@ inline WorkerTrainingProjection workerTrainingProjection(const AIEngine::AIWorld
         if(carriers[id] || builders[id])recipients.push_back(id);
     }
     std::vector<Uint8> candidates(world.catalog->size());
-    for(const auto intent:{I::TrainWalk,I::TrainBuild,I::TrainHarvest,I::TrainSwim,I::TrainConstruction}) {
+    for(const auto intent:{I::TrainWalk,I::TrainBuild,I::TrainHarvest,I::TrainSwim,I::TrainFly,I::TrainConstruction}) {
         if(intent==I::TrainSwim && !swimming)continue;
         for(const int type:world.capabilities().providers(intent))candidates[type]=1;
     }
@@ -201,7 +201,7 @@ inline WorkerTrainingProjection workerTrainingProjection(const AIEngine::AIWorld
                     && world.capabilities().matches(type,I::TrainConstruction,id);
                 if(!trainsAbility && !qualifies)mask&=~(1u<<ability);
                 if(qualifies)result.constructionLevels[type]=std::max(result.constructionLevels[type],grants[ability].constructionLevel);
-                if(carriers[id] && (qualifies || (trainsAbility && (ability==WALK || ability==BUILD || ability==HARVEST || (swimming && ability==SWIM)))))
+                if(carriers[id] && (qualifies || (trainsAbility && (ability==WALK || ability==BUILD || ability==HARVEST || ability==FLY || (swimming && ability==SWIM)))))
                     result.labourProviders[type]=1;
             }
             masks[id]=mask;
