@@ -43,6 +43,7 @@ struct GradientDeviceState
     std::function<std::uint64_t()> cpuClock;
     GradientDeviceService::Metrics totals;
     std::deque<Queued> queue;
+    std::array<std::shared_ptr<OpenCLRequiredControl>,8> activeControls{};
     std::array<Observation,64> observations;
     std::size_t observationRead=0,observationWritten=0;
     std::uint64_t nextSerial=0;
@@ -327,6 +328,8 @@ class DeviceBroker
                     for(std::size_t i=0;i<count;++i)state->queue.erase(state->queue.begin()+indices[i]);
                 }
             }
+            state->activeControls.fill({});
+            for(std::size_t i=0;i<count;++i)state->activeControls[i]=held[i]->requiredControl;
             ++state->totals.batches;state->totals.maxBatch=std::max<std::uint64_t>(state->totals.maxBatch,count);
         }
         const std::span fields(held.data(),count);bool handled=false,submissionStarted=false;
@@ -350,6 +353,7 @@ class DeviceBroker
                         nullptr,field->identity,field->family});
                     requests.back().cpuBuckets=field->cpuBuckets;requests.back().executedOnDevice=&field->executedGPU;
                     requests.back().deviceExecutionObserved=&field->deviceExecutionObserved;
+                    requests.back().requiredControl=field->requiredControl;
                 }
                 if(diagnostics)preparationEnd=serviceCpuNow(state.get());
                 if(trackCompletion) {
@@ -383,6 +387,7 @@ class DeviceBroker
             else {
                 field->fallbackReason=canceled ? GradientFallbackReason::Shutdown : stale ? GradientFallbackReason::StaleGeneration
                     : clockUnavailable ? GradientFallbackReason::CpuClockUnavailable
+                    : field->requiredControl && field->requiredControl->shouldCancel(monotonicNs()) ? GradientFallbackReason::Cancellation
                     : field->session->failed.load() ? GradientFallbackReason::DriverFailure : GradientFallbackReason::BackendDecline;
                 fallbackField(field);
             }
@@ -437,6 +442,7 @@ class DeviceBroker
             ++state->totals.deviceCompletedFields;
             if(!handled)++state->totals.fallbackAfterDeviceCompletionFields;
         }
+        state->activeControls.fill({});
         if(handled) {
             state->totals.completed+=count;
             for(const auto& field:fields) field->executedGPU ? ++state->totals.executed : ++state->totals.trivial;
@@ -564,7 +570,8 @@ void GradientDeviceService::configure(unsigned computeThreads,Backend mode) {
 }
 void GradientDeviceService::stop() noexcept {
     if(auto current=state()) {
-        bool registered=false;{std::lock_guard lock(current->mutex);registered=current->started;current->canceled=true;}
+        bool registered=false;{std::lock_guard lock(current->mutex);registered=current->started;current->canceled=true;
+            for(const auto& control:current->activeControls)if(control)control->requestCancel();}
         if(registered) broker().notify();
     }
 }
@@ -579,6 +586,9 @@ bool GradientDeviceService::submit(const std::shared_ptr<OwnedGradientField>& fi
         if(!current->started || current->canceled || !current->initialized) {
             field->fallbackReason=current->canceled ? GradientFallbackReason::Shutdown : GradientFallbackReason::Unavailable;
             ++current->totals.declined;return false;
+        }
+        if(field->requiredControl && field->requiredControl->shouldCancel(monotonicNs())) {
+            field->fallbackReason=GradientFallbackReason::Cancellation;++current->totals.declined;return false;
         }
         if(field->decision.plan==Plan::CPU || field->decision.generation!=field->session->currentGeneration()) {
             field->fallbackReason=GradientFallbackReason::StaleGeneration;

@@ -91,7 +91,7 @@ struct OpenCLStatus
     bool optionalQuarantinePending=false;
     std::uint64_t requiredQuarantines=0,requiredProofFailures=0;
     bool requiredQuarantinePending=false;
-    std::uint64_t directSeedUploadSafetyCopies=0;
+    std::uint64_t directSeedUploadSafetyCopies=0,requiredCancellations=0;
     // Isolated optional preparation only; never publishes pending/cache planes.
     bool probeColdCosts=false;
 };

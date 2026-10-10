@@ -601,3 +601,30 @@ the caller must retain/cancel that record and add the attempt's CPU to settlemen
 Hardware-free injected backends test exact/mismatched results, required backlog,
 unknown completion, retained admission, invalid clocks and unprepared alternatives.
 These tests do not establish actual driver lifetime or performance qualification.
+
+### Required transfer cancellation
+
+Required GPU jobs have a pre-reserved owned `OpenCLRequiredControl`. It contains
+only cancellation and an optional absolute `monotonicNs()` deadline. The worker
+publishes this control atomically. At publication, pending save drain, reset, or
+registration reconfiguration, the owner sets bounded cancellation metadata;
+it does not inspect driver state or join optional work. The original executor
+ticket still resolves after exactly one CPU continuation on original seeds.
+
+Required uploads and readbacks now use nonblocking transfer events. The single
+coordinator polls covered event completion, checking cancellation between polls
+and dispatch windows. `GLOB2_OPENCL_POLL_US=0` uses a 100 microsecond safety wait;
+explicit nonzero polling overrides retain their configured delay. Cancellation
+interrupts the first controller's wait; other batch controllers are checked at
+the next poll. The deadline is an optional conservative recovery trigger, not a
+change to simulation publication ticks. No deadline is invented from tick IDs.
+
+Unproved commands immediately disable further GPU admission and quarantine
+private staging, descriptors, costs, controls, events, and backend lifetime.
+Original mutable seeds are never a transfer destination, so late driver writes
+cannot race CPU recovery or publication. Reaping uses only nonblocking positive
+covered-event proof, never failure-path `Finish`. Driver API calls themselves
+may hang internally: cooperative polling establishes safe retention and recovery
+between calls, not a hard response bound for a broken driver. Changing blocking
+transfer behavior needs fresh exact-array, actual activation, CPU overhead and
+tail evidence; the previous measured candidate does not qualify this change.

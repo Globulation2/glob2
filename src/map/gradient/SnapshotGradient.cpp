@@ -617,6 +617,7 @@ std::shared_ptr<gradient_kernel::OwnedGradientField> ownPropagation(
         auto reason=MinimalDecline::Budget;
         auto owned=minimalHolder(std::size_t(snapshot.width)*snapshot.height,reason);
         if(!owned){noteMinimalDecline(reason);return {};}
+        if(!owned->requiredControl){noteMinimalDecline(MinimalDecline::Budget);return {};}
         owned->inputs=view;owned->session=std::move(session);owned->grid={snapshot.width,snapshot.height};
         owned->family=backendFamily(request.kind);owned->cpuBuckets=request.terrainBuckets;
         owned->decision=decision;owned->due=due;
@@ -643,6 +644,7 @@ std::shared_ptr<gradient_kernel::OwnedGradientField> ownPropagation(
     auto inputs=std::make_shared<OwnedPropagation>(OwnedPropagation{
         request,snapshot.project(SimulationSnapshot::bit(SimulationSnapshot::Component::Terrain))});
     auto owned=std::make_shared<OwnedGradientField>();
+    if(!owned->requiredControl)return {};
     owned->inputs=inputs;
     // Conservative retained-lease charge. Shared planes may be charged more
     // than once; the limit never assumes their external owners stay alive.

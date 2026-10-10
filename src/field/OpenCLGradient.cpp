@@ -45,6 +45,7 @@ struct MemoryBudget {
 MemoryBudget hostBudget{OpenCLHostBudget};
 MemoryBudget probeBudget{OpenCLProbeBudget};
 struct BudgetExceeded : std::runtime_error { BudgetExceeded():std::runtime_error("OpenCL payload budget exceeded") {} };
+struct RequiredCanceled : std::exception {const char* what() const noexcept override{return "Required OpenCL execution canceled";}};
 struct BudgetLease {
     MemoryBudget& budget;
     std::size_t bytes=0;
@@ -655,6 +656,7 @@ struct Runtime : std::enable_shared_from_this<Runtime>
         std::array<UInt,64> descriptors{};
         std::array<UInt,8> flags{};
         std::array<std::shared_ptr<Device::Plane>,8> costs{};
+        std::array<std::shared_ptr<OpenCLRequiredControl>,8> controls{};
         std::shared_ptr<Device::Plane> preparing;
         Handle event=nullptr;
         OpenCLTransferProof proof;
@@ -668,6 +670,11 @@ struct Runtime : std::enable_shared_from_this<Runtime>
             if(!next)return;
             if(event)lane->api.ReleaseEvent(event);
             event=next;
+        }
+        bool canceled() const noexcept {
+            const auto now=monotonicNs();
+            for(const auto& control:controls)if(control && control->shouldCancel(now))return true;
+            return false;
         }
         static bool terminalProof(void* value) noexcept {
             auto& transaction=*static_cast<RequiredTransaction*>(value);
@@ -729,6 +736,7 @@ struct Runtime : std::enable_shared_from_this<Runtime>
         out.seedUploadedBytes+=in.seedUploadedBytes;out.directSeedUploadedBytes+=in.directSeedUploadedBytes;
         out.outputCopiedBytes+=in.outputCopiedBytes;
         out.directSeedUploadSafetyCopies+=in.directSeedUploadSafetyCopies;
+        out.requiredCancellations+=in.requiredCancellations;
         for(unsigned i=0;i<unsigned(OpenCLCpuCategory::Count);++i){out.apiCpu.ns[i]+=in.apiCpu.ns[i];out.apiCpu.calls[i]+=in.apiCpu.calls[i];}
         out.apiCpu.invalidScopes+=in.apiCpu.invalidScopes;out.apiCpu.reconciliationErrors+=in.apiCpu.reconciliationErrors;
         out.apiCpu.controlBracketNs+=in.apiCpu.controlBracketNs;out.apiCpu.clockReads+=in.apiCpu.clockReads;
@@ -822,17 +830,22 @@ struct Runtime : std::enable_shared_from_this<Runtime>
         Event(const Event&)=delete;
     };
     void await(Event& event) {
-        if(!event.value || !shared->status.pollMicros)return;
+        if(!event.value || (!required && !shared->status.pollMicros))return;
         check(timedCpu(OpenCLCpuCategory::Other,[&]{return api.Flush(queue);}));
         for(;;) {
+            if(required && required->canceled())throw RequiredCanceled();
             Int state=1;
             if(required && required->diagnosticQueryFailures){--required->diagnosticQueryFailures;throw std::runtime_error("Injected required event query failure");}
             check(timedCpu(OpenCLCpuCategory::Other,[&]{return api.GetEventInfo(event.value,0x11D3,sizeof state,&state,nullptr);}));
             if(state<0)check(state);
             if(!state) {if(required)required->proof.eventCompleted();return;}
-            std::this_thread::sleep_for(std::chrono::microseconds(shared->status.pollMicros));
+            // Zero formerly selected a blocking transfer. Required execution
+            // now uses a safety default; explicit nonzero overrides are honored.
+            const auto delay=std::chrono::microseconds(shared->status.pollMicros ? shared->status.pollMicros : 100);
+            if(required && required->controls[0])required->controls[0]->waitFor(delay);
+            else std::this_thread::sleep_for(delay);
         }
-        // Failure unwinds only into batch's checked drain/quarantine guard.
+        // Failure unwinds only into batch's nonblocking proof/quarantine guard.
         // All transfer endpoints and retained events already belong to it.
     }
     void profile(Handle event,std::uint64_t& total) {
@@ -845,8 +858,9 @@ struct Runtime : std::enable_shared_from_this<Runtime>
         total+=finished-started;
     }
     void read(Handle buffer,void* output,std::size_t bytes,bool finalOutput) {
+        if(required && required->canceled())throw RequiredCanceled();
         Event event(api);
-        const bool asynchronous=shared->status.pollMicros!=0;
+        const bool asynchronous=required || shared->status.pollMicros!=0;
         const bool capture=asynchronous || shared->status.deviceProfiling;
         const auto result=timedCpu(finalOutput ? OpenCLCpuCategory::OutputRead : OpenCLCpuCategory::CheckRead,[&]{return api.EnqueueReadBuffer(queue,buffer,!asynchronous,0,bytes,output,0,nullptr,capture ? &event.value : nullptr);});
         requiredEnqueue(result,event.value,!asynchronous);
@@ -858,9 +872,10 @@ struct Runtime : std::enable_shared_from_this<Runtime>
     }
     void write(Handle buffer, const void *data, std::size_t bytes)
     {
+        if(required && required->canceled())throw RequiredCanceled();
         const auto start=activeStageTiming ? monotonicNs() : 0;
         Event event(api);
-        const bool asynchronous=shared->status.pollMicros!=0;
+        const bool asynchronous=required || shared->status.pollMicros!=0;
         const bool capture=asynchronous || shared->status.deviceProfiling;
         const auto result=timedCpu(OpenCLCpuCategory::Upload,[&]{return api.EnqueueWriteBuffer(queue,buffer,!asynchronous,0,bytes,data,0,nullptr,capture ? &event.value : nullptr);});
         requiredEnqueue(result,event.value,!asynchronous);
@@ -871,8 +886,10 @@ struct Runtime : std::enable_shared_from_this<Runtime>
         if(activeStageTiming) activeStageTiming->uploadNs+=monotonicNs()-start;
     }
     void awaitPlane(const std::shared_ptr<Device::Plane>& p) {
-        while(p->ready.wait_for(std::chrono::milliseconds(1))!=std::future_status::ready)
+        while(p->ready.wait_for(std::chrono::milliseconds(1))!=std::future_status::ready) {
+            if(required && required->canceled())throw RequiredCanceled();
             if(shared->failed.load()) throw std::runtime_error("OpenCL cost preparation failed on another lane");
+        }
         p->ready.get();
     }
     std::shared_ptr<Device::Plane> costPlane(const BackendRequest& r) {
@@ -915,6 +932,7 @@ struct Runtime : std::enable_shared_from_this<Runtime>
             const auto n=r.grid.cells();
             if(knownUniform) {p->data[0]=packed;++status.uniformMetadataHits;}
             else for(std::size_t i=0;i<n;++i) {
+                if(!(i%64) && required && required->canceled())throw RequiredCanceled();
                 const auto step=!r.identity.allCells&&blocked[i]?LAND_STEPS:r.costAt(r.context,i);
                 if(!step.cardinal||!step.diagonal||step.cardinal>65535||step.diagonal>65535)
                     throw std::runtime_error("Invalid OpenCL gradient edge cost");
@@ -1009,7 +1027,10 @@ struct Runtime : std::enable_shared_from_this<Runtime>
             blocked.clear();
             if(!r->identity.allCells) {
                 resizeStaging(blocked,n,blockedLease);
-                for(std::size_t i=0;i<n;++i) blocked[i]=r->gradient[i]==0;
+                for(std::size_t i=0;i<n;++i) {
+                    if(!(i%64) && required->canceled())throw RequiredCanceled();
+                    blocked[i]=r->gradient[i]==0;
+                }
             }
             held[field]=costPlane(*r);
             const std::array descriptor{UInt(r->grid.width()),UInt(r->grid.height()),UInt(offset),UInt(field),
@@ -1099,6 +1120,7 @@ struct Runtime : std::enable_shared_from_this<Runtime>
         for (UInt round = 0; round < 65536;)
         {
             if(shared->failed.load()) throw std::runtime_error("OpenCL device failed on another lane");
+            if(required && required->canceled())throw RequiredCanceled();
             const auto count=std::min<UInt>(checkInterval,65536-round);
             struct Events {
                 API& api;std::array<Handle,32> values{};
@@ -1244,6 +1266,8 @@ struct Runtime : std::enable_shared_from_this<Runtime>
             BudgetLease reserved{hostBudget};reserved.resize(sizeof(RequiredTransaction)+256);
             transaction=std::make_shared<RequiredTransaction>(shared_from_this(),reserved);
             transaction->admission.owns=true;slotGuard.transferred=true;required=transaction.get();
+            for(std::size_t i=0;i<std::min<std::size_t>(8,input.size());++i)transaction->controls[i]=input[i].requiredControl;
+            if(transaction->canceled())throw RequiredCanceled();
             probe(); // Lane buffers/queue only. Compilation must already be complete.
             if(!variants[unsigned(plan)-1].kernel) return false;
             selectVariant(unsigned(plan)-1);
@@ -1262,14 +1286,16 @@ struct Runtime : std::enable_shared_from_this<Runtime>
             std::size_t outputOffset=0;
             for(std::size_t begin=0;begin<input.size();begin+=8) {
                 const auto count=std::min<std::size_t>(8,input.size()-begin);
-                std::array<const BackendRequest*,8> pointers{};
-                for(std::size_t i=0;i<count;++i) pointers[i]=&input[begin+i];
+                std::array<const BackendRequest*,8> pointers{};transaction->controls.fill({});
+                for(std::size_t i=0;i<count;++i){pointers[i]=&input[begin+i];transaction->controls[i]=input[begin+i].requiredControl;}
+                if(transaction->canceled())throw RequiredCanceled();
                 std::size_t chunkCells=0;for(std::size_t i=0;i<count;++i) chunkCells+=pointers[i]->grid.cells();
                 computeBatch(std::span(pointers.data(),count),std::span(values.data()+outputOffset,chunkCells),
                     shared->status.directSeedUpload && input.size()==1);
                 outputOffset+=chunkCells;
                 status.fields+=count;
             }
+            if(std::any_of(input.begin(),input.end(),[](const auto& r){return r.requiredControl && r.requiredControl->shouldCancel(monotonicNs());}))throw RequiredCanceled();
             if(shared->failed.load() || std::any_of(input.begin(),input.end(),[](const auto& r){return r.session.failed.load();}))
                 throw std::runtime_error("OpenCL device or session failed on another lane");
             outputOffset=0;
@@ -1284,6 +1310,10 @@ struct Runtime : std::enable_shared_from_this<Runtime>
             outputCopyCpuScope.close();
             ++status.schedulerBatches;
             return true;
+        } catch(const RequiredCanceled&) {
+            ++status.requiredCancellations;
+            if(transaction && transaction->proof.needsProof())protectFailedTransaction(transaction);
+            return false;
         } catch(const BudgetExceeded&) {
             ++status.budgetDeclines;
             if(transaction && transaction->proof.needsProof())protectFailedTransaction(transaction);
@@ -1371,6 +1401,16 @@ struct Register
 } // namespace
 bool reserveOpenCLHostBytes(std::size_t bytes) noexcept {return hostBudget.reserve(bytes);}
 void releaseOpenCLHostBytes(std::size_t bytes) noexcept {hostBudget.release(bytes);}
+std::shared_ptr<OpenCLRequiredControl> makeOpenCLRequiredControl() noexcept {
+    struct LeasedControl : OpenCLRequiredControl {
+        BudgetLease lease{hostBudget};
+        explicit LeasedControl(BudgetLease& reserved){reserved.transferTo(lease);}
+    };
+    try {
+        BudgetLease reserved{hostBudget};reserved.resize(sizeof(LeasedControl)+128);
+        return std::make_shared<LeasedControl>(reserved);
+    }catch(...){return {};}
+}
 bool reserveOpenCLProbeBytes(std::size_t bytes) noexcept {
     if(!probeBudget.reserve(bytes)) return false;
     if(hostBudget.reserve(bytes)) return true;

@@ -15,11 +15,12 @@ namespace gradient_kernel
 class GradientDeviceService;
 struct GradientDeviceState;
 bool gradientDiagnosticsRequested() noexcept;
-enum class GradientFallbackReason : unsigned {None,Unavailable,InvalidRequest,StaleGeneration,Duplicate,MemoryBudget,BackendDecline,DriverFailure,Shutdown,CpuClockUnavailable,Count};
+enum class GradientFallbackReason : unsigned {None,Unavailable,InvalidRequest,StaleGeneration,Duplicate,MemoryBudget,BackendDecline,DriverFailure,Shutdown,CpuClockUnavailable,Cancellation,Count};
 // The device service borrows neither a Map, a pipeline job nor a worker's
 // scratch. Seeds move into this holder and stay unchanged on GPU decline.
 struct OwnedGradientField
 {
+    std::shared_ptr<OpenCLRequiredControl> requiredControl=makeOpenCLRequiredControl();
     std::unique_ptr<std::uint16_t[]> data;
     std::shared_ptr<const void> inputs;
     std::shared_ptr<BackendSession> session;

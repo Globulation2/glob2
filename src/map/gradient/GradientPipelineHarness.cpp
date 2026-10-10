@@ -775,13 +775,13 @@ TEST_CASE("GPU decline recovers original seeds exactly once on a worker and reta
     struct Restore {Backend mode=backend();unsigned mask=readyPlans.load();~Restore(){setBackend(mode);readyPlans=mask;}} restore;
     readyPlans=1u<<unsigned(requestedOpenCLPlan());setBackend(Backend::OpenCL);
     for(bool deviceCompleted:{false,true}){
-    struct State {std::atomic<unsigned> cpu{0};std::atomic<bool> worker{false};bool expectedDeviceCompletion=false;};
+    struct State {std::atomic<unsigned> cpu{0};std::atomic<bool> worker{false},attempted{false};bool expectedDeviceCompletion=false;};
     auto state=std::make_shared<State>();state->expectedDeviceCompletion=deviceCompleted;std::weak_ptr<State> retained=state;
     auto service=std::make_shared<GradientDeviceService>(GradientDeviceService::Hooks{
-        []{return true;},[deviceCompleted](std::span<const BackendRequest> requests,Plan){
+        []{return true;},[deviceCompleted,state](std::span<const BackendRequest> requests,Plan){
             CHECK(requests.front().gradient[0]==77);
             REQUIRE(requests.front().deviceExecutionObserved);
-            *requests.front().deviceExecutionObserved=deviceCompleted;return false;
+            *requests.front().deviceExecutionObserved=deviceCompleted;state->attempted=true;return false;
         }});
     service->configure(2,Backend::OpenCL);
     const auto until=std::chrono::steady_clock::now()+std::chrono::seconds(5);
@@ -801,6 +801,8 @@ TEST_CASE("GPU decline recovers original seeds exactly once on a worker and reta
         };return owned;
     });
     auto* field=new std::uint16_t[1]{};pipeline.advance();pipeline.submit(&field,0,[](auto& job){job.data[0]=77;});
+    while(!state->attempted && std::chrono::steady_clock::now()<until)std::this_thread::yield();
+    REQUIRE(state->attempted);
     pipeline.finish();CHECK(state->cpu==1);CHECK(state->worker);CHECK(field[0]==0);
     CHECK(service->metrics().fallbacks==1);CHECK(pipeline.cpuCompleteFields()==1);
     while(deviceCompleted && service->metrics().deviceCompletedFields!=1 && std::chrono::steady_clock::now()<until)std::this_thread::yield();
@@ -1308,8 +1310,13 @@ TEST_CASE("invalid CPU clocks preserve exact execution without fabricated automa
                 counts->cpu.fetch_add(1);};return field;
         });
         auto* published=new std::uint16_t[1]{};
-        pipeline.advance();pipeline.submit(&published,0,[](auto& job){job.data[0]=77;});pipeline.advance();
-        CHECK(published[0]==91);
+        pipeline.advance();pipeline.submit(&published,0,[](auto& job){job.data[0]=77;});
+        // Exercise the injected service clocks, rather than canceling an as-yet
+        // unsubmitted DTO at publication.
+        if(phase>=2){const auto readyUntil=std::chrono::steady_clock::now()+std::chrono::seconds(5);
+            while(service->metrics().completed+service->metrics().fallbacks!=1 && std::chrono::steady_clock::now()<readyUntil)std::this_thread::yield();
+            REQUIRE(service->metrics().completed+service->metrics().fallbacks==1);}
+        pipeline.advance();CHECK(published[0]==91);
         const auto stop=std::chrono::steady_clock::now()+std::chrono::seconds(5);
         while(policy->lookup(key).plan!=Plan::CPU && std::chrono::steady_clock::now()<stop)std::this_thread::yield();
         CHECK(policy->lookup(key).plan==Plan::CPU);CHECK(policy->metrics().acceptedCpuNs==credits);
@@ -1325,6 +1332,70 @@ TEST_CASE("invalid CPU clocks preserve exact execution without fabricated automa
             CHECK(metrics.fallbackReasons[unsigned(GradientFallbackReason::CpuClockUnavailable)]==unsigned(phase==2));
             CHECK(pipeline.gpuCompleteFields()==unsigned(phase>=3));
         }
+        pipeline.reset();service->stop();delete[] published;
+    }
+}
+
+TEST_CASE("pending required GPU work cancels at publication and drains through one worker recovery" * doctest::test_suite("GradientPipeline"))
+{
+    using namespace gradient_kernel;
+    if constexpr(!GAGCore::ThreadSupport::available)return;
+    struct Restore {Backend mode=backend();unsigned mask=readyPlans.load();~Restore(){setBackend(mode);readyPlans=mask;}} restore;
+    PipelineEnvironment batchSize("GLOB2_GRADIENT_BATCH","1");
+    setBackend(Backend::OpenCL);readyPlans=1u<<unsigned(requestedOpenCLPlan());
+    for(unsigned scenario=0;scenario<4;++scenario) {
+        struct State {
+            std::atomic<bool> entered{false},onWorker{false},timedOut{false};
+            std::atomic<unsigned> calls{0},cpu{0};
+            std::atomic<std::uint16_t> privateReadback{77};
+        };
+        auto state=std::make_shared<State>();
+        auto service=std::make_shared<GradientDeviceService>(GradientDeviceService::Hooks{
+            []{return true;},[state](std::span<const BackendRequest> requests,Plan){
+                ++state->calls;CHECK(requests.size()==1);CHECK(requests[0].gradient[0]==77);
+                auto control=requests[0].requiredControl;REQUIRE(bool(control));
+                state->entered=true;
+                const auto until=std::chrono::steady_clock::now()+std::chrono::seconds(5);
+                while(!control->shouldCancel(monotonicNs()) && std::chrono::steady_clock::now()<until)
+                    control->waitFor(std::chrono::microseconds(100));
+                state->timedOut=!control->shouldCancel(monotonicNs());
+                // Simulate a pending driver read into independently owned staging.
+                // The original seeds are never a driver destination.
+                return false;
+            }});
+        service->configure(2,Backend::OpenCL);
+        const auto readyUntil=std::chrono::steady_clock::now()+std::chrono::seconds(5);
+        while(!service->metrics().ready && std::chrono::steady_clock::now()<readyUntil)std::this_thread::yield();
+        REQUIRE(service->metrics().ready);
+        TestGradientPipeline pipeline;pipeline.configure(1,2,1,[](auto&,auto&){FAIL("unexpected synchronous GPU re-entry");});
+        pipeline.setDeviceService(service);
+        pipeline.setAsyncWork([state](auto& job,PlanDecision decision){
+            auto field=std::make_shared<OwnedGradientField>();field->inputs=state;
+            field->session=job.owner->session();field->decision=decision;field->due=job.executorDue;
+            field->data=std::move(job.data);field->costAt=[](const auto&,std::size_t){return LAND_STEPS;};
+            field->cpu=[](auto& field){auto& state=*const_cast<State*>(static_cast<const State*>(field.inputs.get()));
+                CHECK(field.data[0]==77);++state.cpu;state.onWorker=ComputeExecutor::workerSlot()!=0;field.data[0]=88;};
+            return field;
+        });
+        auto* published=new std::uint16_t[1]{};
+        pipeline.advance();pipeline.submit(&published,0,[](auto& job){job.data[0]=77;});
+        const auto enteredUntil=std::chrono::steady_clock::now()+std::chrono::seconds(5);
+        while(!state->entered && std::chrono::steady_clock::now()<enteredUntil)std::this_thread::yield();
+        REQUIRE(state->entered);
+        std::atomic<unsigned> unrelated{0};
+        const ComputeExecutor::Group other{1,{[](void* value,std::size_t){++*static_cast<std::atomic<unsigned>*>(value);},&unrelated}};
+        auto ticket=pipeline.compute().submit(std::span(&other,1));pipeline.compute().join(ticket);
+        CHECK(unrelated==1);CHECK(published[0]==0);CHECK(state->cpu==0);
+        if(scenario==0) {pipeline.advance();CHECK(published[0]==0);pipeline.advance();CHECK(published[0]==88);}
+        else if(scenario==1) {
+            unsigned snapshots=0;pipeline.visitPendingSnapshots([&](auto saved){++snapshots;CHECK(saved.data[0]==88);CHECK(saved.remaining==2);});
+            CHECK(snapshots==1);CHECK(published[0]==0);pipeline.advance();pipeline.advance();CHECK(published[0]==88);
+        }
+        else if(scenario==2) {pipeline.reset();CHECK(published[0]==0);}
+        else {service->configure(2,Backend::OpenCL);pipeline.finish();pipeline.advance();pipeline.advance();CHECK(published[0]==88);}
+        CHECK_FALSE(state->timedOut);CHECK(state->calls==1);CHECK(state->cpu==1);CHECK(state->onWorker);
+        // A late driver staging write cannot race or overwrite CPU publication.
+        state->privateReadback=99;CHECK(published[0]==(scenario==2 ? 0 : 88));
         pipeline.reset();service->stop();delete[] published;
     }
 }

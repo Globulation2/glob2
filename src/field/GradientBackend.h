@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "GradientCosts.h"
+#include "OpenCLRequiredControl.h"
 #include "AdaptiveGradientPolicy.h"
 #include "Grid.h"
 #include <algorithm>
@@ -55,6 +56,7 @@ struct BackendRequest
     // A successful in-order convergence read proves preceding kernel completion.
     // Retains true when later readback/session failure causes CPU fallback.
     bool* deviceExecutionObserved = nullptr;
+    std::shared_ptr<OpenCLRequiredControl> requiredControl;
 };
 // Optional replay reads immutable seeds and never invokes required CPU recovery
 // or publishes output into that storage. Its owner pins the session, cost

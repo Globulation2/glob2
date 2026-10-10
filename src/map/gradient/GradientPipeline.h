@@ -44,6 +44,8 @@ public:
 		std::uint64_t due = 0;
 		bool superseded = false, done = false;
         bool cpuOnly=false; // Unsaved, original-worker ownership admission recovery.
+        std::atomic<bool> cancelGPU{false};
+        std::atomic<std::shared_ptr<gradient_kernel::OpenCLRequiredControl>> requiredControl;
 		std::exception_ptr error;
 		gradient_preparation::Request request;
 		gradient_preparation::CrowdingScratch* crowding = nullptr;
@@ -187,6 +189,8 @@ private:
                             job.snapshotLease?job.snapshotLease->tick:job.due-delay,true);
                     }
                 }else {
+                job.requiredControl.store(job.deviceField->requiredControl,std::memory_order_release);
+                if(job.cancelGPU.load(std::memory_order_acquire) && job.deviceField->requiredControl)job.deviceField->requiredControl->requestCancel();
                 job.deviceField->workload=key;
                 job.deviceField->seedShape=job.seedShape;job.deviceField->publicationTick=job.due;
                 job.deviceField->tick=job.snapshotLease ? job.snapshotLease->tick : job.due-delay;
@@ -253,6 +257,12 @@ private:
         const auto waitStart=trackStalls ? gradient_kernel::monotonicNs() : 0;
         const auto joinCpuStart=diagnostics ? glob2::threadCpuNs() : 0;
         const bool incomplete=trackStalls && publication && executor && !executor->finished(job.batch);
+        // Do not inspect the worker-mutated deviceField before join. The atomic
+        // request/publication handshake also covers DTO creation after this call.
+        if(executor && !executor->finished(job.batch)) {
+            job.cancelGPU.store(true,std::memory_order_release);
+            if(auto control=job.requiredControl.load(std::memory_order_acquire))control->requestCancel();
+        }
 		if (executor) executor->join(job.batch);
         const auto joined=diagnostics ? gradient_kernel::monotonicNs() : 0;
         const auto completionCpuStart=diagnostics ? glob2::threadCpuNs() : 0;
@@ -306,6 +316,8 @@ public:
 		// Unsubmitted reservations can be discarded; submitted callbacks must end
 		// before their contexts, destination slots or scratch storage are destroyed.
 		for (auto& job : pending) if (!job->batch.empty()) {
+			job->cancelGPU.store(true,std::memory_order_release);
+            if(auto control=job->requiredControl.load(std::memory_order_acquire))control->requestCancel();
 			try { executor->join(job->batch); } catch (...) {}
 		}
 		pending.clear(); spare.clear(); workspaces.clear();
@@ -380,7 +392,7 @@ public:
 		auto job=std::make_unique<Job>();
 		job->slot=snapshot.slot; job->swim=snapshot.swim; job->due=tick+snapshot.remaining;
 		job->superseded=snapshot.superseded; job->done=true; job->data=std::move(snapshot.data);
-        job->cpuOnly=false;
+        job->cpuOnly=false;job->cancelGPU=false;job->requiredControl.store({});
 		pending.push_back(std::move(job));
 	}
 	// Execution is local configuration, never part of saved simulation state.
@@ -425,6 +437,7 @@ public:
 		job->slot=slot; job->swim=swim; job->due=tick+delay;
 		job->deviceField.reset();
         job->seedShape={};job->captureSeedShape=crossDueTiming;
+        job->cancelGPU=false;job->requiredControl.store({});
         job->done=false; job->superseded=false; job->cpuOnly=false; job->error=nullptr;  job->owner=this; job->preparationNs=0;
 		auto *ptr=job.get(); pending.push_back(std::move(job));
 		lastSubmission = tick;
