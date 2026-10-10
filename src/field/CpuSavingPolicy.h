@@ -62,9 +62,10 @@ private:
     std::atomic<unsigned> published{0};
     std::array<Credit,WindowTicks> credits;
     mutable std::mutex background;
-    std::uint64_t generation=1, nextTicket=1, opportunities=0, latestTick=0;
+    std::uint64_t generation=1, nextTicket=1, latestTick=0;
     std::optional<ProbeTicket> active;
     inline static std::atomic<bool> globalProbeBusy{false};
+    inline static std::atomic<std::uint64_t> globalProbeOpportunities{0};
     Metrics totals;
 
     unsigned findOrCreate(const WorkloadKey& key) {
@@ -155,7 +156,7 @@ public:
                                          std::uint64_t conservativeElapsedNs, bool backlog) {
         std::lock_guard lock(background);
         latestTick=std::max(latestTick,tick);
-        if(++opportunities%ProbePeriod || active || backlog || !reserveCpuNs ||
+        if((globalProbeOpportunities.fetch_add(1,std::memory_order_relaxed)+1)%ProbePeriod || active || backlog || !reserveCpuNs ||
            conservativeElapsedNs>slackNs/2) return {};
         const auto index=findOrCreate(key);
         if(index==MaxProfiles || profiles[index].cooldown) return {};
