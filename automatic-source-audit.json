@@ -1,0 +1,15 @@
+{
+  "commit": "13843165bd7e778650142fe884c7af37b40b56f1",
+  "initial_decisions": "all zero; Plan::CPU",
+  "production_establish_callers": [],
+  "test_establish_callers": [
+    "src/field/OpenCLGradientTest.cpp",
+    "src/map/gradient/GradientPipelineHarness.cpp"
+  ],
+  "automatic": "reads established decision; defaultCPU for every category; no production publisher",
+  "forced_opencl": "Frozen8 if eligible and ready; otherwiseCPU",
+  "accounting": "disabled by default; when enabled, updates profiles but never establishes a new plan",
+  "validation": "Every CPU/automatic timed run asserts ready_plan_mask=0,backend_initialization_ns=0,recorded=0,processing_ns=0; exact simulation/output/work counts also compared",
+  "limitations": "CPU/resource comparisons are end-to-end observations, not learned policy or counterfactual per-request decisions",
+  "policy_measurement_limit": "GradientObservation records queue/execution/service steady-clock elapsed timings and GPU stage elapsed timings; no per-request thread/process CPU signal. CPU-efficient learned selection is not implemented or demonstrated."
+}

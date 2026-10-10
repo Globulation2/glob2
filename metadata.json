@@ -1,0 +1,4136 @@
+{
+  "protocol": {
+    "master": "07442b5919988edb323efdf571f220e657a30492",
+    "pr": "13843165bd7e778650142fe884c7af37b40b56f1",
+    "maps": 158,
+    "ticks": 5000,
+    "warmup": 1000,
+    "compute_slots": 8,
+    "repetitions": 1,
+    "variants": [
+      "master",
+      "pr-cpu",
+      "pr-opencl",
+      "pr-auto"
+    ],
+    "accounting": 0,
+    "order": "Original controls, then one512 seed from every generator before second seeds, then additional small/medium controls. Rotate four variants by case index. Stop only between matched quartets for budget.",
+    "metrics": [
+      "gradient preparation and active elapsed time",
+      "gradient jobs/publications/discards",
+      "active time per published field",
+      "gradient waits (scope audited)",
+      "warm-window process CPU",
+      "whole process CPU",
+      "tick p95/p99",
+      "peak RSS",
+      "simulation runtime",
+      "process wall"
+    ],
+    "aggregation": "Per-map matched quartet; report every seed, equal-map geometric means and large-map subset; seed consistency not repeated-timing confidence.",
+    "exclusions": "Only output mismatch, incomplete run or observed build/test affinity overlap. Retain all raw rows; no timing outlier exclusions.",
+    "correctness": "Same immutable saved inputs; initial/final checksums, ticks, termination and final save hashes match master.",
+    "scope": "All67 playable generators: two fresh512-square seeds each,16 stratified128/256 controls,original8 fixtures; supported max512, no1024 generator fixtures. Reserved kernel holdouts untouched.",
+    "master_delta": "Since PR rebase base4ca7b0863: packaging, docs and WSS backpressure changes; no offline simulation/gradient changes. PR head is kept exactly as pushed.",
+    "roster": "expanded-roster.json",
+    "playable_generators": 67,
+    "fresh_large_maps": 134,
+    "fresh_small_medium_controls": 16,
+    "retained_maps": 8,
+    "measured_runs": 632,
+    "termination": "5,000-tick cap; any legitimate earlier ending must match across variants",
+    "timing_budget": "User selected two seeds per generator while retaining about1-2hour target. One rotated matched quartet per map; stop admission at120minutes from campaign-clock; no significance claims from single timings.",
+    "time_budget_seconds": 7200,
+    "primary_question": "Does final automatic mode follow established-plan design, what CPU overhead does it add versus master/forcedCPU, and where does GPU offer unused CPU-demand reductions? No live optimizer exists in production.",
+    "primary_efficiency_metric": "benchmark_run_cpu_ns / benchmark_measured_ticks (all-thread process CPU per warm simulation tick), with matching simulation and gradient work counts",
+    "secondary_metrics": "gradient callback/preparation elapsed work, total join waits, PR-only publication wait breakdown, process CPU/RSS; game wall and tick tails are regression guards",
+    "automatic_contract": "Defaultautomatic remainsCPU; no accelerator initialization, telemetryprocessing or probes with accountingoff. Performance difference versusCPU is overhead/noise, not evidence of learned selection.",
+    "isolation": "Existing cgroup-v2 exclusive balanced partition reserves 0-7,16-23; games use0-7; affinity observer uses23. Prior affinity-only samples retained separately, not pooled."
+  },
+  "fixtures": {
+    "scenarios": [
+      {
+        "id": "open-small",
+        "generator": "even-ground",
+        "map_seed": 8801,
+        "game_seed": 71,
+        "width_exp": 7,
+        "height_exp": 7,
+        "teams": 4,
+        "threads": 8,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "ticks": 20000,
+        "warmup": 1000,
+        "coverage": "open layout; small-field overhead",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/gpu-gradients/wholematch-fresh3/holdout-fixtures/open-small/initial.game.gz"
+        ],
+        "size": 128,
+        "group": "even-ground",
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/gpu-gradients/wholematch-fresh3/holdout-fixtures/open-small/initial.game.gz": "7807a0027f928791307e4f1af7da865b76aebbf4597a439ee5e90f459d641a83"
+        }
+      },
+      {
+        "id": "ocean-islands",
+        "generator": "islands",
+        "map_seed": 9237,
+        "game_seed": 72,
+        "width_exp": 8,
+        "height_exp": 8,
+        "teams": 4,
+        "threads": 8,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "ticks": 20000,
+        "warmup": 1000,
+        "coverage": "disconnected land and swimming",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/gpu-gradients/wholematch-fresh3/holdout-fixtures/ocean-islands/initial.game.gz"
+        ],
+        "size": 256,
+        "group": "islands",
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/gpu-gradients/wholematch-fresh3/holdout-fixtures/ocean-islands/initial.game.gz": "1ecebde0b0cec5990e91f759c185cbda1a15405f761d3906c778af8264ce201f"
+        }
+      },
+      {
+        "id": "maze-routes",
+        "generator": "maze",
+        "map_seed": 6047,
+        "game_seed": 73,
+        "width_exp": 8,
+        "height_exp": 8,
+        "teams": 4,
+        "threads": 8,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "ticks": 20000,
+        "warmup": 1000,
+        "coverage": "walls and long constrained routes",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/gpu-gradients/wholematch-fresh3/holdout-fixtures/maze-routes/initial.game.gz"
+        ],
+        "size": 256,
+        "group": "maze",
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/gpu-gradients/wholematch-fresh3/holdout-fixtures/maze-routes/initial.game.gz": "f6c7157ccc3f6df746fc2dc3a213d5e125c7eca35c64e1ec8cc05a4e6f11cc0a"
+        }
+      },
+      {
+        "id": "urban-canals",
+        "generator": "canals",
+        "map_seed": 15013,
+        "game_seed": 74,
+        "width_exp": 8,
+        "height_exp": 8,
+        "teams": 4,
+        "threads": 8,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "ticks": 20000,
+        "warmup": 1000,
+        "coverage": "dense barriers and water crossings",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/gpu-gradients/wholematch-fresh3/holdout-fixtures/urban-canals/initial.game.gz"
+        ],
+        "size": 256,
+        "group": "canals",
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/gpu-gradients/wholematch-fresh3/holdout-fixtures/urban-canals/initial.game.gz": "8c4f164090bde2399db27f7079185c5e077025bcea88762ec4fbac8d5324dc50"
+        }
+      },
+      {
+        "id": "river-network",
+        "generator": "watershed",
+        "map_seed": 19001,
+        "game_seed": 75,
+        "width_exp": 9,
+        "height_exp": 9,
+        "teams": 4,
+        "threads": 8,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "ticks": 20000,
+        "warmup": 1000,
+        "coverage": "branching water and mixed movement costs",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/gpu-gradients/wholematch-fresh3/holdout-fixtures/river-network/initial.game.gz"
+        ],
+        "size": 512,
+        "group": "watershed",
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/gpu-gradients/wholematch-fresh3/holdout-fixtures/river-network/initial.game.gz": "09ce066992f741c28eefff8014ab2eb337c8e2a23bd50a13f36d368de7e9bf8e"
+        }
+      },
+      {
+        "id": "mountain-passes",
+        "generator": "bajada",
+        "map_seed": 7321,
+        "game_seed": 76,
+        "width_exp": 9,
+        "height_exp": 9,
+        "teams": 4,
+        "threads": 8,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "ticks": 20000,
+        "warmup": 1000,
+        "coverage": "mountains, sparse passes and desert",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/gpu-gradients/wholematch-fresh3/holdout-fixtures/mountain-passes/initial.game.gz"
+        ],
+        "size": 512,
+        "group": "bajada",
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/gpu-gradients/wholematch-fresh3/holdout-fixtures/mountain-passes/initial.game.gz": "8171105963f3abcbad0a8a135e004097d4c28e1ba36a14802f7f972eaa5f7549"
+        }
+      },
+      {
+        "id": "wet-small",
+        "generator": "swamp",
+        "map_seed": 44701,
+        "game_seed": 77,
+        "width_exp": 7,
+        "height_exp": 7,
+        "teams": 4,
+        "threads": 8,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "ticks": 20000,
+        "warmup": 1000,
+        "coverage": "small irregular land/water patches",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/gpu-gradients/wholematch-fresh3/holdout-fixtures/wet-small/initial.game.gz"
+        ],
+        "size": 128,
+        "group": "swamp",
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/gpu-gradients/wholematch-fresh3/holdout-fixtures/wet-small/initial.game.gz": "060e5bf95d7f84f59cde85850809b9535ed83752693ecf204117f1fff914af8d"
+        }
+      },
+      {
+        "id": "central-chokes",
+        "generator": "contested-commons",
+        "map_seed": 32003,
+        "game_seed": 78,
+        "width_exp": 9,
+        "height_exp": 9,
+        "teams": 4,
+        "threads": 8,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "ticks": 20000,
+        "warmup": 1000,
+        "coverage": "island homes, bridges and shared center",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/gpu-gradients/wholematch-fresh3/holdout-fixtures/central-chokes/initial.game.gz"
+        ],
+        "size": 512,
+        "group": "contested-commons",
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/gpu-gradients/wholematch-fresh3/holdout-fixtures/central-chokes/initial.game.gz": "bce0c4c33a0ee4f556c041bc4cd8b7b9e1db87fa42b9165731169e16da49c847"
+        }
+      },
+      {
+        "id": "fingerprint-512-seed1",
+        "generator": "fingerprint",
+        "size": 512,
+        "map_seed": 3723428451,
+        "game_seed": 100,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/fingerprint-512-seed1/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/fingerprint-512-seed1/initial.game.gz": "014ad8e0083476dc58b30a4a0f265c39558bfad3fecd0706831551ba2b534c07"
+        }
+      },
+      {
+        "id": "old-town-512-seed1",
+        "generator": "old-town",
+        "size": 512,
+        "map_seed": 2646450767,
+        "game_seed": 100,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/old-town-512-seed1/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/old-town-512-seed1/initial.game.gz": "5bef8d6839ad8d8e0ae249a89b17e2f707fb19b099108b75384e514b1149bdae"
+        }
+      },
+      {
+        "id": "symmetric-arena-512-seed1",
+        "generator": "symmetric-arena",
+        "size": 512,
+        "map_seed": 2060596857,
+        "game_seed": 100,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/symmetric-arena-512-seed1/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/symmetric-arena-512-seed1/initial.game.gz": "51f324a7ed664699242f36c00f3abd9f5879effdf80931a0a4c27e6e2fc45184"
+        }
+      },
+      {
+        "id": "swamp-512-seed1",
+        "generator": "swamp",
+        "size": 512,
+        "map_seed": 2459493283,
+        "game_seed": 100,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/swamp-512-seed1/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/swamp-512-seed1/initial.game.gz": "f1dd33df5f72924aef6b90d1f43794a0215b7a859fbac54fb350de757ce65772"
+        }
+      },
+      {
+        "id": "tidal-flats-512-seed1",
+        "generator": "tidal-flats",
+        "size": 512,
+        "map_seed": 1208980434,
+        "game_seed": 100,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/tidal-flats-512-seed1/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/tidal-flats-512-seed1/initial.game.gz": "d28c120857184db42f50e0dbaa63d8d16b66c69909c0da9a9bc80d5d2a87f4b7"
+        }
+      },
+      {
+        "id": "river-512-seed1",
+        "generator": "river",
+        "size": 512,
+        "map_seed": 1198501559,
+        "game_seed": 100,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/river-512-seed1/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/river-512-seed1/initial.game.gz": "3da2279620edbba6354ae1379f0c99540c337638a924f3814b0e060d6b5485d2"
+        }
+      },
+      {
+        "id": "isles-512-seed1",
+        "generator": "isles",
+        "size": 512,
+        "map_seed": 968845180,
+        "game_seed": 100,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/isles-512-seed1/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/isles-512-seed1/initial.game.gz": "c5a941621c22ff7f2866210f9fd1cb4bf7dbd7614af90b7ca7e22e04406d3945"
+        }
+      },
+      {
+        "id": "ring-world-512-seed1",
+        "generator": "ring-world",
+        "size": 512,
+        "map_seed": 3116843756,
+        "game_seed": 100,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/ring-world-512-seed1/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/ring-world-512-seed1/initial.game.gz": "9ae2643671b63c514a0a3a83b3680c73a57edef640ff5680e09e1f44faa51ff8"
+        }
+      },
+      {
+        "id": "amphitheatre-512-seed1",
+        "generator": "amphitheatre",
+        "size": 512,
+        "map_seed": 3692868878,
+        "game_seed": 100,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/amphitheatre-512-seed1/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/amphitheatre-512-seed1/initial.game.gz": "59180579749c4bf5983fb9eed910b14ed2d1ba2ec6962758971530049ce7e8a3"
+        }
+      },
+      {
+        "id": "shattered-coast-512-seed1",
+        "generator": "shattered-coast",
+        "size": 512,
+        "map_seed": 734493406,
+        "game_seed": 100,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/shattered-coast-512-seed1/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/shattered-coast-512-seed1/initial.game.gz": "4f27532baab84f67e35795a0281e80fd86588ff5e419dff17d7bd71bf1b7ba6f"
+        }
+      },
+      {
+        "id": "crater-lakes-512-seed1",
+        "generator": "crater-lakes",
+        "size": 512,
+        "map_seed": 22260792,
+        "game_seed": 100,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/crater-lakes-512-seed1/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/crater-lakes-512-seed1/initial.game.gz": "5595537b6a986c386d3b6d30997edad214f337462184476063c9d7b4cb7aa3e2"
+        }
+      },
+      {
+        "id": "fjord-continent-512-seed1",
+        "generator": "fjord-continent",
+        "size": 512,
+        "map_seed": 2000174695,
+        "game_seed": 100,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/fjord-continent-512-seed1/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/fjord-continent-512-seed1/initial.game.gz": "14d3e552a6c29b96031abe078e2af9564432c5eb4e7b20f3384c0197681cd3df"
+        }
+      },
+      {
+        "id": "spider-web-512-seed1",
+        "generator": "spider-web",
+        "size": 512,
+        "map_seed": 542299657,
+        "game_seed": 100,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/spider-web-512-seed1/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/spider-web-512-seed1/initial.game.gz": "32b63ba9293d2805b4b280c3394d9845584f329a16cabb6bed133dee0a7ef00a"
+        }
+      },
+      {
+        "id": "concrete-islands-512-seed1",
+        "generator": "concrete-islands",
+        "size": 512,
+        "map_seed": 2452521025,
+        "game_seed": 100,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/concrete-islands-512-seed1/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/concrete-islands-512-seed1/initial.game.gz": "e35dff0b1528e747f643e2867e1c4c186e67297c81109ed2290929e6fb15fbf9"
+        }
+      },
+      {
+        "id": "watershed-512-seed1",
+        "generator": "watershed",
+        "size": 512,
+        "map_seed": 332795122,
+        "game_seed": 100,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/watershed-512-seed1/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/watershed-512-seed1/initial.game.gz": "f50dfad1c2d0017540f7492d3a376357023592fd163976118cc0b5823ac36eb4"
+        }
+      },
+      {
+        "id": "maze-512-seed1",
+        "generator": "maze",
+        "size": 512,
+        "map_seed": 1819525995,
+        "game_seed": 100,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/maze-512-seed1/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/maze-512-seed1/initial.game.gz": "1abb2ebbdd26bc3a158514f5e4ba1dc8e3174ead830844a01674bcf19ff99f2c"
+        }
+      },
+      {
+        "id": "islands-512-seed1",
+        "generator": "islands",
+        "size": 512,
+        "map_seed": 1352381134,
+        "game_seed": 100,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/islands-512-seed1/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/islands-512-seed1/initial.game.gz": "a1f0eb8347f712e789bffb06107318db7baf489c6486c7560b8d43eebe17b75b"
+        }
+      },
+      {
+        "id": "stone-highlands-512-seed1",
+        "generator": "stone-highlands",
+        "size": 512,
+        "map_seed": 2517310639,
+        "game_seed": 100,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/stone-highlands-512-seed1/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/stone-highlands-512-seed1/initial.game.gz": "44ff6a560bb7e3fd62ac241760ba5f559aaa0e89393f1d7a9495be87dde4e470"
+        }
+      },
+      {
+        "id": "switchbacks-512-seed1",
+        "generator": "switchbacks",
+        "size": 512,
+        "map_seed": 3163064287,
+        "game_seed": 100,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/switchbacks-512-seed1/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/switchbacks-512-seed1/initial.game.gz": "e947e5f91a467b6d467e8dbe3177dd1549a670e02c8a89269dcfdc442b8dadab"
+        }
+      },
+      {
+        "id": "city-states-512-seed1",
+        "generator": "city-states",
+        "size": 512,
+        "map_seed": 1673443213,
+        "game_seed": 100,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/city-states-512-seed1/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/city-states-512-seed1/initial.game.gz": "165f7aefb02e3d3f663ef3a1ac1abd96e0bea94545ce1d4cc784ea589df03cf7"
+        }
+      },
+      {
+        "id": "canals-512-seed1",
+        "generator": "canals",
+        "size": 512,
+        "map_seed": 1467027215,
+        "game_seed": 100,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/canals-512-seed1/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/canals-512-seed1/initial.game.gz": "8d25117e4777fca6fbaae9536efaf8542c46361a29129f69f19fc4ae4091ded0"
+        }
+      },
+      {
+        "id": "sierpinski-gardens-512-seed1",
+        "generator": "sierpinski-gardens",
+        "size": 512,
+        "map_seed": 3114978035,
+        "game_seed": 100,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/sierpinski-gardens-512-seed1/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/sierpinski-gardens-512-seed1/initial.game.gz": "a27a1fa5ce81f6e668c3103ff128d1f0e8e2b45b2a35e5539aff58884023097f"
+        }
+      },
+      {
+        "id": "hilbert-river-512-seed1",
+        "generator": "hilbert-river",
+        "size": 512,
+        "map_seed": 3095011300,
+        "game_seed": 100,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/hilbert-river-512-seed1/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/hilbert-river-512-seed1/initial.game.gz": "44f7b8d2f88dd199b1639192a9890bed874c42167f8d84d92510b70c6ed07cde"
+        }
+      },
+      {
+        "id": "lava-shield-512-seed1",
+        "generator": "lava-shield",
+        "size": 512,
+        "map_seed": 4105323735,
+        "game_seed": 100,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/lava-shield-512-seed1/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/lava-shield-512-seed1/initial.game.gz": "1cf58adaadaf53d8d045bfef882157ef62e1bec6e4c6cb63f5198654c25c15f4"
+        }
+      },
+      {
+        "id": "honeycomb-isle-512-seed1",
+        "generator": "honeycomb-isle",
+        "size": 512,
+        "map_seed": 2388850310,
+        "game_seed": 100,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/honeycomb-isle-512-seed1/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/honeycomb-isle-512-seed1/initial.game.gz": "506c3982bd70de76c01125e6955ef437e1a8acc281710ab57b888e0b330cb594"
+        }
+      },
+      {
+        "id": "karst-towers-512-seed1",
+        "generator": "karst-towers",
+        "size": 512,
+        "map_seed": 468745134,
+        "game_seed": 100,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/karst-towers-512-seed1/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/karst-towers-512-seed1/initial.game.gz": "a070131d7e63707e7d8d7d9d7445e3099f5ff29d645668b6114f6810bb225a0a"
+        }
+      },
+      {
+        "id": "bajada-512-seed1",
+        "generator": "bajada",
+        "size": 512,
+        "map_seed": 2870057783,
+        "game_seed": 100,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/bajada-512-seed1/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/bajada-512-seed1/initial.game.gz": "70d785c5e08f1d3af8e64db8f6ee29dc349da1967909ee2779692a29da02264c"
+        }
+      },
+      {
+        "id": "central-quarry-512-seed1",
+        "generator": "central-quarry",
+        "size": 512,
+        "map_seed": 2359399644,
+        "game_seed": 100,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/central-quarry-512-seed1/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/central-quarry-512-seed1/initial.game.gz": "51fd164c0e20390cc3bb8fc7f03e595032cd93557c206b2a0caab9538838ab3e"
+        }
+      },
+      {
+        "id": "hidden-oasis-512-seed1",
+        "generator": "hidden-oasis",
+        "size": 512,
+        "map_seed": 3342597452,
+        "game_seed": 100,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/hidden-oasis-512-seed1/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/hidden-oasis-512-seed1/initial.game.gz": "aa58d35b25f5a1aeb616afbdd0c77d5981aed56400e70723cc2e789fada1ddf1"
+        }
+      },
+      {
+        "id": "drowned-forest-512-seed1",
+        "generator": "drowned-forest",
+        "size": 512,
+        "map_seed": 664991164,
+        "game_seed": 100,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/drowned-forest-512-seed1/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/drowned-forest-512-seed1/initial.game.gz": "ceae51028b509062051220ba6922e3fe37c1504ffa5a89fa7f516e959c77b93e"
+        }
+      },
+      {
+        "id": "portage-lakes-512-seed1",
+        "generator": "portage-lakes",
+        "size": 512,
+        "map_seed": 2560569438,
+        "game_seed": 100,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/portage-lakes-512-seed1/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/portage-lakes-512-seed1/initial.game.gz": "f9f87833cf48ca376f19c4b2e6df5128cb81dc25da917eab3751a591d7849064"
+        }
+      },
+      {
+        "id": "orchard-commons-512-seed1",
+        "generator": "orchard-commons",
+        "size": 512,
+        "map_seed": 4155954447,
+        "game_seed": 100,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/orchard-commons-512-seed1/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/orchard-commons-512-seed1/initial.game.gz": "48da1962928fe874c1d170c2ef9dd90e5c54791b60d7a91f064665d4f05e2225"
+        }
+      },
+      {
+        "id": "last-treeline-512-seed1",
+        "generator": "last-treeline",
+        "size": 512,
+        "map_seed": 2377120570,
+        "game_seed": 100,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/last-treeline-512-seed1/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/last-treeline-512-seed1/initial.game.gz": "b95117cd3fbfa54202eb5a821b40a5a2dbe69385cccdd3a895951a75a2194051"
+        }
+      },
+      {
+        "id": "gauntlet-512-seed1",
+        "generator": "gauntlet",
+        "size": 512,
+        "map_seed": 4191548567,
+        "game_seed": 100,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/gauntlet-512-seed1/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/gauntlet-512-seed1/initial.game.gz": "b27d9afe82e289593e810c390d5ad255d580e047b053af58f55087ff1b1ec9a2"
+        }
+      },
+      {
+        "id": "faulted-city-512-seed1",
+        "generator": "faulted-city",
+        "size": 512,
+        "map_seed": 191358233,
+        "game_seed": 100,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/faulted-city-512-seed1/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/faulted-city-512-seed1/initial.game.gz": "95a6d7649a1a3cedff6ff7e5e9db5707826d7baddc2b49bb61e810a576b4bd59"
+        }
+      },
+      {
+        "id": "comb-512-seed1",
+        "generator": "comb",
+        "size": 512,
+        "map_seed": 3980235011,
+        "game_seed": 100,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/comb-512-seed1/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/comb-512-seed1/initial.game.gz": "926ab2f7e97798eee47820e7fcdd84813e5c0af998f6bd4367d7da37258f1668"
+        }
+      },
+      {
+        "id": "encircled-kingdom-512-seed1",
+        "generator": "encircled-kingdom",
+        "size": 512,
+        "map_seed": 930697427,
+        "game_seed": 100,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/encircled-kingdom-512-seed1/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/encircled-kingdom-512-seed1/initial.game.gz": "8c59e256dae5ad587ee7047da7469fde360d03c76ac41f7e44f05106e7f3bff3"
+        }
+      },
+      {
+        "id": "bastion-keys-512-seed1",
+        "generator": "bastion-keys",
+        "size": 512,
+        "map_seed": 1866914783,
+        "game_seed": 100,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/bastion-keys-512-seed1/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/bastion-keys-512-seed1/initial.game.gz": "9387be5cf72116dfcc344c35d57ce48382d0d85782423d56ba8b2d012733a190"
+        }
+      },
+      {
+        "id": "even-ground-512-seed1",
+        "generator": "even-ground",
+        "size": 512,
+        "map_seed": 3900819454,
+        "game_seed": 100,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/even-ground-512-seed1/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/even-ground-512-seed1/initial.game.gz": "3380799cb5a6c14ba1389f7257b857b738941276447394bb0f70b1f31d322f74"
+        }
+      },
+      {
+        "id": "marchland-512-seed1",
+        "generator": "marchland",
+        "size": 512,
+        "map_seed": 852096953,
+        "game_seed": 100,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/marchland-512-seed1/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/marchland-512-seed1/initial.game.gz": "ceb4424becee83ff0a8e0d82447ce1b135ba47a37c93136f6a7655e38f86bf74"
+        }
+      },
+      {
+        "id": "who-ate-the-map-512-seed1",
+        "generator": "who-ate-the-map",
+        "size": 512,
+        "map_seed": 3426697467,
+        "game_seed": 100,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/who-ate-the-map-512-seed1/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/who-ate-the-map-512-seed1/initial.game.gz": "d1b6f7ac9435111b8711054342854bff85fa7d648be76675bcc339fb61435657"
+        }
+      },
+      {
+        "id": "rugged-archipelago-512-seed1",
+        "generator": "rugged-archipelago",
+        "size": 512,
+        "map_seed": 2453480557,
+        "game_seed": 100,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/rugged-archipelago-512-seed1/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/rugged-archipelago-512-seed1/initial.game.gz": "cf077921d127e9b2febe594f3b5b05af35713415b5df386c68a2ef334bac69cc"
+        }
+      },
+      {
+        "id": "hungry-marches-512-seed1",
+        "generator": "hungry-marches",
+        "size": 512,
+        "map_seed": 2468649280,
+        "game_seed": 100,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/hungry-marches-512-seed1/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/hungry-marches-512-seed1/initial.game.gz": "b7ca25157900402f7f1b9780b7b8063c686a108710863122a79647e53fb300cb"
+        }
+      },
+      {
+        "id": "contested-commons-512-seed1",
+        "generator": "contested-commons",
+        "size": 512,
+        "map_seed": 1113038816,
+        "game_seed": 100,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/contested-commons-512-seed1/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/contested-commons-512-seed1/initial.game.gz": "2adf27faec8aa86235d0c5099f92383a6e0d3d7b4a6479822d017c361438e26b"
+        }
+      },
+      {
+        "id": "rain-shadow-512-seed1",
+        "generator": "rain-shadow",
+        "size": 512,
+        "map_seed": 1885872155,
+        "game_seed": 100,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/rain-shadow-512-seed1/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/rain-shadow-512-seed1/initial.game.gz": "ecdeaddd226a0721ad5320fcff7bc4857e22a6be092af1d47de5ce9fc708a198"
+        }
+      },
+      {
+        "id": "everglades-512-seed1",
+        "generator": "everglades",
+        "size": 512,
+        "map_seed": 3668345150,
+        "game_seed": 100,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/everglades-512-seed1/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/everglades-512-seed1/initial.game.gz": "bd7162c0f1d03caa2b4202560639cf9b06041f6bde8675223d7a30d1ac974921"
+        }
+      },
+      {
+        "id": "polder-512-seed1",
+        "generator": "polder",
+        "size": 512,
+        "map_seed": 443159433,
+        "game_seed": 100,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/polder-512-seed1/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/polder-512-seed1/initial.game.gz": "51e2efed5eec477519c4e4ca23898615a2dc29729e04f6b732aa8bd03f932ed9"
+        }
+      },
+      {
+        "id": "carousel-512-seed1",
+        "generator": "carousel",
+        "size": 512,
+        "map_seed": 1244977294,
+        "game_seed": 100,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/carousel-512-seed1/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/carousel-512-seed1/initial.game.gz": "0db79abd517719202ffa2f4b21b731aa5f039eb2c155c9b2b1ed968486ea3f50"
+        }
+      },
+      {
+        "id": "old-growth-512-seed1",
+        "generator": "old-growth",
+        "size": 512,
+        "map_seed": 315781491,
+        "game_seed": 100,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/old-growth-512-seed1/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/old-growth-512-seed1/initial.game.gz": "a0dcaa9b5efa5a6516016a851ada3007e48168d37940e4cc70b40c557fbb8f7f"
+        }
+      },
+      {
+        "id": "anthill-512-seed1",
+        "generator": "anthill",
+        "size": 512,
+        "map_seed": 559946689,
+        "game_seed": 100,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/anthill-512-seed1/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/anthill-512-seed1/initial.game.gz": "c3154c0c8c49b448329bc3670e63a402e33a919132eb53c0af6dc12d62b14809"
+        }
+      },
+      {
+        "id": "coral-512-seed1",
+        "generator": "coral",
+        "size": 512,
+        "map_seed": 2108566311,
+        "game_seed": 100,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/coral-512-seed1/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/coral-512-seed1/initial.game.gz": "125d55f1e0c19e5267d9e5d4d02e0aadb4fcb67b6888e8106fd0f7ce29fcde5a"
+        }
+      },
+      {
+        "id": "emoji-512-seed1",
+        "generator": "emoji",
+        "size": 512,
+        "map_seed": 3817428889,
+        "game_seed": 100,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/emoji-512-seed1/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/emoji-512-seed1/initial.game.gz": "593a9cce1c4b68e8fc4f2e31b87856fe7fbc6376a3af21be2ca7c5df0615e71f"
+        }
+      },
+      {
+        "id": "forts-512-seed1",
+        "generator": "forts",
+        "size": 512,
+        "map_seed": 3266292417,
+        "game_seed": 100,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/forts-512-seed1/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/forts-512-seed1/initial.game.gz": "b93999a63cb4cc3c073b12452548687dd435ed8be8d2fa48b6a39b8a7ab1eaf3"
+        }
+      },
+      {
+        "id": "braided-delta-512-seed1",
+        "generator": "braided-delta",
+        "size": 512,
+        "map_seed": 4007846827,
+        "game_seed": 100,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/braided-delta-512-seed1/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/braided-delta-512-seed1/initial.game.gz": "9c3a77750db235e9b0019193037d25d80dd5d898775f11a24535f6dd30aa0eea"
+        }
+      },
+      {
+        "id": "breachable-highlands-512-seed1",
+        "generator": "breachable-highlands",
+        "size": 512,
+        "map_seed": 949695011,
+        "game_seed": 100,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/breachable-highlands-512-seed1/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/breachable-highlands-512-seed1/initial.game.gz": "187b71504a8b81f506e1639309a4f4f30a71004a3c5fd0df00b6d7723a82cea7"
+        }
+      },
+      {
+        "id": "hedgerow-country-512-seed1",
+        "generator": "hedgerow-country",
+        "size": 512,
+        "map_seed": 1067756584,
+        "game_seed": 100,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/hedgerow-country-512-seed1/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/hedgerow-country-512-seed1/initial.game.gz": "4753bf7bd32ab4a6e9e8cf3ad722b157921b07821fb3c4165b1366521727fde1"
+        }
+      },
+      {
+        "id": "glacis-512-seed1",
+        "generator": "glacis",
+        "size": 512,
+        "map_seed": 587492533,
+        "game_seed": 100,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/glacis-512-seed1/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/glacis-512-seed1/initial.game.gz": "bfafa77deb859fc61753ab12dba0fecea2930457cf08003c0241a64486840437"
+        }
+      },
+      {
+        "id": "allotments-512-seed1",
+        "generator": "allotments",
+        "size": 512,
+        "map_seed": 1533276262,
+        "game_seed": 100,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/allotments-512-seed1/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/allotments-512-seed1/initial.game.gz": "6a49036d61b0b143bd17f2eb0bd436a5472a37b98f26e4f74181af076cbf8b6c"
+        }
+      },
+      {
+        "id": "caravanserai-512-seed1",
+        "generator": "caravanserai",
+        "size": 512,
+        "map_seed": 1675167228,
+        "game_seed": 100,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/caravanserai-512-seed1/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/caravanserai-512-seed1/initial.game.gz": "2bdd8c20fa4f0b723e7d6dde35833a3e81b0bfd915af11ba4d4e00108ed41133"
+        }
+      },
+      {
+        "id": "braided-river-512-seed1",
+        "generator": "braided-river",
+        "size": 512,
+        "map_seed": 1657293907,
+        "game_seed": 100,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/braided-river-512-seed1/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/braided-river-512-seed1/initial.game.gz": "599a0ace08307b67a1dd6019740f2aab7a6c0e3f43ead306c1f585492d9bf237"
+        }
+      },
+      {
+        "id": "drumlin-field-512-seed1",
+        "generator": "drumlin-field",
+        "size": 512,
+        "map_seed": 1981210699,
+        "game_seed": 100,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/drumlin-field-512-seed1/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/drumlin-field-512-seed1/initial.game.gz": "df31c657b4e4a7bbdcdffd22527dc4323c3422ec255d8434b18a937dfe4255d1"
+        }
+      },
+      {
+        "id": "continents-512-seed1",
+        "generator": "continents",
+        "size": 512,
+        "map_seed": 1743154502,
+        "game_seed": 100,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/continents-512-seed1/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/continents-512-seed1/initial.game.gz": "be9c6da4e03f14993cc8ffc0ddf841f33eb62e80643245ca2cbfa3746714f8f8"
+        }
+      },
+      {
+        "id": "savannah-512-seed1",
+        "generator": "savannah",
+        "size": 512,
+        "map_seed": 741991202,
+        "game_seed": 100,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/savannah-512-seed1/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/savannah-512-seed1/initial.game.gz": "ae673f37fd02fecd0c706703aca6ca70b3feac57e7496b3b8984159bcc2c8206"
+        }
+      },
+      {
+        "id": "hills-512-seed1",
+        "generator": "hills",
+        "size": 512,
+        "map_seed": 50444031,
+        "game_seed": 100,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/hills-512-seed1/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/hills-512-seed1/initial.game.gz": "6041993523b7e84d7bea5ec0511e1cfada011d0261df278803586e5055cb6a8e"
+        }
+      },
+      {
+        "id": "rice-terraces-512-seed1",
+        "generator": "rice-terraces",
+        "size": 512,
+        "map_seed": 4159824948,
+        "game_seed": 100,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/rice-terraces-512-seed1/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/rice-terraces-512-seed1/initial.game.gz": "9dd1a4561904e319e89a7554ab804bfc9d8b5d6dc2495e377f91ecf858e22761"
+        }
+      },
+      {
+        "id": "locust-512-seed1",
+        "generator": "locust",
+        "size": 512,
+        "map_seed": 857089222,
+        "game_seed": 100,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/locust-512-seed1/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/locust-512-seed1/initial.game.gz": "bc5ca912003d1414784580311630a54e9f998b88bacbfd90041b1a7eb909385b"
+        }
+      },
+      {
+        "id": "plantations-512-seed1",
+        "generator": "plantations",
+        "size": 512,
+        "map_seed": 460829234,
+        "game_seed": 100,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/plantations-512-seed1/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/plantations-512-seed1/initial.game.gz": "37ec1bea86138c59b5b73b925a2e3317a377977b24a373f20191f247d88bbe9f"
+        }
+      },
+      {
+        "id": "fingerprint-512-seed2",
+        "generator": "fingerprint",
+        "size": 512,
+        "map_seed": 1579888881,
+        "game_seed": 101,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/fingerprint-512-seed2/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/fingerprint-512-seed2/initial.game.gz": "3fa2aff12a2cb7f60556726cd136d556dc92ca4d02cd0fc8d0bc1a90cd4f3f1b"
+        }
+      },
+      {
+        "id": "old-town-512-seed2",
+        "generator": "old-town",
+        "size": 512,
+        "map_seed": 1456546028,
+        "game_seed": 101,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/old-town-512-seed2/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/old-town-512-seed2/initial.game.gz": "c2a70128b4d67821714f73408eabfa7723b1a772fc39269ce5d8a5a0540e342b"
+        }
+      },
+      {
+        "id": "symmetric-arena-512-seed2",
+        "generator": "symmetric-arena",
+        "size": 512,
+        "map_seed": 1894555746,
+        "game_seed": 101,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/symmetric-arena-512-seed2/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/symmetric-arena-512-seed2/initial.game.gz": "b1e9a73d7559193abdd57987a07adefdf9cda0735d9e6151ebc73e1f5b3ec940"
+        }
+      },
+      {
+        "id": "swamp-512-seed2",
+        "generator": "swamp",
+        "size": 512,
+        "map_seed": 1987614452,
+        "game_seed": 101,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/swamp-512-seed2/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/swamp-512-seed2/initial.game.gz": "8fcc4c7a1da31138b23e7267c3f44e3b5f0e6f4e8d57a9423dcd941d438ad0cc"
+        }
+      },
+      {
+        "id": "tidal-flats-512-seed2",
+        "generator": "tidal-flats",
+        "size": 512,
+        "map_seed": 2078750882,
+        "game_seed": 101,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/tidal-flats-512-seed2/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/tidal-flats-512-seed2/initial.game.gz": "85249f818d5f8640ff810728f87df32154a07969ec0b303aad6ef494c0cb59f4"
+        }
+      },
+      {
+        "id": "river-512-seed2",
+        "generator": "river",
+        "size": 512,
+        "map_seed": 3273189047,
+        "game_seed": 101,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/river-512-seed2/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/river-512-seed2/initial.game.gz": "dddf5398a8032eb305439b3b7554496f818b56a2cc62ee63f20c851aaf74d59a"
+        }
+      },
+      {
+        "id": "isles-512-seed2",
+        "generator": "isles",
+        "size": 512,
+        "map_seed": 790307508,
+        "game_seed": 101,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/isles-512-seed2/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/isles-512-seed2/initial.game.gz": "546d42623d6d2807055aa59dd42039b3357e76a0bc103ddad9f46b9d9f49d592"
+        }
+      },
+      {
+        "id": "ring-world-512-seed2",
+        "generator": "ring-world",
+        "size": 512,
+        "map_seed": 2602663177,
+        "game_seed": 101,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/ring-world-512-seed2/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/ring-world-512-seed2/initial.game.gz": "2425e675fcda6fd2ee31807936170b20efc5b4f077ce2199082d02cd993053ba"
+        }
+      },
+      {
+        "id": "amphitheatre-512-seed2",
+        "generator": "amphitheatre",
+        "size": 512,
+        "map_seed": 3952196365,
+        "game_seed": 101,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/amphitheatre-512-seed2/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/amphitheatre-512-seed2/initial.game.gz": "31c126585e52d307b47bb44ddf23599ece65be884ceb4687352f88fab1ce59de"
+        }
+      },
+      {
+        "id": "shattered-coast-512-seed2",
+        "generator": "shattered-coast",
+        "size": 512,
+        "map_seed": 2301983245,
+        "game_seed": 101,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/shattered-coast-512-seed2/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/shattered-coast-512-seed2/initial.game.gz": "5fb50b90ff7b7d950dd1db7ec65296bd9e7750e78eb397263728c89d42452898"
+        }
+      },
+      {
+        "id": "crater-lakes-512-seed2",
+        "generator": "crater-lakes",
+        "size": 512,
+        "map_seed": 3200757667,
+        "game_seed": 101,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/crater-lakes-512-seed2/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/crater-lakes-512-seed2/initial.game.gz": "40ef4a719d4ee8bb0edb72e617d65a3c6143ab69c20649a43576bccd05cd66b5"
+        }
+      },
+      {
+        "id": "fjord-continent-512-seed2",
+        "generator": "fjord-continent",
+        "size": 512,
+        "map_seed": 1315040381,
+        "game_seed": 101,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/fjord-continent-512-seed2/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/fjord-continent-512-seed2/initial.game.gz": "fe17c0bc9be824d925885cb44ce85da72a7cee5ef099d22979d8c2475fd1b54e"
+        }
+      },
+      {
+        "id": "spider-web-512-seed2",
+        "generator": "spider-web",
+        "size": 512,
+        "map_seed": 3870531231,
+        "game_seed": 101,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/spider-web-512-seed2/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/spider-web-512-seed2/initial.game.gz": "5416bac5e3997e664486c311ce4291478e94dea689a75a11bb1a566273723330"
+        }
+      },
+      {
+        "id": "concrete-islands-512-seed2",
+        "generator": "concrete-islands",
+        "size": 512,
+        "map_seed": 3141948109,
+        "game_seed": 101,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/concrete-islands-512-seed2/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/concrete-islands-512-seed2/initial.game.gz": "b5e535c8783e7bbe85100fbc3155f22ff4fd7804108a22c87f98a194578ddf7f"
+        }
+      },
+      {
+        "id": "watershed-512-seed2",
+        "generator": "watershed",
+        "size": 512,
+        "map_seed": 511274643,
+        "game_seed": 101,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/watershed-512-seed2/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/watershed-512-seed2/initial.game.gz": "1eecf1a4ead049121208b9866ccdffd74fc9fba58a801b957460f307e7c970ca"
+        }
+      },
+      {
+        "id": "maze-512-seed2",
+        "generator": "maze",
+        "size": 512,
+        "map_seed": 1621051783,
+        "game_seed": 101,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/maze-512-seed2/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/maze-512-seed2/initial.game.gz": "228219fc5515f2b79c7e2075dbc6d5f4006bbb7427593975e68c6f87aa368279"
+        }
+      },
+      {
+        "id": "islands-512-seed2",
+        "generator": "islands",
+        "size": 512,
+        "map_seed": 1083629320,
+        "game_seed": 101,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/islands-512-seed2/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/islands-512-seed2/initial.game.gz": "018ca4e3c715c8b6c91ec13b622fc3fa9930076f31e2f8a800e07c79afb5229f"
+        }
+      },
+      {
+        "id": "stone-highlands-512-seed2",
+        "generator": "stone-highlands",
+        "size": 512,
+        "map_seed": 2859113321,
+        "game_seed": 101,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/stone-highlands-512-seed2/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/stone-highlands-512-seed2/initial.game.gz": "776b4049659acbba399671bcdef96cc29fdcdf4ab67c9719b1296e8f50473088"
+        }
+      },
+      {
+        "id": "switchbacks-512-seed2",
+        "generator": "switchbacks",
+        "size": 512,
+        "map_seed": 1576844039,
+        "game_seed": 101,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/switchbacks-512-seed2/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/switchbacks-512-seed2/initial.game.gz": "b283c0d455595dbcca3e4b3f3a763ea148cdec02ffa6239825dda6ba4b2ec6bb"
+        }
+      },
+      {
+        "id": "city-states-512-seed2",
+        "generator": "city-states",
+        "size": 512,
+        "map_seed": 1595568339,
+        "game_seed": 101,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/city-states-512-seed2/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/city-states-512-seed2/initial.game.gz": "a77a1d17aa62818f27c33d2c898d5ca0eaec49d1af329420aac2e9b2b3bbd75a"
+        }
+      },
+      {
+        "id": "canals-512-seed2",
+        "generator": "canals",
+        "size": 512,
+        "map_seed": 72326799,
+        "game_seed": 101,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/canals-512-seed2/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/canals-512-seed2/initial.game.gz": "6563df9cd4c2628ce87caaac2a5a1b687ab94bb3ee0b15947fc4ffe518fbcf7c"
+        }
+      },
+      {
+        "id": "sierpinski-gardens-512-seed2",
+        "generator": "sierpinski-gardens",
+        "size": 512,
+        "map_seed": 3724853507,
+        "game_seed": 101,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/sierpinski-gardens-512-seed2/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/sierpinski-gardens-512-seed2/initial.game.gz": "3bfea37ccb1aee0ed5a85cf2fffab80ee5760e56fe32d2792a5e80c798cfbd11"
+        }
+      },
+      {
+        "id": "hilbert-river-512-seed2",
+        "generator": "hilbert-river",
+        "size": 512,
+        "map_seed": 4120296657,
+        "game_seed": 101,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/hilbert-river-512-seed2/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/hilbert-river-512-seed2/initial.game.gz": "c11230a96f3230e22cd50523c8091f7938850cd42e4dd7d311f45a946c93450a"
+        }
+      },
+      {
+        "id": "lava-shield-512-seed2",
+        "generator": "lava-shield",
+        "size": 512,
+        "map_seed": 3648895499,
+        "game_seed": 101,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/lava-shield-512-seed2/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/lava-shield-512-seed2/initial.game.gz": "6c54c5cb14bab418346c28b05332a5c5cfbb568e39aa7dbd81f469fd32051e25"
+        }
+      },
+      {
+        "id": "honeycomb-isle-512-seed2",
+        "generator": "honeycomb-isle",
+        "size": 512,
+        "map_seed": 3046248255,
+        "game_seed": 101,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/honeycomb-isle-512-seed2/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/honeycomb-isle-512-seed2/initial.game.gz": "9d4708fda1ea962b8a6c5df42b2a72393acdd4d21f3bfae33402c49862f5c0c9"
+        }
+      },
+      {
+        "id": "karst-towers-512-seed2",
+        "generator": "karst-towers",
+        "size": 512,
+        "map_seed": 3311185787,
+        "game_seed": 101,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/karst-towers-512-seed2/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/karst-towers-512-seed2/initial.game.gz": "8c70931fab0580b83512d40e173e9fdc4bf308a7aad97fe646537f0548212d34"
+        }
+      },
+      {
+        "id": "bajada-512-seed2",
+        "generator": "bajada",
+        "size": 512,
+        "map_seed": 233210754,
+        "game_seed": 101,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/bajada-512-seed2/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/bajada-512-seed2/initial.game.gz": "a74bddc6f0d1dbda2757799459b5c0ca762c987529b8830e0878e25b8ebbd223"
+        }
+      },
+      {
+        "id": "central-quarry-512-seed2",
+        "generator": "central-quarry",
+        "size": 512,
+        "map_seed": 369095332,
+        "game_seed": 101,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/central-quarry-512-seed2/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/central-quarry-512-seed2/initial.game.gz": "c6aed2197e1cd226530361164afa5feba6432e1e38a0c0dfab44f04d0fa48bcd"
+        }
+      },
+      {
+        "id": "hidden-oasis-512-seed2",
+        "generator": "hidden-oasis",
+        "size": 512,
+        "map_seed": 3069546022,
+        "game_seed": 101,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/hidden-oasis-512-seed2/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/hidden-oasis-512-seed2/initial.game.gz": "dc7924c3afcf35bcea0c7c3bc94ce75ef0ac7d2ab61db21aa9ed8437b0c0472b"
+        }
+      },
+      {
+        "id": "drowned-forest-512-seed2",
+        "generator": "drowned-forest",
+        "size": 512,
+        "map_seed": 1585424072,
+        "game_seed": 101,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/drowned-forest-512-seed2/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/drowned-forest-512-seed2/initial.game.gz": "78ed842b0bc4e710d9f8a3543fd31bbd9ff996d3a72b9c7f4760b5f4cfd57b54"
+        }
+      },
+      {
+        "id": "portage-lakes-512-seed2",
+        "generator": "portage-lakes",
+        "size": 512,
+        "map_seed": 744248212,
+        "game_seed": 101,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/portage-lakes-512-seed2/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/portage-lakes-512-seed2/initial.game.gz": "38973021eaa9335acdc1405f1e2817e5b37bfa297d252c3800b755da624d17e8"
+        }
+      },
+      {
+        "id": "orchard-commons-512-seed2",
+        "generator": "orchard-commons",
+        "size": 512,
+        "map_seed": 3355799265,
+        "game_seed": 101,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/orchard-commons-512-seed2/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/orchard-commons-512-seed2/initial.game.gz": "052eb37d90ccac97d77465673631818fe200a7c45fe260afd94c44117471ae86"
+        }
+      },
+      {
+        "id": "last-treeline-512-seed2",
+        "generator": "last-treeline",
+        "size": 512,
+        "map_seed": 554302742,
+        "game_seed": 101,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/last-treeline-512-seed2/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/last-treeline-512-seed2/initial.game.gz": "c1e7a2c595087745a933c7f5f2018437b39841a8867d65da7f002019cf0bf6b9"
+        }
+      },
+      {
+        "id": "gauntlet-512-seed2",
+        "generator": "gauntlet",
+        "size": 512,
+        "map_seed": 2988761487,
+        "game_seed": 101,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/gauntlet-512-seed2/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/gauntlet-512-seed2/initial.game.gz": "b1c5fa6e39cbd2b494fcfbe4fd8ad02813db8f2bbce3a13f53e7c19b7ab4de10"
+        }
+      },
+      {
+        "id": "faulted-city-512-seed2",
+        "generator": "faulted-city",
+        "size": 512,
+        "map_seed": 625958507,
+        "game_seed": 101,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/faulted-city-512-seed2/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/faulted-city-512-seed2/initial.game.gz": "80314c26879a89cda6c005811f188f7501edd8edfb0c5b746f6c54b3497cc346"
+        }
+      },
+      {
+        "id": "comb-512-seed2",
+        "generator": "comb",
+        "size": 512,
+        "map_seed": 3729605627,
+        "game_seed": 101,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/comb-512-seed2/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/comb-512-seed2/initial.game.gz": "b220da6bfa02c40e8865e4f2f44ed5b8bcefafad38c9cd2f37a5dab2638bce3d"
+        }
+      },
+      {
+        "id": "encircled-kingdom-512-seed2",
+        "generator": "encircled-kingdom",
+        "size": 512,
+        "map_seed": 3467343960,
+        "game_seed": 101,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/encircled-kingdom-512-seed2/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/encircled-kingdom-512-seed2/initial.game.gz": "93de21449b9b64863d7087f4babe60be0ccaac02d033c7bb8d64a27cec35d919"
+        }
+      },
+      {
+        "id": "bastion-keys-512-seed2",
+        "generator": "bastion-keys",
+        "size": 512,
+        "map_seed": 3112563481,
+        "game_seed": 101,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/bastion-keys-512-seed2/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/bastion-keys-512-seed2/initial.game.gz": "2ddf44e19bf0470cbb6a2abe980d431b52f488db5dac6ebf5303b11a8df535ec"
+        }
+      },
+      {
+        "id": "even-ground-512-seed2",
+        "generator": "even-ground",
+        "size": 512,
+        "map_seed": 1287180449,
+        "game_seed": 101,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/even-ground-512-seed2/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/even-ground-512-seed2/initial.game.gz": "43292ebb852e1642d86b289740c00e7ebcd2e070b98a5c5ae24e5193714dcb51"
+        }
+      },
+      {
+        "id": "marchland-512-seed2",
+        "generator": "marchland",
+        "size": 512,
+        "map_seed": 3438250500,
+        "game_seed": 101,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/marchland-512-seed2/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/marchland-512-seed2/initial.game.gz": "460d153a5c0735dee5f2b98377915b7d3063eb02ec0162cc39d0203be8d0db29"
+        }
+      },
+      {
+        "id": "who-ate-the-map-512-seed2",
+        "generator": "who-ate-the-map",
+        "size": 512,
+        "map_seed": 865438568,
+        "game_seed": 101,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/who-ate-the-map-512-seed2/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/who-ate-the-map-512-seed2/initial.game.gz": "ce9cd64a00c5d2831bf0e7224a6674477a943d54d6f1e23aa4b69abffedae251"
+        }
+      },
+      {
+        "id": "rugged-archipelago-512-seed2",
+        "generator": "rugged-archipelago",
+        "size": 512,
+        "map_seed": 2047785327,
+        "game_seed": 101,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/rugged-archipelago-512-seed2/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/rugged-archipelago-512-seed2/initial.game.gz": "e9873b145552edf395e172377a39a4ffc9077bd69f2f425bf3528964e830e16d"
+        }
+      },
+      {
+        "id": "hungry-marches-512-seed2",
+        "generator": "hungry-marches",
+        "size": 512,
+        "map_seed": 2469195418,
+        "game_seed": 101,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/hungry-marches-512-seed2/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/hungry-marches-512-seed2/initial.game.gz": "d305b47c318c28e2f9880d26faee56bedbc97c46d88e26674687e51cc73c8e40"
+        }
+      },
+      {
+        "id": "contested-commons-512-seed2",
+        "generator": "contested-commons",
+        "size": 512,
+        "map_seed": 1586441902,
+        "game_seed": 101,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/contested-commons-512-seed2/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/contested-commons-512-seed2/initial.game.gz": "a0b6e174ebcefa89cc51735a83eeb821f0b85823d94deca2151b8814f3c7f230"
+        }
+      },
+      {
+        "id": "rain-shadow-512-seed2",
+        "generator": "rain-shadow",
+        "size": 512,
+        "map_seed": 3064287564,
+        "game_seed": 101,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/rain-shadow-512-seed2/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/rain-shadow-512-seed2/initial.game.gz": "4ac95adbc9551a0a16222c8af5033908dc7ba0f73efcab322a6cfa5ded34f043"
+        }
+      },
+      {
+        "id": "everglades-512-seed2",
+        "generator": "everglades",
+        "size": 512,
+        "map_seed": 1023904320,
+        "game_seed": 101,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/everglades-512-seed2/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/everglades-512-seed2/initial.game.gz": "ac750225c50365bd6f52c8c766df7fc0378bdaa70c99ba6d534bc8c9c188fc22"
+        }
+      },
+      {
+        "id": "polder-512-seed2",
+        "generator": "polder",
+        "size": 512,
+        "map_seed": 2089493192,
+        "game_seed": 101,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/polder-512-seed2/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/polder-512-seed2/initial.game.gz": "ce331abcfbcb71874aa7dac7b23afea9abe2cb996b1ed310fa0c6214a9b0f950"
+        }
+      },
+      {
+        "id": "carousel-512-seed2",
+        "generator": "carousel",
+        "size": 512,
+        "map_seed": 3989106741,
+        "game_seed": 101,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/carousel-512-seed2/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/carousel-512-seed2/initial.game.gz": "73bc5b243561aff00cff3c36b8d6b7f16b2305b63840258147c6aa798b21cc3f"
+        }
+      },
+      {
+        "id": "old-growth-512-seed2",
+        "generator": "old-growth",
+        "size": 512,
+        "map_seed": 409716806,
+        "game_seed": 101,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/old-growth-512-seed2/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/old-growth-512-seed2/initial.game.gz": "620b1e02d1148687142293ec188b80835ff164532d1f37833e64414e97c1e3ef"
+        }
+      },
+      {
+        "id": "anthill-512-seed2",
+        "generator": "anthill",
+        "size": 512,
+        "map_seed": 266826839,
+        "game_seed": 101,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/anthill-512-seed2/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/anthill-512-seed2/initial.game.gz": "c4b1ffadd54c61ff07c5de754601b3ac0935dcbf7205ef6f8b26e51d10f23e6f"
+        }
+      },
+      {
+        "id": "coral-512-seed2",
+        "generator": "coral",
+        "size": 512,
+        "map_seed": 784698397,
+        "game_seed": 101,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/coral-512-seed2/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/coral-512-seed2/initial.game.gz": "083695ca06764f4150feff014be27bd02c1a48dbff2e31025dd88f29f977bbfa"
+        }
+      },
+      {
+        "id": "emoji-512-seed2",
+        "generator": "emoji",
+        "size": 512,
+        "map_seed": 1559846885,
+        "game_seed": 101,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/emoji-512-seed2/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/emoji-512-seed2/initial.game.gz": "1c2a4ce44eb19e454ad2db3d19337b03ef9799b94e58690e2f2152e407216bec"
+        }
+      },
+      {
+        "id": "forts-512-seed2",
+        "generator": "forts",
+        "size": 512,
+        "map_seed": 3872601075,
+        "game_seed": 101,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/forts-512-seed2/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/forts-512-seed2/initial.game.gz": "5a5abcd8ca975e66350380de7d46c5cd39d94beff21368df00f3ca11a09d7377"
+        }
+      },
+      {
+        "id": "braided-delta-512-seed2",
+        "generator": "braided-delta",
+        "size": 512,
+        "map_seed": 1584218351,
+        "game_seed": 101,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/braided-delta-512-seed2/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/braided-delta-512-seed2/initial.game.gz": "c734cc7986e105746a17ef5c55275206a0272eaa286fbd62c81a76f4f828b895"
+        }
+      },
+      {
+        "id": "breachable-highlands-512-seed2",
+        "generator": "breachable-highlands",
+        "size": 512,
+        "map_seed": 1142045332,
+        "game_seed": 101,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/breachable-highlands-512-seed2/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/breachable-highlands-512-seed2/initial.game.gz": "0f86908ccc165006cb9aa9c7d0a33fd70521348c34a9b62534263c2665e9940a"
+        }
+      },
+      {
+        "id": "hedgerow-country-512-seed2",
+        "generator": "hedgerow-country",
+        "size": 512,
+        "map_seed": 1871949793,
+        "game_seed": 101,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/hedgerow-country-512-seed2/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/hedgerow-country-512-seed2/initial.game.gz": "520b12334f874d41a8c1851dbf975f69229bc044d669ca6d2aa3aa30bed9cb99"
+        }
+      },
+      {
+        "id": "glacis-512-seed2",
+        "generator": "glacis",
+        "size": 512,
+        "map_seed": 1308307389,
+        "game_seed": 101,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/glacis-512-seed2/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/glacis-512-seed2/initial.game.gz": "a108fa86a0f4feb8332fdeb5f751ff366201885f6a6b4b07145c15d492627853"
+        }
+      },
+      {
+        "id": "allotments-512-seed2",
+        "generator": "allotments",
+        "size": 512,
+        "map_seed": 3717822936,
+        "game_seed": 101,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/allotments-512-seed2/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/allotments-512-seed2/initial.game.gz": "6af27ce4fa15595c6f559e4d5c144d7459e284f38b3fc809947cc903e385c290"
+        }
+      },
+      {
+        "id": "caravanserai-512-seed2",
+        "generator": "caravanserai",
+        "size": 512,
+        "map_seed": 76999054,
+        "game_seed": 101,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/caravanserai-512-seed2/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/caravanserai-512-seed2/initial.game.gz": "39b5235aa7e22e15f54b0387acf540edaf8207215d426a2b44d7116d16ac884d"
+        }
+      },
+      {
+        "id": "braided-river-512-seed2",
+        "generator": "braided-river",
+        "size": 512,
+        "map_seed": 2551517722,
+        "game_seed": 101,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/braided-river-512-seed2/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/braided-river-512-seed2/initial.game.gz": "600ea640e118500b14baf655170c039883abb80b240796ae41c323f8599755b4"
+        }
+      },
+      {
+        "id": "drumlin-field-512-seed2",
+        "generator": "drumlin-field",
+        "size": 512,
+        "map_seed": 2808690241,
+        "game_seed": 101,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/drumlin-field-512-seed2/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/drumlin-field-512-seed2/initial.game.gz": "e77c4e37f5bb1ceda21273a8a4ae9ffd6cbf50c112c14d56dbb79fbd1e6336c4"
+        }
+      },
+      {
+        "id": "continents-512-seed2",
+        "generator": "continents",
+        "size": 512,
+        "map_seed": 3711554471,
+        "game_seed": 101,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/continents-512-seed2/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/continents-512-seed2/initial.game.gz": "308388247621ac938297761e52134c4ccd43eb790104f47e04727b2467a9e0b1"
+        }
+      },
+      {
+        "id": "savannah-512-seed2",
+        "generator": "savannah",
+        "size": 512,
+        "map_seed": 2392904025,
+        "game_seed": 101,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/savannah-512-seed2/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/savannah-512-seed2/initial.game.gz": "9a7fd7ade790c1b66733a53b00f961013f405cf06911939d6ce7afd3057c5abd"
+        }
+      },
+      {
+        "id": "hills-512-seed2",
+        "generator": "hills",
+        "size": 512,
+        "map_seed": 243213957,
+        "game_seed": 101,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/hills-512-seed2/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/hills-512-seed2/initial.game.gz": "4c01f174f6620a1838eafa97a68ae0db3b47625bd0439e39ac9428332ac77891"
+        }
+      },
+      {
+        "id": "rice-terraces-512-seed2",
+        "generator": "rice-terraces",
+        "size": 512,
+        "map_seed": 4104880585,
+        "game_seed": 101,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/rice-terraces-512-seed2/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/rice-terraces-512-seed2/initial.game.gz": "deff194d0e2af368e436ee336547d22e9feb1692308ccb1c77899f74eb3f8224"
+        }
+      },
+      {
+        "id": "locust-512-seed2",
+        "generator": "locust",
+        "size": 512,
+        "map_seed": 2538565244,
+        "game_seed": 101,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/locust-512-seed2/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/locust-512-seed2/initial.game.gz": "172973a2d0b07389804d6a4fa761d0e4a8762a5e15306d26852993536be93a8e"
+        }
+      },
+      {
+        "id": "plantations-512-seed2",
+        "generator": "plantations",
+        "size": 512,
+        "map_seed": 49165733,
+        "game_seed": 101,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "full generator large-map roster",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/plantations-512-seed2/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/plantations-512-seed2/initial.game.gz": "ead0645c46c39ed93b24e80f6041678f675d3b70e1e87d4be92120ab4db5ab01"
+        }
+      },
+      {
+        "id": "even-ground-128-control",
+        "generator": "even-ground",
+        "size": 128,
+        "map_seed": 3139384004,
+        "game_seed": 102,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "stratified smaller-map control",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/even-ground-128-control/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/even-ground-128-control/initial.game.gz": "26c534252bc67016f0c4d64a993e4052f229cb4b5118f017b819c3f9e501c4b1"
+        }
+      },
+      {
+        "id": "even-ground-256-control",
+        "generator": "even-ground",
+        "size": 256,
+        "map_seed": 1580578859,
+        "game_seed": 102,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "stratified smaller-map control",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/even-ground-256-control/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/even-ground-256-control/initial.game.gz": "2c9784c9fc66eef6590adebaa1798cb468a07a7919daac25846eb8e8896b59e8"
+        }
+      },
+      {
+        "id": "islands-128-control",
+        "generator": "islands",
+        "size": 128,
+        "map_seed": 4121174350,
+        "game_seed": 102,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "stratified smaller-map control",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/islands-128-control/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/islands-128-control/initial.game.gz": "9f7329883551bc6dbb08375d167bdfdfbce69a3a2bcf3d8dbb145fcde376ef76"
+        }
+      },
+      {
+        "id": "islands-256-control",
+        "generator": "islands",
+        "size": 256,
+        "map_seed": 2852242180,
+        "game_seed": 102,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "stratified smaller-map control",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/islands-256-control/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/islands-256-control/initial.game.gz": "1c428a35857b4761e5a8c5bcff77db5b5e8883f2d4db1fe58b7bc3a5546c0cde"
+        }
+      },
+      {
+        "id": "maze-128-control",
+        "generator": "maze",
+        "size": 128,
+        "map_seed": 1205560794,
+        "game_seed": 102,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "stratified smaller-map control",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/maze-128-control/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/maze-128-control/initial.game.gz": "1ec3bf78c281c393d808078c49c2bc9ade19e9c9a1eb25a0f7c066f96a79e361"
+        }
+      },
+      {
+        "id": "maze-256-control",
+        "generator": "maze",
+        "size": 256,
+        "map_seed": 941604086,
+        "game_seed": 102,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "stratified smaller-map control",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/maze-256-control/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/maze-256-control/initial.game.gz": "e3c779e920a5d77374bc9c9121575073a6767f59aee92368752e948f56a5376a"
+        }
+      },
+      {
+        "id": "canals-128-control",
+        "generator": "canals",
+        "size": 128,
+        "map_seed": 1065175262,
+        "game_seed": 102,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "stratified smaller-map control",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/canals-128-control/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/canals-128-control/initial.game.gz": "0a3af6e1ef4af8da8512681d0e0845c40bf8c144c3a4fd0bf9f291b796b43753"
+        }
+      },
+      {
+        "id": "canals-256-control",
+        "generator": "canals",
+        "size": 256,
+        "map_seed": 1029769810,
+        "game_seed": 102,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "stratified smaller-map control",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/canals-256-control/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/canals-256-control/initial.game.gz": "59e31f24ac065a025201efeb0496961c17c4ff33c6ed22cbf2252a0c349bd08b"
+        }
+      },
+      {
+        "id": "watershed-128-control",
+        "generator": "watershed",
+        "size": 128,
+        "map_seed": 3504951302,
+        "game_seed": 102,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "stratified smaller-map control",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/watershed-128-control/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/watershed-128-control/initial.game.gz": "2209e543335564682b7fd870cbd287c10e2ee67322ee31d81625ac801e66d605"
+        }
+      },
+      {
+        "id": "watershed-256-control",
+        "generator": "watershed",
+        "size": 256,
+        "map_seed": 3833920252,
+        "game_seed": 102,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "stratified smaller-map control",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/watershed-256-control/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/watershed-256-control/initial.game.gz": "3fa65be85b25882a5f63c1d5c7f01c28958c36290f4e152613787b92ac729986"
+        }
+      },
+      {
+        "id": "bajada-128-control",
+        "generator": "bajada",
+        "size": 128,
+        "map_seed": 379896248,
+        "game_seed": 102,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "stratified smaller-map control",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/bajada-128-control/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/bajada-128-control/initial.game.gz": "9832981e82022875bbe59d333c359cf9590a346da4c395f3295f4806f3a8770a"
+        }
+      },
+      {
+        "id": "bajada-256-control",
+        "generator": "bajada",
+        "size": 256,
+        "map_seed": 3868564412,
+        "game_seed": 102,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "stratified smaller-map control",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/bajada-256-control/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/bajada-256-control/initial.game.gz": "dd0aefffef471530f979382f21c1a457a0feca9051e2e7ebef606432cc6f7c8b"
+        }
+      },
+      {
+        "id": "swamp-128-control",
+        "generator": "swamp",
+        "size": 128,
+        "map_seed": 1385480640,
+        "game_seed": 102,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "stratified smaller-map control",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/swamp-128-control/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/swamp-128-control/initial.game.gz": "cbba945f08456c190ff234b12b0944517767aa81fdd7dbbac5f7966d0f7a18ee"
+        }
+      },
+      {
+        "id": "swamp-256-control",
+        "generator": "swamp",
+        "size": 256,
+        "map_seed": 2238207539,
+        "game_seed": 102,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "stratified smaller-map control",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/swamp-256-control/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/swamp-256-control/initial.game.gz": "c2b22c917a694fa94e5521b7f592f8c5c9344268cdd8b1b8a5937602c09a815d"
+        }
+      },
+      {
+        "id": "contested-commons-128-control",
+        "generator": "contested-commons",
+        "size": 128,
+        "map_seed": 4246700046,
+        "game_seed": 102,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "stratified smaller-map control",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/contested-commons-128-control/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/contested-commons-128-control/initial.game.gz": "751442881809e4f3aaf784bbdd0ac3addc9b8ddf8052b5c1ddc8606794555bba"
+        }
+      },
+      {
+        "id": "contested-commons-256-control",
+        "generator": "contested-commons",
+        "size": 256,
+        "map_seed": 884017321,
+        "game_seed": 102,
+        "players": [
+          "maxima",
+          "cortex",
+          "nicowar",
+          "maxima"
+        ],
+        "params": {},
+        "coverage": "stratified smaller-map control",
+        "args": [
+          "--load-game",
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/contested-commons-256-control/initial.game.gz"
+        ],
+        "threads": 8,
+        "ticks": 5000,
+        "warmup": 1000,
+        "fixture_sha256": {
+          "/home/bradley/.codex/worktrees/ae0a/glob2/artifacts/master-pr-final/fixtures/contested-commons-256-control/initial.game.gz": "09d3887749f9b8ea5e74b1300cb1120cef1a96c173a97eca76c411b5eb9ad101"
+        }
+      }
+    ],
+    "excluded_generators": [
+      {
+        "id": "uniform",
+        "reason": "editor-only, no ordinary playable start"
+      }
+    ]
+  },
+  "binaries": {
+    "master": "f22caff3ddeb93e92ad39471de8d0bee42a9240b8d69bad8ff996ace306c4b77",
+    "pr": "7d1108042e0f344ac95d6d716d77fefb5af0653f32400af83090d2bee22c8bb7"
+  },
+  "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.43",
+  "compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+  "flags": "scons release=1 server=0 linker=auto -j8; -O3; CCACHE=1",
+  "dependencies": {
+    "master": "\tlinux-vdso.so.1 (0x000070ac8f05e000)\n\tlibz.so.1 => /usr/lib/x86_64-linux-gnu/libz.so.1 (0x000070ac8f01f000)\n\tlibssl.so.3 => /usr/lib/x86_64-linux-gnu/libssl.so.3 (0x000070ac8b0ef000)\n\tlibcrypto.so.3 => /usr/lib/x86_64-linux-gnu/libcrypto.so.3 (0x000070ac8aa00000)\n\tlibepoxy.so.0 => /usr/lib/x86_64-linux-gnu/libepoxy.so.0 (0x000070ac8a8df000)\n\tlibfribidi.so.0 => /usr/lib/x86_64-linux-gnu/libfribidi.so.0 (0x000070ac8f000000)\n\tlibva.so.2 => /usr/lib/x86_64-linux-gnu/libva.so.2 (0x000070ac8efc6000)\n\tlibva-drm.so.2 => /usr/lib/x86_64-linux-gnu/libva-drm.so.2 (0x000070ac8efc1000)\n\tlibSDL3_net.so.0 => /home/bradley/glob2-claude/build/sdl3/prefix/lib/libSDL3_net.so.0 (0x000070ac8efb4000)\n\tlibopusfile.so.0 => /usr/lib/x86_64-linux-gnu/libopusfile.so.0 (0x000070ac8efa5000)\n\tlibSDL3_ttf.so.0 => /home/bradley/glob2-claude/build/sdl3/prefix/lib/libSDL3_ttf.so.0 (0x000070ac8b0c4000)\n\tlibSDL3_image.so.0 => /home/bradley/glob2-claude/build/sdl3/prefix/lib/libSDL3_image.so.0 (0x000070ac8a7be000)\n\tlibspeex.so.1 => /usr/lib/x86_64-linux-gnu/libspeex.so.1 (0x000070ac8b0a4000)\n\tlibSDL3.so.0 => /home/bradley/glob2-claude/build/sdl3/prefix/lib/libSDL3.so.0 (0x000070ac8a200000)\n\tlibstdc++.so.6 => /usr/lib/x86_64-linux-gnu/libstdc++.so.6 (0x000070ac89e00000)\n\tlibm.so.6 => /usr/lib/x86_64-linux-gnu/libm.so.6 (0x000070ac8a698000)\n\tlibgcc_s.so.1 => /usr/lib/x86_64-linux-gnu/libgcc_s.so.1 (0x000070ac8b076000)\n\tlibc.so.6 => /usr/lib/x86_64-linux-gnu/libc.so.6 (0x000070ac89a00000)\n\t/lib64/ld-linux-x86-64.so.2 (0x000070ac8f060000)\n\tlibzstd.so.1 => /usr/lib/x86_64-linux-gnu/libzstd.so.1 (0x000070ac8a13d000)\n\tlibdrm.so.2 => /usr/lib/x86_64-linux-gnu/libdrm.so.2 (0x000070ac8b05f000)\n\tlibogg.so.0 => /usr/lib/x86_64-linux-gnu/libogg.so.0 (0x000070ac8b055000)\n\tlibopus.so.0 => /usr/lib/x86_64-linux-gnu/libopus.so.0 (0x000070ac89400000)\n\tlibfreetype.so.6 => /usr/lib/x86_64-linux-gnu/libfreetype.so.6 (0x000070ac89d2b000)\n\tlibtiff.so.6 => /usr/lib/x86_64-linux-gnu/libtiff.so.6 (0x000070ac8a604000)\n\tlibpng16.so.16 => /usr/lib/x86_64-linux-gnu/libpng16.so.16 (0x000070ac8b01b000)\n\tlibbz2.so.1.0 => /usr/lib/x86_64-linux-gnu/libbz2.so.1.0 (0x000070ac8a5ef000)\n\tlibbrotlidec.so.1 => /usr/lib/x86_64-linux-gnu/libbrotlidec.so.1 (0x000070ac8a12e000)\n\tlibwebp.so.7 => /usr/lib/x86_64-linux-gnu/libwebp.so.7 (0x000070ac89c98000)\n\tliblzma.so.5 => /usr/lib/x86_64-linux-gnu/liblzma.so.5 (0x000070ac8a0f9000)\n\tlibLerc.so.4 => /usr/lib/x86_64-linux-gnu/libLerc.so.4 (0x000070ac8996b000)\n\tlibjbig.so.0 => /usr/lib/x86_64-linux-gnu/libjbig.so.0 (0x000070ac8a0e7000)\n\tlibjpeg.so.8 => /usr/lib/x86_64-linux-gnu/libjpeg.so.8 (0x000070ac898d4000)\n\tlibdeflate.so.0 => /usr/lib/x86_64-linux-gnu/libdeflate.so.0 (0x000070ac8a0cf000)\n\tlibbrotlicommon.so.1 => /usr/lib/x86_64-linux-gnu/libbrotlicommon.so.1 (0x000070ac8a0ac000)\n\tlibsharpyuv.so.0 => /usr/lib/x86_64-linux-gnu/libsharpyuv.so.0 (0x000070ac8a0a3000)\n",
+    "pr": "\tlinux-vdso.so.1 (0x00007a773e1d5000)\n\tlibz.so.1 => /usr/lib/x86_64-linux-gnu/libz.so.1 (0x00007a773e196000)\n\tlibssl.so.3 => /usr/lib/x86_64-linux-gnu/libssl.so.3 (0x00007a773e085000)\n\tlibcrypto.so.3 => /usr/lib/x86_64-linux-gnu/libcrypto.so.3 (0x00007a7739a00000)\n\tlibepoxy.so.0 => /usr/lib/x86_64-linux-gnu/libepoxy.so.0 (0x00007a773a0df000)\n\tlibfribidi.so.0 => /usr/lib/x86_64-linux-gnu/libfribidi.so.0 (0x00007a773e066000)\n\tlibva.so.2 => /usr/lib/x86_64-linux-gnu/libva.so.2 (0x00007a773e02c000)\n\tlibva-drm.so.2 => /usr/lib/x86_64-linux-gnu/libva-drm.so.2 (0x00007a773e027000)\n\tlibSDL3_net.so.0 => /home/bradley/glob2-claude/build/sdl3/prefix/lib/libSDL3_net.so.0 (0x00007a773e01a000)\n\tlibopusfile.so.0 => /usr/lib/x86_64-linux-gnu/libopusfile.so.0 (0x00007a773e00b000)\n\tlibSDL3_ttf.so.0 => /home/bradley/glob2-claude/build/sdl3/prefix/lib/libSDL3_ttf.so.0 (0x00007a773a0b4000)\n\tlibSDL3_image.so.0 => /home/bradley/glob2-claude/build/sdl3/prefix/lib/libSDL3_image.so.0 (0x00007a77398df000)\n\tlibspeex.so.1 => /usr/lib/x86_64-linux-gnu/libspeex.so.1 (0x00007a773a094000)\n\tlibSDL3.so.0 => /home/bradley/glob2-claude/build/sdl3/prefix/lib/libSDL3.so.0 (0x00007a7739400000)\n\tlibstdc++.so.6 => /usr/lib/x86_64-linux-gnu/libstdc++.so.6 (0x00007a7739000000)\n\tlibm.so.6 => /usr/lib/x86_64-linux-gnu/libm.so.6 (0x00007a77392da000)\n\tlibgcc_s.so.1 => /usr/lib/x86_64-linux-gnu/libgcc_s.so.1 (0x00007a773a066000)\n\tlibc.so.6 => /usr/lib/x86_64-linux-gnu/libc.so.6 (0x00007a7738c00000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007a773e1d7000)\n\tlibzstd.so.1 => /usr/lib/x86_64-linux-gnu/libzstd.so.1 (0x00007a773981c000)\n\tlibdrm.so.2 => /usr/lib/x86_64-linux-gnu/libdrm.so.2 (0x00007a773a04f000)\n\tlibogg.so.0 => /usr/lib/x86_64-linux-gnu/libogg.so.0 (0x00007a773dffd000)\n\tlibopus.so.0 => /usr/lib/x86_64-linux-gnu/libopus.so.0 (0x00007a7738600000)\n\tlibfreetype.so.6 => /usr/lib/x86_64-linux-gnu/libfreetype.so.6 (0x00007a7738f2b000)\n\tlibtiff.so.6 => /usr/lib/x86_64-linux-gnu/libtiff.so.6 (0x00007a7738e97000)\n\tlibpng16.so.16 => /usr/lib/x86_64-linux-gnu/libpng16.so.16 (0x00007a77392a0000)\n\tlibbz2.so.1.0 => /usr/lib/x86_64-linux-gnu/libbz2.so.1.0 (0x00007a773a03a000)\n\tlibbrotlidec.so.1 => /usr/lib/x86_64-linux-gnu/libbrotlidec.so.1 (0x00007a773a02b000)\n\tlibwebp.so.7 => /usr/lib/x86_64-linux-gnu/libwebp.so.7 (0x00007a7738b6d000)\n\tliblzma.so.5 => /usr/lib/x86_64-linux-gnu/liblzma.so.5 (0x00007a77397e7000)\n\tlibLerc.so.4 => /usr/lib/x86_64-linux-gnu/libLerc.so.4 (0x00007a7738ad8000)\n\tlibjbig.so.0 => /usr/lib/x86_64-linux-gnu/libjbig.so.0 (0x00007a7738e85000)\n\tlibjpeg.so.8 => /usr/lib/x86_64-linux-gnu/libjpeg.so.8 (0x00007a7738a41000)\n\tlibdeflate.so.0 => /usr/lib/x86_64-linux-gnu/libdeflate.so.0 (0x00007a7738e6d000)\n\tlibbrotlicommon.so.1 => /usr/lib/x86_64-linux-gnu/libbrotlicommon.so.1 (0x00007a7738e4a000)\n\tlibsharpyuv.so.0 => /usr/lib/x86_64-linux-gnu/libsharpyuv.so.0 (0x00007a773a020000)\n"
+  },
+  "sources": {
+    "master": "07442b5919988edb323efdf571f220e657a30492",
+    "pr": "13843165bd7e778650142fe884c7af37b40b56f1"
+  },
+  "dependency_sha256": {
+    "master": {
+      "/usr/lib/x86_64-linux-gnu/libz.so.1.3.1": "47b61967895b30e8c0c6818dd633ffeb87711cf637c688f981896f0dd84ce23b",
+      "/usr/lib/x86_64-linux-gnu/libssl.so.3": "63b47f444efa588e291e9b650a5ba2ab02f856356f2d50f13a2e477db9119e09",
+      "/usr/lib/x86_64-linux-gnu/libcrypto.so.3": "5385f0436ac2e284ba8c5fb1488874057c29c04be72dea32add832694f381e28",
+      "/usr/lib/x86_64-linux-gnu/libepoxy.so.0.0.0": "67533f0552bc23d90402a0df7bed6f4f40d8ec1946782b3f9d245c0e46a758ef",
+      "/usr/lib/x86_64-linux-gnu/libfribidi.so.0.4.0": "c122a34c3e9cab264c9a07b21b75f16443a646cc8db4e84ac91e800daa7e03ce",
+      "/usr/lib/x86_64-linux-gnu/libva.so.2.2300.0": "4a6b851f244e5d3c0ca08ba6861106050f3caaa631721e3f87d621caeec34065",
+      "/usr/lib/x86_64-linux-gnu/libva-drm.so.2.2300.0": "c08daf7ae0bb66e575f8e717906490481caa3bfa20fdc8e63e98fec3b090ebeb",
+      "/home/bradley/glob2-claude/build/sdl3/prefix/lib/libSDL3_net.so.0.2.0": "1d148844b7d4e6cc84dab41fee3f0d7d58663453fd714497a84028f64dd31260",
+      "/usr/lib/x86_64-linux-gnu/libopusfile.so.0.4.5": "977c23c26f87f263af8404fe9772f923179c09feb9b97a2e6e46bbcbf5ab9cf4",
+      "/home/bradley/glob2-claude/build/sdl3/prefix/lib/libSDL3_ttf.so.0.2.2": "f9c2472c3f1cec814e64ca1f14e0eec4a62f52883bdc2b6b31bae42df2ee84af",
+      "/home/bradley/glob2-claude/build/sdl3/prefix/lib/libSDL3_image.so.0.4.6": "c79016a7881358fdb8fa8b609273615f6f589a961e00b93a22107a4ebf3d846f",
+      "/usr/lib/x86_64-linux-gnu/libspeex.so.1.5.2": "b33ab83259722f77ab70905816a96bd71987fbb1f0920bf238a27b77b5efe1f8",
+      "/home/bradley/glob2-claude/build/sdl3/prefix/lib/libSDL3.so.0.4.16": "853f3495eb257384a63f8fa447a6d64481a0daa14dcd3357b259a89ddb3f2b08",
+      "/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.35": "5bb0d21308f123b6ad46c6f35b42cedfcb8d6d439a53aa3dae04d880aaffdde3",
+      "/usr/lib/x86_64-linux-gnu/libm.so.6": "1c488db6f4fe8cecb72456bc018de000b7a9b539c2994864b0416b5e8371b3d8",
+      "/usr/lib/x86_64-linux-gnu/libgcc_s.so.1": "9d339ecb409578d6a5d587e6c537a8f9589b8a13fefba30d167433a4b5758bee",
+      "/usr/lib/x86_64-linux-gnu/libc.so.6": "85e64f97e348786a8fb4d9f3d52fec289e2fb86bba20f0731dfe61990525e0f7",
+      "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2": "bda779ea9e9ad234f60315477d7cfd0bdde861cd8ddd9df8cdaf62f18c4cec14",
+      "/usr/lib/x86_64-linux-gnu/libzstd.so.1.5.7": "060eeb79531d435306665fd78329d8a9dd579f95876c5960bb67937825362a80",
+      "/usr/lib/x86_64-linux-gnu/libdrm.so.2.131.0": "c8be7d3863453898666977c12b0b392014a1c728d84215d885d574882d6e7b89",
+      "/usr/lib/x86_64-linux-gnu/libogg.so.0.8.6": "cb4b444d7f473530c04e31a70347bd572abd5e53a8b28e0f653fe76cf2255bc8",
+      "/usr/lib/x86_64-linux-gnu/libopus.so.0.11.1": "5f01eaf11e7326d83f9c341a1d943851a0b00e3444668697dd663c14b138476e",
+      "/usr/lib/x86_64-linux-gnu/libfreetype.so.6.20.5": "36be278a8138d3e5773eb3f8491ff3fe73122a3051a9b36d1f86457ce0fad22d",
+      "/usr/lib/x86_64-linux-gnu/libtiff.so.6.1.0": "d65b506791e2469e886c716a7993b5e65ce40015aef1d15a678804a9fc3c4844",
+      "/usr/lib/x86_64-linux-gnu/libpng16.so.16.57.0": "2a570998f08a406b4083b06888e528fa0c5d6cc3bef77b40026d661c91cbfb90",
+      "/usr/lib/x86_64-linux-gnu/libbz2.so.1.0.4": "7138aeb748f73c150b1d34d67de69139a441910cd7b269076ba3c8b986dea9a7",
+      "/usr/lib/x86_64-linux-gnu/libbrotlidec.so.1.2.0": "eb8768f85e9c367cd74772919b5668bbe0045cb71b65d75aafc32828e7acb1b7",
+      "/usr/lib/x86_64-linux-gnu/libwebp.so.7.1.10": "0b477702bb43d90a1205813a9c211faa8dfef025a258b9d60663b37311b87c08",
+      "/usr/lib/x86_64-linux-gnu/liblzma.so.5.8.3": "64550dc7a4dc9159d32c00d9e78ce86e0951d02b7b24827df97f090dae101a19",
+      "/usr/lib/x86_64-linux-gnu/libLerc.so.4": "b7c1fe626e31e8c3ecb80d428ffb3a8824fd241ec55c6edc8b12437412206060",
+      "/usr/lib/x86_64-linux-gnu/libjbig.so.0": "19ae16694b0f2c442b367fd9dfecf8da68c9b8ded0bc9029c1d53a9ba91a4151",
+      "/usr/lib/x86_64-linux-gnu/libjpeg.so.8.2.2": "90a1eebead4d7c1abc46cf9c66c5392c60fc2c16f038af20fc7efbd0d8dd427f",
+      "/usr/lib/x86_64-linux-gnu/libdeflate.so.0": "0e33bbae9bd7f62fd4172ac04d9088736defa499491aacae723732ce4e905f94",
+      "/usr/lib/x86_64-linux-gnu/libbrotlicommon.so.1.2.0": "fb353cab2ea4ecd90814b46f872c21e1034c92bd86c3c677415748b4d16b5ad1",
+      "/usr/lib/x86_64-linux-gnu/libsharpyuv.so.0.1.1": "fced0bf76ec62fcce9b2cea1a91a9c61fbf6828e9e66b194cc6d779798907ff2"
+    },
+    "pr": {
+      "/usr/lib/x86_64-linux-gnu/libz.so.1.3.1": "47b61967895b30e8c0c6818dd633ffeb87711cf637c688f981896f0dd84ce23b",
+      "/usr/lib/x86_64-linux-gnu/libssl.so.3": "63b47f444efa588e291e9b650a5ba2ab02f856356f2d50f13a2e477db9119e09",
+      "/usr/lib/x86_64-linux-gnu/libcrypto.so.3": "5385f0436ac2e284ba8c5fb1488874057c29c04be72dea32add832694f381e28",
+      "/usr/lib/x86_64-linux-gnu/libepoxy.so.0.0.0": "67533f0552bc23d90402a0df7bed6f4f40d8ec1946782b3f9d245c0e46a758ef",
+      "/usr/lib/x86_64-linux-gnu/libfribidi.so.0.4.0": "c122a34c3e9cab264c9a07b21b75f16443a646cc8db4e84ac91e800daa7e03ce",
+      "/usr/lib/x86_64-linux-gnu/libva.so.2.2300.0": "4a6b851f244e5d3c0ca08ba6861106050f3caaa631721e3f87d621caeec34065",
+      "/usr/lib/x86_64-linux-gnu/libva-drm.so.2.2300.0": "c08daf7ae0bb66e575f8e717906490481caa3bfa20fdc8e63e98fec3b090ebeb",
+      "/home/bradley/glob2-claude/build/sdl3/prefix/lib/libSDL3_net.so.0.2.0": "1d148844b7d4e6cc84dab41fee3f0d7d58663453fd714497a84028f64dd31260",
+      "/usr/lib/x86_64-linux-gnu/libopusfile.so.0.4.5": "977c23c26f87f263af8404fe9772f923179c09feb9b97a2e6e46bbcbf5ab9cf4",
+      "/home/bradley/glob2-claude/build/sdl3/prefix/lib/libSDL3_ttf.so.0.2.2": "f9c2472c3f1cec814e64ca1f14e0eec4a62f52883bdc2b6b31bae42df2ee84af",
+      "/home/bradley/glob2-claude/build/sdl3/prefix/lib/libSDL3_image.so.0.4.6": "c79016a7881358fdb8fa8b609273615f6f589a961e00b93a22107a4ebf3d846f",
+      "/usr/lib/x86_64-linux-gnu/libspeex.so.1.5.2": "b33ab83259722f77ab70905816a96bd71987fbb1f0920bf238a27b77b5efe1f8",
+      "/home/bradley/glob2-claude/build/sdl3/prefix/lib/libSDL3.so.0.4.16": "853f3495eb257384a63f8fa447a6d64481a0daa14dcd3357b259a89ddb3f2b08",
+      "/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.35": "5bb0d21308f123b6ad46c6f35b42cedfcb8d6d439a53aa3dae04d880aaffdde3",
+      "/usr/lib/x86_64-linux-gnu/libm.so.6": "1c488db6f4fe8cecb72456bc018de000b7a9b539c2994864b0416b5e8371b3d8",
+      "/usr/lib/x86_64-linux-gnu/libgcc_s.so.1": "9d339ecb409578d6a5d587e6c537a8f9589b8a13fefba30d167433a4b5758bee",
+      "/usr/lib/x86_64-linux-gnu/libc.so.6": "85e64f97e348786a8fb4d9f3d52fec289e2fb86bba20f0731dfe61990525e0f7",
+      "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2": "bda779ea9e9ad234f60315477d7cfd0bdde861cd8ddd9df8cdaf62f18c4cec14",
+      "/usr/lib/x86_64-linux-gnu/libzstd.so.1.5.7": "060eeb79531d435306665fd78329d8a9dd579f95876c5960bb67937825362a80",
+      "/usr/lib/x86_64-linux-gnu/libdrm.so.2.131.0": "c8be7d3863453898666977c12b0b392014a1c728d84215d885d574882d6e7b89",
+      "/usr/lib/x86_64-linux-gnu/libogg.so.0.8.6": "cb4b444d7f473530c04e31a70347bd572abd5e53a8b28e0f653fe76cf2255bc8",
+      "/usr/lib/x86_64-linux-gnu/libopus.so.0.11.1": "5f01eaf11e7326d83f9c341a1d943851a0b00e3444668697dd663c14b138476e",
+      "/usr/lib/x86_64-linux-gnu/libfreetype.so.6.20.5": "36be278a8138d3e5773eb3f8491ff3fe73122a3051a9b36d1f86457ce0fad22d",
+      "/usr/lib/x86_64-linux-gnu/libtiff.so.6.1.0": "d65b506791e2469e886c716a7993b5e65ce40015aef1d15a678804a9fc3c4844",
+      "/usr/lib/x86_64-linux-gnu/libpng16.so.16.57.0": "2a570998f08a406b4083b06888e528fa0c5d6cc3bef77b40026d661c91cbfb90",
+      "/usr/lib/x86_64-linux-gnu/libbz2.so.1.0.4": "7138aeb748f73c150b1d34d67de69139a441910cd7b269076ba3c8b986dea9a7",
+      "/usr/lib/x86_64-linux-gnu/libbrotlidec.so.1.2.0": "eb8768f85e9c367cd74772919b5668bbe0045cb71b65d75aafc32828e7acb1b7",
+      "/usr/lib/x86_64-linux-gnu/libwebp.so.7.1.10": "0b477702bb43d90a1205813a9c211faa8dfef025a258b9d60663b37311b87c08",
+      "/usr/lib/x86_64-linux-gnu/liblzma.so.5.8.3": "64550dc7a4dc9159d32c00d9e78ce86e0951d02b7b24827df97f090dae101a19",
+      "/usr/lib/x86_64-linux-gnu/libLerc.so.4": "b7c1fe626e31e8c3ecb80d428ffb3a8824fd241ec55c6edc8b12437412206060",
+      "/usr/lib/x86_64-linux-gnu/libjbig.so.0": "19ae16694b0f2c442b367fd9dfecf8da68c9b8ded0bc9029c1d53a9ba91a4151",
+      "/usr/lib/x86_64-linux-gnu/libjpeg.so.8.2.2": "90a1eebead4d7c1abc46cf9c66c5392c60fc2c16f038af20fc7efbd0d8dd427f",
+      "/usr/lib/x86_64-linux-gnu/libdeflate.so.0": "0e33bbae9bd7f62fd4172ac04d9088736defa499491aacae723732ce4e905f94",
+      "/usr/lib/x86_64-linux-gnu/libbrotlicommon.so.1.2.0": "fb353cab2ea4ecd90814b46f872c21e1034c92bd86c3c677415748b4d16b5ad1",
+      "/usr/lib/x86_64-linux-gnu/libsharpyuv.so.0.1.1": "fced0bf76ec62fcce9b2cea1a91a9c61fbf6828e9e66b194cc6d779798907ff2"
+    }
+  },
+  "harness_sha256": "9c6fb97f9d25cf0dbfcf8e8f56d859da32847392abbd9608e6c804f8524b8f1f",
+  "protocol_sha256": "b5fab373fad1a1b6fa007fa10f29864aac49d15950cfb4594e3f7a7980e8e602",
+  "fixtures_sha256": "5f4a262c586dad04da7dbee5015bbecd1c9b0577d192c594b36f2cff55491a9d"
+}

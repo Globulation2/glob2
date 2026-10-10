@@ -1,0 +1,13 @@
+[
+  {
+    "scenario": "river-network",
+    "reason": "Observed unrelated engine-test thread broadened CPU affinity; one contaminated row, entire matched quartet retained and repeated",
+    "evidence": "artifacts/master-pr-final/excluded-affinity-overlap-01",
+    "unix": 1791634911.5132606
+  },
+  {
+    "reason": "Second unrelated engine-test affinity overlap; all pre-partition runs retained separately and restarted under kernel-enforced isolation",
+    "evidence": "artifacts/master-pr-final/pre-partition-runs",
+    "unix": 1791635026.2213683
+  }
+]
