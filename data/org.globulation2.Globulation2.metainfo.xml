@@ -22,6 +22,7 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="0.11.0.5" date="2026-10-10"><description><p>Corrected native packaging, installed Linux cleanup and iOS distribution verification.</p></description></release>
     <release version="0.11.0.4" date="2026-10-10"><description><p>Corrected Android packaging verification and added protected Play channel permission checks before building.</p></description></release>
     <release version="0.11.0.3" date="2026-10-10"><description><p>Fixed mobile dependency manifest verification.</p></description></release>
     <release version="0.11.0.2" date="2026-10-10">
