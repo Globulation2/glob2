@@ -701,9 +701,11 @@ struct HeadlessRunner
         }
         const auto writeOpenCL=[&](const gradient_kernel::OpenCLStatus& status) {
             result << "{\"available\":" << (status.available ? "true" : "false")
-                << ",\"device\":" << quote(status.device) << ",\"error\":" << quote(status.error);
+                << ",\"device\":" << quote(status.device) << ",\"error\":" << quote(status.error)
+                << ",\"device_uuid_hex\":" << quote(status.deviceUUIDHex);
             const std::map<std::string,Uint64> values={
                 {"fields",status.fields},{"batches",status.batches},{"dispatches",status.dispatches},
+                {"device_ordinal",status.deviceOrdinal},{"device_ordinal_known",status.deviceOrdinalKnown},
                 {"device_observed_fields",status.deviceObservedFields},{"committed_fields",status.committedFields},
                 {"direct_seed_upload_requested",status.directSeedUploadRequested},{"direct_seed_upload",status.directSeedUpload},
                 {"direct_seed_uploads",status.directSeedUploads},{"seed_copied_bytes",status.seedCopiedBytes},

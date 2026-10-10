@@ -65,6 +65,11 @@ struct OpenCLStatus
     bool directSeedUploadRequested = false, directSeedUpload = false;
     std::uint64_t directSeedUploads = 0, seedCopiedBytes = 0, seedUploadedBytes = 0;
     std::uint64_t directSeedUploadedBytes = 0, outputCopiedBytes = 0;
+    // Physical identity is optional for execution, required by offline batching
+    // evidence. Names alone cannot distinguish two identical adapters.
+    std::string deviceUUIDHex;
+    unsigned deviceOrdinal = 0;
+    bool deviceOrdinalKnown = false;
 };
 // Status only: never initializes or compiles. Worker-only maintenance publishes
 // readiness; required callers keep using CPU until a selected plan is ready.

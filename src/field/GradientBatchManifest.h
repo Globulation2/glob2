@@ -6,6 +6,7 @@
 #include <stdexcept>
 #include <string_view>
 #include <fstream>
+#include <limits>
 #include "online/Sha256.h"
 
 namespace gradient_kernel
@@ -74,7 +75,9 @@ struct GradientBatchManifest
            !matches(config,"driver_version",backend.driverVersion) || !matches(config,"device_version",backend.deviceVersion) ||
            !matches(config,"opencl_c_version",backend.openCLCVersion))
             throw std::invalid_argument("batch manifest unavailable backend fingerprint");
-        if(backend.device.empty() || config.at("device").get<std::string>()!=backend.device ||
+        if(!matches(config,"device_uuid_hex",backend.deviceUUIDHex) || !backend.deviceOrdinalKnown ||
+           number(config,"device_ordinal",std::numeric_limits<unsigned>::max())!=backend.deviceOrdinal ||
+           backend.device.empty() || config.at("device").get<std::string>()!=backend.device ||
            number(config,"check_interval",65536)!=backend.checkInterval ||
            number(config,"poll_micros",1000000)!=backend.pollMicros ||
            config.at("active_epoch").get<bool>()!=backend.activeEpoch ||

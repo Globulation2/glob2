@@ -508,10 +508,14 @@ stores when this mode is requested, without an additional classification scan.
 The JSON profile uses schema 1, an immutable `source` evidence reference,
 `native_binary_sha256`, `measurement="homogeneous-ready-batch"`, a `backend`
 configuration object, and at most 32 `profiles`. Backend identity includes device,
-platform/vendor/version, device vendor/version, driver version and OpenCL-C
+the selected OpenCL GPU ordinal and physical `cl_khr_device_uuid` bytes as
+`device_uuid_hex`, platform/vendor/version, device vendor/version, driver version and OpenCL-C
 version, plus check interval, polling, epoch, uniform metadata, profiling and
 parity-binding and direct-seed-upload settings. Missing identity or an executable/driver mismatch declines
-the profile. The native executable SHA256 is streamed once in the background;
+the profile. An unavailable device UUID declines offline batching evidence but does not disable
+ordinary accelerator execution. Query constants follow the
+[Khronos OpenCL extension header](https://github.com/KhronosGroup/OpenCL-Headers/blob/main/CL/cl_ext.h).
+The native executable SHA256 is streamed once in the background;
 the manifest/source hash counters are diagnostic fingerprints, not evidence
 qualification or cryptographic authentication.
 

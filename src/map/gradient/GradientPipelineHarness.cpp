@@ -970,6 +970,7 @@ TEST_CASE("offline batch manifest binds exact configuration seed class and measu
 {
     using namespace gradient_kernel;using Json=nlohmann::json;
     OpenCLStatus backend;backend.device="fixture device";
+    backend.deviceUUIDHex=std::string(32,'a');backend.deviceOrdinal=1;backend.deviceOrdinalKnown=true;
     backend.platform="platform";backend.platformVendor="vendor";backend.platformVersion="version";
     backend.deviceVendor="vendor";backend.driverVersion="driver";backend.deviceVersion="version";backend.openCLCVersion="version";
     const auto nativeIdentity=std::string(64,'a');
@@ -978,7 +979,8 @@ TEST_CASE("offline batch manifest binds exact configuration seed class and measu
         {"family","clear"},{"plan",unsigned(Plan::Frozen8)},{"cost_revision",11u},{"cost_variant",0u},
         {"max_measured_elapsed_ns",1000000u},{"completion_margin_ns",100000u},{"measured_batches",8u}};
     Json manifest={{"schema",1u},{"native_binary_sha256",nativeIdentity},{"source","immutable offline fixture"},{"measurement","homogeneous-ready-batch"},
-        {"backend",{{"device",backend.device},{"platform",backend.platform},{"platform_vendor",backend.platformVendor},
+        {"backend",{{"device",backend.device},{"device_uuid_hex",backend.deviceUUIDHex},{"device_ordinal",backend.deviceOrdinal},
+            {"platform",backend.platform},{"platform_vendor",backend.platformVendor},
             {"platform_version",backend.platformVersion},{"device_vendor",backend.deviceVendor},{"driver_version",backend.driverVersion},
             {"device_version",backend.deviceVersion},{"opencl_c_version",backend.openCLCVersion},{"check_interval",backend.checkInterval},{"poll_micros",backend.pollMicros},
             {"active_epoch",false},{"uniform_metadata",false},{"device_profiling",false},{"parity_bound",false},{"direct_seed_upload",false}}},
@@ -997,6 +999,16 @@ TEST_CASE("offline batch manifest binds exact configuration seed class and measu
     CHECK_THROWS_AS(GradientBatchManifest::parse(changed.dump(),backend,false,nativeIdentity),std::invalid_argument);
     changed=manifest;changed["backend"]["driver_version"]="different";
     CHECK_THROWS_AS(GradientBatchManifest::parse(changed.dump(),backend,false,nativeIdentity),std::invalid_argument);
+    changed=manifest;changed["backend"]["device_uuid_hex"]=std::string(32,'b');
+    CHECK_THROWS_AS(GradientBatchManifest::parse(changed.dump(),backend,false,nativeIdentity),std::invalid_argument);
+    changed=manifest;changed["backend"]["device_ordinal"]=0u;
+    CHECK_THROWS_AS(GradientBatchManifest::parse(changed.dump(),backend,false,nativeIdentity),std::invalid_argument);
+    changed=manifest;changed["backend"].erase("device_uuid_hex");
+    CHECK_THROWS(GradientBatchManifest::parse(changed.dump(),backend,false,nativeIdentity));
+    auto unknownDevice=backend;unknownDevice.deviceUUIDHex.clear();
+    CHECK_THROWS_AS(GradientBatchManifest::parse(text,unknownDevice,false,nativeIdentity),std::invalid_argument);
+    unknownDevice=backend;unknownDevice.deviceOrdinalKnown=false;
+    CHECK_THROWS_AS(GradientBatchManifest::parse(text,unknownDevice,false,nativeIdentity),std::invalid_argument);
     changed=manifest;changed["backend"]["direct_seed_upload"]=true;
     CHECK_THROWS_AS(GradientBatchManifest::parse(changed.dump(),backend,false,nativeIdentity),std::invalid_argument);
     auto directBackend=backend;directBackend.directSeedUpload=true;
@@ -1021,6 +1033,7 @@ TEST_CASE("ready cross-due batches need exact profile cadence seed metadata and 
     const auto path=std::filesystem::temp_directory_path()/("glob2-ready-batch-"+std::to_string(monotonicNs())+".json");
     struct File {std::filesystem::path path;~File(){std::error_code error;std::filesystem::remove(path,error);}} file{path};
     OpenCLStatus backend;const auto plan=requestedOpenCLPlan();backend.device="fixture device";
+    backend.deviceUUIDHex=std::string(32,'a');backend.deviceOrdinalKnown=true;
     backend.platform="platform";backend.platformVendor="vendor";backend.platformVersion="version";
     backend.deviceVendor="vendor";backend.driverVersion="driver";backend.deviceVersion="version";backend.openCLCVersion="version";
     Json entry={{"width",1u},{"height",1u},{"cpu_buckets",64u},{"threads",2u},{"batch",2u},{"limit",65534u},
@@ -1028,7 +1041,8 @@ TEST_CASE("ready cross-due batches need exact profile cadence seed metadata and 
         {"plan",unsigned(plan)},{"cost_revision",42u},{"cost_variant",7u},{"max_measured_elapsed_ns",1000u},
         {"completion_margin_ns",1000u},{"measured_batches",8u}};
     Json manifest={{"schema",1u},{"native_binary_sha256",gradientNativeBuildIdentity()},{"source","ready fake-driver fixture"},{"measurement","homogeneous-ready-batch"},
-        {"backend",{{"device",backend.device},{"platform",backend.platform},{"platform_vendor",backend.platformVendor},
+        {"backend",{{"device",backend.device},{"device_uuid_hex",backend.deviceUUIDHex},{"device_ordinal",backend.deviceOrdinal},
+            {"platform",backend.platform},{"platform_vendor",backend.platformVendor},
             {"platform_version",backend.platformVersion},{"device_vendor",backend.deviceVendor},{"driver_version",backend.driverVersion},
             {"device_version",backend.deviceVersion},{"opencl_c_version",backend.openCLCVersion},{"check_interval",backend.checkInterval},{"poll_micros",backend.pollMicros},
             {"active_epoch",backend.activeEpoch},{"uniform_metadata",backend.uniformMetadata},{"device_profiling",backend.deviceProfiling},

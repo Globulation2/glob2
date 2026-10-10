@@ -470,6 +470,7 @@ struct Device
                     if (available && compiler && group >= 256)
                     {
                         device = candidate;
+                        status.deviceOrdinal=candidateOrdinal;status.deviceOrdinalKnown=true;
                         break;
                     }
                 }
@@ -503,6 +504,15 @@ struct Device
             status.driverVersion=infoString(api.GetDeviceInfo,device,0x102D);
             status.deviceVersion=infoString(api.GetDeviceInfo,device,0x102F);
             status.openCLCVersion=infoString(api.GetDeviceInfo,device,0x103D);
+            // cl_khr_device_uuid defines a 16-byte CL_DEVICE_UUID_KHR query.
+            // Unsupported/error results only disable matching offline evidence.
+            std::array<unsigned char,16> uuid{};std::size_t uuidBytes=0;
+            if(!api.GetDeviceInfo(device,0x106A,sizeof uuid,uuid.data(),&uuidBytes) && uuidBytes==uuid.size() &&
+                std::any_of(uuid.begin(),uuid.end(),[](auto byte){return byte!=0;})) {
+                constexpr char hex[]="0123456789abcdef";
+                status.deviceUUIDHex.reserve(uuid.size()*2);
+                for(const auto byte:uuid){status.deviceUUIDHex.push_back(hex[byte>>4]);status.deviceUUIDHex.push_back(hex[byte&15]);}
+            }
             Int error = 0;
             context = api.CreateContext(nullptr, 1, &device, nullptr, nullptr, &error);
             check(error);
