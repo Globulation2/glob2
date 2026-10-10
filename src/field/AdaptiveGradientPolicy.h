@@ -214,10 +214,15 @@ public:
     // Configure only after stopping the executor (including maintenance passes).
     // Replacing the map creates a new policy; reconfiguration invalidates all
     // previous observations while preserving established plans.
+    // Bounded metadata only: retiring a pipeline does not clear a captured
+    // policy/global admission before its background payload has been reaped.
+    void invalidateConfiguration() noexcept {
+        generation.store(nextGeneration.fetch_add(1),std::memory_order_release);
+        if(const auto owner=learningPolicy())owner->invalidate();
+    }
     void configure(unsigned threads, bool enable) {
         configurationThreads.store(threads);
-        generation.store(nextGeneration.fetch_add(1),std::memory_order_release);
-        if(const auto owner=learningPolicy()) owner->invalidate();
+        invalidateConfiguration();
         if(enable && !accounting) accounting=std::make_unique<Accounting>();
         if(!enable) accounting.reset();
         const auto mode=backend();

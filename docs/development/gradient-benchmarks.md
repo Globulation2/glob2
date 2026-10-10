@@ -811,3 +811,13 @@ confidence-qualified counts. It prevents GPU savings from masking optional
 expense. Separately validate the ordinary promotion-enabled configuration's
 actual GPU selection, exactness and whole-mode responsiveness; suppression
 alone cannot qualify promoted execution.
+
+
+Pipeline reset/reconfiguration preserves its monotonic local credit/cadence tick
+and sets the last-submission marker to that tick. A new submission still requires
+an advance. Publication and save/restore remain relative to current ticks, and
+Map executor deadlines retain their external simulation-boundary callback.
+Retirement performs only bounded session/policy generation invalidation after
+required work drains. Captured old generations cancel on the coordinator, keeping
+their policy/global slot until storage and events are actually released; credit
+history and established plans are retained without owner-side profile cleanup.

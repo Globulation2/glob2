@@ -365,7 +365,11 @@ public:
 			try { executor->join(job->batch); } catch (...) {}
 		}
 		pending.clear(); spare.clear(); workspaces.clear();
-		delay = 0; tick = 0; lastSubmission = 0;
+        // Credit/cadence history uses this monotonic local namespace. Saves and
+        // publication remain relative to the current tick; executorDue is
+        // independently supplied by the Map's external deadline callback.
+        backendSession->invalidateConfiguration();
+		delay = 0; lastSubmission = tick;
         cadenceStartedNs=cadenceOwnerCpuNs=cadenceWaitNs=0;
 	}
 	void configure(ComputeExecutor& target, bool sharedExecution, unsigned ticks, std::size_t size, Work callback) {

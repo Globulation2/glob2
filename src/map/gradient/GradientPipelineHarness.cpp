@@ -1578,3 +1578,47 @@ TEST_CASE("isolated process shutdown abandons unresolved optional proof without 
     // exit-only path must release its registration while that graph remains
     // retained, rather than waiting for a nonexistent positive event proof.
 }
+
+TEST_CASE("gradient reconfiguration preserves credit ticks and relative saved deadlines" * doctest::test_suite("GradientPipeline"))
+{
+    using namespace gradient_kernel;
+    TestGradientPipeline pipeline;
+    pipeline.configure(0,3,1,[](auto& job,auto&){++job.data[0];});
+    auto session=pipeline.session();session->configureLearning(true);const auto policy=session->learningPolicy();
+    REQUIRE(bool(policy));
+    for(unsigned i=0;i<5;++i)pipeline.advance();
+    WorkloadKey key{1,1,BUCKETS,1,1,Family::Materials,255,255};key.limit=COST_LIMIT;
+    policy->observeAccepted(key,Plan::CPU,1000000000,5);REQUIRE(policy->qualify(key,Plan::Frozen8,true));
+    const auto oldGeneration=session->currentGeneration();
+    std::optional<CpuSavingPolicy::ProbeTicket> oldTicket;
+    for(unsigned i=0;i<CpuSavingPolicy::ProbePeriod && !oldTicket;++i)
+        oldTicket=policy->beginAcceptedCapture(key,Plan::Frozen8,5,1000000,100000000,1000000,false,0,oldGeneration,true);
+    REQUIRE(bool(oldTicket));
+    auto* slot=new std::uint16_t[1]{};
+    struct Release {TestGradientPipeline& pipeline;std::uint16_t*& slot;~Release(){pipeline.reset();delete[] slot;}} release{pipeline,slot};
+    auto* job=pipeline.reserve(&slot,0);CHECK(job->due==8);
+    pipeline.prepare(job,[](auto& value){value.data[0]=40;});
+    GradientPipeline::RestoredSnapshot saved{&slot,0,0,false,{}};
+    pipeline.visitPendingSnapshots([&](const auto& snapshot){
+        CHECK(snapshot.remaining==3);CHECK(snapshot.data[0]==41);CHECK(slot[0]==0);
+        saved.remaining=snapshot.remaining;saved.data=std::make_unique<std::uint16_t[]>(1);saved.data[0]=snapshot.data[0];
+    });
+    pipeline.reset();CHECK(session->currentGeneration()!=oldGeneration);
+    CHECK_FALSE(policy->bindAcceptedReference(*oldTicket,oldGeneration,1000000,true,true));
+    CHECK(policy->metrics().probeCpuNs==0); // Admission survives invalidation until cleanup.
+    CHECK(policy->metrics().acceptedCpuNs==1000000000);
+    policy->cancelProbe(*oldTicket,100,true);CHECK(policy->metrics().probeCpuNs>=1000000);
+    pipeline.configure(0,3,1,[](auto& value,auto&){++value.data[0];});
+    CHECK_THROWS_AS(pipeline.reserve(&slot,0),std::logic_error);
+    pipeline.advance();pipeline.restoreCompleted(std::move(saved));
+    pipeline.visitPendingSnapshots([](const auto& snapshot){CHECK(snapshot.remaining==3);});
+    for(unsigned i=0;i<2;++i){pipeline.advance();CHECK(slot[0]==0);}
+    pipeline.advance();CHECK(slot[0]==41);
+    pipeline.advance();pipeline.setWorkerCount(1);
+    pipeline.deadline=[](unsigned remaining){return ComputeExecutor::boundaryDue(1000+remaining);};
+    job=pipeline.reserve(&slot,0);CHECK(job->due==13);
+    pipeline.prepare(job,[](auto& value){value.data[0]=67;});
+    CHECK(job->executorDue==ComputeExecutor::boundaryDue(1003));
+    for(unsigned i=0;i<2;++i){pipeline.advance();CHECK(slot[0]==41);}
+    pipeline.advance();CHECK(slot[0]==68);
+}
