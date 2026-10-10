@@ -69,6 +69,8 @@ validation; later edits do not rewrite that release.
 `/ai-building-studio` is a separate conversational workspace for creating and
 revising building families. Start a project or choose **Edit with AI** from an
 owned manual draft. Fork a library release into a draft to revise it with AI.
+The designer receives building catalogs, semantics, authoring guidance and resource
+catalog guidance, including stock resource-to-material mappings.
 Questions and brainstorming are free. A clear creation or edit request starts
 one generation automatically; each validated delivery costs one building credit,
 including property-only revisions. Confirmed failures return the reservation;

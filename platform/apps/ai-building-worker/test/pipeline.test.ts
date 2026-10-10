@@ -140,6 +140,8 @@ it('delivers normalized artwork in a validated immutable archive and charges one
   expect(designPrompt).toContain('suppliesDirectStockMaterials');
   expect(designPrompt).toContain('the first twelve positions use that fixed material order');
   expect(designPrompt).toContain('completed placeable variant needs instant placement');
+  expect(designPrompt).toContain('paper is the third position (zero-based index 2)');
+  expect(designPrompt).toContain('| `papyrus` | paper |');
   expect(await studio.credits.balance(f.account)).toMatchObject({ balance: 2, reserved: 0 });
 });
 it('answers questions without images or a credit charge', async () => {
@@ -249,8 +251,8 @@ it('resumes a completed design stage after a restart', async () => {
     p = await provider();
   const reference = (
       await Promise.all(
-        ['building-catalogs', 'building-semantics', 'building-authoring'].map((name) =>
-          readFile(resolve(root, 'docs/features', name + '.md'), 'utf8'),
+        ['building-catalogs', 'building-semantics', 'building-authoring', 'resource-catalogs'].map(
+          (name) => readFile(resolve(root, 'docs/features', name + '.md'), 'utf8'),
         ),
       )
     ).join('\n\n'),

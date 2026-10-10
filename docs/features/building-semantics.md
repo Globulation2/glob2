@@ -14,6 +14,10 @@ withdrawals retain their exact fraction of a raw unit. Delivery converts that fr
 using the recipient's multiplier, accepts available capacity and reports discarded
 remainder explicitly.
 
+Count array positions from this fixed engine order, regardless of the order in a
+player's request or a permission list: paper is the third position (zero-based index 2),
+and stone is the fourth (index 3).
+
 `semantics.replenishMaterials` names materials workers should replenish and ordinary
 deliveries may add. Storage capacity does not imply replenishment. The four
 `semantics.market` sets `suppliesStockMaterials`, `suppliesDirectStockMaterials`,
