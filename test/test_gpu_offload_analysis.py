@@ -1,5 +1,5 @@
 import unittest
-from gpu_offload_analysis import paired_interval, summarize, cpu_ceiling
+from gpu_offload_analysis import paired_interval, summarize, cpu_ceiling, aggregate_cpu
 
 
 class OffloadAnalysisTest(unittest.TestCase):
@@ -43,11 +43,31 @@ class OffloadAnalysisTest(unittest.TestCase):
         result['benchmark_gradient_at_start'] = dict(sample_execution_ns=0)
         result['benchmark_gradient_at_end'] = dict(sample_execution_ns=50)
         self.assertFalse(cpu_ceiling(result)['available'])
-        result['benchmark_gradient_at_start'] = dict(required_seed_cpu_ns=10, required_propagation_cpu_ns=20)
-        result['benchmark_gradient_at_end'] = dict(required_seed_cpu_ns=20, required_propagation_cpu_ns=30)
+        result['benchmark_gradient_at_start'] = dict(required_seed_cpu_ns=10, required_propagation_cpu_ns=20, thread_cpu_clock_available=1)
+        result['benchmark_gradient_at_end'] = dict(required_seed_cpu_ns=20, required_propagation_cpu_ns=30, thread_cpu_clock_available=1)
         ceiling = cpu_ceiling(result)
         self.assertEqual(ceiling['ideal_cpu_removal_fraction'], .2)
         self.assertFalse(ceiling['periodic_only_can_reach_30_percent'])
+
+    def test_confirmation_rejects_positive_point_latency_regression(self):
+        rows = [r for n in range(10) for r in (self.row('cpu', n), self.row('gpu', n, 60))]
+        for r in rows:
+            if r['variant'] == 'gpu': r['result']['benchmark_run_wall_ns'] = 101
+        self.assertFalse(summarize(rows, 'cpu', ['gpu'], minimum_pairs=10, confirmation=True)['map-early']['gpu']['qualified'])
+
+    def test_aggregate_counts_maps_not_phases_or_repetitions(self):
+        rows = []
+        for m in ('map1', 'map2'):
+            for phase in ('early', 'middle', 'late'):
+                for n in range(5):
+                    for v, cpu in (('cpu', 100), ('gpu', 60)):
+                        r = self.row(v, n, cpu)
+                        r.update(scenario=m+'-'+phase, map_id=m, group='open-512', phase=phase)
+                        rows.append(r)
+        summary = aggregate_cpu(rows, 'cpu', ['gpu'])['gpu']
+        self.assertEqual(summary['independent_maps'], 2)
+        self.assertAlmostEqual(summary['ratio'], .6)
+        self.assertTrue(summary['cpu_target_pass'])
 
 
 if __name__ == '__main__': unittest.main()

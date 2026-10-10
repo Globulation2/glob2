@@ -55,7 +55,7 @@ def main():
                     fixture = dest / ('initial.game.gz' if tick == 0 else f'checkpoint-{tick}.game.gz')
                     if not fixture.exists(): continue
                     receipt['available_phases'].append(phase)
-                    scenarios.append(dict(id=f'{identity}-{phase}', group=family, map_id=identity,
+                    scenarios.append(dict(id=f'{identity}-{phase}', group=f'{family}-{size}', map_id=identity,
                         phase=phase, size=size, control=size <= 128, start_tick=tick,
                         args=['--load-game', str(fixture), '--ticks', str(tick + 8192)],
                         fixture_sha256={str(fixture): hashlib.sha256(fixture.read_bytes()).hexdigest()}))

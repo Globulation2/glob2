@@ -14,7 +14,7 @@ from pathlib import Path
 import platform
 import subprocess
 import time
-from gpu_offload_analysis import summarize, cpu_ceiling
+from gpu_offload_analysis import summarize, cpu_ceiling, aggregate_cpu
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -32,6 +32,9 @@ def validate(config):
     for v in config['variants']:
         if sha(v['binary']) != v['sha256'] or not v['source_revision'] or not v['build_flags']:
             raise ValueError('unfrozen binary or missing build provenance: ' + v['id'])
+    counts = {str(v.get('compute_threads', '8')) for v in config['variants']}
+    if len(counts) != 1 or any(v != 'auto' and (not v.isdecimal() or int(v) <= 0) for v in counts):
+        raise ValueError('paired variants require the same positive executor budget or auto')
     for s in config['scenarios']:
         if not s.get('fixture_sha256') or '--load-game' not in s['args'] or '--ticks' not in s['args']:
             raise ValueError('retained fixed-tick loaded scenario required')
@@ -44,7 +47,8 @@ def validate(config):
 
 def execute(variant, scenario, output, warmup):
     output.mkdir(parents=True, exist_ok=False)
-    command = [variant['binary'], 'game', 'run', *scenario['args'], '--compute-threads', '8',
+    threads = str(variant.get('compute_threads', '8'))
+    command = [variant['binary'], 'game', 'run', *scenario['args'], '--compute-threads', threads,
                '--benchmark-warmup', str(warmup), '--output-dir', str(output)]
     env = dict(os.environ, **variant.get('env', {}))
     started = time.monotonic_ns()
@@ -66,7 +70,7 @@ def execute(variant, scenario, output, warmup):
     result = json.loads((output / 'result.json').read_text())
     row['result'] = result
     row['cpu_ceiling'] = cpu_ceiling(result)
-    if result['benchmark_measured_ticks'] <= 0 or result['compute_threads'] != 8:
+    if result['benchmark_measured_ticks'] <= 0 or (threads != 'auto' and result['compute_threads'] != int(threads)):
         row['errors'].append('empty window or executor fallback')
     if result['ticks'] != int(scenario['args'][scenario['args'].index('--ticks') + 1]):
         row['errors'].append('game ended before fixed tick endpoint')
@@ -74,7 +78,7 @@ def execute(variant, scenario, output, warmup):
         start, end = result.get('benchmark_opencl_at_start'), result.get('benchmark_opencl_at_end')
         if not start or not end:
             row['errors'].append('GPU execution counters unavailable')
-        elif (warmup and not start['available']) or end['fields'] <= start['fields']:
+        elif (warmup and (not start['available'] or not result.get('benchmark_gradient_at_start', {}).get('ready_plan_mask'))) or end['fields'] <= start['fields']:
             row['errors'].append('backend not warm or no actual measured GPU execution')
     row['valid'] = not row['errors']
     return row
@@ -112,6 +116,7 @@ def main():
                     for variant in order:
                         dest = output / scenario['id'] / str(n) / variant['id']
                         row = dict(scenario=scenario['id'], phase=scenario.get('phase'), group=scenario.get('group'),
+                                   map_id=scenario.get('map_id'), control=scenario.get('control', False),
                                    round=n, variant=variant['id'], **execute(variant, scenario, dest, 0 if args.cold else config['warmup_ticks']))
                         if 'result' in row:
                             signature = tuple(row['result'][k] for k in ('initialChecksum', 'finalChecksum', 'ticks', 'benchmark_measured_ticks'))
@@ -123,7 +128,9 @@ def main():
                         print(f"{scenario['id']} round={n} {variant['id']} valid={row['valid']}", flush=True)
                         if 'paired simulation mismatch' in row['errors']:
                             raise RuntimeError('simulation diverged; retained evidence, campaign stopped')
-        summary = summarize(rows, config['control'], [v['id'] for v in config['variants'] if v['id'] != config['control']], minimum_pairs=rounds)
+        candidates = [v['id'] for v in config['variants'] if v['id'] != config['control']]
+        summary = dict(scenarios=summarize(rows, config['control'], candidates, minimum_pairs=rounds, confirmation=args.stage == 'confirm'),
+                       aggregate_cpu=aggregate_cpu(rows, config['control'], candidates))
         (output / 'summary.json').write_text(json.dumps(summary, indent=2) + '\n')
 
 
