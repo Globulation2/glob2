@@ -100,6 +100,113 @@ inline bool matchesStrategyUnitRole(const AIEngine::AIWorldView& world,const AIE
             return unit.typeNum==int(role);
     }
 }
+inline bool matchesConstructionRole(const AIEngine::AIWorldView& world,const AIEngine::UnitView& unit)
+{
+    // Existing construction jobs gather/deliver packets before building; the
+    // engine still requires transport eligibility as well as Construct.
+    return (unit.capabilityFlags&UnitRuntimeTraits::Construct) && matchesStrategyUnitRole(world,unit,WORKER);
+}
+// Planning-only projection: a recipient may acquire effective clocks at a later
+// configured level. Compute these candidates before scanning live entities.
+inline bool definitionCanServeStrategyRole(const AIEngine::AIWorldView& world,unsigned id,unsigned role)
+{
+    const auto& traits=world.unitTraits(id);
+    AIEngine::UnitView probe;
+    probe.typeNum=id;probe.capabilityFlags=traits.flags;probe.experienceLevel=0;
+    for(const auto& level:world.unitCatalog().levels(id)) {
+        std::copy(std::begin(level.performance),std::end(level.performance),probe.performance);
+        if(!traits.has(UnitRuntimeTraits::LegacyPerformancePolicies)) {
+            if(!traits.has(UnitRuntimeTraits::Walk))probe.performance[WALK]=0;
+            if(!traits.has(UnitRuntimeTraits::Swim))probe.performance[SWIM]=0;
+            if(!traits.has(UnitRuntimeTraits::Fly))probe.performance[FLY]=0;
+        }
+        if(matchesStrategyUnitRole(world,probe,role))return true;
+    }
+    return false;
+}
+inline bool definitionCanConstruct(const AIEngine::AIWorldView& world,unsigned id)
+{
+    return world.unitTraits(id).has(UnitRuntimeTraits::Construct) && definitionCanServeStrategyRole(world,id,WORKER);
+}
+inline AIPlanning::BuildingIntent trainingIntent(int ability)
+{
+    using I=AIPlanning::BuildingIntent;
+    constexpr I intents[]={I::Count,I::Count,I::Count,I::TrainWalk,I::TrainSwim,I::TrainFly,
+        I::TrainBuild,I::TrainHarvest,I::TrainAttackSpeed,I::TrainAttackStrength,
+        I::TrainAirAttack,I::TrainBombing,I::TrainCreateWood,I::TrainCreateWheat,
+        I::TrainCreateAlgae,I::TrainArmor,I::TrainHealth};
+    static_assert(std::size(intents)==NB_ABILITY);
+    return intents[ability];
+}
+// Includes qualification-only grants attached to otherwise inactive abilities.
+// The immutable capability table resolves admission, keyed recipient selectors
+// and enabled ability policies; live canLearn and levels are checked separately.
+inline Uint32 usableTrainingAbilities(const AIEngine::AIWorldView& world,int type,unsigned id)
+{
+    const auto& semantics=world.catalog->at(type).resolvedType.semantics;
+    const auto& traits=world.unitTraits(id);
+    Uint32 result=0;
+    for(int ability=0;ability<NB_ABILITY;++ability) {
+        const auto& grant=semantics.training[ability];
+        if((trainingIntent(ability)!=AIPlanning::BuildingIntent::Count
+                && world.capabilities().matches(type,trainingIntent(ability),id))
+            || (grant.enabled && grant.constructionLevel>0
+                && traits.has(UnitRuntimeTraits::LearnConstruction)
+                && (traits.learnableMask&(1u<<ability))
+                && world.capabilities().matches(type,AIPlanning::BuildingIntent::TrainConstruction,id)
+                && semantics.admittedUnits.matches(id,semantics.admittedUnitMask)
+                && grant.units.matches(id,grant.unitMask)))result|=1u<<ability;
+    }
+    return result;
+}
+struct WorkerTrainingProjection
+{
+    std::vector<Uint8> labourProviders;
+    std::vector<int> constructionLevels;
+    std::vector<std::vector<Uint32>> courseMasks;
+};
+inline WorkerTrainingProjection workerTrainingProjection(const AIEngine::AIWorldView& world,bool swimming)
+{
+    using I=AIPlanning::BuildingIntent;
+    WorkerTrainingProjection result{std::vector<Uint8>(world.catalog->size()),
+        std::vector<int>(world.catalog->size()),std::vector<std::vector<Uint32>>(world.catalog->size())};
+    std::vector<unsigned> recipients;
+    std::vector<Uint8> carriers(world.unitTypeCount()),builders(world.unitTypeCount());
+    for(unsigned id=0;id<world.unitTypeCount();++id) {
+        const auto& definition=world.unitCatalog().definition(id);
+        if(!definition.requiredExperiment.empty() && !world.configuration->getExperiments().has(definition.requiredExperiment))continue;
+        carriers[id]=definitionCanServeStrategyRole(world,id,WORKER);
+        builders[id]=carriers[id] && world.unitTraits(id).has(UnitRuntimeTraits::Construct);
+        if(carriers[id] || builders[id])recipients.push_back(id);
+    }
+    std::vector<Uint8> candidates(world.catalog->size());
+    for(const auto intent:{I::TrainWalk,I::TrainBuild,I::TrainHarvest,I::TrainSwim,I::TrainConstruction}) {
+        if(intent==I::TrainSwim && !swimming)continue;
+        for(const int type:world.capabilities().providers(intent))candidates[type]=1;
+    }
+    // Resolve each candidate once before the entity census. Rows allocate only
+    // for training providers; live units use direct type/recipient indexing.
+    for(unsigned type=0;type<candidates.size();++type)if(candidates[type]) {
+        auto& masks=result.courseMasks[type];masks.resize(world.unitTypeCount());
+        for(const unsigned id:recipients) {
+            auto mask=usableTrainingAbilities(world,type,id);
+            const bool builder=builders[id];
+            const auto& grants=world.catalog->at(type).resolvedType.semantics.training;
+            for(int ability=0;ability<NB_ABILITY;++ability)if(mask&(1u<<ability)) {
+                const auto intent=trainingIntent(ability);
+                const bool trainsAbility=intent!=I::Count && world.capabilities().matches(type,intent,id);
+                const bool qualifies=builder && grants[ability].constructionLevel>0
+                    && world.capabilities().matches(type,I::TrainConstruction,id);
+                if(!trainsAbility && !qualifies)mask&=~(1u<<ability);
+                if(qualifies)result.constructionLevels[type]=std::max(result.constructionLevels[type],grants[ability].constructionLevel);
+                if(carriers[id] && (qualifies || (trainsAbility && (ability==WALK || ability==BUILD || ability==HARVEST || (swimming && ability==SWIM)))))
+                    result.labourProviders[type]=1;
+            }
+            masks[id]=mask;
+        }
+    }
+    return result;
+}
 inline bool needsTraining(const AIEngine::UnitView& unit, const BuildingTrainingSpec& training, int ability)
 {
     return training.enabled && unit.canLearn[ability] && training.units.matches(unit.typeNum,training.unitMask)

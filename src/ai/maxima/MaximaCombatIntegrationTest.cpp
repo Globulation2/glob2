@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <nlohmann/json.hpp>
 #include <utility>
+#include <functional>
 #include "GlobalContainer.h"
 #include "Version.h"
 #include "Game.h"
@@ -16,6 +17,7 @@
 #include "Utilities.h"
 #include "TeamStat.h"
 #include "AIMaximaBuildings.h"
+#include "AIMaximaWorldHelpers.h"
 #include <memory>
 #include <limits>
 #include <locale>
@@ -55,7 +57,7 @@ struct Fixture
     Player player;
     std::unique_ptr<Maxima> ai;
 
-    Fixture() : game(NULL)
+    Fixture(const std::function<void(Game&)>& configure = {}) : game(NULL)
     {
         game.gameHeader.setRandomSeed(5489);
         // This fixture skips setGameHeader, which normally initializes the
@@ -68,6 +70,7 @@ struct Fixture
             game.teams[team]->race.loadDefault();
             game.teams[team]->playersMask=1u<<team;
         }
+        if (configure) configure(game);
         player.setTeam(game.teams[0]);
         ai.reset(new Maxima(&player));
         for(int y=0; y<64; ++y) for(int x=0; x<64; ++x) {
@@ -1492,4 +1495,154 @@ TEST_SUITE("Maxima.Combat")
 	TEST_CASE("forbidden defense zones") { glob2test::HeadlessGlobals globals; combat_regressions::forbiddenDefenseZones(); }
 	TEST_CASE("defense deadband preserves coverage") { glob2test::HeadlessGlobals globals; combat_regressions::defenseDeadbandPreservesCoverage(); }
 	TEST_CASE("offensive control switches") { glob2test::HeadlessGlobals globals; combat_regressions::offensiveControlSwitches(); }
+}
+
+TEST_SUITE("Maxima.Combat")
+{
+    TEST_CASE("unlearned combat estimates use configured tables at the shared strategy level")
+    {
+        glob2test::HeadlessGlobals globals;
+        constexpr int stockRates[]={36,64,110,168};
+        for (int variant=0;variant<3;++variant) {
+            glob2test::HeadlessGame world({.clearImmobile=true,.loadDefaultRace=true,.header=true});
+            auto snapshot=nlohmann::json::parse(UnitCatalog::builtins()->serialize());
+            if (variant==1)
+                for (auto& level:snapshot["units"][WARRIOR]["levels"]) {
+                    level["performance"][ATTACK_SPEED]=level["performance"][ATTACK_SPEED].get<int>()*2;
+                    level["performance"][ATTACK_STRENGTH]=level["performance"][ATTACK_STRENGTH].get<int>()+4;
+                    level["performance"][ARMOR]=5;
+                }
+            if (variant==2) snapshot["units"][WARRIOR]["behaviors"]["melee"]=false;
+            world.game.gameHeader.setUnitCatalog(UnitCatalog::deserialize(snapshot.dump()));
+            world.game.configureBuildingCatalog();
+            auto* live=world.addUnit(WARRIOR,10,10); REQUIRE(live);
+            const auto view=AIEngine::AIWorldView::capture(world.game,AIEngine::AIWorldView::captureCatalog(world.game));
+            auto unit=*view->unitSlots(0)[Unit::GIDtoID(live->gid)];
+            const auto& levels=view->unitCatalog().levels(WARRIOR);
+            const int armour=AIMaxima::WorldHelpers::unlearned_reference_armour(*view);
+            CHECK(armour==(variant==2?0:variant==1?5:10));
+            for (int speedLevel=0;speedLevel<4;++speedLevel)
+                for (int strengthLevel=0;strengthLevel<4;++strengthLevel) {
+                    unit.level[ATTACK_SPEED]=speedLevel;unit.level[ATTACK_STRENGTH]=strengthLevel;
+                    unit.performance[ATTACK_SPEED]=variant==2?0:levels[speedLevel].performance[ATTACK_SPEED];
+                    unit.performance[ATTACK_STRENGTH]=variant==2?0:levels[strengthLevel].performance[ATTACK_STRENGTH];
+                    const int common=std::min(speedLevel,strengthLevel);
+                    const int expected=variant==0?stockRates[common]:variant==2?0:
+                        levels[common].performance[ATTACK_SPEED]*(levels[common].performance[ATTACK_STRENGTH]-armour);
+                    CHECK(AIMaxima::WorldHelpers::unlearned_warrior_damage_rate(*view,unit,armour)==expected);
+                }
+            const int first=variant==2?0:levels[1].performance[ATTACK_SPEED]*(levels[1].performance[ATTACK_STRENGTH]-armour);
+            const int second=variant==2?0:levels[2].performance[ATTACK_SPEED]*(levels[2].performance[ATTACK_STRENGTH]-armour);
+            const int reference=(first+second)/2;
+            CHECK(AIMaxima::WorldHelpers::unlearned_reference_damage_rate(*view,armour)==reference);
+            CHECK(AIMaxima::Labour::attackStrengthSufficient(4LL*reference,4,reference));
+            if (reference>0) CHECK_FALSE(AIMaxima::Labour::attackStrengthSufficient(4LL*reference-1,4,reference));
+            unit.performance[ATTACK_SPEED]=0;
+            CHECK(AIMaxima::WorldHelpers::unlearned_warrior_damage_rate(*view,unit,armour)==0);
+        }
+    }
+
+    TEST_CASE("custom melee remains a reference when built-in combat is disabled")
+    {
+        glob2test::HeadlessGlobals globals;
+        for (bool experimentEnabled:{false,true}) {
+            glob2test::HeadlessGame world({.clearImmobile=true,.loadDefaultRace=true,.header=true});
+            auto units=nlohmann::json::parse(UnitCatalog::builtins()->serialize());
+            auto fighter=units["units"][WARRIOR];fighter["key"]="fixture:reference-fighter";
+            fighter["requiredExperiment"]="fixture-reference";
+            for(auto& level:fighter["levels"]) {
+                level["performance"][ARMOR]=20;
+                level["performance"][ATTACK_SPEED]=3;
+                level["performance"][ATTACK_STRENGTH]=10;
+            }
+            units["units"][WARRIOR]["behaviors"]["melee"]=false;
+            units["experiments"].push_back({{"key","fixture-reference"},{"label","Fixture reference"},{"help","Test only"}});
+            units["units"].push_back(fighter);
+            auto catalog=UnitCatalog::deserialize(units.dump());
+            world.game.gameHeader.setUnitCatalog(catalog);
+            if(experimentEnabled)world.game.gameHeader.getExperiments().set("fixture-reference",true,world.game.gameHeader.catalogExperimentKeys());
+            world.game.configureBuildingCatalog();
+            const auto view=AIEngine::AIWorldView::capture(world.game,AIEngine::AIWorldView::captureCatalog(world.game));
+            const int armour=AIMaxima::WorldHelpers::unlearned_reference_armour(*view);
+            CHECK(armour==(experimentEnabled?20:0));
+            CHECK(AIMaxima::WorldHelpers::unlearned_reference_damage_rate(*view,armour)==(experimentEnabled?3:0));
+        }
+    }
+
+    TEST_CASE("offense uses effective mobile recruits and preserves already assigned custom fighters")
+    {
+        glob2test::HeadlessGlobals globals;
+        combat_regressions::Fixture f([](Game& game) {
+            auto units=nlohmann::json::parse(UnitCatalog::builtins()->serialize());
+            auto denied=units["units"][WARRIOR];denied["key"]="fixture:refuses-recruitment";
+            denied["behaviors"]["recruitDefend"]=false;units["units"].push_back(denied);
+            auto excluded=units["units"][WARRIOR];excluded["key"]="fixture:excluded-fighter";units["units"].push_back(excluded);
+            game.gameHeader.setUnitCatalog(UnitCatalog::deserialize(units.dump()));
+            auto buildings=nlohmann::json::parse(game.buildingsTypes.snapshotJson());
+            for(std::size_t type=0;type<game.buildingsTypes.size();++type)
+                if(game.buildingsTypes.get(type)->runtimeAttractionRoles&4)
+                    buildings["variants"][type]["semantics"]["attractionUnits"]["defend"]={"warrior","fixture:refuses-recruitment"};
+            game.buildingsTypes.loadSnapshotJson(buildings.dump());game.configureBuildingCatalog();
+        });
+        f.building(10,10,0);auto* target=f.building(35,30,1);
+        auto* flag=f.building(12,10,0,"warflag");
+        for(int i=0;i<6;++i)f.warrior(i,0,3);
+        auto* inactive=f.warrior(7,0,3);inactive->performance[ATTACK_SPEED]=0;
+        auto* stationary=f.warrior(8,0,3);stationary->performance[WALK]=stationary->performance[SWIM]=stationary->performance[FLY]=0;
+        auto* denied=f.game.addUnit(9,0,0,3,3,0,0,0);REQUIRE(denied);
+        auto* excluded=f.game.addUnit(10,0,0,4,3,0,0,0);REQUIRE(excluded);
+        auto& ai=*f.ai;auto& context=ai.context;context.initialize();f.remember(target);
+        ai.plan_offense(context);
+        CHECK(ai.offense_diagnostics.eligibleWarriors==6);
+        f.attach(denied,flag);f.attach(excluded,flag);
+        ai.attack_flags.push_back(f.id(flag));
+        ai.tactical_mission.flagId=f.id(flag);
+        ai.plan_offense(context);
+        CHECK(ai.offense_diagnostics.eligibleWarriors==8);
+        inactive->performance[ATTACK_SPEED]=28;
+        ai.plan_offense(context);
+        CHECK(ai.offense_diagnostics.eligibleWarriors==9);
+    }
+
+    TEST_CASE("stationary effective melee triggers local defense while inactive attacks do not")
+    {
+        glob2test::HeadlessGlobals globals;
+        for(bool active:{false,true}) {
+            combat_regressions::Fixture f;
+            f.building(20,24,0);
+            auto* enemy=f.game.addUnit(22,20,1,WARRIOR,1,0,0,0);REQUIRE(enemy);
+            enemy->performance[WALK]=enemy->performance[SWIM]=enemy->performance[FLY]=0;
+            if(!active)enemy->performance[ATTACK_SPEED]=0;
+            f.game.map.setMapExploredByUnit(22,20,1,1,0);
+            auto& ai=*f.ai;auto& context=ai.context;context.initialize();
+            ai.budget.reactive_defense_enabled=true;ai.budget.reactive_defense_flag_radius=5;
+            ai.budget.reactive_defense_unit_cap=10;ai.budget.reactive_defense_advantage_min=3;ai.budget.defense_reserve=30;
+            ai.compute_defense_flag_positioning(context);
+            CHECK(context.buildingOrders.empty()==!active);
+        }
+    }
+
+    TEST_CASE("historical combat calibration remains private to imported race tables")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.clearImmobile=true,.loadDefaultRace=true,.header=true});
+        const auto defaults=UnitCatalog::builtins();
+        std::vector<std::array<UnitType,NB_UNIT_LEVELS>> levels;
+        for (unsigned type=0;type<defaults->size();++type) levels.push_back(defaults->levels(type));
+        for (auto& level:levels[WARRIOR]) {
+            level.performance[ATTACK_SPEED]*=2;level.performance[ATTACK_STRENGTH]+=4;
+        }
+        world.game.gameHeader.setUnitCatalog(defaults->withLegacyLevels(levels,425));
+        world.game.configureBuildingCatalog();
+        auto* live=world.addUnit(WARRIOR,10,10); REQUIRE(live);
+        const auto view=AIEngine::AIWorldView::capture(world.game,AIEngine::AIWorldView::captureCatalog(world.game));
+        auto unit=*view->unitSlots(0)[Unit::GIDtoID(live->gid)];
+        REQUIRE(unit.capabilityFlags&UnitRuntimeTraits::LegacyPerformancePolicies);
+        constexpr int oldRates[]={36,64,110,168};
+        for (int level=0;level<4;++level) {
+            unit.level[ATTACK_SPEED]=3;unit.level[ATTACK_STRENGTH]=level;
+            CHECK(AIMaxima::WorldHelpers::unlearned_warrior_damage_rate(*view,unit,10)==oldRates[level]);
+        }
+        CHECK(AIMaxima::WorldHelpers::unlearned_reference_damage_rate(*view,10)==87);
+    }
 }

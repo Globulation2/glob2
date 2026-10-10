@@ -64,13 +64,25 @@ struct UnitRuntimeTraits
     Sint32 visionRadius = 1, magicRange = 3, attackSearchRadius = 8;
     Sint32 turretPriority = 2, flagRankingHealth = 200;
     Uint8 meshClass = 0;
+    // Compiled automatic flag recruitment: clear, explore, defend. This byte
+    // consumes existing padding; authoring overrides stay in UnitDefinition.
+    Uint8 recruitmentMask = 0;
     bool has(Flag flag) const { return (flags & flag) != 0; }
+    bool recruits(unsigned role) const
+    {
+        assert(role < 3);
+        return (recruitmentMask & (1u << role)) != 0;
+    }
 };
+static_assert(sizeof(UnitRuntimeTraits) == 108, "Unit runtime traits must retain their compact layout");
 struct UnitDefinition
 {
     std::string key, name, requiredExperiment;
     std::string sprite = "units", mesh = "worker";
     UnitRuntimeTraits runtime;
+    // Missing values preserve historical capability-derived eligibility.
+    // Explicit values inherit with the rest of a developer-authored definition.
+    std::array<std::optional<bool>, 3> recruitmentOverrides{};
     std::array<UnitType, NB_UNIT_LEVELS> levels{};
     std::array<Sint32, MaterialSlotCount> cost{};
 };

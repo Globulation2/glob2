@@ -18,14 +18,14 @@ public:
         if(row.empty() || (width_ && width_!=row.size()))throw std::runtime_error("Invalid compiled interaction row width");
         width_=row.size();
         Uint64 hash=14695981039346656037ull;
-        for(const auto& interaction:row) for(Uint32 field:{Uint32(interaction.projectileDamage),interaction.trainingMask,Uint32(interaction.flags)})
+        for(const auto& interaction:row) for(Uint32 field:{Uint32(interaction.projectileDamage),interaction.trainingMask,Uint32(interaction.flags),Uint32(interaction.recruitmentMask)})
         {hash^=field;hash*=1099511628211ull;}
         auto& candidates=buckets_[hash];
         for(std::size_t offset:candidates)
         {
             bool equal=true;
             for(std::size_t i=0;i<row.size() && equal;++i)
-            {const auto& existing=rows_[offset+i];equal=existing.projectileDamage==row[i].projectileDamage && existing.trainingMask==row[i].trainingMask && existing.flags==row[i].flags;}
+            {const auto& existing=rows_[offset+i];equal=existing.projectileDamage==row[i].projectileDamage && existing.trainingMask==row[i].trainingMask && existing.flags==row[i].flags && existing.recruitmentMask==row[i].recruitmentMask;}
             if(equal)return offset;
         }
         if(row.size()>maximumBytes_/sizeof(BuildingUnitInteraction) || rows_.size()>maximumBytes_/sizeof(BuildingUnitInteraction)-row.size())

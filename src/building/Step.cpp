@@ -430,7 +430,7 @@ bool Building::considerUnitForExplorerFlag(Unit* unit, int* dist, int terrainDis
 		noteUnitFailing(unit, UnitNotAvailable);
 		return false;
 	}
-	if (!canUnitWorkHere(unit,true,1))
+	if (!runtime->interaction(unit->typeNum).recruits(1) || !canUnitWorkHere(unit,true,1))
 	{
 		noteUnitFailing(unit, UnitTooLowLevel);
 		return false;
@@ -481,7 +481,7 @@ bool Building::considerUnitForWorkerFlag(Unit* unit, int* dist)
 		noteUnitFailing(unit, UnitNotAvailable);
 		return false;
 	}
-	if (!canUnitWorkHere(unit,true,0))
+	if (!runtime->interaction(unit->typeNum).recruits(0) || !canUnitWorkHere(unit,true,0))
 	{
 		noteUnitFailing(unit, UnitTooLowLevel);
 		return false;
@@ -524,7 +524,7 @@ bool Building::considerUnitForWarriorFlag(Unit* unit, int* dist, int terrainDist
 		noteUnitFailing(unit, UnitNotAvailable);
 		return false;
 	}
-	if (!canUnitWorkHere(unit,true,2))
+	if (!runtime->interaction(unit->typeNum).recruits(2) || !canUnitWorkHere(unit,true,2))
 	{
 		noteUnitFailing(unit, UnitTooLowLevel);
 		return false;
@@ -614,11 +614,11 @@ bool Building::hireFlagUnits()
                 const auto& interaction=runtime->interaction(unit->typeNum);
                 int travelDistance=-1;
                 if(unit->performance[FLY] && airRoutes.enabled()){const auto cost=airRoutes.costTo(unit->posX,unit->posY);travelDistance=cost==decltype(airRoutes)::unreachable ? INT_MAX : int((cost+GRADIENT_STEP-1)/GRADIENT_STEP);}
-                if (interaction.has(BuildingUnitInteraction::Explore)) {
+                if (interaction.recruits(1)) {
                     if (considerUnitForExplorerFlag(unit,&distances[1][n],travelDistance)) possibleJobs[n]|=2;
                 }
-                if (interaction.has(BuildingUnitInteraction::Clear) && considerUnitForWorkerFlag(unit,&distances[0][n])) possibleJobs[n]|=1;
-                if (interaction.has(BuildingUnitInteraction::Defend) && considerUnitForWarriorFlag(unit,&distances[2][n],travelDistance)) possibleJobs[n]|=4;
+                if (interaction.recruits(0) && considerUnitForWorkerFlag(unit,&distances[0][n])) possibleJobs[n]|=1;
+                if (interaction.recruits(2) && considerUnitForWarriorFlag(unit,&distances[2][n],travelDistance)) possibleJobs[n]|=4;
             }
 
 		int assigned[3]{};

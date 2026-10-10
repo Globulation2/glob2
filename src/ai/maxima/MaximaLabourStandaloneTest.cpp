@@ -76,10 +76,20 @@ static void militaryIsPulledByCapacity()
 	// The queue rule answers to the ceiling too, however hungry the colony is.
 	REQUIRE(innsWorthBuilding(3, 24, 96, 500, 24)==24);
 	REQUIRE(innsWorthBuilding(30, 24, 96, 500, 24)==24);
-	REQUIRE(attackStrengthSufficient(0, 0));
-	REQUIRE(!attackStrengthSufficient(4*64, 4));
-	REQUIRE(attackStrengthSufficient(4*110, 4));
-	REQUIRE(attackStrengthSufficient(4*168, 4));
+    REQUIRE(combatDamageRate(12,13,10)==36);
+    REQUIRE(combatDamageRate(16,14,10)==64);
+    REQUIRE(combatDamageRate(22,15,10)==110);
+    REQUIRE(combatDamageRate(28,16,10)==168);
+    REQUIRE(combatDamageRate(0,22,10)==0);
+    REQUIRE(combatDamageRate(3,10,10)==3);
+    REQUIRE(combatDamageRate(3,22,20)==6);
+    REQUIRE(combatDamageRate(INT_MAX,INT_MAX,0)==INT_MAX);
+    REQUIRE(combatDamageRate(INT_MIN,INT_MAX,0)==0);
+    REQUIRE(combatDamageRate(INT_MAX,INT_MIN,INT_MIN)==0);
+	REQUIRE(attackStrengthSufficient(0, 0, 87));
+	REQUIRE(!attackStrengthSufficient(4*64, 4, 87));
+	REQUIRE(attackStrengthSufficient(4*110, 4, 87));
+	REQUIRE(attackStrengthSufficient(4*168, 4, 87));
 }
 
 /// Trimming takes from the largest request first and respects the minimum.

@@ -348,7 +348,7 @@ BuildingsTypes::BuildingsTypes(const BuildingsTypes& other)
 	  experiments_(other.experiments_), catalogKey_(other.catalogKey_),
 	  startingBuildingKey_(other.startingBuildingKey_), startingBuildingId_(other.startingBuildingId_), stockSupplyMask_(other.stockSupplyMask_), directSupplyMask_(other.directSupplyMask_), extraDirectSupplyMask_(other.extraDirectSupplyMask_), usesMarketRouting_(other.usesMarketRouting_), usesOverlaySuppliers_(other.usesOverlaySuppliers_)
 {
-    unitFlags_=other.unitFlags_; unitCount_=other.unitCount_; unitAvailable_=other.unitAvailable_; unitExperiments_=other.unitExperiments_;
+    unitFlags_=other.unitFlags_; unitRecruitmentMasks_=other.unitRecruitmentMasks_; unitCount_=other.unitCount_; unitAvailable_=other.unitAvailable_; unitExperiments_=other.unitExperiments_;
     unitTrainingAbilities_=other.unitTrainingAbilities_;
     unitConstructionTrainingAbilities_=other.unitConstructionTrainingAbilities_;
     compileRuntimeTraits();
@@ -368,11 +368,13 @@ BuildingsTypes& BuildingsTypes::operator=(const BuildingsTypes& other)
 void BuildingsTypes::compileUnitTrainingAbilities(const UnitCatalog& catalog)
 {
     unitFlags_.resize(catalog.size());
+    unitRecruitmentMasks_.resize(catalog.size());
     unitTrainingAbilities_.resize(catalog.size());
     unitConstructionTrainingAbilities_.resize(catalog.size());
     for (unsigned unit=0;unit<catalog.size();++unit) {
         const auto& traits=catalog.runtime(unit);
         unitFlags_[unit]=traits.flags;
+        unitRecruitmentMasks_[unit]=traits.recruitmentMask;
         auto abilities=traits.learnableMask;
         // Historical units retain cached ability policies, including unusual
         // Race tables that do not follow the built-in job capabilities.
@@ -511,7 +513,12 @@ void BuildingsTypes::compileRuntimeTraits()
             constexpr unsigned legacyJobs[3]={WORKER,EXPLORER,WARRIOR};
             for (unsigned role=0; role<3; ++role)
                 if ((s.attractionUnits[role].resolved.empty() ? s.attractionUnits[role].matches(unit,b.zonable[legacyJobs[role]] ? 1u<<legacyJobs[role] : 0) : s.attractionUnits[role].resolved[unit]!=0))
-                { row.flags|=BuildingUnitInteraction::Clear<<role; hot.attractionRoles|=1u<<role; }
+                {
+                    // Semantic attraction still governs existing assignments,
+                    // building orders, routing and team-list memberships.
+                    row.flags|=BuildingUnitInteraction::Clear<<role; hot.attractionRoles|=1u<<role;
+                    if (unitRecruitmentMasks_[unit] & (1u<<role)) row.recruitmentMask|=Uint8(1u<<role);
+                }
             if (unit<s.production.recipes.size() && s.production.recipes[unit].enabled && (unitAvailable_.empty() || unitAvailable_[unit]))
             { row.flags|=BuildingUnitInteraction::Produces; s.production.enabledUnits.push_back(unit); }
             const auto flags=unitFlags_[unit];

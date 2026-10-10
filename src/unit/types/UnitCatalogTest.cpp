@@ -87,6 +87,46 @@ void writePre73Team(GAGCore::OutputStream& out, int version, const Unit& cached,
 }
 TEST_SUITE("UnitCatalog")
 {
+    TEST_CASE("optional recruitment policies preserve pre-policy snapshots and compact traits")
+    {
+        glob2test::HeadlessGlobals globals;
+        const auto bytes = glob2test::readFile(glob2test::fixture("unit-catalog/default-format153.json"));
+        const auto oldSnapshot = Json::parse(bytes).dump();
+        const auto restored = UnitCatalog::deserialize(oldSnapshot);
+        CHECK(restored->serialize() == oldSnapshot);
+        CHECK(restored->serialize() == UnitCatalog::legacy()->serialize());
+        CHECK(restored->digest() == "f6737321d1f31a9abb636f2817873bda2ea0de75eb2c3dad5d213389705c900e");
+        CHECK(sizeof(UnitRuntimeTraits) == 108);
+        CHECK(restored->runtime(WORKER).recruitmentMask == 1);
+        CHECK(restored->runtime(EXPLORER).recruitmentMask == 2);
+        CHECK(restored->runtime(WARRIOR).recruitmentMask == 4);
+        for (unsigned id = 0; id < BuiltinUnitCount; ++id)
+            for (const auto &override : restored->definition(id).recruitmentOverrides)
+                CHECK_FALSE(override.has_value());
+
+        const auto authored = UnitCatalog::fromJson(R"({"schemaVersion":1,"units":[
+            {"key":"fixture:refuses-flags","extends":"worker","behaviors":{"recruitClear":false}},
+            {"key":"fixture:inherits-refusal","extends":"fixture:refuses-flags","behaviors":{"clear":true}},
+            {"key":"fixture:opts-in","extends":"fixture:refuses-flags","behaviors":{"recruitClear":true}},
+            {"key":"fixture:no-ability","extends":"worker","behaviors":{"clear":false,"recruitClear":true}}
+        ]})");
+        CHECK_FALSE(authored->runtime(*authored->find("fixture:refuses-flags")).recruits(0));
+        CHECK_FALSE(authored->runtime(*authored->find("fixture:inherits-refusal")).recruits(0));
+        CHECK(authored->runtime(*authored->find("fixture:opts-in")).recruits(0));
+        CHECK_FALSE(authored->runtime(*authored->find("fixture:no-ability")).recruits(0));
+        const auto reloaded = UnitCatalog::deserialize(authored->serialize());
+        CHECK(reloaded->serialize() == authored->serialize());
+        CHECK(reloaded->digest() == authored->digest());
+        CHECK(reloaded->definition(4).recruitmentOverrides[0] == false);
+        for (const char *name : {"recruitClear", "recruitExplore", "recruitDefend"}) {
+            auto invalid = Json::parse(oldSnapshot);
+            invalid["units"][WORKER]["behaviors"][name] = 0;
+            CHECK_THROWS(UnitCatalog::deserialize(invalid.dump()));
+            invalid["units"][WORKER]["behaviors"][name] = nullptr;
+            CHECK_THROWS(UnitCatalog::deserialize(invalid.dump()));
+        }
+    }
+
     TEST_CASE("pre73 team race tables survive cached units training production and current resaves [save-format]")
     {
         glob2test::HeadlessGlobals globals;

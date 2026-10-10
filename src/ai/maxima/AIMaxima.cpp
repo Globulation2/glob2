@@ -209,7 +209,7 @@ namespace
 		for(int id=0; id<Unit::MAX_COUNT; ++id)
 		{
 			const AIEngine::UnitView* worker=world.unitSlots(observedTeam)[id];
-			if(!worker || !(worker->capabilityFlags&UnitRuntimeTraits::Transport)
+			if(!worker || !AIEngine::ObservationQueries::matchesStrategyUnitRole(world,*worker,WORKER)
 			   || (swimming && worker->performance[SWIM]<=0))
 				continue;
 			const int x=(*map).normalizeX(worker->posX);
@@ -1434,8 +1434,8 @@ void Maxima::sample_reconnaissance_forces(Context& runtime)
 			if(!unit || !AIEngine::ObservationQueries::visible(runtime.observation(),
 				unit->posX, unit->posY, runtime.observedTeam().mask))
 				continue;
-			const bool warrior=(unit->capabilityFlags&UnitRuntimeTraits::Melee);
-			const bool explorer=(unit->capabilityFlags&UnitRuntimeTraits::Explore) || unit->performance[MAGIC_ATTACK_GROUND]>0;
+			const bool warrior=AIEngine::ObservationQueries::matchesStrategyUnitRole(runtime.observation(),*unit,WARRIOR);
+			const bool explorer=AIEngine::ObservationQueries::matchesStrategyUnitRole(runtime.observation(),*unit,EXPLORER) || unit->performance[MAGIC_ATTACK_GROUND]>0;
 			if(!warrior && !explorer)
 				continue;
 			const bool attack_explorer=unit->performance[MAGIC_ATTACK_GROUND]>0;
@@ -1507,15 +1507,16 @@ void Maxima::update_reconnaissance(Context& runtime)
 			if(!unit || !AIEngine::ObservationQueries::visible(runtime.observation(),
 				unit->posX, unit->posY, runtime.observedTeam().mask))
 				continue;
+            const bool worker=AIEngine::ObservationQueries::matchesStrategyUnitRole(runtime.observation(),*unit,WORKER);
+            const bool warrior=AIEngine::ObservationQueries::matchesStrategyUnitRole(runtime.observation(),*unit,WARRIOR);
 			if(!unit->isDead)
 			{
-				if((unit->capabilityFlags&UnitRuntimeTraits::Transport)) ++visible_workers[*team];
-				if((unit->capabilityFlags&UnitRuntimeTraits::Melee)) visible_power[*team]+=warrior_power(runtime.observation(),unit);
+				if(worker) ++visible_workers[*team];
+				if(warrior) visible_power[*team]+=warrior_power(runtime.observation(),unit);
 			}
-			const bool warrior=(unit->capabilityFlags&UnitRuntimeTraits::Melee);
-			const bool explorer=(unit->capabilityFlags&UnitRuntimeTraits::Explore) || unit->performance[MAGIC_ATTACK_GROUND]>0;
+			const bool explorer=AIEngine::ObservationQueries::matchesStrategyUnitRole(runtime.observation(),*unit,EXPLORER) || unit->performance[MAGIC_ATTACK_GROUND]>0;
 			const bool attack_explorer=unit->performance[MAGIC_ATTACK_GROUND]>0;
-			if((unit->capabilityFlags&UnitRuntimeTraits::Transport))
+			if(worker)
 			{
 				reconnaissance.observeEconomicActivity(*team,
 					unit->posX, unit->posY);
@@ -5697,6 +5698,9 @@ Labour::Observation Maxima::observe_labour(Context& runtime) const
 	const AIEngine::TeamView* team=&runtime.observedTeam();
 	const bool swimming=labour_swimming_matters();
 	std::vector<const AIEngine::BuildingView*> schools;
+    const auto workerTraining=runtime.observation().configuration->isUnitUpgradesDisabled()
+        ? AIEngine::ObservationQueries::WorkerTrainingProjection{}
+        : AIEngine::ObservationQueries::workerTrainingProjection(runtime.observation(),swimming);
 	for(int id=0; id<Building::MAX_COUNT; ++id)
 	{
 		const AIEngine::BuildingView* b=runtime.observation().buildingSlots(team->number)[id];
@@ -5730,11 +5734,8 @@ Labour::Observation Maxima::observe_labour(Context& runtime) const
 		}
 		// Idle training reserves cannot pay off when units cannot learn. Existing
 		// hospitals and barracks still provide healing, so only training seats go.
-		bool trains=false;
-		if(!runtime.observation().configuration->isUnitUpgradesDisabled())for(int ability=0;ability<NB_ABILITY;++ability){
-		 const auto& t=AIEngine::ObservationQueries::buildingType(runtime.observation(),*b).semantics.training[ability];
-		 if(t.enabled&&(t.unitMask&AIEngine::ObservationQueries::buildingType(runtime.observation(),*b).semantics.admittedUnitMask&(1u<<WORKER))&&(ability==WALK||ability==BUILD||ability==HARVEST||t.constructionLevel>0||(swimming&&ability==SWIM)))trains=true;
-		}
+        const bool trains=!runtime.observation().configuration->isUnitUpgradesDisabled()
+            && workerTraining.labourProviders[b->typeNum];
 		if(trains)
 		{
 			schools.push_back(b);
@@ -5747,7 +5748,10 @@ Labour::Observation Maxima::observe_labour(Context& runtime) const
 		if(!u || u->isDead) continue;
 		if(u->medical==Unit::MED_DAMAGED) ++result.hurtUnits;
 		if(!runtime.observation().configuration->isHungerDisabled() && u->medical==Unit::MED_HUNGRY) ++result.hungryUnits;
-		if(!(u->capabilityFlags&UnitRuntimeTraits::Transport)) continue;
+		if(!AIEngine::ObservationQueries::matchesStrategyUnitRole(runtime.observation(),*u,WORKER)) continue;
+        // A hybrid assigned to defense or exploration is not
+        // simultaneously part of the transport workforce.
+        if(u->jobPurpose==UnitJobPurpose::Defend || u->jobPurpose==UnitJobPurpose::Explore) continue;
 		++result.workers;
 		if(u->level[WALK]==0) ++result.untrainedWalkers;
 		if(!runtime.observation().configuration->isHungerDisabled() && u->medical==Unit::MED_HUNGRY){++result.eating;continue;}
@@ -5761,7 +5765,9 @@ Labour::Observation Maxima::observe_labour(Context& runtime) const
 		else if(const auto* attached=runtime.observation().building(u->attached))
 		{
 			const BuildingType* type=&AIEngine::ObservationQueries::buildingType(runtime.observation(),*attached);
-			if(type->isBuildingSite) ++result.builders;
+			if(u->jobPurpose!=UnitJobPurpose::None && u->jobPurpose!=UnitJobPurpose::Transport) ++result.otherAssigned;
+            else if(type->isBuildingSite && (u->capabilityFlags&UnitRuntimeTraits::Construct)) ++result.builders;
+            else if(type->isBuildingSite) ++result.otherAssigned;
 			else if(AIMaximaBuildings::serves(context.observation(),*type,AIMaximaBuildings::Production)) ++result.swarmCarriers;
 			else if(AIMaximaBuildings::serves(context.observation(),*type,AIMaximaBuildings::Feeding)) ++result.innCarriers;
 			else ++result.otherAssigned;
@@ -5770,7 +5776,9 @@ Labour::Observation Maxima::observe_labour(Context& runtime) const
 		bool canTrain=false;
 		for(size_t b=0;b<schools.size() && !canTrain;++b)
 			for(int ability=0;ability<NB_ABILITY && !canTrain;++ability)
-				if((ability!=SWIM || swimming) && AIEngine::ObservationQueries::needsTraining(*u,AIEngine::ObservationQueries::buildingType(runtime.observation(),*schools[b]).semantics.training[ability],ability))
+				if((ability!=SWIM || swimming)
+                    && (workerTraining.courseMasks[schools[b]->typeNum][u->typeNum]&(1u<<ability))
+                    && AIEngine::ObservationQueries::needsTraining(*u,AIEngine::ObservationQueries::buildingType(runtime.observation(),*schools[b]).semantics.training[ability],ability))
 					canTrain=true;
 		if(canTrain) ++result.trainable;
 	}
