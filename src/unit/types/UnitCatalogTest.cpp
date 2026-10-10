@@ -102,7 +102,7 @@ TEST_SUITE("UnitCatalog")
             const auto authoritative=restored.getCatalog();
             if (text)
             {
-                GAGCore::TextInputStream input(new GAGCore::MemoryStreamBackend(copy));
+                GAGCore::TextInputStream input(&copy);
                 REQUIRE(restored.load(&input, FILE_FORMAT_VERSION_UNIT_CATALOG));
             }
             else
@@ -136,7 +136,7 @@ TEST_SUITE("UnitCatalog")
             GAGCore::MemoryStreamBackend copy(written); copy.seekFromStart(0);
             Race restored; const auto authoritative=restored.getCatalog();
             if(text) {
-                GAGCore::TextInputStream input(new GAGCore::MemoryStreamBackend(copy));
+                GAGCore::TextInputStream input(&copy);
                 CHECK_THROWS(restored.load(&input,FILE_FORMAT_VERSION_UNIT_CATALOG));
             } else {
                 GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(copy));
@@ -188,7 +188,7 @@ TEST_SUITE("UnitCatalog")
                 };
                 if (text)
                 {
-                    GAGCore::TextInputStream input(new GAGCore::MemoryStreamBackend(copy));
+                    GAGCore::TextInputStream input(&copy);
                     REQUIRE(load(input));
                 }
                 else
