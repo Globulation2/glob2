@@ -1857,6 +1857,13 @@ OpenCLProbe::Metrics OpenCLProbe::metrics() const noexcept {
 #endif
     return result;
 }
+bool OpenCLProbe::waitingForEvent() const noexcept {
+#if !defined(SDL_PLATFORM_EMSCRIPTEN) && !defined(SDL_PLATFORM_ANDROID) && !defined(SDL_PLATFORM_IOS)
+    return state && state->progress==OpenCLProbeProgress::Pending && state->event;
+#else
+    return false;
+#endif
+}
 std::span<const std::uint16_t> OpenCLProbe::result() const noexcept {
 #if !defined(SDL_PLATFORM_EMSCRIPTEN) && !defined(SDL_PLATFORM_ANDROID) && !defined(SDL_PLATFORM_IOS)
     if(state->progress==OpenCLProbeProgress::Complete) return state->lane->values;

@@ -758,6 +758,14 @@ completion another full measured completion interval must remain before the due
 estimate. Promotion retains the measured maximum and2x uncertainty margin; no
 unknown required job is selected from the exploratory quantum.
 
+Bounded CPU setup and comparison blocks request the next broker turn immediately;
+the broker rechecks required EDF work before each turn. A retained native event
+without terminal proof uses the 100 us polling delay, and quarantined graphs retain
+their 100 ms reaping delay. Completed dispatch transitions do not add a second
+artificial wait. Accounting tails still sleep until their two 250 ms endpoints.
+Each advance retains its existing CPU slice and single-kernel limit; this changes
+scheduling latency rather than the CPU credit, accounting or promotion bounds.
+
 Cold compiler/driver preparation is separately reported as an enclosing whole-process
 CPU upper bound. Charge it as startup debt on the first accepted observation.
 Concurrent process work may be overcharged, but readiness never means free startup.

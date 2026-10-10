@@ -20,7 +20,7 @@ struct Driver {
     std::vector<std::uint16_t> original,output;
     std::shared_ptr<const void> borrowed;
     unsigned commands=0,polls=0,cancels=0,costCalls=0;
-    bool ready=true,quarantine=false,terminal=false,failed=false;
+    bool ready=true,quarantine=false,terminal=false,failed=false,pending=false,awaitingEvent=false;
     struct Work final : CaptureProbeReplay::Probe {
         Driver& driver;std::shared_ptr<const void> owner;bool canceled=false,quarantined=false;
         Work(Driver& value,std::shared_ptr<const void> keep):driver(value),owner(std::move(keep)) {}
@@ -30,10 +30,12 @@ struct Driver {
             ++driver.commands;
             if(driver.failed)return OpenCLProbeProgress::Declined;
             if(driver.quarantine){quarantined=true;return OpenCLProbeProgress::Quarantined;}
+            if(driver.pending)return OpenCLProbeProgress::Pending;
             return OpenCLProbeProgress::Complete;
         }
         void cancel() noexcept override {canceled=true;++driver.cancels;}
         bool executionFailed() const noexcept override {return driver.failed && !canceled;}
+        bool waitingForEvent() const noexcept override {return driver.awaitingEvent;}
         std::span<const std::uint16_t> result() const noexcept override {return driver.output;}
     };
     static bool isReady(const void* value) noexcept {return static_cast<const Driver*>(value)->ready;}
@@ -101,6 +103,42 @@ TEST_CASE("captured GPU replay compares immutable arrays before terminal settlem
     CHECK(fixture.policy->metrics().promoted==0);
 }
 
+TEST_CASE("captured replay schedules bounded CPU work immediately and waits only for unproved events" * doctest::test_suite("OpenCLGradient"))
+{
+    const auto baseline=openCLProbeBytes();Fixture fixture;CaptureProbeReplay::Receipt receipt;
+    fixture.driver->pending=true;
+    auto replay=fixture.begin(receipt);REQUIRE(bool(replay));
+    CHECK(replay->nextAdvanceDelayNs()==0);
+    CHECK(replay->advance(fixture.admission())==CaptureProbeReplay::Progress::Pending);
+    CHECK(replay->nextAdvanceDelayNs()==0);
+    fixture.driver->awaitingEvent=true;
+    CHECK(replay->advance(fixture.admission())==CaptureProbeReplay::Progress::Pending);
+    CHECK(replay->nextAdvanceDelayNs()==100000);
+    fixture.driver->pending=false;
+    CHECK(replay->advance(fixture.admission())==CaptureProbeReplay::Progress::Pending);
+    // Comparison is immediate even when the fake adapter retains its old hint.
+    CHECK(replay->nextAdvanceDelayNs()==0);
+    CHECK(replay->advance(fixture.admission())==CaptureProbeReplay::Progress::ReadyToSettle);
+    CHECK(replay->nextAdvanceDelayNs()==0);CHECK(replay->receipt().exact);
+    auto token=replay->takeSettlement();REQUIRE(bool(token));
+    replay.reset();token.reset();CHECK(openCLProbeBytes()==baseline);
+    CHECK(fixture.policy->metrics().probeCpuNs>=fixture.input.reservedCpuNs);
+}
+
+TEST_CASE("immediate replay turns still cancel before work when required backlog appears" * doctest::test_suite("OpenCLGradient"))
+{
+    const auto baseline=openCLProbeBytes();Fixture fixture;CaptureProbeReplay::Receipt receipt;
+    fixture.driver->pending=true;
+    auto replay=fixture.begin(receipt);REQUIRE(bool(replay));
+    CHECK(replay->advance(fixture.admission())==CaptureProbeReplay::Progress::Pending);
+    CHECK(replay->nextAdvanceDelayNs()==0);CHECK(fixture.driver->commands==1);
+    auto admission=fixture.admission();admission.requiredBacklog=true;
+    CHECK(replay->advance(admission)==CaptureProbeReplay::Progress::Declined);
+    CHECK(fixture.driver->commands==1);CHECK(fixture.driver->cancels==1);
+    replay.reset();CHECK(openCLProbeBytes()==baseline);
+    CHECK(fixture.policy->metrics().probeCpuNs>=fixture.input.reservedCpuNs);
+}
+
 TEST_CASE("captured replay mismatch and required backlog decline without publication" * doctest::test_suite("OpenCLGradient"))
 {
     const auto baseline=openCLProbeBytes();
@@ -124,6 +162,7 @@ TEST_CASE("quarantined captured replay retains global credit and storage through
     const auto baseline=openCLProbeBytes();Fixture fixture;CaptureProbeReplay::Receipt receipt;
     fixture.driver->quarantine=true;auto replay=fixture.begin(receipt);REQUIRE(bool(replay));
     CHECK(replay->advance(fixture.admission())==CaptureProbeReplay::Progress::Quarantined);
+    CHECK(replay->nextAdvanceDelayNs()==100000000);
     CHECK_FALSE(replay->takeSettlement());CHECK(bool(fixture.driver->borrowed));
     for(unsigned retry=0;retry<4;++retry)
         CHECK(replay->advance(fixture.admission())==CaptureProbeReplay::Progress::Quarantined);

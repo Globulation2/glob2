@@ -172,6 +172,10 @@ public:
     // Read from the same coordinator that advances the probe. Cancellation is
     // independently atomic; metrics and result do not supply concurrent reads.
     Metrics metrics() const noexcept;
+    // Same coordinator only; no driver call. A retained trailing event has no
+    // terminal proof yet. CPU setup/comparison may instead resume immediately
+    // after the broker checks required work again.
+    bool waitingForEvent() const noexcept;
 private:
     struct Impl;
     std::shared_ptr<Impl> state;

@@ -457,7 +457,7 @@ class DeviceBroker
         accounting.accountStep(stepStart,glob2::threadCpuNs());
         // A tail hold sleeps; it never continuously polls a GPU or a clock.
         const auto tailWake=accounting.nextTailWakeNs();
-        state->optionalReadyNs=tailWake?tailWake:monotonicNs()+(state->probeResult.quarantined?100000000:100000);
+        state->optionalReadyNs=tailWake?tailWake:monotonicNs()+(state->probe?state->probe->nextAdvanceDelayNs():0);
     }
     void execute(const std::shared_ptr<GradientDeviceState>& state) noexcept {
         const auto started=monotonicNs(),cpuStart=serviceCpuNow(state.get());

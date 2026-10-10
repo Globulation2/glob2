@@ -37,6 +37,8 @@ public:
         virtual void cancel() noexcept=0;
         // False for ordinary cancellation, setup pressure and unsupported costs.
         virtual bool executionFailed() const noexcept {return false;}
+        // Unknown test adapters conservatively retain the event polling delay.
+        virtual bool waitingForEvent() const noexcept {return true;}
         virtual std::span<const std::uint16_t> result() const noexcept=0;
     };
     struct Hooks {
@@ -58,6 +60,7 @@ private:
         OpenCLProbeProgress advance() noexcept override {return probe->advance();}
         void cancel() noexcept override {probe->cancel();}
         bool executionFailed() const noexcept override {return probe->metrics().executionFailed;}
+        bool waitingForEvent() const noexcept override {return probe->waitingForEvent();}
         std::span<const std::uint16_t> result() const noexcept override {return probe->result();}
     };
     struct State {
@@ -176,6 +179,12 @@ public:
     const WorkloadKey& key() const noexcept {return workload;}
     std::uint64_t requiredGeneration() const noexcept {return generation;}
     std::uint64_t due() const noexcept {return deadline;}
+    // No event queries or allocations. Zero requests another bounded broker
+    // turn, with required EDF reconsidered first; it never loops within advance.
+    std::uint64_t nextAdvanceDelayNs() const noexcept {
+        if(progress==Progress::Quarantined)return 100000000;
+        return progress==Progress::Pending && !comparing && probe && probe->waitingForEvent()?100000:0;
+    }
     static std::unique_ptr<CaptureProbeReplay> begin(std::shared_ptr<GradientCpuCapture::Record>&& captured,
         Admission admission,Receipt& attempted,Clock clock,Hooks hooks) noexcept {
         attempted={};
