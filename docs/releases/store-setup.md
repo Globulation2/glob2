@@ -15,7 +15,9 @@ trader, tax, and payout onboarding in the portal before requesting review.
 
 For each candidate, create a public `vVERSION` tag and mirror the reviewed
 Epic workflow to the release repository's protected `master` branch. Dispatch
-`epic-windows-release.yml` there with the tag. Its preflight checks the public
+`epic-windows-release.yml` there with the tag. Leave `upload=false` (the default)
+for packaging and runtime smoke verification only; set `upload=true` to request
+the credential-bearing Dev upload after those checks pass. Its preflight checks the public
 tag and version, then records the exact public source commit. The packaging
 and smoke-test jobs check out that commit and have no Epic credentials. The
 upload job verifies every staged file against a
