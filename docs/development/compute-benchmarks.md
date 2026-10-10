@@ -231,9 +231,19 @@ immediately.
 `result.json` includes actual worker count, delay, jobs, published/discarded jobs,
 maximum pending buffers, deadline wait nanoseconds, and summed seeding-plus-propagation elapsed
 nanoseconds. `gradient_preparation_ns` records worker seed time collected at joins;
-snapshot capture remains part of the snapshot metrics. The latter is **not CPU time**. Whole-process user+system CPU must be
-measured externally. Timed runs drain outstanding work before stopping the timer;
-finishing work does not publish it early.
+snapshot capture remains part of the snapshot metrics. Summed elapsed time is
+**not CPU time**. Whole-process user+system CPU must be measured externally.
+Timed runs drain outstanding work before stopping the timer; finishing work does
+not publish it early.
+`benchmark_run_wall_ns` and `benchmark_run_cpu_ns` cover the interval after the
+requested warmup through the final required-work drain; `run_ns` also includes
+warmup. `benchmark_publication_wait_ns` covers publication waits in that measured
+interval. `benchmark_gradient_at_start` and `benchmark_gradient_at_end` snapshot
+bounded controller counters at its boundaries. Readiness at the measured start
+must be checked before calling a result a fixed-GPU comparison. These snapshots
+never wait for initialization or optional processing; a pass straddling a boundary
+is attributed when its counters are published. Keep cold-start results separate
+from warm-window accounting comparisons.
 
 `test/benchmark_gradient_pipeline.py` accepts the same scenario manifests as
 `test/benchmark_parallel_compute.py`. For example:
@@ -322,3 +332,82 @@ speedup even when the seed kernel uses less thread CPU time.
 
 
 See [resource benchmarks](resource-benchmarks.md) for corpus preparation, measurement isolation and growth pipeline comparisons.
+
+## Qualifying alternative gradient kernels
+
+`tools/gradient_qualification/` is an offline qualification tool, separate from the
+runtime plan portfolio and passive controller. Experimental kernels are not
+registered with `AdaptiveGradientPolicy`. A synthetic timing win cannot enable a
+new runtime plan.
+
+Install the pinned optional OpenCL Python dependency from
+`tools/gradient_qualification/requirements.txt` alongside `requirements-dev.txt`.
+A C++17 compiler, OpenCL loader and supported GPU are required. The runner builds
+its native dispatch loop and independent heap-Dijkstra oracle with `-O3`;
+Python generates fixtures, verifies outputs and records evidence outside the
+native execution timer. End-to-end samples also include host preparation,
+buffer allocation when cold, cost upload when cold, transfers and readback.
+Cold here means fresh buffer storage in an already compiled process, not a
+cold driver/process launch. Compilation is reported separately. Python orchestration remains in the total
+measurement, so these are screening measurements, not whole-game claims.
+
+```sh
+python3 -m unittest discover -s tools/gradient_qualification -p 'test_*.py'
+python3 tools/gradient_qualification/run.py --split development --device 0 \
+  --output artifacts/gradient-qualification/development
+python3 tools/gradient_qualification/analyze.py artifacts/gradient-qualification/development
+python3 tools/gradient_qualification/run.py --split stress --device 0 \
+  --output artifacts/gradient-qualification/stress
+python3 tools/gradient_qualification/analyze.py artifacts/gradient-qualification/stress
+python3 tools/gradient_qualification/check_edges.py --device 0 \
+  --output artifacts/gradient-qualification/edges
+```
+
+The deterministic development corpus has 40 independent layouts. The final
+corpus has 1,000: 200 each at 64², 128², 256², 512² and 1024². Seed domains are
+disjoint. Ridges and canals are reserved topology families. Other families vary
+patches, corridor widths, connectivity, islands and room boundaries. Each map
+supplies three chronological fields with changes to resources, buildings,
+obstacles, terrain, seed density/clustering, movement costs and propagation
+caps. Old solved fields are never reused after deletions. Stress cases add thin,
+rectangular, awkward and larger grids. Timings and related fields from the same
+map never increase the independent-map count.
+
+`protocol.json` declares candidate classes and gates before evaluation. A map
+wins only if every eligible chronological field beats every existing GPU plan
+in both cold and warm measurements, by more than 5%, 10 µs and three median
+absolute deviations. Five warm repetitions improve precision without creating
+new maps. No timing outliers are removed. Qualification needs at least 100
+held-out class maps and wins on at least 90% of them. Missing samples,
+inexactness, device failures and inconclusive results cannot qualify.
+
+A development survivor is required before opening final holdouts:
+
+```sh
+python3 tools/gradient_qualification/run.py --split final --device 0 \
+  --development-report artifacts/gradient-qualification/development/analysis.json \
+  --stress-report artifacts/gradient-qualification/stress/analysis.json \
+  --edge-report artifacts/gradient-qualification/edges/result.json \
+  --output artifacts/gradient-qualification/final
+python3 tools/gradient_qualification/analyze.py artifacts/gradient-qualification/final
+```
+
+The runner also requires matching-source stress and adversarial-edge reports.
+It records consumed holdouts under `artifacts/gradient-qualification/consumed-holdouts`
+and refuses a second campaign on the same final roster.
+
+Freeze sources, protocol, corpus identity and workload classes before final
+inputs are generated. Do not tune against final results; a failed final campaign
+requires a newly designed independent evaluation, not rerunning the same seeds
+until they pass. The artifacts contain every sample, input hashes, compilation
+options, source hashes and device metadata. The device lock is cooperative and
+does not establish exclusive GPU use.
+
+Offline qualification never sets `admitted`. Production admission additionally
+requires cheap, measured classification, useful coverage beyond all retained
+alternatives, and a removal ablation in stratified real simulations. Keep eight
+compute slots including the owner, verify checksums/save/replay/continuation,
+include early/middle/late segments and cold/warm/render contention, and measure
+total runtime, tick tails and publication waits. Runtime inputs and publication
+semantics must remain unchanged. A synthetic class absent from ordinary game
+work, or a class whose detection costs erase its advantage, is insufficient.
