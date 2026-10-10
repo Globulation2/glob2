@@ -1,0 +1,8 @@
+nox::game started
+checkpoint: wrote /home/bradley/.codex/worktrees/2d63/glob2/artifacts/cli/merge-parity/game-old/checkpoint-32.game.gz
+nox::gui.game.checkSum() = a2324119
+checkpoint: wrote /home/bradley/.codex/worktrees/2d63/glob2/artifacts/cli/merge-parity/game-old/checkpoint-64.game.gz
+automaticEndingGame ended: 64 ticks, 0 minutes, 2 seconds
+GLOB2_GAME_END ticks=64 winner_team=-1 seed=713 map="study-2-713-r0" orders=8 players=team0:Castor,team1:Cortex
+final: wrote /home/bradley/.codex/worktrees/2d63/glob2/artifacts/cli/merge-parity/game-old/final.game.gz
+Settings::load("preferences.txt") : error, can't open file.

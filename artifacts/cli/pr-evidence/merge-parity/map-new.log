@@ -1,0 +1,25 @@
+STUDY,2,713,1,65536,37025,3286,22851,2374,27217,21247,37885,4459,23192,1.129384,8140138705686088326
+TUNE,1141,2,2,2,3027,3170,3546,3854,2,2
+QUALITY,1,0.959217,0.959217,1.143299,1.224910,1.184105,2,0.091231
+COLONY,0,2,2,1886,1141,359,130,0,0.0,1.143299,0.479608
+COLONY,1,2,2,1909,1707,169,130,0,0.0,1.224910,0.520392
+REQUEST,river,5,713,8,8,2,4
+OPTION,algae-amount,100
+OPTION,desert,0
+OPTION,fruit,4
+OPTION,grass,75
+OPTION,hilltop-stone,0
+OPTION,repeat,0
+OPTION,river-width,35
+OPTION,sand,3
+OPTION,smoothing,4
+OPTION,stone-amount,100
+OPTION,water,45
+OPTION,wheat-amount,100
+OPTION,winding-river,1
+OPTION,wood-amount,100
+START,0,154,21
+START,1,58,28
+MAPFILE,0,/home/bradley/.codex/worktrees/2d63/glob2/artifacts/cli/merge-parity/map-new/map-r0.map.gz,661678,9671320019010384336
+ROTATIONS,2,1,0,1,1,1,1
+Settings::load("preferences.txt") : error, can't open file.

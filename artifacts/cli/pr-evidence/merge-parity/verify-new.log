@@ -1,0 +1,2 @@
+verify-match: verified; 842 checksums in 3384 ms
+Settings::load("preferences.txt") : error, can't open file.

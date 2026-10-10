@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="25" failures="0" errors="0" skipped="1"><testsuite name="CommandLine"><testcase classname="CommandLine" name="completion scripts contain all command options without running jobs" time="0.002944" status="run" />
+  <testcase classname="CommandLine" name="default launch groups URLs and help paths" time="0.002126" status="run" />
+  <testcase classname="CommandLine" name="every leaf accepts a minimal request and rejects missing required inputs" time="0.016186" status="run" />
+  <testcase classname="CommandLine" name="malformed input fails before handlers" time="0.002581" status="run" />
+  <testcase classname="CommandLine" name="registry describes every executable command and help is asset independent" time="0.046409" status="run" />
+  <testcase classname="CommandLine" name="typed options equals ordered repeats and literal filenames" time="0.001951" status="run" />
+  </testsuite><testsuite name="HiveMindEvaluation"><testcase classname="HiveMindEvaluation" name="Hive Mind evaluation gameplay fixture" time="0.000205" status="run" />
+  </testsuite><testsuite name="HiveMindIntegration"><testcase classname="HiveMindIntegration" name="Hive Mind copies the engine fog boundary and validates ownership" time="1.82622" status="run" />
+  </testsuite><testsuite name="HiveMindReliability"><testcase classname="HiveMindReliability" name="Hive Mind pending requests preserve drafts and stop feedback" time="0.693047" status="run" />
+  </testsuite><testsuite name="HiveMindScheduler"><testcase classname="HiveMindScheduler" name="Hive Mind cadence replacement cancellation and lost acknowledgements" time="5.90997" status="run" />
+  </testsuite><testsuite name="HiveMind"><testcase classname="HiveMind" name="Hive Mind exposes only copied player observations" time="0.004589" status="run" />
+    <testcase classname="HiveMind" name="Hive Mind commits globals only through successful results" time="0.013601" status="run" />
+    <testcase classname="HiveMind" name="Hive Mind bounds work output batches and wake storms" time="0.0364" status="run" />
+    <testcase classname="HiveMind" name="Hive Mind examples execute against the contract" time="0.01969" status="run" />
+    <testcase classname="HiveMind" name="Hive Mind replacement migration is preflighted and cannot emit effects" time="0.015045" status="run" />
+  </testsuite><testsuite name="InviteLink"><testcase classname="InviteLink" name="catalog launches preserve mode origin and exact version across URL forms" time="0.000365" status="run" />
+    <testcase classname="InviteLink" name="catalog CLI arguments open the selected destination" time="0.002285" status="run" />
+    <testcase classname="InviteLink" name="the latest invite or map launch replaces the older destination" time="0" status="run" />
+    <testcase classname="InviteLink" name="glob2:// links name the instance and code" time="0.00014" status="run" />
+    <testcase classname="InviteLink" name="https links are &lt;instance&gt;/j/&lt;code&gt;" time="0" status="run" />
+    <testcase classname="InviteLink" name="former official origins mean the official instance" time="0" status="run" />
+    <testcase classname="InviteLink" name="bare codes use the given instance; links format back" time="0" status="run" />
+    <testcase classname="InviteLink" name="the newest link becomes the pending join until taken" time="0" status="run" />
+    <testcase classname="InviteLink" name="launch requests accept links codes and origins and reject invalid invites" time="0.000274" status="run" />
+  </testsuite><testsuite name="HiveMindPresentation"><testcase classname="HiveMindPresentation" name="Hive Mind commander panel [display]" time="0.000"><skipped message="needs a display" /></testcase></testsuite></testsuites>

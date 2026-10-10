@@ -1,0 +1,11 @@
+{
+  "catalog_equal": true,
+  "map_bytes_equal": true,
+  "per_tick_checksums_equal": true,
+  "saves_equal": true,
+  "replay_equal": true,
+  "save_continuation_equal": true,
+  "verdict_equal": true,
+  "tested_revision": "d4aede83ab474137d808afbdf1cac08cfd683e72",
+  "baseline_revision": "2c37ebf45e7b8ac2986f9ebd27fe2b03f06a810a"
+}

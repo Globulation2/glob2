@@ -1,0 +1,58 @@
+[
+  {
+    "source": "src/app/Glob2.cpp",
+    "exit_code": 0
+  },
+  {
+    "source": "src/app/GlobalContainerArgs.cpp",
+    "exit_code": 0
+  },
+  {
+    "source": "src/app/cli/CommandLine.cpp",
+    "exit_code": 0
+  },
+  {
+    "source": "src/app/cli/Headless.cpp",
+    "exit_code": 0
+  },
+  {
+    "source": "src/app/cli/MapCommand.cpp",
+    "exit_code": 0
+  },
+  {
+    "source": "src/app/cli/MapStudy.cpp",
+    "exit_code": 0
+  },
+  {
+    "source": "src/online/InviteLink.cpp",
+    "exit_code": 0
+  },
+  {
+    "source": "src/hive/HiveClient.cpp",
+    "exit_code": 0
+  },
+  {
+    "source": "mobile/MobilePaths.cpp",
+    "exit_code": 0
+  },
+  {
+    "source": "src/app/cli/RenderSkin.cpp",
+    "exit_code": 0
+  },
+  {
+    "source": "src/app/cli/VerifyMatch.cpp",
+    "exit_code": 0
+  },
+  {
+    "source": "src/app/cli/TurnClientCommand.cpp",
+    "exit_code": 0
+  },
+  {
+    "source": "src/scripting/javascript/ScriptCommand.cpp",
+    "exit_code": 0
+  },
+  {
+    "source": "libgag/src/FileManager.cpp",
+    "exit_code": 0
+  }
+]

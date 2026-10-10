@@ -1,0 +1,44 @@
+generate
+study
+generators
+preview
+render
+import-image
+export-image
+inspect-package
+validate-set
+-s
+--fullscreen[fullscreen]
+--no-fullscreen[no-fullscreen]
+--resizable[resizable]
+--no-resizable[no-resizable]
+--custom-cursor[custom-cursor]
+--no-custom-cursor[no-custom-cursor]
+--mute[mute]
+--no-mute[no-mute]
+--renderer[renderer]:value:(gpu software)
+--graphics-detail[graphics-detail]:value:(full reduced)
+--window-size[window-size]:value:
+--username[username]:value:
+--editor-script[editor-script]:value:(sgsl usl)
+--record[record]:value:_files
+--videoshot[videoshot]:value:
+--record-fps[record-fps]:value:
+--record-encoder[record-encoder]:value:(auto software)
+--record-crf[record-crf]:value:
+--record-chapter-ticks[record-chapter-ticks]:value:
+*--data-dir[data-dir]:value:_files -/
+*--generator-package[generator-package]:value:_files
+--building-catalog[building-catalog]:value:_files
+--compute-threads[compute-threads]:value:
+--help[help]
+*:file:_files
+generate
+study
+generators
+preview
+render
+import-image
+export-image
+inspect-package
+validate-set

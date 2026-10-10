@@ -1,0 +1,23 @@
+{
+  "tested_revision": "d4aede83ab474137d808afbdf1cac08cfd683e72",
+  "pr_base_revision": "95016b53e3281d74940730ca2fa0be90c9e5c50d",
+  "baseline_cli_revision": "2c37ebf45e7b8ac2986f9ebd27fe2b03f06a810a",
+  "native_cli_tests": 15,
+  "native_contract_cases": 25,
+  "native_contract_jobs": 12,
+  "display_only_contract_jobs_skipped": 1,
+  "browser_cli_tests": 48,
+  "browser_simulation_tests": 6,
+  "matching_native_browser_traces": 4,
+  "platform_contract_tests": 66,
+  "platform_optional_skips": 8,
+  "real_worker_tests": 5,
+  "python_tournament_tests": 43,
+  "browser_unit_tests": 87,
+  "docs_checked": 306,
+  "docs_errors": 0,
+  "android_syntax_sources": 14,
+  "sim_revision_changed": false,
+  "map_cli_commands": 56,
+  "diagnostic_commands": 21
+}

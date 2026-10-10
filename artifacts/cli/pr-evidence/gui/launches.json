@@ -1,0 +1,55 @@
+[
+  {
+    "name": "default",
+    "command": [
+      "/home/bradley/.codex/worktrees/2d63/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/src/glob2"
+    ],
+    "exit_code": 0,
+    "geometry": "WINDOW=4194358\nX=240\nY=188\nWIDTH=800\nHEIGHT=600\nSCREEN=0\n"
+  },
+  {
+    "name": "play-record",
+    "command": [
+      "/home/bradley/.codex/worktrees/2d63/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/src/glob2",
+      "play",
+      "--window-size",
+      "640x480",
+      "--renderer",
+      "software",
+      "--no-fullscreen",
+      "--resizable",
+      "--no-custom-cursor",
+      "--mute",
+      "--graphics-detail",
+      "reduced",
+      "--record",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/cli/gui/menus.mp4",
+      "--record-encoder",
+      "software",
+      "--record-fps",
+      "15",
+      "--record-crf",
+      "25",
+      "--record-chapter-ticks",
+      "64"
+    ],
+    "exit_code": 0,
+    "geometry": "WINDOW=4194358\nX=320\nY=248\nWIDTH=640\nHEIGHT=480\nSCREEN=0\n"
+  },
+  {
+    "name": "replay",
+    "command": [
+      "/home/bradley/.codex/worktrees/2d63/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/src/glob2",
+      "replay",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/cli/parity-final/game-new/game.replay",
+      "--window-size",
+      "640x480",
+      "--renderer",
+      "software",
+      "--no-fullscreen",
+      "--mute"
+    ],
+    "exit_code": 0,
+    "geometry": "WINDOW=4194358\nX=320\nY=248\nWIDTH=640\nHEIGHT=480\nSCREEN=0\n"
+  }
+]

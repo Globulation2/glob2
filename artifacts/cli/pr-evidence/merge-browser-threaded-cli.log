@@ -1,0 +1,35 @@
+
+Running 24 tests using 1 worker
+
+(node:1027719) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [chromium] › tests/cli.spec.js:17:3 › CLI static top-level help (1.4s)
+  ✓   2 [chromium] › tests/cli.spec.js:17:3 › CLI static group help (1.3s)
+  ✓   3 [chromium] › tests/cli.spec.js:17:3 › CLI static JSON description (1.6s)
+  ✓   4 [chromium] › tests/cli.spec.js:17:3 › CLI static leaf help (1.4s)
+  ✓   5 [chromium] › tests/cli.spec.js:17:3 › CLI static unavailable command help (1.5s)
+  ✓   6 [chromium] › tests/cli.spec.js:17:3 › CLI static completion (1.4s)
+  ✓   7 [chromium] › tests/cli.spec.js:17:3 › CLI static version (1.3s)
+  ✓   8 [chromium] › tests/cli.spec.js:17:3 › CLI static removed command (1.3s)
+(node:1029047) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   9 [firefox] › tests/cli.spec.js:17:3 › CLI static top-level help (2.6s)
+  ✓  10 [firefox] › tests/cli.spec.js:17:3 › CLI static group help (1.9s)
+  ✓  11 [firefox] › tests/cli.spec.js:17:3 › CLI static JSON description (2.9s)
+  ✓  12 [firefox] › tests/cli.spec.js:17:3 › CLI static leaf help (1.8s)
+  ✓  13 [firefox] › tests/cli.spec.js:17:3 › CLI static unavailable command help (2.8s)
+  ✓  14 [firefox] › tests/cli.spec.js:17:3 › CLI static completion (1.9s)
+  ✓  15 [firefox] › tests/cli.spec.js:17:3 › CLI static version (1.9s)
+  ✓  16 [firefox] › tests/cli.spec.js:17:3 › CLI static removed command (2.8s)
+(node:1031279) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  17 [webkit] › tests/cli.spec.js:17:3 › CLI static top-level help (4.4s)
+  ✓  18 [webkit] › tests/cli.spec.js:17:3 › CLI static group help (4.4s)
+  ✓  19 [webkit] › tests/cli.spec.js:17:3 › CLI static JSON description (4.0s)
+  ✓  20 [webkit] › tests/cli.spec.js:17:3 › CLI static leaf help (4.0s)
+  ✓  21 [webkit] › tests/cli.spec.js:17:3 › CLI static unavailable command help (4.3s)
+  ✓  22 [webkit] › tests/cli.spec.js:17:3 › CLI static completion (4.1s)
+  ✓  23 [webkit] › tests/cli.spec.js:17:3 › CLI static version (4.1s)
+  ✓  24 [webkit] › tests/cli.spec.js:17:3 › CLI static removed command (4.4s)
+
+  24 passed (1.1m)

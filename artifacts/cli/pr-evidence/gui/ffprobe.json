@@ -1,0 +1,21 @@
+{
+    "programs": [
+
+    ],
+    "stream_groups": [
+
+    ],
+    "streams": [
+        {
+            "codec_name": "h264",
+            "width": 640,
+            "height": 480
+        },
+        {
+            "codec_name": "aac"
+        },
+        {
+            "codec_name": "bin_data"
+        }
+    ]
+}

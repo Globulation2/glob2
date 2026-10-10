@@ -1,0 +1,15 @@
+Random Seed initial: 713
+Randomly Chosen Map: Playground
+Random Seed gameheader: 713    Player: bradley for team 0
+    Player: Warrush 0 for team 1
+    Player: Castor 1 for team 2
+    Player: Warrush 2 for team 3
+    Player: Castor 3 for team 4
+    Player: Warrush 4 for team 5
+    Player: Castor 5 for team 6
+    Player: Warrush 6 for team 7
+    Player: Castor 7 for team 0
+nox::game started
+nox::gui.game.checkSum() = deb20304
+automaticEndingGame ended: 64 ticks, 0 minutes, 2 seconds
+GLOB2_GAME_END ticks=64 winner_team=-1 seed=713 map="Playground" orders=53 players=team0:local,team1:Warrush,team2:Castor,team3:Warrush,team4:Castor,team5:Warrush,team6:Castor,team7:Warrush,team0:Castor

@@ -1,0 +1,13 @@
+
+Running 6 tests using 1 worker
+
+(node:1034273) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › tests/determinism.spec.js:10:1 › WebAssembly produces a complete per-tick simulation trace (serial/1) (5.8s)
+  ✓  2 [chromium] › tests/determinism.spec.js:10:1 › WebAssembly produces a complete per-tick simulation trace (threaded/1) (6.7s)
+  ✓  3 [chromium] › tests/determinism.spec.js:10:1 › WebAssembly produces a complete per-tick simulation trace (threaded/2) (6.1s)
+  ✓  4 [chromium] › tests/determinism.spec.js:10:1 › WebAssembly produces a complete per-tick simulation trace (threaded/4) (6.5s)
+  ✓  5 [chromium] › tests/determinism.spec.js:64:1 › WebAssembly verifies the committed match record (serial) (7.3s)
+  ✓  6 [chromium] › tests/determinism.spec.js:64:1 › WebAssembly verifies the committed match record (threaded) (6.6s)
+
+  6 passed (40.2s)

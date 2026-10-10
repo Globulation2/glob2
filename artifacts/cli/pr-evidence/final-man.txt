@@ -1,0 +1,1827 @@
+[4mGLOB2[24m(6)                         Games Manual                         [4mGLOB2[24m(6)
+
+[1mNAME[0m
+       glob2 - Globulation 2 game and tools
+
+[1mSYNOPSIS[0m
+       [1mglob2 [22m[COMMAND] [OPTIONS]
+
+[1mDESCRIPTION[0m
+       Without  arguments,  launches  the game. Use glob2 help COMMAND for de‐
+       tailed help.  Use glob2 help --format json for the self-describing  CLI
+       schema.
+
+[1mCOMMANDS[0m
+   [1mplay[0m
+       Launch the graphical game
+
+       Usage: glob2 play [OPTIONS]
+
+       [1m--fullscreen[0m
+              Use fullscreen Default: false.
+
+       [1m--no-fullscreen[0m
+              Use a window Default: false.
+
+       [1m--resizable[0m
+              Allow window resizing Default: false.
+
+       [1m--no-resizable[0m
+              Disable window resizing Default: false.
+
+       [1m--custom-cursor[0m
+              Use the game cursor Default: false.
+
+       [1m--no-custom-cursor[0m
+              Use the system cursor Default: false.
+
+       [1m--mute [22mMute music and speech Default: false.
+
+       [1m--no-mute[0m
+              Unmute music and speech Default: false.
+
+       [1m--renderer[0m
+              Rendering backend Allowed: gpu, software. Type: enum.
+
+       [1m--graphics-detail[0m
+              Detail effects Allowed: full, reduced. Type: enum.
+
+       [1m--window-size[0m
+              Initial window size in pixels; clamped to at least 640x480 Type:
+              resolution. Units: pixels.
+
+       [1m--username[0m
+              Player name Type: string.
+
+       [1m--editor-script[0m
+              Map  editor script language Default: preferences. Allowed: sgsl,
+              usl. Type: enum.
+
+       [1m--record[0m
+              Record menus and gameplay to MP4; refuses existing  files  Type:
+              file.
+
+       [1m--videoshot[0m
+              Record to videoshots/NAME.mp4 Type: string.
+
+       [1m--record-fps[0m
+              Recording  frames  per second Default: 30. Type: integer. Units:
+              frames/second. Range: 1..240.
+
+       [1m--record-encoder[0m
+              Embedded encoder selection Default: auto. Allowed:  auto,  soft‐
+              ware. Type: enum.
+
+       [1m--record-crf[0m
+              Software  H.264 quality; lower means higher quality Default: 23.
+              Type: integer. Range: 0..51.
+
+       [1m--record-chapter-ticks[0m
+              Simulation ticks per  chapter  Default:  10000.  Type:  integer.
+              Units: ticks. Range: 1..1000000000.
+
+       [1m--data-dir[0m
+              Add  an  asset  search directory (in order) Type: directory. Re‐
+              peatable.
+
+       [1m--generator-package[0m
+              Load a custom generator package or directory Type: file. Repeat‐
+              able.
+
+       [1m--building-catalog[0m
+              Building catalog manifest Type: file.
+
+       [1m--compute-threads[0m
+              Shared compute pool; auto uses logical CPU count Default:  auto.
+              Type: compute.
+
+       [1m--help [22mShow this command's help (also -h) Default: false.
+
+       Unspecified  display,  audio  and editor settings inherit saved prefer‐
+       ences
+
+       Choose at most one: --fullscreen, --no-fullscreen
+
+       Choose at most one: --resizable, --no-resizable
+
+       Choose at most one: --custom-cursor, --no-custom-cursor
+
+       Choose at most one: --mute, --no-mute
+
+       Choose at most one: --record, --videoshot
+
+       --record-chapter-ticks requires --record or --videoshot
+
+       --record-crf requires --record or --videoshot
+
+       --record-encoder requires --record or --videoshot
+
+       --record-fps requires --record or --videoshot
+
+       glob2 play --window-size 1280x720 --no-fullscreen
+
+       Outputs: Interactive game
+
+       Platform: all
+
+   [1mreplay[0m
+       Watch a recorded replay
+
+       Usage: glob2 replay FILE [OPTIONS]
+
+       [1m--fullscreen[0m
+              Use fullscreen Default: false.
+
+       [1m--no-fullscreen[0m
+              Use a window Default: false.
+
+       [1m--resizable[0m
+              Allow window resizing Default: false.
+
+       [1m--no-resizable[0m
+              Disable window resizing Default: false.
+
+       [1m--custom-cursor[0m
+              Use the game cursor Default: false.
+
+       [1m--no-custom-cursor[0m
+              Use the system cursor Default: false.
+
+       [1m--mute [22mMute music and speech Default: false.
+
+       [1m--no-mute[0m
+              Unmute music and speech Default: false.
+
+       [1m--renderer[0m
+              Rendering backend Allowed: gpu, software. Type: enum.
+
+       [1m--graphics-detail[0m
+              Detail effects Allowed: full, reduced. Type: enum.
+
+       [1m--window-size[0m
+              Initial window size in pixels; clamped to at least 640x480 Type:
+              resolution. Units: pixels.
+
+       [1m--username[0m
+              Player name Type: string.
+
+       [1m--editor-script[0m
+              Map editor script language Default: preferences. Allowed:  sgsl,
+              usl. Type: enum.
+
+       [1m--record[0m
+              Record  menus  and gameplay to MP4; refuses existing files Type:
+              file.
+
+       [1m--videoshot[0m
+              Record to videoshots/NAME.mp4 Type: string.
+
+       [1m--record-fps[0m
+              Recording frames per second Default: 30. Type:  integer.  Units:
+              frames/second. Range: 1..240.
+
+       [1m--record-encoder[0m
+              Embedded  encoder  selection Default: auto. Allowed: auto, soft‐
+              ware. Type: enum.
+
+       [1m--record-crf[0m
+              Software H.264 quality; lower means higher quality Default:  23.
+              Type: integer. Range: 0..51.
+
+       [1m--record-chapter-ticks[0m
+              Simulation  ticks  per  chapter  Default:  10000. Type: integer.
+              Units: ticks. Range: 1..1000000000.
+
+       [1m--data-dir[0m
+              Add an asset search directory (in order)  Type:  directory.  Re‐
+              peatable.
+
+       [1m--generator-package[0m
+              Load a custom generator package or directory Type: file. Repeat‐
+              able.
+
+       [1m--building-catalog[0m
+              Building catalog manifest Type: file.
+
+       [1m--compute-threads[0m
+              Shared  compute pool; auto uses logical CPU count Default: auto.
+              Type: compute.
+
+       [1m--help [22mShow this command's help (also -h) Default: false.
+
+       Unspecified display, audio and editor settings  inherit  saved  prefer‐
+       ences
+
+       Choose at most one: --fullscreen, --no-fullscreen
+
+       Choose at most one: --resizable, --no-resizable
+
+       Choose at most one: --custom-cursor, --no-custom-cursor
+
+       Choose at most one: --mute, --no-mute
+
+       Choose at most one: --record, --videoshot
+
+       --record-chapter-ticks requires --record or --videoshot
+
+       --record-crf requires --record or --videoshot
+
+       --record-encoder requires --record or --videoshot
+
+       --record-fps requires --record or --videoshot
+
+       glob2 replay replays/match.replay
+
+       Outputs: Interactive replay
+
+       Platform: all
+
+   [1mmap generate[0m
+       Generate a map at one exact seed
+
+       Usage: glob2 map generate GENERATOR [OPTIONS]
+
+       [1m--seed [22mMap  seed  (unsigned  32-bit)  Default: 1. Type: integer. Range:
+              0..4294967295.
+
+       [1m--set  [22mGenerator control KEY=VALUE; CLI overrides config Type:  assign‐
+              ment. Repeatable.
+
+       [1m--width[0m
+              Map width in tiles; registered values only Type: integer. Range:
+              1..512.
+
+       [1m--height[0m
+              Map  height  in  tiles;  registered  values  only Type: integer.
+              Range: 1..512.
+
+       [1m--teams[0m
+              Number of colonies; registered values only Type: integer. Range:
+              1..32.
+
+       [1m--workers[0m
+              Initial workers per colony; registered values only  Type:  inte‐
+              ger. Range: 0..2147483647.
+
+       [1m--preview[0m
+              Overview PNG output Type: file.
+
+       [1m--preview-size[0m
+              Longest  preview  side  in  pixels Type: integer. Units: pixels.
+              Range: 128..4096.
+
+       [1m--preview-scale[0m
+              Scale retained thumbnail pixels Default: 2. Allowed:  2,  4,  8.
+              Type: enum.
+
+       [1m--data-dir[0m
+              Add  an  asset  search directory (in order) Type: directory. Re‐
+              peatable.
+
+       [1m--generator-package[0m
+              Load a custom generator package or directory Type: file. Repeat‐
+              able.
+
+       [1m--output[0m
+              Playable gzip map output; .gz is appended Type: file.
+
+       [1m--report-file[0m
+              Detailed map JSON report Type: file.
+
+       [1m--config[0m
+              KEY=VALUE configuration; CLI settings override it Type: file.
+
+       [1m--map-image[0m
+              Export categorical terrain PNG Type: file.
+
+       [1m--export-generator-package[0m
+              Export selected custom generator package Type: file.
+
+       [1m--help [22mShow this command's help (also -h) Default: false.
+
+       At least one output is required
+
+       Registered generator controls constrain tile sizes and values
+
+       A failed layout never silently retries with another seed
+
+       Choose at most one: --preview-scale, --preview-size
+
+       glob2 map generate river --seed 713 --width 128 --height 128 --teams 2 --output artifacts/river.map --preview artifacts/river.png
+
+       Outputs: Requested .map.gz, overview PNG, categorical PNG and JSON  re‐
+       port
+
+       Platform: all
+
+   [1mmap study[0m
+       Run a structured map-generation study
+
+       Usage: glob2 map study GENERATOR [OPTIONS]
+
+       [1m--output-dir[0m
+              Structured  job  directory; must not already contain result.json
+              Type: directory. Required.
+
+       [1m--profile[0m
+              Isolated profile label Default: glob2-tournament. Type: string.
+
+       [1m--building-catalog[0m
+              Building catalog manifest Type: file.
+
+       [1m--data-dir[0m
+              Add an asset search directory (in order)  Type:  directory.  Re‐
+              peatable.
+
+       [1m--generator-package[0m
+              Load a custom generator package or directory Type: file. Repeat‐
+              able.
+
+       [1m--seed [22mMap seed Default: 1. Type: integer. Range: 0..4294967295.
+
+       [1m--set  [22mCatalog  control KEY=VALUE (study width/height use catalog expo‐
+              nents) Type: assignment. Repeatable.
+
+       [1m--candidates[0m
+              Search candidate count; 0 uses the exact seed Default: 0.  Type:
+              integer. Range: 0..10000.
+
+       [1m--rotations[0m
+              Team rotations Default: 1. Type: integer. Range: 1..16.
+
+       [1m--write-map[0m
+              Write chosen map-r0.map.gz Default: false.
+
+       [1m--report[0m
+              Additional  report  Allowed: headroom, diagnostics, timing, ter‐
+              rain. Type: enum. Repeatable.
+
+       [1m--perturb[0m
+              Study perturbation specification Type: string. Repeatable.
+
+       [1m--building-artwork[0m
+              Building artwork bundle Type: file.
+
+       [1m--help [22mShow this command's help (also -h) Default: false.
+
+       glob2 map study river --seed 713 --write-map --output-dir artifacts/study
+
+       Outputs: result.json, progress.json, artifacts.json; optional maps  and
+       reports
+
+       Platform: all
+
+   [1mmap generators[0m
+       List generators or inspect controls
+
+       Usage: glob2 map generators [GENERATOR] [OPTIONS]
+
+       [1m--format[0m
+              Output format Default: text. Allowed: text, json. Type: enum.
+
+       [1m--data-dir[0m
+              Add  an  asset  search directory (in order) Type: directory. Re‐
+              peatable.
+
+       [1m--generator-package[0m
+              Load a custom generator package or directory Type: file. Repeat‐
+              able.
+
+       [1m--help [22mShow this command's help (also -h) Default: false.
+
+       glob2 map generators river
+
+       Outputs: Generator IDs, defaults and allowed control values
+
+       Platform: all
+
+   [1mmap preview[0m
+       Preview a map or save without stepping simulation
+
+       Usage: glob2 map preview FILE [OPTIONS]
+
+       [1m--data-dir[0m
+              Add an asset search directory (in order)  Type:  directory.  Re‐
+              peatable.
+
+       [1m--generator-package[0m
+              Load a custom generator package or directory Type: file. Repeat‐
+              able.
+
+       [1m--output[0m
+              PNG output Type: file.
+
+       [1m--report-file[0m
+              Map analysis JSON report Type: file.
+
+       [1m--preview[0m
+              Overview PNG output Type: file.
+
+       [1m--preview-size[0m
+              Longest  preview  side  in  pixels Type: integer. Units: pixels.
+              Range: 128..4096.
+
+       [1m--preview-scale[0m
+              Scale retained thumbnail pixels Default: 2. Allowed:  2,  4,  8.
+              Type: enum.
+
+       [1m--help [22mShow this command's help (also -h) Default: false.
+
+       Choose at most one: --output, --preview
+
+       Choose at most one: --preview-scale, --preview-size
+
+       glob2 map preview maps/FourSquares1.map.gz --output artifacts/map.png
+
+       Outputs: Overview PNG and/or map report
+
+       Platform: all
+
+   [1mmap render[0m
+       Render the complete game view
+
+       Usage: glob2 map render FILE [OPTIONS]
+
+       [1m--data-dir[0m
+              Add  an  asset  search directory (in order) Type: directory. Re‐
+              peatable.
+
+       [1m--generator-package[0m
+              Load a custom generator package or directory Type: file. Repeat‐
+              able.
+
+       [1m--output[0m
+              Game-view PNG output Type: file. Required.
+
+       [1m--render-max-pixels[0m
+              Maximum side in pixels Default: 4096. Type: integer. Units: pix‐
+              els. Range: 1..8192.
+
+       [1m--render-field[0m
+              Diagnostic field overlay Type: file.
+
+       [1m--field-color[0m
+              Field color as r,g,b Type: string.
+
+       [1m--help [22mShow this command's help (also -h) Default: false.
+
+       --field-color requires --render-field
+
+       glob2 map render maps/FourSquares1.map.gz --output artifacts/game-view.png
+
+       Outputs: PNG; requires installed game graphics
+
+       Platform: all
+
+   [1mmap import-image[0m
+       Import a categorical terrain PNG
+
+       Usage: glob2 map import-image FILE [OPTIONS]
+
+       [1m--seed [22mMap seed (unsigned 32-bit) Default:  1.  Type:  integer.  Range:
+              0..4294967295.
+
+       [1m--set  [22mGenerator  control KEY=VALUE; CLI overrides config Type: assign‐
+              ment. Repeatable.
+
+       [1m--width[0m
+              Map width in tiles; registered values only Type: integer. Range:
+              1..512.
+
+       [1m--height[0m
+              Map height in  tiles;  registered  values  only  Type:  integer.
+              Range: 1..512.
+
+       [1m--teams[0m
+              Number of colonies; registered values only Type: integer. Range:
+              1..32.
+
+       [1m--workers[0m
+              Initial  workers  per colony; registered values only Type: inte‐
+              ger. Range: 0..2147483647.
+
+       [1m--preview[0m
+              Overview PNG output Type: file.
+
+       [1m--preview-size[0m
+              Longest preview side in pixels  Type:  integer.  Units:  pixels.
+              Range: 128..4096.
+
+       [1m--preview-scale[0m
+              Scale  retained  thumbnail  pixels Default: 2. Allowed: 2, 4, 8.
+              Type: enum.
+
+       [1m--data-dir[0m
+              Add an asset search directory (in order)  Type:  directory.  Re‐
+              peatable.
+
+       [1m--generator-package[0m
+              Load a custom generator package or directory Type: file. Repeat‐
+              able.
+
+       [1m--output[0m
+              Playable gzip map output Type: file. Required.
+
+       [1m--report-file[0m
+              Import report JSON Type: file.
+
+       [1m--image-seam-width[0m
+              Seam  repair  width  in  tiles;  default short side / 32 clamped
+              2..12 Type: integer. Range: 0..16.
+
+       [1m--help [22mShow this command's help (also -h) Default: false.
+
+       Choose at most one: --preview-scale, --preview-size
+
+       glob2 map import-image terrain.png --width 128 --height 128 --output artifacts/imported.map
+
+       Outputs: Playable .map.gz and optional preview/report
+
+       Platform: all
+
+   [1mmap export-image[0m
+       Export categorical terrain and colony markers
+
+       Usage: glob2 map export-image FILE [OPTIONS]
+
+       [1m--data-dir[0m
+              Add an asset search directory (in order)  Type:  directory.  Re‐
+              peatable.
+
+       [1m--generator-package[0m
+              Load a custom generator package or directory Type: file. Repeat‐
+              able.
+
+       [1m--output[0m
+              Categorical PNG output Type: file. Required.
+
+       [1m--help [22mShow this command's help (also -h) Default: false.
+
+       glob2 map export-image maps/FourSquares1.map.gz --output artifacts/terrain.png
+
+       Outputs: Categorical PNG; not an exact save-state interchange
+
+       Platform: all
+
+   [1mmap inspect-package[0m
+       Inspect and canonicalize a generator package
+
+       Usage: glob2 map inspect-package FILE [OPTIONS]
+
+       [1m--output[0m
+              Canonical package JSON Type: file. Required.
+
+       [1m--report-file[0m
+              Metadata JSON Type: file. Required.
+
+       [1m--help [22mShow this command's help (also -h) Default: false.
+
+       glob2 map inspect-package generator.json --output artifacts/canonical.json --report-file artifacts/package.json
+
+       Outputs: Canonical package and metadata JSON
+
+       Platform: all
+
+   [1mmap validate-set[0m
+       Validate a terrain/resource set
+
+       Usage: glob2 map validate-set FILE [OPTIONS]
+
+       [1m--report-file[0m
+              Validation JSON Type: file. Required.
+
+       [1m--preview[0m
+              Preview PNG Type: file.
+
+       [1m--gallery[0m
+              Preview gallery Default: 0. Allowed: 0, 1. Type: enum.
+
+       [1m--phase[0m
+              Gallery phase Default: 0. Type: integer. Range: 0..3.
+
+       [1m--variation[0m
+              Gallery variation Default: 0. Type: integer. Range: 0..3.
+
+       [1m--help [22mShow this command's help (also -h) Default: false.
+
+       glob2 map validate-set set.json --report-file artifacts/set-report.json --preview artifacts/set.png
+
+       Outputs: Validation JSON and optional PNG
+
+       Platform: all
+
+   [1mgame run[0m
+       Run or continue a structured headless game
+
+       Usage: glob2 game run [OPTIONS]
+
+       [1m--output-dir[0m
+              Structured  job  directory; must not already contain result.json
+              Type: directory. Required.
+
+       [1m--profile[0m
+              Isolated profile label Default: glob2-tournament. Type: string.
+
+       [1m--building-catalog[0m
+              Building catalog manifest Type: file.
+
+       [1m--data-dir[0m
+              Add an asset search directory (in order)  Type:  directory.  Re‐
+              peatable.
+
+       [1m--generator-package[0m
+              Load a custom generator package or directory Type: file. Repeat‐
+              able.
+
+       [1m--compute-threads[0m
+              Shared  compute pool; auto uses logical CPU count Default: auto.
+              Type: compute.
+
+       [1m--map-file[0m
+              Map input for a new game Type: file.
+
+       [1m--load-game[0m
+              Saved-game input for continuation Type: file.
+
+       [1m--generator[0m
+              Generate a map before starting Type: string.
+
+       [1m--game-seed[0m
+              Game seed for a new match Type: integer. Range: 0..4294967295.
+
+       [1m--map-seed[0m
+              Generated-map seed Type: integer. Range: 0..4294967295.
+
+       [1m--set  [22mGenerator control KEY=VALUE Type: assignment. Repeatable.
+
+       [1m--candidates[0m
+              Generation candidate count Default:  0.  Type:  integer.  Range:
+              0..10000.
+
+       [1m--player[0m
+              AI per map team in team order Type: string. Repeatable.
+
+       [1m--ai-param[0m
+              AI override PLAYER:KEY=VALUE Type: assignment. Repeatable.
+
+       [1m--ai-script[0m
+              JavaScript AI PLAYER:SOURCE.js Type: string. Repeatable.
+
+       [1m--map-script[0m
+              Map script source Type: file.
+
+       [1m--alliance[0m
+              Alliance per team Type: integer. Range: 1..16. Repeatable.
+
+       [1m--win-condition[0m
+              Winning  condition  Allowed: death, allies, prestige, opponents,
+              script. Type: enum. Repeatable.
+
+       [1m--win-probability[0m
+              Early-victory  threshold  in  permille  Type:  integer.   Range:
+              501..1000.
+
+       [1m--experiment[0m
+              Enable a registered experiment Type: string. Repeatable.
+
+       [1m--rule [22mGame rule KEY=VALUE Type: assignment. Repeatable.
+
+       [1m--fork-rule[0m
+              Explicit  saved-game fork: buildingGradientDelay=N Type: assign‐
+              ment. Repeatable.
+
+       [1m--ticks[0m
+              Absolute tick limit; must  exceed  saved  tick  Default:  90000.
+              Type: integer. Units: ticks. Range: 1..2147483647.
+
+       [1m--gradient-delay[0m
+              Gradient  scheduling  delay  in ticks Default: 8. Type: integer.
+              Units: ticks. Range: 1..16.
+
+       [1m--resource-growth-delay[0m
+              Resource scheduling delay in ticks Type: integer. Units:  ticks.
+              Range: 1..16.
+
+       [1m--ai-order-delay[0m
+              AI  order  delay  in  ticks  Type: integer. Units: ticks. Range:
+              0..8.
+
+       [1m--save [22mSnapshot: initial, final, or every:N Type: string. Repeatable.
+
+       [1m--telemetry[0m
+              Additional telemetry Allowed: checksums, team-timeline,  maxima,
+              gradient-stats. Type: enum. Repeatable.
+
+       [1m--write-replay[0m
+              Write game.replay Default: false.
+
+       [1m--benchmark-warmup[0m
+              Ticks  excluded  from  benchmark  counters Type: integer. Units:
+              ticks. Range: 0..2147483647.
+
+       [1m--diagnostic-fields[0m
+              Diagnostic field selection Allowed: maxima. Type: enum.
+
+       [1m--diagnostic-interval[0m
+              Diagnostic interval  in  ticks  Default:  2500.  Type:  integer.
+              Units: ticks. Range: 1..2147483647.
+
+       [1m--diagnostic-png[0m
+              Export diagnostic PNGs Default: false.
+
+       [1m--building-artwork[0m
+              Artwork for generated maps Type: file.
+
+       [1m--help [22mShow this command's help (also -h) Default: false.
+
+       Exactly one of --map-file, --load-game or --generator
+
+       New games require --game-seed and one --player per team
+
+       Generation requires --map-seed
+
+       Saved games reject new-match setup options
+
+       Structured  jobs isolate engine tuning and diagnostic environment vari‐
+       ables
+
+       --building-artwork requires --generator
+
+       --candidates requires --generator
+
+       --diagnostic-interval requires --diagnostic-fields
+
+       --diagnostic-png requires --diagnostic-fields
+
+       --fork-rule requires --load-game
+
+       --map-seed requires --generator
+
+       --set requires --generator
+
+       glob2 game run --map-file maps/FourSquares1.map.gz --game-seed 713 --player castor --player cortex --player castor --player cortex --ticks 64 --telemetry checksums --output-dir artifacts/game
+
+       Outputs: result.json, progress.json, artifacts.json;  requested  saves,
+       replay and telemetry
+
+       Platform: all
+
+   [1mgame repeat[0m
+       Repeat a saved game headlessly
+
+       Usage: glob2 game repeat FILE [OPTIONS]
+
+       [1m--data-dir[0m
+              Add  an  asset  search directory (in order) Type: directory. Re‐
+              peatable.
+
+       [1m--generator-package[0m
+              Load a custom generator package or directory Type: file. Repeat‐
+              able.
+
+       [1m--compute-threads[0m
+              Shared compute pool; auto uses logical CPU count Default:  auto.
+              Type: compute.
+
+       [1m--ticks[0m
+              Steps  per run; 0 runs until the game ends Default: 0. Type: in‐
+              teger. Units: ticks. Range: 0..2147483647.
+
+       [1m--runs [22mNumber of saved-game runs  Default:  1.  Type:  integer.  Range:
+              1..2147483647.
+
+       [1m--building-catalog[0m
+              Building catalog Type: file.
+
+       [1m--help [22mShow this command's help (also -h) Default: false.
+
+       Environment:  GLOB2_REPLAY_PATH, GLOB2_CHECKSUM_SIDECAR, GLOB2_TEAM_RE‐
+       SULTS, GLOB2_TEAM_TIMELINE
+
+       glob2 game repeat saved.game.gz --ticks 64 --runs 1
+
+       Outputs: Existing game summaries and opt-in environment telemetry
+
+       Platform: all
+
+   [1mmatch verify[0m
+       Verify a multiplayer match record
+
+       Usage: glob2 match verify RECORD [OPTIONS]
+
+       [1m--output-dir[0m
+              Structured job directory; must not already  contain  result.json
+              Type: directory. Required.
+
+       [1m--profile[0m
+              Isolated profile label Default: glob2-verify. Type: string.
+
+       [1m--compute-threads[0m
+              Shared  compute pool; auto uses logical CPU count Default: auto.
+              Type: compute.
+
+       [1m--map-file[0m
+              Recorded match's map Type: file. Required.
+
+       [1m--help [22mShow this command's help (also -h) Default: false.
+
+       glob2 match verify test/fixtures/multiplayer/FourSquares1.g2mr --map-file maps/FourSquares1.map.gz --output-dir artifacts/verified
+
+       Outputs: result.json, verdict.json, checksums.txt,  match.replay,  com‐
+       pute.json, artifacts.json; verdict is in JSON
+
+       Platform: all
+
+   [1monline join[0m
+       Join an invite link or code
+
+       Usage: glob2 online join INVITE [OPTIONS]
+
+       [1m--fullscreen[0m
+              Use fullscreen Default: false.
+
+       [1m--no-fullscreen[0m
+              Use a window Default: false.
+
+       [1m--resizable[0m
+              Allow window resizing Default: false.
+
+       [1m--no-resizable[0m
+              Disable window resizing Default: false.
+
+       [1m--custom-cursor[0m
+              Use the game cursor Default: false.
+
+       [1m--no-custom-cursor[0m
+              Use the system cursor Default: false.
+
+       [1m--mute [22mMute music and speech Default: false.
+
+       [1m--no-mute[0m
+              Unmute music and speech Default: false.
+
+       [1m--renderer[0m
+              Rendering backend Allowed: gpu, software. Type: enum.
+
+       [1m--graphics-detail[0m
+              Detail effects Allowed: full, reduced. Type: enum.
+
+       [1m--window-size[0m
+              Initial window size in pixels; clamped to at least 640x480 Type:
+              resolution. Units: pixels.
+
+       [1m--username[0m
+              Player name Type: string.
+
+       [1m--editor-script[0m
+              Map  editor script language Default: preferences. Allowed: sgsl,
+              usl. Type: enum.
+
+       [1m--record[0m
+              Record menus and gameplay to MP4; refuses existing  files  Type:
+              file.
+
+       [1m--videoshot[0m
+              Record to videoshots/NAME.mp4 Type: string.
+
+       [1m--record-fps[0m
+              Recording  frames  per second Default: 30. Type: integer. Units:
+              frames/second. Range: 1..240.
+
+       [1m--record-encoder[0m
+              Embedded encoder selection Default: auto. Allowed:  auto,  soft‐
+              ware. Type: enum.
+
+       [1m--record-crf[0m
+              Software  H.264 quality; lower means higher quality Default: 23.
+              Type: integer. Range: 0..51.
+
+       [1m--record-chapter-ticks[0m
+              Simulation ticks per  chapter  Default:  10000.  Type:  integer.
+              Units: ticks. Range: 1..1000000000.
+
+       [1m--data-dir[0m
+              Add  an  asset  search directory (in order) Type: directory. Re‐
+              peatable.
+
+       [1m--generator-package[0m
+              Load a custom generator package or directory Type: file. Repeat‐
+              able.
+
+       [1m--building-catalog[0m
+              Building catalog manifest Type: file.
+
+       [1m--compute-threads[0m
+              Shared compute pool; auto uses logical CPU count Default:  auto.
+              Type: compute.
+
+       [1m--instance[0m
+              Online instance origin Type: string.
+
+       [1m--help [22mShow this command's help (also -h) Default: false.
+
+       Unspecified  display,  audio  and editor settings inherit saved prefer‐
+       ences
+
+       Choose at most one: --fullscreen, --no-fullscreen
+
+       Choose at most one: --resizable, --no-resizable
+
+       Choose at most one: --custom-cursor, --no-custom-cursor
+
+       Choose at most one: --mute, --no-mute
+
+       Choose at most one: --record, --videoshot
+
+       --record-chapter-ticks requires --record or --videoshot
+
+       --record-crf requires --record or --videoshot
+
+       --record-encoder requires --record or --videoshot
+
+       --record-fps requires --record or --videoshot
+
+       glob2 online join ABCDEF --instance https://app.glob2online.com
+
+       Outputs: Interactive online lobby
+
+       Platform: all
+
+   [1monline play-map[0m
+       Play a catalog map locally
+
+       Usage: glob2 online play-map ID [OPTIONS]
+
+       [1m--fullscreen[0m
+              Use fullscreen Default: false.
+
+       [1m--no-fullscreen[0m
+              Use a window Default: false.
+
+       [1m--resizable[0m
+              Allow window resizing Default: false.
+
+       [1m--no-resizable[0m
+              Disable window resizing Default: false.
+
+       [1m--custom-cursor[0m
+              Use the game cursor Default: false.
+
+       [1m--no-custom-cursor[0m
+              Use the system cursor Default: false.
+
+       [1m--mute [22mMute music and speech Default: false.
+
+       [1m--no-mute[0m
+              Unmute music and speech Default: false.
+
+       [1m--renderer[0m
+              Rendering backend Allowed: gpu, software. Type: enum.
+
+       [1m--graphics-detail[0m
+              Detail effects Allowed: full, reduced. Type: enum.
+
+       [1m--window-size[0m
+              Initial window size in pixels; clamped to at least 640x480 Type:
+              resolution. Units: pixels.
+
+       [1m--username[0m
+              Player name Type: string.
+
+       [1m--editor-script[0m
+              Map editor script language Default: preferences. Allowed:  sgsl,
+              usl. Type: enum.
+
+       [1m--record[0m
+              Record  menus  and gameplay to MP4; refuses existing files Type:
+              file.
+
+       [1m--videoshot[0m
+              Record to videoshots/NAME.mp4 Type: string.
+
+       [1m--record-fps[0m
+              Recording frames per second Default: 30. Type:  integer.  Units:
+              frames/second. Range: 1..240.
+
+       [1m--record-encoder[0m
+              Embedded  encoder  selection Default: auto. Allowed: auto, soft‐
+              ware. Type: enum.
+
+       [1m--record-crf[0m
+              Software H.264 quality; lower means higher quality Default:  23.
+              Type: integer. Range: 0..51.
+
+       [1m--record-chapter-ticks[0m
+              Simulation  ticks  per  chapter  Default:  10000. Type: integer.
+              Units: ticks. Range: 1..1000000000.
+
+       [1m--data-dir[0m
+              Add an asset search directory (in order)  Type:  directory.  Re‐
+              peatable.
+
+       [1m--generator-package[0m
+              Load a custom generator package or directory Type: file. Repeat‐
+              able.
+
+       [1m--building-catalog[0m
+              Building catalog manifest Type: file.
+
+       [1m--compute-threads[0m
+              Shared  compute pool; auto uses logical CPU count Default: auto.
+              Type: compute.
+
+       [1m--instance[0m
+              Online instance origin Type: string.
+
+       [1m--hash [22mCatalog map SHA-256 Type: string. Required.
+
+       [1m--title[0m
+              Catalog map title Type: string. Required.
+
+       [1m--help [22mShow this command's help (also -h) Default: false.
+
+       Unspecified display, audio and editor settings  inherit  saved  prefer‐
+       ences
+
+       Choose at most one: --fullscreen, --no-fullscreen
+
+       Choose at most one: --resizable, --no-resizable
+
+       Choose at most one: --custom-cursor, --no-custom-cursor
+
+       Choose at most one: --mute, --no-mute
+
+       Choose at most one: --record, --videoshot
+
+       --record-chapter-ticks requires --record or --videoshot
+
+       --record-crf requires --record or --videoshot
+
+       --record-encoder requires --record or --videoshot
+
+       --record-fps requires --record or --videoshot
+
+       glob2 online play-map MAP_ID --hash SHA256 --title 'Catalog map'
+
+       Outputs: Interactive custom-game setup
+
+       Platform: all
+
+   [1monline host-map[0m
+       Host a catalog map online
+
+       Usage: glob2 online host-map ID [OPTIONS]
+
+       [1m--fullscreen[0m
+              Use fullscreen Default: false.
+
+       [1m--no-fullscreen[0m
+              Use a window Default: false.
+
+       [1m--resizable[0m
+              Allow window resizing Default: false.
+
+       [1m--no-resizable[0m
+              Disable window resizing Default: false.
+
+       [1m--custom-cursor[0m
+              Use the game cursor Default: false.
+
+       [1m--no-custom-cursor[0m
+              Use the system cursor Default: false.
+
+       [1m--mute [22mMute music and speech Default: false.
+
+       [1m--no-mute[0m
+              Unmute music and speech Default: false.
+
+       [1m--renderer[0m
+              Rendering backend Allowed: gpu, software. Type: enum.
+
+       [1m--graphics-detail[0m
+              Detail effects Allowed: full, reduced. Type: enum.
+
+       [1m--window-size[0m
+              Initial window size in pixels; clamped to at least 640x480 Type:
+              resolution. Units: pixels.
+
+       [1m--username[0m
+              Player name Type: string.
+
+       [1m--editor-script[0m
+              Map  editor script language Default: preferences. Allowed: sgsl,
+              usl. Type: enum.
+
+       [1m--record[0m
+              Record menus and gameplay to MP4; refuses existing  files  Type:
+              file.
+
+       [1m--videoshot[0m
+              Record to videoshots/NAME.mp4 Type: string.
+
+       [1m--record-fps[0m
+              Recording  frames  per second Default: 30. Type: integer. Units:
+              frames/second. Range: 1..240.
+
+       [1m--record-encoder[0m
+              Embedded encoder selection Default: auto. Allowed:  auto,  soft‐
+              ware. Type: enum.
+
+       [1m--record-crf[0m
+              Software  H.264 quality; lower means higher quality Default: 23.
+              Type: integer. Range: 0..51.
+
+       [1m--record-chapter-ticks[0m
+              Simulation ticks per  chapter  Default:  10000.  Type:  integer.
+              Units: ticks. Range: 1..1000000000.
+
+       [1m--data-dir[0m
+              Add  an  asset  search directory (in order) Type: directory. Re‐
+              peatable.
+
+       [1m--generator-package[0m
+              Load a custom generator package or directory Type: file. Repeat‐
+              able.
+
+       [1m--building-catalog[0m
+              Building catalog manifest Type: file.
+
+       [1m--compute-threads[0m
+              Shared compute pool; auto uses logical CPU count Default:  auto.
+              Type: compute.
+
+       [1m--instance[0m
+              Online instance origin Type: string.
+
+       [1m--hash [22mCatalog map SHA-256 Type: string. Required.
+
+       [1m--title[0m
+              Catalog map title Type: string. Required.
+
+       [1m--help [22mShow this command's help (also -h) Default: false.
+
+       Unspecified  display,  audio  and editor settings inherit saved prefer‐
+       ences
+
+       Choose at most one: --fullscreen, --no-fullscreen
+
+       Choose at most one: --resizable, --no-resizable
+
+       Choose at most one: --custom-cursor, --no-custom-cursor
+
+       Choose at most one: --mute, --no-mute
+
+       Choose at most one: --record, --videoshot
+
+       --record-chapter-ticks requires --record or --videoshot
+
+       --record-crf requires --record or --videoshot
+
+       --record-encoder requires --record or --videoshot
+
+       --record-fps requires --record or --videoshot
+
+       glob2 online host-map MAP_ID --hash SHA256 --title 'Catalog map'
+
+       Outputs: Interactive room creation
+
+       Platform: all
+
+   [1monline turn-client[0m
+       Play a relay assignment headlessly
+
+       Usage: glob2 online turn-client ASSIGNMENT [OPTIONS]
+
+       [1m--output-dir[0m
+              Structured job directory; must not already  contain  result.json
+              Type: directory. Required.
+
+       [1m--profile[0m
+              Isolated profile label Default: glob2-turn-client. Type: string.
+
+       [1m--compute-threads[0m
+              Shared  compute pool; auto uses logical CPU count Default: auto.
+              Type: compute.
+
+       [1m--map-file[0m
+              Recorded match's map Type: file. Required.
+
+       [1m--orders-per-second[0m
+              Synthetic  order  rate  Default:   0.5.   Type:   real.   Range:
+              0..2147483647.
+
+       [1m--max-seconds[0m
+              Maximum  runtime  in  seconds  Default: 1800. Type: real. Units:
+              seconds. Range: 0..2147483647.
+
+       [1m--seed [22mSynthetic-order  seed  Default:   1.   Type:   integer.   Range:
+              0..4294967295.
+
+       [1m--help [22mShow this command's help (also -h) Default: false.
+
+       glob2 online turn-client assignment.json --map-file map.map.gz --output-dir artifacts/client
+
+       Outputs: result.json, network/trace artifacts and replay
+
+       Platform: all
+
+   [1mai check[0m
+       Validate JavaScript AI startup, metadata and callbacks
+
+       Usage: glob2 ai check FILE [OPTIONS]
+
+       [1m--format[0m
+              Output format Default: text. Allowed: text, json. Type: enum.
+
+       [1m--help [22mShow this command's help (also -h) Default: false.
+
+       glob2 ai check examples/javascript/ai.js --format json
+
+       Outputs: Validation text or existing JSON validation payload
+
+       Platform: all
+
+   [1mscript check[0m
+       Compile a JavaScript map script
+
+       Usage: glob2 script check FILE [OPTIONS]
+
+       [1m--help [22mShow this command's help (also -h) Default: false.
+
+       glob2 script check examples/javascript/scenario.js
+
+       Outputs: Validation message
+
+       Platform: all
+
+   [1mscript attach[0m
+       Attach a JavaScript map script
+
+       Usage: glob2 script attach MAP SCRIPT OUTPUT [OPTIONS]
+
+       [1m--data-dir[0m
+              Add  an  asset  search directory (in order) Type: directory. Re‐
+              peatable.
+
+       [1m--generator-package[0m
+              Load a custom generator package or directory Type: file. Repeat‐
+              able.
+
+       [1m--help [22mShow this command's help (also -h) Default: false.
+
+       glob2 script attach maps/FourSquares1.map.gz examples/javascript/scenario.js artifacts/scripted.map.gz
+
+       Outputs: Playable .map.gz; refuses existing destination
+
+       Platform: all
+
+   [1massets compose-buildings[0m
+       Compose and validate building packages
+
+       Usage: glob2 assets compose-buildings [OPTIONS]
+
+       [1m--base [22mBase building catalog Type: file.
+
+       [1m--package[0m
+              Building package manifest Type: file. Repeatable.
+
+       [1m--artwork-bundle[0m
+              Building artwork bundle Type: file.
+
+       [1m--format[0m
+              Output format Default: text. Allowed: text, json. Type: enum.
+
+       [1m--help [22mShow this command's help (also -h) Default: false.
+
+       glob2 assets compose-buildings --format json
+
+       Outputs: Resolved catalog/hash and optional artwork hash
+
+       Platform: all
+
+   [1massets render-skin[0m
+       Bake transparent colony sprites
+
+       Usage: glob2 assets render-skin [OPTIONS]
+
+       [1m--manifest[0m
+              Skin manifest Type: file. Required.
+
+       [1m--texture[0m
+              Texture image Type: file. Required.
+
+       [1m--material[0m
+              Material image Type: file. Required.
+
+       [1m--output-dir[0m
+              Sprite output directory Type: directory. Required.
+
+       [1m--help [22mShow this command's help (also -h) Default: false.
+
+       glob2 assets render-skin --manifest skin.json --texture texture.png --material material.png --output-dir artifacts/sprites
+
+       Outputs: Colony sprite bundle
+
+       Platform: native OpenGL client
+
+   [1massets skin-info[0m
+       Inspect native skin exporter capabilities
+
+       Usage: glob2 assets skin-info [OPTIONS]
+
+       [1m--format[0m
+              Output format Default: text. Allowed: text, json. Type: enum.
+
+       [1m--help [22mShow this command's help (also -h) Default: false.
+
+       glob2 assets skin-info --format json
+
+       Outputs: Exporter revision and pinned codec
+
+       Platform: native OpenGL client
+
+   [1mdev random-games[0m
+       Exercise random AI games
+
+       Usage: glob2 dev random-games [OPTIONS]
+
+       [1m--data-dir[0m
+              Add an asset search directory (in order)  Type:  directory.  Re‐
+              peatable.
+
+       [1m--generator-package[0m
+              Load a custom generator package or directory Type: file. Repeat‐
+              able.
+
+       [1m--fullscreen[0m
+              Use fullscreen Default: false.
+
+       [1m--no-fullscreen[0m
+              Use a window Default: false.
+
+       [1m--resizable[0m
+              Allow window resizing Default: false.
+
+       [1m--no-resizable[0m
+              Disable window resizing Default: false.
+
+       [1m--custom-cursor[0m
+              Use the game cursor Default: false.
+
+       [1m--no-custom-cursor[0m
+              Use the system cursor Default: false.
+
+       [1m--mute [22mMute music and speech Default: false.
+
+       [1m--no-mute[0m
+              Unmute music and speech Default: false.
+
+       [1m--renderer[0m
+              Rendering backend Allowed: gpu, software. Type: enum.
+
+       [1m--graphics-detail[0m
+              Detail effects Allowed: full, reduced. Type: enum.
+
+       [1m--window-size[0m
+              Initial window size in pixels; clamped to at least 640x480 Type:
+              resolution. Units: pixels.
+
+       [1m--username[0m
+              Player name Type: string.
+
+       [1m--editor-script[0m
+              Map  editor script language Default: preferences. Allowed: sgsl,
+              usl. Type: enum.
+
+       [1m--record[0m
+              Record menus and gameplay to MP4; refuses existing  files  Type:
+              file.
+
+       [1m--videoshot[0m
+              Record to videoshots/NAME.mp4 Type: string.
+
+       [1m--record-fps[0m
+              Recording  frames  per second Default: 30. Type: integer. Units:
+              frames/second. Range: 1..240.
+
+       [1m--record-encoder[0m
+              Embedded encoder selection Default: auto. Allowed:  auto,  soft‐
+              ware. Type: enum.
+
+       [1m--record-crf[0m
+              Software  H.264 quality; lower means higher quality Default: 23.
+              Type: integer. Range: 0..51.
+
+       [1m--record-chapter-ticks[0m
+              Simulation ticks per  chapter  Default:  10000.  Type:  integer.
+              Units: ticks. Range: 1..1000000000.
+
+       [1m--compute-threads[0m
+              Shared  compute pool; auto uses logical CPU count Default: auto.
+              Type: compute.
+
+       [1m--display[0m
+              Show test games graphically Default: false.
+
+       [1m--runs [22mGame count; 0 repeats forever Default: 0. Type: integer.  Range:
+              0..2147483647.
+
+       [1m--ticks[0m
+              Tick  cap  per  random  game;  0  runs until game end; overrides
+              GLOB2_TEST_MAX_TICKS  Default:  90000.  Type:  integer.   Units:
+              ticks. Range: 0..2147483647.
+
+       [1m--ai-types[0m
+              Comma-separated random AI pool Type: string.
+
+       [1m--map  [22mMap name resolved as maps/NAME.map Type: string.
+
+       [1m--matchup[0m
+              Comma-separated per-team AIs; requires --map Type: string.
+
+       [1m--save-game-as[0m
+              Write the initial game before running Type: file.
+
+       [1m--building-catalog[0m
+              Building catalog manifest Type: file.
+
+       [1m--help [22mShow this command's help (also -h) Default: false.
+
+       Unspecified  display,  audio  and editor settings inherit saved prefer‐
+       ences
+
+       Recording requires --display
+
+       Choose at most one: --fullscreen, --no-fullscreen
+
+       Choose at most one: --resizable, --no-resizable
+
+       Choose at most one: --custom-cursor, --no-custom-cursor
+
+       Choose at most one: --mute, --no-mute
+
+       Choose at most one: --record, --videoshot
+
+       Choose at most one: --matchup, --ai-types
+
+       --matchup requires --map
+
+       --record-chapter-ticks requires --record or --videoshot
+
+       --record-crf requires --record or --videoshot
+
+       --record-encoder requires --record or --videoshot
+
+       --record-fps requires --record or --videoshot
+
+       Environment: GLOB2_TEST_SEED,  GLOB2_TEST_MAX_TICKS,  GLOB2_TEST_RULES,
+       GLOB2_DUMP_GAME,       GLOB2_REPLAY_PATH,       GLOB2_CHECKSUM_SIDECAR,
+       GLOB2_TEAM_RESULTS, GLOB2_TEAM_TIMELINE
+
+       glob2 dev random-games --runs 1 --ticks 64 --map Playground --matchup castor,warrush,castor,warrush,castor,warrush,castor,warrush
+
+       Outputs: Game summaries and opt-in diagnostic outputs
+
+       Platform: all
+
+   [1mdev stress-maps[0m
+       Generate random maps indefinitely
+
+       Usage: glob2 dev stress-maps [OPTIONS]
+
+       [1m--data-dir[0m
+              Add an asset search directory (in order)  Type:  directory.  Re‐
+              peatable.
+
+       [1m--generator-package[0m
+              Load a custom generator package or directory Type: file. Repeat‐
+              able.
+
+       [1m--help [22mShow this command's help (also -h) Default: false.
+
+       glob2 dev stress-maps
+
+       Outputs: Generation diagnostics; interrupt to stop
+
+       Platform: all
+
+   [1mdev textshots[0m
+       Capture rendered translation texts
+
+       Usage: glob2 dev textshots [OPTIONS]
+
+       [1m--fullscreen[0m
+              Use fullscreen Default: false.
+
+       [1m--no-fullscreen[0m
+              Use a window Default: false.
+
+       [1m--resizable[0m
+              Allow window resizing Default: false.
+
+       [1m--no-resizable[0m
+              Disable window resizing Default: false.
+
+       [1m--custom-cursor[0m
+              Use the game cursor Default: false.
+
+       [1m--no-custom-cursor[0m
+              Use the system cursor Default: false.
+
+       [1m--mute [22mMute music and speech Default: false.
+
+       [1m--no-mute[0m
+              Unmute music and speech Default: false.
+
+       [1m--renderer[0m
+              Rendering backend Allowed: gpu, software. Type: enum.
+
+       [1m--graphics-detail[0m
+              Detail effects Allowed: full, reduced. Type: enum.
+
+       [1m--window-size[0m
+              Initial window size in pixels; clamped to at least 640x480 Type:
+              resolution. Units: pixels.
+
+       [1m--username[0m
+              Player name Type: string.
+
+       [1m--editor-script[0m
+              Map  editor script language Default: preferences. Allowed: sgsl,
+              usl. Type: enum.
+
+       [1m--record[0m
+              Record menus and gameplay to MP4; refuses existing  files  Type:
+              file.
+
+       [1m--videoshot[0m
+              Record to videoshots/NAME.mp4 Type: string.
+
+       [1m--record-fps[0m
+              Recording  frames  per second Default: 30. Type: integer. Units:
+              frames/second. Range: 1..240.
+
+       [1m--record-encoder[0m
+              Embedded encoder selection Default: auto. Allowed:  auto,  soft‐
+              ware. Type: enum.
+
+       [1m--record-crf[0m
+              Software  H.264 quality; lower means higher quality Default: 23.
+              Type: integer. Range: 0..51.
+
+       [1m--record-chapter-ticks[0m
+              Simulation ticks per  chapter  Default:  10000.  Type:  integer.
+              Units: ticks. Range: 1..1000000000.
+
+       [1m--data-dir[0m
+              Add  an  asset  search directory (in order) Type: directory. Re‐
+              peatable.
+
+       [1m--generator-package[0m
+              Load a custom generator package or directory Type: file. Repeat‐
+              able.
+
+       [1m--building-catalog[0m
+              Building catalog manifest Type: file.
+
+       [1m--compute-threads[0m
+              Shared compute pool; auto uses logical CPU count Default:  auto.
+              Type: compute.
+
+       [1m--output-dir[0m
+              Translation screenshot directory Default: .. Type: directory.
+
+       [1m--help [22mShow this command's help (also -h) Default: false.
+
+       Unspecified  display,  audio  and editor settings inherit saved prefer‐
+       ences
+
+       Choose at most one: --fullscreen, --no-fullscreen
+
+       Choose at most one: --resizable, --no-resizable
+
+       Choose at most one: --custom-cursor, --no-custom-cursor
+
+       Choose at most one: --mute, --no-mute
+
+       Choose at most one: --record, --videoshot
+
+       --record-chapter-ticks requires --record or --videoshot
+
+       --record-crf requires --record or --videoshot
+
+       --record-encoder requires --record or --videoshot
+
+       --record-fps requires --record or --videoshot
+
+       glob2 dev textshots --output-dir artifacts/textshots
+
+       Outputs: Translation screenshots; uses the existing screenshot workflow
+
+       Platform: all
+
+   [1mdev dump-resources[0m
+       Dump map resource diagnostics
+
+       Usage: glob2 dev dump-resources FILE [OPTIONS]
+
+       [1m--data-dir[0m
+              Add an asset search directory (in order)  Type:  directory.  Re‐
+              peatable.
+
+       [1m--generator-package[0m
+              Load a custom generator package or directory Type: file. Repeat‐
+              able.
+
+       [1m--help [22mShow this command's help (also -h) Default: false.
+
+       glob2 dev dump-resources maps/FourSquares1.map.gz
+
+       Outputs: Resource counts on stdout
+
+       Platform: all
+
+   [1mdev dump-wheat[0m
+       Dump AI wheat-protection plans
+
+       Usage: glob2 dev dump-wheat FILE [OPTIONS]
+
+       [1m--data-dir[0m
+              Add  an  asset  search directory (in order) Type: directory. Re‐
+              peatable.
+
+       [1m--generator-package[0m
+              Load a custom generator package or directory Type: file. Repeat‐
+              able.
+
+       [1m--team [22mTeam index Default: 0. Type: integer. Range: 0..15.
+
+       [1m--help [22mShow this command's help (also -h) Default: false.
+
+       glob2 dev dump-wheat maps/FourSquares1.map.gz --team 0
+
+       Outputs: Wheat-plan diagnostics on stdout
+
+       Platform: all
+
+   [1mdev dump-tiled[0m
+       Dump a repeated map
+
+       Usage: glob2 dev dump-tiled FILE [OPTIONS]
+
+       [1m--data-dir[0m
+              Add an asset search directory (in order)  Type:  directory.  Re‐
+              peatable.
+
+       [1m--generator-package[0m
+              Load a custom generator package or directory Type: file. Repeat‐
+              able.
+
+       [1m--repeat-x[0m
+              Horizontal repetitions Default: 1. Type: integer. Range: 1..32.
+
+       [1m--repeat-y[0m
+              Vertical repetitions Default: 1. Type: integer. Range: 1..32.
+
+       [1m--colonies[0m
+              Colonies per tile Default: 1. Type: integer. Range: 0..32.
+
+       [1m--swarms[0m
+              Swarms per tile Default: 0. Type: integer. Range: 0..32.
+
+       [1m--help [22mShow this command's help (also -h) Default: false.
+
+       glob2 dev dump-tiled maps/FourSquares1.map.gz --repeat-x 2 --repeat-y 2
+
+       Outputs: Tiled-map diagnostics on stdout
+
+       Platform: all
+
+   [1mdev hive-worker[0m
+       Internal Hive JSON-lines worker
+
+       Usage: glob2 dev hive-worker [OPTIONS]
+
+       [1m--help [22mShow this command's help (also -h) Default: false.
+
+       glob2 dev hive-worker < requests.jsonl
+
+       Outputs:  Worker JSON on stdout; accepts stdin; internal subprocess in‐
+       terface
+
+       Platform: native subprocess (browser uses its dedicated worker)
+
+   [1minfo version[0m
+       Inspect the executable build
+
+       Usage: glob2 info version [OPTIONS]
+
+       [1m--format[0m
+              Output format Default: text. Allowed: text, json. Type: enum.
+
+       [1m--help [22mShow this command's help (also -h) Default: false.
+
+       glob2 info version
+
+       Outputs: Build, SDL, save and network versions
+
+       Platform: all
+
+   [1minfo sim-version[0m
+       Inspect the simulation identity
+
+       Usage: glob2 info sim-version [OPTIONS]
+
+       [1m--format[0m
+              Output format Default: text. Allowed: text, json. Type: enum.
+
+       [1m--help [22mShow this command's help (also -h) Default: false.
+
+       glob2 info sim-version --format json
+
+       Outputs: Existing simulation-version JSON or readable fields
+
+       Platform: all
+
+   [1minfo catalog[0m
+       Inspect AI, generator and job capabilities
+
+       Usage: glob2 info catalog [OPTIONS]
+
+       [1m--format[0m
+              Output format Default: text. Allowed: text, json. Type: enum.
+
+       [1m--data-dir[0m
+              Add an asset search directory (in order)  Type:  directory.  Re‐
+              peatable.
+
+       [1m--generator-package[0m
+              Load a custom generator package or directory Type: file. Repeat‐
+              able.
+
+       [1m--help [22mShow this command's help (also -h) Default: false.
+
+       glob2 info catalog --format json
+
+       Outputs: Existing headless catalog JSON or readable fields
+
+       Platform: all
+
+   [1minfo paths[0m
+       Inspect asset search paths
+
+       Usage: glob2 info paths [OPTIONS]
+
+       [1m--format[0m
+              Output format Default: text. Allowed: text, json. Type: enum.
+
+       [1m--data-dir[0m
+              Add  an  asset  search directory (in order) Type: directory. Re‐
+              peatable.
+
+       [1m--help [22mShow this command's help (also -h) Default: false.
+
+       glob2 info paths --data-dir ./data
+
+       Outputs: Ordered asset directories
+
+       Platform: all
+
+   [1mhelp[0m
+       Describe commands without loading game assets
+
+       Usage: glob2 help [COMMAND...] [OPTIONS]
+
+       [1m--format[0m
+              Output format Default: text. Allowed: text, json. Type: enum.
+
+       [1m--help [22mShow this command's help (also -h) Default: false.
+
+       glob2 help map generate --format json
+
+       Outputs: Text help or schema_version=1, cli_version=2 JSON
+
+       Platform: all
+
+   [1mcompletion[0m
+       Print a shell completion script
+
+       Usage: glob2 completion SHELL [OPTIONS]
+
+       [1m--help [22mShow this command's help (also -h) Default: false.
+
+       glob2 completion bash
+
+       Outputs: Bash, Zsh or Fish completion script
+
+       Platform: all
+
+[1mEXIT STATUS[0m
+       0 success or help; 2 invalid arguments or rejected input; 3 operational
+       failure.
+
+[1mSEE ALSO[0m
+       The project CLI guide: docs/tools/cli.md. Shell completion: glob2  com‐
+       pletion bash, zsh or fish.
+
+                                                                      [4mGLOB2[24m(6)

@@ -1,0 +1,880 @@
+[
+  {
+    "args": [
+      "map",
+      "generators",
+      "--data-dir",
+      "/home/bradley/.codex/worktrees/2d63/glob2"
+    ],
+    "exit": 0,
+    "stdout": "fingerprint (id 26, revision 5)\nold-town (id 31, revision 8)\nsymmetric-arena (id 15, revision 2)\nswamp (id 1, revision 5)\ntidal-flats (id 18, revision 7)\nriver (id 2, revision 5)\nisles (id 6, revision 4)\nring-world (id 16, revision 2)\namphitheatre (id 23, revision 4)\nshattered-coast (id 7, revision 6)\ncrater-lakes (id 4, revision 5)\nfjord-continent (id 12, revision 14)\nspider-web (id 20, revision 3)\nconcrete-islands (id 5, revision 3)\nwatershed (id 13, revision 2)\nmaze (id 11, revision 16)\nislands (id 3, revision 5)\nstone-highlands (id 14, revision 5)\nswitchbacks (id 24, revision 5)\ncity-states (id 17, revision 11)\ncanals (id 29, revision 8)\nsierpinski-gardens (id 49, revision 9)\nhilbert-river (id 50, revision 9)\nlava-shield (id 51, revision 6)\nhoneycomb-isle (id 53, revision 3)\nkarst-towers (id 54, revision 3)\nbajada (id 55, revision 2)\ncentral-quarry (id 56, revision 2)\nhidden-oasis (id 57, revision 2)\ndrowned-forest (id 67, revision 2)\nportage-lakes (id 65, revision 5)\norchard-commons (id 58, revision 4)\nlast-treeline (id 70, revision 4)\ngauntlet (id 59, revision 3)\nfaulted-city (id 64, revision 4)\ncomb (id 62, revision 5)\nencircled-kingdom (id 63, revision 3)\nbastion-keys (id 68, revision 2)\neven-ground (id 60, revision 3)\nmarchland (id 61, revision 3)\nwho-ate-the-map (id 66, revision 2)\nrugged-archipelago (id 8, revision 4)\nhungry-marches (id 69, revision 3)\ncontested-commons (id 9, revision 4)\nrain-shadow (id 27, revision 5)\neverglades (id 19, revision 3)\npolder (id 30, revision 6)\ncarousel (id 22, revision 3)\nold-growth (id 28, revision 5)\nanthill (id 32, revision 5)\ncoral (id 21, revision 2)\nemoji (id 34, revision 12)\nforts (id 35, revision 8)\nbraided-delta (id 36, revision 4)\nbreachable-highlands (id 37, revision 6)\nhedgerow-country (id 38, revision 8)\nglacis (id 39, revision 4)\nallotments (id 40, revision 3)\ncaravanserai (id 41, revision 4)\nbraided-river (id 42, revision 3)\ndrumlin-field (id 43, revision 2)\ncontinents (id 44, revision 4)\nsavannah (id 45, revision 3)\nhills (id 46, revision 8)\nrice-terraces (id 52, revision 4)\nlocust (id 47, revision 5)\nplantations (id 48, revision 4)\nuniform (id 0, revision 1, editor only)\n",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "map",
+      "generators",
+      "--data-dir",
+      "/home/bradley/.codex/worktrees/2d63/glob2",
+      "maze"
+    ],
+    "exit": 0,
+    "stdout": "maze (id 11, revision 16)\n  width=256  values: 64 128 256 512  search: 128 256 512\n  height=256  values: 64 128 256 512  search: 128 256 512\n  teams=4  values: 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16  search: 2 3 4 5 6 7 8\n  workers=4  values: 1 2 3 4 5 6 7 8  search: 3 4 5 6\n  cell-shape=2  values: 0(Squares) 1(Hexagons) 2(Random)  search: 0 1\n  cell-size=32  values: 24 32 40 48  search: 24 32 40\n  warp=0  values: 0 25 50 75 100  search: 0 25 50 75\n  channel-width=2  values: 1 2 3 4 5 6  search: 1 2 3\n  loopiness=5  values: 0 5 10 20 35 50  search: 5 10 20\n  wheat-amount=100  values: 0 25 50 75 100 125 150 175 200 225 250 275 300  search: 75 100 125 150\n  wood-amount=100  values: 0 25 50 75 100 125 150 175 200 225 250 275 300  search: 75 100 125 150\n  stone-amount=100  values: 0 25 50 75 100 125 150 175 200 225 250 275 300  search: 75 100 125 150\n  algae-amount=100  values: 0 25 50 75 100 125 150 175 200 225 250 275 300  search: 75 100 125 150\n  fruit-amount=100  values: 0 25 50 75 100 125 150 175 200 225 250 275 300  search: 75 100 125 150\n  sand-roads=1  values: 0 1  search: 1\n  dead-end-treasure=1  values: 0 1  search: 0 1\n",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "map",
+      "generate",
+      "--help"
+    ],
+    "exit": 0,
+    "stdout": "Globulation 2 \u2014 CLI 2\n\nGenerate a map at one exact seed\n\nUsage: glob2 map generate GENERATOR [OPTIONS]\n\nOptions:\n\nGeneral:\n  --seed <integer>\n    Map seed (unsigned 32-bit) (default: 1) [0..4294967295]\n  --set <assignment>\n    Generator control KEY=VALUE; CLI overrides config [repeatable]\n  --width <integer>\n    Map width in tiles; registered values only [1..512]\n  --height <integer>\n    Map height in tiles; registered values only [1..512]\n  --teams <integer>\n    Number of colonies; registered values only [1..32]\n  --workers <integer>\n    Initial workers per colony; registered values only [0..2147483647]\n  --config <file>\n    KEY=VALUE configuration; CLI settings override it\n  --map-image <file>\n    Export categorical terrain PNG\n  --export-generator-package <file>\n    Export selected custom generator package\n  --help\n    Show this command's help (also -h) (default: false)\n\nOutputs:\n  --preview <file>\n    Overview PNG output\n  --preview-size <integer>\n    Longest preview side in pixels [128..4096] [units: pixels]\n  --preview-scale <2|4|8>\n    Scale retained thumbnail pixels (default: 2)\n  --output <file>\n    Playable gzip map output; .gz is appended\n  --report-file <file>\n    Detailed map JSON report\n\nAssets:\n  --data-dir <directory>\n    Add an asset search directory (in order) [repeatable]\n  --generator-package <file>\n    Load a custom generator package or directory [repeatable]\n\nConstraints:\n  Scalar options cannot repeat; switches and their --no- counterparts conflict.\n  Use -- before positional filenames starting with '-'.\n  At least one output is required\n  Registered generator controls constrain tile sizes and values\n  A failed layout never silently retries with another seed\n  Choose at most one: --preview-scale --preview-size\n\nOutputs: Requested .map.gz, overview PNG, categorical PNG and JSON report\nPlatform: all\n\nExamples:\n  glob2 map generate river --seed 713 --width 128 --height 128 --teams 2 --output artifacts/river.map --preview artifacts/river.png\n\nExit codes: 0 success/help; 2 invalid arguments or rejected input; 3 operational failure.\n",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "--help"
+    ],
+    "exit": 0,
+    "stdout": "Globulation 2 \u2014 CLI 2\n\nUsage: glob2 COMMAND [OPTIONS]\nRun glob2 without arguments to launch the game. Supported launch URLs also work.\n\nCommands:\n  play  Launch the graphical game\n  replay  Watch a recorded replay\n  map generate  Generate a map at one exact seed\n  map study  Run a structured map-generation study\n  map generators  List generators or inspect controls\n  map preview  Preview a map or save without stepping simulation\n  map render  Render the complete game view\n  map import-image  Import a categorical terrain PNG\n  map export-image  Export categorical terrain and colony markers\n  map inspect-package  Inspect and canonicalize a generator package\n  map validate-set  Validate a terrain/resource set\n  game run  Run or continue a structured headless game\n  game repeat  Repeat a saved game headlessly\n  match verify  Verify a multiplayer match record\n  online join  Join an invite link or code\n  online play-map  Play a catalog map locally\n  online host-map  Host a catalog map online\n  online turn-client  Play a relay assignment headlessly\n  ai check  Validate JavaScript AI startup, metadata and callbacks\n  script check  Compile a JavaScript map script\n  script attach  Attach a JavaScript map script\n  assets compose-buildings  Compose and validate building packages\n  assets render-skin  Bake transparent colony sprites\n  assets skin-info  Inspect native skin exporter capabilities\n  dev random-games  Exercise random AI games\n  dev stress-maps  Generate random maps indefinitely\n  dev textshots  Capture rendered translation texts\n  dev dump-resources  Dump map resource diagnostics\n  dev dump-wheat  Dump AI wheat-protection plans\n  dev dump-tiled  Dump a repeated map\n  dev hive-worker  Internal Hive JSON-lines worker\n  info version  Inspect the executable build\n  info sim-version  Inspect the simulation identity\n  info catalog  Inspect AI, generator and job capabilities\n  info paths  Inspect asset search paths\n  help  Describe commands without loading game assets\n  completion  Print a shell completion script\n\nUse glob2 COMMAND --help for complete options and examples.\nUse glob2 help --format json for the machine-readable command tree.\n\nExamples:\n  glob2 play --window-size 1280x720\n  glob2 map generators\n  glob2 map generate river --seed 713 --output artifacts/river.map\n  glob2 game run --help\n\nExit codes: 0 success/help; 2 invalid arguments or rejected input; 3 operational failure.\n",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "map",
+      "generate",
+      "--data-dir",
+      "/home/bradley/.codex/worktrees/2d63/glob2",
+      "maze",
+      "--seed",
+      "7",
+      "--width",
+      "128",
+      "--height",
+      "128",
+      "--teams",
+      "4",
+      "--set",
+      "cell-shape=0",
+      "--preview",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/cli.png",
+      "--output",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/maze.map.gz",
+      "--report-file",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/maze.json"
+    ],
+    "exit": 0,
+    "stdout": "maze revision 16 seed 7 [complete]: \nPreview: /home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/cli.png (128x128 tiles)\nMap: /home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/maze.map.gz\nMap report: /home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/maze.json\n",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "map",
+      "generate",
+      "--data-dir",
+      "/home/bradley/.codex/worktrees/2d63/glob2",
+      "maze",
+      "--seed",
+      "7",
+      "--width",
+      "128",
+      "--set",
+      "cell-shape=0",
+      "--config",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/maze.cfg",
+      "--preview",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/config.png"
+    ],
+    "exit": 0,
+    "stdout": "maze revision 16 seed 7 [complete]: \nPreview: /home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/config.png (128x128 tiles)\n",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "map",
+      "preview",
+      "--data-dir",
+      "/home/bradley/.codex/worktrees/2d63/glob2",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/maze.map.gz",
+      "--output",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/loaded.png"
+    ],
+    "exit": 0,
+    "stdout": "Preview: /home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/loaded.png (128x128 tiles)\n",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "map",
+      "preview",
+      "--data-dir",
+      "/home/bradley/.codex/worktrees/2d63/glob2",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/maze.map.gz",
+      "--preview",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/loaded.png"
+    ],
+    "exit": 0,
+    "stdout": "Preview: /home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/loaded.png (128x128 tiles)\n",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "map",
+      "preview",
+      "--data-dir",
+      "/home/bradley/.codex/worktrees/2d63/glob2",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/maze.map.gz",
+      "--output",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/loaded.png",
+      "--preview",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/cli.png"
+    ],
+    "exit": 2,
+    "stdout": "",
+    "stderr": "glob2: Choose at most one of --output --preview\n"
+  },
+  {
+    "args": [
+      "map",
+      "export-image",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/maze.map.gz",
+      "--output",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/import-controls.png"
+    ],
+    "exit": 0,
+    "stdout": "Map image: /home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/import-controls.png\n",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "map",
+      "import-image",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/import-controls.png",
+      "--width",
+      "128",
+      "--height",
+      "128",
+      "--teams",
+      "4",
+      "--data-dir",
+      "/home/bradley/.codex/worktrees/2d63/glob2",
+      "--output",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/imported.map.gz"
+    ],
+    "exit": 0,
+    "stdout": "Image import: {\"seam_width\":4,\"seam_terrain_changes\":140,\"seam_shore_changes\":0,\"seam_resource_changes\":0,\"resource_seam_fallback\":true,\"markers\":4,\"ignored_markers\":0,\"terrain_changes\":140,\"cleared_resources\":0,\"dropped_resources\":38}\nMap: /home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/imported.map.gz\n",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "map",
+      "import-image",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/import-controls.png",
+      "--set",
+      "width=128",
+      "--set",
+      "height=128",
+      "--set",
+      "teams=4",
+      "--data-dir",
+      "/home/bradley/.codex/worktrees/2d63/glob2",
+      "--output",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/imported.map.gz"
+    ],
+    "exit": 0,
+    "stdout": "Image import: {\"seam_width\":4,\"seam_terrain_changes\":140,\"seam_shore_changes\":0,\"seam_resource_changes\":0,\"resource_seam_fallback\":true,\"markers\":4,\"ignored_markers\":0,\"terrain_changes\":140,\"cleared_resources\":0,\"dropped_resources\":38}\nMap: /home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/imported.map.gz\n",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "script",
+      "attach",
+      "script-input.map.gz",
+      "/home/bradley/.codex/worktrees/2d63/glob2/examples/javascript/scenario.js",
+      "/tmp/glob2-map-cli-vlxibjex/scripted.map.gz",
+      "--data-dir",
+      "/tmp/glob2-map-cli-vlxibjex/assets-only",
+      "--data-dir",
+      "/home/bradley/.codex/worktrees/2d63/glob2"
+    ],
+    "exit": 0,
+    "stdout": "Wrote JavaScript map: /tmp/glob2-map-cli-vlxibjex/scripted.map.gz\n",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "map",
+      "preview",
+      "--data-dir",
+      "/home/bradley/.codex/worktrees/2d63/glob2",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/maze.map.gz",
+      "--output",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/scale-2.png",
+      "--preview-scale",
+      "2"
+    ],
+    "exit": 0,
+    "stdout": "Preview: /home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/scale-2.png (128x128 tiles)\n",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "map",
+      "preview",
+      "--data-dir",
+      "/home/bradley/.codex/worktrees/2d63/glob2",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/maze.map.gz",
+      "--output",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/size-256.png",
+      "--preview-size",
+      "256"
+    ],
+    "exit": 0,
+    "stdout": "Preview: /home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/size-256.png (128x128 tiles)\n",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "map",
+      "preview",
+      "--data-dir",
+      "/home/bradley/.codex/worktrees/2d63/glob2",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/maze.map.gz",
+      "--output",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/scale-4.png",
+      "--preview-scale",
+      "4"
+    ],
+    "exit": 0,
+    "stdout": "Preview: /home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/scale-4.png (128x128 tiles)\n",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "map",
+      "preview",
+      "--data-dir",
+      "/home/bradley/.codex/worktrees/2d63/glob2",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/maze.map.gz",
+      "--output",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/size-512.png",
+      "--preview-size",
+      "512"
+    ],
+    "exit": 0,
+    "stdout": "Preview: /home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/size-512.png (128x128 tiles)\n",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "map",
+      "preview",
+      "--data-dir",
+      "/home/bradley/.codex/worktrees/2d63/glob2",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/maze.map.gz",
+      "--output",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/scale-8.png",
+      "--preview-scale",
+      "8"
+    ],
+    "exit": 0,
+    "stdout": "Preview: /home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/scale-8.png (128x128 tiles)\n",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "map",
+      "preview",
+      "--data-dir",
+      "/home/bradley/.codex/worktrees/2d63/glob2",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/maze.map.gz",
+      "--output",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/size-1024.png",
+      "--preview-size",
+      "1024"
+    ],
+    "exit": 0,
+    "stdout": "Preview: /home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/size-1024.png (128x128 tiles)\n",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "map",
+      "preview",
+      "--data-dir",
+      "/home/bradley/.codex/worktrees/2d63/glob2",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/maze.map.gz",
+      "--output",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/loaded.png",
+      "--preview-size",
+      "128"
+    ],
+    "exit": 0,
+    "stdout": "Preview: /home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/loaded.png (128x128 tiles)\n",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "map",
+      "preview",
+      "--data-dir",
+      "/home/bradley/.codex/worktrees/2d63/glob2",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/maze.map.gz",
+      "--output",
+      "relative.png"
+    ],
+    "exit": 0,
+    "stdout": "Preview: relative.png (128x128 tiles)\n",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "map",
+      "preview",
+      "--data-dir",
+      "/home/bradley/.codex/worktrees/2d63/glob2",
+      "/home/bradley/.codex/worktrees/2d63/glob2/test/fixtures/team-stats/version88.game.gz",
+      "--output",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/team-stats.png"
+    ],
+    "exit": 0,
+    "stdout": "Preview: /home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/team-stats.png (32x32 tiles)\n",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "map",
+      "preview",
+      "--data-dir",
+      "/home/bradley/.codex/worktrees/2d63/glob2",
+      "/home/bradley/.codex/worktrees/2d63/glob2/test/fixtures/wrapped-building/reproducer.game.gz",
+      "--output",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/wrapped-building.png"
+    ],
+    "exit": 0,
+    "stdout": "Preview: /home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/wrapped-building.png (32x32 tiles)\n",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "map",
+      "preview",
+      "--data-dir",
+      "/home/bradley/.codex/worktrees/2d63/glob2",
+      "/home/bradley/.codex/worktrees/2d63/glob2/test/fixtures/entering-explorer/reproducer.game.gz",
+      "--output",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/entering-explorer.png"
+    ],
+    "exit": 0,
+    "stdout": "Preview: /home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/entering-explorer.png (32x32 tiles)\n",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "map",
+      "generate",
+      "--data-dir",
+      "/home/bradley/.codex/worktrees/2d63/glob2",
+      "maze",
+      "--seed",
+      "7",
+      "--width",
+      "256",
+      "--height",
+      "128",
+      "--preview",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/rectangular.png"
+    ],
+    "exit": 0,
+    "stdout": "maze revision 16 seed 7 [complete]: \nPreview: /home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/rectangular.png (256x128 tiles)\n",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "map",
+      "generate",
+      "--data-dir",
+      "/home/bradley/.codex/worktrees/2d63/glob2",
+      "maze",
+      "--seed",
+      "7",
+      "--width",
+      "256",
+      "--height",
+      "128",
+      "--preview",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/rectangular-4.png",
+      "--preview-scale",
+      "4"
+    ],
+    "exit": 0,
+    "stdout": "maze revision 16 seed 7 [complete]: \nPreview: /home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/rectangular-4.png (256x128 tiles)\n",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "map",
+      "generate",
+      "--data-dir",
+      "/home/bradley/.codex/worktrees/2d63/glob2",
+      "maze",
+      "--seed",
+      "7",
+      "--width",
+      "256",
+      "--height",
+      "128",
+      "--preview",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/rectangular-8.png",
+      "--preview-scale",
+      "8"
+    ],
+    "exit": 0,
+    "stdout": "maze revision 16 seed 7 [complete]: \nPreview: /home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/rectangular-8.png (256x128 tiles)\n",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "map",
+      "preview",
+      "--data-dir",
+      "/home/bradley/.codex/worktrees/2d63/glob2",
+      "/home/bradley/.codex/worktrees/2d63/glob2/maps/A_big_pond.map.gz",
+      "--output",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/premade.png"
+    ],
+    "exit": 0,
+    "stdout": "Preview: /home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/premade.png (128x128 tiles)\n",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "map",
+      "preview",
+      "--data-dir",
+      "/home/bradley/.codex/worktrees/2d63/glob2",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/maze.map.gz",
+      "--output",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/cli.png",
+      "--preview-scale",
+      "3"
+    ],
+    "exit": 2,
+    "stdout": "",
+    "stderr": "glob2: --preview-scale expects 2|4|8\n"
+  },
+  {
+    "args": [
+      "map",
+      "preview",
+      "--data-dir",
+      "/home/bradley/.codex/worktrees/2d63/glob2",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/maze.map.gz",
+      "--output",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/cli.png",
+      "--preview-scale",
+      "0"
+    ],
+    "exit": 2,
+    "stdout": "",
+    "stderr": "glob2: --preview-scale expects 2|4|8\n"
+  },
+  {
+    "args": [
+      "map",
+      "preview",
+      "--data-dir",
+      "/home/bradley/.codex/worktrees/2d63/glob2",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/maze.map.gz",
+      "--output",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/cli.png",
+      "--preview-scale",
+      "16"
+    ],
+    "exit": 2,
+    "stdout": "",
+    "stderr": "glob2: --preview-scale expects 2|4|8\n"
+  },
+  {
+    "args": [
+      "map",
+      "preview",
+      "--data-dir",
+      "/home/bradley/.codex/worktrees/2d63/glob2",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/maze.map.gz",
+      "--output",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/cli.png",
+      "--preview-scale",
+      "4",
+      "--preview-size",
+      "512"
+    ],
+    "exit": 2,
+    "stdout": "",
+    "stderr": "glob2: Choose at most one of --preview-scale --preview-size\n"
+  },
+  {
+    "args": [
+      "map",
+      "generate",
+      "--data-dir",
+      "/home/bradley/.codex/worktrees/2d63/glob2",
+      "maze",
+      "--report-file",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/unused.json",
+      "--preview-scale",
+      "2"
+    ],
+    "exit": 2,
+    "stdout": "",
+    "stderr": "glob2: Preview size/scale requires a PNG output\n"
+  },
+  {
+    "args": [
+      "map",
+      "preview",
+      "--data-dir",
+      "/home/bradley/.codex/worktrees/2d63/glob2",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/maze.map.gz",
+      "--output",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/cli.png",
+      "--preview-scale"
+    ],
+    "exit": 2,
+    "stdout": "",
+    "stderr": "glob2: Missing value for --preview-scale; use --preview-scale=VALUE for a value starting with '-'\n"
+  },
+  {
+    "args": [
+      "map",
+      "generate",
+      "--data-dir",
+      "/home/bradley/.codex/worktrees/2d63/glob2"
+    ],
+    "exit": 2,
+    "stdout": "",
+    "stderr": "glob2: Expected GENERATOR; use glob2 map generate --help\n"
+  },
+  {
+    "args": [
+      "map",
+      "generate",
+      "--data-dir",
+      "/home/bradley/.codex/worktrees/2d63/glob2",
+      "unknown",
+      "--preview",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/cli.png"
+    ],
+    "exit": 2,
+    "stdout": "",
+    "stderr": "Map command: Unknown generator: unknown; use glob2 map generators\n"
+  },
+  {
+    "args": [
+      "map",
+      "generate",
+      "--data-dir",
+      "/home/bradley/.codex/worktrees/2d63/glob2",
+      "maze"
+    ],
+    "exit": 2,
+    "stdout": "",
+    "stderr": "glob2: Supply an output: --output, --preview, --report-file, or --map-image\n"
+  },
+  {
+    "args": [
+      "map",
+      "generate",
+      "--data-dir",
+      "/home/bradley/.codex/worktrees/2d63/glob2",
+      "maze",
+      "--seed"
+    ],
+    "exit": 2,
+    "stdout": "",
+    "stderr": "glob2: Missing value for --seed; use --seed=VALUE for a value starting with '-'\n"
+  },
+  {
+    "args": [
+      "map",
+      "generate",
+      "--data-dir",
+      "/home/bradley/.codex/worktrees/2d63/glob2",
+      "maze",
+      "--seed",
+      "4294967296",
+      "--preview",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/cli.png"
+    ],
+    "exit": 2,
+    "stdout": "",
+    "stderr": "glob2: --seed expects an integer in 0..4294967295\n"
+  },
+  {
+    "args": [
+      "map",
+      "generate",
+      "--data-dir",
+      "/home/bradley/.codex/worktrees/2d63/glob2",
+      "maze",
+      "--seed",
+      "-1",
+      "--preview",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/cli.png"
+    ],
+    "exit": 2,
+    "stdout": "",
+    "stderr": "glob2: --seed expects an integer in 0..4294967295\n"
+  },
+  {
+    "args": [
+      "map",
+      "generate",
+      "--data-dir",
+      "/home/bradley/.codex/worktrees/2d63/glob2",
+      "maze",
+      "--width",
+      "127",
+      "--preview",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/cli.png"
+    ],
+    "exit": 2,
+    "stdout": "",
+    "stderr": "Map command: Invalid value for width: 127; use glob2 map generators maze\n"
+  },
+  {
+    "args": [
+      "map",
+      "generate",
+      "--data-dir",
+      "/home/bradley/.codex/worktrees/2d63/glob2",
+      "maze",
+      "--set",
+      "unknown=1",
+      "--preview",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/cli.png"
+    ],
+    "exit": 2,
+    "stdout": "",
+    "stderr": "Map command: Unknown setting: unknown\n"
+  },
+  {
+    "args": [
+      "map",
+      "generate",
+      "--data-dir",
+      "/home/bradley/.codex/worktrees/2d63/glob2",
+      "maze",
+      "--set",
+      "cell-shape=99",
+      "--preview",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/cli.png"
+    ],
+    "exit": 2,
+    "stdout": "",
+    "stderr": "Map command: Invalid value for cell-shape: 99; use glob2 map generators maze\n"
+  },
+  {
+    "args": [
+      "map",
+      "generate",
+      "--data-dir",
+      "/home/bradley/.codex/worktrees/2d63/glob2",
+      "maze",
+      "--set",
+      "cell-shape=1junk",
+      "--preview",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/cli.png"
+    ],
+    "exit": 2,
+    "stdout": "",
+    "stderr": "Map command: Expected an unsigned decimal integer: 1junk\n"
+  },
+  {
+    "args": [
+      "map",
+      "generate",
+      "--data-dir",
+      "/home/bradley/.codex/worktrees/2d63/glob2",
+      "maze",
+      "--set",
+      "broken",
+      "--preview",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/cli.png"
+    ],
+    "exit": 2,
+    "stdout": "",
+    "stderr": "glob2: --set expects KEY=VALUE\n"
+  },
+  {
+    "args": [
+      "map",
+      "generate",
+      "--data-dir",
+      "/home/bradley/.codex/worktrees/2d63/glob2",
+      "maze",
+      "--output",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/cli.png",
+      "--preview",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/cli.png"
+    ],
+    "exit": 2,
+    "stdout": "",
+    "stderr": "Map command: Input and output paths must be distinct\n"
+  },
+  {
+    "args": [
+      "map",
+      "generate",
+      "--data-dir",
+      "/home/bradley/.codex/worktrees/2d63/glob2",
+      "maze",
+      "--output",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/maze.map.gz",
+      "--preview-size",
+      "256"
+    ],
+    "exit": 2,
+    "stdout": "",
+    "stderr": "glob2: Preview size/scale requires a PNG output\n"
+  },
+  {
+    "args": [
+      "map",
+      "generate",
+      "--data-dir",
+      "/home/bradley/.codex/worktrees/2d63/glob2",
+      "maze",
+      "--config",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/missing.cfg",
+      "--preview",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/cli.png"
+    ],
+    "exit": 3,
+    "stdout": "",
+    "stderr": "Map command: Cannot read config: /home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/missing.cfg\n"
+  },
+  {
+    "args": [
+      "map",
+      "preview",
+      "--data-dir",
+      "/home/bradley/.codex/worktrees/2d63/glob2",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/missing.game",
+      "--output",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/cli.png"
+    ],
+    "exit": 3,
+    "stdout": "",
+    "stderr": "Map command: Cannot load map/save: /home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/missing.game\n"
+  },
+  {
+    "args": [
+      "map",
+      "preview",
+      "--data-dir",
+      "/home/bradley/.codex/worktrees/2d63/glob2",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/maze.map.gz",
+      "--output",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/maze.map.gz"
+    ],
+    "exit": 2,
+    "stdout": "",
+    "stderr": "Map command: Input and output paths must be distinct\n"
+  },
+  {
+    "args": [
+      "map",
+      "preview",
+      "--data-dir",
+      "/home/bradley/.codex/worktrees/2d63/glob2",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/maze.map.gz",
+      "--output",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/cli.png",
+      "--overlay",
+      "unknown"
+    ],
+    "exit": 2,
+    "stdout": "",
+    "stderr": "glob2: Unknown argument '--overlay'; use glob2 help map preview\n"
+  },
+  {
+    "args": [
+      "map",
+      "preview",
+      "--data-dir",
+      "/home/bradley/.codex/worktrees/2d63/glob2",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/maze.map.gz",
+      "--output",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/cli.png",
+      "--preview-size",
+      "0"
+    ],
+    "exit": 2,
+    "stdout": "",
+    "stderr": "glob2: --preview-size expects an integer in 128..4096\n"
+  },
+  {
+    "args": [
+      "map",
+      "preview",
+      "--data-dir",
+      "/home/bradley/.codex/worktrees/2d63/glob2",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/maze.map.gz",
+      "--output",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/cli.png",
+      "--preview-size",
+      "4294967295"
+    ],
+    "exit": 2,
+    "stdout": "",
+    "stderr": "glob2: --preview-size expects an integer in 128..4096\n"
+  },
+  {
+    "args": [
+      "map",
+      "preview",
+      "--data-dir",
+      "/home/bradley/.codex/worktrees/2d63/glob2",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/maze.map.gz",
+      "--output",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/cli.png",
+      "--seed",
+      "7"
+    ],
+    "exit": 2,
+    "stdout": "",
+    "stderr": "glob2: Unknown argument '--seed'; use glob2 help map preview\n"
+  },
+  {
+    "args": [
+      "map",
+      "preview",
+      "--data-dir",
+      "/home/bradley/.codex/worktrees/2d63/glob2",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/maze.map.gz",
+      "--output",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli"
+    ],
+    "exit": 3,
+    "stdout": "",
+    "stderr": "Map command: Cannot write PNG /home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli: Couldn't open /home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli: Is a directory\n"
+  },
+  {
+    "args": [
+      "map",
+      "generate",
+      "--data-dir",
+      "/home/bradley/.codex/worktrees/2d63/glob2",
+      "maze",
+      "--config",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/invalid.cfg",
+      "--preview",
+      "/home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/cli.png"
+    ],
+    "exit": 3,
+    "stdout": "",
+    "stderr": "Map command: /home/bradley/.codex/worktrees/2d63/glob2/artifacts/map-cli/invalid.cfg:2: Expected key=value: invalid line\n"
+  }
+]
