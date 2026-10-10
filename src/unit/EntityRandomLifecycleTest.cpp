@@ -26,12 +26,15 @@ std::string save(Game& game, bool text = false, bool map = false)
 }
 bool load(Game& game, const std::string& bytes, bool text = false)
 {
-    auto* backend = new GAGCore::MemoryStreamBackend(bytes.data(), bytes.size());
+    auto backend = std::make_unique<GAGCore::MemoryStreamBackend>(bytes.data(), bytes.size());
     backend->seekFromStart(0);
-    std::unique_ptr<GAGCore::InputStream> input(text
-        ? static_cast<GAGCore::InputStream*>(new GAGCore::TextInputStream(backend))
-        : static_cast<GAGCore::InputStream*>(new GAGCore::BinaryInputStream(backend)));
-    return game.load(input.get());
+    if (text) {
+        // Text input parses immediately and does not own its source backend.
+        GAGCore::TextInputStream input(backend.get());
+        return game.load(&input);
+    }
+    GAGCore::BinaryInputStream input(backend.release());
+    return game.load(&input);
 }
 }
 
