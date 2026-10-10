@@ -276,6 +276,9 @@ TEST_CASE("capture settlement cannot escape borrowed aliases or infer unknown dr
     auto token=GradientCpuCapture::takeSettlement(record);REQUIRE(bool(token));CHECK_FALSE(record);
     CHECK_FALSE(weak.expired());CHECK(openCLProbeBytes()>baseline);
     token->addObservedCpu(1000,true);
+    const auto afterCleanup=token->cleanup();CHECK(weak.expired());
+    CHECK(openCLProbeBytes()>baseline);CHECK(fixture.policy->metrics().probeCpuNs==0);
+    CHECK(token->cleanup().optionalCpuNs==afterCleanup.optionalCpuNs);
     CHECK_FALSE(token->settle({1000,10000,2000,100000000,true,true,true}));
     CHECK(weak.expired());CHECK(openCLProbeBytes()==baseline);
     CHECK(fixture.policy->metrics().probeCpuNs>=fixture.input.reservedCpuNs);

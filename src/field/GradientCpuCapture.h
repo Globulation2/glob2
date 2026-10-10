@@ -210,17 +210,22 @@ public:
                 totals.clockValid=false;totals.requiresFullReservedCharge=true;++totals.invalidClocks;
             } else totals.optionalCpuNs+=ns;
         }
-        bool settle(CpuSavingPolicy::ProbeOutcome outcome,
-                    CaptureSettlementAuthorization authorization={}) noexcept {
-            if(!policy)return false;
+        Receipt cleanup() noexcept {
+            if(!record)return totals;
             const auto start=glob2::threadCpuNs();
             const bool sameProducer=std::this_thread::get_id()==producer;
-            // Record cannot cancel here: this token retains its lease and
-            // admission while arrays, callback owner and holder are destroyed.
+            // Retain policy/ticket/global slot and the lease while the outer
+            // complete-cost envelope observes actual captured-storage cleanup.
             record.reset();
             const auto end=glob2::threadCpuNs();
             addObservedCpu(start && end && end>=start?end-start:0,
                 sameProducer && start && end && end>=start);
+            return totals;
+        }
+        bool settle(CpuSavingPolicy::ProbeOutcome outcome,
+                    CaptureSettlementAuthorization authorization={}) noexcept {
+            if(!policy)return false;
+            cleanup();
             const bool complete=authorization.permitsInference() && outcome.clockValid &&
                 totals.clockValid && !totals.requiresFullReservedCharge &&
                 outcome.actualProbeCpuNs>=totals.optionalCpuNs;
