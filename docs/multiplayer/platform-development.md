@@ -100,6 +100,8 @@ The external `/theme.js` bootstrap runs before paint. HTTPS production sites sha
 `glob2-theme` on `glob2online.com` (one year, Secure, SameSite=Lax, Path=/), including
 an explicit `system` choice. It migrates the previous localStorage key after successful
 persistence. Localhost and unrelated previews use origin-local storage. Returning to
-a tab or restoring a page re-reads the preference; blocked persistence preserves a
+a tab, restoring a page or navigating within the SPA re-reads the preference;
+the app's thin `useThemeNavigation` adapter calls the shared controller's `refresh`
+method after route changes. Blocked persistence preserves a
 usable in-memory choice. Server pages use the same package bootstrap and rebased CSS
 under `/signin/assets/`, allowed by their same-origin CSP.

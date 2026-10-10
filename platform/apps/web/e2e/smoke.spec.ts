@@ -394,6 +394,30 @@ test('the theme toggle cycles system, light and dark and is remembered', async (
   await expect(toggle).toHaveAccessibleName(/same as this device/);
 });
 
+test('SPA navigation re-reads a preference changed by another page', async ({ page }) => {
+  await page.emulateMedia({ colorScheme: 'light' });
+  await page.goto('/leaderboard');
+  await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(241, 241, 225)');
+  const selectRoute = async (href: string) => {
+    const mobile = (page.viewportSize()?.width ?? 1280) < 900;
+    if (mobile) await page.getByRole('button', { name: 'Open navigation', exact: true }).click();
+    await page
+      .locator(mobile ? '.drawer-content' : '.app-sidebar')
+      .locator(`nav a[href="${href}"]`)
+      .click();
+  };
+  // Same-origin writes do not dispatch a storage event in this document.
+  await inPage(page, "localStorage.setItem('glob2-theme-v2', 'dark')");
+  await selectRoute('/maps');
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+  await inPage(page, "localStorage.setItem('glob2-theme-v2', 'light')");
+  await selectRoute('/leaderboard');
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
+  await inPage(page, "localStorage.setItem('glob2-theme-v2', 'dark')");
+  await page.goBack();
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+});
+
 test('keyboard: skip link first, visible focus, focus moves to new pages', async ({
   page,
 }, info) => {
