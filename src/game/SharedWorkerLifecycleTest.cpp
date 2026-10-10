@@ -315,3 +315,112 @@ TEST_CASE("AI and pending gradients consume the presentation union without anoth
     CHECK(frame.world.terrain==observer->observed.terrain);
     CHECK(game.snapshots().metrics.captures==captures+1);
 }
+
+
+TEST_CASE("reduced saved AI rosters retire trailing controllers and preserve continuation" * doctest::test_suite("SharedWorkerLifecycle"))
+{
+    glob2test::HeadlessGlobals globals;
+    GameGUI source;
+    GameHeader header;
+    header.setNumberOfPlayers(4);header.setRandomSeed(123456);
+    header.setAIOrderDelay(2);header.getWinningConditions().clear();
+    for(int seat=0;seat<4;++seat)
+        header.getBasePlayer(seat)=BasePlayer(seat,"Maxima",seat,
+            BasePlayer::playerTypeFromImplementationID(AI::MAXIMA));
+    auto mapHeader=Engine::loadMapHeader("maps/balanced.map");
+    REQUIRE(mapHeader.getNumberOfTeams()>=4);
+    REQUIRE(source.loadFromHeaders(mapHeader,header,true,true));
+    const std::array<unsigned,4> allSeats{0,1,2,3};
+    const std::array<unsigned,2> keptSeats{0,1};
+    // Use actual shared AI admission/deadlines, including canceled future work.
+    const auto step=[](Game& game,std::span<const unsigned> seats) {
+        std::vector<std::string> wires;
+        for(auto& [seat,order]:game.prepareAIOrders(seats,false))
+        {
+            REQUIRE(seat<unsigned(game.gameHeader.getNumberOfPlayers()));
+            order->sender=int(seat);
+            order=game.validateAIOrder(std::move(order),seat);
+            std::string wire{char(seat),char(order->getOrderType())};
+            if(order->getDataLength())
+                wire.append(reinterpret_cast<const char*>(order->getData()),order->getDataLength());
+            wire.push_back(char(game.executeOrder(order,0)));
+            wires.push_back(std::move(wire));
+        }
+        game.syncStep(0);game.drainAI();
+        return wires;
+    };
+    const auto bytes=[](auto save) {
+        auto* memory=new GAGCore::MemoryStreamBackend;
+        GAGCore::BinaryOutputStream output(memory);
+        save(output);output.flush();
+        return memory->takeContents();
+    };
+    const auto saveGame=[&](GameGUI& game) {
+        return bytes([&](auto& out){game.save(&out,"roster continuation");});
+    };
+    for(int tick=0;tick<8;++tick)step(source.game,allSeats);
+    const auto fourPlayerSave=saveGame(source);
+    GameGUI reduced;
+    GAGCore::BinaryInputStream fourReader(new GAGCore::MemoryStreamBackend(fourPlayerSave.data(),fourPlayerSave.size()));
+    REQUIRE(reduced.load(&fourReader));
+    REQUIRE(reduced.game.mapHeader.getIsSavedGame());
+    REQUIRE(reduced.game.gameHeader.getNumberOfPlayers()==4);
+    for(int seat=0;seat<4;++seat)
+    {
+        REQUIRE(reduced.game.players[seat]);REQUIRE(reduced.game.players[seat]->ai);
+        REQUIRE(reduced.game.players[seat]->ai->implementationID==AI::MAXIMA);
+    }
+    step(reduced.game,allSeats);
+    const auto playerBytes=[&](Game& game,int seat) {
+        return bytes([&](auto& out){game.players[seat]->save(&out);});
+    };
+    // Unit/building saves include their cached gameplay values, RNG streams and
+    // ordered cross references. Roster/team membership is intentionally separate.
+    const auto entityBytes=[&](Game& game) {
+        return bytes([&](auto& out) {
+            for(int team=0;team<game.mapHeader.getNumberOfTeams();++team)
+            {
+                for(int slot=0;slot<Unit::MAX_COUNT;++slot)
+                    if(auto* unit=game.teams[team]->myUnits[slot])
+                    {unit->save(&out);unit->saveCrossRef(&out);}
+                for(int slot=0;slot<Building::MAX_COUNT;++slot)
+                    if(auto* building=game.teams[team]->myBuildings[slot])
+                    {building->save(&out);building->saveCrossRef(&out);}
+            }
+        });
+    };
+    Player* first=reduced.game.players[0];Player* second=reduced.game.players[1];
+    const auto firstState=playerBytes(reduced.game,0),secondState=playerBytes(reduced.game,1);
+    const auto entities=entityBytes(reduced.game);
+    const auto ownerRandom=reduced.game.map.worldRandom.streams;
+    const bool ownerInitialized=reduced.game.map.worldRandom.initialized;
+    const auto legacyRandom=reduced.game.syncRandom;
+    GameHeader smaller=reduced.game.gameHeader;smaller.setNumberOfPlayers(2);
+    reduced.game.setGameHeader(smaller,true);
+    CHECK(reduced.game.players[0]==first);CHECK(reduced.game.players[1]==second);
+    for(int seat=2;seat<Team::MAX_COUNT;++seat)CHECK(reduced.game.players[seat]==nullptr);
+    CHECK(playerBytes(reduced.game,0)==firstState);CHECK(playerBytes(reduced.game,1)==secondState);
+    CHECK(entityBytes(reduced.game)==entities);
+    CHECK(reduced.game.map.worldRandom.streams==ownerRandom);
+    CHECK(reduced.game.map.worldRandom.initialized==ownerInitialized);
+    CHECK(reduced.game.syncRandom==legacyRandom);
+    CHECK(reduced.game.teams[2]->numberOfPlayer==0);CHECK(reduced.game.teams[2]->playersMask==0);
+    CHECK(reduced.game.teams[3]->numberOfPlayer==0);CHECK(reduced.game.teams[3]->playersMask==0);
+    const auto checkpoint=saveGame(reduced);
+    GameGUI restored;
+    GAGCore::BinaryInputStream reader(new GAGCore::MemoryStreamBackend(checkpoint.data(),checkpoint.size()));
+    REQUIRE(restored.load(&reader));
+    REQUIRE(restored.game.gameHeader.getNumberOfPlayers()==2);
+    for(int seat=2;seat<Team::MAX_COUNT;++seat)CHECK(restored.game.players[seat]==nullptr);
+    // Both sides loaded the current four-player save before reduction, so their
+    // complete raw heavy checksums include the same format header; no normalization.
+    for(int tick=0;tick<24;++tick)
+    {
+        CHECK(step(reduced.game,keptSeats)==step(restored.game,keptSeats));
+        CHECK(reduced.game.checkSum(nullptr,nullptr,nullptr,true)==restored.game.checkSum(nullptr,nullptr,nullptr,true));
+        CHECK(reduced.game.map.worldRandom.streams==restored.game.map.worldRandom.streams);
+        CHECK(reduced.game.syncRandom==restored.game.syncRandom);
+        CHECK(playerBytes(reduced.game,0)==playerBytes(restored.game,0));
+        CHECK(playerBytes(reduced.game,1)==playerBytes(restored.game,1));
+    }
+}

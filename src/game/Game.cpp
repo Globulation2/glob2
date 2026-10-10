@@ -333,6 +333,15 @@ void Game::setGameHeader(const GameHeader& newGameHeader, bool saveAI)
 		else
 			resolvedHeader.setAIConfig(p, newGameHeader.getAIConfig(p));
 	}
+	// Retire the old roster while its header and teams still describe the
+	// controllers being destroyed. clearGame only visits the current count.
+	for (int i=resolvedHeader.getNumberOfPlayers(); i<Team::MAX_COUNT; ++i)
+		if (players[i])
+		{
+			cancelAI(i);
+			delete players[i];
+			players[i]=nullptr;
+		}
 	gameHeader = resolvedHeader;
 	configureBuildingCatalog();
 	for (int i=0; i<mapHeader.getNumberOfTeams(); ++i)
