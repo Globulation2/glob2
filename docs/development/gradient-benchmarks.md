@@ -282,3 +282,42 @@ reconciliation failures, equal empty-bracket read counts and zero disabled reads
 Evidence owns all builds and real device measurements. Required protocol gates
 still include exact arrays, saved/replay outputs, actual command counts and complete
 process CPU/tick-tail controls; diagnostic stage times alone are not acceptance.
+## Single-work-group frontier development experiment
+
+The isolated `tools/gradient_qualification/compare_persistent.py` candidate uses
+one work-group per complete field, with uniform global/local barriers between
+compact frontier epochs. Each destination enters the following N-entry list at
+most once per epoch. Original zeros stay blocked, nonmaximum sources survive,
+and cap/toroidal semantics use the same monotone maximum fixed point as the
+independent oracle. This avoids assumptions about device-wide publication from
+legacy relaxed atomics; see the [Khronos OpenCL C memory model](https://registry.khronos.org/OpenCL/specs/unified/html/OpenCL_C.html).
+
+The kernel initializes immutable ushort seeds into private uint state, then
+performs at most the configured pops and65536 epochs without stamp wrap. An
+entire epoch is rejected before work if its frontier exceeds the remaining pop
+budget. One successful metadata read proves device completion; only converged
+fields read/convert staged output. Bounded exits recover from the original seeds
+through the paid strongest compatible production CPU. Imported caps/costs beyond
+that CPU contract use the separately labeled independent oracle. API failures
+reap the queue before stack metadata, borrowed output or device storage expires.
+There is no promise of asynchronous host cancellation during a resident kernel:
+finite work and event completion protect ownership, and measured deadlines are
+still required. Neither work limits nor barriers guarantee a wall-time bound.
+
+The runner requires the shared campaign lock before compilers or device setup,
+freezes source/commit/binary hashes, configuration and compiler logs, and uses
+only development layouts and independent edge cases. It records one actual
+kernel submission, one metadata check, pop/round/update counts, queue high-water,
+output transfers and exact CPU recoveries. Device payload includes the original
+upload (22N+32 bytes); host payload and comparison GPU buffers are bounded and
+reported separately from CPU workspace and driver/allocator overhead. Interval
+process CPU remains diagnostic, and production dispatch/qualification and final
+holdouts stay unchanged.
+
+Screen correctness first with `--edges-only`, then repeat with `--pop-limit 1`
+to prove exact bounded recovery. Compare local sizes64/128/256 only when the
+compiled kernel supports them, and pop budgets64K/256K/1M. Small development
+screens give no eligibility evidence for512-square maps: include `--max-size
+512` before any target CPU-benefit claim. Single-group underutilization can
+outweigh fewer host commands, particularly for singleton fields; prune the
+candidate if target-size completion and publication slack fail.
