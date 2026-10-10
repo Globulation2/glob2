@@ -50,6 +50,8 @@ GameGUI::GameGUI(bool persistPreferences)
 {
 	// Headless clients may consume simulation events before the full GUI init.
 	selectionMode = NO_SELECTION;
+	inGameMenu = IGM_NONE;
+	displayMode = CONSTRUCTION_VIEW;
 	this->persistPreferences = persistPreferences;
 }
 
