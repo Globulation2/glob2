@@ -247,11 +247,20 @@ static void deviceOverlayRetry(GAGCore::RendererBackend backend)
     bool complete=false;unsigned holds=0;
     const auto checksum=gui.game.checkSum();
     for(unsigned attempt=0;attempt<128 && !complete;++attempt){
+        // Pausing a running multi-turn capture freezes source animation clocks,
+        // independently of the capture's immutable initial animation phase.
+        gui.gamePaused=attempt==1 || attempt==2;
+        const auto animationBefore=gui.view.render.animationTime;
+        const auto areaBefore=gui.view.render.areaAnimationTick;
         int vx=17,vy=21;
-        REQUIRE(gui.torusView.draw(gui.drawnScene(),&gui,0,Game::DRAW_WHOLE_MAP,vx,vy,960,720));
+        REQUIRE(gui.torusView.draw(gui.drawnScene(),&gui,0,Game::DRAW_WHOLE_MAP|Game::DRAW_AREA,vx,vy,960,720));
+        REQUIRE(gui.view.render.animationTime==animationBefore+(gui.gamePaused?0:1));
+        REQUIRE(gui.view.render.areaAnimationTick==areaBefore+(gui.gamePaused?0:1));
         complete=gfx->flushDeviceFrame();
         if(!complete)++holds;
         gfx->nextFrame();SDL_Delay(1);
+        REQUIRE(gfx->presentationDevice.get()==probe);
+        REQUIRE(gfx->backendSwitchStatus().active==backend);
     }
     REQUIRE(probe->rejected);REQUIRE(complete);REQUIRE(holds>1);
     REQUIRE(gui.game.checkSum()==checksum);

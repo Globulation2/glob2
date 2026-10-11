@@ -584,8 +584,11 @@ physical scissors prevent repeated blending at fractional zoom. Skin preview
 ownership is borrowed only within a draw call and restored before yielding.
 The complete main image remains visible during preparation; capture admission
 and main presentation pause, while simulation, audio and input continue.
+Source presentation phases advance on every unpaused draw turn; only the
+capture's pixels and phases stay frozen, so holds do not slow animation clocks.
 An intentional hold fences completed offscreen work without invalidating the
-healthy graphics generation. A genuine submission failure still invalidates it.
+healthy graphics generation. Admission pressure retries unpublished target
+content; a fatal device failure invalidates the generation.
 Map or team changes cancel the pending capture; it never publishes a partial
 atlas. The visual pause lasts several presentation turns and grows with capture
 size, so playback feel and transition latency require hardware review.

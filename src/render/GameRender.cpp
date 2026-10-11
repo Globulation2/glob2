@@ -194,8 +194,12 @@ void Game::prepareSceneMapFrame(const PresentationFrame &scene, int localTeam, V
 
 void Game::finishMapCapture(ViewState &view, Uint32 options, bool paused)
 {
+    finishMapCapture(view.render,options,paused);
+}
+void Game::finishMapCapture(MapRenderState &render, Uint32 options, bool paused)
+{
     if (!paused && (options & DRAW_AREA) && (!globalContainer->isViewingGame() || globalContainer->replayShowAreas))
-        ++view.render.areaAnimationTick;
+        ++render.areaAnimationTick;
 }
 
 void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargin, int viewportX,

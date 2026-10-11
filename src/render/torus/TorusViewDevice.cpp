@@ -45,12 +45,23 @@ class CaptureSkinScope
     MapRenderState &capture;
     MapRenderState *source;
 public:
-    CaptureSkinScope(MapRenderState &state, GameGUI *gui)
-        : capture(state), source(gui ? &gui->view.render : nullptr)
+    CaptureSkinScope(MapRenderState &state, MapRenderState *sourceRender)
+        : capture(state), source(sourceRender)
     {
         if (source) capture.swapSkinPreview(*source);
     }
     ~CaptureSkinScope() { if (source) capture.swapSkinPreview(*source); }
+};
+class SourceMapPhaseScope
+{
+    MapRenderState &render;
+    unsigned options;
+    bool paused;
+public:
+    SourceMapPhaseScope(MapRenderState &state,unsigned drawOptions,bool animationsPaused)
+        : render(state),options(drawOptions),paused(animationsPaused)
+    { if(!paused)++render.animationTime; }
+    ~SourceMapPhaseScope() { Game::finishMapCapture(render,options,paused); }
 };
 constexpr int cloudGridLimit = 128;
 constexpr float pi = 3.14159265358979323846f;
@@ -285,6 +296,9 @@ bool TorusView::drawDevice(const PresentationFrame &frame, GameGUI *gui, int tea
         }
         if (state.tileTargets.empty()) { failed = true; graphicsGeneration = gfx->getGLContextGeneration(); target = moving = false; amount = 0; return false; }
     }
+    auto &sourceRender=gui ? gui->view.render : standaloneRender;
+    const bool sourcePaused=gui && gui->gamePaused;
+    SourceMapPhaseScope phase(sourceRender,options,sourcePaused);
     const unsigned captureOptions = options | Game::DRAW_NO_CLOUD_LAYER | Game::DRAW_TILED_CAPTURE;
     if (state.captureFrame && (state.captureFrame->map.identity() != frame.map.identity() ||
         state.captureTeam != team || state.captureOptions != captureOptions)) {
@@ -302,9 +316,10 @@ bool TorusView::drawDevice(const PresentationFrame &frame, GameGUI *gui, int tea
         state.capturePaused = gui && gui->gamePaused;
         state.captureTile = 0; state.captureX = state.captureY = 0;
         state.advancePreviews = true;
-        auto &sourceRender = gui ? gui->view.render : standaloneRender;
         auto &captureRender = state.captureView.render;
-        captureRender.animationTime = sourceRender.animationTime;
+        // prepareSceneMapFrame advances the frozen capture once. The source
+        // phase already advanced for this host turn and keeps advancing on holds.
+        captureRender.animationTime = sourceRender.animationTime-(sourcePaused?0:1);
         captureRender.areaAnimationTick = sourceRender.areaAnimationTick;
         captureRender.unitMotion = sourceRender.unitMotion;
         captureRender.minimumZoom = sourceRender.minimumZoom;
@@ -314,7 +329,7 @@ bool TorusView::drawDevice(const PresentationFrame &frame, GameGUI *gui, int tea
             state.captureBuildings = gui->buildingGuiState;
         }
         state.captureView.scene = state.captureFrame.get();
-        CaptureSkinScope skin(captureRender, gui);
+        CaptureSkinScope skin(captureRender, gui ? &sourceRender : nullptr);
         Game::prepareSceneMapFrame(*state.captureFrame, state.captureTeam, state.captureView,
                                   state.captureOptions, state.capturePaused);
     }
@@ -336,7 +351,7 @@ bool TorusView::drawDevice(const PresentationFrame &frame, GameGUI *gui, int tea
     if (!gfx->beginDeviceTarget(state.tileTargets[state.captureTile], captureW*state.captureZoom, captureH*state.captureZoom))
         return true; // Admission deferred: retain the same target and region cursor.
     try {
-        CaptureSkinScope skin(state.captureView.render, gui);
+        CaptureSkinScope skin(state.captureView.render, gui ? &sourceRender : nullptr);
         const SDL_Rect pixels{region.x*pixelsPerCell/32,region.y*pixelsPerCell/32,
             region.w*pixelsPerCell/32,region.h*pixelsPerCell/32};
         if (!gfx->setDeviceTargetScissor(&pixels)) throw std::runtime_error("Torus physical clipping unavailable");
@@ -408,9 +423,6 @@ bool TorusView::drawDevice(const PresentationFrame &frame, GameGUI *gui, int tea
         return true;
     }
     Game::finishMapCapture(state.captureView,state.captureOptions,state.capturePaused);
-    auto &sourceRender=gui ? gui->view.render : standaloneRender;
-    sourceRender.animationTime=state.captureView.render.animationTime;
-    sourceRender.areaAnimationTick=state.captureView.render.areaAnimationTick;
     state.captureFrame.reset();state.captureView.scene=nullptr;
     gfx->setRenderTargetScale(0);gfx->setClipRect();
     const bool drawClouds = globalContainer->settings.clouds;
