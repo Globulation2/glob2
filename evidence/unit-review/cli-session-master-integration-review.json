@@ -1,0 +1,67 @@
+{
+  "status": "PASS_STATIC_SCOPED_INTEGRATION_REVIEW_NO_BLOCKERS",
+  "head": "7e3f2158692dcd23d6e6cbc3b1bf68440aa32d06",
+  "actualBase": "0661f9605046958047d06fb6600546c24f139cd5",
+  "equalMasterBoundaries": {
+    "src/app/cli/CommandLine.cpp": {
+      "7e3f2158692dcd23d6e6cbc3b1bf68440aa32d06": "60690217bf165a4e87d8b85b7b040a03090621bd",
+      "0661f9605046958047d06fb6600546c24f139cd5": "60690217bf165a4e87d8b85b7b040a03090621bd"
+    },
+    "src/app/cli/CommandLineTest.cpp": {
+      "7e3f2158692dcd23d6e6cbc3b1bf68440aa32d06": "954c2d483c5fabe7094a092a1cc4e4dea0724edc",
+      "0661f9605046958047d06fb6600546c24f139cd5": "954c2d483c5fabe7094a092a1cc4e4dea0724edc"
+    },
+    "docs/tools/cli.md": {
+      "7e3f2158692dcd23d6e6cbc3b1bf68440aa32d06": "f505f2f6ebf799185a0642997100de661bc15257",
+      "0661f9605046958047d06fb6600546c24f139cd5": "f505f2f6ebf799185a0642997100de661bc15257"
+    },
+    "debian/glob2.6": {
+      "7e3f2158692dcd23d6e6cbc3b1bf68440aa32d06": "08fb3a299bcb95ab4d33df7c4c9a09166ab3a346",
+      "0661f9605046958047d06fb6600546c24f139cd5": "08fb3a299bcb95ab4d33df7c4c9a09166ab3a346"
+    },
+    "data/completions/_glob2": {
+      "7e3f2158692dcd23d6e6cbc3b1bf68440aa32d06": "a70dec4f309543eb15663ff3269bb00d79936af0",
+      "0661f9605046958047d06fb6600546c24f139cd5": "a70dec4f309543eb15663ff3269bb00d79936af0"
+    },
+    "data/completions/glob2.bash": {
+      "7e3f2158692dcd23d6e6cbc3b1bf68440aa32d06": "c4f2ee4e2b6d49125775071b8f7ec955773cf8b9",
+      "0661f9605046958047d06fb6600546c24f139cd5": "c4f2ee4e2b6d49125775071b8f7ec955773cf8b9"
+    },
+    "data/completions/glob2.fish": {
+      "7e3f2158692dcd23d6e6cbc3b1bf68440aa32d06": "d65cdef7e4366dbacc6e839c8e2d4b1a1192fcc1",
+      "0661f9605046958047d06fb6600546c24f139cd5": "d65cdef7e4366dbacc6e839c8e2d4b1a1192fcc1"
+    },
+    "src/app/GlobalContainerArgs.cpp": {
+      "7e3f2158692dcd23d6e6cbc3b1bf68440aa32d06": "3400b0946b3c5a47da68321433ab98fc5b265450",
+      "0661f9605046958047d06fb6600546c24f139cd5": "3400b0946b3c5a47da68321433ab98fc5b265450"
+    },
+    "src/engine/Engine.h": {
+      "7e3f2158692dcd23d6e6cbc3b1bf68440aa32d06": "b57ea9c925771c52f6c680d892995479b9d16eb3",
+      "0661f9605046958047d06fb6600546c24f139cd5": "b57ea9c925771c52f6c680d892995479b9d16eb3"
+    },
+    "src/engine/sim/SimulationRunner.cpp": {
+      "7e3f2158692dcd23d6e6cbc3b1bf68440aa32d06": "bbd5b5679024d28041509c27513709609f8bc9de",
+      "0661f9605046958047d06fb6600546c24f139cd5": "bbd5b5679024d28041509c27513709609f8bc9de"
+    }
+  },
+  "removedCampaignTokens": {
+    "gitGrepExitCode": 1,
+    "found": false
+  },
+  "preserved": [
+    "Master --gpu switch and game repeat --display constraints",
+    "Master GPU backend initialization and result metrics",
+    "Master camera-refresh admission API and camera-starvation fixture",
+    "Feature legacy152 checksum adapter and retained replay fixture",
+    "Feature UnitStatistics serialization and map unit-catalog binding"
+  ],
+  "minorDocumentationSuggestion": "headless-replays.md41 should describe format-gated saved-race binding instead of claiming everylegacy table adopts after loading; formats58\u201372 bindbeforeunitrecords.",
+  "recommendedFocusedChecks": [
+    "CommandLine/*",
+    "tools/cli_reference.py --check",
+    "EngineSession/* camera refresh and152 replay",
+    "Structured game run --gpu=off and4canonical traces",
+    "GPU equivalence oracle under separateGPUreviewer"
+  ],
+  "scope": "Read-only source integration review; no builds/testexecution/gitmutation. Concurrent OpenCLGradientTest.cpp edits outside this scoped audit."
+}

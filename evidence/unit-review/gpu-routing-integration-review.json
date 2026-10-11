@@ -1,0 +1,45 @@
+{
+  "reviewer": "gpu_unit_integration_review",
+  "review_utc": "2026-10-11T02:40:04.563755+00:00",
+  "source_commit": "a836f8b4654e51868f3c867583d7d83e3cd677c7",
+  "master_reviewed": "0661f9605046958047d06fb6600546c24f139cd5",
+  "result": "PASS (static integration review)",
+  "file_sha256": {
+    "src/map/Map.cpp": "b7741d43b9ff57c9a0e18180eb0b1cb1157b4e258341721637a3de3b0ba9c96a",
+    "src/field/TerrainMovementCosts.h": "56ea1d0dfec457166ccc7cf3a59cdf8e929ae5494edd1366177a602ea2b2f7ba",
+    "src/map/TerrainPropertiesTest.cpp": "7cc80760c5f9fc058a8e47cd61944d6058bc298359dd3c965979db9639471a56",
+    "src/map/gradient/GradientPreparationTest.cpp": "ac67d316fb7a4d99f929810cbf11c0a1541ba561bf914a1a3e7d9fbd726ea64c",
+    "src/field/OpenCLGradientTest.cpp": "a314bf7cfe94daddb519e6841ec152d31539df038bc2eb7a77f014b16f6501a7",
+    "src/map/gradient/SnapshotGradient.cpp": "c36124e29004abc42b25a0b6b6886c9b7bba91ddf68a8d674264f9eea7af84c5",
+    "src/map/MapStep.cpp": "b7221e1ec49e63aa023cec67c37058192649c8666138d61321ab9789c31daef5"
+  },
+  "resolved_findings": [
+    "OpenCL independent heap oracle now covers all eight movement classes and encodes dry cells as forbidden for water-only fields.",
+    "Minimal owned-cost fixture now covers WATER_ONLY_CLASS for modified/unmodified profiles and 64/128/256 rings, including source terrain/table expiry and exact CPU recovery.",
+    "Both Map terrain histogram and minimum-reduction loops cover all eight classes; histogram eligibility uses terrainAllowsGround.",
+    "Independent review identified legacy compile-time minimum admitting TRAIL for water-only class. Narrow terrainAllowsGround substitution fixes class7 baseline while preserving classes0 through6 exactly."
+  ],
+  "architecture_review": [
+    "GPU descriptors consume packed costs, not unit identity; arrays expand with WATER_STEP/SWIM_CLASS_COUNT.",
+    "Snapshot seeding retains GuardIdle capability filtering and water-only seed-cache fallback.",
+    "Minimal async inputs copy profiles/prepared tables without retaining transitive unit/resource/terrain catalog graphs.",
+    "Auto-merges retain upstream async/batch callbacks, required-work cancellation and fixed publication deadlines.",
+    "Histogram add/remove retains first occupied rule/last removed rule accounting; each eligible class increments and decrements the same cardinal-cost bin."
+  ],
+  "regression_review": [
+    "TerrainHazardRouting fixture checks initial10, fast-water5, removal10 and excludes dry fast Trail.",
+    "Route oracle uses literal cardinal5/diagonal7 and terrain passability only; does not use engine cost/minimum functions.",
+    "Independent Python geometry derivation from seven grass vertices produced25 blocked cells and exact reverse-Dijkstra distance92, agreeing with locked fixture.",
+    "Engine first-step assertions require each returned step to lie on an optimal route and final travel cost92."
+  ],
+  "legacy_equivalence": "For swim classes0 through6, terrainAllowsGround(p,sw) reduces exactly to p.walkable || (sw>0 && p.swimmable), matching both previous runtime and compile-time admission predicates. Only class7 changes.",
+  "validation_limits": [
+    "Reviewer ran no builds or engine simulations. Static PASS is not execution evidence.",
+    "Coordinator reported stopping the prior release build after review exposed the missing compile-time baseline correction, then restarting on a836f8b46; the interrupted build is not valid final-revision evidence.",
+    "OpenCL test PASS can include exact CPU fallback when no device is available. Actual device dispatch must be established by coordinator runtime metadata, not inferred from test success."
+  ],
+  "commands": [
+    "git diff --check (PASS)",
+    "independent Python geometry/reverse-Dijkstra review calculation (distance92 PASS)"
+  ]
+}

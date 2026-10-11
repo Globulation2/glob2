@@ -1,0 +1,19 @@
+{
+  "revision": "f7f25a2166c919e81164ad1f10f08cdd1c0677db",
+  "base": "1e113da18493b8dc626edc7744fd9118ab2d651f",
+  "compiledSdlPrefix": "/home/bradley/glob2-claude/build/sdl3/prefix",
+  "requiredRuntimePatchAbsentFromCompilePrefix": "png16-preserve-channels.patch",
+  "compiledHeaderReuseProof": "patched-sdl/manifest.json",
+  "runtimeLoaderOverride": "LD_LIBRARY_PATH to isolated patched SDL; other dependencies unchanged",
+  "isolatedOriginalFailure": "image46unpatched-command.json",
+  "sourceBoundaryUnchanged": {
+    "libgag/src/ImageAssetTest.cpp": "8ee5b8f100a1017562a63a27ceb3dd9e7852416c",
+    "masterTestBlob": "8ee5b8f100a1017562a63a27ceb3dd9e7852416c"
+  },
+  "binaries": {
+    "src/glob2": "1e19f3d327f023cc6f657be72b1af2f3455c284bb0eca3b54b06b42ea5bff2bb",
+    "test/glob2-engine-tests": "9ba49653fa6cd59c2c560e46f92ead667a07782c6c378031585fa3c822a44dba",
+    "test/glob2-unit-tests": "4628ffe3b5cef8fc21879bc2dbefc1d9b420654aea266fd468020bcdc99ed074"
+  },
+  "baseCorrection": "Actual ancestry of f7; prior base field was moving shared origin/master snapshot"
+}

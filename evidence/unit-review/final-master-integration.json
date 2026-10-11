@@ -1,0 +1,17 @@
+{
+  "testedEngineBase": "0661f9605046958047d06fb6600546c24f139cd5",
+  "observedMaster": "9d0685963b1e0c3c09dc767cad3c68596bde51e9",
+  "changedPaths": [
+    ".github/workflows/github-release.yml",
+    ".github/workflows/macos-signing-retry.yml",
+    "docs/releases/desktop.md",
+    "test/build_system/test_ci_concurrency.py",
+    "test/build_system/test_downloads_release_workflows.py",
+    "test/build_system/test_macos_signing_retry.py",
+    "tools/release/macos_keychain.py",
+    "tools/release/signing_retry.py"
+  ],
+  "cleanMergeTree": "4039deef57599f81b1fd0ad7702ac03ac8e1b70f",
+  "assessment": "Mac signing/release tooling only; no runtime, engine build input, PR verification workflow, dependency, or feature overlap. Native engine verification remains source-bound to feature HEAD; no unrelated rebase required per AGENTS.md.",
+  "testedFeature": "1506403c7a154ba4a200e45312f2ee5793d86568"
+}

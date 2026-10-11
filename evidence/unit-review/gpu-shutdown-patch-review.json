@@ -1,0 +1,40 @@
+{
+  "reviewer": "gpu_unit_integration_review",
+  "review_utc": "2026-10-11T03:07:31.638434+00:00",
+  "parent_commit": "68ef5bf32d3949cda55696ad55045489a88db1fa",
+  "source_status": [
+    " M docs/architecture/simulation.md",
+    " M src/app/GlobalContainer.cpp",
+    " M src/field/GradientDeviceService.cpp",
+    " M src/field/GradientDeviceService.h",
+    " M src/map/gradient/GradientPipelineHarness.cpp",
+    " M test/support/TestMain.cpp"
+  ],
+  "patch_sha256": "e5cb1d7c024fa841dce0c4f00e34ecad65c56670a0db14923e3586a351bf8fb2",
+  "file_sha256": {
+    "src/field/GradientDeviceService.cpp": "aaa0ceca63850a65e447e9dc0b02ffb1d0783058b0f51b704d36e7700f93656c",
+    "src/field/GradientDeviceService.h": "e38e10005ab60ae3e562aead079ce8a5bf32a32de299129dc0f001ada995a9ab",
+    "src/app/GlobalContainer.cpp": "1f9256202354c1b6b1e1f50cfe1cb2509af4764775f20cbf71af28e40f038bd7",
+    "test/support/TestMain.cpp": "6c084802355883442a08755b09742771e8855efb2a3d6a82609e6882e071be3e",
+    "src/map/gradient/GradientPipelineHarness.cpp": "f9283b27ba37a2fcd0ac296bcbcf3514f76b2a3d11d124ccd93fe0b88f6a7725",
+    "docs/architecture/simulation.md": "557d55d712210dc73db93cb960f00b593d956c961d6a09aa4c21b932656b29d6"
+  },
+  "result": "PASS static review; runtime failure resolution awaits coordinator execution",
+  "reviewed_contract": [
+    "Shutdown is owner-thread serialized after game/executor drain.",
+    "Cancel active and queued controls while broker/state locks held, then release broker mutex before coordinator join.",
+    "Coordinator processes canceled queued fields through existing fallback/completion, and waits for initialization to return before exit.",
+    "After join, canceled registrations clear and stopping resets; later add starts another thread with stable existing backend lifetime.",
+    "CPU-only shutdown does not instantiate broker/runtime.",
+    "GlobalContainer barrier precedes recording/NET/SDL teardown; shared TestMain covers direct backend unit tests.",
+    "New test proves gate-blocked initialization delays shutdown, restart is possible, and repeated shutdown harmless.",
+    "Gate RAII and Drain declaration ordering retain callback dependencies through test assertion unwinding."
+  ],
+  "diff_check": "PASS",
+  "simulation_impact": "No gameplay/tick/RNG path changes identified; application execution lifecycle only.",
+  "limits": [
+    "No builds or runtime tests performed by reviewer.",
+    "Bounded real driver exit/restart reproduction must verify original failure disappears.",
+    "Static Runtime destruction retains OpenCL release and SDL_UnloadObject calls; patch prevents background work racing process exit, not every driver API call during static cleanup. No confirmed remaining failure from static cleanup."
+  ]
+}

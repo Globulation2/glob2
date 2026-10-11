@@ -1,0 +1,49 @@
+{
+  "reviewer": "gpu_unit_integration_review",
+  "review_utc": "2026-10-11T03:03:58.519874+00:00",
+  "source_commit": "68ef5bf32d3949cda55696ad55045489a88db1fa",
+  "result": "BLOCKER CONFIRMED BY RUNTIME EVIDENCE: background driver initialization survives into process exit",
+  "file_sha256": {
+    "src/field/GradientDeviceService.cpp": "13d012e4fd69fb3e7564589f31a463a16d665d009b1b3746a7ad7c9e2b0787af",
+    "src/field/GradientDeviceService.h": "d79373b80389a45d6582c0d9e77106b5a78005376994cbee9bd91c2d8fc71d18",
+    "src/field/OpenCLGradient.cpp": "0c7f6404d1b9a62306fe7bd9a1b8971de1c7e6a25d84ee5d0510c7a3079b18bd",
+    "src/common/ComputeExecutor.h": "1e689206dfade31f1057c6aa63826ae29a3a0c3afb3d9a5ab3910bc51c0a59dd",
+    "src/map/gradient/GradientRuntime.h": "f0f0a87831d4922e4cfe453a3a536abfbdd2ac615b197182b3f8b0d2bc748d94",
+    "src/map/gradient/GradientPipeline.h": "deef8d75cf40ebd6c25fa64418d2ca4387aaeb20237be5bdea1d51c78e1be0b3",
+    "src/map/Map.cpp": "b7741d43b9ff57c9a0e18180eb0b1cb1157b4e258341721637a3de3b0ba9c96a",
+    "src/app/GlobalContainer.cpp": "85227130a73e3b6efcf8b427565ac9a23d592be36ea2f2bc7ee723a487989975"
+  },
+  "observed_evidence": [
+    "engine47final.log reports EngineSession replay timeout and committed-match exit -11 after842 checksums verified.",
+    "traces47final/verify-match.log reports pthread priority assertion after842 checksums verified.",
+    "verify-shutdown-repro/backtrace.log reports one GDB run exited normally; hung-cli-backtrace.log reports no process at attach."
+  ],
+  "static_findings": [
+    "Broker backendLifetime initializes function-static Runtime before DeviceBroker completes construction; broker static destructor joins coordinator before Runtime static destructor.",
+    "Map clears/reset drains pipeline before GradientRuntime member destruction, which precedes ComputeExecutor destruction.",
+    "Completion tickets retain separate lifetime mutex; executor stop joins jobs/workers before marking lifetime executor null.",
+    "Broker locks broker mutex then state mutex; stop and submit release state mutex before acquiring broker mutex through notify. No confirmed inversion.",
+    "OwnedGradientField serviceRetained alias retains state across executionState reset and reservation release.",
+    "Runtime execution lane retains parent shared Device across lane cleanup and lanesMutex lock.",
+    "GlobalContainer has duplicate NET_Quit on current unchanged master; SDL_net3.2.0 initialize_count guard makes repeated noninitialized quit no-op, so no confirmed defect from that duplication."
+  ],
+  "limits": [
+    "No build, runtime reproduction, debugger attachment or source edits performed by this reviewer.",
+    "Static audit cannot establish exit safety or dismiss demonstrated intermittent failures.",
+    "CPU versus GPU bounded reproduction and a failing-thread native backtrace remain necessary to localize failure."
+  ],
+  "followup_utc": "2026-10-11T03:05:13.443778+00:00",
+  "followup_evidence": {
+    "path": "artifacts/unit-review/shutdown-loops/gdb-gpu-2threads-0/backtrace.log",
+    "sha256": "5cbc72038bcfb85a0bf5b6bc8facdad8aa5e7f8fc0648924c9da3516d4654047",
+    "independent_reading": "Main is in __run_exit_handlers joining a std::thread. Coordinator remains in NVIDIA OpenCL driver mutex acquisition with driver helper threads alive. Simulation had already verified842 checksums.",
+    "other_reviewer_report": "final_engine_review reported explicit CPU2 three exits0; default GPU2 two SIGABRT plus one hang. This reviewer inspected the GDB stack, did not run those reproductions."
+  },
+  "shutdown_recommendations": [
+    "Join/drain background coordinator while driver/SDL services are still live, before process exit handlers run.",
+    "Provide restart for repeated GlobalContainer/HeadlessGlobals lifecycles.",
+    "GlobalContainer teardown hook does not cover direct OpenCL unit suites without globals; shared TestMain/process-final shutdown must cover those.",
+    "Do not infer driver atexit state remains live from a shared_ptr<Device>; async driver load may register exit handlers after broker/Runtime destructor registration.",
+    "Consider explicit Runtime/device/API release before exit too; static Runtime destruction contains OpenCL release and SDL_UnloadObject calls. Actual driver atexit cause is inferred from stack and async timing, not symbol-proven."
+  ]
+}

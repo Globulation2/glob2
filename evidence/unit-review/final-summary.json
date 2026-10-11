@@ -1,0 +1,538 @@
+{
+  "revision": "1506403c7a154ba4a200e45312f2ee5793d86568",
+  "tree": "b9c073d3bf291581993cd9c0171e47debd744c27",
+  "base": "0661f9605046958047d06fb6600546c24f139cd5",
+  "masterIntegration": "final-master-integration.json",
+  "clean": true,
+  "simulationRevision": 47,
+  "fileFormat": 153,
+  "networkProtocol": 69,
+  "saveFloor": 58,
+  "replayFloor": 152,
+  "environment": {
+    "os": "Linux-7.0.0-31-generic-x86_64-with-glibc2.43",
+    "architecture": "x86_64",
+    "compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+    "flags": "release=1 dev_fast=0 linker=default; ordinary -O3 release compilation, no PCH/unity",
+    "dependencies": "Existing pinned SDL3 3.4.16/image3.4.6/ttf3.2.2 and native recording prefix. Runtime SDL rebuilt with all required repository patches; 75 installed headers byte-identical to compile prefix. See patched-sdl/manifest.json. Pinned asset Python used for tooling contracts."
+  },
+  "counts": {
+    "engine47shutdown": {
+      "cases": 299,
+      "passed": 291,
+      "skipped": 8,
+      "failed": 0
+    },
+    "unit47shutdown": {
+      "cases": 1014,
+      "passed": 990,
+      "skipped": 24,
+      "failed": 0
+    },
+    "presentation47shutdown": {
+      "cases": 3,
+      "passed": 3,
+      "skipped": 0,
+      "failed": 0
+    },
+    "cli47shutdown": {
+      "cases": 15,
+      "passed": 15,
+      "skipped": 0,
+      "failed": 0
+    },
+    "buildTooling": {
+      "cases": 497,
+      "passed": 494,
+      "skipped": 3,
+      "failed": 0
+    }
+  },
+  "receipts": {
+    "build47shutdown": {
+      "status": "PASS",
+      "argv": [
+        "python3",
+        "tools/dev_build.py",
+        "release=1",
+        "dev_fast=0",
+        "linker=default",
+        "--build=build/unit-review-release",
+        "build/unit-review-release/src/glob2",
+        "engine-tests",
+        "unit-tests",
+        "-j6"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 69.75876571098343,
+      "logSha256": "e84adcea6da3069d6b322225c6b5e75d528dd9fa7fd914a3c73a9950814c5458"
+    },
+    "engine47shutdown": {
+      "status": "PASS",
+      "argv": [
+        "python3",
+        "test/run_tests.py",
+        "--build-dir",
+        "build/unit-review-release",
+        "-j",
+        "6",
+        "--junit",
+        "/home/bradley/.codex/worktrees/af25/glob2/artifacts/unit-review/engine47shutdown.xml",
+        "--write-inventory",
+        "/home/bradley/.codex/worktrees/af25/glob2/artifacts/unit-review/engine47shutdown-inventory.json",
+        "--artifacts",
+        "/home/bradley/.codex/worktrees/af25/glob2/artifacts/unit-review/engine47shutdown-cases",
+        "--binary",
+        "engine",
+        "--no-display",
+        "--filter",
+        "UnitCatalog/*",
+        "--filter",
+        "UnitCustomization/*",
+        "--filter",
+        "TeamStatsSave/*",
+        "--filter",
+        "EngineSession/*",
+        "--filter",
+        "LegacyReplay/*",
+        "--filter",
+        "GameDiagnostics/*",
+        "--filter",
+        "CommandLine/*",
+        "--filter",
+        "BuildingCatalog/*",
+        "--filter",
+        "BuildingProductionCombat/*",
+        "--filter",
+        "WorldSnapshot/*",
+        "--filter",
+        "TerrainHazardRouting/*",
+        "--filter",
+        "TerrainRuntime/*",
+        "--filter",
+        "Gradient/*",
+        "--filter",
+        "GradientPreparation/*",
+        "--filter",
+        "GradientPipeline/*",
+        "--filter",
+        "ComputeExecutor/*",
+        "--filter",
+        "BuildingGradientInvalidation/*",
+        "--filter",
+        "MapGradientInvalidation/*",
+        "--filter",
+        "TurnEngineHarness/the committed*"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 17.653952438849956,
+      "logSha256": "da56d1301df123c1eb0c9e9db09e79641c49dd1116706ea1b5b8cd8b2093b5e2"
+    },
+    "unit47shutdown": {
+      "status": "PASS",
+      "argv": [
+        "python3",
+        "test/run_tests.py",
+        "--build-dir",
+        "build/unit-review-release",
+        "-j",
+        "6",
+        "--junit",
+        "/home/bradley/.codex/worktrees/af25/glob2/artifacts/unit-review/unit47shutdown.xml",
+        "--write-inventory",
+        "/home/bradley/.codex/worktrees/af25/glob2/artifacts/unit-review/unit47shutdown-inventory.json",
+        "--artifacts",
+        "/home/bradley/.codex/worktrees/af25/glob2/artifacts/unit-review/unit47shutdown-cases",
+        "--binary",
+        "unit",
+        "--no-display"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 22.149136737920344,
+      "logSha256": "ca87b6e2a5ad2660452bb2d9f07a003ad610d078ee2dfa5344a52ed33e0639df"
+    },
+    "presentation47shutdown": {
+      "status": "PASS",
+      "argv": [
+        "python3",
+        "test/run_tests.py",
+        "--build-dir",
+        "build/unit-review-release",
+        "-j",
+        "6",
+        "--junit",
+        "/home/bradley/.codex/worktrees/af25/glob2/artifacts/unit-review/presentation47shutdown.xml",
+        "--write-inventory",
+        "/home/bradley/.codex/worktrees/af25/glob2/artifacts/unit-review/presentation47shutdown-inventory.json",
+        "--artifacts",
+        "/home/bradley/.codex/worktrees/af25/glob2/artifacts/unit-review/presentation47shutdown-cases",
+        "--binary",
+        "engine",
+        "--filter",
+        "UnitCatalog/new combinations retain appearance*",
+        "--filter",
+        "ColonySkinPreview/*"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 0.8766784179024398,
+      "logSha256": "b65a8f0fc0774f34da995bee17cc45983655197def945962370137be893ce4ca"
+    },
+    "cli47shutdown": {
+      "status": "PASS",
+      "argv": [
+        "python3",
+        "test/test_cli_smoke.py",
+        "--binary",
+        "build/unit-review-release/src/glob2",
+        "--artifacts",
+        "/home/bradley/.codex/worktrees/af25/glob2/artifacts/unit-review/cli47shutdown-cases",
+        "--junit",
+        "/home/bradley/.codex/worktrees/af25/glob2/artifacts/unit-review/cli47shutdown.xml"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 15.745680043939501,
+      "logSha256": "eab9eb3cd0d99aeff6d6da192c59ff36b6fcd3e119bbb540031ee6b5f57e5673"
+    },
+    "cliReference47shutdown": {
+      "status": "PASS",
+      "argv": [
+        "python3",
+        "tools/cli_reference.py",
+        "--binary",
+        "build/unit-review-release/src/glob2",
+        "--check"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 0.17127516213804483,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "traces47shutdown": {
+      "status": "PASS",
+      "argv": [
+        "python3",
+        "test/run-browser-determinism.py",
+        "build/unit-review-release/src/glob2",
+        "/home/bradley/.codex/worktrees/af25/glob2/artifacts/unit-review/traces47shutdown",
+        "--engine-binary",
+        "build/unit-review-release/test/glob2-engine-tests"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 2.832401285879314,
+      "logSha256": "52e228d9e9b9e4cd63b495505a5e279a9b48d83611c50cc21bfaf0373a427539"
+    },
+    "gpu47shutdown2": {
+      "status": "PASS",
+      "argv": [
+        "python3",
+        "artifacts/unit-review/gpu_cli_check.py",
+        "gpu47shutdown2"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 1.413412095978856,
+      "logSha256": "6a678ca4cd8cbf78afc7145e3c90ef18ff486fe61bd9716511d16009e78c3d76"
+    },
+    "shutdown47fixed": {
+      "status": "PASS",
+      "argv": [
+        "python3",
+        "artifacts/unit-review/shutdown_fixed_check.py"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 17.915281597990543,
+      "logSha256": "29087ceb5959fe7b9df27ac4f3cef4f8c44ba311f20cc30431d4090b857ef5dd"
+    },
+    "sim47shutdown": {
+      "status": "PASS",
+      "argv": [
+        "python3",
+        "test/check_sim_revision.py",
+        "--base",
+        "32c7ec892b5a1dfb22bde2d9025de106e8eac4d3"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 0.3499843259342015,
+      "logSha256": "e4f69dd9804ed06b2fab423e5a4d09e3a61b3c13f8c41ea57033dbff53f681fe"
+    },
+    "python47shutdown": {
+      "status": "PASS",
+      "argv": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "test",
+        "-p",
+        "test_check_sim_revision.py"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 1.058555702213198,
+      "logSha256": "df5d2ec654bb5118be2bf6d8d838643021f72ebd30da1ea0801785bada7e996b"
+    },
+    "contracts47shutdown": {
+      "status": "PASS",
+      "argv": [
+        "/home/bradley/.local/share/glob2/development/caches/asset-encoder-runtime-assets-v1-py3.14/venv/bin/python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "test/build_system",
+        "-p",
+        "test_*.py"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 84.87660054583102,
+      "logSha256": "0070d1c68527896dbb3bca5d6918436452954298758e00e7e1b50223bb12b74f"
+    }
+  },
+  "binaries": {
+    "src/glob2": "093e162d80bd095d0328e1797fa119bad7c4829ea77f68c84f3efec286eebd34",
+    "test/glob2-engine-tests": "99f713bda01918fea1869f7f75e0193ce55dd045fcd4e05ca76cfac8c56668bd",
+    "test/glob2-unit-tests": "3061f66209961e78f4fec197ff55aaf844e95eb2ca5b6419c80030cf4dcf5f98"
+  },
+  "canonicalTraces": {
+    "candidate": "1506403c7a154ba4a200e45312f2ee5793d86568",
+    "runtimeDependencyCorrection": "runtime-dependency-correction.json",
+    "normalization": "None; complete files byte-for-byte.",
+    "referenceProducer": "9e6f406b634023702eb34125916f74fe453a5e54",
+    "rows": [
+      {
+        "name": "replay",
+        "path": "traces47shutdown/native.replay.checksums",
+        "bytes": 4209844,
+        "sha256": "651709a50b88c4662f6ab0fad34093571c43e993436f7f84174f953a44149259",
+        "referenceSha256": "651709a50b88c4662f6ab0fad34093571c43e993436f7f84174f953a44149259",
+        "equal": true
+      },
+      {
+        "name": "match",
+        "path": "traces47shutdown/verify-match.checksums.txt",
+        "bytes": 10914,
+        "sha256": "f29f0e00acdb3bc32019ce0ccb955e83a5af072138df632a3b22c183ec23b3ce",
+        "referenceSha256": "f29f0e00acdb3bc32019ce0ccb955e83a5af072138df632a3b22c183ec23b3ce",
+        "equal": true
+      },
+      {
+        "name": "resources",
+        "path": "traces47shutdown/resources/native/cases/RuntimeResources/frozen_seeded_resource_compositions_preserve_invariants_and_exact_simulation_continuation__golden/seeded-compositions.trace",
+        "bytes": 13384,
+        "sha256": "d483ae2a779e52f8f43235b9dc112c697f685633cbc03427edf9b59b43bb52a6",
+        "referenceSha256": "d483ae2a779e52f8f43235b9dc112c697f685633cbc03427edf9b59b43bb52a6",
+        "equal": true
+      },
+      {
+        "name": "units",
+        "path": "traces47shutdown/units/native/cases/UnitCustomization/all_locked_capability_ablations_match_fixed_tick_and_RNG_traces__golden__artifacts/unit-ablations.trace",
+        "bytes": 1339,
+        "sha256": "95d87548aa0ce39d8eb5a15a2bbcd8d1ced68f75e70c022e8189d2829db5c094",
+        "referenceSha256": "95d87548aa0ce39d8eb5a15a2bbcd8d1ced68f75e70c022e8189d2829db5c094",
+        "equal": true
+      }
+    ]
+  },
+  "shutdownRepetitions": {
+    "cpu2": 4,
+    "gpu2": 16,
+    "gpuAuto": 4,
+    "allNormalExit": true,
+    "all842ChecksumsEqual": true
+  },
+  "gpu512TickComparison": {
+    "source": "1506403c7a154ba4a200e45312f2ee5793d86568",
+    "commands": [
+      {
+        "argv": [
+          "/home/bradley/.codex/worktrees/af25/glob2/build/unit-review-release/src/glob2",
+          "map",
+          "generate",
+          "river",
+          "--width",
+          "128",
+          "--height",
+          "128",
+          "--teams",
+          "2",
+          "--seed",
+          "713",
+          "--output",
+          "/home/bradley/.codex/worktrees/af25/glob2/artifacts/unit-review/gpu47shutdown2-cases/source.map"
+        ],
+        "exitCode": 0
+      },
+      {
+        "argv": [
+          "/home/bradley/.codex/worktrees/af25/glob2/build/unit-review-release/src/glob2",
+          "game",
+          "run",
+          "--output-dir",
+          "/home/bradley/.codex/worktrees/af25/glob2/artifacts/unit-review/gpu47shutdown2-cases/off",
+          "--ticks",
+          "512",
+          "--compute-threads",
+          "2",
+          "--gpu=off",
+          "--telemetry",
+          "checksums",
+          "--write-replay",
+          "--save",
+          "final",
+          "--map-file",
+          "/home/bradley/.codex/worktrees/af25/glob2/artifacts/unit-review/gpu47shutdown2-cases/source.map.gz",
+          "--game-seed",
+          "713",
+          "--player",
+          "castor",
+          "--player",
+          "cortex"
+        ],
+        "exitCode": 0
+      },
+      {
+        "argv": [
+          "/home/bradley/.codex/worktrees/af25/glob2/build/unit-review-release/src/glob2",
+          "game",
+          "run",
+          "--output-dir",
+          "/home/bradley/.codex/worktrees/af25/glob2/artifacts/unit-review/gpu47shutdown2-cases/on",
+          "--ticks",
+          "512",
+          "--compute-threads",
+          "2",
+          "--gpu=on",
+          "--telemetry",
+          "checksums",
+          "--write-replay",
+          "--save",
+          "final",
+          "--map-file",
+          "/home/bradley/.codex/worktrees/af25/glob2/artifacts/unit-review/gpu47shutdown2-cases/source.map.gz",
+          "--game-seed",
+          "713",
+          "--player",
+          "castor",
+          "--player",
+          "cortex"
+        ],
+        "exitCode": 0
+      }
+    ],
+    "checksumTicksEqual": 512,
+    "off": {
+      "gpu_requested": 0,
+      "gpu_device": "",
+      "gpu_error": "",
+      "gradient_execution": {
+        "gpu_requested_fields": 0,
+        "gpu_selected_fields": 0,
+        "gpu_complete_fields": 0,
+        "cpu_complete_fields": 512,
+        "cpu_reason_explicit": 512,
+        "cpu_reason_owner_excluded": 0,
+        "cpu_reason_unavailable": 0,
+        "cpu_reason_owned_input_decline": 0,
+        "cpu_reason_failed_session": 0,
+        "required_seed_cpu_ns": 9205818,
+        "required_propagation_cpu_ns": 35510186,
+        "required_owned_input_cpu_ns": 0,
+        "required_handoff_cpu_ns": 0,
+        "required_cleanup_cpu_ns": 0,
+        "gpu_publication_wait_count": 0,
+        "gpu_publication_wait_ns": 0,
+        "coordinator_threads": 0,
+        "coordinator_running": 0,
+        "coordinator_ready": 0,
+        "coordinator_cpu_ns": 0,
+        "coordinator_initialization_ns": 0,
+        "coordinator_submitted": 0,
+        "coordinator_completed": 0,
+        "coordinator_executed": 0,
+        "coordinator_fallbacks": 0,
+        "coordinator_declined": 0,
+        "coordinator_batches": 0,
+        "coordinator_max_batch": 0,
+        "coordinator_queued": 0,
+        "fallback_reason_unavailable": 0,
+        "fallback_reason_memory": 0,
+        "fallback_reason_backend_decline": 0,
+        "fallback_reason_driver": 0,
+        "fallback_reason_cancellation": 0,
+        "device_dispatches": 0,
+        "device_observed_fields": 0,
+        "device_committed_fields": 0,
+        "device_cpu_ns": 0,
+        "accelerator_host_bytes": 87840,
+        "accelerator_peak_host_bytes": 87840,
+        "accelerator_device_bytes": 0,
+        "accelerator_peak_device_bytes": 0
+      }
+    },
+    "on": {
+      "gpu_requested": 1,
+      "gpu_device": "NVIDIA GeForce RTX 2070 SUPER",
+      "gpu_error": "",
+      "gradient_execution": {
+        "gpu_requested_fields": 512,
+        "gpu_selected_fields": 0,
+        "gpu_complete_fields": 0,
+        "cpu_complete_fields": 512,
+        "cpu_reason_explicit": 0,
+        "cpu_reason_owner_excluded": 0,
+        "cpu_reason_unavailable": 512,
+        "cpu_reason_owned_input_decline": 0,
+        "cpu_reason_failed_session": 0,
+        "required_seed_cpu_ns": 18150870,
+        "required_propagation_cpu_ns": 35683593,
+        "required_owned_input_cpu_ns": 0,
+        "required_handoff_cpu_ns": 0,
+        "required_cleanup_cpu_ns": 0,
+        "gpu_publication_wait_count": 0,
+        "gpu_publication_wait_ns": 0,
+        "coordinator_threads": 1,
+        "coordinator_running": 1,
+        "coordinator_ready": 1,
+        "coordinator_cpu_ns": 236298747,
+        "coordinator_initialization_ns": 242464402,
+        "coordinator_submitted": 0,
+        "coordinator_completed": 0,
+        "coordinator_executed": 0,
+        "coordinator_fallbacks": 0,
+        "coordinator_declined": 0,
+        "coordinator_batches": 0,
+        "coordinator_max_batch": 0,
+        "coordinator_queued": 0,
+        "fallback_reason_unavailable": 0,
+        "fallback_reason_memory": 0,
+        "fallback_reason_backend_decline": 0,
+        "fallback_reason_driver": 0,
+        "fallback_reason_cancellation": 0,
+        "device_dispatches": 0,
+        "device_observed_fields": 0,
+        "device_committed_fields": 0,
+        "device_cpu_ns": 0,
+        "accelerator_host_bytes": 91336,
+        "accelerator_peak_host_bytes": 91336,
+        "accelerator_device_bytes": 0,
+        "accelerator_peak_device_bytes": 0
+      }
+    },
+    "offTraceSha256": "42d882fefc7c4021408a2fe2ff43180f6e60ce2c43e2b070bb4c8b4df6a166e0",
+    "onTraceSha256": "42d882fefc7c4021408a2fe2ff43180f6e60ce2c43e2b070bb4c8b4df6a166e0"
+  },
+  "reviews": [
+    "team-review.json",
+    "final-review-findings.json",
+    "gpu-routing-integration-review.json",
+    "cli-session-master-integration-review.json",
+    "cli-reference-drift-review.json",
+    "gpu-shutdown-static-review.json",
+    "gpu-shutdown-patch-review.json"
+  ],
+  "failuresRetained": "Original clearing fixture expectation, dependency environment failures, interrupted build, GPU shutdown abort/hang backtraces, inherited CLI documentation drift and development helper output collision remain beside corrected passing runs. No suppressions or relaxed runtime assertions.",
+  "limits": [
+    "Final-head execution is Linux x86_64 GCC15 only; earlier GCC/Clang/macOS/browser evidence retains its original source identity and is not final-head platform execution.",
+    "Final Windows/macOS/browser/mobile/iOS execution and maintainer play-through not performed. Declared display skips are preserved; three focused presentation cases actually ran under Xvfb/Mesa.",
+    "No final performance acceptance or measurement claim; user explicitly removed performance requirements.",
+    "Hosted CI does not establish final-head qualification here; prior hosted environment failures/limits retained in docs-ci/review-receipt.json."
+  ]
+}

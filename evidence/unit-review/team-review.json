@@ -1,0 +1,36 @@
+{
+  "baseline": "32c7ec892b5a1dfb22bde2d9025de106e8eac4d3",
+  "corrections": "e45773b88884f472cb6b763797be2c064c745ac0",
+  "reviewType": "Independent static reviews, corrections followed by separate fresh review; execution results recorded separately",
+  "findingsAddressed": {
+    "architecture": [
+      "Mesh lookup uses presentation identity in skin preview",
+      "Validate authored animation spans against stock atlas, retaining private migrated built-in compatibility"
+    ],
+    "engine": [
+      "Honor idle clearing independently of transport/combat interruption",
+      "Use cached flight for migrated legacy vision and configured radius for authored definitions",
+      "Regression coverage for paid flight training, actual visibility and save/resume"
+    ],
+    "documentation": [
+      "Complete setup and production example",
+      "Field reference and bounds",
+      "Legacy loading stages and capability paging",
+      "Clarify cargo sidecar and interaction-row lifetime/hash collisions"
+    ],
+    "independent_corrections": [
+      "Correct example scheduling to weighted_committed_job",
+      "Add executable authoring example including actual birth and material accounting",
+      "No remaining static blockers reported"
+    ]
+  },
+  "newRegressionCases": 7,
+  "mergeAuthorization": "User explicitly authorized merge after team review; no additional permission requested",
+  "reviewers": [
+    "final_architecture_review",
+    "final_engine_review",
+    "final_docs_tests_review",
+    "final_corrections_independent_review"
+  ],
+  "rebaseProof": "integration-before.json and integration-after.json establish a clean rebase with exactly the independently computed merge tree."
+}

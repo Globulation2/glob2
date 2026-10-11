@@ -1,0 +1,138 @@
+{
+  "reviewer": "gpu_unit_integration_review",
+  "review_utc": "2026-10-11T03:13:13.661657+00:00",
+  "tested_source": "1506403c7a154ba4a200e45312f2ee5793d86568",
+  "review_result": "PASS: demonstrated shutdown failure resolved by bounded final-source exit tests; no remaining confirmed blocker",
+  "reviewed_patch_hashes_match_final_source": {
+    "src/field/GradientDeviceService.cpp": true,
+    "src/field/GradientDeviceService.h": true,
+    "src/app/GlobalContainer.cpp": true,
+    "test/support/TestMain.cpp": true,
+    "src/map/gradient/GradientPipelineHarness.cpp": true,
+    "docs/architecture/simulation.md": true
+  },
+  "checked_receipts": {
+    "build47shutdown": {
+      "receiptSha256": "31eae8068c0f52c15253f8f9d1fe0dd0e1b958d733959ffff5e55794db28fef5",
+      "logSha256": "e84adcea6da3069d6b322225c6b5e75d528dd9fa7fd914a3c73a9950814c5458",
+      "source": "1506403c7a154ba4a200e45312f2ee5793d86568",
+      "exitCode": 0
+    },
+    "engine47shutdown": {
+      "receiptSha256": "f3dde5426d04a28dea3a20e6bb9162794fbcf5e90d18f9ba3f1ba9eae6953577",
+      "logSha256": "da56d1301df123c1eb0c9e9db09e79641c49dd1116706ea1b5b8cd8b2093b5e2",
+      "source": "1506403c7a154ba4a200e45312f2ee5793d86568",
+      "exitCode": 0
+    },
+    "unit47shutdown": {
+      "receiptSha256": "ab7b5a10376bc02a8beaa58ec2e38249f895502b5ae25c2e452fad44258193ee",
+      "logSha256": "ca87b6e2a5ad2660452bb2d9f07a003ad610d078ee2dfa5344a52ed33e0639df",
+      "source": "1506403c7a154ba4a200e45312f2ee5793d86568",
+      "exitCode": 0
+    },
+    "presentation47shutdown": {
+      "receiptSha256": "7f109bc99e87b781dc3c5503d2bc5ff9a27bc1205d73da2cc8034f301f7fbfa3",
+      "logSha256": "b65a8f0fc0774f34da995bee17cc45983655197def945962370137be893ce4ca",
+      "source": "1506403c7a154ba4a200e45312f2ee5793d86568",
+      "exitCode": 0
+    },
+    "cli47shutdown": {
+      "receiptSha256": "1c0b93aa9b11b506768182f92ee9ab36242999148c81a184982eaee8dfe97f73",
+      "logSha256": "eab9eb3cd0d99aeff6d6da192c59ff36b6fcd3e119bbb540031ee6b5f57e5673",
+      "source": "1506403c7a154ba4a200e45312f2ee5793d86568",
+      "exitCode": 0
+    },
+    "traces47shutdown": {
+      "receiptSha256": "882741c3518ca13c0ffe84e91840b9237c7198a059e5b6ea712bccbc8722db7b",
+      "logSha256": "52e228d9e9b9e4cd63b495505a5e279a9b48d83611c50cc21bfaf0373a427539",
+      "source": "1506403c7a154ba4a200e45312f2ee5793d86568",
+      "exitCode": 0
+    },
+    "shutdown47fixed": {
+      "receiptSha256": "9cb4b46b97cc5a7bf619fd78b3b44724b156488ef283e6aadf79ce1c3f921837",
+      "logSha256": "29087ceb5959fe7b9df27ac4f3cef4f8c44ba311f20cc30431d4090b857ef5dd",
+      "source": "1506403c7a154ba4a200e45312f2ee5793d86568",
+      "exitCode": 0
+    },
+    "gpu47shutdown2": {
+      "receiptSha256": "fa1230ed77d3e527c678ee82e761ee42dc3d568aad23935a5ba21adc83a78fb3",
+      "logSha256": "6a678ca4cd8cbf78afc7145e3c90ef18ff486fe61bd9716511d16009e78c3d76",
+      "source": "1506403c7a154ba4a200e45312f2ee5793d86568",
+      "exitCode": 0
+    }
+  },
+  "xml_results": {
+    "engine47shutdown": {
+      "cases": 299,
+      "passed": 291,
+      "skipped": 8,
+      "failures": 0,
+      "sha256": "a915cd4cfc4506c3bc3418717e414de2166bfa74e4eb5eaaaa9e0ee4174ce4a7"
+    },
+    "unit47shutdown": {
+      "cases": 1014,
+      "passed": 990,
+      "skipped": 24,
+      "failures": 0,
+      "sha256": "f5a815fdf4580a184ee7893a51addd683a130b2f0df0c6fccea3dc5c15b8551b"
+    },
+    "presentation47shutdown": {
+      "cases": 3,
+      "passed": 3,
+      "skipped": 0,
+      "failures": 0,
+      "sha256": "148de1a6027967e8326f457ee2d960ac53e8a09bd4885211a2af126caf7e34d0"
+    },
+    "cli47shutdown": {
+      "cases": 15,
+      "passed": 15,
+      "skipped": 0,
+      "failures": 0,
+      "sha256": "5b6dd234440ad82807ffeb860614984d8d931f46a8148f34f97700cfe48a60d4"
+    }
+  },
+  "shutdown_runs": {
+    "total": 24,
+    "groups": [
+      {
+        "mode": "cpu",
+        "computeThreads": "2",
+        "normalExits": 4
+      },
+      {
+        "mode": "gpu",
+        "computeThreads": "2",
+        "normalExits": 16
+      },
+      {
+        "mode": "gpu",
+        "computeThreads": "auto",
+        "normalExits": 4
+      }
+    ],
+    "checksumRecordsPerRun": 842,
+    "allActualTraceFilesValidated": true,
+    "traceSha256": "f29f0e00acdb3bc32019ce0ccb955e83a5af072138df632a3b22c183ec23b3ce",
+    "manifestSha256": "a6b03dc00ca11ef33e5340e3a719e41a493e5b9fdd27c17408e452d89dbcb5f0"
+  },
+  "restart_test": "GradientPipeline/application shutdown joins background initialization and later registrations restart is present and passes in final unit XML.",
+  "gpu_on_off": {
+    "ticks": 512,
+    "actualWorldAndReplayTraceBytesEqual": true,
+    "replaySha256": "42d882fefc7c4021408a2fe2ff43180f6e60ce2c43e2b070bb4c8b4df6a166e0",
+    "worldSha256": "cd6991b9d3eae9e0868bd7d9af92452a1f686f2306797e1615667a9d2f1280e6",
+    "device": "NVIDIA GeForce RTX 2070 SUPER",
+    "error": "",
+    "coordinatorReady": 1,
+    "deviceDispatches": 0,
+    "committedDeviceFields": 0
+  },
+  "claim_limits": [
+    "512-tick GPU-on/off run proves requested mode, NVIDIA RTX2070 initialization and exact CPU fallback. It has0 device dispatches/commits, so does not independently prove GPU field execution parity.",
+    "24 successful exits are bounded evidence, not exhaustive proof for every driver/platform.",
+    "Final XML skips remain omitted; final-source Windows/macOS/browser/mobile execution was not independently checked by this reviewer.",
+    "No performance claim or requirement assessed.",
+    "Original failing GPU helper receipt preserved; fresh unique-output passing receipt is used, with collision classification supplied separately.",
+    "Reviewer inspected source hashes, receipts, logs, XML and actual checksum files; did not execute game/build commands."
+  ]
+}
