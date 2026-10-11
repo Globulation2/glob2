@@ -1,0 +1,8 @@
+baseline startup {'allocations': 3036880, 'peak_heap': '619.63M', 'peak_stack_bytes': 619630349, 'fingerprints': ['508276fc863b73cb']}
+baseline reload {'allocations': 3039397, 'peak_heap': '890.58M', 'peak_stack_bytes': 890584443, 'fingerprints': ['82d43ffadd26555f', '508276fc863b73cb']}
+a startup {'allocations': 2768883, 'peak_heap': '599.81M', 'peak_stack_bytes': 599810779, 'fingerprints': ['508276fc863b73cb']}
+a reload {'allocations': 2772789, 'peak_heap': '890.53M', 'peak_stack_bytes': 890534872, 'fingerprints': ['82d43ffadd26555f', '508276fc863b73cb']}
+b startup {'allocations': 3035859, 'peak_heap': '614.91M', 'peak_stack_bytes': 614907488, 'fingerprints': ['508276fc863b73cb']}
+b reload {'allocations': 3040614, 'peak_heap': '759.66M', 'peak_stack_bytes': 759662646, 'fingerprints': ['82d43ffadd26555f', '508276fc863b73cb']}
+ab startup {'allocations': 2764015, 'peak_heap': '599.86M', 'peak_stack_bytes': 599857324, 'fingerprints': ['508276fc863b73cb']}
+ab reload {'allocations': 2770919, 'peak_heap': '759.61M', 'peak_stack_bytes': 759605172, 'fingerprints': ['82d43ffadd26555f', '508276fc863b73cb']}

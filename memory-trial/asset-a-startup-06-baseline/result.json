@@ -1,0 +1,1322 @@
+{
+  "cpu_reservation": {
+    "cgroup": "0::/glob2-benchmark-0d114ec2f873457bb35bc2004a4799fa",
+    "path": "/sys/fs/cgroup/glob2-benchmark-0d114ec2f873457bb35bc2004a4799fa",
+    "engine_cpus": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "reserved_cpus": "0-7,16-23",
+    "partition": "root"
+  },
+  "cpu_before": {
+    "monotonic_seconds": 2945320.121576155,
+    "busy_jiffies": {
+      "cpu0": 70094507,
+      "cpu1": 68024081,
+      "cpu2": 66397665,
+      "cpu3": 64113396,
+      "cpu4": 76634591,
+      "cpu5": 68622434,
+      "cpu6": 67531556,
+      "cpu7": 67664355,
+      "cpu8": 72840044,
+      "cpu9": 65566956,
+      "cpu10": 64787516,
+      "cpu11": 64355321,
+      "cpu12": 71781368,
+      "cpu13": 66191297,
+      "cpu14": 64856945,
+      "cpu15": 47344571,
+      "cpu16": 74083584,
+      "cpu17": 63375242,
+      "cpu18": 62805710,
+      "cpu19": 63526481,
+      "cpu20": 65265036,
+      "cpu21": 64663685,
+      "cpu22": 63870431,
+      "cpu23": 63482072,
+      "cpu24": 64794013,
+      "cpu25": 66364341,
+      "cpu26": 65158478,
+      "cpu27": 64703863,
+      "cpu28": 67166628,
+      "cpu29": 66125950,
+      "cpu30": 64374335,
+      "cpu31": 46535822
+    },
+    "clock_ticks_per_second": 100,
+    "frequency_boundary": {
+      "0": {
+        "scaling_cur_freq": "1997913",
+        "scaling_governor": "schedutil"
+      },
+      "1": {
+        "scaling_cur_freq": "3999332",
+        "scaling_governor": "schedutil"
+      },
+      "2": {
+        "scaling_cur_freq": "2200000",
+        "scaling_governor": "schedutil"
+      },
+      "3": {
+        "scaling_cur_freq": "2200000",
+        "scaling_governor": "schedutil"
+      },
+      "4": {
+        "scaling_cur_freq": "2199648",
+        "scaling_governor": "schedutil"
+      },
+      "5": {
+        "scaling_cur_freq": "2200000",
+        "scaling_governor": "schedutil"
+      },
+      "6": {
+        "scaling_cur_freq": "2200000",
+        "scaling_governor": "schedutil"
+      },
+      "7": {
+        "scaling_cur_freq": "2199646",
+        "scaling_governor": "schedutil"
+      }
+    }
+  },
+  "cpu_after": {
+    "monotonic_seconds": 2945327.549546215,
+    "busy_jiffies": {
+      "cpu0": 70094783,
+      "cpu1": 68024227,
+      "cpu2": 66397765,
+      "cpu3": 64113481,
+      "cpu4": 76634666,
+      "cpu5": 68622932,
+      "cpu6": 67531674,
+      "cpu7": 67664522,
+      "cpu8": 72840554,
+      "cpu9": 65567592,
+      "cpu10": 64788106,
+      "cpu11": 64355917,
+      "cpu12": 71781847,
+      "cpu13": 66191751,
+      "cpu14": 64857558,
+      "cpu15": 47345300,
+      "cpu16": 74083584,
+      "cpu17": 63375242,
+      "cpu18": 62805710,
+      "cpu19": 63526481,
+      "cpu20": 65265036,
+      "cpu21": 64663685,
+      "cpu22": 63870431,
+      "cpu23": 63482072,
+      "cpu24": 64794696,
+      "cpu25": 66364852,
+      "cpu26": 65159007,
+      "cpu27": 64704374,
+      "cpu28": 67167245,
+      "cpu29": 66126596,
+      "cpu30": 64375073,
+      "cpu31": 46536495
+    },
+    "clock_ticks_per_second": 100,
+    "frequency_boundary": {
+      "0": {
+        "scaling_cur_freq": "2199373",
+        "scaling_governor": "schedutil"
+      },
+      "1": {
+        "scaling_cur_freq": "2200000",
+        "scaling_governor": "schedutil"
+      },
+      "2": {
+        "scaling_cur_freq": "2200000",
+        "scaling_governor": "schedutil"
+      },
+      "3": {
+        "scaling_cur_freq": "2200000",
+        "scaling_governor": "schedutil"
+      },
+      "4": {
+        "scaling_cur_freq": "2199648",
+        "scaling_governor": "schedutil"
+      },
+      "5": {
+        "scaling_cur_freq": "2199653",
+        "scaling_governor": "schedutil"
+      },
+      "6": {
+        "scaling_cur_freq": "2200000",
+        "scaling_governor": "schedutil"
+      },
+      "7": {
+        "scaling_cur_freq": "2199648",
+        "scaling_governor": "schedutil"
+      }
+    }
+  },
+  "cpu_activity": {
+    "snapshot_elapsed_seconds": 7.427970060147345,
+    "per_cpu_busy_seconds": {
+      "cpu0": 2.76,
+      "cpu1": 1.46,
+      "cpu2": 1.0,
+      "cpu3": 0.85,
+      "cpu4": 0.75,
+      "cpu5": 4.98,
+      "cpu6": 1.18,
+      "cpu7": 1.67,
+      "cpu8": 5.1,
+      "cpu9": 6.36,
+      "cpu10": 5.9,
+      "cpu11": 5.96,
+      "cpu12": 4.79,
+      "cpu13": 4.54,
+      "cpu14": 6.13,
+      "cpu15": 7.29,
+      "cpu16": 0.0,
+      "cpu17": 0.0,
+      "cpu18": 0.0,
+      "cpu19": 0.0,
+      "cpu20": 0.0,
+      "cpu21": 0.0,
+      "cpu22": 0.0,
+      "cpu23": 0.0,
+      "cpu24": 6.83,
+      "cpu25": 5.11,
+      "cpu26": 5.29,
+      "cpu27": 5.11,
+      "cpu28": 6.17,
+      "cpu29": 6.46,
+      "cpu30": 7.38,
+      "cpu31": 6.73
+    },
+    "engine_busy_seconds": 14.65,
+    "child_cpu_seconds": 11.13437,
+    "approximate_other_engine_cpu_seconds": 3.51563,
+    "note": "Coarse boundary /proc/stat counters; includes runner, interrupts and kernel activity. Other host work is confined outside the reserved physical cores. Frequency is a boundary snapshot, not an interval measurement."
+  },
+  "exit_code": 0,
+  "wall_seconds": 7.428084799088538,
+  "process_cpu_seconds": 11.13437,
+  "kernel_peak_rss_kib": 714588,
+  "competing_builds_or_games": [],
+  "samples": [
+    {
+      "VmHWM": 17072,
+      "VmRSS": 17072,
+      "VmSwap": 0,
+      "Threads": 1,
+      "seconds": 0.025251809041947126,
+      "texture_bytes": 0,
+      "texture_count": 0
+    },
+    {
+      "VmHWM": 57720,
+      "VmRSS": 57720,
+      "VmSwap": 0,
+      "Threads": 3,
+      "seconds": 0.1261684582568705,
+      "texture_bytes": 0,
+      "texture_count": 0
+    },
+    {
+      "VmHWM": 63736,
+      "VmRSS": 63736,
+      "VmSwap": 0,
+      "Threads": 3,
+      "seconds": 0.22659865906462073,
+      "texture_bytes": 0,
+      "texture_count": 0
+    },
+    {
+      "VmHWM": 75056,
+      "VmRSS": 75056,
+      "VmSwap": 0,
+      "Threads": 13,
+      "seconds": 0.3270063712261617,
+      "texture_bytes": 0,
+      "texture_count": 0
+    },
+    {
+      "VmHWM": 262032,
+      "VmRSS": 262032,
+      "VmSwap": 0,
+      "Threads": 13,
+      "seconds": 0.42754832236096263,
+      "texture_bytes": 1092096,
+      "texture_count": 39
+    },
+    {
+      "VmHWM": 269868,
+      "VmRSS": 269508,
+      "VmSwap": 0,
+      "Threads": 13,
+      "seconds": 0.5281728622503579,
+      "texture_bytes": 4434352,
+      "texture_count": 56
+    },
+    {
+      "VmHWM": 272680,
+      "VmRSS": 270016,
+      "VmSwap": 0,
+      "Threads": 13,
+      "seconds": 0.6288515320047736,
+      "texture_bytes": 9217040,
+      "texture_count": 78
+    },
+    {
+      "VmHWM": 285372,
+      "VmRSS": 285372,
+      "VmSwap": 0,
+      "Threads": 13,
+      "seconds": 0.7294414122588933,
+      "texture_bytes": 13503488,
+      "texture_count": 82
+    },
+    {
+      "VmHWM": 285372,
+      "VmRSS": 285372,
+      "VmSwap": 0,
+      "Threads": 13,
+      "seconds": 0.8300000531598926,
+      "texture_bytes": 22110128,
+      "texture_count": 198
+    },
+    {
+      "VmHWM": 285372,
+      "VmRSS": 285372,
+      "VmSwap": 0,
+      "Threads": 13,
+      "seconds": 0.9302779450081289,
+      "texture_bytes": 25517856,
+      "texture_count": 236
+    },
+    {
+      "VmHWM": 289468,
+      "VmRSS": 289468,
+      "VmSwap": 0,
+      "Threads": 13,
+      "seconds": 1.0735156312584877,
+      "texture_bytes": 31141632,
+      "texture_count": 332
+    },
+    {
+      "VmHWM": 381156,
+      "VmRSS": 381156,
+      "VmSwap": 0,
+      "Threads": 13,
+      "seconds": 1.4150087260641158,
+      "texture_bytes": 44338816,
+      "texture_count": 437
+    },
+    {
+      "VmHWM": 381156,
+      "VmRSS": 381156,
+      "VmSwap": 0,
+      "Threads": 13,
+      "seconds": 1.5156285669654608,
+      "texture_bytes": 49931200,
+      "texture_count": 445
+    },
+    {
+      "VmHWM": 381156,
+      "VmRSS": 381156,
+      "VmSwap": 0,
+      "Threads": 13,
+      "seconds": 1.6159086590632796,
+      "texture_bytes": 55174064,
+      "texture_count": 452
+    },
+    {
+      "VmHWM": 381156,
+      "VmRSS": 381156,
+      "VmSwap": 0,
+      "Threads": 13,
+      "seconds": 1.7161994511261582,
+      "texture_bytes": 59493696,
+      "texture_count": 509
+    },
+    {
+      "VmHWM": 381156,
+      "VmRSS": 381156,
+      "VmSwap": 0,
+      "Threads": 13,
+      "seconds": 1.816482624039054,
+      "texture_bytes": 64206464,
+      "texture_count": 587
+    },
+    {
+      "VmHWM": 381156,
+      "VmRSS": 381156,
+      "VmSwap": 0,
+      "Threads": 13,
+      "seconds": 1.9167912062257528,
+      "texture_bytes": 66625536,
+      "texture_count": 645
+    },
+    {
+      "VmHWM": 423968,
+      "VmRSS": 423156,
+      "VmSwap": 0,
+      "Threads": 13,
+      "seconds": 2.0172512573190033,
+      "texture_bytes": 70475792,
+      "texture_count": 736
+    },
+    {
+      "VmHWM": 438248,
+      "VmRSS": 416108,
+      "VmSwap": 0,
+      "Threads": 13,
+      "seconds": 2.1604871433228254,
+      "texture_bytes": 95122880,
+      "texture_count": 721
+    },
+    {
+      "VmHWM": 477872,
+      "VmRSS": 477872,
+      "VmSwap": 0,
+      "Threads": 13,
+      "seconds": 2.5004284870810807,
+      "texture_bytes": 101265504,
+      "texture_count": 981
+    },
+    {
+      "VmHWM": 531540,
+      "VmRSS": 531540,
+      "VmSwap": 0,
+      "Threads": 13,
+      "seconds": 2.6013796064071357,
+      "texture_bytes": 104738576,
+      "texture_count": 1048
+    },
+    {
+      "VmHWM": 565140,
+      "VmRSS": 565140,
+      "VmSwap": 0,
+      "Threads": 13,
+      "seconds": 2.702312784269452,
+      "texture_bytes": 107796736,
+      "texture_count": 1083
+    },
+    {
+      "VmHWM": 591504,
+      "VmRSS": 553780,
+      "VmSwap": 0,
+      "Threads": 13,
+      "seconds": 2.803228151984513,
+      "texture_bytes": 252565440,
+      "texture_count": 1146
+    },
+    {
+      "VmHWM": 656880,
+      "VmRSS": 598480,
+      "VmSwap": 0,
+      "Threads": 13,
+      "seconds": 2.903559795115143,
+      "texture_bytes": 252565440,
+      "texture_count": 1146
+    },
+    {
+      "VmHWM": 656880,
+      "VmRSS": 534196,
+      "VmSwap": 0,
+      "Threads": 13,
+      "seconds": 3.0042637339793146,
+      "texture_bytes": 233691072,
+      "texture_count": 1149
+    },
+    {
+      "VmHWM": 656880,
+      "VmRSS": 526816,
+      "VmSwap": 0,
+      "Threads": 13,
+      "seconds": 3.1045499769970775,
+      "texture_bytes": 207980368,
+      "texture_count": 912
+    },
+    {
+      "VmHWM": 656880,
+      "VmRSS": 526816,
+      "VmSwap": 0,
+      "Threads": 13,
+      "seconds": 3.247510335408151,
+      "texture_bytes": 211780512,
+      "texture_count": 1088
+    },
+    {
+      "VmHWM": 656880,
+      "VmRSS": 527652,
+      "VmSwap": 0,
+      "Threads": 13,
+      "seconds": 3.586780533194542,
+      "texture_bytes": 225366976,
+      "texture_count": 1349
+    },
+    {
+      "VmHWM": 656880,
+      "VmRSS": 527652,
+      "VmSwap": 0,
+      "Threads": 13,
+      "seconds": 3.6872023143805563,
+      "texture_bytes": 227988032,
+      "texture_count": 1425
+    },
+    {
+      "VmHWM": 656880,
+      "VmRSS": 527972,
+      "VmSwap": 0,
+      "Threads": 13,
+      "seconds": 3.7876548459753394,
+      "texture_bytes": 231018592,
+      "texture_count": 1519
+    },
+    {
+      "VmHWM": 656880,
+      "VmRSS": 529632,
+      "VmSwap": 0,
+      "Threads": 13,
+      "seconds": 3.8880794271826744,
+      "texture_bytes": 233403248,
+      "texture_count": 1628
+    },
+    {
+      "VmHWM": 656880,
+      "VmRSS": 532452,
+      "VmSwap": 0,
+      "Threads": 13,
+      "seconds": 3.9884967389516532,
+      "texture_bytes": 235763328,
+      "texture_count": 1736
+    },
+    {
+      "VmHWM": 656880,
+      "VmRSS": 559776,
+      "VmSwap": 0,
+      "Threads": 13,
+      "seconds": 4.088905851356685,
+      "texture_bytes": 284449440,
+      "texture_count": 1863
+    },
+    {
+      "VmHWM": 656880,
+      "VmRSS": 560160,
+      "VmSwap": 0,
+      "Threads": 13,
+      "seconds": 4.189310212153941,
+      "texture_bytes": 287176816,
+      "texture_count": 2075
+    },
+    {
+      "VmHWM": 656880,
+      "VmRSS": 563572,
+      "VmSwap": 0,
+      "Threads": 13,
+      "seconds": 4.336070038378239,
+      "texture_bytes": 292089776,
+      "texture_count": 2401
+    },
+    {
+      "VmHWM": 656880,
+      "VmRSS": 577400,
+      "VmSwap": 0,
+      "Threads": 13,
+      "seconds": 4.676927505992353,
+      "texture_bytes": 307707024,
+      "texture_count": 3216
+    },
+    {
+      "VmHWM": 656880,
+      "VmRSS": 584012,
+      "VmSwap": 0,
+      "Threads": 13,
+      "seconds": 4.777323258109391,
+      "texture_bytes": 311791520,
+      "texture_count": 3432
+    },
+    {
+      "VmHWM": 656880,
+      "VmRSS": 590544,
+      "VmSwap": 0,
+      "Threads": 13,
+      "seconds": 4.877709509339184,
+      "texture_bytes": 315673984,
+      "texture_count": 3635
+    },
+    {
+      "VmHWM": 656880,
+      "VmRSS": 598072,
+      "VmSwap": 0,
+      "Threads": 13,
+      "seconds": 4.978074531070888,
+      "texture_bytes": 319763952,
+      "texture_count": 3849
+    },
+    {
+      "VmHWM": 656880,
+      "VmRSS": 604952,
+      "VmSwap": 0,
+      "Threads": 13,
+      "seconds": 5.0784740331582725,
+      "texture_bytes": 324001360,
+      "texture_count": 4071
+    },
+    {
+      "VmHWM": 656880,
+      "VmRSS": 611968,
+      "VmSwap": 0,
+      "Threads": 13,
+      "seconds": 5.179289932362735,
+      "texture_bytes": 328195088,
+      "texture_count": 4288
+    },
+    {
+      "VmHWM": 656880,
+      "VmRSS": 618940,
+      "VmSwap": 0,
+      "Threads": 13,
+      "seconds": 5.280103851109743,
+      "texture_bytes": 332279584,
+      "texture_count": 4505
+    },
+    {
+      "VmHWM": 656880,
+      "VmRSS": 630344,
+      "VmSwap": 0,
+      "Threads": 13,
+      "seconds": 5.423877054359764,
+      "texture_bytes": 338870496,
+      "texture_count": 4849
+    },
+    {
+      "VmHWM": 656880,
+      "VmRSS": 653932,
+      "VmSwap": 0,
+      "Threads": 13,
+      "seconds": 5.777940004132688,
+      "texture_bytes": 352838640,
+      "texture_count": 5580
+    },
+    {
+      "VmHWM": 660616,
+      "VmRSS": 660616,
+      "VmSwap": 0,
+      "Threads": 13,
+      "seconds": 5.878798233345151,
+      "texture_bytes": 356584592,
+      "texture_count": 5776
+    },
+    {
+      "VmHWM": 665920,
+      "VmRSS": 665920,
+      "VmSwap": 0,
+      "Threads": 13,
+      "seconds": 5.97956854198128,
+      "texture_bytes": 360030208,
+      "texture_count": 5957
+    },
+    {
+      "VmHWM": 671052,
+      "VmRSS": 671052,
+      "VmSwap": 0,
+      "Threads": 13,
+      "seconds": 6.080302271991968,
+      "texture_bytes": 363066288,
+      "texture_count": 6115
+    },
+    {
+      "VmHWM": 676612,
+      "VmRSS": 676612,
+      "VmSwap": 0,
+      "Threads": 13,
+      "seconds": 6.181031621992588,
+      "texture_bytes": 366451840,
+      "texture_count": 6293
+    },
+    {
+      "VmHWM": 683264,
+      "VmRSS": 683264,
+      "VmSwap": 0,
+      "Threads": 13,
+      "seconds": 6.281837701331824,
+      "texture_bytes": 369968448,
+      "texture_count": 6477
+    },
+    {
+      "VmHWM": 690324,
+      "VmRSS": 690324,
+      "VmSwap": 0,
+      "Threads": 13,
+      "seconds": 6.382669270038605,
+      "texture_bytes": 373730784,
+      "texture_count": 6673
+    },
+    {
+      "VmHWM": 700664,
+      "VmRSS": 700664,
+      "VmSwap": 0,
+      "Threads": 13,
+      "seconds": 6.526470412965864,
+      "texture_bytes": 379164048,
+      "texture_count": 6957
+    },
+    {
+      "VmHWM": 714588,
+      "VmRSS": 701596,
+      "VmSwap": 0,
+      "Threads": 13,
+      "seconds": 6.923699585255235,
+      "texture_bytes": 388345968,
+      "texture_count": 7449
+    },
+    {
+      "VmHWM": 714588,
+      "VmRSS": 701596,
+      "VmSwap": 0,
+      "Threads": 13,
+      "seconds": 7.024614884052426,
+      "texture_bytes": 388345968,
+      "texture_count": 7449
+    },
+    {
+      "VmHWM": 714588,
+      "VmRSS": 649460,
+      "VmSwap": 0,
+      "Threads": 3,
+      "seconds": 7.125132555142045,
+      "texture_bytes": 290071648,
+      "texture_count": 6775
+    },
+    {
+      "VmHWM": 714588,
+      "VmRSS": 454860,
+      "VmSwap": 0,
+      "Threads": 1,
+      "seconds": 7.225594496354461,
+      "texture_bytes": 0,
+      "texture_count": 0
+    },
+    {
+      "Threads": 1,
+      "seconds": 7.3260292070917785
+    }
+  ],
+  "gpu_samples": [
+    {
+      "seconds": 1.0735156312584877,
+      "processes": [
+        {
+          "gpu_instance_id": "N/A",
+          "compute_instance_id": "N/A",
+          "pid": "7455",
+          "type": "G",
+          "process_name": "/home/bradley/.codex/worktrees/040c/glob2/artifacts/memory-wins/baseline/asset-loading-benchmark",
+          "used_memory": "89 MiB"
+        }
+      ]
+    },
+    {
+      "seconds": 2.1604871433228254,
+      "processes": [
+        {
+          "gpu_instance_id": "N/A",
+          "compute_instance_id": "N/A",
+          "pid": "7455",
+          "type": "G",
+          "process_name": "/home/bradley/.codex/worktrees/040c/glob2/artifacts/memory-wins/baseline/asset-loading-benchmark",
+          "used_memory": "202 MiB"
+        }
+      ]
+    },
+    {
+      "seconds": 3.247510335408151,
+      "processes": [
+        {
+          "gpu_instance_id": "N/A",
+          "compute_instance_id": "N/A",
+          "pid": "7455",
+          "type": "G",
+          "process_name": "/home/bradley/.codex/worktrees/040c/glob2/artifacts/memory-wins/baseline/asset-loading-benchmark",
+          "used_memory": "512 MiB"
+        }
+      ]
+    },
+    {
+      "seconds": 4.336070038378239,
+      "processes": [
+        {
+          "gpu_instance_id": "N/A",
+          "compute_instance_id": "N/A",
+          "pid": "7455",
+          "type": "G",
+          "process_name": "/home/bradley/.codex/worktrees/040c/glob2/artifacts/memory-wins/baseline/asset-loading-benchmark",
+          "used_memory": "604 MiB"
+        }
+      ]
+    },
+    {
+      "seconds": 5.423877054359764,
+      "processes": [
+        {
+          "gpu_instance_id": "N/A",
+          "compute_instance_id": "N/A",
+          "pid": "7455",
+          "type": "G",
+          "process_name": "/home/bradley/.codex/worktrees/040c/glob2/artifacts/memory-wins/baseline/asset-loading-benchmark",
+          "used_memory": "666 MiB"
+        }
+      ]
+    },
+    {
+      "seconds": 6.526470412965864,
+      "processes": [
+        {
+          "gpu_instance_id": "N/A",
+          "compute_instance_id": "N/A",
+          "pid": "7455",
+          "type": "G",
+          "process_name": "/home/bradley/.codex/worktrees/040c/glob2/artifacts/memory-wins/baseline/asset-loading-benchmark",
+          "used_memory": "724 MiB"
+        }
+      ]
+    }
+  ],
+  "other_gpu_samples": [
+    {
+      "seconds": 1.0735156312584877,
+      "processes": [
+        {
+          "gpu_instance_id": "N/A",
+          "compute_instance_id": "N/A",
+          "pid": "1042404",
+          "type": "G",
+          "process_name": "/usr/bin/gnome-shell",
+          "used_memory": "2 MiB"
+        },
+        {
+          "gpu_instance_id": "N/A",
+          "compute_instance_id": "N/A",
+          "pid": "1488654",
+          "type": "G",
+          "process_name": "/usr/bin/gnome-shell",
+          "used_memory": "2 MiB"
+        },
+        {
+          "gpu_instance_id": "N/A",
+          "compute_instance_id": "N/A",
+          "pid": "1489030",
+          "type": "C+G",
+          "process_name": "/usr/libexec/gnome-remote-desktop-daemon",
+          "used_memory": "288 MiB"
+        },
+        {
+          "gpu_instance_id": "N/A",
+          "compute_instance_id": "N/A",
+          "pid": "390386",
+          "type": "C+G",
+          "process_name": "/usr/bin/nautilus",
+          "used_memory": "37 MiB"
+        },
+        {
+          "gpu_instance_id": "N/A",
+          "compute_instance_id": "N/A",
+          "pid": "928774",
+          "type": "C+G",
+          "process_name": "/usr/bin/ptyxis",
+          "used_memory": "21 MiB"
+        },
+        {
+          "gpu_instance_id": "N/A",
+          "compute_instance_id": "N/A",
+          "pid": "1042404",
+          "type": "G",
+          "process_name": "/usr/bin/gnome-shell",
+          "used_memory": "3 MiB"
+        },
+        {
+          "gpu_instance_id": "N/A",
+          "compute_instance_id": "N/A",
+          "pid": "1488654",
+          "type": "G",
+          "process_name": "/usr/bin/gnome-shell",
+          "used_memory": "654 MiB"
+        },
+        {
+          "gpu_instance_id": "N/A",
+          "compute_instance_id": "N/A",
+          "pid": "1492338",
+          "type": "G",
+          "process_name": "/usr/bin/Xwayland",
+          "used_memory": "4 MiB"
+        },
+        {
+          "gpu_instance_id": "N/A",
+          "compute_instance_id": "N/A",
+          "pid": "1567981",
+          "type": "G",
+          "process_name": "/usr/lib/chatgpt/ChatGPT --type=gpu-process --gpu-recent-crash-count=0 --ozone-platform=x11 --crashpad-handler-pid=1567941 --enable-crash-reporter=, --user-data-dir=/home/bradley/.config/Codex --change-stack-guard-on-fork=enable --gpu-preferences=YAAAAAAAAAAgAQAEAAAAAAAAAAAAAGAASAAAAAAAAAABAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAMAAAAAAAAAAwAAAAAAAAAAEAAAAAAAAACAAAAAAAAAAMAAAAAQAAAAAAAAAAAAAACAAAAAAAAAAIAAAAAAAAAA== --shared-files --metrics-shmem-handle=4,i,18043345347820529932,4411369045187681996,262144 --field-trial-handle=3,i,18240713093020917693,4742773267380694423,262144 --enable-features=DevToolsWebMCPSupport,DocumentPolicyIncludeJSCallStacksInCrashReports,ReportStuckThrottle --disable-features=DropInputEventsWhilePaintHolding,WebUIOmniboxAimPopup,WebUIOmniboxPopup --variations-seed-version --pseudonymization-salt-handle=7,i,5118478062605585533,16457333683776692197,4 --trace-process-track-uuid=3190708988185955192",
+          "used_memory": "56 MiB"
+        },
+        {
+          "gpu_instance_id": "N/A",
+          "compute_instance_id": "N/A",
+          "pid": "2877198",
+          "type": "C+G",
+          "process_name": "/usr/lib/claude-desktop/claude-desktop --type=gpu-process --ozone-platform=wayland --render-node-override=/dev/dri/renderD129 --crashpad-handler-pid=2877174 --enable-crash-reporter=de11ec81-5d62-4d58-b8c7-89b51aa88441,no_channel --user-data-dir=/home/bradley/.config/Claude --gpu-preferences=YAAAAAAAAAAgAQAEAAAAAAAAAAAAAGAASAAAAAAAAAABAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAMAAAAAAAAAAwAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAMAAAAAQAAAAAAAAAAAAAACAAAAAAAAAAIAAAAAAAAAA== --shared-files --field-trial-handle=3,i,5189492493760953432,6859217504746987243,262144 --enable-features=DocumentPolicyIncludeJSCallStacksInCrashReports,GlobalShortcutsPortal,GlobalShortcutsPortalPreferredTrigger,IsolatesPriorityUseProcessPriority,PdfUseShowSaveFilePicker --disable-features=DropInputEventsWhilePaintHolding,LocalNetworkAccessChecks,ScreenAIOCREnabled,SpareRendererForSitePerProcess,TraceSiteInstanceGetProcessCreation --variations-seed-version --pseudonymization-salt-handle=7,i,4617253094853028090,10400384398224726926,4 --trace-process-track-uuid=3190708988185955192 --disable-logging",
+          "used_memory": "101 MiB"
+        }
+      ]
+    },
+    {
+      "seconds": 2.1604871433228254,
+      "processes": [
+        {
+          "gpu_instance_id": "N/A",
+          "compute_instance_id": "N/A",
+          "pid": "1042404",
+          "type": "G",
+          "process_name": "/usr/bin/gnome-shell",
+          "used_memory": "2 MiB"
+        },
+        {
+          "gpu_instance_id": "N/A",
+          "compute_instance_id": "N/A",
+          "pid": "1488654",
+          "type": "G",
+          "process_name": "/usr/bin/gnome-shell",
+          "used_memory": "2 MiB"
+        },
+        {
+          "gpu_instance_id": "N/A",
+          "compute_instance_id": "N/A",
+          "pid": "1489030",
+          "type": "C+G",
+          "process_name": "/usr/libexec/gnome-remote-desktop-daemon",
+          "used_memory": "288 MiB"
+        },
+        {
+          "gpu_instance_id": "N/A",
+          "compute_instance_id": "N/A",
+          "pid": "390386",
+          "type": "C+G",
+          "process_name": "/usr/bin/nautilus",
+          "used_memory": "37 MiB"
+        },
+        {
+          "gpu_instance_id": "N/A",
+          "compute_instance_id": "N/A",
+          "pid": "928774",
+          "type": "C+G",
+          "process_name": "/usr/bin/ptyxis",
+          "used_memory": "21 MiB"
+        },
+        {
+          "gpu_instance_id": "N/A",
+          "compute_instance_id": "N/A",
+          "pid": "1042404",
+          "type": "G",
+          "process_name": "/usr/bin/gnome-shell",
+          "used_memory": "3 MiB"
+        },
+        {
+          "gpu_instance_id": "N/A",
+          "compute_instance_id": "N/A",
+          "pid": "1488654",
+          "type": "G",
+          "process_name": "/usr/bin/gnome-shell",
+          "used_memory": "661 MiB"
+        },
+        {
+          "gpu_instance_id": "N/A",
+          "compute_instance_id": "N/A",
+          "pid": "1492338",
+          "type": "G",
+          "process_name": "/usr/bin/Xwayland",
+          "used_memory": "3 MiB"
+        },
+        {
+          "gpu_instance_id": "N/A",
+          "compute_instance_id": "N/A",
+          "pid": "1567981",
+          "type": "G",
+          "process_name": "/usr/lib/chatgpt/ChatGPT --type=gpu-process --gpu-recent-crash-count=0 --ozone-platform=x11 --crashpad-handler-pid=1567941 --enable-crash-reporter=, --user-data-dir=/home/bradley/.config/Codex --change-stack-guard-on-fork=enable --gpu-preferences=YAAAAAAAAAAgAQAEAAAAAAAAAAAAAGAASAAAAAAAAAABAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAMAAAAAAAAAAwAAAAAAAAAAEAAAAAAAAACAAAAAAAAAAMAAAAAQAAAAAAAAAAAAAACAAAAAAAAAAIAAAAAAAAAA== --shared-files --metrics-shmem-handle=4,i,18043345347820529932,4411369045187681996,262144 --field-trial-handle=3,i,18240713093020917693,4742773267380694423,262144 --enable-features=DevToolsWebMCPSupport,DocumentPolicyIncludeJSCallStacksInCrashReports,ReportStuckThrottle --disable-features=DropInputEventsWhilePaintHolding,WebUIOmniboxAimPopup,WebUIOmniboxPopup --variations-seed-version --pseudonymization-salt-handle=7,i,5118478062605585533,16457333683776692197,4 --trace-process-track-uuid=3190708988185955192",
+          "used_memory": "56 MiB"
+        },
+        {
+          "gpu_instance_id": "N/A",
+          "compute_instance_id": "N/A",
+          "pid": "2877198",
+          "type": "C+G",
+          "process_name": "/usr/lib/claude-desktop/claude-desktop --type=gpu-process --ozone-platform=wayland --render-node-override=/dev/dri/renderD129 --crashpad-handler-pid=2877174 --enable-crash-reporter=de11ec81-5d62-4d58-b8c7-89b51aa88441,no_channel --user-data-dir=/home/bradley/.config/Claude --gpu-preferences=YAAAAAAAAAAgAQAEAAAAAAAAAAAAAGAASAAAAAAAAAABAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAMAAAAAAAAAAwAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAMAAAAAQAAAAAAAAAAAAAACAAAAAAAAAAIAAAAAAAAAA== --shared-files --field-trial-handle=3,i,5189492493760953432,6859217504746987243,262144 --enable-features=DocumentPolicyIncludeJSCallStacksInCrashReports,GlobalShortcutsPortal,GlobalShortcutsPortalPreferredTrigger,IsolatesPriorityUseProcessPriority,PdfUseShowSaveFilePicker --disable-features=DropInputEventsWhilePaintHolding,LocalNetworkAccessChecks,ScreenAIOCREnabled,SpareRendererForSitePerProcess,TraceSiteInstanceGetProcessCreation --variations-seed-version --pseudonymization-salt-handle=7,i,4617253094853028090,10400384398224726926,4 --trace-process-track-uuid=3190708988185955192 --disable-logging",
+          "used_memory": "101 MiB"
+        }
+      ]
+    },
+    {
+      "seconds": 3.247510335408151,
+      "processes": [
+        {
+          "gpu_instance_id": "N/A",
+          "compute_instance_id": "N/A",
+          "pid": "1042404",
+          "type": "G",
+          "process_name": "/usr/bin/gnome-shell",
+          "used_memory": "2 MiB"
+        },
+        {
+          "gpu_instance_id": "N/A",
+          "compute_instance_id": "N/A",
+          "pid": "1488654",
+          "type": "G",
+          "process_name": "/usr/bin/gnome-shell",
+          "used_memory": "2 MiB"
+        },
+        {
+          "gpu_instance_id": "N/A",
+          "compute_instance_id": "N/A",
+          "pid": "1489030",
+          "type": "C+G",
+          "process_name": "/usr/libexec/gnome-remote-desktop-daemon",
+          "used_memory": "288 MiB"
+        },
+        {
+          "gpu_instance_id": "N/A",
+          "compute_instance_id": "N/A",
+          "pid": "390386",
+          "type": "C+G",
+          "process_name": "/usr/bin/nautilus",
+          "used_memory": "37 MiB"
+        },
+        {
+          "gpu_instance_id": "N/A",
+          "compute_instance_id": "N/A",
+          "pid": "928774",
+          "type": "C+G",
+          "process_name": "/usr/bin/ptyxis",
+          "used_memory": "21 MiB"
+        },
+        {
+          "gpu_instance_id": "N/A",
+          "compute_instance_id": "N/A",
+          "pid": "1042404",
+          "type": "G",
+          "process_name": "/usr/bin/gnome-shell",
+          "used_memory": "3 MiB"
+        },
+        {
+          "gpu_instance_id": "N/A",
+          "compute_instance_id": "N/A",
+          "pid": "1488654",
+          "type": "G",
+          "process_name": "/usr/bin/gnome-shell",
+          "used_memory": "667 MiB"
+        },
+        {
+          "gpu_instance_id": "N/A",
+          "compute_instance_id": "N/A",
+          "pid": "1492338",
+          "type": "G",
+          "process_name": "/usr/bin/Xwayland",
+          "used_memory": "3 MiB"
+        },
+        {
+          "gpu_instance_id": "N/A",
+          "compute_instance_id": "N/A",
+          "pid": "1567981",
+          "type": "G",
+          "process_name": "/usr/lib/chatgpt/ChatGPT --type=gpu-process --gpu-recent-crash-count=0 --ozone-platform=x11 --crashpad-handler-pid=1567941 --enable-crash-reporter=, --user-data-dir=/home/bradley/.config/Codex --change-stack-guard-on-fork=enable --gpu-preferences=YAAAAAAAAAAgAQAEAAAAAAAAAAAAAGAASAAAAAAAAAABAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAMAAAAAAAAAAwAAAAAAAAAAEAAAAAAAAACAAAAAAAAAAMAAAAAQAAAAAAAAAAAAAACAAAAAAAAAAIAAAAAAAAAA== --shared-files --metrics-shmem-handle=4,i,18043345347820529932,4411369045187681996,262144 --field-trial-handle=3,i,18240713093020917693,4742773267380694423,262144 --enable-features=DevToolsWebMCPSupport,DocumentPolicyIncludeJSCallStacksInCrashReports,ReportStuckThrottle --disable-features=DropInputEventsWhilePaintHolding,WebUIOmniboxAimPopup,WebUIOmniboxPopup --variations-seed-version --pseudonymization-salt-handle=7,i,5118478062605585533,16457333683776692197,4 --trace-process-track-uuid=3190708988185955192",
+          "used_memory": "61 MiB"
+        },
+        {
+          "gpu_instance_id": "N/A",
+          "compute_instance_id": "N/A",
+          "pid": "2877198",
+          "type": "C+G",
+          "process_name": "/usr/lib/claude-desktop/claude-desktop --type=gpu-process --ozone-platform=wayland --render-node-override=/dev/dri/renderD129 --crashpad-handler-pid=2877174 --enable-crash-reporter=de11ec81-5d62-4d58-b8c7-89b51aa88441,no_channel --user-data-dir=/home/bradley/.config/Claude --gpu-preferences=YAAAAAAAAAAgAQAEAAAAAAAAAAAAAGAASAAAAAAAAAABAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAMAAAAAAAAAAwAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAMAAAAAQAAAAAAAAAAAAAACAAAAAAAAAAIAAAAAAAAAA== --shared-files --field-trial-handle=3,i,5189492493760953432,6859217504746987243,262144 --enable-features=DocumentPolicyIncludeJSCallStacksInCrashReports,GlobalShortcutsPortal,GlobalShortcutsPortalPreferredTrigger,IsolatesPriorityUseProcessPriority,PdfUseShowSaveFilePicker --disable-features=DropInputEventsWhilePaintHolding,LocalNetworkAccessChecks,ScreenAIOCREnabled,SpareRendererForSitePerProcess,TraceSiteInstanceGetProcessCreation --variations-seed-version --pseudonymization-salt-handle=7,i,4617253094853028090,10400384398224726926,4 --trace-process-track-uuid=3190708988185955192 --disable-logging",
+          "used_memory": "101 MiB"
+        }
+      ]
+    },
+    {
+      "seconds": 4.336070038378239,
+      "processes": [
+        {
+          "gpu_instance_id": "N/A",
+          "compute_instance_id": "N/A",
+          "pid": "1042404",
+          "type": "G",
+          "process_name": "/usr/bin/gnome-shell",
+          "used_memory": "2 MiB"
+        },
+        {
+          "gpu_instance_id": "N/A",
+          "compute_instance_id": "N/A",
+          "pid": "1488654",
+          "type": "G",
+          "process_name": "/usr/bin/gnome-shell",
+          "used_memory": "2 MiB"
+        },
+        {
+          "gpu_instance_id": "N/A",
+          "compute_instance_id": "N/A",
+          "pid": "1489030",
+          "type": "C+G",
+          "process_name": "/usr/libexec/gnome-remote-desktop-daemon",
+          "used_memory": "288 MiB"
+        },
+        {
+          "gpu_instance_id": "N/A",
+          "compute_instance_id": "N/A",
+          "pid": "390386",
+          "type": "C+G",
+          "process_name": "/usr/bin/nautilus",
+          "used_memory": "37 MiB"
+        },
+        {
+          "gpu_instance_id": "N/A",
+          "compute_instance_id": "N/A",
+          "pid": "928774",
+          "type": "C+G",
+          "process_name": "/usr/bin/ptyxis",
+          "used_memory": "21 MiB"
+        },
+        {
+          "gpu_instance_id": "N/A",
+          "compute_instance_id": "N/A",
+          "pid": "1042404",
+          "type": "G",
+          "process_name": "/usr/bin/gnome-shell",
+          "used_memory": "3 MiB"
+        },
+        {
+          "gpu_instance_id": "N/A",
+          "compute_instance_id": "N/A",
+          "pid": "1488654",
+          "type": "G",
+          "process_name": "/usr/bin/gnome-shell",
+          "used_memory": "655 MiB"
+        },
+        {
+          "gpu_instance_id": "N/A",
+          "compute_instance_id": "N/A",
+          "pid": "1492338",
+          "type": "G",
+          "process_name": "/usr/bin/Xwayland",
+          "used_memory": "3 MiB"
+        },
+        {
+          "gpu_instance_id": "N/A",
+          "compute_instance_id": "N/A",
+          "pid": "1567981",
+          "type": "G",
+          "process_name": "/usr/lib/chatgpt/ChatGPT --type=gpu-process --gpu-recent-crash-count=0 --ozone-platform=x11 --crashpad-handler-pid=1567941 --enable-crash-reporter=, --user-data-dir=/home/bradley/.config/Codex --change-stack-guard-on-fork=enable --gpu-preferences=YAAAAAAAAAAgAQAEAAAAAAAAAAAAAGAASAAAAAAAAAABAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAMAAAAAAAAAAwAAAAAAAAAAEAAAAAAAAACAAAAAAAAAAMAAAAAQAAAAAAAAAAAAAACAAAAAAAAAAIAAAAAAAAAA== --shared-files --metrics-shmem-handle=4,i,18043345347820529932,4411369045187681996,262144 --field-trial-handle=3,i,18240713093020917693,4742773267380694423,262144 --enable-features=DevToolsWebMCPSupport,DocumentPolicyIncludeJSCallStacksInCrashReports,ReportStuckThrottle --disable-features=DropInputEventsWhilePaintHolding,WebUIOmniboxAimPopup,WebUIOmniboxPopup --variations-seed-version --pseudonymization-salt-handle=7,i,5118478062605585533,16457333683776692197,4 --trace-process-track-uuid=3190708988185955192",
+          "used_memory": "95 MiB"
+        },
+        {
+          "gpu_instance_id": "N/A",
+          "compute_instance_id": "N/A",
+          "pid": "2877198",
+          "type": "C+G",
+          "process_name": "/usr/lib/claude-desktop/claude-desktop --type=gpu-process --ozone-platform=wayland --render-node-override=/dev/dri/renderD129 --crashpad-handler-pid=2877174 --enable-crash-reporter=de11ec81-5d62-4d58-b8c7-89b51aa88441,no_channel --user-data-dir=/home/bradley/.config/Claude --gpu-preferences=YAAAAAAAAAAgAQAEAAAAAAAAAAAAAGAASAAAAAAAAAABAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAMAAAAAAAAAAwAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAMAAAAAQAAAAAAAAAAAAAACAAAAAAAAAAIAAAAAAAAAA== --shared-files --field-trial-handle=3,i,5189492493760953432,6859217504746987243,262144 --enable-features=DocumentPolicyIncludeJSCallStacksInCrashReports,GlobalShortcutsPortal,GlobalShortcutsPortalPreferredTrigger,IsolatesPriorityUseProcessPriority,PdfUseShowSaveFilePicker --disable-features=DropInputEventsWhilePaintHolding,LocalNetworkAccessChecks,ScreenAIOCREnabled,SpareRendererForSitePerProcess,TraceSiteInstanceGetProcessCreation --variations-seed-version --pseudonymization-salt-handle=7,i,4617253094853028090,10400384398224726926,4 --trace-process-track-uuid=3190708988185955192 --disable-logging",
+          "used_memory": "101 MiB"
+        }
+      ]
+    },
+    {
+      "seconds": 5.423877054359764,
+      "processes": [
+        {
+          "gpu_instance_id": "N/A",
+          "compute_instance_id": "N/A",
+          "pid": "1042404",
+          "type": "G",
+          "process_name": "/usr/bin/gnome-shell",
+          "used_memory": "2 MiB"
+        },
+        {
+          "gpu_instance_id": "N/A",
+          "compute_instance_id": "N/A",
+          "pid": "1488654",
+          "type": "G",
+          "process_name": "/usr/bin/gnome-shell",
+          "used_memory": "2 MiB"
+        },
+        {
+          "gpu_instance_id": "N/A",
+          "compute_instance_id": "N/A",
+          "pid": "1489030",
+          "type": "C+G",
+          "process_name": "/usr/libexec/gnome-remote-desktop-daemon",
+          "used_memory": "288 MiB"
+        },
+        {
+          "gpu_instance_id": "N/A",
+          "compute_instance_id": "N/A",
+          "pid": "390386",
+          "type": "C+G",
+          "process_name": "/usr/bin/nautilus",
+          "used_memory": "37 MiB"
+        },
+        {
+          "gpu_instance_id": "N/A",
+          "compute_instance_id": "N/A",
+          "pid": "928774",
+          "type": "C+G",
+          "process_name": "/usr/bin/ptyxis",
+          "used_memory": "21 MiB"
+        },
+        {
+          "gpu_instance_id": "N/A",
+          "compute_instance_id": "N/A",
+          "pid": "1042404",
+          "type": "G",
+          "process_name": "/usr/bin/gnome-shell",
+          "used_memory": "3 MiB"
+        },
+        {
+          "gpu_instance_id": "N/A",
+          "compute_instance_id": "N/A",
+          "pid": "1488654",
+          "type": "G",
+          "process_name": "/usr/bin/gnome-shell",
+          "used_memory": "662 MiB"
+        },
+        {
+          "gpu_instance_id": "N/A",
+          "compute_instance_id": "N/A",
+          "pid": "1492338",
+          "type": "G",
+          "process_name": "/usr/bin/Xwayland",
+          "used_memory": "3 MiB"
+        },
+        {
+          "gpu_instance_id": "N/A",
+          "compute_instance_id": "N/A",
+          "pid": "1567981",
+          "type": "G",
+          "process_name": "/usr/lib/chatgpt/ChatGPT --type=gpu-process --gpu-recent-crash-count=0 --ozone-platform=x11 --crashpad-handler-pid=1567941 --enable-crash-reporter=, --user-data-dir=/home/bradley/.config/Codex --change-stack-guard-on-fork=enable --gpu-preferences=YAAAAAAAAAAgAQAEAAAAAAAAAAAAAGAASAAAAAAAAAABAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAMAAAAAAAAAAwAAAAAAAAAAEAAAAAAAAACAAAAAAAAAAMAAAAAQAAAAAAAAAAAAAACAAAAAAAAAAIAAAAAAAAAA== --shared-files --metrics-shmem-handle=4,i,18043345347820529932,4411369045187681996,262144 --field-trial-handle=3,i,18240713093020917693,4742773267380694423,262144 --enable-features=DevToolsWebMCPSupport,DocumentPolicyIncludeJSCallStacksInCrashReports,ReportStuckThrottle --disable-features=DropInputEventsWhilePaintHolding,WebUIOmniboxAimPopup,WebUIOmniboxPopup --variations-seed-version --pseudonymization-salt-handle=7,i,5118478062605585533,16457333683776692197,4 --trace-process-track-uuid=3190708988185955192",
+          "used_memory": "83 MiB"
+        },
+        {
+          "gpu_instance_id": "N/A",
+          "compute_instance_id": "N/A",
+          "pid": "2877198",
+          "type": "C+G",
+          "process_name": "/usr/lib/claude-desktop/claude-desktop --type=gpu-process --ozone-platform=wayland --render-node-override=/dev/dri/renderD129 --crashpad-handler-pid=2877174 --enable-crash-reporter=de11ec81-5d62-4d58-b8c7-89b51aa88441,no_channel --user-data-dir=/home/bradley/.config/Claude --gpu-preferences=YAAAAAAAAAAgAQAEAAAAAAAAAAAAAGAASAAAAAAAAAABAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAMAAAAAAAAAAwAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAMAAAAAQAAAAAAAAAAAAAACAAAAAAAAAAIAAAAAAAAAA== --shared-files --field-trial-handle=3,i,5189492493760953432,6859217504746987243,262144 --enable-features=DocumentPolicyIncludeJSCallStacksInCrashReports,GlobalShortcutsPortal,GlobalShortcutsPortalPreferredTrigger,IsolatesPriorityUseProcessPriority,PdfUseShowSaveFilePicker --disable-features=DropInputEventsWhilePaintHolding,LocalNetworkAccessChecks,ScreenAIOCREnabled,SpareRendererForSitePerProcess,TraceSiteInstanceGetProcessCreation --variations-seed-version --pseudonymization-salt-handle=7,i,4617253094853028090,10400384398224726926,4 --trace-process-track-uuid=3190708988185955192 --disable-logging",
+          "used_memory": "101 MiB"
+        }
+      ]
+    },
+    {
+      "seconds": 6.526470412965864,
+      "processes": [
+        {
+          "gpu_instance_id": "N/A",
+          "compute_instance_id": "N/A",
+          "pid": "1042404",
+          "type": "G",
+          "process_name": "/usr/bin/gnome-shell",
+          "used_memory": "2 MiB"
+        },
+        {
+          "gpu_instance_id": "N/A",
+          "compute_instance_id": "N/A",
+          "pid": "1488654",
+          "type": "G",
+          "process_name": "/usr/bin/gnome-shell",
+          "used_memory": "2 MiB"
+        },
+        {
+          "gpu_instance_id": "N/A",
+          "compute_instance_id": "N/A",
+          "pid": "1489030",
+          "type": "C+G",
+          "process_name": "/usr/libexec/gnome-remote-desktop-daemon",
+          "used_memory": "288 MiB"
+        },
+        {
+          "gpu_instance_id": "N/A",
+          "compute_instance_id": "N/A",
+          "pid": "390386",
+          "type": "C+G",
+          "process_name": "/usr/bin/nautilus",
+          "used_memory": "37 MiB"
+        },
+        {
+          "gpu_instance_id": "N/A",
+          "compute_instance_id": "N/A",
+          "pid": "928774",
+          "type": "C+G",
+          "process_name": "/usr/bin/ptyxis",
+          "used_memory": "21 MiB"
+        },
+        {
+          "gpu_instance_id": "N/A",
+          "compute_instance_id": "N/A",
+          "pid": "1042404",
+          "type": "G",
+          "process_name": "/usr/bin/gnome-shell",
+          "used_memory": "3 MiB"
+        },
+        {
+          "gpu_instance_id": "N/A",
+          "compute_instance_id": "N/A",
+          "pid": "1488654",
+          "type": "G",
+          "process_name": "/usr/bin/gnome-shell",
+          "used_memory": "668 MiB"
+        },
+        {
+          "gpu_instance_id": "N/A",
+          "compute_instance_id": "N/A",
+          "pid": "1492338",
+          "type": "G",
+          "process_name": "/usr/bin/Xwayland",
+          "used_memory": "3 MiB"
+        },
+        {
+          "gpu_instance_id": "N/A",
+          "compute_instance_id": "N/A",
+          "pid": "1567981",
+          "type": "G",
+          "process_name": "/usr/lib/chatgpt/ChatGPT --type=gpu-process --gpu-recent-crash-count=0 --ozone-platform=x11 --crashpad-handler-pid=1567941 --enable-crash-reporter=, --user-data-dir=/home/bradley/.config/Codex --change-stack-guard-on-fork=enable --gpu-preferences=YAAAAAAAAAAgAQAEAAAAAAAAAAAAAGAASAAAAAAAAAABAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAMAAAAAAAAAAwAAAAAAAAAAEAAAAAAAAACAAAAAAAAAAMAAAAAQAAAAAAAAAAAAAACAAAAAAAAAAIAAAAAAAAAA== --shared-files --metrics-shmem-handle=4,i,18043345347820529932,4411369045187681996,262144 --field-trial-handle=3,i,18240713093020917693,4742773267380694423,262144 --enable-features=DevToolsWebMCPSupport,DocumentPolicyIncludeJSCallStacksInCrashReports,ReportStuckThrottle --disable-features=DropInputEventsWhilePaintHolding,WebUIOmniboxAimPopup,WebUIOmniboxPopup --variations-seed-version --pseudonymization-salt-handle=7,i,5118478062605585533,16457333683776692197,4 --trace-process-track-uuid=3190708988185955192",
+          "used_memory": "95 MiB"
+        },
+        {
+          "gpu_instance_id": "N/A",
+          "compute_instance_id": "N/A",
+          "pid": "2877198",
+          "type": "C+G",
+          "process_name": "/usr/lib/claude-desktop/claude-desktop --type=gpu-process --ozone-platform=wayland --render-node-override=/dev/dri/renderD129 --crashpad-handler-pid=2877174 --enable-crash-reporter=de11ec81-5d62-4d58-b8c7-89b51aa88441,no_channel --user-data-dir=/home/bradley/.config/Claude --gpu-preferences=YAAAAAAAAAAgAQAEAAAAAAAAAAAAAGAASAAAAAAAAAABAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAMAAAAAAAAAAwAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAMAAAAAQAAAAAAAAAAAAAACAAAAAAAAAAIAAAAAAAAAA== --shared-files --field-trial-handle=3,i,5189492493760953432,6859217504746987243,262144 --enable-features=DocumentPolicyIncludeJSCallStacksInCrashReports,GlobalShortcutsPortal,GlobalShortcutsPortalPreferredTrigger,IsolatesPriorityUseProcessPriority,PdfUseShowSaveFilePicker --disable-features=DropInputEventsWhilePaintHolding,LocalNetworkAccessChecks,ScreenAIOCREnabled,SpareRendererForSitePerProcess,TraceSiteInstanceGetProcessCreation --variations-seed-version --pseudonymization-salt-handle=7,i,4617253094853028090,10400384398224726926,4 --trace-process-track-uuid=3190708988185955192 --disable-logging",
+          "used_memory": "101 MiB"
+        }
+      ]
+    }
+  ],
+  "sprite_samples": [],
+  "asset": [
+    {
+      "phase": "startup",
+      "ready_ms": "6499.21",
+      "cpu_ms": "10393.8",
+      "families": "133",
+      "frames": "3774",
+      "cpu_threads": "8",
+      "io_threads": "2",
+      "peak_cpu": "8",
+      "peak_reads": "2",
+      "peak_scratch": "189617492",
+      "jobs": "13667",
+      "failed": "132",
+      "oversized": "0",
+      "hd_cpu_bytes": "491478528",
+      "texture_bytes": "388345968",
+      "fingerprint": "508276fc863b73cb"
+    }
+  ]
+}

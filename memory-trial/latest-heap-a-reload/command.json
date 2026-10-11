@@ -1,0 +1,41 @@
+{
+  "command": [
+    "/usr/bin/heaptrack",
+    "-o",
+    "/home/bradley/.codex/worktrees/040c/glob2/artifacts/memory-wins/latest-heap-a-reload/trace",
+    "/home/bradley/.codex/worktrees/040c/glob2/artifacts/memory-wins/a/asset-loading-benchmark",
+    "/home/bradley/.codex/worktrees/040c/glob2/build/linux/client/release/client-full-direct-1111/runtime-assets"
+  ],
+  "benchmark_sha256": "fc521d97f47161928d8b95c2029d1d77a4f09daebd1cc6f523afd3845254c838",
+  "metadata": {
+    "base_revision": "322daa07f39c6ed8c1b9d88c2cc86156d32322ee",
+    "files": {
+      "glob2": "64790cd16d5f6e9eb50a0cc6aa6adf789ada9d77118030db8f28c6aa0da446b1",
+      "asset-loading-benchmark": "fc521d97f47161928d8b95c2029d1d77a4f09daebd1cc6f523afd3845254c838",
+      "torus-render-benchmark": "6225d8c6d63cc4796944b71ab9d573b300bcccf59a35c0dd2450aa2a8dacbb87",
+      "glob2-unit-tests": "45e39b470099c032bc1308426ec05924feea27ab751e540fa732a20282e033d4",
+      "glob2-engine-tests": "f5025b9ad92e4942e3c98b551501c255f9c1c6ff151e4d0797a5c5e723fedae6"
+    },
+    "compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+    "build_directory": "/home/bradley/.codex/worktrees/040c/glob2/build/linux/client/release/client-full-direct-1111",
+    "build_flags": "release=1 client_profile=full server=0 CXX=profile-cxx CXXFLAGS=-g1 LINKFLAGS=; wrapper drops -s only; -O3 -fwhole-program retained",
+    "options": "CXX = '/home/bradley/.codex/worktrees/040c/glob2/artifacts/memory-wins/profile-cxx'\nCXXFLAGS = '-g1'\nLINKFLAGS = ''\nrelease = True\nclient_profile = 'full'\n"
+  },
+  "cpu_reservation": {
+    "cgroup": "0::/glob2-benchmark-e9af1bea2ac64d6785789c600dfcd722",
+    "path": "/sys/fs/cgroup/glob2-benchmark-e9af1bea2ac64d6785789c600dfcd722",
+    "engine_cpus": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "reserved_cpus": "0-7,16-23",
+    "partition": "root"
+  },
+  "condition": "separate heap instrumentation; no performance claims"
+}

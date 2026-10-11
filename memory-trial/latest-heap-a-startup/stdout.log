@@ -1,0 +1,13 @@
+heaptrack output will be written to "/home/bradley/.codex/worktrees/040c/glob2/artifacts/memory-wins/latest-heap-a-startup/trace.zst"
+starting application, this might take some time...
+NOTE: heaptrack detected DEBUGINFOD_URLS but will disable it to prevent 
+unintended network delays during recording
+If you really want to use DEBUGINFOD, export HEAPTRACK_ENABLE_DEBUGINFOD=1
+ASSET_BENCHMARK phase=startup ready_ms=8761.39 cpu_ms=12551.3 families=133 frames=3774 cpu_threads=8 io_threads=2 peak_cpu=8 peak_reads=2 peak_scratch=189835944 jobs=13440 failed=132 oversized=0 hd_cpu_bytes=491478528 texture_bytes=388345968 fingerprint=508276fc863b73cb
+heaptrack stats:
+	allocations:          	2768883
+	leaked allocations:   	5365
+	temporary allocations:	129604
+Heaptrack finished! Now run the following to investigate the data:
+
+  heaptrack --analyze "/home/bradley/.codex/worktrees/040c/glob2/artifacts/memory-wins/latest-heap-a-startup/trace.zst"

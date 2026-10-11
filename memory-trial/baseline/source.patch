@@ -1,0 +1,378 @@
+diff --git a/docs/development/package-size.md b/docs/development/package-size.md
+index ae6fa6344..496301dce 100644
+--- a/docs/development/package-size.md
++++ b/docs/development/package-size.md
+@@ -107,9 +107,15 @@ so unique preview and music requests do not accumulate session metadata.
+ Never wait inside a worker or capture a mutable screen, FileManager or renderer.
+ Build `scons asset-loading-benchmark` and run the resulting tool against the same
+ runtime tree with different worker overrides. It reports wall time to final
+-readiness, worker occupancy, estimated peak scratch and a native base-layer pixel fingerprint.
++readiness, process CPU time, worker occupancy, estimated peak scratch and a
++fingerprint of native and selected HD base-layer pixels. Pixel hashing is outside
++the readiness timing window.
+ `GLOB2_ASSET_BENCHMARK_GPU=1` includes OpenGL uploads;
+-`GLOB2_ASSET_BENCHMARK_HD=1` includes installed HD artwork. Use an external RSS
++`GLOB2_ASSET_BENCHMARK_HD=1` includes installed HD artwork.
++`GLOB2_ASSET_BENCHMARK_RELOAD=1` additionally disables HD and measures its
++re-enabling to complete publication, reporting reload CPU time and fingerprints.
++Leave the HD variable unset to measure a native startup followed by an HD toggle.
++Use an external RSS
+ measurement and distinguish warm filesystem cache from cold reads.
+ 
+ Optimized exports also pack the frames of the sprites in `SPRITE_SHEETS`
+diff --git a/docs/development/rendering-benchmarks.md b/docs/development/rendering-benchmarks.md
+index 0af98e80a..70a33a623 100644
+--- a/docs/development/rendering-benchmarks.md
++++ b/docs/development/rendering-benchmarks.md
+@@ -43,7 +43,8 @@ cycles smoothly between the selected zoom and four times that zoom over 120
+ frames. It takes precedence over the seam sweep in the ordinary flat pass.
+ `GLOB2_BENCH_CAMERA_PAN=1` uses the same scrolling at a fixed zoom.
+ `GLOB2_BENCH_FRAME_TIMES=1` prints each measured and warmup frame; summaries
+-include p99 and maximum latency as well as median and p95. The benchmark finishes
++include p99 and maximum latency as well as median and p95. Per-frame records
++include process CPU time captured before diagnostic output. The benchmark finishes
+ deferred HD artwork loading before timing, so density changes compare identical
+ source artwork rather than different asset-loader progress. Keep cold frames when
+ investigating navigation stalls, and repeat cycles to distinguish first-use work
+diff --git a/libgag/src/AssetLoaderTest.cpp b/libgag/src/AssetLoaderTest.cpp
+index 0f9d36412..2af3d2b6a 100644
+--- a/libgag/src/AssetLoaderTest.cpp
++++ b/libgag/src/AssetLoaderTest.cpp
+@@ -1,6 +1,8 @@
+ // SPDX-License-Identifier: GPL-3.0-or-later
+ #include "Glob2Test.h"
+ #include <AssetLoader.h>
++#include <HighResolutionInputs.h>
++#include <GraphicContext.h>
+ #include <FileManager.h>
+ #include <ThreadSupport.h>
+ #include <atomic>
+@@ -8,6 +10,7 @@
+ #include <future>
+ #include <cstring>
+ #include <fstream>
++#include <thread>
+ 
+ namespace {
+ const unsigned char webp[] = {82,73,70,70,58,0,0,0,87,69,66,80,86,80,56,76,45,0,0,0,47,1,64,0,16,31,32,32,33,238,240,127,159,220,16,18,144,41,81,245,144,144,128,88,66,247,127,138,67,2,1,66,58,229,98,156,66,169,23,23,104,136,232,127,4,0};
+@@ -17,6 +20,68 @@ void write(const std::filesystem::path& path, const void *bytes, size_t size) {
+ }
+ }
+ TEST_SUITE("AssetLoader") {
++TEST_CASE("HD staging copies repeated uses then transfers exclusive pixels at the last use") {
++    glob2test::TempDir temp("hd-staging");
++    write(temp.path / "frame.webp", webp, sizeof(webp));
++    GAGCore::FileManager files("asset-loader-test"); files.addDir(temp.path.string());
++    for (unsigned workers : {0u, 2u}) {
++        GAGCore::AssetLoader loader(files, {workers, workers, 1024 * 1024});
++        GAGCore::HighResolutionInputs inputs;
++        inputs.add(loader, "frame.webp"); inputs.add(loader, "frame.webp");
++        const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(5);
++        while (inputs.pending() && std::chrono::steady_clock::now() < deadline) {
++            loader.poll(); std::this_thread::yield();
++        }
++        REQUIRE_FALSE(inputs.pending());
++        CHECK(inputs.size() == 2);
++        CHECK(loader.metrics().submitted == 2); // one read and one decode
++        auto first = inputs.consume("frame.webp");
++        REQUIRE(first.value); CHECK_FALSE(first.exclusive);
++        auto* pixelsOwner = first.value->surface;
++        auto copied = GAGCore::DrawableSurface::fromAssetImage(*first.value, first.exclusive, false);
++        CHECK(copied->getSDLSurface() != pixelsOwner);
++        first.value.reset();
++        auto last = inputs.consume("frame.webp");
++        REQUIRE(last.value); CHECK(last.exclusive);
++        auto adopted = GAGCore::DrawableSurface::fromAssetImage(*last.value, last.exclusive, false);
++        CHECK(adopted->getSDLSurface() == pixelsOwner);
++        CHECK(inputs.size() == 0);
++        auto* rgba = SDL_ConvertSurface(adopted->getSDLSurface(), SDL_PIXELFORMAT_RGBA32);
++        REQUIRE(rgba);
++        for (int y = 0; y < 2; ++y)
++            CHECK(std::memcmp(static_cast<char*>(rgba->pixels) + y * rgba->pitch, pixels + y * 8, 8) == 0);
++        SDL_DestroySurface(rgba);
++    }
++}
++TEST_CASE("HD staging preserves external consumers and cancellation cannot cancel their input") {
++    glob2test::TempDir temp("shared-hd-staging");
++    write(temp.path / "frame.webp", webp, sizeof(webp));
++    write(temp.path / "other.webp", webp, sizeof(webp));
++    GAGCore::FileManager files("asset-loader-test"); files.addDir(temp.path.string());
++    GAGCore::AssetLoader loader(files, {0, 0, 1024 * 1024});
++    auto retained = loader.requestImage("frame.webp", GAGCore::AssetLoader::Priority::Required, true);
++    GAGCore::HighResolutionInputs inputs;
++    inputs.add(loader, "frame.webp");
++    auto borrowed = loader.wait(retained); REQUIRE(borrowed);
++    auto shared = inputs.consume("frame.webp");
++    REQUIRE(shared.value); CHECK_FALSE(shared.exclusive);
++    CHECK(shared.value == borrowed);
++    CHECK(retained.get() == borrowed);
++    inputs.add(loader, "frame.webp"); inputs.clear();
++    CHECK(inputs.size() == 0); CHECK_FALSE(inputs.pending());
++    CHECK(retained.get() == borrowed);
++    GAGCore::HighResolutionInputs cancelled;
++    auto other = loader.requestImage("other.webp");
++    cancelled.add(loader, "other.webp", false); cancelled.clear();
++    CHECK(loader.wait(other));
++    // A missing optional input completes as a failure, without a stuck staging owner.
++    inputs.add(loader, "missing.webp");
++    const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(5);
++    while (inputs.pending() && std::chrono::steady_clock::now() < deadline) loader.poll();
++    REQUIRE_FALSE(inputs.pending());
++    CHECK_FALSE(inputs.consume("missing.webp").value);
++    CHECK(inputs.size() == 0);
++}
+ TEST_CASE("WebP requests deduplicate and preserve alpha and invisible RGB in both execution modes") {
+     glob2test::TempDir temp("parallel-assets");
+     write(temp.path / "frame.webp", webp, sizeof(webp));
+diff --git a/libgag/src/SpriteSheetTest.cpp b/libgag/src/SpriteSheetTest.cpp
+index a7d785c86..0e7ff5157 100644
+--- a/libgag/src/SpriteSheetTest.cpp
++++ b/libgag/src/SpriteSheetTest.cpp
+@@ -115,7 +115,10 @@ TEST_CASE("portable HD uses standalone frames without requesting GL atlases [dis
+     frame.close();
+     std::ofstream index(hd / "frames.txt");
+     index << "GLOB2_HIGHRES 1\n";
+-    for (int i = 0; i < 16; ++i) index << "terrain" << i << " 4 2 4 frame.webp -\n";
++    for (int i = 0; i < 16; ++i) {
++        std::filesystem::copy_file(hd / "frame.webp", hd / ("frame" + std::to_string(i) + ".webp"));
++        index << "terrain" << i << " 4 2 4 frame" << i << ".webp -\n";
++    }
+     index.close();
+     glob2test::ScopedEnvironment assets("GLOB2_ASSET_DIR", scratch.path.string().c_str());
+     glob2test::ScopedEnvironment pack("GLOB2_EXPERIMENT_TEXTURE_DIR", hd.string().c_str());
+@@ -196,7 +199,10 @@ TEST_CASE("independently encoded lossy HD atlases keep exact frame alpha [displa
+     frame.close();
+     std::ofstream index(hd / "frames.txt");
+     index << "GLOB2_HIGHRES 1\n";
+-    for (int i = 0; i < 16; ++i) index << "terrain" << i << " 4 2 4 frame.webp -\n";
++    for (int i = 0; i < 16; ++i) {
++        std::filesystem::copy_file(hd / "frame.webp", hd / ("frame" + std::to_string(i) + ".webp"));
++        index << "terrain" << i << " 4 2 4 frame" << i << ".webp -\n";
++    }
+     index.close();
+     for (int i = 0; i < 4; ++i) {
+         auto name = "terrain-atlas-mip" + std::to_string(i) + ".webp";
+@@ -249,6 +255,60 @@ TEST_CASE("independently encoded lossy HD atlases keep exact frame alpha [displa
+     GAGCore::Sprite::setHighResolution(true);
+     CHECK(GAGCore::Toolkit::assets().sourceGeneration() != generation);
+     CHECK(sprite.experimentImages[0] != published);
++    // Cancellation must release staging inputs without publishing a partial sprite.
++    {
++        glob2test::ScopedEnvironment disabledPack("GLOB2_EXPERIMENT_TEXTURE_DIR", hd.string().c_str());
++        glob2test::unsetEnv("GLOB2_EXPERIMENT_TEXTURE_DIR");
++        GAGCore::Sprite::requestHighResolution(false);
++    }
++    GAGCore::Sprite::requestHighResolution(true);
++    // An explicit experimental directory forces HD even with the preference
++    // disabled. Remove that override while testing ordinary cancellation.
++    {
++        glob2test::ScopedEnvironment disabledPack("GLOB2_EXPERIMENT_TEXTURE_DIR", hd.string().c_str());
++        glob2test::unsetEnv("GLOB2_EXPERIMENT_TEXTURE_DIR");
++        GAGCore::Sprite::requestHighResolution(false);
++        const auto cancellationDeadline = std::chrono::steady_clock::now() + std::chrono::seconds(10);
++        bool cancelled = false;
++        while (std::chrono::steady_clock::now() < cancellationDeadline) {
++            cancelled = GAGCore::Toolkit::pollAssets(2);
++            if (cancelled) break;
++            SDL_Delay(1);
++        }
++        REQUIRE(cancelled);
++        CHECK(sprite.highResolutionAtlas == nullptr);
++        CHECK(sprite.experimentImages[0] == nullptr);
++    }
++    for (int toggle = 0; toggle < 3; ++toggle) {
++        GAGCore::Sprite::setHighResolution(true);
++        REQUIRE(sprite.highResolutionAtlas != nullptr);
++        REQUIRE(sprite.experimentImages[0] != nullptr);
++        auto* surface = sprite.experimentImages[0]->getSDLSurface();
++        for (int y = 0; y < lossyAlphaFixture::height; ++y)
++            for (int x = 0; x < lossyAlphaFixture::width; ++x) {
++                Uint8 r, g, b, a;
++                REQUIRE(SDL_ReadSurfacePixel(surface, x, y, &r, &g, &b, &a));
++                CHECK(a == lossyAlphaFixture::alpha[y * lossyAlphaFixture::width + x]);
++            }
++        glob2test::ScopedEnvironment disabledPack("GLOB2_EXPERIMENT_TEXTURE_DIR", hd.string().c_str());
++        glob2test::unsetEnv("GLOB2_EXPERIMENT_TEXTURE_DIR");
++        GAGCore::Sprite::setHighResolution(false);
++    }
++    // Missing optional mips preserve the valid standalone HD frames.
++    std::filesystem::remove(hd / "terrain-atlas-mip1.webp");
++    GAGCore::Sprite::setHighResolution(true);
++    CHECK(sprite.highResolutionAtlas == nullptr);
++    REQUIRE(sprite.experimentImages[0] != nullptr);
++    // An invalid supplied mip preserves the established native-art fallback.
++    std::filesystem::copy_file(hd / "frame.webp", hd / "terrain-atlas-mip1.webp");
++    GAGCore::Sprite::setHighResolution(true);
++    CHECK(sprite.highResolutionAtlas == nullptr);
++    CHECK(sprite.experimentImages[0] == nullptr);
++    std::filesystem::copy_file(fixtures / "terrain-atlas-mip1.webp", hd / "terrain-atlas-mip1.webp",
++        std::filesystem::copy_options::overwrite_existing);
++    GAGCore::Sprite::setHighResolution(true);
++    REQUIRE(sprite.highResolutionAtlas != nullptr);
++    REQUIRE(sprite.experimentImages[0] != nullptr);
+ }
+ #endif
+ 
+diff --git a/src/render/torus/TorusRenderBenchmark.cpp b/src/render/torus/TorusRenderBenchmark.cpp
+index 42822b5e7..6aa3ec790 100644
+--- a/src/render/torus/TorusRenderBenchmark.cpp
++++ b/src/render/torus/TorusRenderBenchmark.cpp
+@@ -234,9 +234,10 @@ static int run(int argc, char **argv)
+                 glFinish();
+                 assert(glGetError() == GL_NO_ERROR);
+                 double ms = 1000.0 * (SDL_GetPerformanceCounter() - start) / SDL_GetPerformanceFrequency();
++                const double cpuMs = 1000.0 * (std::clock() - cpuStart) / CLOCKS_PER_SEC;
+                 if (std::getenv("GLOB2_BENCH_FRAME_TIMES"))
+                 {
+-                    std::printf("FRAME mode=%s frame=%d elapsed_ms=%.6f\n", label, i, ms);
++                    std::printf("FRAME mode=%s frame=%d elapsed_ms=%.6f process_cpu_ms=%.6f\n", label, i, ms, cpuMs);
+                     const auto &scopes = PerformanceTelemetry::collector().window;
+                     for (auto id : {PerformanceTelemetry::Id::TerrainCache, PerformanceTelemetry::Id::Terrain,
+                         PerformanceTelemetry::Id::Resources, PerformanceTelemetry::Id::GroundUnits})
+@@ -254,12 +255,12 @@ static int run(int argc, char **argv)
+                 }
+                 if (i < 0 && i >= -warmupFrames && i < -warmupFrames + 8)
+                     std::printf("WARMUP frame=%d elapsed_ms=%.3f process_cpu_ms=%.3f\n", i + warmupFrames, ms,
+-                        1000.0 * (std::clock() - cpuStart) / CLOCKS_PER_SEC);
++                        cpuMs);
+                 if (i >= 0)
+                 {
+                     times.push_back(ms);
+                     if (cpuStart != std::clock_t(-1))
+-                        cpuTimes.push_back(1000.0 * (std::clock() - cpuStart) / CLOCKS_PER_SEC);
++                        cpuTimes.push_back(cpuMs);
+                 }
+             }
+             std::sort(times.begin(), times.end());
+diff --git a/tools/AssetLoadingBenchmark.cpp b/tools/AssetLoadingBenchmark.cpp
+index ed6f551aa..6a14d6ce7 100644
+--- a/tools/AssetLoadingBenchmark.cpp
++++ b/tools/AssetLoadingBenchmark.cpp
+@@ -13,6 +13,12 @@
+ #include <set>
+ #include <stdexcept>
+ #include <thread>
++#ifdef WIN32
++#define NOMINMAX
++#include <windows.h>
++#else
++#include <sys/resource.h>
++#endif
+ #ifdef HAVE_OPENGL
+ #ifdef __APPLE__
+ #include <OpenGL/gl.h>
+@@ -24,6 +30,26 @@
+ class GlobalContainer;
+ GlobalContainer *globalContainer = nullptr;
+ 
++static double processCpuMs()
++{
++#ifdef WIN32
++    FILETIME created, exited, kernel, user;
++    if (!GetProcessTimes(GetCurrentProcess(), &created, &exited, &kernel, &user))
++        throw std::runtime_error("Cannot read process CPU time");
++    auto ticks = [](FILETIME time) {
++        ULARGE_INTEGER value;
++        value.LowPart = time.dwLowDateTime; value.HighPart = time.dwHighDateTime;
++        return value.QuadPart;
++    };
++    return (ticks(kernel) + ticks(user)) * 1e-4;
++#else
++    rusage usage{};
++    if (getrusage(RUSAGE_SELF, &usage)) throw std::runtime_error("Cannot read process CPU time");
++    return (usage.ru_utime.tv_sec + usage.ru_stime.tv_sec) * 1000.0 +
++        (usage.ru_utime.tv_usec + usage.ru_stime.tv_usec) / 1000.0;
++#endif
++}
++
+ int main(int argc, char **argv)
+ {
+     using namespace GAGCore;
+@@ -34,6 +60,7 @@ int main(int argc, char **argv)
+         Toolkit::initGraphic(640, 480, gpu ? GraphicContext::USEGPU : 0, "Asset loading benchmark");
+         Sprite::setHighResolution(std::getenv("GLOB2_ASSET_BENCHMARK_HD"));
+         const auto start = std::chrono::steady_clock::now();
++        const double cpuStart = processCpuMs();
+         auto directory = Toolkit::assets().requestDirectory("data/gfx");
+         auto names = Toolkit::assets().wait(directory);
+         if (!names) throw std::runtime_error(directory.error());
+@@ -58,28 +85,64 @@ int main(int argc, char **argv)
+         }
+ #endif
+         const double readyMs = std::chrono::duration<double, std::milli>(std::chrono::steady_clock::now() - start).count();
+-        std::uint64_t fingerprint = 14695981039346656037ull;
+-        auto hash = [&](const unsigned char *data, size_t size) { for (size_t i = 0; i < size; ++i) { fingerprint ^= data[i]; fingerprint *= 1099511628211ull; } };
+-        size_t frames = 0;
+-        for (const auto &name : families) {
+-            auto *sprite = Toolkit::findSprite("data/gfx/" + name);
+-            if (!sprite) throw std::runtime_error("Missing sprite: " + name);
+-            for (int i = 0; i < sprite->getFrameCount(); ++i) {
+-                ++frames;
+-                for (auto *image : {sprite->baseFrame(i)}) {
+-                    if (!image) continue;
+-                    const auto *surface = image->getSDLSurface();
+-                    for (int y = 0; y < surface->h; ++y) hash(static_cast<const unsigned char*>(surface->pixels) + y * surface->pitch, size_t(surface->w) * 4);
++        const double readyCpuMs = processCpuMs() - cpuStart;
++        auto fingerprintLayers = [&] {
++            std::uint64_t fingerprint = 14695981039346656037ull;
++            auto hash = [&](const unsigned char *data, size_t size) {
++                for (size_t i = 0; i < size; ++i) { fingerprint ^= data[i]; fingerprint *= 1099511628211ull; }
++            };
++            size_t frames = 0;
++            for (const auto &name : families) {
++                auto *sprite = Toolkit::findSprite("data/gfx/" + name);
++                if (!sprite) throw std::runtime_error("Missing sprite: " + name);
++                for (int i = 0; i < sprite->getFrameCount(); ++i) {
++                    ++frames;
++                    for (auto *image : {sprite->nativeFrame(i), sprite->baseFrame(i)}) {
++                        if (!image) continue;
++                        const auto *surface = image->getSDLSurface();
++                        for (int y = 0; y < surface->h; ++y)
++                            hash(static_cast<const unsigned char*>(surface->pixels) + y * surface->pitch, size_t(surface->w) * 4);
++                    }
+                 }
+             }
+-        }
++            return std::pair{fingerprint, frames};
++        };
++        const auto [fingerprint, frames] = fingerprintLayers();
+         const auto metrics = Toolkit::assets().metrics();
+-        std::cout << "ASSET_BENCHMARK ready_ms=" << readyMs << " families=" << families.size() << " frames=" << frames
++        std::cout << "ASSET_BENCHMARK phase=startup ready_ms=" << readyMs << " cpu_ms=" << readyCpuMs << " families=" << families.size() << " frames=" << frames
+             << " cpu_threads=" << metrics.cpuThreads << " io_threads=" << metrics.ioThreads
+             << " peak_cpu=" << metrics.peakCpu << " peak_reads=" << metrics.peakReads
+             << " peak_scratch=" << metrics.peakWorkingBytes << " jobs=" << metrics.completed
+             << " failed=" << metrics.failed << " oversized=" << metrics.oversizedJobs
+-            << " fingerprint=" << std::hex << fingerprint << std::dec << '\n';
++            << " hd_cpu_bytes=" << Sprite::highResolutionStats().cpuBytes
++            << " texture_bytes=" << DrawableSurface::allocatedTextureBytes()
++            << " fingerprint=" << std::hex << fingerprint << std::dec << std::endl;
++        if (std::getenv("GLOB2_ASSET_BENCHMARK_RELOAD")) {
++            Sprite::setHighResolution(false);
++            const auto reloadStart = std::chrono::steady_clock::now();
++            const double reloadCpuStart = processCpuMs();
++            Sprite::requestHighResolution(true);
++            const auto reloadDeadline = reloadStart + std::chrono::minutes(3);
++            while (!Toolkit::pollAssets(2)) {
++                if (std::chrono::steady_clock::now() >= reloadDeadline) throw std::runtime_error("HD reload timed out");
++                std::this_thread::sleep_for(std::chrono::milliseconds(1));
++            }
++#ifdef HAVE_OPENGL
++            if (gpu) {
++                glFinish();
++                if (glGetError() != GL_NO_ERROR) throw std::runtime_error("HD reload produced an OpenGL error");
++            }
++#endif
++            const double reloadMs = std::chrono::duration<double, std::milli>(std::chrono::steady_clock::now() - reloadStart).count();
++            const double reloadCpuMs = processCpuMs() - reloadCpuStart;
++            const auto [reloadFingerprint, reloadFrames] = fingerprintLayers();
++            if (std::getenv("GLOB2_ASSET_BENCHMARK_HD") && reloadFingerprint != fingerprint)
++                throw std::runtime_error("HD reload changed sprite pixels");
++            std::cout << "ASSET_BENCHMARK phase=reload ready_ms=" << reloadMs << " cpu_ms=" << reloadCpuMs
++                << " frames=" << reloadFrames << " hd_cpu_bytes=" << Sprite::highResolutionStats().cpuBytes
++                << " texture_bytes=" << DrawableSurface::allocatedTextureBytes()
++                << " fingerprint=" << std::hex << reloadFingerprint << std::dec << std::endl;
++        }
+         Toolkit::close();
+         return families.empty() ? 1 : 0;
+     } catch (const std::exception &error) {

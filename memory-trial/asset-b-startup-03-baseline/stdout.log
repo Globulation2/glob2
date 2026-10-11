@@ -1,0 +1,1 @@
+ASSET_BENCHMARK phase=startup ready_ms=6606.3 cpu_ms=10581.4 families=133 frames=3774 cpu_threads=8 io_threads=2 peak_cpu=8 peak_reads=2 peak_scratch=190909430 jobs=13656 failed=132 oversized=0 hd_cpu_bytes=491478528 texture_bytes=388345968 fingerprint=508276fc863b73cb

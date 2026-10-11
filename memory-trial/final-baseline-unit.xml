@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="32" failures="0" errors="0" skipped="0"><testsuite name="GpuTexturePreparation"><testcase classname="GpuTexturePreparation" name="SDL CPU fallback preserves pixels state and queued revisions [display]" time="0.363615" status="run" />
+  <testcase classname="GpuTexturePreparation" name="SDL premultiplication preserves pixels state and queued revisions [display]" time="0.283065" status="run" />
+  <testcase classname="GpuTexturePreparation" name="native alpha weighted mips match every CPU level and preserve GL state [display]" time="0.655186" status="run" />
+  <testcase classname="GpuTexturePreparation" name="native mip fallback preserves deletion pending programs and separate framebuffers [display]" time="0.476464" status="run" />
+  </testsuite><testsuite name="SpriteLoad"><testcase classname="SpriteLoad" name="variable frame atlas admission accounts for maximum sized padded cells [display]" time="0.376818" status="run" />
+  <testcase classname="SpriteLoad" name="ready sprite pixels publish before unrelated cooperative work" time="0.001328" status="run" />
+    <testcase classname="SpriteLoad" name="source frames prepare in parallel without a graphic context" time="0.004059" status="run" />
+    <testcase classname="SpriteLoad" name="sheet tiles retain frame order and malformed sheets fall back to WebP frames" time="0.003007" status="run" />
+  </testsuite><testsuite name="SpriteSheets"><testcase classname="SpriteSheets" name="independently encoded lossy HD atlases keep exact frame alpha [display]" time="0.333129" status="run" />
+  <testcase classname="SpriteSheets" name="portable HD uses standalone frames without requesting GL atlases [display]" time="0.377326" status="run" />
+  <testcase classname="SpriteSheets" name="sheet tiles load as the frames they were packed from" time="0.011289" status="run" />
+    <testcase classname="SpriteSheets" name="PNG artwork cannot enter the WebP sprite path" time="0.012423" status="run" />
+    <testcase classname="SpriteSheets" name="Q90 sheet tiles preserve exact frame alpha" time="0.010052" status="run" />
+    <testcase classname="SpriteSheets" name="sprites without an index still load one file per frame" time="0.008025" status="run" />
+    <testcase classname="SpriteSheets" name="an index the sheets cannot satisfy falls back to the frames" time="0.032258" status="run" />
+  </testsuite><testsuite name="AssetLoader"><testcase classname="AssetLoader" name="WebP requests deduplicate and preserve alpha and invisible RGB in both execution modes" time="0.002741" status="run" />
+    <testcase classname="AssetLoader" name="read backpressure yields to decoders and retained metadata cannot stall images" time="0.003954" status="run" />
+    <testcase classname="AssetLoader" name="dependency continuations do not block workers and preparation overlaps" time="0.000507" status="run" />
+    <testcase classname="AssetLoader" name="exclusive transfer refuses copied subscriptions and borrowed payloads" time="0" status="run" />
+    <testcase classname="AssetLoader" name="retained continuation inputs survive cancellation of the caller subscription" time="0.002404" status="run" />
+    <testcase classname="AssetLoader" name="unique completed requests do not accumulate expired cache metadata" time="0.001299" status="run" />
+    <testcase classname="AssetLoader" name="reader workers overlap independently of CPU preparation" time="0.001464" status="run" />
+    <testcase classname="AssetLoader" name="finalizers run only on the owner thread and expired owners cancel publication" time="0.001431" status="run" />
+    <testcase classname="AssetLoader" name="nonpositive polling budgets do not start cooperative work or finalizers" time="0" status="run" />
+    <testcase classname="AssetLoader" name="failures cancellation invalidation and shutdown leave usable handles" time="0.000925" status="run" />
+  </testsuite><testsuite name="ImageAssets"><testcase classname="ImageAssets" name="prepared image adoption separates shared pixels and transfers exclusive pixels" time="0.000255" status="run" />
+    <testcase classname="ImageAssets" name="mip preparation preserves padded alpha weighted integer filtering" time="0.000149" status="run" />
+    <testcase classname="ImageAssets" name="WebP decoder preserves exact RGBA including transparent RGB" time="0.000176" status="run" />
+    <testcase classname="ImageAssets" name="Q90 lossy WebP preserves dimensions and exact alpha" time="0.000139" status="run" />
+    <testcase classname="ImageAssets" name="16-bit RGBA rounds normalized channels to the exporter reference" time="0.000109" status="run" />
+    <testcase classname="ImageAssets" name="Native PNG and JPEG loading and saving remain available" time="0.000507" status="run" />
+    <testcase classname="ImageAssets" name="WebP artwork lookup preserves directories without PNG alternatives" time="0.00046" status="run" />
+  </testsuite></testsuites>

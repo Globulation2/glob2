@@ -1,0 +1,8 @@
+PASS UnitHighResolutionCache/HD layer mappings and fallbacks in software rendering (0.2s)
+PASS HighResolutionIntegration/HD artwork; cursor scaling and replay fixture in software rendering [display:1024x768][artifacts] (1.5s)
+PASS UnitHighResolutionCache/HD layer mappings; fallbacks; zoom and shader cache behaviour [display] (2.8s)
+PASS EngineSession/automatic GUI sessions poll asset finalizers on the presentation thread [display] (3.9s)
+PASS HighResolutionIntegration/HD artwork; cursor scaling and replay fixture in OpenGL [display:1024x768][artifacts][writes-preferences] (60.5s)
+
+5 passed, 0 failed, 0 skipped (68.9s of test time)
+[run_tests] JUnit report: artifacts/memory-wins/final-ab-engine.xml (5 cases)

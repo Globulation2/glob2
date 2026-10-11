@@ -1,0 +1,8 @@
+PASS UnitHighResolutionCache/HD layer mappings and fallbacks in software rendering (0.3s)
+PASS HighResolutionIntegration/HD artwork; cursor scaling and replay fixture in software rendering [display:1024x768][artifacts] (2.5s)
+PASS EngineSession/automatic GUI sessions poll asset finalizers on the presentation thread [display] (3.3s)
+PASS UnitHighResolutionCache/HD layer mappings; fallbacks; zoom and shader cache behaviour [display] (6.3s)
+PASS HighResolutionIntegration/HD artwork; cursor scaling and replay fixture in OpenGL [display:1024x768][artifacts][writes-preferences] (114.7s)
+
+5 passed, 0 failed, 0 skipped (127.1s of test time)
+[run_tests] JUnit report: artifacts/memory-wins/final-baseline-engine.xml (5 cases)

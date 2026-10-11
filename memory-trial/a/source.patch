@@ -1,0 +1,739 @@
+diff --git a/docs/development/package-size.md b/docs/development/package-size.md
+index ae6fa6344..496301dce 100644
+--- a/docs/development/package-size.md
++++ b/docs/development/package-size.md
+@@ -107,9 +107,15 @@ so unique preview and music requests do not accumulate session metadata.
+ Never wait inside a worker or capture a mutable screen, FileManager or renderer.
+ Build `scons asset-loading-benchmark` and run the resulting tool against the same
+ runtime tree with different worker overrides. It reports wall time to final
+-readiness, worker occupancy, estimated peak scratch and a native base-layer pixel fingerprint.
++readiness, process CPU time, worker occupancy, estimated peak scratch and a
++fingerprint of native and selected HD base-layer pixels. Pixel hashing is outside
++the readiness timing window.
+ `GLOB2_ASSET_BENCHMARK_GPU=1` includes OpenGL uploads;
+-`GLOB2_ASSET_BENCHMARK_HD=1` includes installed HD artwork. Use an external RSS
++`GLOB2_ASSET_BENCHMARK_HD=1` includes installed HD artwork.
++`GLOB2_ASSET_BENCHMARK_RELOAD=1` additionally disables HD and measures its
++re-enabling to complete publication, reporting reload CPU time and fingerprints.
++Leave the HD variable unset to measure a native startup followed by an HD toggle.
++Use an external RSS
+ measurement and distinguish warm filesystem cache from cold reads.
+ 
+ Optimized exports also pack the frames of the sprites in `SPRITE_SHEETS`
+diff --git a/docs/development/rendering-benchmarks.md b/docs/development/rendering-benchmarks.md
+index 0af98e80a..70a33a623 100644
+--- a/docs/development/rendering-benchmarks.md
++++ b/docs/development/rendering-benchmarks.md
+@@ -43,7 +43,8 @@ cycles smoothly between the selected zoom and four times that zoom over 120
+ frames. It takes precedence over the seam sweep in the ordinary flat pass.
+ `GLOB2_BENCH_CAMERA_PAN=1` uses the same scrolling at a fixed zoom.
+ `GLOB2_BENCH_FRAME_TIMES=1` prints each measured and warmup frame; summaries
+-include p99 and maximum latency as well as median and p95. The benchmark finishes
++include p99 and maximum latency as well as median and p95. Per-frame records
++include process CPU time captured before diagnostic output. The benchmark finishes
+ deferred HD artwork loading before timing, so density changes compare identical
+ source artwork rather than different asset-loader progress. Keep cold frames when
+ investigating navigation stalls, and repeat cycles to distinguish first-use work
+diff --git a/libgag/include/SDLGraphicContext.h b/libgag/include/SDLGraphicContext.h
+index 0d51e0cf7..c04cd50bf 100644
+--- a/libgag/include/SDLGraphicContext.h
++++ b/libgag/include/SDLGraphicContext.h
+@@ -749,11 +749,12 @@ namespace GAGCore
+ 	};
+ 	
+ 	//! A sprite is a collection of images (frames) that can be displayed one after another to make an animation
++    class HighResolutionInputs;
+ 	class Sprite
+ 	{
+         friend class SpriteLoad;
+         void registerLoaded();
+-        static std::vector<AssetLoader::Handle<AssetImage>> prefetchHighResolution(const std::string&, size_t frames);
++        static HighResolutionInputs prefetchHighResolution(const std::string&, size_t frames);
+         void adoptLoaded(Sprite& prepared);
+ 	protected:
+ 		struct RotatedImage
+@@ -776,7 +777,7 @@ namespace GAGCore
+ 		std::vector <DrawableSurface *> images;
+ 		std::vector <RotatedImage *> rotated;
+ 		std::unique_ptr<Sprite> highResolutionAtlas;
+-		void createHighResolutionAtlas(std::span<AssetLoader::Handle<AssetImage>> inputs = {});
++		void createHighResolutionAtlas(HighResolutionInputs& inputs);
+ 		std::vector <DrawableSurface *> experimentImages;
+ 		std::vector <RotatedImage *> experimentRotated;
+ 
+@@ -862,7 +863,7 @@ namespace GAGCore
+ 		DrawableSurface *getColoredSurface(int index, bool experiment);
+ 		DrawableSurface *prepareDrawSurface(unsigned index, bool teamColor, bool experiment);
+         void appendHighResolutionFrame(size_t index, Sprite& target,
+-            std::span<AssetLoader::Handle<AssetImage>> inputs = {});
++            HighResolutionInputs& inputs);
+ 
+ 	public:
+ 		//! Opt into batching variable-size frames; callers must finishDrawingSprite.
+diff --git a/libgag/src/AssetLoaderTest.cpp b/libgag/src/AssetLoaderTest.cpp
+index 0f9d36412..2af3d2b6a 100644
+--- a/libgag/src/AssetLoaderTest.cpp
++++ b/libgag/src/AssetLoaderTest.cpp
+@@ -1,6 +1,8 @@
+ // SPDX-License-Identifier: GPL-3.0-or-later
+ #include "Glob2Test.h"
+ #include <AssetLoader.h>
++#include <HighResolutionInputs.h>
++#include <GraphicContext.h>
+ #include <FileManager.h>
+ #include <ThreadSupport.h>
+ #include <atomic>
+@@ -8,6 +10,7 @@
+ #include <future>
+ #include <cstring>
+ #include <fstream>
++#include <thread>
+ 
+ namespace {
+ const unsigned char webp[] = {82,73,70,70,58,0,0,0,87,69,66,80,86,80,56,76,45,0,0,0,47,1,64,0,16,31,32,32,33,238,240,127,159,220,16,18,144,41,81,245,144,144,128,88,66,247,127,138,67,2,1,66,58,229,98,156,66,169,23,23,104,136,232,127,4,0};
+@@ -17,6 +20,68 @@ void write(const std::filesystem::path& path, const void *bytes, size_t size) {
+ }
+ }
+ TEST_SUITE("AssetLoader") {
++TEST_CASE("HD staging copies repeated uses then transfers exclusive pixels at the last use") {
++    glob2test::TempDir temp("hd-staging");
++    write(temp.path / "frame.webp", webp, sizeof(webp));
++    GAGCore::FileManager files("asset-loader-test"); files.addDir(temp.path.string());
++    for (unsigned workers : {0u, 2u}) {
++        GAGCore::AssetLoader loader(files, {workers, workers, 1024 * 1024});
++        GAGCore::HighResolutionInputs inputs;
++        inputs.add(loader, "frame.webp"); inputs.add(loader, "frame.webp");
++        const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(5);
++        while (inputs.pending() && std::chrono::steady_clock::now() < deadline) {
++            loader.poll(); std::this_thread::yield();
++        }
++        REQUIRE_FALSE(inputs.pending());
++        CHECK(inputs.size() == 2);
++        CHECK(loader.metrics().submitted == 2); // one read and one decode
++        auto first = inputs.consume("frame.webp");
++        REQUIRE(first.value); CHECK_FALSE(first.exclusive);
++        auto* pixelsOwner = first.value->surface;
++        auto copied = GAGCore::DrawableSurface::fromAssetImage(*first.value, first.exclusive, false);
++        CHECK(copied->getSDLSurface() != pixelsOwner);
++        first.value.reset();
++        auto last = inputs.consume("frame.webp");
++        REQUIRE(last.value); CHECK(last.exclusive);
++        auto adopted = GAGCore::DrawableSurface::fromAssetImage(*last.value, last.exclusive, false);
++        CHECK(adopted->getSDLSurface() == pixelsOwner);
++        CHECK(inputs.size() == 0);
++        auto* rgba = SDL_ConvertSurface(adopted->getSDLSurface(), SDL_PIXELFORMAT_RGBA32);
++        REQUIRE(rgba);
++        for (int y = 0; y < 2; ++y)
++            CHECK(std::memcmp(static_cast<char*>(rgba->pixels) + y * rgba->pitch, pixels + y * 8, 8) == 0);
++        SDL_DestroySurface(rgba);
++    }
++}
++TEST_CASE("HD staging preserves external consumers and cancellation cannot cancel their input") {
++    glob2test::TempDir temp("shared-hd-staging");
++    write(temp.path / "frame.webp", webp, sizeof(webp));
++    write(temp.path / "other.webp", webp, sizeof(webp));
++    GAGCore::FileManager files("asset-loader-test"); files.addDir(temp.path.string());
++    GAGCore::AssetLoader loader(files, {0, 0, 1024 * 1024});
++    auto retained = loader.requestImage("frame.webp", GAGCore::AssetLoader::Priority::Required, true);
++    GAGCore::HighResolutionInputs inputs;
++    inputs.add(loader, "frame.webp");
++    auto borrowed = loader.wait(retained); REQUIRE(borrowed);
++    auto shared = inputs.consume("frame.webp");
++    REQUIRE(shared.value); CHECK_FALSE(shared.exclusive);
++    CHECK(shared.value == borrowed);
++    CHECK(retained.get() == borrowed);
++    inputs.add(loader, "frame.webp"); inputs.clear();
++    CHECK(inputs.size() == 0); CHECK_FALSE(inputs.pending());
++    CHECK(retained.get() == borrowed);
++    GAGCore::HighResolutionInputs cancelled;
++    auto other = loader.requestImage("other.webp");
++    cancelled.add(loader, "other.webp", false); cancelled.clear();
++    CHECK(loader.wait(other));
++    // A missing optional input completes as a failure, without a stuck staging owner.
++    inputs.add(loader, "missing.webp");
++    const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(5);
++    while (inputs.pending() && std::chrono::steady_clock::now() < deadline) loader.poll();
++    REQUIRE_FALSE(inputs.pending());
++    CHECK_FALSE(inputs.consume("missing.webp").value);
++    CHECK(inputs.size() == 0);
++}
+ TEST_CASE("WebP requests deduplicate and preserve alpha and invisible RGB in both execution modes") {
+     glob2test::TempDir temp("parallel-assets");
+     write(temp.path / "frame.webp", webp, sizeof(webp));
+diff --git a/libgag/src/Sprite.cpp b/libgag/src/Sprite.cpp
+index d5b9cef31..a04f1a9b1 100644
+--- a/libgag/src/Sprite.cpp
++++ b/libgag/src/Sprite.cpp
+@@ -52,41 +52,15 @@ namespace GAGCore
+     struct PackEntry {
+         int width, height, scale;
+         std::string base, team;
+-        size_t prefetchOffset = 0; // frame's position in each sprite's input vector
+-        bool prefetched = false;
+     };
+     static std::unordered_map<std::string, PackEntry> packEntries;
+     static AssetLoader::Handle<AssetLoader::Bytes> packSource;
+     struct HighResolutionReload {
+-        std::vector<AssetLoader::Handle<AssetImage>> inputs;
++        HighResolutionInputs inputs;
+         std::unique_ptr<Sprite> prepared;
+         size_t frame = 0;
+     };
+     static std::map<Sprite*, HighResolutionReload> pendingHighResolution;
+-    // Retire the matching prefetch subscription as each image is published.
+-    // Holding it until the whole sprite finishes prevents exclusive adoption
+-    // and retains the decoded surface, upload copy and mip chain alongside
+-    // the drawable. Independent consumers still receive isolated pixels.
+-    static std::shared_ptr<const AssetImage> consumeHighResolutionImage(
+-        const std::string& path, bool mipmaps,
+-        std::span<AssetLoader::Handle<AssetImage>> inputs, bool& exclusive)
+-    {
+-        auto& loader = Toolkit::assets();
+-        auto handle = loader.requestImage(path, AssetLoader::Priority::Required, mipmaps);
+-        exclusive = false;
+-        if (!loader.wait(handle)) return {};
+-        const auto* result = handle.dependency().subscription->result.get();
+-        for (auto& input : inputs) {
+-            const auto dependency = input.dependency();
+-            if (dependency.subscription && dependency.subscription->result.get() == result) {
+-                input = {};
+-                break;
+-            }
+-        }
+-        auto image = handle.take();
+-        exclusive = bool(image);
+-        return image ? image : handle.get();
+-    }
+     // Source decoding and standalone frame preparation work with either texture
+     // backend. Only packing those frames into the legacy atlas requires GL.
+     static bool highResolutionFramesSupported()
+@@ -446,7 +420,7 @@ namespace GAGCore
+             }
+             if (reload.frame < sprite->images.size() ||
+                 !highResolutionAtlasReady(sprite->fileName, reload.inputs) ||
+-                std::any_of(reload.inputs.begin(), reload.inputs.end(), [](const auto& handle) { return handle.pending(); })) {
++                reload.inputs.pending()) {
+                 ++it; continue;
+             }
+             reload.prepared->createHighResolutionAtlas(reload.inputs);
+@@ -476,7 +450,7 @@ namespace GAGCore
+     {
+         for(auto sprite:loadedSprites)gc->finishDrawingSprite(sprite,255);
+     }
+-    void Sprite::createHighResolutionAtlas(std::span<AssetLoader::Handle<AssetImage>> inputs)
++    void Sprite::createHighResolutionAtlas(HighResolutionInputs& inputs)
+     {
+ #ifdef HAVE_OPENGL
+         // Portable renderers retain standalone HD sources. Never query GL or
+@@ -507,10 +481,8 @@ namespace GAGCore
+         std::vector<std::unique_ptr<DrawableSurface>> levels;
+         for(int mip=0;mip<4;++mip)
+         {
+-            bool exclusive = false;
+-            auto image = consumeHighResolutionImage(
+-                directory+"/"+prefix+"-atlas-mip"+std::to_string(mip)+".webp", false, inputs, exclusive);
+-            auto* s = image ? image->surface : nullptr;
++            auto image = inputs.consume(directory+"/"+prefix+"-atlas-mip"+std::to_string(mip)+".webp", false);
++            auto* s = image.value ? image.value->surface : nullptr;
+             // A missing optional atlas keeps valid individual HD sources.
+             if(!s) return;
+             if (!mip) {
+@@ -523,7 +495,7 @@ namespace GAGCore
+                     }
+             }
+             if(s->w!=(atlasW>>mip)||s->h!=(atlasH>>mip)){reject();return;}
+-            levels.push_back(DrawableSurface::fromAssetImage(*image, exclusive));
++            levels.push_back(DrawableSurface::fromAssetImage(*image.value, image.exclusive));
+         }
+         // The atlas must correspond to this pack's validated frame layers.
+         for(int i=0;i<count;++i)for(int y=0;y<experimentImages[i]->getH();++y)
+@@ -581,101 +553,86 @@ namespace GAGCore
+ #endif
+     }
+ 
+-    static std::vector<AssetLoader::Handle<AssetImage>> highResolutionInputs(
++    static bool validHighResolutionFile(const std::string& file)
++    {
++        return file != "-" && file.find_first_of("/\\:") == std::string::npos &&
++            file.find("..") == std::string::npos;
++    }
++    static HighResolutionInputs highResolutionInputs(
+         const std::string& name, size_t frames, bool incremental)
+     {
+-        std::vector<AssetLoader::Handle<AssetImage>> handles;
+-        const char *overrideDir = std::getenv("GLOB2_EXPERIMENT_TEXTURE_DIR");
+-        if ((!highResolutionEnabled && !overrideDir) || !highResolutionFramesSupported()) return handles;
++        HighResolutionInputs inputs;
++        const char* overrideDir = std::getenv("GLOB2_EXPERIMENT_TEXTURE_DIR");
++        if ((!highResolutionEnabled && !overrideDir) || !highResolutionFramesSupported()) return inputs;
+         const std::string directory = overrideDir ? overrideDir : "data/highres/v1";
+-        if (!readPack(directory)) return handles;
++        if (!readPack(directory)) return inputs;
+         const auto prefix = name.substr(name.find_last_of('/') + 1);
+         size_t firstFrame = frames;
++        auto add = [&](const std::string& path, bool mipmaps) {
++            inputs.add(path, mipmaps);
++            if (!incremental) inputs.request(Toolkit::assets(), path, mipmaps);
++        };
+         for (size_t i = 0; i < frames; ++i) {
+             auto found = packEntries.find(prefix + std::to_string(i));
+             if (found == packEntries.end()) continue;
+-            found->second.prefetchOffset = handles.size();
+-            found->second.prefetched = true;
+-            for (const auto &file : {found->second.base, found->second.team}) {
+-                if (file == "-" || file.find_first_of("/\\:") != std::string::npos || file.find("..") != std::string::npos) continue;
++            for (const auto& file : {found->second.base, found->second.team}) {
++                if (!validHighResolutionFile(file)) continue;
+                 firstFrame = std::min(firstFrame, i);
+-                handles.push_back(incremental ? AssetLoader::Handle<AssetImage>{} :
+-                    Toolkit::assets().requestImage(directory + '/' + file, AssetLoader::Priority::Required, true));
++                add(directory + '/' + file, true);
+             }
+         }
+         if ((_gc->getOptionFlags() & GraphicContext::USEGPU) &&
+             (prefix == "terrain" || prefix == "ressource"))
+             for (int mip = 0; mip < 4; ++mip)
+-                handles.push_back(incremental ? AssetLoader::Handle<AssetImage>{} :
+-                    Toolkit::assets().requestImage(directory + '/' + prefix + "-atlas-mip" + std::to_string(mip) + ".webp"));
+-        if (incremental && firstFrame < frames) highResolutionFrameReady(name, firstFrame, handles);
+-        return handles;
++                add(directory + '/' + prefix + "-atlas-mip" + std::to_string(mip) + ".webp", false);
++        if (incremental && firstFrame < frames) highResolutionFrameReady(name, firstFrame, inputs);
++        return inputs;
+     }
+-    std::vector<AssetLoader::Handle<AssetImage>> Sprite::prefetchHighResolution(const std::string& name, size_t frames)
++    HighResolutionInputs Sprite::prefetchHighResolution(const std::string& name, size_t frames)
+     {
+         return highResolutionInputs(name, frames, false);
+     }
+-    std::vector<AssetLoader::Handle<AssetImage>> prefetchHighResolutionIncremental(const std::string& name, size_t frames)
++    HighResolutionInputs prefetchHighResolutionIncremental(const std::string& name, size_t frames)
+     {
+         return highResolutionInputs(name, frames, true);
+     }
+-    bool highResolutionFrameReady(const std::string& name, size_t index,
+-        std::span<AssetLoader::Handle<AssetImage>> inputs)
++    bool highResolutionFrameReady(const std::string& name, size_t index, HighResolutionInputs& inputs)
+     {
+         const char* overrideDir = std::getenv("GLOB2_EXPERIMENT_TEXTURE_DIR");
+         if ((!highResolutionEnabled && !overrideDir) || !highResolutionFramesSupported()) return true;
+         const std::string directory = overrideDir ? overrideDir : "data/highres/v1";
+         if (!readPack(directory)) return true;
+         const auto prefix = name.substr(name.find_last_of('/') + 1);
+-        const auto found = packEntries.find(prefix + std::to_string(index));
+-        if (found == packEntries.end()) return true;
+-        const bool atlas = (_gc->getOptionFlags() & GraphicContext::USEGPU) &&
+-            (prefix == "terrain" || prefix == "ressource");
+-        const auto frameInputs = inputs.size() - (atlas && inputs.size() >= 4 ? 4 : 0);
+-        // Bound decoded output even while the application is busy generating a
+-        // map or uploading textures. Scratch admission alone does not limit
+-        // ready images held by prefetch subscriptions.
++        // Preserve the existing eight-frame decode window and worker admission.
+         for (size_t frame = index; frame < index + 8; ++frame) {
+             auto entry = packEntries.find(prefix + std::to_string(frame));
+             if (entry == packEntries.end()) continue;
+-            if (!entry->second.prefetched || entry->second.prefetchOffset >= frameInputs) break;
+-            auto slot = entry->second.prefetchOffset;
+-            for (const auto& file : {entry->second.base, entry->second.team}) {
+-                if (file == "-" || file.find_first_of("/\\:") != std::string::npos || file.find("..") != std::string::npos) continue;
+-                if (slot >= frameInputs) break;
+-                auto& input = inputs[slot++];
+-                if (!input.dependency().subscription)
+-                    input = Toolkit::assets().requestImage(directory + '/' + file, AssetLoader::Priority::Required, true);
+-            }
+-        }
+-        auto offset = found->second.prefetchOffset;
+-        for (const auto& file : {found->second.base, found->second.team}) {
+-            if (file == "-" || file.find_first_of("/\\:") != std::string::npos || file.find("..") != std::string::npos) continue;
+-            // Consult the original subscription, including terminal failures;
+-            // requesting a failed image again would endlessly restart decoding.
+-            if (offset < inputs.size() && inputs[offset++].pending()) return false;
++            for (const auto& file : {entry->second.base, entry->second.team})
++                if (validHighResolutionFile(file)) inputs.request(Toolkit::assets(), directory + '/' + file);
+         }
++        auto found = packEntries.find(prefix + std::to_string(index));
++        if (found == packEntries.end()) return true;
++        for (const auto& file : {found->second.base, found->second.team})
++            if (validHighResolutionFile(file) && inputs.pending(directory + '/' + file)) return false;
+         return true;
+     }
+-    bool highResolutionAtlasReady(const std::string& name,
+-        std::span<AssetLoader::Handle<AssetImage>> inputs)
++    bool highResolutionAtlasReady(const std::string& name, HighResolutionInputs& inputs)
+     {
+         const auto prefix = name.substr(name.find_last_of('/') + 1);
+         if (!_gc || !(_gc->getOptionFlags() & GraphicContext::USEGPU) ||
+-            (prefix != "terrain" && prefix != "ressource") || inputs.size() < 4) return true;
++            (prefix != "terrain" && prefix != "ressource")) return true;
+         const char* overrideDir = std::getenv("GLOB2_EXPERIMENT_TEXTURE_DIR");
+         const std::string directory = overrideDir ? overrideDir : "data/highres/v1";
+         bool ready = true;
+-        for (size_t mip = 0; mip < 4; ++mip) {
+-            auto& input = inputs[inputs.size() - 4 + mip];
+-            if (!input.dependency().subscription)
+-                input = Toolkit::assets().requestImage(directory + '/' + prefix + "-atlas-mip" + std::to_string(mip) + ".webp");
+-            ready = ready && !input.pending();
++        for (int mip = 0; mip < 4; ++mip) {
++            const auto path = directory + '/' + prefix + "-atlas-mip" + std::to_string(mip) + ".webp";
++            inputs.request(Toolkit::assets(), path, false);
++            ready = ready && !inputs.pending(path, false);
+         }
+         return ready;
+     }
+     void Sprite::appendHighResolutionFrame(size_t index, Sprite& target,
+-        std::span<AssetLoader::Handle<AssetImage>> inputs)
++        HighResolutionInputs& inputs)
+     {
+         assert(target.experimentImages.size() == index && target.experimentRotated.size() == index);
+         target.experimentImages.push_back(nullptr); target.experimentRotated.push_back(nullptr);
+@@ -691,14 +648,13 @@ namespace GAGCore
+             if (name == "-" || name.find_first_of("/\\:") != std::string::npos || name.find("..") != std::string::npos) return nullptr;
+             // A partial pack may have no usable prepacked atlas. Every accepted
+             // layer needs a ready standalone texture for that fallback.
+-            bool exclusive = false;
+-            auto decoded = consumeHighResolutionImage(directory + '/' + name, true, inputs, exclusive);
+-            if (!decoded) return nullptr;
+-            auto *surface = decoded->surface;
++            auto image = inputs.consume(directory + '/' + name);
++            if (!image.value) return nullptr;
++            auto *surface = image.value->surface;
+             const int width = dynamicTeamColor ? highResolutionTextureSize : (original ? original->getW() : entry.width) * entry.scale;
+             const int height = dynamicTeamColor ? highResolutionTextureSize : (original ? original->getH() : entry.height) * entry.scale;
+             if (surface->w != width || surface->h != height) return nullptr;
+-            auto result = DrawableSurface::fromAssetImage(*decoded, exclusive);
++            auto result = DrawableSurface::fromAssetImage(*image.value, image.exclusive);
+             result->highResolutionSampling = true;
+             result->prepareTexture();
+             return result.release();
+diff --git a/libgag/src/SpriteHighResolution.h b/libgag/src/SpriteHighResolution.h
+index a3d06929b..5c58fc8e6 100644
+--- a/libgag/src/SpriteHighResolution.h
++++ b/libgag/src/SpriteHighResolution.h
+@@ -3,16 +3,16 @@
+ 
+ #include <cstddef>
+ #include <string>
+-#include <span>
++#include <HighResolutionInputs.h>
+ #include <AssetLoader.h>
+ 
+ namespace GAGCore {
+-std::vector<AssetLoader::Handle<AssetImage>> prefetchHighResolutionIncremental(
++HighResolutionInputs prefetchHighResolutionIncremental(
+     const std::string& name, size_t frames);
+ // Adopt ready HD frames into a private sprite while other frames decode.
+ // Publication still waits for the complete sprite and its optional atlas.
+ bool highResolutionFrameReady(const std::string& name, size_t index,
+-    std::span<AssetLoader::Handle<AssetImage>> inputs);
++    HighResolutionInputs& inputs);
+ bool highResolutionAtlasReady(const std::string& name,
+-    std::span<AssetLoader::Handle<AssetImage>> inputs);
++    HighResolutionInputs& inputs);
+ }
+diff --git a/libgag/src/SpriteLoad.cpp b/libgag/src/SpriteLoad.cpp
+index 3517f04a0..26bd85898 100644
+--- a/libgag/src/SpriteLoad.cpp
++++ b/libgag/src/SpriteLoad.cpp
+@@ -173,7 +173,8 @@ struct SpriteLoad::Impl {
+     bool variableAtlas = false, retried = false, complete = false;
+     AssetLoader::Handle<Sources> discovery;
+     AssetLoader::Handle<Prepared> prepared;
+-    std::vector<AssetLoader::Handle<AssetImage>> images, highResolution;
++    std::vector<AssetLoader::Handle<AssetImage>> images;
++    HighResolutionInputs highResolution;
+     std::shared_ptr<const Sources> sources;
+     std::shared_ptr<const Prepared> pixels;
+     std::unique_ptr<Sprite> sprite;
+@@ -266,7 +267,7 @@ bool SpriteLoad::pollUntil(std::chrono::steady_clock::time_point deadline) {
+     }
+     if (impl->frame != impl->sources->frames || std::chrono::steady_clock::now() >= deadline) return false;
+     if (!highResolutionAtlasReady(impl->name, impl->highResolution) ||
+-        std::any_of(impl->highResolution.begin(), impl->highResolution.end(), [](const auto& handle) { return handle.pending(); })) {
++        impl->highResolution.pending()) {
+         advanceInputs(); return false;
+     }
+     const bool uncolored = std::all_of(impl->sprite->rotated.begin(), impl->sprite->rotated.end(), [](auto p) { return !p; });
+diff --git a/libgag/src/SpriteSheetTest.cpp b/libgag/src/SpriteSheetTest.cpp
+index a7d785c86..836881b09 100644
+--- a/libgag/src/SpriteSheetTest.cpp
++++ b/libgag/src/SpriteSheetTest.cpp
+@@ -2,6 +2,7 @@
+ // GAGCore::Sprite's sheet loader (the <name>.sheet index tools/package_assets.py
+ // writes for packaged builds) and its fallback to one file per frame.
+ #include "Glob2Test.h"
++#include <HighResolutionInputs.h>
+ #include "LossyAlphaFixture.h"
+ #include "SpritePatternFixture.h"
+ #include "ScopedEnvironment.h"
+@@ -115,7 +116,10 @@ TEST_CASE("portable HD uses standalone frames without requesting GL atlases [dis
+     frame.close();
+     std::ofstream index(hd / "frames.txt");
+     index << "GLOB2_HIGHRES 1\n";
+-    for (int i = 0; i < 16; ++i) index << "terrain" << i << " 4 2 4 frame.webp -\n";
++    for (int i = 0; i < 16; ++i) {
++        std::filesystem::copy_file(hd / "frame.webp", hd / ("frame" + std::to_string(i) + ".webp"));
++        index << "terrain" << i << " 4 2 4 frame" << i << ".webp -\n";
++    }
+     index.close();
+     glob2test::ScopedEnvironment assets("GLOB2_ASSET_DIR", scratch.path.string().c_str());
+     glob2test::ScopedEnvironment pack("GLOB2_EXPERIMENT_TEXTURE_DIR", hd.string().c_str());
+@@ -127,22 +131,26 @@ TEST_CASE("portable HD uses standalone frames without requesting GL atlases [dis
+     CHECK(GAGCore::Sprite::prefetchHighResolution("data/gfx/terrain", 16).size() == 16);
+     {
+         auto inputs = GAGCore::prefetchHighResolutionIncremental("data/gfx/terrain", 16);
+-        CHECK(std::count_if(inputs.begin(), inputs.end(), [](const auto& input) {
+-            return bool(input.dependency().subscription);
+-        }) == 8);
++        for (int i = 0; i < 16; ++i) {
++            const auto state = inputs.state(hd.string() + "/frame" + std::to_string(i) + ".webp");
++            CHECK((state != GAGCore::AssetLoader::State::Cancelled) == (i < 8));
++        }
+         GAGCore::highResolutionFrameReady("data/gfx/terrain", 8, inputs);
+-        CHECK(inputs[8].dependency().subscription != nullptr);
++        CHECK(inputs.state(hd.string() + "/frame8.webp") != GAGCore::AssetLoader::State::Cancelled);
+     }
+     for (bool shared : {false, true}) {
+         auto inputs = GAGCore::Sprite::prefetchHighResolution("data/gfx/terrain", 1);
+-        REQUIRE(GAGCore::Toolkit::assets().wait(inputs.front()));
+-        std::weak_ptr<const GAGCore::AssetImage> decoded = inputs.front().get();
+-        auto* pixels = inputs.front().get()->surface;
+-        auto independent = shared ? inputs.front().retain() : GAGCore::AssetLoader::Handle<GAGCore::AssetImage>{};
++        auto inspect = GAGCore::Toolkit::assets().requestImage(hd.string() + "/frame0.webp",
++            GAGCore::AssetLoader::Priority::Required, true);
++        REQUIRE(GAGCore::Toolkit::assets().wait(inspect));
++        std::weak_ptr<const GAGCore::AssetImage> decoded = inspect.get();
++        auto* pixels = inspect.get()->surface;
++        auto independent = shared ? inspect.retain() : GAGCore::AssetLoader::Handle<GAGCore::AssetImage>{};
++        inspect = {};
+         GAGCore::Sprite prepared;
+         sprite.appendHighResolutionFrame(0, prepared, inputs);
+         REQUIRE(prepared.experimentImages[0]);
+-        CHECK(inputs.front().state() == GAGCore::AssetLoader::State::Cancelled);
++        CHECK(inputs.size() == 0);
+         if (shared) {
+             REQUIRE(independent.get());
+             CHECK(independent.get()->surface == pixels);
+@@ -249,6 +257,60 @@ TEST_CASE("independently encoded lossy HD atlases keep exact frame alpha [displa
+     GAGCore::Sprite::setHighResolution(true);
+     CHECK(GAGCore::Toolkit::assets().sourceGeneration() != generation);
+     CHECK(sprite.experimentImages[0] != published);
++    // Cancellation must release staging inputs without publishing a partial sprite.
++    {
++        glob2test::ScopedEnvironment disabledPack("GLOB2_EXPERIMENT_TEXTURE_DIR", hd.string().c_str());
++        glob2test::unsetEnv("GLOB2_EXPERIMENT_TEXTURE_DIR");
++        GAGCore::Sprite::requestHighResolution(false);
++    }
++    GAGCore::Sprite::requestHighResolution(true);
++    // An explicit experimental directory forces HD even with the preference
++    // disabled. Remove that override while testing ordinary cancellation.
++    {
++        glob2test::ScopedEnvironment disabledPack("GLOB2_EXPERIMENT_TEXTURE_DIR", hd.string().c_str());
++        glob2test::unsetEnv("GLOB2_EXPERIMENT_TEXTURE_DIR");
++        GAGCore::Sprite::requestHighResolution(false);
++        const auto cancellationDeadline = std::chrono::steady_clock::now() + std::chrono::seconds(10);
++        bool cancelled = false;
++        while (std::chrono::steady_clock::now() < cancellationDeadline) {
++            cancelled = GAGCore::Toolkit::pollAssets(2);
++            if (cancelled) break;
++            SDL_Delay(1);
++        }
++        REQUIRE(cancelled);
++        CHECK(sprite.highResolutionAtlas == nullptr);
++        CHECK(sprite.experimentImages[0] == nullptr);
++    }
++    for (int toggle = 0; toggle < 3; ++toggle) {
++        GAGCore::Sprite::setHighResolution(true);
++        REQUIRE(sprite.highResolutionAtlas != nullptr);
++        REQUIRE(sprite.experimentImages[0] != nullptr);
++        auto* surface = sprite.experimentImages[0]->getSDLSurface();
++        for (int y = 0; y < lossyAlphaFixture::height; ++y)
++            for (int x = 0; x < lossyAlphaFixture::width; ++x) {
++                Uint8 r, g, b, a;
++                REQUIRE(SDL_ReadSurfacePixel(surface, x, y, &r, &g, &b, &a));
++                CHECK(a == lossyAlphaFixture::alpha[y * lossyAlphaFixture::width + x]);
++            }
++        glob2test::ScopedEnvironment disabledPack("GLOB2_EXPERIMENT_TEXTURE_DIR", hd.string().c_str());
++        glob2test::unsetEnv("GLOB2_EXPERIMENT_TEXTURE_DIR");
++        GAGCore::Sprite::setHighResolution(false);
++    }
++    // Missing optional mips preserve the valid standalone HD frames.
++    std::filesystem::remove(hd / "terrain-atlas-mip1.webp");
++    GAGCore::Sprite::setHighResolution(true);
++    CHECK(sprite.highResolutionAtlas == nullptr);
++    REQUIRE(sprite.experimentImages[0] != nullptr);
++    // An invalid supplied mip preserves the established native-art fallback.
++    std::filesystem::copy_file(hd / "frame.webp", hd / "terrain-atlas-mip1.webp");
++    GAGCore::Sprite::setHighResolution(true);
++    CHECK(sprite.highResolutionAtlas == nullptr);
++    CHECK(sprite.experimentImages[0] == nullptr);
++    std::filesystem::copy_file(fixtures / "terrain-atlas-mip1.webp", hd / "terrain-atlas-mip1.webp",
++        std::filesystem::copy_options::overwrite_existing);
++    GAGCore::Sprite::setHighResolution(true);
++    REQUIRE(sprite.highResolutionAtlas != nullptr);
++    REQUIRE(sprite.experimentImages[0] != nullptr);
+ }
+ #endif
+ 
+diff --git a/src/render/torus/TorusRenderBenchmark.cpp b/src/render/torus/TorusRenderBenchmark.cpp
+index 42822b5e7..6aa3ec790 100644
+--- a/src/render/torus/TorusRenderBenchmark.cpp
++++ b/src/render/torus/TorusRenderBenchmark.cpp
+@@ -234,9 +234,10 @@ static int run(int argc, char **argv)
+                 glFinish();
+                 assert(glGetError() == GL_NO_ERROR);
+                 double ms = 1000.0 * (SDL_GetPerformanceCounter() - start) / SDL_GetPerformanceFrequency();
++                const double cpuMs = 1000.0 * (std::clock() - cpuStart) / CLOCKS_PER_SEC;
+                 if (std::getenv("GLOB2_BENCH_FRAME_TIMES"))
+                 {
+-                    std::printf("FRAME mode=%s frame=%d elapsed_ms=%.6f\n", label, i, ms);
++                    std::printf("FRAME mode=%s frame=%d elapsed_ms=%.6f process_cpu_ms=%.6f\n", label, i, ms, cpuMs);
+                     const auto &scopes = PerformanceTelemetry::collector().window;
+                     for (auto id : {PerformanceTelemetry::Id::TerrainCache, PerformanceTelemetry::Id::Terrain,
+                         PerformanceTelemetry::Id::Resources, PerformanceTelemetry::Id::GroundUnits})
+@@ -254,12 +255,12 @@ static int run(int argc, char **argv)
+                 }
+                 if (i < 0 && i >= -warmupFrames && i < -warmupFrames + 8)
+                     std::printf("WARMUP frame=%d elapsed_ms=%.3f process_cpu_ms=%.3f\n", i + warmupFrames, ms,
+-                        1000.0 * (std::clock() - cpuStart) / CLOCKS_PER_SEC);
++                        cpuMs);
+                 if (i >= 0)
+                 {
+                     times.push_back(ms);
+                     if (cpuStart != std::clock_t(-1))
+-                        cpuTimes.push_back(1000.0 * (std::clock() - cpuStart) / CLOCKS_PER_SEC);
++                        cpuTimes.push_back(cpuMs);
+                 }
+             }
+             std::sort(times.begin(), times.end());
+diff --git a/tools/AssetLoadingBenchmark.cpp b/tools/AssetLoadingBenchmark.cpp
+index ed6f551aa..6a14d6ce7 100644
+--- a/tools/AssetLoadingBenchmark.cpp
++++ b/tools/AssetLoadingBenchmark.cpp
+@@ -13,6 +13,12 @@
+ #include <set>
+ #include <stdexcept>
+ #include <thread>
++#ifdef WIN32
++#define NOMINMAX
++#include <windows.h>
++#else
++#include <sys/resource.h>
++#endif
+ #ifdef HAVE_OPENGL
+ #ifdef __APPLE__
+ #include <OpenGL/gl.h>
+@@ -24,6 +30,26 @@
+ class GlobalContainer;
+ GlobalContainer *globalContainer = nullptr;
+ 
++static double processCpuMs()
++{
++#ifdef WIN32
++    FILETIME created, exited, kernel, user;
++    if (!GetProcessTimes(GetCurrentProcess(), &created, &exited, &kernel, &user))
++        throw std::runtime_error("Cannot read process CPU time");
++    auto ticks = [](FILETIME time) {
++        ULARGE_INTEGER value;
++        value.LowPart = time.dwLowDateTime; value.HighPart = time.dwHighDateTime;
++        return value.QuadPart;
++    };
++    return (ticks(kernel) + ticks(user)) * 1e-4;
++#else
++    rusage usage{};
++    if (getrusage(RUSAGE_SELF, &usage)) throw std::runtime_error("Cannot read process CPU time");
++    return (usage.ru_utime.tv_sec + usage.ru_stime.tv_sec) * 1000.0 +
++        (usage.ru_utime.tv_usec + usage.ru_stime.tv_usec) / 1000.0;
++#endif
++}
++
+ int main(int argc, char **argv)
+ {
+     using namespace GAGCore;
+@@ -34,6 +60,7 @@ int main(int argc, char **argv)
+         Toolkit::initGraphic(640, 480, gpu ? GraphicContext::USEGPU : 0, "Asset loading benchmark");
+         Sprite::setHighResolution(std::getenv("GLOB2_ASSET_BENCHMARK_HD"));
+         const auto start = std::chrono::steady_clock::now();
++        const double cpuStart = processCpuMs();
+         auto directory = Toolkit::assets().requestDirectory("data/gfx");
+         auto names = Toolkit::assets().wait(directory);
+         if (!names) throw std::runtime_error(directory.error());
+@@ -58,28 +85,64 @@ int main(int argc, char **argv)
+         }
+ #endif
+         const double readyMs = std::chrono::duration<double, std::milli>(std::chrono::steady_clock::now() - start).count();
+-        std::uint64_t fingerprint = 14695981039346656037ull;
+-        auto hash = [&](const unsigned char *data, size_t size) { for (size_t i = 0; i < size; ++i) { fingerprint ^= data[i]; fingerprint *= 1099511628211ull; } };
+-        size_t frames = 0;
+-        for (const auto &name : families) {
+-            auto *sprite = Toolkit::findSprite("data/gfx/" + name);
+-            if (!sprite) throw std::runtime_error("Missing sprite: " + name);
+-            for (int i = 0; i < sprite->getFrameCount(); ++i) {
+-                ++frames;
+-                for (auto *image : {sprite->baseFrame(i)}) {
+-                    if (!image) continue;
+-                    const auto *surface = image->getSDLSurface();
+-                    for (int y = 0; y < surface->h; ++y) hash(static_cast<const unsigned char*>(surface->pixels) + y * surface->pitch, size_t(surface->w) * 4);
++        const double readyCpuMs = processCpuMs() - cpuStart;
++        auto fingerprintLayers = [&] {
++            std::uint64_t fingerprint = 14695981039346656037ull;
++            auto hash = [&](const unsigned char *data, size_t size) {
++                for (size_t i = 0; i < size; ++i) { fingerprint ^= data[i]; fingerprint *= 1099511628211ull; }
++            };
++            size_t frames = 0;
++            for (const auto &name : families) {
++                auto *sprite = Toolkit::findSprite("data/gfx/" + name);
++                if (!sprite) throw std::runtime_error("Missing sprite: " + name);
++                for (int i = 0; i < sprite->getFrameCount(); ++i) {
++                    ++frames;
++                    for (auto *image : {sprite->nativeFrame(i), sprite->baseFrame(i)}) {
++                        if (!image) continue;
++                        const auto *surface = image->getSDLSurface();
++                        for (int y = 0; y < surface->h; ++y)
++                            hash(static_cast<const unsigned char*>(surface->pixels) + y * surface->pitch, size_t(surface->w) * 4);
++                    }
+                 }
+             }
+-        }
++            return std::pair{fingerprint, frames};
++        };
++        const auto [fingerprint, frames] = fingerprintLayers();
+         const auto metrics = Toolkit::assets().metrics();
+-        std::cout << "ASSET_BENCHMARK ready_ms=" << readyMs << " families=" << families.size() << " frames=" << frames
++        std::cout << "ASSET_BENCHMARK phase=startup ready_ms=" << readyMs << " cpu_ms=" << readyCpuMs << " families=" << families.size() << " frames=" << frames
+             << " cpu_threads=" << metrics.cpuThreads << " io_threads=" << metrics.ioThreads
+             << " peak_cpu=" << metrics.peakCpu << " peak_reads=" << metrics.peakReads
+             << " peak_scratch=" << metrics.peakWorkingBytes << " jobs=" << metrics.completed
+             << " failed=" << metrics.failed << " oversized=" << metrics.oversizedJobs
+-            << " fingerprint=" << std::hex << fingerprint << std::dec << '\n';
++            << " hd_cpu_bytes=" << Sprite::highResolutionStats().cpuBytes
++            << " texture_bytes=" << DrawableSurface::allocatedTextureBytes()
++            << " fingerprint=" << std::hex << fingerprint << std::dec << std::endl;
++        if (std::getenv("GLOB2_ASSET_BENCHMARK_RELOAD")) {
++            Sprite::setHighResolution(false);
++            const auto reloadStart = std::chrono::steady_clock::now();
++            const double reloadCpuStart = processCpuMs();
++            Sprite::requestHighResolution(true);
++            const auto reloadDeadline = reloadStart + std::chrono::minutes(3);
++            while (!Toolkit::pollAssets(2)) {
++                if (std::chrono::steady_clock::now() >= reloadDeadline) throw std::runtime_error("HD reload timed out");
++                std::this_thread::sleep_for(std::chrono::milliseconds(1));
++            }
++#ifdef HAVE_OPENGL
++            if (gpu) {
++                glFinish();
++                if (glGetError() != GL_NO_ERROR) throw std::runtime_error("HD reload produced an OpenGL error");
++            }
++#endif
++            const double reloadMs = std::chrono::duration<double, std::milli>(std::chrono::steady_clock::now() - reloadStart).count();
++            const double reloadCpuMs = processCpuMs() - reloadCpuStart;
++            const auto [reloadFingerprint, reloadFrames] = fingerprintLayers();
++            if (std::getenv("GLOB2_ASSET_BENCHMARK_HD") && reloadFingerprint != fingerprint)
++                throw std::runtime_error("HD reload changed sprite pixels");
++            std::cout << "ASSET_BENCHMARK phase=reload ready_ms=" << reloadMs << " cpu_ms=" << reloadCpuMs
++                << " frames=" << reloadFrames << " hd_cpu_bytes=" << Sprite::highResolutionStats().cpuBytes
++                << " texture_bytes=" << DrawableSurface::allocatedTextureBytes()
++                << " fingerprint=" << std::hex << reloadFingerprint << std::dec << std::endl;
++        }
+         Toolkit::close();
+         return families.empty() ? 1 : 0;
+     } catch (const std::exception &error) {

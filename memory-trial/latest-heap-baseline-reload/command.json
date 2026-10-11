@@ -1,0 +1,42 @@
+{
+  "command": [
+    "/usr/bin/heaptrack",
+    "-o",
+    "/home/bradley/.codex/worktrees/040c/glob2/artifacts/memory-wins/latest-heap-baseline-reload/trace",
+    "/home/bradley/.codex/worktrees/040c/glob2/artifacts/memory-wins/baseline/asset-loading-benchmark",
+    "/home/bradley/.codex/worktrees/040c/glob2/build/linux/client/release/client-full-direct-1111/runtime-assets"
+  ],
+  "benchmark_sha256": "4f0b862cce70690ede9aa4d9f11d8ca3d02e05203e5c4092f1972b861fb4e03b",
+  "metadata": {
+    "base_revision": "322daa07f39c6ed8c1b9d88c2cc86156d32322ee",
+    "files": {
+      "glob2": "42a5561b33909763aa764a344684d398c722cb1d29e1bafa6b6b918947117357",
+      "asset-loading-benchmark": "4f0b862cce70690ede9aa4d9f11d8ca3d02e05203e5c4092f1972b861fb4e03b",
+      "torus-render-benchmark": "933c17dde32c87c08f7560996a2848d998ad364f0a1e8034bdcc796248fa1d7c",
+      "glob2-unit-tests": "45b6615e85e96faa107a8a00b700838e8fd555d167add4766b58ad60e12e5f2a",
+      "glob2-engine-tests": "0d4a94681a929c5e3a45bd60afe52e42015056ba2c17fe308e030f355d7658a9"
+    },
+    "compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+    "build_directory": "/home/bradley/.codex/worktrees/040c/glob2/build/linux/client/release/client-full-direct-1111",
+    "build_flags": "release=1 client_profile=full server=0 CXX=profile-cxx CXXFLAGS=-g1 LINKFLAGS=; wrapper drops -s only; -O3 -fwhole-program retained",
+    "options": "CXX = '/home/bradley/.codex/worktrees/040c/glob2/artifacts/memory-wins/profile-cxx'\nCXXFLAGS = '-g1'\nLINKFLAGS = ''\nrelease = True\nclient_profile = 'full'\n",
+    "unit_tests": "Common unique-frame, cancellation, successive toggle, partial and invalid atlas assertions"
+  },
+  "cpu_reservation": {
+    "cgroup": "0::/glob2-benchmark-e9af1bea2ac64d6785789c600dfcd722",
+    "path": "/sys/fs/cgroup/glob2-benchmark-e9af1bea2ac64d6785789c600dfcd722",
+    "engine_cpus": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "reserved_cpus": "0-7,16-23",
+    "partition": "root"
+  },
+  "condition": "separate heap instrumentation; no performance claims"
+}

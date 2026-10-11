@@ -1,0 +1,30 @@
+{
+  "cpu_reservation": {
+    "cgroup": "0::/glob2-benchmark-0d114ec2f873457bb35bc2004a4799fa",
+    "path": "/sys/fs/cgroup/glob2-benchmark-0d114ec2f873457bb35bc2004a4799fa",
+    "engine_cpus": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "reserved_cpus": "0-7,16-23",
+    "partition": "root"
+  },
+  "command": [
+    "/home/bradley/.codex/worktrees/040c/glob2/artifacts/memory-wins/b/asset-loading-benchmark",
+    "/home/bradley/.codex/worktrees/040c/glob2/build/linux/client/release/client-full-direct-1111/runtime-assets"
+  ],
+  "overrides": {
+    "GLOB2_ASSET_BENCHMARK_GPU": "1",
+    "GLOB2_ISOLATED_TRIAL": "1",
+    "GLOB2_PROFILE_GPU": "1",
+    "GLOB2_PROFILE_GPU_INTERVAL": "1",
+    "GLOB2_ASSET_BENCHMARK_RELOAD": "1"
+  },
+  "binary_sha256": "e2eda6f1ad00d53236c1b9f6755512ef95b458de29a8041dc5202757ad39a363"
+}

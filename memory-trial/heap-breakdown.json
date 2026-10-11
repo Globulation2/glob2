@@ -1,0 +1,533 @@
+{
+  "scope": "Exclusive allocation-origin attribution at heaptrack global heap peak; each allocation counted once. Ownership transfers preserve the original decode allocation stack. Opaque driver frames cannot be attributed more precisely without symbols. Instrumented runs are separate from performance trials. This is loading/reload evidence, not a whole-match peak profile.",
+  "variants": {
+    "baseline": {
+      "startup": {
+        "peak_bytes": 619630349,
+        "categories": [
+          {
+            "category": "Decoded pixels, including adopted CPU drawables",
+            "bytes": 524686544,
+            "percent": 84.67734752611351
+          },
+          {
+            "category": "Native sprite preparation and copies",
+            "bytes": 41419520,
+            "percent": 6.684553147993078
+          },
+          {
+            "category": "Texture initialization / opaque driver allocations",
+            "bytes": 30353215,
+            "percent": 4.898600439598545
+          },
+          {
+            "category": "Opaque driver / library allocations",
+            "bytes": 13203436,
+            "percent": 2.1308568925503035
+          },
+          {
+            "category": "Texture initialization CPU buffers",
+            "bytes": 4194304,
+            "percent": 0.6769042231015705
+          },
+          {
+            "category": "Other heap allocations",
+            "bytes": 3252341,
+            "percent": 0.5248840708414042
+          },
+          {
+            "category": "Other SDL surfaces",
+            "bytes": 1229168,
+            "percent": 0.19837117435963422
+          },
+          {
+            "category": "Prepared upload pixels and mip chains",
+            "bytes": 1226904,
+            "percent": 0.198005795226147
+          },
+          {
+            "category": "Asset loader metadata, compressed inputs and queues",
+            "bytes": 60261,
+            "percent": 0.009725314471321998
+          },
+          {
+            "category": "Image decoder metadata and other scratch",
+            "bytes": 4104,
+            "percent": 0.0006623303727171053
+          },
+          {
+            "category": "Fonts and text",
+            "bytes": 552,
+            "percent": 8.908537176896737e-05
+          },
+          {
+            "category": "WebP decoder scratch",
+            "bytes": 0,
+            "percent": 0.0
+          }
+        ]
+      },
+      "reload": {
+        "peak_bytes": 890584443,
+        "categories": [
+          {
+            "category": "Decoded pixels, including adopted CPU drawables",
+            "bytes": 538641200,
+            "percent": 60.481766129391055
+          },
+          {
+            "category": "Texture initialization / opaque driver allocations",
+            "bytes": 161035071,
+            "percent": 18.081954189267147
+          },
+          {
+            "category": "Texture initialization CPU buffers",
+            "bytes": 134217728,
+            "percent": 15.070746974635846
+          },
+          {
+            "category": "Native sprite preparation and copies",
+            "bytes": 38301728,
+            "percent": 4.300740744019486
+          },
+          {
+            "category": "Opaque driver / library allocations",
+            "bytes": 13812707,
+            "percent": 1.550971062718193
+          },
+          {
+            "category": "Other heap allocations",
+            "bytes": 3282377,
+            "percent": 0.3685643765506468
+          },
+          {
+            "category": "Other SDL surfaces",
+            "bytes": 1229168,
+            "percent": 0.1380181306400835
+          },
+          {
+            "category": "Asset loader metadata, compressed inputs and queues",
+            "bytes": 63624,
+            "percent": 0.0071440726929473215
+          },
+          {
+            "category": "Fonts and text",
+            "bytes": 552,
+            "percent": 6.198176987468442e-05
+          },
+          {
+            "category": "Image decoder metadata and other scratch",
+            "bytes": 288,
+            "percent": 3.233831471722665e-05
+          },
+          {
+            "category": "WebP decoder scratch",
+            "bytes": 0,
+            "percent": 0.0
+          },
+          {
+            "category": "Prepared upload pixels and mip chains",
+            "bytes": 0,
+            "percent": 0.0
+          }
+        ]
+      }
+    },
+    "a": {
+      "startup": {
+        "peak_bytes": 599810779,
+        "categories": [
+          {
+            "category": "Decoded pixels, including adopted CPU drawables",
+            "bytes": 508180448,
+            "percent": 84.72346042984333
+          },
+          {
+            "category": "Native sprite preparation and copies",
+            "bytes": 44697056,
+            "percent": 7.451859413816903
+          },
+          {
+            "category": "Texture initialization / opaque driver allocations",
+            "bytes": 26595123,
+            "percent": 4.433918817587638
+          },
+          {
+            "category": "Opaque driver / library allocations",
+            "bytes": 13066141,
+            "percent": 2.1783771578403064
+          },
+          {
+            "category": "Other heap allocations",
+            "bytes": 3237885,
+            "percent": 0.5398177414214158
+          },
+          {
+            "category": "Prepared upload pixels and mip chains",
+            "bytes": 2535760,
+            "percent": 0.4227599917806745
+          },
+          {
+            "category": "Other SDL surfaces",
+            "bytes": 1229168,
+            "percent": 0.20492596049195042
+          },
+          {
+            "category": "WebP decoder scratch",
+            "bytes": 140105,
+            "percent": 0.023358199769864422
+          },
+          {
+            "category": "Texture initialization CPU buffers",
+            "bytes": 65536,
+            "percent": 0.01092611241652928
+          },
+          {
+            "category": "Asset loader metadata, compressed inputs and queues",
+            "bytes": 58613,
+            "percent": 0.00977191508590745
+          },
+          {
+            "category": "Image decoder metadata and other scratch",
+            "bytes": 4392,
+            "percent": 0.0007322309224456268
+          },
+          {
+            "category": "Fonts and text",
+            "bytes": 552,
+            "percent": 9.20290230396143e-05
+          }
+        ]
+      },
+      "reload": {
+        "peak_bytes": 890534872,
+        "categories": [
+          {
+            "category": "Decoded pixels, including adopted CPU drawables",
+            "bytes": 538641200,
+            "percent": 60.4851328045467
+          },
+          {
+            "category": "Texture initialization / opaque driver allocations",
+            "bytes": 161328011,
+            "percent": 18.11585554619359
+          },
+          {
+            "category": "Texture initialization CPU buffers",
+            "bytes": 134217728,
+            "percent": 15.071585877212005
+          },
+          {
+            "category": "Native sprite preparation and copies",
+            "bytes": 38301728,
+            "percent": 4.300980141741154
+          },
+          {
+            "category": "Opaque driver / library allocations",
+            "bytes": 13534342,
+            "percent": 1.5197992156785523
+          },
+          {
+            "category": "Other heap allocations",
+            "bytes": 3224675,
+            "percent": 0.3621054156765239
+          },
+          {
+            "category": "Other SDL surfaces",
+            "bytes": 1229168,
+            "percent": 0.1380258133226702
+          },
+          {
+            "category": "Asset loader metadata, compressed inputs and queues",
+            "bytes": 57180,
+            "percent": 0.0064208602939470295
+          },
+          {
+            "category": "Fonts and text",
+            "bytes": 552,
+            "percent": 6.198522004649808e-05
+          },
+          {
+            "category": "Image decoder metadata and other scratch",
+            "bytes": 288,
+            "percent": 3.234011480686856e-05
+          },
+          {
+            "category": "WebP decoder scratch",
+            "bytes": 0,
+            "percent": 0.0
+          },
+          {
+            "category": "Prepared upload pixels and mip chains",
+            "bytes": 0,
+            "percent": 0.0
+          }
+        ]
+      }
+    },
+    "b": {
+      "startup": {
+        "peak_bytes": 614907488,
+        "categories": [
+          {
+            "category": "Decoded pixels, including adopted CPU drawables",
+            "bytes": 524431856,
+            "percent": 85.28630179894638
+          },
+          {
+            "category": "Native sprite preparation and copies",
+            "bytes": 36822704,
+            "percent": 5.988332345694252
+          },
+          {
+            "category": "Texture initialization / opaque driver allocations",
+            "bytes": 30600175,
+            "percent": 4.976386789422216
+          },
+          {
+            "category": "Opaque driver / library allocations",
+            "bytes": 12912291,
+            "percent": 2.0998753880843943
+          },
+          {
+            "category": "Texture initialization CPU buffers",
+            "bytes": 4194304,
+            "percent": 0.6821032564820547
+          },
+          {
+            "category": "Other heap allocations",
+            "bytes": 3250495,
+            "percent": 0.5286152898499099
+          },
+          {
+            "category": "Prepared upload pixels and mip chains",
+            "bytes": 1402176,
+            "percent": 0.22803039926552335
+          },
+          {
+            "category": "Other SDL surfaces",
+            "bytes": 1229168,
+            "percent": 0.19989478482330664
+          },
+          {
+            "category": "Asset loader metadata, compressed inputs and queues",
+            "bytes": 59375,
+            "percent": 0.009655924046903134
+          },
+          {
+            "category": "Image decoder metadata and other scratch",
+            "bytes": 4392,
+            "percent": 0.0007142537838147127
+          },
+          {
+            "category": "Fonts and text",
+            "bytes": 552,
+            "percent": 8.976960124447208e-05
+          },
+          {
+            "category": "WebP decoder scratch",
+            "bytes": 0,
+            "percent": 0.0
+          }
+        ]
+      },
+      "reload": {
+        "peak_bytes": 759662646,
+        "categories": [
+          {
+            "category": "Decoded pixels, including adopted CPU drawables",
+            "bytes": 537162176,
+            "percent": 70.71062119855766
+          },
+          {
+            "category": "WebP decoder scratch",
+            "bytes": 134993618,
+            "percent": 17.77020611857227
+          },
+          {
+            "category": "Native sprite preparation and copies",
+            "bytes": 39780752,
+            "percent": 5.236633946590024
+          },
+          {
+            "category": "Texture initialization / opaque driver allocations",
+            "bytes": 27691592,
+            "percent": 3.6452486042073997
+          },
+          {
+            "category": "Opaque driver / library allocations",
+            "bytes": 15458336,
+            "percent": 2.034894841992797
+          },
+          {
+            "category": "Other heap allocations",
+            "bytes": 3282187,
+            "percent": 0.4320584956075358
+          },
+          {
+            "category": "Other SDL surfaces",
+            "bytes": 1229168,
+            "percent": 0.16180445444727054
+          },
+          {
+            "category": "Asset loader metadata, compressed inputs and queues",
+            "bytes": 64121,
+            "percent": 0.008440720408937943
+          },
+          {
+            "category": "Fonts and text",
+            "bytes": 552,
+            "percent": 7.266383346694133e-05
+          },
+          {
+            "category": "Image decoder metadata and other scratch",
+            "bytes": 144,
+            "percent": 1.895578264354991e-05
+          },
+          {
+            "category": "Texture initialization CPU buffers",
+            "bytes": 0,
+            "percent": 0.0
+          },
+          {
+            "category": "Prepared upload pixels and mip chains",
+            "bytes": 0,
+            "percent": 0.0
+          }
+        ]
+      }
+    },
+    "ab": {
+      "startup": {
+        "peak_bytes": 599857324,
+        "categories": [
+          {
+            "category": "Decoded pixels, including adopted CPU drawables",
+            "bytes": 508312256,
+            "percent": 84.73885966923694
+          },
+          {
+            "category": "Native sprite preparation and copies",
+            "bytes": 44697056,
+            "percent": 7.451281198327088
+          },
+          {
+            "category": "Texture initialization / opaque driver allocations",
+            "bytes": 26520164,
+            "percent": 4.421078636359202
+          },
+          {
+            "category": "Opaque driver / library allocations",
+            "bytes": 13114527,
+            "percent": 2.1862743814727517
+          },
+          {
+            "category": "Other heap allocations",
+            "bytes": 3237880,
+            "percent": 0.5397750215682955
+          },
+          {
+            "category": "Prepared upload pixels and mip chains",
+            "bytes": 2453808,
+            "percent": 0.4090652729948163
+          },
+          {
+            "category": "Other SDL surfaces",
+            "bytes": 1229168,
+            "percent": 0.20491005957943426
+          },
+          {
+            "category": "WebP decoder scratch",
+            "bytes": 228153,
+            "percent": 0.038034544361085436
+          },
+          {
+            "category": "Asset loader metadata, compressed inputs and queues",
+            "bytes": 59440,
+            "percent": 0.009909022966267892
+          },
+          {
+            "category": "Image decoder metadata and other scratch",
+            "bytes": 4320,
+            "percent": 0.0007201712519225655
+          },
+          {
+            "category": "Fonts and text",
+            "bytes": 552,
+            "percent": 9.202188219010559e-05
+          },
+          {
+            "category": "Texture initialization CPU buffers",
+            "bytes": 0,
+            "percent": 0.0
+          }
+        ]
+      },
+      "reload": {
+        "peak_bytes": 759605172,
+        "categories": [
+          {
+            "category": "Decoded pixels, including adopted CPU drawables",
+            "bytes": 538641200,
+            "percent": 70.91068095044514
+          },
+          {
+            "category": "WebP decoder scratch",
+            "bytes": 134993618,
+            "percent": 17.771550665534438
+          },
+          {
+            "category": "Native sprite preparation and copies",
+            "bytes": 38301728,
+            "percent": 5.042320591255796
+          },
+          {
+            "category": "Texture initialization / opaque driver allocations",
+            "bytes": 27691800,
+            "percent": 3.645551797269753
+          },
+          {
+            "category": "Opaque driver / library allocations",
+            "bytes": 15464227,
+            "percent": 2.0358243427020795
+          },
+          {
+            "category": "Other heap allocations",
+            "bytes": 3224641,
+            "percent": 0.42451540864442666
+          },
+          {
+            "category": "Other SDL surfaces",
+            "bytes": 1229168,
+            "percent": 0.1618166970564018
+          },
+          {
+            "category": "Asset loader metadata, compressed inputs and queues",
+            "bytes": 58094,
+            "percent": 0.007647920543647904
+          },
+          {
+            "category": "Fonts and text",
+            "bytes": 552,
+            "percent": 7.266933142998662e-05
+          },
+          {
+            "category": "Image decoder metadata and other scratch",
+            "bytes": 144,
+            "percent": 1.895721689477912e-05
+          },
+          {
+            "category": "Texture initialization CPU buffers",
+            "bytes": 0,
+            "percent": 0.0
+          },
+          {
+            "category": "Prepared upload pixels and mip chains",
+            "bytes": 0,
+            "percent": 0.0
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "base_revision": "322daa07f39c6ed8c1b9d88c2cc86156d32322ee",
+  "files": {
+    "glob2": "c6455fa0b494597cbbc30d6d3fe4d6c97e93ebbaaf1bc92de034c09b98862c45",
+    "asset-loading-benchmark": "e2eda6f1ad00d53236c1b9f6755512ef95b458de29a8041dc5202757ad39a363",
+    "torus-render-benchmark": "ee268aca5725466d6e8330db4ca4ac0266c1083d8bffbaf0cd9ad38898d159be",
+    "glob2-unit-tests": "44d4efc99d03d9d00f8aabe069bd15b5f78888a7aca8a844ca44ef55cb2f1c34",
+    "glob2-engine-tests": "1745d0e0bd32b28bd0a9b6966430c130fd1ef92fedbe1531dffac792a6e36437"
+  },
+  "compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+  "build_directory": "/home/bradley/.codex/worktrees/040c/glob2/build/linux/client/release/client-full-direct-1111",
+  "build_flags": "release=1 client_profile=full server=0 CXX=profile-cxx CXXFLAGS=-g1 LINKFLAGS=; wrapper drops -s only; -O3 -fwhole-program retained",
+  "options": "CXX = '/home/bradley/.codex/worktrees/040c/glob2/artifacts/memory-wins/profile-cxx'\nCXXFLAGS = '-g1'\nLINKFLAGS = ''\nrelease = True\nclient_profile = 'full'\n",
+  "unit_tests": "Common unique-frame, cancellation, successive toggle, partial and invalid atlas assertions"
+}
