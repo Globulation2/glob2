@@ -10,6 +10,7 @@
 #include "ui/RecordingControls.h"
 #include <GameplayRecording.h>
 #include <RendererSelection.h>
+#include <RenderDevice.h>
 #include <BinaryStream.h>
 #include <FileManager.h>
 #include <SDL3/SDL.h>
@@ -203,6 +204,43 @@ TEST_SUITE("GameplayRecording.Integration")
 		reference = run(false);
 		CHECK(run(true) == reference);
 	}
+
+    TEST_CASE("shutdown drains a completed asynchronous screenshot before file services retire "
+              "[display][artifacts]")
+    {
+        for (const auto backend : {GAGCore::RendererBackend::ProgrammableGL, GAGCore::RendererBackend::SDLGPU})
+        {
+            const std::string name(GAGCore::rendererBackendName(backend));
+            glob2test::ScopedEnvironment requested("GLOB2_RENDERER", name.c_str());
+            const std::string filename = std::string("shutdown-") + name + ".bmp";
+            const auto screenshot = glob2test::profileDir() / filename;
+            std::filesystem::remove(screenshot);
+            {
+                glob2test::HeadlessGlobals globals({.display = true, .width = 64, .height = 48});
+                if (globals->gfx->backendSwitchStatus().active != backend)
+                {
+                    MESSAGE("Screenshot shutdown backend unavailable: ", GAGCore::rendererBackendName(backend));
+                    continue;
+                }
+                globals->gfx->drawFilledRect(0, 0, 64, 48, GAGCore::Color(190, 20, 30));
+                globals->gfx->printScreen(filename);
+                globals->gfx->nextFrame();
+                auto *device = globals->gfx->renderDevice();
+                REQUIRE(device);
+                // An independent synchronous copy orders completion after the
+                // screenshot copy without polling GC's screenshot result queue.
+                std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> barrier(
+                    device->captureSynchronously({}), SDL_DestroySurface);
+                REQUIRE(barrier);
+                CHECK_FALSE(std::filesystem::exists(screenshot));
+            }
+            REQUIRE(std::filesystem::exists(screenshot));
+            std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> saved(SDL_LoadBMP(screenshot.string().c_str()), SDL_DestroySurface);
+            REQUIRE(saved);
+            CHECK(saved->w == 64);
+            CHECK(saved->h == 48);
+        }
+    }
 
 	TEST_CASE("global recording shortcut toggles and shutdown awaits finalization [artifacts][writes-preferences]")
 	{
