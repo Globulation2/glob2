@@ -9,6 +9,7 @@
 #include "EndGameScreen.h"
 #include "ui/RecordingControls.h"
 #include <GameplayRecording.h>
+#include <RendererSelection.h>
 #include <BinaryStream.h>
 #include <FileManager.h>
 #include <SDL3/SDL.h>
@@ -33,6 +34,16 @@ public:
         FrontendTheme::onFrame();turns.push_back({before,colony->tick(),visible});
     }
 };
+void requireRequestedRenderer(GAGCore::GraphicContext &context)
+{
+    if (const char *requested = SDL_getenv("GLOB2_RENDERER"))
+    {
+        const auto backend = GAGCore::parseRendererBackend(requested);
+        REQUIRE(backend.has_value());
+        INFO("requested renderer: " << requested);
+        REQUIRE(context.backendSwitchStatus().active == *backend);
+    }
+}
 void show(GAGGUI::Screen &screen, int milliseconds)
 {
 	const auto end = std::chrono::steady_clock::now() + std::chrono::milliseconds(milliseconds);
@@ -62,6 +73,7 @@ TEST_SUITE("GameplayRecording.Integration")
 			 .width = 800,
 			 .height = 600,
 			 .screenFlags = gpu ? GAGCore::GraphicContext::USEGPU : 0u});
+        requireRequestedRenderer(*globals->gfx);
 		globals->settings.autosaveGames = false;
 		globals->settings.decorativeAnimations = false;
 		// Application owns this theme throughout menus and gameplay. Keep that
@@ -198,6 +210,7 @@ TEST_SUITE("GameplayRecording.Integration")
 			return;
 		glob2test::HeadlessGlobals globals(
 			{.display = true, .loadStrings = true, .width = 800, .height = 600});
+        requireRequestedRenderer(*globals->gfx);
 		auto &recorder = GAGCore::Recording::recorder();
 		Application application;
 		REQUIRE(GAGCore::Recording::available());
@@ -253,6 +266,7 @@ TEST_SUITE("GameplayRecording.Integration")
 		glob2test::ScopedEnvironment sidecars("GLOB2_CHECKSUM_SIDECAR", "1");
 		glob2test::HeadlessGlobals globals(
 			{.display = true, .loadStrings = true, .width = 800, .height = 600});
+        requireRequestedRenderer(*globals->gfx);
 		globals->settings.autosaveGames = false;
 		const auto root = glob2test::artifactDir();
 		const auto initial = root / "threaded-initial.game";
