@@ -179,9 +179,11 @@ TEST_SUITE("SDLGPUDevice")
             const auto deadline = SDL_GetTicks() + 5000;
             while (device.completion(submission) == RenderCompletion::Pending && SDL_GetTicks() < deadline) SDL_Delay(1);
             REQUIRE(device.completion(submission) == RenderCompletion::Complete);
-            const auto before = device.telemetry().resourceBytes;
             device.trimRetiredResources();
-            CHECK(device.telemetry().resourceBytes + 64 * 64 * 4 <= before);
+            // The first trim may observe an already signalled fence and evict
+            // this source. Measure retirement from its initially resident bytes,
+            // rather than requiring a second eviction after faster submission.
+            CHECK(device.telemetry().resourceBytes + 64 * 64 * 4 <= pendingBytes);
             REQUIRE(source); // restoration source remains logically owned
             REQUIRE(draw(2)); device.present();
             CaptureRequest request; request.identity = 91; request.frameIdentity = 2;
