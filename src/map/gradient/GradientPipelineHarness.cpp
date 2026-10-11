@@ -1870,6 +1870,15 @@ TEST_CASE("worker group capture replays already ready fields and canceled member
         ComputeExecutor executor;executor.configure(slots);auto held=std::make_shared<OwnedGradientField>();
         held->session=std::make_shared<BackendSession>();held->decision={Plan::Frozen8,0,held->session->currentGeneration()};held->due=100;
         held->data=std::make_unique<std::uint16_t[]>(1);held->data[0]=77;held->costAt=[](const auto&,std::size_t){return LAND_STEPS;};
+        struct BlockerRecovery {mutable std::atomic<unsigned> count{0};};
+        auto blockerFallbacks=std::make_shared<BlockerRecovery>();
+        held->inputs=blockerFallbacks;held->retainedInputBytes=sizeof(BlockerRecovery)+128;
+        held->cpu=[](OwnedGradientField& field){
+            ++static_cast<const BlockerRecovery*>(field.inputs.get())->count;
+            CHECK(field.data[0]==77);GradientWorkspace scratch;
+            propagateFieldCPU(field.data.get(),0,field.limit,field.grid,scratch,[](std::size_t){return false;});
+            CHECK(field.data[0]==77);
+        };
         struct Block {ComputeExecutor* executor;std::shared_ptr<GradientDeviceService> service;std::shared_ptr<OwnedGradientField> field;} block{&executor,blocker,held};
         const ComputeExecutor::Group heldGroup{1,{[](void* value,std::size_t){auto& c=*static_cast<Block*>(value);
             c.field->completion=c.executor->defer();if(!c.service->submit(c.field))c.service->recoverOnWorker(c.field);},&block},ComputeExecutor::NoLane};
@@ -1913,6 +1922,7 @@ TEST_CASE("worker group capture replays already ready fields and canceled member
         executor.join(captureTicket);CHECK(work.required==(scenario?1u:2u));CHECK(driver->begins==0);
         // Required CPU results are complete before the optional broker can run.
         CHECK(work.output[0][0]==GRADIENT_AT_GOAL);gate->open();executor.join(heldTicket);
+        CHECK(blockerFallbacks->count.load()==0);CHECK(held->data[0]==77);
         until=std::chrono::steady_clock::now()+std::chrono::seconds(5);
         while(!service->metrics().probeRetired && !service->metrics().probesCanceled && std::chrono::steady_clock::now()<until)
             std::this_thread::sleep_for(std::chrono::milliseconds(1));
