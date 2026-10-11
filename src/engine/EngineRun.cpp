@@ -1058,6 +1058,7 @@ void Engine::finishRenderedCpuDiagnostics()
     // Whole-process/session counters, never asserted as warm-window dispatches.
     const auto backend=gradient_kernel::openCLStatus();
     report["post_stop_backend_totals"]={{"scope","process lifetime at post-stop status sampling; outside measured interval"},
+        {"active_epoch",backend.activeEpoch},{"check_interval",backend.checkInterval},
         {"dispatches",backend.dispatches},{"device_observed_fields",backend.deviceObservedFields},
         {"committed_fields",backend.committedFields},{"backend_cpu_ns",backend.threadCPUNs},
         {"backend_cpu_clock_available",backend.threadCPUAvailable},{"backend_cpu_invalid_measurements",backend.threadCPUInvalidMeasurements}};
