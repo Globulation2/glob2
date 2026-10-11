@@ -1,6 +1,6 @@
-# Google Play internal releases
+# Google Play tagged channel releases
 
-Prepare signed Android artifacts and publish the internal testing track.
+Prepare verified signed Android artifacts for internal, closed, and production tracks.
 
 ## Google Play internal testing
 
@@ -110,6 +110,22 @@ GitHub Actions secret redaction is not a substitute for keeping secrets out of
 logs and artifacts.
 
 ## Production channel and credential preflight
+
+The workflow also accepts `track: alpha` for the default closed-testing track.
+It uses the protected `google-play-internal` environment and its testing-track
+service account. Set up countries, tester eligibility, feedback contact and all
+required app content/listing declarations in Play Console first. An alpha
+dispatch builds the selected immutable public tag, signs its verified bundle,
+and updates only alpha; the default remains internal. It does not change tester
+lists or grant production access. Closed-test listing review is separate from
+API upload success.
+
+For new personal developer accounts, Google requires at least 12 testers
+continuously opted into the closed test for 14 days before applying for
+production access. Recruit actual testers, record their feedback, and follow
+[Google's testing requirements](https://support.google.com/googleplay/android-developer/answer/14151465).
+Internal testing does not satisfy this requirement. Store availability must
+remain unpublished in website data until production is verified.
 
 The same workflow accepts an explicit `track: production`. Configure a separate
 `google-play-production` mirror environment with the same owner approval,
