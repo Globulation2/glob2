@@ -143,7 +143,20 @@ TEST_SUITE("SDLGPUDevice")
         for (bool mipmapped : {false, true}) {
             TextureDescriptor descriptor;
             if (mipmapped) descriptor.mips = TextureDescriptor::Mips::Generated;
-            auto texture = resources.snapshot(resources.create(pixels.get(), 1, descriptor));
+            std::array<std::vector<std::byte>, 5> mipPixels;
+            std::array<RenderMipLevel, 5> levels;
+            if (mipmapped) for (int level = 0; level < 5; ++level) {
+                const int size = 16 >> level; mipPixels[level].resize(size * size * 4);
+                for (int y = 0; y < size; ++y) for (int x = 0; x < size; ++x) {
+                    const auto color = pixel(pixels.get(), x << level, y << level);
+                    const auto offset = (y * size + x) * 4;
+                    mipPixels[level][offset] = std::byte(color.r); mipPixels[level][offset + 1] = std::byte(color.g);
+                    mipPixels[level][offset + 2] = std::byte(color.b); mipPixels[level][offset + 3] = std::byte(color.a);
+                }
+                levels[level] = {size, size, SDL_PIXELFORMAT_RGBA32, mipPixels[level]};
+            }
+            auto texture = resources.snapshot(resources.create(pixels.get(), 1, descriptor,
+                mipmapped ? std::span<const RenderMipLevel>(levels) : std::span<const RenderMipLevel>()));
             auto render = [&](bool triangles) {
                 RenderFrame frame; frame.logicalWidth = 96; frame.logicalHeight = 64;
                 frame.packets.push_back(fill({0, 0, 96, 64}, {11, 23, 47, 255}));
