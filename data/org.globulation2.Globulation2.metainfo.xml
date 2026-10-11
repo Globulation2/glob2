@@ -22,6 +22,11 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="0.11.1.0" date="2026-10-11">
+      <description>
+        <p>Configurable unit catalogs, additional rendering backends and live renderer switching, presentation performance improvements, and release packaging fixes.</p>
+      </description>
+    </release>
     <release version="0.11.0.6" date="2026-10-10"><description><p>Optimized Fedora release packaging, protected Google Play closed testing and improved native artwork loading.</p></description></release>
     <release version="0.11.0.5" date="2026-10-10"><description><p>Corrected native packaging, installed Linux cleanup and iOS distribution verification.</p></description></release>
     <release version="0.11.0.4" date="2026-10-10"><description><p>Corrected Android packaging verification and added protected Play channel permission checks before building.</p></description></release>
