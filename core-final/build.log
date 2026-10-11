@@ -1,0 +1,22 @@
+In file included from artifacts/renderer-integration/core-467c1e1b8/libgag/src/RenderBackend.cpp:2:
+artifacts/renderer-integration/core-467c1e1b8/libgag/include/RenderBackend.h: In member function ‘virtual void GAGCore::RenderBackend::prepareTexture(const void*, SDL_Surface*, uint64_t, bool)’:
+artifacts/renderer-integration/core-467c1e1b8/libgag/include/RenderBackend.h:33:80: warning: unused parameter ‘linear’ [-Wunused-parameter]
+   33 |     virtual void prepareTexture(const void*, SDL_Surface*, std::uint64_t, bool linear = false) {}
+      |                                                                           ~~~~~^~~~~~~~~~~~~~
+In file included from artifacts/renderer-integration/core-467c1e1b8/libgag/src/SoftwareRenderBackend.cpp:2:
+artifacts/renderer-integration/core-467c1e1b8/libgag/include/RenderBackend.h: In member function ‘virtual void GAGCore::RenderBackend::prepareTexture(const void*, SDL_Surface*, uint64_t, bool)’:
+artifacts/renderer-integration/core-467c1e1b8/libgag/include/RenderBackend.h:33:80: warning: unused parameter ‘linear’ [-Wunused-parameter]
+   33 |     virtual void prepareTexture(const void*, SDL_Surface*, std::uint64_t, bool linear = false) {}
+      |                                                                           ~~~~~^~~~~~~~~~~~~~
+In file included from artifacts/renderer-integration/core-467c1e1b8/libgag/include/RenderDevice.h:3,
+                 from artifacts/renderer-integration/core-467c1e1b8/libgag/src/RenderDevice.cpp:2:
+artifacts/renderer-integration/core-467c1e1b8/libgag/include/RenderBackend.h: In member function ‘virtual void GAGCore::RenderBackend::prepareTexture(const void*, SDL_Surface*, uint64_t, bool)’:
+artifacts/renderer-integration/core-467c1e1b8/libgag/include/RenderBackend.h:33:80: warning: unused parameter ‘linear’ [-Wunused-parameter]
+   33 |     virtual void prepareTexture(const void*, SDL_Surface*, std::uint64_t, bool linear = false) {}
+      |                                                                           ~~~~~^~~~~~~~~~~~~~
+In file included from artifacts/renderer-integration/core-467c1e1b8/libgag/include/RenderDevice.h:3,
+                 from artifacts/renderer-integration/core-467c1e1b8/libgag/src/RenderDeviceTest.cpp:3:
+artifacts/renderer-integration/core-467c1e1b8/libgag/include/RenderBackend.h: In member function ‘virtual void GAGCore::RenderBackend::prepareTexture(const void*, SDL_Surface*, uint64_t, bool)’:
+artifacts/renderer-integration/core-467c1e1b8/libgag/include/RenderBackend.h:33:80: warning: unused parameter ‘linear’ [-Wunused-parameter]
+   33 |     virtual void prepareTexture(const void*, SDL_Surface*, std::uint64_t, bool linear = false) {}
+      |                                                                           ~~~~~^~~~~~~~~~~~~~
