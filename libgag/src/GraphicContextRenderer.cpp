@@ -12,9 +12,6 @@
 #include <cmath>
 #include <limits>
 #include <stdexcept>
-#ifdef __EMSCRIPTEN__
-#include <emscripten.h>
-#endif
 
 namespace GAGCore
 {
@@ -25,6 +22,7 @@ int glob2_surface_prepare(int gpu, int width, int height);
 int glob2_surface_poll();
 void glob2_surface_finish(int success);
 void glob2_surface_error(char *destination, int size);
+int glob2_surface_webgpu_available();
 }
 #endif
 std::optional<RendererBackend> GraphicContext::initialBackend;
@@ -124,7 +122,7 @@ std::vector<RendererAvailability> GraphicContext::rendererAvailability() const
         if (backend == RendererBackend::WebGPU) {
             available = std::filesystem::exists(rendererShaderDirectory() + "/webgpu/primitive.frag.wgsl");
             if (!available) reason = "This build does not contain the generated WebGPU shaders.";
-            else if (!EM_ASM_INT({ return +Boolean(globalThis.navigator?.gpu); })) {
+            else if (!glob2_surface_webgpu_available()) {
                 available = false;
                 reason = "WebGPU is unavailable in this browser's presentation thread.";
             }

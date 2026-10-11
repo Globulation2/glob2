@@ -114,6 +114,8 @@ addToLibrary({
   glob2_surface_prepare: (gpu,width,height) => Glob2SurfaceBridge.prepare(gpu,width,height),
   glob2_surface_poll__deps: ['$Glob2SurfaceBridge'],
   glob2_surface_poll: () => Glob2SurfaceBridge.state,
+  // Query the calling presentation realm, which may be the application worker.
+  glob2_surface_webgpu_available: () => +Boolean(globalThis.navigator?.gpu),
   glob2_surface_finish__deps: ['$Glob2SurfaceBridge'],
   glob2_surface_finish: success => Glob2SurfaceBridge.finish(success),
   glob2_surface_error__deps: ['$Glob2SurfaceBridge','$stringToUTF8'],
