@@ -67,7 +67,7 @@ void tails(CaptureProbeAccounting& accounting,GradientCpuCapture::Settlement& to
 }
 }
 
-TEST_CASE("capture accounting charges unknown process CPU and waits two separate cleanup tails" * doctest::test_suite("OpenCLGradient"))
+TEST_CASE("capture accounting retains unknown process CPU diagnostics and waits two separate cleanup tails" * doctest::test_suite("OpenCLGradient"))
 {
     if(!glob2::threadCpuNs())return;
     const auto baseline=openCLProbeBytes();Fixture f;
@@ -79,7 +79,8 @@ TEST_CASE("capture accounting charges unknown process CPU and waits two separate
     CHECK(result.receipt.processBeginNs==100);CHECK(result.receipt.processEndNs==1100);
     CHECK(result.receipt.cleanupProcessCpuNs==1100);CHECK(result.receipt.firstTailProcessCpuNs==1100);CHECK(result.receipt.secondTailProcessCpuNs==1100);
     CHECK(result.receipt.processCpuNs==1000);CHECK(result.receipt.knownInnerCpuNs==400);CHECK(result.receipt.unknownUpperCpuNs==600);
-    CHECK(result.receipt.totalUpperCpuNs>=f.token->receipt().optionalCpuNs+600);
+    CHECK(result.receipt.totalUpperCpuNs==std::max(
+        result.receipt.capturedCpuNs+result.receipt.optionalCallingCpuNs,f.token->receipt().optionalCpuNs));
     CHECK(result.receipt.secondTailNs-result.receipt.firstTailNs==CaptureProbeAccounting::TailIntervalNs);
     CHECK_FALSE(result.authorization.permitsInference());CHECK_FALSE(result.outcome.clockValid);
     CHECK(f.policy->metrics().probeCpuNs==0);CHECK(openCLProbeBytes()>baseline);
@@ -183,4 +184,32 @@ TEST_CASE("capture accounting rejects zero process clocks even when provider mar
     auto result=accounting->finishResult(*f.token,91,true,true,true,500000001,f.input.slackNs);
     CHECK_FALSE(result.authorization.permitsInference());CHECK_FALSE(result.outcome.clockValid);
     accounting.reset();f.token.reset();CHECK(f.policy->metrics().probeCpuNs>=f.input.reservedCpuNs);
+}
+
+TEST_CASE("unrelated process CPU cannot consume probe credits or supply native coverage" * doctest::test_suite("OpenCLGradient"))
+{
+    if(!glob2::threadCpuNs())return;
+    Fixture f;auto accounting=f.begin(true);REQUIRE(bool(accounting));running(*accounting);
+    accounting->accountStep(100,300);
+    // A different process thread consumes one second. No optional caller did.
+    f.owner->clocks.processCpu+=1000000000;
+    tails(*accounting,*f.token);REQUIRE(accounting->tailFinished());
+    // The legacy friend gate exercises measured accounting only. It cannot
+    // authenticate a production candidate; production always supplies one.
+    auto result=accounting->finishResult(*f.token,91,false,true,true,500000001,f.input.slackNs);
+    CHECK(result.receipt.unknownUpperCpuNs==1000000000);
+    CHECK_FALSE(result.authorization.permitsInference());CHECK_FALSE(result.receipt.nativeCoverageComplete);
+    const auto measured=std::max(result.receipt.capturedCpuNs+result.receipt.optionalCallingCpuNs,
+        f.token->receipt().optionalCpuNs);
+    CHECK(result.outcome.actualProbeCpuNs==measured);CHECK(result.outcome.alternativeCpuNs==measured);
+    CHECK(result.outcome.actualProbeCpuNs<f.input.reservedCpuNs);
+    // A valid legacy test settlement pays only measured optional CPU. The huge
+    // unknown remainder neither supplies coverage nor consumes rolling credits.
+    result=accounting->finishResult(*f.token,91,true,true,true,500000001,f.input.slackNs);
+    REQUIRE(result.authorization.permitsInference());
+    result=CaptureProbeAccounting::close(accounting,result);
+    CHECK_FALSE(f.token->settle(result.outcome,result.authorization));
+    CHECK(f.policy->metrics().probeCpuNs>=result.outcome.actualProbeCpuNs);
+    CHECK(f.policy->metrics().probeCpuNs<f.input.reservedCpuNs);
+    CHECK(f.policy->metrics().promoted==0);
 }

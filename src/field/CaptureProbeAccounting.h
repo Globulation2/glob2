@@ -5,8 +5,9 @@
 
 namespace gradient_kernel
 {
-// Empirical fixed-tail accounting, not causal driver attribution. The qualified
-// release boolean is frozen by production configuration after whole tuning-on /
+// Paid CPU uses disjoint measured optional thread clocks. Enclosing process CPU
+// and its unknown remainder are diagnostic only, not probe debt or candidate cost.
+// The qualified release boolean is frozen by configuration after whole tuning-on /
 // off evidence. Until then no authorization may permit inference.
 class CaptureProbeAccounting
 {
@@ -170,8 +171,10 @@ public:
         const bool overflow=totals.capturedCpuNs>UINT64_MAX-totals.optionalCallingCpuNs;
         const auto explicitCpu=overflow?UINT64_MAX:totals.capturedCpuNs+totals.optionalCallingCpuNs;
         const auto observed=std::max(explicitCpu,captured.optionalCpuNs);
-        if(overflow || measured.unknownUpperCpuNs>UINT64_MAX-observed)invalid();
-        totals.totalUpperCpuNs=observed>UINT64_MAX-measured.unknownUpperCpuNs?UINT64_MAX:observed+measured.unknownUpperCpuNs;
+        if(overflow)invalid();
+        // No enclosing-process remainder is attributed to this optional job.
+        // Sampling/accounting/cleanup are already inside the paid caller clocks.
+        totals.totalUpperCpuNs=observed;
         totals.splitCandidate=false;totals.candidateUpperCpuNs=totals.totalUpperCpuNs;
         totals.nativeCoverageComplete=false;totals.candidateCallingCpuNs=totals.requiredOnlyAllowanceCpuNs=0;
         totals.requiredAllowanceCalibration=0;totals.administrationCpuNs=0;
@@ -191,11 +194,9 @@ public:
             const bool calibrated=candidate->requiredOnlyAllowanceCpuNs && candidate->calibrationIdentity;
             if(validCandidate && calibrated) {
                 auto upper=candidate->callingCpuNs;
-                const bool overflow=measured.unknownUpperCpuNs>UINT64_MAX-upper;
-                if(!overflow)upper+=measured.unknownUpperCpuNs;
                 const bool allowanceOverflow=candidate->requiredOnlyAllowanceCpuNs>UINT64_MAX-upper;
                 if(!allowanceOverflow)upper+=candidate->requiredOnlyAllowanceCpuNs;
-                validCandidate=!overflow && !allowanceOverflow && upper<=totals.totalUpperCpuNs;
+                validCandidate=!allowanceOverflow && upper<=totals.totalUpperCpuNs;
                 if(validCandidate) {
                     totals.splitCandidate=true;totals.candidateUpperCpuNs=upper;
                     totals.administrationCpuNs=totals.totalUpperCpuNs-upper;

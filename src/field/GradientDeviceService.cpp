@@ -861,7 +861,8 @@ class DeviceBroker
             auto cpu=glob2::threadCpuDeltaNs(cpuStart,observationEnd);
             if(state->mode==Backend::Automatic) {
                 measured=measured && envelopeResult.present && envelopeResult.valid && !envelopeResult.churn && !envelopeResult.omitted;
-                if(envelopeResult.unknown>UINT64_MAX-cpu)measured=false;else cpu+=envelopeResult.unknown;
+                // The enclosing unknown remainder is diagnostic, not host CPU
+                // attributable to this accepted gradient job.
             }
             for(const auto& field:fields){if(field->seedCpuNs>UINT64_MAX-cpu)measured=false;else cpu+=field->seedCpuNs;}
             observe(state,fields.front()->session,key,fields.front()->decision.plan,measured ? cpu : 0,fields.front()->tick,!measured);

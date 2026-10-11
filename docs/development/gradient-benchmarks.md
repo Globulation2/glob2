@@ -653,9 +653,11 @@ registry/reader graph, then record disjoint optional calling-CPU brackets around
 allocation, queue manipulation, sampling, replay and cleanup. Required work is
 excluded. Each envelope advance visits at most 64 registered clocks. The total
 charge is the larger of capture-plus-optional calling CPU and the settlement
-receipt, plus the enclosing process window's unknown CPU upper bound. Sampling
-CPU is component telemetry and is not added twice. Unrelated concurrent process
-work may be overcharged; unknown CPU must never be labeled causal driver CPU.
+receipt. Sampling CPU is already inside the measured caller brackets and is
+not added twice. Enclosing process CPU, known-thread deductions and the unknown
+remainder remain diagnostic totals; none of the unidentified remainder enters
+probe debt or candidate cost. Whole-process tuning-on/off qualification still
+accounts for all process work and must establish the complete-mode overhead.
 
 After device terminal proof, extract the settlement, call its idempotent cleanup,
 and destroy the replay wrapper. Confirm cleanup with the matching ticket and both
@@ -802,9 +804,10 @@ the actual remaining work; an overshoot adds debt and demotes the plan. Diagnost
 `gradient_probe` rows identify ticket/generations, admission/device/cleanup/tail
 endpoints, process CPU/known deduction/unknown upper bound, preparation/calling/
 comparison costs, reserved/charged CPU and inference eligibility. They are emitted
-only on the background coordinator. Required GPU observations include the valid
-narrow enclosing process window's unknown CPU upper bound for conservative demotion;
-these windows do not claim causal driver attribution or replace full-game qualification.
+only on the background coordinator. Required GPU observations train on measured
+gradient preparation/submission/completion host CPU. Their enclosing process
+windows remain diagnostic; unknown CPU does not enter selection or demotion.
+These windows do not replace full-game qualification, which includes driver CPU.
 
 Worker capture completion has a separate optional CPU bracket around golden
 cloning, queue submission and capture-wrapper disposal. Only the valid internal
@@ -951,7 +954,8 @@ reads or driver queries and do not qualify incomplete or overspent pairs.
 Learning debt and the CPU upper bound for deployed GPU execution are separate
 receipts. Debt always includes capture, golden cloning, exact comparison,
 registry/sampler work, optional coordinator scheduling, both post-terminal tail intervals,
-cleanup, unknown process CPU and settlement statistics. The optional reservation
+cleanup and settlement statistics. Unidentified process CPU remains diagnostic
+and is excluded from both learning debt and the candidate estimate. The optional reservation
 and rolling one-percent limit apply to that complete debt. Cold initialization
 and passive accepted observation/cadence CPU remain separate reported
 configuration costs; they are included in whole-process tuning-on/off evidence. Reaching
@@ -969,7 +973,7 @@ stays on its accepted plan rather than starting an experiment that cannot finish
 The explicit required-path receipt can only be created after real native
 completion/readback and exact comparison with valid producer clocks. It includes
 all measured native calling CPU, including fresh queue/all-kernel setup until
-separately calibrated, plus all unknown process CPU and an allowance frozen
+separately calibrated, plus an allowance frozen
 before execution for required-only preparation, scheduling and output commit.
 Injected backends cannot attest native coverage. Missing or unqualified
 calibration permits only an authenticated complete-debt candidate: both private

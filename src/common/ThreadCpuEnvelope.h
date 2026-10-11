@@ -45,7 +45,7 @@ struct CpuClockReader {
 class ProcessCpuEnvelope;
 // Development diagnostic only. Register once at thread startup, before work;
 // destroy all of that thread's leases before thread exit. Slots are fixed and
-// overflow stays unidentified CPU, conservatively charged to the GPU. The owner
+// overflow stays in diagnostic unidentified CPU, never attributed to a job. The owner
 // never scans tasks or samples other threads at a tick boundary.
 class CpuClockRegistry {
 public:

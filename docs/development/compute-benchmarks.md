@@ -140,7 +140,11 @@ execution counters.
 The terminal row's `candidate_cpu_upper` is the final candidate upper cost
 submitted to settlement, including its retirement allowance. `alternative_cpu`
 remains raw replay calling CPU, and `charge_cpu` is complete paid exploration
-debt; these quantities must not be substituted for one another.
+debt; these quantities must not be substituted for one another. The reported
+`process_cpu`, `known_inner` and `unknown_upper` are enclosing diagnostics.
+Unidentified process CPU is excluded from `charge_cpu` and `candidate_cpu_upper`;
+all directly measured capture, native, comparison, sampling, accounting and cleanup
+CPU remains paid. Whole-process qualification still covers the entire game.
 
 The terminal row also preserves the first replay setup rejection as
 `setup_reason`, its stage, and the frozen admission tick/slack, captured due,
