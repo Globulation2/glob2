@@ -6,6 +6,7 @@ import json
 from dev_paths import android_sdk, dependency_prefix, isolated
 from pathlib import Path
 import re
+import struct
 import subprocess
 import sys
 import zipfile
@@ -141,6 +142,39 @@ def check_recipe(root=ROOT):
     return codes
 
 
+def verify_native_alignment(contents, arch, name):
+    """Check every native load segment for the page size supported by its ABI."""
+    wide = arch in ('arm64-v8a', 'x86_64')
+    size = 64 if wide else 52
+    page = 16384 if wide else 4096
+    if (len(contents) < size or contents[:4] != b'\x7fELF' or
+            contents[4] != (2 if wide else 1) or contents[5:7] != b'\x01\x01'):
+        raise ValueError('Invalid native ELF header: ' + name)
+    machine = struct.unpack_from('<H', contents, 18)[0]
+    if machine != {'arm64-v8a': 183, 'armeabi-v7a': 40, 'x86_64': 62}[arch]:
+        raise ValueError('Native ELF architecture differs from APK ABI: ' + name)
+    phoff = struct.unpack_from('<Q' if wide else '<I', contents, 32 if wide else 28)[0]
+    entry_size, count = struct.unpack_from('<HH', contents, 54 if wide else 42)
+    if (not count or entry_size < (56 if wide else 32) or phoff < size or
+            phoff + count * entry_size > len(contents)):
+        raise ValueError('Invalid native ELF program headers: ' + name)
+    loads = 0
+    for index in range(count):
+        offset = phoff + index * entry_size
+        if struct.unpack_from('<I', contents, offset)[0] != 1:
+            continue
+        loads += 1
+        file_offset, address = struct.unpack_from('<QQ' if wide else '<II', contents,
+                                                  offset + (8 if wide else 4))
+        alignment = struct.unpack_from('<Q' if wide else '<I', contents,
+                                        offset + (48 if wide else 28))[0]
+        if (alignment < page or alignment & (alignment - 1) or
+                file_offset % alignment != address % alignment):
+            raise ValueError(f'Native ELF requires {page}-byte page alignment: {name}')
+    if not loads:
+        raise ValueError('Native ELF has no load segments: ' + name)
+
+
 def verify_apk(apk, arch, sdk, root=ROOT, require_dependency_manifest=True):
     identity = release_identity(root)
     expected_code = version_code(arch, root)
@@ -171,6 +205,8 @@ def verify_apk(apk, arch, sdk, root=ROOT, require_dependency_manifest=True):
             raise ValueError(f"APK native libraries have ABIs {sorted(found_abis)}, expected {arch}")
         if expected_libraries is not None and set(libraries) != expected_libraries:
             raise ValueError("APK native libraries differ from the pinned dependency manifest")
+        for name in libraries:
+            verify_native_alignment(archive.read(name), arch, name)
     verify_apk_assets(apk)
     tools = toolchain["build_tools"]
     binaries = sdk / "build-tools" / tools

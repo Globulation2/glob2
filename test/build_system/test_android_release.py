@@ -5,6 +5,7 @@ import hashlib
 import json
 from pathlib import Path
 import subprocess
+import struct
 import sys
 import tempfile
 import unittest
@@ -15,6 +16,62 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "mobile"))
 import android_release
 import fdroid_monitor
+
+
+def native_elf(arch='arm64-v8a', alignment=None):
+    wide = arch != 'armeabi-v7a'
+    header, entry = (64, 56) if wide else (52, 32)
+    contents = bytearray(header + entry)
+    contents[:7] = b'\x7fELF' + bytes((2 if wide else 1, 1, 1))
+    struct.pack_into('<H', contents, 18,
+                     {'arm64-v8a': 183, 'armeabi-v7a': 40, 'x86_64': 62}[arch])
+    struct.pack_into('<Q' if wide else '<I', contents, 32 if wide else 28, header)
+    struct.pack_into('<HH', contents, 54 if wide else 42, entry, 1)
+    struct.pack_into('<I', contents, header, 1)
+    struct.pack_into('<Q' if wide else '<I', contents, header + (48 if wide else 28),
+                     alignment if alignment is not None else (16384 if wide else 4096))
+    return bytes(contents)
+
+
+class NativeAlignmentTests(unittest.TestCase):
+    def test_each_supported_abi_accepts_its_page_alignment(self):
+        for arch in android_release.ABI_CODES:
+            with self.subTest(arch=arch):
+                android_release.verify_native_alignment(native_elf(arch), arch, 'libmain.so')
+
+    def test_64_bit_libraries_reject_4k_pages(self):
+        for arch in ('arm64-v8a', 'x86_64'):
+            with self.subTest(arch=arch), self.assertRaisesRegex(ValueError, '16384-byte'):
+                android_release.verify_native_alignment(native_elf(arch, 4096), arch, 'libmain.so')
+
+    def test_non_power_alignment_and_incongruent_segment_reject(self):
+        for alignment in (0, 24576):
+            with self.subTest(alignment=alignment), self.assertRaisesRegex(ValueError, 'alignment'):
+                android_release.verify_native_alignment(native_elf(alignment=alignment), 'arm64-v8a', 'libmain.so')
+        contents = bytearray(native_elf())
+        struct.pack_into('<Q', contents, 64 + 8, 1)
+        with self.assertRaisesRegex(ValueError, 'alignment'):
+            android_release.verify_native_alignment(contents, 'arm64-v8a', 'libmain.so')
+
+    def test_malformed_headers_missing_segments_and_wrong_architecture_reject(self):
+        invalid = [b'native', native_elf()[:-1]]
+        for offset, value in ((5, 2), (64, 0)):
+            contents = bytearray(native_elf()); contents[offset] = value
+            invalid.append(contents)
+        for contents in invalid:
+            with self.subTest(contents=contents), self.assertRaises(ValueError):
+                android_release.verify_native_alignment(contents, 'arm64-v8a', 'libmain.so')
+        with self.assertRaisesRegex(ValueError, 'architecture'):
+            android_release.verify_native_alignment(native_elf('x86_64'), 'arm64-v8a', 'libmain.so')
+
+    def test_apk_checks_dependency_libraries_as_well_as_game(self):
+        with tempfile.TemporaryDirectory() as directory:
+            apk = Path(directory) / 'unaligned.apk'
+            with zipfile.ZipFile(apk, 'w') as package:
+                package.writestr('lib/arm64-v8a/libmain.so', native_elf())
+                package.writestr('lib/arm64-v8a/libc++_shared.so', native_elf(alignment=4096))
+            with self.assertRaisesRegex(ValueError, 'libc\\+\\+_shared.so'):
+                android_release.verify_apk(apk, 'arm64-v8a', Path(directory), require_dependency_manifest=False)
 
 
 class AndroidReleaseTests(unittest.TestCase):
@@ -122,13 +179,13 @@ class AndroidReleaseTests(unittest.TestCase):
             root = Path(directory)
             apk = root / "test.apk"
             with zipfile.ZipFile(apk, "w") as package:
-                package.writestr("lib/arm64-v8a/libmain.so", b"native")
+                package.writestr("lib/arm64-v8a/libmain.so", native_elf())
                 package.writestr("lib/x86_64/libmain.so", b"wrong ABI")
                 package.writestr("assets/glob2-bundle/index.list", hashlib.sha256(b"").hexdigest() + "\n")
             with self.assertRaisesRegex(ValueError, "native libraries"):
                 android_release.verify_apk(apk, "arm64-v8a", root, require_dependency_manifest=False)
             with zipfile.ZipFile(apk, "w") as package:
-                package.writestr("lib/arm64-v8a/libmain.so", b"native")
+                package.writestr("lib/arm64-v8a/libmain.so", native_elf())
                 package.writestr("assets/glob2-bundle/index.list", hashlib.sha256(b"").hexdigest() + "\n")
             with mock.patch.object(android_release.subprocess, "run", return_value=subprocess.CompletedProcess([], 0)):
                 with self.assertRaisesRegex(ValueError, "unsigned"):
@@ -152,7 +209,7 @@ class AndroidReleaseTests(unittest.TestCase):
             apk = root / "unexpected.apk"
             with zipfile.ZipFile(apk, "w") as package:
                 for name in ("libmain.so", "libc++_shared.so", "libSDL3.so", "libextra.so"):
-                    package.writestr("lib/arm64-v8a/" + name, b"native")
+                    package.writestr("lib/arm64-v8a/" + name, native_elf())
             with mock.patch.dict("os.environ", {"GLOB2_DEV_MODE":"isolated"}), self.assertRaisesRegex(ValueError, "pinned dependency manifest"):
                 android_release.verify_apk(apk, "arm64-v8a", root, root=root)
 
@@ -169,7 +226,7 @@ class AndroidReleaseTests(unittest.TestCase):
             apk = root / "release.apk"
             with zipfile.ZipFile(apk, "w") as package:
                 for name in ("libmain.so", "libc++_shared.so"):
-                    package.writestr("lib/arm64-v8a/" + name, b"native")
+                    package.writestr("lib/arm64-v8a/" + name, native_elf())
                 package.writestr("assets/glob2-bundle/index.list", hashlib.sha256(b"").hexdigest() + "\n")
             badging = "package: name='org.globulation2.glob2' versionCode='1100062' versionName='0.11.0.6'\n"
             with (
