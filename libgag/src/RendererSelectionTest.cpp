@@ -8,6 +8,36 @@
 #include <algorithm>
 
 using namespace GAGCore;
+namespace {
+class AdmissionProbe final : public RenderDevice {
+    std::unique_ptr<RenderDevice> owned;
+public:
+    bool reject = false;
+    explicit AdmissionProbe(std::unique_ptr<RenderDevice> device):owned(std::move(device)){}
+    RenderDeviceCapabilities capabilities() const override{return owned->capabilities();}
+    bool canBeginFrame() override{return owned->canBeginFrame();}
+    RenderSubmission submit(RenderFrame frame) override{if(reject){reject=false;throw RenderAdmissionDeferred("injected temporary upload pressure");}return owned->submit(std::move(frame));}
+    RenderCompletion completion(RenderSubmission s) override{return owned->completion(s);}
+    void present() override{owned->present();} void discardFrame() override{owned->discardFrame();}
+    void reset() override{owned->reset();} std::uint64_t generation() const override{return owned->generation();}
+    RenderTelemetry telemetry() const override{return owned->telemetry();}
+    bool capture(CaptureRequest r) override{return owned->capture(std::move(r));}
+    bool pollCapture(CaptureResult &r) override{return owned->pollCapture(r);}
+    SDL_Surface *captureSynchronously(CaptureRequest r) override{return owned->captureSynchronously(std::move(r));}
+    void cancelCaptures() override{owned->cancelCaptures();} void outputSize(int &w,int &h) override{owned->outputSize(w,h);}
+};
+class AdmissionContext final : public GraphicContext {
+public:
+    using GraphicContext::GraphicContext;
+    AdmissionProbe &installProbe(){
+        renderer->flush();deviceRenderer.reset();
+        auto probe=std::make_unique<AdmissionProbe>(std::move(presentationDevice));auto *result=probe.get();
+        presentationDevice=std::move(probe);
+        deviceRenderer=makeDeviceRenderBackend(*presentationDevice,*deviceResources,getW(),getH());renderer=deviceRenderer.get();
+        return *result;
+    }
+};
+}
 TEST_SUITE("RendererSelection")
 {
     TEST_CASE("stable names aliases and startup precedence")
@@ -58,6 +88,36 @@ TEST_SUITE("RendererSelection")
             gfx.drawFilledRect(0,0,64,48,Color(30,40,170));REQUIRE(gfx.flushDeviceFrame());gfx.nextFrame();
             CHECK(gfx.getGLContextGeneration()==generation);captured.reset(device->captureSynchronously(main));REQUIRE(captured);
             REQUIRE(SDL_ReadSurfacePixel(captured.get(),32,24,&r,&g,&b,&a));CHECK(r==30);CHECK(g==40);CHECK(b==170);
+            REQUIRE(resources->erase(handle));
+        }
+    }
+
+    TEST_CASE("public admission abort retains target leases and advances content epoch [display]")
+    {
+        for(auto backend:{RendererBackend::ProgrammableGL,RendererBackend::SDLGPU}){
+            GraphicContext::setInitialRendererBackend(RendererBackend::Software);
+            AdmissionContext gfx(64,48,GraphicContext::NOAUDIO,"bounded upload retry");
+            auto choices=gfx.rendererAvailability();
+            if(std::none_of(choices.begin(),choices.end(),[&](const auto &c){return c.backend==backend&&c.available;}))continue;
+            REQUIRE(gfx.requestBackendSwitch(backend));gfx.nextFrame();REQUIRE(gfx.backendSwitchStatus().active==backend);
+            auto &probe=gfx.installProbe();auto *resources=gfx.renderResources();REQUIRE(resources);
+            std::unique_ptr<SDL_Surface,decltype(&SDL_DestroySurface)> pixels(SDL_CreateSurface(4,4,SDL_PIXELFORMAT_RGBA32),SDL_DestroySurface);
+            REQUIRE(pixels);TextureDescriptor descriptor;descriptor.budgetClass=TextureDescriptor::BudgetClass::TerrainPage;
+            const auto handle=resources->create(pixels.get(),1,descriptor);REQUIRE(handle);const auto target=resources->snapshot(handle);
+            auto paintTarget=[&](SDL_FColor color){REQUIRE(gfx.beginDeviceTarget(target,4,4));DrawPacket p;p.kind=DrawPacket::Kind::Clear;p.clearColor=true;p.clearValue=color;const bool admitted=gfx.submitDevicePacket(std::move(p));gfx.endDeviceTarget();return admitted;};
+            REQUIRE(paintTarget({0,1,0,1}));gfx.drawFilledRect(0,0,64,48,Color(180,20,30));gfx.nextFrame();
+            const auto generation=gfx.getGLContextGeneration();const auto deviceGeneration=probe.generation();
+            const auto epoch=gfx.renderTargetContentRevision();probe.reject=true;
+            // Fill the real adapter to trigger its automatic 4096-command flush.
+            bool admitted=true;for(unsigned i=0;i<4097 && admitted;++i){DrawPacket p;p.kind=DrawPacket::Kind::Barrier;admitted=gfx.submitDevicePacket(std::move(p));}
+            CHECK_FALSE(admitted);CHECK_FALSE(gfx.flushDeviceFrame());gfx.nextFrame();
+            CHECK(gfx.getGLContextGeneration()==generation);CHECK(probe.generation()==deviceGeneration);
+            CHECK(gfx.renderTargetContentRevision()==epoch+1);CHECK(resources->snapshot(handle)==target);
+            REQUIRE(paintTarget({0,0,1,1}));gfx.drawFilledRect(0,0,64,48,Color(20,170,40));gfx.nextFrame();
+            CHECK(gfx.renderTargetContentRevision()==epoch+1);CHECK(resources->snapshot(handle)==target);
+            CaptureRequest capture;capture.target=target;capture.width=capture.height=4;
+            std::unique_ptr<SDL_Surface,decltype(&SDL_DestroySurface)> restored(probe.captureSynchronously(capture),SDL_DestroySurface);
+            REQUIRE(restored);Uint8 r,g,b,a;REQUIRE(SDL_ReadSurfacePixel(restored.get(),2,2,&r,&g,&b,&a));CHECK(r==0);CHECK(g==0);CHECK(b==255);CHECK(a==255);
             REQUIRE(resources->erase(handle));
         }
     }
