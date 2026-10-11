@@ -341,6 +341,46 @@ class EmulatorEnvironmentTests(unittest.TestCase):
 
 
 class IOSSmokeFailureTests(unittest.TestCase):
+    def test_unified_log_readiness_is_scoped_to_each_launched_process(self):
+        import json
+        sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'mobile'))
+        import ios_smoke
+        root = Path(__file__).resolve().parents[2]
+        scratch = root/'build/test-profiles'
+        scratch.mkdir(parents=True, exist_ok=True)
+        with tempfile.TemporaryDirectory(dir=scratch) as temporary:
+            output = Path(temporary)/'diagnostics'
+            launch_count = 0
+            predicates = []
+            def command(argv, **kwargs):
+                nonlocal launch_count
+                arguments = argv[4:]
+                if arguments[:2] == ['list', 'devices']:
+                    return json.dumps({'devices': {'runtime': [{'udid': 'owned-test', 'name': 'Glob2-Mobile', 'state': 'Booted'}]}})
+                if arguments[0] == 'launch' and arguments[-1] == ios_smoke.PACKAGE:
+                    launch_count += 1
+                    return ios_smoke.PACKAGE + ': ' + ('123' if launch_count < 3 else '456')
+                if arguments[:4] == ['spawn', 'owned-test', 'log', 'show']:
+                    self.assertIn('--start', arguments)
+                    predicates.append(arguments[-1])
+                    return 'Glob2 screen ready: 14MainMenuScreen\n'
+                return ''
+            with patch.object(sys, 'argv', ['ios_smoke.py', '--device', 'owned-test', '--output', str(output)]), patch.object(ios_smoke.subprocess, 'check_output', side_effect=command), patch.object(ios_smoke.time, 'sleep'):
+                ios_smoke.main()
+            self.assertEqual(predicates, [
+                'processIdentifier == 123 AND eventMessage CONTAINS "Glob2 screen ready:"',
+                'processIdentifier == 456 AND eventMessage CONTAINS "Glob2 screen ready:"'])
+            result = json.loads((output/'result.json').read_text())
+            self.assertTrue(result['passed'])
+            self.assertEqual(len(result['checks']), 3)
+            self.assertTrue((output/'startup-readiness-system.log').exists())
+
+    def test_main_menu_readiness_requires_one_complete_message(self):
+        sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'mobile'))
+        import ios_smoke
+        self.assertFalse(ios_smoke.main_menu_ready('Glob2 screen ready: SettingsScreen\nOld MainMenuScreen'))
+        self.assertTrue(ios_smoke.main_menu_ready('Glob2 screen ready: 14MainMenuScreen'))
+
     def test_launch_timeout_survives_failed_diagnostics_without_stopping_unstarted_apps(self):
         import json
         import subprocess
