@@ -61,6 +61,51 @@ struct Video
 }
 TEST_SUITE("SDLGPUDevice")
 {
+    GLOB2_TEST_CASE("explicit Vulkan trim restores live immutable source pixels", "[display][isolated]")
+    {
+        {
+            const char *shaders = std::getenv("GLOB2_TEST_SHADER_DIRECTORY");
+            if (!shaders) { MESSAGE("Vulkan shaders unavailable; trim coverage omitted"); return; }
+            Video video; auto gpu = makeSDLGPUDevice(nullptr, 16, 16, shaders); auto &device = *gpu;
+            RenderResources resources;
+            auto pixels = surface(64, 64); REQUIRE(pixels);
+            REQUIRE(SDL_FillSurfaceRect(pixels.get(), nullptr,
+                SDL_MapSurfaceRGBA(pixels.get(), 31, 117, 203, 255)));
+            const auto handle = resources.create(pixels.get(), 1); REQUIRE(handle);
+            const auto source = resources.snapshot(handle);
+            const auto draw = [&](std::uint64_t identity) {
+                DrawPacket packet; packet.kind = DrawPacket::Kind::Blit;
+                packet.texture = source; packet.source = {0, 0, 64, 64};
+                packet.destination = {0, 0, 16, 16};
+                RenderFrame frame; frame.identity = identity;
+                frame.logicalWidth = frame.logicalHeight = 16;
+                frame.packets.push_back(std::move(packet));
+                const auto submission = device.submit(std::move(frame)); REQUIRE(submission);
+                return submission;
+            };
+            const auto submission = draw(1);
+            const auto pendingBytes = device.telemetry().resourceBytes;
+            device.trimRetiredResources();
+            CHECK(device.telemetry().resourceBytes <= pendingBytes); // completed chunk may already retire
+            device.present();
+            const auto deadline = SDL_GetTicks() + 5000;
+            while (device.completion(submission) == RenderCompletion::Pending && SDL_GetTicks() < deadline) SDL_Delay(1);
+            REQUIRE(device.completion(submission) == RenderCompletion::Complete);
+            const auto before = device.telemetry().resourceBytes;
+            device.trimRetiredResources();
+            CHECK(device.telemetry().resourceBytes + 64 * 64 * 4 <= before);
+            REQUIRE(source); // restoration source remains logically owned
+            REQUIRE(draw(2)); device.present();
+            CaptureRequest request; request.identity = 91; request.frameIdentity = 2;
+            request.width = request.height = 16;
+            Surface result(device.captureSynchronously(request), SDL_DestroySurface); REQUIRE(result);
+            for(int y=0;y<16;++y) for(int x=0;x<16;++x) {
+                Uint8 r,g,b,a; REQUIRE(SDL_ReadSurfacePixel(result.get(),x,y,&r,&g,&b,&a));
+                CHECK(r==31); CHECK(g==117); CHECK(b==203); CHECK(a==255);
+            }
+        }
+    }
+
     GLOB2_TEST_CASE("Vulkan trims completed retired targets while capture leases remain", "[display][isolated]")
     {
         const char *shaders = std::getenv("GLOB2_TEST_SHADER_DIRECTORY");

@@ -695,7 +695,22 @@ class SDLGPUDevice final : public RenderDevice
     }
     std::uint64_t generation() const override { return epoch; }
     RenderTelemetry telemetry() const override { return counts; }
-    void trimRetiredResources() override { reap(); }
+    void trimRetiredResources() override {
+        reap();
+        for(auto it=cache.begin();it!=cache.end();) {
+            if(it->second.use_count()==1 && !it->second->renderTarget && !it->second->progressiveUpload) it=cache.erase(it); else ++it;
+        }
+        for(auto it=geometryCache.begin();it!=geometryCache.end();) {
+            if(it->second.use_count()==1) it=geometryCache.erase(it); else ++it;
+        }
+        for(auto it=coverageCache.begin();it!=coverageCache.end();) {
+            if(it->second.use_count()==1) it=coverageCache.erase(it); else ++it;
+        }
+        for(auto it=terrainScratch.begin();it!=terrainScratch.end();) {
+            if(it->second.use_count()==1) it=terrainScratch.erase(it); else ++it;
+        }
+        updateMemory();
+    }
     bool capture(CaptureRequest request) override;
     bool pollCapture(CaptureResult &result) override;
     SDL_Surface *captureSynchronously(CaptureRequest request) override;

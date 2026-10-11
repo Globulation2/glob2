@@ -120,6 +120,49 @@ TEST_SUITE("ProgrammableGLDevice")
         }
     }
 
+    GLOB2_TEST_CASE("explicit GL trim restores live immutable source pixels", "[display]")
+    {
+        for (bool es : {false, true}) {
+            GLFixture fixture(es); auto &device = *fixture.device;
+            RenderResources resources;
+            auto pixels = surface(64, 64); REQUIRE(pixels);
+            REQUIRE(SDL_FillSurfaceRect(pixels.get(), nullptr,
+                SDL_MapSurfaceRGBA(pixels.get(), 31, 117, 203, 255)));
+            const auto handle = resources.create(pixels.get(), 1); REQUIRE(handle);
+            const auto source = resources.snapshot(handle);
+            const auto draw = [&](std::uint64_t identity) {
+                DrawPacket packet; packet.kind = DrawPacket::Kind::Blit;
+                packet.texture = source; packet.source = {0, 0, 64, 64};
+                packet.destination = {0, 0, 16, 16};
+                RenderFrame frame; frame.identity = identity;
+                frame.logicalWidth = frame.logicalHeight = 16;
+                frame.packets.push_back(std::move(packet));
+                const auto submission = device.submit(std::move(frame)); REQUIRE(submission);
+                return submission;
+            };
+            const auto submission = draw(1);
+            const auto pendingBytes = device.telemetry().resourceBytes;
+            device.trimRetiredResources();
+            CHECK(device.telemetry().resourceBytes == pendingBytes); // current unpresented lease
+            device.present();
+            const auto deadline = SDL_GetTicks() + 5000;
+            while (device.completion(submission) == RenderCompletion::Pending && SDL_GetTicks() < deadline) SDL_Delay(1);
+            REQUIRE(device.completion(submission) == RenderCompletion::Complete);
+            const auto before = device.telemetry().resourceBytes;
+            device.trimRetiredResources();
+            CHECK(device.telemetry().resourceBytes + 64 * 64 * 4 <= before);
+            REQUIRE(source); // restoration source remains logically owned
+            REQUIRE(draw(2)); device.present();
+            CaptureRequest request; request.identity = 91; request.frameIdentity = 2;
+            request.width = request.height = 16;
+            Surface result(device.captureSynchronously(request), SDL_DestroySurface); REQUIRE(result);
+            auto expected = surface(); REQUIRE(expected);
+            REQUIRE(SDL_FillSurfaceRect(expected.get(), nullptr,
+                SDL_MapSurfaceRGBA(expected.get(), 31, 117, 203, 255)));
+            equal(expected.get(), result.get());
+        }
+    }
+
     GLOB2_TEST_CASE("minification samples authored CPU mip levels without driver regeneration", "[display]")
     {
         for(bool es:{false,true}){

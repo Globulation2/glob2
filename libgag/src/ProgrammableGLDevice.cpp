@@ -254,11 +254,11 @@ class ProgrammableGLDevice final : public RenderDevice
             gl.glDeleteSync(pending.front().fence); pending.pop_front();
         }
     }
-    void trim(std::size_t admission = 0, std::size_t category = 0, bool colorAdmission = true)
+    void trim(std::size_t admission = 0, std::size_t category = 0, bool colorAdmission = true, bool releaseCompleted = false)
     {
         const auto eligible = [this](const Allocation &value) { return value.lastUse <= completed; };
         for (auto it = textures.begin(); it != textures.end();) {
-            if (eligible(it->second) && (it->second.snapshot.expired() || textureBytes + admission > TextureBudget-captureBytes || (colorAdmission && it->second.category == category && admission > ClassLimits[category] - classBytes[category]))) {
+            if (eligible(it->second) && (releaseCompleted || it->second.snapshot.expired() || textureBytes + admission > TextureBudget-captureBytes || (colorAdmission && it->second.category == category && admission > ClassLimits[category] - classBytes[category]))) {
                 destroy(it->second); it = textures.erase(it);
             } else ++it;
         }
@@ -272,10 +272,10 @@ class ProgrammableGLDevice final : public RenderDevice
         for(auto it=masks.begin();it!=masks.end();) {
             const bool pressure=admission>TextureBudget-textureBytes-captureBytes ||
                 (colorAdmission && category==std::size_t(TextureDescriptor::BudgetClass::TerrainMask) && admission>ClassLimits[category]-classBytes[category]);
-            if(it->second.lastUse<=completed && (it->second.source.expired() || pressure)){destroy(it->second);it=masks.erase(it);}else ++it;
+            if(it->second.lastUse<=completed && (releaseCompleted || it->second.source.expired() || pressure)){destroy(it->second);it=masks.erase(it);}else ++it;
         }
         for(auto it=scratchTargets.begin();it!=scratchTargets.end();) {
-            if(it->second.lastUse<=completed && admission>TextureBudget-textureBytes-captureBytes){destroy(it->second);it=scratchTargets.erase(it);}else ++it;
+            if(it->second.lastUse<=completed && (releaseCompleted || admission>TextureBudget-textureBytes-captureBytes)){destroy(it->second);it=scratchTargets.erase(it);}else ++it;
         }
         if (admission > TextureBudget - textureBytes - captureBytes || (colorAdmission && admission > ClassLimits[category] - classBytes[category])) throw RenderAdmissionDeferred("GL texture budget exhausted");
         counts.resourceBytes = textureBytes;
@@ -1024,9 +1024,9 @@ class ProgrammableGLDevice final : public RenderDevice
     std::uint64_t generation() const override { return epoch; }
     void trimRetiredResources() override
     {
-        current(); poll(); trim();
+        current(); poll(); trim(0, 0, true, true);
         for (auto it = meshes.begin(); it != meshes.end();) {
-            if (it->second.lastUse <= completed && it->second.geometry.expired()) {
+            if (it->second.lastUse <= completed) {
                 destroyMesh(it->second); it = meshes.erase(it);
             } else ++it;
         }
