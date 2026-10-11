@@ -17,6 +17,9 @@ def build_identity(arguments, host=None):
     if size_profile not in ('none', 'gc', 'lto', 'size'):
         raise ValueError('size_optimization must be none, gc, lto, or size')
     target = arguments.get('target', 'native')
+    retain_symbols = enabled(arguments.get('retain_symbols', 0))
+    if retain_symbols and (target != 'native' or not enabled(arguments.get('release', 0))):
+        raise ValueError('retain_symbols requires a native release build')
     from dev_build import development_identity
     development = development_identity(arguments, target, enabled(arguments.get('release', 0)), enabled(arguments.get('profile', 0)))
     if size_profile != 'none' and target != 'native':
@@ -76,6 +79,8 @@ def build_identity(arguments, host=None):
     native_wss = target == 'native' and role == 'client' and enabled(arguments.get('wss', 1))
     identity = {'target': target, 'role': role, 'toolchain': toolchain, 'mode': mode,
                 'native_wss': native_wss}
+    if retain_symbols:
+        identity['retain_symbols'] = True
     if size_profile != 'none':
         if mode != 'release' or toolchain not in ('linux', 'mingw'):
             raise ValueError('size_optimization experiments require a Linux or MinGW release build')
@@ -121,6 +126,8 @@ def default_directory(identity):
         path /= 'size-' + identity['size_optimization']
     if identity.get('lean_images'):
         path /= 'lean-images'
+    if identity.get('retain_symbols'):
+        path /= 'retain-symbols'
     return path / 'china' if identity.get('china') else path
 
 

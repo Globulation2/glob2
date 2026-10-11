@@ -17,6 +17,24 @@ from tools.release.check_profile_platforms import verify
 
 
 class PackageOptimizationTests(unittest.TestCase):
+    def test_distro_symbols_keep_release_profile_and_isolate_stripped_outputs(self):
+        ordinary = build_identity({'release': '1'}, host='linux')
+        symbols = build_identity({'release': '1', 'retain_symbols': '1'}, host='linux')
+        self.assertEqual(symbols['mode'], 'release')
+        self.assertEqual(symbols['client_features'], ordinary['client_features'])
+        self.assertEqual(symbols['client_profile'], 'free')
+        self.assertNotEqual(default_directory(symbols), default_directory(ordinary))
+        with tempfile.TemporaryDirectory() as directory:
+            prepare_directory(directory, ordinary)
+            with self.assertRaises(ValueError):
+                prepare_directory(directory, symbols)
+        for arguments in ({'retain_symbols': '1'},
+                          {'release': '1', 'retain_symbols': '1', 'target': 'android'},
+                          {'release': '1', 'retain_symbols': '1', 'target': 'ios'},
+                          {'release': '1', 'retain_symbols': '1', 'target': 'web'}):
+            with self.assertRaisesRegex(ValueError, 'native release'):
+                build_identity(arguments, host='linux')
+
     def test_compiler_profiles_cannot_mix_cached_objects(self):
         identities = [
             build_identity({"release": "1", "size_optimization": profile}, host="linux")

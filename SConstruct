@@ -37,6 +37,7 @@ def establish_options(env):
     opts.Add("linker", "Development linker: default, auto, lld", "default")
     opts.Add("dependency_jobs", "Dependency build parallelism (defaults to SCons -j)", GetOption("num_jobs"))
     opts.Add(BoolVariable("release", "Build for release", 0))
+    opts.Add(BoolVariable("retain_symbols", "Keep native release symbols for distro debug packages", 0))
     opts.Add("client_profile", "Client product profile: full or free", "free" if ARGUMENTS.get("release") == "1" else "full")
     opts.Add("distribution", "Distribution channel", "direct")
     for feature in ("commander", "authoring_links", "community_ai", "community_generators"):
@@ -350,10 +351,11 @@ def main():
     # is split into a list. Distro RPM macros provide multiple flags at once.
     for flags in ('CXXFLAGS', 'LINKFLAGS'):
         env[flags] = env.Split(env[flags])
-    # Release builds outside macOS link with -s, which strips debug information
+    # Ordinary release builds outside macOS link with -s, which strips debug information
     # from every binary, so compiling it in only slows the build and multiplies
-    # the size of object files and compiler caches. -g never changes codegen.
-    if env['release'] and not isDarwinPlatform:
+    # the size of object files and compiler caches. Distro debug packages retain it.
+    # -g never changes codegen.
+    if env['release'] and not isDarwinPlatform and not env['retain_symbols']:
         for flags in ('CXXFLAGS', 'LINKFLAGS'):
             env[flags] = [flag for flag in env.Split(env[flags]) if flag != '-g']
     # "server" means a build without the game client: the match relay.
@@ -506,8 +508,10 @@ def main():
         env.Append(CXXFLAGS=["-O3"])
         env.Append(LINKFLAGS=["-O3"])
         if not isDarwinPlatform:
-            env.Append(CXXFLAGS=["-s"])
-            env.Append(LINKFLAGS=["-s", "-fwhole-program"])
+            env.Append(LINKFLAGS=["-fwhole-program"])
+            if not env['retain_symbols']:
+                env.Append(CXXFLAGS=["-s"])
+                env.Append(LINKFLAGS=["-s"])
     from size_optimization import apply as apply_size_optimization
     apply_size_optimization(env, env['size_optimization'])
     if env['profile']:
