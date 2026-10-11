@@ -1,5 +1,5 @@
 {
-  "testedHead": "d3056bbbdae4f7cf8ef9bdae5c93b28940dfc964",
+  "testedHead": "3fc507709a8e2dcf2981b5bac91c6fd9f2741395",
   "productionRevision": "e8fa0032fea38a7d4d17d63a61beefc5940adbfb",
   "base": "c3cb01070d121752f4c5e9632c5567ef13e58d9a",
   "postProductionChanges": [
@@ -66,5 +66,25 @@
     "Initial system Python full contracts failed8asset-encoder cases because Pillow/libwebp versions triggered isolated worker execution that escapes in-process test mocks. Package tools/tests unchanged frommaster; rerun in existing pinned Pillow12.2.0/libwebp1.6.0 environment passed523.",
     "Previous hosted523contracts foundshared Emscripten API dependency; corrected through calling-realm platform imports and rerun.",
     "Earlier zero-test static discovery attempts and first source-equivalence hash with source-line-generated telemetry locals were not accepted evidence."
-  ]
+  ],
+  "browser": {
+    "precedingAeca": {
+      "cases": 12,
+      "passed": 12,
+      "failed": 0,
+      "skipped": 0,
+      "adapter": "AMD rdna-2",
+      "runtime": "8789"
+    },
+    "finalBridgeE8fa": {
+      "cases": 6,
+      "passed": 6,
+      "failed": 0,
+      "skipped": 0,
+      "adapter": "AMD rdna-2",
+      "runtime": "8821",
+      "publicExport": "Both actual MP4s validated H2641200x900/AAC and positive duration; original60s OPFScompletion limit retained."
+    },
+    "editorFixtureRefresh": "Actual final failure PNG showed healthy Settings1001x701 and clipped renderer value glyphs; stale startup JPEG from another worker was excluded. Strict text assertion now scrolls full control into view; same deadlines preserved. Reruns pending."
+  }
 }

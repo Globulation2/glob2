@@ -7,6 +7,10 @@
     "bytes": 948518,
     "sha256": "e76c8729ce260947453234b9b7ebbee06489ea450651a5868ca6a07394da84cf"
   },
+  "review/final-native-d305/compatibility-rendering-artifacts.tar.gz": {
+    "bytes": 8918176,
+    "sha256": "78521b3f57ef0138172cc4e7b06e6ea8dadbb63a5cb51c6b4dc296e4adb77ba5"
+  },
   "review/final-native-d305/files.json": {
     "bytes": 3492,
     "sha256": "8c63f078dace9f5a101b82a77708101ee863c37937445f6aedcde2f249770803"
@@ -14,6 +18,18 @@
   "review/final-native-d305/final-aeca-native-install-evidence.tar.gz": {
     "bytes": 5826836,
     "sha256": "043cf45ed216f033fe53cd0bb4cfa7b58630f1e36c44544241d51aa636e0c04e"
+  },
+  "review/final-native-d305/final-browser-results-summary.json": {
+    "bytes": 717,
+    "sha256": "daf613903b9e90903f10fdbef4d962df197b80039af32ca5c9fc0f6a62775551"
+  },
+  "review/final-native-d305/final-browser-review-disposition.json": {
+    "bytes": 2604,
+    "sha256": "8037e6d8db71ec2bc1a075adaabb253c79b02a728fafdfc8ef2f33289a5ac920"
+  },
+  "review/final-native-d305/final-shader-count-receipt.json": {
+    "bytes": 3638,
+    "sha256": "6672d5ad9dd67ade35c1dc39c29bedc2a0041991ba3a4ffb6cb9f22936aad167"
   },
   "review/final-native-d305/glob2-renderer-final-browser-units.log": {
     "bytes": 9757,
@@ -91,6 +107,10 @@
     "bytes": 117350,
     "sha256": "5cadef8428777b0e6af77f073a00b2a60b5dc8aeb0dc2f5b1a51d4d6d8e34ba9"
   },
+  "review/final-native-d305/hosted-cheap-contracts-891a.json": {
+    "bytes": 9362,
+    "sha256": "dfa8d893c5dd6ec16d23426b1cbeb9dcd5aef84989d39f3cba8f7f8b93f84a5e"
+  },
   "review/final-native-d305/native-bridge-source-equivalence.json": {
     "bytes": 9098,
     "sha256": "291985da63799f56cf0b6ab88a6a2c45ca677ed68295a467c523ab5b83023604"
@@ -147,9 +167,17 @@
     "bytes": 25515,
     "sha256": "5b01c64b2795086fd92471a9b5a5479b9736e4d3350605bf0cb99a0ad362c826"
   },
+  "review/final-native-d305/renderer-final-aeca-browser-receipts.tar.gz": {
+    "bytes": 687040,
+    "sha256": "3cfd28166e32aa95cf26b6a24b0ce925312c272cdbafce98f7252cb4015c6658"
+  },
+  "review/final-native-d305/renderer-platform-bridge-final-e8fa-receipts-videos.tar.gz": {
+    "bytes": 21492490,
+    "sha256": "3287ab15e56a39c170fac2326a202bfe2c50aec64cead7a1efb7a107b41214b1"
+  },
   "review/final-native-d305/revision-and-coverage.json": {
-    "bytes": 2705,
-    "sha256": "caf170880412b32ed9abf55d556163d47c3fe15db8e7b848dd9bf68d5fade5e6"
+    "bytes": 3461,
+    "sha256": "9e747ec1c0796844b9faa8c2a8fe6b2d45cb75ea713884779691023244dedaeb"
   },
   "review/final-native-d305/shutdown-failure-gl-gdb.log": {
     "bytes": 54451,
@@ -158,6 +186,10 @@
   "review/final-native-d305/shutdown-failure-provenance.json": {
     "bytes": 1199,
     "sha256": "280a666ee2104752918507b7f3e94f5fdddc170a5b5df7fb099f9d03d6a22ada"
+  },
+  "review/final-native-d305/team-review.md": {
+    "bytes": 2324,
+    "sha256": "70cf59fc30e6300e3a77bfa9be36fe9391f13a3ffd43c700e9f05dc9c1ec3642"
   },
   "review/final-native-d305/teardown-final-engine-display.xml": {
     "bytes": 5361,

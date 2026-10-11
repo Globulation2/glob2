@@ -1,0 +1,20 @@
+{
+  "product": "e8fa0032f",
+  "runtime_url": "http://127.0.0.1:8821/",
+  "passed": 6,
+  "failed": 0,
+  "skipped": 0,
+  "adapter": {
+    "vendor": "amd",
+    "architecture": "rdna-2",
+    "fallbackRenderer": "ANGLE AMD Radeon680M RADV Vulkan"
+  },
+  "first4": "run-first4.log",
+  "recording2": "recording/run.log",
+  "receiptCount": 26,
+  "videoFiles": [
+    "artifacts/renderer-platform-bridge/final-e8fa/videos/serial-backend-switch-recording.mp4",
+    "artifacts/renderer-platform-bridge/final-e8fa/videos/threaded-backend-switch-recording.mp4"
+  ],
+  "limits": "Concurrent independent editor/menu correctness verification in first4 and start of recording; no performance claim. No Torus heavy workload overlap."
+}

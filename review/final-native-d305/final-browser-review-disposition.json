@@ -1,0 +1,33 @@
+{
+  "reviewedProduction": "e8fa0032f",
+  "reviewedHead": "891a630cc69cbbdf731e52d4cb4c9bd41e439ece",
+  "areas": [
+    "RenderDevice/RenderFrame/RenderResources interfaces",
+    "Programmable GL, SDL GPU and WebGPU lifetimes, eviction, completion and capture",
+    "shader layouts/material catalogue/authored mips",
+    "threaded shader ownership and asynchronous prepare epochs",
+    "Toolkit teardown and calling-realm browser bridge",
+    "architecture and lifecycle comments"
+  ],
+  "confirmedUnresolvedProductionDefects": [],
+  "confirmedFixes": [
+    "WebGPU skin quadrant and straight/PMA target parity",
+    "completed live-source physical eviction and current/in-flight protections",
+    "unsubmitted prepared-resource future lease rollback",
+    "threaded owned shader byte proxy",
+    "asynchronous preparation epochs/loss/fence failure isolation",
+    "physical target scissor and nested target restoration",
+    "healthy admission retry retains resources and invalidates publication epochs",
+    "pending screenshot Toolkit service teardown ordering"
+  ],
+  "limits": [
+    "No Windows D3D12, macOS/iOS Metal or Android hardware execution in this review; those platforms remain opt-in",
+    "Actual Safari and Edge hardware not executed; cross-engine browser results owned by shader reviewer",
+    "No release performance/default recommendation from correctness timings; quiet benchmarks and workload regression gates separate",
+    "Long cold Torus preparation intentionally retains the prior completed frame; feel still needs maintainer play review",
+    "Direct C++ archived proofs cover only their six matching input hashes, not the complete application"
+  ],
+  "validationStatus": "Final platform-bridge 6/6 actual AMD Chromium cases passed, no skips: availability/coalescing serial+threaded, real WebGPU loss with WebGL2 fallback serial+threaded, active WebGPU/GL asynchronous recording with public MP4 export serial+threaded. Maintained case deadlines and60s OPFS completion; ffprobe H2641200x900/AAC passed.",
+  "editorReview": "Failure screenshot verified healthy resized Settings1001x701; strict text predicate evaluated renderer row clipped to10px. Shader reviewer retracts product defect, correcting public-scroll fixture only.",
+  "visualSpotCheck": "Decoded native ffmpeg samples from actual public downloads inspected: threaded10s displays WebGPU Settings over coherent terrain/game sprites; serial45s displays ProgrammableGL Settings over coherent terrain/game sprites. Both1200x900, text/alpha/UI readable. This is a spot check, not complete frame-by-frame visual parity."
+}
