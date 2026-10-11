@@ -1,0 +1,77 @@
+{
+  "tested_commit": "40cf8a2c6168e89d074ff817ed8f69df50efd818",
+  "base": "daaef8a1ef7056a00e124166292581201fad46b3",
+  "results": [
+    {
+      "name": "presentation",
+      "command": [
+        "build/darwin/client/debug/dev-dev_fast-true-linker-auto/test/MenuColonyHarness",
+        "presentation",
+        "unused"
+      ],
+      "environment": {
+        "SDL_VIDEODRIVER": "dummy",
+        "SDL_AUDIODRIVER": "dummy"
+      },
+      "exit_code": 0
+    },
+    {
+      "name": "phone-presentation",
+      "command": [
+        "build/darwin/client/debug/dev-dev_fast-true-linker-auto/test/MenuColonyHarness",
+        "presentation",
+        "unused",
+        "400",
+        "900"
+      ],
+      "environment": {
+        "SDL_VIDEODRIVER": "dummy",
+        "SDL_AUDIODRIVER": "dummy",
+        "GLOB2_MOBILE_UI": "1"
+      },
+      "exit_code": 0
+    },
+    {
+      "name": "display",
+      "command": [
+        "build/darwin/client/debug/dev-dev_fast-true-linker-auto/test/MenuColonyHarness",
+        "display",
+        "unused"
+      ],
+      "environment": {
+        "SDL_VIDEODRIVER": "dummy",
+        "SDL_AUDIODRIVER": "dummy"
+      },
+      "exit_code": 0
+    },
+    {
+      "name": "isolation",
+      "command": [
+        "build/darwin/client/debug/dev-dev_fast-true-linker-auto/test/MenuColonyHarness",
+        "isolation",
+        "data/menu/colony.bin"
+      ],
+      "environment": {
+        "SDL_VIDEODRIVER": "dummy",
+        "SDL_AUDIODRIVER": "dummy"
+      },
+      "exit_code": 0
+    },
+    {
+      "name": "capture",
+      "command": [
+        "build/darwin/client/debug/dev-dev_fast-true-linker-auto/test/MenuColonyHarness",
+        "capture",
+        "main",
+        "artifacts/menu-startup/main.png",
+        "1152",
+        "720"
+      ],
+      "environment": {
+        "SDL_VIDEODRIVER": "dummy",
+        "SDL_AUDIODRIVER": "dummy"
+      },
+      "exit_code": 0
+    }
+  ]
+}

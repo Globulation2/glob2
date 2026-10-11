@@ -1,0 +1,6 @@
+global_assets_ms=700.329
+theme_setup_ms=198.822
+colony_load_ms=203.43
+Menu colony unavailable: missing menu snapshot
+Menu colony unavailable: invalid menu snapshot
+PASS: colony simulation, RNG, replay and dataset isolation
