@@ -1,0 +1,100 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="98" failures="0" errors="0" skipped="0"><testsuite name="GpuTexturePreparation"><testcase classname="GpuTexturePreparation" name="SDL CPU fallback preserves pixels state and queued revisions [display]" time="0.183772" status="run" />
+  <testcase classname="GpuTexturePreparation" name="SDL premultiplication preserves pixels state and queued revisions [display]" time="0.211871" status="run" />
+  <testcase classname="GpuTexturePreparation" name="native alpha weighted mips match every CPU level and preserve GL state [display]" time="0.473637" status="run" />
+  <testcase classname="GpuTexturePreparation" name="native mip fallback preserves deletion pending programs and separate framebuffers [display]" time="0.362709" status="run" />
+  </testsuite><testsuite name="GraphicContextDeviceSkins"><testcase classname="GraphicContextDeviceSkins" name="live skin adapters preserve assets and scoped transforms across backend switching [display]" time="3.08493" status="run" />
+  </testsuite><testsuite name="ProgrammableGLDevice"><testcase classname="ProgrammableGLDevice" name="GL trims completed retired targets while capture leases remain [display]" time="1.39988" status="run" />
+  <testcase classname="ProgrammableGLDevice" name="GLES300 shaders draw retained partial submissions [display]" time="0.758569" status="run" />
+  <testcase classname="ProgrammableGLDevice" name="authoritative skin rig matches fixed geometry and cropped capture retains target [display]" time="1.24791" status="run" />
+  <testcase classname="ProgrammableGLDevice" name="capture queues retain timestamps orientation and screenshot independence [display]" time="0.760798" status="run" />
+  <testcase classname="ProgrammableGLDevice" name="desktop core primitives match CPU reference with alpha tolerance [display]" time="0.743086" status="run" />
+  <testcase classname="ProgrammableGLDevice" name="discarded partial frame restores prior output and retains admitted capture [display]" time="0.735607" status="run" />
+  <testcase classname="ProgrammableGLDevice" name="explicit GL trim restores live immutable source pixels [display]" time="1.42345" status="run" />
+  <testcase classname="ProgrammableGLDevice" name="explicit straight and premultiplied uploads retain identical compositing [display]" time="0.83826" status="run" />
+  <testcase classname="ProgrammableGLDevice" name="factory recreation restores retained logical frame and texture revisions [display]" time="0.856189" status="run" />
+  <testcase classname="ProgrammableGLDevice" name="full skin atlas color capacity admits independently bounded depth storage [display]" time="0.913246" status="run" />
+  <testcase classname="ProgrammableGLDevice" name="integer terrain composition preserves seam wrapping orientation reduction and PMA [display]" time="2.07263" status="run" />
+  <testcase classname="ProgrammableGLDevice" name="linear atlas bounds isolate cropped neighbours [display]" time="0.754875" status="run" />
+  <testcase classname="ProgrammableGLDevice" name="linear sampling premultiplies transparent edge colours [display]" time="0.738208" status="run" />
+  <testcase classname="ProgrammableGLDevice" name="malformed advertised shader rejects candidate while prior factory remains usable [display]" time="0.775899" status="run" />
+  <testcase classname="ProgrammableGLDevice" name="many bounded command flushes remain one presentation frame [display]" time="0.836345" status="run" />
+  <testcase classname="ProgrammableGLDevice" name="minification samples authored CPU mip levels without driver regeneration [display]" time="1.49605" status="run" />
+  <testcase classname="ProgrammableGLDevice" name="offscreen targets preserve CPU orientation and later sampling [display]" time="0.764078" status="run" />
+  <testcase classname="ProgrammableGLDevice" name="old texture revisions queued draws and device generation survive mutation [display]" time="0.754175" status="run" />
+  <testcase classname="ProgrammableGLDevice" name="shared CPU pages batch different sprite frames and retain queued revisions [display]" time="1.37509" status="run" />
+  <testcase classname="ProgrammableGLDevice" name="terrain rejects unallocated target feedback before changing the retained frame [display]" time="1.37516" status="run" />
+  <testcase classname="ProgrammableGLDevice" name="translucent offscreen pixels retain premultiplied representation [display]" time="0.763044" status="run" />
+  <testcase classname="ProgrammableGLDevice" name="world depth clipping and overlay state preserve ordered rendering [display]" time="0.820682" status="run" />
+  <testcase classname="ProgrammableGLDevice" name="world sampling preserves offscreen top-left orientation and fractional target size [display]" time="0.805056" status="run" />
+  </testsuite><testsuite name="RendererSelection"><testcase classname="RendererSelection" name="native switching preserves surfaces commits preferences and rejects unavailable choices [display]" time="2.69066" status="run" />
+  <testcase classname="RendererSelection" name="stable names aliases and startup precedence" time="0" status="run" />
+  </testsuite><testsuite name="SDLGPUDevice"><testcase classname="SDLGPUDevice" name="Vulkan atlas and general caches have separate bounded budgets [display][isolated]" time="0.808761" status="run" />
+  <testcase classname="SDLGPUDevice" name="Vulkan authoritative skin catalogue rig fur depth and atlas capture [display][isolated]" time="0.690296" status="run" />
+  <testcase classname="SDLGPUDevice" name="Vulkan completed immutable uploads can be evicted and restored [display][isolated]" time="0.847607" status="run" />
+  <testcase classname="SDLGPUDevice" name="Vulkan discarded segments restore last presented frame [display][isolated]" time="0.589499" status="run" />
+  <testcase classname="SDLGPUDevice" name="Vulkan four atlas pages charge depth to aggregate only [display][isolated]" time="0.70237" status="run" />
+  <testcase classname="SDLGPUDevice" name="Vulkan four depth atlases coexist with full4096 authored terrain mip uploads [display][isolated]" time="2.43551" status="run" />
+  <testcase classname="SDLGPUDevice" name="Vulkan linear skin sampling clamps atlas frames and premultiplies [display][isolated]" time="0.603957" status="run" />
+  <testcase classname="SDLGPUDevice" name="Vulkan primitives preserve software pixels and capture identity [display][isolated]" time="0.643617" status="run" />
+  <testcase classname="SDLGPUDevice" name="Vulkan retains revisions offscreen targets and bounded readbacks [display][isolated]" time="0.590938" status="run" />
+  <testcase classname="SDLGPUDevice" name="Vulkan terrain composition and reduction preserve canonical CPU bytes [display][isolated]" time="0.672669" status="run" />
+  <testcase classname="SDLGPUDevice" name="Vulkan trims completed retired targets while capture leases remain [display][isolated]" time="0.631729" status="run" />
+  <testcase classname="SDLGPUDevice" name="Vulkan uploads authored mip levels and samples trilinear without generation [display][isolated]" time="0.581926" status="run" />
+  <testcase classname="SDLGPUDevice" name="Vulkan window presentation resize and repeated reset retain resources [display][isolated]" time="0.89827" status="run" />
+  <testcase classname="SDLGPUDevice" name="Vulkan world geometry preserves depth repeat clouds particles and cached lifetimes [display][isolated]" time="0.640289" status="run" />
+  <testcase classname="SDLGPUDevice" name="explicit Vulkan trim restores live immutable source pixels [display][isolated]" time="0.623885" status="run" />
+  </testsuite><testsuite name="SpriteSheets"><testcase classname="SpriteSheets" name="SDL GPU retains standalone HD authored mips [display]" time="0.666293" status="run" />
+  <testcase classname="SpriteSheets" name="failed published HD mip upgrade retains valid artwork without retry [display][writes-preferences]" time="1.13848" status="run" />
+  <testcase classname="SpriteSheets" name="independently encoded lossy HD atlases keep exact frame alpha [display]" time="0.297777" status="run" />
+  <testcase classname="SpriteSheets" name="legacy HD without retained CPU levels restores authored mips on a live GL device switch [display][writes-preferences]" time="1.11792" status="run" />
+  <testcase classname="SpriteSheets" name="portable HD prefetch upgrades across a live programmable GL switch [display][writes-preferences]" time="1.01923" status="run" />
+  <testcase classname="SpriteSheets" name="portable HD uses standalone frames without requesting GL atlases [display]" time="0.247092" status="run" />
+  <testcase classname="SpriteSheets" name="programmable GL retains standalone HD authored mips [display]" time="0.74215" status="run" />
+  <testcase classname="SpriteSheets" name="published portable HD upgrades after a live GL switch and survives switching back [display][writes-preferences]" time="1.12216" status="run" />
+  <testcase classname="SpriteSheets" name="sheet tiles load as the frames they were packed from" time="0.009948" status="run" />
+    <testcase classname="SpriteSheets" name="PNG artwork cannot enter the WebP sprite path" time="0.009959" status="run" />
+    <testcase classname="SpriteSheets" name="Q90 sheet tiles preserve exact frame alpha" time="0.009161" status="run" />
+    <testcase classname="SpriteSheets" name="sprites without an index still load one file per frame" time="0.009204" status="run" />
+    <testcase classname="SpriteSheets" name="an index the sheets cannot satisfy falls back to the frames" time="0.030056" status="run" />
+  </testsuite><testsuite name="GameplayRecording"><testcase classname="GameplayRecording" name="capture context restores active match identity after settings [recording]" time="0.001313" status="run" />
+    <testcase classname="GameplayRecording" name="asynchronous admission freezes context rejects stale generations and counts cancellation [recording]" time="0.003447" status="run" />
+    <testcase classname="GameplayRecording" name="producer failure remains failed and a publication collision preserves foreign files [recording]" time="0.073629" status="run" />
+    <testcase classname="GameplayRecording" name="split callback audio survives as consecutive decoded PCM [recording][artifacts]" time="0.215813" status="run" />
+    <testcase classname="GameplayRecording" name="recording rejects invalid options and never overwrites output" time="0.00031" status="run" />
+    <testcase classname="GameplayRecording" name="recording encodes audio, odd resized frames, and semantic chapters [recording]" time="1.47023" status="run" />
+    <testcase classname="GameplayRecording" name="stopping a recording before its first frame completes without hanging" time="0.000457" status="run" />
+  </testsuite><testsuite name="RecordingSession"><testcase classname="RecordingSession" name="session index creation preserves an existing recording" time="0.000254" status="run" />
+    <testcase classname="RecordingSession" name="resize coalescing preserves full resolution and numbers completed segments" time="0.012122" status="run" />
+    <testcase classname="RecordingSession" name="worker normalizes capture color layout and bottom-up orientation" time="0.003486" status="run" />
+    <testcase classname="RecordingSession" name="asynchronous encoder flush is polled before publishing the output" time="0.003502" status="run" />
+    <testcase classname="RecordingSession" name="long scheduling gaps preserve time without an encoding catch-up burst" time="0.065606" status="run" />
+    <testcase classname="RecordingSession" name="device failure closes its stream and starts a software segment" time="0.010702" status="run" />
+    <testcase classname="RecordingSession" name="hardware flush failure during resize continues with a software segment" time="0.010193" status="run" />
+    <testcase classname="RecordingSession" name="capture pressure rejects input within the three-frame budget" time="0.004105" status="run" />
+    <testcase classname="RecordingSession" name="interrupted fragmented media recovers without a finalized trailer" time="0.035739" status="run" />
+    <testcase classname="RecordingSession" name="legacy 44.1 kHz recording recovery preserves its audio rate [recording][artifacts]" time="0.122851" status="run" />
+    <testcase classname="RecordingSession" name="publication failure retains media that can be recovered without overwriting" time="0.005238" status="run" />
+  </testsuite><testsuite name="RenderDevice"><testcase classname="RenderDevice" name="capture identity remains the last committed frame across empty presentation and recreation" time="0.000108" status="run" />
+    <testcase classname="RenderDevice" name="discarded frame capture metadata returns to the last presented identity" time="0" status="run" />
+    <testcase classname="RenderDevice" name="authored mip revisions own padded pixels and charge every supplied level" time="0.000114" status="run" />
+    <testcase classname="RenderDevice" name="software device preserves nearest authored mip fallback with owned RGBA pixels" time="0" status="run" />
+    <testcase classname="RenderDevice" name="authored upload promotion preserves queued ordinary resource identity" time="0" status="run" />
+    <testcase classname="RenderDevice" name="implicit capacity submission defers fatal device errors to presentation boundary" time="0.004048" status="run" />
+    <testcase classname="RenderDevice" name="software discard restores committed pixels and next frame remains usable" time="0" status="run" />
+    <testcase classname="RenderDevice" name="bounded admission failure aborts frame without throwing and later admission resumes" time="0" status="run" />
+    <testcase classname="RenderDevice" name="in-flight revision pressure defers mutation with bounded owned pixels" time="0" status="run" />
+    <testcase classname="RenderDevice" name="queued drawing retains pixels across mutation deletion and slot reuse" time="0" status="run" />
+    <testcase classname="RenderDevice" name="software command adapter renders old and new revisions before forgetting sources" time="0" status="run" />
+    <testcase classname="RenderDevice" name="CPU texture cache evicts inactive assets within a small registry budget" time="0.000369" status="run" />
+    <testcase classname="RenderDevice" name="transient source views with no asset identity cannot reuse old pixels" time="0" status="run" />
+    <testcase classname="RenderDevice" name="command capacity flushes while adjacent batching preserves painter order and barriers" time="0.003947" status="run" />
+    <testcase classname="RenderDevice" name="bounded resource and upload admission retains in-flight revisions until cancellation" time="0" status="run" />
+    <testcase classname="RenderDevice" name="oversized geometry is rejected and cancellation releases unsent pixels" time="0.000949" status="run" />
+    <testcase classname="RenderDevice" name="recorded primitive composites inherit map transforms and clipping" time="0" status="run" />
+    <testcase classname="RenderDevice" name="texture categories enforce independent limits and explicit total budgets" time="0.075087" status="run" />
+    <testcase classname="RenderDevice" name="rig geometry rejects invalid GPU palette indexing" time="0" status="run" />
+    <testcase classname="RenderDevice" name="software cropped capture uses submitted target pixels and admission metadata" time="0" status="run" />
+    <testcase classname="RenderDevice" name="persistent geometry rejects invalid ranges and retains deleted generations" time="0" status="run" />
+    <testcase classname="RenderDevice" name="capture metadata survives completion and bounded capture queue resets" time="0" status="run" />
+  </testsuite></testsuites>

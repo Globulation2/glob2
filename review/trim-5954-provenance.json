@@ -1,0 +1,14 @@
+{
+  "revision": "5954b4e658b0e564ac2c70e513e7f49fc51d31e3",
+  "base": "74e2f52a0015f5f7c0f7d12726097913a79139f4",
+  "unit_cases": 98,
+  "unit_failures": 0,
+  "pressure_cases": 2,
+  "pressure_failures": 1,
+  "acceptance": "intermediate; GL quality restoration and large-map progress remain unresolved; later master GPU-gradient integration requires new validation",
+  "shader_receipt": "artifacts/renderer-integration/review-shader-input.json",
+  "logs": [
+    "/tmp/glob2-renderer-trim-5954-unit.log",
+    "/tmp/glob2-renderer-trim-5954-pressure.log"
+  ]
+}

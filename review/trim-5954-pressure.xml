@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="2" failures="1" errors="0" skipped="0"><testsuite name="TorusRender"><testcase classname="TorusRender" name="SDL GPU torus progresses under live terrain page pressure [display][isolated][artifacts]" time="42.3877" status="run" />
+  <testcase classname="TorusRender" name="programmable GL torus progresses under live terrain page pressure [display][isolated][artifacts]" time="54.9681" status="run">
+      <failure message="8 == 16" type="REQUIRE">
+src/render/torus/TorusRenderIntegrationTest.cpp:330:
+REQUIRE( view.pixelsPerCell==requested ) is NOT correct!
+  values: REQUIRE( 8 == 16 )
+
+      </failure>
+    </testcase>
+  </testsuite></testsuites>

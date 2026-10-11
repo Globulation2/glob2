@@ -1,0 +1,15 @@
+FAIL TorusRender/programmable GL torus progresses under live terrain page pressure [display][isolated][artifacts] (55.1s)
+PASS TorusRender/SDL GPU torus progresses under live terrain page pressure [display][isolated][artifacts] (42.5s)
+
+===== FAIL TorusRender/programmable GL torus progresses under live terrain page pressure [display][isolated][artifacts] =====
+GLOB2_TEST_BUILD compiler=13.3.0 platform=Linux pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": false, "flags": {"CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/home/bradley/glob2=.", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H GLOB2_RENDER_SHADER_DIR \\\"/home/bradley/glob2/build/renderer-integration/native-dev/shaders\\\" SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC", "LINKFLAGS": "-Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -Wl,-rpath,/home/bradley/glob2/build/sdl3/prefix/lib -Wl,--enable-new-dtags"}, "revision": "5954b4e658b0e564ac2c70e513e7f49fc51d31e3", "sourceStatus": [], "sourceTreeSha256": "86b0606b32de319cbc023e0f432c6ca00b00b543598dd0e3fb2082bef4638358"}
+
+[failure] programmable GL torus progresses under live terrain page pressure [display][isolated][artifacts]: 8 == 16
+src/render/torus/TorusRenderIntegrationTest.cpp:330:
+REQUIRE( view.pixelsPerCell==requested ) is NOT correct!
+  values: REQUIRE( 8 == 16 )
+
+
+1 passed, 1 failed, 0 skipped (97.6s of test time)
+[run_tests] JUnit report: artifacts/renderer-tests/trim-5954-pressure.xml (2 cases)
