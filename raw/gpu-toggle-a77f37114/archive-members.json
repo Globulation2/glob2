@@ -1,0 +1,2379 @@
+{
+  "archives": {
+    "a77f37114.tar.gz": {
+      "sha256": "92e2f978a4090fef9e706d4ff6e5fc616d245807da07725ece60baee82eb1c83",
+      "bytes": 48382562
+    },
+    "1676084ef.tar.gz": {
+      "sha256": "8619bf8c9c4cb7af219b69f856630833fe3749ca09933f0e6e27b8d505db5204",
+      "bytes": 98315
+    },
+    "1d179ea62.tar.gz": {
+      "sha256": "2b505908b39569db74be61e7875908cea5b697db9f303e942e7d10cdcefa5b2d",
+      "bytes": 76748
+    },
+    "1f80612ed.tar.gz": {
+      "sha256": "7ec821e8da8cd72e844b391f63219af9a9c12ace6bc1370bf20d95c4fb13562f",
+      "bytes": 2225661
+    },
+    "6adb57fc4.tar.gz": {
+      "sha256": "1eb836eecc5a41b33c8a24ae8593bfb7aa93be6415331670b47263b101591641",
+      "bytes": 11796
+    },
+    "input-fixture.tar.gz": {
+      "sha256": "9c97584cec077deec6b6f5d93ebca11156948669b965d36c2bb36ea91959ca67",
+      "bytes": 652478
+    },
+    "resource-controls.tar.gz": {
+      "sha256": "7d525a45152b12042e2fb8ac1df3a41bb22d8a707f82f1ed12b0410478ab41c3",
+      "bytes": 1492
+    }
+  },
+  "members": {
+    "a77f37114/build-cpu-cleanup.json": {
+      "sha256": "1973247a3195a3605489b4eba56dff7ab554080efa48e39d06c5d2efd4c2e971",
+      "bytes": 105,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/build-cpu-partition-setup.json": {
+      "sha256": "a7fa5a24c2aca23fff91447de9c60991c1936260487445c886e555025c3ef5fe",
+      "bytes": 494,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/build-environment.json": {
+      "sha256": "801d79d38a7c5ace736f36c346f6a301ccbde9dd60b899276c07ef8b5d313c15",
+      "bytes": 169,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/build-execution.json": {
+      "sha256": "a80963bce5e27b50953aaa7b2203c2d60fa59100d8b8a90e02b03a2a84f90107",
+      "bytes": 792,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/build-receipt.json": {
+      "sha256": "f23f831516157b02329388fae9b3a5c3573e5514e0ee5bf96cc976956b1f2b8f",
+      "bytes": 3996,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/build.log": {
+      "sha256": "82508d98083ce6c73da9d27842f2657a9652d452bc6609dfa471cb6d74c9ddcd",
+      "bytes": 139460,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-canonical-replay/fresh-replay-recording/artifacts.json": {
+      "sha256": "61423ea1a4bc5b6018c5a1dffc5a21c4a80ee4f4008e0dbd547229b9579634aa",
+      "bytes": 346,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-canonical-replay/fresh-replay-recording/engine.log": {
+      "sha256": "9ca075679bc2e59aee673193801d6bc9440ad3621d583de02c2242ae097b30b1",
+      "bytes": 422,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-canonical-replay/fresh-replay-recording/environment.json": {
+      "sha256": "1f8d340c54bbfa11b5cc0549f8b1114a8cf642a62d6e5ff750aa2e6b37a2860b",
+      "bytes": 28,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-canonical-replay/fresh-replay-recording/game.replay": {
+      "sha256": "55a0e8793754332cda8db5b13f70b57b588715d6e432efe291a5e4583b8df9f6",
+      "bytes": 1005714,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-canonical-replay/fresh-replay-recording/game.replay.checksums": {
+      "sha256": "a0ca184010a76ec16c1286816fc892bd9940ce49af74376672785cb6c15a636a",
+      "bytes": 172808,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-canonical-replay/fresh-replay-recording/initial.game.gz": {
+      "sha256": "1ef6ea628b9053b9d030465009e0370c521cedee5f83aa4a1b2b7cfffccab4fe",
+      "bytes": 31182,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-canonical-replay/fresh-replay-recording/profile/keyboard-gui.txt": {
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+      "bytes": 1811,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-canonical-replay/fresh-replay-recording/profile/keyboard-mapedit.txt": {
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+      "bytes": 708,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-canonical-replay/fresh-replay-recording/profile/preferences.txt": {
+      "sha256": "496ca8c5489df3e97e2ee26b41df35bfa33e8c038299d890d073fd9f7117cbe4",
+      "bytes": 946,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-canonical-replay/fresh-replay-recording/receipt.json": {
+      "sha256": "b40fc8ac74c3c708140eddd79ff84e8232a8ae60ea45f17874b6fd521e2b81a0",
+      "bytes": 35463,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-canonical-replay/fresh-replay-recording/result.json": {
+      "sha256": "d33ce822ae0f64886137d714b7f24393cd62fbaeb5727f5a7c3471458efb4a3e",
+      "bytes": 11284,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-canonical-replay/fresh-replay-recording/stderr.log": {
+      "sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9",
+      "bytes": 60,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-canonical-replay/fresh-replay-recording/world.checksums": {
+      "sha256": "443f172a95b3a441d84be7ba3d7c6fed369b99c46881dd81c71e98cb11283c4b",
+      "bytes": 1308,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-canonical-replay/local-export-failure.json": {
+      "sha256": "b0afdbe40e91d7a18c300ea18f3af38d288d7b9db6d28401248c91adeea00da4",
+      "bytes": 291,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-canonical-replay/partition-cleanup.json": {
+      "sha256": "1973247a3195a3605489b4eba56dff7ab554080efa48e39d06c5d2efd4c2e971",
+      "bytes": 105,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-canonical-replay/partition-setup.json": {
+      "sha256": "c4b92991beeb1e0d45406e41d91bab977788bb86f6dca37ce12cd216bbd5154b",
+      "bytes": 494,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-canonical-replay/replay-playback/EngineSession/external_replay_retains_recorded_simulation_checksums__benchmark__artifacts/external-replay.checksums.txt": {
+      "sha256": "86ae91aa333032ea86bbfd3c607950eaf0e3d667ec628ab29aa1907bff5bc98a",
+      "bytes": 1310,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-canonical-replay/replay-playback/build-provenance.json": {
+      "sha256": "38adec7029cee158b3adcabca0708b1e77ae505add37eeaf52a0c334237726a5",
+      "bytes": 616,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-canonical-replay/replay-playback/environment.json": {
+      "sha256": "85a2677cf928b09633938bf3e20ecf836083834e7e1d39a33b8a191ab5266835",
+      "bytes": 881,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-canonical-replay/replay-playback/profile/keyboard-gui.txt": {
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+      "bytes": 1811,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-canonical-replay/replay-playback/profile/keyboard-mapedit.txt": {
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+      "bytes": 708,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-canonical-replay/replay-playback/receipt.json": {
+      "sha256": "45440199cc60a4d39ee89625b31d995ed385b1f9b6c749cdfa1f2dfb425b97ec",
+      "bytes": 1505,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-canonical-replay/replay-playback/results.xml": {
+      "sha256": "467b9714eb8d8460c7839a9e5c001a85f01c80da75b4051bc35ec37f50aa6b45",
+      "bytes": 253993,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-canonical-replay/replay-playback/stderr.log": {
+      "sha256": "0b7b14461317c8023bb468418595ef14cb2f4ec109fea3807ec96edae8f4103e",
+      "bytes": 762,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-canonical-replay/summary.json": {
+      "sha256": "f920401a0b3f35815f6a295370ee4eb774269d56356ed79146e9eb8307bcb09d",
+      "bytes": 40707,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-control-protocol.json": {
+      "sha256": "f7bcc403c4fc33b24f431a2b533cb8b0e9448cc50fb04ecc3bc504ad78edb048",
+      "bytes": 432,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-cpu-control/fresh-replay-recording/artifacts.json": {
+      "sha256": "9a8a90ab40038ef4f85592282413f124fb8b9398260797fa82cea299a28c4a4e",
+      "bytes": 346,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-cpu-control/fresh-replay-recording/engine.log": {
+      "sha256": "2c95cc8bea8e5e4c640b5326b33b424e0dc0cd6f17e1fa372b2f6a913b238c14",
+      "bytes": 417,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-cpu-control/fresh-replay-recording/environment.json": {
+      "sha256": "1f8d340c54bbfa11b5cc0549f8b1114a8cf642a62d6e5ff750aa2e6b37a2860b",
+      "bytes": 28,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-cpu-control/fresh-replay-recording/game.replay": {
+      "sha256": "2f40dfec93be2fc9c3a950630ecd0350a0423420b873cd1869f81f09e20c972e",
+      "bytes": 1005714,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-cpu-control/fresh-replay-recording/game.replay.checksums": {
+      "sha256": "e4dd4df5ecff93fea0f60069ac6d6533ff587525966d323253daa30289e66129",
+      "bytes": 172808,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-cpu-control/fresh-replay-recording/initial.game.gz": {
+      "sha256": "1ef6ea628b9053b9d030465009e0370c521cedee5f83aa4a1b2b7cfffccab4fe",
+      "bytes": 31182,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-cpu-control/fresh-replay-recording/profile/keyboard-gui.txt": {
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+      "bytes": 1811,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-cpu-control/fresh-replay-recording/profile/keyboard-mapedit.txt": {
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+      "bytes": 708,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-cpu-control/fresh-replay-recording/profile/preferences.txt": {
+      "sha256": "496ca8c5489df3e97e2ee26b41df35bfa33e8c038299d890d073fd9f7117cbe4",
+      "bytes": 946,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-cpu-control/fresh-replay-recording/receipt.json": {
+      "sha256": "225541d27c8a567b69e8abe18033f1ff22978dc1810e22fa498e552a524afe0e",
+      "bytes": 36055,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-cpu-control/fresh-replay-recording/result.json": {
+      "sha256": "4521f3a28cada918ce4fd8f2870ee38884a72058039e1c47280fe412e6e71e28",
+      "bytes": 11272,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-cpu-control/fresh-replay-recording/stderr.log": {
+      "sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9",
+      "bytes": 60,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-cpu-control/fresh-replay-recording/world.checksums": {
+      "sha256": "f86e8288eeba4fb77e88d204ba3b5a5cc091fc0817769abae390e1c14ab34fa6",
+      "bytes": 1310,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-cpu-control/graphical-missing-off/display.replay": {
+      "sha256": "f669fb190e5bed28966e63ada694c7bda3eb86b4a41b8cce677907bc4e90c5eb",
+      "bytes": 67417524,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-cpu-control/graphical-missing-off/display.replay.checksums": {
+      "sha256": "486b87037bf3c07c93cb84613269a05915f289e4421363e6bec3197186c8593c",
+      "bytes": 76020,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-cpu-control/graphical-missing-off/engine.log": {
+      "sha256": "4174f57062a03f771f41647ea0c650660e7106f776cd726793ad60df8b285b42",
+      "bytes": 273,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-cpu-control/graphical-missing-off/environment.json": {
+      "sha256": "4af6fe73e706e72cb368e80dc700007d5954999bf3df4ae5848ff1de4052c140",
+      "bytes": 954,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-cpu-control/graphical-missing-off/library.trace": {
+      "sha256": "155a2af1eacf97f0c5141bcd6c793876c786f80a53311d24037bbbda1000e6f7",
+      "bytes": 3738748,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-cpu-control/graphical-missing-off/profile/keyboard-gui.txt": {
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+      "bytes": 1811,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-cpu-control/graphical-missing-off/profile/keyboard-mapedit.txt": {
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+      "bytes": 708,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-cpu-control/graphical-missing-off/profile/preferences.txt": {
+      "sha256": "bd9749d715017cc4c4591323165b716cad443f877f07f5363a7a273471f08228",
+      "bytes": 946,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-cpu-control/graphical-missing-off/receipt.json": {
+      "sha256": "947109587c3884f8169426a356215d7b6ffbb2ee36f90c804613f0b03b32a1e2",
+      "bytes": 2194,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-cpu-control/graphical-missing-off/stderr.log": {
+      "sha256": "049d9e1150362bbbb7d389e851a5819a5d389b9801adfc518f04b88366b117cc",
+      "bytes": 45972,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-cpu-control/graphical-stored-on/display.replay": {
+      "sha256": "f669fb190e5bed28966e63ada694c7bda3eb86b4a41b8cce677907bc4e90c5eb",
+      "bytes": 67417524,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-cpu-control/graphical-stored-on/display.replay.checksums": {
+      "sha256": "486b87037bf3c07c93cb84613269a05915f289e4421363e6bec3197186c8593c",
+      "bytes": 76020,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-cpu-control/graphical-stored-on/engine.log": {
+      "sha256": "4174f57062a03f771f41647ea0c650660e7106f776cd726793ad60df8b285b42",
+      "bytes": 273,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-cpu-control/graphical-stored-on/environment.json": {
+      "sha256": "eee1b56462eb74147dde3f6b3d35c0747a8d01c96facfe7c7839209665e6b952",
+      "bytes": 946,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-cpu-control/graphical-stored-on/library.trace": {
+      "sha256": "07c63977242b9a180f3270ef57ab70e1ab1d7f8ac891daa611766373ef267390",
+      "bytes": 3738939,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-cpu-control/graphical-stored-on/profile/keyboard-gui.txt": {
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+      "bytes": 1811,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-cpu-control/graphical-stored-on/profile/keyboard-mapedit.txt": {
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+      "bytes": 708,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-cpu-control/graphical-stored-on/profile/preferences.txt": {
+      "sha256": "bdf334aeab23ab13437163079400c5c0a48dc66f2eadc5d23739ab394708b39f",
+      "bytes": 959,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-cpu-control/graphical-stored-on/receipt.json": {
+      "sha256": "b98587f1c6fbe41e2bdabfcb32d09668558469c1f55dd96cdfb8a1edf447f5a1",
+      "bytes": 2285,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-cpu-control/graphical-stored-on/stderr.log": {
+      "sha256": "00ed89dc77cd2ba2ac0c16301c92a1f1c57158fc9ac7032b80f40c4a242b2973",
+      "bytes": 45912,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-cpu-control/partition-cleanup.json": {
+      "sha256": "1973247a3195a3605489b4eba56dff7ab554080efa48e39d06c5d2efd4c2e971",
+      "bytes": 105,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-cpu-control/partition-setup.json": {
+      "sha256": "31aa7731e9e3dee904f43383479671431a5fad87ac6f4e355d0fddcfc5ada5de",
+      "bytes": 494,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-cpu-control/replay-playback/EngineSession/external_replay_retains_recorded_simulation_checksums__benchmark__artifacts/external-replay.checksums.txt": {
+      "sha256": "c33647f586493de5a5c21c60910086d6367cb1d03c563c030f777fcacfbc2969",
+      "bytes": 788,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-cpu-control/replay-playback/build-provenance.json": {
+      "sha256": "38adec7029cee158b3adcabca0708b1e77ae505add37eeaf52a0c334237726a5",
+      "bytes": 616,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-cpu-control/replay-playback/environment.json": {
+      "sha256": "ebf8d8d0a5ec272fcc8dcc272d09fd926e8891092e5defa06b269540b3ff17a0",
+      "bytes": 861,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-cpu-control/replay-playback/profile/keyboard-gui.txt": {
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+      "bytes": 1811,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-cpu-control/replay-playback/profile/keyboard-mapedit.txt": {
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+      "bytes": 708,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-cpu-control/replay-playback/receipt.json": {
+      "sha256": "a45dbfaf0d9326d9f4e2718fee79ac85adee46e0fb02378c9c38a6ab69b222fb",
+      "bytes": 1486,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-cpu-control/replay-playback/results.xml": {
+      "sha256": "b47545bae0f9677f5018f976e5d89942cc6d4a63736a20de735f0b6cb1ccff22",
+      "bytes": 254243,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-cpu-control/replay-playback/stderr.log": {
+      "sha256": "80f6157ef327bc1418eadd44f1a9e6ef482fcaefa740c3ad4e3b475d2680e915",
+      "bytes": 939,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-cpu-control/summary.json": {
+      "sha256": "e6b85127981a9ec1bfc622fbcccce5e1259d73a9f9e98f5483a60363b8782892",
+      "bytes": 46003,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-guards/fresh-replay-recording/artifacts.json": {
+      "sha256": "756abf5cbe2ef56114f53257773ab7526873e974d6a1a8b85cbbb2f8fe633fc0",
+      "bytes": 346,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-guards/fresh-replay-recording/engine.log": {
+      "sha256": "db026396fdf783dc1ca29f1fc0b139edab5a2b0460aa36ed6e25827129a260bd",
+      "bytes": 412,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-guards/fresh-replay-recording/environment.json": {
+      "sha256": "1f8d340c54bbfa11b5cc0549f8b1114a8cf642a62d6e5ff750aa2e6b37a2860b",
+      "bytes": 28,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-guards/fresh-replay-recording/game.replay": {
+      "sha256": "2f40dfec93be2fc9c3a950630ecd0350a0423420b873cd1869f81f09e20c972e",
+      "bytes": 1005714,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-guards/fresh-replay-recording/game.replay.checksums": {
+      "sha256": "e4dd4df5ecff93fea0f60069ac6d6533ff587525966d323253daa30289e66129",
+      "bytes": 172808,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-guards/fresh-replay-recording/initial.game.gz": {
+      "sha256": "1ef6ea628b9053b9d030465009e0370c521cedee5f83aa4a1b2b7cfffccab4fe",
+      "bytes": 31182,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-guards/fresh-replay-recording/profile/keyboard-gui.txt": {
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+      "bytes": 1811,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-guards/fresh-replay-recording/profile/keyboard-mapedit.txt": {
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+      "bytes": 708,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-guards/fresh-replay-recording/profile/preferences.txt": {
+      "sha256": "496ca8c5489df3e97e2ee26b41df35bfa33e8c038299d890d073fd9f7117cbe4",
+      "bytes": 946,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-guards/fresh-replay-recording/receipt.json": {
+      "sha256": "31ea695fc61e1ea537c194a4f80b6a28385ee4cd24015e00472a780979a91f77",
+      "bytes": 36096,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-guards/fresh-replay-recording/result.json": {
+      "sha256": "64f5f8c44cde51ba7b9a12efdc40d357365c0598e92b7ce398e2606c89858006",
+      "bytes": 11319,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-guards/fresh-replay-recording/stderr.log": {
+      "sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9",
+      "bytes": 60,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-guards/fresh-replay-recording/world.checksums": {
+      "sha256": "f86e8288eeba4fb77e88d204ba3b5a5cc091fc0817769abae390e1c14ab34fa6",
+      "bytes": 1310,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-guards/partition-cleanup.json": {
+      "sha256": "1973247a3195a3605489b4eba56dff7ab554080efa48e39d06c5d2efd4c2e971",
+      "bytes": 105,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-guards/partition-setup.json": {
+      "sha256": "2defa5aaba8042e269270faa24639904a858878e4774d02792d75ee7dbd6a0dc",
+      "bytes": 494,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-guards/replay-playback/EngineSession/external_replay_retains_recorded_simulation_checksums__benchmark__artifacts/external-replay.checksums.txt": {
+      "sha256": "c33647f586493de5a5c21c60910086d6367cb1d03c563c030f777fcacfbc2969",
+      "bytes": 788,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-guards/replay-playback/build-provenance.json": {
+      "sha256": "38adec7029cee158b3adcabca0708b1e77ae505add37eeaf52a0c334237726a5",
+      "bytes": 616,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-guards/replay-playback/environment.json": {
+      "sha256": "5df5b5b3fffb75446f1a602d78df549011cfb1b2a710c50850b30a6d7521d65e",
+      "bytes": 841,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-guards/replay-playback/failure-receipt.json": {
+      "sha256": "a68a64affebfc89997504a3fd807346071c586972228aad3cf55fd8e49db167b",
+      "bytes": 404,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-guards/replay-playback/profile/keyboard-gui.txt": {
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+      "bytes": 1811,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-guards/replay-playback/profile/keyboard-mapedit.txt": {
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+      "bytes": 708,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-guards/replay-playback/results.xml": {
+      "sha256": "b47545bae0f9677f5018f976e5d89942cc6d4a63736a20de735f0b6cb1ccff22",
+      "bytes": 254243,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/compatibility-guards/replay-playback/stderr.log": {
+      "sha256": "80f6157ef327bc1418eadd44f1a9e6ef482fcaefa740c3ad4e3b475d2680e915",
+      "bytes": 939,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/finalize-build.py": {
+      "sha256": "83d5962a7d623307331dd2a2a1430fb914de07921a4c1e6ded1b1cb7dcd0b9c8",
+      "bytes": 2138,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/finalize-summary.py": {
+      "sha256": "896bb47b44d22e176bdde3e075def2213c8c385fff0878ae0461f0e75221afb1",
+      "bytes": 5276,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/finite-sequence-events.json": {
+      "sha256": "636fef0da3131b6db03b9ef8a384af704c3e54e941826902eebf966810708ac5",
+      "bytes": 1206,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/freeze.json": {
+      "sha256": "db8f8bea70644348e5d7c26edd8e25fa2cd2b1070e8a8f58d1f58137816a73b6",
+      "bytes": 806,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/cpu2/continuation/artifacts.json": {
+      "sha256": "5babe9791794c577f12bf33cc2bcd15a0d044053a94bfc8f2e4ed666abe62821",
+      "bytes": 315,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/cpu2/continuation/engine.log": {
+      "sha256": "16fa9e3a2a5b1b1ea25a979517f5f33c219ae5a964a88e8c1bb70270aecbed29",
+      "bytes": 46407,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/cpu2/continuation/environment.json": {
+      "sha256": "1f8d340c54bbfa11b5cc0549f8b1114a8cf642a62d6e5ff750aa2e6b37a2860b",
+      "bytes": 28,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/cpu2/continuation/final.game.gz": {
+      "sha256": "5570c0c89ef0579c399c247656b3426294e4e4a1c967969ca9103e8e78e722c6",
+      "bytes": 925125,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/cpu2/continuation/game.replay": {
+      "sha256": "1fc437a439d7c14d6e2c69a61cf0da543526076af293f239092ebbadf7c3bf6c",
+      "bytes": 68519051,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/cpu2/continuation/game.replay.checksums": {
+      "sha256": "1ab74c6ee363c9b860b4ffe1239ccf1424802a14584ad556a7d47892217c3225",
+      "bytes": 676336,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/cpu2/continuation/profile/keyboard-gui.txt": {
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+      "bytes": 1811,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/cpu2/continuation/profile/keyboard-mapedit.txt": {
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+      "bytes": 708,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/cpu2/continuation/profile/preferences.txt": {
+      "sha256": "496ca8c5489df3e97e2ee26b41df35bfa33e8c038299d890d073fd9f7117cbe4",
+      "bytes": 946,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/cpu2/continuation/receipt.json": {
+      "sha256": "17bc25a2221aecd81d33fd8dabdec4ff9010b1327a769bfa001350ebb15de856",
+      "bytes": 108107,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/cpu2/continuation/result.json": {
+      "sha256": "9b0b9d507bb832dcc2ed094e09d7c6a0cedccc057da2548d6285c774e5841833",
+      "bytes": 61905,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/cpu2/continuation/world.checksums": {
+      "sha256": "1f40ba2f4d5fb2a3b97730edd1763e0b5de2f657c6b86a2e8191256af6a343af",
+      "bytes": 2020,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/cpu2/initial/artifacts.json": {
+      "sha256": "d7b99164cdf2827f24bfb8f921ca2b6d08fd95567d23541f5b9e9f996334f1ff",
+      "bytes": 353,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/cpu2/initial/engine.log": {
+      "sha256": "2b03c12540c0b3c575381834ee8a8b61af119e7bbb879e1892f6049902399d88",
+      "bytes": 46402,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/cpu2/initial/environment.json": {
+      "sha256": "1f8d340c54bbfa11b5cc0549f8b1114a8cf642a62d6e5ff750aa2e6b37a2860b",
+      "bytes": 28,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/cpu2/initial/final.game.gz": {
+      "sha256": "dfb69d786a89972da1347ea497dba3f324ddae886cccaf9f3a7f05acd8880749",
+      "bytes": 918728,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/cpu2/initial/game.replay": {
+      "sha256": "f97e76dfe6b6ba0017bd3f8d2579b7487c685b53b7685de4e406fd74be9f2260",
+      "bytes": 69297290,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/cpu2/initial/game.replay.checksums": {
+      "sha256": "ec3f38588a635dc3bcddc942e32872ed38614bc89c3dc34b71c0e9033133a7ec",
+      "bytes": 1232752,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/cpu2/initial/profile/keyboard-gui.txt": {
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+      "bytes": 1811,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/cpu2/initial/profile/keyboard-mapedit.txt": {
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+      "bytes": 708,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/cpu2/initial/profile/preferences.txt": {
+      "sha256": "496ca8c5489df3e97e2ee26b41df35bfa33e8c038299d890d073fd9f7117cbe4",
+      "bytes": 946,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/cpu2/initial/receipt.json": {
+      "sha256": "db211c89d63d184c120ad18dbedd7e11e37d2e40c049599177270ab373234ab1",
+      "bytes": 108108,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/cpu2/initial/result.json": {
+      "sha256": "d61ea4f3ee1f5ed62c07dbacdff65845542f2ea2c7073fd9cdb697e7d12c3958",
+      "bytes": 61911,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/cpu2/initial/world.checksums": {
+      "sha256": "3912e92ba1201442f31644d2b5ebb818cc6312dda51d2608b14b038299e22cd0",
+      "bytes": 4022,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/cpu8/continuation/artifacts.json": {
+      "sha256": "28fa770ee7b029ef17cc31e81fbac3278bed35d964d573fb7aba7debc3e66f9e",
+      "bytes": 315,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/cpu8/continuation/engine.log": {
+      "sha256": "4bbfbfb475d25c593c4ba2ccbaaf535af75c96c9237988a14527add5923035f6",
+      "bytes": 46407,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/cpu8/continuation/environment.json": {
+      "sha256": "1f8d340c54bbfa11b5cc0549f8b1114a8cf642a62d6e5ff750aa2e6b37a2860b",
+      "bytes": 28,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/cpu8/continuation/final.game.gz": {
+      "sha256": "5570c0c89ef0579c399c247656b3426294e4e4a1c967969ca9103e8e78e722c6",
+      "bytes": 925125,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/cpu8/continuation/game.replay": {
+      "sha256": "1fc437a439d7c14d6e2c69a61cf0da543526076af293f239092ebbadf7c3bf6c",
+      "bytes": 68519051,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/cpu8/continuation/game.replay.checksums": {
+      "sha256": "1ab74c6ee363c9b860b4ffe1239ccf1424802a14584ad556a7d47892217c3225",
+      "bytes": 676336,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/cpu8/continuation/profile/keyboard-gui.txt": {
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+      "bytes": 1811,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/cpu8/continuation/profile/keyboard-mapedit.txt": {
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+      "bytes": 708,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/cpu8/continuation/profile/preferences.txt": {
+      "sha256": "496ca8c5489df3e97e2ee26b41df35bfa33e8c038299d890d073fd9f7117cbe4",
+      "bytes": 946,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/cpu8/continuation/receipt.json": {
+      "sha256": "2098768f2e8357051be29c8bdb1327da8b5f8539d5b39e7e4ca5e27f928593f6",
+      "bytes": 108113,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/cpu8/continuation/result.json": {
+      "sha256": "0f5acb9d88457ed1237a86ea0759254b0c9ff14e80be6e8c4b9965c9a1a5bc56",
+      "bytes": 61911,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/cpu8/continuation/world.checksums": {
+      "sha256": "1f40ba2f4d5fb2a3b97730edd1763e0b5de2f657c6b86a2e8191256af6a343af",
+      "bytes": 2020,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/cpu8/initial/artifacts.json": {
+      "sha256": "4680117e80cbe71de92621115f83f5a02c1f7223aded904af1287b7903f40a83",
+      "bytes": 353,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/cpu8/initial/engine.log": {
+      "sha256": "ea5e006fcaf377346d0410efd6913986122303b17c8bdc6ec9ad809142aa7fbe",
+      "bytes": 46402,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/cpu8/initial/environment.json": {
+      "sha256": "1f8d340c54bbfa11b5cc0549f8b1114a8cf642a62d6e5ff750aa2e6b37a2860b",
+      "bytes": 28,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/cpu8/initial/final.game.gz": {
+      "sha256": "dfb69d786a89972da1347ea497dba3f324ddae886cccaf9f3a7f05acd8880749",
+      "bytes": 918728,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/cpu8/initial/game.replay": {
+      "sha256": "f97e76dfe6b6ba0017bd3f8d2579b7487c685b53b7685de4e406fd74be9f2260",
+      "bytes": 69297290,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/cpu8/initial/game.replay.checksums": {
+      "sha256": "ec3f38588a635dc3bcddc942e32872ed38614bc89c3dc34b71c0e9033133a7ec",
+      "bytes": 1232752,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/cpu8/initial/profile/keyboard-gui.txt": {
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+      "bytes": 1811,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/cpu8/initial/profile/keyboard-mapedit.txt": {
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+      "bytes": 708,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/cpu8/initial/profile/preferences.txt": {
+      "sha256": "496ca8c5489df3e97e2ee26b41df35bfa33e8c038299d890d073fd9f7117cbe4",
+      "bytes": 946,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/cpu8/initial/receipt.json": {
+      "sha256": "c6d83e4bcf3813afd508215ce042f92fc382f9a9c3b73dcb4c94888e4655677b",
+      "bytes": 108116,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/cpu8/initial/result.json": {
+      "sha256": "48cd7b80afac0b73942e442acde8d56f10902ca49a13d4e8a0530bba09be2610",
+      "bytes": 61919,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/cpu8/initial/world.checksums": {
+      "sha256": "3912e92ba1201442f31644d2b5ebb818cc6312dda51d2608b14b038299e22cd0",
+      "bytes": 4022,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu-owner-only1/continuation/artifacts.json": {
+      "sha256": "72ce74e656eabbbf18e6833f39fc6bbb2f51ba093ed6578374980dd5e94d85f4",
+      "bytes": 315,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu-owner-only1/continuation/engine.log": {
+      "sha256": "d596313c735a401a5a39dbb32f410c1dfed13e0acf89307f42c541ea5505ce51",
+      "bytes": 46418,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu-owner-only1/continuation/environment.json": {
+      "sha256": "1f8d340c54bbfa11b5cc0549f8b1114a8cf642a62d6e5ff750aa2e6b37a2860b",
+      "bytes": 28,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu-owner-only1/continuation/final.game.gz": {
+      "sha256": "5570c0c89ef0579c399c247656b3426294e4e4a1c967969ca9103e8e78e722c6",
+      "bytes": 925125,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu-owner-only1/continuation/game.replay": {
+      "sha256": "1fc437a439d7c14d6e2c69a61cf0da543526076af293f239092ebbadf7c3bf6c",
+      "bytes": 68519051,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu-owner-only1/continuation/game.replay.checksums": {
+      "sha256": "1ab74c6ee363c9b860b4ffe1239ccf1424802a14584ad556a7d47892217c3225",
+      "bytes": 676336,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu-owner-only1/continuation/profile/keyboard-gui.txt": {
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+      "bytes": 1811,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu-owner-only1/continuation/profile/keyboard-mapedit.txt": {
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+      "bytes": 708,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu-owner-only1/continuation/profile/preferences.txt": {
+      "sha256": "496ca8c5489df3e97e2ee26b41df35bfa33e8c038299d890d073fd9f7117cbe4",
+      "bytes": 946,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu-owner-only1/continuation/receipt.json": {
+      "sha256": "d0efc46d8c120b843ef4f7ff2e762f383c3f8d73530a9a52eb5584be68e6d2fd",
+      "bytes": 108134,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu-owner-only1/continuation/result.json": {
+      "sha256": "1a0a38f4af10c26d38d0b0e7fbd2691c1cc49f099260483a35ce9b95a38ee966",
+      "bytes": 61900,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu-owner-only1/continuation/world.checksums": {
+      "sha256": "1f40ba2f4d5fb2a3b97730edd1763e0b5de2f657c6b86a2e8191256af6a343af",
+      "bytes": 2020,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu-owner-only1/initial/artifacts.json": {
+      "sha256": "2e5d08c090af54bd7599d9011af26cbd80b88432f87ae0a39948c3b87aadf495",
+      "bytes": 353,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu-owner-only1/initial/engine.log": {
+      "sha256": "9720d2605698d0b6da0878dda7de7113d7a3be0c94a541c84ae4ade97f8fa441",
+      "bytes": 46413,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu-owner-only1/initial/environment.json": {
+      "sha256": "1f8d340c54bbfa11b5cc0549f8b1114a8cf642a62d6e5ff750aa2e6b37a2860b",
+      "bytes": 28,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu-owner-only1/initial/final.game.gz": {
+      "sha256": "dfb69d786a89972da1347ea497dba3f324ddae886cccaf9f3a7f05acd8880749",
+      "bytes": 918728,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu-owner-only1/initial/game.replay": {
+      "sha256": "f97e76dfe6b6ba0017bd3f8d2579b7487c685b53b7685de4e406fd74be9f2260",
+      "bytes": 69297290,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu-owner-only1/initial/game.replay.checksums": {
+      "sha256": "ec3f38588a635dc3bcddc942e32872ed38614bc89c3dc34b71c0e9033133a7ec",
+      "bytes": 1232752,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu-owner-only1/initial/profile/keyboard-gui.txt": {
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+      "bytes": 1811,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu-owner-only1/initial/profile/keyboard-mapedit.txt": {
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+      "bytes": 708,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu-owner-only1/initial/profile/preferences.txt": {
+      "sha256": "496ca8c5489df3e97e2ee26b41df35bfa33e8c038299d890d073fd9f7117cbe4",
+      "bytes": 946,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu-owner-only1/initial/receipt.json": {
+      "sha256": "fdcc786bea6455ba87d3fdd947163a5b6affb9f61a6274055e58cc37c60de297",
+      "bytes": 108126,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu-owner-only1/initial/result.json": {
+      "sha256": "ecda50e7d44e0fd898e6c7145971ce579527f472307486f519cb800d1c3ee553",
+      "bytes": 61908,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu-owner-only1/initial/world.checksums": {
+      "sha256": "3912e92ba1201442f31644d2b5ebb818cc6312dda51d2608b14b038299e22cd0",
+      "bytes": 4022,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu-unavailable2/continuation/artifacts.json": {
+      "sha256": "516ba6bad3362b4edbbfffcb5b6195df966fe2d8ded793b3411c550ca2b31601",
+      "bytes": 315,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu-unavailable2/continuation/engine.log": {
+      "sha256": "2d69b5c22c775829a3b5edfaada2946ea8b87b8a09cac5186963a37ab12f9f1b",
+      "bytes": 46419,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu-unavailable2/continuation/environment.json": {
+      "sha256": "c068ceac240c1ef08ad82e684de2046cf36183b8ad33d89b92e744920d745ad9",
+      "bytes": 30,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu-unavailable2/continuation/final.game.gz": {
+      "sha256": "5570c0c89ef0579c399c247656b3426294e4e4a1c967969ca9103e8e78e722c6",
+      "bytes": 925125,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu-unavailable2/continuation/game.replay": {
+      "sha256": "1fc437a439d7c14d6e2c69a61cf0da543526076af293f239092ebbadf7c3bf6c",
+      "bytes": 68519051,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu-unavailable2/continuation/game.replay.checksums": {
+      "sha256": "1ab74c6ee363c9b860b4ffe1239ccf1424802a14584ad556a7d47892217c3225",
+      "bytes": 676336,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu-unavailable2/continuation/profile/keyboard-gui.txt": {
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+      "bytes": 1811,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu-unavailable2/continuation/profile/keyboard-mapedit.txt": {
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+      "bytes": 708,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu-unavailable2/continuation/profile/preferences.txt": {
+      "sha256": "496ca8c5489df3e97e2ee26b41df35bfa33e8c038299d890d073fd9f7117cbe4",
+      "bytes": 946,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu-unavailable2/continuation/receipt.json": {
+      "sha256": "00c95674b0ac8384c28b318ea4882d4153813c6878e893787089e96eccc217ff",
+      "bytes": 108184,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu-unavailable2/continuation/result.json": {
+      "sha256": "0cbce7f9d5d05d96ba89605139411fbed093f59384033c65a40eeae18cf80185",
+      "bytes": 61945,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu-unavailable2/continuation/world.checksums": {
+      "sha256": "1f40ba2f4d5fb2a3b97730edd1763e0b5de2f657c6b86a2e8191256af6a343af",
+      "bytes": 2020,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu-unavailable2/initial/artifacts.json": {
+      "sha256": "e7a2979482dd9b1efe8ba0685952f075a8ae8593879898c09b2c077ef59fa667",
+      "bytes": 353,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu-unavailable2/initial/engine.log": {
+      "sha256": "08179e959c85a0c5f5a25d5ee660db6ffdecb6fd5bdbc73ed394bdfe0cf002a1",
+      "bytes": 46414,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu-unavailable2/initial/environment.json": {
+      "sha256": "c068ceac240c1ef08ad82e684de2046cf36183b8ad33d89b92e744920d745ad9",
+      "bytes": 30,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu-unavailable2/initial/final.game.gz": {
+      "sha256": "dfb69d786a89972da1347ea497dba3f324ddae886cccaf9f3a7f05acd8880749",
+      "bytes": 918728,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu-unavailable2/initial/game.replay": {
+      "sha256": "f97e76dfe6b6ba0017bd3f8d2579b7487c685b53b7685de4e406fd74be9f2260",
+      "bytes": 69297290,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu-unavailable2/initial/game.replay.checksums": {
+      "sha256": "ec3f38588a635dc3bcddc942e32872ed38614bc89c3dc34b71c0e9033133a7ec",
+      "bytes": 1232752,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu-unavailable2/initial/profile/keyboard-gui.txt": {
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+      "bytes": 1811,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu-unavailable2/initial/profile/keyboard-mapedit.txt": {
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+      "bytes": 708,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu-unavailable2/initial/profile/preferences.txt": {
+      "sha256": "496ca8c5489df3e97e2ee26b41df35bfa33e8c038299d890d073fd9f7117cbe4",
+      "bytes": 946,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu-unavailable2/initial/receipt.json": {
+      "sha256": "0f534ba0f16b433acaa0dac8e8439acc14bbf91995634eabf1b499fa6c6a0d78",
+      "bytes": 108171,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu-unavailable2/initial/result.json": {
+      "sha256": "710f93b5741e9ae905237253a0f80ffadcf4e203bc45ce2343e813c91110f8e0",
+      "bytes": 61949,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu-unavailable2/initial/world.checksums": {
+      "sha256": "3912e92ba1201442f31644d2b5ebb818cc6312dda51d2608b14b038299e22cd0",
+      "bytes": 4022,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu2/continuation/artifacts.json": {
+      "sha256": "3d39801039e50d19ca101e9e9c7b60c6f665aa5b6839bccc64c53e872f68c400",
+      "bytes": 315,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu2/continuation/engine.log": {
+      "sha256": "eac23dc5b6ce83ad8185a178090adee19e19b1efee2c212598bbf961ef869d01",
+      "bytes": 46407,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu2/continuation/environment.json": {
+      "sha256": "1f8d340c54bbfa11b5cc0549f8b1114a8cf642a62d6e5ff750aa2e6b37a2860b",
+      "bytes": 28,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu2/continuation/final.game.gz": {
+      "sha256": "5570c0c89ef0579c399c247656b3426294e4e4a1c967969ca9103e8e78e722c6",
+      "bytes": 925125,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu2/continuation/game.replay": {
+      "sha256": "1fc437a439d7c14d6e2c69a61cf0da543526076af293f239092ebbadf7c3bf6c",
+      "bytes": 68519051,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu2/continuation/game.replay.checksums": {
+      "sha256": "1ab74c6ee363c9b860b4ffe1239ccf1424802a14584ad556a7d47892217c3225",
+      "bytes": 676336,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu2/continuation/profile/keyboard-gui.txt": {
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+      "bytes": 1811,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu2/continuation/profile/keyboard-mapedit.txt": {
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+      "bytes": 708,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu2/continuation/profile/preferences.txt": {
+      "sha256": "496ca8c5489df3e97e2ee26b41df35bfa33e8c038299d890d073fd9f7117cbe4",
+      "bytes": 946,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu2/continuation/receipt.json": {
+      "sha256": "ee34bc1cc0ca59b82a85c462cf7782a9b234bb09ee0ccde9e9ab40768dd0975d",
+      "bytes": 108187,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu2/continuation/result.json": {
+      "sha256": "5762705b183e34af25d2627a06eb63f8df07db3253b5962e3005a4bf36361da3",
+      "bytes": 61986,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu2/continuation/world.checksums": {
+      "sha256": "1f40ba2f4d5fb2a3b97730edd1763e0b5de2f657c6b86a2e8191256af6a343af",
+      "bytes": 2020,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu2/initial/artifacts.json": {
+      "sha256": "fcb158ddb35e82fe835d7f75b146a181248906f3992ddc69e030d982e6555653",
+      "bytes": 353,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu2/initial/engine.log": {
+      "sha256": "412fdd14217fbb86556c67d3c274b73000a73eed0e7681be20444a034b71ccb9",
+      "bytes": 46402,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu2/initial/environment.json": {
+      "sha256": "1f8d340c54bbfa11b5cc0549f8b1114a8cf642a62d6e5ff750aa2e6b37a2860b",
+      "bytes": 28,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu2/initial/final.game.gz": {
+      "sha256": "dfb69d786a89972da1347ea497dba3f324ddae886cccaf9f3a7f05acd8880749",
+      "bytes": 918728,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu2/initial/game.replay": {
+      "sha256": "f97e76dfe6b6ba0017bd3f8d2579b7487c685b53b7685de4e406fd74be9f2260",
+      "bytes": 69297290,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu2/initial/game.replay.checksums": {
+      "sha256": "ec3f38588a635dc3bcddc942e32872ed38614bc89c3dc34b71c0e9033133a7ec",
+      "bytes": 1232752,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu2/initial/profile/keyboard-gui.txt": {
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+      "bytes": 1811,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu2/initial/profile/keyboard-mapedit.txt": {
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+      "bytes": 708,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu2/initial/profile/preferences.txt": {
+      "sha256": "496ca8c5489df3e97e2ee26b41df35bfa33e8c038299d890d073fd9f7117cbe4",
+      "bytes": 946,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu2/initial/receipt.json": {
+      "sha256": "44358c1c6d0de13f12466890c0f36a8de7d84046531df6f8add5c3b24ab43f52",
+      "bytes": 108195,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu2/initial/result.json": {
+      "sha256": "87a2df248966c7d32080a04351bd7f93c9327fe2c7346772446a6be2e219aa86",
+      "bytes": 61999,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu2/initial/world.checksums": {
+      "sha256": "3912e92ba1201442f31644d2b5ebb818cc6312dda51d2608b14b038299e22cd0",
+      "bytes": 4022,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu8/continuation/artifacts.json": {
+      "sha256": "7343ece17a0aabcb9910e845c1414b4b8f280efa0a523eae5b5e4ddbcfd557bb",
+      "bytes": 315,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu8/continuation/engine.log": {
+      "sha256": "1c792cde2139d4683ac7b5367206577ac86a9b08cdb689d83c8ec383563f1efd",
+      "bytes": 46407,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu8/continuation/environment.json": {
+      "sha256": "1f8d340c54bbfa11b5cc0549f8b1114a8cf642a62d6e5ff750aa2e6b37a2860b",
+      "bytes": 28,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu8/continuation/final.game.gz": {
+      "sha256": "5570c0c89ef0579c399c247656b3426294e4e4a1c967969ca9103e8e78e722c6",
+      "bytes": 925125,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu8/continuation/game.replay": {
+      "sha256": "1fc437a439d7c14d6e2c69a61cf0da543526076af293f239092ebbadf7c3bf6c",
+      "bytes": 68519051,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu8/continuation/game.replay.checksums": {
+      "sha256": "1ab74c6ee363c9b860b4ffe1239ccf1424802a14584ad556a7d47892217c3225",
+      "bytes": 676336,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu8/continuation/profile/keyboard-gui.txt": {
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+      "bytes": 1811,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu8/continuation/profile/keyboard-mapedit.txt": {
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+      "bytes": 708,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu8/continuation/profile/preferences.txt": {
+      "sha256": "496ca8c5489df3e97e2ee26b41df35bfa33e8c038299d890d073fd9f7117cbe4",
+      "bytes": 946,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu8/continuation/receipt.json": {
+      "sha256": "cf07c1582e9a35802df052a4a4b1d1eaec22eb3d047960a853145fb2d4ccf89c",
+      "bytes": 108192,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu8/continuation/result.json": {
+      "sha256": "39ca65fae4b0113e541d8329ffdb9a7cdd63032d1338463a0696306dcba69bca",
+      "bytes": 61991,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu8/continuation/world.checksums": {
+      "sha256": "1f40ba2f4d5fb2a3b97730edd1763e0b5de2f657c6b86a2e8191256af6a343af",
+      "bytes": 2020,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu8/initial/artifacts.json": {
+      "sha256": "fcb158ddb35e82fe835d7f75b146a181248906f3992ddc69e030d982e6555653",
+      "bytes": 353,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu8/initial/engine.log": {
+      "sha256": "7890119dce176271c6dfd9c04854a971add3876f1f0bdf391e6a628d0904311c",
+      "bytes": 46402,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu8/initial/environment.json": {
+      "sha256": "1f8d340c54bbfa11b5cc0549f8b1114a8cf642a62d6e5ff750aa2e6b37a2860b",
+      "bytes": 28,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu8/initial/final.game.gz": {
+      "sha256": "dfb69d786a89972da1347ea497dba3f324ddae886cccaf9f3a7f05acd8880749",
+      "bytes": 918728,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu8/initial/game.replay": {
+      "sha256": "f97e76dfe6b6ba0017bd3f8d2579b7487c685b53b7685de4e406fd74be9f2260",
+      "bytes": 69297290,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu8/initial/game.replay.checksums": {
+      "sha256": "ec3f38588a635dc3bcddc942e32872ed38614bc89c3dc34b71c0e9033133a7ec",
+      "bytes": 1232752,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu8/initial/profile/keyboard-gui.txt": {
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+      "bytes": 1811,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu8/initial/profile/keyboard-mapedit.txt": {
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+      "bytes": 708,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu8/initial/profile/preferences.txt": {
+      "sha256": "496ca8c5489df3e97e2ee26b41df35bfa33e8c038299d890d073fd9f7117cbe4",
+      "bytes": 946,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu8/initial/receipt.json": {
+      "sha256": "eeaab8ef32e9c256077624ff3f4d36c2058e859065b862aaf8c18b365630a5aa",
+      "bytes": 108195,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu8/initial/result.json": {
+      "sha256": "71d9b65a85804d5fc54edc5412c01034326d6d3ba0bf1ee1cfe7601ef27a166b",
+      "bytes": 61999,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/gpu8/initial/world.checksums": {
+      "sha256": "3912e92ba1201442f31644d2b5ebb818cc6312dda51d2608b14b038299e22cd0",
+      "bytes": 4022,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/headless-stored-off2/continuation/artifacts.json": {
+      "sha256": "e3bc4d92a4e386ca904b48afbf44669da7036fc26884afd33ee36b74c244fb18",
+      "bytes": 315,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/headless-stored-off2/continuation/engine.log": {
+      "sha256": "f1a6f276f529bb24b123067f1f93c6d5f63e189922634af5f2fbc5c532c658df",
+      "bytes": 46363,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/headless-stored-off2/continuation/environment.json": {
+      "sha256": "1f8d340c54bbfa11b5cc0549f8b1114a8cf642a62d6e5ff750aa2e6b37a2860b",
+      "bytes": 28,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/headless-stored-off2/continuation/final.game.gz": {
+      "sha256": "5570c0c89ef0579c399c247656b3426294e4e4a1c967969ca9103e8e78e722c6",
+      "bytes": 925125,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/headless-stored-off2/continuation/game.replay": {
+      "sha256": "1fc437a439d7c14d6e2c69a61cf0da543526076af293f239092ebbadf7c3bf6c",
+      "bytes": 68519051,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/headless-stored-off2/continuation/game.replay.checksums": {
+      "sha256": "1ab74c6ee363c9b860b4ffe1239ccf1424802a14584ad556a7d47892217c3225",
+      "bytes": 676336,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/headless-stored-off2/continuation/profile/keyboard-gui.txt": {
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+      "bytes": 1811,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/headless-stored-off2/continuation/profile/keyboard-mapedit.txt": {
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+      "bytes": 708,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/headless-stored-off2/continuation/profile/preferences.txt": {
+      "sha256": "56d92b1527f6fee6f5a69b0ffafbd52da33f525834dcef6b5bcdccb9e766d26d",
+      "bytes": 959,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/headless-stored-off2/continuation/receipt.json": {
+      "sha256": "bf59bf471d0f7cafbde11b21d299b2ac6089713b2920b6ba8df879e753e8e9d6",
+      "bytes": 108133,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/headless-stored-off2/continuation/result.json": {
+      "sha256": "1ae377aba3ad17430a5edc6ec489d0bd28dabd5c3dcac78aaebf2fe8daece746",
+      "bytes": 61906,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/headless-stored-off2/continuation/world.checksums": {
+      "sha256": "1f40ba2f4d5fb2a3b97730edd1763e0b5de2f657c6b86a2e8191256af6a343af",
+      "bytes": 2020,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/headless-stored-off2/initial/artifacts.json": {
+      "sha256": "b09106bf1c6df1872b97dfd5822ebd4de84ad9872cf8d732ce3a4af6b2d627a3",
+      "bytes": 353,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/headless-stored-off2/initial/engine.log": {
+      "sha256": "64eeb4dd589c931aa0355c5c6720f2a119873db9050184377d8ef356191e80b9",
+      "bytes": 46358,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/headless-stored-off2/initial/environment.json": {
+      "sha256": "1f8d340c54bbfa11b5cc0549f8b1114a8cf642a62d6e5ff750aa2e6b37a2860b",
+      "bytes": 28,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/headless-stored-off2/initial/final.game.gz": {
+      "sha256": "dfb69d786a89972da1347ea497dba3f324ddae886cccaf9f3a7f05acd8880749",
+      "bytes": 918728,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/headless-stored-off2/initial/game.replay": {
+      "sha256": "f97e76dfe6b6ba0017bd3f8d2579b7487c685b53b7685de4e406fd74be9f2260",
+      "bytes": 69297290,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/headless-stored-off2/initial/game.replay.checksums": {
+      "sha256": "ec3f38588a635dc3bcddc942e32872ed38614bc89c3dc34b71c0e9033133a7ec",
+      "bytes": 1232752,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/headless-stored-off2/initial/profile/keyboard-gui.txt": {
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+      "bytes": 1811,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/headless-stored-off2/initial/profile/keyboard-mapedit.txt": {
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+      "bytes": 708,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/headless-stored-off2/initial/profile/preferences.txt": {
+      "sha256": "56d92b1527f6fee6f5a69b0ffafbd52da33f525834dcef6b5bcdccb9e766d26d",
+      "bytes": 959,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/headless-stored-off2/initial/receipt.json": {
+      "sha256": "7f11884d7db300fa1327497909b6ff9ec3e8132f431c710ec1bda610fb125769",
+      "bytes": 108117,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/headless-stored-off2/initial/result.json": {
+      "sha256": "9c8c05752056d7fbddff9e4774bf4c20f7114f3afef1444e9e414afae7596788",
+      "bytes": 61911,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/headless-stored-off2/initial/world.checksums": {
+      "sha256": "3912e92ba1201442f31644d2b5ebb818cc6312dda51d2608b14b038299e22cd0",
+      "bytes": 4022,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/headless-stored-on2/continuation/artifacts.json": {
+      "sha256": "b4c2b6cead4fcdd682bd174cdba9de24f07d65ff3fedfde5b07f373aa60184eb",
+      "bytes": 315,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/headless-stored-on2/continuation/engine.log": {
+      "sha256": "128cbc9e043041d611f4a76ed097f9f0e903aee5844c6dee6fc7e55e99702886",
+      "bytes": 46362,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/headless-stored-on2/continuation/environment.json": {
+      "sha256": "1f8d340c54bbfa11b5cc0549f8b1114a8cf642a62d6e5ff750aa2e6b37a2860b",
+      "bytes": 28,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/headless-stored-on2/continuation/final.game.gz": {
+      "sha256": "5570c0c89ef0579c399c247656b3426294e4e4a1c967969ca9103e8e78e722c6",
+      "bytes": 925125,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/headless-stored-on2/continuation/game.replay": {
+      "sha256": "1fc437a439d7c14d6e2c69a61cf0da543526076af293f239092ebbadf7c3bf6c",
+      "bytes": 68519051,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/headless-stored-on2/continuation/game.replay.checksums": {
+      "sha256": "1ab74c6ee363c9b860b4ffe1239ccf1424802a14584ad556a7d47892217c3225",
+      "bytes": 676336,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/headless-stored-on2/continuation/profile/keyboard-gui.txt": {
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+      "bytes": 1811,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/headless-stored-on2/continuation/profile/keyboard-mapedit.txt": {
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+      "bytes": 708,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/headless-stored-on2/continuation/profile/preferences.txt": {
+      "sha256": "2760c0a7ee53a948cbaf219fab96219a30b4db30280e5d1dcdfa7d73e136ab7c",
+      "bytes": 959,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/headless-stored-on2/continuation/receipt.json": {
+      "sha256": "383ce6ddfee44981bdc80cf15327929bbd5719343ba13e2765e76e462176d484",
+      "bytes": 108209,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/headless-stored-on2/continuation/result.json": {
+      "sha256": "8516e6d4a73634d17bd583739efb2e2ce89c7a1dfd28ed533a2789304d1dd561",
+      "bytes": 61986,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/headless-stored-on2/continuation/world.checksums": {
+      "sha256": "1f40ba2f4d5fb2a3b97730edd1763e0b5de2f657c6b86a2e8191256af6a343af",
+      "bytes": 2020,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/headless-stored-on2/initial/artifacts.json": {
+      "sha256": "7a7897589ad0ba51c37515443cb9b803da4ea1ed25f0dfa5766a698a9473db0a",
+      "bytes": 353,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/headless-stored-on2/initial/engine.log": {
+      "sha256": "a98c7e7318019c4140c9077924f8c781b64b01945e86d81e8597c2c1010d5715",
+      "bytes": 46357,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/headless-stored-on2/initial/environment.json": {
+      "sha256": "1f8d340c54bbfa11b5cc0549f8b1114a8cf642a62d6e5ff750aa2e6b37a2860b",
+      "bytes": 28,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/headless-stored-on2/initial/final.game.gz": {
+      "sha256": "dfb69d786a89972da1347ea497dba3f324ddae886cccaf9f3a7f05acd8880749",
+      "bytes": 918728,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/headless-stored-on2/initial/game.replay": {
+      "sha256": "f97e76dfe6b6ba0017bd3f8d2579b7487c685b53b7685de4e406fd74be9f2260",
+      "bytes": 69297290,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/headless-stored-on2/initial/game.replay.checksums": {
+      "sha256": "ec3f38588a635dc3bcddc942e32872ed38614bc89c3dc34b71c0e9033133a7ec",
+      "bytes": 1232752,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/headless-stored-on2/initial/profile/keyboard-gui.txt": {
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+      "bytes": 1811,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/headless-stored-on2/initial/profile/keyboard-mapedit.txt": {
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+      "bytes": 708,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/headless-stored-on2/initial/profile/preferences.txt": {
+      "sha256": "2760c0a7ee53a948cbaf219fab96219a30b4db30280e5d1dcdfa7d73e136ab7c",
+      "bytes": 959,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/headless-stored-on2/initial/receipt.json": {
+      "sha256": "dab051499a5abe884b944c94b27ec6179b93084fd8d211e7d173b0878ad58aed",
+      "bytes": 108199,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/headless-stored-on2/initial/result.json": {
+      "sha256": "f5e373ae8c0dd3958eae34ec75bd382ba2f2b936906943f441451f699a5ef56e",
+      "bytes": 61996,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/headless-stored-on2/initial/world.checksums": {
+      "sha256": "3912e92ba1201442f31644d2b5ebb818cc6312dda51d2608b14b038299e22cd0",
+      "bytes": 4022,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/headless-unset2/continuation/artifacts.json": {
+      "sha256": "e979ecbcdddeaed51a349f7b722552b2bcad75f8aa8924b6ce8a6597d7fd63c1",
+      "bytes": 315,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/headless-unset2/continuation/engine.log": {
+      "sha256": "2426111bfd6729a98895ff414c3baa114c5a5d8fd43f89996ea7ef3e73ad4c3b",
+      "bytes": 46418,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/headless-unset2/continuation/environment.json": {
+      "sha256": "1f8d340c54bbfa11b5cc0549f8b1114a8cf642a62d6e5ff750aa2e6b37a2860b",
+      "bytes": 28,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/headless-unset2/continuation/final.game.gz": {
+      "sha256": "5570c0c89ef0579c399c247656b3426294e4e4a1c967969ca9103e8e78e722c6",
+      "bytes": 925125,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/headless-unset2/continuation/game.replay": {
+      "sha256": "1fc437a439d7c14d6e2c69a61cf0da543526076af293f239092ebbadf7c3bf6c",
+      "bytes": 68519051,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/headless-unset2/continuation/game.replay.checksums": {
+      "sha256": "1ab74c6ee363c9b860b4ffe1239ccf1424802a14584ad556a7d47892217c3225",
+      "bytes": 676336,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/headless-unset2/continuation/profile/keyboard-gui.txt": {
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+      "bytes": 1811,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/headless-unset2/continuation/profile/keyboard-mapedit.txt": {
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+      "bytes": 708,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/headless-unset2/continuation/profile/preferences.txt": {
+      "sha256": "496ca8c5489df3e97e2ee26b41df35bfa33e8c038299d890d073fd9f7117cbe4",
+      "bytes": 946,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/headless-unset2/continuation/receipt.json": {
+      "sha256": "11ef0effa716fa4e4b3154cdb6e14a6f882deeb41e9fd792c645c648c40f2b75",
+      "bytes": 108196,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/headless-unset2/continuation/result.json": {
+      "sha256": "6c98b5c76b0dc61273eb36411877814878f6deeb642061152c9c39f50a9d9210",
+      "bytes": 61985,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/headless-unset2/continuation/world.checksums": {
+      "sha256": "1f40ba2f4d5fb2a3b97730edd1763e0b5de2f657c6b86a2e8191256af6a343af",
+      "bytes": 2020,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/headless-unset2/initial/artifacts.json": {
+      "sha256": "7caf5e071deb6c948341ea1de77943dda26f46b6a7b8605b85491461c66030a9",
+      "bytes": 353,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/headless-unset2/initial/engine.log": {
+      "sha256": "52deca417a8d28fe339490422a30bbec44b237973de6c828633aafa1d0b61829",
+      "bytes": 46413,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/headless-unset2/initial/environment.json": {
+      "sha256": "1f8d340c54bbfa11b5cc0549f8b1114a8cf642a62d6e5ff750aa2e6b37a2860b",
+      "bytes": 28,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/headless-unset2/initial/final.game.gz": {
+      "sha256": "dfb69d786a89972da1347ea497dba3f324ddae886cccaf9f3a7f05acd8880749",
+      "bytes": 918728,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/headless-unset2/initial/game.replay": {
+      "sha256": "f97e76dfe6b6ba0017bd3f8d2579b7487c685b53b7685de4e406fd74be9f2260",
+      "bytes": 69297290,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/headless-unset2/initial/game.replay.checksums": {
+      "sha256": "ec3f38588a635dc3bcddc942e32872ed38614bc89c3dc34b71c0e9033133a7ec",
+      "bytes": 1232752,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/headless-unset2/initial/profile/keyboard-gui.txt": {
+      "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+      "bytes": 1811,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/headless-unset2/initial/profile/keyboard-mapedit.txt": {
+      "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+      "bytes": 708,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/headless-unset2/initial/profile/preferences.txt": {
+      "sha256": "496ca8c5489df3e97e2ee26b41df35bfa33e8c038299d890d073fd9f7117cbe4",
+      "bytes": 946,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/headless-unset2/initial/receipt.json": {
+      "sha256": "12a3f9e1c13569fb108b56bc2ae0f7e0cae9c15c21d9a2c9d32d52d42d9e8214",
+      "bytes": 108194,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/headless-unset2/initial/result.json": {
+      "sha256": "d9c386daa499903952c745e65bcb291792975beb7f646ba41273505bd5362542",
+      "bytes": 61999,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/headless-unset2/initial/world.checksums": {
+      "sha256": "3912e92ba1201442f31644d2b5ebb818cc6312dda51d2608b14b038299e22cd0",
+      "bytes": 4022,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/partition-cleanup.json": {
+      "sha256": "1973247a3195a3605489b4eba56dff7ab554080efa48e39d06c5d2efd4c2e971",
+      "bytes": 105,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/partition-setup.json": {
+      "sha256": "fd9698c74b613f77319da1f62be8ffd2a8594e9d0d95ce20890d257b94b28c02",
+      "bytes": 494,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/game-exactness/summary.json": {
+      "sha256": "c5c8a9b111207171473a8fe18eed2acc19a965f4c79680d1bfc9121aef660873",
+      "bytes": 2066285,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/identity.json": {
+      "sha256": "be465343143362c64a5c474333555991f31e87ef005772298ba8d8c14ca6ee8e",
+      "bytes": 309,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/native-activated/host-admission/build-provenance.json": {
+      "sha256": "38adec7029cee158b3adcabca0708b1e77ae505add37eeaf52a0c334237726a5",
+      "bytes": 616,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/native-activated/host-admission/environment.json": {
+      "sha256": "336ae894da9aea32b03b36b55c46b7501a9c5a30965ca549f52ce21b55d7f6ea",
+      "bytes": 690,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/native-activated/host-admission/receipt.json": {
+      "sha256": "5ab0f27a062ebd730c217c08aee28f238b366b34262a96312a3a3e49ba029f5d",
+      "bytes": 1567,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/native-activated/host-admission/results.xml": {
+      "sha256": "08e4a1217a2ea7c927af12c66b7229da7df4969b44faebad9533532768f61ebc",
+      "bytes": 156468,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/native-activated/host-admission/stderr.log": {
+      "sha256": "d22ccb4e40875528054c53491534eb1256a11bc3efef036ee3eae0a06e80fa60",
+      "bytes": 702,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/native-activated/minimal48/build-provenance.json": {
+      "sha256": "38adec7029cee158b3adcabca0708b1e77ae505add37eeaf52a0c334237726a5",
+      "bytes": 616,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/native-activated/minimal48/environment.json": {
+      "sha256": "53db570ba968ca45de39f1df3580fda615186d6304bafdae15bae1c0b72e3ef1",
+      "bytes": 674,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/native-activated/minimal48/receipt.json": {
+      "sha256": "1cb8190ccd4b203f955f7162c3917c07143d7ef10ddcd5ef7690f2899526e6bc",
+      "bytes": 1580,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/native-activated/minimal48/results.xml": {
+      "sha256": "404f22398d3d2479fc2d39cb8562391108240a907c53bbee8139264a5254d91b",
+      "bytes": 253993,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/native-activated/minimal48/stderr.log": {
+      "sha256": "0b7b14461317c8023bb468418595ef14cb2f4ec109fea3807ec96edae8f4103e",
+      "bytes": 762,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/native-activated/observed-rollback/build-provenance.json": {
+      "sha256": "38adec7029cee158b3adcabca0708b1e77ae505add37eeaf52a0c334237726a5",
+      "bytes": 616,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/native-activated/observed-rollback/environment.json": {
+      "sha256": "35381ccf0bc20f4cb897c773529ac1d10b55902700c4a52063f1940a8dbf15d6",
+      "bytes": 715,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/native-activated/observed-rollback/receipt.json": {
+      "sha256": "46ed0353f1b701828c9142fb749a346264d6ada4a65afdb9486d78567a01a69e",
+      "bytes": 1601,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/native-activated/observed-rollback/results.xml": {
+      "sha256": "e50b89a458683ba9237ef418025965b51e250dd0161f70cfa780afb230182dd6",
+      "bytes": 156468,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/native-activated/observed-rollback/stderr.log": {
+      "sha256": "d22ccb4e40875528054c53491534eb1256a11bc3efef036ee3eae0a06e80fa60",
+      "bytes": 702,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/native-activated/partition-cleanup.json": {
+      "sha256": "1973247a3195a3605489b4eba56dff7ab554080efa48e39d06c5d2efd4c2e971",
+      "bytes": 105,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/native-activated/partition-setup.json": {
+      "sha256": "cdb9ce0a449724001f28343e03f66283d9697a7995d59606811c2390979495bd",
+      "bytes": 494,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/native-activated/query-failure/build-provenance.json": {
+      "sha256": "38adec7029cee158b3adcabca0708b1e77ae505add37eeaf52a0c334237726a5",
+      "bytes": 616,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/native-activated/query-failure/environment.json": {
+      "sha256": "e22dae9e6e920f873cc340657be1eb380af10ac35fb0ce5a907a9c04ba22f743",
+      "bytes": 695,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/native-activated/query-failure/receipt.json": {
+      "sha256": "d7e391859113cf5802acb7f82f281aa59aeadff016b0af24dfe3a595a1aadaf6",
+      "bytes": 1568,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/native-activated/query-failure/results.xml": {
+      "sha256": "00b99edc82cade85f9decece6f6dcdeb0fa7901a8b065284bbe175c9cab7ca75",
+      "bytes": 156468,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/native-activated/query-failure/stderr.log": {
+      "sha256": "1e540e02ea628b3631e61f02959736364174ff0d19d0a7249884f990968077d7",
+      "bytes": 723,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/native-activated/summary.json": {
+      "sha256": "5ce9ce82316254455970fa925085f30bd21178ba849ee8f0b8145410842f5cf4",
+      "bytes": 6571,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/native-cpu-cleanup.json": {
+      "sha256": "1973247a3195a3605489b4eba56dff7ab554080efa48e39d06c5d2efd4c2e971",
+      "bytes": 105,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/native-cpu-partition-setup.json": {
+      "sha256": "67e12abcff9a963e1038da012bc24418e211d94b63adb749d22088ae5c7979ff",
+      "bytes": 494,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/native-engine/artifacts/EngineSession/render_ceilings_preserve_per_tick_simulation_checksums_display_artifacts/fps-0.checksums": {
+      "sha256": "3142b6b4e86e1c74a07698ad500a10ebcb320ebd096790b73bf0ed5985761d75",
+      "bytes": 1778,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/native-engine/artifacts/EngineSession/render_ceilings_preserve_per_tick_simulation_checksums_display_artifacts/fps-120.checksums": {
+      "sha256": "3142b6b4e86e1c74a07698ad500a10ebcb320ebd096790b73bf0ed5985761d75",
+      "bytes": 1778,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/native-engine/artifacts/EngineSession/render_ceilings_preserve_per_tick_simulation_checksums_display_artifacts/fps-25.checksums": {
+      "sha256": "3142b6b4e86e1c74a07698ad500a10ebcb320ebd096790b73bf0ed5985761d75",
+      "bytes": 1778,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/native-engine/artifacts/EngineSession/render_ceilings_preserve_per_tick_simulation_checksums_display_artifacts/fps-60.checksums": {
+      "sha256": "3142b6b4e86e1c74a07698ad500a10ebcb320ebd096790b73bf0ed5985761d75",
+      "bytes": 1778,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/native-engine/artifacts/Settings/layout_persistence_live_display_changes_bindings_and_localization_at_1280x900_in_OpenGL_display_1600x1400_artifacts_writes-preferences/gpu-compute-off.png": {
+      "sha256": "63df90975d743d71317a45093a2ba85c3543f7ab49af00c6b46390703de572a8",
+      "bytes": 926900,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/native-engine/artifacts/Settings/layout_persistence_live_display_changes_bindings_and_localization_at_1280x900_in_OpenGL_display_1600x1400_artifacts_writes-preferences/gpu-compute-on.png": {
+      "sha256": "a007bd577fea48c7aabf9a43cdb6c31f7bd4e547e0daffe8b9331203ba167468",
+      "bytes": 927830,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/native-engine/artifacts/Settings/layout_persistence_live_display_changes_bindings_and_localization_at_640x480_in_OpenGL_display_1600x1400_artifacts_writes-preferences/gpu-compute-off.png": {
+      "sha256": "66fc2ea6676311f3005f09c42f102195f5228da0d476a399a02b6d38e1db5dcb",
+      "bytes": 81199,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/native-engine/artifacts/Settings/layout_persistence_live_display_changes_bindings_and_localization_at_640x480_in_OpenGL_display_1600x1400_artifacts_writes-preferences/gpu-compute-on.png": {
+      "sha256": "51bd683dbb98b9c1f56a8cca508cb36f27ecabf050feed61848d58c03ecfe240",
+      "bytes": 81446,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/native-engine/full-compiled-inventory.log": {
+      "sha256": "887d77383127ccc437164475d19637d9cfa095e9f79bc44417989ea74a3f8c07",
+      "bytes": 119774,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/native-engine/inventory.json": {
+      "sha256": "d2d07f0830c200b1b8e07f07f294ac61de1dd2f83d133b887cd96dd230ac672d",
+      "bytes": 145762,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/native-engine/junit.xml": {
+      "sha256": "69957d93e0a605c6d7a9f01062a1047bba985b1cb34861298271dae667e85c2d",
+      "bytes": 10926,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/native-engine/receipt.json": {
+      "sha256": "083e2d44ba7ee08de7a2f0411041e4cc0ab0cb8f294a8d31389192cba94e8d6c",
+      "bytes": 8268,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/native-engine/runner.log": {
+      "sha256": "db6acc769aa006cb68435dd931dafe856b9612467bdfdabeb9d7eeecde8f6474",
+      "bytes": 7011,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/native-engine/selected-inventory.log": {
+      "sha256": "39e63c08929d6fc5afe00da0a7f05b12ab3dd1b2a5a597eb9275c0186a0acb07",
+      "bytes": 5962,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/native-environment.json": {
+      "sha256": "ea5435704339eb64101fcddf879dc84da653ab530d289c51851f8ef04b84ca93",
+      "bytes": 185,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/native-summary.json": {
+      "sha256": "e75486265b5273f004c3e1583bb992d54a4f5721fb046201b83b60050929eded",
+      "bytes": 20451,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/native-unit/artifacts/build-provenance.json": {
+      "sha256": "38adec7029cee158b3adcabca0708b1e77ae505add37eeaf52a0c334237726a5",
+      "bytes": 616,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/native-unit/full-compiled-inventory.log": {
+      "sha256": "c2a3a39cf651ab3294928f0a114811c175d685a29dd6040c56ec0fd7be3593ae",
+      "bytes": 66743,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/native-unit/inventory.json": {
+      "sha256": "fb50de0711bc95fbd0b324a840bcb68f0165d3f283287719a71bd8be2bf1d79e",
+      "bytes": 84647,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/native-unit/junit.xml": {
+      "sha256": "63986e6fb4d1f5e201d7e97ff279d30f4341f696c035b37e65f0c2962e6a1657",
+      "bytes": 16935,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/native-unit/receipt.json": {
+      "sha256": "0849e28cc79c732bba1f6f22ad58dd8850646cb8916e9846f08fe0af07024361",
+      "bytes": 11590,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/native-unit/runner.log": {
+      "sha256": "92417d06c31377776722419859992f678742e4b639784db6ea635e1eb018c6eb",
+      "bytes": 815,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/native-unit/selected-inventory.log": {
+      "sha256": "bd91960dd9266f0d7f26032040364289689634a29f915500d8f29733e0c6070e",
+      "bytes": 9054,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/resume-canonical-playback.py": {
+      "sha256": "d6636c83c3d74a5b59b08aae13973df735c2f5b53f1cac65160f5036c5a8d1a0",
+      "bytes": 3726,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/run-build.py": {
+      "sha256": "0da594938b16436c02831673cd152155f2656fbfafcb80977c409a6d59a98fa2",
+      "bytes": 2169,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/run-canonical-replay-corrected.py": {
+      "sha256": "3d1431d9296349173289e276dfa61ef34b7d3a5777d5039e9c4059b4fffc9582",
+      "bytes": 4011,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/run-canonical-replay.py": {
+      "sha256": "5c8a838662ade8f8638e11fecc8313d672ec6d5f65dd9d6f290ee62a5bc234e6",
+      "bytes": 4005,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/run-compatibility-cpu-control.py": {
+      "sha256": "acbec0e7f2a24a4e33838b8e5ce1904f5a568b0cb1fd153b978c2b98c96367ec",
+      "bytes": 5866,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/run-compatibility-guards.py": {
+      "sha256": "181dfe7bb80c03cc26a84abad56e780465e648c0f5743aeced27209f5a9e3e9f",
+      "bytes": 5640,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/run-finite-sequence.py": {
+      "sha256": "0c932b4318bfcead46b0f9bee26fe5808d2b8af32519b2ec9fe6650ea3376e7b",
+      "bytes": 1038,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/run-game-exactness.py": {
+      "sha256": "1c7968b3174f0d4906d46b982fb2c5213e9d577a2d0f0091bd6fcb426c95685a",
+      "bytes": 4998,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/run-native-activated.py": {
+      "sha256": "c2cc5ebd86f3ec83c60701a2ef87a62c3eb66939faede368a36ba1bc50768409",
+      "bytes": 3404,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/run-native.py": {
+      "sha256": "d93fbafedae633f616d24b12f60a23ddf228dce3b296bd1f4488f8680bf2d3c2",
+      "bytes": 3561,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/sha256-manifest.json": {
+      "sha256": "f48399ea16325c4e60090affc4b06c50a90e4ede35d043906228d27aae77094d",
+      "bytes": 71982,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/summary.json": {
+      "sha256": "becda4cf42b925d0c7feab0695c042889077f986bb7666e1f365f8915f21598d",
+      "bytes": 2298219,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/validation-matrix.json": {
+      "sha256": "6a42e6e429b7651ab3258ee2fd8fb1542b668a74f5f406a0f5f8b56cbd5ed5a1",
+      "bytes": 7255,
+      "archive": "a77f37114.tar.gz"
+    },
+    "a77f37114/visual-qa.json": {
+      "sha256": "39bb6fad05678d8141a9fa87dff8027d0a0b3f7b0df9fa25600ed9372162ec8a",
+      "bytes": 1221,
+      "archive": "a77f37114.tar.gz"
+    },
+    "1676084ef/build-cpu-cleanup.json": {
+      "sha256": "1973247a3195a3605489b4eba56dff7ab554080efa48e39d06c5d2efd4c2e971",
+      "bytes": 105,
+      "archive": "1676084ef.tar.gz"
+    },
+    "1676084ef/build-cpu-partition-setup.json": {
+      "sha256": "2024fe68b3388d61767a7634f917135a6554748b3f930772ac7b57a6e9d5b9ba",
+      "bytes": 494,
+      "archive": "1676084ef.tar.gz"
+    },
+    "1676084ef/build-environment.json": {
+      "sha256": "801d79d38a7c5ace736f36c346f6a301ccbde9dd60b899276c07ef8b5d313c15",
+      "bytes": 169,
+      "archive": "1676084ef.tar.gz"
+    },
+    "1676084ef/build-failure-receipt.json": {
+      "sha256": "eb19787b629be5f8cb5cb02d28a5e3d162e7cdb6eff3f1afd9a2def859a1f477",
+      "bytes": 792,
+      "archive": "1676084ef.tar.gz"
+    },
+    "1676084ef/build.log": {
+      "sha256": "5c4fb62f0ba5ddc1afa3c80a4ff040b243a4f63a1e4a6344416270d412ee0bee",
+      "bytes": 1840110,
+      "archive": "1676084ef.tar.gz"
+    },
+    "1676084ef/finalize-build.py": {
+      "sha256": "cc1b3ddfc9f2275c37d017e28cc1032c9baffa0cd82b8254ab988e51f9f7d685",
+      "bytes": 2138,
+      "archive": "1676084ef.tar.gz"
+    },
+    "1676084ef/finite-sequence-events.json": {
+      "sha256": "06ffda2a7cca33f78a486ab941bbeade52e4b963d9abf1cad3b7663ec0a99a82",
+      "bytes": 249,
+      "archive": "1676084ef.tar.gz"
+    },
+    "1676084ef/freeze.json": {
+      "sha256": "7d368aa77db2822d6ca284fd12ff55ca96e2f145d56c6422afaada62fdb94bae",
+      "bytes": 711,
+      "archive": "1676084ef.tar.gz"
+    },
+    "1676084ef/local-preparation-failure.json": {
+      "sha256": "313e83f2d29918bf10e02edd8a9b056bbaf2bc2a81ba297ffecbe82672fed4cc",
+      "bytes": 252,
+      "archive": "1676084ef.tar.gz"
+    },
+    "1676084ef/run-build.py": {
+      "sha256": "27b2b2591c6d023f2609344b178e65de1b9b7f439408924ad1e2c76ee7e1d57f",
+      "bytes": 2169,
+      "archive": "1676084ef.tar.gz"
+    },
+    "1676084ef/run-compatibility-guards.py": {
+      "sha256": "386c3a78d4c980e2f24d716786c6b16649c6c8b7d9af23f20120cdc06a1292d7",
+      "bytes": 5640,
+      "archive": "1676084ef.tar.gz"
+    },
+    "1676084ef/run-finite-sequence.py": {
+      "sha256": "8c3bb11a834a1eb85eaceca58cb720481f38cb404f6ad3a8aa6d90518cc456b1",
+      "bytes": 1038,
+      "archive": "1676084ef.tar.gz"
+    },
+    "1676084ef/run-game-exactness.py": {
+      "sha256": "4be82972620d885ceedc2935178c07efe834016614911fdf2b8a7bfd828c6f88",
+      "bytes": 4998,
+      "archive": "1676084ef.tar.gz"
+    },
+    "1676084ef/run-native-activated.py": {
+      "sha256": "effeba06ebf0531a84fbdb5f81031d1ad89b7693328aa8bc822c167bba79581e",
+      "bytes": 3404,
+      "archive": "1676084ef.tar.gz"
+    },
+    "1676084ef/run-native.py": {
+      "sha256": "ae8e40f7339f49424baa495f83f8d7f0459da9e1624a7167a027b9ad50ac9bc8",
+      "bytes": 3561,
+      "archive": "1676084ef.tar.gz"
+    },
+    "1676084ef/validation-matrix.json": {
+      "sha256": "65cc501107ed2904b3fb406acd6331c39f102852aa2bf83f0f07ec959359ad52",
+      "bytes": 7189,
+      "archive": "1676084ef.tar.gz"
+    },
+    "1d179ea62/build-cpu-cleanup.json": {
+      "sha256": "1973247a3195a3605489b4eba56dff7ab554080efa48e39d06c5d2efd4c2e971",
+      "bytes": 105,
+      "archive": "1d179ea62.tar.gz"
+    },
+    "1d179ea62/build-cpu-partition-setup.json": {
+      "sha256": "5f0947db542ae607894dc58be6034ecec4590358266a06e63d8d7df4ce8229b8",
+      "bytes": 494,
+      "archive": "1d179ea62.tar.gz"
+    },
+    "1d179ea62/build-environment.json": {
+      "sha256": "801d79d38a7c5ace736f36c346f6a301ccbde9dd60b899276c07ef8b5d313c15",
+      "bytes": 169,
+      "archive": "1d179ea62.tar.gz"
+    },
+    "1d179ea62/build-failure-receipt.json": {
+      "sha256": "34e5442ae84112c5a5be2452663049e10f3e09264722df1af64e18eaf7426f89",
+      "bytes": 792,
+      "archive": "1d179ea62.tar.gz"
+    },
+    "1d179ea62/build.log": {
+      "sha256": "fa7598aa1a6ae18484a5b2f6f5845858ba900e1529e0858213b8a0a756b364a8",
+      "bytes": 1340348,
+      "archive": "1d179ea62.tar.gz"
+    },
+    "1d179ea62/finalize-build.py": {
+      "sha256": "c315b4aba10308e0ff356eb2f9ad9ebe1e82f1180f4e768a26e0846437007d16",
+      "bytes": 2138,
+      "archive": "1d179ea62.tar.gz"
+    },
+    "1d179ea62/freeze.json": {
+      "sha256": "72542cb10c3e9238c7d3dc372f45e89ce4fe1fb622fd3033f1fff5502c22fe31",
+      "bytes": 597,
+      "archive": "1d179ea62.tar.gz"
+    },
+    "1d179ea62/run-build.py": {
+      "sha256": "78e07a1bdc784379f02bcbdf4c3b96c5ede37eaeb09b07a3882042d38a28e9d3",
+      "bytes": 2169,
+      "archive": "1d179ea62.tar.gz"
+    },
+    "1d179ea62/run-game-exactness.py": {
+      "sha256": "ea5aacf057f9601a137b784edcb24e9f1b65b06aff5b4cf95317aedc3bf18ac1",
+      "bytes": 4998,
+      "archive": "1d179ea62.tar.gz"
+    },
+    "1d179ea62/run-native-activated.py": {
+      "sha256": "a6bca3f1b67a2808c78971420211581569d5f1dcd78c801c623dfaef5490b6fd",
+      "bytes": 3404,
+      "archive": "1d179ea62.tar.gz"
+    },
+    "1d179ea62/run-native.py": {
+      "sha256": "7a83e07f76e3d6c32e8a0d298a48bf940b5ce8d4feef8af84a7ee25537489886",
+      "bytes": 3561,
+      "archive": "1d179ea62.tar.gz"
+    },
+    "1d179ea62/validation-matrix.json": {
+      "sha256": "f893d6febdbedcd71269d14a251c5694376a05934b97f5b0dba169c2acca5112",
+      "bytes": 6485,
+      "archive": "1d179ea62.tar.gz"
+    },
+    "1f80612ed/build-cpu-cleanup.json": {
+      "sha256": "1973247a3195a3605489b4eba56dff7ab554080efa48e39d06c5d2efd4c2e971",
+      "bytes": 105,
+      "archive": "1f80612ed.tar.gz"
+    },
+    "1f80612ed/build-cpu-partition-setup.json": {
+      "sha256": "32adc88864840f6856344a85fa025fd44b5c1f69e4f10523444054fd710fcd2a",
+      "bytes": 494,
+      "archive": "1f80612ed.tar.gz"
+    },
+    "1f80612ed/build-environment.json": {
+      "sha256": "801d79d38a7c5ace736f36c346f6a301ccbde9dd60b899276c07ef8b5d313c15",
+      "bytes": 169,
+      "archive": "1f80612ed.tar.gz"
+    },
+    "1f80612ed/build-execution.json": {
+      "sha256": "722dfc7700db231988edcf3f9cb86711059055bc7c7d3e4a5809f97ff647ff6d",
+      "bytes": 792,
+      "archive": "1f80612ed.tar.gz"
+    },
+    "1f80612ed/build-receipt.json": {
+      "sha256": "3595577d8c2b3a86570272e89ba60cd70dd958b1e63f966403011ae63f73347f",
+      "bytes": 3998,
+      "archive": "1f80612ed.tar.gz"
+    },
+    "1f80612ed/build.log": {
+      "sha256": "b92554264536d7bb4ac8538d4d23171686e38c2b3d0bbbe6010e79ede7389155",
+      "bytes": 803880,
+      "archive": "1f80612ed.tar.gz"
+    },
+    "1f80612ed/finalize-build.py": {
+      "sha256": "6ad005d407d38cf62af65a582dcccb5b1ca7467a4aa3f6481d7965ffb13b9ce8",
+      "bytes": 2138,
+      "archive": "1f80612ed.tar.gz"
+    },
+    "1f80612ed/finalize-summary.py": {
+      "sha256": "02ea5c0ee0febc524f403cb1ab38088265d6ed2034b73b6ed128134784198020",
+      "bytes": 3855,
+      "archive": "1f80612ed.tar.gz"
+    },
+    "1f80612ed/finite-sequence-events.json": {
+      "sha256": "492b97d1ea3ece01092ab836900d3ad247c8acdc15eef323ec6c5aae34c5427a",
+      "bytes": 581,
+      "archive": "1f80612ed.tar.gz"
+    },
+    "1f80612ed/freeze.json": {
+      "sha256": "60dd01fb833a9a3009d21156472f03bed1c1be711656290ab55f53cc62cf7487",
+      "bytes": 777,
+      "archive": "1f80612ed.tar.gz"
+    },
+    "1f80612ed/identity.json": {
+      "sha256": "be465343143362c64a5c474333555991f31e87ef005772298ba8d8c14ca6ee8e",
+      "bytes": 309,
+      "archive": "1f80612ed.tar.gz"
+    },
+    "1f80612ed/native-cpu-cleanup.json": {
+      "sha256": "1973247a3195a3605489b4eba56dff7ab554080efa48e39d06c5d2efd4c2e971",
+      "bytes": 105,
+      "archive": "1f80612ed.tar.gz"
+    },
+    "1f80612ed/native-cpu-partition-setup.json": {
+      "sha256": "60ac9f81ddcff8ff30d7e003e270ef6fcb3bd123231accc34eb5dbd13b31c962",
+      "bytes": 494,
+      "archive": "1f80612ed.tar.gz"
+    },
+    "1f80612ed/native-engine/artifacts/EngineSession/render_ceilings_preserve_per_tick_simulation_checksums_display_artifacts/fps-0.checksums": {
+      "sha256": "3142b6b4e86e1c74a07698ad500a10ebcb320ebd096790b73bf0ed5985761d75",
+      "bytes": 1778,
+      "archive": "1f80612ed.tar.gz"
+    },
+    "1f80612ed/native-engine/artifacts/EngineSession/render_ceilings_preserve_per_tick_simulation_checksums_display_artifacts/fps-120.checksums": {
+      "sha256": "3142b6b4e86e1c74a07698ad500a10ebcb320ebd096790b73bf0ed5985761d75",
+      "bytes": 1778,
+      "archive": "1f80612ed.tar.gz"
+    },
+    "1f80612ed/native-engine/artifacts/EngineSession/render_ceilings_preserve_per_tick_simulation_checksums_display_artifacts/fps-25.checksums": {
+      "sha256": "3142b6b4e86e1c74a07698ad500a10ebcb320ebd096790b73bf0ed5985761d75",
+      "bytes": 1778,
+      "archive": "1f80612ed.tar.gz"
+    },
+    "1f80612ed/native-engine/artifacts/EngineSession/render_ceilings_preserve_per_tick_simulation_checksums_display_artifacts/fps-60.checksums": {
+      "sha256": "3142b6b4e86e1c74a07698ad500a10ebcb320ebd096790b73bf0ed5985761d75",
+      "bytes": 1778,
+      "archive": "1f80612ed.tar.gz"
+    },
+    "1f80612ed/native-engine/artifacts/Settings/layout_persistence_live_display_changes_bindings_and_localization_at_1280x900_in_OpenGL_display_1600x1400_artifacts_writes-preferences/gpu-compute-off.png": {
+      "sha256": "8195175f63a5cc32df888c52bd890b0a30e09eaa15ed7950a3c1cb76ab519a62",
+      "bytes": 928139,
+      "archive": "1f80612ed.tar.gz"
+    },
+    "1f80612ed/native-engine/artifacts/Settings/layout_persistence_live_display_changes_bindings_and_localization_at_1280x900_in_OpenGL_display_1600x1400_artifacts_writes-preferences/gpu-compute-on.png": {
+      "sha256": "a73311428a478df9241c61aa38c2a2bc789d280f7dc19344cccd9c1fbd50c8c7",
+      "bytes": 928980,
+      "archive": "1f80612ed.tar.gz"
+    },
+    "1f80612ed/native-engine/artifacts/Settings/layout_persistence_live_display_changes_bindings_and_localization_at_640x480_in_OpenGL_display_1600x1400_artifacts_writes-preferences/gpu-compute-off.png": {
+      "sha256": "c2818012310311c3cef83d3391494fd7e41f208212dc323d8c524388b1c7e817",
+      "bytes": 82105,
+      "archive": "1f80612ed.tar.gz"
+    },
+    "1f80612ed/native-engine/artifacts/Settings/layout_persistence_live_display_changes_bindings_and_localization_at_640x480_in_OpenGL_display_1600x1400_artifacts_writes-preferences/gpu-compute-on.png": {
+      "sha256": "9e92d8c64a779b79ae918f18eb141911b8a8ee682ca2688721bc4e5e8663f237",
+      "bytes": 82474,
+      "archive": "1f80612ed.tar.gz"
+    },
+    "1f80612ed/native-engine/full-compiled-inventory.log": {
+      "sha256": "14e0a008eed32d9c27e51e1b1bbf7197cb687b082dd454337993bbf14636a44c",
+      "bytes": 119775,
+      "archive": "1f80612ed.tar.gz"
+    },
+    "1f80612ed/native-engine/inventory.json": {
+      "sha256": "a2bf1e70c7d41bd475c044f4ec07b8325d0cfdb2c48b74128a198ba0c02a03f0",
+      "bytes": 145765,
+      "archive": "1f80612ed.tar.gz"
+    },
+    "1f80612ed/native-engine/junit.xml": {
+      "sha256": "526a2a77b2c22b657a3f0537fd5b843a7172161988c3535fc417f78061421681",
+      "bytes": 11351,
+      "archive": "1f80612ed.tar.gz"
+    },
+    "1f80612ed/native-engine/receipt.json": {
+      "sha256": "f56c8516e412754d8f1f64e311a8b9dcf12837940f43ea0b2fd6753ad1d26029",
+      "bytes": 8269,
+      "archive": "1f80612ed.tar.gz"
+    },
+    "1f80612ed/native-engine/runner.log": {
+      "sha256": "2668276aba5deebdacf2eb95526c57a05528681dd474e98ee27ac6b261dc5bf4",
+      "bytes": 8308,
+      "archive": "1f80612ed.tar.gz"
+    },
+    "1f80612ed/native-engine/selected-inventory.log": {
+      "sha256": "2ca69bb65a3f45c0e2598fd67e5918bb216dbd59daed45923ad943334766af15",
+      "bytes": 5963,
+      "archive": "1f80612ed.tar.gz"
+    },
+    "1f80612ed/native-environment.json": {
+      "sha256": "2d07a814a1d8a730c20550d2250fb3171e6b30ae3a7c601fa0bf17e7b63c7486",
+      "bytes": 185,
+      "archive": "1f80612ed.tar.gz"
+    },
+    "1f80612ed/native-unit/artifacts/build-provenance.json": {
+      "sha256": "336244ef09198f41a4a4420a54dc369a3b75b52c22c328ec05cf4ac9f1779d25",
+      "bytes": 616,
+      "archive": "1f80612ed.tar.gz"
+    },
+    "1f80612ed/native-unit/full-compiled-inventory.log": {
+      "sha256": "c2a3a39cf651ab3294928f0a114811c175d685a29dd6040c56ec0fd7be3593ae",
+      "bytes": 66743,
+      "archive": "1f80612ed.tar.gz"
+    },
+    "1f80612ed/native-unit/inventory.json": {
+      "sha256": "fb50de0711bc95fbd0b324a840bcb68f0165d3f283287719a71bd8be2bf1d79e",
+      "bytes": 84647,
+      "archive": "1f80612ed.tar.gz"
+    },
+    "1f80612ed/native-unit/junit.xml": {
+      "sha256": "aee70cb8a79533bc384a3822a5e89d2ff2e4e2d073d71bd40f9fcce72879dbe3",
+      "bytes": 16948,
+      "archive": "1f80612ed.tar.gz"
+    },
+    "1f80612ed/native-unit/receipt.json": {
+      "sha256": "b5b9cf3340b0f09fecf38b9135d405570f89e05e339e39193201b03939dc3ba3",
+      "bytes": 11590,
+      "archive": "1f80612ed.tar.gz"
+    },
+    "1f80612ed/native-unit/runner.log": {
+      "sha256": "02f3d9d21f10cc4d4b6125664ec85ea1734282853596178a94382787d6903cdd",
+      "bytes": 815,
+      "archive": "1f80612ed.tar.gz"
+    },
+    "1f80612ed/native-unit/selected-inventory.log": {
+      "sha256": "bd91960dd9266f0d7f26032040364289689634a29f915500d8f29733e0c6070e",
+      "bytes": 9054,
+      "archive": "1f80612ed.tar.gz"
+    },
+    "1f80612ed/run-build.py": {
+      "sha256": "5907197902228baa01e260cd94af75e9dd9b1360cc74f424d4b3dc7a36ed5bbc",
+      "bytes": 2169,
+      "archive": "1f80612ed.tar.gz"
+    },
+    "1f80612ed/run-compatibility-guards.py": {
+      "sha256": "163f4ecc411c54034664b3a95edee217406e4828138074a64ed8921ba4b3d13d",
+      "bytes": 5640,
+      "archive": "1f80612ed.tar.gz"
+    },
+    "1f80612ed/run-finite-sequence.py": {
+      "sha256": "f081f508dcb9d8c4cb8d60fe85e707d5c5dd243f830291cc7d624e998d069a24",
+      "bytes": 1038,
+      "archive": "1f80612ed.tar.gz"
+    },
+    "1f80612ed/run-game-exactness.py": {
+      "sha256": "906f928e8d3dc938c72f0b5e4466b0c293c9b5dc552da30a93c6b18b50cd34e5",
+      "bytes": 4998,
+      "archive": "1f80612ed.tar.gz"
+    },
+    "1f80612ed/run-native-activated.py": {
+      "sha256": "5ed564751ba5f2506e336e2f50fe0d26def2bc7e3c2a088a45d0de7de609d948",
+      "bytes": 3404,
+      "archive": "1f80612ed.tar.gz"
+    },
+    "1f80612ed/run-native.py": {
+      "sha256": "7c80bcca2c30f4b043d3d63a682eedaece41adc29c7948d18a83fd16873d80f6",
+      "bytes": 3561,
+      "archive": "1f80612ed.tar.gz"
+    },
+    "1f80612ed/validation-matrix.json": {
+      "sha256": "5908df825c6f979faf9904c8d5acfb016ca2284015beb96169b5aef46ef665bd",
+      "bytes": 7255,
+      "archive": "1f80612ed.tar.gz"
+    },
+    "1f80612ed/visual-qa.json": {
+      "sha256": "c18170cd9ccb285ae20015fc1bbaceba6eb5da3ebc6396d840a4ac653d3851c1",
+      "bytes": 1181,
+      "archive": "1f80612ed.tar.gz"
+    },
+    "6adb57fc4/finalize-build.py": {
+      "sha256": "9900651f82a78686733f50da9da23f00213fc4467a396054c8a9727ef5cc91ba",
+      "bytes": 2138,
+      "archive": "6adb57fc4.tar.gz"
+    },
+    "6adb57fc4/finalize-summary.py": {
+      "sha256": "4199b0493ae603d3a85dbc39c92f2864c4e2bf110d7aaff823ec6b9491d3d1d3",
+      "bytes": 4086,
+      "archive": "6adb57fc4.tar.gz"
+    },
+    "6adb57fc4/freeze.json": {
+      "sha256": "539336a5d6c42ff1f61d9f185f4a7f184f1284da85bc3aa2054611289c2fc143",
+      "bytes": 833,
+      "archive": "6adb57fc4.tar.gz"
+    },
+    "6adb57fc4/not-executed.json": {
+      "sha256": "6dd00f574ea7464c789163624783f31e3dbeef1f47ad1582206f5926efda2127",
+      "bytes": 230,
+      "archive": "6adb57fc4.tar.gz"
+    },
+    "6adb57fc4/run-build.py": {
+      "sha256": "55b2016418927bf2705c22c8eb3c61c9dd5ff220327048d5c0d8c004ecb26d71",
+      "bytes": 2169,
+      "archive": "6adb57fc4.tar.gz"
+    },
+    "6adb57fc4/run-compatibility-guards.py": {
+      "sha256": "7c54415666a39cb27bbce9f511242f38a657b452deab24513b87e9ca3f122732",
+      "bytes": 5640,
+      "archive": "6adb57fc4.tar.gz"
+    },
+    "6adb57fc4/run-finite-sequence.py": {
+      "sha256": "b2e7a081885d3849f8463bde928344294170bfa1c3b4541a5dc4d46c28224567",
+      "bytes": 1038,
+      "archive": "6adb57fc4.tar.gz"
+    },
+    "6adb57fc4/run-game-exactness.py": {
+      "sha256": "afd83438c77656b8724fd369f28fdfe91bf3ccb9ca203f0f2cef0ec0435ef030",
+      "bytes": 4998,
+      "archive": "6adb57fc4.tar.gz"
+    },
+    "6adb57fc4/run-native-activated.py": {
+      "sha256": "006820d756f83ab38b26b0946928f3edb6b35af3000ecd87860cfe63edbbed18",
+      "bytes": 3404,
+      "archive": "6adb57fc4.tar.gz"
+    },
+    "6adb57fc4/run-native.py": {
+      "sha256": "bd237864cbf3f505bd5d918023efc041c37474ace6d96f6d2a2381bf0d953684",
+      "bytes": 3561,
+      "archive": "6adb57fc4.tar.gz"
+    },
+    "6adb57fc4/validation-matrix.json": {
+      "sha256": "21aece8ce65c33d10c3c71cd86a6d97f9b1f921fbd41b9bba0175b075e11b5c6",
+      "bytes": 7255,
+      "archive": "6adb57fc4.tar.gz"
+    },
+    "input-fixture/final.game.gz": {
+      "sha256": "92069d9b43c62800d2c503087f0f6500d263e5057310a2d06b06fe729ff3f94f",
+      "bytes": 884926,
+      "archive": "input-fixture.tar.gz"
+    },
+    "resource-controls/cpu_partition_ten.py": {
+      "sha256": "30f10b3c9b2030e0416c74f6a008df0ceb31241d4d2a8fb392760d7468d5d65d",
+      "bytes": 3307,
+      "archive": "resource-controls.tar.gz"
+    }
+  }
+}
