@@ -30,6 +30,8 @@ addToLibrary({
         }
         const present=this.pipelineDescription('primitive',3,0,false,0);present.fragment.targets[0].format=this.gpu.getPreferredCanvasFormat();
         this.presentPipeline=await this.device.createRenderPipelineAsync(present);
+        // Loss can arrive while asynchronous pipeline creation is suspended.
+        if(epoch!==this.epoch || this.lost)throw Error(this.error || 'WebGPU preparation was invalidated');
         this.state=1;
       }catch(error){this.fail(error);}
     },

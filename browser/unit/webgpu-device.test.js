@@ -81,3 +81,18 @@ test('discard fences preparation uploads even before the first packet submission
   assert.equal(f.g.completed,0);assert.equal(f.g.transientBytes,16);
   f.completion.shift()();await Promise.resolve();assert.equal(f.g.completed,1);assert.equal(f.g.transientBytes,0);
 });
+
+test('device loss during asynchronous preparation cannot publish readiness',async()=>{
+  const f=fixture();let finishPipeline,signal;
+  const waiting=new Promise(resolve=>{signal=resolve;});
+  f.device.createRenderPipelineAsync=()=>{
+    if(finishPipeline)return Promise.resolve({getBindGroupLayout:()=>({})});
+    return new Promise(resolve=>{finishPipeline=resolve;signal();});
+  };
+  const preparing=f.g.prepare('/shaders');await waiting;
+  f.lost[0]({message:'loss during pipeline creation'});await Promise.resolve();
+  assert.equal(f.library.glob2_webgpu_poll(),-1);
+  finishPipeline({getBindGroupLayout:()=>({})});await preparing;
+  assert.equal(f.library.glob2_webgpu_poll(),-1);
+  assert.match(f.g.error,/loss during pipeline creation/);
+});
