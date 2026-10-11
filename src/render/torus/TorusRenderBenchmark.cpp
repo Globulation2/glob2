@@ -299,7 +299,9 @@ static int run(int argc, char **argv)
                 const auto cpuStart = std::clock();
                 std::clock_t submissionCPU{};unsigned deferredAttempts=0,intentionalHolds=0;
                 for(;;) {
-                    draw();
+                    // Admission retries must redraw the same camera state.
+                    // Advance only after a completed benchmark frame.
+                    draw(i + warmupFrames);
                     if(ContextAccess::backend(*gfx))ContextAccess::backend(*gfx)->flush();
                     submissionCPU=std::clock();
                     if(finishRendering())break;
@@ -434,10 +436,9 @@ static int run(int argc, char **argv)
                 const char *mode = std::getenv("GLOB2_BENCH_MODE");
                 if (mode && std::strcmp(mode, clouds ? "2D clouds" : "2D no clouds")) continue;
                 PerformanceTelemetry::collector().reset();
-                int cameraFrame = 0;
                 if (!clouds && std::getenv("GLOB2_BENCH_COMPARE_RENDERER"))
                     globalContainer->gfx->setRenderBatchEnabled(false);
-                measure(clouds ? "2D clouds" : "2D no clouds", [&] {
+                measure(clouds ? "2D clouds" : "2D no clouds", [&](int cameraFrame) {
                     globalContainer->gfx->resetDrawCallCount();
                     globalContainer->gfx->setClipRect();
                     globalContainer->gfx->drawFilledRect(0, 0, globalContainer->gfx->getW(), globalContainer->gfx->getH(), GAGCore::Color(0, 0, 0));
@@ -475,7 +476,6 @@ static int run(int argc, char **argv)
                         panX, panY, 0, gui.view, options, nullptr, nullptr, pausePresentation,
                         detailForZoom(gui.game, zoom));
                     globalContainer->gfx->endMapTransform();
-                    ++cameraFrame;
                 });
                 std::printf("draw_calls=%lu texture_bytes=%zu\n", globalContainer->gfx->getDrawCallCount(), GAGCore::DrawableSurface::allocatedTextureBytes());
                 if (auto *batch = globalContainer->gfx->getRenderBatch())
@@ -596,7 +596,7 @@ static int run(int argc, char **argv)
             const Uint32 initialChecksum = gui.game.checkSum(nullptr, nullptr, nullptr, true);
             globalContainer->settings.clouds = clouds;
             globalContainer->settings.cloudShadows = clouds;
-            measure(clouds ? "2D clouds" : "2D no clouds", [&] {
+            measure(clouds ? "2D clouds" : "2D no clouds", [&](int) {
                 globalContainer->gfx->setClipRect();
                 if(pausePresentation)gui.view.render.animationTime=22;
                 Game::drawMap(0, 0, width, height, 0, 0, x, y, 0, gui.view, Game::DRAW_WHOLE_MAP,
@@ -611,7 +611,7 @@ static int run(int argc, char **argv)
             if (const char *zoom = std::getenv("GLOB2_BENCH_ZOOM"))
                 ringZoom = std::clamp(float(std::atof(zoom)), ringZoom, float(MapCamera::MAX_ZOOM));
             assert(view.draw(gui.view.drawnScene(),gui.game.gui, 0, Game::DRAW_WHOLE_MAP, x, y, width, height, ringZoom));
-            measure(clouds ? "Torus clouds" : "Torus no clouds", [&] {
+            measure(clouds ? "Torus clouds" : "Torus no clouds", [&](int) {
                 if(pausePresentation)gui.view.render.animationTime=22;
                 view.amount = 1;
                 view.lastFrame = SDL_GetTicks();
