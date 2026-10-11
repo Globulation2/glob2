@@ -34,7 +34,9 @@ def paginated(path, field):
     raise ValueError('Release evidence pagination limit exceeded')
 
 
-def validate(run, jobs, artifacts, context_log, tag, commit):
+def validate(run, jobs, artifacts, context_log, tag, commit, kind="unsigned-macos"):
+    if kind not in ("unsigned-macos", "signed-macos"):
+        raise ValueError("Unsupported Mac artifact kind")
     if not re.fullmatch(r'v[0-9]+(?:\.[0-9]+)+', tag) or not re.fullmatch('[0-9a-f]{40}', commit):
         raise ValueError('Invalid immutable source identity')
     if (run.get('repository', {}).get('id') != REPOSITORY_ID or
@@ -47,6 +49,8 @@ def validate(run, jobs, artifacts, context_log, tag, commit):
     # A failed signing job is allowed; its source build and context must pass.
     required = {'context', 'packages / macos-package (macos-15, arm64)',
                 'packages / macos-package (macos-15-intel, x86_64)'}
+    if kind == 'signed-macos':
+        required |= {'macos-sign (macos-15, arm64)', 'macos-sign (macos-15-intel, x86_64)'}
     for name in required:
         matching = [job for job in jobs if job.get('name') == name]
         if not matching or any(job.get('status') != 'completed' or job.get('conclusion') != 'success'
@@ -60,9 +64,9 @@ def validate(run, jobs, artifacts, context_log, tag, commit):
     selected = {}
     for architecture in ('arm64', 'x86_64'):
         matching = [artifact for artifact in artifacts
-                    if artifact.get('name') == 'unsigned-macos-' + architecture]
+                    if artifact.get('name') == kind + '-' + architecture]
         if len(matching) != 1:
-            raise ValueError('Expected exactly one immutable unsigned Mac artifact')
+            raise ValueError('Expected exactly one immutable ' + kind + ' artifact')
         artifact = matching[0]
         if (artifact.get('expired') is not False or not isinstance(artifact.get('id'), int) or
                 not re.fullmatch('sha256:[0-9a-f]{64}', artifact.get('digest') or '')):
@@ -71,10 +75,12 @@ def validate(run, jobs, artifacts, context_log, tag, commit):
     return selected
 
 
-def extract(archive, expected_digest, output, version):
+def extract(archive, expected_digest, output, version, architecture=None):
+    if architecture not in (None, "arm64", "x86_64"):
+        raise ValueError("Unsupported Mac package architecture")
     if hashlib.sha256(archive.read_bytes()).hexdigest() != expected_digest.removeprefix('sha256:'):
-        raise ValueError('Unsigned artifact checksum differs from verified source-run evidence')
-    expected = f'Glob2-{version}.dmg'
+        raise ValueError('Mac artifact checksum differs from verified source-run evidence')
+    expected = f'Glob2-{version}' + (f'-macos-{architecture}' if architecture else '') + '.dmg'
     with zipfile.ZipFile(archive) as package:
         files = [entry for entry in package.infolist() if not entry.is_dir()]
         if len(files) != 1 or files[0].filename != expected or files[0].file_size > 2 * 1024**3:
@@ -95,11 +101,13 @@ def main():
     preflight.add_argument('--tag', required=True)
     preflight.add_argument('--source-commit', required=True)
     preflight.add_argument('--github-output', type=Path, required=True)
+    preflight.add_argument('--kind', choices=('unsigned-macos', 'signed-macos'), default='unsigned-macos')
     download = modes.add_parser('download')
     download.add_argument('--artifact-id', type=int, required=True)
     download.add_argument('--digest', required=True)
     download.add_argument('--version', required=True)
     download.add_argument('--output', type=Path, required=True)
+    download.add_argument('--architecture', choices=('arm64', 'x86_64'))
     args = parser.parse_args()
     if args.mode == 'preflight':
         if args.run_id <= 0:
@@ -113,7 +121,7 @@ def main():
         artifacts = paginated(base + '/artifacts', 'artifacts')
         for context in contexts:
             context_log = gh(f'repos/{REPOSITORY}/actions/jobs/{context["id"]}/logs', binary=True).decode()
-            selected = validate(run, jobs, artifacts, context_log, args.tag, args.source_commit)
+            selected = validate(run, jobs, artifacts, context_log, args.tag, args.source_commit, args.kind)
         with args.github_output.open('a') as stream:
             stream.write('artifacts=' + json.dumps(selected, separators=(',', ':')) + '\n')
         print('Owner-dispatched source revision and both immutable Mac artifact digests verified')
@@ -128,9 +136,9 @@ def main():
                 result = subprocess.run(['gh', 'api', f'repos/{REPOSITORY}/actions/artifacts/{args.artifact_id}/zip'],
                                         stdout=stream, stderr=subprocess.PIPE)
             if result.returncode:
-                raise ValueError('Verified unsigned artifact download failed')
-            extract(archive, args.digest, args.output, args.version)
-        print('Exact unsigned Mac artifact digest and package contents verified')
+                raise ValueError('Verified Mac artifact download failed')
+            extract(archive, args.digest, args.output, args.version, args.architecture)
+        print('Exact Mac artifact digest and package contents verified')
 
 
 if __name__ == '__main__':
