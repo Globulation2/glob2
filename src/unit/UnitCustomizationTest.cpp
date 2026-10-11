@@ -381,12 +381,23 @@ TEST_SUITE("UnitCustomization")
             world.game.gameHeader.setResourceGrowthDisabled(true);
             auto* unit=world.addUnit(3,6,8); REQUIRE(unit);
             unit->receiveCarriedMaterial(STONE,{});
-            deposit(world.game.map,9,8,WOOD,3);
-            world.game.map.addClearArea(9,8,world.team->teamNumber);
+            // Default wood clearing consumes a whole occupied cell; transport
+            // packet quantities do not determine the number of clearing actions.
+            // Three occupied cells require three clearing actions.
+            const std::array<std::array<int,2>,3> targets={{{9,8},{9,9},{10,8}}};
+            for(const auto& point:targets) {
+                deposit(world.game.map,point[0],point[1],WOOD,1);
+                world.game.map.addClearArea(point[0],point[1],world.team->teamNumber);
+            }
+            const auto remaining=[&] {
+                int count=0;
+                for(const auto& point:targets) count+=world.game.map.getResource(point[0],point[1]).amount>0;
+                return count;
+            };
             const int initialHealth=unit->hp;
             const int selfDamage=world.game.unitCatalog().levels(3)[0].harvestDamage;
             bool harvesting=false,continued=false;
-            for (int tick=0;tick<4096 && world.game.map.getResource(9,8).amount;++tick) {
+            for (int tick=0;tick<4096 && remaining();++tick) {
                 world.game.syncStep(0);
                 harvesting |= unit->movement==Unit::MOV_HARVESTING;
                 // Continue during the first real clearing action, including
@@ -397,7 +408,8 @@ TEST_SUITE("UnitCustomization")
                 }
             }
             REQUIRE(harvesting); REQUIRE(continued);
-            CHECK(world.game.map.getResource(9,8).amount==0);
+            for(const auto& point:targets)
+                CHECK(world.game.map.getResource(point[0],point[1]).amount==0);
             CHECK(world.team->stats.measurements.cleared[WOOD]==3);
             CHECK(unit->hp==initialHealth-3*selfDamage);
             CHECK(unit->hasCarriedMaterial(STONE));
