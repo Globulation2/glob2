@@ -18,6 +18,20 @@ async function choose(page,label) {
   const active={'Software':'software','Programmable GL':'webgl2','WebGPU':'webgpu'}[label];
   if(!active)throw Error('Missing active renderer expectation for '+label);
   await expect.poll(()=>page.evaluate(()=>Module.renderer),{timeout:120000}).toBe(active);
+  if(active==='webgl2') {
+    const owners=await presentationOwners(page);
+    expect(owners).toHaveLength(1);
+    const driver=await owners[0].evaluate(()=>{
+      const gl=Module.canvas.getContext('webgl2');
+      if(!gl)return null;
+      const debug=gl.getExtension('WEBGL_debug_renderer_info');
+      return {version:gl.getParameter(gl.VERSION),renderer:gl.getParameter(gl.RENDERER),
+        unmaskedRenderer:debug?gl.getParameter(debug.UNMASKED_RENDERER_WEBGL):null};
+    });
+    expect(driver,'Successful Programmable GL switch must own a WebGL2 context').not.toBeNull();
+    test.info().annotations.push({type:'Actual WebGL2 driver',description:driver.unmaskedRenderer||driver.renderer});
+    await test.info().attach('webgl2-driver',{body:JSON.stringify(driver,null,2),contentType:'application/json'});
+  }
   await expect.poll(async()=>(await state(page)).loop,{timeout:120000}).toBeGreaterThan(before.loop+1);
   await expect.poll(async()=>hasDarkText(page,await controlBox(page,'graphics.renderer')),{timeout:120000}).toBe(true);
   await expect(page.locator('#canvas')).toHaveCount(1);
