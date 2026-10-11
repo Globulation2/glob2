@@ -464,7 +464,19 @@ class ProgrammableGLDevice final : public RenderDevice
             }
         }
     }
-    void draw(const DrawPacket &packet, std::size_t first, std::size_t count, float logicalW, float logicalH)
+    // Local to one bounded primitive upload. Other passes, uploads and frame
+    // lifecycle operations may mutate GL state, so none of it survives a flush.
+    struct PrimitiveState {
+        std::optional<GLuint> framebuffer, selectedProgram;
+        std::optional<SDL_Rect> viewport, scissor;
+        std::optional<std::array<float,2>> viewportValue, pointViewportValue;
+        std::optional<float> alpha, pointAlphaValue, textured;
+        std::optional<std::array<float,4>> uvBounds;
+        bool samplerInitialized=false;
+    };
+    static bool sameRect(const std::optional<SDL_Rect> &stored, const SDL_Rect &value)
+    { return stored && stored->x==value.x && stored->y==value.y && stored->w==value.w && stored->h==value.h; }
+    void draw(const DrawPacket &packet, std::size_t first, std::size_t count, float logicalW, float logicalH, PrimitiveState &cached)
     {
         GLuint framebuffer = screenFramebuffer;
         int w = width, h = height;
@@ -477,21 +489,29 @@ class ProgrammableGLDevice final : public RenderDevice
         }
         if (packet.targetLogicalWidth > 0) logicalW = packet.targetLogicalWidth;
         if (packet.targetLogicalHeight > 0) logicalH = packet.targetLogicalHeight;
-        gl.glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-        const SDL_Rect viewport = packet.viewport.value_or(SDL_Rect{0, 0, w, h});
-        gl.glViewport(viewport.x, h - viewport.y - viewport.h, viewport.w, viewport.h);
-        const auto bounds = clip(packet, w, h, logicalW, logicalH);
-        gl.glEnable(GL_SCISSOR_TEST); gl.glScissor(bounds.x, h - bounds.y - bounds.h, bounds.w, bounds.h);
+        if(cached.framebuffer!=framebuffer) {gl.glBindFramebuffer(GL_FRAMEBUFFER,framebuffer);cached.framebuffer=framebuffer;}
+        const auto logicalViewport=packet.viewport.value_or(SDL_Rect{0,0,w,h});
+        const SDL_Rect viewport{logicalViewport.x,h-logicalViewport.y-logicalViewport.h,logicalViewport.w,logicalViewport.h};
+        if(!sameRect(cached.viewport,viewport)) {gl.glViewport(viewport.x,viewport.y,viewport.w,viewport.h);cached.viewport=viewport;}
+        const auto bounds=clip(packet,w,h,logicalW,logicalH);
+        const SDL_Rect scissor{bounds.x,h-bounds.y-bounds.h,bounds.w,bounds.h};
+        if(!cached.scissor) gl.glEnable(GL_SCISSOR_TEST);
+        if(!sameRect(cached.scissor,scissor)) {gl.glScissor(scissor.x,scissor.y,scissor.w,scissor.h);cached.scissor=scissor;}
         state(packet, premultiplied);
         GLuint selectedProgram = packet.material == DrawPacket::Material::SmoothPoint ? pointProgram : program;
         if (!selectedProgram) throw std::invalid_argument("Unsupported point material");
-        gl.glUseProgram(selectedProgram);
-        if (selectedProgram != program) {
-            gl.glUniform2f(pointViewport, float(logicalW), float(logicalH));
-            gl.glUniform1f(pointAlpha, packet.alpha / 255.f);
-        } else { gl.glUniform2f(viewportUniform, float(logicalW), float(logicalH));
-        gl.glUniform1i(imageUniform, 0); gl.glUniform1f(texturedUniform, source ? 1.f : 0.f);
-        gl.glUniform1f(alphaUniform, packet.alpha / 255.f);
+        if(cached.selectedProgram!=selectedProgram) {gl.glUseProgram(selectedProgram);cached.selectedProgram=selectedProgram;}
+        const std::array<float,2> dimensions{logicalW,logicalH};
+        const float alpha=packet.alpha/255.f;
+        if(selectedProgram!=program) {
+            if(cached.pointViewportValue!=dimensions) {gl.glUniform2f(pointViewport,logicalW,logicalH);cached.pointViewportValue=dimensions;}
+            if(cached.pointAlphaValue!=alpha) {gl.glUniform1f(pointAlpha,alpha);cached.pointAlphaValue=alpha;}
+        } else {
+        if(cached.viewportValue!=dimensions) {gl.glUniform2f(viewportUniform,logicalW,logicalH);cached.viewportValue=dimensions;}
+        if(!cached.samplerInitialized) {gl.glUniform1i(imageUniform,0);cached.samplerInitialized=true;}
+        const float textured=source?1.f:0.f;
+        if(cached.textured!=textured) {gl.glUniform1f(texturedUniform,textured);cached.textured=textured;}
+        if(cached.alpha!=alpha) {gl.glUniform1f(alphaUniform,alpha);cached.alpha=alpha;}
         float u0 = 0, v0 = 0, u1 = 1, v1 = 1;
         if (packet.linear && packet.kind == DrawPacket::Kind::Blit) {
             const auto &descriptor = packet.texture->descriptor;
@@ -501,14 +521,14 @@ class ProgrammableGLDevice final : public RenderDevice
             v1 = (packet.source.y + packet.source.h - .5f) / descriptor.height;
             if (targets.contains(key(packet.texture))) { const float lower = 1 - v1; v1 = 1 - v0; v0 = lower; }
         }
-        gl.glUniform4f(boundsUniform, u0, v0, u1, v1);
+        const std::array<float,4> uvBounds{u0,v0,u1,v1};
+        if(cached.uvBounds!=uvBounds) {gl.glUniform4f(boundsUniform,u0,v0,u1,v1);cached.uvBounds=uvBounds;}
         }
         gl.glActiveTexture(GL_TEXTURE0); gl.glBindTexture(GL_TEXTURE_2D, source ? source : whiteTexture);
         if (source) {
             gl.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, packet.linear ? (packet.texture && packet.texture->descriptor.mips == TextureDescriptor::Mips::Generated ? GL_LINEAR_MIPMAP_LINEAR : GL_LINEAR) : GL_NEAREST);
             gl.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, packet.linear ? GL_LINEAR : GL_NEAREST);
         }
-        gl.glBindVertexArray(vao); gl.glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
         gl.glDrawArrays(GL_TRIANGLES, GLint(first), GLsizei(count)); ++counts.batches;
     }
     MaterialProgram materialProgram(const std::string &vertexFile, const std::string &fragmentFile)
@@ -992,8 +1012,9 @@ class ProgrammableGLDevice final : public RenderDevice
             gl.glBindVertexArray(vao); gl.glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
             vertexBytes = geometry.size() * sizeof(SDL_Vertex);
             gl.glBufferData(GL_ARRAY_BUFFER, GLsizeiptr(vertexBytes), geometry.data(), GL_STREAM_DRAW);
+            PrimitiveState cached;
             for (const auto &range : ranges)
-                draw(*range.packet, range.first, range.count, frame.logicalWidth, frame.logicalHeight);
+                draw(*range.packet,range.first,range.count,frame.logicalWidth,frame.logicalHeight,cached);
             geometry.clear(); ranges.clear();
         };
         for (std::size_t begin = 0; begin < frame.packets.size();) {

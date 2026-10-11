@@ -6,13 +6,13 @@ const fs=require('node:fs');
 const path=require('node:path');
 function fixture(){
   const library={},uploads=[],completion=[],rejections=[],maps=[],lost=[];
-  let destroyed=0;const calls={buffers:0,groups:0,views:0,writes:0,draws:[]};
+  let destroyed=0;const calls={buffers:0,groups:0,views:0,writes:0,draws:[],passes:[],ends:0,pipeline:0,viewport:0,scissor:0,vertex:0,bindings:0,index:0,sequence:[]};
   const device={limits:{maxTextureDimension2D:2048},lost:new Promise(r=>lost.push(r)),addEventListener(){},
     createShaderModule(){return{getCompilationInfo:async()=>({messages:[]})};},
     createRenderPipelineAsync:async()=>({getBindGroupLayout:()=>({})}),createRenderPipeline:()=>({getBindGroupLayout:()=>({})}),
     createTexture(){return{createView:()=>{calls.views++;return{};},destroy(){destroyed++;}};},createSampler:()=>({}),createBindGroup:description=>{calls.groups++;return{description};},
     createBuffer({size}){calls.buffers++;const data=new ArrayBuffer(size);return{size,destroy(){destroyed++;},mapAsync:()=>new Promise(r=>maps.push(r)),getMappedRange:()=>data,unmap(){}};},
-    createCommandEncoder(){return{beginRenderPass:()=>({setPipeline(){},setViewport(){},setScissorRect(){},setVertexBuffer(){},setBindGroup(){},setIndexBuffer(){},draw(...args){calls.draws.push(args);},drawIndexed(...args){calls.draws.push(args);},end(){}}),finish:()=>({}),copyTextureToBuffer(){},copyTextureToTexture(){}};},
+    createCommandEncoder(){return{beginRenderPass:description=>{calls.passes.push(description);calls.sequence.push('begin');return{setPipeline(){calls.pipeline++;},setViewport(){calls.viewport++;},setScissorRect(){calls.scissor++;},setVertexBuffer(){calls.vertex++;},setBindGroup(){calls.bindings++;},setIndexBuffer(){calls.index++;},draw(...args){calls.draws.push(args);calls.sequence.push('draw');},drawIndexed(...args){calls.draws.push(args);calls.sequence.push('indexed');},end(){calls.ends++;calls.sequence.push('end');}};},finish:()=>({}),copyTextureToBuffer(){},copyTextureToTexture(){}};},
     queue:{writeBuffer(){calls.writes++;},writeTexture(target,data){uploads.push(data);},submit(){},onSubmittedWorkDone:()=>new Promise((resolve,reject)=>{completion.push(resolve);rejections.push(reject);})}};
   const canvas={getContext:()=>({configure(){},unconfigure(){},getCurrentTexture:()=>device.createTexture()})};
   const context={addToLibrary:value=>Object.assign(library,value),navigator:{gpu:{requestAdapter:async()=>({requestDevice:async()=>device}),getPreferredCanvasFormat:()=> 'bgra8unorm'}},
@@ -149,6 +149,9 @@ test('repeated ordered primitives reuse bindings and uniforms within a bounded c
   assert.equal(f.calls.buffers-before.buffers,3); // one geometry, two immutable uniform buffers
   assert.equal(f.calls.groups-before.groups,4); // rather than 4*4096 groups
   assert.equal(f.calls.writes-before.writes,3);
+  assert.equal(f.calls.passes.length,1);assert.equal(f.calls.ends-before.ends,1);
+  for(const key of ['pipeline','viewport','scissor','vertex'])assert.equal(f.calls[key]-before[key],1,key);
+  assert.equal(f.calls.bindings-before.bindings,4);
   assert.equal(f.calls.draws.length,4096);assert.deepEqual(f.calls.draws.map(v=>v[2]),Array.from({length:4096},(_,i)=>i));
   assert.equal(f.g.transientBytes,80);f.g.finishPresentation([]);f.completion[0]();await Promise.resolve();assert.equal(f.g.transientBytes,0);
 });
@@ -175,4 +178,53 @@ test('uniform cache limit falls back without growing retained comparison storage
   assert.equal(bindings.uniform(new Uint32Array([0,0,0,0])),first);
   const before=f.calls.buffers;bindings.uniform(new Uint32Array([512,0,0,0]));assert.equal(f.calls.buffers-before,1);
   f.g.retireBuffers(owned);assert.equal(f.g.transientBytes,0);
+});
+
+test('barriers clears and attachment changes end adjacent pass reuse in painter order',async()=>{
+  const f=fixture();await f.g.prepare('/shaders');f.library.glob2_webgpu_attach();f.g.size(16,16);
+  f.g.resources.set(7,f.g.image(16,16,null,true));
+  const records=primitiveRecords(7),v=new DataView(records.buffer);
+  v.setUint32(256,3,true); // explicit barrier
+  v.setUint32(3*256,2,true);v.setUint32(3*256+244,1,true); // full color clear
+  v.setUint32(5*256+28,7,true); // target switch and then return to screen
+  f.g.submit(records,7,new Uint8Array(32),new Uint8Array(),16,16);
+  assert.equal(f.calls.passes.length,6);assert.equal(f.calls.ends,6);
+  assert.deepEqual(f.calls.sequence,['begin','draw','end','begin','draw','end','begin','end','begin','draw','end','begin','draw','end','begin','draw','end']);
+  assert.equal(f.calls.passes[2].colorAttachments[0].loadOp,'clear');
+  assert.notEqual(f.calls.passes[4].colorAttachments[0].view,f.calls.passes[5].colorAttachments[0].view);
+});
+test('changed state rebinds within the pass while shaders invalidate binding state',async()=>{
+  const f=fixture();await f.g.prepare('/shaders');f.library.glob2_webgpu_attach();f.g.size(16,16);
+  const records=primitiveRecords(4),v=new DataView(records.buffer);
+  v.setUint32(256+72,8,true);v.setUint32(256+88,8,true);v.setUint32(256+32,32,true);
+  v.setFloat32(256+104,.5,true);
+  v.setUint32(2*256+4,3,true); // SmoothPoint shader, then primitive again
+  f.g.submit(records,4,new Uint8Array(64),new Uint8Array(),16,16);
+  assert.equal(f.calls.passes.length,1);assert.equal(f.calls.ends,1);assert.equal(f.calls.pipeline,3);
+  assert.equal(f.calls.viewport,3);assert.equal(f.calls.scissor,3);assert.equal(f.calls.vertex,3);
+  assert.equal(f.calls.bindings,13); // 4 initial + changed fragment + 4 point + 4 primitive
+  assert.equal(f.calls.draws.length,4);
+});
+test('terrain ends an active pass before composing and fresh chunks reset encoded state',async()=>{
+  const f=fixture();await f.g.prepare('/shaders');f.library.glob2_webgpu_attach();f.g.size(16,16);
+  f.g.terrain=()=>{assert.equal(f.calls.ends,1);f.calls.sequence.push('terrain');};
+  const records=primitiveRecords(3),v=new DataView(records.buffer);v.setUint32(256,4,true);
+  f.g.submit(records,3,new Uint8Array(32),new Uint8Array(),16,16);
+  assert.deepEqual(f.calls.sequence,['begin','draw','end','terrain','begin','draw','end']);
+  f.g.submit(primitiveRecords(1),1,new Uint8Array(32),new Uint8Array(),16,16);
+  assert.equal(f.calls.passes.length,3);assert.equal(f.calls.pipeline,3);assert.equal(f.calls.bindings,12);
+});
+
+test('indexed mesh ranges reuse physical buffers but refresh changed bounds',async()=>{
+  const f=fixture();await f.g.prepare('/shaders');f.library.glob2_webgpu_attach();f.g.size(16,16);
+  const mesh={vertices:f.g.buffer(new Uint8Array(128),f.context.GPUBufferUsage.VERTEX),indices:f.g.buffer(new Uint8Array(24),f.context.GPUBufferUsage.INDEX)};
+  f.g.meshes.set(7,mesh);
+  const records=primitiveRecords(4),v=new DataView(records.buffer);
+  for(let i=0;i<4;i++){v.setUint32(i*256+252,7,true);v.setUint32(i*256+44,3,true);v.setUint32(i*256+52,3,true);}
+  v.setUint32(2*256+40,12,true); // different index range in the same physical mesh
+  v.setUint32(3*256+32,32,true); // return index range, change vertex bounds
+  f.g.submit(records,4,new Uint8Array(),new Uint8Array(),16,16);
+  assert.equal(f.calls.passes.length,1);assert.equal(f.calls.vertex,2);assert.equal(f.calls.index,3);
+  assert.equal(f.calls.bindings,4);assert.deepEqual(f.calls.draws,[[3],[3],[3],[3]]);
+  assert.deepEqual(f.calls.sequence,['begin','indexed','indexed','indexed','indexed','end']);
 });

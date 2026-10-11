@@ -506,6 +506,8 @@ sampling calculation and all blend, modulation and color-key rules. SDL GPU
 keeps compatible primitive draws in the same color pass and merges consecutive
 vertex ranges only when their effective state matches. Barriers, clears, world
 geometry, terrain composition and target changes end that pass.
+GL primitive state reuse is local to one bounded vertex-upload segment; barriers,
+other passes and the next segment reset it rather than assuming global driver state.
 Immutable texture revisions retain the pixels that queued draws referenced, even
 when a surface changes or is deleted. The device retires allocations after submission
 completion. Budget deferral retains logical target handles so sliced uploads can
@@ -537,7 +539,10 @@ bindings share buffers and descriptors. Uniform comparison storage is bounded
 to 512 entries and 1 MiB; binding reuse is bounded to 4096 groups. Buffers remain
 owned until completion, and allocations are never rewritten for later chunks.
 Texture views follow physical allocation lifetime; presentation bindings reset
-with output resize or device recreation.
+with output resize or device recreation. Adjacent draws to the same attachment
+share a render pass and skip unchanged binding and raster state. Clears, barriers,
+terrain composition, target changes and submission-chunk boundaries end that pass;
+all draw calls and their painter order remain intact.
 
 Ordered packets cross Wasm in fixed-width packed records. Shader vertex layouts
 come from generated metadata; skin and posed-rig uniforms use the same generated
