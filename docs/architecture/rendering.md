@@ -497,6 +497,15 @@ uploads and externally owned rendered targets. Actual pressure can reduce densit
 rather than a fixed low pixel cap.
 
 The command adapter preserves adjacent painter order and flushes at 4096 commands.
+Cloud alpha maps retain complete cell fans in painter order, submitting at most
+4092 vertices per chunk instead of allocating a packet for each cell. Legacy GL
+float alpha maps also group complete fans into bounded submissions, retaining
+their integer centers and existing clamped colors. Software nearest blits use
+direct coordinate offsets on unscaled axes; scaled axes retain the original
+sampling calculation and all blend, modulation and color-key rules. SDL GPU
+keeps compatible primitive draws in the same color pass and merges consecutive
+vertex ranges only when their effective state matches. Barriers, clears, world
+geometry, terrain composition and target changes end that pass.
 Immutable texture revisions retain the pixels that queued draws referenced, even
 when a surface changes or is deleted. The device retires allocations after submission
 completion. Budget deferral retains logical target handles so sliced uploads can
@@ -522,6 +531,13 @@ builds do not read the worker-local JavaScript filesystem for shaders. Factory
 creation then attaches the
 managed canvas synchronously. The coordinator handles fallback and persisted
 preferences; the adapter reports device loss through the same polling API.
+
+Within one WebGPU submission chunk, identical immutable uniform bytes and
+bindings share buffers and descriptors. Uniform comparison storage is bounded
+to 512 entries and 1 MiB; binding reuse is bounded to 4096 groups. Buffers remain
+owned until completion, and allocations are never rewritten for later chunks.
+Texture views follow physical allocation lifetime; presentation bindings reset
+with output resize or device recreation.
 
 Ordered packets cross Wasm in fixed-width packed records. Shader vertex layouts
 come from generated metadata; skin and posed-rig uniforms use the same generated
@@ -588,6 +604,10 @@ the device's aggregate budget.
 Torus map captures use bounded offscreen regions across presentation turns.
 The capture owns its immutable presentation frame and freezes its animation,
 unit motion, team, options and sampling scale until all regions are complete.
+Each turn can submit up to four regions, yielding after a soft four-millisecond
+CPU budget or admission pressure. Region pixel and source limits remain bounded.
+Final overlays start with a fresh source budget after a turn that submits several
+regions; completed region cursors survive this yield.
 Region culling preserves the complete target coordinate system, and disjoint
 physical scissors prevent repeated blending at fractional zoom. Skin preview
 ownership is borrowed only within a draw call and restored before yielding.

@@ -62,6 +62,78 @@ struct Video
 }
 TEST_SUITE("SDLGPUDevice")
 {
+    GLOB2_TEST_CASE("Vulkan batches the bounded primitive stream without crossing barriers", "[display][isolated]")
+    {
+        const char *shaders = std::getenv("GLOB2_TEST_SHADER_DIRECTORY"); REQUIRE(shaders);
+        Video video; auto device = makeSDLGPUDevice(nullptr, 64, 64, shaders);
+        RenderFrame frame; frame.logicalWidth = frame.logicalHeight = 64; frame.identity = 1;
+        for (int y = 0; y < 64; ++y) for (int x = 0; x < 64; ++x)
+            frame.packets.push_back(fill({float(x), float(y), 1, 1}, {Uint8(x * 4), Uint8(y * 4), Uint8(x + y), 255}));
+        REQUIRE(frame.packets.size() == RenderFrame::CommandCapacity);
+        auto before = device->telemetry(); REQUIRE(device->submit(std::move(frame))); device->present();
+        CHECK(device->telemetry().packets - before.packets == RenderFrame::CommandCapacity);
+        CHECK(device->telemetry().batches - before.batches == 1);
+        Surface image(device->captureSynchronously({}), SDL_DestroySurface); REQUIRE(image);
+        for (int y = 0; y < 64; ++y) for (int x = 0; x < 64; ++x) {
+            const auto color = pixel(image.get(), x, y);
+            CHECK(color.r == x * 4); CHECK(color.g == y * 4); CHECK(color.b == x + y); CHECK(color.a == 255);
+        }
+        RenderFrame separated; separated.logicalWidth = separated.logicalHeight = 64; separated.identity = 2;
+        separated.packets.push_back(fill({0, 0, 64, 64}, {255, 0, 0, 255}));
+        separated.packets.push_back(fill({0, 0, 32, 64}, {0, 255, 0, 128}));
+        DrawPacket barrier; barrier.kind = DrawPacket::Kind::Barrier; separated.packets.push_back(barrier);
+        separated.packets.push_back(fill({0, 0, 16, 64}, {0, 0, 255, 128}));
+        before = device->telemetry(); REQUIRE(device->submit(std::move(separated))); device->present();
+        CHECK(device->telemetry().batches - before.batches == 2);
+        image.reset(device->captureSynchronously({})); REQUIRE(image);
+        const auto layered = pixel(image.get(), 8, 8);
+        CHECK(std::abs(int(layered.r) - 63) <= 1); CHECK(std::abs(int(layered.g) - 64) <= 1);
+        CHECK(std::abs(int(layered.b) - 128) <= 1); CHECK(layered.a == 255);
+    }
+
+    GLOB2_TEST_CASE("Vulkan reused primitive passes match separated state and target changes", "[display][isolated]")
+    {
+        const char *shaders = std::getenv("GLOB2_TEST_SHADER_DIRECTORY"); REQUIRE(shaders);
+        Video video; auto device = makeSDLGPUDevice(nullptr, 32, 24, shaders);
+        RenderResources resources;
+        auto source = surface(4, 2), blank = surface(16, 8); REQUIRE(source); REQUIRE(blank);
+        REQUIRE(SDL_FillSurfaceRect(blank.get(), nullptr, SDL_MapSurfaceRGBA(blank.get(), 0, 0, 0, 0)));
+        for (int y = 0; y < 2; ++y) for (int x = 0; x < 4; ++x)
+            REQUIRE(SDL_WriteSurfacePixel(source.get(), x, y, x < 2 ? 237 : 31, y ? 117 : 203, x < 2 ? 41 : 219, x ? 173 : 255));
+        const auto texture = resources.snapshot(resources.create(source.get(), 1));
+        TextureDescriptor desc; desc.alpha = TextureDescriptor::Alpha::Premultiplied;
+        const auto target = resources.snapshot(resources.create(blank.get(), 1, desc));
+        std::vector<DrawPacket> packets;
+        packets.push_back(fill({0, 0, 32, 24}, {19, 37, 59, 255}));
+        auto overlay = fill({1, 1, 25, 20}, {210, 30, 100, 128}); packets.push_back(overlay);
+        overlay.color = {20, 200, 70, 93}; overlay.destination = {8, 3, 23, 17}; packets.push_back(overlay);
+        auto first = blit(texture, {0, 0, 12, 10}); first.source = {0, 0, 2, 2}; first.linear = true; packets.push_back(first);
+        auto second = first; second.source = {2, 0, 2, 2}; second.destination = {10, 1, 12, 10}; second.alpha = 127;
+        second.clip = SDL_Rect{12, 2, 8, 7}; packets.push_back(second);
+        auto small = fill({0, 0, 32, 24}, {255, 255, 0, 255}); small.viewport = SDL_Rect{16, 12, 16, 12}; packets.push_back(small);
+        auto normal = fill({24, 16, 8, 8}, {0, 0, 255, 255}); packets.push_back(normal); // restores the default viewport and scissor
+        DrawPacket clear; clear.kind = DrawPacket::Kind::Clear; clear.clearColor = true; clear.clearValue = {0, 0, 0, 0};
+        clear.target = target; packets.push_back(clear);
+        auto offscreen = fill({0, 0, 16, 8}, {200, 80, 30, 128}); offscreen.target = target;
+        offscreen.targetLogicalWidth = 16; offscreen.targetLogicalHeight = 8; packets.push_back(offscreen);
+        auto sampled = blit(target, {2, 13, 12, 8}); sampled.alpha = 191; packets.push_back(sampled);
+        auto clippedClear = clear; clippedClear.target.reset(); clippedClear.clearValue = {.1f, .6f, .3f, 1};
+        clippedClear.targetScissor = SDL_Rect{0, 20, 5, 4}; packets.push_back(clippedClear);
+        auto render = [&](bool barriers) {
+            RenderFrame frame; frame.logicalWidth = 32; frame.logicalHeight = 24;
+            for (const auto &packet : packets) {
+                frame.packets.push_back(packet);
+                if (barriers) { DrawPacket barrier; barrier.kind = DrawPacket::Kind::Barrier; frame.packets.push_back(barrier); }
+            }
+            REQUIRE(device->submit(std::move(frame))); device->present();
+            return Surface(device->captureSynchronously({}), SDL_DestroySurface);
+        };
+        const auto reference = render(true), batched = render(false); REQUIRE(reference); REQUIRE(batched);
+        for (int y = 0; y < 24; ++y) for (int x = 0; x < 32; ++x) nearPixel(batched.get(), reference.get(), x, y, 0);
+        CHECK(pixel(batched.get(), 30, 22).b == 255);
+        CHECK(pixel(batched.get(), 1, 22).g == 153);
+    }
+
     GLOB2_TEST_CASE("physical scissors preserve fractional alpha seams", "[display][isolated]")
     {
         const char *shaders=std::getenv("GLOB2_TEST_SHADER_DIRECTORY"); REQUIRE(shaders); Video video;auto owner=makeSDLGPUDevice(nullptr,16,16,shaders);auto &device=*owner;
@@ -107,9 +179,11 @@ TEST_SUITE("SDLGPUDevice")
             const auto deadline = SDL_GetTicks() + 5000;
             while (device.completion(submission) == RenderCompletion::Pending && SDL_GetTicks() < deadline) SDL_Delay(1);
             REQUIRE(device.completion(submission) == RenderCompletion::Complete);
-            const auto before = device.telemetry().resourceBytes;
             device.trimRetiredResources();
-            CHECK(device.telemetry().resourceBytes + 64 * 64 * 4 <= before);
+            // The first trim may observe an already signalled fence and evict
+            // this source. Measure retirement from its initially resident bytes,
+            // rather than requiring a second eviction after faster submission.
+            CHECK(device.telemetry().resourceBytes + 64 * 64 * 4 <= pendingBytes);
             REQUIRE(source); // restoration source remains logically owned
             REQUIRE(draw(2)); device.present();
             CaptureRequest request; request.identity = 91; request.frameIdentity = 2;

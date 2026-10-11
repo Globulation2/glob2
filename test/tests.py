@@ -229,6 +229,7 @@ UNIT_TESTS = [
     'support/RecordingValidationProcess.cpp',
     '#libusl/test/USLCoverageTest.cpp',
     '#libgag/src/SurfaceCoverageTest.cpp',
+    '#libgag/src/SurfaceRasterTest.cpp',
     '#libgag/src/ImageAssetTest.cpp',
     '#libgag/src/GpuTexturePreparationTest.cpp',
     '#src/scripting/javascript/ScriptRuntimeTest.cpp',

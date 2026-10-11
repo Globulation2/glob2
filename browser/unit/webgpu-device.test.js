@@ -6,19 +6,19 @@ const fs=require('node:fs');
 const path=require('node:path');
 function fixture(){
   const library={},uploads=[],completion=[],rejections=[],maps=[],lost=[];
-  let destroyed=0;
+  let destroyed=0;const calls={buffers:0,groups:0,views:0,writes:0,draws:[]};
   const device={limits:{maxTextureDimension2D:2048},lost:new Promise(r=>lost.push(r)),addEventListener(){},
     createShaderModule(){return{getCompilationInfo:async()=>({messages:[]})};},
     createRenderPipelineAsync:async()=>({getBindGroupLayout:()=>({})}),createRenderPipeline:()=>({getBindGroupLayout:()=>({})}),
-    createTexture(){return{createView:()=>({}),destroy(){destroyed++;}};},createSampler:()=>({}),createBindGroup:()=>({}),
-    createBuffer({size}){const data=new ArrayBuffer(size);return{size,destroy(){destroyed++;},mapAsync:()=>new Promise(r=>maps.push(r)),getMappedRange:()=>data,unmap(){}};},
-    createCommandEncoder(){return{beginRenderPass:()=>({setPipeline(){},setViewport(){},setScissorRect(){},setVertexBuffer(){},setBindGroup(){},setIndexBuffer(){},draw(){},drawIndexed(){},end(){}}),finish:()=>({}),copyTextureToBuffer(){},copyTextureToTexture(){}};},
-    queue:{writeBuffer(){},writeTexture(target,data){uploads.push(data);},submit(){},onSubmittedWorkDone:()=>new Promise((resolve,reject)=>{completion.push(resolve);rejections.push(reject);})}};
+    createTexture(){return{createView:()=>{calls.views++;return{};},destroy(){destroyed++;}};},createSampler:()=>({}),createBindGroup:description=>{calls.groups++;return{description};},
+    createBuffer({size}){calls.buffers++;const data=new ArrayBuffer(size);return{size,destroy(){destroyed++;},mapAsync:()=>new Promise(r=>maps.push(r)),getMappedRange:()=>data,unmap(){}};},
+    createCommandEncoder(){return{beginRenderPass:()=>({setPipeline(){},setViewport(){},setScissorRect(){},setVertexBuffer(){},setBindGroup(){},setIndexBuffer(){},draw(...args){calls.draws.push(args);},drawIndexed(...args){calls.draws.push(args);},end(){}}),finish:()=>({}),copyTextureToBuffer(){},copyTextureToTexture(){}};},
+    queue:{writeBuffer(){calls.writes++;},writeTexture(target,data){uploads.push(data);},submit(){},onSubmittedWorkDone:()=>new Promise((resolve,reject)=>{completion.push(resolve);rejections.push(reject);})}};
   const canvas={getContext:()=>({configure(){},unconfigure(){},getCurrentTexture:()=>device.createTexture()})};
   const context={addToLibrary:value=>Object.assign(library,value),navigator:{gpu:{requestAdapter:async()=>({requestDevice:async()=>device}),getPreferredCanvasFormat:()=> 'bgra8unorm'}},
     FS:{readFile:p=>p.endsWith('metadata.json')?fs.readFileSync(path.join(__dirname,'../../libgag/shaders/renderer-manifest.json'),'utf8'):''},Module:{canvas},HEAPU8:new Uint8Array(new SharedArrayBuffer(65536)),GPUTextureUsage:{TEXTURE_BINDING:1,RENDER_ATTACHMENT:2,COPY_SRC:4,COPY_DST:8},GPUBufferUsage:{VERTEX:1,INDEX:2,UNIFORM:4,COPY_DST:8,MAP_READ:16},GPUMapMode:{READ:1}};
   vm.createContext(context);vm.runInContext(fs.readFileSync(path.join(__dirname,'../webgpu-device.js'),'utf8'),context);context.Glob2WebGPU=library.$Glob2WebGPU;
-  return{library,g:context.Glob2WebGPU,context,device,uploads,completion,rejections,maps,lost,destroyed:()=>destroyed};
+  return{calls,library,g:context.Glob2WebGPU,context,device,uploads,completion,rejections,maps,lost,destroyed:()=>destroyed};
 }
 test('prepare validates shaders before presentation attachment and copies shared uploads',async()=>{
   const f=fixture();await f.g.prepare('/shaders');assert.equal(f.g.state,1);assert.equal(f.library.glob2_webgpu_attach(),2048);
@@ -132,4 +132,47 @@ test('retired completion rejection cannot fail a replacement allocation epoch',a
   f.g.submit(new Uint8Array(),0,new Uint8Array(),new Uint8Array(),16,16);f.g.finishPresentation([]);
   f.rejections[1](Error('current fence failed'));await Promise.resolve();await Promise.resolve();
   assert.equal(f.library.glob2_webgpu_poll(),-1);assert.match(f.g.error,/current fence failed/);
+});
+
+function primitiveRecords(count){
+  const records=new Uint8Array(count*256),v=new DataView(records.buffer);
+  for(let i=0;i<count;i++){
+    const base=i*256;v.setUint32(base+36,32,true);v.setUint32(base+48,i,true);v.setUint32(base+52,1,true);
+    for(const offset of[72,76,88,92])v.setUint32(base+offset,16,true);
+    for(const offset of[96,100])v.setFloat32(base+offset,16,true);
+    v.setFloat32(base+104,1,true);v.setFloat32(base+120,1,true);v.setFloat32(base+124,1,true);
+  }return records;
+}
+test('repeated ordered primitives reuse bindings and uniforms within a bounded chunk',async()=>{
+  const f=fixture();await f.g.prepare('/shaders');f.library.glob2_webgpu_attach();f.g.size(16,16);
+  const before={...f.calls};f.g.submit(primitiveRecords(4096),4096,new Uint8Array(32),new Uint8Array(),16,16);
+  assert.equal(f.calls.buffers-before.buffers,3); // one geometry, two immutable uniform buffers
+  assert.equal(f.calls.groups-before.groups,4); // rather than 4*4096 groups
+  assert.equal(f.calls.writes-before.writes,3);
+  assert.equal(f.calls.draws.length,4096);assert.deepEqual(f.calls.draws.map(v=>v[2]),Array.from({length:4096},(_,i)=>i));
+  assert.equal(f.g.transientBytes,80);f.g.finishPresentation([]);f.completion[0]();await Promise.resolve();assert.equal(f.g.transientBytes,0);
+});
+test('changed uniforms and physical image replacement cannot reuse stale bindings',async()=>{
+  const f=fixture();await f.g.prepare('/shaders');f.library.glob2_webgpu_attach();f.g.size(16,16);
+  const records=primitiveRecords(3),v=new DataView(records.buffer);v.setFloat32(256+104,.5,true);
+  const before=f.calls.buffers;f.g.submit(records,3,new Uint8Array(32),new Uint8Array(),16,16);assert.equal(f.calls.buffers-before,4);
+  const texture=f.device.createTexture(),old=f.g.textureView(texture);assert.equal(f.g.textureView(texture),old);
+  assert.notEqual(f.g.textureView(f.device.createTexture()),old);
+  const groups=f.calls.groups;f.g.submit(primitiveRecords(1),1,new Uint8Array(32),new Uint8Array(),16,16);assert.equal(f.calls.groups-groups,4); // separate chunk never reuses transient bindings
+});
+test('presentation binding reuse ends at resize and allocation reset',async()=>{
+  const f=fixture();await f.g.prepare('/shaders');f.library.glob2_webgpu_attach();f.g.size(16,16);
+  const before=f.calls.groups,writes=f.calls.writes;f.g.present();assert.equal(f.calls.groups-before,4);assert.equal(f.calls.writes-writes,2);
+  f.g.present();assert.equal(f.calls.groups-before,4);assert.equal(f.calls.writes-writes,2);
+  f.g.size(32,32);f.g.present();assert.equal(f.calls.groups-before,8);assert.equal(f.calls.writes-writes,4);
+  f.g.reset();assert.equal(f.g.presentGroups,null);
+});
+
+test('uniform cache limit falls back without growing retained comparison storage',async()=>{
+  const f=fixture();await f.g.prepare('/shaders');f.library.glob2_webgpu_attach();const owned=[],bindings=f.g.submissionBindings(owned);
+  const first=bindings.uniform(new Uint32Array([0,0,0,0]));
+  for(let i=1;i<=512;i++)bindings.uniform(new Uint32Array([i,0,0,0]));
+  assert.equal(bindings.uniform(new Uint32Array([0,0,0,0])),first);
+  const before=f.calls.buffers;bindings.uniform(new Uint32Array([512,0,0,0]));assert.equal(f.calls.buffers-before,1);
+  f.g.retireBuffers(owned);assert.equal(f.g.transientBytes,0);
 });

@@ -10,6 +10,7 @@
 #include <assert.h>
 #include <valarray>
 #include <vector>
+#include <array>
 #include <algorithm>
 #include <exception>
 #include <stdexcept>
@@ -18,6 +19,34 @@ namespace GAGCore
 {
 namespace
 {
+template<class Alpha>
+void recordAlphaMap(RenderBackend &backend, const std::valarray<Alpha> &map,
+                    int mapW, int mapH, int x, int y, int cellW, int cellH,
+                    const Color &color, float divisor)
+{
+    if (mapW < 2 || mapH < 2 || size_t(mapW)*size_t(mapH) > map.size()) return;
+    // Keep complete cell fans in painter order. A bounded chunk replaces one
+    // packet/allocation per cell without changing interpolation or coverage.
+    constexpr size_t chunkVertices = 4092; // 341 complete twelve-vertex fans.
+    std::vector<SDL_Vertex> batch;
+    batch.reserve(chunkVertices);
+    auto vertex = [&](float px, float py, float alpha) {
+        return SDL_Vertex{{px,py},{color.r/255.0f,color.g/255.0f,color.b/255.0f,
+            std::clamp(alpha,0.0f,1.0f)},{0,0}};
+    };
+    for (int j=0;j<mapH-1;++j) for (int i=0;i<mapW-1;++i) {
+        const float a=map[j*mapW+i]/divisor, b=map[j*mapW+i+1]/divisor;
+        const float c=map[(j+1)*mapW+i+1]/divisor, d=map[(j+1)*mapW+i]/divisor;
+        const float left=x+i*cellW, top=y+j*cellH, right=left+cellW, bottom=top+cellH;
+        const auto va=vertex(left,top,a), vb=vertex(right,top,b);
+        const auto vc=vertex(right,bottom,c), vd=vertex(left,bottom,d);
+        const auto center=vertex((left+right)/2,(top+bottom)/2,(a+b+c+d)/4);
+        const SDL_Vertex fan[]={center,va,vb,center,vb,vc,center,vc,vd,center,vd,va};
+        batch.insert(batch.end(),std::begin(fan),std::end(fan));
+        if (batch.size()==chunkVertices) {backend.triangles(batch);batch.clear();}
+    }
+    if (!batch.empty()) backend.triangles(batch);
+}
 struct SpriteBatchState
 {
 	static constexpr size_t maxQuads = 4096;
@@ -519,19 +548,7 @@ SpriteDrawBatch::~SpriteDrawBatch() noexcept(false)
 			renderBatch->barrier();
 		if (renderer) prepareDraw();
         if (renderer) {
-            if (mapW < 2 || mapH < 2 || size_t(mapW)*size_t(mapH) > map.size()) return;
-            for(int j=0;j<mapH-1;++j) for(int i=0;i<mapW-1;++i) {
-                auto vertex = [&](float px,float py,float alpha) {
-                    return SDL_Vertex{{px,py},{color.r / 255.0f, color.g / 255.0f, color.b / 255.0f, std::clamp(alpha,0.0f,1.0f)}, {0,0}};
-                };
-                float a=map[j*mapW+i]/1.0f, b=map[j*mapW+i+1]/1.0f;
-                float c=map[(j+1)*mapW+i+1]/1.0f, d=map[(j+1)*mapW+i]/1.0f;
-                float left=x+i*cellW, top=y+j*cellH, right=left+cellW, bottom=top+cellH;
-                auto va=vertex(left,top,a), vb=vertex(right,top,b), vc=vertex(right,bottom,c), vd=vertex(left,bottom,d);
-                auto center=vertex((left+right)/2,(top+bottom)/2,(a+b+c+d)/4);
-                const SDL_Vertex vertices[]={center,va,vb,center,vb,vc,center,vc,vd,center,vd,va};
-                renderer->triangles(vertices);
-            }
+            recordAlphaMap(*renderer,map,mapW,mapH,x,y,cellW,cellH,color,1.0f);
             return;
         }
 	#ifdef HAVE_OPENGL
@@ -573,34 +590,33 @@ SpriteDrawBatch::~SpriteDrawBatch() noexcept(false)
 			} else {
 				glState.doBlend(true);
 				glState.doTexture(false);
-				for (int dy=0; dy < mapH-1; dy++)
-				{
-					int midy = y + dy * cellH + cellH/2;
-					for (int dx=0; dx < mapW-1; dx++)
-					{
-						++drawCalls;glBegin(GL_TRIANGLE_FAN);
-						//This interpolates to find the center color, then fans out to the four corners.
-						int midx = x + dx * cellW + cellW/2;
-						float mid_top_alpha = (map[mapW * dy + dx] + map[mapW * dy + dx + 1])/2;
-						float mid_bottom_alpha = (map[mapW * (dy + 1) + dx] + map[mapW * (dy + 1) + dx + 1])/2;
-						glColor4f(fr, color.g, color.b, (mid_top_alpha + mid_bottom_alpha) / 2);
-						glVertex2f(midx, midy);
-						//Touch each of the four corners
-						glColor4f(fr, fg, fb, map[mapW * dy + dx]);
-						glVertex2f(x + dx * cellW, y + dy * cellH);
-						glColor4f(fr, fg, fb, map[mapW * (dy + 1) + dx]);
-						glVertex2f(x + dx * cellW, y + (dy + 1) * cellH);
-
-						glColor4f(fr, fg, fb, map[mapW * (dy + 1) + dx + 1]);
-						glVertex2f(x + (dx+1) * cellW, y + (dy + 1) * cellH);
-						glColor4f(fr, fg, fb, map[mapW * dy + dx + 1]);
-						glVertex2f(x + (dx+1) * cellW, y + dy * cellH);
-
-						glColor4f(fr, fg, fb, map[mapW * dy + dx]);
-						glVertex2f(x + dx * cellW, y + dy * cellH);
-						glEnd();
-					}
-				}
+                if (mapW<2 || mapH<2) return;
+                // Preserve the legacy integer center and clamped float colors,
+                // but group complete fans into bounded triangle submissions.
+                constexpr unsigned cellsPerChunk=4096;
+                unsigned cells=0;
+                ++drawCalls;glBegin(GL_TRIANGLES);
+                for (int dy=0;dy<mapH-1;++dy) for (int dx=0;dx<mapW-1;++dx) {
+                    const int left=x+dx*cellW,top=y+dy*cellH;
+                    const float a=map[mapW*dy+dx],b=map[mapW*(dy+1)+dx];
+                    const float c=map[mapW*(dy+1)+dx+1],d=map[mapW*dy+dx+1];
+                    const float midpoint=((a+d)/2+(b+c)/2)/2;
+                    const std::array<float,4> alpha{a,b,c,d};
+                    const std::array<std::array<int,2>,4> corners{{{left,top},{left,top+cellH},
+                        {left+cellW,top+cellH},{left+cellW,top}}};
+                    for (unsigned triangle=0;triangle<4;++triangle) {
+                        glColor4f(fr,color.g,color.b,midpoint);
+                        glVertex2f(left+cellW/2,top+cellH/2);
+                        for (unsigned corner:{triangle,(triangle+1)%4}) {
+                            glColor4f(fr,fg,fb,alpha[corner]);
+                            glVertex2f(corners[corner][0],corners[corner][1]);
+                        }
+                    }
+                    if (++cells==cellsPerChunk && (dx!=mapW-2 || dy!=mapH-2)) {
+                        glEnd();++drawCalls;glBegin(GL_TRIANGLES);cells=0;
+                    }
+                }
+                glEnd();
 			}
 		}
 		else
@@ -614,19 +630,7 @@ SpriteDrawBatch::~SpriteDrawBatch() noexcept(false)
 			renderBatch->barrier();
 		if (renderer) prepareDraw();
         if (renderer) {
-            if (mapW < 2 || mapH < 2 || size_t(mapW)*size_t(mapH) > map.size()) return;
-            for(int j=0;j<mapH-1;++j) for(int i=0;i<mapW-1;++i) {
-                auto vertex = [&](float px,float py,float alpha) {
-                    return SDL_Vertex{{px,py},{color.r / 255.0f, color.g / 255.0f, color.b / 255.0f, std::clamp(alpha,0.0f,1.0f)}, {0,0}};
-                };
-                float a=map[j*mapW+i]/255.0f, b=map[j*mapW+i+1]/255.0f;
-                float c=map[(j+1)*mapW+i+1]/255.0f, d=map[(j+1)*mapW+i]/255.0f;
-                float left=x+i*cellW, top=y+j*cellH, right=left+cellW, bottom=top+cellH;
-                auto va=vertex(left,top,a), vb=vertex(right,top,b), vc=vertex(right,bottom,c), vd=vertex(left,bottom,d);
-                auto center=vertex((left+right)/2,(top+bottom)/2,(a+b+c+d)/4);
-                const SDL_Vertex vertices[]={center,va,vb,center,vb,vc,center,vc,vd,center,vd,va};
-                renderer->triangles(vertices);
-            }
+            recordAlphaMap(*renderer,map,mapW,mapH,x,y,cellW,cellH,color,255.0f);
             return;
         }
 	#ifdef HAVE_OPENGL
