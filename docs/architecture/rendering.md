@@ -690,4 +690,9 @@ These paths change presentation work only; simulation and saved state are unchan
 
 `RenderDevice` owns submission, completion, capture and presentation. The software device and existing drawing adapter exercise the contract without hardware. Capture tickets retain frame identity, recording generation, dimensions, timestamps and semantic context; cancellation and telemetry stay bounded. A fake asynchronous device tests admission, retained revisions, deletion, cancellation and recovery.
 
+Shutdown releases sprite and font consumers before the graphics context. File and
+string services remain alive until the context has delivered completed captures
+and retired its presentation surface. A completed asynchronous screenshot can
+still need these services while the context is being destroyed.
+
 `RendererSelection` defines stable backend-family identifiers, aliases, capabilities and startup precedence. The application coordinator applies this policy through the live-switch transaction described above. Auto defaults remain unchanged, and renderer selection stays outside simulation state.
