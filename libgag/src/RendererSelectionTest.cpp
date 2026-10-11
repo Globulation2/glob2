@@ -50,6 +50,10 @@ TEST_SUITE("RendererSelection")
                 REQUIRE(gfx.backendSwitchStatus().phase == RendererSwitchPhase::Complete);
                 REQUIRE(gfx.backendSwitchStatus().active == backend);
                 gfx.drawSurface(20,20,&texture);
+                const auto identity = gfx.renderingIdentity();
+                CHECK(identity.backend == (backend == RendererBackend::LegacyGL ? "opengl" :
+                    backend == RendererBackend::PortableSDL ? "sdl" : std::string(rendererBackendName(backend))));
+                if (backend == RendererBackend::ProgrammableGL) CHECK(identity.glIdentityAvailable);
                 CHECK(saved == backend);
             }
         }

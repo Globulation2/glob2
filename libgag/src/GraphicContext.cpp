@@ -41,10 +41,15 @@ namespace GAGCore
 GraphicContext::RenderingIdentity GraphicContext::renderingIdentity() const
 {
 	RenderingIdentity identity;
-	identity.backend = portableRenderer ? "sdl" : (optionFlags & USEGPU) ? "opengl" : "software";
+	const auto active = backendStatus.active;
+	// Preserve the legacy report names and identify modern families explicitly.
+	identity.backend = active == RendererBackend::LegacyGL ? "opengl" :
+		active == RendererBackend::PortableSDL ? "sdl" : std::string(rendererBackendName(active));
 #ifdef HAVE_OPENGL
-	if ((optionFlags & USEGPU) && context && eventThread == SDL_GetCurrentThreadID()
-		&& SDL_GL_GetCurrentContext() == context)
+	const auto reportContext = presentationDevice && active == RendererBackend::ProgrammableGL ?
+		programmableGLContext(*presentationDevice) : active == RendererBackend::LegacyGL ? context : nullptr;
+	if (reportContext && eventThread == SDL_GetCurrentThreadID()
+		&& SDL_GL_GetCurrentContext() == reportContext)
 	{
 		const auto copy = [](const GLubyte* value) {
 			if (!value) return std::string{};
