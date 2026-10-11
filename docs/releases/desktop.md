@@ -22,6 +22,19 @@ imports the pinned Apple Developer ID G2 intermediate and adds the isolated
 keychain to the search list; the selected game source still supplies the app and
 its signing checks. The retry uploads only notarized final DMGs and never
 publishes a release. Retain the retry run ID with qualification evidence.
+After both signed Mac artifacts finish in an all-platform run, dispatch
+`macos-downloads-qualification.yml` with its tag and run ID. It checks source-run
+provenance and final artifact digests, verifies notarization, Gatekeeper,
+architecture and minimum OS, and installs the final bytes outside the checkout
+on native Apple Silicon and Intel runners. Both execute the frozen
+`test/fixtures/releases/qualification-river.map.gz` fixture with game seed 713,
+repeat a 600-tick run, save at 300 and resume to 600, then finish a full match and
+create a replay. The comparison job rejects any per-tick divergence. Configure
+`MACOS_DOWNLOAD_TEAM_ID` only in the mirror's Actions variables; qualification
+jobs use no signing or publication credentials. Reports and traces remain CI
+artifacts and include package digests, source SHA and verifier/run identities.
+Interactive tutorial, audio, editor, updates and online play still require
+separate qualification; this workflow does not publish or deploy anything.
 Each channel retains a separate manual workflow for retries; no publication
 workflow runs on ordinary pushes or pull requests.
 Each publication workflow skips every job unless it is manually dispatched
