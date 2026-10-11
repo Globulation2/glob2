@@ -42,6 +42,16 @@ python3 test/run_tests.py --update-fixtures --filter 'WinningConditions/*'
 `ColonySkinPreview` checks shared image preparation with independent appearance
 authorization, refresh, expiry and cancellation across preview owners.
 
+`UnitCatalog` validates developer-authored definitions and migration boundaries.
+`UnitCustomization` exercises combined capabilities, cargo accounting and save
+continuation. Its locked ablation fixture exports `unit-ablations.trace`; native
+and serial/threaded browser evidence must match every row of the committed trace.
+`test/run-browser-determinism.py --engine-binary` retains that evidence alongside
+the stock replay and resource composition traces. Current resource compositions
+use `test/fixtures/resources/seeded-compositions-units.trace`; the earlier
+`seeded-compositions.trace` remains historical evidence. Native and browser
+resource/unit evidence must identify the same clean source revision.
+
 `SkinShapeModel` and `SkinModel` check the GSB1 blend-shape and GSR1 bone-rig
 contracts against the analytic fixtures shared with the Studio decoders
 (`test/fixtures/skins/`). `SkinModelRender` checks native GPU/CPU agreement for
@@ -76,6 +86,9 @@ Actions, into the step summary with a `::error file=,line=` annotation per failu
 `test/test_run_tests.py` covers the runner itself.
 The runner escapes commas and backslashes in selected names and checks that JUnit
 records every selected case; a successful exit with missing tests is an error.
+Sanitizer diagnostics fail the run even when the process exits successfully.
+Failures after a passing doctest report, including leak checks at process exit,
+are also recorded in the merged JUnit results.
 
 Standard runs keep display tests windowed. The HD artwork integration test's
 fullscreen camera-continuity checks and the text raster test's fullscreen

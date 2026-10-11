@@ -168,6 +168,18 @@ template<class T, size_t N> void jsonArray(std::ostream& out, const T (&values)[
 	for(size_t i=0;i<N;++i){if(i)out<<',';jsonArray(out,values[i]);}
 	out << ']';
 }
+template<class T, size_t N> void jsonArray(std::ostream& out, const std::array<T,N>& values)
+{
+    out << '[';
+    for(size_t i=0;i<N;++i){if(i)out<<',';jsonArray(out,values[i]);}
+    out << ']';
+}
+template<class T> void jsonArray(std::ostream& out, const UnitStatistics<T>& values)
+{
+    out << '[';
+    for(size_t i=0;i<values.size();++i){if(i)out<<',';jsonArray(out,values[i]);}
+    out << ']';
+}
 void standardStatistics(std::ostream& out, const TeamStat& stat)
 {
 	out << '{'; bool comma=false;
@@ -355,7 +367,9 @@ struct HeadlessRunner
 			GameHeader header;
 			// Catalog-declared experiment keys belong to the received map even
 			// when this installation has no matching authoring definitions.
-			header.setBuildingCatalogSnapshot(Engine::loadGameHeader(mapFile).getBuildingCatalogSnapshot());
+			const auto mapGameHeader=Engine::loadGameHeader(mapFile);
+            header.setBuildingCatalogSnapshot(mapGameHeader.getBuildingCatalogSnapshot());
+            header.setUnitCatalog(mapGameHeader.getUnitCatalog());
 			const auto players=many(options,"--player");
 			if(players.empty() || players.size()!=size_t(map.getNumberOfTeams()) || players.size()>Team::MAX_COUNT)
 				throw std::invalid_argument("one --player AI is required per map team");

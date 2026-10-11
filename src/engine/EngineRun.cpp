@@ -188,14 +188,15 @@ void Engine::gatherAndAdvanceOrders(bool wasReadyLastTick)
 	if (wasReadyLastTick)
 	{
 		PERF_SCOPE_TIME(Replay);
-		Uint32 checksum = gui.game.checkSum(NULL, NULL, NULL);
+		const bool legacy152 = globalContainer->replayReader && globalContainer->replayReader->formatVersion() <= 152;
+		Uint32 checksum = gui.game.checkSum(NULL, NULL, NULL, false, legacy152);
 		net->advanceStep(checksum);
 
 		if (globalContainer->replayWriter) globalContainer->replayWriter->setCheckSum(checksum);
 
 		if (checksumSidecar)
         {
-			checksumSidecar->writeTick(gui.game.stepCounter, checksum, gui.game);
+			checksumSidecar->writeTick(gui.game.stepCounter, checksum, gui.game,legacy152);
             // Explicit verification only: joins private growth and hashes every
             // resource and pending proposal without slowing routine checksums.
             if (!headlessOutput.empty())

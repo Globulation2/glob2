@@ -51,6 +51,8 @@ export async function applyCatalogValidation(
         set_credits: JSON.stringify(result.map.setCredits ?? []),
         resource_experiments: JSON.stringify(result.map.resourceExperiments ?? []),
         required_resource_experiments: JSON.stringify(result.map.requiredResourceExperiments ?? []),
+        unit_catalog: result.map.unitCatalog ? JSON.stringify(result.map.unitCatalog) : null,
+        required_unit_experiments: JSON.stringify(result.map.requiredUnitExperiments ?? []),
         building_catalog: result.map.buildingCatalog
           ? JSON.stringify(result.map.buildingCatalog)
           : null,

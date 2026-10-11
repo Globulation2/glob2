@@ -19,6 +19,8 @@
 #include "BuildingType.h"
 #include "map/Map.h"
 #include "Ressource.h"
+#include <array>
+#include <vector>
 
 // The frozen header (CortexTypes.h) deliberately carries no heavy engine
 // includes, so its CORTEX_* size constants are hand-mirrored copies of the
@@ -40,10 +42,59 @@ static_assert(Cortex::CORTEX_MAX_BUILDING_WORKERS == MAX_BUILDING_WORKER_REQUEST
 
 namespace Cortex
 {
+    // Calibrate the historical planner's 321 active ticks to the configured
+    // food clock. This retains its default decisions while scaling changed
+    // recipients and their time occupying the building's shared seats.
+    int configuredInnSupport(const AIEngine::AIWorldView& world,const AIEngine::TeamView& team,const BuildingType& type)
+    {
+        constexpr long long precision=65536;
+        long long population=0,hunger=0,service=0;
+        // Historical maps saved different food clocks while the stock planner
+        // always used its empirical 321-tick cycle. Migrated definitions carry
+        // that policy; developer-authored definitions use their actual clock.
+        auto plannerHungerRate=[](const UnitRuntimeTraits& traits) {
+            return traits.has(UnitRuntimeTraits::LegacyPerformancePolicies) ? 425 : traits.hungerRate;
+        };
+        const auto& spec=type.semantics.feeding;
+        for(unsigned id=0;id<world.unitTypeCount();++id) {
+            const auto& traits=world.unitTraits(id);
+            if(traits.hungerRate<=0 || traits.foodCapacity<=0 || !spec.units.matches(id,spec.unitMask)
+                || !type.semantics.admittedUnits.matches(id,type.semantics.admittedUnitMask))continue;
+            const int count=team.statistics.numberUnitPerType[id];
+            if(!count)continue;
+            population+=count;
+            hunger+=static_cast<long long>(count)*(static_cast<long long>(plannerHungerRate(traits))*150000*precision/(static_cast<long long>(traits.foodCapacity)*425));
+            service+=static_cast<long long>(count)*spec.duration*256*precision/traits.feedingSpeedQ8;
+        }
+        if(!population) {
+            const auto& traits=world.unitTraits(WORKER);
+            if(!traits.hungerRate)return 1000000;
+            population=1;
+            hunger=static_cast<long long>(plannerHungerRate(traits))*150000*precision/(static_cast<long long>(traits.foodCapacity)*425);
+            service=static_cast<long long>(spec.duration)*256*precision/traits.feedingSpeedQ8;
+        }
+        if(!hunger)return 1000000;
+        if(!service || type.maxUnitInside<=0)return type.maxUnitInside;
+        const long long active=static_cast<long long>(CORTEX_UNIT_WORK_TICKS_PER_FEED)*precision*precision*population/std::max(1LL,hunger);
+        const long long duration=service/population;
+        const long long ceiling=static_cast<long long>(type.maxUnitInside)*(active+duration)/std::max(1LL,duration);
+        return int(std::clamp(ceiling*CORTEX_INN_CAPACITY_SAFETY_NUM/CORTEX_INN_CAPACITY_SAFETY_DEN,1LL,1000000LL));
+    }
 	void observeBuildings(CortexObservation& obs, const AIEngine::TeamView* team, const AIEngine::AIWorldView* game, const PlanningIntent& intents,
 		int maxBuildLevel, Uint16 offenseFlagGid, bool& warFlagFound,
 		Sint32& warFlagX, Sint32& warFlagY, Sint32& warFlagRange)
 	{
+        // Support depends on the team census and immutable building type, not
+        // the particular inn. Use inline storage for the stock catalog and
+        // resolve each live feeding type at most once during this observation.
+        std::array<int,64> inlineSupport;
+        inlineSupport.fill(-1);
+        std::vector<int> extendedSupport;
+        int* support=inlineSupport.data();
+        if(game->catalog->size()>inlineSupport.size()) {
+            extendedSupport.assign(game->catalog->size(),-1);
+            support=extendedSupport.data();
+        }
 		obs.hasModelProjection = 1;
 		for (int i = 0; i < ::Building::MAX_COUNT; i++)
 		{
@@ -93,9 +144,11 @@ namespace Cortex
 					                                    bt->width, bt->height,
 					                                    CORTEX_WHEAT_MIN_TILES_RADIUS)
 					   >= CORTEX_WHEAT_MIN_TILES;
-				if (innHasWheat)
-					obs.feedCapacity += Cortex::cortexInnUnitSupport(
-						bt->maxUnitInside, bt->semantics.feeding.duration);
+                if (innHasWheat) {
+                    int& capacity=support[b->typeNum];
+                    if(capacity<0) capacity=configuredInnSupport(*game,*team,*bt);
+                    obs.feedCapacity+=capacity;
+                }
 			}
 			if ((roles & (1u << Cortex::CORTEX_BUILD_SWARM))
 			 && b->buildingState == ::Building::ALIVE
@@ -178,7 +231,7 @@ namespace Cortex
 			//      game/entities/BuildingType.h:76,79,80
 			// C++: Building::unitsInside (std::list<Unit*>), building/Building.h:510
 			if ((roles & (1u << Cortex::CORTEX_BUILD_FOOD))
-             && !bt->semantics.production.enabledUnitMask
+             && bt->semantics.production.enabledUnits.empty()
 			 && b->buildingState == ::Building::ALIVE
 			 && !bt->isBuildingSite)  // exclude inn sites / inns under upgrade
 			{

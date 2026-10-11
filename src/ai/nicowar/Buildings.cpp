@@ -36,9 +36,7 @@ void NewNicowar::queue_inns(Runtime& runtime)
 	if (runtime.observation().configuration->isHungerDisabled()) return;
 	//Get some statistics
 	const TeamStat* stat=&runtime.observedTeam().statistics;
-	int total_workers=stat->numberUnitPerType[WORKER];
-	int total_explorers=stat->numberUnitPerType[EXPLORER];
-	int total_warriors=stat->numberUnitPerType[WARRIOR];
+	const int feedingPopulation=AIEngine::ObservationQueries::normalizedFoodPopulation(runtime.observation(),stat->numberUnitPerType);
 
 	//Count the number of inns there are at each level
 	BuildingSearch bs_level1(runtime);
@@ -63,7 +61,7 @@ void NewNicowar::queue_inns(Runtime& runtime)
 		+ number3*strategy.level_3_inn_units_can_feed;
 
 	///(by default), A level 1 Inn can handle 8 units, a level 2 can handle 12 and a level 3 can handle 16
-	if((total_workers+total_explorers+total_warriors)>=score)
+	if(feedingPopulation>=score)
 	{
 		placement_queue.push_back(RegularInn);
 	}
@@ -204,7 +202,7 @@ void NewNicowar::queue_barracks(Runtime& runtime)
 	{
 		demand=strategy.war_preparation_phase_number_of_barracks;
 		///This only kicks in right at the start, so that it doesn't build barracks when it doesn't need to
-		demand = std::min(demand, runtime.observedTeam().statistics.isFree[WARRIOR] / AI_NICOWAR_BARRACKS_FREE_WARRIOR_DIVISOR);
+		demand = std::min(demand, runtime.observedTeam().statistics.idleDefenders / AI_NICOWAR_BARRACKS_FREE_WARRIOR_DIVISOR);
 	}
 
 	if(demand > barracks_count)
@@ -225,7 +223,7 @@ void NewNicowar::queue_hospitals(Runtime& runtime)
 	bs_upgrading.add_condition(new BeingUpgraded);
 
 	const int hospital_count=bs_finished.count_buildings() + bs_upgrading.count_buildings() + buildings_under_construction_per_type[RegularHospital];
-	const int total_warrior = runtime.observedTeam().statistics.numberUnitPerType[WARRIOR];
+	const int total_warrior = runtime.observedTeam().statistics.meleeUnits;
 
 	int demand=0;
 	if(runtime.observedTeam().statistics.needHeal > 0)
@@ -742,7 +740,7 @@ NewNicowar::ProductionDemand NewNicowar::manage_swarm(Runtime& runtime, int id)
 {
 	//Get some statistics
 	const TeamStat* stat=&runtime.observedTeam().statistics;
-	int total_explorers=stat->numberUnitPerType[EXPLORER];
+	int total_explorers=stat->scouts;
 	if(stat->totalUnit == 0)
 		return {};
 	int total_starving_percent = stat->needFoodCritical * 100 / stat->totalUnit;

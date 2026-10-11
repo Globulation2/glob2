@@ -260,9 +260,9 @@ bool AIWarrush::isAnyUnitWithLessThanOneThirdFood()const
 		AITrace::AI3::AIWarrush_isAnyUnitWithLessThanOneThirdFood_result,
 		AITrace::AI3::AIWarrush_isAnyUnitWithLessThanOneThirdFood_true,
 		findUnitIf(*observation, observedTeam,
-				   [](const AIEngine::UnitView *u)
+				   [this](const AIEngine::UnitView *u)
 				   {
-					   return u->hungry < (Unit::HUNGRY_MAX / AI_WARRUSH_HUNGRY_THRESHOLD_DIVISOR);
+					   return u->hungriness>0 && u->hungry < (observation->unitTraits(u->typeNum).foodCapacity / AI_WARRUSH_HUNGRY_THRESHOLD_DIVISOR);
 				   }) != nullptr);
 }
 
@@ -569,7 +569,7 @@ std::shared_ptr<Order> AIWarrush::decide()
 
 	//If we have enough workers, we can switch to dedicated warrushing production.
 	// With training off, a level threshold would leave every swarm in its opening mix forever.
-	if((observation->rules.upgradesDisabled ? observedTeam->statistics.numberUnitPerType[WORKER]
+	if((observation->rules.upgradesDisabled ? observedTeam->statistics.carriers
 		: numberOfUnitsWithSkillGreaterThanValue(HARVEST,0)) >= AI_WARRUSH_HARVESTER_THRESHOLD)
 	{
 		//This is basically a way to change all the swarms without bothering to remember

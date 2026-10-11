@@ -387,6 +387,12 @@ recover the exact CPU result from original seeds; partial GPU results are never
 published. Required transfer failures retain unsafe storage until completion can
 be proved. Saves, reconfiguration and shutdown drain required work.
 
+After games and their executors drain, the application owner joins the process
+coordinator before SDL teardown or process exit handlers run. A driver can
+register exit handlers during asynchronous initialization, so the broker's
+static destructor alone cannot establish that ordering. Test entry points use
+the same barrier; subsequent registrations can restart the coordinator.
+
 The native backend dynamically loads an installed OpenCL driver without an SDK
 or linked runtime dependency. Browser, Android and iOS builds use CPU fallback.
 There is no automatic policy, calibration, live probe or tuning. Diagnostics

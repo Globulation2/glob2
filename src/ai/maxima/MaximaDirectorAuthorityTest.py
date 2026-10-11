@@ -142,7 +142,14 @@ class MaximaDirectorAuthorityTest(unittest.TestCase):
             self.combat, "bool tactical_warrior_available"
         )
         self.assertIn("attached=world.building(warrior->attached)", eligibility)
-        self.assertIn("if(continuingFlag && attached==continuingFlag)", eligibility)
+        self.assertIn(
+            "if(tactical_continuing_member(attached,continuingFlag,offenseFlags))return true;",
+            eligibility,
+        )
+        membership = function(self.combat, "bool tactical_continuing_member")
+        self.assertIn("return attached &&", membership)
+        self.assertIn("continuingFlag && attached==continuingFlag", membership)
+        self.assertIn("offenseFlags && std::find(offenseFlags->begin(),offenseFlags->end(),attached)!=offenseFlags->end()", membership)
 
     def test_preemptive_defense_remains_active_under_pressure(self) -> None:
         update = function(

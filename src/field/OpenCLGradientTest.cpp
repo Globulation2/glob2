@@ -78,7 +78,7 @@ TEST_SUITE("OpenCLGradient")
         setBackend(supported ? Backend::OpenCL : Backend::CPU);
         std::mt19937 random(1729);
         for (const auto dimensions : {std::pair{1, 1}, {1, 32}, {32, 1}, {7, 13}, {32, 64}})
-            for (int swim = 0; swim < 7; ++swim)
+            for (int swim = 0; swim < SWIM_CLASS_COUNT; ++swim)
                 for (int cap : {0, 60, COST_LIMIT})
                 {
                     field::Grid grid(dimensions.first, dimensions.second);
@@ -88,7 +88,10 @@ TEST_SUITE("OpenCLGradient")
                     for (std::size_t i = 0; i < grid.cells(); ++i)
                     {
                         water[i] = random() % 3 == 0;
-                        if (random() % 5 == 0 || (swim == 0 && water[i]))
+                        // Movement eligibility is encoded by seeds, including
+                        // water-only fields whose propagation costs are uniform.
+                        const bool closed = swim == WATER_ONLY_CLASS ? !water[i] : swim == 0 && water[i];
+                        if (random() % 5 == 0 || closed)
                             seeds[i] = 0;
                         else if (random() % 17 == 0)
                             seeds[i] = std::uint16_t(65535 - random() % 1000);
@@ -96,6 +99,7 @@ TEST_SUITE("OpenCLGradient")
                             weightedClass(swim) && water[i] ? entrySteps(WATER_STEP[swim]) : LAND_STEPS;
                     }
                     seeds[0] = 65535;
+                    if (swim == WATER_ONLY_CLASS) water[0] = 1;
                     const auto expected = oracle(seeds, grid, costs, cap);
                     auto actual = seeds;
                     GradientWorkspace scratch;

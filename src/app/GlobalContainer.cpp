@@ -16,6 +16,7 @@
 #include "render/ResourceSprites.h"
 #include "TerrainPresentation.h"
 #include "ResourceRegistry.h"
+#include "UnitCatalog.h"
 #include "render/terrain/TerrainCatalogIO.h"
 #include "render/terrain/TerrainCompositor.h"
 #include "ui/ThemeCatalog.h"
@@ -31,6 +32,7 @@
 #include "ReplayReader.h"
 #include "ReplayWriter.h"
 #include "ScrollTuning.h"
+#include "field/GradientDeviceService.h"
 
 #include <ApplicationHost.h>
 
@@ -68,6 +70,8 @@ GlobalContainer::GlobalContainer(const char *profileName, const std::string& bui
 	for (const auto& definition : buildingsTypes.experiments())
 		buildingExperiments.push_back({definition.key, definition.label, definition.help});
 	for (const auto& definition : ResourceRegistry::availableDefaults()->experiments())
+		buildingExperiments.push_back(definition);
+	for (const auto& definition : UnitCatalog::availableDefaults()->experiments())
 		buildingExperiments.push_back(definition);
 	registerCatalogExperiments(buildingExperiments);
 
@@ -117,6 +121,10 @@ GlobalContainer::GlobalContainer(const char *profileName, const std::string& bui
 
 GlobalContainer::~GlobalContainer(void)
 {
+	// Games have already drained their executors. Native drivers may register
+	// process exit handlers during background initialization, after the broker's
+	// static destructor; join here before those handlers or SDL teardown run.
+	gradient_kernel::shutdownGradientDeviceCoordinator();
 	GAGCore::Recording::recorder().shutdown();
 	// Commands and interrupted loading can finish before a heap-owned style exists.
 	if (!runNoX && Style::style != &defaultStyle)

@@ -216,9 +216,9 @@ void Map::adjustTerrainFeatures(std::uint16_t ruleIndex, bool add)
 {
 	const auto &rule = cellRuleData[ruleIndex];
 	const auto &p = rule.properties;
-	const unsigned edge = rule.ground[p.swimmable ? SWIM_CLASS_COUNT - 1 : 0].diagonal;
-	for (unsigned sw = 0; sw < 7; ++sw)
-		if (p.walkable || (sw && p.swimmable))
+	const unsigned edge = rule.ground[p.swimmable ? LEGACY_SWIM_CLASS_COUNT - 1 : 0].diagonal;
+	for (unsigned sw = 0; sw < SWIM_CLASS_COUNT; ++sw)
+		if (gradient_kernel::terrainAllowsGround(p, sw))
 		{
 			auto &count = terrainGroundCostCounts[sw][rule.ground[sw].cardinal];
 			if (add)
@@ -267,7 +267,7 @@ void Map::updateTerrainSummary()
 	terrainBucketCount = terrainFeatures[5] ? 256 : terrainFeatures[4] ? 128 : 64;
 	terrainMinimumGround = gradient_kernel::MINIMUM_TERRAIN_ENTRY_COSTS;
 	terrainMinimumAir = GRADIENT_STEP;
-	for (unsigned sw = 0; sw < 7; ++sw)
+	for (unsigned sw = 0; sw < SWIM_CLASS_COUNT; ++sw)
 		for (unsigned cost = 1; cost < terrainMinimumGround[sw]; ++cost)
 			if (terrainGroundCostCounts[sw][cost])
 			{

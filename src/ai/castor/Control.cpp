@@ -33,15 +33,21 @@ std::shared_ptr<Order>AICastor::controlSwarms()
 	telemetry.count(AITrace::AI2::AICastor_controlSwarms_calls);
 	Sint32 warriorGoal=observation->rules.peaceful ? 0 : warLevel;
 	
-	int unitSum[NB_UNIT_TYPE];
+	int unitSumAll=0;
+    std::array<int,UnitCatalog::Capacity> feedingCounts{};
+    int unitSum[NB_UNIT_TYPE];
 	for (int i=0; i<NB_UNIT_TYPE; i++)
 		unitSum[i]=0;
 	const auto myUnits=observation->unitSlots(observedTeam->number);
 	for (int i=0; i<Unit::MAX_COUNT; i++)
 	{
 		const AIEngine::UnitView *u=myUnits[i];
-		if (u)
-			unitSum[u->typeNum]++;
+		if (u) {
+            ++unitSumAll;++feedingCounts[u->typeNum];
+            unitSum[WORKER]+=AIEngine::ObservationQueries::matchesStrategyUnitRole(*observation,*u,WORKER);
+            unitSum[EXPLORER]+=AIEngine::ObservationQueries::matchesStrategyUnitRole(*observation,*u,EXPLORER);
+            unitSum[WARRIOR]+=AIEngine::ObservationQueries::matchesStrategyUnitRole(*observation,*u,WARRIOR);
+        }
 	}
 	int foodSum=0;
 	const auto myBuildings=observation->buildingSlots(observedTeam->number);
@@ -52,16 +58,17 @@ std::shared_ptr<Order>AICastor::controlSwarms()
 			foodSum+=queries->kind(*b).resolvedType.maxUnitInside;
 	}
 	
-	int unitSumAll=unitSum[0]+unitSum[1]+unitSum[2];
 
-	foodWarning=((unitSumAll+AI_CASTOR_FOODWARN_OFFSET)>=(foodSum<<1));
-	foodLock=((unitSumAll+AI_CASTOR_FOODLOCK_OFFSET)>=(foodSum<<1));
+
+	const int feedingPopulation=AIEngine::ObservationQueries::normalizedFoodPopulation(*observation,feedingCounts);
+	foodWarning=((feedingPopulation+AI_CASTOR_FOODWARN_OFFSET)>=(foodSum<<1));
+	foodLock=((feedingPopulation+AI_CASTOR_FOODLOCK_OFFSET)>=(foodSum<<1));
 	// No hunger removes feeding pressure, but swarms still need wheat to produce.
 	if (observation->rules.hungerDisabled)
 	{ foodLock=false; foodWarning=false; }
 	foodLockStats[foodLock]++;
 
-	foodSurplus=observation->rules.hungerDisabled || (unitSumAll+AI_CASTOR_FOODSURPLUS_OFFSET<foodSum);
+	foodSurplus=observation->rules.hungerDisabled || (feedingPopulation+AI_CASTOR_FOODSURPLUS_OFFSET<foodSum);
 
 	starvingWarning=(((unitSumAll>>AI_CASTOR_STARVING_RATIO_SHIFT)+AI_CASTOR_STARVING_OFFSET)<observedTeam->starving);
 	if (observation->rules.hungerDisabled) starvingWarning=false;
@@ -70,9 +77,9 @@ std::shared_ptr<Order>AICastor::controlSwarms()
 	bool realFoodLock;
 
 	if (warriorGoal>1)
-		realFoodLock=((unitSumAll)>=(foodSum*AI_CASTOR_REAL_FOODLOCK_MULT_WAR));
+		realFoodLock=((feedingPopulation)>=(foodSum*AI_CASTOR_REAL_FOODLOCK_MULT_WAR));
 	else
-		realFoodLock=((unitSumAll)>=(foodSum*AI_CASTOR_REAL_FOODLOCK_MULT_PEACE));
+		realFoodLock=((feedingPopulation)>=(foodSum*AI_CASTOR_REAL_FOODLOCK_MULT_PEACE));
 
 	if (!observation->rules.hungerDisabled && (timer>AI_CASTOR_FOODLOCK_GRACE_TICKS) && (realFoodLock || starvingWarning || starvingWarningStats[1]>starvingWarningStats[0]))
 	{
@@ -329,7 +336,7 @@ std::shared_ptr<Order>AICastor::controlUpgrades()
 	if (requestedWorkers(*b)<1 && queries->kind(*b).resolvedType.semantics.assignmentLimit>0)
 		return telemetry.returnedOrder(AITrace::AI2::AICastor_controlUpgrades_result,
 									   requestWorkers(*b, 1));
-	int numberOfFreeWorkers = observedTeam->statistics.isFree[WORKER];
+	int numberOfFreeWorkers = observedTeam->statistics.idleCarriers;
 	const int transition=repairing ? queries->kind(*b).resolvedType.prevLevel : queries->kind(*b).resolvedType.nextLevel;
 	const int qualification=transition>=0 ? (&queries->kind(transition).resolvedType)->semantics.requiredWorkerLevel
 		: queries->kind(*b).resolvedType.semantics.requiredWorkerLevel;
@@ -435,7 +442,7 @@ std::shared_ptr<Order>AICastor::controlStrikes()
 		return telemetry.returnedOrder(AITrace::AI2::AICastor_controlStrikes_result,
 									   shared_ptr<Order>());
 
-	int warriors=observedTeam->statistics.numberUnitPerType[WARRIOR];
+	int warriors=observedTeam->statistics.meleeUnits;
 	int warFlagsGoal=(warriors+AI_CASTOR_WARFLAG_FORMULA_BIAS)/AI_CASTOR_WARRIORS_PER_WARFLAG;
 	int warFlagsReal=buildingSum[AICastor::AttractWarriors][0];
 

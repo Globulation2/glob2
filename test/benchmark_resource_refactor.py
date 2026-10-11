@@ -45,7 +45,7 @@ METRIC_DESCRIPTIONS = {
     'save_cpu_s': 'CPU around the requested final save; near zero when no final save is requested.',
     'cpu_s': 'Whole child-process user plus system CPU from wait4, including all threads, startup and teardown.',
     'wall_s': 'Whole child-process wall time from launch through wait4 completion.',
-    'peak_rss_bytes': 'Whole child-process peak resident memory; includes setup and does not isolate resource/cache allocations.',
+    'peak_rss_bytes': 'Whole child-process peak resident memory; includes setup and does not isolate resource/cache allocations. Linux results at the inherited runner high-water mark are rejected as censored.',
 }
 RUNNER_INPUTS = (Path(__file__).resolve(), Path(benchmark_parallel_compute.__file__).resolve())
 CATALOG_SUFFIXES = {'.json', '.txt', '.js', '.sgsl'}

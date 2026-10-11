@@ -11,6 +11,11 @@ namespace gradient_kernel
 class GradientDeviceService;
 struct GradientDeviceState;
 bool gradientDiagnosticsRequested() noexcept;
+// Application/test owner barrier after games and their executor work drain.
+// Join driver initialization before driver exit handlers can tear it down.
+// Later registrations may start a fresh coordinator; setup and shutdown must
+// remain serialized on the owner thread.
+void shutdownGradientDeviceCoordinator() noexcept;
 enum class GradientFallbackReason : unsigned {
     None,Unavailable,InvalidRequest,StaleGeneration,Duplicate,MemoryBudget,
     BackendDecline,DriverFailure,Shutdown,Cancellation,Count

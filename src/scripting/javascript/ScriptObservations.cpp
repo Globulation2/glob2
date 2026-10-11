@@ -79,7 +79,7 @@ Value Observations::ref(const AIEngine::BuildingView *b) const
 		return {};
 	return Value::object().set("id", unsigned(b->identity.gid)).set("generation", b->identity.generation);
 }
-Value Observations::unit(const AIEngine::UnitView &u) const
+Value Observations::unit(const AIEngine::UnitView &u, bool extended) const
 {
 	if (!visible(world(), team, u) || u.isDead)
 		return {};
@@ -92,6 +92,8 @@ Value Observations::unit(const AIEngine::UnitView &u) const
 		.set("maxHp", u.performance[HP])
 		.set("levels", numbers(u.level, NB_ABILITY))
 		.set("performance", numbers(u.performance, NB_ABILITY));
+    if (extended) v.set("typeKey",world().unitCatalog().definition(u.typeNum).key)
+        .set("capabilities",u.capabilityFlags).set("foodCapacity",u.configuredFoodCapacity);
 	if (team < 0 || u.team == team)
 	{
 		v.set("experience", u.experience)
@@ -111,6 +113,17 @@ Value Observations::unit(const AIEngine::UnitView &u) const
 			.set("destinationPurpose", u.destinationPurpose)
 			.set("targetX", u.targetX)
 			.set("targetY", u.targetY);
+        if (extended) {
+        Value cargo = Value::array();
+        auto packet=[&](int material, Uint64 numerator, Uint64 denominator) {
+            cargo.items.push_back(Value::object().set("material", material)
+                .set("numerator", std::to_string(numerator)).set("denominator", std::to_string(denominator)));
+        };
+        if (u.carriedMaterial>=0 && !u.widePrimaryCargo) packet(u.carriedMaterial,u.carriedPacket.numerator,u.carriedPacket.denominator);
+        if (const auto* extra=world().extraCargo(u)) for (const auto& entry:*extra)
+            packet(entry.material,entry.packet.numerator,entry.packet.denominator);
+        v.set("cargo",std::move(cargo)).set("assignedPurpose",int(u.jobPurpose));
+        }
 		v.set("attachedBuilding", world().building(u.attached) && visible(world(), team, *world().building(u.attached))
 									  ? ref(world().building(u.attached))
 									  : Value());
@@ -414,6 +427,27 @@ Value Observations::query(const std::string &name, const std::vector<Value> &arg
 		}
 		return terrainDefinitions;
 	}
+    if (name == "unitTypes")
+    {
+        Value result=Value::array();
+        const Value options=args.empty()?Value::object():args[0];
+        const auto count=world().unitTypeCount();
+        const unsigned offset=options.get("offset").kind==Value::Null?0:options.integer("offset",0,int(count));
+        const unsigned limit=options.get("limit").kind==Value::Null?count:options.integer("limit",1,int(count));
+        for (unsigned id=offset;id<count && id<offset+limit;++id) {
+            const auto& definition=world().unitCatalog().definition(id);
+            if (!definition.requiredExperiment.empty() && !world().configuration->getExperiments().has(definition.requiredExperiment)) continue;
+            charge(4*NB_ABILITY+MaterialSlotCount,definition.key.size()+definition.name.size());
+            Value levels=Value::array();
+            for (const auto& level:definition.levels) levels.items.push_back(numbers(level.performance,NB_ABILITY));
+            result.items.push_back(Value::object().set("id",id).set("key",definition.key).set("name",definition.name)
+                .set("capabilities",definition.runtime.flags).set("foodCapacity",definition.runtime.foodCapacity)
+                .set("hungerRate",definition.runtime.hungerRate).set("cargoCapacity",definition.runtime.cargoCapacity)
+                .set("cargoKinds",definition.runtime.cargoKinds).set("productionCost",numbers(definition.cost.data(),MaterialSlotCount))
+                .set("performanceLevels",std::move(levels)));
+        }
+        return result;
+    }
 	if (name == "buildingTypes")
 	{
 		Value a = Value::array();
@@ -556,27 +590,35 @@ Value Observations::query(const std::string &name, const std::vector<Value> &arg
 				}
 		return a;
 	}
-	if (name == "unit" || name == "building")
+	if (name == "unit" || name == "unitBehavior" || name == "building")
 	{
 		if (args.size() != 1)
 			throw std::runtime_error("Entity lookup needs a reference");
 		int id = args[0].integer("id", 0, 65535);
-		if (id >= (name == "unit" ? Unit::MAX_COUNT : Building::MAX_COUNT) * Team::MAX_COUNT)
+		if (id >= (name != "building" ? Unit::MAX_COUNT : Building::MAX_COUNT) * Team::MAX_COUNT)
 			return {};
-		int owner = name == "unit" ? Unit::GIDtoTeam(id) : Building::GIDtoTeam(id);
+		int owner = name != "building" ? Unit::GIDtoTeam(id) : Building::GIDtoTeam(id);
 		if (owner >= int(world().teams.size()))
 			return {};
 		const Value &generation = args[0].get("generation");
 		if (generation.kind != Value::Number)
 			return {};
-		if (name == "unit")
+		if (name != "building")
 		{
 			auto *u = world().unitAtSlot(id);
 			if (u && !u->isDead && visible(world(), team, *u) &&
 				generation.number == ref(u).get("generation").number)
 			{
 				charge(160);
-				return unit(*u);
+				if (name == "unitBehavior") {
+					charge(8, world().unitCatalog().definition(u->typeNum).key.size());
+					if (team < 0 || u->team == team) {
+						std::size_t packets = u->carriedMaterial >= 0 && !u->widePrimaryCargo ? 1 : 0;
+						if (const auto* extra = world().extraCargo(*u)) packets += extra->size();
+						charge(packets * 8, packets * 64);
+					}
+				}
+				return unit(*u,name=="unitBehavior");
 			}
 		}
 		else

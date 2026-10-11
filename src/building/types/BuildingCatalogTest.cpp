@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Glob2Test.h"
 #include "BuildingType.h"
+#include "BuildingUnitInteractionPool.h"
 #include "BuildingLibrary.h"
 #include "BuildingLibraryScreen.h"
 #include "OnlineServices.h"
@@ -10,6 +11,7 @@
 #include "SimVersion.h"
 #include "GameHeader.h"
 #include "Version.h"
+#include "UnitCatalog.h"
 #include <BinaryStream.h>
 #include <TextStream.h>
 #include <StreamBackend.h>
@@ -25,13 +27,19 @@
 
 TEST_SUITE("BuildingCatalog")
 {
-TEST_CASE("shipped JSON preserves all 55 frozen variants and exact canonical stock snapshot")
+TEST_CASE("shipped JSON preserves frozen variants while production inherits unit costs")
 {
+    glob2test::HeadlessGlobals globals;
     BuildingsTypes legacy, installed;
     legacy.initLegacy(); installed.loadManifest((glob2test::sourceRoot() / "data/buildings/manifest.json").string());
     REQUIRE(legacy.size() == 55);
-    CHECK(installed.snapshotJson() == legacy.snapshotJson());
-    CHECK(installed.fingerprint() == legacy.fingerprint());
+    installed.configureUnits(*UnitCatalog::builtins());
+    auto expected=nlohmann::json::parse(legacy.snapshotJson());
+    auto actual=nlohmann::json::parse(installed.snapshotJson());
+    // Authoring now delegates stock producer costs to the unit catalog.
+    for(auto& variant:expected["variants"])
+        for(auto& recipe:variant["semantics"]["production"]["recipes"].items())recipe.value().erase("cost");
+    CHECK(actual==expected);
     for (std::size_t id=0; id<installed.size(); ++id)
     {
         const auto* terminal=installed.getLastLevel(id);
@@ -391,7 +399,7 @@ TEST_CASE("compiled runtime rows are dense aligned value copies and refresh gate
         CHECK(hot.width==authored.width); CHECK(hot.height==authored.height);
         CHECK(hot.assignmentLimit==authored.semantics.assignmentLimit);
         CHECK(hot.productionEnabledMask==authored.semantics.production.enabledUnitMask);
-        CHECK(hot.projectileDamage==authored.semantics.projectileDamage);
+        for (unsigned unit=0;unit<NB_UNIT_TYPE;++unit) CHECK(hot.damage(unit)==authored.semantics.projectileDamage[unit]);
     }
 }
 
@@ -412,7 +420,7 @@ TEST_CASE("compact runtime traits preserve validated numeric boundaries")
     CHECK(hot.shootingRange==1024); CHECK(hot.shootRhythm==65535); CHECK(hot.shootSpeed==65535);
     CHECK(hot.width==64); CHECK(hot.height==64); CHECK(hot.decLeft==-64); CHECK(hot.decTop==64);
     CHECK(hot.assignmentLimit==1024); CHECK(hot.requiredWorkerLevel==3);
-    CHECK(hot.projectileDamage[WARRIOR]==1000000);
+    CHECK(hot.damage(WARRIOR)==1000000);
     properties["shootingRange"]=0; properties["shootRhythm"]=1000000;
     catalog.loadSnapshotJson(json.dump()); CHECK(catalog.getRuntime(3)->shootRhythm==0);
 }
@@ -548,6 +556,7 @@ std::string artworkFixture(const nlohmann::json& sprites,const std::map<std::str
 }
 TEST_SUITE("BuildingArtwork") {
 TEST_CASE("portable bundle verifies image bytes and catalog frame references") {
+    glob2test::HeadlessGlobals globals;
     const unsigned char webp[]={82,73,70,70,58,0,0,0,87,69,66,80,86,80,56,76,45,0,0,0,47,1,64,0,16,31,32,32,33,238,240,127,159,220,16,18,144,41,81,245,144,144,128,88,66,247,127,138,67,2,1,66,58,229,98,156,66,169,23,23,104,136,232,127,4,0};
     const std::string image(reinterpret_cast<const char*>(webp),sizeof(webp));
     const auto hash=Online::Sha256::hex(image);
@@ -556,7 +565,10 @@ TEST_CASE("portable bundle verifies image bytes and catalog frame references") {
         {"imageHash",hash},{"width",2},{"height",2}
     }})}});
     package["variants"][0]["properties"]["gameSprite"]="package:kitchen";
-    BuildingsTypes catalog; catalog.initLegacy();catalog.composePackages({package.dump()});
+    // The release is authored against the same installed base that the
+    // library verifies, including inherited unit production costs.
+    BuildingsTypes catalog=globalContainer->buildingsTypes;
+    catalog.composePackages({package.dump()});
 	CHECK_THROWS(BuildingArtwork::decode({}, catalog));
 	const auto bytes = artworkFixture(package["sprites"], {{hash, image}});
 	const auto artwork = BuildingArtwork::decode(bytes, catalog);
@@ -586,13 +598,12 @@ TEST_CASE("portable bundle verifies image bytes and catalog frame references") {
 			}
 			backend.seekFromStart(0);
 			GameHeader restored;
+			auto inputBackend=std::make_unique<GAGCore::MemoryStreamBackend>(backend);
 			std::unique_ptr<GAGCore::InputStream> stream;
 			if (text)
-				stream = std::make_unique<GAGCore::TextInputStream>(
-					new GAGCore::MemoryStreamBackend(backend));
+				stream = std::make_unique<GAGCore::TextInputStream>(inputBackend.get());
 			else
-				stream = std::make_unique<GAGCore::BinaryInputStream>(
-					new GAGCore::MemoryStreamBackend(backend));
+				stream = std::make_unique<GAGCore::BinaryInputStream>(inputBackend.release());
 			REQUIRE((withoutPlayerInfo ? restored.loadWithoutPlayerInfo(stream.get(), VERSION_MINOR)
 									   : restored.load(stream.get(), VERSION_MINOR)));
 			REQUIRE(restored.getBuildingArtwork());
@@ -605,7 +616,6 @@ TEST_CASE("portable bundle verifies image bytes and catalog frame references") {
 	CHECK_FALSE(retained.getBuildingArtwork());
 	CHECK_THROWS(header.setBuildingArtwork({}));
 	{
-		glob2test::HeadlessGlobals globals;
 		Online::MemoryStorage storage;
 		BuildingLibrary library(storage);
 		const auto releaseHash = Online::Sha256::hex("artwork-release");
@@ -649,13 +659,12 @@ TEST_CASE("portable bundle verifies image bytes and catalog frame references") {
 			world.game.save(output.get(), false, "Portable kitchen");
 			output->flush();
 			saved->seekFromStart(0);
+			auto inputBackend=std::make_unique<GAGCore::MemoryStreamBackend>(*saved);
 			std::unique_ptr<GAGCore::InputStream> input;
 			if (text)
-				input = std::make_unique<GAGCore::TextInputStream>(
-					new GAGCore::MemoryStreamBackend(*saved));
+				input = std::make_unique<GAGCore::TextInputStream>(inputBackend.get());
 			else
-				input = std::make_unique<GAGCore::BinaryInputStream>(
-					new GAGCore::MemoryStreamBackend(*saved));
+				input = std::make_unique<GAGCore::BinaryInputStream>(inputBackend.release());
 			Game loaded(nullptr);
 			REQUIRE(loaded.load(input.get()));
 			REQUIRE(loaded.gameHeader.getBuildingArtwork());
@@ -931,4 +940,173 @@ TEST_SUITE("BuildingLibrary")
 		CHECK(library.compose(stock).catalog.fingerprint() == second.fingerprint());
 		CHECK(storage.persisted >= 6);
 	}
+}
+TEST_SUITE("BuildingCatalog")
+{
+TEST_CASE("configured unit costs inherit only when a producer omits its override")
+{
+    const auto units=UnitCatalog::fromJson(R"({"schemaVersion":1,"units":[{"key":"worker","cost":{"food":7}}]})");
+    BuildingsTypes catalog;catalog.loadManifest((glob2test::sourceRoot()/"data/buildings/manifest.json").string());
+    // Unequal late-choice recipes cannot decide their cost at completion.
+    CHECK_THROWS(catalog.configureUnits(*units));
+    auto snapshot=nlohmann::json::parse(catalog.snapshotJson());
+    for(auto& variant:snapshot["variants"]) {
+        auto& production=variant["semantics"]["production"];
+        if(production["recipes"].empty())continue;
+        production["scheduling"]="weighted_committed_job";
+        production["recipes"]["explorer"]["cost"]=nlohmann::json::object();
+        production["recipes"]["warrior"]["cost"]={{"food",9}};
+    }
+    catalog.loadSnapshotJson(snapshot.dump());catalog.configureUnits(*units);
+    const auto& recipes=catalog.get(catalog.getFinishedTypeNum("swarm"))->semantics.production.recipes;
+    CHECK(recipes[WORKER].cost[materialIndex(MaterialId::Food)]==7);
+    CHECK(recipes[EXPLORER].cost[materialIndex(MaterialId::Food)]==0);
+    CHECK(recipes[WARRIOR].cost[materialIndex(MaterialId::Food)]==9);
+}
+TEST_CASE("late choice resolves mixed inherited and explicit equal costs before validating equality")
+{
+    const auto units=UnitCatalog::fromJson(R"({"schemaVersion":1,"units":[{"key":"worker","cost":{"food":7}},{"key":"explorer","cost":{"food":7}},{"key":"warrior","cost":{"food":7}}]})");
+    BuildingsTypes source; source.loadManifest((glob2test::sourceRoot()/"data/buildings/manifest.json").string());
+    auto snapshot=nlohmann::json::parse(source.snapshotJson());
+    for(auto& variant:snapshot["variants"]) {
+        auto& production=variant["semantics"]["production"];
+        if(production["recipes"].empty())continue;
+        production["scheduling"]="weighted_late_choice";
+        production["recipes"]["worker"].erase("cost");
+        production["recipes"]["explorer"]["cost"]={{"food",7}};
+        production["recipes"]["warrior"].erase("cost");
+    }
+    BuildingsTypes equal; REQUIRE_NOTHROW(equal.loadSnapshotJson(snapshot.dump()));
+    REQUIRE_NOTHROW(equal.configureUnits(*units));
+    const auto& recipes=equal.get(equal.getFinishedTypeNum("swarm"))->semantics.production.recipes;
+    CHECK_FALSE(recipes[WORKER].costExplicit); CHECK(recipes[EXPLORER].costExplicit); CHECK_FALSE(recipes[WARRIOR].costExplicit);
+    for (unsigned type=0;type<BuiltinUnitCount;++type) CHECK(recipes[type].cost[materialIndex(MaterialId::Food)]==7);
+    BuildingsTypes resumed; REQUIRE_NOTHROW(resumed.loadSnapshotJson(equal.snapshotJson())); REQUIRE_NOTHROW(resumed.configureUnits(*units));
+    CHECK(resumed.get(resumed.getFinishedTypeNum("swarm"))->semantics.production.recipes[WORKER].cost==recipes[WORKER].cost);
+    for(auto& variant:snapshot["variants"]) {
+        auto& recipes=variant["semantics"]["production"]["recipes"];
+        if(!recipes.empty())recipes["explorer"]["cost"]={{"food",8}};
+    }
+    BuildingsTypes unequal; REQUIRE_NOTHROW(unequal.loadSnapshotJson(snapshot.dump()));
+    CHECK_THROWS(unequal.configureUnits(*units));
+    // Unequal explicit recipes can be rejected without consulting unit costs.
+    for(auto& variant:snapshot["variants"]) {
+        auto& recipes=variant["semantics"]["production"]["recipes"];
+        if(!recipes.empty())recipes["warrior"]["cost"]={{"food",9}};
+    }
+    CHECK_THROWS(unequal.loadSnapshotJson(snapshot.dump()));
+}
+
+TEST_CASE("additional recipients compile stable keys into direct building interactions")
+{
+    auto units=UnitCatalog::fromJson(R"({"schemaVersion":1,"units":[{"key":"fixture:hauler","extends":"worker","behaviors":{"melee":true}}]})");
+    BuildingsTypes catalog;catalog.initLegacy();
+    auto definition=nlohmann::json::parse(catalog.snapshotJson());
+    auto& semantic=definition["variants"][3]["semantics"];
+    semantic["admittedUnits"]={"fixture:hauler"};
+    semantic["feeding"]["units"]={"fixture:hauler"};
+    catalog.loadSnapshotJson(definition.dump());catalog.configureUnits(*units);
+    CHECK(catalog.get(3)->semantics.admittedUnits.resolved.size()==units->size());
+    CHECK(catalog.get(3)->semantics.feeding.units.resolved.size()==units->size());
+    for (std::size_t id=0;id<catalog.size();++id) {
+        const auto& s=catalog.get(id)->semantics;
+        const auto checkDefault=[&](const BuildingUnitSelection& selection,unsigned mask) {
+            if (selection.specified) return;
+            CHECK(selection.resolved.empty());
+            for (unsigned unit=0;unit<units->size();++unit)
+                CHECK(selection.matches(unit,mask)==(mask==BUILDING_ALL_UNIT_TYPES ||
+                    (unit<BuiltinUnitCount && (mask&(1u<<unit)))));
+        };
+        checkDefault(s.admittedUnits,s.admittedUnitMask);
+        checkDefault(s.feeding.units,s.feeding.unitMask);
+        checkDefault(s.healing.units,s.healing.unitMask);
+        for (const auto& training:s.training) checkDefault(training.units,training.unitMask);
+        for (const auto& attraction:s.attractionUnits) CHECK(attraction.resolved.size()==units->size());
+    }
+    const auto* runtime=catalog.getRuntime(3);
+    CHECK(runtime->unitCount==4);
+    CHECK_FALSE(runtime->interaction(WORKER).has(BuildingUnitInteraction::Feeds));
+    CHECK(runtime->interaction(*units->find("fixture:hauler")).has(BuildingUnitInteraction::Feeds));
+    CHECK_FALSE(runtime->interaction(1023).has(BuildingUnitInteraction::Feeds));
+    auto copy=catalog;
+    CHECK(copy.getRuntime(3)->interactions!=runtime->interactions);
+    CHECK(copy.getRuntime(3)->interaction(3).has(BuildingUnitInteraction::Feeds));
+    const auto canonical=catalog.snapshotJson();
+    catalog.configureUnits(*units);
+    CHECK(catalog.snapshotJson()==canonical);
+    CHECK(catalog.getRuntime(3)->interaction(3).has(BuildingUnitInteraction::Feeds));
+}
+
+TEST_CASE("uniform projectile policies cover additional units and keyed overrides remain authoritative")
+{
+    auto units=UnitCatalog::fromJson(R"({"schemaVersion":1,"units":[{"key":"fixture:target","extends":"worker"},{"key":"fixture:unlisted-target","extends":"warrior"}]})");
+    BuildingsTypes catalog; catalog.initLegacy(); catalog.configureUnits(*units);
+    const auto tower=catalog.getFinishedTypeNum("defencetower");
+    CHECK(catalog.getRuntime(tower)->damage(3)==catalog.getRuntime(tower)->damage(WORKER));
+    auto definitions=nlohmann::json::parse(catalog.snapshotJson());
+    auto& damage=definitions["variants"][tower]["semantics"]["projectileDamage"];
+    damage={{"worker",30},{"explorer",30},{"warrior",30},{"fixture:target",17}};
+    catalog.loadSnapshotJson(definitions.dump()); catalog.configureUnits(*units);
+    CHECK(catalog.getRuntime(tower)->damage(3)==17);
+    CHECK(catalog.getRuntime(tower)->damage(4)==30);
+    BuildingsTypes restored; restored.loadSnapshotJson(catalog.snapshotJson()); restored.configureUnits(*units);
+    CHECK(restored.getRuntime(tower)->damage(3)==17);
+    CHECK(restored.getRuntime(tower)->damage(4)==30);
+    damage=nlohmann::json::array({11,12,13});
+    catalog.loadSnapshotJson(definitions.dump()); catalog.configureUnits(*units);
+    CHECK(catalog.getRuntime(tower)->damage(3)==0);
+    CHECK(catalog.getRuntime(tower)->damage(4)==0);
+}
+
+TEST_CASE("building interaction recruitment bytes remain distinct when semantic roles match")
+{
+    CHECK(sizeof(BuildingUnitInteraction)==12);
+    CHECK(sizeof(BuildingRuntimeTraits)==64);
+    std::vector<BuildingUnitInteraction> row(3);
+    row[WORKER].flags=BuildingUnitInteraction::Clear;
+    row[WORKER].recruitmentMask=1;
+    BuildingUnitInteractionPool pool;
+    const auto accepting=pool.intern(row);
+    row[WORKER].recruitmentMask=0;
+    const auto refusing=pool.intern(row);
+    CHECK(accepting!=refusing); CHECK(pool.intern(row)==refusing);
+    const auto rows=pool.release();
+    CHECK(rows[accepting+WORKER].flags==rows[refusing+WORKER].flags);
+    CHECK(rows[accepting+WORKER].recruits(0)); CHECK_FALSE(rows[refusing+WORKER].recruits(0));
+
+    const auto units=UnitCatalog::fromJson(R"({"schemaVersion":1,"units":[{"key":"worker","behaviors":{"recruitClear":false}}]})");
+    BuildingsTypes catalog; catalog.initLegacy(); catalog.configureUnits(*units);
+    const auto flag=catalog.getFinishedTypeNum("clearingflag");
+    CHECK(catalog.getRuntime(flag)->attractsRole(0));
+    CHECK(catalog.getRuntime(flag)->interaction(WORKER).has(BuildingUnitInteraction::Clear));
+    CHECK_FALSE(catalog.getRuntime(flag)->interaction(WORKER).recruits(0));
+    const auto copy=catalog;
+    CHECK(copy.getRuntime(flag)->interactions!=catalog.getRuntime(flag)->interactions);
+    CHECK(copy.getRuntime(flag)->attractsRole(0));
+    CHECK_FALSE(copy.getRuntime(flag)->interaction(WORKER).recruits(0));
+    BuildingsTypes restored; restored.loadSnapshotJson(catalog.snapshotJson());
+    restored.configureUnits(*UnitCatalog::deserialize(units->serialize()));
+    CHECK(restored.getRuntime(flag)->attractsRole(0));
+    CHECK_FALSE(restored.getRuntime(flag)->interaction(WORKER).recruits(0));
+}
+
+TEST_CASE("building interaction interning shares identical rows and bounds unique storage")
+{
+    std::vector<BuildingUnitInteraction> row(4);
+    row[3].flags=BuildingUnitInteraction::Feeds;
+    BuildingUnitInteractionPool pool(2*row.size()*sizeof(BuildingUnitInteraction));
+    const auto first=pool.intern(row);
+    CHECK(pool.intern(row)==first);
+    row[3].trainingMask=1u<<ATTACK_SPEED;
+    const auto second=pool.intern(row);
+    CHECK(second!=first);
+    CHECK(pool.intern(row)==second);
+    row[3].projectileDamage=19;
+    CHECK_THROWS(pool.intern(row));
+    CHECK(pool.release().size()==8);
+    BuildingsTypes stock;stock.initLegacy();
+    CHECK(stock.getRuntime(stock.getTypeNum("inn",0,false))->interactions==stock.getRuntime(stock.getTypeNum("inn",1,false))->interactions);
+
+}
+
 }

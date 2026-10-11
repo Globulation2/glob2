@@ -1,198 +1,90 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
-
-#include <assert.h>
-
-#include <Stream.h>
-
 #include "Race.h"
-#include "UnitTiming.h"
-#include "map/TerrainProperties.h"
-
-UnitType Race::unitTypes[NB_UNIT_TYPE][NB_UNIT_LEVELS];
-Sint32 Race::hungriness;
-
-namespace
+#include "FileFormatVersions.h"
+#include <Stream.h>
+#include <cassert>
+#include <stdexcept>
+Race::Race() { setCatalog(UnitCatalog::availableDefaults()); }
+Race::~Race() = default;
+void Race::loadDefault() { (void)UnitCatalog::availableDefaults(); }
+void Race::load() { setCatalog(UnitCatalog::availableDefaults()); }
+void Race::setCatalog(std::shared_ptr<const UnitCatalog> catalog)
 {
-	// Compile-time defaults transcribed from the legacy data/units.txt. Index
-	// is [unit_type][level] — outer dim is WORKER/EXPLORER/WARRIOR, inner is
-	// upgrade level 0..3. Values are positional in the array fields:
-	//   startImage[NB_MOVE=9] = { stopWalk, stopSwim, stopFly,
-	//                             walk, swim, fly, build, harvest, attack }
-	//   performance[NB_ABILITY=17] = { stopWalk, stopSwim, stopFly,
-	//                                  walk, swim, fly, build, harvest,
-	//                                  attackSpeed, attackForce,
-	//                                  magicAttackAir, magicAttackGround,
-	//                                  magicCreateWood, magicCreateWheat,
-	//                                  magicCreateAlga, armor, hpMax }
-	constexpr UnitType kDefaultUnitTypes[NB_UNIT_TYPE][NB_UNIT_LEVELS] = {
-		// WORKER (baseWorker)
-		{
-			// level 0
-			{ .startImage = {64, 128, 0, 64, 128, 0, 192, 192, 0},
-			  .hungriness = 350,
-			  .performance = {8, 8, 0, 16, 0, 0, 8, 8, 0, 0, 0, 0, 0, 0, 0, 0, 200},
-			  .harvestDamage = 10,
-			  .armorReductionPerHappyness = 0,
-			  .experiencePerLevel = 0,
-			  .magicActionCooldown = 0 },
-			// level 1
-			{ .startImage = {64, 128, 0, 64, 128, 0, 192, 192, 0},
-			  .hungriness = 350,
-			  .performance = {8, 8, 0, 21, 10, 0, 12, 9, 0, 0, 0, 0, 0, 0, 0, 0, 200},
-			  .harvestDamage = 10,
-			  .armorReductionPerHappyness = 0,
-			  .experiencePerLevel = 0,
-			  .magicActionCooldown = 0 },
-			// level 2
-			{ .startImage = {64, 128, 0, 64, 128, 0, 192, 192, 0},
-			  .hungriness = 350,
-			  .performance = {8, 8, 0, 26, 20, 0, 16, 10, 0, 0, 0, 0, 0, 0, 0, 0, 200},
-			  .harvestDamage = 10,
-			  .armorReductionPerHappyness = 0,
-			  .experiencePerLevel = 0,
-			  .magicActionCooldown = 0 },
-			// level 3
-			{ .startImage = {64, 128, 0, 64, 128, 0, 192, 192, 0},
-			  .hungriness = 350,
-			  .performance = {8, 8, 0, 30, 30, 0, 20, 11, 0, 0, 0, 0, 0, 0, 0, 0, 200},
-			  .harvestDamage = 10,
-			  .armorReductionPerHappyness = 0,
-			  .experiencePerLevel = 0,
-			  .magicActionCooldown = 0 },
-		},
-		// EXPLORER (baseExplorer)
-		{
-			// level 0
-			{ .startImage = {0, 0, 0, 0, 0, 0, 0, 0, 0},
-			  .hungriness = 350,
-			  .performance = {8, 8, 0, 0, 0, 28, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 38},
-			  .harvestDamage = 0,
-			  .armorReductionPerHappyness = 1,
-			  .experiencePerLevel = 50,
-			  .magicActionCooldown = 3 },
-			// level 1 (editor-only)
-			{ .startImage = {0, 0, 0, 0, 0, 0, 0, 0, 0},
-			  .hungriness = 350,
-			  .performance = {8, 8, 0, 0, 0, 28, 0, 0, 0, 0, 6, 0, 4, 4, 4, 0, 38},
-			  .harvestDamage = 0,
-			  .armorReductionPerHappyness = 1,
-			  .experiencePerLevel = 50,
-			  .magicActionCooldown = 3 },
-			// level 2 (editor-only)
-			{ .startImage = {0, 0, 0, 0, 0, 0, 0, 0, 0},
-			  .hungriness = 350,
-			  .performance = {8, 8, 0, 0, 0, 28, 0, 0, 0, 0, 6, 0, 3, 3, 3, 0, 38},
-			  .harvestDamage = 0,
-			  .armorReductionPerHappyness = 1,
-			  .experiencePerLevel = 50,
-			  .magicActionCooldown = 3 },
-			// level 3
-			{ .startImage = {0, 0, 0, 0, 0, 0, 0, 0, 0},
-			  .hungriness = 350,
-			  .performance = {8, 8, 0, 0, 0, 28, 0, 0, 0, 0, 6, 8, 2, 2, 2, 0, 38},
-			  .harvestDamage = 0,
-			  .armorReductionPerHappyness = 1,
-			  .experiencePerLevel = 50,
-			  .magicActionCooldown = 3 },
-		},
-		// WARRIOR (baseWarrior)
-		{
-			// level 0
-			{ .startImage = {256, 320, 0, 256, 320, 0, 0, 0, 384},
-			  .hungriness = 350,
-			  .performance = {8, 8, 0, 16, 0, 0, 0, 0, 12, 13, 0, 0, 0, 0, 0, 10, 250},
-			  .harvestDamage = 0,
-			  .armorReductionPerHappyness = 10,
-			  .experiencePerLevel = 20,
-			  .magicActionCooldown = 0 },
-			// level 1
-			{ .startImage = {256, 320, 0, 256, 320, 0, 0, 0, 384},
-			  .hungriness = 350,
-			  .performance = {8, 8, 0, 21, 8, 0, 0, 0, 16, 14, 0, 0, 0, 0, 0, 10, 250},
-			  .harvestDamage = 0,
-			  .armorReductionPerHappyness = 10,
-			  .experiencePerLevel = 20,
-			  .magicActionCooldown = 0 },
-			// level 2
-			{ .startImage = {256, 320, 0, 256, 320, 0, 0, 0, 384},
-			  .hungriness = 350,
-			  .performance = {8, 8, 0, 26, 16, 0, 0, 0, 22, 15, 0, 0, 0, 0, 0, 10, 250},
-			  .harvestDamage = 0,
-			  .armorReductionPerHappyness = 10,
-			  .experiencePerLevel = 20,
-			  .magicActionCooldown = 0 },
-			// level 3
-			{ .startImage = {256, 320, 0, 256, 320, 0, 0, 0, 384},
-			  .hungriness = 350,
-			  .performance = {8, 8, 0, 30, 24, 0, 0, 0, 28, 16, 0, 0, 0, 0, 0, 10, 250},
-			  .harvestDamage = 0,
-			  .armorReductionPerHappyness = 10,
-			  .experiencePerLevel = 20,
-			  .magicActionCooldown = 0 },
-		},
-	};
-
-    static_assert([] {
-        for (const auto& race : kDefaultUnitTypes) for (const auto& unit : race)
-            for (const auto& terrain : TERRAIN_PROPERTIES)
-                for (int action : {int(WALK),int(SWIM),int(FLY)})
-                {
-                    const unsigned factor=action==FLY?terrain.airSpeedQ8:terrain.groundSpeedQ8;
-                    if (static_cast<unsigned>(unit.performance[action])*factor/256 > UNIT_DELTA_MAX)
-                        return false;
-                }
-        return true;
-    }(), "Default unit terrain movement must not hit the one-cell-per-tick speed cap");
-
-	const Sint32 kDefaultRaceHungriness = 425;
+    if (!catalog)
+        throw std::invalid_argument("Missing unit catalog");
+    catalog_ = std::move(catalog);
+    unitTypes.resize(catalog_->size());
+    for (unsigned i = 0; i < unitTypes.size(); ++i)
+        unitTypes[i] = catalog_->levels(i);
+    hungriness = catalog_->runtime(WORKER).hungerRate;
 }
-
-Race::Race()
+const UnitType *Race::getUnitType(int type, int level) const
 {
+    assert(type >= 0 && unsigned(type) < unitTypes.size() && level >= 0 && level < NB_UNIT_LEVELS);
+    return &unitTypes[type][level];
 }
-
-Race::~Race()
-{
-}
-
-void Race::loadDefault()
-{
-	hungriness = kDefaultRaceHungriness;
-	for (int t = 0; t < NB_UNIT_TYPE; ++t)
-		for (int l = 0; l < NB_UNIT_LEVELS; ++l)
-			unitTypes[t][l] = kDefaultUnitTypes[t][l];
-}
-
-void Race::load()
-{
-}
-
-UnitType *Race::getUnitType(int type, int level)
-{
-	assert (level>=0);
-	assert (level<NB_UNIT_LEVELS);
-	assert (type>=0);
-	assert (type<NB_UNIT_TYPE);
-	return &(unitTypes[type][level]);
-}
-
 void Race::save(GAGCore::OutputStream *stream)
 {
-	for (int i=0; i<NB_UNIT_TYPE; i++)
-		for(int j=0; j<NB_UNIT_LEVELS; j++)
-			unitTypes[i][j].save(stream);
-
-	stream->writeSint32(hungriness, "hungryness");
+    stream->writeUint32(unitTypes.size(), "unitTypeCount");
+    stream->writeEnterSection("unitTypes");
+    for (unsigned type = 0; type < unitTypes.size(); ++type)
+    {
+        stream->writeEnterSection(type);
+        for (unsigned level = 0; level < NB_UNIT_LEVELS; ++level)
+        {
+            stream->writeEnterSection(level);
+            unitTypes[type][level].save(stream);
+            stream->writeLeaveSection();
+        }
+        stream->writeLeaveSection();
+    }
+    stream->writeLeaveSection();
+    stream->writeSint32(hungriness, "hungryness");
 }
-
 bool Race::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 {
-	for (int i=0; i<NB_UNIT_TYPE; i++)
-		for(int j=0; j<NB_UNIT_LEVELS; j++)
-			unitTypes[i][j].load(stream, versionMinor);
-
-	hungriness = (Sint32)stream->readSint32("hungryness");
-
-	return true;
+    // Legacy records always contain the frozen three-type schema. Installed
+    // authoring catalogs must not supply additional rows or migration policies.
+    if (versionMinor < FILE_FORMAT_VERSION_UNIT_CATALOG)
+        setCatalog(UnitCatalog::legacyMigration());
+    const unsigned count = versionMinor >= FILE_FORMAT_VERSION_UNIT_CATALOG
+                               ? stream->readUint32("unitTypeCount")
+                               : BuiltinUnitCount;
+    if (count != unitTypes.size() || count > UnitCatalog::Capacity)
+        throw std::runtime_error("Race unit count does not match catalog");
+    auto loaded = unitTypes;
+    const bool counted = versionMinor >= FILE_FORMAT_VERSION_UNIT_CATALOG;
+    if (counted)
+        stream->readEnterSection("unitTypes");
+    for (unsigned type = 0; type < loaded.size(); ++type)
+    {
+        if (counted)
+            stream->readEnterSection(type);
+        for (unsigned level = 0; level < NB_UNIT_LEVELS; ++level)
+        {
+            if (counted)
+                stream->readEnterSection(level);
+            loaded[type][level].load(stream, versionMinor);
+            if (counted)
+                stream->readLeaveSection();
+        }
+        if (counted)
+            stream->readLeaveSection();
+    }
+    if (counted)
+        stream->readLeaveSection();
+    const auto rate = stream->readSint32("hungryness");
+    if (rate < 0 || rate > 1000000)
+        throw std::runtime_error("Invalid race hunger rate");
+    if (counted)
+    {
+        if (loaded != unitTypes || rate != hungriness)
+            throw std::runtime_error("Race tables differ from the authoritative unit catalog");
+        return true;
+    }
+    auto updated = catalog_->withLegacyLevels(loaded, rate);
+    catalog_ = std::move(updated);
+    unitTypes = std::move(loaded);
+    hungriness = rate;
+    return true;
 }

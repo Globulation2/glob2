@@ -16,6 +16,7 @@ import type { Account, Database } from '@glob2/db';
 import { Type, type Static } from 'typebox';
 import {
   BuildingCatalog,
+  UnitCatalog,
   ResourceExperimentDefinitions,
   MatchRules,
   RoomMapSelection,
@@ -132,6 +133,8 @@ export const RoomSettings = Type.Object({
   rules: MatchRules,
   experiments: Type.Array(Type.String()),
   buildingCatalog: Type.Optional(BuildingCatalog),
+  unitCatalog: Type.Optional(UnitCatalog),
+  requiredUnitExperiments: Type.Optional(Type.Array(Type.String())),
   resourceExperiments: Type.Optional(ResourceExperimentDefinitions),
   requiredResourceExperiments: Type.Optional(Type.Array(Type.String())),
   /** The quick match this room is the rematch of (match.rematch). */
@@ -151,6 +154,8 @@ function readRoomSettings(stored: unknown): RoomSettings {
 
 export interface MapResolution {
   buildingCatalog?: BuildingCatalog;
+  unitCatalog?: UnitCatalog;
+  requiredUnitExperiments?: string[];
   resourceExperiments?: ResourceExperimentDefinitions;
   requiredResourceExperiments?: string[];
   selection: RoomMapSelection;
@@ -331,6 +336,8 @@ export class RoomService {
       resourceExperiments: settings.resourceExperiments,
       requiredResourceExperiments: settings.requiredResourceExperiments,
       ...(settings.buildingCatalog ? { buildingCatalog: settings.buildingCatalog } : {}),
+      ...(settings.unitCatalog ? { unitCatalog: settings.unitCatalog } : {}),
+      requiredUnitExperiments: settings.requiredUnitExperiments,
       members: members.map((m) => ({
         accountId: m.account_id,
         displayName: m.display_name,
@@ -542,6 +549,8 @@ export class RoomService {
           'v.team_count',
           'm.id',
           'v.building_catalog',
+          'v.unit_catalog',
+          'v.required_unit_experiments',
           'v.resource_experiments',
           'v.required_resource_experiments',
         ])
@@ -567,6 +576,8 @@ export class RoomService {
         teamCount: row.team_count,
         resourceExperiments: row.resource_experiments,
         requiredResourceExperiments: row.required_resource_experiments,
+        requiredUnitExperiments: row.required_unit_experiments,
+        ...(row.unit_catalog ? { unitCatalog: row.unit_catalog as UnitCatalog } : {}),
         ...(row.building_catalog
           ? { buildingCatalog: row.building_catalog as BuildingCatalog }
           : {}),
@@ -581,6 +592,8 @@ export class RoomService {
           'failure',
           'job_id',
           'building_catalog',
+          'unit_catalog',
+          'required_unit_experiments',
           'resource_experiments',
           'required_resource_experiments',
         ])
@@ -614,6 +627,8 @@ export class RoomService {
             ...(teamCount ? { teamCount } : {}),
             resourceExperiments: row.resource_experiments,
             requiredResourceExperiments: row.required_resource_experiments,
+            requiredUnitExperiments: row.required_unit_experiments,
+            ...(row.unit_catalog ? { unitCatalog: row.unit_catalog as UnitCatalog } : {}),
             ...(row.building_catalog
               ? { buildingCatalog: row.building_catalog as BuildingCatalog }
               : {}),
@@ -665,6 +680,8 @@ export class RoomService {
         resourceExperiments: state.resourceExperiments,
         requiredResourceExperiments: state.requiredResourceExperiments,
         ...(state.buildingCatalog ? { buildingCatalog: state.buildingCatalog } : {}),
+        ...(state.unitCatalog ? { unitCatalog: state.unitCatalog } : {}),
+        requiredUnitExperiments: state.requiredUnitExperiments,
         status: 'ready',
         teamCount: teams,
       };
@@ -736,7 +753,10 @@ export class RoomService {
       mapStatus: resolution.status,
     };
     // Map changes remove declarations and requirements from the previous map.
-    const previousKeys = new Set((settings.resourceExperiments ?? []).map((entry) => entry.key));
+    const previousKeys = new Set([
+      ...(settings.resourceExperiments ?? []).map((entry) => entry.key),
+      ...(settings.requiredUnitExperiments ?? []),
+    ]);
     next.resourceExperiments = resolution.resourceExperiments ?? [];
     next.requiredResourceExperiments = resolution.requiredResourceExperiments ?? [];
     next.experiments = [
@@ -745,6 +765,10 @@ export class RoomService {
         ...next.requiredResourceExperiments,
       ]),
     ];
+    delete next.unitCatalog;
+    if (resolution.unitCatalog) next.unitCatalog = resolution.unitCatalog;
+    next.requiredUnitExperiments = resolution.requiredUnitExperiments ?? [];
+    next.experiments = [...new Set([...next.experiments, ...next.requiredUnitExperiments])];
     delete next.buildingCatalog;
     if (resolution.buildingCatalog) next.buildingCatalog = resolution.buildingCatalog;
     delete next.mapProblem;
@@ -907,6 +931,11 @@ export class RoomService {
         ...new Set([...settings.experiments, ...settings.requiredResourceExperiments]),
       ];
       if (resolution.buildingCatalog) settings.buildingCatalog = resolution.buildingCatalog;
+      if (resolution.unitCatalog) settings.unitCatalog = resolution.unitCatalog;
+      settings.requiredUnitExperiments = resolution.requiredUnitExperiments ?? [];
+      settings.experiments = [
+        ...new Set([...settings.experiments, ...settings.requiredUnitExperiments]),
+      ];
       settings.mapStatus = resolution.status;
       if (resolution.problem) settings.mapProblem = resolution.problem;
       if (resolution.jobId && resolution.status === 'pending') settings.mapJobId = resolution.jobId;
@@ -1326,7 +1355,11 @@ export class RoomService {
         settings = {
           ...settings,
           experiments: [
-            ...new Set([...changes.experiments, ...(settings.requiredResourceExperiments ?? [])]),
+            ...new Set([
+              ...changes.experiments,
+              ...(settings.requiredResourceExperiments ?? []),
+              ...(settings.requiredUnitExperiments ?? []),
+            ]),
           ],
         };
         clearReady = true;
@@ -1629,6 +1662,7 @@ export class RoomService {
         experiments: settings.experiments,
         resourceExperiments: settings.resourceExperiments,
         ...(settings.buildingCatalog ? { buildingCatalog: settings.buildingCatalog } : {}),
+        ...(settings.unitCatalog ? { unitCatalog: settings.unitCatalog } : {}),
       };
       const probes = await this.db
         .selectFrom('room_members')

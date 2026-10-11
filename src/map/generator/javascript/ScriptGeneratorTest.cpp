@@ -571,10 +571,10 @@ TEST_CASE("Shared generated worlds continue identically without installed genera
 		input.seekFromStart(0);
 		REQUIRE(restored.load(&input));
 		restored.setWaitingOnMask(0);
-		auto components = [](Game &g)
+		auto components = [](Game &g, bool legacy152Representation=false)
 		{
 			std::vector<Uint32> state, buildings, units;
-			g.checkSum(&state, &buildings, &units, true);
+			g.checkSum(&state, &buildings, &units, true, legacy152Representation);
 			state.erase(state.begin());
 			state.insert(state.end(), buildings.begin(), buildings.end());
 			state.insert(state.end(), units.begin(), units.end());
@@ -588,7 +588,10 @@ TEST_CASE("Shared generated worlds continue identically without installed genera
 			REQUIRE(components(first) == components(restored));
 			REQUIRE(first.syncRandom == restored.syncRandom);
 			trace += std::to_string(seed) + " " + std::to_string(tick + 65);
-			for (const auto value : components(first))
+			// Preserve the historical golden representation; the continuation
+			// assertions above retain current components with the existing
+			// map-header version normalization.
+			for (const auto value : components(first, true))
 				trace += " " + std::to_string(value);
 			trace += "\n";
 		}

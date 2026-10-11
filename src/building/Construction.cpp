@@ -218,7 +218,7 @@ bool Building::launchConstruction(Sint32 unitWorking, Sint32 unitWorkingFuture)
 
 		cancelProduction();
 		constructionOriginTypeNum = typeNum;
-		std::copy_n(ratio,NB_UNIT_TYPE,constructionOriginRatios.begin());
+		for (unsigned unit=0;unit<productionTypeCount();++unit) originProductionRatio(unit)=productionRatio(unit);
 		owner->removeFromAbilitiesLists(this);
 
 		// We remove all units who are going to the building:

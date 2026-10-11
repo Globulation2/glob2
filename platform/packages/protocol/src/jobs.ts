@@ -21,6 +21,7 @@ import { ErrorBody, Open, SeatIndex, Sha256Hex, Strict, TeamIndex, Uuid } from '
 import {
   ResourceExperimentDefinitions,
   BuildingCatalog,
+  UnitCatalog,
   GeneratorDescriptor,
   MatchSetup,
 } from './matchSetup.ts';
@@ -54,6 +55,8 @@ const MapFacts = Open({
   height: Type.Integer({ minimum: 1 }),
   teamCount: Type.Integer({ minimum: 1, maximum: 12 }),
   buildingCatalog: Type.Optional(BuildingCatalog),
+  unitCatalog: Type.Optional(UnitCatalog),
+  requiredUnitExperiments: Type.Optional(Type.Array(Type.String(), { maxItems: 64 })),
   resourceExperiments: Type.Optional(ResourceExperimentDefinitions),
   requiredResourceExperiments: Type.Optional(Type.Array(Type.String(), { maxItems: 64 })),
 });

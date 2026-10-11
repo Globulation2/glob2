@@ -1364,3 +1364,115 @@ TEST_CASE("Catalog profiles share capabilities without sharing template identity
  CHECK(world.profile(205)->atLevel(5)->engineType==905);
  CHECK(world.profile(205)->maximumLevel()==5);
 }
+
+
+TEST_CASE("Dynamic template identities retain mixed catalog roles and signed wire values" * doctest::test_suite("Maxima.Placement"))
+{
+    using namespace AIMaximaPlacement;
+    static_assert(sizeof(TemplateId)==sizeof(int32_t));
+    static_assert(std::is_same_v<std::underlying_type_t<TemplateId>,int32_t>);
+    auto world=makeWorld();world.profiles.clear();
+    for(int index=0;index<40;++index)
+    {
+        auto profile=makeProfile(2,2,3);profile.buildingType=100+index;
+        for(auto& level:profile.levels)
+            level.roles=AIMaximaBuildings::roleBit(AIMaximaBuildings::Healing)
+                |AIMaximaBuildings::roleBit(AIMaximaBuildings::WalkTraining);
+        world.profiles.push_back(profile);
+    }
+    Planner planner;planner.configure(world.profiles,1,2,6,5,7,0);
+    REQUIRE(planner.validateTemplates());
+    REQUIRE(planner.templates().size()==80);
+    std::set<int32_t> identities;
+    for(const auto& definition:planner.templates())
+    {
+        CHECK(identities.insert(int32_t(definition.id)).second);
+        CHECK((definition.style==HospitalCompact || definition.style==HospitalDispersed));
+        CHECK(world.profile(definition.buildingType)->atLevel(1)->roles
+            ==(AIMaximaBuildings::roleBit(AIMaximaBuildings::Healing)
+                |AIMaximaBuildings::roleBit(AIMaximaBuildings::WalkTraining)));
+    }
+    CHECK(identities.count(17)==1);CHECK(identities.count(19)==1);
+    CHECK(*identities.rbegin()>64);
+    // Named styles, dynamic IDs, the current loader ceiling, and a signed
+    // representation boundary keep their existing four-byte big-endian wire.
+    // The durable planner loader still rejects negative template IDs.
+    const int32_t values[]={NoTemplate,HospitalCompact,17,19,100000,-1};
+    auto* memory=new GAGCore::MemoryStreamBackend;
+    GAGCore::BinaryOutputStream out(memory);
+    AIMaximaContinuation::BufferedBinaryWriter archive(&out);
+    std::string expected;
+    for(int32_t value:values)
+    {
+        archive("template_id",static_cast<TemplateId>(value));
+        const uint32_t bits=uint32_t(value);
+        for(int shift:{24,16,8,0})expected.push_back(char((bits>>shift)&255));
+    }
+    archive.flush();const auto actual=memory->takeContents();CHECK(actual==expected);
+    GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(actual.data(),actual.size()));
+    input.seekFromStart(0);
+    GAGCore::BinaryInputStream::CheckedReads checked(&input);
+    for(int32_t value:values)CHECK(input.readSint32("template_id")==value);
+}
+
+TEST_CASE("Dynamic template campuses and pending selection continue with identical serialized state" * doctest::test_suite("Maxima.Placement"))
+{
+    using namespace AIMaximaPlacement;
+    auto world=makeWorld();world.profiles.clear();
+    for(int index=0;index<6;++index)
+    {
+        auto profile=makeProfile(2,2,3);profile.buildingType=100+index;
+        for(auto& level:profile.levels)
+            level.roles=AIMaximaBuildings::roleBit(AIMaximaBuildings::Healing)
+                |AIMaximaBuildings::roleBit(AIMaximaBuildings::WalkTraining);
+        world.profiles.push_back(profile);
+    }
+    Planner original;original.configure(world.profiles,1,2,6,5,7,0);
+    DevelopmentIntent intent;intent.buildingType=104;intent.unmetCount=4;
+    intent.priority=100;intent.workers=2;
+    DevelopmentLimits limits;limits.newConstruction=4;
+    DevelopmentAction first;
+    REQUIRE(original.selectAction(world,{intent},limits,first));
+    REQUIRE(int32_t(first.templateId)>15);
+    REQUIRE(original.reserve(world,first));original.markIssued(first.id,110,0);
+    WorldBuilding site;site.id=110;site.buildingType=104;site.level=1;
+    site.centerX=first.centerX;site.centerY=first.centerY;site.hp=site.hpMax=100;site.site=true;
+    world.buildings.push_back(site);occupy(world,first);world.tick=1;original.observe(world);
+    REQUIRE(original.campuses().size()==1);
+    REQUIRE(original.campuses().front().templateId==first.templateId);
+    REQUIRE(original.actions().at(first.id).state==SiteObserved);
+    // Save during an actual incremental selector, retaining its frozen world,
+    // caches, cursor and the already reserved dynamic campus/action.
+    intent.buildingType=105;
+    DevelopmentAction next;
+    for(int phase=0;phase<3;++phase)
+        REQUIRE(original.selectActionIncremental(world,{intent},limits,next,world.computeSignature(),128)==SelectionPending);
+    const auto stateBytes=[](const Planner& value) {
+        auto* memory=new GAGCore::MemoryStreamBackend;
+        GAGCore::BinaryOutputStream output(memory);
+        value.save(&output);value.saveExecutionState(&output);
+        return memory->takeContents();
+    };
+    const auto saved=stateBytes(original);
+    Planner restored;restored.configure(world.profiles,1,2,6,5,7,0);
+    GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(saved.data(),saved.size()));
+    input.seekFromStart(0);
+    GAGCore::BinaryInputStream::CheckedReads checked(&input);
+    REQUIRE(restored.load(&input,VERSION_MINOR));restored.loadExecutionState(&input,VERSION_MINOR);
+    CHECK(stateBytes(restored)==saved);
+    CHECK(restored.footprintReferences()==original.footprintReferences());
+    CHECK(restored.circulationReferences()==original.circulationReferences());
+    DevelopmentAction resumed;SelectionProgress result=SelectionPending;
+    for(int step=0;step<2048 && result==SelectionPending;++step)
+    {
+        result=original.selectActionIncremental(world,{intent},limits,next,world.computeSignature(),128);
+        const auto other=restored.selectActionIncremental(world,{intent},limits,resumed,world.computeSignature(),128);
+        REQUIRE(other==result);CHECK(stateBytes(restored)==stateBytes(original));
+    }
+    REQUIRE(result==SelectionFound);REQUIRE(int32_t(next.templateId)>15);
+    CHECK(next.templateId==resumed.templateId);CHECK(next.buildingType==resumed.buildingType);
+    CHECK(next.centerX==resumed.centerX);CHECK(next.centerY==resumed.centerY);
+    CHECK(next.utility.total==resumed.utility.total);
+    REQUIRE(original.reserve(world,next));REQUIRE(restored.reserve(world,resumed));
+    CHECK(stateBytes(restored)==stateBytes(original));
+}

@@ -873,6 +873,40 @@ TEST_CASE("device registration stop and reconfigure never join a slow background
     CHECK_FALSE(metrics.running);CHECK_FALSE(metrics.ready);
 }
 
+TEST_CASE("application shutdown joins background initialization and later registrations restart" * doctest::test_suite("GradientPipeline"))
+{
+    using namespace gradient_kernel;
+    if constexpr(!GAGCore::ThreadSupport::available) return;
+    struct Gate {
+        std::promise<void> entered,release;
+        std::shared_future<void> released=release.get_future().share();
+        std::atomic<bool> opened{false};
+        void open(){if(!opened.exchange(true))release.set_value();}
+    };
+    auto gate=std::make_shared<Gate>();
+    struct Release {std::shared_ptr<Gate> gate;~Release(){gate->open();}} release{gate};
+    auto entered=gate->entered.get_future();
+    GradientDeviceService first({[gate]{gate->entered.set_value();gate->released.wait();return true;},{}});
+    first.configure(2,Backend::OpenCL);
+    REQUIRE(entered.wait_for(std::chrono::seconds(5))==std::future_status::ready);
+    auto shutdown=std::async(std::launch::async,[]{shutdownGradientDeviceCoordinator();});
+    CHECK(shutdown.wait_for(std::chrono::milliseconds(100))==std::future_status::timeout);
+    // Release before retrieving the future even when a check fails.
+    gate->open();shutdown.get();
+    CHECK_FALSE(first.metrics().running);
+    CHECK(first.metrics().coordinatorThreads==0);
+    std::promise<void> restarted;
+    auto ready=restarted.get_future();
+    struct Drain {~Drain(){shutdownGradientDeviceCoordinator();}} drain;
+    GradientDeviceService second({[&restarted]{restarted.set_value();return true;},{}});
+    second.configure(2,Backend::OpenCL);
+    REQUIRE(ready.wait_for(std::chrono::seconds(5))==std::future_status::ready);
+    shutdownGradientDeviceCoordinator();
+    CHECK_FALSE(second.metrics().running);
+    CHECK(second.metrics().coordinatorThreads==0);
+    shutdownGradientDeviceCoordinator(); // Repeated teardown remains harmless.
+}
+
 TEST_CASE("two device registrations share exactly one process coordinator" * doctest::test_suite("GradientPipeline"))
 {
     using namespace gradient_kernel;

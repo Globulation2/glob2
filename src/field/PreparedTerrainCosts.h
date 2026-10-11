@@ -62,14 +62,15 @@ private:
 
 inline constexpr auto PREPARED_TERRAIN_COSTS = [] {
     // Explicit initialization avoids a default constructor for invalid profiles.
-    return std::array<PreparedTerrainCosts<TERRAIN_COUNT>, 7>{
+    return std::array<PreparedTerrainCosts<TERRAIN_COUNT>, SWIM_CLASS_COUNT>{
         PreparedTerrainCosts<TERRAIN_COUNT>(TERRAIN_ENTRY_COSTS[0]),
         PreparedTerrainCosts<TERRAIN_COUNT>(TERRAIN_ENTRY_COSTS[1]),
         PreparedTerrainCosts<TERRAIN_COUNT>(TERRAIN_ENTRY_COSTS[2]),
         PreparedTerrainCosts<TERRAIN_COUNT>(TERRAIN_ENTRY_COSTS[3]),
         PreparedTerrainCosts<TERRAIN_COUNT>(TERRAIN_ENTRY_COSTS[4]),
         PreparedTerrainCosts<TERRAIN_COUNT>(TERRAIN_ENTRY_COSTS[5]),
-        PreparedTerrainCosts<TERRAIN_COUNT>(TERRAIN_ENTRY_COSTS[6])};
+        PreparedTerrainCosts<TERRAIN_COUNT>(TERRAIN_ENTRY_COSTS[6]),
+        PreparedTerrainCosts<TERRAIN_COUNT>(TERRAIN_ENTRY_COSTS[7])};
 }();
 static_assert(PREPARED_TERRAIN_COSTS.size() == TERRAIN_ENTRY_COSTS.size());
 }

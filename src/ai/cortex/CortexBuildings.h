@@ -23,21 +23,19 @@ inline unsigned buildingRoles(const AIEngine::AIWorldView& game, const BuildingT
  const auto& s = b->semantics;
  unsigned roles = 0;
  auto add = [&](int role, bool yes) { if (yes) roles |= 1u << role; };
- add(CORTEX_BUILD_SWARM, s.production.enabledUnitMask != 0);
- add(CORTEX_BUILD_FOOD, b->maxUnitInside > 0 && s.feeding.enabled && (s.feeding.unitMask & s.admittedUnitMask));
- add(CORTEX_BUILD_HEAL, b->maxUnitInside > 0 && s.healing.enabled && (s.healing.unitMask & s.admittedUnitMask));
- auto trains = [&](int ability) { return b->maxUnitInside > 0 && s.training[ability].enabled && (s.training[ability].unitMask & s.admittedUnitMask); };
+ add(CORTEX_BUILD_SWARM, !s.production.enabledUnits.empty());
+ add(CORTEX_BUILD_FOOD, b->maxUnitInside > 0 && b->runtimeFeeds);
+ add(CORTEX_BUILD_HEAL, b->maxUnitInside > 0 && b->runtimeHeals);
+ auto trains = [&](int ability) { return b->maxUnitInside > 0 && (b->runtimeTrainingAbilities&(1u<<ability)); };
  add(CORTEX_BUILD_WALKSPEED, trains(WALK));
  add(CORTEX_BUILD_SWIMSPEED, trains(SWIM));
  add(CORTEX_BUILD_ATTACK, trains(ATTACK_SPEED) || trains(ATTACK_STRENGTH));
- bool construction = false;
- for (const auto& training : s.training)
-  construction |= b->maxUnitInside > 0 && training.enabled && training.constructionLevel > 0 && (training.unitMask & s.admittedUnitMask & (1u << WORKER));
+ const bool construction=b->maxUnitInside>0 && b->runtimeConstructionTraining;
  add(CORTEX_BUILD_SCIENCE, construction || trains(BUILD) || trains(HARVEST));
- add(CORTEX_BUILD_DEFENSE, b->shootingRange > 0 && b->shootRhythm > 0 && std::any_of(s.projectileDamage.begin(),s.projectileDamage.end(),[](int damage){return damage>0;}));
- add(CORTEX_BUILD_EXPLORATION, b->zonable[EXPLORER] != 0);
- add(CORTEX_BUILD_WAR, b->zonable[WARRIOR] != 0);
- add(CORTEX_BUILD_CLEARING, b->zonable[WORKER] != 0);
+ add(CORTEX_BUILD_DEFENSE, b->shootingRange > 0 && b->shootRhythm > 0 && b->runtimeAnyProjectileDamage);
+ add(CORTEX_BUILD_EXPLORATION, (b->runtimeAttractionRoles&2)!=0);
+ add(CORTEX_BUILD_WAR, (b->runtimeAttractionRoles&4)!=0);
+ add(CORTEX_BUILD_CLEARING, (b->runtimeAttractionRoles&1)!=0);
  add(CORTEX_BUILD_EXCHANGE, (s.market.interTeamFruitExchange || b->runtimeSuppliesDirectStock) || b->runtimeSuppliesStock);
  return roles;
 }

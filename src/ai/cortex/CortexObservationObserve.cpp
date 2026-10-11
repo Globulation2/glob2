@@ -1,4 +1,5 @@
 #include "CortexSnapshotQueries.h"
+#include "ai/observation/ObservationQueries.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2026 The Globulation 2 Authors
 
@@ -53,10 +54,10 @@ namespace Cortex
 
 		// population
 		obs.totalUnit         = stat->totalUnit;
-		obs.workers           = stat->numberUnitPerType[WORKER];
-		obs.explorers         = stat->numberUnitPerType[EXPLORER];
-		obs.warriors          = stat->numberUnitPerType[WARRIOR];
-		obs.freeWorkers       = stat->isFree[WORKER];
+		obs.workers           = stat->carriers;
+		obs.explorers         = stat->scouts;
+		obs.warriors          = stat->meleeUnits;
+		obs.freeWorkers       = stat->idleCarriers;
 		obs.totalFree         = stat->totalFree;
 		obs.totalNeeded       = stat->totalNeeded;
 		for (int lvl = 0; lvl < CORTEX_UNIT_LEVELS; lvl++)
@@ -146,16 +147,16 @@ namespace Cortex
 			// WARRIOR-only WALK slice: the attack-range envelope scales with the
 			// wave's SLOWEST warrior (lowest occupied level), so the per-type slice
 			// is needed — the any-type row above mixes in workers.
-			obs.warriorWalkLevel[lvl]         = stat->upgradeStatePerType[WARRIOR][WALK][lvl];
+			obs.warriorWalkLevel[lvl]         = game->capabilityUpgradeCount(*stat,UnitRuntimeTraits::Melee,WALK,lvl);
 			obs.attackSpeedLevel[lvl]         = stat->upgradeState[ATTACK_SPEED][lvl];
 			// C++: ATTACK_STRENGTH == 9, unit/UnitConsts.h:22
 			obs.attackStrengthLevel[lvl]      = stat->upgradeState[ATTACK_STRENGTH][lvl];
 			// SWIM is 1-based in storage (index 0 == cannot swim); copied verbatim.
-			obs.workerSwimLevel[lvl]          = stat->upgradeStatePerType[WORKER][SWIM][lvl];
+			obs.workerSwimLevel[lvl]          = game->capabilityUpgradeCount(*stat,UnitRuntimeTraits::Transport,SWIM,lvl);
 			// WARRIOR SWIM slice, same 1-based storage — the amphibious commit gate and
 			// the swim-staging hold count the swim-capable warriors from it (levels >= 1).
-			obs.warriorSwimLevel[lvl]         = stat->upgradeStatePerType[WARRIOR][SWIM][lvl];
-			obs.explorerMagicGroundLevel[lvl] = stat->upgradeStatePerType[EXPLORER][MAGIC_ATTACK_GROUND][lvl];
+			obs.warriorSwimLevel[lvl]         = game->capabilityUpgradeCount(*stat,UnitRuntimeTraits::Melee,SWIM,lvl);
+			obs.explorerMagicGroundLevel[lvl] = game->capabilityUpgradeCount(*stat,UnitRuntimeTraits::MagicGround,MAGIC_ATTACK_GROUND,lvl);
 		}
 
 		// Swim-capable warriors: SWIM is 1-based in storage (index 0 == cannot swim), so
@@ -239,7 +240,9 @@ namespace Cortex
 			// (Building::considerUnitForWarriorFlag requires activity == ACT_RANDOM &&
 			// medical == MED_FREE). A warrior already on a flag is ACT_FLAG and is never
 			// poached, so this counts only the immediately-recruitable reserve.
-			if (u->typeNum == WARRIOR
+			if (AIEngine::ObservationQueries::matchesStrategyUnitRole(*game,*u,WARRIOR)
+             && game->unitTraits(u->typeNum).recruits(2)
+             && (u->performance[WALK]>0 || u->performance[SWIM]>0 || u->performance[FLY]>0)
 			 && u->activity == ::Unit::ACT_RANDOM && u->medical == ::Unit::MED_FREE)
 				obs.freeWarriors++;
 		}
@@ -525,7 +528,7 @@ namespace Cortex
 					// ATTACK_STRENGTH level among enemy warriors we can SEE this cycle.
 					// Already inside the FOW gate above, so never unfogged truth.
 					// C++: Unit::level[] (unit/Unit.h), ATTACK_STRENGTH == 9.
-					if (u->typeNum == WARRIOR
+					if (AIEngine::ObservationQueries::matchesStrategyUnitRole(*game,*u,WARRIOR)
 					 && u->level[ATTACK_STRENGTH] > obs.enemyWarriorLevelVisible)
 						obs.enemyWarriorLevelVisible = u->level[ATTACK_STRENGTH];
 				}

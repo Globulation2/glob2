@@ -4,6 +4,7 @@
 #include "ExperimentalFeatures.h"
 #include "Sha256.h"
 #include "UnitUtils.h"
+#include "UnitCatalog.h"
 #include <FileManager.h>
 #include <Toolkit.h>
 #include <nlohmann/json.hpp>
@@ -111,6 +112,12 @@ void stableKey(const std::string& key, const std::string& context)
         if (!((c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') || c == '-' || c == '_' || c == '.'))
             fail(context, "invalid stable key '" + key + "'");
 }
+void unitStableKey(const std::string& key,const std::string& context)
+{
+    if(key.empty() || key.size()>128)fail(context,"unit key must contain 1..128 characters");
+    for(unsigned char c:key)
+        if(!((c>='a' && c<='z') || (c>='0' && c<='9') || c=='-' || c=='_' || c=='.' || c==':'))fail(context,"invalid unit key '"+key+"'");
+}
 void range(Sint32 v, Sint32 lo, Sint32 hi, const std::string& context)
 {
     if (v < lo || v > hi) fail(context, "value outside " + std::to_string(lo) + ".." + std::to_string(hi));
@@ -159,11 +166,24 @@ Json costJson(const BuildingMaterialCost& values)
     for (int r = 0; r < MaterialCount; ++r) if (values[r]) j[MATERIAL_NAMES[r]] = values[r];
     return j;
 }
+BuildingUnitSelection unitSelection(const Json& j,const std::string& context)
+{
+    BuildingUnitSelection out; out.specified=true;
+    if (!j.is_array()) fail(context,"expected stable unit keys");
+    std::unordered_set<std::string> seen;
+    for (const auto& entry:j) {
+        auto key=string(entry,context); unitStableKey(key,context);
+        if (!seen.insert(key).second) fail(context,"duplicate unit key");
+        out.keys.push_back(std::move(key));
+    }
+    return out;
+}
 BuildingServiceSpec service(const Json& j)
 {
-    keys(j, {"enabled", "unitMask", "duration", "cost", "partial", "holdAdmissionUntilExit", "optionalFruitMask", "convertsUnits"}, "service");
+    keys(j, {"enabled", "unitMask", "units", "duration", "cost", "partial", "holdAdmissionUntilExit", "optionalFruitMask", "convertsUnits"}, "service");
     BuildingServiceSpec s;
     optional(j, "enabled", s.enabled); optional(j, "unitMask", s.unitMask);
+    if (j.contains("units")) s.units=unitSelection(j.at("units"),"service.units");
     optional(j, "duration", s.duration); optional(j, "holdAdmissionUntilExit", s.holdAdmissionUntilExit);
     optional(j, "optionalFruitMask", s.optionalFruitMask); optional(j, "convertsUnits", s.convertsUnits);
     if (j.contains("cost")) s.cost = cost(j.at("cost"));
@@ -174,9 +194,11 @@ BuildingServiceSpec service(const Json& j)
 }
 Json serviceJson(const BuildingServiceSpec& s)
 {
-    return {{"enabled", s.enabled}, {"unitMask", s.unitMask}, {"duration", s.duration},
+    Json j={{"enabled", s.enabled}, {"unitMask", s.unitMask}, {"duration", s.duration},
         {"cost", costJson(s.cost)}, {"partial", s.partial == BuildingPartialService::None ? "none" : "proportional_full_cost"},
         {"holdAdmissionUntilExit", s.holdAdmissionUntilExit}, {"optionalFruitMask", s.optionalFruitMask}, {"convertsUnits", s.convertsUnits}};
+    if (s.units.specified) j["units"]=s.units.keys;
+    return j;
 }
 MaterialMask resourceMask(const Json& j, const std::string& context)
 {
@@ -201,7 +223,7 @@ Json resourceMaskJson(MaterialMask mask)
 BuildingSemantics semantics(const Json& j)
 {
     keys(j, {"replenishMaterials", "ammunitionMaterial", "replenishResources", "requiredWorkerLevel", "assignmentLimit", "regenerationPerTick", "repairable", "constructionCost", "repairCost", "placeable", "instantPlacement", "relocatable", "occupiesGround",
-        "admittedUnitMask", "workPriorityBias", "sightSharing", "feeding", "healing", "training", "trainingInParallel",
+        "admittedUnitMask", "admittedUnits", "attractionUnits", "workPriorityBias", "sightSharing", "feeding", "healing", "training", "trainingInParallel",
         "production", "market", "projectileDamage", "projectileBuildingDamage", "ammunitionResource", "ammunitionCost", "areaEffects"}, "semantics");
     BuildingSemantics s;
     if (j.contains("replenishMaterials") && j.contains("replenishResources")) fail("semantics", "conflicting replenishment aliases");
@@ -234,7 +256,24 @@ BuildingSemantics semantics(const Json& j)
     }
     if (j.contains("feeding")) s.feeding = service(j.at("feeding"));
     if (j.contains("healing")) s.healing = service(j.at("healing"));
-    if (j.contains("projectileDamage")) array(j.at("projectileDamage"), s.projectileDamage, "projectileDamage");
+    if (j.contains("admittedUnits")) s.admittedUnits=unitSelection(j.at("admittedUnits"),"admittedUnits");
+    if (j.contains("attractionUnits")) {
+        const auto& attraction=j.at("attractionUnits"); keys(attraction,{"clear","explore","defend"},"attractionUnits");
+        constexpr const char* jobs[]={"clear","explore","defend"};
+        for (unsigned role=0;role<3;++role) if (attraction.contains(jobs[role]))
+            s.attractionUnits[role]=unitSelection(attraction.at(jobs[role]),jobs[role]);
+    }
+    if (j.contains("projectileDamage")) {
+        const auto& damage=j.at("projectileDamage");
+        if (damage.is_array()) array(damage,s.projectileDamage,"projectileDamage");
+        else {
+            object(damage,"projectileDamage");
+            for (auto it=damage.begin();it!=damage.end();++it) {
+                unitStableKey(it.key(),"projectileDamage"); const auto value=integer(it.value(),"projectileDamage");
+                range(value,0,1000000,"projectileDamage"); s.additionalProjectileDamage[it.key()]=value;
+            }
+        }
+    }
     if (j.contains("training"))
     {
         const auto& list = j.at("training");
@@ -245,8 +284,9 @@ BuildingSemantics semantics(const Json& j)
             for (int i = 0; i < NB_ABILITY; ++i) if (it.key() == ABILITY_NAMES[i]) a = i;
             if (a < 0) fail("training", "unknown ability '" + it.key() + "'");
             const auto& t = it.value(); auto& out = s.training[a];
-            keys(t, {"enabled", "unitMask", "targetLevel", "duration", "cost", "constructionLevel"}, "training");
+            keys(t, {"enabled", "unitMask", "units", "targetLevel", "duration", "cost", "constructionLevel"}, "training");
             optional(t, "enabled", out.enabled); optional(t, "unitMask", out.unitMask);
+            if (t.contains("units")) out.units=unitSelection(t.at("units"),"training.units");
             optional(t, "targetLevel", out.targetLevel); optional(t, "duration", out.duration);
             optional(t, "constructionLevel", out.constructionLevel);
             if (t.contains("cost")) out.cost = cost(t.at("cost"));
@@ -260,7 +300,17 @@ BuildingSemantics semantics(const Json& j)
         if (policy == "weighted_late_choice") s.production.scheduling = BuildingProductionScheduling::WeightedLateChoice;
         else if (policy != "weighted_committed_job") fail("production.scheduling", "unknown policy");
         optional(p, "fallbackUnit", s.production.fallbackUnit);
-        if (p.contains("initialRatios")) array(p.at("initialRatios"), s.production.initialRatios, "initialRatios");
+        if (p.contains("initialRatios")) {
+            const auto& ratios=p.at("initialRatios");
+            if (ratios.is_array()) array(ratios,s.production.initialRatios,"initialRatios");
+            else {
+                object(ratios,"initialRatios");
+                for (auto it=ratios.begin();it!=ratios.end();++it) {
+                    unitStableKey(it.key(),"initialRatios"); const auto value=integer(it.value(),"initialRatios");
+                    range(value,0,32767,"initialRatios"); s.production.additionalInitialRatios[it.key()]=value;
+                }
+            }
+        }
         if (p.contains("recipes"))
         {
             const auto& recipes = p.at("recipes");
@@ -269,11 +319,13 @@ BuildingSemantics semantics(const Json& j)
             {
                 int u = -1;
                 for (int i = 0; i < NB_UNIT_TYPE; ++i) if (it.key() == UNIT_NAMES[i]) u = i;
-                if (u < 0) fail("recipes", "unknown unit '" + it.key() + "'");
-                const auto& r = it.value(); auto& out = s.production.recipes[u];
+                unitStableKey(it.key(),"recipes");
+                const auto& r = it.value(); auto& out = u<0 ? s.production.additionalRecipes[it.key()] : s.production.recipes[u];
                 keys(r, {"enabled", "duration", "cost"}, "recipe");
                 optional(r, "enabled", out.enabled); optional(r, "duration", out.duration);
-                if (r.contains("cost")) out.cost = cost(r.at("cost"));
+                out.costExplicit=r.contains("cost");
+                if (out.costExplicit) out.cost = cost(r.at("cost"));
+                else if(u>=0) out.cost=UnitCatalog::legacyMigration()->definition(u).cost;
             }
         }
     }
@@ -308,6 +360,13 @@ Json semanticsJson(const BuildingSemantics& s)
     WRITE(occupiesGround); WRITE(admittedUnitMask); WRITE(workPriorityBias); WRITE(trainingInParallel);
     WRITE(projectileDamage); WRITE(projectileBuildingDamage); WRITE(ammunitionMaterial); WRITE(ammunitionCost);
 #undef WRITE
+    if (s.admittedUnits.specified) j["admittedUnits"]=s.admittedUnits.keys;
+    constexpr const char* jobs[]={"clear","explore","defend"};
+    for (unsigned role=0;role<3;++role) if (s.attractionUnits[role].specified) j["attractionUnits"][jobs[role]]=s.attractionUnits[role].keys;
+    if (!s.additionalProjectileDamage.empty()) {
+        j["projectileDamage"]=s.additionalProjectileDamage;
+        for (unsigned unit=0;unit<NB_UNIT_TYPE;++unit) if (!j["projectileDamage"].contains(UNIT_NAMES[unit])) j["projectileDamage"][UNIT_NAMES[unit]]=s.projectileDamage[unit];
+    }
     j["constructionCost"] = costJson(s.constructionCost);
     j["repairCost"] = costJson(s.repairCost);
     j["sightSharing"] = s.sightSharing == BuildingSightSharing::Food ? "food" : s.sightSharing == BuildingSightSharing::Exchange ? "exchange" : "other";
@@ -329,17 +388,29 @@ Json semanticsJson(const BuildingSemantics& s)
         if (t.enabled || t.unitMask != BUILDING_ALL_UNIT_TYPES || t.targetLevel || t.duration || t.constructionLevel >= 0 || t.cost != BuildingMaterialCost{})
             training[ABILITY_NAMES[a]] = {{"enabled", t.enabled}, {"unitMask", t.unitMask},
                 {"targetLevel", t.targetLevel}, {"duration", t.duration}, {"cost", costJson(t.cost)}};
+        if (t.units.specified) training[ABILITY_NAMES[a]]["units"]=t.units.keys;
         if (t.constructionLevel >= 0) training[ABILITY_NAMES[a]]["constructionLevel"] = t.constructionLevel;
     }
     auto& p = j["production"];
     p["scheduling"] = s.production.scheduling == BuildingProductionScheduling::WeightedLateChoice ? "weighted_late_choice" : "weighted_committed_job";
-    p["fallbackUnit"] = s.production.fallbackUnit; p["initialRatios"] = s.production.initialRatios;
+    p["fallbackUnit"] = s.production.fallbackUnit; p["initialRatios"] = std::vector<Sint32>(s.production.initialRatios.begin(),s.production.initialRatios.begin()+NB_UNIT_TYPE);
+    if (!s.production.additionalInitialRatios.empty()) {
+        p["initialRatios"]=s.production.additionalInitialRatios;
+        for (unsigned unit=0;unit<NB_UNIT_TYPE;++unit) if (!p["initialRatios"].contains(UNIT_NAMES[unit])) p["initialRatios"][UNIT_NAMES[unit]]=s.production.initialRatios[unit];
+    }
     p["recipes"] = Json::object();
     for (int u = 0; u < NB_UNIT_TYPE; ++u)
     {
         const auto& r = s.production.recipes[u];
         if (r.enabled || r.duration || r.cost != BuildingMaterialCost{})
-            p["recipes"][UNIT_NAMES[u]] = {{"enabled", r.enabled}, {"duration", r.duration}, {"cost", costJson(r.cost)}};
+        {
+            p["recipes"][UNIT_NAMES[u]] = {{"enabled", r.enabled}, {"duration", r.duration}};
+            if (r.costExplicit) p["recipes"][UNIT_NAMES[u]]["cost"]=costJson(r.cost);
+        }
+    }
+    for (const auto& [key,r]:s.production.additionalRecipes) {
+        p["recipes"][key]={{"enabled",r.enabled},{"duration",r.duration}};
+        if (r.costExplicit) p["recipes"][key]["cost"]=costJson(r.cost);
     }
     auto& m = j["market"];
     m["suppliesStockMaterials"]=resourceMaskJson(s.market.suppliesStockMask);
@@ -840,7 +911,7 @@ void BuildingsTypes::resolveAndValidate()
             range(service->unitMask, 0, BUILDING_ALL_UNIT_TYPES, b.key + ".service.unitMask");
             range(service->duration, 0, 1000000, b.key + ".service.duration");
             range(service->optionalFruitMask, 0, (1 << HAPPINESS_COUNT) - 1, b.key + ".optionalFruitMask");
-            if (service->enabled && (!(service->unitMask & s.admittedUnitMask) || b.maxUnitInside == 0)) fail(b.key, "service has no admitted occupants");
+            if (service->enabled && ((!service->units.specified && !s.admittedUnits.specified && !(service->unitMask & s.admittedUnitMask)) || b.maxUnitInside == 0)) fail(b.key, "service has no admitted occupants");
         }
         for (const auto& t : s.training)
         {
@@ -848,10 +919,11 @@ void BuildingsTypes::resolveAndValidate()
             range(t.duration, 0, 1000000, b.key + ".training.duration");
             range(t.targetLevel, 0, 3, b.key + ".training.targetLevel");
             range(t.constructionLevel, -1, 3, b.key + ".training.constructionLevel");
-            if (t.enabled && ((!t.targetLevel && t.constructionLevel < 0) || !(t.unitMask & s.admittedUnitMask) || b.maxUnitInside == 0)) fail(b.key, "training has no valid target or occupants");
+            if (t.enabled && ((!t.targetLevel && t.constructionLevel < 0) || (!t.units.specified && !s.admittedUnits.specified && !(t.unitMask & s.admittedUnitMask)) || b.maxUnitInside == 0)) fail(b.key, "training has no valid target or occupants");
         }
-        range(s.production.fallbackUnit, 0, NB_UNIT_TYPE - 1, b.key + ".fallbackUnit");
+        range(s.production.fallbackUnit, 0, 1023, b.key + ".fallbackUnit");
         const BuildingProductionRecipe* first = nullptr;
+        const BuildingProductionRecipe* firstExplicit = nullptr;
         for (int u = 0; u < NB_UNIT_TYPE; ++u)
         {
             const auto& recipe = s.production.recipes[u];
@@ -859,11 +931,18 @@ void BuildingsTypes::resolveAndValidate()
             range(s.production.initialRatios[u], 0, 32767, b.key + ".initialRatios");
             if (!recipe.enabled) continue;
             if (first && s.production.scheduling == BuildingProductionScheduling::WeightedLateChoice &&
-                (recipe.duration != first->duration || recipe.cost != first->cost)) fail(b.key, "late-choice production requires equal recipes");
+                recipe.duration != first->duration) fail(b.key, "late-choice production requires equal recipes");
+            // Inherited costs belong to the unit catalog and are checked when
+            // configureUnits resolves it. Only explicit costs are known here.
+            if(recipe.costExplicit) {
+                if(firstExplicit && s.production.scheduling==BuildingProductionScheduling::WeightedLateChoice && recipe.cost!=firstExplicit->cost)
+                    fail(b.key,"late-choice production requires equal recipes");
+                firstExplicit=&recipe;
+            }
             first = &recipe;
         }
         if (first && s.production.scheduling == BuildingProductionScheduling::WeightedLateChoice &&
-            !s.production.recipes[s.production.fallbackUnit].enabled) fail(b.key, "late-choice fallback recipe is disabled");
+            s.production.fallbackUnit<NB_UNIT_TYPE && !s.production.recipes[s.production.fallbackUnit].enabled) fail(b.key, "late-choice fallback recipe is disabled");
         if (s.repairable && (b.prevLevel < 0 || !(*entries_)[b.prevLevel].isBuildingSite))
             fail(b.key, "repair requires a construction variant");
         if (!b.isBuildingSite && b.nextLevel >= 0 && !(*entries_)[b.nextLevel].isBuildingSite)

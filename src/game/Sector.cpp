@@ -4,6 +4,9 @@
 #include "Bullet.h"
 #include "FileFormatVersions.h"
 #include <algorithm>
+#include <climits>
+#include <memory>
+#include <stdexcept>
 #include "Game.h"
 #include "Sector.h"
 #include "Unit.h"
@@ -66,7 +69,10 @@ bool Sector::load(GAGCore::InputStream *stream, Game *game, Sint32 versionMinor)
 	for (Uint32 i=0; i<bulletCount; i++)
 	{
 		stream->readEnterSection(i);
-		Bullet* bullet = new Bullet(stream, versionMinor);
+		auto loaded = std::make_unique<Bullet>(stream, versionMinor);
+		if (game && versionMinor >= FILE_FORMAT_VERSION_UNIT_CATALOG && loaded->unitDamage.size() != game->unitTypeCount())
+			throw std::runtime_error("Saved bullet damage table does not match unit catalog");
+		Bullet* bullet = loaded.release();
 		if (versionMinor >= FILE_FORMAT_VERSION_BUILDING_CATALOG) bullets.push_back(bullet);
 		else bullets.push_front(bullet);
 		stream->readLeaveSection();
@@ -119,14 +125,14 @@ void Sector::step(void)
 
 				const Unit* target = game->teams[team]->myUnits[id];
 				const int baseDamage = bullet->unitDamage[target->typeNum];
-				const int damage = baseDamage > 0 ? std::max(BULLET_MIN_DAMAGE, baseDamage - target->getRealArmor(false)) : 0;
+				const int damage = baseDamage > 0 ? int(std::clamp<Sint64>(Sint64(baseDamage) - target->getRealArmor(false), BULLET_MIN_DAMAGE, INT_MAX)) : 0;
 				Unit *victim = game->teams[team]->myUnits[id];
 				TeamStats::recordDamage(bullet->sourceTeam >= 0 ? game->teams[bullet->sourceTeam]
 																: nullptr,
 										victim->owner, GameplayMeasurements::TOWER,
 										GameplayMeasurements::UNIT, victim->hp, damage);
 				victim->recordLethalDamage(damage, GameplayMeasurements::COMBAT);
-				game->teams[team]->myUnits[id]->hp -= damage;
+				victim->hp=int(std::max<Sint64>(INT_MIN,Sint64(victim->hp)-damage));
 			}
 			else
 			{
@@ -141,7 +147,7 @@ void Sector::step(void)
 						game->map.setMapDiscovered(bullet->revealX, bullet->revealY, bullet->revealW, bullet->revealH, Team::teamNumberToMask(team));
 
 					Building *building = game->teams[team]->myBuildings[id];
-					const int damage = bullet->shootDamage > 0 ? std::max(BULLET_MIN_DAMAGE, bullet->shootDamage-building->getEffectiveArmor()) : 0;
+					const int damage = bullet->shootDamage > 0 ? int(std::clamp<Sint64>(Sint64(bullet->shootDamage)-building->getEffectiveArmor(), BULLET_MIN_DAMAGE, INT_MAX)) : 0;
 
 					game->teams[team]->pushGameEvent(GameEvent::buildingUnderAttack(game->stepCounter, bullet->targetX, bullet->targetY, building->typeNum));
 
@@ -150,7 +156,7 @@ void Sector::step(void)
 						building->owner, GameplayMeasurements::TOWER,
 						GameplayMeasurements::BUILDING, building->hp,
 						damage);
-					building->hp -= damage;
+					building->hp=int(std::max<Sint64>(INT_MIN,Sint64(building->hp)-damage));
 					if (building->hp <= 0)
 						building->kill(GameplayMeasurements::DESTROYED);
 				}

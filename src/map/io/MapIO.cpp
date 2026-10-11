@@ -789,7 +789,7 @@ void Map::saveBuildingGradientPipeline(GAGCore::OutputStream *stream) const
 	stream->writeLeaveSection();
 }
 
-void Map::loadBuildingGradientPipeline(GAGCore::InputStream *stream, bool packed)
+void Map::loadBuildingGradientPipeline(GAGCore::InputStream *stream, bool packed, int versionMinor)
 {
 	auto &rt=*gradientRuntime;
 	stream->readEnterSection("buildingGradientPipeline");
@@ -816,6 +816,10 @@ void Map::loadBuildingGradientPipeline(GAGCore::InputStream *stream, bool packed
 		request.building=stream->readUint16("building");
 		request.identity=stream->readUint32("identity");
 		request.slot=stream->readUint8("slot");
+		if (versionMinor<FILE_FORMAT_VERSION_UNIT_CATALOG) {
+			if (request.slot>=BUILDING_ROUTE_COUNT*LEGACY_SWIM_CLASS_COUNT) throw std::runtime_error("Invalid saved building gradient destination");
+			request.slot=(request.slot/LEGACY_SWIM_CLASS_COUNT)*SWIM_CLASS_COUNT+request.slot%LEGACY_SWIM_CLASS_COUNT;
+		}
 		request.stale=loadFlag(stream, "stale");
 		stream->readLeaveSection();
 		validDestination(request.team, request.building, request.slot);
@@ -842,6 +846,10 @@ void Map::loadBuildingGradientPipeline(GAGCore::InputStream *stream, bool packed
 		p.buildingId=stream->readUint16("building");
 		p.scriptIdentity=stream->readUint32("identity");
 		p.slot=stream->readUint8("slot");
+		if (versionMinor<FILE_FORMAT_VERSION_UNIT_CATALOG) {
+			if (p.slot>=BUILDING_ROUTE_COUNT*LEGACY_SWIM_CLASS_COUNT) throw std::runtime_error("Invalid saved building gradient destination");
+			p.slot=(p.slot/LEGACY_SWIM_CLASS_COUNT)*SWIM_CLASS_COUNT+p.slot%LEGACY_SWIM_CLASS_COUNT;
+		}
 		validDestination(p.team, p.buildingId, p.slot);
 		p.swim=p.slot%SWIM_CLASS_COUNT;
 		p.route=BuildingRoute(p.slot/SWIM_CLASS_COUNT);
@@ -996,7 +1004,7 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 					stream->writeLeaveSection();
 				}
 				for (int sw=0; sw<SWIM_VARIANT_COUNT; ++sw)
-					stream->writeUint8(building->locked[profile*SWIM_VARIANT_COUNT+sw], sw ? "swimLocked" : "walkLocked");
+					stream->writeUint8(building->locked[profile*SWIM_VARIANT_COUNT+sw], sw==2?"waterOnlyLocked":sw ? "swimLocked" : "walkLocked");
 				stream->writeLeaveSection();
 			}
 			stream->writeLeaveSection();
@@ -1040,6 +1048,8 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 
 void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 {
+	const unsigned savedSwimClasses=versionMinor>=FILE_FORMAT_VERSION_UNIT_CATALOG?SWIM_CLASS_COUNT:LEGACY_SWIM_CLASS_COUNT;
+	const unsigned savedAccessVariants=versionMinor>=FILE_FORMAT_VERSION_UNIT_CATALOG?SWIM_VARIANT_COUNT:2;
 	invalidateResourceSeeds();
     const bool packed=versionMinor>=FILE_FORMAT_VERSION_COMPACT_STATE && GAGCore::PackedArray::binary(stream);
 	gradientRuntime->preparation={};
@@ -1085,7 +1095,7 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 		}
 		stream->readLeaveSection();
 		stream->readEnterSection("swimClasses");
-		for (int sw=0; sw<SWIM_CLASS_COUNT; ++sw)
+		for (int sw=0; sw<savedSwimClasses; ++sw)
 		{
 			stream->readEnterSection(sw);
 			stream->readEnterSection("resources");
@@ -1126,7 +1136,7 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 		{
 			stream->readEnterSection(b);
 			const BuildingRoute savedRoute = versionMinor >= FILE_FORMAT_VERSION_BUILDING_CATALOG ? BuildingRoute::Footprint : BuildingRoute::Automatic;
-			for (int sw=0; sw<SWIM_CLASS_COUNT; ++sw)
+			for (int sw=0; sw<savedSwimClasses; ++sw)
 			{
 				stream->readEnterSection(sw);
 				// Existing saves contain complete fields; discard any previous queue
@@ -1143,7 +1153,7 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 			if (versionMinor >= FILE_FORMAT_VERSION_GREEDY_FETCHING)
 			{
 				stream->readEnterSection("gradientUse");
-				for (int sw=0; sw<SWIM_CLASS_COUNT; ++sw)
+				for (int sw=0; sw<savedSwimClasses; ++sw)
 				{
 					stream->readEnterSection(sw);
 					building->globalGradientUsedStep[building->routeSlot(sw, savedRoute)]=stream->readUint32("usedStep");
@@ -1157,7 +1167,7 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 				// walking field's last-use step. Read and discard them; resource
 				// fetching never consults one now.
 				stream->readEnterSection("roundTrip");
-				for (int sw=0; sw<SWIM_CLASS_COUNT; ++sw)
+				for (int sw=0; sw<savedSwimClasses; ++sw)
 				{
 					stream->readEnterSection(sw);
 					building->globalGradientUsedStep[building->routeSlot(sw, savedRoute)]=stream->readUint32("usedStep");
@@ -1176,10 +1186,13 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 				stream->readLeaveSection();
 			}
 			stream->readEnterSection("access");
-			for (int sw=0; sw<SWIM_VARIANT_COUNT; ++sw)
+			// Older records store access for the building's automatic route;
+			// resolve that sentinel before indexing the concrete route rows.
+			const int savedAccessBase=int(building->resolveRoute(savedRoute))*SWIM_VARIANT_COUNT;
+			for (int sw=0; sw<savedAccessVariants; ++sw)
 			{
 				stream->readEnterSection(sw);
-				building->locked[building->routeAccess(sw, savedRoute)]=loadFlag(stream,"locked");
+				building->locked[savedAccessBase+sw]=loadFlag(stream,"locked");
 				building->anyResourceToClear[sw]=stream->readUint8("resourceState");
 				if (building->anyResourceToClear[sw]>2) throw std::runtime_error("Invalid saved resource state");
 				stream->readLeaveSection();
@@ -1191,7 +1204,7 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 				for (int profile=1; profile<BUILDING_ROUTE_COUNT; ++profile)
 				{
 					stream->readEnterSection(profile);
-					for (int sw=0; sw<SWIM_CLASS_COUNT; ++sw)
+					for (int sw=0; sw<savedSwimClasses; ++sw)
 					{
 						stream->readEnterSection(sw);
 						const int slot=profile*SWIM_CLASS_COUNT+sw;
@@ -1203,8 +1216,8 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 						building->globalGradientUsedStep[slot]=stream->readUint32("usedStep");
 						stream->readLeaveSection();
 					}
-					for (int sw=0; sw<SWIM_VARIANT_COUNT; ++sw)
-						building->locked[profile*SWIM_VARIANT_COUNT+sw]=loadFlag(stream, sw ? "swimLocked" : "walkLocked");
+					for (int sw=0; sw<savedAccessVariants; ++sw)
+						building->locked[profile*SWIM_VARIANT_COUNT+sw]=loadFlag(stream, sw==2?"waterOnlyLocked":sw ? "swimLocked" : "walkLocked");
 					stream->readLeaveSection();
 				}
 				stream->readLeaveSection();
@@ -1223,14 +1236,14 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 		for (unsigned index=0; index<count; ++index) {
 			stream->readEnterSection(index);
 			const unsigned destination=stream->readUint16("destination");
-			const unsigned sw=destination%SWIM_CLASS_COUNT;
-			const unsigned marketBase=Team::MAX_COUNT*(MaterialSlotCount+2)*SWIM_CLASS_COUNT;
+			const unsigned sw=destination%savedSwimClasses;
+			const unsigned marketBase=Team::MAX_COUNT*(MaterialSlotCount+2)*savedSwimClasses;
 			const bool market=destination>=marketBase;
 			if (market && (versionMinor<FILE_FORMAT_VERSION_MARKET_GRADIENTS || !marketsV2Enabled())) throw std::runtime_error("Invalid saved gradient destination");
 			const unsigned encoded=market ? destination-marketBase : destination;
 			const unsigned kinds=market ? MaterialSlotCount : MaterialSlotCount+2;
-			const unsigned kind=(encoded/SWIM_CLASS_COUNT)%kinds;
-			const unsigned team=encoded/(SWIM_CLASS_COUNT*kinds);
+			const unsigned kind=(encoded/savedSwimClasses)%kinds;
+			const unsigned team=encoded/(savedSwimClasses*kinds);
 			if (team>=static_cast<unsigned>(game->teamsCount())) throw std::runtime_error("Invalid saved gradient team");
 			auto *slot=market ? &marketMaterialGradients[team][kind][sw] : kind<MaterialSlotCount ? &materialGradients[team][kind][sw]
 				: kind==MaterialSlotCount ? &guardAreasGradient[team][sw] : &clearAreasGradient[team][sw];
@@ -1246,7 +1259,7 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 	}
 	if (versionMinor>=FILE_FORMAT_VERSION_BUILDING_CATALOG) loadMaterialRoutingCache(stream,packed,versionMinor);
 	// Older saves restore no scheduled building work.
-	if (versionMinor>=FILE_FORMAT_VERSION_BUILDING_GRADIENT_PIPELINE) loadBuildingGradientPipeline(stream,packed);
+	if (versionMinor>=FILE_FORMAT_VERSION_BUILDING_GRADIENT_PIPELINE) loadBuildingGradientPipeline(stream,packed,versionMinor);
     if(versionMinor>=FILE_FORMAT_VERSION_INTEGRATED_RESOURCE_GROWTH || loadedHistoricalGrowthVersion || loadedLegacyGrowth144 || loadedLegacyGrowth145)
         gradientRuntime->growth.load(stream,*this,game->stepCounter,loadedHistoricalGrowthVersion ? loadedHistoricalGrowthVersion : versionMinor);
 	stream->readLeaveSection();
@@ -1260,7 +1273,7 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
         gradientRuntime->materialFields.clear();
         gradientRuntime->materialLru.clear();
         for (int t=0; t<game->teamsCount(); ++t) {
-            for (int sw=0; sw<SWIM_CLASS_COUNT; ++sw) {
+            for (int sw=0; sw<savedSwimClasses; ++sw) {
                 for (int r=0; r<MaterialSlotCount; ++r) {
                     delete[] materialGradients[t][r][sw]; materialGradients[t][r][sw]=nullptr;
                     gradientUpdated[t][r][sw]=false;
@@ -1356,7 +1369,7 @@ void Map::loadMaterialRoutingCache(GAGCore::InputStream* stream, bool packed, in
             || !entry.recency || entry.recency<=prior || entry.recency>clock)
             throw std::runtime_error("Invalid resource routing cache entry");
         prior=entry.recency;
-        const Uint64 key=((((Uint64(entry.consumer+1)*Team::MAX_COUNT+entry.team)*MaterialCount+entry.resource)*SWIM_CLASS_COUNT+entry.swim)*4)+entry.modes;
+        const Uint64 key=MapState::materialFieldKey(entry.consumer,entry.team,entry.resource,entry.swim,entry.modes);
         if (cache.materialFields.contains(key)) throw std::runtime_error("Duplicate resource routing cache entry");
         Uint16* field=nullptr; loadGradient(stream,field,size,packed); entry.cells.reset(field);
         if (!field) throw std::runtime_error("Missing resource routing cache field");

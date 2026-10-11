@@ -350,7 +350,7 @@ uint32_t WorldState::computeSignature() const
 	}
     for(const auto& colony:feedingColonies) {
         hashValue(result,colony.x);hashValue(result,colony.y);
-        for(int unit=0;unit<3;++unit)hashValue(result,colony.demand[unit]);
+        for(int demand:colony.demand)hashValue(result,demand);
     }
 	return result;
 }
@@ -1364,12 +1364,12 @@ void Planner::prepareFoodLedger(const WorldState& world, int excludeAction,
     const auto* candidateProfile=world.profile(candidateType);
     const auto* candidate=candidateProfile?candidateProfile->atLevel(candidateLevel):nullptr;
     if(candidate) {profiles.push_back(candidate);colonies.push_back(candidateColony);buildings.push_back(nullptr);}
-    std::vector<std::array<int,3>> demand;
-    for(const auto& colony:world.feedingColonies)demand.push_back({colony.demand[0],colony.demand[1],colony.demand[2]});
+    std::vector<std::vector<int>> demand;
+    for(const auto& colony:world.feedingColonies)demand.push_back(colony.demand);
     std::vector<AIMaxima::FeedingProvider> providers;
     for(size_t i=0;i<profiles.size();++i) {
         const auto* profile=profiles[i];
-        providers.push_back({colonies[i],profile?profile->feedingRate:0,profile?profile->feedingMask:0});
+        providers.push_back({colonies[i],profile?profile->feedingRate:0,profile?profile->feedingMask:0,profile?profile->feedingRecipients:std::vector<Uint8>{}});
     }
     const auto meals=AIMaxima::allocateFeedingDemand(demand,providers);
     for(size_t i=0;i<profiles.size();++i) {
@@ -2689,7 +2689,7 @@ void Planner::prepareRetrySignature(const WorldState& world)
 	for(int r=0;r<MaterialCount;++r)hashValue(signature,world.accessibleSupplies[r]);
     for(const auto& colony:world.feedingColonies) {
         hashValue(signature,colony.x);hashValue(signature,colony.y);
-        for(int unit=0;unit<3;++unit)hashValue(signature,colony.demand[unit]);
+        for(int demand:colony.demand)hashValue(signature,demand);
     }
 	for(const WorldTile& tile:world.tiles)
 	{

@@ -217,19 +217,19 @@ void fixture(const std::string &name)
 	}
 	const auto directory = glob2test::artifactDir();
 	const auto serial = execute(initial, directory / "workers1", 1, false, true);
-	// Runtime resources have their own trace; retain released traces above and
-	// the terrain trace as historical migration evidence.
-	const auto resourceFixture = "test/fixtures/javascript/" + name + "-256-resources.checksums.gz";
+	// Configurable units have their own trace; retain released traces above and
+	// the terrain/resource traces as historical migration evidence.
+	const auto unitFixture = "test/fixtures/javascript/" + name + "-256-units.checksums.gz";
 	if (glob2test::updatingFixtures())
 	{
-		gzFile output = gzopen((glob2test::sourceRoot() / resourceFixture).string().c_str(), "wb9");
+		gzFile output = gzopen((glob2test::sourceRoot() / unitFixture).string().c_str(), "wb9");
 		REQUIRE(output != nullptr);
 		const auto written = gzwrite(output, serial.trace.data(), unsigned(serial.trace.size()));
 		const auto closed = gzclose(output);
 		REQUIRE(written == int(serial.trace.size()));
 		REQUIRE(closed == Z_OK);
 	}
-	const auto expected = glob2test::readFile(glob2test::inflated(resourceFixture));
+	const auto expected = glob2test::readFile(glob2test::inflated(unitFixture));
 	CHECK(serial.trace == expected);
 	const auto parallel = execute(initial, directory / "workers4", 4, false, true);
 	CHECK(parallel.trace == serial.trace);

@@ -6,6 +6,7 @@
 #include "FileFormatVersions.h"
 #include "BuildingType.h"
 #include "BuildingArtwork.h"
+#include "UnitCatalog.h"
 #include <BinaryStream.h>
 #include <TextStream.h>
 #include <array>
@@ -122,6 +123,7 @@ GameHeader::GameHeader()
 
 void GameHeader::reset()
 {
+	unitCatalogValue=UnitCatalog::availableDefaults();
 	++observationRevisionValue; aiOrderDelay = 8; buildingGradientDelay = DEFAULT_BUILDING_GRADIENT_DELAY;
 	buildingCatalogSnapshot.clear();
 	buildingArtwork.reset();
@@ -197,9 +199,20 @@ void GameHeader::setResourceExperiments(const std::vector<CatalogExperimentDefin
 	validateCatalogExperiments(definitions);
 	resourceCatalogExperiments = definitions;
 }
+void GameHeader::setUnitCatalog(std::shared_ptr<const UnitCatalog> catalog)
+{
+    if(!catalog)throw std::invalid_argument("Missing unit catalog");
+    unitCatalogValue=std::move(catalog); ++observationRevisionValue;
+}
+void GameHeader::setUnitCatalogSnapshot(const std::string& snapshot)
+{
+    setUnitCatalog(snapshot.empty()?UnitCatalog::legacy():UnitCatalog::deserialize(snapshot));
+}
+std::string GameHeader::getUnitCatalogSnapshot() const { return unitCatalogValue->serialize(); }
 std::vector<std::string> GameHeader::catalogExperimentKeys() const
 {
 	auto keys = buildingCatalogExperimentKeys;
+	for (const auto& definition : unitCatalogValue->experiments()) keys.push_back(definition.key);
 	for (const auto& definition : resourceCatalogExperiments) keys.push_back(definition.key);
 	std::sort(keys.begin(), keys.end());
 	keys.erase(std::unique(keys.begin(), keys.end()), keys.end());
@@ -333,6 +346,12 @@ bool GameHeader::load(GAGCore::InputStream *stream, Sint32 versionMinor, Sint32 
 	if (versionMinor >= FILE_FORMAT_VERSION_RUNTIME_RESOURCES)
         setResourceExperiments(loadCatalogExperimentDefinitions(stream));
     else resourceCatalogExperiments.clear();
+    if(versionMinor >= FILE_FORMAT_VERSION_UNIT_CATALOG) {
+        const auto snapshot=readCatalog(stream,"unitCatalog");
+        if(snapshot.empty())throw std::runtime_error("Missing saved unit catalog");
+        setUnitCatalogSnapshot(snapshot);
+    }
+    else setUnitCatalog(UnitCatalog::legacyMigration());
     if (!experiments.load(stream, versionMinor, false, catalogExperimentKeys())) return false;
 	stream->readLeaveSection();
 	return true;
@@ -399,6 +418,7 @@ void GameHeader::save(GAGCore::OutputStream *stream) const
 	writeCatalog(stream, buildingCatalogSnapshot);
 	writeCatalog(stream, buildingArtwork ? buildingArtwork->bytes() : std::string{}, "buildingArtwork",MaxArtworkChunks);
 	saveCatalogExperimentDefinitions(stream, resourceCatalogExperiments);
+	writeCatalog(stream, getUnitCatalogSnapshot(), "unitCatalog");
 	experiments.save(stream);
 	stream->writeLeaveSection();
 }
@@ -474,6 +494,12 @@ bool GameHeader::loadWithoutPlayerInfo(GAGCore::InputStream *stream, Sint32 vers
 	if (versionMinor >= FILE_FORMAT_VERSION_RUNTIME_RESOURCES)
         setResourceExperiments(loadCatalogExperimentDefinitions(stream));
     else resourceCatalogExperiments.clear();
+    if(versionMinor >= FILE_FORMAT_VERSION_UNIT_CATALOG) {
+        const auto snapshot=readCatalog(stream,"unitCatalog");
+        if(snapshot.empty())throw std::runtime_error("Missing saved unit catalog");
+        setUnitCatalogSnapshot(snapshot);
+    }
+    else setUnitCatalog(UnitCatalog::legacyMigration());
     if (!experiments.load(stream, versionMinor, false, catalogExperimentKeys())) return false;
 	stream->readLeaveSection();
 	return true;
@@ -528,6 +554,7 @@ void GameHeader::saveWithoutPlayerInfo(GAGCore::OutputStream *stream) const
 	writeCatalog(stream, buildingCatalogSnapshot);
 	writeCatalog(stream, buildingArtwork ? buildingArtwork->bytes() : std::string{}, "buildingArtwork",MaxArtworkChunks);
 	saveCatalogExperimentDefinitions(stream, resourceCatalogExperiments);
+	writeCatalog(stream, getUnitCatalogSnapshot(), "unitCatalog");
 	experiments.save(stream);
 	stream->writeLeaveSection();
 }

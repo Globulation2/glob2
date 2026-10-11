@@ -170,6 +170,8 @@ delay and format separately; cross-version byte equality is not the acceptance t
 
 The runner retains commands, executable/input hashes, logs, results, per-process
 peak resident memory, wall time, and user-plus-system CPU time from `wait4`.
+On Linux, a child peak at the runner's inherited memory high-water mark is
+rejected as censored; see [RSS measurement limits](resource-benchmarks.md).
 It runs one warm-up and five measured repetitions by default, with rotated/reversed
 ordering; use `--repeats 10` for ten paired measurement rounds. Explicit counts
 run on both binaries; `auto` runs separately on the candidate. The summary includes

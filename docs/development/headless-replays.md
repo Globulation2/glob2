@@ -33,6 +33,15 @@ placements adopt the new streams and trajectories.
 Supported saved games still load and adopt the current simulation;
 the save floor remains 58.
 
+Unit format 153 embeds resolved unit definitions, assigned job purposes and
+extended cargo before dependent state. It uses network protocol 69 and simulation
+revision 47. The replay floor remains 152: built-in version-152 recordings use an
+explicit legacy representation checksum while running the same default unit
+behavior. New recordings checksum the catalog and extended state. Legacy saves
+recover their saved race tables through format-gated loading, preserving cached
+effective values;
+current saves validate redundant tables against the embedded catalog.
+
 Structured `game run` accepts `--ai-order-delay N`, where `N` is an integer
 from 0 through 8 and defaults to 8 for a new match. It is one match-wide engine
 setting, shared by all native and JavaScript AI players. `--rule aiOrderDelay=N`

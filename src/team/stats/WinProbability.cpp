@@ -207,7 +207,7 @@ namespace WinProbability
 			slot.prestige += team->prestige;
 			for(int variant:combatProviders)
                 if(size_t(variant)<stat->buildingCountByVariant.size())slot.barracks+=stat->buildingCountByVariant[variant];
-			slot.explorers += stat->numberUnitPerType[EXPLORER];
+			slot.explorers += stat->scouts;
 			slot.foodCritical += stat->needFoodCritical;
 			slot.attack += stat->totalAttackPower;
 		}

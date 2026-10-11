@@ -270,6 +270,7 @@ Platform: all.
 | `--generator-package` | file | Load a custom generator package or directory. Repeatable. |
 | `--building-catalog` | file | Building catalog manifest. |
 | `--compute-threads` | compute; default auto | Shared compute pool; auto uses logical CPU count. |
+| `--gpu` | on, off | GPU gradient compute; overrides local setting (graphical default off, headless on). |
 | `--help` | flag; default false | Show this command's help (also -h). |
 
 Unspecified display, audio and editor settings inherit saved preferences.
@@ -333,6 +334,7 @@ Platform: all.
 | `--generator-package` | file | Load a custom generator package or directory. Repeatable. |
 | `--building-catalog` | file | Building catalog manifest. |
 | `--compute-threads` | compute; default auto | Shared compute pool; auto uses logical CPU count. |
+| `--gpu` | on, off | GPU gradient compute; overrides local setting (graphical default off, headless on). |
 | `--help` | flag; default false | Show this command's help (also -h). |
 
 Unspecified display, audio and editor settings inherit saved preferences.
@@ -644,6 +646,7 @@ Platform: all.
 | `--data-dir` | directory | Add an asset search directory (in order). Repeatable. |
 | `--generator-package` | file | Load a custom generator package or directory. Repeatable. |
 | `--compute-threads` | compute; default auto | Shared compute pool; auto uses logical CPU count. |
+| `--gpu` | on, off | GPU gradient compute; overrides local setting (graphical default off, headless on). |
 | `--map-file` | file | Map input for a new game. |
 | `--load-game` | file | Saved-game input for continuation. |
 | `--generator` | string | Generate a map before starting. |
@@ -705,7 +708,7 @@ glob2 game run --map-file maps/FourSquares1.map.gz --game-seed 713 --player cast
 
 ### `glob2 game repeat`
 
-Repeat a saved game headlessly.
+Repeat a saved game, optionally with normal presentation.
 
 ```text
 glob2 game repeat FILE [OPTIONS]
@@ -719,13 +722,56 @@ Platform: all.
 | --- | --- | --- |
 | `--data-dir` | directory | Add an asset search directory (in order). Repeatable. |
 | `--generator-package` | file | Load a custom generator package or directory. Repeatable. |
+| `--fullscreen` | flag; default false | Use fullscreen. |
+| `--no-fullscreen` | flag; default false | Use a window. |
+| `--resizable` | flag; default false | Allow window resizing. |
+| `--no-resizable` | flag; default false | Disable window resizing. |
+| `--custom-cursor` | flag; default false | Use the game cursor. |
+| `--no-custom-cursor` | flag; default false | Use the system cursor. |
+| `--mute` | flag; default false | Mute music and speech. |
+| `--no-mute` | flag; default false | Unmute music and speech. |
+| `--renderer` | gpu, software | Rendering backend. |
+| `--graphics-detail` | full, reduced | Detail effects. |
+| `--window-size` | resolution; pixels | Initial window size in pixels; clamped to at least 640x480. |
+| `--username` | string | Player name. |
+| `--editor-script` | sgsl, usl; default preferences | Map editor script language. |
+| `--record` | file | Record menus and gameplay to MP4; refuses existing files. |
+| `--videoshot` | string | Record to videoshots/NAME.mp4. |
+| `--record-fps` | integer; default 30; frames/second; 1..240 | Recording frames per second. |
+| `--record-encoder` | auto, software; default auto | Embedded encoder selection. |
+| `--record-crf` | integer; default 23; 0..51 | Software H.264 quality; lower means higher quality. |
+| `--record-chapter-ticks` | integer; default 10000; ticks; 1..1000000000 | Simulation ticks per chapter. |
+| `--display` | flag; default false | Render the saved game through the normal presentation loop. |
 | `--compute-threads` | compute; default auto | Shared compute pool; auto uses logical CPU count. |
+| `--gpu` | on, off | GPU gradient compute; overrides local setting (graphical default off, headless on). |
 | `--ticks` | integer; default 0; ticks; 0..2147483647 | Steps per run; 0 runs until the game ends. |
 | `--runs` | integer; default 1; 1..2147483647 | Number of saved-game runs. |
 | `--building-catalog` | file | Building catalog. |
 | `--help` | flag; default false | Show this command's help (also -h). |
 
-Applicable environment variables: `GLOB2_REPLAY_PATH`, `GLOB2_CHECKSUM_SIDECAR`, `GLOB2_TEAM_RESULTS`, `GLOB2_TEAM_TIMELINE`.
+Unspecified display, audio and editor settings inherit saved preferences.
+
+Recording requires --display.
+
+Choose at most one: `--fullscreen`, `--no-fullscreen`.
+
+Choose at most one: `--resizable`, `--no-resizable`.
+
+Choose at most one: `--custom-cursor`, `--no-custom-cursor`.
+
+Choose at most one: `--mute`, `--no-mute`.
+
+Choose at most one: `--record`, `--videoshot`.
+
+`--record-chapter-ticks` requires `--record` or `--videoshot`.
+
+`--record-crf` requires `--record` or `--videoshot`.
+
+`--record-encoder` requires `--record` or `--videoshot`.
+
+`--record-fps` requires `--record` or `--videoshot`.
+
+Applicable environment variables: `GLOB2_REPLAY_PATH`, `GLOB2_CHECKSUM_SIDECAR`, `GLOB2_TEAM_RESULTS`, `GLOB2_TEAM_TIMELINE`, `GLOB2_GRADIENT_BACKEND`, `GLOB2_OPENCL_DEVICE`.
 
 ```sh
 glob2 game repeat saved.game.gz --ticks 64 --runs 1
@@ -792,6 +838,7 @@ Platform: all.
 | `--generator-package` | file | Load a custom generator package or directory. Repeatable. |
 | `--building-catalog` | file | Building catalog manifest. |
 | `--compute-threads` | compute; default auto | Shared compute pool; auto uses logical CPU count. |
+| `--gpu` | on, off | GPU gradient compute; overrides local setting (graphical default off, headless on). |
 | `--instance` | string | Online instance origin. |
 | `--help` | flag; default false | Show this command's help (also -h). |
 
@@ -856,6 +903,7 @@ Platform: all.
 | `--generator-package` | file | Load a custom generator package or directory. Repeatable. |
 | `--building-catalog` | file | Building catalog manifest. |
 | `--compute-threads` | compute; default auto | Shared compute pool; auto uses logical CPU count. |
+| `--gpu` | on, off | GPU gradient compute; overrides local setting (graphical default off, headless on). |
 | `--instance` | string | Online instance origin. |
 | `--hash` | string | Catalog map SHA-256. Required. |
 | `--title` | string | Catalog map title. Required. |
@@ -922,6 +970,7 @@ Platform: all.
 | `--generator-package` | file | Load a custom generator package or directory. Repeatable. |
 | `--building-catalog` | file | Building catalog manifest. |
 | `--compute-threads` | compute; default auto | Shared compute pool; auto uses logical CPU count. |
+| `--gpu` | on, off | GPU gradient compute; overrides local setting (graphical default off, headless on). |
 | `--instance` | string | Online instance origin. |
 | `--hash` | string | Catalog map SHA-256. Required. |
 | `--title` | string | Catalog map title. Required. |
@@ -1146,6 +1195,7 @@ Platform: all.
 | `--record-crf` | integer; default 23; 0..51 | Software H.264 quality; lower means higher quality. |
 | `--record-chapter-ticks` | integer; default 10000; ticks; 1..1000000000 | Simulation ticks per chapter. |
 | `--compute-threads` | compute; default auto | Shared compute pool; auto uses logical CPU count. |
+| `--gpu` | on, off | GPU gradient compute; overrides local setting (graphical default off, headless on). |
 | `--display` | flag; default false | Show test games graphically. |
 | `--runs` | integer; default 0; 0..2147483647 | Game count; 0 repeats forever. |
 | `--ticks` | integer; default 90000; ticks; 0..2147483647 | Tick cap per random game; 0 runs until game end; overrides GLOB2_TEST_MAX_TICKS. |
@@ -1247,6 +1297,7 @@ Platform: all.
 | `--generator-package` | file | Load a custom generator package or directory. Repeatable. |
 | `--building-catalog` | file | Building catalog manifest. |
 | `--compute-threads` | compute; default auto | Shared compute pool; auto uses logical CPU count. |
+| `--gpu` | on, off | GPU gradient compute; overrides local setting (graphical default off, headless on). |
 | `--output-dir` | directory; default . | Translation screenshot directory. |
 | `--help` | flag; default false | Show this command's help (also -h). |
 

@@ -13,12 +13,12 @@
 
 namespace
 {
-bool hasExit(Building* building, bool fly, bool canSwim)
+bool hasExit(Building* building, bool fly, bool canSwim, bool canWalk)
 {
 	int x, y, dx, dy;
 	return fly
 		? building->findAirExit(&x, &y, &dx, &dy)
-		: building->findGroundExit(&x, &y, &dx, &dy, canSwim);
+		: building->findGroundExit(&x, &y, &dx, &dy, canSwim,canWalk);
 }
 
 bool allRemainingUnitsTrapped(Team& team)
@@ -34,7 +34,7 @@ bool allRemainingUnitsTrapped(Team& team)
 		if (unit->displacement != Unit::DIS_EXITING_BUILDING
 			|| unit->movement != Unit::MOV_INSIDE || !unit->attachedBuilding)
 			return false;
-		if (hasExit(unit->attachedBuilding, unit->performance[FLY], unit->performance[SWIM]))
+		if (hasExit(unit->attachedBuilding, unit->performance[FLY], unit->performance[SWIM],unit->performance[WALK]))
 			return false;
 	}
 	if (!foundUnit) return false; // Keep the existing zero-unit rule.
@@ -52,11 +52,14 @@ bool allRemainingUnitsTrapped(Team& team)
 		for (Building* swarm : team.swarms)
 		{
 			// Ratios can still be changed by the player, including from zero.
-			for (int type = 0; type < NB_UNIT_TYPE; ++type)
+			for (unsigned type : swarm->type->semantics.production.enabledUnits)
 			{
 				if (!swarm->canAffordProduction(type)) continue;
 				const UnitType* ut = team.race.getUnitType(type, 0);
-				if (hasExit(swarm, ut->performance[FLY], ut->performance[SWIM]))
+				const auto& traits=team.race.getRuntime(type);
+				if (hasExit(swarm, traits.has(UnitRuntimeTraits::Fly) && ut->performance[FLY],
+					traits.has(UnitRuntimeTraits::Swim) && ut->performance[SWIM],
+					(traits.has(UnitRuntimeTraits::Walk) && ut->performance[WALK]) || !(traits.has(UnitRuntimeTraits::Swim) && ut->performance[SWIM])))
 					return false;
 			}
 		}
@@ -186,7 +189,7 @@ namespace
 		if (b->globalGradient[swimClass] == NULL)
 			return false;
 		if (u->carriedMaterial >= 0)
-			return u->carriedMaterial == resource && map->buildingAvailable(b, swimClass, u->posX, u->posY, cost, BuildingRoute::Footprint);
+			return u->hasCarriedMaterial(resource) && map->buildingAvailable(b, swimClass, u->posX, u->posY, cost, BuildingRoute::Footprint);
 		// Fetch and carry: the plain distances, as hiring uses them.
 		int toBuilding, toResource;
 		if (!map->buildingAvailable(b, swimClass, u->posX, u->posY, &toBuilding, BuildingRoute::Footprint)
@@ -232,7 +235,7 @@ namespace
 		u->destinationPurpose = resource;
 		b->unitsWorking.push_back(u);
 		b->updateCallLists();
-		if (u->carriedMaterial == resource)
+		if (u->hasCarriedMaterial(resource))
 		{
 			u->displacement = Unit::DIS_GOING_TO_BUILDING;
 			u->setTargetBuilding(b);
@@ -256,7 +259,7 @@ void Team::swapTask(Unit *unit)
 	int own;
 	if (!jobCost(unit, a, r, &own))
 		return;
-	int timeLeft = (unit->hungry - unit->trigHungry) / unit->race->hungriness;
+	int timeLeft = unit->foodStepsLeft(unit->trigHungry);
 	Unit *best = NULL;
 	int bestGain = SWAP_MIN_GAIN;
 	for (int i = 0; i < Unit::MAX_COUNT; i++)
@@ -271,7 +274,7 @@ void Team::swapTask(Unit *unit)
 		int mateOwn, mine, theirs;
 		if (!jobCost(mate, b, s, &mateOwn) || !jobCost(unit, b, s, &mine) || !jobCost(mate, a, r, &theirs))
 			continue;
-		if (mine >= timeLeft || theirs >= (mate->hungry - mate->trigHungry) / mate->race->hungriness)
+		if (mine >= timeLeft || theirs >= mate->foodStepsLeft(mate->trigHungry))
 			continue;
 		int gain = own + mateOwn - mine - theirs;
 		if (gain > bestGain)
@@ -304,8 +307,8 @@ void Team::swapInn(Unit *unit)
 		if (mate == unit || !isWalkingToInn(mate) || mate->attachedBuilding == a || mate->attachedBuilding->owner != this)
 			continue;
 		Building *b = mate->attachedBuilding;
-		if (!(b->type->semantics.admittedUnitMask & b->type->semantics.feeding.unitMask & (1u << unit->typeNum))
-			|| !(a->type->semantics.admittedUnitMask & a->type->semantics.feeding.unitMask & (1u << mate->typeNum))) continue;
+		if (!b->runtime->interaction(unit->typeNum).has(BuildingUnitInteraction::Feeds)
+			|| !a->runtime->interaction(mate->typeNum).has(BuildingUnitInteraction::Feeds)) continue;
 		int mateOwn, mine, theirs;
 		if (!innCost(mate, b, &mateOwn) || !innCost(unit, b, &mine) || !innCost(mate, a, &theirs))
 			continue;
@@ -350,7 +353,7 @@ void Team::syncStep(void)
 		Unit *u = myUnits[i];
 		if (u)
 		{
-			if (u->typeNum != EXPLORER)
+			if (u->hasCapability(UnitRuntimeTraits::CountsForSurvival))
 			{
 				nbUsefulUnits++;
 				if (u->medical == Unit::MED_FREE || (u->insideTimeout < 0 && u->destinationPurpose==FEED && u->attachedBuilding && u->attachedBuilding->type->semantics.feeding.enabled))
@@ -360,7 +363,7 @@ void Team::syncStep(void)
 			u->syncStep();
 			// Check after the step: reserving the last service place removes the
 			// building from admission lists. Feeding and healing still offer recovery.
-			if (!u->isDead && u->owner == this && u->typeNum != EXPLORER
+			if (!u->isDead && u->owner == this && u->hasCapability(UnitRuntimeTraits::CountsForSurvival)
 				&& ((!u->isUnitHungry() && u->hp > u->trigHP)
 					|| (u->activity == Unit::ACT_UPGRADING && u->destinationPurpose == FEED
 						&& u->attachedBuilding && u->attachedBuilding->type->canFeedUnit)
@@ -476,7 +479,7 @@ void Team::syncStep(void)
 	for (std::list<Building *>::iterator it=swarms.begin(); it!=swarms.end(); ++it)
 		{
 			if (!(*it)->locked[SWIM_VARIANT_CAN_SWIM])
-				for (int unitType = 0; unitType < NB_UNIT_TYPE; ++unitType)
+				for (unsigned unitType : (*it)->type->semantics.production.enabledUnits)
 					if ((*it)->canAffordProduction(unitType)) { isEnoughFoodInSwarm = true; break; }
 			(*it)->swarmStep();
 		}
@@ -516,7 +519,7 @@ void Team::dirtyWarFlagGradient()
 	for (std::list<Building *>::const_iterator it = combatFlags.begin(); it != combatFlags.end(); ++it)
 	{
 		Building *b = *it;
-		if (b->type->zonable[WARRIOR])
+		if (b->runtime->attractsRole(2))
 			b->resetPathfindGradients();
 	}
 }

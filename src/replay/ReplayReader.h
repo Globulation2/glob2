@@ -59,6 +59,7 @@ public:
 
 	/// Returns the total number of steps
 	Uint32 getNumStepsTotal() const;
+    Uint32 formatVersion() const { return versionMinor; }
 
 	/// Returns true if the replay has finished
 	bool isFinished() const;

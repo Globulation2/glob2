@@ -104,6 +104,31 @@ public:
 	std::shared_ptr<const Catalog> catalog;
 	std::shared_ptr<const GameHeader> configuration;
 	std::shared_ptr<const Fertility::GrowthCache> growth;
+    const UnitCatalog& unitCatalog() const { return *lease.catalogs->units; }
+    const UnitRuntimeTraits& unitTraits(unsigned type) const { return unitCatalog().runtime(type); }
+    std::size_t unitTypeCount() const { return unitCatalog().size(); }
+    int capabilityUpgradeCount(const TeamStat& stat,UnitRuntimeTraits::Flag capability,int ability,int level) const {
+        int count=0;
+        for(unsigned id=0;id<unitTypeCount();++id)
+            if(unitTraits(id).has(capability))count+=stat.upgradeStatePerType[id][ability][level];
+        return count;
+    }
+    Sint32 productionRatio(const BuildingView& b, unsigned type) const {
+        if (type<BuiltinUnitCount) return b.ratio[type];
+        const unsigned extra=type-BuiltinUnitCount;
+        return extra<b.extraProductionCount ? lease.entities->extraProduction[b.extraProductionOffset+extra].ratio : 0;
+    }
+    Sint32 productionUsed(const BuildingView& b, unsigned type) const {
+        if (type<BuiltinUnitCount) return b.percentUsed[type];
+        const unsigned extra=type-BuiltinUnitCount;
+        return extra<b.extraProductionCount ? lease.entities->extraProduction[b.extraProductionOffset+extra].used : 0;
+    }
+    Sint32 originProductionRatio(const BuildingView& b, unsigned type) const {
+        if (type<BuiltinUnitCount) return b.constructionOriginRatios[type];
+        const unsigned extra=type-BuiltinUnitCount;
+        return extra<b.extraProductionCount ? lease.entities->extraProduction[b.extraProductionOffset+extra].constructionOriginRatio : 0;
+    }
+    const UnitCargoStore::Inventory* extraCargo(const UnitView& u) const { return lease.entities->unitCargo.find(u.gid); }
 	const UnitType& unitType(int type, int level) const { return (*observedUnitTypes)[type][level]; }
 	std::span<const TeamView> teams;
 	std::span<const BuildingView> buildings;

@@ -39,6 +39,11 @@ when supported. Preserve contaminated runs and repeat into new output directorie
 Instrumented scopes and instruction counts explain costs but do not replace
 end-to-end paired CPU measurements. Report confidence intervals, CPU, wall time and
 peak RSS separately; the runner's memory metric includes the entire process.
+On Linux, a child can inherit the runner's pre-exec memory high-water mark.
+Input hashing streams files to limit runner memory, and each measurement records
+the runner's peak. If the reported child peak does not exceed that inherited
+floor, the campaign rejects it as censored and retains `rss-censored.json`.
+Do not treat that value as the game's peak memory or use it for acceptance.
 
 On Linux, each raw measurement also retains `/proc/stat` snapshots immediately
 before and after its child run, outside the timed interval. `host_cpu_activity`

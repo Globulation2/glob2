@@ -148,7 +148,7 @@ namespace Cortex
 		ScoredSpot heap[CORTEX_BUILD_CANDIDATES];
 		int count = 0;
 
-		const bool isSwarm = completed->semantics.production.enabledUnitMask != 0;
+		const bool isSwarm = !completed->semantics.production.enabledUnits.empty();
         const bool isInn = completed->semantics.feeding.enabled;
         bool usesFood = isInn && completed->semantics.feeding.cost[materialIndex(MaterialId::Food)] > 0;
         for (const auto& recipe : completed->semantics.production.recipes)

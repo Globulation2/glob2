@@ -314,6 +314,13 @@ def junit_execution_issue(job, junit_text):
     return ''
 
 
+def sanitizer_issue(output):
+    """Recoverable sanitizer diagnostics still invalidate an otherwise passing run."""
+    match = re.search(r'^(?:SUMMARY: (?:AddressSanitizer|LeakSanitizer|UndefinedBehaviorSanitizer|ThreadSanitizer|MemorySanitizer):|'
+                      r'.+:\d+(?::\d+)?: runtime error:)', output, re.MULTILINE)
+    return 'sanitizer diagnostic: ' + match.group(0) if match else ''
+
+
 def xvfb_prefix(job):
     if not job.display or platform.system() != 'Linux' or os.environ.get('DISPLAY'):
         return []
@@ -398,6 +405,20 @@ def run_job(job, args, build_dir):
             note = 'the test changed the profile preferences; tag it [writes-preferences] if that is intended'
             output += f'\n[run_tests] {note}\n'
     junit_text = junit.read_text(encoding='utf-8', errors='replace') if junit.exists() else ''
+    sanitizer = sanitizer_issue(output)
+    if sanitizer and status == 'pass':
+        status = 'fail'
+        note = sanitizer
+    elif status == 'fail' and not note:
+        # A process may fail after doctest wrote passing JUnit (for example LSan
+        # at process exit). Preserve that failure in the merged report as well.
+        try:
+            document = ET.fromstring(junit_text)
+        except ET.ParseError:
+            document = None
+        if document is not None and not any(case.find('failure') is not None or case.find('error') is not None
+                                             for case in document.iter('testcase')):
+            note = sanitizer or f'test process exited with status {code} after producing passing JUnit'
     if status == 'pass':
         issue = junit_execution_issue(job, junit_text)
         if issue:
@@ -532,7 +553,7 @@ def merge_junit(results, path):
                 document = ET.fromstring(result.junit)
             except ET.ParseError:
                 document = None
-            if document is not None:
+            if document is not None and list(document.iter('testcase')):
                 # doctest's JUnit reporter names classes after source files; use suites.
                 # Names repeat across suites, so key by file and name and never guess.
                 by_file_and_name = {(case.file, case.name): case.suite for case in result.job.cases}

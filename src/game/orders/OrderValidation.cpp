@@ -233,10 +233,10 @@ Result validate(const Game& game, int senderPlayer, Order& order)
 				return rejected(Reason::OutOfRange);
 		if (b)
 		{
-			const auto enabled=b->type->semantics.production.enabledUnitMask;
-			if (!enabled) return rejected(Reason::BadState);
+			const auto& enabled=b->type->semantics.production.enabledUnits;
+			if (enabled.empty()) return rejected(Reason::BadState);
 			for (int unit=0; unit<NB_UNIT_TYPE; ++unit)
-				if (!(enabled & (1u<<unit)) && o.ratio[unit]) return rejected(Reason::BadState);
+				if (!b->runtime->produces(unit) && o.ratio[unit]) return rejected(Reason::BadState);
 		}
 		return accepted();
 	}
@@ -246,7 +246,7 @@ Result validate(const Game& game, int senderPlayer, Order& order)
 		const auto& o = static_cast<OrderModifyFlag&>(order);
 		if (Result r = ownBuilding(c, o.gid, b); r.verdict != Verdict::Accepted)
 			return r;
-		if (b && !(b->type->zonable[WORKER] || b->type->zonable[EXPLORER] || b->type->zonable[WARRIOR])) return rejected(Reason::BadState);
+		if (b && !(b->runtime->attractsRole(0) || b->runtime->attractsRole(1) || b->runtime->attractsRole(2))) return rejected(Reason::BadState);
 		// GameGUI::requestFlagRange clamps to the flag type's maximum.
 		const int maximum = b ? b->type->maxUnitStayRange : MAX_CREATE_FLAG_RADIUS;
 		return inRange(o.range, 0, maximum) ? accepted() : rejected(Reason::OutOfRange);
@@ -256,7 +256,7 @@ Result validate(const Game& game, int senderPlayer, Order& order)
 	{
 		const auto& o=static_cast<OrderModifyClearingFlag&>(order);
 		if (Result r=ownBuilding(c,o.gid,b); r.verdict != Verdict::Accepted) return r;
-		if (b && !b->type->zonable[WORKER]) return rejected(Reason::BadState);
+		if (b && !b->runtime->attractsRole(0)) return rejected(Reason::BadState);
 		return accepted();
 	}
 
@@ -266,8 +266,8 @@ Result validate(const Game& game, int senderPlayer, Order& order)
 		if (Result r = ownBuilding(c, o.gid, b); r.verdict != Verdict::Accepted)
 			return r;
 		if (o.targetRole > 2) return rejected(Reason::OutOfRange);
-		if (b && !b->type->zonable[o.targetRole == 1 ? EXPLORER : o.targetRole == 2 ? WORKER : WARRIOR]
-			&& !(o.legacyCombinedRole && b->type->zonable[EXPLORER])) return rejected(Reason::BadState);
+		if (b && !b->runtime->attractsRole(o.targetRole == 1 ? 1 : o.targetRole == 2 ? 0 : 2)
+			&& !(o.legacyCombinedRole && b->runtime->attractsRole(1))) return rejected(Reason::BadState);
 		// Ground experience threshold or independent explorer bombing option.
 		return o.targetRole <= 2 && o.minLevelToFlag < (o.targetRole == 1 ? 2 : NB_UNIT_LEVELS) ? accepted() : rejected(Reason::OutOfRange);
 	}

@@ -10,6 +10,7 @@
 #include "FileFormatVersions.h"
 #include "GameHeader.h"
 #include "Version.h"
+#include "LegacyGameHeaderWire.h"
 #include <BinaryStream.h>
 #include <StreamBackend.h>
 #include <TextStream.h>
@@ -318,7 +319,9 @@ TEST_SUITE("ExperimentalFeatures")
             const std::string sectionBytes = bytesOf(original.getExperiments());
             const size_t emptyCatalogTails = 3*sizeof(Uint32); // building catalog, artwork, resource experiments
             REQUIRE(bytes.size() > sectionBytes.size()+emptyCatalogTails+2*sizeof(Uint8));
-            std::string legacyBytes=bytes.substr(0,bytes.size()-sectionBytes.size()-emptyCatalogTails);
+            std::string legacyBytes=bytes;
+            glob2test::removeUnitCatalogWireSection(legacyBytes, original);
+            legacyBytes.resize(legacyBytes.size()-sectionBytes.size()-emptyCatalogTails);
             legacyBytes.erase(sizeof(Sint32)+sizeof(Uint8),2*sizeof(Uint8));
             const size_t legacySize=legacyBytes.size();
             auto* legacy = new MemoryStreamBackend(legacyBytes.data(),legacySize);

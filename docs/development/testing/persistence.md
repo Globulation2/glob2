@@ -2,6 +2,20 @@
 
 Retained continuation, decoding and serialization regressions. Build and isolate cases through the [native test guide](../../../test/README.md).
 
+## Historical unit definitions
+
+The `UnitCatalog` suite covers the format-58 and format-72 BaseTeam race-table
+layout in binary and text streams. Those records precede units; their definitions
+must remain bound while cached units load and when subsequent training or
+production uses an upgraded level. Current-format resaving embeds the recovered
+catalog rather than replacing it with installed defaults. Format 73 moved the
+race tables into the later Team record and uses the staged migration path.
+Historical text records reused flat keys for all twelve ability tables; their
+reader retains the last value of each key. Binary fixtures cover distinct type
+and level tables, while text fixtures cover modified tables representable by
+that historical format. The shipped format-64 FourSquares1 map also exercises
+real embedded tables that differ from current built-in values.
+
 ## Team capacity and format 127
 
 `TeamLimit` checks all sixteen controller/header slots, entity identifiers, packed
@@ -102,7 +116,7 @@ because it includes the save header/version. Run the retained late-game regressi
 with `python3 test/maxima/check_save_continuation_fixture.py build/native-tests/src/glob2`.
 
 The retained Maxima format-115 checkpoint compares all 512 ticks from 30000
-through 30511 against the current terrain simulation's complete-record hashes.
+through 30511 against the current unit-era simulation's complete checksum-record hashes.
 Its midpoint reload also compares complete records, adjusting only the known
 save-format contribution to the aggregate checksum. Its compressed save, expected
 per-tick hashes, and reproduction commands are in
@@ -193,3 +207,10 @@ the immutable copy and its lightweight in-memory representation; encoding includ
 final array/history packing, offset relocation and hashing. The benchmark flattens
 the finished output for section-independent measurement, so its process peak is
 not an isolated allocation bound for the production writer.
+
+Historical unit statistics store separate per-ability level histograms, which do
+not encode the overlap of air and ground magic recipients. Migration uses the
+larger ability total for the new ranged-unit counter. This is exact for stock
+explorers, whose air magic is enabled at every level; modified historical tables
+with disjoint recipients retain a conservative historical count until the next
+live sample counts each capable unit once. Existing stored counters are retained.

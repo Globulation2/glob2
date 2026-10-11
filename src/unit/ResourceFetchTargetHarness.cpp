@@ -16,6 +16,7 @@
 #include "Race.h"
 #include "Ressource.h"
 #include "IntBuildingType.h"
+#include <nlohmann/json.hpp>
 #include <cstdio>
 #include <cstdlib>
 
@@ -39,8 +40,20 @@ static void staleTargetIsRefreshedAfterGradientRebuild(int expectedClass, int sw
 {
 	GameGUI gui;
 	Game& game = gui.game;
-	game.map.setSize(5, 5, GRASS); // 32x32
+	const bool swimOnly=expectedClass==WATER_ONLY_CLASS;
+	game.map.setSize(5, 5, swimOnly?WATER:GRASS); // 32x32
 	game.map.setGame(&game);
+	for(int y=0;y<game.map.getH();++y)
+		for(int x=0;x<game.map.getW();++x) game.map.clearImmobileUnit(x,y);
+	if(swimOnly) {
+		// The historical seven classes walk to land wheat. The eighth has
+		// no land travel, so give it a legal aquatic food source instead.
+		auto aquatic=nlohmann::json::parse(game.map.resourceRegistry().serialize())["resources"][WHEAT];
+		aquatic["key"]="swim-only-food";
+		aquatic["properties"]["habitatMask"]=ResourceAquatic;
+		aquatic["properties"]["requiresGrowthTerrain"]=false;
+		game.map.installResourceDefinitions(nlohmann::json{{"schemaVersion",1},{"resources",nlohmann::json::array({aquatic})}}.dump());
+	}
 	game.addTeam(0);
 	Team* team = game.teams[0];
 	const int teamNumber = team->teamNumber;
@@ -48,8 +61,9 @@ static void staleTargetIsRefreshedAfterGradientRebuild(int expectedClass, int sw
 	const int unitX = 16, unitY = 16;
 	const int nearX = 20, nearY = 16; // distance 4
 	const int farX = 16, farY = 25;   // distance 9
-	require(game.map.incResourceByIndex(nearX, nearY, WHEAT, 0), "seed the near wheat tile");
-	require(game.map.incResourceByIndex(farX, farY, WHEAT, 0), "seed the far wheat tile");
+	const int source=swimOnly?resourceIndex(*game.map.resourceRegistry().find("swim-only-food")):WHEAT;
+	require(game.map.incResourceByIndex(nearX, nearY, source, 0), "seed the near wheat tile");
+	require(game.map.incResourceByIndex(farX, farY, source, 0), "seed the far wheat tile");
 
 	TestUnit* unit = new TestUnit(unitX, unitY, 0, WORKER, team, 0);
 	team->myUnits[0] = unit;
@@ -59,7 +73,7 @@ static void staleTargetIsRefreshedAfterGradientRebuild(int expectedClass, int sw
 	unit->activity = Unit::ACT_FILLING;
 	unit->displacement = Unit::DIS_GOING_TO_RESOURCE;
 	unit->validTarget = true;
-	unit->performance[WALK] = 10;
+	unit->performance[WALK] = swimOnly?0:10;
 	unit->performance[SWIM] = swimSpeed;
 	const int swimClass = unit->swimClass();
 	require(swimClass == expectedClass, "exercise the requested swim class");
@@ -194,8 +208,10 @@ TEST_SUITE("ResourceFetchTarget")
 	{
 		glob2test::HeadlessGlobals globals;
 		const int swimSpeeds[] = {0, 20, 14, 10, 7, 5, 3};
-		for (int swimClass = 0; swimClass < SWIM_CLASS_COUNT; ++swimClass)
+		static_assert(std::size(swimSpeeds)==WATER_ONLY_CLASS);
+		for (int swimClass = 0; swimClass < WATER_ONLY_CLASS; ++swimClass)
 			staleTargetIsRefreshedAfterGradientRebuild(swimClass, swimSpeeds[swimClass]);
+		staleTargetIsRefreshedAfterGradientRebuild(WATER_ONLY_CLASS,20);
 		targetTracksTheGradientTheUnitActuallyFollows();
 	}
 }

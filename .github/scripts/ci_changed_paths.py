@@ -77,8 +77,11 @@ def classify(paths):
         if path in TRANSPORT_TESTS:
             browser = True
             continue
-        if path.startswith(("test/fixtures/javascript/", "test/support/ScriptCorpus")) or is_test_source(path) and Path(path).name.startswith("Script") or path in {
+        if path.startswith(("test/fixtures/javascript/", "test/fixtures/unit-catalog/", "test/maxima/fixtures/save-continuation/", "test/support/ScriptCorpus")) or is_test_source(path) and (Path(path).name.startswith("Script") or Path(path).name in {'UnitCatalogTest.cpp', 'UnitCustomizationTest.cpp'}) or path in {
             "test/check_javascript.py", "test/check_javascript_corpus.py", "test/check_javascript_evidence.py",
+            "test/check_telemetry_simulation.py", "test/test_javascript_evidence.py",
+            "test/maxima/check_save_continuation_fixture.py",
+            "test/fixtures/resources/seeded-compositions-units.trace",
             "test/build_provenance.py", "test/support/TestMain.cpp",
             "libgag/src/ImageAssetTest.cpp",
         }:
@@ -157,9 +160,9 @@ def coverage_profile(paths, event, selected):
         if path.startswith(('browser/',) + PRESENTATION) or path in RENDER_IMPLEMENTATIONS:
             browsers_all = True
         # Conservative omissions only for known test-only and implementation-only boundaries.
-        primary_safe = ((path.startswith('test/') and not path.startswith(('test/fixtures/','test/support/') + TOOLING_TESTS)
+        primary_safe = ((path.startswith('test/') and not path.startswith(('test/fixtures/','test/maxima/fixtures/','test/support/') + TOOLING_TESTS)
                          or is_test_source(path) and not Path(path).name.startswith('Script'))
-                        and path not in ('test/run-browser-determinism.py','test/check_javascript.py','test/check_javascript_corpus.py','test/check_javascript_evidence.py','test/build_provenance.py','libgag/src/ImageAssetTest.cpp'))
+                        and path not in ('test/run-browser-determinism.py','test/check_javascript.py','test/check_javascript_corpus.py','test/check_javascript_evidence.py','test/maxima/check_save_continuation_fixture.py','test/build_provenance.py','libgag/src/ImageAssetTest.cpp'))
         primary_safe = primary_safe or path in RENDER_IMPLEMENTATIONS or (path.startswith(PRESENTATION) and not unclassified(path) and not path.startswith(FULL_PATHS) and path.endswith('.cpp')) or (path.startswith('browser/') and browser_only(path)) or path.startswith(('deploy/','test/deployment/','test/transport/'))
         # Shard/runtime configuration changes must exercise the oldest supported
         # platform too, even though their files live under test/.
