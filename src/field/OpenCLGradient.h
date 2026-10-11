@@ -16,9 +16,6 @@ inline constexpr std::size_t OpenCLDeviceBudget = 128 * 1024 * 1024;
 bool reserveOpenCLHostBytes(std::size_t bytes) noexcept;
 void releaseOpenCLHostBytes(std::size_t bytes) noexcept;
 std::size_t openCLHostBytes() noexcept;
-// Synthetic tracked-budget pressure only; no GPU allocation or driver query.
-// Explicit development tests retain this owned lease until after required cleanup.
-std::shared_ptr<const void> reserveOpenCLDeviceBytesForDiagnostics(std::size_t bytes);
 struct OpenCLStatus
 {
     bool available=false;

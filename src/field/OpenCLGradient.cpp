@@ -1306,20 +1306,6 @@ std::shared_ptr<const void> retainOpenCLLifetime() {
     return {};
 #endif
 }
-std::shared_ptr<const void> reserveOpenCLDeviceBytesForDiagnostics(std::size_t bytes) {
-#if !defined(SDL_PLATFORM_EMSCRIPTEN) && !defined(SDL_PLATFORM_ANDROID) && !defined(SDL_PLATFORM_IOS)
-    struct Lease {
-        std::shared_ptr<Device> device;
-        BudgetLease budget;
-        Lease(std::shared_ptr<Device> device,std::size_t bytes):device(std::move(device)),budget(this->device->deviceBudget) {
-            budget.resize(bytes);
-        }
-    };
-    try {return std::make_shared<Lease>(runtime().shared,bytes);}catch(...) {return {};}
-#else
-    return {};
-#endif
-}
 bool requiredOpenCLQuarantinePending() noexcept {
 #if !defined(SDL_PLATFORM_EMSCRIPTEN) && !defined(SDL_PLATFORM_ANDROID) && !defined(SDL_PLATFORM_IOS)
     std::shared_ptr<Device> device;
