@@ -484,3 +484,11 @@ validation remains a separate release gate.
 `RenderDevice` owns submission, completion, capture and presentation. The software device and existing drawing adapter exercise the contract without hardware. Capture tickets retain frame identity, recording generation, dimensions, timestamps and semantic context; cancellation and telemetry stay bounded. A fake asynchronous device tests admission, retained revisions, deletion, cancellation and recovery.
 
 `RendererSelection` defines stable backend-family identifiers, aliases, capabilities and startup precedence. Live application switching and hardware devices are integrated separately; this core does not change existing defaults or simulation state.
+
+### Hardware device implementations
+
+`ProgrammableGLDevice` and `SDLGPUDevice` implement the shared device contract behind independent factories. They own shader pipelines, explicit targets and state, bounded resource caches, completion tracking, asynchronous capture, and retained completed output. GL uses programmable desktop GL or GLES3/WebGL2; native SDL GPU selects supported compiled SPIR-V, DXIL or Metal library assets. Shader generation and packaging run through the existing offline build helper. Missing formats, shader assets or hardware cause factory rejection with a reason.
+
+`trimRetiredResources()` polls completed work and releases unused allocations before large target admission. It does not wait for the GPU or release in-flight or captured resources. `SpriteRenderAtlas` provides independent bounded CPU pages with revision stamps and filtering gutters.
+
+The device and atlas suites are registered in the native test runner. Set `GLOB2_TEST_SHADER_DIRECTORY` to the generated shader directory when testing hardware. Factories and these isolated tests do not establish application feature coverage or platform default readiness; live application integration and accepted hardware evidence remain separate gates.

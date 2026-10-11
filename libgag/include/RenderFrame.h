@@ -57,7 +57,8 @@ struct CoverageData
     std::uint32_t width=0,height=0;
     std::vector<CoverageSample> samples;
 };
-// Composition produces straight RGBA bytes, preserving the CPU integer reference.
+// Composition preserves the CPU straight-RGBA integer reference; the target
+// descriptor selects the final straight or premultiplied representation.
 struct WeightedComposeData
 {
     std::array<TextureSnapshot,4> materials;

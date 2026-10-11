@@ -278,6 +278,9 @@ def configure(env, server_only, relay=False):
     configfile.finish()
     import skin_materials
     skin_materials.register(env)
+    import renderer_shaders
+    renderer_shaders.configure(env, env.Dir('#').abspath, env['BUILDDIR'])
+    renderer_shaders.install(env)
     conf.Finish()
     contents = configfile.f.getvalue()
     previous = None
