@@ -398,6 +398,9 @@ namespace GAGCore
         bool beginDeviceTarget(TextureSnapshot target, float logicalWidth, float logicalHeight);
         void endDeviceTarget();
         bool submitDevicePacket(DrawPacket packet);
+        // Bounded offscreen producers publish only completed logical captures.
+        bool flushDeviceFrame();
+        bool deferDeviceFrame();
     private:
         bool activateBackend(RendererBackend backend, SDL_Surface *previousFrame);
 		RenderFramePacer renderPacer;

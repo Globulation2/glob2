@@ -43,6 +43,18 @@ std::string GraphicContext::rendererShaderDirectory()
 #endif
 }
 
+bool GraphicContext::flushDeviceFrame()
+{
+    if (!renderDevice()) return false;
+    renderer->flush();
+    return didRecordDeviceFrame(*renderer);
+}
+
+bool GraphicContext::deferDeviceFrame()
+{
+    return renderDevice() && GAGCore::deferDeviceFrame(*renderer);
+}
+
 bool GraphicContext::beginDeviceTarget(TextureSnapshot target, float logicalWidth, float logicalHeight)
 {
     if (!presentationDevice || !renderer || !target) return false;
