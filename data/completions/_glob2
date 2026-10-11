@@ -89,6 +89,7 @@ _glob2() {
       '*--generator-package[generator-package]:value:_files' \
       '--building-catalog[building-catalog]:value:_files' \
       '--compute-threads[compute-threads]:value:' \
+      '--gpu[gpu]:value:(on off)' \
       '--help[help]' \
       '*:file:_files';;
     'replay') _arguments -s \
@@ -115,6 +116,7 @@ _glob2() {
       '*--generator-package[generator-package]:value:_files' \
       '--building-catalog[building-catalog]:value:_files' \
       '--compute-threads[compute-threads]:value:' \
+      '--gpu[gpu]:value:(on off)' \
       '--help[help]' \
       '*:file:_files';;
     'map generate') _arguments -s \
@@ -220,6 +222,7 @@ _glob2() {
       '*--data-dir[data-dir]:value:_files -/' \
       '*--generator-package[generator-package]:value:_files' \
       '--compute-threads[compute-threads]:value:' \
+      '--gpu[gpu]:value:(on off)' \
       '--map-file[map-file]:value:_files' \
       '--load-game[load-game]:value:_files' \
       '--generator[generator]:value:' \
@@ -254,7 +257,28 @@ _glob2() {
     'game repeat') _arguments -s \
       '*--data-dir[data-dir]:value:_files -/' \
       '*--generator-package[generator-package]:value:_files' \
+      '--fullscreen[fullscreen]' \
+      '--no-fullscreen[no-fullscreen]' \
+      '--resizable[resizable]' \
+      '--no-resizable[no-resizable]' \
+      '--custom-cursor[custom-cursor]' \
+      '--no-custom-cursor[no-custom-cursor]' \
+      '--mute[mute]' \
+      '--no-mute[no-mute]' \
+      '--renderer[renderer]:value:(gpu software)' \
+      '--graphics-detail[graphics-detail]:value:(full reduced)' \
+      '--window-size[window-size]:value:' \
+      '--username[username]:value:' \
+      '--editor-script[editor-script]:value:(sgsl usl)' \
+      '--record[record]:value:_files' \
+      '--videoshot[videoshot]:value:' \
+      '--record-fps[record-fps]:value:' \
+      '--record-encoder[record-encoder]:value:(auto software)' \
+      '--record-crf[record-crf]:value:' \
+      '--record-chapter-ticks[record-chapter-ticks]:value:' \
+      '--display[display]' \
       '--compute-threads[compute-threads]:value:' \
+      '--gpu[gpu]:value:(on off)' \
       '--ticks[ticks]:value:' \
       '--runs[runs]:value:' \
       '--building-catalog[building-catalog]:value:_files' \
@@ -291,6 +315,7 @@ _glob2() {
       '*--generator-package[generator-package]:value:_files' \
       '--building-catalog[building-catalog]:value:_files' \
       '--compute-threads[compute-threads]:value:' \
+      '--gpu[gpu]:value:(on off)' \
       '--instance[instance]:value:' \
       '--help[help]' \
       '*:file:_files';;
@@ -318,6 +343,7 @@ _glob2() {
       '*--generator-package[generator-package]:value:_files' \
       '--building-catalog[building-catalog]:value:_files' \
       '--compute-threads[compute-threads]:value:' \
+      '--gpu[gpu]:value:(on off)' \
       '--instance[instance]:value:' \
       '--hash[hash]:value:' \
       '--title[title]:value:' \
@@ -347,6 +373,7 @@ _glob2() {
       '*--generator-package[generator-package]:value:_files' \
       '--building-catalog[building-catalog]:value:_files' \
       '--compute-threads[compute-threads]:value:' \
+      '--gpu[gpu]:value:(on off)' \
       '--instance[instance]:value:' \
       '--hash[hash]:value:' \
       '--title[title]:value:' \
@@ -415,6 +442,7 @@ _glob2() {
       '--record-crf[record-crf]:value:' \
       '--record-chapter-ticks[record-chapter-ticks]:value:' \
       '--compute-threads[compute-threads]:value:' \
+      '--gpu[gpu]:value:(on off)' \
       '--display[display]' \
       '--runs[runs]:value:' \
       '--ticks[ticks]:value:' \
@@ -454,6 +482,7 @@ _glob2() {
       '*--generator-package[generator-package]:value:_files' \
       '--building-catalog[building-catalog]:value:_files' \
       '--compute-threads[compute-threads]:value:' \
+      '--gpu[gpu]:value:(on off)' \
       '--output-dir[output-dir]:value:_files -/' \
       '--help[help]' \
       '*:file:_files';;

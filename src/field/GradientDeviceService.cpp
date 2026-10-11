@@ -42,6 +42,8 @@ struct GradientDeviceState {
 namespace {
 std::atomic<std::uint64_t> brokerCpuNs{0},brokerThreadId{0};
 std::atomic<unsigned> brokerThreads{0};
+class DeviceBroker;
+std::atomic<DeviceBroker*> existingBroker{nullptr};
 bool validCpu(std::uint64_t start,std::uint64_t end) noexcept {return start && end>=start;}
 void recoverField(void* context,std::size_t) noexcept {
     auto& field=*static_cast<OwnedGradientField*>(context);
@@ -212,11 +214,19 @@ class DeviceBroker {
         brokerCpuNs=glob2::threadCpuDeltaNs(start,glob2::threadCpuNs());brokerThreads=0;
     }
 public:
-    ~DeviceBroker(){
+    DeviceBroker(){existingBroker.store(this,std::memory_order_release);}
+    ~DeviceBroker(){shutdown();existingBroker.store(nullptr,std::memory_order_release);}
+    void shutdown() noexcept {
         {std::lock_guard lock(mutex);stopping=true;
             for(const auto& state:registrations){std::lock_guard stateLock(state->mutex);state->canceled=true;
-                for(const auto& control:state->activeControls)if(control)control->requestCancel();}}
+                for(const auto& control:state->activeControls)if(control)control->requestCancel();
+                for(const auto& queued:state->queue)if(queued.field->requiredControl)queued.field->requiredControl->requestCancel();}}
         wake.notify_one();if(coordinator.joinable())coordinator.join();
+        // The process owner may create another GlobalContainer in a harness.
+        // Old registrations stay canceled; new ones can launch a fresh thread.
+        std::lock_guard lock(mutex);
+        while(!registrations.empty())registrations.erase(registrations.begin());
+        stopping=false;
     }
     bool add(const std::shared_ptr<GradientDeviceState>& state) noexcept {
         try {std::lock_guard lock(mutex);if(stopping || !lease.bytes || registrations.full())return false;
@@ -227,6 +237,10 @@ public:
     void notify() noexcept {std::lock_guard lock(mutex);wake.notify_one();}
 };
 DeviceBroker& broker(){static DeviceBroker value;return value;}
+}
+void shutdownGradientDeviceCoordinator() noexcept {
+    // CPU-only applications must not initialize an otherwise unused backend.
+    if(auto* value=existingBroker.load(std::memory_order_acquire))value->shutdown();
 }
 OwnedGradientField::~OwnedGradientField(){
     data.reset();inputs.reset();identity={};session.reset();executionState.reset();releaseReservation();

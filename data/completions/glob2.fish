@@ -140,6 +140,7 @@ complete -c glob2 -n "__glob2_at 'play'" -l data-dir -r -f -a '(__fish_complete_
 complete -c glob2 -n "__glob2_at 'play'" -l generator-package -r
 complete -c glob2 -n "__glob2_at 'play'" -l building-catalog -r
 complete -c glob2 -n "__glob2_at 'play'" -l compute-threads -r
+complete -c glob2 -n "__glob2_at 'play'" -l gpu -r -f -a 'on off'
 complete -c glob2 -n "__glob2_at 'play'" -l help
 complete -c glob2 -n "__glob2_at 'replay'" -l fullscreen
 complete -c glob2 -n "__glob2_at 'replay'" -l no-fullscreen
@@ -164,6 +165,7 @@ complete -c glob2 -n "__glob2_at 'replay'" -l data-dir -r -f -a '(__fish_complet
 complete -c glob2 -n "__glob2_at 'replay'" -l generator-package -r
 complete -c glob2 -n "__glob2_at 'replay'" -l building-catalog -r
 complete -c glob2 -n "__glob2_at 'replay'" -l compute-threads -r
+complete -c glob2 -n "__glob2_at 'replay'" -l gpu -r -f -a 'on off'
 complete -c glob2 -n "__glob2_at 'replay'" -l help
 complete -c glob2 -n "__glob2_at 'map generate'" -l seed -r
 complete -c glob2 -n "__glob2_at 'map generate'" -l set -r
@@ -249,6 +251,7 @@ complete -c glob2 -n "__glob2_at 'game run'" -l building-catalog -r
 complete -c glob2 -n "__glob2_at 'game run'" -l data-dir -r -f -a '(__fish_complete_directories)'
 complete -c glob2 -n "__glob2_at 'game run'" -l generator-package -r
 complete -c glob2 -n "__glob2_at 'game run'" -l compute-threads -r
+complete -c glob2 -n "__glob2_at 'game run'" -l gpu -r -f -a 'on off'
 complete -c glob2 -n "__glob2_at 'game run'" -l map-file -r
 complete -c glob2 -n "__glob2_at 'game run'" -l load-game -r
 complete -c glob2 -n "__glob2_at 'game run'" -l generator -r
@@ -281,7 +284,28 @@ complete -c glob2 -n "__glob2_at 'game run'" -l building-artwork -r
 complete -c glob2 -n "__glob2_at 'game run'" -l help
 complete -c glob2 -n "__glob2_at 'game repeat'" -l data-dir -r -f -a '(__fish_complete_directories)'
 complete -c glob2 -n "__glob2_at 'game repeat'" -l generator-package -r
+complete -c glob2 -n "__glob2_at 'game repeat'" -l fullscreen
+complete -c glob2 -n "__glob2_at 'game repeat'" -l no-fullscreen
+complete -c glob2 -n "__glob2_at 'game repeat'" -l resizable
+complete -c glob2 -n "__glob2_at 'game repeat'" -l no-resizable
+complete -c glob2 -n "__glob2_at 'game repeat'" -l custom-cursor
+complete -c glob2 -n "__glob2_at 'game repeat'" -l no-custom-cursor
+complete -c glob2 -n "__glob2_at 'game repeat'" -l mute
+complete -c glob2 -n "__glob2_at 'game repeat'" -l no-mute
+complete -c glob2 -n "__glob2_at 'game repeat'" -l renderer -r -f -a 'gpu software'
+complete -c glob2 -n "__glob2_at 'game repeat'" -l graphics-detail -r -f -a 'full reduced'
+complete -c glob2 -n "__glob2_at 'game repeat'" -l window-size -r
+complete -c glob2 -n "__glob2_at 'game repeat'" -l username -r
+complete -c glob2 -n "__glob2_at 'game repeat'" -l editor-script -r -f -a 'sgsl usl'
+complete -c glob2 -n "__glob2_at 'game repeat'" -l record -r
+complete -c glob2 -n "__glob2_at 'game repeat'" -l videoshot -r
+complete -c glob2 -n "__glob2_at 'game repeat'" -l record-fps -r
+complete -c glob2 -n "__glob2_at 'game repeat'" -l record-encoder -r -f -a 'auto software'
+complete -c glob2 -n "__glob2_at 'game repeat'" -l record-crf -r
+complete -c glob2 -n "__glob2_at 'game repeat'" -l record-chapter-ticks -r
+complete -c glob2 -n "__glob2_at 'game repeat'" -l display
 complete -c glob2 -n "__glob2_at 'game repeat'" -l compute-threads -r
+complete -c glob2 -n "__glob2_at 'game repeat'" -l gpu -r -f -a 'on off'
 complete -c glob2 -n "__glob2_at 'game repeat'" -l ticks -r
 complete -c glob2 -n "__glob2_at 'game repeat'" -l runs -r
 complete -c glob2 -n "__glob2_at 'game repeat'" -l building-catalog -r
@@ -314,6 +338,7 @@ complete -c glob2 -n "__glob2_at 'online join'" -l data-dir -r -f -a '(__fish_co
 complete -c glob2 -n "__glob2_at 'online join'" -l generator-package -r
 complete -c glob2 -n "__glob2_at 'online join'" -l building-catalog -r
 complete -c glob2 -n "__glob2_at 'online join'" -l compute-threads -r
+complete -c glob2 -n "__glob2_at 'online join'" -l gpu -r -f -a 'on off'
 complete -c glob2 -n "__glob2_at 'online join'" -l instance -r
 complete -c glob2 -n "__glob2_at 'online join'" -l help
 complete -c glob2 -n "__glob2_at 'online play-map'" -l fullscreen
@@ -339,6 +364,7 @@ complete -c glob2 -n "__glob2_at 'online play-map'" -l data-dir -r -f -a '(__fis
 complete -c glob2 -n "__glob2_at 'online play-map'" -l generator-package -r
 complete -c glob2 -n "__glob2_at 'online play-map'" -l building-catalog -r
 complete -c glob2 -n "__glob2_at 'online play-map'" -l compute-threads -r
+complete -c glob2 -n "__glob2_at 'online play-map'" -l gpu -r -f -a 'on off'
 complete -c glob2 -n "__glob2_at 'online play-map'" -l instance -r
 complete -c glob2 -n "__glob2_at 'online play-map'" -l hash -r
 complete -c glob2 -n "__glob2_at 'online play-map'" -l title -r
@@ -366,6 +392,7 @@ complete -c glob2 -n "__glob2_at 'online host-map'" -l data-dir -r -f -a '(__fis
 complete -c glob2 -n "__glob2_at 'online host-map'" -l generator-package -r
 complete -c glob2 -n "__glob2_at 'online host-map'" -l building-catalog -r
 complete -c glob2 -n "__glob2_at 'online host-map'" -l compute-threads -r
+complete -c glob2 -n "__glob2_at 'online host-map'" -l gpu -r -f -a 'on off'
 complete -c glob2 -n "__glob2_at 'online host-map'" -l instance -r
 complete -c glob2 -n "__glob2_at 'online host-map'" -l hash -r
 complete -c glob2 -n "__glob2_at 'online host-map'" -l title -r
@@ -418,6 +445,7 @@ complete -c glob2 -n "__glob2_at 'dev random-games'" -l record-encoder -r -f -a 
 complete -c glob2 -n "__glob2_at 'dev random-games'" -l record-crf -r
 complete -c glob2 -n "__glob2_at 'dev random-games'" -l record-chapter-ticks -r
 complete -c glob2 -n "__glob2_at 'dev random-games'" -l compute-threads -r
+complete -c glob2 -n "__glob2_at 'dev random-games'" -l gpu -r -f -a 'on off'
 complete -c glob2 -n "__glob2_at 'dev random-games'" -l display
 complete -c glob2 -n "__glob2_at 'dev random-games'" -l runs -r
 complete -c glob2 -n "__glob2_at 'dev random-games'" -l ticks -r
@@ -453,6 +481,7 @@ complete -c glob2 -n "__glob2_at 'dev textshots'" -l data-dir -r -f -a '(__fish_
 complete -c glob2 -n "__glob2_at 'dev textshots'" -l generator-package -r
 complete -c glob2 -n "__glob2_at 'dev textshots'" -l building-catalog -r
 complete -c glob2 -n "__glob2_at 'dev textshots'" -l compute-threads -r
+complete -c glob2 -n "__glob2_at 'dev textshots'" -l gpu -r -f -a 'on off'
 complete -c glob2 -n "__glob2_at 'dev textshots'" -l output-dir -r -f -a '(__fish_complete_directories)'
 complete -c glob2 -n "__glob2_at 'dev textshots'" -l help
 complete -c glob2 -n "__glob2_at 'dev dump-resources'" -l data-dir -r -f -a '(__fish_complete_directories)'

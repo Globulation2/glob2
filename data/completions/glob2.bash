@@ -67,8 +67,8 @@ _glob2_complete() {
     'match') opts='verify';;
     'online') opts='join play-map host-map turn-client';;
     'script') opts='check attach';;
-    'play') opts='--fullscreen --no-fullscreen --resizable --no-resizable --custom-cursor --no-custom-cursor --mute --no-mute --renderer --graphics-detail --window-size --username --editor-script --record --videoshot --record-fps --record-encoder --record-crf --record-chapter-ticks --data-dir --generator-package --building-catalog --compute-threads --help ';;
-    'replay') opts='--fullscreen --no-fullscreen --resizable --no-resizable --custom-cursor --no-custom-cursor --mute --no-mute --renderer --graphics-detail --window-size --username --editor-script --record --videoshot --record-fps --record-encoder --record-crf --record-chapter-ticks --data-dir --generator-package --building-catalog --compute-threads --help ';;
+    'play') opts='--fullscreen --no-fullscreen --resizable --no-resizable --custom-cursor --no-custom-cursor --mute --no-mute --renderer --graphics-detail --window-size --username --editor-script --record --videoshot --record-fps --record-encoder --record-crf --record-chapter-ticks --data-dir --generator-package --building-catalog --compute-threads --gpu --help ';;
+    'replay') opts='--fullscreen --no-fullscreen --resizable --no-resizable --custom-cursor --no-custom-cursor --mute --no-mute --renderer --graphics-detail --window-size --username --editor-script --record --videoshot --record-fps --record-encoder --record-crf --record-chapter-ticks --data-dir --generator-package --building-catalog --compute-threads --gpu --help ';;
     'map generate') opts='--seed --set --width --height --teams --workers --preview --preview-size --preview-scale --data-dir --generator-package --output --report-file --config --map-image --export-generator-package --help ';;
     'map study') opts='--output-dir --profile --building-catalog --data-dir --generator-package --seed --set --candidates --rotations --write-map --report --perturb --building-artwork --help ';;
     'map generators') opts='--format --data-dir --generator-package --help ';;
@@ -78,12 +78,12 @@ _glob2_complete() {
     'map export-image') opts='--data-dir --generator-package --output --help ';;
     'map inspect-package') opts='--output --report-file --help ';;
     'map validate-set') opts='--report-file --preview --gallery --phase --variation --help ';;
-    'game run') opts='--output-dir --profile --building-catalog --data-dir --generator-package --compute-threads --map-file --load-game --generator --game-seed --map-seed --set --candidates --player --ai-param --ai-script --map-script --alliance --win-condition --win-probability --experiment --rule --fork-rule --ticks --gradient-delay --resource-growth-delay --ai-order-delay --save --telemetry --write-replay --benchmark-warmup --diagnostic-fields --diagnostic-interval --diagnostic-png --building-artwork --help ';;
-    'game repeat') opts='--data-dir --generator-package --compute-threads --ticks --runs --building-catalog --help ';;
+    'game run') opts='--output-dir --profile --building-catalog --data-dir --generator-package --compute-threads --gpu --map-file --load-game --generator --game-seed --map-seed --set --candidates --player --ai-param --ai-script --map-script --alliance --win-condition --win-probability --experiment --rule --fork-rule --ticks --gradient-delay --resource-growth-delay --ai-order-delay --save --telemetry --write-replay --benchmark-warmup --diagnostic-fields --diagnostic-interval --diagnostic-png --building-artwork --help ';;
+    'game repeat') opts='--data-dir --generator-package --fullscreen --no-fullscreen --resizable --no-resizable --custom-cursor --no-custom-cursor --mute --no-mute --renderer --graphics-detail --window-size --username --editor-script --record --videoshot --record-fps --record-encoder --record-crf --record-chapter-ticks --display --compute-threads --gpu --ticks --runs --building-catalog --help ';;
     'match verify') opts='--output-dir --profile --compute-threads --map-file --help ';;
-    'online join') opts='--fullscreen --no-fullscreen --resizable --no-resizable --custom-cursor --no-custom-cursor --mute --no-mute --renderer --graphics-detail --window-size --username --editor-script --record --videoshot --record-fps --record-encoder --record-crf --record-chapter-ticks --data-dir --generator-package --building-catalog --compute-threads --instance --help ';;
-    'online play-map') opts='--fullscreen --no-fullscreen --resizable --no-resizable --custom-cursor --no-custom-cursor --mute --no-mute --renderer --graphics-detail --window-size --username --editor-script --record --videoshot --record-fps --record-encoder --record-crf --record-chapter-ticks --data-dir --generator-package --building-catalog --compute-threads --instance --hash --title --help ';;
-    'online host-map') opts='--fullscreen --no-fullscreen --resizable --no-resizable --custom-cursor --no-custom-cursor --mute --no-mute --renderer --graphics-detail --window-size --username --editor-script --record --videoshot --record-fps --record-encoder --record-crf --record-chapter-ticks --data-dir --generator-package --building-catalog --compute-threads --instance --hash --title --help ';;
+    'online join') opts='--fullscreen --no-fullscreen --resizable --no-resizable --custom-cursor --no-custom-cursor --mute --no-mute --renderer --graphics-detail --window-size --username --editor-script --record --videoshot --record-fps --record-encoder --record-crf --record-chapter-ticks --data-dir --generator-package --building-catalog --compute-threads --gpu --instance --help ';;
+    'online play-map') opts='--fullscreen --no-fullscreen --resizable --no-resizable --custom-cursor --no-custom-cursor --mute --no-mute --renderer --graphics-detail --window-size --username --editor-script --record --videoshot --record-fps --record-encoder --record-crf --record-chapter-ticks --data-dir --generator-package --building-catalog --compute-threads --gpu --instance --hash --title --help ';;
+    'online host-map') opts='--fullscreen --no-fullscreen --resizable --no-resizable --custom-cursor --no-custom-cursor --mute --no-mute --renderer --graphics-detail --window-size --username --editor-script --record --videoshot --record-fps --record-encoder --record-crf --record-chapter-ticks --data-dir --generator-package --building-catalog --compute-threads --gpu --instance --hash --title --help ';;
     'online turn-client') opts='--output-dir --profile --compute-threads --map-file --orders-per-second --max-seconds --seed --help ';;
     'ai check') opts='--format --help ';;
     'script check') opts='--help ';;
@@ -91,9 +91,9 @@ _glob2_complete() {
     'assets compose-buildings') opts='--base --package --artwork-bundle --format --help ';;
     'assets render-skin') opts='--manifest --texture --material --output-dir --help ';;
     'assets skin-info') opts='--format --help ';;
-    'dev random-games') opts='--data-dir --generator-package --fullscreen --no-fullscreen --resizable --no-resizable --custom-cursor --no-custom-cursor --mute --no-mute --renderer --graphics-detail --window-size --username --editor-script --record --videoshot --record-fps --record-encoder --record-crf --record-chapter-ticks --compute-threads --display --runs --ticks --ai-types --map --matchup --save-game-as --building-catalog --help ';;
+    'dev random-games') opts='--data-dir --generator-package --fullscreen --no-fullscreen --resizable --no-resizable --custom-cursor --no-custom-cursor --mute --no-mute --renderer --graphics-detail --window-size --username --editor-script --record --videoshot --record-fps --record-encoder --record-crf --record-chapter-ticks --compute-threads --gpu --display --runs --ticks --ai-types --map --matchup --save-game-as --building-catalog --help ';;
     'dev stress-maps') opts='--data-dir --generator-package --help ';;
-    'dev textshots') opts='--fullscreen --no-fullscreen --resizable --no-resizable --custom-cursor --no-custom-cursor --mute --no-mute --renderer --graphics-detail --window-size --username --editor-script --record --videoshot --record-fps --record-encoder --record-crf --record-chapter-ticks --data-dir --generator-package --building-catalog --compute-threads --output-dir --help ';;
+    'dev textshots') opts='--fullscreen --no-fullscreen --resizable --no-resizable --custom-cursor --no-custom-cursor --mute --no-mute --renderer --graphics-detail --window-size --username --editor-script --record --videoshot --record-fps --record-encoder --record-crf --record-chapter-ticks --data-dir --generator-package --building-catalog --compute-threads --gpu --output-dir --help ';;
     'dev dump-resources') opts='--data-dir --generator-package --help ';;
     'dev dump-wheat') opts='--data-dir --generator-package --team --help ';;
     'dev dump-tiled') opts='--data-dir --generator-package --repeat-x --repeat-y --colonies --swarms --help ';;
@@ -121,6 +121,7 @@ _glob2_complete() {
     'play|--generator-package') kind='file'; values='';;
     'play|--building-catalog') kind='file'; values='';;
     'play|--compute-threads') kind='compute'; values='';;
+    'play|--gpu') kind='enum'; values='on off';;
     'replay|--renderer') kind='enum'; values='gpu software';;
     'replay|--graphics-detail') kind='enum'; values='full reduced';;
     'replay|--window-size') kind='resolution'; values='';;
@@ -136,6 +137,7 @@ _glob2_complete() {
     'replay|--generator-package') kind='file'; values='';;
     'replay|--building-catalog') kind='file'; values='';;
     'replay|--compute-threads') kind='compute'; values='';;
+    'replay|--gpu') kind='enum'; values='on off';;
     'map generate|--seed') kind='integer'; values='';;
     'map generate|--set') kind='assignment'; values='';;
     'map generate|--width') kind='integer'; values='';;
@@ -210,6 +212,7 @@ _glob2_complete() {
     'game run|--data-dir') kind='directory'; values='';;
     'game run|--generator-package') kind='file'; values='';;
     'game run|--compute-threads') kind='compute'; values='';;
+    'game run|--gpu') kind='enum'; values='on off';;
     'game run|--map-file') kind='file'; values='';;
     'game run|--load-game') kind='file'; values='';;
     'game run|--generator') kind='string'; values='';;
@@ -239,7 +242,19 @@ _glob2_complete() {
     'game run|--building-artwork') kind='file'; values='';;
     'game repeat|--data-dir') kind='directory'; values='';;
     'game repeat|--generator-package') kind='file'; values='';;
+    'game repeat|--renderer') kind='enum'; values='gpu software';;
+    'game repeat|--graphics-detail') kind='enum'; values='full reduced';;
+    'game repeat|--window-size') kind='resolution'; values='';;
+    'game repeat|--username') kind='string'; values='';;
+    'game repeat|--editor-script') kind='enum'; values='sgsl usl';;
+    'game repeat|--record') kind='file'; values='';;
+    'game repeat|--videoshot') kind='string'; values='';;
+    'game repeat|--record-fps') kind='integer'; values='';;
+    'game repeat|--record-encoder') kind='enum'; values='auto software';;
+    'game repeat|--record-crf') kind='integer'; values='';;
+    'game repeat|--record-chapter-ticks') kind='integer'; values='';;
     'game repeat|--compute-threads') kind='compute'; values='';;
+    'game repeat|--gpu') kind='enum'; values='on off';;
     'game repeat|--ticks') kind='integer'; values='';;
     'game repeat|--runs') kind='integer'; values='';;
     'game repeat|--building-catalog') kind='file'; values='';;
@@ -262,6 +277,7 @@ _glob2_complete() {
     'online join|--generator-package') kind='file'; values='';;
     'online join|--building-catalog') kind='file'; values='';;
     'online join|--compute-threads') kind='compute'; values='';;
+    'online join|--gpu') kind='enum'; values='on off';;
     'online join|--instance') kind='string'; values='';;
     'online play-map|--renderer') kind='enum'; values='gpu software';;
     'online play-map|--graphics-detail') kind='enum'; values='full reduced';;
@@ -278,6 +294,7 @@ _glob2_complete() {
     'online play-map|--generator-package') kind='file'; values='';;
     'online play-map|--building-catalog') kind='file'; values='';;
     'online play-map|--compute-threads') kind='compute'; values='';;
+    'online play-map|--gpu') kind='enum'; values='on off';;
     'online play-map|--instance') kind='string'; values='';;
     'online play-map|--hash') kind='string'; values='';;
     'online play-map|--title') kind='string'; values='';;
@@ -296,6 +313,7 @@ _glob2_complete() {
     'online host-map|--generator-package') kind='file'; values='';;
     'online host-map|--building-catalog') kind='file'; values='';;
     'online host-map|--compute-threads') kind='compute'; values='';;
+    'online host-map|--gpu') kind='enum'; values='on off';;
     'online host-map|--instance') kind='string'; values='';;
     'online host-map|--hash') kind='string'; values='';;
     'online host-map|--title') kind='string'; values='';;
@@ -332,6 +350,7 @@ _glob2_complete() {
     'dev random-games|--record-crf') kind='integer'; values='';;
     'dev random-games|--record-chapter-ticks') kind='integer'; values='';;
     'dev random-games|--compute-threads') kind='compute'; values='';;
+    'dev random-games|--gpu') kind='enum'; values='on off';;
     'dev random-games|--runs') kind='integer'; values='';;
     'dev random-games|--ticks') kind='integer'; values='';;
     'dev random-games|--ai-types') kind='string'; values='';;
@@ -356,6 +375,7 @@ _glob2_complete() {
     'dev textshots|--generator-package') kind='file'; values='';;
     'dev textshots|--building-catalog') kind='file'; values='';;
     'dev textshots|--compute-threads') kind='compute'; values='';;
+    'dev textshots|--gpu') kind='enum'; values='on off';;
     'dev textshots|--output-dir') kind='directory'; values='';;
     'dev dump-resources|--data-dir') kind='directory'; values='';;
     'dev dump-resources|--generator-package') kind='file'; values='';;
