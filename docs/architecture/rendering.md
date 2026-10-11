@@ -505,10 +505,10 @@ direct coordinate offsets on unscaled axes; scaled axes retain the original
 sampling calculation and all blend, modulation and color-key rules. SDL GPU
 keeps compatible primitive draws in the same color pass and merges consecutive
 vertex ranges only when their effective state matches. Barriers, clears, world
-geometry, terrain composition and target changes end that pass. Nearest atlas
+geometry, terrain composition and target changes end that pass. Unmipped nearest atlas
 blits share fragment bounds; their individual source regions stay in vertex UVs.
 Linear sampling, whether requested by the packet or texture descriptor, retains
-per-region half-texel clamps. Each SDL submission retains one owning lease per
+per-region half-texel clamps, as do authored mip textures. Each SDL submission retains one owning lease per
 physical texture allocation until its fence completes, and reuses bounded CPU
 preparation arrays while clearing packet references on success and failure.
 GL primitive state reuse is local to one bounded vertex-upload segment; barriers,

@@ -566,10 +566,11 @@ class SDLGPUDevice final : public RenderDevice
         const auto bounds = Layout::primitive_fragment_uvBounds_offset / sizeof(float);
         fragment[bounds + 2] = fragment[bounds + 3] = 1.f;
         // Nearest samples remain inside the source rectangle via vertex UVs.
-        // Only linear filtering needs a per-region half-texel clamp; retaining
-        // it for nearest draws unnecessarily splits adjacent atlas batches.
+        // Linear and authored-mip sampling retain per-region half-texel clamps.
+        // Unmipped nearest draws can share bounds without splitting atlas batches.
         if (packet.kind == DrawPacket::Kind::Blit &&
-            (packet.linear || packet.texture->descriptor.sampling == TextureDescriptor::Sampling::Linear)) {
+            (packet.linear || packet.texture->descriptor.sampling == TextureDescriptor::Sampling::Linear ||
+             packet.texture->descriptor.mips == TextureDescriptor::Mips::Generated)) {
             fragment[bounds] = (packet.source.x + .5f) / draw.texture->width;
             fragment[bounds + 1] = (packet.source.y + .5f) / draw.texture->height;
             fragment[bounds + 2] = (packet.source.x + packet.source.w - .5f) / draw.texture->width;

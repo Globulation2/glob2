@@ -133,7 +133,7 @@ TEST_SUITE("SDLGPUDevice")
         }
     }
 
-    GLOB2_TEST_CASE("nearest atlas blits preserve fractional triangle sampling", "[display][isolated]")
+    GLOB2_TEST_CASE("nearest atlas blits preserve fractional sampling and authored mip boundaries", "[display][isolated]")
     {
         const char *shaders = std::getenv("GLOB2_TEST_SHADER_DIRECTORY"); REQUIRE(shaders);
         Video video; auto device = makeSDLGPUDevice(nullptr, 96, 64, shaders);
@@ -167,7 +167,7 @@ TEST_SUITE("SDLGPUDevice")
                     packet.transform.scale = i % 2 ? 1.333333f : .75f;
                     packet.transform.x = .25f; packet.transform.y = .125f;
                     packet.clip = SDL_Rect{0, 0, 92, 60};
-                    if (triangles) {
+                    if (triangles && !mipmapped) {
                         // Existing arbitrary triangles never specialize an atlas
                         // clamp. They independently exercise the same nearest
                         // sampler, including boundary-close UV interpolation.
@@ -181,6 +181,13 @@ TEST_SUITE("SDLGPUDevice")
                         packet.vertices = {a, b, c, a, c, d};
                     }
                     frame.packets.push_back(std::move(packet));
+                    if (triangles && mipmapped) {
+                        // Authored mip sampling retains the existing per-region
+                        // clamp. Compare isolated passes rather than the different
+                        // sampling contract of arbitrary triangles.
+                        DrawPacket barrier; barrier.kind = DrawPacket::Kind::Barrier;
+                        frame.packets.push_back(barrier);
+                    }
                 }
                 REQUIRE(device->submit(std::move(frame))); device->present();
                 return Surface(device->captureSynchronously({}), SDL_DestroySurface);
