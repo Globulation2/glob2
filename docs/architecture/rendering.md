@@ -498,7 +498,11 @@ rather than a fixed low pixel cap.
 
 The command adapter preserves adjacent painter order and flushes at 4096 commands.
 Cloud alpha maps retain complete cell fans in painter order, submitting at most
-4092 vertices per chunk instead of allocating a packet for each cell. SDL GPU
+4092 vertices per chunk instead of allocating a packet for each cell. Legacy GL
+float alpha maps also group complete fans into bounded submissions, retaining
+their integer centers and existing clamped colors. Software nearest blits use
+direct coordinate offsets on unscaled axes; scaled axes retain the original
+sampling calculation and all blend, modulation and color-key rules. SDL GPU
 keeps compatible primitive draws in the same color pass and merges consecutive
 vertex ranges only when their effective state matches. Barriers, clears, world
 geometry, terrain composition and target changes end that pass.

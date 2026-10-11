@@ -10,6 +10,7 @@
 #include <assert.h>
 #include <valarray>
 #include <vector>
+#include <array>
 #include <algorithm>
 #include <exception>
 #include <stdexcept>
@@ -589,34 +590,33 @@ SpriteDrawBatch::~SpriteDrawBatch() noexcept(false)
 			} else {
 				glState.doBlend(true);
 				glState.doTexture(false);
-				for (int dy=0; dy < mapH-1; dy++)
-				{
-					int midy = y + dy * cellH + cellH/2;
-					for (int dx=0; dx < mapW-1; dx++)
-					{
-						++drawCalls;glBegin(GL_TRIANGLE_FAN);
-						//This interpolates to find the center color, then fans out to the four corners.
-						int midx = x + dx * cellW + cellW/2;
-						float mid_top_alpha = (map[mapW * dy + dx] + map[mapW * dy + dx + 1])/2;
-						float mid_bottom_alpha = (map[mapW * (dy + 1) + dx] + map[mapW * (dy + 1) + dx + 1])/2;
-						glColor4f(fr, color.g, color.b, (mid_top_alpha + mid_bottom_alpha) / 2);
-						glVertex2f(midx, midy);
-						//Touch each of the four corners
-						glColor4f(fr, fg, fb, map[mapW * dy + dx]);
-						glVertex2f(x + dx * cellW, y + dy * cellH);
-						glColor4f(fr, fg, fb, map[mapW * (dy + 1) + dx]);
-						glVertex2f(x + dx * cellW, y + (dy + 1) * cellH);
-
-						glColor4f(fr, fg, fb, map[mapW * (dy + 1) + dx + 1]);
-						glVertex2f(x + (dx+1) * cellW, y + (dy + 1) * cellH);
-						glColor4f(fr, fg, fb, map[mapW * dy + dx + 1]);
-						glVertex2f(x + (dx+1) * cellW, y + dy * cellH);
-
-						glColor4f(fr, fg, fb, map[mapW * dy + dx]);
-						glVertex2f(x + dx * cellW, y + dy * cellH);
-						glEnd();
-					}
-				}
+                if (mapW<2 || mapH<2) return;
+                // Preserve the legacy integer center and clamped float colors,
+                // but group complete fans into bounded triangle submissions.
+                constexpr unsigned cellsPerChunk=4096;
+                unsigned cells=0;
+                ++drawCalls;glBegin(GL_TRIANGLES);
+                for (int dy=0;dy<mapH-1;++dy) for (int dx=0;dx<mapW-1;++dx) {
+                    const int left=x+dx*cellW,top=y+dy*cellH;
+                    const float a=map[mapW*dy+dx],b=map[mapW*(dy+1)+dx];
+                    const float c=map[mapW*(dy+1)+dx+1],d=map[mapW*dy+dx+1];
+                    const float midpoint=((a+d)/2+(b+c)/2)/2;
+                    const std::array<float,4> alpha{a,b,c,d};
+                    const std::array<std::array<int,2>,4> corners{{{left,top},{left,top+cellH},
+                        {left+cellW,top+cellH},{left+cellW,top}}};
+                    for (unsigned triangle=0;triangle<4;++triangle) {
+                        glColor4f(fr,color.g,color.b,midpoint);
+                        glVertex2f(left+cellW/2,top+cellH/2);
+                        for (unsigned corner:{triangle,(triangle+1)%4}) {
+                            glColor4f(fr,fg,fb,alpha[corner]);
+                            glVertex2f(corners[corner][0],corners[corner][1]);
+                        }
+                    }
+                    if (++cells==cellsPerChunk && (dx!=mapW-2 || dy!=mapH-2)) {
+                        glEnd();++drawCalls;glBegin(GL_TRIANGLES);cells=0;
+                    }
+                }
+                glEnd();
 			}
 		}
 		else

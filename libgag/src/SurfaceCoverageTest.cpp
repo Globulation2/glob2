@@ -9,7 +9,15 @@ namespace GAGCore {std::unique_ptr<RenderBackend> makeSDLSoftwareGeometryBackend
 #include <array>
 #include <cstring>
 #include <valarray>
+#include <vector>
 #include <type_traits>
+#ifdef HAVE_OPENGL
+#ifdef __APPLE__
+#include <OpenGL/gl.h>
+#else
+#include <epoxy/gl.h>
+#endif
+#endif
 
 namespace
 {
@@ -80,6 +88,45 @@ void compareAlphaMapChunks(GraphicContext &context, float divisor)
 }
 TEST_SUITE("SurfaceCoverage")
 {
+#ifdef HAVE_OPENGL
+    TEST_CASE("legacy float alpha chunks preserve original fans and integer centers [display]")
+    {
+        glob2test::ToolkitScope toolkit;
+        GraphicContext::setInitialRendererBackend(RendererBackend::LegacyGL);
+        auto *context=Toolkit::initGraphic(384,192,GraphicContext::USEGPU|GraphicContext::NOAUDIO,"legacy alpha chunks");
+        constexpr int width=100,height=50;
+        std::valarray<float> map(width*height);
+        for(size_t i=0;i<map.size();++i) map[i]=float((i*37)%256)/255.f;
+        auto capture=[] {
+            GLint viewport[4];glGetIntegerv(GL_VIEWPORT,viewport);
+            std::vector<Uint8> pixels(size_t(viewport[2])*viewport[3]*4);
+            glReadPixels(viewport[0],viewport[1],viewport[2],viewport[3],GL_RGBA,GL_UNSIGNED_BYTE,pixels.data());
+            REQUIRE(glGetError()==GL_NO_ERROR);return pixels;
+        };
+        auto background=[&] {
+            context->setClipRect();context->drawFilledRect(0,0,384,192,Color(20,30,40));
+            context->setClipRect(7,9,281,151);
+        };
+        background();glEnable(GL_BLEND);glDisable(GL_TEXTURE_2D);
+        glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+        const Color color(60,130,230);
+        const float r=255.f*color.r,g=255.f*color.g,b=255.f*color.b;
+        for(int y=0;y<height-1;++y)for(int x=0;x<width-1;++x) {
+            const float a=map[y*width+x],d=map[y*width+x+1];
+            const float c=map[(y+1)*width+x+1],bl=map[(y+1)*width+x];
+            glBegin(GL_TRIANGLE_FAN);
+            glColor4f(r,color.g,color.b,((a+d)/2+(bl+c)/2)/2);glVertex2f(2+x*3+1,3+y*3+1);
+            glColor4f(r,g,b,a);glVertex2f(2+x*3,3+y*3);
+            glColor4f(r,g,b,bl);glVertex2f(2+x*3,3+(y+1)*3);
+            glColor4f(r,g,b,c);glVertex2f(2+(x+1)*3,3+(y+1)*3);
+            glColor4f(r,g,b,d);glVertex2f(2+(x+1)*3,3+y*3);
+            glColor4f(r,g,b,a);glVertex2f(2+x*3,3+y*3);glEnd();
+        }
+        const auto reference=capture();background();
+        context->drawAlphaMap(map,width,height,2,3,3,3,color);
+        CHECK(capture()==reference);
+    }
+#endif
     TEST_CASE("bounded alpha map chunks preserve clipped cell interpolation [display]")
     {
         glob2test::ToolkitScope toolkit;
