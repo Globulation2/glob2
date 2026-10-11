@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="artifacts/renderer-integration/core-926e40259/core-tests" errors="0" failures="0" tests="839" time="0.106639" timestamp="2026-10-11T01:24:40Z" doctest_version="2.4.11">
+    <testcase classname="artifacts/renderer-integration/core-926e40259/libgag/src/RenderDeviceTest.cpp" name="capture identity remains the last committed frame across empty presentation and recreation" time="0.000175" status="run"/>
+    <testcase classname="artifacts/renderer-integration/core-926e40259/libgag/src/RenderDeviceTest.cpp" name="discarded frame capture metadata returns to the last presented identity" time="0" status="run"/>
+    <testcase classname="artifacts/renderer-integration/core-926e40259/libgag/src/RenderDeviceTest.cpp" name="authored mip revisions own padded pixels and charge every supplied level" time="0.000109" status="run"/>
+    <testcase classname="artifacts/renderer-integration/core-926e40259/libgag/src/RenderDeviceTest.cpp" name="software device preserves nearest authored mip fallback with owned RGBA pixels" time="0.000123" status="run"/>
+    <testcase classname="artifacts/renderer-integration/core-926e40259/libgag/src/RenderDeviceTest.cpp" name="authored upload promotion preserves queued ordinary resource identity" time="0" status="run"/>
+    <testcase classname="artifacts/renderer-integration/core-926e40259/libgag/src/RenderDeviceTest.cpp" name="implicit capacity submission defers fatal device errors to presentation boundary" time="0.004944" status="run"/>
+    <testcase classname="artifacts/renderer-integration/core-926e40259/libgag/src/RenderDeviceTest.cpp" name="software discard restores committed pixels and next frame remains usable" time="0" status="run"/>
+    <testcase classname="artifacts/renderer-integration/core-926e40259/libgag/src/RenderDeviceTest.cpp" name="bounded admission failure aborts frame without throwing and later admission resumes" time="0" status="run"/>
+    <testcase classname="artifacts/renderer-integration/core-926e40259/libgag/src/RenderDeviceTest.cpp" name="in-flight revision pressure defers mutation with bounded owned pixels" time="0" status="run"/>
+    <testcase classname="artifacts/renderer-integration/core-926e40259/libgag/src/RenderDeviceTest.cpp" name="queued drawing retains pixels across mutation deletion and slot reuse" time="0" status="run"/>
+    <testcase classname="artifacts/renderer-integration/core-926e40259/libgag/src/RenderDeviceTest.cpp" name="software command adapter renders old and new revisions before forgetting sources" time="0" status="run"/>
+    <testcase classname="artifacts/renderer-integration/core-926e40259/libgag/src/RenderDeviceTest.cpp" name="CPU texture cache evicts inactive assets within a small registry budget" time="0.000447" status="run"/>
+    <testcase classname="artifacts/renderer-integration/core-926e40259/libgag/src/RenderDeviceTest.cpp" name="transient source views with no asset identity cannot reuse old pixels" time="0" status="run"/>
+    <testcase classname="artifacts/renderer-integration/core-926e40259/libgag/src/RenderDeviceTest.cpp" name="command capacity flushes while adjacent batching preserves painter order and barriers" time="0.005292" status="run"/>
+    <testcase classname="artifacts/renderer-integration/core-926e40259/libgag/src/RenderDeviceTest.cpp" name="bounded resource and upload admission retains in-flight revisions until cancellation" time="0" status="run"/>
+    <testcase classname="artifacts/renderer-integration/core-926e40259/libgag/src/RenderDeviceTest.cpp" name="oversized geometry is rejected and cancellation releases unsent pixels" time="0.001381" status="run"/>
+    <testcase classname="artifacts/renderer-integration/core-926e40259/libgag/src/RenderDeviceTest.cpp" name="recorded primitive composites inherit map transforms and clipping" time="0" status="run"/>
+    <testcase classname="artifacts/renderer-integration/core-926e40259/libgag/src/RenderDeviceTest.cpp" name="texture categories enforce independent limits and explicit total budgets" time="0.094168" status="run"/>
+    <testcase classname="artifacts/renderer-integration/core-926e40259/libgag/src/RenderDeviceTest.cpp" name="rig geometry rejects invalid GPU palette indexing" time="0" status="run"/>
+    <testcase classname="artifacts/renderer-integration/core-926e40259/libgag/src/RenderDeviceTest.cpp" name="software cropped capture uses submitted target pixels and admission metadata" time="0" status="run"/>
+    <testcase classname="artifacts/renderer-integration/core-926e40259/libgag/src/RenderDeviceTest.cpp" name="persistent geometry rejects invalid ranges and retains deleted generations" time="0" status="run"/>
+    <testcase classname="artifacts/renderer-integration/core-926e40259/libgag/src/RenderDeviceTest.cpp" name="capture metadata survives completion and bounded capture queue resets" time="0" status="run"/>
+    <testcase classname="artifacts/renderer-integration/core-926e40259/libgag/src/RendererSelectionTest.cpp" name="stable names aliases and startup precedence" time="0" status="run"/>
+  </testsuite>
+</testsuites>

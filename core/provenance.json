@@ -1,0 +1,13 @@
+{
+  "source": "926e402590a9c9d41afed75b61061656766abbc4",
+  "base": "825e5ea55eb7a65a790ced33a419b18d8d8ffd62",
+  "platform": "Linux x86_64",
+  "compiler": "g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+  "SDL": "3.4.16",
+  "flags": "C++20 -O0 -g1 -Wall -Wextra",
+  "command": "g++ -std=c++20 -O0 -g1 -Wall -Wextra -Ilibgag/include -Itest/support -I<PINNED_SDL_PREFIX>/include main.cpp libgag/src/{RenderBackend,SoftwareRenderBackend,SurfaceRaster,RenderResources,RenderFrame,RenderDevice,RendererSelection,RenderDeviceTest,RendererSelectionTest}.cpp -L<PINNED_SDL_PREFIX>/lib -Wl,-rpath,<PINNED_SDL_PREFIX>/lib -lSDL3 -o core-tests; ./core-tests -r=junit -o=tests.xml",
+  "extraction": "git archive exact source; production headers, core, unchanged software raster sources and committed tests; main.cpp defines doctest implementation/main only",
+  "result": "23 cases pass, zero failures/skips",
+  "binarySha256": "a01af834a0d382bb157f2051e56ce08a26d097906189bb3b755faae1d7c8ab4d",
+  "omissions": "standalone core contract check; full application build and hardware acceptance reported separately"
+}
