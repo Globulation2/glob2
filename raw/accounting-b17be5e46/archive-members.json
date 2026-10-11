@@ -1,0 +1,297 @@
+{
+  "native-fdf795cd0-unit/TurnHarness/four_clients_with_latency__jitter__loss_and_AI_seats__network-sim/four-client-delay.txt": {
+    "sha256": "9439673cc6e9185f9bf567e63b6d8dffa432459ad5af4ddad3c79ca911e475a5",
+    "bytes": 221,
+    "archive": "native-fdf795cd0-unit.tar.gz"
+  },
+  "native-fdf795cd0-unit/TurnHarness/network_telemetry_follows_injected_latency__jitter__loss__an_outage_and_a_rejoin__network-sim__artifacts/network-telemetry-client1.json": {
+    "sha256": "cc29edec72c841ef4c68068179b38dc0e2eb7b789a3ec5179133376710d998f5",
+    "bytes": 18261,
+    "archive": "native-fdf795cd0-unit.tar.gz"
+  },
+  "native-fdf795cd0-unit/TurnHarness/network_telemetry_follows_injected_latency__jitter__loss__an_outage_and_a_rejoin__network-sim__artifacts/network-telemetry-relay.json": {
+    "sha256": "d3e1150adccafd224e983fcbd7d62684822f16fa29d5acff8f7908cecb83c2d6",
+    "bytes": 3660,
+    "archive": "native-fdf795cd0-unit.tar.gz"
+  },
+  "native-fdf795cd0-unit/TurnHarness/network_telemetry_follows_injected_latency__jitter__loss__an_outage_and_a_rejoin__network-sim__artifacts/network-telemetry.txt": {
+    "sha256": "b0e0fa827b5062d9b6e1c7809b30c816f59287786a016b12e2afc8a2270b9eb8",
+    "bytes": 345,
+    "archive": "native-fdf795cd0-unit.tar.gz"
+  },
+  "native-fdf795cd0-unit/TurnHarness/the_input_delay_rises_with_jitter_and_returns_when_it_subsides__network-sim__artifacts/jitter-trace.txt": {
+    "sha256": "d9add8de491e49c7825d3fde6a0b4d8cb7661b2fc81149e2c17a5c43c5262a03",
+    "bytes": 939,
+    "archive": "native-fdf795cd0-unit.tar.gz"
+  },
+  "native-fdf795cd0-unit/build-provenance.json": {
+    "sha256": "b3d66a180e12cc8987e048424b531bfa02bf1be290d1749672287824676b2b76",
+    "bytes": 616,
+    "archive": "native-fdf795cd0-unit.tar.gz"
+  },
+  "native-fdf795cd0-unit/declared-inventory.log": {
+    "sha256": "1bd11e87a4c5298dd972976df396ac376eb4882fc6916194d2d84551a56410a6",
+    "bytes": 27244,
+    "archive": "native-fdf795cd0-unit.tar.gz"
+  },
+  "native-fdf795cd0-unit/inventory.json": {
+    "sha256": "4b78879430900fc1d96368132269caf26c98d5404b71a0c74ce87a88a066ac56",
+    "bytes": 119423,
+    "archive": "native-fdf795cd0-unit.tar.gz"
+  },
+  "native-fdf795cd0-unit/junit.xml": {
+    "sha256": "427c4d877d5a83970457b969659a2f24a2bfc30a0aa70c9448f2237d1b23d5e3",
+    "bytes": 47066,
+    "archive": "native-fdf795cd0-unit.tar.gz"
+  },
+  "native-fdf795cd0-unit/official-receipt.json": {
+    "sha256": "02c46164f9d3c419999d455005ebbc3163ef3f459d75c2e470eee5705804166a",
+    "bytes": 2107,
+    "archive": "native-fdf795cd0-unit.tar.gz"
+  },
+  "native-fdf795cd0-unit/runner.log": {
+    "sha256": "bbd4e30de187a312bae3d218e7692e1d4080d7464fafdad2669b5842d0a1e263",
+    "bytes": 1093,
+    "archive": "native-fdf795cd0-unit.tar.gz"
+  },
+  "native-fdf795cd0-engine/EngineSession/rendered_CPU_boundaries_belong_to_the_actual_simulation_thread_display_artifacts/rendered-cpu-threaded-endpoints.json": {
+    "sha256": "96d3ba7ccefcf74cdbc0b6431fe48af03201d86f69fde3858e9eea1e1e395bef",
+    "bytes": 12798,
+    "archive": "native-fdf795cd0-engine.tar.gz"
+  },
+  "native-fdf795cd0-engine/EngineSession/rendered_CPU_endpoints_preserve_fixed_ticks_checksums_and_prior_clocks_display_artifacts/rendered-cpu-endpoints.json": {
+    "sha256": "8292634ad501ee3ac8df366336c672c794d7d924f0108fa94bf8fa18afc94ee5",
+    "bytes": 12750,
+    "archive": "native-fdf795cd0-engine.tar.gz"
+  },
+  "native-fdf795cd0-engine/EngineSession/warm_capture_resumes_serial_owner_samples_after_stopping_a_paused_runner_display_artifacts/rendered-warm-serial-resume.json": {
+    "sha256": "4c1dae8a9ca550467a399566f7acd43a3922dc5283fcf88f6bc290a75b0f9abe",
+    "bytes": 12745,
+    "archive": "native-fdf795cd0-engine.tar.gz"
+  },
+  "native-fdf795cd0-engine/declared-inventory.log": {
+    "sha256": "891c4a4dcfcc7538a2d4ec0b885a1292e41276d264e06d4a3e8dcee6391d4901",
+    "bytes": 18422,
+    "archive": "native-fdf795cd0-engine.tar.gz"
+  },
+  "native-fdf795cd0-engine/inventory.json": {
+    "sha256": "e01b6a2776a20f2afbcd9dbd968b96d78ed4f3cc749e37b2c58576608a5a6d4e",
+    "bytes": 139598,
+    "archive": "native-fdf795cd0-engine.tar.gz"
+  },
+  "native-fdf795cd0-engine/junit.xml": {
+    "sha256": "4a4463071dfa78a7f87dad6e73d0a5cbde8ac01d689972e2004cc5cdefd20176",
+    "bytes": 4463,
+    "archive": "native-fdf795cd0-engine.tar.gz"
+  },
+  "native-fdf795cd0-engine/official-receipt.json": {
+    "sha256": "e4505b7f92aa00019ec0270b0c806ecc527da9aa45a19ee5b0b64250f49f46b0",
+    "bytes": 1494,
+    "archive": "native-fdf795cd0-engine.tar.gz"
+  },
+  "native-fdf795cd0-engine/runner.log": {
+    "sha256": "4715c72f0568ef6bbdc23f1c0306a28db0d28a935344b4e43b0b3c9dc7aae4cd",
+    "bytes": 2829,
+    "archive": "native-fdf795cd0-engine.tar.gz"
+  },
+  "native-fdf795cd0-activated/calibrated-native-candidate-receipt/build-provenance.json": {
+    "sha256": "b3d66a180e12cc8987e048424b531bfa02bf1be290d1749672287824676b2b76",
+    "bytes": 616,
+    "archive": "native-fdf795cd0-activated.tar.gz"
+  },
+  "native-fdf795cd0-activated/calibrated-native-candidate-receipt/receipt.json": {
+    "sha256": "1bf4791db3cc17576e4ba06dd757e7f803e9370d6959706ebc2fae54888dc14e",
+    "bytes": 1948,
+    "archive": "native-fdf795cd0-activated.tar.gz"
+  },
+  "native-fdf795cd0-activated/calibrated-native-candidate-receipt/results.xml": {
+    "sha256": "2101d5c063c02a640409490f8a648e5edcbc96d8698547a555065e3f7068f015",
+    "bytes": 182844,
+    "archive": "native-fdf795cd0-activated.tar.gz"
+  },
+  "native-fdf795cd0-activated/calibrated-native-candidate-receipt/stderr.log": {
+    "sha256": "2090d8e79c90f38435a0efe51a3ec91cfc64e78f498412fa2e2236c1d4cc70a7",
+    "bytes": 702,
+    "archive": "native-fdf795cd0-activated.tar.gz"
+  },
+  "native-fdf795cd0-activated/full-debt-native-candidate-receipt/build-provenance.json": {
+    "sha256": "b3d66a180e12cc8987e048424b531bfa02bf1be290d1749672287824676b2b76",
+    "bytes": 616,
+    "archive": "native-fdf795cd0-activated.tar.gz"
+  },
+  "native-fdf795cd0-activated/full-debt-native-candidate-receipt/receipt.json": {
+    "sha256": "e5039ad00ad494ea4a8c48c91309ce9de8a89553cbff5bf161da4cb757aea1f3",
+    "bytes": 1947,
+    "archive": "native-fdf795cd0-activated.tar.gz"
+  },
+  "native-fdf795cd0-activated/full-debt-native-candidate-receipt/results.xml": {
+    "sha256": "ae325cb56f9248e71ff028c1398904c8a8050074283df21c673ca2f65d8eac81",
+    "bytes": 182844,
+    "archive": "native-fdf795cd0-activated.tar.gz"
+  },
+  "native-fdf795cd0-activated/full-debt-native-candidate-receipt/stderr.log": {
+    "sha256": "2090d8e79c90f38435a0efe51a3ec91cfc64e78f498412fa2e2236c1d4cc70a7",
+    "bytes": 702,
+    "archive": "native-fdf795cd0-activated.tar.gz"
+  },
+  "native-fdf795cd0-activated/summary.json": {
+    "sha256": "099d45ca127f6ad40586ba3ef0198808901ef15089df3ec26d31f8f08a3c8084",
+    "bytes": 4088,
+    "archive": "native-fdf795cd0-activated.tar.gz"
+  },
+  "native-fdf795cd0-unit-inventory-preparation-failure/declared-inventory.log": {
+    "sha256": "1d4e644a1de4d843599238db54b4054970e4b1e8a6d9783d3f58594002de6170",
+    "bytes": 25483,
+    "archive": "native-fdf795cd0-unit-inventory-preparation-failure.tar.gz"
+  },
+  "native-fdf795cd0-unit-inventory-preparation-failure/preparation-failure-receipt.json": {
+    "sha256": "4b0475ef60eaf44ba5cecd8b203907b0df2f16a2b996bfd4025f168a0fcfa539",
+    "bytes": 508,
+    "archive": "native-fdf795cd0-unit-inventory-preparation-failure.tar.gz"
+  },
+  "weighted-auto-fdf795cd0-direct-cost-diagnostic/analysis.log": {
+    "sha256": "23bde6102d382e647273e4a09ad7c797d412d2b40209d3b69e86775ae01f9899",
+    "bytes": 5447,
+    "archive": "weighted-auto-fdf795cd0-direct-cost-diagnostic.tar.gz"
+  },
+  "weighted-auto-fdf795cd0-direct-cost-diagnostic/artifact-manifest.json": {
+    "sha256": "59409d28f44722bf358072641160822e8f4b99297d00044e22e9f99febda7178",
+    "bytes": 2952,
+    "archive": "weighted-auto-fdf795cd0-direct-cost-diagnostic.tar.gz"
+  },
+  "weighted-auto-fdf795cd0-direct-cost-diagnostic/auto-admission/engine.log": {
+    "sha256": "99b2a90898eb8a6dceeec8dfb7dc72b9b5c258fccd2f8d576cc992def705ff94",
+    "bytes": 1084598,
+    "archive": "weighted-auto-fdf795cd0-direct-cost-diagnostic.tar.gz"
+  },
+  "weighted-auto-fdf795cd0-direct-cost-diagnostic/auto-admission/launch-environment.json": {
+    "sha256": "58609b0a9a282ea3881835d2a1bf31683914d1cd0ce07ebdbd851603dcf1d9ba",
+    "bytes": 1706,
+    "archive": "weighted-auto-fdf795cd0-direct-cost-diagnostic.tar.gz"
+  },
+  "weighted-auto-fdf795cd0-direct-cost-diagnostic/auto-admission/profile/keyboard-gui.txt": {
+    "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+    "bytes": 1811,
+    "archive": "weighted-auto-fdf795cd0-direct-cost-diagnostic.tar.gz"
+  },
+  "weighted-auto-fdf795cd0-direct-cost-diagnostic/auto-admission/profile/keyboard-mapedit.txt": {
+    "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+    "bytes": 708,
+    "archive": "weighted-auto-fdf795cd0-direct-cost-diagnostic.tar.gz"
+  },
+  "weighted-auto-fdf795cd0-direct-cost-diagnostic/auto-admission/profile/preferences.txt": {
+    "sha256": "365ad61bf2b33e6ff3a6bf83f4a94f2efa2036feee5446e9ebb10a076da8bb89",
+    "bytes": 946,
+    "archive": "weighted-auto-fdf795cd0-direct-cost-diagnostic.tar.gz"
+  },
+  "weighted-auto-fdf795cd0-direct-cost-diagnostic/auto-admission/receipt.json": {
+    "sha256": "510c9488adc4810c79324991129c41efc1121a26fafb81ddbc635ecd0063991a",
+    "bytes": 265390,
+    "archive": "weighted-auto-fdf795cd0-direct-cost-diagnostic.tar.gz"
+  },
+  "weighted-auto-fdf795cd0-direct-cost-diagnostic/auto-admission/rendered-cpu.json": {
+    "sha256": "e44a631c61aa658d6744a576bc814392e82885d3bde588f341740de51aa51779",
+    "bytes": 13573,
+    "archive": "weighted-auto-fdf795cd0-direct-cost-diagnostic.tar.gz"
+  },
+  "weighted-auto-fdf795cd0-direct-cost-diagnostic/diagnostic-summary.json": {
+    "sha256": "74d36bb4d9a49bef933b301727d0641be933d5b2c7cb1eaa9920e6943d1ef747",
+    "bytes": 17525,
+    "archive": "weighted-auto-fdf795cd0-direct-cost-diagnostic.tar.gz"
+  },
+  "weighted-auto-fdf795cd0-direct-cost-diagnostic/partition-cleanup.json": {
+    "sha256": "9ddb618a43acc754221c558949488a0383cc9fe8cd32ea5794d85b855438dc34",
+    "bytes": 383,
+    "archive": "weighted-auto-fdf795cd0-direct-cost-diagnostic.tar.gz"
+  },
+  "weighted-auto-fdf795cd0-direct-cost-diagnostic/partition-setup.json": {
+    "sha256": "ad270a7c01cec176d48621213703e4b1134fbc2f35c7706abce3191c39902242",
+    "bytes": 885,
+    "archive": "weighted-auto-fdf795cd0-direct-cost-diagnostic.tar.gz"
+  },
+  "weighted-auto-fdf795cd0-direct-cost-diagnostic/protocol.json": {
+    "sha256": "a520c900c18b65da8acdeab4212908798585048879e33d6e4d6ec35be8dc314f",
+    "bytes": 10724,
+    "archive": "weighted-auto-fdf795cd0-direct-cost-diagnostic.tar.gz"
+  },
+  "weighted-auto-fdf795cd0-direct-cost-diagnostic/runner.py": {
+    "sha256": "4f628ab53cbc0c7d0ac4c0422c4503c3e407ccf6bddad63a2b8b6c14471eeb8b",
+    "bytes": 11842,
+    "archive": "weighted-auto-fdf795cd0-direct-cost-diagnostic.tar.gz"
+  },
+  "weighted-auto-fdf795cd0-direct-cost-diagnostic/summary.json": {
+    "sha256": "c2d7ff2ec550ce5da88dbafe55800312dde089d64f4bd50a7c32ade13d1a2f9f",
+    "bytes": 288009,
+    "archive": "weighted-auto-fdf795cd0-direct-cost-diagnostic.tar.gz"
+  },
+  "candidates/fdf795cd0/activation-cases.json": {
+    "sha256": "8ff5682cdb3c895f0be2ec40dc4d259788d2ca2772dc47cf62c3ac7ef339318d",
+    "bytes": 2074,
+    "archive": "candidates--fdf795cd0.tar.gz"
+  },
+  "candidates/fdf795cd0/affected-native-summary.json": {
+    "sha256": "0e7ecdab4732286522bd8215adccf484e9452ad40b12eef8ba7a0e37dd4fa0cf",
+    "bytes": 3854,
+    "archive": "candidates--fdf795cd0.tar.gz"
+  },
+  "candidates/fdf795cd0/build-execution.json": {
+    "sha256": "0694a354ebd5254698cdf164efd14be1dabd7604eaa7db252e3882bd84a6877b",
+    "bytes": 792,
+    "archive": "candidates--fdf795cd0.tar.gz"
+  },
+  "candidates/fdf795cd0/build-receipt.json": {
+    "sha256": "cae375177a32c260a4a3001aecf78a3072189e9fb9d4402deac5b3eda4cc3ce2",
+    "bytes": 4459,
+    "archive": "candidates--fdf795cd0.tar.gz"
+  },
+  "candidates/fdf795cd0/build.log": {
+    "sha256": "1b3fffc4b95bda1e363f05eb5d961906367363110c8878fb36fe5e56b901839b",
+    "bytes": 3537033,
+    "archive": "candidates--fdf795cd0.tar.gz"
+  },
+  "candidates/fdf795cd0/config.h": {
+    "sha256": "048cc98e2eb0549119322477d521db8bb8745b0263c6ef9f65bbd74c7ef2a994",
+    "bytes": 1439,
+    "archive": "candidates--fdf795cd0.tar.gz"
+  },
+  "candidates/fdf795cd0/expected-native-inventory.json": {
+    "sha256": "78d97dbf639dfd33cfb1f2940094ae2a240f17eacca1ac629aef62e5cdf698d2",
+    "bytes": 111582,
+    "archive": "candidates--fdf795cd0.tar.gz"
+  },
+  "candidates/fdf795cd0/finalize-build.py": {
+    "sha256": "be408899641b54ac7b1f20d3c3e55d0015534384300aa31fc885f67d13cbc966",
+    "bytes": 3030,
+    "archive": "candidates--fdf795cd0.tar.gz"
+  },
+  "candidates/fdf795cd0/freeze.json": {
+    "sha256": "9fe6593c38bccebb8a4cd16c598637efa81947a664d8c9d7c8700a8774caa5ae",
+    "bytes": 964,
+    "archive": "candidates--fdf795cd0.tar.gz"
+  },
+  "candidates/fdf795cd0/identity.json": {
+    "sha256": "be465343143362c64a5c474333555991f31e87ef005772298ba8d8c14ca6ee8e",
+    "bytes": 309,
+    "archive": "candidates--fdf795cd0.tar.gz"
+  },
+  "candidates/fdf795cd0/native-commands.json": {
+    "sha256": "cbbbe79eb2f2e26aee360040f24a9996ceaaa7ab193515f368c0b0e4d4664594",
+    "bytes": 3008,
+    "archive": "candidates--fdf795cd0.tar.gz"
+  },
+  "candidates/fdf795cd0/run-activated-native.py": {
+    "sha256": "cc28d1e99198788e721df8b5d374aff4464f82dedf80f1db79043b315e9e6361",
+    "bytes": 3213,
+    "archive": "candidates--fdf795cd0.tar.gz"
+  },
+  "candidates/fdf795cd0/run-affected-native.py": {
+    "sha256": "6f05c0c65de4203161d514c09dda026bf05fac64a97bfc61b4adefaecfe555fc",
+    "bytes": 2840,
+    "archive": "candidates--fdf795cd0.tar.gz"
+  },
+  "candidates/fdf795cd0/run-build.py": {
+    "sha256": "84ca71c02647935536a230c91df16045b726e14eb224235ec36180b651f44ff2",
+    "bytes": 1490,
+    "archive": "candidates--fdf795cd0.tar.gz"
+  }
+}

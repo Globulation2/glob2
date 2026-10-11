@@ -1,0 +1,64 @@
+{
+  "source_root": "b17be5e46dd7eae50c201ea89eedd61ec9ab2b48",
+  "evidence_source": "fdf795cd0bbd57858b87e648d668d7554c82e8cb",
+  "source_tree": "1d21ec0b8f6599860f7f67e50d185495afa62904",
+  "build": {
+    "exit_code": 0,
+    "compiled_cpp_objects": 564,
+    "compiler_errors": 0,
+    "pinned_dependencies_matched": 14
+  },
+  "native": {
+    "unit_selected_passed": 306,
+    "affected_engine_passed": 26,
+    "compiled_engine_inventory": 204,
+    "device_authorization_checks": 2,
+    "assertions_per_device_check": 37
+  },
+  "auto_diagnostic": {
+    "ticks": 768,
+    "closed_cpu_trace_exact": true,
+    "captured": 2,
+    "retired": 2,
+    "native_preparation_started": 1,
+    "kernel_dispatches": 0,
+    "exact_pairs": 0,
+    "promotions": 0,
+    "required_gpu_fields": 0,
+    "unknown_process_cpu_charged": false
+  },
+  "limitations": [
+    "Diagnostic only; automatic learning remains opt-in and unqualified.",
+    "First Guard field exhausted directly measured preparation budget before dispatch; second declined for deadline slack.",
+    "Retained CPU sample used for exactness only; different source, no performance ratio inference.",
+    "No 30-percent target claim; user accepted historical 24-26-percent separate CPU results.",
+    "Archives omit binaries and bulky assets; their local hashes remain in receipts.",
+    "Inventory-preparation failure retained; no tests ran against the incorrect old build directory."
+  ],
+  "archives": {
+    "native-fdf795cd0-unit.tar.gz": {
+      "sha256": "e4f23923775d0e520637ac843ec847c933ba534d0739074d8ea08bb81389cfc4",
+      "bytes": 53620
+    },
+    "native-fdf795cd0-engine.tar.gz": {
+      "sha256": "c00479b9e5694f2dfb64bd1086d328d87c4d510cb9cc509b6f25e35158e3aa9e",
+      "bytes": 53769
+    },
+    "native-fdf795cd0-activated.tar.gz": {
+      "sha256": "6da3261f5ffcab02e5f8317374259613a5e24ef9c646869c095be032bfb3506c",
+      "bytes": 83147
+    },
+    "native-fdf795cd0-unit-inventory-preparation-failure.tar.gz": {
+      "sha256": "4a830fa14f41e2ef469da59c480d3c1dcf4a24475bcee67e8260587a83188b64",
+      "bytes": 9595
+    },
+    "weighted-auto-fdf795cd0-direct-cost-diagnostic.tar.gz": {
+      "sha256": "5022c0d5275477466778016b41c285cf93fef5b5c7156de17862f49fa44153d1",
+      "bytes": 232699
+    },
+    "candidates--fdf795cd0.tar.gz": {
+      "sha256": "5376122a4f7b7409f01c5a415bc73e66468ace76fc9e2531628d3599230adbcc",
+      "bytes": 265123
+    }
+  }
+}
