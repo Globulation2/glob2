@@ -1,0 +1,572 @@
+
+This GDB supports auto-downloading debuginfo from the following URLs:
+  <https://debuginfod.ubuntu.com>
+Enable debuginfod for this session? (y or [n]) [answered N; input not from terminal]
+Debuginfod has been disabled.
+To make this setting permanent, add 'set debuginfod enabled off' to .gdbinit.
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+GLOB2_TEST_BUILD compiler=13.3.0 platform=Linux pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": false, "flags": {"CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/home/bradley/glob2=.", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H GLOB2_RENDER_SHADER_DIR \\\"/home/bradley/glob2/build/renderer-integration/native-dev/shaders\\\" SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC", "LINKFLAGS": "-Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -Wl,-rpath,/home/bradley/glob2/build/sdl3/prefix/lib -Wl,--enable-new-dtags"}, "revision": "38152eb3a6e196100bb3c048501d4d32abc85200", "sourceStatus": [], "sourceTreeSha256": "e45de126a1c2e513d69e397b16e88190953c91b6da29d2c6e81763eb0f60a2b6"}
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+Settings::load("preferences.txt") : error, can't open file.
+[New Thread 0x7fffe81ff6c0 (LWP 2117863)]
+[New Thread 0x7fffe79fe6c0 (LWP 2117864)]
+[New Thread 0x7fffe71fd6c0 (LWP 2117865)]
+[New Thread 0x7fffe69fc6c0 (LWP 2117866)]
+[New Thread 0x7fffe61fb6c0 (LWP 2117867)]
+[New Thread 0x7fffe59fa6c0 (LWP 2117868)]
+[New Thread 0x7fffe51f96c0 (LWP 2117869)]
+[New Thread 0x7fffe49f86c0 (LWP 2117870)]
+[New Thread 0x7fffc7fff6c0 (LWP 2117871)]
+[New Thread 0x7fffc77fe6c0 (LWP 2117872)]
+[New Thread 0x7fffc6ffd6c0 (LWP 2117873)]
+[New Thread 0x7fffc67fc6c0 (LWP 2117874)]
+[New Thread 0x7fffc5ffb6c0 (LWP 2117875)]
+[New Thread 0x7fffc57fa6c0 (LWP 2117876)]
+[New Thread 0x7fffc4ff96c0 (LWP 2117877)]
+[New Thread 0x7fff9ffff6c0 (LWP 2117878)]
+[New Thread 0x7fff9f7fe6c0 (LWP 2117879)]
+[New Thread 0x7fff96dff6c0 (LWP 2117880)]
+[New Thread 0x7fff9effd6c0 (LWP 2117881)]
+[New Thread 0x7fff9e7fc6c0 (LWP 2117882)]
+[New Thread 0x7fff9dffb6c0 (LWP 2117883)]
+[New Thread 0x7fff9d7fa6c0 (LWP 2117884)]
+[New Thread 0x7fff9cff96c0 (LWP 2117885)]
+[New Thread 0x7fff97fff6c0 (LWP 2117886)]
+[New Thread 0x7fff977fe6c0 (LWP 2117887)]
+[New Thread 0x7fff965fe6c0 (LWP 2117888)]
+[New Thread 0x7fff95dfd6c0 (LWP 2117889)]
+[New Thread 0x7fff955fc6c0 (LWP 2117890)]
+[New Thread 0x7fff94dfb6c0 (LWP 2117891)]
+[New Thread 0x7fff5ffff6c0 (LWP 2117892)]
+[New Thread 0x7fff5f7fe6c0 (LWP 2117893)]
+[New Thread 0x7fff5effd6c0 (LWP 2117894)]
+[New Thread 0x7fff5e7fc6c0 (LWP 2117895)]
+[New Thread 0x7fff5dffb6c0 (LWP 2117896)]
+[New Thread 0x7fff5d7fa6c0 (LWP 2117897)]
+[New Thread 0x7fff5cff96c0 (LWP 2117898)]
+[New Thread 0x7fff4ffff6c0 (LWP 2117899)]
+[New Thread 0x7fff4f7fe6c0 (LWP 2117900)]
+[New Thread 0x7fff4effd6c0 (LWP 2117901)]
+[New Thread 0x7fff4e7fc6c0 (LWP 2117902)]
+[New Thread 0x7fff4dffb6c0 (LWP 2117903)]
+[New Thread 0x7fff4d7fa6c0 (LWP 2117904)]
+[New Thread 0x7fff4cff96c0 (LWP 2117905)]
+[New Thread 0x7fff275ff6c0 (LWP 2117918)]
+[New Thread 0x7fff26dfe6c0 (LWP 2117920)]
+[New Thread 0x7fff265fd6c0 (LWP 2118002)]
+[New Thread 0x7fff25dfc6c0 (LWP 2118003)]
+[New Thread 0x7fff255fb6c0 (LWP 2118004)]
+[New Thread 0x7fff24dfa6c0 (LWP 2118005)]
+[New Thread 0x7fff1bfff6c0 (LWP 2118006)]
+[New Thread 0x7fff1b7fe6c0 (LWP 2118007)]
+[New Thread 0x7fff1affd6c0 (LWP 2118008)]
+[New Thread 0x7fff1a7fc6c0 (LWP 2118009)]
+[New Thread 0x7fff19ffb6c0 (LWP 2118010)]
+[New Thread 0x7fff197fa6c0 (LWP 2118011)]
+[New Thread 0x7fff18ff96c0 (LWP 2118012)]
+[New Thread 0x7fff187f86c0 (LWP 2118013)]
+[New Thread 0x7fff17ff76c0 (LWP 2118014)]
+[New Thread 0x7fff177f66c0 (LWP 2118015)]
+[New Thread 0x7fff16ff56c0 (LWP 2118016)]
+nox::gui.game.checkSum() = 3cf006ad
+automaticEndingGame ended: 60 ticks, 0 minutes, 2 seconds
+GLOB2_GAME_END ticks=60 winner_team=-1 seed=1241274047 map="Recording initial state" orders=0 players=team0:local,team1:None,team2:None,team3:None
+[Thread 0x7fff16ff56c0 (LWP 2118016) exited]
+[Thread 0x7fff177f66c0 (LWP 2118015) exited]
+[Thread 0x7fff17ff76c0 (LWP 2118014) exited]
+[Thread 0x7fff187f86c0 (LWP 2118013) exited]
+[Thread 0x7fff18ff96c0 (LWP 2118012) exited]
+[Thread 0x7fff197fa6c0 (LWP 2118011) exited]
+[Thread 0x7fff19ffb6c0 (LWP 2118010) exited]
+[Thread 0x7fff1a7fc6c0 (LWP 2118009) exited]
+[Thread 0x7fff1affd6c0 (LWP 2118008) exited]
+[Thread 0x7fff1b7fe6c0 (LWP 2118007) exited]
+[Thread 0x7fff1bfff6c0 (LWP 2118006) exited]
+[Thread 0x7fff24dfa6c0 (LWP 2118005) exited]
+[Thread 0x7fff255fb6c0 (LWP 2118004) exited]
+[Thread 0x7fff25dfc6c0 (LWP 2118003) exited]
+[Thread 0x7fff265fd6c0 (LWP 2118002) exited]
+[New Thread 0x7fff16ff56c0 (LWP 2118050)]
+[VAAPI @ 0x7ffef0004a40] Failed to initialise VAAPI connection: -1 (unknown libva error).
+[New Thread 0x7fff177f66c0 (LWP 2118074)]
+[New Thread 0x7fff17ff76c0 (LWP 2118075)]
+[New Thread 0x7fff187f86c0 (LWP 2118076)]
+[New Thread 0x7fff265fd6c0 (LWP 2118077)]
+[New Thread 0x7fff25dfc6c0 (LWP 2118078)]
+[New Thread 0x7fff255fb6c0 (LWP 2118079)]
+[New Thread 0x7fff24dfa6c0 (LWP 2118080)]
+[New Thread 0x7fff1bfff6c0 (LWP 2118081)]
+[New Thread 0x7fff1b7fe6c0 (LWP 2118208)]
+[New Thread 0x7fff1affd6c0 (LWP 2118209)]
+[New Thread 0x7fff1a7fc6c0 (LWP 2118210)]
+[New Thread 0x7fff19ffb6c0 (LWP 2118211)]
+[New Thread 0x7fff197fa6c0 (LWP 2118212)]
+[New Thread 0x7fff18ff96c0 (LWP 2118213)]
+[New Thread 0x7fff167f46c0 (LWP 2118214)]
+[New Thread 0x7fff15ff36c0 (LWP 2118215)]
+[New Thread 0x7fff157f26c0 (LWP 2118216)]
+[New Thread 0x7fff14ff16c0 (LWP 2118217)]
+[New Thread 0x7ffefbfff6c0 (LWP 2118218)]
+[New Thread 0x7ffefb7fe6c0 (LWP 2118219)]
+[New Thread 0x7ffefaffd6c0 (LWP 2118220)]
+[New Thread 0x7ffefa7fc6c0 (LWP 2118221)]
+[New Thread 0x7ffef9ffb6c0 (LWP 2118222)]
+nox::gui.game.checkSum() = 3cf006ad
+automaticEndingGame ended: 60 ticks, 0 minutes, 2 seconds
+GLOB2_GAME_END ticks=60 winner_team=-1 seed=1241274047 map="Recording initial state" orders=0 players=team0:local,team1:None,team2:None,team3:None
+[aac @ 0x7ffef052dcc0] Qavg: 65536.000
+[Thread 0x7fff1bfff6c0 (LWP 2118081) exited]
+[Thread 0x7fff25dfc6c0 (LWP 2118078) exited]
+[Thread 0x7fff255fb6c0 (LWP 2118079) exited]
+[Thread 0x7fff24dfa6c0 (LWP 2118080) exited]
+[Thread 0x7fff187f86c0 (LWP 2118076) exited]
+[Thread 0x7fff265fd6c0 (LWP 2118077) exited]
+[Thread 0x7fff17ff76c0 (LWP 2118075) exited]
+[Thread 0x7fff177f66c0 (LWP 2118074) exited]
+[mov,mp4,m4a,3gp,3g2,mj2 @ 0x7ffef003c2c0] Protocol name not provided, cannot determine if input is local or a network protocol, buffers and access patterns cannot be configured optimally without knowing the protocol
+[mp4 @ 0x7ffef0051800] Starting second pass: moving the moov atom to the beginning of the file
+[Thread 0x7fff16ff56c0 (LWP 2118050) exited]
+[Thread 0x7ffef9ffb6c0 (LWP 2118222) exited]
+[Thread 0x7ffefa7fc6c0 (LWP 2118221) exited]
+[Thread 0x7ffefaffd6c0 (LWP 2118220) exited]
+[Thread 0x7ffefb7fe6c0 (LWP 2118219) exited]
+[Thread 0x7ffefbfff6c0 (LWP 2118218) exited]
+[Thread 0x7fff14ff16c0 (LWP 2118217) exited]
+[Thread 0x7fff157f26c0 (LWP 2118216) exited]
+[Thread 0x7fff15ff36c0 (LWP 2118215) exited]
+[Thread 0x7fff167f46c0 (LWP 2118214) exited]
+[Thread 0x7fff18ff96c0 (LWP 2118213) exited]
+[Thread 0x7fff197fa6c0 (LWP 2118212) exited]
+[Thread 0x7fff19ffb6c0 (LWP 2118211) exited]
+[Thread 0x7fff1a7fc6c0 (LWP 2118210) exited]
+[Thread 0x7fff1affd6c0 (LWP 2118209) exited]
+[Thread 0x7fff1b7fe6c0 (LWP 2118208) exited]
+[Thread 0x7fff275ff6c0 (LWP 2117918) exited]
+[Thread 0x7fff26dfe6c0 (LWP 2117920) exited]
+[Thread 0x7fff4cff96c0 (LWP 2117905) exited]
+[Thread 0x7fff4d7fa6c0 (LWP 2117904) exited]
+[Thread 0x7fff4dffb6c0 (LWP 2117903) exited]
+[Thread 0x7fff4e7fc6c0 (LWP 2117902) exited]
+[Thread 0x7fff4effd6c0 (LWP 2117901) exited]
+[Thread 0x7fff4f7fe6c0 (LWP 2117900) exited]
+[Thread 0x7fff4ffff6c0 (LWP 2117899) exited]
+[Thread 0x7fff5cff96c0 (LWP 2117898) exited]
+[Thread 0x7fff5d7fa6c0 (LWP 2117897) exited]
+[Thread 0x7fff5dffb6c0 (LWP 2117896) exited]
+
+Thread 1 "glob2-engine-te" received signal SIGSEGV, Segmentation fault.
+0x00005555556d168c in std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::size () at /usr/include/c++/13/bits/stl_vector.h:993
+993	      { return size_type(this->_M_impl._M_finish - this->_M_impl._M_start); }
+
+Thread 34 (Thread 0x7fff5e7fc6c0 (LWP 2117895) "glob2-e:disk$0"):
+#0  0x00007ffff6a98e51 in __futex_abstimed_wait_common64 (private=0, cancel=true, abstime=0x0, op=393, expected=0, futex_word=0x55555beae8ec) at ./nptl/futex-internal.c:57
+#1  __futex_abstimed_wait_common (cancel=true, private=0, abstime=0x0, clockid=0, expected=0, futex_word=0x55555beae8ec) at ./nptl/futex-internal.c:87
+#2  __GI___futex_abstimed_wait_cancelable64 (futex_word=futex_word@entry=0x55555beae8ec, expected=expected@entry=0, clockid=clockid@entry=0, abstime=abstime@entry=0x0, private=private@entry=0) at ./nptl/futex-internal.c:139
+#3  0x00007ffff6a9b8cd in __pthread_cond_wait_common (abstime=0x0, clockid=0, mutex=0x55555beae890, cond=0x55555beae8c0) at ./nptl/pthread_cond_wait.c:503
+#4  ___pthread_cond_wait (cond=0x55555beae8c0, mutex=0x55555beae890) at ./nptl/pthread_cond_wait.c:627
+#5  0x00007ffff3599edd in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#6  0x00007ffff3565fbb in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#7  0x00007ffff3599e0c in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#8  0x00007ffff6a9cb84 in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:447
+#9  0x00007ffff6b29ecc in clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+
+Thread 33 (Thread 0x7fff5effd6c0 (LWP 2117894) "glob2-engine-te"):
+#0  0x00007ffff6a98e51 in __futex_abstimed_wait_common64 (private=32767, cancel=true, abstime=0x0, op=393, expected=0, futex_word=0x55555c234630) at ./nptl/futex-internal.c:57
+#1  __futex_abstimed_wait_common (cancel=true, private=32767, abstime=0x0, clockid=0, expected=0, futex_word=0x55555c234630) at ./nptl/futex-internal.c:87
+#2  __GI___futex_abstimed_wait_cancelable64 (futex_word=futex_word@entry=0x55555c234630, expected=expected@entry=0, clockid=clockid@entry=0, abstime=abstime@entry=0x0, private=private@entry=0) at ./nptl/futex-internal.c:139
+#3  0x00007ffff6a9b8cd in __pthread_cond_wait_common (abstime=0x0, clockid=0, mutex=0x55555c2345e0, cond=0x55555c234608) at ./nptl/pthread_cond_wait.c:503
+#4  ___pthread_cond_wait (cond=0x55555c234608, mutex=0x55555c2345e0) at ./nptl/pthread_cond_wait.c:627
+#5  0x00007ffff3599edd in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#6  0x00007ffff386253b in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#7  0x00007ffff3599e0c in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#8  0x00007ffff6a9cb84 in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:447
+#9  0x00007ffff6b29ecc in clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+
+Thread 32 (Thread 0x7fff5f7fe6c0 (LWP 2117893) "glob2-engine-te"):
+#0  0x00007ffff6a98e51 in __futex_abstimed_wait_common64 (private=32767, cancel=true, abstime=0x0, op=393, expected=0, futex_word=0x55555c234630) at ./nptl/futex-internal.c:57
+#1  __futex_abstimed_wait_common (cancel=true, private=32767, abstime=0x0, clockid=0, expected=0, futex_word=0x55555c234630) at ./nptl/futex-internal.c:87
+#2  __GI___futex_abstimed_wait_cancelable64 (futex_word=futex_word@entry=0x55555c234630, expected=expected@entry=0, clockid=clockid@entry=0, abstime=abstime@entry=0x0, private=private@entry=0) at ./nptl/futex-internal.c:139
+#3  0x00007ffff6a9b8cd in __pthread_cond_wait_common (abstime=0x0, clockid=0, mutex=0x55555c2345e0, cond=0x55555c234608) at ./nptl/pthread_cond_wait.c:503
+#4  ___pthread_cond_wait (cond=0x55555c234608, mutex=0x55555c2345e0) at ./nptl/pthread_cond_wait.c:627
+#5  0x00007ffff3599edd in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#6  0x00007ffff386253b in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#7  0x00007ffff3599e0c in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#8  0x00007ffff6a9cb84 in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:447
+#9  0x00007ffff6b29ecc in clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+
+Thread 31 (Thread 0x7fff5ffff6c0 (LWP 2117892) "glob2-engine-te"):
+#0  0x00007ffff6a98e51 in __futex_abstimed_wait_common64 (private=32767, cancel=true, abstime=0x0, op=393, expected=0, futex_word=0x55555c234630) at ./nptl/futex-internal.c:57
+#1  __futex_abstimed_wait_common (cancel=true, private=32767, abstime=0x0, clockid=0, expected=0, futex_word=0x55555c234630) at ./nptl/futex-internal.c:87
+#2  __GI___futex_abstimed_wait_cancelable64 (futex_word=futex_word@entry=0x55555c234630, expected=expected@entry=0, clockid=clockid@entry=0, abstime=abstime@entry=0x0, private=private@entry=0) at ./nptl/futex-internal.c:139
+#3  0x00007ffff6a9b8cd in __pthread_cond_wait_common (abstime=0x0, clockid=0, mutex=0x55555c2345e0, cond=0x55555c234608) at ./nptl/pthread_cond_wait.c:503
+#4  ___pthread_cond_wait (cond=0x55555c234608, mutex=0x55555c2345e0) at ./nptl/pthread_cond_wait.c:627
+#5  0x00007ffff3599edd in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#6  0x00007ffff386253b in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#7  0x00007ffff3599e0c in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#8  0x00007ffff6a9cb84 in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:447
+#9  0x00007ffff6b29ecc in clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+
+Thread 30 (Thread 0x7fff94dfb6c0 (LWP 2117891) "glob2-engine-te"):
+#0  0x00007ffff6a98e51 in __futex_abstimed_wait_common64 (private=32767, cancel=true, abstime=0x0, op=393, expected=0, futex_word=0x55555c234630) at ./nptl/futex-internal.c:57
+#1  __futex_abstimed_wait_common (cancel=true, private=32767, abstime=0x0, clockid=0, expected=0, futex_word=0x55555c234630) at ./nptl/futex-internal.c:87
+#2  __GI___futex_abstimed_wait_cancelable64 (futex_word=futex_word@entry=0x55555c234630, expected=expected@entry=0, clockid=clockid@entry=0, abstime=abstime@entry=0x0, private=private@entry=0) at ./nptl/futex-internal.c:139
+#3  0x00007ffff6a9b8cd in __pthread_cond_wait_common (abstime=0x0, clockid=0, mutex=0x55555c2345e0, cond=0x55555c234608) at ./nptl/pthread_cond_wait.c:503
+#4  ___pthread_cond_wait (cond=0x55555c234608, mutex=0x55555c2345e0) at ./nptl/pthread_cond_wait.c:627
+#5  0x00007ffff3599edd in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#6  0x00007ffff386253b in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#7  0x00007ffff3599e0c in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#8  0x00007ffff6a9cb84 in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:447
+#9  0x00007ffff6b29ecc in clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+
+Thread 29 (Thread 0x7fff955fc6c0 (LWP 2117890) "glob2-engine-te"):
+#0  0x00007ffff6a98e51 in __futex_abstimed_wait_common64 (private=32767, cancel=true, abstime=0x0, op=393, expected=0, futex_word=0x55555c234630) at ./nptl/futex-internal.c:57
+#1  __futex_abstimed_wait_common (cancel=true, private=32767, abstime=0x0, clockid=0, expected=0, futex_word=0x55555c234630) at ./nptl/futex-internal.c:87
+#2  __GI___futex_abstimed_wait_cancelable64 (futex_word=futex_word@entry=0x55555c234630, expected=expected@entry=0, clockid=clockid@entry=0, abstime=abstime@entry=0x0, private=private@entry=0) at ./nptl/futex-internal.c:139
+#3  0x00007ffff6a9b8cd in __pthread_cond_wait_common (abstime=0x0, clockid=0, mutex=0x55555c2345e0, cond=0x55555c234608) at ./nptl/pthread_cond_wait.c:503
+#4  ___pthread_cond_wait (cond=0x55555c234608, mutex=0x55555c2345e0) at ./nptl/pthread_cond_wait.c:627
+#5  0x00007ffff3599edd in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#6  0x00007ffff386253b in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#7  0x00007ffff3599e0c in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#8  0x00007ffff6a9cb84 in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:447
+#9  0x00007ffff6b29ecc in clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+
+Thread 28 (Thread 0x7fff95dfd6c0 (LWP 2117889) "glob2-engine-te"):
+#0  0x00007ffff6a98e51 in __futex_abstimed_wait_common64 (private=32767, cancel=true, abstime=0x0, op=393, expected=0, futex_word=0x55555c234630) at ./nptl/futex-internal.c:57
+#1  __futex_abstimed_wait_common (cancel=true, private=32767, abstime=0x0, clockid=0, expected=0, futex_word=0x55555c234630) at ./nptl/futex-internal.c:87
+#2  __GI___futex_abstimed_wait_cancelable64 (futex_word=futex_word@entry=0x55555c234630, expected=expected@entry=0, clockid=clockid@entry=0, abstime=abstime@entry=0x0, private=private@entry=0) at ./nptl/futex-internal.c:139
+#3  0x00007ffff6a9b8cd in __pthread_cond_wait_common (abstime=0x0, clockid=0, mutex=0x55555c2345e0, cond=0x55555c234608) at ./nptl/pthread_cond_wait.c:503
+#4  ___pthread_cond_wait (cond=0x55555c234608, mutex=0x55555c2345e0) at ./nptl/pthread_cond_wait.c:627
+#5  0x00007ffff3599edd in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#6  0x00007ffff386253b in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#7  0x00007ffff3599e0c in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#8  0x00007ffff6a9cb84 in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:447
+#9  0x00007ffff6b29ecc in clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+
+Thread 27 (Thread 0x7fff965fe6c0 (LWP 2117888) "glob2-engine-te"):
+#0  0x00007ffff6a98e51 in __futex_abstimed_wait_common64 (private=32767, cancel=true, abstime=0x0, op=393, expected=0, futex_word=0x55555c234630) at ./nptl/futex-internal.c:57
+#1  __futex_abstimed_wait_common (cancel=true, private=32767, abstime=0x0, clockid=0, expected=0, futex_word=0x55555c234630) at ./nptl/futex-internal.c:87
+#2  __GI___futex_abstimed_wait_cancelable64 (futex_word=futex_word@entry=0x55555c234630, expected=expected@entry=0, clockid=clockid@entry=0, abstime=abstime@entry=0x0, private=private@entry=0) at ./nptl/futex-internal.c:139
+#3  0x00007ffff6a9b8cd in __pthread_cond_wait_common (abstime=0x0, clockid=0, mutex=0x55555c2345e0, cond=0x55555c234608) at ./nptl/pthread_cond_wait.c:503
+#4  ___pthread_cond_wait (cond=0x55555c234608, mutex=0x55555c2345e0) at ./nptl/pthread_cond_wait.c:627
+#5  0x00007ffff3599edd in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#6  0x00007ffff386253b in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#7  0x00007ffff3599e0c in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#8  0x00007ffff6a9cb84 in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:447
+#9  0x00007ffff6b29ecc in clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+
+Thread 26 (Thread 0x7fff977fe6c0 (LWP 2117887) "glob2-engine-te"):
+#0  0x00007ffff6a98e51 in __futex_abstimed_wait_common64 (private=32767, cancel=true, abstime=0x0, op=393, expected=0, futex_word=0x55555c234630) at ./nptl/futex-internal.c:57
+#1  __futex_abstimed_wait_common (cancel=true, private=32767, abstime=0x0, clockid=0, expected=0, futex_word=0x55555c234630) at ./nptl/futex-internal.c:87
+#2  __GI___futex_abstimed_wait_cancelable64 (futex_word=futex_word@entry=0x55555c234630, expected=expected@entry=0, clockid=clockid@entry=0, abstime=abstime@entry=0x0, private=private@entry=0) at ./nptl/futex-internal.c:139
+#3  0x00007ffff6a9b8cd in __pthread_cond_wait_common (abstime=0x0, clockid=0, mutex=0x55555c2345e0, cond=0x55555c234608) at ./nptl/pthread_cond_wait.c:503
+#4  ___pthread_cond_wait (cond=0x55555c234608, mutex=0x55555c2345e0) at ./nptl/pthread_cond_wait.c:627
+#5  0x00007ffff3599edd in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#6  0x00007ffff386253b in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#7  0x00007ffff3599e0c in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#8  0x00007ffff6a9cb84 in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:447
+#9  0x00007ffff6b29ecc in clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+
+Thread 25 (Thread 0x7fff97fff6c0 (LWP 2117886) "glob2-engine-te"):
+#0  0x00007ffff6a98e51 in __futex_abstimed_wait_common64 (private=32767, cancel=true, abstime=0x0, op=393, expected=0, futex_word=0x55555c234630) at ./nptl/futex-internal.c:57
+#1  __futex_abstimed_wait_common (cancel=true, private=32767, abstime=0x0, clockid=0, expected=0, futex_word=0x55555c234630) at ./nptl/futex-internal.c:87
+#2  __GI___futex_abstimed_wait_cancelable64 (futex_word=futex_word@entry=0x55555c234630, expected=expected@entry=0, clockid=clockid@entry=0, abstime=abstime@entry=0x0, private=private@entry=0) at ./nptl/futex-internal.c:139
+#3  0x00007ffff6a9b8cd in __pthread_cond_wait_common (abstime=0x0, clockid=0, mutex=0x55555c2345e0, cond=0x55555c234608) at ./nptl/pthread_cond_wait.c:503
+#4  ___pthread_cond_wait (cond=0x55555c234608, mutex=0x55555c2345e0) at ./nptl/pthread_cond_wait.c:627
+#5  0x00007ffff3599edd in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#6  0x00007ffff386253b in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#7  0x00007ffff3599e0c in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#8  0x00007ffff6a9cb84 in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:447
+#9  0x00007ffff6b29ecc in clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+
+Thread 24 (Thread 0x7fff9cff96c0 (LWP 2117885) "glob2-engine-te"):
+#0  0x00007ffff6a98e51 in __futex_abstimed_wait_common64 (private=32767, cancel=true, abstime=0x0, op=393, expected=0, futex_word=0x55555c234630) at ./nptl/futex-internal.c:57
+#1  __futex_abstimed_wait_common (cancel=true, private=32767, abstime=0x0, clockid=0, expected=0, futex_word=0x55555c234630) at ./nptl/futex-internal.c:87
+#2  __GI___futex_abstimed_wait_cancelable64 (futex_word=futex_word@entry=0x55555c234630, expected=expected@entry=0, clockid=clockid@entry=0, abstime=abstime@entry=0x0, private=private@entry=0) at ./nptl/futex-internal.c:139
+#3  0x00007ffff6a9b8cd in __pthread_cond_wait_common (abstime=0x0, clockid=0, mutex=0x55555c2345e0, cond=0x55555c234608) at ./nptl/pthread_cond_wait.c:503
+#4  ___pthread_cond_wait (cond=0x55555c234608, mutex=0x55555c2345e0) at ./nptl/pthread_cond_wait.c:627
+#5  0x00007ffff3599edd in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#6  0x00007ffff386253b in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#7  0x00007ffff3599e0c in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#8  0x00007ffff6a9cb84 in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:447
+#9  0x00007ffff6b29ecc in clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+
+Thread 23 (Thread 0x7fff9d7fa6c0 (LWP 2117884) "glob2-engine-te"):
+#0  0x00007ffff6a98e51 in __futex_abstimed_wait_common64 (private=32767, cancel=true, abstime=0x0, op=393, expected=0, futex_word=0x55555c234630) at ./nptl/futex-internal.c:57
+#1  __futex_abstimed_wait_common (cancel=true, private=32767, abstime=0x0, clockid=0, expected=0, futex_word=0x55555c234630) at ./nptl/futex-internal.c:87
+#2  __GI___futex_abstimed_wait_cancelable64 (futex_word=futex_word@entry=0x55555c234630, expected=expected@entry=0, clockid=clockid@entry=0, abstime=abstime@entry=0x0, private=private@entry=0) at ./nptl/futex-internal.c:139
+#3  0x00007ffff6a9b8cd in __pthread_cond_wait_common (abstime=0x0, clockid=0, mutex=0x55555c2345e0, cond=0x55555c234608) at ./nptl/pthread_cond_wait.c:503
+#4  ___pthread_cond_wait (cond=0x55555c234608, mutex=0x55555c2345e0) at ./nptl/pthread_cond_wait.c:627
+#5  0x00007ffff3599edd in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#6  0x00007ffff386253b in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#7  0x00007ffff3599e0c in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#8  0x00007ffff6a9cb84 in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:447
+#9  0x00007ffff6b29ecc in clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+
+Thread 22 (Thread 0x7fff9dffb6c0 (LWP 2117883) "glob2-engine-te"):
+#0  0x00007ffff6a98e51 in __futex_abstimed_wait_common64 (private=32767, cancel=true, abstime=0x0, op=393, expected=0, futex_word=0x55555c234630) at ./nptl/futex-internal.c:57
+#1  __futex_abstimed_wait_common (cancel=true, private=32767, abstime=0x0, clockid=0, expected=0, futex_word=0x55555c234630) at ./nptl/futex-internal.c:87
+#2  __GI___futex_abstimed_wait_cancelable64 (futex_word=futex_word@entry=0x55555c234630, expected=expected@entry=0, clockid=clockid@entry=0, abstime=abstime@entry=0x0, private=private@entry=0) at ./nptl/futex-internal.c:139
+#3  0x00007ffff6a9b8cd in __pthread_cond_wait_common (abstime=0x0, clockid=0, mutex=0x55555c2345e0, cond=0x55555c234608) at ./nptl/pthread_cond_wait.c:503
+#4  ___pthread_cond_wait (cond=0x55555c234608, mutex=0x55555c2345e0) at ./nptl/pthread_cond_wait.c:627
+#5  0x00007ffff3599edd in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#6  0x00007ffff386253b in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#7  0x00007ffff3599e0c in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#8  0x00007ffff6a9cb84 in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:447
+#9  0x00007ffff6b29ecc in clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+
+Thread 21 (Thread 0x7fff9e7fc6c0 (LWP 2117882) "glob2-engine-te"):
+#0  0x00007ffff6a98e51 in __futex_abstimed_wait_common64 (private=32767, cancel=true, abstime=0x0, op=393, expected=0, futex_word=0x55555c234630) at ./nptl/futex-internal.c:57
+#1  __futex_abstimed_wait_common (cancel=true, private=32767, abstime=0x0, clockid=0, expected=0, futex_word=0x55555c234630) at ./nptl/futex-internal.c:87
+#2  __GI___futex_abstimed_wait_cancelable64 (futex_word=futex_word@entry=0x55555c234630, expected=expected@entry=0, clockid=clockid@entry=0, abstime=abstime@entry=0x0, private=private@entry=0) at ./nptl/futex-internal.c:139
+#3  0x00007ffff6a9b8cd in __pthread_cond_wait_common (abstime=0x0, clockid=0, mutex=0x55555c2345e0, cond=0x55555c234608) at ./nptl/pthread_cond_wait.c:503
+#4  ___pthread_cond_wait (cond=0x55555c234608, mutex=0x55555c2345e0) at ./nptl/pthread_cond_wait.c:627
+#5  0x00007ffff3599edd in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#6  0x00007ffff386253b in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#7  0x00007ffff3599e0c in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#8  0x00007ffff6a9cb84 in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:447
+#9  0x00007ffff6b29ecc in clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+
+Thread 20 (Thread 0x7fff9effd6c0 (LWP 2117881) "glob2-engine-te"):
+#0  0x00007ffff6a98e51 in __futex_abstimed_wait_common64 (private=32767, cancel=true, abstime=0x0, op=393, expected=0, futex_word=0x55555c234630) at ./nptl/futex-internal.c:57
+#1  __futex_abstimed_wait_common (cancel=true, private=32767, abstime=0x0, clockid=0, expected=0, futex_word=0x55555c234630) at ./nptl/futex-internal.c:87
+#2  __GI___futex_abstimed_wait_cancelable64 (futex_word=futex_word@entry=0x55555c234630, expected=expected@entry=0, clockid=clockid@entry=0, abstime=abstime@entry=0x0, private=private@entry=0) at ./nptl/futex-internal.c:139
+#3  0x00007ffff6a9b8cd in __pthread_cond_wait_common (abstime=0x0, clockid=0, mutex=0x55555c2345e0, cond=0x55555c234608) at ./nptl/pthread_cond_wait.c:503
+#4  ___pthread_cond_wait (cond=0x55555c234608, mutex=0x55555c2345e0) at ./nptl/pthread_cond_wait.c:627
+#5  0x00007ffff3599edd in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#6  0x00007ffff386253b in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#7  0x00007ffff3599e0c in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#8  0x00007ffff6a9cb84 in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:447
+#9  0x00007ffff6b29ecc in clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+
+Thread 19 (Thread 0x7fff96dff6c0 (LWP 2117880) "glob2-engine-te"):
+#0  0x00007ffff6a98e51 in __futex_abstimed_wait_common64 (private=32767, cancel=true, abstime=0x0, op=393, expected=0, futex_word=0x55555c234630) at ./nptl/futex-internal.c:57
+#1  __futex_abstimed_wait_common (cancel=true, private=32767, abstime=0x0, clockid=0, expected=0, futex_word=0x55555c234630) at ./nptl/futex-internal.c:87
+#2  __GI___futex_abstimed_wait_cancelable64 (futex_word=futex_word@entry=0x55555c234630, expected=expected@entry=0, clockid=clockid@entry=0, abstime=abstime@entry=0x0, private=private@entry=0) at ./nptl/futex-internal.c:139
+#3  0x00007ffff6a9b8cd in __pthread_cond_wait_common (abstime=0x0, clockid=0, mutex=0x55555c2345e0, cond=0x55555c234608) at ./nptl/pthread_cond_wait.c:503
+#4  ___pthread_cond_wait (cond=0x55555c234608, mutex=0x55555c2345e0) at ./nptl/pthread_cond_wait.c:627
+#5  0x00007ffff3599edd in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#6  0x00007ffff386253b in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#7  0x00007ffff3599e0c in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#8  0x00007ffff6a9cb84 in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:447
+#9  0x00007ffff6b29ecc in clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+
+Thread 18 (Thread 0x7fff9f7fe6c0 (LWP 2117879) "glob2-engine-te"):
+#0  0x00007ffff6a98e51 in __futex_abstimed_wait_common64 (private=32767, cancel=true, abstime=0x0, op=393, expected=0, futex_word=0x55555c234630) at ./nptl/futex-internal.c:57
+#1  __futex_abstimed_wait_common (cancel=true, private=32767, abstime=0x0, clockid=0, expected=0, futex_word=0x55555c234630) at ./nptl/futex-internal.c:87
+#2  __GI___futex_abstimed_wait_cancelable64 (futex_word=futex_word@entry=0x55555c234630, expected=expected@entry=0, clockid=clockid@entry=0, abstime=abstime@entry=0x0, private=private@entry=0) at ./nptl/futex-internal.c:139
+#3  0x00007ffff6a9b8cd in __pthread_cond_wait_common (abstime=0x0, clockid=0, mutex=0x55555c2345e0, cond=0x55555c234608) at ./nptl/pthread_cond_wait.c:503
+#4  ___pthread_cond_wait (cond=0x55555c234608, mutex=0x55555c2345e0) at ./nptl/pthread_cond_wait.c:627
+#5  0x00007ffff3599edd in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#6  0x00007ffff386253b in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#7  0x00007ffff3599e0c in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#8  0x00007ffff6a9cb84 in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:447
+#9  0x00007ffff6b29ecc in clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+
+Thread 17 (Thread 0x7fff9ffff6c0 (LWP 2117878) "llvmpipe-15"):
+#0  0x00007ffff6a98e51 in __futex_abstimed_wait_common64 (private=65535, cancel=true, abstime=0x0, op=393, expected=0, futex_word=0x55555bebd17c) at ./nptl/futex-internal.c:57
+#1  __futex_abstimed_wait_common (cancel=true, private=65535, abstime=0x0, clockid=0, expected=0, futex_word=0x55555bebd17c) at ./nptl/futex-internal.c:87
+#2  __GI___futex_abstimed_wait_cancelable64 (futex_word=futex_word@entry=0x55555bebd17c, expected=expected@entry=0, clockid=clockid@entry=0, abstime=abstime@entry=0x0, private=private@entry=0) at ./nptl/futex-internal.c:139
+#3  0x00007ffff6a9b8cd in __pthread_cond_wait_common (abstime=0x0, clockid=0, mutex=0x55555bebd128, cond=0x55555bebd150) at ./nptl/pthread_cond_wait.c:503
+#4  ___pthread_cond_wait (cond=0x55555bebd150, mutex=0x55555bebd128) at ./nptl/pthread_cond_wait.c:627
+#5  0x00007ffff3599edd in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#6  0x00007ffff38666d3 in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#7  0x00007ffff3599e0c in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#8  0x00007ffff6a9cb84 in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:447
+#9  0x00007ffff6b29ecc in clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+
+Thread 16 (Thread 0x7fffc4ff96c0 (LWP 2117877) "llvmpipe-14"):
+#0  0x00007ffff6a98e51 in __futex_abstimed_wait_common64 (private=0, cancel=true, abstime=0x0, op=393, expected=0, futex_word=0x55555bebd01c) at ./nptl/futex-internal.c:57
+#1  __futex_abstimed_wait_common (cancel=true, private=0, abstime=0x0, clockid=0, expected=0, futex_word=0x55555bebd01c) at ./nptl/futex-internal.c:87
+#2  __GI___futex_abstimed_wait_cancelable64 (futex_word=futex_word@entry=0x55555bebd01c, expected=expected@entry=0, clockid=clockid@entry=0, abstime=abstime@entry=0x0, private=private@entry=0) at ./nptl/futex-internal.c:139
+#3  0x00007ffff6a9b8cd in __pthread_cond_wait_common (abstime=0x0, clockid=0, mutex=0x55555bebcfc8, cond=0x55555bebcff0) at ./nptl/pthread_cond_wait.c:503
+#4  ___pthread_cond_wait (cond=0x55555bebcff0, mutex=0x55555bebcfc8) at ./nptl/pthread_cond_wait.c:627
+#5  0x00007ffff3599edd in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#6  0x00007ffff38666d3 in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#7  0x00007ffff3599e0c in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#8  0x00007ffff6a9cb84 in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:447
+#9  0x00007ffff6b29ecc in clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+
+Thread 15 (Thread 0x7fffc57fa6c0 (LWP 2117876) "llvmpipe-13"):
+#0  0x00007ffff6a98e51 in __futex_abstimed_wait_common64 (private=65535, cancel=true, abstime=0x0, op=393, expected=0, futex_word=0x55555bebceb8) at ./nptl/futex-internal.c:57
+#1  __futex_abstimed_wait_common (cancel=true, private=65535, abstime=0x0, clockid=0, expected=0, futex_word=0x55555bebceb8) at ./nptl/futex-internal.c:87
+#2  __GI___futex_abstimed_wait_cancelable64 (futex_word=futex_word@entry=0x55555bebceb8, expected=expected@entry=0, clockid=clockid@entry=0, abstime=abstime@entry=0x0, private=private@entry=0) at ./nptl/futex-internal.c:139
+#3  0x00007ffff6a9b8cd in __pthread_cond_wait_common (abstime=0x0, clockid=0, mutex=0x55555bebce68, cond=0x55555bebce90) at ./nptl/pthread_cond_wait.c:503
+#4  ___pthread_cond_wait (cond=0x55555bebce90, mutex=0x55555bebce68) at ./nptl/pthread_cond_wait.c:627
+#5  0x00007ffff3599edd in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#6  0x00007ffff38666d3 in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#7  0x00007ffff3599e0c in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#8  0x00007ffff6a9cb84 in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:447
+#9  0x00007ffff6b29ecc in clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+
+Thread 14 (Thread 0x7fffc5ffb6c0 (LWP 2117875) "llvmpipe-12"):
+#0  0x00007ffff6a98e51 in __futex_abstimed_wait_common64 (private=0, cancel=true, abstime=0x0, op=393, expected=0, futex_word=0x55555bebcd5c) at ./nptl/futex-internal.c:57
+#1  __futex_abstimed_wait_common (cancel=true, private=0, abstime=0x0, clockid=0, expected=0, futex_word=0x55555bebcd5c) at ./nptl/futex-internal.c:87
+#2  __GI___futex_abstimed_wait_cancelable64 (futex_word=futex_word@entry=0x55555bebcd5c, expected=expected@entry=0, clockid=clockid@entry=0, abstime=abstime@entry=0x0, private=private@entry=0) at ./nptl/futex-internal.c:139
+#3  0x00007ffff6a9b8cd in __pthread_cond_wait_common (abstime=0x0, clockid=0, mutex=0x55555bebcd08, cond=0x55555bebcd30) at ./nptl/pthread_cond_wait.c:503
+#4  ___pthread_cond_wait (cond=0x55555bebcd30, mutex=0x55555bebcd08) at ./nptl/pthread_cond_wait.c:627
+#5  0x00007ffff3599edd in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#6  0x00007ffff38666d3 in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#7  0x00007ffff3599e0c in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#8  0x00007ffff6a9cb84 in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:447
+#9  0x00007ffff6b29ecc in clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+
+Thread 13 (Thread 0x7fffc67fc6c0 (LWP 2117874) "llvmpipe-11"):
+#0  0x00007ffff6a98e51 in __futex_abstimed_wait_common64 (private=0, cancel=true, abstime=0x0, op=393, expected=0, futex_word=0x55555bebcbf8) at ./nptl/futex-internal.c:57
+#1  __futex_abstimed_wait_common (cancel=true, private=0, abstime=0x0, clockid=0, expected=0, futex_word=0x55555bebcbf8) at ./nptl/futex-internal.c:87
+#2  __GI___futex_abstimed_wait_cancelable64 (futex_word=futex_word@entry=0x55555bebcbf8, expected=expected@entry=0, clockid=clockid@entry=0, abstime=abstime@entry=0x0, private=private@entry=0) at ./nptl/futex-internal.c:139
+#3  0x00007ffff6a9b8cd in __pthread_cond_wait_common (abstime=0x0, clockid=0, mutex=0x55555bebcba8, cond=0x55555bebcbd0) at ./nptl/pthread_cond_wait.c:503
+#4  ___pthread_cond_wait (cond=0x55555bebcbd0, mutex=0x55555bebcba8) at ./nptl/pthread_cond_wait.c:627
+#5  0x00007ffff3599edd in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#6  0x00007ffff38666d3 in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#7  0x00007ffff3599e0c in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#8  0x00007ffff6a9cb84 in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:447
+#9  0x00007ffff6b29ecc in clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+
+Thread 12 (Thread 0x7fffc6ffd6c0 (LWP 2117873) "llvmpipe-10"):
+#0  0x00007ffff6a98e51 in __futex_abstimed_wait_common64 (private=65535, cancel=true, abstime=0x0, op=393, expected=0, futex_word=0x55555bebca98) at ./nptl/futex-internal.c:57
+#1  __futex_abstimed_wait_common (cancel=true, private=65535, abstime=0x0, clockid=0, expected=0, futex_word=0x55555bebca98) at ./nptl/futex-internal.c:87
+#2  __GI___futex_abstimed_wait_cancelable64 (futex_word=futex_word@entry=0x55555bebca98, expected=expected@entry=0, clockid=clockid@entry=0, abstime=abstime@entry=0x0, private=private@entry=0) at ./nptl/futex-internal.c:139
+#3  0x00007ffff6a9b8cd in __pthread_cond_wait_common (abstime=0x0, clockid=0, mutex=0x55555bebca48, cond=0x55555bebca70) at ./nptl/pthread_cond_wait.c:503
+#4  ___pthread_cond_wait (cond=0x55555bebca70, mutex=0x55555bebca48) at ./nptl/pthread_cond_wait.c:627
+#5  0x00007ffff3599edd in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#6  0x00007ffff38666d3 in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#7  0x00007ffff3599e0c in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#8  0x00007ffff6a9cb84 in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:447
+#9  0x00007ffff6b29ecc in clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+
+Thread 11 (Thread 0x7fffc77fe6c0 (LWP 2117872) "llvmpipe-9"):
+#0  0x00007ffff6a98e51 in __futex_abstimed_wait_common64 (private=0, cancel=true, abstime=0x0, op=393, expected=0, futex_word=0x55555bebc938) at ./nptl/futex-internal.c:57
+#1  __futex_abstimed_wait_common (cancel=true, private=0, abstime=0x0, clockid=0, expected=0, futex_word=0x55555bebc938) at ./nptl/futex-internal.c:87
+#2  __GI___futex_abstimed_wait_cancelable64 (futex_word=futex_word@entry=0x55555bebc938, expected=expected@entry=0, clockid=clockid@entry=0, abstime=abstime@entry=0x0, private=private@entry=0) at ./nptl/futex-internal.c:139
+#3  0x00007ffff6a9b8cd in __pthread_cond_wait_common (abstime=0x0, clockid=0, mutex=0x55555bebc8e8, cond=0x55555bebc910) at ./nptl/pthread_cond_wait.c:503
+#4  ___pthread_cond_wait (cond=0x55555bebc910, mutex=0x55555bebc8e8) at ./nptl/pthread_cond_wait.c:627
+#5  0x00007ffff3599edd in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#6  0x00007ffff38666d3 in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#7  0x00007ffff3599e0c in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#8  0x00007ffff6a9cb84 in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:447
+#9  0x00007ffff6b29ecc in clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+
+Thread 10 (Thread 0x7fffc7fff6c0 (LWP 2117871) "llvmpipe-8"):
+#0  0x00007ffff6a98e51 in __futex_abstimed_wait_common64 (private=65535, cancel=true, abstime=0x0, op=393, expected=0, futex_word=0x55555bebc7dc) at ./nptl/futex-internal.c:57
+#1  __futex_abstimed_wait_common (cancel=true, private=65535, abstime=0x0, clockid=0, expected=0, futex_word=0x55555bebc7dc) at ./nptl/futex-internal.c:87
+#2  __GI___futex_abstimed_wait_cancelable64 (futex_word=futex_word@entry=0x55555bebc7dc, expected=expected@entry=0, clockid=clockid@entry=0, abstime=abstime@entry=0x0, private=private@entry=0) at ./nptl/futex-internal.c:139
+#3  0x00007ffff6a9b8cd in __pthread_cond_wait_common (abstime=0x0, clockid=0, mutex=0x55555bebc788, cond=0x55555bebc7b0) at ./nptl/pthread_cond_wait.c:503
+#4  ___pthread_cond_wait (cond=0x55555bebc7b0, mutex=0x55555bebc788) at ./nptl/pthread_cond_wait.c:627
+#5  0x00007ffff3599edd in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#6  0x00007ffff38666d3 in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#7  0x00007ffff3599e0c in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#8  0x00007ffff6a9cb84 in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:447
+#9  0x00007ffff6b29ecc in clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+
+Thread 9 (Thread 0x7fffe49f86c0 (LWP 2117870) "llvmpipe-7"):
+#0  0x00007ffff6a98e51 in __futex_abstimed_wait_common64 (private=65535, cancel=true, abstime=0x0, op=393, expected=0, futex_word=0x55555bebc678) at ./nptl/futex-internal.c:57
+#1  __futex_abstimed_wait_common (cancel=true, private=65535, abstime=0x0, clockid=0, expected=0, futex_word=0x55555bebc678) at ./nptl/futex-internal.c:87
+#2  __GI___futex_abstimed_wait_cancelable64 (futex_word=futex_word@entry=0x55555bebc678, expected=expected@entry=0, clockid=clockid@entry=0, abstime=abstime@entry=0x0, private=private@entry=0) at ./nptl/futex-internal.c:139
+#3  0x00007ffff6a9b8cd in __pthread_cond_wait_common (abstime=0x0, clockid=0, mutex=0x55555bebc628, cond=0x55555bebc650) at ./nptl/pthread_cond_wait.c:503
+#4  ___pthread_cond_wait (cond=0x55555bebc650, mutex=0x55555bebc628) at ./nptl/pthread_cond_wait.c:627
+#5  0x00007ffff3599edd in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#6  0x00007ffff38666d3 in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#7  0x00007ffff3599e0c in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#8  0x00007ffff6a9cb84 in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:447
+#9  0x00007ffff6b29ecc in clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+
+Thread 8 (Thread 0x7fffe51f96c0 (LWP 2117869) "llvmpipe-6"):
+#0  0x00007ffff6a98e51 in __futex_abstimed_wait_common64 (private=65535, cancel=true, abstime=0x0, op=393, expected=0, futex_word=0x55555bebc51c) at ./nptl/futex-internal.c:57
+#1  __futex_abstimed_wait_common (cancel=true, private=65535, abstime=0x0, clockid=0, expected=0, futex_word=0x55555bebc51c) at ./nptl/futex-internal.c:87
+#2  __GI___futex_abstimed_wait_cancelable64 (futex_word=futex_word@entry=0x55555bebc51c, expected=expected@entry=0, clockid=clockid@entry=0, abstime=abstime@entry=0x0, private=private@entry=0) at ./nptl/futex-internal.c:139
+#3  0x00007ffff6a9b8cd in __pthread_cond_wait_common (abstime=0x0, clockid=0, mutex=0x55555bebc4c8, cond=0x55555bebc4f0) at ./nptl/pthread_cond_wait.c:503
+#4  ___pthread_cond_wait (cond=0x55555bebc4f0, mutex=0x55555bebc4c8) at ./nptl/pthread_cond_wait.c:627
+#5  0x00007ffff3599edd in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#6  0x00007ffff38666d3 in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#7  0x00007ffff3599e0c in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#8  0x00007ffff6a9cb84 in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:447
+#9  0x00007ffff6b29ecc in clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+
+Thread 7 (Thread 0x7fffe59fa6c0 (LWP 2117868) "llvmpipe-5"):
+#0  0x00007ffff6a98e51 in __futex_abstimed_wait_common64 (private=65535, cancel=true, abstime=0x0, op=393, expected=0, futex_word=0x55555bebc3b8) at ./nptl/futex-internal.c:57
+#1  __futex_abstimed_wait_common (cancel=true, private=65535, abstime=0x0, clockid=0, expected=0, futex_word=0x55555bebc3b8) at ./nptl/futex-internal.c:87
+#2  __GI___futex_abstimed_wait_cancelable64 (futex_word=futex_word@entry=0x55555bebc3b8, expected=expected@entry=0, clockid=clockid@entry=0, abstime=abstime@entry=0x0, private=private@entry=0) at ./nptl/futex-internal.c:139
+#3  0x00007ffff6a9b8cd in __pthread_cond_wait_common (abstime=0x0, clockid=0, mutex=0x55555bebc368, cond=0x55555bebc390) at ./nptl/pthread_cond_wait.c:503
+#4  ___pthread_cond_wait (cond=0x55555bebc390, mutex=0x55555bebc368) at ./nptl/pthread_cond_wait.c:627
+#5  0x00007ffff3599edd in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#6  0x00007ffff38666d3 in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#7  0x00007ffff3599e0c in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#8  0x00007ffff6a9cb84 in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:447
+#9  0x00007ffff6b29ecc in clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+
+Thread 6 (Thread 0x7fffe61fb6c0 (LWP 2117867) "llvmpipe-4"):
+#0  0x00007ffff6a98e51 in __futex_abstimed_wait_common64 (private=65535, cancel=true, abstime=0x0, op=393, expected=0, futex_word=0x55555bebc25c) at ./nptl/futex-internal.c:57
+#1  __futex_abstimed_wait_common (cancel=true, private=65535, abstime=0x0, clockid=0, expected=0, futex_word=0x55555bebc25c) at ./nptl/futex-internal.c:87
+#2  __GI___futex_abstimed_wait_cancelable64 (futex_word=futex_word@entry=0x55555bebc25c, expected=expected@entry=0, clockid=clockid@entry=0, abstime=abstime@entry=0x0, private=private@entry=0) at ./nptl/futex-internal.c:139
+#3  0x00007ffff6a9b8cd in __pthread_cond_wait_common (abstime=0x0, clockid=0, mutex=0x55555bebc208, cond=0x55555bebc230) at ./nptl/pthread_cond_wait.c:503
+#4  ___pthread_cond_wait (cond=0x55555bebc230, mutex=0x55555bebc208) at ./nptl/pthread_cond_wait.c:627
+#5  0x00007ffff3599edd in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#6  0x00007ffff38666d3 in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#7  0x00007ffff3599e0c in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#8  0x00007ffff6a9cb84 in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:447
+#9  0x00007ffff6b29ecc in clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+
+Thread 5 (Thread 0x7fffe69fc6c0 (LWP 2117866) "llvmpipe-3"):
+#0  0x00007ffff6a98e51 in __futex_abstimed_wait_common64 (private=65535, cancel=true, abstime=0x0, op=393, expected=0, futex_word=0x55555bebc0fc) at ./nptl/futex-internal.c:57
+#1  __futex_abstimed_wait_common (cancel=true, private=65535, abstime=0x0, clockid=0, expected=0, futex_word=0x55555bebc0fc) at ./nptl/futex-internal.c:87
+#2  __GI___futex_abstimed_wait_cancelable64 (futex_word=futex_word@entry=0x55555bebc0fc, expected=expected@entry=0, clockid=clockid@entry=0, abstime=abstime@entry=0x0, private=private@entry=0) at ./nptl/futex-internal.c:139
+#3  0x00007ffff6a9b8cd in __pthread_cond_wait_common (abstime=0x0, clockid=0, mutex=0x55555bebc0a8, cond=0x55555bebc0d0) at ./nptl/pthread_cond_wait.c:503
+#4  ___pthread_cond_wait (cond=0x55555bebc0d0, mutex=0x55555bebc0a8) at ./nptl/pthread_cond_wait.c:627
+#5  0x00007ffff3599edd in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#6  0x00007ffff38666d3 in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#7  0x00007ffff3599e0c in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#8  0x00007ffff6a9cb84 in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:447
+#9  0x00007ffff6b29ecc in clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+
+Thread 4 (Thread 0x7fffe71fd6c0 (LWP 2117865) "llvmpipe-2"):
+#0  0x00007ffff6a98e51 in __futex_abstimed_wait_common64 (private=65535, cancel=true, abstime=0x0, op=393, expected=0, futex_word=0x55555bebbf98) at ./nptl/futex-internal.c:57
+#1  __futex_abstimed_wait_common (cancel=true, private=65535, abstime=0x0, clockid=0, expected=0, futex_word=0x55555bebbf98) at ./nptl/futex-internal.c:87
+#2  __GI___futex_abstimed_wait_cancelable64 (futex_word=futex_word@entry=0x55555bebbf98, expected=expected@entry=0, clockid=clockid@entry=0, abstime=abstime@entry=0x0, private=private@entry=0) at ./nptl/futex-internal.c:139
+#3  0x00007ffff6a9b8cd in __pthread_cond_wait_common (abstime=0x0, clockid=0, mutex=0x55555bebbf48, cond=0x55555bebbf70) at ./nptl/pthread_cond_wait.c:503
+#4  ___pthread_cond_wait (cond=0x55555bebbf70, mutex=0x55555bebbf48) at ./nptl/pthread_cond_wait.c:627
+#5  0x00007ffff3599edd in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#6  0x00007ffff38666d3 in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#7  0x00007ffff3599e0c in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#8  0x00007ffff6a9cb84 in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:447
+#9  0x00007ffff6b29ecc in clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+
+Thread 3 (Thread 0x7fffe79fe6c0 (LWP 2117864) "llvmpipe-1"):
+#0  0x00007ffff6a98e51 in __futex_abstimed_wait_common64 (private=65535, cancel=true, abstime=0x0, op=393, expected=0, futex_word=0x55555bebbe38) at ./nptl/futex-internal.c:57
+#1  __futex_abstimed_wait_common (cancel=true, private=65535, abstime=0x0, clockid=0, expected=0, futex_word=0x55555bebbe38) at ./nptl/futex-internal.c:87
+#2  __GI___futex_abstimed_wait_cancelable64 (futex_word=futex_word@entry=0x55555bebbe38, expected=expected@entry=0, clockid=clockid@entry=0, abstime=abstime@entry=0x0, private=private@entry=0) at ./nptl/futex-internal.c:139
+#3  0x00007ffff6a9b8cd in __pthread_cond_wait_common (abstime=0x0, clockid=0, mutex=0x55555bebbde8, cond=0x55555bebbe10) at ./nptl/pthread_cond_wait.c:503
+#4  ___pthread_cond_wait (cond=0x55555bebbe10, mutex=0x55555bebbde8) at ./nptl/pthread_cond_wait.c:627
+#5  0x00007ffff3599edd in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#6  0x00007ffff38666d3 in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#7  0x00007ffff3599e0c in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#8  0x00007ffff6a9cb84 in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:447
+#9  0x00007ffff6b29ecc in clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+
+Thread 2 (Thread 0x7fffe81ff6c0 (LWP 2117863) "llvmpipe-0"):
+#0  0x00007ffff6a98e51 in __futex_abstimed_wait_common64 (private=65535, cancel=true, abstime=0x0, op=393, expected=0, futex_word=0x55555bebbcdc) at ./nptl/futex-internal.c:57
+#1  __futex_abstimed_wait_common (cancel=true, private=65535, abstime=0x0, clockid=0, expected=0, futex_word=0x55555bebbcdc) at ./nptl/futex-internal.c:87
+#2  __GI___futex_abstimed_wait_cancelable64 (futex_word=futex_word@entry=0x55555bebbcdc, expected=expected@entry=0, clockid=clockid@entry=0, abstime=abstime@entry=0x0, private=private@entry=0) at ./nptl/futex-internal.c:139
+#3  0x00007ffff6a9b8cd in __pthread_cond_wait_common (abstime=0x0, clockid=0, mutex=0x55555bebbc88, cond=0x55555bebbcb0) at ./nptl/pthread_cond_wait.c:503
+#4  ___pthread_cond_wait (cond=0x55555bebbcb0, mutex=0x55555bebbc88) at ./nptl/pthread_cond_wait.c:627
+#5  0x00007ffff3599edd in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#6  0x00007ffff38666d3 in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#7  0x00007ffff3599e0c in ?? () from /lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.4.so
+#8  0x00007ffff6a9cb84 in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:447
+#9  0x00007ffff6b29ecc in clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+
+Thread 1 (Thread 0x7ffff6535280 (LWP 2117849) "glob2-engine-te"):
+#0  0x00005555556d168c in std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::size () at /usr/include/c++/13/bits/stl_vector.h:993
+#1  0x0000555555890636 in GAGCore::FileManager::getDirCount () at libgag/include/FileManager.h:58
+#2  0x000055555862267e in GAGCore::GraphicContext::saveScreenshot () at libgag/src/GraphicContextRenderer.cpp:436
+#3  0x0000555558621833 in GAGCore::GraphicContext::pollRecordingCaptures () at libgag/src/GraphicContextRenderer.cpp:358
+#4  0x0000555558621a38 in GAGCore::GraphicContext::cancelRecordingCaptures () at libgag/src/GraphicContextRenderer.cpp:370
+#5  0x00005555586b4e2d in GAGCore::GraphicContext::retirePresentationSurface () at libgag/src/GraphicContext.cpp:806
+#6  0x00005555586b250c in GAGCore::GraphicContext::~GraphicContext () at libgag/src/GraphicContext.cpp:363
+#7  0x00005555586b26b8 in GAGCore::GraphicContext::~GraphicContext () at libgag/src/GraphicContext.cpp:370
+#8  0x000055555874d0ee in GAGCore::Toolkit::close () at libgag/src/Toolkit.cpp:76
+#9  0x0000555556ec21a5 in GlobalContainer::~GlobalContainer () at src/app/GlobalContainer.cpp:158
+#10 0x00005555556eabe3 in glob2test::HeadlessGlobals::~HeadlessGlobals () at test/support/EngineFixtures.cpp:112
+#11 0x0000555555b4cf21 in DOCTEST_ANON_FUNC_3 () at test/GameplayRecordingIntegrationTest.cpp:193

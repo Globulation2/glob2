@@ -1,0 +1,23 @@
+{
+  "testedBinary": "/home/bradley/glob2/build/renderer-integration/native-verify-rebased-38152/test/glob2-engine-tests",
+  "testedRevision": "38152eb3a6e196100bb3c048501d4d32abc85200",
+  "binarySha256": "b81cda5454b69a3e60e8c935eb492229853fcb195d9e98b245a1cfc37d06faae",
+  "sourceHashes": {
+    "libgag/src/Toolkit.cpp": "b247ec247588754741690c03e9f82f33690a430f30d9712bf248ac5ea6333f28",
+    "libgag/src/GraphicContextRenderer.cpp": "b1bd47656b15087b262fd93ddffff40c2788dec3a089dc262eb8f5b0dc16cf95",
+    "libgag/src/GraphicContext.cpp": "4c77468952d5d0d7177d6510700cc671ef93f160c3ad5a18d965cff94ed978d6",
+    "src/app/GlobalContainer.cpp": "c82028ecca2bb1aa48d628e53430c66ca83b55079705de93ed779ac8ff50f04c",
+    "test/GameplayRecordingIntegrationTest.cpp": "84167c7bb7497ff45414d7bf1b85a1cbefbec61423d078a61c6ccfcabbb065a6"
+  },
+  "result": "SIGSEGV null Toolkit FileManager during completed asynchronous screenshot retirement",
+  "renderer": "programmable-gl",
+  "environment": {
+    "GLOB2_TEST_RECORD_GPU": "1",
+    "GLOB2_TEST_DISPLAY": "1",
+    "SDL_AUDIODRIVER": "dummy",
+    "LIBGL_ALWAYS_SOFTWARE": "1"
+  },
+  "gdbLog": "gl-gdb.log",
+  "fixCommit": "9fa48e882",
+  "fixValidated": false
+}

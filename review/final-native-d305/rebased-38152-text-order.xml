@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="8" failures="0" errors="0" skipped="0"><testsuite name="OpaqueRectangleBatch"><testcase classname="OpaqueRectangleBatch" name="retains OpenGL pixels [display]" time="1.5544" status="run" />
+  <testcase classname="OpaqueRectangleBatch" name="retains portable renderer pixels [display]" time="1.45131" status="run" />
+  <testcase classname="OpaqueRectangleBatch" name="native software fog runs meet shade tiles at fractional zoom" time="1.69871" status="run" />
+    <testcase classname="OpaqueRectangleBatch" name="recovers from submission errors" time="0.035638" status="run" />
+  </testsuite><testsuite name="BidiText"><testcase classname="BidiText" name="left-to-right text is unchanged" time="0" status="run" />
+    <testcase classname="BidiText" name="Arabic letters join and read right to left" time="0" status="run" />
+    <testcase classname="BidiText" name="numbers and Latin words keep their own order inside right-to-left text" time="0" status="run" />
+    <testcase classname="BidiText" name="matches fribidi on every Arabic and Persian catalog value" time="0.843043" status="run" />
+  </testsuite></testsuites>

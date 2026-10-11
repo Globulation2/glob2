@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="6" failures="0" errors="0" skipped="0"><testsuite name="DrawableSurfaceBlend"><testcase classname="DrawableSurfaceBlend" name="icon masks preserve resolution alpha and bounded recolours" time="0.05156" status="run" />
+  <testcase classname="DrawableSurfaceBlend" name="portable icon masks preserve resolution alpha and bounded recolours [display]" time="0.728651" status="run" />
+  <testcase classname="DrawableSurfaceBlend" name="software alpha blend stays accurate under stacked draws" time="0.020069" status="run" />
+  </testsuite><testsuite name="FontKerning"><testcase classname="FontKerning" name="kerned words have no gap wider than the same words unkerned" time="0.084863" status="run" />
+  <testcase classname="FontKerning" name="pair advances equal the glyph advances plus kerning" time="0.076826" status="run" />
+  <testcase classname="FontKerning" name="the bundled SDL3_ttf moves the pen for kerned pairs" time="0.001497" status="run" />
+  </testsuite></testsuites>

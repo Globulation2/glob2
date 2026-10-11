@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="17" failures="0" errors="0" skipped="0"><testsuite name="libgag/src/UnitDrawBatchTest.cpp"><testcase classname="libgag/src/UnitDrawBatchTest.cpp" name="cold frame batches defer and bound texture preparation without changing pixels [display]" time="1.47728" status="run" />
+  <testcase classname="libgag/src/UnitDrawBatchTest.cpp" name="unit batch outline bounds preserve all clip edges [display]" time="0.762874" status="run" />
+  <testcase classname="libgag/src/UnitDrawBatchTest.cpp" name="unit batches preserve overlays, clipping and texture lifetime [display]" time="20.1006" status="run" />
+  </testsuite><testsuite name="libgag/src/SpriteDrawBatchTest.cpp"><testcase classname="libgag/src/SpriteDrawBatchTest.cpp" name="resource sprite batch recovers from submission errors" time="0.075779" status="run" />
+  <testcase classname="libgag/src/SpriteDrawBatchTest.cpp" name="ordered HD resource sprite batch retains pixels [display]" time="4.54667" status="run" />
+  <testcase classname="libgag/src/SpriteDrawBatchTest.cpp" name="ordered native resource sprite batch retains pixels [display]" time="4.84128" status="run" />
+  <testcase classname="libgag/src/SpriteDrawBatchTest.cpp" name="ordered portable resource sprite batch retains pixels [display]" time="4.27988" status="run" />
+  </testsuite><testsuite name="MapRenderGeometry"><testcase classname="MapRenderGeometry" name="whole-world buildings; seam overhang and repeated viewport copies" time="0.057368" status="run" />
+    <testcase classname="MapRenderGeometry" name="cloud detail follows camera zoom without changing normal detail" time="0" status="run" />
+  </testsuite><testsuite name="TextMetrics"><testcase classname="TextMetrics" name="font metrics do not rasterize or evict rendered text" time="0.289465" status="run" />
+  </testsuite><testsuite name="UnitDrawGeometry"><testcase classname="UnitDrawGeometry" name="SlotOnUnitPosition" time="0.000332" status="run" />
+    <testcase classname="UnitDrawGeometry" name="SlotLagsWhileEnteringBuilding" time="0.000944" status="run" />
+    <testcase classname="UnitDrawGeometry" name="SeamOccurrencesStayDistinct" time="0" status="run" />
+    <testcase classname="UnitDrawGeometry" name="SeamOccurrencesWhileEnteringBuilding" time="0" status="run" />
+  </testsuite><testsuite name="libgag/src/MapGeometryCacheTest.cpp"><testcase classname="libgag/src/MapGeometryCacheTest.cpp" name="map cache bounds frame builds while retaining hits and fallback pixels [display]" time="0.579098" status="run" />
+  <testcase classname="libgag/src/MapGeometryCacheTest.cpp" name="map cache invalidates only referenced sources [display]" time="0.455938" status="run" />
+  <testcase classname="libgag/src/MapGeometryCacheTest.cpp" name="map geometry cache validates frames, texture lifetime and row ranges [display]" time="0.850446" status="run" />
+  </testsuite></testsuites>

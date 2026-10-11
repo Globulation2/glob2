@@ -1,0 +1,98 @@
+{
+  "rebased-38152-batch-edges.xml": {
+    "bytes": 591,
+    "sha256": "d33b4ff06120ec8d2806591c43944c1c8027c8d473e8e04654e369bd71449205"
+  },
+  "browser-release-provenance.json": {
+    "bytes": 948518,
+    "sha256": "e76c8729ce260947453234b9b7ebbee06489ea450651a5868ca6a07394da84cf"
+  },
+  "rebased-38152-unit.xml": {
+    "bytes": 25515,
+    "sha256": "5b01c64b2795086fd92471a9b5a5479b9736e4d3350605bf0cb99a0ad362c826"
+  },
+  "teardown-final-unit.xml": {
+    "bytes": 17733,
+    "sha256": "71a6b49620f0aa16e1ad47b6b39068448bb71327c3d8f8238b02b086b62a2ea3"
+  },
+  "rebased-38152-recording.xml": {
+    "bytes": 753,
+    "sha256": "07a6c6a78b8513b68e4b2d1265b1154f354283d609af766dbe29e3033d264fb5"
+  },
+  "rebased-38152-engine.xml": {
+    "bytes": 43293,
+    "sha256": "1db8c4c59474551f701085c83aee19fda31986e67ec93ad6900aad203c1d28f5"
+  },
+  "native-dev-provenance.json": {
+    "bytes": 12063,
+    "sha256": "aed76663197279512145dd15887abee9c1d7c918f4434383a7ae019189aa3c2d"
+  },
+  "native-recording-artifacts.tar.gz": {
+    "bytes": 4525116,
+    "sha256": "68cea956814dc67ee3f964e8c1a5d48adf7f50954cd5dbb04cfc6b96286e9ba1"
+  },
+  "rebased-38152-text-order.xml": {
+    "bytes": 1179,
+    "sha256": "fa6b4da4f64550346342d0d12f428a0d2e518b7efaeaee48329db9042698d67f"
+  },
+  "rebased-38152-font-blend.xml": {
+    "bytes": 1036,
+    "sha256": "fe27adb170611745ca84c3e2747fc8572a62132be945ee2b743951b9df8b58aa"
+  },
+  "rebased-38152-batch.xml": {
+    "bytes": 2930,
+    "sha256": "1df1f437938bea08b680daeeaf92263e95ed44f7773a3d2e23800f6074e94b21"
+  },
+  "native-release-provenance.json": {
+    "bytes": 11719,
+    "sha256": "d57b788b8b2d0fb38e8d9d712a36332f6da4aba1957400b61254aa7b14ef104b"
+  },
+  "teardown-final-recording-sdl.xml": {
+    "bytes": 955,
+    "sha256": "f8d95e4490f7c3163e2921a3fcb55e2f7de6389f9422cb4eeb72b55a409dd49c"
+  },
+  "glob2-renderer-rebased-38152-unit.log": {
+    "bytes": 6375,
+    "sha256": "e5595536368160114fb86fa95988c3a10e6062067c48727f238955bf87e7ad86"
+  },
+  "glob2-renderer-teardown-final-native.log": {
+    "bytes": 92302,
+    "sha256": "2ce79e5ab7b8910ffbe27115f22552196656ac523212e03c21f641e8fca3710a"
+  },
+  "glob2-renderer-teardown-fixed-browser.log": {
+    "bytes": 211066,
+    "sha256": "443fda515d33acf3d4a102204dd58e30257cc92d575f28b7e88d2f65b7cae28f"
+  },
+  "teardown-final-recording-gl.xml": {
+    "bytes": 957,
+    "sha256": "5d26fab3dc602891019021924ee976470fb0b1b5e5019d3858c30a36aed4768d"
+  },
+  "glob2-renderer-rebased-38152-engine.log": {
+    "bytes": 28772,
+    "sha256": "a9cc698e1a5341e15d32bbea589f8fbb4388ee63a764cfd0f60671ee0742681d"
+  },
+  "glob2-renderer-teardown-final-recording-gl.log": {
+    "bytes": 734,
+    "sha256": "b2bb1151efd28ec8b740802d5c2a61120b687850f22e90a5229d17221065b1e2"
+  },
+  "glob2-renderer-teardown-fixed-release.log": {
+    "bytes": 117350,
+    "sha256": "5cadef8428777b0e6af77f073a00b2a60b5dc8aeb0dc2f5b1a51d4d6d8e34ba9"
+  },
+  "glob2-renderer-teardown-final-unit.log": {
+    "bytes": 6855,
+    "sha256": "9382c388242df3d81195b943c4243a119cebdf78e82b260819ef3687e127569f"
+  },
+  "revision-and-coverage.json": {
+    "bytes": 1455,
+    "sha256": "539ccbf7bd3d6e95556aaaf3294aa5be20896fb873b9c00b970d8b44e8e6fe61"
+  },
+  "glob2-renderer-teardown-final-recording-sdl.log": {
+    "bytes": 735,
+    "sha256": "4afbe50df02a6e4eb87a76dfd2997e4d6574481e6c7ff7cff8c3f76583ceb63c"
+  },
+  "rebased-38152-content.xml": {
+    "bytes": 2322,
+    "sha256": "ae527ff6b4dc28648553182bc6d5e0d53f0dcb9b053966de781d9bd79eb0c40c"
+  }
+}

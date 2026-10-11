@@ -1,0 +1,178 @@
+{
+  "review/final-native-d305/browser-release-platform-bridge-e8fa-provenance.json": {
+    "bytes": 948425,
+    "sha256": "4dca1622dc21bd7f42c9519b6736fe03ecc21d32ca80b2c3b315125af1a14ce8"
+  },
+  "review/final-native-d305/browser-release-provenance.json": {
+    "bytes": 948518,
+    "sha256": "e76c8729ce260947453234b9b7ebbee06489ea450651a5868ca6a07394da84cf"
+  },
+  "review/final-native-d305/files.json": {
+    "bytes": 3492,
+    "sha256": "8c63f078dace9f5a101b82a77708101ee863c37937445f6aedcde2f249770803"
+  },
+  "review/final-native-d305/final-aeca-native-install-evidence.tar.gz": {
+    "bytes": 5826836,
+    "sha256": "043cf45ed216f033fe53cd0bb4cfa7b58630f1e36c44544241d51aa636e0c04e"
+  },
+  "review/final-native-d305/glob2-renderer-final-browser-units.log": {
+    "bytes": 9757,
+    "sha256": "8d355ca6051e3472ac68b766155b297cef1dcff17ceb5edd2438006de0ae1244"
+  },
+  "review/final-native-d305/glob2-renderer-final-build-contracts.log": {
+    "bytes": 36219,
+    "sha256": "8384621b39aa756dba4770efff8774542a78bcda21618ab4baba4af5e4598ccd"
+  },
+  "review/final-native-d305/glob2-renderer-final-pinned-build-contracts.log": {
+    "bytes": 20944,
+    "sha256": "8ec0872520c40b9bb7070f3b6cd7c0ef9f75a4a8c017b4a7a00f6b3bd9b5914e"
+  },
+  "review/final-native-d305/glob2-renderer-final-platform-boundary.log": {
+    "bytes": 101,
+    "sha256": "6eb29bba7e8fe915cd0478df7907e1c5bd9707a7432ffd769e2469c38446be2c"
+  },
+  "review/final-native-d305/glob2-renderer-final-static-browser_package.log": {
+    "bytes": 127,
+    "sha256": "9f2ffac4e7866a27ecd71a7a42efe70b6829de7eb5048134b474365e17ea15de"
+  },
+  "review/final-native-d305/glob2-renderer-final-static-ci_policy.log": {
+    "bytes": 123,
+    "sha256": "59bb1a381795c2d4376e07b7e4aad0096b50d95f08ac1aae4bd3f38e2b051655"
+  },
+  "review/final-native-d305/glob2-renderer-final-static-renderer_shaders.log": {
+    "bytes": 115,
+    "sha256": "174d62c7ead0ab4c526bea111af58c5a012c926c767675092cf2dd84116531b8"
+  },
+  "review/final-native-d305/glob2-renderer-hosted-selector-failure.log": {
+    "bytes": 211057,
+    "sha256": "c11dc3b38205321502b09e4ac5306472f599012b623811506c894f55aff71032"
+  },
+  "review/final-native-d305/glob2-renderer-platform-bridge-final-browser.log": {
+    "bytes": 215592,
+    "sha256": "092310d86e232a0b6cd1beb80eac9518c68f5f5dbaf9bf80b40d79cdc860cf39"
+  },
+  "review/final-native-d305/glob2-renderer-platform-bridge-final-native.log": {
+    "bytes": 97061,
+    "sha256": "c18d79853ead95b167d1c1544a060158393a0507b81e32d2e573051c816144d9"
+  },
+  "review/final-native-d305/glob2-renderer-rebased-38152-engine.log": {
+    "bytes": 28772,
+    "sha256": "a9cc698e1a5341e15d32bbea589f8fbb4388ee63a764cfd0f60671ee0742681d"
+  },
+  "review/final-native-d305/glob2-renderer-rebased-38152-unit.log": {
+    "bytes": 6375,
+    "sha256": "e5595536368160114fb86fa95988c3a10e6062067c48727f238955bf87e7ad86"
+  },
+  "review/final-native-d305/glob2-renderer-teardown-final-engine-display.log": {
+    "bytes": 3700,
+    "sha256": "fd00a7a71a640379ba2e66f14c30f5dd8257048cd34e3ef5e47ee7b508406f1a"
+  },
+  "review/final-native-d305/glob2-renderer-teardown-final-native.log": {
+    "bytes": 92302,
+    "sha256": "2ce79e5ab7b8910ffbe27115f22552196656ac523212e03c21f641e8fca3710a"
+  },
+  "review/final-native-d305/glob2-renderer-teardown-final-recording-gl.log": {
+    "bytes": 734,
+    "sha256": "b2bb1151efd28ec8b740802d5c2a61120b687850f22e90a5229d17221065b1e2"
+  },
+  "review/final-native-d305/glob2-renderer-teardown-final-recording-sdl.log": {
+    "bytes": 735,
+    "sha256": "4afbe50df02a6e4eb87a76dfd2997e4d6574481e6c7ff7cff8c3f76583ceb63c"
+  },
+  "review/final-native-d305/glob2-renderer-teardown-final-unit.log": {
+    "bytes": 6855,
+    "sha256": "9382c388242df3d81195b943c4243a119cebdf78e82b260819ef3687e127569f"
+  },
+  "review/final-native-d305/glob2-renderer-teardown-fixed-browser.log": {
+    "bytes": 211066,
+    "sha256": "443fda515d33acf3d4a102204dd58e30257cc92d575f28b7e88d2f65b7cae28f"
+  },
+  "review/final-native-d305/glob2-renderer-teardown-fixed-release.log": {
+    "bytes": 117350,
+    "sha256": "5cadef8428777b0e6af77f073a00b2a60b5dc8aeb0dc2f5b1a51d4d6d8e34ba9"
+  },
+  "review/final-native-d305/native-bridge-source-equivalence.json": {
+    "bytes": 9098,
+    "sha256": "291985da63799f56cf0b6ab88a6a2c45ca677ed68295a467c523ab5b83023604"
+  },
+  "review/final-native-d305/native-dev-provenance.json": {
+    "bytes": 12063,
+    "sha256": "aed76663197279512145dd15887abee9c1d7c918f4434383a7ae019189aa3c2d"
+  },
+  "review/final-native-d305/native-recording-artifacts.tar.gz": {
+    "bytes": 4525116,
+    "sha256": "68cea956814dc67ee3f964e8c1a5d48adf7f50954cd5dbb04cfc6b96286e9ba1"
+  },
+  "review/final-native-d305/native-release-provenance.json": {
+    "bytes": 11719,
+    "sha256": "d57b788b8b2d0fb38e8d9d712a36332f6da4aba1957400b61254aa7b14ef104b"
+  },
+  "review/final-native-d305/native-verify-platform-bridge-e8fa-provenance.json": {
+    "bytes": 11970,
+    "sha256": "c370ee7db095e6505dfcaa7f983f6e5e33a141cbfeb037551c875151a914bc35"
+  },
+  "review/final-native-d305/rebased-38152-batch-edges.xml": {
+    "bytes": 591,
+    "sha256": "d33b4ff06120ec8d2806591c43944c1c8027c8d473e8e04654e369bd71449205"
+  },
+  "review/final-native-d305/rebased-38152-batch.xml": {
+    "bytes": 2930,
+    "sha256": "1df1f437938bea08b680daeeaf92263e95ed44f7773a3d2e23800f6074e94b21"
+  },
+  "review/final-native-d305/rebased-38152-content.xml": {
+    "bytes": 2322,
+    "sha256": "ae527ff6b4dc28648553182bc6d5e0d53f0dcb9b053966de781d9bd79eb0c40c"
+  },
+  "review/final-native-d305/rebased-38152-engine.xml": {
+    "bytes": 43293,
+    "sha256": "1db8c4c59474551f701085c83aee19fda31986e67ec93ad6900aad203c1d28f5"
+  },
+  "review/final-native-d305/rebased-38152-font-blend.xml": {
+    "bytes": 1036,
+    "sha256": "fe27adb170611745ca84c3e2747fc8572a62132be945ee2b743951b9df8b58aa"
+  },
+  "review/final-native-d305/rebased-38152-recording.xml": {
+    "bytes": 753,
+    "sha256": "07a6c6a78b8513b68e4b2d1265b1154f354283d609af766dbe29e3033d264fb5"
+  },
+  "review/final-native-d305/rebased-38152-strict-torus-evidence.tar.gz": {
+    "bytes": 3322190,
+    "sha256": "2eec97ab501c51516e07d685eb001b970de8bf1428a3135570f2a58a69b856bb"
+  },
+  "review/final-native-d305/rebased-38152-text-order.xml": {
+    "bytes": 1179,
+    "sha256": "fa6b4da4f64550346342d0d12f428a0d2e518b7efaeaee48329db9042698d67f"
+  },
+  "review/final-native-d305/rebased-38152-unit.xml": {
+    "bytes": 25515,
+    "sha256": "5b01c64b2795086fd92471a9b5a5479b9736e4d3350605bf0cb99a0ad362c826"
+  },
+  "review/final-native-d305/revision-and-coverage.json": {
+    "bytes": 2705,
+    "sha256": "caf170880412b32ed9abf55d556163d47c3fe15db8e7b848dd9bf68d5fade5e6"
+  },
+  "review/final-native-d305/shutdown-failure-gl-gdb.log": {
+    "bytes": 54451,
+    "sha256": "0f729ac31377e581568c2d8940ed7bf9fcbea4559a4d0717e99a174fb77c1ed1"
+  },
+  "review/final-native-d305/shutdown-failure-provenance.json": {
+    "bytes": 1199,
+    "sha256": "280a666ee2104752918507b7f3e94f5fdddc170a5b5df7fb099f9d03d6a22ada"
+  },
+  "review/final-native-d305/teardown-final-engine-display.xml": {
+    "bytes": 5361,
+    "sha256": "133a980ed89074f78bd52395cdc0ccbad9bdd26847b114863cabf4b91d7ccc1d"
+  },
+  "review/final-native-d305/teardown-final-recording-gl.xml": {
+    "bytes": 957,
+    "sha256": "5d26fab3dc602891019021924ee976470fb0b1b5e5019d3858c30a36aed4768d"
+  },
+  "review/final-native-d305/teardown-final-recording-sdl.xml": {
+    "bytes": 955,
+    "sha256": "f8d95e4490f7c3163e2921a3fcb55e2f7de6389f9422cb4eeb72b55a409dd49c"
+  },
+  "review/final-native-d305/teardown-final-unit.xml": {
+    "bytes": 17733,
+    "sha256": "71a6b49620f0aa16e1ad47b6b39068448bb71327c3d8f8238b02b086b62a2ea3"
+  }
+}

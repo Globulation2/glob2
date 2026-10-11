@@ -1,0 +1,70 @@
+{
+  "testedHead": "d3056bbbdae4f7cf8ef9bdae5c93b28940dfc964",
+  "productionRevision": "e8fa0032fea38a7d4d17d63a61beefc5940adbfb",
+  "base": "c3cb01070d121752f4c5e9632c5567ef13e58d9a",
+  "postProductionChanges": [
+    "browser/tests/main-menu.js",
+    "browser/tests/renderer-switch-queue.spec.js",
+    "browser/tests/renderer-switching.spec.js",
+    "test/GameplayRecordingIntegrationTest.cpp"
+  ],
+  "earlierCompatibilityRevision": "38152eb3a6e196100bb3c048501d4d32abc85200",
+  "compatibilityRefreshProductionChanges": [
+    "browser/tests/renderer-switching.spec.js",
+    "libgag/src/Toolkit.cpp",
+    "test/GameplayRecordingIntegrationTest.cpp"
+  ],
+  "finalNativeSuites": {
+    "unit": {
+      "passed": 110,
+      "failed": 0,
+      "skipped": 0
+    },
+    "strictRecordingProgrammableGL": {
+      "passed": 4,
+      "failed": 0,
+      "skipped": 0
+    },
+    "strictRecordingSDLGPU": {
+      "passed": 4,
+      "failed": 0,
+      "skipped": 0
+    },
+    "engineDisplayRefresh": {
+      "passed": 31,
+      "failed": 0,
+      "skipped": 0,
+      "testSeconds": 302.5
+    }
+  },
+  "earlierCompatibilitySuites": {
+    "engine": 268,
+    "unit": 160,
+    "content": 14,
+    "textOrder": 8,
+    "fontBlend": 6,
+    "legacyBatch": 17,
+    "batchEdges": 2,
+    "softwareRecording": 3
+  },
+  "limits": "Earlier compatibility results were built at38152; only production change after that is Toolkit destructor ordering. Final native unit/recording and focused engine display refresh exercise that change. No claim of unavailable physical hardware coverage or default promotion.",
+  "browserClosureRefresh": "Browser-only direct JS calls moved into existing platform bridge.112browser units and523pinned build contracts pass; actualWasmintegration refreshed separately. Native preprocessor equivalence to aeca independently verified for all three modified translation units.",
+  "static": {
+    "buildContracts": {
+      "tests": 523,
+      "failed": 0,
+      "skipped": 3
+    },
+    "browserUnits": {
+      "tests": 112,
+      "failed": 0,
+      "skipped": 0
+    },
+    "platformBoundary": 3
+  },
+  "excludedAttempts": [
+    "Initial system Python full contracts failed8asset-encoder cases because Pillow/libwebp versions triggered isolated worker execution that escapes in-process test mocks. Package tools/tests unchanged frommaster; rerun in existing pinned Pillow12.2.0/libwebp1.6.0 environment passed523.",
+    "Previous hosted523contracts foundshared Emscripten API dependency; corrected through calling-realm platform imports and rerun.",
+    "Earlier zero-test static discovery attempts and first source-equivalence hash with source-line-generated telemetry locals were not accepted evidence."
+  ]
+}

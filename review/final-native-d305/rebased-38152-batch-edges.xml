@@ -1,0 +1,4 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="2" failures="0" errors="0" skipped="0"><testsuite name="libgag/src/UnitDrawBatchTest.cpp"><testcase classname="libgag/src/UnitDrawBatchTest.cpp" name="cold frame preparation cancels changed and deleted source IDs while disabled [display]" time="2.82151" status="run" />
+  </testsuite><testsuite name="libgag/src/MapGeometryCacheTest.cpp"><testcase classname="libgag/src/MapGeometryCacheTest.cpp" name="terrain atlas edges stay isolated at fractional overview zoom [display]" time="1.89027" status="run" />
+  </testsuite></testsuites>

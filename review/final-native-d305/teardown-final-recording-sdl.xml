@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="4" failures="0" errors="0" skipped="0"><testsuite name="GameplayRecording.Integration"><testcase classname="GameplayRecording.Integration" name="global recording shortcut toggles and shutdown awaits finalization [display][artifacts][writes-preferences]" time="10.5954" status="run" />
+  <testcase classname="GameplayRecording.Integration" name="production presentation records menus and gameplay without changing per-tick state [display][artifacts][recording]" time="16.84" status="run" />
+  <testcase classname="GameplayRecording.Integration" name="shutdown drains a completed asynchronous screenshot before file services retire [display][artifacts]" time="4.44695" status="run" />
+  <testcase classname="GameplayRecording.Integration" name="threaded scene recording preserves baseline per-tick checksums [display][artifacts][recording]" time="9.81659" status="run" />
+  </testsuite></testsuites>
