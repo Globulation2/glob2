@@ -61,9 +61,15 @@ def verify_cases(root):
 def compare(root, output):
     reports = {arch: json.loads((root / ('qualification-macos-' + arch) / 'report.json').read_text())
                for arch in ('arm64', 'x86_64')}
-    for field in ('tag', 'sourceCommit', 'fixtureSha256', 'version', 'sourceRunId', 'verifierCommit', 'qualificationRunId'):
+    for field in ('tag', 'sourceCommit', 'fixtureSha256', 'sourceRunId', 'verifierCommit', 'qualificationRunId'):
         if reports['arm64'][field] != reports['x86_64'][field]:
             raise ValueError('Qualification mixes source revisions, versions or fixtures')
+    # Architecture builds retain their own compilation times in the reports.
+    # Compare every compatibility field, excluding only that build timestamp.
+    versions = [{key: value for key, value in report['version'].items() if key != 'compiled'}
+                for report in reports.values()]
+    if versions[0] != versions[1]:
+        raise ValueError('Qualification mixes release or compatibility versions')
     for arch, report in reports.items():
         if (report['architecture'] != arch or report['hostArchitecture'] != arch or
                 report['nativeHost'] is not True or report['publisherVerified'] is not True or

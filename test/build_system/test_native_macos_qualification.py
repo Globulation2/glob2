@@ -84,6 +84,26 @@ class NativeQualificationTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'final trace bytes'):
                 qa.compare(root, root / 'bad.json')
 
+    def test_architecture_build_times_differ_but_compatibility_versions_must_match(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            for arch, compiled in (('arm64', 'Oct 11 2026 03:28:41'),
+                                   ('x86_64', 'Oct 11 2026 03:53:06')):
+                output = root / ('qualification-macos-' + arch); self.cases(output)
+                report = self.report(arch, qa.verify_cases(output))
+                report['version'].update(compiled=compiled, cli_version=2, minimum_save_version=58,
+                                         save_version=152, network_protocol=68, sdl='3.4.16')
+                (output / 'report.json').write_text(json.dumps(report))
+            qa.compare(root, root / 'comparison.json')
+            path = root / 'qualification-macos-x86_64/report.json'
+            original = json.loads(path.read_text())
+            for field in ('version', 'cli_version', 'minimum_save_version', 'save_version',
+                          'network_protocol', 'sdl'):
+                report = copy.deepcopy(original); report['version'][field] = 'different'
+                path.write_text(json.dumps(report))
+                with self.subTest(field=field), self.assertRaisesRegex(ValueError, 'compatibility versions'):
+                    qa.compare(root, root / 'bad.json')
+
     def test_rosetta_and_wrong_platform_fail_before_package_access(self):
         args = SimpleNamespace(architecture='x86_64')
         with patch.object(qa.platform, 'system', return_value='Darwin'), patch.object(qa.platform, 'machine', return_value='arm64'):
