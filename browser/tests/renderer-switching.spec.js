@@ -55,25 +55,7 @@ async function resumeOverlay(page) {
   await expect.poll(async()=>(await state(page)).loop,{timeout:120000}).toBeGreaterThan(loop+2);
   if ((await state(page)).controls.return) await clickControl(page,'return');
 }
-async function match(page) {
-  await clickMainMenu(page,'custom');
-  await clickControl(page,'generator/colonies');await clickByLabel(page,/popup/,'2');
-  for(const dimension of ['width','height']) {
-    await clickControl(page,'generator/'+dimension);await clickByLabel(page,/popup/,'128');
-  }
-  await clickCustomGameStart(page);
-  await expect.poll(async()=>(await state(page)).tick,{timeout:120000}).toBeGreaterThan(25);
-}
-async function available(page,label) {
-  await clickControl(page,'graphics.renderer');
-  const offered=await page.evaluate(label=>Object.entries(glob2Diagnostics.snapshot().controls).some(([key,value])=>/popup/.test(key)&&value.label===label),label);
-  await page.locator('#canvas').press('Escape',{delay:80});
-  if (label!=='WebGPU') return offered;
-  // Compiled shaders alone do not establish an adapter. In threaded builds
-  // inspect the application worker that owns the backend, not the DOM realm.
-  let reason=offered?'Presentation-owner WebGPU realm could not be inspected':'Renderer selector reports WebGPU unavailable';
-  // Idle Emscripten asset pthreads may be inside Atomics.wait forever. Probe
-  // all realms with bounded waits before sending async work to the GPU owner.
+async function presentationOwners(page) {
   const threaded=(await state(page)).executionMode==='threaded';
   const identity=await page.evaluate(()=>Module.glob2ApplicationThreadIdentity);
   // The DOM page and idle asset workers load the same libraries. Only the
@@ -93,8 +75,66 @@ async function available(page,label) {
       new Promise(resolve=>{timer=setTimeout(()=>resolve(false),5000);})
     ]);}finally{clearTimeout(timer);}
   }));
+  return realms.filter((realm,index)=>owners[index]);
+}
+async function match(page) {
+  const owners=await presentationOwners(page);
+  expect(owners).toHaveLength(1);
+  const owner=owners[0],rootSeed=0xdecafbad,candidates=[];
+  const record=message=>{if(message.text().startsWith('Map generation:'))candidates.push(message.text());};
+  page.on('console',record);
+  await owner.evaluate(seed=>{
+    // Emscripten's random_get requests four bytes for std::random_device.
+    // Scope this override to map setup, on the application thread only. UUIDs,
+    // account crypto and all other request sizes retain real entropy.
+    const original=crypto.getRandomValues,descriptor=Object.getOwnPropertyDescriptor(crypto,'getRandomValues');
+    const receipt={rootSeed:seed,requests:0};
+    Object.defineProperty(crypto,'getRandomValues',{configurable:true,value:function(view){
+      if(ArrayBuffer.isView(view)&&view.byteLength===4){
+        new DataView(view.buffer,view.byteOffset,view.byteLength).setUint32(0,seed,true);
+        ++receipt.requests;return view;
+      }
+      return original.call(this,view);
+    }});
+    globalThis.rendererMapEntropy={receipt,restore:()=>{
+      if(descriptor)Object.defineProperty(crypto,'getRandomValues',descriptor);
+      else delete crypto.getRandomValues;
+      delete globalThis.rendererMapEntropy;
+      return receipt;
+    }};
+  },rootSeed);
+  let receipt;
+  try {
+    await clickMainMenu(page,'custom');
+    await clickControl(page,'generator/colonies');await clickByLabel(page,/popup/,'2');
+    for(const dimension of ['width','height']) {
+      await clickControl(page,'generator/'+dimension);await clickByLabel(page,/popup/,'128');
+    }
+    await clickCustomGameStart(page);
+    await screen(page,'GameSessionScreen');
+  } finally {
+    receipt=await owner.evaluate(()=>rendererMapEntropy.restore());
+    page.off('console',record);
+    await test.info().attach('map-entropy-fixture',{body:JSON.stringify({
+      ...receipt,generator:'fingerprint',width:128,height:128,colonies:2,candidates,
+      note:'Fixed root entropy, not an assertion that the last logged candidate is the selected map seed.'
+    },null,2),contentType:'application/json'});
+  }
+  expect(receipt.requests,'Pinned map fixture must consume the scoped four-byte entropy').toBeGreaterThan(0);
+  await expect.poll(async()=>(await state(page)).tick,{timeout:120000}).toBeGreaterThan(25);
+}
+async function available(page,label) {
+  await clickControl(page,'graphics.renderer');
+  const offered=await page.evaluate(label=>Object.entries(glob2Diagnostics.snapshot().controls).some(([key,value])=>/popup/.test(key)&&value.label===label),label);
+  await page.locator('#canvas').press('Escape',{delay:80});
+  if (label!=='WebGPU') return offered;
+  // Compiled shaders alone do not establish an adapter. In threaded builds
+  // inspect the application worker that owns the backend, not the DOM realm.
+  let reason=offered?'Presentation-owner WebGPU realm could not be inspected':'Renderer selector reports WebGPU unavailable';
+  // Idle Emscripten asset pthreads may be inside Atomics.wait forever. Probe
+  // all realms with bounded waits before sending async work to the GPU owner.
+  const realms=await presentationOwners(page);
   for (let index=0;index<realms.length;++index) {
-    if(!owners[index])continue;
     const realm=realms[index];
     let timer,result;
     try{result=await Promise.race([realm.evaluate(async()=>{
