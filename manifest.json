@@ -1,0 +1,25 @@
+{
+  "commit": "65ae86f74e335303e06c881293f1b1a99ecf946b",
+  "base": "daaef8a1ef7056a00e124166292581201fad46b3",
+  "currentMaster": "4a6af16668b5c393bbbb68e75a36c295a193e779",
+  "files": {
+    "artifacts/growth-oscillation/final-tests.log": "82cef7181b1b2a45ae39b6b06274bf53222f1c4eb705f4c4af61de15496b5186",
+    "artifacts/growth-oscillation/final-tests.xml": "e204ad3a0892826809c8211560e82f22d0edeea8e46749ff84c5cdc5474e6559",
+    "artifacts/growth-oscillation/pr-tests.log": "61627f544274193f3156c7c540c626bdec42ff87960d9f33f0b0752d00f14f52",
+    "artifacts/growth-oscillation/pr-tests.xml": "eadf95bf23f251f1fd1640d5f503b869ee5ada6c4f8254c3619afd9c2c89b715",
+    "artifacts/growth-oscillation/build.log": "51ed1a156c55d47cac943efdc1fa3856e7565bd5de81d3ca74ab2bea0be7a113",
+    "artifacts/growth-oscillation/game-build.log": "1db8826864ac8958336e45eca3b3ac253e6594233b8e4ce4556f144de5592fef",
+    "artifacts/growth-oscillation/pr-build.log": "2e404784be4dd4f2b007c59bf59aaad9e0dca9b8a218c3a8247e09d369719b2b",
+    "artifacts/growth-oscillation/sim-revision.log": "e4f69dd9804ed06b2fab423e5a4d09e3a61b3c13f8c41ea57033dbff53f681fe",
+    "artifacts/tests/TurnEngineHarness/two_engines_with_AI_seats_under_latency_jitter_and_loss_agree_at_every_tick_and_the_record_verifies_network-sim_artifacts/two-engines/verify/checksums.txt": "646f333a0a995900a0c3733b8c1480cf9ba46b0f5106d5d16ae24ec4de3f4043",
+    "artifacts/tests/TurnEngineHarness/two_engines_with_AI_seats_under_latency_jitter_and_loss_agree_at_every_tick_and_the_record_verifies_network-sim_artifacts/two-engines/lying-seat/verify/checksums.txt": "646f333a0a995900a0c3733b8c1480cf9ba46b0f5106d5d16ae24ec4de3f4043",
+    "artifacts/tests/TurnEngineHarness/two_engines_with_AI_seats_under_latency_jitter_and_loss_agree_at_every_tick_and_the_record_verifies_network-sim_artifacts/two-engines/forged-turns/verify/checksums.txt": "44e7fb69a10dc3ed4f606f80a22c024ec814dcf82f8a285555c7f78343d8dcbf",
+    "test/fixtures/multiplayer/FourSquares1.g2mr": "f8f74795337dd3a85bd2bdd46bce936b058d5db8095ea6ded9466475177bc3b8",
+    "test/fixtures/multiplayer/FourSquares1.verify-trace.txt": "2287760e6a3f627e08584369f4cb7c202019d69458be4751d42790ebd19b3601",
+    "test/fixtures/resources/seeded-compositions-units.trace": "fef68988e6cd31faf9ab7d9402fe89cb2b018422fa3d50a766a646a40bb79da6",
+    "artifacts/tests/TurnEngineHarness/a_save_with_closed_seats_reteamed_players_keep_their_colonies_closed_ones_are_cleared_network-sim/closed-save/source.game": "8ab388d3ec2f378911855a580a0adf73983c6585ce4b4bc0c2349bebf5e3bfbf",
+    "artifacts/tests/UnitCustomization/all_locked_capability_ablations_match_fixed_tick_and_RNG_traces_golden_artifacts/unit-ablations.trace": "95d87548aa0ce39d8eb5a15a2bbcd8d1ced68f75e70c022e8189d2829db5c094",
+    "artifacts/tests/TurnEngineHarness/two_engines_with_AI_seats_under_latency_jitter_and_loss_agree_at_every_tick_and_the_record_verifies_network-sim_artifacts/two-engines/match.g2mr": "8f9b921c7c4a4ff0425ebbd9abd70c54adacf82ea9be708aedbe1deb6b73071f",
+    "artifacts/tests/TurnEngineHarness/two_engines_with_AI_seats_under_latency_jitter_and_loss_agree_at_every_tick_and_the_record_verifies_network-sim_artifacts/two-engines/verify/match.replay": "4a9f5a55cc75424d92d3e4cec617f060f04f011aaca1350a68b225536acb3c89"
+  }
+}

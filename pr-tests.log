@@ -1,0 +1,9 @@
+PASS ResourceGrowth/mature growth events oscillate and respect intervening harvests (0.6s)
+PASS ResourceGrowth/configured seeds preserve rates variety collisions and saved output (0.6s)
+PASS JavaScriptCompatibility/Resource oscillation rejects earlier replays and enforces acceptance boundaries (0.9s)
+PASS TurnEngineHarness/the committed match record verifies to the committed checksum trace [network-sim][golden] (1.7s)
+PASS ResourceGrowth/zero-worker and shared deadlines match and pending work survives saving (2.3s)
+PASS RuntimeResources/frozen seeded resource compositions preserve invariants and exact simulation continuation [golden] (2.6s)
+
+6 passed, 0 failed, 0 skipped (8.6s of test time)
+[run_tests] JUnit report: artifacts/growth-oscillation/pr-tests.xml (6 cases)
