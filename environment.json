@@ -1,0 +1,14 @@
+{
+  "tested_commit": "7a5f721abb00d5653e31bd09f37e56b98acff8af",
+  "base_commit": "9a08b91f4350649862e788135e99bb1f5f469e3a",
+  "host": "Linux-7.0.0-31-generic-x86_64-with-glibc2.43",
+  "encoder": "3.14.4 (main, Aug 20 2026, 10:41:58) [GCC 15.2.0]\nPillow 12.2.0 libwebp 1.6.0\n",
+  "cpu_affinity": "12-15,28-31 (four physical cores and SMT siblings)",
+  "commands": {
+    "focused_tests": "taskset -c 12-15,28-31 /home/bradley/.local/share/glob2/development/caches/asset-encoder-runtime-assets-v1-py3.14/venv/bin/python -m unittest discover -s test/build_system -p test_package_assets.py -v",
+    "build_tests": "taskset -c 12-15,28-31 /home/bradley/.local/share/glob2/development/caches/asset-encoder-runtime-assets-v1-py3.14/venv/bin/python -m unittest discover -s test/build_system -v",
+    "scons_integration": "taskset -c 12-15,28-31 scons -f artifacts/parallel-assets/SConstruct -j4",
+    "benchmark": "taskset -c 12-15,28-31 /home/bradley/.local/share/glob2/development/caches/asset-encoder-runtime-assets-v1-py3.14/venv/bin/python artifacts/parallel-assets/benchmark.py"
+  },
+  "limitations": "Linux x86-64 only. Full native Windows/macOS release packaging and a complete production asset export were not run. Timing is a representative 16-image sample on a busy host, not a full-build speed claim. Encoding policies and output bytes must match across worker counts."
+}

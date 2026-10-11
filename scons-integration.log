@@ -1,0 +1,6 @@
+scons: Reading SConscript files ...
+scons: done reading SConscript files.
+scons: Building targets ...
+Parallel export integration
+Runtime assets: 3736 -> 2446 bytes (4 files)
+scons: done building targets.

@@ -1,0 +1,112 @@
+{
+  "samples": [
+    "data/highres/v1/barracks0b0.png",
+    "data/highres/v1/barracks0b0r.png",
+    "data/highres/v1/barracks2b0.png",
+    "data/highres/v1/barracks2b0r.png",
+    "data/highres/v1/buildingsite4.png",
+    "data/highres/v1/buildingsite5.png",
+    "data/highres/v1/inn2b0.png",
+    "data/highres/v1/inn2c0.png",
+    "data/highres/v1/inn3c0.png",
+    "data/highres/v1/market0b0.png",
+    "data/highres/v1/pool0b0.png",
+    "data/highres/v1/pool0b0r.png",
+    "data/highres/v1/pool0b1.png",
+    "data/highres/v1/pool0c0.png",
+    "data/highres/v1/racetrack0b0.png",
+    "data/highres/v1/racetrack0b1.png"
+  ],
+  "results": [
+    {
+      "repeat": 0,
+      "jobs": 1,
+      "seconds": 133.12993085198104,
+      "files": 16
+    },
+    {
+      "repeat": 0,
+      "jobs": 4,
+      "seconds": 41.01793859526515,
+      "files": 16
+    },
+    {
+      "repeat": 1,
+      "jobs": 1,
+      "seconds": 57.617358669638634,
+      "files": 16
+    },
+    {
+      "repeat": 1,
+      "jobs": 4,
+      "seconds": 17.071543156169355,
+      "files": 16
+    }
+  ],
+  "output_hashes": [
+    [
+      "data/gfx/sample0.webp",
+      "60ba04729ab53ec5c41a9be5f2b14c20e2274f689d074b35a0716c33c8376dce"
+    ],
+    [
+      "data/gfx/sample1.webp",
+      "92fb38e9690fd9134cc2e18e03ff5de66bdb64ee281249fd6bd0e8ca66b3077e"
+    ],
+    [
+      "data/gfx/sample10.webp",
+      "fb9e6775e561e6b0751da38f3f2abfdf0a9bbb63e8c7679d858ae32ce00543f0"
+    ],
+    [
+      "data/gfx/sample11.webp",
+      "afaaea31cface904ad39a07c39aa4cd7bc53f9aa87378050932db2cc472fda26"
+    ],
+    [
+      "data/gfx/sample12.webp",
+      "1a096401741549295d1d27514a8c2593088d5c0e142bc7377953de187c9a86d1"
+    ],
+    [
+      "data/gfx/sample13.webp",
+      "e4da762abd20c764f742ada0c0d9ac77a8daef66f5f500d4908bf759dbb9c46c"
+    ],
+    [
+      "data/gfx/sample14.webp",
+      "ff01f06581cc3f3053b01842a0c07762ca1aba827e756fa1469c8d4744990dad"
+    ],
+    [
+      "data/gfx/sample15.webp",
+      "44d4d98b0d80ea985924bdcd43a349cd269692607777a1749771e1650617a925"
+    ],
+    [
+      "data/gfx/sample2.webp",
+      "d25acb3c2e77d26e415f39a0791947940b9f812c2e406698903bd407f1718297"
+    ],
+    [
+      "data/gfx/sample3.webp",
+      "6846c1ca8912c9d111a3567b6a21b5e370910fa45f75eded8bf5eeec4fbd2027"
+    ],
+    [
+      "data/gfx/sample4.webp",
+      "d5882015060d2ea5918fd2a1559881f1f13ca44fc580094eb58897c6052c2cb0"
+    ],
+    [
+      "data/gfx/sample5.webp",
+      "95bc045fb9941872b54e6df055a9483bbf92d304f41f5cdddb120bc8a91e8bb2"
+    ],
+    [
+      "data/gfx/sample6.webp",
+      "07707e3fc07bb38975ce787791ffc4382b5bb2aa8b0b55ccb98b936cbdb3e13a"
+    ],
+    [
+      "data/gfx/sample7.webp",
+      "b0c2951b4e96564bd2ee68fb5ada367415779736441e1acb40df5d624122d34d"
+    ],
+    [
+      "data/gfx/sample8.webp",
+      "b0c2951b4e96564bd2ee68fb5ada367415779736441e1acb40df5d624122d34d"
+    ],
+    [
+      "data/gfx/sample9.webp",
+      "620823ddb44aa73e3258c735026191f1816b50f4d47fd6741b878bdec9f5a304"
+    ]
+  ]
+}
