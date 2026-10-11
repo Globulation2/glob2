@@ -7,6 +7,7 @@
 #include <glob2/BuildConfig.h>
 #endif
 #if defined(HAVE_OPENGL) || defined(GLOB2_PROGRAMMABLE_GL) || defined(__EMSCRIPTEN__)
+#include <SDL3/SDL_opengl.h>
 #include <cstdlib>
 #include <cmath>
 #include <filesystem>
@@ -72,6 +73,95 @@ void scene(RenderBackend &backend, SDL_Surface *source)
 }
 TEST_SUITE("ProgrammableGLDevice")
 {
+    GLOB2_TEST_CASE("ordered primitive segments share uploads across state and point changes", "[display]")
+    {
+        GLFixture fixture;
+        DrawPacket background; background.destination={0,0,16,16}; background.color={190,20,30,255}; background.opaque=true;
+        DrawPacket overlay=background; overlay.destination={2,2,12,12}; overlay.color={20,190,30,128}; overlay.opaque=false;
+        DrawPacket point; point.kind=DrawPacket::Kind::Triangles; point.material=DrawPacket::Material::SmoothPoint;
+        point.blend=DrawPacket::Blend::Additive;
+        const SDL_FColor color{.1f,.2f,.8f,.5f};
+        const SDL_Vertex a{{4,4},color,{0,0}},b{{12,4},color,{1,0}},c{{12,12},color,{1,1}},d{{4,12},color,{0,1}};
+        point.vertices={a,b,c,a,c,d};
+        RenderFrame frame; frame.identity=1;frame.logicalWidth=frame.logicalHeight=16;
+        frame.packets={background,overlay,point}; frame.vertexCount=6;
+        const auto batches=fixture.device->telemetry().batches;
+        REQUIRE(fixture.device->submit(frame));
+        auto bufferSize=reinterpret_cast<void(APIENTRY *)(GLenum,GLenum,GLint *)>(SDL_GL_GetProcAddress("glGetBufferParameteriv"));
+        REQUIRE(bufferSize); GLint uploadedBytes=0;bufferSize(GL_ARRAY_BUFFER,GL_BUFFER_SIZE,&uploadedBytes);
+        // The real GL buffer contains all three ordered ranges, not just the
+        // last draw. No state change caused a separate orphan/upload.
+        CHECK(uploadedBytes==18*int(sizeof(SDL_Vertex)));
+        CHECK(fixture.device->telemetry().batches==batches+3);
+        fixture.device->present();Surface combined(fixture.device->captureSynchronously({}),SDL_DestroySurface);REQUIRE(combined);
+        DrawPacket barrier;barrier.kind=DrawPacket::Kind::Barrier;
+        frame.identity=2;frame.packets={background,barrier,overlay,barrier,point};
+        REQUIRE(fixture.device->submit(std::move(frame)));fixture.device->present();
+        Surface separated(fixture.device->captureSynchronously({}),SDL_DestroySurface);REQUIRE(separated);
+        equal(combined.get(),separated.get());
+    }
+    GLOB2_TEST_CASE("cloud revisions and cached world uniforms change pixels on the next frame", "[display]")
+    {
+        GLFixture fixture;RenderResources resources;
+        auto pixels=surface(2,1);SDL_FillSurfaceRect(pixels.get(),nullptr,SDL_MapSurfaceRGBA(pixels.get(),255,0,0,255));
+        auto texture=resources.create(pixels.get(),1);REQUIRE(texture);
+        const std::array<WorldVertex,3> vertices{{{{-1,-1,.5f,1},{1,1,1},{0,0},{0,0,1}},
+            {{0,-1,.5f,1},{1,1,1},{0,0},{0,0,1}},{{-1,1,.5f,1},{1,1,1},{0,0},{0,0,1}}}};
+        auto geometry=resources.createGeometry(GeometryLayout::World48,std::as_bytes(std::span(vertices)),{},1);REQUIRE(geometry);
+        DrawPacket clear;clear.kind=DrawPacket::Kind::Clear;clear.clearColor=true;clear.clearValue={0,0,0,1};
+        DrawPacket cloud;cloud.kind=DrawPacket::Kind::MeshTriangles;cloud.material=DrawPacket::Material::Cloud;
+        cloud.geometry=resources.snapshot(geometry);cloud.count=3;cloud.texture=resources.snapshot(texture);cloud.blend=DrawPacket::Blend::Opaque;
+        cloud.world.projection={1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1};cloud.world.sunSpecular={0,0,1,0};
+        RenderFrame frame;frame.identity=1;frame.logicalWidth=frame.logicalHeight=16;frame.packets={clear,cloud};
+        REQUIRE(fixture.device->submit(frame));fixture.device->present();
+        Surface before(fixture.device->captureSynchronously({}),SDL_DestroySurface);REQUIRE(before);
+        SDL_FillSurfaceRect(pixels.get(),nullptr,SDL_MapSurfaceRGBA(pixels.get(),0,255,0,255));
+        REQUIRE(resources.update(texture,pixels.get(),2));cloud.texture=resources.snapshot(texture);
+        cloud.world.projection[12]=1;cloud.world.sunSpecular={0,0,-1,0};cloud.world.uvTransform={1,1,.25f,0};
+        frame.identity=2;frame.packets={clear,cloud};REQUIRE(fixture.device->submit(std::move(frame)));fixture.device->present();
+        Surface after(fixture.device->captureSynchronously({}),SDL_DestroySurface);REQUIRE(after);
+        Uint8 r,g,b,a;REQUIRE(SDL_ReadSurfacePixel(before.get(),2,10,&r,&g,&b,&a));CHECK(r>0);CHECK(g==0);
+        REQUIRE(SDL_ReadSurfacePixel(after.get(),2,10,&r,&g,&b,&a));CHECK(r==0);CHECK(g==0);
+        REQUIRE(SDL_ReadSurfacePixel(after.get(),10,10,&r,&g,&b,&a));CHECK(r==0);CHECK(g>0);
+    }
+    GLOB2_TEST_CASE("RGBA upload shortcut preserves color-key and color-space conversion", "[display]")
+    {
+        GLFixture fixture;RenderResources resources;
+        for(bool colorKey:{false,true}) {
+            auto source=surface(1,1);const auto color=SDL_MapSurfaceRGBA(source.get(),64,128,192,255);
+            SDL_FillSurfaceRect(source.get(),nullptr,color);
+            if(colorKey)REQUIRE(SDL_SetSurfaceColorKey(source.get(),true,color));
+            else REQUIRE(SDL_SetSurfaceColorspace(source.get(),SDL_COLORSPACE_SRGB_LINEAR));
+            const auto handle=resources.create(source.get(),1);REQUIRE(handle);
+            // Exercise an owned restoration surface whose metadata still needs
+            // SDL conversion, not the registry's already-converted duplicate.
+            auto snapshot=std::make_shared<TextureRevision>(*resources.snapshot(handle));
+            snapshot->pixels=std::shared_ptr<SDL_Surface>(source.release(),SDL_DestroySurface);
+            Surface converted(SDL_ConvertSurface(snapshot->pixels.get(),SDL_PIXELFORMAT_RGBA32),SDL_DestroySurface);REQUIRE(converted);
+            DrawPacket background;background.destination={0,0,16,16};background.color={0,0,0,255};background.opaque=true;
+            DrawPacket image;image.kind=DrawPacket::Kind::Blit;image.texture=snapshot;image.source={0,0,1,1};image.destination={0,0,16,16};
+            RenderFrame frame;frame.identity=1;frame.logicalWidth=frame.logicalHeight=16;frame.packets={background,image};
+            REQUIRE(fixture.device->submit(std::move(frame)));fixture.device->present();
+            Surface actual(fixture.device->captureSynchronously({}),SDL_DestroySurface);REQUIRE(actual);
+            Uint8 r,g,b,a,er,eg,eb,ea;REQUIRE(SDL_ReadSurfacePixel(converted.get(),0,0,&er,&eg,&eb,&ea));
+            REQUIRE(SDL_ReadSurfacePixel(actual.get(),8,8,&r,&g,&b,&a));
+            CHECK(r==Uint8((unsigned(er)*ea+127)/255));CHECK(g==Uint8((unsigned(eg)*ea+127)/255));CHECK(b==Uint8((unsigned(eb)*ea+127)/255));
+        }
+    }
+    GLOB2_TEST_CASE("ordered upload segments flush at vertex capacity without losing following draws", "[display]")
+    {
+        GLFixture fixture;
+        DrawPacket triangles;triangles.kind=DrawPacket::Kind::Triangles;
+        triangles.vertices.resize(RenderFrame::VertexCapacity-4);
+        for(auto &vertex:triangles.vertices)vertex={{0,0},{1,0,0,1},{0,0}};
+        DrawPacket fill;fill.destination={0,0,16,16};fill.color={20,190,30,255};fill.opaque=true;
+        RenderFrame frame;frame.identity=1;frame.logicalWidth=frame.logicalHeight=16;
+        frame.vertexCount=triangles.vertices.size();frame.packets={std::move(triangles),fill};
+        REQUIRE(fixture.device->submit(std::move(frame)));fixture.device->present();
+        Surface actual(fixture.device->captureSynchronously({}),SDL_DestroySurface);REQUIRE(actual);
+        Uint8 r,g,b,a;REQUIRE(SDL_ReadSurfacePixel(actual.get(),8,8,&r,&g,&b,&a));
+        CHECK(r==20);CHECK(g==190);CHECK(b==30);CHECK(a==255);
+    }
     GLOB2_TEST_CASE("physical scissors preserve fractional alpha seams", "[display][isolated]")
     {
         GLFixture fixture; auto &device=*fixture.device;

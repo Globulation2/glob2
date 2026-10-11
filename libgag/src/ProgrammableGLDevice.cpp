@@ -170,7 +170,11 @@ class ProgrammableGLDevice final : public RenderDevice
         std::uint64_t lastUse = 0; std::size_t bytes = 0; };
     std::map<std::tuple<std::uint32_t, std::uint32_t, std::uint64_t>, MeshAllocation> meshes;
     std::size_t meshBytes = 0;
-    struct MaterialProgram { GLuint program = 0; GLint projection = -1, uvTransform = -1, sun = -1, image = -1; };
+    struct MaterialProgram {
+        GLuint program = 0; GLint projection = -1, uvTransform = -1, sun = -1, image = -1;
+        std::optional<std::array<float,16>> projectionValue;
+        std::optional<std::array<float,4>> uvValue, sunValue;
+    };
     MaterialProgram worldProgram, cloudProgram;
     GLuint pointProgram = 0;
     GLint pointViewport = -1, pointAlpha = -1;
@@ -201,6 +205,12 @@ class ProgrammableGLDevice final : public RenderDevice
     static constexpr std::array<std::size_t,4> ClassLimits{64*1024*1024,64*1024*1024,128*1024*1024,32*1024*1024};
     std::array<std::size_t,4> classBytes{};
     std::size_t textureBytes = 0, vertexBytes = 0, captureBytes = 0;
+    // Reused only during submit/upload; neither buffer grows beyond an existing admission limit.
+    std::vector<SDL_Vertex> vertexScratch;
+    std::vector<Uint8> uploadScratch;
+    struct PrimitiveRange { const DrawPacket *packet; std::size_t first, count; };
+    std::vector<PrimitiveRange> primitiveRanges;
+    static constexpr std::size_t UploadScratchLimit = 8 * 1024 * 1024;
 
     void current()
     {
@@ -319,21 +329,42 @@ class ProgrammableGLDevice final : public RenderDevice
         if (required > TextureBudget || required > ClassLimits[category]) throw std::length_error("GL texture exceeds resource budget");
         const std::size_t bytes = std::size_t(required);
         trim(bytes, category);
-        auto converted = std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)>(
-            SDL_ConvertSurface(snapshot->pixels.get(), SDL_PIXELFORMAT_RGBA32), SDL_DestroySurface);
-        if (!converted) throw std::runtime_error(SDL_GetError());
-        if (!SDL_LockSurface(converted.get())) throw std::runtime_error(SDL_GetError());
-        std::vector<Uint8> packed(std::size_t(descriptor.width)*descriptor.height*4);
-        for (int y = 0; y < descriptor.height; ++y) {
-            const auto *row = static_cast<const Uint8 *>(converted->pixels) + y * converted->pitch;
-            auto *destination = packed.data() + std::size_t(target ? descriptor.height - y - 1 : y) * descriptor.width * 4;
-            std::memcpy(destination, row, std::size_t(descriptor.width) * 4);
-            if (premultiplied && descriptor.alpha!=TextureDescriptor::Alpha::Premultiplied)
-                for (int x = 0; x < descriptor.width; ++x)
-                    for (int channel = 0; channel < 3; ++channel)
-                        destination[x * 4 + channel] = Uint8((unsigned(destination[x * 4 + channel]) * destination[x * 4 + 3] + 127) / 255);
+        std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> converted(nullptr, SDL_DestroySurface);
+        SDL_Surface *pixels = snapshot->pixels.get();
+        if (!pixels) throw std::invalid_argument("GL texture has no restoration pixels");
+        if (pixels->format != SDL_PIXELFORMAT_RGBA32 || SDL_SurfaceHasColorKey(pixels) ||
+            SDL_GetSurfaceColorspace(pixels) != SDL_COLORSPACE_SRGB) {
+            converted.reset(SDL_ConvertSurface(pixels, SDL_PIXELFORMAT_RGBA32));
+            if (!converted) throw std::runtime_error(SDL_GetError());
+            pixels = converted.get();
         }
-        SDL_UnlockSurface(converted.get());
+        if (!SDL_LockSurface(pixels)) throw std::runtime_error(SDL_GetError());
+        struct Unlock { SDL_Surface *surface; ~Unlock() { SDL_UnlockSurface(surface); } } unlock{pixels};
+        std::vector<Uint8> largeUpload;
+        const auto scratch = [&](std::size_t size) -> std::vector<Uint8> & {
+            // Large admitted textures may need a temporary conversion, but do
+            // not turn their size into permanent presentation cache storage.
+            auto &buffer = size <= UploadScratchLimit ? uploadScratch : largeUpload;
+            buffer.resize(size); return buffer;
+        };
+        const bool multiply = premultiplied && descriptor.alpha != TextureDescriptor::Alpha::Premultiplied;
+        const auto rowBytes = std::size_t(descriptor.width) * 4;
+        const void *upload = pixels->pixels;
+        // Immutable tightly packed RGBA sources can be uploaded directly. Cloud
+        // revisions in particular need no conversion, flip or temporary copy.
+        if (target || multiply || std::size_t(pixels->pitch) != rowBytes) {
+            auto &packed = scratch(rowBytes * descriptor.height);
+            for (int y = 0; y < descriptor.height; ++y) {
+                const auto *row = static_cast<const Uint8 *>(pixels->pixels) + y * pixels->pitch;
+                auto *destination = packed.data() + std::size_t(target ? descriptor.height - y - 1 : y) * rowBytes;
+                std::memcpy(destination, row, rowBytes);
+                if (multiply)
+                    for (int x = 0; x < descriptor.width; ++x)
+                        for (int channel = 0; channel < 3; ++channel)
+                            destination[x * 4 + channel] = Uint8((unsigned(destination[x * 4 + channel]) * destination[x * 4 + 3] + 127) / 255);
+            }
+            upload = packed.data();
+        }
         Allocation allocation; allocation.snapshot = snapshot; allocation.bytes = bytes; allocation.category = category; allocation.premultiplied=premultiplied || descriptor.alpha==TextureDescriptor::Alpha::Premultiplied;
         gl.glGenTextures(1, &allocation.texture); gl.glBindTexture(GL_TEXTURE_2D, allocation.texture);
         gl.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, descriptor.addressU == TextureDescriptor::Address::Repeat ? GL_REPEAT : GL_CLAMP_TO_EDGE);
@@ -341,15 +372,19 @@ class ProgrammableGLDevice final : public RenderDevice
         gl.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         gl.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         gl.glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-        gl.glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, descriptor.width, descriptor.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, packed.data());
+        gl.glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, descriptor.width, descriptor.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, upload);
         unsigned mipIndex = 1;
         for (const auto &level : snapshot->mips) {
-            std::vector<Uint8> rgba(level.rgba.size()); std::memcpy(rgba.data(), level.rgba.data(), rgba.size());
-            if (premultiplied && descriptor.alpha != TextureDescriptor::Alpha::Premultiplied)
+            const void *mipPixels = level.rgba.data();
+            if (multiply) {
+                auto &rgba = scratch(level.rgba.size());
+                std::memcpy(rgba.data(), mipPixels, level.rgba.size());
                 for (std::size_t pixel = 0; pixel < rgba.size(); pixel += 4)
                     for (unsigned channel = 0; channel < 3; ++channel)
                         rgba[pixel+channel] = Uint8((unsigned(rgba[pixel+channel])*rgba[pixel+3]+127)/255);
-            gl.glTexImage2D(GL_TEXTURE_2D, mipIndex++, GL_RGBA8, level.width, level.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, rgba.data());
+                mipPixels = rgba.data();
+            }
+            gl.glTexImage2D(GL_TEXTURE_2D, mipIndex++, GL_RGBA8, level.width, level.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, mipPixels);
         }
         gl.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, GLint(mipIndex-1));
         if (target) {
@@ -429,7 +464,7 @@ class ProgrammableGLDevice final : public RenderDevice
             }
         }
     }
-    void draw(const DrawPacket &packet, std::span<const SDL_Vertex> vertices, float logicalW, float logicalH)
+    void draw(const DrawPacket &packet, std::size_t first, std::size_t count, float logicalW, float logicalH)
     {
         GLuint framebuffer = screenFramebuffer;
         int w = width, h = height;
@@ -474,9 +509,7 @@ class ProgrammableGLDevice final : public RenderDevice
             gl.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, packet.linear ? GL_LINEAR : GL_NEAREST);
         }
         gl.glBindVertexArray(vao); gl.glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
-        vertexBytes = vertices.size_bytes();
-        gl.glBufferData(GL_ARRAY_BUFFER, GLsizeiptr(vertexBytes), vertices.data(), GL_STREAM_DRAW);
-        gl.glDrawArrays(GL_TRIANGLES, 0, GLsizei(vertices.size())); ++counts.batches;
+        gl.glDrawArrays(GL_TRIANGLES, GLint(first), GLsizei(count)); ++counts.batches;
     }
     MaterialProgram materialProgram(const std::string &vertexFile, const std::string &fragmentFile)
     {
@@ -489,7 +522,9 @@ class ProgrammableGLDevice final : public RenderDevice
         result.projection = gl.glGetUniformLocation(result.program, "projection");
         result.uvTransform = gl.glGetUniformLocation(result.program, "uvTransform");
         result.sun = gl.glGetUniformLocation(result.program, "sunSpecular");
-        result.image = gl.glGetUniformLocation(result.program, "world"); return result;
+        result.image = gl.glGetUniformLocation(result.program, "world");
+        gl.glUseProgram(result.program); gl.glUniform1i(result.image, 0);
+        return result;
     }
     void state(const DrawPacket &packet, bool premultiplied)
     {
@@ -763,19 +798,29 @@ class ProgrammableGLDevice final : public RenderDevice
         const auto available = packet.indexed ? packet.geometry->indices.size() : packet.geometry->vertices.size() / packet.geometry->stride;
         if (!packet.count || packet.first > available || packet.count > available - packet.first || packet.count % 3 ||
             packet.count > RenderFrame::VertexCapacity * (packet.indexed ? 3 : 1)) throw std::invalid_argument("World geometry range exceeds capacity");
-        const auto &material = packet.material == DrawPacket::Material::Cloud ? cloudProgram : worldProgram;
-        GLuint image = packet.texture ? texture(packet.texture, false).texture : whiteTexture;
+        auto &material = packet.material == DrawPacket::Material::Cloud ? cloudProgram : worldProgram;
         if (packet.material == DrawPacket::Material::Skin || packet.material == DrawPacket::Material::SkinRig) {
             drawSkin(packet, allocation); return;
         }
+        GLuint image = packet.texture ? texture(packet.texture, false).texture : whiteTexture;
         state(packet, false); gl.glUseProgram(material.program);
-        gl.glUniformMatrix4fv(material.projection, 1, GL_FALSE, packet.world.projection.data());
+        if (!material.projectionValue || *material.projectionValue != packet.world.projection) {
+            gl.glUniformMatrix4fv(material.projection, 1, GL_FALSE, packet.world.projection.data());
+            material.projectionValue = packet.world.projection;
+        }
         auto uv = packet.world.uvTransform;
         // CPU uploads are top-left, while rendered GL targets have bottom-left texels.
         if (packet.texture && targets.contains(key(packet.texture))) { uv[1] = -uv[1]; uv[3] = 1 - uv[3]; }
-        gl.glUniform4f(material.uvTransform, uv[0], uv[1], uv[2], uv[3]);
-        gl.glUniform4f(material.sun, packet.world.sunSpecular[0], packet.world.sunSpecular[1], packet.world.sunSpecular[2], packet.world.sunSpecular[3]);
-        gl.glUniform1i(material.image, 0); gl.glActiveTexture(GL_TEXTURE0); gl.glBindTexture(GL_TEXTURE_2D, image);
+        // Uniform state belongs to this device's program and survives switching
+        // programs. Terrain tiles usually share projection and lighting.
+        if (!material.uvValue || *material.uvValue != uv) {
+            gl.glUniform4f(material.uvTransform, uv[0], uv[1], uv[2], uv[3]); material.uvValue = uv;
+        }
+        if (!material.sunValue || *material.sunValue != packet.world.sunSpecular) {
+            const auto &sun = packet.world.sunSpecular;
+            gl.glUniform4f(material.sun, sun[0], sun[1], sun[2], sun[3]); material.sunValue = sun;
+        }
+        gl.glActiveTexture(GL_TEXTURE0); gl.glBindTexture(GL_TEXTURE_2D, image);
         gl.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, packet.linear ? GL_LINEAR : GL_NEAREST);
         gl.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, packet.linear ? GL_LINEAR : GL_NEAREST);
         gl.glBindVertexArray(allocation.vao);
@@ -937,27 +982,44 @@ class ProgrammableGLDevice final : public RenderDevice
             gl.glBlitFramebuffer(0,0,width,height,0,0,width,height,GL_COLOR_BUFFER_BIT,GL_NEAREST);
             check("Retain completed renderer output");frameOpen=true;
         }
-        std::vector<SDL_Vertex> geometry; geometry.reserve(std::min(vertices + frame.packets.size() * 6, RenderFrame::VertexCapacity));
+        auto &geometry = vertexScratch;
+        geometry.clear();
+        geometry.reserve(std::min(vertices + frame.packets.size() * 6, RenderFrame::VertexCapacity));
+        auto &ranges = primitiveRanges; ranges.clear();
+        ranges.reserve(std::min(frame.packets.size(), RenderFrame::CommandCapacity));
+        const auto flushPrimitives = [&] {
+            if (geometry.empty()) return;
+            gl.glBindVertexArray(vao); gl.glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+            vertexBytes = geometry.size() * sizeof(SDL_Vertex);
+            gl.glBufferData(GL_ARRAY_BUFFER, GLsizeiptr(vertexBytes), geometry.data(), GL_STREAM_DRAW);
+            for (const auto &range : ranges)
+                draw(*range.packet, range.first, range.count, frame.logicalWidth, frame.logicalHeight);
+            geometry.clear(); ranges.clear();
+        };
         for (std::size_t begin = 0; begin < frame.packets.size();) {
             const auto &first = frame.packets[begin]; const auto end = frame.batchEnd(begin);
-            if (first.kind == DrawPacket::Kind::Barrier) { gl.glFlush(); ++begin; continue; }
-            if(first.kind==DrawPacket::Kind::WeightedCompose){drawCompose(first);++counts.packets;++begin;continue;}
+            if (first.kind == DrawPacket::Kind::Barrier) { flushPrimitives(); gl.glFlush(); ++begin; continue; }
+            if (first.kind == DrawPacket::Kind::WeightedCompose) { flushPrimitives(); drawCompose(first); ++counts.packets; ++begin; continue; }
             if (first.kind == DrawPacket::Kind::Clear || first.kind == DrawPacket::Kind::MeshTriangles) {
-                drawWorld(first, frame.logicalWidth, frame.logicalHeight); ++counts.packets; ++begin; continue;
+                flushPrimitives(); drawWorld(first, frame.logicalWidth, frame.logicalHeight); ++counts.packets; ++begin; continue;
             }
             if (first.target) target(first.target);
             bool flip = false, premultiplied = false;
             if (first.texture) { auto &allocation = texture(first.texture, first.linear); flip = allocation.framebuffer != 0; premultiplied = allocation.premultiplied; }
-            geometry.clear();
+            std::size_t rangeStart = geometry.size();
             for (auto index = begin; index < end; ++index) {
                 const auto &packet = frame.packets[index];
                 const auto count = packet.kind == DrawPacket::Kind::Fill || packet.kind == DrawPacket::Kind::Blit ? 6 : packet.vertices.size();
-                if (count > RenderFrame::VertexCapacity - geometry.size()) { draw(first, geometry, frame.logicalWidth, frame.logicalHeight); geometry.clear(); }
+                if (count > RenderFrame::VertexCapacity - geometry.size()) {
+                    if (geometry.size() > rangeStart) ranges.push_back({&first, rangeStart, geometry.size()-rangeStart});
+                    flushPrimitives(); rangeStart = 0;
+                }
                 appendVertices(geometry, packet, flip, premultiplied); ++counts.packets;
             }
-            if (!geometry.empty()) draw(first, geometry, frame.logicalWidth, frame.logicalHeight);
+            if (geometry.size() > rangeStart) ranges.push_back({&first, rangeStart, geometry.size()-rangeStart});
             begin = end;
         }
+        flushPrimitives();
         check("Submit renderer frame");
         frameOpen = true;
         return {++issued, epoch};
