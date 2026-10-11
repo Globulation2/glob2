@@ -105,7 +105,7 @@ class DeviceBroker {
             a.identity.variant==b.identity.variant && a.identity.revision==b.identity.revision;
     }
     void execute(const std::shared_ptr<GradientDeviceState>& state) noexcept {
-        const auto started=monotonicNs(),cpuStart=glob2::threadCpuNs();
+        const auto cpuStart=glob2::threadCpuNs();
         std::array<std::shared_ptr<OwnedGradientField>,8> held{};std::size_t count=0;bool canceled=false;
         {
             std::lock_guard lock(state->mutex);canceled=state->canceled;
@@ -156,11 +156,8 @@ class DeviceBroker {
         }catch(...){submitted=glob2::threadCpuNs();handled=false;}
         const auto ended=glob2::threadCpuNs(),finished=monotonicNs();
         const bool measured=validCpu(cpuStart,prepared) && validCpu(prepared,submitted) && validCpu(submitted,ended);
-        const auto consumed=glob2::threadCpuDeltaNs(cpuStart,ended);
-        std::size_t cells=0;for(std::size_t i=0;i<count;++i)cells+=held[i]->grid.cells();
         for(std::size_t i=0;i<count;++i) {
-            auto& field=*held[i];field.executedBatchCount=unsigned(count);field.serviceNs=finished-started;
-            field.hostCpuClockValid=measured;field.hostCpuNs=(consumed/cells)*field.grid.cells()+(consumed%cells)*field.grid.cells()/cells;
+            auto& field=*held[i];
             if(state->totals.diagnostics)field.deviceCompletedWallNs=finished;
             if(handled){field.inputs.reset();field.identity={};}
             else field.fallbackReason=canceled?GradientFallbackReason::Shutdown:stale?GradientFallbackReason::StaleGeneration:
@@ -263,25 +260,21 @@ void GradientDeviceService::stop() noexcept {
 bool GradientDeviceService::submit(const std::shared_ptr<OwnedGradientField>& field) noexcept {
     try {
         auto current=state();if(!current){if(field)field->fallbackReason=GradientFallbackReason::Unavailable;return false;}
-        const auto start=glob2::threadCpuNs();std::unique_lock lock(current->mutex);
+        std::unique_lock lock(current->mutex);
         if(field){field->executionState=current;field->diagnostics=current->totals.diagnostics;}
-        const auto finish=[&]{if(field){const auto end=glob2::threadCpuNs();
-            field->preparationCpuClockValid=field->preparationCpuClockValid && validCpu(start,end);
-            const auto cpu=glob2::threadCpuDeltaNs(start,end);
-            if(cpu>UINT64_MAX-field->seedCpuNs)field->preparationCpuClockValid=false;else field->seedCpuNs+=cpu;}};
         if(!field || !field->session || !field->data || !field->completion || !field->cpu || !field->costAt){
-            if(field)field->fallbackReason=GradientFallbackReason::InvalidRequest;++current->totals.declined;finish();return false;}
+            if(field)field->fallbackReason=GradientFallbackReason::InvalidRequest;++current->totals.declined;return false;}
         if(!current->started || current->canceled || !current->initialized){
             field->fallbackReason=current->canceled?GradientFallbackReason::Shutdown:GradientFallbackReason::Unavailable;
-            ++current->totals.declined;finish();return false;}
+            ++current->totals.declined;return false;}
         if(field->requiredControl && field->requiredControl->shouldCancel(monotonicNs())){
-            field->fallbackReason=GradientFallbackReason::Cancellation;++current->totals.declined;finish();return false;}
+            field->fallbackReason=GradientFallbackReason::Cancellation;++current->totals.declined;return false;}
         if(field->decision.plan!=Plan::Frozen8 || field->decision.generation!=field->session->currentGeneration()){
-            field->fallbackReason=GradientFallbackReason::StaleGeneration;++current->totals.stale;++current->totals.declined;finish();return false;}
+            field->fallbackReason=GradientFallbackReason::StaleGeneration;++current->totals.stale;++current->totals.declined;return false;}
         bool unused=false;if(!field->admitted.compare_exchange_strong(unused,true)){
             field->fallbackReason=GradientFallbackReason::Duplicate;++current->totals.declined;return false;}
         const auto decline=[&]{field->admitted=false;field->fallbackReason=GradientFallbackReason::MemoryBudget;
-            ++current->totals.budgetDeclines;++current->totals.declined;finish();return false;};
+            ++current->totals.budgetDeclines;++current->totals.declined;return false;};
         const auto cells=field->grid.cells(),sessionBytes=field->session->metrics().retainedBytes+128;
         if(current->queue.full() || cells>(OpenCLHostBudget-sizeof(OwnedGradientField)-sessionBytes)/sizeof(std::uint16_t))return decline();
         const auto base=cells*sizeof(std::uint16_t)+sizeof(OwnedGradientField)+sessionBytes;
@@ -289,7 +282,7 @@ bool GradientDeviceService::submit(const std::shared_ptr<OwnedGradientField>& fi
         const auto bytes=base+field->retainedInputBytes;if(!reserveOpenCLHostBytes(bytes))return decline();
         field->reservedHostBytes=bytes;field->serviceRetained=std::shared_ptr<std::atomic<std::size_t>>(current,&current->retained);
         current->retained.fetch_add(bytes);current->queue.push_back({field,++current->nextSerial});
-        finish();++current->totals.submitted;lock.unlock();broker().notify();return true;
+        ++current->totals.submitted;lock.unlock();broker().notify();return true;
     }catch(...){return false;}
 }
 void GradientDeviceService::fallback(const std::shared_ptr<OwnedGradientField>& field) noexcept {fallbackField(field);}

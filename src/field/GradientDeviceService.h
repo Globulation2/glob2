@@ -33,13 +33,10 @@ struct OwnedGradientField
     void (*cpu)(OwnedGradientField&) = nullptr;
     ComputeExecutor::CompletionTicket completion;
     std::exception_ptr error;
-    std::uint64_t serviceNs = 0, hostCpuNs = 0, fallbackCpuNs = 0;
+    std::uint64_t fallbackCpuNs = 0;
     // Published before the completion ticket resolves; owner reads after join.
     std::uint64_t deviceStartedWallNs=0,deviceCompletedWallNs=0,fallbackCleanupCpuNs=0;
     bool diagnostics=false;
-    // No preparation CPU reference is assumed unless its producer measured it.
-    bool preparationCpuClockValid=false,hostCpuClockValid=false;
-    unsigned executedBatchCount=1;
     bool executedGPU = false;
     // Diagnostic completion proof survives later rollback. Publication
     // still uses executedGPU, which means the GPU result actually committed.
@@ -49,7 +46,6 @@ struct OwnedGradientField
     std::atomic<bool> admitted{false},resolved{false};
     std::shared_ptr<std::atomic<std::size_t>> serviceRetained;
     std::shared_ptr<GradientDeviceState> executionState;
-    std::uint64_t tick=0, seedCpuNs=0;
     ~OwnedGradientField();
     std::unique_ptr<std::uint16_t[]> takeData();
 private:

@@ -120,7 +120,6 @@ private:
 			catch (...) { job.preparationNs = ns(preparationStart); throw; }
 			job.preparationNs = ns(preparationStart);
             const auto preparedCpu=glob2::threadCpuNs();
-            const bool preparationClockValid=preparationCpu && preparedCpu>=preparationCpu;
             seedCpu.fetch_add(glob2::threadCpuDeltaNs(preparationCpu,preparedCpu),std::memory_order_relaxed);
             const auto handoffStart=diagnostics ? glob2::threadCpuNs() : 0;
             const auto choice = gradient_kernel::backend();
@@ -150,12 +149,8 @@ private:
                 }else {
                 job.requiredControl.store(job.deviceField->requiredControl,std::memory_order_release);
                 if(job.cancelGPU.load(std::memory_order_acquire) && job.deviceField->requiredControl)job.deviceField->requiredControl->requestCancel();
-                job.deviceField->tick=job.due-delay;
                 job.deviceField->completion=executor->defer();
-                const auto ownedCpuEnd=glob2::threadCpuNs();
-                job.deviceField->preparationCpuClockValid=preparationClockValid && preparationCpu && ownedCpuEnd>=preparedCpu;
-                job.deviceField->seedCpuNs=glob2::threadCpuDeltaNs(preparationCpu,ownedCpuEnd);
-                const auto ownedEnd=diagnostics ? ownedCpuEnd : 0;
+                const auto ownedEnd=diagnostics ? glob2::threadCpuNs() : 0;
                 if(!deviceService->submit(job.deviceField)) {
                     // Admission failure still uses the original batch and worker.
                     deviceService->recoverOnWorker(job.deviceField);

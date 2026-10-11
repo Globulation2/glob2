@@ -64,7 +64,7 @@ inline std::atomic<std::uint64_t> backendPreparationNs{0};
 inline std::uint64_t monotonicNs() {
     return std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now().time_since_epoch()).count();
 }
-struct PlanDecision { Plan plan=Plan::CPU; std::uint64_t version=0, generation=0; };
+struct PlanDecision { Plan plan=Plan::CPU; std::uint64_t generation=0; };
 // A session carries only lifetime/generation and failure state. GPU selection is
 // explicit; there are no learned profiles, comparisons or tuning dependencies.
 class BackendSession : public ComputeExecutor::WorkerOnly
@@ -84,7 +84,7 @@ public:
     }
     PlanDecision choose(Family family,std::size_t,Backend mode,Operation operation=Operation::CompleteField) const {
         validateFamily(family);
-        PlanDecision result{Plan::CPU,0,currentGeneration()};
+        PlanDecision result{Plan::CPU,currentGeneration()};
         if(operation==Operation::CompleteField && ComputeExecutor::workerSlot() &&
            mode==Backend::OpenCL && !failed.load() &&
            (readyPlans.load(std::memory_order_acquire)&(1u<<unsigned(Plan::Frozen8))))result.plan=Plan::Frozen8;

@@ -1347,7 +1347,7 @@ TEST_CASE("GradientPreparation/minimal GPU views release source graphs and recov
         gradient_preparation::propagateCPU(request,snapshot,expected.data(),reference);
         auto make=[&]{auto data=std::make_unique<Uint16[]>(map.size);std::copy(original.begin(),original.end(),data.get());return data;};
         auto data=make();auto session=std::make_shared<BackendSession>();
-        auto owned=gradient_preparation::ownPropagation(request,snapshot,data,session,{Plan::Frozen8,0,session->currentGeneration()},17);
+        auto owned=gradient_preparation::ownPropagation(request,snapshot,data,session,{Plan::Frozen8,session->currentGeneration()},17);
         REQUIRE(bool(owned));CHECK_FALSE(data);CHECK(owned->identity.owner==owned->inputs);
         CHECK(owned->identity.retainedBytes>0);CHECK(owned->retainedInputBytes==0);
         const auto before=gradient_preparation::minimalCostViewMetrics();

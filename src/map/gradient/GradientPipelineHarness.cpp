@@ -795,7 +795,6 @@ TEST_CASE("nullable GPU preparation recovers once on the original worker without
     using namespace gradient_kernel;
     if constexpr(!GAGCore::ThreadSupport::available)return;
     struct Restore {Backend mode=backend();unsigned mask=readyPlans.load();~Restore(){setBackend(mode);readyPlans=mask;}} restore;
-    PipelineEnvironment noop("GLOB2_GRADIENT_WORKER_NOOP","0");
     readyPlans=1u<<unsigned(requestedOpenCLPlan());setBackend(Backend::OpenCL);
     struct State {std::atomic<unsigned> attempted{0},cpu{0},gpu{0};std::atomic<bool> worker{true};};
     auto state=std::make_shared<State>();
@@ -992,7 +991,7 @@ TEST_CASE("bounded required device queue recovers excess fields exactly once" * 
     std::array<Context,67> contexts;
     for(unsigned i=0;i<contexts.size();++i){
         auto field=std::make_shared<OwnedGradientField>();field->session=session;
-        field->decision={Plan::Frozen8,0,session->currentGeneration()};field->due=i?1065-i:1000;
+        field->decision={Plan::Frozen8,session->currentGeneration()};field->due=i?1065-i:1000;
         field->data=std::make_unique<std::uint16_t[]>(1);field->data[0]=77;field->inputs=gate;
         field->costAt=[](const auto&,std::size_t){return LAND_STEPS;};
         field->cpu=[](auto& value){CHECK(value.data[0]==77);value.data[0]=177;
