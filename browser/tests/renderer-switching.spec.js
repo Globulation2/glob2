@@ -271,11 +271,20 @@ for(const mode of ['serial','threaded']) {
     await expect.poll(async()=>(await state(page)).tick,{timeout:120000}).toBeGreaterThan(started+10);
     await openOverlay(page);
     if(await available(page,'WebGPU')) {
-      await choose(page,'WebGPU');await resumeOverlay(page);
-      const webgpuTick=(await state(page)).tick;
-      await expect.poll(async()=>(await state(page)).tick,{timeout:120000}).toBeGreaterThan(webgpuTick+10);
-      await info.attach('recording-active-webgpu',{body:JSON.stringify(await state(page),null,2),contentType:'application/json'});
-      await openOverlay(page);
+      await choose(page,'WebGPU');
+      const owners=await presentationOwners(page);expect(owners).toHaveLength(1);const owner=owners[0];
+      await owner.evaluate(()=>{
+        const recorder=Module.glob2Recording,frame=recorder.frame;
+        globalThis.rendererRecordedWebGPU={frames:0,restore(){recorder.frame=frame;}};
+        recorder.frame=function(...args){const accepted=frame.apply(this,args);if(accepted&&JSON.parse(args[4]).screen==='game_session')rendererRecordedWebGPU.frames++;return accepted;};
+      });
+      try {
+        await resumeOverlay(page);const webgpuTick=(await state(page)).tick;
+        await expect.poll(async()=>(await state(page)).tick,{timeout:120000}).toBeGreaterThan(webgpuTick+10);
+        await expect.poll(()=>owner.evaluate(()=>rendererRecordedWebGPU.frames),{timeout:120000}).toBeGreaterThan(0);
+        await info.attach('recording-active-webgpu',{body:JSON.stringify({state:await state(page),acceptedFrames:await owner.evaluate(()=>rendererRecordedWebGPU.frames)},null,2),contentType:'application/json'});
+        await openOverlay(page);
+      } finally {await owner.evaluate(()=>{rendererRecordedWebGPU.restore();delete globalThis.rendererRecordedWebGPU;});}
     }
     await choose(page,'Programmable GL');await choose(page,'Software');await resumeOverlay(page);
     const resumed=(await state(page)).tick;
