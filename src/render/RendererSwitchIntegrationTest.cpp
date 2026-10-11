@@ -74,7 +74,21 @@ TEST_SUITE("RendererSwitchIntegration")
                     unchanged();
                 };
                 auto change=[&](RendererBackend backend) {
-                    REQUIRE(gfx->requestBackendSwitch(backend)); gfx->nextFrame();
+                    REQUIRE(gfx->requestBackendSwitch(backend));
+                    const auto deadline=SDL_GetTicks()+30000;
+                    // An intentional torus capture hold retains the completed
+                    // main image. Switching waits for a coherent capture frame,
+                    // so continue presentation without stepping the simulation.
+                    for(;;) {
+                        gfx->nextFrame();unchanged();bounded();
+                        const auto status=gfx->backendSwitchStatus();
+                        INFO(status.reason);
+                        if(status.phase==RendererSwitchPhase::Complete)break;
+                        REQUIRE(status.phase!=RendererSwitchPhase::Failed);
+                        REQUIRE(SDL_GetTicks()<deadline);
+                        if(status.phase==RendererSwitchPhase::Queued)paint();
+                        SDL_Delay(1);
+                    }
                     INFO(gfx->backendSwitchStatus().reason);
                     REQUIRE(gfx->backendSwitchStatus().phase==RendererSwitchPhase::Complete);
                     REQUIRE(gfx->backendSwitchStatus().active==backend);
