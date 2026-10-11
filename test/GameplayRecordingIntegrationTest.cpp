@@ -242,7 +242,7 @@ TEST_SUITE("GameplayRecording.Integration")
         }
     }
 
-	TEST_CASE("global recording shortcut toggles and shutdown awaits finalization [artifacts][writes-preferences]")
+	TEST_CASE("global recording shortcut toggles and shutdown awaits finalization [display][artifacts][writes-preferences]")
 	{
 		if (!GAGCore::Recording::supported())
 			return;
