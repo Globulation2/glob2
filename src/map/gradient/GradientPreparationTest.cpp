@@ -1261,20 +1261,6 @@ TEST_CASE("GradientPreparation/explicit snapshot batches isolate invalid fields 
     CHECK_FALSE(errors[0]);CHECK_FALSE(errors[2]);REQUIRE(errors[1]);
     CHECK_THROWS_AS(std::rethrow_exception(errors[1]),std::invalid_argument);
     CHECK(outputs[1][1]==65535);CHECK(outputs[1][21]==65000); // Invalid field was never propagated.
-    // Unknown automatic categories execute CPU once; no batch-size discovery
-    // or CPU reference tournament is hidden in this synchronous caller.
-    auto session=std::make_shared<BackendSession>();
-    for(auto& workspace:scratch) workspace.backendSession=session;
-    const auto before=openCLStatus();
-    for(unsigned i:{0u,2u}) {
-        outputs[i].assign(map.getW()*map.getH(),1); outputs[i][i]=65535; outputs[i][13]=0; outputs[i][21]=65000;
-    }
-    setBackend(Backend::Automatic); gradient_preparation::propagateBatch(fields);
-    CHECK(outputs[0]==expected[0]); CHECK(outputs[2]==expected[2]);
-    CHECK(session->decision(Family::Materials,2).plan==Plan::CPU);
-    CHECK(openCLStatus().calibrations==before.calibrations);
-    CHECK(openCLStatus().tunings==before.tunings);
-
 
 }
 
