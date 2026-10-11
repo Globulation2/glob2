@@ -22,6 +22,11 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="0.11.2.0" date="2026-10-11">
+      <description>
+        <p>Restored mature resource stock oscillation, improved native GPU reliability and Metal terrain performance, immediate live colony menus, and faster verified asset packaging.</p>
+      </description>
+    </release>
     <release version="0.11.1.0" date="2026-10-11">
       <description>
         <p>Configurable unit catalogs, additional rendering backends and live renderer switching, presentation performance improvements, and release packaging fixes.</p>
