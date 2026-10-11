@@ -255,8 +255,23 @@ static void deviceOverlayRetry(GAGCore::RendererBackend backend)
     gui.game.players[0]=new Player(0,"Renderer fixture",gui.game.teams[0],BasePlayer::P_LOCAL);
     for(int y=0;y<64;++y)for(int x=0;x<64;++x)gui.game.map.paintVertexSquare(x,y,GRASS,1);
     gui.localPlayer=gui.localTeamNo=0;gui.adjustLocalTeam();gui.prepareLocalPresentation();
-    gui.selectionMode=GameGUI::TOOL_SELECTION;gui.toolManager.activateBuildingTool("swarm");
     gui.mouseX=480;gui.mouseY=368;gui.torusView.textureLimit=1024;gui.torusView.toggle();
+    // Picking uses the last completed world mesh. Establish it before asking the
+    // tool overlay to emit packets; the first capture cannot pick yet.
+    probe->overlayFailure=false;
+    gui.selectionMode=GameGUI::NO_SELECTION;
+    bool initialized=false;
+    for(unsigned attempt=0;attempt<128 && !initialized;++attempt){
+        int vx=17,vy=21;
+        REQUIRE(gui.torusView.draw(gui.drawnScene(),&gui,0,Game::DRAW_WHOLE_MAP|Game::DRAW_AREA,vx,vy,960,720));
+        initialized=gfx->flushDeviceFrame();
+        gfx->nextFrame();SDL_Delay(1);
+    }
+    REQUIRE(initialized);
+    int pickedX=0,pickedY=0;
+    REQUIRE(gui.torusView.pick(gui.mouseX,gui.mouseY,pickedX,pickedY));
+    probe->overlayFailure=true;
+    gui.selectionMode=GameGUI::TOOL_SELECTION;gui.toolManager.activateBuildingTool("swarm");
     bool complete=false;unsigned holds=0;
     const auto checksum=gui.game.checkSum();
     for(unsigned attempt=0;attempt<128 && !complete;++attempt){
