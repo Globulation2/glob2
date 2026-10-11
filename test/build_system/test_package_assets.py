@@ -108,7 +108,54 @@ class AssetExportTests(unittest.TestCase):
         (self.root / "data/fonts/LICENSE.txt").write_text("notice")
 
     def export(self, **kwargs):
+        kwargs.setdefault("jobs", 1)
         return export_assets(self.root, self.output, cache=self.cache, **kwargs)
+
+    def test_serial_and_parallel_exports_are_identical_with_cold_caches(self):
+        import random
+        for index in range(8):
+            Image.frombytes("RGBA", (48, 48), random.Random(index).randbytes(48 * 48 * 4)).save(
+                self.image.parent / f"fixture{index}.png")
+        # Identical inputs exercise simultaneous writes to a shared cache key.
+        (self.image.parent / "duplicate.png").write_bytes(self.image.read_bytes())
+        for lossy in (True, False):
+            with self.subTest(lossy=lossy):
+                serial = export_assets(self.root, self.output, cache=self.cache / f"serial-{lossy}",
+                                       jobs=1, lossy=lossy)
+                before = {p.relative_to(self.output): p.read_bytes()
+                          for p in self.output.rglob("*") if p.is_file()}
+                parallel = export_assets(self.root, self.output, cache=self.cache / f"parallel-{lossy}",
+                                         jobs=4, lossy=lossy)
+                self.assertEqual(serial, parallel)
+                self.assertEqual(before, {p.relative_to(self.output): p.read_bytes()
+                                          for p in self.output.rglob("*") if p.is_file()})
+
+    def test_worker_budget_survives_pinned_encoder_handoff(self):
+        import json
+        with patch.object(package_assets, "encoder_ready", return_value=False), \
+                patch.object(package_assets, "encoder_python", return_value="pinned-python"), \
+                patch.object(package_assets.subprocess, "run") as run:
+            self.output.with_suffix(".json").write_text(json.dumps({"files": []}))
+            self.export(jobs=3)
+        command = run.call_args.args[0]
+        self.assertEqual(command[command.index("--jobs") + 1], "3")
+
+    def test_parallel_encoder_failure_preserves_existing_export(self):
+        self.export(jobs=1)
+        original_audit = self.output.with_suffix(".json").read_bytes()
+        before = {p.relative_to(self.output): p.read_bytes()
+                  for p in self.output.rglob("*") if p.is_file()}
+        Image.new("I;16", (8, 8)).save(self.image)
+        with self.assertRaisesRegex(ValueError, "Unsupported higher-depth"):
+            self.export(jobs=4)
+        self.assertEqual(original_audit, self.output.with_suffix(".json").read_bytes())
+        self.assertEqual(before, {p.relative_to(self.output): p.read_bytes()
+                                  for p in self.output.rglob("*") if p.is_file()})
+
+    def test_invalid_worker_counts_are_rejected(self):
+        for jobs in (0, -1, 1.5):
+            with self.subTest(jobs=jobs), self.assertRaisesRegex(ValueError, "positive integer"):
+                self.export(jobs=jobs)
 
     def test_exact_pixels_including_invisible_rgb_and_sources_unchanged(self):
         original = self.image.read_bytes()
@@ -409,6 +456,7 @@ class SpriteSheetExportTests(unittest.TestCase):
         Image.new("RGBA", (5, 5)).save(self.gfx / "unitmini0.png")
 
     def export(self, **kwargs):
+        kwargs.setdefault("jobs", 1)
         return export_assets(self.root, self.output, cache=self.cache, **kwargs)
 
     def unpack(self):
@@ -432,6 +480,19 @@ class SpriteSheetExportTests(unittest.TestCase):
                     self.assertNotIn(key, frames)
                     frames[key] = tile.tobytes()
         return frames
+
+    def test_parallel_sheets_match_serial_bytes_and_audit(self):
+        for lossy in (True, False):
+            with self.subTest(lossy=lossy):
+                serial = export_assets(self.root, self.output, cache=self.cache / f"serial-{lossy}",
+                                       jobs=1, lossy=lossy)
+                before = {p.relative_to(self.output): p.read_bytes()
+                          for p in self.output.rglob("*") if p.is_file()}
+                parallel = export_assets(self.root, self.output, cache=self.cache / f"parallel-{lossy}",
+                                         jobs=4, lossy=lossy)
+                self.assertEqual(serial, parallel)
+                self.assertEqual(before, {p.relative_to(self.output): p.read_bytes()
+                                          for p in self.output.rglob("*") if p.is_file()})
 
     def test_sheets_hold_every_frame_exactly_and_replace_the_frames(self):
         audit = self.export(lossy=False)
