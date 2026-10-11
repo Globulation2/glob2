@@ -128,9 +128,19 @@ def check_metadata(api, app, version):
         raise ValueError('Primary locale privacy policy URL is missing')
 
 
-def run(api, stage, provenance, draft_version_id=''):
+def check_draft_replacement(version, attached, expected_build_id, selected_build_id):
+    if state(version) != 'PREPARE_FOR_SUBMISSION' or version['attributes'].get('releaseType') != 'MANUAL':
+        raise ValueError('Build replacement requires an unsubmitted manual-release draft')
+    if not attached or attached.get('id') not in (expected_build_id, selected_build_id):
+        raise ValueError('Draft build no longer matches the explicitly selected replacement identity')
+
+
+def run(api, stage, provenance, draft_version_id='', replace_draft_build_id=''):
     if draft_version_id and (stage!='prepare' or not re.fullmatch('[A-Za-z0-9-]{1,128}',draft_version_id)):
         raise ValueError('An explicit draft ID is valid only for prepare')
+    if replace_draft_build_id and (stage != 'prepare' or not draft_version_id or
+            not re.fullmatch('[A-Za-z0-9-]{1,128}', replace_draft_build_id)):
+        raise ValueError('Build replacement requires prepare, an explicit draft and its current build ID')
     app=one(api.collect('/v1/apps?'+urlencode({'filter[bundleId]':BUNDLE})), 'Globulation 2 app')
     build=one(api.collect('/v1/builds?'+urlencode({'filter[app]':app['id'],'filter[version]':provenance['buildNumber'],
         'filter[preReleaseVersion.version]':provenance['marketingVersion'],'filter[preReleaseVersion.platform]':'IOS'})), 'uploaded tagged iOS build')
@@ -148,7 +158,10 @@ def run(api, stage, provenance, draft_version_id=''):
         if (version['id']!=draft_version_id or
             version['attributes'].get('platform')!='IOS' or state(version)!='PREPARE_FOR_SUBMISSION'):
             raise ValueError('Explicit draft must be an editable iOS draft belonging to this app')
-        if api.request('GET',path+'/relationships/build').get('data') is not None:
+        attached = api.request('GET',path+'/relationships/build').get('data')
+        if replace_draft_build_id:
+            check_draft_replacement(version, attached, replace_draft_build_id, build['id'])
+        elif attached is not None:
             raise ValueError('Explicit draft already has a build; refusing to replace it')
         api.request('PATCH',path,resource('appStoreVersions',draft_version_id,
             {'versionString':provenance['marketingVersion'],'releaseType':'MANUAL'},
@@ -162,7 +175,10 @@ def run(api, stage, provenance, draft_version_id=''):
         return {'stage':stage,'versionId':version['id'],'buildId':build['id'],'state':state(version)}
     version=one(versions,'matching iOS App Store version')
     attached=api.request('GET',f"/v1/appStoreVersions/{version['id']}/relationships/build").get('data')
-    if attached and attached.get('id')!=build['id']: raise ValueError('App Store version is attached to a different build; refusing to replace it')
+    if replace_draft_build_id:
+        check_draft_replacement(version, attached, replace_draft_build_id, build['id'])
+    elif attached and attached.get('id')!=build['id']:
+        raise ValueError('App Store version is attached to a different build; refusing to replace it')
     if stage=='prepare':
         if state(version) not in ('PREPARE_FOR_SUBMISSION','READY_FOR_REVIEW','REJECTED','METADATA_REJECTED','DEVELOPER_REJECTED'):
             raise ValueError('App Store version is no longer editable')
@@ -203,11 +219,12 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('stage',choices=('prepare','submit','publish'))
     parser.add_argument('--provenance',type=Path,required=True)
-    parser.add_argument('--draft-version-id',default='',help='Explicit empty editable iOS draft to reuse during prepare')
+    parser.add_argument('--draft-version-id',default='',help='Explicit editable iOS draft to reuse during prepare')
+    parser.add_argument('--replace-draft-build-id', default='', help='Expected current build in that unsubmitted manual-release draft; replacement is otherwise refused')
     for name in ('tag','source-commit','run-id'): parser.add_argument('--'+name,required=True)
     args=parser.parse_args();record=validate_provenance(json.loads(args.provenance.read_text()),args.tag,args.source_commit,args.run_id)
     token=jwt_token(base64.b64decode(os.environ['IOS_ASC_KEY_P8_BASE64'],validate=True),os.environ['IOS_ASC_KEY_ID'],os.environ['IOS_ASC_ISSUER_ID'])
-    result=run(Client(token),args.stage,record,args.draft_version_id);print(json.dumps(result,sort_keys=True))
+    result=run(Client(token),args.stage,record,args.draft_version_id,args.replace_draft_build_id);print(json.dumps(result,sort_keys=True))
 
 
 if __name__=='__main__':main()

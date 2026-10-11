@@ -98,6 +98,57 @@ class IOSStoreTests(unittest.TestCase):
                 store.run(api,stage,provenance(),identity)
             self.assertFalse(any(method!='GET' for method,_,_ in api.calls))
 
+    def test_explicit_replacement_advances_only_named_unsubmitted_manual_draft(self):
+        api=self.draft_api();api.attached='old-build'
+        record={**provenance(), 'tag':'v0.11.1.0', 'marketingVersion':'0.11.100'}
+        store.validate_provenance(record,record['tag'],record['sourceCommit'],record['runId'])
+        store.run(api,'prepare',record,'version-1','old-build')
+        writes=[call for call in api.calls if call[0]!='GET']
+        self.assertEqual(writes,[('PATCH','/v1/appStoreVersions/version-1',store.resource(
+            'appStoreVersions','version-1',{'versionString':'0.11.100','releaseType':'MANUAL'},
+            {'build':store.relation('builds','build-1')}))])
+        self.assertEqual(api.version['attributes']['copyright'],'Globulation 2')
+
+    def test_replacement_rejects_changed_build_review_state_or_automatic_release_without_writes(self):
+        for field,value in [('attached',None),('attached','unexpected-build'),
+                            ('appVersionState','READY_FOR_REVIEW'),('appVersionState','IN_REVIEW'),
+                            ('releaseType','AFTER_APPROVAL'),('owner','different-app')]:
+            api=self.draft_api();api.attached='old-build'
+            if field in ('attached','owner'):setattr(api,field,value)
+            else:api.version['attributes'][field]=value
+            with self.subTest(field=field,value=value),self.assertRaises(ValueError):
+                store.run(api,'prepare',provenance(),'version-1','old-build')
+            self.assertFalse(any(method!='GET' for method,_,_ in api.calls))
+
+    def test_matching_version_replacement_and_retry_bind_only_selected_processed_build(self):
+        for attached in ('old-build','build-1'):
+            api=FakeAPI(attached=attached)
+            store.run(api,'prepare',provenance(),'version-1','old-build')
+            writes=[call for call in api.calls if call[0]!='GET']
+            self.assertEqual(writes,[('PATCH','/v1/appStoreVersions/version-1',store.resource(
+                'appStoreVersions','version-1',{'releaseType':'MANUAL'},
+                {'build':store.relation('builds','build-1')}))])
+        api=FakeAPI(attached='old-build')
+        with self.assertRaisesRegex(ValueError,'refusing to replace'):
+            store.run(api,'prepare',provenance())
+        self.assertFalse(any(method!='GET' for method,_,_ in api.calls))
+
+    def test_replacement_requires_safe_explicit_ids_and_prepare_before_api_access(self):
+        for stage,draft,build in [('submit','version-1','old-build'),('publish','version-1','old-build'),
+                                  ('prepare','','old-build'),('prepare','version-1','../old-build')]:
+            api=FakeAPI()
+            with self.subTest(stage=stage,draft=draft,build=build),self.assertRaises(ValueError):
+                store.run(api,stage,provenance(),draft,build)
+            self.assertEqual(api.calls,[])
+
+    def test_replacement_cannot_bypass_selected_build_processing_and_encryption(self):
+        for field,value in [('processingState','PROCESSING'),('buildAudienceType','INTERNAL_ONLY'),
+                            ('usesNonExemptEncryption',None),('expired',True)]:
+            api=self.draft_api();api.attached='old-build';api.build['attributes'][field]=value
+            with self.subTest(field=field),self.assertRaises(ValueError):
+                store.run(api,'prepare',provenance(),'version-1','old-build')
+            self.assertFalse(any(method!='GET' for method,_,_ in api.calls))
+
     def test_version_mapping_preserves_fourth_component_without_collisions(self):
         self.assertEqual(ios_release.marketing_version('0.11.0.0'),'0.11.0')
         self.assertEqual(ios_release.marketing_version('0.11.1.23'),'0.11.123')

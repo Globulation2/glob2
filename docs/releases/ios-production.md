@@ -18,7 +18,16 @@ The context job verifies the owner-dispatched mirror run, expected workflow,
 success and exact source provenance before the protected `ios-testflight`
 environment supplies App Store Connect credentials. Apple queries must find
 exactly one processed, eligible build with that build number and marketing
-version. A version attached to a different build is never overwritten.
+version. By default a version attached to a different build is never overwritten.
+To advance an unsubmitted candidate draft, the owner must select `prepare`,
+its `draft_version_id`, and the currently attached `replace_draft_build_id`.
+Replacement is limited to an editable `PREPARE_FOR_SUBMISSION` draft with
+`MANUAL` release; a changed build identity or review state blocks the write.
+The exact new build must still have processed, eligible source provenance.
+Retries accept an already attached selected build. This preserves the existing
+listing while advancing its version and build, without submitting or publishing.
+The selected public tag must include replacement support; older tagged tooling
+fails before protected store credentials are obtained.
 
 `prepare` creates or binds the selected version with `MANUAL` release and does
 not submit it. Complete private store listing configuration before `submit`:
@@ -40,7 +49,7 @@ encoding instead of a stale fixed marketing version.
 Run the focused metadata contracts with:
 
 ```sh
-python3 -m unittest discover -s test/build_system -p test_downloads_manifest.py -v
+python3 -m unittest discover -s test/build_system -p test_ios_store_release.py -v
 ```
 
 [Release index](README.md) · [Documentation index](../README.md).
