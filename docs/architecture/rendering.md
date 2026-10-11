@@ -499,7 +499,10 @@ rather than a fixed low pixel cap.
 The command adapter preserves adjacent painter order and flushes at 4096 commands.
 Immutable texture revisions retain the pixels that queued draws referenced, even
 when a surface changes or is deleted. The device retires allocations after submission
-completion. Resource caches and devices belong to presentation, outside saves,
+completion. Budget deferral retains logical target handles so sliced uploads can
+finish. Aborted frames invalidate composed skin and terrain readiness separately
+from the device generation; fatal device failures still enter graphics recovery.
+Resource caches and devices belong to presentation, outside saves,
 orders, synchronized randomness and simulation checksums. Capability queries control
 filtering, torus, cloud layers, alpha-map coverage and live material rendering rather
 than the legacy `USEGPU` flag. CPU offscreen exports temporarily expose software
@@ -512,7 +515,11 @@ prepares adapters, devices and shader pipelines asynchronously before changing
 presentation ownership. `glob2_webgpu_prepare(shaderDirectory)` and
 `glob2_webgpu_poll()` return pending (0), ready (1), or failed (-1), with
 `glob2_webgpu_error()` supplying the reason. The directory contains generated
-WGSL and has `metadata.json` in its parent. Factory creation then attaches the
+WGSL and has `metadata.json` in its parent. A synchronous main-thread helper
+reads the preloaded filesystem and transfers bounded, owned shader text to the
+presentation worker; that worker creates the GPU device and pipelines. Threaded
+builds do not read the worker-local JavaScript filesystem for shaders. Factory
+creation then attaches the
 managed canvas synchronously. The coordinator handles fallback and persisted
 preferences; the adapter reports device loss through the same polling API.
 
@@ -521,7 +528,9 @@ come from generated metadata; skin and posed-rig uniforms use the same generated
 std140 offsets as the native backends. Uploads copy current Wasm views into ordinary
 owned arrays, supporting shared memory and memory growth. Logical resource
 revisions use independent device allocations; submitted frames retain snapshots
-until queue completion. Texture/depth allocations are bounded to 256 MiB in total, with General and
+until queue completion. Discard fences also cover uploads prepared before packet
+submission; backend recreation shares the adapter’s issued completion timeline.
+Texture/depth allocations are bounded to 256 MiB in total, with General and
 SkinAtlas class budgets of 64 MiB, TerrainPage 128 MiB, and TerrainMask 32 MiB;
 persistent geometry to 32 MiB. Eight pending presentation frames and three capture
 requests bound GPU admission. Recorder flushes within one presentation share a
