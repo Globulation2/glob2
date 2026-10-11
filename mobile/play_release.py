@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Publish a signed Globulation 2 bundle to Google Play internal testing or owner-approved production."""
+"""Publish a verified bundle to owner-approved internal, closed, or production tracks."""
 
 import argparse
 import hashlib
@@ -11,6 +11,7 @@ import time
 
 PACKAGE = 'org.globulation2.glob2'
 TRACK = 'internal'
+TRACKS = ('internal', 'alpha', 'production')
 VERSION_EPOCH = 1704067200  # 2024-01-01 UTC; leaves room under Play's 2.1B limit.
 MAX_VERSION_CODE = 2100000000
 
@@ -38,7 +39,7 @@ def bundle_metadata(bundle, code):
 
 
 def release_body(code, name, notes, track=TRACK):
-    if track not in ('internal', 'production'):
+    if track not in TRACKS:
         raise ValueError('Unsupported Play track')
     if not name or len(name) > 50 or not notes.strip():
         raise ValueError('Release name and notes are required')
@@ -52,7 +53,7 @@ def release_body(code, name, notes, track=TRACK):
 
 def preflight(service, track=TRACK):
     """Verify app/channel API access using an uncommitted, temporary edit."""
-    if track not in ('internal', 'production'):
+    if track not in TRACKS:
         raise ValueError('Unsupported Play track')
     edits = service.edits()
     edit = edits.insert(packageName=PACKAGE, body={}).execute(num_retries=3)
@@ -104,9 +105,9 @@ def main():
     subcommands = parser.add_subparsers(dest='command', required=True)
     subcommands.add_parser('version-code')
     check = subcommands.add_parser('preflight')
-    check.add_argument('--track', choices=('internal', 'production'), default=TRACK)
+    check.add_argument('--track', choices=TRACKS, default=TRACK)
     release = subcommands.add_parser('publish')
-    release.add_argument('--track', choices=('internal', 'production'), default=TRACK)
+    release.add_argument('--track', choices=TRACKS, default=TRACK)
     release.add_argument('--bundle', type=Path, required=True)
     release.add_argument('--version-code', type=int, required=True)
     release.add_argument('--release-notes', required=True)
@@ -133,7 +134,7 @@ def main():
         with open(summary, 'a') as output:
             output.write(f"### Google Play release\n\n"
                          f"{name} · version code {args.version_code} · `{result['bundle_sha256']}`\n\n"
-                         f"[Open the internal testing track](https://play.google.com/console/u/0/developers/7470334415218720552/app/4974067701875576344/tracks/4700775093912551215)\n")
+                         f"Selected track: `{args.track}` · [Open Play Console](https://play.google.com/console/)\n")
 
 
 if __name__ == '__main__':
