@@ -18,6 +18,34 @@ namespace GAGCore
 {
 namespace
 {
+template<class Alpha>
+void recordAlphaMap(RenderBackend &backend, const std::valarray<Alpha> &map,
+                    int mapW, int mapH, int x, int y, int cellW, int cellH,
+                    const Color &color, float divisor)
+{
+    if (mapW < 2 || mapH < 2 || size_t(mapW)*size_t(mapH) > map.size()) return;
+    // Keep complete cell fans in painter order. A bounded chunk replaces one
+    // packet/allocation per cell without changing interpolation or coverage.
+    constexpr size_t chunkVertices = 4092; // 341 complete twelve-vertex fans.
+    std::vector<SDL_Vertex> batch;
+    batch.reserve(chunkVertices);
+    auto vertex = [&](float px, float py, float alpha) {
+        return SDL_Vertex{{px,py},{color.r/255.0f,color.g/255.0f,color.b/255.0f,
+            std::clamp(alpha,0.0f,1.0f)},{0,0}};
+    };
+    for (int j=0;j<mapH-1;++j) for (int i=0;i<mapW-1;++i) {
+        const float a=map[j*mapW+i]/divisor, b=map[j*mapW+i+1]/divisor;
+        const float c=map[(j+1)*mapW+i+1]/divisor, d=map[(j+1)*mapW+i]/divisor;
+        const float left=x+i*cellW, top=y+j*cellH, right=left+cellW, bottom=top+cellH;
+        const auto va=vertex(left,top,a), vb=vertex(right,top,b);
+        const auto vc=vertex(right,bottom,c), vd=vertex(left,bottom,d);
+        const auto center=vertex((left+right)/2,(top+bottom)/2,(a+b+c+d)/4);
+        const SDL_Vertex fan[]={center,va,vb,center,vb,vc,center,vc,vd,center,vd,va};
+        batch.insert(batch.end(),std::begin(fan),std::end(fan));
+        if (batch.size()==chunkVertices) {backend.triangles(batch);batch.clear();}
+    }
+    if (!batch.empty()) backend.triangles(batch);
+}
 struct SpriteBatchState
 {
 	static constexpr size_t maxQuads = 4096;
@@ -519,19 +547,7 @@ SpriteDrawBatch::~SpriteDrawBatch() noexcept(false)
 			renderBatch->barrier();
 		if (renderer) prepareDraw();
         if (renderer) {
-            if (mapW < 2 || mapH < 2 || size_t(mapW)*size_t(mapH) > map.size()) return;
-            for(int j=0;j<mapH-1;++j) for(int i=0;i<mapW-1;++i) {
-                auto vertex = [&](float px,float py,float alpha) {
-                    return SDL_Vertex{{px,py},{color.r / 255.0f, color.g / 255.0f, color.b / 255.0f, std::clamp(alpha,0.0f,1.0f)}, {0,0}};
-                };
-                float a=map[j*mapW+i]/1.0f, b=map[j*mapW+i+1]/1.0f;
-                float c=map[(j+1)*mapW+i+1]/1.0f, d=map[(j+1)*mapW+i]/1.0f;
-                float left=x+i*cellW, top=y+j*cellH, right=left+cellW, bottom=top+cellH;
-                auto va=vertex(left,top,a), vb=vertex(right,top,b), vc=vertex(right,bottom,c), vd=vertex(left,bottom,d);
-                auto center=vertex((left+right)/2,(top+bottom)/2,(a+b+c+d)/4);
-                const SDL_Vertex vertices[]={center,va,vb,center,vb,vc,center,vc,vd,center,vd,va};
-                renderer->triangles(vertices);
-            }
+            recordAlphaMap(*renderer,map,mapW,mapH,x,y,cellW,cellH,color,1.0f);
             return;
         }
 	#ifdef HAVE_OPENGL
@@ -614,19 +630,7 @@ SpriteDrawBatch::~SpriteDrawBatch() noexcept(false)
 			renderBatch->barrier();
 		if (renderer) prepareDraw();
         if (renderer) {
-            if (mapW < 2 || mapH < 2 || size_t(mapW)*size_t(mapH) > map.size()) return;
-            for(int j=0;j<mapH-1;++j) for(int i=0;i<mapW-1;++i) {
-                auto vertex = [&](float px,float py,float alpha) {
-                    return SDL_Vertex{{px,py},{color.r / 255.0f, color.g / 255.0f, color.b / 255.0f, std::clamp(alpha,0.0f,1.0f)}, {0,0}};
-                };
-                float a=map[j*mapW+i]/255.0f, b=map[j*mapW+i+1]/255.0f;
-                float c=map[(j+1)*mapW+i+1]/255.0f, d=map[(j+1)*mapW+i]/255.0f;
-                float left=x+i*cellW, top=y+j*cellH, right=left+cellW, bottom=top+cellH;
-                auto va=vertex(left,top,a), vb=vertex(right,top,b), vc=vertex(right,bottom,c), vd=vertex(left,bottom,d);
-                auto center=vertex((left+right)/2,(top+bottom)/2,(a+b+c+d)/4);
-                const SDL_Vertex vertices[]={center,va,vb,center,vb,vc,center,vc,vd,center,vd,va};
-                renderer->triangles(vertices);
-            }
+            recordAlphaMap(*renderer,map,mapW,mapH,x,y,cellW,cellH,color,255.0f);
             return;
         }
 	#ifdef HAVE_OPENGL

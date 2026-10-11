@@ -316,8 +316,8 @@ bool TorusView::drawDevice(const PresentationFrame &frame, GameGUI *gui, int tea
         state.captureView.scene = nullptr;
     }
     // A single full-density tile can contain more than General's 64 MiB of
-    // source mip chains. Admit one bounded region per host turn instead of
-    // replaying the same too-large prefix after every budget deferral.
+    // source mip chains. Submit bounded regions instead of replaying the same
+    // too-large prefix after every budget deferral.
     if (!state.captureFrame) {
         state.captureFrame = std::make_shared<PresentationFrame>(frame);
         state.captureZoom = shownZoom;
@@ -344,50 +344,63 @@ bool TorusView::drawDevice(const PresentationFrame &frame, GameGUI *gui, int tea
                                   state.captureOptions, state.capturePaused);
     }
     const auto &captureFrame = *state.captureFrame;
-    const auto &tile = tiles[state.captureTile];
-    const int captureW = tile.w + 64, captureH = tile.h + 64;
-    // Bound each region to 1024 target pixels per axis. The whole-capture
-    // sampling plan selects the same source density in every region; lower
-    // density therefore admits larger logical regions without more texture bytes.
-    const int regionPoints = pixelsPerCell == 32 ? 512 : 1024;
-    const int regionPixels = regionPoints * 32 / pixelsPerCell;
-    constexpr int cullHalo = 64;
-    const SDL_Rect region{state.captureX, state.captureY,
-        std::min(regionPixels, captureW-state.captureX), std::min(regionPixels, captureH-state.captureY)};
-    const SDL_Rect culling{std::max(0,region.x-cullHalo), std::max(0,region.y-cullHalo),
-        std::min(captureW,region.x+region.w+cullHalo)-std::max(0,region.x-cullHalo),
-        std::min(captureH,region.y+region.h+cullHalo)-std::max(0,region.y-cullHalo)};
-    gfx->setClipRect();
-    if (!gfx->beginDeviceTarget(state.tileTargets[state.captureTile], captureW*state.captureZoom, captureH*state.captureZoom))
-        return true; // Admission deferred: retain the same target and region cursor.
-    try {
-        CaptureSkinScope skin(state.captureView.render, gui ? &sourceRender : nullptr);
-        const SDL_Rect pixels{region.x*pixelsPerCell/32,region.y*pixelsPerCell/32,
-            region.w*pixelsPerCell/32,region.h*pixelsPerCell/32};
-        if (!gfx->setDeviceTargetScissor(&pixels)) throw std::runtime_error("Torus physical clipping unavailable");
-        // Replaying an unfinished region starts from clear pixels, so a prior
-        // submitted prefix cannot blend translucent sprites twice.
-        DrawPacket clear; clear.kind=DrawPacket::Kind::Clear; clear.clearColor=true;
-        clear.clearValue={0,0,0,1};gfx->submitDevicePacket(std::move(clear));
-        gfx->setRenderTargetScale(float(pixelsPerCell)/(32*state.captureZoom));
-        const SDL_Rect clip{0,0,int(std::ceil(captureW*state.captureZoom)),int(std::ceil(captureH*state.captureZoom))};
-        MapTransformScope mapPass(*gfx,state.captureZoom,0,0,clip);
-        const int tx=(originX+tile.x/32-1)&captureFrame.map.getMaskW();
-        const int ty=(originY+tile.y/32-1)&captureFrame.map.getMaskH();
-        Game::drawSceneMapRegion(captureFrame,culling.x,culling.y,culling.w,culling.h,0,0,tx,ty,
-            state.captureTeam,state.captureView,state.captureOptions,nullptr,
-            gui ? &state.captureBuildings : nullptr,state.capturePaused,cloudGridLimit,true,captureW,captureH);
-    } catch (...) {
-        gfx->setDeviceTargetScissor(nullptr);gfx->endDeviceTarget();gfx->setRenderTargetScale(0);throw;
-    }
-    gfx->setDeviceTargetScissor(nullptr);gfx->endDeviceTarget();gfx->setRenderTargetScale(0);
-    if (!gfx->flushDeviceFrame()) return true;
-    state.captureX += region.w;
-    if (state.captureX >= captureW) {state.captureX=0;state.captureY+=region.h;}
-    if (state.captureY >= captureH) {state.captureY=0;++state.captureTile;}
-    if (state.captureTile < tiles.size()) {
-        gfx->deferDeviceFrame();
-        return true;
+    // Continue cheap regions in this turn, with both a hard work bound and a
+    // soft four-millisecond CPU budget. Individual regions keep their existing
+    // pixel/source limits; admission failure still yields without advancing them.
+    constexpr unsigned regionsPerTurn = 4;
+    const auto regionDeadline = SDL_GetTicksNS() + 4'000'000;
+    for (unsigned regionIndex=0;regionIndex<regionsPerTurn && state.captureTile<tiles.size();++regionIndex) {
+        const auto &tile = tiles[state.captureTile];
+        const int captureW = tile.w + 64, captureH = tile.h + 64;
+        // Bound each region to 1024 target pixels per axis. The whole-capture
+        // sampling plan selects the same source density in every region; lower
+        // density therefore admits larger logical regions without more texture bytes.
+        const int regionPoints = pixelsPerCell == 32 ? 512 : 1024;
+        const int regionPixels = regionPoints * 32 / pixelsPerCell;
+        constexpr int cullHalo = 64;
+        const SDL_Rect region{state.captureX, state.captureY,
+            std::min(regionPixels, captureW-state.captureX), std::min(regionPixels, captureH-state.captureY)};
+        const SDL_Rect culling{std::max(0,region.x-cullHalo), std::max(0,region.y-cullHalo),
+            std::min(captureW,region.x+region.w+cullHalo)-std::max(0,region.x-cullHalo),
+            std::min(captureH,region.y+region.h+cullHalo)-std::max(0,region.y-cullHalo)};
+        gfx->setClipRect();
+        if (!gfx->beginDeviceTarget(state.tileTargets[state.captureTile], captureW*state.captureZoom, captureH*state.captureZoom))
+            return true; // Admission deferred: retain the same target and region cursor.
+        try {
+            CaptureSkinScope skin(state.captureView.render, gui ? &sourceRender : nullptr);
+            const SDL_Rect pixels{region.x*pixelsPerCell/32,region.y*pixelsPerCell/32,
+                region.w*pixelsPerCell/32,region.h*pixelsPerCell/32};
+            if (!gfx->setDeviceTargetScissor(&pixels)) throw std::runtime_error("Torus physical clipping unavailable");
+            // Replaying an unfinished region starts from clear pixels, so a prior
+            // submitted prefix cannot blend translucent sprites twice.
+            DrawPacket clear; clear.kind=DrawPacket::Kind::Clear; clear.clearColor=true;
+            clear.clearValue={0,0,0,1};gfx->submitDevicePacket(std::move(clear));
+            gfx->setRenderTargetScale(float(pixelsPerCell)/(32*state.captureZoom));
+            const SDL_Rect clip{0,0,int(std::ceil(captureW*state.captureZoom)),int(std::ceil(captureH*state.captureZoom))};
+            MapTransformScope mapPass(*gfx,state.captureZoom,0,0,clip);
+            const int tx=(originX+tile.x/32-1)&captureFrame.map.getMaskW();
+            const int ty=(originY+tile.y/32-1)&captureFrame.map.getMaskH();
+            Game::drawSceneMapRegion(captureFrame,culling.x,culling.y,culling.w,culling.h,0,0,tx,ty,
+                state.captureTeam,state.captureView,state.captureOptions,nullptr,
+                gui ? &state.captureBuildings : nullptr,state.capturePaused,cloudGridLimit,true,captureW,captureH);
+        } catch (...) {
+            gfx->setDeviceTargetScissor(nullptr);gfx->endDeviceTarget();gfx->setRenderTargetScale(0);throw;
+        }
+        gfx->setDeviceTargetScissor(nullptr);gfx->endDeviceTarget();gfx->setRenderTargetScale(0);
+        if (!gfx->flushDeviceFrame()) return true;
+        state.captureX += region.w;
+        if (state.captureX >= captureW) {state.captureX=0;state.captureY+=region.h;}
+        if (state.captureY >= captureH) {state.captureY=0;++state.captureTile;}
+        if (state.captureTile == tiles.size()) {
+            // Give final overlays a fresh source budget after a multi-region turn.
+            // Keep the completed cursor so the next turn skips straight to overlays.
+            if (regionIndex>0) {gfx->deferDeviceFrame();return true;}
+            break;
+        }
+        if (regionIndex+1 == regionsPerTurn || SDL_GetTicksNS() >= regionDeadline) {
+            gfx->deferDeviceFrame();
+            return true;
+        }
     }
     // UI overlays are captured together after terrain/entity regions, so a
     // moving pointer or changed tool cannot leave different overlays in tiles.

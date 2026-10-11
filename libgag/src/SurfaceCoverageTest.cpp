@@ -8,6 +8,8 @@
 namespace GAGCore {std::unique_ptr<RenderBackend> makeSDLSoftwareGeometryBackend(SDL_Surface *);}
 #include <array>
 #include <cstring>
+#include <valarray>
+#include <type_traits>
 
 namespace
 {
@@ -24,9 +26,68 @@ void black(DrawableSurface& surface)
 {
     surface.setClipRect(); surface.drawFilledRect(0,0,surface.getW(),surface.getH(),Color(0,0,0));
 }
+struct ContextAccess : GraphicContext
+{
+    static RenderBackend *&backend(GraphicContext &context) {
+        auto member = &ContextAccess::renderer;
+        return context.*member;
+    }
+};
+template<class Alpha>
+void compareAlphaMapChunks(GraphicContext &context, float divisor)
+{
+    constexpr int mapW=40, mapH=20;
+    std::valarray<Alpha> map(mapW*mapH);
+    for (size_t i=0;i<map.size();++i) map[i]=Alpha((i*37)%256);
+    if constexpr (std::is_same_v<Alpha,float>) map/=255.0f;
+    auto actual=std::unique_ptr<SDL_Surface,decltype(&SDL_DestroySurface)>(
+        SDL_CreateSurface(context.getW(),context.getH(),SDL_PIXELFORMAT_RGBA32),SDL_DestroySurface);
+    auto reference=std::unique_ptr<SDL_Surface,decltype(&SDL_DestroySurface)>(
+        SDL_CreateSurface(context.getW(),context.getH(),SDL_PIXELFORMAT_RGBA32),SDL_DestroySurface);
+    REQUIRE(actual); REQUIRE(reference);
+    REQUIRE(SDL_FillSurfaceRect(actual.get(),nullptr,SDL_MapSurfaceRGBA(actual.get(),20,30,40,255)));
+    REQUIRE(SDL_FillSurfaceRect(reference.get(),nullptr,SDL_MapSurfaceRGBA(reference.get(),20,30,40,255)));
+    auto batched=makeSDLSoftwareGeometryBackend(actual.get());
+    auto unbatched=makeSDLSoftwareGeometryBackend(reference.get());
+    const SDL_Rect clip{7,9,171,111};
+    context.setClipRect(clip.x,clip.y,clip.w,clip.h);
+    batched->clip(&clip);
+    unbatched->clip(&clip);
+    struct Restore {
+        GraphicContext &context; RenderBackend *previous;
+        ~Restore() {ContextAccess::backend(context)=previous;}
+    } restore{context,ContextAccess::backend(context)};
+    ContextAccess::backend(context)=batched.get();
+    context.drawAlphaMap(map,mapW,mapH,2,3,5,5,Color(60,130,230));
+    batched->flush();
+    for(int j=0;j<mapH-1;++j)for(int i=0;i<mapW-1;++i) {
+        auto vertex=[](float x,float y,float alpha){return SDL_Vertex{{x,y},{60/255.f,130/255.f,230/255.f,alpha},{0,0}};};
+        const float a=map[j*mapW+i]/divisor,b=map[j*mapW+i+1]/divisor;
+        const float c=map[(j+1)*mapW+i+1]/divisor,d=map[(j+1)*mapW+i]/divisor;
+        const float x=2+i*5,y=3+j*5;
+        const auto va=vertex(x,y,a),vb=vertex(x+5,y,b),vc=vertex(x+5,y+5,c),vd=vertex(x,y+5,d);
+        const auto center=vertex(x+2.5f,y+2.5f,(a+b+c+d)/4);
+        const SDL_Vertex fan[]={center,va,vb,center,vb,vc,center,vc,vd,center,vd,va};
+        unbatched->triangles(fan);
+    }
+    unbatched->flush();
+    CHECK(batched->operations().triangles==3);
+    CHECK(unbatched->operations().triangles==(mapW-1)*(mapH-1));
+    for(int y=0;y<actual->h;++y)
+        CHECK(std::memcmp(static_cast<const Uint8 *>(actual->pixels)+y*actual->pitch,
+            static_cast<const Uint8 *>(reference->pixels)+y*reference->pitch,size_t(actual->w)*4)==0);
+}
 }
 TEST_SUITE("SurfaceCoverage")
 {
+    TEST_CASE("bounded alpha map chunks preserve clipped cell interpolation [display]")
+    {
+        glob2test::ToolkitScope toolkit;
+        GraphicContext::setInitialRendererBackend(RendererBackend::Software);
+        auto *context=Toolkit::initGraphic(192,128,GraphicContext::NOAUDIO,"alpha map batching");
+        compareAlphaMapChunks<float>(*context,1.0f);
+        compareAlphaMapChunks<unsigned char>(*context,255.0f);
+    }
     TEST_CASE("backing pixel fills and blits retain native clipping and queued order")
     {
         glob2test::ToolkitScope toolkit; Toolkit::initGraphic(96,96,0,"pixel operations");
