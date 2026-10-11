@@ -2,9 +2,11 @@
 """Export verified runtime assets without modifying source artwork."""
 
 import argparse
+from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
 import hashlib
 import io
 import json
+import multiprocessing
 import os
 from pathlib import Path
 import re
@@ -507,6 +509,33 @@ def terrain_runtime_fingerprints(compiler, sources, root, stage, sheets):
     return fingerprints
 
 
+def packaging_jobs(jobs=None):
+    """Use the CPUs available to this process unless a caller supplies a budget."""
+    if jobs is None:
+        if hasattr(os, "sched_getaffinity"):
+            jobs = len(os.sched_getaffinity(0))
+        else:
+            jobs = os.cpu_count() or 1
+    if not isinstance(jobs, int) or jobs < 1:
+        raise ValueError("Asset packaging jobs must be a positive integer")
+    return jobs
+
+
+def encoding_executor(jobs):
+    # Pillow's WebP encoder and our RGBA64 reference decoder hold the GIL.
+    # Spawn avoids inheriting SCons threads/leases and works on every host OS.
+    if jobs == 1:
+        return ThreadPoolExecutor(max_workers=1)
+    return ProcessPoolExecutor(max_workers=jobs, mp_context=multiprocessing.get_context("spawn"))
+
+
+def encode_sheet(sheet, root, cache, lossy, relative):
+    source = pack_sheet(sheet, root, cache)
+    blob, record = encode_image(source, relative.as_posix(), cache, lossy)
+    verify_sheet(sheet, blob, exact=not record["lossy"])
+    return source, blob, record
+
+
 def _export_assets(
     root,
     output,
@@ -515,6 +544,7 @@ def _export_assets(
     lossy=True,
     cache=None,
     worker=False,
+    jobs=None,
 ):
     root, output = Path(root).resolve(), Path(output).resolve()
     catalog = root / "data/terrain/tileset.json"
@@ -550,6 +580,8 @@ def _export_assets(
             "--platform",
             platform,
             "--worker",
+            "--jobs",
+            str(jobs),
         ]
         if not optimized:
             command.append("--original")
@@ -586,8 +618,21 @@ def _export_assets(
     packed = {f for plan in sheets.values() for sheet in plan for f in sheet["frames"]}
     with tempfile.TemporaryDirectory(
         prefix=output.name + "-staging-", dir=output.parent
-    ) as temporary:
+    ) as temporary, encoding_executor(jobs) as encoders:
         stage = Path(temporary)
+        # Submit independent work before consuming it in source order. Workers
+        # never publish the export or mutate its ordered audit/destination set.
+        encoded = {}
+        for source in files:
+            relative = source.relative_to(root)
+            public_png = platform == "linux" and relative.parts[:2] == ("data", "screenshots")
+            if optimized and source not in packed and source.suffix.lower() == ".png" and not public_png:
+                encoded[source] = encoders.submit(encode_image, source, relative.as_posix(), cache, lossy)
+        encoded_sheets = {}
+        for sprite, plan in sheets.items():
+            for sheet in plan:
+                relative = Path(sprite).parent / sheet["name"]
+                encoded_sheets[relative] = encoders.submit(encode_sheet, sheet, root, cache, lossy, relative)
         for source in files:
             if source in packed:
                 continue
@@ -601,7 +646,7 @@ def _export_assets(
                 "screenshots",
             )
             if optimized and source.suffix.lower() == ".png" and not public_png:
-                blob, record = encode_image(source, relative.as_posix(), cache, lossy)
+                blob, record = encoded[source].result()
                 destination = relative.with_suffix(record["suffix"])
             else:
                 destination = relative
@@ -631,9 +676,7 @@ def _export_assets(
         for sprite, plan in sheets.items():
             for sheet in plan:
                 relative = Path(sprite).parent / sheet["name"]
-                source = pack_sheet(sheet, root, cache)
-                blob, record = encode_image(source, relative.as_posix(), cache, lossy)
-                verify_sheet(sheet, blob, exact=not record["lossy"])
+                source, blob, record = encoded_sheets[relative].result()
                 destination = relative.with_suffix(record["suffix"])
                 if destination in destinations:
                     raise ValueError("Duplicate exported path: " + str(destination))
@@ -783,6 +826,7 @@ def export_assets(
     lossy=True,
     cache=None,
     worker=False,
+    jobs=None,
 ):
     """Export a complete runtime tree and return its source/output audit.
 
@@ -790,13 +834,14 @@ def export_assets(
     output directory and is excluded from shipped resources. An encoder worker
     acquires the output lease itself, avoiding a recursive lock in its parent.
     """
+    jobs = packaging_jobs(jobs)
     if (optimized or (Path(root) / "data/terrain/tileset.json").is_file()) and not encoder_ready() and not worker:
-        return _export_assets(root, output, platform, optimized, lossy, cache, worker)
+        return _export_assets(root, output, platform, optimized, lossy, cache, worker, jobs)
     sys.path.insert(0, str(ROOT / "scons"))
     from dev_store import Lease
 
     with Lease(Path(output).resolve(), exclusive=True, track_use=False):
-        return _export_assets(root, output, platform, optimized, lossy, cache, worker)
+        return _export_assets(root, output, platform, optimized, lossy, cache, worker, jobs)
 
 
 def main():
@@ -818,12 +863,15 @@ def main():
     images.add_argument("--lossless-images", "--lossless-background", dest="lossy_images",
                         action="store_false",
                         help="Require exact RGBA; --lossless-background is a deprecated alias")
+    parser.add_argument("--jobs", type=int, help="Concurrent image/sheet encoders (default: available CPUs)")
     parser.add_argument("--cache", type=Path)
     parser.add_argument("--worker", action="store_true", help=argparse.SUPPRESS)
     args = parser.parse_args()
     if args.encoder_python:
         print(encoder_python())
         return
+    if args.jobs is not None and args.jobs < 1:
+        parser.error("--jobs must be a positive integer")
     if args.output is None:
         parser.error("--output is required")
     result = export_assets(
@@ -834,6 +882,7 @@ def main():
         args.lossy_images,
         args.cache,
         args.worker,
+        args.jobs,
     )
     print(
         "Runtime assets: %d -> %d bytes (%d files)"

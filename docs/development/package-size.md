@@ -18,6 +18,14 @@ both candidates. Unsupported higher-depth modes fail the export without
 quantization; their source artwork remains untouched. Fonts, meshes, music and
 platform icon containers are outside this policy.
 
+Independent image encodings and sprite-sheet packing run concurrently. SCons
+exports use the worker limit from `-j`; standalone exports use the CPUs available
+to the process, or an explicit `tools/package_assets.py --jobs N` limit. Use
+`--jobs 1` for a serial export. These workers run alongside other scheduled build
+jobs; lower `-j` when compiler and encoder memory pressure requires it. Worker
+count does not change encoding recipes, audit order or exported bytes. Each
+candidate and sheet is verified before the export is published.
+
 Source PNG artwork stays in the repository. SCons prepares lossless WebP for
 normal source/debug builds and exposes that generated tree to the client and
 native test programs. Release builds select the smaller permitted WebP encoding.
