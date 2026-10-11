@@ -40,6 +40,7 @@ class MapAssetBundle;
 #include "BitArray.h"
 
 namespace SimulationSnapshot { struct Handle; }
+namespace gradient_kernel { enum class Family; }
 
 class Unit;
 
@@ -243,6 +244,7 @@ public:
 	Uint16 *acquireBuildingGradientBuffer();
 	void recycleBuildingGradientBuffer(Uint16 *buffer);
 	void configureCompute(unsigned threads);
+    std::vector<std::pair<std::string,Uint64>> gradientExecutionMetrics() const;
 	ComputeExecutor &computeExecutor() { return compute; }
 	// Live field seeding retains its serial production order.
 	template<class Function> void initializeGradientCells(Function function) const
@@ -256,7 +258,9 @@ public:
 		unsigned workers = 0, delay = 0;
 		std::size_t pending = 0;
 		std::uint64_t jobs = 0, published = 0, discarded = 0;
-		std::uint64_t maxPending = 0, waitNs = 0, activeElapsedNs = 0, preparationNs = 0;
+		std::uint64_t maxPending = 0, waitNs = 0, activeElapsedNs = 0, preparationNs = 0, publicationWaitNs = 0;
+        // Owner-only O(1) last-advance telemetry, no pending-job scan.
+        std::uint64_t lastPublicationWaitNs=0,lastGpuPublicationWaitNs=0,lastGpuDeviceOverlapWaitNs=0;
 	};
 	bool gradientPipelineEnabled() const;
 	GradientPipelineStatus gradientPipelineStatus() const;
@@ -1149,6 +1153,7 @@ public:
 	//! swimClass must be in [0, SWIM_CLASS_COUNT).
     GAGCore::CooperativeTask updateGlobalGradientTask(Uint8 *gradient);
 	void propagateGradient(Uint16 *gradient, int swimClass, int maxCost = GRADIENT_COST_LIMIT);
+	void propagateGradient(Uint16 *gradient, int swimClass, int maxCost, gradient_kernel::Family family);
 	//! Step toward the neighbour with the highest value minus step cost. strict requires
 	//! real progress; otherwise a random sidestep to an equal cell is accepted when blocked.
 	//! With guardAreaMask, only neighbours painted as a guard area for those teams count

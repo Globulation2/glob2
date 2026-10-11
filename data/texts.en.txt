@@ -1670,6 +1670,10 @@ Automatic torus view
 Automatically show the torus overview while moving around the map (OpenGL).
 [settings Autosave]
 Autosave
+[settings GPU compute]
+GPU compute
+[settings Use GPU for gradient calculations. Applies to the next game.]
+Use GPU for gradient calculations. Applies to the next game.
 [settings Save the game automatically about every 10 seconds.]
 Save the game automatically about every 10 seconds.
 [Channel width]

@@ -157,3 +157,26 @@ starts with cold queues and later repeats retain search capacity.
 Every requested result is checked against the independent heap oracle. Run this
 on both revisions with matching inputs and compare it separately from full-field
 propagation; ordinary test runs exclude the benchmark tag.
+
+## GPU on/off verification
+
+Use release binaries and identical saves, orders and tick windows to compare
+`--gpu off` and `--gpu on`. Freeze source and executable hashes, CPU affinity,
+compute budget and `GLOB2_OPENCL_DEVICE=N` (zero-based GPU ordinal). Serialize
+builds and measurements. Separate cold initialization from sustained gameplay.
+Measure process CPU including the GPU driver and coordinator; worker elapsed time
+includes GPU waiting and does not establish CPU savings. Graphics rendering and
+end-to-end game time are separate measures.
+
+`game run` reports `gpu_requested`, `gpu_device`, `gpu_error` and required-only
+`gradient_execution` counters. A requested device does not establish GPU execution:
+check device dispatches, observed/committed fields, fallback counts and memory.
+Accelerator-owned payload limits are 64 MiB host and 128 MiB device; measure driver
+memory separately. The shipping kernel, convergence interval and coordinator
+concurrency are fixed; no live experimentation runs during a game.
+
+Verify exact arrays against the independent CPU oracle, per-tick checksums,
+saved-game continuation and replays with GPU off/on and compute counts 1/2/3/8.
+Inject initialization, allocation, dispatch, readback and cancellation failures.
+Include normal presentation and singleton/background-worker progress checks;
+headless-only results do not prove GUI responsiveness.

@@ -30,6 +30,29 @@
 
 namespace GAGCore
 {
+GraphicContext::RenderingIdentity GraphicContext::renderingIdentity() const
+{
+	RenderingIdentity identity;
+	identity.backend = portableRenderer ? "sdl" : (optionFlags & USEGPU) ? "opengl" : "software";
+#ifdef HAVE_OPENGL
+	if ((optionFlags & USEGPU) && context && eventThread == SDL_GetCurrentThreadID()
+		&& SDL_GL_GetCurrentContext() == context)
+	{
+		const auto copy = [](const GLubyte* value) {
+			if (!value) return std::string{};
+			const auto* text = reinterpret_cast<const char*>(value);
+			std::size_t length = 0;
+			while (length < 4096 && text[length]) ++length;
+			return length < 4096 ? std::string(text, length) : std::string{};
+		};
+		identity.glVendor = copy(glGetString(GL_VENDOR));
+		identity.glRenderer = copy(glGetString(GL_RENDERER));
+		identity.glIdentityAvailable = !identity.glVendor.empty() && !identity.glRenderer.empty();
+	}
+#endif
+	return identity;
+}
+
 int GraphicContext::maximumTextureSize() const
 {
 	if (portableRenderer)

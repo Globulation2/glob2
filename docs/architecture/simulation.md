@@ -362,6 +362,37 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   including Cortex wheat depth and Maxima food claims. Keep those searches ordered.
   Callers own seeding, field encodings, transient scratch, cache ages and publication.
   Sharing a solver does not make fields with different predicates interchangeable.
+## Optional GPU gradient computation
+
+Settings → Gameplay → **GPU compute** selects CPU or GPU for the next game.
+An absent local `gpuCompute` preference means off in graphical games and on in
+headless games; a saved on/off value is honored in both. `--gpu on|off` overrides
+the local setting for that run. `GLOB2_GRADIENT_BACKEND=cpu|opencl` remains a binary
+benchmark override. Graphics rendering is configured separately.
+
+GPU computation uses one fixed exact integer Frozen8 OpenCL implementation,
+with eight dispatches between convergence checks. It uses a background
+coordinator beyond the shared CPU pool: `--compute-threads` still counts the owner
+and CPU workers. A one-slot pool stays CPU-only. Initialization, submission,
+event polling and readback run off the game loop. Workers hand off owned inputs
+and original seeds while retaining the required completion ticket and lane order.
+Already-ready compatible requests batch up to eight without waiting to fill a
+batch. Results publish at their original simulation deadline; backend completion
+does not change simulation timing. Resumable building searches remain on CPU.
+
+Accelerator payloads share 64 MiB of host storage and 128 MiB of tracked device
+storage. Demand-sized storage and immutable cost-buffer leases bound retained
+inputs. Unsupported devices, memory pressure, cancellation and execution errors
+recover the exact CPU result from original seeds; partial GPU results are never
+published. Required transfer failures retain unsafe storage until completion can
+be proved. Saves, reconfiguration and shutdown drain required work.
+
+The native backend dynamically loads an installed OpenCL driver without an SDK
+or linked runtime dependency. Browser, Android and iOS builds use CPU fallback.
+There is no automatic policy, calibration, live probe or tuning. Diagnostics
+separate requested, selected, actually executed and committed GPU fields from CPU
+fallback and report accelerator allocations.
+
 ## Shared field primitives
 
 - Choose the smallest field operation that preserves the caller's contract:

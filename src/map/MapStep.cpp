@@ -233,7 +233,8 @@ Map::GradientPipelineStatus Map::gradientPipelineStatus() const
 	const auto &metrics = pipeline.metrics;
 	return {pipeline.enabled(), pipeline.workerCount(), pipeline.delayTicks(),
 		pipeline.pendingCount(), metrics.jobs, metrics.published, metrics.discarded,
-		metrics.maxPending, metrics.waitNs, pipeline.activeElapsedNs(), metrics.preparationNs};
+		metrics.maxPending, metrics.waitNs, pipeline.activeElapsedNs(), metrics.preparationNs, metrics.publicationWaitNs,
+        metrics.lastPublicationWaitNs,metrics.lastGpuPublicationWaitNs,metrics.lastGpuDeviceOverlapWaitNs};
 }
 
 bool Map::hasPendingGradientPreparation() const
@@ -329,8 +330,20 @@ void Map::configureGradientPipeline(unsigned workers, unsigned delay)
 	};
 	gradientRuntime->pipeline.configure(compute, workers != 0, delay, size,
         [](GradientPipeline::Job &job, GradientWorkspace &scratch) {
-            gradient_preparation::propagate(job.request, *job.snapshotLease, job.data.get(), scratch);
+            if(job.cpuOnly)gradient_preparation::propagateCPU(job.request,*job.snapshotLease,job.data.get(),scratch);
+            else gradient_preparation::propagate(job.request, *job.snapshotLease, job.data.get(), scratch);
         });
+    gradientRuntime->pipeline.setAsyncWork([](GradientPipeline::Job& job,gradient_kernel::PlanDecision decision) {
+        return gradient_preparation::ownPropagation(job.request,*job.snapshotLease,job.data,
+            job.owner->session(),decision,job.executorDue);
+    });
+    gradientRuntime->pipeline.setBatchWork([this](std::span<GradientPipeline::Job* const> jobs,
+        std::span<GradientWorkspace> scratch) {
+        std::vector<gradient_preparation::PropagationField> fields;fields.reserve(jobs.size());
+        for(std::size_t i=0;i<jobs.size();++i)
+            fields.push_back({jobs[i]->request,&*jobs[i]->snapshotLease,jobs[i]->data.get(),&scratch[i],&jobs[i]->error,nullptr});
+        gradient_preparation::propagateBatch(fields);
+    });
 }
 
 void Map::syncStep(Uint32 stepCounter, bool preparePeriodic)

@@ -353,3 +353,18 @@ and frozen traces in serial and threaded Wasm builds.
 
 
 See [save and file compatibility tests](persistence.md).
+
+## Optional GPU gradients
+
+The `OpenCLGradient` suite checks the fixed Frozen8 kernel against an independent
+heap oracle across movement classes, caps, seeds, obstacles, custom costs and
+wrapped grids. It verifies immutable cost reuse, exact original-seed recovery,
+bounded storage and transfer lifetime. A skipped GPU case is CPU fallback coverage,
+not proof of device execution.
+
+`GradientPipeline` and `ComputeExecutor` verify worker handoff, singleton launch,
+required ticket/lane ordering, publication deadlines and cancellation. Settings
+and CLI tests cover GUI/headless defaults, local persistence and binary overrides.
+Run the affected unit and engine suites through `test/run_tests.py`, then compare
+real saved-game and replay checksums with GPU off/on. See
+[GPU verification](../gradient-benchmarks.md#gpu-onoff-verification).

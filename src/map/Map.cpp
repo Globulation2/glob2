@@ -521,6 +521,47 @@ void Map::clearGradientBufferPool()
 		delete[] idleGradientBuffers[--idleGradientBufferCount];
 }
 
+std::vector<std::pair<std::string,Uint64>> Map::gradientExecutionMetrics() const
+{
+    const auto device=gradientRuntime->deviceService->metrics();
+    const auto opencl=gradient_kernel::openCLStatus();
+    const auto& pipeline=gradientRuntime->pipeline;
+    return {
+        {"gpu_requested_fields",pipeline.gpuRequestedFields()},
+        {"gpu_selected_fields",pipeline.gpuSelectedFields()},
+        {"gpu_complete_fields",pipeline.gpuCompleteFields()},
+        {"cpu_complete_fields",pipeline.cpuCompleteFields()},
+        {"cpu_reason_explicit",pipeline.cpuReason(GradientPipeline::CPUReason::ExplicitCPU)},
+        {"cpu_reason_owner_excluded",pipeline.cpuReason(GradientPipeline::CPUReason::OwnerExcluded)},
+        {"cpu_reason_unavailable",pipeline.cpuReason(GradientPipeline::CPUReason::Unavailable)},
+        {"cpu_reason_owned_input_decline",pipeline.cpuReason(GradientPipeline::CPUReason::OwnedInputDecline)},
+        {"cpu_reason_failed_session",pipeline.cpuReason(GradientPipeline::CPUReason::FailedSession)},
+        {"required_seed_cpu_ns",pipeline.requiredSeedCpuNs()},
+        {"required_propagation_cpu_ns",pipeline.requiredPropagationCpuNs()},
+        {"required_owned_input_cpu_ns",pipeline.requiredOwnedInputCpuNs()},
+        {"required_handoff_cpu_ns",pipeline.requiredHandoffCpuNs()},
+        {"required_cleanup_cpu_ns",pipeline.requiredCleanupCpuNs()},
+        {"gpu_publication_wait_count",pipeline.metrics.gpuPublicationWaitCount},
+        {"gpu_publication_wait_ns",pipeline.metrics.gpuPublicationWaitNs},
+        {"coordinator_threads",device.coordinatorThreads},
+        {"coordinator_running",device.running},{"coordinator_ready",device.ready},
+        {"coordinator_cpu_ns",device.hostCpuNs},{"coordinator_initialization_ns",device.initializationNs},
+        {"coordinator_submitted",device.submitted},{"coordinator_completed",device.completed},
+        {"coordinator_executed",device.executed},{"coordinator_fallbacks",device.fallbacks},
+        {"coordinator_declined",device.declined},{"coordinator_batches",device.batches},
+        {"coordinator_max_batch",device.maxBatch},{"coordinator_queued",device.queued},
+        {"fallback_reason_unavailable",device.fallbackReasons[unsigned(gradient_kernel::GradientFallbackReason::Unavailable)]},
+        {"fallback_reason_memory",device.fallbackReasons[unsigned(gradient_kernel::GradientFallbackReason::MemoryBudget)]},
+        {"fallback_reason_backend_decline",device.fallbackReasons[unsigned(gradient_kernel::GradientFallbackReason::BackendDecline)]},
+        {"fallback_reason_driver",device.fallbackReasons[unsigned(gradient_kernel::GradientFallbackReason::DriverFailure)]},
+        {"fallback_reason_cancellation",device.fallbackReasons[unsigned(gradient_kernel::GradientFallbackReason::Cancellation)]},
+        {"device_dispatches",opencl.dispatches},{"device_observed_fields",opencl.deviceObservedFields},
+        {"device_committed_fields",opencl.committedFields},{"device_cpu_ns",opencl.threadCPUNs},
+        {"accelerator_host_bytes",opencl.hostBytes},{"accelerator_peak_host_bytes",opencl.peakHostBytes},
+        {"accelerator_device_bytes",opencl.deviceBytes},{"accelerator_peak_device_bytes",opencl.peakDeviceBytes}
+    };
+}
+
 void Map::configureCompute(unsigned threads)
 {
 	finishGradientPipeline();
@@ -528,6 +569,11 @@ void Map::configureCompute(unsigned threads)
 	compute.configure(threads);
 	gradientRuntime->pipeline.resizeWorkspaces();
 	gradientRuntime->workspaces.resize(compute.threadCount());
+	gradientRuntime->shareBackendSession();
+    gradientRuntime->backendSession->setExternalInitialization(true);
+    gradientRuntime->backendSession->configure(compute.threadCount());
+    compute.setWorkerOnly(gradientRuntime->backendSession);
+    gradientRuntime->deviceService->configure(compute.threadCount(),gradient_kernel::backend());
 }
 
 void Map::clear()
@@ -547,6 +593,10 @@ void Map::clear()
 	gradientRuntime->pipeline.reset();
 	// Retires into the buffer pool, so before the pool is cleared below.
 	resetBuildingGradientPipeline();
+	gradientRuntime->resetBackendSession();
+    gradientRuntime->backendSession->setExternalInitialization(true);
+    gradientRuntime->backendSession->configure(compute.threadCount());
+    compute.setWorkerOnly(gradientRuntime->backendSession);
 	gradientRuntime->buildingSynchronous=0;
 	gradientRuntime->synchronousByReason={};
 	gradientRuntime->overlaySupplierLocations.clear();
@@ -646,6 +696,10 @@ void Map::clear()
 
 void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 {
+    // Dimensions are exponents, never arbitrary cell counts. Validate before
+    // shifting or clearing the existing map, including in release builds.
+    if (wDec < 0 || hDec < 0 || wDec >= 16 || hDec >= 16)
+        throw std::invalid_argument("Map dimensions require power-of-two size exponents in [0, 15]");
     if (!resourceRegistryValue->size())
     {
         resourceRegistryValue = ResourceRegistry::builtins();
@@ -656,8 +710,6 @@ void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 
 	clear();
 
-	assert(wDec<16);
-	assert(hDec<16);
 	this->wDec=wDec;
 	this->hDec=hDec;
 	w=1<<wDec;

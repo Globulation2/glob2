@@ -745,6 +745,14 @@ namespace GAGCore
 		
 		//! Return the option flags
 		Uint32 getOptionFlags(void) { return optionFlags; }
+		// Report-only identity. GL strings are available only on this context's
+		// presentation thread while the context is current; never switches it.
+		struct RenderingIdentity {
+			std::string backend;
+			std::string glVendor, glRenderer;
+			bool glIdentityAvailable = false;
+		};
+		RenderingIdentity renderingIdentity() const;
 	};
 	
     class HighResolutionInputs;

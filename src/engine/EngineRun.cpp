@@ -909,6 +909,7 @@ void Engine::beginSession(Uint64 now)
 {
     if (session) throw std::logic_error("Engine session is already active");
     if (!net) throw std::logic_error("Engine session requires an initialized game");
+    globalContainer->configureGradientBackend();
 	if (!globalContainer->structuredHeadless || turn)
 		gui.game.map.configureCompute(resolveComputeThreadCount(globalContainer->computeThreads));
     sessionEndingTarget = globalContainer->automaticEndingSteps;

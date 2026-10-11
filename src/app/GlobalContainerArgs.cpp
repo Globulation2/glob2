@@ -3,6 +3,9 @@
 #include "GlobalContainer.h"
 #include "CommandLine.h"
 #include "ComputeThreads.h"
+#include "field/GradientBackend.h"
+#include <cstdlib>
+#include <cstring>
 #include "AINames.h"
 #include "FileManager.h"
 #include "InviteLink.h"
@@ -19,6 +22,8 @@ void GlobalContainer::applyCommand(const Cli::Request &request)
 		fileManager->addDir(path);
 	if (r.has("--compute-threads"))
 		computeThreads = parseComputeThreadCount(r.get("--compute-threads"));
+	if (r.has("--gpu"))
+		gpuComputeOverride = r.get("--gpu") == "on";
 	auto toggle = [&](const char *name, unsigned bit)
 	{
 		if (r.has(std::string("--") + name))
@@ -79,7 +84,7 @@ void GlobalContainer::applyCommand(const Cli::Request &request)
 	}
 	if (r.command == "game repeat")
 	{
-		runNoX = true;
+		runNoX = !r.has("--display");
 		automaticEndingGame = true;
 		runNoXGameName = r.positionals.at(0);
 		automaticEndingSteps = std::stoi(r.get("--ticks"));
@@ -122,4 +127,19 @@ void GlobalContainer::applyCommand(const Cli::Request &request)
 	if (r.command.rfind("dev dump-", 0) == 0)
 		runNoX = true;
 	Online::acceptLaunchRequest(r);
+}
+
+bool GlobalContainer::gpuComputeEnabled() const
+{
+	if (gpuComputeOverride.has_value()) return *gpuComputeOverride;
+	// Retain binary command-line compatibility for reproducible benchmarks.
+	if (const auto* backend = std::getenv("GLOB2_GRADIENT_BACKEND"); backend && *backend)
+		return std::strcmp(backend, "opencl") == 0;
+	return settings.gpuComputeEnabled(runNoX);
+}
+
+void GlobalContainer::configureGradientBackend() const
+{
+	gradient_kernel::setBackend(gpuComputeEnabled() ? gradient_kernel::Backend::OpenCL
+													 : gradient_kernel::Backend::CPU);
 }

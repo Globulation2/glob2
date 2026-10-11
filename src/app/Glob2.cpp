@@ -17,6 +17,8 @@
 #include <SDL3_net/SDL_net.h>
 #endif
 #include <cstdlib>
+#include <stdexcept>
+#include <string>
 #ifdef GLOB2_MOBILE
 #include "mobile/MobilePaths.h"
 #include <exception>
@@ -549,7 +551,9 @@ int Glob2::run(const Cli::Request &request)
 		globalContainer = nullptr;
 		return 0;
 	}
-	globalContainer->deferAssetLoading = !globalContainer->runNoX &&
+	// Saved-game repeats enter Engine::run directly; complete graphics assets
+	// before the rendered repeat rather than bypassing the interactive startup host.
+	globalContainer->deferAssetLoading = request.command != "game repeat" && !globalContainer->runNoX &&
 										 !globalContainer->runTestGames &&
 										 !globalContainer->runTestMapGeneration;
 	globalContainer->load();
@@ -629,7 +633,7 @@ int Glob2::run(const Cli::Request &request)
 		runTestMapGeneration();
 	}
 
-	if (globalContainer->runNoX)
+	if (request.command == "game repeat")
 	{
 		int ret = runNoX();
 		closeGameResources();

@@ -17,6 +17,7 @@
 #include "AINames.h"
 #include "AIJavaScript.h"
 #include "ComputeThreads.h"
+#include "field/OpenCLGradient.h"
 #include "AIMaximaStrategy.h"
 #include "ai/cortex/CortexTuning.h"
 #include "Game.h"
@@ -285,6 +286,7 @@ struct HeadlessRunner
 		globalContainer=&globals;
         for(const auto &directory:many(options,"--data-dir"))globals.fileManager->addDir(directory);
 		globals.runNoX=true;
+		if (options.count("--gpu")) globals.gpuComputeOverride = one(options, "--gpu") == "on";
 		globals.structuredHeadless=true;
 		globals.automaticEndingGame=true;
 		globals.automaticGameGlobalEndConditions=true;
@@ -451,6 +453,7 @@ struct HeadlessRunner
 		if (!fields.empty()) engine.diagnostics = std::make_shared<GameDiagnostics::Session>(engine.gui.game,(output/"diagnostics").string(),diagnosticInterval,diagnosticPng=="true");
 		const std::string requestedSizing = one(options, "--compute-threads", "auto");
 		const unsigned computeThreads = resolveComputeThreadCount(parseComputeThreadCount(requestedSizing));
+		globals.configureGradientBackend();
 		engine.gui.game.map.configureCompute(computeThreads);
         engine.gui.game.map.setResourceGrowthDelay(integer(
             one(options, "--resource-growth-delay", std::to_string(engine.gui.game.map.resourceGrowthDelay())), 1, 16));
@@ -518,6 +521,7 @@ struct HeadlessRunner
 		Game &game=engine.gui.game;
 		const auto pipelineResult = game.map.gradientPipelineStatus();
 		const auto buildingResult = game.map.buildingGradientPipelineStatus();
+		const auto opencl = gradient_kernel::openCLStatus();
         std::sort(tickDurations.begin(),tickDurations.end());
         const auto percentile=[&](unsigned p)->Uint64 {return tickDurations.empty()?0:tickDurations[(tickDurations.size()-1)*p/100];};
 		engine.trackTeamEliminations();
@@ -602,6 +606,9 @@ struct HeadlessRunner
 			<< ",\"compute_threads\":" << game.map.computeExecutor().threadCount()
 			<< ",\"compute_requested_threads\":" << quote(requestedSizing)
 			<< ",\"compute_resolved_threads\":" << computeThreads
+			<< ",\"gpu_requested\":" << globals.gpuComputeEnabled()
+			<< ",\"gpu_device\":" << quote(opencl.device)
+			<< ",\"gpu_error\":" << quote(opencl.error)
 			<< ",\"compute_workers\":" << game.map.computeExecutor().threadCount() - 1
 			<< ",\"compute_batches\":" << game.map.computeExecutor().metrics().batches
 			<< ",\"compute_jobs\":" << game.map.computeExecutor().metrics().jobs
@@ -623,7 +630,14 @@ struct HeadlessRunner
             if(i==63)result<<"null";else result<<(Uint64(1)<<i);
             result<<",\"count\":"<<tickHistogram[i]<<'}';
         }
-        result << ']'
+        result << ']';
+		result << ",\"gradient_execution\":{";
+		bool gradientComma=false;
+		for (const auto& [name,value] : game.map.gradientExecutionMetrics()) {
+			if (gradientComma) result << ',';
+			gradientComma=true; result << quote(name) << ':' << value;
+		}
+		result << '}'
 			<< ",\"game_seed\":" << game.gameHeader.getRandomSeed() << ",\"termination\":"
 			<< quote(termination)
 			<< ",\"resolved\":{\"tick_limit\":" << globals.automaticEndingSteps << ",\"map\":" << quote(game.mapHeader.getMapName())

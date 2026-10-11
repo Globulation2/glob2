@@ -250,6 +250,12 @@ UNIT_TESTS = [
     '#src/hud/GhostBuildingOverlapTest.cpp',
     '#src/ai/shared_runtime/GradientBFSTest.cpp',
     '#src/field/FieldTraversalTest.cpp',
+    '#src/field/OpenCLGradientTest.cpp',
+    '#src/field/OpenCLBorrowedLifetimeTest.cpp',
+    '#src/field/OpenCLRequiredLifetimePoolTest.cpp',
+    '#src/field/OpenCLTransferProofTest.cpp',
+    '#src/field/OpenCLRequiredControlTest.cpp',
+    '#src/field/OpenCLLaneRegistryTest.cpp',
     ('#src/map/gradient/GradientTest.cpp', dict(cxxflags=['-fno-access-control'])),
     'HelloWorldTest.cpp',
     '#libgag/src/Sha1Test.cpp',
@@ -355,6 +361,8 @@ UNIT_TESTS = [
 # Production sources the unit binary links. Plain entries reuse the client build's
 # object; entries with `defines` are compiled again for the unit binary only.
 UNIT_PRODUCTION_SOURCES = [
+    '#src/field/OpenCLGradient.cpp',
+    '#src/field/GradientDeviceService.cpp',
     '#src/app/cli/CommandLine.cpp',
     '#src/map/TerrainRegistry.cpp',
     '#src/map/CellRules.cpp',
@@ -466,6 +474,7 @@ UNIT_PRODUCTION_SOURCES = [
 # Replacement definitions for production symbols the unit binary does not link.
 UNIT_STUBS = [
     'unit/stubs/MapSectorStubs.cpp',
+    'unit/stubs/SnapshotGradientStubs.cpp',
     'unit/stubs/MapHeaderStubs.cpp',
     'unit/stubs/OrderStubs.cpp',
     'unit/stubs/GameGUIStubs.cpp',
