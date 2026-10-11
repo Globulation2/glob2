@@ -368,7 +368,7 @@ class DeviceBroker
                     replay.setupDeclined ? "setup" : !r.inferenceEligible ? "accounting" : "complete";
                 std::fprintf(stderr,"gradient_probe ticket=%llu policy_gen=%llu required_gen=%llu admission=%llu device_terminal=%llu cleanup=%llu tail1=%llu tail2=%llu process_begin=%llu process_end=%llu process_cpu=%llu known_inner=%llu unknown_upper=%llu capture_cpu=%llu calling_cpu=%llu closing_cpu=%llu alternative_cpu=%llu comparison_cpu=%llu elapsed=%llu slack=%llu reserve_cpu=%llu charge_cpu=%llu retired_allowance=%llu exact=%u inference=%u omitted=%zu churn=%u invalid=%llu overshoots=%llu"
                     " width=%u height=%u family=%u swim=%llu limit=%u cpu_buckets=%u threads=%u batch=%u plan=%u seed_density=%u blocker_density=%u movement_modifiers=%u due_tick=%llu"
-                    " accepted_reference_cpu=%llu common_preparation_cpu=%llu authorization_reserve_cpu=%llu capture_cpu_limit=%llu reason=%s budget_canceled=%u required_canceled=%u explicit_canceled=%u setup_declined=%u execution_failed=%u"
+                    " accepted_reference_cpu=%llu common_preparation_cpu=%llu candidate_cpu_upper=%llu authorization_reserve_cpu=%llu capture_cpu_limit=%llu reason=%s budget_canceled=%u required_canceled=%u explicit_canceled=%u setup_declined=%u execution_failed=%u"
                     " native_metrics=%u native_stage=%u native_dispatches=%llu native_checks=%llu native_copied_cells=%llu native_cost_cells=%llu native_cost_bytes=%llu native_cost_uploads=%llu native_setup_cpu=%llu native_cpu=%llu native_batch_fields=%u native_retired_fields=%u\n",
                     (unsigned long long)r.ticketId,(unsigned long long)r.policyGeneration,(unsigned long long)r.requiredGeneration,
                     (unsigned long long)state->probeAdmissionNs,(unsigned long long)r.deviceTerminalNs,(unsigned long long)r.cleanupNs,
@@ -384,7 +384,8 @@ class DeviceBroker
                     key.width,key.height,unsigned(key.family),(unsigned long long)key.movement,key.limit,key.cpuBuckets,key.threads,key.batch,
                     unsigned(state->probePlan),unsigned(key.seedDensity),unsigned(key.blockerDensity),unsigned(key.movementModifiers),
                     (unsigned long long)state->probeDue,(unsigned long long)replay.acceptedReferenceCpuNs,
-                    (unsigned long long)replay.commonPreparationCpuNs,(unsigned long long)replay.reservedCpuNs,
+                    (unsigned long long)replay.commonPreparationCpuNs,(unsigned long long)result.outcome.alternativeCpuNs,
+                    (unsigned long long)replay.reservedCpuNs,
                     (unsigned long long)replay.captureCpuLimitNs,reason,
                     unsigned(replay.budgetCanceled),unsigned(replay.requiredCanceled),unsigned(replay.explicitCanceled),
                     unsigned(replay.setupDeclined),unsigned(replay.executionFailed),unsigned(replay.nativeMetricsAvailable),unsigned(native.stage),

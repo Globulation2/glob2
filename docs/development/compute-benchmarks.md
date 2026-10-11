@@ -137,6 +137,10 @@ unreserved compiler startup. The controlled live path uses these ownership and
 accounting checks. A requested probe or initialized device does not demonstrate
 successful comparison or promotion; inspect terminal probe rows and actual
 execution counters.
+The terminal row's `candidate_cpu_upper` is the final candidate upper cost
+submitted to settlement, including its retirement allowance. `alternative_cpu`
+remains raw replay calling CPU, and `charge_cpu` is complete paid exploration
+debt; these quantities must not be substituted for one another.
 
 With diagnostics enabled, `gradient_policy` follows settlement with the exact
 profile's pairs, epoch and last actual doubling look. Its two upper bounds are
