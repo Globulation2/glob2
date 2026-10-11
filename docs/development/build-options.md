@@ -2,6 +2,14 @@
 
 Fast builds accelerate editing; ordinary debug builds provide full symbols and release builds provide representative runtime behavior.
 
+Native distribution packages that extract separate debug symbols can use
+`release=1 retain_symbols=1`. This preserves release optimization and the free
+launch profile while keeping compiler debug information and disabling stripping
+by SCons. The RPM recipe uses this mode so Fedora can produce its debug packages.
+Its output directory is separate from ordinary stripped release builds. Other
+release packages keep their existing stripping behavior; macOS already retains
+symbols for its matching dSYM.
+
 ## Fast development builds
 
 `python3 tools/dev_build.py` enables caching and `dev_fast=1` in a separate output
