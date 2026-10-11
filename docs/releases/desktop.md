@@ -12,6 +12,16 @@ App Store-eligible external TestFlight candidate, and stage a **draft** GitHub
 release. `publish-desktop.yml` calls this staging workflow before the optional
 Snap stable and Flathub submission workflows. Neither workflow makes the GitHub
 release public; only `promote-downloads.yml` can do that after qualification.
+`macos-signing-retry.yml` can retry direct Mac signing without rebuilding. Pass
+its immutable public tag and the owner-dispatched all-platform source run ID.
+It verifies every successful source-context attempt, both successful native Mac
+package jobs, and each artifact's GitHub SHA-256 digest before importing signing
+credentials. The source run may have failed at signing. Unexpected contents,
+expired artifacts and mixed revisions fail closed. The mirror's reviewed driver
+imports the pinned Apple Developer ID G2 intermediate and adds the isolated
+keychain to the search list; the selected game source still supplies the app and
+its signing checks. The retry uploads only notarized final DMGs and never
+publishes a release. Retain the retry run ID with qualification evidence.
 Each channel retains a separate manual workflow for retries; no publication
 workflow runs on ordinary pushes or pull requests.
 Each publication workflow skips every job unless it is manually dispatched

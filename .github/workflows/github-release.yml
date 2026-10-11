@@ -322,26 +322,22 @@ jobs:
         with:
           name: unsigned-macos-${{ matrix.architecture }}
           path: artifacts/unsigned
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ${{ github.sha }}
+          path: release-driver
+          sparse-checkout: tools/release/macos_keychain.py
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
       - name: Import temporary Developer ID identity and notarization key
         env:
           P12: ${{ secrets.MACOS_DEVELOPER_ID_P12_BASE64 }}
           P12_PASSWORD: ${{ secrets.MACOS_DEVELOPER_ID_PASSWORD }}
           NOTARY_KEY: ${{ secrets.MACOS_NOTARY_KEY_P8_BASE64 }}
+          IDENTITY: ${{ vars.MACOS_DEVELOPER_ID_IDENTITY }}
         run: |
-          python3 - <<'PYCODE'
-          import base64, os, secrets, subprocess
-          from pathlib import Path
-          temp=Path(os.environ['RUNNER_TEMP'])
-          keychain=temp/'glob2-signing.keychain-db'; password=secrets.token_urlsafe(32)
-          certificate=temp/'glob2-developer-id.p12'; certificate.write_bytes(base64.b64decode(os.environ['P12'],validate=True)); certificate.chmod(0o600)
-          key=temp/'glob2-notary.p8'; key.write_bytes(base64.b64decode(os.environ['NOTARY_KEY'],validate=True)); key.chmod(0o600)
-          subprocess.run(['security','create-keychain','-p',password,str(keychain)],check=True)
-          subprocess.run(['security','set-keychain-settings','-lut','21600',str(keychain)],check=True)
-          subprocess.run(['security','unlock-keychain','-p',password,str(keychain)],check=True)
-          subprocess.run(['security','import',str(certificate),'-k',str(keychain),'-P',os.environ['P12_PASSWORD'],'-T','/usr/bin/codesign'],check=True)
-          subprocess.run(['security','set-key-partition-list','-S','apple-tool:,apple:,codesign:','-s','-k',password,str(keychain)],check=True,stdout=subprocess.DEVNULL)
-          certificate.unlink()
-          PYCODE
+          python3 release-driver/tools/release/macos_keychain.py
+
       - name: Restore app and produce notarized final DMG
         env:
           ARCH: ${{ matrix.architecture }}
@@ -362,7 +358,7 @@ jobs:
         if: always()
         run: |
           security delete-keychain "$RUNNER_TEMP/glob2-signing.keychain-db" || true
-          rm -f "$RUNNER_TEMP/glob2-notary.p8" "$RUNNER_TEMP/glob2-developer-id.p12"
+          rm -f "$RUNNER_TEMP/glob2-notary.p8" "$RUNNER_TEMP/glob2-developer-id.p12" "$RUNNER_TEMP/glob2-developer-id-g2.cer"
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: signed-macos-${{ matrix.architecture }}
