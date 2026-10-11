@@ -1,0 +1,1 @@
+Configurable unit catalogs, additional rendering backends and live renderer switching, presentation performance improvements, and release packaging fixes.
