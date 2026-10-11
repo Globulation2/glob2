@@ -8,6 +8,7 @@
 
 namespace GAGCore
 {
+namespace detail { SDL_Rect intersectTargetScissor(SDL_Rect, const std::optional<SDL_Rect> &); }
 struct RenderTransform
 {
     float scale = 1, x = 0, y = 0;
@@ -95,6 +96,9 @@ struct DrawPacket
     TextureSnapshot target; // Empty means the device's presentation target.
     RenderTransform transform;
     std::optional<SDL_Rect> clip;
+    // Exact backing-pixel bounds, independent of logical scaling. Intersects
+    // ordinary clipping; coordinates have a top-left origin in this target.
+    std::optional<SDL_Rect> targetScissor;
     SDL_Rect source{};
     SDL_FRect destination{};
     SDL_Color color{255, 255, 255, 255};

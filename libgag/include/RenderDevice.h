@@ -103,6 +103,8 @@ bool recordDevicePacket(RenderBackend &, DrawPacket);
 bool didRecordDeviceFrame(const RenderBackend &);
 // Fence healthy offscreen work while retaining the previous completed main
 // presentation. Failure remains ordinary abort; inspect intention after present.
+// Set exact backing-pixel clipping for this target scope; nullptr resets it.
+bool setDeviceTargetScissor(RenderBackend &, const SDL_Rect *);
 bool deferDeviceFrame(RenderBackend &);
 bool didIntentionallyDeferDeviceFrame(const RenderBackend &);
 bool didPresentDeviceFrame(const RenderBackend &);

@@ -133,7 +133,7 @@ class WebGPUDevice final:public RenderDevice {
         SDL_Rect result{0,0,w,h};const float sx=w/logicalW,sy=h/logicalH;
         const auto intersect=[&](float x,float y,float rw,float rh){const int left=std::floor(x*sx),top=std::floor(y*sy);SDL_Rect rect{left,top,int(std::ceil((x+rw)*sx))-left,int(std::ceil((y+rh)*sy))-top};if(!SDL_GetRectIntersection(&result,&rect,&result))result={0,0,0,0};};
         if(p.transform.bounds){auto r=*p.transform.bounds;intersect(r.x,r.y,r.w,r.h);}
-        if(p.clip){auto r=*p.clip;const auto&t=p.transform;intersect(r.x*t.scale+t.x,r.y*t.scale+t.y,r.w*t.scale,r.h*t.scale);}return result;
+        if(p.clip){auto r=*p.clip;const auto&t=p.transform;intersect(r.x*t.scale+t.x,r.y*t.scale+t.y,r.w*t.scale,r.h*t.scale);}return detail::intersectTargetScissor(result,p.targetScissor);
     }
     static void appendVertices(std::vector<SDL_Vertex> &v,const DrawPacket &p,bool premultiplied){
         const auto begin=v.size();if(p.kind==DrawPacket::Kind::Fill||p.kind==DrawPacket::Kind::Blit){
@@ -169,6 +169,7 @@ class WebGPUDevice final:public RenderDevice {
             std::size_t end=begin+1;draw.vertexOffset=vertices.size();
             if(p.kind==DrawPacket::Kind::Barrier)draw.kind=3;
             else if(p.kind==DrawPacket::Kind::WeightedCompose){
+                if(p.targetScissor)throw std::invalid_argument("Terrain composition cannot inherit target scissor");
                 if(!p.target||!p.weightedCompose)throw std::invalid_argument("WebGPU terrain target missing");const auto&compose=*p.weightedCompose;
                 const auto size=compose.compositionSize,divisor=compose.reductionDivisor;const auto&r=compose.targetRect;
                 if(!size||size%32||size>maxTexture||!divisor||divisor>32||(divisor&(divisor-1))||size%divisor||compose.paletteCount>4||!compose.paletteCount||r.x<0||r.y<0||r.w!=int(size/divisor)||r.h!=int(size/divisor)||r.x+r.w>tw||r.y+r.h>th)throw std::invalid_argument("WebGPU terrain parameters");

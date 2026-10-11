@@ -31,9 +31,9 @@ class DelayedDevice final : public RenderDevice
     struct Pending { RenderSubmission submission; RenderFrame frame; };
     std::deque<Pending> pending;
     std::uint64_t epoch = 1, issued = 0, completed = 0;
-    bool failSubmission=false;
+    bool failSubmission=false, offscreen=false;
     std::vector<CaptureRequest> captureRequests;
-    RenderDeviceCapabilities capabilities() const override { return {}; }
+    RenderDeviceCapabilities capabilities() const override { RenderDeviceCapabilities c;c.offscreenTargets=offscreen;return c; }
     RenderSubmission submit(RenderFrame frame) override
     {
         if(failSubmission)throw std::runtime_error("Injected device loss");
@@ -60,6 +60,33 @@ class DelayedDevice final : public RenderDevice
 }
 TEST_SUITE("RenderDevice")
 {
+    TEST_CASE("physical scissors partition fractional CPU geometry without double blending")
+    {
+        auto render=[](bool partition) {
+            auto target=surface(16,16);auto device=makeSoftwareRenderDevice(target.get());
+            RenderFrame frame;frame.identity=1;frame.logicalWidth=23;frame.logicalHeight=19;
+            DrawPacket packet;packet.kind=DrawPacket::Kind::Fill;packet.destination={0,0,23,19};packet.color={200,90,40,128};
+            if(partition){packet.targetScissor=SDL_Rect{0,0,8,16};frame.packets.push_back(packet);packet.targetScissor=SDL_Rect{8,0,8,16};}
+            frame.packets.push_back(packet);REQUIRE(device->submit(std::move(frame)));device->present();
+            return Surface(device->captureSynchronously({}),SDL_DestroySurface);
+        };
+        auto whole=render(false),partitioned=render(true);REQUIRE(whole);REQUIRE(partitioned);
+        for(int y=0;y<16;++y)for(int x=0;x<16;++x){Uint8 a[4],b[4];REQUIRE(SDL_ReadSurfacePixel(whole.get(),x,y,&a[0],&a[1],&a[2],&a[3]));REQUIRE(SDL_ReadSurfacePixel(partitioned.get(),x,y,&b[0],&b[1],&b[2],&b[3]));CHECK(std::memcmp(a,b,4)==0);}
+    }
+    TEST_CASE("physical scissors follow target scopes and exclude foreign target packets")
+    {
+        DelayedDevice device;device.offscreen=true;RenderResources resources;auto pixels=surface();
+        auto a=resources.snapshot(resources.create(pixels.get(),1)),b=resources.snapshot(resources.create(pixels.get(),2));
+        auto backend=makeDeviceRenderBackend(device,resources,16,16);SDL_Rect scissor{2,3,7,8};
+        REQUIRE(setDeviceTargetScissor(*backend,&scissor));backend->fill({0,0,16,16},{255,0,0,128});
+        REQUIRE(pushDeviceTarget(*backend,a,2,1));backend->fill({0,0,2,1},{0,255,0,255});
+        REQUIRE(setDeviceTargetScissor(*backend,&scissor));DrawPacket foreign;foreign.kind=DrawPacket::Kind::Fill;foreign.target=b;REQUIRE(recordDevicePacket(*backend,foreign));
+        popDeviceTarget(*backend);backend->fill({0,0,16,16},{255,0,0,128});backend->flush();
+        REQUIRE(device.pending.size()==1);const auto &packets=device.pending.front().frame.packets;REQUIRE(packets.size()==4);
+        REQUIRE(packets[0].targetScissor);CHECK_FALSE(packets[1].targetScissor);CHECK_FALSE(packets[2].targetScissor);REQUIRE(packets[3].targetScissor);CHECK(packets[3].targetScissor->x==2);
+        CHECK_FALSE(packets[0].compatible(packets[1]));SDL_Rect invalid{0,0,-1,1};CHECK_THROWS_AS(setDeviceTargetScissor(*backend,&invalid),std::invalid_argument);
+    }
+
     TEST_CASE("intentional presentation hold preserves committed pixels and capture identity")
     {
         auto output=surface();auto device=makeSoftwareRenderDevice(output.get());RenderResources resources;

@@ -402,7 +402,7 @@ class ProgrammableGLDevice final : public RenderDevice
             intersect({x, y, int(std::ceil((source.x + source.w) * t.scale + t.x)) - x,
                 int(std::ceil((source.y + source.h) * t.scale + t.y)) - y});
         }
-        return result;
+        return detail::intersectTargetScissor(result, packet.targetScissor);
     }
     void appendVertices(std::vector<SDL_Vertex> &vertices, const DrawPacket &packet, bool flip, bool premultiplied)
     {
@@ -532,7 +532,7 @@ class ProgrammableGLDevice final : public RenderDevice
     }
     void validateCompose(const DrawPacket &packet) const
     {
-        if(!supportsTerrain || !packet.weightedCompose || !packet.target || packet.clip || packet.viewport || packet.depth!=DrawPacket::Depth::Disabled || packet.depthWrite)throw std::invalid_argument("Terrain composition unavailable or missing target");
+        if(!supportsTerrain || !packet.weightedCompose || !packet.target || packet.clip || packet.targetScissor || packet.viewport || packet.depth!=DrawPacket::Depth::Disabled || packet.depthWrite)throw std::invalid_argument("Terrain composition unavailable or missing target");
         const auto &data=*packet.weightedCompose;const auto size=data.compositionSize,divisor=data.reductionDivisor;
         if(!size || size%32 || size>unsigned(maxTexture) || !divisor || divisor>32 || (divisor&(divisor-1)) || size%divisor || !data.paletteCount || data.paletteCount>4)
             throw std::invalid_argument("Invalid terrain composition dimensions or palette");

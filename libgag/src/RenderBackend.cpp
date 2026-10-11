@@ -35,6 +35,8 @@ class SDLRenderBackend final : public RenderBackend
 {
 	SDL_Renderer *renderer;
 	float scale = 1, offsetX = 0, offsetY = 0;
+    float nativeX = 1, nativeY = 1;
+    std::optional<SDL_Rect> physicalClip;
 	std::optional<SDL_Rect> bounds;
 	std::vector<SDL_Vertex> transformed;
 	struct Texture
@@ -171,7 +173,7 @@ class SDLRenderBackend final : public RenderBackend
 		}
 		if (result && (result->w <= 0 || result->h <= 0))
 			result = SDL_Rect{};
-		check(SDL_SetRenderClipRect(renderer, result ? &*result : nullptr));
+		check(SDL_SetRenderClipRect(renderer, physicalClip ? &*physicalClip : result ? &*result : nullptr));
 	}
 	SDL_Texture *textureFor(const void *key, SDL_Surface *pixels, std::uint64_t revision,
 							bool linear = false)
@@ -283,13 +285,16 @@ class SDLRenderBackend final : public RenderBackend
 		SDL_Texture *texture = nullptr;
 		if (key)
 			texture = textureFor(key, pixels, revision, linear);
-		if (applyTransform && (scale != 1 || offsetX != 0 || offsetY != 0))
+		if ((applyTransform && (scale != 1 || offsetX != 0 || offsetY != 0)) || physicalClip)
 		{
 			transformed.assign(vertices.begin(), vertices.end());
 			for (auto &vertex : transformed)
 			{
-				vertex.position.x = vertex.position.x * scale + offsetX;
-				vertex.position.y = vertex.position.y * scale + offsetY;
+                if (applyTransform) {
+                    vertex.position.x = vertex.position.x * scale + offsetX;
+                    vertex.position.y = vertex.position.y * scale + offsetY;
+                }
+                if (physicalClip) { vertex.position.x *= nativeX; vertex.position.y *= nativeY; }
 			}
 			vertices = transformed;
 		}
@@ -366,10 +371,20 @@ class SDLRenderBackend final : public RenderBackend
 		int pixelsW, pixelsH;
 		outputSize(pixelsW, pixelsH);
 		check(SDL_SetRenderLogicalPresentation(renderer, 0, 0, SDL_LOGICAL_PRESENTATION_DISABLED));
-		check(SDL_SetRenderScale(renderer, float(pixelsW) / width, float(pixelsH) / height));
+		nativeX = float(pixelsW) / width; nativeY = float(pixelsH) / height;
+        check(SDL_SetRenderScale(renderer, physicalClip ? 1 : nativeX, physicalClip ? 1 : nativeY));
 		// Lazy CPU geometry may be created after direct writes. Scale setup
 		// must not clear the borrowed target or overwrite earlier layers.
 	}
+    void targetScissor(const SDL_Rect *rect)
+    {
+        if (physicalClip.has_value() == bool(rect) && (!rect ||
+            (physicalClip->x==rect->x && physicalClip->y==rect->y && physicalClip->w==rect->w && physicalClip->h==rect->h))) return;
+        flush(); // Previously queued geometry retains its scale and clip.
+        physicalClip = rect ? std::optional<SDL_Rect>(*rect) : std::nullopt;
+        check(SDL_SetRenderScale(renderer, physicalClip ? 1 : nativeX, physicalClip ? 1 : nativeY));
+        check(SDL_SetRenderClipRect(renderer, rect));
+    }
 	void flush() override { check(SDL_FlushRenderer(renderer)); }
 	void present() override
 	{
@@ -402,6 +417,12 @@ std::unique_ptr<RenderBackend> makeSDLRenderBackend(SDL_Window *window, int widt
 	return backend;
 }
 
+void setSDLSoftwareTargetScissor(RenderBackend &backend, const SDL_Rect *rect)
+{
+    auto *value = dynamic_cast<SDLRenderBackend *>(&backend);
+    if (!value) throw std::logic_error("Software geometry backend missing");
+    value->targetScissor(rect);
+}
 std::unique_ptr<RenderBackend> makeSDLSoftwareGeometryBackend(SDL_Surface *surface)
 {
 	std::unique_ptr<SDL_Renderer, decltype(&SDL_DestroyRenderer)> renderer(
