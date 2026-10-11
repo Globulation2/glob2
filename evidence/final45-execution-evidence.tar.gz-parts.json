@@ -1,0 +1,32 @@
+{
+  "archive_bytes": 249486219,
+  "archive_sha256": "61945b1ee745f87806b97ffff62d8bead72482381fc5a37188da69c185bbff8d",
+  "parts": [
+    {
+      "path": "artifacts/unit-foundation/evidence/final45-execution-evidence.tar.gz.part00",
+      "bytes": 50331648,
+      "sha256": "726a8883771977bd54eb07040498a099108d5b47a2518ca3bdbf10e2aa690c91"
+    },
+    {
+      "path": "artifacts/unit-foundation/evidence/final45-execution-evidence.tar.gz.part01",
+      "bytes": 50331648,
+      "sha256": "ab9f7ea2be9e5295c3a745f3c18c38aeeb73d6aabfd40821185c39c25ea88fb3"
+    },
+    {
+      "path": "artifacts/unit-foundation/evidence/final45-execution-evidence.tar.gz.part02",
+      "bytes": 50331648,
+      "sha256": "e6e89ca5c97ae1bc1fad54b167161565e85d98d88f1db079825a268bafd11b4f"
+    },
+    {
+      "path": "artifacts/unit-foundation/evidence/final45-execution-evidence.tar.gz.part03",
+      "bytes": 50331648,
+      "sha256": "a4590f66a660f3da39dfb4eac5dffed8f951bceb04467c94dc4e8f5b143a869b"
+    },
+    {
+      "path": "artifacts/unit-foundation/evidence/final45-execution-evidence.tar.gz.part04",
+      "bytes": 48159627,
+      "sha256": "283f993be1093c335eaa79382ae363383a4ed2d9fb73aab1512f3051cdd1f2f9"
+    }
+  ],
+  "restore": "Concatenate the ordered parts, verify SHA256, then extract tar.gz. Producer identities and original failure statuses are unchanged."
+}
