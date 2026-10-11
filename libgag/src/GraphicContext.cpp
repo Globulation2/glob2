@@ -1224,7 +1224,10 @@ int GraphicContext::maximumTextureSize() const
 				{
 					try { renderer->present(); }
                     catch (const std::exception &error) { handleDeviceFailure(error.what()); return; }
-                    if (presentationDevice && !didPresentDeviceFrame(*renderer)) {
+                    // A bounded offscreen capture may deliberately retain the completed
+                    // frame. Its device and restoration generation remain healthy.
+                    if (presentationDevice && !didPresentDeviceFrame(*renderer) &&
+                        !didIntentionallyDeferDeviceFrame(*renderer)) {
                         ++glContextGeneration;
                         resetDeviceSkinState();
                         transitionPixels.reset();
