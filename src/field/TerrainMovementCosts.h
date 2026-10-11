@@ -76,7 +76,7 @@ inline constexpr auto MINIMUM_TERRAIN_ENTRY_COSTS = []
 	{
 		result[sw] = GRADIENT_STEP;
 		for (unsigned t = 0; t < TERRAIN_COUNT; ++t)
-			if (TERRAIN_PROPERTIES[t].walkable || (sw && TERRAIN_PROPERTIES[t].swimmable))
+			if (terrainAllowsGround(TERRAIN_PROPERTIES[t], sw))
 				result[sw] = std::min(result[sw], TERRAIN_ENTRY_COSTS[sw][t].cardinal);
 	}
 	return result;
