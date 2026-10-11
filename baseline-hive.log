@@ -1,0 +1,33 @@
+
+> test
+> vitest run packages/hive/test/checkout.test.ts
+
+
+ RUN  v5.0.3 /Users/bradley/.codex/worktrees/stripe-webhook-routing/glob2/platform
+
+ ❯ packages/hive/test/checkout.test.ts (5 tests | 1 failed) 475ms
+   × ignores skin payments rather than treating them as legacy Hive purchases 4ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  packages/hive/test/checkout.test.ts > ignores skin payments rather than treating them as legacy Hive purchases
+AssertionError: promise rejected "Error: Skin payment reached credit reconc…" instead of resolving
+ ❯ packages/hive/test/checkout.test.ts:118:68
+    116|     .mockRejectedValue(new Error('Skin payment reached credit reconcil…
+    117|   try {
+    118|     await expect(checkout.webhook(Buffer.from(payload), signature)).re…
+       |                                                                    ^
+    119|     expect(intent).toHaveBeenCalledOnce();
+    120|     expect(charges).not.toHaveBeenCalled();
+
+Caused by: Error: Skin payment reached credit reconciliation.
+ ❯ packages/hive/test/checkout.test.ts:116:24
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 4 passed (5)
+   Start at  07:57:20
+   Duration  718ms (tests 74%, import 16%, transform 10%)
+

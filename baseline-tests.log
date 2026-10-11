@@ -1,0 +1,80 @@
+
+> test
+> vitest run apps/api/test/skinWebhook.test.ts apps/api/test/creditWebhooks.test.ts packages/hive/test/checkout.test.ts
+
+
+ RUN  v5.0.3 /Users/bradley/.codex/worktrees/stripe-webhook-routing/glob2/platform
+
+ ❯ apps/api/test/creditWebhooks.test.ts (2 tests | 2 failed) 731ms
+   × returns a client error for invalid signatures on /api/v1/hive/stripe 12ms
+   × returns a client error for invalid signatures on /api/v1/map-studio/stripe 1ms
+ ❯ apps/api/test/skinWebhook.test.ts (3 tests | 2 failed) 791ms
+   × acknowledges credit checkouts without reconciling them as skin purchases 4ms
+   × acknowledges credit refunds without recording a skin payment event 109ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  apps/api/test/creditWebhooks.test.ts > returns a client error for invalid signatures on /api/v1/hive/stripe
+ FAIL  apps/api/test/creditWebhooks.test.ts > returns a client error for invalid signatures on /api/v1/map-studio/stripe
+AssertionError: expected 500 to be 400 // Object.is equality
+
+- Expected
++ Received
+
+- 400
++ 500
+
+ ❯ apps/api/test/creditWebhooks.test.ts:40:33
+     38|       payload: '{}',
+     39|     });
+     40|     expect(response.statusCode).toBe(400);
+       |                                 ^
+     41|   },
+     42| );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  apps/api/test/skinWebhook.test.ts > acknowledges credit checkouts without reconciling them as skin purchases
+AssertionError: expected 404 to be 200 // Object.is equality
+
+- Expected
++ Received
+
+- 200
++ 404
+
+ ❯ apps/api/test/skinWebhook.test.ts:80:35
+     78|         payload,
+     79|       });
+     80|       expect(response.statusCode).toBe(200);
+       |                                   ^
+     81|     }
+     82|   }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  apps/api/test/skinWebhook.test.ts > acknowledges credit refunds without recording a skin payment event
+AssertionError: expected 401 to be 200 // Object.is equality
+
+- Expected
++ Received
+
+- 200
++ 401
+
+ ❯ apps/api/test/skinWebhook.test.ts:119:33
+    117|       payload,
+    118|     });
+    119|     expect(response.statusCode).toBe(200);
+       |                                 ^
+    120|   }
+    121|   expect(
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+
+ Test Files  2 failed | 1 passed (3)
+      Tests  4 failed | 6 passed (10)
+   Start at  07:56:25
+   Duration  2.12s (tests 42%, import 35%, transform 23%)
+
