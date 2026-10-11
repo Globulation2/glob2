@@ -18,7 +18,9 @@ The context job verifies the owner-dispatched mirror run, expected workflow,
 success and exact source provenance before the protected `ios-testflight`
 environment supplies App Store Connect credentials. Apple queries must find
 exactly one processed, eligible build with that build number and marketing
-version. By default a version attached to a different build is never overwritten.
+version, with Apple explicitly reporting `expired: false`. Missing or unknown
+expiry blocks preparation, review submission and publication before any store
+write. By default a version attached to a different build is never overwritten.
 To advance an unsubmitted candidate draft, the owner must select `prepare`,
 its `draft_version_id`, and the currently attached `replace_draft_build_id`.
 Replacement is limited to an editable `PREPARE_FOR_SUBMISSION` draft with
