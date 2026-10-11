@@ -334,7 +334,7 @@ bool TorusView::drawDevice(const PresentationFrame &frame, GameGUI *gui, int tea
         std::min(captureH,region.y+region.h+cullHalo)-std::max(0,region.y-cullHalo)};
     gfx->setClipRect();
     if (!gfx->beginDeviceTarget(state.tileTargets[state.captureTile], captureW*state.captureZoom, captureH*state.captureZoom))
-        throw std::runtime_error("Torus target binding unavailable");
+        return true; // Admission deferred: retain the same target and region cursor.
     try {
         CaptureSkinScope skin(state.captureView.render, gui);
         const SDL_Rect pixels{region.x*pixelsPerCell/32,region.y*pixelsPerCell/32,
@@ -371,12 +371,15 @@ bool TorusView::drawDevice(const PresentationFrame &frame, GameGUI *gui, int tea
         std::swap(gui->view.render,state.captureView.render);
         gui->view.scene=state.captureFrame.get();
         gui->toolManager.setDrawnScene(state.captureFrame.get());
+        bool overlayComplete=true;
         try {
             for (std::size_t index=0;index<tiles.size();++index) {
                 const auto &overlayTile=tiles[index];
                 const int w=overlayTile.w+64,h=overlayTile.h+64;
-                if(!gfx->beginDeviceTarget(state.tileTargets[index],w*state.captureZoom,h*state.captureZoom))
-                    throw std::runtime_error("Torus overlay target unavailable");
+                if(!gfx->beginDeviceTarget(state.tileTargets[index],w*state.captureZoom,h*state.captureZoom)) {
+                    overlayComplete=false;
+                    break;
+                }
                 try {
                     gfx->setRenderTargetScale(float(pixelsPerCell)/(32*state.captureZoom));
                     const SDL_Rect clip{0,0,int(std::ceil(w*state.captureZoom)),int(std::ceil(h*state.captureZoom))};
@@ -392,6 +395,11 @@ bool TorusView::drawDevice(const PresentationFrame &frame, GameGUI *gui, int tea
         }
         gui->view.scene=previousScene;std::swap(gui->view.render,state.captureView.render);
         gui->toolManager.setDrawnScene(previousScene);
+        if(!overlayComplete) {
+            state.captureTile=0;state.captureX=state.captureY=0;
+            gfx->setRenderTargetScale(0);
+            return true;
+        }
     }
     if (!gfx->flushDeviceFrame()) {
         // An overlay prefix may already have blended into the capture. Rebuild
