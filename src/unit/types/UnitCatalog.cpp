@@ -495,9 +495,6 @@ std::shared_ptr<const UnitCatalog> UnitCatalog::deserialize(std::string_view sou
 {
     auto result = parse(source, true);
     auto j = Json::parse(source);
-    for (const auto &entry : j.at("units"))
-        if (entry.contains("extends"))
-            fail("snapshot contains unresolved inheritance");
     if (j.at("units").size() != result->size())
         fail("incomplete resolved snapshot");
     return result;

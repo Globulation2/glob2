@@ -8,9 +8,6 @@
 #include "Unit.h"
 #include "Utilities.h"
 #include <BinaryStream.h>
-#include <TextStream.h>
-#include <cstdlib>
-#include <string_view>
 #include <stdexcept>
 #include <algorithm>
 
@@ -411,36 +408,6 @@ void Team::save(GAGCore::OutputStream *stream)
 	}
 
 	stream->writeSint32(noMoreBuildingSitesCountdown, "noMoreBuildingSitesCountdown");
-    // Verification-only text fields; binary save/replay bytes stay unchanged.
-    const char* trace=std::getenv("GLOB2_FULL_STATE_TRACE");
-    if(trace && std::string_view(trace)=="1" && dynamic_cast<GAGCore::TextOutputStream*>(stream)) {
-        stream->writeEnterSection("diagnosticEvents");
-        stream->writeEnterSection("eventCooldownTimers");
-        for(unsigned type=0; type<GESize; ++type) {
-            stream->writeEnterSection(type);
-            stream->writeUint8(eventCooldownTimers[type],"remaining");
-            stream->writeLeaveSection();
-        }
-        stream->writeLeaveSection();
-        auto capturedEvents=events; // Preserve the live FIFO; never pop the owner queue.
-        stream->writeEnterSection("queuedEvents");
-        stream->writeUint32(capturedEvents.size(),"count");
-        unsigned eventIndex=0;
-        while(!capturedEvents.empty()) {
-            const auto& event=capturedEvents.front();
-            stream->writeEnterSection(eventIndex++);
-            stream->writeUint32(event.getStep(),"step");
-            stream->writeUint32(event.getEventType(),"type");
-            stream->writeSint16(event.getX(),"x");
-            stream->writeSint16(event.getY(),"y");
-            stream->writeUint32(event.getTypeNum(),"typeNum");
-            stream->writeUint8(event.getOtherTeamNumber(),"otherTeam");
-            stream->writeLeaveSection();
-            capturedEvents.pop();
-        }
-        stream->writeLeaveSection();
-        stream->writeLeaveSection();
-    }
 
 
 	stream->writeLeaveSection();

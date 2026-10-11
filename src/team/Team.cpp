@@ -11,7 +11,6 @@
 #include "Utilities.h"
 #include "Player.h"
 #include "Integrity.h"
-#include "GameDiagnostics.h"
 #include <stdexcept>
 
 // std::min/std::clamp in the teams editor bind this constant by reference.
@@ -194,7 +193,6 @@ void Team::pushGameEvent(GameEvent event)
 	GameEventType eventType = event.getEventType();
 	if(eventCooldownTimers[eventType] == 0)
 	{
-        GameDiagnostics::recordContinuationEvent(teamNumber,event);
 		events.push(std::move(event));
 		eventCooldownTimers[eventType] = GAME_EVENT_COOLDOWN_TICKS;
 	}
