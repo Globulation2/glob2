@@ -1,0 +1,10 @@
+{
+  "finalRevision": "5adb2b3fa3c22d9d6962f95e98542c828ef2e65b",
+  "broadIntegratedRevision": "3db366096",
+  "laterEdit": "5adb2b3fa adjusts only source-coordinate offset evaluation and adds far-origin regression; normal offset math and all GPU implementations unchanged",
+  "laterPaths": [
+    "libgag/src/SurfaceRaster.cpp",
+    "libgag/src/SurfaceRasterTest.cpp"
+  ],
+  "coverage": "Final101native units +10surface cases +UBSanfarorigin +livebrowser andreleasepairedruns; broadterrain/torus engine suite retained at3db with finalsoftware/live-switch refresh."
+}

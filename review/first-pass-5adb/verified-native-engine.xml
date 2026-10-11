@@ -1,0 +1,5 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="3" failures="0" errors="0" skipped="0"><testsuite name="RendererSwitchIntegration"><testcase classname="RendererSwitchIntegration" name="all ordered gameplay and torus backend pairs preserve camera and simulation [display][isolated][writes-preferences][slow]" time="58.4182" status="run" />
+  </testsuite><testsuite name="TerrainPresentation"><testcase classname="TerrainPresentation" name="whole-cell layers preserve software terrain caching [display][artifacts]" time="13.6013" status="run" />
+  </testsuite><testsuite name="TorusRender"><testcase classname="TorusRender" name="game rendering; picking and cache changes in software rendering [writes-preferences]" time="2.31735" status="run" />
+  </testsuite></testsuites>

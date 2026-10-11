@@ -1,0 +1,20 @@
+{
+  "archive": "/home/bradley/.codex/worktrees/renderer-shaders/glob2/artifacts/shaders/optimized-renderer-browser-evidence.tar.gz",
+  "bytes": 43562924,
+  "sha256": "ce42eb3bc03e43f490ba6bae492fe80a4db00e91e6d388c5d4a62207d57cac47",
+  "revision": "5adb2b3fa3c22d9d6962f95e98542c828ef2e65b",
+  "base": "da99df96df914b778a3ea994ede277c27a2c7760",
+  "results": {
+    "passed": 10,
+    "failed": 0,
+    "skipped": 0
+  },
+  "reports": [
+    "optimized-browser-summary.json",
+    "optimized-renderer-amd-results.json",
+    "optimized-runtime-provenance.json"
+  ],
+  "included": "All10case JSON attachments decoded for owner/adapter/timeline/context/loss evidence, actualscreenshots,2downloadedMP4s+media probes,rawrunnerlog,exactmaintainedfixtures/config/command,UBSanreviewfindingfixproof",
+  "omitted": "10large rawtrace ZIPs containingduplicatedruntime/networkpayloads;exactpaths/bytes/SHA256includedmanifest",
+  "performance": "No browser performance claim;correctnessoverlappednativecorrectness;allownedbrowserGPUprocessesclosed"
+}

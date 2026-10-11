@@ -1,0 +1,7 @@
+PASS SurfaceCoverage/legacy float alpha chunks preserve original fans and integer centers [display] (0.8s)
+PASS glob2-unit-tests SurfaceCoverage (6 cases) (0.1s)
+PASS glob2-unit-tests SurfaceRaster (2 cases) (0.1s)
+PASS SurfaceCoverage/bounded alpha map chunks preserve clipped cell interpolation [display] (0.4s)
+
+4 passed, 0 failed, 0 skipped (1.3s of test time)
+[run_tests] JUnit report: artifacts/renderer-optimization/final-coordinate-surface.xml (10 cases)

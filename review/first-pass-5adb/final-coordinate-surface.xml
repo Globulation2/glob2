@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="10" failures="0" errors="0" skipped="0"><testsuite name="SurfaceCoverage"><testcase classname="SurfaceCoverage" name="bounded alpha map chunks preserve clipped cell interpolation [display]" time="0.301926" status="run" />
+  <testcase classname="SurfaceCoverage" name="legacy float alpha chunks preserve original fans and integer centers [display]" time="0.722873" status="run" />
+  <testcase classname="SurfaceCoverage" name="backing pixel fills and blits retain native clipping and queued order" time="0.008815" status="run" />
+    <testcase classname="SurfaceCoverage" name="float and byte alpha grids agree and respect clip rectangles" time="0.008291" status="run" />
+    <testcase classname="SurfaceCoverage" name="scaled partial blits preserve crop coordinates and untouched pixels" time="0.009113" status="run" />
+    <testcase classname="SurfaceCoverage" name="legacy progress style paints exact empty half and full interiors" time="0.008962" status="run" />
+    <testcase classname="SurfaceCoverage" name="skin linear filtering preserves coverage and clipped sampling" time="0.008314" status="run" />
+    <testcase classname="SurfaceCoverage" name="skin filtering through SDL and CPU backends preserves premultiplied edges" time="0.014321" status="run" />
+  </testsuite><testsuite name="SurfaceRaster"><testcase classname="SurfaceRaster" name="native nearest offsets skip far source origins without intermediate overflow" time="0" status="run" />
+    <testcase classname="SurfaceRaster" name="native nearest copies retain alpha keys modulation and clipped source coordinates" time="0.008912" status="run" />
+  </testsuite></testsuites>

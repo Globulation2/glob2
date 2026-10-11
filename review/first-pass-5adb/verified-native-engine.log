@@ -1,0 +1,6 @@
+PASS RendererSwitchIntegration/all ordered gameplay and torus backend pairs preserve camera and simulation [display][isolated][writes-preferences][slow] (58.5s)
+PASS TorusRender/game rendering; picking and cache changes in software rendering [writes-preferences] (2.4s)
+PASS TerrainPresentation/whole-cell layers preserve software terrain caching [display][artifacts] (13.6s)
+
+3 passed, 0 failed, 0 skipped (74.5s of test time)
+[run_tests] JUnit report: artifacts/renderer-optimization/verified-native-engine.xml (3 cases)

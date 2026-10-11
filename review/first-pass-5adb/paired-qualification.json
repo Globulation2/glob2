@@ -1,0 +1,62 @@
+{
+  "before": "aeca7b34c14ab32b1a9e04b015b1d7caff75cb79",
+  "after": "5adb2b3fa3c22d9d6962f95e98542c828ef2e65b",
+  "processes": 54,
+  "completedIntervals": 22140,
+  "regressionsOverFivePercent": [
+    {
+      "workload": "fractional",
+      "backend": "legacy-gl",
+      "mode": "2D clouds",
+      "metric": "wallMs/p95",
+      "values": [
+        1.0962861553953949,
+        1.052024550817831,
+        1.0031951636734826
+      ],
+      "median": 1.052024550817831,
+      "relativeMAD": 0.042072786745476105
+    },
+    {
+      "workload": "fractional",
+      "backend": "legacy-gl",
+      "mode": "2D clouds",
+      "metric": "processCpuMs/p99",
+      "values": [
+        1.0545400357639578,
+        1.0670430486944247,
+        1.0082423038728898
+      ],
+      "median": 1.0545400357639578,
+      "relativeMAD": 0.011856366289032437
+    },
+    {
+      "workload": "torus",
+      "backend": "legacy-gl",
+      "mode": "Torus no clouds",
+      "metric": "wallMs/p95",
+      "values": [
+        1.0680366666546197,
+        1.3372624863685068,
+        0.6071251247171789
+      ],
+      "median": 1.0680366666546197,
+      "relativeMAD": 0.2520754465829111
+    }
+  ],
+  "defaultPromotion": false,
+  "frozenReleaseGateQualified": false,
+  "limitations": [
+    "Three rounds instead of frozen seven-round gate. Torus30 measured/4warmup per process, not300/30.",
+    "No cold loading, streaming, editor/UI, recording performance or GPU timestamp measurements.",
+    "Wall includes all holds, retries and1x1 synchronous readback; final presentation excluded. Process CPU is entire process CPU.",
+    "Concurrent user Flatpak app remains active. Ratio/MAD shows paired observed noise; sample count and background contention limit qualification.",
+    "Legacy p95 regressions exceed five-percent ceiling; do not enlarge gates or claim universal improvement.",
+    "aeca\u21925adb includes intervening master changes; identical fixture/checksum/runtime assets and pins do not isolate every source change.",
+    "No pure software or browser WebGPU release timing in this native three-family comparison; correctness proofs are separate."
+  ],
+  "captures": {
+    "flatRoundZeroBeforeAfterPixelExact": 6,
+    "torusComparison": "Different completed-turn counts can change camera/source animation phases; auxiliary captures, not a new exact visual acceptance claim."
+  }
+}

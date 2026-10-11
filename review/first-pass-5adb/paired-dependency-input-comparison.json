@@ -1,0 +1,36 @@
+{
+  "before": "aeca7b34c",
+  "after": "5adb2b3fa",
+  "files": [
+    {
+      "path": "vcpkg.json",
+      "beforeSHA256": "bbe598aebdf5994a6c09894c0f0d063b14b16318115c3fd0a6b6f53eda209294",
+      "afterSHA256": "bbe598aebdf5994a6c09894c0f0d063b14b16318115c3fd0a6b6f53eda209294"
+    },
+    {
+      "path": "scons/sdl3-versions.json",
+      "beforeSHA256": "a3a1b8abb7980edb71ca9d42733eb5d8e6fd92ac2b26caf9fb22b3526b315c60",
+      "afterSHA256": "a3a1b8abb7980edb71ca9d42733eb5d8e6fd92ac2b26caf9fb22b3526b315c60"
+    },
+    {
+      "path": "browser/toolchain.json",
+      "beforeSHA256": "3c68309a9e41df83e7086a7415a99a07e727fe2c2a84c56e897bbeb5a74411d5",
+      "afterSHA256": "3c68309a9e41df83e7086a7415a99a07e727fe2c2a84c56e897bbeb5a74411d5"
+    },
+    {
+      "path": "requirements-dev.txt",
+      "beforeSHA256": "7c087ea71a5286e1b89522eedeb192730769e7deb030365c82ef07e3fdffb9e7",
+      "afterSHA256": "7c087ea71a5286e1b89522eedeb192730769e7deb030365c82ef07e3fdffb9e7"
+    },
+    {
+      "path": "tools/shaders/generate.py",
+      "beforeSHA256": "eaad316d9710b97a2e9af38088b487f3346065f2bb589a682cf020d77cff7835",
+      "afterSHA256": "eaad316d9710b97a2e9af38088b487f3346065f2bb589a682cf020d77cff7835"
+    }
+  ],
+  "notes": [
+    "Dependency pins unchanged; downloader only adds retry/checksum validation.",
+    "Runtime artwork outputs validated identical by orchestrator.",
+    "Shared user Flatpak process remains active; no agent-owned parallel GPU workload."
+  ]
+}

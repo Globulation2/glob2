@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="38" failures="0" errors="0" skipped="0"><testsuite name="RendererSwitchIntegration"><testcase classname="RendererSwitchIntegration" name="all ordered gameplay and torus backend pairs preserve camera and simulation [display][isolated][writes-preferences][slow]" time="52.0724" status="run" />
+  </testsuite><testsuite name="TerrainPresentation"><testcase classname="TerrainPresentation" name="GPU terrain pages match CPU composition through edits wrapping recovery and live switches [display][isolated][artifacts][writes-preferences]" time="35.4356" status="run" />
+  <testcase classname="TerrainPresentation" name="GPU terrain retains CPU pages when the visible textures exceed its budget [display]" time="2.63399" status="run" />
+  <testcase classname="TerrainPresentation" name="GPU terrain zoom round trips reuse pixels and refresh parked pages [display]" time="5.45219" status="run" />
+  <testcase classname="TerrainPresentation" name="HD material pages and fractional zoom preserve cached pixels with missing optional atlas [display][artifacts]" time="44.4945" status="run" />
+  <testcase classname="TerrainPresentation" name="catalog palettes preserve distinct legacy shores and independent preview colors" time="0.293412" status="run" />
+  <testcase classname="TerrainPresentation" name="complete torus terrain working set survives repeated atlas sweeps [display]" time="2.07537" status="run" />
+  <testcase classname="TerrainPresentation" name="custom aliases share material recipes and keep whole-cell identity [display]" time="2.01525" status="run" />
+  <testcase classname="TerrainPresentation" name="custom thumbnail palettes retain embedded colors alongside catalog builtins" time="0.358143" status="run" />
+  <testcase classname="TerrainPresentation" name="emergency tiles remain deterministic and cover opaque fractional terrain [display]" time="6.88565" status="run" />
+  <testcase classname="TerrainPresentation" name="every paintable built-in binds a material, has an editor icon and exports its own colour [display][artifacts]" time="1.5371" status="run" />
+  <testcase classname="TerrainPresentation" name="export uses registered whole-cell material colors [artifacts]" time="0.319328" status="run" />
+  <testcase classname="TerrainPresentation" name="generated terrain mip uploads stay uncompressed across animation updates [display]" time="1.74016" status="run" />
+  <testcase classname="TerrainPresentation" name="image import reads each pixel as a terrain vertex [artifacts]" time="0.35723" status="run" />
+  <testcase classname="TerrainPresentation" name="offscreen terrain density follows the target and stays stable across capture tiles [display]" time="1.7284" status="run" />
+  <testcase classname="TerrainPresentation" name="overview pages retain wrapped samples and invalidate edits, resources and visibility [display]" time="1.51239" status="run" />
+  <testcase classname="TerrainPresentation" name="overview palette follows detailed shore coverage across both wrapped axes [display] [artifacts]" time="2.07049" status="run" />
+  <testcase classname="TerrainPresentation" name="portable texture limits reduce HD pages and admit only fitting fallback tiles [display]" time="1.91775" status="run" />
+  <testcase classname="TerrainPresentation" name="streaming pages match cached fractional pixels across wraps and small maps [display]" time="19.1657" status="run" />
+  <testcase classname="TerrainPresentation" name="terrain seed survives save and load and stays out of the simulation checksum" time="0.991163" status="run" />
+  <testcase classname="TerrainPresentation" name="tiled capture keeps whole-map density and warm pages at narrow edges [display]" time="2.02349" status="run" />
+  <testcase classname="TerrainPresentation" name="undiscovered pages skip software submissions and refresh after discovery [display]" time="1.52686" status="run" />
+  <testcase classname="TerrainPresentation" name="whole-cell layers preserve OpenGL terrain caching [display]" time="10.842" status="run" />
+  <testcase classname="TerrainPresentation" name="whole-cell layers preserve software terrain caching [display][artifacts]" time="10.8819" status="run" />
+  <testcase classname="TerrainPresentation" name="zoomed-out GPU terrain retains pages across frames and wrapped views [display] [artifacts]" time="16.9061" status="run" />
+  </testsuite><testsuite name="TorusRender"><testcase classname="TorusRender" name="HD tiled capture interiors and gutters match whole-map pixels [display]" time="8.456" status="run" />
+  <testcase classname="TorusRender" name="SDL GPU captures large logical maps beyond the window [display][isolated][artifacts]" time="127.116" status="run" />
+  <testcase classname="TorusRender" name="SDL GPU fatal torus fallback advances animation once [display][isolated]" time="4.18067" status="run" />
+  <testcase classname="TorusRender" name="SDL GPU retries a submitted final torus overlay coherently [display][isolated]" time="5.1796" status="run" />
+  <testcase classname="TorusRender" name="SDL GPU torus progresses under live terrain page pressure [display][isolated][artifacts]" time="63.9618" status="run" />
+  <testcase classname="TorusRender" name="game rendering at triple UI scale in OpenGL [display:1920x1440][writes-preferences]" time="72.7571" status="run" />
+  <testcase classname="TorusRender" name="game rendering; picking and cache changes in OpenGL [display][writes-preferences]" time="69.7414" status="run" />
+  <testcase classname="TorusRender" name="game rendering; picking and cache changes in software rendering [writes-preferences]" time="2.18064" status="run" />
+  <testcase classname="TorusRender" name="native tiled capture pixels and allocation fallback [display]" time="8.19325" status="run" />
+  <testcase classname="TorusRender" name="programmable GL captures large logical maps beyond the window [display][isolated][artifacts]" time="121.977" status="run" />
+  <testcase classname="TorusRender" name="programmable GL fatal torus fallback advances animation once [display][isolated]" time="5.13127" status="run" />
+  <testcase classname="TorusRender" name="programmable GL retries a submitted final torus overlay coherently [display][isolated]" time="5.93818" status="run" />
+  <testcase classname="TorusRender" name="programmable GL torus progresses under live terrain page pressure [display][isolated][artifacts]" time="50.5655" status="run" />
+  </testsuite></testsuites>

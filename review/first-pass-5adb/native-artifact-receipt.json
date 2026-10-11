@@ -1,0 +1,13 @@
+{
+  "archive": "native-validation-artifacts.tar.gz",
+  "bytes": 16104875,
+  "sha256": "96116143f966b434815745483c97e7381ec0a641d4e4b5b69d05be6306dd8595",
+  "contents": [
+    "Final101unit recording/capture files",
+    "Final3live-switch/software scene artifacts",
+    "Broad3db38engine terrain/torus visuals"
+  ],
+  "limitations": [
+    "Broad suite3db preceded far-coordinate evaluation guard; final5ad101units+UBSan+switch/software refresh recorded separately."
+  ]
+}

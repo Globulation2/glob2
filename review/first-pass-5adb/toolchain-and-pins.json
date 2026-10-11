@@ -1,0 +1,33 @@
+{
+  "vcpkg.json": {
+    "sha256": "bbe598aebdf5994a6c09894c0f0d063b14b16318115c3fd0a6b6f53eda209294"
+  },
+  "scons/sdl3-versions.json": {
+    "sha256": "a3a1b8abb7980edb71ca9d42733eb5d8e6fd92ac2b26caf9fb22b3526b315c60"
+  },
+  "build/sdl3/prefix/lib/pkgconfig/sdl3.pc": {
+    "sha256": "389b5a2cc98fdc8feba349129b1ced38115005d3649651fe31b4ece9788fd708"
+  },
+  "libgag/shaders/renderer-manifest.json": {
+    "sha256": "01fb9769b8ec88f6a47f80bafdf165b1602beca8daa5db7880861891fed5be79"
+  },
+  "nativeCompiler": "g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+  "browserCompiler": [
+    "emcc (Emscripten gcc/clang-like replacement + linker emulating GNU ld) 4.0.15 (09f52557f0d48b65b8c724853ed8f4e8bf80e669)",
+    "Copyright (C) 2025 the Emscripten authors (see AUTHORS.txt)",
+    "This is free and open source software under the MIT license.",
+    "There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.",
+    ""
+  ],
+  "node": "v24.19.0",
+  "SDLpkgConfig": "prefix=/home/bradley/glob2/build/sdl3/prefix\nexec_prefix=${prefix}\nlibdir=${prefix}/lib\nincludedir=${prefix}/include\n\nName: sdl3\nDescription: Simple DirectMedia Layer is a cross-platform multimedia library designed to provide low level access to audio, keyboard, mouse, joystick, 3D hardware via OpenGL, and 2D video framebuffer.\nURL: https://www.libsdl.org/\nVersion: 3.4.16\nRequires.private: \nConflicts:\nLibs: -L${libdir} -Wl,-rpath,${libdir} -Wl,--enable-new-dtags -lSDL3 \nLibs.private: -pthread -lm\nCflags: -I${includedir} \n",
+  "releaseOptions": {
+    "release": 1,
+    "client_profile": "full",
+    "web_legacy_gl": 0,
+    "dev_fast": 0,
+    "pch": 0,
+    "unity": 0
+  },
+  "runtimeDependencyChanges": []
+}
