@@ -1,0 +1,145 @@
+{
+  "runtime": "e8fa0032fea38a7d4d17d63a61beefc5940adbfb",
+  "base": "c3cb01070d121752f4c5e9632c5567ef13e58d9a",
+  "results": {
+    "serialAMDTorus": {
+      "passed": 1,
+      "failed": 0
+    },
+    "FirefoxWebKitSoftware": {
+      "passed": 4,
+      "failed": 0
+    },
+    "WebKitThreadedGLCreationFallback": {
+      "passed": 1,
+      "failed": 0
+    },
+    "final8821AMD": {
+      "passed": 7,
+      "failed": 0,
+      "retainedSupersededFixtureFailures": 2
+    },
+    "final8821Firefox": {
+      "passed": 3,
+      "skipped": 2,
+      "failed": 3,
+      "classification": "All three threaded cases failed the strict renderer-label screenshot predicate; correct actual app owner/context and matching trace UI are limited drawing evidence, not passing qualification. Both paired full-page and clipped screenshots are uniformly pale. No fixture assertion waived.",
+      "serialRecovery": "Usable Software fallback after Create output GL error 1282; not successful GL restoration."
+    },
+    "final8821WebKitSerial": {
+      "passed": 3,
+      "skipped": 1,
+      "failed": 0,
+      "recoveryDisposition": "Software fallback after Create output GL error1282; no successful GL restoration claim"
+    }
+  },
+  "evidence": [
+    {
+      "name": "shutdown-aeca-amd-torus-serial-results",
+      "directory": "/home/bradley/.codex/worktrees/renderer-shaders/glob2/artifacts/shaders/shutdown-aeca-amd-torus-serial-results",
+      "traces": [
+        "/home/bradley/.codex/worktrees/renderer-shaders/glob2/artifacts/shaders/shutdown-aeca-amd-torus-serial-results/renderer-switching-serial--fa155-e-settings-overlay-switches-chromium/trace.zip"
+      ],
+      "screenshots": [
+        "/home/bradley/.codex/worktrees/renderer-shaders/glob2/artifacts/shaders/shutdown-aeca-amd-torus-serial-results/renderer-switching-serial--fa155-e-settings-overlay-switches-chromium/torus-after-switch.png",
+        "/home/bradley/.codex/worktrees/renderer-shaders/glob2/artifacts/shaders/shutdown-aeca-amd-torus-serial-results/renderer-switching-serial--fa155-e-settings-overlay-switches-chromium/torus-before-switch.png"
+      ]
+    },
+    {
+      "name": "shutdown-aeca-engine-capability-final-results",
+      "directory": "/home/bradley/.codex/worktrees/renderer-shaders/glob2/artifacts/shaders/shutdown-aeca-engine-capability-final-results",
+      "traces": [
+        "/home/bradley/.codex/worktrees/renderer-shaders/glob2/artifacts/shaders/shutdown-aeca-engine-capability-final-results/cross-engine-capability-th-cbd60--Software-settings-controls-webkit/trace.zip",
+        "/home/bradley/.codex/worktrees/renderer-shaders/glob2/artifacts/shaders/shutdown-aeca-engine-capability-final-results/cross-engine-capability-se-c095d--Software-settings-controls-firefox/trace.zip",
+        "/home/bradley/.codex/worktrees/renderer-shaders/glob2/artifacts/shaders/shutdown-aeca-engine-capability-final-results/cross-engine-capability-th-cbd60--Software-settings-controls-firefox/trace.zip",
+        "/home/bradley/.codex/worktrees/renderer-shaders/glob2/artifacts/shaders/shutdown-aeca-engine-capability-final-results/cross-engine-capability-se-c095d--Software-settings-controls-webkit/trace.zip"
+      ],
+      "screenshots": [
+        "/home/bradley/.codex/worktrees/renderer-shaders/glob2/artifacts/shaders/shutdown-aeca-engine-capability-final-results/cross-engine-capability-th-cbd60--Software-settings-controls-webkit/software-settings-return.png",
+        "/home/bradley/.codex/worktrees/renderer-shaders/glob2/artifacts/shaders/shutdown-aeca-engine-capability-final-results/cross-engine-capability-se-c095d--Software-settings-controls-firefox/software-settings-return.png",
+        "/home/bradley/.codex/worktrees/renderer-shaders/glob2/artifacts/shaders/shutdown-aeca-engine-capability-final-results/cross-engine-capability-th-cbd60--Software-settings-controls-firefox/software-settings-return.png",
+        "/home/bradley/.codex/worktrees/renderer-shaders/glob2/artifacts/shaders/shutdown-aeca-engine-capability-final-results/cross-engine-capability-se-c095d--Software-settings-controls-webkit/software-settings-return.png"
+      ]
+    },
+    {
+      "name": "shutdown-aeca-webkit-threaded-fallback-final-results",
+      "directory": "/home/bradley/.codex/worktrees/renderer-shaders/glob2/artifacts/shaders/shutdown-aeca-webkit-threaded-fallback-final-results",
+      "traces": [
+        "/home/bradley/.codex/worktrees/renderer-shaders/glob2/artifacts/shaders/shutdown-aeca-webkit-threaded-fallback-final-results/cross-engine-capability-th-87e5e--Software-settings-controls-webkit/trace.zip"
+      ],
+      "screenshots": [
+        "/home/bradley/.codex/worktrees/renderer-shaders/glob2/artifacts/shaders/shutdown-aeca-webkit-threaded-fallback-final-results/cross-engine-capability-th-87e5e--Software-settings-controls-webkit/unavailable-WebGL2-fallback.png"
+      ]
+    },
+    {
+      "name": "final8821 corrected editor",
+      "directory": "/home/bradley/.codex/worktrees/renderer-shaders/glob2/artifacts/shaders/final-8821-editor-visible-results",
+      "traces": [
+        "/home/bradley/.codex/worktrees/renderer-shaders/glob2/artifacts/shaders/final-8821-editor-visible-results/renderer-switching-serial--1a9b8-enderer-switches-and-resize-chromium/trace.zip",
+        "/home/bradley/.codex/worktrees/renderer-shaders/glob2/artifacts/shaders/final-8821-editor-visible-results/renderer-switching-threade-da1c3-enderer-switches-and-resize-chromium/trace.zip"
+      ],
+      "screenshots": [
+        "/home/bradley/.codex/worktrees/renderer-shaders/glob2/artifacts/shaders/final-8821-editor-visible-results/renderer-switching-serial--1a9b8-enderer-switches-and-resize-chromium/editor-Programmable GL.png",
+        "/home/bradley/.codex/worktrees/renderer-shaders/glob2/artifacts/shaders/final-8821-editor-visible-results/renderer-switching-serial--1a9b8-enderer-switches-and-resize-chromium/editor-Software.png",
+        "/home/bradley/.codex/worktrees/renderer-shaders/glob2/artifacts/shaders/final-8821-editor-visible-results/renderer-switching-threade-da1c3-enderer-switches-and-resize-chromium/editor-Programmable GL.png",
+        "/home/bradley/.codex/worktrees/renderer-shaders/glob2/artifacts/shaders/final-8821-editor-visible-results/renderer-switching-threade-da1c3-enderer-switches-and-resize-chromium/editor-Software.png"
+      ]
+    }
+  ],
+  "limitations": [
+    "Firefox/WebKit actual presentation owner lacks navigator.gpu: explicit WebGPU API omission",
+    "WebKit threaded OffscreenCanvas WebGL2 unavailable: public requested-GL/active-Software fallback verified on earlier aeca runtime",
+    "Firefox threaded strict visual qualification incomplete: three failed cases retained; screenshot capture limitation suspected, not proven driver failure or supported pass",
+    "Linux WebKit execution does not establish physical Safari/Apple hardware coverage",
+    "Windows D3D12, Apple Metal, Android/iOS and physical Safari/Edge execution unavailable; defaults unchanged"
+  ],
+  "finalPackageInProgress": {
+    "url": "http://127.0.0.1:8821/",
+    "production": "e8fa0032fea38a7d4d17d63a61beefc5940adbfb",
+    "validationHead": "d3056bbbdae4f7cf8ef9bdae5c93b28940dfc964",
+    "passedCases": [
+      "serial Auto/no-op/subsequent GL recording",
+      "serial six repeated menu switches",
+      "threaded Auto/no-op/subsequent GL recording",
+      "threaded six repeated menu switches",
+      "threaded original corrected Torus",
+      "serial corrected full-visibility editor",
+      "threaded corrected full-visibility editor"
+    ],
+    "pendingCases": [],
+    "retainedFalseFailures": "original editor2 renderer label clip excluded glyphs, actual Settings fully rendered; fixed fixture keeps full rendered-text predicate",
+    "failedCases": [
+      "Firefox threaded repeated menu switches: strict renderer text PNG predicate",
+      "Firefox threaded editor: strict renderer text PNG predicate",
+      "Firefox threaded context recovery: failed initial text predicate before intentional loss"
+    ],
+    "pairedCapture": "Same current CSS control rect 910,654,140,44; 1200x900 viewport/canvas. Clip dark0; full-page dark0; decoded full-page control crop dark0. Full-page crop repair rejected.",
+    "status": "Functional validation complete with explicit incomplete Firefox threaded visual qualification"
+  },
+  "reviewDisposition": {
+    "shaderToolchain": "No unresolved confirmed defect; authoritative material source shared with Studio/baker, generated layouts/reflected entrypoints, native offline binaries, pinned build-only translators.",
+    "runtimeDependencies": "No runtime compiler/dependency upgrade; defaults unchanged.",
+    "sourceFixesReviewed": [
+      "generation/resource retirement and bounded admission",
+      "transactional GC allocation rollback",
+      "threaded shader-byte preparation with device on app owner",
+      "recording admission metadata/session generations",
+      "Toolkit screenshot drain before FileManager destruction",
+      "calling-realm browser availability bridge"
+    ],
+    "hardwareOmissions": [
+      "Windows D3D12 execution",
+      "Apple Metal metallib SDK/hardware",
+      "Android/iOS devices",
+      "physical Safari/Edge"
+    ],
+    "fixtureCorrection": "Serial/threaded editor renderer row clipping; preserved falsefailure trace, actual full1001x701 Settings screenshot; replaced pixel-check bounds with fullyVisible public scroll, retained predicates/budgets. Startup JPEG was next test and retracted.",
+    "confirmedUnresolvedProductionDefects": [],
+    "automationLimit": "Firefox threaded pixel qualification remains explicitly incomplete; no pass waiver or GL restoration claim."
+  },
+  "curationPolicy": {
+    "included": "commands/configs, exact runtime provenance and fixture SHA256, full JSON test reports, text logs, actual owner/driver/adapter receipts, screenshots, original clipped-row false failures and corrected reruns",
+    "rawTraces": "Original complete Playwright traces retained under corresponding local result directories; include their SHA256 inventory. Large duplicated runtime payloads are omitted from curated archive; evidence claims rely on included logs/reports/screenshots/receipts, not inaccessible trace-only descriptions."
+  },
+  "earlierRuntime": "aeca7b34c14ab32b1a9e04b015b1d7caff75cb79"
+}

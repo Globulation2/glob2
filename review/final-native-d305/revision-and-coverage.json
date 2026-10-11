@@ -85,6 +85,126 @@
       "runtime": "8821",
       "publicExport": "Both actual MP4s validated H2641200x900/AAC and positive duration; original60s OPFScompletion limit retained."
     },
-    "editorFixtureRefresh": "Actual final failure PNG showed healthy Settings1001x701 and clipped renderer value glyphs; stale startup JPEG from another worker was excluded. Strict text assertion now scrolls full control into view; same deadlines preserved. Reruns pending."
+    "editorFixtureRefresh": "Both serial/threaded corrected editor tests passed on final e8fa runtime within original360s budget. Original failure screenshots show healthy Settings and clipped renderer value text; full-control visibility is now required before the unchanged strict text assertion. No production change resulted.",
+    "finalAMDIntegration": {
+      "menuAutoThreadedTorus": 5,
+      "correctedEditors": 2,
+      "precedingEquivalentRuntimeSerialTorus": 1,
+      "allPassed": true,
+      "finalRuntime": "e8fa on8821",
+      "precedingRuntime": "aeca on8789",
+      "exclusions": "Original seven-case matrix had five passes and two clipped-control fixture failures; corrected editor reruns passed separately."
+    },
+    "firefoxSerialRecovery": {
+      "testPassed": true,
+      "actualOutcome": "usable software fallback after failed GL recreation",
+      "warning": "Create output GL error1282 during intentional restore",
+      "gameplayTicks": "104 ->105 ->107",
+      "contextLostAfter": false,
+      "restores": 1,
+      "qualifiesGLRestoration": false
+    },
+    "firefoxFinal": {
+      "passed": 3,
+      "failed": 3,
+      "skipped": 2,
+      "passedModes": "serial menu/editor; serial context-loss test took software fallback",
+      "failedModes": "threaded menu/editor/context-loss cases stop at first successful GL switch pixel assertion",
+      "unavailable": "WebGPU API absent serial/threaded",
+      "failureDiagnosis": "Actual ownerWebGL2 verified, generation and loop progressed. Exact matching before/after compositor previews show text. Paired region and full-page PNG captures are uniformly paperRGBA241/241/225 with zero dark pixels, despite correct viewport/canvas/control dimensions. No fixture or production change was made; strict visual automation remains incomplete.",
+      "qualifiesThreadedVisualCases": false
+    },
+    "webKitFinalSerial": {
+      "passed": 3,
+      "failed": 0,
+      "skipped": 1,
+      "actualGL": "menu/editor",
+      "contextLossOutcome": "usable software fallback after Create output GL error1282; gameplay tick110->114 andframes204->207; unchangedWasm/start/threadidentity",
+      "unavailable": "WebGPU API",
+      "qualifiesGLRestoration": false
+    },
+    "browserCuratedArchive": {
+      "file": "final-renderer-browser-evidence.tar.gz",
+      "bytes": 22632322,
+      "sha256": "bca6ad805514dc00af10fde50734234a1ad18bfd47f488dfa447eeb8fe8d7eaf",
+      "rawTraceInventory": 28,
+      "rawTracePayloadsIncluded": false
+    }
+  },
+  "hostedCheapContracts": {
+    "head": "3fc507709a8e2dcf2981b5bac91c6fd9f2741395",
+    "run": 38114657403,
+    "conclusion": "success",
+    "engineHardwareQualification": false
+  },
+  "performance": {
+    "primaryProcesses": 42,
+    "primaryRounds": 7,
+    "completedIntervals": 25200,
+    "holds": 0,
+    "admissionDeferrals": 0,
+    "activeMatchesRequested": true,
+    "checksum": "86fc2e1c",
+    "comparison": "same final release executable selectable backends; not pre-migration executable",
+    "wallP50MedianOfRunsMilliseconds": {
+      "fractionalNoCloud": {
+        "legacyGL": 2.65,
+        "programmableGL": 4.68,
+        "sdlGPU": 35.08
+      },
+      "fractionalCloud": {
+        "legacyGL": 9.41,
+        "programmableGL": 15.49,
+        "sdlGPU": 101.38
+      },
+      "nativeNoCloud": {
+        "legacyGL": 0.47,
+        "programmableGL": 0.51,
+        "sdlGPU": 0.63
+      },
+      "nativeCloud": {
+        "legacyGL": 2.36,
+        "programmableGL": 4.0,
+        "sdlGPU": 31.89
+      }
+    },
+    "defaultQualification": false,
+    "primaryConclusion": "Regressions beyond measured noise in fractional/cloud workloads; failed regression/default gates. Same final executable, not pre-migration comparison.",
+    "representativeTorus": {
+      "processes": 9,
+      "rounds": 3,
+      "completedPerProcess": 30,
+      "totalCompleted": 270,
+      "measuredIntentionalHolds": 4320,
+      "ordinaryAdmissionDeferrals": 0,
+      "density": 16,
+      "capturePixels": "4096x4096",
+      "wallP50Milliseconds": {
+        "legacyGL": 6.123,
+        "programmableGL": 38.695,
+        "sdlGPU": 70.058
+      },
+      "fullFrozenGateQualified": false
+    },
+    "omissions": [
+      "cold loading",
+      "streaming",
+      "UI/editor",
+      "interactive recording performance",
+      "other hardware",
+      "GPU timestamp timing"
+    ],
+    "hostWorkload": "User background Flatpak left running; results retain this qualification.",
+    "allProcesses": 51,
+    "totalCompletedMeasuredIntervals": 25470,
+    "benchmarkProcessSeconds": 689,
+    "measuredWallDefinition": "Completion interval includes tiny synchronous readback and all discard/1msyield/hold/retry cost; excludesfinal presentation. No GPUtimestamps."
+  },
+  "finalReview": {
+    "coordinatorAcceptedEvidence": true,
+    "confirmedUnresolvedProductionDefects": [],
+    "allThreeIndependentReviewsComplete": true,
+    "defaultsChanged": false,
+    "finalMasterFetch": "c3cb01070d121752f4c5e9632c5567ef13e58d9a"
   }
 }

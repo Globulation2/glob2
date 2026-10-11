@@ -1,0 +1,6592 @@
+{
+  "aggregate": [
+    {
+      "workload": "flat-warm",
+      "mode": "2D clouds",
+      "backend": "legacy-gl",
+      "rounds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "metrics": {
+        "wallMs/p50": {
+          "runValues": [
+            9.466336,
+            9.932617,
+            9.411463,
+            9.505449,
+            9.390744,
+            9.374975,
+            9.247127
+          ],
+          "median": 9.411463,
+          "relativeMedianAbsoluteDeviation": 0.0058304431521433615
+        },
+        "wallMs/p95": {
+          "runValues": [
+            11.605089,
+            12.058797,
+            10.961097,
+            11.335487,
+            10.641461,
+            10.885516,
+            10.837516
+          ],
+          "median": 10.961097,
+          "relativeMedianAbsoluteDeviation": 0.029160949857482413
+        },
+        "wallMs/p99": {
+          "runValues": [
+            12.486174,
+            12.754937,
+            11.469235,
+            12.589938,
+            11.640896,
+            11.394126,
+            11.666845
+          ],
+          "median": 11.666845,
+          "relativeMedianAbsoluteDeviation": 0.023375556973629148
+        },
+        "processCpuMs/p50": {
+          "runValues": [
+            9.155,
+            9.596,
+            9.087,
+            9.19,
+            9.107,
+            9.074,
+            8.941
+          ],
+          "median": 9.107,
+          "relativeMedianAbsoluteDeviation": 0.005270670912484907
+        },
+        "processCpuMs/p95": {
+          "runValues": [
+            10.098,
+            10.748,
+            9.924,
+            10.224,
+            9.958,
+            9.687,
+            9.499
+          ],
+          "median": 9.958,
+          "relativeMedianAbsoluteDeviation": 0.026712191203052824
+        },
+        "processCpuMs/p99": {
+          "runValues": [
+            10.589,
+            11.836,
+            10.183,
+            10.737,
+            10.47,
+            10.223,
+            9.831
+          ],
+          "median": 10.47,
+          "relativeMedianAbsoluteDeviation": 0.025501432664756393
+        }
+      },
+      "completed": 2100,
+      "attempts": 2100,
+      "intentionalHolds": 0,
+      "admissionDeferrals": 0
+    },
+    {
+      "workload": "flat-warm",
+      "mode": "2D clouds",
+      "backend": "programmable-gl",
+      "rounds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "metrics": {
+        "wallMs/p50": {
+          "runValues": [
+            15.524228,
+            15.412909,
+            15.364499,
+            15.759817,
+            15.487188,
+            15.358377,
+            15.538875
+          ],
+          "median": 15.487188,
+          "relativeMedianAbsoluteDeviation": 0.004796157959727671
+        },
+        "wallMs/p95": {
+          "runValues": [
+            18.152064,
+            18.02089,
+            18.269804,
+            18.948902,
+            17.225103,
+            17.703286,
+            17.612176
+          ],
+          "median": 18.02089,
+          "relativeMedianAbsoluteDeviation": 0.017624212788602718
+        },
+        "wallMs/p99": {
+          "runValues": [
+            18.957979,
+            19.907572,
+            19.587895,
+            20.803795,
+            17.86611,
+            18.994437,
+            18.874393
+          ],
+          "median": 18.994437,
+          "relativeMedianAbsoluteDeviation": 0.031243779428682103
+        },
+        "processCpuMs/p50": {
+          "runValues": [
+            14.364,
+            14.298,
+            14.235,
+            14.512,
+            14.474,
+            14.324,
+            14.516
+          ],
+          "median": 14.364,
+          "relativeMedianAbsoluteDeviation": 0.007658033973823407
+        },
+        "processCpuMs/p95": {
+          "runValues": [
+            15.555,
+            16.346,
+            15.868,
+            16.123,
+            15.629,
+            15.675,
+            15.421
+          ],
+          "median": 15.675,
+          "relativeMedianAbsoluteDeviation": 0.012312599681020709
+        },
+        "processCpuMs/p99": {
+          "runValues": [
+            16.686,
+            17.5,
+            17.397,
+            17.712,
+            16.018,
+            16.791,
+            15.922
+          ],
+          "median": 16.791,
+          "relativeMedianAbsoluteDeviation": 0.042225001488892834
+        }
+      },
+      "completed": 2100,
+      "attempts": 2100,
+      "intentionalHolds": 0,
+      "admissionDeferrals": 0
+    },
+    {
+      "workload": "flat-warm",
+      "mode": "2D clouds",
+      "backend": "sdl-gpu",
+      "rounds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "metrics": {
+        "wallMs/p50": {
+          "runValues": [
+            108.261771,
+            102.236119,
+            101.511345,
+            101.379169,
+            100.991776,
+            101.240009,
+            101.292437
+          ],
+          "median": 101.379169,
+          "relativeMedianAbsoluteDeviation": 0.0013726685804655188
+        },
+        "wallMs/p95": {
+          "runValues": [
+            125.145066,
+            108.125595,
+            107.336833,
+            108.066035,
+            108.402903,
+            105.649442,
+            105.73937
+          ],
+          "median": 108.066035,
+          "relativeMedianAbsoluteDeviation": 0.006747744561924575
+        },
+        "wallMs/p99": {
+          "runValues": [
+            140.985373,
+            115.088708,
+            110.677171,
+            116.951916,
+            134.042259,
+            106.660139,
+            110.236077
+          ],
+          "median": 115.088708,
+          "relativeMedianAbsoluteDeviation": 0.04216426688880722
+        },
+        "processCpuMs/p50": {
+          "runValues": [
+            98.132,
+            87.99,
+            84.482,
+            85.834,
+            83.401,
+            85.168,
+            84.132
+          ],
+          "median": 85.168,
+          "relativeMedianAbsoluteDeviation": 0.01216419312417811
+        },
+        "processCpuMs/p95": {
+          "runValues": [
+            113.961,
+            97.657,
+            93.387,
+            96.319,
+            94.37,
+            93.479,
+            92.615
+          ],
+          "median": 94.37,
+          "relativeMedianAbsoluteDeviation": 0.018597011762212668
+        },
+        "processCpuMs/p99": {
+          "runValues": [
+            124.842,
+            101.551,
+            97.379,
+            105.523,
+            116.479,
+            95.452,
+            98.367
+          ],
+          "median": 101.551,
+          "relativeMedianAbsoluteDeviation": 0.04108280568384356
+        }
+      },
+      "completed": 2100,
+      "attempts": 2100,
+      "intentionalHolds": 0,
+      "admissionDeferrals": 0
+    },
+    {
+      "workload": "flat-warm",
+      "mode": "2D no clouds",
+      "backend": "legacy-gl",
+      "rounds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "metrics": {
+        "wallMs/p50": {
+          "runValues": [
+            3.145324,
+            3.818821,
+            2.491602,
+            2.66677,
+            2.535134,
+            2.654928,
+            2.562595
+          ],
+          "median": 2.654928,
+          "relativeMedianAbsoluteDeviation": 0.04512137428962282
+        },
+        "wallMs/p95": {
+          "runValues": [
+            5.088301,
+            5.605638,
+            3.010211,
+            3.586106,
+            3.424986,
+            3.525663,
+            3.316423
+          ],
+          "median": 3.525663,
+          "relativeMedianAbsoluteDeviation": 0.059347702829226814
+        },
+        "wallMs/p99": {
+          "runValues": [
+            5.893334,
+            10.478566,
+            3.30412,
+            4.603907,
+            4.43922,
+            4.139219,
+            4.132206
+          ],
+          "median": 4.43922,
+          "relativeMedianAbsoluteDeviation": 0.06915944692986599
+        },
+        "processCpuMs/p50": {
+          "runValues": [
+            3.202,
+            3.682,
+            2.78,
+            2.937,
+            2.811,
+            2.921,
+            2.825
+          ],
+          "median": 2.921,
+          "relativeMedianAbsoluteDeviation": 0.03765833618623755
+        },
+        "processCpuMs/p95": {
+          "runValues": [
+            5.109,
+            4.7,
+            3.335,
+            3.51,
+            3.378,
+            3.484,
+            3.518
+          ],
+          "median": 3.51,
+          "relativeMedianAbsoluteDeviation": 0.037606837606837515
+        },
+        "processCpuMs/p99": {
+          "runValues": [
+            5.434,
+            4.924,
+            3.704,
+            3.916,
+            3.645,
+            3.783,
+            3.764
+          ],
+          "median": 3.783,
+          "relativeMedianAbsoluteDeviation": 0.03515728257996299
+        }
+      },
+      "completed": 2100,
+      "attempts": 2100,
+      "intentionalHolds": 0,
+      "admissionDeferrals": 0
+    },
+    {
+      "workload": "flat-warm",
+      "mode": "2D no clouds",
+      "backend": "programmable-gl",
+      "rounds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "metrics": {
+        "wallMs/p50": {
+          "runValues": [
+            4.722618,
+            4.67528,
+            4.60584,
+            4.67007,
+            4.794552,
+            4.591032,
+            4.714684
+          ],
+          "median": 4.67528,
+          "relativeMedianAbsoluteDeviation": 0.010125168973836836
+        },
+        "wallMs/p95": {
+          "runValues": [
+            5.556676,
+            5.76271,
+            5.438425,
+            6.044156,
+            5.927438,
+            5.459845,
+            5.514217
+          ],
+          "median": 5.556676,
+          "relativeMedianAbsoluteDeviation": 0.02128088807049408
+        },
+        "wallMs/p99": {
+          "runValues": [
+            6.004161,
+            6.917737,
+            6.020782,
+            6.633155,
+            6.728133,
+            5.959829,
+            5.978233
+          ],
+          "median": 6.020782,
+          "relativeMedianAbsoluteDeviation": 0.010123767975654922
+        },
+        "processCpuMs/p50": {
+          "runValues": [
+            4.303,
+            4.302,
+            4.234,
+            4.295,
+            4.401,
+            4.206,
+            4.308
+          ],
+          "median": 4.302,
+          "relativeMedianAbsoluteDeviation": 0.0016271501627149404
+        },
+        "processCpuMs/p95": {
+          "runValues": [
+            4.923,
+            5.036,
+            4.933,
+            5.145,
+            5.338,
+            5.084,
+            5.01
+          ],
+          "median": 5.036,
+          "relativeMedianAbsoluteDeviation": 0.020452740270055555
+        },
+        "processCpuMs/p99": {
+          "runValues": [
+            5.475,
+            5.349,
+            5.311,
+            5.466,
+            5.567,
+            5.429,
+            5.215
+          ],
+          "median": 5.429,
+          "relativeMedianAbsoluteDeviation": 0.014735678762202995
+        }
+      },
+      "completed": 2100,
+      "attempts": 2100,
+      "intentionalHolds": 0,
+      "admissionDeferrals": 0
+    },
+    {
+      "workload": "flat-warm",
+      "mode": "2D no clouds",
+      "backend": "sdl-gpu",
+      "rounds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "metrics": {
+        "wallMs/p50": {
+          "runValues": [
+            35.355296,
+            34.955059,
+            34.970619,
+            34.977861,
+            35.082156,
+            35.135606,
+            35.339828
+          ],
+          "median": 35.082156,
+          "relativeMedianAbsoluteDeviation": 0.003179308592094467
+        },
+        "wallMs/p95": {
+          "runValues": [
+            73.641816,
+            37.634352,
+            37.121835,
+            36.550639,
+            36.86178,
+            43.025208,
+            40.025046
+          ],
+          "median": 37.634352,
+          "relativeMedianAbsoluteDeviation": 0.028795845880380855
+        },
+        "wallMs/p99": {
+          "runValues": [
+            79.080281,
+            52.065789,
+            44.317682,
+            38.293914,
+            38.730098,
+            69.376281,
+            45.860683
+          ],
+          "median": 45.860683,
+          "relativeMedianAbsoluteDeviation": 0.15548361981438444
+        },
+        "processCpuMs/p50": {
+          "runValues": [
+            22.277,
+            22.131,
+            21.828,
+            22.007,
+            21.563,
+            22.07,
+            22.441
+          ],
+          "median": 22.07,
+          "relativeMedianAbsoluteDeviation": 0.00937924784775717
+        },
+        "processCpuMs/p95": {
+          "runValues": [
+            25.69,
+            24.535,
+            23.868,
+            24.151,
+            23.605,
+            25.796,
+            24.815
+          ],
+          "median": 24.535,
+          "relativeMedianAbsoluteDeviation": 0.027185653148563343
+        },
+        "processCpuMs/p99": {
+          "runValues": [
+            29.91,
+            25.248,
+            25.775,
+            24.899,
+            24.641,
+            31.472,
+            26.687
+          ],
+          "median": 25.775,
+          "relativeMedianAbsoluteDeviation": 0.03538312318137741
+        }
+      },
+      "completed": 2100,
+      "attempts": 2100,
+      "intentionalHolds": 0,
+      "admissionDeferrals": 0
+    },
+    {
+      "workload": "flat-warm-native",
+      "mode": "2D clouds",
+      "backend": "legacy-gl",
+      "rounds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "metrics": {
+        "wallMs/p50": {
+          "runValues": [
+            2.363383,
+            2.382649,
+            2.387889,
+            2.326193,
+            2.330401,
+            2.364845,
+            3.758087
+          ],
+          "median": 2.364845,
+          "relativeMedianAbsoluteDeviation": 0.009744401852975593
+        },
+        "wallMs/p95": {
+          "runValues": [
+            2.859629,
+            2.805609,
+            2.964516,
+            2.856994,
+            2.782886,
+            3.039415,
+            5.289807
+          ],
+          "median": 2.859629,
+          "relativeMedianAbsoluteDeviation": 0.026836698047194237
+        },
+        "wallMs/p99": {
+          "runValues": [
+            3.094558,
+            3.020971,
+            3.216035,
+            3.238658,
+            3.084058,
+            3.477112,
+            6.316545
+          ],
+          "median": 3.216035,
+          "relativeMedianAbsoluteDeviation": 0.04103717776703301
+        },
+        "processCpuMs/p50": {
+          "runValues": [
+            1.877,
+            1.916,
+            1.936,
+            1.864,
+            1.857,
+            1.883,
+            2.386
+          ],
+          "median": 1.883,
+          "relativeMedianAbsoluteDeviation": 0.01380775358470527
+        },
+        "processCpuMs/p95": {
+          "runValues": [
+            2.411,
+            2.371,
+            2.452,
+            2.423,
+            2.335,
+            2.48,
+            3.357
+          ],
+          "median": 2.423,
+          "relativeMedianAbsoluteDeviation": 0.021460998761865475
+        },
+        "processCpuMs/p99": {
+          "runValues": [
+            2.597,
+            2.491,
+            2.669,
+            2.649,
+            2.528,
+            2.653,
+            3.563
+          ],
+          "median": 2.649,
+          "relativeMedianAbsoluteDeviation": 0.019630049075122707
+        }
+      },
+      "completed": 2100,
+      "attempts": 2100,
+      "intentionalHolds": 0,
+      "admissionDeferrals": 0
+    },
+    {
+      "workload": "flat-warm-native",
+      "mode": "2D clouds",
+      "backend": "programmable-gl",
+      "rounds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "metrics": {
+        "wallMs/p50": {
+          "runValues": [
+            3.813741,
+            4.023483,
+            3.9576,
+            4.041917,
+            3.93138,
+            4.00038,
+            3.998296
+          ],
+          "median": 3.998296,
+          "relativeMedianAbsoluteDeviation": 0.010178335971123715
+        },
+        "wallMs/p95": {
+          "runValues": [
+            4.484283,
+            5.164584,
+            4.617983,
+            4.744209,
+            4.616831,
+            4.774846,
+            5.428326
+          ],
+          "median": 4.744209,
+          "relativeMedianAbsoluteDeviation": 0.02684915441119886
+        },
+        "wallMs/p99": {
+          "runValues": [
+            5.145478,
+            6.117623,
+            5.092218,
+            5.434899,
+            5.062413,
+            5.401666,
+            6.11052
+          ],
+          "median": 5.401666,
+          "relativeMedianAbsoluteDeviation": 0.05728751092718427
+        },
+        "processCpuMs/p50": {
+          "runValues": [
+            3.128,
+            3.266,
+            3.217,
+            3.297,
+            3.181,
+            3.235,
+            3.263
+          ],
+          "median": 3.235,
+          "relativeMedianAbsoluteDeviation": 0.00958268933539417
+        },
+        "processCpuMs/p95": {
+          "runValues": [
+            3.714,
+            3.966,
+            3.855,
+            3.932,
+            3.863,
+            4.033,
+            4.038
+          ],
+          "median": 3.932,
+          "relativeMedianAbsoluteDeviation": 0.019582909460834172
+        },
+        "processCpuMs/p99": {
+          "runValues": [
+            4.168,
+            4.592,
+            4.243,
+            4.275,
+            4.171,
+            4.356,
+            4.447
+          ],
+          "median": 4.275,
+          "relativeMedianAbsoluteDeviation": 0.02432748538011698
+        }
+      },
+      "completed": 2100,
+      "attempts": 2100,
+      "intentionalHolds": 0,
+      "admissionDeferrals": 0
+    },
+    {
+      "workload": "flat-warm-native",
+      "mode": "2D clouds",
+      "backend": "sdl-gpu",
+      "rounds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "metrics": {
+        "wallMs/p50": {
+          "runValues": [
+            31.658775,
+            32.420216,
+            31.646341,
+            32.162275,
+            34.254712,
+            31.891329,
+            31.709649
+          ],
+          "median": 31.891329,
+          "relativeMedianAbsoluteDeviation": 0.007681962705285795
+        },
+        "wallMs/p95": {
+          "runValues": [
+            33.224287,
+            44.735902,
+            33.480897,
+            34.123526,
+            36.346828,
+            34.05566,
+            33.845438
+          ],
+          "median": 34.05566,
+          "relativeMedianAbsoluteDeviation": 0.01687716520543147
+        },
+        "wallMs/p99": {
+          "runValues": [
+            34.375868,
+            72.254756,
+            47.003727,
+            35.411201,
+            37.703842,
+            65.536753,
+            36.771732
+          ],
+          "median": 37.703842,
+          "relativeMedianAbsoluteDeviation": 0.08826617722406127
+        },
+        "processCpuMs/p50": {
+          "runValues": [
+            18.554,
+            19.326,
+            18.43,
+            19.069,
+            22.469,
+            18.793,
+            18.544
+          ],
+          "median": 18.793,
+          "relativeMedianAbsoluteDeviation": 0.014686319374235077
+        },
+        "processCpuMs/p95": {
+          "runValues": [
+            20.1,
+            21.866,
+            20.432,
+            21.584,
+            24.465,
+            20.759,
+            21.436
+          ],
+          "median": 21.436,
+          "relativeMedianAbsoluteDeviation": 0.03158238477327858
+        },
+        "processCpuMs/p99": {
+          "runValues": [
+            23.042,
+            25.324,
+            21.685,
+            23.713,
+            25.01,
+            37.004,
+            24.756
+          ],
+          "median": 24.756,
+          "relativeMedianAbsoluteDeviation": 0.042131200517046344
+        }
+      },
+      "completed": 2100,
+      "attempts": 2100,
+      "intentionalHolds": 0,
+      "admissionDeferrals": 0
+    },
+    {
+      "workload": "flat-warm-native",
+      "mode": "2D no clouds",
+      "backend": "legacy-gl",
+      "rounds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "metrics": {
+        "wallMs/p50": {
+          "runValues": [
+            0.46577,
+            0.458556,
+            0.458797,
+            0.484034,
+            0.467894,
+            0.473905,
+            0.489925
+          ],
+          "median": 0.467894,
+          "relativeMedianAbsoluteDeviation": 0.019442437817112353
+        },
+        "wallMs/p95": {
+          "runValues": [
+            0.624766,
+            0.580304,
+            0.581456,
+            0.620168,
+            0.585944,
+            0.605661,
+            0.824178
+          ],
+          "median": 0.605661,
+          "relativeMedianAbsoluteDeviation": 0.03255451481934611
+        },
+        "wallMs/p99": {
+          "runValues": [
+            0.691581,
+            0.612484,
+            0.660463,
+            0.722238,
+            0.661575,
+            0.74416,
+            1.399072
+          ],
+          "median": 0.691581,
+          "relativeMedianAbsoluteDeviation": 0.044995452448809294
+        },
+        "processCpuMs/p50": {
+          "runValues": [
+            0.317,
+            0.313,
+            0.313,
+            0.339,
+            0.32,
+            0.322,
+            0.325
+          ],
+          "median": 0.32,
+          "relativeMedianAbsoluteDeviation": 0.015625000000000014
+        },
+        "processCpuMs/p95": {
+          "runValues": [
+            0.468,
+            0.449,
+            0.443,
+            0.481,
+            0.444,
+            0.449,
+            0.479
+          ],
+          "median": 0.449,
+          "relativeMedianAbsoluteDeviation": 0.013363028953229411
+        },
+        "processCpuMs/p99": {
+          "runValues": [
+            0.537,
+            0.481,
+            0.51,
+            0.57,
+            0.5,
+            0.536,
+            0.604
+          ],
+          "median": 0.536,
+          "relativeMedianAbsoluteDeviation": 0.06343283582089537
+        }
+      },
+      "completed": 2100,
+      "attempts": 2100,
+      "intentionalHolds": 0,
+      "admissionDeferrals": 0
+    },
+    {
+      "workload": "flat-warm-native",
+      "mode": "2D no clouds",
+      "backend": "programmable-gl",
+      "rounds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "metrics": {
+        "wallMs/p50": {
+          "runValues": [
+            0.515913,
+            0.502108,
+            0.491528,
+            0.505083,
+            0.513679,
+            0.502549,
+            0.538495
+          ],
+          "median": 0.505083,
+          "relativeMedianAbsoluteDeviation": 0.017018984998505293
+        },
+        "wallMs/p95": {
+          "runValues": [
+            0.633723,
+            0.622532,
+            0.585834,
+            0.622432,
+            0.59999,
+            0.590372,
+            0.720525
+          ],
+          "median": 0.622432,
+          "relativeMedianAbsoluteDeviation": 0.036055344198241676
+        },
+        "wallMs/p99": {
+          "runValues": [
+            0.741525,
+            0.711789,
+            0.692764,
+            0.801727,
+            0.652519,
+            0.628243,
+            0.86731
+          ],
+          "median": 0.711789,
+          "relativeMedianAbsoluteDeviation": 0.08326905866766703
+        },
+        "processCpuMs/p50": {
+          "runValues": [
+            0.259,
+            0.249,
+            0.249,
+            0.254,
+            0.259,
+            0.248,
+            0.29
+          ],
+          "median": 0.254,
+          "relativeMedianAbsoluteDeviation": 0.019685039370078757
+        },
+        "processCpuMs/p95": {
+          "runValues": [
+            0.376,
+            0.365,
+            0.347,
+            0.398,
+            0.358,
+            0.34,
+            0.463
+          ],
+          "median": 0.365,
+          "relativeMedianAbsoluteDeviation": 0.04931506849315073
+        },
+        "processCpuMs/p99": {
+          "runValues": [
+            0.459,
+            0.412,
+            0.39,
+            0.558,
+            0.414,
+            0.386,
+            0.571
+          ],
+          "median": 0.414,
+          "relativeMedianAbsoluteDeviation": 0.06763285024154582
+        }
+      },
+      "completed": 2100,
+      "attempts": 2100,
+      "intentionalHolds": 0,
+      "admissionDeferrals": 0
+    },
+    {
+      "workload": "flat-warm-native",
+      "mode": "2D no clouds",
+      "backend": "sdl-gpu",
+      "rounds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "metrics": {
+        "wallMs/p50": {
+          "runValues": [
+            0.623103,
+            0.630868,
+            0.639054,
+            0.628293,
+            0.631589,
+            0.611652,
+            0.615359
+          ],
+          "median": 0.628293,
+          "relativeMedianAbsoluteDeviation": 0.00826047719774059
+        },
+        "wallMs/p95": {
+          "runValues": [
+            0.759929,
+            0.801226,
+            0.804842,
+            0.817015,
+            0.781169,
+            0.741544,
+            0.834829
+          ],
+          "median": 0.801226,
+          "relativeMedianAbsoluteDeviation": 0.025032887100518444
+        },
+        "wallMs/p99": {
+          "runValues": [
+            0.961255,
+            0.864194,
+            0.917693,
+            0.945766,
+            0.888198,
+            0.880393,
+            0.967977
+          ],
+          "median": 0.917693,
+          "relativeMedianAbsoluteDeviation": 0.04064540102191038
+        },
+        "processCpuMs/p50": {
+          "runValues": [
+            0.297,
+            0.32,
+            0.319,
+            0.308,
+            0.307,
+            0.285,
+            0.297
+          ],
+          "median": 0.307,
+          "relativeMedianAbsoluteDeviation": 0.03257328990228016
+        },
+        "processCpuMs/p95": {
+          "runValues": [
+            0.453,
+            0.471,
+            0.524,
+            0.468,
+            0.447,
+            0.433,
+            0.507
+          ],
+          "median": 0.468,
+          "relativeMedianAbsoluteDeviation": 0.04487179487179491
+        },
+        "processCpuMs/p99": {
+          "runValues": [
+            0.612,
+            0.595,
+            0.631,
+            0.587,
+            0.56,
+            0.468,
+            0.597
+          ],
+          "median": 0.595,
+          "relativeMedianAbsoluteDeviation": 0.0285714285714286
+        }
+      },
+      "completed": 2100,
+      "attempts": 2100,
+      "intentionalHolds": 0,
+      "admissionDeferrals": 0
+    },
+    {
+      "workload": "torus",
+      "mode": "Torus no clouds",
+      "backend": "legacy-gl",
+      "rounds": [
+        0,
+        1,
+        2
+      ],
+      "metrics": {
+        "wallMs/p50": {
+          "runValues": [
+            6.123213,
+            6.138582,
+            6.015763
+          ],
+          "median": 6.123213,
+          "relativeMedianAbsoluteDeviation": 0.002509956782493216
+        },
+        "wallMs/p95": {
+          "runValues": [
+            9.643046,
+            11.907614,
+            6.746738
+          ],
+          "median": 9.643046,
+          "relativeMedianAbsoluteDeviation": 0.23483948951399802
+        },
+        "wallMs/p99": {
+          "runValues": [
+            13.139274,
+            17.76421,
+            7.909739
+          ],
+          "median": 13.139274,
+          "relativeMedianAbsoluteDeviation": 0.3519932684256374
+        },
+        "processCpuMs/p50": {
+          "runValues": [
+            4.779,
+            5.079,
+            4.731
+          ],
+          "median": 4.779,
+          "relativeMedianAbsoluteDeviation": 0.010043942247332087
+        },
+        "processCpuMs/p95": {
+          "runValues": [
+            5.915,
+            5.675,
+            5.563
+          ],
+          "median": 5.675,
+          "relativeMedianAbsoluteDeviation": 0.019735682819383277
+        },
+        "processCpuMs/p99": {
+          "runValues": [
+            11.863,
+            13.633,
+            5.721
+          ],
+          "median": 11.863,
+          "relativeMedianAbsoluteDeviation": 0.14920340554665765
+        }
+      },
+      "completed": 90,
+      "attempts": 90,
+      "intentionalHolds": 0,
+      "admissionDeferrals": 0
+    },
+    {
+      "workload": "torus",
+      "mode": "Torus no clouds",
+      "backend": "programmable-gl",
+      "rounds": [
+        0,
+        1,
+        2
+      ],
+      "metrics": {
+        "wallMs/p50": {
+          "runValues": [
+            38.692237,
+            38.695173,
+            39.220193
+          ],
+          "median": 38.695173,
+          "relativeMedianAbsoluteDeviation": 7.587509687573366e-05
+        },
+        "wallMs/p95": {
+          "runValues": [
+            40.352879,
+            40.100657,
+            42.118716
+          ],
+          "median": 40.352879,
+          "relativeMedianAbsoluteDeviation": 0.00625040904764201
+        },
+        "wallMs/p99": {
+          "runValues": [
+            41.715373,
+            41.63368,
+            54.098064
+          ],
+          "median": 41.715373,
+          "relativeMedianAbsoluteDeviation": 0.001958342791277483
+        },
+        "processCpuMs/p50": {
+          "runValues": [
+            14.312,
+            14.423,
+            14.911
+          ],
+          "median": 14.423,
+          "relativeMedianAbsoluteDeviation": 0.007696041045552288
+        },
+        "processCpuMs/p95": {
+          "runValues": [
+            16.235,
+            15.825,
+            17.482
+          ],
+          "median": 16.235,
+          "relativeMedianAbsoluteDeviation": 0.02525408068986758
+        },
+        "processCpuMs/p99": {
+          "runValues": [
+            17.442,
+            17.253,
+            29.52
+          ],
+          "median": 17.442,
+          "relativeMedianAbsoluteDeviation": 0.010835913312693502
+        }
+      },
+      "completed": 90,
+      "attempts": 2250,
+      "intentionalHolds": 2160,
+      "admissionDeferrals": 0
+    },
+    {
+      "workload": "torus",
+      "mode": "Torus no clouds",
+      "backend": "sdl-gpu",
+      "rounds": [
+        0,
+        1,
+        2
+      ],
+      "metrics": {
+        "wallMs/p50": {
+          "runValues": [
+            71.253858,
+            69.575214,
+            70.058225
+          ],
+          "median": 70.058225,
+          "relativeMedianAbsoluteDeviation": 0.006894422460745909
+        },
+        "wallMs/p95": {
+          "runValues": [
+            73.806965,
+            86.560869,
+            85.145977
+          ],
+          "median": 85.145977,
+          "relativeMedianAbsoluteDeviation": 0.01661725016086191
+        },
+        "wallMs/p99": {
+          "runValues": [
+            76.476009,
+            102.22631,
+            91.341426
+          ],
+          "median": 91.341426,
+          "relativeMedianAbsoluteDeviation": 0.11916700315145069
+        },
+        "processCpuMs/p50": {
+          "runValues": [
+            47.096,
+            45.484,
+            45.985
+          ],
+          "median": 45.985,
+          "relativeMedianAbsoluteDeviation": 0.010894857018592968
+        },
+        "processCpuMs/p95": {
+          "runValues": [
+            49.827,
+            61.774,
+            60.776
+          ],
+          "median": 60.776,
+          "relativeMedianAbsoluteDeviation": 0.01642095564038432
+        },
+        "processCpuMs/p99": {
+          "runValues": [
+            52.592,
+            78.063,
+            67.606
+          ],
+          "median": 67.606,
+          "relativeMedianAbsoluteDeviation": 0.15467562050705572
+        }
+      },
+      "completed": 90,
+      "attempts": 2250,
+      "intentionalHolds": 2160,
+      "admissionDeferrals": 0
+    }
+  ],
+  "runs": [
+    {
+      "case": "flat-warm-legacy-gl-round0",
+      "round": 0,
+      "mode": "2D no clouds",
+      "backend": "legacy-gl",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 3.145324,
+        "p95": 5.088301,
+        "p99": 5.893334
+      },
+      "processCpuMs": {
+        "p50": 3.202,
+        "p95": 5.109,
+        "p99": 5.434
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {},
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-legacy-gl-round0/run-0.log",
+      "logSHA256": "55ad3152acf0281a95fba925d7523ba3d57b5d8735e5e7f40ec88a3c440b137f"
+    },
+    {
+      "case": "flat-warm-legacy-gl-round0",
+      "round": 0,
+      "mode": "2D clouds",
+      "backend": "legacy-gl",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 9.466336,
+        "p95": 11.605089,
+        "p99": 12.486174
+      },
+      "processCpuMs": {
+        "p50": 9.155,
+        "p95": 10.098,
+        "p99": 10.589
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {},
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-legacy-gl-round0/run-0.log",
+      "logSHA256": "55ad3152acf0281a95fba925d7523ba3d57b5d8735e5e7f40ec88a3c440b137f"
+    },
+    {
+      "case": "flat-warm-legacy-gl-round1",
+      "round": 1,
+      "mode": "2D no clouds",
+      "backend": "legacy-gl",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 3.818821,
+        "p95": 5.605638,
+        "p99": 10.478566
+      },
+      "processCpuMs": {
+        "p50": 3.682,
+        "p95": 4.7,
+        "p99": 4.924
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {},
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-legacy-gl-round1/run-0.log",
+      "logSHA256": "871395ef074171b414ab682a3e5dc35d862b9d005e8c9b2feb181b2157f8ae84"
+    },
+    {
+      "case": "flat-warm-legacy-gl-round1",
+      "round": 1,
+      "mode": "2D clouds",
+      "backend": "legacy-gl",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 9.932617,
+        "p95": 12.058797,
+        "p99": 12.754937
+      },
+      "processCpuMs": {
+        "p50": 9.596,
+        "p95": 10.748,
+        "p99": 11.836
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {},
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-legacy-gl-round1/run-0.log",
+      "logSHA256": "871395ef074171b414ab682a3e5dc35d862b9d005e8c9b2feb181b2157f8ae84"
+    },
+    {
+      "case": "flat-warm-legacy-gl-round2",
+      "round": 2,
+      "mode": "2D no clouds",
+      "backend": "legacy-gl",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 2.491602,
+        "p95": 3.010211,
+        "p99": 3.30412
+      },
+      "processCpuMs": {
+        "p50": 2.78,
+        "p95": 3.335,
+        "p99": 3.704
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {},
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-legacy-gl-round2/run-0.log",
+      "logSHA256": "e74983aa455b31fe51dc16e6730f7c8de86b0aca53ebb42b30f8002c1d3a1354"
+    },
+    {
+      "case": "flat-warm-legacy-gl-round2",
+      "round": 2,
+      "mode": "2D clouds",
+      "backend": "legacy-gl",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 9.411463,
+        "p95": 10.961097,
+        "p99": 11.469235
+      },
+      "processCpuMs": {
+        "p50": 9.087,
+        "p95": 9.924,
+        "p99": 10.183
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {},
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-legacy-gl-round2/run-0.log",
+      "logSHA256": "e74983aa455b31fe51dc16e6730f7c8de86b0aca53ebb42b30f8002c1d3a1354"
+    },
+    {
+      "case": "flat-warm-legacy-gl-round3",
+      "round": 3,
+      "mode": "2D no clouds",
+      "backend": "legacy-gl",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 2.66677,
+        "p95": 3.586106,
+        "p99": 4.603907
+      },
+      "processCpuMs": {
+        "p50": 2.937,
+        "p95": 3.51,
+        "p99": 3.916
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {},
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-legacy-gl-round3/run-0.log",
+      "logSHA256": "2e13d31c8ad2644a1fa1515fdfb2bb32b43ecc11cb0ae377a6e3bea5a7c6e50d"
+    },
+    {
+      "case": "flat-warm-legacy-gl-round3",
+      "round": 3,
+      "mode": "2D clouds",
+      "backend": "legacy-gl",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 9.505449,
+        "p95": 11.335487,
+        "p99": 12.589938
+      },
+      "processCpuMs": {
+        "p50": 9.19,
+        "p95": 10.224,
+        "p99": 10.737
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {},
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-legacy-gl-round3/run-0.log",
+      "logSHA256": "2e13d31c8ad2644a1fa1515fdfb2bb32b43ecc11cb0ae377a6e3bea5a7c6e50d"
+    },
+    {
+      "case": "flat-warm-legacy-gl-round4",
+      "round": 4,
+      "mode": "2D no clouds",
+      "backend": "legacy-gl",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 2.535134,
+        "p95": 3.424986,
+        "p99": 4.43922
+      },
+      "processCpuMs": {
+        "p50": 2.811,
+        "p95": 3.378,
+        "p99": 3.645
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {},
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-legacy-gl-round4/run-0.log",
+      "logSHA256": "ca91c7f30a240221ac33326473b33928df9ecc7b1bd8d08381a7749d02a70d2e"
+    },
+    {
+      "case": "flat-warm-legacy-gl-round4",
+      "round": 4,
+      "mode": "2D clouds",
+      "backend": "legacy-gl",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 9.390744,
+        "p95": 10.641461,
+        "p99": 11.640896
+      },
+      "processCpuMs": {
+        "p50": 9.107,
+        "p95": 9.958,
+        "p99": 10.47
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {},
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-legacy-gl-round4/run-0.log",
+      "logSHA256": "ca91c7f30a240221ac33326473b33928df9ecc7b1bd8d08381a7749d02a70d2e"
+    },
+    {
+      "case": "flat-warm-legacy-gl-round5",
+      "round": 5,
+      "mode": "2D no clouds",
+      "backend": "legacy-gl",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 2.654928,
+        "p95": 3.525663,
+        "p99": 4.139219
+      },
+      "processCpuMs": {
+        "p50": 2.921,
+        "p95": 3.484,
+        "p99": 3.783
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {},
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-legacy-gl-round5/run-0.log",
+      "logSHA256": "a349dfbf842d0dd87e89d8dcd58af36b2039bba768132fa21e5d8e4f18171583"
+    },
+    {
+      "case": "flat-warm-legacy-gl-round5",
+      "round": 5,
+      "mode": "2D clouds",
+      "backend": "legacy-gl",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 9.374975,
+        "p95": 10.885516,
+        "p99": 11.394126
+      },
+      "processCpuMs": {
+        "p50": 9.074,
+        "p95": 9.687,
+        "p99": 10.223
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {},
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-legacy-gl-round5/run-0.log",
+      "logSHA256": "a349dfbf842d0dd87e89d8dcd58af36b2039bba768132fa21e5d8e4f18171583"
+    },
+    {
+      "case": "flat-warm-legacy-gl-round6",
+      "round": 6,
+      "mode": "2D no clouds",
+      "backend": "legacy-gl",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 2.562595,
+        "p95": 3.316423,
+        "p99": 4.132206
+      },
+      "processCpuMs": {
+        "p50": 2.825,
+        "p95": 3.518,
+        "p99": 3.764
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {},
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-legacy-gl-round6/run-0.log",
+      "logSHA256": "c933058271ad3079509d5546fba03d8e8659b135c66d59051d1ca459239eefba"
+    },
+    {
+      "case": "flat-warm-legacy-gl-round6",
+      "round": 6,
+      "mode": "2D clouds",
+      "backend": "legacy-gl",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 9.247127,
+        "p95": 10.837516,
+        "p99": 11.666845
+      },
+      "processCpuMs": {
+        "p50": 8.941,
+        "p95": 9.499,
+        "p99": 9.831
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {},
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-legacy-gl-round6/run-0.log",
+      "logSHA256": "c933058271ad3079509d5546fba03d8e8659b135c66d59051d1ca459239eefba"
+    },
+    {
+      "case": "flat-warm-native-legacy-gl-round0",
+      "round": 0,
+      "mode": "2D no clouds",
+      "backend": "legacy-gl",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 0.46577,
+        "p95": 0.624766,
+        "p99": 0.691581
+      },
+      "processCpuMs": {
+        "p50": 0.317,
+        "p95": 0.468,
+        "p99": 0.537
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {},
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-native-legacy-gl-round0/run-0.log",
+      "logSHA256": "c43aa726c211a32a089e6a99a137dbb7562e9742e3c5d0fd913e6f552af2bd92"
+    },
+    {
+      "case": "flat-warm-native-legacy-gl-round0",
+      "round": 0,
+      "mode": "2D clouds",
+      "backend": "legacy-gl",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 2.363383,
+        "p95": 2.859629,
+        "p99": 3.094558
+      },
+      "processCpuMs": {
+        "p50": 1.877,
+        "p95": 2.411,
+        "p99": 2.597
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {},
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-native-legacy-gl-round0/run-0.log",
+      "logSHA256": "c43aa726c211a32a089e6a99a137dbb7562e9742e3c5d0fd913e6f552af2bd92"
+    },
+    {
+      "case": "flat-warm-native-legacy-gl-round1",
+      "round": 1,
+      "mode": "2D no clouds",
+      "backend": "legacy-gl",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 0.458556,
+        "p95": 0.580304,
+        "p99": 0.612484
+      },
+      "processCpuMs": {
+        "p50": 0.313,
+        "p95": 0.449,
+        "p99": 0.481
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {},
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-native-legacy-gl-round1/run-0.log",
+      "logSHA256": "572feb5d19694dc5b28540a09e1bb62cf559e890254afb5ec2339673f7501b74"
+    },
+    {
+      "case": "flat-warm-native-legacy-gl-round1",
+      "round": 1,
+      "mode": "2D clouds",
+      "backend": "legacy-gl",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 2.382649,
+        "p95": 2.805609,
+        "p99": 3.020971
+      },
+      "processCpuMs": {
+        "p50": 1.916,
+        "p95": 2.371,
+        "p99": 2.491
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {},
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-native-legacy-gl-round1/run-0.log",
+      "logSHA256": "572feb5d19694dc5b28540a09e1bb62cf559e890254afb5ec2339673f7501b74"
+    },
+    {
+      "case": "flat-warm-native-legacy-gl-round2",
+      "round": 2,
+      "mode": "2D no clouds",
+      "backend": "legacy-gl",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 0.458797,
+        "p95": 0.581456,
+        "p99": 0.660463
+      },
+      "processCpuMs": {
+        "p50": 0.313,
+        "p95": 0.443,
+        "p99": 0.51
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {},
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-native-legacy-gl-round2/run-0.log",
+      "logSHA256": "76554c32175e59f5f4cb3a0020a0f6b4e0db8a0f72a097bdf8857cede476b6f8"
+    },
+    {
+      "case": "flat-warm-native-legacy-gl-round2",
+      "round": 2,
+      "mode": "2D clouds",
+      "backend": "legacy-gl",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 2.387889,
+        "p95": 2.964516,
+        "p99": 3.216035
+      },
+      "processCpuMs": {
+        "p50": 1.936,
+        "p95": 2.452,
+        "p99": 2.669
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {},
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-native-legacy-gl-round2/run-0.log",
+      "logSHA256": "76554c32175e59f5f4cb3a0020a0f6b4e0db8a0f72a097bdf8857cede476b6f8"
+    },
+    {
+      "case": "flat-warm-native-legacy-gl-round3",
+      "round": 3,
+      "mode": "2D no clouds",
+      "backend": "legacy-gl",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 0.484034,
+        "p95": 0.620168,
+        "p99": 0.722238
+      },
+      "processCpuMs": {
+        "p50": 0.339,
+        "p95": 0.481,
+        "p99": 0.57
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {},
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-native-legacy-gl-round3/run-0.log",
+      "logSHA256": "b5fd9ac32f384e644a9515aa9f340324cd9cad3b23ce003789e347f0ddc0158a"
+    },
+    {
+      "case": "flat-warm-native-legacy-gl-round3",
+      "round": 3,
+      "mode": "2D clouds",
+      "backend": "legacy-gl",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 2.326193,
+        "p95": 2.856994,
+        "p99": 3.238658
+      },
+      "processCpuMs": {
+        "p50": 1.864,
+        "p95": 2.423,
+        "p99": 2.649
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {},
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-native-legacy-gl-round3/run-0.log",
+      "logSHA256": "b5fd9ac32f384e644a9515aa9f340324cd9cad3b23ce003789e347f0ddc0158a"
+    },
+    {
+      "case": "flat-warm-native-legacy-gl-round4",
+      "round": 4,
+      "mode": "2D no clouds",
+      "backend": "legacy-gl",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 0.467894,
+        "p95": 0.585944,
+        "p99": 0.661575
+      },
+      "processCpuMs": {
+        "p50": 0.32,
+        "p95": 0.444,
+        "p99": 0.5
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {},
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-native-legacy-gl-round4/run-0.log",
+      "logSHA256": "ccc385b7259d9176c763c6a809d53829c8e33cdf6cb43e69f38861edd47815c2"
+    },
+    {
+      "case": "flat-warm-native-legacy-gl-round4",
+      "round": 4,
+      "mode": "2D clouds",
+      "backend": "legacy-gl",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 2.330401,
+        "p95": 2.782886,
+        "p99": 3.084058
+      },
+      "processCpuMs": {
+        "p50": 1.857,
+        "p95": 2.335,
+        "p99": 2.528
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {},
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-native-legacy-gl-round4/run-0.log",
+      "logSHA256": "ccc385b7259d9176c763c6a809d53829c8e33cdf6cb43e69f38861edd47815c2"
+    },
+    {
+      "case": "flat-warm-native-legacy-gl-round5",
+      "round": 5,
+      "mode": "2D no clouds",
+      "backend": "legacy-gl",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 0.473905,
+        "p95": 0.605661,
+        "p99": 0.74416
+      },
+      "processCpuMs": {
+        "p50": 0.322,
+        "p95": 0.449,
+        "p99": 0.536
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {},
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-native-legacy-gl-round5/run-0.log",
+      "logSHA256": "0a0e58734654158c5420c91df4ee39b69e2ede82801073b157c94265c95c2622"
+    },
+    {
+      "case": "flat-warm-native-legacy-gl-round5",
+      "round": 5,
+      "mode": "2D clouds",
+      "backend": "legacy-gl",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 2.364845,
+        "p95": 3.039415,
+        "p99": 3.477112
+      },
+      "processCpuMs": {
+        "p50": 1.883,
+        "p95": 2.48,
+        "p99": 2.653
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {},
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-native-legacy-gl-round5/run-0.log",
+      "logSHA256": "0a0e58734654158c5420c91df4ee39b69e2ede82801073b157c94265c95c2622"
+    },
+    {
+      "case": "flat-warm-native-legacy-gl-round6",
+      "round": 6,
+      "mode": "2D no clouds",
+      "backend": "legacy-gl",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 0.489925,
+        "p95": 0.824178,
+        "p99": 1.399072
+      },
+      "processCpuMs": {
+        "p50": 0.325,
+        "p95": 0.479,
+        "p99": 0.604
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {},
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-native-legacy-gl-round6/run-0.log",
+      "logSHA256": "131c772bed98222fd772c1648ef70240869a8766823ad650a09b434ed99bf66d"
+    },
+    {
+      "case": "flat-warm-native-legacy-gl-round6",
+      "round": 6,
+      "mode": "2D clouds",
+      "backend": "legacy-gl",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 3.758087,
+        "p95": 5.289807,
+        "p99": 6.316545
+      },
+      "processCpuMs": {
+        "p50": 2.386,
+        "p95": 3.357,
+        "p99": 3.563
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {},
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-native-legacy-gl-round6/run-0.log",
+      "logSHA256": "131c772bed98222fd772c1648ef70240869a8766823ad650a09b434ed99bf66d"
+    },
+    {
+      "case": "flat-warm-native-programmable-gl-round0",
+      "round": 0,
+      "mode": "2D no clouds",
+      "backend": "programmable-gl",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 0.515913,
+        "p95": 0.633723,
+        "p99": 0.741525
+      },
+      "processCpuMs": {
+        "p50": 0.259,
+        "p95": 0.376,
+        "p99": 0.459
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {
+        "packets": {
+          "median": 35.0,
+          "peak": 35
+        },
+        "batches": {
+          "median": 35.0,
+          "peak": 35
+        },
+        "upload_bytes": {
+          "median": 0.0,
+          "peak": 0
+        },
+        "resource_bytes": {
+          "median": 43667356.0,
+          "peak": 43667356
+        },
+        "submit_cpu_ns": {
+          "median": 81587.5,
+          "peak": 211014
+        },
+        "capture_cpu_ns": {
+          "median": 355177.5,
+          "peak": 694205
+        },
+        "capture_drops": {
+          "median": 0.0,
+          "peak": 0
+        }
+      },
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-native-programmable-gl-round0/run-0.log",
+      "logSHA256": "4d70a383eaa94ce410196ac43dd1d7550baeb9cf36c083eb94824fe4497bd843"
+    },
+    {
+      "case": "flat-warm-native-programmable-gl-round0",
+      "round": 0,
+      "mode": "2D clouds",
+      "backend": "programmable-gl",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 3.813741,
+        "p95": 4.484283,
+        "p99": 5.145478
+      },
+      "processCpuMs": {
+        "p50": 3.128,
+        "p95": 3.714,
+        "p99": 4.168
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {
+        "packets": {
+          "median": 7035.0,
+          "peak": 7035
+        },
+        "batches": {
+          "median": 37.0,
+          "peak": 37
+        },
+        "upload_bytes": {
+          "median": 0.0,
+          "peak": 0
+        },
+        "resource_bytes": {
+          "median": 44795740.0,
+          "peak": 44795740
+        },
+        "submit_cpu_ns": {
+          "median": 362100.5,
+          "peak": 715986
+        },
+        "capture_cpu_ns": {
+          "median": 1027027.0,
+          "peak": 2135023
+        },
+        "capture_drops": {
+          "median": 0.0,
+          "peak": 0
+        }
+      },
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-native-programmable-gl-round0/run-0.log",
+      "logSHA256": "4d70a383eaa94ce410196ac43dd1d7550baeb9cf36c083eb94824fe4497bd843"
+    },
+    {
+      "case": "flat-warm-native-programmable-gl-round1",
+      "round": 1,
+      "mode": "2D no clouds",
+      "backend": "programmable-gl",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 0.502108,
+        "p95": 0.622532,
+        "p99": 0.711789
+      },
+      "processCpuMs": {
+        "p50": 0.249,
+        "p95": 0.365,
+        "p99": 0.412
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {
+        "packets": {
+          "median": 35.0,
+          "peak": 35
+        },
+        "batches": {
+          "median": 35.0,
+          "peak": 35
+        },
+        "upload_bytes": {
+          "median": 0.0,
+          "peak": 0
+        },
+        "resource_bytes": {
+          "median": 43667356.0,
+          "peak": 43667356
+        },
+        "submit_cpu_ns": {
+          "median": 77439.0,
+          "peak": 181319
+        },
+        "capture_cpu_ns": {
+          "median": 344107.0,
+          "peak": 1143023
+        },
+        "capture_drops": {
+          "median": 0.0,
+          "peak": 0
+        }
+      },
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-native-programmable-gl-round1/run-0.log",
+      "logSHA256": "53322a156097f383185701158891fab41a51ffc1289dffccfaf321254531ed20"
+    },
+    {
+      "case": "flat-warm-native-programmable-gl-round1",
+      "round": 1,
+      "mode": "2D clouds",
+      "backend": "programmable-gl",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 4.023483,
+        "p95": 5.164584,
+        "p99": 6.117623
+      },
+      "processCpuMs": {
+        "p50": 3.266,
+        "p95": 3.966,
+        "p99": 4.592
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {
+        "packets": {
+          "median": 7035.0,
+          "peak": 7035
+        },
+        "batches": {
+          "median": 37.0,
+          "peak": 37
+        },
+        "upload_bytes": {
+          "median": 0.0,
+          "peak": 0
+        },
+        "resource_bytes": {
+          "median": 44795740.0,
+          "peak": 44795740
+        },
+        "submit_cpu_ns": {
+          "median": 381221.0,
+          "peak": 930526
+        },
+        "capture_cpu_ns": {
+          "median": 1057232.5,
+          "peak": 5561436
+        },
+        "capture_drops": {
+          "median": 0.0,
+          "peak": 0
+        }
+      },
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-native-programmable-gl-round1/run-0.log",
+      "logSHA256": "53322a156097f383185701158891fab41a51ffc1289dffccfaf321254531ed20"
+    },
+    {
+      "case": "flat-warm-native-programmable-gl-round2",
+      "round": 2,
+      "mode": "2D no clouds",
+      "backend": "programmable-gl",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 0.491528,
+        "p95": 0.585834,
+        "p99": 0.692764
+      },
+      "processCpuMs": {
+        "p50": 0.249,
+        "p95": 0.347,
+        "p99": 0.39
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {
+        "packets": {
+          "median": 35.0,
+          "peak": 35
+        },
+        "batches": {
+          "median": 35.0,
+          "peak": 35
+        },
+        "upload_bytes": {
+          "median": 0.0,
+          "peak": 0
+        },
+        "resource_bytes": {
+          "median": 43667356.0,
+          "peak": 43667356
+        },
+        "submit_cpu_ns": {
+          "median": 76302.5,
+          "peak": 188241
+        },
+        "capture_cpu_ns": {
+          "median": 339278.0,
+          "peak": 655403
+        },
+        "capture_drops": {
+          "median": 0.0,
+          "peak": 0
+        }
+      },
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-native-programmable-gl-round2/run-0.log",
+      "logSHA256": "e5419069b8125171c12986cc4c42c31d81e37bba94110e4dfdbd0b644ace1050"
+    },
+    {
+      "case": "flat-warm-native-programmable-gl-round2",
+      "round": 2,
+      "mode": "2D clouds",
+      "backend": "programmable-gl",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 3.9576,
+        "p95": 4.617983,
+        "p99": 5.092218
+      },
+      "processCpuMs": {
+        "p50": 3.217,
+        "p95": 3.855,
+        "p99": 4.243
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {
+        "packets": {
+          "median": 7035.0,
+          "peak": 7035
+        },
+        "batches": {
+          "median": 37.0,
+          "peak": 37
+        },
+        "upload_bytes": {
+          "median": 0.0,
+          "peak": 0
+        },
+        "resource_bytes": {
+          "median": 44795740.0,
+          "peak": 44795740
+        },
+        "submit_cpu_ns": {
+          "median": 362075.0,
+          "peak": 739790
+        },
+        "capture_cpu_ns": {
+          "median": 1050661.0,
+          "peak": 1570731
+        },
+        "capture_drops": {
+          "median": 0.0,
+          "peak": 0
+        }
+      },
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-native-programmable-gl-round2/run-0.log",
+      "logSHA256": "e5419069b8125171c12986cc4c42c31d81e37bba94110e4dfdbd0b644ace1050"
+    },
+    {
+      "case": "flat-warm-native-programmable-gl-round3",
+      "round": 3,
+      "mode": "2D no clouds",
+      "backend": "programmable-gl",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 0.505083,
+        "p95": 0.622432,
+        "p99": 0.801727
+      },
+      "processCpuMs": {
+        "p50": 0.254,
+        "p95": 0.398,
+        "p99": 0.558
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {
+        "packets": {
+          "median": 35.0,
+          "peak": 35
+        },
+        "batches": {
+          "median": 35.0,
+          "peak": 35
+        },
+        "upload_bytes": {
+          "median": 0.0,
+          "peak": 0
+        },
+        "resource_bytes": {
+          "median": 43667356.0,
+          "peak": 43667356
+        },
+        "submit_cpu_ns": {
+          "median": 81006.5,
+          "peak": 219019
+        },
+        "capture_cpu_ns": {
+          "median": 347664.0,
+          "peak": 564834
+        },
+        "capture_drops": {
+          "median": 0.0,
+          "peak": 0
+        }
+      },
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-native-programmable-gl-round3/run-0.log",
+      "logSHA256": "4b767703529484f76c37cc9ab44343e330ca0b4cc469f505bb939ba68b2ad023"
+    },
+    {
+      "case": "flat-warm-native-programmable-gl-round3",
+      "round": 3,
+      "mode": "2D clouds",
+      "backend": "programmable-gl",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 4.041917,
+        "p95": 4.744209,
+        "p99": 5.434899
+      },
+      "processCpuMs": {
+        "p50": 3.297,
+        "p95": 3.932,
+        "p99": 4.275
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {
+        "packets": {
+          "median": 7035.0,
+          "peak": 7035
+        },
+        "batches": {
+          "median": 37.0,
+          "peak": 37
+        },
+        "upload_bytes": {
+          "median": 0.0,
+          "peak": 0
+        },
+        "resource_bytes": {
+          "median": 44795740.0,
+          "peak": 44795740
+        },
+        "submit_cpu_ns": {
+          "median": 386225.5,
+          "peak": 962866
+        },
+        "capture_cpu_ns": {
+          "median": 1061440.5,
+          "peak": 2184616
+        },
+        "capture_drops": {
+          "median": 0.0,
+          "peak": 0
+        }
+      },
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-native-programmable-gl-round3/run-0.log",
+      "logSHA256": "4b767703529484f76c37cc9ab44343e330ca0b4cc469f505bb939ba68b2ad023"
+    },
+    {
+      "case": "flat-warm-native-programmable-gl-round4",
+      "round": 4,
+      "mode": "2D no clouds",
+      "backend": "programmable-gl",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 0.513679,
+        "p95": 0.59999,
+        "p99": 0.652519
+      },
+      "processCpuMs": {
+        "p50": 0.259,
+        "p95": 0.358,
+        "p99": 0.414
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {
+        "packets": {
+          "median": 35.0,
+          "peak": 35
+        },
+        "batches": {
+          "median": 35.0,
+          "peak": 35
+        },
+        "upload_bytes": {
+          "median": 0.0,
+          "peak": 0
+        },
+        "resource_bytes": {
+          "median": 43667356.0,
+          "peak": 43667356
+        },
+        "submit_cpu_ns": {
+          "median": 79608.5,
+          "peak": 136004
+        },
+        "capture_cpu_ns": {
+          "median": 354652.0,
+          "peak": 610409
+        },
+        "capture_drops": {
+          "median": 0.0,
+          "peak": 0
+        }
+      },
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-native-programmable-gl-round4/run-0.log",
+      "logSHA256": "ee94eccde0930f9ad5755dfcbf3fbacfded197fc9d1e5d954c994fcbb82abf72"
+    },
+    {
+      "case": "flat-warm-native-programmable-gl-round4",
+      "round": 4,
+      "mode": "2D clouds",
+      "backend": "programmable-gl",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 3.93138,
+        "p95": 4.616831,
+        "p99": 5.062413
+      },
+      "processCpuMs": {
+        "p50": 3.181,
+        "p95": 3.863,
+        "p99": 4.171
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {
+        "packets": {
+          "median": 7035.0,
+          "peak": 7035
+        },
+        "batches": {
+          "median": 37.0,
+          "peak": 37
+        },
+        "upload_bytes": {
+          "median": 0.0,
+          "peak": 0
+        },
+        "resource_bytes": {
+          "median": 44795740.0,
+          "peak": 44795740
+        },
+        "submit_cpu_ns": {
+          "median": 373522.0,
+          "peak": 1312730
+        },
+        "capture_cpu_ns": {
+          "median": 1044153.0,
+          "peak": 2203481
+        },
+        "capture_drops": {
+          "median": 0.0,
+          "peak": 0
+        }
+      },
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-native-programmable-gl-round4/run-0.log",
+      "logSHA256": "ee94eccde0930f9ad5755dfcbf3fbacfded197fc9d1e5d954c994fcbb82abf72"
+    },
+    {
+      "case": "flat-warm-native-programmable-gl-round5",
+      "round": 5,
+      "mode": "2D no clouds",
+      "backend": "programmable-gl",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 0.502549,
+        "p95": 0.590372,
+        "p99": 0.628243
+      },
+      "processCpuMs": {
+        "p50": 0.248,
+        "p95": 0.34,
+        "p99": 0.386
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {
+        "packets": {
+          "median": 35.0,
+          "peak": 35
+        },
+        "batches": {
+          "median": 35.0,
+          "peak": 35
+        },
+        "upload_bytes": {
+          "median": 0.0,
+          "peak": 0
+        },
+        "resource_bytes": {
+          "median": 43667356.0,
+          "peak": 43667356
+        },
+        "submit_cpu_ns": {
+          "median": 77835.5,
+          "peak": 173664
+        },
+        "capture_cpu_ns": {
+          "median": 350329.0,
+          "peak": 501295
+        },
+        "capture_drops": {
+          "median": 0.0,
+          "peak": 0
+        }
+      },
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-native-programmable-gl-round5/run-0.log",
+      "logSHA256": "499f46b2523955c89196d274d3c3efee555794eeb7b82f3312c5e018e6f7152e"
+    },
+    {
+      "case": "flat-warm-native-programmable-gl-round5",
+      "round": 5,
+      "mode": "2D clouds",
+      "backend": "programmable-gl",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 4.00038,
+        "p95": 4.774846,
+        "p99": 5.401666
+      },
+      "processCpuMs": {
+        "p50": 3.235,
+        "p95": 4.033,
+        "p99": 4.356
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {
+        "packets": {
+          "median": 7035.0,
+          "peak": 7035
+        },
+        "batches": {
+          "median": 37.0,
+          "peak": 37
+        },
+        "upload_bytes": {
+          "median": 0.0,
+          "peak": 0
+        },
+        "resource_bytes": {
+          "median": 44795740.0,
+          "peak": 44795740
+        },
+        "submit_cpu_ns": {
+          "median": 372770.5,
+          "peak": 1415420
+        },
+        "capture_cpu_ns": {
+          "median": 1064832.0,
+          "peak": 2449270
+        },
+        "capture_drops": {
+          "median": 0.0,
+          "peak": 0
+        }
+      },
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-native-programmable-gl-round5/run-0.log",
+      "logSHA256": "499f46b2523955c89196d274d3c3efee555794eeb7b82f3312c5e018e6f7152e"
+    },
+    {
+      "case": "flat-warm-native-programmable-gl-round6",
+      "round": 6,
+      "mode": "2D no clouds",
+      "backend": "programmable-gl",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 0.538495,
+        "p95": 0.720525,
+        "p99": 0.86731
+      },
+      "processCpuMs": {
+        "p50": 0.29,
+        "p95": 0.463,
+        "p99": 0.571
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {
+        "packets": {
+          "median": 35.0,
+          "peak": 35
+        },
+        "batches": {
+          "median": 35.0,
+          "peak": 35
+        },
+        "upload_bytes": {
+          "median": 0.0,
+          "peak": 0
+        },
+        "resource_bytes": {
+          "median": 43667356.0,
+          "peak": 43667356
+        },
+        "submit_cpu_ns": {
+          "median": 83425.0,
+          "peak": 312263
+        },
+        "capture_cpu_ns": {
+          "median": 365311.5,
+          "peak": 698233
+        },
+        "capture_drops": {
+          "median": 0.0,
+          "peak": 0
+        }
+      },
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-native-programmable-gl-round6/run-0.log",
+      "logSHA256": "682bd7873459fd4746e62364984175276dba9f620dc0ff8b65e9b1634cb52fb4"
+    },
+    {
+      "case": "flat-warm-native-programmable-gl-round6",
+      "round": 6,
+      "mode": "2D clouds",
+      "backend": "programmable-gl",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 3.998296,
+        "p95": 5.428326,
+        "p99": 6.11052
+      },
+      "processCpuMs": {
+        "p50": 3.263,
+        "p95": 4.038,
+        "p99": 4.447
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {
+        "packets": {
+          "median": 7035.0,
+          "peak": 7035
+        },
+        "batches": {
+          "median": 37.0,
+          "peak": 37
+        },
+        "upload_bytes": {
+          "median": 0.0,
+          "peak": 0
+        },
+        "resource_bytes": {
+          "median": 44795740.0,
+          "peak": 44795740
+        },
+        "submit_cpu_ns": {
+          "median": 379979.0,
+          "peak": 1285199
+        },
+        "capture_cpu_ns": {
+          "median": 1058460.5,
+          "peak": 8579126
+        },
+        "capture_drops": {
+          "median": 0.0,
+          "peak": 0
+        }
+      },
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-native-programmable-gl-round6/run-0.log",
+      "logSHA256": "682bd7873459fd4746e62364984175276dba9f620dc0ff8b65e9b1634cb52fb4"
+    },
+    {
+      "case": "flat-warm-native-sdl-gpu-round0",
+      "round": 0,
+      "mode": "2D no clouds",
+      "backend": "sdl-gpu",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 0.623103,
+        "p95": 0.759929,
+        "p99": 0.961255
+      },
+      "processCpuMs": {
+        "p50": 0.297,
+        "p95": 0.453,
+        "p99": 0.612
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {
+        "packets": {
+          "median": 35.0,
+          "peak": 35
+        },
+        "batches": {
+          "median": 35.0,
+          "peak": 35
+        },
+        "upload_bytes": {
+          "median": 6720.0,
+          "peak": 6720
+        },
+        "resource_bytes": {
+          "median": 43680604.0,
+          "peak": 43680604
+        },
+        "submit_cpu_ns": {
+          "median": 150335.5,
+          "peak": 670822
+        },
+        "capture_cpu_ns": {
+          "median": 383405.5,
+          "peak": 864353
+        },
+        "capture_drops": {
+          "median": 0.0,
+          "peak": 0
+        }
+      },
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-native-sdl-gpu-round0/run-0.log",
+      "logSHA256": "de5e076baca95051fb8de3063558ac4e67d9485bd58af9adfca8b300c0cc0d59"
+    },
+    {
+      "case": "flat-warm-native-sdl-gpu-round0",
+      "round": 0,
+      "mode": "2D clouds",
+      "backend": "sdl-gpu",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 31.658775,
+        "p95": 33.224287,
+        "p99": 34.375868
+      },
+      "processCpuMs": {
+        "p50": 18.554,
+        "p95": 20.1,
+        "p99": 23.042
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {
+        "packets": {
+          "median": 7035.0,
+          "peak": 7035
+        },
+        "batches": {
+          "median": 7035.0,
+          "peak": 7035
+        },
+        "upload_bytes": {
+          "median": 2694720.0,
+          "peak": 2694720
+        },
+        "resource_bytes": {
+          "median": 49056604.0,
+          "peak": 49056604
+        },
+        "submit_cpu_ns": {
+          "median": 14634214.0,
+          "peak": 20843579
+        },
+        "capture_cpu_ns": {
+          "median": 13885717.5,
+          "peak": 16081364
+        },
+        "capture_drops": {
+          "median": 0.0,
+          "peak": 0
+        }
+      },
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-native-sdl-gpu-round0/run-0.log",
+      "logSHA256": "de5e076baca95051fb8de3063558ac4e67d9485bd58af9adfca8b300c0cc0d59"
+    },
+    {
+      "case": "flat-warm-native-sdl-gpu-round1",
+      "round": 1,
+      "mode": "2D no clouds",
+      "backend": "sdl-gpu",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 0.630868,
+        "p95": 0.801226,
+        "p99": 0.864194
+      },
+      "processCpuMs": {
+        "p50": 0.32,
+        "p95": 0.471,
+        "p99": 0.595
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {
+        "packets": {
+          "median": 35.0,
+          "peak": 35
+        },
+        "batches": {
+          "median": 35.0,
+          "peak": 35
+        },
+        "upload_bytes": {
+          "median": 6720.0,
+          "peak": 6720
+        },
+        "resource_bytes": {
+          "median": 43680604.0,
+          "peak": 43680604
+        },
+        "submit_cpu_ns": {
+          "median": 161591.0,
+          "peak": 573490
+        },
+        "capture_cpu_ns": {
+          "median": 383305.0,
+          "peak": 630507
+        },
+        "capture_drops": {
+          "median": 0.0,
+          "peak": 0
+        }
+      },
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-native-sdl-gpu-round1/run-0.log",
+      "logSHA256": "f05c9b8da5b445fa03f180e40ac9852617f43ece969c33c3878dc9c6b12826fe"
+    },
+    {
+      "case": "flat-warm-native-sdl-gpu-round1",
+      "round": 1,
+      "mode": "2D clouds",
+      "backend": "sdl-gpu",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 32.420216,
+        "p95": 44.735902,
+        "p99": 72.254756
+      },
+      "processCpuMs": {
+        "p50": 19.326,
+        "p95": 21.866,
+        "p99": 25.324
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {
+        "packets": {
+          "median": 7035.0,
+          "peak": 7035
+        },
+        "batches": {
+          "median": 7035.0,
+          "peak": 7035
+        },
+        "upload_bytes": {
+          "median": 2694720.0,
+          "peak": 2694720
+        },
+        "resource_bytes": {
+          "median": 49056604.0,
+          "peak": 49056604
+        },
+        "submit_cpu_ns": {
+          "median": 15127314.5,
+          "peak": 31950383
+        },
+        "capture_cpu_ns": {
+          "median": 14016321.5,
+          "peak": 61786992
+        },
+        "capture_drops": {
+          "median": 0.0,
+          "peak": 0
+        }
+      },
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-native-sdl-gpu-round1/run-0.log",
+      "logSHA256": "f05c9b8da5b445fa03f180e40ac9852617f43ece969c33c3878dc9c6b12826fe"
+    },
+    {
+      "case": "flat-warm-native-sdl-gpu-round2",
+      "round": 2,
+      "mode": "2D no clouds",
+      "backend": "sdl-gpu",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 0.639054,
+        "p95": 0.804842,
+        "p99": 0.917693
+      },
+      "processCpuMs": {
+        "p50": 0.319,
+        "p95": 0.524,
+        "p99": 0.631
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {
+        "packets": {
+          "median": 35.0,
+          "peak": 35
+        },
+        "batches": {
+          "median": 35.0,
+          "peak": 35
+        },
+        "upload_bytes": {
+          "median": 6720.0,
+          "peak": 6720
+        },
+        "resource_bytes": {
+          "median": 43680604.0,
+          "peak": 43680604
+        },
+        "submit_cpu_ns": {
+          "median": 158546.0,
+          "peak": 375361
+        },
+        "capture_cpu_ns": {
+          "median": 392197.0,
+          "peak": 622000
+        },
+        "capture_drops": {
+          "median": 0.0,
+          "peak": 0
+        }
+      },
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-native-sdl-gpu-round2/run-0.log",
+      "logSHA256": "b0f2dac3734cdf289a9ddcd30856542bc0967c622f80a2e46f7d60d018efc195"
+    },
+    {
+      "case": "flat-warm-native-sdl-gpu-round2",
+      "round": 2,
+      "mode": "2D clouds",
+      "backend": "sdl-gpu",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 31.646341,
+        "p95": 33.480897,
+        "p99": 47.003727
+      },
+      "processCpuMs": {
+        "p50": 18.43,
+        "p95": 20.432,
+        "p99": 21.685
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {
+        "packets": {
+          "median": 7035.0,
+          "peak": 7035
+        },
+        "batches": {
+          "median": 7035.0,
+          "peak": 7035
+        },
+        "upload_bytes": {
+          "median": 2694720.0,
+          "peak": 2694720
+        },
+        "resource_bytes": {
+          "median": 49056604.0,
+          "peak": 49056604
+        },
+        "submit_cpu_ns": {
+          "median": 14481359.0,
+          "peak": 19905870
+        },
+        "capture_cpu_ns": {
+          "median": 13930541.5,
+          "peak": 40649072
+        },
+        "capture_drops": {
+          "median": 0.0,
+          "peak": 0
+        }
+      },
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-native-sdl-gpu-round2/run-0.log",
+      "logSHA256": "b0f2dac3734cdf289a9ddcd30856542bc0967c622f80a2e46f7d60d018efc195"
+    },
+    {
+      "case": "flat-warm-native-sdl-gpu-round3",
+      "round": 3,
+      "mode": "2D no clouds",
+      "backend": "sdl-gpu",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 0.628293,
+        "p95": 0.817015,
+        "p99": 0.945766
+      },
+      "processCpuMs": {
+        "p50": 0.308,
+        "p95": 0.468,
+        "p99": 0.587
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {
+        "packets": {
+          "median": 35.0,
+          "peak": 35
+        },
+        "batches": {
+          "median": 35.0,
+          "peak": 35
+        },
+        "upload_bytes": {
+          "median": 6720.0,
+          "peak": 6720
+        },
+        "resource_bytes": {
+          "median": 43680604.0,
+          "peak": 43680604
+        },
+        "submit_cpu_ns": {
+          "median": 157444.0,
+          "peak": 540769
+        },
+        "capture_cpu_ns": {
+          "median": 385364.5,
+          "peak": 646186
+        },
+        "capture_drops": {
+          "median": 0.0,
+          "peak": 0
+        }
+      },
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-native-sdl-gpu-round3/run-0.log",
+      "logSHA256": "e431edc8f42041fc2ee6dbfd514e0aed856e82db7fd6ff0c4610fa8c5f1ca53e"
+    },
+    {
+      "case": "flat-warm-native-sdl-gpu-round3",
+      "round": 3,
+      "mode": "2D clouds",
+      "backend": "sdl-gpu",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 32.162275,
+        "p95": 34.123526,
+        "p99": 35.411201
+      },
+      "processCpuMs": {
+        "p50": 19.069,
+        "p95": 21.584,
+        "p99": 23.713
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {
+        "packets": {
+          "median": 7035.0,
+          "peak": 7035
+        },
+        "batches": {
+          "median": 7035.0,
+          "peak": 7035
+        },
+        "upload_bytes": {
+          "median": 2694720.0,
+          "peak": 2694720
+        },
+        "resource_bytes": {
+          "median": 49056604.0,
+          "peak": 49056604
+        },
+        "submit_cpu_ns": {
+          "median": 15110853.5,
+          "peak": 22755728
+        },
+        "capture_cpu_ns": {
+          "median": 13785611.0,
+          "peak": 15467639
+        },
+        "capture_drops": {
+          "median": 0.0,
+          "peak": 0
+        }
+      },
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-native-sdl-gpu-round3/run-0.log",
+      "logSHA256": "e431edc8f42041fc2ee6dbfd514e0aed856e82db7fd6ff0c4610fa8c5f1ca53e"
+    },
+    {
+      "case": "flat-warm-native-sdl-gpu-round4",
+      "round": 4,
+      "mode": "2D no clouds",
+      "backend": "sdl-gpu",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 0.631589,
+        "p95": 0.781169,
+        "p99": 0.888198
+      },
+      "processCpuMs": {
+        "p50": 0.307,
+        "p95": 0.447,
+        "p99": 0.56
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {
+        "packets": {
+          "median": 35.0,
+          "peak": 35
+        },
+        "batches": {
+          "median": 35.0,
+          "peak": 35
+        },
+        "upload_bytes": {
+          "median": 6720.0,
+          "peak": 6720
+        },
+        "resource_bytes": {
+          "median": 43680604.0,
+          "peak": 43680604
+        },
+        "submit_cpu_ns": {
+          "median": 154874.0,
+          "peak": 290693
+        },
+        "capture_cpu_ns": {
+          "median": 393444.0,
+          "peak": 845417
+        },
+        "capture_drops": {
+          "median": 0.0,
+          "peak": 0
+        }
+      },
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-native-sdl-gpu-round4/run-0.log",
+      "logSHA256": "cf0a4a4b791d312085ffccebef41271f4c2eccbbe8c3397d8d8c52cfd6fddd1e"
+    },
+    {
+      "case": "flat-warm-native-sdl-gpu-round4",
+      "round": 4,
+      "mode": "2D clouds",
+      "backend": "sdl-gpu",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 34.254712,
+        "p95": 36.346828,
+        "p99": 37.703842
+      },
+      "processCpuMs": {
+        "p50": 22.469,
+        "p95": 24.465,
+        "p99": 25.01
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {
+        "packets": {
+          "median": 7035.0,
+          "peak": 7035
+        },
+        "batches": {
+          "median": 7035.0,
+          "peak": 7035
+        },
+        "upload_bytes": {
+          "median": 2694720.0,
+          "peak": 2694720
+        },
+        "resource_bytes": {
+          "median": 49056604.0,
+          "peak": 49056604
+        },
+        "submit_cpu_ns": {
+          "median": 18454051.5,
+          "peak": 22381588
+        },
+        "capture_cpu_ns": {
+          "median": 12656684.5,
+          "peak": 18630410
+        },
+        "capture_drops": {
+          "median": 0.0,
+          "peak": 0
+        }
+      },
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-native-sdl-gpu-round4/run-0.log",
+      "logSHA256": "cf0a4a4b791d312085ffccebef41271f4c2eccbbe8c3397d8d8c52cfd6fddd1e"
+    },
+    {
+      "case": "flat-warm-native-sdl-gpu-round5",
+      "round": 5,
+      "mode": "2D no clouds",
+      "backend": "sdl-gpu",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 0.611652,
+        "p95": 0.741544,
+        "p99": 0.880393
+      },
+      "processCpuMs": {
+        "p50": 0.285,
+        "p95": 0.433,
+        "p99": 0.468
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {
+        "packets": {
+          "median": 35.0,
+          "peak": 35
+        },
+        "batches": {
+          "median": 35.0,
+          "peak": 35
+        },
+        "upload_bytes": {
+          "median": 6720.0,
+          "peak": 6720
+        },
+        "resource_bytes": {
+          "median": 43680604.0,
+          "peak": 43680604
+        },
+        "submit_cpu_ns": {
+          "median": 146779.0,
+          "peak": 576235
+        },
+        "capture_cpu_ns": {
+          "median": 388585.0,
+          "peak": 664450
+        },
+        "capture_drops": {
+          "median": 0.0,
+          "peak": 0
+        }
+      },
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-native-sdl-gpu-round5/run-0.log",
+      "logSHA256": "44c576f0b3415c30552d04c3e5024cbc1240cedfe4782dae9985dcf7ca8a8cda"
+    },
+    {
+      "case": "flat-warm-native-sdl-gpu-round5",
+      "round": 5,
+      "mode": "2D clouds",
+      "backend": "sdl-gpu",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 31.891329,
+        "p95": 34.05566,
+        "p99": 65.536753
+      },
+      "processCpuMs": {
+        "p50": 18.793,
+        "p95": 20.759,
+        "p99": 37.004
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {
+        "packets": {
+          "median": 7035.0,
+          "peak": 7035
+        },
+        "batches": {
+          "median": 7035.0,
+          "peak": 7035
+        },
+        "upload_bytes": {
+          "median": 2694720.0,
+          "peak": 2694720
+        },
+        "resource_bytes": {
+          "median": 49056604.0,
+          "peak": 49056604
+        },
+        "submit_cpu_ns": {
+          "median": 14846024.0,
+          "peak": 31235899
+        },
+        "capture_cpu_ns": {
+          "median": 13823381.5,
+          "peak": 62406476
+        },
+        "capture_drops": {
+          "median": 0.0,
+          "peak": 0
+        }
+      },
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-native-sdl-gpu-round5/run-0.log",
+      "logSHA256": "44c576f0b3415c30552d04c3e5024cbc1240cedfe4782dae9985dcf7ca8a8cda"
+    },
+    {
+      "case": "flat-warm-native-sdl-gpu-round6",
+      "round": 6,
+      "mode": "2D no clouds",
+      "backend": "sdl-gpu",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 0.615359,
+        "p95": 0.834829,
+        "p99": 0.967977
+      },
+      "processCpuMs": {
+        "p50": 0.297,
+        "p95": 0.507,
+        "p99": 0.597
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {
+        "packets": {
+          "median": 35.0,
+          "peak": 35
+        },
+        "batches": {
+          "median": 35.0,
+          "peak": 35
+        },
+        "upload_bytes": {
+          "median": 6720.0,
+          "peak": 6720
+        },
+        "resource_bytes": {
+          "median": 43680604.0,
+          "peak": 43680604
+        },
+        "submit_cpu_ns": {
+          "median": 151332.5,
+          "peak": 434841
+        },
+        "capture_cpu_ns": {
+          "median": 385824.5,
+          "peak": 1354667
+        },
+        "capture_drops": {
+          "median": 0.0,
+          "peak": 0
+        }
+      },
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-native-sdl-gpu-round6/run-0.log",
+      "logSHA256": "ca56e22b21e4450a8e05ec3b6e85f3209de30e15561b2a2cf4cdde06597d626b"
+    },
+    {
+      "case": "flat-warm-native-sdl-gpu-round6",
+      "round": 6,
+      "mode": "2D clouds",
+      "backend": "sdl-gpu",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 31.709649,
+        "p95": 33.845438,
+        "p99": 36.771732
+      },
+      "processCpuMs": {
+        "p50": 18.544,
+        "p95": 21.436,
+        "p99": 24.756
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {
+        "packets": {
+          "median": 7035.0,
+          "peak": 7035
+        },
+        "batches": {
+          "median": 7035.0,
+          "peak": 7035
+        },
+        "upload_bytes": {
+          "median": 2694720.0,
+          "peak": 2694720
+        },
+        "resource_bytes": {
+          "median": 49056604.0,
+          "peak": 49056604
+        },
+        "submit_cpu_ns": {
+          "median": 14719748.5,
+          "peak": 24132846
+        },
+        "capture_cpu_ns": {
+          "median": 13815070.5,
+          "peak": 16034316
+        },
+        "capture_drops": {
+          "median": 0.0,
+          "peak": 0
+        }
+      },
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-native-sdl-gpu-round6/run-0.log",
+      "logSHA256": "ca56e22b21e4450a8e05ec3b6e85f3209de30e15561b2a2cf4cdde06597d626b"
+    },
+    {
+      "case": "flat-warm-programmable-gl-round0",
+      "round": 0,
+      "mode": "2D no clouds",
+      "backend": "programmable-gl",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 4.722618,
+        "p95": 5.556676,
+        "p99": 6.004161
+      },
+      "processCpuMs": {
+        "p50": 4.303,
+        "p95": 4.923,
+        "p99": 5.475
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {
+        "packets": {
+          "median": 8196.0,
+          "peak": 8196
+        },
+        "batches": {
+          "median": 5.0,
+          "peak": 5
+        },
+        "upload_bytes": {
+          "median": 3026432.0,
+          "peak": 3026432
+        },
+        "resource_bytes": {
+          "median": 12982052.0,
+          "peak": 12982052
+        },
+        "submit_cpu_ns": {
+          "median": 1335457.5,
+          "peak": 2598007
+        },
+        "capture_cpu_ns": {
+          "median": 641666.5,
+          "peak": 2938382
+        },
+        "capture_drops": {
+          "median": 0.0,
+          "peak": 0
+        }
+      },
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-programmable-gl-round0/run-0.log",
+      "logSHA256": "b109f14752f6eb813a5911dde8bab0a78a75ebc66f65b64dfe034ab045355f7d"
+    },
+    {
+      "case": "flat-warm-programmable-gl-round0",
+      "round": 0,
+      "mode": "2D clouds",
+      "backend": "programmable-gl",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 15.524228,
+        "p95": 18.152064,
+        "p99": 18.957979
+      },
+      "processCpuMs": {
+        "p50": 14.364,
+        "p95": 15.555,
+        "p99": 16.686
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {
+        "packets": {
+          "median": 31748.0,
+          "peak": 31748
+        },
+        "batches": {
+          "median": 11.0,
+          "peak": 11
+        },
+        "upload_bytes": {
+          "median": 3026432.0,
+          "peak": 3026432
+        },
+        "resource_bytes": {
+          "median": 14162468.0,
+          "peak": 14162468
+        },
+        "submit_cpu_ns": {
+          "median": 2435483.5,
+          "peak": 3489242
+        },
+        "capture_cpu_ns": {
+          "median": 1548394.5,
+          "peak": 5319215
+        },
+        "capture_drops": {
+          "median": 0.0,
+          "peak": 0
+        }
+      },
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-programmable-gl-round0/run-0.log",
+      "logSHA256": "b109f14752f6eb813a5911dde8bab0a78a75ebc66f65b64dfe034ab045355f7d"
+    },
+    {
+      "case": "flat-warm-programmable-gl-round1",
+      "round": 1,
+      "mode": "2D no clouds",
+      "backend": "programmable-gl",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 4.67528,
+        "p95": 5.76271,
+        "p99": 6.917737
+      },
+      "processCpuMs": {
+        "p50": 4.302,
+        "p95": 5.036,
+        "p99": 5.349
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {
+        "packets": {
+          "median": 8196.0,
+          "peak": 8196
+        },
+        "batches": {
+          "median": 5.0,
+          "peak": 5
+        },
+        "upload_bytes": {
+          "median": 3026432.0,
+          "peak": 3026432
+        },
+        "resource_bytes": {
+          "median": 12982052.0,
+          "peak": 12982052
+        },
+        "submit_cpu_ns": {
+          "median": 1358094.5,
+          "peak": 2203111
+        },
+        "capture_cpu_ns": {
+          "median": 632194.5,
+          "peak": 3611658
+        },
+        "capture_drops": {
+          "median": 0.0,
+          "peak": 0
+        }
+      },
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-programmable-gl-round1/run-0.log",
+      "logSHA256": "ed70217f3992a4abff94f62ce26f0e18f80723a52c878d3b4a2707b6af846b86"
+    },
+    {
+      "case": "flat-warm-programmable-gl-round1",
+      "round": 1,
+      "mode": "2D clouds",
+      "backend": "programmable-gl",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 15.412909,
+        "p95": 18.02089,
+        "p99": 19.907572
+      },
+      "processCpuMs": {
+        "p50": 14.298,
+        "p95": 16.346,
+        "p99": 17.5
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {
+        "packets": {
+          "median": 31748.0,
+          "peak": 31748
+        },
+        "batches": {
+          "median": 11.0,
+          "peak": 11
+        },
+        "upload_bytes": {
+          "median": 3026432.0,
+          "peak": 3026432
+        },
+        "resource_bytes": {
+          "median": 14162468.0,
+          "peak": 14162468
+        },
+        "submit_cpu_ns": {
+          "median": 2437182.0,
+          "peak": 3498097
+        },
+        "capture_cpu_ns": {
+          "median": 1510488.0,
+          "peak": 5067415
+        },
+        "capture_drops": {
+          "median": 0.0,
+          "peak": 0
+        }
+      },
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-programmable-gl-round1/run-0.log",
+      "logSHA256": "ed70217f3992a4abff94f62ce26f0e18f80723a52c878d3b4a2707b6af846b86"
+    },
+    {
+      "case": "flat-warm-programmable-gl-round2",
+      "round": 2,
+      "mode": "2D no clouds",
+      "backend": "programmable-gl",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 4.60584,
+        "p95": 5.438425,
+        "p99": 6.020782
+      },
+      "processCpuMs": {
+        "p50": 4.234,
+        "p95": 4.933,
+        "p99": 5.311
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {
+        "packets": {
+          "median": 8196.0,
+          "peak": 8196
+        },
+        "batches": {
+          "median": 5.0,
+          "peak": 5
+        },
+        "upload_bytes": {
+          "median": 3026432.0,
+          "peak": 3026432
+        },
+        "resource_bytes": {
+          "median": 12982052.0,
+          "peak": 12982052
+        },
+        "submit_cpu_ns": {
+          "median": 1322738.0,
+          "peak": 1968724
+        },
+        "capture_cpu_ns": {
+          "median": 625542.0,
+          "peak": 3776436
+        },
+        "capture_drops": {
+          "median": 0.0,
+          "peak": 0
+        }
+      },
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-programmable-gl-round2/run-0.log",
+      "logSHA256": "18b106874b3ea4f08c61d329002aa5d951bc07f16fd17f02c6c7725e2fa526fb"
+    },
+    {
+      "case": "flat-warm-programmable-gl-round2",
+      "round": 2,
+      "mode": "2D clouds",
+      "backend": "programmable-gl",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 15.364499,
+        "p95": 18.269804,
+        "p99": 19.587895
+      },
+      "processCpuMs": {
+        "p50": 14.235,
+        "p95": 15.868,
+        "p99": 17.397
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {
+        "packets": {
+          "median": 31748.0,
+          "peak": 31748
+        },
+        "batches": {
+          "median": 11.0,
+          "peak": 11
+        },
+        "upload_bytes": {
+          "median": 3026432.0,
+          "peak": 3026432
+        },
+        "resource_bytes": {
+          "median": 14162468.0,
+          "peak": 14162468
+        },
+        "submit_cpu_ns": {
+          "median": 2400388.5,
+          "peak": 3309463
+        },
+        "capture_cpu_ns": {
+          "median": 1568636.5,
+          "peak": 5341296
+        },
+        "capture_drops": {
+          "median": 0.0,
+          "peak": 0
+        }
+      },
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-programmable-gl-round2/run-0.log",
+      "logSHA256": "18b106874b3ea4f08c61d329002aa5d951bc07f16fd17f02c6c7725e2fa526fb"
+    },
+    {
+      "case": "flat-warm-programmable-gl-round3",
+      "round": 3,
+      "mode": "2D no clouds",
+      "backend": "programmable-gl",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 4.67007,
+        "p95": 6.044156,
+        "p99": 6.633155
+      },
+      "processCpuMs": {
+        "p50": 4.295,
+        "p95": 5.145,
+        "p99": 5.466
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {
+        "packets": {
+          "median": 8196.0,
+          "peak": 8196
+        },
+        "batches": {
+          "median": 5.0,
+          "peak": 5
+        },
+        "upload_bytes": {
+          "median": 3026432.0,
+          "peak": 3026432
+        },
+        "resource_bytes": {
+          "median": 12982052.0,
+          "peak": 12982052
+        },
+        "submit_cpu_ns": {
+          "median": 1367932.5,
+          "peak": 2350354
+        },
+        "capture_cpu_ns": {
+          "median": 627931.5,
+          "peak": 2691943
+        },
+        "capture_drops": {
+          "median": 0.0,
+          "peak": 0
+        }
+      },
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-programmable-gl-round3/run-0.log",
+      "logSHA256": "d2eb314fe3055476527894ad261c5251b2bd64ef38e16a1730d2104949691677"
+    },
+    {
+      "case": "flat-warm-programmable-gl-round3",
+      "round": 3,
+      "mode": "2D clouds",
+      "backend": "programmable-gl",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 15.759817,
+        "p95": 18.948902,
+        "p99": 20.803795
+      },
+      "processCpuMs": {
+        "p50": 14.512,
+        "p95": 16.123,
+        "p99": 17.712
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {
+        "packets": {
+          "median": 31748.0,
+          "peak": 31748
+        },
+        "batches": {
+          "median": 11.0,
+          "peak": 11
+        },
+        "upload_bytes": {
+          "median": 3026432.0,
+          "peak": 3026432
+        },
+        "resource_bytes": {
+          "median": 14162468.0,
+          "peak": 14162468
+        },
+        "submit_cpu_ns": {
+          "median": 2503299.5,
+          "peak": 4883291
+        },
+        "capture_cpu_ns": {
+          "median": 1536451.5,
+          "peak": 6664334
+        },
+        "capture_drops": {
+          "median": 0.0,
+          "peak": 0
+        }
+      },
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-programmable-gl-round3/run-0.log",
+      "logSHA256": "d2eb314fe3055476527894ad261c5251b2bd64ef38e16a1730d2104949691677"
+    },
+    {
+      "case": "flat-warm-programmable-gl-round4",
+      "round": 4,
+      "mode": "2D no clouds",
+      "backend": "programmable-gl",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 4.794552,
+        "p95": 5.927438,
+        "p99": 6.728133
+      },
+      "processCpuMs": {
+        "p50": 4.401,
+        "p95": 5.338,
+        "p99": 5.567
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {
+        "packets": {
+          "median": 8196.0,
+          "peak": 8196
+        },
+        "batches": {
+          "median": 5.0,
+          "peak": 5
+        },
+        "upload_bytes": {
+          "median": 3026432.0,
+          "peak": 3026432
+        },
+        "resource_bytes": {
+          "median": 12982052.0,
+          "peak": 12982052
+        },
+        "submit_cpu_ns": {
+          "median": 1337015.0,
+          "peak": 2008357
+        },
+        "capture_cpu_ns": {
+          "median": 631638.5,
+          "peak": 2192060
+        },
+        "capture_drops": {
+          "median": 0.0,
+          "peak": 0
+        }
+      },
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-programmable-gl-round4/run-0.log",
+      "logSHA256": "00762ddd05694aebfe5039f56527f1ff89881b8ddd8d67d138d232f4e3f87e50"
+    },
+    {
+      "case": "flat-warm-programmable-gl-round4",
+      "round": 4,
+      "mode": "2D clouds",
+      "backend": "programmable-gl",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 15.487188,
+        "p95": 17.225103,
+        "p99": 17.86611
+      },
+      "processCpuMs": {
+        "p50": 14.474,
+        "p95": 15.629,
+        "p99": 16.018
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {
+        "packets": {
+          "median": 31748.0,
+          "peak": 31748
+        },
+        "batches": {
+          "median": 11.0,
+          "peak": 11
+        },
+        "upload_bytes": {
+          "median": 3026432.0,
+          "peak": 3026432
+        },
+        "resource_bytes": {
+          "median": 14162468.0,
+          "peak": 14162468
+        },
+        "submit_cpu_ns": {
+          "median": 2380527.0,
+          "peak": 3234945
+        },
+        "capture_cpu_ns": {
+          "median": 1484975.5,
+          "peak": 5306340
+        },
+        "capture_drops": {
+          "median": 0.0,
+          "peak": 0
+        }
+      },
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-programmable-gl-round4/run-0.log",
+      "logSHA256": "00762ddd05694aebfe5039f56527f1ff89881b8ddd8d67d138d232f4e3f87e50"
+    },
+    {
+      "case": "flat-warm-programmable-gl-round5",
+      "round": 5,
+      "mode": "2D no clouds",
+      "backend": "programmable-gl",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 4.591032,
+        "p95": 5.459845,
+        "p99": 5.959829
+      },
+      "processCpuMs": {
+        "p50": 4.206,
+        "p95": 5.084,
+        "p99": 5.429
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {
+        "packets": {
+          "median": 8196.0,
+          "peak": 8196
+        },
+        "batches": {
+          "median": 5.0,
+          "peak": 5
+        },
+        "upload_bytes": {
+          "median": 3026432.0,
+          "peak": 3026432
+        },
+        "resource_bytes": {
+          "median": 12982052.0,
+          "peak": 12982052
+        },
+        "submit_cpu_ns": {
+          "median": 1324035.0,
+          "peak": 2826123
+        },
+        "capture_cpu_ns": {
+          "median": 638842.0,
+          "peak": 1558598
+        },
+        "capture_drops": {
+          "median": 0.0,
+          "peak": 0
+        }
+      },
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-programmable-gl-round5/run-0.log",
+      "logSHA256": "77b7dd4c8991eaf714dde38b938ff25fbf1138abd12bad0f5f383d5aa825c7df"
+    },
+    {
+      "case": "flat-warm-programmable-gl-round5",
+      "round": 5,
+      "mode": "2D clouds",
+      "backend": "programmable-gl",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 15.358377,
+        "p95": 17.703286,
+        "p99": 18.994437
+      },
+      "processCpuMs": {
+        "p50": 14.324,
+        "p95": 15.675,
+        "p99": 16.791
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {
+        "packets": {
+          "median": 31748.0,
+          "peak": 31748
+        },
+        "batches": {
+          "median": 11.0,
+          "peak": 11
+        },
+        "upload_bytes": {
+          "median": 3026432.0,
+          "peak": 3026432
+        },
+        "resource_bytes": {
+          "median": 14162468.0,
+          "peak": 14162468
+        },
+        "submit_cpu_ns": {
+          "median": 2429076.5,
+          "peak": 3913391
+        },
+        "capture_cpu_ns": {
+          "median": 1494007.5,
+          "peak": 4148801
+        },
+        "capture_drops": {
+          "median": 0.0,
+          "peak": 0
+        }
+      },
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-programmable-gl-round5/run-0.log",
+      "logSHA256": "77b7dd4c8991eaf714dde38b938ff25fbf1138abd12bad0f5f383d5aa825c7df"
+    },
+    {
+      "case": "flat-warm-programmable-gl-round6",
+      "round": 6,
+      "mode": "2D no clouds",
+      "backend": "programmable-gl",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 4.714684,
+        "p95": 5.514217,
+        "p99": 5.978233
+      },
+      "processCpuMs": {
+        "p50": 4.308,
+        "p95": 5.01,
+        "p99": 5.215
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {
+        "packets": {
+          "median": 8196.0,
+          "peak": 8196
+        },
+        "batches": {
+          "median": 5.0,
+          "peak": 5
+        },
+        "upload_bytes": {
+          "median": 3026432.0,
+          "peak": 3026432
+        },
+        "resource_bytes": {
+          "median": 12982052.0,
+          "peak": 12982052
+        },
+        "submit_cpu_ns": {
+          "median": 1328022.5,
+          "peak": 2087425
+        },
+        "capture_cpu_ns": {
+          "median": 640850.5,
+          "peak": 2756984
+        },
+        "capture_drops": {
+          "median": 0.0,
+          "peak": 0
+        }
+      },
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-programmable-gl-round6/run-0.log",
+      "logSHA256": "d1f6d4c17031bf0bd2f17f340155a9217b160ba5c0e25d1f4b80c8247d11c8a7"
+    },
+    {
+      "case": "flat-warm-programmable-gl-round6",
+      "round": 6,
+      "mode": "2D clouds",
+      "backend": "programmable-gl",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 15.538875,
+        "p95": 17.612176,
+        "p99": 18.874393
+      },
+      "processCpuMs": {
+        "p50": 14.516,
+        "p95": 15.421,
+        "p99": 15.922
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {
+        "packets": {
+          "median": 31748.0,
+          "peak": 31748
+        },
+        "batches": {
+          "median": 11.0,
+          "peak": 11
+        },
+        "upload_bytes": {
+          "median": 3026432.0,
+          "peak": 3026432
+        },
+        "resource_bytes": {
+          "median": 14162468.0,
+          "peak": 14162468
+        },
+        "submit_cpu_ns": {
+          "median": 2484795.5,
+          "peak": 3209982
+        },
+        "capture_cpu_ns": {
+          "median": 1513954.0,
+          "peak": 7067807
+        },
+        "capture_drops": {
+          "median": 0.0,
+          "peak": 0
+        }
+      },
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-programmable-gl-round6/run-0.log",
+      "logSHA256": "d1f6d4c17031bf0bd2f17f340155a9217b160ba5c0e25d1f4b80c8247d11c8a7"
+    },
+    {
+      "case": "flat-warm-sdl-gpu-round0",
+      "round": 0,
+      "mode": "2D no clouds",
+      "backend": "sdl-gpu",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 35.355296,
+        "p95": 73.641816,
+        "p99": 79.080281
+      },
+      "processCpuMs": {
+        "p50": 22.277,
+        "p95": 25.69,
+        "p99": 29.91
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {
+        "packets": {
+          "median": 8196.0,
+          "peak": 8196
+        },
+        "batches": {
+          "median": 8196.0,
+          "peak": 8196
+        },
+        "upload_bytes": {
+          "median": 4600064.0,
+          "peak": 4600064
+        },
+        "resource_bytes": {
+          "median": 19154980.0,
+          "peak": 19154980
+        },
+        "submit_cpu_ns": {
+          "median": 18012703.5,
+          "peak": 40542545
+        },
+        "capture_cpu_ns": {
+          "median": 14344549.0,
+          "peak": 66377077
+        },
+        "capture_drops": {
+          "median": 0.0,
+          "peak": 0
+        }
+      },
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-sdl-gpu-round0/run-0.log",
+      "logSHA256": "aa9689e6021e0fb390fe32821ae645c7fbb483b9f597335c98c07c5d559772b1"
+    },
+    {
+      "case": "flat-warm-sdl-gpu-round0",
+      "round": 0,
+      "mode": "2D clouds",
+      "backend": "sdl-gpu",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 108.261771,
+        "p95": 125.145066,
+        "p99": 140.985373
+      },
+      "processCpuMs": {
+        "p50": 98.132,
+        "p95": 113.961,
+        "p99": 124.842
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {
+        "packets": {
+          "median": 31748.0,
+          "peak": 31748
+        },
+        "batches": {
+          "median": 31748.0,
+          "peak": 31748
+        },
+        "upload_bytes": {
+          "median": 13644032.0,
+          "peak": 13644032
+        },
+        "resource_bytes": {
+          "median": 21635108.0,
+          "peak": 31070756
+        },
+        "submit_cpu_ns": {
+          "median": 80975439.5,
+          "peak": 111742079
+        },
+        "capture_cpu_ns": {
+          "median": 13500900.0,
+          "peak": 69190587
+        },
+        "capture_drops": {
+          "median": 0.0,
+          "peak": 0
+        }
+      },
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-sdl-gpu-round0/run-0.log",
+      "logSHA256": "aa9689e6021e0fb390fe32821ae645c7fbb483b9f597335c98c07c5d559772b1"
+    },
+    {
+      "case": "flat-warm-sdl-gpu-round1",
+      "round": 1,
+      "mode": "2D no clouds",
+      "backend": "sdl-gpu",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 34.955059,
+        "p95": 37.634352,
+        "p99": 52.065789
+      },
+      "processCpuMs": {
+        "p50": 22.131,
+        "p95": 24.535,
+        "p99": 25.248
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {
+        "packets": {
+          "median": 8196.0,
+          "peak": 8196
+        },
+        "batches": {
+          "median": 8196.0,
+          "peak": 8196
+        },
+        "upload_bytes": {
+          "median": 4600064.0,
+          "peak": 4600064
+        },
+        "resource_bytes": {
+          "median": 19154980.0,
+          "peak": 19154980
+        },
+        "submit_cpu_ns": {
+          "median": 18070046.0,
+          "peak": 22600779
+        },
+        "capture_cpu_ns": {
+          "median": 13667981.5,
+          "peak": 42295675
+        },
+        "capture_drops": {
+          "median": 0.0,
+          "peak": 0
+        }
+      },
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-sdl-gpu-round1/run-0.log",
+      "logSHA256": "defe0fd3ce0bc9d02a74fe35243b6680e331fc38d561f864712219f7b8be78da"
+    },
+    {
+      "case": "flat-warm-sdl-gpu-round1",
+      "round": 1,
+      "mode": "2D clouds",
+      "backend": "sdl-gpu",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 102.236119,
+        "p95": 108.125595,
+        "p99": 115.088708
+      },
+      "processCpuMs": {
+        "p50": 87.99,
+        "p95": 97.657,
+        "p99": 101.551
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {
+        "packets": {
+          "median": 31748.0,
+          "peak": 31748
+        },
+        "batches": {
+          "median": 31748.0,
+          "peak": 31748
+        },
+        "upload_bytes": {
+          "median": 13644032.0,
+          "peak": 13644032
+        },
+        "resource_bytes": {
+          "median": 21635108.0,
+          "peak": 24780836
+        },
+        "submit_cpu_ns": {
+          "median": 71921811.0,
+          "peak": 85196240
+        },
+        "capture_cpu_ns": {
+          "median": 17250997.0,
+          "peak": 21727369
+        },
+        "capture_drops": {
+          "median": 0.0,
+          "peak": 0
+        }
+      },
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-sdl-gpu-round1/run-0.log",
+      "logSHA256": "defe0fd3ce0bc9d02a74fe35243b6680e331fc38d561f864712219f7b8be78da"
+    },
+    {
+      "case": "flat-warm-sdl-gpu-round2",
+      "round": 2,
+      "mode": "2D no clouds",
+      "backend": "sdl-gpu",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 34.970619,
+        "p95": 37.121835,
+        "p99": 44.317682
+      },
+      "processCpuMs": {
+        "p50": 21.828,
+        "p95": 23.868,
+        "p99": 25.775
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {
+        "packets": {
+          "median": 8196.0,
+          "peak": 8196
+        },
+        "batches": {
+          "median": 8196.0,
+          "peak": 8196
+        },
+        "upload_bytes": {
+          "median": 4600064.0,
+          "peak": 4600064
+        },
+        "resource_bytes": {
+          "median": 19154980.0,
+          "peak": 19154980
+        },
+        "submit_cpu_ns": {
+          "median": 17749407.0,
+          "peak": 24587685
+        },
+        "capture_cpu_ns": {
+          "median": 13773773.5,
+          "peak": 32817370
+        },
+        "capture_drops": {
+          "median": 0.0,
+          "peak": 0
+        }
+      },
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-sdl-gpu-round2/run-0.log",
+      "logSHA256": "4c3dc092dd77be74fda6ef02b4a9a4359ec6017edf23cca61d6527117424377c"
+    },
+    {
+      "case": "flat-warm-sdl-gpu-round2",
+      "round": 2,
+      "mode": "2D clouds",
+      "backend": "sdl-gpu",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 101.511345,
+        "p95": 107.336833,
+        "p99": 110.677171
+      },
+      "processCpuMs": {
+        "p50": 84.482,
+        "p95": 93.387,
+        "p99": 97.379
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {
+        "packets": {
+          "median": 31748.0,
+          "peak": 31748
+        },
+        "batches": {
+          "median": 31748.0,
+          "peak": 31748
+        },
+        "upload_bytes": {
+          "median": 13644032.0,
+          "peak": 13644032
+        },
+        "resource_bytes": {
+          "median": 21635108.0,
+          "peak": 24780836
+        },
+        "submit_cpu_ns": {
+          "median": 68594885.0,
+          "peak": 81614755
+        },
+        "capture_cpu_ns": {
+          "median": 19428009.0,
+          "peak": 29909295
+        },
+        "capture_drops": {
+          "median": 0.0,
+          "peak": 0
+        }
+      },
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-sdl-gpu-round2/run-0.log",
+      "logSHA256": "4c3dc092dd77be74fda6ef02b4a9a4359ec6017edf23cca61d6527117424377c"
+    },
+    {
+      "case": "flat-warm-sdl-gpu-round3",
+      "round": 3,
+      "mode": "2D no clouds",
+      "backend": "sdl-gpu",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 34.977861,
+        "p95": 36.550639,
+        "p99": 38.293914
+      },
+      "processCpuMs": {
+        "p50": 22.007,
+        "p95": 24.151,
+        "p99": 24.899
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {
+        "packets": {
+          "median": 8196.0,
+          "peak": 8196
+        },
+        "batches": {
+          "median": 8196.0,
+          "peak": 8196
+        },
+        "upload_bytes": {
+          "median": 4600064.0,
+          "peak": 4600064
+        },
+        "resource_bytes": {
+          "median": 19154980.0,
+          "peak": 19154980
+        },
+        "submit_cpu_ns": {
+          "median": 17922425.0,
+          "peak": 21393536
+        },
+        "capture_cpu_ns": {
+          "median": 13784409.5,
+          "peak": 18293983
+        },
+        "capture_drops": {
+          "median": 0.0,
+          "peak": 0
+        }
+      },
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-sdl-gpu-round3/run-0.log",
+      "logSHA256": "25a8d97c9594cd05b506bc50c71d29c359f635f0212a8c44933d7f06decf28ea"
+    },
+    {
+      "case": "flat-warm-sdl-gpu-round3",
+      "round": 3,
+      "mode": "2D clouds",
+      "backend": "sdl-gpu",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 101.379169,
+        "p95": 108.066035,
+        "p99": 116.951916
+      },
+      "processCpuMs": {
+        "p50": 85.834,
+        "p95": 96.319,
+        "p99": 105.523
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {
+        "packets": {
+          "median": 31748.0,
+          "peak": 31748
+        },
+        "batches": {
+          "median": 31748.0,
+          "peak": 31748
+        },
+        "upload_bytes": {
+          "median": 13644032.0,
+          "peak": 13644032
+        },
+        "resource_bytes": {
+          "median": 21635108.0,
+          "peak": 27926564
+        },
+        "submit_cpu_ns": {
+          "median": 69969548.0,
+          "peak": 138146521
+        },
+        "capture_cpu_ns": {
+          "median": 18473863.5,
+          "peak": 36539144
+        },
+        "capture_drops": {
+          "median": 0.0,
+          "peak": 0
+        }
+      },
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-sdl-gpu-round3/run-0.log",
+      "logSHA256": "25a8d97c9594cd05b506bc50c71d29c359f635f0212a8c44933d7f06decf28ea"
+    },
+    {
+      "case": "flat-warm-sdl-gpu-round4",
+      "round": 4,
+      "mode": "2D no clouds",
+      "backend": "sdl-gpu",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 35.082156,
+        "p95": 36.86178,
+        "p99": 38.730098
+      },
+      "processCpuMs": {
+        "p50": 21.563,
+        "p95": 23.605,
+        "p99": 24.641
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {
+        "packets": {
+          "median": 8196.0,
+          "peak": 8196
+        },
+        "batches": {
+          "median": 8196.0,
+          "peak": 8196
+        },
+        "upload_bytes": {
+          "median": 4600064.0,
+          "peak": 4600064
+        },
+        "resource_bytes": {
+          "median": 19154980.0,
+          "peak": 19154980
+        },
+        "submit_cpu_ns": {
+          "median": 17373530.5,
+          "peak": 20997056
+        },
+        "capture_cpu_ns": {
+          "median": 14191994.0,
+          "peak": 22632127
+        },
+        "capture_drops": {
+          "median": 0.0,
+          "peak": 0
+        }
+      },
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-sdl-gpu-round4/run-0.log",
+      "logSHA256": "cbcce7c4aab878b7b2bd234a0a2f4893cdfa2f3c829b91c2e6ff14d26bde043d"
+    },
+    {
+      "case": "flat-warm-sdl-gpu-round4",
+      "round": 4,
+      "mode": "2D clouds",
+      "backend": "sdl-gpu",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 100.991776,
+        "p95": 108.402903,
+        "p99": 134.042259
+      },
+      "processCpuMs": {
+        "p50": 83.401,
+        "p95": 94.37,
+        "p99": 116.479
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {
+        "packets": {
+          "median": 31748.0,
+          "peak": 31748
+        },
+        "batches": {
+          "median": 31748.0,
+          "peak": 31748
+        },
+        "upload_bytes": {
+          "median": 13644032.0,
+          "peak": 13644032
+        },
+        "resource_bytes": {
+          "median": 21635108.0,
+          "peak": 27926564
+        },
+        "submit_cpu_ns": {
+          "median": 67584809.0,
+          "peak": 106070925
+        },
+        "capture_cpu_ns": {
+          "median": 19868705.5,
+          "peak": 45126426
+        },
+        "capture_drops": {
+          "median": 0.0,
+          "peak": 0
+        }
+      },
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-sdl-gpu-round4/run-0.log",
+      "logSHA256": "cbcce7c4aab878b7b2bd234a0a2f4893cdfa2f3c829b91c2e6ff14d26bde043d"
+    },
+    {
+      "case": "flat-warm-sdl-gpu-round5",
+      "round": 5,
+      "mode": "2D no clouds",
+      "backend": "sdl-gpu",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 35.135606,
+        "p95": 43.025208,
+        "p99": 69.376281
+      },
+      "processCpuMs": {
+        "p50": 22.07,
+        "p95": 25.796,
+        "p99": 31.472
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {
+        "packets": {
+          "median": 8196.0,
+          "peak": 8196
+        },
+        "batches": {
+          "median": 8196.0,
+          "peak": 8196
+        },
+        "upload_bytes": {
+          "median": 4600064.0,
+          "peak": 4600064
+        },
+        "resource_bytes": {
+          "median": 19154980.0,
+          "peak": 19154980
+        },
+        "submit_cpu_ns": {
+          "median": 17868434.0,
+          "peak": 37465562
+        },
+        "capture_cpu_ns": {
+          "median": 13809555.0,
+          "peak": 66590683
+        },
+        "capture_drops": {
+          "median": 0.0,
+          "peak": 0
+        }
+      },
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-sdl-gpu-round5/run-0.log",
+      "logSHA256": "0aa3dcc5df2ebbd5b057b27bc99c512a6c803d511292d5f4328699cbee9835ad"
+    },
+    {
+      "case": "flat-warm-sdl-gpu-round5",
+      "round": 5,
+      "mode": "2D clouds",
+      "backend": "sdl-gpu",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 101.240009,
+        "p95": 105.649442,
+        "p99": 106.660139
+      },
+      "processCpuMs": {
+        "p50": 85.168,
+        "p95": 93.479,
+        "p99": 95.452
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {
+        "packets": {
+          "median": 31748.0,
+          "peak": 31748
+        },
+        "batches": {
+          "median": 31748.0,
+          "peak": 31748
+        },
+        "upload_bytes": {
+          "median": 13644032.0,
+          "peak": 13644032
+        },
+        "resource_bytes": {
+          "median": 21635108.0,
+          "peak": 21635108
+        },
+        "submit_cpu_ns": {
+          "median": 69073260.0,
+          "peak": 83435713
+        },
+        "capture_cpu_ns": {
+          "median": 18705700.5,
+          "peak": 23250891
+        },
+        "capture_drops": {
+          "median": 0.0,
+          "peak": 0
+        }
+      },
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-sdl-gpu-round5/run-0.log",
+      "logSHA256": "0aa3dcc5df2ebbd5b057b27bc99c512a6c803d511292d5f4328699cbee9835ad"
+    },
+    {
+      "case": "flat-warm-sdl-gpu-round6",
+      "round": 6,
+      "mode": "2D no clouds",
+      "backend": "sdl-gpu",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 35.339828,
+        "p95": 40.025046,
+        "p99": 45.860683
+      },
+      "processCpuMs": {
+        "p50": 22.441,
+        "p95": 24.815,
+        "p99": 26.687
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {
+        "packets": {
+          "median": 8196.0,
+          "peak": 8196
+        },
+        "batches": {
+          "median": 8196.0,
+          "peak": 8196
+        },
+        "upload_bytes": {
+          "median": 4600064.0,
+          "peak": 4600064
+        },
+        "resource_bytes": {
+          "median": 19154980.0,
+          "peak": 19154980
+        },
+        "submit_cpu_ns": {
+          "median": 18242566.5,
+          "peak": 30020270
+        },
+        "capture_cpu_ns": {
+          "median": 13873444.5,
+          "peak": 31547190
+        },
+        "capture_drops": {
+          "median": 0.0,
+          "peak": 0
+        }
+      },
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-sdl-gpu-round6/run-0.log",
+      "logSHA256": "4c2ddd15028adea8d92e6fe5f419f390d79070328d9b93b752b3ad567f35a289"
+    },
+    {
+      "case": "flat-warm-sdl-gpu-round6",
+      "round": 6,
+      "mode": "2D clouds",
+      "backend": "sdl-gpu",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 101.292437,
+        "p95": 105.73937,
+        "p99": 110.236077
+      },
+      "processCpuMs": {
+        "p50": 84.132,
+        "p95": 92.615,
+        "p99": 98.367
+      },
+      "completion": {
+        "completed": 300,
+        "attempts": 300,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 300,
+      "deviceTelemetry": {
+        "packets": {
+          "median": 31748.0,
+          "peak": 31748
+        },
+        "batches": {
+          "median": 31748.0,
+          "peak": 31748
+        },
+        "upload_bytes": {
+          "median": 13644032.0,
+          "peak": 13644032
+        },
+        "resource_bytes": {
+          "median": 21635108.0,
+          "peak": 24780836
+        },
+        "submit_cpu_ns": {
+          "median": 68410158.0,
+          "peak": 83931326
+        },
+        "capture_cpu_ns": {
+          "median": 19496967.0,
+          "peak": 28228808
+        },
+        "capture_drops": {
+          "median": 0.0,
+          "peak": 0
+        }
+      },
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/flat-warm-sdl-gpu-round6/run-0.log",
+      "logSHA256": "4c2ddd15028adea8d92e6fe5f419f390d79070328d9b93b752b3ad567f35a289"
+    },
+    {
+      "case": "torus-legacy-gl-round0",
+      "round": 0,
+      "mode": "Torus no clouds",
+      "backend": "legacy-gl",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 6.123213,
+        "p95": 9.643046,
+        "p99": 13.139274
+      },
+      "processCpuMs": {
+        "p50": 4.779,
+        "p95": 5.915,
+        "p99": 11.863
+      },
+      "completion": {
+        "completed": 30,
+        "attempts": 30,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 30,
+      "deviceTelemetry": {},
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/torus-legacy-gl-round0/run-0.log",
+      "logSHA256": "86afc9d7fb08c9d0e2dbf7e357b9c6b4df7ab02e45c2aa63ca33bd87897c62c1"
+    },
+    {
+      "case": "torus-legacy-gl-round1",
+      "round": 1,
+      "mode": "Torus no clouds",
+      "backend": "legacy-gl",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 6.138582,
+        "p95": 11.907614,
+        "p99": 17.76421
+      },
+      "processCpuMs": {
+        "p50": 5.079,
+        "p95": 5.675,
+        "p99": 13.633
+      },
+      "completion": {
+        "completed": 30,
+        "attempts": 30,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 30,
+      "deviceTelemetry": {},
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/torus-legacy-gl-round1/run-0.log",
+      "logSHA256": "616570df3276550df74e3cd7bf54b7f40dba4d5550a29fba0b56bfa36140dcac"
+    },
+    {
+      "case": "torus-legacy-gl-round2",
+      "round": 2,
+      "mode": "Torus no clouds",
+      "backend": "legacy-gl",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 6.015763,
+        "p95": 6.746738,
+        "p99": 7.909739
+      },
+      "processCpuMs": {
+        "p50": 4.731,
+        "p95": 5.563,
+        "p99": 5.721
+      },
+      "completion": {
+        "completed": 30,
+        "attempts": 30,
+        "intentionalHolds": 0,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 30,
+      "deviceTelemetry": {},
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/torus-legacy-gl-round2/run-0.log",
+      "logSHA256": "1add86b995ef218abb61cd05bcb1584f23c38637401657234d6f342415cde6a8"
+    },
+    {
+      "case": "torus-programmable-gl-round0",
+      "round": 0,
+      "mode": "Torus no clouds",
+      "backend": "programmable-gl",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 38.692237,
+        "p95": 40.352879,
+        "p99": 41.715373
+      },
+      "processCpuMs": {
+        "p50": 14.312,
+        "p95": 16.235,
+        "p99": 17.442
+      },
+      "completion": {
+        "completed": 30,
+        "attempts": 750,
+        "intentionalHolds": 720,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 30,
+      "deviceTelemetry": {
+        "packets": {
+          "median": 14283.0,
+          "peak": 14283
+        },
+        "batches": {
+          "median": 54.0,
+          "peak": 54
+        },
+        "upload_bytes": {
+          "median": 4981824.0,
+          "peak": 4981824
+        },
+        "resource_bytes": {
+          "median": 88124132.0,
+          "peak": 88124132
+        },
+        "submit_cpu_ns": {
+          "median": 3831080.0,
+          "peak": 7092455
+        },
+        "capture_cpu_ns": {
+          "median": 485370.5,
+          "peak": 768614
+        },
+        "capture_drops": {
+          "median": 0.0,
+          "peak": 0
+        }
+      },
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/torus-programmable-gl-round0/run-0.log",
+      "logSHA256": "a807c4c69d0c71709d1e3ab38739fb4f715a4adf5772c000b245e3f6b40f3a9e"
+    },
+    {
+      "case": "torus-programmable-gl-round1",
+      "round": 1,
+      "mode": "Torus no clouds",
+      "backend": "programmable-gl",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 38.695173,
+        "p95": 40.100657,
+        "p99": 41.63368
+      },
+      "processCpuMs": {
+        "p50": 14.423,
+        "p95": 15.825,
+        "p99": 17.253
+      },
+      "completion": {
+        "completed": 30,
+        "attempts": 750,
+        "intentionalHolds": 720,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 30,
+      "deviceTelemetry": {
+        "packets": {
+          "median": 14283.0,
+          "peak": 14283
+        },
+        "batches": {
+          "median": 54.0,
+          "peak": 54
+        },
+        "upload_bytes": {
+          "median": 4981824.0,
+          "peak": 4981824
+        },
+        "resource_bytes": {
+          "median": 88124132.0,
+          "peak": 88124132
+        },
+        "submit_cpu_ns": {
+          "median": 3656896.5,
+          "peak": 6785722
+        },
+        "capture_cpu_ns": {
+          "median": 450796.5,
+          "peak": 787229
+        },
+        "capture_drops": {
+          "median": 0.0,
+          "peak": 0
+        }
+      },
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/torus-programmable-gl-round1/run-0.log",
+      "logSHA256": "1cf7dbd1c4aded750c64bbf18ebe588d91e7efeb40bb0cae46d81126985373fa"
+    },
+    {
+      "case": "torus-programmable-gl-round2",
+      "round": 2,
+      "mode": "Torus no clouds",
+      "backend": "programmable-gl",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 39.220193,
+        "p95": 42.118716,
+        "p99": 54.098064
+      },
+      "processCpuMs": {
+        "p50": 14.911,
+        "p95": 17.482,
+        "p99": 29.52
+      },
+      "completion": {
+        "completed": 30,
+        "attempts": 750,
+        "intentionalHolds": 720,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 30,
+      "deviceTelemetry": {
+        "packets": {
+          "median": 14283.0,
+          "peak": 14283
+        },
+        "batches": {
+          "median": 54.0,
+          "peak": 54
+        },
+        "upload_bytes": {
+          "median": 4981824.0,
+          "peak": 12539232
+        },
+        "resource_bytes": {
+          "median": 88122020.0,
+          "peak": 88124132
+        },
+        "submit_cpu_ns": {
+          "median": 3917449.5,
+          "peak": 6782866
+        },
+        "capture_cpu_ns": {
+          "median": 485681.5,
+          "peak": 1263638
+        },
+        "capture_drops": {
+          "median": 0.0,
+          "peak": 0
+        }
+      },
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/torus-programmable-gl-round2/run-0.log",
+      "logSHA256": "ff80ce38709f67b6502853e1aee235c9d0fc67ace1d240bd6e04fc0b9f9818a4"
+    },
+    {
+      "case": "torus-sdl-gpu-round0",
+      "round": 0,
+      "mode": "Torus no clouds",
+      "backend": "sdl-gpu",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 71.253858,
+        "p95": 73.806965,
+        "p99": 76.476009
+      },
+      "processCpuMs": {
+        "p50": 47.096,
+        "p95": 49.827,
+        "p99": 52.592
+      },
+      "completion": {
+        "completed": 30,
+        "attempts": 750,
+        "intentionalHolds": 720,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 30,
+      "deviceTelemetry": {
+        "packets": {
+          "median": 14068.0,
+          "peak": 14068
+        },
+        "batches": {
+          "median": 14067.0,
+          "peak": 14067
+        },
+        "upload_bytes": {
+          "median": 7725568.0,
+          "peak": 7725568
+        },
+        "resource_bytes": {
+          "median": 89486148.0,
+          "peak": 89486148
+        },
+        "submit_cpu_ns": {
+          "median": 36260614.5,
+          "peak": 40488611
+        },
+        "capture_cpu_ns": {
+          "median": 525690.5,
+          "peak": 766450
+        },
+        "capture_drops": {
+          "median": 0.0,
+          "peak": 0
+        }
+      },
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/torus-sdl-gpu-round0/run-0.log",
+      "logSHA256": "7a8a38633e5a34940dfd9bfc2ade28ca581033334cbe99ec2b1970f7a936a350"
+    },
+    {
+      "case": "torus-sdl-gpu-round1",
+      "round": 1,
+      "mode": "Torus no clouds",
+      "backend": "sdl-gpu",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 69.575214,
+        "p95": 86.560869,
+        "p99": 102.22631
+      },
+      "processCpuMs": {
+        "p50": 45.484,
+        "p95": 61.774,
+        "p99": 78.063
+      },
+      "completion": {
+        "completed": 30,
+        "attempts": 750,
+        "intentionalHolds": 720,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 30,
+      "deviceTelemetry": {
+        "packets": {
+          "median": 14068.0,
+          "peak": 14068
+        },
+        "batches": {
+          "median": 14067.0,
+          "peak": 14067
+        },
+        "upload_bytes": {
+          "median": 7723264.0,
+          "peak": 15465856
+        },
+        "resource_bytes": {
+          "median": 89481540.0,
+          "peak": 97224132
+        },
+        "submit_cpu_ns": {
+          "median": 34711454.5,
+          "peak": 47206909
+        },
+        "capture_cpu_ns": {
+          "median": 537037.0,
+          "peak": 1437923
+        },
+        "capture_drops": {
+          "median": 0.0,
+          "peak": 0
+        }
+      },
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/torus-sdl-gpu-round1/run-0.log",
+      "logSHA256": "326940201633d0b16fe5e1b6671e4f40555acf47b878349672ea333b303faf08"
+    },
+    {
+      "case": "torus-sdl-gpu-round2",
+      "round": 2,
+      "mode": "Torus no clouds",
+      "backend": "sdl-gpu",
+      "exitCode": 0,
+      "wallMs": {
+        "p50": 70.058225,
+        "p95": 85.145977,
+        "p99": 91.341426
+      },
+      "processCpuMs": {
+        "p50": 45.985,
+        "p95": 60.776,
+        "p99": 67.606
+      },
+      "completion": {
+        "completed": 30,
+        "attempts": 750,
+        "intentionalHolds": 720,
+        "admissionDeferrals": 0
+      },
+      "frameSamples": 30,
+      "deviceTelemetry": {
+        "packets": {
+          "median": 14068.0,
+          "peak": 14068
+        },
+        "batches": {
+          "median": 14067.0,
+          "peak": 14067
+        },
+        "upload_bytes": {
+          "median": 7722304.0,
+          "peak": 15466048
+        },
+        "resource_bytes": {
+          "median": 89479620.0,
+          "peak": 97224516
+        },
+        "submit_cpu_ns": {
+          "median": 35353207.0,
+          "peak": 39527602
+        },
+        "capture_cpu_ns": {
+          "median": 542722.5,
+          "peak": 1197865
+        },
+        "capture_drops": {
+          "median": 0.0,
+          "peak": 0
+        }
+      },
+      "log": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/final-aeca-release-paired/torus-sdl-gpu-round2/run-0.log",
+      "logSHA256": "08375004364d4f8b21af2d7c0bd23f0e585ea54a03db2c7ed986ead617c0fa9d"
+    }
+  ],
+  "paired": [
+    {
+      "workload": "flat-warm",
+      "mode": "2D clouds",
+      "backend": "programmable-gl",
+      "pairedRounds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "metrics": {
+        "wallMs/p50": {
+          "pairedRatios": [
+            1.639940521866116,
+            1.55174703705982,
+            1.632530351551082,
+            1.6579771244893322,
+            1.6491971243173065,
+            1.6382312486166632,
+            1.6804003016288194
+          ],
+          "medianRatio": 1.639940521866116,
+          "relativeMedianAbsoluteDeviation": 0.005644474496341597
+        },
+        "wallMs/p95": {
+          "pairedRatios": [
+            1.564146901415405,
+            1.4944185560135061,
+            1.6667860890201045,
+            1.6716442795973387,
+            1.6186783938784346,
+            1.6263157391895797,
+            1.6251118798809616
+          ],
+          "medianRatio": 1.6251118798809616,
+          "relativeMedianAbsoluteDeviation": 0.025643901601528806
+        },
+        "wallMs/p99": {
+          "pairedRatios": [
+            1.5183177008425481,
+            1.5607738399648698,
+            1.707864125201027,
+            1.6524144122075899,
+            1.5347710348069425,
+            1.667037647293,
+            1.6177803853569668
+          ],
+          "medianRatio": 1.6177803853569668,
+          "relativeMedianAbsoluteDeviation": 0.035237505602170045
+        },
+        "processCpuMs/p50": {
+          "pairedRatios": [
+            1.568978700163845,
+            1.4899958315964985,
+            1.5665236051502145,
+            1.579107725788901,
+            1.5893268914022183,
+            1.5785761516420542,
+            1.623532043395593
+          ],
+          "medianRatio": 1.5785761516420542,
+          "relativeMedianAbsoluteDeviation": 0.006810403000818808
+        },
+        "processCpuMs/p95": {
+          "pairedRatios": [
+            1.5404040404040402,
+            1.5208410867138074,
+            1.5989520354695688,
+            1.5769757433489828,
+            1.5694918658365133,
+            1.6181480334468878,
+            1.6234340456890197
+          ],
+          "medianRatio": 1.5769757433489828,
+          "relativeMedianAbsoluteDeviation": 0.02319103708423328
+        },
+        "processCpuMs/p99": {
+          "pairedRatios": [
+            1.5757861932193786,
+            1.4785400473132815,
+            1.7084356280074633,
+            1.6496227996647108,
+            1.5298949379178606,
+            1.6424728553262251,
+            1.6195707456006512
+          ],
+          "medianRatio": 1.6195707456006512,
+          "relativeMedianAbsoluteDeviation": 0.027034664895131916
+        }
+      }
+    },
+    {
+      "workload": "flat-warm",
+      "mode": "2D clouds",
+      "backend": "sdl-gpu",
+      "pairedRounds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "metrics": {
+        "wallMs/p50": {
+          "pairedRatios": [
+            11.436502042606557,
+            10.292969013100977,
+            10.785926162595551,
+            10.665374039669247,
+            10.754395604863683,
+            10.798963090568243,
+            10.953935963029382
+          ],
+          "medianRatio": 10.785926162595551,
+          "relativeMedianAbsoluteDeviation": 0.011176798460234762
+        },
+        "wallMs/p95": {
+          "pairedRatios": [
+            10.783636902741547,
+            8.966532482469022,
+            9.7925265144538,
+            9.53342675087537,
+            10.18684398692999,
+            9.705506105544284,
+            9.75679020912172
+          ],
+          "medianRatio": 9.75679020912172,
+          "relativeMedianAbsoluteDeviation": 0.022893129139696523
+        },
+        "wallMs/p99": {
+          "pairedRatios": [
+            11.29131894205543,
+            9.023071458526216,
+            9.649917453082093,
+            9.289316277808517,
+            11.514771629262903,
+            9.360975909867944,
+            9.44866217044968
+          ],
+          "medianRatio": 9.44866217044968,
+          "relativeMedianAbsoluteDeviation": 0.021299870712049713
+        },
+        "processCpuMs/p50": {
+          "pairedRatios": [
+            10.718951392681596,
+            9.169445602334305,
+            9.297017717618576,
+            9.33993471164309,
+            9.157900516086528,
+            9.385937844390567,
+            9.409685717481265
+          ],
+          "medianRatio": 9.33993471164309,
+          "relativeMedianAbsoluteDeviation": 0.007468039980110722
+        },
+        "processCpuMs/p95": {
+          "pairedRatios": [
+            11.285502079619725,
+            9.086062523260141,
+            9.410217654171705,
+            9.420872456964007,
+            9.47680257079735,
+            9.64994322287602,
+            9.749973681440151
+          ],
+          "medianRatio": 9.47680257079735,
+          "relativeMedianAbsoluteDeviation": 0.018269943980072038
+        },
+        "processCpuMs/p99": {
+          "pairedRatios": [
+            11.789781849088676,
+            8.579841162554917,
+            9.562898949229108,
+            9.827978019931079,
+            11.12502387774594,
+            9.33698522938472,
+            10.005797985962772
+          ],
+          "medianRatio": 9.827978019931079,
+          "relativeMedianAbsoluteDeviation": 0.04995867812795562
+        }
+      }
+    },
+    {
+      "workload": "flat-warm",
+      "mode": "2D no clouds",
+      "backend": "programmable-gl",
+      "pairedRounds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "metrics": {
+        "wallMs/p50": {
+          "pairedRatios": [
+            1.5014726622758099,
+            1.2242731460835687,
+            1.848545634495397,
+            1.7512083906748612,
+            1.891242040854645,
+            1.7292491547793387,
+            1.8398084753931074
+          ],
+          "medianRatio": 1.7512083906748612,
+          "relativeMedianAbsoluteDeviation": 0.0555829016916856
+        },
+        "wallMs/p95": {
+          "pairedRatios": [
+            1.092049389373781,
+            1.0280203609294785,
+            1.8066590680852603,
+            1.6854370729699568,
+            1.730645906289836,
+            1.5486009298109318,
+            1.6627001441010392
+          ],
+          "medianRatio": 1.6627001441010392,
+          "relativeMedianAbsoluteDeviation": 0.06862284501201907
+        },
+        "wallMs/p99": {
+          "pairedRatios": [
+            1.018805484298022,
+            0.6601797421517409,
+            1.8222043993559554,
+            1.4407665054919658,
+            1.5156115263492236,
+            1.4398438449378979,
+            1.446741280565393
+          ],
+          "medianRatio": 1.4407665054919658,
+          "relativeMedianAbsoluteDeviation": 0.051948057212574554
+        },
+        "processCpuMs/p50": {
+          "pairedRatios": [
+            1.343847595252967,
+            1.1683867463335142,
+            1.5230215827338132,
+            1.4623765747361253,
+            1.5656350053361792,
+            1.439917836357412,
+            1.5249557522123893
+          ],
+          "medianRatio": 1.4623765747361253,
+          "relativeMedianAbsoluteDeviation": 0.042792792607168235
+        },
+        "processCpuMs/p95": {
+          "pairedRatios": [
+            0.9635936582501468,
+            1.0714893617021275,
+            1.479160419790105,
+            1.4658119658119657,
+            1.580224985198342,
+            1.4592422502870264,
+            1.4241046048891415
+          ],
+          "medianRatio": 1.4592422502870264,
+          "relativeMedianAbsoluteDeviation": 0.024079377766764547
+        },
+        "processCpuMs/p99": {
+          "pairedRatios": [
+            1.0075450864924549,
+            1.0863119415109665,
+            1.4338552915766738,
+            1.395812053115424,
+            1.5272976680384087,
+            1.4351044144858578,
+            1.3854941551540914
+          ],
+          "medianRatio": 1.395812053115424,
+          "relativeMedianAbsoluteDeviation": 0.028150180593966186
+        }
+      }
+    },
+    {
+      "workload": "flat-warm",
+      "mode": "2D no clouds",
+      "backend": "sdl-gpu",
+      "pairedRounds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "metrics": {
+        "wallMs/p50": {
+          "pairedRatios": [
+            11.240589522732794,
+            9.153364088026121,
+            14.035395299891396,
+            13.11618962265212,
+            13.838383296504245,
+            13.234108796924062,
+            13.790641127450884
+          ],
+          "medianRatio": 13.234108796924062,
+          "relativeMedianAbsoluteDeviation": 0.04566038475674555
+        },
+        "wallMs/p95": {
+          "pairedRatios": [
+            14.472771166642854,
+            6.7136607822338865,
+            12.331971081096972,
+            10.192291861980655,
+            10.76260749678977,
+            12.203437481120572,
+            12.068739723491245
+          ],
+          "medianRatio": 12.068739723491245,
+          "relativeMedianAbsoluteDeviation": 0.10822440922801153
+        },
+        "wallMs/p99": {
+          "pairedRatios": [
+            13.418598199253596,
+            4.968789527116592,
+            13.412854859992978,
+            8.317699293230728,
+            8.724527732349376,
+            16.76071766195507,
+            11.098353518677433
+          ],
+          "medianRatio": 11.098353518677433,
+          "relativeMedianAbsoluteDeviation": 0.2138899055912341
+        },
+        "processCpuMs/p50": {
+          "pairedRatios": [
+            6.957214241099313,
+            6.010592069527431,
+            7.85179856115108,
+            7.493020088525707,
+            7.670935610103166,
+            7.555631633002397,
+            7.943716814159291
+          ],
+          "medianRatio": 7.555631633002397,
+          "relativeMedianAbsoluteDeviation": 0.039198169330416956
+        },
+        "processCpuMs/p95": {
+          "pairedRatios": [
+            5.028381287923273,
+            5.220212765957447,
+            7.156821589205397,
+            6.880626780626781,
+            6.987862640615749,
+            7.404133180252583,
+            7.053723706651508
+          ],
+          "medianRatio": 6.987862640615749,
+          "relativeMedianAbsoluteDeviation": 0.024178916684424182
+        },
+        "processCpuMs/p99": {
+          "pairedRatios": [
+            5.504232609495768,
+            5.127538586515028,
+            6.958693304535636,
+            6.358273748723187,
+            6.760219478737997,
+            8.319323288395454,
+            7.090063761955367
+          ],
+          "medianRatio": 6.760219478737997,
+          "relativeMedianAbsoluteDeviation": 0.05945749709443538
+        }
+      }
+    },
+    {
+      "workload": "flat-warm-native",
+      "mode": "2D clouds",
+      "backend": "programmable-gl",
+      "pairedRounds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "metrics": {
+        "wallMs/p50": {
+          "pairedRatios": [
+            1.6136787816447864,
+            1.6886595549743164,
+            1.6573634704125695,
+            1.7375673471633695,
+            1.686997216358901,
+            1.6916034666119768,
+            1.0639178922680608
+          ],
+          "medianRatio": 1.686997216358901,
+          "relativeMedianAbsoluteDeviation": 0.017565972047239684
+        },
+        "wallMs/p95": {
+          "pairedRatios": [
+            1.5681345377319924,
+            1.8408067553247796,
+            1.5577527663874977,
+            1.6605596651585548,
+            1.659008310078099,
+            1.570975335714274,
+            1.0261860215315985
+          ],
+          "medianRatio": 1.570975335714274,
+          "relativeMedianAbsoluteDeviation": 0.056037146072569745
+        },
+        "wallMs/p99": {
+          "pairedRatios": [
+            1.6627505446658293,
+            2.0250518790150585,
+            1.5833838873022215,
+            1.6781330415252242,
+            1.6414778840086666,
+            1.5534920934384626,
+            0.9673832767755158
+          ],
+          "medianRatio": 1.6414778840086666,
+          "relativeMedianAbsoluteDeviation": 0.03539127591812159
+        },
+        "processCpuMs/p50": {
+          "pairedRatios": [
+            1.6664890783164625,
+            1.7045929018789145,
+            1.6616735537190084,
+            1.7687768240343347,
+            1.7129779213785676,
+            1.7180031864046734,
+            1.3675607711651299
+          ],
+          "medianRatio": 1.7045929018789145,
+          "relativeMedianAbsoluteDeviation": 0.022353620926410914
+        },
+        "processCpuMs/p95": {
+          "pairedRatios": [
+            1.5404396515968477,
+            1.6727119358920288,
+            1.5721859706362153,
+            1.6227816756087494,
+            1.654389721627409,
+            1.626209677419355,
+            1.2028596961572833
+          ],
+          "medianRatio": 1.6227816756087494,
+          "relativeMedianAbsoluteDeviation": 0.030768316547910988
+        },
+        "processCpuMs/p99": {
+          "pairedRatios": [
+            1.6049287639584136,
+            1.8434363709353672,
+            1.5897339827650807,
+            1.6138165345413364,
+            1.6499208860759496,
+            1.641914813418771,
+            1.2481055290485545
+          ],
+          "medianRatio": 1.6138165345413364,
+          "relativeMedianAbsoluteDeviation": 0.017411073858789334
+        }
+      }
+    },
+    {
+      "workload": "flat-warm-native",
+      "mode": "2D clouds",
+      "backend": "sdl-gpu",
+      "pairedRounds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "metrics": {
+        "wallMs/p50": {
+          "pairedRatios": [
+            13.3955330134811,
+            13.606794790168424,
+            13.252852624221646,
+            13.826142112885734,
+            14.69906338007922,
+            13.485589541809295,
+            8.4377101967038
+          ],
+          "medianRatio": 13.485589541809295,
+          "relativeMedianAbsoluteDeviation": 0.017258193782785435
+        },
+        "wallMs/p95": {
+          "pairedRatios": [
+            11.61839070732602,
+            15.945166272278142,
+            11.293883048700023,
+            11.943856374917134,
+            13.060839718191835,
+            11.204675899803089,
+            6.39823683548379
+          ],
+          "medianRatio": 11.61839070732602,
+          "relativeMedianAbsoluteDeviation": 0.035608615508347596
+        },
+        "wallMs/p99": {
+          "pairedRatios": [
+            11.108490453240817,
+            23.917725790813616,
+            14.615427692795631,
+            10.933911823971533,
+            12.225399781716167,
+            18.848041995771204,
+            5.821494503719993
+          ],
+          "medianRatio": 12.225399781716167,
+          "relativeMedianAbsoluteDeviation": 0.19549691247347978
+        },
+        "processCpuMs/p50": {
+          "pairedRatios": [
+            9.88492274906766,
+            10.086638830897705,
+            9.519628099173554,
+            10.230150214592273,
+            12.099623047926764,
+            9.980350504514073,
+            7.772003352891869
+          ],
+          "medianRatio": 9.980350504514073,
+          "relativeMedianAbsoluteDeviation": 0.025029152028800662
+        },
+        "processCpuMs/p95": {
+          "pairedRatios": [
+            8.336789713811697,
+            9.222269084774357,
+            8.33278955954323,
+            8.907965332232768,
+            10.477516059957173,
+            8.370564516129033,
+            6.385463211200476
+          ],
+          "medianRatio": 8.370564516129033,
+          "relativeMedianAbsoluteDeviation": 0.06420126325628711
+        },
+        "processCpuMs/p99": {
+          "pairedRatios": [
+            8.8725452445129,
+            10.166198313930149,
+            8.124765829898838,
+            8.951679879199698,
+            9.893196202531646,
+            13.947983415001884,
+            6.948077462812237
+          ],
+          "medianRatio": 8.951679879199698,
+          "relativeMedianAbsoluteDeviation": 0.10517761314495551
+        }
+      }
+    },
+    {
+      "workload": "flat-warm-native",
+      "mode": "2D no clouds",
+      "backend": "programmable-gl",
+      "pairedRounds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "metrics": {
+        "wallMs/p50": {
+          "pairedRatios": [
+            1.107656139296219,
+            1.0949764041905459,
+            1.0713409198403652,
+            1.043486614576662,
+            1.0978533599490483,
+            1.060442493748747,
+            1.0991376231055772
+          ],
+          "medianRatio": 1.0949764041905459,
+          "relativeMedianAbsoluteDeviation": 0.011579916295133792
+        },
+        "wallMs/p95": {
+          "pairedRatios": [
+            1.0143365676109135,
+            1.0727687556866745,
+            1.0075293745356484,
+            1.0036506237019645,
+            1.0239715740753383,
+            0.9747565057020346,
+            0.874234692020413
+          ],
+          "medianRatio": 1.0075293745356484,
+          "relativeMedianAbsoluteDeviation": 0.016319325227880186
+        },
+        "wallMs/p99": {
+          "pairedRatios": [
+            1.072217137255072,
+            1.1621348476041822,
+            1.0489066003697407,
+            1.1100592879355557,
+            0.9863114537278463,
+            0.8442310793377767,
+            0.6199180599711809
+          ],
+          "medianRatio": 1.0489066003697407,
+          "relativeMedianAbsoluteDeviation": 0.059676568552271006
+        },
+        "processCpuMs/p50": {
+          "pairedRatios": [
+            0.8170347003154574,
+            0.7955271565495208,
+            0.7955271565495208,
+            0.7492625368731562,
+            0.809375,
+            0.7701863354037267,
+            0.8923076923076922
+          ],
+          "medianRatio": 0.7955271565495208,
+          "relativeMedianAbsoluteDeviation": 0.027035587143526812
+        },
+        "processCpuMs/p95": {
+          "pairedRatios": [
+            0.8034188034188033,
+            0.8129175946547884,
+            0.783295711060948,
+            0.8274428274428275,
+            0.8063063063063063,
+            0.7572383073496659,
+            0.9665970772442589
+          ],
+          "medianRatio": 0.8063063063063063,
+          "relativeMedianAbsoluteDeviation": 0.026214009454233002
+        },
+        "processCpuMs/p99": {
+          "pairedRatios": [
+            0.8547486033519552,
+            0.8565488565488565,
+            0.7647058823529412,
+            0.9789473684210528,
+            0.828,
+            0.7201492537313433,
+            0.945364238410596
+          ],
+          "medianRatio": 0.8547486033519552,
+          "relativeMedianAbsoluteDeviation": 0.10534409842368306
+        }
+      }
+    },
+    {
+      "workload": "flat-warm-native",
+      "mode": "2D no clouds",
+      "backend": "sdl-gpu",
+      "pairedRounds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "metrics": {
+        "wallMs/p50": {
+          "pairedRatios": [
+            1.3377911844901988,
+            1.3757708982109054,
+            1.3928905376451894,
+            1.2980348487916138,
+            1.349854881661231,
+            1.2906637406231205,
+            1.2560269428994233
+          ],
+          "medianRatio": 1.3377911844901988,
+          "relativeMedianAbsoluteDeviation": 0.029717893315117986
+        },
+        "wallMs/p95": {
+          "pairedRatios": [
+            1.2163417983693092,
+            1.3807004604483166,
+            1.3841838419416086,
+            1.3174091536486887,
+            1.3331803039198284,
+            1.2243548783890659,
+            1.0129231792161404
+          ],
+          "medianRatio": 1.3174091536486887,
+          "relativeMedianAbsoluteDeviation": 0.050686370371711094
+        },
+        "wallMs/p99": {
+          "pairedRatios": [
+            1.3899384164689312,
+            1.410965837474938,
+            1.3894692056935816,
+            1.3094935464486774,
+            1.3425507312096134,
+            1.1830695011825414,
+            0.6918707543285835
+          ],
+          "medianRatio": 1.3425507312096134,
+          "relativeMedianAbsoluteDeviation": 0.03529675576327933
+        },
+        "processCpuMs/p50": {
+          "pairedRatios": [
+            0.9369085173501577,
+            1.0223642172523961,
+            1.0191693290734825,
+            0.9085545722713864,
+            0.959375,
+            0.8850931677018633,
+            0.9138461538461538
+          ],
+          "medianRatio": 0.9369085173501577,
+          "relativeMedianAbsoluteDeviation": 0.030263301649732347
+        },
+        "processCpuMs/p95": {
+          "pairedRatios": [
+            0.967948717948718,
+            1.0489977728285078,
+            1.182844243792325,
+            0.972972972972973,
+            1.0067567567567568,
+            0.9643652561247216,
+            1.058455114822547
+          ],
+          "medianRatio": 1.0067567567567568,
+          "relativeMedianAbsoluteDeviation": 0.04195751931959161
+        },
+        "processCpuMs/p99": {
+          "pairedRatios": [
+            1.1396648044692737,
+            1.237006237006237,
+            1.2372549019607844,
+            1.0298245614035089,
+            1.12,
+            0.8731343283582089,
+            0.9884105960264901
+          ],
+          "medianRatio": 1.12,
+          "relativeMedianAbsoluteDeviation": 0.10446985446985428
+        }
+      }
+    },
+    {
+      "workload": "torus",
+      "mode": "Torus no clouds",
+      "backend": "programmable-gl",
+      "pairedRounds": [
+        0,
+        1,
+        2
+      ],
+      "metrics": {
+        "wallMs/p50": {
+          "pairedRatios": [
+            6.318943502373672,
+            6.303601222562474,
+            6.519570834156865
+          ],
+          "medianRatio": 6.318943502373672,
+          "relativeMedianAbsoluteDeviation": 0.002427981798766738
+        },
+        "wallMs/p95": {
+          "pairedRatios": [
+            4.184661050045805,
+            3.367648380271648,
+            6.2428266815756
+          ],
+          "medianRatio": 4.184661050045805,
+          "relativeMedianAbsoluteDeviation": 0.19523986769853538
+        },
+        "wallMs/p99": {
+          "pairedRatios": [
+            3.17486133556542,
+            2.3436831696990748,
+            6.839424663696236
+          ],
+          "medianRatio": 3.17486133556542,
+          "relativeMedianAbsoluteDeviation": 0.26179983250144634
+        },
+        "processCpuMs/p50": {
+          "pairedRatios": [
+            2.9947687800795144,
+            2.8397322307540858,
+            3.1517649545550626
+          ],
+          "medianRatio": 2.9947687800795144,
+          "relativeMedianAbsoluteDeviation": 0.05176912166197761
+        },
+        "processCpuMs/p95": {
+          "pairedRatios": [
+            2.7447168216398983,
+            2.788546255506608,
+            3.1425489843609564
+          ],
+          "medianRatio": 2.788546255506608,
+          "relativeMedianAbsoluteDeviation": 0.01571766427763526
+        },
+        "processCpuMs/p99": {
+          "pairedRatios": [
+            1.4702857624546912,
+            1.2655321646006015,
+            5.1599370739381225
+          ],
+          "medianRatio": 1.4702857624546912,
+          "relativeMedianAbsoluteDeviation": 0.13926108997494935
+        }
+      }
+    },
+    {
+      "workload": "torus",
+      "mode": "Torus no clouds",
+      "backend": "sdl-gpu",
+      "pairedRounds": [
+        0,
+        1,
+        2
+      ],
+      "metrics": {
+        "wallMs/p50": {
+          "pairedRatios": [
+            11.63667799895251,
+            11.33408562433474,
+            11.64577544028912
+          ],
+          "medianRatio": 11.63667799895251,
+          "relativeMedianAbsoluteDeviation": 0.000781790244383117
+        },
+        "wallMs/p95": {
+          "pairedRatios": [
+            7.6539057264685875,
+            7.2693714290705085,
+            12.62031770019823
+          ],
+          "medianRatio": 7.6539057264685875,
+          "relativeMedianAbsoluteDeviation": 0.050240270933608444
+        },
+        "wallMs/p99": {
+          "pairedRatios": [
+            5.820413593627776,
+            5.754621792919584,
+            11.547969661198682
+          ],
+          "medianRatio": 5.820413593627776,
+          "relativeMedianAbsoluteDeviation": 0.011303629827993754
+        },
+        "processCpuMs/p50": {
+          "pairedRatios": [
+            9.854781335007322,
+            8.955306162630439,
+            9.719932361023039
+          ],
+          "medianRatio": 9.719932361023039,
+          "relativeMedianAbsoluteDeviation": 0.01387344777470141
+        },
+        "processCpuMs/p95": {
+          "pairedRatios": [
+            8.423837700760778,
+            10.885286343612336,
+            10.925040445802626
+          ],
+          "medianRatio": 10.885286343612336,
+          "relativeMedianAbsoluteDeviation": 0.003652095216918079
+        },
+        "processCpuMs/p99": {
+          "pairedRatios": [
+            4.433279946050746,
+            5.726032421330595,
+            11.817164831323193
+          ],
+          "medianRatio": 5.726032421330595,
+          "relativeMedianAbsoluteDeviation": 0.22576757869272493
+        }
+      }
+    }
+  ],
+  "defaultPromotion": false,
+  "gpuTimestampSupport": false,
+  "timingScope": "fence-completed wall includes synchronous 1x1 readback and all retry/hold turns; excludes final presentation",
+  "coverage": "Actual rows only; seven rounds require seven common round IDs",
+  "frozenGates": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/frozen-release-gates.json"
+}
