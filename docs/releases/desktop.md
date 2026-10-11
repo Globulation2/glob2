@@ -85,6 +85,13 @@ description and icon only.
 
 ## Outputs
 
+Windows installer upgrades retain the registered installation directory by
+default, including legacy 32-bit registry entries. An explicit `/D=PATH` overrides
+that location; put it last on the installer command line, without quoting the
+path even when it contains spaces. Final signed-package checks exercise an
+alternate explicit destination and a repair without `/D=`, in addition to
+upgrade, uninstall and user-file preservation.
+
 The workflow produces a reproducible source archive and SHA-256 checksum, an
 Ubuntu 22.04-built Linux installation archive, a Windows x86-64 ZIP with its
 MinGW DLLs, a macOS DMG, Fedora source and binary RPMs, a Flatpak bundle and
