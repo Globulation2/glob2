@@ -65,6 +65,22 @@ TEST_SUITE("SettingsGraphics")
         CHECK_FALSE(*globals->settings.gpuCompute);
         globals->applyCommand(Cli::parse({"game", "repeat", "saved.game.gz", "--gpu=off"}));
         CHECK_FALSE(globals->gpuComputeEnabled());
+        globals->gpuComputeOverride.reset();
+        globals->settings.gpuCompute = true;
+        {
+            glob2test::ScopedEnvironment cpu("GLOB2_GRADIENT_BACKEND", "cpu");
+            CHECK_FALSE(globals->gpuComputeEnabled());
+            globals->gpuComputeOverride = true;
+            CHECK(globals->gpuComputeEnabled());
+        }
+        globals->gpuComputeOverride.reset();
+        globals->settings.gpuCompute = false;
+        {
+            glob2test::ScopedEnvironment gpu("GLOB2_GRADIENT_BACKEND", "opencl");
+            CHECK(globals->gpuComputeEnabled());
+            globals->gpuComputeOverride = false;
+            CHECK_FALSE(globals->gpuComputeEnabled());
+        }
         std::filesystem::remove(path);
     }
 
