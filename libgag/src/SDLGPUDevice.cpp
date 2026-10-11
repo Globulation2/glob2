@@ -126,6 +126,27 @@ struct Draw
     CoveragePtr coverage;
     TexturePtr scratch;
 };
+struct PrimitiveState
+{
+    SDL_GPUTexture *target = nullptr, *image = nullptr;
+    SDL_GPUSampler *sampler = nullptr;
+    SDL_GPUGraphicsPipeline *pipeline = nullptr;
+    SDL_Rect clip{}, viewport{};
+    std::array<float, Layout::primitive_size / sizeof(float)> vertex{};
+    std::array<float, Layout::primitive_fragment_size / sizeof(float)> fragment{};
+    bool operator==(const PrimitiveState &other) const
+    {
+        return target == other.target && image == other.image && sampler == other.sampler && pipeline == other.pipeline &&
+            SDL_RectsEqual(&clip, &other.clip) && SDL_RectsEqual(&viewport, &other.viewport) &&
+            vertex == other.vertex && fragment == other.fragment;
+    }
+};
+struct PrimitivePass
+{
+    SDL_GPURenderPass *pass = nullptr;
+    ~PrimitivePass() { end(); }
+    void end() { if (pass) { SDL_EndGPURenderPass(pass); pass = nullptr; } }
+};
 class SDLGPUDevice final : public RenderDevice
 {
     SDL_GPUDevice *device = nullptr;
@@ -513,23 +534,22 @@ class SDLGPUDevice final : public RenderDevice
         }
         return detail::intersectTargetScissor(result, packet.targetScissor);
     }
-    void draw(SDL_GPUCommandBuffer *commands, Work &entry, const Draw &draw, float lw, float lh,
-              SDL_GPUTexture *target, SDL_GPUTextureFormat format, int tw, int th)
+    PrimitiveState primitiveState(const Draw &draw, float lw, float lh)
     {
         const auto &packet = *draw.packet;
         if (packet.targetLogicalWidth > 0) lw = packet.targetLogicalWidth;
         if (packet.targetLogicalHeight > 0) lh = packet.targetLogicalHeight;
-        auto clip = scissor(packet, tw, th, lw, lh); if (clip.w <= 0 || clip.h <= 0 || draw.count == 0) return;
-        SDL_GPUColorTargetInfo color{}; color.texture = target; color.load_op = SDL_GPU_LOADOP_LOAD; color.store_op = SDL_GPU_STOREOP_STORE;
-        auto *pass = SDL_BeginGPURenderPass(commands, &color, 1, nullptr); if (!pass) fail("begin primitive pass");
-        SDL_BindGPUGraphicsPipeline(pass, pipeline(format, bool(packet.texture) && draw.texture->premultiplied, packet.material, packet.kind == DrawPacket::Kind::Clear ? DrawPacket::Blend::Opaque : packet.blend));
-        SDL_GPUBufferBinding binding{}; binding.buffer = entry.vertices; SDL_BindGPUVertexBuffers(pass, 0, &binding, 1);
-        SDL_GPUTextureSamplerBinding image{draw.texture->gpu, samplerFor(packet)};
-        if (packet.material == DrawPacket::Material::Primitive) SDL_BindGPUFragmentSamplers(pass, Layout::image_binding, &image, 1);
-        SDL_SetGPUScissor(pass, &clip);
-        if (packet.viewport) { const auto &v = *packet.viewport; SDL_GPUViewport viewport{float(v.x), float(v.y), float(v.w), float(v.h), 0, 1}; SDL_SetGPUViewport(pass, &viewport); }
-        std::array<float, Layout::primitive_size / sizeof(float)> vertex{}; vertex[0] = float(lw); vertex[1] = float(lh);
-        std::array<float, Layout::primitive_fragment_size / sizeof(float)> fragment{};
+        PrimitiveState state;
+        state.target = draw.target->gpu;
+        state.clip = scissor(packet, draw.target->width, draw.target->height, lw, lh);
+        state.viewport = packet.viewport.value_or(SDL_Rect{0, 0, draw.target->width, draw.target->height});
+        state.pipeline = pipeline(SDL_GPU_TEXTUREFORMAT_R8G8B8A8_UNORM, bool(packet.texture) && draw.texture->premultiplied,
+            packet.material, packet.kind == DrawPacket::Kind::Clear ? DrawPacket::Blend::Opaque : packet.blend);
+        if (packet.material == DrawPacket::Material::Primitive) {
+            state.image = draw.texture->gpu; state.sampler = samplerFor(packet);
+        }
+        state.vertex[0] = lw; state.vertex[1] = lh;
+        auto &fragment = state.fragment;
         fragment[Layout::primitive_fragment_textured_offset / sizeof(float)] = packet.texture ? 1.f : 0.f;
         fragment[Layout::primitive_fragment_alpha_offset / sizeof(float)] = packet.kind == DrawPacket::Kind::Blit ? packet.alpha / 255.f : 1.f;
         const auto bounds = Layout::primitive_fragment_uvBounds_offset / sizeof(float);
@@ -540,10 +560,7 @@ class SDLGPUDevice final : public RenderDevice
             fragment[bounds + 2] = (packet.source.x + packet.source.w - .5f) / draw.texture->width;
             fragment[bounds + 3] = (packet.source.y + packet.source.h - .5f) / draw.texture->height;
         }
-        SDL_PushGPUVertexUniformData(commands, Layout::primitive_binding, vertex.data(), sizeof(vertex));
-        SDL_PushGPUFragmentUniformData(commands, Layout::primitive_fragment_binding, fragment.data(), sizeof(fragment));
-        SDL_DrawGPUPrimitives(pass, draw.count, 1, draw.first, 0); SDL_EndGPURenderPass(pass);
-        ++counts.batches;
+        return state;
     }
     void clear(SDL_GPUCommandBuffer *commands, TexturePtr texture, bool opaque = false)
     {
@@ -570,6 +587,7 @@ class SDLGPUDevice final : public RenderDevice
     SDL_GPUSampler *samplerFor(const DrawPacket &);
     SDL_GPUGraphicsPipeline *worldPipeline(const DrawPacket &);
     void drawWorld(SDL_GPUCommandBuffer *, const Draw &, float, float);
+    void drawPackets(SDL_GPUCommandBuffer *, Work &, const std::vector<Draw> &, float, float);
     void clearPacket(SDL_GPUCommandBuffer *, const Draw &);
     bool hasShader(const std::string &variant, const char *stage) const
     {
@@ -1089,6 +1107,71 @@ void SDLGPUDevice::drawWorld(SDL_GPUCommandBuffer *commands, const Draw &draw, f
     else SDL_DrawGPUPrimitives(pass, draw.count, 1, draw.first, 0);
     SDL_EndGPURenderPass(pass); ++counts.batches;
 }
+void SDLGPUDevice::drawPackets(SDL_GPUCommandBuffer *commands, Work &entry, const std::vector<Draw> &draws, float lw, float lh)
+{
+    PrimitivePass active;
+    std::optional<PrimitiveState> bound, pending;
+    Uint32 first = 0, count = 0;
+    auto flush = [&] {
+        if (!pending) return;
+        const auto &state = *pending;
+        if (!active.pass || !bound || bound->target != state.target) {
+            active.end(); bound.reset();
+            SDL_GPUColorTargetInfo color{}; color.texture = state.target;
+            color.load_op = SDL_GPU_LOADOP_LOAD; color.store_op = SDL_GPU_STOREOP_STORE;
+            active.pass = SDL_BeginGPURenderPass(commands, &color, 1, nullptr);
+            if (!active.pass) fail("begin primitive pass");
+        }
+        const bool pipelineChanged = !bound || bound->pipeline != state.pipeline;
+        if (pipelineChanged) {
+            SDL_BindGPUGraphicsPipeline(active.pass, state.pipeline);
+            SDL_GPUBufferBinding vertices{entry.vertices, 0};
+            SDL_BindGPUVertexBuffers(active.pass, 0, &vertices, 1);
+        }
+        if (state.image && (pipelineChanged || bound->image != state.image || bound->sampler != state.sampler)) {
+            const SDL_GPUTextureSamplerBinding image{state.image, state.sampler};
+            SDL_BindGPUFragmentSamplers(active.pass, Layout::image_binding, &image, 1);
+        }
+        if (!bound || !SDL_RectsEqual(&bound->clip, &state.clip)) SDL_SetGPUScissor(active.pass, &state.clip);
+        if (!bound || !SDL_RectsEqual(&bound->viewport, &state.viewport)) {
+            const auto &rect = state.viewport;
+            const SDL_GPUViewport viewport{float(rect.x), float(rect.y), float(rect.w), float(rect.h), 0, 1};
+            SDL_SetGPUViewport(active.pass, &viewport);
+        }
+        // Uniform bindings are conservatively repushed when shaders change.
+        // Otherwise both immutable blocks can be shared by adjacent draws.
+        if (pipelineChanged || bound->vertex != state.vertex)
+            SDL_PushGPUVertexUniformData(commands, Layout::primitive_binding, state.vertex.data(), sizeof(state.vertex));
+        if (pipelineChanged || bound->fragment != state.fragment)
+            SDL_PushGPUFragmentUniformData(commands, Layout::primitive_fragment_binding, state.fragment.data(), sizeof(state.fragment));
+        SDL_DrawGPUPrimitives(active.pass, count, 1, first, 0); ++counts.batches;
+        bound = state; pending.reset();
+    };
+    auto endPass = [&] { flush(); active.end(); bound.reset(); };
+    for (const auto &draw : draws) {
+        const auto &packet = *draw.packet;
+        // These boundaries may change attachments, depth, or sampled targets.
+        // They also prohibit adjacent geometry merging even when state matches.
+        if (packet.kind == DrawPacket::Kind::Barrier) { endPass(); continue; }
+        if (packet.kind == DrawPacket::Kind::Clear) {
+            endPass();
+            if (!draw.count) { clearPacket(commands, draw); continue; }
+        } else if (packet.kind == DrawPacket::Kind::WeightedCompose) {
+            endPass(); drawTerrain(commands, entry, draw); continue;
+        } else if (packet.kind == DrawPacket::Kind::MeshTriangles) {
+            endPass(); drawWorld(commands, draw, lw, lh); continue;
+        }
+        if (!draw.count) continue;
+        auto state = primitiveState(draw, lw, lh);
+        if (state.clip.w <= 0 || state.clip.h <= 0) continue;
+        // All positions and tint are already in the bounded, ordered vertex
+        // stream. Only consecutive ranges with identical effective state merge.
+        if (pending && *pending == state && first + count == draw.first) count += draw.count;
+        else { flush(); pending = state; first = draw.first; count = draw.count; }
+        if (packet.kind == DrawPacket::Kind::Clear) endPass();
+    }
+    endPass();
+}
 RenderSubmission SDLGPUDevice::submit(RenderFrame frame)
 {
     detail::RenderCpuTimer timing(counts.cpuSubmitNanoseconds);
@@ -1118,10 +1201,22 @@ RenderSubmission SDLGPUDevice::submit(RenderFrame frame)
         }
         std::vector<SDL_Vertex> vertices;
         std::vector<Draw> draws;
+        draws.reserve(frame.packets.size());
+        std::size_t vertexReserve = 0;
+        for (const auto &packet : frame.packets) {
+            const auto count = packet.kind == DrawPacket::Kind::Triangles || packet.kind == DrawPacket::Kind::ScreenTriangles
+                ? packet.vertices.size() : packet.kind == DrawPacket::Kind::Fill || packet.kind == DrawPacket::Kind::Blit ||
+                    packet.kind == DrawPacket::Kind::Clear || packet.kind == DrawPacket::Kind::WeightedCompose ? 6u : 0u;
+            vertexReserve += std::min(RenderFrame::VertexCapacity - vertexReserve, count);
+        }
+        vertices.reserve(vertexReserve);
         for (const auto &packet : frame.packets) {
             if (!std::isfinite(packet.transform.scale) || packet.transform.scale <= 0 || !std::isfinite(packet.transform.x) || !std::isfinite(packet.transform.y))
                 throw std::invalid_argument("Invalid packet transform");
-            if (packet.kind == DrawPacket::Kind::Barrier) { ++counts.packets; continue; }
+            if (packet.kind == DrawPacket::Kind::Barrier) {
+                Draw barrier{}; barrier.packet = &packet; draws.push_back(std::move(barrier));
+                ++counts.packets; continue;
+            }
             if (packet.texture && packet.target && packet.texture.get() == packet.target.get())
                 throw std::invalid_argument("Render target cannot sample itself");
             if (packet.kind == DrawPacket::Kind::Blit) {
@@ -1223,13 +1318,7 @@ RenderSubmission SDLGPUDevice::submit(RenderFrame frame)
             draws.push_back(std::move(draw)); ++counts.packets;
         }
         uploadVertices(commands, entry, vertices);
-        for (const auto &packet : draws) {
-            if (packet.packet->kind == DrawPacket::Kind::Clear && !packet.count) clearPacket(commands, packet);
-            else if (packet.packet->kind == DrawPacket::Kind::WeightedCompose) drawTerrain(commands,entry,packet);
-            else if (packet.packet->kind == DrawPacket::Kind::MeshTriangles) drawWorld(commands, packet, frame.logicalWidth, frame.logicalHeight);
-            else draw(commands, entry, packet, frame.logicalWidth, frame.logicalHeight, packet.target->gpu,
-                      SDL_GPU_TEXTUREFORMAT_R8G8B8A8_UNORM, packet.target->width, packet.target->height);
-        }
+        drawPackets(commands, entry, draws, frame.logicalWidth, frame.logicalHeight);
         submitWork(commands, entry);
         for (auto &[key, texture] : cache) texture->submitted = true;
         for (auto &[key, geometry] : geometryCache) geometry->submitted = true;
