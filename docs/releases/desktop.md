@@ -66,7 +66,10 @@ Build-only runs leave Flatpak off by default because it takes longer to build;
 select `build_flatpak` to exercise that recipe. An untagged run builds its other
 packages from the mirror checkout and pins the Flatpak recipe to the latest
 public source commit contained in that checkout. Tagged publication builds pin
-the selected public tag. The GitHub publication run builds Flatpak.
+the selected public tag. The GitHub publication run builds Flatpak. The Flatpak recipe comes from the
+reviewed mirror workflow revision and pins its game source to the selected public
+commit. Its build exposes the source directory on `PYTHONPATH` so spawned asset
+encoder workers can import the tagged tools under SCons.
 Publication also requires matching AppStream release notes and a hosted gameplay
 screenshot. A native Linux capture of the active menu colony is in
 `data/screenshots/`; the AppStream metadata pins its URL to the commit that
