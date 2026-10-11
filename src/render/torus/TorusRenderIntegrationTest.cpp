@@ -201,11 +201,20 @@ class OverlayAdmissionDevice final : public GAGCore::RenderDevice
     std::unique_ptr<GAGCore::RenderDevice> device;
 public:
     bool rejected=false;
+    bool overlayFailure=true;
+    mutable bool phaseRejected=false;
+    std::function<bool()> phaseFault;
     explicit OverlayAdmissionDevice(std::unique_ptr<GAGCore::RenderDevice> value) : device(std::move(value)) {}
-    GAGCore::RenderDeviceCapabilities capabilities() const override {return device->capabilities();}
+    GAGCore::RenderDeviceCapabilities capabilities() const override {
+        if(!phaseRejected && phaseFault && phaseFault()) {
+            phaseRejected=true;
+            throw std::runtime_error("Injected torus exception after source phase advancement");
+        }
+        return device->capabilities();
+    }
     bool canBeginFrame() override {return device->canBeginFrame();}
     GAGCore::RenderSubmission submit(GAGCore::RenderFrame frame) override {
-        const bool overlay=!rejected && std::any_of(frame.packets.begin(),frame.packets.end(),[](const auto &packet){
+        const bool overlay=overlayFailure && !rejected && std::any_of(frame.packets.begin(),frame.packets.end(),[](const auto &packet){
             return packet.target && packet.target->descriptor.budgetClass==GAGCore::TextureDescriptor::BudgetClass::TerrainPage &&
                 !packet.targetScissor && (packet.kind==GAGCore::DrawPacket::Kind::Fill || packet.kind==GAGCore::DrawPacket::Kind::Blit);
         });
@@ -265,6 +274,43 @@ static void deviceOverlayRetry(GAGCore::RendererBackend backend)
     REQUIRE(probe->rejected);REQUIRE(complete);REQUIRE(holds>1);
     REQUIRE(gui.game.checkSum()==checksum);
     REQUIRE(std::abs(gui.toolManager.highlightStrength-.1f)<.00001f);
+}
+
+static void devicePhaseFallback(GAGCore::RendererBackend backend)
+{
+    using namespace GAGCore;
+    glob2test::HeadlessGlobals globals({.display=true,.loadStrings=true,.width=640,.height=480,
+        .beforeLoad=[backend](GlobalContainer &container){container.settings.rendererBackend=backend;}});
+    auto *gfx=globals->gfx;
+    if(gfx->backendSwitchStatus().active!=backend){MESSAGE("Backend unavailable: ",gfx->backendSwitchStatus().reason);return;}
+    gfx->deviceRenderer.reset();
+    auto injected=std::make_unique<OverlayAdmissionDevice>(std::move(gfx->presentationDevice));
+    auto *probe=injected.get();probe->overlayFailure=false;
+    gfx->presentationDevice=std::move(injected);
+    gfx->deviceRenderer=makeDeviceRenderBackend(*gfx->presentationDevice,*gfx->renderResources(),gfx->getW(),gfx->getH());
+    gfx->renderer=gfx->deviceRenderer.get();
+    globals->settings.clouds=false;
+    GameGUI gui;gui.init();makeTorusMapFixture(gui.game,64,64);
+    gui.localPlayer=gui.localTeamNo=0;gui.adjustLocalTeam();gui.prepareLocalPresentation();
+    gui.torusView.textureLimit=1024;gui.torusView.toggle();
+    const auto checksum=gui.game.checkSum();
+    const int animationBefore=gui.view.render.animationTime;
+    const int areaBefore=gui.view.render.areaAnimationTick;
+    // pushDeviceTarget consults capabilities after the phase scope starts.
+    // The injected fault therefore exercises the real draw() fallback catch.
+    probe->phaseFault=[&]{return gui.view.render.animationTime!=animationBefore;};
+    int vx=17,vy=21;
+    REQUIRE_FALSE(gui.torusView.draw(gui.drawnScene(),&gui,0,Game::DRAW_WHOLE_MAP|Game::DRAW_AREA,vx,vy,640,480));
+    REQUIRE(probe->phaseRejected);
+    probe->phaseFault={};
+    REQUIRE(gui.view.render.animationTime==animationBefore);
+    REQUIRE(gui.view.render.areaAnimationTick==areaBefore);
+    Game::drawSceneMap(gui.drawnScene(),0,0,640,480,0,0,vx,vy,0,gui.view,Game::DRAW_WHOLE_MAP|Game::DRAW_AREA);
+    REQUIRE(gui.view.render.animationTime==animationBefore+1);
+    REQUIRE(gui.view.render.areaAnimationTick==areaBefore+1);
+    REQUIRE(gui.game.checkSum()==checksum);
+    REQUIRE(gfx->presentationDevice.get()==probe);
+    REQUIRE(gfx->backendSwitchStatus().active==backend);
 }
 
 static void deviceCapture(GAGCore::RendererBackend backend)
@@ -1090,6 +1136,12 @@ static void run(bool gpu, int width, int height)
 
 TEST_SUITE("TorusRender")
 {
+    TEST_CASE("programmable GL fatal torus fallback advances animation once [display][isolated]") {
+        TorusRenderIntegrationTest::devicePhaseFallback(GAGCore::RendererBackend::ProgrammableGL);
+    }
+    TEST_CASE("SDL GPU fatal torus fallback advances animation once [display][isolated]") {
+        TorusRenderIntegrationTest::devicePhaseFallback(GAGCore::RendererBackend::SDLGPU);
+    }
     TEST_CASE("programmable GL retries a submitted final torus overlay coherently [display][isolated]") {
         TorusRenderIntegrationTest::deviceOverlayRetry(GAGCore::RendererBackend::ProgrammableGL);
     }

@@ -12,6 +12,7 @@
 #include <algorithm>
 #include <cmath>
 #include <cstring>
+#include <exception>
 
 using namespace GAGCore;
 struct TorusDeviceState
@@ -57,11 +58,20 @@ class SourceMapPhaseScope
     MapRenderState &render;
     unsigned options;
     bool paused;
+    int initialAnimation;
+    int exceptions;
 public:
     SourceMapPhaseScope(MapRenderState &state,unsigned drawOptions,bool animationsPaused)
-        : render(state),options(drawOptions),paused(animationsPaused)
+        : render(state),options(drawOptions),paused(animationsPaused),
+          initialAnimation(state.animationTime),exceptions(std::uncaught_exceptions())
     { if(!paused)++render.animationTime; }
-    ~SourceMapPhaseScope() { Game::finishMapCapture(render,options,paused); }
+    ~SourceMapPhaseScope()
+    {
+        // The caller draws the ordinary map after a fatal torus exception.
+        // Leave that fallback to advance the source phases once for this turn.
+        if(std::uncaught_exceptions()>exceptions)render.animationTime=initialAnimation;
+        else Game::finishMapCapture(render,options,paused);
+    }
 };
 constexpr int cloudGridLimit = 128;
 constexpr float pi = 3.14159265358979323846f;
