@@ -8,7 +8,7 @@ Pillow 12.2.0 libwebp 1.6.0. Validation was confined to CPUs 12–15 and 28–31
 ## Results
 
 - Focused asset suite: 34 tests passed, including serial/parallel cold-cache byte/audit equality for both encoding policies, sprite sheets, duplicate inputs, subprocess budget handoff, and worker-failure rollback.
-- Full build-system suite: 545 tests passed in 86.068 seconds; three skips are recorded in the log (two unavailable pinned SDL source archive checks and fontTools).
+- Full build-system suite: 545 tests passed in 86.068 seconds; three skips are recorded in the log (unavailable pinned SDL3_ttf archive, fontTools, and NSIS compiler).
 - Real SCons integration: `scons -f artifacts/parallel-assets/SConstruct -j4` completed a four-image export through the pinned interpreter and spawned workers.
 - Timing sample: 16 repository artwork PNGs, two runs each at one and four workers, independent cold caches. Output SHA-256 hashes matched across all runs. Individual timing pairs are shown below. The host was busy with other work, so absolute times varied; this is a sample demonstration, not a complete-release-build speed claim.
 
