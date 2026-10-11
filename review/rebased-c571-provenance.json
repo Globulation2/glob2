@@ -1,0 +1,12 @@
+{
+  "revision": "c571f6ab2f571949d13921e9838422289383a5c4",
+  "base": "74e2f52a0015f5f7c0f7d12726097913a79139f4",
+  "command": "GLOB2_TEST_SHADER_DIRECTORY=/home/bradley/glob2/artifacts/renderer-integration/review-shader-input GLOB2_TEST_FFMPEG=/usr/bin/ffmpeg python3 test/run_tests.py --build-dir build/renderer-integration/native-verify-c571f6ab2 --binary engine --filter EngineSession/* -j2 --display-jobs 1 --junit artifacts/renderer-tests/rebased-c571-engine-session.xml --artifacts artifacts/renderer-tests/rebased-c571-engine-session",
+  "compiler": "GCC 13.3.0",
+  "platform": "Linux x86_64",
+  "SDL": "3.4.16",
+  "mode": "fast development correctness; no performance claim",
+  "cases": 14,
+  "failed": 0,
+  "binarySha256": "038bae4d0757f0145dce6ef26ac4225876acd49ac580b87fb18577457703b3db"
+}

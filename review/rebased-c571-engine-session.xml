@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="14" failures="0" errors="0" skipped="0"><testsuite name="EngineSession"><testcase classname="EngineSession" name="automatic GUI sessions poll asset finalizers on the presentation thread [display]" time="4.57054" status="run" />
+  <testcase classname="EngineSession" name="camera refreshes cannot starve advancing presentation worlds" time="0.846454" status="run" />
+  <testcase classname="EngineSession" name="disabled prestige victory cannot end automatic matches" time="0.444326" status="run" />
+  <testcase classname="EngineSession" name="eliminated prestige leaders cannot make every survivor lose" time="0.892075" status="run" />
+  <testcase classname="EngineSession" name="incremental sessions; editor decisions; fertility equivalence and cancellation [writes-preferences]" time="20.993" status="run" />
+  <testcase classname="EngineSession" name="menu colony rendering consumes its shared boundary without recapture [display]" time="2.36754" status="run" />
+  <testcase classname="EngineSession" name="momentum uses the SDL clock after session suspension [display][artifacts]" time="4.23118" status="run" />
+  <testcase classname="EngineSession" name="native presentation fallback yields between expensive chunks" time="0.377298" status="run" />
+  <testcase classname="EngineSession" name="new client requests replace completed pending frames without recapture" time="0.376027" status="run" />
+  <testcase classname="EngineSession" name="observation players preserve seat order and spectator readiness" time="0.376127" status="run" />
+  <testcase classname="EngineSession" name="paced sessions publish completed worlds before waiting and AI reuses them [display]" time="2.39339" status="run" />
+  <testcase classname="EngineSession" name="render ceilings preserve per tick simulation checksums [display][artifacts]" time="11.503" status="run" />
+  <testcase classname="EngineSession" name="routine snapshot input needs no simulation boundary [display][artifacts][writes-preferences]" time="3.45469" status="run" />
+  <testcase classname="EngineSession" name="serial sessions retain chat text across skipped GUI frames" time="2.44656" status="run" />
+  </testsuite></testsuites>
