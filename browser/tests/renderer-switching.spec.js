@@ -102,6 +102,8 @@ async function resumeOverlay(page) {
 }
 async function presentationOwners(page) {
   const threaded=(await state(page)).executionMode==='threaded';
+  if(!threaded)return [page];
+  if(page.rendererPresentationOwner)return [page.rendererPresentationOwner];
   const identity=await page.evaluate(()=>Module.glob2ApplicationThreadIdentity);
   // The DOM page and idle asset workers load the same libraries. Only the
   // application pthread owns renderer initialization; Software deliberately
@@ -120,7 +122,12 @@ async function presentationOwners(page) {
       new Promise(resolve=>{timer=setTimeout(()=>resolve(false),5000);})
     ]);}finally{clearTimeout(timer);}
   }));
-  return realms.filter((realm,index)=>owners[index]);
+  const found=realms.filter((realm,index)=>owners[index]);
+  if(found.length===1) {
+    page.rendererPresentationOwner=found[0];
+    found[0].once('close',()=>{page.rendererPresentationOwner=null;});
+  }
+  return found;
 }
 async function match(page) {
   const owners=await presentationOwners(page);
@@ -335,7 +342,30 @@ for(const mode of ['serial','threaded']) {
     await openMenu(page);
     await expect.poll(()=>page.evaluate(()=>glob2Diagnostics.snapshot().controls['recording/toggle']?.label)).toMatch(/Stop recording/i);
     await clickControl(page,'recording/toggle');
-    await expect.poll(async()=>(await completed()).filter(path=>!existing.has(path)).length,{timeout:60000}).toBe(1);
+    try {
+      await expect.poll(async()=>(await completed()).filter(path=>!existing.has(path)).length,{timeout:60000}).toBe(1);
+    } catch(error) {
+      const owners=await presentationOwners(page);
+      const producer=await owners[0].evaluate(()=>({active:Module.glob2Recording.active,
+        status:Module.glob2Recording.status,frames:Module.glob2Recording.frames,audio:Module.glob2Recording.audio}));
+      const files=await page.evaluate(async()=>{
+        const root=await(await navigator.storage.getDirectory()).getDirectoryHandle('glob2-recordings');
+        const files=[];for await(const[name,handle]of root.entries()) {
+          const file=await handle.getFile(),path=decodeURIComponent(name);
+          files.push({path,size:file.size,text:/manifest|\.json$/.test(path)?(await file.text()).slice(0,20000):undefined});
+        }return files;
+      });
+      const workers=await Promise.all(page.workers().map(async worker=>{
+        if(!worker.url().includes('recording-worker'))return null;
+        let timer;try{return await Promise.race([
+          worker.evaluate(()=>({workerState:state,stopped,processing,frameCredits,
+            closing:!!closing,terminal,files:[...recordingStorage.files].map(([name,value])=>({name,size:value.sync.getSize()}))})),
+          new Promise(resolve=>{timer=setTimeout(()=>resolve({workerUnresponsive:true}),5000);})
+        ]);}finally{clearTimeout(timer);}
+      }));
+      await info.attach('recording-completion-failure',{body:JSON.stringify({producer,files,workers,snapshot:await state(page)},null,2),contentType:'application/json'});
+      throw error;
+    }
     const path=(await completed()).find(path=>!existing.has(path));
     const metadata=await page.evaluate(async path=>{const root=await(await navigator.storage.getDirectory()).getDirectoryHandle('glob2-recordings');return JSON.parse(await(await(await root.getFileHandle(encodeURIComponent(path+'.json'))).getFile()).text());},path);
     expect(metadata.complete).toBe(true);expect(metadata.width).toBe(1200);expect(metadata.height).toBe(900);
