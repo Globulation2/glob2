@@ -288,8 +288,19 @@ jobs:
           if ($client.ExitCode -ne 0) { throw 'Final installed client cannot load its runtime' }
           New-Item -ItemType Directory -Force "$install/games" | Out-Null
           Set-Content "$install/games/user.game" 'user save'
+          # A registered installation must not override an explicit /D= target.
+          $alternate = Join-Path $PWD 'artifacts/alternate signed installation'
+          $relocate = Start-Process -FilePath $installer -ArgumentList "/S /D=$alternate" -Wait -PassThru
+          if ($relocate.ExitCode -ne 0 -or !(Test-Path "$alternate/glob2.exe") -or !(Test-Path "$install/games/user.game")) { throw 'Explicit signed installation destination was ignored or lost user data' }
+          if ((Get-AuthenticodeSignature "$alternate/glob2.exe").Status -ne 'Valid') { throw 'Alternate installed signature invalid' }
+          # Without /D=, repair the registered destination rather than choosing a new one.
+          Remove-Item "$alternate/glob2.exe"
+          $repair = Start-Process -FilePath $installer -ArgumentList '/S' -Wait -PassThru
+          if ($repair.ExitCode -ne 0 -or !(Test-Path "$alternate/glob2.exe")) { throw 'Default signed installation did not retain the registered destination' }
           $upgrade = Start-Process -FilePath $installer -ArgumentList "/S /D=$install" -Wait -PassThru
           if ($upgrade.ExitCode -ne 0 -or !(Test-Path "$install/games/user.game")) { throw 'Signed upgrade failed or lost user data' }
+          $alternateUninstall = Start-Process -FilePath "$alternate/glob2win32-uninst.exe" -ArgumentList "/S _?=$alternate" -Wait -PassThru
+          if ($alternateUninstall.ExitCode -ne 0 -or (Test-Path "$alternate/glob2.exe")) { throw 'Alternate signed uninstall failed' }
           $uninstall = Start-Process -FilePath "$install/glob2win32-uninst.exe" -ArgumentList "/S _?=$install" -Wait -PassThru
           if ($uninstall.ExitCode -ne 0 -or (Test-Path "$install/glob2.exe") -or !(Test-Path "$install/games/user.game")) { throw 'Signed uninstall failed or lost user data' }
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
