@@ -1095,6 +1095,36 @@ TEST_CASE("deadline batch guard needs warm cadence and rejects acceleration unkn
     cadence.record({18,18000,0});CHECK_FALSE(cadence.valid());
     for(unsigned tick=19;tick<35;++tick)cadence.record({tick,UINT64_MAX-1,1000});
     CHECK_FALSE(cadence.fits(40,cadence.version(),1000,bound,0));
+    if constexpr(GAGCore::ThreadSupport::available) {
+        if(!glob2::threadCpuNs())return;
+        PipelineEnvironment tuning("GLOB2_GRADIENT_TUNING","1");
+        PipelineEnvironment crossDue("GLOB2_GRADIENT_CROSS_DUE","0");
+        struct Restore {Backend mode=backend();~Restore(){setBackend(mode);}} restore;
+        setBackend(Backend::Automatic);
+        auto service=std::make_shared<GradientDeviceService>(GradientDeviceService::Hooks{[]{return true;},{}});
+        service->configure(2,Backend::Automatic);
+        const auto initializedUntil=std::chrono::steady_clock::now()+std::chrono::seconds(5);
+        while(!service->learningActive() && std::chrono::steady_clock::now()<initializedUntil)std::this_thread::yield();
+        REQUIRE(service->learningActive());
+        TestGradientPipeline pipeline;pipeline.configure(1,8,1,[](auto&,auto&){});
+        pipeline.setDeviceService(service);pipeline.advance();
+        // Real paced owner intervals contain very little CPU work. They must
+        // remain elapsed publication availability rather than CPU-clock deltas.
+        constexpr auto pace=std::chrono::milliseconds(20);
+        for(unsigned tick=0;tick<16;++tick){std::this_thread::sleep_for(pace);pipeline.advance();}
+        const auto warmedUntil=std::chrono::steady_clock::now()+std::chrono::seconds(5);
+        while(!service->metrics().cadenceFloorNs && std::chrono::steady_clock::now()<warmedUntil)std::this_thread::yield();
+        const auto warmed=service->metrics();
+        REQUIRE(warmed.cadenceFloorNs>=20000000ull);
+        // Removing pacing is a genuine acceleration, not a larger granted
+        // deadline. Existing offers must see a smaller floor and new revision.
+        for(unsigned tick=0;tick<4;++tick)pipeline.advance();
+        const auto fasterUntil=std::chrono::steady_clock::now()+std::chrono::seconds(5);
+        while(service->metrics().cadenceRevision==warmed.cadenceRevision && std::chrono::steady_clock::now()<fasterUntil)std::this_thread::yield();
+        const auto faster=service->metrics();CHECK(faster.cadenceRevision!=warmed.cadenceRevision);
+        CHECK(faster.cadenceFloorNs>0);CHECK(faster.cadenceFloorNs<warmed.cadenceFloorNs);
+        CHECK(service->metrics().submitted==0);pipeline.reset();service->stop();
+    }
 }
 
 TEST_CASE("offline batch manifest binds exact configuration seed class and measured batch size" * doctest::test_suite("GradientPipeline"))

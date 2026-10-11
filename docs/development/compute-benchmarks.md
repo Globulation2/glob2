@@ -624,7 +624,10 @@ batch measurements; do not manufacture a bound by multiplying singleton latency.
 The parser caps input at 64 KiB and depth eight; retained and temporary parsing
 storage are charged to the accelerator host budget.
 
-The owner sends only bounded cadence metadata. The coordinator retains a
+The owner sends only bounded cadence metadata: monotonic elapsed tick intervals
+with observed executor waits removed, including ordinary presentation pacing.
+Required host CPU costs are measured independently and never clamp elapsed
+publication availability. The coordinator retains a
 128-observation rolling minimum, requiring at least 16 valid observations. It
 admits a batch only if twice the measured maximum plus the completion margin fits
 its estimate of every field's publication deadline. Faster observed cadence

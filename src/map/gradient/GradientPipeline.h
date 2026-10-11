@@ -111,7 +111,7 @@ private:
     std::uint64_t cpuNow() const noexcept {
         try{return cpuClock ? cpuClock() : glob2::threadCpuNs();}catch(...){return 0;}
     }
-    std::uint64_t cadenceStartedNs=0,cadenceOwnerCpuNs=0,cadenceWaitNs=0;
+    std::uint64_t cadenceStartedNs=0,cadenceWaitNs=0;
     std::array<std::atomic<std::uint64_t>,unsigned(CPUReason::Count)> cpuReasons{};
 	using Clock = std::chrono::steady_clock;
 	static std::uint64_t ns(Clock::time_point start) {
@@ -410,7 +410,7 @@ public:
         // independently supplied by the Map's external deadline callback.
         backendSession->invalidateConfiguration();
 		delay = 0; lastSubmission = tick;
-        cadenceStartedNs=cadenceOwnerCpuNs=cadenceWaitNs=0;
+        cadenceStartedNs=cadenceWaitNs=0;
 	}
 	void configure(ComputeExecutor& target, bool sharedExecution, unsigned ticks, std::size_t size, Work callback) {
 		reset(); batchWork = {}; asyncWork = {}; metrics = {}; activeNs = 0; seedCpu=0; propagationCpu=0; cpuFields=0; gpuFields=0; selectedGpu=0; requestedGpu=0;
@@ -434,7 +434,7 @@ public:
     }
     void refreshDeviceConfiguration() noexcept {
         crossDueTiming=deviceService && deviceService->crossDueRequested();
-        cadenceStartedNs=cadenceOwnerCpuNs=cadenceWaitNs=0;
+        cadenceStartedNs=cadenceWaitNs=0;
     }
     std::shared_ptr<gradient_kernel::BackendSession> session() const { return backendSession; }
     std::uint64_t requiredSeedCpuNs() const { return seedCpu.load(); }
@@ -490,14 +490,16 @@ public:
         if(cpuEnvelopeTiming && !cpuEnvelopeOwnerRegistered)
             cpuEnvelopeOwnerRegistered=glob2::registerCpuEnvelopeThread(glob2::CpuThreadRole::Owner);
         if((crossDueTiming || (deviceService && deviceService->learningActive())) && executor) {
-            const auto started=gradient_kernel::monotonicNs(),ownerCpu=glob2::threadCpuNs();
+            const auto started=gradient_kernel::monotonicNs();
             const auto totals=executor->metrics();const auto waited=totals.waitNs+totals.joinWaitNs;
             const auto elapsed=started>=cadenceStartedNs ? started-cadenceStartedNs : 0;
             const auto blocked=waited>=cadenceWaitNs ? waited-cadenceWaitNs : elapsed;
-            const auto cpu=glob2::threadCpuDeltaNs(cadenceOwnerCpuNs,ownerCpu);
-            const auto nonWait=cadenceStartedNs && elapsed>blocked ? std::min(elapsed-blocked,cpu) : 0;
+            // Publication availability is elapsed monotonic time, including
+            // normal pacing, with observed executor waits removed. Required
+            // host CPU is measured independently and never predicts slack.
+            const auto nonWait=cadenceStartedNs && elapsed>blocked ? elapsed-blocked : 0;
             deviceService->recordCadence({tick+1,started,nonWait});
-            cadenceStartedNs=started;cadenceOwnerCpuNs=ownerCpu;cadenceWaitNs=waited;
+            cadenceStartedNs=started;cadenceWaitNs=waited;
         }
 		++tick;
         metrics.lastPublicationWaitNs=metrics.lastGpuPublicationWaitNs=metrics.lastGpuDeviceOverlapWaitNs=0;
