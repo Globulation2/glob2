@@ -266,6 +266,18 @@ for(const mode of ['serial','threaded']) {
     await openOverlay(page);await choose(page,'Software');await resumeOverlay(page);
     await expect.poll(async()=>(await state(page)).torus).toBe(false);
     await openOverlay(page);await choose(page,'Programmable GL');await resumeOverlay(page);
+    const restored=await state(page);
+    await info.attach('torus-restored-before-key',{body:JSON.stringify({screenClass:restored.screenClass,
+      controls:Object.keys(restored.controls),renderer:restored.renderer,tick:restored.tick,
+      torus:restored.torus,torusSettled:restored.torusSettled}),contentType:'application/json'});
+    expect(restored.screenClass).toContain('GameSessionScreen');
+    expect(restored.controls.done).toBeUndefined();
+    // Software cannot display Torus, but switching back preserves its mode.
+    // Wait for that restoration before explicitly proving the public toggle;
+    // an unconditional G here would turn the restored view off.
+    await expect.poll(async()=>(await state(page)).torusSettled,{timeout:120000}).toBe(true);
+    await page.locator('#canvas').press('g',{delay:80});
+    await expect.poll(async()=>(await state(page)).torus,{timeout:120000}).toBe(false);
     await page.locator('#canvas').press('g',{delay:80});
     await expect.poll(async()=>(await state(page)).torusSettled,{timeout:120000}).toBe(true);
     await page.screenshot({path:info.outputPath('torus-after-switch.png')});await verify();
