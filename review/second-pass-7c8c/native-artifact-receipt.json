@@ -1,0 +1,436 @@
+{
+  "revision": "920e8e9d80416bb5dcf8906f06e3c03487f491dd",
+  "archiveBytes": 3398833,
+  "archiveSHA256": "4da16e1a6dca0bf8b2668f9152d169454d1c26ef92868071f138812cd5e30c32",
+  "files": {
+    "final-native-units/GameplayRecording/asynchronous_admission_freezes_context_rejects_stale_generations_and_counts_cancellation__recording/capture-admission-3501487231661121.mp4.recording/manifest.1.json": {
+      "bytes": 435,
+      "sha256": "c32e42f43e982d3154b0cdbff4ccfa2d0c463029afc47b5010e81e2aa1228cfe"
+    },
+    "final-native-units/GameplayRecording/asynchronous_admission_freezes_context_rejects_stale_generations_and_counts_cancellation__recording/capture-admission-3501487231661121.mp4.recording/manifest.json": {
+      "bytes": 435,
+      "sha256": "c32e42f43e982d3154b0cdbff4ccfa2d0c463029afc47b5010e81e2aa1228cfe"
+    },
+    "final-native-units/GameplayRecording/asynchronous_admission_freezes_context_rejects_stale_generations_and_counts_cancellation__recording/capture-next-session-3501487232062470.mp4.recording/manifest.1.json": {
+      "bytes": 441,
+      "sha256": "2f12b8623230d10147c3a336c41d35b7080038cd5505e9cf06ba0d1a0068cd58"
+    },
+    "final-native-units/GameplayRecording/asynchronous_admission_freezes_context_rejects_stale_generations_and_counts_cancellation__recording/capture-next-session-3501487232062470.mp4.recording/manifest.json": {
+      "bytes": 441,
+      "sha256": "2f12b8623230d10147c3a336c41d35b7080038cd5505e9cf06ba0d1a0068cd58"
+    },
+    "final-native-units/GameplayRecording/capture_context_restores_active_match_identity_after_settings__recording/capture-match-context-3501487230230209.mp4.recording/manifest.1.json": {
+      "bytes": 443,
+      "sha256": "7641a81512f357aa8b981474d4a43c2d6ef853805f9c0faa7da47ab1b30f6a03"
+    },
+    "final-native-units/GameplayRecording/capture_context_restores_active_match_identity_after_settings__recording/capture-match-context-3501487230230209.mp4.recording/manifest.json": {
+      "bytes": 443,
+      "sha256": "7641a81512f357aa8b981474d4a43c2d6ef853805f9c0faa7da47ab1b30f6a03"
+    },
+    "final-native-units/GameplayRecording/producer_failure_remains_failed_and_a_publication_collision_preserves_foreign_files__recording/capture-failure-3501487232451447.mp4.recording/capture.mp4": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "final-native-units/GameplayRecording/producer_failure_remains_failed_and_a_publication_collision_preserves_foreign_files__recording/capture-failure-3501487232451447.mp4.recording/events.jsonl": {
+      "bytes": 123,
+      "sha256": "37526e0d32aca3c99630572163c6f98b8073d8b2bd57e7658e3b0cfba2cfccb8"
+    },
+    "final-native-units/GameplayRecording/producer_failure_remains_failed_and_a_publication_collision_preserves_foreign_files__recording/capture-failure-3501487232451447.mp4.recording/manifest.1.json": {
+      "bytes": 759,
+      "sha256": "7213a06b49897105df7630ef18153e39d23395573128d2140922e0e15532c5a7"
+    },
+    "final-native-units/GameplayRecording/producer_failure_remains_failed_and_a_publication_collision_preserves_foreign_files__recording/capture-failure-3501487232451447.mp4.recording/manifest.2.json": {
+      "bytes": 737,
+      "sha256": "424da7bef0b1f891ecd4a37402f9d1e7846232f44025787a07430ba00dac4bf8"
+    },
+    "final-native-units/GameplayRecording/producer_failure_remains_failed_and_a_publication_collision_preserves_foreign_files__recording/capture-failure-3501487232451447.mp4.recording/manifest.json": {
+      "bytes": 759,
+      "sha256": "7213a06b49897105df7630ef18153e39d23395573128d2140922e0e15532c5a7"
+    },
+    "final-native-units/GameplayRecording/producer_failure_remains_failed_and_a_publication_collision_preserves_foreign_files__recording/publish-collision-3501487293904303.mp4": {
+      "bytes": 13,
+      "sha256": "7b1cb755f694a734ee6c2e438bf2a4a3bd2a74fcb3236fcea892ccf22969fe98"
+    },
+    "final-native-units/GameplayRecording/producer_failure_remains_failed_and_a_publication_collision_preserves_foreign_files__recording/publish-collision-3501487293904303.mp4.recording/capture.mp4": {
+      "bytes": 2280,
+      "sha256": "34f6498895e410e3d1db51b73fb7e3fc5310ac4114d1c0dd375baea123aaf243"
+    },
+    "final-native-units/GameplayRecording/producer_failure_remains_failed_and_a_publication_collision_preserves_foreign_files__recording/publish-collision-3501487293904303.mp4.recording/events.jsonl": {
+      "bytes": 123,
+      "sha256": "37526e0d32aca3c99630572163c6f98b8073d8b2bd57e7658e3b0cfba2cfccb8"
+    },
+    "final-native-units/GameplayRecording/producer_failure_remains_failed_and_a_publication_collision_preserves_foreign_files__recording/publish-collision-3501487293904303.mp4.recording/final.mp4": {
+      "bytes": 2709,
+      "sha256": "ff86f51bcbde10308f98467e9008ade363392aa7a9fc4e3ea44a4de8173221d1"
+    },
+    "final-native-units/GameplayRecording/producer_failure_remains_failed_and_a_publication_collision_preserves_foreign_files__recording/publish-collision-3501487293904303.mp4.recording/manifest.1.json": {
+      "bytes": 1263,
+      "sha256": "4a5e36ce5e9572b11ad4712e4d136bfb53fd4574c12d02e6fb25350db66fe99d"
+    },
+    "final-native-units/GameplayRecording/producer_failure_remains_failed_and_a_publication_collision_preserves_foreign_files__recording/publish-collision-3501487293904303.mp4.recording/manifest.2.json": {
+      "bytes": 740,
+      "sha256": "b948aa4de3da828610ef9dd028f07e2f46a41c6f634f24754770ba427d893e7d"
+    },
+    "final-native-units/GameplayRecording/producer_failure_remains_failed_and_a_publication_collision_preserves_foreign_files__recording/publish-collision-3501487293904303.mp4.recording/manifest.json": {
+      "bytes": 1263,
+      "sha256": "4a5e36ce5e9572b11ad4712e4d136bfb53fd4574c12d02e6fb25350db66fe99d"
+    },
+    "final-native-units/GameplayRecording/recording_encodes_audio__odd_resized_frames__and_semantic_chapters__recording/recording-sections-3501487556990377.mp4": {
+      "bytes": 36060,
+      "sha256": "48b3e4927ba2412a75464e46b850b138be5c861a122d69cc66e5bd7eab5a830e"
+    },
+    "final-native-units/GameplayRecording/recording_encodes_audio__odd_resized_frames__and_semantic_chapters__recording/recording-sections-3501487556990377.mp4.events.jsonl": {
+      "bytes": 1121,
+      "sha256": "858b2bf5c20280b3ab858414925ac800b095d6b365ef97bc4487c00f55b422eb"
+    },
+    "final-native-units/GameplayRecording/recording_encodes_audio__odd_resized_frames__and_semantic_chapters__recording/recording-sections-3501487556990377.mp4.json": {
+      "bytes": 1538,
+      "sha256": "1dc685199f4144d6a49a61ca8215ba0a029306a476306a7968f3799e8b42bb6e"
+    },
+    "final-native-units/GameplayRecording/recording_encodes_audio__odd_resized_frames__and_semantic_chapters__recording/recording-sections-3501487556990377.mp4.session.json": {
+      "bytes": 188,
+      "sha256": "ce7449a60749f1ed3fae80b9bf111eddcfc91ab195710cf0a2b1ab3da2f5a318"
+    },
+    "final-native-units/GameplayRecording/recording_encodes_audio__odd_resized_frames__and_semantic_chapters__recording/recording-sections-3501487556990377.part0002.mp4": {
+      "bytes": 7041,
+      "sha256": "26ba62e9edcdb5af258e6cb710d2e18c68e81a6eb99eb6d4b8b1fdf2b770b0ff"
+    },
+    "final-native-units/GameplayRecording/recording_encodes_audio__odd_resized_frames__and_semantic_chapters__recording/recording-sections-3501487556990377.part0002.mp4.events.jsonl": {
+      "bytes": 368,
+      "sha256": "ac988de55dcd5f02a3ef9f45c7fd6ba7ce7fb36eaa570f6cb761225bf4eac66f"
+    },
+    "final-native-units/GameplayRecording/recording_encodes_audio__odd_resized_frames__and_semantic_chapters__recording/recording-sections-3501487556990377.part0002.mp4.json": {
+      "bytes": 921,
+      "sha256": "795dda39f6925b422684016a7ee98749dde6ec76d1ea5981cec9677e2808fcf7"
+    },
+    "final-native-units/GameplayRecording/recording_rejects_invalid_options_and_never_overwrites_output/existing-3501487556757923.mp4": {
+      "bytes": 8,
+      "sha256": "1daf82f62247f3a1d148c2d88b1828c9efa2d5f087d7059e98650aafe7afdea3"
+    },
+    "final-native-units/GameplayRecording/split_callback_audio_survives_as_consecutive_decoded_PCM__recording__artifacts/audio-burst-3501487316252252.mp4": {
+      "bytes": 6225,
+      "sha256": "314548607c969df729634f7fd69880b9b8e2fb8f914ef4eac4553af1d891e7d1"
+    },
+    "final-native-units/GameplayRecording/split_callback_audio_survives_as_consecutive_decoded_PCM__recording__artifacts/audio-burst-3501487316252252.mp4.decode.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "final-native-units/GameplayRecording/split_callback_audio_survives_as_consecutive_decoded_PCM__recording__artifacts/audio-burst-3501487316252252.mp4.events.jsonl": {
+      "bytes": 123,
+      "sha256": "37526e0d32aca3c99630572163c6f98b8073d8b2bd57e7658e3b0cfba2cfccb8"
+    },
+    "final-native-units/GameplayRecording/split_callback_audio_survives_as_consecutive_decoded_PCM__recording__artifacts/audio-burst-3501487316252252.mp4.json": {
+      "bytes": 730,
+      "sha256": "1e07f00bd89d5aef66f0b77256eaa7049a1e85423e31c9019359b34af25ca1f9"
+    },
+    "final-native-units/GameplayRecording/split_callback_audio_survives_as_consecutive_decoded_PCM__recording__artifacts/audio-burst-3501487316252252.mp4.pcm": {
+      "bytes": 32768,
+      "sha256": "859d2b88624821ab07d01085538fc4a3b72075d28011807b58da1b877d8ea156"
+    },
+    "final-native-units/GameplayRecording/split_callback_audio_survives_as_consecutive_decoded_PCM__recording__artifacts/audio-burst-3501487316252252.mp4.session.json": {
+      "bytes": 93,
+      "sha256": "7779f6cfc94ba852bc9da4571b6c19323edc2abda828fd74062d2482c22c5416"
+    },
+    "final-native-units/GameplayRecording/stopping_a_recording_before_its_first_frame_completes_without_hanging/no-frame-3501488987876066.mp4.recording/manifest.1.json": {
+      "bytes": 417,
+      "sha256": "4f61529c386a86c6deafc0d530d5810c7fc287ed69d8ac8ce12e5c7964853274"
+    },
+    "final-native-units/GameplayRecording/stopping_a_recording_before_its_first_frame_completes_without_hanging/no-frame-3501488987876066.mp4.recording/manifest.json": {
+      "bytes": 417,
+      "sha256": "4f61529c386a86c6deafc0d530d5810c7fc287ed69d8ac8ce12e5c7964853274"
+    },
+    "final-native-units/RecordingSession/asynchronous_encoder_flush_is_polled_before_publishing_the_output/deferred-3501488736958694.mp4": {
+      "bytes": 2835,
+      "sha256": "3efdd0341f9b040040e961f0347b83a4ec3e88912655d92f7f2d92090a2b4d08"
+    },
+    "final-native-units/RecordingSession/asynchronous_encoder_flush_is_polled_before_publishing_the_output/deferred-3501488736958694.mp4.events.jsonl": {
+      "bytes": 125,
+      "sha256": "3e6c8ee8664f1d1a0905fee3bf859a1e1642c06597ba2c8d0799589fac7bf686"
+    },
+    "final-native-units/RecordingSession/asynchronous_encoder_flush_is_polled_before_publishing_the_output/deferred-3501488736958694.mp4.json": {
+      "bytes": 527,
+      "sha256": "60cc47f831a90797036279ad4d89b5f6f45858bb02927376d3a1867e88428c54"
+    },
+    "final-native-units/RecordingSession/asynchronous_encoder_flush_is_polled_before_publishing_the_output/deferred-3501488736958694.mp4.session.json": {
+      "bytes": 90,
+      "sha256": "41c4271040792268d6786adff27caa05cc981132098f9bb17e7addaaa1789889"
+    },
+    "final-native-units/RecordingSession/capture_pressure_rejects_input_within_the_three-frame_budget/pressure-3501488872412659.mp4": {
+      "bytes": 3003,
+      "sha256": "5263c8f70dfd432fd9538a170412c273b3fb00cb9834a3ca8a9081ef05cc3c6d"
+    },
+    "final-native-units/RecordingSession/capture_pressure_rejects_input_within_the_three-frame_budget/pressure-3501488872412659.mp4.events.jsonl": {
+      "bytes": 125,
+      "sha256": "3e6c8ee8664f1d1a0905fee3bf859a1e1642c06597ba2c8d0799589fac7bf686"
+    },
+    "final-native-units/RecordingSession/capture_pressure_rejects_input_within_the_three-frame_budget/pressure-3501488872412659.mp4.json": {
+      "bytes": 530,
+      "sha256": "8393f176dfc3a18316d159d04968e44deb6a2370aca55b9ec3c9c4ea78694d9b"
+    },
+    "final-native-units/RecordingSession/capture_pressure_rejects_input_within_the_three-frame_budget/pressure-3501488872412659.mp4.session.json": {
+      "bytes": 90,
+      "sha256": "f1c91afb4fae6d276a50ffe21d768ff86f6e81438bfe01e0a9fbc5a23d7f97bc"
+    },
+    "final-native-units/RecordingSession/device_failure_closes_its_stream_and_starts_a_software_segment/device-loss-3501488845048704.mp4": {
+      "bytes": 3003,
+      "sha256": "5263c8f70dfd432fd9538a170412c273b3fb00cb9834a3ca8a9081ef05cc3c6d"
+    },
+    "final-native-units/RecordingSession/device_failure_closes_its_stream_and_starts_a_software_segment/device-loss-3501488845048704.mp4.events.jsonl": {
+      "bytes": 125,
+      "sha256": "3e6c8ee8664f1d1a0905fee3bf859a1e1642c06597ba2c8d0799589fac7bf686"
+    },
+    "final-native-units/RecordingSession/device_failure_closes_its_stream_and_starts_a_software_segment/device-loss-3501488845048704.mp4.json": {
+      "bytes": 572,
+      "sha256": "ac342dbc724751ab524935c83cb076acdb48497161130eb31a16c27611dd6e94"
+    },
+    "final-native-units/RecordingSession/device_failure_closes_its_stream_and_starts_a_software_segment/device-loss-3501488845048704.mp4.session.json": {
+      "bytes": 173,
+      "sha256": "f725cbb968a07d113600d969b8685a4ec07e964b4083199ed45a21d8ee118fa0"
+    },
+    "final-native-units/RecordingSession/device_failure_closes_its_stream_and_starts_a_software_segment/device-loss-3501488845048704.part0002.mp4": {
+      "bytes": 3740,
+      "sha256": "5b9248b79efdd569abe558d44d8319049e7a31024bf1fa862ed8bf0af1f02076"
+    },
+    "final-native-units/RecordingSession/device_failure_closes_its_stream_and_starts_a_software_segment/device-loss-3501488845048704.part0002.mp4.events.jsonl": {
+      "bytes": 125,
+      "sha256": "3e6c8ee8664f1d1a0905fee3bf859a1e1642c06597ba2c8d0799589fac7bf686"
+    },
+    "final-native-units/RecordingSession/device_failure_closes_its_stream_and_starts_a_software_segment/device-loss-3501488845048704.part0002.mp4.json": {
+      "bytes": 580,
+      "sha256": "e3b4b0349c255bf7b133f10d9f19f6014bf32aad945c256e581663839a9e9458"
+    },
+    "final-native-units/RecordingSession/hardware_flush_failure_during_resize_continues_with_a_software_segment/flush-loss-3501488858318902.mp4": {
+      "bytes": 3448,
+      "sha256": "68fcc321501ca7d9458c75d5ebc77a3d3647810b88554be24175b627ad1b6cde"
+    },
+    "final-native-units/RecordingSession/hardware_flush_failure_during_resize_continues_with_a_software_segment/flush-loss-3501488858318902.mp4.events.jsonl": {
+      "bytes": 176,
+      "sha256": "9ced449995a1c53bf309e6bf084fa6f88f07c2f5cb0b144b965b98f4a3b43a4b"
+    },
+    "final-native-units/RecordingSession/hardware_flush_failure_during_resize_continues_with_a_software_segment/flush-loss-3501488858318902.mp4.json": {
+      "bytes": 572,
+      "sha256": "3b7d5cf4f7d1c7b88c55218f2edd9b50d5b85d059e467a26e62862e88be5915d"
+    },
+    "final-native-units/RecordingSession/hardware_flush_failure_during_resize_continues_with_a_software_segment/flush-loss-3501488858318902.mp4.session.json": {
+      "bytes": 171,
+      "sha256": "19219d7c4d1e5e5d8bd23acbd0d4dfcbebedd1e8783cb60fb826124457c2b1e2"
+    },
+    "final-native-units/RecordingSession/hardware_flush_failure_during_resize_continues_with_a_software_segment/flush-loss-3501488858318902.part0002.mp4": {
+      "bytes": 3743,
+      "sha256": "917f025a802fbb825ffc3c1da8a71726424afddf4c46804b60d60eee1cd50940"
+    },
+    "final-native-units/RecordingSession/hardware_flush_failure_during_resize_continues_with_a_software_segment/flush-loss-3501488858318902.part0002.mp4.events.jsonl": {
+      "bytes": 125,
+      "sha256": "3e6c8ee8664f1d1a0905fee3bf859a1e1642c06597ba2c8d0799589fac7bf686"
+    },
+    "final-native-units/RecordingSession/hardware_flush_failure_during_resize_continues_with_a_software_segment/flush-loss-3501488858318902.part0002.mp4.json": {
+      "bytes": 580,
+      "sha256": "0186b98b06b54cf74955b7d37589ddbd78b0617e3b23f8451999c683600cf744"
+    },
+    "final-native-units/RecordingSession/interrupted_fragmented_media_recovers_without_a_finalized_trailer/interrupted-3501488877402856.mp4": {
+      "bytes": 7394,
+      "sha256": "71eecdd706d923c3c1291aa9587b27d5391d1218162cdcf09c7e004cd1cb6a61"
+    },
+    "final-native-units/RecordingSession/interrupted_fragmented_media_recovers_without_a_finalized_trailer/interrupted-3501488877402856.mp4.events.jsonl": {
+      "bytes": 125,
+      "sha256": "3e6c8ee8664f1d1a0905fee3bf859a1e1642c06597ba2c8d0799589fac7bf686"
+    },
+    "final-native-units/RecordingSession/interrupted_fragmented_media_recovers_without_a_finalized_trailer/interrupted-3501488877402856.mp4.json": {
+      "bytes": 554,
+      "sha256": "0c95fca8130758a1660b37af738b0a3776cefc5ab6250c5fbaa6ebf6be8f0e3d"
+    },
+    "final-native-units/RecordingSession/interrupted_fragmented_media_recovers_without_a_finalized_trailer/interrupted-3501488903437630.mp4": {
+      "bytes": 7394,
+      "sha256": "71eecdd706d923c3c1291aa9587b27d5391d1218162cdcf09c7e004cd1cb6a61"
+    },
+    "final-native-units/RecordingSession/interrupted_fragmented_media_recovers_without_a_finalized_trailer/interrupted-3501488903437630.mp4.events.jsonl": {
+      "bytes": 125,
+      "sha256": "3e6c8ee8664f1d1a0905fee3bf859a1e1642c06597ba2c8d0799589fac7bf686"
+    },
+    "final-native-units/RecordingSession/interrupted_fragmented_media_recovers_without_a_finalized_trailer/interrupted-3501488903437630.mp4.json": {
+      "bytes": 554,
+      "sha256": "433b8d3d94d401c20d68a289953e8bdc8552c148051fb7312bf1a1b34b4e08ab"
+    },
+    "final-native-units/RecordingSession/legacy_44.1_kHz_recording_recovery_preserves_its_audio_rate__recording__artifacts/legacy-audio-3501488928487564.mp4": {
+      "bytes": 11393,
+      "sha256": "4f9d41250591e9460650e564c2947a057bc07a71e37c47e3cc516807879e49bf"
+    },
+    "final-native-units/RecordingSession/legacy_44.1_kHz_recording_recovery_preserves_its_audio_rate__recording__artifacts/legacy-audio-3501488928487564.mp4.events.jsonl": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "final-native-units/RecordingSession/legacy_44.1_kHz_recording_recovery_preserves_its_audio_rate__recording__artifacts/legacy-audio-3501488928487564.mp4.generate.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "final-native-units/RecordingSession/legacy_44.1_kHz_recording_recovery_preserves_its_audio_rate__recording__artifacts/legacy-audio-3501488928487564.mp4.json": {
+      "bytes": 137,
+      "sha256": "32b5f39dedac78dec265aacc659534280dc682306d25e910f53403b8302c30c8"
+    },
+    "final-native-units/RecordingSession/legacy_44.1_kHz_recording_recovery_preserves_its_audio_rate__recording__artifacts/legacy-audio-3501488928487564.mp4.probe.log": {
+      "bytes": 6,
+      "sha256": "68b15a32de22fdcc49b69b1d6cb42cb06901c43de41a4cccc92b4f0d4def76e4"
+    },
+    "final-native-units/RecordingSession/long_scheduling_gaps_preserve_time_without_an_encoding_catch-up_burst/gap-3501488744123002.mp4": {
+      "bytes": 3029,
+      "sha256": "61dea0845e8dbfb0e9c4c9277d8d47cfeedcfc40b6335730bc7d413d306ea65e"
+    },
+    "final-native-units/RecordingSession/long_scheduling_gaps_preserve_time_without_an_encoding_catch-up_burst/gap-3501488744123002.mp4.events.jsonl": {
+      "bytes": 193,
+      "sha256": "719db5b963b2b3a20f1350c9d4870ab56e30cb47320682083eb8ceb9bdfa0733"
+    },
+    "final-native-units/RecordingSession/long_scheduling_gaps_preserve_time_without_an_encoding_catch-up_burst/gap-3501488744123002.mp4.json": {
+      "bytes": 527,
+      "sha256": "4e85ad92d06bdb5f7ceb5944fddd9bf9ac4e31083235e6176d860571a54d6581"
+    },
+    "final-native-units/RecordingSession/long_scheduling_gaps_preserve_time_without_an_encoding_catch-up_burst/gap-3501488744123002.mp4.probe.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "final-native-units/RecordingSession/long_scheduling_gaps_preserve_time_without_an_encoding_catch-up_burst/gap-3501488744123002.mp4.progress": {
+      "bytes": 287,
+      "sha256": "a65afe05a3c1de0986bc06f58ee21abb2762d18669d8289174f6221a4992a425"
+    },
+    "final-native-units/RecordingSession/long_scheduling_gaps_preserve_time_without_an_encoding_catch-up_burst/gap-3501488744123002.mp4.session.json": {
+      "bytes": 85,
+      "sha256": "21f1407f1f7572555fe2ce3c2b313aced8ac75609c9864d50a721685ea67ea24"
+    },
+    "final-native-units/RecordingSession/publication_failure_retains_media_that_can_be_recovered_without_overwriting/recover-3501489144023259.mp4": {
+      "bytes": 2835,
+      "sha256": "3efdd0341f9b040040e961f0347b83a4ec3e88912655d92f7f2d92090a2b4d08"
+    },
+    "final-native-units/RecordingSession/publication_failure_retains_media_that_can_be_recovered_without_overwriting/recover-3501489144023259.mp4.events.jsonl": {
+      "bytes": 125,
+      "sha256": "3e6c8ee8664f1d1a0905fee3bf859a1e1642c06597ba2c8d0799589fac7bf686"
+    },
+    "final-native-units/RecordingSession/publication_failure_retains_media_that_can_be_recovered_without_overwriting/recover-3501489144023259.mp4.json": {
+      "bytes": 542,
+      "sha256": "0e617c9f1f97f8762baadde706d0c7120b9a0674c3a51e9cee2a800b91c30e5d"
+    },
+    "final-native-units/RecordingSession/resize_coalescing_preserves_full_resolution_and_numbers_completed_segments/resize-3501488706850255.mp4": {
+      "bytes": 3600,
+      "sha256": "75b7579a61df525d0bb0acdb751c7190549105b270282d7fc4a54a16c794c25d"
+    },
+    "final-native-units/RecordingSession/resize_coalescing_preserves_full_resolution_and_numbers_completed_segments/resize-3501488706850255.mp4.events.jsonl": {
+      "bytes": 176,
+      "sha256": "520bfb3c7402f9ed60e259eec7606257a93d84e78d0c4f1c7e0368f96d463420"
+    },
+    "final-native-units/RecordingSession/resize_coalescing_preserves_full_resolution_and_numbers_completed_segments/resize-3501488706850255.mp4.json": {
+      "bytes": 525,
+      "sha256": "503814e7fe94da755ebf6131e8f13ad7a4cc3ccc33ab1a8576f865bcc213482b"
+    },
+    "final-native-units/RecordingSession/resize_coalescing_preserves_full_resolution_and_numbers_completed_segments/resize-3501488706850255.mp4.session.json": {
+      "bytes": 163,
+      "sha256": "53e5cbed1d9d7a558b72bce36a1de4f4c43b9ed7c3fcbb3c62ac022a3b6d5e7a"
+    },
+    "final-native-units/RecordingSession/resize_coalescing_preserves_full_resolution_and_numbers_completed_segments/resize-3501488706850255.part0002.mp4": {
+      "bytes": 3603,
+      "sha256": "525add3d98352116deda322cd5ec4e6705f218ad0d164f5393a2313a944198b5"
+    },
+    "final-native-units/RecordingSession/resize_coalescing_preserves_full_resolution_and_numbers_completed_segments/resize-3501488706850255.part0002.mp4.events.jsonl": {
+      "bytes": 125,
+      "sha256": "3e6c8ee8664f1d1a0905fee3bf859a1e1642c06597ba2c8d0799589fac7bf686"
+    },
+    "final-native-units/RecordingSession/resize_coalescing_preserves_full_resolution_and_numbers_completed_segments/resize-3501488706850255.part0002.mp4.json": {
+      "bytes": 539,
+      "sha256": "26b9be6fef0209d3c2132a392e31cd483f316fb60a87f056b85bd1f17c0c908e"
+    },
+    "final-native-units/RecordingSession/session_index_creation_preserves_an_existing_recording/exclusive-3501488706305197.mp4.session.json": {
+      "bytes": 15,
+      "sha256": "cf84482b9efdd9291a36643471c6e09c79a69623f87a7b61265b660e54e69eaf"
+    },
+    "final-native-units/RecordingSession/worker_normalizes_capture_color_layout_and_bottom-up_orientation/orientation-3501488729756717.mp4": {
+      "bytes": 2730,
+      "sha256": "09b4e007cdbc7d67af26c063190d92a2fd511fe3eddc5e24308635508ba31fa7"
+    },
+    "final-native-units/RecordingSession/worker_normalizes_capture_color_layout_and_bottom-up_orientation/orientation-3501488729756717.mp4.events.jsonl": {
+      "bytes": 125,
+      "sha256": "3e6c8ee8664f1d1a0905fee3bf859a1e1642c06597ba2c8d0799589fac7bf686"
+    },
+    "final-native-units/RecordingSession/worker_normalizes_capture_color_layout_and_bottom-up_orientation/orientation-3501488729756717.mp4.json": {
+      "bytes": 531,
+      "sha256": "1e4368c28678a250b563cb5e5e841fa572e8931198cc3809861c4618523efcb0"
+    },
+    "final-native-units/RecordingSession/worker_normalizes_capture_color_layout_and_bottom-up_orientation/orientation-3501488729756717.mp4.session.json": {
+      "bytes": 93,
+      "sha256": "1a166cfc01f2b6b9e9121106e29e9f1977a90d00a5a6035307c8083fbe02961d"
+    },
+    "final-native-units/build-provenance.json": {
+      "bytes": 728,
+      "sha256": "f90d1275515f4b3196b1b96d9985e5182f76d564618ed0fbe2ad0c4be0046811"
+    },
+    "final-native-engine/TerrainPresentation/GPU_terrain_pages_match_CPU_composition_through_edits_wrapping_recovery_and_live_switches_display_isolated_artifacts_writes-preferences/gpu-terrain-integration.txt": {
+      "bytes": 25,
+      "sha256": "63741427c0b450450ef89475c4bcae1f19c7e44c25fde1baff0da59b66f0fd03"
+    },
+    "final-native-engine/TerrainPresentation/HD_material_pages_and_fractional_zoom_preserve_cached_pixels_with_missing_optional_atlas_display_artifacts/cache-memory.txt": {
+      "bytes": 102,
+      "sha256": "80c71f98f12065b827f5234facdbe568b707ed2bf9147c34f826dd9ae9651a9c"
+    },
+    "final-native-engine/TerrainPresentation/HD_material_pages_and_fractional_zoom_preserve_cached_pixels_with_missing_optional_atlas_display_artifacts/synthetic-hd/frames.txt": {
+      "bytes": 502,
+      "sha256": "41978fefc8a58964b1a64f09d57aeb086b98b395903caadedf2f21077619ae08"
+    },
+    "final-native-engine/TerrainPresentation/HD_material_pages_and_fractional_zoom_preserve_cached_pixels_with_missing_optional_atlas_display_artifacts/synthetic-hd/grass.webp": {
+      "bytes": 44,
+      "sha256": "0896e81fe68c2a65254fa6895093e86a789de78d6e215000f44e52b11548a36d"
+    },
+    "final-native-engine/TerrainPresentation/streaming_pages_match_cached_fractional_pixels_across_wraps_and_small_maps_display/synthetic-hd/frames.txt": {
+      "bytes": 502,
+      "sha256": "41978fefc8a58964b1a64f09d57aeb086b98b395903caadedf2f21077619ae08"
+    },
+    "final-native-engine/TerrainPresentation/streaming_pages_match_cached_fractional_pixels_across_wraps_and_small_maps_display/synthetic-hd/grass.webp": {
+      "bytes": 44,
+      "sha256": "0896e81fe68c2a65254fa6895093e86a789de78d6e215000f44e52b11548a36d"
+    },
+    "final-native-engine/TorusRender/SDL_GPU_captures_large_logical_maps_beyond_the_window_display_isolated_artifacts/sdl-gpu-large-torus-1024.bmp": {
+      "bytes": 1228938,
+      "sha256": "7297f54617ee936f054af367780b22af8d42d27a59b996d868b9e47c88406052"
+    },
+    "final-native-engine/TorusRender/SDL_GPU_captures_large_logical_maps_beyond_the_window_display_isolated_artifacts/sdl-gpu-large-torus-1024.txt": {
+      "bytes": 51,
+      "sha256": "5ca4218d9fd9ad0f8ae0935dfd0cfd073b3e9bed5ac81c90ef0b5e5a78b51473"
+    },
+    "final-native-engine/TorusRender/SDL_GPU_captures_large_logical_maps_beyond_the_window_display_isolated_artifacts/sdl-gpu-large-torus-2048.bmp": {
+      "bytes": 1228938,
+      "sha256": "f5edaac94c622776a0196b36363802dcb382dd39384e89fffc05b5088044feb3"
+    },
+    "final-native-engine/TorusRender/SDL_GPU_captures_large_logical_maps_beyond_the_window_display_isolated_artifacts/sdl-gpu-large-torus-2048.txt": {
+      "bytes": 51,
+      "sha256": "5ca4218d9fd9ad0f8ae0935dfd0cfd073b3e9bed5ac81c90ef0b5e5a78b51473"
+    },
+    "final-native-engine/TorusRender/SDL_GPU_captures_large_logical_maps_beyond_the_window_display_isolated_artifacts/sdl-gpu-large-torus-4096.bmp": {
+      "bytes": 1228938,
+      "sha256": "31334763b2c8b0c73d34f46038b691d61d003b184f65d07668f692cde7815d90"
+    },
+    "final-native-engine/TorusRender/SDL_GPU_captures_large_logical_maps_beyond_the_window_display_isolated_artifacts/sdl-gpu-large-torus-4096.txt": {
+      "bytes": 51,
+      "sha256": "5ca4218d9fd9ad0f8ae0935dfd0cfd073b3e9bed5ac81c90ef0b5e5a78b51473"
+    },
+    "final-native-engine/TorusRender/programmable_GL_captures_large_logical_maps_beyond_the_window_display_isolated_artifacts/programmable-gl-large-torus-1024.bmp": {
+      "bytes": 1228938,
+      "sha256": "a804cf1e7638258051a0c93de72bb8af650f2b344dc96bc9ef46e566705442e0"
+    },
+    "final-native-engine/TorusRender/programmable_GL_captures_large_logical_maps_beyond_the_window_display_isolated_artifacts/programmable-gl-large-torus-1024.txt": {
+      "bytes": 59,
+      "sha256": "8ff97fa321f2616f7afad21dc24979453cdb44d0c01028e3da46dd967afb05a7"
+    },
+    "final-native-engine/TorusRender/programmable_GL_captures_large_logical_maps_beyond_the_window_display_isolated_artifacts/programmable-gl-large-torus-2048.bmp": {
+      "bytes": 1228938,
+      "sha256": "a125e645ff4b695b62c712ebc0dcc3209ac7c6ff4c361a02bc9a287e058e5aa8"
+    },
+    "final-native-engine/TorusRender/programmable_GL_captures_large_logical_maps_beyond_the_window_display_isolated_artifacts/programmable-gl-large-torus-2048.txt": {
+      "bytes": 59,
+      "sha256": "8ff97fa321f2616f7afad21dc24979453cdb44d0c01028e3da46dd967afb05a7"
+    },
+    "final-native-engine/TorusRender/programmable_GL_captures_large_logical_maps_beyond_the_window_display_isolated_artifacts/programmable-gl-large-torus-4096.bmp": {
+      "bytes": 1228938,
+      "sha256": "66e10627a231c3ac19d31088c222df3c7036792e4e53117c475c691024561a92"
+    },
+    "final-native-engine/TorusRender/programmable_GL_captures_large_logical_maps_beyond_the_window_display_isolated_artifacts/programmable-gl-large-torus-4096.txt": {
+      "bytes": 59,
+      "sha256": "8ff97fa321f2616f7afad21dc24979453cdb44d0c01028e3da46dd967afb05a7"
+    }
+  },
+  "omissions": []
+}

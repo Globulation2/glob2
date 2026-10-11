@@ -1,0 +1,23 @@
+{
+  "testedCommit": "d3084909a281ac7c6ec4eef84650646695365079",
+  "baseCommit": "806a80603fe3dc30d6d9ad42fae648f2c63ffaa4",
+  "compiler": "g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+  "flags": "-std=c++20 -O0 -g -Wall -Wextra -Werror -Wno-unused-parameter -DGLOB2_PROGRAMMABLE_GL=1",
+  "dependency": "pinned SDL3.4.16",
+  "run": "xvfb-run -a env LIBGL_ALWAYS_SOFTWARE=1 GLOB2_RENDERER_SHADER_DIR=/home/bradley/glob2/artifacts/renderer-integration/review-shader-input artifacts/gl-second-pass/tests --test-suite=ProgrammableGLDevice --reporters=junit --out=artifacts/gl-second-pass/results.xml",
+  "result": {
+    "cases": 29,
+    "assertions": 45325,
+    "errors": 0,
+    "failures": 0
+  },
+  "callProbe": "Functional --wrap=SDL_GL_GetProcAddress runs baseline/current with --test-case=primitive state reuse*; identical1041assertions; sampled calls561\u2192383. Includes factory/lifecycle; not a timing/representative performance claim.",
+  "limitations": "No hardware/browser benchmark or integrated full build; only focused native GL/GLES correctness closure",
+  "hashes": {
+    "libgag/src/ProgrammableGLDevice.cpp": "a63e848c707adcc8a334b90a7e2f13d687ef763e3688a0c2f6f6262298ea392d",
+    "libgag/src/ProgrammableGLDeviceTest.cpp": "8db00c5ac294ff785c38fbb44813cc2f85e53cb787f52de212ade4e2e497d002",
+    "artifacts/gl-second-pass/results.xml": "43586a136b3c703a91449c04fc536838f45bd66ffe075e003954b3d658dc6210",
+    "artifacts/gl-second-pass/call-count.cpp": "478de86f9e324821b0bb319b413fd9c87ab3f3270b38e272dcf0a014a05d3fd6",
+    "artifacts/gl-second-pass/call-counts.json": "f38b472f65dcffc885c502457c2ba195366d3c2c7e170b0d885339a6bde40ee8"
+  }
+}

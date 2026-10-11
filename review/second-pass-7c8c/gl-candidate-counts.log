@@ -1,0 +1,16 @@
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases:    1 |    1 passed | 0 failed | 28 skipped
+[doctest] assertions: 1041 | 1041 passed | 0 failed |
+[doctest] Status: SUCCESS!
+glBindFramebuffer=60
+glViewport=40
+glScissor=36
+glUseProgram=41
+glUniform2f=32
+glUniform1f=58
+glUniform1i=34
+glUniform4f=28
+glBindVertexArray=25
+glBindBuffer=29

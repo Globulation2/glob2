@@ -1,0 +1,110 @@
+[
+  {
+    "backend": "programmable-gl",
+    "round": 0,
+    "version": "before",
+    "wallp99Ms": 0.678637,
+    "processCPUp99Ms": 0.383,
+    "submit_cpu_nsp50Ms": 0.057317,
+    "submit_cpu_nsp99Ms": 0.094467,
+    "capture_cpu_nsp50Ms": 0.336738,
+    "capture_cpu_nsp99Ms": 0.537042
+  },
+  {
+    "backend": "programmable-gl",
+    "round": 0,
+    "version": "after",
+    "wallp99Ms": 0.820823,
+    "processCPUp99Ms": 0.391,
+    "submit_cpu_nsp50Ms": 0.046677,
+    "submit_cpu_nsp99Ms": 0.102832,
+    "capture_cpu_nsp50Ms": 0.340295,
+    "capture_cpu_nsp99Ms": 0.696189
+  },
+  {
+    "backend": "programmable-gl",
+    "round": 1,
+    "version": "before",
+    "wallp99Ms": 0.748427,
+    "processCPUp99Ms": 0.368,
+    "submit_cpu_nsp50Ms": 0.057317,
+    "submit_cpu_nsp99Ms": 0.096921,
+    "capture_cpu_nsp50Ms": 0.334835,
+    "capture_cpu_nsp99Ms": 0.565455
+  },
+  {
+    "backend": "programmable-gl",
+    "round": 1,
+    "version": "after",
+    "wallp99Ms": 0.832224,
+    "processCPUp99Ms": 0.327,
+    "submit_cpu_nsp50Ms": 0.043561,
+    "submit_cpu_nsp99Ms": 0.077905,
+    "capture_cpu_nsp50Ms": 0.335265,
+    "capture_cpu_nsp99Ms": 0.652518
+  },
+  {
+    "backend": "programmable-gl",
+    "round": 2,
+    "version": "before",
+    "wallp99Ms": 0.721738,
+    "processCPUp99Ms": 0.423,
+    "submit_cpu_nsp50Ms": 0.05917,
+    "submit_cpu_nsp99Ms": 0.118912,
+    "capture_cpu_nsp50Ms": 0.333783,
+    "capture_cpu_nsp99Ms": 0.555336
+  },
+  {
+    "backend": "programmable-gl",
+    "round": 2,
+    "version": "after",
+    "wallp99Ms": 0.947519,
+    "processCPUp99Ms": 0.355,
+    "submit_cpu_nsp50Ms": 0.046637,
+    "submit_cpu_nsp99Ms": 0.081342,
+    "capture_cpu_nsp50Ms": 0.338792,
+    "capture_cpu_nsp99Ms": 0.832433
+  },
+  {
+    "backend": "legacy-gl",
+    "round": 0,
+    "version": "before",
+    "wallp99Ms": 0.950094,
+    "processCPUp99Ms": 0.567
+  },
+  {
+    "backend": "legacy-gl",
+    "round": 0,
+    "version": "after",
+    "wallp99Ms": 2.29194,
+    "processCPUp99Ms": 0.634
+  },
+  {
+    "backend": "legacy-gl",
+    "round": 1,
+    "version": "before",
+    "wallp99Ms": 0.694757,
+    "processCPUp99Ms": 0.536
+  },
+  {
+    "backend": "legacy-gl",
+    "round": 1,
+    "version": "after",
+    "wallp99Ms": 0.944213,
+    "processCPUp99Ms": 0.506
+  },
+  {
+    "backend": "legacy-gl",
+    "round": 2,
+    "version": "before",
+    "wallp99Ms": 0.696952,
+    "processCPUp99Ms": 0.542
+  },
+  {
+    "backend": "legacy-gl",
+    "round": 2,
+    "version": "after",
+    "wallp99Ms": 0.681953,
+    "processCPUp99Ms": 0.498
+  }
+]

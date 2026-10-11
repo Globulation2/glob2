@@ -1,0 +1,108 @@
+{
+  "before": "5adb2b3fa3c22d9d6962f95e98542c828ef2e65b",
+  "after": "7c8c18c20b50de7bc037529fed9d06ebab8a691f",
+  "processes": 36,
+  "completedIntervals": 14760,
+  "regressionsOverFivePercent": [
+    {
+      "workload": "native",
+      "backend": "legacy-gl",
+      "mode": "2D no clouds",
+      "metric": "wallMs/p99",
+      "beforeAbsoluteMedianMs": 0.696952,
+      "afterAbsoluteMedianMs": 0.944213,
+      "values": [
+        2.412329727374344,
+        1.359055036509168,
+        0.9784791492097017
+      ],
+      "median": 1.359055036509168,
+      "relativeMAD": 0.2800297832507234
+    },
+    {
+      "workload": "native",
+      "backend": "programmable-gl",
+      "mode": "2D no clouds",
+      "metric": "wallMs/p99",
+      "beforeAbsoluteMedianMs": 0.721738,
+      "afterAbsoluteMedianMs": 0.832224,
+      "values": [
+        1.2095170171977065,
+        1.1119641594971854,
+        1.3128295863595931
+      ],
+      "median": 1.2095170171977065,
+      "relativeMAD": 0.0806543904000114
+    },
+    {
+      "workload": "torus",
+      "backend": "legacy-gl",
+      "mode": "Torus no clouds",
+      "metric": "wallMs/p99",
+      "beforeAbsoluteMedianMs": 6.960928,
+      "afterAbsoluteMedianMs": 7.809322,
+      "values": [
+        2.4854581170786423,
+        1.0741918870873408,
+        0.5705925968791062
+      ],
+      "median": 1.0741918870873408,
+      "relativeMAD": 0.4688168811009534
+    },
+    {
+      "workload": "torus",
+      "backend": "legacy-gl",
+      "mode": "Torus no clouds",
+      "metric": "processCpuMs/p95",
+      "beforeAbsoluteMedianMs": 5.555,
+      "afterAbsoluteMedianMs": 6.294,
+      "values": [
+        2.2989493791786053,
+        1.133033303330333,
+        0.450241935483871
+      ],
+      "median": 1.133033303330333,
+      "relativeMAD": 0.6026225053045912
+    },
+    {
+      "workload": "torus",
+      "backend": "legacy-gl",
+      "mode": "Torus no clouds",
+      "metric": "processCpuMs/p99",
+      "beforeAbsoluteMedianMs": 5.877,
+      "afterAbsoluteMedianMs": 6.56,
+      "values": [
+        2.3764176417641765,
+        1.1162157563382678,
+        0.45391612331964903
+      ],
+      "median": 1.1162157563382678,
+      "relativeMAD": 0.5933437413491498
+    },
+    {
+      "workload": "torus",
+      "backend": "programmable-gl",
+      "mode": "Torus no clouds",
+      "metric": "processCpuMs/p99",
+      "beforeAbsoluteMedianMs": 13.39,
+      "afterAbsoluteMedianMs": 14.183,
+      "values": [
+        2.0315907393577297,
+        1.0895196506550218,
+        0.5986661601452028
+      ],
+      "median": 1.0895196506550218,
+      "relativeMAD": 0.4505228429929802
+    }
+  ],
+  "defaultPromotion": false,
+  "frozenReleaseGateQualified": false,
+  "limitations": [
+    "Three rotating rounds only; torus30/4, not frozen7\u00d7300 qualification.",
+    "No SDL new performance claim (second-pass reverted); no software/WebGPU/cold/stream/UI/recording performance.",
+    "Synchronous1x1readback/holds/retries included, finalpresentation excluded; CPU is wholeprocess, noGPUtimestamp.",
+    "UserFlatpak continues; agentownedGPUworkloadslimitedtoonebenchmark.",
+    "Every >5%tailflag retained. No broad speedup/default qualification; no gate widening."
+  ],
+  "changedPathAssessment": "Native-off submissionCPU p50 improves in every pair; p99 is mixed/down in2of3 and processCPUtail improves2of3. Wallp99 increase tracks capture-wait-inclusive timer; no changed-pathCPU regression isolated, but measuredtailflag remains and GPU/scheduling attribution is unproven."
+}

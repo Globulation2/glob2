@@ -1,0 +1,174 @@
+{
+  "browser-build.log": {
+    "bytes": 8678,
+    "sha256": "66557038b6b99e198756bb0bb9895e6428802d3e1880f1641b15e792cd31eb8c"
+  },
+  "browser-provenance.json": {
+    "bytes": 948322,
+    "sha256": "8ca9bd5cc799f0f52c22cbd1da353c8955cb9d0adf529dc1540d1342dcb5f100"
+  },
+  "browser-units.log": {
+    "bytes": 10471,
+    "sha256": "3a7664bbb97a5c2d8a940d5a17e39e56adfd66357001b4a6226ef8dc1b0af3f5"
+  },
+  "build-contracts.log": {
+    "bytes": 20961,
+    "sha256": "7aca35879068c725de06a6b16e8e844b9fe7eea5053d393caad1da4dd2549662"
+  },
+  "candidate-and-scope-history.md": {
+    "bytes": 6630,
+    "sha256": "f76f00b03e73586949bcaf483fc18d475ed7fc4f74a680430d6967e03877a9a0"
+  },
+  "dev-build.log": {
+    "bytes": 97217,
+    "sha256": "613c378862d3853569110847637c466e57ae698e2fd5b303683a4005283875f2"
+  },
+  "dev-provenance.json": {
+    "bytes": 11673,
+    "sha256": "847c9a6cdd85c9762a8f2b2d2001104e7bae03d6d9f0bfd621da0e74cbf061bf"
+  },
+  "final-7c8c-native-gl-paired-curated.tar.gz": {
+    "bytes": 17655035,
+    "sha256": "f983c5bb305ee987ee246bd06c71062bc8a1ec8a127ebae0206555f3ff5da3e1"
+  },
+  "final-gl-native-off-tail-assessment.json": {
+    "bytes": 2515,
+    "sha256": "4f5e20a50a409789197c18b2a7a42641f225bfae50fbb8ab5159ad9832c99f59"
+  },
+  "final-gl-qualification.json": {
+    "bytes": 3502,
+    "sha256": "41420644f10b05529d5fe93725c2150f2fd8a008691b332d098cd2c0f16ddde7"
+  },
+  "final-gl-review-summary.md": {
+    "bytes": 2511,
+    "sha256": "3beec6be0d582b7c1cf2b799d69015d5fa0f90125268b0bf27dfdd2e8cd5e3e3"
+  },
+  "final-gl-summary.json": {
+    "bytes": 1072447,
+    "sha256": "545fc87900d89c0428e4ab86121b5431b4def2742c96988a885077b96e9388bc"
+  },
+  "final-native-engine.log": {
+    "bytes": 1737,
+    "sha256": "93f84e957720651472f7b56f70b29b83a98f50b2a77f8cd639c8a11aa5438104"
+  },
+  "final-native-engine.xml": {
+    "bytes": 2490,
+    "sha256": "137bd6eb49ddb49eff89f50379993107da16d46cd1c42eded592fc8a22c0839e"
+  },
+  "final-native-units.log": {
+    "bytes": 5945,
+    "sha256": "ca2fd0f5dff3b67d72ccaa2aa48775f61d5e8c73abc184a2b73b06aaeaedcf2d"
+  },
+  "final-native-units.xml": {
+    "bytes": 15172,
+    "sha256": "a61e7421753195d3f131f693ff0056e8d35ba9b2d82486ef313410fa00a893ec"
+  },
+  "gl-baseline-counts.log": {
+    "bytes": 465,
+    "sha256": "26c840591c675299bb53cd31ad0c0683ff182e0f40036ce0e6a3db98a62ecb75"
+  },
+  "gl-call-counts.json": {
+    "bytes": 777,
+    "sha256": "f38b472f65dcffc885c502457c2ba195366d3c2c7e170b0d885339a6bde40ee8"
+  },
+  "gl-candidate-counts.log": {
+    "bytes": 465,
+    "sha256": "dd526e68115c094e0d1af883c80c791323e451295171b5ec79328ba0e830d43f"
+  },
+  "gl-provenance.json": {
+    "bytes": 1655,
+    "sha256": "d6622a195200bba79bcd006748d4359a96db0502d92c79f62fa72f0479695817"
+  },
+  "initial-mip-fixture-failure.log": {
+    "bytes": 7044,
+    "sha256": "cc768931dfde2a1ef62e697fe07c6ed7627e500214573edb5dfb9754532b749e"
+  },
+  "native-artifact-receipt.json": {
+    "bytes": 29656,
+    "sha256": "eda071815502296aea513b508660882dc9501e63a632cc7c2a140bedc8ca941b"
+  },
+  "native-build.log": {
+    "bytes": 119284,
+    "sha256": "ab9ab45af733eff262c0324401021aec3c9e5c50e4477724fa4e9026540d4cc4"
+  },
+  "native-provenance.json": {
+    "bytes": 11694,
+    "sha256": "77ad0ecefdf5a4a42782af0cc182c6aaeb2fd5178ce1e3db3a743fb7bb8654de"
+  },
+  "native-validation-artifacts.tar.gz": {
+    "bytes": 3398833,
+    "sha256": "4da16e1a6dca0bf8b2668f9152d169454d1c26ef92868071f138812cd5e30c32"
+  },
+  "rejected-920e-native-paired-curated.tar.gz": {
+    "bytes": 35375293,
+    "sha256": "0fa7b58891ef76c24d02fbc8b7533a2104e31d5e6cd86a99cba7aaff7dc7c447"
+  },
+  "review-findings.md": {
+    "bytes": 1041,
+    "sha256": "e12ab6a1cf1ae5c60efac2fd9371933016a27d192719d90d83eccebd4ce73a80"
+  },
+  "revised-dev-build.log": {
+    "bytes": 99147,
+    "sha256": "e70fa740072f6ddfb36f43a15932ef152a8b4f6c2844aa6647dcdb221a753e66"
+  },
+  "revised-dev-provenance.json": {
+    "bytes": 11673,
+    "sha256": "cf61d5242f62dcf51fcda813b25a4b0273bab6992fdd0b85c5bd9e622a29805a"
+  },
+  "revised-native-artifact-receipt.json": {
+    "bytes": 180,
+    "sha256": "ccce74dafe73da8ca880ec04ed07cc4ee1513a2df241671bcb2fc20e69057d23"
+  },
+  "revised-native-build.log": {
+    "bytes": 119284,
+    "sha256": "beaf7bcf2242bcc2dc0a0373b9ef0cdcad6a1d9961b27c684c2fb6145ec9a2f3"
+  },
+  "revised-native-engine.log": {
+    "bytes": 1739,
+    "sha256": "a253383e9b495deb5cf1e334b650e710ef6e3364d72c21026ef72c830ab67e6e"
+  },
+  "revised-native-engine.xml": {
+    "bytes": 2491,
+    "sha256": "fbf780e0cab1aef089068da9ad98fadd186a4807671fe5d41e8e975e20ad7a47"
+  },
+  "revised-native-provenance.json": {
+    "bytes": 11694,
+    "sha256": "470e301ce872c95c38d87790133ad550b95ef3d742be55f23f12648f814205d9"
+  },
+  "revised-native-units.log": {
+    "bytes": 5713,
+    "sha256": "a82ec552f1100fb5e6aa07d76de2782eca9e3255bcfe2652bf9c0d60eb74e63b"
+  },
+  "revised-native-units.xml": {
+    "bytes": 14835,
+    "sha256": "36be1d0d58405efc737e05edb7442e60d7f2d9fd8159a2d6c63d9e2cfbcf0888"
+  },
+  "revised-native-validation-artifacts.tar.gz": {
+    "bytes": 3787169,
+    "sha256": "b8d5fa2a7bcd8e3f604a2fa25855b3ac5c24a9eab3e9a67594e6d97306da05bf"
+  },
+  "secondpass-browser-curation-receipt.json": {
+    "bytes": 228,
+    "sha256": "9670a1c780d85029fd49173b36daf03ea727b5c8e6ddf0f8e3cbbf9e26482a0a"
+  },
+  "secondpass-browser-summary.json": {
+    "bytes": 35453,
+    "sha256": "028a0d47a4563c706061c7f3569254ca120a3946cc468c3ea936c7572fd73ed2"
+  },
+  "secondpass-final-scope-receipt.json": {
+    "bytes": 3403,
+    "sha256": "f7c52522d37d741c24c813bcc98513f864810cec305c8701a9131cc9ccaede53"
+  },
+  "secondpass-renderer-browser-evidence.tar.gz": {
+    "bytes": 46128703,
+    "sha256": "6d769602106366f50342112b15669621a2e7f3f73531edceb2c8e3163f12459a"
+  },
+  "toolchain-and-pins.json": {
+    "bytes": 1784,
+    "sha256": "4d88fd66b8686baa1f49c037d54e2ac36d4b04ed60fbe835ff638df1384acf0c"
+  },
+  "verification.md": {
+    "bytes": 9651,
+    "sha256": "ba0ba4cf48ebce4d123e512d869ebee92b16933fe7aae8055ff450ab71bc78b9"
+  }
+}

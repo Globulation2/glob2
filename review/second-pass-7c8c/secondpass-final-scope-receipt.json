@@ -1,0 +1,48 @@
+{
+  "testedRevision": "920e8e9d80416bb5dcf8906f06e3c03487f491dd",
+  "finalRevision": "7c8c18c20b50de7bc037529fed9d06ebab8a691f",
+  "base": "806a80603fe3dc30d6d9ad42fae648f2c63ffaa4",
+  "newExecution": false,
+  "changedFiles": [
+    "docs/architecture/rendering.md",
+    "libgag/src/SDLGPUDevice.cpp",
+    "libgag/src/SDLGPUDeviceTest.cpp"
+  ],
+  "disposition": "Preserve the10 executed Chromium serial/threaded correctness results by unchanged effective browser compilation/runtime inputs; no new execution or native SDL qualification claimed.",
+  "importantQualification": "SDLGPUDevice.cpp IS in GAG_SOURCES and is compiled for web. Its native implementation is excluded by #ifndef __EMSCRIPTEN__; the browser-only unavailable factory branch and shared include are byte-identical. Therefore do not claim the entire source file is omitted.",
+  "browserEffectiveSDLGPUBranchSHA256": "733a44ac59ad5675624cbde2ca98f30e9ec317377d2a40a1b49cf08bc7fbce74",
+  "selectionEvidence": {
+    "scons/sources.py": "GAG_SOURCES includes SDLGPUDevice.cpp at line674; SDLGPUDeviceTest.cpp absent from production list.",
+    "scons/web_build.py": "lines168-170 compile GAG_SOURCES (excluding ApplicationHost/RecordingEncoder/RecordingSession). This applies both variants; no test source in production file list.",
+    "libgag/src/SDLGPUDevice.cpp": "Native body under #ifndef __EMSCRIPTEN__, browser factory stub under final #else; changed regions occur only in excluded native body.",
+    "shaderAndJS": "No changes to browser/,libgag/shaders/,tools/shaders/,shared renderer sources/headers,build configuration,asset selection,or shader packaging between tested and final revisions.",
+    "docs": "Only docs/architecture/rendering.md changed outside native SDL files; not a browser runtime/asset input."
+  },
+  "files": [
+    {
+      "path": "docs/architecture/rendering.md",
+      "testedSHA256": "12e615a1dc5712f6447854a18d6fa00cd1a25edddcbf587d3698efedf732b037",
+      "finalSHA256": "52c7456634eeaaec9c7c931b301895b02c48566e548510fc4a25477ac99745f7"
+    },
+    {
+      "path": "libgag/src/SDLGPUDevice.cpp",
+      "testedSHA256": "8e80497763d08fc601cf7065c1afcdd01a724105c9dfa230794b16a058679d68",
+      "finalSHA256": "327bb0ace91fc253908edabcb38ad640296877a344a502ff6719037740cb83b8"
+    },
+    {
+      "path": "libgag/src/SDLGPUDeviceTest.cpp",
+      "testedSHA256": "b4fdf8732f04ad2bb480a5b2d2f4ca073f52b38c553f1429a311d2b8af8315ec",
+      "finalSHA256": "676e4b725842ec4939399cc58950fc3391f31ee032b4120ff5399daaed7f9c31"
+    }
+  ],
+  "unchangedBrowserRepresentativeHashes": {
+    "browser/webgpu-device.js": "81d6afe9e0b3652f1dd0041b3f40d4b7a62bae85493e848c6d36c37840f3f293",
+    "libgag/src/WebGPUDevice.cpp": "a8b21f7e51e19ff16ecbef0bc4d296ae1d778dafc2600483fc7ef742413686c9",
+    "libgag/src/ProgrammableGLDevice.cpp": "a63e848c707adcc8a334b90a7e2f13d687ef763e3688a0c2f6f6262298ea392d",
+    "scons/web_build.py": "8f3369521d2c6be212d145d3519b57900aef3df3f1a2bcf78f927dc59a0e2d04",
+    "scons/sources.py": "11d4d58deb9c66224f089bebee5dc69287f619b6132022a9851cef1ed6e844cc",
+    "scons/renderer_shaders.py": "efbe8007195bf8b690d3fa86d235b8c4826db2479a32ce2e6dbed4c156deb945",
+    "libgag/shaders/renderer-manifest.json": "01fb9769b8ec88f6a47f80bafdf165b1602beca8daa5db7880861891fed5be79",
+    "browser/tests/renderer-switching.spec.js": "e6c7c860f6b4c3a5e1487415deba2022f95b71348e97b983c804cd44f0964d06"
+  }
+}

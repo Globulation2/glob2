@@ -1,0 +1,1054 @@
+{
+  "revision": "920e8e9d80416bb5dcf8906f06e3c03487f491dd",
+  "base": "806a80603fe3dc30d6d9ad42fae648f2c63ffaa4",
+  "runtimeURL": "http://127.0.0.1:8824/",
+  "fixtureSHA256": "e6c7c860f6b4c3a5e1487415deba2022f95b71348e97b983c804cd44f0964d06",
+  "stats": {
+    "startTime": "2026-10-11T13:30:29.865Z",
+    "duration": 928633.01,
+    "expected": 10,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "cases": [
+    {
+      "title": "serial: gameplay and torus survive settings overlay switches",
+      "status": "passed",
+      "durationMilliseconds": 272160,
+      "metadata": [
+        {
+          "name": "map-entropy-fixture",
+          "data": {
+            "rootSeed": 3737844653,
+            "requests": 8,
+            "generator": "fingerprint",
+            "width": 128,
+            "height": 128,
+            "colonies": 2,
+            "candidates": [
+              "Map generation: fingerprint revision 5 seed 3347408468 [complete]: ",
+              "Map generation: fingerprint revision 5 seed 2433195244 [complete]: ",
+              "Map generation: fingerprint revision 5 seed 4039698994 [complete]: ",
+              "Map generation: fingerprint revision 5 seed 4039698994 [complete]: "
+            ],
+            "note": "Fixed root entropy, not an assertion that the last logged candidate is the selected map seed."
+          }
+        },
+        {
+          "name": "webgl2-driver",
+          "data": {
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "renderer": "WebKit WebGL",
+            "unmaskedRenderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon 680M (RADV REMBRANDT) (0x00001681)), radv)"
+          }
+        },
+        {
+          "name": "webgl2-driver",
+          "data": {
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "renderer": "WebKit WebGL",
+            "unmaskedRenderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon 680M (RADV REMBRANDT) (0x00001681)), radv)"
+          }
+        },
+        {
+          "name": "torus-restored-before-key",
+          "data": {
+            "screenClass": "17GameSessionScreen",
+            "controls": [],
+            "renderer": "webgl2",
+            "tick": 210,
+            "torus": true,
+            "torusSettled": true
+          }
+        }
+      ],
+      "attachments": [
+        {
+          "name": "trace",
+          "path": "/home/bradley/.codex/worktrees/renderer-shaders/glob2/artifacts/shaders/secondpass-renderer-amd-results/renderer-switching-serial--fa155-e-settings-overlay-switches-chromium/trace.zip",
+          "bytes": 209615567,
+          "sha256": "458ff7e48c1d8900ebc77abf54b95959ce58ed8583989b413e2873f5a073c770"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "title": "serial: editor stays open across live renderer switches and resize",
+      "status": "passed",
+      "durationMilliseconds": 156067,
+      "metadata": [
+        {
+          "name": "webgl2-driver",
+          "data": {
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "renderer": "WebKit WebGL",
+            "unmaskedRenderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon 680M (RADV REMBRANDT) (0x00001681)), radv)"
+          }
+        }
+      ],
+      "attachments": [
+        {
+          "name": "trace",
+          "path": "/home/bradley/.codex/worktrees/renderer-shaders/glob2/artifacts/shaders/secondpass-renderer-amd-results/renderer-switching-serial--1a9b8-enderer-switches-and-resize-chromium/trace.zip",
+          "bytes": 141121180,
+          "sha256": "a23f28f2d1056943eb40e40d584bcf4ce7cb20fc5c3e2a0a93d5ab1e9119009b"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "title": "serial: recording retains one session while changing backend",
+      "status": "passed",
+      "durationMilliseconds": 111225,
+      "metadata": [
+        {
+          "name": "map-entropy-fixture",
+          "data": {
+            "rootSeed": 3737844653,
+            "requests": 6,
+            "generator": "fingerprint",
+            "width": 128,
+            "height": 128,
+            "colonies": 2,
+            "candidates": [
+              "Map generation: fingerprint revision 5 seed 3347408468 [complete]: ",
+              "Map generation: fingerprint revision 5 seed 2433195244 [complete]: ",
+              "Map generation: fingerprint revision 5 seed 4039698994 [complete]: "
+            ],
+            "note": "Fixed root entropy, not an assertion that the last logged candidate is the selected map seed."
+          }
+        },
+        {
+          "name": "active-webgpu-owner",
+          "data": {
+            "state": 1,
+            "error": "",
+            "issued": 7,
+            "completed": 1,
+            "canvasOwned": true,
+            "adapter": {
+              "vendor": "amd",
+              "architecture": "rdna-2",
+              "device": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "name": "recording-active-webgpu",
+          "data": {
+            "state": {
+              "version": 1,
+              "executionMode": "serial",
+              "threadFallback": "serial requested",
+              "workerCount": 0,
+              "renderer": "webgl2",
+              "renderContext": null,
+              "contextLost": false,
+              "contextRestores": 0,
+              "screen": "match",
+              "screenClass": "17GameSessionScreen",
+              "roomCanStart": false,
+              "customGameReady": false,
+              "tick": 108,
+              "frames": 195,
+              "loop": 537,
+              "paused": false,
+              "torus": false,
+              "torusSettled": false,
+              "width": 1200,
+              "height": 900,
+              "heapBytes": 193331200,
+              "artworkReady": true,
+              "restore": "ready",
+              "watchReplay": "none",
+              "import": "idle",
+              "persisting": false,
+              "persistence": "persisted",
+              "audio": "inactive",
+              "assets": {
+                "core": "ready",
+                "game": "ready",
+                "skins": "idle",
+                "font-cjk": "ready",
+                "menu-music": "ready",
+                "translations": "ready",
+                "music": "ready",
+                "music-sets": "ready",
+                "hd": "skipped"
+              },
+              "opened": [],
+              "controls": {}
+            },
+            "acceptedFrames": 15
+          }
+        },
+        {
+          "name": "webgl2-driver",
+          "data": {
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "renderer": "WebKit WebGL",
+            "unmaskedRenderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon 680M (RADV REMBRANDT) (0x00001681)), radv)"
+          }
+        },
+        {
+          "name": "recording-switch-metadata",
+          "data": {
+            "version": 1,
+            "video": "capture-15660100.mp4",
+            "session": "capture-15660100.mp4",
+            "segment": 1,
+            "session_start_us": 0,
+            "checkpoint_generation": 89,
+            "complete": true,
+            "error": "",
+            "duration_us": 85433333,
+            "fps": 30,
+            "width": 1200,
+            "height": 900,
+            "crf": 23,
+            "encoder": "libx264",
+            "fallback_reason": "WebCodecs H.264 configuration unavailable",
+            "video_codec": "h264",
+            "audio_codec": "aac",
+            "dropped_frames": 210,
+            "dropped_audio_samples": 0,
+            "chapters": [
+              {
+                "id": 1,
+                "title": "game_session / in_game_main",
+                "start_us": 0,
+                "end_us": 466666,
+                "phase": "dialog",
+                "screen": "game_session",
+                "dialog": "in_game_main",
+                "match": 1,
+                "mode": "single_player",
+                "map": "Random map",
+                "team": 0,
+                "tick": 47,
+                "start_tick": 47,
+                "last_tick": 59
+              },
+              {
+                "id": 2,
+                "title": "Match 1: ticks 0\u201310000",
+                "start_us": 466666,
+                "end_us": 866666,
+                "phase": "gameplay",
+                "screen": "game_session",
+                "dialog": "",
+                "match": 1,
+                "mode": "single_player",
+                "map": "Random map",
+                "team": 0,
+                "tick": 60,
+                "era_start": 0,
+                "era_end": 10000,
+                "start_tick": 60,
+                "last_tick": 71
+              },
+              {
+                "id": 3,
+                "title": "game_session / in_game_main",
+                "start_us": 866666,
+                "end_us": 1400000,
+                "phase": "dialog",
+                "screen": "game_session",
+                "dialog": "in_game_main",
+                "match": 1,
+                "mode": "single_player",
+                "map": "Random map",
+                "team": 0,
+                "tick": 73,
+                "start_tick": 73,
+                "last_tick": 86
+              },
+              {
+                "id": 4,
+                "title": "settings",
+                "start_us": 1400000,
+                "end_us": 11533333,
+                "phase": "menu",
+                "screen": "settings",
+                "dialog": "",
+                "match": 1,
+                "mode": "single_player",
+                "map": "Random map",
+                "team": 0,
+                "tick": 87,
+                "start_tick": 87,
+                "last_tick": 87
+              },
+              {
+                "id": 5,
+                "title": "Match 1: ticks 0\u201310000",
+                "start_us": 11533333,
+                "end_us": 12133333,
+                "phase": "gameplay",
+                "screen": "game_session",
+                "dialog": "",
+                "match": 1,
+                "mode": "single_player",
+                "map": "Random map",
+                "team": 0,
+                "tick": 88,
+                "era_start": 0,
+                "era_end": 10000,
+                "start_tick": 88,
+                "last_tick": 107
+              },
+              {
+                "id": 6,
+                "title": "game_session / in_game_main",
+                "start_us": 12133333,
+                "end_us": 12766666,
+                "phase": "dialog",
+                "screen": "game_session",
+                "dialog": "in_game_main",
+                "match": 1,
+                "mode": "single_player",
+                "map": "Random map",
+                "team": 0,
+                "tick": 108,
+                "start_tick": 108,
+                "last_tick": 121
+              },
+              {
+                "id": 7,
+                "title": "settings",
+                "start_us": 12766666,
+                "end_us": 84366666,
+                "phase": "menu",
+                "screen": "settings",
+                "dialog": "",
+                "match": 1,
+                "mode": "single_player",
+                "map": "Random map",
+                "team": 0,
+                "tick": 122,
+                "start_tick": 122,
+                "last_tick": 122
+              },
+              {
+                "id": 8,
+                "title": "Match 1: ticks 0\u201310000",
+                "start_us": 84366666,
+                "end_us": 84966666,
+                "phase": "gameplay",
+                "screen": "game_session",
+                "dialog": "",
+                "match": 1,
+                "mode": "single_player",
+                "map": "Random map",
+                "team": 0,
+                "tick": 123,
+                "era_start": 0,
+                "era_end": 10000,
+                "start_tick": 123,
+                "last_tick": 140
+              },
+              {
+                "id": 9,
+                "title": "game_session / in_game_main",
+                "start_us": 84966666,
+                "end_us": 85433333,
+                "phase": "dialog",
+                "screen": "game_session",
+                "dialog": "in_game_main",
+                "match": 1,
+                "mode": "single_player",
+                "map": "Random map",
+                "team": 0,
+                "tick": 141,
+                "start_tick": 141,
+                "last_tick": 154
+              }
+            ]
+          }
+        },
+        {
+          "name": "backend-switch-media-probe",
+          "data": {
+            "programs": [],
+            "streams": [
+              {
+                "codec_name": "h264",
+                "codec_type": "video",
+                "width": 1200,
+                "height": 900
+              },
+              {
+                "codec_name": "aac",
+                "codec_type": "audio"
+              },
+              {
+                "codec_name": "bin_data",
+                "codec_type": "data"
+              }
+            ],
+            "format": {
+              "duration": "85.433333"
+            }
+          }
+        }
+      ],
+      "attachments": [
+        {
+          "name": "backend-switch-video",
+          "path": "/home/bradley/.codex/worktrees/renderer-shaders/glob2/artifacts/shaders/secondpass-renderer-amd-results/renderer-switching-serial--11041-sion-while-changing-backend-chromium/attachments/backend-switch-video-8df39fc3809fc3eb5fd7a66683478fff00dea705.mp4",
+          "bytes": 16982287,
+          "sha256": "254e5be3ab38709dda56486d7cb968aba50cc9446a0b1a674c7cfb8d43c12e32"
+        },
+        {
+          "name": "trace",
+          "path": "/home/bradley/.codex/worktrees/renderer-shaders/glob2/artifacts/shaders/secondpass-renderer-amd-results/renderer-switching-serial--11041-sion-while-changing-backend-chromium/trace.zip",
+          "bytes": 181044064,
+          "sha256": "a50186eacc16930c09c73e0216071de55ca108a95d002ed8a469d03cf312d63c"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "title": "serial: all available WebGPU pairs retain application ownership",
+      "status": "passed",
+      "durationMilliseconds": 129750,
+      "metadata": [
+        {
+          "name": "webgl2-driver",
+          "data": {
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "renderer": "WebKit WebGL",
+            "unmaskedRenderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon 680M (RADV REMBRANDT) (0x00001681)), radv)"
+          }
+        },
+        {
+          "name": "active-webgpu-owner",
+          "data": {
+            "state": 1,
+            "error": "",
+            "issued": 9,
+            "completed": 5,
+            "canvasOwned": true,
+            "adapter": {
+              "vendor": "amd",
+              "architecture": "rdna-2",
+              "device": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "name": "active-webgpu-owner",
+          "data": {
+            "state": 1,
+            "error": "",
+            "issued": 112,
+            "completed": 109,
+            "canvasOwned": true,
+            "adapter": {
+              "vendor": "amd",
+              "architecture": "rdna-2",
+              "device": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "name": "webgl2-driver",
+          "data": {
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "renderer": "WebKit WebGL",
+            "unmaskedRenderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon 680M (RADV REMBRANDT) (0x00001681)), radv)"
+          }
+        }
+      ],
+      "attachments": [
+        {
+          "name": "trace",
+          "path": "/home/bradley/.codex/worktrees/renderer-shaders/glob2/artifacts/shaders/secondpass-renderer-amd-results/renderer-switching-serial--f9438-etain-application-ownership-chromium/trace.zip",
+          "bytes": 127255345,
+          "sha256": "2b4a4b743169d62011a1b983205c9ad9d509b8160dd1d77116208b3743a21bdf"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "title": "serial: real WebGPU device loss falls back during gameplay",
+      "status": "passed",
+      "durationMilliseconds": 54871,
+      "metadata": [
+        {
+          "name": "map-entropy-fixture",
+          "data": {
+            "rootSeed": 3737844653,
+            "requests": 6,
+            "generator": "fingerprint",
+            "width": 128,
+            "height": 128,
+            "colonies": 2,
+            "candidates": [
+              "Map generation: fingerprint revision 5 seed 3347408468 [complete]: ",
+              "Map generation: fingerprint revision 5 seed 4039698994 [complete]: ",
+              "Map generation: fingerprint revision 5 seed 4039698994 [complete]: "
+            ],
+            "note": "Fixed root entropy, not an assertion that the last logged candidate is the selected map seed."
+          }
+        },
+        {
+          "name": "active-webgpu-owner",
+          "data": {
+            "state": 1,
+            "error": "",
+            "issued": 7,
+            "completed": 3,
+            "canvasOwned": true,
+            "adapter": {
+              "vendor": "amd",
+              "architecture": "rdna-2",
+              "device": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "name": "actual-device-loss-fallback",
+          "data": {
+            "family": "programmable-gl",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon 680M (RADV REMBRANDT) (0x00001681)), radv)",
+            "oldWebGPUCanvasActive": false
+          }
+        }
+      ],
+      "attachments": [
+        {
+          "name": "trace",
+          "path": "/home/bradley/.codex/worktrees/renderer-shaders/glob2/artifacts/shaders/secondpass-renderer-amd-results/renderer-switching-serial--abc8a--falls-back-during-gameplay-chromium/trace.zip",
+          "bytes": 108713279,
+          "sha256": "ce0274a4fa180ddb0a2b87d651f3cd9c53fc860af7add8e1e447a3c70efc4b16"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "title": "threaded: gameplay and torus survive settings overlay switches",
+      "status": "passed",
+      "durationMilliseconds": 42565,
+      "metadata": [
+        {
+          "name": "map-entropy-fixture",
+          "data": {
+            "rootSeed": 3737844653,
+            "requests": 3,
+            "generator": "fingerprint",
+            "width": 128,
+            "height": 128,
+            "colonies": 2,
+            "candidates": [
+              "Map generation: fingerprint revision 5 seed 4039698994 [complete]: "
+            ],
+            "note": "Fixed root entropy, not an assertion that the last logged candidate is the selected map seed."
+          }
+        },
+        {
+          "name": "webgl2-driver",
+          "data": {
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "renderer": "WebKit WebGL",
+            "unmaskedRenderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon 680M (RADV REMBRANDT) (0x00001681)), radv)"
+          }
+        },
+        {
+          "name": "webgl2-driver",
+          "data": {
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "renderer": "WebKit WebGL",
+            "unmaskedRenderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon 680M (RADV REMBRANDT) (0x00001681)), radv)"
+          }
+        },
+        {
+          "name": "torus-restored-before-key",
+          "data": {
+            "screenClass": "17GameSessionScreen",
+            "controls": [],
+            "renderer": "webgl2",
+            "tick": 168,
+            "torus": true,
+            "torusSettled": true
+          }
+        }
+      ],
+      "attachments": [
+        {
+          "name": "trace",
+          "path": "/home/bradley/.codex/worktrees/renderer-shaders/glob2/artifacts/shaders/secondpass-renderer-amd-results/renderer-switching-threade-3595f-e-settings-overlay-switches-chromium/trace.zip",
+          "bytes": 94808204,
+          "sha256": "6ffd6c43ca2102197e75aa3c561d61562e499eefbebae6cab850bc8b3389ec6c"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "title": "threaded: editor stays open across live renderer switches and resize",
+      "status": "passed",
+      "durationMilliseconds": 30897,
+      "metadata": [
+        {
+          "name": "webgl2-driver",
+          "data": {
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "renderer": "WebKit WebGL",
+            "unmaskedRenderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon 680M (RADV REMBRANDT) (0x00001681)), radv)"
+          }
+        }
+      ],
+      "attachments": [
+        {
+          "name": "trace",
+          "path": "/home/bradley/.codex/worktrees/renderer-shaders/glob2/artifacts/shaders/secondpass-renderer-amd-results/renderer-switching-threade-da1c3-enderer-switches-and-resize-chromium/trace.zip",
+          "bytes": 82807195,
+          "sha256": "dfcc48a3c67119728a7c81b5a845c3ee6ba12b392766ef55940ad0da14bcb24a"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "title": "threaded: recording retains one session while changing backend",
+      "status": "passed",
+      "durationMilliseconds": 38882,
+      "metadata": [
+        {
+          "name": "map-entropy-fixture",
+          "data": {
+            "rootSeed": 3737844653,
+            "requests": 3,
+            "generator": "fingerprint",
+            "width": 128,
+            "height": 128,
+            "colonies": 2,
+            "candidates": [
+              "Map generation: fingerprint revision 5 seed 4039698994 [complete]: "
+            ],
+            "note": "Fixed root entropy, not an assertion that the last logged candidate is the selected map seed."
+          }
+        },
+        {
+          "name": "active-webgpu-owner",
+          "data": {
+            "state": 1,
+            "error": "",
+            "issued": 5,
+            "completed": 1,
+            "canvasOwned": true,
+            "adapter": {
+              "vendor": "amd",
+              "architecture": "rdna-2",
+              "device": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "name": "recording-active-webgpu",
+          "data": {
+            "state": {
+              "version": 1,
+              "executionMode": "threaded",
+              "threadFallback": null,
+              "workerCount": 15,
+              "renderer": "webgl2",
+              "renderContext": null,
+              "contextLost": false,
+              "contextRestores": 0,
+              "screen": "match",
+              "screenClass": "17GameSessionScreen",
+              "roomCanStart": false,
+              "customGameReady": false,
+              "tick": 106,
+              "frames": 172,
+              "loop": 547,
+              "paused": false,
+              "torus": false,
+              "torusSettled": false,
+              "width": 1200,
+              "height": 900,
+              "heapBytes": 334102528,
+              "artworkReady": true,
+              "restore": "ready",
+              "watchReplay": "none",
+              "import": "idle",
+              "persisting": false,
+              "persistence": "persisted",
+              "audio": "inactive",
+              "assets": {
+                "core": "ready",
+                "game": "ready",
+                "skins": "idle",
+                "font-cjk": "ready",
+                "menu-music": "ready",
+                "translations": "ready",
+                "music": "ready",
+                "music-sets": "ready",
+                "hd": "skipped"
+              },
+              "opened": [],
+              "controls": {}
+            },
+            "acceptedFrames": 11
+          }
+        },
+        {
+          "name": "webgl2-driver",
+          "data": {
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "renderer": "WebKit WebGL",
+            "unmaskedRenderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon 680M (RADV REMBRANDT) (0x00001681)), radv)"
+          }
+        },
+        {
+          "name": "recording-switch-metadata",
+          "data": {
+            "version": 1,
+            "video": "capture-1791726273850374.mp4",
+            "session": "capture-1791726273850374.mp4",
+            "segment": 1,
+            "session_start_us": 0,
+            "checkpoint_generation": 19,
+            "complete": true,
+            "error": "",
+            "duration_us": 15766666,
+            "fps": 30,
+            "width": 1200,
+            "height": 900,
+            "crf": 23,
+            "encoder": "libx264",
+            "fallback_reason": "WebCodecs H.264 configuration unavailable",
+            "video_codec": "h264",
+            "audio_codec": "aac",
+            "dropped_frames": 81,
+            "dropped_audio_samples": 0,
+            "chapters": [
+              {
+                "id": 1,
+                "title": "game_session / in_game_main",
+                "start_us": 0,
+                "end_us": 400000,
+                "phase": "dialog",
+                "screen": "game_session",
+                "dialog": "in_game_main",
+                "match": 1,
+                "mode": "single_player",
+                "map": "Random map",
+                "team": 0,
+                "tick": 53,
+                "start_tick": 53,
+                "last_tick": 62
+              },
+              {
+                "id": 2,
+                "title": "Match 1: ticks 0\u201310000",
+                "start_us": 400000,
+                "end_us": 833333,
+                "phase": "gameplay",
+                "screen": "game_session",
+                "dialog": "",
+                "match": 1,
+                "mode": "single_player",
+                "map": "Random map",
+                "team": 0,
+                "tick": 64,
+                "era_start": 0,
+                "era_end": 10000,
+                "start_tick": 64,
+                "last_tick": 76
+              },
+              {
+                "id": 3,
+                "title": "game_session / in_game_main",
+                "start_us": 833333,
+                "end_us": 1300000,
+                "phase": "dialog",
+                "screen": "game_session",
+                "dialog": "in_game_main",
+                "match": 1,
+                "mode": "single_player",
+                "map": "Random map",
+                "team": 0,
+                "tick": 77,
+                "start_tick": 77,
+                "last_tick": 89
+              },
+              {
+                "id": 4,
+                "title": "settings",
+                "start_us": 1300000,
+                "end_us": 6500000,
+                "phase": "menu",
+                "screen": "settings",
+                "dialog": "",
+                "match": 1,
+                "mode": "single_player",
+                "map": "Random map",
+                "team": 0,
+                "tick": 90,
+                "start_tick": 90,
+                "last_tick": 90
+              },
+              {
+                "id": 5,
+                "title": "Match 1: ticks 0\u201310000",
+                "start_us": 6500000,
+                "end_us": 7000000,
+                "phase": "gameplay",
+                "screen": "game_session",
+                "dialog": "",
+                "match": 1,
+                "mode": "single_player",
+                "map": "Random map",
+                "team": 0,
+                "tick": 90,
+                "era_start": 0,
+                "era_end": 10000,
+                "start_tick": 90,
+                "last_tick": 105
+              },
+              {
+                "id": 6,
+                "title": "game_session / in_game_main",
+                "start_us": 7000000,
+                "end_us": 7566666,
+                "phase": "dialog",
+                "screen": "game_session",
+                "dialog": "in_game_main",
+                "match": 1,
+                "mode": "single_player",
+                "map": "Random map",
+                "team": 0,
+                "tick": 107,
+                "start_tick": 107,
+                "last_tick": 118
+              },
+              {
+                "id": 7,
+                "title": "settings",
+                "start_us": 7566666,
+                "end_us": 14800000,
+                "phase": "menu",
+                "screen": "settings",
+                "dialog": "",
+                "match": 1,
+                "mode": "single_player",
+                "map": "Random map",
+                "team": 0,
+                "tick": 118,
+                "start_tick": 118,
+                "last_tick": 118
+              },
+              {
+                "id": 8,
+                "title": "Match 1: ticks 0\u201310000",
+                "start_us": 14800000,
+                "end_us": 15333333,
+                "phase": "gameplay",
+                "screen": "game_session",
+                "dialog": "",
+                "match": 1,
+                "mode": "single_player",
+                "map": "Random map",
+                "team": 0,
+                "tick": 119,
+                "era_start": 0,
+                "era_end": 10000,
+                "start_tick": 119,
+                "last_tick": 134
+              },
+              {
+                "id": 9,
+                "title": "game_session / in_game_main",
+                "start_us": 15333333,
+                "end_us": 15766666,
+                "phase": "dialog",
+                "screen": "game_session",
+                "dialog": "in_game_main",
+                "match": 1,
+                "mode": "single_player",
+                "map": "Random map",
+                "team": 0,
+                "tick": 135,
+                "start_tick": 135,
+                "last_tick": 147
+              }
+            ]
+          }
+        },
+        {
+          "name": "backend-switch-media-probe",
+          "data": {
+            "programs": [],
+            "streams": [
+              {
+                "codec_name": "h264",
+                "codec_type": "video",
+                "width": 1200,
+                "height": 900
+              },
+              {
+                "codec_name": "aac",
+                "codec_type": "audio"
+              },
+              {
+                "codec_name": "bin_data",
+                "codec_type": "data"
+              }
+            ],
+            "format": {
+              "duration": "15.767000"
+            }
+          }
+        }
+      ],
+      "attachments": [
+        {
+          "name": "backend-switch-video",
+          "path": "/home/bradley/.codex/worktrees/renderer-shaders/glob2/artifacts/shaders/secondpass-renderer-amd-results/renderer-switching-threade-d5434-sion-while-changing-backend-chromium/attachments/backend-switch-video-7aac915300444c8379d3b3a12793aa7073395a87.mp4",
+          "bytes": 4383992,
+          "sha256": "b88c18af58e109a7c48b3d23ca2bcc1fd10ff0ae79e3f75254017bbcfa30c122"
+        },
+        {
+          "name": "trace",
+          "path": "/home/bradley/.codex/worktrees/renderer-shaders/glob2/artifacts/shaders/secondpass-renderer-amd-results/renderer-switching-threade-d5434-sion-while-changing-backend-chromium/trace.zip",
+          "bytes": 105607347,
+          "sha256": "95adfaa3cc81046b6cb068b23c0e209cecb927544665714787683a7047047fc7"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "title": "threaded: all available WebGPU pairs retain application ownership",
+      "status": "passed",
+      "durationMilliseconds": 28118,
+      "metadata": [
+        {
+          "name": "webgl2-driver",
+          "data": {
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "renderer": "WebKit WebGL",
+            "unmaskedRenderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon 680M (RADV REMBRANDT) (0x00001681)), radv)"
+          }
+        },
+        {
+          "name": "active-webgpu-owner",
+          "data": {
+            "state": 1,
+            "error": "",
+            "issued": 7,
+            "completed": 1,
+            "canvasOwned": true,
+            "adapter": {
+              "vendor": "amd",
+              "architecture": "rdna-2",
+              "device": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "name": "active-webgpu-owner",
+          "data": {
+            "state": 1,
+            "error": "",
+            "issued": 62,
+            "completed": 58,
+            "canvasOwned": true,
+            "adapter": {
+              "vendor": "amd",
+              "architecture": "rdna-2",
+              "device": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "name": "webgl2-driver",
+          "data": {
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "renderer": "WebKit WebGL",
+            "unmaskedRenderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon 680M (RADV REMBRANDT) (0x00001681)), radv)"
+          }
+        }
+      ],
+      "attachments": [
+        {
+          "name": "trace",
+          "path": "/home/bradley/.codex/worktrees/renderer-shaders/glob2/artifacts/shaders/secondpass-renderer-amd-results/renderer-switching-threade-04b14-etain-application-ownership-chromium/trace.zip",
+          "bytes": 76412405,
+          "sha256": "3df4cd8234a35e351fd852d57959fc5fddc409a23debbc9cffae53770deb8ee7"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "title": "threaded: real WebGPU device loss falls back during gameplay",
+      "status": "passed",
+      "durationMilliseconds": 27620,
+      "metadata": [
+        {
+          "name": "map-entropy-fixture",
+          "data": {
+            "rootSeed": 3737844653,
+            "requests": 3,
+            "generator": "fingerprint",
+            "width": 128,
+            "height": 128,
+            "colonies": 2,
+            "candidates": [
+              "Map generation: fingerprint revision 5 seed 4039698994 [complete]: "
+            ],
+            "note": "Fixed root entropy, not an assertion that the last logged candidate is the selected map seed."
+          }
+        },
+        {
+          "name": "active-webgpu-owner",
+          "data": {
+            "state": 1,
+            "error": "",
+            "issued": 5,
+            "completed": 1,
+            "canvasOwned": true,
+            "adapter": {
+              "vendor": "amd",
+              "architecture": "rdna-2",
+              "device": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "name": "actual-device-loss-fallback",
+          "data": {
+            "family": "programmable-gl",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon 680M (RADV REMBRANDT) (0x00001681)), radv)",
+            "oldWebGPUCanvasActive": false
+          }
+        }
+      ],
+      "attachments": [
+        {
+          "name": "trace",
+          "path": "/home/bradley/.codex/worktrees/renderer-shaders/glob2/artifacts/shaders/secondpass-renderer-amd-results/renderer-switching-threade-3f5ea--falls-back-during-gameplay-chromium/trace.zip",
+          "bytes": 78871999,
+          "sha256": "b530c2b4481a5a265120fb7f1cc98cd8d55a5e3da526ab8a8baf9dd0a29527d3"
+        }
+      ],
+      "errors": []
+    }
+  ],
+  "limitations": [
+    "Correctness durations are not performance measurements; native correctness runs may overlap.",
+    "Windows/Apple/mobile hardware and physical Safari/Edge not covered.",
+    "Existing Firefox threaded screenshot qualification limitation remains explicit; this focused optimization validation covers Chromium serial/threaded actual AMD."
+  ]
+}

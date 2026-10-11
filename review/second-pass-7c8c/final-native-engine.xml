@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="13" failures="0" errors="0" skipped="0"><testsuite name="RendererSwitchIntegration"><testcase classname="RendererSwitchIntegration" name="all ordered gameplay and torus backend pairs preserve camera and simulation [display][isolated][writes-preferences][slow]" time="54.7427" status="run" />
+  </testsuite><testsuite name="TerrainPresentation"><testcase classname="TerrainPresentation" name="GPU terrain pages match CPU composition through edits wrapping recovery and live switches [display][isolated][artifacts][writes-preferences]" time="33.8049" status="run" />
+  <testcase classname="TerrainPresentation" name="HD material pages and fractional zoom preserve cached pixels with missing optional atlas [display][artifacts]" time="47.7891" status="run" />
+  <testcase classname="TerrainPresentation" name="generated terrain mip uploads stay uncompressed across animation updates [display]" time="1.79893" status="run" />
+  <testcase classname="TerrainPresentation" name="streaming pages match cached fractional pixels across wraps and small maps [display]" time="20.7077" status="run" />
+  </testsuite><testsuite name="TorusRender"><testcase classname="TorusRender" name="SDL GPU captures large logical maps beyond the window [display][isolated][artifacts]" time="73.9746" status="run" />
+  <testcase classname="TorusRender" name="SDL GPU fatal torus fallback advances animation once [display][isolated]" time="4.01351" status="run" />
+  <testcase classname="TorusRender" name="SDL GPU retries a submitted final torus overlay coherently [display][isolated]" time="4.54564" status="run" />
+  <testcase classname="TorusRender" name="SDL GPU torus progresses under live terrain page pressure [display][isolated][artifacts]" time="45.422" status="run" />
+  <testcase classname="TorusRender" name="programmable GL captures large logical maps beyond the window [display][isolated][artifacts]" time="71.5601" status="run" />
+  <testcase classname="TorusRender" name="programmable GL fatal torus fallback advances animation once [display][isolated]" time="4.63025" status="run" />
+  <testcase classname="TorusRender" name="programmable GL retries a submitted final torus overlay coherently [display][isolated]" time="5.00613" status="run" />
+  <testcase classname="TorusRender" name="programmable GL torus progresses under live terrain page pressure [display][isolated][artifacts]" time="44.852" status="run" />
+  </testsuite></testsuites>

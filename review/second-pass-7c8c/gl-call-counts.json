@@ -1,0 +1,29 @@
+{
+  "description": "Functional linker-interposed GL entrypoint counts for exactly same1041assertiontarget/state fixture; includes factory/lifecycle; not timing or performance benchmark",
+  "counts": {
+    "baseline": {
+      "glBindFramebuffer": 68,
+      "glViewport": 44,
+      "glScissor": 44,
+      "glUseProgram": 53,
+      "glUniform2f": 44,
+      "glUniform1f": 80,
+      "glUniform1i": 50,
+      "glUniform4f": 36,
+      "glBindVertexArray": 69,
+      "glBindBuffer": 73
+    },
+    "candidate": {
+      "glBindFramebuffer": 60,
+      "glViewport": 40,
+      "glScissor": 36,
+      "glUseProgram": 41,
+      "glUniform2f": 32,
+      "glUniform1f": 58,
+      "glUniform1i": 34,
+      "glUniform4f": 28,
+      "glBindVertexArray": 25,
+      "glBindBuffer": 29
+    }
+  }
+}
