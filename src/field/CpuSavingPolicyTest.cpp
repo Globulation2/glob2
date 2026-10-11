@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "AdaptiveGradientPolicy.h"
 #include "Glob2Test.h"
+#include "ScopedEnvironment.h"
+#include "ThreadCpuEnvelopeBridge.h"
 
 namespace
 {
@@ -33,6 +35,28 @@ std::optional<CpuSavingPolicy::ProbeTicket> admitCapture(CpuSavingPolicy& policy
             20000,requiredGeneration,ready))return ticket;
     return {};
 }
+}
+
+TEST_CASE("learning and CPU accounting share qualified default and explicit overrides" * doctest::test_suite("OpenCLGradient"))
+{
+    for(const bool qualified:{false,true}) {
+        CHECK(glob2::gradientLearningValueRequested(nullptr,qualified)==qualified);
+        CHECK(glob2::gradientLearningValueRequested("",qualified)==qualified);
+        CHECK(glob2::gradientLearningValueRequested("1",qualified));
+        CHECK_FALSE(glob2::gradientLearningValueRequested("0",qualified));
+        for(const auto* invalid:{"true","01","1 ","2"})
+            CHECK_FALSE(glob2::gradientLearningValueRequested(invalid,qualified));
+    }
+    glob2test::ScopedEnvironment envelope("GLOB2_GRADIENT_CPU_ENVELOPE","0");
+    for(const auto* value:{"","0","1","invalid"}) {
+        glob2test::ScopedEnvironment tuning("GLOB2_GRADIENT_TUNING",value);
+        CHECK(learningRequested()==glob2::gradientLearningRequested());
+        CHECK(glob2::cpuEnvelopeRequested()==learningRequested());
+    }
+    glob2test::ScopedEnvironment tuningOff("GLOB2_GRADIENT_TUNING","0");
+    glob2test::ScopedEnvironment explicitEnvelope("GLOB2_GRADIENT_CPU_ENVELOPE","1");
+    CHECK_FALSE(learningRequested());
+    CHECK(glob2::cpuEnvelopeRequested());
 }
 
 TEST_CASE("accepted capture binds and authorizes exactly once without mutable reference tickets" * doctest::test_suite("OpenCLGradient"))

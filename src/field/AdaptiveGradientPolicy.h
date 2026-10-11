@@ -2,6 +2,7 @@
 #pragma once
 #include "ComputeExecutor.h"
 #include "ThreadCpuClock.h"
+#include "GradientTuningConfiguration.h"
 #include "CpuSavingPolicy.h"
 #include <array>
 #include <atomic>
@@ -82,11 +83,8 @@ inline Plan requestedOpenCLPlan() {
 inline bool accountingRequested() {
     const auto* value=std::getenv("GLOB2_GRADIENT_ACCOUNTING"); return value && std::strcmp(value,"1")==0;
 }
-inline bool learningRequested() {
-    // Experimental opt-in until the complete tuning-enabled configuration passes
-    // process-CPU, presentation and compatibility qualification.
-    const auto* value=std::getenv("GLOB2_GRADIENT_TUNING");
-    return value && std::strcmp(value,"1")==0;
+inline bool learningRequested() noexcept {
+    return glob2::gradientLearningRequested();
 }
 // Evidence override keeps required CPU choices fixed while genuine probes,
 // confidence processing and their complete expense still execute.
