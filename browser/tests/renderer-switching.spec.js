@@ -345,26 +345,40 @@ for(const mode of ['serial','threaded']) {
     try {
       await expect.poll(async()=>(await completed()).filter(path=>!existing.has(path)).length,{timeout:60000}).toBe(1);
     } catch(error) {
-      const owners=await presentationOwners(page);
-      const producer=await owners[0].evaluate(()=>({active:Module.glob2Recording.active,
-        status:Module.glob2Recording.status,frames:Module.glob2Recording.frames,audio:Module.glob2Recording.audio}));
-      const files=await page.evaluate(async()=>{
-        const root=await(await navigator.storage.getDirectory()).getDirectoryHandle('glob2-recordings');
-        const files=[];for await(const[name,handle]of root.entries()) {
-          const file=await handle.getFile(),path=decodeURIComponent(name);
-          files.push({path,size:file.size,text:/manifest|\.json$/.test(path)?(await file.text()).slice(0,20000):undefined});
-        }return files;
-      });
-      const workers=await Promise.all(page.workers().map(async worker=>{
-        if(!worker.url().includes('recording-worker'))return null;
+      // A writer lock or stalled worker must not hide the original assertion.
+      const inspect=async operation=>{
         let timer;try{return await Promise.race([
-          worker.evaluate(()=>({workerState:state,stopped,processing,frameCredits,
-            closing:!!closing,terminal,files:[...recordingStorage.files].map(([name,value])=>({name,size:value.sync.getSize()}))})),
-          new Promise(resolve=>{timer=setTimeout(()=>resolve({workerUnresponsive:true}),5000);})
+          Promise.resolve().then(operation).catch(e=>({inspectionError:String(e)})),
+          new Promise(resolve=>{timer=setTimeout(()=>resolve({inspectionTimedOut:true}),5000);})
         ]);}finally{clearTimeout(timer);}
-      }));
-      await info.attach('recording-completion-failure',{body:JSON.stringify({producer,files,workers,snapshot:await state(page)},null,2),contentType:'application/json'});
-      throw error;
+      };
+      const evidence={};
+      try {
+        evidence.producer=await inspect(async()=>{
+          const owners=await presentationOwners(page);
+          if(owners.length!==1)throw Error('Expected one actual recording producer');
+          return owners[0].evaluate(()=>({active:Module.glob2Recording.active,
+            status:Module.glob2Recording.status,frames:Module.glob2Recording.frames,audio:Module.glob2Recording.audio}));
+        });
+        evidence.files=await inspect(()=>page.evaluate(async()=>{
+          const root=await(await navigator.storage.getDirectory()).getDirectoryHandle('glob2-recordings');
+          const files=[];for await(const[name,handle]of root.entries()) {
+            const path=decodeURIComponent(name);
+            try {
+              const file=await handle.getFile();
+              files.push({path,size:file.size,text:/manifest|\.json$/.test(path)?(await file.text()).slice(0,20000):undefined});
+            } catch(e) {files.push({path,inspectionError:String(e)});}
+          }return files;
+        }));
+        evidence.workers=await Promise.all(page.workers().filter(worker=>worker.url().includes('recording-worker')).map(worker=>
+          inspect(()=>worker.evaluate(()=>({workerState:state,stopped,processing,frameCredits,
+            closing:!!closing,terminal,files:[...recordingStorage.files].map(([name,value])=>({name,size:value.sync.getSize()}))})))));
+        evidence.snapshot=await inspect(()=>state(page));
+      } catch(e) {evidence.collectionError=String(e);}
+      finally {
+        await inspect(()=>info.attach('recording-completion-failure',{body:JSON.stringify(evidence,null,2),contentType:'application/json'}));
+        throw error;
+      }
     }
     const path=(await completed()).find(path=>!existing.has(path));
     const metadata=await page.evaluate(async path=>{const root=await(await navigator.storage.getDirectory()).getDirectoryHandle('glob2-recordings');return JSON.parse(await(await(await root.getFileHandle(encodeURIComponent(path+'.json'))).getFile()).text());},path);
