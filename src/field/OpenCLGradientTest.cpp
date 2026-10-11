@@ -763,10 +763,11 @@ TEST_CASE("uniform metadata uses scalar costs only with a complete immutable pro
     std::thread service([&] {
         run({7,13},true,packed,false);
         const auto before=openCLStatus();
-        // Proven and discovered uniform planes alias safely across shapes.
+        // Proven scalar planes alias safely across shapes.
         run({31,17},true,packed,false);
+        CHECK(openCLStatus().costCacheHits>=before.costCacheHits+1);
+        // Unproven uniform costs still require full packing.
         run({13,7},true,0,false);
-        if(enabled) CHECK(openCLStatus().costCacheHits>=before.costCacheHits+2);
         // Metadata with a forbidden-dependent or invalid pair is ignored.
         run({7,13},false,packed,true);
         run({13,7},true,step.cardinal,false);
