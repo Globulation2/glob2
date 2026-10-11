@@ -148,7 +148,7 @@ class GpuTerrainPageCache
         const auto found=pages.find(key(chunk));if(found==pages.end() || !found->second.ready)return {};
         found->second.used=frame;return found->second.pixels;
     }
-    void compose(GAGCore::GraphicContext &gfx,TerrainVisual::Compositor &compositor,
+    bool compose(GAGCore::GraphicContext &gfx,TerrainVisual::Compositor &compositor,
                  SoftwareTerrainCache::Chunk &chunk,const std::array<SoftwareTerrainCache::Tile,256> &tiles) {
         using namespace GAGCore;
         const int composition=32*chunk.scale,cellSize=composition/chunk.downsample;
@@ -196,10 +196,16 @@ class GpuTerrainPageCache
             DrawPacket packet;packet.kind=DrawPacket::Kind::WeightedCompose;packet.blend=DrawPacket::Blend::Opaque;
             packet.weightedCompose=std::move(data);packets.push_back(std::move(packet));
         }
-        if(!gfx.beginDeviceTarget(target,dimension,dimension))throw std::bad_alloc();
-        try {for(auto &packet:packets) if(!gfx.submitDevicePacket(std::move(packet)))throw std::bad_alloc();gfx.endDeviceTarget();}
-        catch(...) {gfx.endDeviceTarget();throw;}
+        pages.at(key(chunk)).ready=false;
+        if(!gfx.beginDeviceTarget(target,dimension,dimension))return false;
+        try {
+            for(auto &packet:packets) if(!gfx.submitDevicePacket(std::move(packet))) {
+                gfx.endDeviceTarget();return false;
+            }
+            gfx.endDeviceTarget();
+        } catch(...) {gfx.endDeviceTarget();throw;}
         pages.at(key(chunk)).ready=true;
+        return true;
     }
 };
 
@@ -746,7 +752,12 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 					const bool wasValid = entry->valid;
 					entry->valid = false;
 					entry->opaqueRuns.clear();
-                    if (gpuPages) gpuPages->compose(gfx,compositor,*entry,tiles);
+                    if (gpuPages) {
+                        if(!gpuPages->compose(gfx,compositor,*entry,tiles)) {
+                            // Admission can progress next turn in these same targets.
+                            copies.clear();return false;
+                        }
+                    }
                     else for (int y = 0; y < ChunkTiles; ++y)
 						for (int x = 0; x < ChunkTiles; ++x)
 						{
