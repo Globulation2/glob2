@@ -1,3 +1,4 @@
+import Stripe from 'stripe';
 import { Type } from 'typebox';
 import type { FastifyInstance, FastifyRequest } from 'fastify';
 import { Credits, Sessions, Commander, OpenAICommander, Checkout, HiveError } from '@glob2/hive';
@@ -231,7 +232,7 @@ export async function hiveRoutes(app: FastifyInstance) {
         try {
           await checkout.webhook(request.body as Buffer, signature);
         } catch (error) {
-          if (error instanceof Error && error.name === 'StripeSignatureVerificationError')
+          if (error instanceof Stripe.errors.StripeSignatureVerificationError)
             throw apiError('bad_request', 'Invalid payment signature.');
           throw error;
         }

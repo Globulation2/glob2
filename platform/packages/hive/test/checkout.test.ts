@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto';
-import { beforeAll, afterAll, it, expect } from 'vitest';
+import { beforeAll, afterAll, it, expect, vi } from 'vitest';
 import type Stripe from 'stripe';
 import { createTestDatabase, type TestDatabase } from '../../db/test/support.ts';
 import { Checkout } from '../src/checkout.ts';
@@ -87,4 +87,40 @@ it('handles partial refunds, disputes, duplicate reversal and dispute wins', asy
 it('rejects forged webhooks before reading payment state', async () => {
   const { checkout } = await purchase();
   await expect(checkout.webhook(Buffer.from('{}'), 'invalid')).rejects.toThrow();
+});
+
+it('ignores skin payments rather than treating them as legacy Hive purchases', async () => {
+  const { checkout } = await purchase();
+  const payload = JSON.stringify({
+    id: 'evt_skin_foreign',
+    object: 'event',
+    type: 'checkout.session.completed',
+    livemode: false,
+    data: { object: { id: 'cs_skin_foreign' } },
+  });
+  const signature = checkout.stripe.webhooks.generateTestHeaderString({
+    payload,
+    secret: 'whsec_test',
+  });
+  const session = vi.spyOn(checkout.stripe.checkout.sessions, 'retrieve').mockResolvedValue({
+    id: 'cs_skin_foreign',
+    payment_intent: 'pi_skin_foreign',
+    payment_status: 'paid',
+  } as unknown as Stripe.Response<Stripe.Checkout.Session>);
+  const intent = vi.spyOn(checkout.stripe.paymentIntents, 'retrieve').mockResolvedValue({
+    id: 'pi_skin_foreign',
+    metadata: { purchaseId: randomUUID(), accountId: randomUUID() },
+  } as unknown as Stripe.Response<Stripe.PaymentIntent>);
+  const charges = vi
+    .spyOn(checkout.stripe.charges, 'list')
+    .mockRejectedValue(new Error('Skin payment reached credit reconciliation.'));
+  try {
+    await expect(checkout.webhook(Buffer.from(payload), signature)).resolves.toBeUndefined();
+    expect(intent).toHaveBeenCalledOnce();
+    expect(charges).not.toHaveBeenCalled();
+  } finally {
+    session.mockRestore();
+    intent.mockRestore();
+    charges.mockRestore();
+  }
 });

@@ -1,4 +1,5 @@
 import Stripe from 'stripe';
+import { CREDIT_PRODUCTS } from '@glob2/billing';
 import { beforeAll, afterAll, expect, it } from 'vitest';
 import { createHarness, type Harness, type Instance } from './support.ts';
 let harness: Harness, instance: Instance;
@@ -40,6 +41,86 @@ it('verifies exact raw bytes, refuses mode mismatch, and records an event once',
   expect(
     (await send(live, sdk.webhooks.generateTestHeaderString({ payload: live, secret }))).statusCode,
   ).toBe(400);
+  expect(await harness.database.db.selectFrom('entitlements').selectAll().execute()).toHaveLength(
+    0,
+  );
+});
+
+it('acknowledges credit checkouts without reconciling them as skin purchases', async () => {
+  const sdk = new Stripe('sk_test_local_fixture');
+  for (const creditProduct of Object.keys(CREDIT_PRODUCTS)) {
+    for (const type of [
+      'checkout.session.completed',
+      'checkout.session.async_payment_succeeded',
+      'checkout.session.async_payment_failed',
+      'checkout.session.expired',
+    ]) {
+      const payload = JSON.stringify({
+        id: `evt_credit_${creditProduct}_${type}`,
+        object: 'event',
+        type,
+        livemode: false,
+        data: {
+          object: {
+            id: `cs_${creditProduct}`,
+            object: 'checkout.session',
+            metadata: { purchaseId: '00000000-0000-4000-8000-000000000001', creditProduct },
+          },
+        },
+      });
+      const response = await instance.app.inject({
+        method: 'POST',
+        url: '/api/v1/skins/stripe-webhook',
+        headers: {
+          'content-type': 'application/json',
+          'stripe-signature': sdk.webhooks.generateTestHeaderString({ payload, secret }),
+        },
+        payload,
+      });
+      expect(response.statusCode).toBe(200);
+    }
+  }
+  expect(
+    await harness.database.db.selectFrom('skin_payment_events').selectAll().execute(),
+  ).toHaveLength(1);
+  expect(await harness.database.db.selectFrom('entitlements').selectAll().execute()).toHaveLength(
+    0,
+  );
+});
+
+it('acknowledges credit refunds without recording a skin payment event', async () => {
+  const sdk = new Stripe('sk_test_local_fixture');
+  for (const creditProduct of Object.keys(CREDIT_PRODUCTS)) {
+    const payload = JSON.stringify({
+      id: `evt_credit_refund_${creditProduct}`,
+      object: 'event',
+      type: 'charge.refunded',
+      livemode: false,
+      data: {
+        object: {
+          id: `ch_${creditProduct}`,
+          object: 'charge',
+          payment_intent: {
+            id: `pi_${creditProduct}`,
+            metadata: { purchaseId: '00000000-0000-4000-8000-000000000001', creditProduct },
+          },
+        },
+      },
+    });
+    const response = await instance.app.inject({
+      method: 'POST',
+      url: '/api/v1/skins/stripe-webhook',
+      headers: {
+        'content-type': 'application/json',
+        'stripe-signature': sdk.webhooks.generateTestHeaderString({ payload, secret }),
+      },
+      payload,
+    });
+    expect(response.statusCode).toBe(200);
+  }
+  expect(
+    await harness.database.db.selectFrom('skin_payment_events').selectAll().execute(),
+  ).toHaveLength(1);
   expect(await harness.database.db.selectFrom('entitlements').selectAll().execute()).toHaveLength(
     0,
   );
