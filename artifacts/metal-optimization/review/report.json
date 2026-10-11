@@ -1,0 +1,280 @@
+{
+  "baseline_revision": "86127a7d4ab31f3d9519d4ba8d597f6698a4eedd",
+  "candidate_revision": "532292686e9eb12ad49cbaf319d9b7062ce2a4b6",
+  "integration_base": "401d94a38b8bfc952a4c8599e37211f344edd3cf",
+  "release_flags": "dev_fast=0 release=1, -O3, ordinary compilation, no PCH/unity",
+  "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)\nTarget: arm64-apple-darwin25.6.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin\n",
+  "hardware": "Apple M3",
+  "sdl_mac": "existing Homebrew SDL 3.4.18",
+  "sdl_linux": "pinned SDL 3.4.16",
+  "binaries": {
+    "baseline": "67372b8d48b2d5aa547c6ced2a755aaf69a78bdf628032d5caa25409b224c5c0",
+    "candidate": "4fd2ca0f284d1f1363935ad4214fb93d869f60e6ac67573b228c2b1b8404c56c"
+  },
+  "source_hashes": {
+    "libgag/src/SDLGPUDevice.cpp": "f5a8d3f65c67f2221f22b2ebae6d8219804d295ada24c0c68692512771cac842",
+    "libgag/src/SDLGPUDeviceTest.cpp": "10ceca5e78e1052f37f4337b2c039d29e06f8f42217049768b8e3d887dcf5e56"
+  },
+  "limitations": [
+    "Completion-inclusive timings include synchronous one-pixel readback; final presentation, simulation and extraction excluded.",
+    "No GPU timestamps or whole-game FPS claims.",
+    "Synthetic 400/1000-unit scenes and early saved game; no populated late-game fixture.",
+    "macOS Metal and Linux Vulkan packet tests; Windows/D3D12 and physical iOS omitted.",
+    "Latest base advances GL/WebGPU state reuse only; Metal code and benchmark inputs unchanged."
+  ],
+  "candidate_build_source_state": "Release binary built from exact production SDLGPUDevice.cpp bytes in 532292686; only regression tests and documentation were added after that build.",
+  "metal_suite": {
+    "cases": 20,
+    "assertions": 203478,
+    "passed": true,
+    "actual_backend": "Metal; runner metadata has a historical Vulkan label"
+  },
+  "linux_suite": {
+    "cases": 20,
+    "assertions": 203604,
+    "passed": true
+  },
+  "runs": 56,
+  "repeat": 7,
+  "frames_per_mode": 240,
+  "warmup_per_mode": 120,
+  "summary": [
+    {
+      "scenario": "overview",
+      "mode": "2D no clouds",
+      "baseline_median_ms": 4.874,
+      "baseline_p95_ms": 5.087,
+      "baseline_submission_cpu_median_ms": 4.969,
+      "baseline_submission_cpu_p95_ms": 5.286,
+      "baseline_process_cpu_median_ms": 5.206,
+      "baseline_process_cpu_p95_ms": 5.506,
+      "baseline_frames": 240,
+      "baseline_median_min_ms": 4.829,
+      "baseline_median_max_ms": 4.917,
+      "candidate_median_ms": 5.075,
+      "candidate_p95_ms": 5.218,
+      "candidate_submission_cpu_median_ms": 4.429,
+      "candidate_submission_cpu_p95_ms": 4.636,
+      "candidate_process_cpu_median_ms": 4.597,
+      "candidate_process_cpu_p95_ms": 4.814,
+      "candidate_frames": 240,
+      "candidate_median_min_ms": 5.042,
+      "candidate_median_max_ms": 5.105,
+      "metal_speedup": 0.9603940886699507
+    },
+    {
+      "scenario": "overview",
+      "mode": "2D clouds",
+      "baseline_median_ms": 7.853,
+      "baseline_p95_ms": 8.056,
+      "baseline_submission_cpu_median_ms": 6.988,
+      "baseline_submission_cpu_p95_ms": 7.24,
+      "baseline_process_cpu_median_ms": 7.184,
+      "baseline_process_cpu_p95_ms": 7.424,
+      "baseline_frames": 240,
+      "baseline_median_min_ms": 7.809,
+      "baseline_median_max_ms": 7.912,
+      "candidate_median_ms": 6.918,
+      "candidate_p95_ms": 7.187,
+      "candidate_submission_cpu_median_ms": 6.004,
+      "candidate_submission_cpu_p95_ms": 6.262,
+      "candidate_process_cpu_median_ms": 6.17,
+      "candidate_process_cpu_p95_ms": 6.422,
+      "candidate_frames": 240,
+      "candidate_median_min_ms": 6.874,
+      "candidate_median_max_ms": 6.95,
+      "metal_speedup": 1.1351546689794738
+    },
+    {
+      "scenario": "closeup",
+      "mode": "2D no clouds",
+      "baseline_median_ms": 5.219,
+      "baseline_p95_ms": 6.26,
+      "baseline_submission_cpu_median_ms": 2.211,
+      "baseline_submission_cpu_p95_ms": 3.019,
+      "baseline_process_cpu_median_ms": 3.663,
+      "baseline_process_cpu_p95_ms": 4.669,
+      "baseline_frames": 240,
+      "baseline_median_min_ms": 5.076,
+      "baseline_median_max_ms": 5.283,
+      "candidate_median_ms": 5.205,
+      "candidate_p95_ms": 6.254,
+      "candidate_submission_cpu_median_ms": 2.099,
+      "candidate_submission_cpu_p95_ms": 2.79,
+      "candidate_process_cpu_median_ms": 3.416,
+      "candidate_process_cpu_p95_ms": 4.477,
+      "candidate_frames": 240,
+      "candidate_median_min_ms": 5.116,
+      "candidate_median_max_ms": 5.265,
+      "metal_speedup": 1.0026897214217099
+    },
+    {
+      "scenario": "closeup",
+      "mode": "2D clouds",
+      "baseline_median_ms": 6.779,
+      "baseline_p95_ms": 7.195,
+      "baseline_submission_cpu_median_ms": 3.566,
+      "baseline_submission_cpu_p95_ms": 4.017,
+      "baseline_process_cpu_median_ms": 3.913,
+      "baseline_process_cpu_p95_ms": 4.385,
+      "baseline_frames": 240,
+      "baseline_median_min_ms": 6.714,
+      "baseline_median_max_ms": 6.814,
+      "candidate_median_ms": 6.751,
+      "candidate_p95_ms": 7.172,
+      "candidate_submission_cpu_median_ms": 3.394,
+      "candidate_submission_cpu_p95_ms": 4.025,
+      "candidate_process_cpu_median_ms": 3.688,
+      "candidate_process_cpu_p95_ms": 4.359,
+      "candidate_frames": 240,
+      "candidate_median_min_ms": 6.655,
+      "candidate_median_max_ms": 6.805,
+      "metal_speedup": 1.0041475336987113
+    },
+    {
+      "scenario": "motion",
+      "mode": "2D no clouds",
+      "baseline_median_ms": 2.691,
+      "baseline_p95_ms": 64.273,
+      "baseline_submission_cpu_median_ms": 0.687,
+      "baseline_submission_cpu_p95_ms": 64.137,
+      "baseline_process_cpu_median_ms": 0.987,
+      "baseline_process_cpu_p95_ms": 64.354,
+      "baseline_frames": 240,
+      "baseline_median_min_ms": 2.635,
+      "baseline_median_max_ms": 2.748,
+      "candidate_median_ms": 2.648,
+      "candidate_p95_ms": 64.577,
+      "candidate_submission_cpu_median_ms": 0.601,
+      "candidate_submission_cpu_p95_ms": 63.22,
+      "candidate_process_cpu_median_ms": 0.859,
+      "candidate_process_cpu_p95_ms": 63.351,
+      "candidate_frames": 240,
+      "candidate_median_min_ms": 2.61,
+      "candidate_median_max_ms": 2.759,
+      "metal_speedup": 1.0162386706948638
+    },
+    {
+      "scenario": "motion",
+      "mode": "2D clouds",
+      "baseline_median_ms": 6.287,
+      "baseline_p95_ms": 70.164,
+      "baseline_submission_cpu_median_ms": 5.46,
+      "baseline_submission_cpu_p95_ms": 70.971,
+      "baseline_process_cpu_median_ms": 5.709,
+      "baseline_process_cpu_p95_ms": 71.136,
+      "baseline_frames": 240,
+      "baseline_median_min_ms": 6.119,
+      "baseline_median_max_ms": 6.463,
+      "candidate_median_ms": 6.261,
+      "candidate_p95_ms": 69.138,
+      "candidate_submission_cpu_median_ms": 5.223,
+      "candidate_submission_cpu_p95_ms": 69.846,
+      "candidate_process_cpu_median_ms": 5.484,
+      "candidate_process_cpu_p95_ms": 69.985,
+      "candidate_frames": 240,
+      "candidate_median_min_ms": 6.143,
+      "candidate_median_max_ms": 6.437,
+      "metal_speedup": 1.0041526912633765
+    },
+    {
+      "scenario": "saved-match",
+      "mode": "2D no clouds",
+      "baseline_median_ms": 5.02,
+      "baseline_p95_ms": 5.924,
+      "baseline_submission_cpu_median_ms": 3.071,
+      "baseline_submission_cpu_p95_ms": 3.795,
+      "baseline_process_cpu_median_ms": 3.529,
+      "baseline_process_cpu_p95_ms": 4.35,
+      "baseline_frames": 240,
+      "baseline_median_min_ms": 4.961,
+      "baseline_median_max_ms": 5.062,
+      "candidate_median_ms": 4.989,
+      "candidate_p95_ms": 5.971,
+      "candidate_submission_cpu_median_ms": 3.04,
+      "candidate_submission_cpu_p95_ms": 3.82,
+      "candidate_process_cpu_median_ms": 3.51,
+      "candidate_process_cpu_p95_ms": 4.386,
+      "candidate_frames": 240,
+      "candidate_median_min_ms": 4.94,
+      "candidate_median_max_ms": 5.034,
+      "metal_speedup": 1.006213670074163
+    },
+    {
+      "scenario": "saved-match",
+      "mode": "2D clouds",
+      "baseline_median_ms": 6.889,
+      "baseline_p95_ms": 7.083,
+      "baseline_submission_cpu_median_ms": 4.973,
+      "baseline_submission_cpu_p95_ms": 5.202,
+      "baseline_process_cpu_median_ms": 5.176,
+      "baseline_process_cpu_p95_ms": 5.434,
+      "baseline_frames": 240,
+      "baseline_median_min_ms": 6.849,
+      "baseline_median_max_ms": 6.896,
+      "candidate_median_ms": 6.88,
+      "candidate_p95_ms": 7.054,
+      "candidate_submission_cpu_median_ms": 4.951,
+      "candidate_submission_cpu_p95_ms": 5.15,
+      "candidate_process_cpu_median_ms": 5.139,
+      "candidate_process_cpu_p95_ms": 5.356,
+      "candidate_frames": 240,
+      "candidate_median_min_ms": 6.84,
+      "candidate_median_max_ms": 6.904,
+      "metal_speedup": 1.0013081395348837
+    }
+  ],
+  "capture_matches": {
+    "overview": {
+      "byte_exact": true,
+      "sha256": "9e90e06c826ce1cffa563de6ee2d81cfe266864d9f66c44abd52d76ee67a563e"
+    },
+    "closeup": {
+      "byte_exact": true,
+      "sha256": "ec8e326585e96ae8b721c2f5828d45732d7c38837a27e4fd27eccc8d9b8a3ad3"
+    },
+    "motion": {
+      "byte_exact": true,
+      "sha256": "d5867c32dfbf6e312463447f24435c90af626161377603a8ad9ecd077c988fec"
+    },
+    "saved-match": {
+      "byte_exact": true,
+      "sha256": "4782095974b0d9efeef9ef9d1f93dce2b10bceac626085e44a086b58a305fd2a"
+    }
+  },
+  "profile_findings": {
+    "baseline_main_thread_samples": 11273,
+    "baseline_memory_accounting_leaf_samples": 579,
+    "other_hotspots": [
+      "CPU terrain coverage generation/composition during camera motion",
+      "Texture uploads",
+      "GPU completion/readback and presentation waits"
+    ],
+    "method": "macOS sample, release executable, 15 seconds at 1 ms; profiling runs excluded from timing comparisons",
+    "change": "Texture and depth bytes charged once during allocation lifetime; staging tracked separately; no draw or shader changes."
+  },
+  "metal_trace": {
+    "target_pid": 92099,
+    "intervals": 15666,
+    "record_seconds": 15.933593,
+    "diagnostic_only": true,
+    "method": "Xcode 27 Metal System Trace, 15-second close-up launch; CSV retains only the launched candidate process. Initial overlap with a separate diagnostic process makes this unsuitable for comparative performance claims.",
+    "post_5_seconds": {
+      "Compute": {
+        "active_intervals": 4315,
+        "median_interval_ms": 0.009292,
+        "total_active_interval_ms": 175.395626
+      },
+      "Fragment": {
+        "active_intervals": 4383,
+        "median_interval_ms": 0.323583,
+        "total_active_interval_ms": 2589.674498
+      },
+      "Vertex": {
+        "active_intervals": 4298,
+        "median_interval_ms": 0.031291,
+        "total_active_interval_ms": 308.080909
+      }
+    }
+  }
+}

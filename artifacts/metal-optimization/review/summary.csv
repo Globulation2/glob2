@@ -1,0 +1,9 @@
+scenario,mode,baseline_median_ms,baseline_p95_ms,baseline_submission_cpu_median_ms,baseline_submission_cpu_p95_ms,baseline_process_cpu_median_ms,baseline_process_cpu_p95_ms,baseline_frames,baseline_median_min_ms,baseline_median_max_ms,candidate_median_ms,candidate_p95_ms,candidate_submission_cpu_median_ms,candidate_submission_cpu_p95_ms,candidate_process_cpu_median_ms,candidate_process_cpu_p95_ms,candidate_frames,candidate_median_min_ms,candidate_median_max_ms,metal_speedup
+overview,2D no clouds,4.874,5.087,4.969,5.286,5.206,5.506,240,4.829,4.917,5.075,5.218,4.429,4.636,4.597,4.814,240,5.042,5.105,0.9603940886699507
+overview,2D clouds,7.853,8.056,6.988,7.24,7.184,7.424,240,7.809,7.912,6.918,7.187,6.004,6.262,6.17,6.422,240,6.874,6.95,1.1351546689794738
+closeup,2D no clouds,5.219,6.26,2.211,3.019,3.663,4.669,240,5.076,5.283,5.205,6.254,2.099,2.79,3.416,4.477,240,5.116,5.265,1.0026897214217099
+closeup,2D clouds,6.779,7.195,3.566,4.017,3.913,4.385,240,6.714,6.814,6.751,7.172,3.394,4.025,3.688,4.359,240,6.655,6.805,1.0041475336987113
+motion,2D no clouds,2.691,64.273,0.687,64.137,0.987,64.354,240,2.635,2.748,2.648,64.577,0.601,63.22,0.859,63.351,240,2.61,2.759,1.0162386706948638
+motion,2D clouds,6.287,70.164,5.46,70.971,5.709,71.136,240,6.119,6.463,6.261,69.138,5.223,69.846,5.484,69.985,240,6.143,6.437,1.0041526912633765
+saved-match,2D no clouds,5.02,5.924,3.071,3.795,3.529,4.35,240,4.961,5.062,4.989,5.971,3.04,3.82,3.51,4.386,240,4.94,5.034,1.006213670074163
+saved-match,2D clouds,6.889,7.083,4.973,5.202,5.176,5.434,240,6.849,6.896,6.88,7.054,4.951,5.15,5.139,5.356,240,6.84,6.904,1.0013081395348837
