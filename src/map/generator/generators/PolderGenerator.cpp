@@ -83,6 +83,8 @@ constexpr double kHamletRadius = 5.0;
 // crops spread only onto grass, so one tile of sand corners stops them and the second keeps a grass
 // corner from ever bridging the ring.
 constexpr int kVillageSand = 2;
+// Expanded ground: a dyke vertex this close to a ditch is a boardwalk over it, the rest a dirt track.
+constexpr int kBoardwalkReach = 2;
 // Farm plots (first play): two and a half per colony (rounded up), each at least this far from every
 // village and hamlet and from the plots before it, so they are dotted evenly through the rows.
 constexpr int kPlotsPerTwoColonies = 5, kPlotClear = 18, kPlotMargin = 9;
@@ -95,6 +97,7 @@ struct Layout
 	std::vector<ShapePoint> homes, kits, hamlets;
 	std::vector<int> homeOf;
 	std::vector<unsigned char> water, dyke, village, ring, hamlet;
+	std::vector<unsigned char> boardwalk; // dyke vertices within two of a ditch: the crossings
 	Farm farm;            // the rows' water and sand as a farm, so plots can be stamped into them
 	TerrainSketch sketch; // the terrain as designed, plots and all
 	std::string failure;
@@ -257,7 +260,33 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	context.telemetry.measure("polder.plots.actual", plotsPlaced);
 	L.water = L.farm.water;
 	L.dyke = L.farm.sand;
+	L.boardwalk = dilate(t, L.water, kBoardwalkReach);
 	return L;
+}
+
+// Expanded ground (ground=1): the sketch's grass, sand lines and rings given the terrain they stand
+// for, after the beaches are laid so the ditches' banks stay sand.
+//  - Crop rows are loam, buildable crop land that irrigates more strongly than water, so a row
+//    regrows from further off; the villages, hamlets and farm plots stay grass, which is what their
+//    kits and plantings need.
+//  - Dykes are dirt track (double walking speed, buildable, nothing grows on it) and boardwalk where
+//    they cross a ditch: the polder's roads are real roads, and a lane through the crops stays open
+//    without sand.
+//  - The ring round every village is gravel, which inhibits growth as sand does but is no coastline.
+// Every swap keeps the sand it replaces a containment line: paths and barren ground take no resource.
+void expandGround(TerrainSketch &terrain, const Layout &L)
+{
+	const int n = L.t.size();
+	for (int i = 0; i < n; ++i)
+	{
+		unsigned char &v = terrain.at(i);
+		if (v == GRASS && !L.village[i] && !L.hamlet[i] && !L.farm.plot[i])
+			v = LOAM;
+		else if (v == SAND && L.dyke[i])
+			v = L.boardwalk[i] ? BOARDWALK : DIRT_TRACK;
+		else if (v == SAND && L.ring[i] && !L.dyke[i])
+			v = GRAVEL;
+	}
 }
 
 bool generate(Game &game, GenerationContext &context)
@@ -280,6 +309,8 @@ bool generate(Game &game, GenerationContext &context)
 	context.stage = "polder terrain";
 	TerrainSketch terrain = L.sketch;
 	layBeaches(terrain, t);
+	if (o.expandedGround)
+		expandGround(terrain, L);
 	writeVertices(map, terrain);
 
 	context.stage = "polder colonies";
@@ -350,7 +381,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 } // namespace
 
 PolderOptions::PolderOptions(const GenerationRequest &r)
-	: rowAngle(r.option("row-angle")), dykeSpacing(r.option("dyke-spacing")),
+	: expandedGround(r.option("ground") != 0), rowAngle(r.option("row-angle")), dykeSpacing(r.option("dyke-spacing")),
 	  villageSize(r.option("village-size")), hamlets(r.option("hamlets") != 0),
 	  waterCrossings(r.option("water-crossings") != 0), cropCrossings(r.option("crop-crossings") != 0),
 	  wheat(r.option("wheat-amount")), wood(r.option("wood-amount")),
@@ -371,7 +402,11 @@ GeneratorDefinition polderDefinition()
 		// hold a swarm, its kit and a few more buildings and no more (11 before the first play, and
 		// the growth crowded them; FEEDBACK 2026-09-13: a random angle by default, and villages of
 		// 14 in a sand ring).
-		{GeneratorControl::choice("row-angle", "Row angle",
+		// Expanded ground is opt-in until a maintainer has played it: the randomizer stays on classic.
+		{GeneratorControl::choice("ground", "Ground", {"Classic", "Expanded"}, 0,
+								  ControlGroup::Terrain)
+			 .withSearchValues({0}),
+		 GeneratorControl::choice("row-angle", "Row angle",
 								  {"Random", "Vertical", "Horizontal", "Diagonal"}, 0,
 								  ControlGroup::Terrain)
 			 .withSearchValues({1, 2, 3}),
