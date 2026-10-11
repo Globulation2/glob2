@@ -91,6 +91,92 @@ TEST_SUITE("SDLGPUDevice")
         CHECK(std::abs(int(layered.b) - 128) <= 1); CHECK(layered.a == 255);
     }
 
+    GLOB2_TEST_CASE("nearest atlas regions batch while linear regions keep their clamps", "[display][isolated]")
+    {
+        const char *shaders = std::getenv("GLOB2_TEST_SHADER_DIRECTORY"); REQUIRE(shaders);
+        Video video; auto device = makeSDLGPUDevice(nullptr, 64, 64, shaders);
+        RenderResources resources; auto pixels = surface(4, 4); REQUIRE(pixels);
+        for (int y = 0; y < 4; ++y) for (int x = 0; x < 4; ++x)
+            REQUIRE(SDL_WriteSurfacePixel(pixels.get(), x, y, x * 60, y * 60, (x + y) * 30, 255));
+        auto texture = resources.snapshot(resources.create(pixels.get(), 1));
+        RenderFrame frame; frame.logicalWidth = frame.logicalHeight = 64;
+        for (int y = 0; y < 64; ++y) for (int x = 0; x < 64; ++x) {
+            auto packet = blit(texture, {float(x), float(y), 1, 1});
+            packet.source = {x % 4, y % 4, 1, 1}; frame.packets.push_back(packet);
+        }
+        auto before = device->telemetry(); REQUIRE(device->submit(std::move(frame))); device->present();
+        CHECK(device->telemetry().batches - before.batches == 1);
+        Surface image(device->captureSynchronously({}), SDL_DestroySurface); REQUIRE(image);
+        for (int y = 0; y < 64; ++y) for (int x = 0; x < 64; ++x) {
+            const auto color = pixel(image.get(), x, y);
+            CHECK(color.r == (x % 4) * 60); CHECK(color.g == (y % 4) * 60);
+            CHECK(color.b == ((x % 4) + (y % 4)) * 30); CHECK(color.a == 255);
+        }
+        // Effective linear sampling includes descriptor policy, even when the
+        // packet itself does not ask for linear filtering. Distinct one-texel
+        // regions must never bleed into their poison-colored atlas neighbors.
+        for (bool descriptorLinear : {false, true}) {
+            TextureDescriptor descriptor;
+            if (descriptorLinear) descriptor.sampling = TextureDescriptor::Sampling::Linear;
+            texture = resources.snapshot(resources.create(pixels.get(), 1, descriptor));
+            RenderFrame linearFrame; linearFrame.logicalWidth = linearFrame.logicalHeight = 64;
+            auto first = blit(texture, {0, 0, 32, 64}); first.source = {1, 1, 1, 1}; first.linear = !descriptorLinear;
+            auto second = first; second.destination = {32, 0, 32, 64}; second.source = {2, 2, 1, 1};
+            linearFrame.packets = {first, second}; before = device->telemetry();
+            REQUIRE(device->submit(std::move(linearFrame))); device->present();
+            CHECK(device->telemetry().batches - before.batches == 2);
+            image.reset(device->captureSynchronously({})); REQUIRE(image);
+            for (int y = 0; y < 64; ++y) for (int x = 0; x < 64; ++x) {
+                const auto color = pixel(image.get(), x, y); const int n = x < 32 ? 1 : 2;
+                CHECK(color.r == n * 60); CHECK(color.g == n * 60); CHECK(color.b == n * 60);
+            }
+        }
+    }
+
+    GLOB2_TEST_CASE("nearest atlas blits preserve fractional triangle sampling", "[display][isolated]")
+    {
+        const char *shaders = std::getenv("GLOB2_TEST_SHADER_DIRECTORY"); REQUIRE(shaders);
+        Video video; auto device = makeSDLGPUDevice(nullptr, 96, 64, shaders);
+        RenderResources resources; auto pixels = surface(16, 16); REQUIRE(pixels);
+        for (int y = 0; y < 16; ++y) for (int x = 0; x < 16; ++x)
+            REQUIRE(SDL_WriteSurfacePixel(pixels.get(), x, y, Uint8(x * 17), Uint8(y * 17), Uint8((x * 37 + y * 53) % 256), Uint8(64 + (x + y) % 4 * 63)));
+        for (bool mipmapped : {false, true}) {
+            TextureDescriptor descriptor;
+            if (mipmapped) descriptor.mips = TextureDescriptor::Mips::Generated;
+            auto texture = resources.snapshot(resources.create(pixels.get(), 1, descriptor));
+            auto render = [&](bool triangles) {
+                RenderFrame frame; frame.logicalWidth = 96; frame.logicalHeight = 64;
+                frame.packets.push_back(fill({0, 0, 96, 64}, {11, 23, 47, 255}));
+                for (int i = 0; i < 48; ++i) {
+                    auto packet = blit(texture, {float(i % 12 * 8) + (i % 2 ? .499999f : .125f), float(i / 12 * 12) + .375f,
+                        i % 3 == 0 ? .75f : i % 3 == 1 ? 2.5f : 6.125f, i % 2 ? 1.25f : 7.5f});
+                    packet.source = {1 + i % 10, 1 + i % 9, 3, 2};
+                    packet.transform.scale = i % 2 ? 1.333333f : .75f;
+                    packet.transform.x = .25f; packet.transform.y = .125f;
+                    packet.clip = SDL_Rect{0, 0, 92, 60};
+                    if (triangles) {
+                        // Existing arbitrary triangles never specialize an atlas
+                        // clamp. They independently exercise the same nearest
+                        // sampler, including boundary-close UV interpolation.
+                        packet.kind = DrawPacket::Kind::Triangles;
+                        const auto r = packet.destination;
+                        const float u0 = float(packet.source.x) / 16, v0 = float(packet.source.y) / 16;
+                        const float u1 = float(packet.source.x + packet.source.w) / 16, v1 = float(packet.source.y + packet.source.h) / 16;
+                        const SDL_FColor white{1, 1, 1, 1};
+                        const SDL_Vertex a{{r.x, r.y}, white, {u0, v0}}, b{{r.x + r.w, r.y}, white, {u1, v0}},
+                            c{{r.x + r.w, r.y + r.h}, white, {u1, v1}}, d{{r.x, r.y + r.h}, white, {u0, v1}};
+                        packet.vertices = {a, b, c, a, c, d};
+                    }
+                    frame.packets.push_back(std::move(packet));
+                }
+                REQUIRE(device->submit(std::move(frame))); device->present();
+                return Surface(device->captureSynchronously({}), SDL_DestroySurface);
+            };
+            const auto reference = render(true), actual = render(false); REQUIRE(reference); REQUIRE(actual);
+            for (int y = 0; y < 64; ++y) for (int x = 0; x < 96; ++x) nearPixel(actual.get(), reference.get(), x, y, 0);
+        }
+    }
+
     GLOB2_TEST_CASE("Vulkan reused primitive passes match separated state and target changes", "[display][isolated]")
     {
         const char *shaders = std::getenv("GLOB2_TEST_SHADER_DIRECTORY"); REQUIRE(shaders);
