@@ -326,9 +326,9 @@ class DeviceBroker
         const auto startupEnd=state->totals.automaticTuning && startupClock.process?startupClock.process(startupClock.context):glob2::CpuClockSample{};
         std::lock_guard lock(state->mutex);state->initialized=true;state->started=ready && !state->canceled;
         state->totals.initializationNs=monotonicNs()-start;
-        // Cold compiler/driver work has no accepted reference yet. Charge the
-        // enclosing whole-process CPU upper bound as startup debt, separately
-        // from sustained paired observations. Concurrent work is overcharged.
+        // Cold compiler/driver work has no accepted reference yet. Report its
+        // enclosing whole-process CPU upper bound separately from the rolling
+        // exploration budget. Concurrent work is conservatively included.
         state->totals.tuningStartupClockValid=startupBegin.valid && startupEnd.valid && startupBegin.ns && startupEnd.ns && startupEnd.ns>=startupBegin.ns;
         if(state->totals.automaticTuning)state->totals.tuningStartupUpperCpuNs=state->totals.tuningStartupClockValid?
             startupEnd.ns-startupBegin.ns:UINT64_MAX;
