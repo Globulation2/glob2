@@ -23,7 +23,7 @@ recorded before version 137 became incompatible and network protocol 57 separate
 clients using those rules. Format 146 stores terrain per map vertex and derives each
 cell's rules from its corners. Format 147 makes resource fetching greedy only, without
 round-trip routing, and format 148 schedules building walking fields; the current
-replay floor is 152: units, buildings, world operations and legacy stories use
+private-stream transition in version 152 means units, buildings, world operations and legacy stories use
 salted private PCG32 streams. AI helpers consume their controller streams explicitly.
 Earlier replay trajectories are incompatible. Existing saves remain loadable: each
 missing owner stream is initialized once from the saved seed, domain and identity;
@@ -35,12 +35,15 @@ the save floor remains 58.
 
 Unit format 153 embeds resolved unit definitions, assigned job purposes and
 extended cargo before dependent state. It uses network protocol 69 and simulation
-revision 47. The replay floor remains 152: built-in version-152 recordings use an
-explicit legacy representation checksum while running the same default unit
-behavior. New recordings checksum the catalog and extended state. Legacy saves
+revision 47 when introduced. New recordings checksum the catalog and extended state. Legacy saves
 recover their saved race tables through format-gated loading, preserving cached
 effective values;
 current saves validate redundant tables against the embedded catalog.
+
+Version 154 restores mature resource stock oscillation and uses simulation revision
+48. The replay floor is 154 because earlier recordings have different growth
+trajectories. The save floor remains 58; existing saves adopt the restored growth
+rule without changing resource stocks or pending queue layouts on load.
 
 Structured `game run` accepts `--ai-order-delay N`, where `N` is an integer
 from 0 through 8 and defaults to 8 for a new match. It is one match-wide engine

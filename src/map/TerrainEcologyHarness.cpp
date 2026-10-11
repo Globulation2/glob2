@@ -205,12 +205,8 @@ TEST_CASE("four growth opportunities preserve capped stacks and measured conserv
         for(int i=0;i<3;++i)result.values[i+1]=growth[i][type];
         result.nextRandom=syncRand();
         CHECK(initial+result.values[2]==result.values[0]+result.values[3]);
-        // The resource refactor deliberately removes the historical
-        // full-stack oscillation. Full nonspreaders stay full; spreaders can
-        // add stock elsewhere. The opt-in baseline above retains the old rule.
-        if (map.resourcePropertiesByIndex(type).spreadRate) CHECK(result.values[2]>0);
-        else CHECK(result.values[2]==0);
-        CHECK(result.values[3]==0);
+        CHECK(result.values[2]>0);
+        CHECK(result.values[3]>0);
         return result;
     };
     for(int type:{PAPYRUS,CHERRY,WOOD})

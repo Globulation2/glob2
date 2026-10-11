@@ -16,12 +16,17 @@ at `snapshot.tick + delay`, after team stepping, with eight ticks as the default
 A late worker is joined at its deadline. With zero workers, the executor runs
 the same calculation on the simulation owner at the join. The mutation pass visits the compact proposal list rather than scanning
 the map. Each 12-byte proposal stores its tile, resource type, source variety and
-operation. Replenishment carries one signed material delta. A seed carries
+operation. A positive growth event replenishes a material below capacity or removes
+one unit at capacity, restoring the historical mature-stock oscillation. That
+choice uses live stock at publication, preserving intervening harvesting. Explicit
+negative deltas remain reductions; legacy saved increments and capacity-one yields
+retain their cap.
+A seed carries
 worker-calculated replenishment choices for a matching destination at publication.
 If the destination remains empty, it receives the configured initial stock of every
 material and the source variety, just as the immediate growth pass did. Seed stocks
 do not depend on replenishment rates. If a matching deposit is already present,
-only the precomputed replenishment increments apply, capped independently; initial
+only the precomputed growth events apply independently to each material; initial
 stocks never replace existing stocks. Publication makes no new random choices.
 
 There is no incarnation tracking. A positive replenishment whose deposit disappears
@@ -41,8 +46,8 @@ they must not be summed across teams. With no teams, measure world stocks direct
 Diagnostic `growth_proposals` counts newly computed work, including future batches.
 `growth_publishedProposals` includes restored work and equals accepted plus rejected
 proposals. One accepted seed can add multiple stock units. `growth_clamped` counts
-wholly rejected positive proposals with attempted replenishment; partially accepted
-seed collisions may contain saturated materials without increasing this counter.
+wholly rejected positive proposals with attempted replenishment, including legacy
+capped increments. Mature growth events are accepted reductions.
 Diagnostic counters restart on load; team statistics retain their saved history.
 
 ## Buffering

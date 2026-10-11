@@ -178,16 +178,24 @@ bool Map::growResourceStock(size_t index)
     const auto& r=resourceCells[index].resource;
     if (r.type==NO_RES_TYPE) return false;
     const auto& yields=resourceRegistry().yields(static_cast<ResourceId>(r.type));
+    const auto& properties=resourcePropertiesByIndex(r.type);
+    const bool oscillates=properties.growthRate && properties.ecology!=ResourceEcology::None;
     bool changed=false;
-    for (unsigned remaining=resourcePropertiesByIndex(r.type).materialMask;remaining;remaining&=remaining-1)
+    for (unsigned remaining=properties.materialMask;remaining;remaining&=remaining-1)
     {
         const auto m=std::countr_zero(remaining);
         const auto& y=yields[m];
         if (!y.growthRate) continue;
         const auto amount=materialAmountAtSlot(index,m);
-        if (amount>=y.capacity) continue;
+        if (amount>=y.capacity && (!oscillates || y.capacity==1)) continue;
         const auto increment=Fertility::growthOpportunities(y.growthRate,[&]{return privateRandom(RandomDomain::ResourceStocks).nextU32();});
-        if (increment) { setMaterialAmountSlot(index,m,std::min<unsigned>(y.capacity,unsigned(amount)+increment)); changed=true; }
+        if (increment)
+        {
+            // Mature deposits breathe between capacity and one unit below it.
+            setMaterialAmountSlot(index,m,amount>=y.capacity ? amount-1 :
+                std::min<unsigned>(y.capacity,unsigned(amount)+increment));
+            changed=true;
+        }
     }
     return changed;
 }
