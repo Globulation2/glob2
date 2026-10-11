@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Glob2Test.h"
 #include <AssetLoader.h>
+#include "HighResolutionInputs.h"
+#include <GraphicContext.h>
 #include <FileManager.h>
 #include <ThreadSupport.h>
 #include <atomic>
@@ -8,6 +10,7 @@
 #include <future>
 #include <cstring>
 #include <fstream>
+#include <thread>
 
 namespace {
 const unsigned char webp[] = {82,73,70,70,58,0,0,0,87,69,66,80,86,80,56,76,45,0,0,0,47,1,64,0,16,31,32,32,33,238,240,127,159,220,16,18,144,41,81,245,144,144,128,88,66,247,127,138,67,2,1,66,58,229,98,156,66,169,23,23,104,136,232,127,4,0};
@@ -17,6 +20,68 @@ void write(const std::filesystem::path& path, const void *bytes, size_t size) {
 }
 }
 TEST_SUITE("AssetLoader") {
+TEST_CASE("HD staging copies repeated uses then transfers exclusive pixels at the last use") {
+    glob2test::TempDir temp("hd-staging");
+    write(temp.path / "frame.webp", webp, sizeof(webp));
+    GAGCore::FileManager files("asset-loader-test"); files.addDir(temp.path.string());
+    for (unsigned workers : {0u, 2u}) {
+        GAGCore::AssetLoader loader(files, {workers, workers, 1024 * 1024});
+        GAGCore::HighResolutionInputs inputs;
+        inputs.add(loader, "frame.webp"); inputs.add(loader, "frame.webp");
+        const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(5);
+        while (inputs.pending() && std::chrono::steady_clock::now() < deadline) {
+            loader.poll(); std::this_thread::yield();
+        }
+        REQUIRE_FALSE(inputs.pending());
+        CHECK(inputs.size() == 2);
+        CHECK(loader.metrics().submitted == 2); // one read and one decode
+        auto first = inputs.consume("frame.webp");
+        REQUIRE(first.value); CHECK_FALSE(first.exclusive);
+        auto* pixelsOwner = first.value->surface;
+        auto copied = GAGCore::DrawableSurface::fromAssetImage(*first.value, first.exclusive, false);
+        CHECK(copied->getSDLSurface() != pixelsOwner);
+        first.value.reset();
+        auto last = inputs.consume("frame.webp");
+        REQUIRE(last.value); CHECK(last.exclusive);
+        auto adopted = GAGCore::DrawableSurface::fromAssetImage(*last.value, last.exclusive, false);
+        CHECK(adopted->getSDLSurface() == pixelsOwner);
+        CHECK(inputs.size() == 0);
+        auto* rgba = SDL_ConvertSurface(adopted->getSDLSurface(), SDL_PIXELFORMAT_RGBA32);
+        REQUIRE(rgba);
+        for (int y = 0; y < 2; ++y)
+            CHECK(std::memcmp(static_cast<char*>(rgba->pixels) + y * rgba->pitch, pixels + y * 8, 8) == 0);
+        SDL_DestroySurface(rgba);
+    }
+}
+TEST_CASE("HD staging preserves external consumers and cancellation cannot cancel their input") {
+    glob2test::TempDir temp("shared-hd-staging");
+    write(temp.path / "frame.webp", webp, sizeof(webp));
+    write(temp.path / "other.webp", webp, sizeof(webp));
+    GAGCore::FileManager files("asset-loader-test"); files.addDir(temp.path.string());
+    GAGCore::AssetLoader loader(files, {0, 0, 1024 * 1024});
+    auto retained = loader.requestImage("frame.webp", GAGCore::AssetLoader::Priority::Required, true);
+    GAGCore::HighResolutionInputs inputs;
+    inputs.add(loader, "frame.webp");
+    auto borrowed = loader.wait(retained); REQUIRE(borrowed);
+    auto shared = inputs.consume("frame.webp");
+    REQUIRE(shared.value); CHECK_FALSE(shared.exclusive);
+    CHECK(shared.value == borrowed);
+    CHECK(retained.get() == borrowed);
+    inputs.add(loader, "frame.webp"); inputs.clear();
+    CHECK(inputs.size() == 0); CHECK_FALSE(inputs.pending());
+    CHECK(retained.get() == borrowed);
+    GAGCore::HighResolutionInputs cancelled;
+    auto other = loader.requestImage("other.webp");
+    cancelled.add(loader, "other.webp", false); cancelled.clear();
+    CHECK(loader.wait(other));
+    // A missing optional input completes as a failure, without a stuck staging owner.
+    inputs.add(loader, "missing.webp");
+    const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(5);
+    while (inputs.pending() && std::chrono::steady_clock::now() < deadline) loader.poll();
+    REQUIRE_FALSE(inputs.pending());
+    CHECK_FALSE(inputs.consume("missing.webp").value);
+    CHECK(inputs.size() == 0);
+}
 TEST_CASE("WebP requests deduplicate and preserve alpha and invisible RGB in both execution modes") {
     glob2test::TempDir temp("parallel-assets");
     write(temp.path / "frame.webp", webp, sizeof(webp));

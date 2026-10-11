@@ -173,7 +173,8 @@ struct SpriteLoad::Impl {
     bool variableAtlas = false, retried = false, complete = false;
     AssetLoader::Handle<Sources> discovery;
     AssetLoader::Handle<Prepared> prepared;
-    std::vector<AssetLoader::Handle<AssetImage>> images, highResolution;
+    std::vector<AssetLoader::Handle<AssetImage>> images;
+    HighResolutionInputs highResolution;
     std::shared_ptr<const Sources> sources;
     std::shared_ptr<const Prepared> pixels;
     std::unique_ptr<Sprite> sprite;
@@ -266,7 +267,7 @@ bool SpriteLoad::pollUntil(std::chrono::steady_clock::time_point deadline) {
     }
     if (impl->frame != impl->sources->frames || std::chrono::steady_clock::now() >= deadline) return false;
     if (!highResolutionAtlasReady(impl->name, impl->highResolution) ||
-        std::any_of(impl->highResolution.begin(), impl->highResolution.end(), [](const auto& handle) { return handle.pending(); })) {
+        impl->highResolution.pending()) {
         advanceInputs(); return false;
     }
     const bool uncolored = std::all_of(impl->sprite->rotated.begin(), impl->sprite->rotated.end(), [](auto p) { return !p; });

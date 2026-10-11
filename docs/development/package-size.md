@@ -48,8 +48,9 @@ when a continuation captures inputs owned by its caller. Cancelling the caller
 then leaves those inputs valid until preparation finishes. New source
 mounts and pack changes invalidate future requests while existing consumers retain
 valid data. HD reloads prepare on workers and publish during frame polling.
-HD preparation adopts ready frames while other frames decode, and retires each
-matching prefetch subscription as its frame or atlas is adopted. The completed
+Initial loading and HD reloads adopt ready frames through retained prefetch
+subscriptions while other frames decode. Repeated paths share one subscription
+per preparation mode, released after its last use. The completed
 sprite still publishes atomically. Exclusively owned surfaces and upload buffers
 move into the drawable;
 independent consumers keep isolated copies. This avoids retaining the complete
@@ -60,7 +61,9 @@ Production HD loads prefetch eight frames at a time and defer packed atlases unt
 frame adoption finishes; ready output cannot accumulate for an entire unit sheet
 while the application is busy with map generation or other work.
 Authored HD uploads consume the prepared mip chain directly, without an unused level-zero
-RGBA conversion. Mip filtering skips invisible footprints and averages opaque
+RGBA conversion. Supplied packed atlas mip surfaces stay CPU-only through
+validation; their four exact levels define the final texture storage directly.
+General texture padding is unchanged. Mip filtering skips invisible footprints and averages opaque
 ones directly, preserving the alpha-weighted integer results for every pixel.
 WebGL2 prepares generated power-of-two HD surfaces on the GPU with the same
 integer alpha-weighted filter, including BGRA-to-RGBA conversion. This avoids
