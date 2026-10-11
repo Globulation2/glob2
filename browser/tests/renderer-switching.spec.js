@@ -259,7 +259,7 @@ for(const mode of ['serial','threaded']) {
     await clickControl(page,'choice/1');await screen(page,'EditorMainMenu');await verify();
   });
   test(`${mode}: recording retains one session while changing backend`,async({page},info)=>{
-    test.setTimeout(360000);const verify=await start(page,mode);await match(page);
+    test.setTimeout(480000);const verify=await start(page,mode);await match(page);
     const completed=()=>page.evaluate(async()=>{
       const root=await(await navigator.storage.getDirectory()).getDirectoryHandle('glob2-recordings',{create:true});
       const paths=[];for await(const [name,handle]of root.entries())if(name.endsWith('.complete')&&(await handle.getFile()).size)paths.push(decodeURIComponent(name).slice(0,-9));return paths;
@@ -270,6 +270,13 @@ for(const mode of ['serial','threaded']) {
     await clickControl(page,'return');const started=(await state(page)).tick;
     await expect.poll(async()=>(await state(page)).tick,{timeout:120000}).toBeGreaterThan(started+10);
     await openOverlay(page);
+    if(await available(page,'WebGPU')) {
+      await choose(page,'WebGPU');await resumeOverlay(page);
+      const webgpuTick=(await state(page)).tick;
+      await expect.poll(async()=>(await state(page)).tick,{timeout:120000}).toBeGreaterThan(webgpuTick+10);
+      await info.attach('recording-active-webgpu',{body:JSON.stringify(await state(page),null,2),contentType:'application/json'});
+      await openOverlay(page);
+    }
     await choose(page,'Programmable GL');await choose(page,'Software');await resumeOverlay(page);
     const resumed=(await state(page)).tick;
     await expect.poll(async()=>(await state(page)).tick,{timeout:120000}).toBeGreaterThan(resumed+10);
