@@ -3,7 +3,9 @@
 #include <RendererSelection.h>
 #include <GraphicContext.h>
 #include <RenderBackend.h>
+#include <RenderDevice.h>
 #include <Toolkit.h>
+#include <algorithm>
 
 using namespace GAGCore;
 TEST_SUITE("RendererSelection")
@@ -18,6 +20,48 @@ TEST_SUITE("RendererSelection")
         CHECK(resolveRendererPreference(RendererBackend::Software, {}, RendererBackend::PortableSDL) == RendererBackend::PortableSDL);
         CHECK(resolveRendererPreference(RendererBackend::Software, RendererBackend::Auto, RendererBackend::PortableSDL) == RendererBackend::Auto);
     }
+    TEST_CASE("public device hold preserves graphics generation and offscreen captures [display]")
+    {
+        for (auto backend : {RendererBackend::ProgrammableGL, RendererBackend::SDLGPU}) {
+            GraphicContext::setInitialRendererBackend(RendererBackend::Software);
+            GraphicContext gfx(64,48,GraphicContext::RESIZABLE|GraphicContext::NOAUDIO,"offscreen progress hold");
+            const auto choices=gfx.rendererAvailability();
+            const auto available=std::find_if(choices.begin(),choices.end(),[&](const auto &choice){return choice.backend==backend && choice.available;});
+            if(available==choices.end()){MESSAGE("Device hold coverage unavailable for ",rendererBackendName(backend));continue;}
+            REQUIRE(gfx.requestBackendSwitch(backend));gfx.nextFrame();
+            INFO(gfx.backendSwitchStatus().reason);
+            REQUIRE(gfx.backendSwitchStatus().active==backend);
+            auto *device=gfx.renderDevice();REQUIRE(device);
+            auto *resources=gfx.renderResources();REQUIRE(resources);
+            gfx.drawFilledRect(0,0,64,48,Color(190,20,30));gfx.nextFrame();
+            const auto generation=gfx.getGLContextGeneration();
+            const auto deviceGeneration=device->generation();
+            std::unique_ptr<SDL_Surface,decltype(&SDL_DestroySurface)> pixels(SDL_CreateSurface(4,4,SDL_PIXELFORMAT_RGBA32),SDL_DestroySurface);
+            REQUIRE(pixels);
+            TextureDescriptor descriptor;descriptor.budgetClass=TextureDescriptor::BudgetClass::TerrainPage;
+            const auto handle=resources->create(pixels.get(),1,descriptor);REQUIRE(handle);
+            const auto target=resources->snapshot(handle);
+            REQUIRE(gfx.beginDeviceTarget(target,4,4));
+            DrawPacket clear;clear.kind=DrawPacket::Kind::Clear;clear.clearColor=true;clear.clearValue={0,1,0,1};
+            REQUIRE(gfx.submitDevicePacket(std::move(clear)));gfx.endDeviceTarget();
+            REQUIRE(gfx.flushDeviceFrame());REQUIRE(gfx.deferDeviceFrame());
+            CHECK_FALSE(gfx.flushDeviceFrame());gfx.nextFrame();
+            CHECK(gfx.renderDevice()==device);CHECK(gfx.getGLContextGeneration()==generation);
+            CHECK(device->generation()==deviceGeneration);
+            CaptureRequest main;main.width=64;main.height=48;
+            std::unique_ptr<SDL_Surface,decltype(&SDL_DestroySurface)> captured(device->captureSynchronously(main),SDL_DestroySurface);
+            REQUIRE(captured);Uint8 r,g,b,a;
+            REQUIRE(SDL_ReadSurfacePixel(captured.get(),32,24,&r,&g,&b,&a));CHECK(r==190);CHECK(g==20);CHECK(b==30);
+            CaptureRequest offscreen;offscreen.target=target;offscreen.width=offscreen.height=4;
+            captured.reset(device->captureSynchronously(offscreen));REQUIRE(captured);
+            REQUIRE(SDL_ReadSurfacePixel(captured.get(),2,2,&r,&g,&b,&a));CHECK(r==0);CHECK(g==255);CHECK(b==0);
+            gfx.drawFilledRect(0,0,64,48,Color(30,40,170));REQUIRE(gfx.flushDeviceFrame());gfx.nextFrame();
+            CHECK(gfx.getGLContextGeneration()==generation);captured.reset(device->captureSynchronously(main));REQUIRE(captured);
+            REQUIRE(SDL_ReadSurfacePixel(captured.get(),32,24,&r,&g,&b,&a));CHECK(r==30);CHECK(g==40);CHECK(b==170);
+            REQUIRE(resources->erase(handle));
+        }
+    }
+
     TEST_CASE("native switching preserves surfaces commits preferences and rejects unavailable choices [display]")
     {
         GraphicContext::setInitialRendererBackend(RendererBackend::Software);
