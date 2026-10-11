@@ -63,6 +63,35 @@ struct Video
 }
 TEST_SUITE("SDLGPUDevice")
 {
+    GLOB2_TEST_CASE("Texture memory follows allocation lifetime across repeated leases and failed frames", "[display][isolated]")
+    {
+        const char *shaders = std::getenv("GLOB2_TEST_SHADER_DIRECTORY"); REQUIRE(shaders);
+        Video video; auto device = makeSDLGPUDevice(nullptr, 16, 16, shaders);
+        RenderResources resources; auto pixels = surface(8, 8); REQUIRE(pixels);
+        auto texture = resources.snapshot(resources.create(pixels.get(), 1)); REQUIRE(texture);
+        RenderFrame frame; frame.identity = 1; frame.logicalWidth = frame.logicalHeight = 16;
+        frame.packets.assign(1000, blit(texture, {0, 0, 8, 8}));
+        const auto submission = device->submit(frame); REQUIRE(submission); device->present();
+        Surface captured(device->captureSynchronously({}), SDL_DestroySurface); REQUIRE(captured);
+        REQUIRE(device->completion(submission) == RenderCompletion::Complete);
+        // Screen, committed screen, white pixel and one shared texture. Neither
+        // repeated packet leases nor completed staging allocations add residency.
+        const std::size_t expected = 2 * 16 * 16 * 4 + 4 + 8 * 8 * 4;
+        CHECK(device->telemetry().resourceBytes == expected);
+        auto fresh = resources.snapshot(resources.create(pixels.get(), 2)); REQUIRE(fresh);
+        DrawPacket clear; clear.kind = DrawPacket::Kind::Clear; clear.target = fresh;
+        clear.clearColor = clear.clearDepth = true;
+        frame.packets = {clear, blit(fresh, {0, 0, 8, 8}), fill({0, 0, -1, 8}, {})};
+        CHECK_THROWS_AS(device->submit(frame), std::invalid_argument);
+        device->trimRetiredResources();
+        CHECK(device->telemetry().resourceBytes == 2 * 16 * 16 * 4 + 4);
+        // Releasing the failed allocation must not poison later admission.
+        frame.packets = {blit(fresh, {0, 0, 8, 8})};
+        REQUIRE(device->submit(frame)); device->present();
+        device->reset();
+        CHECK(device->telemetry().resourceBytes == 2 * 16 * 16 * 4 + 4);
+    }
+
     GLOB2_TEST_CASE("Expanded rectangles do not consume recorded triangle capacity", "[display][isolated]")
     {
         const char *shaders = std::getenv("GLOB2_TEST_SHADER_DIRECTORY"); REQUIRE(shaders);

@@ -491,7 +491,10 @@ all levels to finish. GPU terrain composition also checks aggregate memory headr
 before promotion and uses the CPU compositor under pressure. Individual cache class
 budgets do not imply that all classes fit simultaneously. Torus captures use the requested
 terrain density when the full tiled layout fits the terrain-target and aggregate
-resource budgets. Explicit trimming releases completed GPU copies that can be
+resource budgets. SDL GPU charges texture and depth allocations once over their
+owned lifetime, including pending submissions and captures, instead of rebuilding
+the complete texture lease set during each admission check. Staging buffers remain
+charged separately until their work completes. Explicit trimming releases completed GPU copies that can be
 restored from logical CPU snapshots, while preserving in-flight work, unfinished
 uploads and externally owned rendered targets. Actual pressure can reduce density,
 rather than a fixed low pixel cap.
