@@ -166,7 +166,7 @@ void nearest(SDL_Surface *target, SDL_Surface *source, const SDL_Rect &src, cons
 	for (int y = visible.y; y < visible.y + visible.h; ++y)
 	{
 		const int sy =
-			nativeHeight ? src.y + y - dst.y :
+			nativeHeight ? src.y + (y - dst.y) :
 			src.y + int(((std::int64_t(y) - dst.y) * 2 + 1) * src.h / (std::int64_t(dst.h) * 2));
 		if (sy < 0 || sy >= source->h)
 			continue;
@@ -177,7 +177,7 @@ void nearest(SDL_Surface *target, SDL_Surface *source, const SDL_Rect &src, cons
 			visible.x;
 		for (int x = 0; x < visible.w; ++x)
 		{
-			const int sx = nativeWidth ? src.x + visible.x - dst.x + x : columns[x];
+			const int sx = nativeWidth ? src.x + (visible.x - dst.x + x) : columns[x];
 			if (sx < 0 || sx >= source->w)
 				continue;
 			Uint32 value = row[sx];

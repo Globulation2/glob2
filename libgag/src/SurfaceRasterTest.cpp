@@ -4,6 +4,7 @@
 #include <array>
 #include <cstring>
 #include <memory>
+#include <limits>
 
 namespace
 {
@@ -27,6 +28,19 @@ void put(SDL_Surface *value,int x,int y,Uint32 packed)
 }
 TEST_SUITE("SurfaceRaster")
 {
+    TEST_CASE("native nearest offsets skip far source origins without intermediate overflow")
+    {
+        auto source=surface(4,4,SDL_PIXELFORMAT_RGBA32),target=surface(8,8,SDL_PIXELFORMAT_RGBA32);
+        const auto background=SDL_MapSurfaceRGBA(target.get(),20,30,40,255);
+        REQUIRE(SDL_FillSurfaceRect(target.get(),nullptr,background));
+        const SDL_Rect clip{2,2,1,1};REQUIRE(SDL_SetSurfaceClipRect(target.get(),&clip));
+        for(const SDL_Rect src:std::array<SDL_Rect,2>{{{std::numeric_limits<int>::max(),0,4,4},
+                {0,std::numeric_limits<int>::max(),4,4}}}) {
+            GAGCore::SurfaceRaster::blit(target.get(),source.get(),src,{2,2,4,4},173,false,
+                GAGCore::SurfaceRaster::BlitBlend::Triangle);
+            CHECK(pixel(target.get(),2,2)==background);
+        }
+    }
     TEST_CASE("native nearest copies retain alpha keys modulation and clipped source coordinates")
     {
         // Build the reference from independent one-pixel copies. Their source
