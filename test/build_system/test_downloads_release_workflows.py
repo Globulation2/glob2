@@ -157,7 +157,7 @@ class ReleaseWorkflowTests(unittest.TestCase):
         self.assertLess(upload.index('Depot source identity mismatch'),upload.index('Upload unpublished build'))
 
     def test_owner_dispatch_master_guard_on_every_new_entrypoint(self):
-        for name in ('github-release.yml','promote-downloads.yml','android-play-internal.yml','ios-testflight.yml','ios-production.yml','release.yml'):
+        for name in ('github-release.yml','macos-signing-retry.yml','promote-downloads.yml','android-play-internal.yml','ios-testflight.yml','ios-production.yml','release.yml'):
             text=(ROOT/'.github/workflows'/name).read_text()
             for job,(needs,condition) in jobs(text).items():
                 if not needs:
