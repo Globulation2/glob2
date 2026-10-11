@@ -1264,7 +1264,7 @@ TEST_CASE("GradientPreparation/explicit snapshot batches isolate invalid fields 
 
 }
 
-TEST_CASE("GradientPreparation/modified terrain costs stay resident when field obstacles change")
+TEST_CASE("GradientPreparation/modified terrain costs remain exact when field obstacles change")
 {
     using namespace gradient_kernel;
     const auto previous=backend();struct Restore {Backend value;~Restore(){setBackend(value);}} restore{previous};
@@ -1288,12 +1288,13 @@ TEST_CASE("GradientPreparation/modified terrain costs stay resident when field o
     }
 
     for (unsigned entry=0;entry<3;++entry) {
-        std::uint64_t hits=0;
         for(unsigned phase=0;phase<2;++phase) {
             std::vector<Uint16> output(map.size,1);output[0]=65535;output[phase?37:13]=0;
             auto expected=output;
             setBackend(Backend::CPU);map.propagateGradient(expected.data(),0);
             setBackend(Backend::OpenCL);
+            const auto completed=openCLStatus().committedFields;
+            const bool deviceReady=readyPlans.load()&(1u<<unsigned(Plan::Frozen8));
             std::function<void()> work=[&] {
                 if(entry==0) gradient_preparation::propagate(request,snapshot,output.data(),scratch);
                 else if(entry==1) {
@@ -1304,9 +1305,7 @@ TEST_CASE("GradientPreparation/modified terrain costs stay resident when field o
             const ComputeExecutor::Group group{1,{[](void* p,std::size_t){(*static_cast<std::function<void()>*>(p))();},&work}};
             auto batch=map.computeExecutor().submit(std::span(&group,1)); map.computeExecutor().join(batch);
             CHECK(output==expected);
-            const auto status=openCLStatus();
-            if(phase && (readyPlans.load()&(1u<<unsigned(Plan::Frozen8)))) CHECK(status.costIdentityHits>hits);
-            hits=status.costIdentityHits;
+            if(deviceReady) CHECK(openCLStatus().committedFields==completed+1);
         }
     }
 }
