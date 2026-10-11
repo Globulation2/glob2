@@ -1,0 +1,65 @@
+<!doctype html><meta charset="utf-8"><title>Canvas backend replacement probe</title>
+<canvas id="surface" width="16" height="16" tabindex="0" aria-label="Renderer probe"></canvas>
+<pre id="result">pending</pre>
+<script>
+// This isolates browser context replacement. It does not prove SDL/Emscripten rebinding.
+async function probeCanvasSwitch(threaded) {
+  const workerSource = `let instance; onmessage = ({data}) => {
+    if (data.module) {instance = new WebAssembly.Instance(data.module); postMessage({ready:true}); return;}
+    const context = data.canvas.getContext(data.kind, data.kind === 'webgl2' ? {preserveDrawingBuffer:true} : {});
+    if (!context) {postMessage({error:'context unavailable: ' + data.kind}); return;}
+    let pixel;
+    if (data.kind === 'webgl2') {
+      context.clearColor(1,0,0,1);context.clear(context.COLOR_BUFFER_BIT);
+      pixel = new Uint8Array(4);context.readPixels(0,0,1,1,context.RGBA,context.UNSIGNED_BYTE,pixel);
+    } else {context.fillStyle='#ff0000';context.fillRect(0,0,16,16);pixel=context.getImageData(0,0,1,1).data;}
+    postMessage({pixel:Array.from(pixel), counter:instance.exports.next(), kind:data.kind});
+  };`;
+  // One persistent Wasm instance exports a mutable counter; switches must not reset it.
+  const bytes = new Uint8Array([0,97,115,109,1,0,0,0,1,5,1,96,0,1,127,3,2,1,0,
+    6,6,1,127,1,65,0,11,7,8,1,4,110,101,120,116,0,0,
+    10,13,1,11,0,35,0,65,1,106,36,0,35,0,11]);
+  const module = await WebAssembly.compile(bytes);
+  const instance = threaded ? null : new WebAssembly.Instance(module);
+  const workerURL = threaded ? URL.createObjectURL(new Blob([workerSource], {type:'text/javascript'})) : null;
+  const worker = threaded ? new Worker(workerURL) : null;
+  function exchange(data, transfer=[]) {
+    return new Promise((resolve,reject) => {
+      const timer=setTimeout(()=>reject(new Error('worker timeout')),10000);
+      worker.onmessage=({data})=>{clearTimeout(timer);data.error ? reject(new Error(data.error)) : resolve(data);};
+      worker.onerror=event=>{clearTimeout(timer);reject(new Error(event.message));};
+      worker.postMessage(data,transfer);
+    });
+  }
+  const samples=[];
+  try {
+    if (worker) await exchange({module});
+    for (let i=0;i<12;++i) {
+      const kind = i%2 ? 'webgl2' : '2d';
+      const old = document.getElementById('surface');
+      const fresh = old.cloneNode(false);old.replaceWith(fresh);fresh.focus();
+      let sample;
+      if (worker) {
+        const canvas=fresh.transferControlToOffscreen();
+        sample=await exchange({canvas,kind},[canvas]);
+      } else {
+        const context=fresh.getContext(kind,kind==='webgl2'?{preserveDrawingBuffer:true}:{});
+        if (!context) throw new Error('context unavailable: '+kind);
+        let pixel;
+        if (kind==='webgl2') {
+          context.clearColor(1,0,0,1);context.clear(context.COLOR_BUFFER_BIT);
+          pixel=new Uint8Array(4);context.readPixels(0,0,1,1,context.RGBA,context.UNSIGNED_BYTE,pixel);
+        } else {context.fillStyle='#ff0000';context.fillRect(0,0,16,16);pixel=context.getImageData(0,0,1,1).data;}
+        sample={kind,pixel:Array.from(pixel),counter:instance.exports.next()};
+      }
+      if (sample.counter!==i+1 || sample.pixel.join(',')!=='255,0,0,255' || document.activeElement!==fresh)
+        throw new Error('state/pixel/focus mismatch: '+JSON.stringify(sample));
+      samples.push(sample);
+    }
+    return {passed:true, threaded, switches:samples.length, samples,
+      crossOriginIsolated, userAgent:navigator.userAgent,
+      limitation:'Browser primitives only; does not validate game input or SDL/Emscripten canvas references.'};
+  } finally {if(worker) worker.terminate();if(workerURL)URL.revokeObjectURL(workerURL);}
+}
+window.probeCanvasSwitch=probeCanvasSwitch;
+</script>
