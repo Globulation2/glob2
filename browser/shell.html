@@ -792,10 +792,10 @@ function preserveBrowserShortcut(event) {
 }
 document.addEventListener('keydown', preserveBrowserShortcut, true);
 document.addEventListener('keypress', preserveBrowserShortcut, true);
-// SDL 2.32's browser button callback uses the last motion position instead of
-// the button event's coordinates. Synchronize it before SDL sees the button:
-// browsers can omit/coalesce the intervening motion, especially across focus
-// and viewport changes. Keep this SDK adaptation out of gameplay input code.
+// Legacy SDL 2.32 compatibility: its browser button callback used the last
+// motion position, so synchronize it before the button when motion is coalesced
+// across focus or viewport changes. Pinned SDL 3 handles pointer-event coordinates
+// directly; retain this compatibility hook without changing gameplay input.
 let canvasPointerDown = false;
 function syncButtonPosition(event) {
   if (event.target !== canvas && !canvasPointerDown) return;
