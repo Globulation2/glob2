@@ -100,6 +100,49 @@ TEST_SUITE("ProgrammableGLDevice")
         Surface separated(fixture.device->captureSynchronously({}),SDL_DestroySurface);REQUIRE(separated);
         equal(combined.get(),separated.get());
     }
+    GLOB2_TEST_CASE("primitive state reuse matches isolated target viewport clip and program transitions", "[display]")
+    {
+        GLFixture fixture; RenderResources resources;
+        auto pixels=surface(8,8);
+        REQUIRE(SDL_FillSurfaceRect(pixels.get(),nullptr,SDL_MapSurfaceRGBA(pixels.get(),0,0,0,0)));
+        TextureDescriptor descriptor;descriptor.width=descriptor.height=8;
+        auto first=resources.create(pixels.get(),1,descriptor),second=resources.create(pixels.get(),1,descriptor);
+        REQUIRE(first);REQUIRE(second);
+        const auto a=resources.snapshot(first),b=resources.snapshot(second);
+        DrawPacket background;background.destination={0,0,16,16};background.color={10,20,30,255};background.opaque=true;
+        DrawPacket red=background;red.target=a;red.targetLogicalWidth=red.targetLogicalHeight=8;
+        red.destination={0,0,8,8};red.color={210,20,40,255};
+        DrawPacket blue=red;blue.target=b;blue.color={20,40,210,255};blue.viewport=SDL_Rect{1,0,7,8};
+        DrawPacket overlay=red;overlay.color={20,210,40,128};overlay.opaque=false;overlay.alpha=173;
+        overlay.clip=SDL_Rect{2,1,5,6};overlay.targetScissor=SDL_Rect{3,0,5,8};
+        DrawPacket logical=overlay;logical.targetLogicalWidth=4;logical.viewport=SDL_Rect{0,1,8,7};
+        logical.destination={0,0,4,8};logical.color={210,150,20,80};
+        DrawPacket point;point.kind=DrawPacket::Kind::Triangles;point.material=DrawPacket::Material::SmoothPoint;
+        point.blend=DrawPacket::Blend::Additive;point.alpha=127;
+        const SDL_FColor color{.1f,.2f,.8f,.5f};
+        const SDL_Vertex va{{0,0},color,{0,0}},vb{{8,0},color,{1,0}},vc{{8,8},color,{1,1}},vd{{0,8},color,{0,1}};
+        point.vertices={va,vb,vc,va,vc,vd};
+        DrawPacket sample;sample.kind=DrawPacket::Kind::Blit;sample.texture=a;sample.source={1,1,6,6};
+        sample.destination={0,8,8,8};sample.linear=true;sample.alpha=211;
+        DrawPacket nearest=sample;nearest.texture=b;nearest.destination={8,0,8,8};nearest.linear=false;
+        DrawPacket bounds=sample;bounds.source={2,0,3,8};bounds.destination={8,8,8,8};bounds.alpha=255;
+        DrawPacket again=point;again.alpha=231;again.viewport=SDL_Rect{8,0,8,8};
+        DrawPacket tail=background;tail.destination={3,2,4,3};tail.color={50,230,90,100};tail.opaque=false;
+        tail.clip=SDL_Rect{4,3,2,2};
+        std::vector<DrawPacket> packets={background,red,blue,overlay,point,logical,sample,nearest,bounds,again,tail};
+        for(unsigned turn=0;turn<2;++turn) {
+            RenderFrame frame;frame.identity=turn*2+1;frame.logicalWidth=frame.logicalHeight=16;
+            frame.packets=packets;frame.vertexCount=12;
+            REQUIRE(fixture.device->submit(frame));fixture.device->present();
+            Surface combined(fixture.device->captureSynchronously({}),SDL_DestroySurface);REQUIRE(combined);
+            DrawPacket barrier;barrier.kind=DrawPacket::Kind::Barrier;
+            frame.identity++;frame.packets.clear();
+            for(const auto &packet:packets) {frame.packets.push_back(packet);frame.packets.push_back(barrier);}
+            REQUIRE(fixture.device->submit(std::move(frame)));fixture.device->present();
+            Surface isolated(fixture.device->captureSynchronously({}),SDL_DestroySurface);REQUIRE(isolated);
+            equal(combined.get(),isolated.get());
+        }
+    }
     GLOB2_TEST_CASE("cloud revisions and cached world uniforms change pixels on the next frame", "[display]")
     {
         GLFixture fixture;RenderResources resources;
