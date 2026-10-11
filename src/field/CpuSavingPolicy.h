@@ -36,6 +36,14 @@ public:
     static constexpr unsigned ProbePeriod=128, MinimumPairs=8, CooldownRequests=64;
     struct Choice { Plan plan=Plan(0); std::uint64_t version=0,maximumElapsedNs=0; };
     struct ProbeOffer { Plan plan=Plan(0);std::uint64_t reservedCpuNs=0,elapsedNs=0; };
+    struct ProfileDiagnostic {
+        bool found=false,qualified=false,lastConfidenceQualified=false;
+        unsigned pairs=0,lastLookPairs=0,cooldown=0;
+        std::uint64_t epoch=0;
+        // Per-pair upper bounds frozen at the last actual statistical look.
+        double lastRelativeMeanUpperNs=0,lastAbsoluteMeanUpperNs=0;
+        Choice choice;
+    };
     enum class TuningCostKind { OptionalAdministration, ColdInitialization, PassiveObservation };
     enum class ProbeKind { PaidCpuReplay, AcceptedCpuCapture, AcceptedCpuBatchCapture };
     enum class CapturePhase { AwaitingAcceptedReference, ReferenceBound, Running, Reaping };
@@ -76,6 +84,9 @@ private:
         double sumRelative=0, sumAbsolute=0, relativeWidthsSquared=0, absoluteWidthsSquared=0, meanReference=0;
         std::uint64_t epoch=0;
         std::uint64_t maximumElapsed=0;
+        unsigned lastLookPairs=0;
+        double lastRelativeMeanUpperNs=0,lastAbsoluteMeanUpperNs=0;
+        bool lastConfidenceQualified=false;
     };
     struct Profile {
         WorkloadKey key;
@@ -156,6 +167,9 @@ private:
             alternative.relativeWidthsSquared=alternative.absoluteWidthsSquared=0;
             alternative.epoch=nextConfidenceEpoch.fetch_add(1,std::memory_order_relaxed);
             alternative.maximumElapsed=0;
+            alternative.lastLookPairs=0;
+            alternative.lastRelativeMeanUpperNs=alternative.lastAbsoluteMeanUpperNs=0;
+            alternative.lastConfidenceQualified=false;
         }
     }
     bool matches(const ProbeTicket& ticket) const {
@@ -494,6 +508,10 @@ private:
         const double logAlpha=std::log(1/delta);
         const double relativeUpper=alternative.sumRelative+std::sqrt(.5*alternative.relativeWidthsSquared*logAlpha);
         const double absoluteUpper=alternative.sumAbsolute+std::sqrt(.5*alternative.absoluteWidthsSquared*logAlpha);
+        alternative.lastLookPairs=n;
+        alternative.lastRelativeMeanUpperNs=relativeUpper/n;
+        alternative.lastAbsoluteMeanUpperNs=absoluteUpper/n;
+        alternative.lastConfidenceQualified=relativeUpper<0 && absoluteUpper<0;
         if(relativeUpper>=0 || absoluteUpper>=0) return settle(false);
         ++totals.confidenceQualified;
         if(!totals.promotionEnabled)return settle(false);
@@ -537,6 +555,26 @@ public:
         auto result=totals;result.totalTuningCpuNs=saturatedAdd(result.probeCpuNs,
             saturatedAdd(result.coldInitializationCpuNs,result.passiveObservationCpuNs));
         result.profiles=published.load(std::memory_order_acquire); return result;
+    }
+    // Background diagnostics only: fixed profile lookup, no confidence
+    // recomputation, mutation, allocation or required-work dependency.
+    ProfileDiagnostic profileDiagnostic(const WorkloadKey& key,Plan plan) const {
+        std::lock_guard lock(background);ProfileDiagnostic result;
+        const auto count=published.load(std::memory_order_acquire);
+        for(unsigned i=0;i<count;++i)if(profiles[i].key==key) {
+            const auto& profile=profiles[i];result.found=true;result.cooldown=profile.cooldown;
+            const auto word=profile.decision.load(std::memory_order_seq_cst);
+            result.choice={Plan(word&255),word>>8,profile.publishedElapsedNs.load(std::memory_order_seq_cst)};
+            for(const auto& alternative:profile.alternatives)if(alternative.plan==plan && alternative.qualified) {
+                result.qualified=true;result.pairs=alternative.pairs;result.epoch=alternative.epoch;
+                result.lastLookPairs=alternative.lastLookPairs;
+                result.lastRelativeMeanUpperNs=alternative.lastRelativeMeanUpperNs;
+                result.lastAbsoluteMeanUpperNs=alternative.lastAbsoluteMeanUpperNs;
+                result.lastConfidenceQualified=alternative.lastConfidenceQualified;break;
+            }
+            break;
+        }
+        return result;
     }
 };
 }

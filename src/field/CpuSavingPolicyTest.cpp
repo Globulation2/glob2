@@ -209,11 +209,26 @@ TEST_CASE("CPU saving policy requires paired qualified background evidence" * do
     }
     CHECK(sawPromotion);
     CHECK(policy.lookup(key).plan==Plan::Frozen8);
+    const auto promotedDiagnostic=policy.profileDiagnostic(key,Plan::Frozen8);
+    CHECK(promotedDiagnostic.found);CHECK(promotedDiagnostic.qualified);
+    CHECK(promotedDiagnostic.lastConfidenceQualified);
+    CHECK(promotedDiagnostic.lastLookPairs==promotedDiagnostic.pairs);
+    CHECK(promotedDiagnostic.lastRelativeMeanUpperNs<0);
+    CHECK(promotedDiagnostic.lastAbsoluteMeanUpperNs<0);
+    CHECK(promotedDiagnostic.choice.plan==Plan::Frozen8);
+    CHECK(promotedDiagnostic.choice.version==policy.lookup(key).version);
+    CHECK(promotedDiagnostic.choice.maximumElapsedNs==policy.lookup(key).maximumElapsedNs);
+    CHECK_FALSE(policy.profileDiagnostic(workload(512),Plan::Frozen8).found);
     CHECK(policy.lookup(workload(512)).plan==Plan::CPU);
     const auto version=policy.lookup(key).version;
     for(unsigned i=0;i<4;++i) policy.observeAccepted(key,Plan::Frozen8,950000,1);
     CHECK(policy.lookup(key).plan==Plan::CPU);
     CHECK(policy.lookup(key).version>version);
+    const auto demotedDiagnostic=policy.profileDiagnostic(key,Plan::Frozen8);
+    CHECK(demotedDiagnostic.epoch!=promotedDiagnostic.epoch);
+    CHECK(demotedDiagnostic.lastLookPairs==0);CHECK(demotedDiagnostic.pairs==0);
+    CHECK_FALSE(demotedDiagnostic.lastConfidenceQualified);
+    CHECK(demotedDiagnostic.choice.plan==Plan::CPU);
     CHECK_FALSE(nextProbe(policy,key));
     for(unsigned i=0;i<64;++i) policy.observeAccepted(key,Plan::CPU,1000000,1);
     // Existing probes consumed most initial credits; accepted CPU refills them.
@@ -458,15 +473,28 @@ TEST_CASE("suppressed promotion still processes and pays qualified counterfactua
     CpuSavingPolicy policy(false);const auto key=workload();
     policy.observeAccepted(key,Plan::CPU,100000000000ull,1);
     REQUIRE(policy.qualify(key,Plan::Frozen8,true));
+    CpuSavingPolicy::ProfileDiagnostic lastLook;
     for(unsigned pair=0;pair<256;++pair) {
         auto ticket=nextProbe(policy,key);REQUIRE(ticket);
         CHECK_FALSE(policy.finishProbe(*ticket,1000000,100000,1000000,1100000,100000000,true,true));
         CHECK(policy.lookup(key).plan==Plan::CPU);
+        const auto diagnostic=policy.profileDiagnostic(key,Plan::Frozen8);
+        CHECK(diagnostic.pairs==pair+1);
+        if(pair+1>=CpuSavingPolicy::MinimumPairs && ((pair+1)&pair)==0) {
+            CHECK(diagnostic.lastLookPairs==pair+1);lastLook=diagnostic;
+        }else {
+            CHECK(diagnostic.lastLookPairs==lastLook.lastLookPairs);
+            CHECK(diagnostic.lastRelativeMeanUpperNs==lastLook.lastRelativeMeanUpperNs);
+            CHECK(diagnostic.lastAbsoluteMeanUpperNs==lastLook.lastAbsoluteMeanUpperNs);
+        }
     }
     CHECK_FALSE(policy.metrics().promotionEnabled);
     CHECK(policy.metrics().confidenceQualified>0);
     CHECK(policy.metrics().promoted==0);
     CHECK(policy.metrics().probeCpuNs>=256ull*1100000);
+    CHECK(lastLook.lastConfidenceQualified);
+    CHECK(lastLook.lastRelativeMeanUpperNs<0);CHECK(lastLook.lastAbsoluteMeanUpperNs<0);
+    CHECK(lastLook.choice.plan==Plan::CPU); // Diagnostics cannot bypass suppression.
 }
 
 TEST_CASE("ready batch binding freezes selected accepted CPU sums and cannot infer an unqualified cardinality" * doctest::test_suite("OpenCLGradient"))

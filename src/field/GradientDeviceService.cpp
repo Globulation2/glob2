@@ -392,8 +392,22 @@ class DeviceBroker
                     (unsigned long long)native.costCellsPrepared,(unsigned long long)native.costPreparedBytes,(unsigned long long)native.costUploads,
                     (unsigned long long)native.setupCpuNs,(unsigned long long)native.threadCpuNs,native.batchFields,native.retiredFields);
             }
+            const auto policyBefore=policy && state->totals.diagnostics ? policy->metrics() : CpuSavingPolicy::Metrics{};
             // Publication never waits for this settlement or diagnostic row.
             token.settle(result.outcome,result.authorization);state->probeSession.reset();state->probePolicy.reset();
+            if(policy && state->totals.diagnostics) {
+                const auto after=policy->metrics();const auto diagnostic=policy->profileDiagnostic(state->probeKey,state->probePlan);
+                const auto& key=state->probeKey;
+                std::fprintf(stderr,"gradient_policy ticket=%llu width=%u height=%u family=%u swim=%llu limit=%u cpu_buckets=%u threads=%u batch=%u plan=%u seed_density=%u blocker_density=%u movement_modifiers=%u found=%u qualified=%u pairs=%u epoch=%llu last_look_pairs=%u last_relative_mean_upper_ns=%.17g last_absolute_mean_upper_ns=%.17g confidence_qualified=%u confidence_qualified_delta=%llu promoted_delta=%llu selected_plan=%u selected_version=%llu selected_elapsed_bound=%llu cooldown=%u\n",
+                    (unsigned long long)result.receipt.ticketId,key.width,key.height,unsigned(key.family),(unsigned long long)key.movement,
+                    key.limit,key.cpuBuckets,key.threads,key.batch,unsigned(state->probePlan),unsigned(key.seedDensity),
+                    unsigned(key.blockerDensity),unsigned(key.movementModifiers),unsigned(diagnostic.found),unsigned(diagnostic.qualified),
+                    diagnostic.pairs,(unsigned long long)diagnostic.epoch,diagnostic.lastLookPairs,
+                    diagnostic.lastRelativeMeanUpperNs,diagnostic.lastAbsoluteMeanUpperNs,unsigned(diagnostic.lastConfidenceQualified),
+                    (unsigned long long)(after.confidenceQualified-policyBefore.confidenceQualified),
+                    (unsigned long long)(after.promoted-policyBefore.promoted),unsigned(diagnostic.choice.plan),
+                    (unsigned long long)diagnostic.choice.version,(unsigned long long)diagnostic.choice.maximumElapsedNs,diagnostic.cooldown);
+            }
             const auto& r=result.receipt;
             {std::lock_guard lock(state->mutex);
                 ++state->totals.probeRetired;state->totals.probesExact+=state->probeResult.exact;
@@ -793,6 +807,18 @@ class DeviceBroker
             }
             for(const auto& field:fields){if(field->seedCpuNs>UINT64_MAX-cpu)measured=false;else cpu+=field->seedCpuNs;}
             observe(state,fields.front()->session,key,fields.front()->decision.plan,measured ? cpu : 0,fields.front()->tick,!measured);
+            if(diagnostics && state->mode==Backend::Automatic) {
+                const auto actual=std::count_if(fields.begin(),fields.end(),[](const auto& field){return field->executedGPU;});
+                std::fprintf(stderr,"gradient_gpu width=%u height=%u family=%u swim=%llu limit=%u cpu_buckets=%u threads=%u batch=%u plan=%u seed_density=%u blocker_density=%u movement_modifiers=%u selected_version=%llu required_generation=%llu tick=%llu due_tick=%llu original_executor_due=%llu device_started_wall_ns=%llu device_completed_wall_ns=%llu actual_device_fields=%zu host_cpu=%llu elapsed=%llu measured=%u\n",
+                    key.width,key.height,unsigned(key.family),(unsigned long long)key.movement,key.limit,key.cpuBuckets,key.threads,key.batch,
+                    unsigned(fields.front()->decision.plan),unsigned(key.seedDensity),unsigned(key.blockerDensity),unsigned(key.movementModifiers),
+                    (unsigned long long)(count>1?batchVersion:fields.front()->decision.version),
+                    (unsigned long long)fields.front()->decision.generation,(unsigned long long)fields.front()->tick,
+                    (unsigned long long)fields.front()->publicationTick,(unsigned long long)fields.front()->due,
+                    (unsigned long long)fields.front()->deviceStartedWallNs,(unsigned long long)fields.front()->deviceCompletedWallNs,
+                    std::size_t(actual),(unsigned long long)cpu,
+                    (unsigned long long)elapsed,unsigned(measured));
+            }
             if(!measured){batchTimingInvalid=true;if(state->mode==Backend::Automatic)state->automaticClockUnavailable=true;}
         }
         {

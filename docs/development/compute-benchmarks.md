@@ -138,6 +138,17 @@ accounting checks. A requested probe or initialized device does not demonstrate
 successful comparison or promotion; inspect terminal probe rows and actual
 execution counters.
 
+With diagnostics enabled, `gradient_policy` follows settlement with the exact
+profile's pairs, epoch and last actual doubling look. Its two upper bounds are
+per-pair means frozen at that look; `last_look_pairs=0` means no look occurred.
+The selected plan/version and promotion/qualification deltas distinguish a
+confidence-qualified observation from an enabled production choice.
+`gradient_gpu` reports successful required Automatic device results with that
+key, selected version and actual committed device-field count (excluding CPU
+shortcuts). Its wall stamps delimit the backend call, and original executor due
+and publication tick remain distinct. These background diagnostic rows stay
+inside their existing CPU accounting; they are not separate process-CPU totals.
+
 Promotion is checked only at 8, 16, 32 and subsequent doubling sample counts.
 Separate conditional Hoeffding bounds test ten percent and ten microseconds per
 field, using CPU caps reserved before execution. Alpha is spent across both tests,
