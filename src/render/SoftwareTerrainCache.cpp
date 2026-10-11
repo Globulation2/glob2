@@ -536,7 +536,15 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 	{
     if (bool(gpuPages) != composeOnDevice || (gpuPages &&
         (gpuPageGeneration != generation || gpuPages->registryIdentity() != gfx.renderResources()->instanceIdentity()))) {
-        chunks.clear(); gpuPages.reset();
+        if (gpuPages && (gpuPageGeneration != generation ||
+            gpuPages->registryIdentity() != gfx.renderResources()->instanceIdentity())) chunks.clear();
+        else {
+            // A zoom can change composition admission without invalidating CPU
+            // pixels at another density. Retain those bounded cache entries;
+            // device-only pages cannot survive destruction of their targets.
+            std::erase_if(chunks, [](const auto &chunk) { return !chunk->cpuComposed; });
+        }
+        gpuPages.reset();
         if (composeOnDevice) gpuPages = std::make_shared<GpuTerrainPageCache>(gfx.renderResourceOwner());
         gpuPageGeneration = generation;
     }
@@ -863,6 +871,7 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 					if (!gpu)
 						buildOpaqueRuns(*entry);
 					entry->valid = true;
+					entry->cpuComposed = !gpuPages;
 					++rebuilds;
 					if (native) ++reductions;
 				}

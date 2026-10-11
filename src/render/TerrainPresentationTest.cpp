@@ -456,6 +456,21 @@ TEST_SUITE("TerrainPresentation")
             map.unsetMapDiscovered();map.setMapDiscovered(0,0,8,16,fixture.team->me);glob2test::observeMap(map,scene);compare(31,31,1,0,25,false);
             compare(0,0,4,0,25,true);
             {
+                ScopedCPUComposition composition(gfx);
+                SoftwareTerrainCache migration;
+                const auto cpuPixels=draw(migration,0,0,4,0,25,true);
+                CHECK_FALSE(bool(migration.gpuPages));
+                composition.device().forceCPU=false;
+                draw(migration,0,0,1,0,25,true);
+                REQUIRE(bool(migration.gpuPages));
+                const auto beforeReturn=migration.cacheRebuilds();
+                composition.device().forceCPU=true;
+                const auto restored=draw(migration,0,0,4,0,25,true);
+                CHECK_FALSE(bool(migration.gpuPages));
+                CHECK(migration.cacheRebuilds()==beforeReturn);
+                CHECK(restored==cpuPixels);
+            }
+            {
                 // Model concurrent retained atlas/geometry allocations without
                 // allocating fake GPU resources or weakening the actual cap.
                 ScopedCPUComposition pressure(gfx);pressure.device().forceCPU=false;

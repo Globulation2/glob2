@@ -509,6 +509,10 @@ sampling calculation and all blend, modulation and color-key rules. SDL GPU
 keeps compatible primitive draws in the same color pass and merges consecutive
 vertex ranges only when their effective state matches. Barriers, clears, world
 geometry, terrain composition and target changes end that pass.
+Consecutive unreduced terrain cells on the same SDL GPU page share a terrain
+pass, with each cell retaining its own uniforms, samplers, viewport and scissor.
+Other packet kinds and attachment changes close it. Scratch composition and
+reduction remain separate passes so the reduction samples completed writes.
 Immutable texture revisions retain the pixels that queued draws referenced, even
 when a surface changes or is deleted. The device retires allocations after submission
 completion. Budget deferral retains logical target handles so sliced uploads can
@@ -639,6 +643,10 @@ fragment block holds composition parameters and per-material seam constants.
 retain packed-ARGB wrapping; final premultiplied targets apply the same byte
 rounding as CPU uploads before hardware filtering. WebGPU coverage and scratch
 caches each admit at most 32 MiB and count against the device's aggregate budget.
+Changes between CPU and GPU composition retain reusable CPU terrain pages at
+other densities within the existing cache and texture budgets. Device-composed
+pages are discarded when their targets are released; graphics generation or
+resource registry changes still invalidate the cache.
 `tools/shaders/prove_terrain_webgpu.mjs` checks exact integer pixels, material
 presence, alpha, each reduction divisor and premultiplied output. The packed-device
 proof additionally checks owned shared-memory coverage uploads, target gutters,

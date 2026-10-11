@@ -150,8 +150,9 @@ struct PrimitiveState
 struct PrimitivePass
 {
     SDL_GPURenderPass *pass = nullptr;
+    SDL_GPUTexture *target = nullptr;
     ~PrimitivePass() { end(); }
-    void end() { if (pass) { SDL_EndGPURenderPass(pass); pass = nullptr; } }
+    void end() { if (pass) { SDL_EndGPURenderPass(pass); pass = nullptr; } target = nullptr; }
 };
 class SDLGPUDevice final : public RenderDevice
 {
@@ -615,7 +616,7 @@ class SDLGPUDevice final : public RenderDevice
     void loadTerrainShaders();
     CoveragePtr resolveCoverage(SDL_GPUCommandBuffer *, Work &, std::shared_ptr<const CoverageData>);
     void prepareTerrain(SDL_GPUCommandBuffer *&, Work &, Draw &, std::vector<SDL_Vertex> &);
-    void drawTerrain(SDL_GPUCommandBuffer *, Work &, const Draw &);
+    void drawTerrain(SDL_GPUCommandBuffer *, Work &, const Draw &, PrimitivePass &);
     void teardown()
     {
         if (!device) return;
@@ -885,7 +886,7 @@ void SDLGPUDevice::prepareTerrain(SDL_GPUCommandBuffer *&commands, Work &entry, 
                                SDL_Vertex{{0,0},tint,{0,0}},SDL_Vertex{{extent,extent},tint,{1,1}},SDL_Vertex{{0,extent},tint,{0,1}}})vertices.push_back(vertex);
     draw.count=6;
 }
-void SDLGPUDevice::drawTerrain(SDL_GPUCommandBuffer *commands, Work &entry, const Draw &draw)
+void SDLGPUDevice::drawTerrain(SDL_GPUCommandBuffer *commands, Work &entry, const Draw &draw, PrimitivePass &active)
 {
     const auto &data=*draw.packet->weightedCompose;const bool reduced=data.reductionDivisor>1;
     const bool pma=draw.packet->target->descriptor.alpha==TextureDescriptor::Alpha::Premultiplied;
@@ -904,14 +905,24 @@ void SDLGPUDevice::drawTerrain(SDL_GPUCommandBuffer *commands, Work &entry, cons
     const auto &mask=draw.coverage;
     images[4]={mask->weights,nearest};images[5]={mask->selectors,nearest};
     auto render=[&](unsigned index,TexturePtr target,SDL_Rect rect,const void *data,Uint32 bytes,const SDL_GPUTextureSamplerBinding *bindings,Uint32 count) {
-        SDL_GPUColorTargetInfo color{};color.texture=target->gpu;color.load_op=SDL_GPU_LOADOP_LOAD;color.store_op=SDL_GPU_STOREOP_STORE;
-        auto *pass=SDL_BeginGPURenderPass(commands,&color,1,nullptr);if(!pass)fail("begin terrain pass");
+        // Adjacent cells on one page have independent uniforms and scissors,
+        // but share the attachment. Avoid a load/store render pass per cell.
+        if (!active.pass || active.target != target->gpu) {
+            active.end();
+            SDL_GPUColorTargetInfo color{};color.texture=target->gpu;color.load_op=SDL_GPU_LOADOP_LOAD;color.store_op=SDL_GPU_STOREOP_STORE;
+            active.pass=SDL_BeginGPURenderPass(commands,&color,1,nullptr);if(!active.pass)fail("begin terrain pass");
+            active.target=target->gpu;
+        }
+        auto *pass=active.pass;
         SDL_BindGPUGraphicsPipeline(pass,terrainPipelines[index]);SDL_GPUBufferBinding vertices{entry.vertices,0};SDL_BindGPUVertexBuffers(pass,0,&vertices,1);
         SDL_GPUViewport viewport{float(rect.x),float(rect.y),float(rect.w),float(rect.h),0,1};SDL_SetGPUViewport(pass,&viewport);SDL_SetGPUScissor(pass,&rect);
         SDL_BindGPUFragmentSamplers(pass,0,bindings,count);
         const std::array<float,4> vertex{float(draw.packet->weightedCompose->compositionSize),float(draw.packet->weightedCompose->compositionSize),0,0};
         SDL_PushGPUVertexUniformData(commands,0,vertex.data(),sizeof(vertex));SDL_PushGPUFragmentUniformData(commands,0,data,bytes);
-        SDL_DrawGPUPrimitives(pass,6,1,draw.first,0);SDL_EndGPURenderPass(pass);++counts.batches;
+        SDL_DrawGPUPrimitives(pass,6,1,draw.first,0);++counts.batches;
+        // Reduction samples the just-composed scratch attachment; close it
+        // before sampling and close the destination before scratch reuse.
+        if (reduced) active.end();
     };
     render(0,reduced?draw.scratch:draw.target,reduced?SDL_Rect{0,0,int(data.compositionSize),int(data.compositionSize)}:data.targetRect,uniforms.data(),sizeof(uniforms),images.data(),images.size());
     if(reduced) {
@@ -1109,7 +1120,7 @@ void SDLGPUDevice::drawWorld(SDL_GPUCommandBuffer *commands, const Draw &draw, f
 }
 void SDLGPUDevice::drawPackets(SDL_GPUCommandBuffer *commands, Work &entry, const std::vector<Draw> &draws, float lw, float lh)
 {
-    PrimitivePass active;
+    PrimitivePass active, terrain;
     std::optional<PrimitiveState> bound, pending;
     Uint32 first = 0, count = 0;
     auto flush = [&] {
@@ -1150,6 +1161,7 @@ void SDLGPUDevice::drawPackets(SDL_GPUCommandBuffer *commands, Work &entry, cons
     auto endPass = [&] { flush(); active.end(); bound.reset(); };
     for (const auto &draw : draws) {
         const auto &packet = *draw.packet;
+        if (packet.kind != DrawPacket::Kind::WeightedCompose) terrain.end();
         // These boundaries may change attachments, depth, or sampled targets.
         // They also prohibit adjacent geometry merging even when state matches.
         if (packet.kind == DrawPacket::Kind::Barrier) { endPass(); continue; }
@@ -1157,7 +1169,7 @@ void SDLGPUDevice::drawPackets(SDL_GPUCommandBuffer *commands, Work &entry, cons
             endPass();
             if (!draw.count) { clearPacket(commands, draw); continue; }
         } else if (packet.kind == DrawPacket::Kind::WeightedCompose) {
-            endPass(); drawTerrain(commands, entry, draw); continue;
+            endPass(); drawTerrain(commands, entry, draw, terrain); continue;
         } else if (packet.kind == DrawPacket::Kind::MeshTriangles) {
             endPass(); drawWorld(commands, draw, lw, lh); continue;
         }
@@ -1170,7 +1182,7 @@ void SDLGPUDevice::drawPackets(SDL_GPUCommandBuffer *commands, Work &entry, cons
         else { flush(); pending = state; first = draw.first; count = draw.count; }
         if (packet.kind == DrawPacket::Kind::Clear) endPass();
     }
-    endPass();
+    endPass(); terrain.end();
 }
 RenderSubmission SDLGPUDevice::submit(RenderFrame frame)
 {

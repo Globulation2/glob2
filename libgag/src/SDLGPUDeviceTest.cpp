@@ -63,6 +63,70 @@ struct Video
 }
 TEST_SUITE("SDLGPUDevice")
 {
+    GLOB2_TEST_CASE("Shared terrain passes match separated cells across targets reduction and barriers", "[display][isolated]")
+    {
+        const char *shaders = std::getenv("GLOB2_TEST_SHADER_DIRECTORY"); REQUIRE(shaders);
+        Video video; auto device = makeSDLGPUDevice(nullptr, 32, 32, shaders);
+        REQUIRE(device->capabilities().terrainComposition);
+        RenderResources resources;
+        const std::array<SDL_Color, 4> colors{{{240, 10, 20, 255}, {20, 230, 40, 128},
+            {10, 30, 220, 255}, {230, 210, 20, 192}}};
+        std::array<TextureSnapshot, 4> materials;
+        for (unsigned i = 0; i < materials.size(); ++i) {
+            auto pixels = surface(16, 16); REQUIRE(pixels);
+            const auto c = colors[i];
+            REQUIRE(SDL_FillSurfaceRect(pixels.get(), nullptr, SDL_MapSurfaceRGBA(pixels.get(), c.r, c.g, c.b, c.a)));
+            materials[i] = resources.snapshot(resources.create(pixels.get(), 1)); REQUIRE(materials[i]);
+        }
+        auto pixels = surface(32, 32); REQUIRE(pixels);
+        TextureDescriptor descriptor; descriptor.alpha = TextureDescriptor::Alpha::Premultiplied;
+        auto a = resources.snapshot(resources.create(pixels.get(), 1, descriptor));
+        auto b = resources.snapshot(resources.create(pixels.get(), 1, descriptor)); REQUIRE(a); REQUIRE(b);
+        std::vector<DrawPacket> packets;
+        for (const auto &target : {a, b}) {
+            DrawPacket clear; clear.kind = DrawPacket::Kind::Clear; clear.target = target;
+            clear.clearColor = true; clear.clearValue = {.1f, .2f, .3f, 1}; packets.push_back(clear);
+        }
+        auto cell = [&](TextureSnapshot target, unsigned material, SDL_Rect rect, unsigned divisor = 1) {
+            auto data = std::make_shared<WeightedComposeData>(); data->compositionSize = 16;
+            data->reductionDivisor = divisor; data->paletteCount = 1;
+            data->materials[0] = materials[material]; data->targetRect = rect;
+            DrawPacket packet; packet.kind = DrawPacket::Kind::WeightedCompose;
+            packet.target = target; packet.weightedCompose = data; packets.push_back(packet);
+        };
+        cell(a, 0, {0, 0, 16, 16}); cell(a, 1, {16, 0, 16, 16});
+        cell(a, 2, {0, 16, 16, 16}); cell(a, 3, {16, 16, 16, 16});
+        cell(b, 2, {0, 0, 16, 16}); // attachment change
+        cell(b, 3, {16, 0, 8, 8}, 2); // scratch write then reduction read
+        cell(b, 1, {0, 16, 16, 16}); // unreduced after reduction
+        DrawPacket barrier; barrier.kind = DrawPacket::Kind::Barrier; packets.push_back(barrier);
+        cell(b, 0, {16, 16, 16, 16});
+        packets.push_back(blit(a, {0, 0, 32, 32})); // sampling must close terrain pass
+        cell(a, 2, {0, 0, 16, 16});
+        packets.push_back(blit(b, {0, 0, 16, 16}));
+        auto render = [&](bool separated) {
+            RenderFrame frame; frame.identity = separated ? 2 : 1;
+            frame.logicalWidth = frame.logicalHeight = 32;
+            frame.packets.push_back(fill({0, 0, 32, 32}, {0, 0, 0, 255}));
+            for (const auto &packet : packets) {
+                frame.packets.push_back(packet);
+                if (separated) frame.packets.push_back(barrier);
+            }
+            REQUIRE(device->submit(frame)); device->present();
+            std::array<Surface, 3> result{{Surface(nullptr, SDL_DestroySurface),
+                Surface(nullptr, SDL_DestroySurface), Surface(nullptr, SDL_DestroySurface)}};
+            for (unsigned i = 0; i < result.size(); ++i) {
+                CaptureRequest request; request.target = i == 1 ? a : i == 2 ? b : TextureSnapshot{};
+                result[i] = Surface(device->captureSynchronously(request), SDL_DestroySurface); REQUIRE(result[i]);
+            }
+            return result;
+        };
+        auto shared = render(false), separated = render(true);
+        for (unsigned i = 0; i < shared.size(); ++i)
+            for (int y = 0; y < 32; ++y) for (int x = 0; x < 32; ++x)
+                nearPixel(shared[i].get(), separated[i].get(), x, y, 0);
+    }
+
     GLOB2_TEST_CASE("Texture memory follows allocation lifetime across repeated leases and failed frames", "[display][isolated]")
     {
         const char *shaders = std::getenv("GLOB2_TEST_SHADER_DIRECTORY"); REQUIRE(shaders);
