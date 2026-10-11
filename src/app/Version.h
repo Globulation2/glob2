@@ -7,7 +7,8 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 153
+#define VERSION_MINOR 154
+// version 154 restores mature resource stock oscillation; replay trajectories change.
 // version 153 embeds immutable unit catalogs and composed unit continuation.
 // version 152 gives world operations and legacy stories private streams.
 // version 151 gives units and buildings salted private PCG32 streams.

@@ -15,7 +15,8 @@ class OutputStream;
 
 namespace ResourceGrowth
 {
-// Replenishment carries one signed material unit. A seed carries source variety
+// Positive growth events replenish below capacity and shrink mature stocks by one.
+// Negative proposals carry an explicit reduction. A seed carries source variety
 // and precomputed replenishment decisions for a matching destination at publication.
 struct Proposal
 {

@@ -96,8 +96,7 @@ void calculate(const MapState::View &v, MersenneTwister &rng, Batch &out)
 		for (unsigned mask = p.materialMask; mask; mask &= mask - 1)
 		{
 			const auto m = std::countr_zero(mask);
-			if (MapState::materialAmountAt(v, i, m) < yields[m].capacity &&
-				opportunities(yields[m].growthRate))
+			if (opportunities(yields[m].growthRate))
 				out.proposals.push_back({Uint32(i), source.type, Uint8(m), 1, source.variety});
 		}
 	};
@@ -211,13 +210,20 @@ void apply(Map &map, const Batch &batch, Metrics &metrics)
 		{
 			const auto material = std::countr_zero(mask);
 			const auto amount = map.materialAmountAtSlot(op.tile, material);
-			if ((op.delta > 0 && amount >= yields[material].capacity) ||
-				(op.delta < 0 && amount == 0)) continue;
-			map.setMaterialAmountSlot(op.tile, material, amount + op.delta);
+			// Decide against live stock so intervening harvests replenish rather
+			// than receive a stale shrink. Legacy saved increments retain their cap.
+			const bool oscillates = !legacy && properties.growthRate &&
+				properties.ecology != ResourceEcology::None && yields[material].growthRate &&
+				yields[material].capacity > 1;
+			const int delta = oscillates && op.delta > 0 && amount >= yields[material].capacity
+				? -1 : op.delta;
+			if ((delta > 0 && amount >= yields[material].capacity) ||
+			    (delta < 0 && amount == 0)) continue;
+			map.setMaterialAmountSlot(op.tile, material, amount + delta);
 			auto unit = op;
 			unit.material = material;
-			recordDelta(map, unit, false, op.delta);
-			metrics.stockAdded += op.delta > 0;
+			recordDelta(map, unit, false, delta);
+			metrics.stockAdded += delta > 0;
 			changed = true;
 		}
 		if (changed) ++metrics.accepted;

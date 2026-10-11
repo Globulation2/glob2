@@ -26,7 +26,12 @@ Growth opportunities are calculated from a completed-tick snapshot and published
 eight ticks later by default. Replenishment accepts a matching resource type;
 a positive increment can recreate an empty destination with configured initial stocks.
 Spread can survive removal of its source. Destinations are revalidated at publication,
-and accepted increments preserve intervening harvesting. See
+and accepted growth events preserve intervening harvesting. For each regrowing
+material, an event at capacity removes one unit; below capacity it replenishes
+stock. Capacity-one yields stay capped so natural growth cannot extinguish them.
+This restores the mature fields' alternating appearance. The choice uses
+live stock at publication, so a harvest during the delay receives replenishment
+instead of a stale reduction. Non-regrowing yields remain unchanged. See
 [delayed growth](../architecture/resource-growth.md#delayed-resource-growth).
 
 `growthRate` may be 0–786432; `spreadRate` and yield growth probabilities are
