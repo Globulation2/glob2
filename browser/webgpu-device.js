@@ -11,30 +11,36 @@ addToLibrary({
     async prepare(root, ownedSources=null) {
       if(this.state===0.5)return;
       if(this.device&&!this.lost){this.state=1;return;}
+      const epoch=++this.epoch;
       this.state=0.5;this.error='';this.lost=false;
+      const current=()=>epoch===this.epoch && !this.lost;
       try {
         if(ownedSources?.error)throw Error(ownedSources.error);
-        if(!globalThis.navigator?.gpu)throw Error('WebGPU unavailable');
-        const adapter=this.adapter=await (this.gpu=navigator.gpu).requestAdapter();if(!adapter)throw Error('No WebGPU adapter');
-        this.device=await adapter.requestDevice();const epoch=++this.epoch;
-        this.device.lost.then(info=>{if(epoch===this.epoch)this.fail('WebGPU device lost: '+info.message);});
-        this.device.addEventListener('uncapturederror',e=>{if(epoch===this.epoch)this.fail(e.error);});
+        const gpu=globalThis.navigator?.gpu;if(!gpu)throw Error('WebGPU unavailable');
+        const adapter=await gpu.requestAdapter();if(!current())return;
+        if(!adapter)throw Error('No WebGPU adapter');
+        const device=await adapter.requestDevice();
+        if(!current()){device.destroy();return;}
+        this.gpu=gpu;this.adapter=adapter;this.device=device;
+        device.lost.then(info=>{if(epoch===this.epoch)this.fail('WebGPU device lost: '+info.message);});
+        device.addEventListener('uncapturederror',e=>{if(epoch===this.epoch)this.fail(e.error);});
         this.pipelines.clear();this.shaders={};this.metadata=ownedSources ? ownedSources.metadata : JSON.parse(FS.readFile(root+'/../metadata.json',{encoding:'utf8'}));
         for(const variant of['primitive','world','cloud','point','skin','skin-rig','terrain-compose','terrain-reduce']){
           const stages={};for(const stage of['vert','frag']){
-            stages[stage]=this.device.createShaderModule({code:ownedSources ? ownedSources.stages[variant][stage] : FS.readFile(root+'/'+variant+'.'+stage+'.wgsl',{encoding:'utf8'})});
-            const info=await stages[stage].getCompilationInfo();if(info.messages.some(m=>m.type==='error'))throw Error(variant+' '+stage+': '+info.messages.map(m=>m.message).join('\n'));
+            stages[stage]=device.createShaderModule({code:ownedSources ? ownedSources.stages[variant][stage] : FS.readFile(root+'/'+variant+'.'+stage+'.wgsl',{encoding:'utf8'})});
+            const info=await stages[stage].getCompilationInfo();if(!current())return;
+            if(info.messages.some(m=>m.type==='error'))throw Error(variant+' '+stage+': '+info.messages.map(m=>m.message).join('\n'));
           }this.shaders[variant]=stages;
           const description=this.pipelineDescription(variant,0,0,false,0);
-          this.pipelines.set(variant+':0:0:0:0',await this.device.createRenderPipelineAsync(description));
+          const pipeline=await device.createRenderPipelineAsync(description);if(!current())return;
+          this.pipelines.set(variant+':0:0:0:0',pipeline);
         }
-        const present=this.pipelineDescription('primitive',3,0,false,0);present.fragment.targets[0].format=this.gpu.getPreferredCanvasFormat();
-        this.presentPipeline=await this.device.createRenderPipelineAsync(present);
-        // Loss can arrive while asynchronous pipeline creation is suspended.
-        if(epoch!==this.epoch || this.lost)throw Error(this.error || 'WebGPU preparation was invalidated');
-        this.state=1;
-      }catch(error){this.fail(error);}
+        const present=this.pipelineDescription('primitive',3,0,false,0);present.fragment.targets[0].format=gpu.getPreferredCanvasFormat();
+        const pipeline=await device.createRenderPipelineAsync(present);if(!current())return;
+        this.presentPipeline=pipeline;this.state=1;
+      }catch(error){if(epoch===this.epoch)this.fail(error);}
     },
+
     pipelineDescription(variant,blend,depth,write,cull) {
       const world=variant==='world'||variant==='cloud';
       const layout=this.metadata.vertexLayouts[variant];

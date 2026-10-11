@@ -96,3 +96,29 @@ test('device loss during asynchronous preparation cannot publish readiness',asyn
   assert.equal(f.library.glob2_webgpu_poll(),-1);
   assert.match(f.g.error,/loss during pipeline creation/);
 });
+
+
+test('superseded preparation cannot poison or overwrite a new device',async()=>{
+  const f=fixture(),newDevice=fixture().device;let release,started;
+  const waiting=new Promise(resolve=>{started=resolve;});
+  f.device.createRenderPipelineAsync=()=>new Promise(resolve=>{release=resolve;started();});
+  const old=f.g.prepare('/old');await waiting;
+  f.lost[0]({message:'old preparation lost'});await Promise.resolve();
+  f.context.navigator.gpu.requestAdapter=async()=>({requestDevice:async()=>newDevice});
+  await f.g.prepare('/new');const pipelines=Array.from(f.g.pipelines.values()),present=f.g.presentPipeline;
+  assert.equal(f.g.state,1);assert.equal(f.g.device,newDevice);
+  release({old:true});await old;
+  assert.equal(f.g.state,1);assert.equal(f.g.lost,false);assert.equal(f.g.device,newDevice);
+  assert.deepEqual(Array.from(f.g.pipelines.values()),pipelines);assert.equal(f.g.presentPipeline,present);
+});
+
+test('device acquired by superseded preparation is destroyed without replacing the owner',async()=>{
+  const f=fixture(),newDevice=fixture().device;let release,started,destroyed=0;
+  const waiting=new Promise(resolve=>{started=resolve;});
+  f.context.navigator.gpu.requestAdapter=async()=>({requestDevice:()=>new Promise(resolve=>{release=resolve;started();})});
+  const old=f.g.prepare('/old');await waiting;
+  f.g.fail('cancel preparation');
+  f.context.navigator.gpu.requestAdapter=async()=>({requestDevice:async()=>newDevice});
+  await f.g.prepare('/new');release({destroy(){destroyed++;}});await old;
+  assert.equal(destroyed,1);assert.equal(f.g.device,newDevice);assert.equal(f.g.state,1);assert.equal(f.g.lost,false);
+});
