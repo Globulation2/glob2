@@ -143,7 +143,7 @@ namespace GAGCore
 		return v;
 	}
 
-	void DrawableSurface::allocateTexture(void)
+	void DrawableSurface::allocateTexture(bool initializeStorage)
 	{
 		#ifdef HAVE_OPENGL
 		if (textureInfo)
@@ -155,7 +155,7 @@ namespace GAGCore
 #ifdef GLOB2_WEBGL2
             gpuSurfaces.insert(this);
 #endif
-			initTextureSize();
+			if (initializeStorage) initTextureSize();
 		}
 		#endif
 	}
