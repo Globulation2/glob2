@@ -24,15 +24,14 @@ FrontendTheme::FrontendTheme() : original(Style::style)
 {
 	current = this;
 	colony = std::make_unique<MenuColony>();
-#ifdef __EMSCRIPTEN__
-	// Browser startup includes game sprites. Prepare the colony while the HTML
-	// loading page is still visible, before Launcher reveals the menu.
-	if (globalContainer->ensureGameGraphics())
+	// Startup has loaded game sprites. Prepare the live backdrop before the
+	// first menu paint on every host, while the loading screen is still visible.
+	if (Glob2UI::frontendTheme().backdrop.kind == GAGGUI::ui::Backdrop::Kind::Colony &&
+		globalContainer->ensureGameGraphics())
 	{
 		attempted = true;
 		colony->load();
 	}
-#endif
 	syncPalette();
 	for (int i = 0; i < 3; ++i)
 		originalFonts[i] = Toolkit::getFont(fontNames[i])->getStyle();
@@ -48,10 +47,9 @@ void FrontendTheme::syncPalette()
 }
 DrawableSurface *FrontendTheme::backdropImage()
 {
-	// The colony's still image, or the theme's own picture.
+	// Explicit image backdrops only; the colony always uses its live scene.
 	const auto &backdrop = Glob2UI::frontendTheme().backdrop;
-	const std::string path = backdrop.kind == GAGGUI::ui::Backdrop::Kind::Image ? backdrop.image
-																				 : "data/gfx/menu-colony.webp";
+	const std::string path = backdrop.image;
 	if (path != fallbackPath)
 	{
 		fallbackPath = path;
@@ -126,14 +124,12 @@ void FrontendTheme::onFrame()
 		syncPalette();
 		FrontendScope::refresh();
 	}
-	if (!painted)
-		return; // Present the still before doing any loading work.
 	if (Glob2UI::frontendTheme().backdrop.kind != GAGGUI::ui::Backdrop::Kind::Colony)
 	{
 		colony->pause();
 		return;
 	}
-	// Hosts without startup sprites keep the still image until graphics arrive.
+	// Also support switching to a colony theme after startup.
 	if (!attempted && globalContainer->ensureGameGraphics())
 	{
 		attempted = true;
@@ -172,7 +168,7 @@ void FrontendTheme::background(DrawableSurface *s, bool panel, const SDL_Rect *c
 		terrain(s);
 	else if (theme.backdrop.kind == Kind::Colony && colony->ready())
 		colony->draw(w, h);
-	else if (theme.backdrop.kind != Kind::Solid && backdropImage())
+	else if (theme.backdrop.kind == Kind::Image && backdropImage())
 	{
 		// Cache the cropped image at the logical viewport size.
 		if (!fittedFallback || fittedFallback->getW() != w || fittedFallback->getH() != h)
@@ -202,7 +198,6 @@ void FrontendTheme::background(DrawableSurface *s, bool panel, const SDL_Rect *c
 		rounded(s, x + 2, y + 3, pw, ph, 10, palette.shadow);
 		rounded(s, x, y, pw, ph, 10, palette.panel.applyAlpha(palette.panel.a * 248 / 255));
 	}
-	painted = true;
 }
 void FrontendTheme::drawTextButtonBackground(DrawableSurface *s, int x, int y, int w, int h,
 											 unsigned hi)

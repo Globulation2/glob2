@@ -53,6 +53,7 @@ bool MenuColony::load(const std::string& path)
 	pause();
 	presentation.reset();
 	view = Game::ViewState();
+	initialScene.reset();
 	game.reset();
 	try
 	{
@@ -81,7 +82,11 @@ bool MenuColony::load(const std::string& path)
 			const auto required = SceneExtractor::requirements(request);
 			const std::array<unsigned, 1> actors{0};
 			const auto world = game->captureReadBoundary(actors, false, required);
-			presentation->submit(SceneExtractor::inputs(world.project(required), request));
+			// Build the first frame before exposing the menu. Later frames retain
+			// asynchronous preparation, with this scene available until they arrive.
+			initialScene = std::make_unique<PresentationFrame>();
+			SceneExtractor extractor;
+			extractor.prepare(world.project(required), request, *initialScene);
 		}
 		return true;
 	}
@@ -89,6 +94,7 @@ bool MenuColony::load(const std::string& path)
 	{
 		presentation.reset();
 		view = Game::ViewState();
+		initialScene.reset();
 		game.reset();
 		std::cerr << "Menu colony unavailable: " << error.what() << '\n';
 		return false;
@@ -132,6 +138,10 @@ void MenuColony::draw(int width, int height, bool showStatus)
 {
 	if (!presentation) return;
 	view.scene = presentation->acquire();
+	if (view.scene)
+		initialScene.reset();
+	else
+		view.scene = initialScene.get();
 	if (!view.scene) return;
 	ColonyContext context;
 	struct ViewContext
