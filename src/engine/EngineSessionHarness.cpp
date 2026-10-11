@@ -18,6 +18,7 @@
 #include "Player.h"
 #include "sim/SimulationRunner.h"
 #include "sim/presentation/SceneInputs.h"
+#include "sim/presentation/ScenePreparation.h"
 #include "MenuColony.h"
 #include "GameGUITouch.h"
 #include <GraphicContext.h>
@@ -292,6 +293,79 @@ TEST_SUITE("EngineSession")
         CHECK(latest->world.entities==world.entities);
         CHECK(game.snapshots().metrics.captures==captures);
         CHECK_FALSE(runner.admitPresentation());
+    }
+
+    TEST_CASE("camera refreshes cannot starve advancing presentation worlds")
+    {
+        for (bool native : {true,false})
+        {
+            INFO((native ? "native mailbox" : "serial producer"));
+            glob2test::HeadlessGlobals globals;
+            Engine engine;
+            struct RestoreHeadless { ~RestoreHeadless() { globalContainer->runNoX=true; } } restore;
+            globalContainer->runNoX=false;
+            auto& game=engine.gui.game;
+            game.map.setSize(4,4,GRASS);
+            game.map.setGame(&game);
+            game.addTeam();
+            game.teams[0]->race.loadDefault();
+            auto& executor=game.map.computeExecutor();
+            executor.configure(1);
+            if (native) engine.runner=std::make_unique<SimulationRunner>(engine);
+            const auto camera=[&](int x) {
+                engine.gui.clientRequests.publishViewport(x,0,4,4);
+                if (engine.runner) engine.runner->requestScene(engine.gui.sceneRequest(false));
+            };
+            const auto finish=[&] {
+                while(executor.pumpPresentation()) {}
+                if (engine.runner) REQUIRE(engine.runner->acquireScene());
+                else REQUIRE(engine.serialPresentation->acquire());
+            };
+            engine.gui.recordTick(1000,33);
+            camera(0);
+            engine.openReadBoundary({},true,true);
+            finish();
+
+            // A completed camera refresh consumes the client request before the
+            // next tick. That same request must still admit the newer world.
+            camera(1);
+            engine.refreshRetainedPresentation();
+            finish();
+            ++game.stepCounter;
+            engine.gui.recordTick(1033,33);
+            engine.openReadBoundary({},true,true);
+            REQUIRE(engine.retainedPresentation->world.tick==game.stepCounter);
+            CHECK(engine.retainedPresentation->request.tickTime==1033);
+            finish();
+
+            // This camera preparation spans a tick, so its world is now stale.
+            // Further input must leave capacity for a fresh boundary instead of
+            // repeatedly submitting the old world during pacing waits.
+            camera(2);
+            engine.refreshRetainedPresentation();
+            ++game.stepCounter;
+            engine.gui.recordTick(1066,33);
+            engine.openReadBoundary({},true,true);
+            CHECK(engine.retainedPresentation->world.tick==game.stepCounter-1);
+            finish();
+            camera(3);
+            const auto retained=engine.retainedPresentation;
+            engine.refreshRetainedPresentation();
+            CHECK(engine.retainedPresentation==retained);
+            engine.openReadBoundary({},true,true);
+            REQUIRE(engine.retainedPresentation->world.tick==game.stepCounter);
+            CHECK(engine.retainedPresentation->request.tickTime==1066);
+            finish();
+
+            // Camera-only refreshes remain available while game time is stopped.
+            const auto captures=game.snapshots().metrics.captures;
+            camera(4);
+            engine.refreshRetainedPresentation();
+            CHECK(engine.retainedPresentation->request.view.viewportX==4);
+            CHECK(engine.retainedPresentation->request.tickTime==1066);
+            CHECK(game.snapshots().metrics.captures==captures);
+            finish();
+        }
     }
 
     TEST_CASE("menu colony rendering consumes its shared boundary without recapture [display]")

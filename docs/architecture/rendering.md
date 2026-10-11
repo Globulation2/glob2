@@ -135,7 +135,11 @@ or map-array capture. `Game::drawMap` requires an explicitly supplied frame;
   before waiting for tick pacing. AI polling and order delivery stay at their
   existing deadlines and reuse that publication; presentation does not wait a
   whole tick interval before starting. The native mailbox admits at most one
-  preparation per client request and can replace an unconsumed completed frame.
+  preparation per world/client request and can replace an unconsumed completed frame.
+  A camera refresh consuming a client request does not block presentation of a
+  newer tick. If preparation overlaps a tick, retained-world camera refreshes
+  leave the slot free until a fresh boundary is admitted, preventing continuous
+  panning or zooming from repeatedly publishing stale animation state.
 - Serial hosts and browsers use the same preparation path. Hosts without a compute
   worker pump bounded chunks between simulation work; cancellation does not wait
   on the browser event loop. Camera and selection updates can prepare from a retained
