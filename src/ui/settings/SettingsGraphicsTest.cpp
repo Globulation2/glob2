@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
 #include "Settings.h"
+#include "CommandLine.h"
+#include "ScopedEnvironment.h"
 #include "ui/FrontendUI.h"
 #include <Toolkit.h>
 #include <FileManager.h>
@@ -16,6 +18,56 @@ const std::array<bool Settings::*, 8> effects = {
 }
 TEST_SUITE("SettingsGraphics")
 {
+    TEST_CASE("GPU local preference preserves graphical and headless defaults")
+    {
+        glob2test::ScopedEnvironment backend("GLOB2_GRADIENT_BACKEND", "");
+        glob2test::HeadlessGlobals globals;
+        const std::string file = "gpu-compute-test.txt";
+        const auto path = std::filesystem::path(GAGCore::Toolkit::getFileManager()->getDir(0)) / file;
+        Settings settings;
+        CHECK_FALSE(settings.gpuComputeEnabled());
+        CHECK(settings.gpuComputeEnabled(true));
+        REQUIRE(settings.save(file));
+        settings.load(file);
+        CHECK_FALSE(settings.gpuCompute.has_value());
+        CHECK(settings.gpuComputeEnabled(true));
+        for (bool enabled : {false, true}) {
+            settings.gpuCompute = enabled;
+            settings.setGraphicsDetail(!enabled);
+            REQUIRE(settings.save(file));
+            Settings loaded; loaded.load(file);
+            REQUIRE(loaded.gpuCompute.has_value());
+            CHECK(loaded.gpuComputeEnabled() == enabled);
+            CHECK(loaded.gpuComputeEnabled(true) == enabled);
+        }
+        for (const char* value : {"", "auto", "true", "2", "1oops"}) {
+            { std::ofstream out(path); out << "gpuCompute=" << value << '\n'; }
+            settings.gpuCompute = false;
+            settings.load(file);
+            CHECK_FALSE(settings.gpuCompute.has_value());
+            CHECK_FALSE(settings.gpuComputeEnabled());
+            CHECK(settings.gpuComputeEnabled(true));
+        }
+        { std::ofstream out(path); out << "clouds=1\n"; }
+        settings.gpuCompute = true;
+        settings.load(file);
+        CHECK_FALSE(settings.gpuCompute.has_value());
+
+        globals->settings.gpuCompute.reset();
+        globals->applyCommand(Cli::parse({"game", "repeat", "saved.game.gz", "--display"}));
+        CHECK_FALSE(globals->gpuComputeEnabled());
+        globals->applyCommand(Cli::parse({"game", "repeat", "saved.game.gz"}));
+        CHECK(globals->gpuComputeEnabled());
+        globals->settings.gpuCompute = false;
+        CHECK_FALSE(globals->gpuComputeEnabled());
+        globals->applyCommand(Cli::parse({"game", "repeat", "saved.game.gz", "--gpu=on"}));
+        CHECK(globals->gpuComputeEnabled());
+        CHECK_FALSE(*globals->settings.gpuCompute);
+        globals->applyCommand(Cli::parse({"game", "repeat", "saved.game.gz", "--gpu=off"}));
+        CHECK_FALSE(globals->gpuComputeEnabled());
+        std::filesystem::remove(path);
+    }
+
     TEST_CASE("render ceiling defaults migrates validates and round trips")
     {
         glob2test::HeadlessGlobals globals;

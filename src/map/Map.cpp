@@ -521,134 +521,45 @@ void Map::clearGradientBufferPool()
 		delete[] idleGradientBuffers[--idleGradientBufferCount];
 }
 
-std::vector<std::pair<std::string,Uint64>> Map::adaptiveGradientMetrics() const
+std::vector<std::pair<std::string,Uint64>> Map::gradientExecutionMetrics() const
 {
-    const auto m=gradientRuntime->backendSession->metrics();
     const auto device=gradientRuntime->deviceService->metrics();
-    const auto barriers=compute.metrics();
-    const auto minimal=gradient_preparation::minimalCostViewMetrics();
-    auto result=std::vector<std::pair<std::string,Uint64>>{{"cpu_diagnostics_enabled",1},
-        {"gradient_stage_diagnostics_enabled",gradientRuntime->pipeline.diagnosticsEnabled()},
-        {"gpu_requested_fields",gradientRuntime->pipeline.gpuRequestedFields()},
-        {"minimal_cost_view_attempts",minimal.attempted},{"minimal_cost_view_constructed",minimal.constructed},
-        {"minimal_cost_view_reuses",minimal.reused},{"minimal_cost_view_declines",minimal.declined},
-        {"minimal_cost_view_copied_bytes",minimal.copiedBytes},
-        {"minimal_cost_view_budget_declines",minimal.budgetDeclines},{"minimal_cost_view_allocation_declines",minimal.allocationDeclines},
-        {"minimal_cost_view_representation_declines",minimal.representationDeclines},
-        {"cpu_reason_explicit",gradientRuntime->pipeline.cpuReason(GradientPipeline::CPUReason::ExplicitCPU)},
-        {"cpu_reason_owner_excluded",gradientRuntime->pipeline.cpuReason(GradientPipeline::CPUReason::OwnerExcluded)},
-        {"cpu_reason_unavailable",gradientRuntime->pipeline.cpuReason(GradientPipeline::CPUReason::Unavailable)},
-        {"cpu_reason_owned_input_decline",gradientRuntime->pipeline.cpuReason(GradientPipeline::CPUReason::OwnedInputDecline)},
-        {"cpu_reason_automatic_policy",gradientRuntime->pipeline.cpuReason(GradientPipeline::CPUReason::AutomaticPolicy)},
-        {"cpu_reason_failed_session",gradientRuntime->pipeline.cpuReason(GradientPipeline::CPUReason::FailedSession)},
-        {"cpu_reason_trivial",gradientRuntime->pipeline.cpuReason(GradientPipeline::CPUReason::Trivial)},
-        {"cpu_reason_clock_unavailable",gradientRuntime->pipeline.cpuReason(GradientPipeline::CPUReason::CpuClockUnavailable)},
-        {"compute_barrier_diagnostics",barriers.barrierDiagnostics},
-        {"worker_parallel_invokes",barriers.workerParallelInvokes},{"worker_empty_parallel_invokes",barriers.workerEmptyParallelInvokes},
-        {"worker_late_completed_generations",barriers.workerLateCompletedGenerations},{"owner_empty_parallel_invokes",barriers.ownerEmptyParallelInvokes},
-        {"worker_parallel_jobs",barriers.workerParallelJobs},{"owner_parallel_jobs",barriers.ownerParallelJobs},
-        {"worker_parallel_invoke_cpu_ns",barriers.workerParallelInvokeCpuNs},{"owner_parallel_invoke_cpu_ns",barriers.ownerParallelInvokeCpuNs},
-        {"worker_empty_parallel_invoke_cpu_ns",barriers.workerEmptyParallelInvokeCpuNs},{"owner_empty_parallel_invoke_cpu_ns",barriers.ownerEmptyParallelInvokeCpuNs},
-        {"barrier_cpu_invalid_measurements",barriers.barrierCpuInvalidMeasurements},
-        {"worker_noop_bypass",gradientRuntime->pipeline.workerNoopEnabled()},
-        {"required_seed_cpu_ns",gradientRuntime->pipeline.requiredSeedCpuNs()},
-        {"required_propagation_cpu_ns",gradientRuntime->pipeline.requiredPropagationCpuNs()},
-        {"required_owned_input_cpu_ns",gradientRuntime->pipeline.requiredOwnedInputCpuNs()},
-        {"required_handoff_cpu_ns",gradientRuntime->pipeline.requiredHandoffCpuNs()},
-        {"required_cleanup_cpu_ns",gradientRuntime->pipeline.requiredCleanupCpuNs()},
-        {"required_owner_completion_cpu_ns",gradientRuntime->pipeline.metrics.ownerCompletionCpuNs},
-        {"required_owner_join_cpu_ns",gradientRuntime->pipeline.metrics.ownerJoinCpuNs},
-        {"gpu_publication_wait_count",gradientRuntime->pipeline.metrics.gpuPublicationWaitCount},
-        {"gpu_publication_wait_ns",gradientRuntime->pipeline.metrics.gpuPublicationWaitNs},
-        {"gpu_backend_overlap_publication_wait_ns",gradientRuntime->pipeline.metrics.gpuDeviceOverlapWaitNs},
-        {"cpu_complete_fields",gradientRuntime->pipeline.cpuCompleteFields()},
-        {"gpu_selected_fields",gradientRuntime->pipeline.gpuSelectedFields()},
-        {"gpu_complete_fields",gradientRuntime->pipeline.gpuCompleteFields()},
-        {"coordinator_cpu_ns",device.hostCpuNs},{"coordinator_initialization_ns",device.initializationNs},
-        {"coordinator_batch_preparation_cpu_ns",device.batchPreparationCpuNs},
-        {"coordinator_batch_submission_cpu_ns",device.batchSubmissionCpuNs},
-        {"coordinator_batch_completion_cpu_ns",device.batchCompletionCpuNs},
+    const auto opencl=gradient_kernel::openCLStatus();
+    const auto& pipeline=gradientRuntime->pipeline;
+    return {
+        {"gpu_requested_fields",pipeline.gpuRequestedFields()},
+        {"gpu_selected_fields",pipeline.gpuSelectedFields()},
+        {"gpu_complete_fields",pipeline.gpuCompleteFields()},
+        {"cpu_complete_fields",pipeline.cpuCompleteFields()},
+        {"cpu_reason_explicit",pipeline.cpuReason(GradientPipeline::CPUReason::ExplicitCPU)},
+        {"cpu_reason_owner_excluded",pipeline.cpuReason(GradientPipeline::CPUReason::OwnerExcluded)},
+        {"cpu_reason_unavailable",pipeline.cpuReason(GradientPipeline::CPUReason::Unavailable)},
+        {"cpu_reason_owned_input_decline",pipeline.cpuReason(GradientPipeline::CPUReason::OwnedInputDecline)},
+        {"cpu_reason_failed_session",pipeline.cpuReason(GradientPipeline::CPUReason::FailedSession)},
+        {"required_seed_cpu_ns",pipeline.requiredSeedCpuNs()},
+        {"required_propagation_cpu_ns",pipeline.requiredPropagationCpuNs()},
+        {"required_owned_input_cpu_ns",pipeline.requiredOwnedInputCpuNs()},
+        {"required_handoff_cpu_ns",pipeline.requiredHandoffCpuNs()},
+        {"required_cleanup_cpu_ns",pipeline.requiredCleanupCpuNs()},
+        {"gpu_publication_wait_count",pipeline.metrics.gpuPublicationWaitCount},
+        {"gpu_publication_wait_ns",pipeline.metrics.gpuPublicationWaitNs},
+        {"coordinator_threads",device.coordinatorThreads},
         {"coordinator_running",device.running},{"coordinator_ready",device.ready},
-        {"automatic_tuning_enabled",device.automaticTuning},
-        {"automatic_startup_upper_cpu_ns",device.tuningStartupUpperCpuNs},{"automatic_startup_clock_valid",device.tuningStartupClockValid},
-        {"automatic_captures",device.captures},{"automatic_capture_declines",device.captureDeclines},
-        {"automatic_probes_started",device.probesStarted},{"automatic_probes_exact",device.probesExact},
-        {"automatic_probes_canceled",device.probesCanceled},{"automatic_probes_retired",device.probeRetired},
-        {"automatic_probe_calling_cpu_ns",device.probeCallingCpuNs},{"automatic_probe_unknown_upper_cpu_ns",device.probeUnknownCpuNs},
-        {"automatic_probe_outer_process_cpu_ns",device.probeProcessCpuNs},
-        {"automatic_accepted_cpu_ns",device.automaticPolicy.acceptedCpuNs},{"automatic_tuning_charged_cpu_ns",device.automaticPolicy.probeCpuNs},
-        {"automatic_tuning_cold_cpu_ns",device.automaticPolicy.coldInitializationCpuNs},
-        {"automatic_tuning_passive_cpu_ns",device.automaticPolicy.passiveObservationCpuNs},
-        {"automatic_tuning_total_cpu_ns",device.automaticPolicy.totalTuningCpuNs},
-        {"automatic_service_passive_cpu_ns",device.tuningPassiveCpuNs},
-        {"automatic_service_passive_invalid_clocks",device.tuningPassiveInvalidClocks},
-        {"automatic_admitted",device.automaticPolicy.admitted},{"automatic_canceled",device.automaticPolicy.canceled},
-        {"automatic_promoted",device.automaticPolicy.promoted},{"automatic_demoted",device.automaticPolicy.demoted},
-        {"automatic_profiles",device.automaticPolicy.profiles},
-        {"automatic_confidence_qualified",device.automaticPolicy.confidenceQualified},{"automatic_promotion_enabled",device.automaticPolicy.promotionEnabled},
-        {"coordinator_threads",device.coordinatorThreads},{"coordinator_cpu_scope_process",1},
-        {"coordinator_executed",device.executed},{"coordinator_trivial",device.trivial},
-        {"coordinator_gpu_result_committed_fields",device.executed},
-        {"coordinator_device_completed_fields",device.deviceCompletedFields},
-        {"coordinator_fallback_after_device_completion_fields",device.fallbackAfterDeviceCompletionFields},
-        {"coordinator_configured_max_batch",device.configuredMaxBatch},{"coordinator_device_concurrency",device.deviceConcurrency},
+        {"coordinator_cpu_ns",device.hostCpuNs},{"coordinator_initialization_ns",device.initializationNs},
         {"coordinator_submitted",device.submitted},{"coordinator_completed",device.completed},
+        {"coordinator_executed",device.executed},{"coordinator_fallbacks",device.fallbacks},
+        {"coordinator_declined",device.declined},{"coordinator_batches",device.batches},
+        {"coordinator_max_batch",device.maxBatch},{"coordinator_queued",device.queued},
         {"fallback_reason_unavailable",device.fallbackReasons[unsigned(gradient_kernel::GradientFallbackReason::Unavailable)]},
-        {"fallback_reason_cpu_clock",device.fallbackReasons[unsigned(gradient_kernel::GradientFallbackReason::CpuClockUnavailable)]},
-        {"cpu_clock_invalid_measurements",device.clockInvalidMeasurements},{"automatic_cpu_clock_unavailable",device.automaticClockUnavailable},
-        {"fallback_reason_invalid",device.fallbackReasons[unsigned(gradient_kernel::GradientFallbackReason::InvalidRequest)]},
-        {"fallback_reason_stale",device.fallbackReasons[unsigned(gradient_kernel::GradientFallbackReason::StaleGeneration)]},
-        {"fallback_reason_duplicate",device.fallbackReasons[unsigned(gradient_kernel::GradientFallbackReason::Duplicate)]},
         {"fallback_reason_memory",device.fallbackReasons[unsigned(gradient_kernel::GradientFallbackReason::MemoryBudget)]},
         {"fallback_reason_backend_decline",device.fallbackReasons[unsigned(gradient_kernel::GradientFallbackReason::BackendDecline)]},
         {"fallback_reason_driver",device.fallbackReasons[unsigned(gradient_kernel::GradientFallbackReason::DriverFailure)]},
-        {"fallback_reason_shutdown",device.fallbackReasons[unsigned(gradient_kernel::GradientFallbackReason::Shutdown)]},
         {"fallback_reason_cancellation",device.fallbackReasons[unsigned(gradient_kernel::GradientFallbackReason::Cancellation)]},
-        {"fallback_reason_batch_not_ready",device.fallbackReasons[unsigned(gradient_kernel::GradientFallbackReason::BatchNotReady)]},
-        {"fallback_reason_deadline_slack",device.fallbackReasons[unsigned(gradient_kernel::GradientFallbackReason::DeadlineSlack)]},
-        {"coordinator_fallbacks",device.fallbacks},{"coordinator_declined",device.declined},
-        {"coordinator_stale",device.stale},{"coordinator_budget_declines",device.budgetDeclines},
-        {"coordinator_publication_stalls",device.publicationStalls},
-        {"cross_due_requested",device.crossDueRequested},{"cross_due_ready",device.crossDueReady},
-        {"cross_due_batches",device.crossDueBatches},{"batch_profile_count",device.batchProfiles},
-        {"batch_manifest_hash",device.batchManifestHash},{"batch_source_hash",device.batchSourceHash},
-        {"batch_profile_declines",device.batchProfileDeclines},{"batch_cadence_samples",device.cadenceSamples},
-        {"batch_cadence_drops",device.cadenceDrops},{"batch_cadence_floor_ns",device.cadenceFloorNs},
-        {"batch_cadence_revision",device.cadenceRevision},
-        {"cpu_envelope_enabled",device.cpuEnvelopeRequested},{"cpu_envelope_registry_ready",device.cpuEnvelopeRegistryReady},
-        {"cpu_envelope_valid_windows",device.cpuEnvelopeWindows},{"cpu_envelope_invalid_windows",device.cpuEnvelopeInvalid},
-        {"cpu_envelope_declines",device.cpuEnvelopeDeclines},{"cpu_envelope_churn_windows",device.cpuEnvelopeChurn},
-        {"cpu_envelope_batch_outer_process_cpu_ns",device.cpuEnvelopeProcessNs},
-        {"cpu_envelope_batch_known_inner_cpu_ns",device.cpuEnvelopeKnownInnerNs},
-        {"cpu_envelope_batch_unknown_upper_cpu_ns",device.cpuEnvelopeUnknownUpperNs},
-        {"cpu_envelope_sampler_cpu_ns",device.cpuEnvelopeSamplerNs},{"cpu_envelope_omitted_threads",device.cpuEnvelopeOmittedThreads},
-        {"cpu_envelope_max_resolution_ns",device.cpuEnvelopeMaxResolutionNs},
-        {"cpu_envelope_registry_setup_cpu_ns",device.cpuEnvelopeRegistrySetupCpuNs},
-        {"cpu_envelope_role_registration_cpu_ns",device.cpuEnvelopeRoleRegistrationCpuNs},
-        {"cpu_envelope_lifecycle_cpu_ns",device.cpuEnvelopeLifecycleNs},
-        {"cpu_envelope_setup_overshoots",device.cpuEnvelopeSetupOvershoots},{"cpu_envelope_finish_overshoots",device.cpuEnvelopeFinishOvershoots},
-        {"cpu_envelope_attribution_complete",0},
-        {"cpu_envelope_interval_required_batch",1},{"cpu_envelope_outer_sums_not_process_total",1},
-        {"coordinator_retained_host_bytes",device.retainedHostBytes},{"coordinator_observation_drops",device.observationDrops},
-        {"coordinator_batches",device.batches},{"coordinator_max_batch",device.maxBatch},
-        {"coordinator_queued",device.queued},{"thread_cpu_clock_available",glob2::threadCpuNs()!=0},
-        {"recorded",m.recorded},{"dropped",m.dropped},{"accepted",m.accepted},{"stale",m.stale},
-        {"unprocessed_observations",m.recorded>m.accepted+m.stale ? m.recorded-m.accepted-m.stale : 0},
-        {"processing_ns",m.processingNs},{"passes",m.passes},{"initialization_ns",m.initializationNs},
-        {"sample_queue_ns",m.queueNs},{"sample_execution_ns",m.executionNs},{"sample_service_ns",m.serviceNs},
-        {"sample_seed_preparation_ns",m.seedPreparationNs},{"sample_gpu_preparation_ns",m.stages.preparationNs},
-        {"sample_upload_ns",m.stages.uploadNs},{"sample_dispatch_ns",m.stages.dispatchNs},{"sample_readback_ns",m.stages.readbackNs},
-        {"retained_bytes",m.retainedBytes},{"retained_input_bytes",0},{"probe_dispatches",0},
-        {"backend_initialization_ns",gradient_kernel::backendPreparationNs.load()},
-        {"ready_plan_mask",gradient_kernel::readyPlans.load()}};
-    if(gradientRuntime->pipeline.diagnosticsEnabled()) {
-        result.emplace_back("coordinator_tid",device.coordinatorThreadId);
-        const auto ids=compute.threadIds();
-        if(!ids.empty())result.emplace_back("compute_config_owner_tid",ids.front());
-        for(std::size_t slot=1;slot<ids.size();++slot)
-            result.emplace_back("compute_worker_tid_"+std::to_string(slot),ids[slot]);
-    }
-    return result;
+        {"device_dispatches",opencl.dispatches},{"device_observed_fields",opencl.deviceObservedFields},
+        {"device_committed_fields",opencl.committedFields},{"device_cpu_ns",opencl.threadCPUNs},
+        {"accelerator_host_bytes",opencl.hostBytes},{"accelerator_peak_host_bytes",opencl.peakHostBytes},
+        {"accelerator_device_bytes",opencl.deviceBytes},{"accelerator_peak_device_bytes",opencl.peakDeviceBytes}
+    };
 }
 
 void Map::configureCompute(unsigned threads)
@@ -660,11 +571,9 @@ void Map::configureCompute(unsigned threads)
 	gradientRuntime->workspaces.resize(compute.threadCount());
 	gradientRuntime->shareBackendSession();
     gradientRuntime->backendSession->setExternalInitialization(true);
-    gradientRuntime->backendSession->configureLearning(compute.threadCount()>=2 && gradient_kernel::backend()==gradient_kernel::Backend::Automatic && gradient_kernel::learningRequested());
-    gradientRuntime->backendSession->configure(compute.threadCount(),gradient_kernel::accountingRequested());
+    gradientRuntime->backendSession->configure(compute.threadCount());
     compute.setWorkerOnly(gradientRuntime->backendSession);
     gradientRuntime->deviceService->configure(compute.threadCount(),gradient_kernel::backend());
-    gradientRuntime->pipeline.refreshDeviceConfiguration();
 }
 
 void Map::clear()
@@ -686,8 +595,7 @@ void Map::clear()
 	resetBuildingGradientPipeline();
 	gradientRuntime->resetBackendSession();
     gradientRuntime->backendSession->setExternalInitialization(true);
-    gradientRuntime->backendSession->configureLearning(compute.threadCount()>=2 && gradient_kernel::backend()==gradient_kernel::Backend::Automatic && gradient_kernel::learningRequested());
-    gradientRuntime->backendSession->configure(compute.threadCount(),gradient_kernel::accountingRequested());
+    gradientRuntime->backendSession->configure(compute.threadCount());
     compute.setWorkerOnly(gradientRuntime->backendSession);
 	gradientRuntime->buildingSynchronous=0;
 	gradientRuntime->synchronousByReason={};

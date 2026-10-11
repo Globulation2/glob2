@@ -244,7 +244,7 @@ public:
 	Uint16 *acquireBuildingGradientBuffer();
 	void recycleBuildingGradientBuffer(Uint16 *buffer);
 	void configureCompute(unsigned threads);
-    std::vector<std::pair<std::string,Uint64>> adaptiveGradientMetrics() const;
+    std::vector<std::pair<std::string,Uint64>> gradientExecutionMetrics() const;
 	ComputeExecutor &computeExecutor() { return compute; }
 	// Live field seeding retains its serial production order.
 	template<class Function> void initializeGradientCells(Function function) const

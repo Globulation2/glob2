@@ -54,6 +54,8 @@ public:
 	virtual ~GlobalContainer(void);
 
 	void applyCommand(const Cli::Request &request);
+	bool gpuComputeEnabled() const;
+	void configureGradientBackend() const;
 	void loadClient(void);
     bool deferAssetLoading = false;
     //! Advance required preparation without painting; the host schedules drawing.
@@ -129,6 +131,7 @@ public:
 	// Zero selects the reported logical CPU count (one if unavailable). Structured
 	// --run-game configures its own compute executor instead.
 	unsigned computeThreads = 0;
+	std::optional<bool> gpuComputeOverride;
 	std::string runNoXGameName;
 	int runNoXCountRuns; //!< The number of runs you want to repeat the no X run
 	bool automaticEndingGame;

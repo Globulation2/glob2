@@ -98,6 +98,11 @@ Option compute()
 	o.maximum = 4294967295LL;
 	return o;
 }
+Option gpu()
+{
+	return choice("--gpu", "GPU gradient compute; overrides local setting (graphical default off, headless on)",
+				  {"on", "off"});
+}
 std::vector<Option> mapSettings()
 {
 	return {
@@ -350,6 +355,7 @@ const std::vector<Command> &commands()
 		append(launch, assets());
 		launch.push_back(value("--building-catalog", "file", "Building catalog manifest"));
 		launch.push_back(compute());
+		launch.push_back(gpu());
 		add("play", "Launch the graphical game", {}, 0, launch, "Interactive game",
 			{"glob2 play --window-size 1280x720 --no-fullscreen"});
 		add("replay", "Watch a recorded replay", {"FILE"}, 1, launch, "Interactive replay",
@@ -434,6 +440,7 @@ const std::vector<Command> &commands()
 		auto game = profile();
 		append(game, assets());
 		game.push_back(compute());
+		game.push_back(gpu());
 		append(
 			game,
 			{value("--map-file", "file", "Map input for a new game"),
@@ -485,16 +492,14 @@ const std::vector<Command> &commands()
 		append(repeat, display());
 		repeat.push_back(flag("--display", "Render the saved game through the normal presentation loop"));
 		append(repeat,
-			   {compute(),
+			   {compute(), gpu(),
 				integer("--ticks", "Steps per run; 0 runs until the game ends", 0, 2147483647, "0"),
 				integer("--runs", "Number of saved-game runs", 1, 2147483647, "1"),
 				value("--building-catalog", "file", "Building catalog")});
 		add("game repeat", "Repeat a saved game, optionally with normal presentation", {"FILE"}, 1, repeat,
 			"Existing game summaries and opt-in environment telemetry")
 			.environment = {"GLOB2_REPLAY_PATH", "GLOB2_CHECKSUM_SIDECAR", "GLOB2_TEAM_RESULTS",
-							"GLOB2_TEAM_TIMELINE", "GLOB2_PERF_DISTRIBUTIONS",
-                            "GLOB2_RENDERED_CPU_DIAGNOSTICS_PATH", "GLOB2_RENDERED_CPU_WARMUP_TICKS",
-                            "GLOB2_RENDERED_CPU_MEASURE_TICKS"};
+							"GLOB2_TEAM_TIMELINE", "GLOB2_GRADIENT_BACKEND", "GLOB2_OPENCL_DEVICE"};
 		auto verify = profile();
 		verify.pop_back();
 		verify[1].defaultValue = "glob2-verify";
@@ -543,7 +548,7 @@ const std::vector<Command> &commands()
 		append(random, display());
 		append(
 			random,
-			{compute(), flag("--display", "Show test games graphically"),
+			{compute(), gpu(), flag("--display", "Show test games graphically"),
 			 integer("--runs", "Game count; 0 repeats forever", 0, 2147483647, "0"),
 			 integer(
 				 "--ticks",

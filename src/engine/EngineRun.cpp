@@ -3,9 +3,6 @@
 
 #include <GameplayRecording.h>
 #include <PerformanceTelemetry.h>
-#include "common/ThreadCpuEnvelopeBridge.h"
-#include "field/OpenCLGradient.h"
-#include <nlohmann/json.hpp>
 #include <EventQueue.h>
 #include <ApplicationHost.h>
 #include <FormatableString.h>
@@ -304,12 +301,6 @@ void Engine::executeOrdersAndStep(bool readyNow)
 
 void Engine::drawFrame(MainLoopState& st, bool everyFrame, const PresentationFrame* scene)
 {
-    // Diagnostic-only actual rendering role; background initialization may not
-    // have finished at configuration. Retry without registry initialization or task scans.
-    thread_local const bool envelopeRequested=glob2::cpuEnvelopeRequested();
-    thread_local bool envelopeRegistered=false;
-    if(envelopeRequested && !envelopeRegistered)
-        envelopeRegistered=glob2::registerCpuEnvelopeThread(glob2::CpuThreadRole::OtherOwned);
     GAGCore::ApplicationHost::matchFrame(gui.gamePaused);
 	const bool renderedFrame = everyFrame || st.nextGuiStep == 0;
 	if (renderedFrame)
@@ -445,13 +436,11 @@ bool Engine::startSimulationThread(Uint64 now)
     serialPresentation.reset();
     gui.game.map.computeExecutor().cancelPresentationAndWait();
     runner = std::make_unique<SimulationRunner>(*this);
-    attachRenderedWarmTelemetry(PerformanceTelemetry::collector(),false,true);
     gui.simulationThreaded = true;
     if (!runner->start())
     {
         runner.reset();
         gui.simulationThreaded = false;
-        attachRenderedWarmTelemetry(PerformanceTelemetry::collector(),true,true);
         return false;
     }
     gui.simulationAccess=[this](const auto& work){runner->withGame(work);};
@@ -472,14 +461,6 @@ void Engine::stopSimulationThread()
     PerformanceTelemetry::collector().absorb(runner->telemetry);
     runner.reset();
     gui.simulationThreaded = false;
-    // A stopped session may continue serially (for example after parking to
-    // save). Restore the owner producer only after the runner has joined. The
-    // startup attachment already allocated this storage; never allocate here.
-    auto& perf=PerformanceTelemetry::collector();
-    if(renderedCpu&&renderedCpu->warmDurations&&perf.distributions) {
-        perf.distributions->ownerSink=renderedCpu->warmDurations.get();
-        perf.distributions->presentationSink=renderedCpu->warmDurations.get();
-    }
     gui.setPublishedScene(nullptr);
     // Notices published after the last client step.
     gui.consumeClientEvents();
@@ -919,163 +900,11 @@ void Engine::reloadTurnInitialState()
 //   9. handleExitRequest           - drain on exit request
 //
 // Track order readiness separately for the previous and current ticks.
-Engine::RenderedCpuState::~RenderedCpuState()
-{
-    if(clockInstalled)PerformanceTelemetry::setDiagnosticCpuClock(previousTelemetryClock);
-}
-
-void Engine::prepareRenderedCpuDiagnostics()
-{
-    detachRenderedWarmTelemetry();
-    renderedCpu.reset();
-    const auto* path=std::getenv("GLOB2_RENDERED_CPU_DIAGNOSTICS_PATH");
-    if(!path||!*path)return;
-    if(globalContainer->runNoX||!globalContainer->automaticEndingGame||turn
-        ||globalContainer->replaying||globalContainer->runTestGames||globalContainer->structuredHeadless
-        ||globalContainer->runNoXCountRuns!=1||globalContainer->runNoXGameName.empty()
-        ||globalContainer->automaticEndingSteps<=0)
-        throw std::invalid_argument("Rendered CPU diagnostics requires game repeat --display --runs 1 --ticks N");
-    const auto* warm=std::getenv("GLOB2_RENDERED_CPU_WARMUP_TICKS");
-    const auto* measure=std::getenv("GLOB2_RENDERED_CPU_MEASURE_TICKS");
-    if(!warm||!measure)throw std::invalid_argument("Rendered CPU diagnostics requires explicit warmup and measure ticks");
-    const auto ticks=RenderedCpuDiagnostics::range(gui.game.stepCounter,
-        RenderedCpuDiagnostics::parseTicks(warm),RenderedCpuDiagnostics::parseTicks(measure),
-        std::uint64_t(globalContainer->automaticEndingSteps));
-    renderedCpu=std::make_unique<RenderedCpuState>(ticks,path);
-    const auto* distributionMode=std::getenv("GLOB2_RENDERED_WARM_DISTRIBUTIONS");
-    if(distributionMode&&*distributionMode&&
-        !((distributionMode[0]=='0'||distributionMode[0]=='1')&&!distributionMode[1]))
-        throw std::invalid_argument("GLOB2_RENDERED_WARM_DISTRIBUTIONS must be 0 or 1");
-    if(distributionMode&&distributionMode[0]=='1') {
-        // The capture and borrowed counter outlive both producers. Only the
-        // actual owner callback reads this scalar; presentation never does.
-        renderedCpu->warmDurations=std::make_unique<RenderedCpuDiagnostics::WarmDurations>(ticks,
-            +[](const void* counter) noexcept ->std::uint64_t{return *static_cast<const Uint32*>(counter);},
-            &gui.game.stepCounter);
-    }
-    renderedCpu->previousTelemetryClock=PerformanceTelemetry::diagnosticCpuClock();
-    PerformanceTelemetry::setDiagnosticCpuClock(glob2::threadCpuNs);
-    renderedCpu->clockInstalled=true;
-}
-
-void Engine::attachRenderedWarmTelemetry(PerformanceTelemetry::Collector& perf,bool owner,bool presentation)
-{
-    if(!renderedCpu||!renderedCpu->warmDurations)return;
-    if(!perf.enabled)throw std::invalid_argument("Warm distributions require enabled performance telemetry");
-    if(!perf.distributions)perf.enableDurationDistributions(true);
-    perf.distributions->ownerSink=owner?renderedCpu->warmDurations.get():nullptr;
-    perf.distributions->presentationSink=presentation?renderedCpu->warmDurations.get():nullptr;
-}
-
-void Engine::detachRenderedWarmTelemetry()
-{
-    if(!renderedCpu||!renderedCpu->warmDurations)return;
-    auto& perf=PerformanceTelemetry::collector();
-    if(!perf.distributions)return;
-    const auto* sink=renderedCpu->warmDurations.get();
-    if(perf.distributions->ownerSink==sink)perf.distributions->ownerSink=nullptr;
-    if(perf.distributions->presentationSink==sink)perf.distributions->presentationSink=nullptr;
-}
-
-void Engine::finishRenderedCpuDiagnostics()
-{
-    if(!renderedCpu)return;
-    // Simulation has stopped. Allocation, driver/status locks and report I/O
-    // belong outside the fixed measured interval and never occur in onTick().
-    detachRenderedWarmTelemetry();
-    auto state=std::move(renderedCpu); // Restore the prior clock even if reporting fails.
-    const auto& w=state->window;
-    using Json=nlohmann::json;
-    const auto metadata=[](const RenderedCpuState::Counters& c){
-        const auto& g=c.gradient;const auto& a=c.ai;
-        auto result=Json{{"gradient_stage_diagnostics_enabled",g.stageDiagnostics},
-            {"required_seed_cpu_ns",g.seedCpuNs},{"required_propagation_cpu_ns",g.propagationCpuNs},
-            {"required_owned_input_cpu_ns",g.ownedInputCpuNs},{"required_handoff_cpu_ns",g.handoffCpuNs},
-            {"required_cleanup_cpu_ns",g.cleanupCpuNs},{"required_owner_completion_cpu_ns",g.ownerCompletionCpuNs},
-            {"required_owner_join_cpu_ns",g.ownerJoinCpuNs},{"cpu_complete_fields",g.cpuCompleteFields},
-            {"gpu_complete_fields",g.gpuCompleteFields},{"gpu_requested_fields",g.gpuRequestedFields},
-            {"gpu_selected_fields",g.gpuSelectedFields},{"cpu_reason_clock_unavailable",g.cpuClockUnavailableFields},
-            {"publication_wait_ns",g.publicationWaitNs},{"gpu_publication_wait_ns",g.gpuPublicationWaitNs},
-            {"gpu_device_overlap_wait_ns",g.gpuDeviceOverlapWaitNs},
-            {"ai_job_cpu_diagnostics",a.jobCpuDiagnostics},{"ai_jobs_completed",a.jobsCompleted},
-            {"ai_decision_and_command_capture_cpu_ns",a.decisionAndCommandCaptureCpuNs},
-            {"ai_input_release_cpu_ns",a.inputReleaseCpuNs},{"ai_job_cpu_invalid_measurements",a.jobCpuInvalidMeasurements},
-            {"ai_failed_jobs",a.failedJobs},{"ai_submitted",a.submitted},{"ai_delivered",a.delivered},
-            {"ai_deadline_misses",a.deadlineMisses},{"ai_deadline_wait_ns",a.deadlineWaitNs}};
-        result["ai_resource_gradient_diagnostics"]=c.resources.enabled;
-        if(c.resources.enabled)for(unsigned i=0;i<AIEngine::ResourceGradientMetricCount;++i)
-            result[std::string("ai_resource_gradient_")+AIEngine::resourceGradientMetricName(AIEngine::ResourceGradientMetric(i))]=c.resources.values[i];
-        return result;
-    };
-    const auto endpoint=[&](const auto& e){return Json{{"captured",e.captured},{"tick",e.tick},
-        {"process_cpu_ns",e.processCpuNs},{"owner_cpu_ns",e.ownerCpuNs},{"wall_ns",e.wallNs},
-        {"owner_tid",e.ownerTid},{"counters",metadata(e.counters)}};};
-    const auto& start=w.endpoints[0];const auto& end=w.endpoints[1];
-    Json report{{"schema","glob2-rendered-cpu-diagnostics-v1"},{"initial_tick",w.ticks.initial},
-        {"requested_start_tick",w.ticks.start},{"requested_end_tick",w.ticks.end},
-        {"interval","[start_tick,end_tick)"},{"boundary","after each named completed tick"},{"start",endpoint(start)},{"end",endpoint(end)},
-        {"process_cpu_valid",w.processValid()},{"owner_cpu_valid",w.ownerValid()},{"wall_valid",w.wallValid()},
-        {"missed_boundary",w.missedBoundary},{"owner_changed",w.ownerChanged},{"final_tick",gui.game.stepCounter},
-        {"counter_semantics","Independent completed-job lifetime observations; jobs may straddle boundaries. Owner join is inclusive. Nested scopes must not be summed. This is diagnostic evidence, not an exact propagation ceiling."}};
-    report["process_cpu_delta_ns"]=w.processValid()?Json(end.processCpuNs-start.processCpuNs):Json(nullptr);
-    report["owner_cpu_delta_ns"]=w.ownerValid()?Json(end.ownerCpuNs-start.ownerCpuNs):Json(nullptr);
-    report["wall_delta_ns"]=w.wallValid()?Json(end.wallNs-start.wallNs):Json(nullptr);
-    if(state->warmDurations) {
-        const auto& capture=*state->warmDurations;
-        const auto summary=capture.summarize(start.wallNs,end.wallNs,w.wallValid());
-        const auto distribution=[](const auto& d){
-            Json result{{"samples",d.count}};
-            for(const auto p:{50u,95u,99u,100u}) {
-                const auto bounds=d.percentile(p);
-                result["p"+std::to_string(p)+"_ns"]={{"lower",bounds.first},{"upper",bounds.second}};
-            }
-            return result;
-        };
-        Json distributions=Json::object();
-        for(unsigned i=0;i<3;++i)distributions[i==0?"engine_loop":i==1?"engine_work":"game_sync_step"]
-            =distribution(summary->owner[i]);
-        distributions["presentation_interval"]=distribution(summary->frame);
-        report["warm_distributions"]={{"enabled",true},{"valid",summary->valid},
-            {"owner_valid",summary->ownerValid},{"presentation_valid",summary->frameValid},
-            {"selected_completed_ticks","start_tick < actual completed tick <= end_tick"},
-            {"scope_semantics","Engine loop and work scopes are distinct from Game::syncStep. Work uses the existing exclusion of pacing scopes. Inclusive scopes overlap and must not be summed."},
-            {"presentation_selection","Whole intervals whose independent presentation timestamps lie inside the warm wall boundaries; boundary intervals excluded without clipping."},
-            {"owner_records",summary->ownerRecords},{"missing_ticks",summary->missingTicks},
-            {"unexpected_tick_records",summary->unexpectedTicks},{"owner_scopes_outside_window",summary->scopeOutside},
-            {"owner_capacity",capture.owner.samples.size()},{"owner_overflow",capture.owner.overflow},
-            {"owner_invalid",capture.owner.invalid},{"owner_unassociated",capture.owner.unassociated},
-            {"owner_aborted_selected",capture.owner.abortedSelected},
-            {"presentation_capacity",capture.presentation.samples.size()},
-            {"presentation_observations",capture.presentation.observations},
-            {"presentation_overflow",capture.presentation.overflow},{"presentation_clock_invalid",capture.presentation.invalid},
-            {"presentation_outside_intervals",summary->frameOutside},{"presentation_boundary_intervals",summary->frameBoundary},
-            {"distributions",std::move(distributions)}};
-    }
-    const auto rendering=globalContainer->gfx->renderingIdentity();
-    report["rendering_identity"]={{"scope","presentation context after simulation stop; outside measured interval"},
-        {"backend",rendering.backend},{"gl_identity_available",rendering.glIdentityAvailable},
-        {"gl_vendor",rendering.glVendor},{"gl_renderer",rendering.glRenderer}};
-    // Whole-process/session counters, never asserted as warm-window dispatches.
-    const auto backend=gradient_kernel::openCLStatus();
-    report["post_stop_backend_totals"]={{"scope","process lifetime at post-stop status sampling; outside measured interval"},
-        {"active_epoch",backend.activeEpoch},{"check_interval",backend.checkInterval},
-        {"dispatches",backend.dispatches},{"device_observed_fields",backend.deviceObservedFields},
-        {"committed_fields",backend.committedFields},{"backend_cpu_ns",backend.threadCPUNs},
-        {"backend_cpu_clock_available",backend.threadCPUAvailable},{"backend_cpu_invalid_measurements",backend.threadCPUInvalidMeasurements}};
-    const auto device=gui.game.map.adaptiveGradientMetrics();
-    Json totals=Json::object();for(const auto& [key,value]:device)totals[key]=value;
-    report["post_stop_gradient_totals"]={{"scope","independently sampled cumulative totals outside measured interval; pending future jobs may remain"},{"counters",std::move(totals)}};
-    std::ofstream output(state->path,std::ios::trunc);
-    if(!output)throw std::runtime_error("Cannot open rendered CPU diagnostic output: "+state->path);
-    output<<report.dump(2)<<'\n';output.close();
-    if(!output)throw std::runtime_error("Cannot write rendered CPU diagnostic output: "+state->path);
-}
-
 void Engine::beginSession(Uint64 now)
 {
     if (session) throw std::logic_error("Engine session is already active");
     if (!net) throw std::logic_error("Engine session requires an initialized game");
-    prepareRenderedCpuDiagnostics();
+    globalContainer->configureGradientBackend();
 	if (!globalContainer->structuredHeadless || turn)
 		gui.game.map.configureCompute(resolveComputeThreadCount(globalContainer->computeThreads));
     sessionEndingTarget = globalContainer->automaticEndingSteps;
@@ -1097,22 +926,17 @@ void Engine::beginSession(Uint64 now)
 	auto &perf = PerformanceTelemetry::collector();
 	if (!perf.enabled && !perf.started)
 		perf.reset();
-    attachRenderedWarmTelemetry(perf,true,true);
 	if (perf.output)
 	{
-		// beginSession runs before the simulation thread starts. The accessor
-		// also checks the presentation thread and current context before GL reads.
-		const auto rendering = globalContainer->runNoX ? GraphicContext::RenderingIdentity{}
-			: globalContainer->gfx->renderingIdentity();
 		std::ostringstream metadata;
 		metadata << "version=" << VERSION_MINOR << " platform=" << std::quoted(SDL_GetPlatform())
 				 << " map_w=" << gui.game.map.getW() << " map_h=" << gui.game.map.getH()
 				 << " players=" << gui.game.gameHeader.getNumberOfPlayers()
 				 << " teams=" << gui.game.mapHeader.getNumberOfTeams() << " renderer="
-				 << (globalContainer->runNoX ? "headless" : rendering.backend)
-				 << " gl_identity_available=" << (rendering.glIdentityAvailable ? 1 : 0)
-				 << " gl_vendor=" << std::quoted(rendering.glVendor)
-				 << " gl_renderer=" << std::quoted(rendering.glRenderer)
+				 << (globalContainer->runNoX ? "headless"
+					 : (globalContainer->gfx->getOptionFlags() & GraphicContext::USEGPU)
+						 ? "opengl"
+						 : "software")
 				 << " width=" << (globalContainer->runNoX ? 0 : globalContainer->gfx->getW())
 				 << " height=" << (globalContainer->runNoX ? 0 : globalContainer->gfx->getH());
 #ifdef __VERSION__
@@ -1166,8 +990,6 @@ void Engine::abortSession() noexcept
     session.reset();
     sessionInput.clear();
     globalContainer->replayWriter.reset();
-    detachRenderedWarmTelemetry();
-    renderedCpu.reset();
     PerformanceTelemetry::collector().reset();
 }
 
@@ -1298,9 +1120,6 @@ void Engine::absorbSimulationTelemetry()
 bool Engine::advanceSession(Uint64 now, const std::function<void()>& clientWork, bool handleExit)
 {
     auto& st = *session;
-    const auto diagnosticTickBefore=renderedCpu ? gui.game.stepCounter : 0;
-    RenderedCpuDiagnostics::WarmDurations::Advance warmAdvance(
-        renderedCpu?renderedCpu->warmDurations.get():nullptr,diagnosticTickBefore);
     updateTickSpeedAndDrawCadence(st, now);
     auto &perf = PerformanceTelemetry::collector();
 		// Threaded, the main thread configures and captures the session collector
@@ -1368,10 +1187,6 @@ bool Engine::advanceSession(Uint64 now, const std::function<void()>& clientWork,
     loopTime.stop();
     if (!gui.simulationThreaded)
         perf.capture(gui.game.stepCounter);
-    if(renderedCpu && gui.game.stepCounter!=diagnosticTickBefore)
-        renderedCpu->window.onTick(gui.game.stepCounter,[&]{return RenderedCpuState::Counters{
-            gui.game.map.gradientCpuCounters(),gui.game.aiSchedulingCounters(),gui.game.aiResourceGradientCounters()};});
-    warmAdvance.completed();
     return gui.isRunning;
 }
 
@@ -1392,7 +1207,6 @@ std::optional<Engine::PendingLoad> Engine::finishSessionForHost()
     if (gui.isRunning) throw std::logic_error("Cannot finish a running engine session");
     if (globalContainer->automaticEndingGame) printAutomaticEndingSummary();
     teardownSession();
-    finishRenderedCpuDiagnostics();
     auto &perf = PerformanceTelemetry::collector();
 	// Structured runs may still write their requested final save after run().
 	if (!globalContainer->structuredHeadless)

@@ -63,6 +63,8 @@ TEST_SUITE("CommandLine")
 	TEST_CASE("malformed input fails before handlers")
 	{
 		const std::vector<std::vector<std::string>> invalid = {
+			{"play", "--gpu=auto"},
+			{"game", "repeat", "saved.game.gz", "--gpu=automatic"},
 			{"--run-game"},
 			{"--nox", "x", "10", "1"},
 			{"play", "-f"},

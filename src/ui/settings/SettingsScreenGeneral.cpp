@@ -304,6 +304,14 @@ void SettingsScreen::buildGeneral()
 	else if (current == Category::Gameplay)
 	{
 		info(tr("Adjust the pace of play."));
+		toggle("gameplay.gpu", "GPU compute",
+			   "Use GPU for gradient calculations. Applies to the next game.",
+			   s.gpuComputeEnabled(),
+			   [this](int v)
+			   {
+				   globalContainer->settings.gpuCompute = bool(v);
+				   commit();
+			   });
 		std::vector<std::string> labels;
 		Settings copy = s;
 		for (int i = Settings::GAME_SPEED_MINIMUM; i <= Settings::GAME_SPEED_MAXIMUM; ++i)

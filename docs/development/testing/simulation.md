@@ -354,30 +354,17 @@ and frozen traces in serial and threaded Wasm builds.
 
 See [save and file compatibility tests](persistence.md).
 
-## Optional gradient backend
+## Optional GPU gradients
 
-The `OpenCLGradient` unit suite compares complete fields with an independent heap
-oracle across movement classes, caps, seeds, obstacles, custom costs and wrapped
-grids. Every compiled GPU plan must produce exact results. It also covers
-immutable cost identities, concurrent lane isolation, batches larger than eight,
-and frozen-halo convergence across long tile-boundary paths. Unsupported devices
-exercise CPU recovery; a skipped GPU case does not establish GPU coverage.
+The `OpenCLGradient` suite checks the fixed Frozen8 kernel against an independent
+heap oracle across movement classes, caps, seeds, obstacles, custom costs and
+wrapped grids. It verifies immutable cost reuse, exact original-seed recovery,
+bounded storage and transfer lifetime. A skipped GPU case is CPU fallback coverage,
+not proof of device execution.
 
-Shared policy tests cover conservative CPU defaults, explicit plan execution,
-owner and resumable-search exclusion, failed initialization, original-seed
-recovery, bounded observation drops and stale generation/version rejection.
-`ComputeExecutor` tests worker-only admission, required-work and presentation
-priority, thread-creation failure and owner exclusion. `GradientPipeline` tests
-fixed publication deadlines across backend and executor changes.
-
-Run the focused field suites with:
-
-```sh
-GLOB2_GRADIENT_BACKEND=opencl python3 test/run_tests.py --binary unit --filter '*Gradient*/*'
-```
-
-Measure accounting off/on with identical established plans, seeds and eight
-compute slots. Initialization, queue delay, execution and publication waits are
-distinct boundaries. Field equality does not replace per-tick replay and
-save-continuation checks. See [simulation architecture](../../architecture/simulation.md)
-and [compute benchmarks](../compute-benchmarks.md).
+`GradientPipeline` and `ComputeExecutor` verify worker handoff, singleton launch,
+required ticket/lane ordering, publication deadlines and cancellation. Settings
+and CLI tests cover GUI/headless defaults, local persistence and binary overrides.
+Run the affected unit and engine suites through `test/run_tests.py`, then compare
+real saved-game and replay checksums with GPU off/on. See
+[GPU verification](../gradient-benchmarks.md#gpu-onoff-verification).

@@ -115,6 +115,7 @@ void Settings::setTextSizePercent(int percent)
 
 void Settings::load(std::string filename)
 {
+    gpuCompute.reset();
     targetRenderFps = 60;
 #ifdef __EMSCRIPTEN__
 	setGraphicsDetail(false);
@@ -156,6 +157,11 @@ void Settings::load(std::string filename)
 		READ_PARSED_INT(screenWidth);
 		READ_PARSED_INT(screenHeight);
 		READ_PARSED_INT(screenFlags);
+		if (const auto value = parsed.find("gpuCompute"); value != parsed.end())
+		{
+			if (value->second == "0") gpuCompute = false;
+			else if (value->second == "1") gpuCompute = true;
+		}
 		READ_PARSED_INT(uiScale);
         if (const auto value = parsed.find("targetRenderFps"); value != parsed.end())
         {
@@ -344,6 +350,8 @@ bool Settings::save(std::string filename)
 		Utilities::streamprintf(stream, "adaptiveZoomDetail=%d\n", adaptiveZoomDetail);
 		Utilities::streamprintf(stream, "smoothFog=%d\n", smoothFog);
 		Utilities::streamprintf(stream, "autosaveGames=%d\n", autosaveGames);
+		if (gpuCompute.has_value())
+			Utilities::streamprintf(stream, "gpuCompute=%d\n", *gpuCompute);
 		Utilities::streamprintf(stream, "experiments=%s\n", experiments.toText().c_str());
 		Utilities::streamprintf(stream, "gameSpeed=%d\n", gameSpeed);
         Utilities::streamprintf(stream,"textSizePercent=%d\n",textSizePercent);
