@@ -1446,6 +1446,7 @@ TEST_CASE("invalid CPU clocks preserve exact execution without fabricated automa
     if(!glob2::threadCpuNs())return; // Offline qualification itself needs a native clock.
     PipelineEnvironment diagnostics("GLOB2_GRADIENT_DIAGNOSTICS","1");
     PipelineEnvironment tuning("GLOB2_GRADIENT_TUNING","1");
+    PipelineEnvironment crossDue("GLOB2_GRADIENT_CROSS_DUE","0");
     PipelineEnvironment noop("GLOB2_GRADIENT_WORKER_NOOP","0");
     struct Restore {Backend mode=backend();unsigned mask=readyPlans.load();~Restore(){setBackend(mode);readyPlans=mask;}} restore;
     const auto plan=requestedOpenCLPlan();readyPlans=1u<<unsigned(plan);
@@ -1492,10 +1493,15 @@ TEST_CASE("invalid CPU clocks preserve exact execution without fabricated automa
             if(policy->finishAcceptedCapture(*ticket,{600000,1000000,600000,100000000,true,true,true}))break;
         }
         REQUIRE(policy->lookup(key).plan==plan);const auto credits=policy->metrics().acceptedCpuNs;
-        for(unsigned tick=1;tick<=17;++tick)service->recordCadence({tick,monotonicNs(),1000000000ull});
-        const auto cadenceUntil=std::chrono::steady_clock::now()+std::chrono::seconds(5);
-        while(!service->metrics().cadenceFloorNs && std::chrono::steady_clock::now()<cadenceUntil)std::this_thread::yield();
-        REQUIRE(service->metrics().cadenceFloorNs==1000000000ull);
+        if(mode==Backend::Automatic){
+            for(unsigned tick=1;tick<=17;++tick)service->recordCadence({tick,monotonicNs(),1000000000ull});
+            const auto cadenceUntil=std::chrono::steady_clock::now()+std::chrono::seconds(5);
+            while(!service->metrics().cadenceFloorNs && std::chrono::steady_clock::now()<cadenceUntil)std::this_thread::yield();
+            REQUIRE(service->metrics().cadenceFloorNs==1000000000ull);
+        }else {
+            // Forced OpenCL has no automatic cadence state or deadline guard.
+            CHECK(service->metrics().cadenceFloorNs==0);
+        }
         pipeline.setAsyncWork([counts](auto& job,PlanDecision decision){
             auto field=std::make_shared<OwnedGradientField>();field->session=job.owner->session();field->decision=decision;
             field->inputs=counts;field->due=job.executorDue;field->data=std::move(job.data);
