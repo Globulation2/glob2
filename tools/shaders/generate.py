@@ -405,6 +405,8 @@ def compile_metal(output, sdk, tool_lock, root=ROOT, developer_dir=None):
     directory = output / 'metal'
     directory.mkdir(exist_ok=True)
     produced = []
+    # Metal 2.x dialect names include the platform in Apple's compiler.
+    standard = 'macos-metal2.1' if sdk == 'macosx' else 'ios-metal2.1'
     # Register artifacts only after the complete set compiles and links.
     for variant, stages in sources.items():
         for stage, receipt in stages.items():
@@ -414,7 +416,7 @@ def compile_metal(output, sdk, tool_lock, root=ROOT, developer_dir=None):
             suffix = 'vert' if stage == 'vertex' else 'frag'
             air = directory / (variant + '.' + suffix + '.air')
             library = directory / (variant + '.' + suffix + '.metallib')
-            subprocess.run(xcrun + ['metal', '-std=metal2.1', '-c', str(source), '-o', str(air)], check=True)
+            subprocess.run(xcrun + ['metal', '-std=' + standard, '-c', str(source), '-o', str(air)], check=True)
             subprocess.run(xcrun + ['metallib', str(air), '-o', str(library)], check=True)
             data = library.read_bytes()
             if not data.startswith(b'MTLB') or receipt['entrypoint'].encode() + b'\0' not in data:

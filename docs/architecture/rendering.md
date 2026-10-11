@@ -491,7 +491,10 @@ all levels to finish. GPU terrain composition also checks aggregate memory headr
 before promotion and uses the CPU compositor under pressure. Individual cache class
 budgets do not imply that all classes fit simultaneously. Torus captures use the requested
 terrain density when the full tiled layout fits the terrain-target and aggregate
-resource budgets. Explicit trimming releases completed GPU copies that can be
+resource budgets. SDL GPU charges texture and depth allocations once over their
+owned lifetime, including pending submissions and captures, instead of rebuilding
+the complete texture lease set during each admission check. Staging buffers remain
+charged separately until their work completes. Explicit trimming releases completed GPU copies that can be
 restored from logical CPU snapshots, while preserving in-flight work, unfinished
 uploads and externally owned rendered targets. Actual pressure can reduce density,
 rather than a fixed low pixel cap.
@@ -506,6 +509,10 @@ sampling calculation and all blend, modulation and color-key rules. SDL GPU
 keeps compatible primitive draws in the same color pass and merges consecutive
 vertex ranges only when their effective state matches. Barriers, clears, world
 geometry, terrain composition and target changes end that pass.
+Consecutive unreduced terrain cells on the same SDL GPU page share a terrain
+pass, with each cell retaining its own uniforms, samplers, viewport and scissor.
+Other packet kinds and attachment changes close it. Scratch composition and
+reduction remain separate passes so the reduction samples completed writes.
 GL primitive state reuse is local to one bounded vertex-upload segment; barriers,
 other passes and the next segment reset it rather than assuming global driver state.
 Immutable texture revisions retain the pixels that queued draws referenced, even
@@ -641,6 +648,12 @@ fragment block holds composition parameters and per-material seam constants.
 retain packed-ARGB wrapping; final premultiplied targets apply the same byte
 rounding as CPU uploads before hardware filtering. WebGPU coverage and scratch
 caches each admit at most 32 MiB and count against the device's aggregate budget.
+Changes between CPU and GPU composition retain reusable CPU terrain pages at
+other densities within the existing cache and texture budgets. Device-composed
+pages are discarded when their targets are released; graphics generation or
+resource registry changes still invalidate the cache.
+GPU page admission reserves new target storage and the bounded coverage lease
+allowance alongside retained CPU pages, retiring idle storage before composition.
 `tools/shaders/prove_terrain_webgpu.mjs` checks exact integer pixels, material
 presence, alpha, each reduction divisor and premultiplied output. The packed-device
 proof additionally checks owned shared-memory coverage uploads, target gutters,

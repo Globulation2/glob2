@@ -131,6 +131,13 @@ class GpuTerrainPageCache
     std::uint64_t registryIdentity() const {return resources->instanceIdentity();}
     std::size_t retainedBytes() const {return pageBytes + localMaskLeases->bytes.load();}
     std::size_t textureBytes() const {return pageBytes;}
+    std::pair<std::size_t,std::size_t> compositionReservation(const SoftwareTerrainCache::Chunk &chunk) const {
+        const auto dimension=std::size_t(SoftwareTerrainCache::ChunkPixels)*chunk.scale/chunk.downsample;
+        const auto pixels=pages.contains(key(chunk))?0:dimension*dimension*4;
+        // Submitted masks can outlive lookup eviction. Reserve their complete
+        // bounded ownership allowance before adding packets to this frame.
+        return {pixels+MaskLeaseBudgetBytes-localMaskLeases->bytes.load(),pixels};
+    }
     void erase(const SoftwareTerrainCache::Chunk &chunk) {
         auto found=pages.find(key(chunk));if(found==pages.end())return;
         pageBytes-=found->second.pixels->bytes;resources->erase(found->second.handle);pages.erase(found);
@@ -536,7 +543,15 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 	{
     if (bool(gpuPages) != composeOnDevice || (gpuPages &&
         (gpuPageGeneration != generation || gpuPages->registryIdentity() != gfx.renderResources()->instanceIdentity()))) {
-        chunks.clear(); gpuPages.reset();
+        if (gpuPages && (gpuPageGeneration != generation ||
+            gpuPages->registryIdentity() != gfx.renderResources()->instanceIdentity())) chunks.clear();
+        else {
+            // A zoom can change composition admission without invalidating CPU
+            // pixels at another density. Retain those bounded cache entries;
+            // device-only pages cannot survive destruction of their targets.
+            std::erase_if(chunks, [](const auto &chunk) { return !chunk->cpuComposed; });
+        }
+        gpuPages.reset();
         if (composeOnDevice) gpuPages = std::make_shared<GpuTerrainPageCache>(gfx.renderResourceOwner());
         gpuPageGeneration = generation;
     }
@@ -553,9 +568,10 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 				((c->y / ChunkTiles - y0) & (periodY - 1)) <= y1 - y0;
 			if (selected) c->used = frame;
 		}
-		const auto makeRoom = [&](std::size_t needed)
+		const auto makeRoom = [&](std::size_t needed, std::size_t textureNeeded = 0)
 		{
-			while (bytes() + needed > budget)
+			while (bytes() + needed > budget ||
+                (gpu && residentTextureBytes()+textureNeeded > GPUBudget))
 			{
 				auto oldest = chunks.end();
 				// Retire idle renderer storage before discarding any composed pixels.
@@ -753,6 +769,8 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 					entry->valid = false;
 					entry->opaqueRuns.clear();
                     if (gpuPages) {
+                        const auto [retainedReserve,textureReserve]=gpuPages->compositionReservation(*entry);
+                        if(!makeRoom(retainedReserve,textureReserve))throw std::bad_alloc();
                         if(!gpuPages->compose(gfx,compositor,*entry,tiles)) {
                             // Admission can progress next turn in these same targets.
                             copies.clear();return false;
@@ -863,6 +881,7 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 					if (!gpu)
 						buildOpaqueRuns(*entry);
 					entry->valid = true;
+					entry->cpuComposed = !gpuPages;
 					++rebuilds;
 					if (native) ++reductions;
 				}

@@ -19,7 +19,11 @@ build/darwin/client/release/test/torus-render-benchmark --renderer gpu --no-full
 ```
 
 Use the current host's release directory on Linux/Windows. `GLOB2_BENCH_MODE`
-selects `2D no clouds` or `2D clouds`; otherwise both run. Set
+selects `2D no clouds` or `2D clouds`; otherwise both run. Run
+each mode in a separate fresh process with identical warmup and camera settings
+when comparing cloud cost: running both shares terrain and device caches, so the
+second mode benefits from the first mode's work. Alternate process order across
+repeated pairs to limit drift from temperature and background activity. Set
 `GLOB2_BENCH_VISIBLE=1` to show and present the completed fixture.
 `GLOB2_BENCH_NATIVE_CLOUD_DETAIL=1` restores the original dense cloud grid for
 a controlled comparison. `GLOB2_BENCH_BARS=1` adds health/food bars. Unit count

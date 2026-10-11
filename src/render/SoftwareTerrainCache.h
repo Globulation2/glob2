@@ -70,6 +70,8 @@ class SoftwareTerrainCache
 		std::vector<OpaqueRun> opaqueRuns;
 		std::array<std::unique_ptr<HeldMask>, ChunkTiles * ChunkTiles> masks;
 		bool valid = false;
+		// Device-composed pages have no matching pixels in image/parked.
+		bool cpuComposed = true;
 		// Only materials present in discovered recipes invalidate this page.
 		std::vector<std::pair<TerrainVisual::MaterialId, std::uint64_t>> materialRevisions;
 		std::uint64_t used = 0;

@@ -9,6 +9,7 @@
 #include <ProgrammableGLDevice.h>
 #endif
 #include <array>
+#include <algorithm>
 #include <cstdlib>
 #include <cmath>
 #include <limits>
@@ -62,6 +63,125 @@ struct Video
 }
 TEST_SUITE("SDLGPUDevice")
 {
+    GLOB2_TEST_CASE("Shared terrain passes match separated cells across targets reduction and barriers", "[display][isolated]")
+    {
+        const char *shaders = std::getenv("GLOB2_TEST_SHADER_DIRECTORY"); REQUIRE(shaders);
+        Video video; auto device = makeSDLGPUDevice(nullptr, 32, 32, shaders);
+        REQUIRE(device->capabilities().terrainComposition);
+        RenderResources resources;
+        const std::array<SDL_Color, 4> colors{{{240, 10, 20, 255}, {20, 230, 40, 128},
+            {10, 30, 220, 255}, {230, 210, 20, 192}}};
+        std::array<TextureSnapshot, 4> materials;
+        for (unsigned i = 0; i < materials.size(); ++i) {
+            auto pixels = surface(16, 16); REQUIRE(pixels);
+            const auto c = colors[i];
+            REQUIRE(SDL_FillSurfaceRect(pixels.get(), nullptr, SDL_MapSurfaceRGBA(pixels.get(), c.r, c.g, c.b, c.a)));
+            materials[i] = resources.snapshot(resources.create(pixels.get(), 1)); REQUIRE(materials[i]);
+        }
+        auto pixels = surface(32, 32); REQUIRE(pixels);
+        TextureDescriptor descriptor; descriptor.alpha = TextureDescriptor::Alpha::Premultiplied;
+        auto a = resources.snapshot(resources.create(pixels.get(), 1, descriptor));
+        auto b = resources.snapshot(resources.create(pixels.get(), 1, descriptor)); REQUIRE(a); REQUIRE(b);
+        std::vector<DrawPacket> packets;
+        for (const auto &target : {a, b}) {
+            DrawPacket clear; clear.kind = DrawPacket::Kind::Clear; clear.target = target;
+            clear.clearColor = true; clear.clearValue = {.1f, .2f, .3f, 1}; packets.push_back(clear);
+        }
+        auto cell = [&](TextureSnapshot target, unsigned material, SDL_Rect rect, unsigned divisor = 1) {
+            auto data = std::make_shared<WeightedComposeData>(); data->compositionSize = 16;
+            data->reductionDivisor = divisor; data->paletteCount = 1;
+            data->materials[0] = materials[material]; data->targetRect = rect;
+            DrawPacket packet; packet.kind = DrawPacket::Kind::WeightedCompose;
+            packet.target = target; packet.weightedCompose = data; packets.push_back(packet);
+        };
+        cell(a, 0, {0, 0, 16, 16}); cell(a, 1, {16, 0, 16, 16});
+        cell(a, 2, {0, 16, 16, 16}); cell(a, 3, {16, 16, 16, 16});
+        cell(b, 2, {0, 0, 16, 16}); // attachment change
+        cell(b, 3, {16, 0, 8, 8}, 2); // scratch write then reduction read
+        cell(b, 1, {0, 16, 16, 16}); // unreduced after reduction
+        DrawPacket barrier; barrier.kind = DrawPacket::Kind::Barrier; packets.push_back(barrier);
+        cell(b, 0, {16, 16, 16, 16});
+        packets.push_back(blit(a, {0, 0, 32, 32})); // sampling must close terrain pass
+        cell(a, 2, {0, 0, 16, 16});
+        packets.push_back(blit(b, {0, 0, 16, 16}));
+        auto render = [&](bool separated) {
+            RenderFrame frame; frame.identity = separated ? 2 : 1;
+            frame.logicalWidth = frame.logicalHeight = 32;
+            frame.packets.push_back(fill({0, 0, 32, 32}, {0, 0, 0, 255}));
+            for (const auto &packet : packets) {
+                frame.packets.push_back(packet);
+                if (separated) frame.packets.push_back(barrier);
+            }
+            REQUIRE(device->submit(frame)); device->present();
+            std::array<Surface, 3> result{{Surface(nullptr, SDL_DestroySurface),
+                Surface(nullptr, SDL_DestroySurface), Surface(nullptr, SDL_DestroySurface)}};
+            for (unsigned i = 0; i < result.size(); ++i) {
+                CaptureRequest request; request.target = i == 1 ? a : i == 2 ? b : TextureSnapshot{};
+                result[i] = Surface(device->captureSynchronously(request), SDL_DestroySurface); REQUIRE(result[i]);
+            }
+            return result;
+        };
+        auto shared = render(false), separated = render(true);
+        for (unsigned i = 0; i < shared.size(); ++i)
+            for (int y = 0; y < 32; ++y) for (int x = 0; x < 32; ++x)
+                nearPixel(shared[i].get(), separated[i].get(), x, y, 0);
+    }
+
+    GLOB2_TEST_CASE("Texture memory follows allocation lifetime across repeated leases and failed frames", "[display][isolated]")
+    {
+        const char *shaders = std::getenv("GLOB2_TEST_SHADER_DIRECTORY"); REQUIRE(shaders);
+        Video video; auto device = makeSDLGPUDevice(nullptr, 16, 16, shaders);
+        RenderResources resources; auto pixels = surface(8, 8); REQUIRE(pixels);
+        auto texture = resources.snapshot(resources.create(pixels.get(), 1)); REQUIRE(texture);
+        RenderFrame frame; frame.identity = 1; frame.logicalWidth = frame.logicalHeight = 16;
+        frame.packets.assign(1000, blit(texture, {0, 0, 8, 8}));
+        const auto submission = device->submit(frame); REQUIRE(submission); device->present();
+        Surface captured(device->captureSynchronously({}), SDL_DestroySurface); REQUIRE(captured);
+        REQUIRE(device->completion(submission) == RenderCompletion::Complete);
+        // Screen, committed screen, white pixel and one shared texture. Neither
+        // repeated packet leases nor completed staging allocations add residency.
+        const std::size_t expected = 2 * 16 * 16 * 4 + 4 + 8 * 8 * 4;
+        CHECK(device->telemetry().resourceBytes == expected);
+        auto fresh = resources.snapshot(resources.create(pixels.get(), 2)); REQUIRE(fresh);
+        DrawPacket clear; clear.kind = DrawPacket::Kind::Clear; clear.target = fresh;
+        clear.clearColor = clear.clearDepth = true;
+        frame.packets = {clear, blit(fresh, {0, 0, 8, 8}), fill({0, 0, -1, 8}, {})};
+        CHECK_THROWS_AS(device->submit(frame), std::invalid_argument);
+        device->trimRetiredResources();
+        CHECK(device->telemetry().resourceBytes == 2 * 16 * 16 * 4 + 4);
+        // Releasing the failed allocation must not poison later admission.
+        frame.packets = {blit(fresh, {0, 0, 8, 8})};
+        REQUIRE(device->submit(frame)); device->present();
+        device->reset();
+        CHECK(device->telemetry().resourceBytes == 2 * 16 * 16 * 4 + 4);
+    }
+
+    GLOB2_TEST_CASE("Expanded rectangles do not consume recorded triangle capacity", "[display][isolated]")
+    {
+        const char *shaders = std::getenv("GLOB2_TEST_SHADER_DIRECTORY"); REQUIRE(shaders);
+        Video video; auto device = makeSDLGPUDevice(nullptr, 16, 16, shaders);
+        RenderFrame frame; frame.logicalWidth = frame.logicalHeight = 16; frame.identity = 1;
+        frame.packets.push_back(fill({0, 0, 16, 16}, {0, 0, 255, 255}));
+        DrawPacket triangles; triangles.kind = DrawPacket::Kind::Triangles;
+        // Fill the recorded budget with degenerate triangles, then one visible
+        // triangle. The background rectangle contributes six additional vertices.
+        triangles.vertices.resize(RenderFrame::VertexCapacity / 3 * 3);
+        const std::array<SDL_Vertex, 3> visible{{{{2, 2}, {1, 0, 0, 1}, {}},
+            {{14, 2}, {1, 0, 0, 1}, {}}, {{2, 14}, {1, 0, 0, 1}, {}}}};
+        std::copy(visible.begin(), visible.end(), triangles.vertices.end() - 3);
+        frame.vertexCount = triangles.vertices.size(); frame.packets.push_back(std::move(triangles));
+        REQUIRE(device->submit(std::move(frame))); device->present();
+        Surface image(device->captureSynchronously({}), SDL_DestroySurface); REQUIRE(image);
+        CHECK(pixel(image.get(), 4, 4).r == 255);
+        CHECK(pixel(image.get(), 15, 15).b == 255);
+        RenderFrame oversized; oversized.logicalWidth = oversized.logicalHeight = 16;
+        DrawPacket invalid; invalid.kind = DrawPacket::Kind::Triangles;
+        invalid.vertices.resize(RenderFrame::VertexCapacity + 2);
+        oversized.packets.push_back(std::move(invalid));
+        // An understated vertexCount cannot bypass the recorded geometry bound.
+        CHECK_THROWS_AS(device->submit(std::move(oversized)), std::length_error);
+    }
+
     GLOB2_TEST_CASE("Vulkan batches the bounded primitive stream without crossing barriers", "[display][isolated]")
     {
         const char *shaders = std::getenv("GLOB2_TEST_SHADER_DIRECTORY"); REQUIRE(shaders);

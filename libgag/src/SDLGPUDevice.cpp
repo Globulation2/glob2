@@ -12,7 +12,6 @@
 #include <stdexcept>
 #include <vector>
 #include <tuple>
-#include <set>
 #include <nlohmann/json.hpp>
 #include <filesystem>
 #ifdef __APPLE__
@@ -24,6 +23,9 @@ namespace GAGCore
 namespace
 {
 namespace Layout = RendererShaderLayouts;
+// Recorder vertices exclude the six vertices generated for each rectangle,
+// clipped clear or terrain-composition packet.
+constexpr std::size_t ExpandedVertexCapacity = RenderFrame::VertexCapacity + RenderFrame::CommandCapacity * 6;
 const char *platformDriver()
 {
 #if defined(_WIN32)
@@ -62,12 +64,16 @@ struct Texture
     TextureSnapshot source;
     int width=0, height=0;
     std::size_t byteSize=0;
+    std::size_t *residentBytes = nullptr;
     bool submitted = false, premultiplied = false, renderTarget = false;
     bool progressiveUpload = false;
     std::size_t uploadOffset = 0;
     std::uint64_t uploadSubmission = 0;
     std::shared_ptr<Texture> depth;
-    ~Texture() { if (gpu) SDL_ReleaseGPUTexture(device, gpu); }
+    ~Texture() {
+        if (gpu) SDL_ReleaseGPUTexture(device, gpu);
+        if (residentBytes) *residentBytes -= byteSize;
+    }
 };
 using TexturePtr = std::shared_ptr<Texture>;
 struct Geometry
@@ -144,8 +150,9 @@ struct PrimitiveState
 struct PrimitivePass
 {
     SDL_GPURenderPass *pass = nullptr;
+    SDL_GPUTexture *target = nullptr;
     ~PrimitivePass() { end(); }
-    void end() { if (pass) { SDL_EndGPURenderPass(pass); pass = nullptr; } }
+    void end() { if (pass) { SDL_EndGPURenderPass(pass); pass = nullptr; } target = nullptr; }
 };
 class SDLGPUDevice final : public RenderDevice
 {
@@ -161,6 +168,9 @@ class SDLGPUDevice final : public RenderDevice
     std::map<DrawPacket::Material, std::pair<SDL_GPUShader *, SDL_GPUShader *>> worldShaders;
     using WorldPipelineKey = std::tuple<DrawPacket::Material, DrawPacket::Blend, DrawPacket::Depth, bool, DrawPacket::Cull>;
     std::map<WorldPipelineKey, SDL_GPUGraphicsPipeline *> worldPipelines;
+    // Declared before texture owners so it outlives every allocation lease.
+    // A texture is charged once, including while only pending work owns it.
+    std::size_t residentTextureBytes = 0;
     std::map<const GeometryRevision *, GeometryPtr> geometryCache;
     bool worldAvailable = false, skinAvailable = false, terrainAvailable = false;
     std::array<SDL_GPUShader *,2> terrainShaders{};
@@ -199,6 +209,7 @@ class SDLGPUDevice final : public RenderDevice
         texture->width=w;texture->height=h;texture->byteSize=bytes;
         texture->gpu = SDL_CreateGPUTexture(device, &info);
         if (!texture->gpu) fail("create texture");
+        texture->residentBytes = &residentTextureBytes; residentTextureBytes += bytes;
         return texture;
     }
     void release(Work &entry)
@@ -237,29 +248,16 @@ class SDLGPUDevice final : public RenderDevice
     }
     void updateMemory(const Work *pending = nullptr)
     {
-        std::set<const Texture *> textures;
-        if (screen) textures.insert(screen.get());
-        if (committedScreen) textures.insert(committedScreen.get());
-        if (white) textures.insert(white.get());
-        for (const auto &[size,texture] : terrainScratch) textures.insert(texture.get());
-        counts.resourceBytes = 0;
+        counts.resourceBytes = residentTextureBytes;
         for (const auto &[key,coverage] : coverageCache) counts.resourceBytes += coverage->bytes;
-        for (const auto &[key, texture] : cache) textures.insert(texture.get());
         const auto addWork=[&](const Work &entry) {
-            for (const auto &texture : entry.textures) textures.insert(texture.get());
             counts.resourceBytes += entry.vertexBytes;
             for (auto [buffer, bytes] : entry.transfers) counts.resourceBytes += bytes;
         };
         for (const auto &entry : work) addWork(entry);
-        // Resizing can remove a retiring screen from the member/cache maps
-        // before this segment is submitted; its queued lease still consumes VRAM.
-        if(pending)addWork(*pending);
-        for (const auto &capture : captures) {
-            textures.insert(capture.source.get());
+        if (pending) addWork(*pending);
+        for (const auto &capture : captures)
             counts.resourceBytes += std::size_t(capture.request.width) * capture.request.height * 4;
-        }
-        for (const auto *texture : textures) if (texture)
-            counts.resourceBytes += texture->byteSize + (texture->depth ? texture->depth->byteSize : 0);
         for (const auto &[key, geometry] : geometryCache) counts.resourceBytes += geometry->source->bytes;
     }
     void reserveMemory(std::size_t bytes, const Work *pending = nullptr)
@@ -283,7 +281,8 @@ class SDLGPUDevice final : public RenderDevice
             SDL_ConvertSurface(source, SDL_PIXELFORMAT_RGBA32), SDL_DestroySurface);
         if (!converted) fail("convert texture pixels");
         const std::size_t bytes = texture->byteSize;
-        reserveMemory(bytes * 2, &entry);
+        // The destination texture is already charged by allocate().
+        reserveMemory(bytes, &entry);
         auto *buffer = transfer(SDL_GPU_TRANSFERBUFFERUSAGE_UPLOAD, bytes); entry.transfers.emplace_back(buffer, bytes);
         auto *pixels = static_cast<unsigned char *>(SDL_MapGPUTransferBuffer(device, buffer, false));
         if (!pixels) fail("map texture upload");
@@ -440,12 +439,13 @@ class SDLGPUDevice final : public RenderDevice
         // Large authored chains may fit as resident resources but not with a
         // second full-chain transfer allocation beside retained depth atlases.
         // In that case admit bounded asynchronous slices across frame retries.
-        if(bytes>TotalBudget-std::min(TotalBudget,counts.resourceBytes+bytes)) {
+        updateMemory(&entry);
+        if(bytes>TotalBudget-std::min(TotalBudget,counts.resourceBytes)) {
             texture->progressiveUpload=true;cache.emplace(key,texture);
             progressUpload(texture,entry,opaque,premultiplied && source->descriptor.alpha!=TextureDescriptor::Alpha::Premultiplied);
         }
         upload(commands, entry, texture, source->pixels.get(), opaque, premultiplied && source->descriptor.alpha != TextureDescriptor::Alpha::Premultiplied);
-        cache.emplace(key, texture); counts.resourceBytes += bytes; return texture;
+        cache.emplace(key, texture); return texture;
         } catch(const RenderAdmissionDeferred &) {preservePreparedUploads(commands,entry);throw;}
     }
     TexturePtr captureSource(CaptureRequest &request, SDL_Rect &rect)
@@ -616,7 +616,7 @@ class SDLGPUDevice final : public RenderDevice
     void loadTerrainShaders();
     CoveragePtr resolveCoverage(SDL_GPUCommandBuffer *, Work &, std::shared_ptr<const CoverageData>);
     void prepareTerrain(SDL_GPUCommandBuffer *&, Work &, Draw &, std::vector<SDL_Vertex> &);
-    void drawTerrain(SDL_GPUCommandBuffer *, Work &, const Draw &);
+    void drawTerrain(SDL_GPUCommandBuffer *, Work &, const Draw &, PrimitivePass &);
     void teardown()
     {
         if (!device) return;
@@ -880,13 +880,13 @@ void SDLGPUDevice::prepareTerrain(SDL_GPUCommandBuffer *&commands, Work &entry, 
         }
         draw.scratch=found->second;entry.textures.push_back(draw.scratch);
     }
-    if(vertices.size()+6>RenderFrame::VertexCapacity)throw std::length_error("Terrain vertices exceed frame capacity");
+    if(vertices.size()+6>ExpandedVertexCapacity)throw std::length_error("Terrain vertices exceed frame capacity");
     const float extent=float(size);const SDL_FColor tint{1,1,1,1};
     for(const SDL_Vertex vertex:{SDL_Vertex{{0,0},tint,{0,0}},SDL_Vertex{{extent,0},tint,{1,0}},SDL_Vertex{{extent,extent},tint,{1,1}},
                                SDL_Vertex{{0,0},tint,{0,0}},SDL_Vertex{{extent,extent},tint,{1,1}},SDL_Vertex{{0,extent},tint,{0,1}}})vertices.push_back(vertex);
     draw.count=6;
 }
-void SDLGPUDevice::drawTerrain(SDL_GPUCommandBuffer *commands, Work &entry, const Draw &draw)
+void SDLGPUDevice::drawTerrain(SDL_GPUCommandBuffer *commands, Work &entry, const Draw &draw, PrimitivePass &active)
 {
     const auto &data=*draw.packet->weightedCompose;const bool reduced=data.reductionDivisor>1;
     const bool pma=draw.packet->target->descriptor.alpha==TextureDescriptor::Alpha::Premultiplied;
@@ -905,14 +905,24 @@ void SDLGPUDevice::drawTerrain(SDL_GPUCommandBuffer *commands, Work &entry, cons
     const auto &mask=draw.coverage;
     images[4]={mask->weights,nearest};images[5]={mask->selectors,nearest};
     auto render=[&](unsigned index,TexturePtr target,SDL_Rect rect,const void *data,Uint32 bytes,const SDL_GPUTextureSamplerBinding *bindings,Uint32 count) {
-        SDL_GPUColorTargetInfo color{};color.texture=target->gpu;color.load_op=SDL_GPU_LOADOP_LOAD;color.store_op=SDL_GPU_STOREOP_STORE;
-        auto *pass=SDL_BeginGPURenderPass(commands,&color,1,nullptr);if(!pass)fail("begin terrain pass");
+        // Adjacent cells on one page have independent uniforms and scissors,
+        // but share the attachment. Avoid a load/store render pass per cell.
+        if (!active.pass || active.target != target->gpu) {
+            active.end();
+            SDL_GPUColorTargetInfo color{};color.texture=target->gpu;color.load_op=SDL_GPU_LOADOP_LOAD;color.store_op=SDL_GPU_STOREOP_STORE;
+            active.pass=SDL_BeginGPURenderPass(commands,&color,1,nullptr);if(!active.pass)fail("begin terrain pass");
+            active.target=target->gpu;
+        }
+        auto *pass=active.pass;
         SDL_BindGPUGraphicsPipeline(pass,terrainPipelines[index]);SDL_GPUBufferBinding vertices{entry.vertices,0};SDL_BindGPUVertexBuffers(pass,0,&vertices,1);
         SDL_GPUViewport viewport{float(rect.x),float(rect.y),float(rect.w),float(rect.h),0,1};SDL_SetGPUViewport(pass,&viewport);SDL_SetGPUScissor(pass,&rect);
         SDL_BindGPUFragmentSamplers(pass,0,bindings,count);
         const std::array<float,4> vertex{float(draw.packet->weightedCompose->compositionSize),float(draw.packet->weightedCompose->compositionSize),0,0};
         SDL_PushGPUVertexUniformData(commands,0,vertex.data(),sizeof(vertex));SDL_PushGPUFragmentUniformData(commands,0,data,bytes);
-        SDL_DrawGPUPrimitives(pass,6,1,draw.first,0);SDL_EndGPURenderPass(pass);++counts.batches;
+        SDL_DrawGPUPrimitives(pass,6,1,draw.first,0);++counts.batches;
+        // Reduction samples the just-composed scratch attachment; close it
+        // before sampling and close the destination before scratch reuse.
+        if (reduced) active.end();
     };
     render(0,reduced?draw.scratch:draw.target,reduced?SDL_Rect{0,0,int(data.compositionSize),int(data.compositionSize)}:data.targetRect,uniforms.data(),sizeof(uniforms),images.data(),images.size());
     if(reduced) {
@@ -979,6 +989,7 @@ TexturePtr SDLGPUDevice::depthFor(TexturePtr color, const Work *pending)
     info.layer_count_or_depth = info.num_levels = 1;
     auto depth = std::make_shared<Texture>(); depth->device = device; depth->width = color->width; depth->height = color->height;depth->byteSize=std::size_t(depth->width)*depth->height*4;
     depth->gpu = SDL_CreateGPUTexture(device, &info); if (!depth->gpu) fail("create depth attachment");
+    depth->residentBytes = &residentTextureBytes; residentTextureBytes += depth->byteSize;
     color->depth = depth; return depth;
 }
 SDL_GPUSampler *SDLGPUDevice::samplerFor(const DrawPacket &packet)
@@ -1109,7 +1120,7 @@ void SDLGPUDevice::drawWorld(SDL_GPUCommandBuffer *commands, const Draw &draw, f
 }
 void SDLGPUDevice::drawPackets(SDL_GPUCommandBuffer *commands, Work &entry, const std::vector<Draw> &draws, float lw, float lh)
 {
-    PrimitivePass active;
+    PrimitivePass active, terrain;
     std::optional<PrimitiveState> bound, pending;
     Uint32 first = 0, count = 0;
     auto flush = [&] {
@@ -1150,6 +1161,7 @@ void SDLGPUDevice::drawPackets(SDL_GPUCommandBuffer *commands, Work &entry, cons
     auto endPass = [&] { flush(); active.end(); bound.reset(); };
     for (const auto &draw : draws) {
         const auto &packet = *draw.packet;
+        if (packet.kind != DrawPacket::Kind::WeightedCompose) terrain.end();
         // These boundaries may change attachments, depth, or sampled targets.
         // They also prohibit adjacent geometry merging even when state matches.
         if (packet.kind == DrawPacket::Kind::Barrier) { endPass(); continue; }
@@ -1157,7 +1169,7 @@ void SDLGPUDevice::drawPackets(SDL_GPUCommandBuffer *commands, Work &entry, cons
             endPass();
             if (!draw.count) { clearPacket(commands, draw); continue; }
         } else if (packet.kind == DrawPacket::Kind::WeightedCompose) {
-            endPass(); drawTerrain(commands, entry, draw); continue;
+            endPass(); drawTerrain(commands, entry, draw, terrain); continue;
         } else if (packet.kind == DrawPacket::Kind::MeshTriangles) {
             endPass(); drawWorld(commands, draw, lw, lh); continue;
         }
@@ -1170,7 +1182,7 @@ void SDLGPUDevice::drawPackets(SDL_GPUCommandBuffer *commands, Work &entry, cons
         else { flush(); pending = state; first = draw.first; count = draw.count; }
         if (packet.kind == DrawPacket::Kind::Clear) endPass();
     }
-    endPass();
+    endPass(); terrain.end();
 }
 RenderSubmission SDLGPUDevice::submit(RenderFrame frame)
 {
@@ -1178,6 +1190,12 @@ RenderSubmission SDLGPUDevice::submit(RenderFrame frame)
     reap(); if (work.size() >= SubmissionLimit) return {};
     if (frame.logicalWidth <= 0 || frame.logicalHeight <= 0 || frame.packets.size() > RenderFrame::CommandCapacity || frame.vertexCount > RenderFrame::VertexCapacity)
         throw std::invalid_argument("Invalid or unbounded render frame");
+    std::size_t recordedVertices = 0;
+    for (const auto &packet : frame.packets) {
+        if (packet.vertices.size() > RenderFrame::VertexCapacity - recordedVertices)
+            throw std::length_error("GPU recorded vertex capacity exhausted");
+        recordedVertices += packet.vertices.size();
+    }
     Work entry;
     const auto previousScreen = screen;
     const int previousWidth = width, previousHeight = height;
@@ -1207,7 +1225,7 @@ RenderSubmission SDLGPUDevice::submit(RenderFrame frame)
             const auto count = packet.kind == DrawPacket::Kind::Triangles || packet.kind == DrawPacket::Kind::ScreenTriangles
                 ? packet.vertices.size() : packet.kind == DrawPacket::Kind::Fill || packet.kind == DrawPacket::Kind::Blit ||
                     packet.kind == DrawPacket::Kind::Clear || packet.kind == DrawPacket::Kind::WeightedCompose ? 6u : 0u;
-            vertexReserve += std::min(RenderFrame::VertexCapacity - vertexReserve, count);
+            vertexReserve += count;
         }
         vertices.reserve(vertexReserve);
         for (const auto &packet : frame.packets) {
@@ -1272,7 +1290,7 @@ RenderSubmission SDLGPUDevice::submit(RenderFrame frame)
                     const float w = packet.targetLogicalWidth > 0 ? packet.targetLogicalWidth : frame.logicalWidth;
                     const float h = packet.targetLogicalHeight > 0 ? packet.targetLogicalHeight : frame.logicalHeight;
                     const auto c = packet.clearValue;
-                    if (vertices.size() + 6 > RenderFrame::VertexCapacity) throw std::length_error("GPU vertex capacity exhausted");
+                    if (vertices.size() + 6 > ExpandedVertexCapacity) throw std::length_error("GPU vertex capacity exhausted");
                     for (const SDL_Vertex v : {SDL_Vertex{{0,0},c,{0,0}},SDL_Vertex{{w,0},c,{0,0}},SDL_Vertex{{w,h},c,{0,0}},
                                               SDL_Vertex{{0,0},c,{0,0}},SDL_Vertex{{w,h},c,{0,0}},SDL_Vertex{{0,h},c,{0,0}}}) vertices.push_back(v);
                     draw.count = 6;
@@ -1281,7 +1299,7 @@ RenderSubmission SDLGPUDevice::submit(RenderFrame frame)
                 entry.textures.push_back(draw.target); draws.push_back(std::move(draw)); ++counts.packets; continue;
             }
             auto append = [&](SDL_Vertex vertex) {
-                if (vertices.size() >= RenderFrame::VertexCapacity) throw std::length_error("GPU vertex capacity exhausted");
+                if (vertices.size() >= ExpandedVertexCapacity) throw std::length_error("GPU vertex capacity exhausted");
                 if (packet.kind != DrawPacket::Kind::ScreenTriangles) {
                     vertex.position.x = vertex.position.x * packet.transform.scale + packet.transform.x;
                     vertex.position.y = vertex.position.y * packet.transform.scale + packet.transform.y;
