@@ -132,6 +132,7 @@ static void run(int width,int height,bool gl,bool expanded)
         REQUIRE(s.gpuComputeEnabled());
         Settings gpuLoaded; gpuLoaded.load();
         REQUIRE(gpuLoaded.gpuComputeEnabled());
+        screen.capture(output+"/gpu-compute-on.bmp");
         REQUIRE(screen.changeSetting("gameplay.gpu", 0));
         gpuLoaded.load();
         REQUIRE(gpuLoaded.gpuCompute.has_value());
