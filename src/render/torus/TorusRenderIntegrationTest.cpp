@@ -24,6 +24,7 @@
 #include "Team.h"
 #include "TorusMapFixture.h"
 #include "Unit.h"
+#include "Player.h"
 #include "GameGUIKeyActions.h"
 #include "CloudField.h"
 #include <RenderDevice.h>
@@ -249,6 +250,9 @@ static void deviceOverlayRetry(GAGCore::RendererBackend backend)
     gfx->renderer=gfx->deviceRenderer.get();
     globals->settings.clouds=false;
     GameGUI gui;gui.init();makeTorusMapFixture(gui.game,64,64);
+    // The render-only map helper declares a player but does not allocate one.
+    // These fixtures verify game checksums, which require the real player.
+    gui.game.players[0]=new Player(0,"Renderer fixture",gui.game.teams[0],BasePlayer::P_LOCAL);
     for(int y=0;y<64;++y)for(int x=0;x<64;++x)gui.game.map.paintVertexSquare(x,y,GRASS,1);
     gui.localPlayer=gui.localTeamNo=0;gui.adjustLocalTeam();gui.prepareLocalPresentation();
     gui.selectionMode=GameGUI::TOOL_SELECTION;gui.toolManager.activateBuildingTool("swarm");
@@ -291,6 +295,9 @@ static void devicePhaseFallback(GAGCore::RendererBackend backend)
     gfx->renderer=gfx->deviceRenderer.get();
     globals->settings.clouds=false;
     GameGUI gui;gui.init();makeTorusMapFixture(gui.game,64,64);
+    // The render-only map helper declares a player but does not allocate one.
+    // These fixtures verify game checksums, which require the real player.
+    gui.game.players[0]=new Player(0,"Renderer fixture",gui.game.teams[0],BasePlayer::P_LOCAL);
     gui.localPlayer=gui.localTeamNo=0;gui.adjustLocalTeam();gui.prepareLocalPresentation();
     gui.torusView.textureLimit=1024;gui.torusView.toggle();
     const auto checksum=gui.game.checkSum();
