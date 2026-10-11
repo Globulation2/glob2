@@ -249,6 +249,9 @@ class ReleaseWorkflowTests(unittest.TestCase):
         text=(ROOT/'.github/workflows/github-release.yml').read_text()
         self.assertEqual(text.count('source_commit: ${{ needs.context.outputs.revision }}'),4)
         self.assertIn('ref: ${{ needs.context.outputs.revision }}',text)
+        context=text.split('  windows-preflight:',1)[0]
+        self.assertIn('fetch-depth: 1',context)
+        self.assertIn('release.py check --tag',context)
         for name in ('release.yml','android-play-internal.yml','ios-testflight.yml'):
             self.assertIn('EXPECTED_COMMIT',(ROOT/'.github/workflows'/name).read_text())
 

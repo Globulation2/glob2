@@ -41,7 +41,7 @@ jobs:
         with:
           repository: Globulation2/glob2
           ref: ${{ inputs.tag }}
-          fetch-depth: 0
+          fetch-depth: 1
           persist-credentials: false
       - name: Validate immutable public source
         id: source
