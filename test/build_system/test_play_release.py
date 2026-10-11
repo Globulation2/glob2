@@ -94,7 +94,7 @@ class PlayReleaseTests(unittest.TestCase):
             play_release.version_code(play_release.VERSION_EPOCH + play_release.MAX_VERSION_CODE + 1)
 
     def test_preflight_verifies_selected_app_track_without_publishing(self):
-        for track in ('internal', 'production'):
+        for track in ('internal', 'alpha', 'production'):
             with self.subTest(track=track):
                 service, edits = self.service()
                 result = play_release.preflight(service, track)
@@ -161,13 +161,28 @@ class PlayReleaseTests(unittest.TestCase):
             play_release.publish(service, self.bundle, self.code, 'Release 42', 'Public release', track='unknown')
         self.assertEqual(edits.calls, [])
 
+    def test_closed_alpha_keeps_verified_bundle_and_selected_track(self):
+        service, edits = self.service()
+        result = play_release.publish(service, self.bundle, self.code,
+                                      'Closed 42', 'Closed test', track='alpha')
+        self.assertEqual(result['bundle_sha256'], self.digest)
+        self.assertEqual(result['track'], 'alpha')
+        self.assertEqual([name for name, _ in edits.calls],
+                         ['insert', 'get', 'upload', 'update', 'validate', 'commit'])
+        update = edits.calls[3][1]
+        self.assertEqual(update['track'], 'alpha')
+        self.assertEqual(update['body']['releases'][0]['versionCodes'], ['42'])
+        self.assertEqual(update['body']['releases'][0]['status'], 'completed')
+
     def test_never_commits_wrong_or_reused_bundle(self):
-        for kwargs in ({'active': self.code}, {'bad_digest': True}):
-            with self.subTest(kwargs=kwargs):
-                service, edits = self.service(**kwargs)
-                with self.assertRaises(ValueError):
-                    play_release.publish(service, self.bundle, self.code, 'Internal 42', 'Test build')
-                self.assertNotIn('commit', [name for name, _ in edits.calls])
+        for track in play_release.TRACKS:
+            for kwargs in ({'active': self.code}, {'bad_digest': True}):
+                with self.subTest(track=track, kwargs=kwargs):
+                    service, edits = self.service(**kwargs)
+                    with self.assertRaises(ValueError):
+                        play_release.publish(service, self.bundle, self.code,
+                                             'Release 42', 'Test build', track=track)
+                    self.assertNotIn('commit', [name for name, _ in edits.calls])
 
     def test_rejects_changed_build_before_creating_edit(self):
         (self.bundle.parent / 'app-release.aab').write_bytes(b'changed')

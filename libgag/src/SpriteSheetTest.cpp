@@ -2,6 +2,7 @@
 // GAGCore::Sprite's sheet loader (the <name>.sheet index tools/package_assets.py
 // writes for packaged builds) and its fallback to one file per frame.
 #include "Glob2Test.h"
+#include "HighResolutionInputs.h"
 #include "LossyAlphaFixture.h"
 #include "SpritePatternFixture.h"
 #include "ScopedEnvironment.h"
@@ -115,7 +116,10 @@ TEST_CASE("portable HD uses standalone frames without requesting GL atlases [dis
     frame.close();
     std::ofstream index(hd / "frames.txt");
     index << "GLOB2_HIGHRES 1\n";
-    for (int i = 0; i < 16; ++i) index << "terrain" << i << " 4 2 4 frame.webp -\n";
+    for (int i = 0; i < 16; ++i) {
+        std::filesystem::copy_file(hd / "frame.webp", hd / ("frame" + std::to_string(i) + ".webp"));
+        index << "terrain" << i << " 4 2 4 frame" << i << ".webp -\n";
+    }
     index.close();
     glob2test::ScopedEnvironment assets("GLOB2_ASSET_DIR", scratch.path.string().c_str());
     glob2test::ScopedEnvironment pack("GLOB2_EXPERIMENT_TEXTURE_DIR", hd.string().c_str());
@@ -127,22 +131,28 @@ TEST_CASE("portable HD uses standalone frames without requesting GL atlases [dis
     CHECK(GAGCore::Sprite::prefetchHighResolution("data/gfx/terrain", 16).size() == 16);
     {
         auto inputs = GAGCore::prefetchHighResolutionIncremental("data/gfx/terrain", 16);
-        CHECK(std::count_if(inputs.begin(), inputs.end(), [](const auto& input) {
-            return bool(input.dependency().subscription);
-        }) == 8);
+        for (int i = 0; i < 16; ++i) {
+            const auto state = inputs.state(hd.string() + "/frame" + std::to_string(i) + ".webp", false);
+            CHECK((state != GAGCore::AssetLoader::State::Cancelled) == (i < 8));
+        }
         GAGCore::highResolutionFrameReady("data/gfx/terrain", 8, inputs);
-        CHECK(inputs[8].dependency().subscription != nullptr);
+        CHECK(inputs.state(hd.string() + "/frame8.webp", false) != GAGCore::AssetLoader::State::Cancelled);
     }
     for (bool shared : {false, true}) {
         auto inputs = GAGCore::Sprite::prefetchHighResolution("data/gfx/terrain", 1);
-        REQUIRE(GAGCore::Toolkit::assets().wait(inputs.front()));
-        std::weak_ptr<const GAGCore::AssetImage> decoded = inputs.front().get();
-        auto* pixels = inputs.front().get()->surface;
-        auto independent = shared ? inputs.front().retain() : GAGCore::AssetLoader::Handle<GAGCore::AssetImage>{};
+        auto inspect = GAGCore::Toolkit::assets().requestImage(hd.string() + "/frame0.webp",
+            GAGCore::AssetLoader::Priority::Required, false);
+        REQUIRE(GAGCore::Toolkit::assets().wait(inspect));
+        CHECK(inspect.get()->mips.empty()); // SDL sampling never consumes CPU mip levels.
+        std::weak_ptr<const GAGCore::AssetImage> decoded = inspect.get();
+        auto* pixels = inspect.get()->surface;
+        auto independent = shared ? inspect.retain() : GAGCore::AssetLoader::Handle<GAGCore::AssetImage>{};
+        inspect = {};
         GAGCore::Sprite prepared;
         sprite.appendHighResolutionFrame(0, prepared, inputs);
         REQUIRE(prepared.experimentImages[0]);
-        CHECK(inputs.front().state() == GAGCore::AssetLoader::State::Cancelled);
+        CHECK(prepared.experimentImages[0]->preparedMips.empty());
+        CHECK(inputs.size() == 0);
         if (shared) {
             REQUIRE(independent.get());
             CHECK(independent.get()->surface == pixels);
@@ -249,6 +259,60 @@ TEST_CASE("independently encoded lossy HD atlases keep exact frame alpha [displa
     GAGCore::Sprite::setHighResolution(true);
     CHECK(GAGCore::Toolkit::assets().sourceGeneration() != generation);
     CHECK(sprite.experimentImages[0] != published);
+    // Cancellation must release staging inputs without publishing a partial sprite.
+    {
+        glob2test::ScopedEnvironment disabledPack("GLOB2_EXPERIMENT_TEXTURE_DIR", hd.string().c_str());
+        glob2test::unsetEnv("GLOB2_EXPERIMENT_TEXTURE_DIR");
+        GAGCore::Sprite::requestHighResolution(false);
+    }
+    GAGCore::Sprite::requestHighResolution(true);
+    // An explicit experimental directory forces HD even with the preference
+    // disabled. Remove that override while testing ordinary cancellation.
+    {
+        glob2test::ScopedEnvironment disabledPack("GLOB2_EXPERIMENT_TEXTURE_DIR", hd.string().c_str());
+        glob2test::unsetEnv("GLOB2_EXPERIMENT_TEXTURE_DIR");
+        GAGCore::Sprite::requestHighResolution(false);
+        const auto cancellationDeadline = std::chrono::steady_clock::now() + std::chrono::seconds(10);
+        bool cancelled = false;
+        while (std::chrono::steady_clock::now() < cancellationDeadline) {
+            cancelled = GAGCore::Toolkit::pollAssets(2);
+            if (cancelled) break;
+            SDL_Delay(1);
+        }
+        REQUIRE(cancelled);
+        CHECK(sprite.highResolutionAtlas == nullptr);
+        CHECK(sprite.experimentImages[0] == nullptr);
+    }
+    for (int toggle = 0; toggle < 3; ++toggle) {
+        GAGCore::Sprite::setHighResolution(true);
+        REQUIRE(sprite.highResolutionAtlas != nullptr);
+        REQUIRE(sprite.experimentImages[0] != nullptr);
+        auto* surface = sprite.experimentImages[0]->getSDLSurface();
+        for (int y = 0; y < lossyAlphaFixture::height; ++y)
+            for (int x = 0; x < lossyAlphaFixture::width; ++x) {
+                Uint8 r, g, b, a;
+                REQUIRE(SDL_ReadSurfacePixel(surface, x, y, &r, &g, &b, &a));
+                CHECK(a == lossyAlphaFixture::alpha[y * lossyAlphaFixture::width + x]);
+            }
+        glob2test::ScopedEnvironment disabledPack("GLOB2_EXPERIMENT_TEXTURE_DIR", hd.string().c_str());
+        glob2test::unsetEnv("GLOB2_EXPERIMENT_TEXTURE_DIR");
+        GAGCore::Sprite::setHighResolution(false);
+    }
+    // Missing optional mips preserve the valid standalone HD frames.
+    std::filesystem::remove(hd / "terrain-atlas-mip1.webp");
+    GAGCore::Sprite::setHighResolution(true);
+    CHECK(sprite.highResolutionAtlas == nullptr);
+    REQUIRE(sprite.experimentImages[0] != nullptr);
+    // An invalid supplied mip preserves the established native-art fallback.
+    std::filesystem::copy_file(hd / "frame.webp", hd / "terrain-atlas-mip1.webp");
+    GAGCore::Sprite::setHighResolution(true);
+    CHECK(sprite.highResolutionAtlas == nullptr);
+    CHECK(sprite.experimentImages[0] == nullptr);
+    std::filesystem::copy_file(fixtures / "terrain-atlas-mip1.webp", hd / "terrain-atlas-mip1.webp",
+        std::filesystem::copy_options::overwrite_existing);
+    GAGCore::Sprite::setHighResolution(true);
+    REQUIRE(sprite.highResolutionAtlas != nullptr);
+    REQUIRE(sprite.experimentImages[0] != nullptr);
 }
 #endif
 

@@ -1,0 +1,1 @@
+Updated native artwork loading and release packaging; verified permanent sideload signing remains separate from Google Play.

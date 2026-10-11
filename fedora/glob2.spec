@@ -1,5 +1,5 @@
 Name:           glob2
-Version:        0.11.0.5
+Version:        0.11.0.6
 Release:        1%{?dist}
 Summary:        Real time strategy game with automatic unit task assignment
 License:        GPL-3.0-or-later
@@ -75,7 +75,7 @@ export GLOB2_SDL3_PREFIX="$PWD/build/sdl3/prefix"
 python3 scons/sdl3_dependencies.py --prefix "$GLOB2_SDL3_PREFIX" --work build/sdl3/sources --jobs 2
 export RPM_PACKAGE_NAME=%{name} RPM_PACKAGE_VERSION=%{version} \
     RPM_PACKAGE_RELEASE=%{release} RPM_ARCH=%{_arch}
-scons -j2 release=0 server=0 CXXFLAGS="%{optflags}" LINKFLAGS="%{build_ldflags}" \
+scons -j2 release=1 retain_symbols=1 server=0 CXXFLAGS="%{optflags}" LINKFLAGS="%{build_ldflags}" \
     BINDIR=%{_bindir} INSTALLDIR=%{_datadir} DATADIR=%{_datadir}
 
 %install
@@ -83,7 +83,7 @@ export GLOB2_ASSET_ENCODER_PYTHON="$PWD/artifacts/asset-encoder/venv/bin/python"
 export GLOB2_SDL3_PREFIX="$PWD/build/sdl3/prefix"
 export RPM_PACKAGE_NAME=%{name} RPM_PACKAGE_VERSION=%{version} \
     RPM_PACKAGE_RELEASE=%{release} RPM_ARCH=%{_arch}
-scons -j2 release=0 server=0 CXXFLAGS="%{optflags}" LINKFLAGS="%{build_ldflags}" \
+scons -j2 release=1 retain_symbols=1 server=0 CXXFLAGS="%{optflags}" LINKFLAGS="%{build_ldflags}" \
     BINDIR=%{buildroot}%{_bindir} \
     INSTALLDIR=%{buildroot}%{_datadir} DATADIR=%{_datadir} optimized_assets=1 install
 

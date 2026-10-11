@@ -70,10 +70,10 @@ class LimitedTerrainBackend final : public GAGCore::RenderBackend
 	int limit = 1024, largestTexture = 0;
 	explicit LimitedTerrainBackend(GAGCore::RenderBackend &backend) : delegate(backend) {}
 	int maximumTextureSize() const override { return limit; }
-	void prepareTexture(const void *key, SDL_Surface *pixels, std::uint64_t revision) override
+	void prepareTexture(const void *key, SDL_Surface *pixels, std::uint64_t revision, bool linear = false) override
 	{
 		check(pixels);
-		delegate.prepareTexture(key, pixels, revision);
+		delegate.prepareTexture(key, pixels, revision, linear);
 	}
 	void blit(const void *key, SDL_Surface *pixels, std::uint64_t revision, bool opaque,
 			  const SDL_Rect &src, const SDL_FRect &dst, Uint8 alpha) override

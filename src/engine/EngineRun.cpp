@@ -5,6 +5,7 @@
 #include <PerformanceTelemetry.h>
 #include <EventQueue.h>
 #include <ApplicationHost.h>
+#include <Toolkit.h>
 #include <FormatableString.h>
 
 #include "AINames.h"
@@ -1243,6 +1244,7 @@ void Engine::runOneGameSession(bool& doRunOnceAgain)
         // GLOB2_SIM_THREAD test switch and then only take scenes.
         for (;;)
         {
+            if (!globalContainer->runNoX) GAGCore::Toolkit::pollAssets();
             GAGCore::EventQueue events;
             if (!globalContainer->runNoX)
             {
@@ -1269,6 +1271,7 @@ void Engine::runOneGameSession(bool& doRunOnceAgain)
         return;
     }
     while (gui.isRunning) {
+        if (!globalContainer->runNoX) GAGCore::Toolkit::pollAssets();
         stepSession(SDL_GetTicks());
         if (globalContainer->runNoX || globalContainer->gfx->beginRenderFrame()) drawSession();
         if (!globalContainer->runNoX) {

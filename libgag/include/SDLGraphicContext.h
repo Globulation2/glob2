@@ -18,7 +18,6 @@
 #include <valarray>
 #include <memory>
 #include <optional>
-#include <span>
 #include <cstdint>
 
 #include <set>
@@ -211,8 +210,8 @@ namespace GAGCore
 	protected:
 		//! Protected constructor, only called by GraphicContext
 		DrawableSurface() { sdlsurface = NULL; }
-		//! allocate texture in GPU for this surface
-		void allocateTexture(void);
+		//! allocate a GPU texture object, optionally initializing legacy padded storage
+		void allocateTexture(bool initializeStorage = true);
 		//! reset the texture size upon changes
 		void initTextureSize(void);
 		//! upload surface to GPU
@@ -756,12 +755,13 @@ namespace GAGCore
 		RenderingIdentity renderingIdentity() const;
 	};
 	
+    class HighResolutionInputs;
 	//! A sprite is a collection of images (frames) that can be displayed one after another to make an animation
 	class Sprite
 	{
         friend class SpriteLoad;
         void registerLoaded();
-        static std::vector<AssetLoader::Handle<AssetImage>> prefetchHighResolution(const std::string&, size_t frames);
+        static HighResolutionInputs prefetchHighResolution(const std::string&, size_t frames);
         void adoptLoaded(Sprite& prepared);
 	protected:
 		struct RotatedImage
@@ -784,7 +784,7 @@ namespace GAGCore
 		std::vector <DrawableSurface *> images;
 		std::vector <RotatedImage *> rotated;
 		std::unique_ptr<Sprite> highResolutionAtlas;
-		void createHighResolutionAtlas(std::span<AssetLoader::Handle<AssetImage>> inputs = {});
+		void createHighResolutionAtlas(HighResolutionInputs& inputs);
 		std::vector <DrawableSurface *> experimentImages;
 		std::vector <RotatedImage *> experimentRotated;
 
@@ -870,7 +870,7 @@ namespace GAGCore
 		DrawableSurface *getColoredSurface(int index, bool experiment);
 		DrawableSurface *prepareDrawSurface(unsigned index, bool teamColor, bool experiment);
         void appendHighResolutionFrame(size_t index, Sprite& target,
-            std::span<AssetLoader::Handle<AssetImage>> inputs = {});
+            HighResolutionInputs& inputs);
 
 	public:
 		//! Opt into batching variable-size frames; callers must finishDrawingSprite.
