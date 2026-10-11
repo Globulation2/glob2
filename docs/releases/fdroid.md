@@ -25,7 +25,10 @@ developer signature supports emulator and device checks. The all-platform
 staging workflow signs those verified unsigned APKs in its protected
 `android-sideload` job using `mobile/sideload_release.py`, verifies the pinned
 permanent signing certificate and alignment, and stages only the final signed
-APKs. F-Droid's signature remains the sole public F-Droid update channel.
+APKs. APK verification checks every packaged native ELF's ABI and load-segment
+alignment: 16 KB pages for ARM64 and x86-64, and 4 KB pages for ARMv7. This is
+separate from ZIP alignment of the final APK. F-Droid's signature remains the
+sole public F-Droid update channel.
 The reviewed `.github/workflows/fdroid-release-validation.yml` workflow is
 mirrored to `genixpro/glob2-release` and runs by owner dispatch with
 the exact public candidate commit SHA. Its read-only jobs build all three
