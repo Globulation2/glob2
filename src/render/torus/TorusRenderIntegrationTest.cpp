@@ -194,6 +194,70 @@ static void tiledCapture(bool hd = false)
 #endif
 }
 
+// Inject one admission failure after the final overlay work has really submitted.
+// Region packets carry exact physical scissors; the final overlay does not.
+class OverlayAdmissionDevice final : public GAGCore::RenderDevice
+{
+    std::unique_ptr<GAGCore::RenderDevice> device;
+public:
+    bool rejected=false;
+    explicit OverlayAdmissionDevice(std::unique_ptr<GAGCore::RenderDevice> value) : device(std::move(value)) {}
+    GAGCore::RenderDeviceCapabilities capabilities() const override {return device->capabilities();}
+    bool canBeginFrame() override {return device->canBeginFrame();}
+    GAGCore::RenderSubmission submit(GAGCore::RenderFrame frame) override {
+        const bool overlay=!rejected && std::any_of(frame.packets.begin(),frame.packets.end(),[](const auto &packet){
+            return packet.target && packet.target->descriptor.budgetClass==GAGCore::TextureDescriptor::BudgetClass::TerrainPage &&
+                !packet.targetScissor && (packet.kind==GAGCore::DrawPacket::Kind::Fill || packet.kind==GAGCore::DrawPacket::Kind::Blit);
+        });
+        const auto submitted=device->submit(std::move(frame));
+        if(overlay && submitted){rejected=true;throw GAGCore::RenderAdmissionDeferred("Injected final torus overlay admission failure");}
+        return submitted;
+    }
+    GAGCore::RenderCompletion completion(GAGCore::RenderSubmission value) override {return device->completion(value);}
+    void present() override {device->present();}
+    void discardFrame() override {device->discardFrame();}
+    void reset() override {device->reset();}
+    std::uint64_t generation() const override {return device->generation();}
+    GAGCore::RenderTelemetry telemetry() const override {return device->telemetry();}
+    void trimRetiredResources() override {device->trimRetiredResources();}
+    bool capture(GAGCore::CaptureRequest request) override {return device->capture(std::move(request));}
+    bool pollCapture(GAGCore::CaptureResult &result) override {return device->pollCapture(result);}
+    SDL_Surface *captureSynchronously(GAGCore::CaptureRequest request) override {return device->captureSynchronously(std::move(request));}
+    void cancelCaptures() override {device->cancelCaptures();}
+    void outputSize(int &width,int &height) override {device->outputSize(width,height);}
+};
+static void deviceOverlayRetry(GAGCore::RendererBackend backend)
+{
+    using namespace GAGCore;
+    glob2test::HeadlessGlobals globals({.display=true,.loadStrings=true,.width=960,.height=720,
+        .beforeLoad=[backend](GlobalContainer &container){container.settings.rendererBackend=backend;}});
+    auto *gfx=globals->gfx;
+    if(gfx->backendSwitchStatus().active!=backend){MESSAGE("Backend unavailable: ",gfx->backendSwitchStatus().reason);return;}
+    gfx->deviceRenderer.reset();
+    auto injected=std::make_unique<OverlayAdmissionDevice>(std::move(gfx->presentationDevice));
+    auto *probe=injected.get();gfx->presentationDevice=std::move(injected);
+    gfx->deviceRenderer=makeDeviceRenderBackend(*gfx->presentationDevice,*gfx->renderResources(),gfx->getW(),gfx->getH());
+    gfx->renderer=gfx->deviceRenderer.get();
+    globals->settings.clouds=false;
+    GameGUI gui;gui.init();makeTorusMapFixture(gui.game,64,64);
+    for(int y=0;y<64;++y)for(int x=0;x<64;++x)gui.game.map.paintVertexSquare(x,y,GRASS,1);
+    gui.localPlayer=gui.localTeamNo=0;gui.adjustLocalTeam();gui.prepareLocalPresentation();
+    gui.selectionMode=GameGUI::TOOL_SELECTION;gui.toolManager.activateBuildingTool("swarm");
+    gui.mouseX=480;gui.mouseY=368;gui.torusView.textureLimit=1024;gui.torusView.toggle();
+    bool complete=false;unsigned holds=0;
+    const auto checksum=gui.game.checkSum();
+    for(unsigned attempt=0;attempt<128 && !complete;++attempt){
+        int vx=17,vy=21;
+        REQUIRE(gui.torusView.draw(gui.drawnScene(),&gui,0,Game::DRAW_WHOLE_MAP,vx,vy,960,720));
+        complete=gfx->flushDeviceFrame();
+        if(!complete)++holds;
+        gfx->nextFrame();SDL_Delay(1);
+    }
+    REQUIRE(probe->rejected);REQUIRE(complete);REQUIRE(holds>1);
+    REQUIRE(gui.game.checkSum()==checksum);
+    REQUIRE(std::abs(gui.toolManager.highlightStrength-.1f)<.00001f);
+}
+
 static void deviceCapture(GAGCore::RendererBackend backend)
 {
     glob2test::HeadlessGlobals globals({.display = true, .loadStrings = true, .width = 640, .height = 480,
@@ -324,8 +388,15 @@ static void liveTerrainPressure(GAGCore::RendererBackend backend)
     // finish earlier work. Requested density must return without switching device.
     for(auto handle:handles)resources.erase(handle);
     pressure.clear();view.reset();
-    std::unique_ptr<SDL_Surface,decltype(&SDL_DestroySurface)> completed(
-        device.captureSynchronously({}),SDL_DestroySurface);REQUIRE(completed);
+    RenderFrame barrier;
+    barrier.identity=10000;barrier.logicalWidth=gfx->getW();barrier.logicalHeight=gfx->getH();
+    DrawPacket fence;fence.kind=DrawPacket::Kind::Barrier;
+    barrier.packets.push_back(std::move(fence));
+    const auto retirement=device.submit(std::move(barrier));REQUIRE(retirement);
+    device.present();
+    const auto deadline=SDL_GetTicks()+5000;
+    while(device.completion(retirement)==RenderCompletion::Pending && SDL_GetTicks()<deadline) SDL_Delay(1);
+    REQUIRE(device.completion(retirement)==RenderCompletion::Complete);
     device.trimRetiredResources();view.toggle();render();
     REQUIRE(view.pixelsPerCell==requested);
     std::cout<<rendererBackendName(backend)<<" live TerrainPage pressure density "<<reduced
@@ -1010,6 +1081,12 @@ static void run(bool gpu, int width, int height)
 
 TEST_SUITE("TorusRender")
 {
+    TEST_CASE("programmable GL retries a submitted final torus overlay coherently [display][isolated]") {
+        TorusRenderIntegrationTest::deviceOverlayRetry(GAGCore::RendererBackend::ProgrammableGL);
+    }
+    TEST_CASE("SDL GPU retries a submitted final torus overlay coherently [display][isolated]") {
+        TorusRenderIntegrationTest::deviceOverlayRetry(GAGCore::RendererBackend::SDLGPU);
+    }
     TEST_CASE("programmable GL captures large logical maps beyond the window [display][isolated][artifacts]") {
         TorusRenderIntegrationTest::deviceCapture(GAGCore::RendererBackend::ProgrammableGL);
     }

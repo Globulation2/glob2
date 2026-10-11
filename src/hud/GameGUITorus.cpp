@@ -78,27 +78,31 @@ void GameGUI::drawTorusMap(int originX, int originY, int width, int height, int 
 {
     Game::drawMap(0, 0, width, height, 0, 0,
                  originX, originY, team, view, options, nullptr, &buildingGuiState, gamePaused, cloudGridLimit, true);
+    drawTorusOverlays(drawnScene(), originX, originY, width, height, advancePreviews);
+}
+
+void GameGUI::drawTorusOverlays(const PresentationFrame &scene, int originX, int originY, int width, int height, bool advancePreviews)
+{
     if (globalContainer->replaying)
         return;
-    ghostManager.drawAll(drawnScene(), originX, originY, localTeamNo, width, height);
-    globalContainer->gfx->drawMapCopies(drawnScene().map.getW() * 32, drawnScene().map.getH() * 32, width, height, [&]() {
+    ghostManager.drawAll(scene, originX, originY, localTeamNo, width, height);
+    globalContainer->gfx->drawMapCopies(scene.map.getW() * 32, scene.map.getH() * 32, width, height, [&]() {
 
         int px, py;
         if ((selectionMode == TOOL_SELECTION || (selectionMode == BRUSH_SELECTION && !touch->usesHUD())) &&
             torusView.pick(mouseX, mouseY, px, py))
         {
-            int mx = (px - originX * 32) & (drawnScene().map.getW() * 32 - 1);
-            int my = (py - originY * 32) & (drawnScene().map.getH() * 32 - 1);
+            int mx = (px - originX * 32) & (scene.map.getW() * 32 - 1);
+            int my = (py - originY * 32) & (scene.map.getH() * 32 - 1);
             toolManager.drawTool(mx, my, localTeamNo, originX, originY, inputState.modifiers());
         }
         // The ring replaces the 2D map transform, so the selection markers the flat
         // view paints over the map belong on the surface itself, anchored to it.
-        const PresentationFrame &scene = drawnScene();
         if (selectionMode == BUILDING_SELECTION && scene.panels.building.valid)
         {
             const SceneBuildingPanel &b = scene.panels.building;
             int x, y;
-            drawnScene().map.buildingPosToCursor(displayedPosX(b), displayedPosY(b), b.type->width, b.type->height, &x, &y,
+            scene.map.buildingPosToCursor(displayedPosX(b), displayedPosY(b), b.type->width, b.type->height, &x, &y,
                                          originX, originY);
             if (b.owner().number == localTeamNo)
                 globalContainer->gfx->drawCircle(x, y, b.type->width * 16, 0, 0, 190);
@@ -128,10 +132,10 @@ void GameGUI::drawTorusMap(int originX, int originY, int width, int height, int 
         else if (selectionMode == RESOURCE_SELECTION)
         {
             int resource = selectionResource();
-            int rx = resource & drawnScene().map.getMaskW();
-            int ry = resource >> drawnScene().map.getShiftW();
+            int rx = resource & scene.map.getMaskW();
+            int ry = resource >> scene.map.getShiftW();
             int px, py;
-            drawnScene().map.mapCaseToDisplayable(rx, ry, &px, &py, originX, originY);
+            scene.map.mapCaseToDisplayable(rx, ry, &px, &py, originX, originY);
             globalContainer->gfx->drawCircle(px + 16, py + 16, 16, 0, 0, 190);
         }
     }, advancePreviews);

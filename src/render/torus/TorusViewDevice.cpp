@@ -25,9 +25,33 @@ struct TorusDeviceState
     TextureHandle cloud;
     BufferHandle ground, cloudMesh;
     GeometrySnapshot groundGeometry, cloudGeometry;
+    // Backing targets are hidden while a bounded capture cycle is assembled.
+    // The device retains the completed main image during these presentation turns.
+    std::shared_ptr<const PresentationFrame> captureFrame;
+    Game::ViewState captureView;
+    BuildingGuiStateMap captureBuildings;
+    std::size_t captureTile = 0;
+    int captureX = 0, captureY = 0;
+    float captureZoom = 1;
+    int captureTeam = 0;
+    unsigned captureOptions = 0;
+    bool capturePaused = false;
+    bool advancePreviews = true;
 };
 namespace
 {
+class CaptureSkinScope
+{
+    MapRenderState &capture;
+    MapRenderState *source;
+public:
+    CaptureSkinScope(MapRenderState &state, GameGUI *gui)
+        : capture(state), source(gui ? &gui->view.render : nullptr)
+    {
+        if (source) capture.swapSkinPreview(*source);
+    }
+    ~CaptureSkinScope() { if (source) capture.swapSkinPreview(*source); }
+};
 constexpr int cloudGridLimit = 128;
 constexpr float pi = 3.14159265358979323846f;
 float clamp(float x, float a, float b) { return std::max(a, std::min(b, x)); }
@@ -227,17 +251,23 @@ bool TorusView::drawDevice(const PresentationFrame &frame, GameGUI *gui, int tea
             auto candidate = TorusTextureTiles::layout(worldW * 32, worldH * 32, limit, pixelsPerCell);
             // Preserve requested density whenever the actual class and aggregate
             // budgets allow it. Count the complete layout before allocating any
-            // tile; color/depth plus the bounded upload queue need headroom.
+            // tile. Map capture is 2D: only RGBA color is allocated, with no
+            // depth or second atlas. The completed main image covers progress.
+            // Reserve bounded authored source chains and upload staging separately.
             constexpr std::size_t targetBudget = 128u * 1024 * 1024;
             constexpr std::size_t deviceBudget = 256u * 1024 * 1024;
             constexpr std::size_t uploadReserve = 8u * 1024 * 1024;
+            // The largest HD authored terrain block is ~22.4 MiB including
+            // mip levels. Keep additional glyph/sprite admission headroom.
+            constexpr std::size_t sourceReserve = 32u * 1024 * 1024;
             std::size_t count = 0;
             for (const auto &tile : candidate) count += std::size_t(tile.textureW) * tile.textureH;
             const auto resident = std::min(deviceBudget, device.telemetry().resourceBytes);
             const auto deviceHeadroom = deviceBudget - resident;
             const auto logicalHeadroom = resources.byteLimit() - std::min(resources.byteLimit(), resources.retainedBytes());
             bool okay = !candidate.empty() && count <= targetBudget / 4 && count <= logicalHeadroom / 4 &&
-                deviceHeadroom >= uploadReserve && count <= (deviceHeadroom - uploadReserve) / 8 &&
+                deviceHeadroom >= uploadReserve + sourceReserve &&
+                count <= (deviceHeadroom - uploadReserve - sourceReserve) / 4 &&
                 (!allocationPixelLimit || count <= std::size_t(allocationPixelLimit));
             if (!okay) continue;
             for (const auto &tile : candidate) {
@@ -255,44 +285,126 @@ bool TorusView::drawDevice(const PresentationFrame &frame, GameGUI *gui, int tea
         }
         if (state.tileTargets.empty()) { failed = true; graphicsGeneration = gfx->getGLContextGeneration(); target = moving = false; amount = 0; return false; }
     }
-    gfx->setClipRect();
-    Game::ViewState mapView; if (!gui) mapView.render = std::move(standaloneRender);
-    Game::ViewState &captureView = gui ? gui->view : mapView;
-    const PresentationFrame *previousScene = captureView.scene;
     const unsigned captureOptions = options | Game::DRAW_NO_CLOUD_LAYER | Game::DRAW_TILED_CAPTURE;
-    Game::prepareSceneMapFrame(frame, team, captureView, captureOptions, gui && gui->gamePaused);
-    captureView.scene = &frame; if (gui) gui->toolManager.setDrawnScene(&frame);
-    bool advancePreviews = true;
-    try {
-        for (std::size_t index = 0; index < tiles.size(); ++index) {
-            const auto &tile = tiles[index];
-            if (!gfx->beginDeviceTarget(state.tileTargets[index], (tile.w + 64) * shownZoom, (tile.h + 64) * shownZoom))
-                throw std::runtime_error("Torus target binding unavailable");
-            try {
-                DrawPacket clear; clear.kind = DrawPacket::Kind::Clear; clear.clearColor = true;
-                gfx->submitDevicePacket(std::move(clear));
-                gfx->setRenderTargetScale(float(pixelsPerCell) / (32 * shownZoom));
-                // Device packets enforce clipping; the legacy capture disabled
-                // GL scissoring after installing window-relative map bounds.
-                // This target can be much larger than the presentation window.
-                const SDL_Rect captureBounds{0, 0, int(std::ceil((tile.w + 64) * shownZoom)),
-                    int(std::ceil((tile.h + 64) * shownZoom))};
-                MapTransformScope mapPass(*gfx, shownZoom, 0, 0, captureBounds);
-                const int tx = (originX + tile.x / 32 - 1) & frame.map.getMaskW();
-                const int ty = (originY + tile.y / 32 - 1) & frame.map.getMaskH();
-                if (gui) gui->drawTorusMap(tx, ty, tile.w + 64, tile.h + 64, team, captureOptions, cloudGridLimit, advancePreviews);
-                else Game::drawSceneMap(frame, 0, 0, tile.w + 64, tile.h + 64, 0, 0, tx, ty, team, captureView,
-                    captureOptions, nullptr, nullptr, false, cloudGridLimit, true);
-            } catch (...) { gfx->endDeviceTarget(); throw; }
-            gfx->endDeviceTarget(); advancePreviews = false;
-        }
-        Game::finishMapCapture(captureView, captureOptions, gui && gui->gamePaused);
-    } catch (...) {
-        captureView.scene = previousScene; if (!gui) standaloneRender = std::move(mapView.render);
-        gfx->setRenderTargetScale(0); throw;
+    if (state.captureFrame && (state.captureFrame->map.identity() != frame.map.identity() ||
+        state.captureTeam != team || state.captureOptions != captureOptions)) {
+        state.captureFrame.reset();
+        state.captureView.scene = nullptr;
     }
-    captureView.scene = previousScene; if (!gui) standaloneRender = std::move(mapView.render);
-    gfx->setRenderTargetScale(0); gfx->setClipRect();
+    // A single full-density tile can contain more than General's 64 MiB of
+    // source mip chains. Admit one bounded region per host turn instead of
+    // replaying the same too-large prefix after every budget deferral.
+    if (!state.captureFrame) {
+        state.captureFrame = std::make_shared<PresentationFrame>(frame);
+        state.captureZoom = shownZoom;
+        state.captureTeam = team;
+        state.captureOptions = captureOptions;
+        state.capturePaused = gui && gui->gamePaused;
+        state.captureTile = 0; state.captureX = state.captureY = 0;
+        state.advancePreviews = true;
+        auto &sourceRender = gui ? gui->view.render : standaloneRender;
+        auto &captureRender = state.captureView.render;
+        captureRender.animationTime = sourceRender.animationTime;
+        captureRender.areaAnimationTick = sourceRender.areaAnimationTick;
+        captureRender.unitMotion = sourceRender.unitMotion;
+        captureRender.minimumZoom = sourceRender.minimumZoom;
+        captureRender.zonesEmphasised = sourceRender.zonesEmphasised;
+        captureRender.fogFade = sourceRender.fogFade;
+        if (gui) {
+            state.captureBuildings = gui->buildingGuiState;
+        }
+        state.captureView.scene = state.captureFrame.get();
+        CaptureSkinScope skin(captureRender, gui);
+        Game::prepareSceneMapFrame(*state.captureFrame, state.captureTeam, state.captureView,
+                                  state.captureOptions, state.capturePaused);
+    }
+    const auto &captureFrame = *state.captureFrame;
+    const auto &tile = tiles[state.captureTile];
+    const int captureW = tile.w + 64, captureH = tile.h + 64;
+    // Bound each region to 1024 target pixels per axis. The whole-capture
+    // sampling plan selects the same source density in every region; lower
+    // density therefore admits larger logical regions without more texture bytes.
+    const int regionPoints = pixelsPerCell == 32 ? 512 : 1024;
+    const int regionPixels = regionPoints * 32 / pixelsPerCell;
+    constexpr int cullHalo = 64;
+    const SDL_Rect region{state.captureX, state.captureY,
+        std::min(regionPixels, captureW-state.captureX), std::min(regionPixels, captureH-state.captureY)};
+    const SDL_Rect culling{std::max(0,region.x-cullHalo), std::max(0,region.y-cullHalo),
+        std::min(captureW,region.x+region.w+cullHalo)-std::max(0,region.x-cullHalo),
+        std::min(captureH,region.y+region.h+cullHalo)-std::max(0,region.y-cullHalo)};
+    gfx->setClipRect();
+    if (!gfx->beginDeviceTarget(state.tileTargets[state.captureTile], captureW*state.captureZoom, captureH*state.captureZoom))
+        throw std::runtime_error("Torus target binding unavailable");
+    try {
+        CaptureSkinScope skin(state.captureView.render, gui);
+        const SDL_Rect pixels{region.x*pixelsPerCell/32,region.y*pixelsPerCell/32,
+            region.w*pixelsPerCell/32,region.h*pixelsPerCell/32};
+        if (!gfx->setDeviceTargetScissor(&pixels)) throw std::runtime_error("Torus physical clipping unavailable");
+        // Replaying an unfinished region starts from clear pixels, so a prior
+        // submitted prefix cannot blend translucent sprites twice.
+        DrawPacket clear; clear.kind=DrawPacket::Kind::Clear; clear.clearColor=true;
+        clear.clearValue={0,0,0,1};gfx->submitDevicePacket(std::move(clear));
+        gfx->setRenderTargetScale(float(pixelsPerCell)/(32*state.captureZoom));
+        const SDL_Rect clip{0,0,int(std::ceil(captureW*state.captureZoom)),int(std::ceil(captureH*state.captureZoom))};
+        MapTransformScope mapPass(*gfx,state.captureZoom,0,0,clip);
+        const int tx=(originX+tile.x/32-1)&captureFrame.map.getMaskW();
+        const int ty=(originY+tile.y/32-1)&captureFrame.map.getMaskH();
+        Game::drawSceneMapRegion(captureFrame,culling.x,culling.y,culling.w,culling.h,0,0,tx,ty,
+            state.captureTeam,state.captureView,state.captureOptions,nullptr,
+            gui ? &state.captureBuildings : nullptr,state.capturePaused,cloudGridLimit,true,captureW,captureH);
+    } catch (...) {
+        gfx->setDeviceTargetScissor(nullptr);gfx->endDeviceTarget();gfx->setRenderTargetScale(0);throw;
+    }
+    gfx->setDeviceTargetScissor(nullptr);gfx->endDeviceTarget();gfx->setRenderTargetScale(0);
+    if (!gfx->flushDeviceFrame()) return true;
+    state.captureX += region.w;
+    if (state.captureX >= captureW) {state.captureX=0;state.captureY+=region.h;}
+    if (state.captureY >= captureH) {state.captureY=0;++state.captureTile;}
+    if (state.captureTile < tiles.size()) {
+        gfx->deferDeviceFrame();
+        return true;
+    }
+    // UI overlays are captured together after terrain/entity regions, so a
+    // moving pointer or changed tool cannot leave different overlays in tiles.
+    if (gui) {
+        const auto *previousScene=gui->view.scene;
+        std::swap(gui->view.render,state.captureView.render);
+        gui->view.scene=state.captureFrame.get();
+        gui->toolManager.setDrawnScene(state.captureFrame.get());
+        try {
+            for (std::size_t index=0;index<tiles.size();++index) {
+                const auto &overlayTile=tiles[index];
+                const int w=overlayTile.w+64,h=overlayTile.h+64;
+                if(!gfx->beginDeviceTarget(state.tileTargets[index],w*state.captureZoom,h*state.captureZoom))
+                    throw std::runtime_error("Torus overlay target unavailable");
+                try {
+                    gfx->setRenderTargetScale(float(pixelsPerCell)/(32*state.captureZoom));
+                    const SDL_Rect clip{0,0,int(std::ceil(w*state.captureZoom)),int(std::ceil(h*state.captureZoom))};
+                    MapTransformScope mapPass(*gfx,state.captureZoom,0,0,clip);
+                    gui->drawTorusOverlays(captureFrame,(originX+overlayTile.x/32-1)&captureFrame.map.getMaskW(),
+                        (originY+overlayTile.y/32-1)&captureFrame.map.getMaskH(),w,h,state.advancePreviews);
+                } catch(...) {gfx->endDeviceTarget();throw;}
+                gfx->endDeviceTarget();state.advancePreviews=false;
+            }
+        } catch(...) {
+            gui->view.scene=previousScene;std::swap(gui->view.render,state.captureView.render);
+            gui->toolManager.setDrawnScene(previousScene);gfx->setRenderTargetScale(0);throw;
+        }
+        gui->view.scene=previousScene;std::swap(gui->view.render,state.captureView.render);
+        gui->toolManager.setDrawnScene(previousScene);
+    }
+    if (!gfx->flushDeviceFrame()) {
+        // An overlay prefix may already have blended into the capture. Rebuild
+        // the same immutable frame from clean regions instead of painting it twice.
+        state.captureTile=0;state.captureX=state.captureY=0;
+        return true;
+    }
+    Game::finishMapCapture(state.captureView,state.captureOptions,state.capturePaused);
+    auto &sourceRender=gui ? gui->view.render : standaloneRender;
+    sourceRender.animationTime=state.captureView.render.animationTime;
+    sourceRender.areaAnimationTick=state.captureView.render.areaAnimationTick;
+    state.captureFrame.reset();state.captureView.scene=nullptr;
+    gfx->setRenderTargetScale(0);gfx->setClipRect();
     const bool drawClouds = globalContainer->settings.clouds;
     if (drawClouds) {
         int gridW, gridH;

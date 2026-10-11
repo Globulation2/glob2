@@ -576,6 +576,20 @@ admission. Resource requests individually larger than their static limits remain
 errors. Retained output, pending captures and presentation buffers count toward
 the device's aggregate budget.
 
+Torus map captures use bounded offscreen regions across presentation turns.
+The capture owns its immutable presentation frame and freezes its animation,
+unit motion, team, options and sampling scale until all regions are complete.
+Region culling preserves the complete target coordinate system, and disjoint
+physical scissors prevent repeated blending at fractional zoom. Skin preview
+ownership is borrowed only within a draw call and restored before yielding.
+The complete main image remains visible during preparation; capture admission
+and main presentation pause, while simulation, audio and input continue.
+An intentional hold fences completed offscreen work without invalidating the
+healthy graphics generation. A genuine submission failure still invalidates it.
+Map or team changes cancel the pending capture; it never publishes a partial
+atlas. The visual pause lasts several presentation turns and grows with capture
+size, so playback feel and transition latency require hardware review.
+
 Terrain composition uses authoritative integer shaders derived from the CPU
 compositor contract. The producer retains CPU-generated coverage masks with an
 8 MiB lookup cache. A global 40 MiB limit covers owned coverage objects and sample

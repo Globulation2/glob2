@@ -215,6 +215,16 @@ void Game::drawSceneMap(const PresentationFrame& scene, int sx, int sy, int sw, 
 	ViewState& view, Uint32 drawOptions, std::set<Uint16>* visibleBuildings,
 	const BuildingGuiStateMap* buildingGuiState, bool animationsPaused, int cloudGridLimit, bool preparedCapture)
 {
+    drawSceneMapRegion(scene,sx,sy,sw,sh,rightMargin,topMargin,viewportX,viewportY,localTeam,
+        view,drawOptions,visibleBuildings,buildingGuiState,animationsPaused,cloudGridLimit,
+        preparedCapture,sw,sh);
+}
+
+void Game::drawSceneMapRegion(const PresentationFrame& scene, int sx, int sy, int sw, int sh,
+	int rightMargin, int topMargin, int viewportX, int viewportY, int localTeam,
+	ViewState& view, Uint32 drawOptions, std::set<Uint16>* visibleBuildings,
+	const BuildingGuiStateMap* buildingGuiState, bool animationsPaused, int cloudGridLimit, bool preparedCapture, int targetWidth, int targetHeight)
+{
     if (!preparedCapture)
         prepareSceneMapFrame(scene, localTeam, view, drawOptions, animationsPaused);
 	const PresentationFrame* previous = view.scene;
@@ -252,8 +262,8 @@ void Game::drawSceneMap(const PresentationFrame& scene, int sx, int sy, int sw, 
 						  top,
 						  right,
 						  bot,
-						  sw,
-						  sh,
+						  targetWidth,
+						  targetHeight,
 						  viewportX,
 						  viewportY,
 						  localTeam,
