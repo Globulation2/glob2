@@ -1,0 +1,169 @@
+MESA: info: vulkan: No DRI3 support detected - required for presentation
+Note: you can probably enable DRI3 in your Xorg config
+MESA: info: vulkan: No DRI3 support detected - required for presentation
+Note: you can probably enable DRI3 in your Xorg config
+MESA: info: vulkan: No DRI3 support detected - required for presentation
+Note: you can probably enable DRI3 in your Xorg config
+MESA: info: vulkan: No DRI3 support detected - required for presentation
+Note: you can probably enable DRI3 in your Xorg config
+MESA: info: vulkan: No DRI3 support detected - required for presentation
+Note: you can probably enable DRI3 in your Xorg config
+MESA: info: vulkan: No DRI3 support detected - required for presentation
+Note: you can probably enable DRI3 in your Xorg config
+MESA: info: vulkan: No DRI3 support detected - required for presentation
+Note: you can probably enable DRI3 in your Xorg config
+MESA: info: vulkan: No DRI3 support detected - required for presentation
+Note: you can probably enable DRI3 in your Xorg config
+MESA: info: vulkan: No DRI3 support detected - required for presentation
+Note: you can probably enable DRI3 in your Xorg config
+MESA: info: vulkan: No DRI3 support detected - required for presentation
+Note: you can probably enable DRI3 in your Xorg config
+MESA: info: vulkan: No DRI3 support detected - required for presentation
+Note: you can probably enable DRI3 in your Xorg config
+MESA: info: vulkan: No DRI3 support detected - required for presentation
+Note: you can probably enable DRI3 in your Xorg config
+MESA: info: vulkan: No DRI3 support detected - required for presentation
+Note: you can probably enable DRI3 in your Xorg config
+MESA: info: vulkan: No DRI3 support detected - required for presentation
+Note: you can probably enable DRI3 in your Xorg config
+MESA: info: vulkan: No DRI3 support detected - required for presentation
+Note: you can probably enable DRI3 in your Xorg config
+MESA: info: vulkan: No DRI3 support detected - required for presentation
+Note: you can probably enable DRI3 in your Xorg config
+MESA: info: vulkan: No DRI3 support detected - required for presentation
+Note: you can probably enable DRI3 in your Xorg config
+MESA: info: vulkan: No DRI3 support detected - required for presentation
+Note: you can probably enable DRI3 in your Xorg config
+MESA: info: vulkan: No DRI3 support detected - required for presentation
+Note: you can probably enable DRI3 in your Xorg config
+MESA: info: vulkan: No DRI3 support detected - required for presentation
+Note: you can probably enable DRI3 in your Xorg config
+MESA: info: vulkan: No DRI3 support detected - required for presentation
+Note: you can probably enable DRI3 in your Xorg config
+MESA: info: vulkan: No DRI3 support detected - required for presentation
+Note: you can probably enable DRI3 in your Xorg config
+MESA: info: vulkan: No DRI3 support detected - required for presentation
+Note: you can probably enable DRI3 in your Xorg config
+MESA: info: vulkan: No DRI3 support detected - required for presentation
+Note: you can probably enable DRI3 in your Xorg config
+MESA: info: vulkan: No DRI3 support detected - required for presentation
+Note: you can probably enable DRI3 in your Xorg config
+MESA: info: vulkan: No DRI3 support detected - required for presentation
+Note: you can probably enable DRI3 in your Xorg config
+MESA: info: vulkan: No DRI3 support detected - required for presentation
+Note: you can probably enable DRI3 in your Xorg config
+MESA: info: vulkan: No DRI3 support detected - required for presentation
+Note: you can probably enable DRI3 in your Xorg config
+MESA: info: vulkan: No DRI3 support detected - required for presentation
+Note: you can probably enable DRI3 in your Xorg config
+MESA: info: vulkan: No DRI3 support detected - required for presentation
+Note: you can probably enable DRI3 in your Xorg config
+MESA: info: vulkan: No DRI3 support detected - required for presentation
+Note: you can probably enable DRI3 in your Xorg config
+MESA: info: vulkan: No DRI3 support detected - required for presentation
+Note: you can probably enable DRI3 in your Xorg config
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+device-source/libgag/src/SDLGPUDeviceTest.cpp:549:
+TEST SUITE: SDLGPUDevice
+TEST CASE:  Vulkan authoritative skin catalogue rig fur depth and atlas capture [display][isolated]
+
+device-source/libgag/src/SDLGPUDeviceTest.cpp:624: MESSAGE: Vulkan material 0 coverage=5236 restDifference=0 deformationDifference=17988
+  logged: material id 0
+
+device-source/libgag/src/SDLGPUDeviceTest.cpp:624: MESSAGE: Vulkan material 1 coverage=5236 restDifference=0 deformationDifference=18372
+  logged: material id 1
+
+device-source/libgag/src/SDLGPUDeviceTest.cpp:624: MESSAGE: Vulkan material 2 coverage=5236 restDifference=0 deformationDifference=18281
+  logged: material id 2
+
+device-source/libgag/src/SDLGPUDeviceTest.cpp:624: MESSAGE: Vulkan material 3 coverage=5236 restDifference=0 deformationDifference=18238
+  logged: material id 3
+
+device-source/libgag/src/SDLGPUDeviceTest.cpp:624: MESSAGE: Vulkan material 4 coverage=5236 restDifference=0 deformationDifference=10585
+  logged: material id 4
+
+device-source/libgag/src/SDLGPUDeviceTest.cpp:624: MESSAGE: Vulkan material 5 coverage=5236 restDifference=0 deformationDifference=18457
+  logged: material id 5
+
+device-source/libgag/src/SDLGPUDeviceTest.cpp:624: MESSAGE: Vulkan material 6 coverage=5236 restDifference=0 deformationDifference=17926
+  logged: material id 6
+
+device-source/libgag/src/SDLGPUDeviceTest.cpp:624: MESSAGE: Vulkan material 7 coverage=5236 restDifference=0 deformationDifference=18423
+  logged: material id 7
+
+device-source/libgag/src/SDLGPUDeviceTest.cpp:624: MESSAGE: Vulkan material 8 coverage=5236 restDifference=0 deformationDifference=18557
+  logged: material id 8
+
+device-source/libgag/src/SDLGPUDeviceTest.cpp:624: MESSAGE: Vulkan material 9 coverage=5236 restDifference=0 deformationDifference=18089
+  logged: material id 9
+
+device-source/libgag/src/SDLGPUDeviceTest.cpp:624: MESSAGE: Vulkan material 10 coverage=5236 restDifference=0 deformationDifference=18313
+  logged: material id 10
+
+device-source/libgag/src/SDLGPUDeviceTest.cpp:624: MESSAGE: Vulkan material 11 coverage=5236 restDifference=0 deformationDifference=17923
+  logged: material id 11
+
+device-source/libgag/src/SDLGPUDeviceTest.cpp:624: MESSAGE: Vulkan material 12 coverage=5236 restDifference=0 deformationDifference=18351
+  logged: material id 12
+
+device-source/libgag/src/SDLGPUDeviceTest.cpp:624: MESSAGE: Vulkan material 13 coverage=5236 restDifference=1 deformationDifference=18083
+  logged: material id 13
+
+device-source/libgag/src/SDLGPUDeviceTest.cpp:624: MESSAGE: Vulkan material 14 coverage=5236 restDifference=0 deformationDifference=18208
+  logged: material id 14
+
+device-source/libgag/src/SDLGPUDeviceTest.cpp:624: MESSAGE: Vulkan material 15 coverage=5236 restDifference=0 deformationDifference=18198
+  logged: material id 15
+
+device-source/libgag/src/SDLGPUDeviceTest.cpp:624: MESSAGE: Vulkan material 16 coverage=5236 restDifference=0 deformationDifference=18293
+  logged: material id 16
+
+device-source/libgag/src/SDLGPUDeviceTest.cpp:624: MESSAGE: Vulkan material 17 coverage=5236 restDifference=0 deformationDifference=18199
+  logged: material id 17
+
+device-source/libgag/src/SDLGPUDeviceTest.cpp:624: MESSAGE: Vulkan material 18 coverage=5236 restDifference=0 deformationDifference=17893
+  logged: material id 18
+
+device-source/libgag/src/SDLGPUDeviceTest.cpp:624: MESSAGE: Vulkan material 19 coverage=5236 restDifference=0 deformationDifference=18283
+  logged: material id 19
+
+device-source/libgag/src/SDLGPUDeviceTest.cpp:624: MESSAGE: Vulkan material 20 coverage=5236 restDifference=0 deformationDifference=17135
+  logged: material id 20
+
+device-source/libgag/src/SDLGPUDeviceTest.cpp:624: MESSAGE: Vulkan material 21 coverage=5236 restDifference=0 deformationDifference=17577
+  logged: material id 21
+
+===============================================================================
+device-source/libgag/src/SDLGPUDeviceTest.cpp:685:
+TEST SUITE: SDLGPUDevice
+TEST CASE:  VulkaMESA: info: vulkan: No DRI3 support detected - required for presentation
+Note: you can probably enable DRI3 in your Xorg config
+MESA: info: vulkan: No DRI3 support detected - required for presentation
+Note: you can probably enable DRI3 in your Xorg config
+MESA: info: vulkan: No DRI3 support detected - required for presentation
+Note: you can probably enable DRI3 in your Xorg config
+MESA: info: vulkan: No DRI3 support detected - required for presentation
+Note: you can probably enable DRI3 in your Xorg config
+MESA: info: vulkan: No DRI3 support detected - required for presentation
+Note: you can probably enable DRI3 in your Xorg config
+MESA: info: vulkan: No DRI3 support detected - required for presentation
+Note: you can probably enable DRI3 in your Xorg config
+MESA: info: vulkan: No DRI3 support detected - required for presentation
+Note: you can probably enable DRI3 in your Xorg config
+MESA: info: vulkan: No DRI3 support detected - required for presentation
+Note: you can probably enable DRI3 in your Xorg config
+n four depth atlases coexist with full4096 authored terrain mip uploads [display][isolated]
+
+device-source/libgag/src/SDLGPUDeviceTest.cpp:721: MESSAGE: Combined atlas/mip upload deferred attempts=81 peak bytes=232086872
+  logged: Deferred upload attempts: 81
+
+device-source/libgag/src/SDLGPUDeviceTest.cpp:744: MESSAGE: Cold combined upload deferred attempts=132 peak bytes=232086872
+  logged: Deferred upload attempts: 132
+          Cold combined deferred attempts: 132
+
+===============================================================================
+[doctest] test cases:     19 |     19 passed | 0 failed | 0 skipped
+[doctest] assertions: 203585 | 203585 passed | 0 failed |
+[doctest] Status: SUCCESS!

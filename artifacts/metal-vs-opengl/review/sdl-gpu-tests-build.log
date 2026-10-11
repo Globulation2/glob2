@@ -1,0 +1,30 @@
+In file included from /Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/libgag/src/SDLGPUDevice.cpp:2:
+In file included from /Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-vs-opengl/device-tests-final/include/SDLGPUDevice.h:3:
+In file included from /Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/libgag/include/RenderDevice.h:3:
+/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/libgag/include/RenderBackend.h:33:80: warning: unused parameter 'linear' [-Wunused-parameter]
+   33 |     virtual void prepareTexture(const void*, SDL_Surface*, std::uint64_t, bool linear = false) {}
+      |                                                                                ^
+1 warning generated.
+In file included from /Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/libgag/src/SDLGPUDeviceTest.cpp:4:
+In file included from /Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-vs-opengl/device-tests-final/include/SDLGPUDevice.h:3:
+In file included from /Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/libgag/include/RenderDevice.h:3:
+/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/libgag/include/RenderBackend.h:33:80: warning: unused parameter 'linear' [-Wunused-parameter]
+   33 |     virtual void prepareTexture(const void*, SDL_Surface*, std::uint64_t, bool linear = false) {}
+      |                                                                                ^
+1 warning generated.
+In file included from /Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/libgag/src/RenderDevice.cpp:2:
+In file included from /Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/libgag/include/RenderDevice.h:3:
+/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/libgag/include/RenderBackend.h:33:80: warning: unused parameter 'linear' [-Wunused-parameter]
+   33 |     virtual void prepareTexture(const void*, SDL_Surface*, std::uint64_t, bool linear = false) {}
+      |                                                                                ^
+1 warning generated.
+In file included from /Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/libgag/src/SoftwareRenderBackend.cpp:2:
+/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/libgag/include/RenderBackend.h:33:80: warning: unused parameter 'linear' [-Wunused-parameter]
+   33 |     virtual void prepareTexture(const void*, SDL_Surface*, std::uint64_t, bool linear = false) {}
+      |                                                                                ^
+1 warning generated.
+In file included from /Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/libgag/src/RenderBackend.cpp:2:
+/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/libgag/include/RenderBackend.h:33:80: warning: unused parameter 'linear' [-Wunused-parameter]
+   33 |     virtual void prepareTexture(const void*, SDL_Surface*, std::uint64_t, bool linear = false) {}
+      |                                                                                ^
+1 warning generated.

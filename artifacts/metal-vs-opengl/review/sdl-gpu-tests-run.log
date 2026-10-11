@@ -1,0 +1,89 @@
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/libgag/src/SDLGPUDeviceTest.cpp:549:
+TEST SUITE: SDLGPUDevice
+TEST CASE:  Vulkan authoritative skin catalogue rig fur depth and atlas capture [display][isolated]
+
+/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/libgag/src/SDLGPUDeviceTest.cpp:624: MESSAGE: Vulkan material 0 coverage=5236 restDifference=0 deformationDifference=17988
+  logged: material id 0
+
+/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/libgag/src/SDLGPUDeviceTest.cpp:624: MESSAGE: Vulkan material 1 coverage=5236 restDifference=0 deformationDifference=18377
+  logged: material id 1
+
+/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/libgag/src/SDLGPUDeviceTest.cpp:624: MESSAGE: Vulkan material 2 coverage=5236 restDifference=0 deformationDifference=18285
+  logged: material id 2
+
+/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/libgag/src/SDLGPUDeviceTest.cpp:624: MESSAGE: Vulkan material 3 coverage=5236 restDifference=0 deformationDifference=18231
+  logged: material id 3
+
+/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/libgag/src/SDLGPUDeviceTest.cpp:624: MESSAGE: Vulkan material 4 coverage=5236 restDifference=0 deformationDifference=10585
+  logged: material id 4
+
+/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/libgag/src/SDLGPUDeviceTest.cpp:624: MESSAGE: Vulkan material 5 coverage=5236 restDifference=0 deformationDifference=18459
+  logged: material id 5
+
+/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/libgag/src/SDLGPUDeviceTest.cpp:624: MESSAGE: Vulkan material 6 coverage=5236 restDifference=0 deformationDifference=17929
+  logged: material id 6
+
+/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/libgag/src/SDLGPUDeviceTest.cpp:624: MESSAGE: Vulkan material 7 coverage=5236 restDifference=0 deformationDifference=18413
+  logged: material id 7
+
+/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/libgag/src/SDLGPUDeviceTest.cpp:624: MESSAGE: Vulkan material 8 coverage=5236 restDifference=0 deformationDifference=18564
+  logged: material id 8
+
+/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/libgag/src/SDLGPUDeviceTest.cpp:624: MESSAGE: Vulkan material 9 coverage=5236 restDifference=0 deformationDifference=18101
+  logged: material id 9
+
+/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/libgag/src/SDLGPUDeviceTest.cpp:624: MESSAGE: Vulkan material 10 coverage=5236 restDifference=0 deformationDifference=18316
+  logged: material id 10
+
+/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/libgag/src/SDLGPUDeviceTest.cpp:624: MESSAGE: Vulkan material 11 coverage=5236 restDifference=0 deformationDifference=17918
+  logged: material id 11
+
+/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/libgag/src/SDLGPUDeviceTest.cpp:624: MESSAGE: Vulkan material 12 coverage=5236 restDifference=0 deformationDifference=18354
+  logged: material id 12
+
+/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/libgag/src/SDLGPUDeviceTest.cpp:624: MESSAGE: Vulkan material 13 coverage=5236 restDifference=0 deformationDifference=18082
+  logged: material id 13
+
+/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/libgag/src/SDLGPUDeviceTest.cpp:624: MESSAGE: Vulkan material 14 coverage=5236 restDifference=0 deformationDifference=18207
+  logged: material id 14
+
+/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/libgag/src/SDLGPUDeviceTest.cpp:624: MESSAGE: Vulkan material 15 coverage=5236 restDifference=0 deformationDifference=18197
+  logged: material id 15
+
+/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/libgag/src/SDLGPUDeviceTest.cpp:624: MESSAGE: Vulkan material 16 coverage=5236 restDifference=0 deformationDifference=18300
+  logged: material id 16
+
+/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/libgag/src/SDLGPUDeviceTest.cpp:624: MESSAGE: Vulkan material 17 coverage=5236 restDifference=0 deformationDifference=18194
+  logged: material id 17
+
+/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/libgag/src/SDLGPUDeviceTest.cpp:624: MESSAGE: Vulkan material 18 coverage=5236 restDifference=0 deformationDifference=17890
+  logged: material id 18
+
+/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/libgag/src/SDLGPUDeviceTest.cpp:624: MESSAGE: Vulkan material 19 coverage=5236 restDifference=0 deformationDifference=18288
+  logged: material id 19
+
+/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/libgag/src/SDLGPUDeviceTest.cpp:624: MESSAGE: Vulkan material 20 coverage=5236 restDifference=0 deformationDifference=17137
+  logged: material id 20
+
+/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/libgag/src/SDLGPUDeviceTest.cpp:624: MESSAGE: Vulkan material 21 coverage=5236 restDifference=0 deformationDifference=17585
+  logged: material id 21
+
+===============================================================================
+/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/libgag/src/SDLGPUDeviceTest.cpp:685:
+TEST SUITE: SDLGPUDevice
+TEST CASE:  Vulkan four depth atlases coexist with full4096 authored terrain mip uploads [display][isolated]
+
+/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/libgag/src/SDLGPUDeviceTest.cpp:721: MESSAGE: Combined atlas/mip upload deferred attempts=26 peak bytes=232086872
+  logged: Deferred upload attempts: 26
+
+/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/libgag/src/SDLGPUDeviceTest.cpp:744: MESSAGE: Cold combined upload deferred attempts=27 peak bytes=232086872
+  logged: Deferred upload attempts: 27
+          Cold combined deferred attempts: 27
+
+===============================================================================
+[doctest] test cases:     19 |     19 passed | 0 failed | 0 skipped
+[doctest] assertions: 203468 | 203468 passed | 0 failed |
+[doctest] Status: SUCCESS!
