@@ -590,12 +590,17 @@ static int run(int argc, char **argv)
         else
         for (bool clouds : {false, true})
         {
+            const bool pausePresentation=std::getenv("GLOB2_BENCH_PAUSE_PRESENTATION");
+            gui.gamePaused=pausePresentation;
+            if(pausePresentation)gui.view.render.animationTime=22;
             const Uint32 initialChecksum = gui.game.checkSum(nullptr, nullptr, nullptr, true);
             globalContainer->settings.clouds = clouds;
             globalContainer->settings.cloudShadows = clouds;
             measure(clouds ? "2D clouds" : "2D no clouds", [&] {
                 globalContainer->gfx->setClipRect();
-                Game::drawMap(0, 0, width, height, 0, 0, x, y, 0, gui.view, Game::DRAW_WHOLE_MAP);
+                if(pausePresentation)gui.view.render.animationTime=22;
+                Game::drawMap(0, 0, width, height, 0, 0, x, y, 0, gui.view, Game::DRAW_WHOLE_MAP,
+                    nullptr,nullptr,pausePresentation);
             });
             view.reset();
             view.toggle();
@@ -607,6 +612,7 @@ static int run(int argc, char **argv)
                 ringZoom = std::clamp(float(std::atof(zoom)), ringZoom, float(MapCamera::MAX_ZOOM));
             assert(view.draw(gui.view.drawnScene(),gui.game.gui, 0, Game::DRAW_WHOLE_MAP, x, y, width, height, ringZoom));
             measure(clouds ? "Torus clouds" : "Torus no clouds", [&] {
+                if(pausePresentation)gui.view.render.animationTime=22;
                 view.amount = 1;
                 view.lastFrame = SDL_GetTicks();
                 view.setViewport((x + 1) & gui.game.map.getMaskW(), (y + 1) & gui.game.map.getMaskH());
