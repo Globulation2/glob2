@@ -239,6 +239,13 @@ TEST_SUITE("GameplayRecording.Integration")
             REQUIRE(saved);
             CHECK(saved->w == 64);
             CHECK(saved->h == 48);
+            Uint8 r, g, b, a;
+            REQUIRE(SDL_ReadSurfacePixel(saved.get(), 0, 0, &r, &g, &b, &a));
+            CHECK(r == 190);
+            CHECK(g == 20);
+            CHECK(b == 30);
+            std::filesystem::copy_file(screenshot, glob2test::artifactDir() / filename,
+                std::filesystem::copy_options::overwrite_existing);
         }
     }
 
