@@ -385,3 +385,88 @@ For a native preparation comparison, set
 `GLOB2_DISABLE_GPU_TEXTURE_PREPARATION=1` to retain CPU mip generation and SDL
 premultiplication. An unset or empty value enables supported GPU preparation.
 These paths change presentation work only; simulation and saved state are unchanged.
+
+### Portable shader build artifacts
+
+`libgag/shaders/renderer-manifest.json` declares skin/rig, world/cloud, smooth-point and 2D primitive
+vertex layouts, uniform blocks and resource bindings. Generate build artifacts
+with `python3 tools/shaders/generate.py --output artifacts/shaders/generated`.
+The output contains GLSL ES 3.00, desktop GLSL 3.30 and Vulkan GLSL 4.50 sources,
+`metadata.json`, and `RendererShaderLayouts.h` with matching C++ constants.
+Uniform layouts are column-major std140; SDL3 primitive vertices retain their
+position, float colour and texture-coordinate layout. Primitive colours remain
+straight alpha. The fragment `textured` flag disables sampling for solid fills. `uvBounds`
+clamps sampling to the selected source rectangle's texel centres, preventing
+linear filtering from bleeding adjacent atlas entries; generic triangles use
+the full texture bounds.
+
+Pass `--glslang /path/to/glslangValidator` to compile native SPIR-V ahead of time.
+The manifest pins build-only glslang **15.1.0** and Vulkan 1.0; another compiler
+version fails instead of silently producing different binaries. Shader source
+regeneration invalidates older SPIR-V files. Shader compilers are not runtime
+dependencies. Generated `metadata.json` records `shaderArtifacts[family][variant][stage]`
+for each produced vertex/fragment artifact, with its relative path, shader format,
+entrypoint, SPDX licence and SHA-256. The generated shaders retain the game’s
+`GPL-3.0-or-later` licence; build-only translators are not shipped. Vulkan entrypoints are read from compiled SPIR-V;
+WebGPU entrypoints are read from translated WGSL. Factories must reject missing
+format receipts instead of assuming a Metal or Direct3D entrypoint. Generating
+without native tools advertises only the generated GL source formats.
+Optional `--spirv-cross` and `--dxc` generate ahead-of-time Direct3D 12 DXIL
+from the same validated SPIR-V. The manifest pins the Linux SPIRV-Cross package
+and binary digest, and DXC release **v1.8.2505.1** with its archive and binary
+digests. That official Linux release reports a `1.9(dev;4950-b106a961)` compiler
+version; verification checks its actual version rather than assuming the tag is
+the executable's version. DXIL entrypoints come from compiled reflection.
+Translation also emits Metal 2.1 sources and records their actual entrypoints,
+without advertising `.metallib` support. Apple offline compilation must produce
+and validate libraries before the Metal factory can accept their receipts.
+Generating without these tools removes stale native-format outputs.
+On an Apple build host, compile the translated output separately with
+`tools/shaders/generate.py --output OUTPUT --metal-sdk macosx
+--metal-tool-lock LOCK.json` (or `iphoneos` / `iphonesimulator`). The JSON lock
+contains the exact `xcodebuild -version` output (`xcodeVersion`), SDK name and
+version (`sdk`, `sdkVersion`), and SHA-256 digests of the resolved `metal` and
+`metallib` executables (`metalSha256`, `metallibSha256`). It must match the existing
+Xcode pin in `mobile/toolchain.json`; `--developer-dir` selects a bundle without
+changing the system selection. This separate step compiles MSL to AIR, links
+`.metallib`, checks the library magic and compiled function name, and records
+source and library hashes with the entrypoint. Failed or incomplete builds leave
+Metal unavailable. A verified Apple tool lock and actual SDK compilation are
+required before producing release libraries; mock tests verify invocation and
+receipt handling only.
+
+
+Native skin shaders convert GL clip depth to Vulkan's 0..w range;
+material logic and rig deformation still come from the existing authoritative
+GLSL and `SkinDeformation.h`, including Studio and baker consumers.
+
+`tools/shaders/prove_webgl.mjs artifacts/shaders/generated` executes the generated
+programs in Playwright Chromium: every registered atlas material, rest and posed
+GPU rig, fur shells, depth occlusion, solid/textured primitives and alpha. Use
+`PLAYWRIGHT_MODULE` for an existing Playwright package and `PLAYWRIGHT_CHROMIUM`
+for an explicit installed Chromium executable. Its JSON result belongs in the
+artifact directory. This proof does not establish native rendering or cross-driver
+pixel equivalence. MSL and DXIL translation and platform hardware execution
+remain separate acceptance gates.
+
+WGSL generation additionally uses build-only Naga **27.0.0** (install with
+`cargo install naga-cli --version 27.0.0 --locked`). Pass `--naga /path/to/naga`
+alongside `--glslang`. The generator derives separate image/sampler bindings
+from the manifest: group 2 image bindings 0/2 and sampler bindings 1/3. It
+extracts the atlas sampling wrapper from the shared skin source, leaving the
+material catalogue, lighting and deformation authoritative. Optimized SPIR-V
+is translated with coordinate conversion disabled, preserving canonical depth
+and vertical orientation. Native Vulkan and WebGPU wrappers reverse `dFdy` to preserve the shared
+material lighting in downward framebuffer coordinates. Compiler version mismatches fail the build; generating
+without the translator removes previous WGSL artifacts.
+
+`tools/shaders/prove_webgpu.mjs` creates every generated pipeline and renders
+all skin materials, rest/posed rigs, derivatives, fur shells and depth occlusion.
+It uses the same Playwright environment overrides as the WebGL proof and takes
+an optional generated output directory. A local HTTP server on port 8784 is
+required to provide a secure browser origin; `SHADER_PROOF_URL` overrides it. These translation and render
+checks establish shader feasibility; platform default selection still requires
+the application's hardware, lifecycle and performance validation. Metal library
+production requires an Apple offline compiler; Direct3D and Metal hardware
+validation remains a separate release gate.
+
