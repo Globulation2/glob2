@@ -310,8 +310,32 @@ TEST_CASE("invalid captured replay clocks stop new commands and rejected readine
     {
         Fixture fixture;CaptureProbeReplay::Receipt receipt;fixture.driver->ready=false;
         auto replay=fixture.begin(receipt);CHECK_FALSE(replay);CHECK(bool(fixture.record));
-        CHECK(receipt.setupDeclined);CHECK(fixture.driver->commands==0);CHECK(fixture.policy->metrics().probeCpuNs==0);
+        CHECK(receipt.setupDeclined);CHECK(receipt.setup.reason==CaptureProbeReplay::SetupDecline::NotReady);
+        CHECK_FALSE(receipt.setup.ready);CHECK(receipt.setup.slackNs==fixture.admission().slackNs);
+        CHECK(receipt.setup.due==fixture.record->due());CHECK(receipt.invalidClocks==0);
+        CHECK(fixture.driver->commands==0);CHECK(fixture.policy->metrics().probeCpuNs==0);
         fixture.record.reset();CHECK(openCLProbeBytes()==baseline);
+    }
+    {
+        Fixture fixture;CaptureProbeReplay::Receipt receipt;
+        fixture.timer->failAt=fixture.timer->calls+1;
+        auto replay=fixture.begin(receipt);CHECK_FALSE(replay);REQUIRE(bool(fixture.record));
+        CHECK(receipt.setup.reason==CaptureProbeReplay::SetupDecline::ClockRead);
+        CHECK_FALSE(receipt.clockValid);CHECK(receipt.invalidClocks==1);CHECK(fixture.driver->commands==0);
+    }
+    for(unsigned cause=0;cause<3;++cause) {
+        Fixture fixture;CaptureProbeReplay::Receipt receipt;auto admission=fixture.admission();
+        if(cause==0)admission.requiredGeneration++;
+        else if(cause==1)admission.requiredBacklog=true;
+        else admission.slackNs=0;
+        auto replay=CaptureProbeReplay::begin(std::move(fixture.record),admission,receipt);
+        CHECK_FALSE(replay);REQUIRE(bool(fixture.record));CHECK(fixture.driver->commands==0);
+        const auto expected=cause==0?CaptureProbeReplay::SetupDecline::Generation:
+            cause==1?CaptureProbeReplay::SetupDecline::RequiredBacklog:CaptureProbeReplay::SetupDecline::NoSlack;
+        CHECK(receipt.setup.reason==expected);CHECK(receipt.setup.tick==admission.tick);
+        CHECK(receipt.setup.admissionGeneration==admission.requiredGeneration);
+        CHECK(receipt.setup.capturedGeneration==fixture.record->requiredGeneration());
+        CHECK(receipt.setup.slackNs==admission.slackNs);CHECK(receipt.invalidClocks==0);
     }
     {
         Fixture fixture;CaptureProbeReplay::Receipt receipt;

@@ -18,6 +18,24 @@ public:
         bool requiredAllowanceQualified=false;
         std::uint64_t requiredAllowanceCalibration=0;
     };
+    enum class SetupDecline {None,MissingCapture,SharedCapture,UnboundReference,InvalidCount,InvalidCapture,
+        OpenEnrollment,Generation,RequiredBacklog,NoSlack,Due,ClockConfiguration,HooksConfiguration,
+        RetainedStorage,ClockRead,MissingFutureStorage,HostStorage,NotReady,Producer,Authorization,NativeBegin,Exception};
+    enum class SetupStage {Guards,Clock,Storage,Readiness,Producer,Allocation,Authorization,NativeBegin,Complete};
+    struct SetupDiagnostic {
+        SetupDecline reason=SetupDecline::None;
+        SetupStage stage=SetupStage::Guards;
+        std::uint64_t tick=0,slackNs=0,due=0,admissionGeneration=0,capturedGeneration=0;
+        unsigned count=0;
+        bool referenceBound=false,captureValid=false,closed=false,backlog=false,ready=false;
+    };
+    static const char* setupReasonName(SetupDecline reason) noexcept {
+        constexpr const char* names[]={"none","missing_capture","shared_capture","unbound_reference","invalid_count",
+            "invalid_capture","open_enrollment","generation","required_backlog","no_slack","due","clock_configuration",
+            "hooks_configuration","retained_storage","clock_read","missing_future_storage","host_storage","not_ready",
+            "producer","authorization","native_begin","exception"};
+        return unsigned(reason)<std::size(names)?names[unsigned(reason)]:"unknown";
+    }
     struct Receipt {
         std::uint64_t attemptedCallingCpuNs=0,backgroundCallingCpuNs=0;
         std::uint64_t alternativeCallingCpuNs=0,comparisonCpuNs=0,elapsedNs=0;
@@ -34,6 +52,7 @@ public:
         bool requiredAllowanceQualified=false,nativeClock=false;
         std::uint64_t ticketId=0,policyGeneration=0,requiredGeneration=0;
         std::uint64_t requiredAllowanceCalibration=0,captureCpuLimitNs=0;
+        SetupDiagnostic setup;
     };
     struct Clock {
         std::shared_ptr<const void> owner;
@@ -236,34 +255,49 @@ public:
                 if(start && end && end>=start)out.attemptedCallingCpuNs=end-start;
                 else {out.clockValid=false;++out.invalidClocks;}}
         } attempt{attempted,nativeStart};
-        if(!captured || captured.use_count()!=1 || !captured->receipt().referenceBound ||
-           captured->requiredGeneration()!=admission.requiredGeneration || admission.requiredBacklog ||
-           !admission.slackNs || admission.tick>=captured->due() ||
-           (clock.read && (!clock.owner || !clock.retainedBytes)) ||
-           (!clock.read && (clock.owner || clock.retainedBytes)) ||
-           (hooks.begin && (!hooks.owner || !hooks.retainedBytes || !hooks.ready || !hooks.reap)) ||
-           (!hooks.begin && (hooks.owner || hooks.retainedBytes || hooks.ready || hooks.reap))) {
-            attempted.setupDeclined=true;return {};
-        }
+        auto& diagnostic=attempted.setup;
+        diagnostic.tick=admission.tick;diagnostic.slackNs=admission.slackNs;
+        diagnostic.admissionGeneration=admission.requiredGeneration;diagnostic.backlog=admission.requiredBacklog;
+        if(captured){const auto paid=captured->receipt();diagnostic.due=captured->due();
+            diagnostic.capturedGeneration=captured->requiredGeneration();diagnostic.count=1;
+            diagnostic.referenceBound=paid.referenceBound;
+            diagnostic.captureValid=paid.clockValid && !paid.requiresFullReservedCharge;diagnostic.closed=true;}
+        auto reject=[&](SetupDecline reason){attempted.setupDeclined=true;diagnostic.reason=reason;};
+        if(!captured){reject(SetupDecline::MissingCapture);return {};}
+        if(captured.use_count()!=1){reject(SetupDecline::SharedCapture);return {};}
+        if(!diagnostic.referenceBound){reject(SetupDecline::UnboundReference);return {};}
+        if(captured->requiredGeneration()!=admission.requiredGeneration){reject(SetupDecline::Generation);return {};}
+        if(admission.requiredBacklog){reject(SetupDecline::RequiredBacklog);return {};}
+        if(!admission.slackNs){reject(SetupDecline::NoSlack);return {};}
+        if(admission.tick>=captured->due()){reject(SetupDecline::Due);return {};}
+        if((clock.read && (!clock.owner || !clock.retainedBytes)) ||
+           (!clock.read && (clock.owner || clock.retainedBytes))){reject(SetupDecline::ClockConfiguration);return {};}
+        if((hooks.begin && (!hooks.owner || !hooks.retainedBytes || !hooks.ready || !hooks.reap)) ||
+           (!hooks.begin && (hooks.owner || hooks.retainedBytes || hooks.ready || hooks.reap))){reject(SetupDecline::HooksConfiguration);return {};}
         constexpr std::size_t fixed=sizeof(State)+sizeof(NativeProbe)+512+PrechargedProbeStorage::metadataBytes();
         if(clock.retainedBytes>OpenCLProbeBudget-fixed ||
            hooks.retainedBytes>OpenCLProbeBudget-fixed-clock.retainedBytes) {
-            attempted.setupDeclined=true;return {};
+            reject(SetupDecline::RetainedStorage);return {};
         }
         Lease reservedState,reservedWrapper;
         try {
+            diagnostic.stage=SetupStage::Clock;
             const auto beginCpu=clock.read?clock.read(clock.owner.get()):glob2::threadCpuNs();
-            if(!beginCpu){attempted.clockValid=false;++attempted.invalidClocks;return {};}
+            if(!beginCpu){reject(SetupDecline::ClockRead);attempted.clockValid=false;++attempted.invalidClocks;return {};}
             const auto capturedCpu=captured->receipt().optionalCpuNs;
             const auto bytes=fixed+clock.retainedBytes+hooks.retainedBytes;
-            if(!reserveOpenCLProbeBytes(bytes))return {};
+            diagnostic.stage=SetupStage::Storage;
+            if(!reserveOpenCLProbeBytes(bytes)){reject(SetupDecline::HostStorage);return {};}
             reservedState.bytes=bytes;
-            if(!reserveOpenCLProbeBytes(sizeof(CaptureProbeReplay)))return {};
+            if(!reserveOpenCLProbeBytes(sizeof(CaptureProbeReplay))){reject(SetupDecline::HostStorage);return {};}
             reservedWrapper.bytes=sizeof(CaptureProbeReplay);
-            if(!prepared(hooks)){attempted.setupDeclined=true;return {};}
+            diagnostic.stage=SetupStage::Readiness;diagnostic.ready=prepared(hooks);
+            if(!diagnostic.ready){reject(SetupDecline::NotReady);return {};}
             // Adopt producer before moving ownership. Rejected admission keeps
             // the caller's capture alive for conservative receipt settlement.
-            if(!captured->adoptProducer()){attempted.setupDeclined=true;return {};}
+            diagnostic.stage=SetupStage::Producer;
+            if(!captured->adoptProducer()){reject(SetupDecline::Producer);return {};}
+            diagnostic.stage=SetupStage::Allocation;
             auto allocation=std::unique_ptr<State>(new State(std::move(captured),std::move(clock),std::move(hooks),bytes));
             reservedState.bytes=0;
             allocation->initialCaptureCpuNs=capturedCpu;
@@ -273,11 +307,14 @@ public:
             auto payload=std::shared_ptr<State>(allocation.release(),[stateCredit](State* value){delete value;});
             auto result=std::unique_ptr<CaptureProbeReplay>(new CaptureProbeReplay(payload,reservedWrapper.bytes));
             reservedWrapper.bytes=0;
-            payload->floor=beginCpu;
-            if(!payload->now()){payload->receipt.setupDeclined=true;return {};}
+            payload->receipt.setup=diagnostic;payload->floor=beginCpu;
+            if(!payload->now()){payload->receipt.setupDeclined=true;payload->receipt.setup.reason=SetupDecline::ClockRead;
+                attempted=payload->receipt;return {};}
+            diagnostic.stage=SetupStage::Authorization;payload->receipt.setup.stage=diagnostic.stage;
             const auto authorization=payload->record->authorize(admission.requiredGeneration,admission.tick,
                 admission.slackNs,admission.requiredBacklog);
-            if(!authorization) {payload->receipt.setupDeclined=true;return {};}
+            if(!authorization) {payload->receipt.setupDeclined=true;payload->receipt.setup.reason=SetupDecline::Authorization;
+                attempted=payload->receipt;return {};}
             payload->authorization=*authorization;
             payload->receipt.requiredOnlyAllowanceCpuNs=admission.requiredOnlyAllowanceCpuNs;
             payload->receipt.requiredAllowanceQualified=admission.requiredAllowanceQualified;
@@ -290,6 +327,7 @@ public:
             payload->receipt.ticketId=ticket.id;payload->receipt.policyGeneration=ticket.generation;
             payload->receipt.requiredGeneration=payload->record->requiredGeneration();
             const auto& record=*payload->record;
+            diagnostic.stage=SetupStage::NativeBegin;payload->receipt.setup.stage=diagnostic.stage;
             auto costOwner=PrechargedProbeCostOwner::create(payload,record.storageCredit,payload->storageCredit);
             const auto retained=payload->receipt.reservedBytes+record.receipt().reservedBytes+
                 PrechargedProbeCostOwner::metadataBytes();
@@ -305,10 +343,12 @@ public:
                 result->probe=std::make_unique<NativeProbe>(std::move(native));
             payload->account(beginCpu,payload->now(),true);
             result->snapshotProbe();
-            if(!result->probe){payload->receipt.setupDeclined=true;return {};}
-            payload->setupComplete=true;
+            if(!result->probe){payload->receipt.setupDeclined=true;payload->receipt.setup.reason=SetupDecline::NativeBegin;
+                attempted=payload->receipt;return {};}
+            payload->setupComplete=true;payload->receipt.setup.stage=SetupStage::Complete;
             attempted=payload->receipt;return result;
-        } catch(...) {attempted.setupDeclined=true;attempted.clockValid=false;++attempted.invalidClocks;return {};}
+        } catch(...) {reject(diagnostic.stage==SetupStage::Clock?SetupDecline::ClockRead:SetupDecline::Exception);
+            attempted.clockValid=false;++attempted.invalidClocks;return {};}
     }
     static std::unique_ptr<CaptureProbeReplay> begin(std::shared_ptr<GradientCpuCapture::Record>&& captured,
         Admission admission,Receipt& attempted) noexcept {

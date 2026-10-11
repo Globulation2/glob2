@@ -366,13 +366,16 @@ class DeviceBroker
             if(state->totals.diagnostics) {
                 const auto& r=result.receipt;
                 const auto& replay=state->probeResult;const auto& native=replay.nativeMetrics;const auto& key=state->probeKey;
-                const char* reason=!replay.clockValid || r.invalidClocks ? "clock" : replay.overshoots || r.overshoots ? "overshoot" :
+                const char* reason=replay.setupDeclined ?
+                    (replay.setup.reason==CaptureProbeReplay::SetupDecline::ClockRead?"clock":"setup") :
+                    !replay.clockValid ? "clock" : r.invalidClocks ? "accounting" : replay.overshoots || r.overshoots ? "overshoot" :
                     replay.executionFailed ? "driver" : replay.budgetCanceled ? "budget" : replay.requiredCanceled ? "required" :
                     replay.explicitCanceled ? "explicit" : replay.firstMismatch!=SIZE_MAX ? "mismatch" :
-                    replay.setupDeclined ? "setup" : !r.inferenceEligible ? "accounting" : "complete";
+                    !r.inferenceEligible ? "accounting" : "complete";
                 std::fprintf(stderr,"gradient_probe ticket=%llu policy_gen=%llu required_gen=%llu admission=%llu device_terminal=%llu cleanup=%llu tail1=%llu tail2=%llu process_begin=%llu process_end=%llu process_cpu=%llu known_inner=%llu unknown_upper=%llu capture_cpu=%llu calling_cpu=%llu closing_cpu=%llu alternative_cpu=%llu comparison_cpu=%llu elapsed=%llu slack=%llu reserve_cpu=%llu charge_cpu=%llu retired_allowance=%llu exact=%u inference=%u omitted=%zu churn=%u invalid=%llu overshoots=%llu"
                     " width=%u height=%u family=%u swim=%llu limit=%u cpu_buckets=%u threads=%u batch=%u plan=%u seed_density=%u blocker_density=%u movement_modifiers=%u due_tick=%llu"
                     " accepted_reference_cpu=%llu common_preparation_cpu=%llu candidate_cpu_upper=%llu authorization_reserve_cpu=%llu capture_cpu_limit=%llu reason=%s budget_canceled=%u required_canceled=%u explicit_canceled=%u setup_declined=%u execution_failed=%u"
+                    " setup_reason=%s setup_stage=%u setup_tick=%llu setup_slack=%llu setup_due=%llu setup_admission_generation=%llu setup_captured_generation=%llu setup_count=%u setup_reference_bound=%u setup_capture_valid=%u setup_closed=%u setup_backlog=%u setup_ready=%u replay_invalid_clocks=%llu native_coverage_complete=%u"
                     " native_metrics=%u native_stage=%u native_dispatches=%llu native_checks=%llu native_copied_cells=%llu native_cost_cells=%llu native_cost_bytes=%llu native_cost_uploads=%llu native_setup_cpu=%llu native_cpu=%llu native_batch_fields=%u native_retired_fields=%u\n",
                     (unsigned long long)r.ticketId,(unsigned long long)r.policyGeneration,(unsigned long long)r.requiredGeneration,
                     (unsigned long long)state->probeAdmissionNs,(unsigned long long)r.deviceTerminalNs,(unsigned long long)r.cleanupNs,
@@ -392,7 +395,14 @@ class DeviceBroker
                     (unsigned long long)replay.reservedCpuNs,
                     (unsigned long long)replay.captureCpuLimitNs,reason,
                     unsigned(replay.budgetCanceled),unsigned(replay.requiredCanceled),unsigned(replay.explicitCanceled),
-                    unsigned(replay.setupDeclined),unsigned(replay.executionFailed),unsigned(replay.nativeMetricsAvailable),unsigned(native.stage),
+                    unsigned(replay.setupDeclined),unsigned(replay.executionFailed),
+                    CaptureProbeReplay::setupReasonName(replay.setup.reason),unsigned(replay.setup.stage),
+                    (unsigned long long)replay.setup.tick,(unsigned long long)replay.setup.slackNs,
+                    (unsigned long long)replay.setup.due,(unsigned long long)replay.setup.admissionGeneration,
+                    (unsigned long long)replay.setup.capturedGeneration,replay.setup.count,
+                    unsigned(replay.setup.referenceBound),unsigned(replay.setup.captureValid),unsigned(replay.setup.closed),
+                    unsigned(replay.setup.backlog),unsigned(replay.setup.ready),(unsigned long long)replay.invalidClocks,
+                    unsigned(r.nativeCoverageComplete),unsigned(replay.nativeMetricsAvailable),unsigned(native.stage),
                     (unsigned long long)native.dispatches,(unsigned long long)native.hostChecks,(unsigned long long)native.copiedCells,
                     (unsigned long long)native.costCellsPrepared,(unsigned long long)native.costPreparedBytes,(unsigned long long)native.costUploads,
                     (unsigned long long)native.setupCpuNs,(unsigned long long)native.threadCpuNs,native.batchFields,native.retiredFields);

@@ -15,6 +15,8 @@ public:
     using Admission=CaptureProbeReplay::Admission;
     using Receipt=CaptureProbeReplay::Receipt;
     using Clock=CaptureProbeReplay::Clock;
+    using SetupDecline=CaptureProbeReplay::SetupDecline;
+    using SetupStage=CaptureProbeReplay::SetupStage;
     // Injected backends exercise this adapter's actual ownership/comparator
     // without loading a driver. They are diagnostic-only and never qualify.
     class Probe {
@@ -224,16 +226,25 @@ public:
                 if(start && end && end>=start)out.attemptedCallingCpuNs=end-start;
                 else {out.clockValid=false;++out.invalidClocks;}}
         } attempt{attempted,nativeStart};
-        if(!captured || !captured->receipt().referenceBound ||
-           !captured->count() || captured->count()>8 || !captured->captureValid() || !captured->isClosed() ||
-           captured->requiredGeneration()!=admission.requiredGeneration || admission.requiredBacklog ||
-           !admission.slackNs || admission.tick>=captured->due() ||
-           (clock.read && (!clock.owner || !clock.retainedBytes)) ||
-           (!clock.read && (clock.owner || clock.retainedBytes)) ||
-           (hooks.begin && (!hooks.owner || !hooks.retainedBytes || !hooks.ready || !hooks.reap)) ||
-           (!hooks.begin && (hooks.owner || hooks.retainedBytes || hooks.ready || hooks.reap))) {
-            attempted.setupDeclined=true;return {};
-        }
+        auto& diagnostic=attempted.setup;
+        diagnostic.tick=admission.tick;diagnostic.slackNs=admission.slackNs;
+        diagnostic.admissionGeneration=admission.requiredGeneration;diagnostic.backlog=admission.requiredBacklog;
+        if(captured){diagnostic.referenceBound=captured->receipt().referenceBound;diagnostic.count=captured->count();
+            diagnostic.due=captured->due();diagnostic.capturedGeneration=captured->requiredGeneration();}
+        auto reject=[&](SetupDecline reason){attempted.setupDeclined=true;diagnostic.reason=reason;};
+        if(!captured){reject(SetupDecline::MissingCapture);return {};}
+        if(!diagnostic.referenceBound){reject(SetupDecline::UnboundReference);return {};}
+        if(!captured->count() || captured->count()>8){reject(SetupDecline::InvalidCount);return {};}
+        if(!(diagnostic.captureValid=captured->captureValid())){reject(SetupDecline::InvalidCapture);return {};}
+        if(!(diagnostic.closed=captured->isClosed())){reject(SetupDecline::OpenEnrollment);return {};}
+        if(captured->requiredGeneration()!=admission.requiredGeneration){reject(SetupDecline::Generation);return {};}
+        if(admission.requiredBacklog){reject(SetupDecline::RequiredBacklog);return {};}
+        if(!admission.slackNs){reject(SetupDecline::NoSlack);return {};}
+        if(admission.tick>=captured->due()){reject(SetupDecline::Due);return {};}
+        if((clock.read && (!clock.owner || !clock.retainedBytes)) ||
+           (!clock.read && (clock.owner || clock.retainedBytes))){reject(SetupDecline::ClockConfiguration);return {};}
+        if((hooks.begin && (!hooks.owner || !hooks.retainedBytes || !hooks.ready || !hooks.reap)) ||
+           (!hooks.begin && (hooks.owner || hooks.retainedBytes || hooks.ready || hooks.reap))){reject(SetupDecline::HooksConfiguration);return {};}
         constexpr std::size_t fixed=sizeof(State)+sizeof(NativeProbe)+512+PrechargedProbeStorage::metadataBytes();
         constexpr std::size_t wrapperBytes=sizeof(CaptureBatchProbeReplay)+256+PrechargedProbeStorage::metadataBytes();
         // Remaining fixed adapter allowance is independent of native arrays and
@@ -242,32 +253,37 @@ public:
             8*sizeof(OpenCLProbeInput)<16*1024);
         if(clock.retainedBytes>OpenCLProbeBudget-fixed ||
            hooks.retainedBytes>OpenCLProbeBudget-fixed-clock.retainedBytes) {
-            attempted.setupDeclined=true;return {};
+            reject(SetupDecline::RetainedStorage);return {};
         }
         Lease reservedState,reservedWrapper;
         try {
+            diagnostic.stage=SetupStage::Clock;
             const auto beginCpu=clock.read?clock.read(clock.owner.get()):glob2::threadCpuNs();
-            if(!beginCpu){attempted.clockValid=false;++attempted.invalidClocks;return {};}
+            if(!beginCpu){reject(SetupDecline::ClockRead);attempted.clockValid=false;++attempted.invalidClocks;return {};}
             const auto capturedCpu=captured->backgroundCallingReceipt().optionalCpuNs;
             const auto bytes=fixed+clock.retainedBytes+hooks.retainedBytes;
             const auto future=captured->futureStorage;
-            if(!hooks.begin && !future){attempted.setupDeclined=true;return {};}
+            if(!hooks.begin && !future){reject(SetupDecline::MissingFutureStorage);return {};}
+            diagnostic.stage=SetupStage::Storage;
             std::shared_ptr<PrechargedProbeStorage> stateCredit,wrapperCredit;
             if(future) {
                 stateCredit=PrechargedProbeStorage::claim(future,bytes);
                 wrapperCredit=PrechargedProbeStorage::claim(future,wrapperBytes);
             } else {
-                if(!reserveOpenCLProbeBytes(bytes))return {};
+                if(!reserveOpenCLProbeBytes(bytes)){reject(SetupDecline::HostStorage);return {};}
                 reservedState.bytes=bytes;
-                if(!reserveOpenCLProbeBytes(wrapperBytes))return {};
+                if(!reserveOpenCLProbeBytes(wrapperBytes)){reject(SetupDecline::HostStorage);return {};}
                 reservedWrapper.bytes=wrapperBytes;
                 stateCredit=PrechargedProbeStorage::adopt(reservedState.bytes);
                 wrapperCredit=PrechargedProbeStorage::adopt(reservedWrapper.bytes);
             }
-            if(!prepared(hooks)){attempted.setupDeclined=true;return {};}
+            diagnostic.stage=SetupStage::Readiness;diagnostic.ready=prepared(hooks);
+            if(!diagnostic.ready){reject(SetupDecline::NotReady);return {};}
             // Adopt producer before moving ownership. Rejected admission keeps
             // the caller's capture alive for conservative receipt settlement.
-            if(!captured->adoptProducer()){attempted.setupDeclined=true;return {};}
+            diagnostic.stage=SetupStage::Producer;
+            if(!captured->adoptProducer()){reject(SetupDecline::Producer);return {};}
+            diagnostic.stage=SetupStage::Allocation;
             auto allocation=std::unique_ptr<State>(new State({},std::move(clock),std::move(hooks),bytes));
             allocation->lease.bytes=0;
             allocation->storageCredit=stateCredit;
@@ -282,12 +298,13 @@ public:
             payload->record=std::move(captured);
             result->workload=payload->record->key();result->generation=payload->record->requiredGeneration();
             result->deadline=payload->record->due();
-            payload->floor=beginCpu;
-            if(!payload->now()){payload->receipt.setupDeclined=true;result->progress=Progress::Declined;
+            payload->receipt.setup=diagnostic;payload->floor=beginCpu;
+            if(!payload->now()){payload->receipt.setupDeclined=true;payload->receipt.setup.reason=SetupDecline::ClockRead;result->progress=Progress::Declined;
                 attempted=payload->receipt;return result;}
+            diagnostic.stage=SetupStage::Authorization;payload->receipt.setup.stage=diagnostic.stage;
             const auto authorization=payload->record->authorize(admission.requiredGeneration,admission.tick,
                 admission.slackNs,admission.requiredBacklog);
-            if(!authorization) {payload->receipt.setupDeclined=true;result->progress=Progress::Declined;
+            if(!authorization) {payload->receipt.setupDeclined=true;payload->receipt.setup.reason=SetupDecline::Authorization;result->progress=Progress::Declined;
                 attempted=payload->receipt;return result;}
             payload->authorization=*authorization;
             payload->receipt.requiredOnlyAllowanceCpuNs=admission.requiredOnlyAllowanceCpuNs;
@@ -303,6 +320,7 @@ public:
             const auto& record=*payload->record;
             // State owns no wrapper backreference. Native Plane aliases retain
             // this wrapper, State and the real capture/replay ledger credits.
+            diagnostic.stage=SetupStage::NativeBegin;payload->receipt.setup.stage=diagnostic.stage;
             try {
                 auto costOwner=PrechargedProbeCostOwner::create(payload,record.storageCredit,payload->storageCredit,future);
                 const auto retained=payload->receipt.reservedBytes+record.receipt().reservedBytes+
@@ -320,17 +338,20 @@ public:
                 if(payload->hooks.begin)result->probe=payload->hooks.begin(fields,authorization->plan,payload,payload->hooks.owner.get());
                 else if(auto native=beginOpenCLProbeBatch(fields,authorization->plan,payload,{},future))
                     result->probe=std::make_unique<NativeProbe>(std::move(native));
-            } catch(...) {payload->receipt.setupDeclined=true;}
+            } catch(...) {payload->receipt.setupDeclined=true;payload->receipt.setup.reason=SetupDecline::Exception;}
             payload->account(beginCpu,payload->now(),true);
             result->snapshotProbe();
             if(!result->probe) {
                 payload->receipt.setupDeclined=true;
+                if(payload->receipt.setup.reason==SetupDecline::None)payload->receipt.setup.reason=SetupDecline::NativeBegin;
                 if(payload.use_count()>2) {payload->receipt.quarantined=true;result->progress=Progress::Quarantined;}
                 else result->progress=Progress::Declined;
             }
             payload->setupComplete=true;
+            if(!payload->receipt.setupDeclined)payload->receipt.setup.stage=SetupStage::Complete;
             attempted=payload->receipt;return result;
-        } catch(...) {attempted.setupDeclined=true;attempted.clockValid=false;++attempted.invalidClocks;return {};}
+        } catch(...) {reject(diagnostic.stage==SetupStage::Clock?SetupDecline::ClockRead:SetupDecline::Exception);
+            attempted.clockValid=false;++attempted.invalidClocks;return {};}
     }
     static std::unique_ptr<CaptureBatchProbeReplay> begin(std::shared_ptr<GradientCpuCaptureGroup::Record>&& captured,
         Admission admission,Receipt& attempted) noexcept {

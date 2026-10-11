@@ -233,7 +233,34 @@ TEST_CASE("native batch replay rejects missing future storage before consuming o
     const auto bytes=openCLProbeBytes();
     auto replay=CaptureBatchProbeReplay::begin(std::move(fixture.record),fixture.admission(),attempted);
     CHECK_FALSE(replay);CHECK(attempted.setupDeclined);CHECK(bool(fixture.record));CHECK(openCLProbeBytes()==bytes);
+    CHECK(attempted.setup.reason==CaptureProbeReplay::SetupDecline::MissingFutureStorage);
+    CHECK(attempted.setup.count==2);CHECK(attempted.setup.referenceBound);CHECK(attempted.setup.captureValid);
+    CHECK(attempted.setup.closed);CHECK(attempted.setup.due==fixture.record->due());CHECK(attempted.invalidClocks==0);
     auto token=GradientCpuCaptureGroup::takeSettlement(fixture.record);REQUIRE(bool(token));token.reset();CHECK(openCLProbeBytes()==baseline);
+    {
+        Fixture invalidClock;invalidClock.timer->failAt=invalidClock.timer->calls+1;
+        auto declined=invalidClock.begin(attempted);CHECK_FALSE(declined);REQUIRE(bool(invalidClock.record));
+        CHECK(attempted.setup.reason==CaptureProbeReplay::SetupDecline::ClockRead);
+        CHECK_FALSE(attempted.clockValid);CHECK(attempted.invalidClocks==1);CHECK(invalidClock.driver->commands==0);
+    }
+    for(unsigned cause=0;cause<4;++cause) {
+        Fixture rejected;auto admission=rejected.admission();
+        if(cause==0)admission.requiredGeneration++;
+        else if(cause==1)admission.requiredBacklog=true;
+        else if(cause==2)admission.slackNs=0;
+        else admission.tick=rejected.record->due();
+        const auto reads=rejected.timer->calls;
+        auto declined=CaptureBatchProbeReplay::begin(std::move(rejected.record),admission,attempted);
+        CHECK_FALSE(declined);REQUIRE(bool(rejected.record));CHECK(rejected.driver->commands==0);
+        const auto expected=cause==0?CaptureProbeReplay::SetupDecline::Generation:
+            cause==1?CaptureProbeReplay::SetupDecline::RequiredBacklog:
+            cause==2?CaptureProbeReplay::SetupDecline::NoSlack:CaptureProbeReplay::SetupDecline::Due;
+        CHECK(attempted.setup.reason==expected);CHECK(attempted.setup.tick==admission.tick);
+        CHECK(attempted.setup.slackNs==admission.slackNs);CHECK(attempted.setup.due==rejected.record->due());
+        CHECK(attempted.setup.admissionGeneration==admission.requiredGeneration);
+        CHECK(attempted.setup.capturedGeneration==rejected.record->requiredGeneration());
+        CHECK(attempted.invalidClocks==0);CHECK(rejected.timer->calls==reads);
+    }
 }
 
 TEST_CASE("isolated captured batch replay uses prepaid native arrays and exact eager references" * doctest::test_suite("OpenCLGradient"))

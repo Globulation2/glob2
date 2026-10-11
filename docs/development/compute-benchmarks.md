@@ -142,6 +142,15 @@ submitted to settlement, including its retirement allowance. `alternative_cpu`
 remains raw replay calling CPU, and `charge_cpu` is complete paid exploration
 debt; these quantities must not be substituted for one another.
 
+The terminal row also preserves the first replay setup rejection as
+`setup_reason`, its stage, and the frozen admission tick/slack, captured due,
+generations, count, bound/valid/closed state and readiness. `replay_invalid_clocks`
+is separate from the accounting invalid count. Missing authenticated native
+coverage conservatively invalidates inference even after a non-clock setup
+decline; `native_coverage_complete=0` alone is not evidence of a clock failure.
+Setup exceptions retain their stage and remain conservatively charged. These
+fixed background diagnostics do not change admission or deadline rules.
+
 With diagnostics enabled, `gradient_policy` follows settlement with the exact
 profile's pairs, epoch and last actual doubling look. Its two upper bounds are
 per-pair means frozen at that look; `last_look_pairs=0` means no look occurred.
