@@ -17,7 +17,25 @@ async function choose(page,label) {
   await expect.poll(()=>page.evaluate(()=>glob2Diagnostics.snapshot().controls['graphics.renderer']?.label)).toContain(label);
   const active={'Software':'software','Programmable GL':'webgl2','WebGPU':'webgpu'}[label];
   if(!active)throw Error('Missing active renderer expectation for '+label);
-  await expect.poll(()=>page.evaluate(()=>Module.renderer),{timeout:120000}).toBe(active);
+  try {
+    await expect.poll(()=>page.evaluate(()=>Module.renderer),{timeout:120000}).toBe(active);
+  } catch (error) {
+    // Preserve the actual owner failure after automatic fallback. A requested
+    // label and a replacement canvas do not establish successful GPU rendering.
+    const owners=await presentationOwners(page);
+    const diagnostics=await Promise.all(owners.map(owner=>owner.evaluate(()=>{
+      const g=globalThis.Glob2WebGPU;
+      return g?{state:g.state,error:g.error,lost:g.lost,epoch:g.epoch,
+        issued:g.issued,completed:g.completed,bytes:g.totalBytes(),
+        frames:g.frames.length,captures:g.captures.length,
+        resources:g.resources.size,meshes:g.meshes.size,masks:g.masks.size}:null;
+    })));
+    await test.info().attach('renderer-switch-failure',{body:JSON.stringify({
+      requested:label,active:await page.evaluate(()=>Module.renderer),
+      generation:await generation(page),diagnostics,snapshot:await state(page)
+    },null,2),contentType:'application/json'});
+    throw error;
+  }
   if(active==='webgl2') {
     const owners=await presentationOwners(page);
     expect(owners).toHaveLength(1);
