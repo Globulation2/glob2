@@ -33,20 +33,10 @@ void Game::drainAI() {if(aiPipeline)aiPipeline->drain();}
 void Game::clearAI() { map.finishGradientPipeline(); map.finishResourceGrowth(); aiPipeline.reset(); worldSnapshots.reset(); }
 void Game::saveAI(GAGCore::OutputStream* stream) {if(!aiPipeline){aiPipeline=std::make_unique<AIEngine::Pipeline>();aiPipeline->prepare(*this,{},true,nullptr,captureReadBoundary({},true));}aiPipeline->save(stream);}
 bool Game::loadAI(GAGCore::InputStream* stream) {auto pipeline=std::make_unique<AIEngine::Pipeline>();if(!pipeline->load(*this,stream))return false;aiPipeline=std::move(pipeline);return true;}
-Game::AISchedulingCounters Game::aiSchedulingCounters() const noexcept {
- if(!aiPipeline)return {};
- const auto& scheduling=aiPipeline->schedulingMetrics();const auto jobs=aiPipeline->schedulingJobCpuCounters();
- return {scheduling.submitted,scheduling.delivered,scheduling.deadlineMisses,scheduling.deadlineWaitNs,scheduling.sharedBatches,
-  jobs.enabled,jobs.jobsCompleted,jobs.decisionAndCommandCaptureCpuNs,jobs.inputReleaseCpuNs,jobs.invalidMeasurements,jobs.failedJobs};
-}
-AIEngine::ResourceGradientCounters Game::aiResourceGradientCounters() const noexcept {
- return aiPipeline?aiPipeline->schedulingResourceGradientCounters():AIEngine::ResourceGradientCounters{};
-}
 std::vector<std::pair<std::string,Uint64>> Game::aiMetrics() const {
  if(!aiPipeline)return {};
- const auto jobCpu=aiPipeline->schedulingJobCpuCounters();
  const auto& capture=worldSnapshots.metrics;const auto& scheduling=aiPipeline->schedulingMetrics();const auto memory=worldSnapshots.memoryMetrics();const auto queryMemory=aiPipeline->queryVectorMemory();
- std::vector<std::pair<std::string,Uint64>> result{{"captures",capture.captures},{"extraction_ns",capture.captureNs},{"preparation_ns",capture.preparationNs},
+ return {{"captures",capture.captures},{"extraction_ns",capture.captureNs},{"preparation_ns",capture.preparationNs},
   {"bytes_copied",capture.bytesCopied},{"component_reuses",capture.reusedComponents},{"allocations",capture.allocations},
   {"computation_ns",aiPipeline->computationNs()},{"controller_query_vector_bytes",queryMemory.first},
   {"controller_query_vector_peak_bytes",aiPipeline->peakQueryVectorMemory()},
@@ -58,13 +48,7 @@ std::vector<std::pair<std::string,Uint64>> Game::aiMetrics() const {
   {"snapshot_peak_retained_bytes",memory.peakRetainedBytes},{"snapshot_peak_capacity_bytes",memory.peakCapacityBytes},
   {"snapshot_peak_leased_bytes",memory.peakLeasedBytes},
   {"deadline_misses",scheduling.deadlineMisses},{"deadline_wait_ns",scheduling.deadlineWaitNs},{"maximum_pending",scheduling.maximumPending},
-  {"shared_batches",scheduling.sharedBatches},{"job_cpu_diagnostics",jobCpu.enabled},
-  {"jobs_completed",jobCpu.jobsCompleted},{"decision_and_command_capture_cpu_ns",jobCpu.decisionAndCommandCaptureCpuNs},
-  {"input_release_cpu_ns",jobCpu.inputReleaseCpuNs},{"job_cpu_invalid_measurements",jobCpu.invalidMeasurements},{"failed_jobs",jobCpu.failedJobs}};
- const auto resources=aiResourceGradientCounters();result.emplace_back("resource_gradient_diagnostics",resources.enabled);
- if(resources.enabled)for(unsigned i=0;i<AIEngine::ResourceGradientMetricCount;++i)
-  result.emplace_back(std::string("resource_gradient_")+AIEngine::resourceGradientMetricName(AIEngine::ResourceGradientMetric(i)),resources.values[i]);
- return result;
+  {"shared_batches",scheduling.sharedBatches}};
 }
 void Game::observeUnpolledAI() {
  std::vector<AIJavaScript*> idle;

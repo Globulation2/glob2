@@ -68,7 +68,7 @@ class PlayerQuitsGameOrder;
 class GameAnimations;
 class SoftwareTerrainCache;
 namespace AIPlanning { class BuildingCapabilityIndex; }
-namespace AIEngine { class Pipeline; struct ResourceGradientCounters; }
+namespace AIEngine { class Pipeline; }
 namespace GameDiagnostics { class Session; }
 
 // Minimum value of the prestige-victory threshold.
@@ -249,15 +249,6 @@ public:
 	void observeUnpolledAI();
 	SimulationSnapshot::Store& snapshotStore() { return worldSnapshots; }
 	std::vector<std::pair<std::string, Uint64>> aiMetrics() const;
-    struct AISchedulingCounters {
-        Uint64 submitted=0,delivered=0,deadlineMisses=0,deadlineWaitNs=0,sharedBatches=0;
-        bool jobCpuDiagnostics=false;
-        // Unsaved scheduler-lifetime totals spanning controller generations.
-        Uint64 jobsCompleted=0,decisionAndCommandCaptureCpuNs=0,inputReleaseCpuNs=0,jobCpuInvalidMeasurements=0,failedJobs=0;
-    };
-    // Simulation-owner accessor: fixed scalar copies, no observation/memory scans.
-    AISchedulingCounters aiSchedulingCounters() const noexcept;
-    AIEngine::ResourceGradientCounters aiResourceGradientCounters() const noexcept;
 private:
 	mutable SimulationSnapshot::Store worldSnapshots;
 	std::unique_ptr<AIEngine::Pipeline> aiPipeline;
