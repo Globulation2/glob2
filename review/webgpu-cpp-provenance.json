@@ -1,0 +1,26 @@
+{
+  "tested_commit": "47272f65460740a51aab36285a82645766ba90cf",
+  "base_revision": "fe3ea3a7fb24c85001e174915bda03f0737413b5",
+  "platform": "Linux-7.0.0-30-generic-x86_64-with-glibc2.39",
+  "toolchain": "Emscripten 4.0.15; serial SDL 3.4.16 pinned dependency prefix build-37f41e592645e4c8a74415df",
+  "build_flags": "-std=c++20 -O1 -fexceptions -sDISABLE_EXCEPTION_CATCHING=0; actual WebGPUDevice.cpp and RenderFrame.cpp; ALLOW_MEMORY_GROWTH; generated-terrain shader preload",
+  "build_command": "/home/bradley/.local/share/glob2/development/toolchains/emscripten/Linux-x86_64-88a621bc131cd4954413aa39/upstream/emscripten/em++ -std=c++20 -O1 -fexceptions -sDISABLE_EXCEPTION_CATCHING=0 -Ilibgag/include -I/home/bradley/.local/share/glob2/development/dependencies/build-37f41e592645e4c8a74415df/prefix/include -I/home/bradley/.codex/worktrees/renderer-shaders/glob2/artifacts/shaders/generated-terrain tools/shaders/WebGPUCppProof.cpp libgag/src/WebGPUDevice.cpp libgag/src/RenderFrame.cpp /home/bradley/.local/share/glob2/development/dependencies/build-37f41e592645e4c8a74415df/prefix/lib/libSDL3.a --js-library browser/webgpu-device.js -sALLOW_MEMORY_GROWTH=1 -sINITIAL_MEMORY=67108864 -sENVIRONMENT=web -sEXPORTED_RUNTIME_METHODS=FS,UTF8ToString -sMIN_WEBGL_VERSION=2 -sMAX_WEBGL_VERSION=2 --no-entry --preload-file /home/bradley/.codex/worktrees/renderer-shaders/glob2/artifacts/shaders/generated-terrain@/shaders -o artifacts/webgpu-cpp/proof.js",
+  "test_command": "NODE_PATH=/home/bradley/.codex/worktrees/renderer-shaders/glob2/artifacts/browser-runner/node_modules /home/bradley/.local/share/glob2/development/toolchains/emscripten/Linux-x86_64-88a621bc131cd4954413aa39/node/24.19.0_64bit/bin/node tools/shaders/prove_webgpu_cpp.cjs",
+  "gpu": "Chromium ANGLE/Vulkan SwiftShader software adapter; correctness only, no hardware/performance/default promotion claim",
+  "results": "PASS: all four non-solid skin atlas offsets; exact straight/PMA target parity; completed live-source upload pressure eviction protects current-frame leases and output",
+  "omissions": [
+    "Final integrated application build validation",
+    "Native hardware WebGPU",
+    "Browser engine matrix",
+    "Threaded application queue cases: startup/hook discovery evidence remains incomplete"
+  ],
+  "sha256": {
+    "proof.js": "67b29f6f32419c0aadcef4f55339601437427c6d074acb4f045e54ee582587c9",
+    "proof.wasm": "d2babfbda0958f8689d80aba37ad5d8d91b953acfae4ee9e06c91c320d4e9f5f",
+    "result.json": "de9fa881fd9f1fdbcfd2a7d107548e5b710e91798b0465470c700afead434ec7"
+  },
+  "serve_command": "python3 -m http.server 8785 --bind 127.0.0.1 --directory artifacts/webgpu-cpp",
+  "working_directory": "/home/bradley/.codex/worktrees/renderer-core/glob2",
+  "browser": "Playwright1.63.0 Google Chrome for Testing153.0.8010.12",
+  "shader_metadata_sha256": "f4521dbadf6c07a7119569b93f762aeff8f1a6a1ca07a1de4cc507db676e041c"
+}

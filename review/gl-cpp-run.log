@@ -1,0 +1,284 @@
+{
+  "cycles": [
+    [
+      {
+        "reduction": 1,
+        "mixed": 0,
+        "pixel": [
+          0,
+          128,
+          0,
+          255
+        ]
+      },
+      {
+        "reduction": 1,
+        "mixed": 1,
+        "pixel": [
+          0,
+          128,
+          0,
+          255
+        ]
+      },
+      {
+        "reduction": 2,
+        "mixed": 0,
+        "pixel": [
+          0,
+          128,
+          0,
+          255
+        ]
+      },
+      {
+        "reduction": 2,
+        "mixed": 1,
+        "pixel": [
+          0,
+          128,
+          0,
+          255
+        ]
+      },
+      {
+        "reduction": 8,
+        "mixed": 0,
+        "pixel": [
+          0,
+          128,
+          0,
+          255
+        ]
+      },
+      {
+        "reduction": 8,
+        "mixed": 1,
+        "pixel": [
+          0,
+          128,
+          0,
+          255
+        ]
+      },
+      {
+        "reduction": 32,
+        "mixed": 0,
+        "pixel": [
+          0,
+          128,
+          0,
+          255
+        ]
+      },
+      {
+        "reduction": 32,
+        "mixed": 1,
+        "pixel": [
+          0,
+          128,
+          0,
+          255
+        ]
+      },
+      {
+        "resize": true,
+        "pixel": [
+          0,
+          128,
+          0,
+          255
+        ]
+      }
+    ],
+    [
+      {
+        "reduction": 1,
+        "mixed": 0,
+        "pixel": [
+          0,
+          128,
+          0,
+          255
+        ]
+      },
+      {
+        "reduction": 1,
+        "mixed": 1,
+        "pixel": [
+          0,
+          128,
+          0,
+          255
+        ]
+      },
+      {
+        "reduction": 2,
+        "mixed": 0,
+        "pixel": [
+          0,
+          128,
+          0,
+          255
+        ]
+      },
+      {
+        "reduction": 2,
+        "mixed": 1,
+        "pixel": [
+          0,
+          128,
+          0,
+          255
+        ]
+      },
+      {
+        "reduction": 8,
+        "mixed": 0,
+        "pixel": [
+          0,
+          128,
+          0,
+          255
+        ]
+      },
+      {
+        "reduction": 8,
+        "mixed": 1,
+        "pixel": [
+          0,
+          128,
+          0,
+          255
+        ]
+      },
+      {
+        "reduction": 32,
+        "mixed": 0,
+        "pixel": [
+          0,
+          128,
+          0,
+          255
+        ]
+      },
+      {
+        "reduction": 32,
+        "mixed": 1,
+        "pixel": [
+          0,
+          128,
+          0,
+          255
+        ]
+      },
+      {
+        "resize": true,
+        "pixel": [
+          0,
+          128,
+          0,
+          255
+        ]
+      }
+    ],
+    [
+      {
+        "reduction": 1,
+        "mixed": 0,
+        "pixel": [
+          0,
+          128,
+          0,
+          255
+        ]
+      },
+      {
+        "reduction": 1,
+        "mixed": 1,
+        "pixel": [
+          0,
+          128,
+          0,
+          255
+        ]
+      },
+      {
+        "reduction": 2,
+        "mixed": 0,
+        "pixel": [
+          0,
+          128,
+          0,
+          255
+        ]
+      },
+      {
+        "reduction": 2,
+        "mixed": 1,
+        "pixel": [
+          0,
+          128,
+          0,
+          255
+        ]
+      },
+      {
+        "reduction": 8,
+        "mixed": 0,
+        "pixel": [
+          0,
+          128,
+          0,
+          255
+        ]
+      },
+      {
+        "reduction": 8,
+        "mixed": 1,
+        "pixel": [
+          0,
+          128,
+          0,
+          255
+        ]
+      },
+      {
+        "reduction": 32,
+        "mixed": 0,
+        "pixel": [
+          0,
+          128,
+          0,
+          255
+        ]
+      },
+      {
+        "reduction": 32,
+        "mixed": 1,
+        "pixel": [
+          0,
+          128,
+          0,
+          255
+        ]
+      },
+      {
+        "resize": true,
+        "pixel": [
+          0,
+          128,
+          0,
+          255
+        ]
+      }
+    ]
+  ],
+  "errors": [],
+  "consoleMessages": [
+    "[.WebGL-0x343c00190800]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels",
+    "[.WebGL-0x343c00190800]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels",
+    "[.WebGL-0x343c00190800]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels",
+    "[.WebGL-0x343c00190800]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)"
+  ]
+}

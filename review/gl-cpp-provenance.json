@@ -1,0 +1,21 @@
+{
+  "sourceRevision": "0571d6d51b053063d362b4d38777c0774b26641d",
+  "sdk": "Emscripten 4.0.15",
+  "sdl": "3.4.16",
+  "sourceHashes": {
+    "/home/bradley/glob2/libgag/src/ProgrammableGLDevice.cpp": "76e8148f462f7abe4f86742c743b1893f097b0216362b883b2a0506145299d41",
+    "/home/bradley/glob2/libgag/src/RenderFrame.cpp": "9057f8820deb592bb803b3f8fa684990a4c33484c8f5f12ca48b37bd394f1bd8",
+    "/home/bradley/glob2/libgag/include/RenderDevice.h": "649f75aa6fa0bb040b6f9ce4ccb8d51821ef5e761ce49e53b364a94902b9e49a",
+    "/home/bradley/glob2/libgag/include/RenderFrame.h": "2147d35cbeadcaf74d9db1d98ae50529a87957b70c7a1499217c6676361b0872",
+    "/home/bradley/glob2/libgag/include/RenderResources.h": "88b83387bca69a264c17227649d544209f198ee75cc5aa8bebaeec187e51e8ed",
+    "/home/bradley/glob2/artifacts/renderer-integration/review-shader-input/metadata.json": "dd066f4b6127c7d06cba2e185b3c375c0dfa8df4106cb129a454d752483fb1fd",
+    "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/tools/shaders/ProgrammableGLCppProof.cpp": "c031692fac1e3698fbae5d9f82d8f774b35865dce80755024f0009fd7daafb4b"
+  },
+  "omissions": [
+    "Full application UI switching",
+    "Threaded browser build",
+    "Fullscreen transition",
+    "Hardware driver/browser matrix"
+  ],
+  "purpose": "Actual C++ GL factory repeated canvas lifecycle diagnostic; no release acceptance claim"
+}
