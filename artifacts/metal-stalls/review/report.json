@@ -1,0 +1,3969 @@
+{
+  "tested_revision": "aade2ccc21a11800fe03ff804bf245fb6ece3755",
+  "integrated_master": "401d94a38b8bfc952a4c8599e37211f344edd3cf",
+  "latest_master_fetched": "6e8f38f4cc60d5bef579b88dde0f7b150caa8753",
+  "latest_merge_tree": "bf399f797cf31d18c142cb12cbbd3437a58f0bb9",
+  "latest_changes": "Package identities/version strings only; no renderer/benchmark/dependency revision changes; merge tree clean. No additional rebase.",
+  "source_hashes": {
+    "libgag/src/SDLGPUDevice.cpp": "635abbb6a8949608af3dd82418d919cbb5c58b0ac0dd3ffa7a69ab9822409a51",
+    "libgag/src/SDLGPUDeviceTest.cpp": "a956d182887457d0ae3cfe8bc9b16ad9f0edf2b1175227b2a4d9723de9c96bf8",
+    "src/render/SoftwareTerrainCache.cpp": "f7d5b22bd296791d1bbc56fe356b70bb8fd0b709ddf1966ca3b5152773dbeef8",
+    "src/render/SoftwareTerrainCache.h": "757c4f100e8ee04ddbd3b1c9529ad06138d9fb760d109d5271e123bf145a0565",
+    "src/render/TerrainPresentationTest.cpp": "032c31473639eb666e2c5bcced3e13b795bc319babd6947f0e7f149926b2f649",
+    "src/render/torus/TorusRenderBenchmark.cpp": "780ceba973b0180a52339d6002066ff8d260f09e8740eba61c1c31c92602bc9e",
+    "docs/architecture/rendering.md": "b4ecbafaed182387de467c9fa9855faf366be9d3d597f07b4ef13fd802f41a40",
+    "docs/development/rendering-benchmarks.md": "d347d2ef98d978a652cce8576e79783c1cbd0d8c707704ce261d84ccca7fd649"
+  },
+  "release_binary_sha256": "ddd2b617863d9a4ac102041cf04d5d6db34165b1045653b315ecd201fd173a45",
+  "baseline_binary_sha256": "4fd2ca0f284d1f1363935ad4214fb93d869f60e6ac67573b228c2b1b8404c56c",
+  "motion": {
+    "revision": "aade2ccc21a11800fe03ff804bf245fb6ece3755",
+    "baseline_revision": "532292686e9eb12ad49cbaf319d9b7062ce2a4b6",
+    "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "hardware": "Apple M3 MacBook Air, 24 GiB, 10 GPU cores",
+    "baseline_sha256": "4fd2ca0f284d1f1363935ad4214fb93d869f60e6ac67573b228c2b1b8404c56c",
+    "candidate_sha256": "ddd2b617863d9a4ac102041cf04d5d6db34165b1045653b315ecd201fd173a45",
+    "shaders_sha256": "7933a52621a1fdb865968b97cdbcc876ba4e5bf707f3e8f7bfe698b0ab58a235",
+    "fixture_sha256": "542c151e914440c4d501ca7019888103a1c52dd98f522a0837412fc00ae9bedf",
+    "build_command": "GLOB2_RENDER_SHADER_INPUT=\"$PWD/artifacts/metal-vs-opengl/shaders\" python3 tools/dev_build.py dev_fast=0 release=1 torus-render-benchmark engine-tests",
+    "build_log_sha256": "cf7483f3c75e87c04d447ae43102a8a44dec4c0b76c0d6b013c5624faee6f954",
+    "frames": 240,
+    "warmup": 120,
+    "repeat": 7,
+    "method": "Each cloud mode in a fresh process and isolated profile, same 120 warmup and 240 measured camera frames; alternate cloud and binary order across pairs. Completion/readback inclusive; excludes simulation, extraction and final presentation. No builds/tests/profilers/other Glob2 instances during timings.",
+    "thermal_before": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded\n",
+    "runs": [
+      {
+        "scenario": "motion",
+        "pair": 0,
+        "label": "baseline",
+        "mode": "2D no clouds",
+        "command": [
+          "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-stalls/baseline",
+          "--renderer",
+          "sdl-gpu",
+          "--window-size",
+          "1280x800",
+          "--no-fullscreen",
+          "--mute"
+        ],
+        "environment": {
+          "GLOB2_UI_SCALE": "1",
+          "GLOB2_RENDERER_SHADER_DIR": "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-vs-opengl/shaders",
+          "GLOB2_BENCH_FLAT": "1",
+          "GLOB2_BENCH_SIZE": "256x256",
+          "GLOB2_BENCH_UNITS": "1000",
+          "GLOB2_BENCH_FRAMES": "240",
+          "GLOB2_BENCH_WARMUP_FRAMES": "120",
+          "GLOB2_BENCH_PAUSE_PRESENTATION": "1",
+          "GLOB2_BENCH_FRAME_TIMES": "1",
+          "GLOB2_BENCH_MODE": "2D no clouds",
+          "GLOB2_BENCH_ZOOM": "0.25",
+          "GLOB2_BENCH_CAMERA_MOTION": "1",
+          "GLOB2_BENCH_CAPTURE": "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-stalls/retake/motion-0-baseline-no-clouds.ppm"
+        },
+        "exit_code": 0,
+        "elapsed_seconds": 11.551287333015352,
+        "log": "motion-0-baseline-no-clouds.log",
+        "log_sha256": "7c038acb582221b475b22ede7597e7667f59f5dfe63a1bd954b587ec8fe75cb6",
+        "backend": [
+          "sdl-gpu",
+          "sdl-gpu",
+          ""
+        ],
+        "metrics": {
+          "median_ms": 4.878,
+          "p95_ms": 65.53,
+          "submission_cpu_median_ms": 0.884,
+          "submission_cpu_p95_ms": 64.711,
+          "process_cpu_median_ms": 1.302,
+          "process_cpu_p95_ms": 64.906,
+          "p99_ms": 325.628583,
+          "max_ms": 343.209583
+        },
+        "cache_peak_bytes": 216716240,
+        "device_peak_bytes": 138213589,
+        "checksums": [
+          "1ea5698f"
+        ],
+        "viewport": "1120x800",
+        "capture_sha256": "a1d5bdaeec82d3a3975653b35cc73cb5278760038013c7ab0e82171f198fada0"
+      },
+      {
+        "scenario": "motion",
+        "pair": 0,
+        "label": "candidate",
+        "mode": "2D no clouds",
+        "command": [
+          "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-stalls/candidate",
+          "--renderer",
+          "sdl-gpu",
+          "--window-size",
+          "1280x800",
+          "--no-fullscreen",
+          "--mute"
+        ],
+        "environment": {
+          "GLOB2_UI_SCALE": "1",
+          "GLOB2_RENDERER_SHADER_DIR": "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-vs-opengl/shaders",
+          "GLOB2_BENCH_FLAT": "1",
+          "GLOB2_BENCH_SIZE": "256x256",
+          "GLOB2_BENCH_UNITS": "1000",
+          "GLOB2_BENCH_FRAMES": "240",
+          "GLOB2_BENCH_WARMUP_FRAMES": "120",
+          "GLOB2_BENCH_PAUSE_PRESENTATION": "1",
+          "GLOB2_BENCH_FRAME_TIMES": "1",
+          "GLOB2_BENCH_MODE": "2D no clouds",
+          "GLOB2_BENCH_ZOOM": "0.25",
+          "GLOB2_BENCH_CAMERA_MOTION": "1",
+          "GLOB2_BENCH_CAPTURE": "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-stalls/retake/motion-0-candidate-no-clouds.ppm"
+        },
+        "exit_code": 0,
+        "elapsed_seconds": 9.971309666056186,
+        "log": "motion-0-candidate-no-clouds.log",
+        "log_sha256": "bf312c0c22c6dbb4fdde3336fb7a2210851c516db4df77b14cf43cccb4931998",
+        "backend": [
+          "sdl-gpu",
+          "sdl-gpu",
+          ""
+        ],
+        "metrics": {
+          "median_ms": 4.562,
+          "p95_ms": 41.401,
+          "submission_cpu_median_ms": 0.885,
+          "submission_cpu_p95_ms": 38.923,
+          "process_cpu_median_ms": 1.162,
+          "process_cpu_p95_ms": 39.969,
+          "p99_ms": 160.071583,
+          "max_ms": 228.180333
+        },
+        "cache_peak_bytes": 268275456,
+        "device_peak_bytes": 151644322,
+        "checksums": [
+          "1ea5698f"
+        ],
+        "viewport": "1120x800",
+        "capture_sha256": "a1d5bdaeec82d3a3975653b35cc73cb5278760038013c7ab0e82171f198fada0"
+      },
+      {
+        "scenario": "motion",
+        "pair": 0,
+        "label": "legacy-gl",
+        "mode": "2D no clouds",
+        "command": [
+          "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-stalls/candidate",
+          "--renderer",
+          "legacy-gl",
+          "--window-size",
+          "1280x800",
+          "--no-fullscreen",
+          "--mute"
+        ],
+        "environment": {
+          "GLOB2_UI_SCALE": "1",
+          "GLOB2_RENDERER_SHADER_DIR": "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-vs-opengl/shaders",
+          "GLOB2_BENCH_FLAT": "1",
+          "GLOB2_BENCH_SIZE": "256x256",
+          "GLOB2_BENCH_UNITS": "1000",
+          "GLOB2_BENCH_FRAMES": "240",
+          "GLOB2_BENCH_WARMUP_FRAMES": "120",
+          "GLOB2_BENCH_PAUSE_PRESENTATION": "1",
+          "GLOB2_BENCH_FRAME_TIMES": "1",
+          "GLOB2_BENCH_MODE": "2D no clouds",
+          "GLOB2_BENCH_ZOOM": "0.25",
+          "GLOB2_BENCH_CAMERA_MOTION": "1",
+          "GLOB2_BENCH_CAPTURE": "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-stalls/retake/motion-0-legacy-gl-no-clouds.ppm"
+        },
+        "exit_code": 0,
+        "elapsed_seconds": 5.368300292175263,
+        "log": "motion-0-legacy-gl-no-clouds.log",
+        "log_sha256": "2bafe67b5ca1ce932bde7b4abc818079778268e7866874e1b0e41380e2566bf9",
+        "backend": [
+          "legacy-gl",
+          "legacy-gl",
+          ""
+        ],
+        "metrics": {
+          "median_ms": 1.323,
+          "p95_ms": 11.292,
+          "submission_cpu_median_ms": 0.261,
+          "submission_cpu_p95_ms": 4.431,
+          "process_cpu_median_ms": 0.366,
+          "process_cpu_p95_ms": 4.72,
+          "p99_ms": 79.186083,
+          "max_ms": 139.145042
+        },
+        "cache_peak_bytes": 268380952,
+        "device_peak_bytes": 0,
+        "checksums": [
+          "1ea5698f"
+        ],
+        "viewport": "1120x800",
+        "capture_sha256": "de50215bc1cc0502a811892762bd001d7b17dc53e173cd9534cdd003ff513dc8"
+      },
+      {
+        "scenario": "motion",
+        "pair": 0,
+        "label": "baseline",
+        "mode": "2D clouds",
+        "command": [
+          "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-stalls/baseline",
+          "--renderer",
+          "sdl-gpu",
+          "--window-size",
+          "1280x800",
+          "--no-fullscreen",
+          "--mute"
+        ],
+        "environment": {
+          "GLOB2_UI_SCALE": "1",
+          "GLOB2_RENDERER_SHADER_DIR": "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-vs-opengl/shaders",
+          "GLOB2_BENCH_FLAT": "1",
+          "GLOB2_BENCH_SIZE": "256x256",
+          "GLOB2_BENCH_UNITS": "1000",
+          "GLOB2_BENCH_FRAMES": "240",
+          "GLOB2_BENCH_WARMUP_FRAMES": "120",
+          "GLOB2_BENCH_PAUSE_PRESENTATION": "1",
+          "GLOB2_BENCH_FRAME_TIMES": "1",
+          "GLOB2_BENCH_MODE": "2D clouds",
+          "GLOB2_BENCH_ZOOM": "0.25",
+          "GLOB2_BENCH_CAMERA_MOTION": "1",
+          "GLOB2_BENCH_CAPTURE": "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-stalls/retake/motion-0-baseline-clouds.ppm"
+        },
+        "exit_code": 0,
+        "elapsed_seconds": 11.486053416971117,
+        "log": "motion-0-baseline-clouds.log",
+        "log_sha256": "f835dbb657c47198dc03c0eab691f3274b15bf836884d45489b42ab8c41f2366",
+        "backend": [
+          "sdl-gpu",
+          "sdl-gpu",
+          ""
+        ],
+        "metrics": {
+          "median_ms": 9.819,
+          "p95_ms": 70.726,
+          "submission_cpu_median_ms": 5.57,
+          "submission_cpu_p95_ms": 72.112,
+          "process_cpu_median_ms": 5.903,
+          "process_cpu_p95_ms": 72.27,
+          "p99_ms": 316.714083,
+          "max_ms": 335.383917
+        },
+        "cache_peak_bytes": 216716240,
+        "device_peak_bytes": 146397200,
+        "checksums": [
+          "1ea5698f"
+        ],
+        "viewport": "1120x800",
+        "capture_sha256": "d5867c32dfbf6e312463447f24435c90af626161377603a8ad9ecd077c988fec"
+      },
+      {
+        "scenario": "motion",
+        "pair": 0,
+        "label": "candidate",
+        "mode": "2D clouds",
+        "command": [
+          "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-stalls/candidate",
+          "--renderer",
+          "sdl-gpu",
+          "--window-size",
+          "1280x800",
+          "--no-fullscreen",
+          "--mute"
+        ],
+        "environment": {
+          "GLOB2_UI_SCALE": "1",
+          "GLOB2_RENDERER_SHADER_DIR": "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-vs-opengl/shaders",
+          "GLOB2_BENCH_FLAT": "1",
+          "GLOB2_BENCH_SIZE": "256x256",
+          "GLOB2_BENCH_UNITS": "1000",
+          "GLOB2_BENCH_FRAMES": "240",
+          "GLOB2_BENCH_WARMUP_FRAMES": "120",
+          "GLOB2_BENCH_PAUSE_PRESENTATION": "1",
+          "GLOB2_BENCH_FRAME_TIMES": "1",
+          "GLOB2_BENCH_MODE": "2D clouds",
+          "GLOB2_BENCH_ZOOM": "0.25",
+          "GLOB2_BENCH_CAMERA_MOTION": "1",
+          "GLOB2_BENCH_CAPTURE": "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-stalls/retake/motion-0-candidate-clouds.ppm"
+        },
+        "exit_code": 0,
+        "elapsed_seconds": 9.593930000206456,
+        "log": "motion-0-candidate-clouds.log",
+        "log_sha256": "cf4c191b08e49428466ac0b4550bbf798ee0175d5862fc18b55b55da22c42f97",
+        "backend": [
+          "sdl-gpu",
+          "sdl-gpu",
+          ""
+        ],
+        "metrics": {
+          "median_ms": 10.16,
+          "p95_ms": 43.305,
+          "submission_cpu_median_ms": 5.223,
+          "submission_cpu_p95_ms": 41.721,
+          "process_cpu_median_ms": 5.719,
+          "process_cpu_p95_ms": 42.109,
+          "p99_ms": 137.024667,
+          "max_ms": 234.082625
+        },
+        "cache_peak_bytes": 268275456,
+        "device_peak_bytes": 166869154,
+        "checksums": [
+          "1ea5698f"
+        ],
+        "viewport": "1120x800",
+        "capture_sha256": "d5867c32dfbf6e312463447f24435c90af626161377603a8ad9ecd077c988fec"
+      },
+      {
+        "scenario": "motion",
+        "pair": 0,
+        "label": "legacy-gl",
+        "mode": "2D clouds",
+        "command": [
+          "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-stalls/candidate",
+          "--renderer",
+          "legacy-gl",
+          "--window-size",
+          "1280x800",
+          "--no-fullscreen",
+          "--mute"
+        ],
+        "environment": {
+          "GLOB2_UI_SCALE": "1",
+          "GLOB2_RENDERER_SHADER_DIR": "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-vs-opengl/shaders",
+          "GLOB2_BENCH_FLAT": "1",
+          "GLOB2_BENCH_SIZE": "256x256",
+          "GLOB2_BENCH_UNITS": "1000",
+          "GLOB2_BENCH_FRAMES": "240",
+          "GLOB2_BENCH_WARMUP_FRAMES": "120",
+          "GLOB2_BENCH_PAUSE_PRESENTATION": "1",
+          "GLOB2_BENCH_FRAME_TIMES": "1",
+          "GLOB2_BENCH_MODE": "2D clouds",
+          "GLOB2_BENCH_ZOOM": "0.25",
+          "GLOB2_BENCH_CAMERA_MOTION": "1",
+          "GLOB2_BENCH_CAPTURE": "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-stalls/retake/motion-0-legacy-gl-clouds.ppm"
+        },
+        "exit_code": 0,
+        "elapsed_seconds": 6.331011041998863,
+        "log": "motion-0-legacy-gl-clouds.log",
+        "log_sha256": "0a91a516b3811aec577f36cf19914c994403318ae6014498a4ecf22249635fd7",
+        "backend": [
+          "legacy-gl",
+          "legacy-gl",
+          ""
+        ],
+        "metrics": {
+          "median_ms": 4.037,
+          "p95_ms": 12.146,
+          "submission_cpu_median_ms": 2.612,
+          "submission_cpu_p95_ms": 9.01,
+          "process_cpu_median_ms": 2.699,
+          "process_cpu_p95_ms": 9.239,
+          "p99_ms": 83.795042,
+          "max_ms": 139.79525
+        },
+        "cache_peak_bytes": 268380952,
+        "device_peak_bytes": 0,
+        "checksums": [
+          "1ea5698f"
+        ],
+        "viewport": "1120x800",
+        "capture_sha256": "9ce582f9392595b3ac9c59822510c269e0d659bc0dd1a379ac7bfa6410ceecdc"
+      },
+      {
+        "scenario": "motion",
+        "pair": 1,
+        "label": "legacy-gl",
+        "mode": "2D clouds",
+        "command": [
+          "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-stalls/candidate",
+          "--renderer",
+          "legacy-gl",
+          "--window-size",
+          "1280x800",
+          "--no-fullscreen",
+          "--mute"
+        ],
+        "environment": {
+          "GLOB2_UI_SCALE": "1",
+          "GLOB2_RENDERER_SHADER_DIR": "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-vs-opengl/shaders",
+          "GLOB2_BENCH_FLAT": "1",
+          "GLOB2_BENCH_SIZE": "256x256",
+          "GLOB2_BENCH_UNITS": "1000",
+          "GLOB2_BENCH_FRAMES": "240",
+          "GLOB2_BENCH_WARMUP_FRAMES": "120",
+          "GLOB2_BENCH_PAUSE_PRESENTATION": "1",
+          "GLOB2_BENCH_FRAME_TIMES": "1",
+          "GLOB2_BENCH_MODE": "2D clouds",
+          "GLOB2_BENCH_ZOOM": "0.25",
+          "GLOB2_BENCH_CAMERA_MOTION": "1"
+        },
+        "exit_code": 0,
+        "elapsed_seconds": 6.317034041043371,
+        "log": "motion-1-legacy-gl-clouds.log",
+        "log_sha256": "c61a708afc9d0d4dd65c17230e13b991da1e2b0f2f9efce2f7e9b54c2a3fd35b",
+        "backend": [
+          "legacy-gl",
+          "legacy-gl",
+          ""
+        ],
+        "metrics": {
+          "median_ms": 4.259,
+          "p95_ms": 13.326,
+          "submission_cpu_median_ms": 2.656,
+          "submission_cpu_p95_ms": 8.857,
+          "process_cpu_median_ms": 2.778,
+          "process_cpu_p95_ms": 9.057,
+          "p99_ms": 85.043833,
+          "max_ms": 147.678083
+        },
+        "cache_peak_bytes": 268380952,
+        "device_peak_bytes": 0,
+        "checksums": [
+          "1ea5698f"
+        ],
+        "viewport": "1120x800"
+      },
+      {
+        "scenario": "motion",
+        "pair": 1,
+        "label": "candidate",
+        "mode": "2D clouds",
+        "command": [
+          "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-stalls/candidate",
+          "--renderer",
+          "sdl-gpu",
+          "--window-size",
+          "1280x800",
+          "--no-fullscreen",
+          "--mute"
+        ],
+        "environment": {
+          "GLOB2_UI_SCALE": "1",
+          "GLOB2_RENDERER_SHADER_DIR": "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-vs-opengl/shaders",
+          "GLOB2_BENCH_FLAT": "1",
+          "GLOB2_BENCH_SIZE": "256x256",
+          "GLOB2_BENCH_UNITS": "1000",
+          "GLOB2_BENCH_FRAMES": "240",
+          "GLOB2_BENCH_WARMUP_FRAMES": "120",
+          "GLOB2_BENCH_PAUSE_PRESENTATION": "1",
+          "GLOB2_BENCH_FRAME_TIMES": "1",
+          "GLOB2_BENCH_MODE": "2D clouds",
+          "GLOB2_BENCH_ZOOM": "0.25",
+          "GLOB2_BENCH_CAMERA_MOTION": "1"
+        },
+        "exit_code": 0,
+        "elapsed_seconds": 9.633362667169422,
+        "log": "motion-1-candidate-clouds.log",
+        "log_sha256": "04b5a0fa7383046ab8abf584dd5b0b9d7223fa7e700074e37149655d2e1de5bd",
+        "backend": [
+          "sdl-gpu",
+          "sdl-gpu",
+          ""
+        ],
+        "metrics": {
+          "median_ms": 10.107,
+          "p95_ms": 43.43,
+          "submission_cpu_median_ms": 5.489,
+          "submission_cpu_p95_ms": 42.064,
+          "process_cpu_median_ms": 5.757,
+          "process_cpu_p95_ms": 42.306,
+          "p99_ms": 139.271583,
+          "max_ms": 228.942625
+        },
+        "cache_peak_bytes": 268275456,
+        "device_peak_bytes": 166869154,
+        "checksums": [
+          "1ea5698f"
+        ],
+        "viewport": "1120x800"
+      },
+      {
+        "scenario": "motion",
+        "pair": 1,
+        "label": "baseline",
+        "mode": "2D clouds",
+        "command": [
+          "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-stalls/baseline",
+          "--renderer",
+          "sdl-gpu",
+          "--window-size",
+          "1280x800",
+          "--no-fullscreen",
+          "--mute"
+        ],
+        "environment": {
+          "GLOB2_UI_SCALE": "1",
+          "GLOB2_RENDERER_SHADER_DIR": "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-vs-opengl/shaders",
+          "GLOB2_BENCH_FLAT": "1",
+          "GLOB2_BENCH_SIZE": "256x256",
+          "GLOB2_BENCH_UNITS": "1000",
+          "GLOB2_BENCH_FRAMES": "240",
+          "GLOB2_BENCH_WARMUP_FRAMES": "120",
+          "GLOB2_BENCH_PAUSE_PRESENTATION": "1",
+          "GLOB2_BENCH_FRAME_TIMES": "1",
+          "GLOB2_BENCH_MODE": "2D clouds",
+          "GLOB2_BENCH_ZOOM": "0.25",
+          "GLOB2_BENCH_CAMERA_MOTION": "1"
+        },
+        "exit_code": 0,
+        "elapsed_seconds": 11.569044208852574,
+        "log": "motion-1-baseline-clouds.log",
+        "log_sha256": "3a8848b5299e3686c1c787a4dfcca7087b374d4f1f948d2c18c49eefeb4ab25b",
+        "backend": [
+          "sdl-gpu",
+          "sdl-gpu",
+          ""
+        ],
+        "metrics": {
+          "median_ms": 9.914,
+          "p95_ms": 70.988,
+          "submission_cpu_median_ms": 5.708,
+          "submission_cpu_p95_ms": 71.675,
+          "process_cpu_median_ms": 5.942,
+          "process_cpu_p95_ms": 71.832,
+          "p99_ms": 323.2705,
+          "max_ms": 329.017708
+        },
+        "cache_peak_bytes": 216716240,
+        "device_peak_bytes": 146397200,
+        "checksums": [
+          "1ea5698f"
+        ],
+        "viewport": "1120x800"
+      },
+      {
+        "scenario": "motion",
+        "pair": 1,
+        "label": "legacy-gl",
+        "mode": "2D no clouds",
+        "command": [
+          "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-stalls/candidate",
+          "--renderer",
+          "legacy-gl",
+          "--window-size",
+          "1280x800",
+          "--no-fullscreen",
+          "--mute"
+        ],
+        "environment": {
+          "GLOB2_UI_SCALE": "1",
+          "GLOB2_RENDERER_SHADER_DIR": "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-vs-opengl/shaders",
+          "GLOB2_BENCH_FLAT": "1",
+          "GLOB2_BENCH_SIZE": "256x256",
+          "GLOB2_BENCH_UNITS": "1000",
+          "GLOB2_BENCH_FRAMES": "240",
+          "GLOB2_BENCH_WARMUP_FRAMES": "120",
+          "GLOB2_BENCH_PAUSE_PRESENTATION": "1",
+          "GLOB2_BENCH_FRAME_TIMES": "1",
+          "GLOB2_BENCH_MODE": "2D no clouds",
+          "GLOB2_BENCH_ZOOM": "0.25",
+          "GLOB2_BENCH_CAMERA_MOTION": "1"
+        },
+        "exit_code": 0,
+        "elapsed_seconds": 5.080926541006193,
+        "log": "motion-1-legacy-gl-no-clouds.log",
+        "log_sha256": "657dce573fc5cdde24ee742648b895a4c52147f793b0ee367be60110cda1f6bf",
+        "backend": [
+          "legacy-gl",
+          "legacy-gl",
+          ""
+        ],
+        "metrics": {
+          "median_ms": 1.242,
+          "p95_ms": 5.513,
+          "submission_cpu_median_ms": 0.266,
+          "submission_cpu_p95_ms": 3.767,
+          "process_cpu_median_ms": 0.366,
+          "process_cpu_p95_ms": 4.035,
+          "p99_ms": 77.191792,
+          "max_ms": 137.096833
+        },
+        "cache_peak_bytes": 268380952,
+        "device_peak_bytes": 0,
+        "checksums": [
+          "1ea5698f"
+        ],
+        "viewport": "1120x800"
+      },
+      {
+        "scenario": "motion",
+        "pair": 1,
+        "label": "candidate",
+        "mode": "2D no clouds",
+        "command": [
+          "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-stalls/candidate",
+          "--renderer",
+          "sdl-gpu",
+          "--window-size",
+          "1280x800",
+          "--no-fullscreen",
+          "--mute"
+        ],
+        "environment": {
+          "GLOB2_UI_SCALE": "1",
+          "GLOB2_RENDERER_SHADER_DIR": "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-vs-opengl/shaders",
+          "GLOB2_BENCH_FLAT": "1",
+          "GLOB2_BENCH_SIZE": "256x256",
+          "GLOB2_BENCH_UNITS": "1000",
+          "GLOB2_BENCH_FRAMES": "240",
+          "GLOB2_BENCH_WARMUP_FRAMES": "120",
+          "GLOB2_BENCH_PAUSE_PRESENTATION": "1",
+          "GLOB2_BENCH_FRAME_TIMES": "1",
+          "GLOB2_BENCH_MODE": "2D no clouds",
+          "GLOB2_BENCH_ZOOM": "0.25",
+          "GLOB2_BENCH_CAMERA_MOTION": "1"
+        },
+        "exit_code": 0,
+        "elapsed_seconds": 9.650753166992217,
+        "log": "motion-1-candidate-no-clouds.log",
+        "log_sha256": "ddef29339fa29c507a05dedd8c8c8b3d67a7d7747c8707319d771c554001ce2a",
+        "backend": [
+          "sdl-gpu",
+          "sdl-gpu",
+          ""
+        ],
+        "metrics": {
+          "median_ms": 7.841,
+          "p95_ms": 50.114,
+          "submission_cpu_median_ms": 1.087,
+          "submission_cpu_p95_ms": 47.894,
+          "process_cpu_median_ms": 1.706,
+          "process_cpu_p95_ms": 48.889,
+          "p99_ms": 155.448042,
+          "max_ms": 238.346458
+        },
+        "cache_peak_bytes": 268275456,
+        "device_peak_bytes": 151644322,
+        "checksums": [
+          "1ea5698f"
+        ],
+        "viewport": "1120x800"
+      },
+      {
+        "scenario": "motion",
+        "pair": 1,
+        "label": "baseline",
+        "mode": "2D no clouds",
+        "command": [
+          "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-stalls/baseline",
+          "--renderer",
+          "sdl-gpu",
+          "--window-size",
+          "1280x800",
+          "--no-fullscreen",
+          "--mute"
+        ],
+        "environment": {
+          "GLOB2_UI_SCALE": "1",
+          "GLOB2_RENDERER_SHADER_DIR": "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-vs-opengl/shaders",
+          "GLOB2_BENCH_FLAT": "1",
+          "GLOB2_BENCH_SIZE": "256x256",
+          "GLOB2_BENCH_UNITS": "1000",
+          "GLOB2_BENCH_FRAMES": "240",
+          "GLOB2_BENCH_WARMUP_FRAMES": "120",
+          "GLOB2_BENCH_PAUSE_PRESENTATION": "1",
+          "GLOB2_BENCH_FRAME_TIMES": "1",
+          "GLOB2_BENCH_MODE": "2D no clouds",
+          "GLOB2_BENCH_ZOOM": "0.25",
+          "GLOB2_BENCH_CAMERA_MOTION": "1"
+        },
+        "exit_code": 0,
+        "elapsed_seconds": 11.595947082852945,
+        "log": "motion-1-baseline-no-clouds.log",
+        "log_sha256": "02cb4012f456218cbf016b4bccb33c360cc4702aaa37d68ea66833ddf88dd8c5",
+        "backend": [
+          "sdl-gpu",
+          "sdl-gpu",
+          ""
+        ],
+        "metrics": {
+          "median_ms": 7.339,
+          "p95_ms": 65.607,
+          "submission_cpu_median_ms": 0.998,
+          "submission_cpu_p95_ms": 64.502,
+          "process_cpu_median_ms": 1.611,
+          "process_cpu_p95_ms": 64.685,
+          "p99_ms": 340.667167,
+          "max_ms": 358.345792
+        },
+        "cache_peak_bytes": 216716240,
+        "device_peak_bytes": 138213589,
+        "checksums": [
+          "1ea5698f"
+        ],
+        "viewport": "1120x800"
+      },
+      {
+        "scenario": "motion",
+        "pair": 2,
+        "label": "baseline",
+        "mode": "2D no clouds",
+        "command": [
+          "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-stalls/baseline",
+          "--renderer",
+          "sdl-gpu",
+          "--window-size",
+          "1280x800",
+          "--no-fullscreen",
+          "--mute"
+        ],
+        "environment": {
+          "GLOB2_UI_SCALE": "1",
+          "GLOB2_RENDERER_SHADER_DIR": "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-vs-opengl/shaders",
+          "GLOB2_BENCH_FLAT": "1",
+          "GLOB2_BENCH_SIZE": "256x256",
+          "GLOB2_BENCH_UNITS": "1000",
+          "GLOB2_BENCH_FRAMES": "240",
+          "GLOB2_BENCH_WARMUP_FRAMES": "120",
+          "GLOB2_BENCH_PAUSE_PRESENTATION": "1",
+          "GLOB2_BENCH_FRAME_TIMES": "1",
+          "GLOB2_BENCH_MODE": "2D no clouds",
+          "GLOB2_BENCH_ZOOM": "0.25",
+          "GLOB2_BENCH_CAMERA_MOTION": "1"
+        },
+        "exit_code": 0,
+        "elapsed_seconds": 11.429343750001863,
+        "log": "motion-2-baseline-no-clouds.log",
+        "log_sha256": "bb1e03c72589bd90d60250abc8ae2ed2d431c90db1f98ee45427766512eb61b6",
+        "backend": [
+          "sdl-gpu",
+          "sdl-gpu",
+          ""
+        ],
+        "metrics": {
+          "median_ms": 5.005,
+          "p95_ms": 66.785,
+          "submission_cpu_median_ms": 0.921,
+          "submission_cpu_p95_ms": 65.87,
+          "process_cpu_median_ms": 1.345,
+          "process_cpu_p95_ms": 66.046,
+          "p99_ms": 356.005917,
+          "max_ms": 362.037792
+        },
+        "cache_peak_bytes": 216716240,
+        "device_peak_bytes": 138213589,
+        "checksums": [
+          "1ea5698f"
+        ],
+        "viewport": "1120x800"
+      },
+      {
+        "scenario": "motion",
+        "pair": 2,
+        "label": "candidate",
+        "mode": "2D no clouds",
+        "command": [
+          "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-stalls/candidate",
+          "--renderer",
+          "sdl-gpu",
+          "--window-size",
+          "1280x800",
+          "--no-fullscreen",
+          "--mute"
+        ],
+        "environment": {
+          "GLOB2_UI_SCALE": "1",
+          "GLOB2_RENDERER_SHADER_DIR": "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-vs-opengl/shaders",
+          "GLOB2_BENCH_FLAT": "1",
+          "GLOB2_BENCH_SIZE": "256x256",
+          "GLOB2_BENCH_UNITS": "1000",
+          "GLOB2_BENCH_FRAMES": "240",
+          "GLOB2_BENCH_WARMUP_FRAMES": "120",
+          "GLOB2_BENCH_PAUSE_PRESENTATION": "1",
+          "GLOB2_BENCH_FRAME_TIMES": "1",
+          "GLOB2_BENCH_MODE": "2D no clouds",
+          "GLOB2_BENCH_ZOOM": "0.25",
+          "GLOB2_BENCH_CAMERA_MOTION": "1"
+        },
+        "exit_code": 0,
+        "elapsed_seconds": 9.707572875078768,
+        "log": "motion-2-candidate-no-clouds.log",
+        "log_sha256": "2dd469d476e8f18c30b558986341759acb810a0cbd2e90c81876fc356b0269a8",
+        "backend": [
+          "sdl-gpu",
+          "sdl-gpu",
+          ""
+        ],
+        "metrics": {
+          "median_ms": 4.931,
+          "p95_ms": 42.504,
+          "submission_cpu_median_ms": 1.088,
+          "submission_cpu_p95_ms": 35.886,
+          "process_cpu_median_ms": 1.576,
+          "process_cpu_p95_ms": 36.843,
+          "p99_ms": 153.046042,
+          "max_ms": 237.892958
+        },
+        "cache_peak_bytes": 268275456,
+        "device_peak_bytes": 151644322,
+        "checksums": [
+          "1ea5698f"
+        ],
+        "viewport": "1120x800"
+      },
+      {
+        "scenario": "motion",
+        "pair": 2,
+        "label": "legacy-gl",
+        "mode": "2D no clouds",
+        "command": [
+          "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-stalls/candidate",
+          "--renderer",
+          "legacy-gl",
+          "--window-size",
+          "1280x800",
+          "--no-fullscreen",
+          "--mute"
+        ],
+        "environment": {
+          "GLOB2_UI_SCALE": "1",
+          "GLOB2_RENDERER_SHADER_DIR": "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-vs-opengl/shaders",
+          "GLOB2_BENCH_FLAT": "1",
+          "GLOB2_BENCH_SIZE": "256x256",
+          "GLOB2_BENCH_UNITS": "1000",
+          "GLOB2_BENCH_FRAMES": "240",
+          "GLOB2_BENCH_WARMUP_FRAMES": "120",
+          "GLOB2_BENCH_PAUSE_PRESENTATION": "1",
+          "GLOB2_BENCH_FRAME_TIMES": "1",
+          "GLOB2_BENCH_MODE": "2D no clouds",
+          "GLOB2_BENCH_ZOOM": "0.25",
+          "GLOB2_BENCH_CAMERA_MOTION": "1"
+        },
+        "exit_code": 0,
+        "elapsed_seconds": 5.157538999803364,
+        "log": "motion-2-legacy-gl-no-clouds.log",
+        "log_sha256": "6e69569889c03abea63c32b90eb89687e8139f0b6157d710f03aac9376ea68ad",
+        "backend": [
+          "legacy-gl",
+          "legacy-gl",
+          ""
+        ],
+        "metrics": {
+          "median_ms": 1.157,
+          "p95_ms": 5.922,
+          "submission_cpu_median_ms": 0.263,
+          "submission_cpu_p95_ms": 3.876,
+          "process_cpu_median_ms": 0.342,
+          "process_cpu_p95_ms": 4.152,
+          "p99_ms": 77.421417,
+          "max_ms": 137.027458
+        },
+        "cache_peak_bytes": 268380952,
+        "device_peak_bytes": 0,
+        "checksums": [
+          "1ea5698f"
+        ],
+        "viewport": "1120x800"
+      },
+      {
+        "scenario": "motion",
+        "pair": 2,
+        "label": "baseline",
+        "mode": "2D clouds",
+        "command": [
+          "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-stalls/baseline",
+          "--renderer",
+          "sdl-gpu",
+          "--window-size",
+          "1280x800",
+          "--no-fullscreen",
+          "--mute"
+        ],
+        "environment": {
+          "GLOB2_UI_SCALE": "1",
+          "GLOB2_RENDERER_SHADER_DIR": "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-vs-opengl/shaders",
+          "GLOB2_BENCH_FLAT": "1",
+          "GLOB2_BENCH_SIZE": "256x256",
+          "GLOB2_BENCH_UNITS": "1000",
+          "GLOB2_BENCH_FRAMES": "240",
+          "GLOB2_BENCH_WARMUP_FRAMES": "120",
+          "GLOB2_BENCH_PAUSE_PRESENTATION": "1",
+          "GLOB2_BENCH_FRAME_TIMES": "1",
+          "GLOB2_BENCH_MODE": "2D clouds",
+          "GLOB2_BENCH_ZOOM": "0.25",
+          "GLOB2_BENCH_CAMERA_MOTION": "1"
+        },
+        "exit_code": 0,
+        "elapsed_seconds": 11.521805416792631,
+        "log": "motion-2-baseline-clouds.log",
+        "log_sha256": "5fb3e1640d7404019720e4bf6c0252225ab942990715157f48a357ea892d758c",
+        "backend": [
+          "sdl-gpu",
+          "sdl-gpu",
+          ""
+        ],
+        "metrics": {
+          "median_ms": 10.359,
+          "p95_ms": 69.879,
+          "submission_cpu_median_ms": 5.738,
+          "submission_cpu_p95_ms": 71.09,
+          "process_cpu_median_ms": 5.985,
+          "process_cpu_p95_ms": 71.235,
+          "p99_ms": 314.958042,
+          "max_ms": 336.041583
+        },
+        "cache_peak_bytes": 216716240,
+        "device_peak_bytes": 146397200,
+        "checksums": [
+          "1ea5698f"
+        ],
+        "viewport": "1120x800"
+      },
+      {
+        "scenario": "motion",
+        "pair": 2,
+        "label": "candidate",
+        "mode": "2D clouds",
+        "command": [
+          "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-stalls/candidate",
+          "--renderer",
+          "sdl-gpu",
+          "--window-size",
+          "1280x800",
+          "--no-fullscreen",
+          "--mute"
+        ],
+        "environment": {
+          "GLOB2_UI_SCALE": "1",
+          "GLOB2_RENDERER_SHADER_DIR": "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-vs-opengl/shaders",
+          "GLOB2_BENCH_FLAT": "1",
+          "GLOB2_BENCH_SIZE": "256x256",
+          "GLOB2_BENCH_UNITS": "1000",
+          "GLOB2_BENCH_FRAMES": "240",
+          "GLOB2_BENCH_WARMUP_FRAMES": "120",
+          "GLOB2_BENCH_PAUSE_PRESENTATION": "1",
+          "GLOB2_BENCH_FRAME_TIMES": "1",
+          "GLOB2_BENCH_MODE": "2D clouds",
+          "GLOB2_BENCH_ZOOM": "0.25",
+          "GLOB2_BENCH_CAMERA_MOTION": "1"
+        },
+        "exit_code": 0,
+        "elapsed_seconds": 9.581115582957864,
+        "log": "motion-2-candidate-clouds.log",
+        "log_sha256": "550387cdd2e33979593d187612ead406f2a6a438a760f7a3b119c18806a342de",
+        "backend": [
+          "sdl-gpu",
+          "sdl-gpu",
+          ""
+        ],
+        "metrics": {
+          "median_ms": 9.921,
+          "p95_ms": 44.127,
+          "submission_cpu_median_ms": 5.436,
+          "submission_cpu_p95_ms": 41.982,
+          "process_cpu_median_ms": 5.68,
+          "process_cpu_p95_ms": 42.373,
+          "p99_ms": 140.615958,
+          "max_ms": 232.549167
+        },
+        "cache_peak_bytes": 268275456,
+        "device_peak_bytes": 166869154,
+        "checksums": [
+          "1ea5698f"
+        ],
+        "viewport": "1120x800"
+      },
+      {
+        "scenario": "motion",
+        "pair": 2,
+        "label": "legacy-gl",
+        "mode": "2D clouds",
+        "command": [
+          "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-stalls/candidate",
+          "--renderer",
+          "legacy-gl",
+          "--window-size",
+          "1280x800",
+          "--no-fullscreen",
+          "--mute"
+        ],
+        "environment": {
+          "GLOB2_UI_SCALE": "1",
+          "GLOB2_RENDERER_SHADER_DIR": "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-vs-opengl/shaders",
+          "GLOB2_BENCH_FLAT": "1",
+          "GLOB2_BENCH_SIZE": "256x256",
+          "GLOB2_BENCH_UNITS": "1000",
+          "GLOB2_BENCH_FRAMES": "240",
+          "GLOB2_BENCH_WARMUP_FRAMES": "120",
+          "GLOB2_BENCH_PAUSE_PRESENTATION": "1",
+          "GLOB2_BENCH_FRAME_TIMES": "1",
+          "GLOB2_BENCH_MODE": "2D clouds",
+          "GLOB2_BENCH_ZOOM": "0.25",
+          "GLOB2_BENCH_CAMERA_MOTION": "1"
+        },
+        "exit_code": 0,
+        "elapsed_seconds": 6.280218624975532,
+        "log": "motion-2-legacy-gl-clouds.log",
+        "log_sha256": "1f774ee8aa6727fb75e7d2b479ec95924c55eade93020e6c9e3e7f9400496ffe",
+        "backend": [
+          "legacy-gl",
+          "legacy-gl",
+          ""
+        ],
+        "metrics": {
+          "median_ms": 4.42,
+          "p95_ms": 11.814,
+          "submission_cpu_median_ms": 2.639,
+          "submission_cpu_p95_ms": 8.805,
+          "process_cpu_median_ms": 2.722,
+          "process_cpu_p95_ms": 9.028,
+          "p99_ms": 83.813542,
+          "max_ms": 138.292583
+        },
+        "cache_peak_bytes": 268380952,
+        "device_peak_bytes": 0,
+        "checksums": [
+          "1ea5698f"
+        ],
+        "viewport": "1120x800"
+      },
+      {
+        "scenario": "motion",
+        "pair": 3,
+        "label": "legacy-gl",
+        "mode": "2D clouds",
+        "command": [
+          "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-stalls/candidate",
+          "--renderer",
+          "legacy-gl",
+          "--window-size",
+          "1280x800",
+          "--no-fullscreen",
+          "--mute"
+        ],
+        "environment": {
+          "GLOB2_UI_SCALE": "1",
+          "GLOB2_RENDERER_SHADER_DIR": "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-vs-opengl/shaders",
+          "GLOB2_BENCH_FLAT": "1",
+          "GLOB2_BENCH_SIZE": "256x256",
+          "GLOB2_BENCH_UNITS": "1000",
+          "GLOB2_BENCH_FRAMES": "240",
+          "GLOB2_BENCH_WARMUP_FRAMES": "120",
+          "GLOB2_BENCH_PAUSE_PRESENTATION": "1",
+          "GLOB2_BENCH_FRAME_TIMES": "1",
+          "GLOB2_BENCH_MODE": "2D clouds",
+          "GLOB2_BENCH_ZOOM": "0.25",
+          "GLOB2_BENCH_CAMERA_MOTION": "1"
+        },
+        "exit_code": 0,
+        "elapsed_seconds": 6.339977457886562,
+        "log": "motion-3-legacy-gl-clouds.log",
+        "log_sha256": "8386f75259a0f8aad69651a89da61014c9f1df97c1440481d357dc05ebb5c773",
+        "backend": [
+          "legacy-gl",
+          "legacy-gl",
+          ""
+        ],
+        "metrics": {
+          "median_ms": 4.293,
+          "p95_ms": 11.948,
+          "submission_cpu_median_ms": 2.692,
+          "submission_cpu_p95_ms": 8.741,
+          "process_cpu_median_ms": 2.837,
+          "process_cpu_p95_ms": 8.955,
+          "p99_ms": 84.048667,
+          "max_ms": 139.886375
+        },
+        "cache_peak_bytes": 268380952,
+        "device_peak_bytes": 0,
+        "checksums": [
+          "1ea5698f"
+        ],
+        "viewport": "1120x800"
+      },
+      {
+        "scenario": "motion",
+        "pair": 3,
+        "label": "candidate",
+        "mode": "2D clouds",
+        "command": [
+          "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-stalls/candidate",
+          "--renderer",
+          "sdl-gpu",
+          "--window-size",
+          "1280x800",
+          "--no-fullscreen",
+          "--mute"
+        ],
+        "environment": {
+          "GLOB2_UI_SCALE": "1",
+          "GLOB2_RENDERER_SHADER_DIR": "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-vs-opengl/shaders",
+          "GLOB2_BENCH_FLAT": "1",
+          "GLOB2_BENCH_SIZE": "256x256",
+          "GLOB2_BENCH_UNITS": "1000",
+          "GLOB2_BENCH_FRAMES": "240",
+          "GLOB2_BENCH_WARMUP_FRAMES": "120",
+          "GLOB2_BENCH_PAUSE_PRESENTATION": "1",
+          "GLOB2_BENCH_FRAME_TIMES": "1",
+          "GLOB2_BENCH_MODE": "2D clouds",
+          "GLOB2_BENCH_ZOOM": "0.25",
+          "GLOB2_BENCH_CAMERA_MOTION": "1"
+        },
+        "exit_code": 0,
+        "elapsed_seconds": 9.618959291139618,
+        "log": "motion-3-candidate-clouds.log",
+        "log_sha256": "e2a1ee0909fd534c2983910bad8f01fb7fb5eb6cf750e48642253b38278527e4",
+        "backend": [
+          "sdl-gpu",
+          "sdl-gpu",
+          ""
+        ],
+        "metrics": {
+          "median_ms": 10.175,
+          "p95_ms": 43.647,
+          "submission_cpu_median_ms": 5.782,
+          "submission_cpu_p95_ms": 42.369,
+          "process_cpu_median_ms": 6.089,
+          "process_cpu_p95_ms": 42.67,
+          "p99_ms": 138.2975,
+          "max_ms": 231.555
+        },
+        "cache_peak_bytes": 268275456,
+        "device_peak_bytes": 166869154,
+        "checksums": [
+          "1ea5698f"
+        ],
+        "viewport": "1120x800"
+      },
+      {
+        "scenario": "motion",
+        "pair": 3,
+        "label": "baseline",
+        "mode": "2D clouds",
+        "command": [
+          "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-stalls/baseline",
+          "--renderer",
+          "sdl-gpu",
+          "--window-size",
+          "1280x800",
+          "--no-fullscreen",
+          "--mute"
+        ],
+        "environment": {
+          "GLOB2_UI_SCALE": "1",
+          "GLOB2_RENDERER_SHADER_DIR": "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-vs-opengl/shaders",
+          "GLOB2_BENCH_FLAT": "1",
+          "GLOB2_BENCH_SIZE": "256x256",
+          "GLOB2_BENCH_UNITS": "1000",
+          "GLOB2_BENCH_FRAMES": "240",
+          "GLOB2_BENCH_WARMUP_FRAMES": "120",
+          "GLOB2_BENCH_PAUSE_PRESENTATION": "1",
+          "GLOB2_BENCH_FRAME_TIMES": "1",
+          "GLOB2_BENCH_MODE": "2D clouds",
+          "GLOB2_BENCH_ZOOM": "0.25",
+          "GLOB2_BENCH_CAMERA_MOTION": "1"
+        },
+        "exit_code": 0,
+        "elapsed_seconds": 11.644378915894777,
+        "log": "motion-3-baseline-clouds.log",
+        "log_sha256": "83bb5fb7539da82ffffcd5917203c5a998d4a171e6b8be3e8b04c46db313f9c2",
+        "backend": [
+          "sdl-gpu",
+          "sdl-gpu",
+          ""
+        ],
+        "metrics": {
+          "median_ms": 9.885,
+          "p95_ms": 71.04,
+          "submission_cpu_median_ms": 5.801,
+          "submission_cpu_p95_ms": 72.028,
+          "process_cpu_median_ms": 6.03,
+          "process_cpu_p95_ms": 72.191,
+          "p99_ms": 324.580417,
+          "max_ms": 332.313917
+        },
+        "cache_peak_bytes": 216716240,
+        "device_peak_bytes": 146397200,
+        "checksums": [
+          "1ea5698f"
+        ],
+        "viewport": "1120x800"
+      },
+      {
+        "scenario": "motion",
+        "pair": 3,
+        "label": "legacy-gl",
+        "mode": "2D no clouds",
+        "command": [
+          "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-stalls/candidate",
+          "--renderer",
+          "legacy-gl",
+          "--window-size",
+          "1280x800",
+          "--no-fullscreen",
+          "--mute"
+        ],
+        "environment": {
+          "GLOB2_UI_SCALE": "1",
+          "GLOB2_RENDERER_SHADER_DIR": "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-vs-opengl/shaders",
+          "GLOB2_BENCH_FLAT": "1",
+          "GLOB2_BENCH_SIZE": "256x256",
+          "GLOB2_BENCH_UNITS": "1000",
+          "GLOB2_BENCH_FRAMES": "240",
+          "GLOB2_BENCH_WARMUP_FRAMES": "120",
+          "GLOB2_BENCH_PAUSE_PRESENTATION": "1",
+          "GLOB2_BENCH_FRAME_TIMES": "1",
+          "GLOB2_BENCH_MODE": "2D no clouds",
+          "GLOB2_BENCH_ZOOM": "0.25",
+          "GLOB2_BENCH_CAMERA_MOTION": "1"
+        },
+        "exit_code": 0,
+        "elapsed_seconds": 5.185078374808654,
+        "log": "motion-3-legacy-gl-no-clouds.log",
+        "log_sha256": "1ad20a7b6799333d6583b94467745bda628cb91d5efa5ff5a5cb8a9b1aeb4e46",
+        "backend": [
+          "legacy-gl",
+          "legacy-gl",
+          ""
+        ],
+        "metrics": {
+          "median_ms": 1.234,
+          "p95_ms": 5.441,
+          "submission_cpu_median_ms": 0.26,
+          "submission_cpu_p95_ms": 3.804,
+          "process_cpu_median_ms": 0.354,
+          "process_cpu_p95_ms": 4.098,
+          "p99_ms": 76.56975,
+          "max_ms": 136.994917
+        },
+        "cache_peak_bytes": 268380952,
+        "device_peak_bytes": 0,
+        "checksums": [
+          "1ea5698f"
+        ],
+        "viewport": "1120x800"
+      },
+      {
+        "scenario": "motion",
+        "pair": 3,
+        "label": "candidate",
+        "mode": "2D no clouds",
+        "command": [
+          "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-stalls/candidate",
+          "--renderer",
+          "sdl-gpu",
+          "--window-size",
+          "1280x800",
+          "--no-fullscreen",
+          "--mute"
+        ],
+        "environment": {
+          "GLOB2_UI_SCALE": "1",
+          "GLOB2_RENDERER_SHADER_DIR": "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-vs-opengl/shaders",
+          "GLOB2_BENCH_FLAT": "1",
+          "GLOB2_BENCH_SIZE": "256x256",
+          "GLOB2_BENCH_UNITS": "1000",
+          "GLOB2_BENCH_FRAMES": "240",
+          "GLOB2_BENCH_WARMUP_FRAMES": "120",
+          "GLOB2_BENCH_PAUSE_PRESENTATION": "1",
+          "GLOB2_BENCH_FRAME_TIMES": "1",
+          "GLOB2_BENCH_MODE": "2D no clouds",
+          "GLOB2_BENCH_ZOOM": "0.25",
+          "GLOB2_BENCH_CAMERA_MOTION": "1"
+        },
+        "exit_code": 0,
+        "elapsed_seconds": 9.884108874946833,
+        "log": "motion-3-candidate-no-clouds.log",
+        "log_sha256": "e12db133391f9631b39070aa5ab84c1ff782acdb414ee754216b26dcf648ef73",
+        "backend": [
+          "sdl-gpu",
+          "sdl-gpu",
+          ""
+        ],
+        "metrics": {
+          "median_ms": 7.53,
+          "p95_ms": 43.777,
+          "submission_cpu_median_ms": 1.002,
+          "submission_cpu_p95_ms": 37.609,
+          "process_cpu_median_ms": 1.408,
+          "process_cpu_p95_ms": 38.449,
+          "p99_ms": 168.544375,
+          "max_ms": 247.503625
+        },
+        "cache_peak_bytes": 268275456,
+        "device_peak_bytes": 151644322,
+        "checksums": [
+          "1ea5698f"
+        ],
+        "viewport": "1120x800"
+      },
+      {
+        "scenario": "motion",
+        "pair": 3,
+        "label": "baseline",
+        "mode": "2D no clouds",
+        "command": [
+          "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-stalls/baseline",
+          "--renderer",
+          "sdl-gpu",
+          "--window-size",
+          "1280x800",
+          "--no-fullscreen",
+          "--mute"
+        ],
+        "environment": {
+          "GLOB2_UI_SCALE": "1",
+          "GLOB2_RENDERER_SHADER_DIR": "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-vs-opengl/shaders",
+          "GLOB2_BENCH_FLAT": "1",
+          "GLOB2_BENCH_SIZE": "256x256",
+          "GLOB2_BENCH_UNITS": "1000",
+          "GLOB2_BENCH_FRAMES": "240",
+          "GLOB2_BENCH_WARMUP_FRAMES": "120",
+          "GLOB2_BENCH_PAUSE_PRESENTATION": "1",
+          "GLOB2_BENCH_FRAME_TIMES": "1",
+          "GLOB2_BENCH_MODE": "2D no clouds",
+          "GLOB2_BENCH_ZOOM": "0.25",
+          "GLOB2_BENCH_CAMERA_MOTION": "1"
+        },
+        "exit_code": 0,
+        "elapsed_seconds": 11.47727108397521,
+        "log": "motion-3-baseline-no-clouds.log",
+        "log_sha256": "ff24db8a0a33a659404eabd483f143c1b32d502e5e514b2a21dfc703f655622a",
+        "backend": [
+          "sdl-gpu",
+          "sdl-gpu",
+          ""
+        ],
+        "metrics": {
+          "median_ms": 5.036,
+          "p95_ms": 66.484,
+          "submission_cpu_median_ms": 0.827,
+          "submission_cpu_p95_ms": 65.581,
+          "process_cpu_median_ms": 1.211,
+          "process_cpu_p95_ms": 65.748,
+          "p99_ms": 340.487125,
+          "max_ms": 361.934542
+        },
+        "cache_peak_bytes": 216716240,
+        "device_peak_bytes": 138213589,
+        "checksums": [
+          "1ea5698f"
+        ],
+        "viewport": "1120x800"
+      },
+      {
+        "scenario": "motion",
+        "pair": 4,
+        "label": "baseline",
+        "mode": "2D no clouds",
+        "command": [
+          "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-stalls/baseline",
+          "--renderer",
+          "sdl-gpu",
+          "--window-size",
+          "1280x800",
+          "--no-fullscreen",
+          "--mute"
+        ],
+        "environment": {
+          "GLOB2_UI_SCALE": "1",
+          "GLOB2_RENDERER_SHADER_DIR": "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-vs-opengl/shaders",
+          "GLOB2_BENCH_FLAT": "1",
+          "GLOB2_BENCH_SIZE": "256x256",
+          "GLOB2_BENCH_UNITS": "1000",
+          "GLOB2_BENCH_FRAMES": "240",
+          "GLOB2_BENCH_WARMUP_FRAMES": "120",
+          "GLOB2_BENCH_PAUSE_PRESENTATION": "1",
+          "GLOB2_BENCH_FRAME_TIMES": "1",
+          "GLOB2_BENCH_MODE": "2D no clouds",
+          "GLOB2_BENCH_ZOOM": "0.25",
+          "GLOB2_BENCH_CAMERA_MOTION": "1"
+        },
+        "exit_code": 0,
+        "elapsed_seconds": 11.542648375034332,
+        "log": "motion-4-baseline-no-clouds.log",
+        "log_sha256": "63144dee8f6eb9567b29200ecf750768832794abbcfe446c7563052c545bae81",
+        "backend": [
+          "sdl-gpu",
+          "sdl-gpu",
+          ""
+        ],
+        "metrics": {
+          "median_ms": 5.772,
+          "p95_ms": 65.628,
+          "submission_cpu_median_ms": 0.894,
+          "submission_cpu_p95_ms": 64.892,
+          "process_cpu_median_ms": 1.391,
+          "process_cpu_p95_ms": 65.042,
+          "p99_ms": 345.081417,
+          "max_ms": 359.804667
+        },
+        "cache_peak_bytes": 216716240,
+        "device_peak_bytes": 138213589,
+        "checksums": [
+          "1ea5698f"
+        ],
+        "viewport": "1120x800"
+      },
+      {
+        "scenario": "motion",
+        "pair": 4,
+        "label": "candidate",
+        "mode": "2D no clouds",
+        "command": [
+          "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-stalls/candidate",
+          "--renderer",
+          "sdl-gpu",
+          "--window-size",
+          "1280x800",
+          "--no-fullscreen",
+          "--mute"
+        ],
+        "environment": {
+          "GLOB2_UI_SCALE": "1",
+          "GLOB2_RENDERER_SHADER_DIR": "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-vs-opengl/shaders",
+          "GLOB2_BENCH_FLAT": "1",
+          "GLOB2_BENCH_SIZE": "256x256",
+          "GLOB2_BENCH_UNITS": "1000",
+          "GLOB2_BENCH_FRAMES": "240",
+          "GLOB2_BENCH_WARMUP_FRAMES": "120",
+          "GLOB2_BENCH_PAUSE_PRESENTATION": "1",
+          "GLOB2_BENCH_FRAME_TIMES": "1",
+          "GLOB2_BENCH_MODE": "2D no clouds",
+          "GLOB2_BENCH_ZOOM": "0.25",
+          "GLOB2_BENCH_CAMERA_MOTION": "1"
+        },
+        "exit_code": 0,
+        "elapsed_seconds": 9.744122917065397,
+        "log": "motion-4-candidate-no-clouds.log",
+        "log_sha256": "2adf099c3e8efc0800973b618bad288ec981a9a246f14ab31d17d728b10afcee",
+        "backend": [
+          "sdl-gpu",
+          "sdl-gpu",
+          ""
+        ],
+        "metrics": {
+          "median_ms": 8.459,
+          "p95_ms": 52.432,
+          "submission_cpu_median_ms": 1.249,
+          "submission_cpu_p95_ms": 50.366,
+          "process_cpu_median_ms": 1.838,
+          "process_cpu_p95_ms": 51.277,
+          "p99_ms": 156.87625,
+          "max_ms": 229.353333
+        },
+        "cache_peak_bytes": 268275456,
+        "device_peak_bytes": 151644322,
+        "checksums": [
+          "1ea5698f"
+        ],
+        "viewport": "1120x800"
+      },
+      {
+        "scenario": "motion",
+        "pair": 4,
+        "label": "legacy-gl",
+        "mode": "2D no clouds",
+        "command": [
+          "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-stalls/candidate",
+          "--renderer",
+          "legacy-gl",
+          "--window-size",
+          "1280x800",
+          "--no-fullscreen",
+          "--mute"
+        ],
+        "environment": {
+          "GLOB2_UI_SCALE": "1",
+          "GLOB2_RENDERER_SHADER_DIR": "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-vs-opengl/shaders",
+          "GLOB2_BENCH_FLAT": "1",
+          "GLOB2_BENCH_SIZE": "256x256",
+          "GLOB2_BENCH_UNITS": "1000",
+          "GLOB2_BENCH_FRAMES": "240",
+          "GLOB2_BENCH_WARMUP_FRAMES": "120",
+          "GLOB2_BENCH_PAUSE_PRESENTATION": "1",
+          "GLOB2_BENCH_FRAME_TIMES": "1",
+          "GLOB2_BENCH_MODE": "2D no clouds",
+          "GLOB2_BENCH_ZOOM": "0.25",
+          "GLOB2_BENCH_CAMERA_MOTION": "1"
+        },
+        "exit_code": 0,
+        "elapsed_seconds": 5.121557041071355,
+        "log": "motion-4-legacy-gl-no-clouds.log",
+        "log_sha256": "c7e793be7a3908fbd4e398a936fd70604d37276ed5dd64cd70881e42370e2dbe",
+        "backend": [
+          "legacy-gl",
+          "legacy-gl",
+          ""
+        ],
+        "metrics": {
+          "median_ms": 1.272,
+          "p95_ms": 6.058,
+          "submission_cpu_median_ms": 0.267,
+          "submission_cpu_p95_ms": 4.061,
+          "process_cpu_median_ms": 0.357,
+          "process_cpu_p95_ms": 4.327,
+          "p99_ms": 79.635333,
+          "max_ms": 138.490917
+        },
+        "cache_peak_bytes": 268380952,
+        "device_peak_bytes": 0,
+        "checksums": [
+          "1ea5698f"
+        ],
+        "viewport": "1120x800"
+      },
+      {
+        "scenario": "motion",
+        "pair": 4,
+        "label": "baseline",
+        "mode": "2D clouds",
+        "command": [
+          "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-stalls/baseline",
+          "--renderer",
+          "sdl-gpu",
+          "--window-size",
+          "1280x800",
+          "--no-fullscreen",
+          "--mute"
+        ],
+        "environment": {
+          "GLOB2_UI_SCALE": "1",
+          "GLOB2_RENDERER_SHADER_DIR": "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-vs-opengl/shaders",
+          "GLOB2_BENCH_FLAT": "1",
+          "GLOB2_BENCH_SIZE": "256x256",
+          "GLOB2_BENCH_UNITS": "1000",
+          "GLOB2_BENCH_FRAMES": "240",
+          "GLOB2_BENCH_WARMUP_FRAMES": "120",
+          "GLOB2_BENCH_PAUSE_PRESENTATION": "1",
+          "GLOB2_BENCH_FRAME_TIMES": "1",
+          "GLOB2_BENCH_MODE": "2D clouds",
+          "GLOB2_BENCH_ZOOM": "0.25",
+          "GLOB2_BENCH_CAMERA_MOTION": "1"
+        },
+        "exit_code": 0,
+        "elapsed_seconds": 11.448992124991491,
+        "log": "motion-4-baseline-clouds.log",
+        "log_sha256": "323d1fa222d5c375827614a905d025dc21ff6cdf44b62074aa840c35bf444898",
+        "backend": [
+          "sdl-gpu",
+          "sdl-gpu",
+          ""
+        ],
+        "metrics": {
+          "median_ms": 9.965,
+          "p95_ms": 73.367,
+          "submission_cpu_median_ms": 5.664,
+          "submission_cpu_p95_ms": 73.137,
+          "process_cpu_median_ms": 5.948,
+          "process_cpu_p95_ms": 74.54,
+          "p99_ms": 315.594458,
+          "max_ms": 330.24475
+        },
+        "cache_peak_bytes": 216716240,
+        "device_peak_bytes": 146397200,
+        "checksums": [
+          "1ea5698f"
+        ],
+        "viewport": "1120x800"
+      },
+      {
+        "scenario": "motion",
+        "pair": 4,
+        "label": "candidate",
+        "mode": "2D clouds",
+        "command": [
+          "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-stalls/candidate",
+          "--renderer",
+          "sdl-gpu",
+          "--window-size",
+          "1280x800",
+          "--no-fullscreen",
+          "--mute"
+        ],
+        "environment": {
+          "GLOB2_UI_SCALE": "1",
+          "GLOB2_RENDERER_SHADER_DIR": "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-vs-opengl/shaders",
+          "GLOB2_BENCH_FLAT": "1",
+          "GLOB2_BENCH_SIZE": "256x256",
+          "GLOB2_BENCH_UNITS": "1000",
+          "GLOB2_BENCH_FRAMES": "240",
+          "GLOB2_BENCH_WARMUP_FRAMES": "120",
+          "GLOB2_BENCH_PAUSE_PRESENTATION": "1",
+          "GLOB2_BENCH_FRAME_TIMES": "1",
+          "GLOB2_BENCH_MODE": "2D clouds",
+          "GLOB2_BENCH_ZOOM": "0.25",
+          "GLOB2_BENCH_CAMERA_MOTION": "1"
+        },
+        "exit_code": 0,
+        "elapsed_seconds": 9.576590750133619,
+        "log": "motion-4-candidate-clouds.log",
+        "log_sha256": "07eeed60760c201cc553da9a5e6ac3a188521a6e7cb238f4e1bb27953e5d1d36",
+        "backend": [
+          "sdl-gpu",
+          "sdl-gpu",
+          ""
+        ],
+        "metrics": {
+          "median_ms": 10.162,
+          "p95_ms": 44.231,
+          "submission_cpu_median_ms": 5.595,
+          "submission_cpu_p95_ms": 43.17,
+          "process_cpu_median_ms": 5.957,
+          "process_cpu_p95_ms": 43.476,
+          "p99_ms": 143.926417,
+          "max_ms": 232.724167
+        },
+        "cache_peak_bytes": 268275456,
+        "device_peak_bytes": 166869154,
+        "checksums": [
+          "1ea5698f"
+        ],
+        "viewport": "1120x800"
+      },
+      {
+        "scenario": "motion",
+        "pair": 4,
+        "label": "legacy-gl",
+        "mode": "2D clouds",
+        "command": [
+          "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-stalls/candidate",
+          "--renderer",
+          "legacy-gl",
+          "--window-size",
+          "1280x800",
+          "--no-fullscreen",
+          "--mute"
+        ],
+        "environment": {
+          "GLOB2_UI_SCALE": "1",
+          "GLOB2_RENDERER_SHADER_DIR": "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-vs-opengl/shaders",
+          "GLOB2_BENCH_FLAT": "1",
+          "GLOB2_BENCH_SIZE": "256x256",
+          "GLOB2_BENCH_UNITS": "1000",
+          "GLOB2_BENCH_FRAMES": "240",
+          "GLOB2_BENCH_WARMUP_FRAMES": "120",
+          "GLOB2_BENCH_PAUSE_PRESENTATION": "1",
+          "GLOB2_BENCH_FRAME_TIMES": "1",
+          "GLOB2_BENCH_MODE": "2D clouds",
+          "GLOB2_BENCH_ZOOM": "0.25",
+          "GLOB2_BENCH_CAMERA_MOTION": "1"
+        },
+        "exit_code": 0,
+        "elapsed_seconds": 6.257823583902791,
+        "log": "motion-4-legacy-gl-clouds.log",
+        "log_sha256": "670751005981a31564d878e89016308020e21ed9b7b7627c00f5ed9a964fda07",
+        "backend": [
+          "legacy-gl",
+          "legacy-gl",
+          ""
+        ],
+        "metrics": {
+          "median_ms": 4.192,
+          "p95_ms": 11.914,
+          "submission_cpu_median_ms": 2.618,
+          "submission_cpu_p95_ms": 8.766,
+          "process_cpu_median_ms": 2.761,
+          "process_cpu_p95_ms": 8.919,
+          "p99_ms": 83.137333,
+          "max_ms": 139.085833
+        },
+        "cache_peak_bytes": 268380952,
+        "device_peak_bytes": 0,
+        "checksums": [
+          "1ea5698f"
+        ],
+        "viewport": "1120x800"
+      },
+      {
+        "scenario": "motion",
+        "pair": 5,
+        "label": "legacy-gl",
+        "mode": "2D clouds",
+        "command": [
+          "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-stalls/candidate",
+          "--renderer",
+          "legacy-gl",
+          "--window-size",
+          "1280x800",
+          "--no-fullscreen",
+          "--mute"
+        ],
+        "environment": {
+          "GLOB2_UI_SCALE": "1",
+          "GLOB2_RENDERER_SHADER_DIR": "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-vs-opengl/shaders",
+          "GLOB2_BENCH_FLAT": "1",
+          "GLOB2_BENCH_SIZE": "256x256",
+          "GLOB2_BENCH_UNITS": "1000",
+          "GLOB2_BENCH_FRAMES": "240",
+          "GLOB2_BENCH_WARMUP_FRAMES": "120",
+          "GLOB2_BENCH_PAUSE_PRESENTATION": "1",
+          "GLOB2_BENCH_FRAME_TIMES": "1",
+          "GLOB2_BENCH_MODE": "2D clouds",
+          "GLOB2_BENCH_ZOOM": "0.25",
+          "GLOB2_BENCH_CAMERA_MOTION": "1"
+        },
+        "exit_code": 0,
+        "elapsed_seconds": 6.3269240411464125,
+        "log": "motion-5-legacy-gl-clouds.log",
+        "log_sha256": "718ef78a0f15a19364ab0cac7c5011ed306cc3ebb942dd8e39badc2728cc433e",
+        "backend": [
+          "legacy-gl",
+          "legacy-gl",
+          ""
+        ],
+        "metrics": {
+          "median_ms": 4.24,
+          "p95_ms": 12.012,
+          "submission_cpu_median_ms": 2.671,
+          "submission_cpu_p95_ms": 8.893,
+          "process_cpu_median_ms": 2.776,
+          "process_cpu_p95_ms": 9.102,
+          "p99_ms": 83.842292,
+          "max_ms": 141.253708
+        },
+        "cache_peak_bytes": 268380952,
+        "device_peak_bytes": 0,
+        "checksums": [
+          "1ea5698f"
+        ],
+        "viewport": "1120x800"
+      },
+      {
+        "scenario": "motion",
+        "pair": 5,
+        "label": "candidate",
+        "mode": "2D clouds",
+        "command": [
+          "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-stalls/candidate",
+          "--renderer",
+          "sdl-gpu",
+          "--window-size",
+          "1280x800",
+          "--no-fullscreen",
+          "--mute"
+        ],
+        "environment": {
+          "GLOB2_UI_SCALE": "1",
+          "GLOB2_RENDERER_SHADER_DIR": "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-vs-opengl/shaders",
+          "GLOB2_BENCH_FLAT": "1",
+          "GLOB2_BENCH_SIZE": "256x256",
+          "GLOB2_BENCH_UNITS": "1000",
+          "GLOB2_BENCH_FRAMES": "240",
+          "GLOB2_BENCH_WARMUP_FRAMES": "120",
+          "GLOB2_BENCH_PAUSE_PRESENTATION": "1",
+          "GLOB2_BENCH_FRAME_TIMES": "1",
+          "GLOB2_BENCH_MODE": "2D clouds",
+          "GLOB2_BENCH_ZOOM": "0.25",
+          "GLOB2_BENCH_CAMERA_MOTION": "1"
+        },
+        "exit_code": 0,
+        "elapsed_seconds": 9.63538141711615,
+        "log": "motion-5-candidate-clouds.log",
+        "log_sha256": "27c7b1523e2286cbbdac350b90797b09f1aca2c06b27f12e92afdd5bf0f8e442",
+        "backend": [
+          "sdl-gpu",
+          "sdl-gpu",
+          ""
+        ],
+        "metrics": {
+          "median_ms": 9.984,
+          "p95_ms": 43.632,
+          "submission_cpu_median_ms": 5.639,
+          "submission_cpu_p95_ms": 41.711,
+          "process_cpu_median_ms": 5.893,
+          "process_cpu_p95_ms": 42.006,
+          "p99_ms": 136.215167,
+          "max_ms": 239.583167
+        },
+        "cache_peak_bytes": 268275456,
+        "device_peak_bytes": 166869154,
+        "checksums": [
+          "1ea5698f"
+        ],
+        "viewport": "1120x800"
+      },
+      {
+        "scenario": "motion",
+        "pair": 5,
+        "label": "baseline",
+        "mode": "2D clouds",
+        "command": [
+          "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-stalls/baseline",
+          "--renderer",
+          "sdl-gpu",
+          "--window-size",
+          "1280x800",
+          "--no-fullscreen",
+          "--mute"
+        ],
+        "environment": {
+          "GLOB2_UI_SCALE": "1",
+          "GLOB2_RENDERER_SHADER_DIR": "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-vs-opengl/shaders",
+          "GLOB2_BENCH_FLAT": "1",
+          "GLOB2_BENCH_SIZE": "256x256",
+          "GLOB2_BENCH_UNITS": "1000",
+          "GLOB2_BENCH_FRAMES": "240",
+          "GLOB2_BENCH_WARMUP_FRAMES": "120",
+          "GLOB2_BENCH_PAUSE_PRESENTATION": "1",
+          "GLOB2_BENCH_FRAME_TIMES": "1",
+          "GLOB2_BENCH_MODE": "2D clouds",
+          "GLOB2_BENCH_ZOOM": "0.25",
+          "GLOB2_BENCH_CAMERA_MOTION": "1"
+        },
+        "exit_code": 0,
+        "elapsed_seconds": 11.483644834021106,
+        "log": "motion-5-baseline-clouds.log",
+        "log_sha256": "99441af8d298e92b092b14e1bb93d147e716c0560a2d19d89c4005055d20254a",
+        "backend": [
+          "sdl-gpu",
+          "sdl-gpu",
+          ""
+        ],
+        "metrics": {
+          "median_ms": 9.972,
+          "p95_ms": 70.182,
+          "submission_cpu_median_ms": 5.55,
+          "submission_cpu_p95_ms": 71.132,
+          "process_cpu_median_ms": 5.912,
+          "process_cpu_p95_ms": 71.378,
+          "p99_ms": 313.281333,
+          "max_ms": 333.882583
+        },
+        "cache_peak_bytes": 216716240,
+        "device_peak_bytes": 146397200,
+        "checksums": [
+          "1ea5698f"
+        ],
+        "viewport": "1120x800"
+      },
+      {
+        "scenario": "motion",
+        "pair": 5,
+        "label": "legacy-gl",
+        "mode": "2D no clouds",
+        "command": [
+          "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-stalls/candidate",
+          "--renderer",
+          "legacy-gl",
+          "--window-size",
+          "1280x800",
+          "--no-fullscreen",
+          "--mute"
+        ],
+        "environment": {
+          "GLOB2_UI_SCALE": "1",
+          "GLOB2_RENDERER_SHADER_DIR": "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-vs-opengl/shaders",
+          "GLOB2_BENCH_FLAT": "1",
+          "GLOB2_BENCH_SIZE": "256x256",
+          "GLOB2_BENCH_UNITS": "1000",
+          "GLOB2_BENCH_FRAMES": "240",
+          "GLOB2_BENCH_WARMUP_FRAMES": "120",
+          "GLOB2_BENCH_PAUSE_PRESENTATION": "1",
+          "GLOB2_BENCH_FRAME_TIMES": "1",
+          "GLOB2_BENCH_MODE": "2D no clouds",
+          "GLOB2_BENCH_ZOOM": "0.25",
+          "GLOB2_BENCH_CAMERA_MOTION": "1"
+        },
+        "exit_code": 0,
+        "elapsed_seconds": 5.086929291952401,
+        "log": "motion-5-legacy-gl-no-clouds.log",
+        "log_sha256": "ae9356557e8745d29da608c82a06a286f28b2c20b205ed979d056d917dd290f5",
+        "backend": [
+          "legacy-gl",
+          "legacy-gl",
+          ""
+        ],
+        "metrics": {
+          "median_ms": 1.274,
+          "p95_ms": 5.731,
+          "submission_cpu_median_ms": 0.258,
+          "submission_cpu_p95_ms": 3.755,
+          "process_cpu_median_ms": 0.346,
+          "process_cpu_p95_ms": 4.028,
+          "p99_ms": 77.381583,
+          "max_ms": 136.711458
+        },
+        "cache_peak_bytes": 268380952,
+        "device_peak_bytes": 0,
+        "checksums": [
+          "1ea5698f"
+        ],
+        "viewport": "1120x800"
+      },
+      {
+        "scenario": "motion",
+        "pair": 5,
+        "label": "candidate",
+        "mode": "2D no clouds",
+        "command": [
+          "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-stalls/candidate",
+          "--renderer",
+          "sdl-gpu",
+          "--window-size",
+          "1280x800",
+          "--no-fullscreen",
+          "--mute"
+        ],
+        "environment": {
+          "GLOB2_UI_SCALE": "1",
+          "GLOB2_RENDERER_SHADER_DIR": "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-vs-opengl/shaders",
+          "GLOB2_BENCH_FLAT": "1",
+          "GLOB2_BENCH_SIZE": "256x256",
+          "GLOB2_BENCH_UNITS": "1000",
+          "GLOB2_BENCH_FRAMES": "240",
+          "GLOB2_BENCH_WARMUP_FRAMES": "120",
+          "GLOB2_BENCH_PAUSE_PRESENTATION": "1",
+          "GLOB2_BENCH_FRAME_TIMES": "1",
+          "GLOB2_BENCH_MODE": "2D no clouds",
+          "GLOB2_BENCH_ZOOM": "0.25",
+          "GLOB2_BENCH_CAMERA_MOTION": "1"
+        },
+        "exit_code": 0,
+        "elapsed_seconds": 9.707380166975781,
+        "log": "motion-5-candidate-no-clouds.log",
+        "log_sha256": "97acfd1dca5884b0a0916d3b0d866196c751591e801c5bf5ddb3157a70e6679f",
+        "backend": [
+          "sdl-gpu",
+          "sdl-gpu",
+          ""
+        ],
+        "metrics": {
+          "median_ms": 7.666,
+          "p95_ms": 49.307,
+          "submission_cpu_median_ms": 1.024,
+          "submission_cpu_p95_ms": 47.181,
+          "process_cpu_median_ms": 1.557,
+          "process_cpu_p95_ms": 48.338,
+          "p99_ms": 153.930042,
+          "max_ms": 236.871583
+        },
+        "cache_peak_bytes": 268275456,
+        "device_peak_bytes": 151644322,
+        "checksums": [
+          "1ea5698f"
+        ],
+        "viewport": "1120x800"
+      },
+      {
+        "scenario": "motion",
+        "pair": 5,
+        "label": "baseline",
+        "mode": "2D no clouds",
+        "command": [
+          "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-stalls/baseline",
+          "--renderer",
+          "sdl-gpu",
+          "--window-size",
+          "1280x800",
+          "--no-fullscreen",
+          "--mute"
+        ],
+        "environment": {
+          "GLOB2_UI_SCALE": "1",
+          "GLOB2_RENDERER_SHADER_DIR": "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-vs-opengl/shaders",
+          "GLOB2_BENCH_FLAT": "1",
+          "GLOB2_BENCH_SIZE": "256x256",
+          "GLOB2_BENCH_UNITS": "1000",
+          "GLOB2_BENCH_FRAMES": "240",
+          "GLOB2_BENCH_WARMUP_FRAMES": "120",
+          "GLOB2_BENCH_PAUSE_PRESENTATION": "1",
+          "GLOB2_BENCH_FRAME_TIMES": "1",
+          "GLOB2_BENCH_MODE": "2D no clouds",
+          "GLOB2_BENCH_ZOOM": "0.25",
+          "GLOB2_BENCH_CAMERA_MOTION": "1"
+        },
+        "exit_code": 0,
+        "elapsed_seconds": 11.473144374787807,
+        "log": "motion-5-baseline-no-clouds.log",
+        "log_sha256": "5f805ab60076d80e2ffaf33bca697dde474eb5f380283c3ce6f775f9387b6b42",
+        "backend": [
+          "sdl-gpu",
+          "sdl-gpu",
+          ""
+        ],
+        "metrics": {
+          "median_ms": 5.821,
+          "p95_ms": 75.938,
+          "submission_cpu_median_ms": 0.873,
+          "submission_cpu_p95_ms": 66.081,
+          "process_cpu_median_ms": 1.276,
+          "process_cpu_p95_ms": 66.287,
+          "p99_ms": 343.172208,
+          "max_ms": 362.566792
+        },
+        "cache_peak_bytes": 216716240,
+        "device_peak_bytes": 138213589,
+        "checksums": [
+          "1ea5698f"
+        ],
+        "viewport": "1120x800"
+      },
+      {
+        "scenario": "motion",
+        "pair": 6,
+        "label": "baseline",
+        "mode": "2D no clouds",
+        "command": [
+          "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-stalls/baseline",
+          "--renderer",
+          "sdl-gpu",
+          "--window-size",
+          "1280x800",
+          "--no-fullscreen",
+          "--mute"
+        ],
+        "environment": {
+          "GLOB2_UI_SCALE": "1",
+          "GLOB2_RENDERER_SHADER_DIR": "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-vs-opengl/shaders",
+          "GLOB2_BENCH_FLAT": "1",
+          "GLOB2_BENCH_SIZE": "256x256",
+          "GLOB2_BENCH_UNITS": "1000",
+          "GLOB2_BENCH_FRAMES": "240",
+          "GLOB2_BENCH_WARMUP_FRAMES": "120",
+          "GLOB2_BENCH_PAUSE_PRESENTATION": "1",
+          "GLOB2_BENCH_FRAME_TIMES": "1",
+          "GLOB2_BENCH_MODE": "2D no clouds",
+          "GLOB2_BENCH_ZOOM": "0.25",
+          "GLOB2_BENCH_CAMERA_MOTION": "1"
+        },
+        "exit_code": 0,
+        "elapsed_seconds": 11.531919125001878,
+        "log": "motion-6-baseline-no-clouds.log",
+        "log_sha256": "632cfffe608d9cc0acb61b2c11dcb504a14804a9dd35d3477048bc419bf4f7ab",
+        "backend": [
+          "sdl-gpu",
+          "sdl-gpu",
+          ""
+        ],
+        "metrics": {
+          "median_ms": 6.844,
+          "p95_ms": 66.079,
+          "submission_cpu_median_ms": 0.828,
+          "submission_cpu_p95_ms": 65.134,
+          "process_cpu_median_ms": 1.207,
+          "process_cpu_p95_ms": 65.285,
+          "p99_ms": 331.398167,
+          "max_ms": 338.705958
+        },
+        "cache_peak_bytes": 216716240,
+        "device_peak_bytes": 138213589,
+        "checksums": [
+          "1ea5698f"
+        ],
+        "viewport": "1120x800"
+      },
+      {
+        "scenario": "motion",
+        "pair": 6,
+        "label": "candidate",
+        "mode": "2D no clouds",
+        "command": [
+          "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-stalls/candidate",
+          "--renderer",
+          "sdl-gpu",
+          "--window-size",
+          "1280x800",
+          "--no-fullscreen",
+          "--mute"
+        ],
+        "environment": {
+          "GLOB2_UI_SCALE": "1",
+          "GLOB2_RENDERER_SHADER_DIR": "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-vs-opengl/shaders",
+          "GLOB2_BENCH_FLAT": "1",
+          "GLOB2_BENCH_SIZE": "256x256",
+          "GLOB2_BENCH_UNITS": "1000",
+          "GLOB2_BENCH_FRAMES": "240",
+          "GLOB2_BENCH_WARMUP_FRAMES": "120",
+          "GLOB2_BENCH_PAUSE_PRESENTATION": "1",
+          "GLOB2_BENCH_FRAME_TIMES": "1",
+          "GLOB2_BENCH_MODE": "2D no clouds",
+          "GLOB2_BENCH_ZOOM": "0.25",
+          "GLOB2_BENCH_CAMERA_MOTION": "1"
+        },
+        "exit_code": 0,
+        "elapsed_seconds": 9.80837708292529,
+        "log": "motion-6-candidate-no-clouds.log",
+        "log_sha256": "95f100fb176329482a521074aa668f4d58cf0788b57aa92bb33289635ff930b8",
+        "backend": [
+          "sdl-gpu",
+          "sdl-gpu",
+          ""
+        ],
+        "metrics": {
+          "median_ms": 7.765,
+          "p95_ms": 54.034,
+          "submission_cpu_median_ms": 1.086,
+          "submission_cpu_p95_ms": 50.032,
+          "process_cpu_median_ms": 1.671,
+          "process_cpu_p95_ms": 50.787,
+          "p99_ms": 155.242833,
+          "max_ms": 220.792958
+        },
+        "cache_peak_bytes": 268275456,
+        "device_peak_bytes": 151644322,
+        "checksums": [
+          "1ea5698f"
+        ],
+        "viewport": "1120x800"
+      },
+      {
+        "scenario": "motion",
+        "pair": 6,
+        "label": "legacy-gl",
+        "mode": "2D no clouds",
+        "command": [
+          "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-stalls/candidate",
+          "--renderer",
+          "legacy-gl",
+          "--window-size",
+          "1280x800",
+          "--no-fullscreen",
+          "--mute"
+        ],
+        "environment": {
+          "GLOB2_UI_SCALE": "1",
+          "GLOB2_RENDERER_SHADER_DIR": "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-vs-opengl/shaders",
+          "GLOB2_BENCH_FLAT": "1",
+          "GLOB2_BENCH_SIZE": "256x256",
+          "GLOB2_BENCH_UNITS": "1000",
+          "GLOB2_BENCH_FRAMES": "240",
+          "GLOB2_BENCH_WARMUP_FRAMES": "120",
+          "GLOB2_BENCH_PAUSE_PRESENTATION": "1",
+          "GLOB2_BENCH_FRAME_TIMES": "1",
+          "GLOB2_BENCH_MODE": "2D no clouds",
+          "GLOB2_BENCH_ZOOM": "0.25",
+          "GLOB2_BENCH_CAMERA_MOTION": "1"
+        },
+        "exit_code": 0,
+        "elapsed_seconds": 5.104580792132765,
+        "log": "motion-6-legacy-gl-no-clouds.log",
+        "log_sha256": "6b8ed47c1e556bf06ee4ac95cdf1ab47f60ab9355608a0232fe20dec1b6ecd29",
+        "backend": [
+          "legacy-gl",
+          "legacy-gl",
+          ""
+        ],
+        "metrics": {
+          "median_ms": 1.277,
+          "p95_ms": 6.26,
+          "submission_cpu_median_ms": 0.26,
+          "submission_cpu_p95_ms": 3.89,
+          "process_cpu_median_ms": 0.355,
+          "process_cpu_p95_ms": 4.16,
+          "p99_ms": 78.153042,
+          "max_ms": 138.217667
+        },
+        "cache_peak_bytes": 268380952,
+        "device_peak_bytes": 0,
+        "checksums": [
+          "1ea5698f"
+        ],
+        "viewport": "1120x800"
+      },
+      {
+        "scenario": "motion",
+        "pair": 6,
+        "label": "baseline",
+        "mode": "2D clouds",
+        "command": [
+          "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-stalls/baseline",
+          "--renderer",
+          "sdl-gpu",
+          "--window-size",
+          "1280x800",
+          "--no-fullscreen",
+          "--mute"
+        ],
+        "environment": {
+          "GLOB2_UI_SCALE": "1",
+          "GLOB2_RENDERER_SHADER_DIR": "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-vs-opengl/shaders",
+          "GLOB2_BENCH_FLAT": "1",
+          "GLOB2_BENCH_SIZE": "256x256",
+          "GLOB2_BENCH_UNITS": "1000",
+          "GLOB2_BENCH_FRAMES": "240",
+          "GLOB2_BENCH_WARMUP_FRAMES": "120",
+          "GLOB2_BENCH_PAUSE_PRESENTATION": "1",
+          "GLOB2_BENCH_FRAME_TIMES": "1",
+          "GLOB2_BENCH_MODE": "2D clouds",
+          "GLOB2_BENCH_ZOOM": "0.25",
+          "GLOB2_BENCH_CAMERA_MOTION": "1"
+        },
+        "exit_code": 0,
+        "elapsed_seconds": 11.551844957983121,
+        "log": "motion-6-baseline-clouds.log",
+        "log_sha256": "c915517a25d8fa41e0dbdf51927ee375bc129a0979f0d323db6ea57715190e2c",
+        "backend": [
+          "sdl-gpu",
+          "sdl-gpu",
+          ""
+        ],
+        "metrics": {
+          "median_ms": 9.792,
+          "p95_ms": 72.222,
+          "submission_cpu_median_ms": 5.737,
+          "submission_cpu_p95_ms": 73.499,
+          "process_cpu_median_ms": 6.027,
+          "process_cpu_p95_ms": 73.79,
+          "p99_ms": 321.2805,
+          "max_ms": 341.504875
+        },
+        "cache_peak_bytes": 216716240,
+        "device_peak_bytes": 146397200,
+        "checksums": [
+          "1ea5698f"
+        ],
+        "viewport": "1120x800"
+      },
+      {
+        "scenario": "motion",
+        "pair": 6,
+        "label": "candidate",
+        "mode": "2D clouds",
+        "command": [
+          "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-stalls/candidate",
+          "--renderer",
+          "sdl-gpu",
+          "--window-size",
+          "1280x800",
+          "--no-fullscreen",
+          "--mute"
+        ],
+        "environment": {
+          "GLOB2_UI_SCALE": "1",
+          "GLOB2_RENDERER_SHADER_DIR": "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-vs-opengl/shaders",
+          "GLOB2_BENCH_FLAT": "1",
+          "GLOB2_BENCH_SIZE": "256x256",
+          "GLOB2_BENCH_UNITS": "1000",
+          "GLOB2_BENCH_FRAMES": "240",
+          "GLOB2_BENCH_WARMUP_FRAMES": "120",
+          "GLOB2_BENCH_PAUSE_PRESENTATION": "1",
+          "GLOB2_BENCH_FRAME_TIMES": "1",
+          "GLOB2_BENCH_MODE": "2D clouds",
+          "GLOB2_BENCH_ZOOM": "0.25",
+          "GLOB2_BENCH_CAMERA_MOTION": "1"
+        },
+        "exit_code": 0,
+        "elapsed_seconds": 9.572164041223004,
+        "log": "motion-6-candidate-clouds.log",
+        "log_sha256": "b6cb35ac93cb9575fb2cb12b7544dd4c3aeeb57b8fbd20f6b47ad9e520aaeb3a",
+        "backend": [
+          "sdl-gpu",
+          "sdl-gpu",
+          ""
+        ],
+        "metrics": {
+          "median_ms": 10.067,
+          "p95_ms": 44.015,
+          "submission_cpu_median_ms": 5.719,
+          "submission_cpu_p95_ms": 42.767,
+          "process_cpu_median_ms": 5.977,
+          "process_cpu_p95_ms": 43.129,
+          "p99_ms": 137.38525,
+          "max_ms": 226.494917
+        },
+        "cache_peak_bytes": 268275456,
+        "device_peak_bytes": 166869154,
+        "checksums": [
+          "1ea5698f"
+        ],
+        "viewport": "1120x800"
+      },
+      {
+        "scenario": "motion",
+        "pair": 6,
+        "label": "legacy-gl",
+        "mode": "2D clouds",
+        "command": [
+          "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-stalls/candidate",
+          "--renderer",
+          "legacy-gl",
+          "--window-size",
+          "1280x800",
+          "--no-fullscreen",
+          "--mute"
+        ],
+        "environment": {
+          "GLOB2_UI_SCALE": "1",
+          "GLOB2_RENDERER_SHADER_DIR": "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-vs-opengl/shaders",
+          "GLOB2_BENCH_FLAT": "1",
+          "GLOB2_BENCH_SIZE": "256x256",
+          "GLOB2_BENCH_UNITS": "1000",
+          "GLOB2_BENCH_FRAMES": "240",
+          "GLOB2_BENCH_WARMUP_FRAMES": "120",
+          "GLOB2_BENCH_PAUSE_PRESENTATION": "1",
+          "GLOB2_BENCH_FRAME_TIMES": "1",
+          "GLOB2_BENCH_MODE": "2D clouds",
+          "GLOB2_BENCH_ZOOM": "0.25",
+          "GLOB2_BENCH_CAMERA_MOTION": "1"
+        },
+        "exit_code": 0,
+        "elapsed_seconds": 6.33024249994196,
+        "log": "motion-6-legacy-gl-clouds.log",
+        "log_sha256": "045e1fd716880baa096da91ab8da617328de9bbf5969751a5cb9623ecf8c2cf4",
+        "backend": [
+          "legacy-gl",
+          "legacy-gl",
+          ""
+        ],
+        "metrics": {
+          "median_ms": 4.585,
+          "p95_ms": 12.355,
+          "submission_cpu_median_ms": 2.688,
+          "submission_cpu_p95_ms": 8.851,
+          "process_cpu_median_ms": 2.792,
+          "process_cpu_p95_ms": 9.073,
+          "p99_ms": 83.83275,
+          "max_ms": 139.283667
+        },
+        "cache_peak_bytes": 268380952,
+        "device_peak_bytes": 0,
+        "checksums": [
+          "1ea5698f"
+        ],
+        "viewport": "1120x800"
+      }
+    ],
+    "summary": [
+      {
+        "scenario": "motion",
+        "mode": "2D no clouds",
+        "baseline_median_ms": 5.772,
+        "baseline_p95_ms": 66.079,
+        "baseline_submission_cpu_median_ms": 0.884,
+        "baseline_submission_cpu_p95_ms": 65.134,
+        "baseline_process_cpu_median_ms": 1.302,
+        "baseline_process_cpu_p95_ms": 65.285,
+        "baseline_p99_ms": 340.667167,
+        "baseline_max_ms": 359.804667,
+        "baseline_median_ms_min": 4.878,
+        "baseline_median_ms_max": 7.339,
+        "baseline_p95_ms_min": 65.53,
+        "baseline_p95_ms_max": 75.938,
+        "baseline_p99_ms_min": 325.628583,
+        "baseline_p99_ms_max": 356.005917,
+        "candidate_median_ms": 7.666,
+        "candidate_p95_ms": 49.307,
+        "candidate_submission_cpu_median_ms": 1.086,
+        "candidate_submission_cpu_p95_ms": 47.181,
+        "candidate_process_cpu_median_ms": 1.576,
+        "candidate_process_cpu_p95_ms": 48.338,
+        "candidate_p99_ms": 155.448042,
+        "candidate_max_ms": 236.871583,
+        "candidate_median_ms_min": 4.562,
+        "candidate_median_ms_max": 8.459,
+        "candidate_p95_ms_min": 41.401,
+        "candidate_p95_ms_max": 54.034,
+        "candidate_p99_ms_min": 153.046042,
+        "candidate_p99_ms_max": 168.544375,
+        "legacy-gl_median_ms": 1.272,
+        "legacy-gl_p95_ms": 5.922,
+        "legacy-gl_submission_cpu_median_ms": 0.261,
+        "legacy-gl_submission_cpu_p95_ms": 3.876,
+        "legacy-gl_process_cpu_median_ms": 0.355,
+        "legacy-gl_process_cpu_p95_ms": 4.152,
+        "legacy-gl_p99_ms": 77.421417,
+        "legacy-gl_max_ms": 137.096833,
+        "legacy-gl_median_ms_min": 1.157,
+        "legacy-gl_median_ms_max": 1.323,
+        "legacy-gl_p95_ms_min": 5.441,
+        "legacy-gl_p95_ms_max": 11.292,
+        "legacy-gl_p99_ms_min": 76.56975,
+        "legacy-gl_p99_ms_max": 79.635333
+      },
+      {
+        "scenario": "motion",
+        "mode": "2D clouds",
+        "baseline_median_ms": 9.914,
+        "baseline_p95_ms": 70.988,
+        "baseline_submission_cpu_median_ms": 5.708,
+        "baseline_submission_cpu_p95_ms": 72.028,
+        "baseline_process_cpu_median_ms": 5.948,
+        "baseline_process_cpu_p95_ms": 72.191,
+        "baseline_p99_ms": 316.714083,
+        "baseline_max_ms": 333.882583,
+        "baseline_median_ms_min": 9.792,
+        "baseline_median_ms_max": 10.359,
+        "baseline_p95_ms_min": 69.879,
+        "baseline_p95_ms_max": 73.367,
+        "baseline_p99_ms_min": 313.281333,
+        "baseline_p99_ms_max": 324.580417,
+        "candidate_median_ms": 10.107,
+        "candidate_p95_ms": 43.647,
+        "candidate_submission_cpu_median_ms": 5.595,
+        "candidate_submission_cpu_p95_ms": 42.064,
+        "candidate_process_cpu_median_ms": 5.893,
+        "candidate_process_cpu_p95_ms": 42.373,
+        "candidate_p99_ms": 138.2975,
+        "candidate_max_ms": 232.549167,
+        "candidate_median_ms_min": 9.921,
+        "candidate_median_ms_max": 10.175,
+        "candidate_p95_ms_min": 43.305,
+        "candidate_p95_ms_max": 44.231,
+        "candidate_p99_ms_min": 136.215167,
+        "candidate_p99_ms_max": 143.926417,
+        "legacy-gl_median_ms": 4.259,
+        "legacy-gl_p95_ms": 12.012,
+        "legacy-gl_submission_cpu_median_ms": 2.656,
+        "legacy-gl_submission_cpu_p95_ms": 8.851,
+        "legacy-gl_process_cpu_median_ms": 2.776,
+        "legacy-gl_process_cpu_p95_ms": 9.057,
+        "legacy-gl_p99_ms": 83.83275,
+        "legacy-gl_max_ms": 139.79525,
+        "legacy-gl_median_ms_min": 4.037,
+        "legacy-gl_median_ms_max": 4.585,
+        "legacy-gl_p95_ms_min": 11.814,
+        "legacy-gl_p95_ms_max": 13.326,
+        "legacy-gl_p99_ms_min": 83.137333,
+        "legacy-gl_p99_ms_max": 85.043833
+      }
+    ],
+    "thermal_after": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded\n"
+  },
+  "static_smoke": {
+    "revision": "aade2ccc21a11800fe03ff804bf245fb6ece3755",
+    "baseline_revision": "532292686e9eb12ad49cbaf319d9b7062ce2a4b6",
+    "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "hardware": "Apple M3 MacBook Air, 24 GiB, 10 GPU cores",
+    "baseline_sha256": "4fd2ca0f284d1f1363935ad4214fb93d869f60e6ac67573b228c2b1b8404c56c",
+    "candidate_sha256": "ddd2b617863d9a4ac102041cf04d5d6db34165b1045653b315ecd201fd173a45",
+    "shaders_sha256": "7933a52621a1fdb865968b97cdbcc876ba4e5bf707f3e8f7bfe698b0ab58a235",
+    "fixture_sha256": "542c151e914440c4d501ca7019888103a1c52dd98f522a0837412fc00ae9bedf",
+    "build_command": "GLOB2_RENDER_SHADER_INPUT=\"$PWD/artifacts/metal-vs-opengl/shaders\" python3 tools/dev_build.py dev_fast=0 release=1 torus-render-benchmark engine-tests",
+    "build_log_sha256": "cf7483f3c75e87c04d447ae43102a8a44dec4c0b76c0d6b013c5624faee6f954",
+    "frames": 240,
+    "warmup": 120,
+    "repeat": 1,
+    "method": "Each cloud mode in a fresh process and isolated profile, same 120 warmup and 240 measured camera frames; alternate cloud and binary order across pairs. Completion/readback inclusive; excludes simulation, extraction and final presentation. No builds/tests/profilers/other Glob2 instances during timings.",
+    "thermal_before": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded\n",
+    "runs": [
+      {
+        "scenario": "overview",
+        "pair": 0,
+        "label": "baseline",
+        "mode": "2D no clouds",
+        "command": [
+          "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-stalls/baseline",
+          "--renderer",
+          "sdl-gpu",
+          "--window-size",
+          "1280x800",
+          "--no-fullscreen",
+          "--mute"
+        ],
+        "environment": {
+          "GLOB2_UI_SCALE": "1",
+          "GLOB2_RENDERER_SHADER_DIR": "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-vs-opengl/shaders",
+          "GLOB2_BENCH_FLAT": "1",
+          "GLOB2_BENCH_SIZE": "256x256",
+          "GLOB2_BENCH_UNITS": "1000",
+          "GLOB2_BENCH_FRAMES": "240",
+          "GLOB2_BENCH_WARMUP_FRAMES": "120",
+          "GLOB2_BENCH_PAUSE_PRESENTATION": "1",
+          "GLOB2_BENCH_FRAME_TIMES": "1",
+          "GLOB2_BENCH_MODE": "2D no clouds",
+          "GLOB2_BENCH_ZOOM": "0.25",
+          "GLOB2_BENCH_CAPTURE": "artifacts/metal-stalls/retake-static/overview-0-baseline-no-clouds.ppm"
+        },
+        "exit_code": 0,
+        "elapsed_seconds": 7.731251625111327,
+        "log": "overview-0-baseline-no-clouds.log",
+        "log_sha256": "9ed25f4e3388688a4821830cf2f2b30ac36bcefd6518bf86f940ca56a8cccd0d",
+        "backend": [
+          "sdl-gpu",
+          "sdl-gpu",
+          ""
+        ],
+        "metrics": {
+          "median_ms": 10.442,
+          "p95_ms": 11.179,
+          "submission_cpu_median_ms": 5.876,
+          "submission_cpu_p95_ms": 6.615,
+          "process_cpu_median_ms": 6.177,
+          "process_cpu_p95_ms": 6.997,
+          "p99_ms": 11.730333,
+          "max_ms": 12.309375
+        },
+        "cache_peak_bytes": 56191464,
+        "device_peak_bytes": 90283004,
+        "checksums": [
+          "1ea5698f"
+        ],
+        "viewport": "1120x800",
+        "capture_sha256": "94514ccae05eb15f9b2be12a24c4678a2bf1e5556183bf41e529097f75f53400"
+      },
+      {
+        "scenario": "overview",
+        "pair": 0,
+        "label": "candidate",
+        "mode": "2D no clouds",
+        "command": [
+          "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-stalls/candidate",
+          "--renderer",
+          "sdl-gpu",
+          "--window-size",
+          "1280x800",
+          "--no-fullscreen",
+          "--mute"
+        ],
+        "environment": {
+          "GLOB2_UI_SCALE": "1",
+          "GLOB2_RENDERER_SHADER_DIR": "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-vs-opengl/shaders",
+          "GLOB2_BENCH_FLAT": "1",
+          "GLOB2_BENCH_SIZE": "256x256",
+          "GLOB2_BENCH_UNITS": "1000",
+          "GLOB2_BENCH_FRAMES": "240",
+          "GLOB2_BENCH_WARMUP_FRAMES": "120",
+          "GLOB2_BENCH_PAUSE_PRESENTATION": "1",
+          "GLOB2_BENCH_FRAME_TIMES": "1",
+          "GLOB2_BENCH_MODE": "2D no clouds",
+          "GLOB2_BENCH_ZOOM": "0.25",
+          "GLOB2_BENCH_CAPTURE": "artifacts/metal-stalls/retake-static/overview-0-candidate-no-clouds.ppm"
+        },
+        "exit_code": 0,
+        "elapsed_seconds": 7.7644954160787165,
+        "log": "overview-0-candidate-no-clouds.log",
+        "log_sha256": "e7b06b57b8fb367968ea604a14cefba0ceb2fb169a133dec1aac09b04185588f",
+        "backend": [
+          "sdl-gpu",
+          "sdl-gpu",
+          ""
+        ],
+        "metrics": {
+          "median_ms": 9.731,
+          "p95_ms": 10.509,
+          "submission_cpu_median_ms": 6.092,
+          "submission_cpu_p95_ms": 6.549,
+          "process_cpu_median_ms": 6.343,
+          "process_cpu_p95_ms": 6.825,
+          "p99_ms": 11.972917,
+          "max_ms": 12.204167
+        },
+        "cache_peak_bytes": 56191464,
+        "device_peak_bytes": 90283004,
+        "checksums": [
+          "1ea5698f"
+        ],
+        "viewport": "1120x800",
+        "capture_sha256": "94514ccae05eb15f9b2be12a24c4678a2bf1e5556183bf41e529097f75f53400"
+      },
+      {
+        "scenario": "overview",
+        "pair": 0,
+        "label": "legacy-gl",
+        "mode": "2D no clouds",
+        "command": [
+          "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-stalls/candidate",
+          "--renderer",
+          "legacy-gl",
+          "--window-size",
+          "1280x800",
+          "--no-fullscreen",
+          "--mute"
+        ],
+        "environment": {
+          "GLOB2_UI_SCALE": "1",
+          "GLOB2_RENDERER_SHADER_DIR": "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-vs-opengl/shaders",
+          "GLOB2_BENCH_FLAT": "1",
+          "GLOB2_BENCH_SIZE": "256x256",
+          "GLOB2_BENCH_UNITS": "1000",
+          "GLOB2_BENCH_FRAMES": "240",
+          "GLOB2_BENCH_WARMUP_FRAMES": "120",
+          "GLOB2_BENCH_PAUSE_PRESENTATION": "1",
+          "GLOB2_BENCH_FRAME_TIMES": "1",
+          "GLOB2_BENCH_MODE": "2D no clouds",
+          "GLOB2_BENCH_ZOOM": "0.25",
+          "GLOB2_BENCH_CAPTURE": "artifacts/metal-stalls/retake-static/overview-0-legacy-gl-no-clouds.ppm"
+        },
+        "exit_code": 0,
+        "elapsed_seconds": 5.604495665989816,
+        "log": "overview-0-legacy-gl-no-clouds.log",
+        "log_sha256": "2035b7c37c1fb8bfc4a18b9ca6fffdba7d7024a0a32566aa6e9568836af5ade3",
+        "backend": [
+          "legacy-gl",
+          "legacy-gl",
+          ""
+        ],
+        "metrics": {
+          "median_ms": 6.045,
+          "p95_ms": 8.173,
+          "submission_cpu_median_ms": 4.231,
+          "submission_cpu_p95_ms": 4.552,
+          "process_cpu_median_ms": 4.632,
+          "process_cpu_p95_ms": 4.913,
+          "p99_ms": 8.813458,
+          "max_ms": 10.263167
+        },
+        "cache_peak_bytes": 56191464,
+        "device_peak_bytes": 0,
+        "checksums": [
+          "1ea5698f"
+        ],
+        "viewport": "1120x800",
+        "capture_sha256": "d9aeccdb85b7ccb20d3252cee4fc3a62ad36cec56f1fe6f593fe54f45884e9d3"
+      },
+      {
+        "scenario": "overview",
+        "pair": 0,
+        "label": "baseline",
+        "mode": "2D clouds",
+        "command": [
+          "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-stalls/baseline",
+          "--renderer",
+          "sdl-gpu",
+          "--window-size",
+          "1280x800",
+          "--no-fullscreen",
+          "--mute"
+        ],
+        "environment": {
+          "GLOB2_UI_SCALE": "1",
+          "GLOB2_RENDERER_SHADER_DIR": "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-vs-opengl/shaders",
+          "GLOB2_BENCH_FLAT": "1",
+          "GLOB2_BENCH_SIZE": "256x256",
+          "GLOB2_BENCH_UNITS": "1000",
+          "GLOB2_BENCH_FRAMES": "240",
+          "GLOB2_BENCH_WARMUP_FRAMES": "120",
+          "GLOB2_BENCH_PAUSE_PRESENTATION": "1",
+          "GLOB2_BENCH_FRAME_TIMES": "1",
+          "GLOB2_BENCH_MODE": "2D clouds",
+          "GLOB2_BENCH_ZOOM": "0.25",
+          "GLOB2_BENCH_CAPTURE": "artifacts/metal-stalls/retake-static/overview-0-baseline-clouds.ppm"
+        },
+        "exit_code": 0,
+        "elapsed_seconds": 7.764201415935531,
+        "log": "overview-0-baseline-clouds.log",
+        "log_sha256": "903325fa85b371e82c554e6b782f0999742b7a92a3bdfe44ebbf5ead7ad0b9b9",
+        "backend": [
+          "sdl-gpu",
+          "sdl-gpu",
+          ""
+        ],
+        "metrics": {
+          "median_ms": 11.062,
+          "p95_ms": 11.763,
+          "submission_cpu_median_ms": 7.377,
+          "submission_cpu_p95_ms": 8.101,
+          "process_cpu_median_ms": 7.665,
+          "process_cpu_p95_ms": 8.438,
+          "p99_ms": 12.6945,
+          "max_ms": 14.550958
+        },
+        "cache_peak_bytes": 56191464,
+        "device_peak_bytes": 95659004,
+        "checksums": [
+          "1ea5698f"
+        ],
+        "viewport": "1120x800",
+        "capture_sha256": "9e90e06c826ce1cffa563de6ee2d81cfe266864d9f66c44abd52d76ee67a563e"
+      },
+      {
+        "scenario": "overview",
+        "pair": 0,
+        "label": "candidate",
+        "mode": "2D clouds",
+        "command": [
+          "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-stalls/candidate",
+          "--renderer",
+          "sdl-gpu",
+          "--window-size",
+          "1280x800",
+          "--no-fullscreen",
+          "--mute"
+        ],
+        "environment": {
+          "GLOB2_UI_SCALE": "1",
+          "GLOB2_RENDERER_SHADER_DIR": "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-vs-opengl/shaders",
+          "GLOB2_BENCH_FLAT": "1",
+          "GLOB2_BENCH_SIZE": "256x256",
+          "GLOB2_BENCH_UNITS": "1000",
+          "GLOB2_BENCH_FRAMES": "240",
+          "GLOB2_BENCH_WARMUP_FRAMES": "120",
+          "GLOB2_BENCH_PAUSE_PRESENTATION": "1",
+          "GLOB2_BENCH_FRAME_TIMES": "1",
+          "GLOB2_BENCH_MODE": "2D clouds",
+          "GLOB2_BENCH_ZOOM": "0.25",
+          "GLOB2_BENCH_CAPTURE": "artifacts/metal-stalls/retake-static/overview-0-candidate-clouds.ppm"
+        },
+        "exit_code": 0,
+        "elapsed_seconds": 8.029388250084594,
+        "log": "overview-0-candidate-clouds.log",
+        "log_sha256": "ae54418b08d2b44a1e7783a4d505501ad05c6f4100712fee007acda0671cf99f",
+        "backend": [
+          "sdl-gpu",
+          "sdl-gpu",
+          ""
+        ],
+        "metrics": {
+          "median_ms": 10.363,
+          "p95_ms": 11.514,
+          "submission_cpu_median_ms": 7.52,
+          "submission_cpu_p95_ms": 8.319,
+          "process_cpu_median_ms": 7.841,
+          "process_cpu_p95_ms": 8.753,
+          "p99_ms": 61.966417,
+          "max_ms": 80.799042
+        },
+        "cache_peak_bytes": 56191464,
+        "device_peak_bytes": 95659004,
+        "checksums": [
+          "1ea5698f"
+        ],
+        "viewport": "1120x800",
+        "capture_sha256": "9e90e06c826ce1cffa563de6ee2d81cfe266864d9f66c44abd52d76ee67a563e"
+      },
+      {
+        "scenario": "overview",
+        "pair": 0,
+        "label": "legacy-gl",
+        "mode": "2D clouds",
+        "command": [
+          "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-stalls/candidate",
+          "--renderer",
+          "legacy-gl",
+          "--window-size",
+          "1280x800",
+          "--no-fullscreen",
+          "--mute"
+        ],
+        "environment": {
+          "GLOB2_UI_SCALE": "1",
+          "GLOB2_RENDERER_SHADER_DIR": "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-vs-opengl/shaders",
+          "GLOB2_BENCH_FLAT": "1",
+          "GLOB2_BENCH_SIZE": "256x256",
+          "GLOB2_BENCH_UNITS": "1000",
+          "GLOB2_BENCH_FRAMES": "240",
+          "GLOB2_BENCH_WARMUP_FRAMES": "120",
+          "GLOB2_BENCH_PAUSE_PRESENTATION": "1",
+          "GLOB2_BENCH_FRAME_TIMES": "1",
+          "GLOB2_BENCH_MODE": "2D clouds",
+          "GLOB2_BENCH_ZOOM": "0.25",
+          "GLOB2_BENCH_CAPTURE": "artifacts/metal-stalls/retake-static/overview-0-legacy-gl-clouds.ppm"
+        },
+        "exit_code": 0,
+        "elapsed_seconds": 6.484645165968686,
+        "log": "overview-0-legacy-gl-clouds.log",
+        "log_sha256": "7917fb7dc750afa53ca8caf8dd264f68a0029d3bbb74029a5b8c105806748cc7",
+        "backend": [
+          "legacy-gl",
+          "legacy-gl",
+          ""
+        ],
+        "metrics": {
+          "median_ms": 8.171,
+          "p95_ms": 10.124,
+          "submission_cpu_median_ms": 5.827,
+          "submission_cpu_p95_ms": 6.154,
+          "process_cpu_median_ms": 5.974,
+          "process_cpu_p95_ms": 6.297,
+          "p99_ms": 11.007875,
+          "max_ms": 11.589458
+        },
+        "cache_peak_bytes": 56191464,
+        "device_peak_bytes": 0,
+        "checksums": [
+          "1ea5698f"
+        ],
+        "viewport": "1120x800",
+        "capture_sha256": "caae44b721a390ea2ab233488bc24f38ca115d2bd1f2f8b1750864abe09600e5"
+      },
+      {
+        "scenario": "closeup",
+        "pair": 0,
+        "label": "baseline",
+        "mode": "2D no clouds",
+        "command": [
+          "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-stalls/baseline",
+          "--renderer",
+          "sdl-gpu",
+          "--window-size",
+          "1280x800",
+          "--no-fullscreen",
+          "--mute"
+        ],
+        "environment": {
+          "GLOB2_UI_SCALE": "1",
+          "GLOB2_RENDERER_SHADER_DIR": "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-vs-opengl/shaders",
+          "GLOB2_BENCH_FLAT": "1",
+          "GLOB2_BENCH_SIZE": "256x256",
+          "GLOB2_BENCH_UNITS": "400",
+          "GLOB2_BENCH_FRAMES": "240",
+          "GLOB2_BENCH_WARMUP_FRAMES": "120",
+          "GLOB2_BENCH_PAUSE_PRESENTATION": "1",
+          "GLOB2_BENCH_FRAME_TIMES": "1",
+          "GLOB2_BENCH_MODE": "2D no clouds",
+          "GLOB2_BENCH_ZOOM": "1",
+          "GLOB2_BENCH_CAPTURE": "artifacts/metal-stalls/retake-static/closeup-0-baseline-no-clouds.ppm"
+        },
+        "exit_code": 0,
+        "elapsed_seconds": 7.514810041990131,
+        "log": "closeup-0-baseline-no-clouds.log",
+        "log_sha256": "279b2cfde265e54021846a90f84ad6883299f2c8818460d5b9e5e185a1f932fc",
+        "backend": [
+          "sdl-gpu",
+          "sdl-gpu",
+          ""
+        ],
+        "metrics": {
+          "median_ms": 9.369,
+          "p95_ms": 10.558,
+          "submission_cpu_median_ms": 1.94,
+          "submission_cpu_p95_ms": 2.514,
+          "process_cpu_median_ms": 3.106,
+          "process_cpu_p95_ms": 3.991,
+          "p99_ms": 10.848583,
+          "max_ms": 10.866917
+        },
+        "cache_peak_bytes": 76130448,
+        "device_peak_bytes": 105563988,
+        "checksums": [
+          "5c4c1644"
+        ],
+        "viewport": "1120x800",
+        "capture_sha256": "781a912a4a5653e537408f904a4ad46b3879f43fb3fa987fa6ef8e5f7fec3b36"
+      },
+      {
+        "scenario": "closeup",
+        "pair": 0,
+        "label": "candidate",
+        "mode": "2D no clouds",
+        "command": [
+          "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-stalls/candidate",
+          "--renderer",
+          "sdl-gpu",
+          "--window-size",
+          "1280x800",
+          "--no-fullscreen",
+          "--mute"
+        ],
+        "environment": {
+          "GLOB2_UI_SCALE": "1",
+          "GLOB2_RENDERER_SHADER_DIR": "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-vs-opengl/shaders",
+          "GLOB2_BENCH_FLAT": "1",
+          "GLOB2_BENCH_SIZE": "256x256",
+          "GLOB2_BENCH_UNITS": "400",
+          "GLOB2_BENCH_FRAMES": "240",
+          "GLOB2_BENCH_WARMUP_FRAMES": "120",
+          "GLOB2_BENCH_PAUSE_PRESENTATION": "1",
+          "GLOB2_BENCH_FRAME_TIMES": "1",
+          "GLOB2_BENCH_MODE": "2D no clouds",
+          "GLOB2_BENCH_ZOOM": "1",
+          "GLOB2_BENCH_CAPTURE": "artifacts/metal-stalls/retake-static/closeup-0-candidate-no-clouds.ppm"
+        },
+        "exit_code": 0,
+        "elapsed_seconds": 7.488060124916956,
+        "log": "closeup-0-candidate-no-clouds.log",
+        "log_sha256": "bba0f60377951b2ca7af03f42ccfb61f0077629bdc06612f094ccead5eb5371b",
+        "backend": [
+          "sdl-gpu",
+          "sdl-gpu",
+          ""
+        ],
+        "metrics": {
+          "median_ms": 9.131,
+          "p95_ms": 10.437,
+          "submission_cpu_median_ms": 2.013,
+          "submission_cpu_p95_ms": 2.618,
+          "process_cpu_median_ms": 3.179,
+          "process_cpu_p95_ms": 4.152,
+          "p99_ms": 10.9055,
+          "max_ms": 12.887833
+        },
+        "cache_peak_bytes": 76130448,
+        "device_peak_bytes": 105563988,
+        "checksums": [
+          "5c4c1644"
+        ],
+        "viewport": "1120x800",
+        "capture_sha256": "781a912a4a5653e537408f904a4ad46b3879f43fb3fa987fa6ef8e5f7fec3b36"
+      },
+      {
+        "scenario": "closeup",
+        "pair": 0,
+        "label": "legacy-gl",
+        "mode": "2D no clouds",
+        "command": [
+          "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-stalls/candidate",
+          "--renderer",
+          "legacy-gl",
+          "--window-size",
+          "1280x800",
+          "--no-fullscreen",
+          "--mute"
+        ],
+        "environment": {
+          "GLOB2_UI_SCALE": "1",
+          "GLOB2_RENDERER_SHADER_DIR": "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-vs-opengl/shaders",
+          "GLOB2_BENCH_FLAT": "1",
+          "GLOB2_BENCH_SIZE": "256x256",
+          "GLOB2_BENCH_UNITS": "400",
+          "GLOB2_BENCH_FRAMES": "240",
+          "GLOB2_BENCH_WARMUP_FRAMES": "120",
+          "GLOB2_BENCH_PAUSE_PRESENTATION": "1",
+          "GLOB2_BENCH_FRAME_TIMES": "1",
+          "GLOB2_BENCH_MODE": "2D no clouds",
+          "GLOB2_BENCH_ZOOM": "1",
+          "GLOB2_BENCH_CAPTURE": "artifacts/metal-stalls/retake-static/closeup-0-legacy-gl-no-clouds.ppm"
+        },
+        "exit_code": 0,
+        "elapsed_seconds": 3.4217266659252346,
+        "log": "closeup-0-legacy-gl-no-clouds.log",
+        "log_sha256": "f4efc45c54d0cc585dafbe2e595586d6609a6eb4fa23a98c73f42c8492b42036",
+        "backend": [
+          "legacy-gl",
+          "legacy-gl",
+          ""
+        ],
+        "metrics": {
+          "median_ms": 0.882,
+          "p95_ms": 1.229,
+          "submission_cpu_median_ms": 0.163,
+          "submission_cpu_p95_ms": 0.218,
+          "process_cpu_median_ms": 0.242,
+          "process_cpu_p95_ms": 0.308,
+          "p99_ms": 2.284125,
+          "max_ms": 3.100458
+        },
+        "cache_peak_bytes": 76130448,
+        "device_peak_bytes": 0,
+        "checksums": [
+          "5c4c1644"
+        ],
+        "viewport": "1120x800",
+        "capture_sha256": "e1b76be492bbc335cd9bbcafae3a387d7fbd24234164820879b4755b95a31bb2"
+      },
+      {
+        "scenario": "closeup",
+        "pair": 0,
+        "label": "baseline",
+        "mode": "2D clouds",
+        "command": [
+          "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-stalls/baseline",
+          "--renderer",
+          "sdl-gpu",
+          "--window-size",
+          "1280x800",
+          "--no-fullscreen",
+          "--mute"
+        ],
+        "environment": {
+          "GLOB2_UI_SCALE": "1",
+          "GLOB2_RENDERER_SHADER_DIR": "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-vs-opengl/shaders",
+          "GLOB2_BENCH_FLAT": "1",
+          "GLOB2_BENCH_SIZE": "256x256",
+          "GLOB2_BENCH_UNITS": "400",
+          "GLOB2_BENCH_FRAMES": "240",
+          "GLOB2_BENCH_WARMUP_FRAMES": "120",
+          "GLOB2_BENCH_PAUSE_PRESENTATION": "1",
+          "GLOB2_BENCH_FRAME_TIMES": "1",
+          "GLOB2_BENCH_MODE": "2D clouds",
+          "GLOB2_BENCH_ZOOM": "1",
+          "GLOB2_BENCH_CAPTURE": "artifacts/metal-stalls/retake-static/closeup-0-baseline-clouds.ppm"
+        },
+        "exit_code": 0,
+        "elapsed_seconds": 7.429463749984279,
+        "log": "closeup-0-baseline-clouds.log",
+        "log_sha256": "9c4fdab74020ea1eeb73810372b20025395a208d308505c2785fb9b3dc2799cd",
+        "backend": [
+          "sdl-gpu",
+          "sdl-gpu",
+          ""
+        ],
+        "metrics": {
+          "median_ms": 11.22,
+          "p95_ms": 12.397,
+          "submission_cpu_median_ms": 3.969,
+          "submission_cpu_p95_ms": 4.892,
+          "process_cpu_median_ms": 4.771,
+          "process_cpu_p95_ms": 5.537,
+          "p99_ms": 13.307292,
+          "max_ms": 14.274792
+        },
+        "cache_peak_bytes": 76130448,
+        "device_peak_bytes": 110939988,
+        "checksums": [
+          "5c4c1644"
+        ],
+        "viewport": "1120x800",
+        "capture_sha256": "ec8e326585e96ae8b721c2f5828d45732d7c38837a27e4fd27eccc8d9b8a3ad3"
+      },
+      {
+        "scenario": "closeup",
+        "pair": 0,
+        "label": "candidate",
+        "mode": "2D clouds",
+        "command": [
+          "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-stalls/candidate",
+          "--renderer",
+          "sdl-gpu",
+          "--window-size",
+          "1280x800",
+          "--no-fullscreen",
+          "--mute"
+        ],
+        "environment": {
+          "GLOB2_UI_SCALE": "1",
+          "GLOB2_RENDERER_SHADER_DIR": "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-vs-opengl/shaders",
+          "GLOB2_BENCH_FLAT": "1",
+          "GLOB2_BENCH_SIZE": "256x256",
+          "GLOB2_BENCH_UNITS": "400",
+          "GLOB2_BENCH_FRAMES": "240",
+          "GLOB2_BENCH_WARMUP_FRAMES": "120",
+          "GLOB2_BENCH_PAUSE_PRESENTATION": "1",
+          "GLOB2_BENCH_FRAME_TIMES": "1",
+          "GLOB2_BENCH_MODE": "2D clouds",
+          "GLOB2_BENCH_ZOOM": "1",
+          "GLOB2_BENCH_CAPTURE": "artifacts/metal-stalls/retake-static/closeup-0-candidate-clouds.ppm"
+        },
+        "exit_code": 0,
+        "elapsed_seconds": 7.463620250113308,
+        "log": "closeup-0-candidate-clouds.log",
+        "log_sha256": "c64daa43f4191db883dc589d8d007a28526587eede4f87de38768b3a66c4fb21",
+        "backend": [
+          "sdl-gpu",
+          "sdl-gpu",
+          ""
+        ],
+        "metrics": {
+          "median_ms": 11.156,
+          "p95_ms": 12.554,
+          "submission_cpu_median_ms": 3.914,
+          "submission_cpu_p95_ms": 4.88,
+          "process_cpu_median_ms": 4.693,
+          "process_cpu_p95_ms": 5.51,
+          "p99_ms": 13.054833,
+          "max_ms": 13.626625
+        },
+        "cache_peak_bytes": 76130448,
+        "device_peak_bytes": 110939988,
+        "checksums": [
+          "5c4c1644"
+        ],
+        "viewport": "1120x800",
+        "capture_sha256": "ec8e326585e96ae8b721c2f5828d45732d7c38837a27e4fd27eccc8d9b8a3ad3"
+      },
+      {
+        "scenario": "closeup",
+        "pair": 0,
+        "label": "legacy-gl",
+        "mode": "2D clouds",
+        "command": [
+          "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-stalls/candidate",
+          "--renderer",
+          "legacy-gl",
+          "--window-size",
+          "1280x800",
+          "--no-fullscreen",
+          "--mute"
+        ],
+        "environment": {
+          "GLOB2_UI_SCALE": "1",
+          "GLOB2_RENDERER_SHADER_DIR": "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-vs-opengl/shaders",
+          "GLOB2_BENCH_FLAT": "1",
+          "GLOB2_BENCH_SIZE": "256x256",
+          "GLOB2_BENCH_UNITS": "400",
+          "GLOB2_BENCH_FRAMES": "240",
+          "GLOB2_BENCH_WARMUP_FRAMES": "120",
+          "GLOB2_BENCH_PAUSE_PRESENTATION": "1",
+          "GLOB2_BENCH_FRAME_TIMES": "1",
+          "GLOB2_BENCH_MODE": "2D clouds",
+          "GLOB2_BENCH_ZOOM": "1",
+          "GLOB2_BENCH_CAPTURE": "artifacts/metal-stalls/retake-static/closeup-0-legacy-gl-clouds.ppm"
+        },
+        "exit_code": 0,
+        "elapsed_seconds": 3.948044416960329,
+        "log": "closeup-0-legacy-gl-clouds.log",
+        "log_sha256": "2ae3de16e4a69411ac16306a2f7b59e4591cb5fe8681bb82cba2104733eb1db8",
+        "backend": [
+          "legacy-gl",
+          "legacy-gl",
+          ""
+        ],
+        "metrics": {
+          "median_ms": 2.103,
+          "p95_ms": 2.603,
+          "submission_cpu_median_ms": 1.072,
+          "submission_cpu_p95_ms": 1.142,
+          "process_cpu_median_ms": 1.161,
+          "process_cpu_p95_ms": 1.256,
+          "p99_ms": 3.962,
+          "max_ms": 4.250417
+        },
+        "cache_peak_bytes": 76130448,
+        "device_peak_bytes": 0,
+        "checksums": [
+          "5c4c1644"
+        ],
+        "viewport": "1120x800",
+        "capture_sha256": "61528870a32661221bc12ae7f224c15fb196a4d0386785d65412499aa5d06d13"
+      },
+      {
+        "scenario": "saved-match",
+        "pair": 0,
+        "label": "baseline",
+        "mode": "2D no clouds",
+        "command": [
+          "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-stalls/baseline",
+          "--renderer",
+          "sdl-gpu",
+          "--window-size",
+          "1280x800",
+          "--no-fullscreen",
+          "--mute"
+        ],
+        "environment": {
+          "GLOB2_UI_SCALE": "1",
+          "GLOB2_RENDERER_SHADER_DIR": "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-vs-opengl/shaders",
+          "GLOB2_BENCH_FLAT": "1",
+          "GLOB2_BENCH_SIZE": "256x256",
+          "GLOB2_BENCH_UNITS": "1000",
+          "GLOB2_BENCH_FRAMES": "240",
+          "GLOB2_BENCH_WARMUP_FRAMES": "120",
+          "GLOB2_BENCH_PAUSE_PRESENTATION": "1",
+          "GLOB2_BENCH_FRAME_TIMES": "1",
+          "GLOB2_BENCH_MODE": "2D no clouds",
+          "GLOB2_BENCH_GAME": "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/games/gd-bigarena-long.game.gz",
+          "GLOB2_BENCH_FULL_MAP": "1",
+          "GLOB2_BENCH_CAPTURE": "artifacts/metal-stalls/retake-static/saved-match-0-baseline-no-clouds.ppm"
+        },
+        "exit_code": 0,
+        "elapsed_seconds": 7.207762666046619,
+        "log": "saved-match-0-baseline-no-clouds.log",
+        "log_sha256": "841e8d0d87cd2f224414c03feaacb60c0e1ae2708a5e0403d9d5c563a2f91f4a",
+        "backend": [
+          "sdl-gpu",
+          "sdl-gpu",
+          ""
+        ],
+        "metrics": {
+          "median_ms": 9.715,
+          "p95_ms": 10.816,
+          "submission_cpu_median_ms": 3.661,
+          "submission_cpu_p95_ms": 4.749,
+          "process_cpu_median_ms": 4.324,
+          "process_cpu_p95_ms": 5.398,
+          "p99_ms": 11.516167,
+          "max_ms": 12.398417
+        },
+        "cache_peak_bytes": 0,
+        "device_peak_bytes": 43382596,
+        "checksums": [
+          "fa0978d7"
+        ],
+        "viewport": "1120x800",
+        "capture_sha256": "0eb672a1f7d5f4025cde6508fa2dc2df44780a2494e76967f9672e526270c727"
+      },
+      {
+        "scenario": "saved-match",
+        "pair": 0,
+        "label": "candidate",
+        "mode": "2D no clouds",
+        "command": [
+          "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-stalls/candidate",
+          "--renderer",
+          "sdl-gpu",
+          "--window-size",
+          "1280x800",
+          "--no-fullscreen",
+          "--mute"
+        ],
+        "environment": {
+          "GLOB2_UI_SCALE": "1",
+          "GLOB2_RENDERER_SHADER_DIR": "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-vs-opengl/shaders",
+          "GLOB2_BENCH_FLAT": "1",
+          "GLOB2_BENCH_SIZE": "256x256",
+          "GLOB2_BENCH_UNITS": "1000",
+          "GLOB2_BENCH_FRAMES": "240",
+          "GLOB2_BENCH_WARMUP_FRAMES": "120",
+          "GLOB2_BENCH_PAUSE_PRESENTATION": "1",
+          "GLOB2_BENCH_FRAME_TIMES": "1",
+          "GLOB2_BENCH_MODE": "2D no clouds",
+          "GLOB2_BENCH_GAME": "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/games/gd-bigarena-long.game.gz",
+          "GLOB2_BENCH_FULL_MAP": "1",
+          "GLOB2_BENCH_CAPTURE": "artifacts/metal-stalls/retake-static/saved-match-0-candidate-no-clouds.ppm"
+        },
+        "exit_code": 0,
+        "elapsed_seconds": 7.160012042149901,
+        "log": "saved-match-0-candidate-no-clouds.log",
+        "log_sha256": "b00618189fde0a60d2035d92759571bac82dd792c395e0e2ef1e56fd3d171fb1",
+        "backend": [
+          "sdl-gpu",
+          "sdl-gpu",
+          ""
+        ],
+        "metrics": {
+          "median_ms": 9.382,
+          "p95_ms": 10.192,
+          "submission_cpu_median_ms": 4.093,
+          "submission_cpu_p95_ms": 4.834,
+          "process_cpu_median_ms": 4.756,
+          "process_cpu_p95_ms": 5.485,
+          "p99_ms": 11.500583,
+          "max_ms": 12.681583
+        },
+        "cache_peak_bytes": 0,
+        "device_peak_bytes": 43382596,
+        "checksums": [
+          "fa0978d7"
+        ],
+        "viewport": "1120x800",
+        "capture_sha256": "0eb672a1f7d5f4025cde6508fa2dc2df44780a2494e76967f9672e526270c727"
+      },
+      {
+        "scenario": "saved-match",
+        "pair": 0,
+        "label": "legacy-gl",
+        "mode": "2D no clouds",
+        "command": [
+          "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-stalls/candidate",
+          "--renderer",
+          "legacy-gl",
+          "--window-size",
+          "1280x800",
+          "--no-fullscreen",
+          "--mute"
+        ],
+        "environment": {
+          "GLOB2_UI_SCALE": "1",
+          "GLOB2_RENDERER_SHADER_DIR": "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-vs-opengl/shaders",
+          "GLOB2_BENCH_FLAT": "1",
+          "GLOB2_BENCH_SIZE": "256x256",
+          "GLOB2_BENCH_UNITS": "1000",
+          "GLOB2_BENCH_FRAMES": "240",
+          "GLOB2_BENCH_WARMUP_FRAMES": "120",
+          "GLOB2_BENCH_PAUSE_PRESENTATION": "1",
+          "GLOB2_BENCH_FRAME_TIMES": "1",
+          "GLOB2_BENCH_MODE": "2D no clouds",
+          "GLOB2_BENCH_GAME": "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/games/gd-bigarena-long.game.gz",
+          "GLOB2_BENCH_FULL_MAP": "1",
+          "GLOB2_BENCH_CAPTURE": "artifacts/metal-stalls/retake-static/saved-match-0-legacy-gl-no-clouds.ppm"
+        },
+        "exit_code": 0,
+        "elapsed_seconds": 3.882365084020421,
+        "log": "saved-match-0-legacy-gl-no-clouds.log",
+        "log_sha256": "bae8243955c1aa06d911adc0f044c21d17338d6e1604e75b19b481b61ba29971",
+        "backend": [
+          "legacy-gl",
+          "legacy-gl",
+          ""
+        ],
+        "metrics": {
+          "median_ms": 2.9,
+          "p95_ms": 3.792,
+          "submission_cpu_median_ms": 2.014,
+          "submission_cpu_p95_ms": 2.156,
+          "process_cpu_median_ms": 2.204,
+          "process_cpu_p95_ms": 2.369,
+          "p99_ms": 4.706792,
+          "max_ms": 4.810625
+        },
+        "cache_peak_bytes": 0,
+        "device_peak_bytes": 0,
+        "checksums": [
+          "fa0978d7"
+        ],
+        "viewport": "1120x800",
+        "capture_sha256": "54fe7e0182ece1587e76750d75c7821699279d1069cac207ae3d2bb9043f7d6a"
+      },
+      {
+        "scenario": "saved-match",
+        "pair": 0,
+        "label": "baseline",
+        "mode": "2D clouds",
+        "command": [
+          "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-stalls/baseline",
+          "--renderer",
+          "sdl-gpu",
+          "--window-size",
+          "1280x800",
+          "--no-fullscreen",
+          "--mute"
+        ],
+        "environment": {
+          "GLOB2_UI_SCALE": "1",
+          "GLOB2_RENDERER_SHADER_DIR": "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-vs-opengl/shaders",
+          "GLOB2_BENCH_FLAT": "1",
+          "GLOB2_BENCH_SIZE": "256x256",
+          "GLOB2_BENCH_UNITS": "1000",
+          "GLOB2_BENCH_FRAMES": "240",
+          "GLOB2_BENCH_WARMUP_FRAMES": "120",
+          "GLOB2_BENCH_PAUSE_PRESENTATION": "1",
+          "GLOB2_BENCH_FRAME_TIMES": "1",
+          "GLOB2_BENCH_MODE": "2D clouds",
+          "GLOB2_BENCH_GAME": "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/games/gd-bigarena-long.game.gz",
+          "GLOB2_BENCH_FULL_MAP": "1",
+          "GLOB2_BENCH_CAPTURE": "artifacts/metal-stalls/retake-static/saved-match-0-baseline-clouds.ppm"
+        },
+        "exit_code": 0,
+        "elapsed_seconds": 7.143716915976256,
+        "log": "saved-match-0-baseline-clouds.log",
+        "log_sha256": "23a9390fd32a6ae7a8a8cd390a2899d45ca713d6c25616c8cd1c0ea5e3d6de7d",
+        "backend": [
+          "sdl-gpu",
+          "sdl-gpu",
+          ""
+        ],
+        "metrics": {
+          "median_ms": 9.341,
+          "p95_ms": 10.177,
+          "submission_cpu_median_ms": 6.443,
+          "submission_cpu_p95_ms": 6.811,
+          "process_cpu_median_ms": 6.968,
+          "process_cpu_p95_ms": 7.24,
+          "p99_ms": 12.054208,
+          "max_ms": 12.670708
+        },
+        "cache_peak_bytes": 0,
+        "device_peak_bytes": 49674052,
+        "checksums": [
+          "fa0978d7"
+        ],
+        "viewport": "1120x800",
+        "capture_sha256": "4782095974b0d9efeef9ef9d1f93dce2b10bceac626085e44a086b58a305fd2a"
+      },
+      {
+        "scenario": "saved-match",
+        "pair": 0,
+        "label": "candidate",
+        "mode": "2D clouds",
+        "command": [
+          "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-stalls/candidate",
+          "--renderer",
+          "sdl-gpu",
+          "--window-size",
+          "1280x800",
+          "--no-fullscreen",
+          "--mute"
+        ],
+        "environment": {
+          "GLOB2_UI_SCALE": "1",
+          "GLOB2_RENDERER_SHADER_DIR": "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-vs-opengl/shaders",
+          "GLOB2_BENCH_FLAT": "1",
+          "GLOB2_BENCH_SIZE": "256x256",
+          "GLOB2_BENCH_UNITS": "1000",
+          "GLOB2_BENCH_FRAMES": "240",
+          "GLOB2_BENCH_WARMUP_FRAMES": "120",
+          "GLOB2_BENCH_PAUSE_PRESENTATION": "1",
+          "GLOB2_BENCH_FRAME_TIMES": "1",
+          "GLOB2_BENCH_MODE": "2D clouds",
+          "GLOB2_BENCH_GAME": "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/games/gd-bigarena-long.game.gz",
+          "GLOB2_BENCH_FULL_MAP": "1",
+          "GLOB2_BENCH_CAPTURE": "artifacts/metal-stalls/retake-static/saved-match-0-candidate-clouds.ppm"
+        },
+        "exit_code": 0,
+        "elapsed_seconds": 7.156672208104283,
+        "log": "saved-match-0-candidate-clouds.log",
+        "log_sha256": "5faba53a9924c8d3b3a9dd08926f920a2d1866a2398669ea2a36cecfd57cf63d",
+        "backend": [
+          "sdl-gpu",
+          "sdl-gpu",
+          ""
+        ],
+        "metrics": {
+          "median_ms": 10.905,
+          "p95_ms": 11.889,
+          "submission_cpu_median_ms": 6.533,
+          "submission_cpu_p95_ms": 6.852,
+          "process_cpu_median_ms": 6.953,
+          "process_cpu_p95_ms": 7.318,
+          "p99_ms": 13.989292,
+          "max_ms": 14.037
+        },
+        "cache_peak_bytes": 0,
+        "device_peak_bytes": 49674052,
+        "checksums": [
+          "fa0978d7"
+        ],
+        "viewport": "1120x800",
+        "capture_sha256": "4782095974b0d9efeef9ef9d1f93dce2b10bceac626085e44a086b58a305fd2a"
+      },
+      {
+        "scenario": "saved-match",
+        "pair": 0,
+        "label": "legacy-gl",
+        "mode": "2D clouds",
+        "command": [
+          "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-stalls/candidate",
+          "--renderer",
+          "legacy-gl",
+          "--window-size",
+          "1280x800",
+          "--no-fullscreen",
+          "--mute"
+        ],
+        "environment": {
+          "GLOB2_UI_SCALE": "1",
+          "GLOB2_RENDERER_SHADER_DIR": "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/artifacts/metal-vs-opengl/shaders",
+          "GLOB2_BENCH_FLAT": "1",
+          "GLOB2_BENCH_SIZE": "256x256",
+          "GLOB2_BENCH_UNITS": "1000",
+          "GLOB2_BENCH_FRAMES": "240",
+          "GLOB2_BENCH_WARMUP_FRAMES": "120",
+          "GLOB2_BENCH_PAUSE_PRESENTATION": "1",
+          "GLOB2_BENCH_FRAME_TIMES": "1",
+          "GLOB2_BENCH_MODE": "2D clouds",
+          "GLOB2_BENCH_GAME": "/Users/bradley/.codex/worktrees/a1b12e2c-fdad-454b-ae94-16f9adb3f6ad/glob2/games/gd-bigarena-long.game.gz",
+          "GLOB2_BENCH_FULL_MAP": "1",
+          "GLOB2_BENCH_CAPTURE": "artifacts/metal-stalls/retake-static/saved-match-0-legacy-gl-clouds.ppm"
+        },
+        "exit_code": 0,
+        "elapsed_seconds": 4.878293292131275,
+        "log": "saved-match-0-legacy-gl-clouds.log",
+        "log_sha256": "d2b51946297197714b4a8590176402a672d2f7822e68aaf3648fd0515df2d3a2",
+        "backend": [
+          "legacy-gl",
+          "legacy-gl",
+          ""
+        ],
+        "metrics": {
+          "median_ms": 5.779,
+          "p95_ms": 7.083,
+          "submission_cpu_median_ms": 4.048,
+          "submission_cpu_p95_ms": 4.318,
+          "process_cpu_median_ms": 4.265,
+          "process_cpu_p95_ms": 4.542,
+          "p99_ms": 7.784458,
+          "max_ms": 7.839667
+        },
+        "cache_peak_bytes": 0,
+        "device_peak_bytes": 0,
+        "checksums": [
+          "fa0978d7"
+        ],
+        "viewport": "1120x800",
+        "capture_sha256": "974bdc9acca18527e6a0a37a0966fc1c4ba34108423ec7bb0d3b57644372a3a4"
+      }
+    ],
+    "summary": [
+      {
+        "scenario": "overview",
+        "mode": "2D no clouds",
+        "baseline_median_ms": 10.442,
+        "baseline_p95_ms": 11.179,
+        "baseline_submission_cpu_median_ms": 5.876,
+        "baseline_submission_cpu_p95_ms": 6.615,
+        "baseline_process_cpu_median_ms": 6.177,
+        "baseline_process_cpu_p95_ms": 6.997,
+        "baseline_p99_ms": 11.730333,
+        "baseline_max_ms": 12.309375,
+        "baseline_median_ms_min": 10.442,
+        "baseline_median_ms_max": 10.442,
+        "baseline_p95_ms_min": 11.179,
+        "baseline_p95_ms_max": 11.179,
+        "baseline_p99_ms_min": 11.730333,
+        "baseline_p99_ms_max": 11.730333,
+        "candidate_median_ms": 9.731,
+        "candidate_p95_ms": 10.509,
+        "candidate_submission_cpu_median_ms": 6.092,
+        "candidate_submission_cpu_p95_ms": 6.549,
+        "candidate_process_cpu_median_ms": 6.343,
+        "candidate_process_cpu_p95_ms": 6.825,
+        "candidate_p99_ms": 11.972917,
+        "candidate_max_ms": 12.204167,
+        "candidate_median_ms_min": 9.731,
+        "candidate_median_ms_max": 9.731,
+        "candidate_p95_ms_min": 10.509,
+        "candidate_p95_ms_max": 10.509,
+        "candidate_p99_ms_min": 11.972917,
+        "candidate_p99_ms_max": 11.972917,
+        "legacy-gl_median_ms": 6.045,
+        "legacy-gl_p95_ms": 8.173,
+        "legacy-gl_submission_cpu_median_ms": 4.231,
+        "legacy-gl_submission_cpu_p95_ms": 4.552,
+        "legacy-gl_process_cpu_median_ms": 4.632,
+        "legacy-gl_process_cpu_p95_ms": 4.913,
+        "legacy-gl_p99_ms": 8.813458,
+        "legacy-gl_max_ms": 10.263167,
+        "legacy-gl_median_ms_min": 6.045,
+        "legacy-gl_median_ms_max": 6.045,
+        "legacy-gl_p95_ms_min": 8.173,
+        "legacy-gl_p95_ms_max": 8.173,
+        "legacy-gl_p99_ms_min": 8.813458,
+        "legacy-gl_p99_ms_max": 8.813458
+      },
+      {
+        "scenario": "overview",
+        "mode": "2D clouds",
+        "baseline_median_ms": 11.062,
+        "baseline_p95_ms": 11.763,
+        "baseline_submission_cpu_median_ms": 7.377,
+        "baseline_submission_cpu_p95_ms": 8.101,
+        "baseline_process_cpu_median_ms": 7.665,
+        "baseline_process_cpu_p95_ms": 8.438,
+        "baseline_p99_ms": 12.6945,
+        "baseline_max_ms": 14.550958,
+        "baseline_median_ms_min": 11.062,
+        "baseline_median_ms_max": 11.062,
+        "baseline_p95_ms_min": 11.763,
+        "baseline_p95_ms_max": 11.763,
+        "baseline_p99_ms_min": 12.6945,
+        "baseline_p99_ms_max": 12.6945,
+        "candidate_median_ms": 10.363,
+        "candidate_p95_ms": 11.514,
+        "candidate_submission_cpu_median_ms": 7.52,
+        "candidate_submission_cpu_p95_ms": 8.319,
+        "candidate_process_cpu_median_ms": 7.841,
+        "candidate_process_cpu_p95_ms": 8.753,
+        "candidate_p99_ms": 61.966417,
+        "candidate_max_ms": 80.799042,
+        "candidate_median_ms_min": 10.363,
+        "candidate_median_ms_max": 10.363,
+        "candidate_p95_ms_min": 11.514,
+        "candidate_p95_ms_max": 11.514,
+        "candidate_p99_ms_min": 61.966417,
+        "candidate_p99_ms_max": 61.966417,
+        "legacy-gl_median_ms": 8.171,
+        "legacy-gl_p95_ms": 10.124,
+        "legacy-gl_submission_cpu_median_ms": 5.827,
+        "legacy-gl_submission_cpu_p95_ms": 6.154,
+        "legacy-gl_process_cpu_median_ms": 5.974,
+        "legacy-gl_process_cpu_p95_ms": 6.297,
+        "legacy-gl_p99_ms": 11.007875,
+        "legacy-gl_max_ms": 11.589458,
+        "legacy-gl_median_ms_min": 8.171,
+        "legacy-gl_median_ms_max": 8.171,
+        "legacy-gl_p95_ms_min": 10.124,
+        "legacy-gl_p95_ms_max": 10.124,
+        "legacy-gl_p99_ms_min": 11.007875,
+        "legacy-gl_p99_ms_max": 11.007875
+      },
+      {
+        "scenario": "closeup",
+        "mode": "2D no clouds",
+        "baseline_median_ms": 9.369,
+        "baseline_p95_ms": 10.558,
+        "baseline_submission_cpu_median_ms": 1.94,
+        "baseline_submission_cpu_p95_ms": 2.514,
+        "baseline_process_cpu_median_ms": 3.106,
+        "baseline_process_cpu_p95_ms": 3.991,
+        "baseline_p99_ms": 10.848583,
+        "baseline_max_ms": 10.866917,
+        "baseline_median_ms_min": 9.369,
+        "baseline_median_ms_max": 9.369,
+        "baseline_p95_ms_min": 10.558,
+        "baseline_p95_ms_max": 10.558,
+        "baseline_p99_ms_min": 10.848583,
+        "baseline_p99_ms_max": 10.848583,
+        "candidate_median_ms": 9.131,
+        "candidate_p95_ms": 10.437,
+        "candidate_submission_cpu_median_ms": 2.013,
+        "candidate_submission_cpu_p95_ms": 2.618,
+        "candidate_process_cpu_median_ms": 3.179,
+        "candidate_process_cpu_p95_ms": 4.152,
+        "candidate_p99_ms": 10.9055,
+        "candidate_max_ms": 12.887833,
+        "candidate_median_ms_min": 9.131,
+        "candidate_median_ms_max": 9.131,
+        "candidate_p95_ms_min": 10.437,
+        "candidate_p95_ms_max": 10.437,
+        "candidate_p99_ms_min": 10.9055,
+        "candidate_p99_ms_max": 10.9055,
+        "legacy-gl_median_ms": 0.882,
+        "legacy-gl_p95_ms": 1.229,
+        "legacy-gl_submission_cpu_median_ms": 0.163,
+        "legacy-gl_submission_cpu_p95_ms": 0.218,
+        "legacy-gl_process_cpu_median_ms": 0.242,
+        "legacy-gl_process_cpu_p95_ms": 0.308,
+        "legacy-gl_p99_ms": 2.284125,
+        "legacy-gl_max_ms": 3.100458,
+        "legacy-gl_median_ms_min": 0.882,
+        "legacy-gl_median_ms_max": 0.882,
+        "legacy-gl_p95_ms_min": 1.229,
+        "legacy-gl_p95_ms_max": 1.229,
+        "legacy-gl_p99_ms_min": 2.284125,
+        "legacy-gl_p99_ms_max": 2.284125
+      },
+      {
+        "scenario": "closeup",
+        "mode": "2D clouds",
+        "baseline_median_ms": 11.22,
+        "baseline_p95_ms": 12.397,
+        "baseline_submission_cpu_median_ms": 3.969,
+        "baseline_submission_cpu_p95_ms": 4.892,
+        "baseline_process_cpu_median_ms": 4.771,
+        "baseline_process_cpu_p95_ms": 5.537,
+        "baseline_p99_ms": 13.307292,
+        "baseline_max_ms": 14.274792,
+        "baseline_median_ms_min": 11.22,
+        "baseline_median_ms_max": 11.22,
+        "baseline_p95_ms_min": 12.397,
+        "baseline_p95_ms_max": 12.397,
+        "baseline_p99_ms_min": 13.307292,
+        "baseline_p99_ms_max": 13.307292,
+        "candidate_median_ms": 11.156,
+        "candidate_p95_ms": 12.554,
+        "candidate_submission_cpu_median_ms": 3.914,
+        "candidate_submission_cpu_p95_ms": 4.88,
+        "candidate_process_cpu_median_ms": 4.693,
+        "candidate_process_cpu_p95_ms": 5.51,
+        "candidate_p99_ms": 13.054833,
+        "candidate_max_ms": 13.626625,
+        "candidate_median_ms_min": 11.156,
+        "candidate_median_ms_max": 11.156,
+        "candidate_p95_ms_min": 12.554,
+        "candidate_p95_ms_max": 12.554,
+        "candidate_p99_ms_min": 13.054833,
+        "candidate_p99_ms_max": 13.054833,
+        "legacy-gl_median_ms": 2.103,
+        "legacy-gl_p95_ms": 2.603,
+        "legacy-gl_submission_cpu_median_ms": 1.072,
+        "legacy-gl_submission_cpu_p95_ms": 1.142,
+        "legacy-gl_process_cpu_median_ms": 1.161,
+        "legacy-gl_process_cpu_p95_ms": 1.256,
+        "legacy-gl_p99_ms": 3.962,
+        "legacy-gl_max_ms": 4.250417,
+        "legacy-gl_median_ms_min": 2.103,
+        "legacy-gl_median_ms_max": 2.103,
+        "legacy-gl_p95_ms_min": 2.603,
+        "legacy-gl_p95_ms_max": 2.603,
+        "legacy-gl_p99_ms_min": 3.962,
+        "legacy-gl_p99_ms_max": 3.962
+      },
+      {
+        "scenario": "saved-match",
+        "mode": "2D no clouds",
+        "baseline_median_ms": 9.715,
+        "baseline_p95_ms": 10.816,
+        "baseline_submission_cpu_median_ms": 3.661,
+        "baseline_submission_cpu_p95_ms": 4.749,
+        "baseline_process_cpu_median_ms": 4.324,
+        "baseline_process_cpu_p95_ms": 5.398,
+        "baseline_p99_ms": 11.516167,
+        "baseline_max_ms": 12.398417,
+        "baseline_median_ms_min": 9.715,
+        "baseline_median_ms_max": 9.715,
+        "baseline_p95_ms_min": 10.816,
+        "baseline_p95_ms_max": 10.816,
+        "baseline_p99_ms_min": 11.516167,
+        "baseline_p99_ms_max": 11.516167,
+        "candidate_median_ms": 9.382,
+        "candidate_p95_ms": 10.192,
+        "candidate_submission_cpu_median_ms": 4.093,
+        "candidate_submission_cpu_p95_ms": 4.834,
+        "candidate_process_cpu_median_ms": 4.756,
+        "candidate_process_cpu_p95_ms": 5.485,
+        "candidate_p99_ms": 11.500583,
+        "candidate_max_ms": 12.681583,
+        "candidate_median_ms_min": 9.382,
+        "candidate_median_ms_max": 9.382,
+        "candidate_p95_ms_min": 10.192,
+        "candidate_p95_ms_max": 10.192,
+        "candidate_p99_ms_min": 11.500583,
+        "candidate_p99_ms_max": 11.500583,
+        "legacy-gl_median_ms": 2.9,
+        "legacy-gl_p95_ms": 3.792,
+        "legacy-gl_submission_cpu_median_ms": 2.014,
+        "legacy-gl_submission_cpu_p95_ms": 2.156,
+        "legacy-gl_process_cpu_median_ms": 2.204,
+        "legacy-gl_process_cpu_p95_ms": 2.369,
+        "legacy-gl_p99_ms": 4.706792,
+        "legacy-gl_max_ms": 4.810625,
+        "legacy-gl_median_ms_min": 2.9,
+        "legacy-gl_median_ms_max": 2.9,
+        "legacy-gl_p95_ms_min": 3.792,
+        "legacy-gl_p95_ms_max": 3.792,
+        "legacy-gl_p99_ms_min": 4.706792,
+        "legacy-gl_p99_ms_max": 4.706792
+      },
+      {
+        "scenario": "saved-match",
+        "mode": "2D clouds",
+        "baseline_median_ms": 9.341,
+        "baseline_p95_ms": 10.177,
+        "baseline_submission_cpu_median_ms": 6.443,
+        "baseline_submission_cpu_p95_ms": 6.811,
+        "baseline_process_cpu_median_ms": 6.968,
+        "baseline_process_cpu_p95_ms": 7.24,
+        "baseline_p99_ms": 12.054208,
+        "baseline_max_ms": 12.670708,
+        "baseline_median_ms_min": 9.341,
+        "baseline_median_ms_max": 9.341,
+        "baseline_p95_ms_min": 10.177,
+        "baseline_p95_ms_max": 10.177,
+        "baseline_p99_ms_min": 12.054208,
+        "baseline_p99_ms_max": 12.054208,
+        "candidate_median_ms": 10.905,
+        "candidate_p95_ms": 11.889,
+        "candidate_submission_cpu_median_ms": 6.533,
+        "candidate_submission_cpu_p95_ms": 6.852,
+        "candidate_process_cpu_median_ms": 6.953,
+        "candidate_process_cpu_p95_ms": 7.318,
+        "candidate_p99_ms": 13.989292,
+        "candidate_max_ms": 14.037,
+        "candidate_median_ms_min": 10.905,
+        "candidate_median_ms_max": 10.905,
+        "candidate_p95_ms_min": 11.889,
+        "candidate_p95_ms_max": 11.889,
+        "candidate_p99_ms_min": 13.989292,
+        "candidate_p99_ms_max": 13.989292,
+        "legacy-gl_median_ms": 5.779,
+        "legacy-gl_p95_ms": 7.083,
+        "legacy-gl_submission_cpu_median_ms": 4.048,
+        "legacy-gl_submission_cpu_p95_ms": 4.318,
+        "legacy-gl_process_cpu_median_ms": 4.265,
+        "legacy-gl_process_cpu_p95_ms": 4.542,
+        "legacy-gl_p99_ms": 7.784458,
+        "legacy-gl_max_ms": 7.839667,
+        "legacy-gl_median_ms_min": 5.779,
+        "legacy-gl_median_ms_max": 5.779,
+        "legacy-gl_p95_ms_min": 7.083,
+        "legacy-gl_p95_ms_max": 7.083,
+        "legacy-gl_p99_ms_min": 7.784458,
+        "legacy-gl_p99_ms_max": 7.784458
+      }
+    ],
+    "thermal_after": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded\n"
+  },
+  "captures": [
+    {
+      "scenario": "motion",
+      "mode": "2D no clouds",
+      "pixel_exact": true,
+      "ppm_sha256": "a1d5bdaeec82d3a3975653b35cc73cb5278760038013c7ab0e82171f198fada0"
+    },
+    {
+      "scenario": "motion",
+      "mode": "2D clouds",
+      "pixel_exact": true,
+      "ppm_sha256": "d5867c32dfbf6e312463447f24435c90af626161377603a8ad9ecd077c988fec"
+    },
+    {
+      "scenario": "overview",
+      "mode": "2D no clouds",
+      "pixel_exact": true,
+      "ppm_sha256": "94514ccae05eb15f9b2be12a24c4678a2bf1e5556183bf41e529097f75f53400"
+    },
+    {
+      "scenario": "overview",
+      "mode": "2D clouds",
+      "pixel_exact": true,
+      "ppm_sha256": "9e90e06c826ce1cffa563de6ee2d81cfe266864d9f66c44abd52d76ee67a563e"
+    },
+    {
+      "scenario": "closeup",
+      "mode": "2D no clouds",
+      "pixel_exact": true,
+      "ppm_sha256": "781a912a4a5653e537408f904a4ad46b3879f43fb3fa987fa6ef8e5f7fec3b36"
+    },
+    {
+      "scenario": "closeup",
+      "mode": "2D clouds",
+      "pixel_exact": true,
+      "ppm_sha256": "ec8e326585e96ae8b721c2f5828d45732d7c38837a27e4fd27eccc8d9b8a3ad3"
+    },
+    {
+      "scenario": "saved-match",
+      "mode": "2D no clouds",
+      "pixel_exact": true,
+      "ppm_sha256": "0eb672a1f7d5f4025cde6508fa2dc2df44780a2494e76967f9672e526270c727"
+    },
+    {
+      "scenario": "saved-match",
+      "mode": "2D clouds",
+      "pixel_exact": true,
+      "ppm_sha256": "4782095974b0d9efeef9ef9d1f93dce2b10bceac626085e44a086b58a305fd2a"
+    }
+  ],
+  "cloud_mode_cache_trace_matches": [
+    {
+      "scenario": "motion",
+      "pair": 0,
+      "label": "baseline",
+      "identical": false
+    },
+    {
+      "scenario": "motion",
+      "pair": 0,
+      "label": "candidate",
+      "identical": true
+    },
+    {
+      "scenario": "motion",
+      "pair": 0,
+      "label": "legacy-gl",
+      "identical": true
+    },
+    {
+      "scenario": "motion",
+      "pair": 1,
+      "label": "baseline",
+      "identical": true
+    },
+    {
+      "scenario": "motion",
+      "pair": 1,
+      "label": "candidate",
+      "identical": true
+    },
+    {
+      "scenario": "motion",
+      "pair": 1,
+      "label": "legacy-gl",
+      "identical": true
+    },
+    {
+      "scenario": "motion",
+      "pair": 2,
+      "label": "baseline",
+      "identical": true
+    },
+    {
+      "scenario": "motion",
+      "pair": 2,
+      "label": "candidate",
+      "identical": true
+    },
+    {
+      "scenario": "motion",
+      "pair": 2,
+      "label": "legacy-gl",
+      "identical": true
+    },
+    {
+      "scenario": "motion",
+      "pair": 3,
+      "label": "baseline",
+      "identical": true
+    },
+    {
+      "scenario": "motion",
+      "pair": 3,
+      "label": "candidate",
+      "identical": true
+    },
+    {
+      "scenario": "motion",
+      "pair": 3,
+      "label": "legacy-gl",
+      "identical": true
+    },
+    {
+      "scenario": "motion",
+      "pair": 4,
+      "label": "baseline",
+      "identical": true
+    },
+    {
+      "scenario": "motion",
+      "pair": 4,
+      "label": "candidate",
+      "identical": true
+    },
+    {
+      "scenario": "motion",
+      "pair": 4,
+      "label": "legacy-gl",
+      "identical": true
+    },
+    {
+      "scenario": "motion",
+      "pair": 5,
+      "label": "baseline",
+      "identical": true
+    },
+    {
+      "scenario": "motion",
+      "pair": 5,
+      "label": "candidate",
+      "identical": true
+    },
+    {
+      "scenario": "motion",
+      "pair": 5,
+      "label": "legacy-gl",
+      "identical": true
+    },
+    {
+      "scenario": "motion",
+      "pair": 6,
+      "label": "baseline",
+      "identical": true
+    },
+    {
+      "scenario": "motion",
+      "pair": 6,
+      "label": "candidate",
+      "identical": true
+    },
+    {
+      "scenario": "motion",
+      "pair": 6,
+      "label": "legacy-gl",
+      "identical": true
+    },
+    {
+      "scenario": "overview",
+      "pair": 0,
+      "label": "baseline",
+      "identical": true
+    },
+    {
+      "scenario": "saved-match",
+      "pair": 0,
+      "label": "baseline",
+      "identical": true
+    },
+    {
+      "scenario": "closeup",
+      "pair": 0,
+      "label": "baseline",
+      "identical": true
+    },
+    {
+      "scenario": "overview",
+      "pair": 0,
+      "label": "candidate",
+      "identical": true
+    },
+    {
+      "scenario": "saved-match",
+      "pair": 0,
+      "label": "candidate",
+      "identical": true
+    },
+    {
+      "scenario": "closeup",
+      "pair": 0,
+      "label": "candidate",
+      "identical": true
+    },
+    {
+      "scenario": "overview",
+      "pair": 0,
+      "label": "legacy-gl",
+      "identical": true
+    },
+    {
+      "scenario": "saved-match",
+      "pair": 0,
+      "label": "legacy-gl",
+      "identical": true
+    },
+    {
+      "scenario": "closeup",
+      "pair": 0,
+      "label": "legacy-gl",
+      "identical": true
+    }
+  ],
+  "tests": {
+    "terrain_presentation": {
+      "cases": 24,
+      "failed": 0,
+      "log": "terrain-tests-retake-final.log"
+    },
+    "native_metal": {
+      "cases": 21,
+      "assertions": 221944,
+      "failed": 0
+    },
+    "native_vulkan": {
+      "cases": 21,
+      "assertions": 222062,
+      "failed": 0
+    },
+    "shader_tools": {
+      "tests": 16,
+      "failed": 0
+    }
+  },
+  "peak_candidate_cache_bytes": 268275456,
+  "peak_candidate_device_bytes": 166869154,
+  "limits": [
+    "Hidden-window completion/readback-inclusive measurements; excludes gameplay simulation, extraction and final presentation; no GPU timestamp/FPS claims.",
+    "Seven motion pairs; static scenes are one-pair correctness/admission smoke measurements, not repeatability claims.",
+    "No-cloud motion median regresses from 5.772 to 7.666 ms; clouds median 9.914 to 10.107 ms. Do not claim uniform speedup.",
+    "Original combined-mode and preliminary over-budget runs superseded and excluded.",
+    "Native cache integration tested on macOS software/OpenGL/Metal; Linux Vulkan covers shared native device pass changes, not full game cache integration. Windows/D3D12, physical iOS, full compatibility matrix and maintainer gameplay unverified."
+  ]
+}

@@ -1,0 +1,674 @@
+diff --git a/browser/unit/webgpu-device.test.js b/browser/unit/webgpu-device.test.js
+index 2700e4165..fea922d71 100644
+--- a/browser/unit/webgpu-device.test.js
++++ b/browser/unit/webgpu-device.test.js
+@@ -6,13 +6,13 @@ const fs=require('node:fs');
+ const path=require('node:path');
+ function fixture(){
+   const library={},uploads=[],completion=[],rejections=[],maps=[],lost=[];
+-  let destroyed=0;const calls={buffers:0,groups:0,views:0,writes:0,draws:[]};
++  let destroyed=0;const calls={buffers:0,groups:0,views:0,writes:0,draws:[],passes:[],ends:0,pipeline:0,viewport:0,scissor:0,vertex:0,bindings:0,index:0,sequence:[]};
+   const device={limits:{maxTextureDimension2D:2048},lost:new Promise(r=>lost.push(r)),addEventListener(){},
+     createShaderModule(){return{getCompilationInfo:async()=>({messages:[]})};},
+     createRenderPipelineAsync:async()=>({getBindGroupLayout:()=>({})}),createRenderPipeline:()=>({getBindGroupLayout:()=>({})}),
+     createTexture(){return{createView:()=>{calls.views++;return{};},destroy(){destroyed++;}};},createSampler:()=>({}),createBindGroup:description=>{calls.groups++;return{description};},
+     createBuffer({size}){calls.buffers++;const data=new ArrayBuffer(size);return{size,destroy(){destroyed++;},mapAsync:()=>new Promise(r=>maps.push(r)),getMappedRange:()=>data,unmap(){}};},
+-    createCommandEncoder(){return{beginRenderPass:()=>({setPipeline(){},setViewport(){},setScissorRect(){},setVertexBuffer(){},setBindGroup(){},setIndexBuffer(){},draw(...args){calls.draws.push(args);},drawIndexed(...args){calls.draws.push(args);},end(){}}),finish:()=>({}),copyTextureToBuffer(){},copyTextureToTexture(){}};},
++    createCommandEncoder(){return{beginRenderPass:description=>{calls.passes.push(description);calls.sequence.push('begin');return{setPipeline(){calls.pipeline++;},setViewport(){calls.viewport++;},setScissorRect(){calls.scissor++;},setVertexBuffer(){calls.vertex++;},setBindGroup(){calls.bindings++;},setIndexBuffer(){calls.index++;},draw(...args){calls.draws.push(args);calls.sequence.push('draw');},drawIndexed(...args){calls.draws.push(args);calls.sequence.push('indexed');},end(){calls.ends++;calls.sequence.push('end');}};},finish:()=>({}),copyTextureToBuffer(){},copyTextureToTexture(){}};},
+     queue:{writeBuffer(){calls.writes++;},writeTexture(target,data){uploads.push(data);},submit(){},onSubmittedWorkDone:()=>new Promise((resolve,reject)=>{completion.push(resolve);rejections.push(reject);})}};
+   const canvas={getContext:()=>({configure(){},unconfigure(){},getCurrentTexture:()=>device.createTexture()})};
+   const context={addToLibrary:value=>Object.assign(library,value),navigator:{gpu:{requestAdapter:async()=>({requestDevice:async()=>device}),getPreferredCanvasFormat:()=> 'bgra8unorm'}},
+@@ -149,6 +149,9 @@ test('repeated ordered primitives reuse bindings and uniforms within a bounded c
+   assert.equal(f.calls.buffers-before.buffers,3); // one geometry, two immutable uniform buffers
+   assert.equal(f.calls.groups-before.groups,4); // rather than 4*4096 groups
+   assert.equal(f.calls.writes-before.writes,3);
++  assert.equal(f.calls.passes.length,1);assert.equal(f.calls.ends-before.ends,1);
++  for(const key of ['pipeline','viewport','scissor','vertex'])assert.equal(f.calls[key]-before[key],1,key);
++  assert.equal(f.calls.bindings-before.bindings,4);
+   assert.equal(f.calls.draws.length,4096);assert.deepEqual(f.calls.draws.map(v=>v[2]),Array.from({length:4096},(_,i)=>i));
+   assert.equal(f.g.transientBytes,80);f.g.finishPresentation([]);f.completion[0]();await Promise.resolve();assert.equal(f.g.transientBytes,0);
+ });
+@@ -176,3 +179,52 @@ test('uniform cache limit falls back without growing retained comparison storage
+   const before=f.calls.buffers;bindings.uniform(new Uint32Array([512,0,0,0]));assert.equal(f.calls.buffers-before,1);
+   f.g.retireBuffers(owned);assert.equal(f.g.transientBytes,0);
+ });
++
++test('barriers clears and attachment changes end adjacent pass reuse in painter order',async()=>{
++  const f=fixture();await f.g.prepare('/shaders');f.library.glob2_webgpu_attach();f.g.size(16,16);
++  f.g.resources.set(7,f.g.image(16,16,null,true));
++  const records=primitiveRecords(7),v=new DataView(records.buffer);
++  v.setUint32(256,3,true); // explicit barrier
++  v.setUint32(3*256,2,true);v.setUint32(3*256+244,1,true); // full color clear
++  v.setUint32(5*256+28,7,true); // target switch and then return to screen
++  f.g.submit(records,7,new Uint8Array(32),new Uint8Array(),16,16);
++  assert.equal(f.calls.passes.length,6);assert.equal(f.calls.ends,6);
++  assert.deepEqual(f.calls.sequence,['begin','draw','end','begin','draw','end','begin','end','begin','draw','end','begin','draw','end','begin','draw','end']);
++  assert.equal(f.calls.passes[2].colorAttachments[0].loadOp,'clear');
++  assert.notEqual(f.calls.passes[4].colorAttachments[0].view,f.calls.passes[5].colorAttachments[0].view);
++});
++test('changed state rebinds within the pass while shaders invalidate binding state',async()=>{
++  const f=fixture();await f.g.prepare('/shaders');f.library.glob2_webgpu_attach();f.g.size(16,16);
++  const records=primitiveRecords(4),v=new DataView(records.buffer);
++  v.setUint32(256+72,8,true);v.setUint32(256+88,8,true);v.setUint32(256+32,32,true);
++  v.setFloat32(256+104,.5,true);
++  v.setUint32(2*256+4,3,true); // SmoothPoint shader, then primitive again
++  f.g.submit(records,4,new Uint8Array(64),new Uint8Array(),16,16);
++  assert.equal(f.calls.passes.length,1);assert.equal(f.calls.ends,1);assert.equal(f.calls.pipeline,3);
++  assert.equal(f.calls.viewport,3);assert.equal(f.calls.scissor,3);assert.equal(f.calls.vertex,3);
++  assert.equal(f.calls.bindings,13); // 4 initial + changed fragment + 4 point + 4 primitive
++  assert.equal(f.calls.draws.length,4);
++});
++test('terrain ends an active pass before composing and fresh chunks reset encoded state',async()=>{
++  const f=fixture();await f.g.prepare('/shaders');f.library.glob2_webgpu_attach();f.g.size(16,16);
++  f.g.terrain=()=>{assert.equal(f.calls.ends,1);f.calls.sequence.push('terrain');};
++  const records=primitiveRecords(3),v=new DataView(records.buffer);v.setUint32(256,4,true);
++  f.g.submit(records,3,new Uint8Array(32),new Uint8Array(),16,16);
++  assert.deepEqual(f.calls.sequence,['begin','draw','end','terrain','begin','draw','end']);
++  f.g.submit(primitiveRecords(1),1,new Uint8Array(32),new Uint8Array(),16,16);
++  assert.equal(f.calls.passes.length,3);assert.equal(f.calls.pipeline,3);assert.equal(f.calls.bindings,12);
++});
++
++test('indexed mesh ranges reuse physical buffers but refresh changed bounds',async()=>{
++  const f=fixture();await f.g.prepare('/shaders');f.library.glob2_webgpu_attach();f.g.size(16,16);
++  const mesh={vertices:f.g.buffer(new Uint8Array(128),f.context.GPUBufferUsage.VERTEX),indices:f.g.buffer(new Uint8Array(24),f.context.GPUBufferUsage.INDEX)};
++  f.g.meshes.set(7,mesh);
++  const records=primitiveRecords(4),v=new DataView(records.buffer);
++  for(let i=0;i<4;i++){v.setUint32(i*256+252,7,true);v.setUint32(i*256+44,3,true);v.setUint32(i*256+52,3,true);}
++  v.setUint32(2*256+40,12,true); // different index range in the same physical mesh
++  v.setUint32(3*256+32,32,true); // return index range, change vertex bounds
++  f.g.submit(records,4,new Uint8Array(),new Uint8Array(),16,16);
++  assert.equal(f.calls.passes.length,1);assert.equal(f.calls.vertex,2);assert.equal(f.calls.index,3);
++  assert.equal(f.calls.bindings,4);assert.deepEqual(f.calls.draws,[[3],[3],[3],[3]]);
++  assert.deepEqual(f.calls.sequence,['begin','indexed','indexed','indexed','indexed','end']);
++});
+diff --git a/browser/webgpu-device.js b/browser/webgpu-device.js
+index 73b115df4..18bb4e5fb 100644
+--- a/browser/webgpu-device.js
++++ b/browser/webgpu-device.js
+@@ -147,26 +147,41 @@ addToLibrary({
+       this.deferred=false;if(this.lost)throw Error(this.error);if(!this.activeFrame&&this.frames.length>=8)return 0;
+       this.size(width,height);const encoder=this.device.createCommandEncoder(),owned=[];
+       const vertex=this.buffer(vertices,GPUBufferUsage.VERTEX);owned.push(vertex);const bindings=this.submissionBindings(owned);
++      // Attachment loads/stores and immutable bindings may be reused only for
++      // adjacent draws. Clears, explicit barriers and terrain passes end the run.
++      let active=null;
++      const endPass=()=>{if(active){active.pass.end();active=null;}};
++      const sameRect=(a,b)=>a&&a.every((value,index)=>value===b[index]);
+       const view=new DataView(records.buffer,records.byteOffset,records.byteLength);
+       for(let i=0;i<count;i++){
+         const base=i*256,u=o=>view.getUint32(base+o,true),n=o=>view.getInt32(base+o,true),f=o=>view.getFloat32(base+o,true);
+-        const kind=u(0);if(kind===3)continue;
++        const kind=u(0);if(kind===3){endPass();continue;}
+         const target=u(28)?this.resources.get(u(28)):this.screen;if(!target)throw Error('Stale WebGPU target');
+         const texture=u(24)?this.resources.get(u(24)):this.white;if(!texture)throw Error('Stale WebGPU image');
+         if(kind!==2&&texture===target)throw Error('WebGPU target cannot sample itself');
+         if(!target.depth){this.reserve(target.width*target.height*4);target.depth=this.device.createTexture({size:[target.width,target.height],format:'depth24plus',usage:GPUTextureUsage.RENDER_ATTACHMENT});this.bytes+=target.width*target.height*4;}
+-        if(kind===4){this.terrain(encoder,target,u,uniforms,owned);continue;}
++        if(kind===4){endPass();this.terrain(encoder,target,u,uniforms,owned);continue;}
+         const clearColor=kind===2&&u(244),clearDepth=kind===2&&u(248),clip=[n(80),n(84),n(88),n(92)];
+         const fullColor=clearColor&&clip[0]===0&&clip[1]===0&&clip[2]===target.width&&clip[3]===target.height;
+-        const pass=encoder.beginRenderPass({colorAttachments:[{view:this.textureView(target.texture),loadOp:fullColor||!target.initialized?'clear':'load',clearValue:fullColor?[f(224),f(228),f(232),f(236)]:[0,0,0,0],storeOp:'store'}],depthStencilAttachment:{view:this.textureView(target.depth),depthLoadOp:clearDepth||!target.depthInitialized?'clear':'load',depthClearValue:clearDepth?f(240):1,depthStoreOp:'store'}});target.initialized=true;target.depthInitialized=true;
+-        if(kind===2){if(clearColor&&!fullColor)this.clearRegion(pass,target,clip,[f(224),f(228),f(232),f(236)],owned);pass.end();continue;}
++        if(kind===2||active?.target!==target)endPass();
++        if(!active){
++          const pass=encoder.beginRenderPass({colorAttachments:[{view:this.textureView(target.texture),loadOp:fullColor||!target.initialized?'clear':'load',clearValue:fullColor?[f(224),f(228),f(232),f(236)]:[0,0,0,0],storeOp:'store'}],depthStencilAttachment:{view:this.textureView(target.depth),depthLoadOp:clearDepth||!target.depthInitialized?'clear':'load',depthClearValue:clearDepth?f(240):1,depthStoreOp:'store'}});
++          target.initialized=true;target.depthInitialized=true;active={pass,target,groups:[]};
++        }
++        const pass=active.pass;
++        if(kind===2){if(clearColor&&!fullColor)this.clearRegion(pass,target,clip,[f(224),f(228),f(232),f(236)],owned);endPass();continue;}
+         const variant=['primitive','world','cloud','point','skin','skin-rig'][u(4)],skin=u(4)>=4,world=kind===1&&!skin;
+-        const pipeline=this.pipeline(variant,u(8),u(12),u(16),u(20));pass.setPipeline(pipeline);
++        const pipeline=this.pipeline(variant,u(8),u(12),u(16),u(20));
++        if(active.pipeline!==pipeline){pass.setPipeline(pipeline);active.pipeline=pipeline;active.groups=[];}
+         const viewport=[n(64),n(68),n(72),n(76)];
+-        if(viewport[2]<=0||viewport[3]<=0||clip[2]<=0||clip[3]<=0){pass.end();continue;}
+-        pass.setViewport(...viewport,0,1);pass.setScissorRect(...clip);
++        if(viewport[2]<=0||viewport[3]<=0||clip[2]<=0||clip[3]<=0){continue;}
++        if(!sameRect(active.viewport,viewport)){pass.setViewport(...viewport,0,1);active.viewport=viewport;}
++        if(!sameRect(active.clip,clip)){pass.setScissorRect(...clip);active.clip=clip;}
+         const mesh=u(252)?this.meshes.get(u(252)):null;if(u(252)&&!mesh)throw Error('Stale WebGPU geometry');
+-        pass.setVertexBuffer(0,mesh?mesh.vertices:vertex,u(32),u(36));
++        const vertexBuffer=mesh?mesh.vertices:vertex,vertexOffset=u(32),vertexSize=u(36);
++        if(active.vertex!==vertexBuffer||active.vertexOffset!==vertexOffset||active.vertexSize!==vertexSize){
++          pass.setVertexBuffer(0,vertexBuffer,vertexOffset,vertexSize);active.vertex=vertexBuffer;active.vertexOffset=vertexOffset;active.vertexSize=vertexSize;
++        }
+         const vertexData=skin?uniforms.slice(u(112),u(112)+u(116)):world?records.slice(base+128,base+208):new Float32Array([f(96),f(100),0,0]);
+         const fragmentData=skin?uniforms.slice(u(120),u(120)+u(124)):world?records.slice(base+208,base+224):records.slice(base+104,base+128);
+         // Primitive block: textured/alpha, std140 padding, UV bounds.
+@@ -180,11 +195,16 @@ addToLibrary({
+             if(skin){const second=this.resources.get(u(60));if(!second)throw Error('Stale WebGPU material texture');entries.push({binding:2,resource:this.textureView(second.texture)},{binding:3,resource:this.samplers[0]});}
+           }
+           if(group===3){const b=bindings.uniform(skin||world?fragmentData:primitiveData);entries.push({binding:0,resource:{buffer:b}});}
+-          pass.setBindGroup(group,bindings.group(pipeline,group,entries));
++          const binding=bindings.group(pipeline,group,entries);
++          if(active.groups[group]!==binding){pass.setBindGroup(group,binding);active.groups[group]=binding;}
+         }
+-        if(u(44)){pass.setIndexBuffer(mesh.indices,'uint32',u(40),u(44)*4);pass.drawIndexed(u(52));}else pass.draw(u(52),1,u(48));
+-        pass.end();
++        if(u(44)){
++          const offset=u(40),size=u(44)*4;
++          if(active.index!==mesh.indices||active.indexOffset!==offset||active.indexSize!==size){pass.setIndexBuffer(mesh.indices,'uint32',offset,size);active.index=mesh.indices;active.indexOffset=offset;active.indexSize=size;}
++          pass.drawIndexed(u(52));
++        }else pass.draw(u(52),1,u(48));
+       }
++      endPass();
+       const identity=++this.issued;this.device.queue.submit([encoder.finish()]);
+       if(!this.activeFrame)this.activeFrame={identity,owned:[]};this.activeFrame.identity=identity;this.activeFrame.owned.push(...owned);return identity;
+     },
+diff --git a/docs/architecture/rendering.md b/docs/architecture/rendering.md
+index 4d0aefaaf..653083ab1 100644
+--- a/docs/architecture/rendering.md
++++ b/docs/architecture/rendering.md
+@@ -509,6 +509,12 @@ sampling calculation and all blend, modulation and color-key rules. SDL GPU
+ keeps compatible primitive draws in the same color pass and merges consecutive
+ vertex ranges only when their effective state matches. Barriers, clears, world
+ geometry, terrain composition and target changes end that pass.
++Consecutive unreduced terrain cells on the same SDL GPU page share a terrain
++pass, with each cell retaining its own uniforms, samplers, viewport and scissor.
++Other packet kinds and attachment changes close it. Scratch composition and
++reduction remain separate passes so the reduction samples completed writes.
++GL primitive state reuse is local to one bounded vertex-upload segment; barriers,
++other passes and the next segment reset it rather than assuming global driver state.
+ Immutable texture revisions retain the pixels that queued draws referenced, even
+ when a surface changes or is deleted. The device retires allocations after submission
+ completion. Budget deferral retains logical target handles so sliced uploads can
+@@ -540,7 +546,10 @@ bindings share buffers and descriptors. Uniform comparison storage is bounded
+ to 512 entries and 1 MiB; binding reuse is bounded to 4096 groups. Buffers remain
+ owned until completion, and allocations are never rewritten for later chunks.
+ Texture views follow physical allocation lifetime; presentation bindings reset
+-with output resize or device recreation.
++with output resize or device recreation. Adjacent draws to the same attachment
++share a render pass and skip unchanged binding and raster state. Clears, barriers,
++terrain composition, target changes and submission-chunk boundaries end that pass;
++all draw calls and their painter order remain intact.
+ 
+ Ordered packets cross Wasm in fixed-width packed records. Shader vertex layouts
+ come from generated metadata; skin and posed-rig uniforms use the same generated
+@@ -639,6 +648,12 @@ fragment block holds composition parameters and per-material seam constants.
+ retain packed-ARGB wrapping; final premultiplied targets apply the same byte
+ rounding as CPU uploads before hardware filtering. WebGPU coverage and scratch
+ caches each admit at most 32 MiB and count against the device's aggregate budget.
++Changes between CPU and GPU composition retain reusable CPU terrain pages at
++other densities within the existing cache and texture budgets. Device-composed
++pages are discarded when their targets are released; graphics generation or
++resource registry changes still invalidate the cache.
++GPU page admission reserves new target storage and the bounded coverage lease
++allowance alongside retained CPU pages, retiring idle storage before composition.
+ `tools/shaders/prove_terrain_webgpu.mjs` checks exact integer pixels, material
+ presence, alpha, each reduction divisor and premultiplied output. The packed-device
+ proof additionally checks owned shared-memory coverage uploads, target gutters,
+diff --git a/docs/development/rendering-benchmarks.md b/docs/development/rendering-benchmarks.md
+index 5de0928b4..0ca975d40 100644
+--- a/docs/development/rendering-benchmarks.md
++++ b/docs/development/rendering-benchmarks.md
+@@ -19,7 +19,11 @@ build/darwin/client/release/test/torus-render-benchmark --renderer gpu --no-full
+ ```
+ 
+ Use the current host's release directory on Linux/Windows. `GLOB2_BENCH_MODE`
+-selects `2D no clouds` or `2D clouds`; otherwise both run. Set
++selects `2D no clouds` or `2D clouds`; otherwise both run. Run
++each mode in a separate fresh process with identical warmup and camera settings
++when comparing cloud cost: running both shares terrain and device caches, so the
++second mode benefits from the first mode's work. Alternate process order across
++repeated pairs to limit drift from temperature and background activity. Set
+ `GLOB2_BENCH_VISIBLE=1` to show and present the completed fixture.
+ `GLOB2_BENCH_NATIVE_CLOUD_DETAIL=1` restores the original dense cloud grid for
+ a controlled comparison. `GLOB2_BENCH_BARS=1` adds health/food bars. Unit count
+diff --git a/libgag/src/ProgrammableGLDevice.cpp b/libgag/src/ProgrammableGLDevice.cpp
+index 887c91574..3edd5499e 100644
+--- a/libgag/src/ProgrammableGLDevice.cpp
++++ b/libgag/src/ProgrammableGLDevice.cpp
+@@ -464,7 +464,19 @@ class ProgrammableGLDevice final : public RenderDevice
+             }
+         }
+     }
+-    void draw(const DrawPacket &packet, std::size_t first, std::size_t count, float logicalW, float logicalH)
++    // Local to one bounded primitive upload. Other passes, uploads and frame
++    // lifecycle operations may mutate GL state, so none of it survives a flush.
++    struct PrimitiveState {
++        std::optional<GLuint> framebuffer, selectedProgram;
++        std::optional<SDL_Rect> viewport, scissor;
++        std::optional<std::array<float,2>> viewportValue, pointViewportValue;
++        std::optional<float> alpha, pointAlphaValue, textured;
++        std::optional<std::array<float,4>> uvBounds;
++        bool samplerInitialized=false;
++    };
++    static bool sameRect(const std::optional<SDL_Rect> &stored, const SDL_Rect &value)
++    { return stored && stored->x==value.x && stored->y==value.y && stored->w==value.w && stored->h==value.h; }
++    void draw(const DrawPacket &packet, std::size_t first, std::size_t count, float logicalW, float logicalH, PrimitiveState &cached)
+     {
+         GLuint framebuffer = screenFramebuffer;
+         int w = width, h = height;
+@@ -477,21 +489,29 @@ class ProgrammableGLDevice final : public RenderDevice
+         }
+         if (packet.targetLogicalWidth > 0) logicalW = packet.targetLogicalWidth;
+         if (packet.targetLogicalHeight > 0) logicalH = packet.targetLogicalHeight;
+-        gl.glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+-        const SDL_Rect viewport = packet.viewport.value_or(SDL_Rect{0, 0, w, h});
+-        gl.glViewport(viewport.x, h - viewport.y - viewport.h, viewport.w, viewport.h);
+-        const auto bounds = clip(packet, w, h, logicalW, logicalH);
+-        gl.glEnable(GL_SCISSOR_TEST); gl.glScissor(bounds.x, h - bounds.y - bounds.h, bounds.w, bounds.h);
++        if(cached.framebuffer!=framebuffer) {gl.glBindFramebuffer(GL_FRAMEBUFFER,framebuffer);cached.framebuffer=framebuffer;}
++        const auto logicalViewport=packet.viewport.value_or(SDL_Rect{0,0,w,h});
++        const SDL_Rect viewport{logicalViewport.x,h-logicalViewport.y-logicalViewport.h,logicalViewport.w,logicalViewport.h};
++        if(!sameRect(cached.viewport,viewport)) {gl.glViewport(viewport.x,viewport.y,viewport.w,viewport.h);cached.viewport=viewport;}
++        const auto bounds=clip(packet,w,h,logicalW,logicalH);
++        const SDL_Rect scissor{bounds.x,h-bounds.y-bounds.h,bounds.w,bounds.h};
++        if(!cached.scissor) gl.glEnable(GL_SCISSOR_TEST);
++        if(!sameRect(cached.scissor,scissor)) {gl.glScissor(scissor.x,scissor.y,scissor.w,scissor.h);cached.scissor=scissor;}
+         state(packet, premultiplied);
+         GLuint selectedProgram = packet.material == DrawPacket::Material::SmoothPoint ? pointProgram : program;
+         if (!selectedProgram) throw std::invalid_argument("Unsupported point material");
+-        gl.glUseProgram(selectedProgram);
+-        if (selectedProgram != program) {
+-            gl.glUniform2f(pointViewport, float(logicalW), float(logicalH));
+-            gl.glUniform1f(pointAlpha, packet.alpha / 255.f);
+-        } else { gl.glUniform2f(viewportUniform, float(logicalW), float(logicalH));
+-        gl.glUniform1i(imageUniform, 0); gl.glUniform1f(texturedUniform, source ? 1.f : 0.f);
+-        gl.glUniform1f(alphaUniform, packet.alpha / 255.f);
++        if(cached.selectedProgram!=selectedProgram) {gl.glUseProgram(selectedProgram);cached.selectedProgram=selectedProgram;}
++        const std::array<float,2> dimensions{logicalW,logicalH};
++        const float alpha=packet.alpha/255.f;
++        if(selectedProgram!=program) {
++            if(cached.pointViewportValue!=dimensions) {gl.glUniform2f(pointViewport,logicalW,logicalH);cached.pointViewportValue=dimensions;}
++            if(cached.pointAlphaValue!=alpha) {gl.glUniform1f(pointAlpha,alpha);cached.pointAlphaValue=alpha;}
++        } else {
++        if(cached.viewportValue!=dimensions) {gl.glUniform2f(viewportUniform,logicalW,logicalH);cached.viewportValue=dimensions;}
++        if(!cached.samplerInitialized) {gl.glUniform1i(imageUniform,0);cached.samplerInitialized=true;}
++        const float textured=source?1.f:0.f;
++        if(cached.textured!=textured) {gl.glUniform1f(texturedUniform,textured);cached.textured=textured;}
++        if(cached.alpha!=alpha) {gl.glUniform1f(alphaUniform,alpha);cached.alpha=alpha;}
+         float u0 = 0, v0 = 0, u1 = 1, v1 = 1;
+         if (packet.linear && packet.kind == DrawPacket::Kind::Blit) {
+             const auto &descriptor = packet.texture->descriptor;
+@@ -501,14 +521,14 @@ class ProgrammableGLDevice final : public RenderDevice
+             v1 = (packet.source.y + packet.source.h - .5f) / descriptor.height;
+             if (targets.contains(key(packet.texture))) { const float lower = 1 - v1; v1 = 1 - v0; v0 = lower; }
+         }
+-        gl.glUniform4f(boundsUniform, u0, v0, u1, v1);
++        const std::array<float,4> uvBounds{u0,v0,u1,v1};
++        if(cached.uvBounds!=uvBounds) {gl.glUniform4f(boundsUniform,u0,v0,u1,v1);cached.uvBounds=uvBounds;}
+         }
+         gl.glActiveTexture(GL_TEXTURE0); gl.glBindTexture(GL_TEXTURE_2D, source ? source : whiteTexture);
+         if (source) {
+             gl.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, packet.linear ? (packet.texture && packet.texture->descriptor.mips == TextureDescriptor::Mips::Generated ? GL_LINEAR_MIPMAP_LINEAR : GL_LINEAR) : GL_NEAREST);
+             gl.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, packet.linear ? GL_LINEAR : GL_NEAREST);
+         }
+-        gl.glBindVertexArray(vao); gl.glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+         gl.glDrawArrays(GL_TRIANGLES, GLint(first), GLsizei(count)); ++counts.batches;
+     }
+     MaterialProgram materialProgram(const std::string &vertexFile, const std::string &fragmentFile)
+@@ -992,8 +1012,9 @@ class ProgrammableGLDevice final : public RenderDevice
+             gl.glBindVertexArray(vao); gl.glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+             vertexBytes = geometry.size() * sizeof(SDL_Vertex);
+             gl.glBufferData(GL_ARRAY_BUFFER, GLsizeiptr(vertexBytes), geometry.data(), GL_STREAM_DRAW);
++            PrimitiveState cached;
+             for (const auto &range : ranges)
+-                draw(*range.packet, range.first, range.count, frame.logicalWidth, frame.logicalHeight);
++                draw(*range.packet,range.first,range.count,frame.logicalWidth,frame.logicalHeight,cached);
+             geometry.clear(); ranges.clear();
+         };
+         for (std::size_t begin = 0; begin < frame.packets.size();) {
+diff --git a/libgag/src/ProgrammableGLDeviceTest.cpp b/libgag/src/ProgrammableGLDeviceTest.cpp
+index e0dcb551b..a2da6f865 100644
+--- a/libgag/src/ProgrammableGLDeviceTest.cpp
++++ b/libgag/src/ProgrammableGLDeviceTest.cpp
+@@ -100,6 +100,49 @@ TEST_SUITE("ProgrammableGLDevice")
+         Surface separated(fixture.device->captureSynchronously({}),SDL_DestroySurface);REQUIRE(separated);
+         equal(combined.get(),separated.get());
+     }
++    GLOB2_TEST_CASE("primitive state reuse matches isolated target viewport clip and program transitions", "[display]")
++    {
++        GLFixture fixture; RenderResources resources;
++        auto pixels=surface(8,8);
++        REQUIRE(SDL_FillSurfaceRect(pixels.get(),nullptr,SDL_MapSurfaceRGBA(pixels.get(),0,0,0,0)));
++        TextureDescriptor descriptor;descriptor.width=descriptor.height=8;
++        auto first=resources.create(pixels.get(),1,descriptor),second=resources.create(pixels.get(),1,descriptor);
++        REQUIRE(first);REQUIRE(second);
++        const auto a=resources.snapshot(first),b=resources.snapshot(second);
++        DrawPacket background;background.destination={0,0,16,16};background.color={10,20,30,255};background.opaque=true;
++        DrawPacket red=background;red.target=a;red.targetLogicalWidth=red.targetLogicalHeight=8;
++        red.destination={0,0,8,8};red.color={210,20,40,255};
++        DrawPacket blue=red;blue.target=b;blue.color={20,40,210,255};blue.viewport=SDL_Rect{1,0,7,8};
++        DrawPacket overlay=red;overlay.color={20,210,40,128};overlay.opaque=false;overlay.alpha=173;
++        overlay.clip=SDL_Rect{2,1,5,6};overlay.targetScissor=SDL_Rect{3,0,5,8};
++        DrawPacket logical=overlay;logical.targetLogicalWidth=4;logical.viewport=SDL_Rect{0,1,8,7};
++        logical.destination={0,0,4,8};logical.color={210,150,20,80};
++        DrawPacket point;point.kind=DrawPacket::Kind::Triangles;point.material=DrawPacket::Material::SmoothPoint;
++        point.blend=DrawPacket::Blend::Additive;point.alpha=127;
++        const SDL_FColor color{.1f,.2f,.8f,.5f};
++        const SDL_Vertex va{{0,0},color,{0,0}},vb{{8,0},color,{1,0}},vc{{8,8},color,{1,1}},vd{{0,8},color,{0,1}};
++        point.vertices={va,vb,vc,va,vc,vd};
++        DrawPacket sample;sample.kind=DrawPacket::Kind::Blit;sample.texture=a;sample.source={1,1,6,6};
++        sample.destination={0,8,8,8};sample.linear=true;sample.alpha=211;
++        DrawPacket nearest=sample;nearest.texture=b;nearest.destination={8,0,8,8};nearest.linear=false;
++        DrawPacket bounds=sample;bounds.source={2,0,3,8};bounds.destination={8,8,8,8};bounds.alpha=255;
++        DrawPacket again=point;again.alpha=231;again.viewport=SDL_Rect{8,0,8,8};
++        DrawPacket tail=background;tail.destination={3,2,4,3};tail.color={50,230,90,100};tail.opaque=false;
++        tail.clip=SDL_Rect{4,3,2,2};
++        std::vector<DrawPacket> packets={background,red,blue,overlay,point,logical,sample,nearest,bounds,again,tail};
++        for(unsigned turn=0;turn<2;++turn) {
++            RenderFrame frame;frame.identity=turn*2+1;frame.logicalWidth=frame.logicalHeight=16;
++            frame.packets=packets;frame.vertexCount=12;
++            REQUIRE(fixture.device->submit(frame));fixture.device->present();
++            Surface combined(fixture.device->captureSynchronously({}),SDL_DestroySurface);REQUIRE(combined);
++            DrawPacket barrier;barrier.kind=DrawPacket::Kind::Barrier;
++            frame.identity++;frame.packets.clear();
++            for(const auto &packet:packets) {frame.packets.push_back(packet);frame.packets.push_back(barrier);}
++            REQUIRE(fixture.device->submit(std::move(frame)));fixture.device->present();
++            Surface isolated(fixture.device->captureSynchronously({}),SDL_DestroySurface);REQUIRE(isolated);
++            equal(combined.get(),isolated.get());
++        }
++    }
+     GLOB2_TEST_CASE("cloud revisions and cached world uniforms change pixels on the next frame", "[display]")
+     {
+         GLFixture fixture;RenderResources resources;
+diff --git a/libgag/src/SDLGPUDevice.cpp b/libgag/src/SDLGPUDevice.cpp
+index 5296c40fc..282201856 100644
+--- a/libgag/src/SDLGPUDevice.cpp
++++ b/libgag/src/SDLGPUDevice.cpp
+@@ -150,8 +150,9 @@ struct PrimitiveState
+ struct PrimitivePass
+ {
+     SDL_GPURenderPass *pass = nullptr;
++    SDL_GPUTexture *target = nullptr;
+     ~PrimitivePass() { end(); }
+-    void end() { if (pass) { SDL_EndGPURenderPass(pass); pass = nullptr; } }
++    void end() { if (pass) { SDL_EndGPURenderPass(pass); pass = nullptr; } target = nullptr; }
+ };
+ class SDLGPUDevice final : public RenderDevice
+ {
+@@ -615,7 +616,7 @@ class SDLGPUDevice final : public RenderDevice
+     void loadTerrainShaders();
+     CoveragePtr resolveCoverage(SDL_GPUCommandBuffer *, Work &, std::shared_ptr<const CoverageData>);
+     void prepareTerrain(SDL_GPUCommandBuffer *&, Work &, Draw &, std::vector<SDL_Vertex> &);
+-    void drawTerrain(SDL_GPUCommandBuffer *, Work &, const Draw &);
++    void drawTerrain(SDL_GPUCommandBuffer *, Work &, const Draw &, PrimitivePass &);
+     void teardown()
+     {
+         if (!device) return;
+@@ -885,7 +886,7 @@ void SDLGPUDevice::prepareTerrain(SDL_GPUCommandBuffer *&commands, Work &entry,
+                                SDL_Vertex{{0,0},tint,{0,0}},SDL_Vertex{{extent,extent},tint,{1,1}},SDL_Vertex{{0,extent},tint,{0,1}}})vertices.push_back(vertex);
+     draw.count=6;
+ }
+-void SDLGPUDevice::drawTerrain(SDL_GPUCommandBuffer *commands, Work &entry, const Draw &draw)
++void SDLGPUDevice::drawTerrain(SDL_GPUCommandBuffer *commands, Work &entry, const Draw &draw, PrimitivePass &active)
+ {
+     const auto &data=*draw.packet->weightedCompose;const bool reduced=data.reductionDivisor>1;
+     const bool pma=draw.packet->target->descriptor.alpha==TextureDescriptor::Alpha::Premultiplied;
+@@ -904,14 +905,24 @@ void SDLGPUDevice::drawTerrain(SDL_GPUCommandBuffer *commands, Work &entry, cons
+     const auto &mask=draw.coverage;
+     images[4]={mask->weights,nearest};images[5]={mask->selectors,nearest};
+     auto render=[&](unsigned index,TexturePtr target,SDL_Rect rect,const void *data,Uint32 bytes,const SDL_GPUTextureSamplerBinding *bindings,Uint32 count) {
+-        SDL_GPUColorTargetInfo color{};color.texture=target->gpu;color.load_op=SDL_GPU_LOADOP_LOAD;color.store_op=SDL_GPU_STOREOP_STORE;
+-        auto *pass=SDL_BeginGPURenderPass(commands,&color,1,nullptr);if(!pass)fail("begin terrain pass");
++        // Adjacent cells on one page have independent uniforms and scissors,
++        // but share the attachment. Avoid a load/store render pass per cell.
++        if (!active.pass || active.target != target->gpu) {
++            active.end();
++            SDL_GPUColorTargetInfo color{};color.texture=target->gpu;color.load_op=SDL_GPU_LOADOP_LOAD;color.store_op=SDL_GPU_STOREOP_STORE;
++            active.pass=SDL_BeginGPURenderPass(commands,&color,1,nullptr);if(!active.pass)fail("begin terrain pass");
++            active.target=target->gpu;
++        }
++        auto *pass=active.pass;
+         SDL_BindGPUGraphicsPipeline(pass,terrainPipelines[index]);SDL_GPUBufferBinding vertices{entry.vertices,0};SDL_BindGPUVertexBuffers(pass,0,&vertices,1);
+         SDL_GPUViewport viewport{float(rect.x),float(rect.y),float(rect.w),float(rect.h),0,1};SDL_SetGPUViewport(pass,&viewport);SDL_SetGPUScissor(pass,&rect);
+         SDL_BindGPUFragmentSamplers(pass,0,bindings,count);
+         const std::array<float,4> vertex{float(draw.packet->weightedCompose->compositionSize),float(draw.packet->weightedCompose->compositionSize),0,0};
+         SDL_PushGPUVertexUniformData(commands,0,vertex.data(),sizeof(vertex));SDL_PushGPUFragmentUniformData(commands,0,data,bytes);
+-        SDL_DrawGPUPrimitives(pass,6,1,draw.first,0);SDL_EndGPURenderPass(pass);++counts.batches;
++        SDL_DrawGPUPrimitives(pass,6,1,draw.first,0);++counts.batches;
++        // Reduction samples the just-composed scratch attachment; close it
++        // before sampling and close the destination before scratch reuse.
++        if (reduced) active.end();
+     };
+     render(0,reduced?draw.scratch:draw.target,reduced?SDL_Rect{0,0,int(data.compositionSize),int(data.compositionSize)}:data.targetRect,uniforms.data(),sizeof(uniforms),images.data(),images.size());
+     if(reduced) {
+@@ -1109,7 +1120,7 @@ void SDLGPUDevice::drawWorld(SDL_GPUCommandBuffer *commands, const Draw &draw, f
+ }
+ void SDLGPUDevice::drawPackets(SDL_GPUCommandBuffer *commands, Work &entry, const std::vector<Draw> &draws, float lw, float lh)
+ {
+-    PrimitivePass active;
++    PrimitivePass active, terrain;
+     std::optional<PrimitiveState> bound, pending;
+     Uint32 first = 0, count = 0;
+     auto flush = [&] {
+@@ -1150,6 +1161,7 @@ void SDLGPUDevice::drawPackets(SDL_GPUCommandBuffer *commands, Work &entry, cons
+     auto endPass = [&] { flush(); active.end(); bound.reset(); };
+     for (const auto &draw : draws) {
+         const auto &packet = *draw.packet;
++        if (packet.kind != DrawPacket::Kind::WeightedCompose) terrain.end();
+         // These boundaries may change attachments, depth, or sampled targets.
+         // They also prohibit adjacent geometry merging even when state matches.
+         if (packet.kind == DrawPacket::Kind::Barrier) { endPass(); continue; }
+@@ -1157,7 +1169,7 @@ void SDLGPUDevice::drawPackets(SDL_GPUCommandBuffer *commands, Work &entry, cons
+             endPass();
+             if (!draw.count) { clearPacket(commands, draw); continue; }
+         } else if (packet.kind == DrawPacket::Kind::WeightedCompose) {
+-            endPass(); drawTerrain(commands, entry, draw); continue;
++            endPass(); drawTerrain(commands, entry, draw, terrain); continue;
+         } else if (packet.kind == DrawPacket::Kind::MeshTriangles) {
+             endPass(); drawWorld(commands, draw, lw, lh); continue;
+         }
+@@ -1170,7 +1182,7 @@ void SDLGPUDevice::drawPackets(SDL_GPUCommandBuffer *commands, Work &entry, cons
+         else { flush(); pending = state; first = draw.first; count = draw.count; }
+         if (packet.kind == DrawPacket::Kind::Clear) endPass();
+     }
+-    endPass();
++    endPass(); terrain.end();
+ }
+ RenderSubmission SDLGPUDevice::submit(RenderFrame frame)
+ {
+diff --git a/libgag/src/SDLGPUDeviceTest.cpp b/libgag/src/SDLGPUDeviceTest.cpp
+index 7c711fcf6..029aea2ce 100644
+--- a/libgag/src/SDLGPUDeviceTest.cpp
++++ b/libgag/src/SDLGPUDeviceTest.cpp
+@@ -63,6 +63,70 @@ struct Video
+ }
+ TEST_SUITE("SDLGPUDevice")
+ {
++    GLOB2_TEST_CASE("Shared terrain passes match separated cells across targets reduction and barriers", "[display][isolated]")
++    {
++        const char *shaders = std::getenv("GLOB2_TEST_SHADER_DIRECTORY"); REQUIRE(shaders);
++        Video video; auto device = makeSDLGPUDevice(nullptr, 32, 32, shaders);
++        REQUIRE(device->capabilities().terrainComposition);
++        RenderResources resources;
++        const std::array<SDL_Color, 4> colors{{{240, 10, 20, 255}, {20, 230, 40, 128},
++            {10, 30, 220, 255}, {230, 210, 20, 192}}};
++        std::array<TextureSnapshot, 4> materials;
++        for (unsigned i = 0; i < materials.size(); ++i) {
++            auto pixels = surface(16, 16); REQUIRE(pixels);
++            const auto c = colors[i];
++            REQUIRE(SDL_FillSurfaceRect(pixels.get(), nullptr, SDL_MapSurfaceRGBA(pixels.get(), c.r, c.g, c.b, c.a)));
++            materials[i] = resources.snapshot(resources.create(pixels.get(), 1)); REQUIRE(materials[i]);
++        }
++        auto pixels = surface(32, 32); REQUIRE(pixels);
++        TextureDescriptor descriptor; descriptor.alpha = TextureDescriptor::Alpha::Premultiplied;
++        auto a = resources.snapshot(resources.create(pixels.get(), 1, descriptor));
++        auto b = resources.snapshot(resources.create(pixels.get(), 1, descriptor)); REQUIRE(a); REQUIRE(b);
++        std::vector<DrawPacket> packets;
++        for (const auto &target : {a, b}) {
++            DrawPacket clear; clear.kind = DrawPacket::Kind::Clear; clear.target = target;
++            clear.clearColor = true; clear.clearValue = {.1f, .2f, .3f, 1}; packets.push_back(clear);
++        }
++        auto cell = [&](TextureSnapshot target, unsigned material, SDL_Rect rect, unsigned divisor = 1) {
++            auto data = std::make_shared<WeightedComposeData>(); data->compositionSize = 16;
++            data->reductionDivisor = divisor; data->paletteCount = 1;
++            data->materials[0] = materials[material]; data->targetRect = rect;
++            DrawPacket packet; packet.kind = DrawPacket::Kind::WeightedCompose;
++            packet.target = target; packet.weightedCompose = data; packets.push_back(packet);
++        };
++        cell(a, 0, {0, 0, 16, 16}); cell(a, 1, {16, 0, 16, 16});
++        cell(a, 2, {0, 16, 16, 16}); cell(a, 3, {16, 16, 16, 16});
++        cell(b, 2, {0, 0, 16, 16}); // attachment change
++        cell(b, 3, {16, 0, 8, 8}, 2); // scratch write then reduction read
++        cell(b, 1, {0, 16, 16, 16}); // unreduced after reduction
++        DrawPacket barrier; barrier.kind = DrawPacket::Kind::Barrier; packets.push_back(barrier);
++        cell(b, 0, {16, 16, 16, 16});
++        packets.push_back(blit(a, {0, 0, 32, 32})); // sampling must close terrain pass
++        cell(a, 2, {0, 0, 16, 16});
++        packets.push_back(blit(b, {0, 0, 16, 16}));
++        auto render = [&](bool separated) {
++            RenderFrame frame; frame.identity = separated ? 2 : 1;
++            frame.logicalWidth = frame.logicalHeight = 32;
++            frame.packets.push_back(fill({0, 0, 32, 32}, {0, 0, 0, 255}));
++            for (const auto &packet : packets) {
++                frame.packets.push_back(packet);
++                if (separated) frame.packets.push_back(barrier);
++            }
++            REQUIRE(device->submit(frame)); device->present();
++            std::array<Surface, 3> result{{Surface(nullptr, SDL_DestroySurface),
++                Surface(nullptr, SDL_DestroySurface), Surface(nullptr, SDL_DestroySurface)}};
++            for (unsigned i = 0; i < result.size(); ++i) {
++                CaptureRequest request; request.target = i == 1 ? a : i == 2 ? b : TextureSnapshot{};
++                result[i] = Surface(device->captureSynchronously(request), SDL_DestroySurface); REQUIRE(result[i]);
++            }
++            return result;
++        };
++        auto shared = render(false), separated = render(true);
++        for (unsigned i = 0; i < shared.size(); ++i)
++            for (int y = 0; y < 32; ++y) for (int x = 0; x < 32; ++x)
++                nearPixel(shared[i].get(), separated[i].get(), x, y, 0);
++    }
++
+     GLOB2_TEST_CASE("Texture memory follows allocation lifetime across repeated leases and failed frames", "[display][isolated]")
+     {
+         const char *shaders = std::getenv("GLOB2_TEST_SHADER_DIRECTORY"); REQUIRE(shaders);
+diff --git a/src/render/SoftwareTerrainCache.cpp b/src/render/SoftwareTerrainCache.cpp
+index 1b820be74..eda67f096 100644
+--- a/src/render/SoftwareTerrainCache.cpp
++++ b/src/render/SoftwareTerrainCache.cpp
+@@ -131,6 +131,13 @@ class GpuTerrainPageCache
+     std::uint64_t registryIdentity() const {return resources->instanceIdentity();}
+     std::size_t retainedBytes() const {return pageBytes + localMaskLeases->bytes.load();}
+     std::size_t textureBytes() const {return pageBytes;}
++    std::pair<std::size_t,std::size_t> compositionReservation(const SoftwareTerrainCache::Chunk &chunk) const {
++        const auto dimension=std::size_t(SoftwareTerrainCache::ChunkPixels)*chunk.scale/chunk.downsample;
++        const auto pixels=pages.contains(key(chunk))?0:dimension*dimension*4;
++        // Submitted masks can outlive lookup eviction. Reserve their complete
++        // bounded ownership allowance before adding packets to this frame.
++        return {pixels+MaskLeaseBudgetBytes-localMaskLeases->bytes.load(),pixels};
++    }
+     void erase(const SoftwareTerrainCache::Chunk &chunk) {
+         auto found=pages.find(key(chunk));if(found==pages.end())return;
+         pageBytes-=found->second.pixels->bytes;resources->erase(found->second.handle);pages.erase(found);
+@@ -536,7 +543,15 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
+ 	{
+     if (bool(gpuPages) != composeOnDevice || (gpuPages &&
+         (gpuPageGeneration != generation || gpuPages->registryIdentity() != gfx.renderResources()->instanceIdentity()))) {
+-        chunks.clear(); gpuPages.reset();
++        if (gpuPages && (gpuPageGeneration != generation ||
++            gpuPages->registryIdentity() != gfx.renderResources()->instanceIdentity())) chunks.clear();
++        else {
++            // A zoom can change composition admission without invalidating CPU
++            // pixels at another density. Retain those bounded cache entries;
++            // device-only pages cannot survive destruction of their targets.
++            std::erase_if(chunks, [](const auto &chunk) { return !chunk->cpuComposed; });
++        }
++        gpuPages.reset();
+         if (composeOnDevice) gpuPages = std::make_shared<GpuTerrainPageCache>(gfx.renderResourceOwner());
+         gpuPageGeneration = generation;
+     }
+@@ -553,9 +568,10 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
+ 				((c->y / ChunkTiles - y0) & (periodY - 1)) <= y1 - y0;
+ 			if (selected) c->used = frame;
+ 		}
+-		const auto makeRoom = [&](std::size_t needed)
++		const auto makeRoom = [&](std::size_t needed, std::size_t textureNeeded = 0)
+ 		{
+-			while (bytes() + needed > budget)
++			while (bytes() + needed > budget ||
++                (gpu && residentTextureBytes()+textureNeeded > GPUBudget))
+ 			{
+ 				auto oldest = chunks.end();
+ 				// Retire idle renderer storage before discarding any composed pixels.
+@@ -753,6 +769,8 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
+ 					entry->valid = false;
+ 					entry->opaqueRuns.clear();
+                     if (gpuPages) {
++                        const auto [retainedReserve,textureReserve]=gpuPages->compositionReservation(*entry);
++                        if(!makeRoom(retainedReserve,textureReserve))throw std::bad_alloc();
+                         if(!gpuPages->compose(gfx,compositor,*entry,tiles)) {
+                             // Admission can progress next turn in these same targets.
+                             copies.clear();return false;
+@@ -863,6 +881,7 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
+ 					if (!gpu)
+ 						buildOpaqueRuns(*entry);
+ 					entry->valid = true;
++					entry->cpuComposed = !gpuPages;
+ 					++rebuilds;
+ 					if (native) ++reductions;
+ 				}
+diff --git a/src/render/SoftwareTerrainCache.h b/src/render/SoftwareTerrainCache.h
+index 9aee1bd1d..da92d9884 100644
+--- a/src/render/SoftwareTerrainCache.h
++++ b/src/render/SoftwareTerrainCache.h
+@@ -70,6 +70,8 @@ class SoftwareTerrainCache
+ 		std::vector<OpaqueRun> opaqueRuns;
+ 		std::array<std::unique_ptr<HeldMask>, ChunkTiles * ChunkTiles> masks;
+ 		bool valid = false;
++		// Device-composed pages have no matching pixels in image/parked.
++		bool cpuComposed = true;
+ 		// Only materials present in discovered recipes invalidate this page.
+ 		std::vector<std::pair<TerrainVisual::MaterialId, std::uint64_t>> materialRevisions;
+ 		std::uint64_t used = 0;
+diff --git a/src/render/TerrainPresentationTest.cpp b/src/render/TerrainPresentationTest.cpp
+index c602a9c58..0e198a9c6 100644
+--- a/src/render/TerrainPresentationTest.cpp
++++ b/src/render/TerrainPresentationTest.cpp
+@@ -418,10 +418,18 @@ TEST_SUITE("TerrainPresentation")
+             REQUIRE(gfx.backendSwitchStatus().phase==RendererSwitchPhase::Complete);REQUIRE(gfx.backendSwitchStatus().active==backend);
+         };
+         const auto draw=[&](SoftwareTerrainCache &cache,int vx,int vy,int scale,int reduction,int animation,bool whole) {
+-            gfx.setClipRect();gfx.drawFilledRect(0,0,512,512,17,29,41);
+-            gfx.beginMapTransform(1,0,0,0,0,512,512);
+-            REQUIRE(cache.prepareAtResolution(scene,*globals->terrain,0,0,15,15,vx,vy,fixture.team->me,whole,animation,scale,false,reduction));
+-            cache.draw(gfx);gfx.endMapTransform();gfx.renderer->flush();
++            for(unsigned attempt=0;attempt<32;++attempt) {
++                gfx.setClipRect();gfx.drawFilledRect(0,0,512,512,17,29,41);
++                gfx.beginMapTransform(1,0,0,0,0,512,512);
++                REQUIRE(cache.prepareAtResolution(scene,*globals->terrain,0,0,15,15,vx,vy,fixture.team->me,whole,animation,scale,false,reduction));
++                cache.draw(gfx);gfx.endMapTransform();gfx.renderer->flush();
++                CHECK(cache.bytes()<=SoftwareTerrainCache::GPUCacheBudget);
++                CHECK(cache.residentTextureBytes()<=SoftwareTerrainCache::GPUBudget);
++                if(didRecordDeviceFrame(*gfx.renderer))break;
++                // Dense retained CPU pages can require several bounded upload
++                // submissions. Retry the same view until it is published.
++                gfx.nextFrame();
++            }
+             REQUIRE(didRecordDeviceFrame(*gfx.renderer));
+             std::unique_ptr<SDL_Surface,decltype(&SDL_DestroySurface)> pixels(gfx.renderer->capture(),SDL_DestroySurface);REQUIRE(pixels);
+             std::unique_ptr<SDL_Surface,decltype(&SDL_DestroySurface)> rgba(SDL_ConvertSurface(pixels.get(),SDL_PIXELFORMAT_RGBA32),SDL_DestroySurface);REQUIRE(rgba);
+@@ -455,6 +463,32 @@ TEST_SUITE("TerrainPresentation")
+             for(int divisor:{2,4,8,16,32})compare(0,0,1,divisor,25,true);
+             map.unsetMapDiscovered();map.setMapDiscovered(0,0,8,16,fixture.team->me);glob2test::observeMap(map,scene);compare(31,31,1,0,25,false);
+             compare(0,0,4,0,25,true);
++            {
++                ScopedCPUComposition composition(gfx);
++                SoftwareTerrainCache migration;
++                const auto cpuPixels=draw(migration,0,0,4,0,25,true);
++                CHECK_FALSE(bool(migration.gpuPages));
++                composition.device().forceCPU=false;
++                draw(migration,0,0,1,0,25,true);
++                REQUIRE(bool(migration.gpuPages));
++                const auto beforeReturn=migration.cacheRebuilds();
++                composition.device().forceCPU=true;
++                const auto restored=draw(migration,0,0,4,0,25,true);
++                CHECK_FALSE(bool(migration.gpuPages));
++                CHECK(migration.cacheRebuilds()==beforeReturn);
++                CHECK(restored==cpuPixels);
++                // Retaining several densities must still leave room for new
++                // composed targets and masks, including queued mask leases.
++                for(int density:{4,2,1})
++                    for(int vy:{0,16})for(int vx:{0,16})
++                        draw(migration,vx,vy,density,0,25,true);
++                composition.device().forceCPU=false;
++                const auto bounded=draw(migration,15,15,1,0,25,true);
++                REQUIRE(bool(migration.gpuPages));
++                composition.device().forceCPU=true;
++                SoftwareTerrainCache reference;
++                CHECK(bounded==draw(reference,15,15,1,0,25,true));
++            }
+             {
+                 // Model concurrent retained atlas/geometry allocations without
+                 // allocating fake GPU resources or weakening the actual cap.
