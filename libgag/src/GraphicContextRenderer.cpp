@@ -83,7 +83,8 @@ void GraphicContext::endDeviceTarget()
 }
 bool GraphicContext::submitDevicePacket(DrawPacket packet)
 {
-    return presentationDevice && renderer && recordDevicePacket(*renderer, std::move(packet));
+    return presentationDevice && renderer && recordDevicePacket(*renderer, std::move(packet)) &&
+        didRecordDeviceFrame(*renderer);
 }
 
 bool GraphicContext::beginRenderFrame()
