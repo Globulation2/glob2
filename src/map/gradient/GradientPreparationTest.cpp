@@ -1344,7 +1344,7 @@ TEST_CASE("GradientPreparation/minimal GPU views release source graphs and recov
         REQUIRE(GAGCore::ThreadSupport::available);
         nativeExecutor.configure(2,[](auto work){return GAGCore::ThreadSupport::launch(std::move(work));});
     }
-    for(bool modified:{false,true})for(int swim:{0,1,3,6})for(unsigned ring:{64u,128u,256u}) {
+    for(bool modified:{false,true})for(int swim:{0,1,3,6,WATER_ONLY_CLASS})for(unsigned ring:{64u,128u,256u}) {
         CAPTURE(modified);CAPTURE(swim);CAPTURE(ring);
         glob2test::HeadlessGame world({.wDec=4,.hDec=4,.teams=1,.discovered=true,.clearImmobile=true,.header=true});
         auto& map=world.game.map;

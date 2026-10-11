@@ -18,6 +18,7 @@
 #include <nlohmann/json.hpp>
 #include <fstream>
 #include <iterator>
+#include <queue>
 
 TEST_SUITE("TerrainProperties")
 {
@@ -907,6 +908,73 @@ void paintVertices(Map& map, int x0, int y0, int x1, int y1, TerrainType type)
 
 TEST_SUITE("TerrainHazardRouting")
 {
+TEST_CASE("water-only movement minima track fast water and retain optimal obstacle routes")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.wDec=5,.hDec=5,.teams=1,.discovered=true,.clearImmobile=true,.header=true});
+    auto& map=world.game.map;
+    map.game=nullptr;
+    map.importTerrainDefinitions(R"({"schemaVersion":1,"terrains":[{"key":"test:fast-water","name":"Fast water","base":"water","appearance":"water","properties":{"groundSpeedQ8":512}}]})");
+    map.setGame(&world.game);
+    const auto fast=map.terrainRegistry().find("test:fast-water");
+    REQUIRE(fast.has_value());
+    map.fillTerrain(WATER);
+    CHECK(map.minStepCost(WATER_ONLY_CLASS)==10);
+    map.paintCell(3,3,*fast);
+    CHECK(map.minStepCost(WATER_ONLY_CLASS)==5);
+    map.paintCell(3,3,WATER); // Removing the last fast cell must remove its histogram contribution.
+    map.paintCell(25,25,TRAIL);
+    CHECK(map.hasTerrainMovementModifiers());
+    CHECK(map.minStepCost(WATER_ONLY_CLASS)==10); // Faster walkable ground is unavailable to swimmers.
+
+    map.fillTerrain(*fast);
+    // This fixed layout makes an overestimated water-only heuristic choose
+    // a more expensive first move. Grass corners block the surrounding cells.
+    for (const auto [x,y]:{std::pair{9,19}, {10,13}, {10,14}, {10,16}, {10,18}, {16,16}, {17,14}})
+        map.setVertexTerrain(x,y,GRASS);
+    REQUIRE(map.minStepCost(WATER_ONLY_CLASS)==5);
+    constexpr int startX=8,startY=16,targetX=20,targetY=16;
+    // Independent reverse Dijkstra: uniform fast water costs 5 cardinal and
+    // 7 diagonal. Read only passability; use neither engine costs nor its heuristic.
+    std::vector<int> distance(map.size,INT_MAX);
+    using Entry=std::pair<int,size_t>;
+    std::priority_queue<Entry,std::vector<Entry>,std::greater<Entry>> pending;
+    const auto target=map.coordToIndex(targetX,targetY);
+    distance[target]=0;
+    pending.emplace(0,target);
+    while (!pending.empty())
+    {
+        const auto [cost,index]=pending.top(); pending.pop();
+        if (cost!=distance[index]) continue;
+        const int x=int(index&map.wMask),y=int(index>>map.wDec);
+        REQUIRE(map.terrainPropertiesAt(index).groundSpeedQ8==512);
+        for (int dx=-1;dx<=1;++dx) for (int dy=-1;dy<=1;++dy)
+        {
+            if (!dx && !dy) continue;
+            const auto next=map.coordToIndex(x+dx,y+dy);
+            if (!map.terrainPropertiesAt(next).swimmable) continue;
+            const int candidate=cost+(dx && dy ? 7 : 5);
+            if (candidate<distance[next]) { distance[next]=candidate; pending.emplace(candidate,next); }
+        }
+    }
+    REQUIRE(distance[map.coordToIndex(startX,startY)]==92);
+    int x=startX,y=startY,travelCost=0;
+    for (int step=0;step<64 && (x!=targetX || y!=targetY);++step)
+    {
+        int dx=0,dy=0;
+        REQUIRE(map.pathfindPointToPoint(x,y,targetX,targetY,&dx,&dy,WATER_ONLY_CLASS,world.game.teams[0]->me,100));
+        REQUIRE((dx!=0 || dy!=0));
+        const auto next=map.coordToIndex(x+dx,y+dy);
+        const int edge=dx && dy ? 7 : 5;
+        CHECK(edge+distance[next]==distance[map.coordToIndex(x,y)]);
+        travelCost+=edge;
+        x=(x+dx)&map.wMask; y=(y+dy)&map.hMask;
+    }
+    CHECK(x==targetX); CHECK(y==targetY); CHECK(travelCost==92);
+    map.fillTerrain(WATER);
+    CHECK(map.minStepCost(WATER_ONLY_CLASS)==10);
+}
+
 TEST_CASE("ice costs twenty recovery ticks per HP and remains traversable")
 {
     glob2test::HeadlessGlobals globals;
