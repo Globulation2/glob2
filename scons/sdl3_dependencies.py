@@ -9,6 +9,8 @@ import platform
 import subprocess
 import tarfile
 import tempfile
+import time
+import urllib.error
 import urllib.request
 
 LOCK = Path(__file__).with_name('sdl3-versions.json')
@@ -24,9 +26,25 @@ def download(work, versions):
         archive = work / spec['archive']
         if not archive.exists():
             temporary = archive.with_suffix(archive.suffix + '.download')
-            with urllib.request.urlopen(spec['url'], timeout=60) as response:
-                temporary.write_bytes(response.read())
-            temporary.replace(archive)
+            for attempt in range(3):
+                try:
+                    with urllib.request.urlopen(spec['url'], timeout=60) as response:
+                        payload = response.read()
+                    if hashlib.sha256(payload).hexdigest() != spec['sha256']:
+                        raise ValueError(f'Dependency archive checksum mismatch: {archive}')
+                    temporary.write_bytes(payload)
+                    temporary.replace(archive)
+                    break
+                except urllib.error.HTTPError as error:
+                    error.close()
+                    if error.code not in (408, 429, 500, 502, 503, 504) or attempt == 2:
+                        raise
+                except (urllib.error.URLError, TimeoutError, ConnectionError):
+                    if attempt == 2:
+                        raise
+                finally:
+                    temporary.unlink(missing_ok=True)
+                time.sleep(2 ** attempt)
         if hashlib.sha256(archive.read_bytes()).hexdigest() != spec['sha256']:
             raise ValueError(f'Dependency archive checksum mismatch: {archive}')
 
