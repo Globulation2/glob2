@@ -45,7 +45,8 @@ public:
 		bool superseded = false, done = false;
         bool cpuOnly=false; // Unsaved, original-worker ownership admission recovery.
         std::atomic<bool> cancelGPU{false};
-        std::atomic<std::shared_ptr<gradient_kernel::OpenCLRequiredControl>> requiredControl;
+        // Standard shared_ptr atomic functions also work with pinned Emscripten libc++.
+        std::shared_ptr<gradient_kernel::OpenCLRequiredControl> requiredControl;
 		std::exception_ptr error;
 		gradient_preparation::Request request;
 		gradient_preparation::CrowdingScratch* crowding = nullptr;
@@ -147,7 +148,7 @@ private:
                     cpuReasons[unsigned(CPUReason::OwnedInputDecline)].fetch_add(1,std::memory_order_relaxed);
                     cpuFields.fetch_add(1,std::memory_order_relaxed);
                 }else {
-                job.requiredControl.store(job.deviceField->requiredControl,std::memory_order_release);
+                std::atomic_store_explicit(&job.requiredControl,job.deviceField->requiredControl,std::memory_order_release);
                 if(job.cancelGPU.load(std::memory_order_acquire) && job.deviceField->requiredControl)job.deviceField->requiredControl->requestCancel();
                 job.deviceField->completion=executor->defer();
                 const auto ownedEnd=diagnostics ? glob2::threadCpuNs() : 0;
@@ -204,7 +205,7 @@ private:
         // request/publication handshake also covers DTO creation after this call.
         if(executor && !executor->finished(job.batch)) {
             job.cancelGPU.store(true,std::memory_order_release);
-            if(auto control=job.requiredControl.load(std::memory_order_acquire))control->requestCancel();
+            if(auto control=std::atomic_load_explicit(&job.requiredControl,std::memory_order_acquire))control->requestCancel();
         }
 		if (executor) executor->join(job.batch);
         const auto joined=diagnostics ? gradient_kernel::monotonicNs() : 0;
@@ -251,7 +252,7 @@ public:
 		// before their contexts, destination slots or scratch storage are destroyed.
 		for (auto& job : pending) if (!job->batch.empty()) {
 			job->cancelGPU.store(true,std::memory_order_release);
-            if(auto control=job->requiredControl.load(std::memory_order_acquire))control->requestCancel();
+            if(auto control=std::atomic_load_explicit(&job->requiredControl,std::memory_order_acquire))control->requestCancel();
 			try { executor->join(job->batch); } catch (...) {}
 		}
 		pending.clear(); spare.clear(); workspaces.clear();
@@ -316,7 +317,7 @@ public:
 		auto job=std::make_unique<Job>();
 		job->slot=snapshot.slot; job->swim=snapshot.swim; job->due=tick+snapshot.remaining;
 		job->superseded=snapshot.superseded; job->done=true; job->data=std::move(snapshot.data);
-        job->cpuOnly=false;job->cancelGPU=false;job->requiredControl.store({});
+        job->cpuOnly=false;job->cancelGPU=false;std::atomic_store(&job->requiredControl,std::shared_ptr<gradient_kernel::OpenCLRequiredControl>{});
 		pending.push_back(std::move(job));
 	}
 	// Execution is local configuration, never part of saved simulation state.
@@ -349,7 +350,7 @@ public:
 		else { job = std::move(spare.back()); spare.pop_back(); }
 		job->slot=slot; job->swim=swim; job->due=tick+delay;
 		job->deviceField.reset();
-        job->cancelGPU=false;job->requiredControl.store({});
+        job->cancelGPU=false;std::atomic_store(&job->requiredControl,std::shared_ptr<gradient_kernel::OpenCLRequiredControl>{});
         job->done=false; job->superseded=false; job->cpuOnly=false; job->error=nullptr;  job->owner=this; job->preparationNs=0;
 		auto *ptr=job.get(); pending.push_back(std::move(job));
 		lastSubmission = tick;
