@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Glob2Test.h"
+#include <cstring>
 #include <SDLGPUDevice.h>
 #ifdef HAVE_CONFIG_H
 #include <glob2/BuildConfig.h>
@@ -61,6 +62,21 @@ struct Video
 }
 TEST_SUITE("SDLGPUDevice")
 {
+    GLOB2_TEST_CASE("physical scissors preserve fractional alpha seams", "[display][isolated]")
+    {
+        const char *shaders=std::getenv("GLOB2_TEST_SHADER_DIRECTORY"); REQUIRE(shaders); Video video;auto owner=makeSDLGPUDevice(nullptr,16,16,shaders);auto &device=*owner;
+        auto render=[&](bool partition) {
+            RenderFrame frame;frame.logicalWidth=23;frame.logicalHeight=19;
+            DrawPacket base;base.kind=DrawPacket::Kind::Fill;base.destination={0,0,23,19};base.color={0,0,0,255};frame.packets.push_back(base);
+            auto packet=base;packet.color={200,90,40,128};
+            if(partition){packet.targetScissor=SDL_Rect{0,0,8,16};frame.packets.push_back(packet);packet.targetScissor=SDL_Rect{8,0,8,16};}
+            frame.packets.push_back(packet);REQUIRE(device.submit(std::move(frame)));device.present();return Surface(device.captureSynchronously({}),SDL_DestroySurface);
+        };
+        auto whole=render(false),partitioned=render(true);REQUIRE(whole);REQUIRE(partitioned);
+        for(int y=0;y<16;++y)for(int x=0;x<16;++x){Uint8 a[4],b[4];REQUIRE(SDL_ReadSurfacePixel(whole.get(),x,y,&a[0],&a[1],&a[2],&a[3]));REQUIRE(SDL_ReadSurfacePixel(partitioned.get(),x,y,&b[0],&b[1],&b[2],&b[3]));CHECK(std::memcmp(a,b,4)==0);}
+        RenderFrame invalid;invalid.logicalWidth=16;invalid.logicalHeight=16;DrawPacket packet;packet.kind=DrawPacket::Kind::Fill;packet.destination={0,0,16,16};packet.targetScissor=SDL_Rect{0,0,-1,16};invalid.packets.push_back(packet);CHECK_THROWS_AS(device.submit(std::move(invalid)),std::invalid_argument);
+    }
+
     GLOB2_TEST_CASE("explicit Vulkan trim restores live immutable source pixels", "[display][isolated]")
     {
         {

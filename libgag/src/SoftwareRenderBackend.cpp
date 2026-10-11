@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <RenderBackend.h>
+#include <RenderFrame.h>
 #include <SurfaceRaster.h>
 #include <cmath>
 #include <optional>
@@ -10,6 +11,7 @@ namespace GAGCore
 // Private factory: arbitrary geometry retains SDL's rasterizer. Sprites and
 // rectangles do not create textures or enter its command queue.
 std::unique_ptr<RenderBackend> makeSDLSoftwareGeometryBackend(SDL_Surface *surface);
+void setSDLSoftwareTargetScissor(RenderBackend &, const SDL_Rect *);
 namespace
 {
 class TargetClip
@@ -32,7 +34,7 @@ class SoftwareRenderBackend final : public RenderBackend
 	float scale = 1, offsetX = 0, offsetY = 0;
 	int logicalW = 0, logicalH = 0;
 	float nativeX = 1, nativeY = 1;
-	std::optional<SDL_Rect> bounds, localClip;
+	std::optional<SDL_Rect> bounds, localClip, physicalClip;
 	std::unique_ptr<RenderBackend> geometry;
 	RenderOperations counts;
 
@@ -61,8 +63,14 @@ class SoftwareRenderBackend final : public RenderBackend
 			const auto mapped = nativeClip(transformed);
 			SDL_GetRectIntersection(&result, &mapped, &result);
 		}
-		return result;
+		return detail::intersectTargetScissor(result, physicalClip);
 	}
+    void syncGeometryClip() {
+        if (!geometry) return;
+        const auto rect = outputClip();
+        setSDLSoftwareTargetScissor(*geometry, physicalClip ? &rect : nullptr);
+        if (!physicalClip) geometry->clip(localClip ? &*localClip : nullptr);
+    }
 	SDL_Rect pixels(const SDL_FRect &rect) const
 	{
 		// Round shared endpoints, never origin and width independently. Adjacent
@@ -83,11 +91,18 @@ class SoftwareRenderBackend final : public RenderBackend
 			geometry->transform(scale, offsetX, offsetY, bounds ? &*bounds : nullptr);
 			geometry->clip(localClip ? &*localClip : nullptr);
 		}
+        syncGeometryClip();
 		return *geometry;
 	}
 
   public:
 	explicit SoftwareRenderBackend(SDL_Surface *value) : target(value) {}
+    void targetScissor(const SDL_Rect *rect) {
+        flush();
+        physicalClip = rect ? std::optional<SDL_Rect>(*rect) : std::nullopt;
+        detail::intersectTargetScissor({0,0,target->w,target->h}, physicalClip);
+        syncGeometryClip();
+    }
 	void bindTarget(SDL_Surface *value) override
 	{
 		if (target == value)
@@ -112,12 +127,14 @@ class SoftwareRenderBackend final : public RenderBackend
 		localClip.reset();
 		if (geometry)
 			geometry->transform(value, x, y, clipBounds);
+        syncGeometryClip();
 	}
 	void clip(const SDL_Rect *rect) override
 	{
 		localClip = rect ? std::optional<SDL_Rect>(*rect) : std::nullopt;
 		if (geometry)
 			geometry->clip(rect);
+        syncGeometryClip();
 	}
 	void blit(const void *key, SDL_Surface *source, std::uint64_t revision, bool opaque,
 			  const SDL_Rect &sourceRect, const SDL_FRect &destination, Uint8 alpha) override
@@ -247,6 +264,12 @@ class SoftwareRenderBackend final : public RenderBackend
 	}
 };
 } // namespace
+void setSoftwareTargetScissor(RenderBackend &backend, const SDL_Rect *rect)
+{
+    auto *value = dynamic_cast<SoftwareRenderBackend *>(&backend);
+    if (!value) throw std::logic_error("Software backend missing");
+    value->targetScissor(rect);
+}
 std::unique_ptr<RenderBackend> makeSoftwareRenderBackend(SDL_Surface *surface)
 {
 	if (!surface || SDL_GetPixelFormatDetails(surface->format)->bytes_per_pixel != 4)

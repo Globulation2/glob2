@@ -63,19 +63,20 @@ namespace GAGCore
 			delete (*it).second;
 		fontMap.clear();
 		
-		if (fileManager)
-		{
-			delete fileManager;
-			fileManager = NULL;
-			delete strings;
-			strings = NULL;
-		}
-		
-		if (gc)
-		{
-			delete gc;
-			gc = NULL;
-		}
+        // Graphics retirement drains completed asynchronous screenshots and
+        // still needs the file manager after sprite/font resources retire.
+        if (gc)
+        {
+            delete gc;
+            gc = NULL;
+        }
+        if (fileManager)
+        {
+            delete fileManager;
+            fileManager = NULL;
+            delete strings;
+            strings = NULL;
+        }
 	}
 	
     void Toolkit::requestSprite(const std::string& name, bool variableAtlas)

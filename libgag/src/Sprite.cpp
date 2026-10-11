@@ -15,6 +15,7 @@
 #include <cstring>
 #include <SpriteLoad.h>
 #include <AssetLoader.h>
+#include <RenderDevice.h>
 
 #include <memory>
 using std::make_unique;
@@ -45,6 +46,8 @@ namespace GAGCore
 	static std::set<Sprite*> loadedSprites;
 	static bool highResolutionEnabled = false;
     static size_t requestedHighResolutionGeneration = 0;
+    static bool requestedHighResolutionMipmaps = false;
+    static bool requestedHighResolutionCPUChain = false;
     static std::string requestedHighResolutionDirectory;
     static std::string packDirectory, packText;
     static bool packRead=false;
@@ -59,6 +62,7 @@ namespace GAGCore
         HighResolutionInputs inputs;
         std::unique_ptr<Sprite> prepared;
         size_t frame = 0;
+        bool retainPublishedOnFailure = false;
     };
     static std::map<Sprite*, HighResolutionReload> pendingHighResolution;
     // Source decoding and standalone frame preparation work with either texture
@@ -67,8 +71,7 @@ namespace GAGCore
     // chain there duplicates work and prevents adopting the base-only prefetch.
     static bool highResolutionFramesSupported()
     {
-        return _gc && (_gc->getOptionFlags() &
-            (GraphicContext::USEGPU | GraphicContext::PORTABLEGPU));
+        return _gc && _gc->rendererCapabilities().textureFiltering;
     }
     static bool readPack(const std::string &directory)
     {
@@ -98,7 +101,12 @@ namespace GAGCore
 		}
 	}
 	
-    void Sprite::registerLoaded() { loadedSprites.insert(this); }
+    void Sprite::registerLoaded() {
+        loadedSprites.insert(this);
+        for (std::size_t index=0;index<images.size();++index) if(images[index]) {
+            images[index]->spriteSource=this; images[index]->spriteFrame=index;
+        }
+    }
     void Sprite::adoptLoaded(Sprite& prepared)
     {
         assert(images.empty() && rotated.empty());
@@ -108,10 +116,14 @@ namespace GAGCore
         experimentImages.swap(prepared.experimentImages); experimentRotated.swap(prepared.experimentRotated);
         highResolutionAtlas = std::move(prepared.highResolutionAtlas);
         blockCompleteHD = std::move(prepared.blockCompleteHD);
-#ifdef HAVE_OPENGL
         atlas = std::move(prepared.atlas);
-        vbo = std::exchange(prepared.vbo, 0); texCoordBuffer = std::exchange(prepared.texCoordBuffer, 0);
+        atlasStamps = std::move(prepared.atlasStamps); atlasRegions = std::move(prepared.atlasRegions);
+        atlasMemory = std::move(prepared.atlasMemory); atlasVariableSizes = prepared.atlasVariableSizes;
         for (auto *image : images) if (image && image->textureInfo) image->textureInfo->sprite = this;
+#ifdef HAVE_OPENGL
+        vbo = std::exchange(prepared.vbo, 0); texCoordBuffer = std::exchange(prepared.texCoordBuffer, 0);
+        bufferGeneration = prepared.bufferGeneration;
+
 #endif
         registerLoaded();
     }
@@ -147,11 +159,53 @@ namespace GAGCore
 	// Create texture atlas for images array
 	// Using a sprite sheet lets us efficiently drawn terrain and water with a few calls
 	// to glDrawArrays, rather than 272 individual calls to glBegin...glEnd.
+    bool Sprite::createDeviceTextureAtlas(int maximumTextureSize, bool variableSizes) {
+        if (images.empty() || dynamicTeamColor || std::any_of(rotated.begin(),rotated.end(),[](auto value){return value!=nullptr;})) return false;
+        std::vector<SpriteAtlasSource> sources; sources.reserve(images.size());
+        for (std::size_t index=0;index<images.size();++index) {
+            auto *image=images[index]; if(!image || image->highResolutionSampling || !image->sdlsurface)return false;
+            image->spriteSource=this;image->spriteFrame=index;
+            sources.push_back({image->sdlsurface,{image->lifetimeIdentity(),image->contentRevision(),image->sdlsurface->w,image->sdlsurface->h}});
+        }
+        const bool unchanged=atlas && atlasStamps.size()==sources.size() && atlasRegions.size()==sources.size() &&
+            std::equal(atlasStamps.begin(),atlasStamps.end(),sources.begin(),[](const auto &a,const auto &b){return a==b.stamp;}) &&
+            atlas->sdlsurface->w<=std::min(2048,maximumTextureSize) && atlas->sdlsurface->h<=std::min(2048,maximumTextureSize);
+        if(unchanged) {
+            if(!atlasMemory)atlasMemory=reserveSpriteAtlasMemory(std::size_t(atlas->sdlsurface->pitch)*atlas->sdlsurface->h);
+            return bool(atlasMemory);
+        }
+        // Device packets already own old pixel revisions. Retire the source page
+        // before admission so a full CPU cache can still replace a changed page.
+        atlas.reset();atlasMemory.reset();atlasStamps.clear();atlasRegions.clear();
+        for(auto *image:images)image->textureInfo.reset();
+        auto page=prepareSpriteRenderAtlas(sources,maximumTextureSize,variableSizes);
+        if(!page)return false;
+        AssetImage image(page->pixels.release());
+        auto replacement=DrawableSurface::fromAssetImage(image,true,false);
+        atlas=std::move(replacement);atlasMemory=std::move(page->memory);
+        atlasStamps=std::move(page->stamps);atlasRegions=std::move(page->regions);return true;
+    }
+    bool Sprite::resolveDeviceAtlas(DrawableSurface &surface,SDL_Rect &source,const DrawableSurface *&upload) {
+        if(surface.spriteSource!=this || surface.spriteFrame>=images.size() || images[surface.spriteFrame]!=&surface ||
+            !Toolkit::gc || !Toolkit::gc->renderDevice() || surface.highResolutionSampling)return false;
+        if(!createDeviceTextureAtlas(Toolkit::gc->renderDevice()->capabilities().maximumTextureSize,atlasVariableSizes))return false;
+        const auto &region=atlasRegions[surface.spriteFrame];
+        if(source.x<0 || source.y<0 || source.w<=0 || source.h<=0 || source.x>region.w-source.w || source.y>region.h-source.h)return false;
+        source.x+=region.x;source.y+=region.y;upload=atlas.get();return true;
+    }
 	bool Sprite::createTextureAtlas(bool allowVariableSizes)
 	{
+        atlasVariableSizes=allowVariableSizes;
+        if (Toolkit::gc && Toolkit::gc->renderDevice())
+            return createDeviceTextureAtlas(Toolkit::gc->renderDevice()->capabilities().maximumTextureSize, allowVariableSizes);
+
 #ifdef HAVE_OPENGL
 		if (!Toolkit::gc || !(Toolkit::gc->getOptionFlags() & GraphicContext::USEGPU))
 			return false;
+        if (atlas && atlasMemory) {
+            atlas.reset(); atlasMemory.reset(); atlasStamps.clear(); atlasRegions.clear();
+            for (auto *image:images) if(image)image->textureInfo.reset();
+        }
 		if (atlas)
 			return true;
 		if (images.empty())
@@ -235,10 +289,17 @@ namespace GAGCore
 			}
 		}
 		atlas->uploadToTexture();
+        atlasStamps.clear(); atlasRegions.clear();
+        for (auto *image:images) {
+            image->spriteSource=this; image->spriteFrame=atlasStamps.size();
+            atlasStamps.push_back({image->lifetimeIdentity(),image->contentRevision(),image->sdlsurface->w,image->sdlsurface->h});
+            atlasRegions.push_back({image->textureInfo->texX,image->textureInfo->texY,image->textureInfo->w,image->textureInfo->h});
+        }
 		this->atlas = std::move(atlas);
 #ifndef GLOB2_WEBGL2
 		glGenBuffers(1, &vbo);
 		glGenBuffers(1, &texCoordBuffer);
+        bufferGeneration = Toolkit::gc->getGLContextGeneration();
 #endif
 		return true; // Success
 #else
@@ -386,9 +447,14 @@ namespace GAGCore
     {
         const char *overrideDir = std::getenv("GLOB2_EXPERIMENT_TEXTURE_DIR");
         const std::string directory = overrideDir ? overrideDir : "data/highres/v1";
-        if (highResolutionEnabled == enabled &&
+        const bool mipmaps = _gc && _gc->rendererCapabilities().textureMipmaps;
+        requestedHighResolutionCPUChain = mipmaps && _gc && _gc->renderDevice();
+        const bool sameSource = highResolutionEnabled == enabled &&
             requestedHighResolutionGeneration == Toolkit::assets().sourceGeneration() &&
-            requestedHighResolutionDirectory == directory) return;
+            requestedHighResolutionDirectory == directory;
+        if (sameSource && requestedHighResolutionMipmaps == mipmaps) return;
+        const bool retainPublishedOnFailure = sameSource;
+        requestedHighResolutionMipmaps = mipmaps;
         highResolutionEnabled = enabled;
         packRead = false; packText.clear(); packEntries.clear(); packSource = {};
         pendingHighResolution.clear();
@@ -400,8 +466,31 @@ namespace GAGCore
             prepared->fileName = sprite->fileName;
             prepared->dynamicTeamColor = sprite->dynamicTeamColor;
             pendingHighResolution.emplace(sprite, HighResolutionReload{
-                prefetchHighResolutionIncremental(sprite->fileName, sprite->images.size()), std::move(prepared)});
+                prefetchHighResolutionIncremental(sprite->fileName, sprite->images.size()), std::move(prepared), 0, retainPublishedOnFailure});
         }
+    }
+    void Sprite::refreshHighResolutionForRenderer()
+    {
+        // Standalone graphics contexts can switch without an asset toolkit.
+        // Artwork policy is initialized when the application loads its assets.
+        if (!Toolkit::getFileManager()) return;
+        // Backend changes preserve the artwork preference established by the
+        // application or caller; only its preparation policy is refreshed.
+        const bool needsCPUChain = _gc && _gc->renderDevice() && _gc->rendererCapabilities().textureMipmaps;
+        if (needsCPUChain && !requestedHighResolutionCPUChain) {
+            for (const auto *sprite : loadedSprites) {
+                for (auto *image : sprite->experimentImages) {
+                    if (image && (image->getW() > 1 || image->getH() > 1) && image->preparedMips.empty()) {
+                        // Legacy GL may have retired its CPU chain after upload.
+                        // Force one reload when entering a device which restores
+                        // from owned levels; repeated failed refreshes stay terminal.
+                        requestedHighResolutionMipmaps = false;
+                        break;
+                    }
+                }
+            }
+        }
+        requestHighResolution(highResolutionEnabled);
     }
     bool Sprite::pollHighResolution(unsigned budgetMs)
     {
@@ -426,6 +515,14 @@ namespace GAGCore
                 ++it; continue;
             }
             reload.prepared->createHighResolutionAtlas(reload.inputs);
+            if (reload.retainPublishedOnFailure) {
+                for (size_t frame = 0; frame < sprite->experimentImages.size(); ++frame) {
+                    if (!reload.prepared->experimentImages[frame]) {
+                        std::swap(reload.prepared->experimentImages[frame], sprite->experimentImages[frame]);
+                        std::swap(reload.prepared->experimentRotated[frame], sprite->experimentRotated[frame]);
+                    }
+                }
+            }
             sprite->clearTeamColorCache();
             sprite->highResolutionAtlas.swap(reload.prepared->highResolutionAtlas);
             sprite->experimentImages.swap(reload.prepared->experimentImages);
@@ -547,6 +644,7 @@ namespace GAGCore
         glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
         glGenBuffers(1,&batch->vbo);glGenBuffers(1,&batch->texCoordBuffer);
+        batch->bufferGeneration = _gc->getGLContextGeneration();
         for(int i=0;i<count;++i)
         {
             auto surface=experimentImages[i];surface->freeGPUTexture();
@@ -571,7 +669,7 @@ namespace GAGCore
         const std::string directory = overrideDir ? overrideDir : "data/highres/v1";
         if (!readPack(directory)) return inputs;
         const auto prefix = name.substr(name.find_last_of('/') + 1);
-        const bool mipmaps = bool(_gc->getOptionFlags() & GraphicContext::USEGPU);
+        const bool mipmaps = _gc->rendererCapabilities().textureMipmaps;
         size_t firstFrame = frames;
         auto add = [&](const std::string& path, bool mipmaps) {
             inputs.add(path, mipmaps);
@@ -608,7 +706,7 @@ namespace GAGCore
         const std::string directory = overrideDir ? overrideDir : "data/highres/v1";
         if (!readPack(directory)) return true;
         const auto prefix = name.substr(name.find_last_of('/') + 1);
-        const bool mipmaps = bool(_gc->getOptionFlags() & GraphicContext::USEGPU);
+        const bool mipmaps = _gc->rendererCapabilities().textureMipmaps;
         // Preserve the existing eight-frame decode window and worker admission.
         for (size_t frame = index; frame < index + 8; ++frame) {
             auto entry = packEntries.find(prefix + std::to_string(frame));
@@ -650,7 +748,7 @@ namespace GAGCore
         auto found = packEntries.find(wanted); if (found == packEntries.end()) return;
         const auto &entry = found->second;
         if (entry.width != getW(index) || entry.height != getH(index) || entry.scale != (dynamicTeamColor ? 0 : 4)) return;
-        const bool mipmaps = bool(_gc->getOptionFlags() & GraphicContext::USEGPU);
+        const bool mipmaps = _gc->rendererCapabilities().textureMipmaps;
         auto load = [&](const std::string& name, DrawableSurface *original) -> DrawableSurface* {
             if (!validHighResolutionFile(name)) return nullptr;
             // A partial pack may have no usable prepacked atlas. Every accepted
@@ -710,8 +808,10 @@ namespace GAGCore
         // must not re-enter the pending map while it destroys its own entries.
         if (loadedSprites.erase(this)) pendingHighResolution.erase(this);
 #ifdef HAVE_OPENGL
-        if(vbo)glDeleteBuffers(1,&vbo);
-        if(texCoordBuffer)glDeleteBuffers(1,&texCoordBuffer);
+        if (_gc && SDL_GL_GetCurrentContext() && bufferGeneration == _gc->getGLContextGeneration()) {
+            if(vbo)glDeleteBuffers(1,&vbo);
+            if(texCoordBuffer)glDeleteBuffers(1,&texCoordBuffer);
+        }
 #endif
 		for (auto image : experimentImages)
 			delete image;

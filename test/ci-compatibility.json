@@ -50,6 +50,7 @@
     "UnitHighResolutionCache/*",
     "ScreenExecution/*",
     "SettingsGraphics/*",
+    "RendererSwitchIntegration/*",
     "MarketFetch/*",
     "MarketsV2/*",
     "BuildingCatalog/*",
@@ -87,6 +88,7 @@
   "intentional_repeats": [
     "secondary-native-compatibility",
     "browser-engine-and-thread-count",
-    "software-and-webgl-presentation"
+    "software-and-webgl-presentation",
+    "live-renderer-backend-pairs"
   ]
 }

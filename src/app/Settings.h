@@ -5,6 +5,7 @@
 
 #include "Header.h"
 #include "ExperimentalFeatures.h"
+#include <RendererSelection.h>
 #include <string>
 #include <cstdint>
 #include <map>
@@ -53,6 +54,7 @@ public:
     int targetRenderFps = 60;
     static constexpr int RENDER_FPS_PRESETS[] = {25, 30, 60, 90, 120, 144, 165, 240, 0};
 	Uint32 screenFlags;
+    GAGCore::RendererBackend rendererBackend = GAGCore::RendererBackend::Auto;
 	Uint32 optionFlags;
 	bool automaticTorus; // Opt-in movement-triggered overview; local presentation only.
 	std::string language;

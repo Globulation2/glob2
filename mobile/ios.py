@@ -146,8 +146,10 @@ def main():
     from tools.package_assets import export_assets
     asset_root = output/'runtime-assets'
     export_assets(ROOT, asset_root, platform='ios', optimized=True, lossy=args.release)
+    shutil.copytree(output/'shaders', asset_root/'shaders', dirs_exist_ok=True,
+                    ignore=shutil.ignore_patterns('.*', 'RendererShaderLayouts.h', 'native-sources', '*.air'))
     shutil.copytree(recording_prefix/'share/licenses/recording',asset_root/'licenses/recording',dirs_exist_ok=True)
-    resource_roots = [(asset_root, folder) for folder in ('data','maps','campaigns','scripts','licenses')]
+    resource_roots = [(asset_root, folder) for folder in ('data','maps','campaigns','scripts','licenses','shaders')]
     if args.script_tests:
         resource_roots += [(ROOT, folder) for folder in ('games','test/fixtures','examples/javascript')]
     for resource_root, folder in resource_roots:

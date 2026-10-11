@@ -364,32 +364,6 @@ OpenGL texture uploads flush pending draws, and the scope flushes before leaving
 the resource pass. Software surfaces and dynamic team-color sprites retain their
 existing paths; cache-backed team-color surfaces cannot be deferred safely.
 
-## Texture preparation
-
-Generated or edited power-of-two HD surfaces use an integer GPU reduction pass
-on WebGL2 and desktop OpenGL contexts with integer shader and framebuffer support
-(OpenGL 3+ or `GL_EXT_gpu_shader4`). Each mip texel retains the
-CPU filter's alpha-weighted color and integer rounding; authored, worker-prepared
-mip chains keep their existing upload and compression path. Unsupported contexts
-(including older contexts without integer shaders), non-power-of-two surfaces and failed pipeline
-creation retain CPU preparation. Native scratch textures and shaders are released
-before their owning context is destroyed.
-
-The portable SDL renderer used on mobile samples standalone HD frames without
-mip chains, so those requests decode only base pixels. Its linear textures need
-premultiplied alpha: accelerated SDL renderers prepare them by blending a
-straight-alpha staging texture onto a transparent target. The staging texture is
-shared by the renderer, and compatible cached textures are updated in place when
-pixels change. SDL's per-target viewport, clip, scale and logical presentation
-state is restored before drawing resumes. Software renderers and unsupported
-target/blend combinations keep the CPU conversion. Preparation uses the existing
-SDL renderer APIs across OpenGL ES, Metal and other accelerated SDL backends.
-
-For a native preparation comparison, set
-`GLOB2_DISABLE_GPU_TEXTURE_PREPARATION=1` to retain CPU mip generation and SDL
-premultiplication. An unset or empty value enables supported GPU preparation.
-These paths change presentation work only; simulation and saved state are unchanged.
-
 ### Portable shader build artifacts
 
 `libgag/shaders/renderer-manifest.json` declares skin/rig, world/cloud, smooth-point and 2D primitive
@@ -474,6 +448,239 @@ the application's hardware, lifecycle and performance validation. Metal library
 production requires an Apple offline compiler; Direct3D and Metal hardware
 validation remains a separate release gate.
 
+## Runtime backend selection
+
+`RendererBackend` stores stable family identifiers: `auto`, `sdl-gpu`,
+`programmable-gl`, `webgpu`, `portable-sdl`, `software`, and `legacy-gl`.
+Availability depends on the build, shader assets, device and presentation surface.
+A family listed as unavailable cannot be selected. New devices remain experimental
+until their full feature and hardware release gates pass; Auto retains the existing
+platform policy.
+
+Startup precedence is an explicit command-line option or browser query, then the
+native `GLOB2_RENDERER` environment variable, persisted preference, and Auto. Existing
+`gpu`, `webgl2`, `opengl` and `sdl` aliases remain accepted. Startup overrides are
+session state. Settings without the new preference migrate their previous renderer
+flags; a new profile uses Auto.
+
+Graphics settings request a transition through `requestBackendSwitch()`. The status
+reports requested and active families, phase and failure reason. Requests coalesce
+before a transition starts; an active transition finishes before another begins.
+At a completed frame boundary the context retains the completed image, suspends
+old-device capture admission, delivers ready captures, cancels remaining captures,
+and replaces the presentation device and surface. Logical CPU assets survive; their
+backend allocations and context generation are replaced. The first presentation on
+the new device commits the preference. Failure restores the previous family, with
+software as the final fallback; failure does not save the unsuccessful preference.
+Rendering preference changes do not require restarting the game.
+
+Switch status also reports the completed transition duration. Context recovery
+recreates the device and shader objects before restoring logical resources. A fatal
+submission error schedules fallback at a presentation boundary; an unavailable
+frame is never committed as a successful backend change.
+
+The shared skin adapter records posed and rigged geometry into bounded atlas pages,
+with explicit depth passes and premultiplied atlas composition. Paint and material
+revisions remain immutable for submitted draws. Source, geometry and atlas caches
+are rebuilt after switching or recovery.
+
+Native texture restoration uses bounded upload slices when a full authored mip
+chain cannot coexist with retained depth atlases and its transfer buffer. Upload-only
+preparation can complete independently of a deferred draw frame; sampling waits for
+all levels to finish. GPU terrain composition also checks aggregate memory headroom
+before promotion and uses the CPU compositor under pressure. Individual cache class
+budgets do not imply that all classes fit simultaneously. Torus captures use the requested
+terrain density when the full tiled layout fits the terrain-target and aggregate
+resource budgets. Explicit trimming releases completed GPU copies that can be
+restored from logical CPU snapshots, while preserving in-flight work, unfinished
+uploads and externally owned rendered targets. Actual pressure can reduce density,
+rather than a fixed low pixel cap.
+
+The command adapter preserves adjacent painter order and flushes at 4096 commands.
+Immutable texture revisions retain the pixels that queued draws referenced, even
+when a surface changes or is deleted. The device retires allocations after submission
+completion. Budget deferral retains logical target handles so sliced uploads can
+finish. Aborted frames invalidate composed skin and terrain readiness separately
+from the device generation; fatal device failures still enter graphics recovery.
+Resource caches and devices belong to presentation, outside saves,
+orders, synchronized randomness and simulation checksums. Capability queries control
+filtering, torus, cloud layers, alpha-map coverage and live material rendering rather
+than the legacy `USEGPU` flag. CPU offscreen exports temporarily expose software
+capabilities, even when the window uses a GPU device. Graphics settings are also
+available from the in-game and editor menus; the running engine or editor is retained
+while settings are open.
+
+The browser WebGPU adapter (`browser/webgpu-device.js` and `WebGPUDevice.cpp`)
+prepares adapters, devices and shader pipelines asynchronously before changing
+presentation ownership. `glob2_webgpu_prepare(shaderDirectory)` and
+`glob2_webgpu_poll()` return pending (0), ready (1), or failed (-1), with
+`glob2_webgpu_error()` supplying the reason. The directory contains generated
+WGSL and has `metadata.json` in its parent. A synchronous main-thread helper
+reads the preloaded filesystem and transfers bounded, owned shader text to the
+presentation worker; that worker creates the GPU device and pipelines. Threaded
+builds do not read the worker-local JavaScript filesystem for shaders. Factory
+creation then attaches the
+managed canvas synchronously. The coordinator handles fallback and persisted
+preferences; the adapter reports device loss through the same polling API.
+
+Ordered packets cross Wasm in fixed-width packed records. Shader vertex layouts
+come from generated metadata; skin and posed-rig uniforms use the same generated
+std140 offsets as the native backends. Uploads copy current Wasm views into ordinary
+owned arrays, supporting shared memory and memory growth. Logical resource
+revisions use independent device allocations; submitted frames retain snapshots
+until queue completion. Discard fences also cover uploads prepared before packet
+submission; backend recreation shares the adapter’s issued completion timeline.
+Texture/depth allocations are bounded to 256 MiB in total, with General and
+SkinAtlas class budgets of 64 MiB, TerrainPage 128 MiB, and TerrainMask 32 MiB;
+persistent geometry to 32 MiB. Eight pending presentation frames and three capture
+requests bound GPU admission. Recorder flushes within one presentation share a
+fence and admission slot; all transient buffers also count toward the 256 MiB
+aggregate device limit. Capture maps complete asynchronously in admission
+order; recording timestamps and context remain in the originating C++ request.
+Submission, presentation and capture CPU times and completed capture latency
+are accumulated in shared telemetry. Browser screenshots must use polled capture or CPU export rather than blocking
+Wasm waiting for a promise.
+
+`tools/shaders/prove_webgpu_device.mjs` exercises the packed adapter with owned
+shared-memory uploads, offscreen rendering, indexed geometry, queue bounds,
+capture ordering and device recovery. Its Playwright overrides and secure-origin
+configuration match the shader proof. SwiftShader canvas testing requires Vulkan
+and matching ANGLE configuration; shader-only tests do not establish presentation
+support. Unit tests additionally inject asynchronous completion and loss without
+requiring a GPU. Application switch tests remain required for full feature and
+browser acceptance.
+
+The packed C++ wrapper has a separate regression proof. Build it with
+`tools/shaders/build_webgpu_cpp_proof.py`, supplying `--emxx` from the pinned
+Emscripten SDK, the browser SDL prefix with `--sdl-prefix`, and generated shaders
+with `--shader-directory`. Serve its output with `browser/serve.py`, then run
+`NODE_PATH=browser/node_modules node tools/shaders/prove_webgpu_cpp.cjs URL`.
+It checks all four textured skin atlas offsets, straight and premultiplied
+render-target sampling, and pressure eviction with live restoration sources and
+an unpresented frame lease. Exercising only JavaScript records would miss C++
+validation and packing defects.
+
+The programmable GL C++ lifecycle proof uses
+`tools/shaders/build_programmable_gl_cpp_proof.py` with the same pinned inputs,
+then `tools/shaders/prove_programmable_gl_cpp.cjs URL`. It recreates WebGL2
+contexts around SDL software surfaces and checks weighted terrain composition,
+world geometry interleaving, asynchronous capture, trimming and resize. This
+isolates device behavior; full application switching and torus tests are still
+required for browser acceptance.
+
+For cross-API shader conformance, set `SHADER_PROOF_PIXELS=1` on both shader
+proof commands, then run `python3 tools/shaders/compare_pixels.py` with the output
+directory. The comparison normalizes row orientation and permits at most one
+channel value (1/255) for SwiftShader translation rounding. This focused shader
+limit does not replace platform scene tolerances or release measurements.
+
+GPU memory pressure defers the whole presentation instead of displaying partial
+recorder chunks. A retained main-output texture restores the previous image;
+queued work is fenced, while already admitted captures keep their original
+metadata and buffers. The renderer reports `RenderAdmissionDeferred` and
+implements `discardFrame()` for the shared adapter. The coordinator invalidates
+skin and torus promotions for an interrupted presentation. Persistent blit
+buffers make normal presentation and rollback independent of transient buffer
+admission. Resource requests individually larger than their static limits remain
+errors. Retained output, pending captures and presentation buffers count toward
+the device's aggregate budget.
+
+Torus map captures use bounded offscreen regions across presentation turns.
+The capture owns its immutable presentation frame and freezes its animation,
+unit motion, team, options and sampling scale until all regions are complete.
+Region culling preserves the complete target coordinate system, and disjoint
+physical scissors prevent repeated blending at fractional zoom. Skin preview
+ownership is borrowed only within a draw call and restored before yielding.
+The complete main image remains visible during preparation; capture admission
+and main presentation pause, while simulation, audio and input continue.
+Source presentation phases advance on every unpaused draw turn; only the
+capture's pixels and phases stay frozen, so holds do not slow animation clocks.
+An intentional hold fences completed offscreen work without invalidating the
+healthy graphics generation. Admission pressure retries unpublished target
+content; a fatal device failure invalidates the generation.
+Map or team changes cancel the pending capture; it never publishes a partial
+atlas. The visual pause lasts several presentation turns and grows with capture
+size, so playback feel and transition latency require hardware review.
+
+Terrain composition uses authoritative integer shaders derived from the CPU
+compositor contract. The producer retains CPU-generated coverage masks with an
+8 MiB lookup cache. A global 40 MiB limit covers owned coverage objects and sample
+bytes, including leases held by queued submissions and retiring devices; bounded
+lookup and shared-ownership bookkeeping is accounted separately. Exhausted
+admission falls back to CPU composition. GPU coverage allocations retain their
+independent 32 MiB budget. `terrain-compose` reads four straight RGBA materials,
+RGBA16_UINT coverage weights/margin and R8_UINT palette selectors. Its 144-byte
+fragment block holds composition parameters and per-material seam constants.
+`terrain-reduce` performs the reference alpha-weighted box reduction for divisors
+1, 2, 4, 8, 16 and 32 with a 16-byte parameter block. Straight intermediates
+retain packed-ARGB wrapping; final premultiplied targets apply the same byte
+rounding as CPU uploads before hardware filtering. WebGPU coverage and scratch
+caches each admit at most 32 MiB and count against the device's aggregate budget.
+`tools/shaders/prove_terrain_webgpu.mjs` checks exact integer pixels, material
+presence, alpha, each reduction divisor and premultiplied output. The packed-device
+proof additionally checks owned shared-memory coverage uploads, target gutters,
+ordered capture and cache cleanup.
+
+Ordinary sprite frames share CPU atlas pages across device backends. Pages use
+one-pixel gutters, child lifetime/revision stamps, a conservative 2048-pixel
+maximum and a shared 64 MiB CPU ownership budget. Mutations publish a new page;
+queued draw packets retain their original uploaded pixels. HD frames retain
+standalone authored mip chains.
+
+Authored HD texture mip chains retain CPU-generated RGBA levels, including padded
+level zero. The WebGPU adapter allocates the complete chain, uploads owned copies
+of each level, and charges every level to resource budgets. Linear packets use
+trilinear sampling; nearest packets use level zero. Premultiplied source bytes
+are uploaded without a second alpha multiplication. No backend generates mip
+pixels from the base level.
+
+Cross-host shader packages use a verified prebuilt input rather than rerunning
+Linux translators on Apple hosts. Generate the complete set at the exact source
+revision, then import it with `tools/shaders/generate.py --output OUTPUT
+--prebuilt INPUT`. Import verifies the source fingerprint, manifest layouts,
+generated header, every artifact hash and entrypoint, authoritative GL sources,
+and translated Metal source receipts before replacing the output atomically.
+The build supports `GLOB2_RENDER_SHADER_INPUT=INPUT` and never invokes local
+translators on this route. For Apple offline compilation, additionally supply
+`GLOB2_METAL_SDK` and `GLOB2_METAL_TOOL_LOCK`; the verified translated sources are
+retained through preparation and compiled libraries are reused only while the
+input and tool lock remain identical. Source, layout or artifact changes reject
+reuse. Runtime packaging excludes translated HLSL/MSL sources, AIR and headers.
+## Texture preparation
+
+Generated or edited power-of-two HD surfaces use an integer GPU reduction pass
+on WebGL2 and desktop OpenGL contexts with integer shader and framebuffer support
+(OpenGL 3+ or `GL_EXT_gpu_shader4`). Each mip texel retains the
+CPU filter's alpha-weighted color and integer rounding; authored, worker-prepared
+mip chains keep their existing upload and compression path. Unsupported contexts
+(including older contexts without integer shaders), non-power-of-two surfaces and failed pipeline
+creation retain CPU preparation. Native scratch textures and shaders are released
+before their owning context is destroyed.
+
+The portable SDL renderer used on mobile samples standalone HD frames without
+mip chains, so those requests decode only base pixels. In-flight HD requests retain
+their original mip policy across backend changes. A switch to a mip-capable
+backend requests the missing chain independently; a downgrade can consume the
+existing chain. Supplied atlas levels and standalone generated chains remain
+separate requests. Backend changes also schedule a bounded reload for already
+published images when mip preparation or CPU restoration requirements change.
+The previous artwork remains visible until publication, and failed upgrades keep
+a valid existing layer. Its linear textures need
+premultiplied alpha: accelerated SDL renderers prepare them by blending a
+straight-alpha staging texture onto a transparent target. The staging texture is
+shared by the renderer, and compatible cached textures are updated in place when
+pixels change. SDL's per-target viewport, clip, scale and logical presentation
+state is restored before drawing resumes. A bounded 256×256 startup probe checks
+all byte colour/alpha pairs against the CPU integer result. Drivers whose blend
+units differ retain CPU conversion and log their conformance mismatch count.
+Software renderers and unsupported target/blend combinations also keep CPU
+conversion. Preparation uses the existing
+SDL renderer APIs across OpenGL ES, Metal and other accelerated SDL backends.
+
+For a native preparation comparison, set
+`GLOB2_DISABLE_GPU_TEXTURE_PREPARATION=1` to retain CPU mip generation and SDL
+premultiplication. An unset or empty value enables supported GPU preparation.
+These paths change presentation work only; simulation and saved state are unchanged.
 
 ### Bounded renderer command core
 
@@ -483,12 +690,9 @@ validation remains a separate release gate.
 
 `RenderDevice` owns submission, completion, capture and presentation. The software device and existing drawing adapter exercise the contract without hardware. Capture tickets retain frame identity, recording generation, dimensions, timestamps and semantic context; cancellation and telemetry stay bounded. A fake asynchronous device tests admission, retained revisions, deletion, cancellation and recovery.
 
-`RendererSelection` defines stable backend-family identifiers, aliases, capabilities and startup precedence. Live application switching and hardware devices are integrated separately; this core does not change existing defaults or simulation state.
+Shutdown releases sprite and font consumers before the graphics context. File and
+string services remain alive until the context has delivered completed captures
+and retired its presentation surface. A completed asynchronous screenshot can
+still need these services while the context is being destroyed.
 
-### Hardware device implementations
-
-`ProgrammableGLDevice` and `SDLGPUDevice` implement the shared device contract behind independent factories. They own shader pipelines, explicit targets and state, bounded resource caches, completion tracking, asynchronous capture, and retained completed output. GL uses programmable desktop GL or GLES3/WebGL2; native SDL GPU selects supported compiled SPIR-V, DXIL or Metal library assets. Shader generation and packaging run through the existing offline build helper. Missing formats, shader assets or hardware cause factory rejection with a reason.
-
-`trimRetiredResources()` polls completed work and releases unused allocations before large target admission. It does not wait for the GPU or release in-flight or captured resources. `SpriteRenderAtlas` provides independent bounded CPU pages with revision stamps and filtering gutters.
-
-The device and atlas suites are registered in the native test runner. Set `GLOB2_TEST_SHADER_DIRECTORY` to the generated shader directory when testing hardware. Factories and these isolated tests do not establish application feature coverage or platform default readiness; live application integration and accepted hardware evidence remain separate gates.
+`RendererSelection` defines stable backend-family identifiers, aliases, capabilities and startup precedence. The application coordinator applies this policy through the live-switch transaction described above. Auto defaults remain unchanged, and renderer selection stays outside simulation state.

@@ -35,6 +35,8 @@ class SDLRenderBackend final : public RenderBackend
 {
 	SDL_Renderer *renderer;
 	float scale = 1, offsetX = 0, offsetY = 0;
+    float nativeX = 1, nativeY = 1;
+    std::optional<SDL_Rect> physicalClip;
 	std::optional<SDL_Rect> bounds;
 	std::vector<SDL_Vertex> transformed;
 	struct Texture
@@ -85,12 +87,56 @@ class SDLRenderBackend final : public RenderBackend
 		check(restored && colorRestored);
 		return result;
 	}
+    bool exactPremultiplication()
+    {
+        // Blend units can approximate src*alpha differently from our integer
+        // artwork preparation. Test every byte pair once, before caching any
+        // gameplay texture, rather than changing the established pixel result.
+        using Surface = std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)>;
+        using TextureOwner = std::unique_ptr<SDL_Texture, decltype(&SDL_DestroyTexture)>;
+        Surface source(SDL_CreateSurface(256, 256, SDL_PIXELFORMAT_ARGB8888), SDL_DestroySurface);
+        TextureOwner target(SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888,
+                                              SDL_TEXTUREACCESS_TARGET, 256, 256), SDL_DestroyTexture);
+        if (!source || !target) return false;
+        for (unsigned alpha = 0; alpha < 256; ++alpha)
+            for (unsigned channel = 0; channel < 256; ++channel)
+                reinterpret_cast<Uint32 *>(static_cast<Uint8 *>(source->pixels) + alpha * source->pitch)[channel] =
+                    (alpha << 24) | (channel << 16) | ((255 - channel) << 8) | channel;
+        if (!premultiply(target.get(), source.get())) return false;
+        auto *previous = SDL_GetRenderTarget(renderer);
+        if (!SDL_SetRenderTarget(renderer, target.get())) return false;
+        Surface output(SDL_RenderReadPixels(renderer, nullptr), SDL_DestroySurface);
+        check(SDL_SetRenderTarget(renderer, previous));
+        if (!output || output->w != 256 || output->h != 256 || SDL_BYTESPERPIXEL(output->format) != 4) return false;
+        unsigned mismatches = 0;
+        const auto *format = SDL_GetPixelFormatDetails(output->format);
+        for (unsigned alpha = 0; alpha < 256; ++alpha)
+            for (unsigned channel = 0; channel < 256; ++channel) {
+                Uint32 value = 0;
+                std::memcpy(&value, static_cast<Uint8 *>(output->pixels) + alpha * output->pitch +
+                            channel * SDL_BYTESPERPIXEL(output->format), SDL_BYTESPERPIXEL(output->format));
+                Uint8 red, green, blue, a;
+                SDL_GetRGBA(value, format, nullptr, &red, &green, &blue, &a);
+                const unsigned expected = (channel * alpha + 127) / 255;
+                mismatches += red != expected || blue != expected ||
+                    green != ((255 - channel) * alpha + 127) / 255 || a != alpha;
+            }
+        if (mismatches)
+            SDL_LogInfo(SDL_LOG_CATEGORY_RENDER,
+                        "Renderer %s uses CPU texture preparation: GPU byte conformance failed for %u/65536 pairs",
+                        SDL_GetRendererName(renderer), mismatches);
+        return mismatches == 0;
+    }
 	RenderOperations counts;
 
   public:
 	explicit SDLRenderBackend(SDL_Renderer *renderer)
 		: renderer(renderer), gpuPreparation(gpuPreparationEnabled(renderer))
 	{
+        if (gpuPreparation) {
+            gpuPreparation = exactPremultiplication();
+            if (!gpuPreparation) { SDL_DestroyTexture(uploadTexture); uploadTexture = nullptr; }
+        }
 	}
 	~SDLRenderBackend() override
 	{
@@ -127,7 +173,7 @@ class SDLRenderBackend final : public RenderBackend
 		}
 		if (result && (result->w <= 0 || result->h <= 0))
 			result = SDL_Rect{};
-		check(SDL_SetRenderClipRect(renderer, result ? &*result : nullptr));
+		check(SDL_SetRenderClipRect(renderer, physicalClip ? &*physicalClip : result ? &*result : nullptr));
 	}
 	SDL_Texture *textureFor(const void *key, SDL_Surface *pixels, std::uint64_t revision,
 							bool linear = false)
@@ -239,13 +285,16 @@ class SDLRenderBackend final : public RenderBackend
 		SDL_Texture *texture = nullptr;
 		if (key)
 			texture = textureFor(key, pixels, revision, linear);
-		if (applyTransform && (scale != 1 || offsetX != 0 || offsetY != 0))
+		if ((applyTransform && (scale != 1 || offsetX != 0 || offsetY != 0)) || physicalClip)
 		{
 			transformed.assign(vertices.begin(), vertices.end());
 			for (auto &vertex : transformed)
 			{
-				vertex.position.x = vertex.position.x * scale + offsetX;
-				vertex.position.y = vertex.position.y * scale + offsetY;
+                if (applyTransform) {
+                    vertex.position.x = vertex.position.x * scale + offsetX;
+                    vertex.position.y = vertex.position.y * scale + offsetY;
+                }
+                if (physicalClip) { vertex.position.x *= nativeX; vertex.position.y *= nativeY; }
 			}
 			vertices = transformed;
 		}
@@ -322,10 +371,20 @@ class SDLRenderBackend final : public RenderBackend
 		int pixelsW, pixelsH;
 		outputSize(pixelsW, pixelsH);
 		check(SDL_SetRenderLogicalPresentation(renderer, 0, 0, SDL_LOGICAL_PRESENTATION_DISABLED));
-		check(SDL_SetRenderScale(renderer, float(pixelsW) / width, float(pixelsH) / height));
+		nativeX = float(pixelsW) / width; nativeY = float(pixelsH) / height;
+        check(SDL_SetRenderScale(renderer, physicalClip ? 1 : nativeX, physicalClip ? 1 : nativeY));
 		// Lazy CPU geometry may be created after direct writes. Scale setup
 		// must not clear the borrowed target or overwrite earlier layers.
 	}
+    void targetScissor(const SDL_Rect *rect)
+    {
+        if (physicalClip.has_value() == bool(rect) && (!rect ||
+            (physicalClip->x==rect->x && physicalClip->y==rect->y && physicalClip->w==rect->w && physicalClip->h==rect->h))) return;
+        flush(); // Previously queued geometry retains its scale and clip.
+        physicalClip = rect ? std::optional<SDL_Rect>(*rect) : std::nullopt;
+        check(SDL_SetRenderScale(renderer, physicalClip ? 1 : nativeX, physicalClip ? 1 : nativeY));
+        check(SDL_SetRenderClipRect(renderer, rect));
+    }
 	void flush() override { check(SDL_FlushRenderer(renderer)); }
 	void present() override
 	{
@@ -347,22 +406,32 @@ class SDLRenderBackend final : public RenderBackend
 } // namespace
 std::unique_ptr<RenderBackend> makeSDLRenderBackend(SDL_Window *window, int width, int height)
 {
-	SDL_Renderer *renderer = SDL_CreateRenderer(window, nullptr);
+	std::unique_ptr<SDL_Renderer, decltype(&SDL_DestroyRenderer)> renderer(
+        SDL_CreateRenderer(window, nullptr), SDL_DestroyRenderer);
 	if (!renderer)
 		return {};
-	auto backend = std::make_unique<SDLRenderBackend>(renderer);
+	auto backend = std::make_unique<SDLRenderBackend>(renderer.get());
+    auto *active = renderer.release();
 	backend->logicalSize(width, height);
-	check(SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND));
+	check(SDL_SetRenderDrawBlendMode(active, SDL_BLENDMODE_BLEND));
 	return backend;
 }
 
+void setSDLSoftwareTargetScissor(RenderBackend &backend, const SDL_Rect *rect)
+{
+    auto *value = dynamic_cast<SDLRenderBackend *>(&backend);
+    if (!value) throw std::logic_error("Software geometry backend missing");
+    value->targetScissor(rect);
+}
 std::unique_ptr<RenderBackend> makeSDLSoftwareGeometryBackend(SDL_Surface *surface)
 {
-	auto *renderer = SDL_CreateSoftwareRenderer(surface);
+	std::unique_ptr<SDL_Renderer, decltype(&SDL_DestroyRenderer)> renderer(
+        SDL_CreateSoftwareRenderer(surface), SDL_DestroyRenderer);
 	if (!renderer)
 		throw std::runtime_error(SDL_GetError());
-	auto backend = std::make_unique<SDLRenderBackend>(renderer);
-	check(SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND));
+	auto backend = std::make_unique<SDLRenderBackend>(renderer.get());
+    auto *active = renderer.release();
+	check(SDL_SetRenderDrawBlendMode(active, SDL_BLENDMODE_BLEND));
 	return backend;
 }
 

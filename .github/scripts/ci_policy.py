@@ -22,7 +22,7 @@ SIMULATION = ('src/ai/', 'src/unit/', 'src/building/', 'src/team/', 'src/map/',
               'src/scripting/sgsl/', 'src/engine/sim/', 'src/game/orders/')
 PRESENTATION = ('src/hud/', 'src/render/', 'src/unit/render/', 'src/building/hud/')
 # Code inside the directories above that belongs to neither class: every check.
-UNCLASSIFIED = ('data/buildings/', 'src/render/torus/', 'src/render/clouds/', 'src/render/overlay/', 'src/unit/types/',
+UNCLASSIFIED = ('libgag/shaders/', 'tools/shaders/', 'data/buildings/', 'src/render/torus/', 'src/render/clouds/', 'src/render/overlay/', 'src/unit/types/',
                 'src/building/types/', 'src/team/stats/', 'src/map/preview/', 'src/map/tools/',
                 'src/net/lan/screens/')
 UNCLASSIFIED_FILES = {'libgag/include/RenderFramePacer.h', 'src/team/BaseTeam.cpp', 'src/map/MapTiling.cpp', 'src/map/FertilityCalculator.cpp',
@@ -57,7 +57,10 @@ PLATFORM_STACK_PATHS = (
 TRANSPORT_HARNESSES = {'NetConnectionHarness.cpp', 'NativeMultiplayerPeer.cpp', 'WssTransportHarness.cpp',
                        'WssListenerHarness.cpp', 'LANDiscoveryHarness.cpp', 'run-network-transport-tests.py'}
 RENDER = {'libgag/src/RenderBackend.cpp', 'libgag/src/SoftwareRenderBackend.cpp',
-          'libgag/src/SurfaceRaster.cpp'}
+          'libgag/src/SurfaceRaster.cpp', 'libgag/src/RenderDevice.cpp', 'libgag/src/RenderFrame.cpp',
+          'libgag/src/RenderResources.cpp', 'libgag/src/RendererSelection.cpp',
+          'libgag/src/GraphicContextRenderer.cpp', 'libgag/src/ProgrammableGLDevice.cpp',
+          'libgag/src/SDLGPUDevice.cpp', 'libgag/src/WebGPUDevice.cpp'}
 
 
 # The mirror-only deployment of app.glob2online.com (deploy-online.yml runs

@@ -96,6 +96,8 @@ void MapEdit::delegateMenu(SDL_Event& event)
 				performAction("open teams editor");
 			}
 			break;
+			case MapEditMenuScreen::SETTINGS:
+                performAction("close menu screen"); pendingSettings = true; break;
 			case MapEditMenuScreen::RETURN_EDITOR:
 			{
 				performAction("close menu screen");

@@ -45,7 +45,7 @@ namespace GAGCore
 			scale = std::max(std::min(1.0f, scale), std::min({scale, float(pointsW) / std::max(640,minW), float(pointsH) / std::max(480,minH)}));
 		const int logicalW = std::max(1, int(std::lround(pointsW / scale)));
 		const int logicalH = std::max(1, int(std::lround(pointsH / scale)));
-		const bool cpu = !(optionFlags & (USEGPU | PORTABLEGPU));
+		const bool cpu = !presentationDevice && !(optionFlags & (USEGPU | PORTABLEGPU));
 		const bool needsBackend = cpu && (pixelsW != logicalW || pixelsH != logicalH);
 		const int surfaceW = cpu ? pixelsW : logicalW, surfaceH = cpu ? pixelsH : logicalH;
 		const bool changed = getW() != logicalW || getH() != logicalH ||

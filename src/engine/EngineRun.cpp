@@ -940,9 +940,7 @@ void Engine::beginSession(Uint64 now)
 				 << " players=" << gui.game.gameHeader.getNumberOfPlayers()
 				 << " teams=" << gui.game.mapHeader.getNumberOfTeams() << " renderer="
 				 << (globalContainer->runNoX ? "headless"
-					 : (globalContainer->gfx->getOptionFlags() & GraphicContext::USEGPU)
-						 ? "opengl"
-						 : "software")
+					 : GAGCore::rendererBackendName(globalContainer->gfx->backendSwitchStatus().active))
 				 << " width=" << (globalContainer->runNoX ? 0 : globalContainer->gfx->getW())
 				 << " height=" << (globalContainer->runNoX ? 0 : globalContainer->gfx->getH());
 #ifdef __VERSION__

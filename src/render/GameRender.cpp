@@ -194,8 +194,12 @@ void Game::prepareSceneMapFrame(const PresentationFrame &scene, int localTeam, V
 
 void Game::finishMapCapture(ViewState &view, Uint32 options, bool paused)
 {
+    finishMapCapture(view.render,options,paused);
+}
+void Game::finishMapCapture(MapRenderState &render, Uint32 options, bool paused)
+{
     if (!paused && (options & DRAW_AREA) && (!globalContainer->isViewingGame() || globalContainer->replayShowAreas))
-        ++view.render.areaAnimationTick;
+        ++render.areaAnimationTick;
 }
 
 void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargin, int viewportX,
@@ -214,6 +218,16 @@ void Game::drawSceneMap(const PresentationFrame& scene, int sx, int sy, int sw, 
 	int rightMargin, int topMargin, int viewportX, int viewportY, int localTeam,
 	ViewState& view, Uint32 drawOptions, std::set<Uint16>* visibleBuildings,
 	const BuildingGuiStateMap* buildingGuiState, bool animationsPaused, int cloudGridLimit, bool preparedCapture)
+{
+    drawSceneMapRegion(scene,sx,sy,sw,sh,rightMargin,topMargin,viewportX,viewportY,localTeam,
+        view,drawOptions,visibleBuildings,buildingGuiState,animationsPaused,cloudGridLimit,
+        preparedCapture,sw,sh);
+}
+
+void Game::drawSceneMapRegion(const PresentationFrame& scene, int sx, int sy, int sw, int sh,
+	int rightMargin, int topMargin, int viewportX, int viewportY, int localTeam,
+	ViewState& view, Uint32 drawOptions, std::set<Uint16>* visibleBuildings,
+	const BuildingGuiStateMap* buildingGuiState, bool animationsPaused, int cloudGridLimit, bool preparedCapture, int targetWidth, int targetHeight)
 {
     if (!preparedCapture)
         prepareSceneMapFrame(scene, localTeam, view, drawOptions, animationsPaused);
@@ -252,8 +266,8 @@ void Game::drawSceneMap(const PresentationFrame& scene, int sx, int sy, int sw, 
 						  top,
 						  right,
 						  bot,
-						  sw,
-						  sh,
+						  targetWidth,
+						  targetHeight,
 						  viewportX,
 						  viewportY,
 						  localTeam,

@@ -287,7 +287,34 @@ SpriteDrawBatch::~SpriteDrawBatch() noexcept(false)
             if (w <= 0 || h <= 0 || sw <= 0 || sh <= 0) return;
             auto* pixels=surface->getSDLSurface();
             if (!pixels || pixels->w <= 0 || pixels->h <= 0) return;
-            if (spriteBatch.owner == this)
+            if (renderer == deviceRenderer.get() && surface->highResolutionSampling) {
+                // Use the existing alpha-weighted CPU chain for every device.
+                // Mutation creates a new owned upload revision before submission.
+                if (surface->preparedUploadRevision != surface->contentRevision() || surface->preparedMips.empty()) {
+                    AssetImage prepared(nullptr);
+                    prepared.surface = SDL_ConvertSurface(pixels, SDL_PIXELFORMAT_ARGB8888);
+                    if (!prepared.surface) throw std::runtime_error(SDL_GetError());
+                    prepared.prepareUpload(true);
+                    surface->preparedUploadPixels = std::move(prepared.uploadPixels);
+                    surface->preparedMips = std::move(prepared.mips);
+                    surface->preparedUploadRevision = surface->contentRevision();
+                }
+                std::vector<RenderMipLevel> levels;
+                levels.reserve(surface->preparedMips.size());
+#if defined(GLOB2_WEBGL2) || SDL_BYTEORDER == SDL_BIG_ENDIAN
+                constexpr auto format = SDL_PIXELFORMAT_RGBA32;
+#else
+                constexpr auto format = SDL_PIXELFORMAT_ARGB8888;
+#endif
+                for (const auto &level : surface->preparedMips)
+                    levels.push_back({level.width, level.height, format,
+                        {reinterpret_cast<const std::byte *>(level.pixels.data()), level.pixels.size()}});
+                if (spriteBatch.owner == this) spriteBatch.flush();
+                renderer->blitMipmapped(surface, pixels, surface->contentRevision(), levels,
+                    SDL_Rect{sx,sy,sw,sh}, SDL_FRect{x,y,w,h}, alpha);
+                return;
+            }
+            if (spriteBatch.owner == this && renderer != deviceRenderer.get())
             {
                 const float u0 = float(sx)/pixels->w, v0 = float(sy)/pixels->h;
                 const float u1 = float(sx+sw)/pixels->w, v1 = float(sy+sh)/pixels->h;
@@ -296,9 +323,14 @@ SpriteDrawBatch::~SpriteDrawBatch() noexcept(false)
                                        alpha, x, y, w, h, u0, v0, u1, v1)) ++drawCalls;
                 return;
             }
-            renderer->blit(surface, pixels, surface->contentRevision(),
+            const DrawableSurface *uploadSource=surface;
+            SDL_Rect source{sx,sy,sw,sh};
+            if(renderer==deviceRenderer.get() && surface->spriteSource &&
+                surface->spriteSource->resolveDeviceAtlas(*surface,source,uploadSource))
+                pixels=const_cast<DrawableSurface*>(uploadSource)->getSDLSurface();
+            renderer->blit(uploadSource, pixels, uploadSource->contentRevision(),
                            renderer == softwareRasterizer.get() && surface->hasOpaquePixels(),
-                           SDL_Rect{sx,sy,sw,sh}, SDL_FRect{x,y,w,h}, alpha);
+                           source, SDL_FRect{x,y,w,h}, alpha);
             return;
         }
 		#ifdef HAVE_OPENGL
@@ -455,6 +487,12 @@ SpriteDrawBatch::~SpriteDrawBatch() noexcept(false)
             glVertexPointer(2, GL_FLOAT, 0, sprite->vertices.data());
             glTexCoordPointer(2, GL_FLOAT, 0, sprite->texCoords.data());
 #else
+
+            if (sprite->bufferGeneration != glContextGeneration) {
+                glGenBuffers(1, &sprite->vbo);
+                glGenBuffers(1, &sprite->texCoordBuffer);
+                sprite->bufferGeneration = glContextGeneration;
+            }
 			glBindBuffer(GL_ARRAY_BUFFER, sprite->vbo);
 			glBufferData(GL_ARRAY_BUFFER, sprite->vertices.size() * sizeof(float), sprite->vertices.data(), GL_STREAM_DRAW);
 			glVertexPointer(2, GL_FLOAT, 0, 0);

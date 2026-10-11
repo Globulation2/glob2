@@ -20,8 +20,15 @@ pthread_t applicationThread;
 #endif
 void contextAction(void *opaque) {
     EM_ASM({
+        if ($0 === 2) {
+            if (typeof Glob2WebGPU !== 'undefined') Glob2WebGPU.device?.destroy();
+            return;
+        }
         if (typeof GLctx === 'undefined' || !GLctx) return;
-        Module.contextLoss ||= GLctx.getExtension('WEBGL_lose_context');
+        if (Module.contextLossOwner !== GLctx) {
+            Module.contextLossOwner = GLctx;
+            Module.contextLoss = GLctx.getExtension('WEBGL_lose_context');
+        }
         if ($0) Module.contextLoss?.restoreContext();
         else Module.contextLoss?.loseContext();
     }, reinterpret_cast<intptr_t>(opaque));
@@ -51,7 +58,11 @@ void *application(void *opaque) {
 #ifdef __EMSCRIPTEN_PTHREADS__
     Glob2Browser::applicationThread = pthread_self();
 #endif
-    MAIN_THREAD_EM_ASM({ Module.glob2ApplicationStarted = true; });
+    MAIN_THREAD_EM_ASM({
+        Module.glob2ApplicationStarted = true;
+        Module.glob2ApplicationStarts = (Module.glob2ApplicationStarts || 0) + 1;
+        Module.glob2ApplicationThreadIdentity = $0;
+    }, uintptr_t(pthread_self()));
     int result = 1;
     try { result = glob2ApplicationMain(int(args->strings.size()), args->pointers.data()); }
     catch (const std::exception &error) { std::fprintf(stderr, "Browser application: %s\n", error.what()); }

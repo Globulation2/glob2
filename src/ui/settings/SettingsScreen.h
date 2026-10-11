@@ -116,6 +116,8 @@ class SettingsScreen : public Glob2UI::Screen
 	// done() was called and is waiting on persistence to resolve before endExecute().
 	bool closing = false;
 	bool displayError = false;
+    unsigned long long rendererSerial = 0;
+    GAGCore::RendererSwitchPhase rendererPhase = GAGCore::RendererSwitchPhase::Idle;
 	Row picker;
 	KeyboardManager gameKeys, editorKeys;
 	ShortcutMode shortcutMode = GameGUIShortcuts;

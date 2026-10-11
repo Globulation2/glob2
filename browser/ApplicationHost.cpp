@@ -186,12 +186,17 @@ void scheduledFrame(void* opaque)
         return;
     }
     EM_ASM({
-        if (typeof GLctx === 'undefined' || !GLctx || Module.contextEventsInstalled) return;
-        Module.contextEventsInstalled = true;
-        GLctx.canvas.addEventListener('webglcontextlost', event => {
-            event.preventDefault(); Module.gpuLost = true;
-        });
-        GLctx.canvas.addEventListener('webglcontextrestored', () => { Module.gpuRestorePending = true; });
+        const target = typeof GLctx === 'undefined' || !GLctx ? null : GLctx.canvas;
+        if (Module.contextEventCanvas === target) return;
+        Module.contextEventCleanup?.();
+        Module.contextEventCanvas = target;
+        if (!target) return;
+        const lost = event => { event.preventDefault(); if (Module.contextEventCanvas === target) Module.gpuLost = true; };
+        const restored = () => { if (Module.contextEventCanvas === target) Module.gpuRestorePending = true; };
+        target.addEventListener('webglcontextlost', lost);
+        target.addEventListener('webglcontextrestored', restored);
+        Module.contextEventCleanup = () => { target.removeEventListener('webglcontextlost', lost); target.removeEventListener('webglcontextrestored', restored); };
+
     });
     if (EM_ASM_INT({ return Module.gpuRestorePending ? 1 : 0; }) ||
         host.values[HostState::RestorePending]) {
@@ -202,7 +207,8 @@ void scheduledFrame(void* opaque)
             // Forget their handles rather than deleting them in the new context.
             GL.textures.fill(null);
             GL.buffers.fill(null);
-            Module.glob2ForgetMipmaps(GLctx);
+            if (Module.glob2ForgetMipmaps) Module.glob2ForgetMipmaps(GLctx);
+            if (typeof GLImmediate !== 'undefined') {
             GLImmediate.currentRenderer = null;
             GLImmediate.lastRenderer = null;
             GLImmediate.lastArrayBuffer = null;
@@ -212,6 +218,7 @@ void scheduledFrame(void* opaque)
             GLImmediate.totalEnabledClientAttributes = 0;
             GLImmediate.enabledClientAttributes = new Array(2).fill(0);
             GLImmediate.init();
+            }
             GLctx.useProgram(null);
             GLctx.currentProgram = 0;
             GLctx.bindBuffer(GLctx.ARRAY_BUFFER, null);

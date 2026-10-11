@@ -64,6 +64,7 @@ Element InGameMainScreen::build(const Presentation &p)
 
 	buttons.push_back(item("telemetry", fe::tr("[AI telemetry]"), AI_TELEMETRY));
 	buttons.push_back(item("options", fe::tr("[Options]"), OPTIONS));
+    buttons.push_back(item("settings", fe::tr("[settings]"), SETTINGS));
 	buttons.push_back(item("pause", pauseText, PAUSE_GAME, false, SDLK_UNKNOWN, pauseEnabled));
 	if (fe::recordingOffered())
 		buttons.push_back(fe::recordingControls());
@@ -527,10 +528,7 @@ Element InGameOptionScreen::build(const Presentation &p)
 	}
 	std::ostringstream oss;
 	oss << globalContainer->gfx->getW() << "x" << globalContainer->gfx->getH();
-	if (globalContainer->gfx->getOptionFlags() & GAGCore::GraphicContext::USEGPU)
-		oss << " GL";
-	else
-		oss << " SDL";
+	oss << " " << GAGCore::rendererBackendLabel(globalContainer->gfx->backendSwitchStatus().active);
 	parts.push_back(fe::paragraph(oss.str(), {fe::FontRole::Caption, true, fe::TextAlign::Center}));
 	fe::ButtonOptions okOptions;
 	okOptions.primary = true;

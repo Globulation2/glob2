@@ -116,6 +116,11 @@ void portablePreparation(bool cpu)
 			if (r != (channel * alpha + 127) / 255 || g != ((255 - channel) * alpha + 127) / 255 ||
 				b != (channel * alpha + 127) / 255 || a != alpha)
 			{
+                std::fprintf(stderr,
+                    "renderer=%s preparation=%s alpha=%d channel=%d actualRGBA=%u,%u,%u,%u expectedRGBA=%d,%d,%d,%d\n",
+                    SDL_GetRendererName(renderer), cpu ? "forced CPU" : "conformance selected",
+                    alpha, channel, r, g, b, a, (channel * alpha + 127) / 255,
+                    ((255 - channel) * alpha + 127) / 255, (channel * alpha + 127) / 255, alpha);
 				FAIL("Premultiplication changed a channel/alpha combination");
 				break;
 			}
@@ -190,7 +195,7 @@ TEST_SUITE("GpuTexturePreparation")
 						complete += std::chrono::duration<double, std::milli>(done - start).count();
 					}
 				}
-				std::printf("%s,%d,%.4f,%.4f,%d\n", gpu ? "gpu" : "cpu", size, submit / iterations,
+				std::printf("%s,%d,%.4f,%.4f,%d\n", gpu ? "auto" : "cpu", size, submit / iterations,
 							complete / iterations, iterations);
 			}
 	}
@@ -388,7 +393,7 @@ TEST_SUITE("GpuTexturePreparation")
 						complete += std::chrono::duration<double, std::milli>(done - start).count();
 					}
 				}
-				std::printf("%s,%d,%.4f,%.4f,%d\n", gpu ? "gpu" : "cpu", size, submit / iterations,
+				std::printf("%s,%d,%.4f,%.4f,%d\n", gpu ? "auto" : "cpu", size, submit / iterations,
 							complete / iterations, iterations);
 			}
 		glDeleteTextures(1, &texture);

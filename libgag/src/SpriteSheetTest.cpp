@@ -10,8 +10,10 @@
 #include <FileManager.h>
 #include <GraphicContext.h>
 #include <Toolkit.h>
+#include <RenderDevice.h>
 #include <SDL3/SDL.h>
 #include <SDL3_image/SDL_image.h>
+#include <cstring>
 #include <filesystem>
 #include <fstream>
 #include <string>
@@ -190,6 +192,189 @@ TEST_CASE("portable HD uses standalone frames without requesting GL atlases [dis
     REQUIRE(sprite.baseFrame(0));
     CHECK(sprite.baseFrame(0)->getW() == 4);
 }
+
+namespace {
+void checkModernStandaloneHD(GAGCore::RendererBackend backend, bool switchDuringDecode = false, bool publishBeforeSwitch = false, bool failUpgrade = false, bool initialLegacy = false)
+{
+    glob2test::TempDir scratch("modern-hd");
+    const auto artwork = scratch.path / "data/gfx";
+    const auto hd = scratch.path / "hd";
+    std::filesystem::create_directories(artwork);
+    std::filesystem::create_directories(hd);
+    std::filesystem::copy_file(glob2test::sourceRoot() / "test/fixtures/image-assets/native-sheet.webp",
+        artwork / "native-sheet.webp");
+    std::ofstream(artwork / "terrain.sheet") << "native-sheet.webp image 0 16 4 2\n";
+    std::ofstream frame(hd / "frame.webp", std::ios::binary);
+    frame.write(reinterpret_cast<const char*>(lossyAlphaFixture::webp), sizeof(lossyAlphaFixture::webp));
+    frame.close();
+    std::ofstream index(hd / "frames.txt");
+    index << "GLOB2_HIGHRES 1\n";
+    for (int i = 0; i < 16; ++i) index << "terrain" << i << " 4 2 4 frame.webp -\n";
+    index.close();
+    glob2test::ScopedEnvironment assets("GLOB2_ASSET_DIR", scratch.path.string().c_str());
+    glob2test::ScopedEnvironment pack("GLOB2_EXPERIMENT_TEXTURE_DIR", hd.string().c_str());
+    const std::string requested(GAGCore::rendererBackendName((switchDuringDecode || publishBeforeSwitch) ? (initialLegacy ? GAGCore::RendererBackend::LegacyGL : GAGCore::RendererBackend::PortableSDL) : backend));
+    glob2test::ScopedEnvironment selection("GLOB2_RENDERER", requested.c_str());
+    glob2test::ToolkitScope toolkit;
+    auto *context = GAGCore::Toolkit::initGraphic(64, 64, 0, "modern standalone HD frames");
+    const auto choices = context->rendererAvailability();
+    const auto choice = std::find_if(choices.begin(), choices.end(), [backend](const auto &entry) { return entry.backend == backend; });
+    REQUIRE(choice != choices.end());
+    if (!choice->available) {
+        MESSAGE("HD backend coverage unavailable: ", choice->reason);
+        return;
+    }
+    if (initialLegacy && context->backendSwitchStatus().active != GAGCore::RendererBackend::LegacyGL) {
+        MESSAGE("Legacy HD boundary coverage unavailable in this build.");
+        return;
+    }
+    GAGCore::Sprite sprite;
+    REQUIRE(sprite.load("data/gfx/terrain"));
+    auto inputs = GAGCore::Sprite::prefetchHighResolution("data/gfx/terrain", 16);
+    REQUIRE(inputs.size() == (initialLegacy ? 20 : 16)); // optional legacy atlas files are absent
+    if (publishBeforeSwitch) {
+        GAGCore::Sprite::setHighResolution(true);
+        REQUIRE(sprite.experimentImages[0]);
+        CHECK(sprite.experimentImages[0]->preparedMips.empty());
+        auto *published = sprite.experimentImages[0];
+        if (failUpgrade) std::filesystem::remove(hd / "frame.webp");
+        context->drawFilledRect(0, 0, context->getW(), context->getH(), GAGCore::Color(0, 0, 0));
+        context->nextFrame();
+        REQUIRE(context->requestBackendSwitch(backend));
+        auto deadline = SDL_GetTicks() + 10000;
+        do { context->nextFrame(); SDL_Delay(1); }
+        while (context->backendSwitchStatus().active != backend && SDL_GetTicks() < deadline);
+        REQUIRE(context->backendSwitchStatus().active == backend);
+        CHECK(sprite.experimentImages[0] == published);
+        CHECK_FALSE(GAGCore::Sprite::pollHighResolution(0));
+        bool complete = false;
+        while (!(complete = GAGCore::Sprite::pollHighResolution(1)) && SDL_GetTicks() < deadline) {
+            CHECK(sprite.experimentImages[0] == published);
+            GAGCore::Toolkit::assets().poll(); SDL_Delay(1);
+        }
+        REQUIRE(complete);
+        REQUIRE(sprite.experimentImages[0]);
+        if (failUpgrade) CHECK(sprite.experimentImages[0] == published);
+        else CHECK(sprite.experimentImages[0]->preparedMips.size() == 5);
+        const auto submitted = GAGCore::Toolkit::assets().metrics().submitted;
+        for (int repeat = 0; repeat < 3; ++repeat) GAGCore::Sprite::refreshHighResolutionForRenderer();
+        CHECK(GAGCore::Toolkit::assets().metrics().submitted == submitted);
+        REQUIRE(context->requestBackendSwitch(GAGCore::RendererBackend::PortableSDL));
+        deadline = SDL_GetTicks() + 10000;
+        do { context->nextFrame(); SDL_Delay(1); }
+        while (context->backendSwitchStatus().active != GAGCore::RendererBackend::PortableSDL && SDL_GetTicks() < deadline);
+        REQUIRE(context->backendSwitchStatus().active == GAGCore::RendererBackend::PortableSDL);
+        while (!(complete = GAGCore::Sprite::pollHighResolution(1)) && SDL_GetTicks() < deadline) {
+            GAGCore::Toolkit::assets().poll(); SDL_Delay(1);
+        }
+        REQUIRE(complete); REQUIRE(sprite.experimentImages[0]);
+        CHECK(sprite.experimentImages[0]->getW() == 16);
+        CHECK(sprite.experimentImages[0]->getH() == 8);
+        context->drawSurface(0, 0, 4, 2, sprite.experimentImages[0]);
+        // Portable SDL clears its backbuffer after presentation. Inspect the
+        // submitted artwork before presenting, as its capture contract requires.
+        context->renderer->flush();
+        std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> pixels(context->renderer->capture(), SDL_DestroySurface);
+        REQUIRE(pixels);
+        bool visible = false;
+        for (int y = 0; y < 2; ++y) for (int x = 0; x < 4; ++x) {
+            Uint8 red, green, blue, alpha;
+            Uint32 pixel = 0;
+            std::memcpy(&pixel, static_cast<Uint8*>(pixels->pixels) + y*pixels->pitch + x*4, 4);
+            SDL_GetRGBA(pixel, SDL_GetPixelFormatDetails(pixels->format), nullptr, &red, &green, &blue, &alpha);
+            visible = visible || red || green || blue;
+        }
+        CHECK(visible);
+        return;
+    }
+    if (switchDuringDecode) {
+        CHECK_FALSE(context->rendererCapabilities().textureMipmaps);
+        context->drawFilledRect(0, 0, context->getW(), context->getH(), GAGCore::Color(0, 0, 0));
+        context->nextFrame();
+        REQUIRE(context->requestBackendSwitch(backend));
+        const auto deadline = SDL_GetTicks() + 5000;
+        do { context->nextFrame(); SDL_Delay(1); }
+        while (context->backendSwitchStatus().active != backend && SDL_GetTicks() < deadline);
+        REQUIRE(context->backendSwitchStatus().active == backend);
+        bool ready = false;
+        while (!(ready = GAGCore::highResolutionFrameReady("data/gfx/terrain", 0, inputs)) && SDL_GetTicks() < deadline) {
+            GAGCore::Toolkit::assets().poll(); SDL_Delay(1);
+        }
+        REQUIRE(ready);
+    }
+    REQUIRE(context->backendSwitchStatus().requested == backend);
+    REQUIRE(context->backendSwitchStatus().active == backend);
+    REQUIRE(context->rendererCapabilities().textureFiltering);
+    REQUIRE(context->rendererCapabilities().textureMipmaps);
+    // Modern devices intentionally clear both legacy option bits.
+    CHECK((context->getOptionFlags() & (GAGCore::GraphicContext::USEGPU |
+        GAGCore::GraphicContext::PORTABLEGPU)) == 0);
+    auto inspect = GAGCore::Toolkit::assets().requestImage(hd.string() + "/frame.webp",
+        GAGCore::AssetLoader::Priority::Required, true);
+    REQUIRE(GAGCore::Toolkit::assets().wait(inspect));
+    REQUIRE(inspect.get()->mips.size() == 5);
+    CHECK(inspect.get()->mips.front().width == 16);
+    CHECK(inspect.get()->mips.front().height == 8);
+    CHECK(inspect.get()->mips.back().width == 1);
+    CHECK(inspect.get()->mips.back().height == 1);
+    inspect = {};
+    GAGCore::Sprite prepared;
+    sprite.appendHighResolutionFrame(0, prepared, inputs);
+    REQUIRE(prepared.experimentImages[0]);
+    REQUIRE(prepared.experimentImages[0]->preparedMips.size() == 5);
+    CHECK(prepared.experimentImages[0]->preparedMips.back().width == 1);
+    if (switchDuringDecode) {
+        context->drawSurface(0, 0, 4, 2, prepared.experimentImages[0]);
+        context->nextFrame();
+        REQUIRE(context->renderDevice());
+        GAGCore::CaptureRequest capture;
+        std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> pixels(
+            context->renderDevice()->captureSynchronously(capture), SDL_DestroySurface);
+        REQUIRE(pixels);
+        bool visible = false;
+        for (int y = 0; y < 2; ++y) for (int x = 0; x < 4; ++x) {
+            Uint32 value = 0;
+            std::memcpy(&value, static_cast<Uint8*>(pixels->pixels) + y*pixels->pitch + x*4, 4);
+            Uint8 red, green, blue, alpha;
+            SDL_GetRGBA(value, SDL_GetPixelFormatDetails(pixels->format), nullptr, &red, &green, &blue, &alpha);
+            visible = visible || red || green || blue;
+        }
+        CHECK(visible);
+    } else {
+        for (unsigned i = 0; i < 16; ++i) {
+            REQUIRE(sprite.baseFrame(i));
+            CHECK(sprite.baseFrame(i)->getW() == 16);
+            CHECK(sprite.baseFrame(i)->getH() == 8);
+            CHECK(sprite.baseFrame(i)->preparedMips.size() == 5);
+            CHECK(sprite.getW(i) == 4);
+            CHECK(sprite.getH(i) == 2);
+        }
+    }
+#ifdef HAVE_OPENGL
+    CHECK(sprite.highResolutionAtlas == nullptr);
+#endif
+}
+}
+TEST_CASE("portable HD prefetch upgrades across a live programmable GL switch [display][writes-preferences]") {
+    checkModernStandaloneHD(GAGCore::RendererBackend::ProgrammableGL, true);
+}
+TEST_CASE("published portable HD upgrades after a live GL switch and survives switching back [display][writes-preferences]") {
+    checkModernStandaloneHD(GAGCore::RendererBackend::ProgrammableGL, false, true);
+}
+TEST_CASE("legacy HD without retained CPU levels restores authored mips on a live GL device switch [display][writes-preferences]") {
+    checkModernStandaloneHD(GAGCore::RendererBackend::ProgrammableGL, false, true, false, true);
+}
+TEST_CASE("failed published HD mip upgrade retains valid artwork without retry [display][writes-preferences]") {
+    checkModernStandaloneHD(GAGCore::RendererBackend::ProgrammableGL, false, true, true);
+}
+TEST_CASE("programmable GL retains standalone HD authored mips [display]") {
+    checkModernStandaloneHD(GAGCore::RendererBackend::ProgrammableGL);
+}
+#ifndef __EMSCRIPTEN__
+TEST_CASE("SDL GPU retains standalone HD authored mips [display]") {
+    checkModernStandaloneHD(GAGCore::RendererBackend::SDLGPU);
+}
+#endif
 
 #ifdef HAVE_OPENGL
 TEST_CASE("independently encoded lossy HD atlases keep exact frame alpha [display]") {

@@ -34,7 +34,7 @@
     // pool-loading promise nor invokes onAbort. Observe the actual workers.
     class StartupWorker extends NativeWorker {
       constructor(...args) {
-        try { super(...args); }
+        try { super(...args); scope.Module?.glob2PresentationSurface?.attachWorker(this); }
         catch (error) { failed('pthread worker creation failed: ' + error); throw error; }
         const error = event => failed('pthread worker startup failed: ' + (event.message || 'worker error'));
         this.addEventListener('error', error);
@@ -91,9 +91,12 @@
       module.onApplicationStarted = (...args) => { stopWatching(); started?.(...args); };
     }
     const prefix = reason ? '' : 'threaded/';
-    module.locateFile = name => name.endsWith('.data') ? name : prefix + name;
+    const runtime = module.glob2RuntimeFiles?.[module.executionMode] || prefix + 'index.js';
+    const preload = runtime.slice(runtime.lastIndexOf('/') + 1).replace(/\.js$/, '.data');
+    // SDK shader preloads belong to their runtime; artwork packages stay shared.
+    module.locateFile = name => name === preload ? prefix + name : name.endsWith('.data') ? name : prefix + name;
     const script = document.createElement('script');
-    script.src = module.glob2RuntimeFiles?.[module.executionMode] || prefix + 'index.js';
+    script.src = runtime;
     script.onerror = () => module.onAbort?.('Unable to load game runtime');
     document.body.append(script);
   }

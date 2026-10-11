@@ -13,7 +13,9 @@ namespace gradient_kernel
 class OpenCLBorrowedLifetime
 {
     std::atomic<bool> occupied{false};
-    std::atomic<std::shared_ptr<void>> retained;
+    // Pinned Emscripten libc++ lacks atomic<shared_ptr>; the standard shared_ptr
+    // atomic operations preserve the same publication and ownership semantics.
+    std::shared_ptr<void> retained;
 public:
     OpenCLBorrowedLifetime()=default;
     OpenCLBorrowedLifetime(const OpenCLBorrowedLifetime&)=delete;
@@ -25,23 +27,25 @@ public:
     // release. Quarantine itself never releases admission or its payload lease.
     void release() noexcept {occupied.store(false,std::memory_order_release);}
     bool busy() const noexcept {return occupied.load(std::memory_order_acquire);}
-    bool quarantined() const noexcept {return bool(retained.load(std::memory_order_acquire));}
+    bool quarantined() const noexcept {return bool(std::atomic_load_explicit(&retained,std::memory_order_acquire));}
     // Requires the reserved state. Repeated retention of the same owner is
     // idempotent; a second state cannot be admitted while occupied is true.
     bool quarantine(const std::shared_ptr<void>& owner) noexcept {
         if(!owner || !busy())return false;
         std::shared_ptr<void> expected;
-        if(retained.compare_exchange_strong(expected,owner,std::memory_order_acq_rel))return true;
+        if(std::atomic_compare_exchange_strong_explicit(&retained,&expected,owner,
+                std::memory_order_acq_rel,std::memory_order_acquire))return true;
         return expected.get()==owner.get() && !expected.owner_before(owner) && !owner.owner_before(expected);
     }
     // Coordinator/background only. The callback must preserve the payload on
     // failure and must not block waiting for an unresponsive driver. Actual
     // integration polls an existing trailing event; no Finish is implied.
     bool tryReap(bool (*proof)(void*) noexcept) noexcept {
-        auto owner=retained.load(std::memory_order_acquire);
+        auto owner=std::atomic_load_explicit(&retained,std::memory_order_acquire);
         if(!owner || !proof || !proof(owner.get()))return false;
         std::shared_ptr<void> expected=owner;
-        return retained.compare_exchange_strong(expected,{},std::memory_order_acq_rel);
+        return std::atomic_compare_exchange_strong_explicit(&retained,&expected,std::shared_ptr<void>{},
+            std::memory_order_acq_rel,std::memory_order_acquire);
         // owner keeps the graph alive until after the callback/CAS; its final
         // destruction releases admission only if no external handle remains.
     }

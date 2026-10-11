@@ -46,9 +46,14 @@ def localization_files(release):
 
 def entry_files(release):
     """Validate the runtime closure before replacing any served file."""
-    names = list(ENTRY_FILES)
-    runtimes = b''.join((release / name).read_bytes()
-                        for name in ('index.js', 'threaded/index.js'))
+    scripts = {name: (release / name).read_bytes() for name in ('index.js', 'threaded/index.js')}
+    # Complete both variants' shader preloads before publishing either runtime.
+    names = [str(Path(name).with_suffix('.data')) for name, script in scripts.items()
+             if b'index.data' in script]
+    if 'src="presentation-surface.js"' in (release / 'index.html').read_text():
+        names.append('presentation-surface.js')
+    names.extend(ENTRY_FILES)
+    runtimes = b''.join(scripts.values())
     for group in WORKER_RUNTIMES:
         if group[0].encode() in runtimes or any((release / name).exists() for name in group):
             names.extend(group)
@@ -77,9 +82,9 @@ def main():
         sys.exit(__doc__.strip().splitlines()[2].strip())
     release, served = Path(sys.argv[1]), Path(sys.argv[2])
     entries = entry_files(release)
-    (served / 'assets').mkdir(parents=True, exist_ok=True)
     current = sorted(p.name for p in (release / 'assets').iterdir()
                      if p.is_file() and not p.name.startswith('.'))
+    (served / 'assets').mkdir(parents=True, exist_ok=True)
     for name in current:
         target = served / 'assets' / name
         if not target.is_file() or target.stat().st_size != (release / 'assets' / name).stat().st_size:
@@ -94,10 +99,11 @@ def main():
             if (release / (name + suffix)).is_file():
                 (served / name).parent.mkdir(parents=True, exist_ok=True)
                 copy(release / (name + suffix), served / (name + suffix))
-    # Earlier builds shipped one data file without compression.
-    for suffix in ENCODINGS:
-        (served / ('index.data' + suffix)).unlink(missing_ok=True)
-        (served / ('threaded/index.data' + suffix)).unlink(missing_ok=True)
+    # Releases without SDK preloads retire the old monolithic data files.
+    for name in ('index.data', 'threaded/index.data'):
+        if name not in entries:
+            for suffix in ENCODINGS:
+                (served / (name + suffix)).unlink(missing_ok=True)
     record = served / RECORD
     try:
         previous = set(json.loads(record.read_text()))

@@ -5,6 +5,7 @@
 #include "render/MapAssetSprites.h"
 #include <SDLGraphicContext.h>
 #include <memory>
+#include <span>
 
 class SceneMap;
 namespace TerrainVisual
@@ -80,6 +81,16 @@ class Compositor
 	// Decor frame drawn over cell (x, y), or -1. Cells with a neighbour of a
 	// different appearance use the smaller edge frames.
 	int decorFrame(const SceneMap &, int x, int y) const;
+    struct PreparedMaterialView
+    {
+        unsigned variant = 0;
+        std::uint64_t revision = 0;
+        int size = 0;
+        std::span<const std::array<unsigned char, 4>> pixels;
+    };
+    // Valid until prepare() changes this material. Uploaders copy the canonical
+    // animation/HD pixels into owned revisions before retaining or queueing them.
+    PreparedMaterialView preparedMaterial(const Recipe &, MaterialId) const;
 	std::uint64_t materialRevision(MaterialId id) const { return materialRevisions[id]; }
 	int scale() const { return resolution; }
 	std::size_t sourceBytes() const;

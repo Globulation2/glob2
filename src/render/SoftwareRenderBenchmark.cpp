@@ -88,7 +88,7 @@ class SoftwareRenderBenchmark
             SDL_VERSIONNUM_MINOR(version), SDL_VERSIONNUM_MICRO(version), SDL_GetRevision());
 		if (!getenv("PROFILE_VISIBLE"))
 			SDL_HideWindow(SDL_GetWindowFromID(gfx->windowID()));
-		if (!getenv("PROFILE_RECORD") && (gfx->getOptionFlags() & (GraphicContext::USEGPU | GraphicContext::PORTABLEGPU)))
+		if (!getenv("PROFILE_RECORD") && gfx->rendererCapabilities().accelerated)
 			throw std::runtime_error("Benchmark requires the software backend (-G)");
 		{
 			GameGUI gui;

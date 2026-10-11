@@ -202,7 +202,18 @@ void GlobalContainer::loadClient(void)
 	{
 		// create graphic context
 		GraphicContext::setRequestedUiScale(settings.uiScale / 100.0f);
+        std::optional<GAGCore::RendererBackend> environmentBackend;
+#ifndef __EMSCRIPTEN__
+        if (const char *selected = SDL_getenv_unsafe("GLOB2_RENDERER"))
+            environmentBackend = GAGCore::parseRendererBackend(selected);
+#endif
+        GraphicContext::setInitialRendererBackend(GAGCore::resolveRendererPreference(
+            settings.rendererBackend, rendererLaunchOverride, environmentBackend));
 		gfx = Toolkit::initGraphic(settings.screenWidth, settings.screenHeight, settings.screenFlags, "Globulation 2", "glob 2");
+        gfx->setBackendPreferenceCallback([this](GAGCore::RendererBackend selected) {
+            settings.rendererBackend = selected;
+            if (!settings.save()) std::cerr << "Could not save renderer preference." << std::endl;
+        });
         gfx->setTargetRenderFps(settings.targetRenderFps);
 #if !defined(GLOB2_MOBILE) && !defined(__EMSCRIPTEN__)
 		gfx->setDisplayPreferenceCallback([this](int w, int h, bool fullscreen)

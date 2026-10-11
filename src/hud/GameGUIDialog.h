@@ -29,7 +29,8 @@ class InGameMainScreen : public Glob2UI::InGameDialog
 		QUIT_GAME = 6,
 		PAUSE_GAME = 7,
 		HIVE_MIND = 8,
-		AI_TELEMETRY = 9
+		AI_TELEMETRY = 9,
+        SETTINGS = 10
 	};
 	explicit InGameMainScreen(bool isReplay = false, bool canSave = true, bool paused = false);
 	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;

@@ -71,6 +71,60 @@ class BrowserPackageTests(unittest.TestCase):
         self.assertEqual(version, module.package(self.source, self.output))
         module.verify(self.output)
 
+    def renderer_source(self, threaded=False):
+        if threaded:
+            self.threaded_source()
+        html = self.source / "index.html"
+        html.write_text('<script src="presentation-surface.js"></script>' + html.read_text())
+        (self.source / "presentation-surface.js").write_text('/* canvas transaction manager */')
+        for prefix in ("", "threaded/") if threaded else ("",):
+            script = self.source / prefix / "index.js"
+            script.write_text(script.read_text() + "var REMOTE_PACKAGE_BASE='index.data';")
+            (self.source / prefix / "index.data").write_bytes(b"shader-preloads-" + prefix.encode())
+
+    def test_renderer_surface_and_preloads_are_versioned_in_both_runtimes(self):
+        self.renderer_source(threaded=True)
+        version = module.package(self.source, self.output)
+        module.verify(self.output)
+        surface = f"presentation-{version}-surface.js"
+        self.assertIn(surface, (self.output / 'index.html').read_text())
+        self.assertEqual((self.output / surface).read_bytes(), (self.source / 'presentation-surface.js').read_bytes())
+        for prefix in ('', 'threaded/'):
+            data = f'{prefix}index-{version}.data'
+            self.assertEqual((self.output / data).read_bytes(), (self.source / prefix / 'index.data').read_bytes())
+            self.assertTrue((self.output / (data + '.gz')).is_file())
+            self.assertIn(f"'index-{version}.data'", (self.output / f'{prefix}index-{version}.js').read_text())
+        (self.source / 'threaded/index.data').write_bytes(b'new shader binaries')
+        updated = module.package(self.source, self.output)
+        self.assertNotEqual(version, updated)
+        self.assertFalse((self.output / surface).exists())
+        (self.source / 'presentation-surface.js').write_text('/* updated transaction manager */')
+        self.assertNotEqual(updated, module.package(self.source, self.output))
+
+    def test_renderer_required_inputs_cannot_be_omitted(self):
+        self.renderer_source(threaded=True)
+        module.package(self.source, self.output)
+        previous = (self.output / 'SHA256SUMS').read_bytes()
+        for name in ('presentation-surface.js', 'index.data', 'threaded/index.data'):
+            path = self.source / name
+            data = path.read_bytes()
+            path.unlink()
+            with self.assertRaises(FileNotFoundError):
+                module.package(self.source, self.output)
+            self.assertEqual(previous, (self.output / 'SHA256SUMS').read_bytes())
+            path.write_bytes(data)
+
+    def test_verify_requires_renderer_payloads_even_with_refreshed_checksums(self):
+        self.renderer_source(threaded=True)
+        for template in ('presentation-{version}-surface.js', 'index-{version}.data', 'threaded/index-{version}.data'):
+            version = module.package(self.source, self.output)
+            name = template.format(version=version)
+            for suffix in ('', '.gz'):
+                (self.output / (name + suffix)).unlink()
+            self.refresh_checksums()
+            with self.assertRaisesRegex(ValueError, 'every original file'):
+                module.verify(self.output)
+
     def test_translation_catalogs_ship_and_change_release_identity(self):
         self.localized_source()
         catalog = self.source / "locales/fr.json"

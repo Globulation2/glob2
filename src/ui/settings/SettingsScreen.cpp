@@ -389,6 +389,12 @@ bool SettingsScreen::interceptEvent(const SDL_Event &event)
 
 void SettingsScreen::onTimer(Uint32 tick)
 {
+    const auto &renderer = globalContainer->gfx->backendSwitchStatus();
+    if (renderer.serial != rendererSerial || renderer.phase != rendererPhase) {
+        rendererSerial = renderer.serial;
+        rendererPhase = renderer.phase;
+        invalidate();
+    }
 	lastTick = tick;
 	pollCustomAIs();
 	pollCustomGenerators();
@@ -442,7 +448,7 @@ bool SettingsScreen::restartRequired() const
 	return false;
 #else
 	const auto &s = globalContainer->settings;
-	const Uint32 mask = GraphicContext::USEGPU | GraphicContext::CUSTOMCURSOR;
+	const Uint32 mask = GraphicContext::CUSTOMCURSOR;
 	return (s.screenFlags & mask) != (globalContainer->gfx->getOptionFlags() & mask);
 #endif
 }

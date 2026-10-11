@@ -1,8 +1,12 @@
 # Viewport resize contract
 
 The browser host retains the newest viewport dimensions until the application
-consumes them at a frame boundary. Both software and WebGL2 use this event.
-WebGL2 updates its drawable and projection without replacing the context. The
+successfully applies them at a frame boundary. Requests that arrive while a
+backend switch has retired the window remain pending; a newer size replaces the
+unapplied request. Both software and WebGL2 use this event.
+WebGL2 updates its drawable and projection without replacing the context.
+Returning from a responsive screen uses the current browser dimensions, including
+after a live backend switch, rather than restoring the launch dimensions. The
 software renderer allocates a replacement
 surface before releasing its previous surface; nonpositive dimensions and failed
 allocations leave the old target intact. Desktop hosts do not request automatic

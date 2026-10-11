@@ -56,6 +56,7 @@ public:
 	void applyCommand(const Cli::Request &request);
 	bool gpuComputeEnabled() const;
 	void configureGradientBackend() const;
+    std::optional<GAGCore::RendererBackend> rendererLaunchOverride;
 	void loadClient(void);
     bool deferAssetLoading = false;
     //! Advance required preparation without painting; the host schedules drawing.

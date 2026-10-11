@@ -18,6 +18,7 @@ function host(canvas, threaded = true, fail = false) {
       return 0;
     }, addToLibrary:value => { library = value; }});
   const source = readFileSync(path.join(__dirname, '../canvas-size.js'), 'utf8')
+    .split('// Called only after SDL')[0]
     .replace(/#if PTHREADS\n([\s\S]*?)#else\n([\s\S]*?)#endif/, (_, yes, no) => threaded ? yes : no);
   vm.runInContext(source, scope);
   const postset = threaded ? '$setCanvasElementSizeCallingThread__postset' : 'emscripten_set_canvas_element_size__postset';

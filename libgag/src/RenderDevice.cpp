@@ -6,6 +6,7 @@
 
 namespace GAGCore
 {
+void setSoftwareTargetScissor(RenderBackend &, const SDL_Rect *);
 namespace
 {
 class SoftwareRenderDevice final : public RenderDevice
@@ -28,6 +29,7 @@ class SoftwareRenderDevice final : public RenderDevice
             if (packet.vertices.size() > RenderFrame::VertexCapacity - vertexCount)
                 throw std::length_error("Unbounded render geometry");
             vertexCount += packet.vertices.size();
+            detail::intersectTargetScissor({0,0,target->w,target->h}, packet.targetScissor);
             if (packet.kind == DrawPacket::Kind::MeshTriangles || packet.kind == DrawPacket::Kind::WeightedCompose || packet.kind == DrawPacket::Kind::Clear)
                 throw std::invalid_argument("Software device does not support depth/mesh passes");
             if (packet.target) throw std::invalid_argument("Software offscreen targets require a separate device");
@@ -49,6 +51,7 @@ class SoftwareRenderDevice final : public RenderDevice
             backend->transform(packet.transform.scale, packet.transform.x, packet.transform.y,
                 packet.transform.bounds ? &*packet.transform.bounds : nullptr);
             backend->clip(packet.clip ? &*packet.clip : nullptr);
+            setSoftwareTargetScissor(*backend, packet.targetScissor ? &*packet.targetScissor : nullptr);
             auto *pixels = packet.texture ? packet.texture->pixels.get() : nullptr;
             const void *key = packet.texture.get();
             const auto revision = packet.texture ? packet.texture->contentRevision : 0;
@@ -145,7 +148,7 @@ class DeviceRenderBackend final : public RenderBackend
     struct TextureEntry { TextureHandle handle; std::uint64_t lastUse; };
     std::unordered_map<const void *, TextureEntry> textures;
     std::uint64_t useClock = 0;
-    bool aborted=false,lastPresented=true;
+    bool aborted=false,lastPresented=true,intentionalDefer=false,lastIntentionalDefer=false;
     std::string fatalReason;
     void abort(){aborted=true;recorder.cancel();}
     void append(DrawPacket value){if(!aborted){recorder.append(std::move(value));if(aborted)recorder.cancel();}}
@@ -158,10 +161,10 @@ class DeviceRenderBackend final : public RenderBackend
         resources.erase(oldest->second.handle); textures.erase(oldest); return true;
     }
     RenderTransform currentTransform;
-    std::optional<SDL_Rect> currentClip;
+    std::optional<SDL_Rect> currentClip, currentTargetScissor;
     TextureSnapshot currentTarget;
     float targetWidth = 0, targetHeight = 0;
-    struct TargetState { TextureSnapshot target; float width, height; RenderTransform transform; std::optional<SDL_Rect> clip; };
+    struct TargetState { TextureSnapshot target; float width, height; RenderTransform transform; std::optional<SDL_Rect> clip, targetScissor; };
     std::vector<TargetState> targetStack;
     RenderOperations counts;
     std::uint64_t frameIdentity = 1, captureIdentity = 0, submittedFrameIdentity = 0, presentedFrameIdentity = 0;
@@ -240,7 +243,7 @@ class DeviceRenderBackend final : public RenderBackend
     }
     DrawPacket packet(DrawPacket::Kind kind) const
     {
-        DrawPacket value; value.kind = kind; value.transform = currentTransform; value.clip = currentClip;
+        DrawPacket value; value.kind = kind; value.transform = currentTransform; value.clip = currentClip; value.targetScissor = currentTargetScissor;
         value.target = currentTarget; value.targetLogicalWidth = targetWidth; value.targetLogicalHeight = targetHeight; return value;
     }
   public:
@@ -261,15 +264,15 @@ class DeviceRenderBackend final : public RenderBackend
     {
         if (!device.capabilities().offscreenTargets) return false;
         if (!target || w <= 0 || h <= 0 || targetStack.size() >= 8) throw std::invalid_argument("Invalid device target scope");
-        targetStack.push_back({currentTarget, targetWidth, targetHeight, currentTransform, currentClip});
-        currentTarget = std::move(target); targetWidth = w; targetHeight = h; currentTransform = {}; currentClip.reset(); return true;
+        targetStack.push_back({currentTarget, targetWidth, targetHeight, currentTransform, currentClip, currentTargetScissor});
+        currentTarget = std::move(target); targetWidth = w; targetHeight = h; currentTransform = {}; currentClip.reset(); currentTargetScissor.reset(); return true;
     }
     void popTarget()
     {
         if (targetStack.empty()) throw std::logic_error("Unbalanced device target scope");
         auto state = std::move(targetStack.back()); targetStack.pop_back();
         currentTarget = std::move(state.target); targetWidth = state.width; targetHeight = state.height;
-        currentTransform = state.transform; currentClip = state.clip;
+        currentTransform = state.transform; currentClip = state.clip; currentTargetScissor = state.targetScissor;
     }
     void record(DrawPacket packet)
     {
@@ -281,7 +284,12 @@ class DeviceRenderBackend final : public RenderBackend
         if (!packet.target && currentTarget) {
             packet.target = currentTarget; packet.targetLogicalWidth = targetWidth; packet.targetLogicalHeight = targetHeight;
         }
+        if (!packet.targetScissor && packet.target == currentTarget) packet.targetScissor = currentTargetScissor;
         append(std::move(packet));
+    }
+    void setTargetScissor(const SDL_Rect *rect) {
+        if(rect) detail::intersectTargetScissor({0,0,width,height}, *rect);
+        currentTargetScissor = rect ? std::optional<SDL_Rect>(*rect) : std::nullopt;
     }
     void blit(const void *key, SDL_Surface *source, std::uint64_t revision, bool opaque,
               const SDL_Rect &src, const SDL_FRect &dst, Uint8 alpha) override
@@ -340,12 +348,18 @@ class DeviceRenderBackend final : public RenderBackend
         auto found = textures.find(key);
         if (found != textures.end()) { resources.erase(found->second.handle); textures.erase(found); }
     }
-    void reset() override { recorder.cancel(); device.reset(); submittedFrameIdentity=presentedFrameIdentity=0;aborted=false;lastPresented=false;fatalReason.clear(); }
-    void present() override { flush();lastPresented=false;
+    void reset() override { recorder.cancel(); device.reset(); submittedFrameIdentity=presentedFrameIdentity=0;aborted=false;lastPresented=false;intentionalDefer=lastIntentionalDefer=false;fatalReason.clear(); }
+    void present() override { flush();lastPresented=false;lastIntentionalDefer=intentionalDefer;
         if(!fatalReason.empty())throw std::runtime_error(fatalReason);
         if(aborted){device.discardFrame();submittedFrameIdentity=presentedFrameIdentity;}else{device.present();presentedFrameIdentity=submittedFrameIdentity;lastPresented=true;}
-        aborted=false;recorder.begin(++frameIdentity,width,height); }
+        aborted=false;intentionalDefer=false;recorder.begin(++frameIdentity,width,height); }
     std::uint64_t submittedIdentity() const {return submittedFrameIdentity;}
+    bool defer() {
+        flush();
+        if(aborted || !fatalReason.empty())return false;
+        intentionalDefer=true;aborted=true;recorder.cancel();return true;
+    }
+    bool intentionallyDeferred() const {return lastIntentionalDefer;}
     bool recorded() const {return !aborted;}
     bool presented() const {return lastPresented;}
     void flush() override { if(aborted)recorder.cancel();else recorder.flush(); }
@@ -388,6 +402,9 @@ bool recordDevicePacket(RenderBackend &backend, DrawPacket packet)
     if (!device) return false;
     device->record(std::move(packet)); return true;
 }
+bool setDeviceTargetScissor(RenderBackend &backend, const SDL_Rect *rect){auto *device=dynamic_cast<DeviceRenderBackend *>(&backend);if(!device)return false;device->setTargetScissor(rect);return true;}
+bool deferDeviceFrame(RenderBackend &backend){auto *device=dynamic_cast<DeviceRenderBackend *>(&backend);return device && device->defer();}
+bool didIntentionallyDeferDeviceFrame(const RenderBackend &backend){auto *device=dynamic_cast<const DeviceRenderBackend *>(&backend);return device && device->intentionallyDeferred();}
 bool didRecordDeviceFrame(const RenderBackend &backend){auto *device=dynamic_cast<const DeviceRenderBackend *>(&backend);return !device || device->recorded();}
 bool didPresentDeviceFrame(const RenderBackend &backend){auto *device=dynamic_cast<const DeviceRenderBackend *>(&backend);return !device || device->presented();}
 std::uint64_t submittedDeviceFrameIdentity(const RenderBackend &backend){auto *device=dynamic_cast<const DeviceRenderBackend *>(&backend);return device ? device->submittedIdentity() : 0;}

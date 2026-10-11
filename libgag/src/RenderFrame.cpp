@@ -1,9 +1,26 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <RenderFrame.h>
 #include <stdexcept>
+#include <algorithm>
+#include <cstdint>
 
 namespace GAGCore
 {
+namespace detail
+{
+SDL_Rect intersectTargetScissor(SDL_Rect bounds, const std::optional<SDL_Rect> &scissor)
+{
+    if (!scissor) return bounds;
+    if (scissor->w < 0 || scissor->h < 0) throw std::invalid_argument("Negative target scissor extent");
+    // Widen endpoint sums before intersection, including off-target rectangles.
+    const auto left = std::max<std::int64_t>(bounds.x, scissor->x);
+    const auto top = std::max<std::int64_t>(bounds.y, scissor->y);
+    const auto right = std::min<std::int64_t>(std::int64_t(bounds.x) + bounds.w, std::int64_t(scissor->x) + scissor->w);
+    const auto bottom = std::min<std::int64_t>(std::int64_t(bounds.y) + bounds.h, std::int64_t(scissor->y) + scissor->h);
+    if (right <= left || bottom <= top) return {};
+    return {int(left), int(top), int(right-left), int(bottom-top)};
+}
+}
 namespace
 {
 bool equal(const std::optional<SDL_Rect> &a, const std::optional<SDL_Rect> &b)
@@ -20,7 +37,7 @@ bool DrawPacket::compatible(const DrawPacket &other) const
         equal(viewport, other.viewport) && targetLogicalWidth == other.targetLogicalWidth && targetLogicalHeight == other.targetLogicalHeight && texture == other.texture && target == other.target &&
         opaque == other.opaque && linear == other.linear && alpha == other.alpha &&
         transform.scale == other.transform.scale && transform.x == other.transform.x && transform.y == other.transform.y &&
-        equal(transform.bounds, other.transform.bounds) && equal(clip, other.clip);
+        equal(transform.bounds, other.transform.bounds) && equal(clip, other.clip) && equal(targetScissor, other.targetScissor);
 }
 std::size_t RenderFrame::batchEnd(std::size_t begin) const
 {

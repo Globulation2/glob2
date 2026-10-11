@@ -511,7 +511,7 @@ class SDLGPUDevice final : public RenderDevice
                             int(std::ceil((clip.y + clip.h) * transform.scale + transform.y)) - y};
             intersect(mapped);
         }
-        return result;
+        return detail::intersectTargetScissor(result, packet.targetScissor);
     }
     void draw(SDL_GPUCommandBuffer *commands, Work &entry, const Draw &draw, float lw, float lh,
               SDL_GPUTexture *target, SDL_GPUTextureFormat format, int tw, int th)
@@ -828,7 +828,7 @@ void SDLGPUDevice::prepareTerrain(SDL_GPUCommandBuffer *&commands, Work &entry, 
     if(!size || size>MaximumTextureSize || !divisor || divisor>32 || (divisor&(divisor-1)) || size%divisor ||
         !data.paletteCount || data.paletteCount>4 || rect.x<0 || rect.y<0 || rect.w!=int(size/divisor) || rect.h!=rect.w ||
         std::int64_t(rect.x)+rect.w>draw.target->width || std::int64_t(rect.y)+rect.h>draw.target->height ||
-        packet.texture || packet.secondTexture || packet.clip || packet.viewport || packet.transform.bounds || packet.depthWrite || packet.depth!=DrawPacket::Depth::Disabled ||
+        packet.texture || packet.secondTexture || packet.clip || packet.targetScissor || packet.viewport || packet.transform.bounds || packet.depthWrite || packet.depth!=DrawPacket::Depth::Disabled ||
         packet.target->descriptor.alpha==TextureDescriptor::Alpha::Opaque)
         throw std::invalid_argument("Invalid terrain composition dimensions or pass state");
     if(!data.coverage && data.paletteCount!=1)throw std::invalid_argument("Mixed terrain requires coverage");
@@ -1171,7 +1171,7 @@ RenderSubmission SDLGPUDevice::submit(RenderFrame frame)
             }
             if (packet.kind == DrawPacket::Kind::Clear) {
                 if (!std::isfinite(packet.clearDepthValue) || packet.clearDepthValue < 0 || packet.clearDepthValue > 1) throw std::invalid_argument("Depth clear outside canonical range");
-                const bool partial = packet.clip || packet.transform.bounds || packet.viewport;
+                const bool partial = packet.clip || packet.targetScissor || packet.transform.bounds || packet.viewport;
                 if (partial && packet.clearDepth) throw std::invalid_argument("Clipped depth clear is unsupported; issue full depth clear separately");
                 if (partial && packet.clearColor) {
                     const float w = packet.targetLogicalWidth > 0 ? packet.targetLogicalWidth : frame.logicalWidth;

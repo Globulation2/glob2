@@ -193,6 +193,8 @@ def main():
         from tools.package_assets import export_assets
         exported = output/'runtime-assets'
         export_assets(ROOT, exported, platform='android', optimized=True, lossy=args.release)
+        shutil.copytree(output/'shaders', exported/'shaders', dirs_exist_ok=True,
+                        ignore=shutil.ignore_patterns('.*', 'RendererShaderLayouts.h', 'native-sources', '*.air'))
         shutil.copytree(output/'recording/prefix/share/licenses/recording',exported/'licenses/recording',dirs_exist_ok=True)
         assets=generated/'assets/glob2-bundle'
         if assets.exists(): shutil.rmtree(assets)

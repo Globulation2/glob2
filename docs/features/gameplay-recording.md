@@ -219,3 +219,16 @@ retains the selected full resolution and frame rate. Mobile hardware and sustain
 thermal qualification require physical devices.
 
 Related: [features and content](README.md).
+
+### Device capture admission
+
+Shared render devices reserve a capture ticket before readback. The ticket freezes
+recording-session generation, monotonic submission time and semantic chapter context;
+completion never samples the current screen or clock. GPU capture admission is bounded
+to three requests independently of the encoder queue. Readbacks complete in order;
+cancelled or rejected tickets count as dropped frames. Retiring a renderer delivers
+ready frames and cancels remaining tickets while retaining the same recording timeline.
+Existing dimension changes still determine segment boundaries. Device screenshots use polled readback and share the bounded device capture queue;
+a full queue defers screenshot admission. Software screenshots complete immediately.
+Offline map exports retain the CPU drawing path. Explicit synchronous device reads
+remain available where supported for tooling and baking.

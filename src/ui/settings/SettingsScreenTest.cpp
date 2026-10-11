@@ -235,11 +235,12 @@ static void run(int width,int height,bool gl,bool expanded)
         REQUIRE(screen.row("graphics.renderer").kind==SettingsScreen::Kind::Choice);
         screen.activateSetting("graphics.renderer");screen.key(SDLK_ESCAPE);
         screen.capture(output+"/graphics-renderer.bmp");
-        if(s.screenFlags & GraphicContext::USEGPU){
-            REQUIRE(screen.changeSetting("graphics.renderer",0));REQUIRE(screen.restartRequired());
-            loaded.load();REQUIRE(!(loaded.screenFlags & GraphicContext::USEGPU));
-            REQUIRE(screen.changeSetting("graphics.renderer",1));REQUIRE(!screen.restartRequired());
-        }
+        REQUIRE(screen.changeSetting("graphics.renderer",int(RendererBackend::Software)));
+        REQUIRE_FALSE(screen.restartRequired());
+        screen.paintFrame(SDL_GetTicks());
+        globalContainer->gfx->nextFrame();
+        REQUIRE(globalContainer->gfx->backendSwitchStatus().phase==RendererSwitchPhase::Complete);
+        loaded.load(); REQUIRE(loaded.rendererBackend==RendererBackend::Software);
         {
             const auto previousFlags=s.screenFlags;
             screen.failNextDisplay=true;
@@ -337,13 +338,14 @@ static void run(int width,int height,bool gl,bool expanded)
         screen.activateSetting("keys.mode.1");screen.capture(output+"/editor-shortcuts.bmp");
         REQUIRE(s.highResolutionArtwork==originalArtwork);
         screen.selectCategory(SettingsScreen::Category::Display);
-        screen.changeSetting("graphics.artwork",!originalArtwork);
-        Settings saved;saved.load();REQUIRE(saved.highResolutionArtwork==(gl ? !originalArtwork : originalArtwork));
+        const auto capabilities=globalContainer->gfx->rendererCapabilities();
+        REQUIRE(screen.changeSetting("graphics.artwork",!originalArtwork)==capabilities.textureFiltering);
+        Settings saved;saved.load();REQUIRE(saved.highResolutionArtwork==(capabilities.textureFiltering ? !originalArtwork : originalArtwork));
         screen.changeSetting("graphics.artwork",originalArtwork);
         screen.selectCategory(SettingsScreen::Category::Display);
         const bool previousTorus=s.automaticTorus;
-        screen.changeSetting("graphics.torus",!previousTorus);
-        saved.load();REQUIRE(saved.automaticTorus==(gl ? !previousTorus : previousTorus));
+        REQUIRE(screen.changeSetting("graphics.torus",!previousTorus)==capabilities.torus);
+        saved.load();REQUIRE(saved.automaticTorus==(capabilities.torus ? !previousTorus : previousTorus));
         screen.changeSetting("graphics.torus",previousTorus);
         for (const auto& [value,name] : std::vector<std::pair<int,std::string>>{{1,"compact"},{2,"spacious"},{0,"automatic"}}) {
             REQUIRE(screen.changeSetting("display.presentation",value));

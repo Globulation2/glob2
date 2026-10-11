@@ -6,6 +6,11 @@
 #include <PerformanceTelemetry.h>
 #include "GraphicContextPrivate.h"
 #include <SoftwareFramePresenter.h>
+#include <RenderDevice.h>
+#include "RecordingMetadata.h"
+#include <ProgrammableGLDevice.h>
+#include <SDLGPUDevice.h>
+#include <WebGPUDevice.h>
 #include <UiScale.h>
 #include <Toolkit.h>
 #include <AssetLoader.h>
@@ -27,16 +32,26 @@
 #include <tuple>
 #include <SDL3_ttf/SDL_ttf.h>
 #include <SDL3_image/SDL_image.h>
+#ifdef __EMSCRIPTEN__
+extern "C" int glob2_surface_startup_uses_gl();
+extern "C" int glob2_gl_override_texture_units(int requested);
+extern "C" void glob2_gl_restore_texture_units(int previous);
+#endif
 
 namespace GAGCore
 {
 GraphicContext::RenderingIdentity GraphicContext::renderingIdentity() const
 {
 	RenderingIdentity identity;
-	identity.backend = portableRenderer ? "sdl" : (optionFlags & USEGPU) ? "opengl" : "software";
+	const auto active = backendStatus.active;
+	// Preserve the legacy report names and identify modern families explicitly.
+	identity.backend = active == RendererBackend::LegacyGL ? "opengl" :
+		active == RendererBackend::PortableSDL ? "sdl" : std::string(rendererBackendName(active));
 #ifdef HAVE_OPENGL
-	if ((optionFlags & USEGPU) && context && eventThread == SDL_GetCurrentThreadID()
-		&& SDL_GL_GetCurrentContext() == context)
+	const auto reportContext = presentationDevice && active == RendererBackend::ProgrammableGL ?
+		programmableGLContext(*presentationDevice) : active == RendererBackend::LegacyGL ? context : nullptr;
+	if (reportContext && eventThread == SDL_GetCurrentThreadID()
+		&& SDL_GL_GetCurrentContext() == reportContext)
 	{
 		const auto copy = [](const GLubyte* value) {
 			if (!value) return std::string{};
@@ -55,8 +70,8 @@ GraphicContext::RenderingIdentity GraphicContext::renderingIdentity() const
 
 int GraphicContext::maximumTextureSize() const
 {
-	if (portableRenderer)
-		return portableRenderer->maximumTextureSize();
+	if (renderer)
+		return renderer->maximumTextureSize();
 #ifdef HAVE_OPENGL
 	if (optionFlags & USEGPU)
 	{
@@ -268,6 +283,35 @@ int GraphicContext::maximumTextureSize() const
 		minW = minH = 0;
 		sdlsurface = NULL;
 		optionFlags = DEFAULT;
+        backendStatus.requested = initialBackend.value_or(RendererBackend::Auto);
+        automaticBackend = (flags & USEGPU) ? RendererBackend::LegacyGL :
+            (flags & PORTABLEGPU) ? RendererBackend::PortableSDL : RendererBackend::Software;
+#ifdef __EMSCRIPTEN__
+        automaticBackend = glob2_surface_startup_uses_gl() ? RendererBackend::LegacyGL : RendererBackend::Software;
+#endif
+#ifndef HAVE_OPENGL
+        if (automaticBackend == RendererBackend::LegacyGL) automaticBackend = RendererBackend::Software;
+#endif
+#ifdef GLOB2_MOBILE
+        automaticBackend = RendererBackend::PortableSDL;
+#endif
+        const bool explicitBackend = initialBackend.has_value();
+        initialBackend.reset();
+        if (!explicitBackend)
+            if (const char *selected = SDL_getenv_unsafe("GLOB2_RENDERER"))
+                backendStatus.requested = parseRendererBackend(selected).value_or(RendererBackend::Auto);
+        configuredBackend = backendStatus.requested == RendererBackend::Auto ? automaticBackend : backendStatus.requested;
+        const auto available = rendererAvailability();
+        const auto chosen = std::find_if(available.begin(), available.end(), [&](const auto &entry) { return entry.backend == configuredBackend; });
+        if (chosen == available.end() || !chosen->available) {
+            backendStatus.reason = chosen == available.end() ? "Unknown rendering backend." : chosen->reason;
+            backendStatus.phase = RendererSwitchPhase::Failed;
+            configuredBackend = automaticBackend;
+        }
+        if (configuredBackend == RendererBackend::ProgrammableGL || configuredBackend == RendererBackend::SDLGPU || configuredBackend == RendererBackend::WebGPU) flags &= ~(USEGPU | PORTABLEGPU);
+        if (configuredBackend == RendererBackend::Software) flags &= ~(USEGPU | PORTABLEGPU);
+        if (configuredBackend == RendererBackend::LegacyGL) { flags |= USEGPU; flags &= ~PORTABLEGPU; }
+        if (configuredBackend == RendererBackend::PortableSDL) { flags |= PORTABLEGPU; flags &= ~USEGPU; }
 
 		// Request native Mac momentum before Cocoa registers application defaults.
 		SDL_SetHint(SDL_HINT_MAC_SCROLL_MOMENTUM, "1");
@@ -291,15 +335,26 @@ int GraphicContext::maximumTextureSize() const
 			exit(1);
 		}
 
-		///If setting the given resolution fails, default to 800x600
-		if(!setRes(w, h, flags))
-		{
-			fprintf(stderr, "Toolkit : Can't set screen resolution, resetting to default of 800x600\n");
-			if (!setRes(800,600,flags)) {
-				fprintf(stderr, "Toolkit : Initial window could not be created, quitting.\n");
-				exit(1);
-			}
-		}
+#ifdef __EMSCRIPTEN__
+        const bool delayedWebGPU = configuredBackend == RendererBackend::WebGPU;
+        if (delayedWebGPU) {
+            configuredBackend = RendererBackend::Software;
+            flags &= ~(USEGPU | PORTABLEGPU);
+        }
+#endif
+        if (!setRes(w, h, flags)) {
+            backendStatus.reason = SDL_GetError();
+            backendStatus.phase = RendererSwitchPhase::Failed;
+            configuredBackend = RendererBackend::Software;
+            if (!setRes(w, h, flags & ~(USEGPU | PORTABLEGPU)) &&
+                !setRes(800, 600, flags & ~(USEGPU | PORTABLEGPU))) {
+                fprintf(stderr, "Toolkit: no presentation surface available: %s\n", SDL_GetError());
+                exit(1);
+            }
+        }
+#ifdef __EMSCRIPTEN__
+        if (delayedWebGPU) { nextBackend = RendererBackend::WebGPU; nextBackendPersists = false; backendStatus.phase = RendererSwitchPhase::Queued; }
+#endif
 	}
 
 	GraphicContext::~GraphicContext(void)
@@ -307,19 +362,7 @@ int GraphicContext::maximumTextureSize() const
 		// must run before SDL_Quit(): ~CursorManager() runs too late, after this
 		// destructor's body, and SDL_DestroyCursor() after SDL_Quit() is undefined
 		cursorManager.releaseNativeCursor();
-		renderer = nullptr;
-        portableRenderer.reset();
-		if (watchingEvents) SDL_RemoveEventWatch(watchWindow, this);
-        watchingEvents = false;
-		releaseFrameCache();
-		freeOwnedSurface();
-#ifdef HAVE_OPENGL
-		if (context) { destroySkinRenderer(); destroyUnitShader(); releaseNativeMipmaps(context); }
-#endif
-		if (context) SDL_GL_DestroyContext(context);
-		removeMacScrollMonitor();
-		if (window) SDL_DestroyWindow(window);
-		window = nullptr;
+        retirePresentationSurface();
 		_gc = nullptr;
 		TTF_Quit();
 		SDL_Quit();
@@ -407,6 +450,7 @@ int GraphicContext::maximumTextureSize() const
             }
         }
         softwarePresenter.reset();
+        if (renderer != portableRenderer.get() && renderer != deviceRenderer.get()) renderer = nullptr;
 		if (ownsSurface && sdlsurface)
 			SDL_DestroySurface(sdlsurface);
 		sdlsurface = NULL;
@@ -755,9 +799,44 @@ int GraphicContext::maximumTextureSize() const
         return true;
     }
 
+	void GraphicContext::retirePresentationSurface()
+	{
+		// if window exists, delete it
+		if (watchingEvents) SDL_RemoveEventWatch(watchWindow, this);
+		watchingEvents = false;
+		releaseFrameCache();
+        cancelRecordingCaptures();
+        if (renderer) {
+            try { renderer->flush(); }
+            catch (const std::exception &error) { SDL_LogWarn(SDL_LOG_CATEGORY_APPLICATION, "Retiring renderer: %s", error.what()); }
+        }
+        renderer = nullptr;
+        resetDeviceSkinState();
+        deviceTargetStates.clear();
+        deviceRenderer.reset();
+        presentationDevice.reset();
+        deviceResources.reset();
+        softwareTransform = false;
+#ifdef HAVE_OPENGL
+        if (context) { releaseSurfaceTextures(); destroySkinRenderer(); destroyUnitShader(); releaseNativeMipmaps(context); }
+#endif
+		if (context) SDL_GL_DestroyContext(context);
+		context = nullptr;
+		renderer = nullptr;
+        portableRenderer.reset();
+		freeOwnedSurface();
+		if (window) {
+			removeMacScrollMonitor();
+			SDL_DestroyWindow(window);
+			window = nullptr;
+		}
+	}
+
 	bool GraphicContext::setRes(int w, int h, Uint32 flags)
 	{
+        retirePresentationSurface();
         resetRenderPacing();
+        ++glContextGeneration;
 		// check dimension
 		if (minW && (w < minW))
 		{
@@ -797,19 +876,18 @@ int GraphicContext::maximumTextureSize() const
 		int logicalH = std::max(1, static_cast<int>(h / uiScale + 0.5f));
 
 		// set flags
-        const char* selectedRenderer = SDL_getenv_unsafe("GLOB2_RENDERER");
-        if (selectedRenderer && std::string(selectedRenderer) == "sdl") flags |= PORTABLEGPU;
 #ifdef GLOB2_MOBILE
         // Android's SDL3 renderer requires an active Java Activity even with
         // dummy video. Keep native shell tools on the existing software path.
         const char *videoDriver = SDL_GetCurrentVideoDriver();
-        if (!videoDriver || std::string(videoDriver) != "dummy") flags |= PORTABLEGPU;
+        if (configuredBackend == RendererBackend::PortableSDL &&
+            (!videoDriver || std::string(videoDriver) != "dummy")) flags |= PORTABLEGPU;
         flags |= RESIZABLE;
 #endif
         if (flags & PORTABLEGPU) flags &= ~USEGPU;
 #if !defined(GLOB2_MOBILE) && !defined(__EMSCRIPTEN__)
         // The portable backend retains the mobile/browser viewport contract.
-        nativeDesktop = !(flags & PORTABLEGPU);
+        if (!changingBackend) nativeDesktop = !(flags & PORTABLEGPU);
 #endif
 		optionFlags = flags;
         fixedLogicalW=logicalW; fixedLogicalH=logicalH; responsiveViewport=false;
@@ -819,15 +897,19 @@ int GraphicContext::maximumTextureSize() const
 			sdlFlags |= SDL_WINDOW_FULLSCREEN;
 		if ((flags & RESIZABLE) || (nativeDesktop && (flags & FULLSCREEN)))
 			sdlFlags |= SDL_WINDOW_RESIZABLE;
-		#ifdef HAVE_OPENGL
-		if (flags & USEGPU)
+		#if defined(HAVE_OPENGL) || defined(GLOB2_PROGRAMMABLE_GL)
+		if ((flags & USEGPU) || configuredBackend == RendererBackend::ProgrammableGL)
 		{
 			SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
 			SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
-#ifdef GLOB2_WEBGL2
+#if defined(GLOB2_WEBGL2) || defined(GLOB2_GLES3)
 			SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
 			SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
 			SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+#else
+            SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, configuredBackend == RendererBackend::ProgrammableGL ? SDL_GL_CONTEXT_PROFILE_CORE : 0);
+            SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, configuredBackend == RendererBackend::ProgrammableGL ? 3 : 2);
+            SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, configuredBackend == RendererBackend::ProgrammableGL ? 3 : 1);
 #endif
 			sdlFlags |= SDL_WINDOW_OPENGL;
 		}
@@ -836,23 +918,7 @@ int GraphicContext::maximumTextureSize() const
 		optionFlags &= ~USEGPU;
 		#endif
 
-		// if window exists, delete it
-		if (watchingEvents) SDL_RemoveEventWatch(watchWindow, this);
-		watchingEvents = false;
-		releaseFrameCache();
-#ifdef HAVE_OPENGL
-		if (context) { destroySkinRenderer(); destroyUnitShader(); releaseNativeMipmaps(context); }
-#endif
-		if (context) SDL_GL_DestroyContext(context);
-		context = nullptr;
-		renderer = nullptr;
-        portableRenderer.reset();
-		freeOwnedSurface();
-		if (window) {
-			removeMacScrollMonitor();
-			SDL_DestroyWindow(window);
-			window = nullptr;
-		}
+
 		// create the new window and the surface
 		window = SDL_CreateWindow(windowTitle.c_str(), w, h, sdlFlags);
 		if (!window)
@@ -910,8 +976,19 @@ int GraphicContext::maximumTextureSize() const
 					context = nullptr;
 					return false;
 				}
-				++glContextGeneration;
+#if defined(__EMSCRIPTEN__) && defined(HAVE_OPENGL)
+                // Live skin materials use a second unit even on the legacy
+                // renderer. Initialize emulation bookkeeping for that unit too.
+                const int previousUnits = glob2_gl_override_texture_units(2);
+                try { ApplicationHost::initializeOpenGLContext(); }
+                catch (...) {
+                    glob2_gl_restore_texture_units(previousUnits);
+                    throw;
+                }
+                glob2_gl_restore_texture_units(previousUnits);
+#else
                 ApplicationHost::initializeOpenGLContext();
+#endif
 				#ifdef HAVE_OPENGL
 				// The new context starts at the GL defaults, so a cache still describing the
 				// replaced one would skip the enables the next draw call needs.
@@ -923,12 +1000,31 @@ int GraphicContext::maximumTextureSize() const
 				applyGLViewport();
 				#endif
 			}
+            if (configuredBackend == RendererBackend::ProgrammableGL || configuredBackend == RendererBackend::SDLGPU || configuredBackend == RendererBackend::WebGPU) {
+                try {
+                    if (configuredBackend == RendererBackend::ProgrammableGL)
+                        presentationDevice = makeProgrammableGLDevice(window, rendererShaderDirectory());
+#ifdef __EMSCRIPTEN__
+                    else if (configuredBackend == RendererBackend::WebGPU) presentationDevice = makeWebGPURenderDevice(window);
+#else
+                    else presentationDevice = makeSDLGPUDevice(window, drawableW, drawableH, rendererShaderDirectory());
+#endif
+                    deviceResources = std::make_unique<RenderResources>();
+                    deviceRenderer = makeDeviceRenderBackend(*presentationDevice, *deviceResources, logicalW, logicalH);
+                    renderer = deviceRenderer.get();
+                    renderer->outputSize(drawableW, drawableH);
+                } catch (const std::exception &error) {
+                    SDL_SetError("Renderer initialization: %s", error.what());
+                    return false;
+                }
+            }
             _glFormat = *SDL_GetPixelFormatDetails(SDL_PIXELFORMAT_ARGB8888);
 
 			#ifdef HAVE_OPENGL
 			if (optionFlags & USEGPU)
 			{
 				glState.checkExtensions();
+                restoreSurfaceTextures();
 				// A failed compile/link logs once and leaves hasUnitShader() false;
 				// callers fall back to the CPU team-color cache for this context's
 				// lifetime.
@@ -990,6 +1086,8 @@ int GraphicContext::maximumTextureSize() const
 				SDL_AddEventWatch(watchWindow, this);
 				watchingEvents = true;
 			}
+            backendStatus.active = presentationDevice ? configuredBackend : (optionFlags & USEGPU) ? RendererBackend::LegacyGL :
+                (optionFlags & PORTABLEGPU) ? RendererBackend::PortableSDL : RendererBackend::Software;
 			return true;
 		}
 	}
@@ -1009,6 +1107,30 @@ int GraphicContext::maximumTextureSize() const
 		const auto title = windowTitle + suffix;
 		if (window && title != SDL_GetWindowTitle(window))
 			SDL_SetWindowTitle(window, title.c_str());
+        pollRecordingCaptures();
+        if (presentationDevice) {
+            if (nextBackend || changingBackend) return;
+            auto ticket = capture.reserveCapture();
+            if (!ticket) return;
+            try {
+                renderer->flush();
+                if (!didRecordDeviceFrame(*renderer)) { capture.dropCapture(*ticket); return; }
+                int width, height; presentationDevice->outputSize(width, height);
+                CaptureRequest request;
+                request.identity = ticket->identity;
+                request.recordingGeneration = ticket->generation;
+                request.timestamp = ticket->timestamp;
+                if (ticket->context) request.context = ticket->context->fields(capture.options.chapterTicks);
+                request.frameIdentity = submittedDeviceFrameIdentity(*renderer);
+                request.width = width; request.height = height;
+                if (presentationDevice->capture(std::move(request))) recordingCaptures.emplace(ticket->identity, *ticket);
+                else capture.dropCapture(*ticket);
+            } catch (const std::exception &error) {
+                capture.dropCapture(*ticket);
+                SDL_LogWarn(SDL_LOG_CATEGORY_APPLICATION, "Asynchronous recording capture: %s", error.what());
+            }
+            return;
+        }
 		if (!capture.wantsFrame())
 			return;
 		PERF_SCOPE_TIME(RecordingCapture);
@@ -1062,6 +1184,7 @@ int GraphicContext::maximumTextureSize() const
 
 	void GraphicContext::nextFrame(void)
 	{
+        ++captureFrameIdentity;
         endBrowserTextFrame();
 		DrawableSurface::nextFrame();
 		if (sdlsurface)
@@ -1081,37 +1204,32 @@ int GraphicContext::maximumTextureSize() const
 				cursorManager.update(cursorScale);
 			}
 
-			captureRecordingFrame();
+            if (presentationDevice) {
+                try { renderer->flush(); }
+                catch (const std::exception &error) { handleDeviceFailure(error.what()); return; }
+            }
+            captureBackendFrame();
+            try { captureRecordingFrame(); }
+            catch (const std::exception &error) { handleDeviceFailure(error.what()); return; }
 
 			// A transformed software pass may end before nextFrame. Keep the
 			// request independent of the borrowed active-backend pointer.
-			if (!pendingScreenshot.empty())
-			{
-				std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> pixels(
-					renderer ? renderer->capture()
-							 : SDL_ConvertSurface(sdlsurface, SDL_PIXELFORMAT_RGBA32),
-					SDL_DestroySurface);
-				bool saved = false;
-				if (pixels)
-					for (size_t i = 0; i < Toolkit::getFileManager()->getDirCount(); ++i)
-					{
-						auto path = Toolkit::getFileManager()->getDir(i) + DIR_SEPARATOR_S +
-									pendingScreenshot;
-						if (SDL_SaveBMP(pixels.get(), path.c_str()))
-						{
-							saved = true;
-							break;
-						}
-					}
-				if (!saved)
-					std::cerr << "Cannot save screenshot: " << SDL_GetError() << std::endl;
-				pendingScreenshot.clear();
-			}
+            captureScreenshot();
+
 			if (renderer && !nativeSoftware)
 			{
-				if (renderer == portableRenderer.get())
+				if (renderer == portableRenderer.get() || renderer == deviceRenderer.get())
 				{
-					renderer->present();
+					try { renderer->present(); }
+                    catch (const std::exception &error) { handleDeviceFailure(error.what()); return; }
+                    // Budget deferral retains allocations so sliced uploads can progress.
+                    // Only content recorded by an aborted frame needs regeneration.
+                    if (presentationDevice && !didPresentDeviceFrame(*renderer) &&
+                        !didIntentionallyDeferDeviceFrame(*renderer)) {
+                        ++targetContentRevision;
+                        invalidateDeviceSkinTiles();
+                    }
+                    completeBackendFrame();
 					return;
 				}
 				renderer->flush();
@@ -1126,6 +1244,7 @@ int GraphicContext::maximumTextureSize() const
 				swapBuffers();
 			else
 				presentLastFrame();
+            completeBackendFrame();
 		}
 	}
 

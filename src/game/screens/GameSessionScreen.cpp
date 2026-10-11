@@ -6,6 +6,7 @@
 #include "MessageScreen.h"
 #include "GlobalContainer.h"
 #include "SoundMixer.h"
+#include "SettingsScreen.h"
 #include <Toolkit.h>
 #include <StringTable.h>
 #include <stdexcept>
@@ -138,6 +139,11 @@ void GameSessionScreen::updateExecutionImpl(Uint32 tick)
 			nextTick = clock + engine->sessionDelay(clock);
         }
 	}
+	if (running && engine->takeSettingsRequest()) {
+        engine->suspendInput(); input.clear();
+        stack.push(std::make_unique<SettingsScreen>(&stack));
+        return;
+    }
 	// Disk completion is only one stage: retain the dialog for queued capture,
 	// browser persistence, and retry/export after a persistence failure.
 	if (!running && !finishingSession)

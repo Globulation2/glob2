@@ -3,6 +3,7 @@
 #include "GraphicContextPrivate.h"
 #include "SpriteHighResolution.h"
 #include <Toolkit.h>
+#include <RenderDevice.h>
 #include <algorithm>
 #include <cstring>
 #include <cmath>
@@ -183,6 +184,7 @@ struct SpriteLoad::Impl {
 };
 SpriteLoad::SpriteLoad(std::string name, bool variableAtlas) : impl(std::make_unique<Impl>()) {
     impl->name = std::move(name); impl->variableAtlas = variableAtlas;
+    if(_gc && _gc->renderDevice())impl->maxTextureSize=std::min(2048,_gc->renderDevice()->capabilities().maximumTextureSize);
 #ifdef HAVE_OPENGL
     if (_gc && (_gc->getOptionFlags() & GraphicContext::USEGPU))
         glGetIntegerv(GL_MAX_TEXTURE_SIZE, &impl->maxTextureSize);
@@ -243,6 +245,7 @@ bool SpriteLoad::pollUntil(std::chrono::steady_clock::time_point deadline) {
         }
         impl->images.clear(); impl->prepared = {};
         impl->sprite = std::make_unique<Sprite>();
+        impl->sprite->atlasVariableSizes=impl->variableAtlas;
         impl->sprite->fileName = impl->name;
         impl->sprite->dynamicTeamColor = impl->name == "data/gfx/unit";
     }
@@ -271,23 +274,38 @@ bool SpriteLoad::pollUntil(std::chrono::steady_clock::time_point deadline) {
         advanceInputs(); return false;
     }
     const bool uncolored = std::all_of(impl->sprite->rotated.begin(), impl->sprite->rotated.end(), [](auto p) { return !p; });
+    bool adoptedAtlas=false;
+    if(impl->pixels->atlas) {
+        const bool modern=_gc && _gc->renderDevice();
+        bool legacy=false;
 #ifdef HAVE_OPENGL
-    if (impl->pixels->atlas) {
-        auto atlas = DrawableSurface::fromAssetImage(*impl->pixels->atlas, impl->pixels.use_count() == 1);
-        atlas->uploadToTexture();
-        for (size_t i = 0; i < impl->sprite->images.size(); ++i) {
-            auto *image = impl->sprite->images[i];
-            image->textureInfo = TextureInfo{impl->sprite.get(), int(i % impl->pixels->columns) * impl->pixels->cellWidth + 1,
-                int(i / impl->pixels->columns) * impl->pixels->cellHeight + 1, image->getW(), image->getH()};
-            image->texMultX = atlas->texMultX; image->texMultY = atlas->texMultY;
+        legacy=_gc && (_gc->getOptionFlags() & GraphicContext::USEGPU);
+#endif
+        const auto *pixels=impl->pixels->atlas->surface;
+        auto lease=modern?reserveSpriteAtlasMemory(std::size_t(pixels->pitch)*pixels->h):nullptr;
+        if(legacy || lease) {
+            auto atlas=DrawableSurface::fromAssetImage(*impl->pixels->atlas,impl->pixels.use_count()==1,legacy);
+#ifdef HAVE_OPENGL
+            if(legacy)atlas->uploadToTexture();
+#endif
+            for(std::size_t i=0;i<impl->sprite->images.size();++i) {
+                auto *image=impl->sprite->images[i];
+                SDL_Rect region{int(i%impl->pixels->columns)*impl->pixels->cellWidth+1,
+                    int(i/impl->pixels->columns)*impl->pixels->cellHeight+1,image->sdlsurface->w,image->sdlsurface->h};
+                impl->sprite->atlasRegions.push_back(region);
+                impl->sprite->atlasStamps.push_back({image->lifetimeIdentity(),image->contentRevision(),region.w,region.h});
+                if(legacy) {
+                    image->textureInfo=TextureInfo{impl->sprite.get(),region.x,region.y,region.w,region.h};
+                    image->texMultX=atlas->texMultX;image->texMultY=atlas->texMultY;
+                }
+            }
+            impl->sprite->atlas=std::move(atlas);impl->sprite->atlasMemory=std::move(lease);adoptedAtlas=true;
+#if defined(HAVE_OPENGL) && !defined(GLOB2_WEBGL2)
+            if(legacy){glGenBuffers(1,&impl->sprite->vbo);glGenBuffers(1,&impl->sprite->texCoordBuffer);impl->sprite->bufferGeneration=_gc->getGLContextGeneration();}
+#endif
         }
-        impl->sprite->atlas = std::move(atlas);
-#ifndef GLOB2_WEBGL2
-        glGenBuffers(1, &impl->sprite->vbo); glGenBuffers(1, &impl->sprite->texCoordBuffer);
-#endif
-    } else
-#endif
-    if (uncolored) impl->sprite->createTextureAtlas(impl->variableAtlas);
+    }
+    if(!adoptedAtlas && uncolored)impl->sprite->createTextureAtlas(impl->variableAtlas);
     impl->sprite->recomputeBlockCompleteHD(); impl->sprite->createHighResolutionAtlas(impl->highResolution);
     impl->sprite->registerLoaded();
     impl->pixels.reset(); impl->sources.reset(); impl->prepared = {}; impl->images.clear(); impl->highResolution.clear();
