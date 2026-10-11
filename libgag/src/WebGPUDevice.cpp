@@ -23,6 +23,7 @@ int glob2_webgpu_geometry_upload(unsigned,const void *,unsigned,const void *,uns
 void glob2_webgpu_geometry_delete(unsigned);
 unsigned glob2_webgpu_submit(const void *, unsigned, const void *, unsigned, const void *, unsigned, int, int);
 unsigned glob2_webgpu_completed();
+unsigned glob2_webgpu_issued();
 unsigned glob2_webgpu_memory();
 int glob2_webgpu_can_begin();
 int glob2_webgpu_present();
@@ -144,7 +145,7 @@ class WebGPUDevice final:public RenderDevice {
         for(std::size_t i=begin;i<v.size();++i){auto&vertex=v[i];if(p.kind!=DrawPacket::Kind::ScreenTriangles){vertex.position.x=vertex.position.x*p.transform.scale+p.transform.x;vertex.position.y=vertex.position.y*p.transform.scale+p.transform.y;}if(premultiplied){const float a=vertex.color.a*p.alpha/255.f;vertex.color.r*=a;vertex.color.g*=a;vertex.color.b*=a;}}
     }
   public:
-    explicit WebGPUDevice(SDL_Window *borrowed):window(borrowed){maxTexture=glob2_webgpu_attach();if(!maxTexture)fail();}
+    explicit WebGPUDevice(SDL_Window *borrowed):window(borrowed){maxTexture=glob2_webgpu_attach();if(!maxTexture)fail();issued=glob2_webgpu_issued();}
     ~WebGPUDevice() override{glob2_webgpu_reset();}
     RenderDeviceCapabilities capabilities() const override{return {true,true,false,int(maxTexture),true,true,true,true};}
     bool canBeginFrame() override{poll();const int ready=glob2_webgpu_can_begin();if(ready<0)fail();return ready>0;}
@@ -237,8 +238,8 @@ class WebGPUDevice final:public RenderDevice {
     }
     RenderCompletion completion(RenderSubmission submission) override{poll();if(!submission||submission.deviceGeneration!=epoch||submission.identity>issued)return RenderCompletion::Cancelled;return submission.identity<=glob2_webgpu_completed()?RenderCompletion::Complete:RenderCompletion::Pending;}
     void present() override{detail::RenderCpuTimer timing(counts.cpuPresentNanoseconds);if(!glob2_webgpu_present())fail();}
-    void discardFrame() override{if(!glob2_webgpu_discard())fail();}
-    void reset() override{cancelCaptures();glob2_webgpu_reset();textures.clear();meshes.clear();masks.clear();pending.clear();textureBytes=meshBytes=maskBytes=0;classBytes.fill(0);++epoch;maxTexture=glob2_webgpu_attach();if(!maxTexture)fail();}
+    void discardFrame() override{const auto identity=glob2_webgpu_discard();if(!identity)fail();issued=identity;}
+    void reset() override{cancelCaptures();glob2_webgpu_reset();textures.clear();meshes.clear();masks.clear();pending.clear();textureBytes=meshBytes=maskBytes=0;classBytes.fill(0);++epoch;maxTexture=glob2_webgpu_attach();if(!maxTexture)fail();issued=glob2_webgpu_issued();}
     std::uint64_t generation() const override{return epoch;}
     RenderTelemetry telemetry() const override{auto result=counts;result.resourceBytes=glob2_webgpu_memory();return result;}
     bool capture(CaptureRequest request) override{

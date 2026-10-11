@@ -12,6 +12,7 @@ std::unique_ptr<RenderDevice> device;
 SDL_Window *window;
 std::string error;
 unsigned nextTexture=0;
+int pendingRecreation=0;
 TextureSnapshot pressureSource, secondSource;
 TextureSnapshot image(int width,int height,SDL_Color color,TextureDescriptor::Alpha alpha=TextureDescriptor::Alpha::Straight) {
     auto value=std::make_shared<TextureRevision>();value->handle={++nextTexture,1};value->contentRevision=1;
@@ -29,6 +30,7 @@ void submit(std::vector<DrawPacket> packets,bool present=true){RenderFrame frame
 template<class F> int checked(F action){try{action();return 1;}catch(const std::exception&e){error=e.what();return 0;}}
 }
 extern "C" {
+EMSCRIPTEN_KEEPALIVE int proof_pending_recreation(){return pendingRecreation;}
 EMSCRIPTEN_KEEPALIVE const char *proof_error(){return error.c_str();}
 EMSCRIPTEN_KEEPALIVE int proof_init(){return checked([]{if(!SDL_Init(SDL_INIT_VIDEO))throw std::runtime_error(SDL_GetError());window=SDL_CreateWindow("C++ WebGPU proof",64,64,0);if(!window)throw std::runtime_error(SDL_GetError());device=makeWebGPURenderDevice(window);});}
 EMSCRIPTEN_KEEPALIVE int proof_skin(int quadrant){return checked([&]{
@@ -57,6 +59,14 @@ EMSCRIPTEN_KEEPALIVE int proof_pressure(int stage){return checked([&]{
     if(stage==0){device->reset();nextTexture=0;pressureSource=image(4096,2048,{180,30,20,255});secondSource=image(2048,2048,{20,180,30,255});submit({clear(),blit(pressureSource,{0,0,64,64})});}
     else if(stage==1)submit({blit(pressureSource,{0,0,64,64},true)});
     else if(stage==2)submit({blit(pressureSource,{0,0,32,64},true)},false);
-    else submit({blit(secondSource,{32,0,32,64})});
+    else if(stage==3)submit({blit(secondSource,{32,0,32,64})});
+    else if(stage==4){
+        submit({blit(pressureSource,{0,0,64,64},true)},false);
+        pendingRecreation=EM_ASM_INT({return Glob2WebGPU.completed<Glob2WebGPU.issued?1:0;});
+        device.reset();device=makeWebGPURenderDevice(window);nextTexture=0;pressureSource=image(4096,2048,{180,30,20,255});secondSource=image(2048,2048,{20,180,30,255});
+        bool deferred=false;try{submit({clear(),blit(pressureSource,{0,0,64,64}),blit(pressureSource,{0,0,64,64},true),blit(secondSource,{0,0,64,64})});}
+        catch(const RenderAdmissionDeferred &){deferred=true;device->discardFrame();}
+        if(!deferred)throw std::runtime_error("Expected bounded preparation deferral");
+    }else submit({clear(),blit(secondSource,{0,0,64,64})});
 });}
 }

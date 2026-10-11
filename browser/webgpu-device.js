@@ -8,20 +8,21 @@ addToLibrary({
     issued: 0, completed: 0, epoch: 0, width: 0, height: 0, screen: null, committed: null, bytes: 0, deferred: false, presentOwned: [], presentBytes: 0,
     handle(error){if(error?.deferred){this.deferred=true;this.error=String(error.message);}else this.fail(error);},
     fail(error) { this.error=String(error?.message||error);this.state=-1;this.lost=true; },
-    async prepare(root) {
+    async prepare(root, ownedSources=null) {
       if(this.state===0.5)return;
       if(this.device&&!this.lost){this.state=1;return;}
       this.state=0.5;this.error='';this.lost=false;
       try {
+        if(ownedSources?.error)throw Error(ownedSources.error);
         if(!globalThis.navigator?.gpu)throw Error('WebGPU unavailable');
         const adapter=this.adapter=await (this.gpu=navigator.gpu).requestAdapter();if(!adapter)throw Error('No WebGPU adapter');
         this.device=await adapter.requestDevice();const epoch=++this.epoch;
         this.device.lost.then(info=>{if(epoch===this.epoch)this.fail('WebGPU device lost: '+info.message);});
         this.device.addEventListener('uncapturederror',e=>{if(epoch===this.epoch)this.fail(e.error);});
-        this.pipelines.clear();this.shaders={};this.metadata=JSON.parse(FS.readFile(root+'/../metadata.json',{encoding:'utf8'}));
+        this.pipelines.clear();this.shaders={};this.metadata=ownedSources ? ownedSources.metadata : JSON.parse(FS.readFile(root+'/../metadata.json',{encoding:'utf8'}));
         for(const variant of['primitive','world','cloud','point','skin','skin-rig','terrain-compose','terrain-reduce']){
           const stages={};for(const stage of['vert','frag']){
-            stages[stage]=this.device.createShaderModule({code:FS.readFile(root+'/'+variant+'.'+stage+'.wgsl',{encoding:'utf8'})});
+            stages[stage]=this.device.createShaderModule({code:ownedSources ? ownedSources.stages[variant][stage] : FS.readFile(root+'/'+variant+'.'+stage+'.wgsl',{encoding:'utf8'})});
             const info=await stages[stage].getCompilationInfo();if(info.messages.some(m=>m.type==='error'))throw Error(variant+' '+stage+': '+info.messages.map(m=>m.message).join('\n'));
           }this.shaders[variant]=stages;
           const description=this.pipelineDescription(variant,0,0,false,0);
@@ -165,10 +166,14 @@ addToLibrary({
       }pass.draw(6);pass.end();encoder.copyTextureToTexture({texture:this.screen.texture},{texture:this.committed.texture},[this.width,this.height]);this.device.queue.submit([encoder.finish()]);this.committed.initialized=true;this.finishPresentation(owned);
     },
     discard(){
-      // Retire buffers allocated by an interrupted (unsubmitted) chunk. Earlier
-      // chunks stay owned until the restore command's queue fence completes.
+      // Even preparation can enqueue uploads before packet submission fails.
+      // Give all those writes a real completion identity, including a failure
+      // before the first chunk. Existing submitted chunks precede this fence.
       const protectedBuffers=new Set([...this.frames.flatMap(f=>f.owned),...(this.activeFrame?.owned||[])]);
-      this.retireBuffers(Array.from(this.transients).filter(b=>!protectedBuffers.has(b)));
+      const unsubmitted=Array.from(this.transients).filter(b=>!protectedBuffers.has(b));
+      if(!this.activeFrame)this.activeFrame={identity:0,owned:[]};
+      this.activeFrame.identity=++this.issued;
+      this.activeFrame.owned.push(...unsubmitted);
       if(this.screen&&this.committed){const encoder=this.device.createCommandEncoder();encoder.copyTextureToTexture({texture:this.committed.texture},{texture:this.screen.texture},[this.width,this.height]);this.device.queue.submit([encoder.finish()]);}
       if(this.screen)this.present();else if(this.activeFrame)this.finishPresentation([]);this.deferred=false;
     },
@@ -189,8 +194,38 @@ addToLibrary({
       this.destroyImage(this.screen);this.destroyImage(this.committed);this.screen=this.committed=null;this.width=this.height=0;this.completed=this.issued;this.bytes=0;
     }
   },
-  glob2_webgpu_prepare__deps:['$Glob2WebGPU','$FS','$UTF8ToString'],
-  glob2_webgpu_prepare(root){Glob2WebGPU.prepare(UTF8ToString(root));return Glob2WebGPU.state===1?1:Glob2WebGPU.state<0?-1:0;},
+  // SDK preload files live on main. Pthread-local JS FS is a separate tree;
+  // transfer owned source text, while GPU objects stay in the presentation owner.
+  glob2_webgpu_shader_payload__proxy:'sync',
+  glob2_webgpu_shader_payload__deps:['$FS','$UTF8ToString','$lengthBytesUTF8','$stringToUTF8','malloc'],
+  glob2_webgpu_shader_payload(root){
+    let sources;
+    try{
+      const directory=UTF8ToString(root),stages={};
+      const metadata=JSON.parse(FS.readFile(directory+'/../metadata.json',{encoding:'utf8'}));
+      for(const variant of['primitive','world','cloud','point','skin','skin-rig','terrain-compose','terrain-reduce']){
+        stages[variant]={};for(const stage of['vert','frag'])stages[variant][stage]=FS.readFile(directory+'/'+variant+'.'+stage+'.wgsl',{encoding:'utf8'});
+      }
+      sources={metadata,stages};
+    }catch(error){sources={error:String(error?.message||error)};}
+    let text=JSON.stringify(sources),bytes=lengthBytesUTF8(text)+1;
+    if(bytes>2*1024*1024){text=JSON.stringify({error:'Renderer shader payload exceeds preparation budget'});bytes=lengthBytesUTF8(text)+1;}
+    const pointer=_malloc(bytes);if(pointer)stringToUTF8(text,pointer,bytes);return pointer;
+  },
+  glob2_webgpu_prepare__deps:['$Glob2WebGPU','$UTF8ToString','glob2_webgpu_shader_payload','free'],
+  glob2_webgpu_prepare(root){
+    if(Glob2WebGPU.state===0.5)return 0;
+    if(Glob2WebGPU.device&&!Glob2WebGPU.lost){Glob2WebGPU.state=1;return 1;}
+    {
+      const directory=UTF8ToString(root),pointer=_glob2_webgpu_shader_payload(root);
+      if(!pointer){Glob2WebGPU.fail('Renderer shader preparation allocation failed');return -1;}
+      let sources;try{sources=JSON.parse(UTF8ToString(pointer));}finally{_free(pointer);}
+      Glob2WebGPU.prepare(directory,sources);
+    }
+    return Glob2WebGPU.state===1?1:Glob2WebGPU.state<0?-1:0;
+  },
+  glob2_webgpu_issued__deps:['$Glob2WebGPU'],
+  glob2_webgpu_issued(){return Glob2WebGPU.issued;},
   glob2_webgpu_poll__deps:['$Glob2WebGPU'],
   glob2_webgpu_poll(){return Glob2WebGPU.state===1&&!Glob2WebGPU.lost?1:Glob2WebGPU.state<0?-1:0;},
   glob2_webgpu_error__deps:['$Glob2WebGPU','$stringToUTF8'],
@@ -218,7 +253,7 @@ addToLibrary({
   glob2_webgpu_deferred__deps:['$Glob2WebGPU'],
   glob2_webgpu_deferred(){return +Glob2WebGPU.deferred;},
   glob2_webgpu_discard__deps:['$Glob2WebGPU'],
-  glob2_webgpu_discard(){try{Glob2WebGPU.discard();return 1;}catch(e){Glob2WebGPU.fail(e);return 0;}},
+  glob2_webgpu_discard(){try{Glob2WebGPU.discard();return Glob2WebGPU.issued;}catch(e){Glob2WebGPU.fail(e);return 0;}},
   glob2_webgpu_memory__deps:['$Glob2WebGPU'],
   glob2_webgpu_memory(){return Glob2WebGPU.totalBytes();},
   glob2_webgpu_completed__deps:['$Glob2WebGPU'],

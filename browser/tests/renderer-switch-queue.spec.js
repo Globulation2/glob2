@@ -46,11 +46,11 @@ async function installGates(page){
       let release;
       const held=new Promise(resolve=>{release=resolve;});
       const audit=globalThis.rendererQueueOwner={entered:0,phase:'idle',contexts:[],starts:0,acceptedFrames:0,frames:[],release,cleanup:[]};
-      backend.prepare=async function(root){
-        backend.prepare=prepare;audit.entered++;audit.phase='holding';this.state=0.5;
+      backend.prepare=async function(root,ownedSources){
+        backend.prepare=prepare;audit.root=root;audit.entered++;audit.phase='holding';this.state=0.5;
         const fail=await held;
         if(fail){this.fail(Error('injected delayed WebGPU preparation failure'));audit.phase='rejected';return;}
-        this.state=0;await prepare.call(this,root);audit.phase=this.state===1?'prepared':'rejected';
+        this.state=0;await prepare.call(this,root,ownedSources);audit.phase=this.state===1?'prepared':'rejected';
       };
       audit.cleanup.push(()=>{backend.prepare=prepare;release(true);});
       for(const constructor of [globalThis.HTMLCanvasElement,globalThis.OffscreenCanvas])if(constructor){
@@ -81,8 +81,10 @@ async function installGates(page){
     async cleanup(){for(const realm of realms)await realm.evaluate(()=>{for(const cleanup of rendererQueueOwner.cleanup)cleanup();}).catch(()=>{});await page.evaluate(()=>rendererQueueSurface.cleanup());}
   };
 }
-async function assertSoftwarePreference(owner){
-  const preference=await owner.evaluate(()=>{
+async function assertSoftwarePreference(page){
+  // Pthread filesystem syscalls execute on the main realm; its preloaded FS
+  // also owns persisted preferences. A worker-local JS FS is independent.
+  const preference=await page.evaluate(()=>{
     const env=typeof ENV==='object'?ENV:{};
     const directories=[env.GLOB2_USER_DATA_DIR,env.GLOB2_USER_DIR,(env.HOME||'/home/web_user')+'/.glob2','/'];
     for(const directory of directories)if(directory)try{return FS.readFile(directory.replace(/\/$/,'')+'/preferences.txt',{encoding:'utf8'});}catch(_){}
@@ -100,8 +102,22 @@ async function supersede(page,gates,fail){
   await select(page,'Programmable GL');await select(page,'Software');
   expect((await surface(page)).generation).toBe(before.generation);
   await owner.evaluate(fail=>rendererQueueOwner.release(fail),fail);
+  const shaderAudit=await owner.evaluate(()=>{
+    const root=rendererQueueOwner.root;
+    let metadata;try{metadata=FS.readFile(root+'/../metadata.json',{encoding:'utf8'}).length;}catch(error){metadata=String(error);}
+    return {root,metadata,phase:rendererQueueOwner.phase,state:Glob2WebGPU.state,error:Glob2WebGPU.error};
+  });
+  const mainMetadata=await page.evaluate(root=>{
+    try{return FS.readFile(root+'/../metadata.json',{encoding:'utf8'}).length;}catch(error){return String(error);}
+  },shaderAudit.root);
+  await test.info().attach('shader-filesystem-owner',{body:JSON.stringify({...shaderAudit,mainMetadata}),contentType:'application/json'});
   const transitions=fail?0:2;
-  await expect.poll(async()=>(await surface(page)).generation,{timeout:120000}).toBe(before.generation+transitions);
+  try { await expect.poll(async()=>(await surface(page)).generation,{timeout:120000}).toBe(before.generation+transitions); }
+  catch(error){
+    const failure=await owner.evaluate(()=>({phase:rendererQueueOwner.phase,state:Glob2WebGPU.state,error:Glob2WebGPU.error})).catch(e=>({inspectionError:String(e)}));
+    await test.info().attach('prepare-failure-state',{body:JSON.stringify(failure),contentType:'application/json'});
+    throw error;
+  }
   const loop=(await state(page)).loop;
   await expect.poll(async()=>(await state(page)).loop,{timeout:120000}).toBeGreaterThan(loop+4);
   expect(await owner.evaluate(()=>rendererQueueOwner.contexts.filter(kind=>kind==='webgl2'))).toEqual([]);
@@ -113,7 +129,7 @@ async function supersede(page,gates,fail){
     expect(events.filter(event=>event.action==='finish').every(event=>event.success)).toBe(true);
     expect(await owner.evaluate(()=>rendererQueueOwner.contexts)).toContain('webgpu');
   }
-  expect(await page.evaluate(()=>Module.renderer)).toBe('software');await assertSoftwarePreference(owner);
+  expect(await page.evaluate(()=>Module.renderer)).toBe('software');await assertSoftwarePreference(page);
   await expect.poll(()=>page.evaluate(()=>glob2Diagnostics.snapshot().controls['graphics.renderer']?.label),{timeout:120000}).toContain('Software');
   return owner;
 }

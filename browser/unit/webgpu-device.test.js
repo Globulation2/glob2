@@ -64,6 +64,20 @@ test('budget deferral preserves prior presentation and admitted captures',async(
   f.g.submit(new Uint8Array(),0,new Uint8Array(),new Uint8Array(),16,16);f.g.finishPresentation([]);f.completion.shift()();await Promise.resolve();
   assert.equal(f.g.capture(8,16,16),1);f.g.submit(new Uint8Array(),0,new Uint8Array(),new Uint8Array(),16,16);
   f.g.bytes=256*1024*1024;assert.equal(f.library.glob2_webgpu_submit(0,0,0,0,0,0,16,16),0);assert.equal(f.library.glob2_webgpu_deferred(),1);assert.equal(f.g.lost,false);
-  assert.equal(f.library.glob2_webgpu_discard(),1);assert.equal(f.g.captures.length,1);assert.equal(f.g.activeFrame,null);assert.equal(f.library.glob2_webgpu_deferred(),0);
+  const abortedIdentity=f.g.issued+1;assert.equal(f.library.glob2_webgpu_discard(),abortedIdentity);assert.equal(f.g.captures.length,1);assert.equal(f.g.activeFrame,null);assert.equal(f.library.glob2_webgpu_deferred(),0);
   f.completion.forEach(r=>r());await Promise.resolve();assert.equal(f.g.transientBytes,0);
+});
+
+test('owned shader text prepares without accessing the worker-local filesystem',async()=>{
+  const f=fixture(),metadata=JSON.parse(f.context.FS.readFile('/metadata.json'));
+  f.context.FS.readFile=()=>{throw Error('worker has no preload');};
+  const stages={};for(const variant of['primitive','world','cloud','point','skin','skin-rig','terrain-compose','terrain-reduce'])stages[variant]={vert:'',frag:''};
+  await f.g.prepare('/shaders',{metadata,stages});assert.equal(f.g.state,1);assert.equal(f.g.error,'');assert.equal(f.library.glob2_webgpu_shader_payload__proxy,'sync');
+});
+test('discard fences preparation uploads even before the first packet submission',async()=>{
+  const f=fixture();await f.g.prepare('/shaders');f.library.glob2_webgpu_attach();
+  const buffer=f.g.buffer(new Uint8Array(16),f.context.GPUBufferUsage.UNIFORM);
+  assert.equal(f.g.issued,0);assert.equal(f.library.glob2_webgpu_discard(),1);
+  assert.equal(f.g.completed,0);assert.equal(f.g.transientBytes,16);
+  f.completion.shift()();await Promise.resolve();assert.equal(f.g.completed,1);assert.equal(f.g.transientBytes,0);
 });
