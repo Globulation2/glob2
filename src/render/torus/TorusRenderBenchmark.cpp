@@ -234,9 +234,15 @@ static int run(int argc, char **argv)
                 glFinish();
                 assert(glGetError() == GL_NO_ERROR);
                 double ms = 1000.0 * (SDL_GetPerformanceCounter() - start) / SDL_GetPerformanceFrequency();
+                const double cpuMs = 1000.0 * (std::clock() - cpuStart) / CLOCKS_PER_SEC;
                 if (std::getenv("GLOB2_BENCH_FRAME_TIMES"))
                 {
+#ifdef _WIN32
+                    // MSVC's clock() measures elapsed time rather than process CPU.
                     std::printf("FRAME mode=%s frame=%d elapsed_ms=%.6f\n", label, i, ms);
+#else
+                    std::printf("FRAME mode=%s frame=%d elapsed_ms=%.6f process_cpu_ms=%.6f\n", label, i, ms, cpuMs);
+#endif
                     const auto &scopes = PerformanceTelemetry::collector().window;
                     for (auto id : {PerformanceTelemetry::Id::TerrainCache, PerformanceTelemetry::Id::Terrain,
                         PerformanceTelemetry::Id::Resources, PerformanceTelemetry::Id::GroundUnits})
@@ -254,12 +260,12 @@ static int run(int argc, char **argv)
                 }
                 if (i < 0 && i >= -warmupFrames && i < -warmupFrames + 8)
                     std::printf("WARMUP frame=%d elapsed_ms=%.3f process_cpu_ms=%.3f\n", i + warmupFrames, ms,
-                        1000.0 * (std::clock() - cpuStart) / CLOCKS_PER_SEC);
+                        cpuMs);
                 if (i >= 0)
                 {
                     times.push_back(ms);
                     if (cpuStart != std::clock_t(-1))
-                        cpuTimes.push_back(1000.0 * (std::clock() - cpuStart) / CLOCKS_PER_SEC);
+                        cpuTimes.push_back(cpuMs);
                 }
             }
             std::sort(times.begin(), times.end());

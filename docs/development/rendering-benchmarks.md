@@ -43,7 +43,9 @@ cycles smoothly between the selected zoom and four times that zoom over 120
 frames. It takes precedence over the seam sweep in the ordinary flat pass.
 `GLOB2_BENCH_CAMERA_PAN=1` uses the same scrolling at a fixed zoom.
 `GLOB2_BENCH_FRAME_TIMES=1` prints each measured and warmup frame; summaries
-include p99 and maximum latency as well as median and p95. The benchmark finishes
+include p99 and maximum latency as well as median and p95. Per-frame records
+include process CPU time captured before diagnostic output on platforms where
+`clock()` measures CPU time; Windows omits that field. The benchmark finishes
 deferred HD artwork loading before timing, so density changes compare identical
 source artwork rather than different asset-loader progress. Keep cold frames when
 investigating navigation stalls, and repeat cycles to distinguish first-use work
