@@ -37,8 +37,6 @@
 #include "EditorMainMenu.h"
 #include "Engine.h"
 #include "Headless.h"
-#include "io/BenchmarkMapImport.h"
-#include "io/BenchmarkFixtureAdmission.h"
 #include "scripting/javascript/ScriptCommand.h"
 #include "hive/HiveWorker.h"
 #include "hive/HiveClient.h"
@@ -104,26 +102,11 @@ GlobalContainer *globalContainer=NULL;
 int Glob2::runNoX()
 {
 	printf("nox::running %d times %d steps:\n", globalContainer->runNoXCountRuns, globalContainer->automaticEndingSteps);
-	const auto* largeMapEnvironment=std::getenv("GLOB2_BENCHMARK_LARGE_MAPS");
-	const bool largeMapImport=largeMapEnvironment && std::string(largeMapEnvironment)=="1";
-	const auto* stressMapEnvironment=std::getenv("GLOB2_BENCHMARK_2048_MAPS");
-	const bool stressMapImport=largeMapImport && stressMapEnvironment && std::string(stressMapEnvironment)=="1";
-	const int benchmarkMapMaximumExponent=stressMapImport ? ScopedBenchmarkMapImport::StressMaximumExponent
-		: ScopedBenchmarkMapImport::MaximumExponent;
-	const auto fixtureMemoryBudget=stressMapImport
-		? benchmark_fixture::parseMemoryBudget(std::getenv("GLOB2_BENCHMARK_FIXTURE_MEMORY_MIB")) : 0;
-	if(stressMapImport && !benchmark_fixture::memoryAdmission(fixtureMemoryBudget,benchmark_fixture::availableMemoryMiB()))
-		throw std::invalid_argument("2048 benchmark import requires an explicit memory budget of at least 8192 MiB and 2048 MiB available headroom");
 	for (int runNoXCount = 0; runNoXCount < globalContainer->runNoXCountRuns; runNoXCount++)
 	{
 		Engine engine;
-		{
-			// Only the explicitly admitted saved fixture load widens MapIO's
-			// thread-local bounds; presentation and simulation use normal limits.
-			const ScopedBenchmarkMapImport fixtureImport(largeMapImport,benchmarkMapMaximumExponent);
-			if (engine.initCustom(globalContainer->runNoXGameName) != Engine::EE_NO_ERROR)
-				return 3;
-		}
+		if (engine.initCustom(globalContainer->runNoXGameName) != Engine::EE_NO_ERROR)
+			return 3;
 		engine.run();
 	}
 	return 0;

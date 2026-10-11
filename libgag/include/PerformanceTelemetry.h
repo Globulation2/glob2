@@ -3,8 +3,6 @@
 #include <array>
 #include <cstdint>
 #include <iosfwd>
-#include <memory>
-#include <utility>
 #include <string>
 
 // Diagnostic wall-clock measurements. Never inputs to simulation or serialization.
@@ -25,44 +23,11 @@ struct Moments
 	void add(std::uint64_t ns);
 	void merge(const Moments &other);
 };
-// Optional fixed storage for reproducible presentation/tick tails. Values below
-// 256 ns are exact; higher bins span at most 1/128 of their lower endpoint.
-// Export both endpoints rather than claiming an exact quantile.
-struct DurationDistribution
-{
-	static constexpr unsigned BinCount = 256 + 56 * 128;
-	std::array<std::uint64_t, BinCount> bins{};
-	std::array<std::uint16_t, BinCount> active{};
-	unsigned activeCount = 0;
-	std::uint64_t count = 0;
-	void add(std::uint64_t duration);
-	void merge(const DurationDistribution &other);
-	void clear();
-	static std::pair<std::uint64_t, std::uint64_t> bounds(unsigned bin);
-	std::pair<std::uint64_t, std::uint64_t> percentile(unsigned percent) const;
-};
-// Borrowed diagnostic sink. Attach before launching its producer, detach after
-// joining it. Mailbox absorption never forwards events. Implementations must
-// provide allocation-free, nonblocking callbacks and independent producer state.
-struct DurationEventSink
-{
-	virtual ~DurationEventSink() = default;
-	virtual void duration(Id id, std::uint64_t start, std::uint64_t end,
-						  std::uint64_t duration) noexcept = 0;
-	virtual void presented(std::uint64_t timestamp) noexcept = 0;
-};
-struct DurationDistributions
-{
-	DurationDistribution tick, frame, totalTick, totalFrame;
-	DurationEventSink *ownerSink = nullptr, *presentationSink = nullptr;
-};
 struct Metric
 {
 	std::uint64_t calls = 0, self = 0;
-	// Optional diagnostics: nested inclusive CPU must never be summed as a ceiling.
-	std::uint64_t cpu = 0, cpuSelf = 0, cpuSamples = 0;
 	Moments time;
-	bool selfComplete = true, cpuSelfComplete = true;
+	bool selfComplete = true;
 	void merge(const Metric &other);
 };
 struct Budget
@@ -79,10 +44,6 @@ struct Actor
 };
 using Clock = std::uint64_t (*)();
 std::uint64_t now();
-//! Configure before launching workers; null disables diagnostic CPU clocks.
-Clock diagnosticCpuClock();
-void setDiagnosticCpuClock(Clock clock);
-const char *scopeName(Id id);
 struct Collector
 {
 	static constexpr unsigned MaxActors = 128;
@@ -99,12 +60,6 @@ struct Collector
 	bool enabled = true, output = false, described = false, running = false;
 	std::string mode = "startup";
 	Clock clock = now;
-	Clock cpuClock = diagnosticCpuClock();
-	std::unique_ptr<DurationDistributions> distributions;
-	//! Configure only before launching the simulation; no per-event allocation.
-	void enableDurationDistributions(bool enabled);
-	void recordDistribution(Id id, std::uint64_t duration,
-							std::uint64_t start = 0, std::uint64_t end = 0);
 	//! Per scope: 1 = measured on this collector's thread, 2 = absorbed from the
 	//! simulation thread (see absorb); exported as the record's thread attribution.
 	std::array<std::uint8_t, ScopeCount> threads{};
@@ -134,9 +89,9 @@ class Scope
 	Collector *c = nullptr;
 	Scope *parent = nullptr;
 	Id id;
-	std::uint64_t start = 0, children = 0, excluded = 0, cpuStart = 0, cpuChildren = 0;
+	std::uint64_t start = 0, children = 0, excluded = 0;
 	int actorIndex = -1;
-	bool complete = true, cpuComplete = true;
+	bool complete = true;
 
   public:
 	explicit Scope(Id id, int actor = -1);

@@ -4,7 +4,6 @@
 
 #include "BuildingGradientSearch.h"
 #include "Map.h"
-#include "BenchmarkMapImport.h"
 #include "gradient/GradientRuntime.h"
 #include "FileFormatVersions.h"
 #include "Version.h"
@@ -96,8 +95,7 @@ try
 	// We load and compute size:
 	wDec = stream->readSint32("wDec");
 	hDec = stream->readSint32("hDec");
-	if (!supportedDimensions(wDec, hDec) &&
-        !ScopedBenchmarkMapImport::allows(wDec,hDec,MIN_SUPPORTED_SIZE_EXPONENT))
+	if (!supportedDimensions(wDec, hDec))
 		co_return false;
 	w = 1<<wDec;
 	h = 1<<hDec;

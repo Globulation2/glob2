@@ -13,7 +13,6 @@
 #include <optional>
 #include <string>
 #include <vector>
-#include <utility>
 #include "Campaign.h"
 #include "MapHeader.h"
 #include "GameHeader.h"
@@ -22,9 +21,6 @@
 #include "NetEngine.h"
 #include "TurnSession.h"
 #include "ChecksumSidecar.h"
-#include "RenderedCpuWindow.h"
-#include "RenderedWarmDurations.h"
-#include "ai/observation/ResourceGradientDiagnostics.h"
 
 
 class SimulationRunner;
@@ -50,23 +46,6 @@ class Engine
 	friend struct TurnClient;
 	std::shared_ptr<GameDiagnostics::Session> diagnostics;
 	bool headlessDiagnosticsPending() const;
-    struct RenderedCpuState {
-        struct Counters {Map::GradientCpuCounters gradient;Game::AISchedulingCounters ai;
-            AIEngine::ResourceGradientCounters resources;};
-        RenderedCpuDiagnostics::Window<Counters> window;
-        std::unique_ptr<RenderedCpuDiagnostics::WarmDurations> warmDurations;
-        std::string path;
-        std::uint64_t (*previousTelemetryClock)()=nullptr;
-        bool clockInstalled=false;
-        RenderedCpuState(RenderedCpuDiagnostics::Range range,std::string output)
-            :window(range),path(std::move(output)){}
-        ~RenderedCpuState();
-    };
-    std::unique_ptr<RenderedCpuState> renderedCpu;
-    void prepareRenderedCpuDiagnostics();
-    void finishRenderedCpuDiagnostics();
-    void attachRenderedWarmTelemetry(PerformanceTelemetry::Collector&,bool owner,bool presentation);
-    void detachRenderedWarmTelemetry(); // Only after joining the simulation.
 	std::string headlessOutput;
 	std::string initializationDiagnostic;
 	int headlessSaveInterval = 0;
