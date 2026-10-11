@@ -82,7 +82,12 @@ async function controlOnScreen(page, key, options) {
     }
     const root = css(page, bounds, {x: bounds.root.x + bounds.root.w / 2, y: bounds.root.y + bounds.root.h / 2});
     await page.mouse.move(root.x, root.y);
-    await page.mouse.wheel(0, bounds.y + bounds.h / 2 < bounds.root.y + bounds.root.h / 2 ? -120 : 120);
+    const distance = bounds.y + bounds.h / 2 - (bounds.root.y + bounds.root.h / 2);
+    // SDL's browser wheel converts 100 CSS pixels into one scroll step. A
+    // single notch moves only about one row, so use a bounded multi-notch
+    // gesture for distant controls and re-read the real layout after each.
+    const delta = Math.max(120, Math.min(600, bounds.root.h * 0.75, Math.abs(distance) * 3));
+    await page.mouse.wheel(0, (Math.sign(distance) || 1) * delta);
     await page.waitForTimeout(150);
     bounds = await control(page, key, options);
   }
