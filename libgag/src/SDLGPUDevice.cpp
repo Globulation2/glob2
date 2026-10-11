@@ -13,7 +13,6 @@
 #include <vector>
 #include <tuple>
 #include <set>
-#include <unordered_map>
 #include <nlohmann/json.hpp>
 #include <filesystem>
 #ifdef __APPLE__
@@ -100,13 +99,7 @@ struct Work
 {
     RenderSubmission submission;
     SDL_GPUFence *fence = nullptr;
-    // One lease per physical allocation, even when thousands of ordered draws
-    // reuse it. Ownership still lasts until this submission's fence completes.
-    std::unordered_map<const Texture *, TexturePtr> textures;
-    void retain(const TexturePtr &texture)
-    {
-        if (texture) textures.try_emplace(texture.get(), texture);
-    }
+    std::vector<TexturePtr> textures;
     std::vector<GeometryPtr> geometry;
     std::vector<CoveragePtr> coverage;
     std::vector<std::pair<SDL_GPUTransferBuffer *, std::size_t>> transfers;
@@ -187,10 +180,6 @@ class SDLGPUDevice final : public RenderDevice
     std::uint64_t epoch = 1, serial = 0, completed = 0, lastFrame = 0, committedFrame = 0;
     int width, height;
     RenderTelemetry counts;
-    // Submission preparation storage is bounded by RenderFrame's existing
-    // capacities. Packet pointers and resource leases are cleared on every exit.
-    std::vector<SDL_Vertex> vertexScratch;
-    std::vector<Draw> drawScratch;
     static constexpr int MaximumTextureSize = 4096;
     static constexpr std::size_t TextureBudget = 64 * 1024 * 1024, TotalBudget = 256 * 1024 * 1024, SubmissionLimit = 8;
 
@@ -257,7 +246,7 @@ class SDLGPUDevice final : public RenderDevice
         for (const auto &[key,coverage] : coverageCache) counts.resourceBytes += coverage->bytes;
         for (const auto &[key, texture] : cache) textures.insert(texture.get());
         const auto addWork=[&](const Work &entry) {
-            for (const auto &[identity, texture] : entry.textures) textures.insert(identity);
+            for (const auto &texture : entry.textures) textures.insert(texture.get());
             counts.resourceBytes += entry.vertexBytes;
             for (auto [buffer, bytes] : entry.transfers) counts.resourceBytes += bytes;
         };
@@ -348,7 +337,7 @@ class SDLGPUDevice final : public RenderDevice
         const unsigned rows=unsigned(std::min<std::size_t>(height-firstRow,SliceBytes/rowBytes));
         const auto bytes=rowBytes*rows;reserveMemory(bytes,&pending);
         if(texture->source->pixels->format!=SDL_PIXELFORMAT_RGBA32)throw std::invalid_argument("Progressive upload requires normalized RGBA32 restoration pixels");
-        Work entry;entry.retain(texture);entry.transfers.reserve(1);
+        Work entry;entry.textures.push_back(texture);entry.transfers.reserve(1);
         auto *commands=SDL_AcquireGPUCommandBuffer(device);if(!commands)fail("acquire incremental upload commands");
         try {
             auto *buffer=transfer(SDL_GPU_TRANSFERBUFFERUSAGE_UPLOAD,bytes);entry.transfers.emplace_back(buffer,bytes);
@@ -374,7 +363,7 @@ class SDLGPUDevice final : public RenderDevice
         // resolve() runs before ordered drawing begins. Commit immutable upload
         // preparation under pressure so retries do not discard the same assets
         // forever while their staging buffers occupy the admission budget.
-        for(const auto &[key,value]:cache)if(!value->submitted)entry.retain(value);
+        for(const auto &[key,value]:cache)if(!value->submitted)entry.textures.push_back(value);
         for(const auto &[key,value]:geometryCache)if(!value->submitted)entry.geometry.push_back(value);
         for(const auto &[key,value]:coverageCache)if(!value->submitted)entry.coverage.push_back(value);
         submitWork(commands,entry);
@@ -565,12 +554,7 @@ class SDLGPUDevice final : public RenderDevice
         fragment[Layout::primitive_fragment_alpha_offset / sizeof(float)] = packet.kind == DrawPacket::Kind::Blit ? packet.alpha / 255.f : 1.f;
         const auto bounds = Layout::primitive_fragment_uvBounds_offset / sizeof(float);
         fragment[bounds + 2] = fragment[bounds + 3] = 1.f;
-        // Nearest samples remain inside the source rectangle via vertex UVs.
-        // Linear and authored-mip sampling retain per-region half-texel clamps.
-        // Unmipped nearest draws can share bounds without splitting atlas batches.
-        if (packet.kind == DrawPacket::Kind::Blit &&
-            (packet.linear || packet.texture->descriptor.sampling == TextureDescriptor::Sampling::Linear ||
-             packet.texture->descriptor.mips == TextureDescriptor::Mips::Generated)) {
+        if (packet.kind == DrawPacket::Kind::Blit) {
             fragment[bounds] = (packet.source.x + .5f) / draw.texture->width;
             fragment[bounds + 1] = (packet.source.y + .5f) / draw.texture->height;
             fragment[bounds + 2] = (packet.source.x + packet.source.w - .5f) / draw.texture->width;
@@ -882,7 +866,7 @@ void SDLGPUDevice::prepareTerrain(SDL_GPUCommandBuffer *&commands, Work &entry, 
             throw std::invalid_argument("Invalid terrain seam constants");
         if(data.materials[i] && (data.materials[i]==packet.target || data.materials[i]->descriptor.alpha==TextureDescriptor::Alpha::Premultiplied))
             throw std::invalid_argument("Terrain material must provide canonical straight pixels");
-        draw.materials[i]=resolve(commands,entry,data.materials[i]);entry.retain(draw.materials[i]);
+        draw.materials[i]=resolve(commands,entry,data.materials[i]);entry.textures.push_back(draw.materials[i]);
     }
     if(divisor>1) {
         auto found=terrainScratch.find(int(size));
@@ -894,7 +878,7 @@ void SDLGPUDevice::prepareTerrain(SDL_GPUCommandBuffer *&commands, Work &entry, 
             reserveMemory(std::size_t(size)*size*4,&entry);
             found=terrainScratch.emplace(int(size),allocate(size,size,{},&entry)).first;
         }
-        draw.scratch=found->second;entry.retain(draw.scratch);
+        draw.scratch=found->second;entry.textures.push_back(draw.scratch);
     }
     if(vertices.size()+6>RenderFrame::VertexCapacity)throw std::length_error("Terrain vertices exceed frame capacity");
     const float extent=float(size);const SDL_FColor tint{1,1,1,1};
@@ -1206,22 +1190,17 @@ RenderSubmission SDLGPUDevice::submit(RenderFrame frame)
             SDL_GPUBlitInfo copy{}; copy.source.texture=screen->gpu; copy.source.w=screen->width; copy.source.h=screen->height;
             copy.destination.texture=committedScreen->gpu; copy.destination.w=committedScreen->width; copy.destination.h=committedScreen->height;
             copy.load_op=SDL_GPU_LOADOP_DONT_CARE; copy.filter=SDL_GPU_FILTER_NEAREST;
-            SDL_BlitGPUTexture(commands,&copy); entry.retain(screen); entry.retain(committedScreen);
+            SDL_BlitGPUTexture(commands,&copy); entry.textures.push_back(screen); entry.textures.push_back(committedScreen);
         }
         if (window) {
             int w, h; if (!SDL_GetWindowSizeInPixels(window, &w, &h)) fail("get output dimensions");
             if (w > 0 && h > 0 && (w != width || h != height)) {
                 auto replacement = allocate(w, h, {}, &entry); clear(commands, replacement, true);
-                entry.retain(screen); entry.retain(replacement); screen = replacement; width = w; height = h;
+                entry.textures.push_back(screen); entry.textures.push_back(replacement); screen = replacement; width = w; height = h;
             }
         }
-        auto &vertices = vertexScratch;
-        auto &draws = drawScratch;
-        vertices.clear(); draws.clear();
-        struct ClearPreparedDraws {
-            std::vector<Draw> &draws;
-            ~ClearPreparedDraws() { draws.clear(); }
-        } clearPreparedDraws{draws};
+        std::vector<SDL_Vertex> vertices;
+        std::vector<Draw> draws;
         draws.reserve(frame.packets.size());
         std::size_t vertexReserve = 0;
         for (const auto &packet : frame.packets) {
@@ -1252,7 +1231,7 @@ RenderSubmission SDLGPUDevice::submit(RenderFrame frame)
                       packet.target ? resolve(commands, entry, packet.target, false, true, true) : screen, static_cast<Uint32>(vertices.size()), 0, {}, {}, {}, {}, {}};
             if (packet.kind == DrawPacket::Kind::WeightedCompose) {
                 prepareTerrain(commands,entry,draw,vertices);
-                entry.retain(draw.target); draws.push_back(std::move(draw)); ++counts.packets; continue;
+                entry.textures.push_back(draw.target); draws.push_back(std::move(draw)); ++counts.packets; continue;
             }
             if (packet.viewport && (packet.viewport->w <= 0 || packet.viewport->h <= 0)) throw std::invalid_argument("Invalid physical viewport");
             if (packet.kind == DrawPacket::Kind::MeshTriangles) {
@@ -1271,7 +1250,7 @@ RenderSubmission SDLGPUDevice::submit(RenderFrame frame)
                         for (float value : uniforms.pose->normalView) if (!std::isfinite(value)) throw std::invalid_argument("Nonfinite rig normals");
                     }
                     draw.secondTexture = resolve(commands, entry, packet.secondTexture);
-                    entry.retain(draw.secondTexture);
+                    entry.textures.push_back(draw.secondTexture);
                 } else if (!worldAvailable) throw std::runtime_error("World shader binaries unavailable");
                 draw.geometry = resolveGeometry(commands, entry, packet.geometry);
                 const auto layout = packet.material == DrawPacket::Material::Skin ? GeometryLayout::Skin40 : packet.material == DrawPacket::Material::SkinRig ? GeometryLayout::SkinRig72 : GeometryLayout::World48;
@@ -1282,7 +1261,7 @@ RenderSubmission SDLGPUDevice::submit(RenderFrame frame)
                 if (packet.count % 3) throw std::invalid_argument("Mesh triangles require triples");
                 draw.first = packet.first; draw.count = packet.count;
                 if (packet.depth != DrawPacket::Depth::Disabled || packet.depthWrite) depthFor(draw.target, &entry);
-                entry.geometry.push_back(draw.geometry); entry.retain(draw.texture); entry.retain(draw.target);
+                entry.geometry.push_back(draw.geometry); entry.textures.push_back(draw.texture); entry.textures.push_back(draw.target);
                 draws.push_back(std::move(draw)); ++counts.packets; continue;
             }
             if (packet.kind == DrawPacket::Kind::Clear) {
@@ -1299,7 +1278,7 @@ RenderSubmission SDLGPUDevice::submit(RenderFrame frame)
                     draw.count = 6;
                 }
                 if (packet.clearDepth) depthFor(draw.target, &entry);
-                entry.retain(draw.target); draws.push_back(std::move(draw)); ++counts.packets; continue;
+                entry.textures.push_back(draw.target); draws.push_back(std::move(draw)); ++counts.packets; continue;
             }
             auto append = [&](SDL_Vertex vertex) {
                 if (vertices.size() >= RenderFrame::VertexCapacity) throw std::length_error("GPU vertex capacity exhausted");
@@ -1335,7 +1314,7 @@ RenderSubmission SDLGPUDevice::submit(RenderFrame frame)
                 for (auto vertex : packet.vertices) append(vertex);
             }
             draw.count = static_cast<Uint32>(vertices.size()) - draw.first;
-            entry.retain(draw.texture); entry.retain(draw.target);
+            entry.textures.push_back(draw.texture); entry.textures.push_back(draw.target);
             draws.push_back(std::move(draw)); ++counts.packets;
         }
         uploadVertices(commands, entry, vertices);
@@ -1379,7 +1358,7 @@ void SDLGPUDevice::present()
         blit.source.texture = screen->gpu; blit.source.w = width; blit.source.h = height;
         blit.destination.texture = swapchain; blit.destination.w = w; blit.destination.h = h;
         blit.load_op = SDL_GPU_LOADOP_DONT_CARE; blit.filter = SDL_GPU_FILTER_NEAREST;
-        SDL_BlitGPUTexture(commands, &blit); entry.retain(screen);
+        SDL_BlitGPUTexture(commands, &blit); entry.textures.push_back(screen);
     }
     try { submitWork(commands, entry); frameOpen=false; }
     catch (...) { if (commands) SDL_CancelGPUCommandBuffer(commands); release(entry); throw; }
@@ -1397,7 +1376,7 @@ void SDLGPUDevice::discardFrame()
         SDL_GPUBlitInfo copy{}; copy.source.texture=committedScreen->gpu; copy.source.w=committedScreen->width; copy.source.h=committedScreen->height;
         copy.destination.texture=screen->gpu; copy.destination.w=screen->width; copy.destination.h=screen->height;
         copy.load_op=SDL_GPU_LOADOP_DONT_CARE; copy.filter=SDL_GPU_FILTER_NEAREST;
-        SDL_BlitGPUTexture(commands,&copy); entry.retain(screen); entry.retain(committedScreen); entry.retain(previous);
+        SDL_BlitGPUTexture(commands,&copy); entry.textures={screen,committedScreen,previous};
         submitWork(commands,entry); width=screen->width; height=screen->height; lastFrame=committedFrame; frameOpen=false;
     } catch (...) { if(commands) SDL_CancelGPUCommandBuffer(commands); release(entry); screen=previous; throw; }
 }
