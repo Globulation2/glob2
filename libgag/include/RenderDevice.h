@@ -79,7 +79,9 @@ class RenderDevice
     virtual std::uint64_t generation() const = 0;
     virtual RenderTelemetry telemetry() const = 0;
     // Poll completion and release retired allocations before a large preflight.
-    // Never wait for GPU work or discard resources still owned by callers.
+    // Never wait for GPU work. Completed reconstructible GPU copies may be
+    // forgotten while logical CPU snapshots remain owned by callers; preserve
+    // in-flight leases and externally owned rendered target contents.
     virtual void trimRetiredResources() {}
     virtual bool capture(CaptureRequest) = 0;
     virtual bool pollCapture(CaptureResult &) = 0;
