@@ -24,6 +24,9 @@ namespace GAGCore
 namespace
 {
 namespace Layout = RendererShaderLayouts;
+// Recorder vertices exclude the six vertices generated for each rectangle,
+// clipped clear or terrain-composition packet.
+constexpr std::size_t ExpandedVertexCapacity = RenderFrame::VertexCapacity + RenderFrame::CommandCapacity * 6;
 const char *platformDriver()
 {
 #if defined(_WIN32)
@@ -880,7 +883,7 @@ void SDLGPUDevice::prepareTerrain(SDL_GPUCommandBuffer *&commands, Work &entry, 
         }
         draw.scratch=found->second;entry.textures.push_back(draw.scratch);
     }
-    if(vertices.size()+6>RenderFrame::VertexCapacity)throw std::length_error("Terrain vertices exceed frame capacity");
+    if(vertices.size()+6>ExpandedVertexCapacity)throw std::length_error("Terrain vertices exceed frame capacity");
     const float extent=float(size);const SDL_FColor tint{1,1,1,1};
     for(const SDL_Vertex vertex:{SDL_Vertex{{0,0},tint,{0,0}},SDL_Vertex{{extent,0},tint,{1,0}},SDL_Vertex{{extent,extent},tint,{1,1}},
                                SDL_Vertex{{0,0},tint,{0,0}},SDL_Vertex{{extent,extent},tint,{1,1}},SDL_Vertex{{0,extent},tint,{0,1}}})vertices.push_back(vertex);
@@ -1178,6 +1181,12 @@ RenderSubmission SDLGPUDevice::submit(RenderFrame frame)
     reap(); if (work.size() >= SubmissionLimit) return {};
     if (frame.logicalWidth <= 0 || frame.logicalHeight <= 0 || frame.packets.size() > RenderFrame::CommandCapacity || frame.vertexCount > RenderFrame::VertexCapacity)
         throw std::invalid_argument("Invalid or unbounded render frame");
+    std::size_t recordedVertices = 0;
+    for (const auto &packet : frame.packets) {
+        if (packet.vertices.size() > RenderFrame::VertexCapacity - recordedVertices)
+            throw std::length_error("GPU recorded vertex capacity exhausted");
+        recordedVertices += packet.vertices.size();
+    }
     Work entry;
     const auto previousScreen = screen;
     const int previousWidth = width, previousHeight = height;
@@ -1207,7 +1216,7 @@ RenderSubmission SDLGPUDevice::submit(RenderFrame frame)
             const auto count = packet.kind == DrawPacket::Kind::Triangles || packet.kind == DrawPacket::Kind::ScreenTriangles
                 ? packet.vertices.size() : packet.kind == DrawPacket::Kind::Fill || packet.kind == DrawPacket::Kind::Blit ||
                     packet.kind == DrawPacket::Kind::Clear || packet.kind == DrawPacket::Kind::WeightedCompose ? 6u : 0u;
-            vertexReserve += std::min(RenderFrame::VertexCapacity - vertexReserve, count);
+            vertexReserve += count;
         }
         vertices.reserve(vertexReserve);
         for (const auto &packet : frame.packets) {
@@ -1272,7 +1281,7 @@ RenderSubmission SDLGPUDevice::submit(RenderFrame frame)
                     const float w = packet.targetLogicalWidth > 0 ? packet.targetLogicalWidth : frame.logicalWidth;
                     const float h = packet.targetLogicalHeight > 0 ? packet.targetLogicalHeight : frame.logicalHeight;
                     const auto c = packet.clearValue;
-                    if (vertices.size() + 6 > RenderFrame::VertexCapacity) throw std::length_error("GPU vertex capacity exhausted");
+                    if (vertices.size() + 6 > ExpandedVertexCapacity) throw std::length_error("GPU vertex capacity exhausted");
                     for (const SDL_Vertex v : {SDL_Vertex{{0,0},c,{0,0}},SDL_Vertex{{w,0},c,{0,0}},SDL_Vertex{{w,h},c,{0,0}},
                                               SDL_Vertex{{0,0},c,{0,0}},SDL_Vertex{{w,h},c,{0,0}},SDL_Vertex{{0,h},c,{0,0}}}) vertices.push_back(v);
                     draw.count = 6;
@@ -1281,7 +1290,7 @@ RenderSubmission SDLGPUDevice::submit(RenderFrame frame)
                 entry.textures.push_back(draw.target); draws.push_back(std::move(draw)); ++counts.packets; continue;
             }
             auto append = [&](SDL_Vertex vertex) {
-                if (vertices.size() >= RenderFrame::VertexCapacity) throw std::length_error("GPU vertex capacity exhausted");
+                if (vertices.size() >= ExpandedVertexCapacity) throw std::length_error("GPU vertex capacity exhausted");
                 if (packet.kind != DrawPacket::Kind::ScreenTriangles) {
                     vertex.position.x = vertex.position.x * packet.transform.scale + packet.transform.x;
                     vertex.position.y = vertex.position.y * packet.transform.scale + packet.transform.y;

@@ -9,6 +9,7 @@
 #include <ProgrammableGLDevice.h>
 #endif
 #include <array>
+#include <algorithm>
 #include <cstdlib>
 #include <cmath>
 #include <limits>
@@ -62,6 +63,32 @@ struct Video
 }
 TEST_SUITE("SDLGPUDevice")
 {
+    GLOB2_TEST_CASE("Expanded rectangles do not consume recorded triangle capacity", "[display][isolated]")
+    {
+        const char *shaders = std::getenv("GLOB2_TEST_SHADER_DIRECTORY"); REQUIRE(shaders);
+        Video video; auto device = makeSDLGPUDevice(nullptr, 16, 16, shaders);
+        RenderFrame frame; frame.logicalWidth = frame.logicalHeight = 16; frame.identity = 1;
+        frame.packets.push_back(fill({0, 0, 16, 16}, {0, 0, 255, 255}));
+        DrawPacket triangles; triangles.kind = DrawPacket::Kind::Triangles;
+        // Fill the recorded budget with degenerate triangles, then one visible
+        // triangle. The background rectangle contributes six additional vertices.
+        triangles.vertices.resize(RenderFrame::VertexCapacity / 3 * 3);
+        const std::array<SDL_Vertex, 3> visible{{{{2, 2}, {1, 0, 0, 1}, {}},
+            {{14, 2}, {1, 0, 0, 1}, {}}, {{2, 14}, {1, 0, 0, 1}, {}}}};
+        std::copy(visible.begin(), visible.end(), triangles.vertices.end() - 3);
+        frame.vertexCount = triangles.vertices.size(); frame.packets.push_back(std::move(triangles));
+        REQUIRE(device->submit(std::move(frame))); device->present();
+        Surface image(device->captureSynchronously({}), SDL_DestroySurface); REQUIRE(image);
+        CHECK(pixel(image.get(), 4, 4).r == 255);
+        CHECK(pixel(image.get(), 15, 15).b == 255);
+        RenderFrame oversized; oversized.logicalWidth = oversized.logicalHeight = 16;
+        DrawPacket invalid; invalid.kind = DrawPacket::Kind::Triangles;
+        invalid.vertices.resize(RenderFrame::VertexCapacity + 2);
+        oversized.packets.push_back(std::move(invalid));
+        // An understated vertexCount cannot bypass the recorded geometry bound.
+        CHECK_THROWS_AS(device->submit(std::move(oversized)), std::length_error);
+    }
+
     GLOB2_TEST_CASE("Vulkan batches the bounded primitive stream without crossing barriers", "[display][isolated]")
     {
         const char *shaders = std::getenv("GLOB2_TEST_SHADER_DIRECTORY"); REQUIRE(shaders);
