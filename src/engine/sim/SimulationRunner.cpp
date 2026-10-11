@@ -109,15 +109,16 @@ void SimulationRunner::run()
 	parkedChanged.notify_all();
 }
 
-std::optional<SceneRequest> SimulationRunner::admitPresentation()
+std::optional<SceneRequest> SimulationRunner::admitPresentation(bool worldAdvanced)
 {
     if (presentation && presentation->finished()) presentation->rethrowFailure();
     if (presentation && !presentation->finished()) return {};
     std::lock_guard lock(mutex);
     // A completed pending frame occupies the middle slot, not the writable
     // back slot. Allow a newer request to replace it, bounded to one submission
-    // per client request so an uncapped simulation cannot flood preparation.
-    if (requestedSceneGeneration == publishedSceneGeneration) return {};
+    // per world/client request. A camera refresh may have consumed the latest
+    // request, but that must not prevent a newer simulation world from drawing.
+    if (!worldAdvanced && requestedSceneGeneration == publishedSceneGeneration) return {};
     admittedSceneGeneration = requestedSceneGeneration;
     return requestedScene;
 }

@@ -338,7 +338,8 @@ std::vector<unsigned> Engine::observationPlayers(bool wasReadyLastTick) const
 
 SimulationSnapshot::Handle Engine::openReadBoundary(std::span<const unsigned> players, bool paused, bool present)
 {
-    const auto presentation=present ? admitPresentation() : std::optional<SceneRequest>{};
+    const bool worldAdvanced=!retainedPresentation || retainedPresentation->world.tick!=gui.game.stepCounter;
+    const auto presentation=present ? admitPresentation(worldAdvanced) : std::optional<SceneRequest>{};
     const auto world=gui.game.captureReadBoundary(players,paused,
         (presentation ? presentationRequirements(*presentation) : 0)
         | (diagnostics ? diagnostics->observationRequirements(gui.game.stepCounter) : 0));
@@ -347,10 +348,10 @@ SimulationSnapshot::Handle Engine::openReadBoundary(std::span<const unsigned> pl
     return world;
 }
 
-std::optional<SceneRequest> Engine::admitPresentation()
+std::optional<SceneRequest> Engine::admitPresentation(bool worldAdvanced)
 {
     if (globalContainer->runNoX) return {};
-    auto request=runner ? runner->admitPresentation() : std::optional<SceneRequest>{};
+    auto request=runner ? runner->admitPresentation(worldAdvanced) : std::optional<SceneRequest>{};
     if (!runner) {
         if (!serialPresentation) serialPresentation=std::make_unique<ScenePreparation>(gui.game.map.computeExecutor());
         if (serialPresentation->readyToCapture()) request=gui.sceneRequest();
@@ -374,6 +375,9 @@ void Engine::publishPresentation(const SimulationSnapshot::Handle& world,SceneRe
 void Engine::refreshRetainedPresentation()
 {
     if (!retainedPresentation) return;
+    // If preparation overlapped a tick, leave the slot free for the next fresh
+    // boundary. Continuous camera input must not keep resubmitting that old world.
+    if (retainedPresentation->world.tick!=gui.game.stepCounter) return;
     auto request=admitPresentation();
     if (!request) return;
     // A view-only change uses the exact clock and order revision associated

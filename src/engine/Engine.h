@@ -361,7 +361,7 @@ private:
     std::vector<unsigned> observationPlayers(bool wasReadyLastTick) const;
     SimulationSnapshot::Handle openReadBoundary(std::span<const unsigned> players, bool paused, bool present);
     void refreshRetainedPresentation();
-    std::optional<SceneRequest> admitPresentation();
+    std::optional<SceneRequest> admitPresentation(bool worldAdvanced = false);
     void publishPresentation(const SimulationSnapshot::Handle& world,SceneRequest request);
     SimulationSnapshot::Requirements presentationRequirements(const SceneRequest& request) const;
     //! Host clock minus SDL_GetTicks(), published by the main thread for sessionClock.

@@ -50,7 +50,7 @@ public:
 	void suspend();
 	void resume();
 	void requestScene(SceneRequest request);
-    std::optional<SceneRequest> admitPresentation();
+    std::optional<SceneRequest> admitPresentation(bool worldAdvanced = false);
     void publishPresentation(const SimulationSnapshot::Handle& world,SceneRequest request);
 	//! The newest published PresentationFrame, or null before the first one.
 	const PresentationFrame *acquireScene();
