@@ -51,6 +51,8 @@ async function installGates(page){
         const fail=await held;
         if(fail){this.fail(Error('injected delayed WebGPU preparation failure'));audit.phase='rejected';return;}
         this.state=0;await prepare.call(this,root,ownedSources);audit.phase=this.state===1?'prepared':'rejected';
+        const info=this.adapter?.info;
+        audit.adapter=info?{vendor:info.vendor,architecture:info.architecture,device:info.device,description:info.description}:null;
       };
       audit.cleanup.push(()=>{backend.prepare=prepare;release(true);});
       for(const constructor of [globalThis.HTMLCanvasElement,globalThis.OffscreenCanvas])if(constructor){
@@ -105,7 +107,8 @@ async function supersede(page,gates,fail){
   const shaderAudit=await owner.evaluate(()=>{
     const root=rendererQueueOwner.root;
     let metadata;try{metadata=FS.readFile(root+'/../metadata.json',{encoding:'utf8'}).length;}catch(error){metadata=String(error);}
-    return {root,metadata,phase:rendererQueueOwner.phase,state:Glob2WebGPU.state,error:Glob2WebGPU.error};
+    return {root,metadata,phase:rendererQueueOwner.phase,adapter:rendererQueueOwner.adapter,
+      state:Glob2WebGPU.state,error:Glob2WebGPU.error};
   });
   const mainMetadata=await page.evaluate(root=>{
     try{return FS.readFile(root+'/../metadata.json',{encoding:'utf8'}).length;}catch(error){return String(error);}
@@ -128,6 +131,7 @@ async function supersede(page,gates,fail){
     expect(events.filter(event=>event.action==='prepare').map(event=>event.gpu)).toEqual([true,false]);
     expect(events.filter(event=>event.action==='finish').every(event=>event.success)).toBe(true);
     expect(await owner.evaluate(()=>rendererQueueOwner.contexts)).toContain('webgpu');
+    await test.info().attach('prepared-webgpu-adapter',{body:JSON.stringify(await owner.evaluate(()=>rendererQueueOwner.adapter)),contentType:'application/json'});
   }
   expect(await page.evaluate(()=>Module.renderer)).toBe('software');await assertSoftwarePreference(page);
   await expect.poll(()=>page.evaluate(()=>glob2Diagnostics.snapshot().controls['graphics.renderer']?.label),{timeout:120000}).toContain('Software');

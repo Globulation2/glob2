@@ -29,7 +29,10 @@ async function choose(page,label) {
       }),{timeout:120000}).toBe(true);
       await test.info().attach('active-webgpu-owner',{body:JSON.stringify(await owners[0].evaluate(()=>({
         state:Glob2WebGPU.state,error:Glob2WebGPU.error,issued:Glob2WebGPU.issued,
-        completed:Glob2WebGPU.completed,canvasOwned:Glob2WebGPU.context.canvas===Module.canvas
+        completed:Glob2WebGPU.completed,canvasOwned:Glob2WebGPU.context.canvas===Module.canvas,
+        adapter:Glob2WebGPU.adapter?.info?{vendor:Glob2WebGPU.adapter.info.vendor,
+          architecture:Glob2WebGPU.adapter.info.architecture,device:Glob2WebGPU.adapter.info.device,
+          description:Glob2WebGPU.adapter.info.description}:null
       })),null,2),contentType:'application/json'});
     }
   } catch (error) {
