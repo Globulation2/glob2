@@ -45,7 +45,7 @@ jobs:
           repository: Globulation2/glob2
           ref: ${{ inputs.tag }}
           path: source
-          fetch-depth: 0
+          fetch-depth: 1
           persist-credentials: false
       - name: Verify source run and exact immutable artifact digests
         id: source
