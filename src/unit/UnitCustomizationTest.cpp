@@ -125,6 +125,43 @@ void checkPhaseContinuation(Game& game,int ticks)
         REQUIRE(resumed.game.unitCargo.entries()==game.unitCargo.entries());
     }
 }
+
+// Historical visibility depends on the live cached ability, not the type or
+// Race table. Check every tile independently of the engine's rectangle helper.
+void checkVisionAction(Unit& unit,int radius)
+{
+    auto& game=*unit.owner->game;
+    auto& map=game.map;
+    map.unsetMapDiscovered();
+    unit.delta=UNIT_DELTA_MAX;
+    { glob2test::BoundGameRandom bound(game); unit.syncStep(); }
+    for(int y=0;y<map.getH();++y) for(int x=0;x<map.getW();++x) {
+        const int dx=std::min((x-unit.posX)&map.wMask,(unit.posX-x)&map.wMask);
+        const int dy=std::min((y-unit.posY)&map.hMask,(unit.posY-y)&map.hMask);
+        CHECK(map.isMapDiscovered(x,y,unit.owner->me)==(dx<=radius && dy<=radius));
+    }
+}
+
+void checkVisionContinuation(Game& game,int ticks)
+{
+    const auto before=continuationAudit(game);
+    auto* storage=new GAGCore::MemoryStreamBackend;
+    GAGCore::BinaryOutputStream output(storage);
+    game.save(&output,false,"legacy cached flight vision continuation");
+    const auto bytes=storage->takeContents();
+    GameGUI resumed;
+    GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
+    input.seekFromStart(0); REQUIRE(resumed.game.load(&input)); resumed.game.setWaitingOnMask(0);
+    REQUIRE(continuationAudit(resumed.game)==before);
+    REQUIRE(resumed.game.map.mapDiscovered==game.map.mapDiscovered);
+    for(int tick=0;tick<ticks;++tick) {
+        CAPTURE(tick);
+        game.syncStep(0); resumed.game.syncStep(0);
+        REQUIRE(continuationAudit(resumed.game)==continuationAudit(game));
+        REQUIRE(resumed.game.map.mapDiscovered==game.map.mapDiscovered);
+        REQUIRE(resumed.game.syncRandom==game.syncRandom);
+    }
+}
 }
 
 TEST_SUITE("UnitCustomization")
@@ -322,6 +359,78 @@ TEST_SUITE("UnitCustomization")
             CHECK(unit->attachedBuilding == nullptr);
             checkPhaseContinuation(world.game,64);
         }
+    }
+
+    TEST_CASE("idle painted clearing completes without permission to interrupt jobs [save-format]")
+    {
+        glob2test::HeadlessGlobals globals;
+        for (bool flying : {false,true}) {
+            CAPTURE(flying);
+            glob2test::HeadlessGame world({.discovered=true,.clearImmobile=true,.header=true,.seed=4921});
+            auto definitions=nlohmann::json::parse(world.game.unitCatalog().serialize());
+            auto custom=definitions["units"][WORKER]; custom["key"]="fixture:idle-clearer";
+            auto& traits=custom["behaviors"];
+            traits["adjacentClearInterrupt"]=false; traits["clearIdle"]=true;
+            traits["transport"]=false; traits["construct"]=false; traits["hungerRate"]=0;
+            traits["fly"]=flying; traits["walk"]=!flying; traits["swim"]=false;
+            for (unsigned level=0;level<NB_UNIT_LEVELS;++level)
+                custom["levels"][level]["performance"][FLY]=flying?16:0;
+            definitions["units"].push_back(custom);
+            world.game.gameHeader.setUnitCatalog(UnitCatalog::deserialize(definitions.dump()));
+            world.game.configureBuildingCatalog();
+            world.game.gameHeader.setResourceGrowthDisabled(true);
+            auto* unit=world.addUnit(3,6,8); REQUIRE(unit);
+            unit->receiveCarriedMaterial(STONE,{});
+            deposit(world.game.map,9,8,WOOD,3);
+            world.game.map.addClearArea(9,8,world.team->teamNumber);
+            const int initialHealth=unit->hp;
+            const int selfDamage=world.game.unitCatalog().levels(3)[0].harvestDamage;
+            bool harvesting=false,continued=false;
+            for (int tick=0;tick<4096 && world.game.map.getResource(9,8).amount;++tick) {
+                world.game.syncStep(0);
+                harvesting |= unit->movement==Unit::MOV_HARVESTING;
+                // Continue during the first real clearing action, including
+                // its claim, self-damage, cargo and all private random streams.
+                if (harvesting && !continued) {
+                    checkPhaseContinuation(world.game,64);
+                    continued=true;
+                }
+            }
+            REQUIRE(harvesting); REQUIRE(continued);
+            CHECK(world.game.map.getResource(9,8).amount==0);
+            CHECK(world.team->stats.measurements.cleared[WOOD]==3);
+            CHECK(unit->hp==initialHealth-3*selfDamage);
+            CHECK(unit->hasCarriedMaterial(STONE));
+            CHECK(unit->activity==Unit::ACT_RANDOM);
+            CHECK(unit->jobPurpose==UnitJobPurpose::None);
+            CHECK(world.team->integrity());
+        }
+    }
+
+    TEST_CASE("idle clearing permission does not interrupt a transport assignment")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.discovered=true,.clearImmobile=true,.header=true,.seed=4921});
+        world.game.gameHeader.setUnitCatalog(UnitCatalog::fromJson(
+            R"({"schemaVersion":1,"units":[{"key":"worker","behaviors":{"adjacentClearInterrupt":false,"clearIdle":true}}]})"));
+        world.game.configureBuildingCatalog();
+        world.game.gameHeader.setHungerDisabled(true);
+        world.game.gameHeader.setResourceGrowthDisabled(true);
+        auto* inn=world.addBuilding("inn",10,8);
+        auto* unit=world.addUnit(WORKER,6,8);
+        REQUIRE(inn); REQUIRE(unit);
+        deposit(world.game.map,6,7,WOOD,3);
+        world.game.map.addClearArea(6,7,world.team->teamNumber);
+        unit->receiveCarriedMaterial(WHEAT,{});
+        unit->destinationPurpose=WHEAT;
+        unit->subscriptionSuccess(inn,false,false,UnitJobPurpose::Transport);
+        inn->unitsWorking.push_back(unit); inn->updateCallLists();
+        for (int tick=0;tick<2048 && inn->materials[WHEAT]==0;++tick)
+            world.game.syncStep(0);
+        CHECK(inn->materials[WHEAT]>0);
+        CHECK(world.game.map.getResource(6,7).amount==3);
+        CHECK(world.team->stats.measurements.cleared[WOOD]==0);
+        CHECK(world.team->integrity());
     }
 
     TEST_CASE("disabling future flag recruitment preserves all existing job roles and memberships [save-format]")
@@ -742,6 +851,81 @@ TEST_SUITE("UnitCustomization")
         world.team->stats.beginMeasurementSnapshot(world.team); world.team->stats.observeMeasurementUnit(unit);
         CHECK(world.team->stats.measurements.carried[STONE]==1);
         CHECK(world.team->stats.measurements.carried[WOOD]==1);
+    }
+
+    TEST_CASE("documented bulk carrier setup enables an inherited-cost production recipe")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.clearImmobile=true,.header=true,.seed=4921});
+        auto& game=world.game;
+        const auto defaultUnits=nlohmann::json::parse(game.unitCatalog().serialize());
+        const auto defaultBuildings=nlohmann::json::parse(game.buildingsTypes.snapshotJson());
+        // Keep this executable setup aligned with docs/architecture/units.md.
+        const std::string unitJson=R"({
+            "schemaVersion":1,
+            "experiments":[{"key":"bulk-carriers","label":"Bulk carriers","help":"Test larger mixed inventories."}],
+            "units":[{"key":"bulk-worker","extends":"worker","requiredExperiment":"bulk-carriers",
+                "mesh":"worker","sprite":"units","behaviors":{"cargoCapacity":4,"cargoKinds":3},
+                "cost":{"food":2}}]
+        })";
+        game.gameHeader.setUnitCatalog(UnitCatalog::fromJson(unitJson));
+        game.gameHeader.getExperiments().set(
+            "bulk-carriers",true,game.gameHeader.catalogExperimentKeys());
+        auto buildings=nlohmann::json::parse(game.buildingsTypes.snapshotJson());
+        for(auto& variant:buildings["variants"]) {
+            if(variant["key"]!="swarm.0.finished")continue;
+            auto& production=variant["semantics"]["production"];
+            production["scheduling"]="weighted_committed_job";
+            production["recipes"]["bulk-worker"]={{"enabled",true},{"duration",150}};
+            production["initialRatios"]={{"worker",1},{"explorer",0},{"warrior",0},{"bulk-worker",1}};
+        }
+        game.buildingsTypes.loadSnapshotJson(buildings.dump());
+        game.configureBuildingCatalog();
+
+        REQUIRE(game.unitTypeCount()==4);
+        REQUIRE(game.unitCatalog().find("bulk-worker").has_value());
+        const auto type=*game.unitCatalog().find("bulk-worker");
+        CHECK(game.isUnitTypeAvailable(type));
+        CHECK(game.gameHeader.getExperiments().has("bulk-carriers"));
+        CHECK(game.unitCatalog().runtime(type).meshClass==WORKER);
+        CHECK(game.unitCatalog().runtime(type).cargoCapacity==4);
+        CHECK(game.unitCatalog().runtime(type).cargoKinds==3);
+        const auto resolvedUnits=nlohmann::json::parse(game.unitCatalog().serialize());
+        for(unsigned id=0;id<BuiltinUnitCount;++id) {
+            CHECK(resolvedUnits["units"][id]==defaultUnits["units"][id]);
+            CHECK(game.unitCatalog().definition(id).cost[WHEAT]==5);
+        }
+        const auto resolvedBuildings=nlohmann::json::parse(game.buildingsTypes.snapshotJson());
+        for(unsigned id=0;id<defaultBuildings["variants"].size();++id)
+            if(defaultBuildings["variants"][id]["key"]!="swarm.0.finished")
+                CHECK(resolvedBuildings["variants"][id]==defaultBuildings["variants"][id]);
+
+        auto* producer=world.addBuilding("swarm",10,10); REQUIRE(producer);
+        world.team->addToStaticAbilitiesLists(producer);
+        const auto& production=producer->type->semantics.production;
+        CHECK(production.scheduling==BuildingProductionScheduling::WeightedCommittedJob);
+        CHECK(production.recipes[type].cost[WHEAT]==2);
+        CHECK_FALSE(production.recipes[type].costExplicit);
+        CHECK(production.recipes[type].duration==150);
+        for(unsigned id=0;id<BuiltinUnitCount;++id)CHECK(production.recipes[id].cost[WHEAT]==5);
+        CHECK(producer->productionRatio(WORKER)==1);
+        CHECK(producer->productionRatio(type)==1);
+        REQUIRE(producer->runtime->produces(type));
+        producer->materials[WHEAT]=2;
+        Unit* carrier=nullptr;
+        for(int tick=0;tick<4096 && !carrier;++tick) {
+            game.syncStep(0);
+            for(Unit* unit:world.team->liveUnits.entries())if(unit->typeNum==type)carrier=unit;
+        }
+        REQUIRE(carrier);
+        CHECK(carrier->runtimeTraits().meshClass==WORKER);
+        CHECK(carrier->runtimeTraits().cargoCapacity==4);
+        CHECK(carrier->runtimeTraits().cargoKinds==3);
+        CHECK(world.team->stats.measurements.births[type]==1);
+        CHECK(world.team->stats.measurements.births[WORKER]==0);
+        CHECK(producer->materials[WHEAT]==0);
+        CHECK(producer->reservedMaterials[WHEAT]==0);
+        CHECK(world.team->integrity());
     }
 
     TEST_CASE("tiling anchors and starting positions recognize producers of additional units")
@@ -2402,6 +2586,84 @@ TEST_SUITE("UnitCustomization")
             }
         }
     }
+    TEST_CASE("migrated vision follows cached flight rather than presentation or saved Race tables [save-format]")
+    {
+        glob2test::HeadlessGlobals globals;
+        for(int type:{WORKER,EXPLORER}) for(bool differentCache:{false,true}) {
+            CAPTURE(type); CAPTURE(differentCache);
+            glob2test::HeadlessGame world({.wDec=6,.hDec=6,.clearImmobile=true,.header=true,.seed=4921});
+            auto base=UnitCatalog::legacyMigration();
+            std::vector<std::array<UnitType,NB_UNIT_LEVELS>> tables;
+            for(unsigned id=0;id<base->size();++id)tables.push_back(base->levels(id));
+            const bool flying=type==WORKER;
+            const bool tableFlight=differentCache?!flying:flying;
+            for(auto& level:tables[type]) {
+                level.performance[FLY]=tableFlight?16:0;
+                level.performance[WALK]=16;
+            }
+            world.game.gameHeader.setUnitCatalog(base->withLegacyLevels(tables,425));
+            world.game.configureBuildingCatalog();
+            world.game.gameHeader.setHungerDisabled(true);
+            auto* unit=world.addUnit(type,30,30); REQUIRE(unit);
+            REQUIRE(world.addUnit(WARRIOR,50,50)); // Keep an explorer-only subject's team alive.
+            REQUIRE(unit->hasCapability(UnitRuntimeTraits::LegacyPerformancePolicies));
+            if(differentCache) {
+                // Old saves preserve per-unit cached abilities independently of
+                // the final team's authoritative Race table. Keep occupancy valid.
+                if(tableFlight) world.game.map.setAirUnit(unit->posX,unit->posY,NOGUID);
+                else world.game.map.setGroundUnit(unit->posX,unit->posY,NOGUID);
+                unit->performance[FLY]=flying?16:0;
+                if(flying) world.game.map.setAirUnit(unit->posX,unit->posY,unit->gid);
+                else world.game.map.setGroundUnit(unit->posX,unit->posY,unit->gid);
+                unit->movement=flying?Unit::MOV_RANDOM_FLY:Unit::MOV_RANDOM_GROUND;
+                unit->selectPreferredMovement(); unit->speed=unit->performance[unit->action];
+                REQUIRE(unit->performance[FLY]!=world.team->race.getUnitType(type,0)->performance[FLY]);
+            }
+            REQUIRE(unit->configuredVisionRadius==(flying?1:3));
+            checkVisionAction(*unit,flying?3:1);
+            checkVisionContinuation(world.game,64);
+        }
+    }
+
+    TEST_CASE("migrated vision changes with flight learned during a reserved service [save-format]")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.wDec=6,.hDec=6,.clearImmobile=true,.header=true,.seed=4921});
+        auto base=UnitCatalog::legacyMigration();
+        std::vector<std::array<UnitType,NB_UNIT_LEVELS>> tables;
+        for(unsigned type=0;type<base->size();++type)tables.push_back(base->levels(type));
+        for(unsigned level=0;level<NB_UNIT_LEVELS;++level) {
+            tables[WORKER][level].performance[FLY]=level?16:0;
+            tables[WORKER][level].performance[WALK]=16;
+        }
+        world.game.gameHeader.setUnitCatalog(base->withLegacyLevels(tables,425));
+        auto buildings=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());
+        auto& semantics=buildings["variants"][3]["semantics"];
+        semantics["training"]=nlohmann::json::object();
+        semantics["training"]["fly"]={{"enabled",true},{"unitMask",1},{"targetLevel",1},
+            {"duration",3},{"cost",{{"food",2}}}};
+        world.game.buildingsTypes.loadSnapshotJson(buildings.dump()); world.game.configureBuildingCatalog();
+        world.game.gameHeader.setHungerDisabled(true);
+        auto* inn=world.addBuilding("inn",32,30);
+        auto* unit=world.addUnit(WORKER,30,30); REQUIRE(inn); REQUIRE(unit);
+        REQUIRE(unit->hasCapability(UnitRuntimeTraits::LegacyPerformancePolicies));
+        REQUIRE(unit->performance[FLY]==0); REQUIRE(unit->configuredVisionRadius==1);
+        checkVisionAction(*unit,1);
+        inn->materials[WHEAT]=2; unit->destinationPurpose=FLY;
+        REQUIRE(inn->canOfferService(unit,FLY)); inn->subscribeUnitForInside(unit);
+        for(int tick=0;tick<4096 && unit->displacement!=Unit::DIS_INSIDE;++tick) world.game.syncStep(0);
+        REQUIRE(unit->displacement==Unit::DIS_INSIDE); REQUIRE(unit->serviceResourcesReserved);
+        checkVisionContinuation(world.game,128);
+        for(int tick=0;tick<4096 && unit->attachedBuilding;++tick) world.game.syncStep(0);
+        REQUIRE(unit->attachedBuilding==nullptr);
+        REQUIRE(unit->level[FLY]==1); REQUIRE(unit->performance[FLY]==16);
+        CHECK(inn->materials[WHEAT]==0); CHECK(inn->reservedMaterials[WHEAT]==0);
+        REQUIRE(world.game.map.getAirUnit(unit->posX,unit->posY)==unit->gid);
+        CHECK(unit->configuredVisionRadius==1); // Authored cache remains unchanged.
+        checkVisionAction(*unit,3);
+        checkVisionContinuation(world.game,64);
+    }
+
     TEST_CASE("training rejects loss of the last movement mode before reservation or direct mutation")
     {
         glob2test::HeadlessGlobals globals;

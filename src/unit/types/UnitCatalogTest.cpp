@@ -10,6 +10,7 @@
 #include "FileFormatVersions.h"
 #include "Team.h"
 #include "FileManager.h"
+#include "render/UnitAnimation.h"
 using Json = nlohmann::json;
 namespace {
 // The released pre-73 layout places flat Race records inside BaseTeam and
@@ -87,6 +88,49 @@ void writePre73Team(GAGCore::OutputStream& out, int version, const Unit& cached,
 }
 TEST_SUITE("UnitCatalog")
 {
+    TEST_CASE("authored animation spans stay inside the stock atlas")
+    {
+        glob2test::HeadlessGlobals globals;
+        auto snapshot = Json::parse(UnitCatalog::legacy()->serialize());
+        for (auto &level : snapshot["units"][WORKER]["levels"])
+            level["startImage"] = std::array<unsigned, NB_MOVE>{384,384,384,384,384,384,384,384,384};
+        const auto valid = UnitCatalog::fromJson(snapshot.dump());
+        CHECK(UnitCatalog::deserialize(valid->serialize())->serialize() == valid->serialize());
+        CHECK(unitAnimationFrame(384, 7, 255) == UNIT_ANIMATION_ATLAS_FRAME_COUNT - 1);
+        for (unsigned level = 0; level < NB_UNIT_LEVELS; ++level)
+            for (unsigned action = 0; action < NB_MOVE; ++action)
+                for (unsigned invalid : {385u, 1000000u}) {
+                    CAPTURE(level); CAPTURE(action); CAPTURE(invalid);
+                    auto malformed = snapshot;
+                    malformed["units"][WORKER]["levels"][level]["startImage"][action] = invalid;
+                    CHECK_THROWS_WITH(UnitCatalog::fromJson(malformed.dump()),
+                                      "Unit catalog: unit animation exceeds stock atlas");
+                    CHECK_THROWS_WITH(UnitCatalog::deserialize(malformed.dump()),
+                                      "Unit catalog: unit animation exceeds stock atlas");
+                }
+    }
+
+    TEST_CASE("legacy presentation offsets survive migration without relaxing additional types")
+    {
+        glob2test::HeadlessGlobals globals;
+        const auto old = UnitCatalog::legacy();
+        std::vector<std::array<UnitType, NB_UNIT_LEVELS>> tables;
+        for (unsigned type = 0; type < old->size(); ++type)
+            tables.push_back(old->levels(type));
+        tables[WORKER][0].startImage[WALK] = 4096;
+        const auto migrated = old->withLegacyLevels(tables, 425);
+        const auto restored = UnitCatalog::deserialize(migrated->serialize());
+        CHECK(restored->levels(WORKER)[0].startImage[WALK] == 4096);
+        CHECK(restored->serialize() == migrated->serialize());
+        CHECK(old->levels(WORKER)[0].startImage[WALK] == 64);
+        auto snapshot = Json::parse(migrated->serialize());
+        auto extra = snapshot["units"][WORKER];
+        extra["key"] = "fixture:legacy-presentation";
+        snapshot["units"].push_back(extra);
+        CHECK_THROWS_WITH(UnitCatalog::deserialize(snapshot.dump()),
+                          "Unit catalog: unit animation exceeds stock atlas");
+    }
+
     TEST_CASE("optional recruitment policies preserve pre-policy snapshots and compact traits")
     {
         glob2test::HeadlessGlobals globals;

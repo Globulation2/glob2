@@ -148,11 +148,17 @@ hiding rules, not protection against statistical inference from gameplay.
 
 ### Unit definitions
 
-`ctx.game.unitTypes({offset, limit})` pages through available definitions by ID.
+`ctx.game.unitTypes({offset, limit})` visits the catalog-ID interval
+`[offset, offset + limit)`, bounded by the catalog size. Definitions whose
+experiments are disabled are omitted; a short or empty page does not imply the
+end of the catalog. Omitted options select the whole catalog.
 Each record exposes `id`, `key`, `name`, `capabilities`, `foodCapacity`,
 `hungerRate`, `cargoCapacity`, `cargoKinds`, `productionCost` and four
 `performanceLevels` arrays. This query is read-only developer configuration;
-see [unit architecture](../architecture/units.md).
+see [unit architecture](../architecture/units.md). `capabilities` is the numeric
+bitmask defined by [`UnitRuntimeTraits::Flag`](../../src/unit/types/UnitCatalog.h).
+It includes compiled and legacy policy flags as well as enabled behaviors;
+effective performance still determines whether an enabled ability can act.
 
 `ctx.game.unitBehavior({id, generation})` returns the same visible record as
 `unit`, plus `typeKey`, compiled `capabilities` and `foodCapacity`. For owned

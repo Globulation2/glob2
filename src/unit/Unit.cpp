@@ -540,7 +540,11 @@ void Unit::syncStep(void)
 
 		endOfAction();
 
-		const int r=configuredVisionRadius;
+		// Historical saves derive sight from the unit's cached flight ability,
+		// which can differ from its saved Race table or change during training.
+		const int r=hasCapability(UnitRuntimeTraits::LegacyPerformancePolicies)
+			? (performance[FLY]?UNIT_VISION_RADIUS_FLY:UNIT_VISION_RADIUS_GROUND)
+			: configuredVisionRadius;
 		const int d=2*r+1;
 		owner->map->setMapDiscovered(posX-r,posY-r,d,d,owner->sharedVisionOther);
 		owner->map->setMapBuildingsDiscovered(posX-r,posY-r,d,d,owner->sharedVisionOther,owner->game->teams);

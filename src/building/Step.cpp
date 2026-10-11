@@ -26,10 +26,10 @@ namespace
 	constexpr int HARVEST_LEVEL_WEIGHT = 10;
 
 	/// Tiles of detour a candidate pays for turning up with a material this
-	/// building cannot take. Whatever it carries is lost the moment it harvests
-	/// again, so an empty-handed unit this much further away is the better hire,
-	/// and a building that does want the cargo gets its chance at the unit. A
-	/// price, not a veto: past this margin the loaded unit is still hired.
+	/// building cannot take. Legacy one-packet workers discard rejected cargo on
+	/// their next harvest; extended carriers can retain unrelated packets. The
+	/// penalty gives a building that wants the cargo a better chance to hire the
+	/// unit. A price, not a veto: beyond this margin the loaded unit is still hired.
 	constexpr int CARRIED_MATERIAL_PENALTY_TILES = 5;
 
 	/// Composite "experience" key used to rank material-carrying candidates;

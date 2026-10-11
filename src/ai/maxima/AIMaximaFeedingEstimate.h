@@ -38,7 +38,8 @@ struct FeedingEstimate
 };
 
 // Rebuilt only when immutable catalog/strategy/rules profiles are initialized.
-// The bounded temporary array cannot allocate during a building observation.
+// The catalog-sized flow buffer allocates here; observations reuse the resulting
+// profile rather than rebuilding it for each building.
 inline FeedingEstimate estimateFeeding(const BuildingType& type,const FeedingPlan& plan,const UnitCatalog& units=*UnitCatalog::builtins())
 {
     using namespace AIMaximaBuildings;

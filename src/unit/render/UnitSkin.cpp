@@ -8,10 +8,10 @@ UnitSkin g_unitSkins[NB_UNIT_TYPE];
 
 namespace
 {
-	// Sprite-atlas frame offsets for each unit type, indexed by Abilities enum
+	// Default editor-palette frame offsets for each presentation slot, indexed by Abilities enum
 	// values STOP_WALK..ATTACK_SPEED (which are 0..NB_MOVE-1 in UnitConsts.h).
-	// Replaces the legacy data/unitsSkins.txt; offsets are a property of the
-	// data/gfx/unit sprite sheet, not designer-tunable parameters.
+	// Replaces the legacy data/unitsSkins.txt. Live units use their catalog's
+	// animation offsets; the fixed built-in palette retains these stock icons.
 	constexpr Uint32 SKIN_OFFSETS[NB_UNIT_TYPE][NB_MOVE] = {
 		// STOP_WALK, STOP_SWIM, STOP_FLY,  WALK, SWIM, FLY,  BUILD, HARVEST, ATTACK_SPEED
 		/* WORKER   */ {  64, 128, 0,   64, 128, 0,  192, 192,   0 },

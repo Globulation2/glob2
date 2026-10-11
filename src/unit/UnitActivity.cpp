@@ -56,7 +56,7 @@ void Unit::handleActivity(void)
 					return;
 				}
 
-				// we go to a heal building if we'r not fully healed: (1/8 trigger)
+				// Seek healing when missing health exceeds the configured idle threshold.
 				if (hasCapability(UnitRuntimeTraits::MedicalIdle) && hp+(Sint64(performance[HP])*runtimeTraits().idleHealMissingNumerator/runtimeTraits().idleHealMissingDenominator) < performance[HP])
 				{
 					Building *b;

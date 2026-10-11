@@ -73,8 +73,11 @@ void Unit::handleMovement(void)
 
 bool Unit::tryClaimClearingAreaForHarvesting()
 {
-	// clearArea code, override behavior locally
-	if (hasCapability(UnitRuntimeTraits::AdjacentClearInterrupt) && hasCapability(UnitRuntimeTraits::Clear) && performance[HARVEST] &&
+	// Idle painted-area clearing completes the same harvest action as a local
+	// interruption, but does not require permission to interrupt another job.
+	if ((hasCapability(UnitRuntimeTraits::AdjacentClearInterrupt)
+		|| (displacement==DIS_RANDOM && hasCapability(UnitRuntimeTraits::ClearIdle)))
+		&& hasCapability(UnitRuntimeTraits::Clear) && performance[HARVEST] &&
 		medical == MED_FREE &&
 		(displacement == DIS_RANDOM
 		|| displacement == DIS_GOING_TO_FLAG
@@ -82,7 +85,8 @@ bool Unit::tryClaimClearingAreaForHarvesting()
 		|| displacement == DIS_GOING_TO_BUILDING))
 	{
 		Map *map = owner->map;
-		// TODO : be sure this is the right thing to do and add a decent comment
+		// The preceding harvest action has finished; settle its resource removal
+		// and self-damage before claiming the next adjacent painted target.
 		if (movement == MOV_HARVESTING)
 		{
 			const Resource clearedBefore = map->getResource(posX + dx, posY + dy);

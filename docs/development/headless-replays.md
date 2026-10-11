@@ -35,7 +35,7 @@ the save floor remains 58.
 
 Unit format 153 embeds resolved unit definitions, assigned job purposes and
 extended cargo before dependent state. It uses network protocol 69 and simulation
-revision 45. The replay floor remains 152: built-in version-152 recordings use an
+revision 46. The replay floor remains 152: built-in version-152 recordings use an
 explicit legacy representation checksum while running the same default unit
 behavior. New recordings checksum the catalog and extended state. Legacy saves
 adopt their saved race tables after loading, preserving cached effective values;

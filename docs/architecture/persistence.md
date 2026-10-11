@@ -7,8 +7,9 @@ Save capture preserves simulation continuation; encoding and durable persistence
 Unit format 153 embeds the immutable resolved catalog before live units, building
 interaction compilation and AI state. It stores explicit assignment purposes and
 exact extended cargo packets. Current race tables must match that authoritative
-catalog. Saves from formats 58 through 152 use staged race-table migration and
-retain cached unit performance, hunger, learning and pending service state.
+catalog. Formats 58–72 bind saved BaseTeam race tables before reading units;
+formats 73–152 recover the later Team race tables through staged migration.
+Both paths retain cached unit performance, hunger, learning and pending service state.
 Additional production counters are counted by actual catalog size; historical
 three-choice recipes retain their saved cost overrides. See [unit definitions](units.md).
 

@@ -19,7 +19,10 @@ immutable catalog, and two games can use different definitions simultaneously.
 Rich definitions contain stable keys and metadata. A separate contiguous runtime
 table contains numeric traits; units cache capability flags and effective ability,
 hunger and learning values. Vision radius uses an existing padding byte in unit
-state, so completed actions read it directly without growing the record. Loading
+state, so authored units read it directly on completed actions without growing
+the record. Migrated legacy units instead derive the historical radius of one
+or three from their cached flight ability, even when it differs from their Race
+table. Loading
 and supported catalog setup rebuild this derived cache; saves and checksums
 continue to identify it through the catalog. Simulation loops do not resolve keys, scan the catalog
 for a type, allocate behavior objects or invoke virtual behavior dispatch.
@@ -62,6 +65,35 @@ fail validation.
 the unit count. `configureUnitCatalog` alone updates unit state and availability;
 it does not prepare buildings for added definitions.
 
+For a game with its default building catalog initialized, the following setup
+enables the preceding definition and gives the first finished swarm an explicit
+recipe. `unitJson` contains the source JSON above; the code uses `nlohmann::json`.
+Run this before spawning units or buildings:
+
+```cpp
+game.gameHeader.setUnitCatalog(UnitCatalog::fromJson(unitJson));
+game.gameHeader.getExperiments().set(
+    "bulk-carriers", true, game.gameHeader.catalogExperimentKeys());
+auto buildings = nlohmann::json::parse(game.buildingsTypes.snapshotJson());
+for (auto& variant : buildings["variants"]) {
+    if (variant["key"] != "swarm.0.finished") continue;
+    auto& production = variant["semantics"]["production"];
+    production["scheduling"] = "weighted_committed_job";
+    production["recipes"]["bulk-worker"] = {{"enabled", true}, {"duration", 150}};
+    production["initialRatios"] = {
+        {"worker", 1}, {"explorer", 0}, {"warrior", 0}, {"bulk-worker", 1}};
+}
+game.buildingsTypes.loadSnapshotJson(buildings.dump());
+game.configureBuildingCatalog();
+```
+
+The recipe omits `cost`, so it inherits two food from `bulk-worker`. Committed
+scheduling allows this cost to differ from the built-ins' five-food recipes;
+late-choice scheduling requires all enabled recipes to have equal costs and
+durations. These weights let that swarm choose between ordinary and bulk workers;
+the other swarm variants retain their existing recipes and weights. This is
+developer setup, not a shipped roster change.
+
 Add an explicit building production recipe keyed by `bulk-worker`, and include
 its weight in the production `initialRatios` object. Recipe duration remains a
 building property. Admission services use a `units` array of stable keys;
@@ -82,6 +114,10 @@ individual fields inherited from its base, but a supplied `performance` or
 `Abilities` in `src/unit/UnitConsts.h`: idle clocks 0–2, walk/swim/fly 3–5,
 build/harvest 6–7, melee speed/strength 8–9, ranged air/ground 10–11,
 material creation 12–14, armor 15 and HP 16. Animation indices follow `NB_MOVE`.
+Authored `startImage` bases range from 0 through 384: each base addresses a full
+256-frame, eight-direction animation within the 1,792-frame stock atlas, using
+the serialized multiplier of four. Private migrated built-ins preserve their
+historical offsets; additional types never receive that exemption.
 `harvestDamage`, `armorReductionPerHappyness`, `experiencePerLevel` and
 `magicActionCooldown` are per-level fields. `hungriness` in these tables retains
 the historical learning modifier; `behaviors.hungerRate` controls food loss.
@@ -95,6 +131,30 @@ kind limits, vision/search/magic ranges, recruitment ranking and rational hunger
 retreat, healing and rebound thresholds. Consult `UnitRuntimeTraits` and the
 strict parser in `src/unit/types/UnitCatalog.cpp` for accepted names and bounds;
 these contracts are exercised by `UnitCatalog` and `UnitCustomization` fixtures.
+
+The following names belong inside `behaviors`; omitted fields inherit their
+base definition. Movement, work and combat switches do not replace the corresponding
+values in `levels.performance`.
+
+| Group | Authoring fields |
+| --- | --- |
+| Movement and work | `walk`, `swim`, `fly`, `transport`, `construct`, `clear`, `learnConstruction` |
+| Combat and material creation | `melee`, `magicAir`, `magicGround`, `magicCreateWood`, `magicCreateWheat`, `magicCreateAlga`, `combatInterrupt`, `adjacentClearInterrupt` |
+| Autonomous decisions | `guardIdle`, `clearIdle`, `explore`, `exploreIdle`, `medicalIdle`; optional `recruitClear`, `recruitExplore`, `recruitDefend` |
+| Lifecycle and service policies | `convert`, `serviceRebound`, `spillRejectedCargo`, `countsForSurvival`, `releaseClearingClaims` |
+| Food and health | `foodCapacity` (positive, at most 1,000,000), `hungerRate` (0 through capacity), `starvationDamage` (0 through 1,000,000), `regenerationQ8` (0 through 65,536) |
+| Service speed | `feedingSpeedQ8`, `healingSpeedQ8`, `trainingSpeedQ8` (1 through 65,536; 256 means the existing speed) |
+| Inventory | `cargoCapacity` (0 through 65,535 raw packets), `cargoKinds` (0 through the material count and no greater than capacity); transport needs both positive |
+| Search and ranking | `visionRadius`, `magicRange` (0 through 32), `attackSearchRadius` (0 through 64), `turretPriority` (2 through 4), `flagRankingHealth` (positive, at most 1,000,000) |
+| Training | `learnableMask`, a bitmask indexed by `Abilities`; construction qualification also needs `learnConstruction` |
+| Decision thresholds | `hungerTrigger`, `carryingTrigger`, `medicalTrigger`, `idleHealMissing`, `rebound`, each supplied as separate `Numerator` and `Denominator` fields |
+
+Threshold denominators are 1 through 1,000 and numerators are 0 through the
+denominator. For example, `"hungerTriggerNumerator": 1` with
+`"hungerTriggerDenominator": 4` represents one quarter. `regenerationQ8` is health
+per tick in units of 1/256; its fractional remainder survives saving. Derived
+runtime flags such as `Regenerate`, `ExtendedCargo` and legacy migration policies
+are compiled internally and are not authoring switches.
 
 ## Capabilities and upgraded values
 

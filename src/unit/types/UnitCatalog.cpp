@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "UnitCatalog.h"
 #include "UnitTiming.h"
+#include "render/UnitAnimation.h"
 #include "online/Sha256.h"
 #include "map/TerrainProperties.h"
 #include <FileManager.h>
@@ -658,6 +659,12 @@ void UnitCatalog::compile()
         const bool fly = d.levels[0].performance[FLY] != 0;
         for (const auto &l : d.levels)
         {
+            // Imported built-in Race tables retain their historical presentation
+            // bytes. New definitions always use the supported stock atlas.
+            if (!r.has(UnitRuntimeTraits::LegacyPerformancePolicies))
+                for (const auto base : l.startImage)
+                    if (!validUnitAnimationBase(base))
+                        fail("unit animation exceeds stock atlas");
             if (l.performance[HP] < minimumLegacyHealth || l.performance[HP] > 1000000)
                 fail("invalid HP");
             if (!(legacyLevelMovement_ && i < BuiltinUnitCount) && r.has(UnitRuntimeTraits::Fly) &&

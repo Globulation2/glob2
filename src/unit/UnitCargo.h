@@ -21,8 +21,9 @@ struct UnitCargoEntry
     bool operator==(const UnitCargoEntry&) const = default;
 };
 
-// Only additional packets live here. The ordinary one-packet inventory stays
-// inline in UnitState and never allocates or probes this store during a tick.
+// Additional packets live here, along with a primary packet whose exact fraction
+// exceeds the inline representation (UnitState::widePrimaryCargo). Ordinary
+// one-packet counting and delivery use UnitState directly without a store lookup.
 // GIDs include the team; conversion explicitly moves the inventory to its new
 // identity. A value copy is sufficient for snapshot ownership.
 class UnitCargoStore
