@@ -18,7 +18,12 @@ on:
         options: [prepare, submit, publish]
         default: prepare
       draft_version_id:
-        description: Optional empty editable Apple draft ID to reuse during prepare only
+        description: Optional editable Apple draft ID to reuse during prepare only
+        required: false
+        type: string
+        default: ''
+      replace_draft_build_id:
+        description: Expected current build ID in that unsubmitted manual-release draft; leave blank to refuse replacement
         required: false
         type: string
         default: ''
@@ -56,6 +61,9 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG: ${{ inputs.tag }}
           UPLOAD_RUN_ID: ${{ inputs.upload_run_id }}
+          STAGE: ${{ inputs.stage }}
+          DRAFT_VERSION_ID: ${{ inputs.draft_version_id }}
+          REPLACE_DRAFT_BUILD_ID: ${{ inputs.replace_draft_build_id }}
         run: |
           set -euo pipefail
           [[ "$UPLOAD_RUN_ID" =~ ^[0-9]+$ ]]
@@ -63,8 +71,16 @@ jobs:
           mkdir -p artifacts/ios-production
           gh api "repos/genixpro/glob2-release/actions/runs/$UPLOAD_RUN_ID" > artifacts/ios-production/run.json
           python3 - <<'PY'
-          import json
+          import json, os, re, subprocess
           from pathlib import Path
+          expected=os.environ['REPLACE_DRAFT_BUILD_ID']
+          if expected:
+              if (os.environ['STAGE']!='prepare' or not re.fullmatch('[A-Za-z0-9-]{1,128}',os.environ['DRAFT_VERSION_ID'])
+                  or not re.fullmatch('[A-Za-z0-9-]{1,128}',expected)):
+                  raise SystemExit('Replacement requires prepare and explicit draft/current build IDs')
+              help_text=subprocess.check_output(['python3','mobile/ios_store_release.py','--help'],text=True)
+              if '--replace-draft-build-id' not in help_text:
+                  raise SystemExit('The selected immutable source tag does not support explicit draft replacement')
           run=json.loads(Path('artifacts/ios-production/run.json').read_text())
           paths={'.github/workflows/ios-testflight.yml','.github/workflows/github-release.yml','.github/workflows/publish-desktop.yml'}
           if (run['repository']['id']!=1397722696 or run['actor']['id']!=6193625 or run['triggering_actor']['id']!=6193625
@@ -120,10 +136,13 @@ jobs:
           UPLOAD_RUN_ID: ${{ inputs.upload_run_id }}
           STAGE: ${{ inputs.stage }}
           DRAFT_VERSION_ID: ${{ inputs.draft_version_id }}
+          REPLACE_DRAFT_BUILD_ID: ${{ inputs.replace_draft_build_id }}
         run: |
           set -euo pipefail
           test -n "$IOS_ASC_KEY_ID" && test -n "$IOS_ASC_ISSUER_ID" && test -n "$IOS_ASC_KEY_P8_BASE64"
+          replacement_args=()
+          if [ -n "$REPLACE_DRAFT_BUILD_ID" ]; then replacement_args=(--replace-draft-build-id "$REPLACE_DRAFT_BUILD_ID"); fi
           "$RUNNER_TEMP/ios-production-tools/bin/python" mobile/ios_store_release.py "$STAGE" \
             --provenance artifacts/ios-production/ios-upload-provenance.json \
             --tag "$TAG" --source-commit "$SOURCE_COMMIT" --run-id "$UPLOAD_RUN_ID" \
-            --draft-version-id "$DRAFT_VERSION_ID"
+            --draft-version-id "$DRAFT_VERSION_ID" "${replacement_args[@]}"
