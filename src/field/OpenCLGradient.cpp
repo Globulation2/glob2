@@ -1,9 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "OpenCLGradient.h"
-#include "OpenCLProbeBatchStorage.h"
-#include "CaptureProbeAccounting.h"
-#include "OpenCLCpuAttribution.h"
-#include "OpenCLBorrowedLifetime.h"
 #include "OpenCLRequiredLifetimePool.h"
 #include "OpenCLTransferProof.h"
 #include "OpenCLLaneRegistry.h"
@@ -47,44 +43,32 @@ struct MemoryBudget {
     }
 };
 MemoryBudget hostBudget{OpenCLHostBudget};
-MemoryBudget probeBudget{OpenCLProbeBudget};
 struct BudgetExceeded : std::runtime_error { BudgetExceeded():std::runtime_error("OpenCL payload budget exceeded") {} };
 struct RequiredCanceled : std::exception {const char* what() const noexcept override{return "Required OpenCL execution canceled";}};
 } // namespace
-// Named so only this native lease can subdivide an opaque future admission.
-// Empty destination leases adopt the source ledger during transfer/split;
-// direct required and singleton leases retain their process-wide budgets.
-class OpenCLProbeBudgetLease {
+namespace {
+class BudgetLease {
 public:
     MemoryBudget* budget;
-    std::shared_ptr<OpenCLProbeBatchStorage> backing;
-    unsigned kind=0;
     std::size_t bytes=0;
-    explicit OpenCLProbeBudgetLease(MemoryBudget& budget,std::shared_ptr<OpenCLProbeBatchStorage> owner={},unsigned ledger=0)
-        :budget(&budget),backing(std::move(owner)),kind(ledger) {}
-    OpenCLProbeBudgetLease(const OpenCLProbeBudgetLease&)=delete;
-    OpenCLProbeBudgetLease& operator=(const OpenCLProbeBudgetLease&)=delete;
-    ~OpenCLProbeBudgetLease(){release(bytes);}
-    bool reserve(std::size_t count) noexcept {return backing?backing->reserve(kind,count):budget->reserve(count);}
-    void release(std::size_t count) noexcept {if(backing)backing->release(kind,count);else budget->release(count);}
-    void transferTo(OpenCLProbeBudgetLease& destination) noexcept {
-        if(destination.bytes || (!backing && !destination.backing && budget!=destination.budget))std::terminate();
-        destination.budget=budget;destination.backing=backing;destination.kind=kind;
+    explicit BudgetLease(MemoryBudget& budget):budget(&budget) {}
+    BudgetLease(const BudgetLease&)=delete;
+    BudgetLease& operator=(const BudgetLease&)=delete;
+    ~BudgetLease(){budget->release(bytes);}
+    void transferTo(BudgetLease& destination) noexcept {
+        if(destination.bytes || budget!=destination.budget)std::terminate();
         destination.bytes=bytes;bytes=0;
     }
-    void splitTo(OpenCLProbeBudgetLease& destination,std::size_t count) noexcept {
-        if(destination.bytes || count>bytes || (!backing && !destination.backing && budget!=destination.budget))std::terminate();
-        destination.budget=budget;destination.backing=backing;destination.kind=kind;
+    void splitTo(BudgetLease& destination,std::size_t count) noexcept {
+        if(destination.bytes || count>bytes || budget!=destination.budget)std::terminate();
         destination.bytes=count;bytes-=count;
     }
     void resize(std::size_t next) {
-        if(next>bytes && !reserve(next-bytes)) throw BudgetExceeded();
-        if(next<bytes) release(bytes-next);
+        if(next>bytes && !budget->reserve(next-bytes))throw BudgetExceeded();
+        if(next<bytes)budget->release(bytes-next);
         bytes=next;
     }
 };
-namespace {
-using BudgetLease=OpenCLProbeBudgetLease;
 template<class T> void resizeStaging(std::vector<T>& values,std::size_t count,BudgetLease& lease) {
     if(count>values.capacity()) {
         // Reserve the transient old+new allocation, not just their difference.
@@ -149,10 +133,8 @@ struct API
                 const Handle *, Handle *);
     CL_FUNCTION(EnqueueNDRangeKernel, Int, Handle, Handle, UInt, const std::size_t *, const std::size_t *,
                 const std::size_t *, UInt, const Handle *, Handle *);
-    CL_FUNCTION(Finish, Int, Handle);
     CL_FUNCTION(Flush, Int, Handle);
     CL_FUNCTION(GetEventInfo, Int, Handle, UInt, std::size_t, void*, std::size_t*);
-    CL_FUNCTION(GetEventProfilingInfo, Int, Handle, UInt, std::size_t, void*, std::size_t*);
     CL_FUNCTION(ReleaseEvent, Int, Handle);
     CL_FUNCTION(ReleaseMemObject, Int, Handle);
     CL_FUNCTION(ReleaseKernel, Int, Handle);
@@ -197,10 +179,8 @@ struct API
         LOAD(EnqueueFillBuffer);
         LOAD(EnqueueReadBuffer);
         LOAD(EnqueueNDRangeKernel);
-        LOAD(Finish);
         LOAD(Flush);
         LOAD(GetEventInfo);
-        LOAD(GetEventProfilingInfo);
         LOAD(ReleaseEvent);
         LOAD(ReleaseMemObject);
         LOAD(ReleaseKernel);
@@ -216,13 +196,16 @@ void check(Int result)
         throw std::runtime_error("OpenCL error " + std::to_string(result));
 }
 constexpr const char *source = R"CL(
+#define CORE_X 16
+#define CORE_Y 16
+#define STEPS 8
+#define WG 128
+#define FROZEN_HALO 1
+
 #define HALO (FROZEN_HALO?1:STEPS)
 #define UPDATE_X (FROZEN_HALO?CORE_X:SIDE_X)
 #define UPDATE_Y (FROZEN_HALO?CORE_Y:SIDE_Y)
 #define FIRST_CELL (FROZEN_HALO?1:0)
-#if FROZEN_HALO && !COLOR_RELAXATION
-#error Frozen halos require colored relaxation
-#endif
 #define SIDE_X (CORE_X+2*HALO)
 #define SIDE_Y (CORE_Y+2*HALO)
 #define PATCH (SIDE_X*SIDE_Y)
@@ -235,9 +218,6 @@ __kernel void propagate(__global const ushort *a,__global ushort *b,
  __global const uint *c4,__global const uint *c5,__global const uint *c6,__global const uint *c7,
  __global uint *changed,__global const uint *desc,
  __global const uint *active,__global uint *nextActive,uint stride,uint pitch
-#if ACTIVE_EPOCH
- ,uint activeEpoch
-#endif
  )
 {
  uint f=get_group_id(2),d=f*8,w=desc[d],h=desc[d+1],base=desc[d+2],cb=desc[d+3],cap=desc[d+4];
@@ -252,30 +232,20 @@ __kernel void propagate(__global const ushort *a,__global ushort *b,
 
  uint lid=get_local_id(0);
  if(gx>=desc[d+6]||gy>=desc[d+7]||!desc[d+5])return; // Entire workgroup/retired field.
-#if ACTIVE_EPOCH
- if(active[tile]!=activeEpoch){
-#else
  if(!active[tile]){
-#endif
   // Keep ping-pong buffers coherent. Only propagation/local-memory work is skipped.
   for(uint o=lid;o<CORE_X*CORE_Y;o+=WG){uint x=gx*CORE_X+o%CORE_X,y=gy*CORE_Y+o/CORE_X;
   if(x<w&&y<h){uint i=base+y*w+x;b[i]=a[i];}}return;
  }
  __local uint c[LOCAL_PATCH],flags[WG];
-#if COLOR_RELAXATION
  __local ushort v[LOCAL_PATCH];
  __local uint firstSweepChanged;
-#else
- __local ushort storage[2][LOCAL_PATCH];
- __local ushort *v=storage[0],*next=storage[1];
-#endif
  for(uint j=lid;j<PATCH;j+=WG){
   int sx=wrap(gx*CORE_X+(int)(j%SIDE_X)-HALO,w),sy=wrap(gy*CORE_Y+(int)(j/SIDE_X)-HALO,h);
   uint localIndex=(j/SIDE_X)*LOCAL_X+j%SIDE_X;
   v[localIndex]=a[base+sy*w+sx];if(!uniform)c[localIndex]=costs[sy*w+sx];
  }
  barrier(CLK_LOCAL_MEM_FENCE);
-#if COLOR_RELAXATION
  // Four parity classes have no adjacent cells within a class, so each
  // in-place sweep is race-free. Every update extends a valid path and is
  // monotone. Repeated tile exchanges reach the same exact fixed point;
@@ -308,29 +278,6 @@ __kernel void propagate(__global const ushort *a,__global ushort *b,
   if(!firstSweepChanged)break;
  }
  }
-#else
- // The halo covers the complete dependency cone: core results equal STEPS
- // global Jacobi rounds, including wrapped seams and deferred/capped seeds.
- for(uint round=0;round<STEPS;round++){
-  for(uint j=lid;j<PATCH;j+=WG){
-   int sx=j%SIDE_X,sy=j/SIDE_X;
-   // Only this shrinking cone can influence the final core. Its neighbors
-   // were all written by the preceding round before the shared barrier.
-   if(sx<(int)round+1||sy<(int)round+1||sx>=SIDE_X-(int)round-1||sy>=SIDE_Y-(int)round-1)continue;
-   uint val=v[j];
-   int best=0; if(val)for(int dy=-1;dy<=1;dy++)for(int dx=-1;dx<=1;dx++){
-    if((dx||dy)&&(FROZEN_HALO||(sx+dx>=0&&sx+dx<SIDE_X&&sy+dy>=0&&sy+dy<SIDE_Y))){
-     uint k=j+dy*LOCAL_X+dx,src=v[k],step=(dx&&dy)?(uniform?diagonal:c[k]>>16):(uniform?cardinal:c[k]&65535);
-     best=max(best,(int)src-(int)step);
-    }
-   }
-   if(best>=threshold)val=max(val,(uint)best);
-   next[j]=val;
-  }
-  barrier(CLK_LOCAL_MEM_FENCE);
-  __local ushort *tmp=v;v=next;next=tmp;
- }
-#endif
  flags[lid]=0;
  for(uint o=lid;o<CORE_X*CORE_Y;o+=WG){uint x=gx*CORE_X+o%CORE_X,y=gy*CORE_Y+o/CORE_X;
  uint j=(o/CORE_X+HALO)*LOCAL_X+o%CORE_X+HALO;
@@ -349,25 +296,21 @@ __kernel void propagate(__global const ushort *a,__global ushort *b,
    if(lid<(uint)((2*rx+1)*(2*ry+1))){
     int dx,dy;if(rx==1){dx=(int)lid%3-1;dy=(int)lid/3-ry;}else{dx=(int)lid%5-2;dy=(int)lid/5-ry;}
     uint nx=wrap((int)gx+dx,desc[d+6]),ny=wrap((int)gy+dy,desc[d+7]);
-#if ACTIVE_EPOCH
-    // All publishers in this dispatch store the same next epoch. Kernel
-    // boundaries publish it globally before the following tile exchange.
-    atomic_xchg(nextActive+f*stride+ny*pitch+nx,activeEpoch+1u);
-#else
     atomic_or(nextActive+f*stride+ny*pitch+nx,1u);
-#endif
    }
   }
  }
 }
 )CL";
 // Programs are shared by the device; each lane owns distinct kernel handles.
-// Both use the complete shared plan descriptor, so advertised parameters,
-// compilation options and dispatch geometry cannot drift apart.
+// The only GPU descriptor is Frozen8/check8; this is not a plan portfolio.
 struct KernelVariant : ExecutionPlan
 {
-    Handle program = nullptr, kernel = nullptr, reverseKernel = nullptr;
+    Handle program = nullptr, kernel = nullptr;
 };
+static_assert(PLANS.size()==2 && PLANS[1].id==Plan::Frozen8 && PLANS[1].steps==8 &&
+    PLANS[1].threads==128 && PLANS[1].tileWidth==16 && PLANS[1].tileHeight==16 &&
+    PLANS[1].colored && PLANS[1].frozen);
 constexpr auto kernelVariants()
 {
     std::array<KernelVariant, PLANS.size() - 1> variants{};
@@ -387,7 +330,6 @@ struct Device
     std::mutex initialization, cacheMutex, lanesMutex, failureMutex;
     bool probed = false;
     std::atomic<bool> failed{false};
-    OpenCLBorrowedLifetime optionalLifetime;
     OpenCLRequiredLifetimePool requiredLifetime;
     bool requiredQueryFailureDiagnostics=false;
     MemoryBudget deviceBudget{OpenCLDeviceBudget};
@@ -407,13 +349,12 @@ struct Device
             API* api;
             Handle buffer=nullptr;
             BudgetLease deviceLease;
-            Storage(API& api,MemoryBudget& budget,BudgetLease& admission):api(&api),deviceLease(budget,admission.backing,2) {
+            Storage(API& api,MemoryBudget& budget,BudgetLease& admission):api(&api),deviceLease(budget) {
                 admission.transferTo(hostLease);
             }
             static constexpr std::size_t fixedBytes(){return sizeof(Storage)+128;}
-            static std::shared_ptr<Storage> create(API& api,MemoryBudget& budget,
-                std::shared_ptr<OpenCLProbeBatchStorage> future={}) {
-                BudgetLease reserved{hostBudget,std::move(future)};reserved.resize(fixedBytes());
+            static std::shared_ptr<Storage> create(API& api,MemoryBudget& budget) {
+                BudgetLease reserved{hostBudget};reserved.resize(fixedBytes());
                 return std::make_shared<Storage>(api,budget,reserved);
             }
             ~Storage(){if(buffer)api->ReleaseMemObject(buffer);}
@@ -438,30 +379,22 @@ struct Device
         }
         template<class Request>
         static std::shared_ptr<Plane> create(API& api,const Request& request,
-            std::span<const std::uint8_t> mask,bool scalar,bool reserveOnly=false,
-            std::shared_ptr<OpenCLProbeBatchStorage> future={}) {
-            BudgetLease reserved{hostBudget,std::move(future)};
+            std::span<const std::uint8_t> mask,bool scalar) {
+            BudgetLease reserved{hostBudget};
             reserved.resize(estimatedBytes(scalar ? 1 : request.grid.cells(),mask.size(),
                 retainedCostOwnerBytes(request.identity)));
-            return std::make_shared<Plane>(api,request,mask,scalar,reserveOnly,reserved);
+            return std::make_shared<Plane>(api,request,mask,scalar,reserved);
         }
         template<class Request>
-        Plane(API& api,const Request& r,std::span<const std::uint8_t> mask,bool scalar,bool reserveOnly,
+        Plane(API& api,const Request& r,std::span<const std::uint8_t> mask,bool scalar,
             BudgetLease& admission):api(&api),identity(r.identity),width(r.grid.width()),height(r.grid.height()) {
             admission.transferTo(hostLease);
             const auto count=scalar ? std::size_t(1) : r.grid.cells();
-            if(reserveOnly)data.reserve(count);else data.resize(count);
+            data.resize(count);
             blocked.assign(mask.begin(),mask.end());
             hostLease.resize(estimatedBytes(data.capacity(),blocked.capacity(),retainedCostOwnerBytes(identity)));
         }
-        void compactUniform() {
-            if(data.size()==1)return;
-            const auto previous=hostLease.bytes;
-            hostLease.resize(previous+sizeof(UInt));
-            try {{std::vector<UInt> scalar(1,data[0]);data.swap(scalar);}}
-            catch(...){hostLease.resize(previous);throw;}
-            hostLease.resize(estimatedBytes(data.capacity(),blocked.capacity(),retainedCostOwnerBytes(identity)));
-        }
+
     };
     std::array<std::shared_ptr<Plane>, 8> planes;
     std::array<std::uint64_t, 8> used{};
@@ -473,7 +406,7 @@ struct Device
     std::uint64_t retiredSequence = 0;
     std::atomic<std::uint64_t> sequence{0}, active{0}, maximumActive{0};
     std::atomic<std::uint64_t> noopFields{0}, threadCPUNs{0},threadCPUInvalidMeasurements{0},laneBudgetDeclines{0};
-    std::atomic<std::uint64_t> optionalQuarantines{0},requiredQuarantines{0},requiredProofFailures{0};
+    std::atomic<std::uint64_t> requiredQuarantines{0},requiredProofFailures{0};
     std::atomic<bool> threadCPUAvailable{false};
     void reapExpiredLanes() noexcept {std::lock_guard lock(lanesMutex);lanes.clearExpired();}
     void evictUnusedPlanes() {
@@ -502,18 +435,8 @@ struct Device
         probed = true;
         try
         {
-            status.directSeedUploadRequested=numericOverride("GLOB2_OPENCL_DIRECT_SEED_UPLOAD",0,1)!=0;
             requiredQueryFailureDiagnostics=numericOverride("GLOB2_TEST_OPENCL_REQUIRED_QUERY_FAILURE",0,1)!=0;
-            status.apiCpuMode=numericOverride("GLOB2_OPENCL_API_CPU",0,2);
             api.load();
-            status.checkInterval=numericOverride("GLOB2_OPENCL_CHECK_INTERVAL",8,32);
-            if(!status.checkInterval) throw std::runtime_error("Invalid GLOB2_OPENCL_CHECK_INTERVAL");
-            status.pollMicros=numericOverride("GLOB2_OPENCL_POLL_US",0,1000);
-            status.deviceProfiling=numericOverride("GLOB2_OPENCL_PROFILE",0,1)!=0;
-            status.uniformMetadata=numericOverride("GLOB2_OPENCL_UNIFORM_METADATA",0,1)!=0;
-            status.probeColdCosts=numericOverride("GLOB2_OPENCL_PROBE_COLD_COSTS",0,1)!=0;
-            status.activeEpoch=numericOverride("GLOB2_OPENCL_ACTIVE_EPOCH",0,1)!=0;
-            status.parityBound=numericOverride("GLOB2_OPENCL_PARITY_BOUND",0,1)!=0;
             const auto requestedDevice=numericOverride("GLOB2_OPENCL_DEVICE",0,std::numeric_limits<unsigned>::max());
             const bool explicitDevice=std::getenv("GLOB2_OPENCL_DEVICE")!=nullptr;
             unsigned ordinal=0;
@@ -561,7 +484,7 @@ struct Device
             status.device.assign(name.data(),bytes-1);
             // Fingerprints are captured once on the initialization coordinator.
             // A malformed/unsupported optional query leaves metadata empty and
-            // therefore cannot qualify a matching offline batch manifest.
+            // is diagnostic only; it never changes execution or admission.
             const auto infoString=[](auto query,Handle object,UInt key) {
                 std::size_t size=0;
                 if(query(object,key,0,nullptr,&size) || !size || size>2048)return std::string{};
@@ -580,7 +503,7 @@ struct Device
             status.deviceVersion=infoString(api.GetDeviceInfo,device,0x102F);
             status.openCLCVersion=infoString(api.GetDeviceInfo,device,0x103D);
             // cl_khr_device_uuid defines a 16-byte CL_DEVICE_UUID_KHR query.
-            // Unsupported/error results only disable matching offline evidence.
+            // Unsupported/error results leave this diagnostic identity empty.
             std::array<unsigned char,16> uuid{};std::size_t uuidBytes=0;
             if(!api.GetDeviceInfo(device,0x106A,sizeof uuid,uuid.data(),&uuidBytes) && uuidBytes==uuid.size() &&
                 std::any_of(uuid.begin(),uuid.end(),[](auto byte){return byte!=0;})) {
@@ -605,15 +528,9 @@ struct Device
                 const char *text = source;
                 variant.program = api.CreateProgramWithSource(context, 1, &text, nullptr, &error);
                 check(error);
-                const auto options = "-cl-std=CL1.2 -DCORE_X=" + std::to_string(variant.tileWidth) +
-                                     " -DCORE_Y=" + std::to_string(variant.tileHeight) +
-                                     " -DSTEPS=" + std::to_string(variant.steps) +
-                                     " -DCOLOR_RELAXATION=" + std::to_string(variant.colored) +
-                                     " -DWG=" + std::to_string(variant.threads) +
-                                     " -DFROZEN_HALO=" + std::to_string(variant.frozen) +
-                                     " -DACTIVE_EPOCH=" + std::to_string(status.activeEpoch);
+                constexpr const char* options="-cl-std=CL1.2";
                 const auto built =
-                    api.BuildProgram(variant.program, 1, &device, options.c_str(), nullptr, nullptr);
+                    api.BuildProgram(variant.program, 1, &device, options, nullptr, nullptr);
                 if (built != 0)
                 {
                     if (built != -11)
@@ -656,8 +573,6 @@ struct Device
             status.tileHeight = variants[selectedVariant].tileHeight;
             status.localSteps = variants[selectedVariant].steps;
             status.available = true;
-            status.directSeedUpload=status.directSeedUploadRequested;
-            status.apiCpuConfigured=true;
         }
         catch (const std::exception &e)
         {
@@ -675,10 +590,14 @@ struct Device
         try { std::lock_guard lock(failureMutex); if(status.error.empty()) status.error.assign(message.substr(0,4096)); } catch(...) {}
     }
 };
+std::weak_ptr<Device> existingDevice;
+std::mutex existingDeviceMutex;
 std::shared_ptr<Device> makeDevice() {
     BudgetLease reserved{hostBudget};
     reserved.resize(sizeof(Device)+256+Device::LaneCapacity*256+65536);
-    return std::make_shared<Device>(reserved);
+    auto result=std::make_shared<Device>(reserved);
+    {std::lock_guard lock(existingDeviceMutex);existingDevice=result;}
+    return result;
 }
 struct Runtime : std::enable_shared_from_this<Runtime>
 {
@@ -687,16 +606,12 @@ struct Runtime : std::enable_shared_from_this<Runtime>
     bool execution;
     // Declared before payload so leases outlive all lane storage, including
     // status strings retained by a concurrent snapshot's shared lane handle.
-    BudgetLease optionalObjectLease{hostBudget},optionalSubsetLease{probeBudget};
+    BudgetLease objectLease{hostBudget};
     std::uint64_t statusSequence = 0;
-    Runtime(std::shared_ptr<Device> state = makeDevice(), bool lane = false,
-        std::shared_ptr<OpenCLProbeBatchStorage> future={})
-        : shared(std::move(state)), api(shared->api), execution(lane),
-          optionalObjectLease(hostBudget,future),optionalSubsetLease(probeBudget,future,1),
-          valuesLease(hostBudget,future),blockedLease(hostBudget,future),deviceLease(shared->deviceBudget,std::move(future),2) {}
+    Runtime(std::shared_ptr<Device> state = makeDevice(), bool lane = false)
+        : shared(std::move(state)), api(shared->api), execution(lane) {}
     std::mutex mutex;
     OpenCLStatus status;
-    OpenCLCpuAttribution cpuAttribution{status.apiCpu};
     bool probed = false;
     Handle device = nullptr, context = nullptr, queue = nullptr;
     std::array<KernelVariant, PLANS.size() - 1> variants = kernelVariants();
@@ -705,8 +620,7 @@ struct Runtime : std::enable_shared_from_this<Runtime>
     Handle first = nullptr, second = nullptr, changed = nullptr, descriptors = nullptr;
     std::size_t capacity = 0, tileCapacity = 0;
     Handle tilesFirst = nullptr, tilesSecond = nullptr;
-    // Optional lanes retain their own accounting even when a concurrent status
-    // snapshot temporarily holds the lane after its probe owner is destroyed.
+    // Each lane retains its accounting through concurrent status snapshots.
     BudgetLease valuesLease{hostBudget}, blockedLease{hostBudget};
     BudgetLease deviceLease{shared->deviceBudget};
     std::vector<std::uint16_t> values;
@@ -764,8 +678,6 @@ struct Runtime : std::enable_shared_from_this<Runtime>
         {
             if (variant.kernel)
                 api.ReleaseKernel(variant.kernel);
-            if (variant.reverseKernel)
-                api.ReleaseKernel(variant.reverseKernel);
 
         }
         if (queue)
@@ -783,48 +695,29 @@ struct Runtime : std::enable_shared_from_this<Runtime>
         out.tileWidth=in.tileWidth;out.tileHeight=in.tileHeight;out.localSteps=in.localSteps;out.colored=in.colored;
     }
     static void accumulate(OpenCLStatus& out,const OpenCLStatus& in) {
-        out.fields+=in.fields;out.calibrations+=in.calibrations;out.cpuSelections+=in.cpuSelections;
+        out.fields+=in.fields;out.cpuSelections+=in.cpuSelections;
         out.batches+=in.batches;out.maxBatchFields=std::max(out.maxBatchFields,in.maxBatchFields);
         out.costUploads+=in.costUploads;out.costCacheHits+=in.costCacheHits;out.dispatches+=in.dispatches;
         out.hostChecks+=in.hostChecks;out.costIdentityHits+=in.costIdentityHits;out.retiredFields+=in.retiredFields;
-        out.schedulerBatches+=in.schedulerBatches;out.tunings+=in.tunings;
+        out.schedulerBatches+=in.schedulerBatches;
         out.budgetDeclines+=in.budgetDeclines;out.threadCPUNs+=in.threadCPUNs;
         out.threadCPUAvailable=out.threadCPUAvailable||in.threadCPUAvailable;
-        out.preparationNs+=in.preparationNs;out.uploadNs+=in.uploadNs;
-        out.dispatchWaitNs+=in.dispatchWaitNs;out.readbackNs+=in.readbackNs;
-        out.deviceUploadNs+=in.deviceUploadNs;out.deviceKernelNs+=in.deviceKernelNs;
-        out.deviceReadbackNs+=in.deviceReadbackNs;out.deviceCheckReadNs+=in.deviceCheckReadNs;
-        out.profilingErrors+=in.profilingErrors;
-        out.uniformMetadataHits+=in.uniformMetadataHits;
         out.tileMaskInitializations+=in.tileMaskInitializations;out.tileMaskClears+=in.tileMaskClears;
         out.kernelArgumentUpdates+=in.kernelArgumentUpdates;
         out.deviceObservedFields+=in.deviceObservedFields;out.committedFields+=in.committedFields;
-        out.directSeedUploads+=in.directSeedUploads;out.seedCopiedBytes+=in.seedCopiedBytes;
-        out.seedUploadedBytes+=in.seedUploadedBytes;out.directSeedUploadedBytes+=in.directSeedUploadedBytes;
+        out.seedCopiedBytes+=in.seedCopiedBytes;out.seedUploadedBytes+=in.seedUploadedBytes;
         out.outputCopiedBytes+=in.outputCopiedBytes;
-        out.directSeedUploadSafetyCopies+=in.directSeedUploadSafetyCopies;
         out.requiredCancellations+=in.requiredCancellations;
-        for(unsigned i=0;i<unsigned(OpenCLCpuCategory::Count);++i){out.apiCpu.ns[i]+=in.apiCpu.ns[i];out.apiCpu.calls[i]+=in.apiCpu.calls[i];}
-        out.apiCpu.invalidScopes+=in.apiCpu.invalidScopes;out.apiCpu.reconciliationErrors+=in.apiCpu.reconciliationErrors;
-        out.apiCpu.controlBracketNs+=in.apiCpu.controlBracketNs;out.apiCpu.clockReads+=in.apiCpu.clockReads;
-        out.apiCpu.coveredNs+=in.apiCpu.coveredNs;
     }
     static std::shared_ptr<Runtime> registeredLane(const std::shared_ptr<Device>& device,
-        BudgetLease& objectAdmission,BudgetLease* subsetAdmission=nullptr) {
-        // Separate payload/control allocations: expired weak registration must
-        // never retain a full Runtime after its payload credit is released.
-        struct ControlCredit {BudgetLease host,subset;
-            explicit ControlCredit(const std::shared_ptr<OpenCLProbeBatchStorage>& future)
-                :host(hostBudget,future),subset(probeBudget,future,1){}};
-        // Existing admission pays for both this credit holder and the Runtime
-        // control block before either allocation. Registry retains the credit
-        // until the expired weak control is actually erased.
-        auto credit=std::make_shared<ControlCredit>(objectAdmission.backing);
+        BudgetLease& objectAdmission) {
+        // Separate payload/control credits survive until the last weak
+        // registration expires, without retaining the destroyed Runtime.
+        struct ControlCredit {BudgetLease host{hostBudget};};
+        auto credit=std::make_shared<ControlCredit>();
         objectAdmission.splitTo(credit->host,256);
-        if(subsetAdmission)subsetAdmission->splitTo(credit->subset,256);
-        auto result=std::shared_ptr<Runtime>(new Runtime(device,true,objectAdmission.backing),[credit](Runtime* value){delete value;});
-        objectAdmission.transferTo(result->optionalObjectLease);
-        if(subsetAdmission)subsetAdmission->transferTo(result->optionalSubsetLease);
+        auto result=std::shared_ptr<Runtime>(new Runtime(device,true),[credit](Runtime* value){delete value;});
+        objectAdmission.transferTo(result->objectLease);
         std::lock_guard lock(device->lanesMutex);
         if(!device->lanes.insert(result,credit))throw BudgetExceeded();
         return result;
@@ -851,13 +744,10 @@ struct Runtime : std::enable_shared_from_this<Runtime>
         }
         out.available=out.available&&!shared->failed.load();
         out.budgetDeclines+=shared->laneBudgetDeclines.load();
-        out.optionalQuarantines=shared->optionalQuarantines.load();
-        out.optionalQuarantinePending=shared->optionalLifetime.quarantined();
         out.requiredQuarantines=shared->requiredQuarantines.load();
         out.requiredProofFailures=shared->requiredProofFailures.load();
         out.requiredQuarantinePending=shared->requiredLifetime.quarantined();
         out.hostBytes=hostBudget.current.load();out.peakHostBytes=hostBudget.peak.load();
-        out.probeBytes=probeBudget.current.load();out.peakProbeBytes=probeBudget.peak.load();
         out.deviceBytes=shared->deviceBudget.current.load();out.peakDeviceBytes=shared->deviceBudget.peak.load();
         out.noopFields=shared->noopFields.load();out.threadCPUNs=shared->threadCPUNs.load();
         out.threadCPUInvalidMeasurements+=shared->threadCPUInvalidMeasurements.load();
@@ -882,31 +772,25 @@ struct Runtime : std::enable_shared_from_this<Runtime>
         if(!shared->status.available || shared->failed.load()) throw std::runtime_error("OpenCL device unavailable");
         context=shared->context;device=shared->device;
         Int error=0;
-        queue=api.CreateCommandQueue(context,device,shared->status.deviceProfiling ? 2 : 0,&error);check(error);
+        queue=api.CreateCommandQueue(context,device,0,&error);check(error);
         for(std::size_t i=0;i<variants.size();++i) if(shared->variants[i].kernel) {
             variants[i].program=shared->variants[i].program;
             variants[i].kernel=api.CreateKernel(variants[i].program,"propagate",&error);check(error);
-            if(shared->status.parityBound) {
-                variants[i].reverseKernel=api.CreateKernel(variants[i].program,"propagate",&error);check(error);
-            }
         }
         selectedVariant=shared->selectedVariant;selectVariant(selectedVariant);
         status.available=true;probed=true;
     }
-    template<class Function> auto timedCpu(OpenCLCpuCategory category,Function&& function) {
-        OpenCLCpuAttribution::Scope scope(cpuAttribution,category);return function();
-    }
     template<class... Args> Int fill(Args... args) {
-        const auto result=timedCpu(OpenCLCpuCategory::Fill,[&]{return api.EnqueueFillBuffer(args...);});
+        const auto result=api.EnqueueFillBuffer(args...);
         if(required)required->proof.enqueueUnobserved(result);return result;
     }
     template<class... Args> Int enqueueKernel(Args... args) {
-        const auto result=timedCpu(OpenCLCpuCategory::KernelEnqueue,[&]{return api.EnqueueNDRangeKernel(args...);});
+        const auto result=api.EnqueueNDRangeKernel(args...);
         if(required)required->proof.enqueueUnobserved(result);return result;
     }
     template <class T> void argumentTo(Handle target,UInt index,T value)
     {
-        check(timedCpu(OpenCLCpuCategory::Arguments,[&]{return api.SetKernelArg(target,index,sizeof(T),&value);}));++status.kernelArgumentUpdates;
+        check(api.SetKernelArg(target,index,sizeof(T),&value));++status.kernelArgumentUpdates;
     }
     template <class T> void argument(UInt index,T value) {argumentTo(kernel,index,value);}
     struct Event {
@@ -917,16 +801,15 @@ struct Runtime : std::enable_shared_from_this<Runtime>
     };
     void await(Event& event) {
         if(!event.value || (!required && !shared->status.pollMicros))return;
-        check(timedCpu(OpenCLCpuCategory::Other,[&]{return api.Flush(queue);}));
+        check(api.Flush(queue));
         for(;;) {
             if(required && required->canceled())throw RequiredCanceled();
             Int state=1;
             if(required && required->diagnosticQueryFailures){--required->diagnosticQueryFailures;throw std::runtime_error("Injected required event query failure");}
-            check(timedCpu(OpenCLCpuCategory::Other,[&]{return api.GetEventInfo(event.value,0x11D3,sizeof state,&state,nullptr);}));
+            check(api.GetEventInfo(event.value,0x11D3,sizeof state,&state,nullptr));
             if(state<0)check(state);
             if(!state) {if(required)required->proof.eventCompleted();return;}
-            // Zero formerly selected a blocking transfer. Required execution
-            // now uses a safety default; explicit nonzero overrides are honored.
+            // Polling remains interruptible by required publication/save/stop.
             const auto delay=std::chrono::microseconds(shared->status.pollMicros ? shared->status.pollMicros : 100);
             if(required && required->controls[0])required->controls[0]->waitFor(delay);
             else std::this_thread::sleep_for(delay);
@@ -934,42 +817,30 @@ struct Runtime : std::enable_shared_from_this<Runtime>
         // Failure unwinds only into batch's nonblocking proof/quarantine guard.
         // All transfer endpoints and retained events already belong to it.
     }
-    void profile(Handle event,std::uint64_t& total) {
-        if(!event || !shared->status.deviceProfiling) return;
-        Bits started=0,finished=0;
-        if(timedCpu(OpenCLCpuCategory::Other,[&]{return api.GetEventProfilingInfo(event,0x1282,sizeof started,&started,nullptr);})!=0 ||
-           timedCpu(OpenCLCpuCategory::Other,[&]{return api.GetEventProfilingInfo(event,0x1283,sizeof finished,&finished,nullptr);})!=0 || finished<started) {
-            ++status.profilingErrors;return;
-        }
-        total+=finished-started;
-    }
-    void read(Handle buffer,void* output,std::size_t bytes,bool finalOutput) {
+    void read(Handle buffer,void* output,std::size_t bytes,bool /*finalOutput*/) {
         if(required && required->canceled())throw RequiredCanceled();
         Event event(api);
         const bool asynchronous=required || shared->status.pollMicros!=0;
-        const bool capture=asynchronous || shared->status.deviceProfiling;
-        const auto result=timedCpu(finalOutput ? OpenCLCpuCategory::OutputRead : OpenCLCpuCategory::CheckRead,[&]{return api.EnqueueReadBuffer(queue,buffer,!asynchronous,0,bytes,output,0,nullptr,capture ? &event.value : nullptr);});
+        const bool capture=asynchronous;
+        const auto result=api.EnqueueReadBuffer(queue,buffer,!asynchronous,0,bytes,output,0,nullptr,capture ? &event.value : nullptr);
         requiredEnqueue(result,event.value,!asynchronous);
         if(required && event.value)event.owns=false;
         check(result);
         if(asynchronous && !event.value)throw std::runtime_error("OpenCL omitted transfer event");
         await(event);
-        profile(event.value,finalOutput ? status.deviceReadbackNs : status.deviceCheckReadNs);
     }
     void write(Handle buffer, const void *data, std::size_t bytes)
     {
         if(required && required->canceled())throw RequiredCanceled();
-        const auto start=activeStageTiming ? monotonicNs() : 0;
         Event event(api);
         const bool asynchronous=required || shared->status.pollMicros!=0;
-        const bool capture=asynchronous || shared->status.deviceProfiling;
-        const auto result=timedCpu(OpenCLCpuCategory::Upload,[&]{return api.EnqueueWriteBuffer(queue,buffer,!asynchronous,0,bytes,data,0,nullptr,capture ? &event.value : nullptr);});
+        const bool capture=asynchronous;
+        const auto result=api.EnqueueWriteBuffer(queue,buffer,!asynchronous,0,bytes,data,0,nullptr,capture ? &event.value : nullptr);
         requiredEnqueue(result,event.value,!asynchronous);
         if(required && event.value)event.owns=false;
         check(result);
         if(asynchronous && !event.value)throw std::runtime_error("OpenCL omitted transfer event");
-        await(event);profile(event.value,status.deviceUploadNs);
-        if(activeStageTiming) activeStageTiming->uploadNs+=monotonicNs()-start;
+        await(event);
     }
     void awaitPlane(const std::shared_ptr<Device::Plane>& p) {
         while(p->ready.wait_for(std::chrono::milliseconds(1))!=std::future_status::ready) {
@@ -980,8 +851,8 @@ struct Runtime : std::enable_shared_from_this<Runtime>
     }
     std::shared_ptr<Device::Plane> costPlane(const BackendRequest& r) {
         const auto packed=r.identity.packedUniformCost;
-        const bool knownUniform=shared->status.uniformMetadata && r.identity.owner && r.identity.allCells
-            && (packed&65535u) && (packed>>16);
+        const bool knownUniform=r.identity.owner && r.identity.allCells &&
+            (packed&65535u) && (packed>>16);
         auto sameIdentity=[&](const auto& p) {
             return p&&r.identity.owner&&p->identity.owner==r.identity.owner&&p->identity.variant==r.identity.variant&&
                 p->identity.revision==r.identity.revision&&p->identity.allCells==r.identity.allCells&&
@@ -1016,7 +887,7 @@ struct Runtime : std::enable_shared_from_this<Runtime>
         }
         try {
             const auto n=r.grid.cells();
-            if(knownUniform) {p->data[0]=packed;++status.uniformMetadataHits;}
+            if(knownUniform)p->data[0]=packed;
             else for(std::size_t i=0;i<n;++i) {
                 if(!(i%64) && required && required->canceled())throw RequiredCanceled();
                 const auto step=!r.identity.allCells&&blocked[i]?LAND_STEPS:r.costAt(r.context,i);
@@ -1025,7 +896,6 @@ struct Runtime : std::enable_shared_from_this<Runtime>
                 p->data[i]=step.cardinal|(step.diagonal<<16);
                 if (i && p->data[i] != p->data[0]) p->uniform = false;
             }
-            if(shared->status.uniformMetadata && p->uniform) p->compactUniform();
             {std::lock_guard lock(shared->cacheMutex);candidates=shared->planes;}
             for(auto& other:candidates) if(other&&other!=p&&other->published.load()&&other->uniform==p->uniform&&
                 (p->uniform || (other->width==p->width&&other->height==p->height))&&other->data==p->data) {
@@ -1061,11 +931,8 @@ struct Runtime : std::enable_shared_from_this<Runtime>
             throw;
         }
     }
-    void computeBatch(std::span<const BackendRequest *const> requests,std::span<std::uint16_t> staging,
-                      bool directSingletonSeed=false)
+    void computeBatch(std::span<const BackendRequest *const> requests,std::span<std::uint16_t> staging)
     {
-        OpenCLCpuAttribution::Scope preparationCpuScope(cpuAttribution,OpenCLCpuCategory::Preparation);
-        const auto preparationStart=activeStageTiming ? monotonicNs() : 0;
         if(shared->failed.load()) throw std::runtime_error("OpenCL device failed on another lane");
         std::size_t total = 0;
         UInt width = 0, height = 0;
@@ -1101,15 +968,11 @@ struct Runtime : std::enable_shared_from_this<Runtime>
         auto& held=required->costs;held.fill({});
         // Even an errored blocking call has ambiguous acceptance. Never borrow
         // caller seeds: CPU recovery may start before the driver stops reading.
-        if(directSingletonSeed)++status.directSeedUploadSafetyCopies;
-        directSingletonSeed=false;
         std::size_t offset=0, field=0;
         for(auto* r:requests) {
             const auto n=r->grid.cells();
-            if(!directSingletonSeed) {
-                std::copy(r->gradient,r->gradient+n,staging.begin()+offset);
-                status.seedCopiedBytes+=n*sizeof(std::uint16_t);
-            }
+            std::copy(r->gradient,r->gradient+n,staging.begin()+offset);
+            status.seedCopiedBytes+=n*sizeof(std::uint16_t);
             blocked.clear();
             if(!r->identity.allCells) {
                 resizeStaging(blocked,n,blockedLease);
@@ -1128,9 +991,8 @@ struct Runtime : std::enable_shared_from_this<Runtime>
         // Polling uploads always use retained staging. Original seeds stay
         // untouched and unborrowed until commit, including failed drain paths.
         const auto seedBytes=total*sizeof(std::uint16_t);
-        write(first,directSingletonSeed ? requests.front()->gradient : staging.data(),seedBytes);
+        write(first,staging.data(),seedBytes);
         status.seedUploadedBytes+=seedBytes;
-        if(directSingletonSeed){++status.directSeedUploads;status.directSeedUploadedBytes+=seedBytes;}
         write(descriptors, desc.data(), requests.size()*8*sizeof(UInt));
         Handle a = first, b = second;
         const auto &variant = variants[selectedVariant];
@@ -1160,14 +1022,6 @@ struct Runtime : std::enable_shared_from_this<Runtime>
         check(fill(queue, tilesFirst, &one, sizeof one, 0, tileCount * sizeof(UInt), 0,
                                     nullptr, nullptr));
         ++status.tileMaskInitializations;
-        if(shared->status.activeEpoch) {
-            const UInt zero=0;
-            // Reset both masks on every new batch, including reused buffers.
-            // Otherwise stale prior-request epochs could spuriously activate
-            // a tile during this request's first exchanges.
-            check(fill(queue,tilesSecond,&zero,sizeof zero,0,tileCount*sizeof(UInt),0,nullptr,nullptr));
-            ++status.tileMaskInitializations;
-        }
         Handle active = tilesFirst, nextActive = tilesSecond;
         const std::size_t global[]{std::size_t(pitch) * variant.threads, std::size_t(rows),
                                    requests.size()},
@@ -1176,28 +1030,11 @@ struct Runtime : std::enable_shared_from_this<Runtime>
         auto& flags=required->flags;flags.fill(0);
         ++status.batches;
         status.maxBatchFields = std::max(status.maxBatchFields, std::uint64_t(requests.size()));
-        // Each lane owns its kernel instances. Both parity instances share
-        // immutable batch arguments but retain opposite pingpong bindings.
-        // Required batches may change shape/cost/plan, so rebind both each time.
-        const auto forward=variants[selectedVariant].kernel;
-        const auto reverse=variants[selectedVariant].reverseKernel;
-        kernel=forward;
-        const auto bindCommon=[&](Handle target) {
-            for(unsigned i=0;i<8;++i) argumentTo(target,2+i,held[i]?held[i]->buffer:held[0]->buffer);
-            argumentTo(target,10,changed);argumentTo(target,11,descriptors);
-            argumentTo(target,14,UInt(stride));argumentTo(target,15,pitch);
-        };
-        bindCommon(forward);
-        if(shared->status.parityBound) {
-            bindCommon(reverse);
-            argumentTo(forward,0,first);argumentTo(forward,1,second);
-            argumentTo(forward,12,tilesFirst);argumentTo(forward,13,tilesSecond);
-            argumentTo(reverse,0,second);argumentTo(reverse,1,first);
-            argumentTo(reverse,12,tilesSecond);argumentTo(reverse,13,tilesFirst);
-        }
-        preparationCpuScope.close();
-        const auto dispatchStart=activeStageTiming ? monotonicNs() : 0;
-        if(activeStageTiming) activeStageTiming->preparationNs+=dispatchStart-preparationStart;
+        // Each lane owns one Frozen8 kernel and binds this immutable batch.
+        kernel=variants[selectedVariant].kernel;
+        for(unsigned i=0;i<8;++i)argument(2+i,held[i]?held[i]->buffer:held[0]->buffer);
+        argument(10,changed);argument(11,descriptors);
+        argument(14,UInt(stride));argument(15,pitch);
         // Every dispatch extends at least one global path edge. Frozen halos
         // exchange only one cell even when they perform many local sweeps, so
         // the ushort convergence bound counts dispatches, not local sweeps.
@@ -1208,34 +1045,21 @@ struct Runtime : std::enable_shared_from_this<Runtime>
             if(shared->failed.load()) throw std::runtime_error("OpenCL device failed on another lane");
             if(required && required->canceled())throw RequiredCanceled();
             const auto count=std::min<UInt>(checkInterval,65536-round);
-            struct Events {
-                API& api;std::array<Handle,32> values{};
-                ~Events(){for(auto event:values) if(event) api.ReleaseEvent(event);}
-            } events{api};
             for (unsigned dispatch = 0; dispatch < count; ++dispatch)
             {
-                if(shared->status.parityBound) kernel=a==first ? forward : reverse;
                 // Only the last dispatch's changes are read by the host. The
                 // in-order queue clears earlier accumulated flags before it.
                 if (dispatch+1 == count)
                     check(fill(queue, changed, zero.data(), sizeof(UInt), 0,
                                                 requests.size() * sizeof(UInt), 0, nullptr, nullptr));
-                if(shared->status.activeEpoch)
-                    // Epoch one is the initial mask. The convergence bound
-                    // ends at epoch 65537, well before unsigned wraparound.
-                    argument(16,UInt(round+dispatch+1));
-                else {
-                    check(fill(queue, nextActive, zero.data(), sizeof(UInt), 0,
-                                                tileCount * sizeof(UInt), 0, nullptr, nullptr));
-                    ++status.tileMaskClears;
-                }
-                if(!shared->status.parityBound) {
-                    argument(0, a);argument(1, b);
-                    argument(12, active);argument(13, nextActive);
-                }
+                check(fill(queue,nextActive,zero.data(),sizeof(UInt),0,
+                           tileCount*sizeof(UInt),0,nullptr,nullptr));
+                ++status.tileMaskClears;
+                argument(0,a);argument(1,b);
+                argument(12,active);argument(13,nextActive);
                 check(
                     enqueueKernel(queue,kernel,3,nullptr,global,local,0,nullptr,
-                        shared->status.deviceProfiling ? &events.values[dispatch] : nullptr));
+                        nullptr));
                 std::swap(a, b);
                 std::swap(active, nextActive);
                 ++status.dispatches;
@@ -1249,7 +1073,6 @@ struct Runtime : std::enable_shared_from_this<Runtime>
                     if(request->deviceExecutionObserved)*request->deviceExecutionObserved=true;
                 status.deviceObservedFields+=requests.size();deviceObserved=true;
             }
-            for(auto event:events.values) profile(event,status.deviceKernelNs);
             ++status.hostChecks;
             bool retired = false;
             for (std::size_t f = 0; f < requests.size(); ++f)
@@ -1261,10 +1084,7 @@ struct Runtime : std::enable_shared_from_this<Runtime>
                 }
             if (std::none_of(flags.begin(), flags.begin() + requests.size(), [](UInt v) { return v != 0; }))
             {
-                const auto readStart=activeStageTiming ? monotonicNs() : 0;
-                if(activeStageTiming) activeStageTiming->dispatchNs+=readStart-dispatchStart;
                 read(a,staging.data(),total*sizeof(std::uint16_t),true);
-                if(activeStageTiming) activeStageTiming->readbackNs+=monotonicNs()-readStart;
                 return;
             }
             // No later kernel consumes descriptors once every field is done.
@@ -1322,28 +1142,12 @@ struct Runtime : std::enable_shared_from_this<Runtime>
                 return false; }
         }
         std::lock_guard lock(mutex);
-        cpuAttribution.mode=shared->status.apiCpuMode;
-        OpenCLCpuAttribution::Scope batchCpuScope(cpuAttribution,OpenCLCpuCategory::Other);
         struct Active {
             Device& d;
             Active(Device& d):d(d) {const auto n=++d.active;auto old=d.maximumActive.load();while(old<n&&!d.maximumActive.compare_exchange_weak(old,n)){} }
             ~Active(){--d.active;}
         } activeLane(*shared);
         statusSequence=++shared->sequence;
-        StageTiming localStages;
-        auto* stages=activeStageTiming ? activeStageTiming : accountingRequested() ? &localStages : nullptr;
-        const auto before=stages ? *stages : StageTiming{};
-        StageTimingScope timingScope(stages);
-        struct StageAccumulator {
-            OpenCLStatus& status;StageTiming* timing;StageTiming before;
-            ~StageAccumulator() {
-                if(!timing) return;
-                status.preparationNs+=timing->preparationNs-before.preparationNs;
-                status.uploadNs+=timing->uploadNs-before.uploadNs;
-                status.dispatchWaitNs+=timing->dispatchNs-before.dispatchNs;
-                status.readbackNs+=timing->readbackNs-before.readbackNs;
-            }
-        } stageAccumulator{status,stages,before};
         auto* slot=shared->requiredLifetime.tryReserve();
         if(!slot){++status.budgetDeclines;return false;}
         struct SlotGuard {OpenCLRequiredLifetimePool::Slot* slot;bool transferred=false;
@@ -1361,7 +1165,6 @@ struct Runtime : std::enable_shared_from_this<Runtime>
             selectVariant(unsigned(plan)-1);
             // Stage ALL output before commit; even a failure in the last chunk
             // leaves every caller's original seeds intact for exact CPU recovery.
-            OpenCLCpuAttribution::Scope allocationCpuScope(cpuAttribution,OpenCLCpuCategory::Preparation);
             std::size_t total=0;
             for(const auto& request:input) {
                 if(request.grid.cells()>std::numeric_limits<std::size_t>::max()-total) throw BudgetExceeded();
@@ -1370,7 +1173,6 @@ struct Runtime : std::enable_shared_from_this<Runtime>
             if(total>OpenCLHostBudget/sizeof(std::uint16_t)) throw BudgetExceeded();
             try {resizeStaging(values,total,valuesLease);}
             catch(const BudgetExceeded&) {shared->evictUnusedPlanes();resizeStaging(values,total,valuesLease);}
-            allocationCpuScope.close();
             std::size_t outputOffset=0;
             for(std::size_t begin=0;begin<input.size();begin+=8) {
                 const auto count=std::min<std::size_t>(8,input.size()-begin);
@@ -1378,8 +1180,7 @@ struct Runtime : std::enable_shared_from_this<Runtime>
                 for(std::size_t i=0;i<count;++i){pointers[i]=&input[begin+i];transaction->controls[i]=input[begin+i].requiredControl;}
                 if(transaction->canceled())throw RequiredCanceled();
                 std::size_t chunkCells=0;for(std::size_t i=0;i<count;++i) chunkCells+=pointers[i]->grid.cells();
-                computeBatch(std::span(pointers.data(),count),std::span(values.data()+outputOffset,chunkCells),
-                    shared->status.directSeedUpload && input.size()==1);
+                computeBatch(std::span(pointers.data(),count),std::span(values.data()+outputOffset,chunkCells));
                 outputOffset+=chunkCells;
                 status.fields+=count;
             }
@@ -1387,7 +1188,6 @@ struct Runtime : std::enable_shared_from_this<Runtime>
             if(shared->failed.load() || std::any_of(input.begin(),input.end(),[](const auto& r){return r.session.failed.load();}))
                 throw std::runtime_error("OpenCL device or session failed on another lane");
             outputOffset=0;
-            OpenCLCpuAttribution::Scope outputCopyCpuScope(cpuAttribution,OpenCLCpuCategory::OutputCopy);
             for(const auto& r:input) {
                 std::copy_n(values.data()+outputOffset,r.grid.cells(),r.gradient);
                 status.outputCopiedBytes+=r.grid.cells()*sizeof(std::uint16_t);
@@ -1395,7 +1195,6 @@ struct Runtime : std::enable_shared_from_this<Runtime>
                 ++status.committedFields;
                 outputOffset+=r.grid.cells();
             }
-            outputCopyCpuScope.close();
             ++status.schedulerBatches;
             return true;
         } catch(const RequiredCanceled&) {
@@ -1489,6 +1288,7 @@ struct Register
 } // namespace
 bool reserveOpenCLHostBytes(std::size_t bytes) noexcept {return hostBudget.reserve(bytes);}
 void releaseOpenCLHostBytes(std::size_t bytes) noexcept {hostBudget.release(bytes);}
+std::size_t openCLHostBytes() noexcept {return hostBudget.current.load(std::memory_order_relaxed);}
 std::shared_ptr<OpenCLRequiredControl> makeOpenCLRequiredControl() noexcept {
     struct LeasedControl : OpenCLRequiredControl {
         BudgetLease lease{hostBudget};
@@ -1499,13 +1299,6 @@ std::shared_ptr<OpenCLRequiredControl> makeOpenCLRequiredControl() noexcept {
         return std::make_shared<LeasedControl>(reserved);
     }catch(...){return {};}
 }
-bool reserveOpenCLProbeBytes(std::size_t bytes) noexcept {
-    if(!probeBudget.reserve(bytes)) return false;
-    if(hostBudget.reserve(bytes)) return true;
-    probeBudget.release(bytes);return false;
-}
-void releaseOpenCLProbeBytes(std::size_t bytes) noexcept {hostBudget.release(bytes);probeBudget.release(bytes);}
-std::size_t openCLProbeBytes() noexcept {return probeBudget.current.load();}
 std::shared_ptr<const void> retainOpenCLLifetime() {
 #if !defined(SDL_PLATFORM_EMSCRIPTEN) && !defined(SDL_PLATFORM_ANDROID) && !defined(SDL_PLATFORM_IOS)
     return runtime().shared;
@@ -1527,660 +1320,15 @@ std::shared_ptr<const void> reserveOpenCLDeviceBytesForDiagnostics(std::size_t b
     return {};
 #endif
 }
-struct OpenCLProbe::Impl
-{
-    OpenCLProbeProgress progress=OpenCLProbeProgress::Pending;
-    OpenCLProbe::Metrics measured;
-    std::atomic<bool> cancelled{false};
+bool requiredOpenCLQuarantinePending() noexcept {
 #if !defined(SDL_PLATFORM_EMSCRIPTEN) && !defined(SDL_PLATFORM_ANDROID) && !defined(SDL_PLATFORM_IOS)
-    using Phase=OpenCLProbe::Stage;
-    struct AdmissionLease {
-        std::shared_ptr<Device> parent;
-        bool owns=false;
-        ~AdmissionLease(){if(owns)parent->optionalLifetime.release();}
-    } admission;
-    Phase phase=Phase::Costs;
-    OpenCLProbeInput request;
-    Plan plan;
-    BudgetLease objectLease{hostBudget};
-    std::shared_ptr<const void> keepAlive;
-    OpenCLProbeClock clock;
-    std::shared_ptr<Runtime> lane;
-    std::shared_ptr<Device::Plane> costs;
-    std::uint64_t generation,lastCpuClock=0;
-    std::size_t copied=0,tileCount=0,costCharge=0;
-    UInt round=0,pitch=0,rows=0,windowEnd=0;
-    unsigned fieldCount=1,liveFields=1;
-    std::array<const std::uint16_t*,8> originals{};
-    std::array<UInt,8> flags{};
-    std::array<UInt,64> descriptor{};
-    Handle a=nullptr,b=nullptr,active=nullptr,nextActive=nullptr,event=nullptr;
-    bool privateScalar=false,privateCosts=false,source=false,onlyZerosAndMax=true,borrowedTransfers=false;
-    bool completionUnknown=false,untrackedCommand=false;
-    static constexpr std::size_t controlBytes=512+sizeof(OpenCLBorrowedLifetime);
-    static constexpr std::size_t objectBytes() {return sizeof(OpenCLProbe)+sizeof(Impl)+sizeof(Runtime)+controlBytes;}
-    Impl(const OpenCLProbeInput& r,Plan p,std::shared_ptr<const void> owner,OpenCLProbeClock clockValue,
-         BudgetLease& objectAdmission,BudgetLease& laneAdmission,BudgetLease& subsetAdmission)
-        :request(r),plan(p),keepAlive(std::move(owner)),clock(std::move(clockValue)),generation(r.session.currentGeneration()) {
-        admission.parent=runtime().shared;
-        objectAdmission.transferTo(objectLease);
-        lane=Runtime::registeredLane(runtime().shared,laneAdmission,&subsetAdmission);
-        originals[0]=r.gradient;
-        measured.activeEpoch=lane->shared->status.activeEpoch;
-        measured.checkInterval=measured.activeEpoch ? lane->shared->status.checkInterval : 1;
-
-    }
-    ~Impl() {
-        // Only positive proof or command-free setup may reach destruction.
-        // Ambiguous completion retains this state and its Device/API parent.
-        if(event) lane->api.ReleaseEvent(event);
-    }
-    void quarantine(bool executionFailed=false) noexcept {
-        measured.executionFailed=measured.executionFailed || executionFailed;
-        if(!measured.quarantined)++lane->shared->optionalQuarantines;
-        measured.quarantined=true;
-        completionUnknown=true;cancelled=true;progress=OpenCLProbeProgress::Quarantined;
-        lane->shared->failed.store(true,std::memory_order_release);
-        readyPlans.store(0,std::memory_order_release);
-    }
-    // Every successfully accepted async command produces a trailing event.
-    // Replacing the old event is safe on this in-order queue: positive terminal
-    // proof for the new event also covers all preceding borrowed transfers.
-    void remember(Handle next) {
-        if(!next){untrackedCommand=true;quarantine(true);throw std::runtime_error("OpenCL omitted completion event");}
-        if(event)lane->api.ReleaseEvent(event);
-        event=next;
-    }
-    template<class Enqueue> void submitEvent(Enqueue enqueue) {
-        const auto result=submitOpenCLTrackedCommand<Handle>(enqueue,
-            [this](Handle next){remember(next);},
-            [this]{untrackedCommand=true;quarantine(true);});
-        check(result);
-        if(untrackedCommand)throw std::runtime_error("OpenCL omitted completion event");
-    }
-    static bool terminalProof(void* value) noexcept {
-        auto& state=*static_cast<Impl*>(value);
-        if(state.untrackedCommand)return false;
-        if(!state.event)return !state.borrowedTransfers && !state.completionUnknown;
-        Int status=1;
-        if(state.lane->api.GetEventInfo(state.event,0x11D3,sizeof status,&status,nullptr) || status!=0)return false;
-        state.lane->api.ReleaseEvent(state.event);state.event=nullptr;
-        state.borrowedTransfers=false;state.completionUnknown=false;
-        state.progress=OpenCLProbeProgress::Declined;return true;
-    }
-    std::uint64_t clockNow() noexcept {
-        const auto now=clock.read ? clock.read(clock.owner.get()) : threadCPUClock();
-        if(!now || now<lastCpuClock) return 0;
-        lastCpuClock=now;return now;
-    }
-    void invalidClock() noexcept {
-        ++measured.invalidCpuClocks;++lane->shared->threadCPUInvalidMeasurements;cancelled=true;
-    }
-    bool readyEvent() {
-        Int state=0;
-        const auto result=lane->api.GetEventInfo(event,0x11D3,sizeof state,&state,nullptr);
-        if(result || state<0){quarantine(true);return false;}
-        if(state) return false;
-        if(phase==Phase::KernelWait) lane->profile(event,lane->status.deviceKernelNs);
-        if(phase==Phase::CheckWait) lane->profile(event,lane->status.deviceCheckReadNs);
-        if(phase==Phase::OutputWait) lane->profile(event,lane->status.deviceReadbackNs);
-        if(phase==Phase::CostsWait) lane->profile(event,lane->status.deviceUploadNs);
-        lane->api.ReleaseEvent(event);event=nullptr;borrowedTransfers=false;return true;
-    }
-    bool privateCostPermission() const noexcept {return request.capturedPrivateCosts || lane->shared->status.probeColdCosts;}
-    bool canQueueEpochDispatch() const noexcept {
-        // The in-order trailing kernel event covers every prior dispatch. CPU
-        // work still yields after ONE kernel, but no old event poll is needed
-        // inside the bounded window. Transfers and window boundaries require
-        // positive proof before their host storage is consumed or released.
-        return progress==OpenCLProbeProgress::Pending && measured.activeEpoch &&
-            !lane->shared->status.deviceProfiling && phase==Phase::Dispatch &&
-            round>0 && round<windowEnd && !cancelled.load() &&
-            !borrowedTransfers && !completionUnknown && !untrackedCommand &&
-            generation==request.session.currentGeneration() &&
-            !lane->shared->failed.load() && !request.session.failed.load();
-    }
-    void flush() {check(lane->api.Flush(lane->queue));}
-    OpenCLProbeProgress step(std::size_t copyCells,std::uint64_t started,std::uint64_t cpuBudget) {
-        if(progress!=OpenCLProbeProgress::Pending) return progress;
-        if(generation!=request.session.currentGeneration()) cancelled=true;
-        if(lane->shared->failed.load() || request.session.failed.load()) cancelled=true;
-        if(event && !canQueueEpochDispatch() && !readyEvent()) return progress;
-        if(cancelled) {progress=OpenCLProbeProgress::Declined;return progress;}
-        const auto n=request.grid.cells();
-        const auto total=n*fieldCount;
-        auto& api=lane->api;
-        switch(phase) {
-        case Phase::Costs: {
-            std::array<std::shared_ptr<Device::Plane>,8> candidates;
-            {std::lock_guard lock(lane->shared->cacheMutex);candidates=lane->shared->planes;}
-            for(auto& p:candidates) if(p && p->identity.owner==request.identity.owner &&
-                p->identity.variant==request.identity.variant && p->identity.revision==request.identity.revision &&
-                p->identity.allCells && p->identity.packedUniformCost==request.identity.packedUniformCost &&
-                p->width==request.grid.width() && p->height==request.grid.height() && p->published.load() &&
-                p->ready.wait_for(std::chrono::seconds(0))==std::future_status::ready) {costs=p;break;}
-            if(!costs) {
-                const auto packed=request.identity.packedUniformCost;
-                if((!lane->shared->status.uniformMetadata && !request.capturedPrivateCosts) || !(packed&65535u) || !(packed>>16)) {
-                    if(!privateCostPermission() || !request.identity.retainedBytes || !request.costAt) {
-                        progress=OpenCLProbeProgress::Declined;return progress;
-                    }
-                    phase=Phase::CostsReserve;break;
-                }
-                // A private proven scalar needs no callback scan or wait for a
-                // cache reservation being prepared by a different lane.
-                const auto payload=Device::Plane::fixedBytes()+sizeof(UInt)+Device::Plane::Storage::fixedBytes();
-                const auto retained=retainedCostOwnerBytes(request.identity);
-                if(retained>OpenCLProbeBudget-objectBytes()-payload) throw BudgetExceeded();
-                const auto bytes=payload+retained;
-                lane->optionalSubsetLease.resize(objectBytes()-256+bytes);
-                costs=Device::Plane::create(api,request,std::span<const std::uint8_t>{},true,false,lane->optionalObjectLease.backing);
-                costs->data[0]=packed;privateScalar=privateCosts=true;
-                measured.costPreparedBytes=costs->data.capacity()*sizeof(UInt);
-                measured.coldCostPlane=privateCostPermission();
-            }
-            costCharge=costs->hostLease.bytes+Device::Plane::Storage::fixedBytes();
-            lane->optionalSubsetLease.resize(objectBytes()-256+costCharge);phase=Phase::Reserve;break;
-        }
-        case Phase::CostsReserve: {
-            // No pending optional plane is ever inserted into the shared cache.
-            // Required work uses its own lane/plane and never waits for this one.
-            const auto retained=retainedCostOwnerBytes(request.identity);
-            const auto available=OpenCLProbeBudget-objectBytes();
-            const auto fixed=Device::Plane::fixedBytes()+Device::Plane::Storage::fixedBytes();
-            if(retained>available || fixed>available-retained ||
-                n>(available-retained-fixed)/sizeof(UInt))throw BudgetExceeded();
-            const auto bytes=fixed+n*sizeof(UInt)+retained;
-            lane->optionalSubsetLease.resize(objectBytes()-256+bytes);
-            costs=Device::Plane::create(api,request,std::span<const std::uint8_t>{},false,true,lane->optionalObjectLease.backing);
-            costCharge=costs->hostLease.bytes+Device::Plane::Storage::fixedBytes();
-            lane->optionalSubsetLease.resize(objectBytes()-256+costCharge);
-            measured.coldCostPlane=true;privateCosts=true;
-            measured.costPreparedBytes=costs->data.capacity()*sizeof(UInt);
-            phase=Phase::CostsPack;break;
-        }
-        case Phase::CostsPack: {
-            const auto stop=costs->data.size()+std::min(copyCells,n-costs->data.size());
-            while(costs->data.size()<stop) {
-                const auto end=costs->data.size()+std::min<std::size_t>(64,stop-costs->data.size());
-                while(costs->data.size()<end) {
-                    EntrySteps step;
-                    try {step=request.costAt(request.context,costs->data.size());}
-                    catch(...) {progress=OpenCLProbeProgress::Declined;return progress;}
-                    if(!step.cardinal || !step.diagonal || step.cardinal>65535 || step.diagonal>65535) {
-                        progress=OpenCLProbeProgress::Declined;return progress;
-                    }
-                    const UInt packed=step.cardinal|(step.diagonal<<16);
-                    if(!costs->data.empty() && costs->data[0]!=packed) costs->uniform=false;
-                    costs->data.push_back(packed);++measured.costCellsPrepared;
-                }
-                const auto now=clockNow();
-                if(!now || now<started) {invalidClock();progress=OpenCLProbeProgress::Declined;return progress;}
-                if(now-started>=cpuBudget) break;
-            }
-            if(costs->data.size()==n) phase=Phase::Reserve;
-            break;
-        }
-        case Phase::CostsUpload:
-            submitEvent([&](Handle* done){return api.EnqueueWriteBuffer(lane->queue,costs->buffer,0,0,costs->data.size()*sizeof(UInt),
-                costs->data.data(),0,nullptr,done);});
-            borrowedTransfers=true;++lane->status.costUploads;++measured.costUploads;
-            if(privateScalar) ++lane->status.uniformMetadataHits;
-            flush();phase=Phase::CostsWait;break;
-        case Phase::CostsWait:
-            // Completion is private. Do not publish a cache future or transfer
-            // ownership; the probe lease covers this immutable plane to death.
-            costs->published.store(true);costs->completed.set_value();
-            phase=Phase::Upload;break;
-        case Phase::Reserve:
-            if(total>(OpenCLProbeBudget-objectBytes()-costCharge)/sizeof(std::uint16_t)) throw BudgetExceeded();
-            lane->optionalSubsetLease.resize(objectBytes()-256+costCharge+total*sizeof(std::uint16_t));
-            lane->valuesLease.resize(total*sizeof(std::uint16_t));
-            lane->values.reserve(total); // No full-plane value initialization.
-            lane->valuesLease.resize(lane->values.capacity()*sizeof(std::uint16_t));
-            lane->optionalSubsetLease.resize(objectBytes()-256+costCharge+lane->valuesLease.bytes);
-            phase=Phase::Copy;break;
-        case Phase::Copy: {
-            const auto stop=copied+std::min(copyCells,total-copied);
-            while(copied<stop) {
-                const auto field=unsigned(copied/n);
-                const auto offset=copied%n;
-                const auto end=copied+std::min({std::size_t(64),stop-copied,n-offset});
-                const auto* original=originals[field];
-                lane->values.insert(lane->values.end(),original+offset,original+offset+end-copied);
-                for(auto i=copied;i<end;++i) {
-                    const auto value=original[offset+i-copied];source=source||value>1;
-                    onlyZerosAndMax=onlyZerosAndMax&&(value==0||value==65535);
-                }
-                copied=end;
-                const auto now=clockNow();
-                if(!now || now<started) {invalidClock();progress=OpenCLProbeProgress::Declined;return progress;}
-                if(now-started>=cpuBudget) break;
-            }
-            if(copied==total) {
-                if(!source||onlyZerosAndMax) {lane->shared->noopFields+=fieldCount;progress=OpenCLProbeProgress::Complete;}
-                else phase=Phase::Queue;
-            }
-            break;
-        }
-        case Phase::Queue:
-            lane->probe();lane->selectVariant(unsigned(plan)-1);
-            lane->statusSequence=++lane->shared->sequence;phase=Phase::Buffers;break;
-        case Phase::Buffers: {
-            const auto& variant=lane->variants[lane->selectedVariant];
-            pitch=(UInt(request.grid.width())+variant.tileWidth-1)/variant.tileWidth;
-            rows=(UInt(request.grid.height())+variant.tileHeight-1)/variant.tileHeight;
-            tileCount=std::size_t(pitch)*rows*fieldCount;
-            if(total>std::numeric_limits<UInt>::max() || tileCount>std::numeric_limits<UInt>::max()) throw BudgetExceeded();
-            lane->deviceLease.resize(total*2*sizeof(std::uint16_t)+288+tileCount*2*sizeof(UInt));
-            Int error=0;
-            for(auto* buffer:{&lane->first,&lane->second}) {
-                *buffer=api.CreateBuffer(lane->context,1,total*sizeof(std::uint16_t),nullptr,&error);check(error);
-            }
-            lane->changed=api.CreateBuffer(lane->context,1,8*sizeof(UInt),nullptr,&error);check(error);
-            lane->descriptors=api.CreateBuffer(lane->context,1,64*sizeof(UInt),nullptr,&error);check(error);
-            for(auto* buffer:{&lane->tilesFirst,&lane->tilesSecond}) {
-                *buffer=api.CreateBuffer(lane->context,1,tileCount*sizeof(UInt),nullptr,&error);check(error);
-            }
-            lane->capacity=total;lane->tileCapacity=tileCount;
-            if(privateCosts) {
-                costs->storage=Device::Plane::Storage::create(api,lane->shared->deviceBudget,lane->optionalObjectLease.backing);
-                const auto bytes=costs->data.size()*sizeof(UInt);
-                costs->storage->deviceLease.resize(bytes);
-                costs->buffer=costs->storage->buffer=api.CreateBuffer(lane->context,1,bytes,nullptr,&error);check(error);
-            }
-            for(unsigned field=0;field<fieldCount;++field) {
-                const std::array<UInt,8> one{UInt(request.grid.width()),UInt(request.grid.height()),UInt(n*field),field,
-                    UInt(request.limit),costs->uniform?3u:1u,pitch,rows};
-                std::copy(one.begin(),one.end(),descriptor.begin()+8*field);
-            }
-            a=lane->first;b=lane->second;active=lane->tilesFirst;nextActive=lane->tilesSecond;
-            ++lane->status.batches;lane->status.maxBatchFields=std::max<std::uint64_t>(lane->status.maxBatchFields,fieldCount);
-            phase=privateCosts && privateCostPermission() ? Phase::CostsUpload : Phase::Upload;break;
-        }
-        case Phase::Upload: {
-            // All borrowed sources persist until the trailing event completes.
-            if(privateScalar && !privateCostPermission()) {
-                submitEvent([&](Handle* done){return api.EnqueueWriteBuffer(lane->queue,costs->buffer,0,0,sizeof(UInt),costs->data.data(),0,nullptr,done);});
-                borrowedTransfers=true;
-                ++lane->status.costUploads;++lane->status.uniformMetadataHits;
-            }
-            submitEvent([&](Handle* done){return api.EnqueueWriteBuffer(lane->queue,a,0,0,total*sizeof(std::uint16_t),lane->values.data(),0,nullptr,done);});
-            borrowedTransfers=true;
-            submitEvent([&](Handle* done){return api.EnqueueWriteBuffer(lane->queue,lane->descriptors,0,0,8*fieldCount*sizeof(UInt),descriptor.data(),0,nullptr,done);});
-            const UInt one=1;
-            submitEvent([&](Handle* done){return api.EnqueueFillBuffer(lane->queue,active,&one,sizeof one,0,tileCount*sizeof(UInt),0,nullptr,done);});
-            ++lane->status.tileMaskInitializations;++measured.tileMaskInitializations;
-            if(measured.activeEpoch){
-                const UInt zero=0;
-                // Fresh A=1/B=0 across every probe, including cached costs and
-                // differently shaped required work interleaved on its own lane.
-                // The trailing event follows BOTH mask fills and all uploads.
-                submitEvent([&](Handle* done){return api.EnqueueFillBuffer(lane->queue,nextActive,&zero,sizeof zero,0,tileCount*sizeof(UInt),0,nullptr,done);});
-                ++lane->status.tileMaskInitializations;++measured.tileMaskInitializations;
-            }
-            flush();phase=Phase::InitialWait;break;
-        }
-        case Phase::InitialWait:
-            if(privateScalar && !privateCostPermission()) {costs->published.store(true);costs->completed.set_value();}
-            if(measured.activeEpoch){
-                // Same immutable batch bindings as required epoch execution;
-                // only pingpong/mask/epoch arguments change per dispatch. This
-                // kernel is a lane-private clone of the same initialized program.
-                const auto before=lane->status.kernelArgumentUpdates;
-                for(unsigned i=0;i<8;++i)lane->argument(2+i,costs->buffer);
-                lane->argument(10,lane->changed);lane->argument(11,lane->descriptors);
-                lane->argument(14,pitch*rows);lane->argument(15,pitch);
-                measured.kernelArgumentUpdates+=lane->status.kernelArgumentUpdates-before;
-                windowEnd=std::min<UInt>(65536,measured.checkInterval);
-            }
-            phase=Phase::Dispatch;break;
-        case Phase::Dispatch: {
-            if(round==65536) throw std::runtime_error("OpenCL probe failed to converge");
-            const bool queuedWithoutPoll=event && canQueueEpochDispatch();
-            const UInt zero=0;
-            if(!measured.activeEpoch || round+1==windowEnd)
-                submitEvent([&](Handle* done){return api.EnqueueFillBuffer(lane->queue,lane->changed,&zero,sizeof zero,0,fieldCount*sizeof(UInt),0,nullptr,done);});
-            if(!measured.activeEpoch){
-                submitEvent([&](Handle* done){return api.EnqueueFillBuffer(lane->queue,nextActive,&zero,sizeof zero,0,tileCount*sizeof zero,0,nullptr,done);});
-                ++lane->status.tileMaskClears;++measured.tileMaskClears;
-            }
-            const auto before=lane->status.kernelArgumentUpdates;
-            lane->argument(0,a);lane->argument(1,b);
-            if(!measured.activeEpoch){
-                for(unsigned i=0;i<8;++i) lane->argument(2+i,costs->buffer);
-                lane->argument(10,lane->changed);lane->argument(11,lane->descriptors);
-                lane->argument(14,pitch*rows);lane->argument(15,pitch);
-            }
-            lane->argument(12,active);lane->argument(13,nextActive);
-            if(measured.activeEpoch)lane->argument(16,round+1);
-            measured.kernelArgumentUpdates+=lane->status.kernelArgumentUpdates-before;
-            const auto threads=lane->variants[lane->selectedVariant].threads;
-            const std::size_t global[]{std::size_t(pitch)*threads,rows,fieldCount},local[]{threads,1,1};
-            submitEvent([&](Handle* done){return api.EnqueueNDRangeKernel(lane->queue,lane->kernel,3,nullptr,global,local,0,nullptr,done);});
-            std::swap(a,b);std::swap(active,nextActive);++round;
-            ++lane->status.dispatches;++measured.dispatches;
-            if(queuedWithoutPoll)++measured.queuedWindowDispatches;
-            flush();
-            phase=measured.activeEpoch && round<windowEnd && !lane->shared->status.deviceProfiling
-                ? Phase::Dispatch : Phase::KernelWait;
-            break;
-        }
-        case Phase::KernelWait:
-            // Yielded event polls add optional lifecycle cost, but kernel and
-            // convergence-check counts mirror the required epoch check window.
-            if(measured.activeEpoch && round<windowEnd){phase=Phase::Dispatch;break;}
-            submitEvent([&](Handle* done){return api.EnqueueReadBuffer(lane->queue,lane->changed,0,0,fieldCount*sizeof(UInt),flags.data(),0,nullptr,done);});
-            borrowedTransfers=true;
-            flush();phase=Phase::CheckWait;break;
-        case Phase::CheckWait: {
-            ++lane->status.hostChecks;++measured.hostChecks;
-            bool retired=false;
-            for(unsigned field=0;field<fieldCount;++field)if((descriptor[field*8+5]&1u) && !flags[field]) {
-                descriptor[field*8+5]=0;--liveFields;retired=true;
-                ++lane->status.retiredFields;++measured.retiredFields;
-            }
-            if(liveFields){
-                if(measured.activeEpoch)windowEnd=std::min<UInt>(65536,round+measured.checkInterval);
-                if(retired) {
-                    submitEvent([&](Handle* done){return api.EnqueueWriteBuffer(lane->queue,lane->descriptors,0,0,
-                        8*fieldCount*sizeof(UInt),descriptor.data(),0,nullptr,done);});
-                    borrowedTransfers=true;flush();phase=Phase::RetireWait;
-                }else phase=Phase::Dispatch;
-            }
-            else {
-                submitEvent([&](Handle* done){return api.EnqueueReadBuffer(lane->queue,a,0,0,total*sizeof(std::uint16_t),lane->values.data(),0,nullptr,done);});
-                borrowedTransfers=true;
-                flush();phase=Phase::OutputWait;
-            }
-            break;
-        }
-        case Phase::RetireWait:phase=Phase::Dispatch;break;
-        case Phase::OutputWait:
-            lane->status.fields+=fieldCount;
-            progress=OpenCLProbeProgress::Complete;break;
-        }
-        return progress;
-    }
-#else
-    Impl(const BackendRequest&,Plan,std::shared_ptr<const void>,OpenCLProbeClock) {progress=OpenCLProbeProgress::Declined;}
-#endif
-};
-OpenCLProbe::OpenCLProbe(std::shared_ptr<Impl> value):state(std::move(value)) {}
-OpenCLProbe::~OpenCLProbe() {
-#if !defined(SDL_PLATFORM_EMSCRIPTEN) && !defined(SDL_PLATFORM_ANDROID) && !defined(SDL_PLATFORM_IOS)
-    auto parent=state ? state->admission.parent : std::shared_ptr<Device>{};
-    if(state && (state->event || state->borrowedTransfers || state->completionUnknown)) {
-        state->quarantine();state->lane->shared->optionalLifetime.quarantine(state);
-    }
-    state.reset();
-    if(parent)parent->reapExpiredLanes();
-#endif
-}
-void OpenCLProbe::cancel() noexcept {state->cancelled=true;}
-OpenCLProbe::Metrics OpenCLProbe::metrics() const noexcept {
-    auto result=state->measured;
-#if !defined(SDL_PLATFORM_EMSCRIPTEN) && !defined(SDL_PLATFORM_ANDROID) && !defined(SDL_PLATFORM_IOS)
-    result.stage=state->phase;
-    result.copiedCells=state->copied;
-#endif
-    return result;
-}
-bool OpenCLProbe::waitingForEvent() const noexcept {
-#if !defined(SDL_PLATFORM_EMSCRIPTEN) && !defined(SDL_PLATFORM_ANDROID) && !defined(SDL_PLATFORM_IOS)
-    return state && state->progress==OpenCLProbeProgress::Pending && state->event &&
-        !state->canQueueEpochDispatch();
+    std::shared_ptr<Device> device;
+    {std::lock_guard lock(existingDeviceMutex);device=existingDevice.lock();}
+    return device && device->requiredLifetime.quarantined();
 #else
     return false;
 #endif
 }
-std::span<const std::uint16_t> OpenCLProbe::result() const noexcept {
-#if !defined(SDL_PLATFORM_EMSCRIPTEN) && !defined(SDL_PLATFORM_ANDROID) && !defined(SDL_PLATFORM_IOS)
-    if(state->progress==OpenCLProbeProgress::Complete) return state->lane->values;
-#endif
-    return {};
-}
-OpenCLProbeProgress OpenCLProbe::advance(std::size_t copyCells,std::uint64_t cpuBudgetNs) noexcept {
-#if !defined(SDL_PLATFORM_EMSCRIPTEN) && !defined(SDL_PLATFORM_ANDROID) && !defined(SDL_PLATFORM_IOS)
-    if(state->progress!=OpenCLProbeProgress::Pending) return state->progress;
-    const auto started=state->clockNow();
-    std::unique_lock lock(state->lane->mutex);
-    auto& device=*state->lane->shared;
-    const auto budget=std::max<std::uint64_t>(1,std::min<std::uint64_t>(cpuBudgetNs,500000));
-    if(!started) state->invalidClock();
-    try {state->step(std::max<std::size_t>(1,std::min<std::size_t>(copyCells,4096)),started,budget);}
-    catch(const BudgetExceeded&) {++state->lane->status.budgetDeclines;state->cancelled=true;}
-    catch(const std::bad_alloc&) {++state->lane->status.budgetDeclines;state->cancelled=true;}
-    catch(...) {
-        state->measured.executionFailed=true;
-        if(state->event || state->borrowedTransfers || state->completionUnknown)state->quarantine(true);
-        else {device.fail("OpenCL optional execution failed");readyPlans.store(0,std::memory_order_release);}
-        state->cancelled=true;
-    }
-    // Retain ambiguous completion before sampling the endpoint. There is no
-    // blocking drain on this coordinator, including failure/cancellation.
-    if(state->progress==OpenCLProbeProgress::Quarantined)device.optionalLifetime.quarantine(state);
-    else if(state->cancelled && !state->event) {
-        if(state->borrowedTransfers) {
-            state->quarantine();device.optionalLifetime.quarantine(state);
-        }
-        else state->progress=OpenCLProbeProgress::Declined;
-    }
-    lock.unlock();
-    const auto ended=state->clockNow();
-    if(!ended || (started && ended<started)) state->invalidClock();
-    else if(started) {
-        const auto elapsed=ended-started;
-        device.threadCPUAvailable.store(true);device.threadCPUNs+=elapsed;
-        state->measured.threadCpuNs+=elapsed;
-        state->measured.maxAdvanceCpuNs=std::max(state->measured.maxAdvanceCpuNs,elapsed);
-        if(elapsed>budget) ++state->measured.overshoots;
-    }
-    if(state->cancelled && state->progress!=OpenCLProbeProgress::Quarantined) {
-        // Invalid clocks stop new optional commands. Pending events are reaped
-        // on later coordinator advances before captured storage is released.
-        if(state->event) return OpenCLProbeProgress::Pending;
-        state->progress=OpenCLProbeProgress::Declined;
-    }
-    return state->progress;
-#else
-    return OpenCLProbeProgress::Declined;
-#endif
-}
-std::unique_ptr<OpenCLProbe> beginOpenCLProbe(const BackendRequest& request,Plan plan,std::shared_ptr<const void> keepAlive,OpenCLProbeClock clock) {
-    return beginOpenCLProbe(OpenCLProbeInput{request.gradient,request.limit,request.grid,request.session,
-        request.context,request.costAt,request.identity,request.operation},plan,std::move(keepAlive),std::move(clock));
-}
-OpenCLProbeBatchStorage::Estimate OpenCLProbeBatchStorage::estimate(field::Grid grid,unsigned count,
-    Plan plan,std::size_t retainedDiagnosticBytes) noexcept {
-    static_assert(CaptureProbeAccounting::nativeRetainedBytes()+16*1024<=AdapterAllowance,
-        "Batch future admission must cover the complete native accounting graph and adapter allowance");
-#if !defined(SDL_PLATFORM_EMSCRIPTEN) && !defined(SDL_PLATFORM_ANDROID) && !defined(SDL_PLATFORM_IOS)
-    if(!count || count>8 || plan==Plan::CPU || unsigned(plan)>=PLANS.size() ||
-       grid.width()<=0 || grid.height()<=0)return {};
-    const auto cells=grid.cells();const auto& selected=PLANS[unsigned(plan)];
-    if(!selected.tileWidth || !selected.tileHeight || cells>UINT32_MAX/count)return {};
-    const auto pitch=(std::size_t(grid.width())+selected.tileWidth-1)/selected.tileWidth;
-    const auto rows=(std::size_t(grid.height())+selected.tileHeight-1)/selected.tileHeight;
-    if(rows>UINT32_MAX/pitch || pitch*rows>UINT32_MAX/count)return {};
-    const auto tiles=pitch*rows*count,total=cells*count;
-    // The future batch state is bounded by eight input descriptors beyond the
-    // singleton implementation. The flattened host values array is reused for
-    // upload AND readback. Capture original/golden 4N are charged separately.
-    const auto fixed=metadataBytes()+AdapterAllowance+OpenCLProbe::Impl::objectBytes()+
-        8*sizeof(OpenCLProbeInput)+Device::Plane::fixedBytes()+sizeof(UInt)+Device::Plane::Storage::fixedBytes();
-    if(fixed>OpenCLProbeBudget || retainedDiagnosticBytes>OpenCLProbeBudget-fixed ||
-       total>(OpenCLProbeBudget-fixed-retainedDiagnosticBytes)/sizeof(std::uint16_t))return {};
-    const auto host=fixed+retainedDiagnosticBytes+total*sizeof(std::uint16_t);
-    if(tiles>(OpenCLDeviceBudget-292)/8 || total>(OpenCLDeviceBudget-292-tiles*8)/4)return {};
-    return {host,total*4+tiles*8+292,unsigned(plan)};
-#else
-    return {};
-#endif
-}
-std::shared_ptr<OpenCLProbeBatchStorage> OpenCLProbeBatchStorage::adopt(std::size_t& futurePairedBytes,
-    Estimate wanted) noexcept {
-#if !defined(SDL_PLATFORM_EMSCRIPTEN) && !defined(SDL_PLATFORM_ANDROID) && !defined(SDL_PLATFORM_IOS)
-    if(!wanted || !wanted.planOrdinal || wanted.planOrdinal>=PLANS.size() ||
-       wanted.hostBytes>OpenCLProbeBudget || wanted.hostBytes<metadataBytes() ||
-       wanted.deviceBytes>OpenCLDeviceBudget || futurePairedBytes<wanted.hostBytes)return {};
-    try {
-        auto device=runtime().shared;
-        // Admission does not call prepare(), probe(), OpenCL or a compiler.
-        // The caller already paid and qualified initialization separately.
-        {std::lock_guard lock(device->failureMutex);
-            if(!device->probed || !device->status.available || device->failed.load(std::memory_order_acquire))return {};}
-        if(!(readyPlans.load(std::memory_order_acquire)&(1u<<wanted.planOrdinal)))return {};
-        BudgetLease admittedDevice{device->deviceBudget};admittedDevice.resize(wanted.deviceBytes);
-        struct RealCredit {
-            std::shared_ptr<Device> parent;
-            BudgetLease device;
-            std::size_t pairedBytes=0;
-            explicit RealCredit(std::shared_ptr<Device> owner):parent(std::move(owner)),device(parent->deviceBudget){}
-            ~RealCredit(){if(pairedBytes)releaseOpenCLProbeBytes(pairedBytes);}
-        };
-        static_assert(sizeof(RealCredit)+256<=512,"Future admission must precharge credit/control metadata");
-        auto credit=std::make_shared<RealCredit>(std::move(device));
-        admittedDevice.transferTo(credit->device);
-        auto allocation=std::unique_ptr<OpenCLProbeBatchStorage>(new OpenCLProbeBatchStorage(wanted));
-        auto result=std::shared_ptr<OpenCLProbeBatchStorage>(allocation.release(),[credit](auto* value){delete value;});
-        result->realCredit=credit;
-        // Transfer only after every allocating operation has succeeded. The
-        // deleter-held credit pins reservations through escaped weak controls.
-        credit->pairedBytes=wanted.hostBytes;futurePairedBytes-=wanted.hostBytes;
-        return result;
-    }catch(...){return {};}
-#else
-    return {};
-#endif
-}
-std::unique_ptr<OpenCLProbe> beginOpenCLProbe(const OpenCLProbeInput& request,Plan plan,std::shared_ptr<const void> keepAlive,OpenCLProbeClock clock) {
-    return OpenCLProbe::begin(std::span(&request,1),plan,std::move(keepAlive),std::move(clock),{});
-}
-std::unique_ptr<OpenCLProbe> OpenCLProbe::begin(std::span<const OpenCLProbeInput> requests,Plan plan,
-    std::shared_ptr<const void> keepAlive,OpenCLProbeClock clock,std::shared_ptr<OpenCLProbeBatchStorage> future) {
-#if !defined(SDL_PLATFORM_EMSCRIPTEN) && !defined(SDL_PLATFORM_ANDROID) && !defined(SDL_PLATFORM_IOS)
-    if(requests.empty() || requests.size()>8)return {};
-    const auto& request=requests.front();
-    auto& device=*runtime().shared;
-    if(clock.read && !clock.owner) {++device.threadCPUInvalidMeasurements;return {};}
-    const auto started=clock.read ? clock.read(clock.owner.get()) : threadCPUClock();
-    if(!started) {++device.threadCPUInvalidMeasurements;return {};}
-    OpenCLProbe::Impl* admitted=nullptr;
-    struct CPU {
-        Device& device;OpenCLProbe::Impl*& admitted;const OpenCLProbeClock& clock;
-        std::uint64_t started;bool finished=false,valid=false;
-        void finish() noexcept {
-            if(finished) return;finished=true;
-            const auto ended=clock.read ? clock.read(clock.owner.get()) : threadCPUClock();
-            if(!ended || ended<started) {++device.threadCPUInvalidMeasurements;return;}
-            valid=true;
-            const auto elapsed=ended-started;device.threadCPUAvailable.store(true);device.threadCPUNs+=elapsed;
-            if(admitted) {
-                admitted->lastCpuClock=ended;
-                admitted->measured.setupCpuNs+=elapsed;admitted->measured.threadCpuNs+=elapsed;
-                if(elapsed>500000) ++admitted->measured.overshoots;
-            }
-        }
-        ~CPU() {finish();}
-    } timer{device,admitted,clock,started};
-    // These required-only configurations have no matching yieldable probe yet.
-    // It cannot provide live automatic-promotion evidence.
-    if(!keepAlive || !request.gradient || !request.identity.owner || !request.identity.allCells ||
-        request.grid.width()<=0 || request.grid.height()<=0 || request.operation!=Operation::CompleteField ||
-        request.limit<0 || request.session.failed.load() ||
-        plan==Plan::CPU || unsigned(plan)>=PLANS.size() || !(readyPlans.load()&(1u<<unsigned(plan))) ||
-        device.status.parityBound || device.status.directSeedUpload || device.status.apiCpuMode) return {};
-    if(request.grid.cells()>UINT32_MAX/requests.size())return {};
-    for(const auto& input:requests) {
-        if(!input.gradient || &input.session!=&request.session || input.grid.width()!=request.grid.width() ||
-           input.grid.height()!=request.grid.height() || input.limit!=request.limit || input.operation!=Operation::CompleteField ||
-           input.identity.owner.get()!=request.identity.owner.get() ||
-           input.identity.owner.owner_before(request.identity.owner) || request.identity.owner.owner_before(input.identity.owner) ||
-           input.identity.variant!=request.identity.variant || input.identity.revision!=request.identity.revision ||
-           !input.identity.allCells || input.identity.packedUniformCost!=request.identity.packedUniformCost)return {};
-        // This first batch implementation is homogeneous scalar classic. A
-        // callback/cold pack must not implicitly establish batch compatibility.
-        if(requests.size()>1 && (!(input.identity.packedUniformCost&65535u) || !(input.identity.packedUniformCost>>16) ||
-            (!input.capturedPrivateCosts && !device.status.uniformMetadata)))return {};
-    }
-    if(future && !PrechargedProbeCostOwner::matches(request.identity.owner,request.identity.prechargedOwner))return {};
-    // A caller-supplied readiness flag/mask is never permission to perform
-    // device/compiler initialization inside an optional CPU reservation.
-    {std::lock_guard lock(device.failureMutex);
-        if(!device.probed || !device.status.available || device.failed.load())return {};}
-    try {
-        if(!device.optionalLifetime.tryReserve())return {};
-        struct Admission {OpenCLBorrowedLifetime& slot;bool transferred=false;
-            ~Admission(){if(!transferred)slot.release();}} admission{device.optionalLifetime};
-        // Reserve fixed objects/control storage before any shared allocation or
-        // constructor. Local guards retain admission if construction throws;
-        // successful construction transfers the leases without changing totals.
-        BudgetLease objectAdmission{hostBudget,future},laneAdmission{hostBudget,future},subsetAdmission{probeBudget,future,1};
-        objectAdmission.resize(sizeof(OpenCLProbe)+sizeof(OpenCLProbe::Impl)+OpenCLProbe::Impl::controlBytes-256);
-        laneAdmission.resize(sizeof(Runtime)+256);
-        subsetAdmission.resize(OpenCLProbe::Impl::objectBytes());
-        auto state=std::make_shared<OpenCLProbe::Impl>(request,plan,std::move(keepAlive),clock,
-            objectAdmission,laneAdmission,subsetAdmission);
-        state->fieldCount=state->liveFields=unsigned(requests.size());state->measured.batchFields=state->fieldCount;
-        for(unsigned field=0;field<state->fieldCount;++field)state->originals[field]=requests[field].gradient;
-        state->admission.owns=true;admission.transferred=true;
-        auto value=std::unique_ptr<OpenCLProbe>(new OpenCLProbe(std::move(state)));
-        admitted=value->state.get();timer.finish();
-        if(!timer.valid) {admitted=nullptr;return {};}
-        return value;
-    }
-    catch(...) {device.reapExpiredLanes();return {};}
-#else
-    return {};
-#endif
-}
-bool reapOpenCLProbeQuarantine() noexcept {
-#if !defined(SDL_PLATFORM_EMSCRIPTEN) && !defined(SDL_PLATFORM_ANDROID) && !defined(SDL_PLATFORM_IOS)
-    try {auto device=runtime().shared;const bool reaped=device->optionalLifetime.tryReap(&OpenCLProbe::Impl::terminalProof);
-        device->reapExpiredLanes();return reaped;}catch(...){return false;}
-#else
-    return false;
-#endif
-}
-OpenCLProbeBatch::OpenCLProbeBatch(std::unique_ptr<OpenCLProbe> value,unsigned count,std::size_t size,
-    std::shared_ptr<OpenCLProbeBatchStorage> backing,std::size_t charge)
-    :future(std::move(backing)),probe(std::move(value)),fields(count),cells(size),wrapperCharge(charge) {}
-OpenCLProbeBatch::~OpenCLProbeBatch() {
-    probe.reset();
-    if(wrapperCharge){if(future)future->releasePaired(wrapperCharge);else releaseOpenCLProbeBytes(wrapperCharge);}
-}
-std::unique_ptr<OpenCLProbeBatch> OpenCLProbeBatch::begin(std::span<const OpenCLProbeInput> requests,Plan plan,
-    std::shared_ptr<const void> keepAlive,OpenCLProbeClock clock,std::shared_ptr<OpenCLProbeBatchStorage> future) {
-    if(requests.empty() || requests.size()>8)return {};
-    constexpr auto bytes=sizeof(OpenCLProbeBatch);
-    if(future ? !future->reservePaired(bytes) : !reserveOpenCLProbeBytes(bytes))return {};
-    struct Return {std::shared_ptr<OpenCLProbeBatchStorage> owner;std::size_t bytes;
-        ~Return(){if(bytes){if(owner)owner->releasePaired(bytes);else releaseOpenCLProbeBytes(bytes);}}
-    } reserved{future,bytes};
-    try {
-        auto native=OpenCLProbe::begin(requests,plan,std::move(keepAlive),std::move(clock),future);
-        if(!native)return {};
-        auto result=std::unique_ptr<OpenCLProbeBatch>(new OpenCLProbeBatch(std::move(native),unsigned(requests.size()),
-            requests.front().grid.cells(),std::move(future),bytes));
-        reserved.bytes=0;return result;
-    }catch(...){return {};}
-}
-std::unique_ptr<OpenCLProbeBatch> beginOpenCLProbeBatch(std::span<const OpenCLProbeInput> requests,Plan plan,
-    std::shared_ptr<const void> keepAlive,OpenCLProbeClock clock,std::shared_ptr<OpenCLProbeBatchStorage> future) {
-    return OpenCLProbeBatch::begin(requests,plan,std::move(keepAlive),std::move(clock),std::move(future));
-}
-OpenCLProbeProgress OpenCLProbeBatch::advance(std::size_t copyCells,std::uint64_t cpuBudgetNs) noexcept {
-    return probe->advance(copyCells,cpuBudgetNs);
-}
-void OpenCLProbeBatch::cancel() noexcept {probe->cancel();}
-std::span<const std::uint16_t> OpenCLProbeBatch::result(unsigned index) const noexcept {
-    const auto flat=probe->result();
-    if(index>=fields || flat.size()!=cells*fields)return {};
-    return flat.subspan(cells*index,cells);
-}
-OpenCLProbe::Metrics OpenCLProbeBatch::metrics() const noexcept {return probe->metrics();}
-bool OpenCLProbeBatch::waitingForEvent() const noexcept {return probe->waitingForEvent();}
 bool reapOpenCLRequiredQuarantine() noexcept {
 #if !defined(SDL_PLATFORM_EMSCRIPTEN) && !defined(SDL_PLATFORM_ANDROID) && !defined(SDL_PLATFORM_IOS)
     try {auto device=runtime().shared;const bool reaped=device->requiredLifetime.tryReap(&Runtime::RequiredTransaction::terminalProof);
@@ -2204,11 +1352,10 @@ OpenCLStatus openCLStatus()
 #if !defined(SDL_PLATFORM_EMSCRIPTEN) && !defined(SDL_PLATFORM_ANDROID) && !defined(SDL_PLATFORM_IOS)
     try {return runtime().snapshot();}
     catch(...) {OpenCLStatus unavailable;unavailable.hostBytes=hostBudget.current.load();unavailable.peakHostBytes=hostBudget.peak.load();
-        unavailable.probeBytes=probeBudget.current.load();unavailable.peakProbeBytes=probeBudget.peak.load();return unavailable;}
+        return unavailable;}
 #else
     auto status=runtime().status;
     status.hostBytes=hostBudget.current.load();status.peakHostBytes=hostBudget.peak.load();
-    status.probeBytes=probeBudget.current.load();status.peakProbeBytes=probeBudget.peak.load();
     return status;
 #endif
 }

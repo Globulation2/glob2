@@ -5,21 +5,7 @@
 
 namespace gradient_kernel
 {
-// Preserve any returned event before processing an enqueue error. An error or
-// a missing requested event leaves command acceptance ambiguous: a previous
-// trailing event cannot prove that the new command's borrowed storage is safe.
-// These callbacks allocate nothing and run on the optional coordinator only.
-template<class Event,class Enqueue,class Retain,class Unknown>
-auto submitOpenCLTrackedCommand(Enqueue enqueue,Retain retain,Unknown unknown)
-{
-    Event next{};
-    const auto result=enqueue(&next);
-    if(next)retain(next);
-    if(result || !next)unknown();
-    return result;
-}
-
-// One pre-admitted optional state. The state owns this slot's parent/runtime
+// One pre-admitted required transfer state. The state owns this slot's parent/runtime
 // lifetime and releases admission in its destructor, after borrowed storage.
 // A quarantined state is retained without allocating a failure-path container.
 // Only a positively successful completion proof may remove that retention.

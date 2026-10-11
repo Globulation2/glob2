@@ -36,20 +36,11 @@ std::vector<int> reference(int w,int h,std::vector<int> values,
 }
 TEST_SUITE("FieldGradient")
 {
-TEST_CASE("classic empty layer override rejects typos without process latch mutation")
-{
-    CHECK_FALSE(gradient_kernel::parseClassicEmptyLayerSkip(nullptr));
-    CHECK_FALSE(gradient_kernel::parseClassicEmptyLayerSkip(""));
-    CHECK_FALSE(gradient_kernel::parseClassicEmptyLayerSkip("0"));
-    CHECK(gradient_kernel::parseClassicEmptyLayerSkip("1"));
-    for(const auto* value:{"00","10","yes"," 1","-1"})
-        CHECK_THROWS_AS(gradient_kernel::parseClassicEmptyLayerSkip(value),std::invalid_argument);
-}
-TEST_CASE("classic empty layer shortcut preserves deferred seeds weighted costs and scratch reuse")
+TEST_CASE("classic propagation preserves deferred seeds weighted costs and scratch reuse")
 {
     using namespace gradient_kernel;
     std::mt19937 random(41057);
-    GradientWorkspace ordinary,skipped;
+    GradientWorkspace ordinary;
     for(const auto [w,h]:{std::pair{1,1},std::pair{1,17},std::pair{2,9},
         std::pair{7,1},std::pair{8,8},std::pair{9,5}})
         for(int swim=0;swim<int(std::size(WATER_STEP));++swim)
@@ -86,13 +77,10 @@ TEST_CASE("classic empty layer shortcut preserves deferred seeds weighted costs 
                 }
             }
         }
-        auto baseline=seeds,candidate=seeds;
+        auto baseline=seeds;
         const auto at=[&](std::size_t i){return water[i];};
-        propagateFieldCPUVariant<false>(baseline.data(),swim,cap,{w,h},ordinary,at);
-        propagateFieldCPUVariant<true>(candidate.data(),swim,cap,{w,h},skipped,at);
-        CHECK(baseline==expected);CHECK(candidate==expected);CHECK(seeds==original);
-        CHECK(ordinary.deferredSeeds==skipped.deferredSeeds);
-        for(unsigned b=0;b<BUCKETS;++b)CHECK(ordinary.buckets[b].size==skipped.buckets[b].size);
+        propagateFieldCPU(baseline.data(),swim,cap,{w,h},ordinary,at);
+        CHECK(baseline==expected);CHECK(seeds==original);
         // Modified terrain with exactly these costs remains on the untouched
         // general kernel. Its result also checks classic-compatible imports.
         if(trial==0) {

@@ -13,33 +13,18 @@
 #include <algorithm>
 #include <cstddef>
 #include <cstdint>
-#include <cstdlib>
-#include <stdexcept>
 #include <tuple>
 #include <type_traits>
 
 namespace gradient_kernel
 {
-// Development ablation, fixed for the process. Selection is once per eager
-// field; the default specialization retains the original cost-layer loop.
-inline bool parseClassicEmptyLayerSkip(const char* value)
-{
-    if(!value || !*value)return false;
-    if((value[0]=='0'||value[0]=='1') && value[1]=='\0')return value[0]=='1';
-    throw std::invalid_argument("GLOB2_GRADIENT_SKIP_EMPTY_CLASSIC must be 0 or 1");
-}
-inline bool requestedClassicEmptyLayerSkip()
-{
-    static const bool enabled=parseClassicEmptyLayerSkip(std::getenv("GLOB2_GRADIENT_SKIP_EMPTY_CLASSIC"));
-    return enabled;
-}
 // Seeds are already encoded as GRADIENT_AT_GOAL - starting cost. Values 0 and 1
 // are forbidden and unreachable cells, respectively. The caller reseeds before
 // every run; a completed field cannot be reused as its own seed buffer.
 // The cap limits propagation, not the supplied seed values. Preserve those
 // values even when a deferred seed lies beyond the last expandable cost layer.
-template<bool SkipEmptyClassic, class IsWater>
-void propagateFieldCPUVariant(std::uint16_t *gradient, int swimClass, int maxCost,
+template<class IsWater>
+void propagateFieldCPU(std::uint16_t *gradient, int swimClass, int maxCost,
 	field::Grid geometry, GradientWorkspace &workspace, IsWater isWater)
 {
 	auto *buckets = workspace.buckets.data();
@@ -79,10 +64,6 @@ void propagateFieldCPUVariant(std::uint16_t *gradient, int swimClass, int maxCos
 				buckets[unsigned(cur) % BUCKETS].push(std::uint32_t(deferredSeeds[nextSeed].second));
 				pending++;
 			}
-			// Skip only setup/expansion. Keep cur increments and seed insertion
-			// identical, including originals outside the propagation cap.
-			if constexpr (SkipEmptyClassic)
-				if (buckets[unsigned(cur) % BUCKETS].size == 0) continue;
 			expandBucket<decltype(weighted)::value>(gradient, buckets, pending, cur, limit,
 				geometry, waterSteps, waterAt);
 		}
@@ -94,15 +75,6 @@ void propagateFieldCPUVariant(std::uint16_t *gradient, int swimClass, int maxCos
 		const EntrySteps waterSteps = entrySteps(WATER_STEP[swimClass]);
 		sweep(std::true_type(), waterSteps, isWater);
 	}
-}
-template<class IsWater>
-void propagateFieldCPU(std::uint16_t *gradient, int swimClass, int maxCost,
-    field::Grid geometry, GradientWorkspace &workspace, IsWater isWater)
-{
-    if(requestedClassicEmptyLayerSkip())
-        propagateFieldCPUVariant<true>(gradient,swimClass,maxCost,geometry,workspace,isWater);
-    else
-        propagateFieldCPUVariant<false>(gradient,swimClass,maxCost,geometry,workspace,isWater);
 }
 // Same entry point for CPU and optional exact full-field accelerators. Resumed
 // searches still use expandBucket, since their completed-layer state is observable.

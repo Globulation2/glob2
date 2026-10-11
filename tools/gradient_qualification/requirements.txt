@@ -1,3 +1,0 @@
-# Optional, development-only OpenCL qualification (not linked/shipped by game).
-# Install alongside requirements-dev.txt for its pinned numpy.
-pyopencl==2025.2.6

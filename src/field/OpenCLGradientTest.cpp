@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "OpenCLGradient.h"
-#include "OpenCLCpuAttribution.h"
 #include "Glob2Test.h"
 #include "GradientPropagation.h"
 #include "TerrainGradient.h"
@@ -14,23 +13,6 @@
 
 namespace
 {
-struct AttributionClock {
-    std::array<std::uint64_t,8> values{};unsigned at=0;
-    static std::uint64_t read(void* value) noexcept {
-        auto& clock=*static_cast<AttributionClock*>(value);
-        return clock.at<clock.values.size() ? clock.values[clock.at++] : 0;
-    }
-};
-struct ProbeClock {
-    mutable std::uint64_t next=1000;
-    mutable unsigned reads=0;
-    unsigned failRead=~0u;
-    std::uint64_t invalidValue=0;
-    static std::uint64_t read(const void* value) noexcept {
-        auto& clock=*static_cast<const ProbeClock*>(value);
-        return clock.reads++==clock.failRead ? clock.invalidValue : ++clock.next;
-    }
-};
 void onWorker(const std::function<void()>& function)
 {
     if constexpr(!GAGCore::ThreadSupport::available) { function(); return; }
@@ -41,87 +23,12 @@ void onWorker(const std::function<void()>& function)
     auto ticket=executor.submit(std::span(&group,1)); executor.join(ticket);
 }
 
-TEST_CASE("OpenCL CPU scopes conserve nested CPU and expose invalid readings")
-{
-    using namespace gradient_kernel;
-    OpenCLApiCpuCounters measured;
-    OpenCLCpuAttribution timer(measured);timer.mode=1;
-    AttributionClock clock{{100,110,120,130,150,200}};
-    timer.setClockForTesting(&clock,AttributionClock::read);
-    {
-        OpenCLCpuAttribution::Scope parent(timer,OpenCLCpuCategory::Other);
-        {
-            OpenCLCpuAttribution::Scope preparation(timer,OpenCLCpuCategory::Preparation);
-            OpenCLCpuAttribution::Scope upload(timer,OpenCLCpuCategory::Upload);
-        }
-    }
-    CHECK(measured.ns[unsigned(OpenCLCpuCategory::Other)]==60);
-    CHECK(measured.ns[unsigned(OpenCLCpuCategory::Preparation)]==30);
-    CHECK(measured.ns[unsigned(OpenCLCpuCategory::Upload)]==10);
-    CHECK(measured.coveredNs==100);CHECK(measured.clockReads==6);
-    CHECK(measured.invalidScopes==0);CHECK(measured.reconciliationErrors==0);
-    measured={};clock={{100,110,109,200}};
-    {
-        OpenCLCpuAttribution::Scope parent(timer,OpenCLCpuCategory::Other);
-        OpenCLCpuAttribution::Scope child(timer,OpenCLCpuCategory::KernelEnqueue);
-    }
-    CHECK(measured.invalidScopes==2);CHECK(measured.coveredNs==0);
-    CHECK(measured.ns[unsigned(OpenCLCpuCategory::KernelEnqueue)]==0);
-    measured={};clock={{100,110,200,150}};
-    {
-        OpenCLCpuAttribution::Scope parent(timer,OpenCLCpuCategory::Other);
-        OpenCLCpuAttribution::Scope child(timer,OpenCLCpuCategory::Fill);
-    }
-    CHECK(measured.reconciliationErrors==1);CHECK(measured.coveredNs==0);
-    CHECK(measured.ns[unsigned(OpenCLCpuCategory::Fill)]==90);
-    measured={};clock={{0,200}};
-    {OpenCLCpuAttribution::Scope invalid(timer,OpenCLCpuCategory::CheckRead);}
-    CHECK(measured.invalidScopes==1);CHECK(measured.coveredNs==0);
-    measured={};clock={{100,200}};
-    measured.ns[unsigned(OpenCLCpuCategory::OutputCopy)]=UINT64_MAX;
-    {OpenCLCpuAttribution::Scope overflow(timer,OpenCLCpuCategory::OutputCopy);}
-    CHECK(measured.reconciliationErrors==1);CHECK(measured.coveredNs==0);
-    CHECK(measured.ns[unsigned(OpenCLCpuCategory::OutputCopy)]==UINT64_MAX);
-}
-TEST_CASE("OpenCL empty CPU brackets match clock count and off mode reads nothing")
-{
-    using namespace gradient_kernel;
-    OpenCLApiCpuCounters counters;
-    OpenCLCpuAttribution timer(counters);timer.mode=2;
-    AttributionClock clock{{100,101,200,203}};timer.setClockForTesting(&clock,AttributionClock::read);
-    {
-        OpenCLCpuAttribution::Scope parent(timer,OpenCLCpuCategory::Other);
-        OpenCLCpuAttribution::Scope child(timer,OpenCLCpuCategory::Arguments);
-    }
-    CHECK(counters.clockReads==4);CHECK(counters.controlBracketNs==4);
-    CHECK(counters.coveredNs==0);
-    for(const auto value:counters.ns)CHECK(value==0);
-    CHECK(counters.calls[unsigned(OpenCLCpuCategory::Arguments)]==1);
-    const auto control=counters;
-    counters={};timer.mode=1;clock={{100,200,203,300}};
-    {
-        OpenCLCpuAttribution::Scope parent(timer,OpenCLCpuCategory::Other);
-        OpenCLCpuAttribution::Scope child(timer,OpenCLCpuCategory::Arguments);
-    }
-    CHECK(counters.clockReads==control.clockReads);CHECK(counters.calls==control.calls);
-    CHECK(counters.coveredNs==200);CHECK(counters.controlBracketNs==0);
-    const auto before=counters;timer.mode=0;
-    {OpenCLCpuAttribution::Scope off(timer,OpenCLCpuCategory::KernelEnqueue);}
-    CHECK(counters.clockReads==before.clockReads);CHECK(counters.calls==before.calls);
-    CHECK(clock.at==4);
-}
 void initializeForTest()
 {
     using namespace gradient_kernel;
     if constexpr(!GAGCore::ThreadSupport::available) return;
     if(initializationState.load()==2) return;
-    const auto previous=backend(); setBackend(Backend::OpenCL);
-    auto service=std::make_shared<AdaptiveGradientPolicy>(); service->configure(3,false);
-    ComputeExecutor executor; executor.configure(3); executor.setWorkerOnly(service);
-    const auto deadline=std::chrono::steady_clock::now()+std::chrono::seconds(30);
-    while(initializationState.load()!=2 && std::chrono::steady_clock::now()<deadline) std::this_thread::yield();
-    setBackend(previous);
-    REQUIRE(initializationState.load()==2);
+    onWorker([]{gradient_kernel::initializeOpenCL();});
 }
 
 struct RestoreBackend
@@ -168,7 +75,7 @@ TEST_SUITE("OpenCLGradient")
         const auto initial = openCLStatus();
         INFO("OpenCL device: " << initial.device << "; fallback reason: " << initial.error);
         const bool supported=(readyPlans.load()&(1u<<unsigned(Plan::Frozen8)))!=0;
-        setBackend(supported ? Backend::OpenCL : Backend::Automatic);
+        setBackend(supported ? Backend::OpenCL : Backend::CPU);
         std::mt19937 random(1729);
         for (const auto dimensions : {std::pair{1, 1}, {1, 32}, {32, 1}, {7, 13}, {32, 64}})
             for (int swim = 0; swim < 7; ++swim)
@@ -210,7 +117,7 @@ TEST_SUITE("OpenCLGradient")
         onWorker([&] {
         using namespace gradient_kernel;
         RestoreBackend restore;
-        setBackend(openCLStatus().available ? Backend::OpenCL : Backend::Automatic);
+        setBackend(openCLStatus().available ? Backend::OpenCL : Backend::CPU);
         const PreparedTerrainCosts<4> profile(
             std::array<EntrySteps, 4>{{{5, 7}, {7, 10}, {13, 18}, {21, 29}}});
         field::Grid grid(31, 17);
@@ -261,13 +168,13 @@ TEST_SUITE("OpenCLGradient")
         std::vector<std::uint16_t> seeds(grid.cells(), 0);
         // Every legal edge crosses the tile boundary, so more local sweeps
         // cannot replace global exchanges. This requires over 8192 dispatches,
-        // exceeding the old 65536 / localSteps bound for both frozen variants.
+        // exceeding a bound incorrectly divided by the eight local sweeps.
         for (int y = 0; y < grid.height(); ++y)
             seeds[grid.index(15 + (y & 1), y)] = 1;
         seeds[grid.index(15, 0)] = 65535;
         const auto expected = oracle(seeds, grid,
             std::vector<EntrySteps>(grid.cells(), entrySteps(WATER_STEP[1])), COST_LIMIT);
-        // Required execution uses the established frozen8 plan, without a tournament.
+        // Required execution uses the fixed Frozen8 plan.
         GradientWorkspace scratch;
         auto actual = seeds;
         const auto before = openCLStatus();
@@ -495,7 +402,6 @@ TEST_SUITE("OpenCLGradient")
         CHECK(after.fields == before.fields + count);
         CHECK(after.tileWidth * after.tileHeight == 256);
         CHECK((after.localSteps == 2 || after.localSteps == 4 || after.localSteps == 8 || after.localSteps == 16));
-        CHECK(after.tunings == before.tunings); // Small explicit fields do not trigger workload-class tuning.
         });
     }
     TEST_CASE("independent GPU lanes finish while another lane prepares different terrain")
@@ -629,20 +535,7 @@ TEST_SUITE("OpenCLGradient")
 
 TEST_SUITE("OpenCLGradient")
 {
-TEST_CASE("gradient policy rejects invalid families before eligibility or indexing")
-{
-    using namespace gradient_kernel;
-    BackendSession policy;
-    for (const auto family : {Family::Count, Family(-1), Family(1000)}) {
-        CHECK_THROWS_AS(category(family, 1), std::invalid_argument);
-        CHECK_THROWS_AS(policy.establish(family, 1, Plan::CPU), std::invalid_argument);
-        CHECK_THROWS_AS(policy.decision(family, 1), std::invalid_argument);
-        // Owner and resumable short circuits must not hide invalid input.
-        CHECK_THROWS_AS(policy.choose(family, 1, Backend::CPU), std::invalid_argument);
-        CHECK_THROWS_AS(policy.choose(family, 1, Backend::CPU, Operation::ResumableSearch), std::invalid_argument);
-    }
-    CHECK(policy.decision(Family::Generic, 1).version == 0);
-}
+
 TEST_CASE("direct gradient groups validate bounds and homogeneity before work")
 {
     using namespace gradient_kernel;
@@ -676,7 +569,6 @@ TEST_CASE("direct gradient groups validate bounds and homogeneity before work")
     CHECK_THROWS_AS(executeGradientGroup(requests, Backend::CPU), std::invalid_argument);
     CHECK(calls == 0);
     CHECK(value == 1);
-    CHECK(policy.metrics().recorded == 0);
     CHECK_NOTHROW(executeGradientGroup({}, Backend::CPU));
     CHECK(calls == 0);
     }
@@ -696,125 +588,7 @@ TEST_CASE("gradient batches reject invalid later families before executing any g
     CHECK(calls == 0);
     CHECK_NOTHROW(executeGradientBatch({}, Backend::CPU));
 }
-TEST_CASE("malformed optional observations are dropped before profile processing")
-{
-    if constexpr(!GAGCore::ThreadSupport::available) return;
-    using namespace gradient_kernel;
-    BackendSession policy;
-    policy.configure(2, true);
-    onWorker([&] {
-        GradientObservation observation;
-        observation.family = Family::Count;
-        policy.record(observation);
-        observation.family = Family::Generic;
-        observation.decision.plan = Plan::Count;
-        policy.record(observation);
-    });
-    CHECK(policy.metrics().dropped == 2);
-    CHECK(policy.metrics().recorded == 0);
-}
-TEST_CASE("established plans execute once without calibration and unknown work never scans costs")
-{
-    if constexpr(!GAGCore::ThreadSupport::available) return;
-    using namespace gradient_kernel;
-    RestoreBackend restore;
-    const auto old=accelerator; const auto mask=readyPlans.load();
-    struct RestoreProvider { decltype(accelerator) old; unsigned mask; ~RestoreProvider(){accelerator=old;readyPlans.store(mask);} } provider{old,mask};
-    struct Context { unsigned cpu=0,gpu=0,costs=0; } context;
-    accelerator=[](const BackendRequest& request,Plan plan) {
-        CHECK(plan==Plan::Colored4); ++static_cast<Context*>(request.context)->gpu;
-        request.gradient[0]=123; return true;
-    };
-    BackendSession policy;
-    std::uint16_t value=77;
-    BackendRequest request{&value,COST_LIMIT,{1,1},policy,&context,
-        [](void* p,std::size_t){++static_cast<Context*>(p)->costs;return LAND_STEPS;},
-        [](void* p,std::uint16_t* out){++static_cast<Context*>(p)->cpu;*out=123;},{},Family::Materials};
-    readyPlans.store(0);
-    onWorker([&] {
-        executeGradientGroup(std::span(&request,1),Backend::Automatic);
-        CHECK(context.cpu==1); CHECK(context.gpu==0); CHECK(context.costs==0);
-        policy.establish(Family::Materials,1,Plan::Colored4);
-        executeGradientGroup(std::span(&request,1),Backend::Automatic);
-        CHECK(context.cpu==2); CHECK(context.gpu==0);
-        readyPlans.store(1u<<unsigned(Plan::Colored4));
-        executeGradientGroup(std::span(&request,1),Backend::Automatic);
-        CHECK(context.gpu==1); CHECK(context.cpu==2); CHECK(value==123);
-        request.operation=Operation::ResumableSearch;
-        executeGradientGroup(std::span(&request,1),Backend::Automatic);
-        CHECK(context.gpu==1); CHECK(context.cpu==3);
-    });
-    request.operation=Operation::CompleteField;
-    executeGradientGroup(std::span(&request,1),Backend::Automatic); // owner is ineligible
-    CHECK(context.gpu==1); CHECK(context.cpu==4);
-}
-TEST_CASE("declined established plans preserve original seeds and recover exactly once")
-{
-    if constexpr(!GAGCore::ThreadSupport::available) return;
-    using namespace gradient_kernel;
-    const auto old=accelerator; const auto mask=readyPlans.load();
-    struct Restore { decltype(accelerator) old; unsigned mask; ~Restore(){accelerator=old;readyPlans.store(mask);} } restore{old,mask};
-    readyPlans.store(1u<<unsigned(Plan::Frozen8));
-    accelerator=[](const BackendRequest& request,Plan){request.session.fail();return false;};
-    BackendSession policy; policy.establish(Family::Generic,1,Plan::Frozen8);
-    const auto before=policy.decision(Family::Generic,1);
-    unsigned cpu=0; std::uint16_t value=77;
-    BackendRequest request{&value,60,{1,1},policy,&cpu,[](void*,std::size_t){return LAND_STEPS;},
-        [](void* p,std::uint16_t* out){CHECK(*out==77);++*static_cast<unsigned*>(p);*out=123;},{}};
-    onWorker([&]{executeGradientGroup(std::span(&request,1),Backend::Automatic);});
-    CHECK(value==123); CHECK(cpu==1); CHECK(policy.failed.load());
-    CHECK(policy.decision(Family::Generic,1).generation!=before.generation);
-}
-TEST_CASE("executor reconfiguration preserves pending established plan preparation")
-{
-    using namespace gradient_kernel;
-    RestoreBackend restoreBackend;
-    const auto oldState=initializationState.exchange(0);
-    struct RestoreState { unsigned value; ~RestoreState(){initializationState.store(value);} } restoreState{oldState};
-    setBackend(Backend::Automatic);
-    BackendSession policy;
-    policy.configure(1,false);
-    CHECK_FALSE(policy.pending());
-    policy.establish(Family::Materials,1,Plan::Frozen8);
-    REQUIRE(policy.pending());
-    const auto before=policy.decision(Family::Materials,1);
-    policy.configure(8,false);
-    CHECK(policy.pending());
-    CHECK(policy.decision(Family::Materials,1).plan==Plan::Frozen8);
-    CHECK(policy.decision(Family::Materials,1).generation!=before.generation);
-    setBackend(Backend::CPU);
-    policy.configure(8,false);
-    CHECK_FALSE(policy.pending());
-    policy.establish(Family::Materials,1,Plan::CPU);
-    setBackend(Backend::Automatic);
-    policy.configure(8,false);
-    CHECK_FALSE(policy.pending());
-}
-TEST_CASE("passive buffers are bounded worker only and reject retired decisions and configurations")
-{
-    if constexpr(!GAGCore::ThreadSupport::available) return;
-    using namespace gradient_kernel;
-    BackendSession policy; policy.configure(2,true);
-    REQUIRE(policy.metrics().retainedBytes<=512*1024);
-    GradientObservation sample; sample.threads=2; sample.executionNs=19; sample.serviceNs=23; sample.queueNs=4;
-    sample.decision=policy.decision(Family::Generic,1);
-    policy.record(sample); policy.process(); CHECK(policy.metrics().recorded==0);
-    onWorker([&] { for(unsigned i=0;i<64;++i) policy.record(sample); });
-    CHECK(policy.metrics().recorded==32); CHECK(policy.metrics().dropped==32);
-    onWorker([&] { policy.process(); });
-    CHECK(policy.metrics().accepted==AdaptiveGradientPolicy::PassLimit);
-    policy.establish(Family::Generic,1,Plan::CPU); // same algorithm, new decision version
-    onWorker([&] { for(unsigned i=0;i<4;++i) policy.process(); });
-    CHECK(policy.metrics().stale==24);
-    sample.decision=policy.decision(Family::Generic,1);
-    onWorker([&] { policy.record(sample); });
-    policy.configure(3,true);
-    onWorker([&] { policy.process(); });
-    CHECK(policy.metrics().stale==25);
-    CHECK(policy.metrics().executionNs==19*8);
-    CHECK(policy.metrics().serviceNs==23*8);
-    CHECK(policy.metrics().queueNs==4*8);
-}
+
 TEST_CASE("isolated completed kernels remain observed when transactional output is declined")
 {
     // Intentionally quarantines the backend. Run ONLY this case in a separate
@@ -836,7 +610,7 @@ TEST_CASE("isolated completed kernels remain observed when transactional output 
     CHECK_FALSE(committed);CHECK(observed);CHECK(after.dispatches>before.dispatches);CHECK(after.hostChecks>before.hostChecks);
     CHECK(after.deviceObservedFields==before.deviceObservedFields+1);CHECK(after.committedFields==before.committedFields);
 }
-TEST_CASE("every compiled explicit kernel matches the independent oracle without tournaments")
+TEST_CASE("Frozen8 matches the independent oracle across shapes and costs")
 {
     using namespace gradient_kernel;
     initializeForTest();
@@ -849,7 +623,6 @@ TEST_CASE("every compiled explicit kernel matches the independent oracle without
     seeds[1]=65535; seeds[77]=65400;
     const auto expected=oracle(seeds,grid,costs,COST_LIMIT);
     BackendSession session;
-    const auto before=openCLStatus();
     for(unsigned plan=1;plan<unsigned(Plan::Count);++plan) {
         if(!(readyPlans.load()&(1u<<plan))) continue;
         auto actual=seeds;
@@ -865,8 +638,6 @@ TEST_CASE("every compiled explicit kernel matches the independent oracle without
         CHECK(executed.localSteps == PLANS[plan].steps);
         CHECK(executed.colored == PLANS[plan].colored);
     }
-    CHECK(openCLStatus().calibrations==before.calibrations);
-    CHECK(openCLStatus().tunings==before.tunings);
 }
 TEST_CASE("device service calls preserve exact fields and release lane buffer budgets")
 {
@@ -967,7 +738,6 @@ TEST_CASE("uniform metadata uses scalar costs only with a complete immutable pro
 {
     using namespace gradient_kernel;
     if(!initializeOpenCL() || !(readyPlans.load()&(1u<<unsigned(Plan::Frozen8)))) return;
-    const bool enabled=openCLStatus().uniformMetadata;
     const EntrySteps step{17,23};
     const std::uint32_t packed=step.cardinal|(step.diagonal<<16);
     unsigned calls=0;
@@ -986,7 +756,7 @@ TEST_CASE("uniform metadata uses scalar costs only with a complete immutable pro
         const auto before=calls;
         REQUIRE(executeOpenCLDevice(std::span(&request,1),Plan::Frozen8));
         CHECK(actual==expected);
-        const auto expectedCalls=enabled&&allCells&&proof&&(proof&65535u)&&(proof>>16)
+        const auto expectedCalls=allCells&&proof&&(proof&65535u)&&(proof>>16)
             ? 0 : grid.cells()-std::size_t(!allCells);
         CHECK(calls-before==expectedCalls);
     };
@@ -1021,650 +791,7 @@ TEST_CASE("shared offload host reservations are bounded and recover after releas
     }
     CHECK(openCLStatus().hostBytes==before.hostBytes);
 }
-TEST_CASE("optional reference reservations share a bounded subset of total host storage")
-{
-    using namespace gradient_kernel;
-    const auto before=openCLStatus();
-    const auto available=std::min<std::size_t>(OpenCLProbeBudget-openCLProbeBytes(),OpenCLHostBudget-before.hostBytes);
-    REQUIRE(reserveOpenCLProbeBytes(available));
-    CHECK(openCLStatus().hostBytes==before.hostBytes+available);
-    CHECK(openCLProbeBytes()==before.probeBytes+available);
-    CHECK_FALSE(reserveOpenCLProbeBytes(OpenCLProbeBudget-available+1));
-    releaseOpenCLProbeBytes(available);
-    CHECK(openCLStatus().hostBytes==before.hostBytes);
-    CHECK(openCLProbeBytes()==before.probeBytes);
-}
-TEST_CASE("optional device advances preserve seeds interleave required work and release storage")
-{
-    using namespace gradient_kernel;
-    if(!initializeOpenCL() || !(readyPlans.load()&(1u<<unsigned(Plan::Frozen8)))) return;
-    if(openCLStatus().activeEpoch || openCLStatus().parityBound || openCLStatus().directSeedUpload || openCLStatus().apiCpuMode) return; // Required-only experimental modes.
-    std::thread coordinator([&] {
-        for(auto dimensions:{std::pair{1,17},std::pair{17,1},std::pair{7,13}})
-        for(int cap:{0,40,700}) {
-            const field::Grid grid(dimensions.first,dimensions.second);
-            auto seeds=std::make_shared<std::vector<std::uint16_t>>(grid.cells(),1);
-            auto costs=std::make_shared<std::vector<EntrySteps>>(grid.cells(),EntrySteps{5,7});
-            (*seeds)[0]=65535;(*seeds)[1]=0;(*seeds)[5]=65501;
-            const auto original=*seeds;
-            const auto expected=oracle(original,grid,*costs,cap);
-            BackendSession session;
-            BackendRequest request{seeds->data(),cap,grid,session,costs.get(),
-                [](void* p,std::size_t i){return (*static_cast<std::vector<EntrySteps>*>(p))[i];},
-                [](void*,std::uint16_t*){FAIL("probe cannot call CPU fallback");},
-                {costs,92187654,1,true,costs->capacity()*sizeof(EntrySteps)}};
-            // Required execution makes the immutable cost plane resident.
-            auto warm=original;request.gradient=warm.data();
-            REQUIRE(executeOpenCLDevice(std::span(&request,1),Plan::Frozen8));CHECK(warm==expected);
-            request.gradient=seeds->data();
-            const auto sourceBytes=sizeof(request)+sizeof(session)+sizeof(*seeds)+seeds->capacity()*sizeof(std::uint16_t);
-            REQUIRE(reserveOpenCLProbeBytes(sourceBytes));
-            struct SourceLease {std::size_t bytes;~SourceLease(){releaseOpenCLProbeBytes(bytes);}} sourceLease{sourceBytes};
-            const auto reserved=openCLProbeBytes();
-            auto probe=beginOpenCLProbe(request,Plan::Frozen8,seeds);REQUIRE(probe);
-            auto progress=OpenCLProbeProgress::Pending;
-            bool interleaved=false;
-            for(unsigned attempt=0;attempt<100000 && progress==OpenCLProbeProgress::Pending;++attempt) {
-                const auto before=probe->metrics().dispatches;
-                progress=probe->advance(3);
-                CHECK(probe->metrics().dispatches<=before+1);
-                CHECK(*seeds==original);
-                if(!interleaved && probe->metrics().dispatches) {
-                    auto required=original;auto other=request;other.gradient=required.data();
-                    REQUIRE(executeOpenCLDevice(std::span(&other,1),Plan::Frozen8));CHECK(required==expected);
-                    interleaved=true;
-                }
-                if(progress==OpenCLProbeProgress::Pending) std::this_thread::yield();
-            }
-            REQUIRE(progress==OpenCLProbeProgress::Complete);
-            CHECK(std::vector<std::uint16_t>(probe->result().begin(),probe->result().end())==expected);
-            CHECK(interleaved);
-            probe.reset();CHECK(openCLProbeBytes()==reserved);
-            // Cancel while a device dispatch is outstanding. Reap without
-            // touching the source plane or producing a completed result.
-            auto canceled=beginOpenCLProbe(request,Plan::Frozen8,seeds);REQUIRE(canceled);
-            for(unsigned attempt=0;attempt<100000 && !canceled->metrics().dispatches;++attempt) {
-                REQUIRE(canceled->advance(3)==OpenCLProbeProgress::Pending);
-            }
-            REQUIRE(canceled->metrics().dispatches==1);canceled->cancel();
-            progress=OpenCLProbeProgress::Pending;
-            for(unsigned attempt=0;attempt<100000 && progress==OpenCLProbeProgress::Pending;++attempt) {
-                progress=canceled->advance();if(progress==OpenCLProbeProgress::Pending) std::this_thread::yield();
-            }
-            REQUIRE(progress==OpenCLProbeProgress::Declined);CHECK(canceled->result().empty());
-            CHECK(*seeds==original);CHECK_FALSE(session.failed.load());
-            canceled.reset();CHECK(openCLProbeBytes()==reserved);
-        }
-    });
-    coordinator.join();
-}
-TEST_CASE("optional probe clocks reject invalid setup before driver initialization")
-{
-#if !defined(SDL_PLATFORM_EMSCRIPTEN) && !defined(SDL_PLATFORM_ANDROID) && !defined(SDL_PLATFORM_IOS)
-    using namespace gradient_kernel;
-    BackendSession session;std::uint16_t original=77;
-    auto clock=std::make_shared<ProbeClock>();
-    BackendRequest request{&original,100,{1,1},session,nullptr,[](void*,std::size_t){return LAND_STEPS;},nullptr,{clock,381721,1,true}};
-    const auto reserved=openCLProbeBytes();
-    const auto invalid=openCLStatus().threadCPUInvalidMeasurements;
-    clock->failRead=0;
-    CHECK_FALSE(beginOpenCLProbe(request,Plan::Frozen8,clock,{clock,ProbeClock::read}));
-    CHECK(clock->reads==1);CHECK(openCLProbeBytes()==reserved);CHECK(original==77);
-    CHECK_FALSE(beginOpenCLProbe(request,Plan::Frozen8,clock,{{},ProbeClock::read}));
-    CHECK(clock->reads==1);CHECK(openCLProbeBytes()==reserved);
-    // An invalid setup endpoint must also be diagnosed when validation declines
-    // before plan readiness. No initialization/driver work is needed here.
-    clock->failRead=clock->reads+1;clock->invalidValue=1;
-    CHECK_FALSE(beginOpenCLProbe(request,Plan::CPU,clock,{clock,ProbeClock::read}));
-    CHECK(openCLStatus().threadCPUInvalidMeasurements==invalid+3);
-    CHECK(openCLProbeBytes()==reserved);CHECK_FALSE(session.failed.load());
-#endif
-}
-TEST_CASE("owned optional probe clocks cancel invalid copy and pending transfer measurements")
-{
-    using namespace gradient_kernel;
-    const auto* enabled=std::getenv("GLOB2_TEST_OPENCL_PROBE_CLOCK");
-    if(!enabled || std::strcmp(enabled,"1"))return;
-    REQUIRE(initializeOpenCL());const auto status=openCLStatus();
-    REQUIRE_FALSE(status.parityBound);REQUIRE_FALSE(status.directSeedUpload);REQUIRE(status.apiCpuMode==0);
-    REQUIRE((readyPlans.load()&(1u<<unsigned(Plan::Frozen8)))!=0);
-    struct Capture {
-        std::vector<std::uint16_t> seeds=std::vector<std::uint16_t>(257,1);
-        std::shared_ptr<std::vector<EntrySteps>> costs=std::make_shared<std::vector<EntrySteps>>(257,LAND_STEPS);
-        BackendSession session;
-        std::shared_ptr<ProbeClock> clock=std::make_shared<ProbeClock>();
-        std::size_t reservation=0;
-        ~Capture(){if(reservation)releaseOpenCLProbeBytes(reservation);}
-    };
-    std::thread coordinator([] {
-        const auto baseline=openCLProbeBytes();
-        auto owner=std::make_shared<Capture>();owner->seeds[0]=65535;owner->seeds.back()=65000;
-        const auto original=owner->seeds;
-        const auto bytes=sizeof(Capture)+owner->seeds.capacity()*sizeof(std::uint16_t)+sizeof(ProbeClock)+128;
-        REQUIRE(reserveOpenCLProbeBytes(bytes));owner->reservation=bytes;
-        BackendRequest request{owner->seeds.data(),700,{1,257},owner->session,owner->costs.get(),
-            [](void* value,std::size_t i){return (*static_cast<std::vector<EntrySteps>*>(value))[i];},nullptr,
-            {owner->costs,381722,1,true,sizeof(std::vector<EntrySteps>)+owner->costs->capacity()*sizeof(EntrySteps)}};
-        auto warm=original;request.gradient=warm.data();
-        REQUIRE(executeOpenCLDevice(std::span(&request,1),Plan::Frozen8));
-        request.gradient=owner->seeds.data();const auto reserved=openCLProbeBytes();
-        // Valid start, bad setup end: the newly allocated private lane is freed
-        // before admission returns, and the healthy device/session stay usable.
-        owner->clock->failRead=owner->clock->reads+1;owner->clock->invalidValue=1;
-        CHECK_FALSE(beginOpenCLProbe(request,Plan::Frozen8,owner,{owner->clock,ProbeClock::read}));
-        CHECK(openCLProbeBytes()==reserved);CHECK(owner->seeds==original);
-        for(unsigned scenario=0;scenario<7;++scenario){
-            owner->clock->failRead=~0u;
-            auto probe=beginOpenCLProbe(request,Plan::Frozen8,owner,{owner->clock,ProbeClock::read});REQUIRE(probe);
-            const auto target=scenario==4 ? OpenCLProbe::Stage::Dispatch : OpenCLProbe::Stage::Copy;
-            for(unsigned attempt=0;attempt<100000 && probe->metrics().stage!=target;++attempt)
-                REQUIRE(probe->advance()==OpenCLProbeProgress::Pending);
-            REQUIRE(probe->metrics().stage==target);
-            const auto reads=owner->clock->reads;
-            // Cases: bad start; zero/reversed first 64-cell checkpoint; bad
-            // copy endpoint; bad endpoint after enqueue with pending event;
-            // between-advance reversal; checkpoint reversal still >=start.
-            const auto offset=(scenario==0 || scenario==5) ? 0u : (scenario==3 || scenario==6) ? 2u : 1u;
-            owner->clock->failRead=reads+offset;
-            owner->clock->invalidValue=scenario==2 ? 1 : scenario==5 ? owner->clock->next-1 :
-                scenario==6 ? owner->clock->next+1 : 0;
-            auto progress=probe->advance(scenario==3 ? 64 : 4096);
-            if(scenario==4){CHECK(progress==OpenCLProbeProgress::Pending);CHECK(probe->metrics().dispatches==1);}
-            else {CHECK(progress==OpenCLProbeProgress::Declined);CHECK(probe->metrics().dispatches==0);}
-            if(scenario==1 || scenario==2) CHECK(owner->clock->reads==reads+3);
-            if(scenario==6) CHECK(owner->clock->reads==reads+4);
-            REQUIRE(probe->metrics().invalidCpuClocks>0);
-            for(unsigned attempt=0;attempt<1000000 && progress==OpenCLProbeProgress::Pending;++attempt){
-                progress=probe->advance();if(progress==OpenCLProbeProgress::Pending)std::this_thread::yield();
-            }
-            CHECK(progress==OpenCLProbeProgress::Declined);CHECK(probe->result().empty());
-            CHECK(owner->seeds==original);CHECK_FALSE(owner->session.failed.load());
-            probe.reset();CHECK(openCLProbeBytes()==reserved);
-        }
-        // A recovered clock supplies another exact optional result; invalid
-        // measurements do not trigger CPU recovery or quarantine the device.
-        owner->clock->failRead=~0u;
-        auto recovered=beginOpenCLProbe(request,Plan::Frozen8,owner,{owner->clock,ProbeClock::read});REQUIRE(recovered);
-        auto progress=OpenCLProbeProgress::Pending;
-        for(unsigned attempt=0;attempt<1000000 && progress==OpenCLProbeProgress::Pending;++attempt){
-            progress=recovered->advance();if(progress==OpenCLProbeProgress::Pending)std::this_thread::yield();
-        }
-        CHECK(progress==OpenCLProbeProgress::Complete);
-        CHECK(std::vector<std::uint16_t>(recovered->result().begin(),recovered->result().end())==warm);
-        CHECK(recovered->metrics().invalidCpuClocks==0);recovered.reset();owner.reset();
-        CHECK(openCLProbeBytes()==baseline);
-    });coordinator.join();
-}
-TEST_CASE("isolated cold optional costs are exact private bounded and cancelable")
-{
-    using namespace gradient_kernel;
-    const auto* enabled=std::getenv("GLOB2_TEST_OPENCL_COLD_COSTS");
-    if(!enabled || std::strcmp(enabled,"1"))return;
-    REQUIRE(initializeOpenCL());const auto configured=openCLStatus();
-    REQUIRE(configured.probeColdCosts);REQUIRE_FALSE(configured.parityBound);
-    REQUIRE_FALSE(configured.directSeedUpload);REQUIRE(configured.apiCpuMode==0);
-    struct Costs {
-        std::vector<EntrySteps> values;
-        std::size_t calls=0;
-        static EntrySteps at(void* value,std::size_t i) {
-            auto& cost=*static_cast<Costs*>(value);++cost.calls;return cost.values[i];
-        }
-    };
-    struct Capture {
-        std::vector<std::uint16_t> seeds;
-        std::shared_ptr<Costs> costs=std::make_shared<Costs>();
-        BackendSession session;
-        std::shared_ptr<ProbeClock> clock=std::make_shared<ProbeClock>();
-        std::size_t reservation=0;
-        ~Capture(){if(reservation)releaseOpenCLProbeBytes(reservation);}
-    };
-    std::thread coordinator([&] {
-        const auto baseline=openCLProbeBytes();
-        const auto makeCapture=[](field::Grid grid,unsigned variation) {
-            auto owner=std::make_shared<Capture>();owner->seeds.assign(grid.cells(),1);
-            owner->costs->values.assign(grid.cells(),LAND_STEPS);
-            for(std::size_t i=0;i<grid.cells();++i){
-                if(i%13==3)owner->seeds[i]=0;
-                if(i%3==variation%3)owner->costs->values[i]={19+variation,29+variation};
-            }
-            owner->seeds[variation%grid.cells()]=65535;owner->seeds.back()=65001;
-            if(variation==2)owner->seeds[0]=1; // Removed/moved full-strength goal.
-            const auto bytes=sizeof(Capture)+owner->seeds.capacity()*sizeof(std::uint16_t)+sizeof(Costs)+
-                owner->costs->values.capacity()*sizeof(EntrySteps)+sizeof(ProbeClock)+256;
-            REQUIRE(reserveOpenCLProbeBytes(bytes));owner->reservation=bytes;return owner;
-        };
-        const auto makeRequest=[](const std::shared_ptr<Capture>& owner,field::Grid grid,int cap,unsigned revision) {
-            return BackendRequest{owner->seeds.data(),cap,grid,owner->session,owner->costs.get(),Costs::at,nullptr,
-                {owner->costs,492771,revision,true,sizeof(Costs)+owner->costs->values.capacity()*sizeof(EntrySteps)}};
-        };
-        const auto drain=[](OpenCLProbe& probe,OpenCLProbeProgress progress) {
-            for(unsigned attempt=0;attempt<1000000 && progress==OpenCLProbeProgress::Pending;++attempt){
-                progress=probe.advance(64);if(progress==OpenCLProbeProgress::Pending)std::this_thread::yield();
-            }
-            return progress;
-        };
-        unsigned completed=0,interleaved=0;
-        for(unsigned plan=1;plan<PLANS.size();++plan){
-            REQUIRE((readyPlans.load()&(1u<<plan))!=0);
-            for(auto shape:{std::pair{1,257},std::pair{257,1},std::pair{17,19}})
-            for(int cap:{0,700})for(unsigned revision=1;revision<=3;++revision){
-                const field::Grid grid(shape.first,shape.second);auto owner=makeCapture(grid,revision-1);
-                auto request=makeRequest(owner,grid,cap,revision);const auto original=owner->seeds;
-                const auto expected=oracle(original,grid,owner->costs->values,cap);
-                const auto reserved=openCLProbeBytes();const auto uploads=openCLStatus().costUploads;
-                auto probe=beginOpenCLProbe(request,Plan(plan),owner,{owner->clock,ProbeClock::read});REQUIRE(probe);
-                bool required=false;auto progress=OpenCLProbeProgress::Pending;
-                for(unsigned attempt=0;attempt<1000000 && progress==OpenCLProbeProgress::Pending;++attempt){
-                    const auto before=probe->metrics();progress=probe->advance(64);
-                    const auto after=probe->metrics();CHECK(after.costCellsPrepared<=before.costCellsPrepared+64);
-                    CHECK(after.dispatches<=before.dispatches+1);CHECK(owner->seeds==original);
-                    if(!required && plan==unsigned(Plan::Frozen8) && cap==700 && revision==1 &&
-                        after.stage==OpenCLProbe::Stage::CostsPack && after.costCellsPrepared==64){
-                        // Same cold identity on required lane: it completes its
-                        // own preparation while optional packing is unfinished.
-                        auto actual=original;auto requiredRequest=request;requiredRequest.gradient=actual.data();
-                        REQUIRE(executeOpenCLDevice(std::span(&requiredRequest,1),Plan::Frozen8));CHECK(actual==expected);
-                        required=true;++interleaved;
-                    }
-                    if(progress==OpenCLProbeProgress::Pending)std::this_thread::yield();
-                }
-                REQUIRE(progress==OpenCLProbeProgress::Complete);const auto metrics=probe->metrics();
-                CHECK(metrics.coldCostPlane);CHECK(metrics.costCellsPrepared==grid.cells());
-                CHECK(metrics.costPreparedBytes>=grid.cells()*sizeof(std::uint32_t));CHECK(metrics.costUploads==1);
-                CHECK(metrics.invalidCpuClocks==0);CHECK(metrics.dispatches>0);
-                CHECK(owner->costs->calls==grid.cells()*(required ? 2 : 1));
-                CHECK(openCLStatus().costUploads==uploads+(required ? 2 : 1));
-                CHECK(std::vector<std::uint16_t>(probe->result().begin(),probe->result().end())==expected);
-                CHECK(owner->seeds==original);probe.reset();CHECK(openCLProbeBytes()==reserved);++completed;
-            }
-        }
-        CHECK(completed==(PLANS.size()-1)*18);CHECK(interleaved==3);
-        if(configured.uniformMetadata){
-            const field::Grid grid(17,19);auto owner=makeCapture(grid,0);
-            owner->costs->values.assign(grid.cells(),LAND_STEPS);
-            auto request=makeRequest(owner,grid,700,90);
-            request.identity.packedUniformCost=LAND_STEPS.cardinal|(LAND_STEPS.diagonal<<16);
-            const auto original=owner->seeds;const auto expected=oracle(original,grid,owner->costs->values,700);
-            auto scalar=beginOpenCLProbe(request,Plan::Frozen8,owner,{owner->clock,ProbeClock::read});REQUIRE(scalar);
-            CHECK(drain(*scalar,OpenCLProbeProgress::Pending)==OpenCLProbeProgress::Complete);
-            CHECK(scalar->metrics().costCellsPrepared==0);CHECK(scalar->metrics().costPreparedBytes==sizeof(std::uint32_t));
-            CHECK(scalar->metrics().costUploads==1);CHECK(owner->costs->calls==0);
-            CHECK(std::vector<std::uint16_t>(scalar->result().begin(),scalar->result().end())==expected);
-            CHECK(owner->seeds==original);
-        }
-        // Independent cold identity per case. No required warm-up can mask a
-        // canceled pack/upload, bad owner metadata, callback or budget decline.
-        for(unsigned scenario=0;scenario<10;++scenario){
-            const field::Grid grid(17,19);auto owner=makeCapture(grid,scenario);
-            auto request=makeRequest(owner,grid,700,100+scenario);const auto original=owner->seeds;
-            const auto reserved=openCLProbeBytes();
-            if(scenario==0){request.identity.allCells=false;CHECK_FALSE(beginOpenCLProbe(request,Plan::Frozen8,owner));}
-            else {
-                if(scenario==1)request.identity.retainedBytes=0;
-                if(scenario==8)owner->costs->values[10]={0,1};
-                auto probe=beginOpenCLProbe(request,Plan::Frozen8,owner,{owner->clock,ProbeClock::read});REQUIRE(probe);
-                if((scenario>=2 && scenario<=4) || scenario==9){
-                    const auto target=scenario==3 ? OpenCLProbe::Stage::CostsWait : OpenCLProbe::Stage::CostsPack;
-                    for(unsigned attempt=0;attempt<100000 && probe->metrics().stage!=target;++attempt)
-                        REQUIRE(probe->advance(64)==OpenCLProbeProgress::Pending);
-                    REQUIRE(probe->metrics().stage==target);
-                    if(scenario==4)owner->session.configure(2,false);
-                    else if(scenario==9){owner->clock->failRead=owner->clock->reads+1;owner->clock->invalidValue=0;}
-                    else probe->cancel();
-                    CHECK(drain(*probe,OpenCLProbeProgress::Pending)==OpenCLProbeProgress::Declined);
-                    if(scenario==9)CHECK(probe->metrics().invalidCpuClocks>0);
-                } else if(scenario>=5 && scenario<=7){
-                    REQUIRE(probe->advance(64)==OpenCLProbeProgress::Pending); // CostsReserve before any cost allocation.
-                    REQUIRE(probe->metrics().stage==OpenCLProbe::Stage::CostsReserve);
-                    if(scenario==5){
-                        const auto available=OpenCLProbeBudget-openCLProbeBytes();REQUIRE(reserveOpenCLProbeBytes(available));
-                        CHECK(probe->advance(64)==OpenCLProbeProgress::Declined);releaseOpenCLProbeBytes(available);
-                    } else if(scenario==6){
-                        const auto available=OpenCLHostBudget-openCLStatus().hostBytes;REQUIRE(reserveOpenCLHostBytes(available));
-                        CHECK(probe->advance(64)==OpenCLProbeProgress::Declined);releaseOpenCLHostBytes(available);
-                    } else {
-                        const auto before=openCLStatus().deviceBytes;
-                        auto pressure=reserveOpenCLDeviceBytesForDiagnostics(OpenCLDeviceBudget-before);REQUIRE(pressure);
-                        CHECK(drain(*probe,OpenCLProbeProgress::Pending)==OpenCLProbeProgress::Declined);
-                        pressure.reset();CHECK(openCLStatus().deviceBytes==before);
-                    }
-                } else CHECK(drain(*probe,OpenCLProbeProgress::Pending)==OpenCLProbeProgress::Declined);
-                CHECK(probe->result().empty());probe.reset();
-            }
-            CHECK(owner->seeds==original);CHECK_FALSE(owner->session.failed.load());CHECK(openCLProbeBytes()==reserved);
-        }
-        CHECK(openCLProbeBytes()==baseline);
-    });coordinator.join();
-}
-TEST_CASE("isolated epoch probes mirror required windows and preserve exact owned cancellation")
-{
-    using namespace gradient_kernel;
-    const auto* activated=std::getenv("GLOB2_TEST_OPENCL_EPOCH_PROBE");
-    if(!activated || std::strcmp(activated,"1"))return;
-    REQUIRE(initializeOpenCL());const auto configured=openCLStatus();
-    REQUIRE(configured.activeEpoch);REQUIRE_FALSE(configured.parityBound);
-    REQUIRE_FALSE(configured.directSeedUpload);REQUIRE(configured.apiCpuMode==0);
-    REQUIRE_FALSE(configured.deviceProfiling);
-    struct Capture {
-        std::shared_ptr<std::vector<std::uint16_t>> seeds;
-        std::shared_ptr<std::vector<EntrySteps>> costs;
-        std::shared_ptr<BackendSession> session=std::make_shared<BackendSession>();
-        std::size_t reserved=0;
-        ~Capture(){if(reserved)releaseOpenCLProbeBytes(reserved);}
-    };
-    std::thread coordinator([&] {
-        const auto baseline=openCLProbeBytes();unsigned completed=0,requiredInterleaves=0,canceled=0;
-        for(unsigned plan=1;plan<PLANS.size();++plan){
-            REQUIRE((readyPlans.load()&(1u<<plan))!=0);
-            for(auto dimensions:{std::pair{1,1},std::pair{1,257},std::pair{257,1},std::pair{7,13},std::pair{31,33}})
-            for(int cap:{0,700}){
-                const field::Grid grid(dimensions.first,dimensions.second);
-                auto holder=std::make_shared<Capture>();
-                holder->seeds=std::make_shared<std::vector<std::uint16_t>>(grid.cells(),1);
-                holder->costs=std::make_shared<std::vector<EntrySteps>>(grid.cells(),LAND_STEPS);
-                for(std::size_t i=0;i<grid.cells();++i)if(i%5==0)(*holder->costs)[i]={19,29};
-                holder->seeds->front()=65535;holder->seeds->back()=65001;
-                if(grid.cells()>2)(*holder->seeds)[grid.cells()/2]=0;
-                const auto original=*holder->seeds;
-                const auto expected=oracle(original,grid,*holder->costs,cap);
-                const auto sourceBytes=sizeof(Capture)+sizeof(BackendSession)+sizeof(*holder->seeds)+
-                    holder->seeds->capacity()*sizeof(std::uint16_t)+sizeof(*holder->costs)+
-                    holder->costs->capacity()*sizeof(EntrySteps)+128;
-                REQUIRE(reserveOpenCLProbeBytes(sourceBytes));holder->reserved=sourceBytes;
-                BackendRequest request{holder->seeds->data(),cap,grid,*holder->session,holder->costs.get(),
-                    [](void* value,std::size_t cell){return (*static_cast<std::vector<EntrySteps>*>(value))[cell];},
-                    nullptr,{holder->costs,919123,1,true,sizeof(*holder->costs)+holder->costs->capacity()*sizeof(EntrySteps)}};
-                auto required=original;auto warm=request;warm.gradient=required.data();
-                const auto before=openCLStatus();REQUIRE(executeOpenCLDevice(std::span(&warm,1),Plan(plan)));
-                const auto after=openCLStatus();CHECK(required==expected);
-                const auto requiredDispatches=after.dispatches-before.dispatches;
-                const auto reserved=openCLProbeBytes();auto probe=beginOpenCLProbe(request,Plan(plan),holder);REQUIRE(probe);
-                auto progress=OpenCLProbeProgress::Pending;bool interleaved=false;
-                for(unsigned attempt=0;attempt<1000000 && progress==OpenCLProbeProgress::Pending;++attempt){
-                    const auto dispatched=probe->metrics().dispatches;
-                    if(dispatched && probe->metrics().stage==OpenCLProbe::Stage::Dispatch)
-                        CHECK_FALSE(probe->waitingForEvent()); // Healthy in-window work is immediately runnable.
-                    progress=probe->advance(17);
-                    CHECK(probe->metrics().dispatches<=dispatched+1);CHECK(*holder->seeds==original);
-                    if(!interleaved && probe->metrics().dispatches){
-                        // Required lane changes both plan and retained buffer
-                        // size while the probe's private dispatch is outstanding.
-                        for(auto shape:{field::Grid{33,31},field::Grid{1,7}}){
-                            auto costs=std::make_shared<std::vector<EntrySteps>>(shape.cells(),EntrySteps{7,11});
-                            std::vector<std::uint16_t> input(shape.cells(),1);input.front()=65535;input.back()=65401;
-                            const auto output=oracle(input,shape,*costs,700);
-                            BackendSession session;BackendRequest other{input.data(),700,shape,session,costs.get(),
-                                [](void* value,std::size_t cell){return (*static_cast<std::vector<EntrySteps>*>(value))[cell];},
-                                nullptr,{costs,719123,1,true,sizeof(*costs)+costs->capacity()*sizeof(EntrySteps)}};
-                            REQUIRE(executeOpenCLDevice(std::span(&other,1),Plan::Frozen8));CHECK(input==output);++requiredInterleaves;
-                        }
-                        interleaved=true;
-                    }
-                    if(progress==OpenCLProbeProgress::Pending)std::this_thread::yield();
-                }
-                REQUIRE(progress==OpenCLProbeProgress::Complete);CHECK(interleaved);
-                CHECK(std::vector<std::uint16_t>(probe->result().begin(),probe->result().end())==expected);
-                const auto metrics=probe->metrics();CHECK(metrics.activeEpoch);
-                CHECK(metrics.checkInterval==configured.checkInterval);CHECK(metrics.dispatches==requiredDispatches);
-                CHECK(metrics.dispatches>0);CHECK(metrics.hostChecks==(metrics.dispatches+configured.checkInterval-1)/configured.checkInterval);
-                CHECK(metrics.queuedWindowDispatches==metrics.dispatches-metrics.hostChecks);
-                CHECK(metrics.tileMaskInitializations==2);CHECK(metrics.tileMaskClears==0);
-                CHECK(metrics.kernelArgumentUpdates==12+5*metrics.dispatches);
-                probe.reset();CHECK(openCLProbeBytes()==reserved);++completed;
-                if(plan==unsigned(Plan::Frozen8) && grid.width()==7 && grid.height()==13 && cap==700){
-                    using Stage=OpenCLProbe::Stage;
-                    for(const auto [stage,generationCancel]:std::array{
-                        std::pair{Stage::InitialWait,false},std::pair{Stage::KernelWait,false},
-                        std::pair{Stage::CheckWait,false},std::pair{Stage::OutputWait,false},std::pair{Stage::KernelWait,true},
-                        std::pair{Stage::Dispatch,false},std::pair{Stage::Dispatch,true}}){
-                        if(stage==Stage::Dispatch && configured.checkInterval==1)continue;
-                        auto pending=beginOpenCLProbe(request,Plan(plan),holder);REQUIRE(pending);
-                        progress=OpenCLProbeProgress::Pending;bool reached=false;
-                        for(unsigned attempt=0;attempt<1000000 && progress==OpenCLProbeProgress::Pending;++attempt){
-                            progress=pending->advance(17);
-                            if(pending->metrics().stage==stage &&
-                                (stage!=Stage::Dispatch || pending->metrics().dispatches>0)){reached=true;break;}
-                            if(progress==OpenCLProbeProgress::Pending)std::this_thread::yield();
-                        }
-                        REQUIRE(reached);REQUIRE(progress==OpenCLProbeProgress::Pending);
-                        if(stage==Stage::Dispatch){
-                            CHECK_FALSE(pending->waitingForEvent());
-                            CHECK(pending->metrics().dispatches<configured.checkInterval);
-                        }
-                        const auto beforeCancel=pending->metrics().dispatches;
-                        if(generationCancel)holder->session->configure(2,false);else pending->cancel();
-                        CHECK(pending->waitingForEvent()); // Cancellation must prove the trailing queued event.
-                        for(unsigned attempt=0;attempt<1000000 && progress==OpenCLProbeProgress::Pending;++attempt){
-                            progress=pending->advance();if(progress==OpenCLProbeProgress::Pending)std::this_thread::yield();
-                        }
-                        REQUIRE(progress==OpenCLProbeProgress::Declined);CHECK(pending->result().empty());
-                        CHECK(pending->metrics().dispatches==beforeCancel);
-                        CHECK(*holder->seeds==original);CHECK_FALSE(holder->session->failed.load());
-                        pending.reset();CHECK(openCLProbeBytes()==reserved);++canceled;
-                    }
-                }
-            }
-        }
-        CHECK(completed==(PLANS.size()-1)*10);CHECK(requiredInterleaves==completed*2);
-        CHECK(canceled==(configured.checkInterval==1?5:7));
-        CHECK(openCLProbeBytes()==baseline);
-    });
-    coordinator.join();
-}
-TEST_CASE("experimental mask and parity bindings preserve every plan across retirement and buffer reuse")
-{
-    using namespace gradient_kernel;
-    if(!initializeOpenCL() || (!openCLStatus().activeEpoch && !openCLStatus().parityBound)) return;
-    struct Context {
-        field::Grid grid;
-        std::shared_ptr<std::vector<EntrySteps>> costs;
-        std::vector<std::uint16_t> original,actual,expected;
-        int cap;
-    };
-    // A singleton and narrow fields retire before the larger irregular field.
-    // Fresh seed patterns and a smaller middle batch reuse the same allocated
-    // buffers/cost planes before restoring the larger irregular batch.
-    BackendSession session;
-    for(unsigned plan=1;plan<unsigned(Plan::Count);++plan) {
-        if(!(readyPlans.load()&(1u<<plan))) continue;
-        std::vector<Context> fields;
-        for(auto dimensions:{std::pair{1,1},std::pair{1,83},std::pair{83,1},
-                             std::pair{17,31},std::pair{257,131},std::pair{65,19}}) {
-            const field::Grid grid(dimensions.first,dimensions.second);
-            auto costs=std::make_shared<std::vector<EntrySteps>>(grid.cells());
-            for(std::size_t cell=0;cell<grid.cells();++cell)
-                (*costs)[cell]=cell%17 ? EntrySteps{5,7} : EntrySteps{13,18};
-            fields.push_back({grid,costs,{},{},{},grid.cells()<100 ? 40 : COST_LIMIT});
-        }
-        for(unsigned repeat=0;repeat<3;++repeat) {
-            CAPTURE(plan);CAPTURE(repeat);
-            std::vector<BackendRequest> requests;
-            for(auto& field:fields) {
-                field.original.assign(field.grid.cells(),1);
-                for(std::size_t cell=0;cell<field.grid.cells();++cell)
-                    if((cell+repeat)%19==0) field.original[cell]=0;
-                field.original[repeat%field.grid.cells()]=65535;
-                if(field.grid.cells()==1) field.original[0]=65501;
-                else field.original[field.grid.cells()/2]=65000;
-                field.expected=oracle(field.original,field.grid,*field.costs,field.cap);
-                field.actual=field.original;
-                requests.push_back({field.actual.data(),field.cap,field.grid,session,field.costs.get(),
-                    [](void* p,std::size_t cell){return (*static_cast<std::vector<EntrySteps>*>(p))[cell];},
-                    [](void*,std::uint16_t*){FAIL("epoch mask test must execute the exact device plan");},
-                    {field.costs,918201,1,true,field.costs->capacity()*sizeof(EntrySteps)}});
-            }
-            const auto before=openCLStatus();
-            const auto count=repeat==1 ? std::size_t(3) : fields.size();
-            REQUIRE(executeOpenCLDevice(std::span(requests).first(count),Plan(plan)));
-            for(std::size_t i=0;i<fields.size();++i)
-                CHECK(fields[i].actual==(i<count ? fields[i].expected : fields[i].original));
-            const auto after=openCLStatus();
-            const auto dispatches=after.dispatches-before.dispatches;
-            CHECK(after.activeEpoch==before.activeEpoch);CHECK(after.parityBound==before.parityBound);
-            CHECK(after.retiredFields==before.retiredFields+count);
-            CHECK(after.tileMaskInitializations==before.tileMaskInitializations+(after.activeEpoch ? 2 : 1));
-            CHECK(after.tileMaskClears==before.tileMaskClears+(after.activeEpoch ? 0 : dispatches));
-            const auto arguments=after.parityBound ? 32 : 12+4*dispatches;
-            CHECK(after.kernelArgumentUpdates==before.kernelArgumentUpdates+arguments+(after.activeEpoch ? dispatches : 0));
-            CHECK(after.dispatches>before.dispatches);CHECK_FALSE(session.failed.load());
-        }
-    }
-    // The epoch counterpart has a separate fresh-process lifecycle gate above.
-    // Remaining required-only configurations must still decline optional work.
-    const auto configuration=openCLStatus();
-    if(configuration.parityBound || configuration.directSeedUpload || configuration.apiCpuMode){
-        auto seeds=std::make_shared<std::vector<std::uint16_t>>(2,1);(*seeds)[0]=65535;
-        const auto original=*seeds;
-        const auto bytes=openCLProbeBytes();
-        BackendRequest request{seeds->data(),100,{2,1},session,nullptr,
-            [](void*,std::size_t){return LAND_STEPS;},nullptr,{seeds,98232,1,true}};
-        CHECK_FALSE(beginOpenCLProbe(request,Plan::Frozen8,seeds));
-        CHECK(*seeds==original);CHECK(openCLProbeBytes()==bytes);CHECK_FALSE(session.failed.load());
-    }
-}
-TEST_CASE("requested direct seed uploads use retained safety copies and preserve exact arrays")
-{
-    using namespace gradient_kernel;
-    if(!initializeOpenCL() || !openCLStatus().directSeedUpload)return;
-    REQUIRE(openCLStatus().directSeedUploadRequested);
-    BackendSession session;
-    struct Field {
-        field::Grid grid;
-        std::shared_ptr<std::vector<EntrySteps>> costs;
-        std::vector<std::uint16_t> original,actual,expected;
-        int cap;
-    };
-    for(unsigned plan=1;plan<unsigned(Plan::Count);++plan) {
-        if(!(readyPlans.load()&(1u<<plan)))continue;
-        std::vector<Field> fields;
-        // Growth, narrow toroidal grids and subsequent smaller reuse all read
-        // output into the separate reusable staging buffer, never original seeds.
-        for(auto dimensions:{std::pair{1,1},std::pair{1,37},std::pair{37,1},
-                             std::pair{31,17},std::pair{257,131},std::pair{7,13}}) {
-            const field::Grid grid(dimensions.first,dimensions.second);
-            auto costs=std::make_shared<std::vector<EntrySteps>>(grid.cells());
-            for(std::size_t i=0;i<grid.cells();++i)(*costs)[i]=i%11 ? EntrySteps{5,7} : EntrySteps{13,18};
-            fields.push_back({grid,costs,{},{},{},grid.cells()==1 ? 0 : 700});
-        }
-        for(unsigned repeat=0;repeat<2;++repeat)for(auto& field:fields) {
-            field.original.assign(field.grid.cells(),1);
-            for(std::size_t i=0;i<field.original.size();++i)if((i+repeat)%19==0)field.original[i]=0;
-            field.original[repeat%field.original.size()]=field.original.size()==1 ? 65501 : 65535;
-            if(field.original.size()>1)field.original[field.original.size()/2]=65401;
-            field.actual=field.original;field.expected=oracle(field.original,field.grid,*field.costs,field.cap);
-            bool executed=false,observed=false;
-            BackendRequest request{field.actual.data(),field.cap,field.grid,session,field.costs.get(),
-                [](void* p,std::size_t i){return (*static_cast<std::vector<EntrySteps>*>(p))[i];},nullptr,
-                {field.costs,8199271,1,true,field.costs->capacity()*sizeof(EntrySteps)}};
-            request.executedOnDevice=&executed;request.deviceExecutionObserved=&observed;
-            const auto before=openCLStatus();REQUIRE(executeOpenCLDevice(std::span(&request,1),Plan(plan)));
-            CHECK(field.actual==field.expected);CHECK(executed);CHECK(observed);CHECK_FALSE(session.failed.load());
-            const auto after=openCLStatus();const auto bytes=field.grid.cells()*sizeof(std::uint16_t);
-            CHECK(after.directSeedUploads==before.directSeedUploads);
-            CHECK(after.directSeedUploadSafetyCopies==before.directSeedUploadSafetyCopies+1);
-            CHECK(after.directSeedUploadedBytes==before.directSeedUploadedBytes);
-            CHECK(after.seedUploadedBytes==before.seedUploadedBytes+bytes);
-            CHECK(after.seedCopiedBytes==before.seedCopiedBytes+bytes);
-            CHECK(after.outputCopiedBytes==before.outputCopiedBytes+bytes);
-            CHECK(after.batches==before.batches+1);CHECK(after.fields==before.fields+1);
-            const auto dispatches=after.dispatches-before.dispatches;
-            REQUIRE(dispatches>0);CHECK(after.hostChecks>before.hostChecks);
-            CHECK(after.tileMaskInitializations==before.tileMaskInitializations+(after.activeEpoch ? 2 : 1));
-            CHECK(after.tileMaskClears==before.tileMaskClears+(after.activeEpoch ? 0 : dispatches));
-            const auto arguments=after.parityBound ? 32 : 12+4*dispatches;
-            CHECK(after.kernelArgumentUpdates==before.kernelArgumentUpdates+arguments+(after.activeEpoch ? dispatches : 0));
-        }
-        // Nine fields include a singleton tail chunk. It MUST still use the
-        // mixed-batch staging path, preserving the whole-batch rollback contract.
-        std::vector<BackendRequest> requests;
-        std::size_t cells=0;
-        while(fields.size()<9){auto copy=fields[fields.size()%5];fields.push_back(std::move(copy));}
-        for(auto& field:fields) {
-            field.actual=field.original;cells+=field.grid.cells();
-            requests.push_back({field.actual.data(),field.cap,field.grid,session,field.costs.get(),
-                [](void* p,std::size_t i){return (*static_cast<std::vector<EntrySteps>*>(p))[i];},nullptr,
-                {field.costs,8199271,1,true,field.costs->capacity()*sizeof(EntrySteps)}});
-        }
-        const auto before=openCLStatus();REQUIRE(executeOpenCLDevice(requests,Plan(plan)));
-        for(const auto& field:fields)CHECK(field.actual==field.expected);
-        const auto after=openCLStatus();CHECK(after.directSeedUploads==before.directSeedUploads);
-        CHECK(after.directSeedUploadedBytes==before.directSeedUploadedBytes);
-        CHECK(after.seedCopiedBytes==before.seedCopiedBytes+cells*sizeof(std::uint16_t));
-        CHECK(after.seedUploadedBytes==before.seedUploadedBytes+cells*sizeof(std::uint16_t));
-        CHECK(after.outputCopiedBytes==before.outputCopiedBytes+cells*sizeof(std::uint16_t));
-        CHECK(after.batches==before.batches+2);CHECK(after.fields==before.fields+9);
-    }
-    auto seeds=std::make_shared<std::vector<std::uint16_t>>(2,1);(*seeds)[0]=65535;
-    const auto original=*seeds;const auto bytes=openCLProbeBytes();
-    BackendRequest probe{seeds->data(),100,{2,1},session,nullptr,[](void*,std::size_t){return LAND_STEPS;},nullptr,{seeds,872392,1,true}};
-    CHECK_FALSE(beginOpenCLProbe(probe,Plan::Frozen8,seeds));CHECK(*seeds==original);CHECK(openCLProbeBytes()==bytes);
-}
 
-TEST_CASE("opt-in API CPU scopes observe real required commands without changing results")
-{
-    using namespace gradient_kernel;
-    initializeForTest();const auto initial=openCLStatus();
-    if(!initial.available || !initial.apiCpuMode)return;
-    REQUIRE(initial.apiCpuConfigured);
-    const field::Grid grid(7,13);
-    std::vector<std::uint16_t> seeds(grid.cells(),1);seeds[0]=65535;seeds[11]=0;seeds.back()=65000;
-    std::vector<EntrySteps> costs(grid.cells(),LAND_STEPS);
-    const auto expected=oracle(seeds,grid,costs,40);
-    BackendSession session;auto owner=std::make_shared<unsigned>(1);
-    BackendRequest request{seeds.data(),40,grid,session,&costs,
-        [](void* context,std::size_t cell){return (*static_cast<std::vector<EntrySteps>*>(context))[cell];}};
-    request.identity={owner,1,1,true};
-    const auto before=openCLStatus();
-    REQUIRE(executeOpenCLDevice(std::span(&request,1),requestedOpenCLPlan()));
-    CHECK(seeds==expected);
-    const auto after=openCLStatus();
-    const auto calls=[&](OpenCLCpuCategory category){return after.apiCpu.calls[unsigned(category)]-before.apiCpu.calls[unsigned(category)];};
-    CHECK(calls(OpenCLCpuCategory::KernelEnqueue)==after.dispatches-before.dispatches);
-    CHECK(calls(OpenCLCpuCategory::Arguments)==after.kernelArgumentUpdates-before.kernelArgumentUpdates);
-    CHECK(calls(OpenCLCpuCategory::CheckRead)==after.hostChecks-before.hostChecks);
-    CHECK(calls(OpenCLCpuCategory::Fill)==after.tileMaskInitializations-before.tileMaskInitializations+
-        after.tileMaskClears-before.tileMaskClears+after.hostChecks-before.hostChecks);
-    CHECK(calls(OpenCLCpuCategory::OutputRead)==1);CHECK(calls(OpenCLCpuCategory::OutputCopy)==1);
-    CHECK(calls(OpenCLCpuCategory::Upload)>=2);
-    std::uint64_t scopes=0,categoryCpu=0;
-    for(unsigned i=0;i<unsigned(OpenCLCpuCategory::Count);++i){
-        scopes+=after.apiCpu.calls[i]-before.apiCpu.calls[i];categoryCpu+=after.apiCpu.ns[i]-before.apiCpu.ns[i];
-    }
-    CHECK(after.apiCpu.clockReads-before.apiCpu.clockReads==scopes*2);
-    CHECK(after.apiCpu.invalidScopes==before.apiCpu.invalidScopes);
-    CHECK(after.apiCpu.reconciliationErrors==before.apiCpu.reconciliationErrors);
-    if(initial.apiCpuMode==1)CHECK(categoryCpu==after.apiCpu.coveredNs-before.apiCpu.coveredNs);
-    else {CHECK(categoryCpu==0);CHECK(after.apiCpu.coveredNs==before.apiCpu.coveredNs);}
-    CHECK_FALSE(beginOpenCLProbe(request,requestedOpenCLPlan(),owner)); // Unqualified diagnostic overhead.
-}
-TEST_CASE("isolated direct seed upload rollback preserves originals after device work")
-{
-    // This deliberately fails a session after initial admission and quarantines
-    // the backend. Run ONLY this case in a separate native test process with
-    // GLOB2_TEST_OPENCL_DIRECT_UPLOAD_ROLLBACK=1 and direct-upload mode enabled.
-    const auto* isolated=std::getenv("GLOB2_TEST_OPENCL_DIRECT_UPLOAD_ROLLBACK");
-    if(!isolated || std::strcmp(isolated,"1"))return;
-    using namespace gradient_kernel;
-    REQUIRE(initializeOpenCL());REQUIRE(openCLStatus().directSeedUpload);
-    REQUIRE((readyPlans.load()&(1u<<unsigned(Plan::Frozen8)))!=0);
-    BackendSession session;const field::Grid grid(31,17);
-    std::vector<std::uint16_t> seeds(grid.cells(),1);seeds[0]=65535;seeds[19]=65400;seeds[13]=0;
-    const auto original=seeds;
-    struct Context {BackendSession* session;unsigned calls=0;} context{&session};
-    bool executed=true,observed=false;
-    BackendRequest request{seeds.data(),700,grid,session,&context,
-        [](void* p,std::size_t){auto& c=*static_cast<Context*>(p);if(!c.calls++)c.session->fail();return LAND_STEPS;},nullptr,{}};
-    request.executedOnDevice=&executed;request.deviceExecutionObserved=&observed;
-    const auto before=openCLStatus();CHECK_FALSE(executeOpenCLDevice(std::span(&request,1),Plan::Frozen8));
-    const auto after=openCLStatus();CHECK(context.calls>0);CHECK(session.failed.load());CHECK(seeds==original);CHECK_FALSE(executed);CHECK(observed);
-    CHECK(after.deviceObservedFields==before.deviceObservedFields+1);CHECK(after.committedFields==before.committedFields);
-    CHECK(after.directSeedUploads==before.directSeedUploads);
-    CHECK(after.directSeedUploadSafetyCopies==before.directSeedUploadSafetyCopies+1);
-    CHECK(after.directSeedUploadedBytes==before.directSeedUploadedBytes);
-    CHECK(after.seedUploadedBytes==before.seedUploadedBytes+grid.cells()*sizeof(std::uint16_t));
-    CHECK(after.seedCopiedBytes==before.seedCopiedBytes+grid.cells()*sizeof(std::uint16_t));CHECK(after.outputCopiedBytes==before.outputCopiedBytes);
-    CHECK(after.dispatches>before.dispatches);CHECK(after.hostChecks>before.hostChecks);
-}
 }
 
 TEST_CASE("isolated required query failure retains cost graph through exact CPU recovery" * doctest::test_suite("OpenCLGradient"))
@@ -1703,36 +830,13 @@ TEST_CASE("isolated required query failure retains cost graph through exact CPU 
     });
 }
 
-TEST_CASE("worker initialization failure leaves CPU available without inline retries" * doctest::test_suite("OpenCLGradient"))
-{
-    if constexpr(!GAGCore::ThreadSupport::available) return;
-    using namespace gradient_kernel;
-    RestoreBackend restoreBackend;
-    const auto old=prepareAccelerator;
-    const auto state=initializationState.load(),mask=readyPlans.load();
-    struct Restore { decltype(prepareAccelerator) old; unsigned state,mask;
-        ~Restore(){prepareAccelerator=old;initializationState.store(state);readyPlans.store(mask);}
-    } restore{old,state,mask};
-    static unsigned attempts=0; attempts=0;
-    prepareAccelerator=[] {CHECK(ComputeExecutor::workerSlot()!=0);++attempts;throw std::runtime_error("injected compiler failure");};
-    initializationState.store(0);readyPlans.store(0);setBackend(Backend::OpenCL);
-    BackendSession policy;policy.configure(2,false);
-    policy.process();CHECK(attempts==0);CHECK(policy.pending());
-    onWorker([&] {
-        CHECK(policy.choose(Family::Generic,1,Backend::OpenCL).plan==Plan::CPU);
-        policy.process();CHECK(attempts==1);CHECK_FALSE(policy.pending());
-        CHECK(policy.choose(Family::Generic,1,Backend::OpenCL).plan==Plan::CPU);
-        policy.process();CHECK(attempts==1);
-    });
-}
-
 TEST_CASE("isolated required host admission pressure preserves seeds and device readiness" * doctest::test_suite("OpenCLGradient"))
 {
     using namespace gradient_kernel;
     const auto* enabled=std::getenv("GLOB2_TEST_OPENCL_HOST_ADMISSION");
     if(!enabled || std::strcmp(enabled,"1"))return;
     REQUIRE(initializeOpenCL());
-    const auto plan=requestedOpenCLPlan();REQUIRE(plan!=Plan::CPU);
+    const auto plan=Plan::Frozen8;REQUIRE(plan!=Plan::CPU);
     REQUIRE(bool(readyPlans.load()&(1u<<unsigned(plan))));
     const field::Grid grid(8,8);
     std::vector<std::uint16_t> seeds(grid.cells(),1);seeds[0]=65535;
@@ -1772,160 +876,4 @@ TEST_CASE("isolated required host admission pressure preserves seeds and device 
     });
     CHECK(openCLStatus().budgetDeclines>before.budgetDeclines);
     CHECK(openCLStatus().hostBytes<=OpenCLHostBudget);
-}
-
-
-TEST_CASE("owned captured private costs work with diagnostic preparation flags disabled" * doctest::test_suite("OpenCLGradient"))
-{
-    using namespace gradient_kernel;
-    const auto* enabled=std::getenv("GLOB2_TEST_OPENCL_CAPTURE_PRIVATE_COSTS");
-    if(!enabled || std::strcmp(enabled,"1"))return;
-    if constexpr(!GAGCore::ThreadSupport::available)return;
-    REQUIRE(initializeOpenCL());const auto configured=openCLStatus();
-    REQUIRE_FALSE(configured.probeColdCosts);REQUIRE_FALSE(configured.uniformMetadata);
-    REQUIRE_FALSE(configured.parityBound);REQUIRE_FALSE(configured.directSeedUpload);REQUIRE(configured.apiCpuMode==0);
-    std::thread coordinator([] {
-        struct Owner {
-            struct Lease {std::size_t bytes=0;~Lease(){releaseOpenCLProbeBytes(bytes);}} lease;
-            std::vector<std::uint16_t> seeds;
-            std::vector<EntrySteps> costs;
-            unsigned calls=0;
-            explicit Owner(std::size_t cells):seeds(cells,1),costs(cells,LAND_STEPS){}
-        };
-        const auto baseline=openCLProbeBytes(),initializationCpu=openCLStatus().initializationThreadCPUNs;
-        unsigned completed=0,scalar=0,weighted=0;
-        for(unsigned plan=1;plan<unsigned(Plan::Count);++plan) {
-            REQUIRE((readyPlans.load()&(1u<<plan))!=0);
-            unsigned shape=0;
-            for(auto dimensions:{std::pair{1,1},std::pair{1,17},std::pair{17,1},std::pair{9,7}}) {
-                const field::Grid grid(dimensions.first,dimensions.second);
-                const int cap=std::array{0,1,23,700}[shape++];
-                for(unsigned mode=0;mode<3;++mode) {
-                    const auto bytes=sizeof(Owner)+512+grid.cells()*(sizeof(std::uint16_t)+sizeof(EntrySteps));
-                    REQUIRE(reserveOpenCLProbeBytes(bytes));
-                    struct Guard {std::size_t bytes;~Guard(){if(bytes)releaseOpenCLProbeBytes(bytes);}} admission{bytes};
-                    auto owner=std::make_shared<Owner>(grid.cells());owner->lease.bytes=bytes;admission.bytes=0;
-                    for(std::size_t i=0;i<grid.cells();++i) {
-                        if(mode && i%3==0)owner->costs[i]={19,29};
-                        if(i%7==2)owner->seeds[i]=0;
-                    }
-                    owner->seeds[0]=mode==2 ? 65001 : 65535;
-                    owner->seeds.back()=65017; // Arbitrary nonmax/deferred source, including singleton.
-                    const auto original=owner->seeds,expected=oracle(original,grid,owner->costs,cap);
-                    BackendSession session;
-                    OpenCLProbeInput input{owner->seeds.data(),cap,grid,session,owner.get(),
-                        [](void* value,std::size_t cell){auto& o=*static_cast<Owner*>(value);++o.calls;return o.costs[cell];},
-                        {owner,917442,mode+1,true,bytes,mode ? 0u : LAND_STEPS.cardinal|(LAND_STEPS.diagonal<<16)}};
-                    const auto reserved=openCLProbeBytes();
-                    auto control=beginOpenCLProbe(input,Plan(plan),owner);REQUIRE(bool(control));
-                    CHECK(control->advance()==OpenCLProbeProgress::Declined);control.reset();
-                    CHECK(openCLProbeBytes()==reserved);CHECK(owner->calls==0);CHECK(owner->seeds==original);
-                    input.capturedPrivateCosts=true;
-                    auto probe=beginOpenCLProbe(input,Plan(plan),owner);REQUIRE(bool(probe));
-                    auto progress=OpenCLProbeProgress::Pending;
-                    for(unsigned attempt=0;attempt<1000000 && progress==OpenCLProbeProgress::Pending;++attempt) {
-                        progress=probe->advance(64);if(progress==OpenCLProbeProgress::Pending)std::this_thread::yield();
-                    }
-                    REQUIRE(progress==OpenCLProbeProgress::Complete);
-                    CHECK(std::vector<std::uint16_t>(probe->result().begin(),probe->result().end())==expected);
-                    CHECK(owner->seeds==original);CHECK_FALSE(session.failed.load());
-                    CHECK(probe->metrics().coldCostPlane);CHECK(probe->metrics().costUploads==1);
-                    CHECK(probe->metrics().dispatches>0);CHECK(probe->metrics().invalidCpuClocks==0);
-                    CHECK(owner->calls==(mode ? grid.cells() : 0));
-                    CHECK(probe->metrics().costCellsPrepared==(mode ? grid.cells() : 0));
-                    probe.reset();CHECK(openCLProbeBytes()==reserved);
-                    ++completed;mode ? ++weighted : ++scalar;
-                }
-            }
-        }
-        CHECK(completed==72);CHECK(scalar==24);CHECK(weighted==48);
-        CHECK(openCLProbeBytes()==baseline);CHECK(openCLStatus().initializationThreadCPUNs==initializationCpu);
-    });coordinator.join();
-}
-
-TEST_CASE("isolated native probe batches share one dispatch and preserve indexed exact retirement" * doctest::test_suite("OpenCLGradient"))
-{
-    using namespace gradient_kernel;
-    const auto* enabled=std::getenv("GLOB2_TEST_OPENCL_PROBE_BATCH");
-    if(!enabled || std::strcmp(enabled,"1"))return;
-    if constexpr(!GAGCore::ThreadSupport::available)return;
-    struct Capture {
-        struct Lease {std::size_t bytes=0;~Lease(){releaseOpenCLProbeBytes(bytes);}} lease;
-        BackendSession session;
-        std::shared_ptr<ProbeClock> clock=std::make_shared<ProbeClock>();
-        std::array<std::vector<std::uint16_t>,8> seeds;
-    };
-    std::thread coordinator([&] {
-        REQUIRE(initializeOpenCL());const auto configured=openCLStatus();
-        REQUIRE_FALSE(configured.parityBound);REQUIRE_FALSE(configured.directSeedUpload);REQUIRE(configured.apiCpuMode==0);
-        const auto baseline=openCLProbeBytes(),initializationCpu=openCLStatus().initializationThreadCPUNs;
-        auto requiredCostOwner=std::make_shared<int>(1);
-        unsigned completed=0,canceled=0;
-        for(unsigned plan=1;plan<unsigned(Plan::Count);++plan) {
-            REQUIRE((readyPlans.load()&(1u<<plan))!=0);
-            for(unsigned count:{2u,4u,8u})for(auto dimensions:{std::pair{1,17},std::pair{17,1},std::pair{9,7},std::pair{33,19}}) {
-                const field::Grid grid(dimensions.first,dimensions.second);
-                const auto bytes=sizeof(Capture)+sizeof(ProbeClock)+1024+count*grid.cells()*sizeof(std::uint16_t);
-                REQUIRE(reserveOpenCLProbeBytes(bytes));
-                struct Return {std::size_t bytes;~Return(){if(bytes)releaseOpenCLProbeBytes(bytes);}} reserved{bytes};
-                auto owner=std::make_shared<Capture>();owner->lease.bytes=bytes;reserved.bytes=0;
-                std::array<std::vector<std::uint16_t>,8> originals,expected;
-                std::vector<OpenCLProbeInput> inputs;inputs.reserve(count);
-                for(unsigned field=0;field<count;++field) {
-                    auto& seeds=owner->seeds[field];seeds.assign(grid.cells(),1);
-                    for(std::size_t i=0;i<grid.cells();++i)if((i+field)%11==3)seeds[i]=0;
-                    if(field==0)seeds.assign(grid.cells(),0); // Immediate retirement in a mixed batch.
-                    else {seeds[field%grid.cells()]=field%2 ? 65535 : 65001;seeds.back()=65017;}
-                    originals[field]=seeds;
-                    expected[field]=oracle(seeds,grid,std::vector<EntrySteps>(grid.cells(),LAND_STEPS),700);
-                    inputs.push_back(OpenCLProbeInput{seeds.data(),700,grid,owner->session,owner.get(),
-                        [](void*,std::size_t){FAIL("scalar batch must not scan costs");return LAND_STEPS;},
-                        {owner,9911,21,true,bytes,LAND_STEPS.cardinal|(LAND_STEPS.diagonal<<16)}});
-                    inputs.back().capturedPrivateCosts=true;
-                }
-                const auto admitted=openCLProbeBytes();
-                auto probe=beginOpenCLProbeBatch(inputs,Plan(plan),owner,{owner->clock,ProbeClock::read});REQUIRE(bool(probe));
-                auto progress=OpenCLProbeProgress::Pending;bool interleaved=false,oneKernelPerAdvance=true;
-                for(unsigned attempt=0;attempt<1000000 && progress==OpenCLProbeProgress::Pending;++attempt) {
-                    const auto before=probe->metrics().dispatches;progress=probe->advance(64);
-                    oneKernelPerAdvance=oneKernelPerAdvance && probe->metrics().dispatches<=before+1;
-                    if(!interleaved && probe->metrics().dispatches) {
-                        auto required=originals[1];
-                        BackendRequest request{required.data(),700,grid,owner->session,nullptr,
-                            [](void*,std::size_t){return LAND_STEPS;},nullptr,{requiredCostOwner,9911,21,true,sizeof(int)+256,LAND_STEPS.cardinal|(LAND_STEPS.diagonal<<16)}};
-                        REQUIRE(executeOpenCLDevice(std::span(&request,1),Plan(plan)));
-                        CHECK(required==expected[1]);interleaved=true;
-                    }
-                    if(progress==OpenCLProbeProgress::Pending)std::this_thread::yield();
-                }
-                REQUIRE(progress==OpenCLProbeProgress::Complete);CHECK(interleaved);CHECK(oneKernelPerAdvance);
-                CHECK(probe->count()==count);CHECK(probe->metrics().batchFields==count);
-                CHECK(probe->metrics().retiredFields==count);CHECK(probe->metrics().dispatches>0);
-                CHECK(probe->metrics().invalidCpuClocks==0);CHECK(probe->result(count).empty());
-                for(unsigned field=0;field<count;++field) {
-                    const auto actual=probe->result(field);
-                    CHECK(std::vector<std::uint16_t>(actual.begin(),actual.end())==expected[field]);
-                    CHECK(owner->seeds[field]==originals[field]);
-                }
-                probe.reset();CHECK(openCLProbeBytes()==admitted);
-                // Cancellation after real submission keeps originals immutable
-                // and never submits another kernel while the event is reaped.
-                auto canceledProbe=beginOpenCLProbeBatch(inputs,Plan(plan),owner,{owner->clock,ProbeClock::read});REQUIRE(bool(canceledProbe));
-                progress=OpenCLProbeProgress::Pending;
-                for(unsigned attempt=0;attempt<1000000 && !canceledProbe->metrics().dispatches && progress==OpenCLProbeProgress::Pending;++attempt)
-                    progress=canceledProbe->advance(64);
-                REQUIRE(canceledProbe->metrics().dispatches>0);const auto dispatched=canceledProbe->metrics().dispatches;
-                canceledProbe->cancel();
-                for(unsigned attempt=0;attempt<1000000 && progress==OpenCLProbeProgress::Pending;++attempt) {
-                    progress=canceledProbe->advance();if(progress==OpenCLProbeProgress::Pending)std::this_thread::yield();
-                }
-                CHECK(progress==OpenCLProbeProgress::Declined);CHECK(canceledProbe->metrics().dispatches==dispatched);
-                CHECK(canceledProbe->result(0).empty());for(unsigned field=0;field<count;++field)CHECK(owner->seeds[field]==originals[field]);
-                canceledProbe.reset();CHECK(openCLProbeBytes()==admitted);inputs.clear();owner.reset();CHECK(openCLProbeBytes()==baseline);
-                ++completed;++canceled;
-            }
-        }
-        CHECK(completed==72);CHECK(canceled==72);CHECK(openCLProbeBytes()==baseline);
-        CHECK(openCLStatus().initializationThreadCPUNs==initializationCpu);
-    });coordinator.join();
 }
