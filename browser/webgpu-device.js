@@ -52,8 +52,8 @@ addToLibrary({
     reserve(bytes){if(bytes<0||bytes>256*1024*1024)throw Error('WebGPU resource exceeds device budget');if(this.totalBytes()+bytes>256*1024*1024){const error=Error('WebGPU device memory budget admission deferred');error.deferred=true;throw error;}},
     retireBuffers(owned){owned.forEach(b=>{if(this.transients.delete(b)){this.transientBytes-=b.size;b.destroy();}});},
     finishPresentation(owned){
-      const frame=this.activeFrame||{identity:this.issued,owned:[]};frame.owned.push(...owned);this.activeFrame=null;this.frames.push(frame);const epoch=this.allocationEpoch;
-      this.device.queue.onSubmittedWorkDone().then(()=>{this.retireBuffers(frame.owned);if(epoch===this.allocationEpoch){this.completed=Math.max(this.completed,frame.identity);this.frames=this.frames.filter(v=>v!==frame);}}).catch(e=>this.fail(e));
+      const frame=this.activeFrame||{identity:this.issued,owned:[]};frame.owned.push(...owned);this.activeFrame=null;this.frames.push(frame);const epoch=this.allocationEpoch,deviceEpoch=this.epoch;
+      this.device.queue.onSubmittedWorkDone().then(()=>{this.retireBuffers(frame.owned);if(epoch===this.allocationEpoch){this.completed=Math.max(this.completed,frame.identity);this.frames=this.frames.filter(v=>v!==frame);}}).catch(e=>{if(epoch===this.allocationEpoch && deviceEpoch===this.epoch)this.fail(e);});
     },
     image(width,height,pixels,hasDepth=false,mipCount=1){
       if(width<1||height<1||width>this.device.limits.maxTextureDimension2D||height>this.device.limits.maxTextureDimension2D)throw Error('WebGPU texture dimensions unsupported');

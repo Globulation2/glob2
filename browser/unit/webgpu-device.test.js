@@ -5,7 +5,7 @@ const vm=require('node:vm');
 const fs=require('node:fs');
 const path=require('node:path');
 function fixture(){
-  const library={},uploads=[],completion=[],maps=[],lost=[];
+  const library={},uploads=[],completion=[],rejections=[],maps=[],lost=[];
   let destroyed=0;
   const device={limits:{maxTextureDimension2D:2048},lost:new Promise(r=>lost.push(r)),addEventListener(){},
     createShaderModule(){return{getCompilationInfo:async()=>({messages:[]})};},
@@ -13,12 +13,12 @@ function fixture(){
     createTexture(){return{createView:()=>({}),destroy(){destroyed++;}};},createSampler:()=>({}),createBindGroup:()=>({}),
     createBuffer({size}){const data=new ArrayBuffer(size);return{size,destroy(){destroyed++;},mapAsync:()=>new Promise(r=>maps.push(r)),getMappedRange:()=>data,unmap(){}};},
     createCommandEncoder(){return{beginRenderPass:()=>({setPipeline(){},setViewport(){},setScissorRect(){},setVertexBuffer(){},setBindGroup(){},setIndexBuffer(){},draw(){},drawIndexed(){},end(){}}),finish:()=>({}),copyTextureToBuffer(){},copyTextureToTexture(){}};},
-    queue:{writeBuffer(){},writeTexture(target,data){uploads.push(data);},submit(){},onSubmittedWorkDone:()=>new Promise(r=>completion.push(r))}};
+    queue:{writeBuffer(){},writeTexture(target,data){uploads.push(data);},submit(){},onSubmittedWorkDone:()=>new Promise((resolve,reject)=>{completion.push(resolve);rejections.push(reject);})}};
   const canvas={getContext:()=>({configure(){},unconfigure(){},getCurrentTexture:()=>device.createTexture()})};
   const context={addToLibrary:value=>Object.assign(library,value),navigator:{gpu:{requestAdapter:async()=>({requestDevice:async()=>device}),getPreferredCanvasFormat:()=> 'bgra8unorm'}},
     FS:{readFile:p=>p.endsWith('metadata.json')?fs.readFileSync(path.join(__dirname,'../../libgag/shaders/renderer-manifest.json'),'utf8'):''},Module:{canvas},HEAPU8:new Uint8Array(new SharedArrayBuffer(65536)),GPUTextureUsage:{TEXTURE_BINDING:1,RENDER_ATTACHMENT:2,COPY_SRC:4,COPY_DST:8},GPUBufferUsage:{VERTEX:1,INDEX:2,UNIFORM:4,COPY_DST:8,MAP_READ:16},GPUMapMode:{READ:1}};
   vm.createContext(context);vm.runInContext(fs.readFileSync(path.join(__dirname,'../webgpu-device.js'),'utf8'),context);context.Glob2WebGPU=library.$Glob2WebGPU;
-  return{library,g:context.Glob2WebGPU,context,device,uploads,completion,maps,lost,destroyed:()=>destroyed};
+  return{library,g:context.Glob2WebGPU,context,device,uploads,completion,rejections,maps,lost,destroyed:()=>destroyed};
 }
 test('prepare validates shaders before presentation attachment and copies shared uploads',async()=>{
   const f=fixture();await f.g.prepare('/shaders');assert.equal(f.g.state,1);assert.equal(f.library.glob2_webgpu_attach(),2048);
@@ -121,4 +121,15 @@ test('device acquired by superseded preparation is destroyed without replacing t
   f.context.navigator.gpu.requestAdapter=async()=>({requestDevice:async()=>newDevice});
   await f.g.prepare('/new');release({destroy(){destroyed++;}});await old;
   assert.equal(destroyed,1);assert.equal(f.g.device,newDevice);assert.equal(f.g.state,1);assert.equal(f.g.lost,false);
+});
+
+test('retired completion rejection cannot fail a replacement allocation epoch',async()=>{
+  const f=fixture();await f.g.prepare('/shaders');f.library.glob2_webgpu_attach();
+  f.g.submit(new Uint8Array(),0,new Uint8Array(),new Uint8Array(),16,16);f.g.finishPresentation([]);
+  f.library.glob2_webgpu_reset();f.rejections[0](Error('retired fence failed'));
+  await Promise.resolve();await Promise.resolve();
+  assert.equal(f.library.glob2_webgpu_poll(),1);assert.equal(f.g.lost,false);
+  f.g.submit(new Uint8Array(),0,new Uint8Array(),new Uint8Array(),16,16);f.g.finishPresentation([]);
+  f.rejections[1](Error('current fence failed'));await Promise.resolve();await Promise.resolve();
+  assert.equal(f.library.glob2_webgpu_poll(),-1);assert.match(f.g.error,/current fence failed/);
 });
