@@ -121,6 +121,7 @@ async function match(page) {
     },null,2),contentType:'application/json'});
   }
   expect(receipt.requests,'Pinned map fixture must consume the scoped four-byte entropy').toBeGreaterThan(0);
+  expect(candidates.at(-1),'Pinned map setup must finish the expected generation').toBe('Map generation: fingerprint revision 5 seed 4039698994 [complete]: ');
   await expect.poll(async()=>(await state(page)).tick,{timeout:120000}).toBeGreaterThan(25);
 }
 async function available(page,label) {
