@@ -620,8 +620,8 @@ jobs:
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
-          repository: ${{ inputs.tag && 'Globulation2/glob2' || github.repository }}
-          ref: ${{ needs.preflight.outputs.revision }}
+          # Use the reviewed driver recipe while its git source remains pinned below.
+          ref: ${{ github.sha }}
       - name: Pin upstream source
         env:
           REVISION: ${{ needs.preflight.outputs.revision }}
