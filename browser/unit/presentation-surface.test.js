@@ -90,7 +90,7 @@ function library(threaded, canvas=null) {
     else if(enabled)output.push(line);
   }
   vm.runInContext(output.join('\n'),scope);scope.Glob2SurfaceBridge=library.$Glob2SurfaceBridge;
-  return {bridge:scope.Glob2SurfaceBridge,scope,messages,freed,
+  return {bridge:scope.Glob2SurfaceBridge,scope,messages,freed,library,
     webgpuAvailable:library.glob2_surface_webgpu_available,
     reply:r=>listeners.forEach(fn=>fn({data:{glob2Surface:r}}))};
 }
@@ -101,6 +101,27 @@ for (const threaded of [false,true]) test(`WebGPU availability follows the ${thr
   assert.equal(webgpuAvailable(),1);
   scope.navigator={};
   assert.equal(webgpuAvailable(),0);
+});
+test('GL bridge restores legacy texture tuning and copies readback without a shared view',()=>{
+  const {scope,library:l}=library(true);
+  scope.GLctx={MAX_TEXTURE_IMAGE_UNITS:0x8872,getParameter:()=>4,
+    getBufferSubData:(target,offset,data)=>{
+      assert.equal(target,0x88EB);assert.equal(offset,0);
+      assert.equal(Object.prototype.toString.call(data.buffer),'[object ArrayBuffer]');
+      data.set([19,23,29,31]);
+    }};
+  assert.equal(l.glob2_gl_override_texture_units(6),-1);
+  assert.equal(scope.Module.GL_MAX_TEXTURE_IMAGE_UNITS,4);
+  assert.equal(l.glob2_gl_override_texture_units(2),4);
+  l.glob2_gl_restore_texture_units(4);
+  assert.equal(scope.Module.GL_MAX_TEXTURE_IMAGE_UNITS,4);
+  l.glob2_gl_restore_texture_units(-1);
+  assert.equal('GL_MAX_TEXTURE_IMAGE_UNITS' in scope.Module,false);
+  scope.HEAPU8=new Uint8Array(new SharedArrayBuffer(16));
+  l.glob2_gl_copy_readback(3,4);
+  assert.deepEqual(Array.from(scope.HEAPU8.slice(3,7)),[19,23,29,31]);
+  scope.Module.renderer='webgl2';assert.equal(l.glob2_surface_startup_uses_gl(),1);
+  scope.Module.renderer='software';assert.equal(l.glob2_surface_startup_uses_gl(),0);
 });
 test('pthread reply installs SDK offscreen map and rollback restores previous ownership',()=>{
   const original={id:'canvas'};const {bridge,scope,messages,freed,reply}=library(true,original);

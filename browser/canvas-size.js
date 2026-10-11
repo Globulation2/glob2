@@ -116,6 +116,24 @@ addToLibrary({
   glob2_surface_poll: () => Glob2SurfaceBridge.state,
   // Query the calling presentation realm, which may be the application worker.
   glob2_surface_webgpu_available: () => +Boolean(globalThis.navigator?.gpu),
+  glob2_surface_startup_uses_gl: () => +(Module.renderer === 'webgl2'),
+  glob2_gl_override_texture_units__deps: ['$GL'],
+  glob2_gl_override_texture_units: requested => {
+    const previous = Module['GL_MAX_TEXTURE_IMAGE_UNITS'];
+    Module['GL_MAX_TEXTURE_IMAGE_UNITS'] = Math.min(requested, GLctx.getParameter(GLctx.MAX_TEXTURE_IMAGE_UNITS));
+    return previous === undefined ? -1 : previous;
+  },
+  glob2_gl_restore_texture_units: previous => {
+    if (previous < 0) delete Module['GL_MAX_TEXTURE_IMAGE_UNITS'];
+    else Module['GL_MAX_TEXTURE_IMAGE_UNITS'] = previous;
+  },
+  glob2_gl_copy_readback__deps: ['$GL'],
+  glob2_gl_copy_readback: (destination, bytes) => {
+    // WebGL may reject shared Wasm views; copy via an ordinary ArrayBuffer.
+    const data = new Uint8Array(bytes);
+    GLctx.getBufferSubData(0x88EB, 0, data);
+    HEAPU8.set(data, destination);
+  },
   glob2_surface_finish__deps: ['$Glob2SurfaceBridge'],
   glob2_surface_finish: success => Glob2SurfaceBridge.finish(success),
   glob2_surface_error__deps: ['$Glob2SurfaceBridge','$stringToUTF8'],

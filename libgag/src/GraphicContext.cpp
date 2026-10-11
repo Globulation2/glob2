@@ -33,7 +33,9 @@
 #include <SDL3_ttf/SDL_ttf.h>
 #include <SDL3_image/SDL_image.h>
 #ifdef __EMSCRIPTEN__
-#include <emscripten.h>
+extern "C" int glob2_surface_startup_uses_gl();
+extern "C" int glob2_gl_override_texture_units(int requested);
+extern "C" void glob2_gl_restore_texture_units(int previous);
 #endif
 
 namespace GAGCore
@@ -285,7 +287,7 @@ int GraphicContext::maximumTextureSize() const
         automaticBackend = (flags & USEGPU) ? RendererBackend::LegacyGL :
             (flags & PORTABLEGPU) ? RendererBackend::PortableSDL : RendererBackend::Software;
 #ifdef __EMSCRIPTEN__
-        automaticBackend = EM_ASM_INT({ return Module.renderer === 'webgl2' ? 1 : 0; }) ? RendererBackend::LegacyGL : RendererBackend::Software;
+        automaticBackend = glob2_surface_startup_uses_gl() ? RendererBackend::LegacyGL : RendererBackend::Software;
 #endif
 #ifndef HAVE_OPENGL
         if (automaticBackend == RendererBackend::LegacyGL) automaticBackend = RendererBackend::Software;
@@ -977,17 +979,13 @@ int GraphicContext::maximumTextureSize() const
 #if defined(__EMSCRIPTEN__) && defined(HAVE_OPENGL)
                 // Live skin materials use a second unit even on the legacy
                 // renderer. Initialize emulation bookkeeping for that unit too.
-                const int previousUnits = EM_ASM_INT({
-                    const previous = Module['GL_MAX_TEXTURE_IMAGE_UNITS'];
-                    Module['GL_MAX_TEXTURE_IMAGE_UNITS'] = Math.min(2, GLctx.getParameter(GLctx.MAX_TEXTURE_IMAGE_UNITS));
-                    return previous === undefined ? -1 : previous;
-                });
+                const int previousUnits = glob2_gl_override_texture_units(2);
                 try { ApplicationHost::initializeOpenGLContext(); }
                 catch (...) {
-                    EM_ASM({ if ($0 < 0) delete Module['GL_MAX_TEXTURE_IMAGE_UNITS']; else Module['GL_MAX_TEXTURE_IMAGE_UNITS'] = $0; }, previousUnits);
+                    glob2_gl_restore_texture_units(previousUnits);
                     throw;
                 }
-                EM_ASM({ if ($0 < 0) delete Module['GL_MAX_TEXTURE_IMAGE_UNITS']; else Module['GL_MAX_TEXTURE_IMAGE_UNITS'] = $0; }, previousUnits);
+                glob2_gl_restore_texture_units(previousUnits);
 #else
                 ApplicationHost::initializeOpenGLContext();
 #endif

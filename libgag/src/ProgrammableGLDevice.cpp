@@ -15,20 +15,16 @@
 #include <map>
 #include <stdexcept>
 #ifdef __EMSCRIPTEN__
-#include <emscripten.h>
+extern "C" int glob2_gl_override_texture_units(int requested);
+extern "C" void glob2_gl_restore_texture_units(int previous);
+extern "C" void glob2_gl_copy_readback(void *destination, int bytes);
 // The typed GLES entry point carries an i64 timeout. The pinned SDK's
 // GetProcAddress returns a legacy four-i32 import for this particular function.
 extern "C" GLenum APIENTRY glClientWaitSync(GLsync, GLbitfield, GLuint64);
 #ifdef HAVE_OPENGL
 #include <ApplicationHost.h>
 #endif
-// WebGL has getBufferSubData rather than mapped CPU buffers. Copy through an
-// ordinary ArrayBuffer: WebGL implementations need not accept shared Wasm views.
-EM_JS(void, copyProgrammableGLReadback, (void *destination, int bytes), {
-    const data = new Uint8Array(bytes);
-    GLctx.getBufferSubData(0x88EB, 0, data);
-    HEAPU8.set(data, destination);
-});
+
 #endif
 
 namespace GAGCore
@@ -841,17 +837,13 @@ class ProgrammableGLDevice final : public RenderDevice
             // before invoking wrapped GL entry points. Programmable materials
             // use six real texture units; the legacy renderer's one-unit tuning
             // remains unchanged outside this initialization.
-            const int previousUnits=EM_ASM_INT({
-                const previous=Module['GL_MAX_TEXTURE_IMAGE_UNITS'];
-                Module['GL_MAX_TEXTURE_IMAGE_UNITS']=Math.min(6,GLctx.getParameter(GLctx.MAX_TEXTURE_IMAGE_UNITS));
-                return previous===undefined?-1:previous;
-            });
+            const int previousUnits=glob2_gl_override_texture_units(6);
             try {ApplicationHost::initializeOpenGLContext();}
             catch(...) {
-                EM_ASM({if($0<0)delete Module['GL_MAX_TEXTURE_IMAGE_UNITS'];else Module['GL_MAX_TEXTURE_IMAGE_UNITS']=$0;},previousUnits);
+                glob2_gl_restore_texture_units(previousUnits);
                 throw;
             }
-            EM_ASM({if($0<0)delete Module['GL_MAX_TEXTURE_IMAGE_UNITS'];else Module['GL_MAX_TEXTURE_IMAGE_UNITS']=$0;},previousUnits);
+            glob2_gl_restore_texture_units(previousUnits);
 #endif
             gl.load(); gl.glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTexture);
             int profile; SDL_GL_GetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, &profile);
@@ -1080,7 +1072,7 @@ class ProgrammableGLDevice final : public RenderDevice
         const std::size_t bytes = std::size_t(readback.request.width) * readback.request.height * 4;
         gl.glBindBuffer(GL_PIXEL_PACK_BUFFER, readback.buffer);
 #ifdef __EMSCRIPTEN__
-        copyProgrammableGLReadback(captured.pixels->pixels, int(bytes));
+        glob2_gl_copy_readback(captured.pixels->pixels, int(bytes));
 #else
         const void *mapped = gl.glMapBufferRange(GL_PIXEL_PACK_BUFFER, 0, GLsizeiptr(bytes), GL_MAP_READ_BIT);
         if (!mapped) throw std::runtime_error("Cannot map completed GL capture");
