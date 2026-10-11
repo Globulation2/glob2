@@ -469,6 +469,17 @@ TEST_SUITE("TerrainPresentation")
                 CHECK_FALSE(bool(migration.gpuPages));
                 CHECK(migration.cacheRebuilds()==beforeReturn);
                 CHECK(restored==cpuPixels);
+                // Retaining several densities must still leave room for new
+                // composed targets and masks, including queued mask leases.
+                for(int density:{4,2,1})
+                    for(int vy:{0,16})for(int vx:{0,16})
+                        draw(migration,vx,vy,density,0,25,true);
+                composition.device().forceCPU=false;
+                const auto bounded=draw(migration,15,15,1,0,25,true);
+                REQUIRE(bool(migration.gpuPages));
+                composition.device().forceCPU=true;
+                SoftwareTerrainCache reference;
+                CHECK(bounded==draw(reference,15,15,1,0,25,true));
             }
             {
                 // Model concurrent retained atlas/geometry allocations without

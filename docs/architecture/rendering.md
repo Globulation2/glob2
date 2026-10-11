@@ -652,6 +652,8 @@ Changes between CPU and GPU composition retain reusable CPU terrain pages at
 other densities within the existing cache and texture budgets. Device-composed
 pages are discarded when their targets are released; graphics generation or
 resource registry changes still invalidate the cache.
+GPU page admission reserves new target storage and the bounded coverage lease
+allowance alongside retained CPU pages, retiring idle storage before composition.
 `tools/shaders/prove_terrain_webgpu.mjs` checks exact integer pixels, material
 presence, alpha, each reduction divisor and premultiplied output. The packed-device
 proof additionally checks owned shared-memory coverage uploads, target gutters,
