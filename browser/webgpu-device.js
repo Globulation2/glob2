@@ -147,26 +147,41 @@ addToLibrary({
       this.deferred=false;if(this.lost)throw Error(this.error);if(!this.activeFrame&&this.frames.length>=8)return 0;
       this.size(width,height);const encoder=this.device.createCommandEncoder(),owned=[];
       const vertex=this.buffer(vertices,GPUBufferUsage.VERTEX);owned.push(vertex);const bindings=this.submissionBindings(owned);
+      // Attachment loads/stores and immutable bindings may be reused only for
+      // adjacent draws. Clears, explicit barriers and terrain passes end the run.
+      let active=null;
+      const endPass=()=>{if(active){active.pass.end();active=null;}};
+      const sameRect=(a,b)=>a&&a.every((value,index)=>value===b[index]);
       const view=new DataView(records.buffer,records.byteOffset,records.byteLength);
       for(let i=0;i<count;i++){
         const base=i*256,u=o=>view.getUint32(base+o,true),n=o=>view.getInt32(base+o,true),f=o=>view.getFloat32(base+o,true);
-        const kind=u(0);if(kind===3)continue;
+        const kind=u(0);if(kind===3){endPass();continue;}
         const target=u(28)?this.resources.get(u(28)):this.screen;if(!target)throw Error('Stale WebGPU target');
         const texture=u(24)?this.resources.get(u(24)):this.white;if(!texture)throw Error('Stale WebGPU image');
         if(kind!==2&&texture===target)throw Error('WebGPU target cannot sample itself');
         if(!target.depth){this.reserve(target.width*target.height*4);target.depth=this.device.createTexture({size:[target.width,target.height],format:'depth24plus',usage:GPUTextureUsage.RENDER_ATTACHMENT});this.bytes+=target.width*target.height*4;}
-        if(kind===4){this.terrain(encoder,target,u,uniforms,owned);continue;}
+        if(kind===4){endPass();this.terrain(encoder,target,u,uniforms,owned);continue;}
         const clearColor=kind===2&&u(244),clearDepth=kind===2&&u(248),clip=[n(80),n(84),n(88),n(92)];
         const fullColor=clearColor&&clip[0]===0&&clip[1]===0&&clip[2]===target.width&&clip[3]===target.height;
-        const pass=encoder.beginRenderPass({colorAttachments:[{view:this.textureView(target.texture),loadOp:fullColor||!target.initialized?'clear':'load',clearValue:fullColor?[f(224),f(228),f(232),f(236)]:[0,0,0,0],storeOp:'store'}],depthStencilAttachment:{view:this.textureView(target.depth),depthLoadOp:clearDepth||!target.depthInitialized?'clear':'load',depthClearValue:clearDepth?f(240):1,depthStoreOp:'store'}});target.initialized=true;target.depthInitialized=true;
-        if(kind===2){if(clearColor&&!fullColor)this.clearRegion(pass,target,clip,[f(224),f(228),f(232),f(236)],owned);pass.end();continue;}
+        if(kind===2||active?.target!==target)endPass();
+        if(!active){
+          const pass=encoder.beginRenderPass({colorAttachments:[{view:this.textureView(target.texture),loadOp:fullColor||!target.initialized?'clear':'load',clearValue:fullColor?[f(224),f(228),f(232),f(236)]:[0,0,0,0],storeOp:'store'}],depthStencilAttachment:{view:this.textureView(target.depth),depthLoadOp:clearDepth||!target.depthInitialized?'clear':'load',depthClearValue:clearDepth?f(240):1,depthStoreOp:'store'}});
+          target.initialized=true;target.depthInitialized=true;active={pass,target,groups:[]};
+        }
+        const pass=active.pass;
+        if(kind===2){if(clearColor&&!fullColor)this.clearRegion(pass,target,clip,[f(224),f(228),f(232),f(236)],owned);endPass();continue;}
         const variant=['primitive','world','cloud','point','skin','skin-rig'][u(4)],skin=u(4)>=4,world=kind===1&&!skin;
-        const pipeline=this.pipeline(variant,u(8),u(12),u(16),u(20));pass.setPipeline(pipeline);
+        const pipeline=this.pipeline(variant,u(8),u(12),u(16),u(20));
+        if(active.pipeline!==pipeline){pass.setPipeline(pipeline);active.pipeline=pipeline;active.groups=[];}
         const viewport=[n(64),n(68),n(72),n(76)];
-        if(viewport[2]<=0||viewport[3]<=0||clip[2]<=0||clip[3]<=0){pass.end();continue;}
-        pass.setViewport(...viewport,0,1);pass.setScissorRect(...clip);
+        if(viewport[2]<=0||viewport[3]<=0||clip[2]<=0||clip[3]<=0){continue;}
+        if(!sameRect(active.viewport,viewport)){pass.setViewport(...viewport,0,1);active.viewport=viewport;}
+        if(!sameRect(active.clip,clip)){pass.setScissorRect(...clip);active.clip=clip;}
         const mesh=u(252)?this.meshes.get(u(252)):null;if(u(252)&&!mesh)throw Error('Stale WebGPU geometry');
-        pass.setVertexBuffer(0,mesh?mesh.vertices:vertex,u(32),u(36));
+        const vertexBuffer=mesh?mesh.vertices:vertex,vertexOffset=u(32),vertexSize=u(36);
+        if(active.vertex!==vertexBuffer||active.vertexOffset!==vertexOffset||active.vertexSize!==vertexSize){
+          pass.setVertexBuffer(0,vertexBuffer,vertexOffset,vertexSize);active.vertex=vertexBuffer;active.vertexOffset=vertexOffset;active.vertexSize=vertexSize;
+        }
         const vertexData=skin?uniforms.slice(u(112),u(112)+u(116)):world?records.slice(base+128,base+208):new Float32Array([f(96),f(100),0,0]);
         const fragmentData=skin?uniforms.slice(u(120),u(120)+u(124)):world?records.slice(base+208,base+224):records.slice(base+104,base+128);
         // Primitive block: textured/alpha, std140 padding, UV bounds.
@@ -180,11 +195,16 @@ addToLibrary({
             if(skin){const second=this.resources.get(u(60));if(!second)throw Error('Stale WebGPU material texture');entries.push({binding:2,resource:this.textureView(second.texture)},{binding:3,resource:this.samplers[0]});}
           }
           if(group===3){const b=bindings.uniform(skin||world?fragmentData:primitiveData);entries.push({binding:0,resource:{buffer:b}});}
-          pass.setBindGroup(group,bindings.group(pipeline,group,entries));
+          const binding=bindings.group(pipeline,group,entries);
+          if(active.groups[group]!==binding){pass.setBindGroup(group,binding);active.groups[group]=binding;}
         }
-        if(u(44)){pass.setIndexBuffer(mesh.indices,'uint32',u(40),u(44)*4);pass.drawIndexed(u(52));}else pass.draw(u(52),1,u(48));
-        pass.end();
+        if(u(44)){
+          const offset=u(40),size=u(44)*4;
+          if(active.index!==mesh.indices||active.indexOffset!==offset||active.indexSize!==size){pass.setIndexBuffer(mesh.indices,'uint32',offset,size);active.index=mesh.indices;active.indexOffset=offset;active.indexSize=size;}
+          pass.drawIndexed(u(52));
+        }else pass.draw(u(52),1,u(48));
       }
+      endPass();
       const identity=++this.issued;this.device.queue.submit([encoder.finish()]);
       if(!this.activeFrame)this.activeFrame={identity,owned:[]};this.activeFrame.identity=identity;this.activeFrame.owned.push(...owned);return identity;
     },
