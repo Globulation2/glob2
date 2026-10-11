@@ -1,0 +1,75 @@
+{
+  "revision": "9003f050449cb89ff9bb746a4f5f2cc8128f7808",
+  "product_revision": "38152eb3a",
+  "base": "c3cb01070d121752f4c5e9632c5567ef13e58d9a",
+  "static": {
+    "shader": {
+      "log": "/tmp/glob2-renderer-ccfb-shaders-actual.log",
+      "sha256": "96ee74359d011074634b379d7e56381b6115021ef1a5c9334dc7c1410a2b26b1",
+      "tail": [
+        "................",
+        "----------------------------------------------------------------------",
+        "Ran 16 tests in 1.383s",
+        "",
+        "OK"
+      ]
+    },
+    "ci_policy": {
+      "log": "/tmp/glob2-renderer-ccfb-ci-policy.log",
+      "sha256": "ed65d4386af5e5fe2510894509df28bce2bb81dd81de35efbb8f524c3028a1d7",
+      "tail": [
+        "........................",
+        "----------------------------------------------------------------------",
+        "Ran 24 tests in 0.876s",
+        "",
+        "OK"
+      ]
+    },
+    "browser_unit_node24": {
+      "log": "/tmp/glob2-renderer-ccfb-browser-units-node24.log",
+      "sha256": "656149507b621aac40ed48d123fd1ca20843383c79d2ebf5ec2afca06f9f3eee",
+      "tail": [
+        "\u2714 device loss during asynchronous preparation cannot publish readiness (12.392767ms)",
+        "\u2714 superseded preparation cannot poison or overwrite a new device (9.10808ms)",
+        "\u2714 device acquired by superseded preparation is destroyed without replacing the owner (10.710058ms)",
+        "\u2714 retired completion rejection cannot fail a replacement allocation epoch (7.567746ms)",
+        "\u2139 tests 109",
+        "\u2139 suites 0",
+        "\u2139 pass 109",
+        "\u2139 fail 0",
+        "\u2139 cancelled 0",
+        "\u2139 skipped 0",
+        "\u2139 todo 0",
+        "\u2139 duration_ms 1373.965733"
+      ]
+    },
+    "browser_package": {
+      "log": "/tmp/glob2-renderer-9003-browser-package.log",
+      "sha256": "1878570bb394ccdf7012aef39ca3c2080583cb1b11624c260fa39c4d2c36eed5",
+      "tail": [
+        "............................",
+        "----------------------------------------------------------------------",
+        "Ran 28 tests in 1.262s",
+        "",
+        "OK"
+      ]
+    },
+    "web_assets": {
+      "log": "/tmp/glob2-renderer-ccfb-web-assets.log",
+      "sha256": "4a2ae251a226f17a703fe45ba3d296a668be59d83ead2023bfeb3c1afeae61fa",
+      "tail": [
+        "....s....................",
+        "----------------------------------------------------------------------",
+        "Ran 25 tests in 123.874s",
+        "",
+        "OK (skipped=1)",
+        "web client: /tmp/tmpz0atqpgw/served (0 asset files)"
+      ]
+    }
+  },
+  "excluded_attempts": [
+    "Initial shader discovery filename matched zero tests; corrected16-test run used.",
+    "Initial browser unit command used system Node lacking Blob; rerun pinned Node24 passed109.",
+    "Initial package discovery filename matched zero tests; corrected28-test run used."
+  ]
+}
