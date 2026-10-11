@@ -278,13 +278,16 @@ static int run(int argc, char **argv)
 #endif
         std::printf("GPU=%s map=%s %dx%d viewport=%dx%d frames=%d\n", driver,
             path ? path : "maps/Oazis.map", gui.game.map.getW(), gui.game.map.getH(), width, height, frames);
-        std::printf("BENCH_TIMING wall=draw_flush_completion_with_readback_overhead process_cpu=completion_inclusive submission_cpu=draw_flush gpu_timestamp=unavailable device_presentation=outside_timing\n");
+        std::printf("BENCH_TIMING wall=draw_flush_completion_with_readback_overhead process_cpu=completion_inclusive submission_cpu=draw_flush gpu_timestamp=unavailable final_presentation=outside_timing retry_discard=inside_timing retry_yield_ms=1\n");
         std::fflush(stdout);
         auto measure = [&](const char *label, auto draw)
         {
             const char *mode = std::getenv("GLOB2_BENCH_MODE");
             if (mode && std::strcmp(mode, label)) return;
             std::vector<double> times, cpuTimes, submissionCpuTimes;
+            std::uint64_t measuredAttempts=0, measuredHolds=0, measuredAdmissionDefers=0;
+            double measuredWallMs=0;
+            std::uint64_t warmupAttempts=0,warmupHolds=0,warmupAdmissionDefers=0;
             const int warmupFrames = std::max(0, std::getenv("GLOB2_BENCH_WARMUP_FRAMES")
                 ? std::atoi(std::getenv("GLOB2_BENCH_WARMUP_FRAMES")) : 2);
             for (int i = -warmupFrames; i < frames; ++i)
@@ -294,7 +297,7 @@ static int run(int argc, char **argv)
                 const auto scopesBefore = PerformanceTelemetry::collector().window;
                 Uint64 start = SDL_GetPerformanceCounter();
                 const auto cpuStart = std::clock();
-                std::clock_t submissionCPU{};unsigned deferredAttempts=0;
+                std::clock_t submissionCPU{};unsigned deferredAttempts=0,intentionalHolds=0;
                 for(;;) {
                     draw();
                     if(ContextAccess::backend(*gfx))ContextAccess::backend(*gfx)->flush();
@@ -303,13 +306,14 @@ static int run(int argc, char **argv)
                     // Admission retry cost remains inside this frame's wall/CPU
                     // interval. No incomplete frame contributes a timing sample.
                     ContextAccess::backend(*gfx)->present();
+                    if(GAGCore::didIntentionallyDeferDeviceFrame(*ContextAccess::backend(*gfx)))++intentionalHolds;
                     if(++deferredAttempts>=1000)throw std::runtime_error("Benchmark resource admission did not progress");
                     SDL_Delay(1);
                 }
                 const auto completedCPU=std::clock();
                 double ms = 1000.0 * (SDL_GetPerformanceCounter() - start) / SDL_GetPerformanceFrequency();
                 const double cpuMs = 1000.0 * (completedCPU - cpuStart) / CLOCKS_PER_SEC;
-                if(deferredAttempts)std::printf("FRAME_DEFERRED mode=%s frame=%d attempts=%u included_in_timing=1\n",label,i,deferredAttempts);
+                if(deferredAttempts)std::printf("FRAME_DEFERRED mode=%s frame=%d attempts=%u intentional_holds=%u admission_deferrals=%u included_in_timing=1\n",label,i,deferredAttempts,intentionalHolds,deferredAttempts-intentionalHolds);
                 if (std::getenv("GLOB2_BENCH_FRAME_TIMES"))
                 {
                     if(auto *device=gfx->renderDevice()) {
@@ -347,14 +351,28 @@ static int run(int argc, char **argv)
                 if (i >= 0)
                 {
                     times.push_back(ms);
+                    measuredAttempts+=deferredAttempts+1;
+                    measuredHolds+=intentionalHolds;
+                    measuredAdmissionDefers+=deferredAttempts-intentionalHolds;
+                    measuredWallMs+=ms;
                     if (cpuStart != std::clock_t(-1))
                         cpuTimes.push_back(1000.0 * (completedCPU - cpuStart) / CLOCKS_PER_SEC);
                     if(cpuStart!=std::clock_t(-1))submissionCpuTimes.push_back(1000.0*(submissionCPU-cpuStart)/CLOCKS_PER_SEC);
+                }
+                if(i<0) {
+                    warmupAttempts+=deferredAttempts+1;
+                    warmupHolds+=intentionalHolds;
+                    warmupAdmissionDefers+=deferredAttempts-intentionalHolds;
                 }
                 // Close each device frame after measurement. Otherwise recorder
                 // identity/backup work would be shared by the whole benchmark.
                 if(gfx->renderDevice())ContextAccess::backend(*gfx)->present();
             }
+            std::printf("COMPLETION_SUMMARY mode=%s completed=%zu attempts=%llu intentional_holds=%llu admission_deferrals=%llu completed_per_second=%.6f\n",label,times.size(),
+                static_cast<unsigned long long>(measuredAttempts),static_cast<unsigned long long>(measuredHolds),
+                static_cast<unsigned long long>(measuredAdmissionDefers),1000.0*times.size()/measuredWallMs);
+            std::printf("WARMUP_COMPLETION_SUMMARY mode=%s completed=%d attempts=%llu intentional_holds=%llu admission_deferrals=%llu\n",label,warmupFrames,
+                static_cast<unsigned long long>(warmupAttempts),static_cast<unsigned long long>(warmupHolds),static_cast<unsigned long long>(warmupAdmissionDefers));
             std::sort(times.begin(), times.end());
             std::printf("%s median=%.3f ms p95=%.3f ms\n", label, times[times.size()/2], times[(times.size()*95+99)/100-1]);
             std::printf("%s p99=%.3f ms max=%.3f ms\n", label,
