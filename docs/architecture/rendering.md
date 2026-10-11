@@ -470,3 +470,13 @@ the application's hardware, lifecycle and performance validation. Metal library
 production requires an Apple offline compiler; Direct3D and Metal hardware
 validation remains a separate release gate.
 
+
+### Bounded renderer command core
+
+`RenderFrame` records ordered packets with explicit clips, transforms, targets, blending and depth. Adjacent compatible packets batch without reordering. The recorder flushes at 4096 commands and bounds geometry storage; a rejected submission abandons the incomplete frame rather than exposing partial output.
+
+`RenderResources` supplies generation-checked logical texture and buffer handles, immutable content revisions, retained restoration pixels and per-class budgets. Mutation preserves the content referenced by older submissions. Deletion retires a logical identity while its snapshots remain owned by submitted work. Backends maintain their own allocation generations and upload revisions.
+
+`RenderDevice` owns submission, completion, capture and presentation. The software device and existing drawing adapter exercise the contract without hardware. Capture tickets retain frame identity, recording generation, dimensions, timestamps and semantic context; cancellation and telemetry stay bounded. A fake asynchronous device tests admission, retained revisions, deletion, cancellation and recovery.
+
+`RendererSelection` defines stable backend-family identifiers, aliases, capabilities and startup precedence. Live application switching and hardware devices are integrated separately; this core does not change existing defaults or simulation state.

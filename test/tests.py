@@ -210,6 +210,8 @@ UNIT_TESTS = [
     '#libgag/src/AssetLoaderTest.cpp',
     '#libgag/src/SpriteLoadTest.cpp',
     '#libgag/src/RenderFramePacerTest.cpp',
+    '#libgag/src/RenderDeviceTest.cpp',
+    '#libgag/src/RendererSelectionTest.cpp',
     '#libgag/src/FontMetricsTest.cpp',
     '#libgag/src/PackedArrayTest.cpp',
     '#libgag/src/EventQueueTest.cpp',
