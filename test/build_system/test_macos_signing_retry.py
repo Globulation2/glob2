@@ -102,6 +102,15 @@ class KeychainTests(unittest.TestCase):
                 self.assertTrue(imports[1][2].endswith('.p12'))
         finally: os.umask(old_umask)
 
+    def test_imported_but_unusable_identity_fails_before_signing(self):
+        old_umask = os.umask(0o077)
+        try:
+            with tempfile.TemporaryDirectory() as directory, patch.object(keychain, 'checked', return_value=''), \
+                    patch.object(keychain, 'INTERMEDIATE_SHA256', hashlib.sha256(b'CA').hexdigest()):
+                with self.assertRaisesRegex(ValueError, 'not valid'):
+                    keychain.prepare(directory, b'p12', 'secret', b'p8', IDENTITY, b'CA')
+        finally: os.umask(old_umask)
+
     def test_failure_does_not_disclose_password_or_command(self):
         with patch.object(keychain.subprocess, 'run', return_value=subprocess.CompletedProcess([], 1, '', 'secret')):
             with self.assertRaises(ValueError) as error:
