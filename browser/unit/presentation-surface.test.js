@@ -90,8 +90,18 @@ function library(threaded, canvas=null) {
     else if(enabled)output.push(line);
   }
   vm.runInContext(output.join('\n'),scope);scope.Glob2SurfaceBridge=library.$Glob2SurfaceBridge;
-  return {bridge:scope.Glob2SurfaceBridge,scope,messages,freed,reply:r=>listeners.forEach(fn=>fn({data:{glob2Surface:r}}))};
+  return {bridge:scope.Glob2SurfaceBridge,scope,messages,freed,
+    webgpuAvailable:library.glob2_surface_webgpu_available,
+    reply:r=>listeners.forEach(fn=>fn({data:{glob2Surface:r}}))};
 }
+for (const threaded of [false,true]) test(`WebGPU availability follows the ${threaded?'worker':'serial'} presentation realm`,()=>{
+  const {scope,webgpuAvailable}=library(threaded);
+  assert.equal(webgpuAvailable(),0);
+  scope.navigator={gpu:{requestAdapter(){}}};
+  assert.equal(webgpuAvailable(),1);
+  scope.navigator={};
+  assert.equal(webgpuAvailable(),0);
+});
 test('pthread reply installs SDK offscreen map and rollback restores previous ownership',()=>{
   const original={id:'canvas'};const {bridge,scope,messages,freed,reply}=library(true,original);
   assert.equal(bridge.prepare(1,900,700),0);assert.deepEqual(Array.from(scope.HEAP32.slice(16,19)),[900,700,128]);
