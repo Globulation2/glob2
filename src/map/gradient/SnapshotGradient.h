@@ -10,7 +10,6 @@
 #include "BuildingGradientSearch.h"
 #include "Building.h"
 #include "SeedCells.h"
-#include "field/GradientSeedShape.h"
 
 class ComputeExecutor;
 namespace gradient_kernel { struct OwnedGradientField; }
@@ -68,8 +67,7 @@ struct CrowdingScratch
     std::vector<size_t> positions, seeds;
 };
 void boxSum(Uint16* grid, int width, int height, CrowdingScratch& scratch);
-void seed(const Request& request, const SimulationSnapshot::Handle& snapshot, Uint16* output, CrowdingScratch& scratch,
-          gradient_kernel::GradientSeedShape* shape=nullptr);
+void seed(const Request& request, const SimulationSnapshot::Handle& snapshot, Uint16* output, CrowdingScratch& scratch);
 struct PropagationField {
     Request request;
     const SimulationSnapshot::Handle* snapshot;
@@ -88,12 +86,6 @@ void propagateCPU(const Request& request,const SimulationSnapshot::Handle& snaps
 std::shared_ptr<gradient_kernel::OwnedGradientField> ownPropagation(
     const Request&, const SimulationSnapshot::Handle&, std::unique_ptr<Uint16[]>&,
     std::shared_ptr<gradient_kernel::BackendSession>, gradient_kernel::PlanDecision, std::uint64_t due);
-// Isolated development override; null means admission declined with seeds still
-// owned by the caller. The normal entry point latches its default-off env flag.
-std::shared_ptr<gradient_kernel::OwnedGradientField> ownPropagation(
-    const Request&, const SimulationSnapshot::Handle&, std::unique_ptr<Uint16[]>&,
-    std::shared_ptr<gradient_kernel::BackendSession>, gradient_kernel::PlanDecision,
-    std::uint64_t due, bool minimalCosts);
 struct MinimalCostViewMetrics {
     Uint64 attempted=0,constructed=0,reused=0,declined=0,copiedBytes=0;
     Uint64 budgetDeclines=0,allocationDeclines=0,representationDeclines=0;

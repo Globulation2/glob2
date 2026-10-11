@@ -29,7 +29,7 @@
 class GradientPipeline
 {
 public:
-    enum class CPUReason : unsigned {ExplicitCPU,OwnerExcluded,Unavailable,AutomaticPolicy,FailedSession,Trivial,CpuClockUnavailable,OwnedInputDecline,Count};
+    enum class CPUReason : unsigned {ExplicitCPU,OwnerExcluded,Unavailable,FailedSession,OwnedInputDecline,Count};
 	struct Job {
 		std::optional<SimulationSnapshot::Handle> snapshotLease;
 		std::uint16_t **slot = nullptr;
@@ -54,8 +54,6 @@ public:
 		std::function<void(Job&)> seed;
 		std::uint64_t preparationNs = 0, submittedNs = 0, executorDue = 0;
         std::shared_ptr<gradient_kernel::OwnedGradientField> deviceField;
-        gradient_kernel::GradientSeedShape seedShape;
-        bool captureSeedShape=false;
 	};
 	// Stable save boundary. A view is valid only during visitPendingSnapshots;
 	// the owning queue and worker state remain private to the pipeline.
@@ -106,12 +104,6 @@ private:
 	std::atomic<std::uint64_t> activeNs{0}, seedCpu{0}, propagationCpu{0}, cpuFields{0}, gpuFields{0}, selectedGpu{0}, requestedGpu{0};
     std::atomic<std::uint64_t> ownedInputCpu{0},handoffCpu{0},cleanupCpu{0};
     bool diagnostics=false;
-    bool workerNoopBypass=false,crossDueTiming=false,cpuEnvelopeTiming=false,cpuEnvelopeOwnerRegistered=false;
-    std::function<std::uint64_t()> cpuClock; // Empty production default; owned test clock only.
-    std::uint64_t cpuNow() const noexcept {
-        try{return cpuClock ? cpuClock() : glob2::threadCpuNs();}catch(...){return 0;}
-    }
-    std::uint64_t cadenceStartedNs=0,cadenceWaitNs=0;
     std::array<std::atomic<std::uint64_t>,unsigned(CPUReason::Count)> cpuReasons{};
 	using Clock = std::chrono::steady_clock;
 	static std::uint64_t ns(Clock::time_point start) {
@@ -119,97 +111,48 @@ private:
 	}
 	void execute(Job &job, Workspace &scratch) noexcept {
 		const auto start = Clock::now();
-		gradient_kernel::JobTiming timing{job.submittedNs, job.submittedNs ? gradient_kernel::monotonicNs() : 0,0};
-		gradient_kernel::JobTimingScope timingScope(timing);
 		job.crowding = &scratch.crowding;
 		try
 		{
 			const auto preparationStart = Clock::now();
-            const auto preparationCpu = cpuNow();
+            const auto preparationCpu = glob2::threadCpuNs();
 			try { if (job.seed) job.seed(job); }
 			catch (...) { job.preparationNs = ns(preparationStart); throw; }
 			job.preparationNs = ns(preparationStart);
-            const auto preparedCpu=cpuNow();
+            const auto preparedCpu=glob2::threadCpuNs();
             const bool preparationClockValid=preparationCpu && preparedCpu>=preparationCpu;
             seedCpu.fetch_add(glob2::threadCpuDeltaNs(preparationCpu,preparedCpu),std::memory_order_relaxed);
-            timing.preparation=job.preparationNs;
-            const auto handoffStart=diagnostics ? cpuNow() : 0;
+            const auto handoffStart=diagnostics ? glob2::threadCpuNs() : 0;
             const auto choice = gradient_kernel::backend();
             if(choice==gradient_kernel::Backend::OpenCL) requestedGpu.fetch_add(1,std::memory_order_relaxed);
             const auto family=gradient_preparation::backendFamily(job.request.kind);
-            const bool learningEnabled=bool(backendSession->learningPolicy()) &&
-                (choice!=gradient_kernel::Backend::Automatic || (deviceService && deviceService->learningActive()));
-            gradient_kernel::WorkloadKey key;
-            if(learningEnabled || choice==gradient_kernel::Backend::OpenCL) {
-                key.width=job.snapshotLease ? job.snapshotLease->width : unsigned(cells);
-                key.height=job.snapshotLease ? job.snapshotLease->height : 1;
-                key.family=family; key.cpuBuckets=job.request.terrainBuckets;
-                key.threads=unsigned(executor->threadCount()); key.limit=gradient_kernel::COST_LIMIT;
-                key.movement=unsigned(job.request.swim);
-                key.seedDensity=job.seedShape.seedDensity();key.blockerDensity=job.seedShape.blockerDensity();
-                key.movementModifiers=job.snapshotLease && job.snapshotLease->terrain && job.snapshotLease->terrain->movementModifiers;
-            }
-            auto decision = choice==gradient_kernel::Backend::CPU ? gradient_kernel::PlanDecision{}
-                : asyncWork && deviceService ? backendSession->chooseWorkload(key,choice)
-                : backendSession->choose(family,1,choice);
-            if(choice==gradient_kernel::Backend::Automatic && (!preparationClockValid ||
-                (backendSession->learningPolicy() && !learningEnabled)))decision={};
-            gradient_kernel::GradientBatchChoice batchChoice;
-            if(decision.plan==gradient_kernel::Plan::CPU && choice==gradient_kernel::Backend::Automatic &&
-               learningEnabled && preparationClockValid && deviceService && asyncWork && executor->slot()) {
-                batchChoice=deviceService->acceptedBatchChoice(backendSession,key);
-                if(batchChoice)decision=batchChoice.decision;
-            }
+            const auto decision=backendSession->choose(family,1,choice);
             const bool selectedGPU = decision.plan != gradient_kernel::Plan::CPU;
             if(selectedGPU) selectedGpu.fetch_add(1,std::memory_order_relaxed);
-            if(selectedGPU && workerNoopBypass && gradient_kernel::alreadyFixedGradient(std::span(job.data.get(),cells))) {
-                // Use the existing callback even for exact fixed seeds: it
-                // retains movement/queue validation and the shared CPU shortcut.
-                // Avoid constructing an accelerator DTO and waking the broker.
-                const auto cpuStart=cpuNow();
-                if(diagnostics)handoffCpu.fetch_add(glob2::threadCpuDeltaNs(handoffStart,cpuStart),std::memory_order_relaxed);
-                work(job,scratch.propagation);
-                propagationCpu.fetch_add(glob2::threadCpuDeltaNs(cpuStart,cpuNow()),std::memory_order_relaxed);
-                cpuReasons[unsigned(CPUReason::Trivial)].fetch_add(1,std::memory_order_relaxed);
-                cpuFields.fetch_add(1,std::memory_order_relaxed);
-            } else if (selectedGPU && deviceService && asyncWork && executor->slot()) {
-                const auto ownedStart=diagnostics ? cpuNow() : 0;
+            if(selectedGPU && deviceService && asyncWork && executor->slot()) {
+                const auto ownedStart=diagnostics ? glob2::threadCpuNs() : 0;
                 job.deviceField=asyncWork(job,decision);
                 if(!job.deviceField) {
                     // A bounded owned-view admission can decline before seed
                     // ownership moves. Recovery stays on this original worker
                     // and has no deferred ticket or coordinator dependency.
-                    const auto cpuStart=cpuNow();
+                    const auto cpuStart=glob2::threadCpuNs();
                     if(diagnostics) {
                         ownedInputCpu.fetch_add(glob2::threadCpuDeltaNs(ownedStart,cpuStart),std::memory_order_relaxed);
                         handoffCpu.fetch_add(glob2::threadCpuDeltaNs(handoffStart,ownedStart),std::memory_order_relaxed);
                     }
                     job.cpuOnly=true;
                     work(job,scratch.propagation);
-                    const auto cpuEnd=cpuNow();
+                    const auto cpuEnd=glob2::threadCpuNs();
                     propagationCpu.fetch_add(glob2::threadCpuDeltaNs(cpuStart,cpuEnd),std::memory_order_relaxed);
                     cpuReasons[unsigned(CPUReason::OwnedInputDecline)].fetch_add(1,std::memory_order_relaxed);
                     cpuFields.fetch_add(1,std::memory_order_relaxed);
-                    if(learningEnabled) {
-                        const bool valid=preparationClockValid&&cpuStart>=preparedCpu&&cpuEnd>=cpuStart;
-                        if(batchChoice) {
-                            auto offered=key;offered.batch=batchChoice.minimumCount;
-                            deviceService->recordBatchOfferFallback(backendSession,offered,decision.plan,decision.version,
-                                glob2::threadCpuDeltaNs(preparationCpu,cpuEnd),job.due-delay,valid);
-                        }else deviceService->recordAccepted(backendSession,key,decision.plan,
-                            valid?glob2::threadCpuDeltaNs(preparationCpu,cpuEnd):0,
-                            job.due-delay,true);
-                    }
                 }else {
                 job.requiredControl.store(job.deviceField->requiredControl,std::memory_order_release);
                 if(job.cancelGPU.load(std::memory_order_acquire) && job.deviceField->requiredControl)job.deviceField->requiredControl->requestCancel();
-                job.deviceField->workload=key;
-                if(batchChoice){job.deviceField->minimumBatchCount=batchChoice.minimumCount;
-                    job.deviceField->offeredBatchElapsedNs=batchChoice.maximumElapsedNs;}
-                job.deviceField->seedShape=job.seedShape;job.deviceField->publicationTick=job.due;
                 job.deviceField->tick=job.due-delay;
                 job.deviceField->completion=executor->defer();
-                const auto ownedCpuEnd=cpuNow();
+                const auto ownedCpuEnd=glob2::threadCpuNs();
                 job.deviceField->preparationCpuClockValid=preparationClockValid && preparationCpu && ownedCpuEnd>=preparedCpu;
                 job.deviceField->seedCpuNs=glob2::threadCpuDeltaNs(preparationCpu,ownedCpuEnd);
                 const auto ownedEnd=diagnostics ? ownedCpuEnd : 0;
@@ -219,100 +162,23 @@ private:
                 }
                 if(diagnostics) {
                     ownedInputCpu.fetch_add(glob2::threadCpuDeltaNs(ownedStart,ownedEnd),std::memory_order_relaxed);
-                    handoffCpu.fetch_add(glob2::threadCpuDeltaNs(handoffStart,ownedStart)+glob2::threadCpuDeltaNs(ownedEnd,cpuNow()),std::memory_order_relaxed);
+                    handoffCpu.fetch_add(glob2::threadCpuDeltaNs(handoffStart,ownedStart)+glob2::threadCpuDeltaNs(ownedEnd,glob2::threadCpuNs()),std::memory_order_relaxed);
                 }
                 }
             } else if (selectedGPU && batchWork && gradient_kernel::canBatch(*backendSession)) {
-                if(diagnostics)handoffCpu.fetch_add(glob2::threadCpuDeltaNs(handoffStart,cpuNow()),std::memory_order_relaxed);
+                if(diagnostics)handoffCpu.fetch_add(glob2::threadCpuDeltaNs(handoffStart,glob2::threadCpuNs()),std::memory_order_relaxed);
                 const std::array jobs{&job};
                 batchWork(jobs, std::span(&scratch.propagation, 1));
             } else {
                 const auto reason=choice==gradient_kernel::Backend::CPU ? CPUReason::ExplicitCPU
                     : !executor->slot() ? CPUReason::OwnerExcluded
                     : backendSession->failed.load() ? CPUReason::FailedSession
-                    : choice==gradient_kernel::Backend::Automatic && !preparationClockValid ? CPUReason::CpuClockUnavailable
-                    : choice==gradient_kernel::Backend::Automatic ? CPUReason::AutomaticPolicy
                     : CPUReason::Unavailable;
                 cpuReasons[unsigned(reason)].fetch_add(1,std::memory_order_relaxed);
-                gradient_kernel::GradientCpuCapture::Receipt captureReceipt;
-                std::unique_ptr<gradient_kernel::GradientCpuCapture> capture;
-                std::unique_ptr<gradient_kernel::GradientDeviceService::GroupCapture> groupCapture;
-                if(learningEnabled && deviceService && executor->slot() && job.snapshotLease &&
-                   job.snapshotLease->terrain && job.snapshotLease->terrain->rules) {
-                    gradient_kernel::GradientCpuCapture::Input input;
-                    input.original=std::span(job.data.get(),cells);input.key=key;input.swim=job.swim;
-                    input.tick=job.due-delay;input.due=job.due;input.requiredGeneration=backendSession->currentGeneration();
-                    input.commonPreparationCpuNs=glob2::threadCpuDeltaNs(preparationCpu,preparedCpu);
-                    input.modifiedCosts=job.snapshotLease->terrain->movementModifiers || key.cpuBuckets!=gradient_kernel::BUCKETS;
-                    input.waterContext=&job;
-                    input.waterAt=[](void* value,std::size_t cell)->std::uint8_t {
-                        const auto& terrain=*static_cast<Job*>(value)->snapshotLease->terrain;
-                        return terrain.rules->swimming(terrain.cellRules[cell]);
-                    };
-                    const bool scalarGroup=!input.modifiedCosts && !gradient_kernel::weightedClass(job.swim) &&
-                        (key.family==gradient_kernel::Family::Clear || key.family==gradient_kernel::Family::Guard);
-                    if(scalarGroup) {
-                        gradient_kernel::GradientCpuCaptureGroup::Input group;
-                        group.original=input.original;group.key=key;group.sourceIdentity=job.snapshotLease->terrain;
-                        group.weakSourceBytes=sizeof(SimulationSnapshot::Terrain)+256;
-                        group.revision=job.snapshotLease->terrain->revision;group.variant=std::uint64_t(job.swim);
-                        group.tick=input.tick;group.due=input.due;group.optionalExpiry=input.due;
-                        group.requiredGeneration=input.requiredGeneration;group.commonPreparationCpuNs=input.commonPreparationCpuNs;
-                        group.scalarClassic=true;
-                        groupCapture=deviceService->beginGroupCapture(backendSession,group,captureReceipt);
-                    }else capture=deviceService->beginCapture(backendSession,input,captureReceipt);
-                }
-                // If required propagation throws, pay capture disposal on this
-                // worker without including required execution in the bracket.
-                struct CaptureCleanup {
-                    std::unique_ptr<gradient_kernel::GradientCpuCapture>& capture;
-                    std::unique_ptr<gradient_kernel::GradientDeviceService::GroupCapture>& group;
-                    gradient_kernel::BackendSession& session;
-                    std::uint64_t tick;
-                    ~CaptureCleanup() {
-                        if(!capture && !group)return;
-                        const auto before=group?group->callingReceipt():gradient_kernel::GradientCpuCapture::Receipt{};
-                        const auto started=glob2::threadCpuNs();capture.reset();
-                        const auto paid=group?group->retire():gradient_kernel::GradientCpuCapture::Receipt{};group.reset();
-                        const auto policy=session.learningPolicy();const auto ended=glob2::threadCpuNs();
-                        const auto charge=gradient_kernel::GradientCpuCapture::unrecordedCallingCpu(started,ended,before.optionalCpuNs,paid);
-                        if(policy)policy->recordTuningOverhead(tick,charge.ns,charge.clockValid);
-                    }
-                } captureCleanup{capture,groupCapture,*backendSession,job.due-delay};
-                const auto cpuStart=cpuNow();
+                const auto cpuStart=glob2::threadCpuNs();
                 if(diagnostics)handoffCpu.fetch_add(glob2::threadCpuDeltaNs(handoffStart,cpuStart),std::memory_order_relaxed);
                 work(job,scratch.propagation);
-                const auto cpuEnded=cpuNow();
-                const auto consumed=glob2::threadCpuDeltaNs(cpuStart,cpuEnded);
-                const bool measured=preparationClockValid && cpuStart>=preparedCpu && cpuEnded>=cpuStart;
-                propagationCpu.fetch_add(consumed,std::memory_order_relaxed);
-                if(capture) {
-                    const auto optionalStarted=glob2::threadCpuNs();
-                    const auto recordedBefore=captureReceipt.optionalCpuNs;
-                    const auto policy=backendSession->learningPolicy();
-                    auto record=capture->complete(std::span(job.data.get(),cells),
-                        {backendSession->currentGeneration(),consumed,true,measured},captureReceipt);
-                    // Freeze the clone receipt before the coordinator can adopt
-                    // the Record. No worker reads escaped producer-owned state.
-                    if(record)deviceService->submitCapture(std::move(record),backendSession);
-                    capture.reset();
-                    const auto charge=gradient_kernel::GradientCpuCapture::unrecordedCallingCpu(
-                        optionalStarted,glob2::threadCpuNs(),recordedBefore,captureReceipt);
-                    if(policy)policy->recordTuningOverhead(captureCleanup.tick,charge.ns,charge.clockValid);
-                }
-                if(groupCapture) {
-                    const auto before=groupCapture->callingReceipt();
-                    const auto optionalStarted=glob2::threadCpuNs();
-                    groupCapture->complete(std::span(job.data.get(),cells),
-                        {backendSession->currentGeneration(),consumed,true,measured});
-                    const auto paid=groupCapture->retire();groupCapture.reset();
-                    const auto charge=gradient_kernel::GradientCpuCapture::unrecordedCallingCpu(
-                        optionalStarted,glob2::threadCpuNs(),before.optionalCpuNs,paid);
-                    if(auto policy=backendSession->learningPolicy())policy->recordTuningOverhead(captureCleanup.tick,charge.ns,charge.clockValid);
-                }
-                if(learningEnabled && deviceService && executor->slot()) deviceService->recordAccepted(backendSession,key,
-                    gradient_kernel::Plan::CPU,measured ? glob2::threadCpuDeltaNs(preparationCpu,preparedCpu)+consumed : 0,
-                    job.due-delay,!measured);
+                propagationCpu.fetch_add(glob2::threadCpuDeltaNs(cpuStart,glob2::threadCpuNs()),std::memory_order_relaxed);
                 cpuFields.fetch_add(1,std::memory_order_relaxed);
             }
 		}
@@ -321,12 +187,12 @@ private:
 			job.error = std::current_exception();
 		}
 		// Completion releases all borrowed immutable inputs, including failures.
-        const auto cleanupStart=diagnostics ? cpuNow() : 0;
+        const auto cleanupStart=diagnostics ? glob2::threadCpuNs() : 0;
 		job.water.reset(); job.terrain.reset(); job.registry.reset(); job.profiles.reset();
 		job.snapshotLease.reset(); job.seed = {}; job.crowding = nullptr;
 		activeNs.fetch_add(ns(start), std::memory_order_relaxed);
 		job.done = true;
-        if(diagnostics)cleanupCpu.fetch_add(glob2::threadCpuDeltaNs(cleanupStart,cpuNow()),std::memory_order_relaxed);
+        if(diagnostics)cleanupCpu.fetch_add(glob2::threadCpuDeltaNs(cleanupStart,glob2::threadCpuNs()),std::memory_order_relaxed);
 	}
 	static void run(void* context, std::size_t) {
 		auto& job = *static_cast<Job*>(context);
@@ -335,9 +201,7 @@ private:
 	}
 	void wait(Job &job, bool publication = false) {
 		const auto start = Clock::now();
-        const bool learningEnabled=bool(backendSession->learningPolicy()) &&
-            (gradient_kernel::backend()!=gradient_kernel::Backend::Automatic || (deviceService && deviceService->learningActive()));
-        const bool trackStalls=diagnostics || learningEnabled;
+        const bool trackStalls=diagnostics;
         const auto waitStart=trackStalls ? gradient_kernel::monotonicNs() : 0;
         const auto joinCpuStart=diagnostics ? glob2::threadCpuNs() : 0;
         const bool incomplete=trackStalls && publication && executor && !executor->finished(job.batch);
@@ -357,13 +221,6 @@ private:
             // The ticket includes owned input release and service completion work.
             // Any incomplete GPU outcome can block its fixed publication, even
             // after the backend call has finished. Backend overlap is telemetry.
-            if(incomplete && job.deviceField->executedGPU) {
-                if(learningEnabled && deviceService) {
-                    auto key=job.deviceField->workload;key.batch=job.deviceField->executedBatchCount;
-                    deviceService->recordAccepted(job.deviceField->session,key,job.deviceField->decision.plan,
-                        0,job.deviceField->tick,false,true);
-                }
-            }
             if(diagnostics && incomplete && job.deviceField->executedGPU) {
                 const auto waited=joined-waitStart;
                 const auto from=std::max(waitStart,job.deviceField->deviceStartedWallNs);
@@ -389,8 +246,6 @@ private:
 	}
 public:
 	~GradientPipeline() { reset(); }
-    // Tests install an owned clock only after required work has drained.
-    void setCpuClockForTesting(std::function<std::uint64_t()> clock){finish();cpuClock=std::move(clock);}
 	bool enabled() const { return delay != 0; }
 	unsigned workerCount() const { return shared && executor ? executor->threadCount()-1 : 0; }
 	unsigned delayTicks() const { return delay; }
@@ -405,42 +260,28 @@ public:
 			try { executor->join(job->batch); } catch (...) {}
 		}
 		pending.clear(); spare.clear(); workspaces.clear();
-        // Credit/cadence history uses this monotonic local namespace. Saves and
-        // publication remain relative to the current tick; executorDue is
-        // independently supplied by the Map's external deadline callback.
+        // Saves/publication remain relative to the monotonic local tick;
+        // executorDue is independently supplied by the Map's deadline callback.
         backendSession->invalidateConfiguration();
 		delay = 0; lastSubmission = tick;
-        cadenceStartedNs=cadenceWaitNs=0;
 	}
 	void configure(ComputeExecutor& target, bool sharedExecution, unsigned ticks, std::size_t size, Work callback) {
 		reset(); batchWork = {}; asyncWork = {}; metrics = {}; activeNs = 0; seedCpu=0; propagationCpu=0; cpuFields=0; gpuFields=0; selectedGpu=0; requestedGpu=0;
         for(auto& reason:cpuReasons) reason=0; cells = size; work = std::move(callback);
         diagnostics=gradient_kernel::gradientDiagnosticsRequested();
-        cpuEnvelopeTiming=glob2::cpuEnvelopeRequested();cpuEnvelopeOwnerRegistered=false;ownedInputCpu=0;handoffCpu=0;cleanupCpu=0;
-        workerNoopBypass=false;
-        if(const auto* value=std::getenv("GLOB2_GRADIENT_WORKER_NOOP");value && *value) {
-            if(std::strcmp(value,"0") && std::strcmp(value,"1"))
-                throw std::invalid_argument("GLOB2_GRADIENT_WORKER_NOOP must be 0 or 1");
-            workerNoopBypass=std::strcmp(value,"1")==0;
-        }
-		executor = &target; shared = sharedExecution;refreshDeviceConfiguration();
+        ownedInputCpu=0;handoffCpu=0;cleanupCpu=0;
+		executor = &target; shared = sharedExecution;
 		resizeWorkspaces(); delay = ticks;
 	}
     void setBatchWork(BatchWork callback) { finish(); batchWork=std::move(callback); }
     void setAsyncWork(AsyncWork callback) { finish(); asyncWork=std::move(callback); }
     void setDeviceService(std::shared_ptr<gradient_kernel::GradientDeviceService> service) {
         finish(); deviceService=std::move(service);
-        refreshDeviceConfiguration();
-    }
-    void refreshDeviceConfiguration() noexcept {
-        crossDueTiming=deviceService && deviceService->crossDueRequested();
-        cadenceStartedNs=cadenceWaitNs=0;
     }
     std::shared_ptr<gradient_kernel::BackendSession> session() const { return backendSession; }
     std::uint64_t requiredSeedCpuNs() const { return seedCpu.load(); }
     std::uint64_t requiredPropagationCpuNs() const { return propagationCpu.load(); }
     bool diagnosticsEnabled() const {return diagnostics;}
-    bool workerNoopEnabled() const {return workerNoopBypass;}
     std::uint64_t requiredOwnedInputCpuNs() const {return ownedInputCpu.load();}
     std::uint64_t requiredHandoffCpuNs() const {return handoffCpu.load();}
     std::uint64_t requiredCleanupCpuNs() const {return cleanupCpu.load();}
@@ -487,20 +328,7 @@ public:
 	void setWorkerCount(unsigned count) { finish(); shared = count != 0; }
 	// Publish before the teams step; preparation observes the completed previous tick.
 	void advance() {
-        if(cpuEnvelopeTiming && !cpuEnvelopeOwnerRegistered)
-            cpuEnvelopeOwnerRegistered=glob2::registerCpuEnvelopeThread(glob2::CpuThreadRole::Owner);
-        if((crossDueTiming || (deviceService && deviceService->learningActive())) && executor) {
-            const auto started=gradient_kernel::monotonicNs();
-            const auto totals=executor->metrics();const auto waited=totals.waitNs+totals.joinWaitNs;
-            const auto elapsed=started>=cadenceStartedNs ? started-cadenceStartedNs : 0;
-            const auto blocked=waited>=cadenceWaitNs ? waited-cadenceWaitNs : elapsed;
-            // Publication availability is elapsed monotonic time, including
-            // normal pacing, with observed executor waits removed. Required
-            // host CPU is measured independently and never predicts slack.
-            const auto nonWait=cadenceStartedNs && elapsed>blocked ? elapsed-blocked : 0;
-            deviceService->recordCadence({tick+1,started,nonWait});
-            cadenceStartedNs=started;cadenceWaitNs=waited;
-        }
+
 		++tick;
         metrics.lastPublicationWaitNs=metrics.lastGpuPublicationWaitNs=metrics.lastGpuDeviceOverlapWaitNs=0;
 		while (!pending.empty() && pending.front()->due <= tick) {
@@ -526,7 +354,6 @@ public:
 		else { job = std::move(spare.back()); spare.pop_back(); }
 		job->slot=slot; job->swim=swim; job->due=tick+delay;
 		job->deviceField.reset();
-        job->seedShape={};job->captureSeedShape=crossDueTiming || (deviceService && deviceService->learningActive());
         job->cancelGPU=false;job->requiredControl.store({});
         job->done=false; job->superseded=false; job->cpuOnly=false; job->error=nullptr;  job->owner=this; job->preparationNs=0;
 		auto *ptr=job.get(); pending.push_back(std::move(job));
@@ -539,7 +366,7 @@ public:
 	template<class Seed> void prepare(Job *ptr, Seed &&seed) {
 		try {
 			ptr->seed = std::forward<Seed>(seed);
-            ptr->submittedNs=backendSession->accountingEnabled() ? gradient_kernel::monotonicNs() : 0;
+            ptr->submittedNs=diagnostics ? gradient_kernel::monotonicNs() : 0;
 			// Owner-only execution computes now; publication keeps its deadline.
 			if (!shared) { execute(*ptr, workspaces[0]); return; }
 			const ComputeExecutor::Group group{1, {&run, ptr}, ComputeExecutor::NoLane};

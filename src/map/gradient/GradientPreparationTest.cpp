@@ -1361,15 +1361,15 @@ TEST_CASE("GradientPreparation/minimal GPU views release source graphs and recov
         gradient_preparation::propagateCPU(request,snapshot,expected.data(),reference);
         auto make=[&]{auto data=std::make_unique<Uint16[]>(map.size);std::copy(original.begin(),original.end(),data.get());return data;};
         auto data=make();auto session=std::make_shared<BackendSession>();
-        auto owned=gradient_preparation::ownPropagation(request,snapshot,data,session,{Plan::Frozen8,0,session->currentGeneration()},17,true);
+        auto owned=gradient_preparation::ownPropagation(request,snapshot,data,session,{Plan::Frozen8,0,session->currentGeneration()},17);
         REQUIRE(bool(owned));CHECK_FALSE(data);CHECK(owned->identity.owner==owned->inputs);
         CHECK(owned->identity.retainedBytes>0);CHECK(owned->retainedInputBytes==0);
         const auto before=gradient_preparation::minimalCostViewMetrics();
-        auto otherData=make();auto other=gradient_preparation::ownPropagation(request,snapshot,otherData,session,{},17,true);
+        auto otherData=make();auto other=gradient_preparation::ownPropagation(request,snapshot,otherData,session,{},17);
         REQUIRE(bool(other));CHECK(other->identity.owner==owned->identity.owner);
         CHECK(gradient_preparation::minimalCostViewMetrics().reused==before.reused+1);
         auto replacement=std::make_shared<SimulationSnapshot::Terrain>(*terrain);snapshot.terrain=replacement;
-        auto replacedData=make();auto replaced=gradient_preparation::ownPropagation(request,snapshot,replacedData,session,{},17,true);
+        auto replacedData=make();auto replaced=gradient_preparation::ownPropagation(request,snapshot,replacedData,session,{},17);
         REQUIRE(bool(replaced));CHECK(replaced->identity.owner!=owned->identity.owner); // Same revision, different control identity.
         replacement.reset();snapshot={};terrain.reset();rules.reset();
         CHECK(source.expired());CHECK(table.expired());
@@ -1420,14 +1420,14 @@ TEST_CASE("GradientPreparation/minimal view pressure declines without moving ori
     {
         struct Release {std::size_t bytes;~Release(){releaseOpenCLHostBytes(bytes);}} release{pressure};
         const auto before=gradient_preparation::minimalCostViewMetrics();
-        CHECK_FALSE(gradient_preparation::ownPropagation(request,snapshot,data,session,{},17,true));
+        CHECK_FALSE(gradient_preparation::ownPropagation(request,snapshot,data,session,{},17));
         CHECK(gradient_preparation::minimalCostViewMetrics().budgetDeclines==before.budgetDeclines+1);
     }
     CHECK(data.get()==original);CHECK(data[0]==77);CHECK(data[world.game.map.size-1]==77);
     auto malformed=std::make_shared<SimulationSnapshot::Terrain>(*snapshot.terrain);
     malformed->cellRules.pop_back();snapshot.terrain=malformed;
     const auto before=gradient_preparation::minimalCostViewMetrics();
-    CHECK_FALSE(gradient_preparation::ownPropagation(request,snapshot,data,session,{},17,true));
+    CHECK_FALSE(gradient_preparation::ownPropagation(request,snapshot,data,session,{},17));
     CHECK(gradient_preparation::minimalCostViewMetrics().representationDeclines==before.representationDeclines+1);
     CHECK(data.get()==original);CHECK(data[0]==77);
 }

@@ -2,8 +2,7 @@
 #pragma once
 #include "GradientCosts.h"
 #include "OpenCLRequiredControl.h"
-#include "OpenCLChargedStorage.h"
-#include "AdaptiveGradientPolicy.h"
+#include "BackendSession.h"
 #include "Grid.h"
 #include <algorithm>
 #include <array>
@@ -33,13 +32,9 @@ struct CostIdentity
     // Optional immutable proof: every cell has this packed cardinal/diagonal
     // pair. Zero is unknown. Valid only with owner and allCells.
     std::uint32_t packedUniformCost = 0;
-    // Trusted owned capture only. Pointer and shared control identity must both
-    // match owner; unrelated/generic owners retain conservative graph charges.
-    std::shared_ptr<const PrechargedProbeCostOwner> prechargedOwner;
 };
 inline std::size_t retainedCostOwnerBytes(const CostIdentity& identity) noexcept {
-    return identity.owner && !PrechargedProbeCostOwner::matches(identity.owner,identity.prechargedOwner)
-        ? identity.retainedBytes : 0;
+    return identity.owner ? identity.retainedBytes : 0;
 }
 struct BackendRequest
 {
@@ -65,24 +60,6 @@ struct BackendRequest
     // Retains true when later readback/session failure causes CPU fallback.
     bool* deviceExecutionObserved = nullptr;
     std::shared_ptr<OpenCLRequiredControl> requiredControl;
-};
-// Optional replay reads immutable seeds and never invokes required CPU recovery
-// or publishes output into that storage. Its owner pins the session, cost
-// context and complete retained graph until positive transfer completion.
-struct OpenCLProbeInput
-{
-    const std::uint16_t* gradient;
-    int limit;
-    field::Grid grid;
-    BackendSession& session;
-    void* context;
-    EntrySteps (*costAt)(void*,std::size_t);
-    CostIdentity identity;
-    Operation operation=Operation::CompleteField;
-    // Owned accepted capture only: CPU/host/device reservations and immutable
-    // cost context already exist. Permits private cost preparation, never
-    // device/compiler initialization or publication into the required cache.
-    bool capturedPrivateCosts=false;
 };
 inline bool alreadyFixedGradient(std::span<const std::uint16_t> seeds) {
     const auto source=std::find_if(seeds.begin(),seeds.end(),[](auto value){return value>1;});
@@ -131,23 +108,12 @@ inline void executeGradientGroup(std::span<const BackendRequest> requests, Backe
         return alreadyFixedGradient(std::span(request.gradient,request.grid.cells()));
     })) return;
     const auto chosen=eligible ? first.session.choose(first.family,requests.size(),mode) : PlanDecision{};
-    const bool sample=eligible && first.session.sample();
-    GradientObservation observation;
-    const auto started=sample ? monotonicNs() : 0;
-    if(sample) {
-        observation.decision=chosen; observation.family=first.family; observation.batch=unsigned(requests.size());
-        observation.width=first.grid.width(); observation.height=first.grid.height(); observation.limit=first.limit;
-        observation.movement=first.identity.variant; observation.costRevision=first.identity.revision;
-        observation.cpuBuckets=first.cpuBuckets; observation.threads=unsigned(ComputeExecutor::executionThreads());
-    }
-    StageTimingScope stageScope(sample ? &observation.stages : nullptr);
     bool handled=false;
     if(chosen.plan!=Plan::CPU) {
         if(requests.size()==1 && accelerator) handled=accelerator(first,chosen.plan);
         else if(batchAccelerator) handled=batchAccelerator(requests,chosen.plan);
     }
     if(!handled) {
-        observation.decision.plan=Plan::CPU;
         if(first.cpuBatch && std::all_of(requests.begin(),requests.end(),[&](const auto& r){return r.cpuBatch==first.cpuBatch;})) {
             std::array<const BackendRequest*,8> pointers{};
             std::array<std::uint16_t*,8> outputs{};
@@ -159,17 +125,7 @@ inline void executeGradientGroup(std::span<const BackendRequest> requests, Backe
             catch(...) { if(r.failure) r.failure(r.context,std::current_exception()); else throw; }
         }
     }
-    if(sample) {
-        const auto completed=monotonicNs();
-        const auto* job=JobTiming::current;
-        observation.hasQueue=job && job->submitted;
-        const auto executionStart=observation.hasQueue ? job->started : started;
-        observation.executionNs=completed-executionStart;
-        observation.queueNs=observation.hasQueue ? job->started-job->submitted : 0;
-        observation.serviceNs=observation.executionNs+observation.queueNs;
-        observation.seedPreparationNs=job ? job->preparation : 0;
-        first.session.record(observation);
-    }
+
 }
 inline void executeGradientBatch(std::span<const BackendRequest> input, Backend mode)
 {
