@@ -418,10 +418,18 @@ TEST_SUITE("TerrainPresentation")
             REQUIRE(gfx.backendSwitchStatus().phase==RendererSwitchPhase::Complete);REQUIRE(gfx.backendSwitchStatus().active==backend);
         };
         const auto draw=[&](SoftwareTerrainCache &cache,int vx,int vy,int scale,int reduction,int animation,bool whole) {
-            gfx.setClipRect();gfx.drawFilledRect(0,0,512,512,17,29,41);
-            gfx.beginMapTransform(1,0,0,0,0,512,512);
-            REQUIRE(cache.prepareAtResolution(scene,*globals->terrain,0,0,15,15,vx,vy,fixture.team->me,whole,animation,scale,false,reduction));
-            cache.draw(gfx);gfx.endMapTransform();gfx.renderer->flush();
+            for(unsigned attempt=0;attempt<32;++attempt) {
+                gfx.setClipRect();gfx.drawFilledRect(0,0,512,512,17,29,41);
+                gfx.beginMapTransform(1,0,0,0,0,512,512);
+                REQUIRE(cache.prepareAtResolution(scene,*globals->terrain,0,0,15,15,vx,vy,fixture.team->me,whole,animation,scale,false,reduction));
+                cache.draw(gfx);gfx.endMapTransform();gfx.renderer->flush();
+                CHECK(cache.bytes()<=SoftwareTerrainCache::GPUCacheBudget);
+                CHECK(cache.residentTextureBytes()<=SoftwareTerrainCache::GPUBudget);
+                if(didRecordDeviceFrame(*gfx.renderer))break;
+                // Dense retained CPU pages can require several bounded upload
+                // submissions. Retry the same view until it is published.
+                gfx.nextFrame();
+            }
             REQUIRE(didRecordDeviceFrame(*gfx.renderer));
             std::unique_ptr<SDL_Surface,decltype(&SDL_DestroySurface)> pixels(gfx.renderer->capture(),SDL_DestroySurface);REQUIRE(pixels);
             std::unique_ptr<SDL_Surface,decltype(&SDL_DestroySurface)> rgba(SDL_ConvertSurface(pixels.get(),SDL_PIXELFORMAT_RGBA32),SDL_DestroySurface);REQUIRE(rgba);
