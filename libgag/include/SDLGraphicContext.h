@@ -385,6 +385,7 @@ namespace GAGCore
         void recoverPresentationDevice();
         void handleDeviceFailure(const std::string &);
         void resetDeviceSkinState() { deviceSkinState.reset(); }
+        void invalidateDeviceSkinTiles();
         void prepareDeviceSkinMeshes(const std::vector<SkinMeshRequest> &);
         bool drawDeviceSkinMesh(const SkinMeshRequest &, float, float, float, float, DrawableSurface *, Uint8);
         bool readDeviceSkinMesh(const SkinMeshRequest &, std::vector<std::uint8_t> &);
@@ -501,6 +502,7 @@ namespace GAGCore
 		void updateWindowSize(void);
 		SDL_Window *window = nullptr;
 		unsigned glContextGeneration = 0;
+        std::uint64_t targetContentRevision = 0;
 		SDL_GLContext context = nullptr;
 		SDL_ThreadID eventThread = 0;
 		bool pollingEvents = false;
@@ -616,6 +618,8 @@ namespace GAGCore
 		//! Bounded software pass; borrows pixels and restores facade/backend state on failure.
 		void drawToSurface(SDL_Surface* surface, float scale, const std::function<void()>& draw);
 		unsigned getGLContextGeneration() const { return glContextGeneration; }
+        // Failed bounded admission invalidates composed pixels, not logical leases.
+        std::uint64_t renderTargetContentRevision() const { return targetContentRevision; }
 
 		// modifiers
 		virtual bool setRes(int w, int h, Uint32 flags);

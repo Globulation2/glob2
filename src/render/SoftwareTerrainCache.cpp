@@ -19,7 +19,7 @@ class GpuTerrainPageCache
 {
     using Resources = GAGCore::RenderResources;
     using PageKey = std::tuple<int,int,int,int>;
-    struct Page { GAGCore::TextureHandle handle; GAGCore::TextureSnapshot pixels; std::uint64_t used; };
+    struct Page { GAGCore::TextureHandle handle; GAGCore::TextureSnapshot pixels; std::uint64_t used; bool ready; };
     struct Source { GAGCore::TextureHandle handle; std::uint64_t revision, used; };
     struct MaskKey {
         TerrainVisual::Recipe recipe; int scale;
@@ -42,7 +42,7 @@ class GpuTerrainPageCache
     inline static const auto globalMaskLeases=std::make_shared<MaskLeaseBudget>();
     const std::shared_ptr<MaskLeaseBudget> localMaskLeases=std::make_shared<MaskLeaseBudget>();
     std::size_t pageBytes=0,maskBytes=0;
-    std::uint64_t frame=0,maskIdentity=0;
+    std::uint64_t frame=0,maskIdentity=0,contentRevision=0;
     inline static std::atomic_uint64_t nextCacheIdentity{0};
     const std::uint64_t cacheIdentity=++nextCacheIdentity;
     static constexpr std::size_t PageBudget=128u*1024*1024,MaskBudget=8u*1024*1024;
@@ -135,13 +135,17 @@ class GpuTerrainPageCache
         auto found=pages.find(key(chunk));if(found==pages.end())return;
         pageBytes-=found->second.pixels->bytes;resources->erase(found->second.handle);pages.erase(found);
     }
-    void begin(std::uint64_t tick,int x0,int y0,int x1,int y1,int maskW,int maskH,int scale,int reduction) {
+    void begin(std::uint64_t revision,std::uint64_t tick,int x0,int y0,int x1,int y1,int maskW,int maskH,int scale,int reduction) {
+        if(contentRevision!=revision) {
+            for(auto &[key,page]:pages) page.ready=false;
+            contentRevision=revision;
+        }
         frame=tick;protectedPages.clear();
         for(int y=y0;y<=y1;++y) for(int x=x0;x<=x1;++x)
             protectedPages.emplace((x*SoftwareTerrainCache::ChunkTiles)&maskW,(y*SoftwareTerrainCache::ChunkTiles)&maskH,scale,reduction);
     }
     GAGCore::TextureSnapshot find(const SoftwareTerrainCache::Chunk &chunk) {
-        const auto found=pages.find(key(chunk));if(found==pages.end())return {};
+        const auto found=pages.find(key(chunk));if(found==pages.end() || !found->second.ready)return {};
         found->second.used=frame;return found->second.pixels;
     }
     void compose(GAGCore::GraphicContext &gfx,TerrainVisual::Compositor &compositor,
@@ -149,7 +153,10 @@ class GpuTerrainPageCache
         using namespace GAGCore;
         const int composition=32*chunk.scale,cellSize=composition/chunk.downsample;
         const int dimension=SoftwareTerrainCache::ChunkTiles*cellSize;
-        auto target=find(chunk);
+        // Recompose unpublished pixels in the same allocation; replacing its
+        // handle would restart a deferred upload on every retry.
+        auto existing=pages.find(key(chunk));
+        auto target=existing==pages.end()?TextureSnapshot{}:existing->second.pixels;
         if(!target) {
             const auto bytes=std::size_t(dimension)*dimension*4;
             while(pageBytes+bytes>PageBudget) {
@@ -164,7 +171,7 @@ class GpuTerrainPageCache
             TextureDescriptor descriptor;descriptor.width=descriptor.height=dimension;
             descriptor.alpha=TextureDescriptor::Alpha::Premultiplied;descriptor.budgetClass=TextureDescriptor::BudgetClass::TerrainPage;
             auto handle=resources->create(pixels.get(),1,descriptor);if(!handle)throw std::bad_alloc();
-            target=resources->snapshot(handle);pages[key(chunk)]={handle,target,frame};pageBytes+=target->bytes;
+            target=resources->snapshot(handle);pages[key(chunk)]={handle,target,frame,false};pageBytes+=target->bytes;
         }
         // Prepare owned packets before emitting any part of the page. Failure
         // leaves the caller free to use the CPU compositor for the entire page.
@@ -192,6 +199,7 @@ class GpuTerrainPageCache
         if(!gfx.beginDeviceTarget(target,dimension,dimension))throw std::bad_alloc();
         try {for(auto &packet:packets) if(!gfx.submitDevicePacket(std::move(packet)))throw std::bad_alloc();gfx.endDeviceTarget();}
         catch(...) {gfx.endDeviceTarget();throw;}
+        pages.at(key(chunk)).ready=true;
     }
 };
 
@@ -526,7 +534,7 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
         if (composeOnDevice) gpuPages = std::make_shared<GpuTerrainPageCache>(gfx.renderResourceOwner());
         gpuPageGeneration = generation;
     }
-    if (gpuPages) gpuPages->begin(frame,x0,y0,x1,y1,map.getMaskW(),map.getMaskH(),resolution,downsample);
+    if (gpuPages) gpuPages->begin(gfx.renderTargetContentRevision(),frame,x0,y0,x1,y1,map.getMaskW(),map.getMaskH(),resolution,downsample);
 
 		// Protect the complete requested view before admitting its first page.
 		// Otherwise a pan can evict a page we are about to visit later this frame.

@@ -1224,13 +1224,12 @@ int GraphicContext::maximumTextureSize() const
 				{
 					try { renderer->present(); }
                     catch (const std::exception &error) { handleDeviceFailure(error.what()); return; }
-                    // A bounded offscreen capture may deliberately retain the completed
-                    // frame. Its device and restoration generation remain healthy.
+                    // Budget deferral retains allocations so sliced uploads can progress.
+                    // Only content recorded by an aborted frame needs regeneration.
                     if (presentationDevice && !didPresentDeviceFrame(*renderer) &&
                         !didIntentionallyDeferDeviceFrame(*renderer)) {
-                        ++glContextGeneration;
-                        resetDeviceSkinState();
-                        transitionPixels.reset();
+                        ++targetContentRevision;
+                        invalidateDeviceSkinTiles();
                     }
                     completeBackendFrame();
 					return;

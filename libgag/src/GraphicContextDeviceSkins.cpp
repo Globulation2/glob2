@@ -87,6 +87,9 @@ struct DeviceSkinState {
         meshes.emplace(key,handle);return resources.snapshot(handle);
     }
 };
+void GraphicContext::invalidateDeviceSkinTiles() {
+    if(deviceSkinState) deviceSkinState->slots=SkinAtlasCache{};
+}
 void GraphicContext::prepareDeviceSkinMeshes(const std::vector<SkinMeshRequest> &requests) {
     if(!presentationDevice || renderer != deviceRenderer.get() || !presentationDevice->capabilities().skinMaterials || requests.empty()) return;
     if(!deviceSkinState) deviceSkinState=std::make_shared<DeviceSkinState>(*deviceResources);
@@ -119,7 +122,9 @@ void GraphicContext::prepareDeviceSkinMeshes(const std::vector<SkinMeshRequest> 
         if(!state.page(prospective/SlotsPerPage)) continue;
         const auto slot=state.slots.reserve(key),tile=slot%SlotsPerPage;
         const auto target=state.page(slot/SlotsPerPage);
-        if(!target || !beginDeviceTarget(target,AtlasSize,AtlasSize)) { deviceSkinState.reset(); return; }
+        if(!target || !beginDeviceTarget(target,AtlasSize,AtlasSize)) {
+            invalidateDeviceSkinTiles(); return;
+        }
         try {
             const SDL_Rect viewport{int(tile%Columns*TileSize),int(tile/Columns*TileSize),TileSize,TileSize};
             DrawPacket clear;clear.kind=DrawPacket::Kind::Clear;clear.clearDepth=true;clear.clearColor=false;
