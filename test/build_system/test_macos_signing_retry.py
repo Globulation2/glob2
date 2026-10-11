@@ -122,6 +122,9 @@ class KeychainTests(unittest.TestCase):
         self.assertLess(workflow.index('signing_retry.py download'), workflow.index('      - name: Import temporary Developer ID'))
         self.assertIn('ref: ${{ needs.preflight.outputs.source_commit }}', workflow)
         self.assertIn('environment: macos-developer-id', workflow)
+        self.assertIn('fetch-depth: 1', workflow)
+        self.assertNotIn('fetch-depth: 0', workflow)
+        self.assertIn('release.py check --tag', workflow)
         self.assertIn('source/tools/release/sign_macos.py', workflow)
         self.assertNotIn('contents: write', workflow)
 
