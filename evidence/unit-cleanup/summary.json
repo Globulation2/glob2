@@ -1,0 +1,331 @@
+{
+  "status": "PASS_FINAL_CLEANUP_VALIDATION",
+  "revision": "32c7ec892b5a1dfb22bde2d9025de106e8eac4d3",
+  "master": "c6a7eae787a0f945619a622ed99ac755c2632689",
+  "previousCleanupRevision": "00f50c5ff1b1da77254b4057c3e04059917cc5a8",
+  "originalFoundationEvidenceRevision": "66379264ecd55c8058fe31d61009eafffc7db563",
+  "checks": {
+    "build-current": {
+      "status": "PASS",
+      "exitCode": 0,
+      "receipt": "build-current-command.json",
+      "argv": [
+        "python3",
+        "tools/dev_build.py",
+        "release=1",
+        "dev_fast=0",
+        "linker=default",
+        "--build=build/unit-cleanup-release",
+        "build/unit-cleanup-release/src/glob2",
+        "engine-tests",
+        "unit-tests",
+        "-j6"
+      ]
+    },
+    "engine-current": {
+      "status": "PASS",
+      "exitCode": 0,
+      "receipt": "engine-current-command.json",
+      "argv": [
+        "python3",
+        "test/run_tests.py",
+        "--build-dir",
+        "build/unit-cleanup-release",
+        "--keep-profiles",
+        "-j",
+        "6",
+        "--junit",
+        "/home/bradley/.codex/worktrees/af25/glob2/artifacts/unit-cleanup/engine-current.xml",
+        "--write-inventory",
+        "/home/bradley/.codex/worktrees/af25/glob2/artifacts/unit-cleanup/engine-current-inventory.json",
+        "--artifacts",
+        "/home/bradley/.codex/worktrees/af25/glob2/artifacts/unit-cleanup/engine-current-cases",
+        "--binary",
+        "engine",
+        "--no-display",
+        "--filter",
+        "UnitCatalog/*",
+        "--filter",
+        "UnitCustomization/*",
+        "--filter",
+        "TeamStatsSave/*",
+        "--filter",
+        "EngineSession/*",
+        "--filter",
+        "LegacyReplay/*",
+        "--filter",
+        "GameDiagnostics/*",
+        "--filter",
+        "CommandLine/*"
+      ],
+      "cases": {
+        "tests": 133,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 8,
+        "passed": 125
+      }
+    },
+    "unit-current": {
+      "status": "PASS",
+      "exitCode": 0,
+      "receipt": "unit-current-command.json",
+      "argv": [
+        "python3",
+        "test/run_tests.py",
+        "--build-dir",
+        "build/unit-cleanup-release",
+        "--keep-profiles",
+        "-j",
+        "6",
+        "--junit",
+        "/home/bradley/.codex/worktrees/af25/glob2/artifacts/unit-cleanup/unit-current.xml",
+        "--write-inventory",
+        "/home/bradley/.codex/worktrees/af25/glob2/artifacts/unit-cleanup/unit-current-inventory.json",
+        "--artifacts",
+        "/home/bradley/.codex/worktrees/af25/glob2/artifacts/unit-cleanup/unit-current-cases",
+        "--binary",
+        "unit",
+        "--no-display"
+      ],
+      "cases": {
+        "tests": 941,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 24,
+        "passed": 917
+      }
+    },
+    "assets-current": {
+      "status": "PASS",
+      "exitCode": 0,
+      "receipt": "assets-current-command.json",
+      "argv": [
+        "python3",
+        "test/run_tests.py",
+        "--build-dir",
+        "build/unit-cleanup-release",
+        "--keep-profiles",
+        "-j",
+        "6",
+        "--junit",
+        "/home/bradley/.codex/worktrees/af25/glob2/artifacts/unit-cleanup/assets-current.xml",
+        "--write-inventory",
+        "/home/bradley/.codex/worktrees/af25/glob2/artifacts/unit-cleanup/assets-current-inventory.json",
+        "--artifacts",
+        "/home/bradley/.codex/worktrees/af25/glob2/artifacts/unit-cleanup/assets-current-cases",
+        "--binary",
+        "unit",
+        "--filter",
+        "AssetLoader/*",
+        "--filter",
+        "SpriteSheets/*"
+      ],
+      "cases": {
+        "tests": 19,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "passed": 19
+      }
+    },
+    "presentation-current": {
+      "status": "PASS",
+      "exitCode": 0,
+      "receipt": "presentation-current-command.json",
+      "argv": [
+        "python3",
+        "test/run_tests.py",
+        "--build-dir",
+        "build/unit-cleanup-release",
+        "--keep-profiles",
+        "-j",
+        "6",
+        "--junit",
+        "/home/bradley/.codex/worktrees/af25/glob2/artifacts/unit-cleanup/presentation-current.xml",
+        "--write-inventory",
+        "/home/bradley/.codex/worktrees/af25/glob2/artifacts/unit-cleanup/presentation-current-inventory.json",
+        "--artifacts",
+        "/home/bradley/.codex/worktrees/af25/glob2/artifacts/unit-cleanup/presentation-current-cases",
+        "--binary",
+        "engine",
+        "--filter",
+        "EngineSession/automatic GUI sessions poll asset finalizers*",
+        "--filter",
+        "UnitCatalog/new combinations retain appearance*"
+      ],
+      "cases": {
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "passed": 2
+      }
+    },
+    "cli-current": {
+      "status": "PASS",
+      "exitCode": 0,
+      "receipt": "cli-current-command.json",
+      "argv": [
+        "python3",
+        "test/test_cli_smoke.py",
+        "--binary",
+        "build/unit-cleanup-release/src/glob2",
+        "--artifacts",
+        "/home/bradley/.codex/worktrees/af25/glob2/artifacts/unit-cleanup/cli-current-cases",
+        "--junit",
+        "/home/bradley/.codex/worktrees/af25/glob2/artifacts/unit-cleanup/cli-current.xml"
+      ],
+      "cases": {
+        "tests": 15,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "passed": 15
+      }
+    },
+    "cli-reference-current": {
+      "status": "PASS",
+      "exitCode": 0,
+      "receipt": "cli-reference-current-command.json",
+      "argv": [
+        "python3",
+        "tools/cli_reference.py",
+        "--binary",
+        "build/unit-cleanup-release/src/glob2",
+        "--check"
+      ]
+    },
+    "traces-current": {
+      "status": "PASS",
+      "exitCode": 0,
+      "receipt": "traces-current-command.json",
+      "argv": [
+        "python3",
+        "test/run-browser-determinism.py",
+        "build/unit-cleanup-release/src/glob2",
+        "/home/bradley/.codex/worktrees/af25/glob2/artifacts/unit-cleanup/traces-current",
+        "--engine-binary",
+        "build/unit-cleanup-release/test/glob2-engine-tests"
+      ]
+    },
+    "package-optimization-current": {
+      "status": "PASS",
+      "exitCode": 0,
+      "receipt": "package-optimization-current-command.json",
+      "argv": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "test/build_system",
+        "-p",
+        "test_package_optimization.py"
+      ],
+      "cases": {
+        "tests": 6,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "passed": 6
+      }
+    },
+    "android-release-current": {
+      "status": "PASS",
+      "exitCode": 0,
+      "receipt": "android-release-current-command.json",
+      "argv": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "test/build_system",
+        "-p",
+        "test_android_release.py"
+      ],
+      "cases": {
+        "tests": 16,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "passed": 16
+      }
+    },
+    "play-release-current": {
+      "status": "PASS",
+      "exitCode": 0,
+      "receipt": "play-release-current-command.json",
+      "argv": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "test/build_system",
+        "-p",
+        "test_play_release.py"
+      ],
+      "cases": {
+        "tests": 10,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "passed": 10
+      }
+    }
+  },
+  "canonicalComparison": {
+    "status": "PASS",
+    "revision": "32c7ec892b5a1dfb22bde2d9025de106e8eac4d3",
+    "referenceProducer": "9e6f406b634023702eb34125916f74fe453a5e54",
+    "normalization": "None; whole raw bytes",
+    "traces": [
+      {
+        "kind": "replay",
+        "currentPath": "artifacts/unit-cleanup/traces-current/native.replay.checksums",
+        "referencePath": "artifacts/unit-cleanup/reference/replay.trace",
+        "bytes": 4209844,
+        "sha256": "651709a50b88c4662f6ab0fad34093571c43e993436f7f84174f953a44149259",
+        "wholeBytesEqual": true
+      },
+      {
+        "kind": "match",
+        "currentPath": "artifacts/unit-cleanup/traces-current/verify-match.checksums.txt",
+        "referencePath": "artifacts/unit-cleanup/reference/match.trace",
+        "bytes": 10914,
+        "sha256": "f29f0e00acdb3bc32019ce0ccb955e83a5af072138df632a3b22c183ec23b3ce",
+        "wholeBytesEqual": true
+      },
+      {
+        "kind": "resources",
+        "currentPath": "artifacts/unit-cleanup/traces-current/resources/native/cases/RuntimeResources/frozen_seeded_resource_compositions_preserve_invariants_and_exact_simulation_continuation__golden/seeded-compositions.trace",
+        "referencePath": "artifacts/unit-cleanup/reference/resources.trace",
+        "bytes": 13384,
+        "sha256": "d483ae2a779e52f8f43235b9dc112c697f685633cbc03427edf9b59b43bb52a6",
+        "wholeBytesEqual": true
+      },
+      {
+        "kind": "units",
+        "currentPath": "artifacts/unit-cleanup/traces-current/units/native/cases/UnitCustomization/all_locked_capability_ablations_match_fixed_tick_and_RNG_traces__golden__artifacts/unit-ablations.trace",
+        "referencePath": "artifacts/unit-cleanup/reference/units.trace",
+        "bytes": 1339,
+        "sha256": "95d87548aa0ce39d8eb5a15a2bbcd8d1ced68f75e70c022e8189d2829db5c094",
+        "wholeBytesEqual": true
+      }
+    ]
+  },
+  "preservedFailedAttempts": {
+    "build-command.json": "Old build directory rejected by updated master build configuration, before compilation.",
+    "build-fresh-command.json": "Compilation completed and binaries passed tests; original wrapper failed because shared origin/master advanced. Raw receipt remains FAIL. Corrected current wrapper pins immutable HEAD/tree and records child exit separately.",
+    "package-contracts-current-command.json": "Incorrect unittest module invocation: no tests imported. Corrected explicit discover invocations passed32 cases."
+  },
+  "limits": [
+    "Linux x86_64 GCC15.2 release verification at final revision. Display checks use Xvfb/Mesa.",
+    "Earlier platform and full-state evidence retains its original source identities; it is not relabeled as final cleanup execution.",
+    "Windows/mobile hardware execution and maintainer play-through not newly verified.",
+    "No new performance campaign or performance claim. User removed performance acceptance requirements.",
+    "Hosted CI is not claimed by local checks."
+  ]
+}
