@@ -101,6 +101,10 @@ void popDeviceTarget(RenderBackend &);
 bool recordDevicePacket(RenderBackend &, DrawPacket);
 // Query after flush and before capture admission, then after present respectively.
 bool didRecordDeviceFrame(const RenderBackend &);
+// Fence healthy offscreen work while retaining the previous completed main
+// presentation. Failure remains ordinary abort; inspect intention after present.
+bool deferDeviceFrame(RenderBackend &);
+bool didIntentionallyDeferDeviceFrame(const RenderBackend &);
 bool didPresentDeviceFrame(const RenderBackend &);
 std::uint64_t submittedDeviceFrameIdentity(const RenderBackend &);
 } // namespace GAGCore

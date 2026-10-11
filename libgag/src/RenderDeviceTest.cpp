@@ -60,6 +60,35 @@ class DelayedDevice final : public RenderDevice
 }
 TEST_SUITE("RenderDevice")
 {
+    TEST_CASE("intentional presentation hold preserves committed pixels and capture identity")
+    {
+        auto output=surface();auto device=makeSoftwareRenderDevice(output.get());RenderResources resources;
+        auto backend=makeDeviceRenderBackend(*device,resources,2,1);
+        backend->fill({0,0,2,1},{200,0,0,255});backend->present();
+        const auto identity=submittedDeviceFrameIdentity(*backend);
+        const auto generation=device->generation();
+        backend->fill({0,0,2,1},{0,200,0,255});
+        REQUIRE(deferDeviceFrame(*backend));CHECK_FALSE(didRecordDeviceFrame(*backend));
+        backend->fill({0,0,2,1},{0,0,200,255}); // later commands cannot leak into held output
+        backend->present();CHECK_FALSE(didPresentDeviceFrame(*backend));
+        CHECK(didIntentionallyDeferDeviceFrame(*backend));CHECK(submittedDeviceFrameIdentity(*backend)==identity);
+        CHECK(device->generation()==generation);
+        Surface captured(backend->capture(),SDL_DestroySurface);REQUIRE(captured);CHECK(pixel(captured.get(),0).r==200);
+        backend->fill({0,0,2,1},{0,0,180,255});backend->present();
+        CHECK(didPresentDeviceFrame(*backend));CHECK_FALSE(didIntentionallyDeferDeviceFrame(*backend));
+        captured.reset(backend->capture());REQUIRE(captured);CHECK(pixel(captured.get(),0).b==180);
+        REQUIRE(deferDeviceFrame(*backend));backend->present();backend->reset();
+        CHECK_FALSE(didIntentionallyDeferDeviceFrame(*backend));CHECK(submittedDeviceFrameIdentity(*backend)==0);
+    }
+    TEST_CASE("ordinary device failure cannot become an intentional presentation hold")
+    {
+        DelayedDevice device;RenderResources resources;auto backend=makeDeviceRenderBackend(device,resources,2,1);
+        device.failSubmission=true;backend->fill({0,0,2,1},{200,0,0,255});
+        CHECK_FALSE(deferDeviceFrame(*backend));CHECK_FALSE(didRecordDeviceFrame(*backend));
+        CHECK_THROWS_AS(backend->present(),std::runtime_error);CHECK_FALSE(didIntentionallyDeferDeviceFrame(*backend));
+        backend->reset();CHECK_FALSE(didIntentionallyDeferDeviceFrame(*backend));
+    }
+
     TEST_CASE("capture identity remains the last committed frame across empty presentation and recreation")
     {
         auto output=surface();auto device=makeSoftwareRenderDevice(output.get());RenderResources resources;
