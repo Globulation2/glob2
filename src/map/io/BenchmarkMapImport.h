@@ -3,7 +3,7 @@
 
 // Explicit development import scope for constructed stress fixtures. Ordinary
 // map contracts, lobby/network readers and generators retain their own bounds.
-// The synchronous Headless saved-game import and fixture harness alone opt in;
+// Synchronous Headless/repeat saved-game imports and the fixture harness opt in;
 // MapIO never reads a process environment flag.
 class ScopedBenchmarkMapImport
 {
