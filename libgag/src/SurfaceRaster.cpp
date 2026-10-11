@@ -145,10 +145,18 @@ void nearest(SDL_Surface *target, SDL_Surface *source, const SDL_Rect &src, cons
 	const bool rleBlend = triangleBlend && sameFormat && opacity == 255 && src.w == dst.w &&
 						  src.h == dst.h && alphaMask == 0xff000000;
 	const auto divide255 = [](Uint32 value) { return (value + 1 + (value >> 8)) >> 8; };
-	std::vector<int> columns(visible.w);
-	for (int x = 0; x < visible.w; ++x)
-		columns[x] = src.x + int(((std::int64_t(visible.x + x) - dst.x) * 2 + 1) * src.w /
-								 (std::int64_t(dst.w) * 2));
+	// At native size the original pixel-center mapping reduces exactly to an
+	// offset. Keep scaled sampling unchanged, without allocating its lookup for
+	// common alpha sprite copies.
+	const bool nativeWidth = src.w == dst.w, nativeHeight = src.h == dst.h;
+	std::vector<int> columns;
+	if (!nativeWidth)
+	{
+		columns.resize(visible.w);
+		for (int x = 0; x < visible.w; ++x)
+			columns[x] = src.x + int(((std::int64_t(visible.x + x) - dst.x) * 2 + 1) * src.w /
+									 (std::int64_t(dst.w) * 2));
+	}
 	check(SDL_LockSurface(source));
 	if (!SDL_LockSurface(target))
 	{
@@ -158,6 +166,7 @@ void nearest(SDL_Surface *target, SDL_Surface *source, const SDL_Rect &src, cons
 	for (int y = visible.y; y < visible.y + visible.h; ++y)
 	{
 		const int sy =
+			nativeHeight ? src.y + y - dst.y :
 			src.y + int(((std::int64_t(y) - dst.y) * 2 + 1) * src.h / (std::int64_t(dst.h) * 2));
 		if (sy < 0 || sy >= source->h)
 			continue;
@@ -168,7 +177,7 @@ void nearest(SDL_Surface *target, SDL_Surface *source, const SDL_Rect &src, cons
 			visible.x;
 		for (int x = 0; x < visible.w; ++x)
 		{
-			const int sx = columns[x];
+			const int sx = nativeWidth ? src.x + visible.x - dst.x + x : columns[x];
 			if (sx < 0 || sx >= source->w)
 				continue;
 			Uint32 value = row[sx];
