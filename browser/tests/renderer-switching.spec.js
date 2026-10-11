@@ -394,7 +394,20 @@ for(const mode of ['serial','threaded']) {
       expect(chapter.map).toBe(identity.map);expect(chapter.team).toBe(identity.team);
       expect(chapter.tick).toBeGreaterThanOrEqual(identity.tick);
     }
-    await info.attach('recording-switch-metadata',{body:JSON.stringify(metadata,null,2),contentType:'application/json'});await verify();
+    await info.attach('recording-switch-metadata',{body:JSON.stringify(metadata,null,2),contentType:'application/json'});
+    await clickControl(page,'recording/files');await screen(page,'RecordingFilesScreen');
+    const download=page.waitForEvent('download');await clickControl(page,'export/'+path);
+    const video=await download,file=info.outputPath('backend-switch-recording.mp4');await video.saveAs(file);
+    expect(require('node:fs').statSync(file).size).toBeGreaterThan(1000);
+    const probe=JSON.parse(require('node:child_process').execFileSync(process.env.GLOB2_FFPROBE||'ffprobe',
+      ['-v','error','-show_entries','stream=codec_name,codec_type,width,height:format=duration','-of','json',file],
+      {encoding:'utf8',timeout:10000}));
+    const videoStream=probe.streams.find(stream=>stream.codec_type==='video');
+    expect(videoStream).toMatchObject({codec_name:'h264',width:metadata.width,height:metadata.height});
+    expect(probe.streams.some(stream=>stream.codec_type==='audio'&&stream.codec_name==='aac')).toBe(true);
+    expect(Number(probe.format.duration)).toBeGreaterThan(0);
+    await info.attach('backend-switch-media-probe',{body:JSON.stringify(probe,null,2),contentType:'application/json'});
+    await info.attach('backend-switch-video',{path:file,contentType:'video/mp4'});await verify();
   });
   test(`${mode}: all available WebGPU pairs retain application ownership`,async({page},info)=>{
     test.setTimeout(480000);const verify=await start(page,mode);
