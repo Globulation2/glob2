@@ -541,7 +541,8 @@ def main():
         # $ORIGIN/../lib/glob2, so remove the build prefix from both.
         env['RPATH'] = [path for path in env.get('RPATH', []) if str(path) != sdl_prefix + '/lib']
         env['LINKFLAGS'] = [flag for flag in env.get('LINKFLAGS', [])
-                            if str(flag) != '-Wl,-rpath,' + sdl_prefix + '/lib']
+                            if str(flag) not in ('-Wl,-rpath,' + sdl_prefix + '/lib',
+                                             '-Wl,-rpath=' + sdl_prefix + '/lib')]
     
     
     configure_development(env, identity)

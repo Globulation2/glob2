@@ -85,12 +85,56 @@ class SDLRenderBackend final : public RenderBackend
 		check(restored && colorRestored);
 		return result;
 	}
+    bool exactPremultiplication()
+    {
+        // Blend units can approximate src*alpha differently from our integer
+        // artwork preparation. Test every byte pair once, before caching any
+        // gameplay texture, rather than changing the established pixel result.
+        using Surface = std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)>;
+        using TextureOwner = std::unique_ptr<SDL_Texture, decltype(&SDL_DestroyTexture)>;
+        Surface source(SDL_CreateSurface(256, 256, SDL_PIXELFORMAT_ARGB8888), SDL_DestroySurface);
+        TextureOwner target(SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888,
+                                              SDL_TEXTUREACCESS_TARGET, 256, 256), SDL_DestroyTexture);
+        if (!source || !target) return false;
+        for (unsigned alpha = 0; alpha < 256; ++alpha)
+            for (unsigned channel = 0; channel < 256; ++channel)
+                reinterpret_cast<Uint32 *>(static_cast<Uint8 *>(source->pixels) + alpha * source->pitch)[channel] =
+                    (alpha << 24) | (channel << 16) | ((255 - channel) << 8) | channel;
+        if (!premultiply(target.get(), source.get())) return false;
+        auto *previous = SDL_GetRenderTarget(renderer);
+        if (!SDL_SetRenderTarget(renderer, target.get())) return false;
+        Surface output(SDL_RenderReadPixels(renderer, nullptr), SDL_DestroySurface);
+        check(SDL_SetRenderTarget(renderer, previous));
+        if (!output || output->w != 256 || output->h != 256 || SDL_BYTESPERPIXEL(output->format) != 4) return false;
+        unsigned mismatches = 0;
+        const auto *format = SDL_GetPixelFormatDetails(output->format);
+        for (unsigned alpha = 0; alpha < 256; ++alpha)
+            for (unsigned channel = 0; channel < 256; ++channel) {
+                Uint32 value = 0;
+                std::memcpy(&value, static_cast<Uint8 *>(output->pixels) + alpha * output->pitch +
+                            channel * SDL_BYTESPERPIXEL(output->format), SDL_BYTESPERPIXEL(output->format));
+                Uint8 red, green, blue, a;
+                SDL_GetRGBA(value, format, nullptr, &red, &green, &blue, &a);
+                const unsigned expected = (channel * alpha + 127) / 255;
+                mismatches += red != expected || blue != expected ||
+                    green != ((255 - channel) * alpha + 127) / 255 || a != alpha;
+            }
+        if (mismatches)
+            SDL_LogInfo(SDL_LOG_CATEGORY_RENDER,
+                        "Renderer %s uses CPU texture preparation: GPU byte conformance failed for %u/65536 pairs",
+                        SDL_GetRendererName(renderer), mismatches);
+        return mismatches == 0;
+    }
 	RenderOperations counts;
 
   public:
 	explicit SDLRenderBackend(SDL_Renderer *renderer)
 		: renderer(renderer), gpuPreparation(gpuPreparationEnabled(renderer))
 	{
+        if (gpuPreparation) {
+            gpuPreparation = exactPremultiplication();
+            if (!gpuPreparation) { SDL_DestroyTexture(uploadTexture); uploadTexture = nullptr; }
+        }
 	}
 	~SDLRenderBackend() override
 	{
@@ -347,22 +391,26 @@ class SDLRenderBackend final : public RenderBackend
 } // namespace
 std::unique_ptr<RenderBackend> makeSDLRenderBackend(SDL_Window *window, int width, int height)
 {
-	SDL_Renderer *renderer = SDL_CreateRenderer(window, nullptr);
+	std::unique_ptr<SDL_Renderer, decltype(&SDL_DestroyRenderer)> renderer(
+        SDL_CreateRenderer(window, nullptr), SDL_DestroyRenderer);
 	if (!renderer)
 		return {};
-	auto backend = std::make_unique<SDLRenderBackend>(renderer);
+	auto backend = std::make_unique<SDLRenderBackend>(renderer.get());
+    auto *active = renderer.release();
 	backend->logicalSize(width, height);
-	check(SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND));
+	check(SDL_SetRenderDrawBlendMode(active, SDL_BLENDMODE_BLEND));
 	return backend;
 }
 
 std::unique_ptr<RenderBackend> makeSDLSoftwareGeometryBackend(SDL_Surface *surface)
 {
-	auto *renderer = SDL_CreateSoftwareRenderer(surface);
+	std::unique_ptr<SDL_Renderer, decltype(&SDL_DestroyRenderer)> renderer(
+        SDL_CreateSoftwareRenderer(surface), SDL_DestroyRenderer);
 	if (!renderer)
 		throw std::runtime_error(SDL_GetError());
-	auto backend = std::make_unique<SDLRenderBackend>(renderer);
-	check(SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND));
+	auto backend = std::make_unique<SDLRenderBackend>(renderer.get());
+    auto *active = renderer.release();
+	check(SDL_SetRenderDrawBlendMode(active, SDL_BLENDMODE_BLEND));
 	return backend;
 }
 

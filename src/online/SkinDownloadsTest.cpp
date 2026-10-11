@@ -41,6 +41,26 @@ TEST_SUITE("SkinDownloads") {
         auto again=f.loader();f.keys();again->poll(1700000000);CHECK(again->takeReady().size()==1);
         CHECK(f.http.count("/texture")==1);CHECK(f.http.count("/material")==1);
     }
+    TEST_CASE("renderer changes restore either representation without changing authorization"){
+        DownloadFixture f; f.cache(); auto loader=f.loader(); loader->setSoftware(true);
+        f.keys(); loader->poll(1700000000);
+        auto ready=loader->takeReady(); REQUIRE(ready.size()==1); CHECK(ready[0].path.empty());
+        loader->setSoftware(false); loader->poll(1700000001);
+        ready=loader->takeReady(); REQUIRE(ready.size()==1); CHECK(ready[0].path==f.path());
+        CHECK(ready[0].materialPath==f.materialPath()); CHECK(f.http.count("/texture")==0);
+        loader->setSoftware(false); loader->poll(1700000002); CHECK(loader->takeReady().empty());
+        loader->setSoftware(true); loader->poll(1700000003);
+        ready=loader->takeReady(); REQUIRE(ready.size()==1); CHECK(ready[0].path.empty());
+    }
+    TEST_CASE("switching to sprites cancels pending live atlas downloads"){
+        DownloadFixture f; auto loader=f.loader(); f.keys(); loader->poll(1700000000);
+        REQUIRE(f.http.pending("/texture")); REQUIRE(f.http.pending("/material"));
+        loader->setSoftware(true); loader->poll(1700000001);
+        CHECK(f.http.pending("/texture")==nullptr); CHECK(f.http.pending("/material")==nullptr);
+        REQUIRE(loader->takeReady().size()==1); CHECK(loader->done());
+        loader->setSoftware(false); loader->poll(1700000002); f.serve(); loader->poll(1700000003);
+        REQUIRE(loader->takeReady().size()==1); CHECK(loader->done());
+    }
     TEST_CASE("corrupt cache and network bytes cannot reach the renderer"){
         DownloadFixture f;f.storage.files[f.path()]="corrupt";f.storage.files[f.materialPath()]=f.texture; // valid WebP, wrong hash
         auto loader=f.loader();f.keys();loader->poll(1700000000);

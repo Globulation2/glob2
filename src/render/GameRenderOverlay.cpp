@@ -296,7 +296,7 @@ void Game::drawMapOverlayMaps(int left, int top, int right, int bot, int sw, int
 		}
 
 		///This is to correct OpenGL's blending not beeing offset correctly to line up with the map tiles
-		if(globalContainer->gfx->getOptionFlags() & GraphicContext::USEGPU)
+		if(globalContainer->gfx->rendererCapabilities().alphaMapCellCentres)
 			globalContainer->gfx->drawAlphaMap(overlayAlphas, width, height, -16, -16, 32, 32, overlayColor);
 		else
 			globalContainer->gfx->drawAlphaMap(overlayAlphas, width, height, -32, -32, 32, 32, overlayColor);

@@ -254,6 +254,7 @@ GLuint createMaterial()
 
 void TorusView::releaseMaterials()
 {
+    releaseDeviceMaterials();
 #ifdef GLOB2_TORUS_OPENGL
     if (graphicsContext && graphicsContext == SDL_GL_GetCurrentContext() &&
         graphicsGeneration == globalContainer->gfx->getGLContextGeneration())
@@ -426,7 +427,7 @@ void TorusView::updateClouds(int time)
 #endif
 }
 
-bool TorusView::draw(const PresentationFrame& frame,GameGUI* gui, int team, unsigned options, int &vx, int &vy, int width, int height, float flatZoom, float fractionX, float fractionY)
+bool TorusView::drawLegacy(const PresentationFrame& frame,GameGUI* gui, int team, unsigned options, int &vx, int &vy, int width, int height, float flatZoom, float fractionX, float fractionY)
 {
 	PERF_SCOPE_TIME(Torus);
 #ifdef GLOB2_TORUS_OPENGL

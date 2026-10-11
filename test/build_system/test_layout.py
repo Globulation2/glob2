@@ -33,6 +33,21 @@ class BuildLayoutTests(unittest.TestCase):
         self.assertNotEqual(default_directory(build_identity({})),
                             default_directory(build_identity({'wss':'0'})))
 
+    def test_direct_browser_renderer_has_isolated_build_identity(self):
+        for release in ('0', '1'):
+            legacy = build_identity({'target': 'web', 'release': release})
+            direct = build_identity({'target': 'web', 'release': release, 'web_legacy_gl': '0'})
+            self.assertEqual(default_directory(direct), default_directory(legacy) / 'direct')
+            self.assertNotEqual(legacy, direct)
+            with tempfile.TemporaryDirectory() as path:
+                prepare_directory(path, legacy)
+                with self.assertRaises(ValueError):
+                    prepare_directory(path, direct)
+        for args in ({'web_legacy_gl': '0'}, {'target': 'web', 'web_legacy_gl': 'yes'},
+                     {'target': 'android', 'web_legacy_gl': '0'}):
+            with self.subTest(args=args), self.assertRaises(ValueError):
+                build_identity(args)
+
     def test_incompatible_explicit_directory_is_rejected(self):
         with tempfile.TemporaryDirectory() as path:
             native = build_identity({})

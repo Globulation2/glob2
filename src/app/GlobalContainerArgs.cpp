@@ -36,10 +36,7 @@ void GlobalContainer::applyCommand(const Cli::Request &request)
 	toggle("custom-cursor", GraphicContext::CUSTOMCURSOR);
 	if (r.has("--renderer"))
 	{
-		if (r.get("--renderer") == "gpu")
-			settings.screenFlags |= GraphicContext::USEGPU;
-		else
-			settings.screenFlags &= ~GraphicContext::USEGPU;
+        rendererLaunchOverride = GAGCore::parseRendererBackend(r.get("--renderer"));
 	}
 	if (r.has("--graphics-detail"))
 		settings.setGraphicsDetail(r.get("--graphics-detail") == "full");

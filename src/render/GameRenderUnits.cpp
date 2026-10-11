@@ -125,7 +125,7 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	auto color = presentationColor(entities.owner(*unit).color);
 	// Pending software artwork keeps the classic sprites with the authorized
 	// skin color, matching the treatment of other buildings.
-	if (!(globalContainer->gfx->getOptionFlags() & GAGCore::GraphicContext::USEGPU))
+	if (!globalContainer->gfx->rendererCapabilities().liveSkins)
 		if (const auto chosen = view.render.skinPreview().buildingColor(unit->team))
 			color = GAGCore::Color((*chosen >> 16) & 255, (*chosen >> 8) & 255, *chosen & 255);
 	unitSprite->setBaseColor(color);

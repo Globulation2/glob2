@@ -234,6 +234,9 @@ void Application::choose(int choice)
 // native hosts never report an installation.
 void Application::installStagedAssets()
 {
+    // Packages remain in the host queue until the replacement surface exists;
+    // translation/font relayout and artwork preparation need its dimensions.
+    if (!globalContainer->gfx->getSDLSurface()) return;
 	const bool inMatch = dynamic_cast<GameSessionScreen *>(screens.top()) != nullptr;
     GAGCore::Toolkit::pollAssets();
     for (const auto &package : GAGCore::ApplicationHost::takeInstalledAssetPackages())
@@ -324,9 +327,17 @@ bool Application::frame(std::uint32_t tick, const std::vector<SDL_Event> &incomi
 	int width, height;
 	if (GAGCore::ApplicationHost::takeViewportSize(width, height))
 	{
+		pendingViewportWidth = width;
+		pendingViewportHeight = height;
+	}
+	// A surface handover can temporarily retire the SDL window. Keep the
+	// latest browser request until the replacement can accept it.
+	if (pendingViewportWidth > 0 && pendingViewportHeight > 0 && globalContainer->gfx->getSDLSurface())
+	{
 		const int oldWidth = globalContainer->gfx->getW(), oldHeight = globalContainer->gfx->getH();
-		if (globalContainer->gfx->resizeViewport(width, height))
+		if (globalContainer->gfx->resizeViewport(pendingViewportWidth, pendingViewportHeight))
 		{
+			pendingViewportWidth = pendingViewportHeight = 0;
 			width = globalContainer->gfx->getW();
 			height = globalContainer->gfx->getH();
 			screens.viewportResized(oldWidth, oldHeight, width, height);

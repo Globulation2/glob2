@@ -26,6 +26,7 @@ class Application : public GAGCore::ApplicationHost::Loop
 	GAGGUI::ScreenStack shutdownScreens;
 	SinglePlayerFlow singlePlayer;
 	std::uint32_t lastFrame = 0;
+	int pendingViewportWidth = 0, pendingViewportHeight = 0;
 	bool hidden = false;
 	bool quitting = false;
 	void mainMenu();

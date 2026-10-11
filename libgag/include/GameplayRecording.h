@@ -5,11 +5,19 @@
 #include <AudioFormat.h>
 #include <cstdint>
 #include <memory>
+#include <optional>
 #include <string>
 #include <vector>
 
 namespace GAGCore::Recording
 {
+namespace Detail { struct Context; }
+struct CaptureTicket
+{
+    std::uint64_t identity = 0, generation = 0;
+    std::int64_t timestamp = 0;
+    std::shared_ptr<const Detail::Context> context;
+};
 inline constexpr int AudioSampleRate = GAGCore::AudioSampleRate;
 inline constexpr int AudioChannels = 2;
 enum class EncoderPreference { Auto, Software };
@@ -59,6 +67,10 @@ class Recorder
 	bool active() const;
 	bool wantsFrame() const;
 	void frame(const SDL_Surface &pixels, bool bottomUp = false);
+    // Reserve cadence and semantic context before asynchronous GPU readback.
+    std::optional<CaptureTicket> reserveCapture();
+    void frame(const SDL_Surface &pixels, const CaptureTicket &, bool bottomUp = false);
+    void dropCapture(const CaptureTicket &);
 	// Interleaved signed stereo samples at 48000 Hz; count includes both channels.
 	// Timestamp the first chunk once, then advance by frames for split SDL refills.
 	void audio(const std::int16_t *samples, std::size_t count, std::int64_t startUs);
@@ -71,6 +83,7 @@ class Recorder
 
   private:
 	struct Impl;
+    void enqueueFrame(const SDL_Surface &, std::int64_t, const Detail::Context &, bool);
 	std::unique_ptr<Impl> impl;
 };
 // Shared monotonic clock used for frame timestamps and the first sample of a refill.

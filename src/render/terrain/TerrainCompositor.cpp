@@ -316,6 +316,12 @@ Recipe Compositor::describe(const SceneMap &map, int x, int y) const
 				materialFor(map, map.vertexTerrainAt(r.x + x, r.y + y));
 	return r;
 }
+Compositor::PreparedMaterialView Compositor::preparedMaterial(const Recipe &recipe, MaterialId id) const
+{
+    const unsigned variant = definitions.variantIndex(id, recipe.x, recipe.y, recipe.seed);
+    const auto &texture = textures.at(id).at(variant);
+    return {variant, materialRevisions.at(id), texture.size, texture.pixels};
+}
 void Compositor::compose(const Recipe &r, SDL_Surface *target, int ox, int oy, int scale,
 						 const CellMask *mask) const
 {

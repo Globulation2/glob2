@@ -140,7 +140,18 @@ SkinDownloads::SkinDownloads(OnlineStorage &storage,std::string origin,std::stri
     } catch(const std::exception &){impl->failed=true;}
 }
 SkinDownloads::~SkinDownloads()=default;
-void SkinDownloads::setSoftware(bool value){impl->software=value;}
+void SkinDownloads::setSoftware(bool value)
+{
+    if (impl->software == value) return;
+    impl->software = value;
+    // Revisit authorized entries when the renderer changes: baked sprites and
+    // live paint/material assets are separate representations of the same skin.
+    for (auto &entry : impl->entries) if (entry.authorization) {
+        entry.finished = false;
+        if (value) for (auto &download : entry.downloads) if (download) { download->cancel(); download.reset(); }
+    }
+    if (impl->refreshDownloads) impl->refreshDownloads->setSoftware(value);
+}
 OnlineStorage &SkinDownloads::storage(){return impl->storage;}
 SkinDownloads::FetchStarter SkinDownloads::fetchStarter()const{return impl->fetch;}
 const std::string &SkinDownloads::origin()const{return impl->origin;}

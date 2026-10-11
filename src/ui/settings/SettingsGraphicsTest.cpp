@@ -84,6 +84,32 @@ TEST_SUITE("SettingsGraphics")
         std::filesystem::remove(path);
     }
 
+    TEST_CASE("renderer preference migrates flags and round trips without startup overrides")
+    {
+        glob2test::HeadlessGlobals globals;
+        const std::string file = "renderer-preference-test.txt";
+        const auto path = std::filesystem::path(GAGCore::Toolkit::getFileManager()->getDir(0)) / file;
+        Settings settings;
+        CHECK(settings.rendererBackend == GAGCore::RendererBackend::Auto);
+        for (const auto &[flags, expected] : std::array{
+            std::pair{0, GAGCore::RendererBackend::Software},
+            std::pair{int(GAGCore::GraphicContext::USEGPU), GAGCore::RendererBackend::LegacyGL},
+            std::pair{int(GAGCore::GraphicContext::PORTABLEGPU), GAGCore::RendererBackend::PortableSDL}}) {
+            { std::ofstream out(path); out << "screenFlags=" << flags << '\n'; }
+            settings.load(file);
+            CHECK(settings.rendererBackend == expected);
+        }
+        for (auto backend : GAGCore::RendererBackends) {
+            settings.rendererBackend = backend;
+            REQUIRE(settings.save(file));
+            Settings loaded; loaded.load(file);
+            CHECK(loaded.rendererBackend == backend);
+        }
+        { std::ofstream out(path); out << "rendererBackend=invalid\nscreenFlags=1\n"; }
+        settings.load(file);
+        CHECK(settings.rendererBackend == GAGCore::RendererBackend::Auto);
+        std::filesystem::remove(path);
+    }
     TEST_CASE("render ceiling defaults migrates validates and round trips")
     {
         glob2test::HeadlessGlobals globals;

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "support/Glob2Test.h"
 #include <GameplayRecording.h>
+#include "RecordingMetadata.h"
 #include "support/RecordingValidationProcess.h"
 #include <SDL3/SDL.h>
 #include <chrono>
@@ -72,6 +73,92 @@ void awaitRecording(Recorder &recorder, SDL_Surface &pixels)
 } // namespace
 TEST_SUITE("GameplayRecording")
 {
+    TEST_CASE("capture context restores active match identity after settings [recording]")
+    {
+        if (!supported()) return;
+        Recorder recorder;
+        REQUIRE(recorder.start(output("capture-match-context").string()));
+        recorder.beginMatch("single_player", "original map", 3, 123);
+        auto capture = [&]() {
+            auto ticket = recorder.reserveCapture();
+            REQUIRE(ticket);
+            auto context = ticket->context;
+            recorder.dropCapture(*ticket);
+            return context;
+        };
+        recorder.matchFrame(123, false, 1);
+        const auto original = capture();
+        REQUIRE(original->match == 1);
+        recorder.screen("settings");
+        const auto settings = capture();
+        CHECK(settings->screen == "settings");
+        CHECK(settings->match == original->match);
+        CHECK(settings->map == original->map);
+        recorder.matchFrame(456, true, 2);
+        const auto resumed = capture();
+        CHECK(resumed->screen == "game_session");
+        CHECK(resumed->match == original->match);
+        CHECK(resumed->mode == original->mode);
+        CHECK(resumed->map == original->map);
+        CHECK(resumed->team == original->team);
+        CHECK(resumed->tick == 456);
+        CHECK(resumed->paused);
+        CHECK(resumed->speed == 2);
+        CHECK(original->tick == 123);
+        recorder.screen("main_menu");
+        const auto menu = capture();
+        CHECK(menu->match == 0);
+        CHECK(menu->mode.empty());
+        CHECK(menu->map.empty());
+        CHECK(menu->team == -1);
+        recorder.screen("settings");
+        CHECK(capture()->match == 0);
+        recorder.beginMatch("replay", "next map", 1, 789);
+        recorder.matchFrame(790, false, 1);
+        const auto next = capture();
+        CHECK(next->match == original->match + 1);
+        CHECK(next->map == "next map");
+        CHECK(next->team == 1);
+        CHECK(next->tick == 790);
+        recorder.screen("editor");
+        CHECK(capture()->match == 0);
+        recorder.shutdown();
+    }
+
+    TEST_CASE("asynchronous admission freezes context rejects stale generations and counts cancellation [recording]")
+    {
+        if (!supported()) return;
+        Recorder recorder;
+        recorder.screen("main_menu");
+        REQUIRE(recorder.start(output("capture-admission").string()));
+        auto dropped = recorder.reserveCapture();
+        REQUIRE(dropped);
+        CHECK(dropped->context->screen == "main_menu");
+        recorder.dropCapture(*dropped);
+        CHECK(recorder.status().droppedFrames == 1);
+        auto admitted = recorder.reserveCapture();
+        REQUIRE(admitted);
+        recorder.screen("game_session");
+        recorder.beginMatch("singleplayer", "later map", 0, 123);
+        CHECK(admitted->context->screen == "main_menu");
+        CHECK(admitted->context->match == 0);
+        CHECK_FALSE(recorder.reserveCapture());
+        recorder.shutdown();
+        CHECK(recorder.status().droppedFrames == 2);
+        REQUIRE(recorder.start(output("capture-next-session").string()));
+        auto next = recorder.reserveCapture();
+        REQUIRE(next);
+        CHECK(next->generation != admitted->generation);
+        auto pixels = std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)>(SDL_CreateSurface(16,16,SDL_PIXELFORMAT_RGBA32), SDL_DestroySurface);
+        REQUIRE(pixels);
+        recorder.frame(*pixels, *admitted);
+        CHECK(recorder.status().state == State::Starting);
+        CHECK_FALSE(recorder.reserveCapture());
+        recorder.dropCapture(*next);
+        CHECK(recorder.status().droppedFrames == 1);
+        recorder.shutdown();
+    }
+
 	TEST_CASE("producer failure remains failed and a publication collision preserves foreign files "
 			  "[recording]")
 	{

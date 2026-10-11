@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "GraphicContextPrivate.h"
+#include <RenderDevice.h>
 #include <Toolkit.h>
 #include <FileManager.h>
 #include <assert.h>
@@ -15,15 +16,11 @@
 #include <stdexcept>
 #include <AssetLoader.h>
 #include <ApplicationHost.h>
-#ifdef GLOB2_WEBGL2
 #include <set>
-#endif
 
 namespace GAGCore
 {
-#ifdef GLOB2_WEBGL2
-    namespace { std::set<DrawableSurface*> gpuSurfaces; }
-#endif
+    namespace { std::set<DrawableSurface*> liveSurfaces; }
     std::uint64_t DrawableSurface::nextSurfaceIdentity()
     {
         static std::atomic<std::uint64_t> sequence{0};
@@ -80,6 +77,7 @@ namespace GAGCore
 
     DrawableSurface::DrawableSurface(SDL_Surface *prepared, AdoptPixels, bool allocateGPU)
     {
+        liveSurfaces.insert(this);
         assert(prepared && prepared->format == SDL_PIXELFORMAT_ARGB8888);
         sdlsurface = prepared;
         setClipRect(); if (allocateGPU) allocateTexture(); markPixelsChanged();
@@ -107,7 +105,10 @@ namespace GAGCore
     {
         assert(!_gc || SDL_GetCurrentThreadID() == _gc->eventThread);
         if (_gc && _gc->portableRenderer) _gc->portableRenderer->prepareTexture(this, sdlsurface, pixelRevision, highResolutionSampling);
-        if (glUploadedRevision != pixelRevision) uploadToTexture();
+        // Device adapters consume the authored chain on draw and need it again
+        // after switching or recovery. Legacy upload cleanup must not discard
+        // that restoration source when there is no legacy GL allocation.
+        if ((!_gc || !_gc->presentationDevice) && glUploadedRevision != pixelRevision) uploadToTexture();
     }
 
     size_t DrawableSurface::allocatedTextureBytes()
@@ -128,8 +129,10 @@ namespace GAGCore
 
 	DrawableSurface::~DrawableSurface(void)
 	{
+        liveSurfaces.erase(this);
 		if (_gc && _gc->portableRenderer) _gc->portableRenderer->forget(this);
         if (_gc && _gc->softwareRasterizer) _gc->softwareRasterizer->forget(this);
+        if (_gc && _gc->deviceRenderer) _gc->deviceRenderer->forget(this);
 		SDL_DestroySurface(sdlsurface);
 		freeGPUTexture();
 	}
@@ -145,16 +148,14 @@ namespace GAGCore
 
 	void DrawableSurface::allocateTexture(bool initializeStorage)
 	{
+        liveSurfaces.insert(this);
 		#ifdef HAVE_OPENGL
 		if (textureInfo)
 			return;
-		if (_gc && (_gc->optionFlags & GraphicContext::USEGPU))
+		if (_gc && _gc->context && (_gc->optionFlags & GraphicContext::USEGPU))
 		{
 			glGenTextures(1, reinterpret_cast<GLuint*>(&texture));
 			glState.allocatedTextureCount++;
-#ifdef GLOB2_WEBGL2
-            gpuSurfaces.insert(this);
-#endif
 			if (initializeStorage) initTextureSize();
 		}
 		#endif
@@ -213,11 +214,8 @@ namespace GAGCore
 		}
 		if (_gc && (_gc->optionFlags & GraphicContext::USEGPU))
 		{
-#ifdef GLOB2_WEBGL2
-            // Context restoration discards lost handles. Recreate a texture
-            // when it is actually used instead of uploading every HD frame.
+            // Restoration and live activation both discard absent GL names.
             if (!texture) allocateTexture();
-#endif
 			glState.setTexture(texture);
 
 			void *pixelsPtr;
@@ -353,9 +351,6 @@ namespace GAGCore
 	{
 		if (!textureInfo && _gc && _gc->renderBatch)
 			_gc->renderBatch->textureChanged(texture);
-#ifdef GLOB2_WEBGL2
-        gpuSurfaces.erase(this);
-#endif
         if (!texture) return;
 		#ifdef HAVE_OPENGL
 		if (_gc && texture && (_gc->optionFlags & GraphicContext::USEGPU))
@@ -486,6 +481,12 @@ namespace GAGCore
 namespace GAGCore {
 void GraphicContext::restoreBrowserContext()
 {
+    if (_gc && _gc->presentationDevice) {
+        try { _gc->recoverPresentationDevice(); }
+        catch (const std::exception &error) { _gc->handleDeviceFailure(error.what()); }
+        return;
+    }
+#ifdef HAVE_OPENGL
     if (!_gc || !(_gc->optionFlags & USEGPU)) return;
     _gc->resetRenderPacing();
     // GL objects owned outside libgag, such as the torus overview's, belong to
@@ -508,12 +509,34 @@ void GraphicContext::restoreBrowserContext()
     // Rebuild GPU objects without touching game, camera, or UI state.
     glState.allocatedTextureCount = 0;
     glState.allocatedTextureBytes = 0;
-    for (auto* surface : gpuSurfaces) {
+    for (auto* surface : liveSurfaces) {
         surface->texture = 0;
         surface->gpuBytes = 0;
         surface->glUploadedRevision = 0;
     }
     _gc->setClipRect();
+#endif
 }
 }
 #endif
+
+namespace GAGCore {
+void GraphicContext::releaseSurfaceTextures()
+{
+#ifdef HAVE_OPENGL
+    for (auto *surface : liveSurfaces)
+        if (surface != _gc) surface->freeGPUTexture();
+#endif
+}
+void GraphicContext::restoreSurfaceTextures()
+{
+#ifdef HAVE_OPENGL
+    for (auto *surface : liveSurfaces) {
+        if (surface == _gc || surface->textureInfo || !surface->sdlsurface ||
+            surface->getW() <= 0 || surface->getH() <= 0) continue;
+        surface->allocateTexture();
+        surface->uploadToTexture();
+    }
+#endif
+}
+}

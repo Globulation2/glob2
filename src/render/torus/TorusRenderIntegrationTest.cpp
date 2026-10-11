@@ -26,6 +26,9 @@
 #include "Unit.h"
 #include "GameGUIKeyActions.h"
 #include "CloudField.h"
+#include <RenderDevice.h>
+#include <RenderBackend.h>
+#include <RendererSelection.h>
 #ifdef HAVE_OPENGL
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
@@ -38,6 +41,7 @@
 #include <fstream>
 #include <optional>
 #include "render/terrain/TerrainCompositor.h"
+#include "render/SoftwareTerrainCache.h"
 
 class TorusRenderIntegrationTest
 {
@@ -188,6 +192,145 @@ static void tiledCapture(bool hd = false)
     REQUIRE(std::abs(gui.toolManager.highlightStrength - .2f) < .00001f);
     REQUIRE(glGetError() == GL_NO_ERROR);
 #endif
+}
+
+static void deviceCapture(GAGCore::RendererBackend backend)
+{
+    glob2test::HeadlessGlobals globals({.display = true, .loadStrings = true, .width = 640, .height = 480,
+        .beforeLoad = [backend](GlobalContainer &container) { container.settings.rendererBackend = backend; }});
+    auto *gfx = globals->gfx;
+    if (gfx->backendSwitchStatus().active != backend) {
+        MESSAGE("Backend unavailable: ", gfx->backendSwitchStatus().reason);
+        return;
+    }
+    REQUIRE(gfx->renderDevice());
+    globals->settings.clouds = false;
+    Game game(nullptr);
+    makeTorusMapFixture(game, 256, 256);
+    game.map.setMapDiscovered();
+    // The logical capture is over 8,000 pixels high, independently of the
+    // window and the bounded physical tile resolution. Its centre must receive
+    // terrain rather than retain the black initial target contents.
+    for (int limit : {4096, 2048, 1024}) {
+        TorusView view;
+        view.textureLimit = limit;
+        view.toggle();
+        bool recorded = false;
+        // Full-density targets exceed one bounded upload admission. Preserve
+        // the requested quality while allowing successive frames to restore them.
+        for (unsigned retry = 0; retry < 128; ++retry) {
+            int vx = 128, vy = 128;
+            REQUIRE(view.draw(glob2test::sceneOf(game), nullptr, 0, Game::DRAW_WHOLE_MAP,
+                vx, vy, gfx->getW(), gfx->getH()));
+            REQUIRE(view.pixelsPerCell == SoftwareTerrainCache::capturePixelsPerCell(256, 256));
+            gfx->renderer->flush();
+            recorded = didRecordDeviceFrame(*gfx->renderer);
+            if (recorded) break;
+            gfx->nextFrame();
+            SDL_Delay(1);
+        }
+        REQUIRE(recorded);
+        std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> capture(gfx->renderer->capture(), SDL_DestroySurface);
+        REQUIRE(capture);
+        unsigned samples = 0, coloured = 0;
+        for (int y = capture->h / 3; y < 2 * capture->h / 3; y += 8)
+            for (int x = capture->w / 3; x < 2 * capture->w / 3; x += 8) {
+                Uint8 r, g, b, a;
+                REQUIRE(SDL_ReadSurfacePixel(capture.get(), x, y, &r, &g, &b, &a));
+                ++samples;
+                coloured += unsigned(r) + g + b > 48;
+            }
+        CHECK(coloured * 100 >= samples * 90);
+        const auto filename = std::string(GAGCore::rendererBackendName(backend)) + "-large-torus-" + std::to_string(limit);
+        REQUIRE(SDL_SaveBMP(capture.get(), (glob2test::artifactDir() / (filename + ".bmp")).string().c_str()));
+        std::ofstream report(glob2test::artifactDir() / (filename + ".txt"));
+        report << "active=" << GAGCore::rendererBackendName(gfx->backendSwitchStatus().active)
+            << " density=" << view.pixelsPerCell << " samples=" << samples << " coloured=" << coloured << '\n';
+        gfx->nextFrame();
+    }
+}
+
+static void liveTerrainPressure(GAGCore::RendererBackend backend)
+{
+    using namespace GAGCore;
+    glob2test::HeadlessGlobals globals({.display=true,.loadStrings=true,.width=640,.height=480,
+        .beforeLoad=[backend](GlobalContainer &container){container.settings.rendererBackend=backend;}});
+    auto *gfx=globals->gfx;
+    if(gfx->backendSwitchStatus().active!=backend){MESSAGE("Backend unavailable: ",gfx->backendSwitchStatus().reason);return;}
+    auto &device=*gfx->renderDevice();auto &resources=*gfx->renderResources();
+    REQUIRE(device.capabilities().maximumTextureSize>=2048);
+    globals->settings.clouds=false;
+    // Four live 2048-square pages consume 64 MiB of the shared TerrainPage
+    // class. The 256-cell torus's requested density needs another >64 MiB.
+    // These are completed GPU targets, not merely unuploaded logical handles.
+    std::vector<TextureHandle> handles;std::vector<TextureSnapshot> pressure;
+    for(unsigned i=0;i<4;++i){
+        std::unique_ptr<SDL_Surface,decltype(&SDL_DestroySurface)> pixels(
+            SDL_CreateSurface(2048,2048,SDL_PIXELFORMAT_RGBA32),SDL_DestroySurface);
+        REQUIRE(pixels);REQUIRE(SDL_FillSurfaceRect(pixels.get(),nullptr,0));
+        TextureDescriptor descriptor;descriptor.budgetClass=TextureDescriptor::BudgetClass::TerrainPage;
+        descriptor.alpha=TextureDescriptor::Alpha::Opaque;
+        auto handle=resources.create(pixels.get(),i+1,descriptor);REQUIRE(handle);
+        handles.push_back(handle);pressure.push_back(resources.snapshot(handle));
+        RenderSubmission submission;
+        for(unsigned retry=0;retry<128 && !submission;++retry){
+            RenderFrame frame;frame.identity=i+1;frame.logicalWidth=gfx->getW();frame.logicalHeight=gfx->getH();
+            DrawPacket clear;clear.kind=DrawPacket::Kind::Clear;clear.target=pressure.back();
+            clear.clearColor=true;clear.clearValue={.8f,.1f,.2f,1};frame.packets.push_back(clear);
+            try{submission=device.submit(std::move(frame));}
+            catch(const RenderAdmissionDeferred &){device.discardFrame();}
+            if(!submission)SDL_Delay(1);
+        }
+        REQUIRE(submission);device.present();
+        CaptureRequest request;request.target=pressure.back();request.pixelRegion=SDL_Rect{1024,1024,1,1};
+        request.width=request.height=1;
+        std::unique_ptr<SDL_Surface,decltype(&SDL_DestroySurface)> pixel(device.captureSynchronously(request),SDL_DestroySurface);
+        REQUIRE(pixel);Uint8 r,g,b,a;REQUIRE(SDL_ReadSurfacePixel(pixel.get(),0,0,&r,&g,&b,&a));
+        REQUIRE(r>=200);REQUIRE(a==255);
+    }
+    device.trimRetiredResources();
+    REQUIRE(device.telemetry().resourceBytes>=64u*1024*1024);
+    Game game(nullptr);makeTorusMapFixture(game,256,256);game.map.setMapDiscovered();
+    const auto requested=SoftwareTerrainCache::capturePixelsPerCell(256,256);
+    TorusView view;view.textureLimit=2048;view.toggle();
+    auto render=[&]{
+        for(unsigned retry=0;retry<128;++retry){
+            if(!view.active())view.toggle();
+            int vx=128,vy=128;
+            REQUIRE(view.draw(glob2test::sceneOf(game),nullptr,0,Game::DRAW_WHOLE_MAP,
+                vx,vy,gfx->getW(),gfx->getH()));
+            gfx->renderer->flush();
+            const bool recorded=didRecordDeviceFrame(*gfx->renderer);
+            if(recorded){
+                std::unique_ptr<SDL_Surface,decltype(&SDL_DestroySurface)> capture(gfx->renderer->capture(),SDL_DestroySurface);
+                REQUIRE(capture);
+                unsigned sampled=0,coloured=0;
+                for(int y=capture->h/3;y<2*capture->h/3;y+=16)
+                    for(int x=capture->w/3;x<2*capture->w/3;x+=16){
+                        Uint8 r,g,b,a;REQUIRE(SDL_ReadSurfacePixel(capture.get(),x,y,&r,&g,&b,&a));
+                        ++sampled;coloured+=unsigned(r)+g+b>48;
+                    }
+                REQUIRE(coloured*100>=sampled*90);
+            }
+            gfx->nextFrame();
+            if(recorded)return;
+            SDL_Delay(1);
+        }
+        FAIL("Torus never completed within bounded pressure retries");
+    };
+    render();REQUIRE(view.pixelsPerCell>0);REQUIRE(view.pixelsPerCell<requested);
+    const auto reduced=view.pixelsPerCell;
+    // Release both logical handles and external target leases, then explicitly
+    // finish earlier work. Requested density must return without switching device.
+    for(auto handle:handles)resources.erase(handle);
+    pressure.clear();view.reset();
+    std::unique_ptr<SDL_Surface,decltype(&SDL_DestroySurface)> completed(
+        device.captureSynchronously({}),SDL_DestroySurface);REQUIRE(completed);
+    device.trimRetiredResources();view.toggle();render();
+    REQUIRE(view.pixelsPerCell==requested);
+    std::cout<<rendererBackendName(backend)<<" live TerrainPage pressure density "<<reduced
+        <<" -> "<<view.pixelsPerCell<<" completed without backend fallback\n";
+    REQUIRE(gfx->backendSwitchStatus().active==backend);
 }
 
 static void run(bool gpu, int width, int height)
@@ -867,6 +1010,18 @@ static void run(bool gpu, int width, int height)
 
 TEST_SUITE("TorusRender")
 {
+    TEST_CASE("programmable GL captures large logical maps beyond the window [display][isolated][artifacts]") {
+        TorusRenderIntegrationTest::deviceCapture(GAGCore::RendererBackend::ProgrammableGL);
+    }
+    TEST_CASE("SDL GPU captures large logical maps beyond the window [display][isolated][artifacts]") {
+        TorusRenderIntegrationTest::deviceCapture(GAGCore::RendererBackend::SDLGPU);
+    }
+    TEST_CASE("programmable GL torus progresses under live terrain page pressure [display][isolated][artifacts]") {
+        TorusRenderIntegrationTest::liveTerrainPressure(GAGCore::RendererBackend::ProgrammableGL);
+    }
+    TEST_CASE("SDL GPU torus progresses under live terrain page pressure [display][isolated][artifacts]") {
+        TorusRenderIntegrationTest::liveTerrainPressure(GAGCore::RendererBackend::SDLGPU);
+    }
     TEST_CASE("native tiled capture pixels and allocation fallback [display]") { TorusRenderIntegrationTest::tiledCapture(); }
     TEST_CASE("HD tiled capture interiors and gutters match whole-map pixels [display]") { TorusRenderIntegrationTest::tiledCapture(true); }
 	TEST_CASE("game rendering; picking and cache changes in software rendering [writes-preferences]") { TorusRenderIntegrationTest::run(false, 1120, 720); }

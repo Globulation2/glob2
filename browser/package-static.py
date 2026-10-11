@@ -61,6 +61,15 @@ def package(source, destination):
             files["threaded/" + ext] = (
                 source / "threaded" / ("index." + ext)
             ).read_bytes()
+    # Emscripten's shader --preload-file bundles are separate from staged art.
+    # Each runtime can have its own package; its JS basename is relative to it.
+    for prefix in ("", "threaded/") if threaded else ("",):
+        script_key = prefix + "js"
+        if b"index.data" in files[script_key]:
+            files[prefix + "data"] = (source / prefix / "index.data").read_bytes()
+    surface = {}
+    if b'src="presentation-surface.js"' in files["html"]:
+        surface["presentation-surface.js"] = (source / "presentation-surface.js").read_bytes()
     hive = {name: (source / name).read_bytes() for name in ("hive-worker.js", "hive-runtime.js", "hive-runtime.wasm") if (source / name).exists()}
     if hive and len(hive) != 3:
         raise ValueError("Incomplete Hive Mind runtime")
@@ -81,6 +90,7 @@ def package(source, destination):
         require_translation_catalogs(localization)
     version = hashlib.sha256(
         POLICY
+        + b"".join(surface.values())
         + b"".join(hive.values())
         + b"".join(recording.values())
         + b"".join(music.values())
@@ -91,13 +101,13 @@ def package(source, destination):
     names = {ext: f"index-{version}.{ext}" for ext in ("js", "wasm")}
     # Worker entry points, imports, and Wasm URLs must share the release identity.
     # Rewriting both game runtimes prevents cached code from loading an old backend.
-    worker_assets = {**recording, **music}
+    worker_assets = {**recording, **music, **surface}
     worker_names = {name: name.replace("-", f"-{version}-", 1) for name in worker_assets}
 
     def runtime_references(text):
         for old, new in worker_names.items():
             text = text.replace(old, new)
-        return text
+        return text.replace('index.data', f'index-{version}.data')
 
     worker_assets = {
         worker_names[name]: runtime_references(data.decode()).encode() if name.endswith(".js") else data
@@ -105,7 +115,7 @@ def package(source, destination):
     }
     script = runtime_references(files["js"].decode())
     script = script.replace('"index.wasm"', f'"{names["wasm"]}"')
-    html = files["html"].decode().replace('src="index.js"', f'src="{names["js"]}"')
+    html = runtime_references(files["html"].decode()).replace('src="index.js"', f'src="{names["js"]}"')
     html = html.replace("src=index.js>", f'src="{names["js"]}">')
     if not threaded and names["js"] not in html:
         raise ValueError("Expected Emscripten script tag")
@@ -124,7 +134,11 @@ def package(source, destination):
         **notices,
         **localization,
     }
+    if "data" in files:
+        contents[f"index-{version}.data"] = files["data"]
     if threaded:
+        if "threaded/data" in files:
+            contents[f"threaded/index-{version}.data"] = files["threaded/data"]
         loader = f"loader-{version}.js"
         # The runtime map is data, so loader selection and fallback remain shared.
         mapping = {"serial": names["js"], "threaded": "threaded/" + names["js"]}
@@ -275,6 +289,20 @@ def verify(directory):
         name for name in expected
         if name.startswith(("licenses/recording/", "licenses/opus/")) and not name.endswith(".gz")
     ]
+    if b'src="presentation-surface.js"' in (directory / "index.html").read_bytes():
+        raise ValueError("Unversioned presentation surface runtime reference")
+    surface_name = f"presentation-{marker['version']}-surface.js"
+    if surface_name.encode() in (directory / "index.html").read_bytes():
+        names.append(surface_name)
+    runtime_paths = [f"index-{marker['version']}.js"]
+    if marker.get("threaded"):
+        runtime_paths.append(f"threaded/index-{marker['version']}.js")
+    for runtime in runtime_paths:
+        script = (directory / runtime).read_bytes()
+        if b"index.data" in script:
+            raise ValueError("Unversioned renderer preload package reference")
+        if f"index-{marker['version']}.data".encode() in script:
+            names.append(str(Path(runtime).with_suffix('.data')))
     if marker.get("threaded"):
         names += [f"loader-{marker['version']}.js"] + [
             f"threaded/index-{marker['version']}.{ext}" for ext in ("js", "wasm")

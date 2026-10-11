@@ -168,3 +168,59 @@ JavaScript, streaming WASM and Emscripten data loading consume the original
 uncompressed representation through the browser's HTTP decoder. Verify transfer
 headers, progress and actual compressed bytes on the release host; local static
 files alone do not establish deployed behavior.
+
+### Live presentation surface replacement
+
+The shell's canvas reference is managed by `browser/presentation-surface.js`.
+Backend changes first call `glob2_surface_retire()` on the presentation owner
+to preserve fullscreen and invalidate the retiring SDL resize callback. Retire
+the SDL window and graphics context next, then call
+`glob2_surface_prepare(gpu, width, height)` from the presentation owner.
+`glob2_surface_poll()` returns pending (0), ready (1), or failure (-1); polling
+must yield through the normal frame loop. After creating the replacement SDL
+window and presenting, call `glob2_surface_finish(1)`. Creation failure uses
+`glob2_surface_finish(0)` before recreating the previous SDL window.
+`glob2_surface_error(destination, size)` copies a bounded diagnostic string.
+
+Software on threaded builds still presents through SDL's main-thread DOM canvas;
+GPU canvases transfer to the application worker. The bridge registers the pinned
+SDK's `GL.offscreenCanvases` record and shared dimensions/owner, restores it on
+rollback, and releases retired shared metadata on commit. The shell moves its
+resize observer, focus, audio activation and context-loss listeners to the new
+canvas and clears SDL's cached software context. Execution mode and Wasm instance
+remain unchanged. The persistent `presentation-host` ancestor owns browser
+fullscreen, allowing the child canvas to change while fullscreen stays active.
+Managed canvas fullscreen methods target that host; the pinned SDK shim reports
+the current canvas identity to SDL and restores dimensions on the current canvas
+when exiting. Retiring SDL windows cannot trigger fullscreen exit or invoke a
+resize callback with freed window data. Browser text inputs remain under the
+fullscreen ancestor. Directly fullscreening an unmanaged canvas through a native
+prototype call bypasses this ownership and is rejected before replacement.
+
+## Renderer presentation surfaces
+
+`presentation-surface.js` replaces the canvas when backend context types change.
+The replacement preserves CSS geometry, focus and accessibility attributes and rebinds
+input, resize and context-loss handlers. A stable `presentation-host` owns fullscreen;
+the SDK bridge maps fullscreen status back to the current canvas for SDL. The retirement
+hook runs before SDL window destruction so a renderer transition does not leave fullscreen.
+
+In threaded builds the existing application worker keeps running. Its bridge updates
+`Module.canvas`, SDL state and the pinned SDK's OffscreenCanvas registry after the main
+thread replaces the DOM canvas. The coordinator polls readiness on later frames instead
+of blocking the worker. The canvas transaction commits after presentation or restores
+the previous binding on failure. Runtime switching does not change serial/threaded
+execution mode. Browser query preferences use the same renderer family names as the CLI.
+
+The programmable backend binds fence waits through the typed GLES entry point.
+In the pinned Emscripten SDK, the proc-address form uses a split 64-bit timeout
+signature; casting it to the ordinary GLES signature traps in serial Wasm.
+`tools/rendering/webgl_sync_probe.cjs` checks this boundary against an explicitly
+selected SDK and Playwright installation.
+
+Use `web_legacy_gl=0` to build the direct rendering path with
+`LEGACY_GL_EMULATION=0`. It uses a separate output directory from the build that
+retains the legacy backend, and omits fixed-function shader and texture-unit
+workarounds. The backend selector still exposes software, direct WebGL2 and
+WebGPU where their generated assets are available. This option does not promote
+a backend to the platform default.

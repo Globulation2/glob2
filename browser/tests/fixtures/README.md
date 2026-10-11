@@ -66,3 +66,31 @@ threaded fallback as unavailable coverage, even when headless threaded checks pa
 The generator reference also records engine and simulation versions. Save-version
 advances can change the frozen snapshot bytes and generated-map checksum trace;
 refresh these fields from native execution before comparing browser builds.
+
+## Presentation surface ownership
+
+`presentation-surface-probe.c` is a standalone Emscripten lifecycle fixture.
+It draws a software DOM canvas, replaces it with WebGL2, checks a red GPU pixel,
+and switches back to DOM software without replacing the Wasm instance. Run it
+in both serial and pthread modes when changing the surface bridge or SDK.
+
+Compile with the pinned SDK's `emcc`, `--js-library browser/canvas-size.js`,
+`-sMIN_WEBGL_VERSION=2 -sMAX_WEBGL_VERSION=2 -sEXIT_RUNTIME=0`, and an output
+under `artifacts/`. Add `-pthread -sPTHREAD_POOL_SIZE=1
+-sOFFSCREENCANVAS_SUPPORT=1` for the threaded fixture. A host page must load
+`browser/presentation-surface.js`, provide `Module.canvas` and `executionMode`,
+create `Module.glob2PresentationSurface`, and attach each pthread Worker through
+its `attachWorker()` method before loading the generated runtime. Serve with
+cross-origin isolation headers using `browser/serve.py`. Completion reports
+`Module.probe`; verify `ok`, token `0x13579`, two committed surface generations,
+and a green software pixel. The fixture proves SDK surface ownership, not full
+game rendering or SDL lifecycle integration.
+
+To check fullscreen preservation, export the `callMain` runtime method, set
+`noInitialRun:true`, and place the canvas under `presentation-host`. In a trusted
+button handler invoke `Module._probe_fullscreen()`, wait for `fullscreenchange`,
+then call `Module.callMain([])`. The fixture exercises actual SDK fullscreen
+strategy/resize handling and simulated SDL teardown exits. After both switches,
+assert `Module.probe.fullscreen`, status id `canvas`, and DOM fullscreen element
+`presentation-host`. Exiting fullscreen must restore the current canvas without
+accessing the retired surface or its shared metadata.

@@ -25,6 +25,7 @@ python3 tools/dev_build.py engine-tests -j8
 python3 tools/dev_build.py dev_fast=0 linker=default
 python3 tools/dev_build.py pch=1 unity=1
 python3 tools/dev_build.py target=web web_variant=serial
+python3 tools/dev_build.py target=web web_variant=serial web_legacy_gl=0
 python3 tools/dev_build.py target=android arch=arm64-v8a
 python3 tools/dev_build.py target=ios environment=simulator
 python3 tools/dev_build.py --cache-stats
@@ -76,6 +77,28 @@ Compile/link work totals sum command durations; they are not parallel wall times
 GNU time reports per-process peak RSS on Linux; unsupported hosts report missing
 memory coverage explicitly. Review evidence stays under `artifacts/dev-build`.
 No speedup is assumed before measuring matching source and toolchain inputs.
+
+### Shared renderer shader assets
+
+The build generates shader layouts and GLSL variants from
+`libgag/shaders/renderer-manifest.json` and the authoritative material sources.
+`GLOB2_GLSLANG` can point to pinned glslang 15.1.0 for offline Vulkan SPIR-V generation;
+without the platform’s offline binaries the experimental SDL GPU family is unavailable.
+`GLOB2_NAGA` selects pinned Naga 27.0.0 for browser WGSL. Optional
+`GLOB2_SPIRV_CROSS` and `GLOB2_DXC` select the pinned build-only native translators
+described in the rendering guide; together with glslang they produce Direct3D 12
+DXIL. On Apple build hosts, `GLOB2_METAL_SDK` and
+`GLOB2_METAL_TOOL_LOCK` select the verified offline Metal SDK and tool receipt;
+`DEVELOPER_DIR` scopes the selected Xcode installation. `GLOB2_RENDER_SHADER_INPUT`
+imports prebuilt shaders only after validating source, layout and artifact
+receipts. These paths are described in the rendering guide. No shader translation compiler ships with the game. Generated native assets install under
+`glob2/shaders`; browser GLSL assets are preloaded under `/shaders/webgl2`.
+The browser shader preloads are SDK payloads beside each runtime: `index.data`
+and `threaded/index.data`. Content-addressed artwork packages under `assets/`
+remain shared. Local deployment through `deploy/install-web-client.py` checks
+both runtime payloads and the presentation-surface helper before replacing served
+files, then publishes these dependencies before the game scripts.
+`GLOB2_RENDERER_SHADER_DIR` overrides the shader directory for focused device tests.
 
 ## Free launch profiles
 

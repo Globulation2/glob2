@@ -23,6 +23,8 @@ class SkinSprites
 	void install(const AuthorizedSkin &);
 	void remove(int team);
 	void poll();
+    // Record visible fallback demand without submitting any drawing.
+    void prefetch(int team, unsigned clip, unsigned frame);
 	bool draw(GAGCore::GraphicContext &, int team, unsigned clip, unsigned frame, float x, float y,
 			  float w, float h, GAGCore::DrawableSurface *shadow = nullptr,
 			  unsigned char alpha = 255);
@@ -78,6 +80,7 @@ class SkinSprites
 	bool diskChanged = false;
 	Counters metrics;
 
+	Page *requestPage(int team, unsigned clip, unsigned frame);
 	bool authorized(const std::string &hash) const;
 	bool cache(const std::string &path, const std::string &bytes);
 	void eraseDisk(std::string path);

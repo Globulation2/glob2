@@ -190,6 +190,8 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 					openDialog(IGM_TELEMETRY, std::make_unique<InGameAITelemetryScreen>(this));
 					return true;
 
+				case InGameMainScreen::SETTINGS:
+                    closeDialog(); pendingSettings = true; return true;
 				case InGameMainScreen::OPTIONS:
 				{
 					openDialog(IGM_OPTION, std::make_unique<InGameOptionScreen>(this));

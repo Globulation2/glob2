@@ -20,6 +20,10 @@
 #include <Toolkit.h>
 #include <MapCamera.h>
 #include <RenderBatch.h>
+#include <RenderDevice.h>
+#include <RendererSelection.h>
+#include <memory>
+#include <stdexcept>
 #include <MapGeometryCache.h>
 #include <PerformanceTelemetry.h>
 #include "TorusMapFixture.h"
@@ -140,11 +144,47 @@ class TorusRenderBenchmark
                 globalContainer->settings.cloudPatchSize, zoom);
     }
 
+    struct ContextAccess : GAGCore::GraphicContext
+    {
+        // Obtain a base member pointer through the derived protected-access
+        // rule; the actual GraphicContext object remains its original type.
+        static GAGCore::RenderBackend *backend(GAGCore::GraphicContext &context) {
+            auto member=&ContextAccess::renderer;return context.*member;
+        }
+    };
+    static bool finishRendering()
+    {
+        auto *gfx=globalContainer->gfx;
+        if(ContextAccess::backend(*gfx))ContextAccess::backend(*gfx)->flush();
+        if(auto *device=gfx->renderDevice()) {
+            if(!GAGCore::didRecordDeviceFrame(*ContextAccess::backend(*gfx)))return false;
+            GAGCore::CaptureRequest request;request.width=request.height=1;request.pixelRegion=SDL_Rect{0,0,1,1};
+            std::unique_ptr<SDL_Surface,decltype(&SDL_DestroySurface)> completion(device->captureSynchronously(request),SDL_DestroySurface);
+            if(!completion)throw std::runtime_error("Benchmark completion readback failed");
+            return true;
+        }
 #ifdef HAVE_OPENGL
+        glFinish();assert(glGetError()==GL_NO_ERROR);return true;
+#else
+        throw std::runtime_error("Benchmark requires a rendering device");
+#endif
+    }
     static void captureFramebuffer(const char *path = nullptr)
     {
         if (!path) path = std::getenv("GLOB2_BENCH_CAPTURE");
         if (!path) return;
+        auto *gfx=globalContainer->gfx;
+        if(auto *device=gfx->renderDevice()) {
+            ContextAccess::backend(*gfx)->flush();
+            std::unique_ptr<SDL_Surface,decltype(&SDL_DestroySurface)> original(device->captureSynchronously({}),SDL_DestroySurface);
+            std::unique_ptr<SDL_Surface,decltype(&SDL_DestroySurface)> pixels(SDL_ConvertSurface(original.get(),SDL_PIXELFORMAT_RGB24),SDL_DestroySurface);
+            if(!pixels)throw std::runtime_error("Benchmark full capture failed");
+            std::ofstream image(path,std::ios::binary);image<<"P6\n"<<pixels->w<<" "<<pixels->h<<"\n255\n";
+            for(int y=0;y<pixels->h;++y)image.write(static_cast<const char *>(pixels->pixels)+y*pixels->pitch,pixels->w*3);
+            if(!image.good())throw std::runtime_error("Benchmark capture write failed");
+            return;
+        }
+#ifdef HAVE_OPENGL
         GLint viewport[4];
         glGetIntegerv(GL_VIEWPORT, viewport);
         std::vector<unsigned char> pixels(viewport[2] * viewport[3] * 3);
@@ -158,8 +198,10 @@ class TorusRenderBenchmark
         for (int row = viewport[3] - 1; row >= 0; --row)
             image.write(reinterpret_cast<const char *>(pixels.data() + row * viewport[2] * 3), viewport[2] * 3);
         assert(image.good());
-    }
+#else
+        throw std::runtime_error("Benchmark capture requires a renderer");
 #endif
+    }
 
 public:
 static int run(int argc, char **argv)
@@ -172,10 +214,26 @@ static int run(int argc, char **argv)
     globalContainer->load();
     // Finish deferred HD publication before comparing renderer workloads.
     GAGCore::Sprite::setHighResolution(globalContainer->settings.highResolutionArtwork);
+    auto *gfx=globalContainer->gfx;
+    const auto active=GAGCore::rendererBackendName(gfx->backendSwitchStatus().active);
+    const auto requested=GAGCore::rendererBackendName(gfx->backendSwitchStatus().requested);
+    std::printf("BACKEND requested=%.*s active=%.*s fallback_reason=%s\n",int(requested.size()),requested.data(),int(active.size()),active.data(),gfx->backendSwitchStatus().reason.c_str());
+    const auto capabilities=gfx->rendererCapabilities();
+    const auto deviceCapabilities=gfx->renderDevice()?gfx->renderDevice()->capabilities():GAGCore::RenderDeviceCapabilities{};
+    std::printf("BENCH_CAPABILITIES torus=%d skin_materials=%d async_capture=%d terrain_composition=%d gpu_timing=%d max_texture=%d\n",
+        capabilities.torus,capabilities.liveSkins,capabilities.asynchronousCapture,deviceCapabilities.terrainComposition,
+        deviceCapabilities.gpuTiming,deviceCapabilities.maximumTextureSize);
+    if(!std::getenv("GLOB2_BENCH_FLAT") && !gfx->rendererCapabilities().torus)
+        throw std::runtime_error("Selected benchmark backend does not support torus");
+    if(!std::getenv("GLOB2_BENCH_VISIBLE")) {
+        int count=0;auto **windows=SDL_GetWindows(&count);
+        if(windows){for(int i=0;i<count;++i)SDL_HideWindow(windows[i]);SDL_free(windows);}
+    }
 #ifdef HAVE_OPENGL
-    if (!SDL_GL_GetCurrentContext()) return 1;
-    if (!std::getenv("GLOB2_BENCH_VISIBLE")) SDL_HideWindow(SDL_GL_GetCurrentWindow());
-    SDL_GL_SetSwapInterval(0);
+    if(SDL_GL_GetCurrentContext())SDL_GL_SetSwapInterval(0);
+#endif
+    if(gfx->renderDevice() && std::getenv("GLOB2_BENCH_COMPARE_RENDERER"))
+        throw std::runtime_error("The immediate-versus-batched comparison requires legacy GL");
     {
         GameGUI gui;
         const char *path = std::getenv("GLOB2_BENCH_MAP");
@@ -214,31 +272,56 @@ static int run(int argc, char **argv)
         int x = 0, y = 0;
         TorusView view;
         const int frames = std::max(1, std::getenv("GLOB2_BENCH_FRAMES") ? std::atoi(std::getenv("GLOB2_BENCH_FRAMES")) : 100);
-        std::printf("GPU=%s map=%s %dx%d viewport=%dx%d frames=%d\n", glGetString(GL_RENDERER),
+        const char *driver="SDL GPU (external capability inventory identifies physical device)";
+#ifdef HAVE_OPENGL
+        if(SDL_GL_GetCurrentContext())driver=reinterpret_cast<const char *>(glGetString(GL_RENDERER));
+#endif
+        std::printf("GPU=%s map=%s %dx%d viewport=%dx%d frames=%d\n", driver,
             path ? path : "maps/Oazis.map", gui.game.map.getW(), gui.game.map.getH(), width, height, frames);
+        std::printf("BENCH_TIMING wall=draw_flush_completion_with_readback_overhead process_cpu=completion_inclusive submission_cpu=draw_flush gpu_timestamp=unavailable device_presentation=outside_timing\n");
         std::fflush(stdout);
         auto measure = [&](const char *label, auto draw)
         {
             const char *mode = std::getenv("GLOB2_BENCH_MODE");
             if (mode && std::strcmp(mode, label)) return;
-            std::vector<double> times, cpuTimes;
+            std::vector<double> times, cpuTimes, submissionCpuTimes;
             const int warmupFrames = std::max(0, std::getenv("GLOB2_BENCH_WARMUP_FRAMES")
                 ? std::atoi(std::getenv("GLOB2_BENCH_WARMUP_FRAMES")) : 2);
             for (int i = -warmupFrames; i < frames; ++i)
             {
-                glFinish();
+                if(!finishRendering())ContextAccess::backend(*gfx)->present();
+                const auto telemetryBefore=gfx->renderDevice()?gfx->renderDevice()->telemetry():GAGCore::RenderTelemetry{};
                 const auto scopesBefore = PerformanceTelemetry::collector().window;
                 Uint64 start = SDL_GetPerformanceCounter();
                 const auto cpuStart = std::clock();
-                draw();
-                glFinish();
-                assert(glGetError() == GL_NO_ERROR);
+                std::clock_t submissionCPU{};unsigned deferredAttempts=0;
+                for(;;) {
+                    draw();
+                    if(ContextAccess::backend(*gfx))ContextAccess::backend(*gfx)->flush();
+                    submissionCPU=std::clock();
+                    if(finishRendering())break;
+                    // Admission retry cost remains inside this frame's wall/CPU
+                    // interval. No incomplete frame contributes a timing sample.
+                    ContextAccess::backend(*gfx)->present();
+                    if(++deferredAttempts>=1000)throw std::runtime_error("Benchmark resource admission did not progress");
+                    SDL_Delay(1);
+                }
+                const auto completedCPU=std::clock();
                 double ms = 1000.0 * (SDL_GetPerformanceCounter() - start) / SDL_GetPerformanceFrequency();
-                const double cpuMs = 1000.0 * (std::clock() - cpuStart) / CLOCKS_PER_SEC;
+                const double cpuMs = 1000.0 * (completedCPU - cpuStart) / CLOCKS_PER_SEC;
+                if(deferredAttempts)std::printf("FRAME_DEFERRED mode=%s frame=%d attempts=%u included_in_timing=1\n",label,i,deferredAttempts);
                 if (std::getenv("GLOB2_BENCH_FRAME_TIMES"))
                 {
+                    if(auto *device=gfx->renderDevice()) {
+                        const auto after=device->telemetry();
+                        std::printf("FRAME_DEVICE frame=%d packets=%llu batches=%llu upload_bytes=%llu resource_bytes=%zu submit_cpu_ns=%llu capture_cpu_ns=%llu capture_drops=%llu\n",i,
+                            static_cast<unsigned long long>(after.packets-telemetryBefore.packets),static_cast<unsigned long long>(after.batches-telemetryBefore.batches),
+                            static_cast<unsigned long long>(after.uploadBytes-telemetryBefore.uploadBytes),after.resourceBytes,
+                            static_cast<unsigned long long>(after.cpuSubmitNanoseconds-telemetryBefore.cpuSubmitNanoseconds),
+                            static_cast<unsigned long long>(after.cpuCaptureNanoseconds-telemetryBefore.cpuCaptureNanoseconds),static_cast<unsigned long long>(after.captureDrops-telemetryBefore.captureDrops));
+                    }
 #ifdef _WIN32
-                    // MSVC's clock() measures elapsed time rather than process CPU.
+                    // MSVC clock() measures elapsed time rather than process CPU.
                     std::printf("FRAME mode=%s frame=%d elapsed_ms=%.6f\n", label, i, ms);
 #else
                     std::printf("FRAME mode=%s frame=%d elapsed_ms=%.6f process_cpu_ms=%.6f\n", label, i, ms, cpuMs);
@@ -260,18 +343,27 @@ static int run(int argc, char **argv)
                 }
                 if (i < 0 && i >= -warmupFrames && i < -warmupFrames + 8)
                     std::printf("WARMUP frame=%d elapsed_ms=%.3f process_cpu_ms=%.3f\n", i + warmupFrames, ms,
-                        cpuMs);
+                        1000.0 * (completedCPU - cpuStart) / CLOCKS_PER_SEC);
                 if (i >= 0)
                 {
                     times.push_back(ms);
                     if (cpuStart != std::clock_t(-1))
-                        cpuTimes.push_back(cpuMs);
+                        cpuTimes.push_back(1000.0 * (completedCPU - cpuStart) / CLOCKS_PER_SEC);
+                    if(cpuStart!=std::clock_t(-1))submissionCpuTimes.push_back(1000.0*(submissionCPU-cpuStart)/CLOCKS_PER_SEC);
                 }
+                // Close each device frame after measurement. Otherwise recorder
+                // identity/backup work would be shared by the whole benchmark.
+                if(gfx->renderDevice())ContextAccess::backend(*gfx)->present();
             }
             std::sort(times.begin(), times.end());
             std::printf("%s median=%.3f ms p95=%.3f ms\n", label, times[times.size()/2], times[(times.size()*95+99)/100-1]);
             std::printf("%s p99=%.3f ms max=%.3f ms\n", label,
                 times[(times.size()*99+99)/100-1], times.back());
+            if(!submissionCpuTimes.empty()) {
+                std::sort(submissionCpuTimes.begin(),submissionCpuTimes.end());
+                std::printf("%s submission_cpu_median=%.3f ms submission_cpu_p95=%.3f ms\n",label,
+                    submissionCpuTimes[submissionCpuTimes.size()/2],submissionCpuTimes[(submissionCpuTimes.size()*95+99)/100-1]);
+            }
 #ifndef _WIN32
             if (!cpuTimes.empty())
             {
@@ -373,7 +465,7 @@ static int run(int argc, char **argv)
                     const auto geometry = batch->geometryCache().stats();
                     const auto textures = batch->stats();
                     std::printf("STEADY_CACHE pending=%zu attempts=%llu promotions=%llu array_bytes=%zu geometry_bytes=%zu builds=%llu deferred=%llu\n",
-                        textures.pendingTextures, textures.warmAttempts, textures.warmPromotions,
+                        textures.pendingTextures, static_cast<unsigned long long>(textures.warmAttempts), static_cast<unsigned long long>(textures.warmPromotions),
                         textures.textureBytes, geometry.bytes, geometry.builds, geometry.deferred);
                 }
                 PerformanceTelemetry::collector().write(std::cout, "BENCH_SCOPE", 0, false);
@@ -383,6 +475,7 @@ static int run(int argc, char **argv)
                 // fixed within each pair. Readback/checksum work is deliberately
                 // outside the timing interval. Cloud animation has separate
                 // mutable presentation state, so compare only the no-cloud pass.
+#ifdef HAVE_OPENGL
                 if (!clouds && std::getenv("GLOB2_BENCH_COMPARE_RENDERER"))
                 {
                     const bool advance = std::getenv("GLOB2_BENCH_COMPARE_AI");
@@ -470,6 +563,7 @@ static int run(int argc, char **argv)
                     std::printf("COMPARE_FINAL tick=%u checksum=%08x\n", gui.game.stepCounter,
                         gui.game.checkSum(nullptr, nullptr, nullptr, true));
                 }
+#endif
                 captureFramebuffer();
                 if (std::getenv("GLOB2_BENCH_VISIBLE")) globalContainer->gfx->nextFrame();
             }
@@ -510,7 +604,6 @@ static int run(int argc, char **argv)
             std::printf("simulation_checksum=%08x\n", initialChecksum);
         }
     }
-#endif
     delete globalContainer;
     return 0;
 }

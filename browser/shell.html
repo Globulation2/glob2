@@ -17,6 +17,7 @@
 html,body{width:100%;height:100%;margin:0;overflow:hidden;background:var(--bg)}
 body{display:flex;align-items:center;justify-content:center;color:var(--ink);
   background:radial-gradient(ellipse at 50% 40%,var(--surface),var(--bg) 70%)}
+#presentation-host{width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--bg)}
 canvas{display:block;outline:none;touch-action:none;opacity:0;transition:opacity .2s ease}
 body.ready canvas{opacity:1}
 #loading{position:fixed;z-index:1;box-sizing:border-box;width:min(440px,calc(100% - 32px));max-height:calc(100% - 32px);overflow:auto;
@@ -73,8 +74,10 @@ body.ready #loading{opacity:0;pointer-events:none}
   <p id="language-error" role="alert" data-i18n="Could not load this language. Please try again." hidden>Could not load this language. Please try again.</p>
   <p id="loading-note" data-i18n="The first visit downloads the game once. Later visits start from this device's copy." hidden>The first visit downloads the game once. Later visits start from this device's copy.</p>
 </div>
-<canvas id="canvas" width="800" height="600" tabindex="0" aria-label="Globulation 2" oncontextmenu="event.preventDefault()"></canvas>
+<div id="presentation-host"><canvas id="canvas" width="800" height="600" tabindex="0" aria-label="Globulation 2" oncontextmenu="event.preventDefault()"></canvas>
+<script src="presentation-surface.js"></script>
 <div id="open-link" role="alert" hidden><span id="open-link-text"></span><a id="open-link-anchor" target="_blank" rel="noopener"></a><button type="button" id="open-link-close" aria-label="Close" data-i18n-aria="Close">×</button></div>
+</div>
 <script>
 // Browser chrome shares the website's locale; the game's saved profile remains independent.
 function browserText(source, params) {
@@ -123,7 +126,7 @@ if (globalThis.Glob2I18n) {
   });
   addEventListener('glob2:localechange', refreshBrowserLanguage);
 } else languagePicker.hidden = true;
-const canvas = document.getElementById('canvas');
+let canvas = document.getElementById('canvas');
 const loading = document.getElementById('loading');
 const loadingStatus = document.getElementById('loading-status');
 function fitCanvas() {
@@ -132,7 +135,8 @@ function fitCanvas() {
   canvas.style.height = innerHeight + 'px';
 }
 addEventListener('resize', fitCanvas);
-new MutationObserver(fitCanvas).observe(canvas, {attributes:true,attributeFilter:['width','height']});
+const canvasSizeObserver = new MutationObserver(fitCanvas);
+canvasSizeObserver.observe(canvas, {attributes:true,attributeFilter:['width','height']});
 fitCanvas();
 // Download progress for the WebAssembly module and the startup data packages, with a
 // time estimate from the rate so far. Downloads report decoded bytes; responses
@@ -297,7 +301,7 @@ function chooseRenderer() {
       // Chrome doesn't flag SwiftShader as a performance caveat, so check the rasterizer too.
       return !/SwiftShader|llvmpipe|softpipe|Software Rasterizer|Basic Render Driver/i.test(name);
     };
-    return requested === 'webgl2' || (requested !== 'software' && accelerated());
+    return ['webgl2','gpu','legacy-gl','programmable-gl','portable-sdl','sdl','webgpu'].includes(requested) || (requested !== 'software' && accelerated());
  }
 var Module = {
   noInitialRun: true,
@@ -439,7 +443,8 @@ var Module = {
     const join = new URLSearchParams(location.search).get('join');
     const invite = join && /^[A-Za-z0-9]{6,16}$/.test(join) ? ['online', 'join', join, '--instance', location.origin] : [];
     const roomMap = browserMapLaunchArguments(location.search, location.origin);
-    const graphics = ['--window-size', width + 'x' + height, '--no-fullscreen', '--no-custom-cursor', '--renderer', gpu ? 'gpu' : 'software'];
+    const requestedBackend = new URLSearchParams(location.search).get('renderer');
+    const graphics = ['--window-size', width + 'x' + height, '--no-fullscreen', '--no-custom-cursor', ...(requestedBackend ? ['--renderer', requestedBackend] : [])];
     const launch = watchReplay && watchReplay.status === 'ready' ? ['replay', watchReplay.path] : roomMap.length ? roomMap : invite.length ? invite : ['play'];
     const args = [...launch, ...graphics];
     if (Module.storageRestore === 'ready') {
@@ -479,6 +484,14 @@ var Module = {
   },
   onAbort(reason) { globalThis.glob2SetPreview?.send('error',{text:String(reason).slice(0,2000)}); Module.printErr('Game stopped: ' + reason); globalThis.glob2Studio?.send('error', {text:String(reason).slice(0,2000)}); }
 };
+Module.glob2PresentationSurface = Glob2PresentationSurface.create(Module);
+Module.glob2PresentationSurface.bind(next => {
+  canvasSizeObserver.disconnect();
+  canvas = next;
+  canvasSizeObserver.observe(canvas, {attributes:true,attributeFilter:['width','height']});
+  fitCanvas();
+  return () => canvasSizeObserver.disconnect();
+});
 const preferencesPath = '/home/web_user/.glob2/preferences.txt';
 function savedPreference(name) {
   try {
@@ -652,7 +665,7 @@ Module.textBridge = (() => {
               event.preventDefault();field.action=event.key==='Enter' ? 1 : 2;field.dirty=true;element.blur();
             }
           });
-        document.body.appendChild(element);element.value=value;
+        (Module.glob2PresentationSurface.fullscreenHost || document.body).appendChild(element);element.value=value;
         // A field shown for copying by hand (a failed Copy) opens with its text
         // selected, ready for Ctrl+C or the phone's Copy menu.
         if (selectAll) { element.readOnly=true; element.focus({preventScroll:true}); element.select(); }
@@ -755,15 +768,21 @@ window.visualViewport?.addEventListener('resize',publishPresentationMetrics);
 window.visualViewport?.addEventListener('scroll',publishPresentationMetrics);
 publishPresentationMetrics();
 Module.visibilityPending = true;
-canvas.addEventListener('webglcontextlost', event => {
-  event.preventDefault();
-  Module.gpuLost = true;
-  Module.visibilityPending = true;
+Module.glob2PresentationSurface.bind(target => {
+  const lost = event => { event.preventDefault(); Module.gpuLost = true; Module.visibilityPending = true; };
+  const restored = () => { Module.gpuRestorePending = true; };
+  target.addEventListener('webglcontextlost', lost);
+  target.addEventListener('webglcontextrestored', restored);
+  target.addEventListener('pointerdown', focusGame);
+  target.addEventListener('keydown', activateAudio);
+  return () => {
+    target.removeEventListener('webglcontextlost', lost);
+    target.removeEventListener('webglcontextrestored', restored);
+    target.removeEventListener('pointerdown', focusGame);
+    target.removeEventListener('keydown', activateAudio);
+  };
 });
-canvas.addEventListener('webglcontextrestored', () => { Module.gpuRestorePending = true; });
 document.addEventListener('visibilitychange', () => { Module.visibilityPending = true; });
-canvas.addEventListener('pointerdown', focusGame);
-canvas.addEventListener('keydown', activateAudio);
 // SDL consumes navigation keys even when the browser needs them. Reserve reload
 // and address-bar shortcuts without cancelling their browser default action.
 // Key releases still reach SDL so a previously held game key cannot stick.

@@ -123,8 +123,7 @@ std::unique_ptr<DrawableSurface> BrushSwatches::composeTerrain(TerrainType type,
 	// Inspecting another set can replace the global custom compositor. Prepare
 	// the current instance for each new swatch, rather than retaining a flag
 	// tied to the previous instance. Cached swatches need no texture work.
-	const bool gpu = globalContainer->gfx->getOptionFlags() &
-					 (GAGCore::GraphicContext::USEGPU | GAGCore::GraphicContext::PORTABLEGPU);
+	const bool gpu = globalContainer->gfx->rendererCapabilities().accelerated;
 	compositor.prepare(gpu, 0);
 	const auto &catalog = compositor.catalog();
 	// A custom material binding takes precedence over the imported base look.

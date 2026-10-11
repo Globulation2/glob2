@@ -148,7 +148,10 @@ TEST_SUITE("SkinSprites")
 		REQUIRE(manifest);
 		manifest->replyRaw(200, f.doc.dump());
 		sprites.poll();
-		CHECK_FALSE(sprites.draw(*gfx, 2, 0, 0, 10, 10, 38, 38));
+        // A live renderer can prepare the software fallback without drawing it.
+        sprites.prefetch(2, 0, 0);
+        CHECK(sprites.counters().hits == 0);
+        CHECK(sprites.counters().misses == 0);
 		sprites.poll();
 		auto page = http.pending("/pages/" + Online::Sha256::hex(f.unit));
 		REQUIRE(page);

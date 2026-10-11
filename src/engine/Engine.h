@@ -88,6 +88,7 @@ public:
     GAGCore::CooperativeTask loadReplayTask(std::string filename);
     void cancelInitialization();
     const std::string& getInitializationDiagnostic() const { return initializationDiagnostic; }
+    bool takeSettingsRequest() { return gui.takeSettingsRequest(); }
     void suspendInput() { gui.suspendInput(); }
     void viewportResized(int oldWidth, int oldHeight, int width, int height) { gui.viewportResized(oldWidth, oldHeight, width, height); }
 

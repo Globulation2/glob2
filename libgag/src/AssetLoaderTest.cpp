@@ -82,6 +82,81 @@ TEST_CASE("HD staging preserves external consumers and cancellation cannot cance
     CHECK_FALSE(inputs.consume("missing.webp").value);
     CHECK(inputs.size() == 0);
 }
+TEST_CASE("HD request policy survives backend capability changes without discarding in-flight images") {
+    glob2test::TempDir temp("hd-policy-switch");
+    write(temp.path / "frame.webp", webp, sizeof(webp));
+    GAGCore::FileManager files("asset-loader-test"); files.addDir(temp.path.string());
+    for (unsigned workers : {0u, 2u}) {
+        GAGCore::AssetLoader loader(files, {workers, workers, 1024 * 1024});
+        GAGCore::HighResolutionInputs inputs;
+        inputs.add(loader, "frame.webp", false);
+        inputs.add("frame.webp", false);
+        auto base = loader.requestImage("frame.webp", GAGCore::AssetLoader::Priority::Required, false);
+        // Switch to a mip-capable device before the original decode completes.
+        inputs.request(loader, "frame.webp", true);
+        const auto wait = [&] {
+            const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(5);
+            while (inputs.pending() && std::chrono::steady_clock::now() < deadline) {
+                loader.poll(); std::this_thread::yield();
+            }
+            REQUIRE_FALSE(inputs.pending());
+        };
+        wait();
+        REQUIRE(loader.wait(base));
+        REQUIRE(base.get()); CHECK(base.get()->mips.empty());
+        const auto submitted = loader.metrics().submitted;
+        inputs.request(loader, "frame.webp", true);
+        CHECK(loader.metrics().submitted == submitted);
+        auto first = inputs.consume("frame.webp", true);
+        REQUIRE(first.value); REQUIRE_FALSE(first.value->mips.empty());
+        CHECK_FALSE(first.exclusive); CHECK(inputs.size() == 1);
+        // A subsequent downgrade keeps the same completed upgraded result.
+        inputs.request(loader, "frame.webp", false);
+        auto last = inputs.consume("frame.webp", false);
+        REQUIRE(last.value); CHECK(last.value == first.value);
+        CHECK(inputs.size() == 0); CHECK_FALSE(inputs.pending());
+        inputs.add(loader, "frame.webp", true);
+        wait();
+        auto downgraded = inputs.consume("frame.webp", false);
+        REQUIRE(downgraded.value); CHECK_FALSE(downgraded.value->mips.empty());
+        CHECK(inputs.size() == 0);
+        // Authored atlas pixels and generated standalone mips sharing a path
+        // remain distinct registered requests and use counts.
+        inputs.add(loader, "frame.webp", false); inputs.add(loader, "frame.webp", true);
+        wait();
+        auto authored = inputs.consume("frame.webp", false);
+        auto generated = inputs.consume("frame.webp", true);
+        REQUIRE(authored.value); REQUIRE(generated.value);
+        CHECK(authored.value->mips.empty()); CHECK_FALSE(generated.value->mips.empty());
+        CHECK(inputs.size() == 0);
+        inputs.add(loader, "missing.webp", false);
+        inputs.request(loader, "missing.webp", true);
+        wait();
+        const auto failedSubmissions = loader.metrics().submitted;
+        for (int repeat = 0; repeat < 3; ++repeat) inputs.request(loader, "missing.webp", true);
+        CHECK(loader.metrics().submitted == failedSubmissions);
+        CHECK_FALSE(inputs.consume("missing.webp", false).value);
+        CHECK(inputs.size() == 0);
+    }
+    // A failed re-decode retains the immutable valid base already owned by
+    // the in-flight subscription, rather than dropping the HD layer.
+    GAGCore::AssetLoader loader(files, {0, 0, 1024 * 1024});
+    GAGCore::HighResolutionInputs inputs;
+    inputs.add(loader, "frame.webp", false);
+    while (inputs.pending()) loader.poll();
+    REQUIRE(inputs.state("frame.webp", false) == GAGCore::AssetLoader::State::Ready);
+    std::filesystem::remove(temp.path / "frame.webp");
+    loader.invalidate();
+    inputs.request(loader, "frame.webp", true);
+    while (inputs.pending()) loader.poll();
+    CHECK(loader.metrics().failed > 0);
+    const auto failedSubmissions = loader.metrics().submitted;
+    for (int repeat = 0; repeat < 3; ++repeat) inputs.request(loader, "frame.webp", true);
+    CHECK(loader.metrics().submitted == failedSubmissions);
+    auto retained = inputs.consume("frame.webp", true);
+    REQUIRE(retained.value); CHECK(retained.value->mips.empty());
+    CHECK(inputs.size() == 0);
+}
 TEST_CASE("WebP requests deduplicate and preserve alpha and invisible RGB in both execution modes") {
     glob2test::TempDir temp("parallel-assets");
     write(temp.path / "frame.webp", webp, sizeof(webp));

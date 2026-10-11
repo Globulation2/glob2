@@ -463,6 +463,7 @@ class MapEdit
     int editingResult = 0;
     GAGCore::InputState inputState;
     bool fertilityRequested = false;
+    bool pendingSettings = false;
     std::string pendingSaveFilename, pendingSaveName, pendingLoadFilename, pendingShareFilename;
     std::unique_ptr<GAGCore::BackgroundFileWriter> saveWriter;
     // Keep retry/export available if a save fails after a window-close request.
@@ -479,6 +480,7 @@ public:
 	///Updates the editor after map generation
 	void update();
 
+    bool takeSettingsRequest() { return std::exchange(pendingSettings, false); }
     bool usesPhone() const { return bool(phone); }
     // Touch content is coasting or bouncing; the screen frames faster meanwhile.
     bool touchAnimating() const;

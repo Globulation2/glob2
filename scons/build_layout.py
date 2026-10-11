@@ -26,6 +26,8 @@ def build_identity(arguments, host=None):
         raise ValueError('size_optimization experiments require a native release build')
     if target not in ('native', 'web', 'android', 'ios'):
         raise ValueError('target must be native, web, android, or ios')
+    if target != 'web' and 'web_legacy_gl' in arguments:
+        raise ValueError('web_legacy_gl requires target=web')
     # server=0 is still accepted so existing client commands keep working.
     if enabled(arguments.get('server', 0)):
         raise ValueError('server=1 (the YOG lobby server) was removed; build role=client or role=relay')
@@ -79,6 +81,11 @@ def build_identity(arguments, host=None):
     native_wss = target == 'native' and role == 'client' and enabled(arguments.get('wss', 1))
     identity = {'target': target, 'role': role, 'toolchain': toolchain, 'mode': mode,
                 'native_wss': native_wss}
+    if target == 'web':
+        legacy = str(arguments.get('web_legacy_gl', '1'))
+        if legacy not in ('0', '1'):
+            raise ValueError('web_legacy_gl must be 0 or 1')
+        if legacy == '0': identity['web_legacy_gl'] = False
     if retain_symbols:
         identity['retain_symbols'] = True
     if size_profile != 'none':
@@ -99,6 +106,9 @@ def build_identity(arguments, host=None):
 
 
 def default_directory(identity):
+    if identity.get('web_legacy_gl') is False:
+        base = dict(identity); del base['web_legacy_gl']
+        return default_directory(base) / 'direct'
     from client_features import directory_suffix
     feature_suffix = directory_suffix(identity)
     if feature_suffix:

@@ -10,7 +10,7 @@ void DynamicClouds::compute(const int viewPortX, const int viewPortY, const int 
                             const int viewPortHeight, const int time, const int worldWidth,
                             const int worldHeight, bool includeCloudLayer, int maxGridSize)
 {
-    if (!(globalContainer->gfx->getOptionFlags() & GraphicContext::USEGPU))
+    if (!globalContainer->gfx->rendererCapabilities().cloudLayers)
         return;
     // Keep the lattice anchored in world space. An overview can request fewer
     // samples without changing the field or the normal viewport quality.
@@ -61,7 +61,7 @@ void DynamicClouds::computeWorld(const int worldWidth, const int worldHeight, co
 
 void DynamicClouds::render(DrawableSurface *dest, const int, const int, DynamicClouds::Layer layer)
 {
-    if (!(globalContainer->gfx->getOptionFlags() & GraphicContext::USEGPU))
+    if (!globalContainer->gfx->rendererCapabilities().cloudLayers)
         return;
     // Magnification is sampled in world space, never around the viewport center.
     bool cloud = layer == DynamicClouds::CLOUD;

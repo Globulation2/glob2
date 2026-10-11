@@ -66,7 +66,7 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
                       LINK=command_path(compiler), AR=command_path(emscripten / 'emar'), RANLIB=command_path(emscripten / 'emranlib'))
     env['OPUS_PREFIX'] = str(opus_prefix)
     env['PROGSUFFIX'] = '.js'
-    env.Append(LINKFLAGS=['--js-library', 'browser/canvas-size.js'])
+    env.Append(LINKFLAGS=['--js-library', 'browser/canvas-size.js', '--js-library', 'browser/webgpu-device.js'])
     if threaded:
         env.Append(CCFLAGS=['-pthread'], LINKFLAGS=['-pthread', '-sOFFSCREENCANVAS_SUPPORT=1',
             '-sDEFAULT_PTHREAD_STACK_SIZE=8388608',
@@ -74,9 +74,11 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
             "'-sPTHREAD_POOL_SIZE=Math.min(2*Math.max(navigator.hardwareConcurrency||1,1),16)'",
             '-sALLOW_BLOCKING_ON_MAIN_THREAD=0',
             '--js-library', 'browser/threaded-egl.js'])
+    legacy_gl = identity.get('web_legacy_gl', True)
     config = output / 'include/glob2/BuildConfig.h'
     write_if_changed(config, f'''#pragma once
-#define HAVE_OPENGL 1
+{'#define HAVE_OPENGL 1' if legacy_gl else ''}
+#define GLOB2_PROGRAMMABLE_GL 1
 #define GLOB2_WEBGL2 1
 #define PACKAGE "glob2"
 #define PACKAGE_NAME "Globulation 2"
@@ -86,18 +88,27 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
 #define PRIMARY_FONT "sans.ttf"
 ''' + client_feature_header(identity))
     skin_materials.generate(Path(__file__).resolve().parents[1], output)
+    import renderer_shaders
+    shaders = renderer_shaders.configure(env, root, output, browser=True)
+    env.Append(LINKFLAGS=['--preload-file', str(shaders / 'webgl2') + '@/shaders/webgl2'])
+    if (shaders / 'webgpu').is_dir():
+        env.Append(LINKFLAGS=['--preload-file', str(shaders / 'webgpu') + '@/shaders/webgpu',
+            '--preload-file', str(shaders / 'metadata.json') + '@/shaders/metadata.json'])
     include_paths = [str(output / 'include'), str(sdl_prefix / 'include')] + list(INCLUDE_DIRECTORIES)
     env.Append(CPPPATH=include_paths + [str(opus_prefix / 'include'), str(opus_prefix / 'include/opus'), "#third_party/quickjs-ng"], CPPDEFINES=['HAVE_CONFIG_H'] + official_instance.cppdefines(official_instance.origin(arguments)),
                CXXFLAGS=['-std=gnu++20', '-fwasm-exceptions', '-g2', '-O2' if identity['mode']=='release' else '-O0'] + PORTS)
     env.Append(LINKFLAGS=['-fwasm-exceptions', '-O2' if identity['mode']=='release' else '-O0',
-        '-sLEGACY_GL_EMULATION=1', '-sFETCH=1', '-sMIN_WEBGL_VERSION=2', '-sMAX_WEBGL_VERSION=2',
+        '-sLEGACY_GL_EMULATION=' + ('1' if legacy_gl else '0'), '-sFETCH=1', '-sMIN_WEBGL_VERSION=2', '-sMAX_WEBGL_VERSION=2',
         '-sALLOW_MEMORY_GROWTH',
         '-sINITIAL_MEMORY=134217728', '-sSTACK_SIZE=8388608', '-sASSERTIONS=1',
         '-sFORCE_FILESYSTEM', '-lidbfs.js', '-lwebsocket.js',
         "'-sEXPORTED_FUNCTIONS=[\"_main\",\"_malloc\",\"_free\"]'",
         "'-sEXPORTED_RUNTIME_METHODS=[\"callMain\",\"FS\"]'",
         '--pre-js', 'browser/storage.js', '--pre-js', 'browser/file-selection.js', '--pre-js', 'browser/audio.js', '--pre-js', 'browser/recording.js', '--pre-js', 'browser/runtime.js',
-        '--post-js', 'browser/webgl-shaders.js'] + PORTS)
+        ] + PORTS)
+    if legacy_gl:
+        env.Append(LINKFLAGS=['--pre-js', 'browser/legacy-gl-runtime.js',
+                              '--post-js', 'browser/webgl-shaders.js'])
     if arguments.get('web_profile') == '1':
         # Preserve function names for browser CPU profiles without changing optimization.
         env.Append(LINKFLAGS=['--profiling-funcs'])
@@ -248,9 +259,15 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
 
     env.Depends(program, ['browser/storage.js', 'browser/file-selection.js', 'browser/audio.js', 'browser/recording.js', 'browser/runtime.js', 'browser/webgl-shaders.js',
                           'browser/asset-loader.js', 'browser/canvas-size.js', 'browser/toolchain.json', assets])
+    if legacy_gl:
+        env.Depends(program, 'browser/legacy-gl-runtime.js')
     if threaded:
         env.Depends(program, 'browser/threaded-egl.js')
-    env.SideEffect([str(output / 'index.wasm')], program)
+    env.Depends(program, env['RENDER_SHADER_FILES'])
+    env.SideEffect([str(output / 'index.wasm'), str(output / 'index.data')], program)
+    # SideEffect alone does not rebuild an up-to-date JS target after deletion.
+    if not (output / 'index.data').is_file():
+        env.AlwaysBuild(program)
     env.Clean(program, [str(output / ('index.'+ext)) for ext in ('wasm','data')] + ([] if threaded else [str(output / 'assets')]))
     database = env.CompilationDatabase(str(output / 'compile_commands.json'))
     env.Alias('compile_commands.json', database)
@@ -357,10 +374,11 @@ def build_web(directory, identity, arguments):
     hive_worker = env.Install(directory, 'browser/hive-worker.js')
     env.Depends(page, [hive_program, hive_worker])
     loader = env.Install(directory, 'browser/loader.js')
+    presentation_surface = env.Install(directory, 'browser/presentation-surface.js')
     localization = env.Install(directory, 'browser/i18n.js')
     localization += env.Install(str(Path(directory) / 'locales'), [str(path) for path in sorted(Path('platform/packages/i18n/locales').glob('*.json'))])
-    env.Depends(page, [loader, localization])
-    env.Alias('web-package', [page, loader])
+    env.Depends(page, [loader, presentation_surface, localization])
+    env.Alias('web-package', [page, loader, presentation_surface])
     if threaded: env.Alias('web-threaded', threaded)
     if serial: env.Alias('web-serial', serial)
-    Default(page, loader, database)
+    Default(page, loader, presentation_surface, database)

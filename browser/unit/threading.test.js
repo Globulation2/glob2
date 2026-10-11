@@ -81,3 +81,35 @@ test('persistence snapshots survive worker rename and byte changes during the da
   assert.equal(finished, true);
   assert.throws(() => idbfs.loadLocalEntry('/save'), /removed/);
 });
+
+test('loader keeps SDK shader preloads beside each runtime and artwork shared', async () => {
+  const vm = require('node:vm');
+  const source = require('node:fs').readFileSync(require.resolve('../loader.js'), 'utf8');
+  for (const mode of ['serial', 'threaded']) for (const version of ['', '-0123456789abcdef']) {
+    let selectedScript;
+    const module = {renderer:'software', glob2RuntimeFiles:{
+      serial:`index${version}.js`, threaded:`threaded/index${version}.js`,
+    }};
+    const timers = new Map(); let nextTimer=0;
+    const context = vm.createContext({
+      module:{exports:{}}, Module:module, crossOriginIsolated:true,
+      SharedArrayBuffer, WebAssembly, Blob, URL, URLSearchParams,
+      location:{search:'?threads='+mode, href:'https://example.test/play/'},
+      Worker:class extends EventTarget {
+        postMessage(){queueMicrotask(()=>this.onmessage({data:true}));} terminate(){}
+      },
+      setTimeout(callback){timers.set(++nextTimer,callback);return nextTimer;},
+      clearTimeout(id){timers.delete(id);},
+      document:{createElement(){return {};},body:{append(script){selectedScript=script.src;}}},
+    });
+    vm.runInContext(source,context);
+    await context.module.exports.load();
+    module.onApplicationStarted?.();
+    const prefix=mode==='threaded'?'threaded/':'';
+    assert.equal(selectedScript,prefix+`index${version}.js`);
+    assert.equal(module.locateFile(`index${version}.data`),prefix+`index${version}.data`);
+    assert.equal(module.locateFile(`index${version}.wasm`),prefix+`index${version}.wasm`);
+    assert.equal(module.locateFile('assets/core.1234567890abcdef.data'),'assets/core.1234567890abcdef.data');
+    assert.equal(timers.size,0);
+  }
+});
