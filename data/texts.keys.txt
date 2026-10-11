@@ -822,6 +822,8 @@
 [settings Automatic torus view]
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 [settings Autosave]
+[settings GPU compute]
+[settings Use GPU for gradient calculations. Applies to the next game.]
 [settings Save the game automatically about every 10 seconds.]
 [Channel width]
 [Land bridge width]

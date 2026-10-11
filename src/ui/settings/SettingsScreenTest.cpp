@@ -127,6 +127,7 @@ static void run(int width,int height,bool gl,bool expanded)
         for (const auto& row : screen.rows()) REQUIRE(row.id != "display.resolution");
         screen.selectCategory(SettingsScreen::Category::Gameplay);
         REQUIRE(screen.row("gameplay.gpu").kind == SettingsScreen::Kind::Toggle);
+        REQUIRE(screen.row("gameplay.gpu").label == "GPU compute");
         REQUIRE_FALSE(s.gpuComputeEnabled());
         REQUIRE(screen.changeSetting("gameplay.gpu", 1));
         REQUIRE(s.gpuComputeEnabled());
