@@ -222,6 +222,18 @@ class RendererShaderTest(unittest.TestCase):
                     self.assertEqual(receipt['sourceSha256'], source_hash)
             self.assertTrue(result['nativeTranslationReceipt']['metalLibrariesProduced'])
             self.assertEqual(commands[0][:2], ['/usr/bin/env', 'DEVELOPER_DIR=/selected/Xcode'])
+            self.assertIn('-std=macos-metal2.1', commands[0])
+            for sdk in ('iphoneos', 'iphonesimulator'):
+                with self.subTest(sdk=sdk):
+                    lock['sdk'] = sdk
+                    lockfile.write_text(json.dumps(lock))
+                    commands.clear()
+                    with patch.object(shader.subprocess, 'check_output', side_effect=check), patch.object(shader.subprocess, 'run', side_effect=run):
+                        shader.compile_metal(output, sdk, lockfile)
+                    self.assertEqual(commands[0][:3], ['xcrun', '--sdk', sdk])
+                    self.assertIn('-std=ios-metal2.1', commands[0])
+            lock['sdk'] = 'macosx'
+            lockfile.write_text(json.dumps(lock))
             metal.write_bytes(b'unknown compiler')
             with patch.object(shader.subprocess, 'check_output', side_effect=check), patch.object(shader.subprocess, 'run') as calls:
                 with self.assertRaisesRegex(ValueError, 'binary does not match'):
