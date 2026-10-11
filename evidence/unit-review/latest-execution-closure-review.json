@@ -1,0 +1,438 @@
+{
+  "schema": 1,
+  "reviewer": "gpu_unit_integration_review",
+  "review": "Independent final execution closure after latest master renderer integration",
+  "review_time_utc": "2026-10-11T03:20:20.615450+00:00",
+  "source_revision": "c48c2871ea238df16401bc34bca394293f4f952f",
+  "base_revision": "c1401a484ed788f06238626424de422df9f5dbb0",
+  "source_status": "",
+  "verdict": "PASS_REVIEWED_FEATURE_CHECKS_WITH_INHERITED_TOOLING_FAILURE_AND_COVERAGE_LIMITS",
+  "receipt_validation": "All 13 command receipts completed at identical clean before/after source; their actual logs match recorded SHA256. contractsLatest expected failure retained.",
+  "receipts": {
+    "buildLatest": {
+      "status": "PASS",
+      "exitCode": 0,
+      "logSha256": "0224da79e4f1bba65132bfefaa38409b5ad97f5ff001bb790d324c5a3d355a4c",
+      "receiptSha256": "5d153492b5ca7d15312589ec62f8db7d9823613fa2be52ef5f3f93574e099474"
+    },
+    "engineLatest": {
+      "status": "PASS",
+      "exitCode": 0,
+      "logSha256": "33acf94a55cd141d6e89e297bb6c8994524d2b53d1c3dedd671147310328ad3e",
+      "receiptSha256": "2663a2a3bec5dd8218eee368fca265d02a702e69d0683d27e4f9e5514e63f3b8"
+    },
+    "unitLatest": {
+      "status": "PASS",
+      "exitCode": 0,
+      "logSha256": "80c8958868248b6281c8d1b6bc8218f1cdbe30dceb53e1533d788cb2fb6c539e",
+      "receiptSha256": "4c115d7960bcfb4b662d6f629d1f8217895cabb1963db27165d3747cefe0101a"
+    },
+    "presentationLatest": {
+      "status": "PASS",
+      "exitCode": 0,
+      "logSha256": "da6e4619f5c83eeaff8193315ea6b5ec71302f5a759b4e3a2ba710d3ca013484",
+      "receiptSha256": "2c71121bbee28efe03fb21ecf00c9e9fd7869bc6d6ad5e8ccb32f377b13bc2fa"
+    },
+    "cliLatest": {
+      "status": "PASS",
+      "exitCode": 0,
+      "logSha256": "4152ead2fd050e022428ec6b46226f06a376ad0b60952287593968065b161166",
+      "receiptSha256": "183993510a34fa7fc08394077b491af00d00170fc8018c87fe08872817deb6fe"
+    },
+    "glLatest": {
+      "status": "PASS",
+      "exitCode": 0,
+      "logSha256": "5ec2abf352fa575333fecc608e4c463f30e16acfaf618718e9bb2e1c722a91e3",
+      "receiptSha256": "2f8a78d1f7bfed2675bb2afdb15474ee650fed0c0c31fbbba8e19fdd47c35bf4"
+    },
+    "tracesLatest": {
+      "status": "PASS",
+      "exitCode": 0,
+      "logSha256": "52e228d9e9b9e4cd63b495505a5e279a9b48d83611c50cc21bfaf0373a427539",
+      "receiptSha256": "c2c1af56cd9dff535cb668373c0326d985f20404b327e69d04a6b0ad15f59260"
+    },
+    "gpuLatest": {
+      "status": "PASS",
+      "exitCode": 0,
+      "logSha256": "1c61ea3809c964c54badb393c3239561a134cf950627316e01d9606e2381a2a2",
+      "receiptSha256": "3cbb7bd3d15fe4ec56f2a471d52cac9fb12e20b90f9da972c9d547e17db546f2"
+    },
+    "shutdownLatest": {
+      "status": "PASS",
+      "exitCode": 0,
+      "logSha256": "29087ceb5959fe7b9df27ac4f3cef4f8c44ba311f20cc30431d4090b857ef5dd",
+      "receiptSha256": "581119c78c15b3749734ed33097ecda823b34f1adeb7e516a7a177097614081a"
+    },
+    "pythonLatest": {
+      "status": "PASS",
+      "exitCode": 0,
+      "logSha256": "4266b477e955ea204bfbf1a958db8e4f0893dbc04503f1eed2ba674c68aa0b7b",
+      "receiptSha256": "9264c31c35e7e55b7dd03cb8e619a1d1a04f7a38215920496425a20e80b33156"
+    },
+    "simLatest": {
+      "status": "PASS",
+      "exitCode": 0,
+      "logSha256": "e4f69dd9804ed06b2fab423e5a4d09e3a61b3c13f8c41ea57033dbff53f681fe",
+      "receiptSha256": "d7f890ce17f974c4f533b3bdfa7fa72dfbfd5cdc7ed14c146e086f7ea299bba8"
+    },
+    "cliReferenceLatest": {
+      "status": "PASS",
+      "exitCode": 0,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receiptSha256": "7bd1eebafb822f0bb5594969669a995990768d03c70591d85cccfb311b1807ff"
+    },
+    "contractsLatest": {
+      "status": "FAIL",
+      "exitCode": 1,
+      "logSha256": "069820ccf711488b18ce35369450a9922da380281aca2e13c1ca52512432c3d0",
+      "receiptSha256": "02c76e4968f09d632e3b3cff3c92c8d2eaf67af887241f36f5a831df3a578eb2"
+    }
+  },
+  "xml_results": {
+    "engineLatest": {
+      "tests": 299,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 8,
+      "passed": 291,
+      "sha256": "7938b7239d9e4ec99a39539ff352c9a1fe59eb55ffabb6ca715eb1ec05b88080"
+    },
+    "unitLatest": {
+      "tests": 1055,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 62,
+      "passed": 993,
+      "sha256": "ac4b693c1e3f728eebaa56b113f90033a2247db63f98eeb88d6b7a434243ca8b"
+    },
+    "presentationLatest": {
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "passed": 3,
+      "sha256": "697c39908ee7e08134408d1979229c2f7df7160f6e7054edc67c89670b56be79"
+    },
+    "cliLatest": {
+      "tests": 15,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "passed": 15,
+      "sha256": "5b6dd234440ad82807ffeb860614984d8d931f46a8148f34f97700cfe48a60d4",
+      "counting": "XML root lacks aggregate attributes; counted 15 testcase elements and zero failure/error/skipped elements."
+    },
+    "glLatest": {
+      "tests": 23,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "passed": 23,
+      "sha256": "1e2ded0eef7952a694d61743ec229b634166a451d2bad058adee68376f289478"
+    }
+  },
+  "shutdown_validation": {
+    "run_count": 24,
+    "groups": {
+      "cpu/2": 4,
+      "gpu/2": 16,
+      "gpu/auto": 4
+    },
+    "all_normal_exit": true,
+    "all_actual_raw_trace_files_equal_committed_842_tick_trace": true,
+    "rows": [
+      {
+        "mode": "cpu",
+        "computeThreads": "2",
+        "path": "artifacts/unit-review/shutdown-shutdownLatest/cpu-2-0/result/checksums.txt",
+        "bytes": 10914,
+        "sha256": "f29f0e00acdb3bc32019ce0ccb955e83a5af072138df632a3b22c183ec23b3ce",
+        "exitCode": 0
+      },
+      {
+        "mode": "cpu",
+        "computeThreads": "2",
+        "path": "artifacts/unit-review/shutdown-shutdownLatest/cpu-2-1/result/checksums.txt",
+        "bytes": 10914,
+        "sha256": "f29f0e00acdb3bc32019ce0ccb955e83a5af072138df632a3b22c183ec23b3ce",
+        "exitCode": 0
+      },
+      {
+        "mode": "cpu",
+        "computeThreads": "2",
+        "path": "artifacts/unit-review/shutdown-shutdownLatest/cpu-2-2/result/checksums.txt",
+        "bytes": 10914,
+        "sha256": "f29f0e00acdb3bc32019ce0ccb955e83a5af072138df632a3b22c183ec23b3ce",
+        "exitCode": 0
+      },
+      {
+        "mode": "cpu",
+        "computeThreads": "2",
+        "path": "artifacts/unit-review/shutdown-shutdownLatest/cpu-2-3/result/checksums.txt",
+        "bytes": 10914,
+        "sha256": "f29f0e00acdb3bc32019ce0ccb955e83a5af072138df632a3b22c183ec23b3ce",
+        "exitCode": 0
+      },
+      {
+        "mode": "gpu",
+        "computeThreads": "2",
+        "path": "artifacts/unit-review/shutdown-shutdownLatest/gpu-2-0/result/checksums.txt",
+        "bytes": 10914,
+        "sha256": "f29f0e00acdb3bc32019ce0ccb955e83a5af072138df632a3b22c183ec23b3ce",
+        "exitCode": 0
+      },
+      {
+        "mode": "gpu",
+        "computeThreads": "2",
+        "path": "artifacts/unit-review/shutdown-shutdownLatest/gpu-2-1/result/checksums.txt",
+        "bytes": 10914,
+        "sha256": "f29f0e00acdb3bc32019ce0ccb955e83a5af072138df632a3b22c183ec23b3ce",
+        "exitCode": 0
+      },
+      {
+        "mode": "gpu",
+        "computeThreads": "2",
+        "path": "artifacts/unit-review/shutdown-shutdownLatest/gpu-2-2/result/checksums.txt",
+        "bytes": 10914,
+        "sha256": "f29f0e00acdb3bc32019ce0ccb955e83a5af072138df632a3b22c183ec23b3ce",
+        "exitCode": 0
+      },
+      {
+        "mode": "gpu",
+        "computeThreads": "2",
+        "path": "artifacts/unit-review/shutdown-shutdownLatest/gpu-2-3/result/checksums.txt",
+        "bytes": 10914,
+        "sha256": "f29f0e00acdb3bc32019ce0ccb955e83a5af072138df632a3b22c183ec23b3ce",
+        "exitCode": 0
+      },
+      {
+        "mode": "gpu",
+        "computeThreads": "2",
+        "path": "artifacts/unit-review/shutdown-shutdownLatest/gpu-2-4/result/checksums.txt",
+        "bytes": 10914,
+        "sha256": "f29f0e00acdb3bc32019ce0ccb955e83a5af072138df632a3b22c183ec23b3ce",
+        "exitCode": 0
+      },
+      {
+        "mode": "gpu",
+        "computeThreads": "2",
+        "path": "artifacts/unit-review/shutdown-shutdownLatest/gpu-2-5/result/checksums.txt",
+        "bytes": 10914,
+        "sha256": "f29f0e00acdb3bc32019ce0ccb955e83a5af072138df632a3b22c183ec23b3ce",
+        "exitCode": 0
+      },
+      {
+        "mode": "gpu",
+        "computeThreads": "2",
+        "path": "artifacts/unit-review/shutdown-shutdownLatest/gpu-2-6/result/checksums.txt",
+        "bytes": 10914,
+        "sha256": "f29f0e00acdb3bc32019ce0ccb955e83a5af072138df632a3b22c183ec23b3ce",
+        "exitCode": 0
+      },
+      {
+        "mode": "gpu",
+        "computeThreads": "2",
+        "path": "artifacts/unit-review/shutdown-shutdownLatest/gpu-2-7/result/checksums.txt",
+        "bytes": 10914,
+        "sha256": "f29f0e00acdb3bc32019ce0ccb955e83a5af072138df632a3b22c183ec23b3ce",
+        "exitCode": 0
+      },
+      {
+        "mode": "gpu",
+        "computeThreads": "2",
+        "path": "artifacts/unit-review/shutdown-shutdownLatest/gpu-2-8/result/checksums.txt",
+        "bytes": 10914,
+        "sha256": "f29f0e00acdb3bc32019ce0ccb955e83a5af072138df632a3b22c183ec23b3ce",
+        "exitCode": 0
+      },
+      {
+        "mode": "gpu",
+        "computeThreads": "2",
+        "path": "artifacts/unit-review/shutdown-shutdownLatest/gpu-2-9/result/checksums.txt",
+        "bytes": 10914,
+        "sha256": "f29f0e00acdb3bc32019ce0ccb955e83a5af072138df632a3b22c183ec23b3ce",
+        "exitCode": 0
+      },
+      {
+        "mode": "gpu",
+        "computeThreads": "2",
+        "path": "artifacts/unit-review/shutdown-shutdownLatest/gpu-2-10/result/checksums.txt",
+        "bytes": 10914,
+        "sha256": "f29f0e00acdb3bc32019ce0ccb955e83a5af072138df632a3b22c183ec23b3ce",
+        "exitCode": 0
+      },
+      {
+        "mode": "gpu",
+        "computeThreads": "2",
+        "path": "artifacts/unit-review/shutdown-shutdownLatest/gpu-2-11/result/checksums.txt",
+        "bytes": 10914,
+        "sha256": "f29f0e00acdb3bc32019ce0ccb955e83a5af072138df632a3b22c183ec23b3ce",
+        "exitCode": 0
+      },
+      {
+        "mode": "gpu",
+        "computeThreads": "2",
+        "path": "artifacts/unit-review/shutdown-shutdownLatest/gpu-2-12/result/checksums.txt",
+        "bytes": 10914,
+        "sha256": "f29f0e00acdb3bc32019ce0ccb955e83a5af072138df632a3b22c183ec23b3ce",
+        "exitCode": 0
+      },
+      {
+        "mode": "gpu",
+        "computeThreads": "2",
+        "path": "artifacts/unit-review/shutdown-shutdownLatest/gpu-2-13/result/checksums.txt",
+        "bytes": 10914,
+        "sha256": "f29f0e00acdb3bc32019ce0ccb955e83a5af072138df632a3b22c183ec23b3ce",
+        "exitCode": 0
+      },
+      {
+        "mode": "gpu",
+        "computeThreads": "2",
+        "path": "artifacts/unit-review/shutdown-shutdownLatest/gpu-2-14/result/checksums.txt",
+        "bytes": 10914,
+        "sha256": "f29f0e00acdb3bc32019ce0ccb955e83a5af072138df632a3b22c183ec23b3ce",
+        "exitCode": 0
+      },
+      {
+        "mode": "gpu",
+        "computeThreads": "2",
+        "path": "artifacts/unit-review/shutdown-shutdownLatest/gpu-2-15/result/checksums.txt",
+        "bytes": 10914,
+        "sha256": "f29f0e00acdb3bc32019ce0ccb955e83a5af072138df632a3b22c183ec23b3ce",
+        "exitCode": 0
+      },
+      {
+        "mode": "gpu",
+        "computeThreads": "auto",
+        "path": "artifacts/unit-review/shutdown-shutdownLatest/gpu-auto-0/result/checksums.txt",
+        "bytes": 10914,
+        "sha256": "f29f0e00acdb3bc32019ce0ccb955e83a5af072138df632a3b22c183ec23b3ce",
+        "exitCode": 0
+      },
+      {
+        "mode": "gpu",
+        "computeThreads": "auto",
+        "path": "artifacts/unit-review/shutdown-shutdownLatest/gpu-auto-1/result/checksums.txt",
+        "bytes": 10914,
+        "sha256": "f29f0e00acdb3bc32019ce0ccb955e83a5af072138df632a3b22c183ec23b3ce",
+        "exitCode": 0
+      },
+      {
+        "mode": "gpu",
+        "computeThreads": "auto",
+        "path": "artifacts/unit-review/shutdown-shutdownLatest/gpu-auto-2/result/checksums.txt",
+        "bytes": 10914,
+        "sha256": "f29f0e00acdb3bc32019ce0ccb955e83a5af072138df632a3b22c183ec23b3ce",
+        "exitCode": 0
+      },
+      {
+        "mode": "gpu",
+        "computeThreads": "auto",
+        "path": "artifacts/unit-review/shutdown-shutdownLatest/gpu-auto-3/result/checksums.txt",
+        "bytes": 10914,
+        "sha256": "f29f0e00acdb3bc32019ce0ccb955e83a5af072138df632a3b22c183ec23b3ce",
+        "exitCode": 0
+      }
+    ]
+  },
+  "canonical_validation": {
+    "normalization": "None; actual files compared byte-for-byte to frozen reference files.",
+    "referenceProducer": "9e6f406b634023702eb34125916f74fe453a5e54",
+    "rows": [
+      {
+        "name": "replay",
+        "path": "artifacts/unit-review/tracesLatest/native.replay.checksums",
+        "bytes": 4209844,
+        "sha256": "651709a50b88c4662f6ab0fad34093571c43e993436f7f84174f953a44149259",
+        "referencePath": "artifacts/unit-review/reference/replay.trace",
+        "rawEqual": true
+      },
+      {
+        "name": "match",
+        "path": "artifacts/unit-review/tracesLatest/verify-match.checksums.txt",
+        "bytes": 10914,
+        "sha256": "f29f0e00acdb3bc32019ce0ccb955e83a5af072138df632a3b22c183ec23b3ce",
+        "referencePath": "artifacts/unit-review/reference/match.trace",
+        "rawEqual": true
+      },
+      {
+        "name": "resources",
+        "path": "artifacts/unit-review/tracesLatest/resources/native/cases/RuntimeResources/frozen_seeded_resource_compositions_preserve_invariants_and_exact_simulation_continuation__golden/seeded-compositions.trace",
+        "bytes": 13384,
+        "sha256": "d483ae2a779e52f8f43235b9dc112c697f685633cbc03427edf9b59b43bb52a6",
+        "referencePath": "artifacts/unit-review/reference/resources.trace",
+        "rawEqual": true
+      },
+      {
+        "name": "units",
+        "path": "artifacts/unit-review/tracesLatest/units/native/cases/UnitCustomization/all_locked_capability_ablations_match_fixed_tick_and_RNG_traces__golden__artifacts/unit-ablations.trace",
+        "bytes": 1339,
+        "sha256": "95d87548aa0ce39d8eb5a15a2bbcd8d1ced68f75e70c022e8189d2829db5c094",
+        "referencePath": "artifacts/unit-review/reference/units.trace",
+        "rawEqual": true
+      }
+    ]
+  },
+  "gpu_validation": {
+    "device": "NVIDIA GeForce RTX 2070 SUPER",
+    "error": "",
+    "ticks": 512,
+    "raw_pairs": [
+      {
+        "file": "world.checksums",
+        "rawEqual": true,
+        "bytes": 7454,
+        "sha256": "cd6991b9d3eae9e0868bd7d9af92452a1f686f2306797e1615667a9d2f1280e6"
+      },
+      {
+        "file": "game.replay.checksums",
+        "rawEqual": true,
+        "bytes": 1097238,
+        "sha256": "42d882fefc7c4021408a2fe2ff43180f6e60ce2c43e2b070bb4c8b4df6a166e0"
+      }
+    ],
+    "deviceDispatches": 0,
+    "deviceCommittedFields": 0,
+    "claim": "OpenCL driver initialization, normal explicit shutdown, and CPU fallback equality demonstrated. Zero actual GPU fields were dispatched; this does not prove OpenCL device-executed field parity."
+  },
+  "programmable_gl_validation": {
+    "actual_executed_cases": 23,
+    "skipped": 0,
+    "asset_receipt": "gl-shader-evidence/manifest.json",
+    "all_actual_shader_file_hashes_match": true,
+    "fixture_resolution": "No GLOB2_RENDERER_SHADER_DIR override; compiled GLOB2_RENDER_SHADER_DIR points to this build generated shader directory. GLOB2_TEST_SHADER_DIRECTORY does not select GL fixture assets.",
+    "claim": "Native programmable GL and GLES context cases executed successfully, including authoritative skin rig, capture, atlas lifetime and factory recreation. Native SDL GPU/Vulkan was not established."
+  },
+  "inherited_tooling_failure": {
+    "selected": 506,
+    "passed": 502,
+    "failed": 1,
+    "skipped": 3,
+    "test": "test_shared_code_does_not_embed_browser_api_calls",
+    "failure": "#include <emscripten> in libgag/src/ProgrammableGLDevice.cpp",
+    "unmodified_base": "c1401a484ed788f06238626424de422df9f5dbb0",
+    "baseline_exitCode": 1,
+    "baseline_log_sha256": "6f5097dc4c9574e82c7e45e8d2f579bdfbfa96ff84d4bc8fc56b6917904c6284",
+    "exported_files_sha256": {
+      "libgag/src/ProgrammableGLDevice.cpp": "03255ee7d0dff5ed41475f0bbec415a516dc5f1aa0d0730e1e4ae278c6a30b37",
+      "test/build_system/test_platform_boundary.py": "c18c7e93d4890cd2d37762908a6300d1c67d9018fff9928eb22a5b90c499a721"
+    },
+    "proof": "Actual exported source and test bytes match git show at unmodified base and current feature; baseline and feature logs report same file, regex match span474\u2013494, and failure."
+  },
+  "static_source_binding": "All source hashes from latest-renderer-integration-review.json remain identical.",
+  "limitations": [
+    "No all-checks-pass claim: inherited master platform-boundary tooling failure remains visible and unsuppressed.",
+    "Independent review read receipt/log/XML and actual trace/shader/source bytes; reviewer did not build or execute runtime checks.",
+    "Native SDL GPU/Vulkan hardware cases not executed in this evidence.",
+    "OpenCL device field execution not demonstrated by 512-tick on/off case.",
+    "Windows, macOS, serial/threaded browsers and mobile execution coverage not refreshed here; maintain explicit platform omissions.",
+    "No performance acceptance claim; user waived requirement."
+  ],
+  "coordinator_final_summary_cross_check": {
+    "revision": "c48c2871ea238df16401bc34bca394293f4f952f",
+    "summary": "final-summary.json",
+    "canonical_comparison": "trace-comparison-final.json",
+    "all_four_rows_match_independent_raw_comparisons": true,
+    "note": "Coordinator summary source/base and canonical rows agree with independent receipt. Summary may add publication links after this review; raw evidence identities above remain authoritative."
+  }
+}

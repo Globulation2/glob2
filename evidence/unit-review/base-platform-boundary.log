@@ -1,0 +1,14 @@
+.F.
+======================================================================
+FAIL: test_shared_code_does_not_embed_browser_api_calls (test_platform_boundary.PlatformBoundaryTests.test_shared_code_does_not_embed_browser_api_calls)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/af25/glob2/artifacts/unit-review/base-platform-boundary/test/build_system/test_platform_boundary.py", line 14, in test_shared_code_does_not_embed_browser_api_calls
+    self.assertIsNone(forbidden.search(path.read_text()), str(path.relative_to(root)))
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: <re.Match object; span=(474, 494), match='#include <emscripten'> is not None : libgag/src/ProgrammableGLDevice.cpp
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.754s
+
+FAILED (failures=1)

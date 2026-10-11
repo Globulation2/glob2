@@ -1,12 +1,12 @@
 {
-  "candidate": "1506403c7a154ba4a200e45312f2ee5793d86568",
+  "candidate": "c48c2871ea238df16401bc34bca394293f4f952f",
   "runtimeDependencyCorrection": "runtime-dependency-correction.json",
   "normalization": "None; complete files byte-for-byte.",
   "referenceProducer": "9e6f406b634023702eb34125916f74fe453a5e54",
   "rows": [
     {
       "name": "replay",
-      "path": "traces47shutdown/native.replay.checksums",
+      "path": "tracesLatest/native.replay.checksums",
       "bytes": 4209844,
       "sha256": "651709a50b88c4662f6ab0fad34093571c43e993436f7f84174f953a44149259",
       "referenceSha256": "651709a50b88c4662f6ab0fad34093571c43e993436f7f84174f953a44149259",
@@ -14,7 +14,7 @@
     },
     {
       "name": "match",
-      "path": "traces47shutdown/verify-match.checksums.txt",
+      "path": "tracesLatest/verify-match.checksums.txt",
       "bytes": 10914,
       "sha256": "f29f0e00acdb3bc32019ce0ccb955e83a5af072138df632a3b22c183ec23b3ce",
       "referenceSha256": "f29f0e00acdb3bc32019ce0ccb955e83a5af072138df632a3b22c183ec23b3ce",
@@ -22,7 +22,7 @@
     },
     {
       "name": "resources",
-      "path": "traces47shutdown/resources/native/cases/RuntimeResources/frozen_seeded_resource_compositions_preserve_invariants_and_exact_simulation_continuation__golden/seeded-compositions.trace",
+      "path": "tracesLatest/resources/native/cases/RuntimeResources/frozen_seeded_resource_compositions_preserve_invariants_and_exact_simulation_continuation__golden/seeded-compositions.trace",
       "bytes": 13384,
       "sha256": "d483ae2a779e52f8f43235b9dc112c697f685633cbc03427edf9b59b43bb52a6",
       "referenceSha256": "d483ae2a779e52f8f43235b9dc112c697f685633cbc03427edf9b59b43bb52a6",
@@ -30,7 +30,7 @@
     },
     {
       "name": "units",
-      "path": "traces47shutdown/units/native/cases/UnitCustomization/all_locked_capability_ablations_match_fixed_tick_and_RNG_traces__golden__artifacts/unit-ablations.trace",
+      "path": "tracesLatest/units/native/cases/UnitCustomization/all_locked_capability_ablations_match_fixed_tick_and_RNG_traces__golden__artifacts/unit-ablations.trace",
       "bytes": 1339,
       "sha256": "95d87548aa0ce39d8eb5a15a2bbcd8d1ced68f75e70c022e8189d2829db5c094",
       "referenceSha256": "95d87548aa0ce39d8eb5a15a2bbcd8d1ced68f75e70c022e8189d2829db5c094",

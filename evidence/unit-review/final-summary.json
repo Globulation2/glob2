@@ -1,8 +1,8 @@
 {
-  "revision": "1506403c7a154ba4a200e45312f2ee5793d86568",
-  "tree": "b9c073d3bf291581993cd9c0171e47debd744c27",
-  "base": "0661f9605046958047d06fb6600546c24f139cd5",
-  "masterIntegration": "final-master-integration.json",
+  "revision": "c48c2871ea238df16401bc34bca394293f4f952f",
+  "tree": "771d75daa5acf1cc2eddfa914f9b206954e81e18",
+  "base": "c1401a484ed788f06238626424de422df9f5dbb0",
+  "masterIntegration": "latest-master-rebase.json",
   "clean": true,
   "simulationRevision": 47,
   "fileFormat": 153,
@@ -17,39 +17,46 @@
     "dependencies": "Existing pinned SDL3 3.4.16/image3.4.6/ttf3.2.2 and native recording prefix. Runtime SDL rebuilt with all required repository patches; 75 installed headers byte-identical to compile prefix. See patched-sdl/manifest.json. Pinned asset Python used for tooling contracts."
   },
   "counts": {
-    "engine47shutdown": {
+    "engineLatest": {
       "cases": 299,
       "passed": 291,
       "skipped": 8,
       "failed": 0
     },
-    "unit47shutdown": {
-      "cases": 1014,
-      "passed": 990,
-      "skipped": 24,
+    "unitLatest": {
+      "cases": 1055,
+      "passed": 993,
+      "skipped": 62,
       "failed": 0
     },
-    "presentation47shutdown": {
+    "presentationLatest": {
       "cases": 3,
       "passed": 3,
       "skipped": 0,
       "failed": 0
     },
-    "cli47shutdown": {
+    "cliLatest": {
       "cases": 15,
       "passed": 15,
       "skipped": 0,
       "failed": 0
     },
-    "buildTooling": {
-      "cases": 497,
-      "passed": 494,
-      "skipped": 3,
+    "glLatest": {
+      "cases": 23,
+      "passed": 23,
+      "skipped": 0,
       "failed": 0
+    },
+    "buildTooling": {
+      "cases": 506,
+      "passed": 502,
+      "skipped": 3,
+      "failed": 1,
+      "failure": "Existing master browser API boundary in ProgrammableGLDevice.cpp, independently reproduced on unmodified c1401a484"
     }
   },
   "receipts": {
-    "build47shutdown": {
+    "buildLatest": {
       "status": "PASS",
       "argv": [
         "python3",
@@ -64,10 +71,10 @@
         "-j6"
       ],
       "exitCode": 0,
-      "elapsedSeconds": 69.75876571098343,
-      "logSha256": "e84adcea6da3069d6b322225c6b5e75d528dd9fa7fd914a3c73a9950814c5458"
+      "elapsedSeconds": 85.54889778699726,
+      "logSha256": "0224da79e4f1bba65132bfefaa38409b5ad97f5ff001bb790d324c5a3d355a4c"
     },
-    "engine47shutdown": {
+    "engineLatest": {
       "status": "PASS",
       "argv": [
         "python3",
@@ -77,11 +84,11 @@
         "-j",
         "6",
         "--junit",
-        "/home/bradley/.codex/worktrees/af25/glob2/artifacts/unit-review/engine47shutdown.xml",
+        "/home/bradley/.codex/worktrees/af25/glob2/artifacts/unit-review/engineLatest.xml",
         "--write-inventory",
-        "/home/bradley/.codex/worktrees/af25/glob2/artifacts/unit-review/engine47shutdown-inventory.json",
+        "/home/bradley/.codex/worktrees/af25/glob2/artifacts/unit-review/engineLatest-inventory.json",
         "--artifacts",
-        "/home/bradley/.codex/worktrees/af25/glob2/artifacts/unit-review/engine47shutdown-cases",
+        "/home/bradley/.codex/worktrees/af25/glob2/artifacts/unit-review/engineLatest-cases",
         "--binary",
         "engine",
         "--no-display",
@@ -125,10 +132,10 @@
         "TurnEngineHarness/the committed*"
       ],
       "exitCode": 0,
-      "elapsedSeconds": 17.653952438849956,
-      "logSha256": "da56d1301df123c1eb0c9e9db09e79641c49dd1116706ea1b5b8cd8b2093b5e2"
+      "elapsedSeconds": 17.472731763962656,
+      "logSha256": "33acf94a55cd141d6e89e297bb6c8994524d2b53d1c3dedd671147310328ad3e"
     },
-    "unit47shutdown": {
+    "unitLatest": {
       "status": "PASS",
       "argv": [
         "python3",
@@ -138,20 +145,20 @@
         "-j",
         "6",
         "--junit",
-        "/home/bradley/.codex/worktrees/af25/glob2/artifacts/unit-review/unit47shutdown.xml",
+        "/home/bradley/.codex/worktrees/af25/glob2/artifacts/unit-review/unitLatest.xml",
         "--write-inventory",
-        "/home/bradley/.codex/worktrees/af25/glob2/artifacts/unit-review/unit47shutdown-inventory.json",
+        "/home/bradley/.codex/worktrees/af25/glob2/artifacts/unit-review/unitLatest-inventory.json",
         "--artifacts",
-        "/home/bradley/.codex/worktrees/af25/glob2/artifacts/unit-review/unit47shutdown-cases",
+        "/home/bradley/.codex/worktrees/af25/glob2/artifacts/unit-review/unitLatest-cases",
         "--binary",
         "unit",
         "--no-display"
       ],
       "exitCode": 0,
-      "elapsedSeconds": 22.149136737920344,
-      "logSha256": "ca87b6e2a5ad2660452bb2d9f07a003ad610d078ee2dfa5344a52ed33e0639df"
+      "elapsedSeconds": 21.65101608308032,
+      "logSha256": "80c8958868248b6281c8d1b6bc8218f1cdbe30dceb53e1533d788cb2fb6c539e"
     },
-    "presentation47shutdown": {
+    "presentationLatest": {
       "status": "PASS",
       "argv": [
         "python3",
@@ -161,11 +168,11 @@
         "-j",
         "6",
         "--junit",
-        "/home/bradley/.codex/worktrees/af25/glob2/artifacts/unit-review/presentation47shutdown.xml",
+        "/home/bradley/.codex/worktrees/af25/glob2/artifacts/unit-review/presentationLatest.xml",
         "--write-inventory",
-        "/home/bradley/.codex/worktrees/af25/glob2/artifacts/unit-review/presentation47shutdown-inventory.json",
+        "/home/bradley/.codex/worktrees/af25/glob2/artifacts/unit-review/presentationLatest-inventory.json",
         "--artifacts",
-        "/home/bradley/.codex/worktrees/af25/glob2/artifacts/unit-review/presentation47shutdown-cases",
+        "/home/bradley/.codex/worktrees/af25/glob2/artifacts/unit-review/presentationLatest-cases",
         "--binary",
         "engine",
         "--filter",
@@ -174,10 +181,10 @@
         "ColonySkinPreview/*"
       ],
       "exitCode": 0,
-      "elapsedSeconds": 0.8766784179024398,
-      "logSha256": "b65a8f0fc0774f34da995bee17cc45983655197def945962370137be893ce4ca"
+      "elapsedSeconds": 0.756306738127023,
+      "logSha256": "da6e4619f5c83eeaff8193315ea6b5ec71302f5a759b4e3a2ba710d3ca013484"
     },
-    "cli47shutdown": {
+    "cliLatest": {
       "status": "PASS",
       "argv": [
         "python3",
@@ -185,15 +192,15 @@
         "--binary",
         "build/unit-review-release/src/glob2",
         "--artifacts",
-        "/home/bradley/.codex/worktrees/af25/glob2/artifacts/unit-review/cli47shutdown-cases",
+        "/home/bradley/.codex/worktrees/af25/glob2/artifacts/unit-review/cliLatest-cases",
         "--junit",
-        "/home/bradley/.codex/worktrees/af25/glob2/artifacts/unit-review/cli47shutdown.xml"
+        "/home/bradley/.codex/worktrees/af25/glob2/artifacts/unit-review/cliLatest.xml"
       ],
       "exitCode": 0,
-      "elapsedSeconds": 15.745680043939501,
-      "logSha256": "eab9eb3cd0d99aeff6d6da192c59ff36b6fcd3e119bbb540031ee6b5f57e5673"
+      "elapsedSeconds": 15.852079008705914,
+      "logSha256": "4152ead2fd050e022428ec6b46226f06a376ad0b60952287593968065b161166"
     },
-    "cliReference47shutdown": {
+    "cliReferenceLatest": {
       "status": "PASS",
       "argv": [
         "python3",
@@ -203,45 +210,46 @@
         "--check"
       ],
       "exitCode": 0,
-      "elapsedSeconds": 0.17127516213804483,
+      "elapsedSeconds": 0.17204170813784003,
       "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
-    "traces47shutdown": {
+    "tracesLatest": {
       "status": "PASS",
       "argv": [
         "python3",
         "test/run-browser-determinism.py",
         "build/unit-review-release/src/glob2",
-        "/home/bradley/.codex/worktrees/af25/glob2/artifacts/unit-review/traces47shutdown",
+        "/home/bradley/.codex/worktrees/af25/glob2/artifacts/unit-review/tracesLatest",
         "--engine-binary",
         "build/unit-review-release/test/glob2-engine-tests"
       ],
       "exitCode": 0,
-      "elapsedSeconds": 2.832401285879314,
+      "elapsedSeconds": 2.887948038056493,
       "logSha256": "52e228d9e9b9e4cd63b495505a5e279a9b48d83611c50cc21bfaf0373a427539"
     },
-    "gpu47shutdown2": {
+    "gpuLatest": {
       "status": "PASS",
       "argv": [
         "python3",
         "artifacts/unit-review/gpu_cli_check.py",
-        "gpu47shutdown2"
+        "gpuLatest"
       ],
       "exitCode": 0,
-      "elapsedSeconds": 1.413412095978856,
-      "logSha256": "6a678ca4cd8cbf78afc7145e3c90ef18ff486fe61bd9716511d16009e78c3d76"
+      "elapsedSeconds": 1.9743076292797923,
+      "logSha256": "1c61ea3809c964c54badb393c3239561a134cf950627316e01d9606e2381a2a2"
     },
-    "shutdown47fixed": {
+    "shutdownLatest": {
       "status": "PASS",
       "argv": [
         "python3",
-        "artifacts/unit-review/shutdown_fixed_check.py"
+        "artifacts/unit-review/shutdown_fixed_check.py",
+        "shutdownLatest"
       ],
       "exitCode": 0,
-      "elapsedSeconds": 17.915281597990543,
+      "elapsedSeconds": 17.358615920878947,
       "logSha256": "29087ceb5959fe7b9df27ac4f3cef4f8c44ba311f20cc30431d4090b857ef5dd"
     },
-    "sim47shutdown": {
+    "simLatest": {
       "status": "PASS",
       "argv": [
         "python3",
@@ -250,10 +258,10 @@
         "32c7ec892b5a1dfb22bde2d9025de106e8eac4d3"
       ],
       "exitCode": 0,
-      "elapsedSeconds": 0.3499843259342015,
+      "elapsedSeconds": 0.3089186209253967,
       "logSha256": "e4f69dd9804ed06b2fab423e5a4d09e3a61b3c13f8c41ea57033dbff53f681fe"
     },
-    "python47shutdown": {
+    "pythonLatest": {
       "status": "PASS",
       "argv": [
         "python3",
@@ -266,11 +274,11 @@
         "test_check_sim_revision.py"
       ],
       "exitCode": 0,
-      "elapsedSeconds": 1.058555702213198,
-      "logSha256": "df5d2ec654bb5118be2bf6d8d838643021f72ebd30da1ea0801785bada7e996b"
+      "elapsedSeconds": 0.9782265010289848,
+      "logSha256": "4266b477e955ea204bfbf1a958db8e4f0893dbc04503f1eed2ba674c68aa0b7b"
     },
-    "contracts47shutdown": {
-      "status": "PASS",
+    "contractsLatest": {
+      "status": "FAIL",
       "argv": [
         "/home/bradley/.local/share/glob2/development/caches/asset-encoder-runtime-assets-v1-py3.14/venv/bin/python",
         "-m",
@@ -281,25 +289,49 @@
         "-p",
         "test_*.py"
       ],
+      "exitCode": 1,
+      "elapsedSeconds": 85.50463980389759,
+      "logSha256": "069820ccf711488b18ce35369450a9922da380281aca2e13c1ca52512432c3d0"
+    },
+    "glLatest": {
+      "status": "PASS",
+      "argv": [
+        "python3",
+        "test/run_tests.py",
+        "--build-dir",
+        "build/unit-review-release",
+        "-j",
+        "6",
+        "--junit",
+        "/home/bradley/.codex/worktrees/af25/glob2/artifacts/unit-review/glLatest.xml",
+        "--write-inventory",
+        "/home/bradley/.codex/worktrees/af25/glob2/artifacts/unit-review/glLatest-inventory.json",
+        "--artifacts",
+        "/home/bradley/.codex/worktrees/af25/glob2/artifacts/unit-review/glLatest-cases",
+        "--binary",
+        "unit",
+        "--filter",
+        "ProgrammableGLDevice/*"
+      ],
       "exitCode": 0,
-      "elapsedSeconds": 84.87660054583102,
-      "logSha256": "0070d1c68527896dbb3bca5d6918436452954298758e00e7e1b50223bb12b74f"
+      "elapsedSeconds": 12.92402042914182,
+      "logSha256": "5ec2abf352fa575333fecc608e4c463f30e16acfaf618718e9bb2e1c722a91e3"
     }
   },
   "binaries": {
-    "src/glob2": "093e162d80bd095d0328e1797fa119bad7c4829ea77f68c84f3efec286eebd34",
-    "test/glob2-engine-tests": "99f713bda01918fea1869f7f75e0193ce55dd045fcd4e05ca76cfac8c56668bd",
-    "test/glob2-unit-tests": "3061f66209961e78f4fec197ff55aaf844e95eb2ca5b6419c80030cf4dcf5f98"
+    "src/glob2": "9383aa3a7d2d6317959defe36a4dbb1bc4a09c71920805a2fbb6c7727b5eb0c0",
+    "test/glob2-engine-tests": "aa95614ace6645fdf87bc644759c4c389e2c3d3a3d8f507bf98c7654147d3ed8",
+    "test/glob2-unit-tests": "4b783693104790433901fa472aa4da838fe26c6c4962b896269e35d86a636a7e"
   },
   "canonicalTraces": {
-    "candidate": "1506403c7a154ba4a200e45312f2ee5793d86568",
+    "candidate": "c48c2871ea238df16401bc34bca394293f4f952f",
     "runtimeDependencyCorrection": "runtime-dependency-correction.json",
     "normalization": "None; complete files byte-for-byte.",
     "referenceProducer": "9e6f406b634023702eb34125916f74fe453a5e54",
     "rows": [
       {
         "name": "replay",
-        "path": "traces47shutdown/native.replay.checksums",
+        "path": "tracesLatest/native.replay.checksums",
         "bytes": 4209844,
         "sha256": "651709a50b88c4662f6ab0fad34093571c43e993436f7f84174f953a44149259",
         "referenceSha256": "651709a50b88c4662f6ab0fad34093571c43e993436f7f84174f953a44149259",
@@ -307,7 +339,7 @@
       },
       {
         "name": "match",
-        "path": "traces47shutdown/verify-match.checksums.txt",
+        "path": "tracesLatest/verify-match.checksums.txt",
         "bytes": 10914,
         "sha256": "f29f0e00acdb3bc32019ce0ccb955e83a5af072138df632a3b22c183ec23b3ce",
         "referenceSha256": "f29f0e00acdb3bc32019ce0ccb955e83a5af072138df632a3b22c183ec23b3ce",
@@ -315,7 +347,7 @@
       },
       {
         "name": "resources",
-        "path": "traces47shutdown/resources/native/cases/RuntimeResources/frozen_seeded_resource_compositions_preserve_invariants_and_exact_simulation_continuation__golden/seeded-compositions.trace",
+        "path": "tracesLatest/resources/native/cases/RuntimeResources/frozen_seeded_resource_compositions_preserve_invariants_and_exact_simulation_continuation__golden/seeded-compositions.trace",
         "bytes": 13384,
         "sha256": "d483ae2a779e52f8f43235b9dc112c697f685633cbc03427edf9b59b43bb52a6",
         "referenceSha256": "d483ae2a779e52f8f43235b9dc112c697f685633cbc03427edf9b59b43bb52a6",
@@ -323,7 +355,7 @@
       },
       {
         "name": "units",
-        "path": "traces47shutdown/units/native/cases/UnitCustomization/all_locked_capability_ablations_match_fixed_tick_and_RNG_traces__golden__artifacts/unit-ablations.trace",
+        "path": "tracesLatest/units/native/cases/UnitCustomization/all_locked_capability_ablations_match_fixed_tick_and_RNG_traces__golden__artifacts/unit-ablations.trace",
         "bytes": 1339,
         "sha256": "95d87548aa0ce39d8eb5a15a2bbcd8d1ced68f75e70c022e8189d2829db5c094",
         "referenceSha256": "95d87548aa0ce39d8eb5a15a2bbcd8d1ced68f75e70c022e8189d2829db5c094",
@@ -336,10 +368,11 @@
     "gpu2": 16,
     "gpuAuto": 4,
     "allNormalExit": true,
-    "all842ChecksumsEqual": true
+    "all842ChecksumsEqual": true,
+    "manifest": "shutdown-shutdownLatest/manifest.json"
   },
   "gpu512TickComparison": {
-    "source": "1506403c7a154ba4a200e45312f2ee5793d86568",
+    "source": "c48c2871ea238df16401bc34bca394293f4f952f",
     "commands": [
       {
         "argv": [
@@ -356,7 +389,7 @@
           "--seed",
           "713",
           "--output",
-          "/home/bradley/.codex/worktrees/af25/glob2/artifacts/unit-review/gpu47shutdown2-cases/source.map"
+          "/home/bradley/.codex/worktrees/af25/glob2/artifacts/unit-review/gpuLatest-cases/source.map"
         ],
         "exitCode": 0
       },
@@ -366,7 +399,7 @@
           "game",
           "run",
           "--output-dir",
-          "/home/bradley/.codex/worktrees/af25/glob2/artifacts/unit-review/gpu47shutdown2-cases/off",
+          "/home/bradley/.codex/worktrees/af25/glob2/artifacts/unit-review/gpuLatest-cases/off",
           "--ticks",
           "512",
           "--compute-threads",
@@ -378,7 +411,7 @@
           "--save",
           "final",
           "--map-file",
-          "/home/bradley/.codex/worktrees/af25/glob2/artifacts/unit-review/gpu47shutdown2-cases/source.map.gz",
+          "/home/bradley/.codex/worktrees/af25/glob2/artifacts/unit-review/gpuLatest-cases/source.map.gz",
           "--game-seed",
           "713",
           "--player",
@@ -394,7 +427,7 @@
           "game",
           "run",
           "--output-dir",
-          "/home/bradley/.codex/worktrees/af25/glob2/artifacts/unit-review/gpu47shutdown2-cases/on",
+          "/home/bradley/.codex/worktrees/af25/glob2/artifacts/unit-review/gpuLatest-cases/on",
           "--ticks",
           "512",
           "--compute-threads",
@@ -406,7 +439,7 @@
           "--save",
           "final",
           "--map-file",
-          "/home/bradley/.codex/worktrees/af25/glob2/artifacts/unit-review/gpu47shutdown2-cases/source.map.gz",
+          "/home/bradley/.codex/worktrees/af25/glob2/artifacts/unit-review/gpuLatest-cases/source.map.gz",
           "--game-seed",
           "713",
           "--player",
@@ -432,8 +465,8 @@
         "cpu_reason_unavailable": 0,
         "cpu_reason_owned_input_decline": 0,
         "cpu_reason_failed_session": 0,
-        "required_seed_cpu_ns": 9205818,
-        "required_propagation_cpu_ns": 35510186,
+        "required_seed_cpu_ns": 15160244,
+        "required_propagation_cpu_ns": 47982227,
         "required_owned_input_cpu_ns": 0,
         "required_handoff_cpu_ns": 0,
         "required_cleanup_cpu_ns": 0,
@@ -481,8 +514,8 @@
         "cpu_reason_unavailable": 512,
         "cpu_reason_owned_input_decline": 0,
         "cpu_reason_failed_session": 0,
-        "required_seed_cpu_ns": 18150870,
-        "required_propagation_cpu_ns": 35683593,
+        "required_seed_cpu_ns": 13857290,
+        "required_propagation_cpu_ns": 42332469,
         "required_owned_input_cpu_ns": 0,
         "required_handoff_cpu_ns": 0,
         "required_cleanup_cpu_ns": 0,
@@ -491,8 +524,8 @@
         "coordinator_threads": 1,
         "coordinator_running": 1,
         "coordinator_ready": 1,
-        "coordinator_cpu_ns": 236298747,
-        "coordinator_initialization_ns": 242464402,
+        "coordinator_cpu_ns": 359716654,
+        "coordinator_initialization_ns": 500162144,
         "coordinator_submitted": 0,
         "coordinator_completed": 0,
         "coordinator_executed": 0,
@@ -526,13 +559,21 @@
     "cli-session-master-integration-review.json",
     "cli-reference-drift-review.json",
     "gpu-shutdown-static-review.json",
-    "gpu-shutdown-patch-review.json"
+    "gpu-shutdown-patch-review.json",
+    "latest-renderer-integration-review.json",
+    "latest-execution-closure-review.json"
   ],
   "failuresRetained": "Original clearing fixture expectation, dependency environment failures, interrupted build, GPU shutdown abort/hang backtraces, inherited CLI documentation drift and development helper output collision remain beside corrected passing runs. No suppressions or relaxed runtime assertions.",
   "limits": [
     "Final-head execution is Linux x86_64 GCC15 only; earlier GCC/Clang/macOS/browser evidence retains its original source identity and is not final-head platform execution.",
     "Final Windows/macOS/browser/mobile/iOS execution and maintainer play-through not performed. Declared display skips are preserved; three focused presentation cases actually ran under Xvfb/Mesa.",
     "No final performance acceptance or measurement claim; user explicitly removed performance requirements.",
-    "Hosted CI does not establish final-head qualification here; prior hosted environment failures/limits retained in docs-ci/review-receipt.json."
-  ]
+    "Hosted CI does not establish final-head qualification here; prior hosted environment failures/limits retained in docs-ci/review-receipt.json.",
+    "New SDL GPU renderer display tests were not executed; 23 programmable GL display tests ran under Xvfb/Mesa with generated shaders."
+  ],
+  "inheritedToolingFailure": {
+    "proof": "base-platform-boundary.json",
+    "log": "base-platform-boundary.log",
+    "status": "Same failure reproduced on unmodified base; no feature modification to violating file."
+  }
 }

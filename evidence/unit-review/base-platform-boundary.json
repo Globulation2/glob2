@@ -1,0 +1,17 @@
+{
+  "source": "c1401a484ed788f06238626424de422df9f5dbb0",
+  "export": "git archive; complete scanned src/libgag/libusl/browser and unchanged test source",
+  "argv": [
+    "python3",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "test/build_system",
+    "-p",
+    "test_platform_boundary.py"
+  ],
+  "exitCode": 1,
+  "logSha256": "6f5097dc4c9574e82c7e45e8d2f579bdfbfa96ff84d4bc8fc56b6917904c6284",
+  "assessment": "Same shared-browser-API failure in libgag/src/ProgrammableGLDevice.cpp on unmodified master; unrelated to configurable units. No source weakening or suppression."
+}

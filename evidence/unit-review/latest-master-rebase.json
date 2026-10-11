@@ -1,0 +1,32 @@
+{
+  "priorTestedFeature": "1506403c7a154ba4a200e45312f2ee5793d86568",
+  "feature": "c48c2871ea238df16401bc34bca394293f4f952f",
+  "base": "c1401a484ed788f06238626424de422df9f5dbb0",
+  "rebase": "Clean, all 50 commits applied without conflicts",
+  "changedPaths": [
+    ".github/workflows/github-release.yml",
+    ".github/workflows/macos-signing-retry.yml",
+    "SConstruct",
+    "docs/architecture/rendering.md",
+    "docs/releases/desktop.md",
+    "libgag/include/ProgrammableGLDevice.h",
+    "libgag/include/RenderDevice.h",
+    "libgag/include/RenderFrame.h",
+    "libgag/include/SDLGPUDevice.h",
+    "libgag/include/SpriteRenderAtlas.h",
+    "libgag/src/ProgrammableGLDevice.cpp",
+    "libgag/src/ProgrammableGLDeviceTest.cpp",
+    "libgag/src/SDLGPUDevice.cpp",
+    "libgag/src/SDLGPUDeviceTest.cpp",
+    "libgag/src/SpriteRenderAtlas.cpp",
+    "libgag/src/SpriteRenderAtlasTest.cpp",
+    "scons/sources.py",
+    "test/build_system/test_ci_concurrency.py",
+    "test/build_system/test_downloads_release_workflows.py",
+    "test/build_system/test_macos_signing_retry.py",
+    "test/tests.py",
+    "tools/release/macos_keychain.py",
+    "tools/release/signing_retry.py"
+  ],
+  "assessment": "New master renderer factories/isolated tests and shared build inputs require release rebuild, complete unit coverage, unit presentation checks, selected simulation/compatibility suites and canonical traces. Mac signing workflow changes are unrelated."
+}

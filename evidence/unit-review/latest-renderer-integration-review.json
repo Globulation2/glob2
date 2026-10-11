@@ -1,0 +1,92 @@
+{
+  "schema": 1,
+  "review": "latest-master renderer integration with configurable units and explicit gradient shutdown",
+  "status": "STATIC_PASS_NO_CONFIRMED_INTEGRATION_BLOCKER",
+  "reviewer": "gpu_unit_integration_review",
+  "review_time_utc": "2026-10-11T03:18:42.023695+00:00",
+  "source_revision": "c48c2871ea238df16401bc34bca394293f4f952f",
+  "previous_validated_revision": "1506403c7a154ba4a200e45312f2ee5793d86568",
+  "upstream_revision": "c1401a484ed788f06238626424de422df9f5dbb0",
+  "upstream_renderer_commit": "a24607af20e542169def654e8ed44ef38c7d1971",
+  "working_tree_status_at_review": "",
+  "scope": [
+    "new master source/build/test registration differences",
+    "render packet and device interfaces",
+    "unit catalog mesh-class presentation consumer",
+    "native GPU and GL object teardown ownership",
+    "shader build generation and runtime asset prerequisites"
+  ],
+  "source_sha256": {
+    "SConstruct": "eaab4f53cd60653141c4a2789a9129ed251b961f7bb8ab60f2302e8c4d80bbc6",
+    "scons/sources.py": "939682dcd5887e93b8b4bc93df09008618bac6b11413c10c63eeef83e533d385",
+    "scons/renderer_shaders.py": "efbe8007195bf8b690d3fa86d235b8c4826db2479a32ce2e6dbed4c156deb945",
+    "test/tests.py": "c183b39f104cfc75c6e73948a5b6dfa17f59d5d1f6d31e1717d94e51be779c91",
+    "libgag/include/RenderDevice.h": "8619811692be468911f9b6afd310b12739169bb9b32b037ea6f4e0d70d8cf70b",
+    "libgag/include/RenderFrame.h": "2147d35cbeadcaf74d9db1d98ae50529a87957b70c7a1499217c6676361b0872",
+    "libgag/include/ProgrammableGLDevice.h": "bbd56be49f628475fd7632167125d3ad011a10797c0c799e1a66fbe36595735c",
+    "libgag/include/SDLGPUDevice.h": "26822e70e1f096d350853fac94b4ae05c5f4b68caa4d40f99b262119a2799511",
+    "libgag/include/SpriteRenderAtlas.h": "a862e1ba11a1ea4d347ab1b0a6d28e65d4956507f7d7025cb94e8019103eb8c9",
+    "libgag/src/ProgrammableGLDevice.cpp": "03255ee7d0dff5ed41475f0bbec415a516dc5f1aa0d0730e1e4ae278c6a30b37",
+    "libgag/src/SDLGPUDevice.cpp": "43e1b7120248c227c1c51ef3ab10fb1e209cb56bc391fe833b1110cb804bf2ed",
+    "libgag/src/SpriteRenderAtlas.cpp": "64d889fc653cea9c5d325af03fa3f593c11a7604bc515802dc0d93a05f6cd00a",
+    "libgag/src/ProgrammableGLDeviceTest.cpp": "ecbab678e516cc97a8299b94b7e1130a0d3a3896dd73bfbb3cb2ba8064630a5d",
+    "libgag/src/SDLGPUDeviceTest.cpp": "42e59f02beace166f9cebfe594b75efca26be1180200d6cee820223e7ee0097b",
+    "libgag/src/SpriteRenderAtlasTest.cpp": "4722957cd7e0988de4290cf9596e38adffdda2f26433934d82a15278fa1ed51c",
+    "src/unit/render/ColonySkinPreview.cpp": "ca8810bdeb9b5295cb4e181e37e5e8b103094b09c8899ffc433d83520eb3ef5e",
+    "src/unit/render/UnitSkin.cpp": "a0a13c524cd7b28b438d799ff6bf5c6996049f2c7e61b31e256d47cd48d39722",
+    "src/field/GradientDeviceService.cpp": "aaa0ceca63850a65e447e9dc0b02ffb1d0783058b0f51b704d36e7700f93656c",
+    "src/field/GradientDeviceService.h": "e38e10005ab60ae3e562aead079ce8a5bf32a32de299129dc0f001ada995a9ab",
+    "src/app/GlobalContainer.cpp": "1f9256202354c1b6b1e1f50cfe1cb2509af4764775f20cbf71af28e40f038bd7",
+    "test/support/TestMain.cpp": "6c084802355883442a08755b09742771e8855efb2a3d6a82609e6882e071be3e"
+  },
+  "unchanged_from_previous_validated_revision": {
+    "src/unit/render/ColonySkinPreview.cpp": true,
+    "src/unit/render/UnitSkin.cpp": true,
+    "src/field/GradientDeviceService.cpp": true,
+    "src/field/GradientDeviceService.h": true,
+    "src/app/GlobalContainer.cpp": true,
+    "test/support/TestMain.cpp": true
+  },
+  "findings": [
+    {
+      "result": "pass",
+      "detail": "Unit presentation uses immutable scene unit catalog meshClass before selecting existing skin mesh/region; new device packets and atlas ownership do not depend on simulation unit IDs."
+    },
+    {
+      "result": "pass",
+      "detail": "RenderDevice trimRetiredResources has a default no-op; existing implementations/test doubles remain source-compatible. RenderFrame changed comment only."
+    },
+    {
+      "result": "pass",
+      "detail": "No live application references select either new hardware factory. Added devices are independently created by isolated device tests. Native SDL GPU device destructor waits for work and frees leases before destroying owned device; GL device owns context and borrows caller window."
+    },
+    {
+      "result": "pass",
+      "detail": "Latest master leaves explicit gradient broker shutdown and GlobalContainer/TestMain barriers byte-identical to validated previous revision. New render devices introduce no new process-static asynchronous coordinator in reviewed code."
+    },
+    {
+      "result": "pass",
+      "detail": "Shader configuration adds generated include directory/assets and source registrations, so main plus affected harnesses must be rebuilt. Translators are optional build-time tools; default generation can provide GL shader source without native SPIR-V."
+    }
+  ],
+  "focused_verification": [
+    "Rebuild ordinary release main, engine and unit binaries with new shared source list and shader generation.",
+    "Rerun complete native unit inventory, including SpriteRenderAtlas, plus existing three ColonySkinPreview appearance tests.",
+    "Run programmable GL display cases covering authoritative skin rig, cropped capture, atlas packing, device recreation and texture revision retention with usable context and generated assets. GL fixture uses GLOB2_RENDERER_SHADER_DIR or compile-time GLOB2_RENDER_SHADER_DIR.",
+    "Native SDL GPU display/isolated tests require GLOB2_TEST_SHADER_DIRECTORY with compiled native shaders and usable driver. Successful early returns without shader assets do not demonstrate hardware execution.",
+    "Refresh final canonical simulation trace, shutdown and compatibility evidence on rebased source, preserving old proof identities."
+  ],
+  "execution_claims": [],
+  "limitations": [
+    "Static integration review only; reviewer ran no build or runtime validation.",
+    "Not an independent full audit of all new renderer implementation logic; upstream renderer tests cover that responsibility.",
+    "Prior execution receipts at 1506403c7 remain historical proof, not proof for this rebased revision.",
+    "Actual native SDL GPU execution and affected platform coverage must be recorded separately or explicitly omitted."
+  ],
+  "parent_validation_update": {
+    "source_revision": "c48c2871ea238df16401bc34bca394293f4f952f",
+    "release_build": "Parent reports PASS; not independently executed by reviewer.",
+    "tooling": "Parent reports 506 selected cases with one test_platform_boundary failure rejecting Emscripten APIs in new-master ProgrammableGLDevice.cpp; unmodified c1401a484 baseline proof in progress. No all-checks-pass claim.",
+    "programmable_gl": "Parent is running 23 display cases with generated shaders; actual fixture defaults to compile-time GLOB2_RENDER_SHADER_DIR unless GLOB2_RENDERER_SHADER_DIR override is supplied. Execution results pending at update."
+  }
+}
