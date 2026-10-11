@@ -204,8 +204,8 @@
     "sha256": "3287ab15e56a39c170fac2326a202bfe2c50aec64cead7a1efb7a107b41214b1"
   },
   "revision-and-coverage.json": {
-    "bytes": 8177,
-    "sha256": "97ce3e36c9d6613470720ec577e9145011b24f18f5a8eb6335a828b9a6c854c9"
+    "bytes": 8215,
+    "sha256": "b40f06c8d46a5c0c58e4d6c7a0c5b15605c33c43d3ee960ada5608909f4e4e14"
   },
   "shader-final-review-evidence-index.json": {
     "bytes": 10295,

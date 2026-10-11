@@ -4,15 +4,11 @@
   "base": "c3cb01070d121752f4c5e9632c5567ef13e58d9a",
   "postProductionChanges": [
     "browser/tests/main-menu.js",
-    "browser/tests/renderer-switch-queue.spec.js",
-    "browser/tests/renderer-switching.spec.js",
-    "test/GameplayRecordingIntegrationTest.cpp"
+    "browser/tests/renderer-switching.spec.js"
   ],
   "earlierCompatibilityRevision": "38152eb3a6e196100bb3c048501d4d32abc85200",
   "compatibilityRefreshProductionChanges": [
-    "browser/tests/renderer-switching.spec.js",
-    "libgag/src/Toolkit.cpp",
-    "test/GameplayRecordingIntegrationTest.cpp"
+    "libgag/src/Toolkit.cpp"
   ],
   "finalNativeSuites": {
     "unit": {
@@ -47,7 +43,7 @@
     "batchEdges": 2,
     "softwareRecording": 3
   },
-  "limits": "Earlier compatibility results were built at38152; only production change after that is Toolkit destructor ordering. Final native unit/recording and focused engine display refresh exercise that change. No claim of unavailable physical hardware coverage or default promotion.",
+  "limits": "Earlier compatibility results were built at38152. The subsequent native behavior change is Toolkit destructor ordering, covered by final native unit/recording and focused display refresh. Later browser bridge production changes are covered by refreshed application evidence; native preprocessor equivalence is verified independently. Head3fc differs from productione8 only in two browser fixture files. Unavailable hardware and failed/incomplete performance or browser gates do not support default promotion.",
   "browserClosureRefresh": "Browser-only direct JS calls moved into existing platform bridge.112browser units and523pinned build contracts pass; actualWasmintegration refreshed separately. Native preprocessor equivalence to aeca independently verified for all three modified translation units.",
   "static": {
     "buildContracts": {
