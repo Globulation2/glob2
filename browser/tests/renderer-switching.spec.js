@@ -421,6 +421,21 @@ for(const mode of ['serial','threaded']) {
     await page.evaluate(()=>Module._glob2_context_action(2));
     await expect.poll(()=>{if(page.rendererSwitchErrors?.length)throw Error(page.rendererSwitchErrors.join('\n'));return generation(page);},{timeout:120000}).toBeGreaterThan(before.generation);
     await expect.poll(async()=>(await state(page)).tick,{timeout:120000}).toBeGreaterThan(before.tick);
+    const owners=await presentationOwners(page);expect(owners).toHaveLength(1);
+    const fallback=await owners[0].evaluate(()=>{
+      const gl=Module.canvas.getContext('webgl2');
+      if(gl){
+        const debug=gl.getExtension('WEBGL_debug_renderer_info');
+        return {family:'programmable-gl',version:gl.getParameter(gl.VERSION),
+          renderer:debug?gl.getParameter(debug.UNMASKED_RENDERER_WEBGL):gl.getParameter(gl.RENDERER),
+          oldWebGPUCanvasActive:Glob2WebGPU.context?.canvas===Module.canvas};
+      }
+      return {family:Module.renderer==='software'&&Module.canvas.getContext('2d')?'software':null,
+        oldWebGPUCanvasActive:Glob2WebGPU.context?.canvas===Module.canvas};
+    });
+    expect(['programmable-gl','software']).toContain(fallback.family);
+    expect(fallback.oldWebGPUCanvasActive).toBe(false);
+    await info.attach('actual-device-loss-fallback',{body:JSON.stringify(fallback,null,2),contentType:'application/json'});
     await openOverlay(page);
     expect(await page.evaluate(()=>glob2Diagnostics.snapshot().controls['graphics.renderer']?.label)).toContain('WebGPU'); // Successful preference survives automatic fallback.
     await page.screenshot({path:info.outputPath('device-loss-fallback.png')});await resumeOverlay(page);await verify();
