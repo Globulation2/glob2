@@ -1,0 +1,44 @@
+In file included from /home/bradley/glob2/artifacts/renderer-foundation-0ceada/source/libgag/include/RenderDevice.h:3,
+                 from /home/bradley/glob2/artifacts/renderer-foundation-0ceada/source/libgag/include/SDLGPUDevice.h:3,
+                 from /home/bradley/glob2/artifacts/renderer-foundation-0ceada/source/libgag/src/SDLGPUDevice.cpp:2:
+/home/bradley/glob2/artifacts/renderer-foundation-0ceada/source/libgag/include/RenderBackend.h: In member function ‘virtual void GAGCore::RenderBackend::prepareTexture(const void*, SDL_Surface*, uint64_t, bool)’:
+/home/bradley/glob2/artifacts/renderer-foundation-0ceada/source/libgag/include/RenderBackend.h:33:80: warning: unused parameter ‘linear’ [-Wunused-parameter]
+   33 |     virtual void prepareTexture(const void*, SDL_Surface*, std::uint64_t, bool linear = false) {}
+      |                                                                           ~~~~~^~~~~~~~~~~~~~
+In file included from /home/bradley/glob2/artifacts/renderer-foundation-0ceada/source/libgag/include/RenderDevice.h:3,
+                 from /home/bradley/glob2/artifacts/renderer-foundation-0ceada/source/libgag/include/SDLGPUDevice.h:3,
+                 from /home/bradley/glob2/artifacts/renderer-foundation-0ceada/source/libgag/src/SDLGPUDeviceTest.cpp:3:
+/home/bradley/glob2/artifacts/renderer-foundation-0ceada/source/libgag/include/RenderBackend.h: In member function ‘virtual void GAGCore::RenderBackend::prepareTexture(const void*, SDL_Surface*, uint64_t, bool)’:
+/home/bradley/glob2/artifacts/renderer-foundation-0ceada/source/libgag/include/RenderBackend.h:33:80: warning: unused parameter ‘linear’ [-Wunused-parameter]
+   33 |     virtual void prepareTexture(const void*, SDL_Surface*, std::uint64_t, bool linear = false) {}
+      |                                                                           ~~~~~^~~~~~~~~~~~~~
+In file included from /home/bradley/glob2/artifacts/renderer-foundation-0ceada/source/libgag/include/RenderDevice.h:3,
+                 from /home/bradley/glob2/artifacts/renderer-foundation-0ceada/source/libgag/include/ProgrammableGLDevice.h:3,
+                 from /home/bradley/glob2/artifacts/renderer-foundation-0ceada/source/libgag/src/ProgrammableGLDevice.cpp:2:
+/home/bradley/glob2/artifacts/renderer-foundation-0ceada/source/libgag/include/RenderBackend.h: In member function ‘virtual void GAGCore::RenderBackend::prepareTexture(const void*, SDL_Surface*, uint64_t, bool)’:
+/home/bradley/glob2/artifacts/renderer-foundation-0ceada/source/libgag/include/RenderBackend.h:33:80: warning: unused parameter ‘linear’ [-Wunused-parameter]
+   33 |     virtual void prepareTexture(const void*, SDL_Surface*, std::uint64_t, bool linear = false) {}
+      |                                                                           ~~~~~^~~~~~~~~~~~~~
+In file included from /home/bradley/glob2/artifacts/renderer-foundation-0ceada/source/libgag/include/RenderDevice.h:3,
+                 from /home/bradley/glob2/artifacts/renderer-foundation-0ceada/source/libgag/include/ProgrammableGLDevice.h:3,
+                 from /home/bradley/glob2/artifacts/renderer-foundation-0ceada/source/libgag/src/ProgrammableGLDeviceTest.cpp:3:
+/home/bradley/glob2/artifacts/renderer-foundation-0ceada/source/libgag/include/RenderBackend.h: In member function ‘virtual void GAGCore::RenderBackend::prepareTexture(const void*, SDL_Surface*, uint64_t, bool)’:
+/home/bradley/glob2/artifacts/renderer-foundation-0ceada/source/libgag/include/RenderBackend.h:33:80: warning: unused parameter ‘linear’ [-Wunused-parameter]
+   33 |     virtual void prepareTexture(const void*, SDL_Surface*, std::uint64_t, bool linear = false) {}
+      |                                                                           ~~~~~^~~~~~~~~~~~~~
+In file included from /home/bradley/glob2/artifacts/renderer-foundation-0ceada/source/libgag/include/RenderDevice.h:3,
+                 from /home/bradley/glob2/artifacts/renderer-foundation-0ceada/source/libgag/src/RenderDevice.cpp:2:
+/home/bradley/glob2/artifacts/renderer-foundation-0ceada/source/libgag/include/RenderBackend.h: In member function ‘virtual void GAGCore::RenderBackend::prepareTexture(const void*, SDL_Surface*, uint64_t, bool)’:
+/home/bradley/glob2/artifacts/renderer-foundation-0ceada/source/libgag/include/RenderBackend.h:33:80: warning: unused parameter ‘linear’ [-Wunused-parameter]
+   33 |     virtual void prepareTexture(const void*, SDL_Surface*, std::uint64_t, bool linear = false) {}
+      |                                                                           ~~~~~^~~~~~~~~~~~~~
+In file included from /home/bradley/glob2/artifacts/renderer-foundation-0ceada/source/libgag/src/SoftwareRenderBackend.cpp:2:
+/home/bradley/glob2/artifacts/renderer-foundation-0ceada/source/libgag/include/RenderBackend.h: In member function ‘virtual void GAGCore::RenderBackend::prepareTexture(const void*, SDL_Surface*, uint64_t, bool)’:
+/home/bradley/glob2/artifacts/renderer-foundation-0ceada/source/libgag/include/RenderBackend.h:33:80: warning: unused parameter ‘linear’ [-Wunused-parameter]
+   33 |     virtual void prepareTexture(const void*, SDL_Surface*, std::uint64_t, bool linear = false) {}
+      |                                                                           ~~~~~^~~~~~~~~~~~~~
+In file included from /home/bradley/glob2/artifacts/renderer-foundation-0ceada/source/libgag/src/RenderBackend.cpp:2:
+/home/bradley/glob2/artifacts/renderer-foundation-0ceada/source/libgag/include/RenderBackend.h: In member function ‘virtual void GAGCore::RenderBackend::prepareTexture(const void*, SDL_Surface*, uint64_t, bool)’:
+/home/bradley/glob2/artifacts/renderer-foundation-0ceada/source/libgag/include/RenderBackend.h:33:80: warning: unused parameter ‘linear’ [-Wunused-parameter]
+   33 |     virtual void prepareTexture(const void*, SDL_Surface*, std::uint64_t, bool linear = false) {}
+      |                                                                           ~~~~~^~~~~~~~~~~~~~
