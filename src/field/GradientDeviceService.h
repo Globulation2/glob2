@@ -19,7 +19,7 @@ namespace gradient_kernel
 class GradientDeviceService;
 struct GradientDeviceState;
 bool gradientDiagnosticsRequested() noexcept;
-enum class GradientFallbackReason : unsigned {None,Unavailable,InvalidRequest,StaleGeneration,Duplicate,MemoryBudget,BackendDecline,DriverFailure,Shutdown,CpuClockUnavailable,Cancellation,BatchNotReady,Count};
+enum class GradientFallbackReason : unsigned {None,Unavailable,InvalidRequest,StaleGeneration,Duplicate,MemoryBudget,BackendDecline,DriverFailure,Shutdown,CpuClockUnavailable,Cancellation,BatchNotReady,DeadlineSlack,Count};
 // The device service borrows neither a Map, a pipeline job nor a worker's
 // scratch. Seeds move into this holder and stay unchanged on GPU decline.
 struct GradientBatchChoice

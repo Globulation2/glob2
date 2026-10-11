@@ -168,6 +168,13 @@ same due key. Automatic mode also requires a separately accepted batch-size
 profile; a singleton decision does not qualify a larger batch. The development
 cross-deadline candidate below uses measured bounds rather than extrapolating
 singleton latency. No mode waits to fill a batch.
+Accepted Automatic singletons also revalidate their measured bound against
+the original publication tick and admission cadence immediately before driver
+submission. Insufficient or accelerated cadence routes untouched seeds to one
+CPU continuation (`fallback_reason_deadline_slack`) without treating a valid
+CPU result as a failed GPU plan. A successful guard installs the existing owned
+cancellation deadline. This empirical cadence guard preserves original due
+semantics; it does not guarantee future tick pacing. Forced OpenCL is unchanged.
 
 `--ai-threads`, `--gradient-workers` and `--compute-experiments` have been removed;
 use `--compute-threads auto|N`. The optional area, initialization and hiring compute

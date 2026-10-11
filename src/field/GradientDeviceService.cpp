@@ -197,22 +197,26 @@ void recoverField(void* context,std::size_t) noexcept
     const bool batchOffer=field.minimumBatchCount>1 && field.executedBatchCount<field.minimumBatchCount &&
         (field.fallbackReason==GradientFallbackReason::BatchNotReady ||
          field.fallbackReason==GradientFallbackReason::MemoryBudget || field.fallbackReason==GradientFallbackReason::Unavailable);
-    const bool measureCleanup=field.diagnostics || batchOffer;
+    const bool slackDecline=field.fallbackReason==GradientFallbackReason::DeadlineSlack;
+    const bool measureCleanup=field.diagnostics || batchOffer || slackDecline;
     const auto cleanupStart=measureCleanup ? serviceCpuNow(field.executionState.get()) : 0;
     field.inputs.reset();field.identity={};
     const auto cleanupEnd=measureCleanup ? serviceCpuNow(field.executionState.get()) : 0;
     if(measureCleanup)field.fallbackCleanupCpuNs=glob2::threadCpuDeltaNs(cleanupStart,cleanupEnd);
     bool measured=field.preparationCpuClockValid && field.hostCpuClockValid && validCpuInterval(cpuStart,cpuEnd);
-    if(batchOffer)measured=measured && validCpuInterval(cleanupStart,cleanupEnd) && cleanupStart>=cpuEnd;
+    if(batchOffer || slackDecline)measured=measured && validCpuInterval(cleanupStart,cleanupEnd) && cleanupStart>=cpuEnd;
     auto cpu=field.seedCpuNs;
     for(const auto part:{field.hostCpuNs,field.fallbackCpuNs}){if(part>UINT64_MAX-cpu)measured=false;else cpu+=part;}
-    if(batchOffer){if(field.fallbackCleanupCpuNs>UINT64_MAX-cpu)measured=false;else cpu+=field.fallbackCleanupCpuNs;}
+    if(batchOffer || slackDecline){if(field.fallbackCleanupCpuNs>UINT64_MAX-cpu)measured=false;else cpu+=field.fallbackCleanupCpuNs;}
     if(!measured && field.executionState){std::lock_guard lock(field.executionState->mutex);++field.executionState->totals.clockInvalidMeasurements;}
     if(auto service=field.observer.lock()) {
         auto key=field.workload;
         if(batchOffer) {
             key.batch=field.minimumBatchCount;
             service->recordBatchOfferFallback(field.session,key,field.decision.plan,field.decision.version,cpu,field.tick,measured && !field.error);
+        }else if(slackDecline) {
+            key.batch=1;
+            service->recordAccepted(field.session,key,Plan::CPU,measured ? cpu : 0,field.tick,!measured || bool(field.error));
         }else {
             key.batch=std::max(field.executedBatchCount,field.minimumBatchCount);
             service->recordAccepted(field.session,key,field.decision.plan,measured ? cpu : 0,field.tick,true);
@@ -616,7 +620,8 @@ class DeviceBroker
     }
     void execute(const std::shared_ptr<GradientDeviceState>& state) noexcept {
         const auto started=monotonicNs(),cpuStart=serviceCpuNow(state.get());
-        std::array<std::shared_ptr<OwnedGradientField>,8> held;std::size_t count=0;bool canceled=false,batchNotReady=false;std::uint64_t batchVersion=0;
+        std::array<std::shared_ptr<OwnedGradientField>,8> held;std::size_t count=0;
+        bool canceled=false,batchNotReady=false,singletonSlackDecline=false;std::uint64_t batchVersion=0;
         {
             std::lock_guard lock(state->mutex);canceled=state->canceled;
             const auto earlier=[](const auto& a,const auto& b) {
@@ -706,6 +711,27 @@ class DeviceBroker
                     break;
                 }
                 batchNotReady=count<first->minimumBatchCount;
+                if(count==1 && !batchNotReady && state->mode==Backend::Automatic) {
+                    const auto policy=first->session->learningPolicy();
+                    auto key=first->workload;key.batch=1;
+                    const auto choice=policy?policy->lookup(key):CpuSavingPolicy::Choice{};
+                    // Version mismatches remain stale decisions below. An
+                    // accepted singleton still needs its own measured bound;
+                    // temporary cadence/slack rejection is ordinary CPU work.
+                    if(choice.plan==first->decision.plan && choice.version==first->decision.version) {
+                        const GradientBatchBound bound{key,choice.plan,first->identity.revision,
+                            first->identity.variant,choice.maximumElapsedNs,500000};
+                        const auto now=monotonicNs();
+                        singletonSlackDecline=!state->batching || !state->batching->cadence.fits(
+                            first->publicationTick,first->cadenceRevision,first->cadenceFloorNs,bound,now);
+                        if(!singletonSlackDecline && first->requiredControl) {
+                            const auto latest=state->batching->cadence.last();
+                            const auto floor=std::min(state->batching->cadence.floorNs(),first->cadenceFloorNs);
+                            const auto due=latest.startedNs+(first->publicationTick-latest.tick)*floor;
+                            first->requiredControl->setDeadlineNs(due-bound.completionMarginNs);
+                        }
+                    }
+                }
                 if(count==1) {held[0]=first;state->queue.erase(earliest);}
                 else {
                     for(std::size_t i=0;i<count;++i)held[i]=candidates[i]->field;
@@ -726,13 +752,13 @@ class DeviceBroker
         // An insufficient ready batch submits no driver work. Its exact CPU
         // continuation pays the calling coordinator CPU, without initializing
         // optional diagnostic registry/envelope storage on that required path.
-        const bool envelopeRequested=state->totals.cpuEnvelopeRequested && !batchNotReady;
+        const bool envelopeRequested=state->totals.cpuEnvelopeRequested && !batchNotReady && !singletonSlackDecline;
         const auto envelopeSetupStarted=envelopeRequested ? glob2::threadCpuNs() : 0;
         auto envelope=envelopeRequested ? beginBatchCpuEnvelope() : nullptr;
         const auto envelopeSetupCpu=envelopeRequested ? glob2::threadCpuDeltaNs(envelopeSetupStarted,glob2::threadCpuNs()) : 0;
         const bool missingPreparationClock=std::any_of(fields.begin(),fields.end(),[](const auto& field){return !field->preparationCpuClockValid;});
         const bool clockUnavailable=state->mode==Backend::Automatic && (state->automaticClockUnavailable || !cpuStart || missingPreparationClock);
-        const bool stale=std::any_of(fields.begin(),fields.end(),[&](const auto& field) {
+        bool stale=std::any_of(fields.begin(),fields.end(),[&](const auto& field) {
             if(field->decision.generation!=field->session->currentGeneration() || field->session->failed.load())return true;
             if(state->mode==Backend::Automatic && !batchNotReady) {
                 const auto policy=field->session->learningPolicy();if(!policy)return true;
@@ -741,7 +767,27 @@ class DeviceBroker
             }
             return false;
         });
-        if(!canceled && !stale && !clockUnavailable && !batchNotReady) {
+        if(state->mode==Backend::Automatic && count==1 && !batchNotReady && !stale && !singletonSlackDecline) {
+            // Recheck immediately before driver submission: bounded envelope
+            // setup or a queued acceleration sample may have consumed slack.
+            std::lock_guard lock(state->mutex);cadenceLocked(*state);
+            const auto& field=fields.front();const auto policy=field->session->learningPolicy();
+            auto key=field->workload;key.batch=1;const auto choice=policy?policy->lookup(key):CpuSavingPolicy::Choice{};
+            stale=choice.plan!=field->decision.plan || choice.version!=field->decision.version;
+            if(!stale) {
+                const GradientBatchBound bound{key,choice.plan,field->identity.revision,
+                    field->identity.variant,choice.maximumElapsedNs,500000};
+                singletonSlackDecline=!state->batching || !state->batching->cadence.fits(
+                    field->publicationTick,field->cadenceRevision,field->cadenceFloorNs,bound,monotonicNs());
+                if(!singletonSlackDecline && field->requiredControl) {
+                    const auto latest=state->batching->cadence.last();
+                    const auto floor=std::min(state->batching->cadence.floorNs(),field->cadenceFloorNs);
+                    const auto due=latest.startedNs+(field->publicationTick-latest.tick)*floor;
+                    field->requiredControl->setDeadlineNs(due-bound.completionMarginNs);
+                }
+            }
+        }
+        if(!canceled && !stale && !clockUnavailable && !batchNotReady && !singletonSlackDecline) {
             try {
                 std::vector<BackendRequest> requests;requests.reserve(count);
                 for(const auto& field:fields) {
@@ -784,6 +830,7 @@ class DeviceBroker
             else {
                 field->fallbackReason=canceled ? GradientFallbackReason::Shutdown : batchNotReady ? GradientFallbackReason::BatchNotReady : stale ? GradientFallbackReason::StaleGeneration
                     : clockUnavailable ? GradientFallbackReason::CpuClockUnavailable
+                    : singletonSlackDecline ? GradientFallbackReason::DeadlineSlack
                     : field->requiredControl && field->requiredControl->shouldCancel(monotonicNs()) ? GradientFallbackReason::Cancellation
                     : field->session->failed.load() ? GradientFallbackReason::DriverFailure : GradientFallbackReason::BackendDecline;
             }

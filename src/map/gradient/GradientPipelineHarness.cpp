@@ -1473,6 +1473,10 @@ TEST_CASE("invalid CPU clocks preserve exact execution without fabricated automa
         TestGradientPipeline pipeline;pipeline.configure(1,1,1,[counts](auto& job,auto&){
             CHECK(job.data[0]==77);job.data[0]=91;++counts->cpu;
         });
+        // Keep these clock-failure scenarios eligible under the real singleton
+        // deadline gate. Empty owner advances precede service attachment, so
+        // they cannot overwrite the explicit warm cadence below.
+        for(unsigned tick=0;tick<18;++tick)pipeline.advance();
         if(phase<2)pipeline.setCpuClockForTesting([counts,phase]{return phase==0 ? 0ull : counts->workerClock.fetch_sub(1000);});
         pipeline.setDeviceService(service);const auto session=pipeline.session();session->configureLearning(true);
         const auto policy=session->learningPolicy();WorkloadKey key;
@@ -1488,6 +1492,10 @@ TEST_CASE("invalid CPU clocks preserve exact execution without fabricated automa
             if(policy->finishAcceptedCapture(*ticket,{600000,1000000,600000,100000000,true,true,true}))break;
         }
         REQUIRE(policy->lookup(key).plan==plan);const auto credits=policy->metrics().acceptedCpuNs;
+        for(unsigned tick=1;tick<=17;++tick)service->recordCadence({tick,monotonicNs(),1000000000ull});
+        const auto cadenceUntil=std::chrono::steady_clock::now()+std::chrono::seconds(5);
+        while(!service->metrics().cadenceFloorNs && std::chrono::steady_clock::now()<cadenceUntil)std::this_thread::yield();
+        REQUIRE(service->metrics().cadenceFloorNs==1000000000ull);
         pipeline.setAsyncWork([counts](auto& job,PlanDecision decision){
             auto field=std::make_shared<OwnedGradientField>();field->session=job.owner->session();field->decision=decision;
             field->inputs=counts;field->due=job.executorDue;field->data=std::move(job.data);
@@ -1498,7 +1506,7 @@ TEST_CASE("invalid CPU clocks preserve exact execution without fabricated automa
                 counts->cpu.fetch_add(1);};return field;
         });
         auto* published=new std::uint16_t[1]{};
-        pipeline.advance();pipeline.submit(&published,0,[](auto& job){job.data[0]=77;});
+        pipeline.submit(&published,0,[](auto& job){job.data[0]=77;});
         // Exercise the injected service clocks, rather than canceling an as-yet
         // unsubmitted DTO at publication.
         if(phase>=2){const auto readyUntil=std::chrono::steady_clock::now()+std::chrono::seconds(5);
@@ -1931,5 +1939,99 @@ TEST_CASE("worker group capture replays already ready fields and canceled member
         CHECK(policy->metrics().promoted==0);service->stop();blocker->stop();
         while(openCLProbeBytes()!=baseline && std::chrono::steady_clock::now()<until)std::this_thread::sleep_for(std::chrono::milliseconds(1));
         CHECK(openCLProbeBytes()==baseline);
+    }
+}
+
+TEST_CASE("accepted singleton deadline guard rejects queued acceleration without demoting its plan" * doctest::test_suite("GradientPipeline"))
+{
+    using namespace gradient_kernel;
+    if constexpr(!GAGCore::ThreadSupport::available)return;if(!glob2::threadCpuNs())return;
+    PipelineEnvironment tuning("GLOB2_GRADIENT_TUNING","1"),envelope("GLOB2_GRADIENT_CPU_ENVELOPE","1"),
+        crossDue("GLOB2_GRADIENT_CROSS_DUE","0"),batch("GLOB2_GRADIENT_BATCH","1");
+    const auto plan=requestedOpenCLPlan();
+    for(unsigned scenario=0;scenario<3;++scenario) {
+        const auto mode=scenario==2?Backend::OpenCL:Backend::Automatic;
+        auto session=std::make_shared<BackendSession>();session->configureLearning(true);
+        const auto policy=session->learningPolicy();WorkloadKey key{1,1,BUCKETS,3,1,Family::Materials,255,255};key.limit=COST_LIMIT;
+        policy->observeAccepted(key,Plan::CPU,1000000000000ull,1);REQUIRE(policy->qualify(key,plan,true));
+        for(unsigned pair=0;pair<256 && policy->lookup(key).plan==Plan::CPU;++pair) {
+            std::optional<CpuSavingPolicy::ProbeTicket> ticket;
+            for(unsigned i=0;i<CpuSavingPolicy::ProbePeriod && !ticket;++i)
+                ticket=policy->beginAcceptedCapture(key,plan,1,1000000,100000000,1000000,false,0,session->currentGeneration(),true);
+            REQUIRE(bool(ticket));REQUIRE(policy->bindAcceptedReference(*ticket,session->currentGeneration(),1000000,true,true));
+            REQUIRE(bool(policy->authorizeOptionalExecution(*ticket,session->currentGeneration(),1,100000000,false)));
+            policy->finishAcceptedCapture(*ticket,{100000,1000000,600000,100000000,true,true,true});
+        }
+        const auto accepted=policy->lookup(key);REQUIRE(accepted.plan==plan);REQUIRE(accepted.maximumElapsedNs>0);
+        const auto initialCredits=policy->metrics().acceptedCpuNs;
+        struct Gate {std::promise<void> entered,release;std::shared_future<void> released=release.get_future().share();
+            std::atomic<bool> opened{false};void open(){if(!opened.exchange(true))release.set_value();}};
+        auto gate=std::make_shared<Gate>();auto entered=gate->entered.get_future();
+        auto blocker=std::make_shared<GradientDeviceService>(GradientDeviceService::Hooks{[]{return true;},
+            [gate](std::span<const BackendRequest>,Plan){gate->entered.set_value();gate->released.wait();return true;}});
+        std::atomic<unsigned> calls{0};
+        auto service=std::make_shared<GradientDeviceService>(GradientDeviceService::Hooks{[]{return true;},
+            [&calls,mode](std::span<const BackendRequest> requests,Plan){++calls;
+                for(const auto& request:requests){CHECK(request.gradient[0]==77);REQUIRE(bool(request.requiredControl));
+                    CHECK(request.requiredControl->shouldCancel(UINT64_MAX)==(mode==Backend::Automatic));
+                    if(request.executedOnDevice)*request.executedOnDevice=true;}return true;}});
+        service->configure(3,mode);blocker->configure(3,Backend::OpenCL);
+        auto until=std::chrono::steady_clock::now()+std::chrono::seconds(5);
+        while((!service->metrics().ready || !blocker->metrics().ready) && std::chrono::steady_clock::now()<until)std::this_thread::yield();
+        REQUIRE(service->metrics().ready);REQUIRE(blocker->metrics().ready);
+        if(mode==Backend::Automatic) {
+            for(unsigned tick=1;tick<=17;++tick)service->recordCadence({tick,monotonicNs(),1000000000ull});
+            while(!service->metrics().cadenceFloorNs && std::chrono::steady_clock::now()<until)std::this_thread::yield();
+            REQUIRE(service->metrics().cadenceFloorNs==1000000000ull);
+        }
+        ComputeExecutor executor;executor.configure(3);
+        struct Recovery {mutable std::atomic<unsigned> count{0};};
+        auto recovered=std::make_shared<Recovery>();
+        struct Context {ComputeExecutor* executor;std::shared_ptr<GradientDeviceService> service;std::shared_ptr<OwnedGradientField> field;};
+        std::array<Context,2> contexts;
+        for(unsigned i=0;i<2;++i) {
+            auto field=std::make_shared<OwnedGradientField>();field->session=session;
+            REQUIRE(bool(field->requiredControl)); // Constructor's precharged owned control.
+            field->decision={plan,i?accepted.version:0,session->currentGeneration()};
+            field->data=std::make_unique<std::uint16_t[]>(1);field->data[0]=77;field->grid={1,1};field->limit=COST_LIMIT;
+            field->workload=key;field->family=key.family;field->due=100+i;field->publicationTick=20+i;field->tick=17;
+            field->preparationCpuClockValid=true;field->seedCpuNs=100;
+            field->inputs=recovered;field->retainedInputBytes=sizeof(Recovery)+128;
+            field->costAt=[](const auto&,std::size_t){return LAND_STEPS;};
+            field->cpu=[](OwnedGradientField& owned){++static_cast<const Recovery*>(owned.inputs.get())->count;
+                CHECK(owned.data[0]==77);GradientWorkspace scratch;
+                propagateFieldCPU(owned.data.get(),0,owned.limit,owned.grid,scratch,[](std::size_t){return false;});CHECK(owned.data[0]==77);};
+            contexts[i]={&executor,i?service:blocker,std::move(field)};
+        }
+        std::array<ComputeExecutor::Batch,2> tickets;
+        struct Drain {ComputeExecutor& executor;std::array<ComputeExecutor::Batch,2>& tickets;std::shared_ptr<Gate> gate;
+            ~Drain(){gate->open();for(auto& ticket:tickets)try{executor.join(ticket);}catch(...){}}
+        } drain{executor,tickets,gate};
+        const auto submit=+[](void* value,std::size_t){auto& context=*static_cast<Context*>(value);
+            context.field->completion=context.executor->defer();REQUIRE(context.service->submit(context.field));};
+        const ComputeExecutor::Group first{1,{submit,&contexts[0]},ComputeExecutor::NoLane};tickets[0]=executor.submit(std::span(&first,1),100);
+        const auto enteredStatus=entered.wait_for(std::chrono::seconds(5));if(enteredStatus!=std::future_status::ready)gate->open();
+        REQUIRE(enteredStatus==std::future_status::ready);
+        const ComputeExecutor::Group target{1,{submit,&contexts[1]},ComputeExecutor::NoLane};tickets[1]=executor.submit(std::span(&target,1),101);
+        while(service->metrics().submitted!=1 && std::chrono::steady_clock::now()<until)std::this_thread::yield();
+        REQUIRE(service->metrics().submitted==1);CHECK_FALSE(executor.finished(tickets[1]));
+        std::atomic<unsigned> other{0};const ComputeExecutor::Group independent{1,{+[](void* p,std::size_t){++*static_cast<std::atomic<unsigned>*>(p);},&other},ComputeExecutor::NoLane};
+        auto otherTicket=executor.submit(std::span(&independent,1),99);executor.join(otherTicket);CHECK(other.load()==1);
+        if(scenario)service->recordCadence({18,monotonicNs(),100});
+        const auto beforeWindows=service->metrics().cpuEnvelopeWindows;
+        gate->open();for(auto& ticket:tickets)executor.join(ticket);
+        CHECK(calls.load()==(scenario==1?0u:1u));CHECK(recovered->count.load()==(scenario==1?1u:0u));
+        const auto& field=contexts[1].field;CHECK(field->data[0]==77);CHECK(field->due==101);CHECK(field->publicationTick==21);
+        CHECK(field->decision.version==accepted.version);
+        CHECK(field->fallbackReason==(scenario==1?GradientFallbackReason::DeadlineSlack:GradientFallbackReason::None));
+        if(scenario==1) {
+            until=std::chrono::steady_clock::now()+std::chrono::seconds(5);
+            while(policy->metrics().acceptedCpuNs==initialCredits && std::chrono::steady_clock::now()<until)std::this_thread::yield();
+            CHECK(policy->metrics().acceptedCpuNs>initialCredits);
+            CHECK(policy->lookup(key).plan==plan);CHECK(policy->lookup(key).version==accepted.version);
+            CHECK(service->metrics().cpuEnvelopeWindows==beforeWindows);
+            CHECK(service->metrics().fallbackReasons[unsigned(GradientFallbackReason::DeadlineSlack)]==1);
+        }
+        service->stop();blocker->stop();
     }
 }
