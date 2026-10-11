@@ -15,10 +15,23 @@ async function choose(page,label) {
   // Surface generation advances only after successful transaction commit.
   await expect.poll(()=>{if(page.rendererSwitchErrors?.length)throw Error(page.rendererSwitchErrors.join('\n'));return generation(page);},{timeout:120000}).toBeGreaterThan(before.generation);
   await expect.poll(()=>page.evaluate(()=>glob2Diagnostics.snapshot().controls['graphics.renderer']?.label)).toContain(label);
-  const active={'Software':'software','Programmable GL':'webgl2','WebGPU':'webgpu'}[label];
+  // Module.renderer is the surface transport family: both GPU contexts use
+  // 'webgl2'. Verify WebGPU against the actual owner and replacement canvas.
+  const active={'Software':'software','Programmable GL':'webgl2','WebGPU':'webgl2'}[label];
   if(!active)throw Error('Missing active renderer expectation for '+label);
   try {
     await expect.poll(()=>page.evaluate(()=>Module.renderer),{timeout:120000}).toBe(active);
+    if(label==='WebGPU') {
+      const owners=await presentationOwners(page);expect(owners).toHaveLength(1);
+      await expect.poll(()=>owners[0].evaluate(()=>{
+        const g=Glob2WebGPU;
+        return g.state===1&&!g.lost&&g.context?.canvas===Module.canvas&&!!g.screen;
+      }),{timeout:120000}).toBe(true);
+      await test.info().attach('active-webgpu-owner',{body:JSON.stringify(await owners[0].evaluate(()=>({
+        state:Glob2WebGPU.state,error:Glob2WebGPU.error,issued:Glob2WebGPU.issued,
+        completed:Glob2WebGPU.completed,canvasOwned:Glob2WebGPU.context.canvas===Module.canvas
+      })),null,2),contentType:'application/json'});
+    }
   } catch (error) {
     // Preserve the actual owner failure after automatic fallback. A requested
     // label and a replacement canvas do not establish successful GPU rendering.
@@ -36,7 +49,7 @@ async function choose(page,label) {
     },null,2),contentType:'application/json'});
     throw error;
   }
-  if(active==='webgl2') {
+  if(label==='Programmable GL') {
     const owners=await presentationOwners(page);
     expect(owners).toHaveLength(1);
     const driver=await owners[0].evaluate(()=>{
