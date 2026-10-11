@@ -491,8 +491,10 @@ all levels to finish. GPU terrain composition also checks aggregate memory headr
 before promotion and uses the CPU compositor under pressure. Individual cache class
 budgets do not imply that all classes fit simultaneously. Torus captures use the requested
 terrain density when the full tiled layout fits the terrain-target and aggregate
-resource budgets. Completed unused allocations are trimmed before admission;
-actual pressure can reduce density, rather than a fixed low pixel cap.
+resource budgets. Explicit trimming releases completed GPU copies that can be
+restored from logical CPU snapshots, while preserving in-flight work, unfinished
+uploads and externally owned rendered targets. Actual pressure can reduce density,
+rather than a fixed low pixel cap.
 
 The command adapter preserves adjacent painter order and flushes at 4096 commands.
 Immutable texture revisions retain the pixels that queued draws referenced, even
