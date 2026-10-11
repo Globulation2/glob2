@@ -55,6 +55,11 @@ bool GraphicContext::deferDeviceFrame()
     return renderDevice() && GAGCore::deferDeviceFrame(*renderer);
 }
 
+bool GraphicContext::setDeviceTargetScissor(const SDL_Rect *pixels)
+{
+    return renderDevice() && GAGCore::setDeviceTargetScissor(*renderer, pixels);
+}
+
 bool GraphicContext::beginDeviceTarget(TextureSnapshot target, float logicalWidth, float logicalHeight)
 {
     if (!presentationDevice || !renderer || !target) return false;

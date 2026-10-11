@@ -401,6 +401,7 @@ namespace GAGCore
         // Bounded offscreen producers publish only completed logical captures.
         bool flushDeviceFrame();
         bool deferDeviceFrame();
+        bool setDeviceTargetScissor(const SDL_Rect *pixels);
     private:
         bool activateBackend(RendererBackend backend, SDL_Surface *previousFrame);
 		RenderFramePacer renderPacer;
