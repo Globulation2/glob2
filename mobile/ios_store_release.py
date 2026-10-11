@@ -144,7 +144,7 @@ def run(api, stage, provenance, draft_version_id='', replace_draft_build_id=''):
     app=one(api.collect('/v1/apps?'+urlencode({'filter[bundleId]':BUNDLE})), 'Globulation 2 app')
     build=one(api.collect('/v1/builds?'+urlencode({'filter[app]':app['id'],'filter[version]':provenance['buildNumber'],
         'filter[preReleaseVersion.version]':provenance['marketingVersion'],'filter[preReleaseVersion.platform]':'IOS'})), 'uploaded tagged iOS build')
-    if build['attributes'].get('processingState')!='VALID' or build['attributes'].get('expired') is True or build['attributes'].get('buildAudienceType')!='APP_STORE_ELIGIBLE':
+    if build['attributes'].get('processingState')!='VALID' or build['attributes'].get('expired') is not False or build['attributes'].get('buildAudienceType')!='APP_STORE_ELIGIBLE':
         raise ValueError('Selected Apple build is not processed and App Store eligible')
     if build['attributes'].get('usesNonExemptEncryption') is not False:
         raise ValueError('Encryption declaration is unresolved or differs from the uploaded app')

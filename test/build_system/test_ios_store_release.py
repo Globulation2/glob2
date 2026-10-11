@@ -17,7 +17,7 @@ class FakeAPI:
     def __init__(self, state='PREPARE_FOR_SUBMISSION', missing=False, attached='build-1'):
         self.calls=[];self.missing=missing;self.attached=attached
         self.app=dict(id='app-1',attributes={'primaryLocale':'en-US'})
-        self.build=dict(id='build-1',attributes={'processingState':'VALID','buildAudienceType':'APP_STORE_ELIGIBLE','usesNonExemptEncryption':False})
+        self.build=dict(id='build-1',attributes={'processingState':'VALID','expired':False,'buildAudienceType':'APP_STORE_ELIGIBLE','usesNonExemptEncryption':False})
         self.version=dict(id='version-1',attributes={'appVersionState':state,'releaseType':'MANUAL','copyright':'Globulation 2'})
     def collect(self,path):
         self.calls.append(('GET',path,None))
@@ -216,6 +216,20 @@ class IOSStoreTests(unittest.TestCase):
             api=FakeAPI();api.build['attributes'][field]=value
             with self.assertRaises(ValueError):store.run(api,'prepare',provenance())
             self.assertFalse(any(method!='GET' for method,_,_ in api.calls))
+
+    def test_unknown_or_expired_build_blocks_every_store_stage_before_writes(self):
+        for stage in ('prepare','submit','publish'):
+            for expiry in (None,True,0,'false','missing'):
+                api=FakeAPI(state='PENDING_DEVELOPER_RELEASE' if stage=='publish' else 'PREPARE_FOR_SUBMISSION')
+                if expiry=='missing': api.build['attributes'].pop('expired')
+                else: api.build['attributes']['expired']=expiry
+                with self.subTest(stage=stage,expiry=expiry),self.assertRaisesRegex(ValueError,'not processed and App Store eligible'):
+                    store.run(api,stage,provenance())
+                self.assertFalse(any(method!='GET' for method,_,_ in api.calls))
+
+        api=self.draft_api();api.attached='old-build';api.build['attributes'].pop('expired')
+        with self.assertRaises(ValueError):store.run(api,'prepare',provenance(),'version-1','old-build')
+        self.assertFalse(any(method!='GET' for method,_,_ in api.calls))
 
     def test_client_rejects_pagination_to_other_origin_before_sending_token(self):
         api=store.Client('secret-token')
