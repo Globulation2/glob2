@@ -201,6 +201,8 @@ addToLibrary({
   glob2_webgpu_upload(id,width,height,pixels,repeatU,repeatV,target,mipCount=1){try{const g=Glob2WebGPU;const image=g.image(width,height,HEAPU8.slice(pixels,pixels+width*height*4),!!target,mipCount);image.repeatU=!!repeatU;image.repeatV=!!repeatV;g.resources.set(id,image);g.bytes+=image.colorBytes+(target?width*height*4:0);return 1;}catch(e){Glob2WebGPU.handle(e);return 0;}},
   glob2_webgpu_mip_upload__deps:['$Glob2WebGPU'],
   glob2_webgpu_mip_upload(id,level,width,height,pixels){try{const g=Glob2WebGPU,image=g.resources.get(id);if(!image||level<1||level>=image.mipCount||width!==Math.max(1,image.width>>level)||height!==Math.max(1,image.height>>level))throw Error('WebGPU mip dimensions');g.device.queue.writeTexture({texture:image.texture,mipLevel:level},HEAPU8.slice(pixels,pixels+width*height*4),{bytesPerRow:width*4},[width,height]);return 1;}catch(e){Glob2WebGPU.handle(e);return 0;}},
+  glob2_webgpu_trim__deps:['$Glob2WebGPU'],
+  glob2_webgpu_trim(){const g=Glob2WebGPU;for(const[key,image]of g.scratch){if(image.lastUse<=g.completed){g.destroyImage(image);g.scratchBytes-=image.width*image.height*(image.depth?8:4);g.scratch.delete(key);}}},
   glob2_webgpu_delete__deps:['$Glob2WebGPU'],
   glob2_webgpu_delete(id){const g=Glob2WebGPU,v=g.resources.get(id);if(v){g.destroyImage(v);g.bytes-=v.colorBytes+(v.depth?v.width*v.height*4:0);g.resources.delete(id);}},
   glob2_webgpu_mask_upload__deps:['$Glob2WebGPU'],

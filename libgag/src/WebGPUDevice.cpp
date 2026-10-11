@@ -16,6 +16,7 @@ int glob2_webgpu_discard();
 int glob2_webgpu_upload(unsigned, int, int, const void *, int, int,int,int);
 int glob2_webgpu_mip_upload(unsigned,int,int,int,const void*);
 void glob2_webgpu_delete(unsigned);
+void glob2_webgpu_trim();
 int glob2_webgpu_mask_upload(unsigned,int,int,const void*,const void*);
 void glob2_webgpu_mask_delete(unsigned);
 int glob2_webgpu_geometry_upload(unsigned,const void *,unsigned,const void *,unsigned);
@@ -216,7 +217,23 @@ class WebGPUDevice final:public RenderDevice {
         }
         const auto identity=glob2_webgpu_submit(records.data(),records.size(),vertices.data(),vertices.size(),uniforms.data(),uniforms.size(),width,height);if(!identity)fail();issued=identity;RenderSubmission submission{identity,epoch};pending.push_back({submission,std::move(frame)});return submission;
     }
-    void trimRetiredResources() override { poll(); }
+    void trimRetiredResources() override {
+        poll(); const auto done=glob2_webgpu_completed();
+        for(auto it=textures.begin();it!=textures.end();) {
+            const auto &allocation=it->second;
+            if(!allocation.target && allocation.lastUse<=done) {
+                glob2_webgpu_delete(allocation.identity);textureBytes-=allocation.bytes;
+                classBytes[allocation.budgetClass]-=allocation.colorBytes;it=textures.erase(it);
+            }else ++it;
+        }
+        for(auto it=meshes.begin();it!=meshes.end();) {
+            if(it->second.lastUse<=done){glob2_webgpu_geometry_delete(it->second.identity);meshBytes-=it->second.bytes;it=meshes.erase(it);}else ++it;
+        }
+        for(auto it=masks.begin();it!=masks.end();) {
+            if(it->second.lastUse<=done){glob2_webgpu_mask_delete(it->second.identity);maskBytes-=it->second.bytes;it=masks.erase(it);}else ++it;
+        }
+        glob2_webgpu_trim();
+    }
     RenderCompletion completion(RenderSubmission submission) override{poll();if(!submission||submission.deviceGeneration!=epoch||submission.identity>issued)return RenderCompletion::Cancelled;return submission.identity<=glob2_webgpu_completed()?RenderCompletion::Complete:RenderCompletion::Pending;}
     void present() override{detail::RenderCpuTimer timing(counts.cpuPresentNanoseconds);if(!glob2_webgpu_present())fail();}
     void discardFrame() override{if(!glob2_webgpu_discard())fail();}

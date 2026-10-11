@@ -16,14 +16,15 @@ const assert=require('node:assert/strict');
    for(let q=0;q<4;q++){call('skin',q);const p=await pixels();skin.push([p(20,20),p(44,44)]);}
    const targets=[];for(let pma=0;pma<2;pma++){call('terrain',pma);targets.push((await pixels())(32,32));}
    call('pressure',0);await wait();call('pressure',1);await wait();call('pressure',2);
-   const leased=Array.from(g.resources.keys());call('pressure',3);const p=await pixels();
-   return{skin,targets,leased,remaining:Array.from(g.resources.keys()),pressure:[p(16,32),p(48,32)],gpuError:g.error};
+   const leased=Array.from(g.resources.keys());call('trim');const protectedKeys=Array.from(g.resources.keys());call('pressure',3);const p=await pixels();
+   const pressure=[p(16,32),p(48,32)],remaining=Array.from(g.resources.keys());call('trim');const trimmed=Array.from(g.resources.keys());call('pressure',1);const restored=(await pixels())(32,32);
+   return{skin,targets,leased,pressure,remaining,protectedKeys,trimmed,restored,gpuError:g.error};
   });
   assert.deepEqual(errors,[]);assert.equal(result.gpuError,'');
   result.skin.forEach((samples,q)=>{assert.equal(samples[0][3],255);assert(samples[0].slice(0,3).some(v=>v>40),`quadrant ${q} rendered`);assert.notDeepEqual(samples[0],samples[1],`quadrant ${q} non-solid paint`);});
   assert.equal(new Set(result.skin.map(s=>s[0].slice(0,3).join(','))).size,4);
   assert.deepEqual(result.targets,[[0,128,0,255],[0,128,0,255]]);
-  assert.equal(result.leased.length,2);assert.deepEqual(result.remaining,[result.leased[1],result.leased[1]+1]);assert.deepEqual(result.pressure,[[180,30,20,255],[20,180,30,255]]);
+  assert.equal(result.leased.length,2);assert.deepEqual(result.protectedKeys,[result.leased[1]]);assert.equal(result.trimmed.length,0);assert.deepEqual(result.restored,[180,30,20,255]);assert.deepEqual(result.remaining,[result.leased[1],result.leased[1]+1]);assert.deepEqual(result.pressure,[[180,30,20,255],[20,180,30,255]]);
   console.log(JSON.stringify(result,null,2));
  }finally{await browser.close();}
 })().catch(e=>{console.error(e);process.exitCode=1;});

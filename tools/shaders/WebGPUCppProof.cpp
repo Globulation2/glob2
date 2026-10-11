@@ -48,6 +48,7 @@ EMSCRIPTEN_KEEPALIVE int proof_terrain(int premultiplied){return checked([&]{
     DrawPacket packet;packet.kind=DrawPacket::Kind::WeightedCompose;packet.target=target;packet.weightedCompose=compose;
     submit({packet,clear(),blit(target,{0,0,64,64})});
 });}
+EMSCRIPTEN_KEEPALIVE int proof_trim(){return checked([&]{device->trimRetiredResources();});}
 EMSCRIPTEN_KEEPALIVE int proof_pressure(int stage){return checked([&]{
     if(stage==0){device->reset();nextTexture=0;pressureSource=image(4096,2048,{180,30,20,255});secondSource=image(2048,2048,{20,180,30,255});submit({clear(),blit(pressureSource,{0,0,64,64})});}
     else if(stage==1)submit({blit(pressureSource,{0,0,64,64},true)});
