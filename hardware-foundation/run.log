@@ -1,0 +1,89 @@
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/foundation-520336e0/source/libgag/src/SDLGPUDeviceTest.cpp:387:
+TEST SUITE: SDLGPUDevice
+TEST CASE:  Vulkan authoritative skin catalogue rig fur depth and atlas capture [display][isolated]
+
+/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/foundation-520336e0/source/libgag/src/SDLGPUDeviceTest.cpp:462: MESSAGE: Vulkan material 0 coverage=5236 restDifference=0 deformationDifference=17985
+  logged: material id 0
+
+/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/foundation-520336e0/source/libgag/src/SDLGPUDeviceTest.cpp:462: MESSAGE: Vulkan material 1 coverage=5236 restDifference=0 deformationDifference=18382
+  logged: material id 1
+
+/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/foundation-520336e0/source/libgag/src/SDLGPUDeviceTest.cpp:462: MESSAGE: Vulkan material 2 coverage=5236 restDifference=0 deformationDifference=18283
+  logged: material id 2
+
+/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/foundation-520336e0/source/libgag/src/SDLGPUDeviceTest.cpp:462: MESSAGE: Vulkan material 3 coverage=5236 restDifference=0 deformationDifference=18227
+  logged: material id 3
+
+/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/foundation-520336e0/source/libgag/src/SDLGPUDeviceTest.cpp:462: MESSAGE: Vulkan material 4 coverage=5236 restDifference=0 deformationDifference=10567
+  logged: material id 4
+
+/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/foundation-520336e0/source/libgag/src/SDLGPUDeviceTest.cpp:462: MESSAGE: Vulkan material 5 coverage=5236 restDifference=0 deformationDifference=18444
+  logged: material id 5
+
+/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/foundation-520336e0/source/libgag/src/SDLGPUDeviceTest.cpp:462: MESSAGE: Vulkan material 6 coverage=5236 restDifference=0 deformationDifference=17936
+  logged: material id 6
+
+/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/foundation-520336e0/source/libgag/src/SDLGPUDeviceTest.cpp:462: MESSAGE: Vulkan material 7 coverage=5236 restDifference=0 deformationDifference=18419
+  logged: material id 7
+
+/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/foundation-520336e0/source/libgag/src/SDLGPUDeviceTest.cpp:462: MESSAGE: Vulkan material 8 coverage=5236 restDifference=0 deformationDifference=18557
+  logged: material id 8
+
+/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/foundation-520336e0/source/libgag/src/SDLGPUDeviceTest.cpp:462: MESSAGE: Vulkan material 9 coverage=5236 restDifference=0 deformationDifference=18104
+  logged: material id 9
+
+/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/foundation-520336e0/source/libgag/src/SDLGPUDeviceTest.cpp:462: MESSAGE: Vulkan material 10 coverage=5236 restDifference=0 deformationDifference=18306
+  logged: material id 10
+
+/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/foundation-520336e0/source/libgag/src/SDLGPUDeviceTest.cpp:462: MESSAGE: Vulkan material 11 coverage=5236 restDifference=0 deformationDifference=17932
+  logged: material id 11
+
+/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/foundation-520336e0/source/libgag/src/SDLGPUDeviceTest.cpp:462: MESSAGE: Vulkan material 12 coverage=5236 restDifference=0 deformationDifference=18364
+  logged: material id 12
+
+/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/foundation-520336e0/source/libgag/src/SDLGPUDeviceTest.cpp:462: MESSAGE: Vulkan material 13 coverage=5236 restDifference=0 deformationDifference=18062
+  logged: material id 13
+
+/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/foundation-520336e0/source/libgag/src/SDLGPUDeviceTest.cpp:462: MESSAGE: Vulkan material 14 coverage=5236 restDifference=0 deformationDifference=18205
+  logged: material id 14
+
+/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/foundation-520336e0/source/libgag/src/SDLGPUDeviceTest.cpp:462: MESSAGE: Vulkan material 15 coverage=5236 restDifference=0 deformationDifference=18194
+  logged: material id 15
+
+/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/foundation-520336e0/source/libgag/src/SDLGPUDeviceTest.cpp:462: MESSAGE: Vulkan material 16 coverage=5236 restDifference=0 deformationDifference=18304
+  logged: material id 16
+
+/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/foundation-520336e0/source/libgag/src/SDLGPUDeviceTest.cpp:462: MESSAGE: Vulkan material 17 coverage=5236 restDifference=0 deformationDifference=18194
+  logged: material id 17
+
+/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/foundation-520336e0/source/libgag/src/SDLGPUDeviceTest.cpp:462: MESSAGE: Vulkan material 18 coverage=5236 restDifference=0 deformationDifference=17891
+  logged: material id 18
+
+/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/foundation-520336e0/source/libgag/src/SDLGPUDeviceTest.cpp:462: MESSAGE: Vulkan material 19 coverage=5236 restDifference=0 deformationDifference=18292
+  logged: material id 19
+
+/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/foundation-520336e0/source/libgag/src/SDLGPUDeviceTest.cpp:462: MESSAGE: Vulkan material 20 coverage=5236 restDifference=0 deformationDifference=17147
+  logged: material id 20
+
+/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/foundation-520336e0/source/libgag/src/SDLGPUDeviceTest.cpp:462: MESSAGE: Vulkan material 21 coverage=5236 restDifference=0 deformationDifference=17577
+  logged: material id 21
+
+===============================================================================
+/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/foundation-520336e0/source/libgag/src/SDLGPUDeviceTest.cpp:523:
+TEST SUITE: SDLGPUDevice
+TEST CASE:  Vulkan four depth atlases coexist with full4096 authored terrain mip uploads [display][isolated]
+
+/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/foundation-520336e0/source/libgag/src/SDLGPUDeviceTest.cpp:559: MESSAGE: Combined atlas/mip upload deferred attempts=23 peak bytes=232086872
+  logged: Deferred upload attempts: 23
+
+/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/foundation-520336e0/source/libgag/src/SDLGPUDeviceTest.cpp:582: MESSAGE: Cold combined upload deferred attempts=25 peak bytes=232086872
+  logged: Deferred upload attempts: 25
+          Cold combined deferred attempts: 25
+
+===============================================================================
+[doctest] test cases:     39 |     39 passed | 0 failed | 0 skipped
+[doctest] assertions: 218330 | 218330 passed | 0 failed |
+[doctest] Status: SUCCESS!

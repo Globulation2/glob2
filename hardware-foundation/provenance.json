@@ -1,0 +1,98 @@
+{
+  "revision": "520336e0f92a355a03e8388af45e14b4c79672f0",
+  "command": [
+    "g++",
+    "-std=c++20",
+    "-O0",
+    "-g",
+    "-Wall",
+    "-Wextra",
+    "-DGLOB2_PROGRAMMABLE_GL=1",
+    "-I/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/foundation-520336e0/source/libgag/include",
+    "-I/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/foundation-520336e0/source/test/support",
+    "-I/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/foundation-520336e0/source/third_party/nlohmann-json/include",
+    "-I/home/bradley/glob2/build/linux/client/release/client-full-direct-1111/shaders",
+    "-I/home/bradley/glob2/build/sdl3/prefix/include",
+    "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/foundation-520336e0/source/libgag/src/SDLGPUDevice.cpp",
+    "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/foundation-520336e0/source/libgag/src/SDLGPUDeviceTest.cpp",
+    "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/foundation-520336e0/source/libgag/src/ProgrammableGLDevice.cpp",
+    "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/foundation-520336e0/source/libgag/src/ProgrammableGLDeviceTest.cpp",
+    "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/foundation-520336e0/source/libgag/src/SpriteRenderAtlas.cpp",
+    "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/foundation-520336e0/source/libgag/src/SpriteRenderAtlasTest.cpp",
+    "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/foundation-520336e0/source/libgag/src/RenderDevice.cpp",
+    "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/foundation-520336e0/source/libgag/src/RenderFrame.cpp",
+    "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/foundation-520336e0/source/libgag/src/RenderResources.cpp",
+    "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/foundation-520336e0/source/libgag/src/SoftwareRenderBackend.cpp",
+    "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/foundation-520336e0/source/libgag/src/RenderBackend.cpp",
+    "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/foundation-520336e0/source/libgag/src/SurfaceRaster.cpp",
+    "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/foundation-520336e0/main.cpp",
+    "-L/home/bradley/glob2/build/sdl3/prefix/lib",
+    "-Wl,-rpath,/home/bradley/glob2/build/sdl3/prefix/lib",
+    "-lSDL3",
+    "-o",
+    "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/foundation-520336e0/tests"
+  ],
+  "source_sha256": {
+    "libgag/src/SDLGPUDevice.cpp": "eed37ceac16f01577fa90fb0d466db2ed5aecbc2162c9462a5f32ca8fd4221d1",
+    "libgag/src/SDLGPUDeviceTest.cpp": "4a0b44a493f5adbae886af06e603eb35f0d0a98327f7d6f28739095e51af7821",
+    "libgag/src/ProgrammableGLDevice.cpp": "76e8148f462f7abe4f86742c743b1893f097b0216362b883b2a0506145299d41",
+    "libgag/src/ProgrammableGLDeviceTest.cpp": "69deee2f0c870b74c8cd588606755981c10a2630597439572ae7295bf5d0ec64",
+    "libgag/src/SpriteRenderAtlas.cpp": "64d889fc653cea9c5d325af03fa3f593c11a7604bc515802dc0d93a05f6cd00a",
+    "libgag/src/SpriteRenderAtlasTest.cpp": "4722957cd7e0988de4290cf9596e38adffdda2f26433934d82a15278fa1ed51c",
+    "libgag/src/RenderDevice.cpp": "27b3b80d0d2fbfc034b907d29503c928b19e15b552a330f91f32e2b222b47064",
+    "libgag/src/RenderFrame.cpp": "9057f8820deb592bb803b3f8fa684990a4c33484c8f5f12ca48b37bd394f1bd8",
+    "libgag/src/RenderResources.cpp": "77c3fb979ce4a3d527740ebd5a8b0ae460f8e81c977ec95199517dba70f09f00",
+    "libgag/src/SoftwareRenderBackend.cpp": "3cba5a8da4217661d3cc1ac762b550d8d3c2e3f0109b07c0a8eb128fb738311e",
+    "libgag/src/RenderBackend.cpp": "e04b12113d9d3ef182e27dee41d681c6ecd3f0eb133c7577c4bdd5b192eedd4d",
+    "libgag/src/SurfaceRaster.cpp": "ae14a48acc5e3b28694241d6ce6e4668fe58f7ca299c02cf0ab036c0ef7c6bb1"
+  },
+  "shader_metadata_sha256": "7e3d4959dfc83107a470853181643fc3190024f0750e091e39fe2099d674c314",
+  "asset_closure": {
+    "bundle_verified_against_archive": true,
+    "packaged_files": 34,
+    "source_archive_sha256": "a9eccc0507a52b504de8c0a7d272b030103209986a086f36660abd07a9af44bf",
+    "sdl_version": "3.4.16",
+    "tests": "native SDL GPU, desktop GL/GLES, SpriteRenderAtlas; Linux AMD hardware only",
+    "limitations": [
+      "Live application browser torus failure remains an integration acceptance hold.",
+      "No Windows/Metal/mobile hardware validation.",
+      "No performance/default recommendation."
+    ]
+  },
+  "corrected_shader_input": {
+    "directory": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/foundation-520336e0/shaders",
+    "verified_files": 50,
+    "formats": [
+      "webgl2",
+      "desktop-gl",
+      "vulkan"
+    ],
+    "metadata_sha256": "58b2412777b8f71d1991513bd0dcbc8a2a511240d0b7f32a34762c159c6d2443",
+    "identical_generated_header": true
+  },
+  "build_exit_code": 0,
+  "run_exit_code": 0,
+  "test_binary_sha256": "c6b92510f954df61d86f04c78c629309702a45de3e3d61211901e7c603481e2b",
+  "base_revision": "1e113da18493b8dc626edc7744fd9118ab2d651f",
+  "compiler": "g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+  "platform": "Linux-7.0.0-30-generic-x86_64-with-glibc2.39",
+  "results": {
+    "cases": 39,
+    "passed": 39,
+    "failed": 0,
+    "skipped": 0,
+    "assertions": 218330,
+    "tests": [
+      "SDL GPU/Vulkan14",
+      "Desktop GL/GLES22",
+      "SpriteRenderAtlas3"
+    ]
+  },
+  "initial_missing_formats_configuration": {
+    "cases": 39,
+    "passed": 25,
+    "failed_unavailable_vulkan_assets": 14,
+    "log": "run-missing-offline-assets.log",
+    "qualified": false
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "bundle": "/home/bradley/.codex/worktrees/renderer-feasibility/glob2/artifacts/renderer-feasibility/foundation-520336e0/full-shader-input",
+  "verified_against_root": true,
+  "archive_revision": "520336e0f92a355a03e8388af45e14b4c79672f0",
+  "packaged_files": 98,
+  "formats": [
+    "webgl2",
+    "desktop-gl",
+    "vulkan",
+    "webgpu",
+    "direct3d12"
+  ],
+  "metadata_sha256": "dd066f4b6127c7d06cba2e185b3c375c0dfa8df4106cb129a454d752483fb1fd",
+  "tested_native_gl_outputs_changed": []
+}

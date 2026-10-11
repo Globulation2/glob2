@@ -1,0 +1,55 @@
+artifacts/renderer-feasibility/foundation-520336e0/full-shader-input/vulkan/cloud.frag
+artifacts/renderer-feasibility/foundation-520336e0/full-shader-input/vulkan/cloud.vert
+artifacts/renderer-feasibility/foundation-520336e0/full-shader-input/vulkan/point.frag
+artifacts/renderer-feasibility/foundation-520336e0/full-shader-input/vulkan/point.vert
+artifacts/renderer-feasibility/foundation-520336e0/full-shader-input/vulkan/primitive.frag
+artifacts/renderer-feasibility/foundation-520336e0/full-shader-input/vulkan/primitive.vert
+artifacts/renderer-feasibility/foundation-520336e0/full-shader-input/vulkan/skin-rig.frag
+artifacts/renderer-feasibility/foundation-520336e0/full-shader-input/vulkan/skin-rig.vert
+artifacts/renderer-feasibility/foundation-520336e0/full-shader-input/vulkan/skin.frag
+artifacts/renderer-feasibility/foundation-520336e0/full-shader-input/vulkan/skin.vert
+artifacts/renderer-feasibility/foundation-520336e0/full-shader-input/vulkan/terrain-compose.frag
+artifacts/renderer-feasibility/foundation-520336e0/full-shader-input/vulkan/terrain-compose.vert
+artifacts/renderer-feasibility/foundation-520336e0/full-shader-input/vulkan/terrain-reduce.frag
+artifacts/renderer-feasibility/foundation-520336e0/full-shader-input/vulkan/terrain-reduce.vert
+artifacts/renderer-feasibility/foundation-520336e0/full-shader-input/vulkan/world.frag
+artifacts/renderer-feasibility/foundation-520336e0/full-shader-input/vulkan/world.vert
+artifacts/renderer-feasibility/foundation-520336e0/full-shader-input/webgpu/skin.vert
+[WARN  naga::front::spv] Unknown decoration Block
+[WARN  naga::front::spv] Unknown decoration Block
+artifacts/renderer-feasibility/foundation-520336e0/full-shader-input/webgpu/skin.frag
+[WARN  naga::front::spv] Unknown decoration Block
+artifacts/renderer-feasibility/foundation-520336e0/full-shader-input/webgpu/skin-rig.vert
+[WARN  naga::front::spv] Unknown decoration Block
+[WARN  naga::front::spv] Unknown decoration Block
+artifacts/renderer-feasibility/foundation-520336e0/full-shader-input/webgpu/skin-rig.frag
+[WARN  naga::front::spv] Unknown decoration Block
+artifacts/renderer-feasibility/foundation-520336e0/full-shader-input/webgpu/primitive.vert
+[WARN  naga::front::spv] Unknown decoration Block
+[WARN  naga::front::spv] Unknown decoration Block
+artifacts/renderer-feasibility/foundation-520336e0/full-shader-input/webgpu/primitive.frag
+[WARN  naga::front::spv] Unknown decoration Block
+artifacts/renderer-feasibility/foundation-520336e0/full-shader-input/webgpu/world.vert
+[WARN  naga::front::spv] Unknown decoration Block
+[WARN  naga::front::spv] Unknown decoration Block
+artifacts/renderer-feasibility/foundation-520336e0/full-shader-input/webgpu/world.frag
+[WARN  naga::front::spv] Unknown decoration Block
+artifacts/renderer-feasibility/foundation-520336e0/full-shader-input/webgpu/cloud.vert
+[WARN  naga::front::spv] Unknown decoration Block
+[WARN  naga::front::spv] Unknown decoration Block
+artifacts/renderer-feasibility/foundation-520336e0/full-shader-input/webgpu/cloud.frag
+artifacts/renderer-feasibility/foundation-520336e0/full-shader-input/webgpu/point.vert
+[WARN  naga::front::spv] Unknown decoration Block
+[WARN  naga::front::spv] Unknown decoration Block
+artifacts/renderer-feasibility/foundation-520336e0/full-shader-input/webgpu/point.frag
+[WARN  naga::front::spv] Unknown decoration Block
+artifacts/renderer-feasibility/foundation-520336e0/full-shader-input/webgpu/terrain-compose.vert
+[WARN  naga::front::spv] Unknown decoration Block
+[WARN  naga::front::spv] Unknown decoration Block
+artifacts/renderer-feasibility/foundation-520336e0/full-shader-input/webgpu/terrain-compose.frag
+[WARN  naga::front::spv] Unknown decoration Block
+artifacts/renderer-feasibility/foundation-520336e0/full-shader-input/webgpu/terrain-reduce.vert
+[WARN  naga::front::spv] Unknown decoration Block
+[WARN  naga::front::spv] Unknown decoration Block
+artifacts/renderer-feasibility/foundation-520336e0/full-shader-input/webgpu/terrain-reduce.frag
+[WARN  naga::front::spv] Unknown decoration Block
