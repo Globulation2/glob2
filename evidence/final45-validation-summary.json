@@ -1,0 +1,251 @@
+{
+  "status": "COMPLETE_REVIEWABLE_FOUNDATION_WITH_EXPLICIT_PLATFORM_LIMITS",
+  "generatedUtc": "2026-10-11T00:43:54.299991+00:00",
+  "finalSourceRevision": "5efe8b6f0326b59b7ace524992612ef07e861581",
+  "finalSource": {
+    "revision": "5efe8b6f0326b59b7ace524992612ef07e861581",
+    "dirty": false,
+    "sourceStatus": [],
+    "sourceTreeSha256": "31828ccf2b4795d7246f77b42ab75c661b4fbef2d3765c447bc74b0302a301e4"
+  },
+  "simulationProducerRevision": "9e6f406b634023702eb34125916f74fe453a5e54",
+  "baselineRevision": "69ef3e1b2bf453aa280a69be72f83167b1511d9d",
+  "integrationMasterRevision": "16842835bed59d85b60f9054470a086807a24d7d",
+  "latestAssessedMasterRevision": "285a21f510cf68ac2ddd8c0755de1d2320a6852c",
+  "scope": "Developer configuration foundation; only three shipped unit definitions; no UI/artwork/balance changes. Final17 paths are the attested non-simulation delta. No prior producer is relabeled as final execution.",
+  "versions": {
+    "file": 153,
+    "network": 69,
+    "simulationRevision": 45,
+    "minimumSaveFormat": 58,
+    "legacyReplayAccepted": 152
+  },
+  "performance": "User explicitly removed further measurement and acceptance requirements. No final performance claim.",
+  "results": {
+    "currentFormatCompleteState": {
+      "main": 208,
+      "auxiliary": 50,
+      "exact": true
+    },
+    "rootFocused": {
+      "engine": 250,
+      "unit": 2
+    },
+    "rootReleaseUnit": {
+      "headlessPassed": 914,
+      "displayPassedSeparately": 20
+    },
+    "gcc13Clang18": {
+      "enginePassedEach": 359,
+      "unitPassedEach": 914,
+      "canonical4Exact": true,
+      "strict73Equal": true
+    },
+    "masterIntegration": {
+      "enginePassed": 272,
+      "unitPassed": 915,
+      "declaredDisplayUnitSkips": 20,
+      "canonical4Exact": true,
+      "strict73Equal": true
+    },
+    "platformWithDatabase": {
+      "passed": 1145,
+      "conditionalSkipped": 15,
+      "failed": 0
+    },
+    "strictSanitizers": {
+      "nonLanEngine": {
+        "caseCount": 457,
+        "failedCases": 0,
+        "skippedCases": 0,
+        "passedCases": 457,
+        "exactInventoryMatches": true,
+        "failures": [],
+        "executedBuildProvenanceMatches": true
+      },
+      "requiredUnit": {
+        "caseCount": 2,
+        "passedCases": 2,
+        "failedCases": 0,
+        "skippedCases": 0,
+        "exactInventoryMatches": true,
+        "failures": []
+      },
+      "heldLan": {
+        "caseCount": 2,
+        "passedCases": 2,
+        "failedCases": 0,
+        "skippedCases": 0,
+        "exactInventoryMatches": true,
+        "failures": []
+      },
+      "suppressed": false
+    },
+    "macOS": {
+      "enginePassed": 1265,
+      "declaredDisplayEngineSkips": 182,
+      "unitPassed": 914,
+      "declaredDisplayUnitSkips": 20,
+      "cliPassed": 15,
+      "canonical4Exact": true,
+      "strict73Equal": true
+    },
+    "browsers": {
+      "strict73AllSixEqual": true,
+      "replayAndMatchAllThreeBrowsersEqual": true,
+      "chromiumCanonical4BothVariantsEqual": true,
+      "firefoxWebKitCanonicalKinds": 2
+    },
+    "latestMasterPresentation": {
+      "controller": "PASS",
+      "unitPassed": 17,
+      "enginePassed": 16,
+      "scope": "Optimized main/engine/unit integrated build and bounded affected GPU/Sprite/terrain/unit-presentation cases; no simulation suite repeat"
+    },
+    "finalScopedChecks": [
+      "Release main/engine/unit incremental build",
+      "CLI15",
+      "GlobalContainer pre-asset shutdown via info paths",
+      "One display touch lifecycle fixture",
+      "13 formatter checks and smoke argparse help"
+    ]
+  },
+  "compatibilityLimits": {
+    "historicalResumeRawEquality": false,
+    "retainedDiagnosticDifferences": 309,
+    "historicalGameplayOrdersRngEqual": true,
+    "windows": "Build passed;14/15 CLI passed before inherited Bash helper error. Linux verifies final master helper fix; no post-fix Windows execution. Twelve replay traces match; raw CRLF/LF checksum sidecars are not claimed byte-equal.",
+    "mobile": "Android arm64/x86 release build/package passed; no device execution. Physical mobile/iOS execution unavailable; current-master iOS packaging changes not executed in the narrow final bridge.",
+    "display": "Declared headless display skips retained; root separately passed20unit+5engine display cases. Sanitizer scope is non-display.",
+    "latestGpu": "New GPU fixtures may return early on unsupported contexts; actual presentation source/driver limitations remain explicit in the integration receipt.",
+    "feel": "Maintainer play-through pending.",
+    "hosted": "Original failures remain in raw evidence. No overall-green hosted workflow claim."
+  },
+  "evidenceReceipts": [
+    {
+      "path": "artifacts/unit-foundation/final45b-validation/release45-final-build-command.json",
+      "sha256": "bc8f0ca09d9ec7337fb477d643334bc10ab86c7b167345a50d8f418f564837f6",
+      "status": "PASS"
+    },
+    {
+      "path": "artifacts/unit-foundation/final45b-validation/native-correctness-controller.json",
+      "sha256": "8c295568f0aa4fc74d0ed88a8e117f6e44d8b9e3fad89b06ded80d8876d18928",
+      "status": "PASS"
+    },
+    {
+      "path": "artifacts/unit-foundation/final45b-validation/freeze-command.json",
+      "sha256": "27aa4d4b9fbbb678bcdc59e74703e7734c43b2ffb85a7db678c2c17fb9b86f6d",
+      "status": "PASS"
+    },
+    {
+      "path": "artifacts/unit-foundation/final45b-validation/release45-followup-execution-closure.json",
+      "sha256": "93c82967aec840b4a2ac3a2d3dc047d37ec36ab815c1b2a1964c48fd98b23806",
+      "status": "PASS"
+    },
+    {
+      "path": "artifacts/unit-foundation/final45b-validation/native45/gcc13-controller.json",
+      "sha256": "a124bebe4c56987258a568bf0e53c8dcdcef2f0ae4952635749b99574c670a32",
+      "status": "PASS"
+    },
+    {
+      "path": "artifacts/unit-foundation/final45b-validation/native45/clang18-controller.json",
+      "sha256": "1a86ca4fbd82987158891b91bcabd2a075d8919c20edcdc9eaf7d132931b2b9d",
+      "status": "PASS"
+    },
+    {
+      "path": "artifacts/unit-foundation/final45b-validation/master-integration4/controller.json",
+      "sha256": "f774323ecea5645894df2f0624b450eb5f80753264cfb0d5d2dcc4394a6483a1",
+      "status": "PASS"
+    },
+    {
+      "path": "artifacts/unit-foundation/final45b-validation/master-integration5/controller.json",
+      "sha256": "0637d9aba1d3986ebe2e76bf51af919b076f155dc7dd013b540696975ff10cd1",
+      "status": "PASS"
+    },
+    {
+      "path": "artifacts/unit-foundation/final45b-validation/merged-platform4/controller.json",
+      "sha256": "1dc084db48bb3610d8ea21a966400ca1396893ff8ae0f54929798703e4376cb7",
+      "status": "PASS"
+    },
+    {
+      "path": "artifacts/unit-foundation/final45b-validation/state25/owned-controller.json",
+      "sha256": "6648b8234ee9109ccb5051b062a6ccc32a9d4bf3e15e5f4d596a2e2c4e10ad92",
+      "status": "PASS"
+    },
+    {
+      "path": "artifacts/unit-foundation/final45b-validation/state25/actual-closed-evidence-audit.json",
+      "sha256": "34d0def75deff90c6e00353d3b14a94a939f1ec78f7b33c04ba82af499cf9633",
+      "status": "PASS_CLOSED_ACTUAL_EVIDENCE_AUDIT"
+    },
+    {
+      "path": "artifacts/unit-foundation/final45b-validation/state25/sampled-publication-archive-integrity.json",
+      "sha256": "7a3c05c1589d3108977c9e6c5b29c2af3184ec79e9ecae9d4e9675b35c898937",
+      "status": "PASS_ARCHIVE_BYTE_INTEGRITY"
+    },
+    {
+      "path": "artifacts/unit-foundation/final45b-validation/san23-link-retry-draft/san-release23-execution-closure.json",
+      "sha256": "0bbcaa2ca55efbb2c89466be9bb888207ac57e8bbcdc3e274c278065be323824",
+      "status": "PASS_NON_LAN_LAN_PENDING"
+    },
+    {
+      "path": "artifacts/unit-foundation/final45b-validation/san23-link-retry-draft/san-release23-held-lan-execution-closure.json",
+      "sha256": "ab7435fed93d98369253148d343588ff15e7667013adab23995fde471c7cc169",
+      "status": "PASS_STRICT_SCOPE_COMPLETE"
+    },
+    {
+      "path": "artifacts/unit-foundation/final45b-validation/quiet45b-link-retry/controller.json",
+      "sha256": "e8d5a541b9121b4fa39a918dc6976b6ba801d8ccbc574af0fb990749dfbd2c88",
+      "status": "PASS"
+    },
+    {
+      "path": "artifacts/unit-foundation/final45b-validation/final-source-input-bridge.json",
+      "sha256": "8cce285d6fd54848bcfef13eab809a4d3d6e4f842403b36ddfbb43cf8da926fd",
+      "status": "PASS_EXACT_FINAL_DELTA_SOURCE_BRIDGE"
+    },
+    {
+      "path": "artifacts/unit-foundation/final45b-validation/final-source-delta-independent-review-unit-architecture.json",
+      "sha256": "10e2c1f56d23646766dc19b5364e8abf6e71fc96013fea6208143a5f2915c380",
+      "status": "PASS_EXACT_SOURCE_DELTA_AUDIT_EXECUTION_PENDING"
+    },
+    {
+      "path": "artifacts/unit-foundation/final45b-validation/final-delta-verification-corrections.json",
+      "sha256": "a4a850f3ad41a209946df964083e1ad9f67003397603f604ec00336c283c9acc",
+      "status": "PASS_FOCUSED_SUCCESSORS_WITH_ORIGINAL_VERIFICATION_FAILURES_PRESERVED"
+    },
+    {
+      "path": "artifacts/unit-foundation/final45b-validation/final-master-fetch.json",
+      "sha256": "1de00d1780501bef1255f4d24a89a8fd7dc764a2ccc46231a22322f8ce24610d",
+      "status": "PASS_FETCH_CLEAN_MERGE_AFFECTED_PRESENTATION_REFRESH_PENDING"
+    },
+    {
+      "path": "artifacts/unit-foundation/final45b-validation/hosted-platform-evidence/collection-final-11.json",
+      "sha256": "efb970c9b51c973ac81b819df012e9f139a0085ceed63c2529afa117fa9d62f7",
+      "status": "AVAILABLE_HOSTED_PLATFORM_EVIDENCE_CLOSED_WITH_FAILURES_AND_EXPLICIT_LIMITS"
+    },
+    {
+      "path": "artifacts/unit-foundation/final45b-validation/final-build/command.json",
+      "sha256": "f7c8d32f9489ad24584c80ab81ff90f2984a3849e2f90b5f64776f7b3fd956bc",
+      "status": "PASS"
+    },
+    {
+      "path": "artifacts/unit-foundation/final45b-validation/final-cli/command.json",
+      "sha256": "d1a83cff31a2c295ca6581b16a20b5e733f1fc5b760af7505681dcad32aa2c4e",
+      "status": "PASS"
+    },
+    {
+      "path": "artifacts/unit-foundation/final45b-validation/final-paths-list/command.json",
+      "sha256": "83e82fdc6226d049ac80dbf61e86e6cf4e90f5032fe8acfcfbec3dcf664898ac",
+      "status": "PASS"
+    },
+    {
+      "path": "artifacts/unit-foundation/final45b-validation/final-touch-isolated/command.json",
+      "sha256": "c06e2a3f0859674d2e53c9f19ecc05be79a502969a1cdcecbdd25a6153825e6a",
+      "status": "PASS"
+    },
+    {
+      "path": "artifacts/unit-foundation/final45b-validation/final-format/command.json",
+      "sha256": "5d75b4e1af6624a4cd57906ec7dafe3c321519d4b78264944efa5762c65c1436",
+      "status": "PASS"
+    }
+  ]
+}
