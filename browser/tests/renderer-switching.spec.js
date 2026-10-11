@@ -67,7 +67,7 @@ async function choose(page,label) {
     await test.info().attach('webgl2-driver',{body:JSON.stringify(driver,null,2),contentType:'application/json'});
   }
   await expect.poll(async()=>(await state(page)).loop,{timeout:120000}).toBeGreaterThan(before.loop+1);
-  await expect.poll(async()=>hasDarkText(page,await controlBox(page,'graphics.renderer')),{timeout:120000}).toBe(true);
+  await expect.poll(async()=>hasDarkText(page,await controlBox(page,'graphics.renderer',{fullyVisible:true})),{timeout:120000}).toBe(true);
   await expect(page.locator('#canvas')).toHaveCount(1);
   expect(await page.evaluate(()=>document.querySelector('#canvas').isConnected)).toBe(true);
 }

@@ -50,7 +50,9 @@ function center(page, bounds) {
 exports.control = control;
 // The control's bounds in CSS pixels, for pixel checks near a known control.
 exports.controlBox = async (page, key, options) => {
-  const bounds = await control(page, key, {enabled: false, ...options});
+  const requested = {enabled: false, ...options};
+  const bounds = options?.fullyVisible
+    ? await controlOnScreen(page, key, requested) : await control(page, key, requested);
   const origin = css(page, bounds, {x: bounds.x, y: bounds.y});
   const corner = css(page, bounds, {x: bounds.x + bounds.w, y: bounds.y + bounds.h});
   return {x: origin.x, y: origin.y, width: corner.x - origin.x, height: corner.y - origin.y};
@@ -71,8 +73,12 @@ const same = (a, b) => a.x === b.x && a.y === b.y && a.w === b.w && a.h === b.h;
 const shown = bounds => bounds.visible && bounds.visible.w >= Math.min(bounds.w, 8) && bounds.visible.h >= Math.min(bounds.h, 8);
 async function controlOnScreen(page, key, options) {
   let bounds = await control(page, key, options);
+  // Clicking needs only an exposed hit area; rendered-text checks need the
+  // complete control, including glyphs below a scroll-region clipping edge.
+  const exposed = options?.fullyVisible
+    ? b => b.visible && b.visible.w >= b.w && b.visible.h >= b.h : shown;
   for (let attempt = 0; attempt < 60; ++attempt) {
-    if (shown(bounds)) {
+    if (exposed(bounds)) {
       // Wait until the bounds hold still before clicking.
       await page.waitForTimeout(150);
       const again = await control(page, key, options);
