@@ -12,6 +12,7 @@
 #include "MusicTrack.h"
 #include "SoundMixer.h"
 #include "MainMenuScreen.h"
+#include "HandPreferenceScreen.h"
 #include "CustomGameScreen.h"
 #include "MessageScreen.h"
 #include "CampaignMainMenu.h"
@@ -183,6 +184,12 @@ Application::~Application() = default;
 
 void Application::mainMenu()
 {
+	if (Glob2UI::touchPresentation() && !globalContainer->settings.thumbSideChosen)
+	{
+		screens.push(std::make_unique<HandPreferenceScreen>(),
+			[this](GAGGUI::Screen &, int) { mainMenu(); });
+		return;
+	}
 	// Rebuild translated labels after returning from settings.
 	screens.push(std::make_unique<MainMenuScreen>(),
 				 [this](GAGGUI::Screen &, int choice) { choose(choice); });

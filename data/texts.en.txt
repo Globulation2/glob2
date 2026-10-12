@@ -6064,3 +6064,17 @@ Error: %0
 None
 [settings Starting]
 Starting
+[Which hand holds your phone?]
+Left or right hand?
+[hand preference explanation]
+Hold your phone naturally. Tap the hand you play with.
+[hand silhouettes description]
+A phone outline with left and right hands on top. Press either beveled thumb target to choose that side.
+[hand preference change later]
+You can change sides later in Settings.
+[hand preference save failed]
+Could not save your choice. Please try again.
+[Left hand]
+Left hand
+[Right hand]
+Right hand

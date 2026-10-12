@@ -144,6 +144,7 @@ public:
 		THUMB_LEFT = 1,
 	};
 	int thumbSide;
+	bool thumbSideChosen = false; ///< First-launch hand selection has been saved.
 	/// Resolves the platform default: Google Maps (Android) zooms in on a
 	/// downward drag, Apple Maps and others on an upward drag.
 	bool dragUpZoomsIn(void) const;

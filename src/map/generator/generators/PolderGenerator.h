@@ -4,6 +4,7 @@
 #include "GeneratorDefinition.h"
 struct PolderOptions
 {
+	bool expandedGround;
 	int rowAngle, dykeSpacing, villageSize;
 	bool hamlets, waterCrossings, cropCrossings;
 	int wheat, wood, stone, algae, fruit; // percentages of the default amounts

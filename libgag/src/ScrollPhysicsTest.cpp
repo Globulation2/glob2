@@ -91,6 +91,59 @@ TEST_SUITE("ScrollPhysics")
 		CHECK(VelocityTracker{}.velocity(0) == 0.0);
 	}
 
+	TEST_CASE("pauses break velocity history and repeated timestamps replace samples")
+	{
+		VelocityTracker tracker;
+		for (Ticks t = 0; t <= 64; t += 16)
+			tracker.add(t, double(t));
+		tracker.add(144, 65);
+		CHECK(tracker.velocity(145) == 0);
+		CHECK(tracker.displacement(145) == 0);
+		tracker.add(160, 66);
+		CHECK(tracker.displacement(161) == 1);
+		tracker.add(160, 67);
+		CHECK(tracker.size() == 2);
+		CHECK(tracker.displacement(161) == 2);
+	}
+
+	TEST_CASE("map release intent is recent radial travel rather than lifetime drag")
+	{
+		auto dragged = []()
+		{
+			ScrollMotion motion(ScrollPresets::mapViewport());
+			motion.beginDrag(0);
+			for (Ticks t = 16; t <= 64; t += 16)
+				motion.drag(t, 20, 0);
+			return motion;
+		};
+		for (Ticks pause : {24, 64, 80, 1000})
+		{
+			auto motion = dragged();
+			motion.drag(64 + pause, 1, 0);
+			motion.drag(80 + pause, 1, 0);
+			const double released = motion.x.offset();
+			motion.endDrag(81 + pause, 16, 3);
+			CHECK_FALSE(motion.isAnimating());
+			CHECK(motion.x.step(5000) == released);
+		}
+		auto stationary = dragged();
+		stationary.drag(80, 0, 0);
+		stationary.drag(96, 0, 0);
+		stationary.endDrag(97, 16, 3);
+		CHECK_FALSE(stationary.isAnimating());
+		auto resumed = dragged();
+		for (Ticks t = 144; t <= 192; t += 16)
+			resumed.drag(t, 10, 0);
+		resumed.endDrag(192, 16, 3);
+		CHECK(resumed.isAnimating());
+		ScrollMotion diagonal(ScrollPresets::mapViewport());
+		diagonal.beginDrag(0);
+		for (Ticks t = 16; t <= 64; t += 16)
+			diagonal.drag(t, 3, 3);
+		diagonal.endDrag(64, 16, 3);
+		CHECK(diagonal.isAnimating());
+	}
+
 	TEST_CASE("a fling coasts to its projected end inside the bounds")
 	{
 		ScrollAxis axis(defaults());
