@@ -51,7 +51,7 @@ class SoftwareRenderBackend final : public RenderBackend
     bool admitMetadata()
     {
         // Covers command/source control storage, maximum bins/references,
-        // two tile scratch slots and the owner's wide-column scratch.
+        // two bounded tile/serial sampling scratch slots.
         if (!metadataAdmitted) metadataAdmitted = metadataReservation.reserve(2u*1024u*1024u);
         return metadataAdmitted;
     }
