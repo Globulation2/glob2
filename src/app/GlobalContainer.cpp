@@ -35,6 +35,7 @@
 #include "field/GradientDeviceService.h"
 
 #include <ApplicationHost.h>
+#include <algorithm>
 
 
 /**
@@ -187,7 +188,11 @@ void GlobalContainer::updateLoadProgressScreen(int value)
 			}
 		gfx->finishDrawingSprite(terrain, 255);
 	}
-	gfx->drawSurface((gfx->getW()-title->getW())>>1, (gfx->getH()-title->getH())>>1, title.get());
+	// Keep the splash wordmark inside portrait viewports without stretching it.
+	const float titleWidth = std::min(float(title->getW()), gfx->getW() * 0.8f);
+	const float titleHeight = title->getH() * (titleWidth / title->getW());
+	gfx->drawSurface((gfx->getW() - titleWidth) / 2, (gfx->getH() - titleHeight) / 2,
+					 titleWidth, titleHeight, title.get());
 	gfx->nextFrame();
 }
 
