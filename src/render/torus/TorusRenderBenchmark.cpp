@@ -11,6 +11,7 @@
 #undef private
 #include "GameGUI.h"
 #include "Engine.h"
+#include "ComputeThreads.h"
 #include "Team.h"
 #include "Unit.h"
 #include "Player.h"
@@ -266,6 +267,7 @@ static int run(int argc, char **argv)
             gameHeader.setNumberOfPlayers(mapHeader.getNumberOfTeams());
             assert(gui.loadFromHeaders(mapHeader, gameHeader, true, true));
         }
+        gui.game.map.configureCompute(resolveComputeThreadCount(globalContainer->computeThreads));
         gui.localPlayer = gui.localTeamNo = 0;
         gui.adjustLocalTeam();
         gui.adjustInitialViewport();

@@ -92,6 +92,8 @@ See [skin rendering](skin-rendering.md) for production sprite export and skin pr
 Build `software-render-benchmark` and `torus-render-benchmark` with `release=1`.
 Use the same retained save, seed, animation, viewport, warmup and compute budget
 for `GLOB2_RENDER_EXECUTION=auto`, `serial` and `parallel` in separate processes.
+Both standalone tools apply the launch `--compute-threads auto|N` budget to their
+map executor; keep that budget fixed between modes.
 `auto` measures the conservative immediate path; `serial` measures packed CPU
 terrain and recorder overhead; `parallel` requests worker execution where bounds
 permit it. Use `GLOB2_RENDER_WORKERS=1` to test the rendering concurrency ceiling
