@@ -6059,6 +6059,9 @@ Invitation link copied.
 [settings GPU fields]
 
 [settings CPU fallbacks]
+
+[discord copy failed]
+Could not copy the link. Select the invitation above to copy it manually.
 [settings MCP server]
 
 [settings Enabling the MCP server permits local clients to see and operate the game.]
@@ -6086,6 +6089,7 @@ Invitation link copied.
 [settings None]
 
 [settings Starting]
+
 [Which hand holds your phone?]
 
 [hand preference explanation]
@@ -6100,9 +6104,3 @@ Invitation link copied.
 
 [Right hand]
 
-[settings GPU compute]
-
-[settings Use GPU for gradient calculations. Applies to the next game.]
-
-[discord copy failed]
-Could not copy the link. Select the invitation above to copy it manually.
