@@ -674,10 +674,13 @@ TEST_CASE("graphics context CPU pixel borrowing fences recorded main and offscre
     {
         glob2test::ScopedEnvironment mode("GLOB2_RENDER_EXECUTION", execution);
         GraphicContext context(64, 48, GraphicContext::NOAUDIO, "CPU pixel observation");
-        context.drawFilledRect(0, 0, 64, 48, Color(71, 117, 191));
+        // Native 1x contexts use immediate facade drawing until a transform
+        // activates the software backend. Keep it active while borrowing pixels.
+        context.beginMapTransform(1, 1, 0, 0, 0, 64, 48);
+        context.drawFilledRect(-1, 0, 64, 48, Color(71, 117, 191));
         CHECK(pixel(context.getSDLSurface(), 31, 23) == 0xff4775bf);
         REQUIRE(SDL_FillSurfaceRect(context.getSDLSurface(), nullptr, 0xff173b61));
-        context.drawFilledRect(2, 3, 7, 5, Color(151, 43, 79));
+        context.drawFilledRect(1, 3, 7, 5, Color(151, 43, 79));
         CHECK(pixel(context.getSDLSurface(), 4, 5) == 0xff972b4f);
         CHECK(pixel(context.getSDLSurface(), 31, 23) == 0xff173b61);
         auto offscreen = pixels(19, 17);
@@ -687,5 +690,64 @@ TEST_CASE("graphics context CPU pixel borrowing fences recorded main and offscre
             CHECK(pixel(context.getSDLSurface(), 9, 8) == 0xff2b6197);
         });
         CHECK(pixel(context.getSDLSurface(), 31, 23) == 0xff173b61);
+        context.endMapTransform();
     }
+}
+
+TEST_CASE("memory capture rejects failed raster output and resumes after owner discard" *
+          doctest::test_suite("SoftwareRenderer"))
+{
+    glob2test::ScopedEnvironment mode("GLOB2_RENDER_EXECUTION", "parallel");
+    struct Failure : PresentationWork
+    {
+        void executePresentationJobs(std::size_t count,
+                                     const std::function<void(std::size_t)> &job) override
+        {
+            if (count)
+                job(0);
+            throw std::runtime_error("injected memory capture raster failure");
+        }
+    } failure;
+    GraphicContext context(271, 263, GraphicContext::NOAUDIO, "CPU capture recovery");
+    context.drawFilledRect(0, 0, 271, 263, Color(17, 29, 43));
+    context.nextFrame();
+    const auto completed = snapshot(context.completedFrame());
+    // A translated map pass activates the recorder on native 1x displays.
+    context.beginMapTransform(1, 1, 0, 0, 0, 271, 263);
+    bool rejected = false;
+    context.requestMemoryCapture([&](auto image, auto, auto error) {
+        CHECK_FALSE(image);
+        CHECK(error == "injected memory capture raster failure");
+        rejected = true;
+    });
+    context.drawFilledRect(-1, 0, 271, 263, Color(211, 113, 71));
+    {
+        PresentationWorkScope scope(failure);
+        CHECK_THROWS_AS(context.nextFrame(), std::runtime_error);
+    }
+    CHECK(rejected);
+    CHECK(snapshot(context.completedFrame()) == completed);
+    context.discardFrame();
+    CHECK(snapshot(context.completedFrame()) == completed);
+    context.endMapTransform();
+
+    std::shared_ptr<SDL_Surface> captured;
+    context.requestMemoryCapture([&](auto image, auto, auto error) {
+        CHECK(error.empty());
+        captured = std::move(image);
+    });
+    context.beginMapTransform(1, 1, 0, 0, 0, 271, 263);
+    context.drawFilledRect(127, 127, 3, 5, Color(31, 73, 151));
+    context.nextFrame();
+    context.endMapTransform();
+    REQUIRE(captured);
+    Uint8 red, green, blue, alpha;
+    REQUIRE(SDL_ReadSurfacePixel(captured.get(), 129, 128, &red, &green, &blue, &alpha));
+    CHECK(red == 31);
+    CHECK(green == 73);
+    CHECK(blue == 151);
+    REQUIRE(SDL_ReadSurfacePixel(captured.get(), 2, 3, &red, &green, &blue, &alpha));
+    CHECK(red == 17);
+    CHECK(green == 29);
+    CHECK(blue == 43);
 }
