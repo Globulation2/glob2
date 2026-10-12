@@ -93,10 +93,39 @@ void VelocityTracker::reset()
 
 void VelocityTracker::add(Ticks t, double position)
 {
+	if (count)
+	{
+		const auto &last = ring[(head + ring.size() - 1) % ring.size()];
+		if (t < last.t || t - last.t > stale)
+			reset();
+		else if (t == last.t)
+		{
+			ring[(head + ring.size() - 1) % ring.size()].x = position;
+			return;
+		}
+	}
 	ring[head] = {t, position};
 	head = (head + 1) % ring.size();
 	if (count < ring.size())
 		++count;
+}
+
+double VelocityTracker::displacement(Ticks t, Ticks horizon) const
+{
+	if (!count)
+		return 0;
+	const auto &newest = ring[(head + ring.size() - 1) % ring.size()];
+	if (newest.t > t || t - newest.t > stale)
+		return 0;
+	double oldest = newest.x;
+	for (std::size_t i = 1; i < count; ++i)
+	{
+		const auto &sample = ring[(head + ring.size() - 1 - i) % ring.size()];
+		if (t - sample.t > horizon)
+			break;
+		oldest = sample.x;
+	}
+	return newest.x - oldest;
 }
 
 double VelocityTracker::velocity(Ticks t) const
@@ -244,8 +273,8 @@ void ScrollAxis::drag(Ticks t, double delta)
 		value = low - rubber(low - target);
 	else
 		value = target;
-	if (delta != 0 || tracker.size() == 0)
-		tracker.add(t, raw);
+	// Stationary motion events are evidence that the finger stopped, too.
+	tracker.add(t, raw);
 }
 
 void ScrollAxis::startBounce(Ticks t, double at, double overshoot, double velocity)
@@ -387,10 +416,17 @@ void ScrollMotion::drag(Ticks t, double dx, double dy)
 	y.drag(t, dy);
 }
 
-void ScrollMotion::endDrag(Ticks t)
+void ScrollMotion::endDrag(Ticks t, double minimumTravel, double settleSlop)
 {
+	const bool enoughTravel = minimumTravel <= 0 ||
+		std::hypot(x.recentTravel(t), y.recentTravel(t)) >= minimumTravel;
+	const bool stillMoving = settleSlop <= 0 ||
+		std::hypot(x.recentTravel(t, VelocityTracker::stale),
+				   y.recentTravel(t, VelocityTracker::stale)) > settleSlop;
 	x.endDrag(t);
 	y.endDrag(t);
+	if (!enoughTravel || !stillMoving)
+		interrupt();
 }
 
 void ScrollMotion::interrupt()
