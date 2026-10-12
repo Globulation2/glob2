@@ -6,7 +6,11 @@
 #include <mutex>
 #include <type_traits>
 #if defined(__EMSCRIPTEN__) && defined(__EMSCRIPTEN_PTHREADS__)
-#include <emscripten/threading.h>
+// Browser-specific waiting lives in the platform implementation. Initialization
+// remains asynchronous; admission rejects the owner before any callback borrows
+// task storage, so owner-side failure cannot release in-flight memory.
+extern "C" int glob2_gradient_worker_context();
+extern "C" void glob2_gradient_worker_wait(int *);
 extern "C" void glob2_gradient_prepare(int *, const char *, const char *, char *);
 extern "C" void glob2_gradient_execute(int *, const std::uint32_t *, const std::uint32_t *,
 									   std::uint32_t *, int, int, int, int);
@@ -100,7 +104,7 @@ bool wait(std::unique_ptr<Task> &task, const BackendRequest *request = nullptr)
 			s.retained.push_back(std::move(task));
 			return false;
 		}
-		emscripten_futex_wait(task->signal.data(), 0, 1);
+		glob2_gradient_worker_wait(task->signal.data());
 	}
 	return completed(*task) > 0;
 }
@@ -129,6 +133,8 @@ bool initializeWebGPUGradient()
 }
 bool executeWebGPUGradient(std::span<const BackendRequest> requests, Plan plan)
 {
+	if (!glob2_gradient_worker_context())
+		return false;
 	if (plan != Plan::WebGPUFrozen8 && plan != Plan::WebGPUJacobi)
 		return false;
 	if (requests.size() > BATCH_CATEGORIES)
