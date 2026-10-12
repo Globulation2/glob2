@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="6" failures="0" errors="0" skipped="0"><testsuite name="GameGUITouch"><testcase classname="GameGUITouch" name="actual gameplay touch; toroidal pan; preview; confirmation; validation; cancellation and duplicate suppression [display][artifacts][writes-preferences]" time="115.965" status="run" />
+  </testsuite><testsuite name="SettingsGraphics"><testcase classname="SettingsGraphics" name="first-launch hand choice persists and migrates existing side preferences" time="0.444107" status="run" />
+  <testcase classname="SettingsGraphics" name="hand-choice screen saves both sides and retains a choice after write failure [writes-preferences]" time="0.342391" status="run" />
+  <testcase classname="SettingsGraphics" name="illustrated hand choices activate through their phone overlay [display][writes-preferences]" time="2.1649" status="run" />
+  </testsuite><testsuite name="UIPresentation"><testcase classname="UIPresentation" name="every screen lays out; navigates and captures at small landscape across presentations and insets [display:1600x1400][artifacts][slow]" time="3.06488" status="run" />
+  <testcase classname="UIPresentation" name="every screen lays out; navigates and captures at small portrait across presentations and insets [display:1600x1400][artifacts][slow]" time="3.95301" status="run" />
+  </testsuite></testsuites>
