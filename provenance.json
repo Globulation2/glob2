@@ -1,0 +1,34 @@
+{
+  "original_revision": "9b853c4a3dcb2647b8828b77bb48faf5251a3de5",
+  "current_revision": "2d5cf67e8ea20ad8ebb983c9b207e24234e0356c",
+  "current_build_checkout": "d2b4e57360d9fbd5a0baf3c0b94c5a5aed254a48",
+  "production_equivalence_current": true,
+  "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
+  "display": {
+    "DISPLAY": ":1",
+    "XDG_SESSION_TYPE": "x11",
+    "SDL_VIDEODRIVER": null
+  },
+  "sdl_prefix": "/home/bradley/glob2/build/sdl3/prefix",
+  "dependency_prefix": "/home/bradley/.local/share/glob2/development/dependencies/build-6b62ea86279899032d0eabbb/prefix",
+  "governor": "performance",
+  "build_command": "GLOB2_SDL3_PREFIX=/home/bradley/glob2/build/sdl3/prefix scons release=1 -j6 software-render-benchmark",
+  "candidate_build_command": "GLOB2_SDL3_PREFIX=/home/bradley/glob2/build/sdl3/prefix scons release=1 -j2 software-render-benchmark",
+  "scope": "Original rendering code unchanged; original Engine has only diagnostic lateness observation, benchmark friendship; current instrumentation only benchmark file. Both use same native full presentation and external-only interactive pacing. Benchmark patches published, no production edits proposed.",
+  "assets_source_unchanged_between_endpoints": true,
+  "asset_files": 7470,
+  "assets_byte_identical_original_export_and_preserved_current": true,
+  "assets_manifest_sha256": "9a16877e1024771178cbf72afdb3bc813b8e61f0cc77119e11bf704cb18a8d7d",
+  "binaries_sha256": {
+    "original": "c5f421f4fd301fff7a8263dd2f1baf1a7fb4e309e2949edfdadefb7a936467a3",
+    "current": "cd113952ae51af2eaeded1705dab186ba8ccd5f637d7f2b2a8677e54ba2c5335"
+  },
+  "formal_process_counts": {
+    "software_matrix": 210,
+    "interactive": 63,
+    "accelerated": 42,
+    "captures": 15
+  },
+  "software_max_sampled_one_minute_load": 3.14013671875,
+  "software_compiler_contended_runs": 0
+}
