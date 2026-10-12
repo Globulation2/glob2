@@ -36,19 +36,19 @@ def verify_cases(root):
                 result.get('initialChecksum') != rows[0][1] or
                 type(result.get('finalChecksum')) is not int or not 0 <= result['finalChecksum'] < 2**32):
             raise ValueError('Incomplete simulation or final-byte trace/result mismatch')
-    if traces['direct-600'][0][0] != 0 or traces['direct-600'][-1][0] != 599:
-        raise ValueError('Direct simulation did not execute all 600 ticks')
+    if traces['direct-600'][0][0] != 1 or traces['direct-600'][-1][0] != 599:
+        raise ValueError('Direct simulation did not execute ticks 1 through 599')
     if (traces['repeat-600'] != traces['direct-600'] or
             results['repeat-600']['finalChecksum'] != results['direct-600']['finalChecksum']):
         raise ValueError('Repeated simulation diverged')
-    if (traces['save-300'] != traces['direct-600'][:300] or
-            results['save-300']['finalChecksum'] != traces['direct-600'][300][1]):
+    if (traces['save-300'] != traces['direct-600'][:299] or
+            results['save-300']['finalChecksum'] != traces['direct-600'][299][1]):
         raise ValueError('Save simulation diverged')
-    if (traces['resume-600'] != traces['direct-600'][300:] or
+    if (traces['resume-600'] != traces['direct-600'][299:] or
             results['resume-600']['finalChecksum'] != results['direct-600']['finalChecksum']):
         raise ValueError('Resumed save diverged')
     full = results['full-match']
-    if traces['full-match'][0][0] != 0 or not 600 < full['ticks'] < 90000 or full.get('unresolved') is not False:
+    if traces['full-match'][0][0] != 1 or not 600 < full['ticks'] < 90000 or full.get('unresolved') is not False:
         raise ValueError('Full match did not end naturally')
     replay = root / 'cases/full-match/game.replay'
     if not replay.is_file() or replay.stat().st_size == 0:
@@ -146,8 +146,16 @@ def qualify(args):
         run([exe, 'info', 'paths', '--format', 'json'], 'paths', env, work)
         base = [exe, 'game', 'run', '--compute-threads', '1', '--profile', 'glob2-native-release-qualification', '--save', 'final', '--telemetry', 'checksums']
         setup = ['--map-file', args.fixture.resolve(), '--game-seed', '713', '--player', 'castor', '--player', 'cortex']
+        # The frozen map can predate the current save format. MapHeader's
+        # checksum includes its loaded format version, while saves write the
+        # current version. Start every compared case from the same current-format
+        # one-tick save so raw checksums compare state with identical headers.
+        # Keep the historical fixture and all checksum comparisons unchanged.
+        baseline = args.output / 'baseline'
+        run(base + setup + ['--ticks', '1', '--output-dir', baseline.resolve()], 'baseline', env, work, 1200)
+        initial_save = (baseline / 'final.game.gz').resolve()
         for name, ticks in zip(CASES, (600, 600, 300, 600, 90000)):
-            command = base + (['--load-game', (args.output / 'cases/save-300/final.game.gz').resolve()] if name == 'resume-600' else setup)
+            command = base + ['--load-game', (args.output / 'cases/save-300/final.game.gz').resolve() if name == 'resume-600' else initial_save]
             command += ['--ticks', str(ticks), '--output-dir', (args.output / 'cases' / name).resolve()]
             if name == 'full-match': command += ['--write-replay']
             run(command, name, env, work, 1200)
