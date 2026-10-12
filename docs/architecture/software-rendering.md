@@ -108,7 +108,8 @@ on the graphics owner. The default `auto` retains immediate serial drawing and
 terrain preparation, using the shared composition and regional pixel kernels;
 it does not enable concurrency or recording until representative release
 measurements justify selection thresholds. These are development overrides,
-not gameplay settings. `GLOB2_RENDER_WORKERS=N` accepts 1–64 and caps presentation
+not gameplay settings; set them before launch. The recorder reads execution
+mode when its backend is created. `GLOB2_RENDER_WORKERS=N` accepts 1–64 and caps presentation
 concurrency at the smaller of the request, two, and the available compute workers.
 Scene preparation consumes a slot in the same ceiling. Neither override changes
 simulation worker configuration. Browser graphics batches execute serially.

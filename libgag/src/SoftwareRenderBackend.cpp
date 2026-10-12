@@ -42,6 +42,8 @@ class SoftwareRenderBackend final : public RenderBackend
 	std::optional<SDL_Rect> bounds, localClip, physicalClip;
 	std::unique_ptr<RenderBackend> geometry;
 	RenderOperations counts;
+    // Development execution controls are fixed for this backend lifetime.
+    const RenderExecution execution = renderExecution();
     static constexpr std::size_t MaximumCommands = 1024, MaximumSourceBytes = 4u * 1024u * 1024u;
     static constexpr std::size_t MaximumBins = 4096, MaximumReferences = 65536;
     std::vector<SurfaceRaster::RasterCommand> commands;
@@ -51,7 +53,7 @@ class SoftwareRenderBackend final : public RenderBackend
 
     bool recordFill(SDL_Rect dst, SDL_Color color)
     {
-        if (renderExecution() == RenderExecution::Auto)
+        if (execution == RenderExecution::Auto)
             return false;
         if (commands.size() == MaximumCommands)
             flush();
@@ -65,7 +67,7 @@ class SoftwareRenderBackend final : public RenderBackend
     }
     bool recordBlit(SDL_Surface *source, SDL_Rect src, SDL_Rect dst, Uint8 alpha, bool opaque)
     {
-        if (renderExecution() == RenderExecution::Auto || source->format != target->format ||
+        if (execution == RenderExecution::Auto || source->format != target->format ||
             source->format != SDL_PIXELFORMAT_ARGB8888)
             return false;
         Uint32 key;
@@ -118,6 +120,13 @@ class SoftwareRenderBackend final : public RenderBackend
         sourceBytes += bytes;
         return true;
     }
+    void drainGeometry()
+    {
+        if (geometry) {
+            PERF_SCOPE_TIME(RasterFallback);
+            geometry->flush();
+        }
+    }
     void executeSegment()
     {
         if (failedRaster)
@@ -125,8 +134,7 @@ class SoftwareRenderBackend final : public RenderBackend
         if (commands.empty())
             return;
         ++counts.rasterBatches;
-        if (geometry)
-            geometry->flush();
+        drainGeometry();
         const SDL_Rect full{0, 0, target->w, target->h};
         struct Tile
         {
@@ -135,7 +143,7 @@ class SoftwareRenderBackend final : public RenderBackend
         };
         std::vector<Tile> tiles;
         std::vector<std::size_t> references;
-        bool tiled = renderExecution() == RenderExecution::Parallel && PresentationWork::current;
+        bool tiled = execution == RenderExecution::Parallel && PresentationWork::current;
         {
             PERF_SCOPE_TIME(RasterBinning);
             constexpr int edge = 128;
@@ -359,6 +367,7 @@ class SoftwareRenderBackend final : public RenderBackend
 			fallback().blit(key, source, revision, opaque, sourceRect, destination, alpha);
 			return;
 		}
+        if (execution != RenderExecution::Auto)
         {
             PERF_SCOPE_TIME(RasterCapture);
             if (recordBlit(source, sourceRect, mapped, alpha, opaque))
@@ -373,6 +382,7 @@ class SoftwareRenderBackend final : public RenderBackend
     bool fillPixels(const SDL_Rect &rect, SDL_Color color) override
     {
         ++counts.fills;
+        if (execution != RenderExecution::Auto)
         {
             PERF_SCOPE_TIME(RasterCapture);
             if (recordFill(rect, color))
@@ -387,6 +397,7 @@ class SoftwareRenderBackend final : public RenderBackend
     bool blitPixels(SDL_Surface *source, const SDL_Rect &src, const SDL_Rect &dst, Uint8 alpha) override
     {
         ++counts.blits;
+        if (execution != RenderExecution::Auto)
         {
             PERF_SCOPE_TIME(RasterCapture);
             if (recordBlit(source, src, dst, alpha, false))
@@ -412,6 +423,7 @@ class SoftwareRenderBackend final : public RenderBackend
 			fallback().fill(rect, color);
 			return;
 		}
+        if (execution != RenderExecution::Auto)
         {
             PERF_SCOPE_TIME(RasterCapture);
             if (recordFill(pixels(rect), color))
@@ -449,8 +461,7 @@ class SoftwareRenderBackend final : public RenderBackend
 	void flush() override
 	{
         executeSegment();
-		if (geometry)
-			geometry->flush();
+        drainGeometry();
 	}
     void discardFrame() noexcept override
     {

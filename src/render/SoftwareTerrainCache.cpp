@@ -557,7 +557,11 @@ bool SoftwareTerrainCache::buildCpuPage(Chunk &page,
     if (!cpuBatch)
         return false;
     PERF_SCOPE_TIME(TerrainPlanning);
-    auto materials = compositor.cpuMaterials(neededMaterials);
+    std::shared_ptr<const TerrainVisual::Compositor::CpuMaterials> materials;
+    {
+        PERF_SCOPE_TIME(TerrainMaterials);
+        materials = compositor.cpuMaterials(neededMaterials);
+    }
     cpuMaterialLease = materials;
     // Planning is owner-only. Masks cannot be evicted or
     // replaced until the synchronous group finishes.
@@ -956,6 +960,7 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
                     else if (!buildCpuPage(*entry, tiles, compositor, target, wasValid, budget))
                     {
                         ++workMetrics.serialPages;
+                        PERF_SCOPE_TIME(TerrainBatch);
                         for (int y = 0; y < ChunkTiles; ++y)
 						for (int x = 0; x < ChunkTiles; ++x)
 						{
