@@ -116,6 +116,7 @@ void Settings::setTextSizePercent(int percent)
 void Settings::load(std::string filename)
 {
     gpuCompute.reset();
+    thumbSideChosen = false;
     rendererBackend = GAGCore::RendererBackend::Auto;
     targetRenderFps = 60;
 #ifdef __EMSCRIPTEN__
@@ -232,6 +233,11 @@ void Settings::load(std::string filename)
 		READ_PARSED_INT(oneFingerZoomDirection);
 		oneFingerZoomDirection = std::clamp(oneFingerZoomDirection,
 			int(ONE_FINGER_ZOOM_PLATFORM), int(ONE_FINGER_ZOOM_DOWN_IN));
+		// An existing side preference remains an explicit choice on migration.
+		if (const auto chosen = parsed.find("thumbSideChosen"); chosen != parsed.end())
+			thumbSideChosen = chosen->second == "1";
+		else if (const auto side = parsed.find("thumbSide"); side != parsed.end())
+			thumbSideChosen = side->second == "0" || side->second == "1";
 		READ_PARSED_INT(thumbSide);
 		thumbSide = std::clamp(thumbSide, int(THUMB_RIGHT), int(THUMB_LEFT));
 		gameSpeed=std::max(static_cast<int>(GAME_SPEED_MINIMUM),
@@ -388,6 +394,7 @@ bool Settings::save(std::string filename)
         Utilities::streamprintf(stream,"mapScrollMomentum=%d\n",mapScrollMomentum);
 		Utilities::streamprintf(stream, "oneFingerZoomDirection=%d\n", oneFingerZoomDirection);
 		Utilities::streamprintf(stream, "thumbSide=%d\n", thumbSide);
+		Utilities::streamprintf(stream, "thumbSideChosen=%d\n", thumbSideChosen);
 
         for(const auto& [key,value]:buildingAssignments)
             Utilities::streamprintf(stream,"buildingAssignment.%s=%d\n",key.c_str(),value);
