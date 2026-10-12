@@ -1510,3 +1510,80 @@ TEST_CASE("shared reservation pressure preserves serial terrain before readmitti
     REQUIRE(cache.prepare(scene,*globals->terrain,0,0,15,15,0,0,fixture.team->me,true,1));
     CHECK(cache.workMetrics.jobs>0);
 }
+
+TEST_CASE("CPU terrain retires coverage when cells leave discovery [display]" *
+          doctest::test_suite("TerrainMaterials"))
+{
+    glob2test::ScopedEnvironment workers("GLOB2_RENDER_WORKERS", "2");
+    glob2test::HeadlessGlobals globals({.display = true});
+    glob2test::HeadlessGame fixture({.wDec = 5, .hDec = 5, .terrain = SAND, .discovered = true});
+    fixture.game.map.setVertexTerrain(3, 3, WATER);
+    fixture.game.map.setVertexTerrain(11, 11, WATER);
+    ComputeExecutor executor;
+    executor.configure(4);
+    GAGCore::PresentationWorkScope scope(executor);
+    std::array<SoftwareTerrainCache, 3> caches;
+    for (int phase = 0; phase < 3; ++phase)
+    {
+        if (phase == 1)
+        {
+            fixture.game.map.unsetMapDiscovered();
+            fixture.game.map.setMapDiscovered(9, 9, 15, 15, fixture.team->me);
+            // Recompose a discovered cell in the same group as hidden cells;
+            // this exercises mask retirement during an admitted CPU batch.
+            fixture.game.map.setVertexTerrain(12, 12, GRASS);
+        }
+        if (phase == 2) fixture.game.map.unsetMapDiscovered();
+        SceneMap scene;
+        glob2test::observeMap(fixture.game.map, scene);
+        for (unsigned mode = 0; mode < caches.size(); ++mode)
+        {
+            glob2test::ScopedEnvironment execution("GLOB2_RENDER_EXECUTION",
+                                                   mode == 0 ? "auto" : mode == 1 ? "serial" : "parallel");
+            const auto previousBatches = caches[mode].workMetrics.batches;
+            REQUIRE(caches[mode].prepare(scene, *globals->terrain, 0, 0, 15, 15, 0, 0,
+                                        fixture.team->me, phase == 0, 0));
+            if (phase == 0) CHECK(caches[mode].maskBytes() > 0);
+            // Pixel/coverage parity alone could pass through a serial fallback.
+            // Require the partial-fog transition to use the CPU grouping path.
+            if (phase == 1 && mode != 0)
+                CHECK(caches[mode].workMetrics.batches > previousBatches);
+            if (phase == 2) CHECK(caches[mode].maskBytes() == 0);
+            CHECK(caches[mode].maskBytes() == caches[0].maskBytes());
+        }
+#if !defined(__EMSCRIPTEN__)
+        // Native opt-in mode must reach the executor, rather than merely
+        // constructing private results and processing them on the owner.
+        if (phase == 0) CHECK(executor.graphicsMetrics().parallelBatches > 0);
+#endif
+    }
+}
+
+TEST_CASE("sparse CPU terrain edits snapshot only changed materials [display]" *
+          doctest::test_suite("TerrainMaterials"))
+{
+    glob2test::ScopedEnvironment mode("GLOB2_RENDER_EXECUTION", "parallel");
+    glob2test::HeadlessGlobals globals({.display = true});
+    glob2test::HeadlessGame fixture({.wDec = 5, .hDec = 5, .terrain = SAND, .discovered = true});
+    fixture.game.map.setVertexTerrain(3, 3, WATER);
+    fixture.game.map.setVertexTerrain(5, 5, ICE);
+    ComputeExecutor executor;
+    executor.configure(4);
+    GAGCore::PresentationWorkScope scope(executor);
+    SoftwareTerrainCache cache;
+    SceneMap scene;
+    glob2test::observeMap(fixture.game.map, scene);
+    REQUIRE(cache.prepare(scene, *globals->terrain, 0, 0, 15, 15, 0, 0, fixture.team->me, true, 0));
+    const auto originalBytes = cache.bytes();
+    const auto originalCells = cache.workMetrics.cells;
+    const auto originalBatches = cache.workMetrics.batches;
+
+    // Water and ice variants are unchanged elsewhere in this page. A distant local
+    // edit should replace the retained snapshot with sand/grass alone.
+    fixture.game.map.setVertexTerrain(13, 13, GRASS);
+    glob2test::observeMap(fixture.game.map, scene);
+    REQUIRE(cache.prepare(scene, *globals->terrain, 0, 0, 15, 15, 0, 0, fixture.team->me, true, 0));
+    CHECK(cache.workMetrics.batches > originalBatches);
+    CHECK(cache.workMetrics.cells - originalCells < SoftwareTerrainCache::ChunkTiles * SoftwareTerrainCache::ChunkTiles);
+    CHECK(cache.bytes() < originalBytes);
+}

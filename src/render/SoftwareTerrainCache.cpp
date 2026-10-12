@@ -459,11 +459,35 @@ struct TerrainCellResult
 {
     unsigned index;
     SoftwareTerrainCache::Tile input;
-    std::vector<Uint32> pixels;
+    std::span<Uint32> pixels;
     std::optional<TerrainVisual::Compositor::CellMask> mask;
     const TerrainVisual::Compositor::CellMask *reused = nullptr;
     bool opaque = false, empty = false, keepMask = false;
 };
+// The first alpha selects one constant predicate: opaque and empty cells need
+// only one scan, while a partially transparent sample rejects both immediately.
+// Keep the scan vectorizable for the common uniform opaque terrain pages.
+template <Uint32 Alpha>
+bool allAlpha(const SDL_Surface &surface, SDL_Rect rect)
+{
+    for (int y = rect.y; y < rect.y + rect.h; ++y)
+    {
+        const auto *row = reinterpret_cast<const Uint32 *>(
+            static_cast<const Uint8 *>(surface.pixels) + y * surface.pitch);
+        if (!std::all_of(row + rect.x, row + rect.x + rect.w,
+                         [](Uint32 pixel) { return pixel >> 24 == Alpha; }))
+            return false;
+    }
+    return true;
+}
+std::pair<bool, bool> classifyAlpha(const SDL_Surface &surface, SDL_Rect rect)
+{
+    const auto *first = reinterpret_cast<const Uint32 *>(
+        static_cast<const Uint8 *>(surface.pixels) + rect.y * surface.pitch) + rect.x;
+    if (*first >> 24 == 255) return {allAlpha<255>(surface, rect), false};
+    if (*first >> 24 == 0) return {false, allAlpha<0>(surface, rect)};
+    return {false, false};
+}
 void buildTerrainJob(std::span<TerrainCellResult> results,
                      const TerrainVisual::Compositor::CpuMaterials &materials, int samplingScale,
                      std::size_t cellsPerJob, std::size_t job)
@@ -486,10 +510,8 @@ void buildTerrainJob(std::span<TerrainCellResult> results,
                               : result.mask ? &*result.mask
                                             : nullptr);
         }
-        result.opaque = std::all_of(result.pixels.begin(), result.pixels.end(),
-                                    [](Uint32 p) { return p >> 24 == 255; });
-        result.empty = std::all_of(result.pixels.begin(), result.pixels.end(),
-                                   [](Uint32 p) { return p >> 24 == 0; });
+        std::tie(result.opaque, result.empty) =
+            classifyAlpha(output, {0, 0, output.w, output.h});
     }
 }
 } // namespace
@@ -516,7 +538,7 @@ bool SoftwareTerrainCache::prepare(const SceneMap &map, GAGCore::Sprite &sprite,
 	return prepareAtResolution(map, sprite, left, top, right, bottom, vx, vy, visibleTeams,
 							   wholeMap, time, 0, tiledCapture);
 }
-bool SoftwareTerrainCache::buildCpuPage(Chunk &page,
+bool SoftwareTerrainCache::tryBuildCpuPage(Chunk &page,
                                         const std::array<Tile, ChunkTiles * ChunkTiles> &tiles,
                                         TerrainVisual::Compositor &compositor, SDL_Surface *target,
                                         bool wasValid, std::size_t budget)
@@ -524,7 +546,6 @@ bool SoftwareTerrainCache::buildCpuPage(Chunk &page,
     if (downsample != 1 || resolution > 4 ||
         GAGCore::renderExecution() == GAGCore::RenderExecution::Auto ||
         !GAGCore::PresentationWork::current) return false;
-    auto *entry = &page;
     const auto materialChanged = [&](TerrainVisual::MaterialId id)
     {
         const auto old = std::find_if(page.materialRevisions.begin(), page.materialRevisions.end(),
@@ -536,11 +557,24 @@ bool SoftwareTerrainCache::buildCpuPage(Chunk &page,
     // serial. A CPU job covers at most 16K sampled pixels.
     constexpr std::size_t inFlightLimit = 4u * 1024u * 1024u;
     const std::size_t cellPixels = std::size_t(32 * resolution) * (32 * resolution);
+    // Select changed cells first: a local edit needs neither snapshots nor
+    // admission space for materials used only by unchanged cells in this page.
+    std::vector<unsigned> changed;
+    changed.reserve(tiles.size());
     std::vector<TerrainVisual::MaterialId> neededMaterials;
-    for (const auto& tile : tiles) if (tile.discovered)
-        for (auto id : tile.recipe.corners)
-            if (std::find(neededMaterials.begin(),neededMaterials.end(),id) == neededMaterials.end())
-                neededMaterials.push_back(id);
+    for (unsigned i = 0; i < tiles.size(); ++i)
+    {
+        const auto &tile = tiles[i];
+        if (wasValid && page.tiles[i] == tile &&
+            (!tile.discovered || std::none_of(tile.recipe.corners.begin(),
+                                              tile.recipe.corners.end(), materialChanged)))
+            continue;
+        changed.push_back(i);
+        if (tile.discovered)
+            for (auto id : tile.recipe.corners)
+                if (std::find(neededMaterials.begin(), neededMaterials.end(), id) == neededMaterials.end())
+                    neededMaterials.push_back(id);
+    }
     if (neededMaterials.empty()) return false;
     const std::size_t materialBytes = compositor.cpuMaterialBytes(neededMaterials);
     const std::size_t perCell =
@@ -551,11 +585,7 @@ bool SoftwareTerrainCache::buildCpuPage(Chunk &page,
     const std::size_t groupCells =
         allowance > fixed ? std::min(std::size_t(32), (allowance - fixed) / perCell) : 0;
     const std::size_t reserve = fixed + perCell * groupCells;
-    const bool cpuBatch = downsample == 1 && resolution <= 4 &&
-                          GAGCore::renderExecution() != GAGCore::RenderExecution::Auto &&
-                          GAGCore::PresentationWork::current && groupCells >= 2;
-    if (!cpuBatch)
-        return false;
+    if (groupCells < 2) return false;
     GAGCore::RenderWorkReservation workReservation;
     if (!workReservation.reserve(reserve)) return false;
     PERF_SCOPE_TIME(TerrainPlanning);
@@ -567,26 +597,25 @@ bool SoftwareTerrainCache::buildCpuPage(Chunk &page,
     cpuMaterialLease = materials;
     // Planning is owner-only. Masks cannot be evicted or
     // replaced until the synchronous group finishes.
-    std::vector<unsigned> changed;
-    for (unsigned i = 0; i < tiles.size(); ++i)
-        if (!wasValid || entry->tiles[i] != tiles[i] ||
-            (tiles[i].discovered && std::any_of(tiles[i].recipe.corners.begin(),
-                                                tiles[i].recipe.corners.end(), materialChanged)))
-            changed.push_back(i);
     for (std::size_t first = 0; first < changed.size(); first += groupCells)
     {
         std::vector<TerrainCellResult> results;
-        results.reserve(std::min(groupCells, changed.size() - first));
+        const auto count = std::min(groupCells, changed.size() - first);
+        results.reserve(count);
+        // One owner allocation, disjoint worker spans. Storage outlives the
+        // synchronous join and canonical installation of every cell in the group.
+        std::vector<Uint32> pixels(count * cellPixels);
         for (std::size_t k = first; k < changed.size() && k < first + groupCells; ++k)
         {
             const unsigned i = changed[k];
             TerrainCellResult result{};
             result.index = i;
             result.input = tiles[i];
-            result.pixels.resize(cellPixels);
+            result.pixels = std::span(pixels).subspan((k - first) * cellPixels, cellPixels);
             const auto &recipe = tiles[i].recipe;
-            const auto &held = entry->masks[i];
-            if (held && held->mask.recipe == recipe && held->mask.scale == resolution)
+            const auto &held = page.masks[i];
+            if (tiles[i].discovered && held && held->mask.recipe == recipe &&
+                held->mask.scale == resolution)
                 result.reused = &held->mask;
             result.keepMask = tiles[i].discovered &&
                               std::any_of(recipe.corners.begin(), recipe.corners.end(),
@@ -622,13 +651,13 @@ bool SoftwareTerrainCache::buildCpuPage(Chunk &page,
                 std::memcpy(static_cast<Uint8 *>(target->pixels) + (y * n + row) * target->pitch +
                                 x * n * 4,
                             result.pixels.data() + row * n, n * 4);
-            auto &held = entry->masks[result.index];
+            auto &held = page.masks[result.index];
             if (held && !result.reused)
                 held.reset();
             if (result.mask && releaseMasks(result.mask->bytes()))
                 held = std::make_unique<HeldMask>(std::move(*result.mask), maskTotal);
-            entry->opaque[result.index] = result.opaque;
-            entry->empty[result.index] = result.empty;
+            page.opaque[result.index] = result.opaque;
+            page.empty[result.index] = result.empty;
         }
     }
     return true;
@@ -650,7 +679,9 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 	}
 
     if (GAGCore::renderExecution() == GAGCore::RenderExecution::Auto)
+    {
         cpuMaterialLease.reset();
+    }
 	PERF_SCOPE_TIME(TerrainCache);
 	copies.clear();
 	++frame;
@@ -959,7 +990,7 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
                             copies.clear();return false;
                         }
                     }
-                    else if (!buildCpuPage(*entry, tiles, compositor, target, wasValid, budget))
+                    else if (!tryBuildCpuPage(*entry, tiles, compositor, target, wasValid, budget))
                     {
                         ++workMetrics.serialPages;
                         PERF_SCOPE_TIME(TerrainBatch);
@@ -1036,21 +1067,8 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 							// Opacity runs are consumed only by the software draw path.
 							if (!gpu)
 							{
-								bool opaque = true, empty = true;
-								for (int py = 0; py < n && (opaque || empty); ++py)
-									for (int px = 0; px < n; ++px)
-									{
-										const auto *row = reinterpret_cast<const Uint32 *>(
-											static_cast<const Uint8 *>(target->pixels) +
-											(y * n + py) * target->pitch);
-										const auto alpha = row[x * n + px] >> 24;
-										opaque &= alpha == 255;
-										empty &= alpha == 0;
-										if (!opaque && !empty)
-											break;
-									}
-								entry->opaque[i] = opaque;
-								entry->empty[i] = empty;
+                                std::tie(entry->opaque[i], entry->empty[i]) =
+                                    classifyAlpha(*target, {x * n, y * n, n, n});
 							}
 						}
                     }

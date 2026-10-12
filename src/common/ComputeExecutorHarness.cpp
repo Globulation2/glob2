@@ -1019,3 +1019,136 @@ TEST_CASE("graphics capture destruction can inspect scheduler metrics before com
         executor.finishPresentationBatch(batch);CHECK(released.load());
     }
 }
+TEST_CASE("synchronous graphics adapter keeps empty calls idle and guards owner callbacks" *
+          doctest::test_suite("ComputeExecutor"))
+{
+    ComputeExecutor executor;
+    executor.configure(1);
+    executor.executePresentationJobs(0, {});
+    CHECK(executor.graphicsMetrics().batches == 0);
+    const auto owner = std::this_thread::get_id();
+    executor.executePresentationJobs(1, [&](std::size_t index)
+    {
+        CHECK(index == 0);
+        CHECK(std::this_thread::get_id() == owner);
+        CHECK(ComputeExecutor::workerSlot() == 0);
+        CHECK_THROWS_AS(executor.configure(1), std::logic_error);
+        CHECK_THROWS_AS(executor.executePresentationJobs(0, {}), std::logic_error);
+        CHECK_THROWS_AS(executor.submitPresentationBatch(0, {2}, {}), std::logic_error);
+        auto empty = ComputeExecutor::PresentationBatchTicket{};
+        CHECK_THROWS_AS(executor.finishPresentationBatch(empty), std::logic_error);
+    });
+    const auto metrics = executor.graphicsMetrics();
+    CHECK(metrics.batches == 1);
+    CHECK(metrics.jobs == 1);
+    CHECK(metrics.parallelBatches == 0);
+    CHECK(metrics.waitNs >= metrics.activeNs);
+    auto admitted = executor.submitPresentationBatch(1, {2}, [](auto) {});
+    CHECK_THROWS_WITH_AS(executor.executePresentationJobs(1, [](auto) {}),
+                         "Graphics batch already admitted", std::logic_error);
+    CHECK(executor.graphicsMetrics().jobs == 1);
+    executor.finishPresentationBatch(admitted);
+}
+TEST_CASE("graphics adapter restores callback state on failure and never pumps other work" *
+          doctest::test_suite("ComputeExecutor"))
+{
+    ComputeExecutor executor;
+    unsigned scene = 0, required = 0, graphics = 0;
+    auto preparation = executor.submitPresentation(1, [&](auto) { ++scene; });
+    ComputeExecutor::Group group{
+        1, {[](void *value, std::size_t) { ++*static_cast<unsigned *>(value); }, &required}};
+    auto pending = executor.submit(std::span(&group, 1));
+    CHECK_THROWS_WITH_AS(executor.executePresentationJobs(5, [&](std::size_t index)
+    {
+        ++graphics;
+        CHECK(ComputeExecutor::workerSlot() == 0);
+        if (index == 1) throw std::runtime_error("adapter failure");
+    }), "adapter failure", std::runtime_error);
+    CHECK(graphics == 2);
+    CHECK(scene == 0);
+    CHECK(required == 0);
+    CHECK(executor.graphicsMetrics().jobs == 2);
+    executor.executePresentationJobs(2, [&](auto) { ++graphics; });
+    CHECK(graphics == 4);
+    executor.join(pending);
+    CHECK(required == 1);
+    executor.cancelPresentationAndWait();
+    executor.configure(2);
+#ifdef __EMSCRIPTEN__
+    const auto owner = std::this_thread::get_id();
+    executor.executePresentationJobs(3, [&](auto)
+    {
+        CHECK(std::this_thread::get_id() == owner);
+        CHECK_THROWS_AS(executor.configure(1), std::logic_error);
+    });
+#endif
+}
+TEST_CASE("graphics adapter preserves occupied admission and serial finish shares the scene cap" *
+          doctest::test_suite("ComputeExecutor"))
+{
+    if constexpr (!GAGCore::ThreadSupport::available) return;
+    ComputeExecutor executor;
+    executor.configure(2);
+    std::atomic<bool> sceneEntered{false}, releaseScene{false}, sceneInside{false}, overlap{false};
+    auto scene = executor.submitPresentation(1, [&](auto)
+    {
+        sceneInside.store(true);
+        sceneEntered.store(true);
+        const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(5);
+        while (!releaseScene.load() && std::chrono::steady_clock::now() < deadline)
+            std::this_thread::yield();
+        sceneInside.store(false);
+    });
+    const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(5);
+    while (!sceneEntered.load() && std::chrono::steady_clock::now() < deadline)
+        std::this_thread::yield();
+    REQUIRE(sceneEntered.load());
+    auto admitted = executor.submitPresentationBatch(3, {1}, [&](auto)
+    {
+        if (sceneInside.load()) overlap.store(true);
+    });
+    CHECK_THROWS_WITH_AS(executor.executePresentationJobs(1, [](auto) {}),
+                         "Graphics batch already admitted", std::logic_error);
+    std::thread release([&]
+    {
+        std::this_thread::sleep_for(std::chrono::milliseconds(20));
+        releaseScene.store(true);
+    });
+    executor.finishPresentationBatch(admitted);
+    release.join();
+    CHECK_FALSE(overlap.load());
+    CHECK(scene->finished());
+    CHECK(executor.graphicsMetrics().jobs == 3);
+}
+TEST_CASE("canceling a slot-blocked graphics batch wakes its owner before scene completion" *
+          doctest::test_suite("ComputeExecutor"))
+{
+    if constexpr (!GAGCore::ThreadSupport::available) return;
+    ComputeExecutor executor;
+    executor.configure(2);
+    std::atomic<bool> sceneEntered{false}, releaseScene{false};
+    auto scene = executor.submitPresentation(1, [&](auto)
+    {
+        sceneEntered.store(true);
+        const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(5);
+        while (!releaseScene.load() && std::chrono::steady_clock::now() < deadline)
+            std::this_thread::yield();
+    });
+    const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(5);
+    while (!sceneEntered.load() && std::chrono::steady_clock::now() < deadline)
+        std::this_thread::yield();
+    REQUIRE(sceneEntered.load());
+    auto admitted = executor.submitPresentationBatch(3, {1}, [](auto) {});
+    std::thread cancel([&]
+    {
+        std::this_thread::sleep_for(std::chrono::milliseconds(20));
+        admitted.cancel();
+    });
+    executor.finishPresentationBatch(admitted);
+    cancel.join();
+    CHECK(admitted.status() == ComputeExecutor::Presentation::Status::Canceled);
+    CHECK_FALSE(scene->finished());
+    CHECK(executor.graphicsMetrics().jobs == 0);
+    releaseScene.store(true);
+    executor.cancelPresentationAndWait();
+}
