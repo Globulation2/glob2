@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "ResourceRegistry.h"
+#include "field/GradientPreparationRules.h"
 #include "online/Sha256.h"
 #include <FileManager.h>
 #include <Toolkit.h>
@@ -491,10 +492,13 @@ std::vector<std::string> ResourceRegistry::experimentKeys() const
 }
 void ResourceRegistry::compile()
 {
+    gradientPreparation_.resize(size());
     mutableMaterialSources_ = 0;
     for (unsigned id = 0; id < size(); ++id)
     {
         const auto& p = properties_[id];
+        gradientPreparation_[id] = gradient_preparation::rules::resourceTraits(p.materialMask,p.blocksGround,
+            p.visibleToHarvest,p.clearable,p.farmable);
         const auto& yields = yields_[id];
         // Harvesting any destructive secondary yield also removes an infinite
         // primary source. Do not infer mutability from just the selected yield.

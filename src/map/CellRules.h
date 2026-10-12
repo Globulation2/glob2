@@ -36,6 +36,15 @@ struct CellRule
 	bool uniform() const { return corners[0] == corners[3]; }
 };
 
+// Integer wire table compiled with the ordinary corner rules. All swim classes
+// use the same representation; no map-sized host preparation is needed.
+struct GradientPreparationRule
+{
+	std::uint32_t accessibility = 0;
+	std::array<std::uint32_t, std::size(gradient_kernel::WATER_STEP)> costs{};
+};
+static_assert(sizeof(GradientPreparationRule) == 36);
+
 // The compiled rules of one map, for one terrain and one resource registry.
 // Rule t is the uniform cell of terrain type t, for every registered type; mixed
 // combinations follow in the order the map first needs them, so an index is
@@ -62,6 +71,7 @@ class CellRuleTable
 	std::size_t size() const { return rules_.size(); }
 	const CellRule &operator[](std::uint16_t rule) const { return rules_[rule]; }
 	const CellRule *data() const { return rules_.data(); }
+	const std::vector<GradientPreparationRule>& gradientPreparation() const { return gradientPreparation_; }
 	const TerrainRegistry &terrains() const { return *terrains_; }
 	const ResourceRegistry &resources() const { return *resources_; }
 	const std::shared_ptr<const TerrainRegistry> &terrainRegistry() const { return terrains_; }
@@ -84,7 +94,8 @@ class CellRuleTable
 	const TerrainRegistry::Movement &movement(unsigned swim) const { return movement_[swim]; }
 
 	MaterialMask materialPermissions(std::uint16_t rule) const { return rules_[rule].materials; }
-	std::size_t capacityBytes() const { return rules_.capacity() * sizeof(CellRule) + permissions_.capacity(); }
+	std::size_t capacityBytes() const { return rules_.capacity() * sizeof(CellRule) + permissions_.capacity()
+		+ gradientPreparation_.capacity() * sizeof(GradientPreparationRule); }
 	int farmResource(std::uint16_t rule) const { return rules_[rule].farmResource; }
 
   private:
@@ -100,6 +111,7 @@ class CellRuleTable
 	std::shared_ptr<const TerrainRegistry> terrains_;
 	std::shared_ptr<const ResourceRegistry> resources_;
 	std::vector<CellRule> rules_;
+	std::vector<GradientPreparationRule> gradientPreparation_;
 	std::map<Key, std::uint16_t> index_;
 	// Per resource registry: each resource's habitat profile, and per profile
 	// the materials it supplies and its first farmable resource per material.

@@ -24,7 +24,10 @@ void GlobalContainer::applyCommand(const Cli::Request &request)
 		computeThreads = parseComputeThreadCount(r.get("--compute-threads"));
 	if (r.has("--gpu"))
 		gpuComputeOverride = r.get("--gpu") == "on";
-	auto toggle = [&](const char *name, unsigned bit)
+	if(r.has("--gradient-backend"))gradientBackendOverride=*gradient_kernel::parseBackend(r.get("--gradient-backend"));
+    if(r.has("--gradient-algorithm"))gradientAlgorithmOverride=*gradient_kernel::parseAlgorithm(r.get("--gradient-algorithm"));
+    if(r.has("--gradient-verify"))gradientVerifyOverride=r.get("--gradient-verify")=="on";
+    auto toggle = [&](const char *name, unsigned bit)
 	{
 		if (r.has(std::string("--") + name))
 			settings.screenFlags |= bit;
@@ -126,17 +129,25 @@ void GlobalContainer::applyCommand(const Cli::Request &request)
 	Online::acceptLaunchRequest(r);
 }
 
-bool GlobalContainer::gpuComputeEnabled() const
+gradient_kernel::Configuration GlobalContainer::gradientConfiguration() const
 {
-	if (gpuComputeOverride.has_value()) return *gpuComputeOverride;
-	// Retain binary command-line compatibility for reproducible benchmarks.
-	if (const auto* backend = std::getenv("GLOB2_GRADIENT_BACKEND"); backend && *backend)
-		return std::strcmp(backend, "opencl") == 0;
-	return settings.gpuComputeEnabled(runNoX);
+    using namespace gradient_kernel;
+    auto c=settings.gradientConfiguration(runNoX);
+    if(const auto* value=std::getenv("GLOB2_GRADIENT_BACKEND");value && *value)c.backend=parseBackend(value).value_or(Backend::CPU);
+    if(gpuComputeOverride)c.backend=*gpuComputeOverride?Backend::OpenCL:Backend::CPU;
+    if(gradientBackendOverride)c.backend=*gradientBackendOverride;
+    if(const auto* value=std::getenv("GLOB2_GRADIENT_ALGORITHM");value && *value)c.algorithm=parseAlgorithm(value).value_or(Algorithm::Frozen8);
+    if(gradientAlgorithmOverride)c.algorithm=*gradientAlgorithmOverride;
+    if(const auto* value=std::getenv("GLOB2_GRADIENT_VERIFY");value && *value)c.verify=parseVerification(value).value_or(false);
+    if(gradientVerifyOverride)c.verify=*gradientVerifyOverride;
+    if(!supportsAlgorithm(c.backend,c.algorithm)){
+        if(gradientAlgorithmOverride)throw std::invalid_argument("Gradient algorithm is unsupported by selected backend");
+        c.algorithm=isGPU(c.backend)?Algorithm::Frozen8:Algorithm::Buckets;
+    }
+    return c;
 }
-
+bool GlobalContainer::gpuComputeEnabled() const {return gradient_kernel::isGPU(gradientConfiguration().backend);}
 void GlobalContainer::configureGradientBackend() const
 {
-	gradient_kernel::setBackend(gpuComputeEnabled() ? gradient_kernel::Backend::OpenCL
-													 : gradient_kernel::Backend::CPU);
+    const auto c=gradientConfiguration();gradient_kernel::requestBackendConfiguration(c);gradient_kernel::applyBackendConfiguration(c);
 }

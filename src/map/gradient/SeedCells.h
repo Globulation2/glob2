@@ -4,6 +4,7 @@
 #include "SeedTerrain.h"
 #include "MapInternal.h"
 #include "Building.h"
+#include "field/GradientPreparationRules.h"
 #include <algorithm>
 #include <array>
 #include <atomic>
@@ -29,17 +30,29 @@ void materialCells(const MapState::View& view, const Uint32* fog, int team, int 
                 if (!(view.areas[i].forbidden&mask) && cell.immobileUnit==IMMOBILE_UNIT_NONE) {
                     const auto& deposit=view.resources[i].resource;
                     const auto* p=deposit.type==NO_RES_TYPE ? nullptr : &view.resourceProperties(deposit.type);
-                    if (!p || !p->blocksGround) {
-                        if (cell.building==NOGBID) {
-                            value=terrainAt(i);
-                        } else if constexpr (std::remove_cvref_t<decltype(market)>::value) {
-                            const unsigned id=unsigned(cell.building)-base;
-                            if (id<Building::MAX_COUNT) value=suppliers[id];
+                    if constexpr (!std::remove_cvref_t<decltype(market)>::value) {
+                        const bool stocked=p && (p->materialMask&requested) &&
+                            (std::has_single_bit(p->materialMask) ? deposit.amount!=0 : MapState::materialAmountAt(view,i,material)>0);
+                        const bool visible=!p || !p->visibleToHarvest || (fog[i]&mask);
+                        const bool blocked=(p && p->blocksGround) || cell.building!=NOGBID;
+                        // Goal precedence does not depend on terrain. Preserve the
+                        // CPU path's lazy lookup for goals and blocked cells.
+                        const Uint16 open=(!blocked && !(stocked && visible)) ? terrainAt(i) : GRADIENT_FORBIDDEN;
+                        value=Uint16(rules::materialSeed(0,1,p&&p->blocksGround,cell.building!=NOGBID,
+                            open,stocked,visible));
+                    } else {
+                        if (!p || !p->blocksGround) {
+                            if (cell.building==NOGBID) {
+                                value=terrainAt(i);
+                            } else {
+                                const unsigned id=unsigned(cell.building)-base;
+                                if (id<Building::MAX_COUNT) value=suppliers[id];
+                            }
                         }
-                    }
-                    if (p && (p->materialMask&requested)) {
-                        const bool stocked=std::has_single_bit(p->materialMask) ? deposit.amount!=0 : MapState::materialAmountAt(view,i,material)>0;
-                        if (stocked && (!p->visibleToHarvest || (fog[i]&mask))) value=GRADIENT_AT_GOAL;
+                        if (p && (p->materialMask&requested)) {
+                            const bool stocked=std::has_single_bit(p->materialMask) ? deposit.amount!=0 : MapState::materialAmountAt(view,i,material)>0;
+                            if (stocked && (!p->visibleToHarvest || (fog[i]&mask))) value=GRADIENT_AT_GOAL;
+                        }
                     }
                 }
                 out[i]=value;
@@ -52,13 +65,7 @@ void materialCells(const MapState::View& view, const Uint32* fog, int team, int 
 template<class Run>
 void clearCells(const MapState::View& view, bool farm, int team, int swim, Uint16* out, Run run)
 {
-    constexpr Uint8 blocked=1, clearable=2, farmClearable=4;
-    std::array<Uint8, ResourceRegistry::Capacity> traits;
-    const auto& properties=view.resourceRegistry->propertyTable();
-    for (size_t id=0; id<properties.size(); ++id) {
-        const auto& p=properties[id];
-        traits[id]=(p.blocksGround?blocked:0)|(p.clearable?clearable:0)|(farm&&p.clearable&&!p.farmable?farmClearable:0);
-    }
+    const auto& traits=view.resourceRegistry->gradientPreparation();
     const Uint32 mask=Uint32(1)<<team;
     withOpenTerrain(view,swim,[&](auto terrainAt) {
     run([&](size_t begin, size_t end) {
@@ -67,11 +74,16 @@ void clearCells(const MapState::View& view, bool farm, int team, int swim, Uint1
             const auto& area=view.areas[i];
             if (!(area.forbidden&mask)) {
                 const auto type=view.resources[i].resource.type;
-                const Uint8 flags=type==NO_RES_TYPE?0:traits[type];
-                if (((flags&clearable)&&(area.clear&mask)) || ((flags&farmClearable)&&(area.farm&mask))) value=GRADIENT_AT_GOAL;
-                else if (!(flags&blocked) && view.occupancy[i].immobileUnit==IMMOBILE_UNIT_NONE && view.occupancy[i].building==NOGBID) {
-                    value=terrainAt(i);
-                }
+                const Uint32 flags=type==NO_RES_TYPE?0:traits[type];
+                const auto& cell=view.occupancy[i];
+                const bool goal=(flags&(1u<<18)) && ((area.clear&mask)
+                    || (farm && (area.farm&mask) && !(flags&(1u<<19))));
+                const bool openCell=cell.immobileUnit==IMMOBILE_UNIT_NONE
+                    && !(flags&(1u<<16)) && cell.building==NOGBID;
+                const Uint16 open=(!goal && openCell) ? terrainAt(i) : GRADIENT_FORBIDDEN;
+                value=Uint16(rules::clearSeed(0,cell.immobileUnit==IMMOBILE_UNIT_NONE,
+                    flags&(1u<<16),cell.building!=NOGBID,open,flags&(1u<<18),
+                    flags&(1u<<19),area.clear&mask,area.farm&mask,farm));
             }
             out[i]=value;
         }

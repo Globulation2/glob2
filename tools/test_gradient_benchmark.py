@@ -158,7 +158,7 @@ class BenchmarkProtocolTest(unittest.TestCase):
             1, ['/unused/benchmark'], output=partial, stderr=diagnostic + '\n',
         )
         with tempfile.TemporaryDirectory() as directory:
-            args = SimpleNamespace(output=Path(directory), repeats=2, cpu=None)
+            args = SimpleNamespace(output=Path(directory), repeats=2, cpu=None, backend='scalar')
             with patch('gradient_benchmark.subprocess.run', side_effect=failure):
                 with self.assertRaises(RuntimeError) as raised:
                     run_cases(args, Path('/unused/benchmark'), [dict(size=32)])
@@ -180,7 +180,7 @@ class BenchmarkProtocolTest(unittest.TestCase):
         ]
         raw = ''.join(json.dumps(row) + '\n' for row in rows)
         with tempfile.TemporaryDirectory() as directory:
-            args = SimpleNamespace(output=Path(directory), repeats=2, cpu=None)
+            args = SimpleNamespace(output=Path(directory), repeats=2, cpu=None, backend='sse2')
             with patch('gradient_benchmark.subprocess.run', return_value=Mock(stdout=raw)) as run:
                 run_cases(args, Path('/unused/benchmark'), [dict(size=32)])
             summary = json.loads((args.output / 'summary.json').read_text())
@@ -191,6 +191,9 @@ class BenchmarkProtocolTest(unittest.TestCase):
                 self.assertEqual(row['ratio'], 0.5)
             self.assertEqual((args.output / 'samples.jsonl').read_text(), raw + raw)
             for call, layout in zip(run.call_args_list, ('shared', 'separate')):
+                self.assertEqual(call.kwargs['env']['GLOB2_GRADIENT_BACKEND'], 'sse2')
+                self.assertEqual(call.kwargs['env']['GLOB2_GRADIENT_VERIFY'], 'off')
+                self.assertEqual(call.kwargs['env']['GLOB2_GRADIENT_ALGORITHM'], 'buckets')
                 self.assertEqual(call.args[0], [
                     '/unused/benchmark', '--repeats', '2', '--layout', layout, '--size', '32',
                 ])
