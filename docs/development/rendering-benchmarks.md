@@ -113,7 +113,8 @@ shared scope collectors. Reduced terrain remains an explicitly serial fallback.
 
 `PROFILE_MODE=interactive PROFILE_SAVE=/path/to/save.game PROFILE_SECONDS=10
 PROFILE_FPS=60` runs the production threaded session with a fixed display cadence.
-It reports drawing plus presentation p95/p99, missed render deadlines,
+It reports drawing plus presentation p95/p99, missed render deadlines and undrawn
+opportunities (pacing or unavailable scenes),
 displayed-scene age and the last observed simulation deadline lateness at each
 display. The latter distribution is weighted by displayed frames; the
 `simulation.deadline_lateness` scope records actual tick observations. Scene age

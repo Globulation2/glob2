@@ -100,7 +100,7 @@ static void interactiveBenchmark()
     if (!engine.startSimulationThread(SDL_GetTicks()))
         throw std::runtime_error("Interactive benchmark requires a simulation thread");
     std::vector<double> draw, age, lateness;
-    unsigned missed = 0;
+    unsigned missed = 0, opportunities = 0;
     const auto began = SDL_GetTicksNS();
     auto due = began;
     while (SDL_GetTicksNS() - began < seconds * 1e9)
@@ -113,6 +113,7 @@ static void interactiveBenchmark()
         }
         if (!engine.threadedClientFrame(SDL_GetTicks(), {}))
             break;
+        ++opportunities;
         if (std::getenv("PROFILE_PAN"))
         {
             engine.gui.camera.originX += .25;
@@ -141,8 +142,9 @@ static void interactiveBenchmark()
             due = end; // No catch-up drawing after a missed frame.
     }
     engine.stopSimulationThread();
-    printf("interactive frames=%zu missed_render_deadlines=%u period_ns=%llu\n", draw.size(),
-           missed, (unsigned long long)period);
+    printf("interactive frames=%zu opportunities=%u undrawn_opportunities=%zu "
+           "missed_render_deadlines=%u period_ns=%llu\n", draw.size(), opportunities,
+           opportunities - draw.size(), missed, (unsigned long long)period);
     distribution("draw_and_present", draw);
     distribution("displayed_scene_age", age);
     distribution("last_simulation_deadline_lateness", lateness);
