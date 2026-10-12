@@ -129,7 +129,8 @@ Finished tickets retain failure information, but no job inputs.
 CPU terrain preparation separates owner planning, private cell composition and
 canonical installation. Published materials contain only immutable composition
 pixels for the page's referenced materials and catalog definitions. Unchanged material revisions share storage;
-the compositor holds a weak publication and each cache charges its retained
+the compositor keeps bounded weak records per material revision, allowing reuse
+while any snapshot still owns unchanged pixels. Each cache charges its retained
 lease against subsequent admission. Current-page masks remain protected until
 the synchronous group finishes. Workers reuse bounded scratch and never create
 `HeldMask` or drawable objects. Jobs sample at most 16K pixels; a group admits

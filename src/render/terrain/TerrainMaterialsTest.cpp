@@ -1410,6 +1410,13 @@ TEST_CASE("owned prepared materials survive animation and share unchanged revisi
                           static_cast<Uint8 *>(original->pixels) + y * original->pitch,
                           32*samplingScale*4) == 0);
     }
+    // Expiring the last publication must not retain unused immutable buffers.
+    std::weak_ptr<const TerrainVisual::Compositor::MaterialPixels> released =
+        retained->textures[c.find("sand")][0].pixels;
+    std::weak_ptr<const TerrainVisual::Catalog> releasedCatalog = retained->definitions;
+    retained.reset();
+    CHECK(released.expired());
+    CHECK(releasedCatalog.expired());
 }
 TEST_CASE(
     "CPU terrain groups preserve incremental pages under serial and parallel schedules [display]" *

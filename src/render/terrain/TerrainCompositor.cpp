@@ -105,6 +105,8 @@ std::size_t Compositor::sourceBytes() const
 				bytes += t.pixels.capacity() * 4;
     if (auto retained = publishedCpu.lock())
         bytes += retained->bytes;
+    else if (!publishedPixels.empty())
+        bytes += cpuPublicationBytes();
 	return bytes;
 }
 bool Compositor::prepareMaterial(unsigned id, bool hd, int phase, std::vector<Texture> &target)
@@ -324,11 +326,24 @@ Compositor::PreparedMaterialView Compositor::preparedMaterial(const Recipe &reci
     const auto &texture = textures.at(id).at(variant);
     return {variant, materialRevisions.at(id), texture.size, texture.pixels};
 }
+std::size_t Compositor::cpuPublicationBytes() const
+{
+    // Include the bounded weak tables, revision keys and control blocks even
+    // when the last whole snapshot has expired. Admission reserves the maximum
+    // table shape so selecting another material cannot grow uncharged metadata.
+    // make_shared keeps inline object storage until its last weak reference
+    // disappears, including an expired whole snapshot or catalog publication.
+    std::size_t bytes = sizeof(CpuMaterials) + sizeof(Catalog) + 256 +
+        textures.capacity() * (sizeof(CpuPublication) + sizeof(std::uint64_t));
+    for (const auto &set : textures)
+        bytes += set.size() * (sizeof(std::weak_ptr<const MaterialPixels>) + 64);
+    return bytes;
+}
 std::size_t Compositor::cpuMaterialBytes(std::span<const MaterialId> needed) const
 {
     // Capacity accounting includes the catalog's nested allocations and
     // shared ownership/control storage; allocator headers receive headroom.
-    std::size_t bytes = sizeof(CpuMaterials) + sizeof(Catalog) + 256 +
+    std::size_t bytes = cpuPublicationBytes() + sizeof(CpuMaterials) + sizeof(Catalog) + 256 +
                         definitions.serialized.capacity() + definitions.compiledPack.capacity() +
                         definitions.profiles.capacity() * sizeof(Profile) +
                         definitions.materials.capacity() * sizeof(Material) +
@@ -363,19 +378,36 @@ std::shared_ptr<const Compositor::CpuMaterials> Compositor::cpuMaterials(std::sp
     if (previous && previous->included == included && publishedRevisions == materialRevisions)
         return previous;
     auto next = std::make_shared<CpuMaterials>();
-    next->definitions =
-        previous ? previous->definitions : std::make_shared<const Catalog>(definitions);
+    next->definitions = publishedCatalog.lock();
+    if (!next->definitions)
+        next->definitions = std::make_shared<const Catalog>(definitions);
+    publishedCatalog = next->definitions;
+    publishedPixels.resize(textures.size());
     next->textures.resize(textures.size());
     next->included = std::move(included);
     for (std::size_t id = 0; id < textures.size(); ++id)
     {
         if (!next->included[id]) continue;
-        if (previous && previous->included[id] && publishedRevisions[id] == materialRevisions[id])
-            next->textures[id] = previous->textures[id];
+        auto &record = publishedPixels[id];
+        if (record.revision != materialRevisions[id])
+        {
+            record.pixels.assign(textures[id].size(), {});
+            record.revision = materialRevisions[id];
+        }
         else
-            for (const auto &texture : textures[id])
-                next->textures[id].push_back(
-                    {texture.size, std::make_shared<const MaterialPixels>(texture.pixels)});
+            record.pixels.resize(textures[id].size());
+        next->textures[id].reserve(textures[id].size());
+        for (std::size_t variant = 0; variant < textures[id].size(); ++variant)
+        {
+            const auto &texture = textures[id][variant];
+            auto pixels = record.pixels[variant].lock();
+            if (!pixels)
+            {
+                pixels = std::make_shared<const MaterialPixels>(texture.pixels);
+                record.pixels[variant] = pixels;
+            }
+            next->textures[id].push_back({texture.size, std::move(pixels)});
+        }
     }
     next->bytes = cpuMaterialBytes(needed);
     publishedRevisions = materialRevisions;

@@ -126,6 +126,16 @@ class Compositor
   private:
       std::weak_ptr<const CpuMaterials> publishedCpu;
       std::vector<std::uint64_t> publishedRevisions;
+      struct CpuPublication
+      {
+          std::uint64_t revision = 0;
+          std::vector<std::weak_ptr<const MaterialPixels>> pixels;
+      };
+      // One weak record per prepared variant: older snapshots can keep an
+      // unchanged revision reusable without the compositor retaining pixels.
+      std::vector<CpuPublication> publishedPixels;
+      std::weak_ptr<const Catalog> publishedCatalog;
+      std::size_t cpuPublicationBytes() const;
       static void composePixels(const Catalog &, const Recipe &, SDL_Surface *, int, int, int,
                                 std::span<const PreparedMaterialView>, const CellMask *);
       static void buildMask(const Catalog &, const Recipe &, int, CellMask &);
