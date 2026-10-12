@@ -21,6 +21,10 @@ class GameSessionScreen : public GAGGUI::Screen
 	void suspendExecution() override;
 	void viewportResized(int oldWidth, int oldHeight, int width, int height) override;
 	void handleExecutionEvent(SDL_Event event) override;
+    bool defersExecutionInput() const override { return true; }
+    bool hasPendingExecutionInput() const override;
+    void beginAdditionalInput(std::shared_ptr<GAGCore::InputDispatchReceipt>) override;
+    void endAdditionalInput(std::size_t enqueued) override;
 	void drawExecution() override;
 	Uint32 executionDelay(Uint32 now, Uint32 fallback) override;
 	ExecutionWait executionWait() const override;
@@ -38,6 +42,14 @@ class GameSessionScreen : public GAGGUI::Screen
 	GAGGUI::ScreenStack &stack;
 	std::unique_ptr<Engine> engine;
 	GAGCore::EventQueue input;
+    struct BufferedInputDispatch {
+        std::shared_ptr<GAGCore::InputDispatchReceipt> receipt;
+        std::size_t first = 0, count = 0;
+    };
+    std::vector<BufferedInputDispatch> inputReceipts;
+    void pruneCancelledScreenInput();
+    void cancelScreenInputReceipt();
+    void transferInputReceipt();
 	bool started = false, finished = false, resetClock = false;
 	// Once simulation ends, keep the save dialog alive through durable persistence.
 	bool finishingSession = false;

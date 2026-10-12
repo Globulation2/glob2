@@ -180,6 +180,13 @@ void Settings::load(std::string filename)
                 targetRenderFps = fps;
         }
         READ_PARSED_STRING(interfacePresentation);
+        if (const auto value=parsed.find("mcpEnabled"); value!=parsed.end()) mcpEnabled=value->second=="1";
+        if (const auto value=parsed.find("mcpPort"); value!=parsed.end()) {
+            int port=27202;
+            const auto &text=value->second;
+            const auto result=std::from_chars(text.data(),text.data()+text.size(),port);
+            mcpPort=result.ec==std::errc{} && result.ptr==text.data()+text.size() && port>=1 && port<=65535 ? port : 27202;
+        }
         READ_PARSED_STRING(menuTheme);
         READ_PARSED_STRING(gameTheme);
         interfacePresentation=presentationPreferenceName(parsePresentationPreference(interfacePresentation));
@@ -352,6 +359,7 @@ bool Settings::save(std::string filename)
         Utilities::streamprintf(stream, "rendererBackend=%s\n", std::string(GAGCore::rendererBackendName(rendererBackend)).c_str());
 		Utilities::streamprintf(stream, "uiScale=%d\n", uiScale);
         Utilities::streamprintf(stream, "interfacePresentation=%s\n", interfacePresentation.c_str());
+        Utilities::streamprintf(stream, "mcpEnabled=%d\nmcpPort=%d\n", int(mcpEnabled), mcpPort);
         Utilities::streamprintf(stream, "menuTheme=%s\n", menuTheme.c_str());
         Utilities::streamprintf(stream, "gameTheme=%s\n", gameTheme.c_str());
 		Utilities::streamprintf(stream, "optionFlags=%d\n", optionFlags & ~LEGACY_LOW_DETAIL);

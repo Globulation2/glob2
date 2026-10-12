@@ -599,9 +599,9 @@ bool GameGUITouch::process(SDL_Event &event)
 	}
 	if (usesHUD() && event.type == SDL_EVENT_MOUSE_WHEEL)
 	{
-		float x, y;
-		SDL_GetMouseState(&x, &y);
-		GraphicContext::translateMouseCoordinates(x, y);
+        // process() receives logical event coordinates from the shared input boundary.
+        // The OS pointer can differ for queued or remotely supplied events.
+        const float x = event.wheel.mouse_x, y = event.wheel.mouse_y;
 		const int region = interfaceRegion({double(x), double(y)});
 		const double delta =
 			event.wheel.y * (event.wheel.direction == SDL_MOUSEWHEEL_FLIPPED ? -48 : 48);

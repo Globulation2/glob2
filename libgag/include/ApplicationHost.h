@@ -67,6 +67,12 @@ class FileSelection
 	virtual FileSelectionState state() const = 0;
 	virtual SelectedFile takeFile() = 0;
 };
+// True while a desktop OS file picker is open; game events cannot operate it.
+#ifndef __EMSCRIPTEN__
+bool nativeDialogOpen();
+#else
+inline bool nativeDialogOpen() { return false; }
+#endif
 bool canImportFiles();
 std::unique_ptr<FileSelection> selectFile(const std::string &extension);
 

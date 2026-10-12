@@ -3,9 +3,11 @@
 
 #pragma once
 
+#include <InputDispatchReceipt.h>
 #include "GAGSys.h"
 #include "GraphicContext.h"
 #include <utility>
+#include <memory>
 
 namespace GAGCore
 {
@@ -69,6 +71,15 @@ namespace GAGGUI
 		virtual void suspendExecution() {}
 		virtual void viewportResized(int oldWidth, int oldHeight, int width, int height) {}
 		virtual void handleExecutionEvent(SDL_Event event);
+		//! True when supplied events are consumed only by updateExecution().
+		//! Additional input must then wait until an ordinary input frame finishes.
+		//! Screens that buffer SDL events must override this capability.
+		virtual bool defersExecutionInput() const { return false; }
+		//! Pending ordinary input can still change geometry on a later update.
+		virtual bool hasPendingExecutionInput() const { return false; }
+		//! Buffered consumers retain this receipt and resolve it after actual dispatch.
+		virtual void beginAdditionalInput(std::shared_ptr<GAGCore::InputDispatchReceipt>) {}
+		virtual void endAdditionalInput(std::size_t) {}
 		virtual bool usesResponsiveViewport() const { return false; }
 		virtual bool supportsCompactViewport() const { return usesResponsiveViewport(); }
 		virtual std::pair<int,int> minimumViewportSize() const { return {0,0}; }
