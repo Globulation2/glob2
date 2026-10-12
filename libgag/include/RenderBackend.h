@@ -50,6 +50,8 @@ class RenderBackend
 	virtual void forget(const void *key) = 0;
 	virtual void reset() = 0;
 	virtual void present() = 0;
+    // Complete deferred drawing before accessing borrowed target pixels outside
+    // this backend. Capture, presentation and target binding fence themselves.
 	virtual void flush() = 0;
     // Abandon queued drawing after a failed CPU batch. No output is committed;
     // the owner restores the completed image before beginning another frame.

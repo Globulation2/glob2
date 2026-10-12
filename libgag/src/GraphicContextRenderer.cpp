@@ -25,6 +25,17 @@ void glob2_surface_error(char *destination, int size);
 int glob2_surface_webgpu_available();
 }
 #endif
+SDL_Surface *GraphicContext::getSDLSurface()
+{
+    // Accelerated backends keep a CPU facade for dimensions/availability. A
+    // getter must not submit their frames or imply a GPU readback. Temporary
+    // CPU passes also expose their borrowed target only after drawing finishes.
+    if (renderer && (renderer == softwareRasterizer.get() ||
+                     (offscreenPass && renderer != deviceRenderer.get())))
+        renderer->flush();
+    return sdlsurface;
+}
+
 std::optional<RendererBackend> GraphicContext::initialBackend;
 std::string GraphicContext::rendererShaderDirectory()
 {

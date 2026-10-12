@@ -162,7 +162,11 @@ performance thresholds.
 The owner drains earlier SDL geometry, locks the target once, and captures its
 format/pitch before dispatch. Jobs write disjoint half-open regions in painter
 order and sample from the original complete destination. They never touch SDL
-surface state. The owner unlocks after all jobs return, before fallback drawing,
+surface state. `GraphicContext::getSDLSurface()` fences active CPU drawing before
+returning pixels; accelerated contexts retain their existing CPU facade and need
+explicit capture for readback. Callers holding a base-class alias or an earlier
+raw target pointer must flush the owner before reading or modifying it.
+The owner unlocks after all jobs return, before fallback drawing,
 capture, target rotation or presentation. Failed work blocks capture and commit.
 `GraphicContext::discardFrame()` discards recorded drawing and restores the
 presenter's previous completed image, permitting a subsequent full or partial

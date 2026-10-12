@@ -118,6 +118,7 @@ TEST_SUITE("SoftwareRenderer")
 			backend->transform(zoom, -0.5f, 0.5f, nullptr);
 			backend->fill(SDL_FRect{0, 0, 16, 16}, SDL_Color{255, 0, 0, 255});
 			backend->fill(SDL_FRect{16, 0, 16, 16}, SDL_Color{0, 255, 0, 255});
+			backend->flush(); // Fence before observing the borrowed target directly.
 			const int end = int(std::floor(32 * zoom));
 			for (int x = 0; x < end; ++x)
 				CHECK(pixel(target.get(), x, 1) != 0xff000000);
@@ -128,12 +129,14 @@ TEST_SUITE("SoftwareRenderer")
 			{{0, 0}, blue, {}}, {{40, 0}, blue, {}}, {{0, 40}, blue, {}}};
 		backend->triangles(triangle);
 		backend->fill(SDL_FRect{0, 0, 10, 10}, SDL_Color{255, 0, 0, 255});
+		backend->flush();
 		CHECK(pixel(target.get(), 2, 2) == 0xffff0000);
 		CHECK(pixel(target.get(), 12, 2) == 0xff0000ff);
 		auto replacement = pixels(64, 48);
 		backend->triangles(triangle);
 		backend->bindTarget(replacement.get());
 		backend->fill(SDL_FRect{0, 0, 10, 10}, SDL_Color{0, 255, 0, 255});
+		backend->flush();
 		CHECK(pixel(target.get(), 2, 2) == 0xff0000ff);
 		CHECK(pixel(replacement.get(), 2, 2) == 0xff00ff00);
 	}
@@ -662,4 +665,27 @@ TEST_CASE("render reservation rollback and commit preserve prior captures" *
     CHECK(RenderWorkReservation::available() == available-384);
     committed.release();
     CHECK(RenderWorkReservation::available() == available);
+}
+
+TEST_CASE("graphics context CPU pixel borrowing fences recorded main and offscreen drawing" *
+          doctest::test_suite("SoftwareRenderer"))
+{
+    for (const char *execution : {"auto", "serial", "parallel"})
+    {
+        glob2test::ScopedEnvironment mode("GLOB2_RENDER_EXECUTION", execution);
+        GraphicContext context(64, 48, GraphicContext::NOAUDIO, "CPU pixel observation");
+        context.drawFilledRect(0, 0, 64, 48, Color(71, 117, 191));
+        CHECK(pixel(context.getSDLSurface(), 31, 23) == 0xff4775bf);
+        REQUIRE(SDL_FillSurfaceRect(context.getSDLSurface(), nullptr, 0xff173b61));
+        context.drawFilledRect(2, 3, 7, 5, Color(151, 43, 79));
+        CHECK(pixel(context.getSDLSurface(), 4, 5) == 0xff972b4f);
+        CHECK(pixel(context.getSDLSurface(), 31, 23) == 0xff173b61);
+        auto offscreen = pixels(19, 17);
+        context.drawToSurface(offscreen.get(), 1, [&] {
+            context.drawFilledRect(0, 0, 19, 17, Color(43, 97, 151));
+            CHECK(context.getSDLSurface() == offscreen.get());
+            CHECK(pixel(context.getSDLSurface(), 9, 8) == 0xff2b6197);
+        });
+        CHECK(pixel(context.getSDLSurface(), 31, 23) == 0xff173b61);
+    }
 }
