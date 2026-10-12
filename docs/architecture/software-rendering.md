@@ -55,7 +55,7 @@ exceed the allowance but their CPU pages and one upload fit, drawing streams
 textures from those retained pixels rather than recomposing the entire view.
 Terrain, discovery and material revisions are checked when an old zoom level
 returns. Kept coverage masks for mixed cells beside animated materials add at
-most 8 MiB in software mode or 32 MiB in GPU mode. Native and
+most 16 MiB in software mode or 32 MiB in GPU mode. Native and
 HD rendering share CPU composition; GPU backends upload the resulting pages.
 The [terrain authoring guide](../assets/terrain-materials.md) describes the catalog,
 boundary resolver, source preparation, budgets and asset pipeline.
