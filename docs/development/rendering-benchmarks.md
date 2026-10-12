@@ -117,8 +117,16 @@ displayed-scene age and the last observed simulation deadline lateness at each
 display. The latter distribution is weighted by displayed frames; the
 `simulation.deadline_lateness` scope records actual tick observations. Scene age
 includes drawing/presentation time and uses the captured tick completion time.
-`PROFILE_PAN=1` adds camera motion. Renderer-only timings exclude simulation;
+`PROFILE_PAN=1` adds camera motion. Only actual draws admitted by the production
+frame pacer enter the distributions. Renderer-only timings exclude simulation;
 interactive results include its contention and must be reported separately.
+
+For renderer-only composition diagnostics, `PROFILE_MODE=map PROFILE_WHOLE_MAP=1`
+shows the captured terrain irrespective of discovery; it does not modify the saved
+world. Verify counters show admitted jobs before interpreting parallel timings.
+The software recorder serves backing-scale, fractional-transform and offscreen
+backend paths. Ordinary native-size immediate surface drawing retains its existing
+arithmetic and runs serially; `PROFILE_FRACTION=1` exercises the transform path.
 
 Keep warm caches, cold first frames, animated terrain, camera/zoom motion, large
 colonies and translucent overlays separate. CPU fallback and device-composed

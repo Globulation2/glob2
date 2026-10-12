@@ -116,13 +116,17 @@ static void interactiveBenchmark()
             engine.gui.camera.originX += .25;
             engine.gui.viewportX = engine.gui.camera.tileX();
         }
+        const auto renderedBefore = PerformanceTelemetry::collector().calls[
+            static_cast<unsigned>(PerformanceTelemetry::Id::Render)];
         const auto start = SDL_GetTicksNS();
-        engine.drawSession();
+        if (globalContainer->gfx->beginRenderFrame())
+            engine.drawSession();
         const auto end = SDL_GetTicksNS();
         // AcquireScene can initially have no published frame. Exclude that
         // startup opportunity from displayed-frame distributions.
         const auto &scene = engine.gui.drawnScene();
-        if (scene.tickTime)
+        if (PerformanceTelemetry::collector().calls[
+                static_cast<unsigned>(PerformanceTelemetry::Id::Render)] != renderedBefore)
         {
             draw.push_back((end - start) / 1e6);
             const auto displayed = SDL_GetTicks();
@@ -142,6 +146,7 @@ static void interactiveBenchmark()
     distribution("last_simulation_deadline_lateness", lateness);
     PerformanceTelemetry::collector().write(std::cout, "interactive", engine.gui.game.stepCounter,
                                             true);
+    engine.gui.isRunning = false;
     engine.finishSession();
 }
   public:
@@ -335,7 +340,8 @@ static void interactiveBenchmark()
 					gfx->beginFrame(GraphicContext::FrameMode::FullRedraw);
 					gfx->setClipRect();
 					Game::drawMap(0, 0, gfx->getW() - 160, gfx->getH(), 0, 0, gui.viewportX,
-									 gui.viewportY, 0, gui.view, Game::DRAW_AREA);
+									 gui.viewportY, 0, gui.view, Game::DRAW_AREA |
+                                         (getenv("PROFILE_WHOLE_MAP") ? Game::DRAW_WHOLE_MAP : 0));
 				}
 				Uint64 b = SDL_GetPerformanceCounter();
 				if (!getenv("PROFILE_NO_PRESENT"))
