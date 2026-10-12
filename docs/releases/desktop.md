@@ -28,7 +28,8 @@ provenance and final artifact digests, verifies notarization, Gatekeeper,
 architecture and minimum OS, and installs the final bytes outside the checkout
 on native Apple Silicon and Intel runners. Both execute the frozen
 `test/fixtures/releases/qualification-river.map.gz` fixture with game seed 713,
-repeat a 600-tick run, save at 300 and resume to 600, then finish a full match and
+create a one-tick baseline save in the current format, repeat continuation to
+600, save at 300 and resume to 600, then finish a full match and
 create a replay. The comparison job rejects any per-tick divergence.
 The comparison also requires matching release, CLI, save, network and SDL
 versions. Each architecture retains its own compilation timestamp in its report;

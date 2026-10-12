@@ -19,8 +19,8 @@ COMMIT = existing_retry_tests.COMMIT
 
 class NativeQualificationTests(unittest.TestCase):
     def cases(self, root):
-        ranges = {'direct-600': (0, 600), 'repeat-600': (0, 600), 'save-300': (0, 300),
-                  'resume-600': (300, 600), 'full-match': (0, 602)}
+        ranges = {'direct-600': (1, 600), 'repeat-600': (1, 600), 'save-300': (1, 300),
+                  'resume-600': (300, 600), 'full-match': (1, 602)}
         for name, (first, last) in ranges.items():
             output = root / 'cases' / name; output.mkdir(parents=True)
             (output / 'world.checksums').write_text(''.join(f'{tick} {tick+100}\n' for tick in range(first, last)))
