@@ -349,7 +349,8 @@ static void interactiveBenchmark()
 					gfx->setClipRect();
 					Game::drawMap(0, 0, gfx->getW() - 160, gfx->getH(), 0, 0, gui.viewportX,
 									 gui.viewportY, 0, gui.view, Game::DRAW_AREA |
-                                         (getenv("PROFILE_WHOLE_MAP") ? Game::DRAW_WHOLE_MAP : 0));
+                                         (getenv("PROFILE_WHOLE_MAP") ? Game::DRAW_WHOLE_MAP : 0),
+                                         nullptr, nullptr, gui.gamePaused);
 				}
 				Uint64 b = SDL_GetPerformanceCounter();
 				if (!getenv("PROFILE_NO_PRESENT"))
