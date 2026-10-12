@@ -121,7 +121,10 @@ private:
             if (!running && (canceled.load() || next == count))
             {
                 settling = true;
-                auto released = std::move(job);
+                // A moved-from std::function may keep its inline callable on
+                // libc++. Swap guarantees that the retained state is empty.
+                std::function<void(PresentationJobContext)> released;
+                released.swap(job);
                 lock.unlock();
                 auto* previous = active;
                 active = owner; // Lifecycle barriers remain forbidden in capture destructors.
