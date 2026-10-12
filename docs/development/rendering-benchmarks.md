@@ -126,7 +126,9 @@ interactive results include its contention and must be reported separately.
 
 For renderer-only composition diagnostics, `PROFILE_MODE=map PROFILE_WHOLE_MAP=1`
 shows the captured terrain irrespective of discovery; it does not modify the saved
-world. Verify counters show admitted jobs before interpreting parallel timings.
+world. `PROFILE_PAUSED=1` freezes view animation in renderer-only workloads,
+separating warm static caches from animated-page rebuilding. Verify counters show
+admitted jobs before interpreting parallel timings.
 The software recorder serves backing-scale, fractional-transform and offscreen
 backend paths. Ordinary native-size immediate surface drawing retains its existing
 arithmetic and runs serially; `PROFILE_FRACTION=1` exercises the transform path.

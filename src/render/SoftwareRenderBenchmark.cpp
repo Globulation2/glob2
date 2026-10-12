@@ -1,5 +1,5 @@
-#include "CommandLine.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "CommandLine.h"
 // Opt-in loaded-game CPU benchmark. PROFILE_* overrides are local diagnostics.
 #include "GlobalContainer.h"
 #include "GameGUI.h"
@@ -206,7 +206,7 @@ static void interactiveBenchmark()
 			gui.localPlayer = gui.localTeamNo = 0;
 			gui.adjustLocalTeam();
 			gui.adjustInitialViewport();
-			gui.gamePaused = false;
+			gui.gamePaused = getenv("PROFILE_PAUSED") != nullptr;
 			// PROFILE_SELECT=building|flag|unit selects the local team's first such entity,
 			// so captures include the selection panel and the map-view selection markers.
 			if (const char *select = getenv("PROFILE_SELECT"))
