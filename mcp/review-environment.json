@@ -1,0 +1,9 @@
+{
+  "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
+  "machine": "x86_64",
+  "compiler": "g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+  "python": "3.12.3",
+  "configuration": "tools/dev_build.py dev_fast=1, -O0 -g1, client and relay",
+  "runtimeDependencies": "existing pinned SDL prefix and repository/system dependency facilities; no new runtime dependency",
+  "sdkClient": "official Python MCP SDK 2.3.0, development-only artifact venv"
+}

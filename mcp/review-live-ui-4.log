@@ -1,0 +1,54 @@
+  + Exception Group Traceback (most recent call last):
+  |   File "/home/bradley/.codex/worktrees/mcp-desktop-ui/glob2/artifacts/mcp/review-live-capture.py", line 9, in <module>
+  |     anyio.run(run)
+  |   File "/home/bradley/.codex/worktrees/mcp-desktop-ui/glob2/artifacts/mcp/client-venv/lib/python3.12/site-packages/anyio/_core/_eventloop.py", line 83, in run
+  |     return async_backend.run(func, args, {}, backend_options)
+  |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |   File "/home/bradley/.codex/worktrees/mcp-desktop-ui/glob2/artifacts/mcp/client-venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 2548, in run
+  |     return runner.run(wrapper())
+  |            ^^^^^^^^^^^^^^^^^^^^^
+  |   File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+  |     return self._loop.run_until_complete(task)
+  |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |   File "/usr/lib/python3.12/asyncio/base_events.py", line 687, in run_until_complete
+  |     return future.result()
+  |            ^^^^^^^^^^^^^^^
+  |   File "/home/bradley/.codex/worktrees/mcp-desktop-ui/glob2/artifacts/mcp/client-venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 2531, in wrapper
+  |     return await func(*args)
+  |            ^^^^^^^^^^^^^^^^^
+  |   File "/home/bradley/.codex/worktrees/mcp-desktop-ui/glob2/artifacts/mcp/review-live-capture.py", line 5, in run
+  |     async with Client('http://127.0.0.1:27202/mcp') as c:
+  |   File "/home/bradley/.codex/worktrees/mcp-desktop-ui/glob2/artifacts/mcp/client-venv/lib/python3.12/site-packages/mcp/client/client.py", line 480, in __aexit__
+  |     await self._exit_stack.__aexit__(exc_type, exc_val, exc_tb)
+  |   File "/usr/lib/python3.12/contextlib.py", line 754, in __aexit__
+  |     raise exc_details[1]
+  |   File "/usr/lib/python3.12/contextlib.py", line 737, in __aexit__
+  |     cb_suppress = await cb(*exc_details)
+  |                   ^^^^^^^^^^^^^^^^^^^^^^
+  |   File "/usr/lib/python3.12/contextlib.py", line 231, in __aexit__
+  |     await self.gen.athrow(value)
+  |   File "/home/bradley/.codex/worktrees/mcp-desktop-ui/glob2/artifacts/mcp/client-venv/lib/python3.12/site-packages/mcp/client/streamable_http.py", line 766, in streamable_http_client
+  |     async with (
+  |   File "/home/bradley/.codex/worktrees/mcp-desktop-ui/glob2/artifacts/mcp/client-venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 847, in __aexit__
+  |     raise BaseExceptionGroup(
+  | ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+  +-+---------------- 1 ----------------
+    | Exception Group Traceback (most recent call last):
+    |   File "/home/bradley/.codex/worktrees/mcp-desktop-ui/glob2/artifacts/mcp/client-venv/lib/python3.12/site-packages/mcp/client/streamable_http.py", line 788, in streamable_http_client
+    |     yield read_stream, write_stream
+    |   File "/usr/lib/python3.12/contextlib.py", line 737, in __aexit__
+    |     cb_suppress = await cb(*exc_details)
+    |                   ^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/home/bradley/.codex/worktrees/mcp-desktop-ui/glob2/artifacts/mcp/client-venv/lib/python3.12/site-packages/mcp/client/session.py", line 514, in __aexit__
+    |     result = await self._task_group.__aexit__(exc_type, exc_val, exc_tb)
+    |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/home/bradley/.codex/worktrees/mcp-desktop-ui/glob2/artifacts/mcp/client-venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 847, in __aexit__
+    |     raise BaseExceptionGroup(
+    | ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+    +-+---------------- 1 ----------------
+      | Traceback (most recent call last):
+      |   File "/home/bradley/.codex/worktrees/mcp-desktop-ui/glob2/artifacts/mcp/review-live-capture.py", line 6, in run
+      |     r=await c.call_tool('ui_screenshot');assert not r.is_error,r
+      |                                                 ^^^^^^^^^^^^^^
+      | AssertionError: meta={'io.modelcontextprotocol/serverInfo': {'name': 'globulation2-ui', 'version': '1.0'}} content=[TextContent(type='text', text='{"error":"UI operation deadline exceeded","input_started":false}', annotations=None, meta=None)] structured_content={'error': 'UI operation deadline exceeded', 'input_started': False} is_error=True result_type='complete'
+      +------------------------------------

@@ -1,0 +1,265 @@
+Base revision: 2ced60e06b8e7fa7a4a4ecff944c40bda494bcf4
+Replay reader at unchanged HEAD:
+//! Oldest replay format (the VERSION_MINOR the replay was written with) that
+static constexpr Uint16 REPLAY_MINIMUM_VERSION_MINOR = 154;
+Pre-existing test at unchanged HEAD:
+TEST_CASE("a retained version-152 stock replay preserves recorded simulation checksums [save-format]")
+    {
+        glob2test::HeadlessGlobals globals({.loadStrings=true});
+        REQUIRE(NET_Init());
+        struct NetworkScope {~NetworkScope(){NET_Quit();}} network;
+        globals->automaticEndingGame=false;
+        const auto path=glob2test::inflated("unit-catalog/legacy152-stock.replay.gz");
+        Engine engine; REQUIRE(engine.loadReplayTask(path.string()).run());
+        auto& reader=*globals->replayReader;
+        REQUIRE(reader.formatVersion()==152);
+        REQUIRE(reader.getNumStepsTotal()==128);
+        engine.beginSession(0);
+        for(unsigned tick=0;tick<128;++tick) {
+            reader.setCheckSum(engine.gui.game.checkSum(nullptr,nullptr,nullptr,false,true));
+            REQUIRE(engine.stepSession(tick*40,{}));
+            REQUIRE(reader.isValid());
+            CHECK(engine.gui.game.stepCounter==tick+1);
+        }
+        engine.gui.isRunning=false; engine.finishSession();
+    }
+
+    TEST_CASE("external replay retains recorded simulation checksums [benchmark][artifacts]")
+    {
+        const char* path=SDL_getenv_unsafe("GLOB2_REFERENCE_REPLAY");REQUIRE(path);
+        glob2test::HeadlessGlobals globals({.loadStrings=true});
+        REQUIRE(NET_Init());
+        struct NetworkScope {~NetworkScope(){NET_Quit();}} network;
+        globals->automaticEndingGame=false;
+        Engine engine;REQUIRE(engine.loadReplayTask(path).run());
+        auto& reader=*globals->replayReader;
+        const auto ticks=reader.getNumStepsTotal();REQUIRE(ticks>0);
+        const auto initialTick=engine.gui.game.stepCounter;
+        engine.beginSession(0);
+        std::ofstream trace(glob2test::artifactDir()/"external-replay.checksums.txt");
+        for(unsigned tick=0;tick<ticks;++tick) {
+            const auto checksum=engine.gui.game.checkSum(nullptr,nullptr,nullptr,SDL_getenv_unsafe("GLOB2_REFERENCE_HEAVY")!=nullptr,reader.formatVersion()<=152);
+            trace<<engine.gui.game.stepCounter<<' '<<checksum<<'\n';
+            reader.setCheckSum(checksum);
+            REQUIRE(engine.stepSession(tick*40,{}));
+            REQUIRE(reader.isValid());
+            CHECK(engine.gui.game.stepCounter==initialTick+tick+1);
+        }
+        engine.gui.isRunning=false;engine.finishSession();
+    }
+    TEST_CASE("render ceilings preserve per tick simulation checksums [display][artifacts]")
+    {
+        glob2test::ScopedEnvironment serial("GLOB2_SIM_THREAD", "0");
+        glob2test::ScopedEnvironment desktop("GLOB2_MOBILE_UI", "0");
+        glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.display=true,.loadStrings=true,.width=800,.height=600});
+        REQUIRE(NET_Init());
+        struct NetworkScope { ~NetworkScope() { NET_Quit(); } } network;
+        globalContainer->automaticEndingGame = false;
+        std::vector<Uint32> baseline;
+        for (int fps : {25, 60, 120, 0}) {
+            INFO("render ceiling=" << fps);
+            setSyncRandSeed(123);
+            Engine engine;
+            REQUIRE(engine.initCampaign("maps/balanced.map") == Engine::EE_NO_ERROR);
+            globalContainer->gfx->setTargetRenderFps(fps);
+            engine.beginSession(1000);
+            std::vector<Uint32> checksums;
+            std::ofstream evidence(glob2test::artifactDir()/ ("fps-" + std::to_string(fps) + ".checksums"));
+            for (unsigned tick = 0; tick < 128; ++tick) {
+                REQUIRE(engine.stepSession(1000 + tick * 40, {}));
+                const Uint32 checksum = engine.gui.game.checkSum();
+                if (globalContainer->gfx->beginRenderFrame()) engine.drawSession();
+                CHECK(engine.gui.game.checkSum() == checksum);
+                checksums.push_back(checksum);
+                evidence << engine.gui.game.stepCounter << " " << checksum << '\n';
+            }
+            if (baseline.empty()) baseline = checksums;
+            else CHECK(checksums == baseline);
+            engine.gui.isRunning = false;
+            CHECK_FALSE(engine.finishSession());
+        }
+    }
+
+    TEST_CASE("snapshot client frame latency with and without forced parking [benchmark][display][artifacts]")
+    {
+        glob2test::ScopedEnvironment desktop("GLOB2_MOBILE_UI","0");
+        glob2test::HeadlessGlobals globals({.display=true,.loadStrings=true,.width=800,.height=600,.screenFlags=GAGCore::GraphicContext::PORTABLEGPU});
+        REQUIRE(NET_Init());
+        struct NetworkScope { ~NetworkScope(){NET_Quit();} } network;
+        globalContainer->automaticEndingGame=false;
+        globalContainer->settings.autosaveGames=false;
+        globalContainer->settings.gameSpeed=Settings::GAME_SPEED_MAXIMUM;
+        globalContainer->computeThreads=2;
+        std::ofstream evidence(glob2test::artifactDir()/"client-frame-latency.csv");
+        evidence << "forced_park,frames,ticks,elapsed_ms,frame_p50_us,frame_p95_us,scene_age_p95_ms,input_p50_us,input_p95_us\n";
+        for(bool forced : {true,false})
+        {
+            setSyncRandSeed(123);
+            Engine engine;
+            REQUIRE(engine.initCampaign("maps/balanced.map")==Engine::EE_NO_ERROR);
+            engine.beginSession(SDL_GetTicks());
+            REQUIRE(engine.startSimulationThread(SDL_GetTicks()));
+            std::vector<double> frames,ages,inputs;
+            const auto start=SDL_GetTicks();
+            while(SDL_GetTicks()-start<5000)
+            {
+                const auto frameStart=std::chrono::steady_clock::now();
+                SDL_Event motion{}; motion.type=SDL_EVENT_MOUSE_MOTION;
+                motion.motion.x=200+(frames.size()%100); motion.motion.y=250;
+                const auto input=[&]{REQUIRE(engine.threadedClientFrame(SDL_GetTicks(),{motion}));};
+                if(forced) engine.gui.parkForClient(input); else input();
+                const auto inputEnd=std::chrono::steady_clock::now();
+                engine.drawSession();
+                if(engine.gui.drawnScene().tickTime)
+                {
+                    inputs.push_back(std::chrono::duration<double,std::micro>(inputEnd-frameStart).count());
+                    frames.push_back(std::chrono::duration<double,std::micro>(std::chrono::steady_clock::now()-frameStart).count());
+                    ages.push_back(double(SDL_GetTicks()-engine.gui.drawnScene().tickTime));
+                }
+                SDL_Delay(1);
+            }
+            engine.stopSimulationThread();
+            const auto elapsed=SDL_GetTicks()-start;
+            REQUIRE(!frames.empty());
+            std::sort(frames.begin(),frames.end()); std::sort(ages.begin(),ages.end()); std::sort(inputs.begin(),inputs.end());
+            evidence << forced << ',' << frames.size() << ',' << engine.gui.game.stepCounter << ',' << elapsed << ','
+                << frames[frames.size()/2] << ',' << frames[frames.size()*95/100] << ',' << ages[ages.size()*95/100]
+                << ',' << inputs[inputs.size()/2] << ',' << inputs[inputs.size()*95/100] << '\n';
+            engine.gui.isRunning=false;
+            CHECK_FALSE(engine.finishSession());
+        }
+    }
+
+    TEST_CASE("routine snapshot input needs no simulation boundary [display][artifacts][writes-preferences]")
+    {
+        glob2test::ScopedEnvironment desktop("GLOB2_MOBILE_UI","0");
+        glob2test::HeadlessGlobals globals({.display=true,.loadStrings=true,.width=800,.height=600,.screenFlags=GAGCore::GraphicContext::PORTABLEGPU});
+        REQUIRE(NET_Init());
+        struct NetworkScope { ~NetworkScope(){NET_Quit();} } network;
+        globalContainer->automaticEndingGame=false;
+        globalContainer->settings.autosaveGames=false;
+        Engine engine;
+        REQUIRE(engine.initCampaign("maps/balanced.map")==Engine::EE_NO_ERROR);
+        engine.beginSession(SDL_GetTicks());
+        engine.gui.gamePaused=true;
+        REQUIRE(engine.admitPresentation());
+        REQUIRE(engine.serialPresentation);
+        REQUIRE(engine.startSimulationThread(SDL_GetTicks()));
+        CHECK_FALSE(engine.serialPresentation);
+        const auto boundary=engine.gui.simulationAccess;
+        unsigned parked=0;
+        engine.gui.simulationAccess=[&](const auto& work){++parked;boundary(work);};
+        // Snapshot publication is asynchronous; retain the input exercise while
+        // allowing instrumented builds to publish their first world.
+        const auto readyBy=SDL_GetTicks()+10000;
+        for(unsigned i=0;i<80 || (engine.gui.drawnScene().map.getW()==0 && SDL_GetTicks()<readyBy);++i)
+        {
+            SDL_Event motion{}; motion.type=SDL_EVENT_MOUSE_MOTION;
+            motion.motion.x=200+i; motion.motion.y=250;
+            REQUIRE(engine.threadedClientFrame(SDL_GetTicks(),{motion}));
+            engine.drawSession();
+            SDL_Delay(1);
+        }
+        REQUIRE(engine.gui.drawnScene().map.getW()>0);
+        CHECK(parked==0);
+        engine.gui.openChat();
+        for(unsigned i=0;i<5;++i)
+        {
+            SDL_Event motion{}; motion.type=SDL_EVENT_MOUSE_MOTION;
+            motion.motion.x=200+i; motion.motion.y=250;
+            REQUIRE(engine.threadedClientFrame(SDL_GetTicks(),{motion}));
+        }
+        CHECK(parked==0); // Chat updates and pointer motion remain client-only.
+        engine.gui.closeChat();
+        engine.gui.cycleGameSpeed();
+        CHECK(parked==1); // Explicit settings boundary, including nested setGameSpeed.
+        engine.gui.isRunning=false;
+        engine.stopSimulationThread();
+        CHECK_FALSE(engine.finishSession());
+    }
+
+	TEST_CASE("momentum uses the SDL clock after session suspension [display][artifacts]")
+	{
+		glob2test::ScopedEnvironment desktopUI("GLOB2_MOBILE_UI", "0");
+		glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.display = true, .loadStrings = true, .width = 800, .height = 600, .screenFlags = GAGCore::GraphicContext::PORTABLEGPU});
+		REQUIRE(NET_Init());
+		struct NetworkScope { ~NetworkScope() { NET_Quit(); } } network;
+		globalContainer->automaticEndingGame = false;
+		for (bool threaded : {false, true})
+		{
+			INFO("threaded client path=" << threaded);
+			Engine engine;
+			REQUIRE(engine.initCampaign("maps/balanced.map") == Engine::EE_NO_ERROR);
+			// A resumed session's clock trails SDL wall time. Keep it at zero
+			// while driving real timestamped touch events; no long sleep needed.
+			engine.beginSession(0);
+			engine.gui.gamePaused = true;
+			if (threaded)
+				REQUIRE(engine.startSimulationThread(0));
+			auto frame = [&](const std::vector<SDL_Event> &events = {}) {
+				REQUIRE(threaded ? engine.threadedClientFrame(0, events) : engine.stepSession(0, events));
+			};
+			// Input targets the displayed immutable world, including on the first
+			// threaded frame. Wait for initial publication before sending gestures.
+			const auto readyBy = SDL_GetTicks() + 5000;
+			while (!engine.gui.drawnScene().world.entities && SDL_GetTicks() < readyBy)
+			{
+				frame();
+				engine.drawSession(true);
+				SDL_Delay(1);
+			}
+			REQUIRE(engine.gui.drawnScene().world.entities);
+			auto finger = [&](Uint32 type, float x) {
+				SDL_Event event{};
+				event.type = type;
+				event.tfinger.timestamp = SDL_GetTicksNS();
+				event.tfinger.touchID = 7;
+				event.tfinger.fingerID = 1;
+				event.tfinger.x = x / 800;
+				event.tfinger.y = 300.f / 600;
+				frame({event});
+			};
+			for (int resume = 0; resume < 2; ++resume)
+			{
+				engine.suspendInput();
+				engine.suspendSimulation();
+				REQUIRE(!engine.gui.touch->scrollAnimating());
+				engine.resumeSimulation(0);
+				frame();
+				finger(SDL_EVENT_FINGER_DOWN, 300);
+				for (int move = 1; move <= 4; ++move)
+				{
+					SDL_Delay(16);
+					finger(SDL_EVENT_FINGER_MOTION, 300 + 30 * move);
+				}
+				finger(SDL_EVENT_FINGER_UP, 420);
+				const auto capture = [&](const char *phase) {
+					glob2test::drawGUI(engine.gui,0);
+					const std::string name = std::string("resume-") + (threaded ? "threaded-" : "serial-")
+						+ std::to_string(resume) + "-" + phase + ".bmp";
+					globalContainer->gfx->printScreen(name.c_str());
+					globalContainer->gfx->nextFrame();
+				};
+				const double released = engine.gui.camera.originX;
+				capture("released");
+				SDL_Delay(20);
+				frame();
+				capture("coasting");
+				const double coast = MapCamera::wrap(released - engine.gui.camera.originX,
+					engine.gui.game.map.getW() * 32.0);
+				std::cout << "Resume momentum: threaded=" << threaded << " cycle=" << resume
+					<< " session_ms=0 SDL_ms=" << SDL_GetTicks() << " coast_pixels=" << coast << "\n";
+				REQUIRE(coast > 1);
+				REQUIRE(coast < engine.gui.game.map.getW() * 16.0);
+			}
+			// Teardown's GUI-only service has no session-time argument and must
+			// park the producer even when there is no save left to finalize.
+			const auto stoppedTick = engine.gui.game.stepCounter;
+			REQUIRE_FALSE(engine.advancePendingSave({}));
+			REQUIRE_FALSE(engine.simulationThreaded());
+			REQUIRE(engine.gui.game.stepCounter == stoppedTick);
+			engine.abortSession();
+		}
+	}
+Diff of compatibility gates (empty):
+

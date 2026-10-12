@@ -1,0 +1,113 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="23" failures="0" errors="1" skipped="0"><testsuite name="GameGUITouch"><testcase classname="GameGUITouch" name="a touch on or near a flag drags the flag; not the map [display]" time="7.37401" status="run" />
+  <testcase classname="GameGUITouch" name="actual gameplay touch; toroidal pan; preview; confirmation; validation; cancellation and duplicate suppression [display][artifacts][writes-preferences]" time="301.802"><error message="timeout" type="timeout">x/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+
+[run_tests] timeout process group:
+ 569140  568779  569140 Rsl  /home/bradley/.codex/worktrees/mcp-desktop-ui/glob2/artifacts/mcp/focused-build/test/glob2-engine-tests -r=junit -o=/tmp/glob2-test-05to_c64/junit.xml --no-breaks=true -tc=actual gameplay touch; toroidal pan; preview; confirmation; validation; cancellation and duplicate suppression [display][artifacts][writes-preferences] -ts=GameGUITouch
+  thread 569140: 0
+  thread 569159: futex_do_wait
+  thread 569160: futex_do_wait
+  thread 569161: futex_do_wait
+  thread 569162: futex_do_wait
+  thread 569163: futex_do_wait
+  thread 569164: futex_do_wait
+  thread 569165: futex_do_wait
+  thread 569166: futex_do_wait
+  thread 569167: futex_do_wait
+  thread 569168: futex_do_wait
+  thread 569169: futex_do_wait
+  thread 569170: futex_do_wait
+  thread 569171: futex_do_wait
+  thread 569172: futex_do_wait
+  thread 569173: futex_do_wait
+  thread 569174: futex_do_wait
+  thread 569175: futex_do_wait
+  thread 569176: futex_do_wait
+  thread 569177: futex_do_wait
+  thread 569178: futex_do_wait
+  thread 569179: futex_do_wait
+  thread 569180: futex_do_wait
+  thread 569181: futex_do_wait
+  thread 569182: futex_do_wait
+  thread 569183: futex_do_wait
+  thread 569184: futex_do_wait
+  thread 569185: futex_do_wait
+  thread 569186: futex_do_wait
+  thread 569187: futex_do_wait
+  thread 569188: futex_do_wait
+  thread 569189: futex_do_wait
+  thread 569190: futex_do_wait
+  thread 569191: futex_do_wait
+  thread 569192: futex_do_wait
+  thread 569193: futex_do_wait
+  thread 569194: futex_do_wait
+  thread 569204: futex_do_wait
+  thread 569205: futex_do_wait
+  thread 569206: futex_do_wait
+  thread 569207: futex_do_wait
+  thread 569208: futex_do_wait
+  thread 569209: futex_do_wait
+  thread 569210: futex_do_wait
+  thread 569211: futex_do_wait
+  thread 569212: futex_do_wait
+  thread 569213: futex_do_wait
+  thread 569219: futex_do_wait
+  thread 569224: hrtimer_nanosleep
+  thread 569260: futex_do_wait
+  thread 569261: futex_do_wait
+  thread 574655: hrtimer_nanosleep
+
+[run_tests] killed after 300s
+</error></testcase><testcase classname="GameGUITouch" name="scaled gameplay dialog input is translated once [display]" time="7.08373" status="run" />
+  <testcase classname="GameGUITouch" name="touch scroll momentum on the map; the HUD palette and the editor [display]" time="30.9337" status="run" />
+  <testcase classname="GameGUITouch" name="unit taps have a zoom independent halo and show unit stats [display][artifacts]" time="13.2883" status="run" />
+  </testsuite><testsuite name="src/mcp/MCPTest.cpp"><testcase classname="src/mcp/MCPTest.cpp" name="MCP/HTTP restrictions bounded bodies restart and disconnect cancellation [network]" time="0.074409" status="run" />
+  <testcase classname="src/mcp/MCPTest.cpp" name="MCP/OpenGL capture dimensions orientation cancellation [display][artifacts]" time="4.23005" status="run" />
+  <testcase classname="src/mcp/MCPTest.cpp" name="MCP/SDL GPU capture dimensions orientation cancellation [display][artifacts]" time="6.42495" status="run" />
+  <testcase classname="src/mcp/MCPTest.cpp" name="MCP/held input and drag clocks begin at actual dispatch [network]" time="4.1786" status="run" />
+  <testcase classname="src/mcp/MCPTest.cpp" name="MCP/hidden suspension resolves buffered receipts before later work [network]" time="3.37467" status="run" />
+  <testcase classname="src/mcp/MCPTest.cpp" name="MCP/input boundaries preserve observation and cancel truncated batches [network]" time="3.67817" status="run" />
+  <testcase classname="src/mcp/MCPTest.cpp" name="MCP/key events honor SDL keycode options for modifier chords [network]" time="3.95762" status="run" />
+  <testcase classname="src/mcp/MCPTest.cpp" name="MCP/leases input dispatch cancellation viewport and capture [network]" time="4.47254" status="run" />
+  <testcase classname="src/mcp/MCPTest.cpp" name="MCP/pending coordinates cancel when viewport changes before consumption [network]" time="3.48633" status="run" />
+  <testcase classname="src/mcp/MCPTest.cpp" name="MCP/pending keys cancel when UI becomes unavailable before consumption [network]" time="3.23774" status="run" />
+  <testcase classname="src/mcp/MCPTest.cpp" name="MCP/preferences retain desktop defaults and reject malformed ports" time="0.567409" status="run" />
+  <testcase classname="src/mcp/MCPTest.cpp" name="MCP/protocol adapters validate metadata and discover all tools" time="0.02818" status="run" />
+  <testcase classname="src/mcp/MCPTest.cpp" name="MCP/software capture dimensions orientation cancellation [display][artifacts]" time="3.40682" status="run" />
+  <testcase classname="src/mcp/MCPTest.cpp" name="MCP/staged release cancellation does not acknowledge undelivered cleanup [network]" time="3.45654" status="run" />
+  </testsuite><testsuite name="ScreenExecution"><testcase classname="ScreenExecution" name="a top screen with unsaved work can veto window close" time="0.010222" status="run" />
+  <testcase classname="ScreenExecution" name="additional input follows human dispatch and reports an interrupted prefix" time="0.007985" status="run" />
+  <testcase classname="ScreenExecution" name="cancelled buffered ranges preserve later human text and defer receipt completion" time="0.003993" status="run" />
+  <testcase classname="ScreenExecution" name="screen phases; completion; reuse; quit and compatibility host" time="0.522818" status="run" />
+  </testsuite></testsuites>

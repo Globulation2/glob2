@@ -1,0 +1,5 @@
+{
+  "compiler": "x86_64-w64-mingw32-g++-posix 13",
+  "purpose": "syntax-only Windows branch checks; no Windows game build/link/runtime",
+  "headers": "portable Linux-installed SDL/Boost plus host OpenSSL public/configuration headers; no Windows binary libraries used"
+}

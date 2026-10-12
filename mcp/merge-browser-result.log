@@ -1,0 +1,14 @@
+src/mcp/UIService.cpp 0
+src/app/Application.cpp 0
+src/app/Settings.cpp 0
+src/ui/settings/SettingsScreen.cpp 0
+src/ui/settings/SettingsScreenMCP.cpp 0
+libgag/src/ScreenStack.cpp 0
+libgag/src/GraphicContextRenderer.cpp 0
+src/hud/touch/GameGUITouch.cpp 0
+src/hud/input/GameGUIInput.cpp 0
+src/hud/GameGUIStep.cpp 0
+src/game/screens/GameSessionScreen.cpp 0
+src/map/editor/screens/MapEditorScreen.cpp 0
+src/map/editor/MapEditIO.cpp 0
+src/engine/EngineRun.cpp 0

@@ -1,0 +1,228 @@
+PASS ScreenExecution/cancelled buffered ranges preserve later human text and defer receipt completion (0.0s)
+PASS ScreenExecution/a top screen with unsaved work can veto window close (0.1s)
+PASS ScreenExecution/additional input follows human dispatch and reports an interrupted prefix (0.1s)
+PASS ScreenExecution/screen phases; completion; reuse; quit and compatibility host (0.6s)
+PASS GameGUITouch/scaled gameplay dialog input is translated once [display] (7.2s)
+PASS GameGUITouch/unit taps have a zoom independent halo and show unit stats [display][artifacts] (13.6s)
+PASS MCP/protocol adapters validate metadata and discover all tools (0.1s)
+PASS MCP/HTTP restrictions bounded bodies restart and disconnect cancellation [network] (0.1s)
+PASS MCP/leases input dispatch cancellation viewport and capture [network] (4.6s)
+PASS MCP/input boundaries preserve observation and cancel truncated batches [network] (3.8s)
+PASS MCP/staged release cancellation does not acknowledge undelivered cleanup [network] (3.5s)
+PASS MCP/key events honor SDL keycode options for modifier chords [network] (4.0s)
+PASS MCP/held input and drag clocks begin at actual dispatch [network] (4.3s)
+PASS MCP/pending coordinates cancel when viewport changes before consumption [network] (3.6s)
+PASS MCP/pending keys cancel when UI becomes unavailable before consumption [network] (3.3s)
+PASS MCP/hidden suspension resolves buffered receipts before later work [network] (3.5s)
+PASS GameGUITouch/touch scroll momentum on the map; the HUD palette and the editor [display] (31.1s)
+PASS MCP/preferences retain desktop defaults and reject malformed ports (0.6s)
+PASS MCP/software capture dimensions orientation cancellation [display][artifacts] (3.5s)
+PASS MCP/SDL GPU capture dimensions orientation cancellation [display][artifacts] (6.5s)
+PASS MCP/OpenGL capture dimensions orientation cancellation [display][artifacts] (4.4s)
+PASS GameGUITouch/a touch on or near a flag drags the flag; not the map [display] (7.5s)
+TIMEOUT GameGUITouch/actual gameplay touch; toroidal pan; preview; confirmation; validation; cancellation and duplicate suppression [display][artifacts][writes-preferences] (301.8s)
+
+===== TIMEOUT GameGUITouch/actual gameplay touch; toroidal pan; preview; confirmation; validation; cancellation and duplicate suppression [display][artifacts][writes-preferences] =====
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+No frames for sprite: data/gfx/touch-fixture-missing-resource
+
+[run_tests] timeout process group:
+ 569140  568779  569140 Rsl  /home/bradley/.codex/worktrees/mcp-desktop-ui/glob2/artifacts/mcp/focused-build/test/glob2-engine-tests -r=junit -o=/tmp/glob2-test-05to_c64/junit.xml --no-breaks=true -tc=actual gameplay touch; toroidal pan; preview; confirmation; validation; cancellation and duplicate suppression [display][artifacts][writes-preferences] -ts=GameGUITouch
+  thread 569140: 0
+  thread 569159: futex_do_wait
+  thread 569160: futex_do_wait
+  thread 569161: futex_do_wait
+  thread 569162: futex_do_wait
+  thread 569163: futex_do_wait
+  thread 569164: futex_do_wait
+  thread 569165: futex_do_wait
+  thread 569166: futex_do_wait
+  thread 569167: futex_do_wait
+  thread 569168: futex_do_wait
+  thread 569169: futex_do_wait
+  thread 569170: futex_do_wait
+  thread 569171: futex_do_wait
+  thread 569172: futex_do_wait
+  thread 569173: futex_do_wait
+  thread 569174: futex_do_wait
+  thread 569175: futex_do_wait
+  thread 569176: futex_do_wait
+  thread 569177: futex_do_wait
+  thread 569178: futex_do_wait
+  thread 569179: futex_do_wait
+  thread 569180: futex_do_wait
+  thread 569181: futex_do_wait
+  thread 569182: futex_do_wait
+  thread 569183: futex_do_wait
+  thread 569184: futex_do_wait
+  thread 569185: futex_do_wait
+  thread 569186: futex_do_wait
+  thread 569187: futex_do_wait
+  thread 569188: futex_do_wait
+  thread 569189: futex_do_wait
+  thread 569190: futex_do_wait
+  thread 569191: futex_do_wait
+  thread 569192: futex_do_wait
+  thread 569193: futex_do_wait
+  thread 569194: futex_do_wait
+  thread 569204: futex_do_wait
+  thread 569205: futex_do_wait
+  thread 569206: futex_do_wait
+  thread 569207: futex_do_wait
+  thread 569208: futex_do_wait
+  thread 569209: futex_do_wait
+  thread 569210: futex_do_wait
+  thread 569211: futex_do_wait
+  thread 569212: futex_do_wait
+  thread 569213: futex_do_wait
+  thread 569219: futex_do_wait
+  thread 569224: hrtimer_nanosleep
+  thread 569260: futex_do_wait
+  thread 569261: futex_do_wait
+  thread 574655: hrtimer_nanosleep
+
+[run_tests] killed after 300s
+
+22 passed, 1 failed, 0 skipped (407.8s of test time)
+[run_tests] JUnit report: artifacts/mcp/review-final-core-junit.xml (23 cases)

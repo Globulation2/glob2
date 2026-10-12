@@ -1,0 +1,9 @@
+/usr/bin/ld: build/mcp-dev/test/engine-src_ui_settings_SettingsGraphicsTest.o: in function `DOCTEST_ANON_SUITE_2::DOCTEST_ANON_FUNC_5()':
+./src/ui/settings/SettingsGraphicsTest.cpp:57:(.text+0xf5a): undefined reference to `HandPreferenceScreen::choose(int)'
+/usr/bin/ld: ./src/ui/settings/SettingsGraphicsTest.cpp:61:(.text+0x10a8): undefined reference to `HandPreferenceScreen::choose(int)'
+/usr/bin/ld: ./src/ui/settings/SettingsGraphicsTest.cpp:75:(.text+0x14bc): undefined reference to `HandPreferenceScreen::choose(int)'
+/usr/bin/ld: build/mcp-dev/test/engine-src_ui_settings_SettingsGraphicsTest.o: in function `HandPreferenceScreen::HandPreferenceScreen()':
+./src/ui/screens/HandPreferenceScreen.h:5:(.text._ZN20HandPreferenceScreenC2Ev[_ZN20HandPreferenceScreenC5Ev]+0x1f): undefined reference to `vtable for HandPreferenceScreen'
+/usr/bin/ld: build/mcp-dev/test/engine-src_ui_settings_SettingsGraphicsTest.o: in function `HandPreferenceScreen::~HandPreferenceScreen()':
+./src/ui/screens/HandPreferenceScreen.h:5:(.text._ZN20HandPreferenceScreenD2Ev[_ZN20HandPreferenceScreenD5Ev]+0x13): undefined reference to `vtable for HandPreferenceScreen'
+collect2: error: ld returned 1 exit status

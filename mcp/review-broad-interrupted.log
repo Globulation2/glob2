@@ -1,0 +1,61 @@
+PASS PortableRenderer/live scale retains portable viewport ownership [display] (1.2s)
+PASS PortableRenderer/software targets resize and destroy safely during an active transform [display] (2.5s)
+PASS WindowResize/cache; callbacks; reflow; context lifetime; input; minimum size and recreation in software rendering [display:1600x1400] (2.8s)
+PASS GUIInteractionCoverage/service progress horizon covers mixed visits and preserves stock horizons (0.6s)
+PASS WindowResize/cache; callbacks; reflow; context lifetime; input; minimum size and recreation in OpenGL [display:1600x1400] (2.5s)
+PASS WindowResize/native display and live preferences in software [display] (1.3s)
+PASS GUIInteractionCoverage/mixed upgrade preview tracks actual rows scroll and recipe inputs [display][artifacts] (10.3s)
+PASS GUIInteractionCoverage/construction choice displays recipe costs independently of storage [display][artifacts] (11.4s)
+PASS GUIInteractionCoverage/custom mixed building panels render without mutating simulation [display][artifacts] (8.6s)
+PASS GUIInteractionCoverage/unit information reflects damage hunger ownership and abilities without mutating simulation [display][artifacts] (10.1s)
+PASS GUIInteractionCoverage/desktop building menu clicks queue authoritative worker and priority orders [display] (9.5s)
+PASS GUIInteractionCoverage/configured keyboard actions toggle presentation and queue pause without changing simulation [display] (7.9s)
+PASS GUIInteractionCoverage/initial camera survives waiting for the first presentation [display] (7.6s)
+PASS GUIInteractionCoverage/home keyboard action wraps the camera and script messages preserve history [display] (7.9s)
+PASS GUIInteractionCoverage/match and editor dialogs wear the in-match theme; results dialogs stay on paper [display][artifacts] (5.9s)
+PASS GUIInteractionCoverage/local victory popup and results show the same deciding condition [display][artifacts] (11.9s)
+PASS GUIInteractionCoverage/match dialogs accept return and distinguish continuing from ending a game [display] (6.2s)
+PASS WindowResize/native display and live preferences in OpenGL [display] (1.3s)
+PASS GUIOrderCoverage/worker requests clamp deduplicate and retain newer pending changes (2.1s)
+PASS PortableRenderer/each accelerated backend uploads surface revisions independently [display] (1.7s)
+PASS GUIOrderCoverage/reconciliation is field-specific and replay clears superseded shadows (2.3s)
+PASS GUIOrderCoverage/priority and radius requests clamp and reconcile against real orders (4.1s)
+PASS GUIInteractionCoverage/resource inspectors show infinity only for stocked infinite yields [display:1024x768][artifacts] (12.9s)
+PASS EditorActionCoverage/rerolling the terrain look changes the map seed and marks the map modified [display] (33.3s)
+PASS EditorActionCoverage/editor selects and saves the sixteenth team [display][artifacts] (51.9s)
+PASS EditorActionCoverage/unit placement selection and stat edits use the action dispatcher [display] (39.7s)
+PASS EditorActionCoverage/building selection exposes matching editor controls and save retains edits [display] (43.5s)
+PASS EditorActionCoverage/zone brush addition removal and seam wrapping preserve other team paint and saved masks [display][artifacts] (31.9s)
+PASS EditorActionCoverage/resource brushes add erase and retain painted wheat through editor save-load [display] (37.1s)
+PASS EditorActionCoverage/farm brush is offered only with the farm-areas experiment and refuses ground that cannot grow [display][artifacts] (42.7s)
+PASS EditorActionCoverage/base terrain brush changes water sand and grass and saves the final terrain [display] (29.4s)
+PASS EditorActionCoverage/terrain experiments independently gate whole-cell brushes [display] (32.0s)
+PASS EditorActionCoverage/registered terrain stamps batch invalidation and reject invalid selector IDs [display] (28.5s)
+PASS EditorActionCoverage/catalogue group selectors and the palette actions navigate the dock [display][artifacts] (30.2s)
+PASS EditorFlows/window close quits a clean editor and asks in the editor when it is dirty [display][artifacts] (34.2s)
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/mcp-desktop-ui/glob2/test/run_tests.py", line 719, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/home/bradley/.codex/worktrees/mcp-desktop-ui/glob2/test/run_tests.py", line 702, in main
+    result = future.result()
+             ^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/concurrent/futures/_base.py", line 449, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/concurrent/futures/_base.py", line 401, in __get_result
+    raise self._exception
+  File "/usr/lib/python3.12/concurrent/futures/thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/bradley/.codex/worktrees/mcp-desktop-ui/glob2/test/run_tests.py", line 695, in run
+    return run_job(job, args, build_dir)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/bradley/.codex/worktrees/mcp-desktop-ui/glob2/test/run_tests.py", line 383, in run_job
+    process = subprocess.Popen(command, **popen_kwargs)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/subprocess.py", line 1026, in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+  File "/usr/lib/python3.12/subprocess.py", line 1955, in _execute_child
+    raise child_exception_type(errno_num, err_msg, err_filename)
+PermissionError: [Errno 13] Permission denied: '/home/bradley/.codex/worktrees/mcp-desktop-ui/glob2/artifacts/mcp/focused-build/test/glob2-engine-tests'

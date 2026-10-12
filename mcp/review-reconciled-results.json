@@ -1,0 +1,902 @@
+{
+  "uniqueCases": 149,
+  "passed": 148,
+  "failed": 1,
+  "errors": 0,
+  "cases": [
+    {
+      "suite": "EngineSession",
+      "name": "a retained version-152 stock replay preserves recorded simulation checksums [save-format]",
+      "state": "failed",
+      "evidence": "review-core-junit.xml"
+    },
+    {
+      "suite": "EngineSession",
+      "name": "automatic GUI sessions poll asset finalizers on the presentation thread [display]",
+      "state": "passed",
+      "evidence": "review-core-junit.xml"
+    },
+    {
+      "suite": "EngineSession",
+      "name": "buffered input receipts wait for GUI dispatch and cancel exact ranges [display]",
+      "state": "passed",
+      "evidence": "review-core-junit.xml"
+    },
+    {
+      "suite": "EngineSession",
+      "name": "camera refreshes cannot starve advancing presentation worlds",
+      "state": "passed",
+      "evidence": "review-core-junit.xml"
+    },
+    {
+      "suite": "EngineSession",
+      "name": "disabled prestige victory cannot end automatic matches",
+      "state": "passed",
+      "evidence": "review-core-junit.xml"
+    },
+    {
+      "suite": "EngineSession",
+      "name": "eliminated prestige leaders cannot make every survivor lose",
+      "state": "passed",
+      "evidence": "review-core-junit.xml"
+    },
+    {
+      "suite": "EngineSession",
+      "name": "incremental sessions; editor decisions; fertility equivalence and cancellation [writes-preferences]",
+      "state": "passed",
+      "evidence": "review-core-junit.xml"
+    },
+    {
+      "suite": "EngineSession",
+      "name": "menu colony rendering consumes its shared boundary without recapture [display]",
+      "state": "passed",
+      "evidence": "review-core-junit.xml"
+    },
+    {
+      "suite": "EngineSession",
+      "name": "momentum uses the SDL clock after session suspension [display][artifacts]",
+      "state": "passed",
+      "evidence": "review-core-junit.xml"
+    },
+    {
+      "suite": "EngineSession",
+      "name": "native presentation fallback yields between expensive chunks",
+      "state": "passed",
+      "evidence": "review-core-junit.xml"
+    },
+    {
+      "suite": "EngineSession",
+      "name": "new client requests replace completed pending frames without recapture",
+      "state": "passed",
+      "evidence": "review-core-junit.xml"
+    },
+    {
+      "suite": "EngineSession",
+      "name": "observation players preserve seat order and spectator readiness",
+      "state": "passed",
+      "evidence": "review-core-junit.xml"
+    },
+    {
+      "suite": "EngineSession",
+      "name": "paced sessions publish completed worlds before waiting and AI reuses them [display]",
+      "state": "passed",
+      "evidence": "review-core-junit.xml"
+    },
+    {
+      "suite": "EngineSession",
+      "name": "render ceilings preserve per tick simulation checksums [display][artifacts]",
+      "state": "passed",
+      "evidence": "review-core-junit.xml"
+    },
+    {
+      "suite": "EngineSession",
+      "name": "routine snapshot input needs no simulation boundary [display][artifacts][writes-preferences]",
+      "state": "passed",
+      "evidence": "review-core-junit.xml"
+    },
+    {
+      "suite": "EngineSession",
+      "name": "serial sessions retain chat text across skipped GUI frames",
+      "state": "passed",
+      "evidence": "review-core-junit.xml"
+    },
+    {
+      "suite": "GameGUITouch",
+      "name": "a touch on or near a flag drags the flag; not the map [display]",
+      "state": "passed",
+      "evidence": "review-final-core-junit.xml"
+    },
+    {
+      "suite": "GameGUITouch",
+      "name": "actual gameplay touch; toroidal pan; preview; confirmation; validation; cancellation and duplicate suppression [display][artifacts][writes-preferences]",
+      "state": "passed",
+      "evidence": "review-touch-retry-junit.xml"
+    },
+    {
+      "suite": "GameGUITouch",
+      "name": "scaled gameplay dialog input is translated once [display]",
+      "state": "passed",
+      "evidence": "review-final-core-junit.xml"
+    },
+    {
+      "suite": "GameGUITouch",
+      "name": "touch scroll momentum on the map; the HUD palette and the editor [display]",
+      "state": "passed",
+      "evidence": "review-final-core-junit.xml"
+    },
+    {
+      "suite": "GameGUITouch",
+      "name": "unit taps have a zoom independent halo and show unit stats [display][artifacts]",
+      "state": "passed",
+      "evidence": "review-final-core-junit.xml"
+    },
+    {
+      "suite": "src/mcp/MCPTest.cpp",
+      "name": "MCP/HTTP restrictions bounded bodies restart and disconnect cancellation [network]",
+      "state": "passed",
+      "evidence": "review-final-core-junit.xml"
+    },
+    {
+      "suite": "src/mcp/MCPTest.cpp",
+      "name": "MCP/OpenGL capture dimensions orientation cancellation [display][artifacts]",
+      "state": "passed",
+      "evidence": "review-final-core-junit.xml"
+    },
+    {
+      "suite": "src/mcp/MCPTest.cpp",
+      "name": "MCP/SDL GPU capture dimensions orientation cancellation [display][artifacts]",
+      "state": "passed",
+      "evidence": "review-final-core-junit.xml"
+    },
+    {
+      "suite": "src/mcp/MCPTest.cpp",
+      "name": "MCP/held input and drag clocks begin at actual dispatch [network]",
+      "state": "passed",
+      "evidence": "review-final-core-junit.xml"
+    },
+    {
+      "suite": "src/mcp/MCPTest.cpp",
+      "name": "MCP/hidden suspension resolves buffered receipts before later work [network]",
+      "state": "passed",
+      "evidence": "review-final-core-junit.xml"
+    },
+    {
+      "suite": "src/mcp/MCPTest.cpp",
+      "name": "MCP/input boundaries preserve observation and cancel truncated batches [network]",
+      "state": "passed",
+      "evidence": "review-final-core-junit.xml"
+    },
+    {
+      "suite": "src/mcp/MCPTest.cpp",
+      "name": "MCP/key events honor SDL keycode options for modifier chords [network]",
+      "state": "passed",
+      "evidence": "review-final-core-junit.xml"
+    },
+    {
+      "suite": "src/mcp/MCPTest.cpp",
+      "name": "MCP/leases input dispatch cancellation viewport and capture [network]",
+      "state": "passed",
+      "evidence": "review-final-core-junit.xml"
+    },
+    {
+      "suite": "src/mcp/MCPTest.cpp",
+      "name": "MCP/pending coordinates cancel when viewport changes before consumption [network]",
+      "state": "passed",
+      "evidence": "review-final-core-junit.xml"
+    },
+    {
+      "suite": "src/mcp/MCPTest.cpp",
+      "name": "MCP/pending keys cancel when UI becomes unavailable before consumption [network]",
+      "state": "passed",
+      "evidence": "review-final-core-junit.xml"
+    },
+    {
+      "suite": "src/mcp/MCPTest.cpp",
+      "name": "MCP/preferences retain desktop defaults and reject malformed ports",
+      "state": "passed",
+      "evidence": "review-final-core-junit.xml"
+    },
+    {
+      "suite": "src/mcp/MCPTest.cpp",
+      "name": "MCP/protocol adapters validate metadata and discover all tools",
+      "state": "passed",
+      "evidence": "review-final-core-junit.xml"
+    },
+    {
+      "suite": "src/mcp/MCPTest.cpp",
+      "name": "MCP/software capture dimensions orientation cancellation [display][artifacts]",
+      "state": "passed",
+      "evidence": "review-final-core-junit.xml"
+    },
+    {
+      "suite": "src/mcp/MCPTest.cpp",
+      "name": "MCP/staged release cancellation does not acknowledge undelivered cleanup [network]",
+      "state": "passed",
+      "evidence": "review-final-core-junit.xml"
+    },
+    {
+      "suite": "ScreenExecution",
+      "name": "a top screen with unsaved work can veto window close",
+      "state": "passed",
+      "evidence": "review-final-core-junit.xml"
+    },
+    {
+      "suite": "ScreenExecution",
+      "name": "additional input follows human dispatch and reports an interrupted prefix",
+      "state": "passed",
+      "evidence": "review-final-core-junit.xml"
+    },
+    {
+      "suite": "ScreenExecution",
+      "name": "cancelled buffered ranges preserve later human text and defer receipt completion",
+      "state": "passed",
+      "evidence": "review-final-core-junit.xml"
+    },
+    {
+      "suite": "ScreenExecution",
+      "name": "screen phases; completion; reuse; quit and compatibility host",
+      "state": "passed",
+      "evidence": "review-final-core-junit.xml"
+    },
+    {
+      "suite": "ClientCapabilities",
+      "name": "Settings categories follow the resolved client capabilities",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "EditorActionCoverage",
+      "name": "base terrain brush changes water sand and grass and saves the final terrain [display]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "EditorActionCoverage",
+      "name": "building selection exposes matching editor controls and save retains edits [display]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "EditorActionCoverage",
+      "name": "catalogue group selectors and the palette actions navigate the dock [display][artifacts]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "EditorActionCoverage",
+      "name": "custom catalog editor exposes resources mixed controls and long upgrade paths [display][artifacts]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "EditorActionCoverage",
+      "name": "custom terrain imports reach the dock and saved maps work on desktop and phone [display][artifacts]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "EditorActionCoverage",
+      "name": "editor material rows require configured capacity and natural or owned presence [display]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "EditorActionCoverage",
+      "name": "editor selects and saves the sixteenth team [display][artifacts]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "EditorActionCoverage",
+      "name": "farm brush is offered only with the farm-areas experiment and refuses ground that cannot grow [display][artifacts]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "EditorActionCoverage",
+      "name": "registered terrain stamps batch invalidation and reject invalid selector IDs [display]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "EditorActionCoverage",
+      "name": "rerolling the terrain look changes the map seed and marks the map modified [display]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "EditorActionCoverage",
+      "name": "resource brushes add erase and retain painted wheat through editor save-load [display]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "EditorActionCoverage",
+      "name": "terrain experiments independently gate whole-cell brushes [display]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "EditorActionCoverage",
+      "name": "unit placement selection and stat edits use the action dispatcher [display]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "EditorActionCoverage",
+      "name": "zone brush addition removal and seam wrapping preserve other team paint and saved masks [display][artifacts]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "EditorFlows",
+      "name": "cancelling fertility during a save keeps the save dialog with a message [display]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "EditorFlows",
+      "name": "definition imports offer the device picker and explain an empty folder [display]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "EditorFlows",
+      "name": "editor input receipts report skipped persistence and interrupted tails [display]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "EditorFlows",
+      "name": "loading another map asks about unsaved changes first [display]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "EditorFlows",
+      "name": "menu quit with unsaved changes uses the in-editor card and save continues to quit [display][artifacts]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "EditorFlows",
+      "name": "rerolling the terrain look from the menu asks first [display]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "EditorFlows",
+      "name": "saving over an existing file asks inline, except for the document's own file [display]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "EditorFlows",
+      "name": "sharing a never-saved map saves it first and then shares the saved file [display]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "EditorFlows",
+      "name": "teams scenario and area-name dialogs mark the map modified only for real changes [display]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "EditorFlows",
+      "name": "terrain strokes mark the fertility overlay stale until it is refreshed [display][artifacts]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "EditorFlows",
+      "name": "window close quits a clean editor and asks in the editor when it is dirty [display][artifacts]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "EditorTerrainPaint",
+      "name": "Del reverts only vertices of the selected terrain to grass [display]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "EditorTerrainPaint",
+      "name": "a resource stroke that places nothing explains where the resource grows [display]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "EditorTerrainPaint",
+      "name": "every terrain brush paints exactly the vertices its hover preview shows [display]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "EditorTerrainPaint",
+      "name": "terrain strokes remove only what the new terrain disallows [display]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "EditorTerrainPaint",
+      "name": "the smallest brush paints one vertex and lays a beach around water [display]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "GUIInteractionCoverage",
+      "name": "configured keyboard actions toggle presentation and queue pause without changing simulation [display]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "GUIInteractionCoverage",
+      "name": "construction choice displays recipe costs independently of storage [display][artifacts]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "GUIInteractionCoverage",
+      "name": "custom mixed building panels render without mutating simulation [display][artifacts]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "GUIInteractionCoverage",
+      "name": "desktop building menu clicks queue authoritative worker and priority orders [display]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "GUIInteractionCoverage",
+      "name": "home keyboard action wraps the camera and script messages preserve history [display]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "GUIInteractionCoverage",
+      "name": "initial camera survives waiting for the first presentation [display]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "GUIInteractionCoverage",
+      "name": "local victory popup and results show the same deciding condition [display][artifacts]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "GUIInteractionCoverage",
+      "name": "match and editor dialogs wear the in-match theme; results dialogs stay on paper [display][artifacts]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "GUIInteractionCoverage",
+      "name": "match dialogs accept return and distinguish continuing from ending a game [display]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "GUIInteractionCoverage",
+      "name": "mixed service progress stays in its row and preserves downstream hit testing [display:1700x900][artifacts]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "GUIInteractionCoverage",
+      "name": "mixed upgrade preview tracks actual rows scroll and recipe inputs [display][artifacts]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "GUIInteractionCoverage",
+      "name": "resource inspectors show infinity only for stocked infinite yields [display:1024x768][artifacts]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "GUIInteractionCoverage",
+      "name": "service progress horizon covers mixed visits and preserves stock horizons",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "GUIInteractionCoverage",
+      "name": "unit information reflects damage hunger ownership and abilities without mutating simulation [display][artifacts]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "GUIOrderCoverage",
+      "name": "priority and radius requests clamp and reconcile against real orders",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "GUIOrderCoverage",
+      "name": "reconciliation is field-specific and replay clears superseded shadows",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "GUIOrderCoverage",
+      "name": "worker requests clamp deduplicate and retain newer pending changes",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "GameplayRecording.Integration",
+      "name": "global recording shortcut toggles and shutdown awaits finalization [display][artifacts][writes-preferences]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "GameplayRecording.Integration",
+      "name": "production presentation records menus and gameplay without changing per-tick state [display][artifacts][recording]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "GameplayRecording.Integration",
+      "name": "shutdown drains a completed asynchronous screenshot before file services retire [display][artifacts]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "GameplayRecording.Integration",
+      "name": "threaded scene recording preserves baseline per-tick checksums [display][artifacts][recording]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "PortableRenderer",
+      "name": "each accelerated backend uploads surface revisions independently [display]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "PortableRenderer",
+      "name": "live scale retains portable viewport ownership [display]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "PortableRenderer",
+      "name": "software targets resize and destroy safely during an active transform [display]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "PortableRenderer",
+      "name": "zone boundaries; UI transforms and portable rendering paths [display]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "RendererSwitchIntegration",
+      "name": "all ordered gameplay and torus backend pairs preserve camera and simulation [display][isolated][writes-preferences][slow]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "SavegameSafety",
+      "name": "autosave defaults; atomic and background writes; truncated and malformed loads; imports and campaign progress [save-format][writes-preferences]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "Settings",
+      "name": "catalog building defaults in compact layout [display][artifacts][writes-preferences]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "Settings",
+      "name": "layout; persistence; live display changes; bindings and localization at 1000x700 in OpenGL [display:1600x1400][artifacts][writes-preferences]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "Settings",
+      "name": "layout; persistence; live display changes; bindings and localization at 1000x700 in software rendering [display:1600x1400][artifacts][writes-preferences]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "Settings",
+      "name": "layout; persistence; live display changes; bindings and localization at 1280x900 in OpenGL [display:1600x1400][artifacts][writes-preferences]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "Settings",
+      "name": "layout; persistence; live display changes; bindings and localization at 640x480 in OpenGL [display:1600x1400][artifacts][writes-preferences]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "Settings",
+      "name": "layout; persistence; live display changes; bindings and localization at 800x600 in OpenGL [display:1600x1400][artifacts][writes-preferences]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "Settings",
+      "name": "layout; persistence; live display changes; bindings and localization with expanded wording at 640x480 in OpenGL [display:1600x1400][artifacts][writes-preferences]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "Settings",
+      "name": "render FPS dropdown in compact layout [display][artifacts][writes-preferences]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "SettingsAILibrary",
+      "name": "AI library compact discovery, favourite, installation and malformed responses [display:1280x900][artifacts]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "SettingsAILibrary",
+      "name": "AI library desktop discovery, favourite, installation and malformed responses [display:1280x900][artifacts]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "SettingsExperiments",
+      "name": "catalog experiments use translated text when available and English metadata otherwise",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "SettingsExperiments",
+      "name": "every experiment's label and help are in the string tables",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "SettingsExperiments",
+      "name": "preferences keep the enabled experiments and drop unknown keys",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "SettingsGraphics",
+      "name": "GPU local preference preserves graphical and headless defaults",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "SettingsGraphics",
+      "name": "edge scrolling defaults migrate and independent modes round trip",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "SettingsGraphics",
+      "name": "legacy preferences migrate and independent effects round trip",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "SettingsGraphics",
+      "name": "render ceiling defaults migrates validates and round trips",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "SettingsGraphics",
+      "name": "renderer preference migrates flags and round trips without startup overrides",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "SettingsGraphics",
+      "name": "text size applies to desktop and touch independently of interface scale",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "SoftwareRenderer",
+      "name": "fractional shared endpoints leave no seams; queued triangles obey direct writes",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "SoftwareRenderer",
+      "name": "geometry-reference blits preserve mixed pixel formats and source modulation",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "SoftwareRenderer",
+      "name": "integer transformed primitives retain SDL triangle blending exactly",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "SoftwareRenderer",
+      "name": "large owned images retain SDL geometry sampling and overflow behavior",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "SoftwareRenderer",
+      "name": "native display scaling preserves direct pixels through lazy geometry and target rotation",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "SoftwareRenderer",
+      "name": "nearest blits retain sampling under destination clipping and restore source state",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "SoftwareRenderer",
+      "name": "opacity classification follows content revisions; opaque copy matches alpha blending",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "SoftwareRenderer",
+      "name": "opaque row copies retain SDL clipping and color modulation",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "SoftwareRenderer",
+      "name": "presenter rotates full frames and preserves completed pixels during partial updates",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "SoftwareRenderer",
+      "name": "terrain cache matches integer-transformed coastlines and discovery across wraps and mutations [display][artifacts]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "SoftwareRenderer",
+      "name": "translucent fills preserve colors on 32-bit targets without alpha",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "TurnEngineHarness",
+      "name": "a 10 s flag drag and a held key keep the input delay bounded, without a flood [network-sim][artifacts]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "TurnEngineHarness",
+      "name": "a client sending hostile orders of every type crashes no one and is refused identically everywhere [network-sim][fuzz][artifacts]",
+      "state": "passed",
+      "evidence": "review-turn-retry-junit.xml"
+    },
+    {
+      "suite": "TurnEngineHarness",
+      "name": "a client that executes a tampered order is repaired by an in-place reload and named by the verifier [network-sim][artifacts]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "TurnEngineHarness",
+      "name": "a pause limit is enforced identically everywhere and the record verifies [network-sim][artifacts]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "TurnEngineHarness",
+      "name": "a player who leaves stays listed as Left, and the one left standing learns why it won [network-sim]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "TurnEngineHarness",
+      "name": "a player who quits leaves through the relay's quit order and the rest play on [network-sim]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "TurnEngineHarness",
+      "name": "a save with closed seats: reteamed players keep their colonies, closed ones are cleared [network-sim]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "TurnEngineHarness",
+      "name": "closed seats are closed colonies: the last player standing wins everywhere and the record verifies [network-sim]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "TurnEngineHarness",
+      "name": "embedded terrain definitions travel with shared matches and verifier replays [network-sim][artifacts]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "TurnEngineHarness",
+      "name": "engines report network telemetry, and its output changes nothing they execute [network-sim][artifacts]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "TurnEngineHarness",
+      "name": "four engines survive a stall and a restart: the restarted client reloads and fast-forwards [network-sim][artifacts]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "TurnEngineHarness",
+      "name": "one client claiming the game finished does not end it for a player who is reconnecting [network-sim]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "TurnEngineHarness",
+      "name": "orders a hostile relay forges for a seat are refused by the verifier, which still verifies [network-sim]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "TurnEngineHarness",
+      "name": "shared scripted maps play and produce verified ordinary replays without installation [network-sim][artifacts]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "TurnEngineHarness",
+      "name": "the committed match record verifies to the committed checksum trace [network-sim][golden]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "TurnEngineHarness",
+      "name": "two engines with AI seats under latency, jitter and loss agree at every tick and the record verifies [network-sim][artifacts]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "TurnEngineHarness",
+      "name": "voice packets do not hold up a player's orders [network-sim][artifacts]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "TurnEngineHarness",
+      "name": "without a pause limit a pause lasts until someone resumes it [network-sim]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "WindowResize",
+      "name": "cache; callbacks; reflow; context lifetime; input; minimum size and recreation in OpenGL [display:1600x1400]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "WindowResize",
+      "name": "cache; callbacks; reflow; context lifetime; input; minimum size and recreation in software rendering [display:1600x1400]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "WindowResize",
+      "name": "native display and live preferences in OpenGL [display]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    },
+    {
+      "suite": "WindowResize",
+      "name": "native display and live preferences in software [display]",
+      "state": "passed",
+      "evidence": "review-broad-junit.xml"
+    }
+  ]
+}

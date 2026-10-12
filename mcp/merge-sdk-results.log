@@ -1,0 +1,8 @@
+protocol 2026-07-28
+status {"available": true, "controlled": false, "controller": "None", "dispatched": false, "frame_id": 468, "height": 700, "input_started": false, "viewport_id": 1, "width": 1000}
+capture {"available": true, "controlled": true, "controller": "glob2-validation-auto", "dispatched": false, "frame_id": 475, "height": 700, "viewport_id": 1, "width": 1000}
+PASS auto
+protocol 2025-11-25
+status {"available": true, "controlled": false, "controller": "None", "dispatched": false, "frame_id": 480, "height": 700, "input_started": false, "viewport_id": 1, "width": 1000}
+capture {"available": true, "controlled": true, "controller": "Local MCP client", "dispatched": false, "frame_id": 486, "height": 700, "viewport_id": 1, "width": 1000}
+PASS legacy

@@ -1,0 +1,81 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="79" failures="0" errors="0" skipped="0"><testsuite name="EditorFlows"><testcase classname="EditorFlows" name="editor input receipts report skipped persistence and interrupted tails [display]" time="7.44044" status="run" />
+  </testsuite><testsuite name="EngineSession"><testcase classname="EngineSession" name="buffered input receipts wait for GUI dispatch and cancel exact ranges [display]" time="2.71281" status="run" />
+  <testcase classname="EngineSession" name="serial sessions retain chat text across skipped GUI frames" time="2.3603" status="run" />
+  </testsuite><testsuite name="GUIInteractionCoverage"><testcase classname="GUIInteractionCoverage" name="configured keyboard actions toggle presentation and queue pause without changing simulation [display]" time="1.64229" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="construction choice displays recipe costs independently of storage [display][artifacts]" time="2.74163" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="custom mixed building panels render without mutating simulation [display][artifacts]" time="1.64274" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="desktop building menu clicks queue authoritative worker and priority orders [display]" time="2.2781" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="home keyboard action wraps the camera and script messages preserve history [display]" time="1.67018" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="initial camera survives waiting for the first presentation [display]" time="1.58514" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="local victory popup and results show the same deciding condition [display][artifacts]" time="2.27819" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="match and editor dialogs wear the in-match theme; results dialogs stay on paper [display][artifacts]" time="1.47016" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="match dialogs accept return and distinguish continuing from ending a game [display]" time="1.45228" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="mixed service progress stays in its row and preserves downstream hit testing [display:1700x900][artifacts]" time="2.75241" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="mixed upgrade preview tracks actual rows scroll and recipe inputs [display][artifacts]" time="2.22758" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="resource inspectors show infinity only for stocked infinite yields [display:1024x768][artifacts]" time="2.44073" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="service progress horizon covers mixed visits and preserves stock horizons" time="0.297793" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="unit information reflects damage hunger ownership and abilities without mutating simulation [display][artifacts]" time="2.22977" status="run" />
+  </testsuite><testsuite name="GUIOrderCoverage"><testcase classname="GUIOrderCoverage" name="priority and radius requests clamp and reconcile against real orders" time="0.567659" status="run" />
+  <testcase classname="GUIOrderCoverage" name="reconciliation is field-specific and replay clears superseded shadows" time="0.328956" status="run" />
+  <testcase classname="GUIOrderCoverage" name="worker requests clamp deduplicate and retain newer pending changes" time="0.521021" status="run" />
+  </testsuite><testsuite name="GameGUITouch"><testcase classname="GameGUITouch" name="a touch on or near a flag drags the flag; not the map [display]" time="2.39435" status="run" />
+  <testcase classname="GameGUITouch" name="actual gameplay touch; toroidal pan; preview; confirmation; validation; cancellation and duplicate suppression [display][artifacts][writes-preferences]" time="146.91" status="run" />
+  <testcase classname="GameGUITouch" name="scaled gameplay dialog input is translated once [display]" time="1.66414" status="run" />
+  <testcase classname="GameGUITouch" name="touch scroll momentum on the map; the HUD palette and the editor [display]" time="8.05212" status="run" />
+  <testcase classname="GameGUITouch" name="unit taps have a zoom independent halo and show unit stats [display][artifacts]" time="3.58886" status="run" />
+  </testsuite><testsuite name="GameplayRecording.Integration"><testcase classname="GameplayRecording.Integration" name="global recording shortcut toggles and shutdown awaits finalization [display][artifacts][writes-preferences]" time="2.41706" status="run" />
+  <testcase classname="GameplayRecording.Integration" name="production presentation records menus and gameplay without changing per-tick state [display][artifacts][recording]" time="6.58446" status="run" />
+  <testcase classname="GameplayRecording.Integration" name="shutdown drains a completed asynchronous screenshot before file services retire [display][artifacts]" time="3.93662" status="run" />
+  <testcase classname="GameplayRecording.Integration" name="threaded scene recording preserves baseline per-tick checksums [display][artifacts][recording]" time="7.60883" status="run" />
+  </testsuite><testsuite name="src/mcp/MCPTest.cpp"><testcase classname="src/mcp/MCPTest.cpp" name="MCP/HTTP restrictions bounded bodies restart and disconnect cancellation [network]" time="0.016718" status="run" />
+  <testcase classname="src/mcp/MCPTest.cpp" name="MCP/OpenGL capture dimensions orientation cancellation [display][artifacts]" time="1.63592" status="run" />
+  <testcase classname="src/mcp/MCPTest.cpp" name="MCP/SDL GPU capture dimensions orientation cancellation [display][artifacts]" time="2.52818" status="run" />
+  <testcase classname="src/mcp/MCPTest.cpp" name="MCP/held input and drag clocks begin at actual dispatch [network]" time="1.0083" status="run" />
+  <testcase classname="src/mcp/MCPTest.cpp" name="MCP/hidden suspension resolves buffered receipts before later work [network]" time="1.08376" status="run" />
+  <testcase classname="src/mcp/MCPTest.cpp" name="MCP/input boundaries preserve observation and cancel truncated batches [network]" time="1.0286" status="run" />
+  <testcase classname="src/mcp/MCPTest.cpp" name="MCP/key events honor SDL keycode options for modifier chords [network]" time="1.06554" status="run" />
+  <testcase classname="src/mcp/MCPTest.cpp" name="MCP/leases input dispatch cancellation viewport and capture [network]" time="1.07845" status="run" />
+  <testcase classname="src/mcp/MCPTest.cpp" name="MCP/pending coordinates cancel when viewport changes before consumption [network]" time="0.996616" status="run" />
+  <testcase classname="src/mcp/MCPTest.cpp" name="MCP/pending keys cancel when UI becomes unavailable before consumption [network]" time="1.0084" status="run" />
+  <testcase classname="src/mcp/MCPTest.cpp" name="MCP/preferences retain desktop defaults and reject malformed ports" time="0.240778" status="run" />
+  <testcase classname="src/mcp/MCPTest.cpp" name="MCP/protocol adapters validate metadata and discover all tools" time="0.005916" status="run" />
+  <testcase classname="src/mcp/MCPTest.cpp" name="MCP/software capture dimensions orientation cancellation [display][artifacts]" time="1.49275" status="run" />
+  <testcase classname="src/mcp/MCPTest.cpp" name="MCP/staged release cancellation does not acknowledge undelivered cleanup [network]" time="1.03364" status="run" />
+  </testsuite><testsuite name="PortableRenderer"><testcase classname="PortableRenderer" name="each accelerated backend uploads surface revisions independently [display]" time="0.48769" status="run" />
+  <testcase classname="PortableRenderer" name="live scale retains portable viewport ownership [display]" time="0.381471" status="run" />
+  <testcase classname="PortableRenderer" name="software targets resize and destroy safely during an active transform [display]" time="0.777058" status="run" />
+  <testcase classname="PortableRenderer" name="zone boundaries; UI transforms and portable rendering paths [display]" time="1.65307" status="run" />
+  </testsuite><testsuite name="RendererSwitchIntegration"><testcase classname="RendererSwitchIntegration" name="all ordered gameplay and torus backend pairs preserve camera and simulation [display][isolated][writes-preferences][slow]" time="55.3293" status="run" />
+  </testsuite><testsuite name="SavegameSafety"><testcase classname="SavegameSafety" name="autosave defaults; atomic and background writes; truncated and malformed loads; imports and campaign progress [save-format][writes-preferences]" time="57.2267" status="run" />
+  </testsuite><testsuite name="ScreenExecution"><testcase classname="ScreenExecution" name="a top screen with unsaved work can veto window close" time="0.004819" status="run" />
+  <testcase classname="ScreenExecution" name="additional input follows human dispatch and reports an interrupted prefix" time="0.001436" status="run" />
+  <testcase classname="ScreenExecution" name="cancelled buffered ranges preserve later human text and defer receipt completion" time="0.001943" status="run" />
+  <testcase classname="ScreenExecution" name="screen phases; completion; reuse; quit and compatibility host" time="0.499593" status="run" />
+  </testsuite><testsuite name="Settings"><testcase classname="Settings" name="catalog building defaults in compact layout [display][artifacts][writes-preferences]" time="1.89758" status="run" />
+  <testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization at 1000x700 in OpenGL [display:1600x1400][artifacts][writes-preferences]" time="9.27774" status="run" />
+  <testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization at 1000x700 in software rendering [display:1600x1400][artifacts][writes-preferences]" time="7.86414" status="run" />
+  <testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization at 1280x900 in OpenGL [display:1600x1400][artifacts][writes-preferences]" time="9.95876" status="run" />
+  <testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization at 640x480 in OpenGL [display:1600x1400][artifacts][writes-preferences]" time="6.51204" status="run" />
+  <testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization at 800x600 in OpenGL [display:1600x1400][artifacts][writes-preferences]" time="7.8635" status="run" />
+  <testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization with expanded wording at 640x480 in OpenGL [display:1600x1400][artifacts][writes-preferences]" time="7.03093" status="run" />
+  <testcase classname="Settings" name="render FPS dropdown in compact layout [display][artifacts][writes-preferences]" time="1.87687" status="run" />
+  </testsuite><testsuite name="SettingsAILibrary"><testcase classname="SettingsAILibrary" name="AI library compact discovery, favourite, installation and malformed responses [display:1280x900][artifacts]" time="2.96246" status="run" />
+  <testcase classname="SettingsAILibrary" name="AI library desktop discovery, favourite, installation and malformed responses [display:1280x900][artifacts]" time="3.99783" status="run" />
+  </testsuite><testsuite name="SettingsExperiments"><testcase classname="SettingsExperiments" name="catalog experiments use translated text when available and English metadata otherwise" time="0.607963" status="run" />
+  <testcase classname="SettingsExperiments" name="every experiment's label and help are in the string tables" time="0.674245" status="run" />
+  <testcase classname="SettingsExperiments" name="preferences keep the enabled experiments and drop unknown keys" time="0.270185" status="run" />
+  </testsuite><testsuite name="SettingsGraphics"><testcase classname="SettingsGraphics" name="GPU local preference preserves graphical and headless defaults" time="0.297849" status="run" />
+  <testcase classname="SettingsGraphics" name="edge scrolling defaults migrate and independent modes round trip" time="0.327811" status="run" />
+  <testcase classname="SettingsGraphics" name="first-launch hand choice persists and migrates existing side preferences" time="0.318845" status="run" />
+  <testcase classname="SettingsGraphics" name="hand-choice screen saves both sides and retains a choice after write failure [writes-preferences]" time="0.268424" status="run" />
+  <testcase classname="SettingsGraphics" name="illustrated hand choices activate through their phone overlay [display][writes-preferences]" time="1.51003" status="run" />
+  <testcase classname="SettingsGraphics" name="legacy preferences migrate and independent effects round trip" time="0.516139" status="run" />
+  <testcase classname="SettingsGraphics" name="render ceiling defaults migrates validates and round trips" time="0.440768" status="run" />
+  <testcase classname="SettingsGraphics" name="renderer preference migrates flags and round trips without startup overrides" time="0.45099" status="run" />
+  <testcase classname="SettingsGraphics" name="text size applies to desktop and touch independently of interface scale" time="0.237911" status="run" />
+  </testsuite><testsuite name="WindowResize"><testcase classname="WindowResize" name="cache; callbacks; reflow; context lifetime; input; minimum size and recreation in OpenGL [display:1600x1400]" time="0.76513" status="run" />
+  <testcase classname="WindowResize" name="cache; callbacks; reflow; context lifetime; input; minimum size and recreation in software rendering [display:1600x1400]" time="0.822338" status="run" />
+  <testcase classname="WindowResize" name="native display and live preferences in OpenGL [display]" time="0.285512" status="run" />
+  <testcase classname="WindowResize" name="native display and live preferences in software [display]" time="0.422627" status="run" />
+  </testsuite></testsuites>

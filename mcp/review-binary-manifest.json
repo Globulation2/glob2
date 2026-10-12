@@ -1,0 +1,14 @@
+{
+  "build/mcp-dev/src/glob2": {
+    "sha256": "10d22c7279138a675db2b3d588292360a6741a2682bf44e40f5b06990d6062e7",
+    "bytes": 322745208
+  },
+  "artifacts/mcp/focused-build/test/glob2-engine-tests": {
+    "sha256": "94558d1e961178ce5fce7e33de791b09431d817eb3f7cfc92c1ce50fd1c411cf",
+    "bytes": 336000216
+  },
+  "build/mcp-relay/src/glob2-relay": {
+    "sha256": "c55cedac11f89d8f7dd0ce3c5e799abf8b0919b3d619c63bdc2ae8b751db5855",
+    "bytes": 144955200
+  }
+}

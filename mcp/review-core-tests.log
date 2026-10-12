@@ -1,0 +1,57 @@
+PASS ScreenExecution/a top screen with unsaved work can veto window close (0.1s)
+PASS ScreenExecution/additional input follows human dispatch and reports an interrupted prefix (0.1s)
+PASS ScreenExecution/cancelled buffered ranges preserve later human text and defer receipt completion (0.1s)
+PASS ScreenExecution/screen phases; completion; reuse; quit and compatibility host (0.6s)
+PASS EngineSession/disabled prestige victory cannot end automatic matches (0.9s)
+PASS EngineSession/new client requests replace completed pending frames without recapture (0.9s)
+PASS MCP/protocol adapters validate metadata and discover all tools (0.1s)
+PASS MCP/HTTP restrictions bounded bodies restart and disconnect cancellation [network] (0.1s)
+PASS EngineSession/native presentation fallback yields between expensive chunks (1.5s)
+PASS EngineSession/observation players preserve seat order and spectator readiness (1.8s)
+PASS EngineSession/camera refreshes cannot starve advancing presentation worlds (2.8s)
+PASS EngineSession/eliminated prestige leaders cannot make every survivor lose (4.2s)
+FAIL EngineSession/a retained version-152 stock replay preserves recorded simulation checksums [save-format] (5.0s)
+PASS MCP/input boundaries preserve observation and cancel truncated batches [network] (6.3s)
+PASS EngineSession/menu colony rendering consumes its shared boundary without recapture [display] (7.9s)
+PASS EngineSession/serial sessions retain chat text across skipped GUI frames (8.1s)
+PASS MCP/preferences retain desktop defaults and reject malformed ports (1.2s)
+PASS EngineSession/buffered input receipts wait for GUI dispatch and cancel exact ranges [display] (8.9s)
+PASS EngineSession/paced sessions publish completed worlds before waiting and AI reuses them [display] (10.5s)
+PASS MCP/leases input dispatch cancellation viewport and capture [network] (4.4s)
+PASS MCP/software capture dimensions orientation cancellation [display][artifacts] (5.4s)
+PASS MCP/key events honor SDL keycode options for modifier chords [network] (5.8s)
+PASS EngineSession/automatic GUI sessions poll asset finalizers on the presentation thread [display] (18.0s)
+PASS EngineSession/routine snapshot input needs no simulation boundary [display][artifacts][writes-preferences] (10.4s)
+PASS MCP/held input and drag clocks begin at actual dispatch [network] (3.9s)
+PASS EngineSession/momentum uses the SDL clock after session suspension [display][artifacts] (13.7s)
+PASS MCP/OpenGL capture dimensions orientation cancellation [display][artifacts] (6.8s)
+PASS MCP/pending coordinates cancel when viewport changes before consumption [network] (4.1s)
+FAIL MCP/pending keys cancel when UI becomes unavailable before consumption [network] (3.8s)
+PASS MCP/SDL GPU capture dimensions orientation cancellation [display][artifacts] (12.6s)
+PASS MCP/hidden suspension resolves buffered receipts before later work [network] (5.3s)
+PASS EngineSession/render ceilings preserve per tick simulation checksums [display][artifacts] (32.5s)
+PASS EngineSession/incremental sessions; editor decisions; fertility equivalence and cancellation [writes-preferences] (62.8s)
+
+===== FAIL EngineSession/a retained version-152 stock replay preserves recorded simulation checksums [save-format] =====
+GLOB2_TEST_BUILD compiler=13.3.0 platform=Linux pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": true, "flags": {"CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/home/bradley/.codex/worktrees/mcp-desktop-ui/glob2=.", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H GLOB2_RENDER_SHADER_DIR \\\"/home/bradley/.codex/worktrees/mcp-desktop-ui/glob2/build/mcp-dev/shaders\\\" SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC", "LINKFLAGS": "-Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -Wl,-rpath,/home/bradley/glob2/build/sdl3/prefix/lib -Wl,--enable-new-dtags"}, "revision": "2ced60e06b8e7fa7a4a4ecff944c40bda494bcf4", "sourceStatus": [" M .github/scripts/ci_policy.py", " M data/texts.ar.txt", " M data/texts.br.txt", " M data/texts.ca.txt", " M data/texts.cz.txt", " M data/texts.de.txt", " M data/texts.dk.txt", " M data/texts.en.txt", " M data/texts.eo.txt", " M data/texts.es.txt", " M data/texts.eu.txt", " M data/texts.fa.txt", " M data/texts.fi.txt", " M data/texts.fr.txt", " M data/texts.gr.txt", " M data/texts.hu.txt", " M data/texts.id.txt", " M data/texts.incomplete.txt", " M data/texts.it.txt", " M data/texts.ja.txt", " M data/texts.keys.txt", " M data/texts.ko.txt", " M data/texts.nl.txt", " M data/texts.pending.txt", " M data/texts.pl.txt", " M data/texts.pt.txt", " M data/texts.ro.txt", " M data/texts.ru.txt", " M data/texts.si.txt", " M data/texts.sk.txt", " M data/texts.sr.txt", " M data/texts.sv.txt", " M data/texts.tr.txt", " M data/texts.uk.txt", " M data/texts.vi.txt", " M data/texts.zh-cn.txt", " M data/texts.zh-tw.txt", " M docs/development/README.md", " M docs/development/ui-framework.md", " M libgag/include/ApplicationHost.h", " M libgag/include/EventQueue.h", " M libgag/include/GUIBase.h", " M libgag/include/SDLGraphicContext.h", " M libgag/include/ScreenStack.h", " M libgag/src/ApplicationHost.cpp", " M libgag/src/GraphicContext.cpp", " M libgag/src/GraphicContextRenderer.cpp", " M libgag/src/ScreenExecutionHarness.cpp", " M libgag/src/ScreenStack.cpp", " M scons/sources.py", " M src/SConscript", " M src/app/Application.cpp", " M src/app/Application.h", " M src/app/Settings.cpp", " M src/app/Settings.h", " M src/engine/Engine.cpp", " M src/engine/Engine.h", " M src/engine/EngineRun.cpp", " M src/engine/EngineSessionHarness.cpp", " M src/game/screens/GameSessionScreen.cpp", " M src/game/screens/GameSessionScreen.h", " M src/hud/GameGUIStep.cpp", " M src/hud/input/GameGUIInput.cpp", " M src/hud/touch/GameGUITouch.cpp", " M src/hud/touch/GameGUITouchHarness.cpp", " M src/map/editor/EditorFlowsTest.cpp", " M src/map/editor/MapEdit.h", " M src/map/editor/MapEditIO.cpp", " M src/map/editor/screens/MapEditorScreen.cpp", " M src/map/editor/screens/MapEditorScreen.h", " M src/ui/settings/SettingsScreen.cpp", " M src/ui/settings/SettingsScreen.h", " M test/ci-compatibility.json", " M test/tests.py", "?? docs/development/mcp-ui-server.md", "?? libgag/include/InputDispatchReceipt.h", "?? src/mcp/", "?? src/ui/settings/SettingsScreenMCP.cpp"], "sourceTreeSha256": "b7a15be9f41a99ddc5e3c731cbff6380431e64abe21bf0ffa1fe59fa93cc2a04"}
+Error reading replay: Unsupported replay version: iostream error
+
+[failure] a retained version-152 stock replay preserves recorded simulation checksums [save-format]: false
+src/engine/EngineSessionHarness.cpp:489:
+REQUIRE( engine.loadReplayTask(path.string()).run() ) is NOT correct!
+  values: REQUIRE( false )
+
+
+===== FAIL MCP/pending keys cancel when UI becomes unavailable before consumption [network] =====
+GLOB2_TEST_BUILD compiler=13.3.0 platform=Linux pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": true, "flags": {"CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/home/bradley/.codex/worktrees/mcp-desktop-ui/glob2=.", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H GLOB2_RENDER_SHADER_DIR \\\"/home/bradley/.codex/worktrees/mcp-desktop-ui/glob2/build/mcp-dev/shaders\\\" SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC", "LINKFLAGS": "-Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -Wl,-rpath,/home/bradley/glob2/build/sdl3/prefix/lib -Wl,--enable-new-dtags"}, "revision": "2ced60e06b8e7fa7a4a4ecff944c40bda494bcf4", "sourceStatus": [" M .github/scripts/ci_policy.py", " M data/texts.ar.txt", " M data/texts.br.txt", " M data/texts.ca.txt", " M data/texts.cz.txt", " M data/texts.de.txt", " M data/texts.dk.txt", " M data/texts.en.txt", " M data/texts.eo.txt", " M data/texts.es.txt", " M data/texts.eu.txt", " M data/texts.fa.txt", " M data/texts.fi.txt", " M data/texts.fr.txt", " M data/texts.gr.txt", " M data/texts.hu.txt", " M data/texts.id.txt", " M data/texts.incomplete.txt", " M data/texts.it.txt", " M data/texts.ja.txt", " M data/texts.keys.txt", " M data/texts.ko.txt", " M data/texts.nl.txt", " M data/texts.pending.txt", " M data/texts.pl.txt", " M data/texts.pt.txt", " M data/texts.ro.txt", " M data/texts.ru.txt", " M data/texts.si.txt", " M data/texts.sk.txt", " M data/texts.sr.txt", " M data/texts.sv.txt", " M data/texts.tr.txt", " M data/texts.uk.txt", " M data/texts.vi.txt", " M data/texts.zh-cn.txt", " M data/texts.zh-tw.txt", " M docs/development/README.md", " M docs/development/ui-framework.md", " M libgag/include/ApplicationHost.h", " M libgag/include/EventQueue.h", " M libgag/include/GUIBase.h", " M libgag/include/SDLGraphicContext.h", " M libgag/include/ScreenStack.h", " M libgag/src/ApplicationHost.cpp", " M libgag/src/GraphicContext.cpp", " M libgag/src/GraphicContextRenderer.cpp", " M libgag/src/ScreenExecutionHarness.cpp", " M libgag/src/ScreenStack.cpp", " M scons/sources.py", " M src/SConscript", " M src/app/Application.cpp", " M src/app/Application.h", " M src/app/Settings.cpp", " M src/app/Settings.h", " M src/engine/Engine.cpp", " M src/engine/Engine.h", " M src/engine/EngineRun.cpp", " M src/engine/EngineSessionHarness.cpp", " M src/game/screens/GameSessionScreen.cpp", " M src/game/screens/GameSessionScreen.h", " M src/hud/GameGUIStep.cpp", " M src/hud/input/GameGUIInput.cpp", " M src/hud/touch/GameGUITouch.cpp", " M src/hud/touch/GameGUITouchHarness.cpp", " M src/map/editor/EditorFlowsTest.cpp", " M src/map/editor/MapEdit.h", " M src/map/editor/MapEditIO.cpp", " M src/map/editor/screens/MapEditorScreen.cpp", " M src/map/editor/screens/MapEditorScreen.h", " M src/ui/settings/SettingsScreen.cpp", " M src/ui/settings/SettingsScreen.h", " M test/ci-compatibility.json", " M test/tests.py", "?? docs/development/mcp-ui-server.md", "?? libgag/include/InputDispatchReceipt.h", "?? src/mcp/", "?? src/ui/settings/SettingsScreenMCP.cpp"], "sourceTreeSha256": "b7a15be9f41a99ddc5e3c731cbff6380431e64abe21bf0ffa1fe59fa93cc2a04"}
+
+[failure] MCP/pending keys cancel when UI becomes unavailable before consumption [network]: true == false
+src/mcp/MCPTest.cpp:812:
+CHECK( result.data["dispatched"] == false ) is NOT correct!
+  values: CHECK( true == false )
+
+
+31 passed, 2 failed, 0 skipped (250.6s of test time)
+[run_tests] JUnit report: artifacts/mcp/review-core-junit.xml (33 cases)

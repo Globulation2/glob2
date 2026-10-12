@@ -1,0 +1,5 @@
+{
+  "binary": "build/mcp-relay/src/glob2-relay",
+  "mcp_symbols": [],
+  "excluded": true
+}
