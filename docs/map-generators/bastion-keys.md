@@ -96,8 +96,10 @@ corridor vertex may have been dressed with buildable ground.
 
 The generator uses existing simulation rules. It changes no engine behavior,
 save format, replay acceptance, network protocol or AI, and no other generator.
-Revision 3 produces different maps from the same seed, so it bumps the simulation
-revision and the golden rows.
+Revision 3 produces different maps from the same seed, so it moves the generator
+revision and the golden rows. It deliberately leaves `SIM_REVISION` alone for now
+(a maintainer decision); Bastion Keys is not in the online fair-generator pool, and
+whether any path regenerates maps from a generator descriptor was not verified.
 
 ### Revision 3 evidence
 
