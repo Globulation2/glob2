@@ -311,6 +311,8 @@ static void interactiveBenchmark()
 			Uint64 measuredStart = 0;
 			std::vector<double> draw, present;
 			RenderOperations initialOps{};
+            decltype(terrainCache.workMetrics) initialWork{};
+            auto initialGraphics = gui.game.map.computeExecutor().graphicsMetrics();
 			std::uint64_t initialHits = 0, initialRebuilds = 0;
 			double c0 = 0;
 			double freq = SDL_GetPerformanceFrequency();
@@ -322,6 +324,8 @@ static void interactiveBenchmark()
 				{
 					c0 = cpu(); measuredStart = SDL_GetPerformanceCounter();
 					initialOps = gfx->backendOperations();
+                    initialWork = terrainCache.workMetrics;
+                    initialGraphics = gui.game.map.computeExecutor().graphicsMetrics();
 					initialHits = terrainCache.cacheHits();
 					initialRebuilds = terrainCache.cacheRebuilds();
 					PerformanceTelemetry::collector().reset();
@@ -396,24 +400,24 @@ static void interactiveBenchmark()
             const auto graphics = gui.game.map.computeExecutor().graphicsMetrics();
             printf("terrain_cpu batches=%llu jobs=%llu cells=%llu serial_pages=%llu "
                    "batch_ns=%llu peak_reserved_bytes=%zu\n",
-                   (unsigned long long)work.batches, (unsigned long long)work.jobs,
-                   (unsigned long long)work.cells, (unsigned long long)work.serialPages,
-                   (unsigned long long)work.batchNs, work.peakReservedBytes);
+                   (unsigned long long)(work.batches - initialWork.batches), (unsigned long long)(work.jobs - initialWork.jobs),
+                   (unsigned long long)(work.cells - initialWork.cells), (unsigned long long)(work.serialPages - initialWork.serialPages),
+                   (unsigned long long)(work.batchNs - initialWork.batchNs), work.peakReservedBytes);
             printf("raster_cpu batches=%llu tiles=%llu references=%llu "
                    "serial_batches=%llu snapshot_bytes=%llu peak_retained_bytes=%llu "
                    "fallback_operations=%llu\n",
-                   (unsigned long long)ops.rasterBatches, (unsigned long long)ops.rasterTiles,
-                   (unsigned long long)ops.rasterReferences,
-                   (unsigned long long)ops.rasterSerialBatches,
-                   (unsigned long long)ops.rasterSnapshotBytes,
+                   (unsigned long long)(ops.rasterBatches - initialOps.rasterBatches), (unsigned long long)(ops.rasterTiles - initialOps.rasterTiles),
+                   (unsigned long long)(ops.rasterReferences - initialOps.rasterReferences),
+                   (unsigned long long)(ops.rasterSerialBatches - initialOps.rasterSerialBatches),
+                   (unsigned long long)(ops.rasterSnapshotBytes - initialOps.rasterSnapshotBytes),
                    (unsigned long long)ops.rasterPeakRetainedBytes,
-                   (unsigned long long)ops.rasterFallbacks);
+                   (unsigned long long)(ops.rasterFallbacks - initialOps.rasterFallbacks));
             printf("graphics_executor batches=%llu parallel_batches=%llu jobs=%llu "
                    "summed_queue_ns=%llu summed_active_ns=%llu owner_wait_ns=%llu\n",
-                   (unsigned long long)graphics.batches,
-                   (unsigned long long)graphics.parallelBatches, (unsigned long long)graphics.jobs,
-                   (unsigned long long)graphics.queueNs, (unsigned long long)graphics.activeNs,
-                   (unsigned long long)graphics.waitNs);
+                   (unsigned long long)(graphics.batches - initialGraphics.batches),
+                   (unsigned long long)(graphics.parallelBatches - initialGraphics.parallelBatches), (unsigned long long)(graphics.jobs - initialGraphics.jobs),
+                   (unsigned long long)(graphics.queueNs - initialGraphics.queueNs), (unsigned long long)(graphics.activeNs - initialGraphics.activeNs),
+                   (unsigned long long)(graphics.waitNs - initialGraphics.waitNs));
 			PerformanceTelemetry::collector().write(std::cout, "profile", gui.game.stepCounter,
 													false);
 			if (const char *p = getenv("PROFILE_CAPTURE"))

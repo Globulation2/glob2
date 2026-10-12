@@ -105,6 +105,7 @@ The saved-game benchmark reports draw/present p95 and p99, process CPU, terrain
 jobs/cells/reservation, raster tiles/references/source-copy bytes, serial batches,
 fallback operations, summed queue delay/worker activity and owner wait. Summed
 worker activity is elapsed callback time, not process CPU or batch latency.
+Counters exclude warmup; peak retained/reserved bytes cover the entire run.
 Scope records separate material preparation, terrain planning/install, command
 capture, source copying, binning and raster execution. Inclusive scopes must not
 be added together. Counters are owner aggregates; worker callbacks do not use
