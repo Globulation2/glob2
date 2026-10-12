@@ -6030,5 +6030,35 @@ Discord opened. You can return to the game at any time.
 Could not open Discord. Copy the invitation link and open it in your browser.
 [discord link copied]
 Invitation link copied.
+[settings CPU automatic]
+
+[settings Scalar]
+
+[settings Unavailable]
+
+[settings Initializing]
+
+[settings Gradient backend]
+
+[settings Applies at the next simulation boundary. Unsupported work uses CPU automatic; rendering is independent.]
+
+[settings Gradient algorithm]
+
+[settings All choices compute the same exact field.]
+
+[settings Bucket propagation]
+
+[settings Verify gradient results]
+
+[settings Compare GPU results with scalar CPU before publication. Adds computation and stops the game on a mismatch.]
+
+[settings Gradient computation]
+
+[settings CPU fallback]
+
+[settings GPU fields]
+
+[settings CPU fallbacks]
+
 [discord copy failed]
 Could not copy the link. Select the invitation above to copy it manually.

@@ -14,7 +14,7 @@ namespace gradient_kernel
 // including cardinal/diagonal aliases, rather than assuming four distinct costs.
 // Reserve once per chunk, outside neighbor loops; retain vector relaxation on
 // SSE2/NEON and the same scalar wrapped-edge path as the legacy specialization.
-template<bool Masked, std::size_t N, class ClassAt, unsigned QueueBuckets = BUCKETS,class Reserve=DefaultGradientReserve>
+template<bool Masked, std::size_t N, class ClassAt, unsigned QueueBuckets = BUCKETS,class Reserve=DefaultGradientReserve,bool Simd=true>
 void expandPreparedTerrainBucketRangeAddressed(std::uint16_t *__restrict gradient, GradientBucket *queue,
     std::size_t &pending, int cur, int limit, const field::Grid &grid,
     const PreparedTerrainCosts<N> &profile, ClassAt classAt,std::size_t begin,std::size_t end,Reserve reserve={})
@@ -46,8 +46,9 @@ void expandPreparedTerrainBucketRangeAddressed(std::uint16_t *__restrict gradien
     }
 #if defined(GLOB2_GRADIENT_SSE2)
     __m128i vectors[N], limits[N];
-    const auto one = _mm_set1_epi16(1), bias = _mm_set1_epi16(short(0x8000));
-    for (unsigned t = 0; t < profile.classCount; ++t)
+    __m128i one,bias;
+    if constexpr(Simd){one=_mm_set1_epi16(1);bias=_mm_set1_epi16(short(0x8000));}
+    if constexpr(Simd)for (unsigned t = 0; t < profile.classCount; ++t)
     {
         const short c = values[profile.cardinalSlots[t]], d = values[profile.diagonalSlots[t]];
         vectors[t] = _mm_setr_epi16(d,c,d,1,d,c,d,1);
@@ -55,7 +56,7 @@ void expandPreparedTerrainBucketRangeAddressed(std::uint16_t *__restrict gradien
     }
 #elif defined(GLOB2_GRADIENT_NEON)
     uint16x8_t vectors[N], limits[N];
-    for (unsigned t = 0; t < profile.classCount; ++t)
+    if constexpr(Simd)for (unsigned t = 0; t < profile.classCount; ++t)
     {
         const auto c = values[profile.cardinalSlots[t]], d = values[profile.diagonalSlots[t]];
         const auto half = vset_lane_u16(1, vset_lane_u16(c, vdup_n_u16(d), 1), 3);
@@ -102,7 +103,7 @@ void expandPreparedTerrainBucketRangeAddressed(std::uint16_t *__restrict gradien
                 *cursor = static_cast<std::uint32_t>(n); cursor += better;
             };
 #if defined(GLOB2_GRADIENT_SSE2)
-            if (x >= 1 && x+2 < width)
+            if (Simd && x >= 1 && x+2 < width)
             {
                 auto *a = gradient + above+x-1, *b = gradient + below+x-1;
                 const auto old = _mm_unpacklo_epi64(_mm_loadl_epi64((const __m128i *)a), _mm_loadl_epi64((const __m128i *)b));
@@ -116,7 +117,7 @@ void expandPreparedTerrainBucketRangeAddressed(std::uint16_t *__restrict gradien
             }
             else
 #elif defined(GLOB2_GRADIENT_NEON)
-            if (x >= 1 && x+2 < width)
+            if (Simd && x >= 1 && x+2 < width)
             {
                 auto *a = gradient + above+x-1, *b = gradient + below+x-1;
                 const auto old = vcombine_u16(vld1_u16(a),vld1_u16(b));
@@ -154,10 +155,14 @@ void expandPreparedTerrainBucketRange(std::uint16_t *gradient,GradientBucket *qu
     std::size_t& pending,int cur,int limit,const field::Grid& grid,
     const PreparedTerrainCosts<N>& profile,ClassAt classAt,std::size_t begin,std::size_t end,Reserve reserve={})
 {
-    if(grid.powerOfTwo())
-        expandPreparedTerrainBucketRangeAddressed<true,N,ClassAt,QueueBuckets>(gradient,queue,pending,cur,limit,grid,profile,classAt,begin,end,reserve);
-    else
-        expandPreparedTerrainBucketRangeAddressed<false,N,ClassAt,QueueBuckets>(gradient,queue,pending,cur,limit,grid,profile,classAt,begin,end,reserve);
+    const auto dispatch=[&]<bool Simd>() {
+        if(grid.powerOfTwo())
+            expandPreparedTerrainBucketRangeAddressed<true,N,ClassAt,QueueBuckets,Reserve,Simd>(gradient,queue,pending,cur,limit,grid,profile,classAt,begin,end,reserve);
+        else
+            expandPreparedTerrainBucketRangeAddressed<false,N,ClassAt,QueueBuckets,Reserve,Simd>(gradient,queue,pending,cur,limit,grid,profile,classAt,begin,end,reserve);
+    };
+    if(cpuBackend()==Backend::Scalar)dispatch.template operator()<false>();
+    else dispatch.template operator()<true>();
     pending-=end-begin;
 }
 

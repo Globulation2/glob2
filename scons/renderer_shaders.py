@@ -67,6 +67,17 @@ def prepare(root, output):
 
 
 def configure(env, root, output, browser=False):
+    # Compute shaders are embedded so headless/mobile packages need no asset lookup.
+    compute_script = Path(root) / 'tools/shaders/gradient_compute.py'
+    spec = importlib.util.spec_from_file_location('glob2_gradient_shaders', compute_script)
+    compute = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(compute)
+    compute.verify(Path(root))
+    rule_script = Path(root) / 'tools/shaders/gradient_preparation_rules.py'
+    spec = importlib.util.spec_from_file_location('glob2_gradient_preparation_rules', rule_script)
+    rules = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(rules)
+    rules.verify()
     directory = prepare(root, output)
     env.Append(CPPPATH=[str(directory.resolve())])
     env.Append(CPPDEFINES=[('GLOB2_RENDER_SHADER_DIR', '\\"' + ('/shaders' if browser else str(directory.resolve())) + '\\"')])

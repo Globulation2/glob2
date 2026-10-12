@@ -101,9 +101,12 @@ Option compute()
 }
 Option gpu()
 {
-	return choice("--gpu", "GPU gradient compute; overrides local setting (graphical default off, headless on)",
+	return choice("--gpu", "Legacy gradient selection: on=OpenCL, off=CPU automatic; explicit backend takes precedence",
 				  {"on", "off"});
 }
+Option gradientBackend() {return choice("--gradient-backend","Gradient computation backend",{"cpu","scalar","sse2","neon","opencl","vulkan","webgpu"});}
+Option gradientAlgorithm() {return choice("--gradient-algorithm","Gradient computation algorithm",{"buckets","frozen8","jacobi"});}
+Option gradientVerify() {return choice("--gradient-verify","Compare accelerated fields with scalar CPU output",{"on","off"});}
 std::vector<Option> mapSettings()
 {
 	return {
@@ -356,7 +359,7 @@ const std::vector<Command> &commands()
 		append(launch, assets());
 		launch.push_back(value("--building-catalog", "file", "Building catalog manifest"));
 		launch.push_back(compute());
-		launch.push_back(gpu());
+		launch.push_back(gpu());launch.push_back(gradientBackend());launch.push_back(gradientAlgorithm());launch.push_back(gradientVerify());
 		add("play", "Launch the graphical game", {}, 0, launch, "Interactive game",
 			{"glob2 play --window-size 1280x720 --no-fullscreen"});
 		add("replay", "Watch a recorded replay", {"FILE"}, 1, launch, "Interactive replay",
@@ -441,7 +444,7 @@ const std::vector<Command> &commands()
 		auto game = profile();
 		append(game, assets());
 		game.push_back(compute());
-		game.push_back(gpu());
+		game.push_back(gpu());game.push_back(gradientBackend());game.push_back(gradientAlgorithm());game.push_back(gradientVerify());
 		append(
 			game,
 			{value("--map-file", "file", "Map input for a new game"),
@@ -493,14 +496,14 @@ const std::vector<Command> &commands()
 		append(repeat, display());
 		repeat.push_back(flag("--display", "Render the saved game through the normal presentation loop"));
 		append(repeat,
-			   {compute(), gpu(),
+			   {compute(), gpu(), gradientBackend(), gradientAlgorithm(), gradientVerify(),
 				integer("--ticks", "Steps per run; 0 runs until the game ends", 0, 2147483647, "0"),
 				integer("--runs", "Number of saved-game runs", 1, 2147483647, "1"),
 				value("--building-catalog", "file", "Building catalog")});
 		add("game repeat", "Repeat a saved game, optionally with normal presentation", {"FILE"}, 1, repeat,
 			"Existing game summaries and opt-in environment telemetry")
 			.environment = {"GLOB2_REPLAY_PATH", "GLOB2_CHECKSUM_SIDECAR", "GLOB2_TEAM_RESULTS",
-							"GLOB2_TEAM_TIMELINE", "GLOB2_GRADIENT_BACKEND", "GLOB2_OPENCL_DEVICE"};
+							"GLOB2_TEAM_TIMELINE", "GLOB2_GRADIENT_BACKEND", "GLOB2_GRADIENT_ALGORITHM", "GLOB2_GRADIENT_VERIFY", "GLOB2_OPENCL_DEVICE"};
 		auto verify = profile();
 		verify.pop_back();
 		verify[1].defaultValue = "glob2-verify";
@@ -549,7 +552,7 @@ const std::vector<Command> &commands()
 		append(random, display());
 		append(
 			random,
-			{compute(), gpu(), flag("--display", "Show test games graphically"),
+			{compute(), gpu(), gradientBackend(), gradientAlgorithm(), gradientVerify(), flag("--display", "Show test games graphically"),
 			 integer("--runs", "Game count; 0 repeats forever", 0, 2147483647, "0"),
 			 integer(
 				 "--ticks",

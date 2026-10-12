@@ -845,7 +845,9 @@ TEST_SUITE("TerrainRuntime")
 	{
 		glob2test::HeadlessGlobals globals;
 		using Json = nlohmann::json;
-		for (unsigned count : {7, 259, 1024, 16384})
+		// Built-ins grow over time. The requested cohort count includes them;
+		// starting custom IDs at an old literal overfilled the capacity fixture.
+		for (unsigned count : {unsigned(TERRAIN_COUNT), 259u, 1024u, unsigned(TerrainRegistry::Capacity)})
 		{
 			GameGUI world;
 			GAGCore::BinaryInputStream input(glob2OpenMapOrSaveInputStreamBackend(
@@ -853,12 +855,12 @@ TEST_SUITE("TerrainRuntime")
 			REQUIRE(world.game.load(&input));
 			auto &map = world.game.map;
 			map.game = nullptr;
-			if (count > 7)
+			if (count > TERRAIN_COUNT)
 			{
 				Json definitions = Json::array();
-				for (unsigned i = 7; i < count; ++i)
+				for (unsigned i = TERRAIN_COUNT; i < count; ++i)
 				{
-					const auto *preset = TerrainPresentations[(i - 7) % 5].name;
+					const auto *preset = TerrainPresentations[(i - TERRAIN_COUNT) % 5].name;
 					definitions.push_back({{"key", "bench:t" + std::to_string(i)},
 										   {"name", "Equivalent terrain"},
 										   {"base", preset},
@@ -867,6 +869,7 @@ TEST_SUITE("TerrainRuntime")
 				}
 				map.importTerrainDefinitions(
 					Json{{"schemaVersion", 1}, {"terrains", definitions}}.dump());
+				REQUIRE(map.terrainRegistry().size() == count);
 				std::array<std::vector<TerrainType>, 5> equivalents;
 				for (unsigned i = TERRAIN_COUNT; i < map.terrainRegistry().size(); ++i)
 					equivalents[map.terrainRegistry().appearance(TerrainType(i))].push_back(
@@ -879,8 +882,15 @@ TEST_SUITE("TerrainRuntime")
 						if (original <= TRAIL)
 						{
 							const auto &choices = equivalents[original];
+							// At full catalog capacity, random aliases at every vertex
+							// create too many transient corner combinations while painting.
+							// Keep the complete catalog, but use spatially coherent aliases
+							// spanning its range so the fixture remains a valid map.
+							const bool maximum = count == TerrainRegistry::Capacity;
+							const unsigned sx = maximum ? unsigned(x / 16) : unsigned(x);
+							const unsigned sy = maximum ? unsigned(y / 16) : unsigned(y);
 							map.setVertexTerrain(x, y,
-											   choices[unsigned(x * 73856093u ^ y * 19349663u) % choices.size()]);
+											   choices[(sx * 73856093u ^ sy * 19349663u) % choices.size()]);
 						}
 					}
 			}

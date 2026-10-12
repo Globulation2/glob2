@@ -284,6 +284,7 @@ public:
 	void resetGradientPipeline() noexcept;
 	void setGradientWorkerCount(unsigned workers);
 	void configureGradientPipeline(unsigned workers, unsigned delay);
+    void applyGradientBackendRequest();
 	// Scheduled building gradients (MapGradientScheduling.cpp). Team stepping
 	// requests refreshes of existing fields and keeps serving the old ones;
 	// after the tick up to MaxJobsPerTick requests are staged, captured at the

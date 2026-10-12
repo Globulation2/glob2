@@ -66,7 +66,7 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
                       LINK=command_path(compiler), AR=command_path(emscripten / 'emar'), RANLIB=command_path(emscripten / 'emranlib'))
     env['OPUS_PREFIX'] = str(opus_prefix)
     env['PROGSUFFIX'] = '.js'
-    env.Append(LINKFLAGS=['--js-library', 'browser/canvas-size.js', '--js-library', 'browser/webgpu-device.js'])
+    env.Append(LINKFLAGS=['--js-library', 'browser/canvas-size.js', '--js-library', 'browser/webgpu-device.js', '--js-library', 'browser/gradient-compute.js'])
     if threaded:
         env.Append(CCFLAGS=['-pthread'], LINKFLAGS=['-pthread', '-sOFFSCREENCANVAS_SUPPORT=1',
             '-sDEFAULT_PTHREAD_STACK_SIZE=8388608',

@@ -121,7 +121,7 @@ def main():
         embedded_profile.chmod(0o644)
 
     frameworks = output / "Contents/Frameworks"
-    for code in sorted(frameworks.glob("*.dylib")):
+    for code in [*sorted(frameworks.glob("*.dylib")), *sorted(frameworks.glob("*.framework"))]:
         run("codesign", "--force", "--sign", args.identity, code)
     for code in sorted((output / "Contents/MacOS").iterdir()):
         if code.is_file():

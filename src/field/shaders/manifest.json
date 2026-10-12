@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "glslang": "15.1.0",
+  "naga": "27.0.0",
+  "target": "vulkan1.0",
+  "files": {
+    "src/field/GradientComputeShaders.h": "e0102a2bd34e319ec8fb1ab406670a2048577a09f7c7d2f1aa70ef8e199e2b0a",
+    "tools/shaders/gradient_compute.py": "4673065899248f8a69ad8833684d05310b464a3c0cec15696f0724d8ecccefb9",
+    "src/field/shaders/frozen8.comp": "7d1fcfa92c7d64571f64759ff4d7efcacf35d6e65ac73ee9b3fff5974e22529c",
+    "src/field/shaders/frozen8.wgsl": "d1df1490a1034e706c21e382ed08664af9bfb4ee10d4d08fe03b9e9f18ca5102",
+    "src/field/shaders/jacobi.comp": "79a6f5bb11eada98c4581281f94bfc032e10edf31ff3582cc7eceddfa2a83913",
+    "src/field/shaders/jacobi.wgsl": "8256977f2d88ad833bdbf6df9ddb11ba46f6871b09571152cd84fd6e5daf1282"
+  }
+}

@@ -68,6 +68,7 @@ public:
     // currently unplaced ones). Explicit map edits are tracked independently.
     MaterialMask mutableMaterialSources() const { return mutableMaterialSources_; }
     const std::vector<ResourceProperties>& propertyTable() const { return properties_; }
+    const std::vector<std::uint32_t>& gradientPreparation() const { return gradientPreparation_; }
     const std::string& digest() const { return digest_; }
     std::uint32_t checksum() const { return checksum_; }
 private:
@@ -78,6 +79,7 @@ private:
     std::vector<std::string> keys_, requiredExperiments_;
     std::map<std::string, ResourceId, std::less<>> keyIndex_;
     std::vector<ResourceProperties> properties_;
+    std::vector<std::uint32_t> gradientPreparation_;
     std::vector<ResourceYields> yields_;
     std::vector<ResourcePresentation> presentations_;
     std::vector<CatalogExperimentDefinition> experiments_;

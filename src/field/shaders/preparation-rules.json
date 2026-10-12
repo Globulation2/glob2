@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "functions": [
+    {
+      "name": "materialSeed",
+      "parameters": ["forbidden", "mobile", "blocked", "building", "open", "stocked", "visible"],
+      "expression": ["select", ["or", "forbidden", ["not", "mobile"]], 0,
+        ["select", ["and", "stocked", "visible"], 65535,
+          ["select", ["or", "blocked", "building"], 0, "open"]]]
+    },
+    {
+      "name": "clearSeed",
+      "parameters": ["forbidden", "mobile", "blocked", "building", "open", "clearable", "farmable", "clear", "farm", "farmEnabled"],
+      "expression": ["select", "forbidden", 0,
+        ["select", ["and", "clearable", ["or", "clear", ["and", "farmEnabled", ["and", "farm", ["not", "farmable"]]]]], 65535,
+          ["select", ["or", "blocked", ["or", "building", ["not", "mobile"]]], 0, "open"]]]
+    },
+    {
+      "name": "resourceTraits",
+      "parameters": ["materials", "blocked", "visible", "clearable", "farmable"],
+      "expression": ["bitOr", "materials", ["bitOr", ["shift", "blocked", 16], ["bitOr", ["shift", "visible", 17], ["bitOr", ["shift", "clearable", 18], ["shift", "farmable", 19]]]]]
+    }
+  ]
+}

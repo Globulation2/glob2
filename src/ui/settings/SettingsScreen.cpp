@@ -167,7 +167,7 @@ bool SettingsScreen::changeSetting(const std::string &id, int value)
 	for (auto r : form)
 		if (r.id == id && r.enabled && r.change)
 		{
-			if (r.kind == Kind::Choice && (value < 0 || value >= int(r.choices.size())))
+			if (r.kind == Kind::Choice && (value < 0 || value >= int(r.choices.size()) || (!r.enabledChoices.empty() && !r.enabledChoices[std::size_t(value)])))
 				return false;
 			if (r.kind == Kind::Number || r.kind == Kind::Slider)
 				value = std::clamp(value, r.minimum, r.maximum);
@@ -389,6 +389,7 @@ bool SettingsScreen::interceptEvent(const SDL_Event &event)
 
 void SettingsScreen::onTimer(Uint32 tick)
 {
+    if(current==Category::Gameplay && tick-gradientStatusAt>=1000){gradientStatusAt=tick;invalidate();}
     const auto &renderer = globalContainer->gfx->backendSwitchStatus();
     if (renderer.serial != rendererSerial || renderer.phase != rendererPhase) {
         rendererSerial = renderer.serial;
@@ -559,6 +560,7 @@ Element SettingsScreen::rowElement(const Row &r, const Presentation &p)
 		auto change = r.change;
 		ChoiceOptions options;
 		options.controlEnabled = r.enabled;
+        options.enabled=r.enabledChoices;
 		return field(r.label, Glob2UI::choice(r.id, r.choices, r.number, [change](int v) { if (change) change(v); }, options), {help, p.touch ? 220.0 : 140.0});
 	}
 	case Kind::Slider:

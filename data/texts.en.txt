@@ -1670,10 +1670,6 @@ Automatic torus view
 Automatically show the torus overview while moving around the map (OpenGL).
 [settings Autosave]
 Autosave
-[settings GPU compute]
-GPU compute
-[settings Use GPU for gradient calculations. Applies to the next game.]
-Use GPU for gradient calculations. Applies to the next game.
 [settings Save the game automatically about every 10 seconds.]
 Save the game automatically about every 10 seconds.
 [Channel width]
@@ -6034,5 +6030,35 @@ Discord opened. You can return to the game at any time.
 Could not open Discord. Copy the invitation link and open it in your browser.
 [discord link copied]
 Invitation link copied.
+[settings CPU automatic]
+CPU automatic
+[settings Scalar]
+Scalar
+[settings Unavailable]
+Unavailable
+[settings Initializing]
+Initializing
+[settings Gradient backend]
+Gradient backend
+[settings Applies at the next simulation boundary. Unsupported work uses CPU automatic; rendering is independent.]
+Applies at the next simulation boundary. Unsupported work uses CPU automatic; rendering is independent.
+[settings Gradient algorithm]
+Gradient algorithm
+[settings All choices compute the same exact field.]
+All choices compute the same exact field.
+[settings Bucket propagation]
+Bucket propagation
+[settings Verify gradient results]
+Verify gradient results
+[settings Compare GPU results with scalar CPU before publication. Adds computation and stops the game on a mismatch.]
+Compare GPU results with scalar CPU before publication. Adds computation and stops the game on a mismatch.
+[settings Gradient computation]
+Gradient computation
+[settings CPU fallback]
+CPU fallback
+[settings GPU fields]
+GPU fields
+[settings CPU fallbacks]
+CPU fallbacks
 [discord copy failed]
 Could not copy the link. Select the invitation above to copy it manually.
