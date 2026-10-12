@@ -624,6 +624,10 @@ namespace GAGCore
 		//! Destructor
 		virtual ~GraphicContext(void);
 		
+        // Fences active CPU drawing before borrowing its pixels. Base-class
+        // aliases and already-borrowed pointers still require an owner fence.
+        SDL_Surface *getSDLSurface();
+
 		//! Bounded software pass; borrows pixels and restores facade/backend state on failure.
 		void drawToSurface(SDL_Surface* surface, float scale, const std::function<void()>& draw);
 		unsigned getGLContextGeneration() const { return glContextGeneration; }
@@ -749,6 +753,7 @@ namespace GAGCore
 		virtual void setClipRect(void);
 		enum class FrameMode { FullRedraw, PreserveContent };
         void beginFrame(FrameMode mode = FrameMode::PreserveContent);
+        void discardFrame() noexcept;
         RenderOperations backendOperations() const;
         SDL_Surface* completedFrame() const;
         virtual void nextFrame(void);

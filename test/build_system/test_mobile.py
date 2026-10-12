@@ -517,3 +517,63 @@ class RecordingNoticeTests(unittest.TestCase):
                 self.stage(env, root / 'missing', root / 'output')
             self.assertEqual(self.stage(env, root / 'missing', root / 'output', required=False), [])
             env.Install.assert_not_called()
+
+
+class IOSRecordingPrefixTests(unittest.TestCase):
+    @staticmethod
+    def libraries(output):
+        import ast
+        import hashlib
+        import json
+        root = Path(__file__).resolve().parents[2]
+        tree = ast.parse((root / 'mobile/ios.py').read_text())
+        helper = next(node for node in tree.body if isinstance(node, ast.FunctionDef)
+                      and node.name == 'recording_libraries')
+        namespace = {'Path': Path, 'hashlib': hashlib, 'json': json, 'adopt': Path}
+        exec(compile(ast.Module(body=[helper], type_ignores=[]), '<ios-recording>', 'exec'), namespace)
+        return namespace['recording_libraries'](output)
+
+    @staticmethod
+    def fixture(root, target='ios'):
+        import hashlib
+        import json
+        prefix = root / 'shared/prefix'
+        (prefix / 'lib').mkdir(parents=True)
+        archives = {}
+        for name in ('avformat', 'avcodec', 'swscale', 'swresample', 'avutil', 'x264'):
+            path = prefix / 'lib' / ('lib' + name + '.a')
+            path.write_bytes(name.encode())
+            archives[path.name] = hashlib.sha256(path.read_bytes()).hexdigest()
+        manifest = prefix / 'recording-manifest.json'
+        manifest.write_text(json.dumps({'identity': {'target': target, 'arch': 'arm64'}, 'archives': archives}))
+        output = root / 'output'
+        output.mkdir()
+        (output / 'recording-prefix.json').write_text(json.dumps({
+            'prefix': str(prefix), 'manifest_sha256': hashlib.sha256(manifest.read_bytes()).hexdigest()}))
+        return output, prefix
+
+    def test_uses_exact_shared_installation_without_local_alias(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            output, prefix = self.fixture(Path(temporary))
+            libraries = self.libraries(output)
+            self.assertEqual(len(libraries), 6)
+            self.assertTrue(all(path.parent == prefix / 'lib' for path in libraries))
+            self.assertFalse((output / 'recording/prefix').exists())
+
+    def test_changed_archive_or_manifest_is_rejected(self):
+        for changed in ('lib/libavcodec.a', 'recording-manifest.json'):
+            with self.subTest(changed=changed), tempfile.TemporaryDirectory() as temporary:
+                output, prefix = self.fixture(Path(temporary))
+                with (prefix / changed).open('ab') as stream:
+                    stream.write(b'changed')
+                with self.assertRaisesRegex(ValueError, 'changed'):
+                    self.libraries(output)
+
+    def test_other_platform_and_missing_receipt_are_rejected(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            output, prefix = self.fixture(Path(temporary), target='android')
+            with self.assertRaisesRegex(ValueError, 'not the iOS'):
+                self.libraries(output)
+            (output / 'recording-prefix.json').unlink()
+            with self.assertRaises(FileNotFoundError):
+                self.libraries(output)

@@ -81,6 +81,7 @@
     "RuntimeResources/*",
     "TerrainResources/*",
     "MapSets/*",
+    "SoftwareRenderer/*",
     "MCP/*"
   ],
   "unit_filters": [

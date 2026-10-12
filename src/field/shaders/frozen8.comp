@@ -1,0 +1,49 @@
+#version 450
+// SPDX-License-Identifier: GPL-3.0-or-later
+layout(local_size_x=128) in;
+layout(set=0,binding=0,std430) readonly buffer Input { uint a[]; };
+layout(set=0,binding=1,std430) buffer Output { uint b[]; };
+layout(set=0,binding=2,std430) readonly buffer Costs { uint costs[]; };
+layout(set=0,binding=3,std430) buffer Changed { uint changed[]; };
+layout(set=0,binding=4,std430) readonly buffer Params { uint width; uint height; uint cap; uint pitch; };
+layout(set=0,binding=5,std430) readonly buffer Active { uint activeTiles[]; };
+layout(set=0,binding=6,std430) buffer NextActive { uint nextActive[]; };
+shared uint values[324];shared uint nextValues[324];shared uint localChanged;
+uint wrap(int x,uint size){return x<0?size-1u-(uint(-x-1)%size):uint(x)%size;}
+void main(){
+ uint lid=gl_LocalInvocationID.x,gx=gl_WorkGroupID.x,gy=gl_WorkGroupID.y;
+ uint tile=gy*pitch+gx,rows=(height+15)/16;
+ bool isActive=activeTiles[tile]!=0;
+ for(uint j=lid;j<324;j+=128){uint x=wrap(int(gx*16+j%18)-1,width),y=wrap(int(gy*16+j/18)-1,height);values[j]=a[y*width+x];}
+ barrier();int threshold=max(2,65535-int(cap));
+ for(uint round=0;round<8;round++){
+  for(uint color=0;color<4;color++){
+   for(uint j=lid;j<324;j+=128)nextValues[j]=values[j];
+   barrier();
+   // Each color owns one quarter of the 16x16 interior, with immutable halo.
+   if(isActive && lid<64){uint x=1+(lid%8)*2+(color&1),y=1+(lid/8)*2+(color>>1),j=y*18+x;
+    uint value=values[j];
+    if(value!=0)for(int dy=-1;dy<=1;dy++)for(int dx=-1;dx<=1;dx++)if(dx!=0||dy!=0){
+     uint k=uint(int(j)+dy*18+dx);
+     uint sx=wrap(int(gx*16+x)-1+dx,width),sy=wrap(int(gy*16+y)-1+dy,height);
+     uint packed=costs[sy*width+sx],step=(dx!=0&&dy!=0)?packed>>16:packed&65535;
+     int candidate=int(values[k])-int(step);if(candidate>=threshold)value=max(value,uint(candidate));
+    }
+    nextValues[j]=value;
+   }
+   barrier();
+   for(uint j=lid;j<324;j+=128)values[j]=nextValues[j];
+   barrier();
+  }
+ }
+ if(lid==0)localChanged=0;barrier();
+ for(uint j=lid;j<256;j+=128){uint x=gx*16+j%16,y=gy*16+j/16;
+  if(x<width&&y<height){uint i=y*width+x,v=values[(j/16+1)*18+j%16+1];b[i]=v;if(a[i]!=v)atomicOr(localChanged,1);}}
+ barrier();
+ if(localChanged!=0){
+  if(lid==0)atomicOr(changed[0],1);
+  int rx=(width%16!=0&&width>16)?2:1,ry=(height%16!=0&&height>16)?2:1;
+  if(lid<uint((2*rx+1)*(2*ry+1))){int dx=int(lid)%((2*rx+1))-rx,dy=int(lid)/((2*rx+1))-ry;
+   atomicOr(nextActive[wrap(int(gy)+dy,rows)*pitch+wrap(int(gx)+dx,pitch)],1);}
+ }
+}

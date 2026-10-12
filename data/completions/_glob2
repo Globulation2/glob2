@@ -90,6 +90,9 @@ _glob2() {
       '--building-catalog[building-catalog]:value:_files' \
       '--compute-threads[compute-threads]:value:' \
       '--gpu[gpu]:value:(on off)' \
+      '--gradient-backend[gradient-backend]:value:(cpu scalar sse2 neon opencl vulkan webgpu)' \
+      '--gradient-algorithm[gradient-algorithm]:value:(buckets frozen8 jacobi)' \
+      '--gradient-verify[gradient-verify]:value:(on off)' \
       '--help[help]' \
       '*:file:_files';;
     'replay') _arguments -s \
@@ -117,6 +120,9 @@ _glob2() {
       '--building-catalog[building-catalog]:value:_files' \
       '--compute-threads[compute-threads]:value:' \
       '--gpu[gpu]:value:(on off)' \
+      '--gradient-backend[gradient-backend]:value:(cpu scalar sse2 neon opencl vulkan webgpu)' \
+      '--gradient-algorithm[gradient-algorithm]:value:(buckets frozen8 jacobi)' \
+      '--gradient-verify[gradient-verify]:value:(on off)' \
       '--help[help]' \
       '*:file:_files';;
     'map generate') _arguments -s \
@@ -223,6 +229,9 @@ _glob2() {
       '*--generator-package[generator-package]:value:_files' \
       '--compute-threads[compute-threads]:value:' \
       '--gpu[gpu]:value:(on off)' \
+      '--gradient-backend[gradient-backend]:value:(cpu scalar sse2 neon opencl vulkan webgpu)' \
+      '--gradient-algorithm[gradient-algorithm]:value:(buckets frozen8 jacobi)' \
+      '--gradient-verify[gradient-verify]:value:(on off)' \
       '--map-file[map-file]:value:_files' \
       '--load-game[load-game]:value:_files' \
       '--generator[generator]:value:' \
@@ -279,6 +288,9 @@ _glob2() {
       '--display[display]' \
       '--compute-threads[compute-threads]:value:' \
       '--gpu[gpu]:value:(on off)' \
+      '--gradient-backend[gradient-backend]:value:(cpu scalar sse2 neon opencl vulkan webgpu)' \
+      '--gradient-algorithm[gradient-algorithm]:value:(buckets frozen8 jacobi)' \
+      '--gradient-verify[gradient-verify]:value:(on off)' \
       '--ticks[ticks]:value:' \
       '--runs[runs]:value:' \
       '--building-catalog[building-catalog]:value:_files' \
@@ -316,6 +328,9 @@ _glob2() {
       '--building-catalog[building-catalog]:value:_files' \
       '--compute-threads[compute-threads]:value:' \
       '--gpu[gpu]:value:(on off)' \
+      '--gradient-backend[gradient-backend]:value:(cpu scalar sse2 neon opencl vulkan webgpu)' \
+      '--gradient-algorithm[gradient-algorithm]:value:(buckets frozen8 jacobi)' \
+      '--gradient-verify[gradient-verify]:value:(on off)' \
       '--instance[instance]:value:' \
       '--help[help]' \
       '*:file:_files';;
@@ -344,6 +359,9 @@ _glob2() {
       '--building-catalog[building-catalog]:value:_files' \
       '--compute-threads[compute-threads]:value:' \
       '--gpu[gpu]:value:(on off)' \
+      '--gradient-backend[gradient-backend]:value:(cpu scalar sse2 neon opencl vulkan webgpu)' \
+      '--gradient-algorithm[gradient-algorithm]:value:(buckets frozen8 jacobi)' \
+      '--gradient-verify[gradient-verify]:value:(on off)' \
       '--instance[instance]:value:' \
       '--hash[hash]:value:' \
       '--title[title]:value:' \
@@ -374,6 +392,9 @@ _glob2() {
       '--building-catalog[building-catalog]:value:_files' \
       '--compute-threads[compute-threads]:value:' \
       '--gpu[gpu]:value:(on off)' \
+      '--gradient-backend[gradient-backend]:value:(cpu scalar sse2 neon opencl vulkan webgpu)' \
+      '--gradient-algorithm[gradient-algorithm]:value:(buckets frozen8 jacobi)' \
+      '--gradient-verify[gradient-verify]:value:(on off)' \
       '--instance[instance]:value:' \
       '--hash[hash]:value:' \
       '--title[title]:value:' \
@@ -443,6 +464,9 @@ _glob2() {
       '--record-chapter-ticks[record-chapter-ticks]:value:' \
       '--compute-threads[compute-threads]:value:' \
       '--gpu[gpu]:value:(on off)' \
+      '--gradient-backend[gradient-backend]:value:(cpu scalar sse2 neon opencl vulkan webgpu)' \
+      '--gradient-algorithm[gradient-algorithm]:value:(buckets frozen8 jacobi)' \
+      '--gradient-verify[gradient-verify]:value:(on off)' \
       '--display[display]' \
       '--runs[runs]:value:' \
       '--ticks[ticks]:value:' \
@@ -483,6 +507,9 @@ _glob2() {
       '--building-catalog[building-catalog]:value:_files' \
       '--compute-threads[compute-threads]:value:' \
       '--gpu[gpu]:value:(on off)' \
+      '--gradient-backend[gradient-backend]:value:(cpu scalar sse2 neon opencl vulkan webgpu)' \
+      '--gradient-algorithm[gradient-algorithm]:value:(buckets frozen8 jacobi)' \
+      '--gradient-verify[gradient-verify]:value:(on off)' \
       '--output-dir[output-dir]:value:_files -/' \
       '--help[help]' \
       '*:file:_files';;

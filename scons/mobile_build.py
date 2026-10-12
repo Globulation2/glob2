@@ -101,6 +101,12 @@ def build_mobile(directory, identity, arguments):
         target=identity['target'], arch=identity['arch'], cflags=toolchain['cflags'],
         ldflags=toolchain['ldflags'], environment=environment)
     attach_recording(env, recording_prefix, identity['target'])
+    if can_build_dependencies():
+        recording_manifest = recording_prefix / 'recording-manifest.json'
+        write_if_changed(output / 'recording-prefix.json', json.dumps({
+            'prefix': str(recording_prefix.resolve()),
+            'manifest_sha256': hashlib.sha256(recording_manifest.read_bytes()).hexdigest(),
+        }, sort_keys=True) + '\n')
     recording_notices = recording_notice_nodes(env, recording_prefix, output, required=can_build_dependencies())
     if any(target in COMMAND_LINE_TARGETS for target in ('android-tests', 'ios-tests', 'web-tests')):
         from test_provenance import register_test_provenance
@@ -222,6 +228,7 @@ def build_mobile(directory, identity, arguments):
                     local.Depends(targets, provenance_header)
                 test_objects += targets
             harness = env.StaticLibrary(str(output / 'lib/glob2-script-tests'), objects + test_objects)
+            env.Depends(harness, recording_notices)
             env.Alias('ios-tests', harness)
 
     env.Depends(program, recording_notices)

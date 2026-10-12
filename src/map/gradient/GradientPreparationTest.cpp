@@ -47,8 +47,7 @@ void scalarClear(Map &m, int team, int swim, Uint16 *out)
 	const Uint32 mask = Team::teamNumberToMask(team);
 	for (size_t i = 0; i < m.size; ++i)
 	{
-		const auto c = m.getTile(size_t(i));
-		if (m.areaCells[i].forbidden & mask)
+				if (m.areaCells[i].forbidden & mask)
 			out[i] = GRADIENT_FORBIDDEN;
 		else if (m.isClearingTarget(i, mask, m.farmAreasEnabled()))
 			out[i] = GRADIENT_AT_GOAL;
@@ -71,8 +70,7 @@ void scalarGuard(Map &m, int team, int swim, Uint16 *out)
 	bool painted = false;
 	for (size_t i = 0; i < m.size; ++i)
 	{
-		const auto c = m.getTile(size_t(i));
-		if (m.areaCells[i].forbidden & mask)
+				if (m.areaCells[i].forbidden & mask)
 			out[i] = GRADIENT_FORBIDDEN;
 		else if (m.occupancyCells[i].immobileUnit != IMMOBILE_UNIT_NONE)
 			out[i] = GRADIENT_FORBIDDEN;
@@ -265,7 +263,7 @@ TEST_SUITE("GradientPreparation")
 		auto &cache = m.gradientRuntime->resourceSeeds;
 		std::vector<Uint16> expected(m.size), actual(m.size);
 		auto compare = [&](int phase) {
-			for (int resource = 0; resource < MaterialCount; ++resource)
+			for (int resource = 0; resource < int(MaterialCount); ++resource)
 			{
 				const int team = phase % Team::MAX_COUNT, swim = phase % SWIM_CLASS_COUNT;
 				CAPTURE(team);
@@ -660,7 +658,7 @@ TEST_SUITE("GradientPreparation")
 				world.game.configureBuildingCatalog();
 				m.fogOfWar = phase & 1 ? m.fogOfWarB.data() : m.fogOfWarA.data();
 				world.game.teams[0]->allies = phase & 1 ? 3 : 1;
-				for (int r=0; r<MaterialCount; ++r)
+				for (int r=0; r<int(MaterialCount); ++r)
 				{
 					market0->materials[r] = phase & 1 ? 0 : 10;
 					market1->materials[r] = phase & 1 ? 10 : 0;
@@ -672,7 +670,7 @@ TEST_SUITE("GradientPreparation")
 					CAPTURE(phase);
 					CAPTURE(team);
 					CAPTURE(swim);
-					for (int resource=0; resource<MaterialCount; ++resource)
+					for (int resource=0; resource<int(MaterialCount); ++resource)
 					for (bool markets : {false, true})
 					{
 						CAPTURE(resource);
@@ -726,7 +724,7 @@ TEST_SUITE("GradientPreparation")
 		{
 			CAPTURE(team);
 			CAPTURE(swim);
-			for (int resource=0; resource<MaterialCount; ++resource)
+			for (int resource=0; resource<int(MaterialCount); ++resource)
 			{
 				CAPTURE(resource);
 				scalarResource(m, team, resource, swim, expected.data(), false);
@@ -1441,4 +1439,109 @@ TEST_CASE("GradientPreparation/minimal view pressure declines without moving ori
     CHECK_FALSE(gradient_preparation::ownPropagation(request,snapshot,data,session,{},17));
     CHECK(gradient_preparation::minimalCostViewMetrics().representationDeclines==before.representationDeclines+1);
     CHECK(data.get()==original);CHECK(data[0]==77);
+}
+
+TEST_CASE("compiled preparation tables preserve rule and catalog interpretation" * doctest::test_suite("GradientPreparation"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.wDec=5,.hDec=5,.teams=2,.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
+    auto& map=world.game.map;
+    for(std::size_t i=0;i<map.size;++i)map.paintCell(i,static_cast<TerrainType>(i%TERRAIN_COUNT));
+    const auto snapshot=SimulationSnapshot::capture(world.game,SimulationSnapshot::captureCatalog(world.game),
+        gradient_preparation::Request{gradient_preparation::Kind::Clear}.requirements());
+    const auto& rules=*snapshot.terrain->rules;
+    REQUIRE(rules.gradientPreparation().size()==rules.size());
+    for(std::size_t id=0;id<rules.size();++id)for(unsigned swim=0;swim<8;++swim){
+        const auto& original=rules[Uint16(id)];const auto& compact=rules.gradientPreparation()[id];
+        CHECK(bool(compact.accessibility&(1u<<swim))==gradient_kernel::terrainAllowsGround(original.properties,swim));
+        CHECK((compact.costs[swim]&65535)==original.ground[swim].cardinal);
+        CHECK((compact.costs[swim]>>16)==original.ground[swim].diagonal);
+    }
+    const auto& resources=*snapshot.catalogs->resources;
+    REQUIRE(resources.gradientPreparation().size()==resources.size());
+    for(std::size_t id=0;id<resources.size();++id){
+        const auto& original=resources.properties(static_cast<ResourceId>(id));
+        const auto compact=resources.gradientPreparation()[id];
+        CHECK((compact&AllMaterials)==original.materialMask);
+        CHECK(bool(compact&(1u<<16))==original.blocksGround);
+        CHECK(bool(compact&(1u<<17))==original.visibleToHarvest);
+        CHECK(bool(compact&(1u<<18))==original.clearable);
+        CHECK(bool(compact&(1u<<19))==original.farmable);
+    }
+}
+
+TEST_CASE("rejected corner identities preserve all compiled gradient tables" *
+		  doctest::test_suite("GradientPreparation"))
+{
+	glob2test::HeadlessGlobals globals;
+	CellRuleTable table(TerrainRegistry::builtins(), ResourceRegistry::builtins());
+	table.intern(GRASS, SAND, GRASS, SAND);
+	const auto original = table;
+	const auto invalid = static_cast<TerrainType>(TerrainRegistry::builtins()->size());
+	CHECK_THROWS_AS(table.intern(GRASS, SAND, GRASS, invalid), std::invalid_argument);
+	REQUIRE(table.size() == original.size());
+	CHECK(table.gradientPreparation().size() == original.gradientPreparation().size());
+	for (unsigned swim = 0; swim < 8; ++swim)
+	{
+		const auto &actual = table.movement(swim);
+		const auto &expected = original.movement(swim);
+		CHECK(actual.entries.size() == expected.entries.size());
+		CHECK(actual.profiles.size() == expected.profiles.size());
+		CHECK(actual.profileIds == expected.profileIds);
+		CHECK(actual.steps == expected.steps);
+		CHECK(actual.minimum == expected.minimum);
+	}
+	// A subsequent valid insertion still issues the next stable rule identity.
+	CHECK(table.intern(GRASS, GRASS, GRASS, SAND) == original.size());
+	CHECK(table.gradientPreparation().size() == table.size());
+}
+
+TEST_CASE("movement profile rejection rolls back previously appended swim classes" *
+		  doctest::test_suite("GradientPreparation"))
+{
+	glob2test::HeadlessGlobals globals;
+	CellRuleTable table(TerrainRegistry::builtins(), ResourceRegistry::builtins());
+	// Force the final class's documented profile limit. Earlier classes have
+	// already appended entries when this rejection occurs; rollback must cover
+	// their prepared metadata as well as the unpublished derived record.
+	auto &capped = const_cast<TerrainRegistry::Movement &>(table.movement(7));
+	capped.profiles.assign(256, gradient_kernel::EntrySteps{1, 1});
+	const auto original = table;
+	const auto corners = CellRuleTable::key(GRASS, SAND, GRASS, SAND);
+	CHECK_THROWS_AS(table.intern(corners), std::length_error);
+	CHECK_FALSE(table.find(corners).has_value());
+	CHECK(table.size() == original.size());
+	CHECK(table.gradientPreparation().size() == original.gradientPreparation().size());
+	for (unsigned swim = 0; swim < 8; ++swim)
+	{
+		const auto &actual = table.movement(swim);
+		const auto &expected = original.movement(swim);
+		REQUIRE(actual.entries.size() == expected.entries.size());
+		REQUIRE(actual.profiles.size() == expected.profiles.size());
+		CHECK(actual.profileIds == expected.profileIds);
+		CHECK(actual.steps == expected.steps);
+		CHECK(actual.minimum == expected.minimum);
+		REQUIRE(actual.prepared.has_value() == expected.prepared.has_value());
+		if (actual.prepared)
+			std::visit(
+				[&](const auto &profile)
+				{
+					using Profile = std::remove_cvref_t<decltype(profile)>;
+					const auto *previous = std::get_if<Profile>(&*expected.prepared);
+					REQUIRE(previous != nullptr);
+					CHECK(profile.terrainClasses == previous->terrainClasses);
+					CHECK(profile.cardinalSlots == previous->cardinalSlots);
+					CHECK(profile.diagonalSlots == previous->diagonalSlots);
+					CHECK(profile.steps == previous->steps);
+					CHECK(profile.maxAppends == previous->maxAppends);
+					CHECK(profile.classCount == previous->classCount);
+					CHECK(profile.stepCount == previous->stepCount);
+				},
+				*actual.prepared);
+		for (std::size_t i = 0; i < actual.entries.size(); ++i)
+		{
+			CHECK(actual.entries[i].cardinal == expected.entries[i].cardinal);
+			CHECK(actual.entries[i].diagonal == expected.entries[i].diagonal);
+		}
+	}
 }

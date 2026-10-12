@@ -190,6 +190,16 @@ def copy_sources(args):
     (snapshot / 'map').mkdir(exist_ok=True)
     for header in (args.candidate_dir / 'field').glob('*.h'):
         shutil.copyfile(header, snapshot / 'field' / header.name)
+    # CPU-only executor test double: accelerator eligibility is always false.
+    (snapshot / 'ComputeExecutor.h').write_text(
+        '#pragma once\nclass ComputeExecutor { public: static unsigned workerSlot(){return 0;} '
+        'class WorkerOnly { public: virtual ~WorkerOnly()=default; '
+        'virtual bool pending() const noexcept=0; virtual void process() noexcept=0; }; };\n')
+    # Unit constants need only the SDL integer typedef, not a linked SDL runtime.
+    (snapshot / 'GAGSys.h').write_text('#pragma once\n#include <cstdint>\nusing Uint32=std::uint32_t;\n')
+    shutil.copyfile(args.candidate_dir / 'common/PowerOfTwo.h', snapshot / 'PowerOfTwo.h')
+    (snapshot / 'unit').mkdir(exist_ok=True)
+    shutil.copyfile(args.candidate_dir / 'unit/UnitConsts.h', snapshot / 'unit/UnitConsts.h')
     # The terrain tables are header-only and include one another, so take every
     # top-level header of their directories rather than a list that drifts from
     # their includes.
@@ -270,7 +280,12 @@ def run_cases(args, binary, matrix):
                 if args.cpu is not None:
                     command = ['taskset', '-c', str(args.cpu), *command]
                 try:
-                    result = subprocess.run(command, check=True, text=True, capture_output=True)
+                    # Timing inputs must not inherit an unrelated game's GPU
+                    # algorithm or opt-in shadow verification environment.
+                    environment = {**os.environ, 'GLOB2_GRADIENT_BACKEND': args.backend,
+                                   'GLOB2_GRADIENT_ALGORITHM': 'buckets',
+                                   'GLOB2_GRADIENT_VERIFY': 'off'}
+                    result = subprocess.run(command, check=True, text=True, capture_output=True, env=environment)
                 except subprocess.CalledProcessError as error:
                     # Preserve rows already produced by a failing case, while
                     # showing the actual oracle/validation diagnostic to users.
@@ -306,7 +321,8 @@ def parse_args():
     parser.add_argument('--repeats', type=int, default=11)
     parser.add_argument('--compiler', default=os.environ.get('CXX', 'g++'))
     parser.add_argument('--flags', default='-O3 -DNDEBUG -std=c++20')
-    parser.add_argument('--scalar', action='store_true')
+    parser.add_argument('--scalar', action='store_true', help='Legacy build-time scalar reference')
+    parser.add_argument('--backend', choices=('cpu','scalar','sse2','neon'), default='cpu', help='Select a CPU kernel at runtime in this standalone harness; use game run for GPU comparisons')
     parser.add_argument('--instrumented', action='store_true',
                         help='collect counters/allocations; never use these timings for performance claims')
     parser.add_argument('--cpu', type=int, help='pin benchmark subprocess to a CPU')

@@ -629,6 +629,7 @@ TEST_CASE("Frozen8 matches the independent oracle across shapes and costs")
     const auto expected=oracle(seeds,grid,costs,COST_LIMIT);
     BackendSession session;
     for(unsigned plan=1;plan<unsigned(Plan::Count);++plan) {
+        if(PLANS[plan].backend!=Backend::OpenCL)continue;
         if(!(readyPlans.load()&(1u<<plan))) continue;
         auto actual=seeds;
         bool committed=false,observed=false;

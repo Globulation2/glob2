@@ -66,7 +66,7 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
                       LINK=command_path(compiler), AR=command_path(emscripten / 'emar'), RANLIB=command_path(emscripten / 'emranlib'))
     env['OPUS_PREFIX'] = str(opus_prefix)
     env['PROGSUFFIX'] = '.js'
-    env.Append(LINKFLAGS=['--js-library', 'browser/canvas-size.js', '--js-library', 'browser/webgpu-device.js'])
+    env.Append(LINKFLAGS=['--js-library', 'browser/canvas-size.js', '--js-library', 'browser/webgpu-device.js', '--js-library', 'browser/gradient-compute.js'])
     if threaded:
         env.Append(CCFLAGS=['-pthread'], LINKFLAGS=['-pthread', '-sOFFSCREENCANVAS_SUPPORT=1',
             '-sDEFAULT_PTHREAD_STACK_SIZE=8388608',
@@ -169,7 +169,7 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
     files += ['libgag/src/' + s for s in GAG_SOURCES if s not in ('ApplicationHost.cpp', 'RecordingEncoder.cpp', 'RecordingSession.cpp')]
     files += ['libusl/src/' + s for s in USL_SOURCES]
     files += ['browser/HiveBrowserHost.cpp', 'browser/VoiceRecorder.cpp', 'browser/ApplicationHost.cpp', 'browser/RecordingPlatform.cpp', 'browser/NetTransport.cpp', 'browser/Launcher.cpp', 'browser/HttpFetch.cpp']
-    files += ['browser/Audio.cpp']
+    files += ['browser/Audio.cpp', 'browser/GradientCompute.cpp']
     if any(target in COMMAND_LINE_TARGETS for target in ('android-tests', 'ios-tests', 'web-tests')):
         from test_provenance import register_test_provenance
         provenance_header = register_test_provenance(env, output)

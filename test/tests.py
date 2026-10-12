@@ -28,6 +28,7 @@ ENGINE_SUPPORT = [
 ENGINE_TESTS = [
     '#libgag/src/ToolkitAssetOptionsTest.cpp',
     '#src/replay/ReplayTelemetryTest.cpp',
+    ('#src/map/gradient/GradientBackendSwitchTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('#src/mcp/MCPTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/unit/types/UnitCatalogTest.cpp',
     ('#src/unit/UnitCustomizationTest.cpp', dict(cxxflags=['-fno-access-control'])),
@@ -262,6 +263,8 @@ UNIT_TESTS = [
     '#src/ai/shared_runtime/GradientBFSTest.cpp',
     '#src/field/FieldTraversalTest.cpp',
     '#src/field/OpenCLGradientTest.cpp',
+    '#src/field/RuntimeGradientBackendTest.cpp',
+    '#src/field/GradientPreparationContractTest.cpp',
     '#src/field/OpenCLBorrowedLifetimeTest.cpp',
     '#src/field/OpenCLRequiredLifetimePoolTest.cpp',
     '#src/field/OpenCLTransferProofTest.cpp',
@@ -388,6 +391,9 @@ UNIT_PRODUCTION_SOURCES = [
 
     '#src/field/OpenCLGradient.cpp',
     '#src/field/GradientDeviceService.cpp',
+    '#src/field/GradientAccelerators.cpp',
+    '#src/field/VulkanGradient.cpp',
+    '#src/field/WebGPUGradient.cpp',
     '#src/app/cli/CommandLine.cpp',
     '#src/map/TerrainRegistry.cpp',
     '#src/map/CellRules.cpp',

@@ -246,4 +246,17 @@ TEST_CASE("legacy sizing injection retains fallback while new caller allocation 
     input.capabilities.allocatedCpuParticipants=6; // Caller-owned allocation, not inferred hint.
     CHECK(resolveApplicationResourcePlan(input).resources.computeParticipants==6);
 }
+
+TEST_CASE("CPU observation does not infer which gradient accelerator is available")
+{
+    CpuAvailabilityObservation cpu;
+    cpu.hardwareHint = 8;
+    cpu.eligibleLogicalCpuCount = 6;
+    const auto capabilities = applicationCapabilitiesFromCpuAvailability(cpu, true);
+    CHECK(capabilities.allocatedCpuParticipants == 6);
+    CHECK_FALSE(capabilities.computeGpuSupported.has_value());
+    auto input = application(); input.capabilities = capabilities;
+    input.legacyGpuComputeEnabled = true; input.legacyGpuComputeExplicit = true;
+    CHECK(resolveApplicationResourcePlan(input).resources.computeGpu == GpuPolicy::Enabled);
+}
 }

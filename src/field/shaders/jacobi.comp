@@ -1,0 +1,23 @@
+#version 450
+// SPDX-License-Identifier: GPL-3.0-or-later
+layout(local_size_x=128) in;
+layout(set=0,binding=0,std430) readonly buffer Input { uint a[]; };
+layout(set=0,binding=1,std430) buffer Output { uint b[]; };
+layout(set=0,binding=2,std430) readonly buffer Costs { uint costs[]; };
+layout(set=0,binding=3,std430) buffer Changed { uint changed[]; };
+layout(set=0,binding=4,std430) readonly buffer Params { uint width; uint height; uint cap; uint pitch; };
+uint wrap(int x,uint size){return x<0?size-1u-(uint(-x-1)%size):uint(x)%size;}
+void main(){
+ uint i=gl_GlobalInvocationID.x;if(i>=width*height)return;
+ uint value=a[i],old=value;
+ if(value!=0){
+  int x=int(i%width),y=int(i/width),threshold=max(2,65535-int(cap));
+  for(int dy=-1;dy<=1;dy++)for(int dx=-1;dx<=1;dx++)if(dx!=0||dy!=0){
+   uint k=wrap(y+dy,height)*width+wrap(x+dx,width);
+   uint step=(dx!=0&&dy!=0)?costs[k]>>16:costs[k]&65535;
+   int candidate=int(a[k])-int(step);
+   if(candidate>=threshold)value=max(value,uint(candidate));
+  }
+ }
+ b[i]=value;if(value!=old)atomicOr(changed[0],1);
+}

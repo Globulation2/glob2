@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Generate an Xcode app project; SCons compiles the shared game core."""
 import argparse
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -12,6 +13,7 @@ from dev_paths import dependency_prefix
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scons'))
 from build_layout import PACKAGE_VERSION, build_identity, default_directory, write_if_changed
 from dev_build import dependency_identity
+from dev_store import adopt
 from ios_release import marketing_version
 import official_instance
 from mobile_toolchain import ROOT, discover
@@ -22,6 +24,26 @@ BUNDLE_ID = 'org.globulation2.glob2'
 
 def cmake_quote(value):
     return '"'+str(value).replace('\\','/').replace('"','\\"').replace('$','\\$').replace(';','\\;')+'"'
+
+
+def recording_libraries(output):
+    """Use the installation selected by SCons, rather than guess its cache path."""
+    receipt = json.loads((Path(output) / 'recording-prefix.json').read_text())
+    prefix = adopt(receipt['prefix'])
+    manifest_bytes = (prefix / 'recording-manifest.json').read_bytes()
+    if hashlib.sha256(manifest_bytes).hexdigest() != receipt['manifest_sha256']:
+        raise ValueError('Recording installation manifest changed after the native build')
+    manifest = json.loads(manifest_bytes)
+    if manifest['identity']['target'] != 'ios' or manifest['identity']['arch'] != 'arm64':
+        raise ValueError('Recording installation is not the iOS ARM64 build')
+    names = ['lib' + name + '.a' for name in ('avformat', 'avcodec', 'swscale', 'swresample', 'avutil', 'x264')]
+    if set(manifest['archives']) != set(names):
+        raise ValueError('Recording installation archive inventory is incomplete')
+    libraries = [prefix / 'lib' / name for name in names]
+    for path in libraries:
+        if hashlib.sha256(path.read_bytes()).hexdigest() != manifest['archives'][path.name]:
+            raise ValueError('Recording installation archive changed: ' + str(path))
+    return libraries
 
 
 def main():
@@ -97,8 +119,7 @@ def main():
     manifest=json.loads((prefix/'manifest.json').read_text())
     include=[output/'include',prefix/'include',prefix/'include/SDL3']+[ROOT/p for p in INCLUDE_DIRECTORIES]
     libraries=[output/('lib/libglob2-script-tests.a' if args.script_tests else 'lib/libglob2.a')]+[prefix/p for p in manifest['archives']]
-    recording_prefix=output/'recording/prefix'
-    libraries += [recording_prefix/'lib'/('lib'+name+'.a') for name in ('avformat','avcodec','swscale','swresample','avutil','x264')]
+    libraries += recording_libraries(output)
     lines=['cmake_minimum_required(VERSION 3.24)','project(Glob2 LANGUAGES C CXX OBJC OBJCXX)',
         'set(CMAKE_CXX_STANDARD 20)', 'set(CMAKE_CXX_STANDARD_REQUIRED ON)',
         'add_executable(Glob2 MACOSX_BUNDLE '+cmake_quote(ROOT/('mobile/ios/ScriptTests.mm' if args.script_tests else 'src/app/Glob2.cpp'))+')',
@@ -137,6 +158,12 @@ def main():
         'target_sources(Glob2 PRIVATE '+cmake_quote(icons)+')',
         'set_source_files_properties('+cmake_quote(icons)+' PROPERTIES MACOSX_PACKAGE_LOCATION Resources)',
         'set_target_properties(Glob2 PROPERTIES XCODE_ATTRIBUTE_ASSETCATALOG_COMPILER_APPICON_NAME AppIcon)']
+    sys.path.insert(0, str(ROOT / 'scons'))
+    from moltenvk import prepare as prepare_moltenvk
+    compute_framework, compute_license = prepare_moltenvk('ios', output, args.environment)
+    lines += ['set_property(TARGET Glob2 PROPERTY XCODE_EMBED_FRAMEWORKS '+cmake_quote(compute_framework)+')',
+              'set_target_properties(Glob2 PROPERTIES XCODE_EMBED_FRAMEWORKS_CODE_SIGN_ON_COPY YES XCODE_EMBED_FRAMEWORKS_REMOVE_HEADERS_ON_COPY YES)',
+              'set_property(TARGET Glob2 APPEND PROPERTY BUILD_RPATH "@executable_path/Frameworks")']
     for framework in ('VideoToolbox','UniformTypeIdentifiers','UIKit','Foundation','AudioToolbox','CoreAudio','AVFoundation','CoreGraphics','CoreHaptics','CoreMotion','CoreBluetooth','CoreMedia','CoreVideo','GameController','Metal','QuartzCore','OpenGLES','Security','SystemConfiguration'):
         lines.append('target_link_libraries(Glob2 PRIVATE "-framework '+framework+'")')
     if args.script_tests:
@@ -148,7 +175,10 @@ def main():
     export_assets(ROOT, asset_root, platform='ios', optimized=True, lossy=args.release)
     shutil.copytree(output/'shaders', asset_root/'shaders', dirs_exist_ok=True,
                     ignore=shutil.ignore_patterns('.*', 'RendererShaderLayouts.h', 'native-sources', '*.air'))
-    shutil.copytree(recording_prefix/'share/licenses/recording',asset_root/'licenses/recording',dirs_exist_ok=True)
+    shutil.copytree(output/'licenses/recording',asset_root/'licenses/recording',dirs_exist_ok=True)
+    notice=asset_root/'licenses/MoltenVK'
+    notice.mkdir(parents=True,exist_ok=True)
+    shutil.copy2(compute_license,notice/'LICENSE')
     resource_roots = [(asset_root, folder) for folder in ('data','maps','campaigns','scripts','licenses','shaders')]
     if args.script_tests:
         resource_roots += [(ROOT, folder) for folder in ('games','test/fixtures','examples/javascript')]

@@ -84,7 +84,16 @@ Building catalog manifest Type: file.
 Shared compute pool; auto respects available logical CPUs Default: auto. Type: compute.
 .TP
 .B \-\-gpu
-GPU gradient compute; overrides local setting (graphical default off, headless on) Allowed: on, off. Type: enum.
+Legacy gradient selection: on=OpenCL, off=CPU automatic; explicit backend takes precedence Allowed: on, off. Type: enum.
+.TP
+.B \-\-gradient\-backend
+Gradient computation backend Allowed: cpu, scalar, sse2, neon, opencl, vulkan, webgpu. Type: enum.
+.TP
+.B \-\-gradient\-algorithm
+Gradient computation algorithm Allowed: buckets, frozen8, jacobi. Type: enum.
+.TP
+.B \-\-gradient\-verify
+Compare accelerated fields with scalar CPU output Allowed: on, off. Type: enum.
 .TP
 .B \-\-help
 Show this command's help (also \-h) Default: false.
@@ -191,7 +200,16 @@ Building catalog manifest Type: file.
 Shared compute pool; auto respects available logical CPUs Default: auto. Type: compute.
 .TP
 .B \-\-gpu
-GPU gradient compute; overrides local setting (graphical default off, headless on) Allowed: on, off. Type: enum.
+Legacy gradient selection: on=OpenCL, off=CPU automatic; explicit backend takes precedence Allowed: on, off. Type: enum.
+.TP
+.B \-\-gradient\-backend
+Gradient computation backend Allowed: cpu, scalar, sse2, neon, opencl, vulkan, webgpu. Type: enum.
+.TP
+.B \-\-gradient\-algorithm
+Gradient computation algorithm Allowed: buckets, frozen8, jacobi. Type: enum.
+.TP
+.B \-\-gradient\-verify
+Compare accelerated fields with scalar CPU output Allowed: on, off. Type: enum.
 .TP
 .B \-\-help
 Show this command's help (also \-h) Default: false.
@@ -605,7 +623,16 @@ Load a custom generator package or directory Type: file. Repeatable.
 Shared compute pool; auto respects available logical CPUs Default: auto. Type: compute.
 .TP
 .B \-\-gpu
-GPU gradient compute; overrides local setting (graphical default off, headless on) Allowed: on, off. Type: enum.
+Legacy gradient selection: on=OpenCL, off=CPU automatic; explicit backend takes precedence Allowed: on, off. Type: enum.
+.TP
+.B \-\-gradient\-backend
+Gradient computation backend Allowed: cpu, scalar, sse2, neon, opencl, vulkan, webgpu. Type: enum.
+.TP
+.B \-\-gradient\-algorithm
+Gradient computation algorithm Allowed: buckets, frozen8, jacobi. Type: enum.
+.TP
+.B \-\-gradient\-verify
+Compare accelerated fields with scalar CPU output Allowed: on, off. Type: enum.
 .TP
 .B \-\-map\-file
 Map input for a new game Type: file.
@@ -803,7 +830,16 @@ Render the saved game through the normal presentation loop Default: false.
 Shared compute pool; auto respects available logical CPUs Default: auto. Type: compute.
 .TP
 .B \-\-gpu
-GPU gradient compute; overrides local setting (graphical default off, headless on) Allowed: on, off. Type: enum.
+Legacy gradient selection: on=OpenCL, off=CPU automatic; explicit backend takes precedence Allowed: on, off. Type: enum.
+.TP
+.B \-\-gradient\-backend
+Gradient computation backend Allowed: cpu, scalar, sse2, neon, opencl, vulkan, webgpu. Type: enum.
+.TP
+.B \-\-gradient\-algorithm
+Gradient computation algorithm Allowed: buckets, frozen8, jacobi. Type: enum.
+.TP
+.B \-\-gradient\-verify
+Compare accelerated fields with scalar CPU output Allowed: on, off. Type: enum.
 .TP
 .B \-\-ticks
 Steps per run; 0 runs until the game ends Default: 0. Type: integer. Units: ticks. Range: 0..2147483647.
@@ -839,7 +875,7 @@ Choose at most one: \-\-record, \-\-videoshot
 .PP
 \-\-record\-fps requires \-\-record or \-\-videoshot
 .PP
-Environment: GLOB2_REPLAY_PATH, GLOB2_CHECKSUM_SIDECAR, GLOB2_TEAM_RESULTS, GLOB2_TEAM_TIMELINE, GLOB2_GRADIENT_BACKEND, GLOB2_OPENCL_DEVICE
+Environment: GLOB2_REPLAY_PATH, GLOB2_CHECKSUM_SIDECAR, GLOB2_TEAM_RESULTS, GLOB2_TEAM_TIMELINE, GLOB2_GRADIENT_BACKEND, GLOB2_GRADIENT_ALGORITHM, GLOB2_GRADIENT_VERIFY, GLOB2_OPENCL_DEVICE
 .PP
 .nf
 glob2 game repeat saved.game.gz \-\-ticks 64 \-\-runs 1
@@ -950,7 +986,16 @@ Building catalog manifest Type: file.
 Shared compute pool; auto respects available logical CPUs Default: auto. Type: compute.
 .TP
 .B \-\-gpu
-GPU gradient compute; overrides local setting (graphical default off, headless on) Allowed: on, off. Type: enum.
+Legacy gradient selection: on=OpenCL, off=CPU automatic; explicit backend takes precedence Allowed: on, off. Type: enum.
+.TP
+.B \-\-gradient\-backend
+Gradient computation backend Allowed: cpu, scalar, sse2, neon, opencl, vulkan, webgpu. Type: enum.
+.TP
+.B \-\-gradient\-algorithm
+Gradient computation algorithm Allowed: buckets, frozen8, jacobi. Type: enum.
+.TP
+.B \-\-gradient\-verify
+Compare accelerated fields with scalar CPU output Allowed: on, off. Type: enum.
 .TP
 .B \-\-instance
 Online instance origin Type: string.
@@ -1060,7 +1105,16 @@ Building catalog manifest Type: file.
 Shared compute pool; auto respects available logical CPUs Default: auto. Type: compute.
 .TP
 .B \-\-gpu
-GPU gradient compute; overrides local setting (graphical default off, headless on) Allowed: on, off. Type: enum.
+Legacy gradient selection: on=OpenCL, off=CPU automatic; explicit backend takes precedence Allowed: on, off. Type: enum.
+.TP
+.B \-\-gradient\-backend
+Gradient computation backend Allowed: cpu, scalar, sse2, neon, opencl, vulkan, webgpu. Type: enum.
+.TP
+.B \-\-gradient\-algorithm
+Gradient computation algorithm Allowed: buckets, frozen8, jacobi. Type: enum.
+.TP
+.B \-\-gradient\-verify
+Compare accelerated fields with scalar CPU output Allowed: on, off. Type: enum.
 .TP
 .B \-\-instance
 Online instance origin Type: string.
@@ -1176,7 +1230,16 @@ Building catalog manifest Type: file.
 Shared compute pool; auto respects available logical CPUs Default: auto. Type: compute.
 .TP
 .B \-\-gpu
-GPU gradient compute; overrides local setting (graphical default off, headless on) Allowed: on, off. Type: enum.
+Legacy gradient selection: on=OpenCL, off=CPU automatic; explicit backend takes precedence Allowed: on, off. Type: enum.
+.TP
+.B \-\-gradient\-backend
+Gradient computation backend Allowed: cpu, scalar, sse2, neon, opencl, vulkan, webgpu. Type: enum.
+.TP
+.B \-\-gradient\-algorithm
+Gradient computation algorithm Allowed: buckets, frozen8, jacobi. Type: enum.
+.TP
+.B \-\-gradient\-verify
+Compare accelerated fields with scalar CPU output Allowed: on, off. Type: enum.
 .TP
 .B \-\-instance
 Online instance origin Type: string.
@@ -1451,7 +1514,16 @@ Simulation ticks per chapter Default: 10000. Type: integer. Units: ticks. Range:
 Shared compute pool; auto respects available logical CPUs Default: auto. Type: compute.
 .TP
 .B \-\-gpu
-GPU gradient compute; overrides local setting (graphical default off, headless on) Allowed: on, off. Type: enum.
+Legacy gradient selection: on=OpenCL, off=CPU automatic; explicit backend takes precedence Allowed: on, off. Type: enum.
+.TP
+.B \-\-gradient\-backend
+Gradient computation backend Allowed: cpu, scalar, sse2, neon, opencl, vulkan, webgpu. Type: enum.
+.TP
+.B \-\-gradient\-algorithm
+Gradient computation algorithm Allowed: buckets, frozen8, jacobi. Type: enum.
+.TP
+.B \-\-gradient\-verify
+Compare accelerated fields with scalar CPU output Allowed: on, off. Type: enum.
 .TP
 .B \-\-display
 Show test games graphically Default: false.
@@ -1611,7 +1683,16 @@ Building catalog manifest Type: file.
 Shared compute pool; auto respects available logical CPUs Default: auto. Type: compute.
 .TP
 .B \-\-gpu
-GPU gradient compute; overrides local setting (graphical default off, headless on) Allowed: on, off. Type: enum.
+Legacy gradient selection: on=OpenCL, off=CPU automatic; explicit backend takes precedence Allowed: on, off. Type: enum.
+.TP
+.B \-\-gradient\-backend
+Gradient computation backend Allowed: cpu, scalar, sse2, neon, opencl, vulkan, webgpu. Type: enum.
+.TP
+.B \-\-gradient\-algorithm
+Gradient computation algorithm Allowed: buckets, frozen8, jacobi. Type: enum.
+.TP
+.B \-\-gradient\-verify
+Compare accelerated fields with scalar CPU output Allowed: on, off. Type: enum.
 .TP
 .B \-\-output\-dir
 Translation screenshot directory Default: .. Type: directory.

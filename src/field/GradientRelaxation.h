@@ -7,6 +7,7 @@
 // field and the completed-layer boundary must not.
 #include "GradientCosts.h"
 #include "Grid.h"
+#include "GradientSelection.h"
 
 #include <algorithm>
 #include <cstddef>
@@ -46,7 +47,7 @@ namespace gradient_kernel
 	// The search runs backward from goals: when expanding i, each neighbor is a
 	// possible predecessor, so all eight edges charge the cost of entering i.
 	// Weighted layers read isWater(i) for that cost; uniform layers omit the read.
-	template<bool Weighted, bool Masked, typename IsWater,typename Reserve=DefaultGradientReserve>
+	template<bool Weighted, bool Masked, typename IsWater,typename Reserve=DefaultGradientReserve,bool Simd=true>
 	void expandBucketRangeAddressed(std::uint16_t *__restrict gradient, GradientBucket *queue, size_t &pending,
 		int cur, int limit, const field::Grid& grid, EntrySteps waterSteps, IsWater isWater,
 		std::size_t begin,std::size_t end,Reserve reserve={})
@@ -96,12 +97,13 @@ namespace gradient_kernel
 				short(diagonal), short(cardinal), short(diagonal), 1);
 		};
 		// SSE2 compares signed: biasing both sides by 0x8000 orders them unsigned.
-		const __m128i one = _mm_set1_epi16(1);
-		const __m128i bias = _mm_set1_epi16(short(0x8000));
-		auto biasedLimit = [&](__m128i values) { return _mm_xor_si128(_mm_sub_epi16(values, one), bias); };
-		const __m128i landValues = aroundValues(landCardinalValue, landDiagonalValue);
-		const __m128i waterValues = aroundValues(waterCardinalValue, waterDiagonalValue);
-		const __m128i landLimits = biasedLimit(landValues), waterLimits = biasedLimit(waterValues);
+        __m128i one,bias,landValues,waterValues,landLimits,waterLimits;
+        if constexpr(Simd){
+            one=_mm_set1_epi16(1);bias=_mm_set1_epi16(short(0x8000));
+            const auto biasedLimit=[&](__m128i values){return _mm_xor_si128(_mm_sub_epi16(values,one),bias);};
+            landValues=aroundValues(landCardinalValue,landDiagonalValue);waterValues=aroundValues(waterCardinalValue,waterDiagonalValue);
+            landLimits=biasedLimit(landValues);waterLimits=biasedLimit(waterValues);
+        }
 #elif defined(GLOB2_GRADIENT_NEON)
 		// Four lanes per row cover x-1..x+2. In the middle row the center and
 		// x+2 lanes carry 1; in the outer rows only x+2 carries 1.
@@ -114,13 +116,14 @@ namespace gradient_kernel
 		{
 			return vset_lane_u16(cardinal, vset_lane_u16(cardinal, vdup_n_u16(1), 0), 2);
 		};
-		const uint16x8_t landValues = outerValues(landCardinalValue, landDiagonalValue);
-		const uint16x8_t waterValues = outerValues(waterCardinalValue, waterDiagonalValue);
-		const uint16x4_t landRowValues = rowValues(landCardinalValue), waterRowValues = rowValues(waterCardinalValue);
-		const uint16x8_t landLimits = vsubq_u16(landValues, vdupq_n_u16(1));
-		const uint16x8_t waterLimits = vsubq_u16(waterValues, vdupq_n_u16(1));
-		const uint16x4_t landRowLimits = vsub_u16(landRowValues, vdup_n_u16(1));
-		const uint16x4_t waterRowLimits = vsub_u16(waterRowValues, vdup_n_u16(1));
+        uint16x8_t landValues,waterValues,landLimits,waterLimits;
+        uint16x4_t landRowValues,waterRowValues,landRowLimits,waterRowLimits;
+        if constexpr(Simd){
+            landValues=outerValues(landCardinalValue,landDiagonalValue);waterValues=outerValues(waterCardinalValue,waterDiagonalValue);
+            landRowValues=rowValues(landCardinalValue);waterRowValues=rowValues(waterCardinalValue);
+            landLimits=vsubq_u16(landValues,vdupq_n_u16(1));waterLimits=vsubq_u16(waterValues,vdupq_n_u16(1));
+            landRowLimits=vsub_u16(landRowValues,vdup_n_u16(1));waterRowLimits=vsub_u16(waterRowValues,vdup_n_u16(1));
+        }
 #endif
 		// No target bucket can be the current bucket, so reserving target capacity
 		// cannot invalidate this pointer even when a target vector reallocates.
@@ -181,7 +184,7 @@ namespace gradient_kernel
 #ifdef GLOB2_GRADIENT_SSE2
 				// Four contiguous cells must fit in each row. Seam-adjacent cells
 				// use scalar wrapped indices below; vector loads never cross a row.
-				if (x >= 1 && x + 2 <= wMask)
+				if (Simd && x >= 1 && x + 2 <= wMask)
 				{
 						// movemask gives two bits per 16-bit lane; bits 0,2,4 and
 						// 8,10,12 are the six neighbors queued below.
@@ -211,7 +214,7 @@ namespace gradient_kernel
 				}
 				else
 #elif defined(GLOB2_GRADIENT_NEON)
-				if (x >= 1 && x + 2 <= wMask)
+				if (Simd && x >= 1 && x + 2 <= wMask)
 				{
 						// Columns x-1..x+2 of all three rows; the same contiguous-row
 						// condition as SSE2 is required before loading.
@@ -292,10 +295,14 @@ namespace gradient_kernel
 		int cur,int limit,const field::Grid& grid,EntrySteps waterSteps,IsWater isWater,
 		std::size_t begin,std::size_t end,Reserve reserve={})
 	{
-		if(grid.powerOfTwo())
-			expandBucketRangeAddressed<Weighted,true>(gradient,queue,pending,cur,limit,grid,waterSteps,isWater,begin,end,reserve);
-		else
-			expandBucketRangeAddressed<Weighted,false>(gradient,queue,pending,cur,limit,grid,waterSteps,isWater,begin,end,reserve);
+        const auto dispatch=[&]<bool Simd>() {
+            if(grid.powerOfTwo())
+                expandBucketRangeAddressed<Weighted,true,IsWater,Reserve,Simd>(gradient,queue,pending,cur,limit,grid,waterSteps,isWater,begin,end,reserve);
+            else
+                expandBucketRangeAddressed<Weighted,false,IsWater,Reserve,Simd>(gradient,queue,pending,cur,limit,grid,waterSteps,isWater,begin,end,reserve);
+        };
+        if(cpuBackend()==Backend::Scalar)dispatch.template operator()<false>();
+        else dispatch.template operator()<true>();
 	}
 	// Choose geometry once for a complete layer; both paths share relaxation,
 	// bucket accounting and SIMD rules, including thin-grid aliasing.

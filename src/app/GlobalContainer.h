@@ -59,6 +59,8 @@ public:
 
 	void applyCommand(const Cli::Request &request);
 	bool gpuComputeEnabled() const;
+    gradient_kernel::Configuration gradientConfiguration() const;
+    gradient_kernel::Configuration resolvedGradientConfiguration() const;
 	void configureGradientBackend() const;
     // Resolve only at an explicit owner/session setup boundary. Queries never rediscover.
     void refreshResourcePlan(bool ownerOnly = false);
@@ -152,8 +154,12 @@ public:
 	std::optional<bool> gpuComputeOverride;
     resource_policy::ExecutionRequest executionResourceRequest;
     std::optional<resource_policy::ResourcePlan> frozenResourcePlan;
+    std::optional<gradient_kernel::Configuration> frozenGradientConfiguration;
     CpuAvailabilityObservation frozenCpuAvailability;
     std::uint64_t frozenResourceObservationNs=0;
+    std::optional<gradient_kernel::Backend> gradientBackendOverride;
+    std::optional<gradient_kernel::Algorithm> gradientAlgorithmOverride;
+    std::optional<bool> gradientVerifyOverride;
 	std::string runNoXGameName;
 	int runNoXCountRuns; //!< The number of runs you want to repeat the no X run
 	bool automaticEndingGame;

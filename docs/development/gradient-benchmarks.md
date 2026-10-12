@@ -2,6 +2,43 @@
 
 Measure individual field kernels and integrated game behavior separately; kernel speed alone does not establish an engine improvement.
 
+## Preparation memory feasibility
+
+Before allocating resident snapshots, run the native record-size worksheet:
+
+```sh
+python3 tools/gradient_preparation_memory.py \
+  --output artifacts/gradient-preparation/memory.json
+```
+
+Set `GLOB2_SDL3_PREFIX` or pass `--include` for non-system SDL headers. The tool
+compiles a size probe against the actual C++ snapshot records. It models 128²,
+256² and 512² maps, one/two/four overlapping versions, eight pending fields,
+whole snapshot arrays, stock sidecars, shared tables, staging and solver/readback
+storage. Override `--pending-fields`, `--table-rules` and `--table-resources` for
+the intended workload. It counts shared table owners once.
+
+These numbers are a conservative worksheet, not an admission proof: variable
+catalog allocations, allocator overhead, device alignment and other retained
+gradient work still require actual lease accounting. The worksheet assumes
+whole-snapshot host staging is live together; streaming staging can reduce that
+part of the envelope. Sparse uploads do not reduce retained snapshot arrays.
+The fixed limits remain 64 MiB host and
+128 MiB device. On the native little-endian record layout, a material snapshot
+uses 52 bytes per cell before multi-yield stocks; a full stock sidecar adds
+24 bytes per cell. Under the worksheet's default assumptions, two fully stocked
+512² versions exceed the modeled host envelope. Actual admission must use the
+adapter's leases and allocation/retirement proofs.
+
+Production currently prepares periodic seeds on CPU. The generated preparation
+predicates and shared residency state/range contracts do not establish GPU
+preparation execution or qualify any platform. GPU preparation requires separate
+kernel execution evidence and release measurements against CPU preparation using
+the same backend and algorithm. Use at least eight alternating run pairs, count
+final drain and unused preload CPU, and treat pairs as statistical units. Freeze
+fixture weights, measurement windows and the paired confidence-interval method
+before timing. Native and browser cohorts must remain separate.
+
 ## Terrain gradient benchmarks
 
 `TerrainHazardBenchmark` provides opt-in CPU and wall-time measurements for idle
@@ -61,8 +98,8 @@ python3 tools/gradient_benchmark.py \
 The runner copies candidate headers (the field kernels and the header-only
 terrain and resource tables they include) and harness source before compiling, records
 compiler/flags and SHA-256 hashes, and writes raw JSONL samples plus per-case
-median comparisons. `--cpu N` pins the subprocess on Linux. `--scalar` forces the
-scalar implementation; otherwise the compiler target selects SSE2 or NEON.
+median comparisons. `--cpu N` pins the subprocess on Linux. `--backend cpu|scalar|sse2|neon` selects kernels in the same executable.
+`--scalar` retains the older build-time scalar reference switch.
 `--suite full` adds 64² and 256² cases; `--suite smoke` reduces the main timing
 matrix to 32² while retaining the correctness corner cases. The baseline adapter
 is specific to the historical revision above and rejects changed source anchors
@@ -160,23 +197,33 @@ propagation; ordinary test runs exclude the benchmark tag.
 
 ## GPU on/off verification
 
-Use release binaries and identical saves, orders and tick windows to compare
-`--gpu off` and `--gpu on`. Freeze source and executable hashes, CPU affinity,
-compute budget and `GLOB2_OPENCL_DEVICE=N` (zero-based GPU ordinal). Serialize
-builds and measurements. Separate cold initialization from sustained gameplay.
-Measure process CPU including the GPU driver and coordinator; worker elapsed time
-includes GPU waiting and does not establish CPU savings. Graphics rendering and
-end-to-end game time are separate measures.
+The legacy `--gpu off|on` compares CPU automatic with OpenCL. For all variants,
+use the same release binary with `--gradient-backend cpu|scalar|sse2|neon|opencl|vulkan|webgpu`
+and `--gradient-algorithm buckets|frozen8|jacobi`. Vulkan/WebGPU expose both GPU
+algorithms; OpenCL retains Frozen8. Unsupported devices/operations use CPU
+fallback. A one-slot pool cannot execute GPU gradients.
 
-`game run` reports `gpu_requested`, `gpu_device`, `gpu_error` and required-only
-`gradient_execution` counters. A requested device does not establish GPU execution:
-check device dispatches, observed/committed fields, fallback counts and memory.
-Accelerator-owned payload limits are 64 MiB host and 128 MiB device; measure driver
-memory separately. The shipping kernel, convergence interval and coordinator
-concurrency are fixed; no live experimentation runs during a game.
+`game run` records `gradient_backend`, `gradient_algorithm`, `gradient_device`,
+`gradient_driver`, `gradient_shader`, `gradient_gpu_fields`,
+`gradient_cpu_fallbacks` and verification counters alongside existing execution
+metrics. Check actual committed fields before attributing a result to the GPU.
+Settings displays backend timing and fallback status during live comparisons.
 
-Verify exact arrays against the independent CPU oracle, per-tick checksums,
-saved-game continuation and replays with GPU off/on and compute counts 1/2/3/8.
-Inject initialization, allocation, dispatch, readback and cancellation failures.
-Include normal presentation and singleton/background-worker progress checks;
-headless-only results do not prove GUI responsiveness.
+Freeze save inputs, source/executable/shader hashes, orders, tick windows, CPU
+affinity and compute budgets. Separate initialization, uploads, device computation,
+readback and deadline waiting. Measure driver/coordinator process CPU too; worker
+waiting alone does not demonstrate CPU savings. Disable shadow verification in
+timing runs; use `--gradient-verify on` separately for exact CPU comparisons.
+
+Run the `RuntimeGradientBackend`, `GradientBackendSwitch`, `OpenCLGradient` and
+existing gradient/save/replay suites. `GLOB2_REQUIRE_VULKAN=1` makes missing Vulkan
+hardware a test failure; otherwise hardware-only cases report their omission.
+Chromium's `gradient-compute.spec.js` checks generated WGSL against independent
+exact fields. Keep real hardware and software-driver coverage distinct.
+
+Compare per-tick checksums, saves and replays across backends, worker counts and
+platforms. Exercise initialization, memory, dispatch, readback, cancellation,
+device loss, live changes and shutdown. Headless tests do not establish GUI
+responsiveness; retain screenshots and live-play evidence separately. Budgets
+remain 64 MiB host and 128 MiB tracked device payload; measure driver allocations
+separately. No performance improvement is assumed by enabling a backend.

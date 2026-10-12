@@ -141,6 +141,9 @@ complete -c glob2 -n "__glob2_at 'play'" -l generator-package -r
 complete -c glob2 -n "__glob2_at 'play'" -l building-catalog -r
 complete -c glob2 -n "__glob2_at 'play'" -l compute-threads -r
 complete -c glob2 -n "__glob2_at 'play'" -l gpu -r -f -a 'on off'
+complete -c glob2 -n "__glob2_at 'play'" -l gradient-backend -r -f -a 'cpu scalar sse2 neon opencl vulkan webgpu'
+complete -c glob2 -n "__glob2_at 'play'" -l gradient-algorithm -r -f -a 'buckets frozen8 jacobi'
+complete -c glob2 -n "__glob2_at 'play'" -l gradient-verify -r -f -a 'on off'
 complete -c glob2 -n "__glob2_at 'play'" -l help
 complete -c glob2 -n "__glob2_at 'replay'" -l fullscreen
 complete -c glob2 -n "__glob2_at 'replay'" -l no-fullscreen
@@ -166,6 +169,9 @@ complete -c glob2 -n "__glob2_at 'replay'" -l generator-package -r
 complete -c glob2 -n "__glob2_at 'replay'" -l building-catalog -r
 complete -c glob2 -n "__glob2_at 'replay'" -l compute-threads -r
 complete -c glob2 -n "__glob2_at 'replay'" -l gpu -r -f -a 'on off'
+complete -c glob2 -n "__glob2_at 'replay'" -l gradient-backend -r -f -a 'cpu scalar sse2 neon opencl vulkan webgpu'
+complete -c glob2 -n "__glob2_at 'replay'" -l gradient-algorithm -r -f -a 'buckets frozen8 jacobi'
+complete -c glob2 -n "__glob2_at 'replay'" -l gradient-verify -r -f -a 'on off'
 complete -c glob2 -n "__glob2_at 'replay'" -l help
 complete -c glob2 -n "__glob2_at 'map generate'" -l seed -r
 complete -c glob2 -n "__glob2_at 'map generate'" -l set -r
@@ -252,6 +258,9 @@ complete -c glob2 -n "__glob2_at 'game run'" -l data-dir -r -f -a '(__fish_compl
 complete -c glob2 -n "__glob2_at 'game run'" -l generator-package -r
 complete -c glob2 -n "__glob2_at 'game run'" -l compute-threads -r
 complete -c glob2 -n "__glob2_at 'game run'" -l gpu -r -f -a 'on off'
+complete -c glob2 -n "__glob2_at 'game run'" -l gradient-backend -r -f -a 'cpu scalar sse2 neon opencl vulkan webgpu'
+complete -c glob2 -n "__glob2_at 'game run'" -l gradient-algorithm -r -f -a 'buckets frozen8 jacobi'
+complete -c glob2 -n "__glob2_at 'game run'" -l gradient-verify -r -f -a 'on off'
 complete -c glob2 -n "__glob2_at 'game run'" -l map-file -r
 complete -c glob2 -n "__glob2_at 'game run'" -l load-game -r
 complete -c glob2 -n "__glob2_at 'game run'" -l generator -r
@@ -306,6 +315,9 @@ complete -c glob2 -n "__glob2_at 'game repeat'" -l record-chapter-ticks -r
 complete -c glob2 -n "__glob2_at 'game repeat'" -l display
 complete -c glob2 -n "__glob2_at 'game repeat'" -l compute-threads -r
 complete -c glob2 -n "__glob2_at 'game repeat'" -l gpu -r -f -a 'on off'
+complete -c glob2 -n "__glob2_at 'game repeat'" -l gradient-backend -r -f -a 'cpu scalar sse2 neon opencl vulkan webgpu'
+complete -c glob2 -n "__glob2_at 'game repeat'" -l gradient-algorithm -r -f -a 'buckets frozen8 jacobi'
+complete -c glob2 -n "__glob2_at 'game repeat'" -l gradient-verify -r -f -a 'on off'
 complete -c glob2 -n "__glob2_at 'game repeat'" -l ticks -r
 complete -c glob2 -n "__glob2_at 'game repeat'" -l runs -r
 complete -c glob2 -n "__glob2_at 'game repeat'" -l building-catalog -r
@@ -339,6 +351,9 @@ complete -c glob2 -n "__glob2_at 'online join'" -l generator-package -r
 complete -c glob2 -n "__glob2_at 'online join'" -l building-catalog -r
 complete -c glob2 -n "__glob2_at 'online join'" -l compute-threads -r
 complete -c glob2 -n "__glob2_at 'online join'" -l gpu -r -f -a 'on off'
+complete -c glob2 -n "__glob2_at 'online join'" -l gradient-backend -r -f -a 'cpu scalar sse2 neon opencl vulkan webgpu'
+complete -c glob2 -n "__glob2_at 'online join'" -l gradient-algorithm -r -f -a 'buckets frozen8 jacobi'
+complete -c glob2 -n "__glob2_at 'online join'" -l gradient-verify -r -f -a 'on off'
 complete -c glob2 -n "__glob2_at 'online join'" -l instance -r
 complete -c glob2 -n "__glob2_at 'online join'" -l help
 complete -c glob2 -n "__glob2_at 'online play-map'" -l fullscreen
@@ -365,6 +380,9 @@ complete -c glob2 -n "__glob2_at 'online play-map'" -l generator-package -r
 complete -c glob2 -n "__glob2_at 'online play-map'" -l building-catalog -r
 complete -c glob2 -n "__glob2_at 'online play-map'" -l compute-threads -r
 complete -c glob2 -n "__glob2_at 'online play-map'" -l gpu -r -f -a 'on off'
+complete -c glob2 -n "__glob2_at 'online play-map'" -l gradient-backend -r -f -a 'cpu scalar sse2 neon opencl vulkan webgpu'
+complete -c glob2 -n "__glob2_at 'online play-map'" -l gradient-algorithm -r -f -a 'buckets frozen8 jacobi'
+complete -c glob2 -n "__glob2_at 'online play-map'" -l gradient-verify -r -f -a 'on off'
 complete -c glob2 -n "__glob2_at 'online play-map'" -l instance -r
 complete -c glob2 -n "__glob2_at 'online play-map'" -l hash -r
 complete -c glob2 -n "__glob2_at 'online play-map'" -l title -r
@@ -393,6 +411,9 @@ complete -c glob2 -n "__glob2_at 'online host-map'" -l generator-package -r
 complete -c glob2 -n "__glob2_at 'online host-map'" -l building-catalog -r
 complete -c glob2 -n "__glob2_at 'online host-map'" -l compute-threads -r
 complete -c glob2 -n "__glob2_at 'online host-map'" -l gpu -r -f -a 'on off'
+complete -c glob2 -n "__glob2_at 'online host-map'" -l gradient-backend -r -f -a 'cpu scalar sse2 neon opencl vulkan webgpu'
+complete -c glob2 -n "__glob2_at 'online host-map'" -l gradient-algorithm -r -f -a 'buckets frozen8 jacobi'
+complete -c glob2 -n "__glob2_at 'online host-map'" -l gradient-verify -r -f -a 'on off'
 complete -c glob2 -n "__glob2_at 'online host-map'" -l instance -r
 complete -c glob2 -n "__glob2_at 'online host-map'" -l hash -r
 complete -c glob2 -n "__glob2_at 'online host-map'" -l title -r
@@ -446,6 +467,9 @@ complete -c glob2 -n "__glob2_at 'dev random-games'" -l record-crf -r
 complete -c glob2 -n "__glob2_at 'dev random-games'" -l record-chapter-ticks -r
 complete -c glob2 -n "__glob2_at 'dev random-games'" -l compute-threads -r
 complete -c glob2 -n "__glob2_at 'dev random-games'" -l gpu -r -f -a 'on off'
+complete -c glob2 -n "__glob2_at 'dev random-games'" -l gradient-backend -r -f -a 'cpu scalar sse2 neon opencl vulkan webgpu'
+complete -c glob2 -n "__glob2_at 'dev random-games'" -l gradient-algorithm -r -f -a 'buckets frozen8 jacobi'
+complete -c glob2 -n "__glob2_at 'dev random-games'" -l gradient-verify -r -f -a 'on off'
 complete -c glob2 -n "__glob2_at 'dev random-games'" -l display
 complete -c glob2 -n "__glob2_at 'dev random-games'" -l runs -r
 complete -c glob2 -n "__glob2_at 'dev random-games'" -l ticks -r
@@ -482,6 +506,9 @@ complete -c glob2 -n "__glob2_at 'dev textshots'" -l generator-package -r
 complete -c glob2 -n "__glob2_at 'dev textshots'" -l building-catalog -r
 complete -c glob2 -n "__glob2_at 'dev textshots'" -l compute-threads -r
 complete -c glob2 -n "__glob2_at 'dev textshots'" -l gpu -r -f -a 'on off'
+complete -c glob2 -n "__glob2_at 'dev textshots'" -l gradient-backend -r -f -a 'cpu scalar sse2 neon opencl vulkan webgpu'
+complete -c glob2 -n "__glob2_at 'dev textshots'" -l gradient-algorithm -r -f -a 'buckets frozen8 jacobi'
+complete -c glob2 -n "__glob2_at 'dev textshots'" -l gradient-verify -r -f -a 'on off'
 complete -c glob2 -n "__glob2_at 'dev textshots'" -l output-dir -r -f -a '(__fish_complete_directories)'
 complete -c glob2 -n "__glob2_at 'dev textshots'" -l help
 complete -c glob2 -n "__glob2_at 'dev dump-resources'" -l data-dir -r -f -a '(__fish_complete_directories)'

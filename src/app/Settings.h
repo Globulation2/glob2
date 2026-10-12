@@ -11,6 +11,7 @@
 #include <cstdint>
 #include <map>
 #include <optional>
+#include "field/GradientSelection.h"
 #include "IntBuildingType.h"
 class BuildingType;
 class BuildingsTypes;
@@ -101,7 +102,14 @@ public:
 	std::optional<bool> gpuCompute;
 	// Local execution intent; absence preserves each launch context's default.
 	std::optional<resource_policy::ExecutionProfile> executionProfile;
-	bool gpuComputeEnabled(bool headless = false) const { return gpuCompute.value_or(headless); }
+	std::optional<gradient_kernel::Backend> gradientBackend;
+    gradient_kernel::Algorithm gradientAlgorithm=gradient_kernel::Algorithm::Frozen8;
+    bool gradientVerify=false;
+    gradient_kernel::Configuration gradientConfiguration(bool headless=false) const {
+        const auto b=gradientBackend.value_or(gpuCompute.value_or(headless)?gradient_kernel::Backend::OpenCL:gradient_kernel::Backend::CPU);
+        return {b,gradient_kernel::isGPU(b)?gradientAlgorithm:gradient_kernel::Algorithm::Buckets,gradientVerify};
+    }
+    bool gpuComputeEnabled(bool headless = false) const { return gradient_kernel::isGPU(gradientConfiguration(headless).backend); }
 	/// Experimental features to bake into every new game this player starts or
 	/// hosts (Settings > Experiments). Saved as comma-separated keys; a key this
 	/// build no longer knows is dropped on load.

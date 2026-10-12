@@ -36,7 +36,10 @@ void GlobalContainer::applyCommand(const Cli::Request &request)
         executionResourceRequest.explicitProfile = resource_policy::parseExecutionProfile(r.get("--execution-profile"));
     if (r.has("--memory-budget-bytes"))
         executionResourceRequest.planningMemoryBytes = resource_policy::parsePlanningMemoryBytes(r.get("--memory-budget-bytes"));
-	auto toggle = [&](const char *name, unsigned bit)
+	if(r.has("--gradient-backend"))gradientBackendOverride=*gradient_kernel::parseBackend(r.get("--gradient-backend"));
+    if(r.has("--gradient-algorithm"))gradientAlgorithmOverride=*gradient_kernel::parseAlgorithm(r.get("--gradient-algorithm"));
+    if(r.has("--gradient-verify"))gradientVerifyOverride=r.get("--gradient-verify")=="on";
+    auto toggle = [&](const char *name, unsigned bit)
 	{
 		if (r.has(std::string("--") + name))
 			settings.screenFlags |= bit;
@@ -138,19 +141,40 @@ void GlobalContainer::applyCommand(const Cli::Request &request)
 	Online::acceptLaunchRequest(r);
 }
 
-bool GlobalContainer::gpuComputeEnabled() const
+gradient_kernel::Configuration GlobalContainer::gradientConfiguration() const
 {
-	if (gpuComputeOverride.has_value()) return *gpuComputeOverride;
-	// Retain binary command-line compatibility for reproducible benchmarks.
-	if (const auto* backend = std::getenv("GLOB2_GRADIENT_BACKEND"); backend && *backend)
-		return std::strcmp(backend, "opencl") == 0;
-	return settings.gpuComputeEnabled(runNoX);
+    using namespace gradient_kernel;
+    auto c=settings.gradientConfiguration(runNoX);
+    if(const auto* value=std::getenv("GLOB2_GRADIENT_BACKEND");value && *value)c.backend=parseBackend(value).value_or(Backend::CPU);
+    if(gpuComputeOverride)c.backend=*gpuComputeOverride?Backend::OpenCL:Backend::CPU;
+    if(gradientBackendOverride)c.backend=*gradientBackendOverride;
+    if(const auto* value=std::getenv("GLOB2_GRADIENT_ALGORITHM");value && *value)c.algorithm=parseAlgorithm(value).value_or(Algorithm::Frozen8);
+    if(gradientAlgorithmOverride)c.algorithm=*gradientAlgorithmOverride;
+    if(const auto* value=std::getenv("GLOB2_GRADIENT_VERIFY");value && *value)c.verify=parseVerification(value).value_or(false);
+    if(gradientVerifyOverride)c.verify=*gradientVerifyOverride;
+    if(!supportsAlgorithm(c.backend,c.algorithm)){
+        if(gradientAlgorithmOverride)throw std::invalid_argument("Gradient algorithm is unsupported by selected backend");
+        c.algorithm=isGPU(c.backend)?Algorithm::Frozen8:Algorithm::Buckets;
+    }
+    return c;
 }
-
+bool GlobalContainer::gpuComputeEnabled() const {return gradient_kernel::isGPU(gradientConfiguration().backend);}
+gradient_kernel::Configuration GlobalContainer::resolvedGradientConfiguration() const
+{
+    auto configuration = gradientConfiguration();
+    if (!frozenResourcePlan) return configuration;
+    using namespace gradient_kernel;
+    if (frozenResourcePlan->resources.computeGpu == resource_policy::GpuPolicy::Disabled && isGPU(configuration.backend))
+        configuration = {Backend::CPU, Algorithm::Buckets, configuration.verify};
+    else if (frozenResourcePlan->request.computeGpu == resource_policy::GpuPolicy::Enabled && !isGPU(configuration.backend))
+        configuration = {Backend::OpenCL, Algorithm::Frozen8, configuration.verify};
+    return configuration;
+}
 void GlobalContainer::configureGradientBackend() const
 {
-	gradient_kernel::setBackend((frozenResourcePlan ? resolvedGpuComputeEnabled() : gpuComputeEnabled()) ? gradient_kernel::Backend::OpenCL
-													 : gradient_kernel::Backend::CPU);
+    const auto configuration = resolvedGradientConfiguration();
+    gradient_kernel::requestBackendConfiguration(configuration);
+    gradient_kernel::applyBackendConfiguration(configuration);
 }
 
 void GlobalContainer::refreshResourcePlan(bool ownerOnly)
@@ -164,7 +188,7 @@ void GlobalContainer::refreshResourcePlan(bool ownerOnly)
     input.legacyRequestedComputeParticipants = computeThreads;
     input.legacyGpuComputeEnabled = gpuComputeEnabled(); // Preserve legacy CLI/environment/saved/context ordering.
     const auto *environment = std::getenv("GLOB2_GRADIENT_BACKEND");
-    input.legacyGpuComputeExplicit = gpuComputeOverride.has_value() || (environment && *environment);
+    input.legacyGpuComputeExplicit = gradientBackendOverride.has_value() || gpuComputeOverride.has_value() || (environment && *environment);
     if (settings.targetRenderFps < 0) throw std::invalid_argument("Render frame rate must be nonnegative");
     input.currentPresentation.frameRate = unsigned(settings.targetRenderFps);
     // Independent legacy appearance flags and discretionary work retain their
@@ -172,6 +196,7 @@ void GlobalContainer::refreshResourcePlan(bool ownerOnly)
     CpuAvailabilityObservation sampledCpuAvailability;
     input.capabilities = resource_policy::discoverApplicationResourceCapabilities(&sampledCpuAvailability);
     frozenResourcePlan = resource_policy::resolveApplicationResourcePlan(input);
+    frozenGradientConfiguration = resolvedGradientConfiguration();
     frozenCpuAvailability=sampledCpuAvailability;
     frozenResourceObservationNs=SDL_GetTicksNS();
 }
@@ -191,6 +216,22 @@ bool GlobalContainer::resolvedGpuComputeEnabled() const
 nlohmann::json GlobalContainer::resourcePlanJson() const
 {
     auto value = resource_policy::describeResourcePlan(resourcePlan());
+    const auto describeGradient = [](gradient_kernel::Configuration configuration) {
+        return nlohmann::json{{"backend", gradient_kernel::backendName(configuration.backend)},
+            {"algorithm", gradient_kernel::algorithmName(configuration.algorithm)},
+            {"verify", configuration.verify}};
+    };
+    const auto environmentPresent = [](const char *name) { const auto *value=std::getenv(name); return value && *value; };
+    value["gradient_configuration"] = {
+        {"setup", frozenGradientConfiguration ? describeGradient(*frozenGradientConfiguration) : nlohmann::json(nullptr)},
+        {"current_requested", describeGradient(gradient_kernel::requestedBackendConfiguration())},
+        {"current_applied", describeGradient(gradient_kernel::configuration())},
+        {"backend_source", gradientBackendOverride ? "explicit backend or later menu choice" : gpuComputeOverride ? "explicit legacy GPU override" :
+            environmentPresent("GLOB2_GRADIENT_BACKEND") ? "environment" : settings.gradientBackend || settings.gpuCompute ? "saved preference" : "context default"},
+        {"algorithm_source", gradientAlgorithmOverride ? "explicit algorithm or later menu choice" : environmentPresent("GLOB2_GRADIENT_ALGORITHM") ? "environment" : "saved/default preference"},
+        {"verify_source", gradientVerifyOverride ? "explicit verification or later menu choice" : environmentPresent("GLOB2_GRADIENT_VERIFY") ? "environment" : "saved/default preference"},
+        {"scope", "Setup permission belongs to the frozen resource plan; later backend requests apply at the existing simulation boundary, without resizing the compute pool. Per-job backend generations remain scheduler-owned."}
+    };
     value["frozen_host_observation_sdl_ns"]=frozenResourceObservationNs;
     value["cpu_availability_observation"] = {
         {"source",cpuAvailabilitySourceName(frozenCpuAvailability.source)},

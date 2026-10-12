@@ -285,8 +285,12 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   share ownership with searches/jobs and invalidate together with terrain snapshots.
   Eager fields, resumed building searches, worker snapshots and strategic travel
   share compiled integer costs and reusable scratch storage.
-- Runtime-terrain performance qualification compares equivalent maps with 7, 259
-  and 1,024 definitions, plus distinct-cost and 16,384-type stress cases. Use release
+- Runtime-terrain performance qualification compares equivalent maps with the
+  current built-in count (`TERRAIN_COUNT`), 259 and 1,024 definitions, plus
+  distinct-cost and 16,384-type stress cases. The maximum catalog fixture assigns
+  aliases in 16×16 blocks so intermediate paint operations stay within the
+  separate 65,536-corner-rule limit; it retains all catalog definitions but does
+  not place every identity on the map. Use release
   builds on a quiet machine, warm up, randomize paired execution order and collect
   at least ten repetitions. Report CPU and wall time separately, with rendering
   and memory costs. Repeatable regressions over 2% full-match CPU or 5% terrain
@@ -351,6 +355,21 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   retain compact base fields and goal bitsets. No cached template retains snapshot
   buffers or reads the live mutable material cache. Immediate building seeding
   remains in its domain source files.
+  Material and clearing precedence comes from the restricted unsigned-integer
+  source `src/field/shaders/preparation-rules.json`; regenerate its C++, OpenCL
+  and GLSL predicates with `tools/shaders/gradient_preparation_rules.py --generate`.
+  Builds reject stale generated predicates. Independent scalar reference tests
+  remain handwritten. Ordinary resource/corner-rule compilation produces compact
+  resource traits and accessibility/movement tables; periodic seeding does not
+  rebuild those tables. Clearing reads no visibility or stock sidecar values.
+  Execution selection is captured before CPU seeding. Resident GPU preparation
+  is not connected to production execution yet. `GradientResidency.h` models
+  exact-owner identities, upload ranges and retirement transitions; it supplies
+  neither adapter bindings nor budget leases. Its tests cannot demonstrate
+  adapter residency or GPU preparation. Uploaded contents become readable only
+  after all transfers succeed and retire; invalidation alone cannot release
+  retained owners. Changed ranges include alignment widening and metadata in
+  the 256 KiB / 16-region speculative quota.
   `MapGradientPropagation.cpp` starts eager fields through the private
   `src/field/GradientPropagation.h` core; `BuildingGradientSearch.cpp` resumes
   building fields. Both use `src/field/GradientRelaxation.h`. Keep their cell-cost
@@ -365,27 +384,85 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   including Cortex wheat depth and Maxima food claims. Keep those searches ordered.
   Callers own seeding, field encodings, transient scratch, cache ages and publication.
   Sharing a solver does not make fields with different predicates interchangeable.
+## Execution resource policy
+
+`resource_policy::resolveResourcePlan` is the shared, platform-neutral resolver.
+It records requested execution intent, explicit overrides, known allocations,
+constraints and the resolved owner-inclusive compute budget. The application
+adapter samples capabilities at setup; a session retains that plan rather than
+rediscovering CPU capacity in individual simulation subsystems. Unknown CPU
+allocation uses one participant. Affinity describes eligible logical CPUs, not
+exclusive ownership, physical cores or a CPU-time quota.
+
+The six execution-profile names currently preserve intent and report
+`profile_tuning_pending`. They retain validated caller defaults; calibrated
+device tiers and adaptive presentation have not been enabled. Planning memory
+budgets do not enforce RSS limits or authorize evicting simulation-visible state.
+Independent asset and presentation phases resolve their own plans; these are
+phase budgets, not a process-wide simultaneous admission guarantee. Tournament
+coordinators allocate frozen, disjoint CPU shares to concurrent games; see
+[tournament resource allocation](../tools/tournaments.md).
+
+GPU permission and gradient implementation selection are distinct. Resource
+telemetry retains the setup configuration and reports current requested/applied
+backend, algorithm and verification settings separately. Existing gradient
+switches apply at simulation boundaries, retaining captured job generations and
+publication deadlines; compute pool resizing remains a session setup operation.
+
 ## Optional GPU gradient computation
 
-Settings → Gameplay → **GPU compute** selects CPU or GPU for the next game.
-An absent local `gpuCompute` preference means off in graphical games and on in
-headless games; a saved on/off value is honored in both. `--gpu on|off` overrides
-the local setting for that run. `GLOB2_GRADIENT_BACKEND=cpu|opencl` remains a binary
-benchmark override. Graphics rendering is configured separately.
+Settings → Gameplay → **Gradient backend** selects CPU automatic, scalar, SSE2,
+NEON, OpenCL, Vulkan or WebGPU according to build and runtime availability.
+Renderer selection is independent. CPU automatic selects an available SIMD kernel,
+otherwise scalar; explicit CPU kernels also apply to resumed building searches.
+The **Gradient algorithm** control offers bucket propagation on CPU, Frozen8 on
+OpenCL, and Frozen8/Jacobi on Vulkan and WebGPU. Every implementation must produce
+the same integer fields before it can be qualified. Order-sensitive AI traversals
+retain their existing implementations.
 
-GPU computation uses one fixed exact integer Frozen8 OpenCL implementation,
-with eight dispatches between convergence checks. It uses a background
-coordinator beyond the shared CPU pool: `--compute-threads` still counts the owner
-and CPU workers. A one-slot pool stays CPU-only. Initialization, submission,
-event polling and readback run off the game loop. Workers hand off owned inputs
-and original seeds while retaining the required completion ticket and lane order.
-Already-ready compatible requests batch up to eight without waiting to fill a
-batch. Results publish at their original simulation deadline; backend completion
-does not change simulation timing. Resumable building searches remain on CPU.
+A preference change requests an owner-side tick-boundary barrier. Existing jobs
+finish privately and keep their publication deadlines, serving fields and pending
+queue positions. Subsequent jobs capture the new configuration/generation. Neither
+GPU completion speed nor backend switching advances or resets the simulation
+schedule. Resumable building searches stay on CPU without restarting their queues.
+
+An absent preference uses CPU automatic with graphics and OpenCL headless.
+Legacy `gpuCompute=0|1` resolves to CPU automatic/OpenCL. Explicit
+`--gradient-backend` overrides `--gpu`, then `GLOB2_GRADIENT_BACKEND`, then saved
+preferences/defaults. Algorithm selection uses `--gradient-algorithm`,
+`GLOB2_GRADIENT_ALGORITHM`, then the saved choice; incompatible saved choices use
+the backend default. Explicit incompatible CLI algorithms are rejected. Settings
+are local and never saved in simulation state. An explicit menu change supersedes
+the launch choice for the current run and also saves the preference.
+
+The process coordinator is additional to the shared CPU pool; compute thread
+counts still include the owner. One-slot pools stay CPU-only. Initialization,
+submission and completion run outside the game loop. Already-ready compatible
+requests group up to eight without waiting for a batch. New backends use simple
+per-field transfers inside those groups. Frozen8 uses four-color integer relaxation
+on 16×16 tiles with frozen halos and eight sweeps; Jacobi uses separate input/output
+buffers for each round. A convergence signal starts complete-field validation;
+it does not by itself establish correct execution.
+The GLSL sources generate pinned SPIR-V and WGSL with integer-only wrapping.
+Vulkan/WebGPU readback also passes an exact positive-cost fixed-point check against
+original seeds before commit. A convergence flag alone cannot publish fabricated
+sources or stale data. A proven fixed-point mismatch stops the run through the
+original completion ticket and writes original seeds, costs and the full 32-bit
+readback to `artifacts/gradient-proof-*.bin` (or `GLOB2_TEST_ARTIFACTS`). The binary
+uses little-endian records, with a text sidecar identifying the device, driver,
+shader and job generation. It does not
+count as a committed GPU field or a successful CPU fallback.
+
+Vulkan integration remains unqualified: native NVIDIA stress runs have produced
+intermittent fixed-point proof failures. Retaining this guard prevents those
+fields from reaching simulation state; passing individual kernel tests does not
+establish live-game correctness. Threaded-browser WebGPU also requires complete
+game, continuation and platform qualification before production enablement of
+resident preparation.
 
 Accelerator payloads share 64 MiB of host storage and 128 MiB of tracked device
 storage. Demand-sized storage and immutable cost-buffer leases bound retained
-inputs. Unsupported devices, memory pressure, cancellation and execution errors
+inputs. Unsupported devices, memory pressure, cancellation and driver errors
 recover the exact CPU result from original seeds; partial GPU results are never
 published. Required transfer failures retain unsafe storage until completion can
 be proved. Saves, reconfiguration and shutdown drain required work.
@@ -402,11 +479,29 @@ register exit handlers during asynchronous initialization, so the broker's
 static destructor alone cannot establish that ordering. Test entry points use
 the same barrier; subsequent registrations can restart the coordinator.
 
-The native backend dynamically loads an installed OpenCL driver without an SDK
-or linked runtime dependency. Browser, Android and iOS builds use CPU fallback.
-There is no automatic policy, calibration, live probe or tuning. Diagnostics
-separate requested, selected, actually executed and committed GPU fields from CPU
-fallback and report accelerator allocations.
+OpenCL dynamically loads an installed desktop driver. Vulkan dynamically loads
+native drivers on Linux, Windows and Android; Apple bundles a hash-pinned MoltenVK
+framework. Compute devices have no rendering surface or swapchain. Threaded
+browsers use a separate WebGPU device and an asynchronous main-browser bridge;
+only coordinator workers wait for its completion. Serial browsers stay on CPU.
+Original inputs and callback storage survive cancellation until completion proves
+safe retirement; late results never publish into an expired job.
+
+Diagnostics distinguish requested/selected execution, committed GPU fields and CPU
+fallbacks. Adapter phase totals include canceled browser work when its retained
+callback retires, exactly once. Per-field execution observations include only
+completion proof seen before the worker resolves its ticket; a later callback
+cannot mutate a released field. Optional **Verify gradient results** /
+`--gradient-verify on` computes a
+scalar reference from original seeds before publication. A mismatch stops the run
+and writes `gradient-mismatch-*.bin` in the artifact directory with geometry, cap,
+family, seeds, expected/actual fields and packed costs. Verification has separate
+CPU timing and should be disabled for performance comparisons. There is no
+automatic policy, calibration or tuning.
+`GLOB2_GRADIENT_VERIFY` accepts `1/on/true` and `0/off/false`; explicit CLI choices
+take precedence. Unknown values disable verification. Standalone CPU benchmarks
+force verification off and bucket propagation so inherited game settings cannot
+contaminate their timing.
 
 ## Shared field primitives
 

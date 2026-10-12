@@ -26,9 +26,7 @@ DeviceCapabilities applicationCapabilitiesFromCpuAvailability(const CpuAvailabil
     // may separately inject its own explicit allocation through capabilities.
     device.allocatedCpuParticipants = observation.eligibleLogicalCpuCount;
     device.threadsSupported = threadsSupported;
-#if defined(__EMSCRIPTEN__) || defined(SDL_PLATFORM_ANDROID) || defined(SDL_PLATFORM_IOS)
-    device.computeGpuSupported = false; // Current native OpenCL backend is absent.
-#endif
+
     // Driver availability, renderer support and memory allocation remain unknown.
     return device;
 }

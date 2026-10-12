@@ -2,6 +2,14 @@
 
 Build and run the iOS app with isolated simulators and pinned dependencies.
 
+
+The native build records its resolved recording installation in
+`recording-prefix.json`. Xcode project generation checks that installation's
+manifest and static archives before adding the recording link inputs; shared
+cache prefixes are supported without a checkout-local alias. Recording notices
+are copied from the native output's `licenses/recording` directory into the app's
+resources, alongside the pinned MoltenVK license.
+
 ## iOS
 
 Build dependencies and the generated Xcode project with the same configuration:
@@ -90,3 +98,12 @@ alone does not add `applinks:`. Check a TestFlight IPA with
 `codesign -d --entitlements - Payload/Glob2.app` before relying on universal links.
 
 [Mobile index](README.md) · [Documentation index](../README.md).
+
+### Vulkan gradient computation
+
+The iOS project embeds the matching hash-pinned MoltenVK 1.4.2 framework and its
+Apache-2.0 notice for device or simulator builds. Xcode signs the embedded framework
+on copy. Gradient compute loads it independently of rendering, and falls back to
+CPU for unavailable device capabilities. The lock is `scons/moltenvk.json`; no
+runtime shader compiler is shipped. Device correctness and signed package launch
+need Apple qualification in addition to cross-platform solver tests.

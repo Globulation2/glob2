@@ -270,7 +270,12 @@ Platform: all.
 | `--generator-package` | file | Load a custom generator package or directory. Repeatable. |
 | `--building-catalog` | file | Building catalog manifest. |
 | `--compute-threads` | compute; default auto | Shared compute pool; auto respects available logical CPUs. |
-| `--gpu` | on, off | GPU gradient compute; overrides local setting (graphical default off, headless on). |
+| `--gpu` | on, off | Legacy gradient selection: on=OpenCL, off=CPU automatic; explicit backend takes precedence. |
+| `--gradient-backend` | cpu, scalar, sse2, neon, opencl, vulkan, webgpu | Gradient computation backend. |
+| `--gradient-algorithm` | buckets, frozen8, jacobi | Gradient computation algorithm. |
+| `--gradient-verify` | on, off | Compare accelerated fields with scalar CPU output. |
+| `--execution-profile` | auto, eco, balanced, luxurious, fast-simulation, efficient-throughput | Execution resource intent; calibrated tier tuning is pending. |
+| `--memory-budget-bytes` | integer; bytes; 1..9223372036854775807 | Planning budget for recoverable storage; does not enforce a process RSS limit. |
 | `--help` | flag; default false | Show this command's help (also -h). |
 
 Unspecified display, audio and editor settings inherit saved preferences.
@@ -334,7 +339,12 @@ Platform: all.
 | `--generator-package` | file | Load a custom generator package or directory. Repeatable. |
 | `--building-catalog` | file | Building catalog manifest. |
 | `--compute-threads` | compute; default auto | Shared compute pool; auto respects available logical CPUs. |
-| `--gpu` | on, off | GPU gradient compute; overrides local setting (graphical default off, headless on). |
+| `--gpu` | on, off | Legacy gradient selection: on=OpenCL, off=CPU automatic; explicit backend takes precedence. |
+| `--gradient-backend` | cpu, scalar, sse2, neon, opencl, vulkan, webgpu | Gradient computation backend. |
+| `--gradient-algorithm` | buckets, frozen8, jacobi | Gradient computation algorithm. |
+| `--gradient-verify` | on, off | Compare accelerated fields with scalar CPU output. |
+| `--execution-profile` | auto, eco, balanced, luxurious, fast-simulation, efficient-throughput | Execution resource intent; calibrated tier tuning is pending. |
+| `--memory-budget-bytes` | integer; bytes; 1..9223372036854775807 | Planning budget for recoverable storage; does not enforce a process RSS limit. |
 | `--help` | flag; default false | Show this command's help (also -h). |
 
 Unspecified display, audio and editor settings inherit saved preferences.
@@ -391,6 +401,8 @@ Platform: all.
 | `--config` | file | KEY=VALUE configuration; CLI settings override it. |
 | `--map-image` | file | Export categorical terrain PNG. |
 | `--export-generator-package` | file | Export selected custom generator package. |
+| `--execution-profile` | auto, eco, balanced, luxurious, fast-simulation, efficient-throughput | Execution resource intent; calibrated tier tuning is pending. |
+| `--memory-budget-bytes` | integer; bytes; 1..9223372036854775807 | Planning budget for recoverable storage; does not enforce a process RSS limit. |
 | `--help` | flag; default false | Show this command's help (also -h). |
 
 At least one output is required.
@@ -432,6 +444,8 @@ Platform: all.
 | `--report` | headroom, diagnostics, timing, terrain | Additional report. Repeatable. |
 | `--perturb` | string | Study perturbation specification. Repeatable. |
 | `--building-artwork` | file | Building artwork bundle. |
+| `--execution-profile` | auto, eco, balanced, luxurious, fast-simulation, efficient-throughput | Execution resource intent; calibrated tier tuning is pending. |
+| `--memory-budget-bytes` | integer; bytes; 1..9223372036854775807 | Planning budget for recoverable storage; does not enforce a process RSS limit. |
 | `--help` | flag; default false | Show this command's help (also -h). |
 
 ```sh
@@ -482,6 +496,8 @@ Platform: all.
 | `--preview` | file | Overview PNG output. |
 | `--preview-size` | integer; pixels; 128..4096 | Longest preview side in pixels. |
 | `--preview-scale` | 2, 4, 8; default 2 | Scale retained thumbnail pixels. |
+| `--execution-profile` | auto, eco, balanced, luxurious, fast-simulation, efficient-throughput | Execution resource intent; calibrated tier tuning is pending. |
+| `--memory-budget-bytes` | integer; bytes; 1..9223372036854775807 | Planning budget for recoverable storage; does not enforce a process RSS limit. |
 | `--help` | flag; default false | Show this command's help (also -h). |
 
 Choose at most one: `--output`, `--preview`.
@@ -512,6 +528,8 @@ Platform: all.
 | `--render-max-pixels` | integer; default 4096; pixels; 1..8192 | Maximum side in pixels. |
 | `--render-field` | file | Diagnostic field overlay. |
 | `--field-color` | string | Field color as r,g,b. |
+| `--execution-profile` | auto, eco, balanced, luxurious, fast-simulation, efficient-throughput | Execution resource intent; calibrated tier tuning is pending. |
+| `--memory-budget-bytes` | integer; bytes; 1..9223372036854775807 | Planning budget for recoverable storage; does not enforce a process RSS limit. |
 | `--help` | flag; default false | Show this command's help (also -h). |
 
 `--field-color` requires `--render-field`.
@@ -548,6 +566,8 @@ Platform: all.
 | `--output` | file | Playable gzip map output. Required. |
 | `--report-file` | file | Import report JSON. |
 | `--image-seam-width` | integer; 0..16 | Seam repair width in tiles; default short side / 32 clamped 2..12. |
+| `--execution-profile` | auto, eco, balanced, luxurious, fast-simulation, efficient-throughput | Execution resource intent; calibrated tier tuning is pending. |
+| `--memory-budget-bytes` | integer; bytes; 1..9223372036854775807 | Planning budget for recoverable storage; does not enforce a process RSS limit. |
 | `--help` | flag; default false | Show this command's help (also -h). |
 
 Choose at most one: `--preview-scale`, `--preview-size`.
@@ -573,6 +593,8 @@ Platform: all.
 | `--data-dir` | directory | Add an asset search directory (in order). Repeatable. |
 | `--generator-package` | file | Load a custom generator package or directory. Repeatable. |
 | `--output` | file | Categorical PNG output. Required. |
+| `--execution-profile` | auto, eco, balanced, luxurious, fast-simulation, efficient-throughput | Execution resource intent; calibrated tier tuning is pending. |
+| `--memory-budget-bytes` | integer; bytes; 1..9223372036854775807 | Planning budget for recoverable storage; does not enforce a process RSS limit. |
 | `--help` | flag; default false | Show this command's help (also -h). |
 
 ```sh
@@ -646,7 +668,10 @@ Platform: all.
 | `--data-dir` | directory | Add an asset search directory (in order). Repeatable. |
 | `--generator-package` | file | Load a custom generator package or directory. Repeatable. |
 | `--compute-threads` | compute; default auto | Shared compute pool; auto respects available logical CPUs. |
-| `--gpu` | on, off | GPU gradient compute; overrides local setting (graphical default off, headless on). |
+| `--gpu` | on, off | Legacy gradient selection: on=OpenCL, off=CPU automatic; explicit backend takes precedence. |
+| `--gradient-backend` | cpu, scalar, sse2, neon, opencl, vulkan, webgpu | Gradient computation backend. |
+| `--gradient-algorithm` | buckets, frozen8, jacobi | Gradient computation algorithm. |
+| `--gradient-verify` | on, off | Compare accelerated fields with scalar CPU output. |
 | `--map-file` | file | Map input for a new game. |
 | `--load-game` | file | Saved-game input for continuation. |
 | `--generator` | string | Generate a map before starting. |
@@ -676,6 +701,8 @@ Platform: all.
 | `--diagnostic-interval` | integer; default 2500; ticks; 1..2147483647 | Diagnostic interval in ticks. |
 | `--diagnostic-png` | flag; default false | Export diagnostic PNGs. |
 | `--building-artwork` | file | Artwork for generated maps. |
+| `--execution-profile` | auto, eco, balanced, luxurious, fast-simulation, efficient-throughput | Execution resource intent; calibrated tier tuning is pending. |
+| `--memory-budget-bytes` | integer; bytes; 1..9223372036854775807 | Planning budget for recoverable storage; does not enforce a process RSS limit. |
 | `--help` | flag; default false | Show this command's help (also -h). |
 
 Exactly one of --map-file, --load-game or --generator.
@@ -743,10 +770,15 @@ Platform: all.
 | `--record-chapter-ticks` | integer; default 10000; ticks; 1..1000000000 | Simulation ticks per chapter. |
 | `--display` | flag; default false | Render the saved game through the normal presentation loop. |
 | `--compute-threads` | compute; default auto | Shared compute pool; auto respects available logical CPUs. |
-| `--gpu` | on, off | GPU gradient compute; overrides local setting (graphical default off, headless on). |
+| `--gpu` | on, off | Legacy gradient selection: on=OpenCL, off=CPU automatic; explicit backend takes precedence. |
+| `--gradient-backend` | cpu, scalar, sse2, neon, opencl, vulkan, webgpu | Gradient computation backend. |
+| `--gradient-algorithm` | buckets, frozen8, jacobi | Gradient computation algorithm. |
+| `--gradient-verify` | on, off | Compare accelerated fields with scalar CPU output. |
 | `--ticks` | integer; default 0; ticks; 0..2147483647 | Steps per run; 0 runs until the game ends. |
 | `--runs` | integer; default 1; 1..2147483647 | Number of saved-game runs. |
 | `--building-catalog` | file | Building catalog. |
+| `--execution-profile` | auto, eco, balanced, luxurious, fast-simulation, efficient-throughput | Execution resource intent; calibrated tier tuning is pending. |
+| `--memory-budget-bytes` | integer; bytes; 1..9223372036854775807 | Planning budget for recoverable storage; does not enforce a process RSS limit. |
 | `--help` | flag; default false | Show this command's help (also -h). |
 
 Unspecified display, audio and editor settings inherit saved preferences.
@@ -771,7 +803,7 @@ Choose at most one: `--record`, `--videoshot`.
 
 `--record-fps` requires `--record` or `--videoshot`.
 
-Applicable environment variables: `GLOB2_REPLAY_PATH`, `GLOB2_CHECKSUM_SIDECAR`, `GLOB2_TEAM_RESULTS`, `GLOB2_TEAM_TIMELINE`, `GLOB2_GRADIENT_BACKEND`, `GLOB2_OPENCL_DEVICE`.
+Applicable environment variables: `GLOB2_REPLAY_PATH`, `GLOB2_CHECKSUM_SIDECAR`, `GLOB2_TEAM_RESULTS`, `GLOB2_TEAM_TIMELINE`, `GLOB2_GRADIENT_BACKEND`, `GLOB2_GRADIENT_ALGORITHM`, `GLOB2_GRADIENT_VERIFY`, `GLOB2_OPENCL_DEVICE`.
 
 ```sh
 glob2 game repeat saved.game.gz --ticks 64 --runs 1
@@ -795,6 +827,8 @@ Platform: all.
 | `--profile` | string; default glob2-verify | Isolated profile label. |
 | `--compute-threads` | compute; default auto | Shared compute pool; auto respects available logical CPUs. |
 | `--map-file` | file | Recorded match's map. Required. |
+| `--execution-profile` | auto, eco, balanced, luxurious, fast-simulation, efficient-throughput | Execution resource intent; calibrated tier tuning is pending. |
+| `--memory-budget-bytes` | integer; bytes; 1..9223372036854775807 | Planning budget for recoverable storage; does not enforce a process RSS limit. |
 | `--help` | flag; default false | Show this command's help (also -h). |
 
 ```sh
@@ -838,8 +872,13 @@ Platform: all.
 | `--generator-package` | file | Load a custom generator package or directory. Repeatable. |
 | `--building-catalog` | file | Building catalog manifest. |
 | `--compute-threads` | compute; default auto | Shared compute pool; auto respects available logical CPUs. |
-| `--gpu` | on, off | GPU gradient compute; overrides local setting (graphical default off, headless on). |
+| `--gpu` | on, off | Legacy gradient selection: on=OpenCL, off=CPU automatic; explicit backend takes precedence. |
+| `--gradient-backend` | cpu, scalar, sse2, neon, opencl, vulkan, webgpu | Gradient computation backend. |
+| `--gradient-algorithm` | buckets, frozen8, jacobi | Gradient computation algorithm. |
+| `--gradient-verify` | on, off | Compare accelerated fields with scalar CPU output. |
 | `--instance` | string | Online instance origin. |
+| `--execution-profile` | auto, eco, balanced, luxurious, fast-simulation, efficient-throughput | Execution resource intent; calibrated tier tuning is pending. |
+| `--memory-budget-bytes` | integer; bytes; 1..9223372036854775807 | Planning budget for recoverable storage; does not enforce a process RSS limit. |
 | `--help` | flag; default false | Show this command's help (also -h). |
 
 Unspecified display, audio and editor settings inherit saved preferences.
@@ -903,10 +942,15 @@ Platform: all.
 | `--generator-package` | file | Load a custom generator package or directory. Repeatable. |
 | `--building-catalog` | file | Building catalog manifest. |
 | `--compute-threads` | compute; default auto | Shared compute pool; auto respects available logical CPUs. |
-| `--gpu` | on, off | GPU gradient compute; overrides local setting (graphical default off, headless on). |
+| `--gpu` | on, off | Legacy gradient selection: on=OpenCL, off=CPU automatic; explicit backend takes precedence. |
+| `--gradient-backend` | cpu, scalar, sse2, neon, opencl, vulkan, webgpu | Gradient computation backend. |
+| `--gradient-algorithm` | buckets, frozen8, jacobi | Gradient computation algorithm. |
+| `--gradient-verify` | on, off | Compare accelerated fields with scalar CPU output. |
 | `--instance` | string | Online instance origin. |
 | `--hash` | string | Catalog map SHA-256. Required. |
 | `--title` | string | Catalog map title. Required. |
+| `--execution-profile` | auto, eco, balanced, luxurious, fast-simulation, efficient-throughput | Execution resource intent; calibrated tier tuning is pending. |
+| `--memory-budget-bytes` | integer; bytes; 1..9223372036854775807 | Planning budget for recoverable storage; does not enforce a process RSS limit. |
 | `--help` | flag; default false | Show this command's help (also -h). |
 
 Unspecified display, audio and editor settings inherit saved preferences.
@@ -970,10 +1014,15 @@ Platform: all.
 | `--generator-package` | file | Load a custom generator package or directory. Repeatable. |
 | `--building-catalog` | file | Building catalog manifest. |
 | `--compute-threads` | compute; default auto | Shared compute pool; auto respects available logical CPUs. |
-| `--gpu` | on, off | GPU gradient compute; overrides local setting (graphical default off, headless on). |
+| `--gpu` | on, off | Legacy gradient selection: on=OpenCL, off=CPU automatic; explicit backend takes precedence. |
+| `--gradient-backend` | cpu, scalar, sse2, neon, opencl, vulkan, webgpu | Gradient computation backend. |
+| `--gradient-algorithm` | buckets, frozen8, jacobi | Gradient computation algorithm. |
+| `--gradient-verify` | on, off | Compare accelerated fields with scalar CPU output. |
 | `--instance` | string | Online instance origin. |
 | `--hash` | string | Catalog map SHA-256. Required. |
 | `--title` | string | Catalog map title. Required. |
+| `--execution-profile` | auto, eco, balanced, luxurious, fast-simulation, efficient-throughput | Execution resource intent; calibrated tier tuning is pending. |
+| `--memory-budget-bytes` | integer; bytes; 1..9223372036854775807 | Planning budget for recoverable storage; does not enforce a process RSS limit. |
 | `--help` | flag; default false | Show this command's help (also -h). |
 
 Unspecified display, audio and editor settings inherit saved preferences.
@@ -1021,6 +1070,8 @@ Platform: all.
 | `--orders-per-second` | real; default 0.5; 0..2147483647 | Synthetic order rate. |
 | `--max-seconds` | real; default 1800; seconds; 0..2147483647 | Maximum runtime in seconds. |
 | `--seed` | integer; default 1; 0..4294967295 | Synthetic-order seed. |
+| `--execution-profile` | auto, eco, balanced, luxurious, fast-simulation, efficient-throughput | Execution resource intent; calibrated tier tuning is pending. |
+| `--memory-budget-bytes` | integer; bytes; 1..9223372036854775807 | Planning budget for recoverable storage; does not enforce a process RSS limit. |
 | `--help` | flag; default false | Show this command's help (also -h). |
 
 ```sh
@@ -1195,7 +1246,10 @@ Platform: all.
 | `--record-crf` | integer; default 23; 0..51 | Software H.264 quality; lower means higher quality. |
 | `--record-chapter-ticks` | integer; default 10000; ticks; 1..1000000000 | Simulation ticks per chapter. |
 | `--compute-threads` | compute; default auto | Shared compute pool; auto respects available logical CPUs. |
-| `--gpu` | on, off | GPU gradient compute; overrides local setting (graphical default off, headless on). |
+| `--gpu` | on, off | Legacy gradient selection: on=OpenCL, off=CPU automatic; explicit backend takes precedence. |
+| `--gradient-backend` | cpu, scalar, sse2, neon, opencl, vulkan, webgpu | Gradient computation backend. |
+| `--gradient-algorithm` | buckets, frozen8, jacobi | Gradient computation algorithm. |
+| `--gradient-verify` | on, off | Compare accelerated fields with scalar CPU output. |
 | `--display` | flag; default false | Show test games graphically. |
 | `--runs` | integer; default 0; 0..2147483647 | Game count; 0 repeats forever. |
 | `--ticks` | integer; default 90000; ticks; 0..2147483647 | Tick cap per random game; 0 runs until game end; overrides GLOB2_TEST_MAX_TICKS. |
@@ -1204,6 +1258,8 @@ Platform: all.
 | `--matchup` | string | Comma-separated per-team AIs; requires --map. |
 | `--save-game-as` | file | Write the initial game before running. |
 | `--building-catalog` | file | Building catalog manifest. |
+| `--execution-profile` | auto, eco, balanced, luxurious, fast-simulation, efficient-throughput | Execution resource intent; calibrated tier tuning is pending. |
+| `--memory-budget-bytes` | integer; bytes; 1..9223372036854775807 | Planning budget for recoverable storage; does not enforce a process RSS limit. |
 | `--help` | flag; default false | Show this command's help (also -h). |
 
 Unspecified display, audio and editor settings inherit saved preferences.
@@ -1297,8 +1353,13 @@ Platform: all.
 | `--generator-package` | file | Load a custom generator package or directory. Repeatable. |
 | `--building-catalog` | file | Building catalog manifest. |
 | `--compute-threads` | compute; default auto | Shared compute pool; auto respects available logical CPUs. |
-| `--gpu` | on, off | GPU gradient compute; overrides local setting (graphical default off, headless on). |
+| `--gpu` | on, off | Legacy gradient selection: on=OpenCL, off=CPU automatic; explicit backend takes precedence. |
+| `--gradient-backend` | cpu, scalar, sse2, neon, opencl, vulkan, webgpu | Gradient computation backend. |
+| `--gradient-algorithm` | buckets, frozen8, jacobi | Gradient computation algorithm. |
+| `--gradient-verify` | on, off | Compare accelerated fields with scalar CPU output. |
 | `--output-dir` | directory; default . | Translation screenshot directory. |
+| `--execution-profile` | auto, eco, balanced, luxurious, fast-simulation, efficient-throughput | Execution resource intent; calibrated tier tuning is pending. |
+| `--memory-budget-bytes` | integer; bytes; 1..9223372036854775807 | Planning budget for recoverable storage; does not enforce a process RSS limit. |
 | `--help` | flag; default false | Show this command's help (also -h). |
 
 Unspecified display, audio and editor settings inherit saved preferences.
