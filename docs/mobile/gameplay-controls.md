@@ -26,9 +26,11 @@ Objectives/Hints and 640 for Teams.
 ### Pan the map
 
 Gameplay map drags start after 8 screen points of travel. Release momentum requires
-reaching 16 points from the gesture start, so small touch jitter and short
-positioning drags stop on release. This distance is independent of map zoom and
-display density; deliberate swipes retain the configured momentum.
+16 points of net travel within the last 100 ms of continuous movement, plus more
+than 3 points within the final 40 ms. A movement gap longer than 40 ms starts a
+new velocity history. Small finger-lift movements after a stop cannot inherit
+fling eligibility from the earlier drag. These distances are independent of map
+zoom and display density; deliberate swipes retain the configured momentum.
 
 ### Toolbar and statistics
 

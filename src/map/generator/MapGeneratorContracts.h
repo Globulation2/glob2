@@ -2178,6 +2178,33 @@ inline void bastionKeysContracts()
 	assert(GenerationService().generate(bridged, request));
 	assert(coloniesApart(bridged.map, 2, "without swimming").empty());
 	const Torus t(bridged.map);
+	// The estates are dressed in catalogue ground and the map's header declares it. Deep water is
+	// absent by design: a tile between shallow and deep water is not swimmable, so a ring of it
+	// would seal every island from swimmers.
+	{
+		const auto required = bridged.map.requiredTerrainExperiments();
+		assert(required.has(ExperimentId::PathTerrain) && required.has(ExperimentId::BarrenTerrain) &&
+			   required.has(ExperimentId::FertileTerrain) && required.has(ExperimentId::RidgeTerrain));
+		assert(!required.has(ExperimentId::DeepWaterTerrain));
+		std::set<int> used;
+		int pier = -1;
+		for (int i = 0; i < t.size(); ++i)
+		{
+			const int corner = bridged.map.vertexTerrainAt(i % t.w, i / t.w);
+			used.insert(corner);
+			if (corner == BOARDWALK && pier < 0)
+				pier = i;
+		}
+		for (const int type : {BOARDWALK, DIRT_TRACK, GRAVEL, LOAM, OUTCROP, RIDGE_ROCK})
+			assert(used.count(type));
+		assert(!used.count(DEEP_WATER) && !used.count(DARK_WATER));
+		// Any change to the dressing is a changed design, so the final-world check refuses it.
+		GenerationContext dressed(request);
+		bridged.map.setVertexTerrain(pier % t.w, pier / t.w, GRASS);
+		assert(!definition.validateWorld(bridged, dressed).empty());
+		bridged.map.setVertexTerrain(pier % t.w, pier / t.w, BOARDWALK);
+		assert(definition.validateWorld(bridged, dressed).empty());
+	}
 	TerrainSketch landBridge(t.size());
 	for (int i = 0; i < t.size(); ++i)
 	{

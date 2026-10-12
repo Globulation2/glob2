@@ -4194,6 +4194,28 @@ class GameGUITouchHarness
 		frame(16);
 		require(!gui.touch->scrollAnimating(), "A finger that rests before lifting leaves no momentum");
 		require(std::abs(MapCamera::wrap(held - gui.camera.originX, mapWidth) - 12) < 1e-6, "The drag after the stop still pans");
+		// A substantial drag followed by a stop must not coast from lift jitter.
+		for (Uint64 pause : {24, 64, 80, 1000})
+		{
+			frame(500);
+			finger(SDL_EVENT_FINGER_DOWN, 400, 300);
+			for (int i = 1; i <= 4; ++i)
+			{
+				frame(16);
+				finger(SDL_EVENT_FINGER_MOTION, 400 + 20 * i, 300);
+			}
+			frame(pause);
+			finger(SDL_EVENT_FINGER_MOTION, 481, 300);
+			frame(16);
+			finger(SDL_EVENT_FINGER_MOTION, 482, 300);
+			finger(SDL_EVENT_FINGER_UP, 482, 300);
+			const auto released = gui.camera;
+			frame(100);
+			require(!gui.touch->scrollAnimating(), "Lift jitter after a long drag must not fling");
+			require(std::abs(gui.camera.originX - released.originX) < 1e-6 &&
+					std::abs(gui.camera.originY - released.originY) < 1e-6,
+					"The map stays at the drag release position");
+		}
 		// Suspending input stops coasting too.
 		flick(400, 300, 0, 40);
 		frame(16);

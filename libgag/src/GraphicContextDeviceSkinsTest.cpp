@@ -130,4 +130,25 @@ TEST_SUITE("RendererAssetLifetime") {
             REQUIRE(gfx->requestBackendSwitch(RendererBackend::Software));gfx->nextFrame();
         }
     }
+
+    TEST_CASE("an offscreen pass draws a drawable rebuilt at a freed drawable's address [display]") {
+        // Whole-map renders stream one terrain page at a time, each allocated where the last was freed.
+        glob2test::ToolkitScope toolkit;
+        GraphicContext::setInitialRendererBackend(RendererBackend::Software);
+        auto *gfx=Toolkit::initGraphic(640,480,GraphicContext::NOAUDIO,"offscreen drawable reuse");
+        std::unique_ptr<SDL_Surface,decltype(&SDL_DestroySurface)> canvas(SDL_CreateSurface(16,8,SDL_PIXELFORMAT_RGBA32),SDL_DestroySurface);
+        REQUIRE(canvas);
+        alignas(DrawableSurface) std::array<std::byte,sizeof(DrawableSurface)> storage;
+        gfx->drawToSurface(canvas.get(),1,[&]{
+            for(int page=0;page<2;++page) {
+                auto *source=std::construct_at(reinterpret_cast<DrawableSurface*>(storage.data()),8,8);
+                source->drawFilledRect(0,0,8,8,page==0 ? Color(255,0,0) : Color(0,255,0));
+                gfx->drawSurface(page*8,0,source);
+                std::destroy_at(source);
+            }
+        });
+        Uint8 r,g,b,a;
+        REQUIRE(SDL_ReadSurfacePixel(canvas.get(),4,4,&r,&g,&b,&a));CHECK(r==255);CHECK(g==0);
+        REQUIRE(SDL_ReadSurfacePixel(canvas.get(),12,4,&r,&g,&b,&a));CHECK(r==0);CHECK(g==255);
+    }
 }
