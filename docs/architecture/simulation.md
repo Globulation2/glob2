@@ -533,3 +533,21 @@ contaminate their timing.
   colony placement; a cell it fails is a "Generation failed" a player would see.
 - A cache or other retained state with no eviction policy needs an explicit bound —
   a count or a byte budget. "It would take an enormous game to reach" is not a bound.
+
+### Diagnostic movement planning
+
+The optional movement shadow is owned by `Game`, alongside the AI pipeline, and
+leases projected immutable inputs from the shared completed-world boundary.
+Exploration is a separately requested component containing the aging per-team
+exploration bytes. Its chunk tracking is enabled lazily when a capture requests
+it; discovery and visibility are independent observations. Refresh, decay,
+initialization and load invalidate the corresponding exploration stamps.
+
+Movement shadow jobs use dedicated team lanes and portable per-request randomness.
+The pure planner can read snapshot values and prepare private bounded route fields,
+but cannot call live map queries or mutate assignments. Pending generations publish
+at fixed deadlines, independent of worker readiness. All action, task, resource,
+combat, occupancy and visibility execution remains authoritative in the unit
+update. Shadow metadata is diagnostic and is excluded from saves and checksums.
+See [compute benchmarks](../development/compute-benchmarks.md#movement-planning-shadow-trial)
+for the staged trial and progression gate.

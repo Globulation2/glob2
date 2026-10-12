@@ -173,7 +173,7 @@ void OrderScheduler::submit(RequestId request, std::shared_ptr<const AIWorldView
 		throw std::logic_error("AI controller already polled for this tick");
 	if (!batches.empty() && request.observedTick - batches.front().observedTick > delay)
 		throw std::logic_error("AI pipeline exceeded its delay window");
-	if (request.player >= ComputeExecutor::Lanes) throw std::invalid_argument("AI controller index exceeds 31");
+	if (request.player >= ComputeExecutor::AILanes) throw std::invalid_argument("AI controller index exceeds 31");
 	std::size_t controllerPending = 0;
 	for (const auto& batch : batches) for (const auto& entry : batch.entries) controllerPending += entry.request.player == request.player;
 	if (controllerPending >= delay + 1) throw std::logic_error("AI controller admission exceeds its deadline horizon");

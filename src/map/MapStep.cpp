@@ -548,17 +548,38 @@ void Map::setMapBuildingsDiscovered(int x, int y, int w, int h, Uint32 sharedVis
 
 void Map::setMapExploredByUnit(int x, int y, int w, int h, int team)
 {
+    if (!explorationTracking) {
+        for (int dx=x;dx<x+w;++dx) for (int dy=y;dy<y+h;++dy)
+            exploredArea[team][coordToIndex(dx,dy)] = EXPLORED_FRESH;
+        return;
+    }
 	for (int dx = x; dx < x + w; dx++)
 		for (int dy = y; dy < y + h; dy++)
-			exploredArea[team][coordToIndex(dx, dy)] = EXPLORED_FRESH;
+			{
+                const auto index = coordToIndex(dx, dy);
+                if (exploredArea[team][index] != EXPLORED_FRESH) {
+                    exploredArea[team][index] = EXPLORED_FRESH;
+                    explorationChanges[team].mark(chunkGeometry.chunkOf(index));
+                }
+            }
 }
 
 void Map::setMapExploredByBuilding(int x, int y, int w, int h, int team)
 {
+    if (!explorationTracking) {
+        for (int dx=x;dx<x+w;++dx) for (int dy=y;dy<y+h;++dy)
+            if(exploredArea[team][coordToIndex(dx,dy)]<EXPLORED_BY_BUILDING_MIN)
+                exploredArea[team][coordToIndex(dx,dy)] = EXPLORED_BY_BUILDING_MIN;
+        return;
+    }
 	for (int dx = x; dx < x + w; dx++)
 		for (int dy = y; dy < y + h; dy++)
 			if (exploredArea[team][coordToIndex(dx, dy)] < EXPLORED_BY_BUILDING_MIN)
-				exploredArea[team][coordToIndex(dx, dy)] = EXPLORED_BY_BUILDING_MIN;
+				{
+                const auto index = coordToIndex(dx, dy);
+                exploredArea[team][index] = EXPLORED_BY_BUILDING_MIN;
+                explorationChanges[team].mark(chunkGeometry.chunkOf(index));
+            }
 }
 
 void Map::unsetMapDiscovered(void)
@@ -621,6 +642,7 @@ void Map::computeDisplayedFarmArea(int teamNumber)
 void Map::initExploredArea(int teamNumber)
 {
 	std::fill(exploredArea[teamNumber], exploredArea[teamNumber] + size, 0);
+	markExplorationChanged(teamNumber);
 }
 
 // Seed a team's explored area from its discovery map. Used when the file
@@ -641,6 +663,7 @@ void Map::makeDiscoveredAreasExplored(int teamNumber)
 
 void Map::updateExploredArea(int teamNumber)
 {
+	markExplorationChanged(teamNumber);
 	for (size_t i = 0; i < size; i++)
 		if (exploredArea[teamNumber][i] > 0)
 			exploredArea[teamNumber][i]--;

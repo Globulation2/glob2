@@ -64,6 +64,11 @@ struct Terrain
 	bool movementModifiers = false, airConstraints = false;
 	ChunkStamps stamps;
 };
+struct Exploration
+{
+    std::array<std::vector<Uint8>, Team::MAX_COUNT> teams;
+    std::array<ChunkStamps, Team::MAX_COUNT> stamps;
+};
 using ResourceCell = MapState::ResourceCell;
 // Single-yield stock lives inline in each cell; multi-yield deposits index the
 // stock sidecar. Both are covered by the one Resources generation.
@@ -148,6 +153,7 @@ struct Handle
 	std::shared_ptr<const Occupancy> occupancy;
 	std::shared_ptr<const Areas> areas;
 	std::shared_ptr<const Visibility> visibility;
+	std::shared_ptr<const Exploration> exploration;
 	std::shared_ptr<const Entities> entities;
 	std::shared_ptr<const Teams> teams;
 	std::shared_ptr<const Rules> rules;
@@ -155,6 +161,7 @@ struct Handle
 	std::shared_ptr<const Fertility::GrowthCache> growth;
 	std::shared_ptr<const BuildingAreaEffects::FertilitySnapshot> areaFertility;
 	Uint64 worldIdentity = 0, configurationRevision = 0;
+	std::array<Uint64, Team::MAX_COUNT> explorationGenerations{};
 	std::array<Uint64, 5> mapGenerations{};
 	Handle project(Requirements requested) const;
 	// Scalar readers touch only their requested immutable component. Defaults

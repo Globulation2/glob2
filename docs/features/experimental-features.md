@@ -176,3 +176,9 @@ For a built-in engine experiment:
    maintainer playing it is part of review.
 
 Related: [features and content](README.md).
+
+Movement planning currently has a local diagnostic shadow trial through
+`game run --movement-shadow K` and a reference `--movement-profile` control.
+It does not change movement or appear in Settings → Experiments. Registering
+`planned-movement` requires the staged coverage and cost gate described in
+[compute benchmarks](../development/compute-benchmarks.md#movement-planning-shadow-trial).

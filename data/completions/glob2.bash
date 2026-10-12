@@ -78,7 +78,7 @@ _glob2_complete() {
     'map export-image') opts='--data-dir --generator-package --output --help ';;
     'map inspect-package') opts='--output --report-file --help ';;
     'map validate-set') opts='--report-file --preview --gallery --phase --variation --help ';;
-    'game run') opts='--output-dir --profile --building-catalog --data-dir --generator-package --compute-threads --gpu --gradient-backend --gradient-algorithm --gradient-verify --map-file --load-game --generator --game-seed --map-seed --set --candidates --player --ai-param --ai-script --map-script --alliance --win-condition --win-probability --experiment --rule --fork-rule --ticks --gradient-delay --resource-growth-delay --ai-order-delay --save --telemetry --write-replay --benchmark-warmup --diagnostic-fields --diagnostic-interval --diagnostic-png --building-artwork --help ';;
+    'game run') opts='--output-dir --profile --building-catalog --data-dir --generator-package --compute-threads --gpu --gradient-backend --gradient-algorithm --gradient-verify --map-file --load-game --generator --game-seed --map-seed --set --candidates --player --ai-param --ai-script --map-script --alliance --win-condition --win-probability --experiment --rule --fork-rule --ticks --gradient-delay --resource-growth-delay --ai-order-delay --movement-shadow --movement-profile --save --telemetry --write-replay --benchmark-warmup --diagnostic-fields --diagnostic-interval --diagnostic-png --building-artwork --help ';;
     'game repeat') opts='--data-dir --generator-package --fullscreen --no-fullscreen --resizable --no-resizable --custom-cursor --no-custom-cursor --mute --no-mute --renderer --graphics-detail --window-size --username --editor-script --record --videoshot --record-fps --record-encoder --record-crf --record-chapter-ticks --display --compute-threads --gpu --gradient-backend --gradient-algorithm --gradient-verify --ticks --runs --building-catalog --help ';;
     'match verify') opts='--output-dir --profile --compute-threads --map-file --help ';;
     'online join') opts='--fullscreen --no-fullscreen --resizable --no-resizable --custom-cursor --no-custom-cursor --mute --no-mute --renderer --graphics-detail --window-size --username --editor-script --record --videoshot --record-fps --record-encoder --record-crf --record-chapter-ticks --data-dir --generator-package --building-catalog --compute-threads --gpu --gradient-backend --gradient-algorithm --gradient-verify --instance --help ';;
@@ -243,6 +243,7 @@ _glob2_complete() {
     'game run|--gradient-delay') kind='integer'; values='';;
     'game run|--resource-growth-delay') kind='integer'; values='';;
     'game run|--ai-order-delay') kind='integer'; values='';;
+    'game run|--movement-shadow') kind='enum'; values='1 2 4 8';;
     'game run|--save') kind='string'; values='';;
     'game run|--telemetry') kind='enum'; values='checksums team-timeline maxima gradient-stats';;
     'game run|--benchmark-warmup') kind='integer'; values='';;

@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include <PerformanceTelemetry.h>
+#include "unit/planning/MovementDiagnostics.h"
 #include "Map.h"
 #include "Utilities.h"
 #include "Unit.h"
@@ -15,6 +16,7 @@
 bool Map::pathfindMaterial(EntityRandom& random, int teamNumber, Uint8 resourceType, int swimClass, int x, int y, int *dx, int *dy, bool *stopWork, Building *target, bool withMarkets)
 {
 	PERF_SCOPE_TIME(PathResource);
+    MovementPlanning::SearchScope movementSearch;
 	assert(resourceType<MaterialCount);
 	const Uint16 *gradient=getMaterialGradientSlot(teamNumber, resourceType, swimClass, withMarkets, target);
 	size_t hereIndex=coordToIndex(x, y);

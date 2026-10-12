@@ -271,7 +271,9 @@ public:
 	};
 	using CompletionTicket = std::shared_ptr<Completion>;
 	static constexpr unsigned NoLane = ~0u;
-	static constexpr unsigned Lanes = 32;
+	static constexpr unsigned AILanes = 32;
+    static constexpr unsigned MovementLaneBase = AILanes, MovementLanes = 16;
+    static constexpr unsigned Lanes = AILanes + MovementLanes;
 	struct Group
 	{
 		std::size_t count = 0;
@@ -296,7 +298,8 @@ public:
 	// gradients (16), building gradients (8) and growth (16), plus headroom for tests and
 	// teardown. The producers static_assert their horizons against these.
 	static constexpr std::size_t AIHorizon = 8, GradientHorizon = 16, BuildingHorizon = 8, GrowthHorizon = 16;
-	static constexpr std::size_t Slots = (AIHorizon + 1) + (GradientHorizon + 1) + (BuildingHorizon + 1) + (GrowthHorizon + 1) + 13;
+	static constexpr std::size_t MovementHorizon = 8;
+	static constexpr std::size_t Slots = (MovementHorizon + 1) + (AIHorizon + 1) + (GradientHorizon + 1) + (BuildingHorizon + 1) + (GrowthHorizon + 1) + 13;
 private:
 	using Clock = std::chrono::steady_clock;
 	inline static thread_local ComputeExecutor *active = nullptr;

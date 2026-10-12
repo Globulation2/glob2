@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Point-to-point movement searches share Map scratch but require no area fields.
 #include <PerformanceTelemetry.h>
+#include "unit/planning/MovementDiagnostics.h"
 #include "Map.h"
 #include "MapInternal.h"
 #include "Utilities.h"
@@ -12,6 +13,7 @@
 bool Map::pathfindPointToPoint(int x, int y, int targetX, int targetY, int *dx, int *dy, int swimClass, Uint32 teamMask, int maximumLength)
 {
 	PERF_SCOPE_TIME(PathPoint);
+    MovementPlanning::SearchScope movementSearch;
 	*dx = *dy = 0;
 	//This implements a fairly standard A* algorithm, except that each node does not store the location
 	//of the node that lead to it, thus, you can't trace backwards to the starting point to get the path.
@@ -48,6 +50,7 @@ bool Map::pathfindPointToPoint(int x, int y, int targetX, int targetY, int *dx, 
 		AStarAlgorithmPoint& pos = aStarPoints[position];
         if (pos.isClosed || pos.moveCost != queuedCost) continue;
 		pos.isClosed = true;
+        MovementPlanning::visitSearchCell();
 
 		if(pos.x == targetX && pos.y == targetY)
 		{
@@ -119,8 +122,10 @@ bool Map::pathfindPointToPoint(int x, int y, int targetX, int targetY, int *dx, 
 	aStarExaminedPoints.clear();
 
 	//It was never examined, thus there is no paths
-	if(final.x == -1 || !final.isClosed || final.moveCost > unsigned(maximumCost))
+	if(final.x == -1 || !final.isClosed || final.moveCost > unsigned(maximumCost)) {
+		MovementPlanning::failedSearch();
 		return false;
+    }
 
 	//Input direction of the final square to the unit
 	*dx = final.dx;
@@ -134,6 +139,7 @@ bool Map::pathfindPointToPoint(int x, int y, int targetX, int targetY, int *dx, 
 bool Map::pathfindAirPointToPoint(int x, int y, int targetX, int targetY, int *dx, int *dy)
 {
     PERF_SCOPE_TIME(PathPoint);
+    MovementPlanning::SearchScope movementSearch;
     *dx = *dy = 0;
     x &= wMask; y &= hMask; targetX &= wMask; targetY &= hMask;
 	const unsigned minimum = terrainMinimumAir;

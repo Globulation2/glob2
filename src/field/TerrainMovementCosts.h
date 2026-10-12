@@ -7,9 +7,26 @@
 #include "map/TerrainProperties.h"
 #include <array>
 #include <cstdint>
+#include <cstdlib>
 
 namespace gradient_kernel
 {
+// The live map and immutable planners classify speeds identically.
+inline int movementSwimClass(int walkSpeed, int swimSpeed)
+{
+	if (swimSpeed <= 0)
+		return 0;
+	if (walkSpeed <= 0)
+		return WATER_ONLY_CLASS;
+	// A water cell should cost walk/swim land cells: pick the closest class.
+	int wanted = (GRADIENT_STEP * walkSpeed + swimSpeed / 2) / swimSpeed;
+	int best = 1;
+	for (int c = 2; c < LEGACY_SWIM_CLASS_COUNT; c++)
+		if (std::abs(WATER_STEP[c] - wanted) < std::abs(WATER_STEP[best] - wanted))
+			best = c;
+	return best;
+}
+
 // Derive the hot binary profile discriminator from the property table. With
 // one swimming terrain the compiler emits a single comparison; additional
 // swimming definitions automatically use the small flag table instead.

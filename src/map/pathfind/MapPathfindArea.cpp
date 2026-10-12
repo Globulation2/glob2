@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include <PerformanceTelemetry.h>
+#include "unit/planning/MovementDiagnostics.h"
 #include "Map.h"
 #include "MapInternal.h"
 #include "Game.h"
@@ -14,6 +15,7 @@
 bool Map::pathfindForbidden(const Uint16 *optionGradient, int teamNumber, int swimClass, int x, int y, int *dx, int *dy)
 {
 	PERF_SCOPE_TIME(PathArea);
+    MovementPlanning::SearchScope movementSearch;
 	const Uint16 *gradient=getForbiddenGradient(teamNumber, swimClass);
 	bool canSwim=swimClass>0;
 
@@ -53,6 +55,7 @@ bool Map::pathfindForbidden(const Uint16 *optionGradient, int teamNumber, int sw
 bool Map::pathfindArea(EntityRandom& random, AreaKind kind, int teamNumber, int swimClass, int x, int y, int *dx, int *dy)
 {
 	PERF_SCOPE_TIME(PathArea);
+    MovementPlanning::SearchScope movementSearch;
 	const Uint16 *gradient = (kind == AreaKind::Guard)
 		? getGuardAreasGradient(teamNumber, swimClass)
 		: getClearAreasGradient(teamNumber, swimClass);

@@ -10,7 +10,8 @@ Handle Store::captureBoundary(const Game& game, Requirements required)
 	if (latest && latest->worldIdentity != game.map.identity()) reset();
 	if (latest && latest->tick == game.stepCounter && latest->observationRevision == observationRevision
         && latest->configurationRevision == game.gameHeader.observationRevision()
-        && latest->mapGenerations == game.map.snapshotGenerations()) {
+        && latest->mapGenerations == game.map.snapshotGenerations()
+        && (!needs(required | latest->requirements, Component::Exploration) || latest->explorationGenerations == game.map.explorationGenerations())) {
 		if ((required & latest->requirements) == required) return latest->project(requested);
 		required |= latest->requirements;
 	}
@@ -38,6 +39,7 @@ Handle Store::captureBoundary(const Game& game, Requirements required)
 	account(next.occupancy, previous.occupancy, 0);
 	account(next.areas, previous.areas, 0);
 	account(next.visibility, previous.visibility, 0);
+	account(next.exploration, previous.exploration, 0);
 	account(next.catalogs, previous.catalogs, 0);
 	account(next.rules, previous.rules, 0);
 	if(next.growth) {

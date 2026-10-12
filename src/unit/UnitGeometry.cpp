@@ -2,6 +2,8 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "Unit.h"
+#include "Game.h"
+#include "unit/planning/MovementShadow.h"
 #include "Team.h"
 #include "Map.h"
 
@@ -148,13 +150,26 @@ void Unit::escapeGroundTarget()
 
 void Unit::endOfAction(void)
 {
-	handleMedical();
-	if (isDead)
-		return;
-	handleActivity();
-	handleDisplacement();
-	handleMovement();
-	handleAction();
+auto* diagnostic = owner->game->movementDiagnostics();
+    if (!diagnostic) {
+        handleMedical();
+        if (isDead) return;
+        handleActivity(); handleDisplacement(); handleMovement(); handleAction();
+        return;
+    }
+    struct Completion { MovementPlanning::Shadow* diagnostic; Unit& unit;
+        ~Completion() { if(diagnostic)diagnostic->completeAction(unit); } } completion{diagnostic,*this};
+    MovementPlanning::DiagnosticBinding binding(diagnostic ? diagnostic->counters(*this) : nullptr);
+    {
+        MovementPlanning::PhaseScope phase(MovementPlanning::Phase::Transitions);
+        handleMedical();
+        if (isDead) return;
+        handleActivity();
+    }
+    { MovementPlanning::PhaseScope phase(MovementPlanning::Phase::Displacement); handleDisplacement(); }
+    { MovementPlanning::PhaseScope phase(MovementPlanning::Phase::Direction); handleMovement(); }
+    if (diagnostic) diagnostic->observe(*this);
+    { MovementPlanning::PhaseScope phase(MovementPlanning::Phase::Action); handleAction(); }
 }
 
 // NOTE : position 0 is top left (-1, -1) then run clockwise

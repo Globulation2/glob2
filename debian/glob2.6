@@ -697,6 +697,12 @@ Resource scheduling delay in ticks Type: integer. Units: ticks. Range: 1..16.
 .B \-\-ai\-order\-delay
 AI order delay in ticks Type: integer. Units: ticks. Range: 0..8.
 .TP
+.B \-\-movement\-shadow
+Diagnostic movement planning delay; preserves reference movement Allowed: 1, 2, 4, 8. Type: enum.
+.TP
+.B \-\-movement\-profile
+Profile reference movement without shadow jobs Default: false.
+.TP
 .B \-\-save
 Snapshot: initial, final, or every:N Type: string. Repeatable.
 .TP

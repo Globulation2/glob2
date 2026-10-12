@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include "unit/planning/MovementDiagnostics.h"
 
 // Pathfinding relaxation kernel shared by eager and resumed searches.
 // Each call settles one cost layer. The scalar, SSE2 and NEON paths must make

@@ -472,6 +472,8 @@ const std::vector<Command> &commands()
 					 std::to_string(DefaultGradientDelay)),
 			 integer("--resource-growth-delay", "Resource scheduling delay in ticks", 1, 16),
 			 integer("--ai-order-delay", "AI order delay in ticks", 0, 8),
+             choice("--movement-shadow", "Diagnostic movement planning delay; preserves reference movement", {"1", "2", "4", "8"}),
+             flag("--movement-profile", "Profile reference movement without shadow jobs"),
 			 value("--save", "string", "Snapshot: initial, final, or every:N", "", true),
 			 choice("--telemetry", "Additional telemetry",
 					{"checksums", "team-timeline", "maxima", "gradient-stats"}, "", true),

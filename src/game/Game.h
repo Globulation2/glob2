@@ -71,6 +71,7 @@ class GameAnimations;
 class SoftwareTerrainCache;
 namespace AIPlanning { class BuildingCapabilityIndex; }
 namespace AIEngine { class Pipeline; }
+namespace MovementPlanning { class Shadow; }
 namespace GameDiagnostics { class Session; }
 
 // Minimum value of the prestige-victory threshold.
@@ -259,9 +260,14 @@ public:
 	void observeUnpolledAI();
 	SimulationSnapshot::Store& snapshotStore() { return worldSnapshots; }
 	std::vector<std::pair<std::string, Uint64>> aiMetrics() const;
+    void configureMovementShadow(unsigned delay);
+    MovementPlanning::Shadow* movementDiagnostics() const { return movementShadow.get(); }
+    std::vector<std::pair<std::string, Uint64>> movementMetrics() const;
+    void drainMovementShadow();
 private:
 	mutable SimulationSnapshot::Store worldSnapshots;
 	std::unique_ptr<AIEngine::Pipeline> aiPipeline;
+	std::unique_ptr<MovementPlanning::Shadow> movementShadow;
 public:
 
 	/// Makes a step for building projects that are waiting for the areas to clear of units.

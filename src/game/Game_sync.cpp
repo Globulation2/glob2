@@ -19,6 +19,7 @@
 #include "GlobalContainer.h"
 #include "Order.h"
 #include "Unit.h"
+#include "unit/planning/MovementShadow.h"
 #include "Utilities.h"
 #include <SDL3/SDL.h>
 #include "sim/ClientCommandSink.h"
@@ -222,6 +223,8 @@ void Game::syncStep(Sint32 localTeam, PreparationCompletion completion)
 	if (!anyPlayerWaited)
 	{
 		PERF_SCOPE_TIME(Tick);
+        // Direct callers share the same idempotent completed-world boundary.
+        if (movementShadow && movementShadow->planningEnabled()) captureReadBoundary({},false);
 		if (globalContainer->replayWriter && globalContainer->replayWriter->isValid())
 		{
 			globalContainer->replayWriter->advanceStep();

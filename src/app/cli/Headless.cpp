@@ -473,6 +473,10 @@ struct HeadlessRunner
 		const unsigned computeThreads = resolveComputeThreadCount(parseComputeThreadCount(requestedSizing));
 		globals.configureGradientBackend();
 		engine.gui.game.map.configureCompute(computeThreads);
+        if (options.count("--movement-profile") && options.count("--movement-shadow"))
+            throw std::invalid_argument("choose --movement-profile or --movement-shadow");
+        if (options.count("--movement-shadow")) engine.gui.game.configureMovementShadow(integer(one(options,"--movement-shadow"),1,8));
+        else if (options.count("--movement-profile")) engine.gui.game.configureMovementShadow(0);
         engine.gui.game.map.setResourceGrowthDelay(integer(
             one(options, "--resource-growth-delay", std::to_string(engine.gui.game.map.resourceGrowthDelay())), 1, 16));
 		const auto pipeline = engine.gui.game.map.gradientPipelineStatus();
@@ -529,6 +533,7 @@ struct HeadlessRunner
 			measuredTicks=engine.gui.game.stepCounter-start;
 		}
 		else { engine.run(); engine.gui.game.map.finishGradientPipeline(); engine.gui.game.map.finishResourceGrowth(); }
+		engine.gui.game.drainMovementShadow();
 		if (engine.diagnostics) engine.diagnostics->finish();
 		const auto runEnd = std::chrono::steady_clock::now();
 		const auto saveCpuStart=benchmark?processCpuNs():0;
@@ -651,6 +656,9 @@ struct HeadlessRunner
 			<< ",\"ai_pipeline\":{";
 		bool metricComma=false;
 		for(const auto& [name,value]:game.aiMetrics()) {if(metricComma)result<<',';metricComma=true;result<<quote(name)<<':'<<value;}
+        result << "},\"movement_shadow\":{";
+        metricComma=false;
+        for(const auto& [name,value]:game.movementMetrics()) {if(metricComma)result<<',';metricComma=true;result<<quote(name)<<':'<<value;}
         result << "},\"benchmark_tick_histogram\":[";
         for(unsigned i=0;i<tickHistogram.size();++i) {
             if(i) result<<',';

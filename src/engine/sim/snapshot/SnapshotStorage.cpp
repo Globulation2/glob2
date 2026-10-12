@@ -65,6 +65,12 @@ MemoryMetrics Storage::memoryMetrics() const
 	account(terrain, [&](const Terrain& value, bool leased) { remember(value.vertices, leased); remember(value.rules, leased); return vectorBytes(value.cellRules); });
 	const auto cells = [&](const auto& value, bool) { return vectorBytes(value.cells); };
 	account(resources, cells); account(occupancy, cells); account(areas, cells); account(visibility, [&](const Visibility& value, bool) { return vectorBytes(value.discovered) + vectorBytes(value.visible); });
+	account(exploration, [&](const Exploration& value, bool) {
+        Uint64 bytes = 0;
+        for (unsigned t = 0; t < value.teams.size(); ++t)
+            bytes += vectorBytes(value.teams[t]) + vectorBytes(value.stamps[t].chunks);
+        return bytes;
+    });
 	account(entities, [&](const Entities& value, bool) {
 		return value.unitCargo.capacityBytes() + vectorBytes(value.extraProduction) + vectorBytes(value.buildings) + vectorBytes(value.units) + vectorBytes(value.buildingSlotIndices) + vectorBytes(value.unitSlotIndices) + vectorBytes(value.relationships) + vectorBytes(value.projects);
 	});

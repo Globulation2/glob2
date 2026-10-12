@@ -2,6 +2,7 @@
 // Copyright (C) 2026 glob2 contributors
 
 #include <PerformanceTelemetry.h>
+#include "unit/planning/MovementDiagnostics.h"
 #include "Map.h"
 #include "MapInternal.h"
 #include "Utilities.h"
@@ -15,17 +16,7 @@ static_assert(WATER_STEP[Map::SWIM_CLASS_EVEN] == GRADIENT_STEP);
 
 int Map::swimClass(int walkSpeed, int swimSpeed)
 {
-	if (swimSpeed <= 0)
-		return 0;
-	if (walkSpeed <= 0)
-		return WATER_ONLY_CLASS;
-	// A water cell should cost walk/swim land cells: pick the closest class.
-	int wanted = (GRADIENT_STEP * walkSpeed + swimSpeed / 2) / swimSpeed;
-	int best = 1;
-	for (int c = 2; c < LEGACY_SWIM_CLASS_COUNT; c++)
-		if (std::abs(WATER_STEP[c] - wanted) < std::abs(WATER_STEP[best] - wanted))
-			best = c;
-	return best;
+    return gradient_kernel::movementSwimClass(walkSpeed, swimSpeed);
 }
 
 int Map::minStepCost(int swimClass) const
@@ -42,6 +33,8 @@ int Map::stepCost(int dx, int dy, size_t targetIndex, int swimClass) const
 bool Map::directionByGradient(EntityRandom& random, Uint32 teamMask, int swimClass, int x, int y, const Uint16 *gradient, int *dx, int *dy, bool strict, Uint32 guardAreaMask) const
 {
 	PERF_SCOPE_TIME(PathDirection);
+    MovementPlanning::SearchScope movementSearch;
+    if(MovementPlanning::currentCounters)++MovementPlanning::currentCounters->directionChoices;
 	const bool canSwim = swimClass > 0;
 	Uint16 here = gradient[coordToIndex(x, y)];
 	// Settling the whole cost layer of `here` also finalizes every better or

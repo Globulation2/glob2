@@ -127,12 +127,14 @@ class Map
 	// Per-array change tracking at chunk granularity; see MapChangeTracking.h.
 	MapState::ChunkGeometry chunkGeometry;
 	MapState::ChangeTracker terrainChanges, resourceChanges, occupancyChanges, areaChanges, visibilityChanges;
+	mutable std::array<MapState::ChangeTracker, Team::MAX_COUNT> explorationChanges;
+    mutable bool explorationTracking = false;
 	void markTerrain(size_t index) { terrainChanges.mark(chunkGeometry.chunkOf(index)); }
 	void markResource(size_t index) { resourceChanges.mark(chunkGeometry.chunkOf(index)); }
 	void markOccupancy(size_t index) { occupancyChanges.mark(chunkGeometry.chunkOf(index)); }
 	void markArea(size_t index) { areaChanges.mark(chunkGeometry.chunkOf(index)); }
 	void markVisibility(size_t index) { visibilityChanges.mark(chunkGeometry.chunkOf(index)); }
-	void markAllChanges() { terrainChanges.markAll(); resourceChanges.markAll(); occupancyChanges.markAll(); areaChanges.markAll(); visibilityChanges.markAll(); }
+	void markAllChanges() { terrainChanges.markAll(); resourceChanges.markAll(); occupancyChanges.markAll(); areaChanges.markAll(); visibilityChanges.markAll(); for(auto& tracker:explorationChanges)tracker.markAll(); }
 	//! For fixtures that assign the cell arrays directly instead of calling
 	//! setSize: size the change trackers and bind the live view to the arrays.
 	void bindBootstrappedArrays() { resetChangeTracking(); refreshLiveView(); }
@@ -143,6 +145,7 @@ class Map
 		const auto count = chunkGeometry.count();
 		terrainChanges.reset(count); resourceChanges.reset(count); occupancyChanges.reset(count);
 		areaChanges.reset(count); visibilityChanges.reset(count);
+		if (explorationTracking) for (auto& tracker : explorationChanges) tracker.reset(count);
 	}
 	mutable std::mutex waterSnapshotMutex;
 	mutable std::shared_ptr<const std::vector<Uint8>> waterSnapshot;
@@ -227,6 +230,26 @@ public:
 	EntityRandom& privateRandom(RandomDomain domain);
 	std::array<Uint64, 5> snapshotGenerations() const
 	{ return {terrainChanges.generation, resourceChanges.generation, occupancyChanges.generation, areaChanges.generation, visibilityChanges.generation}; }
+	// Owner capture enables stamps lazily; ordinary matches retain the old hot loops.
+    void trackExploration() const
+    {
+        if (explorationTracking) return;
+        for (auto& tracker : explorationChanges) tracker.reset(chunkGeometry.count());
+        explorationTracking = true;
+    }
+    std::span<const Uint8> explorationState(unsigned team) const
+    {
+        if (team >= Team::MAX_COUNT) throw std::out_of_range("exploration team");
+        return exploredArea[team] ? std::span<const Uint8>(exploredArea[team], size) : std::span<const Uint8>{};
+    }
+    const MapState::ChangeTracker& explorationTracker(unsigned team) const { return explorationChanges.at(team); }
+    std::array<Uint64, Team::MAX_COUNT> explorationGenerations() const
+    {
+        std::array<Uint64, Team::MAX_COUNT> result{};
+        for (unsigned team = 0; team < result.size(); ++team) result[team] = explorationChanges[team].generation;
+        return result;
+    }
+    void markExplorationChanged(unsigned team) { if(explorationTracking)explorationChanges.at(team).markAll(); }
 	const MapState::ChunkGeometry& chunks() const { return chunkGeometry; }
 	const MapState::ChangeTracker& changes(MapState::TrackedArray array) const
 	{

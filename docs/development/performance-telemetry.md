@@ -212,3 +212,10 @@ Measure disabled and enabled collection on the same retained fixture when changi
 
 
 See [compute pipeline benchmarks](compute-benchmarks.md) for scheduled work and optimization comparisons.
+
+The optional `game run --movement-profile` and `--movement-shadow K` controls
+export additional `movement_shadow` counters in the headless result. Their phase
+timers partition completed-action work; nested search timers are inclusive subsets.
+They are owner elapsed times, not synchronous CPU measurements. Worker elapsed,
+publication waits and incremental capture costs are separate measurements. See
+[movement shadow trial](compute-benchmarks.md#movement-planning-shadow-trial).

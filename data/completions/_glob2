@@ -253,6 +253,8 @@ _glob2() {
       '--gradient-delay[gradient-delay]:value:' \
       '--resource-growth-delay[resource-growth-delay]:value:' \
       '--ai-order-delay[ai-order-delay]:value:' \
+      '--movement-shadow[movement-shadow]:value:(1 2 4 8)' \
+      '--movement-profile[movement-profile]' \
       '*--save[save]:value:' \
       '*--telemetry[telemetry]:value:(checksums team-timeline maxima gradient-stats)' \
       '--write-replay[write-replay]' \

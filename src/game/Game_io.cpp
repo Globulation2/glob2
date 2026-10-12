@@ -657,6 +657,7 @@ void DeferredGameSHA1::apply(GAGCore::ChunkedBuffer& contents) const
 
 void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::string& name, DeferredGameSHA1* deferredSHA1)
 {
+    drainMovementShadow();
 	PERF_SCOPE_TIME(Serialize);
 	assert(stream);
 	drainAI(); // Freeze submissions and finish private state, without delivering future orders.

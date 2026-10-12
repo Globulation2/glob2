@@ -2,6 +2,7 @@
 #pragma once
 
 #include "GradientPropagation.h"
+#include "unit/planning/MovementDiagnostics.h"
 #include "PreparedTerrainCosts.h"
 
 #ifndef GLOB2_GRADIENT_BENCH_EVENT
@@ -25,6 +26,7 @@ void expandPreparedTerrainBucketRangeAddressed(std::uint16_t *__restrict gradien
     if (begin==end) return;
     GLOB2_GRADIENT_BENCH_EVENT(occupied, 1);
     GLOB2_GRADIENT_BENCH_EVENT(popped, count-begin);
+    MovementPlanning::routeExpansion(count-begin);
     const auto &steps = profile.steps;
     const unsigned stepCount = profile.stepCount;
     // Class/slot membership is invariant; only candidate values depend on cur.

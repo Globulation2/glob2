@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "Map.h"
+#include "unit/planning/MovementDiagnostics.h"
 #include "gradient/ResourceSeedCache.h"
 #include "gradient/GradientRuntime.h"
 #include "Utilities.h"
@@ -334,6 +335,8 @@ bool Map::materialAvailableUpdateSlot(int teamNumber, int resourceType, int swim
 template<typename T>
 bool Map::getGlobalGradientDestination(const T *gradient, int x, int y, Sint32 *targetX, Sint32 *targetY) const
 {
+    MovementPlanning::SearchScope movementSearch;
+    if(MovementPlanning::currentCounters)++MovementPlanning::currentCounters->destinationSearches;
 	const T atGoal = std::numeric_limits<T>::max();
 	// we start from our current position
 	int vx = x & wMask;

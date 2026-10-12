@@ -73,12 +73,14 @@ Handle capture(const Game& game,
 {
 	if (needs(requirements, Component::Catalogs) && (!catalog || catalog->size() != game.buildingsTypes.size()))
 		throw std::invalid_argument("AI observation needs the current building catalog");
-	Handle value;
+	if (needs(requirements, Component::Exploration)) game.map.trackExploration();
+    Handle value;
 	auto* result = &value;
 	result->requirements = requirements;
 	result->configurationRevision = game.gameHeader.observationRevision();
 	result->worldIdentity = game.map.identity();
 	result->mapGenerations = game.map.snapshotGenerations();
+    result->explorationGenerations = game.map.explorationGenerations();
 	if (previous && previous->worldIdentity == result->worldIdentity)
 	{
 		auto reuse = [&](Component component, auto& destination, const auto& source, bool unchanged) {
@@ -100,6 +102,8 @@ Handle capture(const Game& game,
 		reuse(Component::Areas, result->areas, previous->areas, generations[3] == old[3] && previous->configurationRevision == result->configurationRevision);
 		reuse(Component::Annotations, result->annotations, previous->annotations, generations[3] == old[3]);
 		reuse(Component::Visibility, result->visibility, previous->visibility, generations[4] == old[4]);
+		reuse(Component::Exploration, result->exploration, previous->exploration,
+            previous->explorationGenerations == result->explorationGenerations);
 		reuse(Component::Growth, result->growth, previous->growth, sameTerrain);
 	}
 
@@ -132,6 +136,7 @@ Handle capture(const Game& game,
 	auto* areas = areasOwner ? areasOwner.get() : &unusedAreas;
 	Visibility unusedVisibility; auto visibilityOwner = acquireStamped(&Storage::visibility, Component::Visibility);
 	auto* visibility = visibilityOwner ? visibilityOwner.get() : &unusedVisibility;
+	auto explorationOwner = acquire(&Storage::exploration, Component::Exploration);
 	Entities unusedEntities; auto entitiesOwner = acquire(&Storage::entities, Component::Entities);
 	auto* entities = entitiesOwner ? entitiesOwner.get() : &unusedEntities;
 	Teams unusedTeams; auto teamsOwner = acquire(&Storage::teams, Component::Teams);
@@ -297,6 +302,16 @@ Handle capture(const Game& game,
 			else std::fill_n(visibility->visible.begin() + start, length, 0u);
 		});
 	}
+	if (explorationOwner) {
+        for (unsigned t = 0; t < Team::MAX_COUNT; ++t) {
+            const auto source = game.map.explorationState(t);
+            const bool resized = prepare(explorationOwner->teams[t], source.size());
+            if (source.empty()) { explorationOwner->stamps[t] = {}; continue; }
+            refresh(explorationOwner->stamps[t], game.map.explorationTracker(t), resized,
+                [&](std::size_t start, std::size_t length) { copyCells(explorationOwner->teams[t], source, start, length); });
+        }
+        result->exploration = std::move(explorationOwner);
+    }
 	for (int t = 0; (needs(requirements, Component::Teams) || needs(requirements, Component::Entities)) && t < game.mapHeader.getNumberOfTeams(); ++t)
 	{
 		const auto* team = game.teams[t];
@@ -583,6 +598,9 @@ void verifyCapture(const Game& game, const Handle& handle)
 		compare("discovered", handle.visibility->discovered, std::span<const Uint32>(game.map.mapDiscovered));
 		if (game.map.fogOfWar) compare("visible", handle.visibility->visible, std::span<const Uint32>(game.map.fogOfWar, game.map.cellCount()));
 	}
+    if (handle.exploration)
+        for (unsigned t = 0; t < Team::MAX_COUNT; ++t)
+            compare("exploration", handle.exploration->teams[t], game.map.explorationState(t));
     if (handle.catalogs && handle.catalogs->units!=game.gameHeader.getUnitCatalog())
         throw std::logic_error("snapshot verification: unit catalog differs from the game");
     if (handle.entities) {

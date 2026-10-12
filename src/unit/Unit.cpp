@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "Unit.h"
+#include "unit/planning/MovementShadow.h"
 #include "Race.h"
 #include "Team.h"
 #include "Map.h"
@@ -539,6 +540,9 @@ void Unit::syncStep(void)
 		delta=int(std::clamp<Sint64>(Sint64(delta)+stepSpeed-UNIT_DELTA_QUANTUM,INT_MIN,INT_MAX));
 
 		endOfAction();
+        auto* diagnostic = owner->game->movementDiagnostics();
+        MovementPlanning::DiagnosticBinding binding(diagnostic ? diagnostic->counters(*this) : nullptr);
+        MovementPlanning::PhaseScope visibilityPhase(MovementPlanning::Phase::Visibility);
 
 		// Historical saves derive sight from the unit's cached flight ability,
 		// which can differ from its saved Race table or change during training.

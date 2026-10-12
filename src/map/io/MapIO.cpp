@@ -690,6 +690,7 @@ void Map::removeTeam(void)
 	assert(exploredArea[t] != NULL);
 	delete[] exploredArea[t];
 	exploredArea[t]=NULL;
+	markExplorationChanged(t);
 	
 	assert(clearingAreaClaims[t] != NULL);
 	delete[] clearingAreaClaims[t];

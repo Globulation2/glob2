@@ -677,6 +677,8 @@ Platform: all.
 | `--gradient-delay` | integer; default 8; ticks; 1..16 | Gradient scheduling delay in ticks. |
 | `--resource-growth-delay` | integer; ticks; 1..16 | Resource scheduling delay in ticks. |
 | `--ai-order-delay` | integer; ticks; 0..8 | AI order delay in ticks. |
+| `--movement-shadow` | 1, 2, 4, 8 | Diagnostic movement planning delay; preserves reference movement. |
+| `--movement-profile` | flag; default false | Profile reference movement without shadow jobs. |
 | `--save` | string | Snapshot: initial, final, or every:N. Repeatable. |
 | `--telemetry` | checksums, team-timeline, maxima, gradient-stats | Additional telemetry. Repeatable. |
 | `--write-replay` | flag; default false | Write game.replay. |

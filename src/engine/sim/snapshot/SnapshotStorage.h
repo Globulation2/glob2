@@ -33,6 +33,7 @@ struct Storage
 	BufferPool<Occupancy> occupancy;
 	BufferPool<Areas> areas;
 	BufferPool<Visibility> visibility;
+	BufferPool<Exploration> exploration;
 	BufferPool<Entities> entities;
 	BufferPool<Teams> teams;
 	BufferPool<Rules> rules;

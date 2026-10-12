@@ -38,6 +38,7 @@ void Map::loadExploredArea(GAGCore::InputStream *stream, int numberOfTeams, bool
 		if(versionMinor>=FILE_FORMAT_VERSION_COMPACT_STATE && GAGCore::PackedArray::binary(stream))
             GAGCore::PackedArray::read<Uint8>(stream,size,[&](size_t i,Uint8 v){dest[i]=v;});
         else stream->read(dest, size, "explored");
+        if (keep) markExplorationChanged(t);
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();

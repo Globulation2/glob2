@@ -324,3 +324,76 @@ speedup even when the seed kernel uses less thread CPU time.
 
 
 See [resource benchmarks](resource-benchmarks.md) for corpus preparation, measurement isolation and growth pipeline comparisons.
+
+## Movement planning shadow trial
+
+`game run --movement-profile` measures the existing unit trajectory without
+planning jobs. `--movement-shadow K` enables diagnostic planning for `K` equal to
+1, 2, 4 or 8 ticks. These options are mutually exclusive, local diagnostics; they
+are not match rules and are not restored from saves. Neither option adopts a
+suggestion or changes gameplay RNG. Saving drains shadow jobs without publishing
+future results. The live `planned-movement` experiment is gated on this trial and
+is not registered yet.
+
+The shadow uses the game's shared completed-world snapshot and executor. One
+batch per admitted boundary contains one job per requesting team, sorted by unit
+incarnation. Movement lanes are distinct from controller lanes. Publication waits
+for complete due batches before unit updates; serial execution uses the same jobs
+at the same deadlines. Requests have separate diagnostic task epochs, action
+generations and per-incarnation planning sequences. Clock prediction records the
+existing `stepCounter` at action completion, including diagonal quantization.
+
+`result.json` exports `movement_shadow`. Team/mode prefixes distinguish idle,
+exploration, resource, building, clearing and pursuit opportunities. Stable
+opportunities retain their observed task signature through the authoritative
+transitions; changed tasks are counted separately as rapid opportunities.
+`valid / stable_opportunities` measures suggestion identity coverage, not path
+quality. Missing suggestions, position/task/generation rejections, destination
+rejections, preferred-prefix success, selected ranks, blocked outcomes and
+prediction errors are separate counters. Rank 8 means every direction failed the
+current local checks. Shadow rank checks cannot establish gameplay after adoption.
+
+`reference_phase_0_ns` through `reference_phase_4_ns` partition completed-action
+transitions, displacement, direction selection, action execution and visibility.
+Search time is an inclusive subset of those phases and must not be added again.
+Search counts, visited cells and route expansions have no timers inside neighbor
+loops. The `_ns` values measure owner elapsed work. The corresponding `_cpu_ns`
+values measure owner thread CPU when `owner_cpu_available` is true; availability
+is explicit on platforms without a thread CPU clock. Use process user-plus-system
+CPU alongside them. `active_ns` is worker or serial planner elapsed work;
+`deadline_wait_ns` and capture costs can overlap it. Profiling is diagnostic work
+and must be excluded from final uninstrumented performance repetitions.
+
+Owner request/output storage, private cache/workspace peaks and pooled snapshot
+retention are reported separately. Snapshot payloads are shared with other
+consumers: compare paired reference/shadow retention rather than adding all
+categories. Allocator/control-block overhead and configuration heaps are outside
+the snapshot counters; these counters alone cannot prove a total memory ceiling.
+
+Retain deterministic inputs with:
+
+```sh
+GLOB2_MOVEMENT_FIXTURE_DIR="$PWD/artifacts/movement/fixtures" \
+  python3 test/run_tests.py --build-dir build/local-tests \
+  --filter 'MovementPlanningFixtures/*' --tag benchmark
+python3 test/benchmark_movement_planning.py RELEASE_BINARY MANIFEST_JSON \
+  artifacts/movement/stage-a --participants 4
+```
+
+The fixture exporter supplies ordinary, large-colony, contention and team-count
+inputs. Long-running sustainability, active worker counts and representative
+traffic must be verified before marking them qualified. Add ground/air hazards,
+markets and extended cargo, exploration/clearing, pursuit and frequent task-change
+scenarios from retained engine fixtures or the existing compute corpus. The
+manifest has a `scenarios` array with `id`, `workload`, `args`, applicable `modes`
+and `qualified`. Paths, commands, hashes, logs and results belong under ignored
+`artifacts/`; qualification requires retained evidence, not just a scenario name.
+
+The Stage A evaluator checks all four delays independently. Every applicable
+stable mode needs at least 95% valid coverage, and admission plus incremental
+capture overhead must leave a plausible owner saving. Missing qualified workloads,
+missing samples or missing cost data are inconclusive. Exit codes are 0 for a
+qualifying delay, 2 for inconclusive evidence and 3 when every delay fails.
+A failure or inconclusive result stops live implementation. Later policy,
+staleness and threading controls and the opt-in trial require separate evidence;
+shadow coverage is not a performance or gameplay acceptance claim.

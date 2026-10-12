@@ -12,6 +12,7 @@ Handle Handle::project(Requirements requested) const
 	result.tick = tick; result.width = width; result.height = height; result.requirements = requested;
 	result.observationRevision = observationRevision;
 	result.configurationRevision = configurationRevision; result.worldIdentity = worldIdentity; result.mapGenerations = mapGenerations;
+    result.explorationGenerations = explorationGenerations;
 	if (needs(requested, Component::Session)) result.session = session;
 	if (needs(requested, Component::Effects)) result.effects = effects;
 	if (needs(requested, Component::Statistics)) result.statistics = statistics;
@@ -25,6 +26,7 @@ Handle Handle::project(Requirements requested) const
 	if (needs(requested, Component::Occupancy)) result.occupancy = occupancy;
 	if (needs(requested, Component::Areas)) result.areas = areas;
 	if (needs(requested, Component::Visibility)) result.visibility = visibility;
+	if (needs(requested, Component::Exploration)) result.exploration = exploration;
 	if (needs(requested, Component::Entities)) result.entities = entities;
 	if (needs(requested, Component::Teams)) result.teams = teams;
 	if (needs(requested, Component::Rules)) result.rules = rules;

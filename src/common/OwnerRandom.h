@@ -16,7 +16,8 @@ enum class RandomDomain : std::uint16_t {
     MatchAI = 9,
     GenerationExercise = 10,
     GrowthSource = 11,
-    Music = 12
+    Music = 12,
+    MovementPlanning = 13
 };
 
 class WorldRandomStreams

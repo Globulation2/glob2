@@ -1,6 +1,8 @@
 """Source manifests shared by every Glob2 toolchain. Paths are relative to each library."""
 
 CLIENT_SOURCES = (
+    'unit/planning/MovementPlanner.cpp',
+    'unit/planning/MovementShadow.cpp',
     'field/OpenCLGradient.cpp',
     'field/GradientAccelerators.cpp',
     'field/VulkanGradient.cpp',
