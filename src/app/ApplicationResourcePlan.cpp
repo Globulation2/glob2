@@ -44,9 +44,18 @@ ResourcePlan resolveApplicationResourcePlan(const ApplicationResourceInputs &inp
     request.savedProfile = input.savedProfile;
     request.contextDefault = input.headless ? ExecutionProfile::FastSimulation : ExecutionProfile::Auto;
     if (input.legacyRequestedComputeParticipants)
+    {
+        if (request.computeParticipants && *request.computeParticipants != input.legacyRequestedComputeParticipants)
+            throw std::invalid_argument("Conflicting explicit compute participant requests");
         request.computeParticipants = input.legacyRequestedComputeParticipants;
+    }
     if (input.legacyGpuComputeExplicit)
-        request.computeGpu = input.legacyGpuComputeEnabled ? GpuPolicy::Enabled : GpuPolicy::Disabled;
+    {
+        const auto legacyGpu = input.legacyGpuComputeEnabled ? GpuPolicy::Enabled : GpuPolicy::Disabled;
+        if (request.computeGpu && *request.computeGpu != legacyGpu)
+            throw std::invalid_argument("Conflicting explicit GPU compute requests");
+        request.computeGpu = legacyGpu;
+    }
     WorkloadRequirements workload;
     if (input.ownerOnly) workload.maximumComputeParticipants = 1;
     workload.defaults.computeParticipants = defaultComputeThreadCount(input.capabilities.allocatedCpuParticipants.value_or(1));

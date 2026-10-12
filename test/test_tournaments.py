@@ -824,6 +824,86 @@ class ExecutionProfileJobs(unittest.TestCase):
         self.assertEqual(args.count('--execution-profile'), 1)
         self.assertEqual(self.execution['resolved_plan_status'], 'pending_engine_result')
 
+    def test_explicit_gpu_permission_is_validated_emitted_and_collected(self):
+        from tools.tournaments.worker import outcome_only
+        bundle = copy.deepcopy(self.bundle)
+        bundle['cli_description']['commands'][0]['options'].append({'name': '--gpu'})
+        original = self.adapter.command(self.request, bundle, '/attempt', self.inputs,
+                                        execution=self.execution)
+        self.assertNotIn('--gpu', original)
+        for permission in ('on', 'off'):
+            request = copy.deepcopy(self.request)
+            request['config']['gpu'] = permission
+            self.adapter.validate(request)
+            args = self.adapter.command(request, bundle, '/attempt', self.inputs,
+                                        execution=self.execution)
+            self.assertEqual(args[args.index('--gpu') + 1], permission)
+            result = {'schema_version': 1, 'status': 'completed',
+                      'compute_threads': 2, 'compute_resolved_threads': 2,
+                      'execution_resources': self.plan(), 'gpu_requested': int(permission == 'on')}
+            result['execution_resources']['resolved_resources']['gpu_compute_policy'] = (
+                'enabled' if permission == 'on' else 'disabled')
+            result['execution_resources']['resource_sources'] = {'gpu_compute_policy': 'explicit_override'}
+            result['execution_resources']['original_request'] = {'resource_overrides': {
+                'gpu_compute_policy': 'enabled' if permission == 'on' else 'disabled'}}
+            result['execution_resources']['device_capabilities']['gpu_compute_supported'] = None
+            result['execution_resources']['diagnostics'] = []
+            compact = outcome_only(result)
+            joined = self.adapter.join_execution_result(request, bundle, '/attempt',
+                                                        self.execution, compact)
+            self.assertEqual(joined['gpu_requested'], int(permission == 'on'))
+            bad_plan = copy.deepcopy(compact)
+            bad_plan['execution_resources']['resource_sources']['gpu_compute_policy'] = 'validated_default'
+            with self.assertRaisesRegex(ValueError, 'GPU plan'):
+                self.adapter.join_execution_result(request, bundle, '/attempt', self.execution, bad_plan)
+            for wrong in (int(permission != 'on'), 'on', None):
+                with self.assertRaisesRegex(ValueError, 'GPU permission'):
+                    self.adapter.join_execution_result(request, bundle, '/attempt',
+                                                       self.execution, dict(compact, gpu_requested=wrong))
+            with self.assertRaisesRegex(ValueError, 'advertise requested GPU'):
+                self.adapter.command(request, self.bundle, '/attempt', self.inputs,
+                                     execution=self.execution)
+        for invalid in (True, False, 0, 1, None, 'auto', 'ON'):
+            request = copy.deepcopy(self.request)
+            request['config']['gpu'] = invalid
+            with self.assertRaisesRegex(ValueError, 'gpu must be'):
+                self.adapter.validate(request)
+
+    def test_known_unsupported_gpu_fallback_requires_raw_intent_and_resolver_proof(self):
+        bundle = copy.deepcopy(self.bundle)
+        bundle['cli_description']['commands'][0]['options'].append({'name': '--gpu'})
+        request = copy.deepcopy(self.request); request['config']['gpu'] = 'on'
+        plan = self.plan()
+        plan.update(original_request={'resource_overrides': {'gpu_compute_policy': 'enabled'}},
+                    resource_sources={'gpu_compute_policy': 'explicit_override'},
+                    diagnostics=['compute_gpu_unavailable'])
+        plan['resolved_resources']['gpu_compute_policy'] = 'disabled'
+        plan['device_capabilities']['gpu_compute_supported'] = False
+        result = {'status': 'completed', 'compute_threads': 2, 'compute_resolved_threads': 2,
+                  'gpu_requested': 0, 'execution_resources': plan}
+        self.assertEqual(self.adapter.join_execution_result(request, bundle, '/attempt',
+                         self.execution, copy.deepcopy(result))['gpu_requested'], 0)
+        mutations = [
+            lambda p: p['device_capabilities'].update(gpu_compute_supported=None),
+            lambda p: p['device_capabilities'].update(gpu_compute_supported=0),
+            lambda p: p['device_capabilities'].update(gpu_compute_supported=True),
+            lambda p: p.update(diagnostics=[]),
+            lambda p: p.update(diagnostics=['render_gpu_unavailable']),
+            lambda p: p['original_request']['resource_overrides'].update(gpu_compute_policy='disabled'),
+            lambda p: p['resource_sources'].update(gpu_compute_policy='validated_default'),
+        ]
+        for change in mutations:
+            bad = copy.deepcopy(result); change(bad['execution_resources'])
+            with self.assertRaisesRegex(ValueError, 'GPU plan'):
+                self.adapter.join_execution_result(request, bundle, '/attempt', self.execution, bad)
+        with self.assertRaisesRegex(ValueError, 'GPU permission'):
+            self.adapter.join_execution_result(request, bundle, '/attempt', self.execution,
+                                               dict(result, gpu_requested=1))
+        legacy = copy.deepcopy(request); legacy.pop('execution')
+        with self.assertRaisesRegex(ValueError, 'GPU permission'):
+            self.adapter.join_execution_result(legacy, None, '/attempt', None, result)
+
+
     def test_old_job_and_explicit_legacy_keep_identical_original_argv(self):
         original = dict(self.request)
         del original['execution']
@@ -968,6 +1048,58 @@ class ExecutionProfileJobs(unittest.TestCase):
         del no_help['cli_description']
         with self.assertRaisesRegex(ValueError, 'does not advertise'):
             self.adapter.command(self.request, no_help, '/attempt', self.inputs, execution=self.execution)
+
+
+
+
+class EngineInputStaging(unittest.TestCase):
+    def test_plain_and_compressed_map_save_bytes_choose_loader_suffix(self):
+        import gzip
+        from tools.tournaments.worker import stage_input
+        from tools.tournaments.jobs import EngineJob
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            payload = b'engine map/save header and body\x00' * 40
+            for name in ('map', 'save'):
+                for compressed in (False, True):
+                    for transport_compressed in (False, True):
+                        for hint in (None, 'original.game.gz'):
+                            with self.subTest(name=name, compressed=compressed,
+                                              transport=transport_compressed, hint=hint):
+                                raw = gzip.compress(payload, mtime=0) if compressed else payload
+                                source = root / 'source'
+                                source.write_bytes(raw)
+                                artifact = store_artifact(source, root / 'objects', compress=transport_compressed)
+                                if hint is not None:
+                                    artifact['path'] = hint
+                                staged = Path(stage_input(root / 'objects' / artifact['sha256'],
+                                                          root / 'inputs', name, artifact))
+                                self.assertEqual(staged.name, name + ('.gz' if compressed else ''))
+                                self.assertEqual(staged.read_bytes(), raw)
+                                self.assertEqual(file_hash(staged), artifact['raw_sha256'])
+                                loaded = gzip.decompress(staged.read_bytes()) if staged.suffix == '.gz' else staged.read_bytes()
+                                self.assertEqual(loaded, payload)
+                                request = job('game', 'a'*64, inputs={name: artifact},
+                                    config={'ticks': 16, **({'players': ['nicowar']} if name == 'map' else {})},
+                                    seeds={'game': 1} if name == 'map' else {}, execution=None)
+                                argv = EngineJob('game').command(request,
+                                    {'directory': '/bundle', 'executable': 'glob2'}, '/attempt', {name: str(staged)})
+                                option = '--load-game' if name == 'save' else '--map-file'
+                                self.assertEqual(argv[argv.index(option) + 1], str(staged))
+
+    def test_non_engine_input_suffix_and_integrity_contract_remain(self):
+        from tools.tournaments.worker import stage_input
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            source = root / 'source'; source.write_bytes(b'plain custom package')
+            artifact = store_artifact(source, root / 'objects')
+            artifact['path'] = 'package.gz'
+            path = stage_input(root / 'objects' / artifact['sha256'], root / 'inputs',
+                               'generator-package', artifact)
+            self.assertTrue(path.endswith('generator-package.gz'))
+            corrupt = dict(artifact, raw_sha256='0'*64)
+            with self.assertRaises(ValueError):
+                stage_input(root / 'objects' / artifact['sha256'], root / 'bad', 'save', corrupt)
 
 
 if __name__ == '__main__': unittest.main()

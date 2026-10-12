@@ -24,5 +24,7 @@ DeviceCapabilities applicationCapabilitiesFromCpuAvailability(const CpuAvailabil
 DeviceCapabilities discoverApplicationResourceCapabilities(CpuAvailabilityObservation* observation = nullptr);
 std::uint64_t parsePlanningMemoryBytes(std::string_view);
 // Pure injected bridge, suitable for tests without querying this machine.
+// Legacy explicit values fill absent typed overrides; matching values are accepted,
+// and conflicting explicit values are rejected rather than silently replaced.
 ResourcePlan resolveApplicationResourcePlan(const ApplicationResourceInputs &);
 } // namespace resource_policy

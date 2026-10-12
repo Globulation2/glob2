@@ -29,6 +29,24 @@ HOST_DEFAULTS = {'slots': max(1, (os.cpu_count() or 1) - 1), 'collect_slots': 2,
                  'cpu_ids': None, 'memory_planning_budget_bytes': None, 'participants_per_game': None}
 
 
+def stage_input(source, directory, name, artifact):
+    """Decode transport compression; retain the engine map/save representation."""
+    suffix = '.gz' if artifact.get('path', '').endswith('.gz') else ''
+    target = Path(directory) / (identifier(name) + suffix)
+    copy_decoded(source, target, artifact)
+    if name in ('map', 'save'):
+        # Imported objects need not have a path. Transport gzip is independent
+        # of gzip already present in the engine file, which the loader selects
+        # by filename. Inspect only these format-aware engine inputs.
+        with target.open('rb') as stream:
+            compressed = stream.read(2) == b'\x1f\x8b'
+        resolved = Path(directory) / (identifier(name) + ('.gz' if compressed else ''))
+        if resolved != target:
+            target.rename(resolved)
+        target = resolved
+    return str(target)
+
+
 def launcher():
     if sys.argv[0].endswith('.pyz'):
         return [sys.executable, str(Path(sys.argv[0]).resolve())]
@@ -82,7 +100,8 @@ def outcome_only(result):
         'teams': [{key: team[key] for key in team_fields if key in team} for team in result.get('teams', [])],
         'players': [{key: player[key] for key in player_fields if key in player} for player in result.get('players', [])],
         **{key: result[key] for key in ('execution_resources', 'tournament_execution',
-                                       'compute_threads', 'compute_resolved_threads', 'compute_requested_threads') if key in result},
+                                       'compute_threads', 'compute_resolved_threads', 'compute_requested_threads',
+                                       'gpu_requested') if key in result},
     }
 
 
@@ -390,12 +409,8 @@ def execute(root, identity):
             bundle = installed_bundle(worker.root / 'bundles' / job['build'])
             inputs = {}
             for name, artifact in attempt['resolved_inputs'].items():
-                # Keep a ".gz" source suffix: the engine decides whether to inflate
-                # a map/save file by its extension, not its content.
-                suffix = '.gz' if artifact.get('path', '').endswith('.gz') else ''
-                target = directory / 'inputs' / (identifier(name) + suffix)
-                copy_decoded(worker.root / 'objects' / artifact['sha256'], target, artifact)
-                inputs[name] = str(target)
+                inputs[name] = stage_input(worker.root / 'objects' / artifact['sha256'],
+                                           directory / 'inputs', name, artifact)
             out = directory / 'output'
             out.mkdir(exist_ok=True)
             assignment = None

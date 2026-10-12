@@ -243,7 +243,7 @@ Every job has these fields:
 | `inputs` | Map `map` or save `save`, or empty for generation. Values are imported artifact records or `{"job":"ID","artifact":"map-r0.map.gz"}` (artifact names match the produced file, including its `.gz` suffix) |
 | `depends_on` | Job IDs; every input dependency must appear; cycles rejected |
 | `seeds` | `{"game":N}` or `{"map":N}`; empty on saved games |
-| `config` | Game: players, ticks, ai_params (player-string to key/value object), alliances, winning_conditions. Generator: generator, params, candidates, rotations. Defaults follow CLI |
+| `config` | Game: players, ticks, ai_params (player-string to key/value object), alliances, winning_conditions, optional `gpu` (`on` or `off`). Generator: generator, params, candidates, rotations. Defaults follow CLI |
 | `outputs` | replay false; saves/telemetry/reports empty lists; map false; core/stack false; required empty list of relative output paths; result `full` (or `outcome` for compact rating/adjudication fields only) |
 | `limits` | timeout_seconds 3600, memory_mb host default, estimated_seconds 60 (buffer planning only) |
 | `labels` | Opaque JSON object preserved unchanged |
@@ -251,6 +251,22 @@ Every job has these fields:
 Use `python3 -m tools.tournaments input RESULTS FILE` before submission to import
 external input; copy the emitted complete artifact record into `inputs`. This
 retains compression metadata needed for transparent decoding.
+
+Transport compression is separate from the map/save file format. After verifying
+and decoding transport bytes, workers recognize gzip map/save payloads and stage
+them with the `.gz` suffix required by the engine loader, including imported
+objects without a source filename. Plain map/save payloads keep a plain filename;
+the engine bytes and their hashes are unchanged.
+
+Set game `config.gpu` to pin GPU compute permission for a comparison. The supplied
+binary must advertise `--gpu`; unsupported requests fail explicitly. Omission
+preserves the binary's default. Completed results must report matching
+`gpu_requested`, including compact outcomes. Profile-aware results may resolve an
+explicit `on` request to disabled permission when the device reports unsupported
+compute and the plan records `compute_gpu_unavailable`; the original intent and
+explicit override provenance must remain intact. Older results without a plan
+must match the requested permission directly. Permission does not establish GPU
+dispatch, sustained device health, or a performance benefit.
 
 Coordinator settings (omitted fields use these defaults): heartbeat_seconds 15,
 lease_seconds 300 (at least two heartbeats), prefetch 2 queued jobs per execution

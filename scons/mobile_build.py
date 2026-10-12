@@ -16,6 +16,15 @@ from sources import CLIENT_SOURCES, GAG_SOURCES, USL_SOURCES, INCLUDE_DIRECTORIE
 import skin_materials
 
 
+def recording_notice_nodes(env, recording_prefix, output, *, required=True):
+    """Stage notices from the resolved installation, including shared caches."""
+    notices = sorted(path for path in (Path(recording_prefix) / 'share/licenses/recording').glob('*')
+                     if path.is_file())
+    if required and not notices:
+        raise ValueError('Recording dependency lacks license notices: ' + str(recording_prefix))
+    return [env.Install(str(Path(output) / 'licenses/recording'), str(path)) for path in notices]
+
+
 def build_mobile(directory, identity, arguments):
     output = Path(directory).resolve()
     # The Amazon flavor changes game behavior, not its pinned native dependencies.
@@ -92,6 +101,7 @@ def build_mobile(directory, identity, arguments):
         target=identity['target'], arch=identity['arch'], cflags=toolchain['cflags'],
         ldflags=toolchain['ldflags'], environment=environment)
     attach_recording(env, recording_prefix, identity['target'])
+    recording_notices = recording_notice_nodes(env, recording_prefix, output, required=can_build_dependencies())
     if any(target in COMMAND_LINE_TARGETS for target in ('android-tests', 'ios-tests', 'web-tests')):
         from test_provenance import register_test_provenance
         provenance_header = register_test_provenance(env, output)
@@ -214,6 +224,7 @@ def build_mobile(directory, identity, arguments):
             harness = env.StaticLibrary(str(output / 'lib/glob2-script-tests'), objects + test_objects)
             env.Alias('ios-tests', harness)
 
+    env.Depends(program, recording_notices)
     env.Depends(objects, [str(config), str(LOCK), str(manifest)])
     database = env.CompilationDatabase(str(output / 'compile_commands.json'))
     env.Alias('compile_commands.json', database)

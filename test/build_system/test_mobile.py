@@ -475,3 +475,45 @@ class IOSNumericGuardTests(unittest.TestCase):
         # No Android-only by_source map is available in an iOS graph.
         exec(compile(ast.Module(body=[guard], type_ignores=[]), '<ios-guard>', 'exec'), namespace)
         callback.assert_called_once_with(strict, [objects[1], objects[3], objects[4]])
+
+
+class RecordingNoticeTests(unittest.TestCase):
+    @staticmethod
+    def stage(env, prefix, output, **options):
+        import ast
+        root = Path(__file__).resolve().parents[2]
+        tree = ast.parse((root / 'scons/mobile_build.py').read_text())
+        helper = next(node for node in tree.body if isinstance(node, ast.FunctionDef)
+                      and node.name == 'recording_notice_nodes')
+        namespace = {'Path': Path}
+        exec(compile(ast.Module(body=[helper], type_ignores=[]), '<recording-notices>', 'exec'), namespace)
+        return namespace['recording_notice_nodes'](env, prefix, output, **options)
+
+    def test_shared_prefix_notices_are_declared_install_inputs(self):
+        from unittest.mock import Mock
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            prefix = root / 'shared/prefix'
+            notices = prefix / 'share/licenses/recording'
+            notices.mkdir(parents=True)
+            for name in ('x264-COPYING', 'ffmpeg-COPYING.GPLv3', 'sources.json'):
+                (notices / name).write_text(name)
+            (notices / 'not-a-file').mkdir()
+            output = root / 'build/android'
+            env = Mock()
+            installed = self.stage(env, prefix, output)
+            self.assertEqual(len(installed), 3)
+            self.assertEqual(env.Install.call_args_list,
+                             [unittest.mock.call(str(output / 'licenses/recording'), str(path))
+                              for path in sorted(notices.iterdir()) if path.is_file()])
+            self.assertFalse((output / 'recording/prefix').exists())
+
+    def test_missing_notices_fail_build_but_do_not_provision_query(self):
+        from unittest.mock import Mock
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            env = Mock()
+            with self.assertRaisesRegex(ValueError, 'lacks license notices'):
+                self.stage(env, root / 'missing', root / 'output')
+            self.assertEqual(self.stage(env, root / 'missing', root / 'output', required=False), [])
+            env.Install.assert_not_called()

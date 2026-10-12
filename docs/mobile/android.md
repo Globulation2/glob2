@@ -32,6 +32,11 @@ python3 mobile/android.py install --arch arm64-v8a --release --serial DEVICE_SER
 python3 mobile/android.py launch --arch arm64-v8a --release --serial DEVICE_SERIAL
 ```
 
+Recording license notices are installed by the native build into its
+`licenses/recording` output directory and copied into the APK asset bundle. This
+uses the recording installation selected for linking, including shared dependency
+caches; packaging does not require a checkout-local recording prefix.
+
 Release builds start unsigned. `sign` uses a local developer key and validates
 ZIP alignment, the signature and APK digest. Store distribution requires separate
 signing arrangements. Use `armeabi-v7a` or `x86_64` for other supported targets.

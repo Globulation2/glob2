@@ -58,6 +58,65 @@ TEST_CASE("legacy positive CPU override and GPU override retain explicit provena
     CHECK(plan.computeGpuSource == ValueSource::ExplicitOverride);
     CHECK(input.request == original);
 }
+TEST_CASE("typed CPU request merges only absent or equal legacy explicit values")
+{
+    auto input = application();
+    input.request.computeParticipants = 3;
+    auto plan = resolveApplicationResourcePlan(input); // Legacy zero remains automatic/absent.
+    CHECK(plan.resources.computeParticipants == 3);
+    CHECK(plan.participantSource == ValueSource::ExplicitOverride);
+    input.request.computeParticipants.reset(); input.legacyRequestedComputeParticipants = 3;
+    plan = resolveApplicationResourcePlan(input);
+    CHECK(plan.request.computeParticipants == 3);
+    input.request.computeParticipants = 3;
+    const auto original = input.request;
+    CHECK(resolveApplicationResourcePlan(input).resources.computeParticipants == 3);
+    CHECK(input.request == original);
+    input.legacyRequestedComputeParticipants = 12;
+    CHECK_THROWS_AS(resolveApplicationResourcePlan(input), std::invalid_argument);
+    CHECK(input.request == original);
+    // An invalid typed zero must not be hidden by a positive legacy request.
+    input.request.computeParticipants = 0;
+    CHECK_THROWS_AS(resolveApplicationResourcePlan(input), std::invalid_argument);
+    input.legacyRequestedComputeParticipants = 0;
+    CHECK_THROWS_AS(resolveApplicationResourcePlan(input), std::invalid_argument);
+}
+TEST_CASE("typed GPU permission takes precedence over defaults and rejects explicit conflicts")
+{
+    for (const bool enabled : {false, true})
+    {
+        auto input = application(); input.legacyGpuComputeEnabled = enabled;
+        const auto legacy = enabled ? GpuPolicy::Enabled : GpuPolicy::Disabled;
+        const auto opposite = enabled ? GpuPolicy::Disabled : GpuPolicy::Enabled;
+        CHECK(resolveApplicationResourcePlan(input).resources.computeGpu == legacy);
+        // A legacy default is not a competing explicit request.
+        input.request.computeGpu = opposite;
+        auto plan = resolveApplicationResourcePlan(input);
+        CHECK(plan.request.computeGpu == opposite); CHECK(plan.resources.computeGpu == opposite);
+        CHECK(plan.computeGpuSource == ValueSource::ExplicitOverride);
+        input.legacyGpuComputeExplicit = true; input.request.computeGpu.reset();
+        plan = resolveApplicationResourcePlan(input);
+        CHECK(plan.request.computeGpu == legacy); CHECK(plan.computeGpuSource == ValueSource::ExplicitOverride);
+        input.request.computeGpu = legacy;
+        CHECK(resolveApplicationResourcePlan(input).request.computeGpu == legacy);
+        input.request.computeGpu = opposite;
+        const auto original = input.request;
+        CHECK_THROWS_AS(resolveApplicationResourcePlan(input), std::invalid_argument);
+        CHECK(input.request == original);
+    }
+}
+TEST_CASE("typed automatic GPU permission is retained unless a different explicit legacy value exists")
+{
+    auto input = application(); input.request.computeGpu = GpuPolicy::Automatic;
+    CHECK(resolveApplicationResourcePlan(input).request.computeGpu == GpuPolicy::Automatic);
+    CHECK(resolveApplicationResourcePlan(input).resources.computeGpu == GpuPolicy::Automatic);
+    input.legacyGpuComputeExplicit = true;
+    for (const bool enabled : {false, true})
+    {
+        input.legacyGpuComputeEnabled = enabled;
+        CHECK_THROWS_AS(resolveApplicationResourcePlan(input), std::invalid_argument);
+    }
+}
 TEST_CASE("serial platform enforces support while a threaded allocation remains a soft override bound")
 {
     auto input = application(); input.legacyRequestedComputeParticipants = 12;

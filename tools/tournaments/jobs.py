@@ -33,13 +33,15 @@ class EngineJob:
         if isinstance(config.get('generator'),str) and ':' in config['generator'] and not any(k=='generator-package' or k.startswith('generator-package-') for k in job['inputs']):
             raise ValueError('custom generation requires frozen generator package inputs')
         generation = {'generator', 'params', 'candidates'}
-        allowed = ({'players', 'ticks', 'ai_params', 'alliances', 'winning_conditions', 'rules', 'win_probability_permille'} | generation
+        allowed = ({'players', 'ticks', 'ai_params', 'alliances', 'winning_conditions', 'rules', 'win_probability_permille', 'gpu'} | generation
                    if self.kind == 'game' else generation | {'rotations'})
         if set(config) - allowed:
             raise ValueError('unknown job configuration fields: ' + ', '.join(sorted(set(config) - allowed)))
         if self.kind == 'game' and 'save' in job['inputs'] and seeds:
             raise ValueError('saved games retain their seeds')
         if self.kind == 'game':
+            if 'gpu' in config and (type(config['gpu']) is not str or config['gpu'] not in ('on', 'off')):
+                raise ValueError('gpu must be on or off')
             # A game either loads a map or a save, or generates its own map inline;
             # exactly one of the three.
             inline = 'generator' in config
@@ -157,6 +159,13 @@ class EngineJob:
                 'resolved_plan_status': 'legacy_not_resolved' if mode == 'legacy_argv' else 'pending_engine_result'}
 
     def command(self, job, bundle, attempt_dir, inputs, *, execution=None):
+        if 'gpu' in job['config']:
+            commands = (bundle.get('cli_description') or {}).get('commands', [])
+            if not any(c.get('path') == 'game run' and c.get('available') is True
+                       and type(c.get('options')) is list
+                       and any(o.get('name') == '--gpu' for o in c.get('options', []) if type(o) is dict)
+                       for c in commands if type(c) is dict):
+                raise ValueError('binary does not advertise requested GPU option')
         record = self.execution_record(job, bundle, attempt_dir, execution)
         root = Path(bundle['directory'])
         out = Path(attempt_dir) / 'output'
@@ -182,6 +191,8 @@ class EngineJob:
             if 'game' in job['seeds']:
                 add('--game-seed', job['seeds']['game'])
             add('--ticks', config.get('ticks', 90000))
+            if 'gpu' in config:
+                add('--gpu', config['gpu'])
             for player in config.get('players', []):
                 add('--player', player)
             for player, params in sorted(config.get('ai_params', {}).items()):
@@ -235,7 +246,13 @@ class EngineJob:
 
     def join_execution_result(self, job, bundle, attempt_dir, execution, result):
         """Validate and join pure parsed engine output with assigned provenance."""
-        if self.execution_request(job) is not None:
+        request = self.execution_request(job)
+        if ('gpu' in job['config'] and result.get('status') == 'completed'
+                and (request is None or request['compatibility_mode'] == 'legacy_argv')):
+            actual = result.get('gpu_requested')
+            if type(actual) not in (int, bool) or actual != int(job['config']['gpu'] == 'on'):
+                raise ValueError('engine GPU permission differs from explicit request')
+        if request is not None:
             if bundle is None:
                 raise ValueError('bundle capability required to collect execution result')
             record = self.execution_record(job, bundle, attempt_dir, execution)
@@ -256,6 +273,25 @@ class EngineJob:
                 capabilities = plan.get('device_capabilities')
                 if type(resources) is not dict or type(capabilities) is not dict:
                     raise ValueError('missing resolved execution resources/capabilities')
+                if 'gpu' in job['config'] and result.get('status') == 'completed':
+                    expected = 'enabled' if job['config']['gpu'] == 'on' else 'disabled'
+                    original = plan.get('original_request')
+                    overrides = original.get('resource_overrides') if type(original) is dict else None
+                    sources = plan.get('resource_sources')
+                    resolved = resources.get('gpu_compute_policy')
+                    supported = capabilities.get('gpu_compute_supported')
+                    diagnostics = plan.get('diagnostics')
+                    proven_fallback = (expected == 'enabled' and resolved == 'disabled'
+                        and supported is False and type(diagnostics) is list
+                        and 'compute_gpu_unavailable' in diagnostics)
+                    if (type(overrides) is not dict or overrides.get('gpu_compute_policy') != expected
+                            or type(sources) is not dict or sources.get('gpu_compute_policy') != 'explicit_override'
+                            or (resolved != expected and not proven_fallback)
+                            or (resolved == 'enabled' and supported is False)):
+                        raise ValueError('engine GPU plan differs from explicit request')
+                    actual = result.get('gpu_requested')
+                    if type(actual) not in (int, bool) or actual != int(resolved == 'enabled'):
+                        raise ValueError('engine GPU permission differs from resolved plan')
                 participants = resources.get('compute_participants')
                 allocated = capabilities.get('allocated_cpu_participants')
                 if (type(participants) is not int or participants != record['allocation']['participants']
