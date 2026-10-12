@@ -55,7 +55,7 @@ A host list (`hosts.json`); directories must be absolute:
 
 ```json
 [
-  {"name":"localhost", "transport":"local", "directory":"/tmp/glob2-worker", "slots":1}
+  {"name":"localhost", "transport":"local", "directory":"/tmp/glob2-worker", "slots":1, "cpu_ids":[0,1]}
 ]
 ```
 
@@ -65,6 +65,23 @@ python3 -m tools.tournaments submit planned.json /tmp/glob2-results --bundle /tm
 python3 -m tools.tournaments run /tmp/glob2-results --hosts hosts.json
 python3 -m tools.tournaments.ai_comparison reanalyze /tmp/glob2-results
 ```
+
+New game jobs request `efficient-throughput` by default. Supply each host's
+caller-owned logical `cpu_ids` and explicit `slots`; the coordinator partitions
+that budget into disjoint game allocations. The example CPU IDs are placeholders
+for an allocation you own, not a whole-machine discovery rule. An optional
+`memory_planning_budget_bytes` is divided between slots as a soft reservation;
+it does not enforce process RSS or change simulation-visible caches.
+For a single host, `run`, `collect` and `doctor` also accept `--cpu-ids 0,1`,
+`--jobs 1` and `--memory-planning-budget-bytes BYTES`. Multi-host overrides belong
+in the host JSON, where each machine has its own budget.
+
+Profile-aware jobs require the binary's registered execution-resource options
+and returned resolved plan. An explicitly selected `legacy_argv` compatibility
+request supports older CLI2 binaries with their original arguments; it still
+requires worker CPU allocation proof and does not claim an engine-resolved plan.
+Previously signed jobs without an execution envelope retain their original
+command and identity. Missing capabilities never trigger an automatic fallback.
 
 Planning validates and expands jobs without starting games. Generation jobs save
 verified rotations; dependent games consume the exact committed map artifact.
@@ -519,7 +536,11 @@ non-duel formats retain K=32 pairwise updates. Ablation intervals resample paire
 effects.
 
 Legacy entry points remain: `ai-benchmark.sh` delegates to this package (its legacy
-capped-game summary remains a draw); `cortex-knob-search.py` invokes that benchmark;
+capped-game summary remains a draw); `cortex-knob-search.py` invokes that benchmark and forwards required caller
+`--cpu-ids` and `--jobs`, selected `--execution-profile`, optional soft memory
+reservation and explicit older compatibility. Search state freezes that budget
+across resume; previously unbound results are retained only as explicit legacy
+evidence, never promoted to resolved resource measurements;
 `map_fairness_tournament.py` and `map_generator_study.py` use shared local execution
 and the main binary. Their existing statistical/report formats remain available.
 The old study executable remains a regression wrapper around production code.

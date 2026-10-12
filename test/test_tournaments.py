@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Protocol, durable lease acceptance, transfer corruption and offline analysis tests."""
+import copy
 import base64
 import hashlib
 import json
@@ -47,7 +48,7 @@ class RuleJobs(unittest.TestCase):
     def test_rules_are_repeatable_sorted_and_new_game_only(self):
         from tools.tournaments.jobs import EngineJob
         adapter = EngineJob('game')
-        request = job('game', 'a'*64, inputs={'map': {'sha256': 'b'*64}},
+        request = job('game', 'a'*64, execution=None, inputs={'map': {'sha256': 'b'*64}},
                       seeds={'game': 713}, config={'players': ['numbi', 'castor'],
                       'rules': {'peaceful': 1, 'noUpgrades': 1}})
         adapter.validate(request)
@@ -64,13 +65,13 @@ class RuleJobs(unittest.TestCase):
     def test_probability_threshold_matches_engine_range(self):
         from tools.tournaments.jobs import EngineJob
         for threshold in (True, -1, 1, 500, 1001):
-            request = job('game', 'a'*64, config={'generator': 15,
+            request = job('game', 'a'*64, execution=None, config={'generator': 15,
                 'players': ['numbi', 'castor'], 'win_probability_permille': threshold},
                 seeds={'map': 1, 'game': 1})
             with self.assertRaisesRegex(ValueError, '501'):
                 EngineJob('game').validate(request)
         for threshold in (0, 501, 970, 1000):
-            request = job('game', 'a'*64, config={'generator': 15,
+            request = job('game', 'a'*64, execution=None, config={'generator': 15,
                 'players': ['numbi', 'castor'], 'win_probability_permille': threshold},
                 seeds={'map': 1, 'game': 1})
             EngineJob('game').validate(request)
@@ -78,7 +79,7 @@ class RuleJobs(unittest.TestCase):
     def test_rules_require_integer_values(self):
         from tools.tournaments.jobs import EngineJob
         for rules in ([1], {'noUpgrades': True}, {'scarcity': '3'}, {1: 0}):
-            request = job('game', 'a'*64, inputs={'map': {'sha256': 'b'*64}},
+            request = job('game', 'a'*64, execution=None, inputs={'map': {'sha256': 'b'*64}},
                           seeds={'game': 713}, config={'players': ['numbi', 'castor'], 'rules': rules})
             with self.assertRaisesRegex(ValueError, 'rules must map'):
                 EngineJob('game').validate(request)
@@ -550,13 +551,20 @@ class AnalysisTests(unittest.TestCase):
             self.assertEqual(job['config']['win_probability_permille'], 970)
         # And the flag has to survive the trip into the engine's command line,
         # which is the only part the engine actually sees.
-        bundle_directory = {'directory': '/bundle', 'executable': 'glob2'}
-        arguments = EngineJob('game').command(games[0], bundle_directory, '/tmp/attempt', {})
+        from tools.tournaments.resources import PROFILES, plan_allocations
+        bundle_directory = {'directory': '/bundle', 'executable': 'glob2', 'cli_version': 2,
+            'cli_description': {'cli_version': 2, 'schema_version': 1, 'commands': [
+                {'path': 'game run', 'available': True, 'options': [
+                    {'name': '--execution-profile'}, {'name': '--compute-threads'}]}],
+                'execution_profiles': {'policy_version': 1, 'resource_plan_schema_version': 1,
+                                       'profiles': list(PROFILES)}}}
+        execution = plan_allocations([0], 1).attempt_record('attempt', 0)
+        arguments = EngineJob('game').command(games[0], bundle_directory, '/tmp/attempt', {}, execution=execution)
         self.assertIn('--win-probability', arguments)
         self.assertEqual(arguments[arguments.index('--win-probability') + 1], '970')
         plain_game = next(j for j in plain['jobs'] if j['type'] == 'game')
         self.assertNotIn('--win-probability',
-                         EngineJob('game').command(plain_game, bundle_directory, '/tmp/attempt', {}))
+                         EngineJob('game').command(plain_game, bundle_directory, '/tmp/attempt', {}, execution=execution))
 
     def test_sample_games_uses_standard_duels_via_inline_generation(self):
         """The standard Elo cohort uses 128x128 duels. Sampling remains the one
@@ -775,6 +783,191 @@ class ParameterSampling(unittest.TestCase):
         manifest = Planner('generator_stress', config, [self.bundle()]).plan()
         sampled = [j for j in manifest['jobs'] if j['labels']['variant'].startswith('catalog-')]
         self.assertIn(2, {j['config']['params']['shape'] for j in sampled})
+
+
+class ExecutionProfileJobs(unittest.TestCase):
+    """Pure command/collection tests, no subprocess or binary probes."""
+    def setUp(self):
+        from tools.tournaments.jobs import EngineJob
+        from tools.tournaments.resources import Allocation, PROFILES, plan_allocations
+        self.adapter = EngineJob('game')
+        self.request = job('game', 'a'*64, inputs={'map': {'sha256': 'b'*64}},
+                           seeds={'game': 1}, config={'players': ['nicowar', 'nicowar'], 'ticks': 16})
+        self.request['execution'] = {'schema_version': 1, 'policy_version': 1,
+            'requested_execution_profile': 'efficient-throughput', 'compatibility_mode': 'require_profile'}
+        self.bundle = {'directory': '/bundle', 'executable': 'glob2', 'cli_version': 2,
+            'cli_description': {'cli_version': 2, 'schema_version': 1, 'commands': [
+                {'path': 'game run', 'available': True, 'options': [
+                    {'name': '--execution-profile'}, {'name': '--compute-threads'},
+                    {'name': '--memory-budget-bytes'}]}],
+                'execution_profiles': {'policy_version': 1, 'resource_plan_schema_version': 1,
+                                       'profiles': list(PROFILES)}}}
+        self.execution = plan_allocations([3, 19], 1, measured=True).attempt_record('attempt', 0)
+        self.inputs = {'map': '/map.gz'}
+
+    def plan(self):
+        return {'schema_version': 1, 'policy_version': 1,
+            'requested_execution_profile': 'efficient-throughput',
+            'selected_execution_profile': 'efficient-throughput', 'profile_source': 'explicit_profile',
+            'profile_tuning_pending': True,
+            'resolved_resources': {'compute_participants': 2, 'planning_memory_budget_bytes': None,
+                                   'recoverable_memory_budget_bytes': 0},
+            'device_capabilities': {'allocated_cpu_participants': 2, 'allocated_memory_bytes': None}}
+
+    def test_profile_command_retains_application_isolation_and_allocation(self):
+        self.adapter.validate(self.request)
+        args = self.adapter.command(self.request, self.bundle, '/attempt', self.inputs,
+                                    execution=self.execution)
+        self.assertEqual(args[args.index('--profile') + 1], 'glob2-tournament-attempt')
+        self.assertEqual(args[args.index('--execution-profile') + 1], 'efficient-throughput')
+        self.assertEqual(args[args.index('--compute-threads') + 1], '2')
+        self.assertEqual(args.count('--execution-profile'), 1)
+        self.assertEqual(self.execution['resolved_plan_status'], 'pending_engine_result')
+
+    def test_old_job_and_explicit_legacy_keep_identical_original_argv(self):
+        original = dict(self.request)
+        del original['execution']
+        expected = self.adapter.command(original, self.bundle, '/attempt', self.inputs)
+        legacy = dict(self.request, execution=dict(self.request['execution'], compatibility_mode='legacy_argv'))
+        bundle = copy.deepcopy(self.bundle)
+        del bundle['cli_description']['execution_profiles']
+        args = self.adapter.command(legacy, bundle, '/attempt', self.inputs, execution=self.execution)
+        self.assertEqual(expected, args)
+        with self.assertRaisesRegex(ValueError, 'does not advertise'):
+            self.adapter.command(self.request, bundle, '/attempt', self.inputs, execution=self.execution)
+        with self.assertRaises(ValueError):
+            self.adapter.command(original, bundle, '/attempt', self.inputs, execution=self.execution)
+
+    def test_missing_allocation_wrong_identity_and_boolean_count_reject(self):
+        for execution in [None, dict(self.execution, attempt_id='other'),
+                          dict(self.execution, policy_version=True)]:
+            with self.subTest(execution=execution), self.assertRaises(ValueError):
+                self.adapter.command(self.request, self.bundle, '/attempt', self.inputs, execution=execution)
+        bad = copy.deepcopy(self.execution)
+        bad['allocation']['participants'] = True
+        with self.assertRaises(ValueError):
+            self.adapter.command(self.request, self.bundle, '/attempt', self.inputs, execution=bad)
+        for field, value in [('policy_version', True), ('requested_execution_profile', 'unknown')]:
+            request = copy.deepcopy(self.request)
+            request['execution'][field] = value
+            with self.assertRaises(ValueError):
+                self.adapter.validate(request)
+        with self.assertRaises(ValueError):
+            self.adapter.validate(dict(self.request, execution=None))
+        from tools.tournaments.jobs import EngineJob
+        generated = job('generate_map', 'a'*64, config={'generator': 15}, seeds={'map': 1})
+        generated['execution'] = self.request['execution']
+        with self.assertRaisesRegex(ValueError, 'not registered'):
+            EngineJob('generate_map').validate(generated)
+
+    def test_collect_joins_actual_plan_and_preserves_source_result(self):
+        with tempfile.TemporaryDirectory() as directory:
+            attempt = Path(directory) / 'attempt';(attempt / 'output').mkdir(parents=True)
+            plan = self.plan()
+            atomic_json(attempt / 'output/result.json', {'schema_version': 1, 'status': 'completed',
+                                                        'execution_resources': plan, 'compute_threads': 2, 'compute_resolved_threads': 2})
+            result = self.adapter.collect(self.request, attempt, execution=self.execution, bundle=self.bundle)
+            self.assertEqual(result['execution_resources'], plan)
+            joined = result['tournament_execution']
+            self.assertEqual(joined['resolved_plan_status'], 'reported_engine_plan')
+            self.assertEqual(joined['attempt_allocation'], self.execution)
+            self.assertEqual(joined['cpu_id_enforcement'], 'requires_separate_worker_proof')
+            self.assertTrue(joined['resolved_engine_plan']['profile_tuning_pending'])
+
+    def test_collect_missing_or_mismatched_plan_rejects(self):
+        plans = [None, dict(self.plan(), policy_version=True),
+                 dict(self.plan(), requested_execution_profile='balanced')]
+        wrong = self.plan();wrong['resolved_resources']['compute_participants'] = 1;plans.append(wrong)
+        wrong = self.plan();wrong['device_capabilities']['allocated_cpu_participants'] = 32;plans.append(wrong)
+        wrong = self.plan();del wrong['resolved_resources']['planning_memory_budget_bytes'];plans.append(wrong)
+        for plan in plans:
+            with self.subTest(plan=plan), tempfile.TemporaryDirectory() as directory:
+                attempt = Path(directory) / 'attempt';(attempt / 'output').mkdir(parents=True)
+                atomic_json(attempt / 'output/result.json', {'schema_version': 1, 'status': 'completed',
+                                                            'execution_resources': plan, 'compute_threads': 2, 'compute_resolved_threads': 2})
+                with self.assertRaises(ValueError):
+                    self.adapter.collect(self.request, attempt, execution=self.execution, bundle=self.bundle)
+
+    def test_measured_pool_mismatch_rejects_and_unmeasured_fallback_is_qualified(self):
+        with tempfile.TemporaryDirectory() as directory:
+            attempt = Path(directory) / 'attempt';(attempt / 'output').mkdir(parents=True)
+            result = {'schema_version': 1, 'status': 'completed', 'execution_resources': self.plan(),
+                      'compute_threads': 1, 'compute_resolved_threads': 2}
+            atomic_json(attempt / 'output/result.json', result)
+            with self.assertRaisesRegex(ValueError, 'measured compute pool'):
+                self.adapter.collect(self.request, attempt, execution=self.execution, bundle=self.bundle)
+            from tools.tournaments.resources import plan_allocations
+            execution = plan_allocations([3, 19], 1).attempt_record('attempt', 0)
+            joined = self.adapter.collect(self.request, attempt, execution=execution, bundle=self.bundle)
+            self.assertEqual(joined['tournament_execution']['runtime_participants_status'],
+                             'qualified_serial_or_partial_fallback')
+            self.assertEqual(joined['tournament_execution']['actual_compute_participants'], 1)
+            result['compute_threads'] = 2;result['compute_resolved_threads'] = 1
+            atomic_json(attempt / 'output/result.json', result)
+            with self.assertRaisesRegex(ValueError, 'participant metadata'):
+                self.adapter.collect(self.request, attempt, execution=execution, bundle=self.bundle)
+
+    def test_legacy_collect_never_invents_engine_resource_plan(self):
+        legacy = dict(self.request, execution=dict(self.request['execution'], compatibility_mode='legacy_argv'))
+        bundle = dict(self.bundle, cli_description={'cli_version': 2, 'schema_version': 1, 'commands': ['game']})
+        with tempfile.TemporaryDirectory() as directory:
+            attempt = Path(directory) / 'attempt';(attempt / 'output').mkdir(parents=True)
+            atomic_json(attempt / 'output/result.json', {'schema_version': 1, 'status': 'completed'})
+            result = self.adapter.collect(legacy, attempt, execution=self.execution, bundle=bundle)
+            self.assertEqual(result['tournament_execution']['resolved_plan_status'], 'legacy_not_resolved')
+            self.assertNotIn('resolved_engine_plan', result['tournament_execution'])
+            self.assertNotIn('execution_resources', result)
+
+    def test_memory_budget_flag_requires_actual_option_and_matches_plan(self):
+        from tools.tournaments.resources import plan_allocations
+        allocation = plan_allocations([3, 19], 1, memory_planning_budget_bytes=4096).attempt_record('attempt', 0)
+        args = self.adapter.command(self.request, self.bundle, '/attempt', self.inputs, execution=allocation)
+        self.assertEqual(args[args.index('--memory-budget-bytes') + 1], '4096')
+        unsupported = copy.deepcopy(self.bundle)
+        unsupported['cli_description']['commands'][0]['options'].pop()
+        with self.assertRaisesRegex(ValueError, 'resource options'):
+            self.adapter.command(self.request, unsupported, '/attempt', self.inputs, execution=allocation)
+        with tempfile.TemporaryDirectory() as directory:
+            attempt = Path(directory) / 'attempt';(attempt / 'output').mkdir(parents=True)
+            plan = self.plan();plan['resolved_resources']['planning_memory_budget_bytes'] = 4096
+            atomic_json(attempt / 'output/result.json', {'schema_version': 1, 'status': 'completed',
+                                                        'execution_resources': plan, 'compute_threads': 2, 'compute_resolved_threads': 2})
+            result = self.adapter.collect(self.request, attempt, execution=allocation, bundle=self.bundle)
+            self.assertIsNone(result['execution_resources']['device_capabilities']['allocated_memory_bytes'])
+            plan['resolved_resources']['planning_memory_budget_bytes'] = None
+            atomic_json(attempt / 'output/result.json', {'schema_version': 1, 'status': 'completed',
+                                                        'execution_resources': plan, 'compute_threads': 2, 'compute_resolved_threads': 2})
+            with self.assertRaisesRegex(ValueError, 'planning memory differs'):
+                self.adapter.collect(self.request, attempt, execution=allocation, bundle=self.bundle)
+
+    def test_bundle_persists_help_marker_only_with_actual_description(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory);source = root / 'source';source.mkdir()
+            executable = source / 'glob2';executable.write_text('not executed');executable.chmod(0o755)
+            catalog = {'schema_version': 1, 'commands': ['game']}
+            with patch('tools.tournaments.bundles.subprocess.check_output') as probe:
+                legacy = register_bundle(source, root / 'legacy', 'glob2', 'fixture', capabilities=catalog)
+                current = register_bundle(source, root / 'current', 'glob2', 'fixture', capabilities=catalog,
+                                          cli_description=self.bundle['cli_description'])
+                probe.assert_not_called()
+            self.assertNotIn('cli_description', legacy)
+            self.assertNotIn('execution_support', legacy)
+            self.assertEqual(current['execution_support'], 'execution_profiles_v1')
+            self.assertEqual(current['cli_description'], self.bundle['cli_description'])
+            self.assertNotEqual(legacy['id'], current['id'])
+
+    def test_supplied_cli_description_is_capability_proof_not_catalog_inference(self):
+        from tools.tournaments.resources import classify_cli_capability
+        with patch('tools.tournaments.bundles.subprocess.check_output',
+                   return_value=json.dumps(self.bundle['cli_description']).encode()) as probe:
+            from tools.tournaments.bundles import validate_cli
+            parsed = validate_cli('/not-executed', '/unused')
+            self.assertEqual(classify_cli_capability(parsed), 'execution_profiles_v1')
+            self.assertEqual(probe.call_args.kwargs['timeout'], 10)
+        no_help = dict(self.bundle)
+        del no_help['cli_description']
+        with self.assertRaisesRegex(ValueError, 'does not advertise'):
+            self.adapter.command(self.request, no_help, '/attempt', self.inputs, execution=self.execution)
 
 
 if __name__ == '__main__': unittest.main()

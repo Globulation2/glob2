@@ -16,6 +16,7 @@
 #include <algorithm>
 #include <charconv>
 #include <iterator>
+#include <stdexcept>
 #include <StreamBackend.h>
 
 using namespace GAGCore;
@@ -116,6 +117,7 @@ void Settings::setTextSizePercent(int percent)
 void Settings::load(std::string filename)
 {
     gpuCompute.reset();
+    executionProfile.reset();
     rendererBackend = GAGCore::RendererBackend::Auto;
     targetRenderFps = 60;
 #ifdef __EMSCRIPTEN__
@@ -163,6 +165,11 @@ void Settings::load(std::string filename)
 			if (value->second == "0") gpuCompute = false;
 			else if (value->second == "1") gpuCompute = true;
 		}
+        if (const auto value = parsed.find("executionProfile"); value != parsed.end())
+        {
+            try { executionProfile = resource_policy::parseExecutionProfile(value->second); }
+            catch (const std::invalid_argument&) { executionProfile.reset(); }
+        }
         if (const auto backend = parsed.find("rendererBackend"); backend != parsed.end())
             rendererBackend = GAGCore::parseRendererBackend(backend->second).value_or(GAGCore::RendererBackend::Auto);
         else if (parsed.count("screenFlags"))
@@ -378,6 +385,9 @@ bool Settings::save(std::string filename)
 		Utilities::streamprintf(stream, "autosaveGames=%d\n", autosaveGames);
 		if (gpuCompute.has_value())
 			Utilities::streamprintf(stream, "gpuCompute=%d\n", *gpuCompute);
+        if (executionProfile)
+            Utilities::streamprintf(stream, "executionProfile=%s\n",
+                std::string(resource_policy::executionProfileName(*executionProfile)).c_str());
 		Utilities::streamprintf(stream, "experiments=%s\n", experiments.toText().c_str());
 		Utilities::streamprintf(stream, "gameSpeed=%d\n", gameSpeed);
         Utilities::streamprintf(stream,"textSizePercent=%d\n",textSizePercent);

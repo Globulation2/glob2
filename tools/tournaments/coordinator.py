@@ -1,4 +1,5 @@
 """Lease authority and durable single-result acceptance for at-least-once work."""
+import copy
 import concurrent.futures
 import contextlib
 import json
@@ -13,6 +14,7 @@ from .bundles import eligible, inspect_bundle, package_identity
 from .common import (atomic_json, canonical, database, digest, file_hash, hash_id, identifier,
                      lock, read_json, transaction)
 from .model import DEFAULTS, validate_experiment
+from .resources import AllocationPlan, plan_from_record, validate_frozen_attempt
 from .transfer import receive_file, send_file
 from .transport import Transport, worker_archive
 
@@ -82,6 +84,10 @@ class Coordinator:
         for job in manifest['jobs']:
             if job['type'] not in builds[job['build']]['capabilities']['commands']:
                 raise ValueError('build does not support job type')
+            from .jobs import get_job_type
+            adapter = get_job_type(job['type'])
+            if 'execution' in job:
+                adapter.validate_bundle_execution(job, builds[job['build']])
         for subdir in ('builds', 'jobs', 'results', 'failures', 'attempts', 'artifacts', 'reports', 'transfers'):
             (directory / subdir).mkdir(parents=True, exist_ok=True)
         for identity in required:
@@ -224,13 +230,17 @@ class Coordinator:
                 continue
             if any(not parent['accepted'] for parent in parents):
                 continue
+            if 'execution' not in job and (any(a.get('execution_allocation') is not None and a['state'] in ('queued', 'running') for a in status.get('attempts', []))
+                    or any('execution_allocation' in a for a in dispatched)
+                    or any((self.root/'transfers'/(a['id']+'.json')).exists() and 'execution_allocation' in read_json(self.root/'transfers'/(a['id']+'.json')) for a in computing)):
+                continue
             inputs = self.resolve_inputs(job)
             if inputs is None:
                 self.db.execute("UPDATE jobs SET state='blocked' WHERE id=?", (job['id'],))
                 continue
             # Prefer another eligible, recently connected host for a repeat attempt.
             previous = self.db.execute('SELECT host FROM attempts WHERE job_id=? ORDER BY created DESC LIMIT 1', (job['id'],)).fetchone()
-            if previous and previous['host'] == host:
+            if previous and previous['host'] == host and not ('execution' in job and self.settings.get('measured', False)):
                 alternatives = self.db.execute('SELECT name,status FROM hosts WHERE name!=? AND updated>? AND error IS NULL', (host, now - self.settings['lease_seconds'])).fetchall()
                 if any(eligible(bundle, json.loads(other['status']), job['type']) and json.loads(other['status'])['accepting'] for other in alternatives):
                     continue
@@ -238,13 +248,80 @@ class Coordinator:
             time_budget = self.settings.get('prefetch_seconds')
             if time_budget is not None and (count or dispatched) and buffered_seconds + estimate > time_budget:
                 break
+            resource_plan = None
+            allocation_slot = None
+            if 'execution' in job:
+                if status.get('resource_plan') is None:
+                    raise ValueError('resource-aware games require an explicit host CPU budget')
+                base = plan_from_record(status['resource_plan'])
+                if self.settings.get('caller_allocation_plan') is not None:
+                    expected = plan_from_record(self.settings['caller_allocation_plan'])
+                    if (base.cpu_ids, base.allocations, base.memory_planning_budget_bytes) != (
+                            expected.cpu_ids, expected.allocations, expected.memory_planning_budget_bytes):
+                        raise ValueError('host allocation differs from frozen caller manifest')
+                resource_plan = AllocationPlan(base.cpu_ids, base.allocations,
+                    base.memory_planning_budget_bytes, self.settings.get('measured', False))
+                occupied = set()
+                active = [a for a in status.get('attempts', []) if a['state'] in ('queued', 'running')]
+                if any(a.get('execution_allocation') is None for a in active):
+                    continue  # Legacy work has no bounded CPU claim; drain it first.
+                for a in active:
+                    occupied.update(a['execution_allocation']['allocation']['cpu_ids'])
+                for computing_row in computing:
+                    transfer = self.root / 'transfers' / (computing_row['id'] + '.json')
+                    if transfer.exists():
+                        existing = read_json(transfer)
+                        if 'execution_allocation' not in existing:
+                            occupied.update(resource_plan.cpu_ids)
+                        else:
+                            occupied.update(existing['execution_allocation']['allocation']['cpu_ids'])
+                for dispatched_attempt in dispatched:
+                    if 'execution_allocation' not in dispatched_attempt:
+                        occupied.update(resource_plan.cpu_ids)
+                    else:
+                        occupied.update(dispatched_attempt['execution_allocation']['allocation']['cpu_ids'])
+                candidates = [i for i, a in enumerate(resource_plan.allocations)
+                              if not occupied.intersection(a.cpu_ids)]
+                if not candidates:
+                    continue
+                allocation_slot = candidates[0]
+                if resource_plan.measured and previous:
+                    old_attempt = self.db.execute('SELECT id,host FROM attempts WHERE job_id=? ORDER BY created DESC LIMIT 1', (job['id'],)).fetchone()
+                    prior = read_json(self.root / 'transfers' / (old_attempt['id'] + '.json'))
+                    if old_attempt['host'] != host:
+                        continue
+                    if prior['allocation_plan'] != resource_plan.record():
+                        raise ValueError('measured retry allocation plan changed')
+                    allocation_slot = prior['execution_allocation']['slot']
+                    if allocation_slot not in candidates:
+                        continue
             attempt = {'schema_version': 1, 'id': uuid.uuid4().hex, 'token': uuid.uuid4().hex,
                        'experiment': self.manifest['id'], 'host': host, 'job': job,
                        'package_id': self.manifest['package_id'], 'resolved_inputs': inputs,
                        'lease_seconds': self.settings['lease_seconds']}
+            if resource_plan is not None:
+                attempt['allocation_plan'] = resource_plan.record()
+                attempt['execution_allocation'] = resource_plan.attempt_record(attempt['id'], allocation_slot,
+                    requested_execution_profile=job['execution']['requested_execution_profile'])
             with transaction(self.db):
                 if self.mode != 'running':
                     break
+                # Another pipeline lane may have reserved a slot since the snapshot.
+                # SQLite serializes this final admission check and attempt insertion.
+                if resource_plan is not None:
+                    conflicting = False
+                    selected_cpus = set(resource_plan.allocations[allocation_slot].cpu_ids)
+                    for live in self.db.execute("SELECT id FROM attempts WHERE host=? AND state='leased'", (host,)):
+                        if states.get(live['id']) in ('executed', 'packing', 'done', 'acknowledged', 'cancelled'):
+                            continue
+                        path = self.root / 'transfers' / (live['id'] + '.json')
+                        prior = read_json(path)
+                        if ('execution_allocation' not in prior or selected_cpus.intersection(
+                                prior['execution_allocation']['allocation']['cpu_ids'])):
+                            conflicting = True
+                            break
+                    if conflicting:
+                        continue
                 changed = self.db.execute("UPDATE jobs SET state='active',active=? WHERE id=? AND state='pending'", (attempt['id'], job['id'])).rowcount
                 if not changed:
                     continue
@@ -266,6 +343,26 @@ class Coordinator:
         expected_job = json.loads(self.db.execute('SELECT spec FROM jobs WHERE id=?', (row['job_id'],)).fetchone()[0])
         if record['job'] != expected_job or record['package_id'] != self.manifest['package_id']:
             raise ValueError('result configuration/build/package mismatch')
+        if 'execution' in expected_job:
+            assigned = read_json(self.root / 'transfers' / (record['id'] + '.json'))
+            plan = plan_from_record(assigned['allocation_plan'])
+            validate_frozen_attempt(assigned['execution_allocation'], plan, record['id'], assigned['execution_allocation']['slot'])
+            if record.get('execution_allocation') != assigned['execution_allocation']:
+                raise ValueError('result immutable allocation differs')
+            if record['category'] == 'success':
+                proof = record.get('cpu_affinity_proof')
+                if (type(proof) is not dict or proof.get('verified') is not True
+                        or proof.get('actual_cpu_ids') != sorted(assigned['execution_allocation']['allocation']['cpu_ids'])):
+                    raise ValueError('result lacks actual assigned CPU affinity proof')
+                joined = (record.get('result') or {}).get('tournament_execution')
+                if type(joined) is not dict or joined.get('attempt_allocation') != assigned['execution_allocation']:
+                    raise ValueError('result lacks resolved allocation provenance')
+                from .jobs import get_job_type
+                validated = get_job_type(expected_job['type']).join_execution_result(
+                    expected_job, self.bundle(expected_job['build']), self.root / 'attempts' / record['id'],
+                    assigned['execution_allocation'], copy.deepcopy(record['result']))
+                if validated['tournament_execution'] != joined:
+                    raise ValueError('result resolved plan/provenance differs from assignment')
         for artifact in record['artifacts']:
             path = self.root / 'artifacts' / hash_id(artifact['sha256'])
             if not path.exists() or path.stat().st_size != artifact['bytes'] or file_hash(path) != artifact['sha256']:

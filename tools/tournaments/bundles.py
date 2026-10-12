@@ -9,6 +9,7 @@ import shutil
 import subprocess
 import tempfile
 from .common import lock, atomic_json, canonical, digest, file_hash, hash_id, inside, read_json
+from .resources import classify_cli_capability
 
 
 def validate_cli(executable, directory):
@@ -18,8 +19,12 @@ def validate_cli(executable, directory):
             [str(executable), 'help', '--format', 'json'], cwd=directory, timeout=10))
     except (subprocess.SubprocessError, OSError, ValueError) as error:
         raise ValueError('Unable to probe Glob2 CLI 2: ' + str(error)) from error
-    if description.get('cli_version') != 2 or description.get('schema_version') != 1 or not isinstance(description.get('commands'), list):
+    if (type(description) is not dict or type(description.get('cli_version')) is not int
+            or description['cli_version'] != 2 or type(description.get('schema_version')) is not int
+            or description['schema_version'] != 1 or not isinstance(description.get('commands'), list)):
         raise ValueError('Unsupported Glob2 CLI: requires CLI 2 and description schema 1')
+    classify_cli_capability(description)  # Malformed advertised marker must not become legacy support.
+    return description
 
 
 def platform_identity():
@@ -54,7 +59,7 @@ def inspect_bundle(directory, verify=True):
 
 
 def register_bundle(source, destination, executable, revision, options=None, dirty_identity=None,
-                    target_platform=None, capabilities=None):
+                    target_platform=None, capabilities=None, cli_description=None):
     source, destination = Path(source).resolve(), Path(destination).resolve()
     exe = inside(source, executable)
     if not exe.is_file():
@@ -63,13 +68,20 @@ def register_bundle(source, destination, executable, revision, options=None, dir
         raise ValueError('bundle destination must be outside supplied source')
     target_platform = target_platform or platform_identity()
     if capabilities is None:
-        validate_cli(exe, source)
+        cli_description = validate_cli(exe, source)
         if target_platform != platform_identity():
             raise ValueError('cross-platform registration requires supplied capabilities JSON')
         capabilities = json.loads(subprocess.check_output([str(exe), 'info', 'catalog', '--format', 'json'], cwd=source, timeout=60))
     manifest = {'schema_version': 1, 'cli_version': 2, 'source_revision': revision, 'dirty_identity': dirty_identity,
                 'build_options': options or {}, 'platform': target_platform, 'executable': executable,
                 'capabilities': capabilities, 'files': []}
+    if cli_description is not None:
+        support = classify_cli_capability(cli_description)
+        if support == 'unsupported_cli':
+            raise ValueError('Unsupported supplied CLI description')
+        manifest['cli_description'] = cli_description
+        manifest['execution_support'] = support
+    # Supplied cross-platform catalogs alone do not advertise execution-profile flags.
     for path in sorted(source.rglob('*')):
         if path.is_symlink():
             raise ValueError('supplied bundles must contain regular files, not symlinks: ' + str(path))

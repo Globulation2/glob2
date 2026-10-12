@@ -30,6 +30,7 @@
 #include "Game.h"
 #include "GameGUI.h"
 #include "GlobalContainer.h"
+#include "ApplicationResourcePlan.h"
 #include "Headless.h"
 #include "CommandLine.h"
 #include "MatchSetup.h"
@@ -53,6 +54,8 @@ struct Options
 	double maxSeconds = 1800;
 	std::uint32_t seed = 1;
 	unsigned computeThreads = 0;
+    std::optional<resource_policy::ExecutionProfile> executionProfile;
+    std::optional<std::uint64_t> planningMemoryBytes;
 };
 
 std::string readText(const std::string& path)
@@ -146,6 +149,8 @@ static int play(const Options& options, const fs::path& output)
 	globals.runNoX = true;
 	globals.structuredHeadless = true;
 	globals.computeThreads = options.computeThreads;
+    globals.executionResourceRequest.explicitProfile = options.executionProfile;
+    globals.executionResourceRequest.planningMemoryBytes = options.planningMemoryBytes;
 	globals.automaticEndingGame = false;
 	globals.load();
 
@@ -274,7 +279,8 @@ static int play(const Options& options, const fs::path& output)
 	       << ",\"executed_ticks\":" << finalTick << ",\"game_ended\":" << (game.isGameEnded ? "true" : "false")
 	       << ",\"timed_out\":" << (timedOut ? "true" : "false") << ",\"desync_flagged\":" << (desync ? "true" : "false")
 	       << ",\"compute_requested_threads\":" << Headless::quote(options.computeThreads ? std::to_string(options.computeThreads) : "auto")
-	       << ",\"compute_resolved_threads\":" << resolveComputeThreadCount(options.computeThreads)
+	       << ",\"compute_resolved_threads\":" << globals.resolvedComputeParticipants()
+	       << ",\"execution_resources\":" << globals.resourcePlanJson().dump()
 	       << ",\"compute_threads\":" << game.map.computeExecutor().threadCount()
 	       << ",\"compute_workers\":" << game.map.computeExecutor().threadCount() - 1
 	       << ",\"reloads\":" << reloads << ",\"orders_queued\":" << ordersQueued
@@ -312,6 +318,10 @@ int runTurnClient(const Cli::Request &request)
         options.out = request.get("--output-dir");
         options.profile = request.get("--profile");
         options.computeThreads = parseComputeThreadCount(request.get("--compute-threads"));
+        if (request.has("--execution-profile"))
+            options.executionProfile = resource_policy::parseExecutionProfile(request.get("--execution-profile"));
+        if (request.has("--memory-budget-bytes"))
+            options.planningMemoryBytes = resource_policy::parsePlanningMemoryBytes(request.get("--memory-budget-bytes"));
         options.ordersPerSecond = std::stod(request.get("--orders-per-second"));
         options.maxSeconds = std::stod(request.get("--max-seconds"));
         options.seed = static_cast<std::uint32_t>(std::stoul(request.get("--seed")));

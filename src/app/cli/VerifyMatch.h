@@ -12,6 +12,8 @@
 #include <map>
 #include <string>
 #include <vector>
+#include <optional>
+#include "ResourcePolicy.h"
 
 #include <SDL3/SDL_stdinc.h>
 
@@ -52,5 +54,7 @@ struct MatchVerifier
 	/// The command line: checks the record and setup, creates the process's
 	/// GlobalContainer and verifies. Bad input throws std::invalid_argument.
 	static int run(const std::string& recordPath, const std::string& mapPath, const std::filesystem::path& output,
-	               const std::string& profile, unsigned computeThreads = 0);
+	               const std::string& profile, unsigned computeThreads = 0,
+                   std::optional<resource_policy::ExecutionProfile> executionProfile = {},
+                   std::optional<std::uint64_t> planningMemoryBytes = {});
 };

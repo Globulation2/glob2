@@ -2,6 +2,9 @@
 import itertools
 import random
 from .common import digest, hash_id, identifier
+from .resources import default_execution_request
+
+_NEW_EXECUTION = object()
 
 PROTOCOL_VERSION = 1
 SCHEMA_VERSION = 1
@@ -45,11 +48,15 @@ def rotations(values):
 
 
 def job(kind, build, *, inputs=None, seeds=None, config=None, outputs=None,
-        limits=None, labels=None, depends_on=None, job_id=None):
+        limits=None, labels=None, depends_on=None, job_id=None, execution=_NEW_EXECUTION):
     value = {'schema_version': SCHEMA_VERSION, 'type': kind, 'build': build,
              'inputs': inputs or {}, 'seeds': seeds or {}, 'config': config or {},
              'outputs': outputs or {}, 'limits': limits or {}, 'labels': labels or {},
              'depends_on': depends_on or []}
+    if execution is _NEW_EXECUTION:
+        execution = default_execution_request() if kind == 'game' else None
+    if execution is not None:
+        value['execution'] = execution
     value['id'] = job_id or digest(value)[:32]
     return value
 
@@ -114,6 +121,8 @@ def validate_experiment(manifest):
     for key in index:
         visit(key)
     settings = DEFAULTS | manifest.get('settings', {})
+    if type(settings.get('measured', False)) is not bool:
+        raise ValueError('measured setting must be bool')
     if settings['heartbeat_seconds'] <= 0 or settings['lease_seconds'] < 2 * settings['heartbeat_seconds']:
         raise ValueError('lease must span at least two positive heartbeat intervals')
     if type(settings['prefetch']) is not int or settings['prefetch'] < 0:

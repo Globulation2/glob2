@@ -5,6 +5,7 @@
 
 #include "Header.h"
 #include "ExperimentalFeatures.h"
+#include "ResourcePolicy.h"
 #include <RendererSelection.h>
 #include <string>
 #include <cstdint>
@@ -98,6 +99,8 @@ public:
 	bool autosaveGames;
 	// Local compute preference. An absent value defaults off with graphics, on headless.
 	std::optional<bool> gpuCompute;
+	// Local execution intent; absence preserves each launch context's default.
+	std::optional<resource_policy::ExecutionProfile> executionProfile;
 	bool gpuComputeEnabled(bool headless = false) const { return gpuCompute.value_or(headless); }
 	/// Experimental features to bake into every new game this player starts or
 	/// hosts (Settings > Experiments). Saved as comma-separated keys; a key this

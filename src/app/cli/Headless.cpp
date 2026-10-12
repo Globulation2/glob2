@@ -12,6 +12,7 @@
 #include "Engine.h"
 #include "GameDiagnostics.h"
 #include "GlobalContainer.h"
+#include "ApplicationResourcePlan.h"
 #include "BuildingArtwork.h"
 #include "Sha256.h"
 #include "AINames.h"
@@ -298,6 +299,11 @@ struct HeadlessRunner
 		globalContainer=&globals;
         for(const auto &directory:many(options,"--data-dir"))globals.fileManager->addDir(directory);
 		globals.runNoX=true;
+		globals.computeThreads = parseComputeThreadCount(one(options, "--compute-threads", "auto"));
+        if (options.count("--execution-profile"))
+            globals.executionResourceRequest.explicitProfile = resource_policy::parseExecutionProfile(one(options, "--execution-profile"));
+        if (options.count("--memory-budget-bytes"))
+            globals.executionResourceRequest.planningMemoryBytes = resource_policy::parsePlanningMemoryBytes(one(options, "--memory-budget-bytes"));
 		if (options.count("--gpu")) globals.gpuComputeOverride = one(options, "--gpu") == "on";
 		globals.structuredHeadless=true;
 		globals.automaticEndingGame=true;
@@ -466,7 +472,8 @@ struct HeadlessRunner
 		}
 		if (!fields.empty()) engine.diagnostics = std::make_shared<GameDiagnostics::Session>(engine.gui.game,(output/"diagnostics").string(),diagnosticInterval,diagnosticPng=="true");
 		const std::string requestedSizing = one(options, "--compute-threads", "auto");
-		const unsigned computeThreads = resolveComputeThreadCount(parseComputeThreadCount(requestedSizing));
+        globals.refreshResourcePlan();
+		const unsigned computeThreads = globals.resolvedComputeParticipants();
 		globals.configureGradientBackend();
 		engine.gui.game.map.configureCompute(computeThreads);
         engine.gui.game.map.setResourceGrowthDelay(integer(
@@ -553,6 +560,7 @@ struct HeadlessRunner
 					termination="win_probability";
 		}
 		result << "{\"schema_version\":1,\"job_type\":\"game\",\"status\":\"completed\",\"ticks\":" << game.stepCounter
+			<< ",\"execution_resources\":" << globals.resourcePlanJson().dump()
 			<< ",\"initialChecksum\":" << initialChecksum
 			<< ",\"finalChecksum\":" << game.checkSum(nullptr, nullptr, nullptr, true)
 			<< ",\"benchmark_setup_cpu_ns\":" << setupCpu
@@ -923,6 +931,10 @@ int runHeadlessCommand(const Cli::Request &request)
 											 "tuning",
 											 "quality",
 											 "result=" + (output / "result.json").string()};
+            if (options.count("--execution-profile"))
+                args.push_back("execution-profile=" + one(options, "--execution-profile"));
+            if (options.count("--memory-budget-bytes"))
+                args.push_back("memory-budget-bytes=" + one(options, "--memory-budget-bytes"));
 			for (const auto &directory : many(options, "--data-dir"))
 				args.push_back("data-dir=" + directory);
 			if (options.count("--building-catalog"))

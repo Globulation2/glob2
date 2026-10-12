@@ -10,6 +10,8 @@
 
 #include "BuildingType.h"
 #include "Settings.h"
+#include "ResourcePolicy.h"
+#include <nlohmann/json_fwd.hpp>
 #include "TerrainType.h"
 class MapAssetBundle;
 #include <array>
@@ -56,6 +58,12 @@ public:
 	void applyCommand(const Cli::Request &request);
 	bool gpuComputeEnabled() const;
 	void configureGradientBackend() const;
+    // Resolve only at an explicit owner/session setup boundary. Queries never rediscover.
+    void refreshResourcePlan(bool ownerOnly = false);
+    const resource_policy::ResourcePlan &resourcePlan() const;
+    unsigned resolvedComputeParticipants() const;
+    bool resolvedGpuComputeEnabled() const;
+    nlohmann::json resourcePlanJson() const;
     std::optional<GAGCore::RendererBackend> rendererLaunchOverride;
 	void loadClient(void);
     bool deferAssetLoading = false;
@@ -133,6 +141,8 @@ public:
 	// --run-game configures its own compute executor instead.
 	unsigned computeThreads = 0;
 	std::optional<bool> gpuComputeOverride;
+    resource_policy::ExecutionRequest executionResourceRequest;
+    std::optional<resource_policy::ResourcePlan> frozenResourcePlan;
 	std::string runNoXGameName;
 	int runNoXCountRuns; //!< The number of runs you want to repeat the no X run
 	bool automaticEndingGame;

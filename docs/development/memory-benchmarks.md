@@ -21,12 +21,22 @@ an absolute game tick, and the warmup must leave a nonempty measured window.
 ```sh
 python3 tools/memory_benchmark.py \
   --baseline artifacts/memory/baseline/glob2 \
-  --candidate build/darwin/client/release/src/glob2 \
+  --candidate build/linux/client/release/src/glob2 \
+  --cpu-ids 0,1,2 --execution-profile efficient-throughput \
   --fixture 0=artifacts/memory/initial.game.gz \
   --fixture 15000=artifacts/memory/checkpoint-15000.game.gz \
   --fixture 45000=artifacts/memory/checkpoint-45000.game.gz \
   --output artifacts/memory/comparison
 ```
+
+CPU IDs are caller-owned allocation examples. Profile-aware measurements enforce
+that inherited mask on supported platforms and probe registered resource options
+before timing. Each binary can explicitly select
+`--baseline-execution-compatibility legacy_argv` or
+`--candidate-execution-compatibility legacy_argv` for older CLI2; original game
+arguments are retained and no resolved-plan claim is made. Both explicit legacy
+roles may omit CPU IDs on platforms without an affinity API. An optional
+`--memory-planning-budget-bytes` is a soft reservation, not an RSS limit.
 
 Use the appropriate platform build directory. The runner alternates seven pairs,
 checks identical final simulation checksums and compressed save bytes, and extends

@@ -25,6 +25,7 @@
 #include "GeneratorRegistry.h"
 #include "GeneratorPackage.h"
 #include "GlobalContainer.h"
+#include "ApplicationResourcePlan.h"
 #include "IntBuildingType.h"
 #include "Race.h"
 #include <BinaryStream.h>
@@ -453,6 +454,8 @@ int runMapCommand(const Cli::Request &cli)
 		bool sizeSpecified = false, scaleSpecified = false;
 		for (const auto &[arg, value] : cli.occurrences)
 		{
+			if (arg == "--execution-profile" || arg == "--memory-budget-bytes")
+				continue; // Applied once below through the shared resource resolver.
 			if (arg == "--output")
 				output = value;
 			else if (arg == "--render-max-pixels" && render)
@@ -611,6 +614,11 @@ int runMapCommand(const Cli::Request &cli)
 		GlobalContainer globals;
 		globalContainer = &globals;
 		globals.runNoX = true;
+		if (cli.has("--execution-profile"))
+			globals.executionResourceRequest.explicitProfile = resource_policy::parseExecutionProfile(cli.get("--execution-profile"));
+		if (cli.has("--memory-budget-bytes"))
+			globals.executionResourceRequest.planningMemoryBytes = resource_policy::parsePlanningMemoryBytes(cli.get("--memory-budget-bytes"));
+		globals.refreshResourcePlan(true); // These map operations retain their serial execution.
 		globals.settings.rememberUnit = false;
 		for (const auto &directory : directories)
 			globals.fileManager->addDir(directory);
@@ -687,6 +695,13 @@ int runMapCommand(const Cli::Request &cli)
 		std::string report = json.empty() ? ""
 										  : describeMap(game, generate ? &request : nullptr,
 														generate ? &result : nullptr);
+		if (!report.empty())
+		{
+			const auto closing = report.find_last_of('}');
+			if (closing == std::string::npos)
+				throw std::runtime_error("Cannot append resource plan to map report");
+			report.insert(closing, ",\"execution_resources\":" + globals.resourcePlanJson().dump());
+		}
 		if (importing && !report.empty())
 		{
 			const auto closing = report.find_last_of('}');

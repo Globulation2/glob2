@@ -7,6 +7,8 @@ import tempfile
 from .bundles import register_bundle
 from .common import canonical, digest, file_hash, read_json, store_artifact
 from .coordinator import Coordinator
+from .cli import configure_hosts
+from .resources import default_execution_request, plan_allocations
 from .model import job
 from .results import Results
 from .transport import Transport
@@ -24,12 +26,20 @@ def supplied_binary(binary, data_root, cache):
     return cache/manifest['id']
 
 
-def execute_jobs(directory, jobs, bundle, slots=1):
+def execute_jobs(directory, jobs, bundle, slots=1, *, cpu_ids=None, memory_planning_budget_bytes=None, participants_per_game=None):
     directory=Path(directory).resolve()
     manifest={'schema_version':1,'id':'local-'+digest([j['id'] for j in jobs])[:24], 'jobs':jobs,
               'settings':{'heartbeat_seconds':1,'lease_seconds':300}}
-    coordinator=Coordinator.submit(directory,manifest,[bundle])
     host={'name':'localhost','transport':'local','directory':str(directory/'worker'),'slots':slots}
+    host=configure_hosts([host], cpu_ids=cpu_ids, memory_planning_budget_bytes=memory_planning_budget_bytes, participants_per_game=participants_per_game,
+                         resource_aware=any('execution' in value for value in jobs))[0]
+    if host.get('cpu_ids') is not None:
+        allocation=plan_allocations(host['cpu_ids'],host['slots'],
+            memory_planning_budget_bytes=host.get('memory_planning_budget_bytes'),
+            participants_per_game=host.get('participants_per_game')).record()
+        manifest['settings']['caller_allocation_plan']=allocation
+        manifest['id']='local-'+digest({'jobs':[j['id'] for j in jobs],'allocation':allocation})[:24]
+    coordinator=Coordinator.submit(directory,manifest,[bundle])
     try:
         status=coordinator.run([host])
         if status['jobs'].get('pending') or status['jobs'].get('active'):
@@ -41,13 +51,20 @@ def execute_jobs(directory, jobs, bundle, slots=1):
         finally: coordinator.close()
 
 
-def run_job(binary, data_root, directory, kind, *, config, seeds, inputs=None, outputs=None, timeout=3600, labels=None):
+def run_job(binary, data_root, directory, kind, *, config, seeds, inputs=None, outputs=None, timeout=3600, labels=None,
+            cpu_ids=None, memory_planning_budget_bytes=None, participants_per_game=None, compatibility_mode='require_profile', requested_execution_profile='efficient-throughput'):
     directory=Path(directory).resolve()
+    # Validate before packaging or creating an experiment. Older CLI2 is an
+    # explicit request, never a fallback when profiles are absent.
+    execution=default_execution_request(compatibility_mode=compatibility_mode, requested_execution_profile=requested_execution_profile) if kind == 'game' else None
+    configure_hosts([{'slots':1}], cpu_ids=cpu_ids, memory_planning_budget_bytes=memory_planning_budget_bytes, participants_per_game=participants_per_game,
+                    resource_aware=execution is not None)
     bundle=supplied_binary(binary,data_root,Path(data_root)/'.cache/tournament-bundles')
     artifacts={name:store_artifact(path,directory/'artifacts') for name,path in (inputs or {}).items()}
     value=job(kind,bundle.name,config=config,seeds=seeds,inputs=artifacts,outputs=outputs,
-              limits={'timeout_seconds':timeout},labels=labels)
-    source=execute_jobs(directory,[value],bundle)
+              limits={'timeout_seconds':timeout},labels=labels,execution=execution)
+    source=execute_jobs(directory,[value],bundle,cpu_ids=cpu_ids,
+                        memory_planning_budget_bytes=memory_planning_budget_bytes, participants_per_game=participants_per_game)
     records=list(source)
     if records:
         return records[0],source

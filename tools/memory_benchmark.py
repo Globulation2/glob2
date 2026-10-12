@@ -12,8 +12,12 @@ import statistics
 import signal
 import time
 import subprocess
+import sys
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0,str(ROOT))
+from tools.tournaments.cli import parse_cpu_ids, positive_integer, prepare_native_resources, validate_native_resource_result
+from tools.tournaments.resources import PROFILES
 METRICS = ('benchmark_setup_cpu_ns', 'benchmark_run_cpu_ns', 'benchmark_save_cpu_ns')
 
 
@@ -99,11 +103,18 @@ def main():
     parser.add_argument('--limit', type=float, default=2)
     parser.add_argument('--interleave-seconds', type=float, default=0,
                         help='POSIX: alternate stopped processes in short slices to reduce load drift')
+    parser.add_argument('--cpu-ids',help='caller-owned logical CPU IDs; required for profile-aware measurements')
+    parser.add_argument('--execution-profile',choices=PROFILES,default='efficient-throughput')
+    parser.add_argument('--baseline-execution-compatibility',choices=('require_profile','legacy_argv'),default='require_profile')
+    parser.add_argument('--candidate-execution-compatibility',choices=('require_profile','legacy_argv'),default='require_profile')
+    parser.add_argument('--memory-planning-budget-bytes')
     args = parser.parse_args()
     if args.repeat < 2 or args.max_repeat < args.repeat or args.warmup < 0 or args.ticks < 1:
         parser.error('invalid repetition or tick counts')
     if not math.isfinite(args.interleave_seconds) or args.interleave_seconds < 0 or (args.interleave_seconds and os.name != 'posix'):
         parser.error('interleaved measurements require POSIX and a positive slice duration')
+    if args.interleave_seconds and args.memory_planning_budget_bytes is not None:
+        parser.error('interleaved measurements retain two processes; use sequential mode for a shared memory planning budget')
     signal.signal(signal.SIGTERM, stop_on_signal)
     fixtures = []
     for spec in args.fixture:
@@ -112,17 +123,22 @@ def main():
     output = args.output.resolve()
     output.mkdir(parents=True, exist_ok=True)
     binaries = {'baseline': args.baseline.resolve(), 'candidate': args.candidate.resolve()}
+    try:
+        execution=prepare_native_resources(binaries,parse_cpu_ids(args.cpu_ids) if args.cpu_ids else None,args.execution_profile,
+            {'baseline':args.baseline_execution_compatibility,'candidate':args.candidate_execution_compatibility},
+            positive_integer(args.memory_planning_budget_bytes) if args.memory_planning_budget_bytes is not None else None)
+    except ValueError as error: parser.error(str(error))
     env = os.environ.copy()
     for name in ('MallocStackLogging', 'MallocStackLoggingNoCompact', 'DYLD_INSERT_LIBRARIES'):
         env.pop(name, None)
     env.update(SDL_VIDEODRIVER='dummy', SDL_AUDIODRIVER='dummy')
-    summary = {'binaries': {k: {'path': str(v), 'sha256': digest(v)} for k, v in binaries.items()},
+    summary = {'execution_resources':execution, 'binaries': {k: {'path': str(v), 'sha256': digest(v)} for k, v in binaries.items()},
                'interleave_seconds': args.interleave_seconds, 'warmup_ticks': args.warmup, 'measured_ticks': args.ticks, 'limit_percent': args.limit,
                'fixtures': []}
     previous = None
     if args.resume:
         previous = json.loads((output / 'comparison.json').read_text())
-        for key in ('binaries', 'warmup_ticks', 'measured_ticks', 'limit_percent', 'interleave_seconds'):
+        for key in ('binaries', 'warmup_ticks', 'measured_ticks', 'limit_percent', 'interleave_seconds', 'execution_resources'):
             if previous.get(key) != summary[key]:
                 parser.error(f'resume input differs: {key}')
         if len(previous['fixtures']) > len(fixtures):
@@ -146,12 +162,16 @@ def main():
                            '--ticks', str(start + args.warmup + args.ticks),
                            '--benchmark-warmup', str(args.warmup), '--save', 'final',
                            '--output-dir', str(directory)]
+                command += execution['flags'][label]
+                if execution['compatibility_modes'][label]=='require_profile':
+                    command += ['--compute-threads',str(len(execution['cpu_ids']))]
                 directory.mkdir(exist_ok=True)
                 commands[label], directories[label] = command, directory
             run_pair(commands, directories, order, env, args.interleave_seconds)
             for label in order:
                 directory, command = directories[label], commands[label]
                 data = json.loads((directory / 'result.json').read_text())
+                validate_native_resource_result(data,execution,label,len(execution['cpu_ids']) if execution['cpu_ids'] else 1)
                 if data['benchmark_measured_ticks'] != args.ticks:
                     raise RuntimeError('game ended before the measured window completed')
                 text = (directory / 'run.log').read_text()

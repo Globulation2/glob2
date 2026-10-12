@@ -21,7 +21,7 @@ anti-overfit rules from the rank-gate tuning handoff:
 
 Usage:
   # overnight search (report design defaults):
-  tools/cortex-knob-search.py --run-dir .tmp/knob-search/run1
+  tools/cortex-knob-search.py --run-dir .tmp/knob-search/run1 --cpu-ids 0,1,2 --jobs 3
 
   # tiny smoke run to validate plumbing end-to-end:
   tools/cortex-knob-search.py --run-dir .tmp/knob-search/smoke \
@@ -47,6 +47,8 @@ import re
 import shutil
 import subprocess
 import sys
+from tournaments.cli import configure_hosts, parse_cpu_ids, positive_integer
+from tournaments.resources import PROFILES
 
 TOOLS_DIR = os.path.dirname(os.path.abspath(__file__))
 REPO_DIR = os.path.dirname(TOOLS_DIR)
@@ -141,7 +143,7 @@ def parse_game(log_path, cortex_team):
     return "W" if winner == cortex_team else "L"
 
 
-def run_bench(bin_path, cfg_path, game_map, games, seed_base, out_dir, jobs):
+def run_bench(bin_path, cfg_path, game_map, games, seed_base, out_dir, jobs, cpu_ids, execution_profile, compatibility_mode, memory_budget=None):
     """One ai-benchmark.sh invocation; returns {seed: {'fwd': o, 'rev': o}}."""
     os.makedirs(out_dir, exist_ok=True)
     env = dict(os.environ)
@@ -151,11 +153,12 @@ def run_bench(bin_path, cfg_path, game_map, games, seed_base, out_dir, jobs):
            "--seed-base", str(seed_base),
            "--bin", os.path.abspath(bin_path),
            "--out", out_dir, "--keep"]
-    if jobs:
-        cmd += ["--jobs", str(jobs)]
+    cmd += ["--jobs", str(jobs), "--cpu-ids", ",".join(map(str,cpu_ids)),
+            "--execution-profile", execution_profile, "--execution-compatibility", compatibility_mode]
+    if memory_budget is not None: cmd += ["--memory-planning-budget-bytes", str(memory_budget)]
     with open(os.path.join(out_dir, "bench.out"), "w") as summary:
         subprocess.run(cmd, env=env, stdout=summary,
-                       stderr=subprocess.STDOUT, check=False)
+                       stderr=subprocess.STDOUT, check=True)
     results = {}
     for i in range(games):
         tag = f"{i:04d}"
@@ -189,6 +192,21 @@ def flips_vs(control, candidate):
             elif theirs[o] == "L" and ours[o] == "W":
                 gained += 1
     return gained, lost
+
+
+def freeze_execution_budget(args, state):
+    budget={'cpu_ids':sorted(args.cpu_ids),'concurrent_games':args.jobs,
+            'requested_execution_profile':args.execution_profile,
+            'compatibility_mode':args.execution_compatibility,
+            'memory_planning_budget_bytes':args.memory_planning_budget_bytes}
+    old=state.data.get('execution_budget')
+    if old is not None and old!=budget:
+        raise ValueError('search execution budget changed; use a new run directory')
+    if old is None and state.data.get('configs'):
+        if args.execution_compatibility!='legacy_argv':
+            raise ValueError('existing search state has no resource proof; use a new directory or explicit older compatibility')
+        state.data['preceding_results_resource_scope']='legacy unbound results; no resolved plan or CPU-budget proof'
+    state.data['execution_budget']=budget
 
 
 class State:
@@ -238,7 +256,7 @@ def eval_block(args, state, cid, cfg_path, maps, block_games, block_base):
         print(f"  {cid} {m} seeds {block_base}..{block_base + block_games - 1} ...",
               flush=True)
         results = run_bench(args.bin, cfg_path, m, block_games, block_base,
-                            out_dir, args.jobs)
+                            out_dir, args.jobs, args.cpu_ids, args.execution_profile, args.execution_compatibility, args.memory_planning_budget_bytes)
         state.grid(cid, m).update(results)
         state.save()
         errs = sum(1 for r in results.values() for o in ("fwd", "rev") if r[o] == "E")
@@ -259,6 +277,7 @@ def cmd_search(args):
 
     os.makedirs(os.path.join(args.run_dir, "configs"), exist_ok=True)
     state = State(os.path.join(args.run_dir, "state.json"))
+    freeze_execution_budget(args,state)
 
     # Population: the control (defaults) + N sampled configs. Sampling is
     # deterministic in --sample-seed, so a resumed run regenerates the same
@@ -342,6 +361,7 @@ def cmd_search(args):
 def cmd_holdout(args):
     maps = args.holdout_maps.split(",")
     state = State(os.path.join(args.run_dir, "state.json"))
+    freeze_execution_budget(args,state)
     cfg_path = os.path.abspath(os.path.join(args.run_dir, args.holdout))
     cid = "holdout-" + os.path.splitext(os.path.basename(args.holdout))[0]
     knobs = {}
@@ -385,8 +405,11 @@ def main():
     p.add_argument("--seed-base", type=int, default=1)
     p.add_argument("--sample-seed", type=int, default=42,
                    help="RNG seed for config sampling (reproducible population)")
-    p.add_argument("--jobs", type=int, default=0,
-                   help="parallel games per benchmark (default: ai-benchmark.sh's)")
+    p.add_argument("--jobs", type=int, required=True, help="parallel games within caller-owned CPU budget")
+    p.add_argument("--cpu-ids", required=True)
+    p.add_argument("--execution-profile", choices=PROFILES, default="efficient-throughput")
+    p.add_argument("--execution-compatibility", choices=("require_profile","legacy_argv"), default="require_profile")
+    p.add_argument("--memory-planning-budget-bytes")
     p.add_argument("--bin", default=str(native_binary()))
     p.add_argument("--include-secondary", action="store_true",
                    help="also search tierMidDiv/workerRatioTier2")
@@ -403,6 +426,11 @@ def main():
     p.add_argument("--holdout-seed-base", type=int, default=1001,
                    help="fresh seeds, disjoint from the search's (default 1001)")
     args = p.parse_args()
+    try:
+        args.cpu_ids=parse_cpu_ids(args.cpu_ids)
+        args.memory_planning_budget_bytes=positive_integer(args.memory_planning_budget_bytes) if args.memory_planning_budget_bytes is not None else None
+        configure_hosts([{'slots':args.jobs}],cpu_ids=args.cpu_ids,memory_planning_budget_bytes=args.memory_planning_budget_bytes,resource_aware=True)
+    except ValueError as error: p.error(str(error))
 
     args.run_dir = os.path.abspath(args.run_dir)
     if not os.path.exists(args.bin):

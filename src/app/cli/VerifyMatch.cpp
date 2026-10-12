@@ -21,6 +21,7 @@
 #include "Environment.h"
 #include "Game.h"
 #include "GlobalContainer.h"
+#include "ApplicationResourcePlan.h"
 #include "ComputeThreads.h"
 #include "Headless.h"
 #include "CommandLine.h"
@@ -275,11 +276,12 @@ MatchVerifier::Verdict MatchVerifier::verify(const Turn::MatchRecord& record, co
 	result << "]},";
 	Headless::playersAndTeamsJson(result, game, engine.teamEliminatedTick);
 	result << ",\"verification\":" << verification.dump()
+	       << ",\"execution_resources\":" << globals.resourcePlanJson().dump()
 	       << ",\"network\":" << Turn::recordNetworkSummary(record).dump() << '}';
 	Headless::writeJson((output / "result.json").string(), result.str());
 	Headless::writeJson((output / "compute.json").string(), json{
 	    {"compute_requested_threads", globals.computeThreads ? std::to_string(globals.computeThreads) : "auto"},
-	    {"compute_resolved_threads", resolveComputeThreadCount(globals.computeThreads)},
+	    {"compute_resolved_threads", globals.resolvedComputeParticipants()},
 	    {"compute_threads", game.map.computeExecutor().threadCount()},
 	    {"compute_workers", game.map.computeExecutor().threadCount() - 1}}.dump());
 
@@ -336,7 +338,9 @@ MatchVerifier::Verdict MatchVerifier::verify(const Turn::MatchRecord& record, co
 }
 
 int MatchVerifier::run(const std::string& recordPath, const std::string& mapPath, const fs::path& output,
-                       const std::string& profile, unsigned computeThreads)
+                       const std::string& profile, unsigned computeThreads,
+                       std::optional<resource_policy::ExecutionProfile> executionProfile,
+                       std::optional<std::uint64_t> planningMemoryBytes)
 {
 	// Record and setup first: a defect here is a bad request, not a verdict.
 	Turn::MatchRecord record;
@@ -365,6 +369,8 @@ int MatchVerifier::run(const std::string& recordPath, const std::string& mapPath
 	GlobalContainer globals(profile.c_str());
 	globalContainer = &globals;
 	globals.computeThreads = computeThreads;
+    globals.executionResourceRequest.explicitProfile = executionProfile;
+    globals.executionResourceRequest.planningMemoryBytes = planningMemoryBytes;
 	globals.runNoX = true;
 	globals.structuredHeadless = true;
 	globals.load();
@@ -382,6 +388,10 @@ int runVerifyMatch(const Cli::Request &request)
         const auto out = request.get("--output-dir");
         const auto profile = request.get("--profile");
         const auto computeThreads = parseComputeThreadCount(request.get("--compute-threads"));
+        const auto executionProfile = request.has("--execution-profile")
+            ? std::optional{resource_policy::parseExecutionProfile(request.get("--execution-profile"))} : std::nullopt;
+        const auto planningMemoryBytes = request.has("--memory-budget-bytes")
+            ? std::optional<std::uint64_t>{resource_policy::parsePlanningMemoryBytes(request.get("--memory-budget-bytes"))} : std::nullopt;
 		output = fs::absolute(out);
 		fs::create_directories(output / "profile");
 		// Both profile variables, as the other headless commands set them (#554).
@@ -390,7 +400,8 @@ int runVerifyMatch(const Cli::Request &request)
 		GAGCore::setProcessEnvironment("GLOB2_USER_DATA_DIR", profileDir.c_str(), 1);
 		if (fs::exists(output / "result.json"))
 			throw Usage("output directory already contains a result");
-		return MatchVerifier::run(fs::absolute(record).string(), fs::absolute(map).string(), output, profile, computeThreads);
+		return MatchVerifier::run(fs::absolute(record).string(), fs::absolute(map).string(), output, profile,
+            computeThreads, executionProfile, planningMemoryBytes);
 	}
 	catch (const std::exception& error)
 	{

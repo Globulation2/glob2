@@ -876,7 +876,7 @@ void Engine::reloadTurnInitialState()
 			checksumSidecar.reset();
 	}
 	if (!globalContainer->structuredHeadless || turn)
-		gui.game.map.configureCompute(resolveComputeThreadCount(globalContainer->computeThreads));
+		gui.game.map.configureCompute(globalContainer->resolvedComputeParticipants());
 	teamEliminatedTick.clear();
 	if (session)
 		session->wasReadyLastTick = true;
@@ -910,9 +910,13 @@ void Engine::beginSession(Uint64 now)
 {
     if (session) throw std::logic_error("Engine session is already active");
     if (!net) throw std::logic_error("Engine session requires an initialized game");
-    globalContainer->configureGradientBackend();
 	if (!globalContainer->structuredHeadless || turn)
-		gui.game.map.configureCompute(resolveComputeThreadCount(globalContainer->computeThreads));
+    {
+        globalContainer->refreshResourcePlan();
+        globalContainer->configureGradientBackend();
+		gui.game.map.configureCompute(globalContainer->resolvedComputeParticipants());
+    }
+    else globalContainer->configureGradientBackend();
     sessionEndingTarget = globalContainer->automaticEndingSteps;
     MainLoopState st{};
     st.adjustableGameSpeed = gui.canChangeGameSpeed();

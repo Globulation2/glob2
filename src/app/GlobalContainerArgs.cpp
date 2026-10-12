@@ -3,6 +3,10 @@
 #include "GlobalContainer.h"
 #include "CommandLine.h"
 #include "ComputeThreads.h"
+#include "ApplicationResourcePlan.h"
+#include "ResourcePlanJson.h"
+#include <nlohmann/json.hpp>
+#include <limits>
 #include "field/GradientBackend.h"
 #include <cstdlib>
 #include <cstring>
@@ -24,6 +28,10 @@ void GlobalContainer::applyCommand(const Cli::Request &request)
 		computeThreads = parseComputeThreadCount(r.get("--compute-threads"));
 	if (r.has("--gpu"))
 		gpuComputeOverride = r.get("--gpu") == "on";
+    if (r.has("--execution-profile"))
+        executionResourceRequest.explicitProfile = resource_policy::parseExecutionProfile(r.get("--execution-profile"));
+    if (r.has("--memory-budget-bytes"))
+        executionResourceRequest.planningMemoryBytes = resource_policy::parsePlanningMemoryBytes(r.get("--memory-budget-bytes"));
 	auto toggle = [&](const char *name, unsigned bit)
 	{
 		if (r.has(std::string("--") + name))
@@ -137,6 +145,51 @@ bool GlobalContainer::gpuComputeEnabled() const
 
 void GlobalContainer::configureGradientBackend() const
 {
-	gradient_kernel::setBackend(gpuComputeEnabled() ? gradient_kernel::Backend::OpenCL
+	gradient_kernel::setBackend((frozenResourcePlan ? resolvedGpuComputeEnabled() : gpuComputeEnabled()) ? gradient_kernel::Backend::OpenCL
 													 : gradient_kernel::Backend::CPU);
+}
+
+void GlobalContainer::refreshResourcePlan(bool ownerOnly)
+{
+    resource_policy::ApplicationResourceInputs input;
+    input.request = executionResourceRequest;
+    input.savedProfile = settings.executionProfile;
+    input.headless = runNoX;
+    input.ownerOnly = ownerOnly;
+    input.legacyRequestedComputeParticipants = computeThreads;
+    input.legacyGpuComputeEnabled = gpuComputeEnabled(); // Preserve legacy CLI/environment/saved/context ordering.
+    const auto *environment = std::getenv("GLOB2_GRADIENT_BACKEND");
+    input.legacyGpuComputeExplicit = gpuComputeOverride.has_value() || (environment && *environment);
+    if (settings.targetRenderFps < 0) throw std::invalid_argument("Render frame rate must be nonnegative");
+    input.currentPresentation.frameRate = unsigned(settings.targetRenderFps);
+    // Independent legacy appearance flags and discretionary work retain their
+    // current consumers. No numeric detail/preparation tier is inferred/applied.
+    input.capabilities = resource_policy::discoverApplicationResourceCapabilities();
+    frozenResourcePlan = resource_policy::resolveApplicationResourcePlan(input);
+}
+const resource_policy::ResourcePlan &GlobalContainer::resourcePlan() const
+{
+    if (!frozenResourcePlan) throw std::logic_error("Resource plan requires explicit session/setup refresh");
+    return *frozenResourcePlan;
+}
+unsigned GlobalContainer::resolvedComputeParticipants() const
+{
+    return resourcePlan().resources.computeParticipants;
+}
+bool GlobalContainer::resolvedGpuComputeEnabled() const
+{
+    return resourcePlan().resources.computeGpu != resource_policy::GpuPolicy::Disabled;
+}
+nlohmann::json GlobalContainer::resourcePlanJson() const
+{
+    auto value = resource_policy::describeResourcePlan(resourcePlan());
+    value["application_adapter"] = {
+        {"frozen_session_plan", true},
+        {"cpu_discovery", "current portable eligible-CPU hint with serial fallback; not physical cores or CPU-time quota"},
+        {"required_live_bytes_scope", "unestimated lower bound; not a complete heap/live ownership census"},
+        {"memory_budget_actions_applied", false}, {"render_policy_actions_applied", false},
+        {"render_detail_scope", "legacy appearance flags preserved; no numeric tier applied"},
+        {"presentation_preparation_scope", "planning metadata only; existing required and discretionary consumers unchanged"}
+    };
+    return value;
 }

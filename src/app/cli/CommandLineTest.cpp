@@ -3,8 +3,55 @@
 #include "CommandLine.h"
 #include <sstream>
 #include <algorithm>
+#include <limits>
 TEST_SUITE("CommandLine")
 {
+	TEST_CASE("execution intent has six choices independently of the profile directory label")
+	{
+		for (const char *intent : {"auto", "eco", "balanced", "luxurious", "fast-simulation", "efficient-throughput"})
+		{
+			const auto request = Cli::parse({"game", "run", "--load-game=fixture", "--output-dir=output",
+				"--profile=isolated-label", std::string("--execution-profile=") + intent});
+			CHECK_EQ(request.get("--profile"), "isolated-label");
+			CHECK_EQ(request.get("--execution-profile"), intent);
+		}
+		const auto legacy = Cli::parse({"game", "run", "--load-game=fixture", "--output-dir=output", "--profile=eco"});
+		CHECK_EQ(legacy.get("--profile"), "eco");
+		CHECK_FALSE(legacy.has("--execution-profile"));
+		for (const char *invalid : {"automatic", "Eco", "3", ""})
+			CHECK_THROWS_AS(Cli::parse({"play", std::string("--execution-profile=") + invalid}), std::invalid_argument);
+	}
+	TEST_CASE("execution resource help exposes intent and a planning memory budget")
+	{
+		const auto schema = Cli::describe("play").at("commands").at(0);
+		bool foundIntent = false, foundMemory = false;
+		for (const auto &option : schema.at("options"))
+		{
+			if (option.at("name") == "--execution-profile")
+			{
+				foundIntent = true;
+				CHECK_EQ(option.at("choices").size(), 6);
+				CHECK_EQ(option.at("default"), "");
+			}
+			if (option.at("name") == "--memory-budget-bytes")
+			{
+				foundMemory = true;
+				CHECK_EQ(option.at("minimum"), 1);
+				CHECK_EQ(option.at("maximum"), std::numeric_limits<std::int64_t>::max());
+				CHECK_EQ(option.at("units"), "bytes");
+			}
+		}
+		CHECK(foundIntent); CHECK(foundMemory);
+		CHECK(Cli::help("play").find("does not enforce a process RSS limit") != std::string::npos);
+	}
+	TEST_CASE("planning memory budget rejects invalid values before application handlers")
+	{
+		for (const char *valid : {"1", "1073741824", "9223372036854775807"})
+			CHECK_EQ(Cli::parse({"play", std::string("--memory-budget-bytes=") + valid}).get("--memory-budget-bytes"), valid);
+		CHECK_FALSE(Cli::parse({"play"}).has("--memory-budget-bytes"));
+		for (const char *invalid : {"0", "-1", "1.5", "1oops", "9223372036854775808"})
+			CHECK_THROWS_AS(Cli::parse({"play", std::string("--memory-budget-bytes=") + invalid}), std::invalid_argument);
+	}
 	TEST_CASE("registry describes every executable command and help is asset independent")
 	{
 		const auto schema = Cli::describe();

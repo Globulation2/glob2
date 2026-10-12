@@ -2,6 +2,7 @@
 #include "CommandLine.h"
 #include "RecordingDefaults.h"
 #include "MapRender.h"
+#include "ResourcePlanJson.h"
 #ifdef HAVE_CONFIG_H
 #include <glob2/BuildConfig.h>
 #endif
@@ -10,6 +11,7 @@
 #include <cctype>
 #include <cmath>
 #include <iostream>
+#include <limits>
 #include <sstream>
 #include <stdexcept>
 
@@ -103,6 +105,15 @@ Option gpu()
 {
 	return choice("--gpu", "GPU gradient compute; overrides local setting (graphical default off, headless on)",
 				  {"on", "off"});
+}
+std::vector<Option> executionResources()
+{
+    auto memory = integer("--memory-budget-bytes",
+        "Planning budget for recoverable storage; does not enforce a process RSS limit",
+        1, std::numeric_limits<std::int64_t>::max());
+    memory.units = "bytes";
+    return {choice("--execution-profile", "Execution resource intent; calibrated tier tuning is pending",
+        {"auto", "eco", "balanced", "luxurious", "fast-simulation", "efficient-throughput"}), memory};
 }
 std::vector<Option> mapSettings()
 {
@@ -607,6 +618,11 @@ const std::vector<Command> &commands()
 				return std::any_of(c.options.begin(), c.options.end(),
 								   [&](const auto &o) { return o.name == name; });
 			};
+            if (supports("--compute-threads") || c.path == "map study" ||
+                c.path == "map generate" || c.path == "map info" ||
+                c.path == "map preview" || c.path == "map render" ||
+                c.path == "map import-image" || c.path == "map export-image")
+                append(c.options, executionResources());
 			if (c.path == "map preview")
 				c.conflicts.push_back({"--output", "--preview"});
 			for (const auto &name : {"fullscreen", "resizable", "custom-cursor", "mute"})
@@ -929,6 +945,7 @@ nlohmann::json describe(const std::string &path)
 							   {"2", "invalid arguments or rejected input"},
 							   {"3", "operational failure"}}}};
 	result["removed_arguments"] = migrations();
+    result["execution_profiles"] = resource_policy::describeExecutionProfiles();
 	for (const auto &c : commands())
 		if (under(c.path, path))
 		{

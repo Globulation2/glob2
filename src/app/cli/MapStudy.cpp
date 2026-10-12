@@ -13,6 +13,7 @@
 #include "FairnessModel.h"
 #include "GeneratorRegistry.h"
 #include "GlobalContainer.h"
+#include "ApplicationResourcePlan.h"
 #include "FileManager.h"
 #include "BuildingArtwork.h"
 #include "IntBuildingType.h"
@@ -612,6 +613,15 @@ int runMapStudy(int argc, char **argv)
 	GlobalContainer globals(argv[3], buildingCatalog);
 	globalContainer = &globals;
 	globals.runNoX = true;
+    for (int i = 4; i < argc; ++i)
+    {
+        const std::string arg = argv[i];
+        if (arg.starts_with("execution-profile="))
+            globals.executionResourceRequest.explicitProfile = resource_policy::parseExecutionProfile(arg.substr(18));
+        if (arg.starts_with("memory-budget-bytes="))
+            globals.executionResourceRequest.planningMemoryBytes = resource_policy::parsePlanningMemoryBytes(arg.substr(20));
+    }
+    globals.refreshResourcePlan(true); // Map generation currently executes on its owner only.
     for(int i=4;i<argc;++i)if(std::string(argv[i]).starts_with("data-dir="))globals.fileManager->addDir(std::string(argv[i]).substr(9));
 	globals.settings.rememberUnit = false;
 
@@ -644,6 +654,7 @@ int runMapStudy(int argc, char **argv)
 	for (int i = 4; i < argc; ++i)
 	{
 		std::string arg = argv[i];
+        if (arg.starts_with("execution-profile=") || arg.starts_with("memory-budget-bytes=")) continue;
 		if (arg == "tuning")
 			tuning = true;
 		else if (arg == "headroom")
@@ -1095,6 +1106,7 @@ int runMapStudy(int argc, char **argv)
 		std::ostringstream out;
 		out << "{\"schema_version\":1,\"job_type\":\"generate_map\",\"status\":"
 			<< Headless::quote(success ? "completed" : result.error == GenerationError::InvalidRequest ? "invalid_request" : "generation_failed")
+            << ",\"execution_resources\":" << globals.resourcePlanJson().dump()
 			<< ",\"generator\":" << Headless::quote(result.generatorId)
 			<< ",\"revision\":" << result.revision << ",\"map_seed\":" << seed
 			<< ",\"chosen_seed\":" << result.seed << ",\"candidates\":" << candidates

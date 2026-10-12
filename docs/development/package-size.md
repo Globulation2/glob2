@@ -254,6 +254,13 @@ archive savings, no credible repeatable simulation slowdown, image/renderer
 checks, and a separate actual application-startup measurement within 10%.
 `--version` timing is labelled process launch and does not prove GUI startup.
 The tool never changes defaults or declares an experiment ready to adopt.
+Its profile-aware mode requires caller-owned `--cpu-ids`, preserves the existing
+serial compute participant count and records `--execution-profile` intent
+(default `efficient-throughput`). Registered options and the returned plan are
+validated before accepting measurements. Older CLI2 binaries require explicit
+per-role `--baseline-execution-compatibility legacy_argv` or
+`--candidate-execution-compatibility legacy_argv`; no profile flags are silently
+dropped. The optional memory planning reservation does not enforce RSS.
 `benchmark_decoder.py` compares stock/private decoders against identical exported
 images in separate processes; its scope excludes GPU upload and rendering.
 

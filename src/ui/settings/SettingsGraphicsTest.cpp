@@ -18,6 +18,58 @@ const std::array<bool Settings::*, 8> effects = {
 }
 TEST_SUITE("SettingsGraphics")
 {
+    TEST_CASE("optional execution intent migrates and round trips without changing graphics")
+    {
+        glob2test::HeadlessGlobals globals;
+        const std::string file = "execution-intent-test.txt";
+        const auto path = std::filesystem::path(GAGCore::Toolkit::getFileManager()->getDir(0)) / file;
+        Settings settings;
+        CHECK_FALSE(settings.executionProfile.has_value());
+        for (const char *value : {"", "invalid", "Eco", "3"})
+        {
+            {
+                std::ofstream out(path);
+                out << "executionProfile=" << value << "\ntargetRenderFps=90\nclouds=0\ncloudShadows=1\n"
+                    << "gpuCompute=1\nrendererBackend=software\n";
+            }
+            settings.executionProfile = resource_policy::ExecutionProfile::Eco;
+            settings.load(file);
+            CHECK_FALSE(settings.executionProfile.has_value());
+            CHECK(settings.targetRenderFps == 90);
+            CHECK_FALSE(settings.clouds); CHECK(settings.cloudShadows);
+            CHECK(settings.gpuCompute == true);
+            CHECK(settings.rendererBackend == GAGCore::RendererBackend::Software);
+        }
+        { std::ofstream out(path); out << "targetRenderFps=90\nclouds=0\ngpuCompute=0\nrendererBackend=software\n"; }
+        settings.executionProfile = resource_policy::ExecutionProfile::Eco;
+        settings.load(file);
+        CHECK_FALSE(settings.executionProfile.has_value());
+        CHECK(settings.targetRenderFps == 90); CHECK_FALSE(settings.clouds);
+        CHECK(settings.gpuCompute == false);
+        for (const char *intent : {"auto", "eco", "balanced", "luxurious", "fast-simulation", "efficient-throughput"})
+        {
+            settings.executionProfile = resource_policy::parseExecutionProfile(intent);
+            for (size_t i = 0; i < effects.size(); ++i) settings.*effects[i] = (i % 2) != 0;
+            REQUIRE(settings.save(file));
+            Settings loaded; loaded.load(file);
+            REQUIRE(loaded.executionProfile.has_value());
+            CHECK(*loaded.executionProfile == *settings.executionProfile);
+            CHECK(loaded.targetRenderFps == 90);
+            CHECK(loaded.gpuCompute == false);
+            CHECK(loaded.rendererBackend == GAGCore::RendererBackend::Software);
+            for (size_t i = 0; i < effects.size(); ++i) CHECK((loaded.*effects[i]) == ((i % 2) != 0));
+        }
+        settings.executionProfile.reset();
+        REQUIRE(settings.save(file));
+        Settings automatic; automatic.load(file);
+        CHECK_FALSE(automatic.executionProfile.has_value());
+        CHECK(automatic.targetRenderFps == 90);
+        CHECK(automatic.gpuCompute == false);
+        CHECK(automatic.rendererBackend == GAGCore::RendererBackend::Software);
+        for (size_t i = 0; i < effects.size(); ++i) CHECK((automatic.*effects[i]) == ((i % 2) != 0));
+        std::filesystem::remove(path);
+    }
+
     TEST_CASE("GPU local preference preserves graphical and headless defaults")
     {
         glob2test::ScopedEnvironment backend("GLOB2_GRADIENT_BACKEND", "");

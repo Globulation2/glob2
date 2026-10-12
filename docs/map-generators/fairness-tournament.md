@@ -24,10 +24,20 @@ scons release=1 -j3 map-generator-study
 Then run a preset:
 
 ```bash
-python3 tools/map_fairness_tournament.py run smoke      # quick end-to-end check
-python3 tools/map_fairness_tournament.py run standard   # the standard measurement
-python3 tools/map_fairness_tournament.py run baseline   # engine team-index bias, symmetric maps only
+python3 tools/map_fairness_tournament.py run smoke --cpu-ids 0,1,2 --jobs 3      # quick end-to-end check
+python3 tools/map_fairness_tournament.py run standard --cpu-ids 0,1,2 --jobs 3   # the standard measurement
+python3 tools/map_fairness_tournament.py run baseline --cpu-ids 0,1,2 --jobs 3   # engine team-index bias, symmetric maps only
 ```
+
+Choose `--cpu-ids` from an allocation you own; the example IDs are placeholders.
+The game phase uses one durable coordinator to partition that budget across
+`--jobs` concurrent games. `--execution-profile` defaults to
+`efficient-throughput`; `--execution-compatibility legacy_argv` explicitly selects
+older CLI2 behavior without automatic fallback. An optional
+`--memory-planning-budget-bytes` is a shared soft reservation, not an RSS limit.
+Map generation keeps its existing scalar compatibility job shape; these game
+CPU allocations do not yet establish affinity enforcement for generation jobs.
+
 
 The `baseline` preset plays only Symmetric arena, whose colonies are identical by construction. Its
 wins by start should come out uniform, and its wins by team index measure the engine's own

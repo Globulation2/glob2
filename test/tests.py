@@ -340,6 +340,9 @@ UNIT_TESTS = [
     '#src/game/WinningConditionsHarness.cpp',
     '#libgag/src/BufferedFileStreamHarness.cpp',
     '#src/common/ComputeExecutorHarness.cpp',
+    '#src/common/ResourcePolicyTest.cpp',
+    '#src/app/ResourcePlanJsonTest.cpp',
+    '#src/app/ApplicationResourcePlanTest.cpp',
     '#src/map/gradient/GradientPipelineHarness.cpp',
     ('#mobile/MobileCertificateHarness.cpp', dict(require={'wss'})),
     '#mobile/MobileDocumentsHarness.cpp',
@@ -371,6 +374,9 @@ UNIT_TESTS = [
 # object; entries with `defines` are compiled again for the unit binary only.
 UNIT_PRODUCTION_SOURCES = [
     '#src/common/ComputeThreads.cpp',
+    '#src/common/ResourcePolicy.cpp',
+    '#src/app/ResourcePlanJson.cpp',
+    '#src/app/ApplicationResourcePlan.cpp',
     '#src/field/OpenCLGradient.cpp',
     '#src/field/GradientDeviceService.cpp',
     '#src/app/cli/CommandLine.cpp',

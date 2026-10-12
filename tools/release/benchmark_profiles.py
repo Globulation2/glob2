@@ -19,6 +19,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
+from tools.tournaments.cli import parse_cpu_ids, positive_integer, prepare_native_resources, validate_native_resource_result
+from tools.tournaments.resources import PROFILES
 FIXTURES = ROOT / "test/fixtures/javascript"
 
 
@@ -46,7 +48,7 @@ def repeatable_slowdown(pairs):
     )
 
 
-def run(binary, fixture, output, correctness=False):
+def run(binary, fixture, output, correctness=False, execution_flags=(), resource_receipt=None, resource_role=None):
     output.mkdir(parents=True, exist_ok=False)
     (output / "profile").mkdir()
     command = [
@@ -61,6 +63,7 @@ def run(binary, fixture, output, correctness=False):
         "--output-dir",
         str(output),
     ]
+    command += list(execution_flags)
     if correctness:
         command += ["--telemetry", "checksums", "--write-replay", "--save", "final"]
     started = time.perf_counter()
@@ -75,6 +78,7 @@ def run(binary, fixture, output, correctness=False):
         )
     elapsed = time.perf_counter() - started
     result = json.loads((output / "result.json").read_text())
+    if resource_receipt is not None: validate_native_resource_result(result,resource_receipt,resource_role,1)
     return dict(
         wall_seconds=elapsed,
         headless_setup_seconds=result["setup_ns"] / 1e9,
@@ -84,13 +88,15 @@ def run(binary, fixture, output, correctness=False):
     )
 
 
-def benchmark(baseline, candidate, output, baseline_size, candidate_size):
+def benchmark(baseline, candidate, output, baseline_size, candidate_size, *, cpu_ids=None, execution_profile='efficient-throughput', compatibility_modes=None, memory_budget=None):
     output = Path(output).resolve()
     output.mkdir(parents=True, exist_ok=False)
     binaries = dict(
         baseline=Path(baseline).resolve(), candidate=Path(candidate).resolve()
     )
+    execution=prepare_native_resources(binaries,cpu_ids,execution_profile,compatibility_modes or {'baseline':'require_profile','candidate':'require_profile'},memory_budget)
     evidence = dict(
+        execution_resources=execution,
         schema=1,
         revision=baseline_size["revision"],
         platform=baseline_size["platform"],
@@ -108,7 +114,7 @@ def benchmark(baseline, candidate, output, baseline_size, candidate_size):
         checks = {}
         for name, binary in binaries.items():
             directory = output / scenario / "correctness" / name
-            run(binary, fixture, directory, correctness=True)
+            run(binary, fixture, directory, correctness=True, execution_flags=execution['flags'][name], resource_receipt=execution, resource_role=name)
             checks[name] = {
                 file: digest(directory / file)
                 for file in ("game.replay.checksums", "game.replay", "final.game.gz")
@@ -129,6 +135,7 @@ def benchmark(baseline, candidate, output, baseline_size, candidate_size):
                         binaries[name],
                         fixture,
                         output / scenario / str(batch) / str(repeat) / name,
+                        execution_flags=execution['flags'][name], resource_receipt=execution, resource_role=name,
                     )
                     row.update(batch=batch, repeat=repeat, variant=name)
                     rows.append(row)
@@ -222,6 +229,11 @@ def main():
     parser.add_argument("--baseline-size", type=Path, required=True)
     parser.add_argument("--candidate-size", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument('--cpu-ids',help='caller-owned logical CPU IDs; required for profile-aware measurements')
+    parser.add_argument('--execution-profile',choices=PROFILES,default='efficient-throughput')
+    parser.add_argument('--baseline-execution-compatibility',choices=('require_profile','legacy_argv'),default='require_profile')
+    parser.add_argument('--candidate-execution-compatibility',choices=('require_profile','legacy_argv'),default='require_profile')
+    parser.add_argument('--memory-planning-budget-bytes')
     args = parser.parse_args()
     benchmark(
         args.baseline,
@@ -229,6 +241,9 @@ def main():
         args.output,
         json.loads(args.baseline_size.read_text()),
         json.loads(args.candidate_size.read_text()),
+        cpu_ids=parse_cpu_ids(args.cpu_ids) if args.cpu_ids else None,execution_profile=args.execution_profile,
+        compatibility_modes={'baseline':args.baseline_execution_compatibility,'candidate':args.candidate_execution_compatibility},
+        memory_budget=positive_integer(args.memory_planning_budget_bytes) if args.memory_planning_budget_bytes is not None else None,
     )
 
 

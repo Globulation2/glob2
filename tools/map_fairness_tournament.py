@@ -16,8 +16,8 @@ start-quality score. For every generator and map seed the tournament:
 
 See docs/map-generators/fairness-tournament.md for the metrics and how to read the report.
 
-  python3 tools/map_fairness_tournament.py run smoke
-  python3 tools/map_fairness_tournament.py run standard --jobs 3
+  python3 tools/map_fairness_tournament.py run smoke --cpu-ids 0,1,2 --jobs 3
+  python3 tools/map_fairness_tournament.py run standard --cpu-ids 0,1,2 --jobs 3
   python3 tools/map_fairness_tournament.py summarize artifacts/map-fairness/smoke
 """
 import argparse
@@ -36,7 +36,11 @@ import threading
 import time
 from pathlib import Path
 from build_paths import native_binary
-from tournaments.local import run_job as shared_job, export_artifacts, parallel_map
+from tournaments.local import run_job as shared_job, export_artifacts, parallel_map, execute_jobs, supplied_binary
+from tournaments.cli import configure_hosts, parse_cpu_ids, positive_integer
+from tournaments.common import store_artifact
+from tournaments.model import job as durable_job
+from tournaments.resources import PROFILES, default_execution_request
 from tournaments.fairness_statistics import (
     MIN_MAPS_FOR_INTERVAL, benjamini_hochberg, bias_interval, bootstrap, chi_square_uniform,
     exact_uniform_p, fair_map_floor, gamma_q, holm, pearson, ranks, rms_points, seed_for,
@@ -371,7 +375,7 @@ def game_jobs(config, records):
     return jobs
 
 
-def run_game(config, paths, record, job, directory=None, force=False):
+def run_game(config, paths, record, job, directory=None, force=False, executed=None):
     directory = directory or paths['games'] / record['key'] / f'r{job["rotation"]}-k{job["game"]}'
     result_file = directory / 'result.json'
     if result_file.exists() and not force:
@@ -394,16 +398,22 @@ def run_game(config, paths, record, job, directory=None, force=False):
                '--matchup', ','.join([config['ai']] * record['colonies'])]
     log = directory / 'game.log'
     begun = time.monotonic()
-    attempt, source = shared_job(paths['glob2'], ROOT, directory / 'execution', 'game',
-        config={'players': [config['ai']] * record['colonies'], 'ticks': int(config['tick_cap'])},
-        seeds={'game': job['seed']}, inputs={'map': map_file['path']},
-        outputs={'replay': bool(config.get('keep_replays')), 'telemetry': ['team-timeline'] if config.get('timeline') else []},
-        timeout=float(config['game_timeout_seconds']))
+    if executed is not None:
+        attempt, source = executed
+    else:
+        attempt, source = shared_job(paths['glob2'], ROOT, directory / 'execution', 'game',
+            config={'players': [config['ai']] * record['colonies'], 'ticks': int(config['tick_cap'])},
+            seeds={'game': job['seed']}, inputs={'map': map_file['path']},
+            outputs={'replay': bool(config.get('keep_replays')), 'telemetry': ['team-timeline'] if config.get('timeline') else []},
+            timeout=float(config['game_timeout_seconds']), cpu_ids=config['cpu_ids'],
+            memory_planning_budget_bytes=config.get('memory_planning_budget_bytes'),
+            compatibility_mode=config.get('execution_compatibility','require_profile'),
+            requested_execution_profile=config.get('execution_profile','efficient-throughput'))
     with source.open_artifact(attempt, 'stdout.log') as stream: text = stream.read()
     log.write_text(text)
     command = attempt.get('command', command)
     status = 'ok' if attempt['category'] == 'success' else attempt['category']
-    wall = time.monotonic() - begun
+    wall = attempt.get('seconds', time.monotonic() - begun)
     text = log.read_text(errors='replace')
     parsed = parse_game_log(text)
     native = attempt.get('result') or {}
@@ -416,6 +426,12 @@ def run_game(config, paths, record, job, directory=None, force=False):
     game = {**job, 'status': status, 'wall_seconds': round(wall, 3), 'parsed': parsed,
             'command': command[1:], 'env': {k: env[k] for k in (
                 'GLOB2_TEST_SEED', 'GLOB2_TEAM_RESULTS', 'GLOB2_TEST_MAX_TICKS')}}
+    game['env_scope'] = 'legacy-equivalent report metadata; actual worker environment is retained in durable attempts'
+    game['wall_seconds_scope'] = 'durable execution attempt, excluding coordinator queue and artifact collection'
+    game['execution_resources'] = native.get('execution_resources')
+    game['execution_allocation'] = attempt.get('execution_allocation')
+    game['cpu_affinity_proof'] = attempt.get('cpu_affinity_proof')
+    game['durable_attempt_id'] = attempt.get('attempt_id', attempt.get('id'))
     game['outcome'] = adjudicate(game, record, config)
     # Keep only what the analysis reads; the full engine output can be large.
     if game['outcome']['status'] == 'ok':
@@ -425,6 +441,43 @@ def run_game(config, paths, record, job, directory=None, force=False):
     game = json.loads(json.dumps(game))
     result_file.write_text(json.dumps(game, indent=1))
     return game
+
+
+def run_games(config, paths, records, tasks, describe):
+    """One coordinator partitions the caller budget across all game attempts."""
+    pending = []
+    results = []
+    for task in tasks:
+        record = records[task['map']]
+        result = paths['games'] / record['key'] / f'r{task["rotation"]}-k{task["game"]}' / 'result.json'
+        if result.exists(): results.append(json.loads(result.read_text()))
+        else: results.append(None); pending.append((len(results)-1,task))
+    if not pending: return results
+    directory = paths['out'] / 'game-execution'
+    bundle = supplied_binary(paths['glob2'], ROOT, paths['out'] / '.bundles')
+    execution = default_execution_request(requested_execution_profile=config['execution_profile'],
+                                         compatibility_mode=config['execution_compatibility'])
+    jobs = []
+    for task in tasks:
+        record = records[task['map']]
+        map_file = next(f for f in record['files'] if f['rotation'] == task['rotation'])
+        artifact = store_artifact(map_file['path'],directory/'artifacts')
+        jobs.append(durable_job('game',bundle.name,inputs={'map':artifact},seeds={'game':task['seed']},
+            config={'players':[config['ai']]*record['colonies'],'ticks':int(config['tick_cap'])},
+            outputs={'replay':bool(config.get('keep_replays')),'telemetry':['team-timeline'] if config.get('timeline') else []},
+            limits={'timeout_seconds':float(config['game_timeout_seconds'])},labels=task,execution=execution))
+    source = execute_jobs(directory,jobs,bundle,slots=config['jobs'],cpu_ids=config['cpu_ids'],
+                          memory_planning_budget_bytes=config.get('memory_planning_budget_bytes'))
+    accepted = {r['job']['id']:r for r in source}
+    failed = {}
+    for attempt in source.attempts(): failed[attempt['job']['id']] = attempt
+    for index, task in pending:
+        spec = jobs[index]
+        attempt = accepted.get(spec['id']) or failed.get(spec['id'])
+        if attempt is None: raise RuntimeError('game produced no attempt: '+spec['id'])
+        results[index] = run_game(config,paths,records[task['map']],task,executed=(attempt,source))
+        print(f'[{index+1}/{len(tasks)}] {describe(task,results[index])}',flush=True)
+    return results
 
 
 def run_pool(tasks, jobs, work, describe):
@@ -982,11 +1035,19 @@ def command_run(args):
                  'size': args.size, 'colonies': args.colonies, 'verify_games': args.verify,
                  'name': args.name}
     config = load_config(args.preset, overrides)
+    try:
+        config['cpu_ids']=parse_cpu_ids(args.cpu_ids)
+        config['memory_planning_budget_bytes']=positive_integer(args.memory_planning_budget_bytes) if args.memory_planning_budget_bytes is not None else None
+        config['execution_profile']=args.execution_profile
+        config['execution_compatibility']=args.execution_compatibility
+        configure_hosts([{'slots':config['jobs']}],cpu_ids=config['cpu_ids'],
+                        memory_planning_budget_bytes=config['memory_planning_budget_bytes'],resource_aware=True)
+    except ValueError as error: raise SystemExit('error: '+str(error))
     out = Path(args.out).resolve() if args.out else ROOT / 'artifacts' / 'map-fairness' / config['name']
     out.mkdir(parents=True, exist_ok=True)
     if args.fresh:
         # Only this tool's own outputs, and never the run directory itself.
-        for name in RUN_DIRECTORIES:
+        for name in (*RUN_DIRECTORIES, 'game-execution', '.bundles'):
             remove_tree(out / name, out)
         for name in RUN_FILES:
             (out / name).unlink(missing_ok=True)
@@ -1017,8 +1078,7 @@ def command_run(args):
         who = f'start {o["winner_slot"]} (team {o["winner_team"]})' if o['winner_slot'] is not None else 'no winner'
         return (f'{job["map"]} r{job["rotation"]} seed {job["seed"]}: {o["status"]}, {o["end_reason"]}, {who}, '
                 f'{o["ticks"]} ticks, {game["wall_seconds"]:.0f}s')
-    games = run_pool(game_jobs(config, records), jobs,
-                     lambda j: run_game(config, paths, by_key[j['map']], j), describe)
+    games = run_games(config,paths,by_key,game_jobs(config,records),describe)
     if config.get('verify_games'):
         verify(config, paths, by_key, games)
     remove_tree(paths['profiles'], out)
@@ -1054,7 +1114,11 @@ def main():
     run.add_argument('--size', type=int, help='map side in tiles (power of two)')
     run.add_argument('--colonies', type=int)
     run.add_argument('--tick-cap', type=int)
-    run.add_argument('--jobs', type=int, help='concurrent processes')
+    run.add_argument('--jobs', type=int, help='concurrent processes within the caller budget')
+    run.add_argument('--cpu-ids',required=True,help='caller-owned logical CPU IDs, comma-separated')
+    run.add_argument('--memory-planning-budget-bytes',help='shared soft planning budget, not an RSS limit')
+    run.add_argument('--execution-profile',choices=PROFILES,default='efficient-throughput')
+    run.add_argument('--execution-compatibility',choices=('require_profile','legacy_argv'),default='require_profile')
     run.add_argument('--verify', type=int, help='re-run this many games to check reproducibility')
     summarize_parser = sub.add_parser('summarize', help='recompute the summary of an existing run')
     summarize_parser.add_argument('out', help='run directory')
