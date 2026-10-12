@@ -109,7 +109,8 @@ using the shared composition and regional pixel kernels; it does not enable conc
 or recording until representative release measurements justify selection thresholds.
 These are development overrides, not gameplay settings; set them before launch. The
 recorder reads execution mode when its backend is created. `GLOB2_RENDER_WORKERS=N`
-accepts 1–64 and caps presentation concurrency at the smaller of the request and two.
+accepts 1–64 and caps admitted scene/graphics concurrency at the smaller of the
+request and two.
 Native worker availability can further limit achieved concurrency. Scene preparation
 consumes a slot in the same ceiling. Neither override changes simulation worker
 configuration. Browser graphics callbacks run serially on the owner within the same
