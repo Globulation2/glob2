@@ -99,9 +99,11 @@ class SoftwareRenderBackend final : public RenderBackend
         const auto targetLast = targetFirst + std::size_t(target->pitch) * target->h;
         if (first < targetLast && targetFirst < last)
             flush();
-        if (!sourceReservation.reserve(bytes)) {
+        // Failed allocation/locking must release only this uncommitted capture.
+        RenderWorkReservation captureReservation;
+        if (!captureReservation.reserve(bytes)) {
             flush();
-            if (!sourceReservation.reserve(bytes)) return false;
+            if (!captureReservation.reserve(bytes)) return false;
         }
         PERF_SCOPE_TIME(RasterSnapshot);
         std::vector<Uint32> pixels(std::size_t(retained.w) * retained.h);
@@ -130,6 +132,7 @@ class SoftwareRenderBackend final : public RenderBackend
             snapshots.reserve(std::min(MaximumCommands, std::max(std::size_t(32), snapshots.capacity()*2)));
         snapshots.push_back(std::move(pixels));
         commands.push_back(command);
+        sourceReservation.absorb(captureReservation);
         sourceBytes += bytes;
         return true;
     }
@@ -215,7 +218,7 @@ class SoftwareRenderBackend final : public RenderBackend
                           snapshots.capacity() * sizeof(std::vector<Uint32>) +
                           tiles.capacity() * sizeof(Tile) +
                           references.capacity() * sizeof(std::size_t) +
-                          2*128*sizeof(std::int64_t) + (tiled ? 0 : std::size_t(target->w)*sizeof(std::int64_t))));
+                          2*128*sizeof(std::int64_t)));
         // Lock exactly once on the owner, before exposing stable target pixels.
         if (!SDL_LockSurface(target))
             throw std::runtime_error(SDL_GetError());
@@ -240,7 +243,18 @@ class SoftwareRenderBackend final : public RenderBackend
                                                     commands[references[i]], output, tile.region);
                                         });
             else
-                SurfaceRaster::executeRegion(commands, output, full);
+            {
+                // Captured inputs are immutable, so each command can traverse
+                // narrow regions while retaining painter order. This bounds
+                // sampling scratch even on unusually wide offscreen targets.
+                for (const auto &command : commands)
+                    for (int x = 0; x < full.w;)
+                    {
+                        const int width = std::min(128, full.w - x);
+                        SurfaceRaster::executeCommand(command, output, {x, 0, width, full.h});
+                        x += width;
+                    }
+            }
         }
         catch (...)
         {

@@ -135,7 +135,9 @@ the synchronous group finishes. Workers reuse bounded scratch and never create
 `HeldMask` or drawable objects. Jobs sample at most 16K pixels; a group admits
 up to 32 changed cells under a 4 MiB additional reservation and available cache
 headroom. Queued raster sources and active terrain work share an additional
-8 MiB owner reservation ceiling; raster bookkeeping reserves 2 MiB within it.
+8 MiB owner reservation ceiling; raster bookkeeping reserves 2 MiB within it for the backend lifetime,
+including retained vector capacity. Captured source reservations release when
+the segment finishes or is discarded.
 The reservation includes material revisions, catalog/control storage,
 results, masks, metadata and two scratch slots. Oversized HD cells, reductions,
 and groups without headroom use existing serial composition. GPU composition,
@@ -152,8 +154,8 @@ capture time, including terrain views. Overlapping byte ranges between distinct
 source/target views flush earlier drawing before the source snapshot. Source
 mutation or destruction cannot change a captured command. Each segment is
 bounded by 1,024 commands and 4 MiB of copied sources; bin bookkeeping is bounded
-by 4,096 tiles and 65,536 references. Excessive tile work uses full-region serial
-execution. Current candidates are 128-pixel tiles and at most sixteen command
+by 4,096 tiles and 65,536 references. Excessive tile work uses serial command traversal in regions at most
+128 pixels wide, bounding sampling scratch independently of target width. Current candidates are 128-pixel tiles and at most sixteen command
 references per tile; these are conservative experimental bounds, not measured
 performance thresholds.
 

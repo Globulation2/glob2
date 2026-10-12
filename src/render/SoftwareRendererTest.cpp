@@ -620,3 +620,46 @@ TEST_CASE("shared rendering reservation pressure selects immediate software fall
     backend->fillPixels({1,2,3,4},{47,91,157,255});backend->flush();
     CHECK(backend->operations().rasterBatches==1);
 }
+
+TEST_CASE("very wide recorded targets retain bounded scratch and exact painter order" *
+          doctest::test_suite("SoftwareRenderer"))
+{
+    std::vector<Uint32> expected;
+    for (const char *execution : {"auto", "serial", "parallel"})
+    {
+        glob2test::ScopedEnvironment mode("GLOB2_RENDER_EXECUTION", execution);
+        auto target = pixels(300000, 1), source = pixels(7, 1);
+        auto backend = makeSoftwareRenderBackend(target.get());
+        REQUIRE(SDL_FillSurfaceRect(source.get(), nullptr, 0xff719bc3));
+        backend->fillPixels({0, 0, target->w, 1}, {11, 23, 47, 255});
+        backend->blitPixels(source.get(), {0, 0, 7, 1}, {13, 0, 299971, 1}, 173);
+        backend->fillPixels({128, 0, 257, 1}, {89, 51, 117, 79});
+        backend->flush();
+        if (expected.empty()) expected = snapshot(target.get());
+        else CHECK(snapshot(target.get()) == expected);
+        CHECK(backend->operations().rasterPeakRetainedBytes < 2u*1024u*1024u);
+    }
+}
+TEST_CASE("render reservation rollback and commit preserve prior captures" *
+          doctest::test_suite("SoftwareRenderer"))
+{
+    const auto available = RenderWorkReservation::available();
+    RenderWorkReservation committed;
+    REQUIRE(committed.reserve(128));
+    try
+    {
+        RenderWorkReservation pending;
+        REQUIRE(pending.reserve(256));
+        throw std::runtime_error("injected capture failure");
+    }
+    catch (const std::runtime_error&) {}
+    CHECK(RenderWorkReservation::available() == available-128);
+    {
+        RenderWorkReservation pending;
+        REQUIRE(pending.reserve(256));
+        committed.absorb(pending);
+    }
+    CHECK(RenderWorkReservation::available() == available-384);
+    committed.release();
+    CHECK(RenderWorkReservation::available() == available);
+}

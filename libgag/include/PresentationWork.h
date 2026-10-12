@@ -53,6 +53,12 @@ public:
         retained += extra; bytes += extra;
         return true;
     }
+    // Commit a temporary reservation without releasing its owner-thread credits.
+    void absorb(RenderWorkReservation &other) noexcept
+    {
+        if (&other == this) return;
+        bytes += other.bytes; other.bytes = 0;
+    }
     void release() noexcept { retained -= bytes; bytes = 0; }
     RenderWorkReservation() = default;
     ~RenderWorkReservation() { release(); }
