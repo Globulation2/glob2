@@ -86,3 +86,42 @@ path is not an untouched-master baseline.
 
 
 See [skin rendering](skin-rendering.md) for production sprite export and skin preview diagnostics.
+
+## CPU presentation batches
+
+Build `software-render-benchmark` and `torus-render-benchmark` with `release=1`.
+Use the same retained save, seed, animation, viewport, warmup and compute budget
+for `GLOB2_RENDER_EXECUTION=auto`, `serial` and `parallel` in separate processes.
+`auto` measures the conservative immediate path; `serial` measures packed CPU
+terrain and recorder overhead; `parallel` requests worker execution where bounds
+permit it. Use `GLOB2_RENDER_WORKERS=1` to test the rendering concurrency ceiling
+without changing simulation configuration. Retain an untouched base executable
+and captures too: the diagnostic immediate path shares current kernels and is
+not an independent pixel reference.
+
+The saved-game benchmark reports draw/present p95 and p99, process CPU, terrain
+jobs/cells/reservation, raster tiles/references/source-copy bytes, serial batches,
+fallback operations, summed queue delay/worker activity and owner wait. Summed
+worker activity is elapsed callback time, not process CPU or batch latency.
+Scope records separate material preparation, terrain planning/install, command
+capture, source copying, binning and raster execution. Inclusive scopes must not
+be added together. Counters are owner aggregates; worker callbacks do not use
+shared scope collectors. Reduced terrain remains an explicitly serial fallback.
+
+`PROFILE_MODE=interactive PROFILE_SAVE=/path/to/save.game PROFILE_SECONDS=10
+PROFILE_FPS=60` runs the production threaded session with a fixed display cadence.
+It reports drawing plus presentation p95/p99, missed render deadlines,
+displayed-scene age and the last observed simulation deadline lateness at each
+display. The latter distribution is weighted by displayed frames; the
+`simulation.deadline_lateness` scope records actual tick observations. Scene age
+includes drawing/presentation time and uses the captured tick completion time.
+`PROFILE_PAN=1` adds camera motion. Renderer-only timings exclude simulation;
+interactive results include its contention and must be reported separately.
+
+Keep warm caches, cold first frames, animated terrain, camera/zoom motion, large
+colonies and translucent overlays separate. CPU fallback and device-composed
+terrain also need separate results. Verify exact capture pixels and unchanged
+simulation checksums before discussing latency. Do not infer smoother gameplay
+from composition throughput alone, or establish thresholds from fast builds.
+The automatic default remains serial until representative hardware results
+justify enabling the bounded paths.

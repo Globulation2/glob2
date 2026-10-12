@@ -1,5 +1,6 @@
 #include "CommandLine.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include <PresentationWork.h>
 // Loaded-game benchmark. Run with an isolated profile; no desktop input is generated.
 #include "GlobalContainer.h"
 #include "TorusPicking.h"
@@ -236,6 +237,7 @@ static int run(int argc, char **argv)
         throw std::runtime_error("The immediate-versus-batched comparison requires legacy GL");
     {
         GameGUI gui;
+        GAGCore::PresentationWorkScope cpuWork(gui.game.map.computeExecutor());
         const char *path = std::getenv("GLOB2_BENCH_MAP");
         const char *savedGame = std::getenv("GLOB2_BENCH_GAME");
         if (savedGame)

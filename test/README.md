@@ -220,3 +220,15 @@ python3 tools/cli_reference.py --binary /path/to/glob2 --check
 ```
 
 See the [CLI guide](../docs/tools/cli.md) for command and migration contracts.
+
+CPU rendering changes use `ComputeExecutor`, `SurfaceRaster`, `SoftwareRenderer`,
+`TerrainMaterials`, `TerrainPresentation` and `RenderDevice` alongside window,
+backend-switch and recording integration suites. Executor tests control callback
+claims, cancellation and release order, check that graphics barriers do not pump
+simulation or scene work, and retain tickets across lifecycle changes. Regional
+raster checks compare complete regions and disjoint tiles exactly; software
+recorder cases also check pending source destruction, shared backing views,
+capacity flushes, fallback ordering and failure/discard recovery. Run rendering
+integration with both `GLOB2_RENDER_EXECUTION=serial` and `parallel`; the default
+`auto` keeps admission conservative. Preserve independent base-revision captures
+because shared-kernel comparisons alone cannot prove unchanged pixel arithmetic.

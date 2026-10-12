@@ -725,6 +725,7 @@ namespace GAGCore
 		virtual void setClipRect(void);
 		enum class FrameMode { FullRedraw, PreserveContent };
         void beginFrame(FrameMode mode = FrameMode::PreserveContent);
+        void discardFrame() noexcept;
         RenderOperations backendOperations() const;
         SDL_Surface* completedFrame() const;
         virtual void nextFrame(void);

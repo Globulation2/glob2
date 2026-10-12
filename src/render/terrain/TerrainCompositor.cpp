@@ -103,6 +103,8 @@ std::size_t Compositor::sourceBytes() const
 		for (const auto *set : {&animation.current, &animation.next})
 			for (const auto &t : *set)
 				bytes += t.pixels.capacity() * 4;
+    if (auto retained = publishedCpu.lock())
+        bytes += retained->bytes;
 	return bytes;
 }
 bool Compositor::prepareMaterial(unsigned id, bool hd, int phase, std::vector<Texture> &target)
@@ -322,28 +324,118 @@ Compositor::PreparedMaterialView Compositor::preparedMaterial(const Recipe &reci
     const auto &texture = textures.at(id).at(variant);
     return {variant, materialRevisions.at(id), texture.size, texture.pixels};
 }
+std::size_t Compositor::cpuMaterialBytes(std::span<const MaterialId> needed) const
+{
+    // Capacity accounting includes the catalog's nested allocations and
+    // shared ownership/control storage; allocator headers receive headroom.
+    std::size_t bytes = sizeof(CpuMaterials) + sizeof(Catalog) + 256 +
+                        definitions.serialized.capacity() + definitions.compiledPack.capacity() +
+                        definitions.profiles.capacity() * sizeof(Profile) +
+                        definitions.materials.capacity() * sizeof(Material) +
+                        definitions.treatments.capacity() * sizeof(PairTreatment) +
+                        textures.capacity() * sizeof(std::vector<CpuMaterials::Texture>);
+    for (const auto &profile : definitions.profiles)
+    {
+        bytes +=
+            profile.key.capacity() + profile.contours.capacity() * sizeof(std::vector<int>) + 128;
+        for (const auto &contour : profile.contours)
+            bytes += contour.capacity() * sizeof(int) + 64;
+    }
+    for (const auto &material : definitions.materials)
+        bytes += material.key.capacity() + material.sprite.capacity() +
+                 material.variants.capacity() * sizeof(Variant) + material.decor.sprite.capacity() +
+                 (material.decor.full.capacity() + material.decor.edge.capacity()) * sizeof(int) +
+                 256;
+    for (const auto &binding : definitions.bindings)
+        bytes += sizeof(binding) + binding.first.capacity() + 128;
+    bytes += textures.size();
+    for (std::size_t id = 0; id < textures.size(); ++id)
+        if (needed.empty() || std::find(needed.begin(),needed.end(),id) != needed.end())
+            for (const auto& texture : textures[id])
+                bytes += sizeof(CpuMaterials::Texture)*2 + 128 + texture.pixels.capacity()*sizeof(MaterialPixels::value_type);
+    return bytes;
+}
+std::shared_ptr<const Compositor::CpuMaterials> Compositor::cpuMaterials(std::span<const MaterialId> needed)
+{
+    auto previous = publishedCpu.lock();
+    std::vector<char> included(textures.size(),needed.empty());
+    for (const auto id : needed) included.at(id) = true;
+    if (previous && previous->included == included && publishedRevisions == materialRevisions)
+        return previous;
+    auto next = std::make_shared<CpuMaterials>();
+    next->definitions =
+        previous ? previous->definitions : std::make_shared<const Catalog>(definitions);
+    next->textures.resize(textures.size());
+    next->included = std::move(included);
+    for (std::size_t id = 0; id < textures.size(); ++id)
+    {
+        if (!next->included[id]) continue;
+        if (previous && previous->included[id] && publishedRevisions[id] == materialRevisions[id])
+            next->textures[id] = previous->textures[id];
+        else
+            for (const auto &texture : textures[id])
+                next->textures[id].push_back(
+                    {texture.size, std::make_shared<const MaterialPixels>(texture.pixels)});
+    }
+    next->bytes = cpuMaterialBytes(needed);
+    publishedRevisions = materialRevisions;
+    publishedCpu = next;
+    return next;
+}
+void Compositor::CpuMaterials::compose(const Recipe &recipe, SDL_Surface *target, int scale,
+                                       const CellMask *mask) const
+{
+    CpuScratch scratch;
+    compose(recipe, target, scale, scratch, mask);
+}
+void Compositor::CpuMaterials::compose(const Recipe &recipe, SDL_Surface *target, int scale,
+                                       CpuScratch &scratch, const CellMask *mask) const
+{
+    scratch.sources.resize(definitions->materials.size());
+    auto &sources = scratch.sources;
+    for (auto id : recipe.corners)
+    {
+        const auto variant = definitions->variantIndex(id, recipe.x, recipe.y, recipe.seed);
+        const auto &texture = textures.at(id).at(variant);
+        sources[id] = {variant, 0, texture.size, *texture.pixels,
+                       texture.size % (32 * scale) ? 0 : texture.size / (32 * scale)};
+    }
+    if (!mask && std::any_of(recipe.corners.begin(), recipe.corners.end(),
+                             [&](auto id) { return id != recipe.corners[0]; }))
+    {
+        buildMask(*definitions, recipe, scale, scratch.mask);
+        mask = &scratch.mask;
+    }
+    composePixels(*definitions, recipe, target, 0, 0, scale, sources, mask);
+}
+Compositor::CellMask Compositor::CpuMaterials::mask(const Recipe &recipe, int scale) const
+{
+    CellMask result;
+    buildMask(*definitions, recipe, scale, result);
+    return result;
+}
 void Compositor::compose(const Recipe &r, SDL_Surface *target, int ox, int oy, int scale,
 						 const CellMask *mask) const
+{
+    thread_local std::vector<PreparedMaterialView> sources;
+    sources.resize(definitions.materials.size());
+    for (auto id : r.corners)
+    {
+        sources[id] = preparedMaterial(r, id);
+        sources[id].step = sources[id].size % (32 * scale) ? 0 : sources[id].size / (32 * scale);
+    }
+    composePixels(definitions, r, target, ox, oy, scale, sources, mask);
+}
+void Compositor::composePixels(const Catalog &definitions, const Recipe &r, SDL_Surface *target,
+                               int ox, int oy, int scale,
+                               std::span<const PreparedMaterialView> prepared, const CellMask *mask)
 {
 	if (target->format != SDL_PIXELFORMAT_ARGB8888)
 		throw std::runtime_error("Terrain compositor requires ARGB8888");
 	const int size = 32 * scale;
 	// Resolve immutable pixel storage once per tile, rather than through
 	// vector/array accessors for every channel of every instrumented pixel.
-	struct Source
-	{
-		const std::array<unsigned char, 4> *pixels = nullptr;
-		int size = 0, step = 0;
-	};
-	std::vector<Source> selected(definitions.materials.size());
-	auto *sources = selected.data();
-	for (auto id : r.corners)
-		if (!sources[id].pixels)
-		{
-			const auto &texture = textures[id][definitions.variantIndex(id, r.x, r.y, r.seed)];
-			sources[id] = {texture.pixels.data(), texture.size,
-			texture.size % size == 0 ? texture.size / size : 0};
-		}
+    const auto *sources = prepared.data();
 	const bool uniform = std::all_of(r.corners.begin(), r.corners.end(),
 									 [&](auto id) { return id == r.corners[0]; });
 	if (uniform)
@@ -351,13 +443,13 @@ void Compositor::compose(const Recipe &r, SDL_Surface *target, int ox, int oy, i
 		const auto &texture = sources[r.corners[0]];
 		// Native and HD sources usually divide the composition grid exactly.
 		// Walk their texels directly instead of dividing twice per output pixel.
-		if (texture.pixels && texture.step)
+        if (!texture.pixels.empty() && texture.step)
 		{
 			for (int y = 0; y < size; ++y)
 			{
 				auto *row = reinterpret_cast<Uint32 *>(static_cast<unsigned char *>(target->pixels) +
 					(oy + y) * target->pitch) + ox;
-				const auto *source = texture.pixels + y * texture.step * texture.size;
+                const auto *source = texture.pixels.data() + y * texture.step * texture.size;
 				for (int x = 0; x < size; ++x, source += texture.step)
 				{
 					const auto *p = source->data();
@@ -374,12 +466,14 @@ void Compositor::compose(const Recipe &r, SDL_Surface *target, int ox, int oy, i
 						ox;
 			for (int x = 0; x < size; ++x)
 			{
-				if (!texture.pixels)
+                if (texture.pixels.empty())
 					row[x] = 0;
 				else
 				{
-					const auto *p = texture.pixels[(y * texture.size / size) * texture.size +
-													x * texture.size / size].data();
+                    const auto *p = texture
+                                        .pixels[(y * texture.size / size) * texture.size +
+                                                x * texture.size / size]
+                                        .data();
 					row[x] = (unsigned(p[3]) << 24) | (unsigned(p[0]) << 16) |
 							 (unsigned(p[1]) << 8) | p[2];
 				}
@@ -390,7 +484,7 @@ void Compositor::compose(const Recipe &r, SDL_Surface *target, int ox, int oy, i
 	// Uncached composition reuses one mask per thread rather than allocating.
 	thread_local CellMask scratch;
 	if (!mask)
-		this->mask(r, scale, scratch);
+        buildMask(definitions, r, scale, scratch);
 	const auto &cell = mask ? *mask : scratch;
 	if (cell.recipe != r || cell.scale != scale)
 		throw std::runtime_error("Terrain cell mask does not match its recipe");
@@ -411,7 +505,7 @@ void Compositor::compose(const Recipe &r, SDL_Surface *target, int ox, int oy, i
 			std::uint64_t rgb[3] = {};
 			unsigned alpha = 0;
 			for (unsigned slot = 0; slot < cell.colors; ++slot)
-				if (weights[slot] && sources[cell.palette[slot]].pixels)
+                if (weights[slot] && !sources[cell.palette[slot]].pixels.empty())
 				{
 					const auto &t = sources[cell.palette[slot]];
 					const int sx = t.step ? x * t.step : x * t.size / size;
@@ -463,6 +557,10 @@ Compositor::CellMask Compositor::mask(const Recipe &r, int scale) const
 	return cell;
 }
 void Compositor::mask(const Recipe &r, int scale, CellMask &cell) const
+{
+    buildMask(definitions, r, scale, cell);
+}
+void Compositor::buildMask(const Catalog &definitions, const Recipe &r, int scale, CellMask &cell)
 {
 	cell.palette = {};
 	cell.colors = 0;

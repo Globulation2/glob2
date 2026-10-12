@@ -1,5 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
+#include "ScopedEnvironment.h"
+#include "ComputeExecutor.h"
+#include <PresentationWork.h>
+#include <cstring>
 #include "TerrainMaterials.h"
 #include "TerrainCompositor.h"
 #include "TerrainCatalogIO.h"
@@ -1370,4 +1374,115 @@ TEST_SUITE("TerrainMaterials")
 			CHECK(c.frame(c.find("ice"), 7, 9, t) ==
 				  c.frame(c.find("ice"), 7, 9, 0) + (t / 4) % 3 * 16);
 	}
+}
+
+TEST_CASE("owned prepared materials survive animation and share unchanged revisions [display]" *
+          doctest::test_suite("TerrainMaterials"))
+{
+    glob2test::HeadlessGlobals globals({.display = true});
+    TerrainVisual::Compositor compositor(catalog());
+    compositor.prepare(false, 0);
+    auto retained = compositor.cpuMaterials();
+    const auto c = compositor.catalog();
+    auto recipe = contextualRecipe(3, 7, 16, [&](int x, int y)
+                                   { return (x + y) % 3 ? c.find("sand") : c.find("water"); });
+    for (int samplingScale : {1,2,4}) {
+        compositor.prepare(false,0);
+    auto original = std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)>(
+        SDL_CreateSurface(32*samplingScale, 32*samplingScale, SDL_PIXELFORMAT_ARGB8888), SDL_DestroySurface);
+    auto actual = std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)>(
+        SDL_CreateSurface(32*samplingScale, 32*samplingScale, SDL_PIXELFORMAT_ARGB8888), SDL_DestroySurface);
+    REQUIRE(original);
+    REQUIRE(actual);
+    compositor.compose(recipe, original.get(), 0, 0, samplingScale);
+    compositor.prepare(false, 5);
+    auto changed = compositor.cpuMaterials();
+    CHECK(changed != retained);
+    CHECK(changed->textures[c.find("sand")][0].pixels ==
+          retained->textures[c.find("sand")][0].pixels);
+    ComputeExecutor executor;
+    executor.configure(4);
+    auto batch = executor.submitPresentationBatch(1, {2}, [retained, recipe, &actual, samplingScale](auto)
+                                                  { retained->compose(recipe, actual.get(), samplingScale); });
+    executor.finishPresentationBatch(batch);
+    for (int y = 0; y < 32*samplingScale; ++y)
+        CHECK(std::memcmp(static_cast<Uint8 *>(actual->pixels) + y * actual->pitch,
+                          static_cast<Uint8 *>(original->pixels) + y * original->pitch,
+                          32*samplingScale*4) == 0);
+    }
+}
+TEST_CASE(
+    "CPU terrain groups preserve incremental pages under serial and parallel schedules [display]" *
+    doctest::test_suite("TerrainMaterials"))
+{
+    glob2test::HeadlessGlobals globals({.display = true});
+    glob2test::HeadlessGame fixture({.wDec = 5, .hDec = 5, .terrain = SAND, .discovered = true});
+    for (int y = 0; y < 32; ++y)
+        for (int x = 0; x < 32; ++x)
+            if ((x * 7 + y * 13) % 11 < 5)
+                fixture.game.map.setVertexTerrain(x, y, WATER);
+    ComputeExecutor executor;
+    executor.configure(4);
+    GAGCore::PresentationWorkScope scope(executor);
+    std::array<SoftwareTerrainCache, 3> caches;
+    for (int frame = 0; frame < 6; ++frame)
+    {
+        if (frame == 2)
+            fixture.game.map.setVertexTerrain(31, 9, GRASS);
+        if (frame == 4) fixture.game.map.unsetMapDiscovered();
+        if (frame == 5) fixture.game.map.setMapDiscovered(2,2,7,9,fixture.team->me);
+        SceneMap scene;
+        glob2test::observeMap(fixture.game.map, scene);
+        std::vector<Uint32> expected;
+        for (unsigned mode = 0; mode < 3; ++mode)
+        {
+            glob2test::ScopedEnvironment execution("GLOB2_RENDER_EXECUTION", mode == 0 ? "auto"
+                                                                             : mode == 1
+                                                                                 ? "serial"
+                                                                                 : "parallel");
+            auto &cache = caches[mode];
+            REQUIRE(cache.prepare(scene, *globals->terrain, 0, 0, 15, 15, frame == 3 ? 16 : 0, 0,
+                                  fixture.team->me, frame < 4, frame));
+            globals->gfx->drawFilledRect(0, 0, 640, 480, GAGCore::Color(11, 22, 33));
+            cache.draw(*globals->gfx);
+            globals->gfx->finishDrawingSprite(globals->terrain, 255);
+            const auto *output = globals->gfx->getSDLSurface();
+            std::vector<Uint32> current;
+            for (int y = 0; y < output->h; ++y)
+            {
+                const auto *row = reinterpret_cast<const Uint32 *>(
+                    static_cast<const Uint8 *>(output->pixels) + y * output->pitch);
+                current.insert(current.end(), row, row + output->w);
+            }
+            if (mode == 0)
+                expected = std::move(current);
+            else
+                CHECK(current == expected);
+        }
+    }
+    CHECK(caches[1].workMetrics.cells > 0);
+    CHECK(caches[2].workMetrics.jobs > 0);
+    CHECK(caches[2].workMetrics.peakReservedBytes <= 4u * 1024u * 1024u);
+}
+TEST_CASE("failed CPU terrain groups retire invalid pages and recover on the next prepare [display]" * doctest::test_suite("TerrainMaterials"))
+{
+    glob2test::ScopedEnvironment mode("GLOB2_RENDER_EXECUTION","parallel");
+    glob2test::HeadlessGlobals globals({.display=true});
+    glob2test::HeadlessGame fixture({.wDec=5,.hDec=5,.terrain=SAND,.discovered=true});
+    fixture.game.map.setVertexTerrain(7,9,WATER);
+    SceneMap scene;glob2test::observeMap(fixture.game.map,scene);
+    SoftwareTerrainCache cache;
+    struct AllocationFailure : GAGCore::PresentationWork {
+        void executePresentationJobs(std::size_t count,const std::function<void(std::size_t)>& job) override {
+            if(count)job(0);
+            throw std::bad_alloc();
+        }
+    } failure;
+    { GAGCore::PresentationWorkScope scope(failure);
+        CHECK_FALSE(cache.prepare(scene,*globals->terrain,0,0,15,15,0,0,fixture.team->me,true,0));
+    }
+    CHECK(cache.bytes()==0);CHECK(cache.maskBytes()==0);
+    ComputeExecutor executor;executor.configure(3);GAGCore::PresentationWorkScope scope(executor);
+    CHECK(cache.prepare(scene,*globals->terrain,0,0,15,15,0,0,fixture.team->me,true,0));
+    CHECK(cache.workMetrics.jobs>0);
 }

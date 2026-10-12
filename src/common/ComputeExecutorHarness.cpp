@@ -774,3 +774,248 @@ TEST_CASE("retained completion tickets can be resolved after executor destructio
     }
     CHECK_FALSE(ticket->complete());
 }
+
+TEST_CASE("graphics batches finish once, retain failures and release captures" *
+          doctest::test_suite("ComputeExecutor"))
+{
+    for (unsigned threads : {1u, 2u, 5u})
+    {
+        ComputeExecutor executor;
+        executor.configure(threads);
+        auto retained = std::make_shared<int>(42);
+        std::weak_ptr<int> weak = retained;
+        std::array<std::atomic<unsigned>, 37> results{};
+        auto batch = executor.submitPresentationBatch(
+            results.size(), {2},
+            [&, retained](auto context)
+            {
+                ++results[context.index];
+                CHECK((ComputeExecutor::workerSlot() != 0 || threads == 1));
+            });
+        retained.reset();
+        executor.finishPresentationBatch(batch);
+        executor.finishPresentationBatch(batch);
+        CHECK(batch.status() == ComputeExecutor::Presentation::Status::Complete);
+        CHECK(weak.expired());
+        for (const auto &result : results)
+            CHECK(result.load() == 1);
+        auto empty = executor.submitPresentationBatch(0, {2}, {});
+        CHECK(empty.finished());
+        executor.finishPresentationBatch(empty);
+        auto bad = executor.submitPresentationBatch(
+            8, {2}, [](auto) { throw std::runtime_error("graphics error"); });
+        CHECK_THROWS_WITH_AS(executor.finishPresentationBatch(bad), "graphics error",
+                             std::runtime_error);
+        CHECK(bad.finished());
+        CHECK_THROWS_WITH_AS(bad.rethrowFailure(), "graphics error", std::runtime_error);
+    }
+}
+TEST_CASE(
+    "serial graphics finish never pumps scene or required work and abandonment releases captures" *
+    doctest::test_suite("ComputeExecutor"))
+{
+    ComputeExecutor executor;
+    unsigned scene = 0, simulation = 0, graphics = 0;
+    auto preparation = executor.submitPresentation(3, [&](auto) { ++scene; });
+    ComputeExecutor::Group group{
+        3, {[](void *p, std::size_t) { ++*static_cast<unsigned *>(p); }, &simulation}};
+    auto required = executor.submit(std::span(&group, 1));
+    auto batch = executor.submitPresentationBatch(3, {2}, [&](auto) { ++graphics; });
+    executor.finishPresentationBatch(batch);
+    CHECK(graphics == 3);
+    CHECK(scene == 0);
+    CHECK(simulation == 0);
+    auto capture = std::make_shared<int>(1);
+    std::weak_ptr<int> weak = capture;
+    {
+        auto abandoned = executor.submitPresentationBatch(3, {2}, [capture](auto) {});
+        capture.reset();
+    }
+    CHECK(weak.expired());
+    executor.join(required);
+    executor.cancelPresentationAndWait();
+}
+TEST_CASE("graphics cancellation drains claimed work and reconfiguration releases inputs" *
+          doctest::test_suite("ComputeExecutor"))
+{
+#ifndef __EMSCRIPTEN__
+    ComputeExecutor executor;
+    executor.configure(4);
+    std::mutex mutex;
+    std::condition_variable changed;
+    unsigned entered = 0;
+    bool release = false;
+    auto retained = std::make_shared<int>(7);
+    std::weak_ptr<int> weak = retained;
+    auto batch = executor.submitPresentationBatch(50, {2},
+                                                  [&, retained](auto context)
+                                                  {
+                                                      std::unique_lock lock(mutex);
+                                                      ++entered;
+                                                      changed.notify_all();
+                                                      changed.wait(lock, [&] { return release; });
+                                                      CHECK(context.cancellation.canceled());
+                                                  });
+    retained.reset();
+    {
+        std::unique_lock lock(mutex);
+        REQUIRE(changed.wait_for(lock, std::chrono::seconds(5), [&] { return entered == 2; }));
+    }
+    batch.cancel();
+    CHECK_FALSE(batch.finished());
+    CHECK_FALSE(weak.expired());
+    {
+        std::lock_guard lock(mutex);
+        release = true;
+    }
+    changed.notify_all();
+    executor.finishPresentationBatch(batch);
+    CHECK(entered == 2);
+    CHECK(weak.expired());
+    CHECK(batch.status() == ComputeExecutor::Presentation::Status::Canceled);
+    // A pending batch with no workers is canceled by reconfiguration.
+    executor.configure(1);
+    retained = std::make_shared<int>(9);
+    weak = retained;
+    auto pending = executor.submitPresentationBatch(3, {2}, [retained](auto) {});
+    retained.reset();
+    executor.configure(3);
+    CHECK(pending.finished());
+    CHECK(weak.expired());
+#endif
+}
+TEST_CASE("both presentation classes progress during required lane backlog" *
+          doctest::test_suite("ComputeExecutor"))
+{
+#ifndef __EMSCRIPTEN__
+    ComputeExecutor executor;
+    executor.configure(2);
+    std::atomic<unsigned> required{0}, scene{0}, graphics{0};
+    std::atomic<bool> sceneEarly{false}, graphicsEarly{false};
+    ComputeExecutor::Group group{
+        512,
+        {[](void *p, std::size_t) { ++*static_cast<std::atomic<unsigned> *>(p); }, &required},
+        3};
+    // Hold the sole worker until all three classes are admitted.
+    std::mutex mutex;
+    std::condition_variable changed;
+    bool entered = false, release = false;
+    ComputeExecutor::Group gate{1,
+                                {[](void *p, std::size_t)
+                                 {
+                                     auto &invoke = *static_cast<std::function<void()> *>(p);
+                                     invoke();
+                                 },
+                                 nullptr}};
+    std::function<void()> hold = [&]
+    {
+        std::unique_lock lock(mutex);
+        entered = true;
+        changed.notify_all();
+        changed.wait(lock, [&] { return release; });
+    };
+    gate.job.context = &hold;
+    auto held = executor.submit(std::span(&gate, 1));
+    {
+        std::unique_lock lock(mutex);
+        REQUIRE(changed.wait_for(lock, std::chrono::seconds(5), [&] { return entered; }));
+    }
+    auto simulation = executor.submit(std::span(&group, 1));
+    auto preparation = executor.submitPresentation(4,
+                                                   [&](auto)
+                                                   {
+                                                       if (required.load() < 512)
+                                                           sceneEarly.store(true);
+                                                       ++scene;
+                                                   });
+    auto batch = executor.submitPresentationBatch(4, {2},
+                                                  [&](auto)
+                                                  {
+                                                      if (required.load() < 512)
+                                                          graphicsEarly.store(true);
+                                                      ++graphics;
+                                                  });
+    {
+        std::lock_guard lock(mutex);
+        release = true;
+    }
+    changed.notify_all();
+    executor.finishPresentationBatch(batch);
+    executor.join(held);
+    executor.join(simulation);
+    executor.cancelPresentationAndWait();
+    CHECK(graphics == 4);
+    CHECK(scene > 0);
+    CHECK(sceneEarly.load());
+    CHECK(graphicsEarly.load());
+#endif
+}
+TEST_CASE("graphics callback barriers are rejected and completed tickets do not pump newer work" *
+          doctest::test_suite("ComputeExecutor"))
+{
+    ComputeExecutor executor;
+    auto first = executor.submitPresentationBatch(
+        1, {2},
+        [&](auto)
+        {
+            auto empty = ComputeExecutor::PresentationBatchTicket{};
+            CHECK_THROWS_AS(executor.finishPresentationBatch(empty), std::logic_error);
+            CHECK_THROWS_AS(executor.configure(1), std::logic_error);
+            CHECK_THROWS_AS(executor.submitPresentationBatch(0, {2}, {}), std::logic_error);
+        });
+    executor.finishPresentationBatch(first);
+    first.cancel();
+    CHECK(first.status() == ComputeExecutor::Presentation::Status::Complete);
+    unsigned ran = 0;
+    auto second = executor.submitPresentationBatch(2, {2}, [&](auto) { ++ran; });
+    executor.finishPresentationBatch(first);
+    CHECK(ran == 0);
+    ComputeExecutor other;
+    CHECK_THROWS_AS(other.finishPresentationBatch(second), std::logic_error);
+    executor.finishPresentationBatch(second);
+    CHECK(ran == 2);
+}
+TEST_CASE("empty graphics submissions bypass occupied admission and concurrency metrics respect "
+          "ceilings" *
+          doctest::test_suite("ComputeExecutor"))
+{
+    ComputeExecutor executor;
+    auto pending = executor.submitPresentationBatch(2, {1}, [](auto) {});
+    auto empty = executor.submitPresentationBatch(0, {2}, {});
+    CHECK(empty.finished());
+    executor.finishPresentationBatch(empty);
+    CHECK_FALSE(pending.finished());
+    executor.finishPresentationBatch(pending);
+    CHECK(executor.graphicsMetrics().parallelBatches == 0);
+    for (unsigned threads : {2u, 4u})
+    {
+        executor.configure(threads);
+        auto one = executor.submitPresentationBatch(10, {1}, [](auto) {});
+        executor.finishPresentationBatch(one);
+        CHECK(executor.graphicsMetrics().parallelBatches == 0);
+    }
+    ComputeExecutor::PresentationBatchTicket retained;
+    auto input = std::make_shared<int>(1);
+    std::weak_ptr<int> weak = input;
+    {
+        ComputeExecutor retired;
+        retained = retired.submitPresentationBatch(4, {2}, [input](auto) {});
+        input.reset();
+    }
+    CHECK(retained.finished());
+    CHECK(weak.expired());
+}
+TEST_CASE("graphics capture destruction can inspect scheduler metrics before completion" * doctest::test_suite("ComputeExecutor"))
+{
+    for(unsigned threads : {1u,4u}) {
+        ComputeExecutor executor;executor.configure(threads);
+        std::atomic<bool> released{false};
+        auto capture=std::shared_ptr<int>(new int(1),[&](int* value) {
+            const auto metrics=executor.graphicsMetrics();
+            CHECK(metrics.jobs==1);
+            released.store(true);delete value;
+        });
+        auto batch=executor.submitPresentationBatch(1,{2},[capture](auto){});capture.reset();
+        executor.finishPresentationBatch(batch);CHECK(released.load());
+    }
+}

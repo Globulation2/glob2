@@ -13,6 +13,8 @@ namespace GAGCore
 struct RenderOperations
 {
 	std::uint64_t blits = 0, fills = 0, triangles = 0;
+    std::uint64_t rasterBatches = 0, rasterTiles = 0, rasterReferences = 0, rasterSerialBatches = 0;
+    std::uint64_t rasterSnapshotBytes = 0, rasterPeakRetainedBytes = 0, rasterFallbacks = 0;
 };
 
 class RenderBackend
@@ -49,6 +51,9 @@ class RenderBackend
 	virtual void reset() = 0;
 	virtual void present() = 0;
 	virtual void flush() = 0;
+    // Abandon queued drawing after a failed CPU batch. No output is committed;
+    // the owner restores the completed image before beginning another frame.
+    virtual void discardFrame() noexcept {}
 	virtual void logicalSize(int width, int height) = 0;
 	// Map logical geometry across the CPU target without letterboxing.
 	virtual void nativeLogicalSize(int width, int height) { logicalSize(width, height); }

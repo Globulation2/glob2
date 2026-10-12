@@ -87,15 +87,48 @@ class Compositor
         std::uint64_t revision = 0;
         int size = 0;
         std::span<const std::array<unsigned char, 4>> pixels;
+        int step = 0;
     };
     // Valid until prepare() changes this material. Uploaders copy the canonical
     // animation/HD pixels into owned revisions before retaining or queueing them.
     PreparedMaterialView preparedMaterial(const Recipe &, MaterialId) const;
+    // Published material revisions own only composition data. A later prepare
+    // can replace animated pixels without invalidating a running CPU batch.
+    using MaterialPixels = std::vector<std::array<unsigned char, 4>>;
+    struct CpuScratch
+    {
+        CellMask mask;
+        std::vector<PreparedMaterialView> sources;
+    };
+    struct CpuMaterials
+    {
+        struct Texture
+        {
+            int size = 0;
+            std::shared_ptr<const MaterialPixels> pixels;
+        };
+        std::shared_ptr<const Catalog> definitions;
+        std::vector<std::vector<Texture>> textures;
+        std::vector<char> included;
+        std::size_t bytes = 0;
+        // Every recipe corner must be included in this immutable snapshot.
+        void compose(const Recipe &, SDL_Surface *, int scale, const CellMask * = nullptr) const;
+        void compose(const Recipe &, SDL_Surface *, int scale, CpuScratch &,
+                     const CellMask * = nullptr) const;
+        CellMask mask(const Recipe &, int scale) const;
+    };
+    std::shared_ptr<const CpuMaterials> cpuMaterials(std::span<const MaterialId> needed = {});
+    std::size_t cpuMaterialBytes(std::span<const MaterialId> needed = {}) const;
 	std::uint64_t materialRevision(MaterialId id) const { return materialRevisions[id]; }
 	int scale() const { return resolution; }
 	std::size_t sourceBytes() const;
 
   private:
+      std::weak_ptr<const CpuMaterials> publishedCpu;
+      std::vector<std::uint64_t> publishedRevisions;
+      static void composePixels(const Catalog &, const Recipe &, SDL_Surface *, int, int, int,
+                                std::span<const PreparedMaterialView>, const CellMask *);
+      static void buildMask(const Catalog &, const Recipe &, int, CellMask &);
 	struct Texture
 	{
 		GAGCore::DrawableSurface *source = nullptr;
