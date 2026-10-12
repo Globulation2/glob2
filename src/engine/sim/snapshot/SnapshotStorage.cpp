@@ -89,4 +89,25 @@ MemoryMetrics Storage::memoryMetrics() const
 	}
 	return result;
 }
+ResourcePlaneMemoryMetrics Storage::resourcePlaneMemoryMetrics() const
+{
+	ResourcePlaneMemoryMetrics result;
+	resourceFields.inspect([&](const ResourceFields& fields, bool leased) {
+		if (leased) {
+			++result.leasedDescriptors;
+			result.leasedDescriptorReferences += fields.planes.size();
+		} else {
+			++result.reusableDescriptors;
+			result.reusableDescriptorReferences += fields.planes.size();
+		}
+	});
+	resourcePlanes.inspect([&](const std::vector<Uint16>& values, bool leased) {
+		const auto bytes = Uint64(values.capacity()) * sizeof(Uint16);
+		++result.allocatedPlanes;
+		result.capacityBytes += bytes;
+		if (leased) { ++result.leasedPlanes; result.leasedCapacityBytes += bytes; }
+		else { ++result.reusablePlanes; result.reusableCapacityBytes += bytes; }
+	});
+	return result;
+}
 } // namespace SimulationSnapshot

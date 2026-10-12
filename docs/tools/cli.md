@@ -255,7 +255,7 @@ Platform: all.
 | `--no-custom-cursor` | flag; default false | Use the system cursor. |
 | `--mute` | flag; default false | Mute music and speech. |
 | `--no-mute` | flag; default false | Unmute music and speech. |
-| `--renderer` | gpu, software | Rendering backend. |
+| `--renderer` | auto, sdl-gpu, programmable-gl, webgpu, portable-sdl, software, legacy-gl, gpu, webgl2, sdl, opengl | Rendering backend. |
 | `--graphics-detail` | full, reduced | Detail effects. |
 | `--window-size` | resolution; pixels | Initial window size in pixels; clamped to at least 640x480. |
 | `--username` | string | Player name. |
@@ -269,7 +269,7 @@ Platform: all.
 | `--data-dir` | directory | Add an asset search directory (in order). Repeatable. |
 | `--generator-package` | file | Load a custom generator package or directory. Repeatable. |
 | `--building-catalog` | file | Building catalog manifest. |
-| `--compute-threads` | compute; default auto | Shared compute pool; auto uses logical CPU count. |
+| `--compute-threads` | compute; default auto | Shared compute pool; auto respects available logical CPUs. |
 | `--gpu` | on, off | GPU gradient compute; overrides local setting (graphical default off, headless on). |
 | `--help` | flag; default false | Show this command's help (also -h). |
 
@@ -319,7 +319,7 @@ Platform: all.
 | `--no-custom-cursor` | flag; default false | Use the system cursor. |
 | `--mute` | flag; default false | Mute music and speech. |
 | `--no-mute` | flag; default false | Unmute music and speech. |
-| `--renderer` | gpu, software | Rendering backend. |
+| `--renderer` | auto, sdl-gpu, programmable-gl, webgpu, portable-sdl, software, legacy-gl, gpu, webgl2, sdl, opengl | Rendering backend. |
 | `--graphics-detail` | full, reduced | Detail effects. |
 | `--window-size` | resolution; pixels | Initial window size in pixels; clamped to at least 640x480. |
 | `--username` | string | Player name. |
@@ -333,7 +333,7 @@ Platform: all.
 | `--data-dir` | directory | Add an asset search directory (in order). Repeatable. |
 | `--generator-package` | file | Load a custom generator package or directory. Repeatable. |
 | `--building-catalog` | file | Building catalog manifest. |
-| `--compute-threads` | compute; default auto | Shared compute pool; auto uses logical CPU count. |
+| `--compute-threads` | compute; default auto | Shared compute pool; auto respects available logical CPUs. |
 | `--gpu` | on, off | GPU gradient compute; overrides local setting (graphical default off, headless on). |
 | `--help` | flag; default false | Show this command's help (also -h). |
 
@@ -645,7 +645,7 @@ Platform: all.
 | `--building-catalog` | file | Building catalog manifest. |
 | `--data-dir` | directory | Add an asset search directory (in order). Repeatable. |
 | `--generator-package` | file | Load a custom generator package or directory. Repeatable. |
-| `--compute-threads` | compute; default auto | Shared compute pool; auto uses logical CPU count. |
+| `--compute-threads` | compute; default auto | Shared compute pool; auto respects available logical CPUs. |
 | `--gpu` | on, off | GPU gradient compute; overrides local setting (graphical default off, headless on). |
 | `--map-file` | file | Map input for a new game. |
 | `--load-game` | file | Saved-game input for continuation. |
@@ -730,7 +730,7 @@ Platform: all.
 | `--no-custom-cursor` | flag; default false | Use the system cursor. |
 | `--mute` | flag; default false | Mute music and speech. |
 | `--no-mute` | flag; default false | Unmute music and speech. |
-| `--renderer` | gpu, software | Rendering backend. |
+| `--renderer` | auto, sdl-gpu, programmable-gl, webgpu, portable-sdl, software, legacy-gl, gpu, webgl2, sdl, opengl | Rendering backend. |
 | `--graphics-detail` | full, reduced | Detail effects. |
 | `--window-size` | resolution; pixels | Initial window size in pixels; clamped to at least 640x480. |
 | `--username` | string | Player name. |
@@ -742,7 +742,7 @@ Platform: all.
 | `--record-crf` | integer; default 23; 0..51 | Software H.264 quality; lower means higher quality. |
 | `--record-chapter-ticks` | integer; default 10000; ticks; 1..1000000000 | Simulation ticks per chapter. |
 | `--display` | flag; default false | Render the saved game through the normal presentation loop. |
-| `--compute-threads` | compute; default auto | Shared compute pool; auto uses logical CPU count. |
+| `--compute-threads` | compute; default auto | Shared compute pool; auto respects available logical CPUs. |
 | `--gpu` | on, off | GPU gradient compute; overrides local setting (graphical default off, headless on). |
 | `--ticks` | integer; default 0; ticks; 0..2147483647 | Steps per run; 0 runs until the game ends. |
 | `--runs` | integer; default 1; 1..2147483647 | Number of saved-game runs. |
@@ -793,7 +793,7 @@ Platform: all.
 | --- | --- | --- |
 | `--output-dir` | directory | Structured job directory; must not already contain result.json. Required. |
 | `--profile` | string; default glob2-verify | Isolated profile label. |
-| `--compute-threads` | compute; default auto | Shared compute pool; auto uses logical CPU count. |
+| `--compute-threads` | compute; default auto | Shared compute pool; auto respects available logical CPUs. |
 | `--map-file` | file | Recorded match's map. Required. |
 | `--help` | flag; default false | Show this command's help (also -h). |
 
@@ -823,7 +823,7 @@ Platform: all.
 | `--no-custom-cursor` | flag; default false | Use the system cursor. |
 | `--mute` | flag; default false | Mute music and speech. |
 | `--no-mute` | flag; default false | Unmute music and speech. |
-| `--renderer` | gpu, software | Rendering backend. |
+| `--renderer` | auto, sdl-gpu, programmable-gl, webgpu, portable-sdl, software, legacy-gl, gpu, webgl2, sdl, opengl | Rendering backend. |
 | `--graphics-detail` | full, reduced | Detail effects. |
 | `--window-size` | resolution; pixels | Initial window size in pixels; clamped to at least 640x480. |
 | `--username` | string | Player name. |
@@ -837,7 +837,7 @@ Platform: all.
 | `--data-dir` | directory | Add an asset search directory (in order). Repeatable. |
 | `--generator-package` | file | Load a custom generator package or directory. Repeatable. |
 | `--building-catalog` | file | Building catalog manifest. |
-| `--compute-threads` | compute; default auto | Shared compute pool; auto uses logical CPU count. |
+| `--compute-threads` | compute; default auto | Shared compute pool; auto respects available logical CPUs. |
 | `--gpu` | on, off | GPU gradient compute; overrides local setting (graphical default off, headless on). |
 | `--instance` | string | Online instance origin. |
 | `--help` | flag; default false | Show this command's help (also -h). |
@@ -888,7 +888,7 @@ Platform: all.
 | `--no-custom-cursor` | flag; default false | Use the system cursor. |
 | `--mute` | flag; default false | Mute music and speech. |
 | `--no-mute` | flag; default false | Unmute music and speech. |
-| `--renderer` | gpu, software | Rendering backend. |
+| `--renderer` | auto, sdl-gpu, programmable-gl, webgpu, portable-sdl, software, legacy-gl, gpu, webgl2, sdl, opengl | Rendering backend. |
 | `--graphics-detail` | full, reduced | Detail effects. |
 | `--window-size` | resolution; pixels | Initial window size in pixels; clamped to at least 640x480. |
 | `--username` | string | Player name. |
@@ -902,7 +902,7 @@ Platform: all.
 | `--data-dir` | directory | Add an asset search directory (in order). Repeatable. |
 | `--generator-package` | file | Load a custom generator package or directory. Repeatable. |
 | `--building-catalog` | file | Building catalog manifest. |
-| `--compute-threads` | compute; default auto | Shared compute pool; auto uses logical CPU count. |
+| `--compute-threads` | compute; default auto | Shared compute pool; auto respects available logical CPUs. |
 | `--gpu` | on, off | GPU gradient compute; overrides local setting (graphical default off, headless on). |
 | `--instance` | string | Online instance origin. |
 | `--hash` | string | Catalog map SHA-256. Required. |
@@ -955,7 +955,7 @@ Platform: all.
 | `--no-custom-cursor` | flag; default false | Use the system cursor. |
 | `--mute` | flag; default false | Mute music and speech. |
 | `--no-mute` | flag; default false | Unmute music and speech. |
-| `--renderer` | gpu, software | Rendering backend. |
+| `--renderer` | auto, sdl-gpu, programmable-gl, webgpu, portable-sdl, software, legacy-gl, gpu, webgl2, sdl, opengl | Rendering backend. |
 | `--graphics-detail` | full, reduced | Detail effects. |
 | `--window-size` | resolution; pixels | Initial window size in pixels; clamped to at least 640x480. |
 | `--username` | string | Player name. |
@@ -969,7 +969,7 @@ Platform: all.
 | `--data-dir` | directory | Add an asset search directory (in order). Repeatable. |
 | `--generator-package` | file | Load a custom generator package or directory. Repeatable. |
 | `--building-catalog` | file | Building catalog manifest. |
-| `--compute-threads` | compute; default auto | Shared compute pool; auto uses logical CPU count. |
+| `--compute-threads` | compute; default auto | Shared compute pool; auto respects available logical CPUs. |
 | `--gpu` | on, off | GPU gradient compute; overrides local setting (graphical default off, headless on). |
 | `--instance` | string | Online instance origin. |
 | `--hash` | string | Catalog map SHA-256. Required. |
@@ -1016,7 +1016,7 @@ Platform: all.
 | --- | --- | --- |
 | `--output-dir` | directory | Structured job directory; must not already contain result.json. Required. |
 | `--profile` | string; default glob2-turn-client | Isolated profile label. |
-| `--compute-threads` | compute; default auto | Shared compute pool; auto uses logical CPU count. |
+| `--compute-threads` | compute; default auto | Shared compute pool; auto respects available logical CPUs. |
 | `--map-file` | file | Recorded match's map. Required. |
 | `--orders-per-second` | real; default 0.5; 0..2147483647 | Synthetic order rate. |
 | `--max-seconds` | real; default 1800; seconds; 0..2147483647 | Maximum runtime in seconds. |
@@ -1183,7 +1183,7 @@ Platform: all.
 | `--no-custom-cursor` | flag; default false | Use the system cursor. |
 | `--mute` | flag; default false | Mute music and speech. |
 | `--no-mute` | flag; default false | Unmute music and speech. |
-| `--renderer` | gpu, software | Rendering backend. |
+| `--renderer` | auto, sdl-gpu, programmable-gl, webgpu, portable-sdl, software, legacy-gl, gpu, webgl2, sdl, opengl | Rendering backend. |
 | `--graphics-detail` | full, reduced | Detail effects. |
 | `--window-size` | resolution; pixels | Initial window size in pixels; clamped to at least 640x480. |
 | `--username` | string | Player name. |
@@ -1194,7 +1194,7 @@ Platform: all.
 | `--record-encoder` | auto, software; default auto | Embedded encoder selection. |
 | `--record-crf` | integer; default 23; 0..51 | Software H.264 quality; lower means higher quality. |
 | `--record-chapter-ticks` | integer; default 10000; ticks; 1..1000000000 | Simulation ticks per chapter. |
-| `--compute-threads` | compute; default auto | Shared compute pool; auto uses logical CPU count. |
+| `--compute-threads` | compute; default auto | Shared compute pool; auto respects available logical CPUs. |
 | `--gpu` | on, off | GPU gradient compute; overrides local setting (graphical default off, headless on). |
 | `--display` | flag; default false | Show test games graphically. |
 | `--runs` | integer; default 0; 0..2147483647 | Game count; 0 repeats forever. |
@@ -1282,7 +1282,7 @@ Platform: all.
 | `--no-custom-cursor` | flag; default false | Use the system cursor. |
 | `--mute` | flag; default false | Mute music and speech. |
 | `--no-mute` | flag; default false | Unmute music and speech. |
-| `--renderer` | gpu, software | Rendering backend. |
+| `--renderer` | auto, sdl-gpu, programmable-gl, webgpu, portable-sdl, software, legacy-gl, gpu, webgl2, sdl, opengl | Rendering backend. |
 | `--graphics-detail` | full, reduced | Detail effects. |
 | `--window-size` | resolution; pixels | Initial window size in pixels; clamped to at least 640x480. |
 | `--username` | string | Player name. |
@@ -1296,7 +1296,7 @@ Platform: all.
 | `--data-dir` | directory | Add an asset search directory (in order). Repeatable. |
 | `--generator-package` | file | Load a custom generator package or directory. Repeatable. |
 | `--building-catalog` | file | Building catalog manifest. |
-| `--compute-threads` | compute; default auto | Shared compute pool; auto uses logical CPU count. |
+| `--compute-threads` | compute; default auto | Shared compute pool; auto respects available logical CPUs. |
 | `--gpu` | on, off | GPU gradient compute; overrides local setting (graphical default off, headless on). |
 | `--output-dir` | directory; default . | Translation screenshot directory. |
 | `--help` | flag; default false | Show this command's help (also -h). |

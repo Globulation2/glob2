@@ -17,6 +17,10 @@
 #include <string>
 #include <Environment.h>
 #include <future>
+#if defined(__linux__) && !defined(__EMSCRIPTEN__)
+#include <bit>
+#include <sched.h>
+#endif
 
 TEST_SUITE("ComputeExecutor")
 {
@@ -30,6 +34,35 @@ TEST_CASE("automatic sizing respects platform limits and supports unknown CPU co
 #else
     CHECK(defaultComputeThreadCount(12) == 12);
     CHECK(defaultComputeThreadCount(128) == 128);
+#endif
+}
+TEST_CASE("automatic eligibility bounds hardware hints and preserves portable fallback")
+{
+    CHECK(availableComputeCpuCount(32, 6) == 6);
+    CHECK(availableComputeCpuCount(32, 1) == 1);
+    CHECK(availableComputeCpuCount(4, 6) == 4);
+    CHECK(availableComputeCpuCount(0, 6) == 6);
+    CHECK(availableComputeCpuCount(32, 0) == 32);
+    CHECK(availableComputeCpuCount(0, 0) == 1);
+    CHECK(resolveComputeThreadCount(4) == 4);
+    CHECK(resolveComputeThreadCount(32) == 32);
+    CHECK(resolveComputeThreadCount(std::numeric_limits<unsigned>::max()) == std::numeric_limits<unsigned>::max());
+    CHECK(defaultComputeThreadCount() == defaultComputeThreadCount(availableComputeCpuCount()));
+    CHECK(resolveComputeThreadCount(0) == defaultComputeThreadCount());
+#if defined(__linux__) && !defined(__EMSCRIPTEN__)
+    // Works with the harness's existing affinity, including external taskset
+    // controls. Do not change thread/process affinity inside a shared fixture.
+    cpu_set_t mask{};
+    if (sched_getaffinity(0, sizeof(mask), &mask) == 0)
+    {
+        unsigned eligible = 0;
+        const auto* bits = reinterpret_cast<const unsigned char*>(&mask);
+        for (size_t i = 0; i < sizeof(mask); ++i) eligible += std::popcount(bits[i]);
+        REQUIRE(eligible > 0);
+        CHECK(availableComputeCpuCount(0) == eligible);
+        CHECK(availableComputeCpuCount(1) == 1);
+        CHECK(availableComputeCpuCount(std::numeric_limits<unsigned>::max()) == eligible);
+    }
 #endif
 }
 TEST_CASE("thread configuration accepts auto and rejects malformed or overflowing overrides")

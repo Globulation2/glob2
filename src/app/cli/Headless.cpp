@@ -615,11 +615,26 @@ struct HeadlessRunner
 			std::ofstream csv(output/"gradient-stats.csv");
 			stats->writeCsv(csv);
 			if (!csv) throw std::runtime_error("cannot write gradient-stats.csv");
+			const auto planes = game.snapshotStore().resourcePlaneMemoryMetrics();
+			Headless::writeJson((output/"snapshot-memory.json").string(), nlohmann::json{
+				{"scope", "Pooled resource-plane capacity at result export; excludes overflow allocations; not peak heap or RSS"},
+				{"allocated_planes", planes.allocatedPlanes},
+				{"leased_planes", planes.leasedPlanes},
+				{"reusable_planes", planes.reusablePlanes},
+				{"capacity_bytes", planes.capacityBytes},
+				{"leased_capacity_bytes", planes.leasedCapacityBytes},
+				{"reusable_capacity_bytes", planes.reusableCapacityBytes},
+				{"leased_descriptors", planes.leasedDescriptors},
+				{"reusable_descriptors", planes.reusableDescriptors},
+				{"leased_descriptor_references", planes.leasedDescriptorReferences},
+				{"reusable_descriptor_references", planes.reusableDescriptorReferences}
+			}.dump());
 		}
 		result
 			<< ",\"compute_threads\":" << game.map.computeExecutor().threadCount()
 			<< ",\"compute_requested_threads\":" << quote(requestedSizing)
 			<< ",\"compute_resolved_threads\":" << computeThreads
+			<< ",\"gpu_host_event_waits\":" << opencl.hostEventWaits
 			<< ",\"gpu_requested\":" << globals.gpuComputeEnabled()
 			<< ",\"gpu_device\":" << quote(opencl.device)
 			<< ",\"gpu_error\":" << quote(opencl.error)

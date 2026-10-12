@@ -74,7 +74,7 @@ _glob2() {
       '--no-custom-cursor[no-custom-cursor]' \
       '--mute[mute]' \
       '--no-mute[no-mute]' \
-      '--renderer[renderer]:value:(gpu software)' \
+      '--renderer[renderer]:value:(auto sdl-gpu programmable-gl webgpu portable-sdl software legacy-gl gpu webgl2 sdl opengl)' \
       '--graphics-detail[graphics-detail]:value:(full reduced)' \
       '--window-size[window-size]:value:' \
       '--username[username]:value:' \
@@ -101,7 +101,7 @@ _glob2() {
       '--no-custom-cursor[no-custom-cursor]' \
       '--mute[mute]' \
       '--no-mute[no-mute]' \
-      '--renderer[renderer]:value:(gpu software)' \
+      '--renderer[renderer]:value:(auto sdl-gpu programmable-gl webgpu portable-sdl software legacy-gl gpu webgl2 sdl opengl)' \
       '--graphics-detail[graphics-detail]:value:(full reduced)' \
       '--window-size[window-size]:value:' \
       '--username[username]:value:' \
@@ -265,7 +265,7 @@ _glob2() {
       '--no-custom-cursor[no-custom-cursor]' \
       '--mute[mute]' \
       '--no-mute[no-mute]' \
-      '--renderer[renderer]:value:(gpu software)' \
+      '--renderer[renderer]:value:(auto sdl-gpu programmable-gl webgpu portable-sdl software legacy-gl gpu webgl2 sdl opengl)' \
       '--graphics-detail[graphics-detail]:value:(full reduced)' \
       '--window-size[window-size]:value:' \
       '--username[username]:value:' \
@@ -300,7 +300,7 @@ _glob2() {
       '--no-custom-cursor[no-custom-cursor]' \
       '--mute[mute]' \
       '--no-mute[no-mute]' \
-      '--renderer[renderer]:value:(gpu software)' \
+      '--renderer[renderer]:value:(auto sdl-gpu programmable-gl webgpu portable-sdl software legacy-gl gpu webgl2 sdl opengl)' \
       '--graphics-detail[graphics-detail]:value:(full reduced)' \
       '--window-size[window-size]:value:' \
       '--username[username]:value:' \
@@ -328,7 +328,7 @@ _glob2() {
       '--no-custom-cursor[no-custom-cursor]' \
       '--mute[mute]' \
       '--no-mute[no-mute]' \
-      '--renderer[renderer]:value:(gpu software)' \
+      '--renderer[renderer]:value:(auto sdl-gpu programmable-gl webgpu portable-sdl software legacy-gl gpu webgl2 sdl opengl)' \
       '--graphics-detail[graphics-detail]:value:(full reduced)' \
       '--window-size[window-size]:value:' \
       '--username[username]:value:' \
@@ -358,7 +358,7 @@ _glob2() {
       '--no-custom-cursor[no-custom-cursor]' \
       '--mute[mute]' \
       '--no-mute[no-mute]' \
-      '--renderer[renderer]:value:(gpu software)' \
+      '--renderer[renderer]:value:(auto sdl-gpu programmable-gl webgpu portable-sdl software legacy-gl gpu webgl2 sdl opengl)' \
       '--graphics-detail[graphics-detail]:value:(full reduced)' \
       '--window-size[window-size]:value:' \
       '--username[username]:value:' \
@@ -430,7 +430,7 @@ _glob2() {
       '--no-custom-cursor[no-custom-cursor]' \
       '--mute[mute]' \
       '--no-mute[no-mute]' \
-      '--renderer[renderer]:value:(gpu software)' \
+      '--renderer[renderer]:value:(auto sdl-gpu programmable-gl webgpu portable-sdl software legacy-gl gpu webgl2 sdl opengl)' \
       '--graphics-detail[graphics-detail]:value:(full reduced)' \
       '--window-size[window-size]:value:' \
       '--username[username]:value:' \
@@ -467,7 +467,7 @@ _glob2() {
       '--no-custom-cursor[no-custom-cursor]' \
       '--mute[mute]' \
       '--no-mute[no-mute]' \
-      '--renderer[renderer]:value:(gpu software)' \
+      '--renderer[renderer]:value:(auto sdl-gpu programmable-gl webgpu portable-sdl software legacy-gl gpu webgl2 sdl opengl)' \
       '--graphics-detail[graphics-detail]:value:(full reduced)' \
       '--window-size[window-size]:value:' \
       '--username[username]:value:' \

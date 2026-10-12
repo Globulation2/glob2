@@ -43,8 +43,10 @@ changing only worker count must preserve execution at the same delay.
 
 All sessions use `--compute-threads auto|N`, where N is a positive unsigned
 integer counting total executor participants, including the simulation owner.
-`auto` (the default) uses all reported logical CPU threads, falling back to one
-if detection returns zero. There is no separate limit of 64 for explicit counts.
+`auto` (the default) uses reported logical CPU threads, bounded on Linux and
+Android by the calling thread's CPU affinity. Sizing falls back to one when both
+CPU-count hints are unavailable; browser automatic sizing remains capped at eight. Affinity respects cpuset
+restrictions, but does not infer CPU-time quotas or physical-core throughput. There is no separate limit of 64 for explicit counts.
 The background pool has N−1 workers. AI, periodic/building gradients, resource
 growth and presentation share this pool. `--compute-threads 1` is the serial
 compute control. Thread creation failure and platforms without threads also leave
@@ -64,6 +66,10 @@ explicit count), `compute_resolved_threads` records the resolved participant cou
 `compute_threads` records the actual count including serial fallback, and
 `compute_workers` records actual background workers. Automatic sizing should be
 measured separately from fixed counts; using every logical CPU is not a speedup claim.
+
+`gpu_host_event_waits` counts successful host synchronization calls after an
+OpenCL event reports completion. It does not count polling calls or pending-event
+wait time; committed GPU fields are reported separately.
 
 `result.json` retains the map executor's `compute_threads`,
 `compute_batches`, `compute_jobs`, `compute_parallel_batches`, `compute_batch_ns`,

@@ -26,6 +26,7 @@ ENGINE_SUPPORT = [
 
 # glob2-engine-tests: every client object except the entry point, plus these.
 ENGINE_TESTS = [
+    '#src/replay/ReplayTelemetryTest.cpp',
     '#src/unit/types/UnitCatalogTest.cpp',
     ('#src/unit/UnitCustomizationTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/app/cli/CommandLineTest.cpp',
@@ -369,6 +370,7 @@ UNIT_TESTS = [
 # Production sources the unit binary links. Plain entries reuse the client build's
 # object; entries with `defines` are compiled again for the unit binary only.
 UNIT_PRODUCTION_SOURCES = [
+    '#src/common/ComputeThreads.cpp',
     '#src/field/OpenCLGradient.cpp',
     '#src/field/GradientDeviceService.cpp',
     '#src/app/cli/CommandLine.cpp',

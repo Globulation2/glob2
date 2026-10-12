@@ -363,6 +363,25 @@ TEST_SUITE("WorldSnapshot")
 		// reference died with the store.
 		weak.reset();
 	}
+	TEST_CASE("resource field sparse index is empty and reusable after repeated clear")
+	{
+		SimulationSnapshot::ResourceFields fields;
+		const std::array<Uint16, 3> keys{0, 7, Uint16(MapState::PlaneCount - 1)};
+		for (auto key : keys) CHECK(fields.find(key) == nullptr);
+		auto values = std::make_shared<const std::vector<Uint16>>(16, 41);
+		for (Uint64 generation = 1; generation <= 4; ++generation) {
+			for (auto key : keys) fields.add({key, generation, values});
+			for (auto key : keys) {
+				const auto* plane = fields.find(key);
+				REQUIRE(plane); CHECK(plane->key == key);
+				CHECK(plane->generation == generation); CHECK(plane->values == values);
+			}
+			const auto capacity = fields.planes.capacity();
+			fields.clear(); fields.clear();
+			CHECK(fields.planes.empty()); CHECK(fields.planes.capacity() == capacity);
+			for (auto key : keys) CHECK(fields.find(key) == nullptr);
+		}
+	}
 	TEST_CASE("worker final lease release synchronizes owner buffer reuse")
 	{
 		if constexpr (GAGCore::ThreadSupport::available)

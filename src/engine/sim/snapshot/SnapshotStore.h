@@ -43,5 +43,6 @@ public:
 	void setVerification(bool on) { storage.verify = on; }
 	Handle captureBoundary(const Game& game, Requirements required);
 	MemoryMetrics memoryMetrics() const;
+	ResourcePlaneMemoryMetrics resourcePlaneMemoryMetrics() const { return storage.resourcePlaneMemoryMetrics(); }
 };
 } // namespace SimulationSnapshot

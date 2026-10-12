@@ -129,7 +129,7 @@ public:
 	bool networkInitialized = false;
 	bool structuredHeadless = false;
 	bool headlessReplay = false;
-	// Zero selects the reported logical CPU count (one if unavailable). Structured
+	// Zero selects automatic eligible-CPU sizing (one if unavailable). Structured
 	// --run-game configures its own compute executor instead.
 	unsigned computeThreads = 0;
 	std::optional<bool> gpuComputeOverride;

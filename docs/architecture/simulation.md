@@ -310,6 +310,9 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   explicit deferred stepping leaves that capture to its caller. Direct map
   stepping invalidates the cached boundary because its caller need not advance
   the game's tick counter.
+- Optional owner-query diagnostics distinguish pooled resource-plane capacity and
+  descriptor references, including planes pinned by reusable descriptors. These
+  counts exclude unpooled overflow allocations and external-only owners.
 - Gradient selection, round-robin flags, invalidation and publication stay on the
   simulation owner. Jobs own their output and use worker-private scratch; they never read live map
   arrays or mutable seed caches. Publication remains after the configured delay
@@ -386,6 +389,12 @@ inputs. Unsupported devices, memory pressure, cancellation and execution errors
 recover the exact CPU result from original seeds; partial GPU results are never
 published. Required transfer failures retain unsafe storage until completion can
 be proved. Saves, reconfiguration and shutdown drain required work.
+
+Before consuming transfer data, the backend synchronizes an event that has
+already reported completion. A completed status query alone does not establish
+host synchronization. A failed wait follows the existing permanent-failure and
+CPU fallback path; abandoned transfers retain their existing covering-proof
+lifetime checks without publishing canceled output.
 
 After games and their executors drain, the application owner joins the process
 coordinator before SDL teardown or process exit handlers run. A driver can

@@ -106,7 +106,7 @@ _glob2_complete() {
     'completion') opts='--help ';;
   esac
   case "$path|$prev" in
-    'play|--renderer') kind='enum'; values='gpu software';;
+    'play|--renderer') kind='enum'; values='auto sdl-gpu programmable-gl webgpu portable-sdl software legacy-gl gpu webgl2 sdl opengl';;
     'play|--graphics-detail') kind='enum'; values='full reduced';;
     'play|--window-size') kind='resolution'; values='';;
     'play|--username') kind='string'; values='';;
@@ -122,7 +122,7 @@ _glob2_complete() {
     'play|--building-catalog') kind='file'; values='';;
     'play|--compute-threads') kind='compute'; values='';;
     'play|--gpu') kind='enum'; values='on off';;
-    'replay|--renderer') kind='enum'; values='gpu software';;
+    'replay|--renderer') kind='enum'; values='auto sdl-gpu programmable-gl webgpu portable-sdl software legacy-gl gpu webgl2 sdl opengl';;
     'replay|--graphics-detail') kind='enum'; values='full reduced';;
     'replay|--window-size') kind='resolution'; values='';;
     'replay|--username') kind='string'; values='';;
@@ -242,7 +242,7 @@ _glob2_complete() {
     'game run|--building-artwork') kind='file'; values='';;
     'game repeat|--data-dir') kind='directory'; values='';;
     'game repeat|--generator-package') kind='file'; values='';;
-    'game repeat|--renderer') kind='enum'; values='gpu software';;
+    'game repeat|--renderer') kind='enum'; values='auto sdl-gpu programmable-gl webgpu portable-sdl software legacy-gl gpu webgl2 sdl opengl';;
     'game repeat|--graphics-detail') kind='enum'; values='full reduced';;
     'game repeat|--window-size') kind='resolution'; values='';;
     'game repeat|--username') kind='string'; values='';;
@@ -262,7 +262,7 @@ _glob2_complete() {
     'match verify|--profile') kind='string'; values='';;
     'match verify|--compute-threads') kind='compute'; values='';;
     'match verify|--map-file') kind='file'; values='';;
-    'online join|--renderer') kind='enum'; values='gpu software';;
+    'online join|--renderer') kind='enum'; values='auto sdl-gpu programmable-gl webgpu portable-sdl software legacy-gl gpu webgl2 sdl opengl';;
     'online join|--graphics-detail') kind='enum'; values='full reduced';;
     'online join|--window-size') kind='resolution'; values='';;
     'online join|--username') kind='string'; values='';;
@@ -279,7 +279,7 @@ _glob2_complete() {
     'online join|--compute-threads') kind='compute'; values='';;
     'online join|--gpu') kind='enum'; values='on off';;
     'online join|--instance') kind='string'; values='';;
-    'online play-map|--renderer') kind='enum'; values='gpu software';;
+    'online play-map|--renderer') kind='enum'; values='auto sdl-gpu programmable-gl webgpu portable-sdl software legacy-gl gpu webgl2 sdl opengl';;
     'online play-map|--graphics-detail') kind='enum'; values='full reduced';;
     'online play-map|--window-size') kind='resolution'; values='';;
     'online play-map|--username') kind='string'; values='';;
@@ -298,7 +298,7 @@ _glob2_complete() {
     'online play-map|--instance') kind='string'; values='';;
     'online play-map|--hash') kind='string'; values='';;
     'online play-map|--title') kind='string'; values='';;
-    'online host-map|--renderer') kind='enum'; values='gpu software';;
+    'online host-map|--renderer') kind='enum'; values='auto sdl-gpu programmable-gl webgpu portable-sdl software legacy-gl gpu webgl2 sdl opengl';;
     'online host-map|--graphics-detail') kind='enum'; values='full reduced';;
     'online host-map|--window-size') kind='resolution'; values='';;
     'online host-map|--username') kind='string'; values='';;
@@ -338,7 +338,7 @@ _glob2_complete() {
     'assets skin-info|--format') kind='enum'; values='text json';;
     'dev random-games|--data-dir') kind='directory'; values='';;
     'dev random-games|--generator-package') kind='file'; values='';;
-    'dev random-games|--renderer') kind='enum'; values='gpu software';;
+    'dev random-games|--renderer') kind='enum'; values='auto sdl-gpu programmable-gl webgpu portable-sdl software legacy-gl gpu webgl2 sdl opengl';;
     'dev random-games|--graphics-detail') kind='enum'; values='full reduced';;
     'dev random-games|--window-size') kind='resolution'; values='';;
     'dev random-games|--username') kind='string'; values='';;
@@ -360,7 +360,7 @@ _glob2_complete() {
     'dev random-games|--building-catalog') kind='file'; values='';;
     'dev stress-maps|--data-dir') kind='directory'; values='';;
     'dev stress-maps|--generator-package') kind='file'; values='';;
-    'dev textshots|--renderer') kind='enum'; values='gpu software';;
+    'dev textshots|--renderer') kind='enum'; values='auto sdl-gpu programmable-gl webgpu portable-sdl software legacy-gl gpu webgl2 sdl opengl';;
     'dev textshots|--graphics-detail') kind='enum'; values='full reduced';;
     'dev textshots|--window-size') kind='resolution'; values='';;
     'dev textshots|--username') kind='string'; values='';;

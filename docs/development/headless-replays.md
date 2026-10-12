@@ -467,6 +467,15 @@ The same timeline option also exports [engine performance telemetry](performance
 frame/work timing, subsystem costs, sampled pathfinding, per-player AI time, and autosave work.
 Performance records describe this execution session and are not stored in saves.
 
+For structured `game run`, `--telemetry gradient-stats` writes `gradient-stats.csv`
+and `snapshot-memory.json` in the job output directory. The snapshot sidecar reports
+pooled resource-plane vector capacity and reusable/leased descriptor references at
+result export. Leases include references retained by descriptor components;
+unpooled overflow allocations and external-only owners are excluded. Descriptor
+reference counts measure array entries, including empty slots, rather than unique
+planes. The sidecar describes a subset of retained capacity, not peak heap or
+resident process memory.
+
 ### Gradient scheduling compatibility
 
 Version 120 makes periodic resource, guard and clear fields publish eight ticks
@@ -491,8 +500,13 @@ Periodic material, market, guard and clear gradients use the same executor as AI
 Their immutable inputs are captured at the completed-tick boundary; seeding and
 propagation both execute privately and retain the existing publication deadlines.
 `--compute-threads auto|N` controls the shared pool for all sessions; `auto` uses
-reported logical CPU threads (one if unavailable), and N is a positive unsigned
-participant count including the owner. Saving drains
+reported logical CPU threads (one if unavailable), bounded on Linux and Android
+by the calling thread's eligible CPUs. This respects affinity and cpuset limits;
+CPU-time quotas and SMT throughput are not inferred. Other native platforms use
+the portable hardware hint; browser automatic sizing remains capped at eight.
+N is a positive unsigned participant count including the owner and is not clamped
+by CPU eligibility. Platforms without worker support retain the serial executor
+fallback. Saving drains
 private work without publishing it early and continues to serialize completed
 fields with their remaining deadlines.
 

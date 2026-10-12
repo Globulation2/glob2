@@ -98,6 +98,7 @@ CLIENT_SOURCES = (
     'game/player/BasePlayer.cpp',
     'team/BaseTeam.cpp',
     'common/BitArray.cpp',
+    'common/ComputeThreads.cpp',
     'map/Brush.cpp',
     'map/BrushCoverage.cpp',
     'building/Lifecycle.cpp',

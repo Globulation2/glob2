@@ -18,6 +18,18 @@ struct MemoryMetrics
 	Uint64 peakAllocatedBuffers = 0, peakReusableBuffers = 0, peakLeasedBuffers = 0;
 	Uint64 peakRetainedBytes = 0, peakCapacityBytes = 0, peakLeasedBytes = 0;
 };
+// Managed-pool counters, queried on the owner rather than per tick. Overflow
+// allocations and external-only owners are excluded. Plane leases include
+// descriptor references; bytes count vector capacity, excluding allocator and
+// control-block overhead. Descriptor reference counts are array entries,
+// including empty slots, rather than unique planes.
+struct ResourcePlaneMemoryMetrics
+{
+	Uint64 allocatedPlanes = 0, leasedPlanes = 0, reusablePlanes = 0;
+	Uint64 capacityBytes = 0, leasedCapacityBytes = 0, reusableCapacityBytes = 0;
+	Uint64 leasedDescriptors = 0, reusableDescriptors = 0;
+	Uint64 leasedDescriptorReferences = 0, reusableDescriptorReferences = 0;
+};
 struct Storage
 {
 	BufferPool<Catalogs> catalogs;
@@ -49,6 +61,7 @@ struct Storage
 	//! with the live state and throw on a mismatch (an unmarked write).
 	bool verify = false;
 	MemoryMetrics memoryMetrics() const;
+	ResourcePlaneMemoryMetrics resourcePlaneMemoryMetrics() const;
 };
 
 } // namespace SimulationSnapshot
