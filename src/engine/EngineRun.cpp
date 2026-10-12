@@ -315,10 +315,10 @@ void Engine::drawFrame(MainLoopState& st, bool everyFrame, const PresentationFra
 				gui.gamePaused || gui.hardPause, scene ? int(scene->tickInterval) : st.speed);
         try
         {
-		gui.drawAll(gui.localTeamNo);
-			PERF_SCOPE_TIME(Present);
-			globalContainer->gfx->nextFrame();
-		}
+            gui.drawAll(gui.localTeamNo);
+            PERF_SCOPE_TIME(Present);
+            globalContainer->gfx->nextFrame();
+        }
         catch (...)
         {
             globalContainer->gfx->discardFrame();
