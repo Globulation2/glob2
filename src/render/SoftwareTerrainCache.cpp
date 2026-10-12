@@ -546,7 +546,7 @@ bool SoftwareTerrainCache::buildCpuPage(Chunk &page,
     const std::size_t perCell =
         cellPixels * (4 + sizeof(TerrainVisual::Compositor::CellMask::Sample)) +
         sizeof(TerrainVisual::Compositor::CellMask) + sizeof(Tile) + 256;
-    const std::size_t allowance = bytes() <= budget ? std::min(inFlightLimit, budget - bytes()) : 0;
+    const std::size_t allowance = bytes() <= budget ? std::min({inFlightLimit, budget - bytes(), GAGCore::RenderWorkReservation::available()}) : 0;
     const std::size_t fixed = materialBytes * 2 + perCell * 2;
     const std::size_t groupCells =
         allowance > fixed ? std::min(std::size_t(32), (allowance - fixed) / perCell) : 0;
@@ -556,6 +556,8 @@ bool SoftwareTerrainCache::buildCpuPage(Chunk &page,
                           GAGCore::PresentationWork::current && groupCells >= 2;
     if (!cpuBatch)
         return false;
+    GAGCore::RenderWorkReservation workReservation;
+    if (!workReservation.reserve(reserve)) return false;
     PERF_SCOPE_TIME(TerrainPlanning);
     std::shared_ptr<const TerrainVisual::Compositor::CpuMaterials> materials;
     {

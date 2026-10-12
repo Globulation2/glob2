@@ -134,7 +134,9 @@ lease against subsequent admission. Current-page masks remain protected until
 the synchronous group finishes. Workers reuse bounded scratch and never create
 `HeldMask` or drawable objects. Jobs sample at most 16K pixels; a group admits
 up to 32 changed cells under a 4 MiB additional reservation and available cache
-headroom. The reservation includes material revisions, catalog/control storage,
+headroom. Queued raster sources and active terrain work share an additional
+8 MiB owner reservation ceiling; raster bookkeeping reserves 2 MiB within it.
+The reservation includes material revisions, catalog/control storage,
 results, masks, metadata and two scratch slots. Oversized HD cells, reductions,
 and groups without headroom use existing serial composition. GPU composition,
 streamed pages and emergency fallback retain their existing paths. Installation

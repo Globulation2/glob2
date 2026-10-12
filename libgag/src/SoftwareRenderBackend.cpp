@@ -46,6 +46,15 @@ class SoftwareRenderBackend final : public RenderBackend
     const RenderExecution execution = renderExecution();
     static constexpr std::size_t MaximumCommands = 1024, MaximumSourceBytes = 4u * 1024u * 1024u;
     static constexpr std::size_t MaximumBins = 4096, MaximumReferences = 65536;
+    RenderWorkReservation metadataReservation, sourceReservation;
+    bool metadataAdmitted = false;
+    bool admitMetadata()
+    {
+        // Covers command/source control storage, maximum bins/references,
+        // two tile scratch slots and the owner's wide-column scratch.
+        if (!metadataAdmitted) metadataAdmitted = metadataReservation.reserve(2u*1024u*1024u);
+        return metadataAdmitted;
+    }
     std::vector<SurfaceRaster::RasterCommand> commands;
     std::vector<std::vector<Uint32>> snapshots;
     std::size_t sourceBytes = 0;
@@ -53,7 +62,7 @@ class SoftwareRenderBackend final : public RenderBackend
 
     bool recordFill(SDL_Rect dst, SDL_Color color)
     {
-        if (execution == RenderExecution::Auto)
+        if (execution == RenderExecution::Auto || !admitMetadata())
             return false;
         if (commands.size() == MaximumCommands)
             flush();
@@ -68,7 +77,7 @@ class SoftwareRenderBackend final : public RenderBackend
     bool recordBlit(SDL_Surface *source, SDL_Rect src, SDL_Rect dst, Uint8 alpha, bool opaque)
     {
         if (execution == RenderExecution::Auto || source->format != target->format ||
-            source->format != SDL_PIXELFORMAT_ARGB8888)
+            source->format != SDL_PIXELFORMAT_ARGB8888 || !admitMetadata())
             return false;
         Uint32 key;
         if (SDL_GetSurfaceColorKey(source, &key))
@@ -90,6 +99,10 @@ class SoftwareRenderBackend final : public RenderBackend
         const auto targetLast = targetFirst + std::size_t(target->pitch) * target->h;
         if (first < targetLast && targetFirst < last)
             flush();
+        if (!sourceReservation.reserve(bytes)) {
+            flush();
+            if (!sourceReservation.reserve(bytes)) return false;
+        }
         PERF_SCOPE_TIME(RasterSnapshot);
         std::vector<Uint32> pixels(std::size_t(retained.w) * retained.h);
         if (!SDL_LockSurface(source))
@@ -201,7 +214,8 @@ class SoftwareRenderBackend final : public RenderBackend
             std::uint64_t(sourceBytes + commands.capacity() * sizeof(SurfaceRaster::RasterCommand) +
                           snapshots.capacity() * sizeof(std::vector<Uint32>) +
                           tiles.capacity() * sizeof(Tile) +
-                          references.capacity() * sizeof(std::size_t)));
+                          references.capacity() * sizeof(std::size_t) +
+                          2*128*sizeof(std::int64_t) + (tiled ? 0 : std::size_t(target->w)*sizeof(std::int64_t))));
         // Lock exactly once on the owner, before exposing stable target pixels.
         if (!SDL_LockSurface(target))
             throw std::runtime_error(SDL_GetError());
@@ -235,11 +249,13 @@ class SoftwareRenderBackend final : public RenderBackend
             commands.clear();
             snapshots.clear();
             sourceBytes = 0;
+            sourceReservation.release();
             throw;
         }
         commands.clear();
         snapshots.clear();
         sourceBytes = 0;
+        sourceReservation.release();
     }
 
 	SDL_Rect nativeClip(SDL_Rect rect) const
@@ -468,6 +484,7 @@ class SoftwareRenderBackend final : public RenderBackend
         commands.clear();
         snapshots.clear();
         sourceBytes = 0;
+        sourceReservation.release();
         geometry.reset();
         failedRaster = false;
 	}

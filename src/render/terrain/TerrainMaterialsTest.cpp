@@ -1486,3 +1486,20 @@ TEST_CASE("failed CPU terrain groups retire invalid pages and recover on the nex
     CHECK(cache.prepare(scene,*globals->terrain,0,0,15,15,0,0,fixture.team->me,true,0));
     CHECK(cache.workMetrics.jobs>0);
 }
+TEST_CASE("shared reservation pressure preserves serial terrain before readmitting jobs [display]" * doctest::test_suite("TerrainMaterials"))
+{
+    glob2test::ScopedEnvironment mode("GLOB2_RENDER_EXECUTION","parallel");
+    glob2test::HeadlessGlobals globals({.display=true});
+    glob2test::HeadlessGame fixture({.wDec=5,.hDec=5,.terrain=SAND,.discovered=true});
+    fixture.game.map.setVertexTerrain(7,9,WATER);
+    ComputeExecutor executor;executor.configure(4);GAGCore::PresentationWorkScope scope(executor);
+    SceneMap scene;glob2test::observeMap(fixture.game.map,scene);
+    SoftwareTerrainCache cache;
+    GAGCore::RenderWorkReservation occupied;
+    REQUIRE(occupied.reserve(GAGCore::RenderWorkReservation::available()));
+    REQUIRE(cache.prepare(scene,*globals->terrain,0,0,15,15,0,0,fixture.team->me,true,0));
+    CHECK(cache.workMetrics.jobs==0);CHECK(cache.workMetrics.serialPages>0);
+    occupied.release();
+    REQUIRE(cache.prepare(scene,*globals->terrain,0,0,15,15,0,0,fixture.team->me,true,1));
+    CHECK(cache.workMetrics.jobs>0);
+}

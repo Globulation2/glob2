@@ -607,3 +607,16 @@ TEST_CASE("first frame discard establishes a blank base for partial updates" *
     presenter.discard();
     CHECK(pixel(presenter.completed(), 3, 4) == 0xff112233);
 }
+TEST_CASE("shared rendering reservation pressure selects immediate software fallback" * doctest::test_suite("SoftwareRenderer"))
+{
+    glob2test::ScopedEnvironment mode("GLOB2_RENDER_EXECUTION","parallel");
+    const auto before=RenderWorkReservation::available();
+    RenderWorkReservation occupied;REQUIRE(occupied.reserve(before));
+    auto target=pixels(33,31);auto backend=makeSoftwareRenderBackend(target.get());
+    backend->fillPixels({0,0,33,31},{29,71,137,255});backend->flush();
+    CHECK(pixel(target.get(),7,9)==0xff1d4789);
+    CHECK(backend->operations().rasterBatches==0);
+    occupied.release();CHECK(RenderWorkReservation::available()==before);
+    backend->fillPixels({1,2,3,4},{47,91,157,255});backend->flush();
+    CHECK(backend->operations().rasterBatches==1);
+}
