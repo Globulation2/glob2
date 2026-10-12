@@ -76,6 +76,8 @@ static void distribution(const char *label, std::vector<double> values)
            values[values.size() / 2], values[(values.size() - 1) * 95 / 100],
            values[(values.size() - 1) * 99 / 100]);
 }
+class SoftwareRenderBenchmark
+{
 static void interactiveBenchmark()
 {
     const auto *path = std::getenv("PROFILE_SAVE");
@@ -141,8 +143,6 @@ static void interactiveBenchmark()
                                             true);
     engine.finishSession();
 }
-class SoftwareRenderBenchmark
-{
   public:
 	static int run(int argc, char **argv)
 	{

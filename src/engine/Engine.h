@@ -51,6 +51,7 @@ class Engine
 	int headlessSaveInterval = 0;
 	int previousCustomSpeed = -1;
 	friend class HighResolutionIntegrationHarness;
+	friend class SoftwareRenderBenchmark;
 public:
 	//! Constructor
 	Engine();
