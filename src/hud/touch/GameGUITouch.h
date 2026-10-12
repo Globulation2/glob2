@@ -289,9 +289,7 @@ class GameGUITouch
 	GAGCore::TrackedScrollAxis &nativeAxis() { return nativePanel == 3 ? tutorialAxis : nativePanel == 2 ? actionAxis : panelAxis; }
 	double &nativeOffset() { return nativePanel == 3 ? tutorialScroll : nativePanel == 2 ? actionScroll : panelScroll; }
 	GAGCore::ScrollMotion mapMotion;
-	// Screen-point displacement, separate from the smaller pan/tap slop.
-	GAGCore::ViewPoint mapDragTravel{};
-	bool mapFlingArmed = false;
+	Uint64 mapDragStartTime = 0;
 	double tutorialMaximum() const;
 	Uint64 lastStepTime = 0;
 	// Momentum only follows real fingers; the synthetic mouse finger drags.
