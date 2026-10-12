@@ -27,6 +27,7 @@
 #include "LanRoom.h"
 #include "LANMenuScreen.h"
 #include "MainMenuScreen.h"
+#include "HandPreferenceScreen.h"
 #include "MessageScreen.h"
 #include "SettingsScreen.h"
 #include "CustomGameScreen.h"
@@ -94,6 +95,7 @@ std::vector<Fixture> fixtures()
 {
 	auto &strings = *GAGCore::Toolkit::getStringTable();
 	return {
+		{"hand-preference", [](GAGGUI::ScreenStack &) { return std::make_unique<HandPreferenceScreen>(); }},
 		{"main-menu", [](GAGGUI::ScreenStack &) { return std::make_unique<MainMenuScreen>(); }},
 		{"discord-community", [](GAGGUI::ScreenStack &) { auto screen = std::make_unique<MainMenuScreen>(); screen->openCommunity(); return screen; }},
 		{"main-menu-more", [](GAGGUI::ScreenStack &) { return std::make_unique<MainMenuScreen>(); }},

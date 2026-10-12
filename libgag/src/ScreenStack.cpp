@@ -17,6 +17,12 @@ ScreenStack::~ScreenStack()
 {
 	stop();
 	boundary();
+	for (auto &pending : pendingInput)
+	{
+		if (!pending.receipt->consumed)
+			pending.receipt->consumed = 0;
+	}
+	pollInputReceipts();
 }
 
 void ScreenStack::push(std::unique_ptr<Screen> screen, Completion completed)
@@ -119,7 +125,29 @@ void ScreenStack::boundary()
 	}
 }
 
-void ScreenStack::frame(Uint32 tick, const std::vector<SDL_Event> &events, bool paint)
+void ScreenStack::pollInputReceipts()
+{
+	auto i = pendingInput.begin();
+	while (i != pendingInput.end())
+	{
+		if (!i->receipt->consumed)
+		{
+			++i;
+			continue;
+		}
+		const auto count = *i->receipt->consumed;
+		const auto consumed =
+			count < i->bufferedIndices.size() ? i->bufferedIndices[count] : i->delivered;
+		auto complete = std::move(i->complete);
+		const auto total = i->total;
+		i = pendingInput.erase(i);
+		if (complete)
+			complete(consumed, total);
+	}
+}
+
+void ScreenStack::frame(Uint32 tick, const std::vector<SDL_Event> &events, bool paint,
+						const AdditionalInput &additional)
 {
 	if (dispatching)
 		throw std::logic_error("Screen stack frames cannot recurse");
@@ -129,6 +157,7 @@ void ScreenStack::frame(Uint32 tick, const std::vector<SDL_Event> &events, bool 
 		Guard(bool &f) : flag(f) { flag = true; }
 		~Guard() { flag = false; }
 	} guard(dispatching);
+    pollInputReceipts();
     for (const auto& event:events) {
         if (event.type==SDL_EVENT_WILL_ENTER_BACKGROUND || event.type==SDL_EVENT_DID_ENTER_BACKGROUND) {
             backgrounded=true; suspendExecution();
@@ -182,19 +211,71 @@ void ScreenStack::frame(Uint32 tick, const std::vector<SDL_Event> &events, bool 
             ((event.type==SDL_EVENT_MOUSE_BUTTON_DOWN || event.type==SDL_EVENT_MOUSE_BUTTON_UP) && event.button.which==SDL_TOUCH_MOUSEID)) continue;
 		screen.handleExecutionEvent(event);
 	}
+	// Buffered consumers acknowledge when they actually process this range,
+	// rather than when their handleExecutionEvent merely queues it.
+	bool prepared = false;
+	PendingInput dispatch;
+	std::vector<SDL_Event> extra;
+	const bool ordinaryInputPending =
+		screen.defersExecutionInput() && (!events.empty() || screen.hasPendingExecutionInput());
+	if (!stopped && pending.empty() && screen.isExecutionRunning() && pendingInput.empty())
+	{
+		if (ordinaryInputPending)
+		{
+			if (additional.prepareCleanup)
+			{
+				additional.prepareCleanup(extra);
+				prepared = !extra.empty();
+			}
+		}
+		else if (additional.prepare)
+		{
+			additional.prepare(extra);
+			prepared = true;
+		}
+	}
+	if (extra.empty() && !pendingInput.empty())
+		prepared = false;
+	if (prepared)
+	{
+		dispatch.receipt = std::make_shared<GAGCore::InputDispatchReceipt>();
+		if (additional.cancellation)
+			dispatch.receipt->cancelled = additional.cancellation();
+		dispatch.complete = additional.completion ? additional.completion() : additional.complete;
+		dispatch.total = extra.size();
+		screen.beginAdditionalInput(dispatch.receipt);
+		for (const auto &event : extra)
+		{
+			if (stopped || !pending.empty() || !screen.isExecutionRunning())
+				break;
+			if (!additional.intercept || !additional.intercept(event))
+			{
+				dispatch.bufferedIndices.push_back(dispatch.delivered);
+				screen.handleExecutionEvent(event);
+			}
+			++dispatch.delivered;
+		}
+		screen.endAdditionalInput(dispatch.bufferedIndices.size());
+		if (!screen.defersExecutionInput() || dispatch.bufferedIndices.empty())
+			dispatch.receipt->consumed = dispatch.bufferedIndices.size();
+	}
 	// Admit queued cancellation before advancing a potentially expensive load.
 	if (!stopped && pending.empty() && screen.isExecutionRunning())
 		screen.updateExecution(tick);
+	if (prepared)
+		pendingInput.push_back(std::move(dispatch));
+	pollInputReceipts();
 	// Constructing a child can change presentation immediately. Keep the last
 	// completed frame until the child is admitted at the next boundary.
-    if (paint) draw();
+	if (paint)
+		draw();
 	if (stopped)
 		boundary();
 }
 
 void ScreenStack::draw()
 {
-    if (backgrounded || stopped || !pending.empty() || screens.empty()) return;
+	if (backgrounded || stopped || !pending.empty() || screens.empty()) return;
     auto &screen = *screens.back().screen;
     if (!screen.isExecutionRunning()) return;
     auto *context = dynamic_cast<GAGCore::GraphicContext *>(&surface);

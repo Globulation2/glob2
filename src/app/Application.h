@@ -4,6 +4,10 @@
 #include <ScreenStack.h>
 #include "SinglePlayerFlow.h"
 #include "OnlineServices.h"
+#include "mcp/Availability.h"
+#if GLOB2_DESKTOP_MCP
+namespace MCP { class UIService; }
+#endif
 
 class FrontendTheme;
 
@@ -22,6 +26,9 @@ class Application : public GAGCore::ApplicationHost::Loop
 	// outlive every screen: screens and their requests hold the platform client.
 	Online::ServicesOwner online;
 	std::unique_ptr<FrontendTheme> frontend;
+#if GLOB2_DESKTOP_MCP
+	std::unique_ptr<MCP::UIService> mcp;
+#endif
 	GAGGUI::ScreenStack screens;
 	GAGGUI::ScreenStack shutdownScreens;
 	SinglePlayerFlow singlePlayer;

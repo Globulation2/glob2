@@ -7,6 +7,7 @@
 #include <filesystem>
 #include <fstream>
 #include <mutex>
+#include <atomic>
 #include <thread>
 #ifdef HAVE_CONFIG_H
 #include <glob2/BuildConfig.h>
@@ -19,14 +20,18 @@
 
 namespace GAGCore::ApplicationHost
 {
+namespace { std::atomic<unsigned> nativeDialogs{0}; }
+bool nativeDialogOpen() { return nativeDialogs.load() != 0; }
 bool exportFilePath(const std::string &path)
 {
 #ifdef GLOB2_MOBILE
 	return MobileDocuments::platformExportPath(path, Toolkit::getStringTable()->getString("[export failed]"));
 #else
 	auto source = new std::string(path);
+	++nativeDialogs;
 	SDL_ShowSaveFileDialog([](void *opaque,const char *const *files,int)
 	{
+		--nativeDialogs;
 		std::unique_ptr<std::string> source(static_cast<std::string *>(opaque));
 		if (!files || !files[0]) return;
 		std::thread([source = *source, destination = std::string(files[0])]
@@ -98,9 +103,11 @@ class DesktopSelection : public FileSelection
 		auto *lifetime = new std::shared_ptr<DesktopSelectionState>(shared);
 		shared->extension = extension;
 		shared->filter = {"Selected files", shared->extension.c_str()};
+		++nativeDialogs;
 		SDL_ShowOpenFileDialog(
 			[](void *opaque, const char *const *files, int)
 			{
+				--nativeDialogs;
 				std::unique_ptr<std::shared_ptr<DesktopSelectionState>> lifetime(
 					static_cast<std::shared_ptr<DesktopSelectionState> *>(opaque));
 				auto &s = **lifetime;

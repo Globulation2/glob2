@@ -487,15 +487,76 @@ void Engine::stopSimulationThread()
     gui.consumeClientEvents();
 }
 
-bool Engine::threadedClientFrame(Uint64 now, const std::vector<SDL_Event>& events)
+void Engine::trackInputDispatch(std::shared_ptr<GAGCore::InputDispatchReceipt> receipt,
+								std::size_t first, std::size_t count)
 {
-    if (!runner) throw std::logic_error("Simulation thread not running");
-    publishSessionClock(now);
-    runner->rethrowFailure();
-    for (const auto& event : events) sessionInput.push_back(event);
-    // Selection and hit testing need this world's first immutable view. Preserve
-    // early input until it arrives; never fall back to a previous world's PresentationFrame.
-    if (!runner->sceneReady())
+	inputDispatches.push_back({std::move(receipt), sessionInput.events().size() + first, count});
+}
+void Engine::pruneCancelledInput()
+{
+	for (std::size_t i = 0; i < inputDispatches.size();)
+	{
+		const auto &tracked = inputDispatches[i];
+		if (!tracked.receipt->cancelled || !tracked.receipt->cancelled())
+		{
+			++i;
+			continue;
+		}
+		const auto first = tracked.first, count = tracked.count;
+		sessionInput.erase(first, count);
+		tracked.receipt->consumed = 0;
+		inputDispatches.erase(inputDispatches.begin() + i);
+		for (auto &remaining : inputDispatches)
+			if (remaining.first >= first + count)
+				remaining.first -= count;
+	}
+}
+void Engine::cancelInputDispatches()
+{
+	// Retire in reverse order so offsets remain valid, preserving human events.
+	for (auto i = inputDispatches.rbegin(); i != inputDispatches.rend(); ++i)
+	{
+		// Failure before the next event append can retire a future range too.
+		if (i->first < sessionInput.events().size())
+			sessionInput.erase(i->first,
+							   std::min(i->count, sessionInput.events().size() - i->first));
+		i->receipt->consumed = 0;
+	}
+	inputDispatches.clear();
+}
+void Engine::completeInputDispatches()
+{
+	for (const auto &tracked : inputDispatches)
+		tracked.receipt->consumed = tracked.count;
+	inputDispatches.clear();
+}
+void Engine::dispatchClientInput(const std::vector<SDL_Event> &events)
+{
+	if (inputDispatches.empty())
+	{
+		clientStep(events);
+		return;
+	}
+	for (const auto &event : events)
+		sessionInput.push_back(event);
+	pruneCancelledInput();
+	clientStep(sessionInput.events());
+	completeInputDispatches();
+	sessionInput.clear();
+}
+
+bool Engine::threadedClientFrame(Uint64 now, const std::vector<SDL_Event> &events)
+{
+	if (!runner)
+		throw std::logic_error("Simulation thread not running");
+	publishSessionClock(now);
+	runner->rethrowFailure();
+	for (const auto &event : events)
+		sessionInput.push_back(event);
+	pruneCancelledInput();
+	// Selection and hit testing need this world's first immutable view. Preserve
+	// early input until it arrives; never fall back to a previous world's PresentationFrame.
+	if (!runner->sceneReady())
     {
         const auto* scene=runner->acquireScene();
         if (!scene) return gui.isRunning && !runner->ended();
@@ -504,6 +565,7 @@ bool Engine::threadedClientFrame(Uint64 now, const std::vector<SDL_Event>& event
     if (gui.isRunning)
     {
         clientStep(sessionInput.events());
+        completeInputDispatches();
         sessionInput.clear();
         runner->requestScene(gui.sceneRequest(false));
         absorbSimulationTelemetry();
@@ -1007,6 +1069,7 @@ void Engine::abortSession() noexcept
     }
     if (diagnostics) diagnostics->drain();
     session.reset();
+    cancelInputDispatches();
     sessionInput.clear();
     globalContainer->replayWriter.reset();
     PerformanceTelemetry::collector().reset();
@@ -1020,11 +1083,13 @@ bool Engine::stepSessionImpl(Uint64 now, const std::vector<SDL_Event>& events)
     turnDrawPending = true;
     --st.nextGuiStep;
     for (const auto &event : events) sessionInput.push_back(event);
+    pruneCancelledInput();
     return advanceSession(now, [&] {
         if (!globalContainer->runNoX && st.nextGuiStep == 0) {
             // Touch event timestamps use SDL time, which keeps advancing while
             // the session clock is suspended in the background.
             gui.step(sessionInput.events(), SDL_GetTicks());
+            completeInputDispatches();
             sessionInput.clear();
         }
     }, true);
@@ -1045,7 +1110,7 @@ bool Engine::serialClientFrame(Uint64 now, const std::vector<SDL_Event>& events,
     return guardedSessionStep(*this, [&]() -> bool {
         if (!session) throw std::logic_error("No active engine session");
         const Uint64 started = SDL_GetTicks();
-        clientStep(events);
+        dispatchClientInput(events);
         // Apply speed/pause input before deciding whether a tick is due.
         updateTickSpeedAndDrawCadence(*session, now);
         bool advanced = false;
@@ -1222,7 +1287,17 @@ bool Engine::advancePendingSave(const std::vector<SDL_Event>& events)
     // before touching that state, and never resume simulation during teardown.
     stopSimulationThread();
     // Save/retry dialogs share the SDL input clock, just like active gameplay.
-    if (gui.savePending()) gui.step(events, SDL_GetTicks());
+    if (inputDispatches.empty()) {
+        if (gui.savePending()) gui.step(events, SDL_GetTicks());
+    } else {
+        for (const auto &event : events) sessionInput.push_back(event);
+        pruneCancelledInput();
+        if (gui.savePending()) {
+            gui.step(sessionInput.events(), SDL_GetTicks());
+            completeInputDispatches();
+        } else cancelInputDispatches();
+        sessionInput.clear();
+    }
     return gui.savePending();
 }
 
@@ -1243,6 +1318,7 @@ std::optional<Engine::PendingLoad> Engine::finishSessionForHost()
 
     if (diagnostics) diagnostics->drain();
     session.reset();
+    cancelInputDispatches();
     sessionInput.clear();
     const auto filename = std::exchange(gui.toLoadGameFileName, {});
     if (gui.exitGlobCompletely || filename.empty()) return std::nullopt;

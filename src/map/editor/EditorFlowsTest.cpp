@@ -153,6 +153,31 @@ TEST_SUITE("EditorFlows")
 		}
 	}
 
+	TEST_CASE("editor input receipts report skipped persistence and interrupted tails [display]")
+	{
+		glob2test::HeadlessGlobals globals(displayOptions());
+		MapEdit editor;
+		blank(editor);
+		editor.beginEditing();
+		editor.performAction("open save screen");
+		struct Pending : GAGCore::ApplicationHost::Persistence
+		{
+			GAGCore::ApplicationHost::PersistenceState state() const override
+			{
+				return GAGCore::ApplicationHost::PersistenceState::Pending;
+			}
+		};
+		editor.loadSaveScreen->beginPersistence(std::make_unique<Pending>());
+		std::size_t consumed = 99;
+		REQUIRE(editor.advanceEditing({escapeEvent()}, 33, &consumed));
+		CHECK(consumed == 0);
+		editor.performAction("close save screen");
+		editor.performAction("quit editor");
+		consumed = 99;
+		CHECK_FALSE(editor.advanceEditing({escapeEvent(), escapeEvent()}, 66, &consumed));
+		CHECK(consumed == 1);
+	}
+
 	TEST_CASE("menu quit with unsaved changes uses the in-editor card and save continues to quit [display][artifacts]")
 	{
 		glob2test::HeadlessGlobals globals(displayOptions());
