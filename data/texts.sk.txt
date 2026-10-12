@@ -6010,8 +6010,6 @@ Pravidlá scenára rozhodli o výsledku.
 Časový limit vypršal.
 [outcome reason probability]
 Prahová hodnota pravdepodobnosti víťazstva bola dosiahnutá.
-[Destroy this building?]
-Zničiť túto budovu?
 [Discord community]
 
 [Globulation 2 Discord]
@@ -6104,3 +6102,5 @@ Zničiť túto budovu?
 
 [discord copy failed]
 
+[Destroy this building?]
+Zničiť túto budovu?

@@ -6010,8 +6010,6 @@ Die Szenarioregeln haben den Ausgang entschieden.
 Zeitlimit erreicht.
 [outcome reason probability]
 Schwellenwert der Siegwahrscheinlichkeit erreicht.
-[Destroy this building?]
-Dieses Gebäude zerstören?
 [Discord community]
 
 [Globulation 2 Discord]
@@ -6104,3 +6102,5 @@ Dieses Gebäude zerstören?
 
 [discord copy failed]
 
+[Destroy this building?]
+Dieses Gebäude zerstören?

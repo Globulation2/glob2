@@ -6010,8 +6010,6 @@ Les règles du scénario ont déterminé le résultat.
 Limite de temps atteinte.
 [outcome reason probability]
 Seuil de probabilité de victoire atteint.
-[Destroy this building?]
-Détruire ce bâtiment ?
 [Discord community]
 
 [Globulation 2 Discord]
@@ -6104,3 +6102,5 @@ Détruire ce bâtiment ?
 
 [discord copy failed]
 
+[Destroy this building?]
+Détruire ce bâtiment ?

@@ -6010,8 +6010,6 @@ Agertokiaren arauek emaitza erabaki dute.
 Denbora agortu da.
 [outcome reason probability]
 Irabazteko probabilitatearen atalasea lortu da.
-[Destroy this building?]
-Eraikin hau suntsitu?
 [Discord community]
 
 [Globulation 2 Discord]
@@ -6104,3 +6102,5 @@ Eraikin hau suntsitu?
 
 [discord copy failed]
 
+[Destroy this building?]
+Eraikin hau suntsitu?

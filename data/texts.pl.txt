@@ -6010,8 +6010,6 @@ Reguły scenariusza rozstrzygnęły wynik.
 Upłynął limit czasu.
 [outcome reason probability]
 Osiągnięto próg prawdopodobieństwa zwycięstwa.
-[Destroy this building?]
-Zniszczyć ten budynek?
 [Discord community]
 
 [Globulation 2 Discord]
@@ -6104,3 +6102,5 @@ Zniszczyć ten budynek?
 
 [discord copy failed]
 
+[Destroy this building?]
+Zniszczyć ten budynek?

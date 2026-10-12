@@ -6010,8 +6010,6 @@ FFmpeg није доступан, па је снимање искључено. �
 Временско ограничење је истекло.
 [outcome reason probability]
 Праг вероватноће победе је достигнут.
-[Destroy this building?]
-Уништити ову зграду?
 [Discord community]
 
 [Globulation 2 Discord]
@@ -6104,3 +6102,5 @@ FFmpeg није доступан, па је снимање искључено. �
 
 [discord copy failed]
 
+[Destroy this building?]
+Уништити ову зграду?

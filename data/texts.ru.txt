@@ -6010,8 +6010,6 @@ FFmpeg недоступен, поэтому запись отключена. У�
 Лимит времени истёк.
 [outcome reason probability]
 Порог вероятности победы достигнут.
-[Destroy this building?]
-Уничтожить это здание?
 [Discord community]
 
 [Globulation 2 Discord]
@@ -6104,3 +6102,5 @@ FFmpeg недоступен, поэтому запись отключена. У�
 
 [discord copy failed]
 
+[Destroy this building?]
+Уничтожить это здание?

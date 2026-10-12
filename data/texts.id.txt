@@ -6010,8 +6010,6 @@ Aturan skenario menentukan hasil.
 Batas waktu tercapai.
 [outcome reason probability]
 Ambang probabilitas kemenangan tercapai.
-[Destroy this building?]
-Hancurkan bangunan ini?
 [Discord community]
 
 [Globulation 2 Discord]
@@ -6104,3 +6102,5 @@ Hancurkan bangunan ini?
 
 [discord copy failed]
 
+[Destroy this building?]
+Hancurkan bangunan ini?

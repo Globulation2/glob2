@@ -6010,8 +6010,6 @@ Skenaarion säännöt ratkaisivat lopputuloksen.
 Aikaraja saavutettu.
 [outcome reason probability]
 Voittotodennäköisyyden kynnysarvo saavutettu.
-[Destroy this building?]
-Tuhotaanko tämä rakennus?
 [Discord community]
 
 [Globulation 2 Discord]
@@ -6104,3 +6102,5 @@ Tuhotaanko tämä rakennus?
 
 [discord copy failed]
 
+[Destroy this building?]
+Tuhotaanko tämä rakennus?

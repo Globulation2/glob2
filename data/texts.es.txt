@@ -6010,8 +6010,6 @@ Las reglas del escenario han determinado el resultado.
 Límite de tiempo alcanzado.
 [outcome reason probability]
 Umbral de probabilidad de victoria alcanzado.
-[Destroy this building?]
-¿Destruir este edificio?
 [Discord community]
 
 [Globulation 2 Discord]
@@ -6104,3 +6102,5 @@ Umbral de probabilidad de victoria alcanzado.
 
 [discord copy failed]
 
+[Destroy this building?]
+¿Destruir este edificio?

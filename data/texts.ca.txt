@@ -6010,8 +6010,6 @@ Les regles de l’escenari han determinat el resultat.
 Límit de temps assolit.
 [outcome reason probability]
 Llindar de probabilitat de victòria assolit.
-[Destroy this building?]
-Vols destruir aquest edifici?
 [Discord community]
 
 [Globulation 2 Discord]
@@ -6104,3 +6102,5 @@ Vols destruir aquest edifici?
 
 [discord copy failed]
 
+[Destroy this building?]
+Vols destruir aquest edifici?

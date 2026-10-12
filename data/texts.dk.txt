@@ -6010,8 +6010,6 @@ Scenariets regler afgjorde udfaldet.
 Tidsgrænsen er nået.
 [outcome reason probability]
 Tærsklen for sejrsandsynlighed er nået.
-[Destroy this building?]
-Ødelæg denne bygning?
 [Discord community]
 
 [Globulation 2 Discord]
@@ -6104,3 +6102,5 @@ Tærsklen for sejrsandsynlighed er nået.
 
 [discord copy failed]
 
+[Destroy this building?]
+Ødelæg denne bygning?

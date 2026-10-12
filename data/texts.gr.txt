@@ -6010,8 +6010,6 @@ CPU %0%
 Έληξε το χρονικό όριο.
 [outcome reason probability]
 Επιτεύχθηκε το όριο πιθανότητας νίκης.
-[Destroy this building?]
-Να καταστραφεί αυτό το κτίριο;
 [Discord community]
 
 [Globulation 2 Discord]
@@ -6104,3 +6102,5 @@ CPU %0%
 
 [discord copy failed]
 
+[Destroy this building?]
+Να καταστραφεί αυτό το κτίριο;

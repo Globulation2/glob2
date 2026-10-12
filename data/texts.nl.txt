@@ -6010,8 +6010,6 @@ De scenarioregels hebben de uitkomst bepaald.
 Tijdslimiet bereikt.
 [outcome reason probability]
 Drempel voor de winstkans bereikt.
-[Destroy this building?]
-Dit gebouw vernietigen?
 [Discord community]
 
 [Globulation 2 Discord]
@@ -6104,3 +6102,5 @@ Dit gebouw vernietigen?
 
 [discord copy failed]
 
+[Destroy this building?]
+Dit gebouw vernietigen?

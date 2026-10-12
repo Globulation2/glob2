@@ -6010,8 +6010,6 @@ FFmpeg غير متاح، لذا التسجيل معطّل. ثبّت FFmpeg وت�
 انتهت المهلة الزمنية.
 [outcome reason probability]
 تم بلوغ عتبة احتمال الفوز.
-[Destroy this building?]
-هل تريد تدمير هذا المبنى؟
 [Discord community]
 
 [Globulation 2 Discord]
@@ -6104,3 +6102,5 @@ FFmpeg غير متاح، لذا التسجيل معطّل. ثبّت FFmpeg وت�
 
 [discord copy failed]
 
+[Destroy this building?]
+هل تريد تدمير هذا المبنى؟

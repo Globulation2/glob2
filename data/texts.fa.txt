@@ -6010,8 +6010,6 @@ FFmpeg در دسترس نیست، پس ضبط خاموش است. FFmpeg را ن�
 مهلت زمانی به پایان رسید.
 [outcome reason probability]
 آستانهٔ احتمال پیروزی محقق شد.
-[Destroy this building?]
-این ساختمان تخریب شود؟
 [Discord community]
 
 [Globulation 2 Discord]
@@ -6104,3 +6102,5 @@ FFmpeg در دسترس نیست، پس ضبط خاموش است. FFmpeg را ن�
 
 [discord copy failed]
 
+[Destroy this building?]
+این ساختمان تخریب شود؟

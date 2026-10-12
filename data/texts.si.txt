@@ -6010,8 +6010,6 @@ Pravila scenarija so odločila o izidu.
 Časovna omejitev je dosežena.
 [outcome reason probability]
 Prag verjetnosti zmage je dosežen.
-[Destroy this building?]
-Uniči to stavbo?
 [Discord community]
 
 [Globulation 2 Discord]
@@ -6104,3 +6102,5 @@ Uniči to stavbo?
 
 [discord copy failed]
 
+[Destroy this building?]
+Uniči to stavbo?
