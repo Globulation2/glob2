@@ -27,14 +27,15 @@ until someone can swim.
   a few tiles from water, so it all regrows. Only crops could close a lane, so `openColonyRoutes` clears
   only crops.
 - **Ground.** `ground` is Classic by default, and the player-facing randomizer stays on it. Expanded
-  gives each part of the polder the terrain it stands for, after the beaches are laid so the ditches' banks
-  stay sand: crop rows are loam (buildable crop land that irrigates three times as strongly as water),
-  dykes are dirt track (twice walking speed, buildable, nothing grows) with boardwalk where they cross a
-  ditch, and each village's ring is gravel (inhibits growth like sand, never a coastline). Villages,
-  hamlets and farm plots stay grass for their kits and plantings. The map then requires the fertile,
-  path and barren terrain experiments, which the generated map declares itself. Fast dykes and
-  irrigating loam change pacing and regrowth: the row widths have not been refitted for loam, and the
-  expanded ground needs a play before it becomes the default.
+  gives the dykes and village rings the terrain they stand for, after the beaches are laid so the
+  ditches' banks stay sand: dykes are dirt track (twice walking speed, buildable, nothing grows) with
+  boardwalk where they cross a ditch, and each village's ring is gravel (inhibits growth like sand,
+  never a coastline). Villages, hamlets, farm plots and the crop rows stay grass. The map then requires
+  the path and barren terrain experiments, which the generated map declares itself. Loam crop rows were
+  tried and dropped: fertile ground irrigates three times as strongly as water, wheat filled every row,
+  and Cortex found no room for an inn (13 of 16 colonies under 20 units after 25,000 ticks, against 1
+  on grass). Four-AI games of the shipped mix (four seeds, Nicowar, Cortex, Maxima) matched classic;
+  it has not been played by a person.
 
 ## Implementation source
 

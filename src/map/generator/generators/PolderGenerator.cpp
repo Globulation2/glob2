@@ -264,25 +264,23 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	return L;
 }
 
-// Expanded ground (ground=1): the sketch's grass, sand lines and rings given the terrain they stand
-// for, after the beaches are laid so the ditches' banks stay sand.
-//  - Crop rows are loam, buildable crop land that irrigates more strongly than water, so a row
-//    regrows from further off; the villages, hamlets and farm plots stay grass, which is what their
-//    kits and plantings need.
+// Expanded ground (ground=1): the dykes and village rings given the terrain they stand for, after the
+// beaches are laid so the ditches' banks stay sand.
 //  - Dykes are dirt track (double walking speed, buildable, nothing grows on it) and boardwalk where
 //    they cross a ditch: the polder's roads are real roads, and a lane through the crops stays open
 //    without sand.
 //  - The ring round every village is gravel, which inhibits growth as sand does but is no coastline.
 // Every swap keeps the sand it replaces a containment line: paths and barren ground take no resource.
+// The crop rows stay grass. Loam rows were tried (fertile ground irrigates three times as strongly as
+// water): wheat filled every row, no free footprint was left beside the villages and Cortex never built
+// an inn (13 of 16 colonies under 20 units against 1 on grass), while Maxima grew half as large again.
 void expandGround(TerrainSketch &terrain, const Layout &L)
 {
 	const int n = L.t.size();
 	for (int i = 0; i < n; ++i)
 	{
 		unsigned char &v = terrain.at(i);
-		if (v == GRASS && !L.village[i] && !L.hamlet[i] && !L.farm.plot[i])
-			v = LOAM;
-		else if (v == SAND && L.dyke[i])
+		if (v == SAND && L.dyke[i])
 			v = L.boardwalk[i] ? BOARDWALK : DIRT_TRACK;
 		else if (v == SAND && L.ring[i] && !L.dyke[i])
 			v = GRAVEL;
