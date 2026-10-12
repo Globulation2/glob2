@@ -153,3 +153,70 @@ TEST_CASE(
                 }
             }
 }
+
+TEST_CASE("opaque regional rows preserve padded pitches source clipping and scaled height" *
+          doctest::test_suite("SurfaceRaster"))
+{
+    using namespace GAGCore::SurfaceRaster;
+    const auto format = *SDL_GetPixelFormatDetails(SDL_PIXELFORMAT_ARGB8888);
+    std::array<Uint32, 20 * 7> source;
+    for (std::size_t i = 0; i < source.size(); ++i)
+        source[i] = 0x73100000u + Uint32(i * 977);
+    for (const int height : {11, 17})
+    {
+        std::array<Uint32, 24 * 12> actual, expected;
+        actual.fill(0x12345678); expected = actual;
+        RasterCommand command;
+        command.kind = RasterCommand::Kind::Blit;
+        command.source = {reinterpret_cast<const Uint8 *>(source.data()), 13, 7, 20 * 4, format};
+        command.sourceRect = {-3, -2, 20, 11};
+        command.destination = {1, 1, 20, height};
+        command.clip = {3, 2, 12, 8};
+        command.opaque = true;
+        // Independent scalar sampling also checks untouched row padding.
+        for (int y = 2; y < 10; ++y)
+            for (int x = 3; x < 15; ++x)
+            {
+                const int sx = -3 + x - 1;
+                const int sy = -2 + ((y - 1) * 2 + 1) * 11 / (height * 2);
+                if (sx >= 0 && sx < 13 && sy >= 0 && sy < 7)
+                    expected[y * 24 + x] = source[sy * 20 + sx];
+            }
+        const WritablePixelView output{
+            reinterpret_cast<Uint8 *>(actual.data()), 19, 12, 24 * 4, format};
+        for (int y = 0; y < 12; y += 5)
+            for (int x = 0; x < 19; x += 5)
+                executeCommand(command, output, {x, y, 5, 5});
+        CHECK(actual == expected);
+    }
+}
+
+TEST_CASE("opaque regional alias views retain forward pixel traversal" *
+          doctest::test_suite("SurfaceRaster"))
+{
+    using namespace GAGCore::SurfaceRaster;
+    const auto format = *SDL_GetPixelFormatDetails(SDL_PIXELFORMAT_ARGB8888);
+    for (const int sourceOffset : {0, 1})
+    {
+        std::array<Uint32, 12 * 2> actual, expected;
+        for (std::size_t i = 0; i < actual.size(); ++i)
+            actual[i] = 0xff000000u + Uint32(i * 977);
+        expected = actual;
+        const int destinationX = 1 - sourceOffset;
+        RasterCommand command;
+        command.kind = RasterCommand::Kind::Blit;
+        command.source = {reinterpret_cast<const Uint8 *>(actual.data() + sourceOffset),
+                          9, 2, 12 * 4, format};
+        command.sourceRect = {0, 0, 8, 2};
+        command.destination = {destinationX, 0, 8, 2};
+        command.clip = {0, 0, 10, 2};
+        command.opaque = true;
+        for (int y = 0; y < 2; ++y)
+            for (int x = 0; x < 8; ++x)
+                expected[y * 12 + destinationX + x] = expected[y * 12 + sourceOffset + x];
+        executeCommand(command,
+                       {reinterpret_cast<Uint8 *>(actual.data()), 10, 2, 12 * 4, format},
+                       {0, 0, 10, 2});
+        CHECK(actual == expected);
+    }
+}

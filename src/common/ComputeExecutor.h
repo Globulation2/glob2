@@ -23,8 +23,8 @@
 #include <cstdlib>
 #include <cstring>
 
-// One executor for the simulation's parallel work. Two shapes of work share
-// its threads:
+// One executor shares the simulation's workers with optional presentation work.
+// Required simulation work has two shapes:
 //
 //  * run(): a blocking fork/join batch submitted and joined by one thread. Jobs
 //    may nest batches; nested work stays on its current thread. No simulation
@@ -40,6 +40,11 @@
 // Jobs compute only from inputs fixed at submission, so the schedule never
 // changes a result. Joins always end: a worker claims a lane job only after its
 // predecessor completed, and neither jobs nor presentation chunks wait on the owner.
+// Optional scene preparation is resumable and runs on a designated worker;
+// bounded graphics batches share its opportunities without entering simulation
+// barriers. Graphics inputs belong to the submitting owner until synchronous
+// completion. Worker-only maintenance uses idle opportunities and cannot retain
+// game inputs. Neither presentation nor maintenance is pumped by required joins.
 class ComputeExecutor : public GAGCore::PresentationWork
 {
 public:
@@ -130,6 +135,10 @@ private:
                 active = owner; // Lifecycle barriers remain forbidden in capture destructors.
                 released = {};
                 active = previous;
+                // Completion also wakes an owner waiting for a scene slot.
+                // Publish under the scheduler mutex to avoid a lost wakeup;
+                // the unfinished batch keeps stop() draining during handoff.
+                std::unique_lock schedulerLock(owner->mutex);
                 lock.lock();
                 status.store(error             ? Presentation::Status::Failed
                              : canceled.load() ? Presentation::Status::Canceled
@@ -137,6 +146,7 @@ private:
                              std::memory_order_release);
                 finished.store(true, std::memory_order_release);
                 done.notify_all();
+                owner->ready.notify_all();
             }
         }
         void cancel()
@@ -409,7 +419,7 @@ private:
     bool graphicsClaimable(bool owner = false, std::size_t worker = 0) const
     {
         if (!graphicsBatch ||
-            (!owner && graphicsRunning + std::size_t(presentationRunning) >= presentationLimit()))
+            graphicsRunning + std::size_t(presentationRunning) >= presentationLimit())
             return false;
         // Keep a slot available for the designated worker when scene work is
         // waiting. It may alternate that slot between the two classes; spare
@@ -834,8 +844,14 @@ public:
         if (!presentationWorker || ticket.work->serial)
         {
             std::unique_lock lock(mutex);
-            while (graphicsClaimable(true))
-                executeCpuPresentation(lock, 0, false);
+            while (!ticket.finished())
+            {
+                // A browser owner shares the presentation ceiling with scene
+                // extraction even though graphics callbacks run serially here.
+                ready.wait(lock, [&] { return ticket.finished() || graphicsClaimable(true); });
+                if (!ticket.finished())
+                    executeCpuPresentation(lock, 0, false);
+            }
         }
         ticket.work->drain();
         {
@@ -854,18 +870,18 @@ public:
     void executePresentationJobs(std::size_t count,
                                  const std::function<void(std::size_t)> &function) override
     {
-#if defined(__EMSCRIPTEN__)
-        for (std::size_t i = 0; i < count; ++i)
-            function(i);
-#else
-        auto ticket = submitPresentationBatch(count, {GAGCore::renderConcurrency()},
+        if (active)
+            throw std::logic_error("Graphics batch submission inside a job");
+        if (!count)
+            return;
+        const auto concurrency = GAGCore::renderConcurrency();
+        auto ticket = submitPresentationBatch(count, {concurrency},
                                               [function](PresentationJobContext context)
                                               {
                                                   if (!context.cancellation.canceled())
                                                       function(context.index);
                                               });
         finishPresentationBatch(ticket);
-#endif
 	}
 	// The submitting thread owns admission. Replacing pending work releases its
 	// captures immediately; active work finishes its current chunk on its worker.
