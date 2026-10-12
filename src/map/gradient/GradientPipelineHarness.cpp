@@ -35,7 +35,7 @@ public:
         const std::function<std::thread(std::function<void()>)>& factory =
             [](auto f) { return GAGCore::ThreadSupport::launch(std::move(f)); })
     {
-        reset(); executor.configure(count+1, factory);
+        reset(); executor.configureTelemetry(ComputeTelemetryMode::Trace); executor.configure(count+1, factory);
         GradientPipeline::configure(executor, count!=0, delay, cells, std::move(work));
     }
 };

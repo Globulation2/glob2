@@ -212,3 +212,96 @@ Measure disabled and enabled collection on the same retained fixture when changi
 
 
 See [compute pipeline benchmarks](compute-benchmarks.md) for scheduled work and optimization comparisons.
+
+## Optional compute executor diagnostics
+
+`play`, `replay` and `game run` accept `--compute-telemetry off|waits|trace`.
+The default is `off`. This option controls executor and producer pipeline diagnostic
+collection independently of ordinary performance scopes and GPU/backend diagnostics.
+Producer outcome counts (published/discarded work, proposals and throughput) remain ordinary
+telemetry; this mode controls optional executor accounting and producer timing.
+Mode changes drain required work before selecting worker and callback specializations.
+Reconfiguring workers or diagnostics starts a fresh collection interval; exports cover
+that interval or the time since the latest load/restart reset.
+No diagnostic metadata is saved, replayed, hashed, or used to choose simulation results.
+
+- `off` allocates no diagnostic sidecars or trace storage. Its worker specialization
+  contains no diagnostic clock calls, counter updates, event writes or mode tests.
+- `waits` records submissions and owner joins under the existing executor mutex.
+  Workers use the same specialization as `off`; worker callback timing is unavailable.
+- `trace` also records scheduling, callbacks, suspension, external resolution,
+  continuations, completion and retirement. Callback end is distinct from completion.
+  A continuation retains its batch/job identity; repeated claim/start/end events identify
+  successive invocations. Blocking fork/join and presentation events have separate
+  `execution_kind` namespaces (0 deferred, 1 fork/join, 2 scene preparation, 3 graphics batches, 4 worker-only maintenance).
+  Maintenance has no required join or simulation deadline; its events show worker occupancy.
+
+The zero-delay AI placement policy still measures decision duration in all modes: it
+uses that duration to choose owner or worker execution. Those clocks are scheduling
+inputs, rather than optional diagnostics. Delayed AI callbacks do not read that clock
+in `off` or `waits`. Optional gradient GPU diagnostics and backend calibration also
+retain their own controls and clocks. Turning compute diagnostics off does not disable
+those independent features.
+
+Headless `result.json`, turn network session summaries, and the local
+`GLOB2_COMPUTE_SUMMARY` JSON record emitted with `GLOB2_TEAM_TIMELINE=1` contain a
+versioned `compute_telemetry` object (the timeline record contains that object directly).
+Disabled exports contain `schema_version: 1`, `mode: "off"`, `available: false`.
+Allocation failure disables collection or downgrades tracing to waits; `requested_mode`
+identifies a downgrade. Legacy headless timing/counter fields are `null` when unavailable.
+Pipeline join timing is derived from the common executor summaries; its population
+now includes valid joins only, excluding empty/stale handles. AI deadline metrics also
+come from these summaries. Raw pipeline diagnostic structs do not independently time joins.
+
+Each producer/reason entry contains joined and incomplete batch counts, background wait
+attempts, owner execution joins, and duration totals, maxima and fixed histograms.
+Histogram bucket 0 is zero ns; bucket n>0 covers `[2^(n-1), 2^n-1]` ns, through bucket 64.
+An unfinished batch under the completion lock counts as a wait attempt even if completion
+occurs before the owner sleeps. Background wait duration includes completion notification,
+scheduling and mutex reacquisition. It is elapsed time, not worker CPU time.
+Join lock time measures acquisition; total join time ends after slot retirement/accounting,
+before mutex release and exception delivery. Failed batches are counted before rethrowing.
+Fork/join summaries also report the owner's work before its completion barrier.
+
+Producer attribution identifies the work awaited. Owner fallback duration can include earlier
+deadlines from other producers. It is not the awaited producer's callback execution time.
+A mixed batch has one `mixed` attribution. Save, reconfigure, teardown and verification joins
+remain separate from tick deadline and immediate required joins.
+
+Required joins with a tick must arrive in nondecreasing logical tick order within a session.
+Lifecycle calls use `ComputeTelemetry::NoTick`. Producers explicitly map their local advance
+boundaries onto the simulation tick, independently of executor deadline keys. Repeated waits
+on a tick add elapsed time, while per-producer and global affected-tick counts increment once.
+Advancing ticks are counted after successful simulation advancement, excluding pause and
+network stalls. Current tick duration is included in snapshots without mutating the collector.
+Frequency denominators are `required_batches_joined` and `advancing_ticks`; their numerators
+are `required_batches_incomplete` and `background_wait_ticks`. A zero denominator has no
+measured rate. Loading/restarting clears session summaries and streams after producers drain.
+
+Trace event arrays share a default 16 MiB budget per executor, split among simulation owner, graphics owner, workers
+and an external completion stream. The budget covers event storage; bounded summary and
+stream metadata are additional. Configuration allocates all arrays. Full arrays drop new
+events without blocking or allocating; `trace_lost_events` and `trace_incomplete` expose loss.
+Scheduler/external writes use existing executor locks; fork/join callback starts use their
+thread's single-writer stream. Summary snapshots copy synchronized counters. Full event
+snapshots require drained required work and idle scene/graphics presentation; they never inspect a running
+writer. Headless and final timeline exports satisfy that boundary. Network snapshots omit
+event arrays (`trace_included: false`) and retain loss counters.
+
+Analyze a full export with:
+
+```sh
+python3 tools/compute_trace.py artifacts/run/result.json --output artifacts/run/compute-analysis.json
+```
+
+The reader preserves missing evidence as `null`, reports truncation, and derives callback
+elapsed time, lane predecessor delay, time queued after eligibility, external resolution
+after callback return, and completion-to-join latency. These intervals describe observed
+elapsed delays; eligible queue time does not identify which competing producer occupied
+workers. Inspect overlapping events to investigate that cause.
+
+Worker-only maintenance can span a snapshot: its event writes still use the scheduler
+mutex, and `trace_open_work` marks an open interval. A session reset discards the
+previous maintenance interval; an epoch check suppresses its returning events, while
+`trace_coverage_gap` marks that missing prefix until the next configuration/reset.
+Both flags contribute to `trace_incomplete`, independently of dropped-event counts.

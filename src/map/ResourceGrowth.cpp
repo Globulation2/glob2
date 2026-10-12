@@ -141,14 +141,14 @@ void calculate(const MapState::View &v, MersenneTwister &rng, Batch &out)
 	out.capacityGrew = out.proposals.capacity() != initialCapacity;
 }
 
-void apply(Map &map, const Batch &batch, Metrics &metrics)
+void apply(Map &map, const Batch &batch, Metrics &metrics, bool measure)
 {
-	const auto start = now();
+	const auto start = measure ? now() : 0;
 	metrics.publishedProposals += batch.proposals.size();
 	if (map.game->gameHeader.isResourceGrowthDisabled())
 	{
 		metrics.rejected += batch.proposals.size();
-		metrics.publicationNs += now() - start;
+		if (measure) metrics.publicationNs += now() - start;
 		return;
 	}
 	if (batch.proposals.empty()) return;
@@ -233,7 +233,7 @@ void apply(Map &map, const Batch &batch, Metrics &metrics)
 			metrics.clamped += attempted && op.delta > 0;
 		}
 	}
-	metrics.publicationNs += now() - start;
+	if (measure) metrics.publicationNs += now() - start;
 }
 
 SimulationSnapshot::Requirements Pipeline::requirements()
@@ -250,11 +250,12 @@ void Pipeline::stage(Uint32 tick, Uint32 seed)
 		throw std::logic_error("Resource growth tick did not advance");
 	reservation = std::pair{tick, seed};
 }
+template<bool Measure>
 void Pipeline::run(void *context, std::size_t)
 {
 	auto &j = *static_cast<Job *>(context);
-	const auto start = now();
-	j.queueNs = start - j.submittedNs;
+	const auto start = [] { if constexpr (Measure) return now(); else return Uint64(0); }();
+	if constexpr (Measure) j.queueNs = start - j.submittedNs;
 	try
 	{
 		MersenneTwister rng(j.seed);
@@ -265,7 +266,7 @@ void Pipeline::run(void *context, std::size_t)
 		j.error = std::current_exception();
 	}
 	j.snapshot.reset();
-	j.computeNs = now() - start;
+	if constexpr (Measure) j.computeNs = now() - start;
 }
 void Pipeline::prepare(const SimulationSnapshot::Handle &snapshot, ComputeExecutor &target)
 {
@@ -305,7 +306,8 @@ void Pipeline::prepare(const SimulationSnapshot::Handle &snapshot, ComputeExecut
 	j->error = {};
 	j->collected = false;
 	j->work = {};
-	j->submittedNs = now();
+	j->submittedNs = executor->telemetryMode() == ComputeTelemetryMode::Trace ? now() : 0;
+    j->computeNs = j->queueNs = 0;
 	auto *job = j.get();
 	pending.push_back(std::move(j));
 	Uint64 bytes = 0;
@@ -315,11 +317,12 @@ void Pipeline::prepare(const SimulationSnapshot::Handle &snapshot, ComputeExecut
 		bytes += p->reservedCapacity * sizeof(Proposal);
 	metrics.maxProposalBytes = std::max(metrics.maxProposalBytes, bytes);
 	reservation.reset();
-	const ComputeExecutor::Group group{1, {run, job}, ComputeExecutor::NoLane};
+	const auto callback = executor->telemetryMode() == ComputeTelemetryMode::Trace ? &run<true> : &run<false>;
+	const ComputeExecutor::Group group{1, {callback, job}, ComputeExecutor::NoLane};
 	try
 	{
 		job->work = executor->submit(std::span(&group, 1),
-			ComputeExecutor::advanceDue(job->output.dueTick));
+			ComputeExecutor::advanceDue(job->output.dueTick), {ComputeProducer::ResourceGrowth, job->output.sourceTick, job->output.dueTick});
 	}
 	catch (...)
 	{
@@ -330,14 +333,12 @@ void Pipeline::prepare(const SimulationSnapshot::Handle &snapshot, ComputeExecut
 	++metrics.submitted;
 	metrics.maxPending = std::max<Uint64>(metrics.maxPending, pending.size());
 }
-void Pipeline::join(Job &j)
+void Pipeline::join(Job &j, JoinContext context)
 {
 	if (!j.work.empty())
 	{
-		const auto start = now();
-		executor->join(j.work);
+		executor->join(j.work, context);
 		j.work = {};
-		metrics.waitNs += now() - start;
 	}
 	if (j.error)
 		std::rethrow_exception(j.error);
@@ -366,9 +367,9 @@ void Pipeline::publish(Map &map, Uint32 tick)
 	while (!pending.empty() && Sint32(tick - pending.front()->output.dueTick) >= 0)
 	{
 		auto &j = *pending.front();
-		join(j);
+		join(j, {JoinReason::TickDeadline, tick});
 		if (j.world == map.identity() && j.catalog == map.resourceRegistry().checksum())
-			apply(map, j.output, metrics);
+			apply(map, j.output, metrics, executor && executor->telemetryEnabled());
 		else
 		{
 			metrics.publishedProposals += j.output.proposals.size();
@@ -379,10 +380,10 @@ void Pipeline::publish(Map &map, Uint32 tick)
 		pending.pop_front();
 	}
 }
-void Pipeline::finish()
+void Pipeline::finish(JoinContext context)
 {
 	for (auto &j : pending)
-		join(*j);
+		join(*j, context);
 }
 void Pipeline::reset() noexcept
 {
@@ -391,7 +392,7 @@ void Pipeline::reset() noexcept
 		{
 			try
 			{
-				executor->join(j->work);
+				executor->join(j->work, {JoinReason::Teardown, ComputeTelemetry::NoTick});
 			}
 			catch (...)
 			{
@@ -415,7 +416,7 @@ void Pipeline::save(GAGCore::OutputStream *s, Uint32 tick)
 {
 	if (reservation)
 		throw std::logic_error("Saving unprepared growth");
-	finish();
+	finish({JoinReason::Save, ComputeTelemetry::NoTick});
 	s->writeEnterSection("resourceGrowth");
 	s->writeUint8(delay, "delay");
 	s->writeUint8(pending.size(), "count");
@@ -600,10 +601,10 @@ void Map::stageResourceGrowth()
 	if (!game->gameHeader.isResourceGrowthDisabled())
 		gradientRuntime->growth.stage(game->stepCounter, privateRandom(RandomDomain::GrowthJobs).nextU32());
 }
-void Map::finishResourceGrowth()
+void Map::finishResourceGrowth(JoinContext context)
 {
 	preparePendingWorld();
-	gradientRuntime->growth.finish();
+	gradientRuntime->growth.finish(context);
 }
 void Map::setResourceGrowthDelay(unsigned delay)
 {

@@ -564,8 +564,8 @@ std::vector<std::pair<std::string,Uint64>> Map::gradientExecutionMetrics() const
 
 void Map::configureCompute(unsigned threads)
 {
-	finishGradientPipeline();
-	finishResourceGrowth();
+	finishGradientPipeline({JoinReason::Reconfigure, ComputeTelemetry::NoTick});
+	finishResourceGrowth({JoinReason::Reconfigure, ComputeTelemetry::NoTick});
 	compute.configure(threads);
 	gradientRuntime->pipeline.resizeWorkspaces();
 	gradientRuntime->workspaces.resize(compute.threadCount());

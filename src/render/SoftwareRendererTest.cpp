@@ -533,6 +533,7 @@ TEST_CASE("pending borrowed pixels survive destruction before flush and prove ti
     glob2test::ScopedEnvironment mode("GLOB2_RENDER_EXECUTION", "parallel");
     ComputeExecutor executor;
     executor.configure(4);
+    executor.configureTelemetry(ComputeTelemetryMode::Trace);
     PresentationWorkScope scope(executor);
     auto target = pixels(271, 263);
     auto backend = makeSoftwareRenderBackend(target.get());
