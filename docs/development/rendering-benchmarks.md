@@ -106,6 +106,8 @@ jobs/cells/reservation, raster tiles/references/source-copy bytes, serial batche
 fallback operations, summed queue delay/worker activity and owner wait. Summed
 worker activity is elapsed callback time, not process CPU or batch latency.
 Counters exclude warmup; peak retained/reserved bytes cover the entire run.
+Terrain cache counters describe the retained view cache. Streaming uses temporary
+page caches; use executor counters and terrain scopes to observe their CPU jobs.
 Scope records separate material preparation, terrain planning/install, command
 capture, source copying, binning and raster execution. Inclusive scopes must not
 be added together. Counters are owner aggregates; worker callbacks do not use

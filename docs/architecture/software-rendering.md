@@ -141,8 +141,8 @@ including retained vector capacity. Captured source reservations release when
 the segment finishes or is discarded.
 The reservation includes material revisions, catalog/control storage,
 results, masks, metadata and two scratch slots. Oversized HD cells, reductions,
-and groups without headroom use existing serial composition. GPU composition,
-streamed pages and emergency fallback retain their existing paths. Installation
+and groups without headroom use existing serial composition. GPU composition and emergency fallback retain their existing paths. Streamed
+CPU pages reuse the bounded page builder while keeping one temporary page alive. Installation
 keeps the page invalid until its pixels, masks, revisions and opaque runs are
 consistent. Allocation failure discards the invalid cache rather than publishing
 partial output.
