@@ -394,16 +394,17 @@ GeneratorDefinition polderDefinition()
 		"polder",
 		30,
 		"Polder",
-		6,
+		7, // 7: expanded ground (dirt-track dykes, gravel village rings) is the default
 		false,
 		// A dyke every 24 tiles is a lane every one and a half rows' walk; villages of radius 14
 		// hold a swarm, its kit and a few more buildings and no more (11 before the first play, and
 		// the growth crowded them; FEEDBACK 2026-09-13: a random angle by default, and villages of
 		// 14 in a sand ring).
-		// Expanded ground is opt-in until a maintainer has played it: the randomizer stays on classic.
-		{GeneratorControl::choice("ground", "Ground", {"Classic", "Expanded"}, 0,
+		// Expanded ground is the default; Classic keeps the sand dykes and rings. The randomizer follows
+		// the default.
+		{GeneratorControl::choice("ground", "Ground", {"Classic", "Expanded"}, 1,
 								  ControlGroup::Terrain)
-			 .withSearchValues({0}),
+			 .withSearchValues({1}),
 		 GeneratorControl::choice("row-angle", "Row angle",
 								  {"Random", "Vertical", "Horizontal", "Diagonal"}, 0,
 								  ControlGroup::Terrain)

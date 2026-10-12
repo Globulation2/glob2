@@ -26,16 +26,16 @@ until someone can swim.
 - **Fields.** 55% of the fertile row ground under wheat and 8% under wood, in patches; every row tile is
   a few tiles from water, so it all regrows. Only crops could close a lane, so `openColonyRoutes` clears
   only crops.
-- **Ground.** `ground` is Classic by default, and the player-facing randomizer stays on it. Expanded
-  gives the dykes and village rings the terrain they stand for, after the beaches are laid so the
-  ditches' banks stay sand: dykes are dirt track (twice walking speed, buildable, nothing grows) with
-  boardwalk where they cross a ditch, and each village's ring is gravel (inhibits growth like sand,
-  never a coastline). Villages, hamlets, farm plots and the crop rows stay grass. The map then requires
-  the path and barren terrain experiments, which the generated map declares itself. Loam crop rows were
-  tried and dropped: fertile ground irrigates three times as strongly as water, wheat filled every row,
-  and Cortex found no room for an inn (13 of 16 colonies under 20 units after 25,000 ticks, against 1
-  on grass). Four-AI games of the shipped mix (four seeds, Nicowar, Cortex, Maxima) matched classic;
-  it has not been played by a person.
+- **Ground.** `ground` is Expanded by default (revision 7), and the player-facing randomizer follows it;
+  Classic keeps the original sand dykes and rings. Expanded gives the dykes and village rings the
+  terrain they stand for, after the beaches are laid so the ditches' banks stay sand: dykes are dirt
+  track (twice walking speed, buildable, nothing grows) with boardwalk where they cross a ditch, and
+  each village's ring is gravel (inhibits growth like sand, never a coastline). Villages, hamlets, farm
+  plots and the crop rows stay grass. The map then requires the path and barren terrain experiments,
+  which the generated map declares itself. Loam crop rows were tried and dropped: fertile ground
+  irrigates three times as strongly as water, wheat filled every row, and Cortex found no room for an
+  inn (13 of 16 colonies under 20 units after 25,000 ticks, against 1 on grass). Four-AI games of the
+  shipped mix (four seeds, Nicowar, Cortex, Maxima) matched classic; it has not been played by a person.
 
 ## Implementation source
 
