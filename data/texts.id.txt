@@ -6030,5 +6030,33 @@ Discord opened. You can return to the game at any time.
 Could not open Discord. Copy the invitation link and open it in your browser.
 [discord link copied]
 Invitation link copied.
+[settings MCP server]
+
+[settings Enabling the MCP server permits local clients to see and operate the game.]
+
+[settings Enable MCP server]
+
+[settings Port]
+
+[settings Current controller: %0]
+
+[settings Copy endpoint]
+
+[settings Retry listener]
+
+[settings Revoke control]
+
+[settings MCP server unavailable in this application]
+
+[settings Disabled]
+
+[settings Running]
+
+[settings Error: %0]
+
+[settings None]
+
+[settings Starting]
+
 [discord copy failed]
 Could not copy the link. Select the invitation above to copy it manually.

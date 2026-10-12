@@ -31,6 +31,8 @@ if env.get('role') == 'relay':
 if not env.get('wss', True):
     source_files.remove('net/WssTransport.cpp')
     source_files.remove('online/HttpFetch.cpp')
+if env.get('target', 'native') not in ('web', 'android', 'ios') and not env.get('server'):
+    source_files += ['mcp/Tools.cpp', 'mcp/Protocol.cpp', 'mcp/HttpServer.cpp']
 local = env.Clone()
 from skin_render import configure as configure_skin_render
 configure_skin_render(local)

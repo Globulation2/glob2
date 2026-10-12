@@ -919,6 +919,7 @@ class GameGUITouchHarness
 				SDL_Event wheel{};
 				wheel.type = SDL_EVENT_MOUSE_WHEEL;
 				wheel.wheel.y = -1;
+                wheel.wheel.mouse_x=x; wheel.wheel.mouse_y=y;
 #if SDL_VERSION_ATLEAST(2,0,18)
 				wheel.wheel.y = -1;
 #endif
@@ -1170,6 +1171,16 @@ class GameGUITouchHarness
 				const size_t count = gui.touch->paletteItems().size();
 				const auto top = gui.touch->paletteItemRect(count - 1);
 				require(top.y < content.y, "Padded rail fixture must overflow");
+                // Queued/remote wheels carry their own pointer. Put the OS cursor
+                // elsewhere to catch consumers that substitute polled mouse state.
+                SDL_WarpMouseInWindow(SDL_GetWindowFromID(gfx->windowID()), 5, 5);
+                SDL_Event wheel{}; wheel.type=SDL_EVENT_MOUSE_WHEEL;
+                wheel.wheel.mouse_x=content.x+content.w/2;
+                wheel.wheel.mouse_y=content.y+content.h/2;
+                wheel.wheel.y=-gui.touch->paletteScrollSign();
+                gui.processEvent(&wheel);
+                require(gui.touch->panelScroll>0, "Wheel must scroll the supplied HUD position, independently of the OS pointer");
+                gui.touch->panelScroll=0; gui.touch->clampScroll();
 				{
 					const double before = gui.touch->panelScroll;
 					finger(SDL_EVENT_FINGER_DOWN, 1, content.x + content.w / 2, content.y + 8 * unit);

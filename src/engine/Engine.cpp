@@ -32,6 +32,7 @@ Engine::Engine()
 
 Engine::~Engine()
 {
+    cancelInputDispatches();
 	stopSimulationThread();
 	PerformanceTelemetry::collector().enabled = false;
 	globalContainer->liveSpectating=false;

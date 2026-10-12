@@ -7,6 +7,7 @@
 #include "IntBuildingType.h"
 #include "SoundMixer.h"
 #include <GameplayRecording.h>
+#include "mcp/UIService.h"
 #include <StringTable.h>
 #include <Toolkit.h>
 #include <algorithm>
@@ -90,8 +91,8 @@ std::string SettingsScreen::categoryName(Category category) const
 	const char *names[] = {
 		"Display & graphics", "Audio",         "Gameplay",  "Building defaults", "Controls",
 		"Language & player",  "Online",        "Hive Mind", "Recording",         "Experiments",
-		"Custom AIs",         "Map generators"};
-	static_assert(std::size(names) == std::size_t(Category::CustomGenerators) + 1,
+		"Custom AIs",         "Map generators", "MCP server"};
+	static_assert(std::size(names) == std::size_t(Category::MCPServer) + 1,
 				  "a name for every settings category");
 	return tr(names[int(category)]);
 }
@@ -109,6 +110,8 @@ void SettingsScreen::buildRows()
 		buildOnline();
 	else if (current == Category::HiveMind)
 		buildHiveMind();
+	else if (current == Category::MCPServer)
+        buildMCP();
 	else if (current == Category::Recording)
 		buildRecording();
 	else if (current == Category::CustomGenerators)
@@ -204,6 +207,9 @@ std::vector<SettingsScreen::Category> SettingsScreen::visibleCategories() const
 #endif
 	if (GAGCore::Recording::supported())
 		result.push_back(Category::Recording);
+#if GLOB2_DESKTOP_MCP
+    result.push_back(Category::MCPServer);
+#endif
 	result.push_back(Category::Experiments);
 	if constexpr (ClientFeatures::CommunityAI) result.push_back(Category::CustomAIs);
 	if constexpr (ClientFeatures::CommunityGenerators) result.push_back(Category::CustomGenerators);
@@ -395,6 +401,12 @@ void SettingsScreen::onTimer(Uint32 tick)
         rendererPhase = renderer.phase;
         invalidate();
     }
+#if GLOB2_DESKTOP_MCP
+    if (current == Category::MCPServer && MCP::service()) {
+        const auto value = MCP::service()->status() + MCP::service()->currentController();
+        if (value != mcpStatus) { mcpStatus = value; invalidate(); }
+    }
+#endif
 	lastTick = tick;
 	pollCustomAIs();
 	pollCustomGenerators();
@@ -513,8 +525,8 @@ Element SettingsScreen::categoryNavigation(const Presentation &p, bool sidebar)
 			static constexpr UIIcon icons[] = {
 				UIIcon::Display,  UIIcon::Audio,       UIIcon::Gameplay, UIIcon::Buildings,
 				UIIcon::Controls, UIIcon::Player,      UIIcon::Online,   UIIcon::Crown,
-				UIIcon::Display,  UIIcon::Experiments, UIIcon::Gameplay, UIIcon::Gameplay};
-			static_assert(std::size(icons) == std::size_t(Category::CustomGenerators) + 1,
+				UIIcon::Display,  UIIcon::Experiments, UIIcon::Gameplay, UIIcon::Gameplay, UIIcon::Display};
+			static_assert(std::size(icons) == std::size_t(Category::MCPServer) + 1,
 						  "an icon for every settings category");
 			options.icon = uiIcon(icons[int(category)]);
 			items.push_back(Glob2UI::button("nav." + std::to_string(int(category)), categoryName(category),
