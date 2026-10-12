@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include <PresentationWork.h>
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include <GameplayRecording.h>
@@ -303,6 +304,7 @@ void Engine::executeOrdersAndStep(bool readyNow)
 
 void Engine::drawFrame(MainLoopState& st, bool everyFrame, const PresentationFrame* scene)
 {
+    GAGCore::PresentationWorkScope cpuWork(gui.game.map.computeExecutor());
     GAGCore::ApplicationHost::matchFrame(gui.gamePaused);
 	const bool renderedFrame = everyFrame || st.nextGuiStep == 0;
 	if (renderedFrame)
@@ -311,12 +313,25 @@ void Engine::drawFrame(MainLoopState& st, bool everyFrame, const PresentationFra
 		// reading the live simulation's tick or timing from the rendering thread.
 		GAGCore::Recording::recorder().matchFrame(scene ? scene->tick : gui.game.stepCounter,
 				gui.gamePaused || gui.hardPause, scene ? int(scene->tickInterval) : st.speed);
-		gui.drawAll(gui.localTeamNo);
-		{
-			PERF_SCOPE_TIME(Present);
-			globalContainer->gfx->nextFrame();
-		}
-		PerformanceTelemetry::collector().presented();
+        try
+        {
+            gui.drawAll(gui.localTeamNo);
+            PERF_SCOPE_TIME(Present);
+            globalContainer->gfx->nextFrame();
+        }
+        catch (...)
+        {
+            globalContainer->gfx->discardFrame();
+            throw;
+        }
+        auto &perf = PerformanceTelemetry::collector();
+        if (scene && scene->tickTime)
+        {
+            const auto now = SDL_GetTicks();
+            perf.record(PerformanceTelemetry::Id::SceneAge,
+                        (now >= scene->tickTime ? now - scene->tickTime : 0) * 1000000ULL);
+        }
+        perf.presented();
 	}
 
 }
@@ -1208,9 +1223,16 @@ bool Engine::advanceSession(Uint64 now, const std::function<void()>& clientWork,
         gatherAndAdvanceOrders(st.wasReadyLastTick);
         readyNow = net->tickReady();
         const Uint32 tickBefore = gui.game.stepCounter;
+        const Sint64 elapsed = static_cast<Sint64>(now - st.startTime) * 1000000;
+        const Uint64 lateness =
+            st.speedNs && elapsed > st.needToBeTime ? elapsed - st.needToBeTime : 0;
         executeOrdersAndStep(readyNow);
         if (gui.game.stepCounter != tickBefore)
+        {
+            observedSimulationLateness.store(lateness, std::memory_order_relaxed);
+            perf.record(PerformanceTelemetry::Id::SimulationLateness, lateness);
             gui.recordTick(SDL_GetTicks(), Uint32(st.speed));
+        }
     }
     if (globalContainer->automaticEndingGame && (int)gui.game.stepCounter == sessionEndingTarget) {
         gui.isRunning = false;

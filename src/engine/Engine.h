@@ -52,6 +52,7 @@ class Engine
 	int headlessSaveInterval = 0;
 	int previousCustomSpeed = -1;
 	friend class HighResolutionIntegrationHarness;
+	friend class SoftwareRenderBenchmark;
 public:
 	//! Constructor
 	Engine();
@@ -253,7 +254,13 @@ public:
 	/// multiplayer games deliberately do not (docs/features/experimental-features.md).
 	static void applyLocalExperiments(GameHeader &header, const MapHeader &map);
 	
+    // Diagnostic observation only; never an input to pacing or simulation.
+    Uint64 simulationDeadlineLatenessNs() const
+    {
+        return observedSimulationLateness.load(std::memory_order_relaxed);
+    }
 private:
+    std::atomic<Uint64> observedSimulationLateness{0};
     static std::unique_ptr<GAGCore::InputStream> openGameInput(const std::string& filename, MapHeader& map, GameHeader& players);
     GAGCore::CooperativeTask initGameFromStreamTask(MapHeader map, GameHeader players, std::unique_ptr<GAGCore::InputStream> stream, bool saveAI);
     bool stepSessionImpl(Uint64 now, const std::vector<SDL_Event>& events);

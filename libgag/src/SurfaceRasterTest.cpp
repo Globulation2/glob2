@@ -92,3 +92,64 @@ TEST_SUITE("SurfaceRaster")
         }
     }
 }
+
+TEST_CASE(
+    "regional kernels match the original rasterizer across clipped tiles and alpha arithmetic" *
+    doctest::test_suite("SurfaceRaster"))
+{
+    using namespace GAGCore::SurfaceRaster;
+    for (auto format : {SDL_PIXELFORMAT_ARGB8888, SDL_PIXELFORMAT_RGBA32})
+        for (Uint8 alpha : {Uint8(0), Uint8(1), Uint8(79), Uint8(254), Uint8(255)})
+            for (SDL_Rect dst :
+                 std::array<SDL_Rect, 3>{{{-4, -3, 37, 31}, {1, 2, 13, 11}, {4, 3, 21, 17}}})
+            {
+                auto input = surface(13, 11, format), original = surface(31, 29, format),
+                     actual = surface(31, 29, format);
+                for (int y = 0; y < 11; ++y)
+                    for (int x = 0; x < 13; ++x)
+                        put(input.get(), x, y,
+                            SDL_MapSurfaceRGBA(input.get(), x * 17, y * 21, 39,
+                                               Uint8((x + y * 3) * 19)));
+                const SDL_Rect clip{2, 1, 27, 26}, src{-1, -2, 13, 11};
+                REQUIRE(SDL_SetSurfaceClipRect(original.get(), &clip));
+                for (int y = 0; y < 29; ++y)
+                    for (int x = 0; x < 31; ++x)
+                    {
+                        const auto value = SDL_MapSurfaceRGBA(original.get(), x * 7, y * 9, 123,
+                                                              Uint8(90 + x * 3));
+                        put(original.get(), x, y, value);
+                        put(actual.get(), x, y, value);
+                    }
+                blit(original.get(), input.get(), src, dst, alpha, false, BlitBlend::Triangle);
+                RasterCommand command;
+                command.kind = RasterCommand::Kind::Blit;
+                command.source = {static_cast<const Uint8 *>(input->pixels), input->w, input->h,
+                                  input->pitch, *SDL_GetPixelFormatDetails(format)};
+                command.sourceRect = src;
+                command.destination = dst;
+                command.clip = clip;
+                command.opacity = alpha;
+                WritablePixelView output{static_cast<Uint8 *>(actual->pixels), actual->w, actual->h,
+                                         actual->pitch, *SDL_GetPixelFormatDetails(format)};
+                for (int y = 0; y < 29; y += 7)
+                    for (int x = 0; x < 31; x += 7)
+                        executeRegion(std::span(&command, 1), output, {x, y, 7, 7});
+                for (int y = 0; y < 29; ++y)
+                    for (int x = 0; x < 31; ++x)
+                        CHECK(pixel(actual.get(), x, y) == pixel(original.get(), x, y));
+                for (auto blend : {FillBlend::Native, FillBlend::SourceOver})
+                {
+                    const auto color = SDL_MapSurfaceRGBA(actual.get(), 49, 149, 209, 255);
+                    fill(original.get(), dst, color, alpha, blend);
+                    command.kind = RasterCommand::Kind::Fill;
+                    command.color = color;
+                    command.fillBlend = blend;
+                    for (int y = 0; y < 29; y += 7)
+                        for (int x = 0; x < 31; x += 7)
+                            executeRegion(std::span(&command, 1), output, {x, y, 7, 7});
+                    for (int y = 0; y < 29; ++y)
+                        for (int x = 0; x < 31; ++x)
+                            CHECK(pixel(actual.get(), x, y) == pixel(original.get(), x, y));
+                }
+            }
+}
