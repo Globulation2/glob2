@@ -118,7 +118,8 @@ display. The latter distribution is weighted by displayed frames; the
 `simulation.deadline_lateness` scope records actual tick observations. Scene age
 includes drawing/presentation time and uses the captured tick completion time.
 `PROFILE_PAN=1` adds camera motion. Only actual draws admitted by the production
-frame pacer enter the distributions. Renderer-only timings exclude simulation;
+frame pacer enter the distributions. Interactive observations require telemetry;
+`GLOB2_PERF_DISABLE` is rejected for this mode. Renderer-only timings exclude simulation;
 interactive results include its contention and must be reported separately.
 
 For renderer-only composition diagnostics, `PROFILE_MODE=map PROFILE_WHOLE_MAP=1`
