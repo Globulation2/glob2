@@ -6030,5 +6030,23 @@ Discord opened. You can return to the game at any time.
 Could not open Discord. Copy the invitation link and open it in your browser.
 [discord link copied]
 Invitation link copied.
+[Which hand holds your phone?]
+
+[hand preference explanation]
+
+[hand silhouettes description]
+
+[hand preference change later]
+
+[hand preference save failed]
+
+[Left hand]
+
+[Right hand]
+
+[settings GPU compute]
+
+[settings Use GPU for gradient calculations. Applies to the next game.]
+
 [discord copy failed]
 Could not copy the link. Select the invitation above to copy it manually.

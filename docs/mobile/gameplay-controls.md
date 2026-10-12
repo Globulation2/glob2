@@ -156,9 +156,16 @@ bottom corner opposite the thumb: two columns of buildings in portrait (four in
 landscape), flags and zones in one column (one row in landscape), filled
 row by row from the toolbox corner. The rail is inset from the side edge, and a
 rail taller than its space reveals higher rows when dragged down. The Thumb side
-setting (right by default) puts these toolboxes on the left for a right thumb and
+setting puts these toolboxes on the left for a right thumb and
 on the right for a left thumb. `ThumbSide::toolboxLeft()` supplies that opposite
 side; the radial inspector and placement confirmation remain on the thumb side.
+
+On first interactive launch with touch presentation, a hand-choice screen shows
+a phone outline beneath mirrored grip silhouettes at thumb scale and asks which
+hand holds the phone. The raised thumb targets and the two labeled buttons are
+pressable choices. Choosing either hand saves the side before opening the main menu.
+The prompt remains pending if saving fails. Existing saved thumb-side preferences
+are respected; the side can be changed in Display & graphics settings.
 
 ### Building and flag inspectors
 
@@ -203,9 +210,9 @@ worker level, or exploration mode. Level buttons pair the number with a
 team-colored worker or warrior icon. Clearing materials occupy a fifth ring as
 independent toggle buttons. Selected radio and toggle segments have a brass
 fill with dark text and a brass accent along their inner edge. The rings use a larger preferred radius and sweep,
-falling back to rows when the full control cannot fit. Repair/upgrade and
-construction actions remain chips beside the dial in landscape and above its
-quadrant in portrait. Destroy confirmation replaces all dial controls and readouts
+falling back to rows when the full control cannot fit. Upgrade, repair and cancel-construction occupy the fourth ring on buildings,
+using the lane that flags reserve for level requirements. They share the same
+validation and orders as the row layout. Destroy confirmation replaces all dial controls and readouts
 with Cancel and Destroy arc buttons on the middle (third) ring, with
 “Destroy this building?” on the next outer ring. The preferred radius is 388 points, with a 256-point
 minimum before falling back to rows. Short landscape screens use a shallower

@@ -2887,6 +2887,23 @@ class GameGUITouchHarness
 			{
 				building->hp = building->type->hpMax - (repair ? 1 : 0);
 				const auto stateBefore = gui.game.checkSum();
+                glob2test::drawGUI(gui,0);
+                if (gui.touch->usesDial()) {
+                    const auto regions = gui.touch->dialRegions();
+                    const auto construction = std::find_if(regions.begin(), regions.end(),
+                        [](const auto &region) { return region.action.kind == 3; });
+                    require(construction != regions.end() &&
+                        construction->part == GameGUITouch::DialRegion::Segment && construction->ring == 3,
+                        "Repair and upgrade occupy a radial construction lane, never a chip");
+                    require(std::count_if(regions.begin(), regions.end(),
+                        [](const auto &region) { return region.action.kind == 3; }) == 1,
+                        "Construction has exactly one radial target");
+                    // Queue before painting; GPU presentation clears its backbuffer.
+                    gfx->printScreen((std::string("touch-construction-") + (repair ? "repair-" : "upgrade-") +
+                        std::to_string(width) + ".bmp").c_str());
+                    glob2test::drawGUI(gui,0);
+                    gfx->nextFrame();
+                }
 				pressAction(3);
 				require(gui.orderQueue.size() == 1, "Repair/upgrade starts with exactly one order");
 				auto order = std::dynamic_pointer_cast<OrderConstruction>(gui.orderQueue.front());

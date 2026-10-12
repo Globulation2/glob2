@@ -9,6 +9,7 @@
 #include <cmath>
 #include <algorithm>
 #include "MainMenuScreen.h"
+#include "HandPreferenceScreen.h"
 #include "CampaignMainMenu.h"
 #include "CampaignSelectorScreen.h"
 #include "CampaignMenuScreen.h"
@@ -302,6 +303,7 @@ struct MobileGallerySetup
 		stack.push(std::move(main));
 		frame(stack);
 		stackShot(stack, "main-menu");
+		screenShot(stack, "hand-preference", std::make_unique<HandPreferenceScreen>());
 		if (mainScreen->host().find("menu/more"))
 			press(stack, *mainScreen, "menu/more");
 		press(stack, *mainScreen, "menu/discord");
