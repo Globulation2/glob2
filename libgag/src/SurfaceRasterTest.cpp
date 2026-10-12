@@ -220,3 +220,53 @@ TEST_CASE("opaque regional alias views retain forward pixel traversal" *
         CHECK(actual == expected);
     }
 }
+
+namespace
+{
+void checkSignedPitchAlias(bool negativeSource)
+{
+    using namespace GAGCore::SurfaceRaster;
+    const auto format = *SDL_GetPixelFormatDetails(SDL_PIXELFORMAT_ARGB8888);
+    std::array<Uint32, 16> actual, expected;
+    for (std::size_t i = 0; i < actual.size(); ++i)
+        actual[i] = 0xff000000u + Uint32(i * 977);
+    expected = actual;
+    const int sourceOffset = negativeSource ? 7 : 3;
+    const int sourceHeight = negativeSource ? 4 : 1;
+    const int sourcePitch = negativeSource ? -8 : 8;
+    const int targetOffset = negativeSource ? 4 : 8;
+    const int targetHeight = negativeSource ? 1 : 4;
+    const int targetPitch = negativeSource ? 8 : -8;
+    RasterCommand command;
+    command.kind = RasterCommand::Kind::Blit;
+    command.source = {reinterpret_cast<const Uint8 *>(actual.data() + sourceOffset),
+                      2, sourceHeight, sourcePitch, format};
+    command.sourceRect = {0, 0, 2, sourceHeight};
+    command.destination = command.clip = {0, 0, 2, targetHeight};
+    command.opaque = true;
+    // Preserve forward sampling when vertical scaling reaches an overlapping
+    // row. An overlapping memcpy would instead retain the second source word.
+    for (int y = 0; y < targetHeight; ++y)
+    {
+        const int sy = (2 * y + 1) * sourceHeight / (2 * targetHeight);
+        for (int x = 0; x < 2; ++x)
+            expected[targetOffset + y * (targetPitch / 4) + x] =
+                expected[sourceOffset + sy * (sourcePitch / 4) + x];
+    }
+    executeCommand(command,
+                   {reinterpret_cast<Uint8 *>(actual.data() + targetOffset),
+                    2, targetHeight, targetPitch, format},
+                   command.destination);
+    CHECK(actual == expected);
+}
+}
+TEST_CASE("negative source pitch preserves aliased regional forward sampling" *
+          doctest::test_suite("SurfaceRaster"))
+{
+    checkSignedPitchAlias(true);
+}
+TEST_CASE("negative target pitch preserves aliased regional forward sampling" *
+          doctest::test_suite("SurfaceRaster"))
+{
+    checkSignedPitchAlias(false);
+}

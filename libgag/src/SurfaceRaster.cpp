@@ -435,12 +435,14 @@ void executeCommand(const RasterCommand &command, WritablePixelView target, SDL_
     const bool copy = command.opaque && command.opacity == 255;
     // Recorded sources have separate storage. Immediate owner views may alias:
     // retain their forward pixel traversal instead of passing overlap to memcpy.
+    // This range proof covers forward rows only; signed-pitch views stay scalar.
     const auto sourceFirst = reinterpret_cast<std::uintptr_t>(source.pixels);
     const auto targetFirst = reinterpret_cast<std::uintptr_t>(target.pixels);
     const auto sourceBytes = std::size_t(source.pitch) * source.height;
     const auto targetBytes = std::size_t(target.pitch) * target.height;
-    const bool disjoint = sourceFirst <= targetFirst ? targetFirst - sourceFirst >= sourceBytes
-                                                     : sourceFirst - targetFirst >= targetBytes;
+    const bool disjoint = source.pitch > 0 && target.pitch > 0 &&
+        (sourceFirst <= targetFirst ? targetFirst - sourceFirst >= sourceBytes
+                                   : sourceFirst - targetFirst >= targetBytes);
     if (copy && nativeWidth && disjoint)
     {
         const auto copyLeft = std::max(left, std::int64_t(dst.x) - src.x);

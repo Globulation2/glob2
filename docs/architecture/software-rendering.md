@@ -177,7 +177,7 @@ experimental bounds, not measured performance thresholds.
 The owner drains earlier SDL geometry, locks the target once, and captures its
 format/pitch before dispatch. Jobs write disjoint half-open regions in painter order and
 sample from the original complete destination. They never touch SDL surface state.
-Verified opaque native-width copies use row copies only when the complete source and
+Verified opaque native-width copies with positive strides use row copies only when the complete source and
 target backing ranges are disjoint; aliased views retain ordered per-pixel execution.
 `GraphicContext::getSDLSurface()` fences active CPU drawing before returning pixels;
 accelerated contexts retain their existing CPU facade and need explicit capture for
