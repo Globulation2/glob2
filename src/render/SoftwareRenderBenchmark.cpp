@@ -190,7 +190,7 @@ static void interactiveBenchmark()
             // Standalone GameGUI loading does not start an Engine session.
             // Apply the same compute budget before measuring rendering batches.
             gui.game.map.configureCompute(resolveComputeThreadCount(globalContainer->computeThreads));
-            printf("compute_threads=%u\n", gui.game.map.computeExecutor().threadCount());
+            printf("compute_threads=%zu\n", gui.game.map.computeExecutor().threadCount());
 			auto &terrainCache = gui.view.render.terrainCache(gui.game.map.identity());
 			if (const char *c = getenv("PROFILE_TERRAIN_CACHE"))
 				terrainCache.enabled = atoi(c) != 0;
