@@ -27,9 +27,9 @@ class SoftwareTerrainCache
 	static constexpr std::size_t GPUCacheBudget = GPUBudget + 128u * 1024u * 1024u;
 #endif
 	// Coverage kept for mixed cells next to animated materials, so a phase change
-	// re-blends their textures instead of re-sampling coverage. A quarter of the
-	// original density budget; cells beyond it compose without a kept mask.
-	static constexpr std::size_t MaskBudget = Budget / 4, GPUMaskBudget = GPUBudget / 4;
+	// re-blends their textures instead of re-sampling coverage. Half of the software
+	// density budget (a quarter of the GPU one); cells beyond it compose without a kept mask.
+	static constexpr std::size_t MaskBudget = Budget / 2, GPUMaskBudget = GPUBudget / 4;
 	struct HeldMask
 	{
 		TerrainVisual::Compositor::CellMask mask;

@@ -207,7 +207,7 @@ animated materials recompose at that cadence. Repeating the same animation time
 reuses their pixels. Pages also keep the coverage of mixed cells that touch an animated material (`Compositor::CellMask`, 10 bytes per
 composed pixel), so a phase change re-blends their textures instead of
 re-sampling the boundary; coverage depends only on the cell, never on the phase.
-These masks have their own budget (8 MiB software, 32 MiB GPU, or 128 MiB for
+These masks have their own budget (16 MiB software, 32 MiB GPU, or 128 MiB for
 reduced desktop GPU pages that cover many animated cells); when it is full,
 masks of pages not drawn in the current frame are released oldest first, and cells that still do not fit compose without one.
 Composition always blends through the same mask encoding, so a kept mask and a
