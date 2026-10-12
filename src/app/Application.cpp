@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <GameplayRecording.h>
 #include "Application.h"
+#include "mcp/UIService.h"
 #include "ui/ThemeCatalog.h"
 #include "FrontendTheme.h"
 #include <Toolkit.h>
@@ -11,6 +12,7 @@
 #include "MusicTrack.h"
 #include "SoundMixer.h"
 #include "MainMenuScreen.h"
+#include "HandPreferenceScreen.h"
 #include "CustomGameScreen.h"
 #include "MessageScreen.h"
 #include "CampaignMainMenu.h"
@@ -156,6 +158,10 @@ Application::Application()
 	: frontend(themedFrontend()), screens(*globalContainer->gfx),
 	  shutdownScreens(*globalContainer->gfx), singlePlayer(screens)
 {
+#if GLOB2_DESKTOP_MCP
+    mcp = std::make_unique<MCP::UIService>(*globalContainer->gfx);
+    mcp->configure(globalContainer->settings.mcpEnabled, globalContainer->settings.mcpPort);
+#endif
 	if (GAGCore::ApplicationHost::storageRestoreFailed())
 	{
 		auto &strings = *GAGCore::Toolkit::getStringTable();
@@ -178,6 +184,12 @@ Application::~Application() = default;
 
 void Application::mainMenu()
 {
+	if (Glob2UI::touchPresentation() && !globalContainer->settings.thumbSideChosen)
+	{
+		screens.push(std::make_unique<HandPreferenceScreen>(),
+			[this](GAGGUI::Screen &, int) { mainMenu(); });
+		return;
+	}
 	// Rebuild translated labels after returning from settings.
 	screens.push(std::make_unique<MainMenuScreen>(),
 				 [this](GAGGUI::Screen &, int choice) { choose(choice); });
@@ -304,26 +316,67 @@ bool Application::frame(std::uint32_t tick, const std::vector<SDL_Event> &incomi
 	const auto &events = *delivered;
 	Online::pump();
 	auto filtered = events;
-	std::erase_if(filtered,
-				  [](const SDL_Event &event)
-				  {
-					  if ((event.type == SDL_EVENT_KEY_DOWN || event.type == SDL_EVENT_KEY_UP) &&
-						  isRecordingShortcut(event.key) &&
-						  (GAGCore::Recording::available() || GAGCore::Recording::recorder().active()))
-					  {
-						  if (event.type == SDL_EVENT_KEY_DOWN && !event.key.repeat)
-							  GAGCore::Recording::toggle();
-						  return true;
-					  }
-					  return false;
-				  });
 	if (GAGCore::ApplicationHost::takeVisibilityChange(hidden))
 	{
-        globalContainer->gfx->resetRenderPacing();
-        screens.suspendExecution();
-    }
+		globalContainer->gfx->resetRenderPacing();
+		screens.suspendExecution();
+	}
+#if GLOB2_DESKTOP_MCP
 	if (hidden)
+		screens.pollInputReceipts();
+	mcp->configure(!quitting && globalContainer->settings.mcpEnabled,
+				   globalContainer->settings.mcpPort);
+	const auto mcpAvailable = [this]
+	{
+		auto *window = globalContainer->gfx->getWindow();
+		return !hidden && !quitting && !GAGCore::ApplicationHost::nativeDialogOpen() && window &&
+			   !(SDL_GetWindowFlags(window) & (SDL_WINDOW_MINIMIZED | SDL_WINDOW_HIDDEN));
+	};
+	// Merge human/remote ownership before ordinary dispatch. Request admission
+	// and cleanup delivery wait until the screen stack settles human actions.
+	mcp->pump(filtered, mcpAvailable(), false);
+#endif
+	const auto recordingShortcut = [](const SDL_Event &event)
+	{
+		if ((event.type == SDL_EVENT_KEY_DOWN || event.type == SDL_EVENT_KEY_UP) &&
+			isRecordingShortcut(event.key) &&
+			(GAGCore::Recording::available() || GAGCore::Recording::recorder().active()))
+		{
+			if (event.type == SDL_EVENT_KEY_DOWN && !event.key.repeat)
+				GAGCore::Recording::toggle();
+			return true;
+		}
+		return false;
+	};
+	std::erase_if(filtered, recordingShortcut);
+	if (hidden)
+	{
+#if GLOB2_DESKTOP_MCP
+		// Visibility suspension already cancels buffered consumer receipts.
+		// Clear hidden release state without a screen update or simulation tick;
+		// never acknowledge a previously pending buffered request here.
+		std::vector<SDL_Event> releases;
+		mcp->drainCleanup(releases);
+		if (!releases.empty())
+		{
+			const auto complete = mcp->dispatchCompletion();
+			if (auto *screen = screens.top())
+			{
+				for (const auto &event : releases)
+					screen->handleExecutionEvent(event);
+				if (screen->defersExecutionInput())
+					screen->cancelExecutionInput();
+			}
+			complete(releases.size(), releases.size());
+		}
+		else if (!mcp->awaitingInputDispatch())
+		{
+			// A release with no held inputs has no event range to acknowledge.
+			mcp->dispatchCompletion()(0, 0);
+		}
+#endif
 		return true;
+	}
 	int width, height;
 	if (GAGCore::ApplicationHost::takeViewportSize(width, height))
 	{
@@ -361,13 +414,24 @@ bool Application::frame(std::uint32_t tick, const std::vector<SDL_Event> &incomi
 #ifdef __EMSCRIPTEN__
     screens.frame(tick, filtered, false);
 #else
-    screens.frame(tick, filtered);
+#if GLOB2_DESKTOP_MCP
+	GAGGUI::ScreenStack::AdditionalInput remote;
+	remote.prepare = [&](std::vector<SDL_Event> &extra) { mcp->pump(extra, mcpAvailable()); };
+    remote.completion = [service = mcp.get()] { return service->dispatchCompletion(); };
+	remote.prepareCleanup = [this](std::vector<SDL_Event> &extra) { mcp->drainCleanup(extra); };
+        remote.cancellation = [this] { return mcp->dispatchCancellation(); };
+        remote.intercept = recordingShortcut;
+	screens.frame(tick, filtered, true, remote);
+#else
+	screens.frame(tick, filtered);
+#endif
 #endif
 #if !defined(GLOB2_CHINA_RELEASE) && !defined(GLOB2_AMAZON_RELEASE)
 	// An invite link (at launch or while running) opens the online hub from the
 	// main menu; the hub consumes it.
 	static std::uint32_t hubOpenedAt = 0;
-	if (Online::pendingJoin() && dynamic_cast<MainMenuScreen *>(screens.top()) && tick - hubOpenedAt > 2000)
+	if (Online::pendingJoin() && dynamic_cast<MainMenuScreen *>(screens.top()) &&
+		tick - hubOpenedAt > 2000)
 	{
 		hubOpenedAt = tick;
 		screens.push(std::make_unique<OnlineHubScreen>(screens));

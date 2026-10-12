@@ -734,3 +734,14 @@ and retired its presentation surface. A completed asynchronous screenshot can
 still need these services while the context is being destroyed.
 
 `RendererSelection` defines stable backend-family identifiers, aliases, capabilities and startup precedence. The application coordinator applies this policy through the live-switch transaction described above. Auto defaults remain unchanged, and renderer selection stays outside simulation state.
+
+### CPU presentation batches
+
+The graphics owner can synchronously dispatch bounded CPU terrain composition
+and software raster tiles through `PresentationWork` on the existing compute
+executor. This is independent of resumable scene preparation and does not add
+an asynchronous frame queue or camera cancellation pipeline. Simulation joins
+never pump graphics work. Draw ordering, cache installation, SDL/backend access,
+frame capture and presentation remain on the graphics owner. See
+[bounded CPU presentation work](software-rendering.md#bounded-cpu-presentation-work)
+for scheduling, ownership, admission, serial defaults and development controls.

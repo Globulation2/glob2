@@ -599,9 +599,9 @@ bool GameGUITouch::process(SDL_Event &event)
 	}
 	if (usesHUD() && event.type == SDL_EVENT_MOUSE_WHEEL)
 	{
-		float x, y;
-		SDL_GetMouseState(&x, &y);
-		GraphicContext::translateMouseCoordinates(x, y);
+        // process() receives logical event coordinates from the shared input boundary.
+        // The OS pointer can differ for queued or remotely supplied events.
+        const float x = event.wheel.mouse_x, y = event.wheel.mouse_y;
 		const int region = interfaceRegion({double(x), double(y)});
 		const double delta =
 			event.wheel.y * (event.wheel.direction == SDL_MOUSEWHEEL_FLIPPED ? -48 : 48);
@@ -730,8 +730,7 @@ bool GameGUITouch::process(SDL_Event &event)
 			GAGCore::ScrollPhysicsConfig mapConfig = ScrollPresets::mapViewport();
 			mapConfig.momentum = mapConfig.momentum && fingerIsTouch;
 			mapMotion.setConfig(mapConfig);
-			mapDragTravel = {};
-			mapFlingArmed = false;
+			mapDragStartTime = time;
 			const auto hud = fingerIsTouch ? ScrollPresets::hudPanel() : ScrollPresets::mouse();
 			panelAxis.axis.setConfig(hud);
 			actionAxis.axis.setConfig(hud);
@@ -981,21 +980,17 @@ void GameGUITouch::actions(const std::vector<TouchAction> &changes)
 			gui.viewportX = gui.camera.tileX();
 			gui.viewportY = gui.camera.tileY();
 			gui.viewportChanged(oldX, gui.viewportX, oldY, gui.viewportY);
-			// Accumulate displacement in screen points, not world or raster pixels.
-			// Back-and-forth jitter inside the dead zone cannot arm a fling.
-			mapDragTravel.x += action.point.x;
-			mapDragTravel.y += action.point.y;
-			mapFlingArmed |= std::hypot(mapDragTravel.x, mapDragTravel.y) >= InGameTouchTheme::mapFlingTravelPoints;
 			// The same finger motion feeds the release velocity, in logical pixels.
 			if (!mapMotion.isDragging())
-				mapMotion.beginDrag(action.time);
+				mapMotion.beginDrag(mapDragStartTime);
 			mapMotion.drag(action.time, -point.x, -point.y);
 		}
 		else if (action.kind == TouchActionKind::PanEnd)
 		{
-			mapMotion.endDrag(action.time);
-			if (!mapFlingArmed)
-				mapMotion.interrupt();
+			// Intent must be present near release, even after a long drag. Small
+			// lift-off movements cannot inherit eligibility from before a stop.
+			mapMotion.endDrag(action.time, scale * InGameTouchTheme::mapFlingTravelPoints,
+							 scale * InGameTouchTheme::mapReleaseSlopPoints);
 		}
 		else if (action.kind == TouchActionKind::Zoom)
 		{

@@ -265,6 +265,40 @@ namespace GAGCore
         SDL_SetSurfaceClipRect(target, &clipRect);
     }
 
+    void GraphicContext::discardFrame() noexcept
+    {
+        if (softwareRasterizer)
+            softwareRasterizer->discardFrame();
+        if (softwarePresenter && !offscreenPass)
+        {
+            sdlsurface = softwarePresenter->discard();
+            // Queues are already discarded; rebinding cannot dispatch work.
+            try
+            {
+                if (softwareRasterizer)
+                    softwareRasterizer->bindTarget(sdlsurface);
+            }
+            catch (...)
+            {
+                return;
+            }
+            markPixelsChanged();
+            SDL_SetSurfaceClipRect(sdlsurface, &clipRect);
+        }
+        else if (frameCache.valid && frameCache.surface && sdlsurface && !offscreenPass)
+        {
+            SDL_SetSurfaceClipRect(sdlsurface, nullptr);
+            SDL_BlitSurface(frameCache.surface, nullptr, sdlsurface, nullptr);
+            SDL_SetSurfaceClipRect(sdlsurface, &clipRect);
+        }
+        else if (sdlsurface && !offscreenPass && nativeSoftware)
+        {
+            SDL_SetSurfaceClipRect(sdlsurface, nullptr);
+            SDL_FillSurfaceRect(sdlsurface, nullptr, SDL_MapSurfaceRGBA(sdlsurface, 0, 0, 0, 255));
+            SDL_SetSurfaceClipRect(sdlsurface, &clipRect);
+        }
+    }
+
     void GraphicContext::prepareDraw()
     {
         // Legacy menu/editor callers may update only part of a frame. Explicit

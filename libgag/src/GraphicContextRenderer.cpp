@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "GraphicContextPrivate.h"
+#include <cstring>
 #include <SoftwareFramePresenter.h>
 #include <algorithm>
 #include <RenderDevice.h>
@@ -25,6 +26,17 @@ void glob2_surface_error(char *destination, int size);
 int glob2_surface_webgpu_available();
 }
 #endif
+SDL_Surface *GraphicContext::getSDLSurface()
+{
+    // Accelerated backends keep a CPU facade for dimensions/availability. A
+    // getter must not submit their frames or imply a GPU readback. Temporary
+    // CPU passes also expose their borrowed target only after drawing finishes.
+    if (renderer && (renderer == softwareRasterizer.get() ||
+                     (offscreenPass && renderer != deviceRenderer.get())))
+        renderer->flush();
+    return sdlsurface;
+}
+
 std::optional<RendererBackend> GraphicContext::initialBackend;
 std::string GraphicContext::rendererShaderDirectory()
 {
@@ -88,7 +100,7 @@ bool GraphicContext::submitDevicePacket(DrawPacket packet)
 bool GraphicContext::beginRenderFrame()
 {
     try {
-    pollRecordingCaptures();
+    pollCaptures();
     if (awaitingBrowserSurface || awaitingDevicePreparation || (transitionPixels && nextBackend)) applyQueuedBackend();
     return !awaitingBrowserSurface && !awaitingDevicePreparation && !awaitingSwitchCapture && window && sdlsurface && (!presentationDevice || presentationDevice->canBeginFrame()) && renderPacer.begin(SDL_GetTicksNS());
     } catch (const std::exception &error) { handleDeviceFailure(error.what()); return false; }
@@ -338,7 +350,7 @@ void GraphicContext::applyQueuedBackend()
         backendPreferenceCallback(requested);
 }
 
-void GraphicContext::pollRecordingCaptures()
+void GraphicContext::pollCaptures()
 {
     if (!presentationDevice) return;
     CaptureResult result;
@@ -357,15 +369,23 @@ void GraphicContext::pollRecordingCaptures()
             else SDL_LogWarn(SDL_LOG_CATEGORY_APPLICATION, "Screenshot cancelled during graphics transition.");
             screenshotCaptures.erase(screenshot); continue;
         }
+        if (auto memory = memoryCaptures.find(result.request.identity); memory != memoryCaptures.end()) {
+            const auto frameIdentity = memory->second.frameIdentity;
+            auto complete = std::move(memory->second.complete);
+            memoryCaptures.erase(memory);
+            complete(std::shared_ptr<SDL_Surface>(result.pixels.release(), SDL_DestroySurface),
+                frameIdentity, result.cancelled ? "Capture cancelled during graphics transition" : "");
+            continue;
+        }
         if (found == recordingCaptures.end()) continue;
         if (result.cancelled || !result.pixels) Recording::recorder().dropCapture(found->second);
         else Recording::recorder().frame(*result.pixels, found->second);
         recordingCaptures.erase(found);
     }
 }
-void GraphicContext::cancelRecordingCaptures()
+void GraphicContext::cancelCaptures()
 {
-    try { pollRecordingCaptures(); }
+    try { pollCaptures(); }
     catch (const std::exception &error) { SDL_LogWarn(SDL_LOG_CATEGORY_APPLICATION, "Retiring capture queue: %s", error.what()); }
     if (presentationDevice) {
         try { presentationDevice->cancelCaptures(); }
@@ -374,6 +394,11 @@ void GraphicContext::cancelRecordingCaptures()
     if (!screenshotCaptures.empty())
         SDL_LogWarn(SDL_LOG_CATEGORY_APPLICATION, "Cancelled %zu screenshot(s) during graphics transition.", screenshotCaptures.size());
     screenshotCaptures.clear(); awaitingSwitchCapture = false;
+    auto pending = std::move(pendingMemoryCaptures);
+    auto active = std::move(memoryCaptures);
+    pendingMemoryCaptures.clear(); memoryCaptures.clear();
+    for (auto &[id, request] : pending) request.complete({}, 0, "Capture cancelled during graphics transition");
+    for (auto &[id, request] : active) request.complete({}, 0, "Capture cancelled during graphics transition");
     for (const auto &[identity, ticket] : recordingCaptures) Recording::recorder().dropCapture(ticket);
     recordingCaptures.clear();
 }
@@ -461,7 +486,7 @@ void GraphicContext::captureScreenshot()
 }
 void GraphicContext::recoverPresentationDevice()
 {
-    cancelRecordingCaptures();
+    cancelCaptures();
     resetDeviceSkinState(); deviceTargetStates.clear();
     ++glContextGeneration;
     renderer = nullptr; deviceRenderer.reset(); presentationDevice.reset();
@@ -481,7 +506,7 @@ void GraphicContext::handleDeviceFailure(const std::string &reason)
 {
     SDL_LogWarn(SDL_LOG_CATEGORY_APPLICATION, "Graphics device recovery: %s", reason.c_str());
     backendStatus.reason = reason; ++backendStatus.serial;
-    cancelRecordingCaptures(); transitionPixels.reset();
+    cancelCaptures(); transitionPixels.reset();
     // Repaint the latest immutable scene on the replacement device. A lost
     // device cannot provide a completed CPU image for the transition.
     recoveringBackend = true; nextBackendPersists = false;
@@ -496,3 +521,135 @@ void GraphicContext::completeBackendFrame()
     applyQueuedBackend();
 }
 }
+
+namespace GAGCore
+{
+std::uint64_t GraphicContext::requestMemoryCapture(CaptureCompletion complete)
+{
+	if (!window || !sdlsurface || pendingMemoryCaptures.size() + memoryCaptures.size() >= 8)
+	{
+		complete({}, 0, "No capturable frame or capture queue full");
+		return 0;
+	}
+	const auto identity = ++memoryCaptureIdentity;
+	pendingMemoryCaptures.emplace(identity, MemoryCapture{0, std::move(complete)});
+	return identity;
+}
+void GraphicContext::cancelMemoryCapture(std::uint64_t identity)
+{
+	for (auto *requests : {&pendingMemoryCaptures, &memoryCaptures})
+	{
+		auto i = requests->find(identity);
+		if (i == requests->end())
+			continue;
+		auto complete = std::move(i->second.complete);
+		requests->erase(i);
+		complete({}, 0, "Capture cancelled");
+	}
+}
+void GraphicContext::captureMemoryFrame()
+{
+	if (pendingMemoryCaptures.empty())
+		return;
+	if (!window || !sdlsurface || nextBackend || changingBackend)
+	{
+		auto pending = std::move(pendingMemoryCaptures);
+		pendingMemoryCaptures.clear();
+		for (auto &[id, r] : pending)
+			r.complete({}, 0, "No capturable frame during graphics transition");
+		return;
+	}
+	try
+	{
+		if (renderer)
+			renderer->flush();
+		if (presentationDevice && !didRecordDeviceFrame(*renderer))
+			return;
+		while (!pendingMemoryCaptures.empty())
+		{
+			auto i = pendingMemoryCaptures.begin();
+			const auto id = i->first;
+			i->second.frameIdentity = captureFrameIdentity;
+			// Keep the callback queued until readback admission succeeds or fails explicitly.
+			if (presentationDevice)
+			{
+				CaptureRequest request;
+				request.identity = id;
+				request.frameIdentity = submittedDeviceFrameIdentity(*renderer);
+				presentationDevice->outputSize(request.width, request.height);
+				if (presentationDevice->capture(std::move(request)))
+				{
+					memoryCaptures.emplace(id, std::move(i->second));
+					pendingMemoryCaptures.erase(i);
+				}
+				else
+				{
+					auto complete = std::move(i->second.complete);
+					pendingMemoryCaptures.erase(i);
+					complete({}, 0, "Renderer rejected capture");
+				}
+			}
+			else
+			{
+				std::shared_ptr<SDL_Surface> pixels;
+#if defined(HAVE_OPENGL) && !defined(GLOB2_WEBGL2)
+				if (!renderer && (optionFlags & USEGPU))
+				{
+					int w = 0, h = 0;
+					SDL_GetWindowSizeInPixels(window, &w, &h);
+					pixels = std::shared_ptr<SDL_Surface>(
+						SDL_CreateSurface(w, h, SDL_PIXELFORMAT_RGBA32), SDL_DestroySurface);
+					if (!pixels)
+						throw std::runtime_error(SDL_GetError());
+					GLint alignment, previousBuffer;
+					glGetIntegerv(GL_PACK_ALIGNMENT, &alignment);
+					glGetIntegerv(GL_READ_BUFFER, &previousBuffer);
+					glPixelStorei(GL_PACK_ALIGNMENT, 1);
+					glReadBuffer(GL_BACK);
+#if !defined(GLOB2_WEBGL2)
+					GLint rowLength;
+					glGetIntegerv(GL_PACK_ROW_LENGTH, &rowLength);
+					glPixelStorei(GL_PACK_ROW_LENGTH, pixels->pitch / 4);
+#endif
+					glReadPixels(0, 0, w, h, GL_RGBA, GL_UNSIGNED_BYTE, pixels->pixels);
+					glPixelStorei(GL_PACK_ALIGNMENT, alignment);
+					glReadBuffer(previousBuffer);
+#if !defined(GLOB2_WEBGL2)
+					glPixelStorei(GL_PACK_ROW_LENGTH, rowLength);
+#endif
+					// Normalize GL's bottom-up rows; worker PNG encoding sees top-left pixels.
+					std::vector<unsigned char> row(pixels->pitch);
+					auto *bytes = static_cast<unsigned char *>(pixels->pixels);
+					for (int y = 0; y < h / 2; ++y)
+					{
+						auto *top = bytes + y * pixels->pitch,
+							 *bottom = bytes + (h - y - 1) * pixels->pitch;
+						std::memcpy(row.data(), top, row.size());
+						std::memcpy(top, bottom, row.size());
+						std::memcpy(bottom, row.data(), row.size());
+					}
+				}
+				else
+#endif
+					pixels = std::shared_ptr<SDL_Surface>(
+						renderer ? renderer->capture()
+								 : SDL_ConvertSurface(sdlsurface, SDL_PIXELFORMAT_RGBA32),
+						SDL_DestroySurface);
+				auto complete = std::move(i->second.complete);
+				pendingMemoryCaptures.erase(i);
+				complete(pixels, captureFrameIdentity, pixels ? "" : "No capturable frame");
+			}
+		}
+	}
+	catch (const RenderAdmissionDeferred &)
+	{
+	}
+	catch (const std::exception &error)
+	{
+		auto pending = std::move(pendingMemoryCaptures);
+		pendingMemoryCaptures.clear();
+		for (auto &[id, r] : pending)
+			r.complete({}, 0, error.what());
+	}
+}
+} // namespace GAGCore

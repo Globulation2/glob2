@@ -137,10 +137,10 @@ GameGUITouch::DialChips GameGUITouch::dialChips(const DialLayout &dial) const
 		{
 			if (confirmDestroy) result.actions.push_back(row);
 		}
-		else if (row.kind == 3 || row.kind == 5)
+		else if (row.kind == 5)
 			result.actions.push_back(row);
 		else if (row.kind != 6 && row.kind != 7 && row.kind != 8 && row.kind != 1 &&
-			row.kind != 2 && row.kind != 12 && row.kind != 11)
+			row.kind != 2 && row.kind != 12 && row.kind != 11 && row.kind != 3)
 			options.push_back(row);
 	}
 	// Actions sit nearest the toolbar: Destroy (or its confirmation) lowest.
@@ -240,6 +240,19 @@ std::vector<GameGUITouch::DialRegion> GameGUITouch::dialRegions() const
 			region.part = DialRegion::Destroy;
 			region.action = row;
 			region.box = dial.destroy;
+			regions.push_back(region);
+		}
+		else if (row.kind == 3)
+		{
+			// Buildings use the inner lane that flags reserve for level requirements.
+			// Upgrade, repair and their cancellation share one construction control.
+			DialRegion region;
+			region.part = DialRegion::Segment;
+			region.action = row;
+			region.ring = levelRing;
+			region.from = g.sweepStart;
+			region.to = g.sweepEnd;
+			region.box = boxAt(region.ring, region.from, region.to);
 			regions.push_back(region);
 		}
 		else if (row.kind == 6)

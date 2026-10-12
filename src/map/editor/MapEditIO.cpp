@@ -98,8 +98,9 @@ bool MapEdit::touchAnimating() const
 	return phone && phone->animating();
 }
 
-bool MapEdit::advanceEditing(const std::vector<SDL_Event>& events, Uint32 tick)
+bool MapEdit::advanceEditing(const std::vector<SDL_Event>& events, Uint32 tick, std::size_t *consumed)
 {
+    if (consumed) *consumed = 0;
     if(saveWriter) saveWriter->poll();
     if (!editing || !pendingLoadFilename.empty()) return editing;
     pollDeviceImport();
@@ -129,6 +130,7 @@ bool MapEdit::advanceEditing(const std::vector<SDL_Event>& events, Uint32 tick)
         return true;
     }
     for (auto event : events) {
+        if (consumed) ++*consumed;
         if (quitAfterSave && showingSave && isQuitRequest(event)) continue;
         // Window close, Cmd+Q and Alt+F4 ask about unsaved work in the editor.
         if (isQuitRequest(event)) { requestApplicationQuit(); continue; }

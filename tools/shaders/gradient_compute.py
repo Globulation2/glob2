@@ -23,6 +23,12 @@ def digest(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def normalized_translation(source):
+    # Naga emits whitespace after some attributes. Keep generated, embedded and
+    # hashed text identical without carrying trailing whitespace into commits.
+    return '\n'.join(line.rstrip() for line in source.splitlines()) + '\n'
+
+
 def verify(root=ROOT):
     directory = root / 'src/field/shaders'
     manifest = json.loads((directory / 'manifest.json').read_text())
@@ -61,6 +67,7 @@ def generate(compiler, naga, output):
         subprocess.run([compiler, '-V', '--target-env', 'vulkan1.0', str(DIRECTORY / (name + '.comp')), '-o', str(binary)], check=True)
         wgsl = DIRECTORY / (name + '.wgsl')
         subprocess.run([naga, str(binary), str(wgsl)], check=True)
+        wgsl.write_text(normalized_translation(wgsl.read_text()))
         artifact_hashes.extend([digest(binary), digest(wgsl)])
         words = struct.unpack('<' + 'I' * (binary.stat().st_size // 4), binary.read_bytes())
         header.append('inline constexpr std::uint32_t ' + name + '[] = {')

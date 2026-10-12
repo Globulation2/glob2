@@ -252,6 +252,7 @@ void SettingsScreen::buildGeneral()
 				   {
 					   globalContainer->settings.thumbSide =
 						   std::clamp(v, int(Settings::THUMB_RIGHT), int(Settings::THUMB_LEFT));
+					   globalContainer->settings.thumbSideChosen = true;
 					   commit();
 				   });
 	}

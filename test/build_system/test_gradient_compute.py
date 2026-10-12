@@ -16,6 +16,12 @@ SPEC.loader.exec_module(shader)
 
 
 class GradientComputeTest(unittest.TestCase):
+    def test_translation_normalization_is_idempotent_and_preserves_tokens(self):
+        source = '@group(0) @binding(4) \nvar<storage, read> params: Params;\t\n\n'
+        expected = '@group(0) @binding(4)\nvar<storage, read> params: Params;\n\n'
+        self.assertEqual(shader.normalized_translation(source), expected)
+        self.assertEqual(shader.normalized_translation(expected), expected)
+
     def copy_bundle(self, root):
         for relative in (*shader.BUNDLE_FILES, 'src/field/shaders/manifest.json',
                          *(f'third_party/vulkan/{name}' for name in shader.VULKAN_FILES),

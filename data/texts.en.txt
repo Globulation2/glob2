@@ -6062,3 +6062,45 @@ GPU fields
 CPU fallbacks
 [discord copy failed]
 Could not copy the link. Select the invitation above to copy it manually.
+[settings MCP server]
+MCP server
+[settings Enabling the MCP server permits local clients to see and operate the game.]
+Enabling the MCP server permits local clients to see and operate the game.
+[settings Enable MCP server]
+Enable MCP server
+[settings Port]
+Port
+[settings Current controller: %0]
+Current controller: %0
+[settings Copy endpoint]
+Copy endpoint
+[settings Retry listener]
+Retry listener
+[settings Revoke control]
+Revoke control
+[settings MCP server unavailable in this application]
+MCP server unavailable in this application
+[settings Disabled]
+Disabled
+[settings Running]
+Running
+[settings Error: %0]
+Error: %0
+[settings None]
+None
+[settings Starting]
+Starting
+[Which hand holds your phone?]
+Left or right hand?
+[hand preference explanation]
+Hold your phone naturally. Tap the hand you play with.
+[hand silhouettes description]
+A phone outline with left and right hands on top. Press either beveled thumb target to choose that side.
+[hand preference change later]
+You can change sides later in Settings.
+[hand preference save failed]
+Could not save your choice. Please try again.
+[Left hand]
+Left hand
+[Right hand]
+Right hand

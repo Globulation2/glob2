@@ -491,7 +491,8 @@ public:
     // "Share online…" from the menu: the saved map file to upload to the catalog.
     std::string takeShareRequest() { return std::exchange(pendingShareFilename, {}); }
     void suspendInput();
-    bool advanceEditing(const std::vector<SDL_Event>& events, Uint32 tick);
+    bool advanceEditing(const std::vector<SDL_Event>& events, Uint32 tick,
+                        std::size_t *consumed = nullptr);
     void drawEditing();
 	///The dialog receiving input: a menu, file dialog, editor or the area name box.
 	bool hasDialog() const;

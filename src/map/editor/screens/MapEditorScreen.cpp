@@ -8,6 +8,7 @@
 #include <Toolkit.h>
 #include <StringTable.h>
 #include <stdexcept>
+#include <algorithm>
 
 MapEditorScreen::MapEditorScreen(GAGGUI::ScreenStack &screens, std::unique_ptr<MapEdit> editor)
 	: screens(screens), editor(std::move(editor))
@@ -15,7 +16,28 @@ MapEditorScreen::MapEditorScreen(GAGGUI::ScreenStack &screens, std::unique_ptr<M
 	if (!this->editor)
 		throw std::invalid_argument("Map editor screen requires an editor");
 }
-MapEditorScreen::~MapEditorScreen() = default;
+MapEditorScreen::~MapEditorScreen()
+{
+	completeInputReceipt(0);
+}
+void MapEditorScreen::beginAdditionalInput(std::shared_ptr<GAGCore::InputDispatchReceipt> receipt)
+{
+	inputReceipt = std::move(receipt);
+	receiptFirst = input.events().size();
+	receiptCount = 0;
+}
+void MapEditorScreen::endAdditionalInput(std::size_t enqueued)
+{
+	receiptCount = enqueued;
+}
+void MapEditorScreen::completeInputReceipt(std::size_t processed)
+{
+	if (!inputReceipt)
+		return;
+	inputReceipt->consumed =
+		processed <= receiptFirst ? 0 : std::min(receiptCount, processed - receiptFirst);
+	inputReceipt.reset();
+}
 void MapEditorScreen::updateExecution(Uint32 tick)
 {
 	if (!isExecutionRunning())
@@ -26,14 +48,22 @@ void MapEditorScreen::updateExecution(Uint32 tick)
 		editor->beginEditing();
 		started = true;
 	}
-	const bool running = editor->advanceEditing(input.events(), tick);
+	if (inputReceipt && inputReceipt->isCancelled())
+	{
+		// Preserve unrelated human events while removing cancelled remote work.
+		input.erase(receiptFirst, receiptCount);
+		completeInputReceipt(0);
+	}
+	std::size_t processed = 0;
+	const bool running = editor->advanceEditing(input.events(), tick, &processed);
+	completeInputReceipt(processed);
 	input.clear();
 	if (!running)
 	{
 		endExecute(editor->editingReturnCode());
 		return;
 	}
-    if (editor->takeSettingsRequest()) {
+	if (editor->takeSettingsRequest()) {
         editor->suspendInput();
         screens.push(std::make_unique<SettingsScreen>(&screens));
         return;
@@ -101,12 +131,14 @@ bool MapEditorScreen::usesResponsiveViewport() const
 void MapEditorScreen::viewportResized(int oldWidth, int oldHeight, int width, int height)
 {
 	editor->suspendInput();
+    completeInputReceipt(0);
 	input.clear();
 	editor->viewportResized(oldWidth, oldHeight, width, height);
 }
 
 void MapEditorScreen::suspendExecution()
 {
+	completeInputReceipt(0);
 	editor->suspendInput();
 	input.clear();
 }

@@ -17,13 +17,14 @@
 #include <stdexcept>
 #include <thread>
 #include <ThreadSupport.h>
+#include <PresentationWork.h>
 #include <vector>
 #include <utility>
 #include <cstdlib>
 #include <cstring>
 
-// One executor for the simulation's parallel work. Two shapes of work share
-// its threads:
+// One executor shares the simulation's workers with optional presentation work.
+// Required simulation work has two shapes:
 //
 //  * run(): a blocking fork/join batch submitted and joined by one thread. Jobs
 //    may nest batches; nested work stays on its current thread. No simulation
@@ -39,7 +40,12 @@
 // Jobs compute only from inputs fixed at submission, so the schedule never
 // changes a result. Joins always end: a worker claims a lane job only after its
 // predecessor completed, and neither jobs nor presentation chunks wait on the owner.
-class ComputeExecutor
+// Optional scene preparation is resumable and runs on a designated worker;
+// bounded graphics batches share its opportunities without entering simulation
+// barriers. Graphics inputs belong to the submitting owner until synchronous
+// completion. Worker-only maintenance uses idle opportunities and cannot retain
+// game inputs. Neither presentation nor maintenance is pumped by required joins.
+class ComputeExecutor : public GAGCore::PresentationWork
 {
 public:
 	// Optional maintenance is never a deferred Group: join/run/owner fallback
@@ -75,6 +81,144 @@ public:
 		std::exception_ptr error;
 	};
 	using PresentationTicket = std::shared_ptr<Presentation>;
+    struct GraphicsMetrics
+    {
+        std::uint64_t batches = 0, parallelBatches = 0, jobs = 0;
+        std::uint64_t queueNs = 0, activeNs = 0, waitNs = 0;
+    };
+    struct PresentationBatchOptions
+    {
+        std::size_t maximumConcurrency = 2;
+    };
+    class PresentationCancellationToken
+    {
+        const std::atomic<bool> *flag;
+
+    public:
+        explicit PresentationCancellationToken(const std::atomic<bool> *flag) : flag(flag) {}
+        bool canceled() const { return flag->load(std::memory_order_acquire); }
+    };
+    struct PresentationJobContext
+    {
+        std::size_t index;
+        PresentationCancellationToken cancellation;
+    };
+
+private:
+    struct GraphicsBatch
+    {
+        std::mutex mutex;
+        std::condition_variable done;
+        std::atomic<bool> canceled{false}, finished{false};
+        std::atomic<Presentation::Status> status{Presentation::Status::Pending};
+        std::size_t next = 0, count = 0, running = 0, limit = 2;
+        bool serial = false, settling = false;
+        ComputeExecutor *owner = nullptr;
+        std::chrono::steady_clock::time_point submitted = std::chrono::steady_clock::now();
+        std::function<void(PresentationJobContext)> job;
+        std::exception_ptr error;
+        // The caller holds only the batch mutex. Captured storage is released
+        // with neither scheduler nor batch mutex held, before completion.
+        void settle(std::unique_lock<std::mutex>& lock)
+        {
+            if (settling || finished.load(std::memory_order_acquire))
+                return;
+            if (!running && (canceled.load() || next == count))
+            {
+                settling = true;
+                // A moved-from std::function may keep its inline callable on
+                // libc++. Swap guarantees that the retained state is empty.
+                std::function<void(PresentationJobContext)> released;
+                released.swap(job);
+                lock.unlock();
+                auto* previous = active;
+                active = owner; // Lifecycle barriers remain forbidden in capture destructors.
+                released = {};
+                active = previous;
+                // Completion also wakes an owner waiting for a scene slot.
+                // Publish under the scheduler mutex to avoid a lost wakeup;
+                // the unfinished batch keeps stop() draining during handoff.
+                std::unique_lock schedulerLock(owner->mutex);
+                lock.lock();
+                status.store(error             ? Presentation::Status::Failed
+                             : canceled.load() ? Presentation::Status::Canceled
+                                               : Presentation::Status::Complete,
+                             std::memory_order_release);
+                finished.store(true, std::memory_order_release);
+                done.notify_all();
+                owner->ready.notify_all();
+            }
+        }
+        void cancel()
+        {
+            std::unique_lock lock(mutex);
+            if (finished.load(std::memory_order_acquire))
+                return;
+            canceled.store(true, std::memory_order_release);
+            settle(lock);
+        }
+        void drain()
+        {
+            std::unique_lock lock(mutex);
+            done.wait(lock, [&] { return finished.load(std::memory_order_acquire); });
+        }
+    };
+
+public:
+    // Move-only ownership makes abandonment a cancellation barrier. The state
+    // survives executor shutdown for failure/status inspection, without inputs.
+    class PresentationBatchTicket
+    {
+        friend class ComputeExecutor;
+        std::shared_ptr<GraphicsBatch> work;
+        explicit PresentationBatchTicket(std::shared_ptr<GraphicsBatch> work)
+            : work(std::move(work))
+        {
+        }
+
+    public:
+        PresentationBatchTicket() = default;
+        PresentationBatchTicket(const PresentationBatchTicket &) = delete;
+        PresentationBatchTicket &operator=(const PresentationBatchTicket &) = delete;
+        PresentationBatchTicket(PresentationBatchTicket &&) = default;
+        PresentationBatchTicket &operator=(PresentationBatchTicket &&other)
+        {
+            if (this != &other)
+            {
+                dispose();
+                work = std::move(other.work);
+            }
+            return *this;
+        }
+        ~PresentationBatchTicket() { dispose(); }
+        void dispose()
+        {
+            if (work && !finished())
+            {
+                // Destruction inside a callback could wait for itself.
+                if (ComputeExecutor::active)
+                    std::terminate();
+                work->cancel();
+                work->drain();
+            }
+        }
+        void cancel()
+        {
+            if (work)
+                work->cancel();
+        }
+        bool finished() const { return !work || work->finished.load(std::memory_order_acquire); }
+        Presentation::Status status() const
+        {
+            return work ? work->status.load(std::memory_order_acquire)
+                        : Presentation::Status::Complete;
+        }
+        void rethrowFailure() const
+        {
+            if (status() == Presentation::Status::Failed)
+                std::rethrow_exception(work->error);
+        }
+    };
 	struct PresentationMetrics
 	{
 		std::uint64_t submitted = 0, replaced = 0, chunks = 0, activeNs = 0;
@@ -195,6 +339,10 @@ private:
 	std::vector<WorkerMetrics> workerMetrics{1};
 	PresentationTicket presentation, presentationPending;
 	bool presentationRunning = false;
+    std::shared_ptr<GraphicsBatch> graphicsBatch;
+    std::size_t graphicsRunning = 0;
+    bool preferGraphics = false;
+    GraphicsMetrics graphicsTotals;
 	// Set before launching workers, never inferred from the vector while it grows.
 	// Zero means there are no workers, so the owner runs deferred jobs itself.
 	unsigned presentationWorker = 0;
@@ -212,9 +360,16 @@ private:
 		return worker != presentationWorker && maintenance && !maintenanceRunning && !presentation && !presentationPending && maintenance->pending();
 	}
 
+    std::size_t presentationLimit() const
+    {
+        return graphicsBatch && (!graphicsBatch->finished.load() || graphicsRunning)
+                   ? graphicsBatch->limit
+                   : 2;
+    }
 	bool presentationClaimable(std::size_t worker) const
 	{
-		return worker == presentationWorker && !presentationRunning && (presentation || presentationPending);
+        return worker == presentationWorker && graphicsRunning < presentationLimit() &&
+               !presentationRunning && (presentation || presentationPending);
 	}
 	PresentationTicket claimPresentation()
 	{
@@ -258,6 +413,99 @@ private:
 			presentationRunning = false;
 		}
 		presentationDone.notify_all();
+		ready.notify_all();
+	}
+
+    bool graphicsClaimable(bool owner = false, std::size_t worker = 0) const
+    {
+        if (!graphicsBatch ||
+            graphicsRunning + std::size_t(presentationRunning) >= presentationLimit())
+            return false;
+        // Keep a slot available for the designated worker when scene work is
+        // waiting. It may alternate that slot between the two classes; spare
+        // workers cannot repeatedly fill it before scene preparation claims.
+        if (!owner && worker != presentationWorker && !presentationRunning &&
+            (presentation || presentationPending) && graphicsRunning >= presentationLimit()-1)
+            return false;
+        std::lock_guard lock(graphicsBatch->mutex);
+        return (owner || !graphicsBatch->serial) && !graphicsBatch->canceled.load() &&
+               graphicsBatch->next < graphicsBatch->count &&
+               graphicsBatch->running < graphicsBatch->limit;
+    }
+    bool cpuPresentationClaimable(std::size_t worker) const
+    {
+        return presentationClaimable(worker) || graphicsClaimable(false, worker);
+    }
+    // Scheduler mutex held on entry and exit. Alternate both presentation
+    // classes at the designated worker's reserved opportunity.
+    void executeCpuPresentation(std::unique_lock<std::mutex> &lock, std::size_t worker,
+                                bool sceneAllowed = true)
+    {
+        if (sceneAllowed && presentationClaimable(worker) &&
+            (!preferGraphics || !graphicsClaimable(false, worker)))
+        {
+            preferGraphics = true;
+            const auto work = claimPresentation();
+            lock.unlock();
+            executePresentation(work, worker);
+            lock.lock();
+            return;
+        }
+        if (worker == presentationWorker) preferGraphics = false;
+        auto work = graphicsBatch;
+        std::size_t index;
+        {
+            std::lock_guard batchLock(work->mutex);
+            // Ticket cancellation can race a scheduler opportunity.
+            if (work->canceled.load() || work->next == work->count)
+                return;
+            index = work->next++;
+            ++work->running;
+            ++graphicsRunning;
+            work->status.store(Presentation::Status::Running, std::memory_order_release);
+        }
+        const auto started = Clock::now();
+        graphicsTotals.queueNs +=
+            std::chrono::duration_cast<std::chrono::nanoseconds>(started - work->submitted).count();
+        lock.unlock();
+        auto *previous = active;
+        auto previousSlot = activeSlot;
+        active = this;
+        activeSlot = worker;
+        std::exception_ptr failure;
+        try
+        {
+            work->job({index, PresentationCancellationToken(&work->canceled)});
+        }
+        catch (...)
+        {
+            failure = std::current_exception();
+        }
+        active = previous;
+        activeSlot = previousSlot;
+        {
+            std::lock_guard batchLock(work->mutex);
+            if (failure)
+            {
+                if (!work->error)
+                    work->error = failure;
+                work->canceled.store(true);
+            }
+        }
+        lock.lock();
+        --graphicsRunning;
+        ++graphicsTotals.jobs;
+        graphicsTotals.activeNs +=
+            std::chrono::duration_cast<std::chrono::nanoseconds>(Clock::now() - started).count();
+        // Publish totals before completion, but release potentially expensive
+        // captured storage outside the scheduler mutex.
+        lock.unlock();
+        {
+            std::unique_lock batchLock(work->mutex);
+            --work->running;
+            work->settle(batchLock);
+        }
+        lock.lock();
 		ready.notify_all();
 	}
 
@@ -416,18 +664,22 @@ private:
 		std::unique_lock<std::mutex> lock(mutex);
 		for (;;)
 		{
-			ready.wait(lock, [&] { return stopping || generation != seen || claimable(false) || presentationClaimable(slot) || maintenanceClaimable(slot); });
-			if (stopping) return;
+            ready.wait(lock,
+                       [&]
+                       {
+                           return stopping || generation != seen || claimable(false) ||
+                                  cpuPresentationClaimable(slot) || maintenanceClaimable(slot);
+                       });
+            if (stopping)
+                return;
 			// The designated worker interleaves presentation chunks with
 			// simulation jobs, so neither starves the other: a join waits at
 			// most one chunk for it, and other workers keep claiming meanwhile.
-			if (simulationClaims >= 8 && presentationClaimable(slot))
+            if (slot == presentationWorker && simulationClaims >= 8 &&
+                cpuPresentationClaimable(slot))
 			{
-				const auto work = claimPresentation();
 				simulationClaims = 0;
-				lock.unlock();
-				executePresentation(work, slot);
-				lock.lock();
+                executeCpuPresentation(lock, slot);
 				continue;
 			}
 			if (generation != seen)
@@ -444,24 +696,24 @@ private:
 			const auto claimed = claim(false);
 			if (!claimed.valid)
 			{
-				if (!presentationClaimable(slot))
+                if (!cpuPresentationClaimable(slot))
 				{
-					if (!maintenanceClaimable(slot)) continue;
+                    if (!maintenanceClaimable(slot))
+                        continue;
 					const auto work = maintenance;
 					maintenanceRunning = true;
 					lock.unlock();
-					active = this; activeSlot = slot;
+                    active = this;
+                    activeSlot = slot;
 					work->process();
-					active = nullptr; activeSlot = 0;
+                    active = nullptr;
+                    activeSlot = 0;
 					lock.lock();
 					maintenanceRunning = false;
 					continue;
 				}
-				const auto work = claimPresentation();
 				simulationClaims = 0;
-				lock.unlock();
-				executePresentation(work, slot);
-				lock.lock();
+                executeCpuPresentation(lock, slot);
 				continue;
 			}
 			++simulationClaims;
@@ -472,6 +724,22 @@ private:
 	}
 	void stop()
 	{
+        if (active)
+            throw std::logic_error("Executor lifecycle inside a job");
+        std::shared_ptr<GraphicsBatch> pendingGraphics;
+        {
+            std::lock_guard lock(mutex);
+            pendingGraphics = graphicsBatch;
+        }
+        if (pendingGraphics)
+        {
+            pendingGraphics->cancel();
+            pendingGraphics->drain();
+        }
+        {
+            std::lock_guard lock(mutex);
+            graphicsBatch.reset();
+        }
 		setWorkerOnly({});
 		cancelPresentationAndWait();
 		joinAll();
@@ -498,7 +766,10 @@ public:
 		const std::function<std::thread(std::function<void()>)> &launch =
 			[](std::function<void()> function) { return GAGCore::ThreadSupport::launch(std::move(function)); })
 	{
-		assert(!active && threads >= 1);
+        if (active)
+            throw std::logic_error("Executor configuration inside a job");
+        if (!threads)
+            throw std::invalid_argument("Executor needs at least one thread");
 		stop();
 		presentationWorker = threads > 1 ? threads - 1 : 0;
 		if constexpr (GAGCore::ThreadSupport::available)
@@ -509,12 +780,108 @@ public:
 				for (unsigned i = 1; i < threads; ++i)
 					workers.push_back(launch([this, i] { worker(i); }));
 			}
-			catch (...) { stop(); presentationWorker = 0; }
+            catch (...)
+            {
+                stop();
+                presentationWorker = 0;
+            }
 		}
 		else presentationWorker = 0;
 		workerMetrics.assign(threadCount(), {});
 		totals = {};
 		presentationTotals = {};
+        graphicsTotals = {};
+    }
+    PresentationBatchTicket
+    submitPresentationBatch(std::size_t count, PresentationBatchOptions options,
+                            std::function<void(PresentationJobContext)> function)
+    {
+        if (active)
+            throw std::logic_error("Graphics batch submission inside a job");
+        if (count && !function)
+            throw std::invalid_argument("Graphics batch needs work");
+        auto work = std::make_shared<GraphicsBatch>();
+        work->owner = this;
+        work->count = count;
+        work->limit = std::clamp(options.maximumConcurrency, std::size_t(1), std::size_t(2));
+        work->job = std::move(function);
+#if defined(__EMSCRIPTEN__)
+        work->serial = true;
+#endif
+        if (!count)
+        {
+            std::unique_lock batchLock(work->mutex);
+            work->settle(batchLock);
+            return PresentationBatchTicket(work);
+        }
+        {
+            std::lock_guard lock(mutex);
+            if (graphicsBatch && !graphicsBatch->finished.load())
+                throw std::logic_error("Graphics batch already admitted");
+            graphicsBatch = work;
+            ++graphicsTotals.batches;
+            graphicsTotals.parallelBatches +=
+                count > 1 && threadCount() > 2 && work->limit > 1 && !work->serial;
+        }
+        ready.notify_all();
+        return PresentationBatchTicket(work);
+    }
+    void finishPresentationBatch(PresentationBatchTicket &ticket)
+    {
+        if (active)
+            throw std::logic_error("Graphics batch barrier inside a job");
+        if (!ticket.work)
+            return;
+        if (ticket.finished())
+        {
+            ticket.rethrowFailure();
+            return;
+        }
+        if (ticket.work->owner != this)
+            throw std::logic_error("Graphics batch belongs to another executor");
+        // Browser draw batches remain serial even with pthread simulation.
+        const auto waitStart = Clock::now();
+        if (!presentationWorker || ticket.work->serial)
+        {
+            std::unique_lock lock(mutex);
+            while (!ticket.finished())
+            {
+                // A browser owner shares the presentation ceiling with scene
+                // extraction even though graphics callbacks run serially here.
+                ready.wait(lock, [&] { return ticket.finished() || graphicsClaimable(true); });
+                if (!ticket.finished())
+                    executeCpuPresentation(lock, 0, false);
+            }
+        }
+        ticket.work->drain();
+        {
+            std::lock_guard lock(mutex);
+            graphicsTotals.waitNs +=
+                std::chrono::duration_cast<std::chrono::nanoseconds>(Clock::now() - waitStart)
+                    .count();
+        }
+        ticket.rethrowFailure();
+    }
+    GraphicsMetrics graphicsMetrics() const
+    {
+        std::lock_guard lock(mutex);
+        return graphicsTotals;
+    }
+    void executePresentationJobs(std::size_t count,
+                                 const std::function<void(std::size_t)> &function) override
+    {
+        if (active)
+            throw std::logic_error("Graphics batch submission inside a job");
+        if (!count)
+            return;
+        const auto concurrency = GAGCore::renderConcurrency();
+        auto ticket = submitPresentationBatch(count, {concurrency},
+                                              [function](PresentationJobContext context)
+                                              {
+                                                  if (!context.cancellation.canceled())
+                                                      function(context.index);
+                                              });
+        finishPresentationBatch(ticket);
 	}
 	// The submitting thread owns admission. Replacing pending work releases its
 	// captures immediately; active work finishes its current chunk on its worker.

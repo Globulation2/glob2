@@ -1,6 +1,12 @@
 {
   "screens": [
     {
+      "id": "hand-preference",
+      "title": "First-launch hand preference",
+      "description": "Full-size mirrored grip silhouettes explain which bottom corner will hold the controls. Shown once on touch hosts until a side is saved.",
+      "group": "Menus & campaigns"
+    },
+    {
       "id": "main-menu",
       "title": "Main menu",
       "description": "Top-level navigation, including the menu colony background.",

@@ -445,22 +445,22 @@ struct NextActive_1 {
 
 var<private> gl_LocalInvocationID_1: vec3<u32>;
 var<private> gl_WorkGroupID_1: vec3<u32>;
-@group(0) @binding(4) 
+@group(0) @binding(4)
 var<storage> unnamed: Params;
-@group(0) @binding(5) 
+@group(0) @binding(5)
 var<storage> unnamed_1: Active;
 var<workgroup> values: array<u32, 324>;
-@group(0) @binding(0) 
+@group(0) @binding(0)
 var<storage> unnamed_2: Input;
 var<workgroup> nextValues: array<u32, 324>;
-@group(0) @binding(2) 
+@group(0) @binding(2)
 var<storage> unnamed_3: Costs;
 var<workgroup> localChanged: atomic<u32>;
-@group(0) @binding(1) 
+@group(0) @binding(1)
 var<storage, read_write> unnamed_4: Output;
-@group(0) @binding(3) 
+@group(0) @binding(3)
 var<storage, read_write> unnamed_5: Changed_1;
-@group(0) @binding(6) 
+@group(0) @binding(6)
 var<storage, read_write> unnamed_6: NextActive_1;
 
 fn wrap_u0028_i1_u003b_u1_u003b(x: ptr<function, i32>, size: ptr<function, u32>) -> u32 {
@@ -862,7 +862,7 @@ fn main_1() {
     return;
 }
 
-@compute @workgroup_size(128, 1, 1) 
+@compute @workgroup_size(128, 1, 1)
 fn main(@builtin(local_invocation_id) gl_LocalInvocationID: vec3<u32>, @builtin(workgroup_id) gl_WorkGroupID: vec3<u32>) {
     gl_LocalInvocationID_1 = gl_LocalInvocationID;
     gl_WorkGroupID_1 = gl_WorkGroupID;
@@ -1064,15 +1064,15 @@ struct Changed_1 {
 }
 
 var<private> gl_GlobalInvocationID_1: vec3<u32>;
-@group(0) @binding(4) 
+@group(0) @binding(4)
 var<storage> unnamed: Params;
-@group(0) @binding(0) 
+@group(0) @binding(0)
 var<storage> unnamed_1: Input;
-@group(0) @binding(2) 
+@group(0) @binding(2)
 var<storage> unnamed_2: Costs;
-@group(0) @binding(1) 
+@group(0) @binding(1)
 var<storage, read_write> unnamed_3: Output;
-@group(0) @binding(3) 
+@group(0) @binding(3)
 var<storage, read_write> unnamed_4: Changed_1;
 
 fn wrap_u0028_i1_u003b_u1_u003b(x: ptr<function, i32>, size: ptr<function, u32>) -> u32 {
@@ -1214,11 +1214,11 @@ fn main_1() {
     return;
 }
 
-@compute @workgroup_size(128, 1, 1) 
+@compute @workgroup_size(128, 1, 1)
 fn main(@builtin(global_invocation_id) gl_GlobalInvocationID: vec3<u32>) {
     gl_GlobalInvocationID_1 = gl_GlobalInvocationID;
     main_1();
 }
 )WGSL";
-inline constexpr char identity[] = "9da3ff77b663ba19c5502f4e93b920786ea3e5820b2f6ffd13ef5ca299e17b85";
+inline constexpr char identity[] = "f628549a478f612d15c729e828f030e3f9897c32031af487b76f01fa3fa0456f";
 }
