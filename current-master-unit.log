@@ -1,0 +1,7 @@
+PASS glob2-unit-tests MobileInput (2 cases) (0.3s)
+PASS glob2-unit-tests ScrollPhysics (16 cases) (0.3s)
+PASS glob2-unit-tests GestureScroll (6 cases) (0.3s)
+PASS glob2-unit-tests UILayout (31 cases) (0.5s)
+
+4 passed, 0 failed, 0 skipped (1.3s of test time)
+[run_tests] JUnit report: artifacts/touch-fling-research/master-unit-results.xml (55 cases)

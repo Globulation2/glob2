@@ -1,0 +1,8 @@
+Starting: Intent { cmp=org.globulation2.glob2.touchtest/org.globulation2.glob2.Glob2Activity }
+Warning: Activity not started, intent has been delivered to currently running top-most instance.
+Status: ok
+LaunchState: UNKNOWN (0)
+Activity: org.globulation2.glob2.touchtest/org.globulation2.glob2.Glob2Activity
+TotalTime: 0
+WaitTime: 5
+Complete

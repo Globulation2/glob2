@@ -1,0 +1,4 @@
+PASS GameGUITouch/touch scroll momentum on the map; the HUD palette and the editor [display] (2.4s)
+
+1 passed, 0 failed, 0 skipped (2.4s of test time)
+[run_tests] JUnit report: artifacts/touch-fling-research/master-game-touch-results.xml (1 cases)

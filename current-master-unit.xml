@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="55" failures="0" errors="0" skipped="0"><testsuite name="GestureScroll"><testcase classname="GestureScroll" name="native deltas accumulate fractions and release never adds a fling" time="0.000192" status="run" />
+    <testcase classname="GestureScroll" name="native momentum is swallowed after reaching either edge" time="0" status="run" />
+    <testcase classname="GestureScroll" name="release from stretch springs and ignores native tail; new contact catches spring" time="0" status="run" />
+    <testcase classname="GestureScroll" name="horizontal tray chooses and retains its initial dominant axis" time="0" status="run" />
+    <testcase classname="GestureScroll" name="settings; zero content; timeout only after release; cancelled tails stay owned" time="0" status="run" />
+    <testcase classname="GestureScroll" name="gesture payload survives SDL queue; source reuse; deferred queue copies and clearing" time="0.003391" status="run" />
+  </testsuite><testsuite name="MobileInput"><testcase classname="MobileInput" name="zoom anchoring; seams; rotation; safe layouts; gestures and cancellation" time="0.000482" status="run" />
+    <testcase classname="MobileInput" name="opaque SDL3 touch identifiers retain their high bits" time="0" status="run" />
+  </testsuite><testsuite name="ScrollPhysics"><testcase classname="ScrollPhysics" name="velocity tracker fits constant and decelerating motion" time="0" status="run" />
+    <testcase classname="ScrollPhysics" name="stopped finger stale samples and degenerate input yield zero" time="0" status="run" />
+    <testcase classname="ScrollPhysics" name="pauses break velocity history and repeated timestamps replace samples" time="0" status="run" />
+    <testcase classname="ScrollPhysics" name="map release intent is recent radial travel rather than lifetime drag" time="0" status="run" />
+    <testcase classname="ScrollPhysics" name="a fling coasts to its projected end inside the bounds" time="0.000111" status="run" />
+    <testcase classname="ScrollPhysics" name="stepping cadence does not change the path" time="0" status="run" />
+    <testcase classname="ScrollPhysics" name="rubber band is monotonic and bounded by the extent" time="0.000199" status="run" />
+    <testcase classname="ScrollPhysics" name="the spring settles without oscillation" time="0" status="run" />
+    <testcase classname="ScrollPhysics" name="a fling into an edge hands its velocity to the spring" time="0" status="run" />
+    <testcase classname="ScrollPhysics" name="wrap mode is unbounded and bounce off stops at the edge" time="0" status="run" />
+    <testcase classname="ScrollPhysics" name="interrupt keeps the offset and a new drag continues from it" time="0" status="run" />
+    <testcase classname="ScrollPhysics" name="fling velocity limits and momentum off" time="0" status="run" />
+    <testcase classname="ScrollPhysics" name="bounds changes clamp idle offsets but not a drag in progress" time="0" status="run" />
+    <testcase classname="ScrollPhysics" name="two axes step together and report deltas" time="0.0002" status="run" />
+    <testcase classname="ScrollPhysics" name="widenTicks follows the reference across a 32-bit wrap" time="0" status="run" />
+    <testcase classname="ScrollPhysics" name="presets follow the tuning sliders" time="0" status="run" />
+  </testsuite><testsuite name="UILayout"><testcase classname="UILayout" name="icons and tooltips" time="0.001749" status="run" />
+    <testcase classname="UILayout" name="geometry" time="0" status="run" />
+    <testcase classname="UILayout" name="text" time="0" status="run" />
+    <testcase classname="UILayout" name="column and flex" time="0" status="run" />
+    <testcase classname="UILayout" name="row cross align" time="0" status="run" />
+    <testcase classname="UILayout" name="paragraph wraps with width" time="0" status="run" />
+    <testcase classname="UILayout" name="text fields retain the touch target with compact control metrics" time="0.000135" status="run" />
+    <testcase classname="UILayout" name="wrap columns" time="0" status="run" />
+    <testcase classname="UILayout" name="footer folds" time="0.000299" status="run" />
+    <testcase classname="UILayout" name="scroll clamp and wheel" time="0.000448" status="run" />
+    <testcase classname="UILayout" name="tap versus pan" time="0.000662" status="run" />
+    <testcase classname="UILayout" name="native gestures retain fractions ownership and survive rebuilds" time="0.001013" status="run" />
+    <testcase classname="UILayout" name="native gesture bounds settle and external jumps cancel the tail" time="0.025267" status="run" />
+    <testcase classname="UILayout" name="native nested capture does not transfer to parent and missing owners consume tails" time="0.001217" status="run" />
+    <testcase classname="UILayout" name="native popup scrolling owns its tail after dismissal" time="0.001636" status="run" />
+    <testcase classname="UILayout" name="fling continues after release" time="0.038786" status="run" />
+    <testcase classname="UILayout" name="overscroll springs back" time="0.011122" status="run" />
+    <testcase classname="UILayout" name="touch wheel and programmatic scroll stop a fling" time="0.004607" status="run" />
+    <testcase classname="UILayout" name="scrollbar press stops a fling" time="0.001725" status="run" />
+    <testcase classname="UILayout" name="mouse drag does not fling" time="0.005667" status="run" />
+    <testcase classname="UILayout" name="list and text overscroll" time="0.00905" status="run" />
+    <testcase classname="UILayout" name="press survives resize" time="0" status="run" />
+    <testcase classname="UILayout" name="focus and keyboard" time="0.000313" status="run" />
+    <testcase classname="UILayout" name="choice popup" time="0.000224" status="run" />
+    <testcase classname="UILayout" name="icon segments and choices" time="0.000208" status="run" />
+    <testcase classname="UILayout" name="text field" time="0.000113" status="run" />
+    <testcase classname="UILayout" name="list view" time="0" status="run" />
+    <testcase classname="UILayout" name="copy field" time="0" status="run" />
+    <testcase classname="UILayout" name="adaptive and field" time="0.000335" status="run" />
+    <testcase classname="UILayout" name="invariants" time="0.000112" status="run" />
+    <testcase classname="UILayout" name="text stays inside its control at every size" time="0.054629" status="run" />
+  </testsuite></testsuites>
