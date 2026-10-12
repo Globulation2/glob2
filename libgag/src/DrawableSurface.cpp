@@ -133,6 +133,10 @@ namespace GAGCore
 		if (_gc && _gc->portableRenderer) _gc->portableRenderer->forget(this);
         if (_gc && _gc->softwareRasterizer) _gc->softwareRasterizer->forget(this);
         if (_gc && _gc->deviceRenderer) _gc->deviceRenderer->forget(this);
+        // An offscreen pass draws through its own backend, which none of the above own. Its texture
+        // cache is keyed by this address and revision, so a surface later allocated at the same
+        // address (every streamed terrain page of a whole-map render) would draw this one's pixels.
+        if (_gc && _gc->offscreenPass && _gc->renderer) _gc->renderer->forget(this);
 		SDL_DestroySurface(sdlsurface);
 		freeGPUTexture();
 	}
