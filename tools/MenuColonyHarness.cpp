@@ -3,6 +3,7 @@
 #include "GlobalContainer.h"
 #include <Environment.h>
 #include "FrontendTheme.h"
+#include "ui/ThemeCatalog.h"
 #include "MenuColony.h"
 #include <StringTable.h>
 #include "MainMenuScreen.h"
@@ -61,11 +62,53 @@ void require(bool condition, const char *message)
 		std::exit(2);
 	}
 }
+
+void checkStartupPainting(FrontendTheme &theme)
+{
+	auto *gfx = globalContainer->gfx;
+	const auto &backdrop = Glob2UI::frontendTheme();
+	auto raster = [&]
+	{
+		DrawableSurface image(gfx->getW(), gfx->getH());
+		image.drawSurface(0, 0, gfx);
+		auto *pixels = image.getSDLSurface();
+		return std::string(static_cast<const char *>(pixels->pixels), pixels->pitch * pixels->h);
+	};
+	require(theme.colony->ready(), "colony loaded before first menu paint");
+	const auto tick = theme.colony->tick(), checksum = theme.colony->checksum();
+	MenuColony reference;
+	require(reference.load(), "load reference scene");
+	for (int frame = 0; frame < 2; ++frame)
+	{
+		// Advance the reference's presentation effects once per paint too.
+		gfx->drawFilledRect(0, 0, gfx->getW(), gfx->getH(), backdrop.palette.backdrop);
+		const auto empty = raster();
+		reference.draw(gfx->getW(), gfx->getH());
+		require(raster() != empty, "first colony draw has a complete scene without a simulation step");
+		if (backdrop.backdrop.veil.a)
+			gfx->drawFilledRect(0, 0, gfx->getW(), gfx->getH(), backdrop.backdrop.veil);
+		const auto expected = raster();
+		if (frame) theme.onFrame();
+		theme.background(gfx, false);
+		require(raster() == expected, "menu paint uses the live colony's framing, without a screenshot");
+	}
+	require(theme.colony->tick() == tick && theme.colony->checksum() == checksum,
+			"startup scene preparation does not advance simulation");
+	std::cout << "PASS: first and second menu paints use the complete live colony\n";
+}
 // Menus keep the frontend theme active for their lifetime, even when created
 // while gameplay is still winding down, and their background never changes when
 // a pending gameplay screen acquires its scope.
 void checkMenuPainting()
 {
+	// Scope restoration needs a static background. Live startup painting is
+	// checked separately, and its terrain animation may change on every draw.
+	struct StaticBackdrop
+	{
+		std::unique_ptr<MenuColony> live = std::move(FrontendTheme::current->colony);
+		StaticBackdrop() { FrontendTheme::current->colony = std::make_unique<MenuColony>(); }
+		~StaticBackdrop() { FrontendTheme::current->colony = std::move(live); }
+	} staticBackdrop;
 	struct Menu : Glob2UI::Screen
 	{
 		Glob2UI::Element build(const Glob2UI::Presentation &) override { return Glob2UI::label("menu"); }
@@ -193,6 +236,11 @@ template <class T> class Preview : public T
 {
   public:
 	using T::T;
+	bool animateBackdrop = true;
+	void beforePaint() override
+	{
+		if (animateBackdrop) T::beforePaint();
+	}
 	~Preview()
 	{
 		if (this->isExecutionRunning())
@@ -482,12 +530,20 @@ int main(int argc, char **argv)
 					   "OUTPUT [W H] | record-colony DIR FRAMES [W H] | soak SECONDS");
 	const std::string mode = argv[1];
 	// These contracts exercise the complete desktop keyboard routes.
-	if (mode == "check" || mode == "navigation")
+	if (mode == "check" || mode == "isolation" || mode == "navigation")
 		GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "0", 1);
 	const auto startupBegin = std::chrono::steady_clock::now();
 	GlobalContainer globals("glob2-frontend-test");
 	globalContainer = &globals;
 	globals.settings.mute = 1;
+	if (mode == "presentation")
+	{
+		// Compare framing and scene readiness without time-dependent effects.
+		globals.settings.clouds = false;
+		globals.settings.cloudShadows = false;
+		globals.settings.unitInterpolation = false;
+		globals.settings.showColonySkins = false;
+	}
 	globals.settings.screenWidth = argc > 4 ? std::atoi(argv[4]) : 1152;
 	globals.settings.screenHeight = argc > 5 ? std::atoi(argv[5]) : 720;
 	globals.settings.screenFlags = std::getenv("GLOB2_PREVIEW_GL") ? GraphicContext::USEGPU : 0;
@@ -514,17 +570,20 @@ int main(int argc, char **argv)
 	if (mode == "capture")
 	{
 		require(argc >= 4, "capture needs screen and output");
-		if (std::string(argv[2]) != "fallback")
+		if (std::string(argv[2]) == "fallback")
+			theme.colony = std::make_unique<MenuColony>();
+		else
 			require(theme.colony->load(), "load bundled colony");
 		capture(argv[2], argv[3]);
 		return 0;
 	}
 	if (mode == "presentation")
 	{
+		checkStartupPainting(theme);
 		checkMenuPainting();
 		return 0;
 	}
-	if (mode == "check")
+	if (mode == "check" || mode == "isolation")
 	{
 		checkMenuPainting();
 		// Team tinting must preserve transparent sprite pixels in software mode.
@@ -664,6 +723,8 @@ int main(int argc, char **argv)
 		}
 		require(!missing.load(invalidPath), "incompatible asset fallback");
 		std::filesystem::remove(invalidPath);
+		std::cout << "PASS: colony simulation, RNG, replay and dataset isolation\n";
+		if (mode == "isolation") return 0;
 		{
 			FrontendScope scope;
 			const int actions[] = {
@@ -804,6 +865,7 @@ int main(int argc, char **argv)
 					"change logical resolution");
 			{
 				Preview<MainMenuScreen> screen;
+				screen.animateBackdrop = false;
 				screen.render();
 				screen.checkBounds();
 			}
@@ -818,6 +880,7 @@ int main(int argc, char **argv)
 					"resize fallback");
 			{
 				Preview<MainMenuScreen> screen;
+				screen.animateBackdrop = false;
 				screen.render();
 				screen.checkBounds();
 			}

@@ -23,9 +23,13 @@ const binary = process.env.GLOB2_BINARY,
   scratch = process.env.GLOB2_GENERATOR_SCRATCH;
 describe.runIf(binary && scratch)('real shared generator publication and room flow', () => {
   it('publishes an isolated validated package and starts a pinned room whose guest downloads only the map', async () => {
-    const { stdout } = await promisify(execFile)(resolve(root, binary!), ['--sim-version'], {
-      cwd: root,
-    });
+    const { stdout } = await promisify(execFile)(
+      resolve(root, binary!),
+      ['info', 'sim-version', '--format', 'json'],
+      {
+        cwd: root,
+      },
+    );
     const sim = JSON.parse(stdout) as SimVersion;
     const executor = await createGeneratorExecutor(
       {

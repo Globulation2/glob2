@@ -1,11 +1,6 @@
 # Identity: accounts, sign-in and tokens
 
-The online platform has its own accounts. Players start as guests without
-signing up, and can later link a sign-in provider to the same account. There is
-no bundled identity-provider service: OpenID Connect providers, Sign in with
-Apple and optional local passwords are built into `platform-api`
-(`platform/apps/api/src/auth/`). See the [architecture](architecture.md) for the
-rest of the platform.
+Authentication contracts for native and browser clients. See [account management](account-management.md) for export, deletion and administrator actions.
 
 ## Accounts
 
@@ -40,7 +35,7 @@ or surrounding spaces), a role (`user`, `moderator`, `admin`) and a status
   `reason: identity_in_use`, the provider and the owner's `PublicAccount`).
   Accounts are never merged; the player may switch to the other account instead.
 
-| REST | |
+| REST |  |
 | --- | --- |
 | `POST /api/v1/auth/guest` | `GuestSignInRequest` → `SignInResponse` |
 | `POST /api/v1/auth/refresh` | `RefreshRequest` → `AuthTokens` |
@@ -56,6 +51,7 @@ or surrounding spaces), a role (`user`, `moderator`, `admin`) and a status
 Authenticated REST calls send `Authorization: Bearer <access token>`. Errors are
 `ErrorBody` documents (`unauthenticated` 401, `forbidden` 403, `conflict` 409,
 `rate_limited` 429, …).
+
 
 ## Profile photos
 
@@ -91,6 +87,7 @@ interrupted writes or unlinked identities are collected after the existing seven
 blob grace period. Preference changes and account deletion remove stored avatar images. Data exports include
 photo preferences and the current download URL.
 
+
 ## Sign-in providers
 
 Providers are configured in `instance.yaml` under `auth.providers`; their
@@ -98,11 +95,18 @@ secrets stay in the environment and are referenced by variable name (see
 `platform/instance.example.yaml`). Every provider's redirect URI is
 `<PUBLIC_ORIGIN>/auth/<id>/callback`; register exactly that with the provider.
 
-| Kind | Notes |
-| --- | --- |
-| `oidc` | Generic OpenID Connect, authorization code with PKCE (S256), state and nonce, via `openid-client`. `preset: google` fills in `https://accounts.google.com`; `preset: microsoft` fills in `https://login.microsoftonline.com/<tenant>/v2.0` (`tenant` defaults to `common`; the ID token's issuer is checked against its own `tid`). Any other issuer is set with `issuer`. The client secret is optional (public clients). The identity is the issuer's `sub`. |
-| `apple` | Sign in with Apple: the client secret is a fresh ES256 JWT (5 minutes, `iss` team id, `sub` Services ID, `aud` Apple) signed with the operator's `.p8` key from the environment. The response arrives by `form_post`, a cross-site POST to the callback, protected by `state`; the name comes from the first sign-in's `user` field. Apple does not document PKCE for this flow, so it is not used. |
-| local | Username and password, off by default (`auth.local.enabled`, with `allowRegistration`), for self-hosted instances without single sign-on. Usernames are 3-32 of `A-Z a-z 0-9 . _ -`, compared case-insensitively (the identity's subject is the lowercase form). Passwords have 10-256 characters and are hashed with argon2id (19 MiB, 2 passes, 1 lane; PHC strings, so the cost can rise later). Unknown usernames take as long as wrong passwords. |
+### `oidc`
+
+Generic OpenID Connect, authorization code with PKCE (S256), state and nonce, via `openid-client`. `preset: google` fills in `https://accounts.google.com`; `preset: microsoft` fills in `https://login.microsoftonline.com/<tenant>/v2.0` (`tenant` defaults to `common`; the ID token's issuer is checked against its own `tid`). Any other issuer is set with `issuer`. The client secret is optional (public clients). The identity is the issuer's `sub`.
+
+### `apple`
+
+Sign in with Apple: the client secret is a fresh ES256 JWT (5 minutes, `iss` team id, `sub` Services ID, `aud` Apple) signed with the operator's `.p8` key from the environment. The response arrives by `form_post`, a cross-site POST to the callback, protected by `state`; the name comes from the first sign-in's `user` field. Apple does not document PKCE for this flow, so it is not used.
+
+### local
+
+Username and password, off by default (`auth.local.enabled`, with `allowRegistration`), for self-hosted instances without single sign-on. Usernames are 3-32 of `A-Z a-z 0-9 . _ -`, compared case-insensitively (the identity's subject is the lowercase form). Passwords have 10-256 characters and are hashed with argon2id (19 MiB, 2 passes, 1 lane; PHC strings, so the cost can rise later). Unknown usernames take as long as wrong passwords.
+
 
 Provider flows keep their state server-side (`auth_flows`: hash of `state`,
 PKCE verifier, nonce, purpose, the attempt and browser binding), consumed once
@@ -112,6 +116,7 @@ secret is left out (logged) instead of stopping the API.
 `GET /api/v1/instance` lists the configured providers (`InstanceInfo.authProviders`),
 including `{id: "local", kind: "local"}` when local accounts are on, so clients
 can show the right buttons.
+
 
 ## Browser handoff sign-in
 
@@ -187,6 +192,7 @@ needs no account, so they are limited per address
 (`limits.signinAttemptsPerHour`, 30) and in total
 (`limits.signinAttemptsPerMinuteTotal`, 300), on every replica.
 
+
 ## Tokens
 
 - **Access tokens** are EdDSA (Ed25519) JWTs with header
@@ -216,7 +222,7 @@ needs no account, so they are limited per address
   HttpOnly `SameSite=Lax` cookie (`__Host-glob2_session` over HTTPS), stored
   hashed in `web_sessions` (`auth.webSessionDays`, default 30). Cookie-
   authenticated requests that change state must come from an allowed origin.
-- **Match tickets** (M4) are EdDSA JWTs with `typ: glob2-match+jwt` and audience
+- **Match tickets** are EdDSA JWTs with `typ: glob2-match+jwt` and audience
   `glob2-relay`, carrying the match id, seat, account, sim version, the match's
   human seats, relay URL, entitlements and a short expiry (`MatchTicketClaims`),
   signed with the same keys.
@@ -242,9 +248,10 @@ unknown `kid`, are expired (30 s leeway) or have the wrong audience.
 `platform/packages/protocol/fixtures/tickets/` contains a test JWKS and one
 ticket for each of these cases.
 
+
 ## Realtime sessions
 
-`/realtime` carries the envelope described in the [architecture](architecture.md#realtime-messages).
+`/realtime` carries the envelope described in the [architecture](contracts.md#realtime-messages).
 Identity-related methods: `session.hello` (optionally with an access token;
 an invalid token answers `unauthenticated` and the client may retry without
 it), `session.authenticate` (attach or replace the token, e.g. after a
@@ -253,134 +260,6 @@ refresh), `session.ping`, `auth.handoff.begin`, `auth.handoff.resume` and
 reuse, ban; a ban also closes the socket), `auth.handoff.completed`,
 `auth.handoff.failed`.
 
-## Administration
-
-The first administrator is granted on the server:
-
-```sh
-cd platform
-npm run platform -- admin grant <account id or exact display name>   # admin
-npm run platform -- admin grant <account> --role moderator
-npm run platform -- admin revoke <account>                           # back to user
-npm run platform -- admin ban <account> [--reason <text>]
-npm run platform -- admin delete <account> [--reason <text>]
-```
-
-Only registered accounts can hold a role. Minimal REST endpoints cover what the
-old YOG lobby's admin chat commands did; the web admin pages come in M8.
-
-| Endpoint | Role | |
-| --- | --- | --- |
-| `GET /api/v1/admin/accounts?q=&cursor=` | moderator | search by name fragment, id or linked email (`AdminAccountList`) |
-| `GET /api/v1/admin/accounts/{id}` | moderator | `AdminAccount` |
-| `POST …/{id}/rename` | moderator | `AdminRenameRequest`; bypasses the rename interval |
-| `POST …/{id}/mute` | moderator | `AdminMuteRequest`; `minutes: 0` lifts it |
-| `POST …/{id}/ban` | admin | `AdminBanRequest`; ends every session of the account at once |
-| `POST …/{id}/role` | admin | `AdminRoleRequest` |
-| `DELETE …/{id}?reason=` | admin | deletes the account (`204`), see below |
-
-Nobody can change their own role or ban themselves, and mutes and bans apply
-only to accounts of a lower role. Every action is recorded in
-`admin_audit_log` (a null actor is the command line).
-
-### Downloading your data
-
-The web account page (`/account`; the game's Settings row "Download or delete my
-data" opens it) has a **Download my data** link to `GET /api/v1/accounts/me/export`.
-It answers, for the signed-in account (session cookie or bearer token), a JSON file
-(`AccountExport`, `format: "glob2-account-export/1"`, sent as an attachment with
-`Cache-Control: no-store`) holding every stored row about the account, read in one
-snapshot (`apps/api/src/auth/accountExport.ts`):
-
-| Section | Contents |
-| --- | --- |
-| `account` | id, kind, display name, role, status, creation, last seen, last rename, mute |
-| `signIn` | linked identities (provider, subject, e-mail; for local accounts the username), device credentials, refresh tokens and web sessions (platform and times), browser sign-in attempts |
-| `entitlements`, `moderation` | entitlements; moderation actions about the account (action, details, time; not who took them) |
-| `ratings`, `ratingHistory` | ratings per ladder, and every rating change |
-| `matches` | every match played: the match's origin, status, result, times, map hash, and the account's seat, team, name, outcome, disconnects, rating change and connection-quality summary, with the match page URL |
-| `rooms` | rooms hosted (with their settings), memberships (with server-region round trips), seats, own chat messages, kicks |
-| `matchmaking` | queue tickets (with region round trips), cooldowns, quick-match proposals and responses |
-| `skins` | published paints and immutable version metadata (including the swarm mesh), equipped version and building color, private draft (name, building color, swarm mesh) with its colour atlas and material map bytes as base64 (`imageBase64`, `materialBase64`), match appearances, purchases and payment-event references, reports filed |
-| `maps` | catalog maps with their versions, likes, reports filed, uploads, and download days |
-
-Rows keep the database's columns in camelCase and leave out nulls. Left out on
-purpose: password, credential and token hashes, token families, sign-in
-confirmation codes, other players' ids (who moderated, kicked or resolved), other
-players' chat, signed appearance assertions, checkout recovery bookkeeping, and
-published file bytes (replays, maps and skin images have their own downloads).
-Private skin drafts include both images' stored bytes because they are not
-published. New drafts store lossless WebP; older drafts may still contain PNG.
-Rate-limit counters (keyed by address or account, kept a day) are not exported, and
-server logs are outside the database. Each account may export 10 times an hour
-(`429` beyond). `apps/api/test/accountExport.test.ts` fails if a column referring to
-`accounts` is added without being exported or listed as deliberately left out.
-
-### Deleting an account
-
-Players delete their own account on the web account page (`/account`; the game's
-Settings row "Download or delete my data" opens it), which calls `DELETE
-/api/v1/accounts/me` with `{"confirmDisplayName": "<current display name>"}`
-(`DeleteAccountRequest`; a mismatch is `400` with `reason: confirmation_mismatch`).
-Moderators use `DELETE /api/v1/admin/accounts/{id}` or `platform admin delete`.
-Both run `AdminService.deleteAccount`, which keeps the row, marked `deleted` with
-`deleted_at`, because matches, ratings and the audit log refer to it by id. In one
-transaction it:
-
-- renames it "Deleted player", also on its past match participations and its
-  seats in stored match setups (`matches.setup` and the copy in the match's
-  verify-match job). A match still running or awaiting its verdict keeps the
-  setup the relay recorded until it is settled; the worker then scrubs it
-  (`account_name_scrubs`, at most a week later);
-- deletes its room chat messages and replaces every name it went by (current,
-  in past matches, and in renames) with "Deleted player" in other players'
-  messages in rooms it was in and in the names of rooms it hosted (whole words,
-  ignoring case);
-- replaces those names in the free text of audit-log entries about it (the
-  entries, actors, ids and times stay; the log is otherwise append-only, see
-  [database roles](../hosting/README.md#database-roles)); the deletion's own entry
-  records no name;
-- removes its sign-in identities (so a username can be registered again; e-mail
-  addresses go with them) and device credentials, and revokes its refresh tokens
-  and web sessions (open sockets get `session.revoked` and close);
-- deletes its catalog maps, like a map deletion (versions, likes, reports and
-  download counts go; the bytes stay for matches played on them), its likes of
-  other maps, its uploads, and its queue tickets;
-- removes its AI Map Studio projects, prompts, worker checkpoints, stage events
-  and artifact records, and cancels their native import jobs. Pending generation
-  reservations are released without charging; credit purchases and ledger entries
-  remain as financial records. Anonymous daily provider-call totals retain service
-  budget usage without retaining the private journal. Unreferenced stage image bytes are collected under
-  the normal blob retention policy. Concurrent project creation and late worker
-  completions cannot restore the deleted projects.
-
-There is no undo. What stays, and why:
-
-| Kept | Why |
-| --- | --- |
-| The account row (id, kind, creation time, `deleted` status) | Matches, ratings and audit entries refer to it. |
-| Match history and rating rows, by account id, as "Deleted player" | Other players' history and ratings depend on them; deleted accounts are left out of leaderboards and player pages. |
-| Binary match records and replays (blobs) | The verified record of games other people played too. The engine wrote each player's in-game name into them, and they are content-addressed, so the name there stays. |
-| Uploaded file bytes (blobs) | Matches played on them refer to them by hash. |
-| Map reports it filed, audit entries about it (scrubbed) | Moderation records. |
-
-### Data retention
-
-| Data | Kept |
-| --- | --- |
-| Refresh tokens | Rotated or revoked: 7 days (reuse detection); expired: 30 days after expiry. |
-| Web sessions | 30 days after they expire or are revoked. |
-| Provider sign-in flows | 24 hours after they expire. |
-| Browser sign-in attempts | 7 days once finished. |
-| Rate-limit counters | A day after their last use. |
-| Queue tickets | Expired after an hour of waiting; deleted 30 days after they finish. |
-| Guest accounts | Deleted when unused for 90 days if they never played a match, host no open room and own no catalog map. |
-| Room chat | 30 days. |
-| Registered accounts, matches, ratings, catalog maps | Until the player deletes the account (or a moderator does). |
-
-The worker deletes these (`apps/worker/src/maintenance.ts`); the full table, with jobs
-and blobs, is in [hosting: retention](../hosting/README.md#retention). The
-[privacy policy](../mobile/privacy-policy.md) states the same periods for players.
 
 ## Hardening
 
@@ -394,8 +273,6 @@ and blobs, is in [hosting: retention](../hosting/README.md#retention). The
   per address (`limits.passwordFailuresPerIp`, 50 per hour, over all usernames);
   a correct password clears its username's count. The general cap on other
   routes (`limits.apiPerMinute`, default 600) is per replica, in memory.
-
-## Hardening
 
 - Realtime sockets: a token bucket per
   socket (`realtimePerSecond` 10, `realtimeBurst` 40; excess requests answer
@@ -417,7 +294,8 @@ and blobs, is in [hosting: retention](../hosting/README.md#retention). The
 - Credentials are per instance: a client connected to a self-hosted instance
   never sends the official instance's tokens there, and vice versa.
 
-## What is verified
+
+## Verification coverage
 
 Vitest suites under `platform/apps/api/test/` run against Postgres with two API
 replicas and an in-test OpenID Connect issuer (`mockIssuer.ts`): guest creation
@@ -428,7 +306,10 @@ fan-out, shared rate limits and password lockout across replicas (`abuse.test.ts
 self-service deletion and name scrubbing (`deletion.test.ts`), and the handoff
 (code entry and wrong-code lockout, link, conflict and switch, browser binding, refusal,
 cancellation, resume after a dropped socket, expiry, Apple `form_post` with a
-verified ES256 client secret, local passwords on the page). Against the real
-Google and Microsoft endpoints only discovery and the authorization redirect
-have been exercised; complete sign-ins with real Google, Microsoft and Apple
-accounts need registered client ids and remain to be tested.
+verified ES256 client secret, local passwords on the page).
+
+Mock-provider tests do not establish real-provider acceptance. Before enabling a
+provider on an instance, complete a sign-in with a registered client ID and its
+actual callback configuration, including account linking and return to the game.
+
+[Multiplayer index](README.md) · [Documentation index](../README.md).

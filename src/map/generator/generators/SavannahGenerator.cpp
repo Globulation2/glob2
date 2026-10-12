@@ -23,7 +23,7 @@ using namespace MapGeneration;
 // between colonies, pools and lone trees dotting the plain between them. Crops occupy sealed
 // grass islands in sand, not the whole fertile countryside:
 // growth can fill those islands without eating the town or the plains. This is a terrain design,
-// not a new growth rule. See docs/map-generators/SAVANNAH.md for budgets and validation evidence.
+// not a new growth rule. See docs/map-generators/savannah.md for budgets and validation evidence.
 namespace
 {
 // A radius-20 home plus three tiles of untouched margin seats an ordinary town; centres 48 apart

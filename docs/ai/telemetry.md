@@ -1,26 +1,14 @@
 # AI telemetry
 
-AI telemetry is collected automatically alongside gameplay measurements and exported
-when `GLOB2_TEAM_TIMELINE=1`. Open **AI telemetry** from the in-game menu to inspect
-current values, filter fields, and select a controller. Scene extraction includes
-only own/mutually allied teams during play, and all teams for spectators and replays.
-The dialog reads immutable Scene values. The values describe the AI's own state,
-calculations and requests; emitted orders are not evidence that the engine accepted
-or completed an action.
+## On this page
 
-The panel lists fields alphabetically as compact name/value/unit rows. Select a
-row with a click, tap, or the arrow keys to read its full name, value, unit,
-description, and update tick below the list. The details area scrolls independently
-and uses at most one-third of the list-and-details area. Search matches field
-names, descriptions, and values without ASCII case sensitivity.
-
-Samples refresh every 32 ticks. Selection, search drafts, focus, and list scroll
-position survive refreshes; changing controllers resets the selected field and
-scroll positions. Routine refreshes wait for pointer gestures and inertial
-scrolling to finish. Changes to accessible controllers refresh immediately,
-including while paused, and remove inaccessible details and open player choices.
-The list lays out fixed-height rows and paints only visible rows, so larger
-schemas do not require wrapping every field's description.
+- [Collection contract](#collection-contract)
+- [Identity, freshness and counters](#identity-freshness-and-counters)
+- [Built-in coverage](#built-in-coverage)
+- [Output and persistence](#output-and-persistence)
+- [Offense target team](#offense-target-team)
+- [Adding fields or an AI](#adding-fields-or-an-ai)
+- [Maxima placement fields](#maxima-placement-fields)
 
 ## Collection contract
 
@@ -101,7 +89,7 @@ The schema output is the authoritative field-by-field catalog. Per-entity lists,
 map surfaces, variable-length candidate sets, debug strings and expensive new
 aggregations are deliberately excluded from the indexed numeric schema. JavaScript
 controllers may additionally publish bounded numbers, booleans and short text with
-`ctx.telemetry.set`; see the [API reference](../development/javascript-api.md#telemetry).
+`ctx.telemetry.set`; see the [API reference](../scripting/javascript-api.md#telemetry).
 Existing independent AI debug options
 remain independent; this mechanism does not enable them or parse their output.
 
@@ -153,7 +141,7 @@ traffic, and is excluded from gameplay checksums.
 To study how much a free-for-all or 2v2 result depends on who was attacked first,
 each AI that attacks exposes the enemy team its offense is aimed at. These fields
 are diagnostics like every other field here: no AI decision reads them, and
-neither does the [win probability model](../win-probability-model.md).
+neither does the [win probability model](architecture/win-probability-model.md).
 
 | AI | Field | Meaning |
 | --- | --- | --- |
@@ -212,9 +200,9 @@ analysis exports typed JSONL and CSV. See [distributed telemetry](../tools/tourn
 Structured offline runs can capture Maxima's per-tile placement inputs:
 
 ```sh
-"$GLOB2_BIN" --run-game --load-game initial.game.gz --ticks 3000 \
+"$GLOB2_BIN" game run --load-game initial.game.gz --ticks 3000 \
   --output-dir artifacts/placement --diagnostic-fields maxima \
-  --diagnostic-interval 1000 --diagnostic-png true
+  --diagnostic-interval 1000 --diagnostic-png
 ```
 
 `--diagnostic-fields maxima` enables capture; the interval defaults to 2500
@@ -243,6 +231,8 @@ their live capture buffers when a checkpoint is written, but those buffers are
 omitted from the checkpoint. Loading starts a new capture session rather than
 resuming an image that was pending in the old process.
 
-These options apply to `--run-game`, including loaded games, and require a Maxima
+These options apply to `game run`, including loaded games, and require a Maxima
 controller. Interactive captures and environment-variable aliases are not
-provided. See [whole-map rendering](../map-generators/CLI.md#render-a-whole-game).
+provided. See [whole-map rendering](../map-generators/cli.md#render-a-whole-game).
+
+Related: [AI documentation](README.md).

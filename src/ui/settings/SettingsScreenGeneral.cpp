@@ -75,9 +75,7 @@ void SettingsScreen::buildGeneral()
 			info(FormattableString(tr("Current display %0 %1 %2 %3"))
 					 .arg(globalContainer->gfx->getDrawableW())
 					 .arg(globalContainer->gfx->getDrawableH())
-					 .arg((globalContainer->gfx->getOptionFlags() & GraphicContext::USEGPU)
-							  ? "OpenGL"
-							  : tr("Software"))
+                     .arg(std::string(rendererBackendLabel(globalContainer->gfx->backendSwitchStatus().active)))
 					 .arg(tr(globalContainer->gfx->getOptionFlags() & GraphicContext::FULLSCREEN
 								 ? "Fullscreen"
 								 : "Windowed")));
@@ -115,26 +113,26 @@ void SettingsScreen::buildGeneral()
 		if (!touchLayout || globalContainer->gfx->isNativeDesktop())
 		{
 			choice("graphics.artwork", "Artwork",
-				   "Apply artwork on the next game or editor load (OpenGL).",
+				   "Apply artwork on the next game or editor load.",
 				   s.highResolutionArtwork, {tr("Original"), tr("High resolution")},
 				   [this](int v)
 				   {
 					   globalContainer->settings.highResolutionArtwork = v;
 					   commit();
 				   });
-			const bool gpu = bool(globalContainer->gfx->getOptionFlags() & GraphicContext::USEGPU);
+			const bool gpu = globalContainer->gfx->rendererCapabilities().textureFiltering;
 			form.back().enabled = gpu;
-			if (!gpu) form.back().help = tr("Requires the OpenGL renderer. Your saved choice is retained.");
+            if (!gpu) form.back().help = tr("Requires a renderer with texture filtering. Your saved choice is retained.");
 			toggle("graphics.torus", "Automatic torus view",
-				   "Automatically show the torus overview while moving around the map (OpenGL).",
+                   "Automatically show the torus overview while moving around the map.",
 				   s.automaticTorus,
 				   [this](int v)
 				   {
 					   globalContainer->settings.automaticTorus = v;
 					   commit();
 				   });
-			form.back().enabled = gpu;
-			if (!gpu) form.back().help = tr("Requires the OpenGL renderer. Your saved choice is retained.");
+			form.back().enabled = globalContainer->gfx->rendererCapabilities().torus;
+			if (!form.back().enabled) form.back().help = tr("Requires a renderer with torus support. Your saved choice is retained.");
 		}
 #endif
 		section("Interface appearance");
@@ -211,28 +209,30 @@ void SettingsScreen::buildGeneral()
 		effect("graphics.zoomdetail", "Adaptive zoom detail", "Simplify bars, zones, terrain and units as the map zooms out, and keep them small zoomed in.", &Settings::adaptiveZoomDetail);
 		effect("graphics.unitmotion", "Smooth unit motion", "Experimental: move and animate units between game ticks.", &Settings::unitInterpolation);
 		effect("graphics.smoothfog", "Smooth fog of war", "Fade the map into and out of the fog of war gradually.", &Settings::smoothFog);
-#ifndef GLOB2_MOBILE
-		if (!touchLayout || globalContainer->gfx->isNativeDesktop())
-		{
-			choice("graphics.renderer", "Renderer", "Changing the renderer requires a restart.",
-				   bool(s.screenFlags & GraphicContext::USEGPU), {tr("Software"), "OpenGL"},
-				   [this](int v)
-				   {
-					   changeDisplay(
-						   [v](Settings &s)
-						   {
-							   if (v)
-								   s.screenFlags |= GraphicContext::USEGPU;
-							   else
-								   s.screenFlags &= ~GraphicContext::USEGPU;
-						   });
-				   });
-#ifndef HAVE_OPENGL
-			form.back().enabled = false;
-			form.back().help = tr("OpenGL is not available in this build.");
-#endif
-		}
-#endif
+        {
+            auto *gfx = globalContainer->gfx;
+            const auto availability = gfx->rendererAvailability();
+            std::vector<RendererBackend> backends;
+            std::vector<std::string> labels;
+            for (const auto &entry : availability) {
+                backends.push_back(entry.backend);
+                auto label = std::string(rendererBackendLabel(entry.backend));
+                if (!entry.available) label += " (unavailable)";
+                labels.push_back(std::move(label));
+            }
+            const auto &status = gfx->backendSwitchStatus();
+            const auto selected = std::find(backends.begin(), backends.end(), status.requested);
+            choice("graphics.renderer", "Renderer", "Apply at the next completed frame. Your game stays running.",
+                int(selected - backends.begin()), labels, [this, backends](int v) {
+                    if (v >= 0 && v < int(backends.size()))
+                        globalContainer->gfx->requestBackendSwitch(backends[v]);
+                    invalidate();
+                });
+            info("Active renderer: " + std::string(rendererBackendLabel(status.active)));
+            if (status.phase == RendererSwitchPhase::Queued || status.phase == RendererSwitchPhase::Preparing ||
+                status.phase == RendererSwitchPhase::Presenting) info(tr("Changing renderer…"));
+            if (!status.reason.empty()) info(status.reason);
+        }
 		if (touchLayout)
 			choice("display.zoomdrag", "One-finger zoom", "Double-tap the map, hold, then drag to zoom.",
 				   s.oneFingerZoomDirection,
@@ -304,6 +304,14 @@ void SettingsScreen::buildGeneral()
 	else if (current == Category::Gameplay)
 	{
 		info(tr("Adjust the pace of play."));
+		toggle("gameplay.gpu", "GPU compute",
+			   "Use GPU for gradient calculations. Applies to the next game.",
+			   s.gpuComputeEnabled(),
+			   [this](int v)
+			   {
+				   globalContainer->settings.gpuCompute = bool(v);
+				   commit();
+			   });
 		std::vector<std::string> labels;
 		Settings copy = s;
 		for (int i = Settings::GAME_SPEED_MINIMUM; i <= Settings::GAME_SPEED_MAXIMUM; ++i)

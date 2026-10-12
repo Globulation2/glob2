@@ -16,6 +16,7 @@
 #include <fstream>
 #include <iomanip>
 #include <mutex>
+#include <set>
 #include <sstream>
 #include <stdexcept>
 #include <thread>
@@ -94,7 +95,15 @@ struct Recorder::Impl
 	std::string path, error;
 	Status published;
 	Context context;
+	struct MatchIdentity
+	{
+		std::uint64_t serial = 0;
+		std::string mode, map;
+		int team = -1;
+	} matchIdentity;
 	std::uint64_t matchSerial = 0;
+    std::uint64_t captureGeneration = 0, captureIdentity = 0;
+    std::set<std::uint64_t> pendingCaptures;
 	std::thread worker;
 
 	bool active() const
@@ -216,10 +225,13 @@ bool Recorder::start(const std::string &requestedPath)
 		}
 		impl->matchSerial = impl->context.match ? 1 : 0;
 		impl->context.match = impl->matchSerial;
+		impl->matchIdentity.serial = impl->matchSerial;
 		impl->epoch = 0;
 		impl->stoppedAt = 0;
 		impl->lastCapture = -1;
 		impl->queuedFrames = 0;
+        ++impl->captureGeneration;
+        impl->pendingCaptures.clear();
 		impl->droppedFrames = 0;
 		impl->droppedAudio = 0;
 		impl->captureFps = options.fps;
@@ -266,6 +278,8 @@ void Recorder::stop()
 		if (expected != State::Starting && expected != State::Recording)
 			return;
 		impl->stoppedAt = now();
+        impl->droppedFrames += impl->pendingCaptures.size();
+        impl->pendingCaptures.clear();
 		while (!impl->state.compare_exchange_weak(expected, State::Finalizing))
 		{
 			if (expected != State::Starting && expected != State::Recording)
@@ -324,15 +338,50 @@ bool Recorder::wantsFrame() const
 #ifdef __EMSCRIPTEN__
 	if (!browserRecordingRoom()) { ++impl->droppedFrames; return false; }
 #endif
-	if (lock && impl->queuedFrames >= MaxQueuedFrames)
+    if (lock && (impl->queuedFrames >= MaxQueuedFrames || impl->pendingCaptures.size() >= MaxQueuedFrames))
 		++impl->droppedFrames;
-	return lock && impl->queuedFrames < MaxQueuedFrames;
+    return lock && impl->queuedFrames < MaxQueuedFrames && impl->pendingCaptures.size() < MaxQueuedFrames;
 }
 void Recorder::frame(const SDL_Surface &pixels, bool bottomUp)
 {
+    enqueueFrame(pixels, now(), impl->context, bottomUp);
+}
+std::optional<CaptureTicket> Recorder::reserveCapture()
+{
+    if (!wantsFrame()) return std::nullopt;
+    std::unique_lock<std::mutex> lock(impl->mutex, std::try_to_lock);
+    if (!lock || !impl->active() || impl->pendingCaptures.size() >= MaxQueuedFrames) return std::nullopt;
+    CaptureTicket ticket{++impl->captureIdentity, impl->captureGeneration, now(), std::make_shared<Context>(impl->context)};
+    impl->pendingCaptures.insert(ticket.identity);
+    if (!impl->epoch) impl->epoch = ticket.timestamp;
+    impl->lastCapture = (ticket.timestamp - impl->epoch) * impl->captureFps / 1000000;
+    return ticket;
+}
+void Recorder::dropCapture(const CaptureTicket &ticket)
+{
+    std::lock_guard<std::mutex> lock(impl->mutex);
+    if (ticket.generation == impl->captureGeneration && impl->pendingCaptures.erase(ticket.identity)) {
+        ++impl->droppedFrames;
+        // A dropped initial request must not leave Starting unable to acquire
+        // the first dimensions on a subsequent frame.
+        if (impl->state == State::Starting && impl->pendingCaptures.empty() && !impl->queuedFrames) {
+            impl->epoch = 0;
+            impl->lastCapture = -1;
+        }
+    }
+}
+void Recorder::frame(const SDL_Surface &pixels, const CaptureTicket &ticket, bool bottomUp)
+{
+    {
+        std::lock_guard<std::mutex> lock(impl->mutex);
+        if (!ticket.context || ticket.generation != impl->captureGeneration || !impl->pendingCaptures.erase(ticket.identity)) return;
+    }
+    enqueueFrame(pixels, ticket.timestamp, *ticket.context, bottomUp);
+}
+void Recorder::enqueueFrame(const SDL_Surface &pixels, std::int64_t time, const Detail::Context &context, bool bottomUp)
+{
 	if (!active())
 		return;
-	const auto time = now();
 	std::unique_lock<std::mutex> lock(impl->mutex, std::try_to_lock);
 	if (!lock || impl->queuedFrames >= MaxQueuedFrames)
 	{
@@ -352,7 +401,7 @@ void Recorder::frame(const SDL_Surface &pixels, bool bottomUp)
 		lock.unlock(); abort("Unsupported recording capture pixel format"); return;
 	}
 	const auto bytesPerPixel = layout < 4 ? 4 : 3;
-	Frame frame{time, pixels.w, pixels.h, {}, impl->context};
+	Frame frame{time, pixels.w, pixels.h, {}, context};
 	frame.pixelLayout = layout; frame.bottomUp = bottomUp;
 	frame.rgba.resize(std::size_t(frame.width) * frame.height * bytesPerPixel);
 	for (int y = 0; y < frame.height; ++y)
@@ -361,10 +410,10 @@ void Recorder::frame(const SDL_Surface &pixels, bool bottomUp)
 					std::size_t(frame.width) * bytesPerPixel);
 	if (!impl->epoch)
 		impl->epoch = time;
-	impl->lastCapture = (time - impl->epoch) * impl->captureFps / 1000000;
+	impl->lastCapture = std::max(impl->lastCapture.load(), (time - impl->epoch) * impl->captureFps / 1000000);
 #ifdef __EMSCRIPTEN__
-	auto context = "{\"pixel_layout\":"+std::to_string(frame.pixelLayout)+",\"bottom_up\":"+(frame.bottomUp ? "true" : "false")+","+frame.context.fields(options.chapterTicks)+",\"speed\":"+std::to_string(frame.context.speed)+",\"paused\":"+(frame.context.paused ? "true" : "false")+"}";
-	if (!browserRecordingFrame(frame.rgba.data(),frame.width,frame.height,double(frame.time),context.c_str())) ++impl->droppedFrames;
+	auto contextJson = "{\"pixel_layout\":"+std::to_string(frame.pixelLayout)+",\"bottom_up\":"+(frame.bottomUp ? "true" : "false")+","+frame.context.fields(options.chapterTicks)+",\"speed\":"+std::to_string(frame.context.speed)+",\"paused\":"+(frame.context.paused ? "true" : "false")+"}";
+	if (!browserRecordingFrame(frame.rgba.data(),frame.width,frame.height,double(frame.time),contextJson.c_str())) ++impl->droppedFrames;
 #else
 	impl->frames.push_back(std::move(frame));
 	++impl->queuedFrames;
@@ -411,7 +460,7 @@ void Recorder::screen(const std::string &id)
 {
 	impl->context.screen = id;
 	impl->context.dialog.clear();
-	if (id != "game_session" && id != "end_game")
+	if (id != "game_session" && id != "end_game" && id != "settings")
 	{
 		impl->context.match = 0;
 		impl->context.mode.clear();
@@ -426,7 +475,8 @@ void Recorder::dialog(const std::string &id)
 void Recorder::beginMatch(const std::string &mode, const std::string &map, int team,
 						  std::uint32_t tick)
 {
-	impl->context.match = ++impl->matchSerial;
+	impl->matchIdentity = {++impl->matchSerial, mode, map, team};
+	impl->context.match = impl->matchIdentity.serial;
 	impl->context.mode = mode;
 	impl->context.map = map;
 	impl->context.team = team;
@@ -436,6 +486,11 @@ void Recorder::beginMatch(const std::string &mode, const std::string &map, int t
 }
 void Recorder::matchFrame(std::uint32_t tick, bool paused, int speed)
 {
+	// Menu presentation changes the capture context, never the active match.
+	impl->context.match = impl->matchIdentity.serial;
+	impl->context.mode = impl->matchIdentity.mode;
+	impl->context.map = impl->matchIdentity.map;
+	impl->context.team = impl->matchIdentity.team;
 	if (paused != impl->context.paused)
 		event("paused", paused ? "true" : "false");
 	if (speed != impl->context.speed)

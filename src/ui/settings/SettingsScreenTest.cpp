@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "app/ClientFeatures.h"
 #include "ui/ThemeCatalog.h"
 #include "EngineFixtures.h"
 #include "ScopedEnvironment.h"
+#include <algorithm>
 #include <vector>
 #include <string>
 #include <utility>
@@ -124,6 +126,19 @@ static void run(int width,int height,bool gl,bool expanded)
         REQUIRE((screen.row("display.mode").number==windowMode && !screen.restartRequired()));
         for (const auto& row : screen.rows()) REQUIRE(row.id != "display.resolution");
         screen.selectCategory(SettingsScreen::Category::Gameplay);
+        REQUIRE(screen.row("gameplay.gpu").kind == SettingsScreen::Kind::Toggle);
+        REQUIRE(screen.row("gameplay.gpu").label == "GPU compute");
+        REQUIRE_FALSE(s.gpuComputeEnabled());
+        REQUIRE(screen.changeSetting("gameplay.gpu", 1));
+        REQUIRE(s.gpuComputeEnabled());
+        Settings gpuLoaded; gpuLoaded.load();
+        REQUIRE(gpuLoaded.gpuComputeEnabled());
+        screen.capture(output+"/gpu-compute-on.bmp");
+        REQUIRE(screen.changeSetting("gameplay.gpu", 0));
+        gpuLoaded.load();
+        REQUIRE(gpuLoaded.gpuCompute.has_value());
+        REQUIRE_FALSE(gpuLoaded.gpuComputeEnabled(true));
+        screen.capture(output+"/gpu-compute-off.bmp");
         for(const auto& row:screen.rows())REQUIRE((row.id!="graphics.torus" && row.id!="gameplay.torus"));
         screen.selectCategory(SettingsScreen::Category::Buildings);
         const auto fingerprint=globalContainer->buildingsTypes.fingerprint();
@@ -220,11 +235,12 @@ static void run(int width,int height,bool gl,bool expanded)
         REQUIRE(screen.row("graphics.renderer").kind==SettingsScreen::Kind::Choice);
         screen.activateSetting("graphics.renderer");screen.key(SDLK_ESCAPE);
         screen.capture(output+"/graphics-renderer.bmp");
-        if(s.screenFlags & GraphicContext::USEGPU){
-            REQUIRE(screen.changeSetting("graphics.renderer",0));REQUIRE(screen.restartRequired());
-            loaded.load();REQUIRE(!(loaded.screenFlags & GraphicContext::USEGPU));
-            REQUIRE(screen.changeSetting("graphics.renderer",1));REQUIRE(!screen.restartRequired());
-        }
+        REQUIRE(screen.changeSetting("graphics.renderer",int(RendererBackend::Software)));
+        REQUIRE_FALSE(screen.restartRequired());
+        screen.paintFrame(SDL_GetTicks());
+        globalContainer->gfx->nextFrame();
+        REQUIRE(globalContainer->gfx->backendSwitchStatus().phase==RendererSwitchPhase::Complete);
+        loaded.load(); REQUIRE(loaded.rendererBackend==RendererBackend::Software);
         {
             const auto previousFlags=s.screenFlags;
             screen.failNextDisplay=true;
@@ -322,13 +338,14 @@ static void run(int width,int height,bool gl,bool expanded)
         screen.activateSetting("keys.mode.1");screen.capture(output+"/editor-shortcuts.bmp");
         REQUIRE(s.highResolutionArtwork==originalArtwork);
         screen.selectCategory(SettingsScreen::Category::Display);
-        screen.changeSetting("graphics.artwork",!originalArtwork);
-        Settings saved;saved.load();REQUIRE(saved.highResolutionArtwork==(gl ? !originalArtwork : originalArtwork));
+        const auto capabilities=globalContainer->gfx->rendererCapabilities();
+        REQUIRE(screen.changeSetting("graphics.artwork",!originalArtwork)==capabilities.textureFiltering);
+        Settings saved;saved.load();REQUIRE(saved.highResolutionArtwork==(capabilities.textureFiltering ? !originalArtwork : originalArtwork));
         screen.changeSetting("graphics.artwork",originalArtwork);
         screen.selectCategory(SettingsScreen::Category::Display);
         const bool previousTorus=s.automaticTorus;
-        screen.changeSetting("graphics.torus",!previousTorus);
-        saved.load();REQUIRE(saved.automaticTorus==(gl ? !previousTorus : previousTorus));
+        REQUIRE(screen.changeSetting("graphics.torus",!previousTorus)==capabilities.torus);
+        saved.load();REQUIRE(saved.automaticTorus==(capabilities.torus ? !previousTorus : previousTorus));
         screen.changeSetting("graphics.torus",previousTorus);
         for (const auto& [value,name] : std::vector<std::pair<int,std::string>>{{1,"compact"},{2,"spacious"},{0,"automatic"}}) {
             REQUIRE(screen.changeSetting("display.presentation",value));
@@ -600,4 +617,24 @@ TEST_CASE("AI library compact discovery, favourite, installation and malformed r
 		  doctest::test_suite("SettingsAILibrary"))
 {
 	aiLibraryPresentation(640, 800, "dark");
+}
+
+
+TEST_CASE("Settings categories follow the resolved client capabilities" * doctest::test_suite("ClientCapabilities"))
+{
+    glob2test::HeadlessGlobals globals;
+    SettingsScreen screen;
+    const auto categories = screen.visibleCategories();
+    const auto contains = [&](SettingsScreen::Category category) {
+        return std::find(categories.begin(), categories.end(), category) != categories.end();
+    };
+#if !defined(GLOB2_CHINA_RELEASE) && !defined(GLOB2_AMAZON_RELEASE)
+    CHECK(contains(SettingsScreen::Category::HiveMind) == ClientFeatures::Commander);
+#endif
+    CHECK(contains(SettingsScreen::Category::CustomAIs) == ClientFeatures::CommunityAI);
+    CHECK(contains(SettingsScreen::Category::CustomGenerators) == ClientFeatures::CommunityGenerators);
+    if (!ClientFeatures::Commander) {
+        screen.selectCategory(SettingsScreen::Category::HiveMind);
+        CHECK(screen.category() == SettingsScreen::Category::Display);
+    }
 }

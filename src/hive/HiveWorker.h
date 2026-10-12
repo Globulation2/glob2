@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
-#include <nlohmann/json.hpp>
+#include <nlohmann/json_fwd.hpp>
 #include "scripting/javascript/ScriptValue.h"
 namespace Hive
 {

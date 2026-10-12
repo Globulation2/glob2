@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 # Copyright (C) 2026 The Globulation 2 Authors
 #
-# Cortex DECIDE pilot — offline-RL (AWR) trainer for the decision-selection net.
+# Cortex optional decision model — offline-RL (AWR) trainer for the decision-selection net.
 # Warm-starts from the BC net, fits a value baseline V(s) to Monte-Carlo returns,
 # then runs Advantage-Weighted Regression: the SAME masked-softmax CE as BC, but
 # each contested (popcount>=2) decision row is reweighted by exp(A_t/tau) (clipped).
@@ -13,11 +13,11 @@
 #
 # The net architecture is EXACTLY 48->64->64->18 and the masked-CE / mask-then-
 # argmax inference rule is identical to BC — the blob / inference contract is
-# unchanged (DECIDE_CONTRACT.md). Reward/shaping lives in decide_reward.py.
+# unchanged (tools/cortex-ml/training.md). Reward/shaping lives in decide_reward.py.
 #
 #   python3 train_decide_awr.py --bc <bc.json> --data <dir> --out <awr.json>
 #
-# See docs/AI/cortex/DECIDE_PILOT.md (Method, Reward) and DECIDE_CONTRACT.md.
+# See tools/cortex-ml/decide_reward.py (Method, Reward) and tools/cortex-ml/training.md.
 # Sibling of train_awr.py (worker-cap) and train_decide_bc.py (BC).
 
 import argparse

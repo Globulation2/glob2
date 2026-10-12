@@ -1,12 +1,12 @@
 # Window resizing
 
-Windowed mode follows the OS window dimensions when `RESIZABLE` is enabled
-(`-r`; `-R` disables it). SDL enforces the minimum 640 x 480 game size. Desktop
-fullscreen fills the current desktop at native drawable resolution. Saved width/height
-and `-s WIDTHxHEIGHT` specify the remembered initial window size. Resolution selection
-is removed; old fullscreen dimensions never set the raster target.
-SDL3 exposes drawable pixels separately from window coordinates. See SDL’s
-[pixel-size API](https://wiki.libsdl.org/SDL3/SDL_GetWindowSizeInPixels).
+## On this page
+
+- [Event and rendering ownership](#event-and-rendering-ownership)
+- [Layout](#layout)
+- [Timing and validation](#timing-and-validation)
+- [Periodic drawing and display scale](#periodic-drawing-and-display-scale)
+- [Independent graphics effects](#independent-graphics-effects)
 
 ## Event and rendering ownership
 
@@ -77,100 +77,14 @@ on window recreation. OpenGL pixels are captured at the swap boundary rather
 than reading the post-swap front buffer, which is unreliable under Mesa/Xvfb.
 Linux CI runs both backends under Xvfb/Mesa.
 
-The pre-migration SDL2 resize harness passed in a Windows Server 2022 desktop VM with SDL 2.32.10,
-using both software rendering and OpenGL 1.1 GDI Generic. The same checks pass on
-Linux X11/Mesa llvmpipe and macOS Apple M3 OpenGL. For Windows desktop tests, use
-at least 1100 x 850 pixels and disable automatic remote-desktop size changes.
-Enable "Show window contents while dragging" in Windows Performance Options as
-well as full-window dragging in the RDP client. The client setting alone did not
-override the guest's disabled visual effect.
+For a Windows native modal-loop check, hold the system-menu Size interaction open,
+then verify cached presentation, unchanged normal-frame counters and recovery on
+release. Enable full-window dragging in both OS and remote-desktop settings.
+Test network peers resuming and compare shared-tick checksum sidecars.
+Physical GPU drivers, Wayland and mixed-DPI multi-monitor transitions require
+platform-specific review; old acceptance runs do not cover a changed renderer.
 
-For a native modal-loop exercise, run the client, drag the window edges and use
-the Windows system menu's Size command to hold the modal loop open. The harness
-logs cached presentations and checks that the normal frame count stays unchanged
-inside the event pump. This passed in the Windows VM: one sustained sizing session
-presented 357 cached frames while normal frame 2351 stayed unchanged. Edge dragging
-and maximize/restore also retained the image and resumed normal drawing.
-
-## Presentation benchmark and polish
-
-The `WindowResize` software/GL presentation benchmark cases (`--filter
-'WindowResize/*presentation benchmark*' --tag benchmark`)
-measure a frame containing two opaque rectangles, with test pixel readback disabled.
-Each result is the median of five batches of 60 frames after a warm-up batch.
-GL requests swap interval zero and waits for GPU completion; the separate
-cache-only measurement includes that completion wait. These are presentation
-microbenchmarks, not gameplay frame rates, and the two timings are not additive.
-Set `GLOB2_TEST_BENCHMARK_SIZE=WIDTHxHEIGHT` to compare the same actual window
-dimensions across revisions; the output also records native drawable dimensions.
-
-A release build on `pharaoh-dev-1.local`, X11/Xvfb (1280 x 1024), SDL 2.32.10,
-and Mesa 26.0.8 llvmpipe produced this comparison against `02bb97db4`:
-
-| Backend | Window | Before frame (ms) | After frame (ms) | After cache-only (ms) |
-| --- | --- | ---: | ---: | ---: |
-| Software | 640 x 480 | 1.986 | 1.930 | 0.081 |
-| Software | 1024 x 768 | 4.962 | 4.760 | 0.211 |
-| OpenGL / llvmpipe | 640 x 480 | 1.183 | 1.197 | 0.550 |
-| OpenGL / llvmpipe | 1024 x 768 | 3.034 | 3.092 | 1.427 |
-
-The software result is consistent with avoiding a redundant full-window clear
-and using an unscaled blit when dimensions match. The GL difference is small
-(about 1–2%); this single comparison does not establish a performance change.
-The completed-frame copy remains a per-frame cost, particularly on llvmpipe.
-Physical GPU and high-resolution gameplay performance still need separate profiling.
-
-Cache resources and validity now live in one structure, explicitly released before
-GL context destruction. The device texture limit is queried once per context.
-Texture allocation and software allocation/copy failures invalidate the cache and
-report once until recovery. The resize harness also checks letterbox pixels and
-recovery after a simulated device texture-size limit. Both resize backends and all
-five fullscreen/aspect sizes passed on Linux after the polish; the macOS harnesses
-also compile. The Windows acceptance below describes the earlier tested version.
-
-## Windows acceptance results (2026-09-08 UTC)
-
-The full client from `71da3dbbc` passed the following checks in the existing
-Windows Server 2022 VM, using SDL 2.32.10 and app-local Mesa 26.1.8 llvmpipe for
-OpenGL. This acceptance pass required no production code changes.
-
-- Two independent Windows clients played SmallForTwo over real loopback TCP.
-  Host and guest were each held in the native system-menu sizing loop for short,
-  ten-second, and greater-than-sixty-second pauses. The short/ten-second host
-  tests initially used outline resizing; full-window contents were enabled
-  before the sustained host test and all guest tests. The peer displayed its
-  waiting message, and both clients resumed after each pause. Both accepted
-  building-priority orders afterward. The guest left through the game menu and
-  the host received the victory result.
-- Separate `GLOB2_REPLAY_PATH` values and `GLOB2_CHECKSUM_SIDECAR=1` recorded both
-  clients. All **6,371 shared ticks (0 through 6370)** matched, including total,
-  team, unit, and building checksum records. The host recorded 7,276 ticks in
-  total because it continued after the guest departed. There were zero shared
-  tick mismatches. This establishes recovery for the tested LAN session; it
-  does not simulate Internet latency, packet loss, or a public server.
-- The Introduction and Basics tutorial passed in software and Mesa GL: grow to
-  1000 pixels wide, shrink to 640 x 480, maximize, drag the maximized title bar
-  down to restore, and advance messages with Space. Tutorial text, units, and
-  terrain remained intact; the GL cloud rendering also survived the sequence.
-  No persistent white textures, blank regions, or duplicated sidebar edges
-  appeared in the inspected frames. Animation non-advancement inside the
-  callback is covered by the resize harness; this was not a frame-rate benchmark.
-- The tutorial's nested Save dialog (GL) and Load dialog (software) remained
-  visible and accepted Cancel after growing and shrinking with the dialog open.
-  The earlier editor pass covered menu clamping and relocated minimap input.
-  Both full-client tutorial backends also passed minimize/taskbar-restore.
-- GL fullscreen startup and settings-button input passed. Software switched
-  windowed -> fullscreen -> windowed live and retained working controls.
-  GL display-setting changes required restart in that tested revision.
-
-Physical Windows GPU drivers and mixed-DPI multi-monitor transitions remain
-unverified hardware coverage, rather than known failures. The resize cache's
-maximum-texture-size fallback and Windows simulation pause are intentional
-limits described above. Broader campaign play and Internet multiplayer testing
-can extend this coverage without representing the current acceptance checks as
-an exhaustive proof of correctness.
-
-## Repeated-map rendering audit
+## Periodic drawing and display scale
 
 A viewport can show several copies of a small toroidal map. Sprite visibility
 alone is insufficient: every map-space annotation must use the same periodic
@@ -213,15 +127,9 @@ multiply that OS scale; automatic applies multiplier 1. `GLOB2_UI_SCALE` remains
 an absolute window-coordinate override. The whole view retains its minimum layout
 floor, while map zoom stays separate. Mobile and browser avoid counting density twice.
 
-The Windows acceptance results above describe the earlier implementation. Linux
-X11/Mesa and macOS Retina regression checks cover native fullscreen, live scale
-changes, input and clipping in both renderers, with independent glyph-raster comparisons. Windows
-native-display acceptance, Wayland and physical mixed-DPI display changes still
-need platform review. Background macOS tests use
-the existing fullscreen-space preference when testing in the background.
-Native fullscreen Spaces need a focused application play check. The transition
-confirms SDL’s resulting mode before persisting it and restores state on failure.
-A maintainer should play the native-display result before merging because fullscreen layout and text sharpness visibly change.
+Test native fullscreen, input, clipping and live scale changes in both renderers.
+Focus the application for a native fullscreen Spaces play check on macOS. Validate
+Windows native displays, Wayland and mixed-DPI transitions on their actual hosts.
 
 ### Permanent regression coverage
 
@@ -281,3 +189,5 @@ interface/map scale in both desktop and touch layouts: menus, dialogs and, on
 touch, the gameplay HUD. It is saved as `textSizePercent` and shared with the
 in-game options' text-size control; the former `mobileDialogTextPercent` is
 ignored. See [Text size](../development/ui-framework.md#text-size).
+
+Related: [features and content](README.md).

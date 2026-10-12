@@ -4,7 +4,7 @@ import shlex
 import shutil
 import subprocess
 import sys
-from SCons.Script import Action
+from SCons.Script import Action, Flatten
 
 
 def javascript_objects(env, directory, release, shared=False):
@@ -26,6 +26,8 @@ def javascript_objects(env, directory, release, shared=False):
     math = sorted(Path(env.Dir('#third_party/openlibm/src').abspath).glob('*.c'))
     objects += [object_builder(str(output / 'openlibm' / (p.stem + '.o')),
                              '#third_party/openlibm/src/' + p.name) for p in math]
+    from build_timing import record
+    record(local, objects, "compile")
     numeric_guard(local, objects)
     return objects
 
@@ -56,6 +58,12 @@ def numeric_guard(local, objects):
     action = Action(verify_symbols, varlist=['GLOB2_NUMERIC_GUARD', 'GLOB2_NUMERIC_NM',
                                             'GLOB2_NUMERIC_PYTHON'])
     for group in objects:
+        # PCH objects use a cloned compilation environment. Post-actions execute
+        # with that object's environment, not necessarily the caller's local.
+        for node in Flatten([group]):
+            build_env = node.get_executor().get_build_env()
+            for name in ('GLOB2_NUMERIC_GUARD', 'GLOB2_NUMERIC_NM', 'GLOB2_NUMERIC_PYTHON'):
+                build_env[name] = local[name]
         local.AddPostAction(group, action)
         local.Depends(group, str(guard))
 

@@ -16,6 +16,7 @@
 #include "render/ResourceSprites.h"
 #include "TerrainPresentation.h"
 #include "ResourceRegistry.h"
+#include "UnitCatalog.h"
 #include "render/terrain/TerrainCatalogIO.h"
 #include "render/terrain/TerrainCompositor.h"
 #include "ui/ThemeCatalog.h"
@@ -31,6 +32,7 @@
 #include "ReplayReader.h"
 #include "ReplayWriter.h"
 #include "ScrollTuning.h"
+#include "field/GradientDeviceService.h"
 
 #include <ApplicationHost.h>
 
@@ -68,6 +70,8 @@ GlobalContainer::GlobalContainer(const char *profileName, const std::string& bui
 	for (const auto& definition : buildingsTypes.experiments())
 		buildingExperiments.push_back({definition.key, definition.label, definition.help});
 	for (const auto& definition : ResourceRegistry::availableDefaults()->experiments())
+		buildingExperiments.push_back(definition);
+	for (const auto& definition : UnitCatalog::availableDefaults()->experiments())
 		buildingExperiments.push_back(definition);
 	registerCatalogExperiments(buildingExperiments);
 
@@ -117,9 +121,13 @@ GlobalContainer::GlobalContainer(const char *profileName, const std::string& bui
 
 GlobalContainer::~GlobalContainer(void)
 {
+	// Games have already drained their executors. Native drivers may register
+	// process exit handlers during background initialization, after the broker's
+	// static destructor; join here before those handlers or SDL teardown run.
+	gradient_kernel::shutdownGradientDeviceCoordinator();
 	GAGCore::Recording::recorder().shutdown();
-	// unlink GUI style
-	if (!runNoX)
+	// Commands and interrupted loading can finish before a heap-owned style exists.
+	if (!runNoX && Style::style != &defaultStyle)
 		delete Style::style;
 	Style::style = &defaultStyle;
 
@@ -153,7 +161,7 @@ GlobalContainer::~GlobalContainer(void)
 	// runs after this body — no manual cleanup needed.
 }
 
-// parseArgs is defined in GlobalContainerArgs.cpp.
+// applyCommand is defined in GlobalContainerArgs.cpp.
 
 void GlobalContainer::updateLoadProgressScreen(int value)
 {
@@ -194,7 +202,18 @@ void GlobalContainer::loadClient(void)
 	{
 		// create graphic context
 		GraphicContext::setRequestedUiScale(settings.uiScale / 100.0f);
+        std::optional<GAGCore::RendererBackend> environmentBackend;
+#ifndef __EMSCRIPTEN__
+        if (const char *selected = SDL_getenv_unsafe("GLOB2_RENDERER"))
+            environmentBackend = GAGCore::parseRendererBackend(selected);
+#endif
+        GraphicContext::setInitialRendererBackend(GAGCore::resolveRendererPreference(
+            settings.rendererBackend, rendererLaunchOverride, environmentBackend));
 		gfx = Toolkit::initGraphic(settings.screenWidth, settings.screenHeight, settings.screenFlags, "Globulation 2", "glob 2");
+        gfx->setBackendPreferenceCallback([this](GAGCore::RendererBackend selected) {
+            settings.rendererBackend = selected;
+            if (!settings.save()) std::cerr << "Could not save renderer preference." << std::endl;
+        });
         gfx->setTargetRenderFps(settings.targetRenderFps);
 #if !defined(GLOB2_MOBILE) && !defined(__EMSCRIPTEN__)
 		gfx->setDisplayPreferenceCallback([this](int w, int h, bool fullscreen)

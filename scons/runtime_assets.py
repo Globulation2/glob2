@@ -77,7 +77,7 @@ def install_export(exported, destination):
 
 
 def prepare_assets(env):
-    from SCons.Script import Action, Value
+    from SCons.Script import Action, Value, GetOption
 
     if env.get("RUNTIME_ASSET_STAMP") is not None:
         return env["RUNTIME_ASSET_STAMP"]
@@ -98,7 +98,7 @@ def prepare_assets(env):
     lossy = optimized_install_enabled(env.get("release", True), env.get("optimized_assets", "auto"))
 
     def export(target, source, env):
-        export_assets(root, exported, platform=platform, lossy=lossy)
+        export_assets(root, exported, platform=platform, lossy=lossy, jobs=GetOption("num_jobs"))
         return 0
 
     stamp = env.Command(

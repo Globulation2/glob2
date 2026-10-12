@@ -5996,3 +5996,39 @@ FFmpeg در دسترس نیست، پس ضبط خاموش است. FFmpeg را ن�
 صدور بسته در دسترس نیست.
 [stat band area upkeep]
 نگهداری منطقه
+[outcome reason eliminated]
+مستعمره از بین رفت.
+[outcome reason opponents defeated]
+همهٔ حریفان شکست خوردند.
+[outcome reason ally won]
+یک مستعمرهٔ متحد پیروز شد.
+[outcome reason prestige]
+هدف اعتبار محقق شد.
+[outcome reason scenario]
+قواعد سناریو نتیجه را تعیین کردند.
+[outcome reason timer]
+مهلت زمانی به پایان رسید.
+[outcome reason probability]
+آستانهٔ احتمال پیروزی محقق شد.
+[Destroy this building?]
+این ساختمان تخریب شود؟
+[Discord community]
+Discord community
+[Globulation 2 Discord]
+Globulation 2 Discord
+[discord community intro]
+Find opponents, ask for help, and share your maps with the Globulation 2 community.
+[discord opens externally]
+Join our Discord server. This opens Discord or your browser.
+[Join Discord]
+Join Discord
+[Copy link]
+Copy link
+[discord opened]
+Discord opened. You can return to the game at any time.
+[discord open failed]
+Could not open Discord. Copy the invitation link and open it in your browser.
+[discord link copied]
+Invitation link copied.
+[discord copy failed]
+Could not copy the link. Select the invitation above to copy it manually.

@@ -58,6 +58,12 @@ Compositor::Compositor(Catalog catalog, std::shared_ptr<const MapAssetBundle> as
 		decorSprites.push_back(m.decor.sprite.empty() ? nullptr : customSprites.resolve(m.decor.sprite));
         sprites.push_back(sprite);
 		textures.emplace_back(m.variants.size());
+		animationTextures.emplace_back();
+		if (m.animationFrames > 1 && m.animationTicks > 1)
+		{
+			animationTextures.back().current.resize(m.variants.size());
+			animationTextures.back().next.resize(m.variants.size());
+		}
 		materialRevisions.push_back(0);
 	}
     if (mixedDecorSprites) sharedDecorSprite = nullptr;
@@ -93,7 +99,86 @@ std::size_t Compositor::sourceBytes() const
 	for (const auto &set : textures)
 		for (const auto &t : set)
 			bytes += t.pixels.capacity() * 4;
+	for (const auto &animation : animationTextures)
+		for (const auto *set : {&animation.current, &animation.next})
+			for (const auto &t : *set)
+				bytes += t.pixels.capacity() * 4;
 	return bytes;
+}
+bool Compositor::prepareMaterial(unsigned id, bool hd, int phase, std::vector<Texture> &target)
+{
+	const auto &m = definitions.materials[id];
+	bool refresh = false;
+	for (unsigned i = 0; i < m.variants.size(); ++i)
+	{
+		const int frame = m.variants[i].frame + phase * m.animationStride;
+		auto *source = hd ? sprites[id]->baseFrame(frame) : sprites[id]->nativeFrame(frame);
+		if (!source)
+			throw std::runtime_error("Missing terrain texture: " + m.key);
+		auto &t = target[i];
+		refresh |= t.source != source || t.identity != source->lifetimeIdentity() ||
+				   t.revision != source->contentRevision();
+	}
+	if (!refresh)
+		return false;
+	bool packaged = pack != nullptr;
+	if (packaged)
+		for (const auto &variant : m.variants)
+		{
+			const int frame = variant.frame + phase * m.animationStride;
+			auto *source = hd ? sprites[id]->baseFrame(frame) : sprites[id]->nativeFrame(frame);
+			const auto clean = cleanSources.find(source->lifetimeIdentity());
+			packaged &= source == sprites[id]->nativeFrame(frame) &&
+						clean != cleanSources.end() &&
+						clean->second == source->contentRevision() &&
+						pack->matches(m.sprite + std::to_string(frame) + ".png",
+									  source->getSDLSurface());
+		}
+	for (unsigned i = 0; i < m.variants.size(); ++i)
+	{
+		const int frame = m.variants[i].frame + phase * m.animationStride;
+		auto *source = hd ? sprites[id]->baseFrame(frame) : sprites[id]->nativeFrame(frame);
+		auto &t = target[i];
+		if (packaged)
+		{
+			pack->read(m.sprite + std::to_string(frame) + ".png", t.pixels);
+			t.size = 32;
+			t.source = source;
+			t.identity = source->lifetimeIdentity();
+			t.revision = source->contentRevision();
+		}
+		else
+			readTexture(t, source);
+	}
+	if (packaged || m.periodicEdges)
+		return true; // Sources already have their shared variant borders.
+	// One periodic master boundary per material, not a different edge for
+	// each variant. Blend premultiplied color and alpha together so
+	// translucent variants cannot reintroduce rectangular seams.
+	const auto master = target[0];
+	for (auto &t : target)
+		for (int y = 0; y < t.size; ++y)
+			for (int x = 0; x < t.size; ++x)
+			{
+				const int distance = std::min({x, y, t.size - 1 - x, t.size - 1 - y});
+				const int band = std::max(1, t.size / 8);
+				if (distance >= band)
+					continue;
+				const int mx = x * master.size / t.size, my = y * master.size / t.size;
+				// Reflect the master at each seam: opposing outer pixels agree.
+				const int xx = std::min(mx, master.size - 1 - mx),
+						  yy = std::min(my, master.size - 1 - my);
+				const auto &p = master.pixels[yy * master.size + xx];
+				auto &destination = t.pixels[y * t.size + x];
+				const unsigned alpha = p[3] * (band - distance) + destination[3] * distance;
+				for (int k = 0; k < 3; ++k)
+					destination[k] = alpha ? (p[k] * p[3] * (band - distance) +
+											  destination[k] * destination[3] * distance) /
+												 alpha
+										   : 0;
+				destination[3] = alpha / band;
+			}
+	return true;
 }
 void Compositor::prepare(bool hd, int time)
 {
@@ -102,81 +187,63 @@ void Compositor::prepare(bool hd, int time)
 	{
 		const auto &m = definitions.materials[id];
 		const int phase = unsigned(time) / m.animationTicks % m.animationFrames;
-		bool refresh = false;
-		for (unsigned i = 0; i < m.variants.size(); ++i)
+		auto &animation = animationTextures[id];
+		if (animation.current.empty())
 		{
-			const int frame = m.variants[i].frame + phase * m.animationStride;
-			auto *source = hd ? sprites[id]->baseFrame(frame) : sprites[id]->nativeFrame(frame);
-			if (!source)
-				throw std::runtime_error("Missing terrain texture: " + m.key);
-			auto &t = textures[id][i];
-			refresh |= t.source != source || t.identity != source->lifetimeIdentity() ||
-					   t.revision != source->contentRevision();
-			if (source->getW() > 32)
-				nextResolution = 4;
+			if (prepareMaterial(id, hd, phase, textures[id])) ++materialRevisions[id];
 		}
-		if (!refresh)
-			continue;
-		++materialRevisions[id];
-		bool packaged = pack != nullptr;
-		if (packaged)
-			for (const auto &variant : m.variants)
-			{
-				const int frame = variant.frame + phase * m.animationStride;
-				auto *source = hd ? sprites[id]->baseFrame(frame) : sprites[id]->nativeFrame(frame);
-				const auto clean = cleanSources.find(source->lifetimeIdentity());
-				packaged &= source == sprites[id]->nativeFrame(frame) &&
-							clean != cleanSources.end() &&
-							clean->second == source->contentRevision() &&
-							pack->matches(m.sprite + std::to_string(frame) + ".png",
-										  source->getSDLSurface());
-			}
-		for (unsigned i = 0; i < m.variants.size(); ++i)
+		else
 		{
-			const int frame = m.variants[i].frame + phase * m.animationStride;
+			// Reuse the previous next phase as the current endpoint on ordinary advances.
+			const int frame = m.variants.front().frame + phase * m.animationStride;
 			auto *source = hd ? sprites[id]->baseFrame(frame) : sprites[id]->nativeFrame(frame);
-			auto &t = textures[id][i];
-			if (packaged)
+			const bool advanced = animation.next.front().source == source;
+			if (advanced) animation.current.swap(animation.next);
+			const bool currentChanged = prepareMaterial(id, hd, phase, animation.current);
+			const bool nextChanged = prepareMaterial(id, hd, (phase + 1) % m.animationFrames, animation.next);
+			const unsigned blend = unsigned(time) % m.animationTicks;
+			if (advanced || currentChanged || nextChanged || animation.blend != blend)
 			{
-				pack->read(m.sprite + std::to_string(frame) + ".png", t.pixels);
-				t.size = 32;
-				t.source = source;
-				t.identity = source->lifetimeIdentity();
-				t.revision = source->contentRevision();
-			}
-			else
-				readTexture(t, source);
-		}
-		if (packaged)
-			continue; // Compiler already prepared the shared variant borders.
-		if (m.periodicEdges)
-			continue; // Variants already share one periodic edge band.
-		// One periodic master boundary per material, not a different edge for
-		// each variant. Blend premultiplied color and alpha together so
-		// translucent variants cannot reintroduce rectangular seams.
-		const auto master = textures[id][0];
-		for (auto &t : textures[id])
-			for (int y = 0; y < t.size; ++y)
-				for (int x = 0; x < t.size; ++x)
+				++materialRevisions[id];
+				animation.blend = blend;
+				for (unsigned i = 0; i < m.variants.size(); ++i)
 				{
-					const int distance = std::min({x, y, t.size - 1 - x, t.size - 1 - y});
-					const int band = std::max(1, t.size / 8);
-					if (distance >= band)
-						continue;
-					const int mx = x * master.size / t.size, my = y * master.size / t.size;
-					// Reflect the master at each seam: opposing outer pixels agree.
-					const int xx = std::min(mx, master.size - 1 - mx),
-							  yy = std::min(my, master.size - 1 - my);
-					const auto &p = master.pixels[yy * master.size + xx];
-					auto &destination = t.pixels[y * t.size + x];
-					const unsigned alpha = p[3] * (band - distance) + destination[3] * distance;
-					for (int k = 0; k < 3; ++k)
-						destination[k] = alpha ? (p[k] * p[3] * (band - distance) +
-												  destination[k] * destination[3] * distance) /
-													 alpha
-											   : 0;
-					destination[3] = alpha / band;
+					const auto &a = animation.current[i], &b = animation.next[i];
+					auto &out = textures[id][i];
+					out.size = std::max(a.size, b.size);
+					out.pixels.resize(out.size * out.size);
+					const unsigned weightB = (std::uint64_t(blend) * 65536 + m.animationTicks / 2) / m.animationTicks;
+					const unsigned weightA = 65536 - weightB;
+					for (std::size_t p = 0; p < out.pixels.size(); ++p)
+					{
+						// Partial HD packs can supply only one endpoint at higher resolution.
+						const auto sample = [&](const Texture &t) -> const auto &
+						{
+							if (t.size == out.size) return t.pixels[p];
+							return t.pixels[(p / out.size * t.size / out.size) * t.size +
+								p % out.size * t.size / out.size];
+						};
+						const auto &pa = sample(a), &pb = sample(b);
+						auto &pixel = out.pixels[p];
+						if (pa[3] == 255 && pb[3] == 255)
+						{
+							for (unsigned k = 0; k < 3; ++k)
+								pixel[k] = (pa[k] * weightA + pb[k] * weightB + 32768) >> 16;
+							pixel[3] = 255;
+							continue;
+						}
+						const auto alpha = pa[3] * weightA + pb[3] * weightB;
+						// Blend premultiplied colour to avoid fringes in translucent custom art.
+						for (unsigned k = 0; k < 3; ++k)
+							pixel[k] = alpha ? (pa[k] * pa[3] * weightA +
+								pb[k] * pb[3] * weightB + alpha / 2) / alpha : 0;
+						pixel[3] = (alpha + 32768) >> 16;
+					}
 				}
+			}
+		}
+		for (const auto &texture : textures[id])
+			if (texture.size > 32) nextResolution = 4;
 	}
 	resolution = nextResolution;
 }
@@ -249,6 +316,12 @@ Recipe Compositor::describe(const SceneMap &map, int x, int y) const
 				materialFor(map, map.vertexTerrainAt(r.x + x, r.y + y));
 	return r;
 }
+Compositor::PreparedMaterialView Compositor::preparedMaterial(const Recipe &recipe, MaterialId id) const
+{
+    const unsigned variant = definitions.variantIndex(id, recipe.x, recipe.y, recipe.seed);
+    const auto &texture = textures.at(id).at(variant);
+    return {variant, materialRevisions.at(id), texture.size, texture.pixels};
+}
 void Compositor::compose(const Recipe &r, SDL_Surface *target, int ox, int oy, int scale,
 						 const CellMask *mask) const
 {
@@ -260,7 +333,7 @@ void Compositor::compose(const Recipe &r, SDL_Surface *target, int ox, int oy, i
 	struct Source
 	{
 		const std::array<unsigned char, 4> *pixels = nullptr;
-		int size = 0;
+		int size = 0, step = 0;
 	};
 	std::vector<Source> selected(definitions.materials.size());
 	auto *sources = selected.data();
@@ -268,13 +341,32 @@ void Compositor::compose(const Recipe &r, SDL_Surface *target, int ox, int oy, i
 		if (!sources[id].pixels)
 		{
 			const auto &texture = textures[id][definitions.variantIndex(id, r.x, r.y, r.seed)];
-			sources[id] = {texture.pixels.data(), texture.size};
+			sources[id] = {texture.pixels.data(), texture.size,
+			texture.size % size == 0 ? texture.size / size : 0};
 		}
 	const bool uniform = std::all_of(r.corners.begin(), r.corners.end(),
 									 [&](auto id) { return id == r.corners[0]; });
 	if (uniform)
 	{
 		const auto &texture = sources[r.corners[0]];
+		// Native and HD sources usually divide the composition grid exactly.
+		// Walk their texels directly instead of dividing twice per output pixel.
+		if (texture.pixels && texture.step)
+		{
+			for (int y = 0; y < size; ++y)
+			{
+				auto *row = reinterpret_cast<Uint32 *>(static_cast<unsigned char *>(target->pixels) +
+					(oy + y) * target->pitch) + ox;
+				const auto *source = texture.pixels + y * texture.step * texture.size;
+				for (int x = 0; x < size; ++x, source += texture.step)
+				{
+					const auto *p = source->data();
+					row[x] = (unsigned(p[3]) << 24) | (unsigned(p[0]) << 16) |
+						(unsigned(p[1]) << 8) | p[2];
+				}
+			}
+			return;
+		}
 		for (int y = 0; y < size; ++y)
 		{
 			auto *row = reinterpret_cast<Uint32 *>(static_cast<unsigned char *>(target->pixels) +
@@ -322,7 +414,9 @@ void Compositor::compose(const Recipe &r, SDL_Surface *target, int ox, int oy, i
 				if (weights[slot] && sources[cell.palette[slot]].pixels)
 				{
 					const auto &t = sources[cell.palette[slot]];
-					const auto *p = t.pixels[(y * t.size / size) * t.size + x * t.size / size].data();
+					const int sx = t.step ? x * t.step : x * t.size / size;
+					const int sy = t.step ? y * t.step : y * t.size / size;
+					const auto *p = t.pixels[sy * t.size + sx].data();
 					const unsigned a = weights[slot] * p[3];
 					alpha += a;
 					for (int k = 0; k < 3; ++k)
@@ -349,7 +443,13 @@ void Compositor::compose(const Recipe &r, SDL_Surface *target, int ox, int oy, i
 			}
 			const auto channel = [&](int k)
 			{
-				unsigned value = unsigned(alpha ? rgb[k] / alpha : 0) * shade >> 8;
+				// Opaque materials have a constant denominator. Keep the exact
+				// integer result while avoiding three variable-width divisions
+				// per sample when an animated terrain page is re-blended.
+				constexpr unsigned opaqueAlpha = 255u * 65536;
+				const unsigned blended = alpha == opaqueAlpha ? unsigned(rgb[k] / opaqueAlpha)
+					: unsigned(alpha ? rgb[k] / alpha : 0);
+				unsigned value = blended * shade >> 8;
 				return value + (unsigned(other.fringeColor[k]) - value) * tint / 256;
 			};
 			*p = ((alpha + 32768) / 65536 << 24) | (channel(0) << 16) | (channel(1) << 8) |

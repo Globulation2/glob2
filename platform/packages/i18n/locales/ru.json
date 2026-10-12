@@ -2964,5 +2964,9 @@
   "Presentation": "Представление",
   "{value0} source": "Исходный код {value0}",
   "{value0} decor source": "Источник декора {value0}",
-  "Your draft changed while the design was loading. Your changes were kept; try opening the design again.": "Ваш черновик изменился во время загрузки дизайна. Ваши изменения сохранены; попробуйте открыть дизайн ещё раз."
+  "Your draft changed while the design was loading. Your changes were kept; try opening the design again.": "Ваш черновик изменился во время загрузки дизайна. Ваши изменения сохранены; попробуйте открыть дизайн ещё раз.",
+  "More filters": "Больше фильтров",
+  "Clear filters": "Сбросить фильтры",
+  "No results match these filters.": "Нет результатов, соответствующих этим фильтрам.",
+  "Results: {value0}": "Результаты: {value0}"
 }

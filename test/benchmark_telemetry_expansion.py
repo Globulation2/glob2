@@ -26,7 +26,7 @@ def digest(path: Path) -> str:
 
 def run(binary: Path, save: Path, ticks: int) -> dict:
     with tempfile.TemporaryDirectory(prefix="glob2-telemetry-benchmark-") as output:
-        command = [str(binary), "--run-game", "--load-game", str(save),
+        command = [str(binary), "game", "run", "--load-game", str(save),
                    "--ticks", str(ticks), "--output-dir", output]
         before = resource.getrusage(resource.RUSAGE_CHILDREN)
         started = time.perf_counter()
@@ -68,7 +68,7 @@ def main() -> None:
     result = {"platform": platform.platform(), "save": str(save),
               "save_sha256": digest(save), "ticks": args.ticks, "pairs": args.pairs,
               "order": args.order,
-              "commands": {variant: [str(binary),"--run-game","--load-game",str(save),
+              "commands": {variant: [str(binary),"game", "run","--load-game",str(save),
                                      "--ticks",str(args.ticks),"--output-dir","<temp>"]
                            for variant,binary in (("before",before),("after",after))},
               "binary_sha256": {"before":digest(before),"after":digest(after)},

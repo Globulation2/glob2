@@ -3018,5 +3018,9 @@
   "Presentation": "العرض",
   "{value0} source": "مصدر {value0}",
   "{value0} decor source": "مصدر الزينة لـ{value0}",
-  "Your draft changed while the design was loading. Your changes were kept; try opening the design again.": "تغيّرت مسودتك أثناء تحميل التصميم. حُفظت تغييراتك؛ حاول فتح التصميم مرة أخرى."
+  "Your draft changed while the design was loading. Your changes were kept; try opening the design again.": "تغيّرت مسودتك أثناء تحميل التصميم. حُفظت تغييراتك؛ حاول فتح التصميم مرة أخرى.",
+  "More filters": "المزيد من المرشحات",
+  "Clear filters": "مسح المرشحات",
+  "No results match these filters.": "لا توجد نتائج تطابق هذه المرشحات.",
+  "Results: {value0}": "النتائج: {value0}"
 }

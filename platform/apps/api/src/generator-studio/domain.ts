@@ -62,7 +62,7 @@ export function generatorStarter() {
   });
 }
 const documentation = readFileSync(
-  new URL('../../../../../docs/map-generators/JAVASCRIPT.md', import.meta.url),
+  new URL('../../../../../docs/map-generators/javascript.md', import.meta.url),
   'utf8',
 );
 const toolkit = readFileSync(

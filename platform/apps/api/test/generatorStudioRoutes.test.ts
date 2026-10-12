@@ -68,7 +68,7 @@ it('keeps generator authoring and tools disabled until the instance opts in', as
       url: '/api/v1/generator-studio' + url,
       headers,
     });
-    expect(result.statusCode).toBe(404);
+    expect(result.statusCode).toBe(method === 'GET' ? 200 : 503);
   }
 });
 it('owns private drafts, runs and check receipts and exports the complete project', async () => {

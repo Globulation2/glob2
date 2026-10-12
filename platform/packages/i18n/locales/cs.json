@@ -2964,5 +2964,9 @@
   "Presentation": "Prezentace",
   "{value0} source": "Zdroj {value0}",
   "{value0} decor source": "Zdroj dekorací {value0}",
-  "Your draft changed while the design was loading. Your changes were kept; try opening the design again.": "Váš koncept se během načítání návrhu změnil. Vaše změny byly zachovány; zkuste návrh znovu otevřít."
+  "Your draft changed while the design was loading. Your changes were kept; try opening the design again.": "Váš koncept se během načítání návrhu změnil. Vaše změny byly zachovány; zkuste návrh znovu otevřít.",
+  "More filters": "Další filtry",
+  "Clear filters": "Vymazat filtry",
+  "No results match these filters.": "Těmto filtrům neodpovídají žádné výsledky.",
+  "Results: {value0}": "Výsledky: {value0}"
 }

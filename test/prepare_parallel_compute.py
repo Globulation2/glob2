@@ -35,8 +35,8 @@ def main():
         params = ['width='+str(size), 'height='+str(size), 'teams='+str(teams)]
         generator = 15 if terrain == 'land' else 26
         params += ['moat=0', 'lakes=0'] if terrain == 'land' else ['pattern=1']
-        command = [str(binary), '--run-game', '--generator', str(generator), '--map-seed', str(seed), '--game-seed', '19', '--ticks', '32768', '--save', 'initial', '--save', 'every:8192', '--save', 'final', '--output-dir', str(directory)]
-        for param in params: command += ['--param', param]
+        command = [str(binary), 'game', 'run', '--generator', str(generator), '--map-seed', str(seed), '--game-seed', '19', '--ticks', '32768', '--save', 'initial', '--save', 'every:8192', '--save', 'final', '--output-dir', str(directory)]
+        for param in params: command += ['--set', param]
         for player in range(teams): command += ['--player', mixes[player % 3] if mix == 'mixed' else mix]
         with (output / (name+'.log')).open('w') as log:
             subprocess.run(command, cwd=ROOT, stdout=log, stderr=subprocess.STDOUT, check=True)

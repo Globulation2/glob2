@@ -77,4 +77,4 @@ OpenLibm `hypot` is retained and namespaced alongside the other double routines.
 Half-number conversion and clamped integer rounding also avoid system math.
 The build checks interpreter, math and host conversion objects for unexpected
 platform numeric symbols. The operation inventory and trusted-code assumptions
-are maintained in [the scripting guide](../docs/development/javascript.md).
+are maintained in [the scripting guide](../docs/scripting/javascript.md).

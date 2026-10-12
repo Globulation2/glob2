@@ -5996,3 +5996,39 @@ La selezione dei file non è disponibile.
 L’esportazione dei pacchetti non è disponibile.
 [stat band area upkeep]
 Mantenimento dell’area
+[outcome reason eliminated]
+Colonia eliminata.
+[outcome reason opponents defeated]
+Tutti gli avversari sono stati sconfitti.
+[outcome reason ally won]
+Una colonia alleata ha vinto.
+[outcome reason prestige]
+Obiettivo di prestigio raggiunto.
+[outcome reason scenario]
+Le regole dello scenario hanno determinato l’esito.
+[outcome reason timer]
+Limite di tempo raggiunto.
+[outcome reason probability]
+Soglia di probabilità di vittoria raggiunta.
+[Destroy this building?]
+Distruggere questo edificio?
+[Discord community]
+Discord community
+[Globulation 2 Discord]
+Globulation 2 Discord
+[discord community intro]
+Find opponents, ask for help, and share your maps with the Globulation 2 community.
+[discord opens externally]
+Join our Discord server. This opens Discord or your browser.
+[Join Discord]
+Join Discord
+[Copy link]
+Copy link
+[discord opened]
+Discord opened. You can return to the game at any time.
+[discord open failed]
+Could not open Discord. Copy the invitation link and open it in your browser.
+[discord link copied]
+Invitation link copied.
+[discord copy failed]
+Could not copy the link. Select the invitation above to copy it manually.

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Check a task-owned iOS simulator's native startup and process lifecycle."""
 import argparse
+from datetime import datetime
 import json
 import os
 from pathlib import Path
@@ -10,6 +11,11 @@ import time
 
 ROOT = Path(__file__).resolve().parents[1]
 PACKAGE = 'org.globulation2.glob2'
+
+
+def main_menu_ready(log):
+    return any('Glob2 screen ready:' in line and 'MainMenuScreen' in line
+               for line in log.splitlines())
 
 
 def main():
@@ -49,16 +55,29 @@ def main():
     def start(label, redirect=True):
         stdout, stderr = output/(label+'-stdout.txt'), output/(label+'-stderr.txt')
         options = ['--stdout='+str(stdout), '--stderr='+str(stderr)] if redirect else []
+        began = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         result = run('launch', *options, args.device, PACKAGE)
         match = re.search(r': (\d+)\s*$', result)
         if not match: raise RuntimeError('Missing native process ID: ' + result)
         started_packages.add(PACKAGE)
-        return match.group(1), (stdout, stderr)
-    def ready(paths):
+        return match.group(1), (stdout, stderr), began
+    def ready(paths, pid, label, began):
         deadline = time.monotonic() + 90
+        next_system_check = 0
         while time.monotonic() < deadline:
             log = ''.join(path.read_text(errors='replace') for path in paths if path.exists())
-            if 'Glob2 screen ready:' in log and 'MainMenuScreen' in log: return
+            if main_menu_ready(log): return
+            # SDL's Apple logging backend can send readiness to unified logging
+            # instead of the file descriptors redirected by simctl launch.
+            # Scope the fallback to this launch and its exact native PID.
+            if time.monotonic() >= next_system_check:
+                system_log = run('spawn', args.device, 'log', 'show', '--start', began,
+                                 '--style', 'compact', '--predicate',
+                                 f'processIdentifier == {pid} AND eventMessage CONTAINS "Glob2 screen ready:"',
+                                 timeout=30)
+                (output/(label+'-readiness-system.log')).write_text(system_log)
+                if main_menu_ready(system_log): return
+                next_system_check = time.monotonic() + 5
             time.sleep(1)
         raise RuntimeError('Native main menu did not become ready')
     def screenshot(label, timeout=None): run('io', args.device, 'screenshot', str(output/(label+'.png')), timeout=timeout)
@@ -68,19 +87,19 @@ def main():
         services = run('spawn', args.device, 'launchctl', 'list')
         if any(PACKAGE in line and line.split()[0].isdigit() for line in services.splitlines()):
             run('terminate', args.device, PACKAGE)
-        first, paths = start('startup'); ready(paths); screenshot('startup')
+        first, paths, began = start('startup'); ready(paths, first, 'startup', began); screenshot('startup')
         summary['checks'].append('native startup and bundled assets')
         run('launch', args.device, 'com.apple.Preferences')
         started_packages.add('com.apple.Preferences')
         time.sleep(2)
         # A retained process keeps its original output handles. Do not ask
         # simctl to redirect them again while merely activating the app.
-        resumed, _ = start('resumed', redirect=False)
+        resumed, _, _ = start('resumed', redirect=False)
         if resumed != first: raise RuntimeError('Background/resume restarted the native process')
         time.sleep(1); screenshot('resumed')
         summary['checks'].append('retained-process background/resume')
         run('terminate', args.device, PACKAGE)
-        second, paths = start('relaunched'); ready(paths)
+        second, paths, began = start('relaunched'); ready(paths, second, 'relaunched', began)
         if first == second: raise RuntimeError('Termination did not produce a fresh process')
         screenshot('relaunched')
         summary['checks'].append('termination and fresh-process relaunch')

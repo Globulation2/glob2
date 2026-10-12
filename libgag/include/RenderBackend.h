@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include <SDL3/SDL.h>
+#include "RenderResources.h"
 #include <memory>
 #include <span>
 #include <cstdint>
@@ -23,8 +24,13 @@ class RenderBackend
                            const SDL_Rect &src, const SDL_FRect &dst, Uint8 alpha) {
         blit(key,source,revision,false,src,dst,alpha);
     }
+    virtual void blitMipmapped(const void *key, SDL_Surface *source, std::uint64_t revision,
+                              std::span<const RenderMipLevel>, const SDL_Rect &src,
+                              const SDL_FRect &dst, Uint8 alpha) {
+        blit(key, source, revision, false, src, dst, alpha);
+    }
 	virtual void fill(const SDL_FRect &rect, SDL_Color color) = 0;
-    virtual void prepareTexture(const void*, SDL_Surface*, std::uint64_t) {}
+    virtual void prepareTexture(const void*, SDL_Surface*, std::uint64_t, bool linear = false) {}
 	virtual RenderOperations operations() const { return {}; }
 	// Zero means the backend does not impose or report a texture limit.
 	virtual int maximumTextureSize() const { return 0; }

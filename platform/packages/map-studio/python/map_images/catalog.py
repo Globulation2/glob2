@@ -34,7 +34,7 @@ def build_catalog(binary, repo=None):
     """
     repo = Path(repo).resolve() if repo is not None else glob2_source()
     result = subprocess.run(
-        [str(binary), "--headless-catalog"],
+        [str(binary), "info", "catalog", "--format", "json"],
         cwd=repo,
         capture_output=True,
         text=True,

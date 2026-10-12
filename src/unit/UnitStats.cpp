@@ -10,13 +10,14 @@
 #include "Building.h"
 
 #include <climits>
+#include <algorithm>
 
 //! Return the real armor, taking into account the reduction due to fruits
 int Unit::getRealArmor(bool isMagic) const
 {
 	int armorReductionPerHappyness = race->getUnitType(typeNum, level[ARMOR])->armorReductionPerHappyness;
 	if (isMagic) //magic bypasses armor yet fruit penalties still apply
-		return 0 - fruitCount * armorReductionPerHappyness;
+		return int(std::clamp<Sint64>(-Sint64(fruitCount)*armorReductionPerHappyness,INT_MIN,INT_MAX));
 	else
 	{
 		// Custom-game "glass cannon" rule: armor is reduced by the same
@@ -33,26 +34,31 @@ int Unit::getRealArmor(bool isMagic) const
 			if (factor != BuildingAreaEffects::Neutral)
 				armor = BuildingAreaEffects::scale(armor, factor);
 		}
-		return armor - fruitCount * armorReductionPerHappyness;
+		return int(std::clamp<Sint64>(Sint64(armor)-Sint64(fruitCount)*armorReductionPerHappyness,INT_MIN,INT_MAX));
 	}
 }
 
 //! Return the real attack strength, taking into account the experience level
 int Unit::getRealAttackStrength(void) const
 {
-	return applyAreaAttack((performance[ATTACK_STRENGTH] + experienceLevel) * owner->game->gameHeader.getGlassCannonScale());
+	return applyAreaAttack(int(std::clamp<Sint64>((Sint64(performance[ATTACK_STRENGTH]) + experienceLevel) * owner->game->gameHeader.getGlassCannonScale(),0,INT_MAX)));
 }
 
 //! Return the amount of experience to level-up
 int Unit::getNextLevelThreshold(void) const
 {
-	return (experienceLevel + 1) * (experienceLevel + 1) * race->getUnitType(typeNum, level[ATTACK_STRENGTH])->experiencePerLevel;
+	const Sint64 next=std::max<Sint64>(1,Sint64(experienceLevel)+1);
+	const int scale=race->getUnitType(typeNum,level[ATTACK_STRENGTH])->experiencePerLevel;
+	if (scale<=0) return INT_MAX;
+	const Sint64 square=next*next; // even a saved INT_MAX level fits this product
+	return square>INT_MAX/scale ? INT_MAX : int(square*scale);
 }
 
 //! Increment experience. If level-up occurs, handle it. Multiple level-up may occur at once.
 void Unit::incrementExperience(int increment)
 {
-	experience += increment;
+	if (race->getUnitType(typeNum,level[ATTACK_STRENGTH])->experiencePerLevel<=0) return;
+	experience=int(std::clamp<Sint64>(Sint64(experience)+increment,0,INT_MAX));
 	int nextLevelThreshold = getNextLevelThreshold();
 	while (experience > nextLevelThreshold)
 	{
@@ -68,7 +74,13 @@ int Unit::numberOfStepsLeftUntilHungry(void)
 {
 	int timeLeft;
 	if (hungriness)
-		timeLeft = (hungry-trigHungry) / hungriness;
+	{
+		const Sint64 remaining = Sint64(hungry)-trigHungry;
+		if (hungriness > 0 && remaining >= INT_MIN && remaining <= INT_MAX)
+			timeLeft = int(remaining)/hungriness;
+		else
+			timeLeft = int(std::clamp<Sint64>(remaining/hungriness,INT_MIN,INT_MAX));
+	}
 	else
 		timeLeft = INT_MAX;
 	stepsLeftUntilHungry = timeLeft;

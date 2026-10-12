@@ -22,3 +22,9 @@ deploy/secrets
 platform/apps/web/dist
 deploy/instance.yaml
 deploy/.env
+
+platform/.cache
+platform/apps/web/public/brand
+platform/apps/web/public/fonts
+platform/apps/web/public/theme.js
+platform/apps/web/public/design-system.json

@@ -40,7 +40,7 @@ using namespace MapGeneration;
 // cleared, so the ruins keep their shape and only their gaps and fill change hands. The bridges are
 // where the two halves of the city meet, and the landmark's orchard is the prize at the middle.
 //
-// WHY IT WORKS (docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md). Every street is paved, and a
+// WHY IT WORKS (docs/map-generators/game-rules-for-map-design.md). Every street is paved, and a
 // line of sand corners seals the ground either side of it, so every block is a sealed plot of its
 // own: its crops and its rubble can grow only inside it, and no pond or field needs a sand ring.
 // The validator proves it on the finished map (containedPlotsMismatch over every block's label).

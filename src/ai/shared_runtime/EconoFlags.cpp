@@ -23,7 +23,7 @@ void Econo::tick_explorer_flags_fruit(Runtime& runtime)
 	{
 		if(runtime.is_fruit_on_map())
 		{
-			if(runtime.get_team_stats().numberUnitPerType[EXPLORER]>=AI_SHARED_RUNTIME_RTI_FRUIT_FLAG_EXPLORER_MIN && !flag_on_cherry && !flag_on_orange && !flag_on_prune)
+			if(runtime.get_team_stats().scouts>=AI_SHARED_RUNTIME_RTI_FRUIT_FLAG_EXPLORER_MIN && !flag_on_cherry && !flag_on_orange && !flag_on_prune)
 			{
 				//Constraints around nearby settlement
 				AISharedRuntime::Gradients::GradientInfo gi_building;
@@ -132,7 +132,7 @@ void Econo::tick_explorer_flags_enemies(Runtime& runtime)
 	telemetry.count(AITrace::AI4::Econo_tick_explorer_flags_enemies_calls);
 	if((timer%AI_SHARED_RUNTIME_RTI_ENEMY_SCAN_INTERVAL_TICKS)==0)
 	{
-		if(runtime.get_team_stats().numberUnitPerType[EXPLORER]>=AI_SHARED_RUNTIME_RTI_ENEMY_FLAG_EXPLORER_MIN)
+		if(runtime.get_team_stats().scouts>=AI_SHARED_RUNTIME_RTI_ENEMY_FLAG_EXPLORER_MIN)
 		{
 			for(enemy_team_iterator i(runtime); i!=enemy_team_iterator(); ++i)
 			{

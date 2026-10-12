@@ -12,7 +12,7 @@ import sys
 import tempfile
 from pathlib import Path
 from benchmark_parallel_compute import execute, digest
-from check_telemetry_simulation import detailed_ticks
+from check_telemetry_simulation import detailed_tick_hashes
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -29,7 +29,7 @@ def main():
     output.mkdir(parents=True, exist_ok=True)
     fixture = output/'fixture'
     execute(binary, ['--generator','26','--map-seed','4242','--game-seed','19',
-                     '--param','width=7','--param','height=7','--param','teams=4','--param','pattern=1',
+                     '--set','width=7','--set','height=7','--set','teams=4','--set','pattern=1',
                      '--player','maxima','--player','cortex','--player','nicowar','--player','maxima',
                      '--ticks','1','--save','initial'], fixture)
     initial = fixture/'initial.game'
@@ -50,21 +50,21 @@ def main():
     # resumed tick/entity traces against the uninterrupted run, across worker counts.
     whole = output/'whole'
     execute(binary, ['--load-game',str(initial),'--ticks','80','--telemetry','checksums'], whole)
-    expected = detailed_ticks((whole/'game.replay.checksums').read_bytes())
+    expected = detailed_tick_hashes(whole/'game.replay.checksums')
     for phase in range(8):
         checkpoint = output/f'checkpoint-{phase}'
         execute(binary, ['--load-game',str(initial),'--ticks',str(32+phase),'--save','final'], checkpoint)
         for workers in (0,1,2):
             dest = output/f'resumed-{phase}-{workers}'
             execute(binary, ['--load-game',str(checkpoint/'final.game'),'--ticks','80',
-                             '--compute-threads',str(workers + 1),'--telemetry','checksums','--replay','true'], dest)
-            ticks = detailed_ticks((dest/'game.replay.checksums').read_bytes())
+                             '--compute-threads',str(workers + 1),'--telemetry','checksums','--write-replay'], dest)
+            ticks = detailed_tick_hashes(dest/'game.replay.checksums')
             assert ticks and all(expected[t] == value for t,value in ticks.items()), (phase, workers)
     cases = [['--compute-threads','4294967296'],['--compute-threads','1','--gradient-delay','0'],
              ['--load-game',str(output/'checkpoint-0/final.game'),'--gradient-delay','3']]
     for index, args in enumerate(cases):
         dest = output/f'rejection-{index}'
-        run = subprocess.run([str(binary),'--run-game','--output-dir',str(dest),*args],capture_output=True,text=True)
+        run = subprocess.run([str(binary),'game', 'run','--output-dir',str(dest),*args],capture_output=True,text=True)
         (output/f'rejection-{index}.log').write_text(run.stdout+run.stderr)
         assert run.returncode != 0, args
         assert not list(dest.glob('*.game*')) and not list(dest.glob('*.replay')), args
@@ -102,7 +102,7 @@ def building_pass(binary, initial, output):
     for delay in BUILDING_DELAYS:
         whole = output/f'whole-d{delay}'
         execute(binary, ['--load-game', str(initial), *fork(delay), '--ticks', str(RESUME_TICKS), '--telemetry', 'checksums'], whole)
-        expected = detailed_ticks((whole/'game.replay.checksums').read_bytes())
+        expected = detailed_tick_hashes(whole/'game.replay.checksums')
         for phase in range(delay):
             # Step the save by whole delays until a job is in flight; a young
             # colony requests few refreshes, so a fixed tick may catch none.
@@ -118,7 +118,7 @@ def building_pass(binary, initial, output):
                                            '--compute-threads', str(workers + 1), '--telemetry', 'checksums'], dest)
                 assert resumed['result']['resolved']['rules']['buildingGradientDelay'] == delay
                 assert resumed['result']['resolved']['fork'] == []
-                ticks = detailed_ticks((dest/'game.replay.checksums').read_bytes())
+                ticks = detailed_tick_hashes(dest/'game.replay.checksums')
                 assert ticks and all(expected[t] == value for t, value in ticks.items()), (delay, phase, workers)
     assert len(pending_saves) == sum(BUILDING_DELAYS), 'saves must catch scheduled building fields in flight at every phase'
     # The worker depth moves CPU between worker and owner, never results, at
@@ -133,10 +133,10 @@ def building_pass(binary, initial, output):
                              '--telemetry', 'checksums'], dest)
         finally:
             del os.environ['GLOB2_BUILDING_DEPTH']
-        traces[mode] = (dest/'game.replay.checksums').read_bytes()
+        traces[mode] = digest(dest/'game.replay.checksums')
     assert len(set(traces.values())) == 1, 'building depth changed the simulation'
-    generated = ['--generator', '26', '--map-seed', '4242', '--game-seed', '19', '--param', 'width=7', '--param', 'height=7',
-                 '--param', 'teams=4', '--param', 'pattern=1', '--player', 'maxima', '--player', 'cortex', '--player', 'nicowar',
+    generated = ['--generator', '26', '--map-seed', '4242', '--game-seed', '19', '--set', 'width=7', '--set', 'height=7',
+                 '--set', 'teams=4', '--set', 'pattern=1', '--player', 'maxima', '--player', 'cortex', '--player', 'nicowar',
                  '--player', 'maxima', '--ticks', '2']
     cases = [[*generated, '--rule', f'buildingGradientDelay={d}'] for d in (0, 9)]
     cases += [['--load-game', str(initial), *fork(d), '--ticks', '2'] for d in (0, 9)]
@@ -148,7 +148,7 @@ def building_pass(binary, initial, output):
     cases.append(['--load-game', str(pending), '--fork-rule', f'buildingGradientDelay={9-delay}', '--ticks', str(RESUME_TICKS)])
     for index, args in enumerate(cases):
         dest = output/f'rejection-{index}'
-        run = subprocess.run([str(binary), '--run-game', '--output-dir', str(dest), *args], capture_output=True, text=True)
+        run = subprocess.run([str(binary), 'game', 'run', '--output-dir', str(dest), *args], capture_output=True, text=True)
         (output/f'rejection-{index}.log').write_text(run.stdout+run.stderr)
         assert run.returncode != 0, args
         assert not list(dest.glob('*.game*')) and not list(dest.glob('*.replay')), args

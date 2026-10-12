@@ -1,0 +1,1066 @@
+{
+  "schemaVersion": 1,
+  "units": [
+    {
+      "key": "ablation-0",
+      "extends": "worker",
+      "behaviors": {
+        "melee": false,
+        "combatInterrupt": false,
+        "guardIdle": false,
+        "clear": false,
+        "clearIdle": false,
+        "adjacentClearInterrupt": false,
+        "cargoCapacity": 3,
+        "cargoKinds": 3,
+        "fly": false,
+        "walk": true,
+        "swim": true,
+        "magicAir": true,
+        "magicGround": true,
+        "regenerationQ8": 0,
+        "releaseClearingClaims": true
+      },
+      "levels": [
+        {
+          "performance": [
+            8,
+            8,
+            8,
+            16,
+            16,
+            0,
+            8,
+            8,
+            0,
+            0,
+            2,
+            2,
+            0,
+            0,
+            0,
+            2,
+            200
+          ],
+          "experiencePerLevel": 20,
+          "magicActionCooldown": 3
+        },
+        {
+          "performance": [
+            8,
+            8,
+            8,
+            16,
+            16,
+            0,
+            8,
+            8,
+            0,
+            0,
+            2,
+            2,
+            0,
+            0,
+            0,
+            2,
+            200
+          ],
+          "experiencePerLevel": 20,
+          "magicActionCooldown": 3
+        },
+        {
+          "performance": [
+            8,
+            8,
+            8,
+            16,
+            16,
+            0,
+            8,
+            8,
+            0,
+            0,
+            2,
+            2,
+            0,
+            0,
+            0,
+            2,
+            200
+          ],
+          "experiencePerLevel": 20,
+          "magicActionCooldown": 3
+        },
+        {
+          "performance": [
+            8,
+            8,
+            8,
+            16,
+            16,
+            0,
+            8,
+            8,
+            0,
+            0,
+            2,
+            2,
+            0,
+            0,
+            0,
+            2,
+            200
+          ],
+          "experiencePerLevel": 20,
+          "magicActionCooldown": 3
+        }
+      ]
+    },
+    {
+      "key": "ablation-1",
+      "extends": "worker",
+      "behaviors": {
+        "melee": true,
+        "combatInterrupt": true,
+        "guardIdle": true,
+        "clear": false,
+        "clearIdle": false,
+        "adjacentClearInterrupt": false,
+        "cargoCapacity": 3,
+        "cargoKinds": 3,
+        "fly": false,
+        "walk": true,
+        "swim": true,
+        "magicAir": true,
+        "magicGround": true,
+        "regenerationQ8": 17,
+        "releaseClearingClaims": true
+      },
+      "levels": [
+        {
+          "performance": [
+            8,
+            8,
+            8,
+            16,
+            16,
+            0,
+            8,
+            8,
+            12,
+            13,
+            2,
+            2,
+            0,
+            0,
+            0,
+            2,
+            200
+          ],
+          "experiencePerLevel": 20,
+          "magicActionCooldown": 3
+        },
+        {
+          "performance": [
+            8,
+            8,
+            8,
+            16,
+            16,
+            0,
+            8,
+            8,
+            12,
+            13,
+            2,
+            2,
+            0,
+            0,
+            0,
+            2,
+            200
+          ],
+          "experiencePerLevel": 20,
+          "magicActionCooldown": 3
+        },
+        {
+          "performance": [
+            8,
+            8,
+            8,
+            16,
+            16,
+            0,
+            8,
+            8,
+            12,
+            13,
+            2,
+            2,
+            0,
+            0,
+            0,
+            2,
+            200
+          ],
+          "experiencePerLevel": 20,
+          "magicActionCooldown": 3
+        },
+        {
+          "performance": [
+            8,
+            8,
+            8,
+            16,
+            16,
+            0,
+            8,
+            8,
+            12,
+            13,
+            2,
+            2,
+            0,
+            0,
+            0,
+            2,
+            200
+          ],
+          "experiencePerLevel": 20,
+          "magicActionCooldown": 3
+        }
+      ]
+    },
+    {
+      "key": "ablation-2",
+      "extends": "worker",
+      "behaviors": {
+        "melee": false,
+        "combatInterrupt": false,
+        "guardIdle": false,
+        "clear": true,
+        "clearIdle": true,
+        "adjacentClearInterrupt": true,
+        "cargoCapacity": 3,
+        "cargoKinds": 3,
+        "fly": false,
+        "walk": true,
+        "swim": true,
+        "magicAir": true,
+        "magicGround": true,
+        "regenerationQ8": 34,
+        "releaseClearingClaims": true
+      },
+      "levels": [
+        {
+          "performance": [
+            8,
+            8,
+            8,
+            16,
+            16,
+            0,
+            8,
+            8,
+            0,
+            0,
+            2,
+            2,
+            0,
+            0,
+            0,
+            2,
+            200
+          ],
+          "experiencePerLevel": 20,
+          "magicActionCooldown": 3
+        },
+        {
+          "performance": [
+            8,
+            8,
+            8,
+            16,
+            16,
+            0,
+            8,
+            8,
+            0,
+            0,
+            2,
+            2,
+            0,
+            0,
+            0,
+            2,
+            200
+          ],
+          "experiencePerLevel": 20,
+          "magicActionCooldown": 3
+        },
+        {
+          "performance": [
+            8,
+            8,
+            8,
+            16,
+            16,
+            0,
+            8,
+            8,
+            0,
+            0,
+            2,
+            2,
+            0,
+            0,
+            0,
+            2,
+            200
+          ],
+          "experiencePerLevel": 20,
+          "magicActionCooldown": 3
+        },
+        {
+          "performance": [
+            8,
+            8,
+            8,
+            16,
+            16,
+            0,
+            8,
+            8,
+            0,
+            0,
+            2,
+            2,
+            0,
+            0,
+            0,
+            2,
+            200
+          ],
+          "experiencePerLevel": 20,
+          "magicActionCooldown": 3
+        }
+      ]
+    },
+    {
+      "key": "ablation-3",
+      "extends": "worker",
+      "behaviors": {
+        "melee": true,
+        "combatInterrupt": true,
+        "guardIdle": true,
+        "clear": true,
+        "clearIdle": true,
+        "adjacentClearInterrupt": true,
+        "cargoCapacity": 3,
+        "cargoKinds": 3,
+        "fly": false,
+        "walk": true,
+        "swim": true,
+        "magicAir": true,
+        "magicGround": true,
+        "regenerationQ8": 51,
+        "releaseClearingClaims": true
+      },
+      "levels": [
+        {
+          "performance": [
+            8,
+            8,
+            8,
+            16,
+            16,
+            0,
+            8,
+            8,
+            12,
+            13,
+            2,
+            2,
+            0,
+            0,
+            0,
+            2,
+            200
+          ],
+          "experiencePerLevel": 20,
+          "magicActionCooldown": 3
+        },
+        {
+          "performance": [
+            8,
+            8,
+            8,
+            16,
+            16,
+            0,
+            8,
+            8,
+            12,
+            13,
+            2,
+            2,
+            0,
+            0,
+            0,
+            2,
+            200
+          ],
+          "experiencePerLevel": 20,
+          "magicActionCooldown": 3
+        },
+        {
+          "performance": [
+            8,
+            8,
+            8,
+            16,
+            16,
+            0,
+            8,
+            8,
+            12,
+            13,
+            2,
+            2,
+            0,
+            0,
+            0,
+            2,
+            200
+          ],
+          "experiencePerLevel": 20,
+          "magicActionCooldown": 3
+        },
+        {
+          "performance": [
+            8,
+            8,
+            8,
+            16,
+            16,
+            0,
+            8,
+            8,
+            12,
+            13,
+            2,
+            2,
+            0,
+            0,
+            0,
+            2,
+            200
+          ],
+          "experiencePerLevel": 20,
+          "magicActionCooldown": 3
+        }
+      ]
+    },
+    {
+      "key": "ablation-4",
+      "extends": "worker",
+      "behaviors": {
+        "melee": false,
+        "combatInterrupt": false,
+        "guardIdle": false,
+        "clear": false,
+        "clearIdle": false,
+        "adjacentClearInterrupt": false,
+        "cargoCapacity": 3,
+        "cargoKinds": 3,
+        "fly": true,
+        "walk": false,
+        "swim": false,
+        "magicAir": true,
+        "magicGround": true,
+        "regenerationQ8": 68,
+        "releaseClearingClaims": true
+      },
+      "levels": [
+        {
+          "performance": [
+            8,
+            8,
+            8,
+            0,
+            0,
+            28,
+            8,
+            8,
+            0,
+            0,
+            2,
+            2,
+            0,
+            0,
+            0,
+            2,
+            200
+          ],
+          "experiencePerLevel": 20,
+          "magicActionCooldown": 3
+        },
+        {
+          "performance": [
+            8,
+            8,
+            8,
+            0,
+            0,
+            28,
+            8,
+            8,
+            0,
+            0,
+            2,
+            2,
+            0,
+            0,
+            0,
+            2,
+            200
+          ],
+          "experiencePerLevel": 20,
+          "magicActionCooldown": 3
+        },
+        {
+          "performance": [
+            8,
+            8,
+            8,
+            0,
+            0,
+            28,
+            8,
+            8,
+            0,
+            0,
+            2,
+            2,
+            0,
+            0,
+            0,
+            2,
+            200
+          ],
+          "experiencePerLevel": 20,
+          "magicActionCooldown": 3
+        },
+        {
+          "performance": [
+            8,
+            8,
+            8,
+            0,
+            0,
+            28,
+            8,
+            8,
+            0,
+            0,
+            2,
+            2,
+            0,
+            0,
+            0,
+            2,
+            200
+          ],
+          "experiencePerLevel": 20,
+          "magicActionCooldown": 3
+        }
+      ]
+    },
+    {
+      "key": "ablation-5",
+      "extends": "worker",
+      "behaviors": {
+        "melee": true,
+        "combatInterrupt": true,
+        "guardIdle": true,
+        "clear": false,
+        "clearIdle": false,
+        "adjacentClearInterrupt": false,
+        "cargoCapacity": 3,
+        "cargoKinds": 3,
+        "fly": true,
+        "walk": false,
+        "swim": false,
+        "magicAir": true,
+        "magicGround": true,
+        "regenerationQ8": 85,
+        "releaseClearingClaims": true
+      },
+      "levels": [
+        {
+          "performance": [
+            8,
+            8,
+            8,
+            0,
+            0,
+            28,
+            8,
+            8,
+            12,
+            13,
+            2,
+            2,
+            0,
+            0,
+            0,
+            2,
+            200
+          ],
+          "experiencePerLevel": 20,
+          "magicActionCooldown": 3
+        },
+        {
+          "performance": [
+            8,
+            8,
+            8,
+            0,
+            0,
+            28,
+            8,
+            8,
+            12,
+            13,
+            2,
+            2,
+            0,
+            0,
+            0,
+            2,
+            200
+          ],
+          "experiencePerLevel": 20,
+          "magicActionCooldown": 3
+        },
+        {
+          "performance": [
+            8,
+            8,
+            8,
+            0,
+            0,
+            28,
+            8,
+            8,
+            12,
+            13,
+            2,
+            2,
+            0,
+            0,
+            0,
+            2,
+            200
+          ],
+          "experiencePerLevel": 20,
+          "magicActionCooldown": 3
+        },
+        {
+          "performance": [
+            8,
+            8,
+            8,
+            0,
+            0,
+            28,
+            8,
+            8,
+            12,
+            13,
+            2,
+            2,
+            0,
+            0,
+            0,
+            2,
+            200
+          ],
+          "experiencePerLevel": 20,
+          "magicActionCooldown": 3
+        }
+      ]
+    },
+    {
+      "key": "ablation-6",
+      "extends": "worker",
+      "behaviors": {
+        "melee": false,
+        "combatInterrupt": false,
+        "guardIdle": false,
+        "clear": true,
+        "clearIdle": true,
+        "adjacentClearInterrupt": true,
+        "cargoCapacity": 3,
+        "cargoKinds": 3,
+        "fly": true,
+        "walk": false,
+        "swim": false,
+        "magicAir": true,
+        "magicGround": true,
+        "regenerationQ8": 102,
+        "releaseClearingClaims": true
+      },
+      "levels": [
+        {
+          "performance": [
+            8,
+            8,
+            8,
+            0,
+            0,
+            28,
+            8,
+            8,
+            0,
+            0,
+            2,
+            2,
+            0,
+            0,
+            0,
+            2,
+            200
+          ],
+          "experiencePerLevel": 20,
+          "magicActionCooldown": 3
+        },
+        {
+          "performance": [
+            8,
+            8,
+            8,
+            0,
+            0,
+            28,
+            8,
+            8,
+            0,
+            0,
+            2,
+            2,
+            0,
+            0,
+            0,
+            2,
+            200
+          ],
+          "experiencePerLevel": 20,
+          "magicActionCooldown": 3
+        },
+        {
+          "performance": [
+            8,
+            8,
+            8,
+            0,
+            0,
+            28,
+            8,
+            8,
+            0,
+            0,
+            2,
+            2,
+            0,
+            0,
+            0,
+            2,
+            200
+          ],
+          "experiencePerLevel": 20,
+          "magicActionCooldown": 3
+        },
+        {
+          "performance": [
+            8,
+            8,
+            8,
+            0,
+            0,
+            28,
+            8,
+            8,
+            0,
+            0,
+            2,
+            2,
+            0,
+            0,
+            0,
+            2,
+            200
+          ],
+          "experiencePerLevel": 20,
+          "magicActionCooldown": 3
+        }
+      ]
+    },
+    {
+      "key": "ablation-7",
+      "extends": "worker",
+      "behaviors": {
+        "melee": true,
+        "combatInterrupt": true,
+        "guardIdle": true,
+        "clear": true,
+        "clearIdle": true,
+        "adjacentClearInterrupt": true,
+        "cargoCapacity": 3,
+        "cargoKinds": 3,
+        "fly": true,
+        "walk": false,
+        "swim": false,
+        "magicAir": true,
+        "magicGround": true,
+        "regenerationQ8": 119,
+        "releaseClearingClaims": true
+      },
+      "levels": [
+        {
+          "performance": [
+            8,
+            8,
+            8,
+            0,
+            0,
+            28,
+            8,
+            8,
+            12,
+            13,
+            2,
+            2,
+            0,
+            0,
+            0,
+            2,
+            200
+          ],
+          "experiencePerLevel": 20,
+          "magicActionCooldown": 3
+        },
+        {
+          "performance": [
+            8,
+            8,
+            8,
+            0,
+            0,
+            28,
+            8,
+            8,
+            12,
+            13,
+            2,
+            2,
+            0,
+            0,
+            0,
+            2,
+            200
+          ],
+          "experiencePerLevel": 20,
+          "magicActionCooldown": 3
+        },
+        {
+          "performance": [
+            8,
+            8,
+            8,
+            0,
+            0,
+            28,
+            8,
+            8,
+            12,
+            13,
+            2,
+            2,
+            0,
+            0,
+            0,
+            2,
+            200
+          ],
+          "experiencePerLevel": 20,
+          "magicActionCooldown": 3
+        },
+        {
+          "performance": [
+            8,
+            8,
+            8,
+            0,
+            0,
+            28,
+            8,
+            8,
+            12,
+            13,
+            2,
+            2,
+            0,
+            0,
+            0,
+            2,
+            200
+          ],
+          "experiencePerLevel": 20,
+          "magicActionCooldown": 3
+        }
+      ]
+    },
+    {
+      "key": "swimmer",
+      "extends": "worker",
+      "behaviors": {
+        "walk": false,
+        "swim": true,
+        "adjacentClearInterrupt": false,
+        "releaseClearingClaims": true
+      },
+      "levels": [
+        {
+          "performance": [
+            8,
+            8,
+            0,
+            0,
+            16,
+            0,
+            8,
+            8,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            200
+          ]
+        },
+        {
+          "performance": [
+            8,
+            8,
+            0,
+            0,
+            16,
+            0,
+            8,
+            8,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            200
+          ]
+        },
+        {
+          "performance": [
+            8,
+            8,
+            0,
+            0,
+            16,
+            0,
+            8,
+            8,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            200
+          ]
+        },
+        {
+          "performance": [
+            8,
+            8,
+            0,
+            0,
+            16,
+            0,
+            8,
+            8,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            200
+          ]
+        }
+      ]
+    },
+    {
+      "key": "stationary",
+      "extends": "worker",
+      "behaviors": {
+        "walk": false,
+        "swim": false,
+        "transport": false,
+        "construct": false,
+        "clear": false,
+        "clearIdle": false,
+        "adjacentClearInterrupt": false,
+        "hungerRate": 0,
+        "cargoCapacity": 0,
+        "cargoKinds": 0,
+        "releaseClearingClaims": true
+      }
+    },
+    {
+      "key": "healer",
+      "extends": "worker",
+      "behaviors": {
+        "hungerRate": 0,
+        "regenerationQ8": 256,
+        "releaseClearingClaims": true
+      }
+    },
+    {
+      "key": "starver",
+      "extends": "worker",
+      "behaviors": {
+        "hungerRate": 1000,
+        "starvationDamage": 3,
+        "releaseClearingClaims": true
+      }
+    },
+    {
+      "key": "fast-service",
+      "extends": "worker",
+      "behaviors": {
+        "feedingSpeedQ8": 512,
+        "healingSpeedQ8": 512,
+        "trainingSpeedQ8": 512,
+        "releaseClearingClaims": true
+      }
+    }
+  ]
+}

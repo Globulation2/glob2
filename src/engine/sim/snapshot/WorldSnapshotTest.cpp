@@ -5,6 +5,7 @@
 #include "Building.h"
 #include "Unit.h"
 #include "Team.h"
+#include "OutcomeReason.h"
 #include "ai/observation/AIWorldView.h"
 #include <limits>
 #include <span>
@@ -16,6 +17,47 @@
 
 TEST_SUITE("WorldSnapshot")
 {
+    TEST_CASE("outcome reasons survive the read boundary without changing simulation state")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame fixture{glob2test::GameOptions{.wDec=5, .hDec=5, .teams=2, .header=true}};
+        auto& game=fixture.game;
+        auto& winner=*game.teams[0];
+        auto& loser=*game.teams[1];
+        winner.allies=winner.me; loser.allies=loser.me;
+        winner.hasWon=true; winner.winCondition=WCAllies;
+        loser.isAlive=false; loser.hasLost=true; loser.winCondition=WCDeath;
+        const auto before=game.checkSum();
+        const auto captured=SimulationSnapshot::capture(game,SimulationSnapshot::captureCatalog(game));
+        CHECK(captured.teams->values[0].outcomeReasonKey=="[outcome reason opponents defeated]");
+        CHECK(captured.teams->values[1].outcomeReasonKey=="[outcome reason eliminated]");
+        CHECK(game.checkSum()==before);
+        CHECK(winner.winCondition==WCAllies);
+
+        // The probability sample may be older than the displayed tick. Its
+        // living losers must not turn the displayed reason into conquest.
+        WinningCondition::setWinProbabilityWinCondition(game.gameHeader.getWinningConditions(),970);
+        game.stepCounter=513;
+        loser.isAlive=true; loser.winCondition=WCWinProbability;
+        CHECK(std::string(outcomeReasonKey(game,0))=="[outcome reason probability]");
+        CHECK(std::string(outcomeReasonKey(game,1))=="[outcome reason probability]");
+        winner.winCondition=WCOpponentsDefeated;
+        CHECK(std::string(outcomeReasonKey(game,0))=="[outcome reason probability]");
+        CHECK(captured.teams->values[0].outcomeReasonKey=="[outcome reason opponents defeated]");
+
+        winner.winCondition=WCScript;
+        CHECK(std::string(outcomeReasonKey(game,0))=="[outcome reason scenario]");
+        winner.hasWon=false; winner.hasLost=false;
+        CHECK(std::string(outcomeReasonKey(game,0)).empty());
+
+        // A scenario won only by the ally still explains the local result.
+        winner.hasWon=true; winner.winCondition=WCAllies;
+        loser.hasLost=false; loser.hasWon=true; loser.winCondition=WCScript;
+        winner.allies|=loser.me; loser.allies|=winner.me;
+        game.gameHeader.getWinningConditions().clear();
+        game.gameHeader.getWinningConditions().push_back(std::make_shared<WinningConditionAllies>());
+        CHECK(std::string(outcomeReasonKey(game,0))=="[outcome reason ally won]");
+    }
     TEST_CASE("shared entity indices preserve empty slots and canonical record addresses")
     {
         glob2test::HeadlessGlobals globals;
@@ -114,6 +156,7 @@ TEST_SUITE("WorldSnapshot")
         static_assert(std::is_base_of_v<UnitState,Unit>);
         static_assert(std::is_base_of_v<UnitState,SimulationSnapshot::UnitView>);
         CHECK(observed.typeNum==unit->typeNum); CHECK(observed.posX==unit->posX); CHECK(observed.posY==unit->posY);
+        CHECK(observed.configuredVisionRadius==unit->configuredVisionRadius);
         CHECK(observed.action==unit->action); CHECK(observed.needToRecheckMedical==unit->needToRecheckMedical);
         CHECK(observed.serviceResourcesReserved==unit->serviceResourcesReserved);
         CHECK(observed.trigHP==unit->trigHP); CHECK(observed.trigHungryCarrying==unit->trigHungryCarrying);
@@ -124,6 +167,9 @@ TEST_SUITE("WorldSnapshot")
         }
         const int oldLevel=observed.level[WALK]; unit->level[WALK]=oldLevel+1; unit->jobTimer=31;
         CHECK(observed.level[WALK]==oldLevel); CHECK(observed.jobTimer==17);
+        const auto frozenVision=observed.configuredVisionRadius;
+        unit->configuredVisionRadius=Uint8(frozenVision+1);
+        CHECK(observed.configuredVisionRadius==frozenVision);
     }
     TEST_CASE("map snapshots bulk copy authoritative records without translation")
     {

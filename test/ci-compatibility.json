@@ -2,6 +2,7 @@
   "schema": 1,
   "description": "Portable regressions run completely on primary GCC 13. These suites repeat on secondary native toolchains to protect serialization, scheduling and scripting boundaries. CLI continuation and per-tick evidence run separately on each selected platform.",
   "engine_filters": [
+    "CommandLine/*",
     "*Save*/*",
     "BuildingAreaEffects/*",
     "MapTiling/*",
@@ -9,6 +10,8 @@
     "*Gradient*/*",
     "ComputeExecutor/*",
     "EntityRandomLifecycle/*",
+    "UnitCatalog/*",
+    "UnitCustomization/*",
     "ReadOnlyPhase/*",
     "SimulationReadPhase/*",
     "*Script*/*",
@@ -23,6 +26,7 @@
     "*Version*/*",
     "*ImageAsset*/*",
     "HiveMind*/*",
+    "ClientCapabilities/*",
     "GameplayRecording*/*",
     "MacScrollMonitor/*",
     "GameDiagnostics/*",
@@ -46,6 +50,7 @@
     "UnitHighResolutionCache/*",
     "ScreenExecution/*",
     "SettingsGraphics/*",
+    "RendererSwitchIntegration/*",
     "MarketFetch/*",
     "MarketsV2/*",
     "BuildingCatalog/*",
@@ -83,6 +88,7 @@
   "intentional_repeats": [
     "secondary-native-compatibility",
     "browser-engine-and-thread-count",
-    "software-and-webgl-presentation"
+    "software-and-webgl-presentation",
+    "live-renderer-backend-pairs"
   ]
 }

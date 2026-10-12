@@ -53,16 +53,16 @@ void setting(MapSettings &settings, const std::string &text)
 	const auto eq = text.find('=');
 	if (eq == std::string::npos || trim(text.substr(0, eq)).empty() ||
 		trim(text.substr(eq + 1)).empty())
-		throw std::runtime_error("Expected key=value: " + text);
+		throw std::invalid_argument("Expected key=value: " + text);
 	settings[trim(text.substr(0, eq))] = trim(text.substr(eq + 1));
 }
 std::uint32_t number(const std::string &text)
 {
 	if (text.empty() || text.find_first_not_of("0123456789") != std::string::npos)
-		throw std::runtime_error("Expected an unsigned decimal integer: " + text);
+		throw std::invalid_argument("Expected an unsigned decimal integer: " + text);
 	const auto n = std::stoull(text);
 	if (n > std::numeric_limits<std::uint32_t>::max())
-		throw std::runtime_error("Integer exceeds 4294967295: " + text);
+		throw std::invalid_argument("Integer exceeds 4294967295: " + text);
 	return static_cast<std::uint32_t>(n);
 }
 int method(const std::string &name)
@@ -71,7 +71,7 @@ int method(const std::string &name)
 	for (int id : registry.methods())
 		if (name == registry.at(id).id || name == std::to_string(id))
 			return id;
-	throw std::runtime_error("Unknown generator: " + name + "; use --list-map-generators");
+	throw std::invalid_argument("Unknown generator: " + name + "; use glob2 map generators");
 }
 std::vector<GeneratorControl> controls(int id)
 {
@@ -93,23 +93,36 @@ void configure(GenerationRequest &request, const MapSettings &settings)
 		auto c = std::find_if(all.begin(), all.end(),
 							  [&](const auto &c) { return c.id == entry.first; });
 		if (c == all.end())
-			throw std::runtime_error("Unknown setting: " + entry.first);
+			throw std::invalid_argument("Unknown setting: " + entry.first);
 		const auto n = number(entry.second);
 		const auto values = c->values();
 		const auto value = std::find_if(values.begin(), values.end(), [&](int v)
 										{ return n == static_cast<unsigned>(c->displayValue(v)); });
 		if (value == values.end())
-			throw std::runtime_error("Invalid value for " + entry.first + ": " + entry.second +
-									 "; use --list-map-generators " +
+			throw std::invalid_argument("Invalid value for " + entry.first + ": " + entry.second +
+									 "; use glob2 map generators " +
 									 GeneratorRegistry::active().at(request.method).id);
 		c->set(request, *value);
 	}
 	// Relationship validation runs in GenerationService so failures retain JSON diagnostics.
 }
-void catalog(const std::string &name)
+void catalog(const std::string &name, bool json = false)
 {
 	const auto &registry = GeneratorRegistry::active();
 	const auto methods = name.empty() ? registry.methods() : std::vector<int>{method(name)};
+    if(json) {
+        nlohmann::json list=nlohmann::json::array();
+        for(const auto id:methods) {
+            const auto &d=registry.at(id);
+            nlohmann::json row={{"id",d.id},{"method",id},{"revision",d.revision},{"editorOnly",d.editorOnly},{"controls",nlohmann::json::array()}};
+            for(const auto &c:controls(id)) {
+                std::vector<int> values;for(int v:c.values())values.push_back(c.displayValue(v));
+                row["controls"].push_back({{"id",c.id},{"default",c.displayValue(c.defaultValue)},{"values",values}});
+            }
+            list.push_back(row);
+        }
+        std::cout<<nlohmann::json({{"schema_version",1},{"generators",list}}).dump()<<'\n';return;
+    }
 	for (int id : methods)
 	{
 		const auto &d = registry.at(id);
@@ -228,67 +241,19 @@ void exportPreview(const Game &game, const std::string &path, int size, int scal
 
 } // namespace
 
-bool isMapCommand(const char *arg)
-{
-	const std::string s = arg;
-	return s == "--inspect-generator-package" || s == "--validate-set" || s == "--generate-map" ||
-		   s == "--preview-map" || s == "--list-map-generators" || s == "--render-game" ||
-		   s == "--export-map-image" || s == "--import-map-image";
-}
-void printMapCommandHelp()
-{
-	std::cout
-		<< "  --render-game <file.map|file.game> --output file.png [--render-max-pixels 1..8192]\n"
-		   "    [--render-field file.field] [--field-color r,g,b]\n"
-		<< "  --validate-set <package.json> --json report.json [--preview preview.png] [--gallery "
-		   "1] [--phase 0..3] [--variation 0..3]\n"
-		<< "  --inspect-generator-package package.json --output canonical.json --json "
-		   "metadata.json\n"
-		<< "Map launch modes (put the mode first; no display required):\n"
-		   "  --generate-map <generator> [--output file.map] [--preview file.png] [--json "
-		   "report.json]\n"
-		   "    [--config file] [--set key=value ...] [--seed N]\n"
-		   "    [--width tiles] [--height tiles] [--teams N] [--workers N]\n"
-		   "  --preview-map <file.map|file.game> [--output file.png] [--json report.json]\n"
-		   "  --export-map-image <file.map|file.game> --output image.png\n"
-		   "  --import-map-image <image.png> --output file.map [--preview file.png] [--json "
-		   "report.json]\n"
-		   "    [--width tiles] [--height tiles] [--teams N] [--workers N] [--seed N]\n"
-		   "    [--image-seam-width 0..16] (default: map short side / 32, clamped 2..12)\n"
-		   "  --generate-map <generator> --map-image image.png [other outputs/settings]\n"
-		   "  --list-map-generators [generator]  List IDs, or settings and allowed values\n"
-		   "  --generator-package PATH  Load a custom generator package or development directory\n"
-		   "  --export-generator-package FILE  Export the selected custom package with a generated "
-		   "map\n"
-		   "Preview scale: --preview-scale 2|4|8 (default 2, relative to retained thumbnail "
-		   "pixels).\n"
-		   "Or --preview-size 128..4096 (explicit longest side; cannot combine with scale).\n"
-		   "Asset search: -d directory (repeatable).\n"
-		   "Supply at least one output: --output, --preview, or --json. Defaults: seed=1, "
-		   "registered settings.\n"
-		   "Config: key=value lines; blank lines and # comments allowed. CLI overrides config.\n"
-		   "Width/height are tile counts, not exponents. See docs/map-generators/CLI.md.\n"
-		   "JSON fields, units and formulas: docs/map-generators/REPORT.md.\n";
-}
-int runMapCommand(int argc, char **argv)
+int runMapCommand(const Cli::Request &cli)
 {
 	try
 	{
-		const std::string mode = argv[1];
-		if (argc == 3 && std::string(argv[2]) == "--help")
+		const auto &mode = cli.command;
+		const auto source = cli.positionals.empty() ? std::string() : cli.positionals.at(0);
+		if (mode == "map inspect-package")
 		{
-			printMapCommandHelp();
-			return 0;
-		}
-		if (mode == "--inspect-generator-package")
-		{
-			if (argc != 7 || std::string(argv[3]) != "--output" || std::string(argv[5]) != "--json")
-				throw std::runtime_error("Expected --inspect-generator-package input --output "
-										 "canonical --json metadata");
-			if (samePath(argv[2], argv[4]) || samePath(argv[2], argv[6]) ||
-				samePath(argv[4], argv[6]))
-				throw std::runtime_error("Input and output paths must be distinct");
-			const auto package = MapGeneration::JavaScript::Package::load(argv[2]);
+			if (samePath(source, cli.get("--output")) ||
+				samePath(source, cli.get("--report-file")) ||
+				samePath(cli.get("--output"), cli.get("--report-file")))
+				throw std::invalid_argument("Input and output paths must be distinct");
+			const auto package = MapGeneration::JavaScript::Package::load(source);
 			auto metadata = nlohmann::json::parse(package->canonical).at("manifest");
 			metadata["description"] = package->description;
 			metadata["editorOnly"] = package->editorOnly;
@@ -319,9 +284,10 @@ int runMapCommand(int argc, char **argv)
 			}
 			metadata["toolkitVersion"] = 1;
 			metadata["packageHash"] = package->hash;
-			for (const char *path : {argv[4], argv[6]})
+			for (const auto &path : {cli.get("--output"), cli.get("--report-file")})
 				parentDirectory(path);
-			std::ofstream canonical(argv[4], std::ios::binary), report(argv[6], std::ios::binary);
+			std::ofstream canonical(cli.get("--output"), std::ios::binary),
+				report(cli.get("--report-file"), std::ios::binary);
 			canonical << package->canonical;
 			report << metadata.dump();
 			canonical.close();
@@ -330,48 +296,17 @@ int runMapCommand(int argc, char **argv)
 				throw std::runtime_error("Cannot write generator inspection");
 			return 0;
 		}
-		if (mode == "--validate-set")
+		if (mode == "map validate-set")
 		{
-			if (argc < 5)
-				throw std::runtime_error("Expected --validate-set package.json --json report.json");
-			std::string reportPath, previewPath;
-			bool gallery = false;
-			unsigned phase = 0, variation = 0;
-			for (int i = 3; i < argc; i += 2)
-			{
-				if (i + 1 >= argc)
-					throw std::runtime_error("Missing set output argument");
-				const std::string option = argv[i];
-				if (option == "--json")
-					reportPath = argv[i + 1];
-				else if (option == "--preview")
-					previewPath = argv[i + 1];
-				else if (option == "--gallery")
-				{
-					const auto n = number(argv[i + 1]);
-					if (n > 1)
-						throw std::runtime_error("Gallery must be zero or one");
-					gallery = n == 1;
-				}
-				else if (option == "--phase")
-				{
-					phase = number(argv[i + 1]);
-					if (phase > 3)
-						throw std::runtime_error("Phase exceeds three");
-				}
-				else if (option == "--variation")
-				{
-					variation = number(argv[i + 1]);
-					if (variation > 3)
-						throw std::runtime_error("Variation exceeds three");
-				}
-				else
-					throw std::runtime_error("Unknown set argument");
-			}
-			if (reportPath.empty() || samePath(argv[2], reportPath) ||
-				samePath(argv[2], previewPath) || samePath(reportPath, previewPath))
-				throw std::runtime_error("Set input and output paths must be distinct");
-			std::ifstream input(argv[2], std::ios::binary | std::ios::ate);
+			const auto reportPath = cli.get("--report-file");
+			const auto previewPath = cli.get("--preview");
+			const bool gallery = cli.get("--gallery") == "1";
+			const auto phase = unsigned(std::stoul(cli.get("--phase")));
+			const auto variation = unsigned(std::stoul(cli.get("--variation")));
+			if (reportPath.empty() || samePath(source, reportPath) ||
+				samePath(source, previewPath) || samePath(reportPath, previewPath))
+				throw std::invalid_argument("Set input and output paths must be distinct");
+			std::ifstream input(source, std::ios::binary | std::ios::ate);
 			if (!input || input.tellg() < 0 ||
 				input.tellg() > std::streamoff(MapAssetBundle::MaximumBytes))
 				throw std::runtime_error("Cannot read set or set exceeds 16 MiB");
@@ -497,42 +432,27 @@ int runMapCommand(int argc, char **argv)
 				report["reason"] = std::move(reason);
 			}
 			writeJsonReport(reportPath, report.dump());
-			return 0;
+			return report["valid"].get<bool>() ? 0 : 2;
 		}
-		if (mode == "--list-map-generators")
+		if (mode == "map generators")
 		{
-			if (argc > 3)
-				throw std::runtime_error("Expected at most one generator ID");
-			catalog(argc == 3 ? argv[2] : "");
+			catalog(source, cli.get("--format") == "json");
 			return 0;
 		}
-		if (argc < 3 || std::string(argv[2]).rfind("--", 0) == 0)
-			throw std::runtime_error("Missing generator or input path; use " + mode + " --help");
-		const bool render = mode == "--render-game";
-		const bool generate = mode == "--generate-map";
-		const bool importing = mode == "--import-map-image";
-		const bool exporting = mode == "--export-map-image";
+		const bool render = mode == "map render";
+		const bool generate = mode == "map generate";
+		const bool importing = mode == "map import-image";
+		const bool exporting = mode == "map export-image";
 		const bool writesMap = generate || importing;
 		std::string output, preview, config, json, mapImage, renderField, fieldColor,
 			generatorExport;
 		int renderPixels = MapRender::DefaultPixels;
 		MapSettings overrides, settings;
 		std::vector<std::string> directories;
-		int previewSize = 0, previewScale = 2, imageSeamWidth = -1;
+		int previewSize = 0, previewScale = Cli::DefaultPreviewScale, imageSeamWidth = -1;
 		bool sizeSpecified = false, scaleSpecified = false;
-		for (int i = 3; i < argc; ++i)
+		for (const auto &[arg, value] : cli.occurrences)
 		{
-			const std::string arg = argv[i];
-			if (arg == "--help")
-			{
-				printMapCommandHelp();
-				return 0;
-			}
-			if (i + 1 == argc)
-				throw std::runtime_error("Missing value for " + arg);
-			const std::string value = argv[++i];
-			if (value.empty() || value.rfind("--", 0) == 0)
-				throw std::runtime_error("Missing value for " + arg);
 			if (arg == "--output")
 				output = value;
 			else if (arg == "--render-max-pixels" && render)
@@ -548,9 +468,9 @@ int runMapCommand(int argc, char **argv)
 				fieldColor = value;
 			else if (arg == "--export-generator-package" && generate)
 				generatorExport = value;
-			else if (arg == "--json" && !render)
+			else if (arg == "--report-file" && !render)
 				json = value;
-			else if (arg == "--preview" && writesMap)
+			else if (arg == "--preview" && (writesMap || mode == "map preview"))
 				preview = value;
 			else if (arg == "--map-image" && generate)
 				mapImage = value;
@@ -563,7 +483,7 @@ int runMapCommand(int argc, char **argv)
 			}
 			else if (arg == "--config" && generate)
 				config = value;
-			else if (arg == "--set" && generate)
+			else if (arg == "--set" && writesMap)
 				setting(overrides, value);
 			else if (writesMap && (arg == "--seed" || arg == "--width" || arg == "--height" ||
 								   arg == "--teams" || arg == "--workers"))
@@ -584,47 +504,52 @@ int runMapCommand(int argc, char **argv)
 				previewSize = int(n);
 				sizeSpecified = true;
 			}
-			else if (arg == "-d")
+			else if (arg == "--data-dir")
 				directories.push_back(value);
-			else
-				throw std::runtime_error("Unknown option for " + mode + ": " + arg);
+			else if (arg != "--generator-package")
+				throw std::invalid_argument("Unknown option for " + mode + ": " + arg);
 		}
 		if (!writesMap && !exporting && !render)
-			preview = output;
+		{
+			if (!preview.empty() && !output.empty())
+				throw std::invalid_argument("Choose --output or --preview, not both");
+			if (!output.empty())
+				preview = output;
+		}
 		if ((importing || exporting) && output.empty())
-			throw std::runtime_error("Image import/export requires --output");
+			throw std::invalid_argument("Image import/export requires --output");
 		if (output.empty() && preview.empty() && json.empty() && mapImage.empty())
-			throw std::runtime_error("Specify an output path; use " + mode + " --help");
+			throw std::invalid_argument("Specify an output path; use " + mode + " --help");
 		if ((sizeSpecified || scaleSpecified) && preview.empty())
-			throw std::runtime_error("Preview size/scale requires a PNG output");
+			throw std::invalid_argument("Preview size/scale requires a PNG output");
 		if (sizeSpecified && scaleSpecified)
-			throw std::runtime_error("Choose --preview-size or --preview-scale, not both");
+			throw std::invalid_argument("Choose --preview-size or --preview-scale, not both");
 		// Compare the actual gzip destination as well as the user-supplied name.
 		std::vector<std::string> paths{
 			output, writesMap ? preview : "", config, json, mapImage, renderField, generatorExport};
 		if (!generate)
 		{
-			paths.push_back(argv[2]);
-			if (!importing && !endsWithGz(argv[2]) &&
-				std::filesystem::exists(std::string(argv[2]) + ".gz"))
-				paths.push_back(std::string(argv[2]) + ".gz");
+			paths.push_back(source);
+			if (!importing && !endsWithGz(source) &&
+				std::filesystem::exists(std::string(source) + ".gz"))
+				paths.push_back(std::string(source) + ".gz");
 		}
 		if (writesMap && !output.empty() && !endsWithGz(output))
 			paths.push_back(glob2GzipWritePath(output));
 		for (size_t a = 0; a < paths.size(); ++a)
 			for (size_t b = a + 1; b < paths.size(); ++b)
 				if (samePath(paths[a], paths[b]))
-					throw std::runtime_error("Input and output paths must be distinct");
+					throw std::invalid_argument("Input and output paths must be distinct");
 		GenerationRequest request;
 		if (generate)
 		{
-			request.setMethodDefaults(method(argv[2]));
+			request.setMethodDefaults(method(source));
 			request.seed = 1;
 			if (!generatorExport.empty())
 			{
 				const auto &definition = request.definition();
 				if (!definition.apiVersion || !definition.owner)
-					throw std::runtime_error("Package export requires a custom generator");
+					throw std::invalid_argument("Package export requires a custom generator");
 				auto package = std::static_pointer_cast<const MapGeneration::JavaScript::Package>(
 					definition.owner);
 				parentDirectory(generatorExport);
@@ -677,7 +602,7 @@ int runMapCommand(int argc, char **argv)
 		if (render)
 		{
 			if (output.empty())
-				throw std::runtime_error("--render-game requires --output");
+				throw std::runtime_error("map render requires --output");
 			if (!fieldColor.empty() && renderField.empty())
 				throw std::runtime_error("--field-color requires --render-field");
 			GAGCore::setProcessEnvironment("SDL_VIDEODRIVER", "dummy", 1);
@@ -702,7 +627,7 @@ int runMapCommand(int argc, char **argv)
 			{
 				if (!json.empty())
 					writeJsonReport(json, describeGenerationFailure(request, result));
-				throw std::runtime_error(result.diagnostic());
+				throw std::invalid_argument(result.diagnostic());
 			}
 			std::cout << result.diagnostic() << "\n";
 		}
@@ -711,7 +636,7 @@ int runMapCommand(int argc, char **argv)
 			const int expected = overrides.count("teams") ? int(number(overrides.at("teams"))) : 0;
 			try
 			{
-				importMapImage(game, argv[2], request, expected, imageReport, imageSeamWidth);
+				importMapImage(game, source, request, expected, imageReport, imageSeamWidth);
 			}
 			catch (...)
 			{
@@ -728,7 +653,7 @@ int runMapCommand(int argc, char **argv)
 			// Explicit paths use the same loader as normal games, without stepping simulation.
 			// A bare ".map"/".game" path prefers an existing ".gz" sibling, matching how
 			// the rest of the engine resolves map/save names.
-			std::string inputPath = argv[2];
+			std::string inputPath = source;
 			std::error_code exists;
 			if (!endsWithGz(inputPath) && std::filesystem::exists(inputPath + ".gz", exists))
 				inputPath += ".gz";
@@ -792,6 +717,6 @@ int runMapCommand(int argc, char **argv)
 	catch (const std::exception &e)
 	{
 		std::cerr << "Map command: " << e.what() << "\n";
-		return 1;
+		return dynamic_cast<const std::invalid_argument*>(&e) ? 2 : 3;
 	}
 }

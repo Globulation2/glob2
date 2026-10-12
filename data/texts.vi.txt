@@ -5996,3 +5996,39 @@ Không thể sử dụng chức năng chọn tệp.
 Không thể sử dụng chức năng xuất gói.
 [stat band area upkeep]
 Duy trì khu vực
+[outcome reason eliminated]
+Thuộc địa đã bị diệt.
+[outcome reason opponents defeated]
+Tất cả đối thủ đã bị đánh bại.
+[outcome reason ally won]
+Một thuộc địa đồng minh đã thắng.
+[outcome reason prestige]
+Đã đạt mục tiêu uy danh.
+[outcome reason scenario]
+Quy tắc kịch bản đã quyết định kết quả.
+[outcome reason timer]
+Đã hết thời gian.
+[outcome reason probability]
+Đã đạt ngưỡng xác suất thắng.
+[Destroy this building?]
+Phá hủy công trình này?
+[Discord community]
+Discord community
+[Globulation 2 Discord]
+Globulation 2 Discord
+[discord community intro]
+Find opponents, ask for help, and share your maps with the Globulation 2 community.
+[discord opens externally]
+Join our Discord server. This opens Discord or your browser.
+[Join Discord]
+Join Discord
+[Copy link]
+Copy link
+[discord opened]
+Discord opened. You can return to the game at any time.
+[discord open failed]
+Could not open Discord. Copy the invitation link and open it in your browser.
+[discord link copied]
+Invitation link copied.
+[discord copy failed]
+Could not copy the link. Select the invitation above to copy it manually.

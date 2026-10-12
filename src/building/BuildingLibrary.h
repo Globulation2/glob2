@@ -2,7 +2,7 @@
 #pragma once
 #include "BuildingType.h"
 #include "BuildingArtwork.h"
-#include <nlohmann/json.hpp>
+#include <nlohmann/json_fwd.hpp>
 namespace Online
 {
 class OnlineStorage;

@@ -5996,3 +5996,39 @@ FFmpeg غير متاح، لذا التسجيل معطّل. ثبّت FFmpeg وت�
 تصدير الحزم غير متاح.
 [stat band area upkeep]
 صيانة المنطقة
+[outcome reason eliminated]
+أُبيدت المستعمرة.
+[outcome reason opponents defeated]
+هُزم جميع الخصوم.
+[outcome reason ally won]
+فازت مستعمرة حليفة.
+[outcome reason prestige]
+تم بلوغ هدف الهيبة.
+[outcome reason scenario]
+حددت قواعد السيناريو النتيجة.
+[outcome reason timer]
+انتهت المهلة الزمنية.
+[outcome reason probability]
+تم بلوغ عتبة احتمال الفوز.
+[Destroy this building?]
+هل تريد تدمير هذا المبنى؟
+[Discord community]
+Discord community
+[Globulation 2 Discord]
+Globulation 2 Discord
+[discord community intro]
+Find opponents, ask for help, and share your maps with the Globulation 2 community.
+[discord opens externally]
+Join our Discord server. This opens Discord or your browser.
+[Join Discord]
+Join Discord
+[Copy link]
+Copy link
+[discord opened]
+Discord opened. You can return to the game at any time.
+[discord open failed]
+Could not open Discord. Copy the invitation link and open it in your browser.
+[discord link copied]
+Invitation link copied.
+[discord copy failed]
+Could not copy the link. Select the invitation above to copy it manually.

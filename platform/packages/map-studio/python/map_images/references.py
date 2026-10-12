@@ -99,7 +99,7 @@ def prepare(args):
         # Failed defaults/seeds stay visible; no generator substitutions or quiet retries.
         command = [
             str(binary),
-            "--generate-map",
+            "map", "generate",
             identifier,
             "--seed",
             str(args.seed),
@@ -115,7 +115,7 @@ def prepare(args):
             str(folder / "preview.png"),
             "--map-image",
             str(folder / "tile.png"),
-            "--json",
+            "--report-file",
             str(folder / "report.json"),
         ]
         write_json(folder / "command.json", command)

@@ -372,6 +372,70 @@ TEST_SUITE("TerrainMaterials")
 		log << "simulation_checksum=" << simulationChecksum << " unchanged after both presentations\n";
 	}
 
+	TEST_CASE("terrain crossfade preserves endpoints midpoint loop and paused revisions [display]")
+	{
+		glob2test::HeadlessGlobals globals({.display = true});
+		auto definitions = catalog();
+		definitions.compiledPack.clear();
+		const auto id = definitions.find("ice");
+		auto &ice = definitions.materials[id];
+		ice.variants = {{272, 1}};
+		ice.totalWeight = 1;
+		ice.animationFrames = 2;
+		ice.animationStride = 1;
+		ice.animationTicks = 4;
+		ice.periodicEdges = true;
+		struct RestoreFrame
+		{
+			GAGCore::DrawableSurface *frame;
+			std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> original;
+			~RestoreFrame()
+			{
+				if (!original) return;
+				SDL_SetSurfaceBlendMode(original.get(), SDL_BLENDMODE_NONE);
+				SDL_BlitSurface(original.get(), nullptr, frame->getSDLSurface(), nullptr);
+				frame->markPixelsChanged();
+			}
+		};
+		auto *a = globals->terrain->nativeFrame(272), *b = globals->terrain->nativeFrame(273);
+		RestoreFrame restoreA{a, {SDL_DuplicateSurface(a->getSDLSurface()), SDL_DestroySurface}};
+		RestoreFrame restoreB{b, {SDL_DuplicateSurface(b->getSDLSurface()), SDL_DestroySurface}};
+		REQUIRE(restoreA.original);
+		REQUIRE(restoreB.original);
+		a->drawFilledRect(0, 0, 32, 32, 240, 0, 0);
+		b->drawFilledRect(0, 0, 32, 32, 0, 0, 240);
+		TerrainVisual::Compositor compositor(definitions);
+		TerrainVisual::Recipe recipe;
+		recipe.width = recipe.height = 16;
+		recipe.corners.fill(id);
+		GAGCore::DrawableSurface result(32, 32);
+		const auto pixel = [&](int time)
+		{
+			compositor.prepare(false, time);
+			compositor.compose(recipe, result.getSDLSurface(), 0, 0, 1);
+			return static_cast<const Uint32 *>(result.getSDLSurface()->pixels)[0];
+		};
+		CHECK(pixel(0) == 0xfff00000u);
+		CHECK(pixel(2) == 0xff780078u);
+		const auto revision = compositor.materialRevision(id);
+		const auto bytes = compositor.sourceBytes();
+		CHECK(pixel(2) == 0xff780078u);
+		CHECK(compositor.materialRevision(id) == revision);
+		CHECK(pixel(4) == 0xff0000f0u);
+		CHECK(pixel(6) == 0xff780078u);
+		CHECK(pixel(8) == 0xfff00000u);
+		CHECK(compositor.sourceBytes() == bytes);
+		// Jump by a whole phase with the same blend fraction: swapped endpoints
+		// must still invalidate composed terrain pages.
+		const auto beforeJump = compositor.materialRevision(id);
+		CHECK(pixel(12) == 0xff0000f0u);
+		CHECK(compositor.materialRevision(id) == beforeJump + 1);
+		b->drawFilledRect(0, 0, 32, 32, 0, 240, 0);
+		CHECK(pixel(12) == 0xff00f000u);
+		REQUIRE(SDL_FillSurfaceRect(b->getSDLSurface(), nullptr, 0x0000ffffu));
+		b->markPixelsChanged();
+		CHECK(pixel(2) == 0x80f00000u); // Transparent cyan contributes no colour.
+	}
 	TEST_CASE("animation invalidates only pages using that material [display]")
 	{
 		glob2test::HeadlessGlobals globals({.display = true});
@@ -382,7 +446,7 @@ TEST_SUITE("TerrainMaterials")
 		ice.totalWeight = 1;
 		ice.animationFrames = 2;
 		ice.animationStride = 1;
-		ice.animationTicks = 1;
+		ice.animationTicks = 4; // Exercise a crossfade within a phase.
 		globals->terrainCompositor_ =
 			std::make_unique<TerrainVisual::Compositor>(std::move(definitions));
 		glob2test::HeadlessGame fixture({.wDec = 6, .hDec = 5, .discovered = true});

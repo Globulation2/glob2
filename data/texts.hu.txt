@@ -5996,3 +5996,39 @@ A fájlválasztás nem érhető el.
 A csomagexportálás nem érhető el.
 [stat band area upkeep]
 Terület fenntartása
+[outcome reason eliminated]
+A kolónia elpusztult.
+[outcome reason opponents defeated]
+Minden ellenfél vereséget szenvedett.
+[outcome reason ally won]
+Egy szövetséges kolónia győzött.
+[outcome reason prestige]
+A presztízscél teljesült.
+[outcome reason scenario]
+A forgatókönyv szabályai döntötték el az eredményt.
+[outcome reason timer]
+Lejárt az időkorlát.
+[outcome reason probability]
+A győzelmi valószínűség elérte a küszöbértéket.
+[Destroy this building?]
+Lerombolod ezt az épületet?
+[Discord community]
+Discord community
+[Globulation 2 Discord]
+Globulation 2 Discord
+[discord community intro]
+Find opponents, ask for help, and share your maps with the Globulation 2 community.
+[discord opens externally]
+Join our Discord server. This opens Discord or your browser.
+[Join Discord]
+Join Discord
+[Copy link]
+Copy link
+[discord opened]
+Discord opened. You can return to the game at any time.
+[discord open failed]
+Could not open Discord. Copy the invitation link and open it in your browser.
+[discord link copied]
+Invitation link copied.
+[discord copy failed]
+Could not copy the link. Select the invitation above to copy it manually.

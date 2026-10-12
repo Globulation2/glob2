@@ -16,11 +16,10 @@ namespace AIPlanning
 bool hasIndependentAttractionUse(const BuildingType& type,unsigned retiringUnitMask)
 {
     const auto& spec=type.semantics;
-    for(int unit=0;unit<NB_UNIT_TYPE;++unit)
-        if(type.zonable[unit] && !(retiringUnitMask&(1u<<unit))) return true;
+    if (type.runtimeAttractionRoles & ~retiringUnitMask) return true;
     return spec.feeding.enabled || spec.healing.enabled || type.shootingRange>0
         || spec.market.interTeamFruitExchange || spec.market.suppliesStock || spec.market.suppliesDirectStock
-        || std::any_of(spec.production.recipes.begin(),spec.production.recipes.end(),[](const auto& r){return r.enabled;})
+        || !spec.production.enabledUnits.empty()
         || std::any_of(spec.training.begin(),spec.training.end(),[](const auto& r){return r.enabled;});
 }
 
@@ -113,58 +112,50 @@ bool experimentEnabled(const std::string& key, const GameHeader& rules)
 	return key.empty() || rules.getExperiments().has(key);
 }
 
-unsigned recipients(const BuildingType& type, unsigned serviceMask)
+bool serviceRecipient(const BuildingsTypes& catalog, const BuildingType& type, Intent intent, unsigned unit)
 {
-	return type.maxUnitInside > 0
-		? type.semantics.admittedUnitMask & serviceMask & BUILDING_ALL_UNIT_TYPES : 0;
+    const auto& s=type.semantics;
+    const bool admitted=type.maxUnitInside>0 && s.admittedUnits.matches(unit,s.admittedUnitMask);
+    const int ability=BuildingCapabilityIndex::trainingAbility(intent);
+    if(ability>=0) {
+        const auto& training=s.training[ability];
+        return admitted && training.enabled && training.targetLevel>0 && training.units.matches(unit,training.unitMask)
+            && (catalog.unitTrainingAbilities(unit)&(1u<<ability));
+    }
+    switch(intent) {
+    case Intent::ProduceWorker:case Intent::ProduceExplorer:case Intent::ProduceWarrior:
+        return unit==unsigned(intent) && unit<s.production.recipes.size() && s.production.recipes[unit].enabled;
+    case Intent::Feed:return admitted && s.feeding.enabled && s.feeding.units.matches(unit,s.feeding.unitMask);
+    case Intent::Heal:return admitted && s.healing.enabled && s.healing.units.matches(unit,s.healing.unitMask);
+    case Intent::TrainConstruction:
+        for(unsigned ability=0;ability<NB_ABILITY;++ability) {
+            const auto& t=s.training[ability];
+            if(admitted && t.enabled && t.constructionLevel>0 && t.units.matches(unit,t.unitMask)
+                && (catalog.unitConstructionTrainingAbilities(unit)&(1u<<ability)))return true;
+        }
+        return false;
+    case Intent::ProjectileDefense:
+        return type.shootingRange>0 && type.shootRhythm>0 && (unit<s.resolvedProjectileDamage.size()?s.resolvedProjectileDamage[unit]>0:unit<3 && s.projectileDamage[unit]>0);
+    case Intent::AttractWorkers:case Intent::ClearResources:case Intent::AttractExplorers:case Intent::AttractWarriors: {
+        const int role=intent==Intent::AttractExplorers?1:intent==Intent::AttractWarriors?2:0;
+        const auto& selection=s.attractionUnits[role];
+        return selection.resolved.empty()?selection.matches(unit,type.zonable[role]?(1u<<role):0):unit<selection.resolved.size() && selection.resolved[unit];
+    }
+    case Intent::ExchangeResources:return false;
+    default:return false;
+    }
 }
 
-unsigned serviceMask(const BuildingType& type, Intent intent)
+std::vector<std::uint8_t> serviceMask(const BuildingsTypes& catalog, const BuildingType& type, Intent intent,unsigned count)
 {
-	const auto& semantics = type.semantics;
-	const int ability = BuildingCapabilityIndex::trainingAbility(intent);
-	if (ability >= 0)
-	{
-		const auto& training = semantics.training[ability];
-		return training.enabled && training.targetLevel > 0
-			? recipients(type, training.unitMask) : 0;
-	}
-	int produced = -1;
-	switch (intent)
-	{
-		case Intent::ProduceWorker: produced = WORKER; break;
-		case Intent::ProduceExplorer: produced = EXPLORER; break;
-		case Intent::ProduceWarrior: produced = WARRIOR; break;
-		case Intent::Feed:
-			return semantics.feeding.enabled ? recipients(type, semantics.feeding.unitMask) : 0;
-		case Intent::Heal:
-			return semantics.healing.enabled ? recipients(type, semantics.healing.unitMask) : 0;
-		case Intent::TrainConstruction:
-		{
-			unsigned mask = 0;
-			for (const auto& training : semantics.training)
-				if (training.enabled && training.constructionLevel > 0)
-					mask |= recipients(type, training.unitMask);
-			return mask;
-		}
-		case Intent::ProjectileDefense:
-		{
-			if (type.shootingRange <= 0 || type.shootRhythm <= 0) return 0;
-			unsigned mask = semantics.projectileBuildingDamage > 0 ? NoUnitRequired : 0;
-			for (int unit = 0; unit < NB_UNIT_TYPE; ++unit)
-				if (semantics.projectileDamage[unit] > 0) mask |= 1u << unit;
-			return mask;
-		}
-		case Intent::AttractWorkers:
-		case Intent::ClearResources: return type.zonable[WORKER] ? 1u << WORKER : 0;
-		case Intent::AttractExplorers: return type.zonable[EXPLORER] ? 1u << EXPLORER : 0;
-		case Intent::AttractWarriors: return type.zonable[WARRIOR] ? 1u << WARRIOR : 0;
-		case Intent::ExchangeResources:
-			return semantics.market.interTeamFruitExchange || semantics.market.suppliesStock || semantics.market.suppliesDirectStock ? NoUnitRequired : 0;
-		default: return 0;
-	}
-	return semantics.production.recipes[produced].enabled ? 1u << produced : 0;
+    std::vector<std::uint8_t> result(count+1);
+    for(unsigned id=0;id<count;++id)result[id]=serviceRecipient(catalog,type,intent,id);
+    const auto& s=type.semantics;
+    result[count]=(intent==Intent::ExchangeResources && (s.market.interTeamFruitExchange || s.market.suppliesStock || s.market.suppliesDirectStock))
+        || (intent==Intent::ProjectileDefense && type.shootingRange>0 && type.shootRhythm>0 && s.projectileBuildingDamage>0);
+    return result;
 }
+
 }
 
 int BuildingCapabilityIndex::trainingAbility(BuildingIntent intent)
@@ -196,12 +187,15 @@ BuildingCapabilityIndex::BuildingCapabilityIndex(const BuildingsTypes& catalog)
 	{
 		const auto& type = *catalog.get(id);
 		if (type.isBuildingSite) continue;
-		for (std::size_t demand = 0; demand < IntentCount; ++demand)
-			if ((data_->masks_[id][demand] = serviceMask(type, static_cast<Intent>(demand))))
-			{
-				data_->intentMasks_[id] |= std::uint64_t(1) << demand;
-				data_->providers_[demand].push_back(static_cast<int>(id));
-			}
+        for(std::size_t demand=0;demand<IntentCount;++demand) {
+            auto& mask=data_->masks_[id][demand];
+            mask=serviceMask(catalog,type,static_cast<Intent>(demand),catalog.getRuntime(id)->unitCount);
+            if(std::any_of(mask.begin(),mask.end(),[](auto value){return value!=0;})) {
+                data_->intentMasks_[id]|=std::uint64_t(1)<<demand;
+                data_->providers_[demand].push_back(int(id));
+            }
+        }
+
 	}
 	for (std::size_t id = 0; id < catalog.size(); ++id)
 	{
@@ -221,7 +215,7 @@ BuildingCapabilityIndex::BuildingCapabilityIndex(const BuildingsTypes& catalog)
 			|| catalog.get(complete)->isBuildingSite)
 			throw std::invalid_argument("Placeable building has no completed variant");
 		for (std::size_t demand = 0; demand < IntentCount; ++demand)
-			if (data_->masks_[complete][demand])
+			if (data_->intentMasks_[complete] & (std::uint64_t(1)<<demand))
 				data_->placements_[demand].push_back({static_cast<int>(id), complete});
 	}
     // This fallback ranks the unweighted construction resource total, then ID.
@@ -255,8 +249,9 @@ const std::vector<BuildingCandidate>& BuildingCapabilityTables::placementsByCost
 bool BuildingCapabilityTables::matches(int type, BuildingIntent intent, int unit) const
 {
 	if (type < 0 || static_cast<std::size_t>(type) >= masks_.size()) return false;
-	const unsigned mask = masks_[type][index(intent)];
-	return unit == -1 ? mask != 0 : unit >= 0 && unit < NB_UNIT_TYPE && (mask & (1u << unit)) != 0;
+	const auto& mask=masks_[type][index(intent)];
+    return unit==-1 ? bool(intentMasks_[type]&(std::uint64_t(1)<<index(intent)))
+        : unit>=0 && std::size_t(unit)+1<mask.size() && mask[unit]!=0;
 }
 
 int BuildingCapabilityTables::lineageRoot(int type) const

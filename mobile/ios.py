@@ -10,7 +10,9 @@ import subprocess
 import sys
 from dev_paths import dependency_prefix
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scons'))
-from build_layout import build_identity, default_directory, write_if_changed
+from build_layout import PACKAGE_VERSION, build_identity, default_directory, write_if_changed
+from dev_build import dependency_identity
+from ios_release import marketing_version
 import official_instance
 from mobile_toolchain import ROOT, discover
 from sources import INCLUDE_DIRECTORIES
@@ -41,6 +43,7 @@ def main():
                         help='Isolated simulator device set for install/launch')
     parser.add_argument('--cmake',default='cmake')
     args=parser.parse_args()
+    release_marketing_version=marketing_version(PACKAGE_VERSION)
     if not args.build_number.isdecimal() or int(args.build_number) < 1:
         raise ValueError('--build-number must be a positive integer')
     if args.jobs < 1:
@@ -71,7 +74,7 @@ def main():
             command=['xcrun','devicectl','device']+(['install','app','--device',args.device,str(app)] if args.command=='install' else ['process','launch','--device',args.device,bundle_id])
         subprocess.run(command,env=env,check=True);return
     triplet='glob2-arm64-ios'+('-simulator' if args.environment=='simulator' else '')
-    prefix=args.mobile_deps.resolve() if args.mobile_deps else dependency_prefix(ROOT, identity, discover(identity,options)['fingerprint'])
+    prefix=args.mobile_deps.resolve() if args.mobile_deps else dependency_prefix(ROOT, dependency_identity(identity), discover(identity,options)['fingerprint'])
     if not (prefix/'manifest.json').exists(): raise ValueError('Build iOS dependencies first with mobile/dependencies.py --target ios --environment '+args.environment)
     scons=shutil.which('scons')
     if not scons: raise ValueError('SCons is required')
@@ -86,6 +89,7 @@ def main():
     info['CFBundleExecutable']=product
     info['CFBundleName']='Glob2 Script Tests' if args.script_tests else info['CFBundleName']
     info['CFBundleVersion']=args.build_number
+    info['CFBundleShortVersionString']=release_marketing_version
     if args.china:
         # The China edition builds without online play, so it claims no invite links.
         info.pop('CFBundleURLTypes',None)
@@ -142,8 +146,10 @@ def main():
     from tools.package_assets import export_assets
     asset_root = output/'runtime-assets'
     export_assets(ROOT, asset_root, platform='ios', optimized=True, lossy=args.release)
+    shutil.copytree(output/'shaders', asset_root/'shaders', dirs_exist_ok=True,
+                    ignore=shutil.ignore_patterns('.*', 'RendererShaderLayouts.h', 'native-sources', '*.air'))
     shutil.copytree(recording_prefix/'share/licenses/recording',asset_root/'licenses/recording',dirs_exist_ok=True)
-    resource_roots = [(asset_root, folder) for folder in ('data','maps','campaigns','scripts','licenses')]
+    resource_roots = [(asset_root, folder) for folder in ('data','maps','campaigns','scripts','licenses','shaders')]
     if args.script_tests:
         resource_roots += [(ROOT, folder) for folder in ('games','test/fixtures','examples/javascript')]
     for resource_root, folder in resource_roots:

@@ -62,7 +62,7 @@ using namespace MapGeneration;
 // make identical is measured and held equal instead. The design is a pure function of the request, so
 // validateWorld rebuilds it and checks the finished world.
 //
-// GAME RULES BEHIND IT (docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md): stone can never be
+// GAME RULES BEHIND IT (docs/map-generators/game-rules-for-map-design.md): stone can never be
 // cleared, so the walls and the ramps are permanent; a unit may step diagonally, which is why every
 // border is walled where any neighbour has another label (labelBorders); water blocks walking until a
 // colony swims, which is why a sea must lie wholly inside its territory; a defence tower shoots over

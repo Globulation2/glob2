@@ -5,6 +5,7 @@ import hashlib
 import json
 from pathlib import Path
 import subprocess
+import struct
 import sys
 import tempfile
 import unittest
@@ -17,18 +18,74 @@ import android_release
 import fdroid_monitor
 
 
+def native_elf(arch='arm64-v8a', alignment=None):
+    wide = arch != 'armeabi-v7a'
+    header, entry = (64, 56) if wide else (52, 32)
+    contents = bytearray(header + entry)
+    contents[:7] = b'\x7fELF' + bytes((2 if wide else 1, 1, 1))
+    struct.pack_into('<H', contents, 18,
+                     {'arm64-v8a': 183, 'armeabi-v7a': 40, 'x86_64': 62}[arch])
+    struct.pack_into('<Q' if wide else '<I', contents, 32 if wide else 28, header)
+    struct.pack_into('<HH', contents, 54 if wide else 42, entry, 1)
+    struct.pack_into('<I', contents, header, 1)
+    struct.pack_into('<Q' if wide else '<I', contents, header + (48 if wide else 28),
+                     alignment if alignment is not None else (16384 if wide else 4096))
+    return bytes(contents)
+
+
+class NativeAlignmentTests(unittest.TestCase):
+    def test_each_supported_abi_accepts_its_page_alignment(self):
+        for arch in android_release.ABI_CODES:
+            with self.subTest(arch=arch):
+                android_release.verify_native_alignment(native_elf(arch), arch, 'libmain.so')
+
+    def test_64_bit_libraries_reject_4k_pages(self):
+        for arch in ('arm64-v8a', 'x86_64'):
+            with self.subTest(arch=arch), self.assertRaisesRegex(ValueError, '16384-byte'):
+                android_release.verify_native_alignment(native_elf(arch, 4096), arch, 'libmain.so')
+
+    def test_non_power_alignment_and_incongruent_segment_reject(self):
+        for alignment in (0, 24576):
+            with self.subTest(alignment=alignment), self.assertRaisesRegex(ValueError, 'alignment'):
+                android_release.verify_native_alignment(native_elf(alignment=alignment), 'arm64-v8a', 'libmain.so')
+        contents = bytearray(native_elf())
+        struct.pack_into('<Q', contents, 64 + 8, 1)
+        with self.assertRaisesRegex(ValueError, 'alignment'):
+            android_release.verify_native_alignment(contents, 'arm64-v8a', 'libmain.so')
+
+    def test_malformed_headers_missing_segments_and_wrong_architecture_reject(self):
+        invalid = [b'native', native_elf()[:-1]]
+        for offset, value in ((5, 2), (64, 0)):
+            contents = bytearray(native_elf()); contents[offset] = value
+            invalid.append(contents)
+        for contents in invalid:
+            with self.subTest(contents=contents), self.assertRaises(ValueError):
+                android_release.verify_native_alignment(contents, 'arm64-v8a', 'libmain.so')
+        with self.assertRaisesRegex(ValueError, 'architecture'):
+            android_release.verify_native_alignment(native_elf('x86_64'), 'arm64-v8a', 'libmain.so')
+
+    def test_apk_checks_dependency_libraries_as_well_as_game(self):
+        with tempfile.TemporaryDirectory() as directory:
+            apk = Path(directory) / 'unaligned.apk'
+            with zipfile.ZipFile(apk, 'w') as package:
+                package.writestr('lib/arm64-v8a/libmain.so', native_elf())
+                package.writestr('lib/arm64-v8a/libc++_shared.so', native_elf(alignment=4096))
+            with self.assertRaisesRegex(ValueError, 'libc\\+\\+_shared.so'):
+                android_release.verify_apk(apk, 'arm64-v8a', Path(directory), require_dependency_manifest=False)
+
+
 class AndroidReleaseTests(unittest.TestCase):
     def test_candidate_accepts_existing_version_but_publication_rejects_tag_collision(self):
         with mock.patch.object(android_release.subprocess, "check_output", side_effect=[
-                "v0.11.0.0\n", "candidate\n", "published\n"]):
+                "v0.11.2.0\n", "candidate\n", "published\n"]):
             with self.assertRaisesRegex(ValueError, "already points"):
                 android_release.check_prior_tags()
         with mock.patch.object(android_release.subprocess, "check_output", side_effect=AssertionError("Candidate must not inspect release tags")):
-            self.assertEqual(android_release.check_candidate()["versionName"], "0.11.0.0")
+            self.assertEqual(android_release.check_candidate()["versionName"], "0.11.2.0")
     def test_version_codes_and_desktop_version(self):
-        self.assertEqual(android_release.release_identity()["versionName"], "0.11.0.0")
+        self.assertEqual(android_release.release_identity()["versionName"], "0.11.2.0")
         self.assertEqual({arch: android_release.version_code(arch) for arch in android_release.ABI_CODES},
-                         {"armeabi-v7a": 1100001, "arm64-v8a": 1100002, "x86_64": 1100003})
+                         {"armeabi-v7a": 1102001, "arm64-v8a": 1102002, "x86_64": 1102003})
         self.assertEqual(android_release.check_recipe(), [1100001, 1100002, 1100003])
 
     def test_recipe_rejects_missing_abi(self):
@@ -68,8 +125,8 @@ class AndroidReleaseTests(unittest.TestCase):
                 target.parent.mkdir(parents=True, exist_ok=True)
                 target.write_bytes((ROOT / path).read_bytes())
             (root / "mobile/android-release.json").write_text(
-                json.dumps({"versionName": "0.11.0.1", "versionCodeBase": 110001}))
-            (root / "scons/build_layout.py").write_text('PACKAGE_VERSION = "0.11.0.1"\n')
+                json.dumps({"versionName": "0.11.0.6", "versionCodeBase": 110006}))
+            (root / "scons/build_layout.py").write_text('PACKAGE_VERSION = "0.11.0.6"\n')
             self.assertEqual(android_release.check_recipe(root), [1100001, 1100002, 1100003])
 
     def test_version_manifest_rejects_mismatch(self):
@@ -84,17 +141,17 @@ class AndroidReleaseTests(unittest.TestCase):
 
     def test_preflight_rejects_reused_tag_at_other_commit(self):
         with mock.patch.object(android_release.subprocess, "check_output",
-                               side_effect=["v0.11.0.0\n", "new-commit\n", "old-commit\n"]):
+                               side_effect=["v0.11.2.0\n", "new-commit\n", "old-commit\n"]):
             with self.assertRaisesRegex(ValueError, "already points to another commit"):
                 android_release.check_prior_tags()
 
     def test_development_check_allows_released_version_but_not_lower_codes(self):
         with mock.patch.object(android_release.subprocess, "check_output",
-                               return_value="v0.10.0.0\nv0.11.0.0\n"):
+                               return_value="v0.10.0.0\nv0.11.2.0\n"):
             android_release.check_prior_tags(development=True)
         with mock.patch.object(android_release.subprocess, "check_output",
-                               return_value="v0.11.0.0\nv0.11.1.0\n"):
-            with self.assertRaisesRegex(ValueError, "would not increase past v0.11.1.0"):
+                               return_value="v0.11.2.0\nv0.11.2.1\n"):
+            with self.assertRaisesRegex(ValueError, "would not increase past v0.11.2.1"):
                 android_release.check_prior_tags(development=True)
 
     def test_development_cli_preserves_identity_and_recipe_validation(self):
@@ -122,18 +179,18 @@ class AndroidReleaseTests(unittest.TestCase):
             root = Path(directory)
             apk = root / "test.apk"
             with zipfile.ZipFile(apk, "w") as package:
-                package.writestr("lib/arm64-v8a/libmain.so", b"native")
+                package.writestr("lib/arm64-v8a/libmain.so", native_elf())
                 package.writestr("lib/x86_64/libmain.so", b"wrong ABI")
                 package.writestr("assets/glob2-bundle/index.list", hashlib.sha256(b"").hexdigest() + "\n")
             with self.assertRaisesRegex(ValueError, "native libraries"):
                 android_release.verify_apk(apk, "arm64-v8a", root, require_dependency_manifest=False)
             with zipfile.ZipFile(apk, "w") as package:
-                package.writestr("lib/arm64-v8a/libmain.so", b"native")
+                package.writestr("lib/arm64-v8a/libmain.so", native_elf())
                 package.writestr("assets/glob2-bundle/index.list", hashlib.sha256(b"").hexdigest() + "\n")
             with mock.patch.object(android_release.subprocess, "run", return_value=subprocess.CompletedProcess([], 0)):
                 with self.assertRaisesRegex(ValueError, "unsigned"):
                     android_release.verify_apk(apk, "arm64-v8a", root, require_dependency_manifest=False)
-            badging = "package: name='org.globulation2.glob2' versionCode='1100001' versionName='0.9.5.4'\n"
+            badging = "package: name='org.globulation2.glob2' versionCode='1100061' versionName='0.9.5.4'\n"
             with mock.patch.object(android_release.subprocess, "run", return_value=subprocess.CompletedProcess([], 1)), mock.patch.object(android_release.subprocess, "check_output", return_value=badging):
                 with self.assertRaisesRegex(ValueError, "version code"):
                     android_release.verify_apk(apk, "arm64-v8a", root, require_dependency_manifest=False)
@@ -152,7 +209,7 @@ class AndroidReleaseTests(unittest.TestCase):
             apk = root / "unexpected.apk"
             with zipfile.ZipFile(apk, "w") as package:
                 for name in ("libmain.so", "libc++_shared.so", "libSDL3.so", "libextra.so"):
-                    package.writestr("lib/arm64-v8a/" + name, b"native")
+                    package.writestr("lib/arm64-v8a/" + name, native_elf())
             with mock.patch.dict("os.environ", {"GLOB2_DEV_MODE":"isolated"}), self.assertRaisesRegex(ValueError, "pinned dependency manifest"):
                 android_release.verify_apk(apk, "arm64-v8a", root, root=root)
 
@@ -169,9 +226,9 @@ class AndroidReleaseTests(unittest.TestCase):
             apk = root / "release.apk"
             with zipfile.ZipFile(apk, "w") as package:
                 for name in ("libmain.so", "libc++_shared.so"):
-                    package.writestr("lib/arm64-v8a/" + name, b"native")
+                    package.writestr("lib/arm64-v8a/" + name, native_elf())
                 package.writestr("assets/glob2-bundle/index.list", hashlib.sha256(b"").hexdigest() + "\n")
-            badging = "package: name='org.globulation2.glob2' versionCode='1100002' versionName='0.11.0.0'\n"
+            badging = "package: name='org.globulation2.glob2' versionCode='1102002' versionName='0.11.2.0'\n"
             with (
                 mock.patch.object(android_release, "isolated", return_value=False),
                 mock.patch.object(android_release, "dependency_prefix", return_value=prefix),
@@ -183,12 +240,12 @@ class AndroidReleaseTests(unittest.TestCase):
 
     def test_monitor_state_transitions(self):
         now = dt.datetime(2026, 10, 4, tzinfo=dt.timezone.utc)
-        release = {"tag_name": "v0.11.0.0", "published_at": "2026-09-30T00:00:00Z"}
-        package = {"packages": [{"versionName": "0.11.0.0", "versionCode": 1100001},
-                                {"versionName": "0.11.0.0", "versionCode": 1100002}]}
+        release = {"tag_name": "v0.11.2.0", "published_at": "2026-09-30T00:00:00Z"}
+        package = {"packages": [{"versionName": "0.11.2.0", "versionCode": 1102001},
+                                {"versionName": "0.11.2.0", "versionCode": 1102002}]}
         self.assertEqual(fdroid_monitor.status(release, package, now)["state"], "overdue")
-        self.assertEqual(fdroid_monitor.status(release, package, now)["missing_codes"], [1100003])
-        package["packages"].append({"versionName": "0.11.0.0", "versionCode": 1100003})
+        self.assertEqual(fdroid_monitor.status(release, package, now)["missing_codes"], [1102003])
+        package["packages"].append({"versionName": "0.11.2.0", "versionCode": 1102003})
         self.assertEqual(fdroid_monitor.status(release, package, now)["state"], "complete")
 
 

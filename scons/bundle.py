@@ -1,4 +1,5 @@
 import SCons.Util, os
+from SCons.Script import GetOption
 import sys
 import shutil
 import subprocess
@@ -44,7 +45,7 @@ def createBundle(target, source, env) :
     # Exported image bytes and source notices are the only runtime resources.
     from tools.package_assets import export_assets
     assets = Path(env['BUILDDIR'])/'runtime-assets'
-    export_assets(Path.cwd(), assets, platform='macos')
+    export_assets(Path.cwd(), assets, platform='macos', jobs=GetOption('num_jobs'))
     for directory in ('data', 'maps', 'campaigns', 'scripts'):
         if (assets/directory).is_dir():
             shutil.copytree(assets/directory, Path(bundleDir)/'Contents/Resources'/directory)

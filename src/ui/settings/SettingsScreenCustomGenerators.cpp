@@ -1,3 +1,4 @@
+#include "app/ClientFeatures.h"
 #include "OnlineGeneratorsScreen.h"
 #include <ScreenStack.h>
 // SPDX-License-Identifier: GPL-3.0-or-later
@@ -81,6 +82,7 @@ void SettingsScreen::pollCustomGenerators()
 }
 void SettingsScreen::buildCustomGenerators()
 {
+	if constexpr (!ClientFeatures::CommunityGenerators) return;
 	try
 	{
 		if (!customGenerators)

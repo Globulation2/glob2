@@ -198,3 +198,5 @@ as an independent observation. Report uncertainty and map-specific variation;
 a similar mean or a few extra wins do not demonstrate equivalent strength or an
 optimal strategy. Keep temporary results and reproduction commands in ignored
 review evidence, as described in the repository contribution instructions.
+
+Related: [AI documentation](../README.md).

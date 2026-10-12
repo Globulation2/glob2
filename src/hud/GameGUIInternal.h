@@ -78,6 +78,8 @@ inline int buildingExtraHeaderHeight(const BuildingType& type)
 // they take before the tick rate.
 #define TOP_BAR_CHEVRON_PITCH 7
 #define TOP_BAR_SPEED_WIDTH 40
+// Two coloured Glob-and-arrow counters before the speed control.
+#define TOP_BAR_CONVERSION_WIDTH 110
 
 // The sidebar on the right
 #include "GameGUIViewport.h"

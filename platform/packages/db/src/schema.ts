@@ -272,6 +272,8 @@ export interface MapVersionsTable {
   }>;
   set_credits: DefaultedJson<MapSetCredits>;
   building_catalog: NullableJson<JsonValue>;
+  unit_catalog: NullableJson<JsonValue>;
+  required_unit_experiments: DefaultedJson<string[]>;
   resource_experiments: DefaultedJson<ResourceExperimentDefinitions>;
   required_resource_experiments: DefaultedJson<string[]>;
   id: Generated<string>;
@@ -415,6 +417,8 @@ export interface MatchesTable {
 
 export interface MapUploadsTable {
   building_catalog: NullableJson<JsonValue>;
+  unit_catalog: NullableJson<JsonValue>;
+  required_unit_experiments: DefaultedJson<string[]>;
   resource_experiments: DefaultedJson<ResourceExperimentDefinitions>;
   required_resource_experiments: DefaultedJson<string[]>;
   id: Generated<string>;
@@ -439,6 +443,8 @@ export interface MapUploadsTable {
 export interface GeneratedMapsTable {
   chosen_seed: Nullable<number>;
   building_catalog: NullableJson<JsonValue>;
+  unit_catalog: NullableJson<JsonValue>;
+  required_unit_experiments: DefaultedJson<string[]>;
   resource_experiments: DefaultedJson<ResourceExperimentDefinitions>;
   required_resource_experiments: DefaultedJson<string[]>;
   descriptor_hash: string;

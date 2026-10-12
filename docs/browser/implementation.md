@@ -46,6 +46,29 @@ application pthread instead of proxying them to the UI, where the transferred
 canvas cannot create a context. This adapter is included only in the threaded
 runtime and must be checked when upgrading the SDK or SDL port.
 
+Generated power-of-two HD surfaces prepare their mip chain in WebGL2, using an
+integer shader that matches the shared alpha-weighted CPU filter. Animated
+terrain therefore avoids preparing the complete chain on the application thread.
+Its BGRA-to-RGBA conversion also runs in the GPU pass. The application host
+invalidates the cached pipeline and GL state mirror during context restoration.
+Tracked GL setters and object deletion preserve renderer state without repeating
+driver state queries on every upload. A deletion-pending current program retains
+the CPU path, since switching away would destroy it before it could be restored.
+Authored sprites retain worker-prepared mips; non-power-of-two surfaces and shader
+initialization failures retain the CPU fallback. The GPU pass restores renderer
+state and recreates its cached resources after context loss.
+Context recovery discards lost texture handles and restores textures when they
+are next drawn. It does not synchronously upload every unused HD animation frame
+before allowing the application to resume.
+
+Automatic browser compute sizing uses at most eight participants, including the
+application owner. The SDK prewarms at most sixteen pthread realms to cover the
+application, compute pool and asset decoders. Each pthread reserves an 8 MiB
+stack in the shared 2 GiB Wasm heap; unlimited hardware sizing can crowd
+out artwork and game state on many-core devices. Explicit `--compute-threads`
+overrides remain available. Pool sizing changes work placement, not match rules
+or simulation deadlines. Native automatic sizing continues to follow hardware.
+
 Both runtimes include `browser/canvas-size.js`. It preserves software canvas
 pixels when SDL repeats an unchanged size request, while retaining SDK viewport,
 context-loss and offscreen ownership handling. Threaded startup and gameplay
@@ -54,68 +77,7 @@ lifetime to the replacement gameplay loop, and terminal completion releases it.
 
 ### Music playback
 
-Both game runtimes use a separate Wasm decoder worker and an AudioWorklet. The
-application sends assets and controls through `browser/Audio.cpp` and the UI host
-in `browser/audio.js`; ongoing playback never calls the application mixer or
-waits for its event loop.
-
-| Owner | Responsibilities | Must not do |
-| --- | --- | --- |
-| Application / UI host | Validate and transfer compressed assets, coalesce controls, activate and suspend the device, forward capture | Forward ongoing music PCM between worker and worklet |
-| Decoder worker | Own `Music::Producer`, decode/seek/transition, publish prepared blocks | Access game Wasm or its filesystem during playback |
-| AudioWorklet | Consume prepared PCM, resample continuously to the device rate, apply gain and recovery ramps, publish bounded capture/diagnostics | Decode, perform I/O, wait for locks or allocate unbounded queues |
-
-The worker runs the same `Music::Producer` as native playback. It prepares
-1,024-frame 48 kHz stereo blocks, maintaining a 24-block (512 ms) target with a
-20-block (427 ms) refill threshold and a hard 48-block capacity. Volume and mute are
-applied at consumption, so they do not wait for the prepared queue to drain.
-The half-second target rounds up to whole blocks; the refill threshold retains
-a 400 ms producer-stall cushion when at least 20 blocks remain queued.
-
-Isolated browsers with SharedArrayBuffer use an atomic ring; other browsers use
-a direct MessageChannel with recycled transferable buffers. Shared transport has
-64 physical slots for wraparound and the same 48-block logical capacity. Each
-transferable buffer is a credit: the worker can publish it again only after the
-worklet returns it, including when a generation change discards stale PCM.
-The consumer alone advances the read cursor; resets never overwrite it from the
-producer. Control delivery has one command in flight and coalesces repeated mood
-and preview requests while preserving order between different controls.
-
-Some WebKit builds delay MessagePort delivery during page long tasks. Those
-builds can tolerate buffered stalls but cannot cover an arbitrary multi-second
-UI blockage without shared transport. Genuine starvation enters explicit refill
-mode, fades out once, and waits for the target before fading back in. It never
-loops stale audio. Generations separate replacements, preview sessions and seeks;
-a failed replacement retains the previous valid music. Preview pause freezes the
-consumer and retains its partial block, so resume continues at the next sample.
-Reset preserves the consumed timeline: the worker briefly pauses consumption and
-requests that position before replacing prepared PCM. Generation checks reject
-stale replies; a one-second acknowledgement timeout rejects only that reset and
-releases the control queue. It never seeks to a guessed decoder-ahead cursor.
-
-The UI owns device lifecycle. Activation starts in the initiating gesture before
-asynchronous worklet loading, and a refused activation may be retried by a later
-gesture. Hidden tabs suspend both context and production; visible tabs refill
-before audible consumption resumes. Teardown closes the context and terminates
-the worker. Initialization failure reports unavailable audio without stopping the
-game. Package `music-worker.js`, `music-output.js`, `music-runtime.js` and
-`music-runtime.wasm` with both game runtimes. The static packager includes these
-files and Opus license notices, versions worker/worklet/Wasm URLs together, and
-checks all gzip sidecars; a partial backend cannot produce a release package.
-
-Recording receives bounded copies of consumed, gain-adjusted 48 kHz PCM after
-starvation handling. Its timestamps follow consumption rather than the decoder's
-look-ahead. Eight capture buffers provide credits; if recording cannot return
-them in time, capture drops samples without blocking playback. Credits are
-returned even if the recording bridge fails.
-
-`Module.glob2Music.status` reports queued, consumed and starvation frames,
-underruns, maximum render time, command latency, captured frames and dropped
-capture frames. `.transport` identifies the selected transport. Compare counters
-over an observation interval; startup/refill and actual starvation are different
-states. These counters establish application supply, not hardware continuity.
-See [audio verification](../../test/README.md#audio-buffering-and-cpu-contention)
-for deterministic, browser and contention tests.
+The application host transfers assets and controls to a separate decoder worker and AudioWorklet. Ongoing playback does not wait for the game loop. See [music playback](audio.md) for ownership, bounds and lifecycle.
 
 ### Network and storage adapters
 
@@ -150,6 +112,14 @@ and the other files with revalidation. The
 [browser README](../../browser/README.md#game-data-and-loading) describes the core
 and optional packages and how the page loads them.
 
+Deployments also install both runtime variants, the music/recording/Hive worker
+scripts and codec runtimes, translation catalogs and licence notices. The host
+installer validates this runtime closure before replacing the served launcher.
+The read-only diagnostics include `heapBytes` for the current Wasm memory size;
+it is an allocation high-water mark, not the size of currently live objects.
+`artworkReady` confirms that sprite preparation and HD publication have finished;
+an HD package being downloaded and mounted does not establish that readiness.
+
 C++ exceptions use native WebAssembly exception handling (`-fwasm-exceptions`),
 which needs Chrome 95, Firefox 100 or Safari 15.2 or later; it makes the module
 smaller and faster than Emscripten's JavaScript-based handling.
@@ -161,62 +131,25 @@ platform and relay check it at admission (see the
 
 ## Verification
 
-CI builds native client, relay and browser identities. Native
-harnesses cover screen/session ownership, loading and generation cancellation,
-save safety, transports, and deterministic replay. Chromium runs the complete
-browser behavior suite; Firefox and WebKit run focused startup, gameplay, and
-viewport compatibility checks. Focused Chromium runs cover WebGL2 and real-window
-visibility in addition to the software-renderer suite. Persistence, import/export,
-context recovery and online links remain in the complete suite.
-Manual workflow runs accept `browser_only` when a follow-up changes only the web
-host or its tests. Pull requests select native, browser, map-generator, and
-self-hosting deployment jobs from changed paths. AI, GUI, rendering, and networking
-changes skip the map-generator sweep; browser shell, AI, GUI, and rendering changes
-skip the deployment check.
-Shared build, data, and cross-platform fixture changes still run every platform
-job and the checksum comparison. An unreadable diff also runs every job. Pushes
-to `master` run the full workflow and refresh compiler caches. A final check
-verifies that every selected job succeeded.
+Build and run the [browser test suite](../../browser/README.md#automated-tests). Native harnesses cover screen/session ownership, cooperative cancellation, save continuation and transports; browser tests cover actual host integration. Chromium, Firefox and WebKit coverage complements manual qualification on shipping browsers and physical devices.
 
-The operational commands live in [the browser README](../../browser/README.md).
-WebKit automation is not a substitute for manual testing in shipping Safari, and
-Chromium automation is not a substitute for shipping Edge qualification.
-
-CI retains the same 1,500-tick `games/cross-replay.game.gz` trace from two Linux
-compiler environments, Windows, and serial/threaded WebAssembly, then compares every byte in a
-separate comparison job. The fixture uses seed 42. Run a native trace locally with
-`python3 test/run-browser-determinism.py BINARY OUTPUT`; the browser counterpart
-is `browser/tests/determinism.spec.js`. Artifacts include logs, fixture hashes,
-and trace hashes. This scenario complements the save-continuation harnesses;
-it does not establish equivalence for every game or generator.
+Hosted coverage follows the [CI selection policy](../development/verification.md#hosted-verification-and-regression-detection); a cheap-only PR result does not establish engine or browser verification. Compare per-tick traces across affected native and serial/threaded Wasm configurations for simulation changes. The retained seed-42 fixture runs for 1,500 ticks using `test/run-browser-determinism.py` and `browser/tests/determinism.spec.js`. That scenario establishes equivalence for its inputs, not all maps or games.
 
 ## Compressed release assets
 
 The release build preloads the shared verified runtime export, including WebP
-support. The pinned Emscripten SDK's standard SDL_image port lacks WebP, so
-`browser/ports/` supplies checksum-pinned libwebp 1.6.0 and SDL_image 2.8.12 ports
-with PNG/JPEG/WebP loading. Their recipes participate in the managed port cache
-identity; source/debug images remain PNG. Codec notices ship with runtime data.
+support. The shared dependency helper in `scons/sdl3_dependencies.py` builds SDL3_image and its pinned WebP dependency. Versions and archive hashes live in `scons/sdl3-versions.json`; browser builds do not use the SDL2 image port. Source artwork remains PNG; the runtime export uses WebP. Codec notices ship with runtime data.
 `browser/package-static.py` creates deterministic gzip sidecars for the
-versioned serial and threaded JS/WASM, the capability loader, shared data file,
+versioned serial and threaded JS/WASM, the capability loader, content-addressed data packages,
 and HTML entry point. Both runtime binaries and the loader participate in the
 package identity; the loader selects versioned URLs from the entry point.
-Packaging verifies both runtime asset payloads are identical before retaining
-one shared data file. Its packaging policy
+The packager retains shared `assets/*.data` packages under their content-addressed names. Its packaging policy
 participates in the version identity so changing transfer representation does
 not overwrite an older immutable URL. `--verify DIRECTORY` checks file coverage,
 SHA-256 and each sidecar's decompressed bytes before publication.
 Generated directories use mode 0755 and files 0644 so the unprivileged web
 service can serve a read-only mount even with a restrictive packaging umask.
 The generated `package.json` marker records ownership and package identity.
-Static export directories use mode 0755 and files 0644 so an unprivileged
-server can read the payload even when the build uses a private umask.
-Packaging refuses to replace an unmarked directory, even if it contains HTML;
-remove an older generated `build/browser-static` once before repackaging it.
-
-Static exports use `0755` directories and `0644` files so the web container can
-read the public package as its separate user, including threaded assets and gzip
-sidecars, regardless of the packager's umask.
 
 Caddy serves gzip sidecars through content negotiation and retains original files
 for uncompressed requests. The Google Cloud Storage publisher uploads gzip bytes
@@ -235,3 +168,59 @@ JavaScript, streaming WASM and Emscripten data loading consume the original
 uncompressed representation through the browser's HTTP decoder. Verify transfer
 headers, progress and actual compressed bytes on the release host; local static
 files alone do not establish deployed behavior.
+
+### Live presentation surface replacement
+
+The shell's canvas reference is managed by `browser/presentation-surface.js`.
+Backend changes first call `glob2_surface_retire()` on the presentation owner
+to preserve fullscreen and invalidate the retiring SDL resize callback. Retire
+the SDL window and graphics context next, then call
+`glob2_surface_prepare(gpu, width, height)` from the presentation owner.
+`glob2_surface_poll()` returns pending (0), ready (1), or failure (-1); polling
+must yield through the normal frame loop. After creating the replacement SDL
+window and presenting, call `glob2_surface_finish(1)`. Creation failure uses
+`glob2_surface_finish(0)` before recreating the previous SDL window.
+`glob2_surface_error(destination, size)` copies a bounded diagnostic string.
+
+Software on threaded builds still presents through SDL's main-thread DOM canvas;
+GPU canvases transfer to the application worker. The bridge registers the pinned
+SDK's `GL.offscreenCanvases` record and shared dimensions/owner, restores it on
+rollback, and releases retired shared metadata on commit. The shell moves its
+resize observer, focus, audio activation and context-loss listeners to the new
+canvas and clears SDL's cached software context. Execution mode and Wasm instance
+remain unchanged. The persistent `presentation-host` ancestor owns browser
+fullscreen, allowing the child canvas to change while fullscreen stays active.
+Managed canvas fullscreen methods target that host; the pinned SDK shim reports
+the current canvas identity to SDL and restores dimensions on the current canvas
+when exiting. Retiring SDL windows cannot trigger fullscreen exit or invoke a
+resize callback with freed window data. Browser text inputs remain under the
+fullscreen ancestor. Directly fullscreening an unmanaged canvas through a native
+prototype call bypasses this ownership and is rejected before replacement.
+
+## Renderer presentation surfaces
+
+`presentation-surface.js` replaces the canvas when backend context types change.
+The replacement preserves CSS geometry, focus and accessibility attributes and rebinds
+input, resize and context-loss handlers. A stable `presentation-host` owns fullscreen;
+the SDK bridge maps fullscreen status back to the current canvas for SDL. The retirement
+hook runs before SDL window destruction so a renderer transition does not leave fullscreen.
+
+In threaded builds the existing application worker keeps running. Its bridge updates
+`Module.canvas`, SDL state and the pinned SDK's OffscreenCanvas registry after the main
+thread replaces the DOM canvas. The coordinator polls readiness on later frames instead
+of blocking the worker. The canvas transaction commits after presentation or restores
+the previous binding on failure. Runtime switching does not change serial/threaded
+execution mode. Browser query preferences use the same renderer family names as the CLI.
+
+The programmable backend binds fence waits through the typed GLES entry point.
+In the pinned Emscripten SDK, the proc-address form uses a split 64-bit timeout
+signature; casting it to the ordinary GLES signature traps in serial Wasm.
+`tools/rendering/webgl_sync_probe.cjs` checks this boundary against an explicitly
+selected SDK and Playwright installation.
+
+Use `web_legacy_gl=0` to build the direct rendering path with
+`LEGACY_GL_EMULATION=0`. It uses a separate output directory from the build that
+retains the legacy backend, and omits fixed-function shader and texture-unit
+workarounds. The backend selector still exposes software, direct WebGL2 and
+WebGPU where their generated assets are available. This option does not promote
+a backend to the platform default.

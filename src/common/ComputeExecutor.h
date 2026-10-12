@@ -18,6 +18,9 @@
 #include <thread>
 #include <ThreadSupport.h>
 #include <vector>
+#include <utility>
+#include <cstdlib>
+#include <cstring>
 
 // One executor for the simulation's parallel work. Two shapes of work share
 // its threads:
@@ -39,6 +42,16 @@
 class ComputeExecutor
 {
 public:
+	// Optional maintenance is never a deferred Group: join/run/owner fallback
+	// cannot execute it. A pass must be bounded and must not retain game inputs.
+	// No ticket or completion barrier is exposed to required work.
+	class WorkerOnly
+	{
+	public:
+		virtual ~WorkerOnly() = default;
+		virtual bool pending() const noexcept = 0;
+		virtual void process() noexcept = 0;
+	};
 	// Presentation is best-effort work, never part of a simulation barrier.
 	// One chunk runs at a time; at most one replacement waits behind it.
 	class Presentation
@@ -72,12 +85,47 @@ public:
 		std::uint64_t batchNs = 0, waitNs = 0;
 		std::size_t deferredBatches = 0, deferredJobs = 0, ownerJobs = 0, workerJobs = 0;
 		std::uint64_t joinWaitNs = 0;
+
 	};
 	struct Job
 	{
 		void (*invoke)(void*, std::size_t) = nullptr;
 		void* context = nullptr;
 	};
+	// A suspended deferred job keeps its batch and lane incomplete while its
+	// worker runs other work. Resolution is one-shot, including early resolution
+	// before the invoking callback returns. No completion retains game inputs.
+	struct CompletionLifetime {
+		std::mutex mutex;
+		ComputeExecutor* executor;
+		explicit CompletionLifetime(ComputeExecutor* executor):executor(executor) {}
+	};
+	class Completion
+	{
+		friend class ComputeExecutor;
+		std::atomic<ComputeExecutor*> owner;
+		std::shared_ptr<CompletionLifetime> lifetime;
+		std::size_t slot, index;
+		std::uint64_t serial;
+		bool running = true, resolved = false;
+		Job continuation;
+		std::exception_ptr error;
+		Completion(ComputeExecutor* owner, std::size_t slot, std::size_t index, std::uint64_t serial)
+			: owner(owner), lifetime(owner->completionLifetime), slot(slot), index(index), serial(serial) {}
+	public:
+		bool complete(std::exception_ptr error = {}) {
+			std::lock_guard lock(lifetime->mutex);
+			auto* target = lifetime->executor == owner.load(std::memory_order_acquire) ? lifetime->executor : nullptr;
+			return target && target->resolve(*this, {}, error);
+		}
+		bool resume(Job continuation) {
+			if (!continuation.invoke) throw std::invalid_argument("Completion needs a nonempty continuation");
+			std::lock_guard lock(lifetime->mutex);
+			auto* target = lifetime->executor == owner.load(std::memory_order_acquire) ? lifetime->executor : nullptr;
+			return target && target->resolve(*this, continuation, {});
+		}
+	};
+	using CompletionTicket = std::shared_ptr<Completion>;
 	static constexpr unsigned NoLane = ~0u;
 	static constexpr unsigned Lanes = 32;
 	struct Group
@@ -109,6 +157,8 @@ private:
 	using Clock = std::chrono::steady_clock;
 	inline static thread_local ComputeExecutor *active = nullptr;
 	inline static thread_local std::size_t activeSlot = 0;
+	inline static thread_local std::size_t deferredSlot = 0, deferredIndex = 0;
+	inline static thread_local std::uint64_t deferredSerial = 0;
 	struct Slot
 	{
 		std::uint64_t serial = 0; // zero: free
@@ -117,10 +167,13 @@ private:
 		std::vector<std::size_t> starts; // first job index of each group
 		std::vector<std::uint64_t> laneBases; // lane sequence of each group's first job
 		std::vector<char> claimed;
+		std::vector<CompletionTicket> completions;
+		std::vector<Job> continuations;
 		std::size_t total = 0, unclaimed = 0, completed = 0, firstUnclaimed = 0;
 		std::exception_ptr error;
 	};
 	struct Claim { std::size_t slot = 0, index = 0; bool valid = false; };
+	std::shared_ptr<CompletionLifetime> completionLifetime = std::make_shared<CompletionLifetime>(this);
 	std::vector<std::thread> workers;
 	mutable std::mutex mutex;
 	std::condition_variable ready, runFinished, slotDone;
@@ -148,6 +201,16 @@ private:
 	bool ownerRunsDeferred() const { return presentationWorker == 0; }
 	PresentationMetrics presentationTotals;
 	std::condition_variable presentationDone;
+	std::shared_ptr<WorkerOnly> maintenance;
+	bool maintenanceRunning = false;
+	// Optional observations do not wake the pool. Returning workers and normal
+	// required-work wakeups provide opportunities; idle tail samples may remain
+	// pending until another opportunity or lifecycle disposal. Registration still
+	// wakes workers, allowing asynchronous backend preparation before first work.
+	bool maintenanceClaimable(std::size_t worker) const
+	{
+		return worker != presentationWorker && maintenance && !maintenanceRunning && !presentation && !presentationPending && maintenance->pending();
+	}
 
 	bool presentationClaimable(std::size_t worker) const
 	{
@@ -272,24 +335,62 @@ private:
 	}
 	void freeSlot(Slot& slot)
 	{
-		slot.serial = 0; slot.groups.clear(); slot.starts.clear(); slot.laneBases.clear(); slot.claimed.clear();
+		slot.serial = 0; slot.groups.clear(); slot.starts.clear(); slot.laneBases.clear(); slot.claimed.clear(); slot.completions.clear(); slot.continuations.clear();
 		slot.total = slot.unclaimed = slot.completed = slot.firstUnclaimed = 0; slot.error = nullptr;
 		--live;
+	}
+	// Under mutex: settle a synchronous or externally completed job.
+	void completeJob(Slot& slot, std::size_t index, std::exception_ptr failure)
+	{
+		if (failure && !slot.error) slot.error = failure;
+		if (auto& ticket = slot.completions[index]) ticket->owner.store(nullptr, std::memory_order_release);
+		slot.completions[index].reset();
+		const auto lane = slot.groups[group(slot, index)].lane;
+		if (lane != NoLane) { ++laneCompleted[lane]; ready.notify_all(); }
+		if (++slot.completed == slot.total) slotDone.notify_all();
+	}
+	void settle(Completion& ticket)
+	{
+		auto& slot = slots[ticket.slot];
+		if (ticket.continuation.invoke && !ticket.error) {
+			slot.continuations[ticket.index] = ticket.continuation;
+			slot.claimed[ticket.index] = 0; ++slot.unclaimed;
+			slot.firstUnclaimed = std::min(slot.firstUnclaimed, ticket.index);
+			ticket.owner.store(nullptr, std::memory_order_release);
+			slot.completions[ticket.index].reset();
+			ready.notify_all();
+		} else completeJob(slot, ticket.index, ticket.error);
+	}
+	bool resolve(Completion& ticket, Job continuation, std::exception_ptr failure)
+	{
+		std::lock_guard<std::mutex> lock(mutex);
+		auto& slot = slots[ticket.slot];
+		if (slot.serial != ticket.serial || slot.completions[ticket.index].get() != &ticket || ticket.resolved) return false;
+		ticket.resolved = true; ticket.continuation = continuation; ticket.error = failure;
+		if (!ticket.running) settle(ticket);
+		return true;
 	}
 	// Outside the mutex: run one claimed deferred job, then record completion.
 	void execute(const Claim& claim, std::size_t thread)
 	{
 		Group group; std::size_t offset = 0;
+		std::uint64_t serial;
 		{
 			std::lock_guard<std::mutex> lock(mutex);
 			auto& slot = slots[claim.slot];
+			serial = slot.serial;
 			const auto g = this->group(slot, claim.index);
 			group = slot.groups[g]; offset = claim.index - slot.starts[g];
-			assert(group.lane == NoLane || laneCompleted[group.lane] == slot.laneBases[g] + offset);
+			if (slot.continuations[claim.index].invoke) { group.job = slot.continuations[claim.index]; offset = 0; }
+			assert(group.lane == NoLane || laneCompleted[group.lane] == slot.laneBases[g] + (claim.index - slot.starts[g]));
 		}
 		auto *previous = active;
 		const auto previousSlot = activeSlot;
 		active = this; activeSlot = thread;
+		const auto previousDeferredSlot = deferredSlot, previousDeferredIndex = deferredIndex;
+		const auto previousDeferredSerial = deferredSerial;
+		deferredSlot = claim.slot; deferredIndex = claim.index;
+		deferredSerial = serial;
 		const auto started = Clock::now();
 		std::exception_ptr failure;
 		try { group.job.invoke(group.job.context, offset); }
@@ -297,13 +398,16 @@ private:
 		workerMetrics[thread].activeNs += std::chrono::duration_cast<std::chrono::nanoseconds>(Clock::now() - started).count();
 		++workerMetrics[thread].jobs;
 		active = previous; activeSlot = previousSlot;
+		deferredSlot = previousDeferredSlot; deferredIndex = previousDeferredIndex; deferredSerial = previousDeferredSerial;
 		{
 			std::lock_guard<std::mutex> lock(mutex);
 			auto& slot = slots[claim.slot];
-			if (failure && !slot.error) slot.error = failure;
 			if (thread) ++totals.workerJobs; else ++totals.ownerJobs;
-			if (group.lane != NoLane) { ++laneCompleted[group.lane]; ready.notify_all(); }
-			if (++slot.completed == slot.total) slotDone.notify_all();
+			if (auto ticket = slot.completions[claim.index]) {
+				ticket->running = false;
+				if (failure) { ticket->resolved = true; ticket->error = failure; }
+				if (ticket->resolved) settle(*ticket);
+			} else completeJob(slot, claim.index, failure);
 		}
 	}
 	void worker(std::size_t slot)
@@ -312,7 +416,7 @@ private:
 		std::unique_lock<std::mutex> lock(mutex);
 		for (;;)
 		{
-			ready.wait(lock, [&] { return stopping || generation != seen || claimable(false) || presentationClaimable(slot); });
+			ready.wait(lock, [&] { return stopping || generation != seen || claimable(false) || presentationClaimable(slot) || maintenanceClaimable(slot); });
 			if (stopping) return;
 			// The designated worker interleaves presentation chunks with
 			// simulation jobs, so neither starves the other: a join waits at
@@ -340,7 +444,19 @@ private:
 			const auto claimed = claim(false);
 			if (!claimed.valid)
 			{
-				if (!presentationClaimable(slot)) continue;
+				if (!presentationClaimable(slot))
+				{
+					if (!maintenanceClaimable(slot)) continue;
+					const auto work = maintenance;
+					maintenanceRunning = true;
+					lock.unlock();
+					active = this; activeSlot = slot;
+					work->process();
+					active = nullptr; activeSlot = 0;
+					lock.lock();
+					maintenanceRunning = false;
+					continue;
+				}
 				const auto work = claimPresentation();
 				simulationClaims = 0;
 				lock.unlock();
@@ -356,6 +472,7 @@ private:
 	}
 	void stop()
 	{
+		setWorkerOnly({});
 		cancelPresentationAndWait();
 		joinAll();
 		{ std::lock_guard<std::mutex> lock(mutex); stopping = true; }
@@ -369,7 +486,11 @@ public:
 	ComputeExecutor() = default;
 	ComputeExecutor(const ComputeExecutor &) = delete;
 	ComputeExecutor &operator=(const ComputeExecutor &) = delete;
-	~ComputeExecutor() { stop(); }
+	~ComputeExecutor() {
+		stop();
+		std::lock_guard lock(completionLifetime->mutex);
+		completionLifetime->executor = nullptr;
+	}
 	// Configure only between batches; pending deferred work is joined first.
 	// Thread creation failure retains a usable serial executor; caller reports
 	// the actual thread count.
@@ -466,6 +587,19 @@ public:
 	PresentationMetrics presentationMetrics() const { std::lock_guard<std::mutex> lock(mutex); return presentationTotals; }
 	std::size_t threadCount() const { return workers.size() + 1; }
 	std::size_t slot() const { return active == this ? activeSlot : 0; }
+	static std::size_t workerSlot() { return active ? activeSlot : 0; }
+	static std::size_t executionThreads() { return active ? active->threadCount() : 1; }
+	// Configuration/lifecycle only. Replacing a service does not wait for a
+	// running pass; the worker retains its old service until that pass ends.
+	void setWorkerOnly(std::shared_ptr<WorkerOnly> service)
+	{
+		std::shared_ptr<WorkerOnly> old;
+		{
+			std::lock_guard<std::mutex> lock(mutex);
+			old = std::exchange(maintenance, std::move(service));
+		}
+		ready.notify_all();
+	}
 	// A consistent copy; workers update the deferred counters under the mutex.
 	Metrics metrics() const { std::lock_guard<std::mutex> lock(mutex); return totals; }
 	// Sum of active elapsed times, NOT CPU time (the benchmark measures process CPU).
@@ -558,12 +692,27 @@ public:
 		}
 		slot.total = slot.unclaimed = total; slot.completed = slot.firstUnclaimed = 0; slot.error = nullptr;
 		slot.claimed.assign(total, 0);
+		slot.completions.assign(total, {}); slot.continuations.assign(total, {});
 		++live;
 		++totals.deferredBatches; totals.deferredJobs += total;
 		batch.slot = index; batch.serial = slot.serial;
 		lock.unlock();
 		if (!ownerRunsDeferred()) ready.notify_all();
 		return batch;
+	}
+	// Suspend only the currently executing deferred callback. The caller must
+	// arrange complete() or resume() on every path, including handoff failures.
+	CompletionTicket defer()
+	{
+		if (active != this || !deferredSerial || !activeSlot)
+			throw std::logic_error("Only a worker deferred job can suspend");
+		std::lock_guard<std::mutex> lock(mutex);
+		auto& slot = slots[deferredSlot];
+		if (slot.serial != deferredSerial || slot.completions[deferredIndex])
+			throw std::logic_error("Deferred callback already suspended");
+		auto ticket = CompletionTicket(new Completion(this, deferredSlot, deferredIndex, deferredSerial));
+		slot.completions[deferredIndex] = ticket;
+		return ticket;
 	}
 	// True once every job of the batch has completed (or the batch was joined).
 	bool finished(const Batch& batch) const

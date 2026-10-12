@@ -3,6 +3,16 @@ import os
 Import('env')
 Import("PackTar")
 
+# Install CLI support before the optimized asset path returns.
+if 'install' in COMMAND_LINE_TARGETS and not env.get('server'):
+    for source, destination in [('completions/glob2.bash', 'bash-completion/completions/glob2'),
+                                ('completions/_glob2', 'zsh/site-functions/_glob2'),
+                                ('completions/glob2.fish', 'fish/vendor_completions.d/glob2.fish')]:
+        env.Alias('install', env.InstallAs(env['INSTALLDIR'] + '/' + destination, source))
+    env.Alias('install', env.Install(env['INSTALLDIR'] + '/man/man6', '#debian/glob2.6'))
+if 'dist' in COMMAND_LINE_TARGETS:
+    PackTar(env['TARFILE'], Split('completions/glob2.bash completions/_glob2 completions/glob2.fish'))
+
 if env.get('OPTIMIZED_ASSET_INSTALL') and 'dist' not in COMMAND_LINE_TARGETS:
     env.InstallAs(env["INSTALLDIR"] + "/applications/org.globulation2.Globulation2.desktop", "glob2.desktop")
     env.Install(env["INSTALLDIR"] + "/metainfo", "org.globulation2.Globulation2.metainfo.xml")

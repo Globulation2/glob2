@@ -4,7 +4,7 @@ name: App signing fingerprints
 # only that repository's owner can dispatch it, and every job is skipped in
 # Globulation2/glob2. Prints only public certificate SHA-256 fingerprints and the
 # Apple App ID's Team ID and capabilities, for invite-link verification
-# (docs/hosting/README.md#mobile-app-links). Never print keys or passwords.
+# (docs/hosting/networking.md#mobile-app-links). Never print keys or passwords.
 on:
   workflow_dispatch:
     inputs:

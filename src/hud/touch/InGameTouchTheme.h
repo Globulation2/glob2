@@ -35,6 +35,8 @@ inline constexpr double flagReachEdge = 36;
 inline constexpr double flagReachEdgeBand = 96;
 inline constexpr double inspectorRow = 44;
 inline constexpr double inspectorHeader = 40;
+inline constexpr double unitStatRow = 36;
+inline constexpr double unitStatsTitle = 32;
 inline constexpr double ratioRow = 64;
 inline constexpr double ratioLabel = 20;
 inline constexpr double inspectorWide = 400;
@@ -58,12 +60,12 @@ inline constexpr double railInset = 12;
 // The compact inspector's thumb dial: quarter rings centred on the thumb corner
 // (outer radius shrinks to fit), swept from along the toolbar (start) to nearly
 // straight up (end), stopping short of the screen edge.
-inline constexpr double dialRadius = 286;
-inline constexpr double dialMinimumRadius = 150;
-inline constexpr double dialRingThickness = 28;
+inline constexpr double dialRadius = 388;
+inline constexpr double dialMinimumRadius = 256;
+inline constexpr double dialRingThickness = 30;
 inline constexpr double dialRingGap = 8;
 inline constexpr double dialSweepStart = 4;
-inline constexpr double dialSweepEnd = 78;
+inline constexpr double dialSweepEnd = 84;
 inline constexpr double dialPad = 44; // Arc length of the −/+ pads at a slider's ends,
 inline constexpr double dialPadMaximumAngle = 18; // capped so short inner arcs keep a slider.
 inline constexpr double dialChipWidth = 104;

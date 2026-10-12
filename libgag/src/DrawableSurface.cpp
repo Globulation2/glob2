@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "GraphicContextPrivate.h"
+#include <RenderDevice.h>
 #include <Toolkit.h>
 #include <FileManager.h>
 #include <assert.h>
@@ -14,15 +15,12 @@
 #include <SurfaceRaster.h>
 #include <stdexcept>
 #include <AssetLoader.h>
-#ifdef GLOB2_WEBGL2
+#include <ApplicationHost.h>
 #include <set>
-#endif
 
 namespace GAGCore
 {
-#ifdef GLOB2_WEBGL2
-    namespace { std::set<DrawableSurface*> gpuSurfaces; }
-#endif
+    namespace { std::set<DrawableSurface*> liveSurfaces; }
     std::uint64_t DrawableSurface::nextSurfaceIdentity()
     {
         static std::atomic<std::uint64_t> sequence{0};
@@ -79,6 +77,7 @@ namespace GAGCore
 
     DrawableSurface::DrawableSurface(SDL_Surface *prepared, AdoptPixels, bool allocateGPU)
     {
+        liveSurfaces.insert(this);
         assert(prepared && prepared->format == SDL_PIXELFORMAT_ARGB8888);
         sdlsurface = prepared;
         setClipRect(); if (allocateGPU) allocateTexture(); markPixelsChanged();
@@ -105,8 +104,11 @@ namespace GAGCore
     void DrawableSurface::prepareTexture()
     {
         assert(!_gc || SDL_GetCurrentThreadID() == _gc->eventThread);
-        if (_gc && _gc->portableRenderer) _gc->portableRenderer->prepareTexture(this, sdlsurface, pixelRevision);
-        if (glUploadedRevision != pixelRevision) uploadToTexture();
+        if (_gc && _gc->portableRenderer) _gc->portableRenderer->prepareTexture(this, sdlsurface, pixelRevision, highResolutionSampling);
+        // Device adapters consume the authored chain on draw and need it again
+        // after switching or recovery. Legacy upload cleanup must not discard
+        // that restoration source when there is no legacy GL allocation.
+        if ((!_gc || !_gc->presentationDevice) && glUploadedRevision != pixelRevision) uploadToTexture();
     }
 
     size_t DrawableSurface::allocatedTextureBytes()
@@ -127,8 +129,10 @@ namespace GAGCore
 
 	DrawableSurface::~DrawableSurface(void)
 	{
+        liveSurfaces.erase(this);
 		if (_gc && _gc->portableRenderer) _gc->portableRenderer->forget(this);
         if (_gc && _gc->softwareRasterizer) _gc->softwareRasterizer->forget(this);
+        if (_gc && _gc->deviceRenderer) _gc->deviceRenderer->forget(this);
 		SDL_DestroySurface(sdlsurface);
 		freeGPUTexture();
 	}
@@ -142,19 +146,17 @@ namespace GAGCore
 		return v;
 	}
 
-	void DrawableSurface::allocateTexture(void)
+	void DrawableSurface::allocateTexture(bool initializeStorage)
 	{
+        liveSurfaces.insert(this);
 		#ifdef HAVE_OPENGL
 		if (textureInfo)
 			return;
-		if (_gc && (_gc->optionFlags & GraphicContext::USEGPU))
+		if (_gc && _gc->context && (_gc->optionFlags & GraphicContext::USEGPU))
 		{
 			glGenTextures(1, reinterpret_cast<GLuint*>(&texture));
 			glState.allocatedTextureCount++;
-#ifdef GLOB2_WEBGL2
-            gpuSurfaces.insert(this);
-#endif
-			initTextureSize();
+			if (initializeStorage) initTextureSize();
 		}
 		#endif
 	}
@@ -212,6 +214,8 @@ namespace GAGCore
 		}
 		if (_gc && (_gc->optionFlags & GraphicContext::USEGPU))
 		{
+            // Restoration and live activation both discard absent GL names.
+            if (!texture) allocateTexture();
 			glState.setTexture(texture);
 
 			void *pixelsPtr;
@@ -221,7 +225,17 @@ namespace GAGCore
 #elif SDL_BYTEORDER == SDL_BIG_ENDIAN
             std::valarray<Uint32> tempPixels;
 #endif
-            if (preparedUploadRevision == pixelRevision && !preparedUploadPixels.empty()) {
+            if (highResolutionSampling && !glState.isTextureSRectangle) {
+                // The HD branch uploads its prepared mip chain, including
+                // level zero. Converting this surface here would create an
+                // unused full-size RGBA copy on every terrain animation update.
+                pixelsPtr = nullptr;
+#if defined(GLOB2_WEBGL2) || SDL_BYTEORDER == SDL_BIG_ENDIAN
+                pixelFormat = GL_RGBA;
+#else
+                pixelFormat = GL_BGRA;
+#endif
+            } else if (preparedUploadRevision == pixelRevision && !preparedUploadPixels.empty()) {
                 pixelsPtr = preparedUploadPixels.data(); pixelFormat = GL_RGBA;
             } else {
 			#if defined(GLOB2_WEBGL2)
@@ -254,13 +268,37 @@ namespace GAGCore
 			}
 			else
 			{
-				glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, sdlsurface->w, sdlsurface->h, pixelFormat, GL_UNSIGNED_BYTE, pixelsPtr);
                 if(highResolutionSampling)
                 {
                     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
                     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_LINEAR);
                     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
                     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
+                    if ((preparedUploadRevision != pixelRevision || preparedMips.empty()) &&
+                        sdlsurface->w > 0 && sdlsurface->h > 0 &&
+                        sdlsurface->pitch == sdlsurface->w * 4 &&
+                        !(sdlsurface->w & (sdlsurface->w - 1)) && !(sdlsurface->h & (sdlsurface->h - 1))) {
+#ifdef GLOB2_WEBGL2
+                        const bool generated = ApplicationHost::prepareOpenGLMipmaps(
+                            texture, sdlsurface->pixels, sdlsurface->w, sdlsurface->h);
+#else
+                        const bool generated = prepareNativeMipmaps(texture, sdlsurface);
+#endif
+                        if (generated) {
+                            glState.allocatedTextureBytes -= gpuBytes; gpuBytes = 0;
+                            int w = sdlsurface->w, h = sdlsurface->h;
+                            for (;;) {
+                                gpuBytes += size_t(w) * h * 4;
+                                if (w == 1 && h == 1) break;
+                                w = std::max(1, w / 2); h = std::max(1, h / 2);
+                            }
+                            glState.allocatedTextureBytes += gpuBytes;
+                            glUploadedRevision = pixelRevision;
+                            std::vector<unsigned char>().swap(preparedUploadPixels);
+                            std::vector<AssetImage::Mip>().swap(preparedMips);
+                            return;
+                        }
+                    }
                     AssetImage fallback(nullptr);
                     const auto *levels = &preparedMips;
                     if (preparedUploadRevision != pixelRevision || preparedMips.empty()) {
@@ -281,7 +319,12 @@ namespace GAGCore
 #ifdef GLOB2_WEBGL2
                     const bool compress=false;
 #else
-                    const bool compress=glState.hasS3TCCompression;
+                    // Authored artwork has worker-prepared mip levels. Generated
+                    // or edited pixels use the fallback chain and can change on
+                    // every animation phase; driver-side DXT encoding stalls the
+                    // render thread for those updates.
+                    const bool compress=glState.hasS3TCCompression &&
+                        preparedUploadRevision == pixelRevision && !preparedMips.empty();
 #endif
                     const GLenum internalFormat=compress?GL_COMPRESSED_RGBA_S3TC_DXT5_EXT:GL_RGBA;
                     for (size_t mip = 0; mip < levels->size(); ++mip) {
@@ -294,6 +337,8 @@ namespace GAGCore
                     }
 
                 }
+                else
+                    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, sdlsurface->w, sdlsurface->h, pixelFormat, GL_UNSIGNED_BYTE, pixelsPtr);
 			}
 		}
 		#endif
@@ -306,9 +351,6 @@ namespace GAGCore
 	{
 		if (!textureInfo && _gc && _gc->renderBatch)
 			_gc->renderBatch->textureChanged(texture);
-#ifdef GLOB2_WEBGL2
-        gpuSurfaces.erase(this);
-#endif
         if (!texture) return;
 		#ifdef HAVE_OPENGL
 		if (_gc && texture && (_gc->optionFlags & GraphicContext::USEGPU))
@@ -439,6 +481,12 @@ namespace GAGCore
 namespace GAGCore {
 void GraphicContext::restoreBrowserContext()
 {
+    if (_gc && _gc->presentationDevice) {
+        try { _gc->recoverPresentationDevice(); }
+        catch (const std::exception &error) { _gc->handleDeviceFailure(error.what()); }
+        return;
+    }
+#ifdef HAVE_OPENGL
     if (!_gc || !(_gc->optionFlags & USEGPU)) return;
     _gc->resetRenderPacing();
     // GL objects owned outside libgag, such as the torus overview's, belong to
@@ -460,16 +508,35 @@ void GraphicContext::restoreBrowserContext()
     // CPU surfaces, including sprite atlases, remain the source of truth.
     // Rebuild GPU objects without touching game, camera, or UI state.
     glState.allocatedTextureCount = 0;
-    for (auto* surface : gpuSurfaces) {
-        glDeleteTextures(1, &surface->texture);
+    glState.allocatedTextureBytes = 0;
+    for (auto* surface : liveSurfaces) {
         surface->texture = 0;
-        if (surface->textureInfo) continue;
-        glGenTextures(1, &surface->texture);
-        ++glState.allocatedTextureCount;
-        surface->initTextureSize();
-        surface->uploadToTexture();
+        surface->gpuBytes = 0;
+        surface->glUploadedRevision = 0;
     }
     _gc->setClipRect();
+#endif
 }
 }
 #endif
+
+namespace GAGCore {
+void GraphicContext::releaseSurfaceTextures()
+{
+#ifdef HAVE_OPENGL
+    for (auto *surface : liveSurfaces)
+        if (surface != _gc) surface->freeGPUTexture();
+#endif
+}
+void GraphicContext::restoreSurfaceTextures()
+{
+#ifdef HAVE_OPENGL
+    for (auto *surface : liveSurfaces) {
+        if (surface == _gc || surface->textureInfo || !surface->sdlsurface ||
+            surface->getW() <= 0 || surface->getH() <= 0) continue;
+        surface->allocateTexture();
+        surface->uploadToTexture();
+    }
+#endif
+}
+}

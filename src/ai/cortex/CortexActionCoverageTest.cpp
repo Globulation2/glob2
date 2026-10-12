@@ -300,6 +300,45 @@ TEST_SUITE("CortexActionCoverage")
         }
     }
 
+    TEST_CASE("inn capacity preserves historical clocks and scales authored food demand")
+    {
+        glob2test::HeadlessGlobals globals;
+        int historical=0,authoredDefault=0,authored700=0,authored850=0;
+        for(int variant=0;variant<4;++variant) {
+            CAPTURE(variant);
+            glob2test::HeadlessGame world({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
+            const auto defaults=UnitCatalog::builtins();
+            if(variant==0) {
+                std::vector<std::array<UnitType,NB_UNIT_LEVELS>> levels;
+                for(unsigned id=0;id<defaults->size();++id)levels.push_back(defaults->levels(id));
+                world.game.gameHeader.setUnitCatalog(defaults->withLegacyLevels(levels,700));
+            } else {
+                auto units=nlohmann::json::parse(defaults->serialize());
+                for(auto& unit:units["units"])unit["behaviors"]["hungerRate"]=variant==1?425:variant==2?700:850;
+                world.game.gameHeader.setUnitCatalog(UnitCatalog::deserialize(units.dump()));
+            }
+            world.game.configureUnitCatalog();
+            auto catalog=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());
+            const int innType=world.game.buildingsTypes.getFinishedTypeNum("inn");
+            // A free feeding service isolates capacity from the food-source scan.
+            catalog["variants"][innType]["semantics"]["feeding"]["cost"]=nlohmann::json::object();
+            world.game.buildingsTypes.loadSnapshotJson(catalog.dump());world.game.configureBuildingCatalog();
+            auto* inn=world.addBuilding("inn",4,4);REQUIRE(inn);
+            REQUIRE(world.addUnit(WORKER,12,12));refreshStats(*world.team);
+            auto obs=Cortex::makeEmptyObservation();bool found=false;Sint32 x=0,y=0,r=0;
+            Cortex::observeBuildings(obs,world.team,&world.game,0,NOGBID,found,x,y,r);
+            const int expected=Cortex::cortexInnUnitSupport(inn->type->maxUnitInside,inn->type->semantics.feeding.duration);
+            if(variant==0){historical=obs.feedCapacity;CHECK(historical==expected);}
+            if(variant==1){authoredDefault=obs.feedCapacity;CHECK(authoredDefault==expected);}
+            if(variant==2)authored700=obs.feedCapacity;
+            if(variant==3)authored850=obs.feedCapacity;
+        }
+        CHECK(historical==authoredDefault);
+        CHECK(authored700<authoredDefault);
+        CHECK(authored850<authored700);
+        CHECK(authored850>0);
+    }
+
     TEST_CASE("mixed renamed provider has multiple policy roles but one model and worker identity")
     {
         glob2test::HeadlessGlobals globals;

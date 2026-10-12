@@ -22,7 +22,7 @@ SIMULATION = ('src/ai/', 'src/unit/', 'src/building/', 'src/team/', 'src/map/',
               'src/scripting/sgsl/', 'src/engine/sim/', 'src/game/orders/')
 PRESENTATION = ('src/hud/', 'src/render/', 'src/unit/render/', 'src/building/hud/')
 # Code inside the directories above that belongs to neither class: every check.
-UNCLASSIFIED = ('data/buildings/', 'src/render/torus/', 'src/render/clouds/', 'src/render/overlay/', 'src/unit/types/',
+UNCLASSIFIED = ('libgag/shaders/', 'tools/shaders/', 'data/buildings/', 'src/render/torus/', 'src/render/clouds/', 'src/render/overlay/', 'src/unit/types/',
                 'src/building/types/', 'src/team/stats/', 'src/map/preview/', 'src/map/tools/',
                 'src/net/lan/screens/')
 UNCLASSIFIED_FILES = {'libgag/include/RenderFramePacer.h', 'src/team/BaseTeam.cpp', 'src/map/MapTiling.cpp', 'src/map/FertilityCalculator.cpp',
@@ -57,7 +57,10 @@ PLATFORM_STACK_PATHS = (
 TRANSPORT_HARNESSES = {'NetConnectionHarness.cpp', 'NativeMultiplayerPeer.cpp', 'WssTransportHarness.cpp',
                        'WssListenerHarness.cpp', 'LANDiscoveryHarness.cpp', 'run-network-transport-tests.py'}
 RENDER = {'libgag/src/RenderBackend.cpp', 'libgag/src/SoftwareRenderBackend.cpp',
-          'libgag/src/SurfaceRaster.cpp'}
+          'libgag/src/SurfaceRaster.cpp', 'libgag/src/RenderDevice.cpp', 'libgag/src/RenderFrame.cpp',
+          'libgag/src/RenderResources.cpp', 'libgag/src/RendererSelection.cpp',
+          'libgag/src/GraphicContextRenderer.cpp', 'libgag/src/ProgrammableGLDevice.cpp',
+          'libgag/src/SDLGPUDevice.cpp', 'libgag/src/WebGPUDevice.cpp'}
 
 
 # The mirror-only deployment of app.glob2online.com (deploy-online.yml runs
@@ -86,7 +89,9 @@ def unclassified(path):
 def cheap_path(path):
     return (path.startswith(('docs/', 'test/build_system/test_ci', 'fdroid/', 'fastlane/'))
             or path.endswith('.md') or path in MIRROR_DEPLOY_FILES or path in {
+                'INSTALL', 'AUTHORS', 'tools/README', 'debian/README.Debian', 'debian/README.source',
                 'requirements-dev.txt', 'test/test_run_tests.py', 'test/test_ci_failure_aggregation.py',
+                'tools/check_docs.py', 'tools/docs/navigation.json', 'tools/docs/requirements.txt', 'test/test_check_docs.py',
                 'tools/package_steam_windows.py', 'test/test_steam_windows_package.py',
                 'mobile/android_release.py', '.github/workflows/steam-windows-package.yml',
                 '.github/workflows/mac-app-store.yml'})
@@ -145,6 +150,8 @@ def select(paths, labels=(), known=False):
             add(path, 'map_generators', 'compatibility')
         elif path.endswith(('.h', '.hpp', '.hh')):
             add(path, *FLAGS)
+        elif path.startswith('src/app/cli/') or path in {'src/app/Glob2.cpp', 'src/app/GlobalContainerArgs.cpp', 'tools/cli_reference.py', 'test/test_cli_smoke.py'}:
+            add(path, 'native', 'browser', 'windows', 'android', 'macos', 'compatibility', 'cross_platform', 'platform', 'deployment')
         elif is_test_source(path):
             name = Path(path).name
             if name.startswith('Hive'):
@@ -152,18 +159,20 @@ def select(paths, labels=(), known=False):
                 add(path, *FLAGS)
             elif name in TRANSPORT_HARNESSES:
                 add(path, 'native', 'browser', 'windows', 'compatibility', 'cross_platform', 'deployment')
-            elif name.startswith('Script'):
+            elif name.startswith('Script') or name in {'UnitCatalogTest.cpp', 'UnitCustomizationTest.cpp'}:
                 add(path, 'native', 'browser', 'windows', 'compatibility', 'cross_platform')
             elif name.startswith('MapGenerator'):
                 add(path, 'native', 'map_generators', 'compatibility')
             else:
                 add(path, 'native')
-        elif path.startswith(('scons/', 'libusl/', 'data/terrain/', 'data/resources/')) or path in {'SConstruct', 'vcpkg.json', 'libgag/include/AudioFormat.h', 'tools/image_encoding.json', 'tools/terrain_tileset.py', 'tools/test_terrain_tileset.py'} or unclassified(path):
+        elif path.startswith(('scons/', 'libusl/', 'data/terrain/', 'data/resources/', 'data/units/')) or path in {'SConstruct', 'vcpkg.json', 'libgag/include/AudioFormat.h', 'tools/image_encoding.json', 'tools/terrain_tileset.py', 'tools/test_terrain_tileset.py'} or unclassified(path):
             add(path, *FLAGS)
-        elif path.startswith(('test/fixtures/', 'test/support/', '.github/')) or path in {
+        elif path.startswith(('test/fixtures/', 'test/maxima/fixtures/', 'test/support/', '.github/')) or path in {
             'test/run_tests.py', 'test/ci_native_shard_plan.py', 'test/ci-native-auxiliary.json',
             'test/ci-compatibility.json', 'test/build_ci_timing_profile.py', 'test/run-browser-determinism.py',
             'test/check_javascript.py', 'test/check_javascript_corpus.py', 'test/check_javascript_evidence.py',
+            'test/check_telemetry_simulation.py', 'test/test_javascript_evidence.py',
+            'test/maxima/check_save_continuation_fixture.py',
             'test/build_provenance.py'} or path.startswith('test/ci-timings/'):
             add(path, *FLAGS)
         elif path.startswith(('mobile/',)):

@@ -23,6 +23,7 @@ private:
 	std::unique_ptr<Game> game;
 	Game::ViewState view;
 	std::unique_ptr<ScenePreparation> presentation;
+	std::unique_ptr<PresentationFrame> initialScene;
 	Uint64 worldTickTime = 0;
 	Uint64 lastTime = 0, pending = 0; // pending is accumulated nanoseconds
 	bool clockStarted = false;

@@ -7,7 +7,11 @@
 #include "GAGSys.h"
 #include "CursorManager.h"
 #include "RenderFramePacer.h"
+#include "RendererSelection.h"
+#include "RenderResources.h"
+#include "GameplayRecording.h"
 #include "SkinAtlasCache.h"
+#include "SpriteRenderAtlas.h"
 #include <AssetLoader.h>
 #include <array>
 #include <map>
@@ -36,6 +40,10 @@ namespace GAGCore
     struct SkinMeshRequest;
 
     class RenderBackend;
+    struct DrawPacket;
+    struct DeviceSkinState;
+    class RenderDevice;
+    class RenderResources;
     class SoftwareFramePresenter;
     struct RenderOperations;
 	//! Color is 4 bytes big but provides easy access to components
@@ -182,6 +190,8 @@ namespace GAGCore
 		SDL_Surface *sdlsurface;
 		// Texture dimensions
 		std::optional<TextureInfo> textureInfo;
+        Sprite *spriteSource = nullptr;
+        std::uint32_t spriteFrame = 0;
 		//! The clipping rect, we do not draw outside it
 		SDL_Rect clipRect;
 		// Content revisions are never consumed by drawing. Each backend remembers
@@ -210,8 +220,8 @@ namespace GAGCore
 	protected:
 		//! Protected constructor, only called by GraphicContext
 		DrawableSurface() { sdlsurface = NULL; }
-		//! allocate texture in GPU for this surface
-		void allocateTexture(void);
+		//! allocate a GPU texture object, optionally initializing legacy padded storage
+		void allocateTexture(bool initializeStorage = true);
 		//! reset the texture size upon changes
 		void initTextureSize(void);
 		//! upload surface to GPU
@@ -355,14 +365,60 @@ namespace GAGCore
 	//! A GraphicContext is a DrawableSurface that represent the main screen of the application.
 	class GraphicContext:public DrawableSurface
 	{
+        RendererSwitchStatus backendStatus;
+        std::optional<RendererBackend> nextBackend;
+        bool changingBackend = false, nextBackendPersists = true, switchPersists = true, recoveringBackend = false;
+        RendererCapabilities retiringCapabilities;
+        Uint64 switchStarted = 0;
+        std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> transitionPixels{nullptr, SDL_DestroySurface};
+        std::function<void(RendererBackend)> backendPreferenceCallback;
+        static std::optional<RendererBackend> initialBackend;
+        RendererBackend automaticBackend = RendererBackend::Software;
+        bool awaitingBrowserSurface = false;
+        bool awaitingDevicePreparation = false, awaitingSwitchCapture = false;
+        RendererBackend switchingFrom = RendererBackend::Software, switchingTo = RendererBackend::Software;
+        int switchWindowX = SDL_WINDOWPOS_UNDEFINED, switchWindowY = SDL_WINDOWPOS_UNDEFINED;
+        void retirePresentationSurface();
+        void applyQueuedBackend();
+        void captureBackendFrame();
+        void completeBackendFrame();
+        void recoverPresentationDevice();
+        void handleDeviceFailure(const std::string &);
+        void resetDeviceSkinState() { deviceSkinState.reset(); }
+        void invalidateDeviceSkinTiles();
+        void prepareDeviceSkinMeshes(const std::vector<SkinMeshRequest> &);
+        bool drawDeviceSkinMesh(const SkinMeshRequest &, float, float, float, float, DrawableSurface *, Uint8);
+        bool readDeviceSkinMesh(const SkinMeshRequest &, std::vector<std::uint8_t> &);
+        void captureScreenshot();
+        bool saveScreenshot(SDL_Surface &, const std::string &);
+        static std::string rendererShaderDirectory();
+    public:
+        RenderDevice *renderDevice() const { return renderer == deviceRenderer.get() ? presentationDevice.get() : nullptr; }
+        RenderResources *renderResources() const { return deviceResources.get(); }
+        std::shared_ptr<RenderResources> renderResourceOwner() const { return deviceResources; }
+        bool beginDeviceTarget(TextureSnapshot target, float logicalWidth, float logicalHeight);
+        void endDeviceTarget();
+        bool submitDevicePacket(DrawPacket packet);
+        // Bounded offscreen producers publish only completed logical captures.
+        bool flushDeviceFrame();
+        bool deferDeviceFrame();
+        bool setDeviceTargetScissor(const SDL_Rect *pixels);
+    private:
+        bool activateBackend(RendererBackend backend, SDL_Surface *previousFrame);
 		RenderFramePacer renderPacer;
 		static const bool verbose = false;
 	public:
+        static void setInitialRendererBackend(RendererBackend backend) { initialBackend = backend; }
+        bool requestBackendSwitch(RendererBackend backend);
+        const RendererSwitchStatus &backendSwitchStatus() const { return backendStatus; }
+        RendererCapabilities rendererCapabilities() const;
+        std::vector<RendererAvailability> rendererAvailability() const;
+        void setBackendPreferenceCallback(std::function<void(RendererBackend)> callback) { backendPreferenceCallback = std::move(callback); }
 		// Interactive hosts reserve drawing before painting; exports and benchmarks
 		// leave the context's default uncapped. Zero means Unlimited.
 		void setTargetRenderFps(int fps) { renderPacer.configure(fps); }
 		void resetRenderPacing() { renderPacer.reset(); }
-		bool beginRenderFrame() { return renderPacer.begin(SDL_GetTicksNS()); }
+        bool beginRenderFrame();
 		Uint32 renderFrameWait() const { return renderPacer.waitMilliseconds(SDL_GetTicksNS()); }
 
 		//! The cursor manager, public to be able to set custom cursors
@@ -446,6 +502,7 @@ namespace GAGCore
 		void updateWindowSize(void);
 		SDL_Window *window = nullptr;
 		unsigned glContextGeneration = 0;
+        std::uint64_t targetContentRevision = 0;
 		SDL_GLContext context = nullptr;
 		SDL_ThreadID eventThread = 0;
 		bool pollingEvents = false;
@@ -514,6 +571,8 @@ namespace GAGCore
 			std::map<std::pair<std::uint64_t, std::uint64_t>, std::array<bool, 4>> shellRegions;
 		} skinResources;
 		void destroySkinRenderer();
+        static void releaseSurfaceTextures();
+        static void restoreSurfaceTextures();
         unsigned unitShaderProgram = 0;
 		int unitShaderLocBase = -1, unitShaderLocTeam = -1;
 		int unitShaderLocHasBase = -1, unitShaderLocHasTeam = -1;
@@ -524,6 +583,19 @@ namespace GAGCore
 		virtual void swapBuffers();
 		static bool SDLCALL watchWindow(void *userdata, SDL_Event *event);
 		std::unique_ptr<RenderBackend> portableRenderer;
+        std::unique_ptr<RenderDevice> presentationDevice;
+        std::shared_ptr<RenderResources> deviceResources;
+        std::unique_ptr<RenderBackend> deviceRenderer;
+        RendererBackend configuredBackend = RendererBackend::Software;
+        std::shared_ptr<DeviceSkinState> deviceSkinState;
+        struct DeviceTargetState { SDL_Rect clip; float scale; bool offscreen, map, ui; };
+        std::vector<DeviceTargetState> deviceTargetStates;
+        std::map<std::uint64_t, Recording::CaptureTicket> recordingCaptures;
+        std::uint64_t captureFrameIdentity = 0;
+        std::uint64_t screenshotIdentity = UINT64_MAX / 2;
+        std::map<std::uint64_t, std::string> screenshotCaptures;
+        void pollRecordingCaptures();
+        void cancelRecordingCaptures();
         RenderBackend* renderer = nullptr; // Borrowed active backend; ownership stays in the two unique_ptrs.
         // Rasterizes transformed passes into the existing software framebuffer.
         std::unique_ptr<RenderBackend> softwareRasterizer;
@@ -546,6 +618,8 @@ namespace GAGCore
 		//! Bounded software pass; borrows pixels and restores facade/backend state on failure.
 		void drawToSurface(SDL_Surface* surface, float scale, const std::function<void()>& draw);
 		unsigned getGLContextGeneration() const { return glContextGeneration; }
+        // Failed bounded admission invalidates composed pixels, not logical leases.
+        std::uint64_t renderTargetContentRevision() const { return targetContentRevision; }
 
 		// modifiers
 		virtual bool setRes(int w, int h, Uint32 flags);
@@ -745,14 +819,23 @@ namespace GAGCore
 		
 		//! Return the option flags
 		Uint32 getOptionFlags(void) { return optionFlags; }
+		// Report-only identity. GL strings are available only on this context's
+		// presentation thread while the context is current; never switches it.
+		struct RenderingIdentity {
+			std::string backend;
+			std::string glVendor, glRenderer;
+			bool glIdentityAvailable = false;
+		};
+		RenderingIdentity renderingIdentity() const;
 	};
 	
+    class HighResolutionInputs;
 	//! A sprite is a collection of images (frames) that can be displayed one after another to make an animation
 	class Sprite
 	{
         friend class SpriteLoad;
         void registerLoaded();
-        static std::vector<AssetLoader::Handle<AssetImage>> prefetchHighResolution(const std::string&, size_t frames);
+        static HighResolutionInputs prefetchHighResolution(const std::string&, size_t frames);
         void adoptLoaded(Sprite& prepared);
 	protected:
 		struct RotatedImage
@@ -775,7 +858,7 @@ namespace GAGCore
 		std::vector <DrawableSurface *> images;
 		std::vector <RotatedImage *> rotated;
 		std::unique_ptr<Sprite> highResolutionAtlas;
-		void createHighResolutionAtlas();
+		void createHighResolutionAtlas(HighResolutionInputs& inputs);
 		std::vector <DrawableSurface *> experimentImages;
 		std::vector <RotatedImage *> experimentRotated;
 
@@ -785,8 +868,13 @@ namespace GAGCore
 		std::vector <float> texCoords;
 		unsigned int vbo = 0; // Vertex buffer object
 		unsigned int texCoordBuffer = 0;
-		std::unique_ptr<const DrawableSurface> atlas = nullptr;
+        unsigned bufferGeneration = 0;
 #endif
+        std::shared_ptr<const SpriteAtlasMemory> atlasMemory;
+        std::unique_ptr<const DrawableSurface> atlas = nullptr;
+        std::vector<SpriteAtlasStamp> atlasStamps;
+        std::vector<SDL_Rect> atlasRegions;
+        bool atlasVariableSizes = false;
 		static void checkAllSpritesDrawn();
 		Color actColor;
 
@@ -860,15 +948,19 @@ namespace GAGCore
 		void applyTeamHueShift(DrawableSurface &surface);
 		DrawableSurface *getColoredSurface(int index, bool experiment);
 		DrawableSurface *prepareDrawSurface(unsigned index, bool teamColor, bool experiment);
-        void appendHighResolutionFrame(size_t index, Sprite& target);
+        void appendHighResolutionFrame(size_t index, Sprite& target,
+            HighResolutionInputs& inputs);
 
 	public:
 		//! Opt into batching variable-size frames; callers must finishDrawingSprite.
 		bool createTextureAtlas(bool allowVariableSizes = false);
+        bool resolveDeviceAtlas(DrawableSurface &, SDL_Rect &, const DrawableSurface *&);
+        bool createDeviceTextureAtlas(int maximumTextureSize, bool variableSizes);
 		struct HighResolutionStats {size_t cpuBytes=0, coloredFrames=0;};
 		static HighResolutionStats highResolutionStats();
 		static void setHighResolution(bool enabled);
         static void requestHighResolution(bool enabled);
+        static void refreshHighResolutionForRenderer();
         static bool pollHighResolution(unsigned budgetMs = 2);
         static bool pollHighResolutionUntil(std::chrono::steady_clock::time_point deadline);
 		static void flushBatches(GraphicContext *gc);

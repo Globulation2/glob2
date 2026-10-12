@@ -54,7 +54,7 @@ Ratings change only for **rated queue matches** whose verify-match verdict is
 | The verifier reports a winning side | Winner rank 1, loser rank 2 |
 | The verifier reports winners on both sides (a shared win) | Draw: no change |
 | No winner, and one side's last human left first while an opponent stayed | Abandonment is a loss: the leaving side loses |
-| Both sides left within 250 ticks (10 s) of each other | Mutual leave: no change |
+| Both sides left within `MUTUAL_LEAVE_TICKS` (250 ticks, about 8.33 s at 30 ticks/s) of each other | Mutual leave: no change |
 | No winner and nobody left (or the match was cut off) | Unresolved: no change |
 | Verdict `diverged` or `unverifiable` | No change; the match is flagged for admins |
 | A seat holds a deleted account, or one rating entity occupies two seats | No change |
@@ -73,11 +73,13 @@ it automatically could punish the wrong player.
 ### Shared wins are draws
 
 The engine marks a team won when any winning condition says so, and ties count.
-When the prestige goal is reached, or the sudden-death timer runs out, every team
-tied for the most prestige has won, whatever its alliance; the in-game end screen
-tells each of those players "you have won". A sudden-death game in which every team is on
-the same prestige at the buzzer (often none at all) therefore ends with every team
-won, which
+When enabled prestige victory reaches its goal, or the sudden-death timer runs
+out, surviving teams tied for the most prestige have won, whatever their alliance.
+Eliminated colonies cannot set the winning prestige score. The in-game end screen
+shows a draw when winning teams belong to different alliances, and a shared win
+when they are mutually allied. A sudden-death game in which every surviving team
+is on the same prestige at the buzzer (often none at all) therefore marks every
+survivor won, which
 `result.json` and the verify-match verdict report as such.
 
 The platform reads a win as a win only when one side holds it.
@@ -157,7 +159,7 @@ provisional (±177 display points per standard deviation). `ratings.seed_source`
 records the seed.
 
 | AI | Doc Elo | Seed μ | Seed σ | Initial display |
-| --- | ---: | ---: | ---: | ---: |
+| --- | --- | --- | --- | --- |
 | Maxima | 1873 | 37.65 | 6 | 1785 |
 | Cabino | 1680 | 31.11 | 6 | 1592 |
 | Nicowar | 1653 | 30.19 | 6 | 1565 |
@@ -192,7 +194,7 @@ rejects map pools whose team count does not fit the mode.
 
 The default pool contains every generator registered with a `fairness:` tag, at
 128×128 (`width`/`height` 7) with five candidate rolls. These are generators whose
-homes are fair by construction ([adding a generator](../map-generators/ADDING_A_GENERATOR.md)):
+homes are fair by construction ([adding a generator](../map-generators/adding-a-generator.md)):
 
 - **Exact symmetry:** Symmetric Arena, Sierpiński Gardens.
 - **Solved fairness:** Even Ground (catchment), Marchland (rope).
@@ -303,27 +305,28 @@ native request opens a new TCP and TLS connection each time, so it divides by
 three (TCP handshake, TLS 1.3 handshake, request), while the browser, which keeps
 the connection, reports the fastest request as is.
 
-## Contracts with other workstreams
+## Protocol and database integration
 
-**Protocol additions** (`packages/protocol`, fixtures regenerated):
+**Protocol contracts** (`packages/protocol`, generated fixtures):
 
-- `queue.join` params gain `allowAiOpponent` ("Allow an AI opponent", default true).
-- New method `queue.respond {proposalId, accept}`.
-- New events `queue.proposal` and `queue.proposalEnded`.
-- `QueueInfo` gains `acceptSeconds` and `maps` (generator ids of the pool).
-- Later: `queue.update`, the extra `queue.status` and `queue.proposal` fields
-  above, and `GET /api/v1/relays/regions` (`RelayRegionList`).
+- `queue.join` params include `allowAiOpponent` ("Allow an AI opponent", default true).
+- `queue.respond {proposalId, accept}`.
+- Events `queue.proposal` and `queue.proposalEnded`.
+- `QueueInfo` includes `acceptSeconds` and `maps` (generator ids of the pool).
+- `queue.update` changes AI backfill preference; `queue.status` and
+  `queue.proposal` describe progress and acceptance.
+- `GET /api/v1/relays/regions` provides `RelayRegionList` for region probes.
 
 **Schema** (`packages/db/migrations/0002_ratings_matchmaking.sql`):
 
-- `matches`: new columns `rating_status`, `rating_note`, `ratings_applied_at` and
+- `matches`: `rating_status`, `rating_note`, `ratings_applied_at` and
   `proposal_id` (unique).
-- `ratings`: new column `seed_source`.
-- New tables: `rating_history`, `match_proposals`, `match_proposal_seats` and
+- `ratings`: `seed_source`.
+- Tables: `rating_history`, `match_proposals`, `match_proposal_seats` and
   `queue_cooldowns`.
 - `queue_tickets`:
-  - new statuses `proposed` and `declined`;
-  - new columns `allow_ai_opponent` and `proposal_id`;
+  - statuses `proposed` and `declined`;
+  - columns `allow_ai_opponent` and `proposal_id`;
   - the one-ticket-per-account index now covers `waiting` and `proposed`.
 
 **API realtime handlers** call the ticket operations exported by `@glob2/play`
@@ -360,7 +363,7 @@ The production starter is `PlatformMatchStarter`; its MatchSetup comes from
 index) writes the rows a real starter would through the same builder, with a
 placeholder map.
 
-**Match intake** (M4) sets `match_participants.quit_tick` from the relay's
+**Match intake** sets `match_participants.quit_tick` from the relay's
 `RelayMatchEnded` report. It may mark a seat `outcome = 'abandoned'`. Ratings read
 both fields.
 
@@ -368,7 +371,7 @@ both fields.
 
 `platform/packages/play/test/ratings.test.ts` and
 `platform/apps/worker/test/matchmaker.test.ts` run against a
-real Postgres; see [architecture](architecture.md#working-on-the-platform) for the
+real Postgres; see [architecture](platform-development.md#working-on-the-platform) for the
 test database. They cover:
 
 - the published OpenSkill 2v2 vector;
@@ -385,3 +388,5 @@ test database. They cover:
 - accept, decline, timeout and leave;
 - start failure;
 - leader failover after the leader's database session is terminated.
+
+[Multiplayer index](README.md) · [Documentation index](../README.md).

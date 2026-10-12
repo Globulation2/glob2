@@ -143,12 +143,16 @@ export async function createSetValidator(
       },
       scratch,
     );
-    if (result.code !== 0 || result.timedOut)
+    if (
+      (result.code !== 0 &&
+        !(args[0] === 'map' && args[1] === 'validate-set' && result.code === 2)) ||
+      result.timedOut
+    )
       throw Error('Isolated asset validator failed: ' + result.stderr.slice(-1000));
   }
   // Exercise rendering as well as startup before advertising the job.
   await withScratchDir(options.scratchRoot, async (dir) => {
-    await run(dir, ['--sim-version']);
+    await run(dir, ['info', 'sim-version', '--format', 'json']);
     const setId = '11111111-1111-4111-8111-111111111111',
       versionId = '22222222-2222-4222-8222-222222222222';
     await writeFile(
@@ -176,9 +180,10 @@ export async function createSetValidator(
       }),
     );
     await run(dir, [
-      '--validate-set',
+      'map',
+      'validate-set',
       '/job/probe.json',
-      '--json',
+      '--report-file',
       '/job/probe-report.json',
       '--preview',
       '/job/probe.png',
@@ -198,9 +203,10 @@ export async function createSetValidator(
       await run(
         dir,
         [
-          '--validate-set',
+          'map',
+          'validate-set',
           '/job/set.json',
-          '--json',
+          '--report-file',
           '/job/report.json',
           '--preview',
           '/job/preview.png',

@@ -9,7 +9,7 @@ coroutine frames to retain those objects across deliberate checkpoints. It has
 no browser APIs, threads, wall clock, or Asyncify dependency. Existing native
 callers can drain the same task through a synchronous adapter.
 
-Loading screens use the measured cooperative slice described below. Awaited children report checkpoints
+Loading screens use the bounded cooperative slice described below. Awaited children report checkpoints
 to that root; completing a child resumes the parent until its next checkpoint.
 Destroying the root destroys all suspended child frames. Exceptions propagate to
 the root result. Job lifetimes must be shorter than the game and stream they
@@ -54,7 +54,7 @@ owned screens rather than modal calls inside the loader.
 
 Current checkpoints cover game stages, teams and players, chunks of 512 terrain
 cells, gradient seeding and individual propagation sweeps. Fertility stages
-master's `Fertility::Field` privately and publishes it only on commit; computing
+the shared `Fertility::Field` privately and publishes it only on commit; computing
 that field is one synchronous operation. A checkpoint count is a scheduling contract rather than a hard real-time
 guarantee: decompression, allocation, and other individual operations run until
 the next explicit checkpoint. In-session reload uses the same owned loading flow.
@@ -165,3 +165,5 @@ starts, so cancellation destroys partially loaded objects with their owner.
 The synchronous adapter drains the same parser and preserves serialization order.
 Native tests cancel in each stage, including a fixture containing real units and
 buildings, and check scheduled-load continuation against the session checksum.
+
+Related: [browser guide and decision index](README.md).

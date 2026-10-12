@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <RenderBackend.h>
 #include <limits>
+#include <cstdlib>
+#include <cstring>
 #include <cmath>
 #include <optional>
 #include <vector>
@@ -11,24 +13,131 @@ namespace GAGCore
 {
 namespace
 {
+bool update(SDL_Texture *texture, SDL_Surface *pixels)
+{
+	if (!SDL_LockSurface(pixels))
+		return false;
+	const bool result = SDL_UpdateTexture(texture, nullptr, pixels->pixels, pixels->pitch);
+	SDL_UnlockSurface(pixels);
+	return result;
+}
 void check(bool result)
 {
 	if (!result)
 		throw std::runtime_error(SDL_GetError());
 }
+bool gpuPreparationEnabled(SDL_Renderer *renderer)
+{
+	const char *disabled = std::getenv("GLOB2_DISABLE_GPU_TEXTURE_PREPARATION");
+	return std::strcmp(SDL_GetRendererName(renderer), "software") != 0 && (!disabled || !*disabled);
+}
 class SDLRenderBackend final : public RenderBackend
 {
 	SDL_Renderer *renderer;
 	float scale = 1, offsetX = 0, offsetY = 0;
+    float nativeX = 1, nativeY = 1;
+    std::optional<SDL_Rect> physicalClip;
 	std::optional<SDL_Rect> bounds;
 	std::vector<SDL_Vertex> transformed;
-	std::unordered_map<const void *, SDL_Texture *> textures;
-	std::unordered_map<const void *, std::uint64_t> revisions;
-	std::unordered_map<const void *, bool> premultiplied;
+	struct Texture
+	{
+		SDL_Texture *handle;
+		std::uint64_t revision;
+		bool linear, gpu;
+		int width, height;
+		SDL_PixelFormat format;
+	};
+	std::unordered_map<const void *, Texture> textures;
+	SDL_Texture *uploadTexture = nullptr;
+	bool gpuPreparation;
+
+	// A single straight-alpha staging texture is reused; retained linear
+	// textures contain premultiplied pixels. No CPU copy or pixel loop is needed.
+	bool premultiply(SDL_Texture *target, SDL_Surface *pixels)
+	{
+		if (uploadTexture && (uploadTexture->w != pixels->w || uploadTexture->h != pixels->h))
+		{
+			SDL_DestroyTexture(uploadTexture);
+			uploadTexture = nullptr;
+		}
+		if (!uploadTexture)
+		{
+			uploadTexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888,
+											  SDL_TEXTUREACCESS_STATIC, pixels->w, pixels->h);
+			if (!uploadTexture || !SDL_SetTextureBlendMode(uploadTexture, SDL_BLENDMODE_BLEND) ||
+				!SDL_SetTextureScaleMode(uploadTexture, SDL_SCALEMODE_NEAREST))
+				return false;
+		}
+		if (!update(uploadTexture, pixels))
+			return false;
+		auto *previous = SDL_GetRenderTarget(renderer);
+		SDL_FColor color;
+		if (!SDL_GetRenderDrawColorFloat(renderer, &color.r, &color.g, &color.b, &color.a))
+			return false;
+		if (!SDL_SetRenderTarget(renderer, target))
+			return false;
+		// Viewport, clip, scale and logical presentation belong to each target
+		// in SDL. Switching back restores the caller's state, including clips.
+		const bool result = SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0) &&
+							SDL_RenderClear(renderer) &&
+							SDL_RenderTexture(renderer, uploadTexture, nullptr, nullptr);
+		const bool restored = SDL_SetRenderTarget(renderer, previous);
+		const bool colorRestored =
+			SDL_SetRenderDrawColorFloat(renderer, color.r, color.g, color.b, color.a);
+		check(restored && colorRestored);
+		return result;
+	}
+    bool exactPremultiplication()
+    {
+        // Blend units can approximate src*alpha differently from our integer
+        // artwork preparation. Test every byte pair once, before caching any
+        // gameplay texture, rather than changing the established pixel result.
+        using Surface = std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)>;
+        using TextureOwner = std::unique_ptr<SDL_Texture, decltype(&SDL_DestroyTexture)>;
+        Surface source(SDL_CreateSurface(256, 256, SDL_PIXELFORMAT_ARGB8888), SDL_DestroySurface);
+        TextureOwner target(SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888,
+                                              SDL_TEXTUREACCESS_TARGET, 256, 256), SDL_DestroyTexture);
+        if (!source || !target) return false;
+        for (unsigned alpha = 0; alpha < 256; ++alpha)
+            for (unsigned channel = 0; channel < 256; ++channel)
+                reinterpret_cast<Uint32 *>(static_cast<Uint8 *>(source->pixels) + alpha * source->pitch)[channel] =
+                    (alpha << 24) | (channel << 16) | ((255 - channel) << 8) | channel;
+        if (!premultiply(target.get(), source.get())) return false;
+        auto *previous = SDL_GetRenderTarget(renderer);
+        if (!SDL_SetRenderTarget(renderer, target.get())) return false;
+        Surface output(SDL_RenderReadPixels(renderer, nullptr), SDL_DestroySurface);
+        check(SDL_SetRenderTarget(renderer, previous));
+        if (!output || output->w != 256 || output->h != 256 || SDL_BYTESPERPIXEL(output->format) != 4) return false;
+        unsigned mismatches = 0;
+        const auto *format = SDL_GetPixelFormatDetails(output->format);
+        for (unsigned alpha = 0; alpha < 256; ++alpha)
+            for (unsigned channel = 0; channel < 256; ++channel) {
+                Uint32 value = 0;
+                std::memcpy(&value, static_cast<Uint8 *>(output->pixels) + alpha * output->pitch +
+                            channel * SDL_BYTESPERPIXEL(output->format), SDL_BYTESPERPIXEL(output->format));
+                Uint8 red, green, blue, a;
+                SDL_GetRGBA(value, format, nullptr, &red, &green, &blue, &a);
+                const unsigned expected = (channel * alpha + 127) / 255;
+                mismatches += red != expected || blue != expected ||
+                    green != ((255 - channel) * alpha + 127) / 255 || a != alpha;
+            }
+        if (mismatches)
+            SDL_LogInfo(SDL_LOG_CATEGORY_RENDER,
+                        "Renderer %s uses CPU texture preparation: GPU byte conformance failed for %u/65536 pairs",
+                        SDL_GetRendererName(renderer), mismatches);
+        return mismatches == 0;
+    }
 	RenderOperations counts;
 
   public:
-	explicit SDLRenderBackend(SDL_Renderer *renderer) : renderer(renderer) {}
+	explicit SDLRenderBackend(SDL_Renderer *renderer)
+		: renderer(renderer), gpuPreparation(gpuPreparationEnabled(renderer))
+	{
+        if (gpuPreparation) {
+            gpuPreparation = exactPremultiplication();
+            if (!gpuPreparation) { SDL_DestroyTexture(uploadTexture); uploadTexture = nullptr; }
+        }
+	}
 	~SDLRenderBackend() override
 	{
 		reset();
@@ -64,23 +173,50 @@ class SDLRenderBackend final : public RenderBackend
 		}
 		if (result && (result->w <= 0 || result->h <= 0))
 			result = SDL_Rect{};
-		check(SDL_SetRenderClipRect(renderer, result ? &*result : nullptr));
+		check(SDL_SetRenderClipRect(renderer, physicalClip ? &*physicalClip : result ? &*result : nullptr));
 	}
 	SDL_Texture *textureFor(const void *key, SDL_Surface *pixels, std::uint64_t revision,
 							bool linear = false)
 	{
-		SDL_Texture *texture = nullptr;
 		if (!pixels)
 			throw std::invalid_argument("Texture has no CPU pixels");
-		auto version = revisions.find(key);
-		if (version == revisions.end() || version->second != revision ||
-			premultiplied[key] != linear)
-			forget(key);
 		auto found = textures.find(key);
-		if (found == textures.end())
+		if (found != textures.end() &&
+			(found->second.linear != linear || found->second.width != pixels->w ||
+			 found->second.height != pixels->h ||
+			 (found->second.gpu && SDL_SurfaceHasColorKey(pixels)) ||
+			 found->second.format != pixels->format))
 		{
-			// Linear filtering must interpolate premultiplied color, as the
-			// live skin atlas does. Storage and CPU pages remain straight alpha.
+			forget(key);
+			found = textures.end();
+		}
+		if (found != textures.end() && found->second.revision == revision)
+			return found->second.handle;
+		SDL_Texture *texture = found == textures.end() ? nullptr : found->second.handle;
+		bool gpu = found != textures.end() && found->second.gpu;
+		if (linear && (gpuPreparation || gpu) && pixels->format == SDL_PIXELFORMAT_ARGB8888 &&
+			!SDL_SurfaceHasColorKey(pixels) && (!texture || gpu))
+		{
+			if (!texture)
+				texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888,
+											SDL_TEXTUREACCESS_TARGET, pixels->w, pixels->h);
+			if (texture && SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND_PREMULTIPLIED) &&
+				SDL_SetTextureScaleMode(texture, SDL_SCALEMODE_LINEAR) &&
+				premultiply(texture, pixels))
+				gpu = true;
+			else
+			{
+				if (found != textures.end())
+					textures.erase(found);
+				SDL_DestroyTexture(texture);
+				texture = nullptr;
+				// Unsupported target/blend combinations retain the CPU path.
+				gpuPreparation = false;
+				gpu = false;
+			}
+		}
+		if (!gpu)
+		{
 			std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> converted(
 				nullptr, SDL_DestroySurface);
 			if (linear)
@@ -100,25 +236,33 @@ class SDLRenderBackend final : public RenderBackend
 					}
 				SDL_UnlockSurface(converted.get());
 			}
-			texture = SDL_CreateTextureFromSurface(renderer, linear ? converted.get() : pixels);
+			auto *source = linear ? converted.get() : pixels;
+			if (texture &&
+				(SDL_SurfaceHasColorKey(source) ||
+				 SDL_GetNumberProperty(SDL_GetTextureProperties(texture),
+									   SDL_PROP_TEXTURE_FORMAT_NUMBER, 0) != source->format))
+			{
+				SDL_DestroyTexture(texture);
+				texture = nullptr;
+			}
+			if (texture)
+				check(update(texture, source));
+			else
+				texture = SDL_CreateTextureFromSurface(renderer, source);
 			if (!texture)
 				throw std::runtime_error(SDL_GetError());
-			textures.emplace(key, texture);
-			revisions[key] = revision;
-			premultiplied[key] = linear;
 			check(SDL_SetTextureBlendMode(texture, linear ? SDL_BLENDMODE_BLEND_PREMULTIPLIED
 														  : SDL_BLENDMODE_BLEND));
-			check(SDL_SetTextureScaleMode(texture, SDL_SCALEMODE_NEAREST));
+			check(SDL_SetTextureScaleMode(texture,
+										  linear ? SDL_SCALEMODE_LINEAR : SDL_SCALEMODE_NEAREST));
 		}
-		else
-			texture = found->second;
-		check(SDL_SetTextureScaleMode(texture,
-									  linear ? SDL_SCALEMODE_LINEAR : SDL_SCALEMODE_NEAREST));
+		textures[key] = {texture, revision, linear, gpu, pixels->w, pixels->h, pixels->format};
 		return texture;
 	}
-	void prepareTexture(const void *key, SDL_Surface *pixels, std::uint64_t revision) override
+	void prepareTexture(const void *key, SDL_Surface *pixels, std::uint64_t revision,
+						bool linear = false) override
 	{
-		textureFor(key, pixels, revision);
+		textureFor(key, pixels, revision, linear);
 	}
 	void triangles(std::span<const SDL_Vertex> vertices, const void *key, SDL_Surface *pixels,
 				   std::uint64_t revision) override
@@ -141,13 +285,16 @@ class SDLRenderBackend final : public RenderBackend
 		SDL_Texture *texture = nullptr;
 		if (key)
 			texture = textureFor(key, pixels, revision, linear);
-		if (applyTransform && (scale != 1 || offsetX != 0 || offsetY != 0))
+		if ((applyTransform && (scale != 1 || offsetX != 0 || offsetY != 0)) || physicalClip)
 		{
 			transformed.assign(vertices.begin(), vertices.end());
 			for (auto &vertex : transformed)
 			{
-				vertex.position.x = vertex.position.x * scale + offsetX;
-				vertex.position.y = vertex.position.y * scale + offsetY;
+                if (applyTransform) {
+                    vertex.position.x = vertex.position.x * scale + offsetX;
+                    vertex.position.y = vertex.position.y * scale + offsetY;
+                }
+                if (physicalClip) { vertex.position.x *= nativeX; vertex.position.y *= nativeY; }
 			}
 			vertices = transformed;
 		}
@@ -195,19 +342,18 @@ class SDLRenderBackend final : public RenderBackend
 		auto found = textures.find(key);
 		if (found != textures.end())
 		{
-			SDL_DestroyTexture(found->second);
+			SDL_DestroyTexture(found->second.handle);
 			textures.erase(found);
 		}
-		revisions.erase(key);
-		premultiplied.erase(key);
 	}
 	void reset() override
 	{
 		for (auto [key, texture] : textures)
-			SDL_DestroyTexture(texture);
+			SDL_DestroyTexture(texture.handle);
 		textures.clear();
-		revisions.clear();
-		premultiplied.clear();
+		SDL_DestroyTexture(uploadTexture);
+		uploadTexture = nullptr;
+		gpuPreparation = gpuPreparationEnabled(renderer);
 	}
 	void clear()
 	{
@@ -225,10 +371,20 @@ class SDLRenderBackend final : public RenderBackend
 		int pixelsW, pixelsH;
 		outputSize(pixelsW, pixelsH);
 		check(SDL_SetRenderLogicalPresentation(renderer, 0, 0, SDL_LOGICAL_PRESENTATION_DISABLED));
-		check(SDL_SetRenderScale(renderer, float(pixelsW) / width, float(pixelsH) / height));
+		nativeX = float(pixelsW) / width; nativeY = float(pixelsH) / height;
+        check(SDL_SetRenderScale(renderer, physicalClip ? 1 : nativeX, physicalClip ? 1 : nativeY));
 		// Lazy CPU geometry may be created after direct writes. Scale setup
 		// must not clear the borrowed target or overwrite earlier layers.
 	}
+    void targetScissor(const SDL_Rect *rect)
+    {
+        if (physicalClip.has_value() == bool(rect) && (!rect ||
+            (physicalClip->x==rect->x && physicalClip->y==rect->y && physicalClip->w==rect->w && physicalClip->h==rect->h))) return;
+        flush(); // Previously queued geometry retains its scale and clip.
+        physicalClip = rect ? std::optional<SDL_Rect>(*rect) : std::nullopt;
+        check(SDL_SetRenderScale(renderer, physicalClip ? 1 : nativeX, physicalClip ? 1 : nativeY));
+        check(SDL_SetRenderClipRect(renderer, rect));
+    }
 	void flush() override { check(SDL_FlushRenderer(renderer)); }
 	void present() override
 	{
@@ -250,22 +406,32 @@ class SDLRenderBackend final : public RenderBackend
 } // namespace
 std::unique_ptr<RenderBackend> makeSDLRenderBackend(SDL_Window *window, int width, int height)
 {
-	SDL_Renderer *renderer = SDL_CreateRenderer(window, nullptr);
+	std::unique_ptr<SDL_Renderer, decltype(&SDL_DestroyRenderer)> renderer(
+        SDL_CreateRenderer(window, nullptr), SDL_DestroyRenderer);
 	if (!renderer)
 		return {};
-	auto backend = std::make_unique<SDLRenderBackend>(renderer);
+	auto backend = std::make_unique<SDLRenderBackend>(renderer.get());
+    auto *active = renderer.release();
 	backend->logicalSize(width, height);
-	check(SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND));
+	check(SDL_SetRenderDrawBlendMode(active, SDL_BLENDMODE_BLEND));
 	return backend;
 }
 
+void setSDLSoftwareTargetScissor(RenderBackend &backend, const SDL_Rect *rect)
+{
+    auto *value = dynamic_cast<SDLRenderBackend *>(&backend);
+    if (!value) throw std::logic_error("Software geometry backend missing");
+    value->targetScissor(rect);
+}
 std::unique_ptr<RenderBackend> makeSDLSoftwareGeometryBackend(SDL_Surface *surface)
 {
-	auto *renderer = SDL_CreateSoftwareRenderer(surface);
+	std::unique_ptr<SDL_Renderer, decltype(&SDL_DestroyRenderer)> renderer(
+        SDL_CreateSoftwareRenderer(surface), SDL_DestroyRenderer);
 	if (!renderer)
 		throw std::runtime_error(SDL_GetError());
-	auto backend = std::make_unique<SDLRenderBackend>(renderer);
-	check(SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND));
+	auto backend = std::make_unique<SDLRenderBackend>(renderer.get());
+    auto *active = renderer.release();
+	check(SDL_SetRenderDrawBlendMode(active, SDL_BLENDMODE_BLEND));
 	return backend;
 }
 

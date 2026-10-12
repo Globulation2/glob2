@@ -13,6 +13,7 @@ import {
 } from '@glob2/core';
 import { runProcess } from '@glob2/engine/process';
 import { renderSkin } from '../src/process.ts';
+import { requireCliVersion } from '@glob2/engine/engineCli';
 
 // Opt-in integration: run Vitest under Xvfb with the built native client.
 it.skipIf(!process.env['GLOB2_SKIN_RENDER_TEST_BINARY'])(
@@ -20,10 +21,19 @@ it.skipIf(!process.env['GLOB2_SKIN_RENDER_TEST_BINARY'])(
   async () => {
     const binary = process.env['GLOB2_SKIN_RENDER_TEST_BINARY']!;
     const cwd = fileURLToPath(new URL('../../../../', import.meta.url));
+    const description = await runProcess({
+      binary,
+      cwd,
+      args: ['help', '--format', 'json'],
+      limits: { timeoutMs: 10000 },
+      maxCaptureBytes: 1024 * 1024,
+    });
+    expect(description.code).toBe(0);
+    requireCliVersion(description.stdout);
     const probe = await runProcess({
       binary,
       cwd,
-      args: ['--skin-render-info'],
+      args: ['assets', 'skin-info', '--format', 'json'],
       limits: { timeoutMs: 10000 },
     });
     expect(probe.code).toBe(0);
@@ -150,7 +160,8 @@ it.skipIf(!process.env['GLOB2_SKIN_RENDER_TEST_BINARY'])(
     let texture: Buffer = Buffer.from(fixture.textureHex, 'hex'),
       material: Buffer = Buffer.from(fixture.materialHex, 'hex');
     const args = [
-      '--render-skin',
+      'assets',
+      'render-skin',
       '--manifest',
       join(work, 'input.json'),
       '--texture',
@@ -188,9 +199,9 @@ it.skipIf(!process.env['GLOB2_SKIN_RENDER_TEST_BINARY'])(
         limits: { timeoutMs: 15000 },
       });
     try {
-      expect((await command(['--render-skin'])).code).toBe(1);
+      expect((await command(['assets', 'render-skin'])).code).toBe(2);
       await save();
-      expect((await command([...args, '--manifest', join(work, 'input.json')])).code).toBe(1);
+      expect((await command([...args, '--manifest', join(work, 'input.json')])).code).toBe(2);
       texture = await sharp(texture).resize(513, 512).png().toBuffer();
       await save();
       expect((await command()).stderr).toContain('512x512');
@@ -213,16 +224,16 @@ it.skipIf(!process.env['GLOB2_SKIN_RENDER_TEST_BINARY'])(
       await expect(access(join(work, 'output.partial'))).rejects.toThrow();
       // Correct inputs, but no installed meshes: staging must be cleaned on failure.
       const missing = await command(args, work);
-      expect(missing.code).toBe(1);
-      expect(missing.stderr).toContain('worker-walk.gsk');
+      expect(missing.code).toBe(3);
+      expect(missing.stderr).toContain('worker-walk.gsb');
       await expect(access(join(work, 'output.partial'))).rejects.toThrow();
       await mkdir(join(work, 'output.partial'));
       await writeFile(join(work, 'output.partial', 'sentinel'), 'preserve');
-      expect((await command()).code).toBe(1);
+      expect((await command()).code).toBe(3);
       expect(await readFile(join(work, 'output.partial', 'sentinel'), 'utf8')).toBe('preserve');
       await mkdir(join(work, 'output'));
       await writeFile(join(work, 'output', 'sentinel'), 'preserve');
-      expect((await command()).code).toBe(1);
+      expect((await command()).code).toBe(3);
       expect(await readFile(join(work, 'output', 'sentinel'), 'utf8')).toBe('preserve');
     } finally {
       await rm(work, { recursive: true, force: true });

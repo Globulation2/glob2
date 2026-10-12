@@ -38,6 +38,21 @@ const GENERATOR = {
   startingUnitLevel: 0,
 };
 
+const unitSnapshot = JSON.stringify({
+  schemaVersion: 1,
+  experiments: [{ key: 'unit-fixture', label: 'Fixture unit', help: 'Foundation test.' }],
+  units: ['worker', 'explorer', 'warrior', 'fixture:carrier'].map((key) => ({
+    key,
+    levels: [{}, {}, {}, {}],
+    behaviors: {},
+    requiredExperiment: key.startsWith('fixture:') ? 'unit-fixture' : '',
+  })),
+});
+const unitCatalog = {
+  snapshot: unitSnapshot,
+  hash: createHash('sha256').update(unitSnapshot).digest('hex'),
+};
+
 let harness: Harness;
 let a: Instance;
 let b: Instance;
@@ -107,14 +122,21 @@ describe('rooms', () => {
 
     engine.resourceExperiments = [{ key: 'coral-food', label: 'Coral', help: 'Food from coral.' }];
     engine.requiredResourceExperiments = ['coral-food'];
+    engine.unitCatalog = unitCatalog;
+    engine.requiredUnitExperiments = ['unit-fixture'];
     // The engine agent finishes the job; the worker's result task NOTIFYs map_jobs.
     expect(await engine.runPending()).toBe(1);
     room = (await roomState(host.client, (r) => r['mapStatus'] === 'ready')) as Room;
     expect(room.map?.hash).toMatch(/^[0-9a-f]{64}$/);
     expect(room['resourceExperiments']).toEqual(engine.resourceExperiments);
     expect(room['experiments']).toContain('coral-food');
+    expect(room['unitCatalog']).toEqual(unitCatalog);
+    expect(room['requiredUnitExperiments']).toEqual(['unit-fixture']);
+    expect(room['experiments']).toContain('unit-fixture');
     engine.resourceExperiments = [];
     engine.requiredResourceExperiments = [];
+    engine.unitCatalog = undefined;
+    engine.requiredUnitExperiments = [];
     // Generated map bytes are public: anyone can download them by hash.
     const download = await fetch(`${a.url}/api/v1/blobs/maps/${room.map!.hash}`);
     expect(download.status).toBe(200);
@@ -332,6 +354,8 @@ describe('rooms', () => {
         building_catalog: JSON.stringify(buildingCatalog),
         resource_experiments: JSON.stringify(resourceExperiments),
         required_resource_experiments: JSON.stringify(['coral-food']),
+        unit_catalog: JSON.stringify(unitCatalog),
+        required_unit_experiments: JSON.stringify(['unit-fixture']),
       })
       .where('map_hash', '=', room.map!.hash!)
       .execute();
@@ -360,6 +384,8 @@ describe('rooms', () => {
         resourceExperiments,
       );
       expect((setup as unknown as { experiments: string[] }).experiments).toContain('coral-food');
+      expect((setup as unknown as { unitCatalog: unknown }).unitCatalog).toEqual(unitCatalog);
+      expect((setup as unknown as { experiments: string[] }).experiments).toContain('unit-fixture');
       // The locked, empty seat's team is closed: no player, no colony.
       expect(setup.seats.map((s) => s.kind)).toEqual(['human', 'human', 'closed']);
       expect(setup.seats[2]).toEqual({ seat: 2, kind: 'closed', team: 2 });
@@ -397,7 +423,7 @@ describe('rooms', () => {
     expect(match.seed).toBe((match.setup as { seed: number }).seed);
     expect(match.sim_version).toBe(simVersionKey(SIM));
     expect(match.rules_identity).toBe(
-      simVersionKey(catalogRulesVersion(SIM, buildingCatalog.hash)),
+      simVersionKey(catalogRulesVersion(SIM, buildingCatalog.hash, unitCatalog.hash)),
     );
     // Participants are the players; the closed seat is none.
     const participants = await harness.database.db
@@ -653,7 +679,7 @@ describe('room REST and the invite page', () => {
     expect(html).toContain(`<meta property="og:url" content="${ORIGIN}/j/${room.code}"`);
     expect(html).not.toContain('<room>');
     const csp = page.headers.get('content-security-policy')!;
-    const nonce = /script-src 'nonce-([^']+)'/.exec(csp)?.[1];
+    const nonce = /'nonce-([^']+)'/.exec(csp)?.[1];
     expect(nonce).toBeTruthy();
     expect(html).toContain(`<script nonce="${nonce}">`);
     // Most people who get a link have no app: the browser comes first, the app
@@ -662,7 +688,7 @@ describe('room REST and the invite page', () => {
     const open = html.indexOf('id="open-app"');
     expect(play).toBeGreaterThan(0);
     expect(open).toBeGreaterThan(play);
-    expect(html.slice(html.lastIndexOf('<a', play), play)).toContain('class="button primary"');
+    expect(html.slice(html.lastIndexOf('<a', play), play)).toContain('class="btn button primary"');
     expect(html).toContain('Open in the Globulation 2 app');
     expect(html).toContain('id="app-fallback"');
     expect(html).not.toMatch(/location\.href\s*=/);
@@ -683,7 +709,8 @@ describe('room REST and the invite page', () => {
     expect(unknownHtml).toContain('expired or does not exist');
     expect(unknownHtml).toContain('<meta property="og:title" content="Invite not found"');
     expect(unknownHtml).toContain(`href="${ORIGIN}/play/"`);
-    expect(unknownHtml).not.toContain('<script');
+    expect(unknownHtml).toContain('<script src="/signin/assets/bootstrap.js"></script>');
+    expect(unknownHtml).not.toMatch(/<script nonce=/);
 
     // With verified app links (the official domain), a phone that still shows
     // the page gets the app first; on Android as an intent that falls back to

@@ -59,13 +59,13 @@ using namespace MapGeneration;
 // same. Between neighbouring homes in a row lies a doline lake in a ring of sealed fields, where
 // there is room for one; beyond the valleys, sinkholes drain into chains of pools.
 //
-// WHY IT PLAYS WELL (docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md). Stone never runs out and cannot
+// WHY IT PLAYS WELL (docs/map-generators/game-rules-for-map-design.md). Stone never runs out and cannot
 // be cleared, so the towers are permanent terrain and a bowl's gates are its only ways in. Crops
 // regrow by the density of pure water near them, so the design puts water beside every field it
 // plants: the home paddy's channel, the flooded terraces, the lakes. The river terraces are the
 // surplus, and they lie on the fronts; swimming turns a river from a wall into a way through them.
 // The towers are structural and not scaled by any resource amount; the home paddy and starter kit
-// are guarantees and not scaled either. docs/map-generators/KARST_TOWERS.md has the measurements.
+// are guarantees and not scaled either. docs/map-generators/karst-towers.md has the measurements.
 namespace
 {
 

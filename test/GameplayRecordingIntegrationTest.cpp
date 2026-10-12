@@ -9,6 +9,8 @@
 #include "EndGameScreen.h"
 #include "ui/RecordingControls.h"
 #include <GameplayRecording.h>
+#include <RendererSelection.h>
+#include <RenderDevice.h>
 #include <BinaryStream.h>
 #include <FileManager.h>
 #include <SDL3/SDL.h>
@@ -16,9 +18,33 @@
 #include <fstream>
 #include <thread>
 #include <array>
+#include <sstream>
 
 namespace
 {
+class ObservedFrontend final : public FrontendTheme
+{
+public:
+    struct Turn {Uint32 before,after;bool visible;};
+    std::vector<Turn> turns;
+    void onFrame() override
+    {
+        const auto before=colony->tick();
+        auto *window=SDL_GetWindowFromID(globalContainer->gfx->windowID());
+        const bool visible=window && !(SDL_GetWindowFlags(window)&SDL_WINDOW_MINIMIZED);
+        FrontendTheme::onFrame();turns.push_back({before,colony->tick(),visible});
+    }
+};
+void requireRequestedRenderer(GAGCore::GraphicContext &context)
+{
+    if (const char *requested = SDL_getenv("GLOB2_RENDERER"))
+    {
+        const auto backend = GAGCore::parseRendererBackend(requested);
+        REQUIRE(backend.has_value());
+        INFO("requested renderer: " << requested);
+        REQUIRE(context.backendSwitchStatus().active == *backend);
+    }
+}
 void show(GAGGUI::Screen &screen, int milliseconds)
 {
 	const auto end = std::chrono::steady_clock::now() + std::chrono::milliseconds(milliseconds);
@@ -48,11 +74,12 @@ TEST_SUITE("GameplayRecording.Integration")
 			 .width = 800,
 			 .height = 600,
 			 .screenFlags = gpu ? GAGCore::GraphicContext::USEGPU : 0u});
+        requireRequestedRenderer(*globals->gfx);
 		globals->settings.autosaveGames = false;
 		globals->settings.decorativeAnimations = false;
 		// Application owns this theme throughout menus and gameplay. Keep that
 		// lifetime here so capture includes the real animated colony backdrop.
-		FrontendTheme frontend;
+		ObservedFrontend frontend;
 		const auto root = glob2test::artifactDir();
 		const auto initial = root / "recording-initial.game";
 		const auto video =
@@ -85,7 +112,16 @@ TEST_SUITE("GameplayRecording.Integration")
 				REQUIRE(recorder.status().state == GAGCore::Recording::State::Recording);
 				REQUIRE(frontend.colony->ready());
 				const auto colonyTick = frontend.colony->tick();
+                const auto firstTurn=frontend.turns.size();
 				show(menu, 200);
+                INFO("frontend frames before=",firstTurn," after=",frontend.turns.size(),
+                    " styleOwned=",GAGGUI::Style::style==&frontend," allowed=",FrontendTheme::allowed);
+                std::ostringstream turns;
+                for(std::size_t i=0;i<frontend.turns.size();++i) {
+                    const auto &turn=frontend.turns[i];
+                    turns<<"turn="<<i<<" before="<<turn.before<<" after="<<turn.after<<" visible="<<turn.visible<<';';
+                }
+                INFO(turns.str());
 				CHECK(frontend.colony->tick() > colonyTick);
 				// Recording is controlled from Settings, the in-game menu and its hotkey.
 				REQUIRE(menu.host().find("recording/toggle") == nullptr);
@@ -169,12 +205,57 @@ TEST_SUITE("GameplayRecording.Integration")
 		CHECK(run(true) == reference);
 	}
 
-	TEST_CASE("global recording shortcut toggles and shutdown awaits finalization [artifacts][writes-preferences]")
+    TEST_CASE("shutdown drains a completed asynchronous screenshot before file services retire "
+              "[display][artifacts]")
+    {
+        for (const auto backend : {GAGCore::RendererBackend::ProgrammableGL, GAGCore::RendererBackend::SDLGPU})
+        {
+            const std::string name(GAGCore::rendererBackendName(backend));
+            glob2test::ScopedEnvironment requested("GLOB2_RENDERER", name.c_str());
+            const std::string filename = std::string("shutdown-") + name + ".bmp";
+            const auto screenshot = glob2test::profileDir() / filename;
+            std::filesystem::remove(screenshot);
+            {
+                glob2test::HeadlessGlobals globals({.display = true, .width = 64, .height = 48});
+                if (globals->gfx->backendSwitchStatus().active != backend)
+                {
+                    MESSAGE("Screenshot shutdown backend unavailable: ", GAGCore::rendererBackendName(backend));
+                    continue;
+                }
+                globals->gfx->drawFilledRect(0, 0, 64, 48, GAGCore::Color(190, 20, 30));
+                globals->gfx->printScreen(filename);
+                globals->gfx->nextFrame();
+                auto *device = globals->gfx->renderDevice();
+                REQUIRE(device);
+                // An independent synchronous copy orders completion after the
+                // screenshot copy without polling GC's screenshot result queue.
+                std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> barrier(
+                    device->captureSynchronously({}), SDL_DestroySurface);
+                REQUIRE(barrier);
+                CHECK_FALSE(std::filesystem::exists(screenshot));
+            }
+            REQUIRE(std::filesystem::exists(screenshot));
+            std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> saved(SDL_LoadBMP(screenshot.string().c_str()), SDL_DestroySurface);
+            REQUIRE(saved);
+            CHECK(saved->w == 64);
+            CHECK(saved->h == 48);
+            Uint8 r, g, b, a;
+            REQUIRE(SDL_ReadSurfacePixel(saved.get(), 0, 0, &r, &g, &b, &a));
+            CHECK(r == 190);
+            CHECK(g == 20);
+            CHECK(b == 30);
+            std::filesystem::copy_file(screenshot, glob2test::artifactDir() / filename,
+                std::filesystem::copy_options::overwrite_existing);
+        }
+    }
+
+	TEST_CASE("global recording shortcut toggles and shutdown awaits finalization [display][artifacts][writes-preferences]")
 	{
 		if (!GAGCore::Recording::supported())
 			return;
 		glob2test::HeadlessGlobals globals(
 			{.display = true, .loadStrings = true, .width = 800, .height = 600});
+        requireRequestedRenderer(*globals->gfx);
 		auto &recorder = GAGCore::Recording::recorder();
 		Application application;
 		REQUIRE(GAGCore::Recording::available());
@@ -230,6 +311,7 @@ TEST_SUITE("GameplayRecording.Integration")
 		glob2test::ScopedEnvironment sidecars("GLOB2_CHECKSUM_SIDECAR", "1");
 		glob2test::HeadlessGlobals globals(
 			{.display = true, .loadStrings = true, .width = 800, .height = 600});
+        requireRequestedRenderer(*globals->gfx);
 		globals->settings.autosaveGames = false;
 		const auto root = glob2test::artifactDir();
 		const auto initial = root / "threaded-initial.game";

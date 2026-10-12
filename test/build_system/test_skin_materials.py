@@ -56,7 +56,7 @@ class SkinMaterialsTest(unittest.TestCase):
         self.assertIn('COLONY_SKIN_SHELL_DEPTH = %s;' % registry['shellDepth'], text)
 
     def test_docs_point_at_the_registry(self):
-        for path in ('docs/multiplayer/architecture.md', 'docs/development/reference.md',
+        for path in ('docs/multiplayer/colony-skins.md', 'docs/architecture/rendering.md',
                      'tools/unit-animation/README.md'):
             self.assertIn('skin-materials.json', (ROOT / path).read_text(), path)
 

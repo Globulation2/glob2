@@ -1,14 +1,14 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 # Copyright (C) 2026 The Globulation 2 Authors
 #
-# Cortex DECIDE pilot — offline reward module for the decision-selection AWR
+# Cortex optional decision model — offline reward module for the decision-selection AWR
 # trainer. Joins the per-(team,game) trajectory CSVs to their game log's
 # terminal winner, builds a FOW-respecting own-colony-strength potential Phi,
 # and emits potential-based shaped rewards + Monte-Carlo returns per episode.
 #
 # Variant A (own strength only): Phi is built from the 48 logged features; the
 # terminal +/-1 carries the opponent signal. All reward/shaping logic lives here
-# (Python) so it iterates without recompiling. See DECIDE_PILOT.md (Reward).
+# (Python) so it iterates without recompiling. See decide_reward.py.
 #
 # numpy-only, deterministic.
 
@@ -28,7 +28,7 @@ W_MIL = 1.0            # potential weight: military
 W_ECO = 1.0            # potential weight: economy
 W_RISK = 1.0           # potential weight: risk (subtracted)
 
-# Feature indices into the 48-vector (DECIDE_CONTRACT order). Sanity-checked
+# Feature indices into the 48-vector (candidate array order). Sanity-checked
 # against FEATURE_NAMES at import so a contract reorder is caught loudly.
 F_WARRIORS = 16
 F_ATTACKSTRENGTHLEVEL = 32

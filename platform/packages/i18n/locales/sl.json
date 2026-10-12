@@ -2964,5 +2964,9 @@
   "Presentation": "Predstavitev",
   "{value0} source": "Izvor {value0}",
   "{value0} decor source": "Izvor okrasja {value0}",
-  "Your draft changed while the design was loading. Your changes were kept; try opening the design again.": "Vaš osnutek se je med nalaganjem zasnove spremenil. Vaše spremembe so ohranjene; poskusite znova odpreti zasnovo."
+  "Your draft changed while the design was loading. Your changes were kept; try opening the design again.": "Vaš osnutek se je med nalaganjem zasnove spremenil. Vaše spremembe so ohranjene; poskusite znova odpreti zasnovo.",
+  "More filters": "Več filtrov",
+  "Clear filters": "Počisti filtre",
+  "No results match these filters.": "Noben rezultat ne ustreza tem filtrom.",
+  "Results: {value0}": "Rezultati: {value0}"
 }

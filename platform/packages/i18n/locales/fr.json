@@ -2937,5 +2937,9 @@
   "Presentation": "Présentation",
   "{value0} source": "Source de {value0}",
   "{value0} decor source": "Source de décoration de {value0}",
-  "Your draft changed while the design was loading. Your changes were kept; try opening the design again.": "Votre brouillon a changé pendant le chargement du modèle. Vos modifications ont été conservées ; essayez de rouvrir le modèle."
+  "Your draft changed while the design was loading. Your changes were kept; try opening the design again.": "Votre brouillon a changé pendant le chargement du modèle. Vos modifications ont été conservées ; essayez de rouvrir le modèle.",
+  "More filters": "Plus de filtres",
+  "Clear filters": "Effacer les filtres",
+  "No results match these filters.": "Aucun résultat ne correspond à ces filtres.",
+  "Results: {value0}": "Résultats: {value0}"
 }

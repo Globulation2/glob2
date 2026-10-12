@@ -1,86 +1,46 @@
 # Documentation
 
-The documentation tree contains deliberately curated, durable project guides. A
-file is not documentation merely because it was written during development. It
-belongs here only when it has a clear long-term audience and will be maintained
-with the behavior it describes. Temporary development notes, generated evidence,
-dated reports and pull-request artifacts do not belong here.
+Use these topic guides to understand, change, create content for, and operate
+Globulation 2. Each index orders its tutorials, procedures, explanations, and
+references so you can start with an overview and follow the task you need.
 
 ## Topics
 
-- **Globulation 2 Online website:** [Astro website repository](https://github.com/Globulation2/glob2-online-website),
-  [content and legacy migration](https://github.com/Globulation2/glob2-online-website/blob/main/docs/content.md),
-  and [Firebase deployment, CI, and rollback](https://github.com/Globulation2/glob2-online-website/blob/main/docs/hosting.md).
-  The public site is [glob2online.com](https://glob2online.com/); the browser game
-  and multiplayer app use [app.glob2online.com](https://app.glob2online.com/).
-- **AI:** [telemetry](ai/telemetry.md), [gameplay measurements](ai/gameplay-statistics.md),
-  [Cortex mechanics](ai/cortex-upgrade-expand-mechanics.md), and [Maxima](ai/maxima/README.md).
-- **Assets:** [terrain materials](assets/terrain-materials.md), [third-party attribution](assets/source-attribution.md),
-  [soundtrack style guide](assets/music-style-guide.md), [music pipeline](assets/music-pipeline.md) and
-  [high-resolution artwork provenance](assets/high-resolution/README.md).
-- **Development:** [build and coding reference](development/reference.md),
-  [GOG releases](development/gog-release.md),
-  [Mac App Store release](development/mac-app-store.md),
-  [mainland China release](development/china-release.md),
-  [menus and dialogs on the declarative UI framework](development/ui-framework.md),
-  [release packaging](development/releasing.md),
-  [headless replays](development/headless-replays.md),
-  [JavaScript scripting](development/javascript.md) and
-  [API reference](development/javascript-api.md),
-  [performance telemetry](development/performance-telemetry.md) and
-  [network telemetry](development/network-telemetry.md),
-  [save continuation](development/savegame-continuation.md), and the
-  [historical architecture overview](development/legacy-architecture.txt).
-- **Features:** [gameplay footage and automatic chapters](features/gameplay-recording.md), [custom-game setup](features/custom-game-setup/README.md),
-  [experimental features](features/experimental-features.md),
-  [building catalogs](features/building-catalogs.md),
-  [resource catalogs and materials](features/resource-catalogs.md) and the
-  [guard-area balancing](features/guard-area-balancing.md) and
-  [farm areas](features/farm-areas.md) and [Markets V2](features/markets-v2.md) experiments,
-  [map previews](features/pre-game-map-preview.md),
-  [window resizing](features/window-resizing.md), and the
-  [toroidal view](features/torus-experiment.md).
-- **Map generators:** [design and implementation index](map-generators/README.md).
-- **Online multiplayer:** [Hive Mind commander](multiplayer/hive-mind.md),
-  [platform architecture](multiplayer/architecture.md),
-  [identity and sign-in](multiplayer/identity.md),
-  [rooms and matches](multiplayer/rooms-and-matches.md),
-  [ratings and matchmaking](multiplayer/ratings-and-matchmaking.md),
-  [match history and the web app](multiplayer/history-and-web.md),
-  [connection quality](multiplayer/connection-quality.md) (Ping, Delay, Behind), the
-  [relay-sequenced turn protocol](multiplayer/turn-protocol.md), the
-  [match relay](multiplayer/relay.md) that hosts it, [LAN games](multiplayer/lan.md)
-  and the [LAN playtest guide](multiplayer/lan-playtest.md).
-- **Hosting:** [self-hosting an online instance](hosting/README.md) with the
-  Compose stack in `deploy/` (file index: [deploy/README.md](../deploy/README.md)).
-- **Tools:** [distributed tournaments](tools/tournaments.md).
+| Topic | Start here |
+| --- | --- |
+| [Development](development/README.md) | Setup, builds, tests, contribution, dependencies, troubleshooting |
+| [Architecture](architecture/README.md) | Engine responsibilities, simulation, rendering, persistence, compatibility |
+| [Features](features/README.md) | Gameplay and interface behavior, supported experiments |
+| [AI](ai/README.md) | Opponents, implementation, configuration, evaluation, telemetry |
+| [Map generators](map-generators/README.md) | Design, authoring, framework, controls, generator catalog |
+| [Assets](assets/README.md) | Artwork, terrain, music, production workflows, provenance |
+| [Scripting](scripting/README.md) | Script authoring, execution model, APIs |
+| [Multiplayer](multiplayer/README.md) | Platform, identity, clients, rooms, relay, protocols |
+| [Browser](browser/README.md) | Browser development, storage, rendering, transports, decisions |
+| [Mobile](mobile/README.md) | Android/iOS development, interaction requirements, verification |
+| [Hosting](hosting/README.md) | Local setup, production configuration, maintenance, recovery |
+| [Releases](releases/README.md) | Packaging, distribution, store procedures |
+| [Tools](tools/README.md) | Contributor tools and workflows across topics |
 
-- **Mobile platforms:** [builds, responsive UI and verification](mobile/development.md),
-  the [iPhone/iPad App Store page](mobile/app-store.md),
-  the [privacy policy](mobile/privacy-policy.md) for the Android and iOS apps and the
-  official online service, and the
-  [Amazon Fire tablet privacy policy](mobile/amazon-privacy-policy.md).
+## Reader paths
 
-- **Online multiplayer:** [online client](multiplayer/client.md): platform
-  connection, sign-in, instances, map cache and invite links.
+- **Contributors:** [contribution guide](../CONTRIBUTING.md), development, architecture,
+  then the relevant subsystem. [Repository instructions](../AGENTS.md) record the
+  shared compatibility and review policies.
+- **Content creators:** assets, map generators, and scripting; feature references
+  explain the behavior your content can configure.
+- **Operators:** hosting, multiplayer, and releases.
+- **Players:** [public guides and downloads](https://glob2online.com/) and the
+  [browser game](https://app.glob2online.com/). In-repo feature pages explain current
+  capabilities and experimental controls.
 
+## Maintain the library
 
-- **Browser platform:** [build and play](../browser/README.md),
-  [architecture](browser/implementation.md), [storage](browser/storage.md),
-  [viewport](browser/viewport.md), and [secure network transports](browser/gateway.md).
+Follow the [documentation maintenance guide](development/documentation.md).
+[Licensing](development/licensing.md) indexes code and asset notices.
+[Support](../SUPPORT.md) explains how to report a problem.
 
-## Temporary work
-
-Use the ignored root `artifacts/` directory for screenshots, logs,
-maps, saves, replays, datasets, profiles and archives. Use the ignored `.work/`
-directory beside this file for temporary Markdown, validation narratives and PR
-drafts. Neither location is committed.
-
-Evidence required for review should be attached to the pull request or stored on a
-dedicated evidence branch. Preserve only conclusions that remain useful after the
-change merges, and add those conclusions to the appropriate durable guide above.
-
-- [AI ratings](ai/ratings.md): measured opponent strength and interpretation.
-
-- [Win probability model](win-probability-model.md): fitted live-state predictions, calibration limits and optional early victory.
-- [Building-field depth model](building-gradient-depth-model.md): how deep scheduled building fields are settled, fitted from tournament field statistics.
+Keep temporary notes and draft narratives in ignored `docs/.work/`; keep generated
+review evidence in ignored root `artifacts/`. Attach evidence needed for review to
+the pull request or an accessible evidence branch. Git history preserves retired
+designs and reports; current guides describe maintained behavior.

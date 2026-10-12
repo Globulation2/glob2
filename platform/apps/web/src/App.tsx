@@ -1,8 +1,10 @@
+import { FeatureProvider, pathAvailable, useFeatures } from './features.tsx';
 import { t, useLocale, LocaleProvider, LanguageSelector, RichMessage } from './i18n.tsx';
 import { Generators, GeneratorPage, GeneratorPublish } from './pages/Generators.tsx';
 import { studioLocal } from './components/studio/storage.ts';
 import { Players } from './pages/Players.tsx';
 import './music/music.css';
+import { SkinWorkspaceContext } from './skins/workspace.ts';
 import { Skins } from './pages/Skins.tsx';
 import { CommanderCredits } from './pages/Commander.tsx';
 // The platform web app: home, leaderboards, player and match pages, the map
@@ -18,7 +20,7 @@ import { Leaderboard } from './pages/Leaderboard.tsx';
 import { Matches } from './pages/Matches.tsx';
 import { Link, RouterProvider, matchPath, useRouter } from './router.tsx';
 import { SessionProvider, isModerator, useSession } from './state.tsx';
-import { ThemeProvider, ThemeToggle } from './theme.tsx';
+import { ThemeProvider, ThemeToggle, useThemeNavigation } from './theme.tsx';
 
 // Pages most visitors never open load on demand.
 const AiBuildingStudio = lazy(() =>
@@ -408,14 +410,18 @@ function About() {
 }
 
 function Layout() {
+  const features = useFeatures();
   const locale = useLocale();
   const { location } = useRouter();
+  useThemeNavigation(`${location.path}?${location.search.toString()}`);
   const { instance, account } = useSession();
   const found = resolve(location.path);
+  const available = pathAvailable(location.path, features);
   const section = found?.route.section;
   const name = instance?.name ?? 'Globulation 2';
   const home = section === 'home';
-  const studio = section === 'skins' || !!found?.route.workspace;
+  const [skinEditing, setSkinEditing] = useState(true);
+  const studio = available && (section === 'skins' ? skinEditing : !!found?.route.workspace);
   const main = useRef<HTMLElement>(null);
   const navigationKey = `studio-navigation:${account?.id ?? 'anonymous'}`;
   const [navigationPreference, setNavigationPreference] = useState(() => ({
@@ -475,12 +481,16 @@ function Layout() {
     { to: '/ais', id: 'ais', name: 'AI Library', icon: 'robot' },
     { to: '/buildings', id: 'buildings', name: 'Buildings', icon: 'map' },
     { to: '/music', id: 'music', name: 'Music', icon: 'music' },
-    { to: '/skins', id: 'skins', name: 'Skins', icon: 'palette' },
+    ...(features.includes('skins.designer')
+      ? [{ to: '/skins', id: 'skins', name: 'Skins', icon: 'palette' as IconName }]
+      : []),
     ...(isModerator(account)
       ? [{ to: '/admin', id: 'admin', name: 'Moderation', icon: 'shield-check' as IconName }]
       : []),
   ];
-  const page = found ? (
+  const page = !available ? (
+    <h1>{t('Unavailable')}</h1>
+  ) : found ? (
     found.route.render(found.params)
   ) : (
     <>
@@ -612,7 +622,11 @@ function Layout() {
           }
         >
           <div className="wrap">
-            <div className="page">{page}</div>
+            <div className="page">
+              <SkinWorkspaceContext.Provider value={setSkinEditing}>
+                {page}
+              </SkinWorkspaceContext.Provider>
+            </div>
           </div>
         </Suspense>
       </main>
@@ -627,7 +641,9 @@ export function App() {
       <ThemeProvider>
         <RouterProvider>
           <SessionProvider>
-            <Layout />
+            <FeatureProvider>
+              <Layout />
+            </FeatureProvider>
           </SessionProvider>
         </RouterProvider>
       </ThemeProvider>

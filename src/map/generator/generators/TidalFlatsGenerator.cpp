@@ -39,7 +39,7 @@ using namespace MapGeneration;
 // colony count. The whole design is a pure function of the request, so validateWorld rebuilds
 // it and checks the finished world.
 //
-// GAME RULES BEHIND IT (docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md): buildings need pure
+// GAME RULES BEHIND IT (docs/map-generators/game-rules-for-map-design.md): buildings need pure
 // grass, so the islands are the only building ground; growth refuses when its probe finds sand,
 // so the flats stay bare; and farmland needs water, so every island's pond is what keeps its
 // fields alive. Neutral islands arrive already under wheat, which blocks building until cleared,

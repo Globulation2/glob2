@@ -32,7 +32,7 @@ using namespace MapGeneration;
 // seam can't be seen. Terrain is written straight to the map's vertices after an order-independent
 // beach pass that, unlike Map::layBeaches(), leaves the water whole.
 //
-// WHY IT PLAYS WELL (docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md). Every colony has the same
+// WHY IT PLAYS WELL (docs/map-generators/game-rules-for-map-design.md). Every colony has the same
 // situation: one neighbour each way along the belt, sea behind it, and colonies alternating between
 // the two coasts by default so neighbours are not simply lined up on one shore. Contact is along
 // one axis, so a colony can concentrate its defence on two fronts, and the sea at its back is a

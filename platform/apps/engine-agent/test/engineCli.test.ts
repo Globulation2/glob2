@@ -46,20 +46,19 @@ describe('catalog and generation', () => {
     // This recorded catalog predates the current pool's generator revisions.
     const revision = catalog.generators.get(entry.generatorId)!.revision;
     expect(generateMapArgs({ ...entry, revision, seed: 42 }, catalog, '/tmp/out')).toEqual([
-      '--generate-map',
-      '--generator',
+      'map',
+      'study',
       '15',
-      '--map-seed',
+      '--seed',
       '42',
       '--candidates',
       '5',
       '--write-map',
-      'true',
-      '--param',
+      '--set',
       'height=7',
-      '--param',
+      '--set',
       'teams=2',
-      '--param',
+      '--set',
       'width=7',
       '--output-dir',
       '/tmp/out',
@@ -102,7 +101,7 @@ describe('catalog and generation', () => {
   });
 
   it('reads saved players from report controllers', () => {
-    // Shape of `--preview-map final.game.gz --json` with player names
+    // Shape of `map preview final.game.gz --json` with player names
     // (multiplayer/map-report-players), from a nicowar vs cortex save.
     const report = JSON.stringify({
       schema_version: 2,
@@ -190,11 +189,12 @@ describe('verify-match outputs', () => {
     expect(() => parseVerdict('{"verdict":"maybe"}')).toThrow(/unknown verdict/);
     expect(() => parseVerdict('not json')).toThrow(EngineOutputError);
     expect(verifyMatchArgs('r', 'm', 'o')).toEqual([
-      '--verify-match',
+      'match',
+      'verify',
       'r',
-      '--map',
+      '--map-file',
       'm',
-      '--out',
+      '--output-dir',
       'o',
     ]);
   });
@@ -203,7 +203,7 @@ describe('verify-match outputs', () => {
 describe('sim version', () => {
   const catalog = { versionMinor: 125, netProtocol: 49 };
 
-  it('parses --sim-version output in either key style', () => {
+  it('parses info sim-version --format json output in either key style', () => {
     expect(
       parseSimVersionOutput(`noise\n{"versionMinor":125,"netProtocol":49,"dataHash":"${HASH}"}\n`),
     ).toEqual({ versionMinor: 125, netProtocol: 49, dataHash: HASH });
@@ -236,10 +236,10 @@ describe('sim version', () => {
     ).toThrow(SimVersionError);
     expect(() =>
       resolveSimVersion({ catalog, reported: { ...reported, netProtocol: 48 }, env: {} }),
-    ).toThrow(/--sim-version reports/);
+    ).toThrow(/info sim-version --format json reports/);
   });
 
-  it('only runs --sim-version when the catalog advertises it or the operator asks', async () => {
+  it('only runs info sim-version --format json when the catalog advertises it or the operator asks', async () => {
     let probes = 0;
     const engine = {
       reportedSimVersion: async () => {
@@ -297,4 +297,18 @@ describe('process limits', () => {
     expect(result.timedOut).toBe(true);
     expect(result.signal).toBe('SIGKILL');
   });
+});
+
+// CLI descriptions are separate from domain catalog/simulation versions.
+import { requireCliVersion } from '@glob2/engine/engineCli';
+it('rejects unsupported static CLI descriptions before starting jobs', () => {
+  expect(() =>
+    requireCliVersion(JSON.stringify({ schema_version: 1, cli_version: 2, commands: [] })),
+  ).not.toThrow();
+  for (const value of [
+    { schema_version: 1, cli_version: 1, commands: [] },
+    { schema_version: 2, cli_version: 2, commands: [] },
+    { schema_version: 1, cli_version: 2 },
+  ])
+    expect(() => requireCliVersion(JSON.stringify(value))).toThrow();
 });

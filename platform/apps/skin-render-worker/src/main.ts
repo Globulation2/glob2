@@ -10,6 +10,7 @@ import {
   Shutdown,
   enqueueSkinSprites,
 } from '@glob2/core';
+import { requireCliVersion } from '@glob2/engine/engineCli';
 import { runProcess } from '@glob2/engine/process';
 import { renderSkin } from './process.ts';
 import { SPRITE_BUNDLE_FORMAT } from './bundle.ts';
@@ -20,10 +21,19 @@ shutdown.installSignalHandlers();
 const abort = new AbortController();
 const binary = process.env['GLOB2_BINARY'] ?? '/opt/glob2/bin/glob2',
   cwd = process.env['GLOB2_DATA_DIR'] ?? '/opt/glob2/share';
+const cli = await runProcess({
+  binary,
+  cwd,
+  args: ['help', '--format', 'json'],
+  limits: { timeoutMs: 10000, memoryMb: 2048 },
+  maxCaptureBytes: 1024 * 1024,
+});
+if (cli.code !== 0) throw new Error('Glob2 CLI probe failed; deploy a CLI 2 binary');
+requireCliVersion(cli.stdout);
 const info = await runProcess({
   binary,
   cwd,
-  args: ['--skin-render-info'],
+  args: ['assets', 'skin-info', '--format', 'json'],
   limits: { timeoutMs: 10000, memoryMb: 2048 },
 });
 if (info.code !== 0) throw new Error('Skin renderer capability probe failed');

@@ -63,19 +63,20 @@ namespace GAGCore
 			delete (*it).second;
 		fontMap.clear();
 		
-		if (fileManager)
-		{
-			delete fileManager;
-			fileManager = NULL;
-			delete strings;
-			strings = NULL;
-		}
-		
-		if (gc)
-		{
-			delete gc;
-			gc = NULL;
-		}
+        // Graphics retirement drains completed asynchronous screenshots and
+        // still needs the file manager after sprite/font resources retire.
+        if (gc)
+        {
+            delete gc;
+            gc = NULL;
+        }
+        if (fileManager)
+        {
+            delete fileManager;
+            fileManager = NULL;
+            delete strings;
+            strings = NULL;
+        }
 	}
 	
     void Toolkit::requestSprite(const std::string& name, bool variableAtlas)
@@ -96,7 +97,9 @@ namespace GAGCore
             return std::max(std::chrono::milliseconds::zero(),
                 std::chrono::ceil<std::chrono::milliseconds>(deadline - std::chrono::steady_clock::now()));
         };
-        if (remaining().count()) assets().poll(remaining());
+        // Consume ready HD output before more reads/decodes can spend this
+        // turn's whole budget and leave large prepared buffers accumulating.
+        Sprite::pollHighResolutionUntil(deadline);
         for (auto it = loadingSprites.begin(); it != loadingSprites.end() && remaining().count();) {
             if (it->second->pollUntil(deadline)) {
                 auto sprite = it->second->take();
@@ -106,6 +109,7 @@ namespace GAGCore
                 it = loadingSprites.erase(it);
             } else ++it;
         }
+        if (remaining().count()) assets().poll(remaining());
         const bool reloaded = Sprite::pollHighResolutionUntil(deadline);
         return loadingSprites.empty() && reloaded;
     }
@@ -179,4 +183,3 @@ namespace GAGCore
 		fontMap.erase(it);
 	}
 }
-

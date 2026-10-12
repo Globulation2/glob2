@@ -1,14 +1,18 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "SnapshotGradient.h"
+#include "ComputeExecutor.h"
 #include "SeedCells.h"
 #include "MapInternal.h"
 #include "Building.h"
 #include "Unit.h"
 #include "BuildingType.h"
 #include "field/RuntimeTerrainGradient.h"
+#include "field/GradientDeviceService.h"
 #include <array>
 #include <bit>
 #include <cstring>
+#include <cstdlib>
+#include <mutex>
 
 namespace gradient_preparation
 {
@@ -28,6 +32,7 @@ template<class Fn> void visitSeedBits(const MaterialSeedCache::Bits& bits, Fn fn
 bool MaterialSeedCache::trySeed(const SimulationSnapshot::Handle& snapshot, int team, int material,
     int swim, Uint16* output, const Uint16* suppliers)
 {
+    if (swim==WATER_ONLY_CLASS) return false;
     const auto view=snapshot.view();
     const size_t cells=size_t(view.width)*view.height, words=(cells+63)/64;
     const size_t required=cells*(2*sizeof(Uint16)+sizeof(Uint16)+sizeof(Uint32))
@@ -240,7 +245,7 @@ void seed(const Request& request, const SimulationSnapshot::Handle& snapshot, Ui
     if (scratch.seeds.empty()) return;
     scratch.positions.clear();
     for (const auto& u : snapshot.entities->units)
-        if (u.team == request.team && !u.isDead && u.typeNum == WARRIOR && u.displacement != Unit::DIS_INSIDE)
+        if (u.team == request.team && !u.isDead && (u.capabilityFlags & UnitRuntimeTraits::GuardIdle) && u.displacement != Unit::DIS_INSIDE)
             scratch.positions.push_back(view.index(u.posX, u.posY));
     if (scratch.positions.empty()) return;
     scratch.warriors.assign(size, 0);
@@ -256,12 +261,345 @@ void seed(const Request& request, const SimulationSnapshot::Handle& snapshot, Ui
     }
 }
 
+namespace
+{
+gradient_kernel::CostIdentity snapshotCostIdentity(const Request& request, const SimulationSnapshot::Handle& snapshot)
+{
+    const auto& terrain = *snapshot.terrain;
+    // Snapshot lookups cover every cell. Valid terrain costs do not depend on
+    // this field's obstacle mask, even when movement modifiers are enabled.
+    bool allCells=!terrain.movementModifiers;
+    std::uint32_t uniform=0;
+    if(!terrain.movementModifiers) {
+        // Binary weighted swimming can vary across cells; proving it uniform
+        // would need a map scan, so leave it unknown. The land-only class is
+        // already uniform by construction.
+        if(!gradient_kernel::weightedClass(request.swim))
+            uniform=gradient_kernel::LAND_STEPS.cardinal|(gradient_kernel::LAND_STEPS.diagonal<<16);
+    } else {
+        const auto& profiles=terrain.rules->movement(request.swim).profiles;
+        allCells=true;
+        const auto first=profiles.empty() ? gradient_kernel::EntrySteps{} : profiles.front();
+        bool same=!profiles.empty();
+        // This replaces the existing validity pass: only compact cost profiles
+        // are inspected, never cells or original seed values.
+        for(const auto step:profiles) {
+            allCells=allCells && step.cardinal && step.diagonal && step.cardinal<=65535 && step.diagonal<=65535;
+            same=same && step.cardinal==first.cardinal && step.diagonal==first.diagonal;
+        }
+        if(allCells && same) uniform=first.cardinal|(first.diagonal<<16);
+    }
+    // Synchronous callers keep this borrowed graph alive only through packing.
+    // Backend planes own packed costs and use content reuse; they must never
+    // retain this transitive terrain/catalog graph. Async DTOs replace the owner
+    // with their precharged minimal immutable cost view before submission.
+    return {{},std::uint64_t(request.swim),terrain.revision,allCells,0,uniform};
+}
+}
+
 void propagate(const Request& request, const SimulationSnapshot::Handle& snapshot, Uint16* out, GradientWorkspace& scratch)
 {
+    scratch.family = backendFamily(request.kind);
     gradient_kernel::propagateTerrainField(out, request.swim, gradient_kernel::COST_LIMIT,
         {snapshot.width, snapshot.height}, scratch,
         [rules=snapshot.terrain->cellRules.data()](size_t i) { return rules[i]; },
-        snapshot.terrain->movementModifiers, *snapshot.terrain->rules, request.terrainBuckets);
+        snapshot.terrain->movementModifiers, *snapshot.terrain->rules, request.terrainBuckets,
+        snapshotCostIdentity(request, snapshot));
+}
+
+namespace
+{
+gradient_kernel::EntrySteps batchCosts(const PropagationField &field, std::size_t cell)
+{
+    using namespace gradient_kernel;
+    const auto &terrain = *field.snapshot->terrain;
+    if (!terrain.movementModifiers)
+        return weightedClass(field.request.swim) && terrain.rules->swimming(terrain.cellRules[cell])
+                   ? entrySteps(WATER_STEP[field.request.swim])
+                   : LAND_STEPS;
+    const auto &movement = terrain.rules->movement(field.request.swim);
+    return movement.profiles[movement.profileIds[terrain.cellRules[cell]]];
+}
+void batchCPU(const PropagationField &field, Uint16 *out)
+{
+    using namespace gradient_kernel;
+    const auto &terrain = *field.snapshot->terrain;
+    const field::Grid grid(field.snapshot->width, field.snapshot->height);
+    auto at = [&](std::size_t i) { return terrain.cellRules[i]; };
+    if (!terrain.movementModifiers)
+    {
+        propagateFieldCPU(out, field.request.swim, COST_LIMIT, grid, *field.scratch,
+                          [&](std::size_t i) { return terrain.rules->swimming(at(i)); });
+        return;
+    }
+    const auto &movement = terrain.rules->movement(field.request.swim);
+    if (field.request.terrainBuckets == 64)
+        runtime_terrain::propagate<64, false, false>(out, COST_LIMIT, grid, *field.scratch, at, movement);
+    else if (field.request.terrainBuckets == 128)
+        runtime_terrain::propagate<128, false, false>(out, COST_LIMIT, grid, *field.scratch, at, movement);
+    else
+        runtime_terrain::propagate<256, false, false>(out, COST_LIMIT, grid, *field.scratch, at, movement);
+}
+void batchCPUGroup(std::span<const gradient_kernel::BackendRequest* const> requests,
+                   std::span<Uint16* const> destinations)
+{
+    const auto& first = *static_cast<const PropagationField*>(requests.front()->context);
+    first.executor->run(requests.size(), [&](std::size_t i) {
+        try { requests[i]->cpu(requests[i]->context, destinations[i]); }
+        catch(...) { if(requests[i]->failure) requests[i]->failure(requests[i]->context,std::current_exception()); else throw; }
+    });
+}
+} // namespace
+void propagateCPU(const Request& request,const SimulationSnapshot::Handle& snapshot,Uint16* output,GradientWorkspace& scratch)
+{
+    gradient_kernel::runtime_terrain::validateQueueSize(request.terrainBuckets);
+    const PropagationField field{request,&snapshot,output,&scratch};
+    batchCPU(field,output);
+}
+void propagateBatch(std::span<const PropagationField> fields)
+{
+    using namespace gradient_kernel;
+    std::vector<BackendRequest> requests;
+    requests.reserve(fields.size());
+    for (const auto &field : fields)
+    {
+        try
+        {
+            runtime_terrain::validateQueueSize(field.request.terrainBuckets);
+            const auto &terrain = *field.snapshot->terrain;
+            if (terrain.movementModifiers)
+            {
+                const auto &movement = terrain.rules->movement(field.request.swim);
+                if (std::any_of(movement.profiles.begin(), movement.profiles.end(),
+                                [&](auto cost)
+                                {
+                                    return !cost.cardinal || !cost.diagonal ||
+                                           cost.cardinal >= field.request.terrainBuckets ||
+                                           cost.diagonal >= field.request.terrainBuckets;
+                                }))
+                    for (std::size_t cell = 0;
+                         cell < std::size_t(field.snapshot->width) * field.snapshot->height; ++cell)
+                        if (field.output[cell])
+                            runtime_terrain::validateQueueEdge(batchCosts(field, cell),
+                                                               field.request.terrainBuckets);
+            }
+            requests.push_back(
+                {field.output,
+                 COST_LIMIT,
+                 {field.snapshot->width, field.snapshot->height},
+                 *field.scratch->backendSession,
+                 const_cast<PropagationField *>(&field),
+                 [](void *context, std::size_t cell)
+                 { return batchCosts(*static_cast<PropagationField *>(context), cell); },
+                 [](void *context, Uint16 *out) { batchCPU(*static_cast<PropagationField *>(context), out); },
+                 snapshotCostIdentity(field.request, *field.snapshot),
+                 backendFamily(field.request.kind), field.executor ? batchCPUGroup : nullptr});
+            requests.back().cpuBuckets=field.request.terrainBuckets;
+            requests.back().failure=[](void* context,std::exception_ptr error) {
+                const auto& field=*static_cast<const PropagationField*>(context);
+                if(field.error) *field.error=error; else std::rethrow_exception(error);
+            };
+        }
+        catch (...)
+        {
+            if (field.error)
+                *field.error = std::current_exception();
+            else
+                throw;
+        }
+    }
+    executeGradientBatch(requests,backend());
+
+}
+
+namespace {
+std::atomic<Uint64> minimalAttempted{0},minimalConstructed{0},minimalReused{0},minimalDeclined{0},minimalCopied{0};
+std::atomic<Uint64> minimalBudgetDeclines{0},minimalAllocationDeclines{0},minimalRepresentationDeclines{0};
+enum class MinimalDecline {Budget,Allocation,Representation};
+void noteMinimalDecline(MinimalDecline reason) noexcept {
+    ++minimalDeclined;
+    if(reason==MinimalDecline::Budget)++minimalBudgetDeclines;
+    else if(reason==MinimalDecline::Allocation)++minimalAllocationDeclines;
+    else ++minimalRepresentationDeclines;
+}
+// A recovery view has no transitive simulation/catalog ownership. Its selected
+// profile numbering and prepared tables are copied unchanged from the source.
+struct MinimalCosts {
+    std::size_t leasedBytes;
+    int swim;
+    bool modified;
+    std::array<gradient_kernel::EntrySteps,256> storage{};
+    std::span<const gradient_kernel::EntrySteps> profiles;
+    // The indirect branch is never selected, but remains a valid expression
+    // in the generic runtime kernel's DirectProfiles conditional.
+    std::array<std::uint8_t,256> profileIds{};
+    std::optional<TerrainRegistry::Movement::Prepared> prepared;
+    std::unique_ptr<std::uint8_t[]> cells;
+    MinimalCosts(std::size_t bytes,int swim,bool modified):leasedBytes(bytes),swim(swim),modified(modified){}
+    MinimalCosts(const MinimalCosts&)=delete;
+    ~MinimalCosts(){cells.reset();gradient_kernel::releaseOpenCLHostBytes(leasedBytes);}
+    gradient_kernel::EntrySteps at(std::size_t i)const {
+        if(modified)return profiles[cells[i]];
+        return gradient_kernel::weightedClass(swim)&&cells[i]
+            ?gradient_kernel::entrySteps(gradient_kernel::WATER_STEP[swim]):gradient_kernel::LAND_STEPS;
+    }
+};
+struct MinimalCostCache {
+    static constexpr unsigned Count=64;
+    struct Entry {
+        std::weak_ptr<const SimulationSnapshot::Terrain> source;
+        std::weak_ptr<const MinimalCosts> view;
+        int width=0,height=0,swim=0;
+        Uint64 revision=0;
+        bool modified=false;
+    };
+    // Weak source leases retain only control/object allocation storage after
+    // destruction, never source vectors/registries. Weak make_shared view
+    // controls also retain their coallocated fixed object storage. Charge both
+    // conservatively as well as cache/control metadata before construction.
+    static constexpr std::size_t Bytes=sizeof(std::mutex)+sizeof(Entry)*Count
+        +Count*(sizeof(SimulationSnapshot::Terrain)+sizeof(MinimalCosts)+512)+512;
+    std::mutex mutex;
+    std::array<Entry,Count> entries;
+    unsigned next=0;
+    ~MinimalCostCache(){for(auto& e:entries)e={};gradient_kernel::releaseOpenCLHostBytes(Bytes);}
+};
+std::shared_ptr<MinimalCostCache> minimalCache(MinimalDecline& reason) noexcept {
+    static std::mutex mutex;
+    static std::shared_ptr<MinimalCostCache> cache;
+    std::lock_guard lock(mutex);
+    if(cache)return cache;
+    if(!gradient_kernel::reserveOpenCLHostBytes(MinimalCostCache::Bytes))return {};
+    try {cache=std::make_shared<MinimalCostCache>();}
+    catch(...) {reason=MinimalDecline::Allocation;gradient_kernel::releaseOpenCLHostBytes(MinimalCostCache::Bytes);}
+    return cache;
+}
+bool sameSource(const std::weak_ptr<const SimulationSnapshot::Terrain>& a,
+                const std::shared_ptr<const SimulationSnapshot::Terrain>& b) {
+    return !a.owner_before(b)&&!b.owner_before(a);
+}
+std::shared_ptr<const MinimalCosts> minimalView(const Request& request,const SimulationSnapshot::Handle& snapshot) noexcept {
+    const auto decline=[](MinimalDecline reason)->std::shared_ptr<const MinimalCosts>{noteMinimalDecline(reason);return {};};
+    try {
+        if(!snapshot.terrain || !snapshot.terrain->rules || request.swim<0 ||
+            unsigned(request.swim)>=std::size(gradient_kernel::WATER_STEP))return decline(MinimalDecline::Representation);
+        const auto& terrain=*snapshot.terrain;
+        const auto& movement=terrain.rules->movement(request.swim);
+        if(terrain.movementModifiers&&(movement.profiles.empty()||movement.profiles.size()>256||!movement.prepared))return decline(MinimalDecline::Representation);
+        auto reason=MinimalDecline::Budget;auto cache=minimalCache(reason);if(!cache)return decline(reason);
+        const auto matches=[&](const MinimalCostCache::Entry& e){return sameSource(e.source,snapshot.terrain)
+            &&e.width==snapshot.width&&e.height==snapshot.height&&e.swim==request.swim
+            &&e.revision==terrain.revision&&e.modified==terrain.movementModifiers;};
+        {
+            std::lock_guard lock(cache->mutex);
+            for(const auto& e:cache->entries)if(matches(e))if(auto view=e.view.lock()){++minimalReused;return view;}
+        }
+        const auto count=std::size_t(snapshot.width)*snapshot.height;
+        const bool plane=terrain.movementModifiers||gradient_kernel::weightedClass(request.swim);
+        if(snapshot.width<=0||snapshot.height<=0||terrain.cellRules.size()!=count)return decline(MinimalDecline::Representation);
+        const auto payload=plane?count:0;
+        if(payload>gradient_kernel::OpenCLHostBudget-sizeof(MinimalCosts)-256)return decline(MinimalDecline::Budget);
+        const auto bytes=sizeof(MinimalCosts)+256+payload;
+        if(!gradient_kernel::reserveOpenCLHostBytes(bytes))return decline(MinimalDecline::Budget);
+        std::shared_ptr<MinimalCosts> view;
+        try {view=std::make_shared<MinimalCosts>(bytes,request.swim,terrain.movementModifiers);}
+        catch(...) {gradient_kernel::releaseOpenCLHostBytes(bytes);return decline(MinimalDecline::Allocation);}
+        if(terrain.movementModifiers) {
+            std::copy(movement.profiles.begin(),movement.profiles.end(),view->storage.begin());
+            view->profiles={view->storage.data(),movement.profiles.size()};
+            view->prepared=movement.prepared;
+        }
+        if(plane) {
+            view->cells=std::make_unique<std::uint8_t[]>(count);
+            for(std::size_t i=0;i<count;++i) {
+                const auto rule=terrain.cellRules[i];
+                if(terrain.movementModifiers) {
+                    if(rule>=movement.profileIds.size()||movement.profileIds[rule]>=movement.profiles.size())return decline(MinimalDecline::Representation);
+                    view->cells[i]=movement.profileIds[rule];
+                }else view->cells[i]=terrain.rules->swimming(rule);
+            }
+            minimalCopied.fetch_add(count,std::memory_order_relaxed);
+        }
+        ++minimalConstructed;
+        {
+            std::lock_guard lock(cache->mutex);
+            // Another worker may have built the same immutable view. Prefer
+            // that shared owner so backend cache identity does not fragment.
+            for(const auto& e:cache->entries)if(matches(e))if(auto existing=e.view.lock()){++minimalReused;return existing;}
+            auto& e=cache->entries[cache->next++%MinimalCostCache::Count];
+            e={snapshot.terrain,view,snapshot.width,snapshot.height,request.swim,terrain.revision,terrain.movementModifiers};
+        }
+        return view;
+    }catch(const std::bad_alloc&){return decline(MinimalDecline::Allocation);}
+    catch(...){return decline(MinimalDecline::Representation);}
+}
+std::shared_ptr<gradient_kernel::OwnedGradientField> minimalHolder(std::size_t count,MinimalDecline& reason) noexcept {
+    using namespace gradient_kernel;
+    constexpr auto fixed=sizeof(OwnedGradientField)+256;
+    if(count>(OpenCLHostBudget-fixed)/sizeof(Uint16))return {};
+    const auto bytes=fixed+count*sizeof(Uint16);
+    if(!reserveOpenCLHostBytes(bytes))return {};
+    // Cover holder/control and original output ownership before allocation or
+    // transfer. The deleter releases only after members and object are gone.
+    struct Admission {std::size_t bytes;~Admission(){if(bytes)releaseOpenCLHostBytes(bytes);}} admission{bytes};
+    auto dispose=[bytes](OwnedGradientField* field){delete field;releaseOpenCLHostBytes(bytes);};
+    try {
+        std::unique_ptr<OwnedGradientField,decltype(dispose)> allocated(new OwnedGradientField,dispose);
+        admission.bytes=0;
+        return std::shared_ptr<OwnedGradientField>(std::move(allocated));
+    }catch(...){reason=MinimalDecline::Allocation;return {};}
+}
+}
+MinimalCostViewMetrics minimalCostViewMetrics() noexcept {
+    return {minimalAttempted.load(std::memory_order_relaxed),minimalConstructed.load(std::memory_order_relaxed),minimalReused.load(std::memory_order_relaxed),
+        minimalDeclined.load(std::memory_order_relaxed),minimalCopied.load(std::memory_order_relaxed),
+        minimalBudgetDeclines.load(std::memory_order_relaxed),minimalAllocationDeclines.load(std::memory_order_relaxed),minimalRepresentationDeclines.load(std::memory_order_relaxed)};
+}
+std::shared_ptr<gradient_kernel::OwnedGradientField> ownPropagation(
+    const Request& request,const SimulationSnapshot::Handle& snapshot,std::unique_ptr<Uint16[]>& data,
+    std::shared_ptr<gradient_kernel::BackendSession> session,gradient_kernel::PlanDecision decision,std::uint64_t due)
+{
+    using namespace gradient_kernel;
+    runtime_terrain::validateQueueSize(request.terrainBuckets);
+    const auto& terrain=*snapshot.terrain;
+    if(terrain.movementModifiers) {
+        const auto& movement=terrain.rules->movement(request.swim);
+        if(std::any_of(movement.profiles.begin(),movement.profiles.end(),[&](auto cost) {
+            return !cost.cardinal || !cost.diagonal || cost.cardinal>=request.terrainBuckets || cost.diagonal>=request.terrainBuckets;
+        })) {
+            const PropagationField field{request,&snapshot,data.get(),nullptr};
+            for(std::size_t cell=0;cell<std::size_t(snapshot.width)*snapshot.height;++cell)
+                if(data[cell]) runtime_terrain::validateQueueEdge(batchCosts(field,cell),request.terrainBuckets);
+        }
+    }
+    ++minimalAttempted;
+    const auto view=minimalView(request,snapshot);if(!view)return {};
+    auto reason=MinimalDecline::Budget;
+    auto owned=minimalHolder(std::size_t(snapshot.width)*snapshot.height,reason);
+    if(!owned){noteMinimalDecline(reason);return {};}
+    if(!owned->requiredControl){noteMinimalDecline(MinimalDecline::Budget);return {};}
+    owned->inputs=view;owned->session=std::move(session);owned->grid={snapshot.width,snapshot.height};
+    owned->family=backendFamily(request.kind);owned->cpuBuckets=request.terrainBuckets;
+    owned->decision=decision;owned->due=due;
+    // Reuse the bounded validity/uniform proof, but replace its graph owner
+    // and retained byte estimate before anything escapes to the backend.
+    owned->identity=snapshotCostIdentity(request,snapshot);
+    owned->identity.owner=view;owned->identity.retainedBytes=view->leasedBytes;
+    owned->costAt=[](const OwnedGradientField& field,std::size_t i){return static_cast<const MinimalCosts*>(field.inputs.get())->at(i);};
+    owned->cpu=[](OwnedGradientField& field) {
+        const auto& costs=*static_cast<const MinimalCosts*>(field.inputs.get());
+        GradientWorkspace workspace;workspace.backendSession=field.session;
+        if(!costs.modified) {
+            propagateFieldCPU(field.data.get(),costs.swim,COST_LIMIT,field.grid,workspace,
+                [&](std::size_t i){return costs.cells&&costs.cells[i];});
+        }else {
+            const auto at=[&](std::size_t i){return costs.cells[i];};
+            if(field.cpuBuckets==64)runtime_terrain::propagate<64,true,false>(field.data.get(),COST_LIMIT,field.grid,workspace,at,costs);
+            else if(field.cpuBuckets==128)runtime_terrain::propagate<128,true,false>(field.data.get(),COST_LIMIT,field.grid,workspace,at,costs);
+            else runtime_terrain::propagate<256,true,false>(field.data.get(),COST_LIMIT,field.grid,workspace,at,costs);
+        }
+    };
+    owned->data=std::move(data);return owned;
 }
 
 SimulationSnapshot::Requirements buildingRequirements()

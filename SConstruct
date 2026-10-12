@@ -31,7 +31,17 @@ def establish_options(env):
 	    opts.Add("INSTALLDIR", "Installation Directory", "/usr/local/share")
     opts.Add("BINDIR", "Binary Installation Directory", "/usr/local/bin")
     opts.Add("DATADIR", "Directory where data will be put, set to the same as INSTALLDIR", "/usr/local/share")
+    opts.Add(BoolVariable("dev_fast", "Fast full-featured development build", 0))
+    opts.Add(BoolVariable("pch", "Experimental development precompiled headers", 0))
+    opts.Add(BoolVariable("unity", "Experimental selective development unity compilation", 0))
+    opts.Add("linker", "Development linker: default, auto, lld", "default")
+    opts.Add("dependency_jobs", "Dependency build parallelism (defaults to SCons -j)", GetOption("num_jobs"))
     opts.Add(BoolVariable("release", "Build for release", 0))
+    opts.Add(BoolVariable("retain_symbols", "Keep native release symbols for distro debug packages", 0))
+    opts.Add("client_profile", "Client product profile: full or free", "free" if ARGUMENTS.get("release") == "1" else "full")
+    opts.Add("distribution", "Distribution channel", "direct")
+    for feature in ("commander", "authoring_links", "community_ai", "community_generators"):
+        opts.Add("feature_" + feature, "Override client feature (0 or 1)", "auto")
     opts.Add("size_optimization", "Opt-in GCC release experiment: none, gc, lto, size", "none")
     opts.Add(BoolVariable("lean_images", "Use private PNG/JPEG/WebP SDL_image for native release packages", 0))
     opts.Add("optimized_assets", "Offer lossy WebP artwork: auto (release), 0 (lossless), or 1", "auto")
@@ -96,6 +106,9 @@ def configure(env, server_only, relay=False):
     configfile.add("PRIMARY_FONT", "This is the primary font Globulation 2 will use", "\"" + env["font"] + "\"")
     if env['china']:
         configfile.add("GLOB2_CHINA_RELEASE", "Mainland China local-play client", "1")
+
+    from client_features import header
+    configfile.f.write(header(build_identity(ARGUMENTS)))
 
     missing=[]
 
@@ -265,6 +278,9 @@ def configure(env, server_only, relay=False):
     configfile.finish()
     import skin_materials
     skin_materials.register(env)
+    import renderer_shaders
+    renderer_shaders.configure(env, env.Dir('#').abspath, env['BUILDDIR'])
+    renderer_shaders.install(env)
     conf.Finish()
     contents = configfile.f.getvalue()
     previous = None
@@ -287,6 +303,10 @@ def main():
               default=None,
               help='build directory')
     identity = build_identity(ARGUMENTS)
+    from dev_build import can_build_dependencies, dependency_jobs, configure as configure_development
+    from shared_dependencies import ensure as ensure_dependency
+    build_dependencies = can_build_dependencies()
+    jobs = dependency_jobs(ARGUMENTS)
     bdir = str(GetOption('build') or default_directory(identity))
     Path(bdir).mkdir(parents=True, exist_ok=True)
     build_lock = BuildLock(bdir)
@@ -334,10 +354,11 @@ def main():
     # is split into a list. Distro RPM macros provide multiple flags at once.
     for flags in ('CXXFLAGS', 'LINKFLAGS'):
         env[flags] = env.Split(env[flags])
-    # Release builds outside macOS link with -s, which strips debug information
+    # Ordinary release builds outside macOS link with -s, which strips debug information
     # from every binary, so compiling it in only slows the build and multiplies
-    # the size of object files and compiler caches. -g never changes codegen.
-    if env['release'] and not isDarwinPlatform:
+    # the size of object files and compiler caches. Distro debug packages retain it.
+    # -g never changes codegen.
+    if env['release'] and not isDarwinPlatform and not env['retain_symbols']:
         for flags in ('CXXFLAGS', 'LINKFLAGS'):
             env[flags] = [flag for flag in env.Split(env[flags]) if flag != '-g']
     # "server" means a build without the game client: the match relay.
@@ -426,20 +447,20 @@ def main():
     if env['mingw'] or isWindowsPlatform or env['mingwcross']:
         env.Append(CPPDEFINES=["WIN32"])
     if isDarwinPlatform and env['release'] and not server_only and any(
-            target in COMMAND_LINE_TARGETS for target in ('bundle', 'package')) and not GetOption('clean') and not GetOption('no_exec'):
+            target in COMMAND_LINE_TARGETS for target in ('bundle', 'package')) and build_dependencies:
         from mac_image_dependency import ensure
         image_environment = dict(os.environ)
         image_environment.update(env["ENV"])
         if sdl_prefix:
             image_environment["GLOB2_SDL3_PREFIX"] = sdl_prefix
-        image_prefix = ensure(Path.cwd(), jobs=2, environment=image_environment)
+        image_prefix = ensure(Path.cwd(), jobs=jobs, environment=image_environment)
         env.Prepend(LIBPATH=[str(image_prefix/'lib')], CPPPATH=[str(image_prefix/'include')])
         env['LEAN_IMAGE_PREFIX'] = str(image_prefix)
-    if identity.get('lean_images') and not GetOption('clean') and not GetOption('no_exec'):
+    if identity.get('lean_images') and build_dependencies:
         from native_image_dependency import ensure
         image_environment = dict(os.environ)
         image_environment.update(env['ENV'])
-        image_prefix = ensure(Path.cwd(), cc=str(env['CC']), cxx=str(env['CXX']), jobs=2, environment=image_environment)
+        image_prefix = ensure(Path.cwd(), cc=str(env['CC']), cxx=str(env['CXX']), jobs=jobs, environment=image_environment)
         env.Prepend(LIBPATH=[str(image_prefix/'lib')], CPPPATH=[str(image_prefix/'include/SDL3')])
         env['LEAN_IMAGE_PREFIX'] = str(image_prefix)
         from build_layout import write_if_changed
@@ -460,10 +481,10 @@ def main():
         # Variant SConscript files resolve relative CPPPATH entries locally.
         # Keep pinned headers and archives rooted at the dependency installation.
         recording_prefix = recording_prefix.resolve()
-        if not GetOption('clean') and not GetOption('no_exec'):
-            build_recording(recording_prefix, Path(bdir) / 'recording/sources',
+        recording_prefix = ensure_dependency(build_recording, recording_prefix, Path(bdir) / 'recording/sources',
+                explicit=bool(os.environ.get('GLOB2_RECORDING_PREFIX') or (shared_recording and (shared_recording/'recording-manifest.json').exists())), execute=build_dependencies,
                 cc=env['CC'], cxx=env['CXX'], ar=env['AR'], ranlib=env.get('RANLIB', 'ranlib'),
-                target=recording_target, environment=env['ENV'], jobs=2)
+                target=recording_target, environment=env['ENV'], jobs=jobs)
         attach_recording(env, recording_prefix, recording_target)
         env['RECORDING_PREFIX'] = str(recording_prefix.resolve())
         for notice in (recording_prefix / 'share/licenses/recording').glob('*'):
@@ -490,8 +511,10 @@ def main():
         env.Append(CXXFLAGS=["-O3"])
         env.Append(LINKFLAGS=["-O3"])
         if not isDarwinPlatform:
-            env.Append(CXXFLAGS=["-s"])
-            env.Append(LINKFLAGS=["-s", "-fwhole-program"])
+            env.Append(LINKFLAGS=["-fwhole-program"])
+            if not env['retain_symbols']:
+                env.Append(CXXFLAGS=["-s"])
+                env.Append(LINKFLAGS=["-s"])
     from size_optimization import apply as apply_size_optimization
     apply_size_optimization(env, env['size_optimization'])
     if env['profile']:
@@ -518,9 +541,16 @@ def main():
         # $ORIGIN/../lib/glob2, so remove the build prefix from both.
         env['RPATH'] = [path for path in env.get('RPATH', []) if str(path) != sdl_prefix + '/lib']
         env['LINKFLAGS'] = [flag for flag in env.get('LINKFLAGS', [])
-                            if str(flag) != '-Wl,-rpath,' + sdl_prefix + '/lib']
+                            if str(flag) not in ('-Wl,-rpath,' + sdl_prefix + '/lib',
+                                             '-Wl,-rpath=' + sdl_prefix + '/lib')]
     
     
+    configure_development(env, identity)
+    if ccache.enabled():
+        from dev_build import cache_flags
+        cache_flags(env)
+    env.Alias("dev-dependencies", [])
+
     env["TARFILE"] = env.Dir("#").abspath + "/glob2-" + env["VERSION"] + ".tar.gz"
     env["TARFLAGS"] = "-c -z"
     env.Alias("dist", env["TARFILE"])
@@ -624,3 +654,6 @@ def main():
         SConscript(target + "/SConscript", variant_dir = bdir + "/" + target, duplicate = 0)
 
 main()
+
+# A configuration-only target for first-use dependency measurements.
+Alias("dev-dependencies", [])

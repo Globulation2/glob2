@@ -158,8 +158,8 @@ void AICortex::dumpAttackState(const Cortex::CortexObservation& obs) const
 		int sp3 = es->upgradeState[ATTACK_SPEED][3];
 		cerr << "CORTEX_DUMP TRUTH enemy team=" << et->number
 		     << " totalUnit=" << es->totalUnit
-		     << " warriors=" << es->numberUnitPerType[WARRIOR]
-		     << " workers=" << es->numberUnitPerType[WORKER]
+		     << " warriors=" << es->meleeUnits
+		     << " workers=" << es->carriers
 		     << " totalBuilding=" << es->totalBuilding
 		     << " atkStrengthLvls=[" << as0 << "," << as1 << "," << as2 << "," << as3 << "]"
 		     << " atkSpeedLvls=[" << sp0 << "," << sp1 << "," << sp2 << "," << sp3 << "]\n";
@@ -167,7 +167,7 @@ void AICortex::dumpAttackState(const Cortex::CortexObservation& obs) const
 	cerr << "CORTEX_DUMP ==== end snapshot ====" << std::endl;
 }
 
-// TRAINING TRACE for the ML worker-tuning pilot (docs/AI/cortex/PILOT.md). Appends
+// TRAINING TRACE for the ML worker tuning (tools/cortex-ml/training.md). Appends
 // one CSV row per valid tracked swarm to <prefix>.team<N>.csv, where <prefix> is
 // GLOB2_CORTEX_TRACE. Each row is the swarm's observed state this decision cycle
 // plus the cap the HAND RULE chose (the BC target). Pure read of obs + the tune
@@ -214,10 +214,10 @@ void AICortex::dumpWorkerTrace(const Cortex::CortexObservation& obs,
 	}
 }
 
-// DECISION-SELECTION TRACE for the decide() ML pilot (docs/AI/cortex/DECIDE_CONTRACT.md).
+// DECISION-SELECTION TRACE for the decide() ML tools (tools/cortex-ml/training.md).
 // Appends ONE CSV row per decision cycle to <prefix>.team<N>.csv, where <prefix> is
 // GLOB2_CORTEX_DECIDE_TRACE. Each row is: tick, team, the 48 decision features (in
-// DECIDE_CONTRACT idx order, computed by CortexPolicy::extractDecideFeatures — the
+// candidate array idx order, computed by CortexPolicy::extractDecideFeatures — the
 // single source of truth the future inference path reuses), the per-cycle eligibility
 // bitmask, the chosen class index, and the cycle's failed feasibility-gate bitmask
 // (CortexGate bits — ANDed with a candidate's candidateGates[] mask this shows WHY a

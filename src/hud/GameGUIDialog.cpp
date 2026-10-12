@@ -64,6 +64,7 @@ Element InGameMainScreen::build(const Presentation &p)
 
 	buttons.push_back(item("telemetry", fe::tr("[AI telemetry]"), AI_TELEMETRY));
 	buttons.push_back(item("options", fe::tr("[Options]"), OPTIONS));
+    buttons.push_back(item("settings", fe::tr("[settings]"), SETTINGS));
 	buttons.push_back(item("pause", pauseText, PAUSE_GAME, false, SDLK_UNKNOWN, pauseEnabled));
 	if (fe::recordingOffered())
 		buttons.push_back(fe::recordingControls());
@@ -103,8 +104,8 @@ Element InGameConfirmScreen::build(const Presentation &p)
 }
 
 InGameEndOfGameScreen::InGameEndOfGameScreen(std::string title, bool canContinue, std::optional<GAGCore::Color> teamColor,
-											 bool won)
-	: title(std::move(title)), canContinue(canContinue), teamColor(teamColor), won(won)
+											 bool won, std::string reason)
+	: title(std::move(title)), canContinue(canContinue), teamColor(teamColor), reason(std::move(reason)), won(won)
 {
 }
 
@@ -132,6 +133,12 @@ Element InGameEndOfGameScreen::build(const Presentation &p)
 								   }));
 	}
 	parts.push_back(fe::paragraph(title, {fe::FontRole::Title, false, fe::TextAlign::Center}));
+	if (!reason.empty())
+	{
+		auto explanation = fe::paragraph(reason, {fe::FontRole::Body, true, fe::TextAlign::Center});
+		explanation->key = "outcome/reason";
+		parts.push_back(std::move(explanation));
+	}
 	std::vector<fe::MenuAction> actions;
 	actions.push_back({"ok", fe::tr("[ok]"), [this] { finish(QUIT); }, true, SDLK_RETURN});
 	if (canContinue)
@@ -521,10 +528,7 @@ Element InGameOptionScreen::build(const Presentation &p)
 	}
 	std::ostringstream oss;
 	oss << globalContainer->gfx->getW() << "x" << globalContainer->gfx->getH();
-	if (globalContainer->gfx->getOptionFlags() & GAGCore::GraphicContext::USEGPU)
-		oss << " GL";
-	else
-		oss << " SDL";
+	oss << " " << GAGCore::rendererBackendLabel(globalContainer->gfx->backendSwitchStatus().active);
 	parts.push_back(fe::paragraph(oss.str(), {fe::FontRole::Caption, true, fe::TextAlign::Center}));
 	fe::ButtonOptions okOptions;
 	okOptions.primary = true;

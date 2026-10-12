@@ -15,6 +15,7 @@
 #include "Unit.h"
 #include <SDL3_image/SDL_image.h>
 #include <FileManager.h>
+#include <AssetLoader.h>
 #ifdef HAVE_OPENGL
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
@@ -92,8 +93,19 @@ class HighResolutionIntegrationHarness
         auto building=editor.game.addBuilding(15,15,globalContainer->buildingsTypes.getFinishedTypeNum("swarm"),0);REQUIRE(building);
         editor.regenerateGameHeader();editor.minimap.setMapSize(editor.game.map.getW(), editor.game.map.getH());editor.updateCamera();
         editor.game.map.displayViewportW=editor.game.map.displayViewportH=512;
-        // Setup can destroy a staging GameGUI, which releases shared HD caches.
         Sprite::setHighResolution(true);
+        const auto generation = Toolkit::assets().sourceGeneration();
+        auto *published = globalContainer->resources->experimentImages[0];
+        {
+            MapEdit staging;
+        }
+        {
+            GameGUI staging(false);
+        }
+        // Creating and destroying screens must retain shared artwork.
+        REQUIRE(Toolkit::assets().sourceGeneration() == generation);
+        REQUIRE(Sprite::pollHighResolution(0));
+        REQUIRE(globalContainer->resources->experimentImages[0] == published);
         // An incomplete NPOT mip chain samples white without producing a GL
         // error. Verify that both atlas-backed sprite families produce color.
         for(auto sprite:{globalContainer->terrain,globalContainer->resources})
@@ -416,8 +428,9 @@ public:
                 dense.drawMenu();dense.drawMiniMap();dense.drawWidgets();capture(std::string(hd?"dense-hd-":"dense-original-")+std::to_string(int(zoom*100)));
             }
         }
-        // GUI teardown schedules optional layer release; exercise the same
-        // owner polling that the application performs before checking residency.
+        // Optional layers remain shared across screen teardown. Disabling the
+        // preference explicitly still releases them through owner polling.
+        Sprite::requestHighResolution(false);
         finishAssets();
         REQUIRE(Sprite::highResolutionStats().cpuBytes==0);
         std::cout<<"PASS gameplay/editor conversions, wheel zoom, zoom controls, replay drawing, stable simulation checksums and resource release\n";

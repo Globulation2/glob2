@@ -6,8 +6,7 @@ WebGL2 is the default where the browser accelerates it; otherwise the game uses
 the software renderer. `?renderer=webgl2` or `?renderer=software` forces either
 one. The pinned Emscripten 4.0.15 build
 shares game logic and the GPU renderer with desktop. The browser host schedules frames and cooperative jobs without Asyncify. Build and verification instructions below cover the desktop browser target.
-The browser ADRs under `docs/browser` describe the implementation boundaries and
-platform boundaries.
+The [browser documentation hub](../docs/browser/README.md) links architecture, platform contracts and accepted design decisions.
 Browser SDK calls for viewport metrics and text editing live in
 `browser/ApplicationHost.cpp`; shared UI code uses the `ApplicationHost` and
 `BrowserTextInput` interfaces, with native implementations in libgag.
@@ -30,6 +29,21 @@ scons target=web release=1 -j8
 python3 browser/serve.py 8765 --bind 127.0.0.1 --directory build/emscripten/client/release
 ```
 
+For routine editing, build one threaded runtime with basic debug symbols:
+
+```sh
+python3 tools/dev_build.py target=web
+python3 browser/serve.py 8765 --bind 127.0.0.1 --directory build/emscripten/client/debug/dev-dev_fast-true-linker-auto-web_variant-threaded
+```
+
+Use `web_variant=serial` for a serial-only development client. All game features
+and shared assets remain present; a threaded-only client reports an error when
+the host cannot support threads. Ordinary SCons defaults to both runtimes,
+and `web-package` requires both. Full browser compatibility verification also
+uses both. `pch=1` and `unity=1` are explicit experiments; see
+[development build profiles](../docs/development/build-options.md#fast-development-builds)
+for cache controls and debugging limits.
+
 Open http://127.0.0.1:8765. The game starts automatically and fills the page.
 The pinned SDK is installed once per user and host/version; build outputs remain
 checkout-local and ignored by Git. Shared source manifests in
@@ -41,7 +55,7 @@ Native builds do not require Emscripten; browser builds do not probe system libr
 `browser/toolchain.json` pins the SDK revision and version. `emsdk=/path/to/emsdk`
 selects an already installed matching SDK. `GLOB2_DEV_MODE=isolated` restores
 checkout-local SDK and library/port caches for independent verification.
-See [development storage](../docs/development/reference.md#shared-development-storage)
+See [development storage](../docs/development/development-storage.md#shared-development-storage)
 for configuration and cleanup. Omit `release=1` for a debug build.
 `python3 browser/build.py` remains a compatibility wrapper for the release build.
 See [delivery contracts](../docs/browser/implementation.md) for output paths and
@@ -189,7 +203,7 @@ When hosted under `/play/`, quitting then returns the current browser tab to the
 Glob2 Online home page on the same origin. Standalone browser hosts retain the
 exit message and can be restarted by reloading.
 
-## Scope
+## Supported capabilities
 
 The browser client uses mouse and keyboard controls.
 Online play goes through the online hub, as on desktop; matches run over the
@@ -206,7 +220,7 @@ Browser and desktop players in one match must run builds with the same sim
 version; the platform and relay check it (see the
 [turn protocol](../docs/multiplayer/turn-protocol.md)).
 
-## Compatibility note
+## Compatibility
 
 Map generation follows the current native `GenerationService`, including its
 landscape picker and start-quality scoring. The browser services preview
@@ -222,7 +236,7 @@ baselines. Online and LAN players fetch the room's map by its hash.
 ## Automated tests
 
 Build the native client and `transport-test` target before running the full
-suite. Editor generation tests read the native client's `--headless-catalog`
+suite. Editor generation tests read the native client's `info catalog --format json`
 to find named landscapes in the picker; this prevents additions to the catalog
 from silently changing which generator a test exercises. UI actions still use
 real pointer and keyboard events.
@@ -241,6 +255,11 @@ npm ci --ignore-scripts
 npx playwright install chromium firefox webkit
 npm test
 ```
+
+When testing a development output served separately, set `GLOB2_TEST_URL` to its
+origin and `GLOB2_TEST_BUILD_DIR` to the absolute build directory. The latter
+places temporary command-line host pages beside the selected runtime. Select
+tests for the available variant; the complete suite expects both runtimes.
 
 On Linux CI or a container without a desktop session, Firefox needs Xvfb for
 WebGL2 and an audio service for `AudioContext.resume()` to complete. After
@@ -349,7 +368,7 @@ this flag for error assertions, and omit it from performance measurements.
 The browser steps simulation on the application host even in its threaded
 runtime; background AI/gradient workers do not enable the native separate
 simulation runner. Local match presentation uses animation-frame callbacks
-independently of the 25 Hz simulation clock. Each callback consumes input once
+independently of the 30 Hz default simulation clock. Each callback consumes input once
 and advances due ticks within a six-millisecond work budget, always allowing
 one due tick to finish. Accelerated play batches ticks instead of scheduling a
 nested timer per tick. An individual expensive tick can exceed the budget; it

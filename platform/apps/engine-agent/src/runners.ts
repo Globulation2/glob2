@@ -390,6 +390,10 @@ export class HeadlessEngineRunner implements EngineRunner {
         teamCount: report.teamCount,
         ...(report.setCredits ? { setCredits: report.setCredits } : {}),
         ...(report.buildingCatalog ? { buildingCatalog: report.buildingCatalog } : {}),
+        ...(report.unitCatalog ? { unitCatalog: report.unitCatalog } : {}),
+        ...(report.requiredUnitExperiments
+          ? { requiredUnitExperiments: report.requiredUnitExperiments }
+          : {}),
         ...(report.resourceExperiments ? { resourceExperiments: report.resourceExperiments } : {}),
         ...(report.requiredResourceExperiments
           ? { requiredResourceExperiments: report.requiredResourceExperiments }

@@ -1,6 +1,16 @@
 # ADR 006: reuse the 2D GPU renderer for WebGL2
 
-Status: accepted.
+Status: accepted for the retained legacy backend; staged replacement available.
+
+The runtime selector also offers `programmable-gl`, a direct WebGL2 implementation
+using the shared command and resource contracts, and `webgpu`. They are opt-in
+until the browser release gates pass. This decision records the compatibility
+renderer still used by the existing Auto policy. The `webgl2` startup alias keeps
+that legacy meaning; use `?renderer=programmable-gl` for the direct implementation.
+With `web_legacy_gl=0`, legacy emulation is omitted and the accelerated path uses
+direct WebGL2. See [browser implementation](implementation.md#renderer-presentation-surfaces)
+and [runtime backend selection](../architecture/rendering.md#runtime-backend-selection)
+for selection, live transitions, resource ownership and recovery.
 
 Glob2 already has GPU implementations of its 2D drawing operations. The browser
 build compiles those implementations with the pinned Emscripten SDK's OpenGL
@@ -9,9 +19,9 @@ primitives are drawn by the GPU rather than uploading a software-rendered frame.
 
 This preserves the shared drawing interface and desktop behavior. The
 compatibility layer uses SDK internals during context restoration, so SDK upgrades
-must run the rendering and recovery suite. A direct GLES3 implementation could
-replace it behind the same interface if browser compatibility or measured
-performance requires that later.
+must run the rendering and recovery suite. The programmable implementation replaces
+these emulated operations behind the shared drawing adapters. Its shaders, explicit
+buffers and targets do not use fixed-function calls.
 
 SDL3 creates contexts through Emscripten's HTML5 API. The browser implementation
 of `ApplicationHost::initializeOpenGLContext` runs the SDK's context-created
@@ -78,3 +88,5 @@ GLOB2_TEST_URL=http://127.0.0.1:8770 GLOB2_ANGLE=metal node benchmarks/rendering
 Omit `GLOB2_ANGLE` to use Chromium's default hardware backend. The benchmark
 starts a custom map and samples six seconds after warmup; it is a local comparison,
 not a portable release threshold.
+
+Related: [browser guide and decision index](README.md).

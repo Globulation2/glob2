@@ -118,15 +118,18 @@ MobileLayout GameGUITouch::layout() const
 	}
 	if ((result.persistentPanel || panelOpen) && gui.selectionMode == GameGUI::UNIT_SELECTION)
 	{
-		const double width = std::min(300., result.safe.w - 24);
-		const double height = std::min({420., result.world.h - 104,
-			48 + unitInfoRows().size() * 48 * InGameTouchTheme::textGrowth()});
+		const double width = std::min(320., result.safe.w - 24);
+		const double available = std::max(0.0, result.actions.y - minimapBottom - 12);
+		const double height = std::min(available,
+			(result.persistentPanel ? InGameTouchTheme::inspectorHeader : 0) +
+			InGameTouchTheme::unitStatsTitle + 8 + unitInfoRows().size() *
+			InGameTouchTheme::unitStatRow * InGameTouchTheme::textGrowth());
 		result.panel = ThumbSide::corner(result.safe, width, height, 12, result.actions.y, !ThumbSide::left());
 	}
-	if ((result.persistentPanel || panelOpen) && inspectingResource())
+	if (result.persistentPanel && inspectingResource())
 	{
 		const double width = std::min(240.0, result.safe.w - 2 * InGameTouchTheme::railInset);
-		result.panel = ThumbSide::corner(result.safe, width, 112, InGameTouchTheme::railInset,
+		result.panel = ThumbSide::corner(result.safe, width, InGameTouchTheme::inspectorHeader, InGameTouchTheme::railInset,
 			result.actions.y - 8, !ThumbSide::left());
 	}
 	if (gui.selectionMode == GameGUI::BRUSH_SELECTION)
@@ -145,6 +148,8 @@ MobileLayout GameGUITouch::layout() const
 		rect->w *= unit;
 		rect->h *= unit;
 	}
+	if (panelOpen && inspectingResource() && !result.persistentPanel)
+		result.panel = hudLayout(result).identity;
 	if (dial && gui.selectionMode != GameGUI::BRUSH_SELECTION)
 		result.panel = dialLayout(result).bounds;
 	// The compact lens strip replaces the tactical list's drawer.
@@ -190,7 +195,7 @@ void GameGUITouch::clampScroll()
 					  (paletteRail(ui) ? InGameTouchTheme::paletteCell + InGameTouchTheme::gap : 60) +
 				  (paletteRail(ui) ? InGameTouchTheme::gap : 8)
 			: gui.selectionMode == GameGUI::UNIT_SELECTION
-				? unitInfoRows().size() * 48 * InGameTouchTheme::textGrowth()
+				? 8 + unitInfoRows().size() * InGameTouchTheme::unitStatRow * InGameTouchTheme::textGrowth()
 				: inspectingResource() ? 0 : tacticalActions().size() * 56;
 	panelAxis.sync(panelScroll, std::max(0.0, height - content.h / unit), content.h / unit);
 	tutorialAxis.sync(tutorialScroll, tutorialMaximum(), tutorialRect().h / unit);
@@ -485,7 +490,7 @@ std::vector<ViewRect> GameGUITouch::keyboardTargets()
 	else if (inspecting() && usesDial())
 	{
 		for (const auto &region : dialRegions())
-			if (region.part != DialRegion::Arc && region.part != DialRegion::Proportions)
+			if (region.part != DialRegion::Arc)
 				targets.push_back(region.box);
 	}
 	else if (inspecting())
@@ -639,6 +644,21 @@ bool GameGUITouch::process(SDL_Event &event)
 		return false;
 	const ViewPoint pointerPoint{event.tfinger.x * globalContainer->gfx->getW(),
 								 event.tfinger.y * globalContainer->gfx->getH()};
+	// An outside press dismisses confirmation and consumes its whole sequence,
+	// so restoring the normal controls cannot activate one underneath the tap.
+	if (usesHUD() && gui.inputState.hasFocus() && !ignoreTouchSequence &&
+		confirmDestroy && fingers.empty() && event.type == SDL_EVENT_FINGER_DOWN)
+	{
+		const auto action = actionAt(pointerPoint);
+		if (!action || (action->kind != 4 && action->kind != 5))
+		{
+			confirmDestroy = false;
+			stopScrolling();
+			fingers.emplace_back(event.tfinger.touchID, event.tfinger.fingerID);
+			ignoreTouchSequence = true;
+			return true;
+		}
+	}
 	if (usesHUD() && gui.inputState.hasFocus() && !ignoreTouchSequence &&
 		processAllocationPointer(event, pointerPoint))
 		return true;
@@ -1215,6 +1235,11 @@ void GameGUITouch::interfaceTap(ViewPoint point)
 	}
 	if (usesHUD() && interfaceRegion(point) == 38)
 	{
+		if (inspectingReadOnly())
+		{
+			dismissMapPanels();
+			return;
+		}
 		gui.clearSelection();
 		panelOpen = previousPanelOpen;
 		prepareDraw();

@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "app/ClientFeatures.h"
 // Copyright (C) 2026 glob2 contributors
 // Settings > Online (multiplayer mock-up 8): which server to play on (the official
 // one, a remembered one or any address, checked before switching), the display name,
@@ -99,6 +100,7 @@ void SettingsScreen::unlinkProvider(const std::string &provider, const std::stri
 
 void SettingsScreen::buildHiveMind()
 {
+	if constexpr (!ClientFeatures::Commander) return;
 	auto &config = Online::services().config;
 	const auto &client = Online::services().client;
 	const std::string origin = client.origin().empty() ? config.selectedOrigin() : client.origin();

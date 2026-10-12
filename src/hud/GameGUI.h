@@ -71,6 +71,7 @@ class MapMarkOrder;
 */
 namespace Hive { class Client; class Dialog; }
 class GameGUITouch;
+class HudUnitConversionIcon;
 class ConnectionOverlay;
 class GameGUI : public ClientCommandSink
 {
@@ -85,8 +86,11 @@ class GameGUI : public ClientCommandSink
 	friend class HighResolutionIntegrationHarness;
 	friend class FailingUnitMarkersHarness;
 public:
+    bool pendingSettings = false;
+    bool takeSettingsRequest() { const bool result = pendingSettings; pendingSettings = false; return result; }
     friend class TorusView;
     void drawTorusMap(int originX, int originY, int width, int height, int team, unsigned options, int cloudGridLimit, bool advancePreviews);
+    void drawTorusOverlays(const PresentationFrame &scene, int originX, int originY, int width, int height, bool advancePreviews);
 	///Constructs a GameGUI
 	explicit GameGUI(bool persistPreferences = true);
 	
@@ -397,6 +401,7 @@ private:
     friend class GameGUITouchHarness;
 	friend class MobileGalleryGameplay;
 	std::unique_ptr<GameGUITouch> touch;
+	std::unique_ptr<HudUnitConversionIcon> unitConversionIcon;
 
 	//! Serializes the game and hands the bytes to autosaveWriter.
 	void autosave();

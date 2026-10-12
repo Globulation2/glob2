@@ -14,7 +14,7 @@ import { createAiValidator } from './aiValidation.ts';
 //   ENGINE_SCRATCH_DIR     parent of per-job scratch directories (default OS temp)
 //   ENGINE_DATA_HASH       sim data hash, until the binary reports it itself
 //   ENGINE_SIM_VERSION     full simVersionKey; checked against the binary
-//   ENGINE_PROBE_SIM_VERSION=1  run `glob2 --sim-version` even if the catalog
+//   ENGINE_PROBE_SIM_VERSION=1  run `glob2 info sim-version --format json` even if the catalog
 //                          does not advertise it
 //   ENGINE_TIMEOUT_GENERATE_S / _INSPECT_S / _VERIFY_S  wall-clock limits
 //   ENGINE_MEMORY_MB       address-space limit per engine process (Linux)

@@ -4,6 +4,7 @@
 #include "Glob2Test.h"
 #include "InstanceConfig.h"
 #include "InviteLink.h"
+#include "CommandLine.h"
 #include "OnlineHandoff.h"
 
 using namespace Online;
@@ -37,17 +38,14 @@ TEST_SUITE("InviteLink")
 
 	TEST_CASE("catalog CLI arguments open the selected destination")
 	{
-		std::vector<std::string> args{"glob2", "--local-map", "5f6a7b8c-9d0e-4f1a-8b2c-3d4e5f6a7b8c", std::string(64, 'a'), "Map", "--instance", "https://play.example.org"};
-		std::vector<char *> argv;
-		for (auto &arg : args) argv.push_back(arg.data());
-		CHECK_EQ(acceptRoomMapArguments(argv.size(), argv.data(), 1), 4);
+        auto request=Cli::parse({"online","play-map","5f6a7b8c-9d0e-4f1a-8b2c-3d4e5f6a7b8c","--hash",std::string(64,'a'),"--title","Map","--instance","https://play.example.org"});
+        acceptLaunchRequest(request);
 		REQUIRE(pendingMapPlay());
 		CHECK(pendingMapPlay()->mode == MapPlayRequest::Mode::Local);
 		CHECK_EQ(pendingMapPlay()->origin, "https://play.example.org");
 		takePendingMapPlay();
-		args[1] = "--room-map";
-		argv[1] = args[1].data();
-		CHECK_EQ(acceptRoomMapArguments(argv.size(), argv.data(), 1), 4);
+        request.command="online host-map";
+        acceptLaunchRequest(request);
 		CHECK(pendingMapPlay()->mode == MapPlayRequest::Mode::Multiplayer);
 		takePendingMapPlay();
 	}
@@ -59,9 +57,7 @@ TEST_SUITE("InviteLink")
 		CHECK_FALSE(useMapInRoom({"older", std::string(64, 'b'), "Earlier map"}));
 		REQUIRE(pendingRoomMap());
 		const std::string link = "glob2://play?map=5f6a7b8c-9d0e-4f1a-8b2c-3d4e5f6a7b8c&version=" + std::string(64, 'a') + "&mode=local";
-		std::string argument = link;
-		char *argv[] = {argument.data()};
-		CHECK_EQ(acceptLaunchArguments(1, argv, 0), 1);
+        acceptLaunchRequest(Cli::parse({link}));
 		REQUIRE(pendingMapPlay());
 		CHECK_FALSE(pendingJoin());
 		CHECK_FALSE(pendingRoomMap());
@@ -163,28 +159,21 @@ TEST_SUITE("InviteLink")
 		CHECK_FALSE(takePendingJoin().has_value());
 	}
 
-	TEST_CASE("launch arguments: bare links, --join and --instance")
-	{
-		clearPendingJoin();
-		const char *bare[] = {"glob2", "-s", "glob2://join?instance=https://b.example&code=BBBBBB"};
-		CHECK_EQ(acceptLaunchArguments(3, const_cast<char **>(bare), 1), 0);
-		CHECK_EQ(acceptLaunchArguments(3, const_cast<char **>(bare), 2), 1);
-		CHECK_EQ(takePendingJoin()->origin, "https://b.example");
-
-		const char *coded[] = {"glob2", "--join", "CCCCCC", "--instance", "https://c.example:8443"};
-		CHECK_EQ(acceptLaunchArguments(5, const_cast<char **>(coded), 1), 2);
-		CHECK_EQ(acceptLaunchArguments(5, const_cast<char **>(coded), 3), 2);
-		auto invite = takePendingJoin();
-		REQUIRE(invite.has_value());
-		CHECK_EQ(invite->origin, "https://c.example:8443");
-		CHECK_EQ(invite->code, "CCCCCC");
-
-		const char *official[] = {"glob2", "--join", "DDDDDD"};
-		CHECK_EQ(acceptLaunchArguments(3, const_cast<char **>(official), 1), 2);
-		CHECK_EQ(takePendingJoin()->origin, OFFICIAL_INSTANCE_ORIGIN);
-
-		const char *invalid[] = {"glob2", "--join", "no!"};
-		CHECK_EQ(acceptLaunchArguments(3, const_cast<char **>(invalid), 1), 2);
-		CHECK_FALSE(pendingJoin().has_value());
-	}
+    TEST_CASE("launch requests accept links codes and origins and reject invalid invites")
+    {
+        clearPendingJoin();
+        acceptLaunchRequest(Cli::parse({"glob2://join?instance=https://b.example&code=BBBBBB"}));
+        CHECK_EQ(takePendingJoin()->origin,"https://b.example");
+        for(const auto &link:{"http://localhost:8080/j/ABCDEF", "GLOB2:join?code=ABCDEF", "HTTPS://b.example/j/ABCDEF"}) {
+            acceptLaunchRequest(Cli::parse({link}));
+            CHECK_EQ(takePendingJoin()->code,"ABCDEF");
+        }
+        acceptLaunchRequest(Cli::parse({"online","join","CCCCCC","--instance","https://c.example:8443"}));
+        const auto invite=takePendingJoin();REQUIRE(invite);
+        CHECK_EQ(invite->origin,"https://c.example:8443");CHECK_EQ(invite->code,"CCCCCC");
+        acceptLaunchRequest(Cli::parse({"online","join","DDDDDD"}));
+        CHECK_EQ(takePendingJoin()->origin,OFFICIAL_INSTANCE_ORIGIN);
+        CHECK_THROWS_AS(acceptLaunchRequest(Cli::parse({"online","join","no!"})),std::invalid_argument);
+        CHECK_FALSE(pendingJoin());
+    }
 }

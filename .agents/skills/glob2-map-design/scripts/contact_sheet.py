@@ -21,7 +21,7 @@ def font(size):
 def render(binary, generator, seed, w, h, teams, settings, cell):
     fd, png = tempfile.mkstemp(suffix='.png')
     os.close(fd)
-    cmd = [binary, '--generate-map', generator, '--seed', str(seed), '--width', str(w),
+    cmd = [binary, 'map', 'generate', generator, '--seed', str(seed), '--width', str(w),
            '--height', str(h), '--teams', str(teams), '--preview', png,
            '--preview-size', str(cell)]
     for k, v in settings.items():

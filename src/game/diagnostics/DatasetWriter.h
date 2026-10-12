@@ -5,7 +5,7 @@
   a (state_blob, action) pair the trainer's BC pipeline consumes — the
   state_blob is the bot-team-only scalars + a fog-of-war-filtered 32×32×7
   spatial grid, computed at order time from the live Game state. See
-  glob2-ai-trainer/docs/training-design.md §6 for the full rationale.
+  docs/development/headless-replays.md for the dataset format and reader boundary.
 
   Triggered by the GLOB2_DATASET_PATH env var, mirroring GLOB2_REPLAY_PATH
   and GLOB2_CHECKSUM_SIDECAR.

@@ -19,7 +19,10 @@ const headers = () => ({ authorization: `Bearer ${owner.accessToken}` });
 beforeAll(async () => {
   harness = await createHarness();
   instance = await harness.start({
-    instance: { auth: { providers: [], local: { enabled: true } } },
+    instance: {
+      skinDesigner: { enabled: true, salesEnabled: true },
+      auth: { providers: [], local: { enabled: true } },
+    },
   });
   owner = await registeredPlayer(instance, 'CollectionOwner');
   other = await registeredPlayer(instance, 'CollectionOther');

@@ -4,11 +4,16 @@ import { request } from '../api.ts';
 
 /** A filter change cancels both the current search and any pending continuation. */
 export function useMusicCatalogue(filters: string) {
+  const [revision, setRevision] = useState(0);
   const [items, setItems] = useState<MusicRelease[]>([]);
   const [next, setNext] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [loadedFilters, setLoadedFilters] = useState<string | null>(null);
+  const reload = useCallback(() => {
+    setLoadedFilters(null);
+    setRevision((value) => value + 1);
+  }, []);
   const active = useRef<AbortController | null>(null);
   const currentFilters = useRef(filters);
   useEffect(() => {
@@ -17,6 +22,7 @@ export function useMusicCatalogue(filters: string) {
     const controller = new AbortController();
     active.current = controller;
     const timer = setTimeout(() => {
+      setError('');
       setLoading(true);
       setNext(null);
       void request<MusicList>('GET', `/api/v1/music?${filters}`, { signal: controller.signal })
@@ -36,13 +42,13 @@ export function useMusicCatalogue(filters: string) {
         .finally(() => {
           if (!controller.signal.aborted) setLoading(false);
         });
-    }, 200);
+    }, 0);
     return () => {
       clearTimeout(timer);
       controller.abort();
       active.current?.abort();
     };
-  }, [filters]);
+  }, [filters, revision]);
 
   const more = useCallback(async () => {
     if (!next || loading || loadedFilters !== filters || currentFilters.current !== filters) return;
@@ -68,11 +74,12 @@ export function useMusicCatalogue(filters: string) {
     }
   }, [filters, loadedFilters, next, loading]);
   return {
-    items,
+    items: loadedFilters === filters ? items : [],
     setItems,
     next: loadedFilters === filters ? next : null,
     loading: loading || loadedFilters !== filters,
-    error,
+    error: loadedFilters === filters ? error : '',
     more,
+    reload,
   };
 }

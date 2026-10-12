@@ -1,6 +1,6 @@
 let wheat=[], observedAt=0;
 // An AI read-only example. Fog of war is enforced by the host.
-// API: docs/development/javascript-api.md. Constants are local, not engine globals.
+// API: docs/scripting/javascript-api.md. Constants are local, not engine globals.
 const WHEAT = 1;
 
 /** @param {import('./glob2').Context} ctx */

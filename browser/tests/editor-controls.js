@@ -20,7 +20,7 @@ function editorLandscapeNames() {
     const build = path.resolve(root, process.env.GLOB2_BUILD_DIR || `build/${toolchain}/client/release`);
     const binary = path.join(build, 'src', `glob2${platform === 'win32' ? '.exe' : ''}`);
     const catalog = JSON.parse(require('node:child_process').execFileSync(
-      binary, ['--headless-catalog'], {cwd:root, encoding:'utf8', maxBuffer:8*1024*1024}));
+      binary, ['info', 'catalog', '--format', 'json'], {cwd:root, encoding:'utf8', maxBuffer:8*1024*1024}));
     landscapeNames = catalog.generators.filter(entry => entry.method !== 0)
       .map(entry => entry.nameKey).sort();
   }

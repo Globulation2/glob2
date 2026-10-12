@@ -6,7 +6,7 @@ import platform
 import tempfile
 
 
-PACKAGE_VERSION = "0.11.0.0"
+PACKAGE_VERSION = "0.11.2.0"
 
 def enabled(value):
     return str(value).lower() in ('1', 'true', 'yes', 'on')
@@ -17,10 +17,17 @@ def build_identity(arguments, host=None):
     if size_profile not in ('none', 'gc', 'lto', 'size'):
         raise ValueError('size_optimization must be none, gc, lto, or size')
     target = arguments.get('target', 'native')
+    retain_symbols = enabled(arguments.get('retain_symbols', 0))
+    if retain_symbols and (target != 'native' or not enabled(arguments.get('release', 0))):
+        raise ValueError('retain_symbols requires a native release build')
+    from dev_build import development_identity
+    development = development_identity(arguments, target, enabled(arguments.get('release', 0)), enabled(arguments.get('profile', 0)))
     if size_profile != 'none' and target != 'native':
         raise ValueError('size_optimization experiments require a native release build')
     if target not in ('native', 'web', 'android', 'ios'):
         raise ValueError('target must be native, web, android, or ios')
+    if target != 'web' and 'web_legacy_gl' in arguments:
+        raise ValueError('web_legacy_gl requires target=web')
     # server=0 is still accepted so existing client commands keep working.
     if enabled(arguments.get('server', 0)):
         raise ValueError('server=1 (the YOG lobby server) was removed; build role=client or role=relay')
@@ -61,6 +68,9 @@ def build_identity(arguments, host=None):
             identity['china'] = True
         if amazon:
             identity['amazon'] = True
+        from client_features import resolve
+        identity.update(resolve(arguments))
+        identity.update(development)
         return identity
     if target == 'web' and (role != 'client' or enabled(arguments.get('mingw', 0)) or enabled(arguments.get('mingwcross', 0))):
         raise ValueError('web supports only the client role and cannot use a native cross compiler')
@@ -71,6 +81,13 @@ def build_identity(arguments, host=None):
     native_wss = target == 'native' and role == 'client' and enabled(arguments.get('wss', 1))
     identity = {'target': target, 'role': role, 'toolchain': toolchain, 'mode': mode,
                 'native_wss': native_wss}
+    if target == 'web':
+        legacy = str(arguments.get('web_legacy_gl', '1'))
+        if legacy not in ('0', '1'):
+            raise ValueError('web_legacy_gl must be 0 or 1')
+        if legacy == '0': identity['web_legacy_gl'] = False
+    if retain_symbols:
+        identity['retain_symbols'] = True
     if size_profile != 'none':
         if mode != 'release' or toolchain not in ('linux', 'mingw'):
             raise ValueError('size_optimization experiments require a Linux or MinGW release build')
@@ -81,10 +98,30 @@ def build_identity(arguments, host=None):
         identity['lean_images'] = True
     if china:
         identity['china'] = True
+    if role == 'client':
+        from client_features import resolve
+        identity.update(resolve(arguments))
+    identity.update(development)
     return identity
 
 
 def default_directory(identity):
+    if identity.get('web_legacy_gl') is False:
+        base = dict(identity); del base['web_legacy_gl']
+        return default_directory(base) / 'direct'
+    from client_features import directory_suffix
+    feature_suffix = directory_suffix(identity)
+    if feature_suffix:
+        from client_features import resolve
+        base = dict(identity)
+        base.update(resolve({'target': identity['target'], 'release': identity['mode'] == 'release',
+                             'china': identity.get('china', False), 'amazon': identity.get('amazon', False)}))
+        return default_directory(base) / feature_suffix
+    from dev_build import DEVELOPMENT_KEYS
+    suffix = [key + '-' + str(identity[key]).lower() for key in DEVELOPMENT_KEYS if key in identity]
+    if suffix:
+        base = {key: value for key, value in identity.items() if key not in DEVELOPMENT_KEYS}
+        return default_directory(base) / ('dev-' + '-'.join(suffix))
     if identity['target'] in ('android', 'ios'):
         path = (Path('build') / identity['toolchain'] / identity['environment'] /
                 identity['arch'] / identity['api'] / identity['role'] / identity['mode'])
@@ -99,6 +136,8 @@ def default_directory(identity):
         path /= 'size-' + identity['size_optimization']
     if identity.get('lean_images'):
         path /= 'lean-images'
+    if identity.get('retain_symbols'):
+        path /= 'retain-symbols'
     return path / 'china' if identity.get('china') else path
 
 

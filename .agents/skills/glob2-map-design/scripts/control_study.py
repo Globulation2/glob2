@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """One-machine control study for any generator: every control on its own, then random rolls of everything.
 
-Reads the generator's controls from `glob2 --list-map-generators ID`, runs the native binary in parallel
+Reads the generator's controls from `glob2 map generators ID`, runs the native binary in parallel
 and keeps one compact JSON line per map. Run from the repository root:
 
   python3 .agents/skills/glob2-map-design/scripts/control_study.py hidden-oasis ablation --out DIR
@@ -19,7 +19,7 @@ The default --domain search samples registered playable search envelopes; --doma
 retains the full experimental domains for compatibility and extreme-value studies.
 
 Metrics: terrain shares, resource tiles, 4x4 building sites, mean fertility, generation seconds, and the
-mean of every numeric telemetry key the generator records (docs/map-generators/TELEMETRY.md): give a
+mean of every numeric telemetry key the generator records (docs/map-generators/telemetry.md): give a
 control a telemetry measure of what it places and the report shows whether it moved.
 """
 import argparse, collections, hashlib, json, math, os, random, re, statistics as st, sys, time

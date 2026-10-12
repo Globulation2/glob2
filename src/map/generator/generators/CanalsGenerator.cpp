@@ -41,7 +41,7 @@ using namespace MapGeneration;
 // (spreadPockets), every other block is dealt its kind by a weighted draw, and fairness is
 // statistical (the lobby keeps the best-scoring of several seeds).
 //
-// WHY IT PLAYS WELL (docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md). Water blocks walking until
+// WHY IT PLAYS WELL (docs/map-generators/game-rules-for-map-design.md). Water blocks walking until
 // a colony can swim, so the canals are a timing rule; a tower scans square rings with no line of
 // sight, and a straight canal w corners wide puts the banks' grass w + 4 tiles apart (Channels.h),
 // so the default canal of 3 is reached by a level-2 tower (range 7) and not by a level-1 (range 5).

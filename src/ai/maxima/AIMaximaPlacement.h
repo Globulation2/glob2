@@ -51,7 +51,9 @@ enum DevelopmentPurpose
 	Fortification
 };
 
-enum TemplateId
+// Catalog-generated identities exceed the named styles; preserve the signed
+// 32-bit representation used by planner persistence, including sentinel bits.
+enum TemplateId : int32_t
 {
 	NoTemplate=0,
 	InnCompact,
@@ -188,6 +190,7 @@ struct BuildingLevelProfile
 	int operatingMaterials[MaterialCount]{}; // recurring carried packets, FoodLedger::RateScale per tick
 	int feedingRate=0; // visits per tick, FoodLedger::RateScale
     unsigned feedingMask=0;
+    std::vector<Uint8> feedingRecipients;
     int feedingMaterials[MaterialCount]{};
     int operatingAssignmentLimit=1024;
     int initialCarriers=-1; // -1 only for legacy/planner-only unknown staffing
@@ -275,7 +278,7 @@ struct WorldBuilding
 struct FeedingColony
 {
     int x=0,y=0;
-    int demand[3]{}; // recipient-class meals/tick, FoodLedger::RateScale
+    std::vector<int> demand{0,0,0}; // recipient-class meals/tick, FoodLedger::RateScale
 };
 
 struct WorldState

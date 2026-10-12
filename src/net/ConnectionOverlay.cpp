@@ -90,7 +90,7 @@ Reading reading(const ConnectionRow &row)
 	{
 		r = {true, Metric::Ping, row.pingMs, ConnectionQuality::rate(Metric::Ping, row.pingMs)};
 	}
-	// The relay marks a player slow from 2 s behind: poor on the shared scale too.
+	// A relay Slow state overrides the numeric metric with a Poor rating.
 	if (row.state == ConnectionRow::State::Slow)
 		r.rating = Rating::Poor;
 	return r;

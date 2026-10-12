@@ -29,7 +29,8 @@ class InGameMainScreen : public Glob2UI::InGameDialog
 		QUIT_GAME = 6,
 		PAUSE_GAME = 7,
 		HIVE_MIND = 8,
-		AI_TELEMETRY = 9
+		AI_TELEMETRY = 9,
+        SETTINGS = 10
 	};
 	explicit InGameMainScreen(bool isReplay = false, bool canSave = true, bool paused = false);
 	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;
@@ -89,7 +90,7 @@ class InGameEndOfGameScreen : public Glob2UI::InGameDialog
 	const std::string title;
 	const bool canContinue;
 	InGameEndOfGameScreen(std::string title, bool canContinue, std::optional<GAGCore::Color> teamColor = {},
-						  bool won = false);
+						  bool won = false, std::string reason = {});
 	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;
 
   protected:
@@ -98,6 +99,7 @@ class InGameEndOfGameScreen : public Glob2UI::InGameDialog
 
   private:
 	std::optional<GAGCore::Color> teamColor;
+	std::string reason;
 	bool won;
 };
 

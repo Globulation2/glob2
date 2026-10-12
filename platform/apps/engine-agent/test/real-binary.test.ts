@@ -106,7 +106,8 @@ describe.runIf(binary)('real glob2 binary', () => {
       await promisify(execFile)(
         binary!,
         [
-          '--run-game',
+          'game',
+          'run',
           '--map-file',
           resolve(REPO, 'maps/balanced_for_2.map.gz'),
           '--game-seed',

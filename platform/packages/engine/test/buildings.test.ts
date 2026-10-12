@@ -28,7 +28,7 @@ describe('engine building composition output', () => {
     const artworkHash = createHash('sha256').update(artwork).digest('hex');
     const signal = new AbortController().signal;
     const launcher = vi.fn(async (options: RunOptions, scratch: string) => {
-      expect(options.args[0]).toBe('--compose-buildings');
+      expect(options.args.slice(0, 2)).toEqual(['assets', 'compose-buildings']);
       expect(options.signal).toBe(signal);
       expect(options.maxCaptureBytes).toBe(32 * 1024 * 1024);
       const packagePath = options.args[options.args.indexOf('--package') + 1]!;

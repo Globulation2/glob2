@@ -7,14 +7,14 @@ start-quality score. For every generator and map seed the tournament:
 
 1. generates one playable map the way the custom-game lobby does (the best-scoring of five
    rolls derived from the map seed) and writes one copy per cyclic rotation, in which the
-   generator's colony t plays as team (t + r) mod N (production --generate-map --rotations);
+   generator's colony t plays as team (t + r) mod N (production map study --rotations);
 2. plays free-for-all games with the same AI in every slot on every rotation, differing only in
-   the explicit game seed, through glob2 --run-game and shared durable workers;
+   the explicit game seed, through glob2 game run and shared durable workers;
 3. tallies wins by start position and, separately, by team index. Every team index plays every
    start equally often, so a start that keeps winning is the map's doing and a team index that
    keeps winning is the engine's own processing-order bias.
 
-See docs/map-generators/FAIRNESS_TOURNAMENT.md for the metrics and how to read the report.
+See docs/map-generators/fairness-tournament.md for the metrics and how to read the report.
 
   python3 tools/map_fairness_tournament.py run smoke
   python3 tools/map_fairness_tournament.py run standard --jobs 3
@@ -390,7 +390,7 @@ def run_game(config, paths, record, job, directory=None, force=False):
                GLOB2_REPLAY_PATH=str(directory / 'game.replay'))
     if config.get('timeline'):
         env['GLOB2_TEAM_TIMELINE'] = '1'
-    command = [str(paths['glob2']), '-test-games-nox', '1', '--map', map_name,
+    command = [str(paths['glob2']), 'dev', 'random-games', '--runs', '1', '--map', map_name,
                '--matchup', ','.join([config['ai']] * record['colonies'])]
     log = directory / 'game.log'
     begun = time.monotonic()
@@ -668,7 +668,7 @@ def analyse_generator(method, maps, config, catalog):
 
 def load_catalog(study):
     try:
-        entries = json.loads(subprocess.run([str(study), '--headless-catalog'], cwd=ROOT, capture_output=True,
+        entries = json.loads(subprocess.run([str(study), 'info', 'catalog', '--format', 'json'], cwd=ROOT, capture_output=True,
                                             text=True, timeout=60).stdout)
         return {e['method']: e for e in entries['generators']}
     except Exception:
@@ -874,7 +874,7 @@ def markdown(summary, config):
     lines += ['', '## Engine team-index bias', '',
               'Wins by team index, pooled over rotations, so every index played every start equally often. '
               'A skew here is the engine\'s processing order (team 0 also carries the passive local player of '
-              '`-test-games-nox` and its AI polls last), not the map.', '',
+              '`dev random-games` and its AI polls last), not the map.', '',
               '| Scope | Decided games | Wins by team ' + ' / '.join(str(t) for t in range(n))
               + ' | p (uniform) | Top team share [95%] | Bias (pp) |',
               '| --- | ---: | --- | ---: | --- | ---: |']

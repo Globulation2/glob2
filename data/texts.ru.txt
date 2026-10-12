@@ -5996,3 +5996,39 @@ FFmpeg недоступен, поэтому запись отключена. У�
 Экспорт пакетов недоступен.
 [stat band area upkeep]
 Содержание области
+[outcome reason eliminated]
+Колония уничтожена.
+[outcome reason opponents defeated]
+Все противники побеждены.
+[outcome reason ally won]
+Союзная колония победила.
+[outcome reason prestige]
+Цель по престижу достигнута.
+[outcome reason scenario]
+Правила сценария определили исход.
+[outcome reason timer]
+Лимит времени истёк.
+[outcome reason probability]
+Порог вероятности победы достигнут.
+[Destroy this building?]
+Уничтожить это здание?
+[Discord community]
+Discord community
+[Globulation 2 Discord]
+Globulation 2 Discord
+[discord community intro]
+Find opponents, ask for help, and share your maps with the Globulation 2 community.
+[discord opens externally]
+Join our Discord server. This opens Discord or your browser.
+[Join Discord]
+Join Discord
+[Copy link]
+Copy link
+[discord opened]
+Discord opened. You can return to the game at any time.
+[discord open failed]
+Could not open Discord. Copy the invitation link and open it in your browser.
+[discord link copied]
+Invitation link copied.
+[discord copy failed]
+Could not copy the link. Select the invitation above to copy it manually.

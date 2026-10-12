@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 # Copyright (C) 2026 The Globulation 2 Authors
 #
-# Cortex ML pilot — numpy MLP for BC.  Architecture (ML_CONTRACT.md):
+# Cortex ML tools — numpy MLP for BC.  Architecture (tools/cortex-ml-infer/format.md):
 #   16 -> Dense(32) -> ReLU -> Dense(32) -> ReLU -> Dense(20 logits)
 # Manual forward + backprop. Cross-entropy on softmax for TRAINING ONLY;
 # inference is argmax over logits (no softmax in the sim path).

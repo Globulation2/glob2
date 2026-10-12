@@ -305,7 +305,7 @@ class MaximaStrategyConfigTest(unittest.TestCase):
         environment = os.environ.copy()
         environment["GLOB2_MAXIMA_PLAYER_OVERRIDES"] = "1:farming.enabled=false"
         result = subprocess.run(
-            [str(self.game_binary), "-test-games-nox", "1", "--map", "SmallForTwo",
+            [str(self.game_binary), "dev", "random-games", "--runs", "1", "--map", "SmallForTwo",
              "--matchup", "maxima,maxima"],
             cwd=ROOT,
             env=environment,

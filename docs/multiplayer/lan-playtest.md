@@ -33,7 +33,7 @@ lost connections behave.
 ## Running two instances
 
 Build the client (`scons -j3 release=1 server=0`, see the
-[development reference](../development/reference.md)). The binary is
+[development reference](../development/README.md)). The binary is
 `build/<platform>/client/release/src/glob2`; run it from the repository root.
 
 **On one machine.** Give each instance its own profile, so settings, map caches and
@@ -85,8 +85,8 @@ match record to `<host user dir>/replays/lan-last.g2mr`, which can be checked ag
 map:
 
 ```sh
-build/darwin/client/release/src/glob2 --verify-match /tmp/glob2-host/replays/lan-last.g2mr \
-  --map maps/<the map>.map.gz --out /tmp/lan-verify
+build/darwin/client/release/src/glob2 match verify /tmp/glob2-host/replays/lan-last.g2mr \
+  --map maps/<the map>.map.gz --output-dir /tmp/lan-verify
 ```
 
 `/tmp/lan-verify/verdict.json` should say `verified`. Attach the sidecars (or the compare
@@ -95,32 +95,23 @@ notes on what felt different and when (game minute, which player).
 
 ## Baseline input delay
 
-Measured by `LanMatchHarness` ("LAN input delay ...", `python3 test/run_tests.py --binary
-engine --tag benchmark --filter 'LanMatchHarness/*'`). A host and one guest on one
-machine over loopback WSS play FourSquares1 with a Nicowar AI. The guest's turn traffic
-can get an emulated one-way delay. Input delay is the time from an order entering the
-GUI's order queue (a click, at a random moment between frames) to its execution. Each
-row covers about 60 orders over 25 s, on macOS arm64. The benchmark also writes a
-per-stage breakdown (pickup, uplink, relay wait, downlink, buffer wait) and stall counts.
+Run `LanMatchHarness`'s `LAN input delay on loopback and delayed links` benchmark:
 
-| Link (guest, one way) | Host mean / p95 | Guest mean / p95 |
-| --- | --- | --- |
-| loopback | 59 / 76 ms | 87 / 144 ms |
-| +50 ms | 59 / 77 ms | 164 / 262 ms |
+```sh
+python3 test/run_tests.py --binary engine --tag benchmark --filter 'LanMatchHarness/*'
+```
 
-These are from a quiet machine. On a heavily loaded one (load average around 60), the
-engines' threads were descheduled often enough that each client measured more than
-10 ms of jitter and kept a two-tick buffer: host 140 / 162 ms and guest 193 / 241 ms on
-loopback, guest 261 / 292 ms at +50 ms. Before the latency work (see
-[measured delay](turn-protocol.md#measured-delay)) the same loaded machine measured
-197 / 238, 279 / 383 and 455 / 505 ms. The host's delay does not depend on the guest's
-link.
+A host and guest play FourSquares1 with a Nicowar AI over loopback WSS. The case
+varies the guest's one-way delay and bundle interval, queues GUI orders between
+frames, and writes latency distributions, stage breakdowns and stall counts.
+Record the revision, build flags, OS/architecture, host load and generated reports
+for each comparison. Use the same inputs when evaluating a pacing or buffering
+change; do not use an old machine's measurements as universal acceptance limits.
 
-The old LAN game used one fixed delay for everyone, computed at the start from lobby
-pings. It is typically one or two ticks (40–80 ms) on a quiet LAN, but a single slow or
-stalled player held up every player. On a good network the new LAN game should now
-react about as quickly as the old one: a click waits for the next frame, a round trip
-to the host and about a tick. It keeps running for everyone when one connection is
-bad. Whether it feels right is what this playtest decides. In particular, note any
-small hitches on Wi-Fi: a client with under 10 ms of jitter holds no buffer and absorbs
-a late bundle as a short wait.
+The host's latency should not grow with the guest's link delay, and a slow guest
+should not hold up the host's simulation. Assess responsiveness and short Wi-Fi
+hitches while playing, alongside the measured pickup, transport and buffer waits.
+The [timing contract](turn-timing.md#measured-delay) explains measurement boundaries.
+
+
+[Multiplayer index](README.md) · [Documentation index](../README.md).

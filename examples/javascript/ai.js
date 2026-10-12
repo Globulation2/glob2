@@ -1,6 +1,6 @@
 let decisions=0, offset=0;
 // A small starting point: keep two requested workers at each owned building.
-// API: docs/development/javascript-api.md. Read results are detached copies.
+// API: docs/scripting/javascript-api.md. Read results are detached copies.
 /**
  * @param {import('./glob2').Context} ctx
  * @returns {import('./glob2').Order}

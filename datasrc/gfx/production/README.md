@@ -23,3 +23,5 @@ original Blender sources and controls animation exports.
 Reproduce terrain using `tools/artwork/terrain_materials.py`; its retained sources,
 settings and mask records are under `datasrc/gfx/derived/terrain-materials-v1`. Packaging copies these
 approved finals and never generates new texture details.
+
+Related: [artwork production](../../../docs/assets/artwork-workflow.md).

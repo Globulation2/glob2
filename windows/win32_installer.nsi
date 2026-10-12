@@ -2,7 +2,8 @@
 Unicode true
 Name "Globulation 2"
 OutFile "${OUT_FILE}"
-InstallDir "$PROGRAMFILES64\Globulation_2"
+; Leave empty so .onInit can distinguish NSIS's explicit /D= override.
+InstallDir ""
 RequestExecutionLevel admin
 SetCompressor /SOLID lzma
 SetCompressorDictSize 32
@@ -143,15 +144,19 @@ Function .onInit
     Abort "This package requires 64-bit Windows."
   ${EndIf}
   SetRegView 64
-  ; Keep the existing installation location, including the legacy 32-bit key.
-  ReadRegStr $0 HKCU "Software\Globulation_2" ""
-  ${If} $0 == ""
-    SetRegView 32
+  ; NSIS applies /D= before this callback. Only choose a default when absent.
+  ${If} $INSTDIR == ""
     ReadRegStr $0 HKCU "Software\Globulation_2" ""
-    SetRegView 64
-  ${EndIf}
-  ${If} $0 != ""
-    StrCpy $INSTDIR $0
+    ${If} $0 == ""
+      SetRegView 32
+      ReadRegStr $0 HKCU "Software\Globulation_2" ""
+      SetRegView 64
+    ${EndIf}
+    ${If} $0 != ""
+      StrCpy $INSTDIR $0
+    ${Else}
+      StrCpy $INSTDIR "$PROGRAMFILES64\Globulation_2"
+    ${EndIf}
   ${EndIf}
 FunctionEnd
 

@@ -1,0 +1,1 @@
+Restored mature resource stock oscillation, improved native GPU reliability and Metal terrain performance, immediate live colony menus, and faster verified asset packaging.

@@ -2910,5 +2910,9 @@
   "Presentation": "Presentation",
   "{value0} source": "{value0} source",
   "{value0} decor source": "{value0} decor source",
-  "Your draft changed while the design was loading. Your changes were kept; try opening the design again.": "Your draft changed while the design was loading. Your changes were kept; try opening the design again."
+  "Your draft changed while the design was loading. Your changes were kept; try opening the design again.": "Your draft changed while the design was loading. Your changes were kept; try opening the design again.",
+  "More filters": "More filters",
+  "Clear filters": "Clear filters",
+  "No results match these filters.": "No results match these filters.",
+  "Results: {value0}": "Results: {value0}"
 }

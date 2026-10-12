@@ -64,7 +64,7 @@ void Map::updateGlobalGradient(Building *building, int swimClass, BuildingRoute 
 			if (occupancyCells[i].building!=NOGBID)
 				gradient[i]=occupancyCells[i].building==bgid ? GRADIENT_AT_GOAL : GRADIENT_FORBIDDEN;
 			else if ((areaCells[i].forbidden&teamMask) || resourceBlocksGround(i) ||
-			         occupancyCells[i].immobileUnit!=IMMOBILE_UNIT_NONE || (!terrainPropertiesAt(i).walkable && !(canSwim && terrainPropertiesAt(i).swimmable)))
+			         occupancyCells[i].immobileUnit!=IMMOBILE_UNIT_NONE || !gradient_kernel::terrainAllowsGround(terrainPropertiesAt(i),swimClass))
 				gradient[i]=GRADIENT_FORBIDDEN;
 			else
 				gradient[i]=GRADIENT_UNREACHABLE;
@@ -117,7 +117,7 @@ void Map::updateGlobalGradient(Building *building, int swimClass, BuildingRoute 
 						}
 					}
 			}
-			building->anyResourceToClear[canSwim] = anyResourceToClear ? 1 : 2;
+			building->anyResourceToClear[swimAccessVariant(swimClass)] = anyResourceToClear ? 1 : 2;
 		}
 
 		initializeGradientCells([&](size_t begin, size_t end) {
@@ -134,7 +134,7 @@ void Map::updateGlobalGradient(Building *building, int swimClass, BuildingRoute 
 						gradient[wyx] = GRADIENT_FORBIDDEN;
 					//Clearing flags don't consider water an obstacle so long as that piece of
 					//water is under the flag, like algae
-					else if (!terrainPropertiesAt(wyx).walkable && !(canSwim && terrainPropertiesAt(wyx).swimmable) && (!isClearingFlag || gradient[wyx] != GRADIENT_AT_GOAL))
+					else if (!gradient_kernel::terrainAllowsGround(terrainPropertiesAt(wyx),swimClass) && (!isClearingFlag || gradient[wyx] != GRADIENT_AT_GOAL))
 						gradient[wyx] = GRADIENT_FORBIDDEN;
 				}
 				else

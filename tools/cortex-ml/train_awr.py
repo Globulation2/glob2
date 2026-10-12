@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 # Copyright (C) 2026 The Globulation 2 Authors
 #
-# Cortex ML pilot — offline RL trainer (Advantage-Weighted Regression).
+# Cortex ML tools — offline RL trainer (Advantage-Weighted Regression).
 #
 #   BC warm-start  ->  fit value baseline V(s)  ->  weighted BC where each
 #   (s_t, a_t) is reweighted by exp((Ret_t - V(s_t)) / beta) (clipped).
@@ -17,7 +17,7 @@
 #
 #   python3 train_awr.py --data <corpus_dir> --out <weights.json>
 #
-# See docs/AI/cortex/PILOT.md ("Method", "Reward") and ML_CONTRACT.md.
+# See tools/cortex-ml/training.md and tools/cortex-ml-infer/format.md.
 
 import argparse
 import numpy as np

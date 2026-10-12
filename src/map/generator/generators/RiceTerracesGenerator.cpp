@@ -43,7 +43,7 @@ using namespace MapGeneration;
 // That map is Hills now (HillsGenerator.cpp); this one starts from the landscape instead of from
 // the contour-farm primitive.
 //
-// WHY IT PLAYS WELL (docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md). Water blocks walking and
+// WHY IT PLAYS WELL (docs/map-generators/game-rules-for-map-design.md). Water blocks walking and
 // crops block walking and building, so the terraces are a wall between the crest and the valley
 // that only the stairs cross; every crop strip lies within a few tiles of water, so the terraces
 // regrow and a colony's food is the slope below its town. Sand caps above and below the terraces,

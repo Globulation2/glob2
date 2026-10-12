@@ -186,7 +186,8 @@ TEST_SUITE("WinProbability")
         for (int tick = 0; tick < 128; ++tick)
         {
             world.step();
-            trace << game.stepCounter << ' ' << world.checksum() << ' '
+            // Retain the published pre-unit-catalog golden representation.
+            trace << game.stepCounter << ' ' << game.checkSum(nullptr, nullptr, nullptr, false, true) << ' '
                   << game.teams[0]->hasWon << ' ' << game.teams[1]->hasLost << '\n';
             if (tick < 64)
                 CHECK_FALSE(game.isGameEnded);

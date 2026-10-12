@@ -43,7 +43,7 @@ using namespace MapGeneration;
 //   and half with a few fruit trees, and lay out each colony's island (divideUpPlayerLands: wheat
 //   and wood fields along its coast, stone in its interior, the swarm beside its wheat).
 //
-// GAME RULES IT LEANS ON (docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md):
+// GAME RULES IT LEANS ON (docs/map-generators/game-rules-for-map-design.md):
 // - Water blocks walking until a colony can swim: every island, colony and neutral, is reached by
 //   swimming only, so the neutral islands are the first prizes once pools are built.
 // - Fruit is a weapon: the neutral islands' fruit is what lets a colony that takes them pull hungry

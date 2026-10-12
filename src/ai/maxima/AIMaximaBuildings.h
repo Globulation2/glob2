@@ -20,10 +20,10 @@ inline const BuildingType* completed(const World& game, const BuildingType& type
 { return type.isBuildingSite && type.nextLevel>=0 ? game.buildingsTypes.get(type.nextLevel) : &type; }
 // A service timeout counts unit actions. The final action performs completion;
 // insideSpeed advances the unit's fixed-point action clock each simulation tick.
-inline int serviceTicks(const BuildingType& type,int duration)
+inline int serviceTicks(const BuildingType& type,int duration,int speedQ8=256)
 {
  // Nominal cardinal cadence; the engine never completes two actions in one tick.
- const int advance=std::clamp(type.insideSpeed,1,UNIT_DELTA_QUANTUM);
+ const int advance=int(std::clamp(static_cast<long long>(type.insideSpeed)*speedQ8/256,1LL,static_cast<long long>(UNIT_DELTA_QUANTUM)));
  return int(((static_cast<long long>(std::max(0,duration))+1)*UNIT_DELTA_QUANTUM+advance-1)/advance);
 }
 template<class World>
@@ -32,15 +32,15 @@ inline unsigned capabilities(const World& game, const BuildingType& type)
  const auto* b=completed(game,type); if(!b || !b->runtimeAvailable)return 0;
  const auto& s=b->semantics; unsigned result=0;
  auto add=[&](int role,bool yes){if(yes)result|=roleBit(role);};
- auto trains=[&](int ability){const auto& t=s.training[ability];return b->maxUnitInside>0 && t.enabled && (t.unitMask&s.admittedUnitMask);};
- add(Production,s.production.enabledUnitMask);
- add(Feeding,b->maxUnitInside>0&&s.feeding.enabled&&(s.feeding.unitMask&s.admittedUnitMask));
- add(Healing,b->maxUnitInside>0&&s.healing.enabled&&(s.healing.unitMask&s.admittedUnitMask));
+ auto trains=[&](int ability){return b->maxUnitInside>0 && (b->runtimeTrainingAbilities&(1u<<ability));};
+ add(Production,!s.production.enabledUnits.empty());
+ add(Feeding,b->maxUnitInside>0&&b->runtimeFeeds);
+ add(Healing,b->maxUnitInside>0&&b->runtimeHeals);
  add(WalkTraining,trains(WALK));add(SwimTraining,trains(SWIM));
  add(CombatTraining,trains(ATTACK_SPEED)||trains(ATTACK_STRENGTH));
- for(const auto& t:s.training) add(ConstructionTraining,b->maxUnitInside>0&&t.enabled&&t.constructionLevel>0&&(t.unitMask&s.admittedUnitMask&(1u<<WORKER)));
- add(ProjectileDefense,b->shootingRange>0&&b->shootRhythm>0&&std::any_of(s.projectileDamage.begin(),s.projectileDamage.end(),[](int damage){return damage>0;}));
- add(ExploreAttraction,b->zonable[EXPLORER]);add(WarriorAttraction,b->zonable[WARRIOR]);add(WorkerAttraction,b->zonable[WORKER]);
+ add(ConstructionTraining,b->maxUnitInside>0&&b->runtimeConstructionTraining);
+ add(ProjectileDefense,b->shootingRange>0&&b->shootRhythm>0&&b->runtimeAnyProjectileDamage);
+ add(ExploreAttraction,b->runtimeAttractionRoles&2);add(WarriorAttraction,b->runtimeAttractionRoles&4);add(WorkerAttraction,b->runtimeAttractionRoles&1);
  add(ResourceExchange,(s.market.interTeamFruitExchange || b->runtimeSuppliesDirectStock)||b->runtimeSuppliesStock);
  return result;
 }

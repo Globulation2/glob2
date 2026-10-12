@@ -32,7 +32,7 @@ seat, the engine removes its colony, and it has lost from the start. The taken s
 become the match's players, numbered `0..p-1` in room seat order on their own map
 teams, so a player's match seat (ticket `seat`, `match_participants.seat`) differs from
 its room seat when an empty seat comes before it. See
-[MatchSetup to GameHeader](turn-protocol.md#matchsetup-to-gameheader).
+[MatchSetup to GameHeader](turn-engine.md#matchsetup-to-gameheader).
 
 **Sim versions.** A room carries its host's sim version. A client whose sim version
 differs gets `update_required` from `room.join`, and a client whose version the
@@ -101,7 +101,7 @@ load. Every participant downloads those bytes from
 
 | Source | How the room gets its hash and team count |
 | --- | --- |
-| Catalog `{kind: "catalog", hash, mapId?}` | A valid `map_versions` row of a map that is not hidden and is public, unlisted or the host's own, saved by an engine no newer than the room's (`minVersionMinor`). See [Map catalog](architecture.md#map-catalog) |
+| Catalog `{kind: "catalog", hash, mapId?}` | A valid `map_versions` row of a map that is not hidden and is public, unlisted or the host's own, saved by an engine no newer than the room's (`minVersionMinor`). See [Map catalog](engine-agents.md#map-catalog) |
 | Upload `{kind: "upload", format, hash}` | The host's own upload for the room's sim version, once validated. The client uploads a premade or own map chosen in the room's map editor this way (`PlatformRoom::usePremadeMap`) |
 | Generator `{kind: "generated", generator}` | A `generate-map` job. `params.teams` is required and sets the team count. The hash is filled in when the job finishes |
 
@@ -155,7 +155,7 @@ caller gets `404`. Responses carry `ETag: "<hash>"` and an immutable cache lifet
 **Warm maps.** Queue starts first take a pre-generated map of the queue, sim
 version and pool entry from the warm map pool (`takeWarmMap` in
 `packages/play/src/warmMaps.ts`, wired in the worker's `main.ts`; see
-[Warm map pool](architecture.md#warm-map-pool)). Warm maps are generated with one
+[Warm map pool](engine-agents.md#warm-map-pool)). Warm maps are generated with one
 team per queue seat, as on-demand maps are. When the pool is empty or turned off
 (`WARM_MAPS_PER_ENTRY=0`), the starter generates on demand and waits up to 60 s.
 
@@ -171,7 +171,7 @@ share one sequence, `createMatch()` in `platform/packages/play/src/play/start.ts
 2. **Map.** The room's map must be ready. A queue start takes a warm map or
    generates one.
 3. **Placement.** The match goes on a relay, as described in
-   [relay placement](#relay-placement). Without an available relay the start fails
+   [relay placement](rooms-and-matches.md#relay-placement). Without an available relay the start fails
    with `unavailable` and nothing is recorded. A room returns to `open`, and the
    matchmaker retries and then requeues.
 4. **Record.** The `matches` row stores the exact `MatchSetup`, a seed the platform
@@ -389,7 +389,4 @@ Caddy routes `/j/*` to the API, as it routes `/api` and `/realtime`; `/internal`
 is never served publicly, and relays reach it on the backend network (see the
 [self-hosting guide](../hosting/README.md)).
 
-## Not done yet
-
-- **Client side.** The room screen and the client side of `glob2://` and `?join=`
-  wait for approved mock-ups and the client work.
+[Multiplayer index](README.md) · [Documentation index](../README.md).

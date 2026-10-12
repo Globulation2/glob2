@@ -13,6 +13,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <fstream>
+#include <algorithm>
 
 namespace
 {
@@ -113,6 +114,32 @@ TEST_SUITE("EnteringUnitSave")
 	                ++cases;
 	            }
 	}
+	TEST_CASE("authored catalogs reject unassigned indoor service membership [save-format]")
+	{
+		glob2test::HeadlessGlobals globals;
+		glob2test::HeadlessGame world({.clearImmobile=true,.header=true,.seed=731});
+		auto* inn=world.addBuilding("inn",8,8);
+		auto* unit=world.addUnit(EXPLORER,7,8);
+		REQUIRE(inn); REQUIRE(unit);
+		REQUIRE_FALSE(unit->hasCapability(UnitRuntimeTraits::LegacyPerformancePolicies));
+		unit->attachedBuilding=inn;
+		unit->activity=Unit::ACT_RANDOM;
+		unit->destinationPurpose=-1;
+		unit->serviceResourcesReserved=false;
+		unit->displacement=Unit::DIS_ENTERING_BUILDING;
+		unit->movement=Unit::MOV_ENTERING_BUILDING;
+		unit->action=FLY;
+		unit->posX=8; unit->posY=8; unit->dx=1; unit->dy=0;
+		inn->unitsInside.push_back(unit);
+		auto* bytes=new GAGCore::MemoryStreamBackend;
+		GAGCore::BinaryOutputStream writer(bytes);
+		world.game.save(&writer,false,"invalid authored unassigned indoor visit");
+		auto* copy=new GAGCore::MemoryStreamBackend(*bytes);
+		copy->seekFromStart(0);
+		GAGCore::BinaryInputStream input(copy);
+		glob2test::HeadlessGame restored({.header=true});
+		CHECK_THROWS_WITH(restored.game.load(&input),"Invalid saved building service membership");
+	}
 	TEST_CASE("the retained fixture loads [save-format]")
 	{
 		glob2test::HeadlessGlobals globals;
@@ -130,5 +157,50 @@ TEST_SUITE("EnteringUnitSave")
 	                "fixture destination and direction");
 	        require(loaded.map.getAirUnit(7, 8) == unit->gid, "fixture previous-tile occupancy");
 	        require(unit->attachedBuilding == loaded.teams[0]->myBuildings[0], "fixture entered building");
+	        // The retained release fixture is format 88, including its historical
+	        // zero-valued race tables. A current resave must retain that catalog
+	        // and every cached entry value rather than replacing them with defaults.
+	        const auto catalogDigest=loaded.unitCatalog().digest();
+	        REQUIRE(unit->hasCapability(UnitRuntimeTraits::LegacyPerformancePolicies));
+	        REQUIRE(unit->activity==Unit::ACT_RANDOM);
+	        REQUIRE(unit->destinationPurpose==-1);
+	        REQUIRE_FALSE(unit->serviceResourcesReserved);
+	        const auto originalUnit=static_cast<const UnitState&>(*unit);
+	        auto* currentBytes=new GAGCore::MemoryStreamBackend;
+	        GAGCore::BinaryOutputStream currentWriter(currentBytes);
+	        loaded.save(&currentWriter,false,"format 88 current continuation");
+	        auto* currentCopy=new GAGCore::MemoryStreamBackend(*currentBytes);
+	        currentCopy->seekFromStart(0);
+	        GAGCore::BinaryInputStream currentReader(currentCopy);
+	        GameGUI continuedGUI;
+	        Game& continued=continuedGUI.game;
+	        require(continued.load(&currentReader),"reload current resave of format 88");
+	        require(continued.unitCatalog().digest()==catalogDigest,"historical race catalog survives current resave");
+	        auto* currentUnit=continued.teams[0]->myUnits[0];
+	        require(currentUnit,"resaved explorer exists");
+	        CHECK(currentUnit->hp==originalUnit.hp);
+	        CHECK(currentUnit->hungry==originalUnit.hungry);
+	        CHECK(currentUnit->hungriness==originalUnit.hungriness);
+	        CHECK(std::equal(std::begin(currentUnit->performance),std::end(currentUnit->performance),std::begin(originalUnit.performance)));
+	        CHECK(currentUnit->entityRandom==originalUnit.entityRandom);
+	        CHECK(currentUnit->displacement==originalUnit.displacement);
+	        CHECK(continued.map.getAirUnit(7,8)==currentUnit->gid);
+	        const auto state=[](Game& game) {
+	            std::vector<Uint32> fields,buildings,units;
+	            game.checkSum(&fields,&buildings,&units,true);
+	            fields.erase(fields.begin()); // loaded map format 88 vs current format
+	            fields.insert(fields.end(),buildings.begin(),buildings.end());
+	            fields.insert(fields.end(),units.begin(),units.end());
+	            return fields;
+	        };
+	        CHECK(state(loaded)==state(continued));
+	        for(int tick=0;tick<64;++tick) {
+	            loaded.syncStep(0); continued.syncStep(0);
+	            CHECK(state(loaded)==state(continued));
+	        }
+	        // This synthetic fixture has zero FLY/WALK/SWIM caches despite its
+	        // air occupancy. The pre-catalog engine asserted at its first action
+	        // completion (tick 8); later occupancy is not a valid save oracle.
+	        // Compare continuation state without repairing those historical caches.
 	}
 }

@@ -41,9 +41,9 @@ shared_ptr<Order> retireWarAttractor(const AIEngine::AIWorldView& world,const Co
 {
  const auto& type=*Cortex::buildingType(world,building);
  const auto& s=type.semantics;
- bool otherService=s.production.enabledUnitMask || s.feeding.enabled || s.healing.enabled ||
+ bool otherService=!s.production.enabledUnits.empty() || s.feeding.enabled || s.healing.enabled ||
   type.shootingRange>0 || (s.market.interTeamFruitExchange || type.runtimeSuppliesDirectStock) || type.runtimeSuppliesStock ||
-  type.zonable[WORKER] || type.zonable[EXPLORER];
+  (type.attractsRole(0) || type.attractsRole(1));
  for(const auto& training:s.training)otherService|=training.enabled;
  if(otherService)return {};
  if(s.instantPlacement && !s.occupiesGround)return std::make_shared<OrderDelete>(building.gid);

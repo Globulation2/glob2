@@ -2937,5 +2937,9 @@
   "Presentation": "Apresentação",
   "{value0} source": "Fonte de {value0}",
   "{value0} decor source": "Fonte de decoração de {value0}",
-  "Your draft changed while the design was loading. Your changes were kept; try opening the design again.": "O seu rascunho mudou enquanto o design era carregado. As suas alterações foram preservadas; tente abrir o design novamente."
+  "Your draft changed while the design was loading. Your changes were kept; try opening the design again.": "O seu rascunho mudou enquanto o design era carregado. As suas alterações foram preservadas; tente abrir o design novamente.",
+  "More filters": "Mais filtros",
+  "Clear filters": "Limpar filtros",
+  "No results match these filters.": "Nenhum resultado corresponde a estes filtros.",
+  "Results: {value0}": "Resultados: {value0}"
 }

@@ -1219,7 +1219,7 @@ GeneratorDefinition lavaShieldDefinition()
 			 // Nicowar's final critical hunger and starvation deaths on both tested
 			 // seeds, and cost about 2% of initial overlapping building origins.
 			 // Food service depends on inns, labor, route use and combat as well as
-			 // crop count. See docs/map-generators/LAVA_SHIELD.md and the linked raw
+			 // crop count. See docs/map-generators/lava-shield.md and the linked raw
 			 // playtest telemetry before changing these defaults for hunger alone.
 			 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
 			 GeneratorControl::percentage("wood-amount", "Wood amount"),

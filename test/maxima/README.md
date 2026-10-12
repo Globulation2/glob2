@@ -1,6 +1,7 @@
 # Maxima tests
 
-Maxima's policy, configuration and engine integration tests live here. The C++
+Maxima's C++ and Python test sources live beside the implementation in
+`src/ai/maxima/`; this page is their verification entrypoint. The C++
 suites are doctest cases in the shared test binaries (`Maxima.*` suites; the
 standalone policy checks in `glob2-unit-tests`, the engine integrations in
 `glob2-engine-tests`); the Python tests are plain `unittest` files:
@@ -28,7 +29,7 @@ are required.
 | Rally arrival, recruitment and attack waves | `MaximaTacticsStandaloneTest`, `MaximaCombatIntegrationTest` |
 | Runtime orders, building lifetimes and continuation | `MaximaImplementationIntegrationTest`, `MaximaLifecycleTest`, `MaximaDiagnosticsTest` |
 
-Three of these suites are doctest cases in the shared test binaries:
+Run focused shared-binary cases for food accounting, continuation and relocation:
 
 ```sh
 scons release=1 server=0 tests

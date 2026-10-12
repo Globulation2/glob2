@@ -18,7 +18,7 @@ namespace MapGeneration
 // What the measurements are worth is not decided here. FairnessModel.h turns them into a
 // start's fitness with coefficients fitted to thousands of real games, and the map's fairness
 // is how evenly that fitness shares out the chance of winning. See
-// docs/map-generators/FAIRNESS_MODEL.md.
+// docs/map-generators/fairness-model.md.
 
 // The two numbers that decide what gets measured in the first place, as opposed to what a
 // measurement is then worth. Both describe a young colony's working range on the ground.

@@ -1,8 +1,8 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 # Copyright (C) 2026 The Globulation 2 Authors
 #
-# Cortex DECIDE pilot — numpy MLP for decision-selection BC. Architecture
-# (DECIDE_CONTRACT.md):  48 -> Dense(64) -> ReLU -> Dense(64) -> ReLU -> Dense(18)
+# Cortex optional decision model — numpy MLP for decision-selection BC. Architecture
+# (tools/cortex-ml/training.md):  48 -> Dense(64) -> ReLU -> Dense(64) -> ReLU -> Dense(18)
 # Manual forward + backprop. MASKED softmax cross-entropy for TRAINING ONLY
 # (softmax restricted to the eligible classes, matching the mask-then-argmax
 # inference rule); inference is argmax over logits (no softmax in the sim path).

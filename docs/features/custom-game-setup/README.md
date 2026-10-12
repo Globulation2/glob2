@@ -1,5 +1,12 @@
 # Custom-game setup
 
+## On this page
+
+- [Behavior](#behavior)
+- [AI behavior and rule corrections](#ai-behavior-and-rule-corrections)
+- [Adding or tweaking a ruleset](#adding-or-tweaking-a-ruleset)
+- [Reproduce verification](#reproduce-verification)
+
 The native lobby has Map, Players & Teams, and Game Rules tabs. The fixed footer
 keeps the match summary and launch action available while dense content scrolls.
 
@@ -10,7 +17,7 @@ uses two controller slots for one colony. Individual landscapes can impose lower
 limits when their homes, resources or routes need more room.
 
 - Start on a random map with four colonies in a free-for-all: you plus three Numbi AIs
-  (since 2026-09-14; the premade library, a tab away, preselects FourSquares1 the first time
+  (the premade library, a tab away, preselects FourSquares1 the first time
   it is opened). A saved lobby restores whichever mode it was left in.
 - Unix map libraries separate installed and user roots. Windows/shared-root
   installations show one combined library so shipped maps remain accessible.
@@ -77,8 +84,17 @@ limits when their homes, resources or routes need more room.
     Combat. A setup that cannot end (combat off, conquest only, no time limit, no
     probability victory) shows a warning, as does a 30-minute limit.
   - Session speed is restored when the match ends.
+- Prestige victory and probability victory are independent rules. Disabling
+  prestige victory prevents the prestige threshold from ending local, online or
+  headless matches. Conquest can still eliminate a colony before every unit and
+  building disappears, when it has no useful units or production capable of
+  recovery; reserved feeding or healing protects a recovering colony.
+- The in-game win/loss popup shows the outcome and its reason: colony elimination,
+  opponents defeated, an allied victory, prestige, scenario rules, the time
+  limit, or the win-probability threshold. The results screen uses the same reason;
+  it can also explain when opponents left.
 - When the sudden-death timer or prestige goal ends a match with non-allied teams
-  tied for the most prestige, the tied players and live watchers see **Draw**
+  tied for the most prestige among surviving colonies, the tied players and live watchers see **Draw**
   instead of a win. Allies that win together still see a win, and teams below the
   tie still lose. This is presentation only: the engine still marks every tied
   team as won, so saves, replays and result files are unchanged.
@@ -240,5 +256,5 @@ SDL event loops through human, shared-control and AI-only launches.
 
 The Linux workflow runs the headless harness and native compact UI checks under
 Xvfb. macOS desktop event injection was unreliable during development; see
-[the automation guide](../../../test/LOBBY_AUTOMATION.md) for the working SDL approach
+[the automation guide](../../development/testing/lobby-automation.md) for the working SDL approach
 and the distinction between game-side input coverage and physical OS input.

@@ -43,7 +43,7 @@ using namespace MapGeneration;
 // start; without it (the default) the colonies start entirely apart, and the validator checks the
 // map by cutting cost rather than by walking.
 //
-// WHY IT PLAYS WELL (docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md). Deposits block movement
+// WHY IT PLAYS WELL (docs/map-generators/game-rules-for-map-design.md). Deposits block movement
 // and building, wood is clearable, and clearing is slow work, so the forest is a wall that any
 // colony can breach anywhere at a price in worker-hours; that makes the front a choice. Wood far
 // from water never regrows, so every cut is permanent and the map's history is written in it; wood

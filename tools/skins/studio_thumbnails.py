@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """Generate Studio selectors from production sprite bundles or legacy GSKs.
 
-For rigs, use --sprite-bundle with a neutral-paint --render-skin export. This
+For rigs, use --sprite-bundle with a neutral-paint assets render-skin export. This
 uses the production loader/evaluator/renderer instead of another rig decoder.
 """
 import argparse

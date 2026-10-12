@@ -21,7 +21,9 @@ from tools.tournaments.worker import Worker, installed_bundle, outcome_only, pac
 
 FAKE = '''#!/usr/bin/env python3
 import json, pathlib, sys
-if sys.argv[1]=='--headless-catalog':
+if sys.argv[1:2]==['help']:
+ print(json.dumps({'schema_version':1,'cli_version':2,'commands':[]}));sys.exit(0)
+if sys.argv[1:3]==['info','catalog']:
  print(json.dumps({'schema_version':1,'commands':['game','generate_map'],'ais':[],'generators':[]}));sys.exit(0)
 if '--report' in sys.argv and sys.argv[sys.argv.index('--report')+1]=='slow':
  import time;time.sleep(10)
@@ -40,7 +42,7 @@ class RuleJobs(unittest.TestCase):
         adapter=EngineJob('generate_map');adapter.validate(request)
         command=adapter.command(request,{'directory':'/bundle','executable':'glob2'},'/attempt',{'generator-package-0':'/frozen.json'})
         self.assertEqual(command[command.index('--generator-package')+1],'/frozen.json')
-        self.assertEqual(command[command.index('--generator')+1],'example:map')
+        self.assertEqual(command[1:4],['map','study','example:map'])
 
     def test_rules_are_repeatable_sorted_and_new_game_only(self):
         from tools.tournaments.jobs import EngineJob

@@ -17,6 +17,10 @@
 
 namespace
 {
+bool serviceMovementAllowed(const Map&,Unit& unit,const Building&)
+{
+    return unit.performance[FLY] || unit.performance[WALK] || unit.performance[SWIM];
+}
 auto airDistancesFor(const Map& map,const Unit& unit)
 {
     // Building choice ignores transient flyers; steering handles their occupied
@@ -36,12 +40,14 @@ int airDistanceTiles(Field& field,Building& building)
 
 Sint32 starvationLimitedTravelDistance(const Unit *unit)
 {
-	return std::max(0, unit->hungry) / unit->race->hungriness + unit->hp;
+	const auto& traits=unit->runtimeTraits();
+	if (unit->hungriness<=0 || traits.starvationDamage<=0) return 32767;
+	return std::min(32767,std::max(0,unit->hungry)/unit->hungriness+unit->hp/traits.starvationDamage);
 }
 
 Building *Team::findNearestHeal(Unit *unit)
 {
-	if (unit->hungry < 0)
+	if (unit->hungriness > 0 && unit->hungry < 0)
 		return NULL;
 	if (unit->performance[FLY])
 	{
@@ -54,7 +60,7 @@ Building *Team::findNearestHeal(Unit *unit)
 		for (std::list<Building *>::iterator bi=canHealUnit.begin(); bi!=canHealUnit.end(); ++bi)
 		{
 			Building *b=(*bi);
-			if (!b->canOfferService(unit, HEAL)) continue;
+			if (!b->canOfferService(unit, HEAL) || !serviceMovementAllowed(*map,*unit,*b)) continue;
             const int travel=airRoutes.enabled()?airDistanceTiles(airRoutes,*b):0;
             if(airRoutes.enabled() && travel>=maxDist) continue;
             Sint32 dist2 = airRoutes.enabled()?travel*travel:map->warpDistSquare(x,y,b->posX,b->posY);
@@ -75,7 +81,7 @@ Building *Team::findNearestHeal(Unit *unit)
 		Sint32 bestDist = maxDist;
 		for (std::list<Building *>::iterator bi=canHealUnit.begin(); bi!=canHealUnit.end(); ++bi)
 		{
-			if (!(*bi)->canOfferService(unit, HEAL)) continue;
+			if (!(*bi)->canOfferService(unit, HEAL) || !serviceMovementAllowed(*map,*unit,**bi)) continue;
 			int buildingDist;//initialized in buildingAvailable next line
 			if (map->buildingAvailable((*bi), unit->swimClass(), x, y, &buildingDist, BuildingRoute::Footprint) && (buildingDist < bestDist))
 			{
@@ -107,7 +113,7 @@ Building *Team::findNearestFood(Unit *unit)
 	Sint32 bestEnemyHappyness = 0;
 	Sint32 maxDist = starvationLimitedTravelDistance(unit);
 	Building *bestEnemyFood = NULL;
-	if (concurency)
+	if (concurency && unit->hasCapability(UnitRuntimeTraits::Convert))
 	{
 		if (unit->verbose)
 			printf("guid=(%d), Team::findNearestFood(), concurency\n", unit->gid);
@@ -123,7 +129,7 @@ Building *Team::findNearestFood(Unit *unit)
 					continue;
 				for (std::list<Building *>::iterator bi = team->canFeedUnit.begin(); bi != team->canFeedUnit.end(); ++bi)
 				{
-			if (!(*bi)->canOfferService(unit, FEED)) continue;
+			if (!(*bi)->canOfferService(unit, FEED) || !serviceMovementAllowed(*map,*unit,**bi)) continue;
 					Sint32 dist = airRoutes.enabled()?airDistanceTiles(airRoutes,**bi):
                         1 + (Sint32)sqrt(map->warpDistSquare(unit->posX,unit->posY,(*bi)->posX,(*bi)->posY));
 					if (dist >= maxDist
@@ -159,7 +165,7 @@ Building *Team::findNearestFood(Unit *unit)
 					continue;
 				for (std::list<Building *>::iterator bi = team->canFeedUnit.begin(); bi != team->canFeedUnit.end(); ++bi)
 				{
-			if (!(*bi)->canOfferService(unit, FEED)) continue;
+			if (!(*bi)->canOfferService(unit, FEED) || !serviceMovementAllowed(*map,*unit,**bi)) continue;
 					int dist = 1 + (Sint32)sqrt(map->warpDistSquare(unit->posX, unit->posY, (*bi)->posX, (*bi)->posY));
 					if ((dist >= maxDist && !map->hasTerrainMovementModifiers())
 						|| !(*bi)->canConvertUnit()
@@ -198,7 +204,7 @@ Building *Team::findNearestFood(Unit *unit)
 		Building *choosenFood = NULL;
 		for (std::list<Building *>::iterator bi=canFeedUnit.begin(); bi!=canFeedUnit.end(); ++bi)
 		{
-			if (!(*bi)->canOfferService(unit, FEED)) continue;
+			if (!(*bi)->canOfferService(unit, FEED) || !serviceMovementAllowed(*map,*unit,**bi)) continue;
 			if ((*bi)->availableHappynessLevel() < bestEnemyHappyness)
 				continue;
 			Sint32 dist = airRoutes.enabled()?airDistanceTiles(airRoutes,**bi):
@@ -217,7 +223,7 @@ Building *Team::findNearestFood(Unit *unit)
 		Building *choosenFood = NULL;
 		for (std::list<Building *>::iterator bi=canFeedUnit.begin(); bi!=canFeedUnit.end(); ++bi)
 		{
-			if (!(*bi)->canOfferService(unit, FEED)) continue;
+			if (!(*bi)->canOfferService(unit, FEED) || !serviceMovementAllowed(*map,*unit,**bi)) continue;
 			if ((*bi)->availableHappynessLevel() < bestEnemyHappyness)
 				continue;
 			int dist = 1 + (Sint32)sqrt(map->warpDistSquare(unit->posX, unit->posY, (*bi)->posX, (*bi)->posY));
@@ -264,7 +270,7 @@ Building *Team::findBestUpgrade(Unit *unit)
 			Building *b=(*bi);
 			if (unit->verbose)
 				printf("guid=(%d)  b->gid=%d, b->type->level=%d, actLevel=%d\n", unit->gid, b->gid, b->type->level, actLevel);
-			if (!b->canOfferService(unit, ability))
+			if (!b->canOfferService(unit, ability) || !serviceMovementAllowed(*map,*unit,*b))
 				continue;
             std::int64_t distanceSquared=map->warpDistSquare(b->posX,b->posY,x,y);
             if(airRoutes.enabled())
@@ -273,7 +279,7 @@ Building *Team::findBestUpgrade(Unit *unit)
                 if(distance==INT_MAX) continue;
                 distanceSquared=std::int64_t(distance)*distance;
             }
-            else if(!unit->performance[FLY] && map->hasTerrainMovementModifiers())
+            else if(!unit->performance[FLY] && (map->hasTerrainMovementModifiers() || !unit->performance[WALK]))
             {
                 int distance=0;
                 if(!map->buildingAvailable(b,unit->swimClass(),x,y,&distance, BuildingRoute::Footprint)) continue;
@@ -302,7 +308,11 @@ int Team::maxBuildLevel(void)
 	for (int i=0; i<Unit::MAX_COUNT; i++)
 	{
 		Unit *u=myUnits[i];
-		if (u && u->performance[BUILD])
+		if (u && u->hasCapability(UnitRuntimeTraits::Construct)
+            && u->hasCapability(UnitRuntimeTraits::Transport)
+            && (u->performance[FLY]>0 || u->performance[WALK]>0 || u->performance[SWIM]>0)
+            && u->performance[BUILD]>0 && u->performance[HARVEST]>0
+            && (!u->hasCapability(UnitRuntimeTraits::ExtendedCargo) || u->runtimeTraits().cargoCapacity>0))
 		{
 			int unitLevel=u->workerLevel();
 			if (unitLevel>maxLevel)

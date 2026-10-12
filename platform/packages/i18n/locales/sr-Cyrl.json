@@ -2937,5 +2937,9 @@
   "Presentation": "Приказ",
   "{value0} source": "Извор {value0}",
   "{value0} decor source": "Извор украса {value0}",
-  "Your draft changed while the design was loading. Your changes were kept; try opening the design again.": "Ваш нацрт се променио током учитавања дизајна. Ваше измене су сачуване; покушајте поново да отворите дизајн."
+  "Your draft changed while the design was loading. Your changes were kept; try opening the design again.": "Ваш нацрт се променио током учитавања дизајна. Ваше измене су сачуване; покушајте поново да отворите дизајн.",
+  "More filters": "Још филтера",
+  "Clear filters": "Очисти филтере",
+  "No results match these filters.": "Нема резултата који одговарају овим филтерима.",
+  "Results: {value0}": "Резултати: {value0}"
 }

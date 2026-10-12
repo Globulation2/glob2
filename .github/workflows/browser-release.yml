@@ -80,9 +80,14 @@ jobs:
         run: |
           set -euo pipefail
           python3 browser/setup.py
-          scons target=web release=1 -j$(nproc)
+          scons target=web release=1 client_profile=free -j$(nproc)
           python3 browser/package-static.py
           python3 browser/package-static.py --verify build/browser-static
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: client-build-browser
+          path: build/emscripten/client/release/identity.json
+          if-no-files-found: error
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: browser-release

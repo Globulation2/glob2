@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "InviteLink.h"
+#include "CommandLine.h"
 #include "OnlineHandoff.h"
 #include "InstanceConfig.h"
 
@@ -282,25 +283,21 @@ bool acceptInviteText(const std::string &text)
 	setPendingJoin(*invite);
 	return true;
 }
-int acceptLaunchArguments(int argc, char **argv, int index)
+void acceptLaunchRequest(const Cli::Request &request)
 {
-	const std::string argument = argv[index];
-	if (argument == "--instance")
-		return index + 1 < argc ? 2 : 1;
-	if (argument == "--join")
-	{
-		if (index + 1 >= argc)
-			return 1;
-		std::string origin = OFFICIAL_INSTANCE_ORIGIN;
-		for (int i = 1; i + 1 < argc; ++i)
-			if (std::strcmp(argv[i], "--instance") == 0)
-				origin = argv[i + 1];
-		if (auto invite = parseInvite(argv[index + 1], origin))
-			setPendingJoin(*invite);
-		else
-			std::fprintf(stderr, "Ignoring invalid invite: %s\n", argv[index + 1]);
-		return 2;
-	}
-	return acceptInviteText(argument) ? 1 : 0;
+    if(request.command=="online join") {
+        const auto &text=request.positionals.at(0);
+        if(acceptInviteText(text)) return;
+        const auto invite=parseInvite(text,request.get("--instance",OFFICIAL_INSTANCE_ORIGIN));
+        if(!invite) throw std::invalid_argument("Invalid invite link or code");
+        setPendingJoin(*invite);
+    } else if(request.command=="online play-map" || request.command=="online host-map") {
+        RoomMapChoice choice;
+        choice.mapId=request.positionals.at(0);choice.hash=request.get("--hash");choice.title=request.get("--title").substr(0,128);
+        const auto normalized=normalizeOrigin(request.get("--instance",OFFICIAL_INSTANCE_ORIGIN));
+        if(!normalized || !validCatalogMap(choice)) throw std::invalid_argument("Invalid catalog map or instance origin");
+        std::transform(choice.hash.begin(),choice.hash.end(),choice.hash.begin(),[](unsigned char c){return char(std::tolower(c));});
+        setPendingMapPlay({choice,currentOrigin(*normalized),request.command=="online play-map"?MapPlayRequest::Mode::Local:MapPlayRequest::Mode::Multiplayer});
+    }
 }
 } // namespace Online

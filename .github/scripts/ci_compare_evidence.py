@@ -37,12 +37,23 @@ def validate_traces(root, native, browsers):
     return len(native) + len(found)
 
 
-def validate_resource_compositions(root, native, browsers, committed):
-    """Require every selected producer and its complete custom-resource trace."""
+def native_composition_manifest(root, platform, family):
+    manifests = list((root / f'browser-determinism-{platform}').glob(f'**/{family}/native/manifest.json'))
+    if len(manifests) != 1:
+        raise ValueError(f'{platform}: expected one {family} composition manifest')
+    return manifests[0]
+
+
+def validate_resource_compositions(root, native, browsers, committed, *, units=False,
+                                   expected_source=None):
+    """Require every selected producer and its complete composition trace."""
+    family = 'units' if units else 'resources'
+    selection = 'unit-composition' if units else 'composition'
+    trace_name = 'unit-ablations.trace' if units else 'seeded-compositions.trace'
     reference = committed.read_bytes().replace(b'\r\n', b'\n')
-    if len(reference.splitlines()) != 150:
-        raise ValueError('Incomplete committed resource composition trace')
-    source = None
+    if len(reference.splitlines()) != (97 if units else 150):
+        raise ValueError(f'Incomplete committed {family} composition trace')
+    source = expected_source
     count = 0
 
     def check(directory, manifest):
@@ -52,24 +63,22 @@ def validate_resource_compositions(root, native, browsers, committed):
         if producer['dirty'] is not False or not all(identity) or (source is not None and identity != source):
             raise ValueError(f'Resource composition source mismatch: {directory}')
         source = identity
-        traces = list(directory.rglob('seeded-compositions.trace'))
+        traces = list(directory.rglob(trace_name))
         if len(traces) != 1 or traces[0].read_bytes().replace(b'\r\n', b'\n') != reference:
             raise ValueError(f'Missing, incomplete or different resource composition: {directory}')
         count += 1
 
     for platform in native:
-        manifests = list((root / f'browser-determinism-{platform}').glob('**/resources/native/manifest.json'))
-        if len(manifests) != 1:
-            raise ValueError(f'{platform}: expected one resource composition manifest')
-        check(manifests[0].parent, json.loads(manifests[0].read_text()))
+        manifest_path = native_composition_manifest(root, platform, family)
+        check(manifest_path.parent, json.loads(manifest_path.read_text()))
     expected = {(variant, browser) for variant in ('serial', 'threaded') for browser in browsers}
     found = set()
-    for path in root.glob('browser-determinism-wasm-*/resources/*/*/composition/manifest.json'):
+    for path in root.glob(f'browser-determinism-wasm-*/resources/*/*/{selection}/manifest.json'):
         manifest = json.loads(path.read_text())
         identity = (manifest['variant'], manifest['browser'])
         if identity not in expected or identity in found:
             raise ValueError(f'Unexpected or repeated resource composition: {identity}')
-        if manifest['selection']['name'] != 'composition' or manifest.get('exit') != 0 or manifest.get('error'):
+        if manifest['selection']['name'] != selection or manifest.get('exit') != 0 or manifest.get('error'):
             raise ValueError(f'Failed resource composition: {path}')
         check(path.parent, manifest)
         found.add(identity)
@@ -99,8 +108,15 @@ def main():
     browsers = {'chromium', 'firefox', 'webkit'}
     print(f'{validate_traces(args.traces, native, browsers)} exact native/browser traces match')
     resource_count = validate_resource_compositions(args.traces, native, browsers,
-        Path('test/fixtures/resources/seeded-compositions.trace'))
+        Path('test/fixtures/resources/seeded-compositions-units.trace'))
     print(f'{resource_count} exact native/browser resource composition traces match')
+    resource_producer = json.loads(native_composition_manifest(
+        args.traces, native[0], 'resources').read_text())['producer']
+    resource_source = (resource_producer['revision'], resource_producer['sourceTreeSha256'])
+    unit_count = validate_resource_compositions(args.traces, native, browsers,
+        Path('test/fixtures/unit-catalog/ablation-checksums.txt'), units=True,
+        expected_source=resource_source)
+    print(f'{unit_count} exact native/browser unit composition traces match')
     corpora = []
     for profile in profiles:
         path = args.scripting / profile / 'javascript-corpus'

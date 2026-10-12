@@ -2910,5 +2910,9 @@
   "Presentation": "Presentation",
   "{value0} source": "{value0}-källa",
   "{value0} decor source": "{value0}-dekorationskälla",
-  "Your draft changed while the design was loading. Your changes were kept; try opening the design again.": "Ditt utkast ändrades medan designen lästes in. Dina ändringar har bevarats; försök öppna designen igen."
+  "Your draft changed while the design was loading. Your changes were kept; try opening the design again.": "Ditt utkast ändrades medan designen lästes in. Dina ändringar har bevarats; försök öppna designen igen.",
+  "More filters": "Fler filter",
+  "Clear filters": "Rensa filter",
+  "No results match these filters.": "Inga resultat matchar dessa filter.",
+  "Results: {value0}": "Resultat: {value0}"
 }

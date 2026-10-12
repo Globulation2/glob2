@@ -12,7 +12,7 @@
 /// The read methods at the bottom are legacy USL/SGSL queries of client
 /// state. Threaded execution answers from the simulation-owned choice mirror,
 /// independently of GUI consumption. Do not add new reads. See
-/// docs/development/reference.md.
+/// docs/architecture/rendering.md.
 class ClientCommandSink
 {
 public:

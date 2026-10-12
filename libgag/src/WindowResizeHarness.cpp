@@ -203,6 +203,21 @@ public:
 void resizeChecks(bool gpu, bool benchmarkMode)
 {
 	Context gfx(gpu);
+	const auto identity = gfx.renderingIdentity();
+	require(identity.backend == (gpu ? "opengl" : "software"), "Incorrect actual presentation backend");
+#ifdef HAVE_OPENGL
+	if (gpu) {
+		require(identity.glIdentityAvailable, "Current OpenGL context identity unavailable");
+		require(identity.glVendor == reinterpret_cast<const char*>(glGetString(GL_VENDOR)), "Wrong GL vendor identity");
+		require(identity.glRenderer == reinterpret_cast<const char*>(glGetString(GL_RENDERER)), "Wrong GL renderer identity");
+	}
+#endif
+	GraphicContext::RenderingIdentity otherThread;
+	std::thread([&] { otherThread = gfx.renderingIdentity(); }).join();
+	require(!otherThread.glIdentityAvailable && otherThread.glVendor.empty() && otherThread.glRenderer.empty(),
+		"Non-presentation thread read GL identity");
+	if (!gpu) require(!identity.glIdentityAvailable && identity.glVendor.empty() && identity.glRenderer.empty(),
+		"Software renderer claimed a GL identity");
 	const int version = SDL_GetVersion();
 	std::printf("SDL %d.%d.%d; video driver %s\n", SDL_VERSIONNUM_MAJOR(version), SDL_VERSIONNUM_MINOR(version), SDL_VERSIONNUM_MICRO(version), SDL_GetCurrentVideoDriver());
 #ifdef HAVE_OPENGL

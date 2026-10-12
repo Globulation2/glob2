@@ -1,4 +1,4 @@
-name: Publish desktop channels
+name: Stage public release and submit optional desktop channels
 
 # Mirror reviewed commits to the owner-controlled release repository before use.
 # The upstream repository has no store credentials and these jobs cannot run there.
@@ -12,6 +12,7 @@ on:
 
 permissions:
   contents: read
+  id-token: write
 
 concurrency:
   group: desktop-publication

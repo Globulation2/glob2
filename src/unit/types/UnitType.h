@@ -38,6 +38,7 @@ struct UnitType
 	// Used by save-file serialization in Race::save() / Race::load(stream).
 	// Note: the text-stream "data/units.txt" load path is gone — the default
 	// table is now baked into race.cpp at compile time.
+	bool operator==(const UnitType&) const = default;
 	void load(GAGCore::InputStream *stream, Sint32 versionMinor);
 	void save(GAGCore::OutputStream *stream);
 };

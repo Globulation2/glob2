@@ -6,17 +6,17 @@
 #include <array>
 #include <CooperativeTask.h>
 
-#include <iostream>
 #include <memory>
 #include <span>
 
 #include "Map.h"
+#include "UnitCatalog.h"
+#include "UnitCargo.h"
 #include "sim/snapshot/SnapshotStore.h"
 #include "Utilities.h"
 #include "OwnerRandom.h"
 #include "SGSL.h"
 #include <string>
-#include <valarray>
 #include "MapHeader.h"
 #include "GameHeader.h"
 #include "GameObjectives.h"
@@ -157,6 +157,12 @@ public:
 	// Frozen for the lifetime of this simulation. Entity type pointers always
 	// refer to this registry, never to the application's authoring defaults.
 	BuildingsTypes buildingsTypes;
+	UnitCargoStore unitCargo;
+	const UnitCatalog& unitCatalog() const { return *gameHeader.getUnitCatalog(); }
+	std::size_t unitTypeCount() const { return unitCatalog().size(); }
+	bool isUnitTypeAvailable(int type) const;
+	void configureUnitCatalog();
+	bool hasWaterOnlyUnits() const { return waterOnlyUnits; }
 	BuildingAreaEffects::Runtime areaEffects;
 	const AIPlanning::BuildingCapabilityIndex& buildingCapabilities() const;
 	// Setup/load only: compile experiment gates and discard catalog-derived AI
@@ -172,6 +178,8 @@ public:
 	SyncRandScope bindRandom() { return SyncRandScope(syncRandom); }
 private:
 	std::unique_ptr<const AIPlanning::BuildingCapabilityIndex> buildingCapabilityIndex;
+	std::vector<Uint8> unitAvailability;
+	bool waterOnlyUnits=false;
 	friend class HighResolutionIntegrationHarness;
 	friend class EnteringUnitDrawHarness;
 	friend class FailingUnitMarkersHarness;
@@ -336,8 +344,11 @@ public:
 	/// shadow to consult.
     // Prepare one immutable presentation frame for several offscreen regions.
     static void finishMapCapture(ViewState &view, Uint32 options, bool paused);
+	static void finishMapCapture(MapRenderState &render, Uint32 options, bool paused);
     static void prepareSceneMapFrame(const PresentationFrame &scene, int team, ViewState &view, Uint32 options, bool paused);
 	static void drawSceneMap(const PresentationFrame& scene, int sx, int sy, int sw, int sh, int rightMargin, int topMargin, int viewportX, int viewportY, int teamSelected, ViewState& view, Uint32 drawOptions = 0, std::set<Uint16> *visibleBuildings = 0, const BuildingGuiStateMap* buildingGuiState = nullptr, bool animationsPaused = false, int cloudGridLimit = 0, bool preparedCapture = false);
+	// Bounded capture culling keeps layer wrapping in the complete target coordinate system.
+	static void drawSceneMapRegion(const PresentationFrame& scene, int sx, int sy, int sw, int sh, int rightMargin, int topMargin, int viewportX, int viewportY, int teamSelected, ViewState& view, Uint32 drawOptions, std::set<Uint16> *visibleBuildings, const BuildingGuiStateMap* buildingGuiState, bool animationsPaused, int cloudGridLimit, bool preparedCapture, int targetWidth, int targetHeight);
 	static void drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargin, int viewportX, int viewportY, int teamSelected, ViewState& view, Uint32 drawOptions = 0, std::set<Uint16> *visibleBuildings = 0, const BuildingGuiStateMap* buildingGuiState = nullptr, bool animationsPaused = false, int cloudGridLimit = 0, bool preparedCapture = false);
 
 	///Sets the mask representing which players the game is waiting on
@@ -459,7 +470,7 @@ private:
 	static void drawUnitOffScreen(int sx, int sy, int sw, int sh, int viewportX, int viewportY, const SnapshotUnit& unit, Uint32 drawOptions, const PresentationFrame& scene, float unitMotion = 0);
 	static bool isOnScreen(int left, int top, int right, int bot, int viewportX, int viewportY, int x, int y, const SceneMap& map);
 public:
-	Uint32 checkSum(std::vector<Uint32> *checkSumsVector=NULL, std::vector<Uint32> *checkSumsVectorForBuildings=NULL, std::vector<Uint32> *checkSumsVectorForUnits=NULL, bool heavy=false);
+	Uint32 checkSum(std::vector<Uint32> *checkSumsVector=NULL, std::vector<Uint32> *checkSumsVectorForBuildings=NULL, std::vector<Uint32> *checkSumsVectorForUnits=NULL, bool heavy=false, bool legacy152=false);
 
 	/// Sets the alliances from the GameHeader alliance teams
 	void setAlliances(void);
@@ -486,7 +497,7 @@ public:
 	std::string missionBriefing;
 	///The front-end that owns this game, or null. Simulation code must not use
 	///it; it remains for the torus renderer and GUI-side helpers (see
-	///docs/development/reference.md, "Simulation/client boundary").
+	///docs/architecture/rendering.md, "Simulation/client boundary").
 	GameGUI *gui;
 	MapEdit *edit;
 	///Client channels (all null without a GameGUI). Scripts send presentation

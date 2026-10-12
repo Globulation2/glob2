@@ -2883,5 +2883,9 @@
   "Presentation": "外观",
   "{value0} source": "{value0} 的源数据",
   "{value0} decor source": "{value0} 的装饰源数据",
-  "Your draft changed while the design was loading. Your changes were kept; try opening the design again.": "加载设计时，你的草稿发生了变化。你的更改已保留；请尝试重新打开设计。"
+  "Your draft changed while the design was loading. Your changes were kept; try opening the design again.": "加载设计时，你的草稿发生了变化。你的更改已保留；请尝试重新打开设计。",
+  "More filters": "更多筛选条件",
+  "Clear filters": "清除筛选条件",
+  "No results match these filters.": "没有符合这些筛选条件的结果。",
+  "Results: {value0}": "结果: {value0}"
 }

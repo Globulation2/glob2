@@ -129,32 +129,6 @@ std::optional<MapPlayRequest> takePendingMapPlay()
 	return result;
 }
 
-int acceptRoomMapArguments(int argc, char **argv, int index)
-{
-	const std::string flag = argv[index];
-	if (flag != "--room-map" && flag != "--local-map")
-		return 0;
-	if (index + 3 >= argc)
-		return argc - index;
-	RoomMapChoice choice;
-	choice.mapId = argv[index + 1];
-	choice.hash = argv[index + 2];
-	choice.title = std::string(argv[index + 3]).substr(0, 128);
-	std::string origin = OFFICIAL_INSTANCE_ORIGIN;
-	for (int i = 1; i + 1 < argc; ++i)
-		if (std::string(argv[i]) == "--instance")
-			origin = argv[i + 1];
-	const auto normalized = normalizeOrigin(origin);
-	if (normalized && validCatalogMap(choice))
-	{
-		std::transform(choice.hash.begin(), choice.hash.end(), choice.hash.begin(), [](unsigned char c) { return char(std::tolower(c)); });
-		setPendingMapPlay({choice, currentOrigin(*normalized), flag == "--local-map" ? MapPlayRequest::Mode::Local : MapPlayRequest::Mode::Multiplayer});
-	}
-	else
-		std::fprintf(stderr, "Ignoring invalid %s\n", flag.c_str());
-	return 4;
-}
-
 void setRematchHandler(RematchHandler handler)
 {
 	handoffs().rematch = std::move(handler);

@@ -24,8 +24,12 @@
 #include "Team.h"
 #include "TorusMapFixture.h"
 #include "Unit.h"
+#include "Player.h"
 #include "GameGUIKeyActions.h"
 #include "CloudField.h"
+#include <RenderDevice.h>
+#include <RenderBackend.h>
+#include <RendererSelection.h>
 #ifdef HAVE_OPENGL
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
@@ -38,6 +42,7 @@
 #include <fstream>
 #include <optional>
 #include "render/terrain/TerrainCompositor.h"
+#include "render/SoftwareTerrainCache.h"
 
 class TorusRenderIntegrationTest
 {
@@ -188,6 +193,292 @@ static void tiledCapture(bool hd = false)
     REQUIRE(std::abs(gui.toolManager.highlightStrength - .2f) < .00001f);
     REQUIRE(glGetError() == GL_NO_ERROR);
 #endif
+}
+
+// Inject one admission failure after the final overlay work has really submitted.
+// Region packets carry exact physical scissors; the final overlay does not.
+class OverlayAdmissionDevice final : public GAGCore::RenderDevice
+{
+    std::unique_ptr<GAGCore::RenderDevice> device;
+public:
+    bool rejected=false;
+    bool overlayFailure=true;
+    mutable bool phaseRejected=false;
+    std::function<bool()> phaseFault;
+    explicit OverlayAdmissionDevice(std::unique_ptr<GAGCore::RenderDevice> value) : device(std::move(value)) {}
+    GAGCore::RenderDeviceCapabilities capabilities() const override {
+        if(!phaseRejected && phaseFault && phaseFault()) {
+            phaseRejected=true;
+            throw std::runtime_error("Injected torus exception after source phase advancement");
+        }
+        return device->capabilities();
+    }
+    bool canBeginFrame() override {return device->canBeginFrame();}
+    GAGCore::RenderSubmission submit(GAGCore::RenderFrame frame) override {
+        const bool overlay=overlayFailure && !rejected && std::any_of(frame.packets.begin(),frame.packets.end(),[](const auto &packet){
+            return packet.target && packet.target->descriptor.budgetClass==GAGCore::TextureDescriptor::BudgetClass::TerrainPage &&
+                !packet.targetScissor && (packet.kind==GAGCore::DrawPacket::Kind::Fill || packet.kind==GAGCore::DrawPacket::Kind::Blit);
+        });
+        const auto submitted=device->submit(std::move(frame));
+        if(overlay && submitted){rejected=true;throw GAGCore::RenderAdmissionDeferred("Injected final torus overlay admission failure");}
+        return submitted;
+    }
+    GAGCore::RenderCompletion completion(GAGCore::RenderSubmission value) override {return device->completion(value);}
+    void present() override {device->present();}
+    void discardFrame() override {device->discardFrame();}
+    void reset() override {device->reset();}
+    std::uint64_t generation() const override {return device->generation();}
+    GAGCore::RenderTelemetry telemetry() const override {return device->telemetry();}
+    void trimRetiredResources() override {device->trimRetiredResources();}
+    bool capture(GAGCore::CaptureRequest request) override {return device->capture(std::move(request));}
+    bool pollCapture(GAGCore::CaptureResult &result) override {return device->pollCapture(result);}
+    SDL_Surface *captureSynchronously(GAGCore::CaptureRequest request) override {return device->captureSynchronously(std::move(request));}
+    void cancelCaptures() override {device->cancelCaptures();}
+    void outputSize(int &width,int &height) override {device->outputSize(width,height);}
+};
+static void deviceOverlayRetry(GAGCore::RendererBackend backend)
+{
+    using namespace GAGCore;
+    glob2test::HeadlessGlobals globals({.display=true,.loadStrings=true,.width=960,.height=720,
+        .beforeLoad=[backend](GlobalContainer &container){container.settings.rendererBackend=backend;}});
+    auto *gfx=globals->gfx;
+    if(gfx->backendSwitchStatus().active!=backend){MESSAGE("Backend unavailable: ",gfx->backendSwitchStatus().reason);return;}
+    gfx->deviceRenderer.reset();
+    auto injected=std::make_unique<OverlayAdmissionDevice>(std::move(gfx->presentationDevice));
+    auto *probe=injected.get();gfx->presentationDevice=std::move(injected);
+    gfx->deviceRenderer=makeDeviceRenderBackend(*gfx->presentationDevice,*gfx->renderResources(),gfx->getW(),gfx->getH());
+    gfx->renderer=gfx->deviceRenderer.get();
+    globals->settings.clouds=false;
+    GameGUI gui;gui.init();makeTorusMapFixture(gui.game,64,64);
+    // The render-only map helper declares a player but does not allocate one.
+    // These fixtures verify game checksums, which require the real player.
+    gui.game.players[0]=new Player(0,"Renderer fixture",gui.game.teams[0],BasePlayer::P_LOCAL);
+    for(int y=0;y<64;++y)for(int x=0;x<64;++x)gui.game.map.paintVertexSquare(x,y,GRASS,1);
+    gui.localPlayer=gui.localTeamNo=0;gui.adjustLocalTeam();gui.prepareLocalPresentation();
+    gui.mouseX=480;gui.mouseY=368;gui.torusView.textureLimit=1024;gui.torusView.toggle();
+    // Picking uses the last completed world mesh. Establish it before asking the
+    // tool overlay to emit packets; the first capture cannot pick yet.
+    probe->overlayFailure=false;
+    gui.selectionMode=GameGUI::NO_SELECTION;
+    bool initialized=false;
+    for(unsigned attempt=0;attempt<128 && !initialized;++attempt){
+        int vx=17,vy=21;
+        REQUIRE(gui.torusView.draw(gui.drawnScene(),&gui,0,Game::DRAW_WHOLE_MAP|Game::DRAW_AREA,vx,vy,960,720));
+        initialized=gfx->flushDeviceFrame();
+        gfx->nextFrame();SDL_Delay(1);
+    }
+    REQUIRE(initialized);
+    int pickedX=0,pickedY=0;
+    REQUIRE(gui.torusView.pick(gui.mouseX,gui.mouseY,pickedX,pickedY));
+    probe->overlayFailure=true;
+    gui.selectionMode=GameGUI::TOOL_SELECTION;gui.toolManager.activateBuildingTool("swarm");
+    bool complete=false;unsigned holds=0;
+    const auto checksum=gui.game.checkSum();
+    for(unsigned attempt=0;attempt<128 && !complete;++attempt){
+        // Pausing a running multi-turn capture freezes source animation clocks,
+        // independently of the capture's immutable initial animation phase.
+        gui.gamePaused=attempt==1 || attempt==2;
+        const auto animationBefore=gui.view.render.animationTime;
+        const auto areaBefore=gui.view.render.areaAnimationTick;
+        int vx=17,vy=21;
+        REQUIRE(gui.torusView.draw(gui.drawnScene(),&gui,0,Game::DRAW_WHOLE_MAP|Game::DRAW_AREA,vx,vy,960,720));
+        REQUIRE(gui.view.render.animationTime==animationBefore+(gui.gamePaused?0:1));
+        REQUIRE(gui.view.render.areaAnimationTick==areaBefore+(gui.gamePaused?0:1));
+        complete=gfx->flushDeviceFrame();
+        if(!complete)++holds;
+        gfx->nextFrame();SDL_Delay(1);
+        REQUIRE(gfx->presentationDevice.get()==probe);
+        REQUIRE(gfx->backendSwitchStatus().active==backend);
+    }
+    REQUIRE(probe->rejected);REQUIRE(complete);REQUIRE(holds>1);
+    REQUIRE(gui.game.checkSum()==checksum);
+    REQUIRE(std::abs(gui.toolManager.highlightStrength-.1f)<.00001f);
+}
+
+static void devicePhaseFallback(GAGCore::RendererBackend backend)
+{
+    using namespace GAGCore;
+    glob2test::HeadlessGlobals globals({.display=true,.loadStrings=true,.width=640,.height=480,
+        .beforeLoad=[backend](GlobalContainer &container){container.settings.rendererBackend=backend;}});
+    auto *gfx=globals->gfx;
+    if(gfx->backendSwitchStatus().active!=backend){MESSAGE("Backend unavailable: ",gfx->backendSwitchStatus().reason);return;}
+    gfx->deviceRenderer.reset();
+    auto injected=std::make_unique<OverlayAdmissionDevice>(std::move(gfx->presentationDevice));
+    auto *probe=injected.get();probe->overlayFailure=false;
+    gfx->presentationDevice=std::move(injected);
+    gfx->deviceRenderer=makeDeviceRenderBackend(*gfx->presentationDevice,*gfx->renderResources(),gfx->getW(),gfx->getH());
+    gfx->renderer=gfx->deviceRenderer.get();
+    globals->settings.clouds=false;
+    GameGUI gui;gui.init();makeTorusMapFixture(gui.game,64,64);
+    // The render-only map helper declares a player but does not allocate one.
+    // These fixtures verify game checksums, which require the real player.
+    gui.game.players[0]=new Player(0,"Renderer fixture",gui.game.teams[0],BasePlayer::P_LOCAL);
+    gui.localPlayer=gui.localTeamNo=0;gui.adjustLocalTeam();gui.prepareLocalPresentation();
+    gui.torusView.textureLimit=1024;gui.torusView.toggle();
+    const auto checksum=gui.game.checkSum();
+    const int animationBefore=gui.view.render.animationTime;
+    const int areaBefore=gui.view.render.areaAnimationTick;
+    // pushDeviceTarget consults capabilities after the phase scope starts.
+    // The injected fault therefore exercises the real draw() fallback catch.
+    probe->phaseFault=[&]{return gui.view.render.animationTime!=animationBefore;};
+    int vx=17,vy=21;
+    REQUIRE_FALSE(gui.torusView.draw(gui.drawnScene(),&gui,0,Game::DRAW_WHOLE_MAP|Game::DRAW_AREA,vx,vy,640,480));
+    REQUIRE(probe->phaseRejected);
+    probe->phaseFault={};
+    REQUIRE(gui.view.render.animationTime==animationBefore);
+    REQUIRE(gui.view.render.areaAnimationTick==areaBefore);
+    Game::drawSceneMap(gui.drawnScene(),0,0,640,480,0,0,vx,vy,0,gui.view,Game::DRAW_WHOLE_MAP|Game::DRAW_AREA);
+    REQUIRE(gui.view.render.animationTime==animationBefore+1);
+    REQUIRE(gui.view.render.areaAnimationTick==areaBefore+1);
+    REQUIRE(gui.game.checkSum()==checksum);
+    REQUIRE(gfx->presentationDevice.get()==probe);
+    REQUIRE(gfx->backendSwitchStatus().active==backend);
+}
+
+static void deviceCapture(GAGCore::RendererBackend backend)
+{
+    glob2test::HeadlessGlobals globals({.display = true, .loadStrings = true, .width = 640, .height = 480,
+        .beforeLoad = [backend](GlobalContainer &container) { container.settings.rendererBackend = backend; }});
+    auto *gfx = globals->gfx;
+    if (gfx->backendSwitchStatus().active != backend) {
+        MESSAGE("Backend unavailable: ", gfx->backendSwitchStatus().reason);
+        return;
+    }
+    REQUIRE(gfx->renderDevice());
+    globals->settings.clouds = false;
+    Game game(nullptr);
+    makeTorusMapFixture(game, 256, 256);
+    game.map.setMapDiscovered();
+    // The logical capture is over 8,000 pixels high, independently of the
+    // window and the bounded physical tile resolution. Its centre must receive
+    // terrain rather than retain the black initial target contents.
+    for (int limit : {4096, 2048, 1024}) {
+        TorusView view;
+        view.textureLimit = limit;
+        view.toggle();
+        bool recorded = false;
+        // Full-density targets exceed one bounded upload admission. Preserve
+        // the requested quality while allowing successive frames to restore them.
+        for (unsigned retry = 0; retry < 128; ++retry) {
+            int vx = 128, vy = 128;
+            REQUIRE(view.draw(glob2test::sceneOf(game), nullptr, 0, Game::DRAW_WHOLE_MAP,
+                vx, vy, gfx->getW(), gfx->getH()));
+            REQUIRE(view.pixelsPerCell == SoftwareTerrainCache::capturePixelsPerCell(256, 256));
+            gfx->renderer->flush();
+            recorded = didRecordDeviceFrame(*gfx->renderer);
+            if (recorded) break;
+            gfx->nextFrame();
+            SDL_Delay(1);
+        }
+        REQUIRE(recorded);
+        std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> capture(gfx->renderer->capture(), SDL_DestroySurface);
+        REQUIRE(capture);
+        unsigned samples = 0, coloured = 0;
+        for (int y = capture->h / 3; y < 2 * capture->h / 3; y += 8)
+            for (int x = capture->w / 3; x < 2 * capture->w / 3; x += 8) {
+                Uint8 r, g, b, a;
+                REQUIRE(SDL_ReadSurfacePixel(capture.get(), x, y, &r, &g, &b, &a));
+                ++samples;
+                coloured += unsigned(r) + g + b > 48;
+            }
+        CHECK(coloured * 100 >= samples * 90);
+        const auto filename = std::string(GAGCore::rendererBackendName(backend)) + "-large-torus-" + std::to_string(limit);
+        REQUIRE(SDL_SaveBMP(capture.get(), (glob2test::artifactDir() / (filename + ".bmp")).string().c_str()));
+        std::ofstream report(glob2test::artifactDir() / (filename + ".txt"));
+        report << "active=" << GAGCore::rendererBackendName(gfx->backendSwitchStatus().active)
+            << " density=" << view.pixelsPerCell << " samples=" << samples << " coloured=" << coloured << '\n';
+        gfx->nextFrame();
+    }
+}
+
+static void liveTerrainPressure(GAGCore::RendererBackend backend)
+{
+    using namespace GAGCore;
+    glob2test::HeadlessGlobals globals({.display=true,.loadStrings=true,.width=640,.height=480,
+        .beforeLoad=[backend](GlobalContainer &container){container.settings.rendererBackend=backend;}});
+    auto *gfx=globals->gfx;
+    if(gfx->backendSwitchStatus().active!=backend){MESSAGE("Backend unavailable: ",gfx->backendSwitchStatus().reason);return;}
+    auto &device=*gfx->renderDevice();auto &resources=*gfx->renderResources();
+    REQUIRE(device.capabilities().maximumTextureSize>=2048);
+    globals->settings.clouds=false;
+    // Four live 2048-square pages consume 64 MiB of the shared TerrainPage
+    // class. The 256-cell torus's requested density needs another >64 MiB.
+    // These are completed GPU targets, not merely unuploaded logical handles.
+    std::vector<TextureHandle> handles;std::vector<TextureSnapshot> pressure;
+    for(unsigned i=0;i<4;++i){
+        std::unique_ptr<SDL_Surface,decltype(&SDL_DestroySurface)> pixels(
+            SDL_CreateSurface(2048,2048,SDL_PIXELFORMAT_RGBA32),SDL_DestroySurface);
+        REQUIRE(pixels);REQUIRE(SDL_FillSurfaceRect(pixels.get(),nullptr,0));
+        TextureDescriptor descriptor;descriptor.budgetClass=TextureDescriptor::BudgetClass::TerrainPage;
+        descriptor.alpha=TextureDescriptor::Alpha::Opaque;
+        auto handle=resources.create(pixels.get(),i+1,descriptor);REQUIRE(handle);
+        handles.push_back(handle);pressure.push_back(resources.snapshot(handle));
+        RenderSubmission submission;
+        for(unsigned retry=0;retry<128 && !submission;++retry){
+            RenderFrame frame;frame.identity=i+1;frame.logicalWidth=gfx->getW();frame.logicalHeight=gfx->getH();
+            DrawPacket clear;clear.kind=DrawPacket::Kind::Clear;clear.target=pressure.back();
+            clear.clearColor=true;clear.clearValue={.8f,.1f,.2f,1};frame.packets.push_back(clear);
+            try{submission=device.submit(std::move(frame));}
+            catch(const RenderAdmissionDeferred &){device.discardFrame();}
+            if(!submission)SDL_Delay(1);
+        }
+        REQUIRE(submission);device.present();
+        CaptureRequest request;request.target=pressure.back();request.pixelRegion=SDL_Rect{1024,1024,1,1};
+        request.width=request.height=1;
+        std::unique_ptr<SDL_Surface,decltype(&SDL_DestroySurface)> pixel(device.captureSynchronously(request),SDL_DestroySurface);
+        REQUIRE(pixel);Uint8 r,g,b,a;REQUIRE(SDL_ReadSurfacePixel(pixel.get(),0,0,&r,&g,&b,&a));
+        REQUIRE(r>=200);REQUIRE(a==255);
+    }
+    device.trimRetiredResources();
+    REQUIRE(device.telemetry().resourceBytes>=64u*1024*1024);
+    Game game(nullptr);makeTorusMapFixture(game,256,256);game.map.setMapDiscovered();
+    const auto requested=SoftwareTerrainCache::capturePixelsPerCell(256,256);
+    TorusView view;view.textureLimit=2048;view.toggle();
+    auto render=[&]{
+        for(unsigned retry=0;retry<128;++retry){
+            if(!view.active())view.toggle();
+            int vx=128,vy=128;
+            REQUIRE(view.draw(glob2test::sceneOf(game),nullptr,0,Game::DRAW_WHOLE_MAP,
+                vx,vy,gfx->getW(),gfx->getH()));
+            gfx->renderer->flush();
+            const bool recorded=didRecordDeviceFrame(*gfx->renderer);
+            if(recorded){
+                std::unique_ptr<SDL_Surface,decltype(&SDL_DestroySurface)> capture(gfx->renderer->capture(),SDL_DestroySurface);
+                REQUIRE(capture);
+                unsigned sampled=0,coloured=0;
+                for(int y=capture->h/3;y<2*capture->h/3;y+=16)
+                    for(int x=capture->w/3;x<2*capture->w/3;x+=16){
+                        Uint8 r,g,b,a;REQUIRE(SDL_ReadSurfacePixel(capture.get(),x,y,&r,&g,&b,&a));
+                        ++sampled;coloured+=unsigned(r)+g+b>48;
+                    }
+                REQUIRE(coloured*100>=sampled*90);
+            }
+            gfx->nextFrame();
+            if(recorded)return;
+            SDL_Delay(1);
+        }
+        FAIL("Torus never completed within bounded pressure retries");
+    };
+    render();REQUIRE(view.pixelsPerCell>0);REQUIRE(view.pixelsPerCell<requested);
+    const auto reduced=view.pixelsPerCell;
+    // Release both logical handles and external target leases, then explicitly
+    // finish earlier work. Requested density must return without switching device.
+    for(auto handle:handles)resources.erase(handle);
+    pressure.clear();view.reset();
+    RenderFrame barrier;
+    barrier.identity=10000;barrier.logicalWidth=gfx->getW();barrier.logicalHeight=gfx->getH();
+    DrawPacket fence;fence.kind=DrawPacket::Kind::Barrier;
+    barrier.packets.push_back(std::move(fence));
+    const auto retirement=device.submit(std::move(barrier));REQUIRE(retirement);
+    device.present();
+    const auto deadline=SDL_GetTicks()+5000;
+    while(device.completion(retirement)==RenderCompletion::Pending && SDL_GetTicks()<deadline) SDL_Delay(1);
+    REQUIRE(device.completion(retirement)==RenderCompletion::Complete);
+    device.trimRetiredResources();view.toggle();render();
+    REQUIRE(view.pixelsPerCell==requested);
+    std::cout<<rendererBackendName(backend)<<" live TerrainPage pressure density "<<reduced
+        <<" -> "<<view.pixelsPerCell<<" completed without backend fallback\n";
+    REQUIRE(gfx->backendSwitchStatus().active==backend);
 }
 
 static void run(bool gpu, int width, int height)
@@ -867,6 +1158,30 @@ static void run(bool gpu, int width, int height)
 
 TEST_SUITE("TorusRender")
 {
+    TEST_CASE("programmable GL fatal torus fallback advances animation once [display][isolated]") {
+        TorusRenderIntegrationTest::devicePhaseFallback(GAGCore::RendererBackend::ProgrammableGL);
+    }
+    TEST_CASE("SDL GPU fatal torus fallback advances animation once [display][isolated]") {
+        TorusRenderIntegrationTest::devicePhaseFallback(GAGCore::RendererBackend::SDLGPU);
+    }
+    TEST_CASE("programmable GL retries a submitted final torus overlay coherently [display][isolated]") {
+        TorusRenderIntegrationTest::deviceOverlayRetry(GAGCore::RendererBackend::ProgrammableGL);
+    }
+    TEST_CASE("SDL GPU retries a submitted final torus overlay coherently [display][isolated]") {
+        TorusRenderIntegrationTest::deviceOverlayRetry(GAGCore::RendererBackend::SDLGPU);
+    }
+    TEST_CASE("programmable GL captures large logical maps beyond the window [display][isolated][artifacts]") {
+        TorusRenderIntegrationTest::deviceCapture(GAGCore::RendererBackend::ProgrammableGL);
+    }
+    TEST_CASE("SDL GPU captures large logical maps beyond the window [display][isolated][artifacts]") {
+        TorusRenderIntegrationTest::deviceCapture(GAGCore::RendererBackend::SDLGPU);
+    }
+    TEST_CASE("programmable GL torus progresses under live terrain page pressure [display][isolated][artifacts]") {
+        TorusRenderIntegrationTest::liveTerrainPressure(GAGCore::RendererBackend::ProgrammableGL);
+    }
+    TEST_CASE("SDL GPU torus progresses under live terrain page pressure [display][isolated][artifacts]") {
+        TorusRenderIntegrationTest::liveTerrainPressure(GAGCore::RendererBackend::SDLGPU);
+    }
     TEST_CASE("native tiled capture pixels and allocation fallback [display]") { TorusRenderIntegrationTest::tiledCapture(); }
     TEST_CASE("HD tiled capture interiors and gutters match whole-map pixels [display]") { TorusRenderIntegrationTest::tiledCapture(true); }
 	TEST_CASE("game rendering; picking and cache changes in software rendering [writes-preferences]") { TorusRenderIntegrationTest::run(false, 1120, 720); }

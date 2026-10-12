@@ -19,6 +19,10 @@ on:
         default: false
   workflow_call:
     inputs:
+      source_commit:
+        required: false
+        default: ''
+        type: string
       tag:
         required: true
         type: string
@@ -32,7 +36,7 @@ on:
         type: boolean
 
 concurrency:
-  group: release-${{ github.ref }}
+  group: release-${{ github.ref }}-${{ inputs.tag }}
   cancel-in-progress: false
 
 env:
@@ -46,6 +50,7 @@ jobs:
       github.repository_id == 1397722696 &&
       github.actor_id == 6193625 &&
       github.triggering_actor == 'genixpro' &&
+      github.event_name == 'workflow_dispatch' &&
       github.ref == 'refs/heads/master'
     runs-on: ubuntu-24.04
     outputs:
@@ -61,6 +66,7 @@ jobs:
         id: version
         env:
           TAG: ${{ inputs.tag }}
+          EXPECTED_COMMIT: ${{ inputs.source_commit }}
         run: |
           set -euo pipefail
           if [[ -n "$TAG" ]]; then
@@ -77,6 +83,7 @@ jobs:
               exit 1
             fi
           fi
+          if [[ -n "$EXPECTED_COMMIT" ]]; then test "$(git rev-parse HEAD)" = "$EXPECTED_COMMIT"; fi
           echo "version=$version" >> "$GITHUB_OUTPUT"
           echo "revision=$revision" >> "$GITHUB_OUTPUT"
       - name: Validate Android release identity
@@ -93,7 +100,7 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           repository: ${{ inputs.tag && 'Globulation2/glob2' || github.repository }}
-          ref: ${{ inputs.tag || github.sha }}
+          ref: ${{ needs.preflight.outputs.revision }}
           fetch-depth: 0
       - name: Create reproducible source archive
         env:
@@ -123,7 +130,7 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           repository: ${{ inputs.tag && 'Globulation2/glob2' || github.repository }}
-          ref: ${{ inputs.tag || github.sha }}
+          ref: ${{ needs.preflight.outputs.revision }}
       - name: Install native build utilities
         run: sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends scons pkg-config nasm libva-dev unzip zip autoconf automake libtool cmake ninja-build
       - name: Install pinned Android toolchain
@@ -183,7 +190,7 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           repository: ${{ inputs.tag && 'Globulation2/glob2' || github.repository }}
-          ref: ${{ inputs.tag || github.sha }}
+          ref: ${{ needs.preflight.outputs.revision }}
       - name: Install build and runtime dependencies
         run: |
           sudo apt-get update -qq
@@ -198,18 +205,25 @@ jobs:
           python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
           echo "$PWD/build/sdl3-ci/prefix/bin" >> "$GITHUB_PATH"
           export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
-          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons -j2 release=1 server=0 lean_images=1 \
+          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons -j2 release=1 client_profile=free server=0 lean_images=1 \
             BINDIR="$stage/usr/bin" INSTALLDIR="$stage/usr/share" \
             DATADIR=/usr/share install
           python3 tools/release/release.py verify-install --stage "$stage"
-          scons -j2 release=1 server=0 lean_images=1 engine-tests
-          LD_LIBRARY_PATH="$stage/usr/lib/glob2" build/linux/client/release/lean-images/test/glob2-engine-tests --test-suite=ImageAssets
-          env -u LD_LIBRARY_PATH "$stage/usr/bin/glob2" --version
+          scons -j2 release=1 client_profile=free server=0 lean_images=1 unit-tests
+          LD_LIBRARY_PATH="$stage/usr/lib/glob2" build/linux/client/release/lean-images/test/glob2-unit-tests --test-suite=ImageAssets
+          env -u LD_LIBRARY_PATH "$stage/usr/bin/glob2" info version
+          env -u LD_LIBRARY_PATH "$stage/usr/bin/glob2" info paths --format json > "$RUNNER_TEMP/linux-installed-paths.json"
+          python3 - "$RUNNER_TEMP/linux-installed-paths.json" "$stage/usr/share/glob2" <<'PY'
+          import json, sys
+          from pathlib import Path
+          paths = json.loads(Path(sys.argv[1]).read_text())
+          assert isinstance(paths, list) and sys.argv[2] in paths, 'Installed runtime assets are not discoverable'
+          PY
           ldd "$stage/usr/bin/glob2" | grep -F "$stage/usr/bin/../lib/glob2/libSDL3_image"
       - name: Measure original-assets Linux baseline
         run: |
           stage="$PWD/artifacts/size-baseline"
-          scons -j2 release=1 server=0 lean_images=0 optimized_assets=0 \
+          scons -j2 release=1 client_profile=free server=0 lean_images=0 optimized_assets=0 \
             BINDIR="$stage/usr/bin" INSTALLDIR="$stage/usr/share" DATADIR=/usr/share install
           # Original bytes are an offline measurement tree, not playable artwork.
           python3 tools/package_assets.py --platform linux --original --output artifacts/source-asset-baseline
@@ -224,6 +238,7 @@ jobs:
           VERSION: ${{ needs.preflight.outputs.version }}
         run: |
           mkdir -p artifacts/release-output
+          python3 tools/release/linux_installation.py --stage artifacts/release-stage
           python3 tools/release/archives.py linux --stage artifacts/release-stage \
             --output "artifacts/release-output/glob2-${VERSION}-linux-x86_64-ubuntu22.04.tar.gz" \
             --report artifacts/package-sizes/linux-compression.json
@@ -243,7 +258,7 @@ jobs:
         run: |
           for profile in gc lto size; do
             stage="$PWD/artifacts/profile-$profile"
-            scons -j2 release=1 server=0 lean_images=1 size_optimization="$profile" \
+            scons -j2 release=1 client_profile=free server=0 lean_images=1 size_optimization="$profile" \
               BINDIR="$stage/usr/bin" INSTALLDIR="$stage/usr/share" DATADIR=/usr/share install
             python3 tools/release/archives.py linux --stage "$stage" \
               --output "$PWD/artifacts/profile-$profile.tar.gz" \
@@ -265,6 +280,11 @@ jobs:
         with:
           name: package-sizes-linux
           path: artifacts/package-sizes/*.json
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: client-build-linux
+          path: build/linux/client/release/lean-images/identity.json
+          if-no-files-found: error
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: release-linux
@@ -308,21 +328,17 @@ jobs:
               zlib fribidi pcre glu libepoxy
           - name: openSUSE Tumbleweed
             image: opensuse/tumbleweed
-            install: >-
-              zypper --non-interactive install git gcc-c++ make python3 scons pkg-config nasm libva-devel cmake freetype2-devel
-              libpng16-devel libjpeg8-devel
-              libX11-devel libXext-devel libXcursor-devel libXi-devel libXrandr-devel libXss-devel libXtst-devel
-              wayland-devel libxkbcommon-devel alsa-devel libpulse-devel
-              opusfile-devel libopus-devel libogg-devel speex-devel boost-devel libopenssl-devel
-              zlib-devel fribidi-devel Mesa-libGL-devel Mesa-libGLU-devel
-              libepoxy-devel
+            install: |
+              set -e
+              zypper --non-interactive dist-upgrade --allow-downgrade
+              zypper --non-interactive install git gcc-c++ make python3 scons pkg-config nasm libva-devel cmake freetype2-devel libpng16-devel libjpeg8-devel libX11-devel libXext-devel libXcursor-devel libXi-devel libXrandr-devel libXss-devel libXtst-devel wayland-devel libxkbcommon-devel alsa-devel libpulse-devel opusfile-devel libopus-devel libogg-devel speex-devel boost-devel libopenssl-devel zlib-devel fribidi-devel Mesa-libGL-devel Mesa-libGLU-devel libepoxy-devel
     steps:
       - name: Install dependencies
         run: ${{ matrix.install }}
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           repository: ${{ inputs.tag && 'Globulation2/glob2' || github.repository }}
-          ref: ${{ inputs.tag || github.sha }}
+          ref: ${{ needs.preflight.outputs.revision }}
       - name: Build from source
         run: |
           # The checkout is owned by another user inside the container.
@@ -330,8 +346,8 @@ jobs:
           python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
           echo "$PWD/build/sdl3-ci/prefix/bin" >> "$GITHUB_PATH"
           export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
-          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons -j2 release=1 server=0
-          build/linux/client/release/src/glob2 --version
+          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons -j2 release=1 client_profile=free server=0
+          build/linux/client/release/src/glob2 info version
 
   rpm-package:
     needs: [preflight, source]
@@ -351,7 +367,7 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           repository: ${{ inputs.tag && 'Globulation2/glob2' || github.repository }}
-          ref: ${{ inputs.tag || github.sha }}
+          ref: ${{ needs.preflight.outputs.revision }}
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
           name: release-source
@@ -418,7 +434,7 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           repository: ${{ inputs.tag && 'Globulation2/glob2' || github.repository }}
-          ref: ${{ inputs.tag || github.sha }}
+          ref: ${{ needs.preflight.outputs.revision }}
       - name: Build and package Windows client
         env:
           VERSION: ${{ needs.preflight.outputs.version }}
@@ -426,19 +442,19 @@ jobs:
           python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
           echo "$PWD/build/sdl3-ci/prefix/bin" >> "$GITHUB_PATH"
           export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
-          scons -j2 release=1 mingw=1 server=0 build/mingw/client/release/src/glob2.exe
-          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons -j2 release=1 mingw=1 server=0 lean_images=1 build/mingw/client/release/lean-images/src/glob2.exe
-          scons -j2 release=1 mingw=1 server=0 lean_images=1 engine-tests
+          scons -j2 release=1 client_profile=free mingw=1 server=0 build/mingw/client/release/src/glob2.exe
+          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons -j2 release=1 client_profile=free mingw=1 server=0 lean_images=1 build/mingw/client/release/lean-images/src/glob2.exe
+          scons -j2 release=1 client_profile=free mingw=1 server=0 lean_images=1 unit-tests
           image_prefix="$(python3 -c 'import json; print(json.load(open("build/mingw/client/release/lean-images/image-runtime.json"))["prefix"])')"
-          PATH="$(cygpath -u "$image_prefix")/bin:$PATH" ./build/mingw/client/release/lean-images/test/glob2-engine-tests.exe --test-suite=ImageAssets
-          ./build/mingw/client/release/lean-images/src/glob2.exe --version
+          PATH="$(cygpath -u "$image_prefix")/bin:$PATH" ./build/mingw/client/release/lean-images/test/glob2-unit-tests.exe --test-suite=ImageAssets
+          ./build/mingw/client/release/lean-images/src/glob2.exe info version
           python3 tools/release/package_windows.py \
             build/mingw/client/release/lean-images/src/glob2.exe \
             "artifacts/release-output/glob2-${VERSION}-windows-x86_64.zip" \
             --compression-report artifacts/package-sizes/windows-zip-compression.json
           python3 -c 'import sys, zipfile; zipfile.ZipFile(sys.argv[1]).extractall("artifacts/release-smoke")' \
             "artifacts/release-output/glob2-${VERSION}-windows-x86_64.zip"
-          ./artifacts/release-smoke/Globulation2/glob2.exe --version
+          ./artifacts/release-smoke/Globulation2/glob2.exe info version
           python3 tools/release/package_nsis.py --stage artifacts/release-smoke/Globulation2 \
             --output "artifacts/release-output/glob2-${VERSION}-windows-x86_64-setup.exe" --version "$VERSION"
           python3 tools/release/package_windows.py build/mingw/client/release/src/glob2.exe \
@@ -465,7 +481,7 @@ jobs:
         run: |
           for profile in gc lto size; do
             binary="build/mingw/client/release/size-$profile/lean-images/src/glob2.exe"
-            scons -j2 release=1 mingw=1 server=0 lean_images=1 size_optimization="$profile" "$binary"
+            scons -j2 release=1 client_profile=free mingw=1 server=0 lean_images=1 size_optimization="$profile" "$binary"
             python3 tools/release/package_windows.py "$binary" "artifacts/profile-$profile.zip"
             python3 -c 'import sys,zipfile; zipfile.ZipFile(sys.argv[1]).extractall(sys.argv[2])' \
               "artifacts/profile-$profile.zip" "artifacts/profile-$profile"
@@ -492,7 +508,7 @@ jobs:
           if ($process.ExitCode -ne 0) { throw "Installer failed: $($process.ExitCode)" }
           $env:PATH = "$env:SystemRoot\System32;$env:SystemRoot"
           # glob2.exe is a GUI-subsystem program, so & leaves $LASTEXITCODE unset; wait for it.
-          $client = Start-Process -FilePath "$install/glob2.exe" -ArgumentList '--version' -NoNewWindow -Wait -PassThru
+          $client = Start-Process -FilePath "$install/glob2.exe" -ArgumentList @('info', 'version') -NoNewWindow -Wait -PassThru
           if ($client.ExitCode -ne 0) { throw ('Installed client could not load its runtime (exit 0x{0:X8})' -f $client.ExitCode) }
           New-Item -ItemType Directory -Force "$install/games" | Out-Null
           Set-Content "$install/games/user.game" 'user save'
@@ -540,36 +556,56 @@ jobs:
           path: artifacts/package-sizes/*.json
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: release-windows
+          name: client-build-windows
+          path: build/mingw/client/release/lean-images/identity.json
+          if-no-files-found: error
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: unsigned-windows
           path: artifacts/release-output/*
           if-no-files-found: error
 
   macos-package:
     needs: preflight
-    runs-on: macos-15
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: macos-15
+            architecture: arm64
+          - runner: macos-15-intel
+            architecture: x86_64
+    runs-on: ${{ matrix.runner }}
+    env:
+      MACOSX_DEPLOYMENT_TARGET: '15.0'
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           repository: ${{ inputs.tag && 'Globulation2/glob2' || github.repository }}
-          ref: ${{ inputs.tag || github.sha }}
+          ref: ${{ needs.preflight.outputs.revision }}
       - name: Install dependencies
         run: |
-          brew install cmake freetype libpng jpeg-turbo scons     \
+          brew install cmake freetype libpng jpeg-turbo scons nasm \
             opusfile opus libogg speex boost openssl@3 fribidi pcre libepoxy
       - name: Build application and DMG
         run: |
           python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
           echo "$PWD/build/sdl3-ci/prefix/bin" >> "$GITHUB_PATH"
           export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
-          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons -j2 release=1 server=0 package
+          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons -j2 release=1 client_profile=free server=0 CXXFLAGS="-g -mmacosx-version-min=15.0" LINKFLAGS="-mmacosx-version-min=15.0" package
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: release-macos
+          name: client-build-macos-${{ matrix.architecture }}
+          path: build/darwin/client/release/identity.json
+          if-no-files-found: error
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: unsigned-macos-${{ matrix.architecture }}
           path: Glob2-*.dmg
           if-no-files-found: error
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: release-macos-symbols
+          name: release-macos-symbols-${{ matrix.architecture }}
           path: build/darwin/client/release/symbols/
           if-no-files-found: error
           retention-days: 90
@@ -584,8 +620,8 @@ jobs:
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
-          repository: ${{ inputs.tag && 'Globulation2/glob2' || github.repository }}
-          ref: ${{ inputs.tag || github.sha }}
+          # Use the reviewed driver recipe while its git source remains pinned below.
+          ref: ${{ github.sha }}
       - name: Pin upstream source
         env:
           REVISION: ${{ needs.preflight.outputs.revision }}
@@ -625,7 +661,7 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           repository: ${{ inputs.tag && 'Globulation2/glob2' || github.repository }}
-          ref: ${{ inputs.tag || github.sha }}
+          ref: ${{ needs.preflight.outputs.revision }}
       - uses: snapcore/action-build@3bdaa03e1ba6bf59a65f84a751d943d549a54e79 # v1
         id: snap
       - name: Test installed snap
@@ -633,7 +669,7 @@ jobs:
           SNAP: ${{ steps.snap.outputs.snap }}
         run: |
           sudo snap install --dangerous "$SNAP"
-          snap run globulation2 --version
+          snap run globulation2 info version
           python3 tools/release/package_sizes.py report --staged-root /snap/globulation2/current \
             --archive "$SNAP" --compiler unrecorded --output artifacts/package-sizes/snap.json
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
@@ -649,13 +685,13 @@ jobs:
 
   compiler-profile-portability:
     if: inputs.benchmark_profiles
-    needs: [linux-package, windows-package]
+    needs: [preflight, linux-package, windows-package]
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           repository: ${{ inputs.tag && 'Globulation2/glob2' || github.repository }}
-          ref: ${{ inputs.tag || github.sha }}
+          ref: ${{ needs.preflight.outputs.revision }}
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
           name: compiler-profile-measurements-linux

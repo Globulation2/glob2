@@ -34,7 +34,7 @@
     // pool-loading promise nor invokes onAbort. Observe the actual workers.
     class StartupWorker extends NativeWorker {
       constructor(...args) {
-        try { super(...args); }
+        try { super(...args); scope.Module?.glob2PresentationSurface?.attachWorker(this); }
         catch (error) { failed('pthread worker creation failed: ' + error); throw error; }
         const error = event => failed('pthread worker startup failed: ' + (event.message || 'worker error'));
         this.addEventListener('error', error);
@@ -56,7 +56,10 @@
     await root.Glob2I18n?.initialize();
     const module = root.Module;
     const forced = new URLSearchParams(location.search).get('threads');
-    const reason = forced === 'serial' ? (new URLSearchParams(location.search).get('thread-fallback') || 'serial requested') : await threadingSupport(module.renderer);
+    const available = root.Glob2BuildVariants || ['serial', 'threaded'];
+    if (forced === 'serial' && !available.includes('serial')) throw new Error('This development build includes only the threaded runtime');
+    const reason = !available.includes('threaded') ? 'serial development build' : forced === 'serial' ? (new URLSearchParams(location.search).get('thread-fallback') || 'serial requested') : await threadingSupport(module.renderer);
+    if (reason && !available.includes('serial')) throw new Error('Threaded development runtime unavailable: ' + reason);
     module.executionMode = reason ? 'serial' : 'threaded';
     module.threadFallback = reason;
     let stopWatching = () => {};
@@ -64,6 +67,11 @@
     const fallback = reason => {
       if (module.executionMode !== 'threaded' || module.glob2ApplicationStarted) return false;
       if (fallingBack) return true;
+      if (!available.includes('serial')) {
+        stopWatching();
+        abort?.('Threaded development runtime unavailable: ' + reason);
+        return true;
+      }
       fallingBack = true;
       stopWatching();
       const url = new URL(location.href);
@@ -83,9 +91,12 @@
       module.onApplicationStarted = (...args) => { stopWatching(); started?.(...args); };
     }
     const prefix = reason ? '' : 'threaded/';
-    module.locateFile = name => name.endsWith('.data') ? name : prefix + name;
+    const runtime = module.glob2RuntimeFiles?.[module.executionMode] || prefix + 'index.js';
+    const preload = runtime.slice(runtime.lastIndexOf('/') + 1).replace(/\.js$/, '.data');
+    // SDK shader preloads belong to their runtime; artwork packages stay shared.
+    module.locateFile = name => name === preload ? prefix + name : name.endsWith('.data') ? name : prefix + name;
     const script = document.createElement('script');
-    script.src = module.glob2RuntimeFiles?.[module.executionMode] || prefix + 'index.js';
+    script.src = runtime;
     script.onerror = () => module.onAbort?.('Unable to load game runtime');
     document.body.append(script);
   }

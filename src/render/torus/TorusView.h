@@ -6,8 +6,10 @@
 #include "TorusTextureTiles.h"
 #include "DynamicClouds.h"
 #include <SDL3/SDL.h>
+#include <memory>
 #include "render/MapRenderState.h"
 class GameGUI;
+struct TorusDeviceState;
 struct PresentationFrame;
 
 // Presentation-only state. Never serialized or sent to other players.
@@ -42,6 +44,10 @@ class TorusView
 
   private:
     void releaseMaterials();
+    void releaseDeviceMaterials();
+    bool drawDevice(const PresentationFrame &, GameGUI *, int, unsigned, int &, int &, int, int, float, float, float);
+    bool drawLegacy(const PresentationFrame &, GameGUI *, int, unsigned, int &, int &, int, int, float, float, float);
+    std::shared_ptr<TorusDeviceState> deviceState;
     bool prepareRenderTarget();
     void updateClouds(int time);
     static constexpr int meshColumns = 160, meshRows = 160;
@@ -65,7 +71,7 @@ class TorusView
     std::vector<TorusTextureTiles::Tile> tiles;
     int pixelsPerCell = 32;
     // Private test seams: simulate smaller hardware and allocation pressure.
-    int textureLimit = 2048, allocationPixelLimit = 0;
+    int textureLimit = 0, allocationPixelLimit = 0;
     float tileOffsetU = -100, tileOffsetV = -100;
     bool tileMeshDirty = true;
     Uint32 lastFrame;

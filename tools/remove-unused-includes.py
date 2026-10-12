@@ -32,7 +32,7 @@ Usage:
 
 Afterwards:
   scons -j16 && scons -j16 tests
-  then Workflow 1 in ../docs/replay-verification.md (G2 plus the gradient corpus).
+  then the replay and gradient verification in docs/development/headless-replays.md.
   Replay equality is the only check that catches the one risk -fsyntax-only misses:
   a removed header's static-initializer side effect.
 """

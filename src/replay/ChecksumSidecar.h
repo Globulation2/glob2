@@ -36,7 +36,7 @@ public:
 	~ChecksumSidecarWriter();
 
 	bool open(const std::string& replayPath, const Game& game);
-	void writeTick(Uint32 tick, Uint32 totalChecksum, Game& game);
+	void writeTick(Uint32 tick, Uint32 totalChecksum, Game& game, bool legacy152=false);
 	//! Patches total_ticks into the header and closes the file. Returns
 	//! false if any write, seek, or close failed since open(); in that case
 	//! the on-disk file has been deleted, because a truncated sidecar would

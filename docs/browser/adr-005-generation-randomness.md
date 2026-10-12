@@ -2,13 +2,11 @@
 
 Status: accepted.
 
-The browser uses master's `GenerationService`, registered generators and
+The browser uses the shared `GenerationService`, registered generators and
 `GenerationRequest` options. It preserves the current lobby layout, landscape
 picker, start-quality scoring, candidate selection and generated-map snapshot.
-The port does not retain the replaced Perlin/legacy generator implementation.
 
-`GenerationContext` owns named random streams. `GenerationService` saves and
-restores the calling thread's synchronized engine RNG around each complete roll.
+`GenerationContext` derives named random streams from the request seed. `GenerationService` initializes the target map’s world streams from that seed; generation does not borrow another game’s synchronized RNG.
 Native and threaded browser landscape previews use the same worker threads. The serial browser fallback
 calls `LandscapePreviewer::poll()` to complete one queued generation attempt;
 the serial WebAssembly runtime starts no worker threads. The lobby and landscape picker both
@@ -26,9 +24,9 @@ closing the lobby cannot delete a map that has not yet loaded.
 
 `EditorGenerateScreen` owns its request and staging editor. It presents the
 progress screen before generating, samples the same candidate budget as native
-master and transfers the editor only on success. The screen stack admits queued
+clients and transfers the editor only on success. The screen stack admits queued
 input before advancing work, so a queued cancellation cannot lose to a completed
-roll. Failure and cancellation destroy the staging editor and restore RNG state.
+roll. Failure and cancellation destroy the staging editor and leave the live editor unchanged.
 
 ## Latency limits
 
@@ -37,14 +35,14 @@ attempts, not inside every terrain algorithm. Large or expensive maps can still
 pause rendering and input until a roll finishes. Cancellation can discard queued
 work but cannot interrupt a roll in progress. Subdividing the new generator
 pipeline is follow-up work; the old port's coroutine checkpoints do not apply to
-master's replacement generators.
+the shared generators.
 
 ## Compatibility and verification
 
-Generation behavior follows master. Existing map/save formats and the save-loader
+Browser generation uses the shared service. Existing map/save formats and the save-loader
 compatibility floor remain intact. The generator's native golden-map tests remain
 in CI. Native session tests cover cancellation, RNG restoration, invalid requests
-and staged fertility publication against master's `Fertility::Field`.
+and staged fertility publication against the shared `Fertility::Field`.
 
 Native/WebAssembly simulation checks use the same retained saved-game bytes and
 compare per-tick checksums. This does not prove that every generator produces
@@ -52,3 +50,5 @@ bit-identical maps across platforms: floating-point terrain generation needs
 separate qualification. Online rooms and LAN hosts distribute the selected map file (checked by its hash)
 rather than asking clients to independently regenerate it, so all clients start
 with the same map bytes.
+
+Related: [browser guide and decision index](README.md).

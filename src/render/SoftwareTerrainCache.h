@@ -11,6 +11,7 @@
 class SceneMap;
 class TerrainRegistry;
 class MapAssetBundle;
+class GpuTerrainPageCache;
 // Shared presentation page cache. The historical name remains for existing view
 // controls/benchmarks; software and GPU consume the same composed coverage.
 class SoftwareTerrainCache
@@ -69,6 +70,8 @@ class SoftwareTerrainCache
 		std::vector<OpaqueRun> opaqueRuns;
 		std::array<std::unique_ptr<HeldMask>, ChunkTiles * ChunkTiles> masks;
 		bool valid = false;
+		// Device-composed pages have no matching pixels in image/parked.
+		bool cpuComposed = true;
 		// Only materials present in discovered recipes invalidate this page.
 		std::vector<std::pair<TerrainVisual::MaterialId, std::uint64_t>> materialRevisions;
 		std::uint64_t used = 0;
@@ -109,6 +112,8 @@ class SoftwareTerrainCache
 	int resolution = 1;
 	int downsample = 1;
 	bool gpu = false;
+    std::shared_ptr<GpuTerrainPageCache> gpuPages;
+    std::uint64_t gpuPageGeneration = 0;
 
   public:
 	enum class FallbackMode
@@ -137,4 +142,7 @@ class SoftwareTerrainCache
 	std::uint64_t cacheRebuilds() const { return rebuilds; }
 	std::uint64_t cacheReductions() const { return reductions; }
 	std::size_t maskBytes() const { return *maskTotal; }
+	// A torus visits every page each frame. Keep its complete terrain working
+	// set resident instead of selecting density independently for each tile.
+	static int capturePixelsPerCell(int width, int height);
 };

@@ -65,7 +65,17 @@ namespace GAGCore {
 #endif
         responsiveMinW=minimumWidth; responsiveMinH=minimumHeight;
         int width = fixedLogicalW, height = fixedLogicalH;
+#ifdef __EMSCRIPTEN__
+        // Desktop browser layouts follow the live viewport. Returning from a
+        // responsive screen must not restore the launch dimensions after resize.
+        if (!enabled && windowW > 0 && windowH > 0) {
+            width = std::max(1, static_cast<int>(windowW / uiScale + 0.5f));
+            height = std::max(1, static_cast<int>(windowH / uiScale + 0.5f));
+        }
+#endif
+#ifndef __EMSCRIPTEN__
         if (!renderer && !enabled) { responsiveViewport=false; return false; }
+#endif
         if (enabled) {
             if (windowW<=0 || windowH<=0) return enabled;
             float density = 1;

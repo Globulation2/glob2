@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Publish a signed Globulation 2 bundle to Google Play internal testing."""
+"""Publish a verified bundle to owner-approved internal, closed, or production tracks."""
 
 import argparse
 import hashlib
@@ -11,6 +11,7 @@ import time
 
 PACKAGE = 'org.globulation2.glob2'
 TRACK = 'internal'
+TRACKS = ('internal', 'alpha', 'production')
 VERSION_EPOCH = 1704067200  # 2024-01-01 UTC; leaves room under Play's 2.1B limit.
 MAX_VERSION_CODE = 2100000000
 
@@ -37,10 +38,12 @@ def bundle_metadata(bundle, code):
     return hashlib.sha256(bundle.read_bytes()).hexdigest()
 
 
-def release_body(code, name, notes):
+def release_body(code, name, notes, track=TRACK):
+    if track not in TRACKS:
+        raise ValueError('Unsupported Play track')
     if not name or len(name) > 50 or not notes.strip():
         raise ValueError('Release name and notes are required')
-    return {'track': TRACK, 'releases': [{
+    return {'track': track, 'releases': [{
         'name': name,
         'versionCodes': [str(code)],
         'status': 'completed',
@@ -48,20 +51,37 @@ def release_body(code, name, notes):
     }]}
 
 
-def publish(service, bundle, code, name, notes):
-    """Create a Play edit, upload the bundle, and commit only the internal track."""
+def preflight(service, track=TRACK):
+    """Verify app/channel API access using an uncommitted, temporary edit."""
+    if track not in TRACKS:
+        raise ValueError('Unsupported Play track')
+    edits = service.edits()
+    edit = edits.insert(packageName=PACKAGE, body={}).execute(num_retries=3)
+    args = {'packageName': PACKAGE, 'editId': edit['id']}
+    try:
+        current = edits.tracks().get(track=track, **args).execute(num_retries=3)
+        if current.get('track') != track:
+            raise ValueError('Play returned a different selected track')
+    finally:
+        edits.delete(**args).execute(num_retries=3)
+    return {'package': PACKAGE, 'track': track, 'apiAccessVerified': True}
+
+
+def publish(service, bundle, code, name, notes, track=TRACK):
+    """Create a Play edit, upload the bundle, and commit only the explicitly selected track."""
     from googleapiclient.http import MediaFileUpload
 
+    desired = release_body(code, name, notes, track)
     digest = bundle_metadata(bundle, code)
     edits = service.edits()
     edit = edits.insert(packageName=PACKAGE, body={}).execute(num_retries=3)
     edit_id = edit['id']
     args = {'packageName': PACKAGE, 'editId': edit_id}
-    current = edits.tracks().get(track=TRACK, **args).execute(num_retries=3)
+    current = edits.tracks().get(track=track, **args).execute(num_retries=3)
     active_codes = [int(value) for release in current.get('releases', [])
                     for value in release.get('versionCodes', [])]
     if active_codes and code <= max(active_codes):
-        raise ValueError('Version code must exceed the current internal release')
+        raise ValueError('Version code must exceed the current selected release')
 
     media = MediaFileUpload(str(bundle), mimetype='application/octet-stream',
                             chunksize=8 * 1024 * 1024, resumable=True)
@@ -69,15 +89,14 @@ def publish(service, bundle, code, name, notes):
     if int(uploaded['versionCode']) != code or uploaded.get('sha256', '').lower() != digest:
         raise ValueError('Play returned a different bundle version or SHA-256; edit was not committed')
 
-    desired = release_body(code, name, notes)
-    updated = edits.tracks().update(track=TRACK, body=desired, **args).execute(num_retries=3)
-    if updated.get('track') != TRACK or not any(
+    updated = edits.tracks().update(track=track, body=desired, **args).execute(num_retries=3)
+    if updated.get('track') != track or not any(
             release.get('status') == 'completed' and str(code) in release.get('versionCodes', [])
             for release in updated.get('releases', [])):
-        raise ValueError('Play did not confirm the internal track update; edit was not committed')
+        raise ValueError('Play did not confirm the selected track update; edit was not committed')
     edits.validate(**args).execute(num_retries=3)
     edits.commit(**args).execute(num_retries=3)
-    return {'package': PACKAGE, 'track': TRACK, 'version_code': code,
+    return {'package': PACKAGE, 'track': track, 'version_code': code,
             'bundle_sha256': digest, 'release_name': name}
 
 
@@ -85,7 +104,10 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     subcommands = parser.add_subparsers(dest='command', required=True)
     subcommands.add_parser('version-code')
+    check = subcommands.add_parser('preflight')
+    check.add_argument('--track', choices=TRACKS, default=TRACK)
     release = subcommands.add_parser('publish')
+    release.add_argument('--track', choices=TRACKS, default=TRACK)
     release.add_argument('--bundle', type=Path, required=True)
     release.add_argument('--version-code', type=int, required=True)
     release.add_argument('--release-notes', required=True)
@@ -93,23 +115,26 @@ def main():
     if args.command == 'version-code':
         print(version_code())
         return
-    if not 1 < args.version_code <= MAX_VERSION_CODE:
+    if args.command == 'publish' and not 1 < args.version_code <= MAX_VERSION_CODE:
         raise ValueError('Invalid Play version code')
     from googleapiclient.discovery import build
     import google.auth
 
     credentials, _ = google.auth.default(scopes=['https://www.googleapis.com/auth/androidpublisher'])
     service = build('androidpublisher', 'v3', credentials=credentials, cache_discovery=False)
+    if args.command == 'preflight':
+        print(json.dumps(preflight(service, args.track), sort_keys=True))
+        return
     revision = os.environ.get('GITHUB_SHA', 'local')[:7]
-    name = f'Internal {args.version_code} ({revision})'
-    result = publish(service, args.bundle.resolve(), args.version_code, name, args.release_notes)
+    name = f'{args.track.title()} {args.version_code} ({revision})'
+    result = publish(service, args.bundle.resolve(), args.version_code, name, args.release_notes, args.track)
     print(json.dumps(result, sort_keys=True))
     summary = os.environ.get('GITHUB_STEP_SUMMARY')
     if summary:
         with open(summary, 'a') as output:
-            output.write(f"### Google Play internal release\n\n"
+            output.write(f"### Google Play release\n\n"
                          f"{name} · version code {args.version_code} · `{result['bundle_sha256']}`\n\n"
-                         f"[Open the internal testing track](https://play.google.com/console/u/0/developers/7470334415218720552/app/4974067701875576344/tracks/4700775093912551215)\n")
+                         f"Selected track: `{args.track}` · [Open Play Console](https://play.google.com/console/)\n")
 
 
 if __name__ == '__main__':

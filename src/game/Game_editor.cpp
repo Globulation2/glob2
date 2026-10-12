@@ -48,7 +48,7 @@ int Game::unitsCount(int team, int type)
 {
 	if (
 		(team >= 0) && (team < mapHeader.getNumberOfTeams()) &&
-		(type >= 0) && (type < NB_UNIT_TYPE)
+		(type >= 0) && (static_cast<std::size_t>(type) < unitTypeCount())
 	)
 		return std::as_const(teams[team]->stats).getLatestStat()->numberUnitPerType[type];
 	else
@@ -59,7 +59,7 @@ int Game::unitsUpgradesCount(int team, int type, int ability, int level)
 {
 	if (
 		(team >= 0) && (team < mapHeader.getNumberOfTeams()) &&
-		(type >= 0) && (type < NB_UNIT_TYPE) &&
+		(type >= 0) && (static_cast<std::size_t>(type) < unitTypeCount()) &&
 		(ability >= 0) && (ability < NB_ABILITY) &&
 		(level >= 0) && (level < NB_UNIT_LEVELS)
 	)
@@ -93,7 +93,7 @@ GAGCore::CooperativeTask Game::addTeamTask(int pos)
 		pos=mapHeader.getNumberOfTeams();
 	teams[pos]=new Team(this);
 	teams[pos]->teamNumber=mapHeader.getNumberOfTeams();
-	teams[pos]->race.load();
+	teams[pos]->race.setCatalog(gameHeader.getUnitCatalog());
 	teams[pos]->setCorrectMasks();
 
 	pos=mapHeader.getNumberOfTeams();
@@ -175,19 +175,26 @@ void Game::regenerateDiscoveryMap(void)
 
 Unit *Game::addUnit(int x, int y, int team, Sint32 typeNum, int level, int delta, int dx, int dy)
 {
-	assert(team<mapHeader.getNumberOfTeams());
+	if (team < 0 || team >= mapHeader.getNumberOfTeams() || !teams[team] ||
+        !isUnitTypeAvailable(typeNum) || level < 0 || level >= NB_UNIT_LEVELS) return nullptr;
 
-	UnitType *ut=teams[team]->race.getUnitType(typeNum, level);
+	if (teams[team]->stats.unitTypeCount != teams[team]->race.unitTypeCount())
+        teams[team]->stats.configureUnits(teams[team]->race.unitTypeCount());
+	const UnitType *ut=teams[team]->race.getUnitType(typeNum, level);
 
 	x = powerOfTwoRemainder(x + map.getW(), map.getW());
 	y = powerOfTwoRemainder(y + map.getH(), map.getH());
 
-	bool fly=ut->performance[FLY];
+	const auto& traits = teams[team]->race.getRuntime(typeNum);
+	bool fly=traits.has(UnitRuntimeTraits::Fly) && ut->performance[FLY];
 	bool free;
+    const bool walks=traits.has(UnitRuntimeTraits::Walk) && ut->performance[WALK];
+    const bool swims=traits.has(UnitRuntimeTraits::Swim) && ut->performance[SWIM];
+    if (!fly && !walks && swims && !map.terrainPropertiesAt(x,y).swimmable) return nullptr;
 	if (fly)
 		free=map.isFreeForAirUnit(x, y);
 	else
-		free=map.isFreeForGroundUnit(x, y, ut->performance[SWIM], Team::teamNumberToMask(team));
+		free=map.isFreeForGroundUnit(x, y, traits.has(UnitRuntimeTraits::Swim) && ut->performance[SWIM], Team::teamNumberToMask(team));
 	if (!free)
 		return NULL;
 
@@ -257,7 +264,7 @@ Building *Game::addBuilding(int x, int y, int typeNum, int teamNumber, Sint32 un
 	Building *b=new Building(x&map.getMaskW(), y&map.getMaskH(), gid, typeNum, team, &buildingsTypes, unitWorking, unitWorkingFuture);
 
 	if (b->type->runtimeSuppliesDirectStock) team->directStockSuppliers.push_back(b);
-	if (b->type->zonable[WARRIOR]) team->combatFlags.push_back(b);
+	if (b->runtime->attractsRole(2)) team->combatFlags.push_back(b);
 	if (b->type->canExchange)
 		team->canExchange.push_front(b);
 	if (b->type->runtimeSuppliesStock)
@@ -318,6 +325,12 @@ bool Game::removeUnitAndBuildingAndFlags(int x, int y, unsigned flags)
 			Building *b=teams[team]->myBuildings[id];
 			if (!b->type->isVirtual)
 				map.setBuilding(b->posX, b->posY, b->type->width, b->type->height, NOGBID);
+			teams[team]->removeFromAbilitiesLists(b);
+			for (auto &entry : teams[team]->buildingsNeedingUnits)
+				entry.second.erase(std::remove(entry.second.begin(), entry.second.end(), b), entry.second.end());
+			teams[team]->buildingsTryToBuildingSiteRoom.remove(b);
+			teams[team]->buildingsWaitingForDestruction.remove(b);
+			teams[team]->buildingsToBeDestroyed.remove(b);
 			delete b;
 			teams[team]->myBuildings[id]=NULL;
 			teams[team]->detachBuilding(id);
@@ -330,10 +343,18 @@ bool Game::removeUnitAndBuildingAndFlags(int x, int y, unsigned flags)
 			for (std::list<Building *>::iterator bi=teams[ti]->virtualBuildings.begin(); bi!=teams[ti]->virtualBuildings.end(); ++bi)
 				if ((*bi)->posX==x && (*bi)->posY==y)
 				{
-					teams[ti]->myBuildings[Building::GIDtoID((*bi)->gid)]=NULL;
-					teams[ti]->detachBuilding(Building::GIDtoID((*bi)->gid));
-					delete *bi;
-					teams[ti]->virtualBuildings.erase(bi);
+					Building *b = *bi;
+					teams[ti]->myBuildings[Building::GIDtoID(b->gid)]=NULL;
+					teams[ti]->detachBuilding(Building::GIDtoID(b->gid));
+					// This also removes the virtual-building list entry; do not
+					// use its iterator after removing the ability references.
+					teams[ti]->removeFromAbilitiesLists(b);
+					for (auto &entry : teams[ti]->buildingsNeedingUnits)
+						entry.second.erase(std::remove(entry.second.begin(), entry.second.end(), b), entry.second.end());
+					teams[ti]->buildingsTryToBuildingSiteRoom.remove(b);
+					teams[ti]->buildingsWaitingForDestruction.remove(b);
+					teams[ti]->buildingsToBeDestroyed.remove(b);
+					delete b;
 					found=true;
 					break;
 				}
@@ -452,4 +473,3 @@ Unit* Game::getUnit(int guid)
 		return NULL;
 	return teams[Unit::GIDtoTeam(guid)]->myUnits[Unit::GIDtoID(guid)];
 }
-

@@ -15,9 +15,9 @@ FAKE = '''#!/usr/bin/env python3
 import json, os, pathlib, sys, time
 args = sys.argv
 assert pathlib.Path.cwd() == pathlib.Path(os.environ['GLOB2_USER_DIR']).resolve()
-assert args[args.index('-d') + 1] == ROOT
+assert args[args.index('--data-dir') + 1] == ROOT
 seed = int(args[args.index('--seed') + 1])
-output = pathlib.Path(args[args.index('--json') + 1])
+output = pathlib.Path(args[args.index('--report-file') + 1])
 print('retained stdout', flush=True)
 print('retained stderr', file=sys.stderr, flush=True)
 if seed == 3: time.sleep(5)
@@ -32,7 +32,7 @@ records = [] if seed == 2 else [
     {'key':'x.toggle','kind':'measurement','subject':None,'value':True}]
 output.write_text(json.dumps({'schema_version':2,
     'report_type':'generation_failure' if seed == 2 else 'map',
-    'generation':{'generator':args[2], 'seed':seed, 'revision':4,
+    'generation':{'generator':args[3], 'seed':seed, 'revision':4,
     'parameters':{'width':128}, 'outcome':{'success':seed != 2},
     'telemetry':{'schema_version':1,'enabled':True,'dropped_records':0,
     'invalid_values':0,'records':records}}}))

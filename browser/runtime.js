@@ -1,6 +1,4 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// Keep fixed-function emulation bounded in every JS realm, including render workers.
-Module['GL_MAX_TEXTURE_IMAGE_UNITS'] = 1;
 // A completion promise works for hosted games and synchronous command-line tools.
 // pthreads have their own JS realms; only the UI/runtime realm owns these hooks.
 if (typeof ENVIRONMENT_IS_PTHREAD === 'undefined' || !ENVIRONMENT_IS_PTHREAD) {

@@ -9,6 +9,7 @@
 # Included sets keep their own pins and remain the source of truth for them:
 -r tools/asset-requirements.txt
 -r tools/music/requirements.txt
+-r tools/docs/requirements.txt
 #
 # Kept out on purpose:
 # - mobile/play-api-requirements.txt: hash-pinned, isolated venv for Play uploads.

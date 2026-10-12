@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "app/ClientFeatures.h"
 // Copyright (C) 2026 glob2 contributors
 
 #include "PlatformRoom.h"
@@ -1044,6 +1045,7 @@ void PlatformRoom::useMapBytes(std::string bytes, const std::string &title, cons
 
 void PlatformRoom::useScriptGenerator(const std::string &descriptor)
 {
+	if constexpr (!ClientFeatures::CommunityGenerators) return;
 	Json selection = {{"kind", "scripted"}, {"generator", Json::parse(descriptor)}};
 	if (!canEditSetup())
 		return;

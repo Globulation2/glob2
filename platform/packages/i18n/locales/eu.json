@@ -2910,5 +2910,9 @@
   "Presentation": "Aurkezpena",
   "{value0} source": "{value0} iturburua",
   "{value0} decor source": "{value0} dekorazioaren iturburua",
-  "Your draft changed while the design was loading. Your changes were kept; try opening the design again.": "Zure zirriborroa aldatu da diseinua kargatzen ari zen bitartean. Zure aldaketak gorde dira; saiatu diseinua berriro irekitzen."
+  "Your draft changed while the design was loading. Your changes were kept; try opening the design again.": "Zure zirriborroa aldatu da diseinua kargatzen ari zen bitartean. Zure aldaketak gorde dira; saiatu diseinua berriro irekitzen.",
+  "More filters": "Iragazki gehiago",
+  "Clear filters": "Garbitu iragazkiak",
+  "No results match these filters.": "Ez dago iragazki hauekin bat datorren emaitzarik.",
+  "Results: {value0}": "Emaitzak: {value0}"
 }

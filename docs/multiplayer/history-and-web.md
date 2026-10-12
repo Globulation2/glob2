@@ -5,7 +5,7 @@ matches, participants, rating history, per-team statistics and 512-tick
 timelines, and the replay of every verified match. This page describes the
 read-only REST API over that history and the web app built on it (`platform/apps/web`).
 The writers are described in [ratings and matchmaking](ratings-and-matchmaking.md)
-and [architecture](architecture.md#engine-agents).
+and [architecture](engine-agents.md#engine-agents).
 
 ## REST
 
@@ -180,6 +180,47 @@ without menu controls or status bars; no separate sprite animations are overlaid
   and while the tab is hidden, and shows a still poster under
   `prefers-reduced-motion` or when video playback fails.
 
+### Content library patterns
+
+Maps, terrain/resource sets, AIs, buildings, music and the skin collection share
+`apps/web/src/components/library.tsx` and scoped `styles/library.css`. Each landing
+page uses a 56px game-art header, title and description, one gold creation/share
+action and outlined secondary actions. Put the primary action first in DOM order
+so it leads when headers wrap. Collection navigation sits beneath the
+header; only supported views are offered. Maps retains its Generators link, and
+Skins remains a personal collection with a separate Shop action. Its collection
+uses the ordinary page shell; opening an editor restores the studio shell and its
+saved navigation preference.
+
+Use `LibraryFilters` with visibly labelled `LibraryField` controls. Text search
+uses `useLibrarySearch`: trim and apply after 250ms, or immediately on Enter;
+selects and chips apply immediately. Filter changes reset pagination, and reset
+restores the library's default sort without switching collection views. Music's
+tag, duration and AI disclosure controls live under **More filters**, with an
+active-filter count; Maps also places size and creation method there to keep its
+phone gallery within reach. Preserve shared select chevrons by changing only
+background color, not the entire background. Existing AI URL and return-focus behavior is preserved.
+
+`LibraryGrid` uses fluid columns with a 240px minimum and 24px gaps. `LibraryCard`
+provides a shared surface and hierarchy: maps, artwork, covers and skins use square
+previews, while AIs use text and identity marks. Passive cards may be a single
+link; cards with playback, selection or equipment controls use an article with
+separate opening and action targets. Give repeated action controls an accessible
+name that includes the item title, and combine previews/titles into one opening
+target. `LibraryResults` provides loading and
+retryable errors in a themed feedback frame. Keep a concise, persistent result
+count announcement outside the busy gallery. When loading replaces focused
+pagination controls, restore focus to the first new result; clearing filters
+returns focus to search. Automatic updates must not move search/filter focus.
+`LibraryEmpty` distinguishes empty collections from filtered
+results with an appropriate creation/browse or clear-filters action. Keep domain
+requests, authentication, release status and equipment logic in the individual
+libraries. Skin collections retain six designs/presets per page to bound WebGL
+previews, plus the stock colony card. Library styles must not change studios,
+upload forms or item detail pages. Review both themes, narrow screens, keyboard
+focus and reduced motion when changing these patterns.
+
+
 The sign-in and invite pages (`apps/api/src/web/pages.ts`) share the tokens and
 the colony backdrop; their assets are served from `/signin/assets/`. Invite
 pages carry an OpenGraph image for link previews.
@@ -218,7 +259,7 @@ finances and operations are admin-only. Analytics and finances accept `days=7`,
 `30` (default), or `90`; finances also accepts `mode=live` (default), `test`, or
 `unclassified`. Results are cached for 60 seconds and display their generation
 time. No private prompts/source are returned by operations lists or details.
-See [hosting](../hosting/README.md#admin-reporting) for collection, coverage,
+See [hosting](../hosting/admin-reporting.md#admin-reporting) for collection, coverage,
 recovery and rate configuration.
 
 Map detail previews show one complete map period at its native aspect ratio.
@@ -248,7 +289,7 @@ the instance description) load on demand.
 The match page links "Watch in browser" to `/play/?replay=<replay URL>`. The
 browser shell (`browser/shell.html`) downloads that replay while the game loads,
 writes it to the in-memory `/tmp` (never to saved storage), and starts the game
-with `-replay <file>`, the existing replay viewer. It accepts http(s) URLs only,
+with `replay <file>`, the existing replay viewer. It accepts http(s) URLs only,
 sends credentials only to its own origin, and caps the file at 64 MiB. When the
 download fails, the game starts at the main menu. `glob2Diagnostics.snapshot()`
 reports `watchReplay` (`none`, `downloading`, `ready` or `failed`).
@@ -279,3 +320,5 @@ least 44 px. Other checks: keyboard skip link and focus after navigation, the
 theme toggle, and the colony animation (pause, reduced motion).
 `SCREENSHOT_DIR=<dir>` saves desktop and phone screenshots of each page in both
 themes; `AXE_REPORT=<file>` writes the axe results as JSON lines.
+
+[Multiplayer index](README.md) · [Documentation index](../README.md).

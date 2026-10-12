@@ -115,11 +115,12 @@ export async function createGeneratorExecutor(
     const result = await run(
       dir,
       [
-        '--inspect-generator-package',
+        'map',
+        'inspect-package',
         join(dir, 'input.json'),
         '--output',
         join(dir, 'canonical.json'),
-        '--json',
+        '--report-file',
         join(dir, 'metadata.json'),
       ],
       signal,
@@ -152,20 +153,19 @@ export async function createGeneratorExecutor(
     const out = join(dir, name);
     await mkdir(out);
     const args = [
+      'map',
+      'study',
+      metadata.id,
       '--generator-package',
       join(dir, 'canonical.json'),
-      '--generate-map',
-      '--generator',
-      metadata.id,
-      '--map-seed',
+      '--seed',
       String(settings.seed),
       '--candidates',
       String(settings.candidates),
       '--write-map',
-      'true',
     ];
     for (const [key, value] of Object.entries(settings.params))
-      args.push('--param', `${key}=${value}`);
+      args.push('--set', `${key}=${value}`);
     args.push('--output-dir', out);
     const result = await run(dir, args, signal);
     let document;
@@ -206,9 +206,10 @@ export async function createGeneratorExecutor(
     const result = await run(
       dir,
       [
-        '--preview-map',
+        'map',
+        'preview',
         join(dir, name, 'map-r0.map.gz'),
-        '--json',
+        '--report-file',
         join(dir, name, 'loaded.json'),
         '--output',
         join(dir, name, 'preview.png'),

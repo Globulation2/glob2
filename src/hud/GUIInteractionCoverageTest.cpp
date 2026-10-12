@@ -7,6 +7,9 @@
 #include "Order.h"
 #include "GameGUIKeyActions.h"
 #include "GameGUIDialog.h"
+#include "EndGameScreen.h"
+#include <StringTable.h>
+#include <Toolkit.h>
 #include "LoadSaveDialog.h"
 #include "MapEditDialog.h"
 #include <SDLGraphicContext.h>
@@ -497,6 +500,39 @@ TEST_SUITE("GUIInteractionCoverage")
         CHECK(w.checksum()==checksum); CHECK(gui.orderQueue.empty());
     }
 
+    TEST_CASE("local victory popup and results show the same deciding condition [display][artifacts]")
+    {
+        glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.display=true,.loadStrings=true,.width=640,.height=480});
+        glob2test::HeadlessGame world(glob2test::GameOptions{.teams=2,.discovered=true,.loadDefaultRace=true,.header=true});
+        auto& gui=world.gui;
+        gui.localTeamNo=0; gui.localPlayer=0; gui.localTeam=world.team;
+        gui.init();
+        for (int t=0;t<2;++t) world.game.teams[t]->allies=world.game.teams[t]->me;
+        world.game.prestigeToReach=10;
+        world.team->prestige=10;
+        world.game.prestigeSyncStep(); world.game.wonSyncStep();
+        REQUIRE(world.team->hasWon);
+        const auto checksum=world.checksum();
+        glob2test::drawGUI(gui,0);
+        gui.checkWonConditions();
+        REQUIRE(gui.inGameMenu==GameGUI::IGM_END_OF_GAME);
+        auto* dialog=dynamic_cast<InGameEndOfGameScreen*>(gui.gameMenuScreen.get());
+        REQUIRE(dialog);
+        dialog->update(0);
+        CHECK(dialog->title==GAGCore::Toolkit::getStringTable()->getString("[you have won]"));
+        auto* explanation=dialog->host().find("outcome/reason");
+        REQUIRE(explanation);
+        CHECK(explanation->accessibleText()==GAGCore::Toolkit::getStringTable()->getString("[outcome reason prestige]"));
+        CHECK(EndGameScreen::describe(world.game,*world.team).reason==explanation->accessibleText());
+        CHECK(world.checksum()==checksum);
+        CHECK(dialog->host().bounds("ok").bottom()<=globalContainer->gfx->getH());
+        auto* gfx=globalContainer->gfx;
+        gfx->beginFrame(GAGCore::GraphicContext::FrameMode::FullRedraw);
+        gfx->setClipRect(); gfx->drawFilledRect(0,0,gfx->getW(),gfx->getH(),GAGCore::Color(60,110,50));
+        dialog->draw(0); gfx->nextFrame();
+        REQUIRE(SDL_SaveBMP(gfx->completedFrame(),(glob2test::artifactDir()/"victory-prestige-reason.bmp").string().c_str()));
+    }
+
     TEST_CASE("match and editor dialogs wear the in-match theme; results dialogs stay on paper [display][artifacts]")
     {
         glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.display=true,.loadStrings=true,.width=1024,.height=768});
@@ -519,7 +555,7 @@ TEST_SUITE("GUIInteractionCoverage")
         InGameMainScreen menu(false,true,false);
         CHECK(&menu.theme()==&match);
         capture(menu,"dialog-ingame-menu.bmp");
-        InGameEndOfGameScreen outcome("Victory",true);
+        InGameEndOfGameScreen outcome("Victory",true,{},true,"Win probability threshold reached.");
         CHECK(&outcome.theme()==&match);
         capture(outcome,"dialog-ingame-outcome.bmp");
         LoadSaveDialog save("games","game",false,"Save game");

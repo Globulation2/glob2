@@ -1,0 +1,151 @@
+name: Retry verified Mac download signing
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing immutable public vVERSION tag
+        required: true
+        type: string
+      source_run_id:
+        description: Owner-dispatched all-platform run with successful Mac packages
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: macos-signing-retry-${{ inputs.tag }}
+  cancel-in-progress: false
+
+jobs:
+  preflight:
+    if: >-
+      github.repository == 'genixpro/glob2-release' &&
+      github.repository_id == 1397722696 &&
+      github.actor_id == 6193625 &&
+      github.triggering_actor == 'genixpro' &&
+      github.event_name == 'workflow_dispatch' &&
+      github.ref == 'refs/heads/master'
+    runs-on: ubuntu-24.04
+    outputs:
+      source_commit: ${{ steps.source.outputs.source_commit }}
+      version: ${{ steps.source.outputs.version }}
+      artifacts: ${{ steps.source.outputs.artifacts }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ${{ github.sha }}
+          path: driver
+          persist-credentials: false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          repository: Globulation2/glob2
+          ref: ${{ inputs.tag }}
+          path: source
+          fetch-depth: 1
+          persist-credentials: false
+      - name: Verify source run and exact immutable artifact digests
+        id: source
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ inputs.tag }}
+          SOURCE_RUN: ${{ inputs.source_run_id }}
+        run: |
+          set -euo pipefail
+          [[ "$TAG" =~ ^v[0-9]+(\.[0-9]+)+$ ]]
+          [[ "$SOURCE_RUN" =~ ^[1-9][0-9]*$ ]]
+          cd source
+          version="$(python3 tools/release/release.py check --tag "$TAG")"
+          revision="$(git rev-parse HEAD)"
+          python3 ../driver/tools/release/signing_retry.py preflight --run-id "$SOURCE_RUN" \
+            --tag "$TAG" --source-commit "$revision" --github-output "$GITHUB_OUTPUT"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "source_commit=$revision" >> "$GITHUB_OUTPUT"
+
+  sign:
+    needs: preflight
+    environment: macos-developer-id
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: macos-15
+            architecture: arm64
+          - runner: macos-15-intel
+            architecture: x86_64
+    runs-on: ${{ matrix.runner }}
+    env:
+      VERSION: ${{ needs.preflight.outputs.version }}
+    steps:
+      - name: Require protected signing configuration
+        env:
+          P12: ${{ secrets.MACOS_DEVELOPER_ID_P12_BASE64 }}
+          P12_PASSWORD: ${{ secrets.MACOS_DEVELOPER_ID_PASSWORD }}
+          NOTARY_KEY: ${{ secrets.MACOS_NOTARY_KEY_P8_BASE64 }}
+          IDENTITY: ${{ vars.MACOS_DEVELOPER_ID_IDENTITY }}
+          KEY_ID: ${{ secrets.MACOS_NOTARY_KEY_ID }}
+          ISSUER: ${{ secrets.MACOS_NOTARY_ISSUER_ID }}
+        run: |
+          python3 - <<'PYCODE'
+          import os
+          required = ('P12', 'P12_PASSWORD', 'NOTARY_KEY', 'IDENTITY', 'KEY_ID', 'ISSUER')
+          missing = [name for name in required if not os.environ.get(name)]
+          if missing:
+              raise SystemExit('Missing protected signing configuration: ' + ', '.join(missing))
+          PYCODE
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ${{ github.sha }}
+          path: driver
+          persist-credentials: false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          repository: Globulation2/glob2
+          ref: ${{ needs.preflight.outputs.source_commit }}
+          path: source
+          persist-credentials: false
+      - name: Download and verify the exact unsigned artifact before importing credentials
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ARTIFACT_ID: ${{ fromJSON(needs.preflight.outputs.artifacts)[matrix.architecture].id }}
+          ARTIFACT_DIGEST: ${{ fromJSON(needs.preflight.outputs.artifacts)[matrix.architecture].digest }}
+        run: |
+          python3 driver/tools/release/signing_retry.py download --artifact-id "$ARTIFACT_ID" \
+            --digest "$ARTIFACT_DIGEST" --version "$VERSION" --output artifacts/unsigned
+      - name: Import temporary Developer ID identity and notarization key
+        env:
+          P12: ${{ secrets.MACOS_DEVELOPER_ID_P12_BASE64 }}
+          P12_PASSWORD: ${{ secrets.MACOS_DEVELOPER_ID_PASSWORD }}
+          NOTARY_KEY: ${{ secrets.MACOS_NOTARY_KEY_P8_BASE64 }}
+          IDENTITY: ${{ vars.MACOS_DEVELOPER_ID_IDENTITY }}
+        run: python3 driver/tools/release/macos_keychain.py
+      - name: Restore app and produce notarized final DMG
+        env:
+          ARCH: ${{ matrix.architecture }}
+          IDENTITY: ${{ vars.MACOS_DEVELOPER_ID_IDENTITY }}
+          KEY_ID: ${{ secrets.MACOS_NOTARY_KEY_ID }}
+          ISSUER: ${{ secrets.MACOS_NOTARY_ISSUER_ID }}
+        run: |
+          set -euo pipefail
+          mkdir -p artifacts/stage "$RUNNER_TEMP/glob2-mount"
+          hdiutil attach "artifacts/unsigned/Glob2-$VERSION.dmg" -mountpoint "$RUNNER_TEMP/glob2-mount" -readonly -nobrowse
+          ditto "$RUNNER_TEMP/glob2-mount/Glob2.app" artifacts/stage/Glob2.app
+          hdiutil detach "$RUNNER_TEMP/glob2-mount"
+          python3 source/tools/release/sign_macos.py --app artifacts/stage/Glob2.app \
+            --output "artifacts/release-output/Glob2-$VERSION-macos-$ARCH.dmg" --architecture "$ARCH" \
+            --identity "$IDENTITY" --keychain "$RUNNER_TEMP/glob2-signing.keychain-db" \
+            --key "$RUNNER_TEMP/glob2-notary.p8" --key-id "$KEY_ID" --issuer "$ISSUER"
+      - name: Remove temporary signing material
+        if: always()
+        run: |
+          hdiutil detach "$RUNNER_TEMP/glob2-mount" || true
+          security delete-keychain "$RUNNER_TEMP/glob2-signing.keychain-db" || true
+          rm -f "$RUNNER_TEMP/glob2-notary.p8" "$RUNNER_TEMP/glob2-developer-id.p12" "$RUNNER_TEMP/glob2-developer-id-g2.cer"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: signed-macos-${{ matrix.architecture }}
+          path: artifacts/release-output/*.dmg
+          if-no-files-found: error

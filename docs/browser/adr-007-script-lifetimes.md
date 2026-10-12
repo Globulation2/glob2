@@ -1,4 +1,6 @@
-# Script interpreter lifetimes during reload
+# ADR 007: script interpreter lifetimes during reload
+
+Status: accepted.
 
 ## Problem
 
@@ -30,8 +32,7 @@ method table. Script execution rules and serialized formats are unchanged.
 
 `EngineSessionHarness` checks repeated collection of roots, reclamation of dead
 values, preservation of active stacks and pending bytecode constants, independent
-native method tables, and final heap cleanup. The focused GC block also passed
-AddressSanitizer and UndefinedBehaviorSanitizer. Browser tests exercise repeated
+native method tables, and final heap cleanup. Use AddressSanitizer and UndefinedBehaviorSanitizer when qualifying GC changes. Browser tests exercise repeated
 in-game save loads, replay reloads and failure recovery after real simulation.
 Native/browser matches check that the shared runtime still agrees on checksums.
 
@@ -40,3 +41,5 @@ interpreter definitions are included only by MapScriptUSL.cpp. This prevents
 unrelated game-header consumers in headless servers from instantiating prototype
 code or acquiring a link dependency on the script engine. GCC exposed this
 boundary issue where the macOS compiler had discarded unused definitions.
+
+Related: [browser guide and decision index](README.md).

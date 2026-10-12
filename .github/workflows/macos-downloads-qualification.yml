@@ -1,0 +1,160 @@
+name: Qualify final Mac downloads on native hosts
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing immutable public vVERSION tag
+        required: true
+        type: string
+      source_run_id:
+        description: All-platform run with both signed Mac packages completed
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: macos-downloads-qualification-${{ inputs.tag }}
+  cancel-in-progress: false
+
+jobs:
+  preflight:
+    if: >-
+      github.repository == 'genixpro/glob2-release' &&
+      github.repository_id == 1397722696 &&
+      github.actor_id == 6193625 &&
+      github.triggering_actor == 'genixpro' &&
+      github.event_name == 'workflow_dispatch' &&
+      github.ref == 'refs/heads/master'
+    runs-on: ubuntu-24.04
+    outputs:
+      source_commit: ${{ steps.source.outputs.source_commit }}
+      version: ${{ steps.source.outputs.version }}
+      artifacts: ${{ steps.source.outputs.artifacts }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ${{ github.sha }}
+          path: driver
+          persist-credentials: false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          repository: Globulation2/glob2
+          ref: ${{ inputs.tag }}
+          path: source
+          fetch-depth: 1
+          persist-credentials: false
+      - name: Verify final signed artifact provenance and private verification configuration
+        id: source
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TEAM: ${{ vars.MACOS_DOWNLOAD_TEAM_ID }}
+          TAG: ${{ inputs.tag }}
+          SOURCE_RUN: ${{ inputs.source_run_id }}
+        run: |
+          set -euo pipefail
+          test -n "$TEAM" || { echo 'Missing mirror MACOS_DOWNLOAD_TEAM_ID verification configuration'; exit 1; }
+          [[ "$TAG" =~ ^v[0-9]+(\.[0-9]+)+$ ]]
+          [[ "$SOURCE_RUN" =~ ^[1-9][0-9]*$ ]]
+          cd source
+          version="$(python3 tools/release/release.py check --tag "$TAG")"
+          revision="$(git rev-parse HEAD)"
+          python3 ../driver/tools/release/signing_retry.py preflight --run-id "$SOURCE_RUN" \
+            --tag "$TAG" --source-commit "$revision" --kind signed-macos --github-output "$GITHUB_OUTPUT"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "source_commit=$revision" >> "$GITHUB_OUTPUT"
+
+  qualify:
+    needs: preflight
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: macos-15
+            architecture: arm64
+          - runner: macos-15-intel
+            architecture: x86_64
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ${{ github.sha }}
+          path: driver
+          persist-credentials: false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          repository: Globulation2/glob2
+          ref: ${{ needs.preflight.outputs.source_commit }}
+          path: source
+          persist-credentials: false
+      - name: Download exact verified final DMG
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ARTIFACT_ID: ${{ fromJSON(needs.preflight.outputs.artifacts)[matrix.architecture].id }}
+          ARTIFACT_DIGEST: ${{ fromJSON(needs.preflight.outputs.artifacts)[matrix.architecture].digest }}
+          ARCH: ${{ matrix.architecture }}
+          VERSION: ${{ needs.preflight.outputs.version }}
+        run: |
+          python3 driver/tools/release/signing_retry.py download --artifact-id "$ARTIFACT_ID" \
+            --digest "$ARTIFACT_DIGEST" --version "$VERSION" --architecture "$ARCH" --output artifacts/package
+      - name: Verify trust and exercise the installed final bytes natively
+        env:
+          ARCH: ${{ matrix.architecture }}
+          VERSION: ${{ needs.preflight.outputs.version }}
+          TAG: ${{ inputs.tag }}
+          REVISION: ${{ needs.preflight.outputs.source_commit }}
+          TEAM: ${{ vars.MACOS_DOWNLOAD_TEAM_ID }}
+        run: |
+          python3 driver/tools/release/qualify_macos.py run --dmg "artifacts/package/Glob2-$VERSION-macos-$ARCH.dmg" \
+            --source-root source --source-commit "$REVISION" --tag "$TAG" --architecture "$ARCH" \
+            --expected-team "$TEAM" --fixture driver/test/fixtures/releases/qualification-river.map.gz \
+            --output artifacts/qualification
+      - name: Record reproducible artifact and verifier provenance
+        env:
+          ARTIFACT_ID: ${{ fromJSON(needs.preflight.outputs.artifacts)[matrix.architecture].id }}
+          ARTIFACT_DIGEST: ${{ fromJSON(needs.preflight.outputs.artifacts)[matrix.architecture].digest }}
+          SOURCE_RUN: ${{ inputs.source_run_id }}
+        run: |
+          python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          path = Path('artifacts/qualification/report.json')
+          data = json.loads(path.read_text())
+          data.update(sourceRunId=int(os.environ['SOURCE_RUN']), artifactId=int(os.environ['ARTIFACT_ID']),
+                      artifactDigest=os.environ['ARTIFACT_DIGEST'], verifierCommit=os.environ['GITHUB_SHA'],
+                      qualificationRunId=os.environ['GITHUB_RUN_ID'])
+          path.write_text(json.dumps(data, indent=2) + '\n')
+          PY
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: qualification-macos-${{ matrix.architecture }}
+          path: |
+            artifacts/qualification/report.json
+            artifacts/qualification/cases/*/world.checksums
+          if-no-files-found: error
+
+  compare:
+    needs: [preflight, qualify]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ${{ github.sha }}
+          path: driver
+          persist-credentials: false
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          pattern: qualification-macos-*
+          path: artifacts/evidence
+      - name: Compare every tick across native release architectures
+        run: |
+          python3 driver/tools/release/qualify_macos.py compare --evidence-root artifacts/evidence \
+            --output artifacts/native-macos-comparison.json
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: qualification-macos-comparison
+          path: artifacts/native-macos-comparison.json
+          if-no-files-found: error

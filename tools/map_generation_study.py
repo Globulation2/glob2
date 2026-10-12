@@ -15,7 +15,7 @@ from pathlib import Path
 
 
 def load_catalog(binary, timeout=60, generator_packages=()):
-    result = subprocess.run([str(binary), '--headless-catalog']+[v for p in generator_packages for v in ['--generator-package',str(p)]], capture_output=True,
+    result = subprocess.run([str(binary), 'info', 'catalog', '--format', 'json']+[v for p in generator_packages for v in ['--generator-package',str(p)]], capture_output=True,
                             text=True, timeout=timeout, check=True)
     catalog = json.loads(result.stdout)
     if catalog.get('schema_version') != 1 or not isinstance(catalog.get('generators'), list):
@@ -52,11 +52,11 @@ def generate_map(binary, method, seed, width, height, teams, settings=None, time
     started = time.monotonic()
     row = dict(category='execution_error', detail='', returncode=None, native=None)
     with tempfile.TemporaryDirectory(prefix='glob2-map-study-') as directory:
-        command = [str(binary), '--generate-map', '--generator', str(method),
-                   '--map-seed', str(seed), '--output-dir', directory]
+        command = [str(binary), 'map', 'study', str(method),
+                   '--seed', str(seed), '--output-dir', directory]
         command += [v for p in generator_packages for v in ['--generator-package',str(p)]]
         for key, value in params.items():
-            command += ['--param', f'{key}={value}']
+            command += ['--set', f'{key}={value}']
         try:
             result = subprocess.run(command, capture_output=True, text=True, timeout=timeout)
             row['returncode'] = result.returncode

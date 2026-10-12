@@ -32,7 +32,7 @@ struct World
 	Game& game = gui.game;
 	Building* inn = nullptr;
 
-	World()
+	World(bool waterOnly=false)
 	{
 		game.map.setSize(6, 6, GRASS);
 		game.map.setGame(&game);
@@ -42,6 +42,10 @@ struct World
 		inn = game.addBuilding(20, 20, typeNum, 0);
 		require(inn != nullptr, "inn placed");
 		game.map.setBuilding(20, 20, inn->type->width, inn->type->height, inn->gid);
+        if(waterOnly)
+            for(int y=0;y<game.map.getH();++y)
+                for(int x=0;x<game.map.getW();++x)
+                    if(game.map.getBuilding(x,y)==NOGBID) game.map.paintCell(x,y,WATER);
 	}
 
 	void clearOccupancy()
@@ -62,25 +66,32 @@ struct World
 
 static void freshMapHasNoImmobileUnits()
 {
-	World world;
+    // Preserve legacy grass cases and exercise water-only callers on water.
+    for(bool waterOnly:{false,true})
+    {
+	World world(waterOnly);
 	for (int y = 0; y < world.game.map.getH(); ++y)
 		for (int x = 0; x < world.game.map.getW(); ++x)
 			require(!world.game.map.isImmobileUnit(x, y), "a fresh map has no immobile unit anywhere");
-	for (int c = 0; c < SWIM_CLASS_COUNT; ++c)
+	for (int c = waterOnly ? SWIM_CLASS_COUNT-1 : 0; c < (waterOnly ? SWIM_CLASS_COUNT : SWIM_CLASS_COUNT-1); ++c)
 	{
-		require(world.value(c, 20, 23) > GRADIENT_UNREACHABLE, "open grass near the inn is reachable");
-		require(world.value(c, 40, 45) > GRADIENT_UNREACHABLE, "distant grass is reachable");
+		require(world.value(c, 20, 23) > GRADIENT_UNREACHABLE, "passable terrain near the inn is reachable");
+		require(world.value(c, 40, 45) > GRADIENT_UNREACHABLE, "distant passable terrain is reachable");
 	}
 	std::puts("PASS fresh map occupancy and weighted routes for every swim class");
+    }
 }
 
 static void immobileUnitBlocksItsOwnTile()
 {
-	World world;
+    // Preserve legacy grass cases and exercise water-only callers on water.
+    for(bool waterOnly:{false,true})
+    {
+	World world(waterOnly);
 	world.clearOccupancy();
 	world.game.map.markImmobileUnit(20, 23, 0);
 	world.game.map.markImmobileUnit(2, 1, 0);
-	for (int c = 0; c < SWIM_CLASS_COUNT; ++c)
+	for (int c = waterOnly ? SWIM_CLASS_COUNT-1 : 0; c < (waterOnly ? SWIM_CLASS_COUNT : SWIM_CLASS_COUNT-1); ++c)
 	{
 		require(world.value(c, 20, 23) == GRADIENT_FORBIDDEN, "the immobile unit's tile is blocked");
 		require(world.value(c, 2, 1) == GRADIENT_FORBIDDEN, "the distant immobile unit's tile is blocked");
@@ -89,9 +100,10 @@ static void immobileUnitBlocksItsOwnTile()
 	}
 	world.game.map.clearImmobileUnit(20, 23);
 	world.inn->resetPathfindGradients();
-	for (int c = 0; c < SWIM_CLASS_COUNT; ++c)
+	for (int c = waterOnly ? SWIM_CLASS_COUNT-1 : 0; c < (waterOnly ? SWIM_CLASS_COUNT : SWIM_CLASS_COUNT-1); ++c)
 		require(world.value(c, 20, 23) > GRADIENT_UNREACHABLE, "clearing the unit frees its tile on rebuild");
 	std::puts("PASS immobile units block their own weighted-gradient cells");
+    }
 }
 
 static void alterForbidden(World& world, BrushTool::Mode mode, BrushAccumulator& brush)
@@ -113,9 +125,12 @@ static void forbidRow(World& world, int y, int gapX)
 
 static void paintingForbiddenAreaRefreshesGradients()
 {
+    // Preserve legacy grass cases and exercise water-only callers on water.
+    for(bool waterOnly:{false,true})
+    {
 	EntityRandom random;
 	random.seed(42, 54);
-	World world;
+	World world(waterOnly);
 	world.clearOccupancy();
 	Team* team = world.game.teams[0];
 	world.game.players[0] = new Player(0, "harness", team, BasePlayer::P_LOCAL);
@@ -124,14 +139,14 @@ static void paintingForbiddenAreaRefreshesGradients()
 	forbidRow(world, 55, -1);
 	require(world.game.map.isForbidden(19, 23, team->me) && !world.game.map.isForbidden(20, 23, team->me), "painted rows leave one gap");
 	int dist = -1, dx = 0, dy = 0;
-	for (int c = 0; c < SWIM_CLASS_COUNT; ++c)
+	for (int c = waterOnly ? SWIM_CLASS_COUNT-1 : 0; c < (waterOnly ? SWIM_CLASS_COUNT : SWIM_CLASS_COUNT-1); ++c)
 	{
 		require(world.game.map.buildingAvailable(world.inn, c, 20, 26, &dist), "near route uses the gap");
 		require(world.game.map.buildingAvailable(world.inn, c, 40, 45, &dist), "distant route uses the gap");
 		require(world.game.map.pathfindBuilding(random, world.inn, c, 40, 45, &dx, &dy), "distant unit can advance");
 	}
 	forbidRow(world, 23, -1);
-	for (int c = 0; c < SWIM_CLASS_COUNT; ++c)
+	for (int c = waterOnly ? SWIM_CLASS_COUNT-1 : 0; c < (waterOnly ? SWIM_CLASS_COUNT : SWIM_CLASS_COUNT-1); ++c)
 	{
 		require(world.inn->globalGradient[c] == nullptr, "painting invalidates every cached swim class immediately");
 		require(!world.game.map.buildingAvailable(world.inn, c, 20, 26, &dist), "closing the gap cuts off the near route");
@@ -141,13 +156,14 @@ static void paintingForbiddenAreaRefreshesGradients()
 	BrushAccumulator gap;
 	gap.applyBrush(BrushApplication(20, 23, 0), &world.game.map);
 	alterForbidden(world, BrushTool::MODE_DEL, gap);
-	for (int c = 0; c < SWIM_CLASS_COUNT; ++c)
+	for (int c = waterOnly ? SWIM_CLASS_COUNT-1 : 0; c < (waterOnly ? SWIM_CLASS_COUNT : SWIM_CLASS_COUNT-1); ++c)
 	{
 		require(world.inn->globalGradient[c] == nullptr, "erasing invalidates every cached swim class immediately");
 		require(world.game.map.buildingAvailable(world.inn, c, 20, 26, &dist), "erasing restores the near route");
 		require(world.game.map.buildingAvailable(world.inn, c, 40, 45, &dist), "erasing restores the distant route");
 	}
 	std::puts("PASS painting and erasing refresh all weighted building routes");
+    }
 }
 }
 

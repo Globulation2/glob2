@@ -2,7 +2,7 @@
 
 Read this when a map gives one colony a special role, when a perimeter has several
 promised approaches, or when a rich-looking start stalls in AI games. These lessons
-come from [Encircled Kingdom's durable design guide](../../../../docs/map-generators/ENCIRCLED_KINGDOM.md).
+come from [Encircled Kingdom's durable design guide](../../../../docs/map-generators/encircled-kingdom.md).
 Its numerical budgets are examples, not new requirements for other generators.
 
 ## Preserve roles while varying the map

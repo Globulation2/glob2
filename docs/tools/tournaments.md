@@ -1,5 +1,11 @@
 # Distributed tournaments
 
+Tournament binaries and worker packages require [CLI 2](cli.md). Register new
+bundles when upgrading; drain active attempts before switching worker packages.
+Retain historical packages with their original binaries when resuming old runs.
+Registration and worker startup probe the static CLI description with a timeout;
+unsupported versions fail explicitly. Simulation and artifact schemas are separate.
+
 `tools/tournaments` is a Python 3.10+ standard-library package for Linux and macOS.
 It executes immutable, explicitly selected binary/data bundles on localhost and
 SSH hosts. Workers need Python and the bundle's runtime libraries already installed.
@@ -27,7 +33,7 @@ snapshot or diff, including untracked source). `--options` reads a JSON object o
 build flags. `--executable` defaults to `glob2`. For a bundle built on another
 platform, supply `--platform platform.json` (for example
 `{"os":"linux","arch":"x86_64"}`) and `--capabilities catalog.json`, captured by
-running that bundle's `glob2 --headless-catalog` on its target. Registration hashes
+running that bundle's `glob2 info catalog --format json` on its target. Registration hashes
 every file and manifest field. It never overwrites an installed bundle.
 
 An AI comparison configuration (`comparison.json`):
@@ -69,7 +75,7 @@ Each generation sample is its own job, so a failed sample does not discard a bat
 
 ## Production engine interface
 
-Put the command first. `--headless-catalog` writes schema-version-1 JSON to stdout;
+Put the command first. `info catalog --format json` writes schema-version-1 JSON to stdout;
 startup diagnostics go to stderr. It enumerates selectable AIs (excluding None),
 Cortex and Maxima parameter schemas, generators, controls, revisions, telemetry,
 and save/network versions, plus map-report and generation-telemetry schema versions.
@@ -79,14 +85,14 @@ simulation version (see [verifying a match record](../development/headless-repla
 so a job runner can probe a binary without passing it flags it may not know.
 Game and generation commands require `--output-dir DIR`; an existing
 `result.json` is rejected. Building-family composition writes JSON to stdout; see
-[portable building families](../features/building-catalogs.md#portable-building-families).
+[portable building families](../features/building-family-packages.md#portable-building-families).
 Values are separate ordinary arguments, not JSON.
 
 ```sh
-build/src/glob2 --generate-map --generator 15 --map-seed 42 \
-  --param teams=2 --param width=7 --param height=7 \
-  --write-map true --rotations 2 --output-dir /tmp/generated
-build/src/glob2 --run-game --map-file /tmp/generated/map-r0.map.gz \
+build/src/glob2 map study 15 --seed 42 \
+  --set teams=2 --set width=7 --set height=7 \
+  --write-map --rotations 2 --output-dir /tmp/generated
+build/src/glob2 game run --map-file /tmp/generated/map-r0.map.gz \
   --game-seed 19 --player cortex --player cortex \
   --ai-param 0:swarmWorkerCap=4 --ai-param 1:swarmWorkerCap=7 \
   --ticks 4096 --save initial --save every:512 --save final \
@@ -96,10 +102,10 @@ build/src/glob2 --run-game --map-file /tmp/generated/map-r0.map.gz \
 To exercise a custom profile, append repeatable rule arguments to a new game:
 
 ```sh
-build/src/glob2 --run-game --map-file maps/SmallForTwo.map.gz \
+build/src/glob2 game run --map-file maps/SmallForTwo.map.gz \
   --game-seed 19 --player cortex --player maxima \
   --rule noUpgrades=1 --rule noHunger=1 --rule peaceful=1 \
-  --ticks 30000 --save initial --save final --replay true \
+  --ticks 30000 --save initial --save final --write-replay \
   --telemetry checksums --output-dir /tmp/custom-rules
 ```
 
@@ -116,10 +122,10 @@ Generator options:
 
 | Argument | Meaning/default |
 | --- | --- |
-| `--generator ID`, `--map-seed N` | Required method and independent uint32 seed |
-| `--param key=value` | Repeatable generator controls; defaults and valid ranges come from catalog. Width/height are power-of-two exponents, as in the existing study tool |
+| `map study GENERATOR --seed N` | Generator and independent uint32 seed |
+| `--set key=value` | Repeatable generator controls; defaults and valid ranges come from catalog. Width/height are power-of-two exponents, as in the existing study tool |
 | `--candidates N` | 0: explicit single-seed generation; positive: deterministic quality candidate selection, maximum 10000 |
-| `--write-map true/false` | false; emits `map-rN.map.gz` (gzip level 6) when true |
+| `--write-map` | absent by default; emits `map-rN.map.gz` (gzip level 6) when true |
 | `--rotations N` | 1; cyclic team reindexings, verified for unchanged geography and rotated starts |
 | `--report headroom/terrain` | Headroom study measurements on stdout or terrain/resource grid in terrain.txt |
 | `--profile NAME` | Optional isolated profile name; profile files live inside this output directory |
@@ -130,7 +136,7 @@ Game options:
 | --- | --- |
 | `--map-file PATH` | New game on this exact map |
 | `--load-game PATH` | Saved initial state or continuation, mutually exclusive with map/generator input |
-| `--generator`, `--map-seed`, `--param`, `--candidates` | Inline generation alternative; embeds generation results and saves the generated map |
+| `--generator`, `--map-seed`, `--set`, `--candidates` | Inline generation alternative; embeds generation results and saves the generated map |
 | `--game-seed N` | Required uint32 for a new game; forbidden when loading a save |
 | `--ai-script player:source.js` | Embedded source for a `javascript` player (zero-based index); new games only |
 | `--map-script source.js` | Replace the new game's map script with JavaScript |
@@ -142,7 +148,7 @@ Game options:
 | `--rule name=value` | Repeatable custom rules, using the names and ranges in [headless rules](../development/headless-replays.md#glob2_test_rules). New games only; effective values are recorded in `resolved.rules`. Tournament game configurations accept the equivalent `rules` object, e.g. `{"noUpgrades": 1, "peaceful": 1}` |
 | `--ticks N` | Absolute tick limit, default 90000; must exceed saved tick |
 | `--compute-threads auto\|N` | Shared executor participants including the owner; default `auto` uses reported logical CPUs; explicit N is a positive unsigned integer |
-| `--replay true/false` | false |
+| `--write-replay` | Boolean switch; absent by default; writes `game.replay` when present |
 | `--save initial/final/every:N` | Repeatable opt-in saves; checkpoints are diagnostics, not automatic recovery |
 | `--telemetry NAME` | Repeatable checksums, team-timeline, maxima, gradient-stats ([building field statistics](../development/performance-telemetry.md#building-field-statistics)); default none |
 | `--profile NAME` | Optional isolated profile name |
@@ -298,11 +304,11 @@ outbound SSH sessions. No port or service is opened on the coordinator.
 
 ```json
 [
-  {"name":"therig.local","directory":"/home/bradley/glob2-workers","slots":1},
-  {"name":"devlaptop.local","directory":"/home/bradley/glob2-workers","slots":1},
-  {"name":"pharaoh-dev-1.local","directory":"/home/bradley/glob2-workers","slots":1},
-  {"name":"pharaoh-dev-2.local","directory":"/home/bradley/glob2-workers","slots":1},
-  {"name":"pharaoh-dev-3.local","directory":"/home/bradley/glob2-workers","slots":1}
+  {"name":"worker-1.example","directory":"/srv/glob2-workers","slots":1},
+  {"name":"worker-2.example","directory":"/srv/glob2-workers","slots":1},
+  {"name":"worker-3.example","directory":"/srv/glob2-workers","slots":1},
+  {"name":"worker-4.example","directory":"/srv/glob2-workers","slots":1},
+  {"name":"worker-5.example","directory":"/srv/glob2-workers","slots":1}
 ]
 ```
 
@@ -431,7 +437,7 @@ unsupported combinations remain reported failures rather than being filtered out
   independently draws its AI matchup and generator; the standard format and size
   remain 1v1 and 128x128 unless the configuration overrides them. Games are submitted
   as a single inline-generation job (`--generator`/`--map-seed` embedded directly
-  in `--run-game`, no separate `generate_map` dependency). `sample_seed` (default
+  in `game run`, no separate `generate_map` dependency). `sample_seed` (default
   1) makes the draw reproducible; `sizes` is a list of `generator_params`-shaped
   dicts to choose from per sample (defaulting to one 128x128 size, or to an
   explicit `generator_params` value); `generators` still
@@ -474,7 +480,7 @@ unsupported combinations remain reported failures rather than being filtered out
   exact map artifacts. format defaults to 1v1 for two players, otherwise ffa;
   alliances is optional. Paired effects, raw pairs, intervals, configurations and
   failure rates are exported. No automatic best-variant selection occurs.
-* `gradient_depth`: data for the [building-field depth model](../building-gradient-depth-model.md).
+* `gradient_depth`: data for the [building-field depth model](../ai/architecture/building-gradient-depth-model.md).
   `sample_games` (default 48) independently drawn games; each draws a map size
   first, then a format that size admits, then AIs and a generator, all from
   `sample_seed`. `sizes` defaults to 64x64 (duels only, since four colonies do not
@@ -548,7 +554,8 @@ python3 test/run_tests.py --filter 'TournamentCompatibility/*'
 python3 test/tournament_cli_integration.py --output artifacts/tournament-cli
 ```
 
-CI runs these with the production Linux binary and retains CLI evidence. The
+Hosted native verification runs these with the production Linux binary and retains
+CLI evidence when selected by the coverage policy. The
 opt-in `test/tournament_reliability_pilot.py --help` describes the localhost/five-host
 pilot; it intentionally kills only its own processes and simulates connection loss
 by withholding coordinator contact, without rebooting hosts or changing networking.
@@ -560,7 +567,7 @@ ignored `artifacts/` workspace or in pull-request attachments.
 ## Map-generation telemetry
 
 Structured generation results now embed `map_report`, the complete native
-[version-2 report](../map-generators/REPORT.md), including every final-map measurement
+[version-2 report](../map-generators/report-format.md), including every final-map measurement
 and the bounded, ordered internal trace. Collection is automatic, independent of
 map-file output. Failures from the generation service retain its failure report;
 argument errors and crashes may only have diagnostics. Root/chosen seeds remain
@@ -576,19 +583,19 @@ resample complete seed blocks across variants in your analysis script.
 
 See the [map-design bulk workflow](../../.agents/skills/glob2-map-design/references/distributed-telemetry.md)
 for complete commands, host configuration, dimensional units and statistical limits.
-Native `--generate-map NAME --json FILE` uses tile dimensions; the structured
-`--generate-map --output-dir DIR` interface uses exponent dimensions as documented
+Native `map generate NAME --report-file FILE` uses tile dimensions; the structured
+`map study GENERATOR --output-dir DIR` interface uses exponent dimensions as documented
 above. Both use the same production report serializer.
 
 ## Ending decided games early
 
 `"win_probability_permille": 970` in an experiment design turns on the optional
-[win probability](../win-probability-model.md) winning condition for its games, so a
+[win probability](../ai/architecture/win-probability-model.md) winning condition for its games, so a
 match that is already decided is not played out. It is off by default, because it
 changes the outcome that gets measured and so must be asked for.
 
-Historical calibration is described in the model guide; it has not been rerun
-against current AI and game rules. The threshold accepts 0 (off) or 501–1000.
+Calibration and its limits are described in the model guide. Evaluate the model
+against the AI and game rules in the cohort you intend to measure. The threshold accepts 0 (off) or 501–1000.
 Experiment `rules` also pass through the shared `--rule` interface. Games it ended report a `termination`
 of `win_probability` rather than `engine_end`, and `observations()` carries the
 raw termination through, so analysis can pool, exclude or compare them but can
@@ -607,7 +614,7 @@ fit report unavailable uncertainty rather than silently biasing the intervals.
 ## Gameplay, AI and performance telemetry
 
 Add `"outputs":{"telemetry":["team-timeline"]}` to an experiment configuration
-(or pass `--telemetry team-timeline` to `--run-game`). This existing option now
+(or pass `--telemetry team-timeline` to `game run`). This existing option now
 exports the legacy timeline **and** all gameplay measurements, per-player AI
 schemas/current/history/final values, and engine performance samples/final totals.
 Collection remains automatic; export remains opt-in. No extra worker service,
@@ -712,7 +719,7 @@ benchmark procedure and interpretation of CPU and wall time.
 
 New generated maps can carry normalized custom building frames with
 `--building-catalog CATALOG_JSON --building-artwork BUNDLE_G2BA`. Use the canonical
-snapshot produced by `--compose-buildings` as the catalog file. The artwork bundle
+snapshot produced by `assets compose-buildings --format json` as the catalog file. The artwork bundle
 is verified against that catalog and embedded in the generated map (format 145).
 Families selected in the graphical picker do not affect headless generation.
 
@@ -720,4 +727,12 @@ Custom JavaScript generator jobs may use a namespaced string `generator` ID. Att
 the frozen portable package as an input named `generator-package` (or numbered
 `generator-package-*` inputs for several packages). The adapter supplies them through
 `--generator-package`; package artifacts therefore participate in job identity and
-travel with the request. See [generator authoring](../map-generators/JAVASCRIPT.md).
+travel with the request. See [generator authoring](../map-generators/javascript.md).
+
+## Related guides
+
+See [AI evaluation](../ai/README.md), [map-generator verification](../map-generators/verification.md), and the [tools index](README.md).
+
+## Related guides
+
+See [AI evaluation](../ai/README.md), [map-generator verification](../map-generators/verification.md), and the [tools index](README.md).

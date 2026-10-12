@@ -35,62 +35,63 @@ std::string readSource(const std::string &path)
 	return source;
 }
 } // namespace Script
-int runScriptCommand(int argc, char **argv)
+int runScriptCommand(const Cli::Request &request)
 {
-	if (argc < 2)
-		return -1;
-	std::string command = argv[1];
-	if (command == "--check-ai-json")
+	const auto &command = request.command;
+	if (command == "ai check" && request.get("--format") == "json")
 	{
 		nlohmann::json report{{"valid", false}};
 		std::string stage = "syntax";
 		try
 		{
-			if (argc != 3) throw std::invalid_argument("--check-ai-json source.js");
-			const auto source = Script::readSource(argv[2]);
+			const auto source = Script::readSource(request.positionals.at(0));
 			auto metadata = Script::inspectAI(source, &stage);
 			report["valid"] = true;
-			report["metadata"] = {{"apiVersion", metadata.apiVersion}, {"name", metadata.name},
-				{"description", metadata.description}, {"version", metadata.version}, {"author", metadata.author}};
+			report["metadata"] = {{"apiVersion", metadata.apiVersion},
+								  {"name", metadata.name},
+								  {"description", metadata.description},
+								  {"version", metadata.version},
+								  {"author", metadata.author}};
 		}
-		catch (const std::exception &e) { report["failedCheck"] = stage; report["message"] = std::string(e.what()).substr(0, 2000); }
+		catch (const std::exception &e)
+		{
+			report["failedCheck"] = stage;
+			report["message"] = std::string(e.what()).substr(0, 2000);
+		}
 		std::cout << report.dump() << '\n';
 		return report["valid"] == true ? 0 : 2;
 	}
-	if (command != "--check-script" && command != "--check-ai" && command != "--attach-map-script")
+	if (command != "script check" && command != "ai check" && command != "script attach")
 		return -1;
 	try
 	{
-		if (command == "--check-ai")
+		if (command == "ai check")
 		{
-			if (argc != 3)
-				throw std::invalid_argument("--check-ai source.js");
-			auto metadata = Script::inspectAI(Script::readSource(argv[2]));
+			auto metadata = Script::inspectAI(Script::readSource(request.positionals.at(0)));
 			std::cout << "JavaScript AI profile " << metadata.apiVersion << ": " << metadata.name
 					  << " — startup, callback and persistent globals validated\n";
 			return 0;
 		}
-		if (command == "--check-script")
+		if (command == "script check")
 		{
-			if (argc != 3)
-				throw std::invalid_argument("--check-script source.js");
-			Script::readSource(argv[2]);
+			Script::readSource(request.positionals.at(0));
 			std::cout << "JavaScript profile 1: source compiled successfully\n";
 			return 0;
 		}
-		if (argc != 5)
-			throw std::invalid_argument("--attach-map-script input.map source.js output.map");
-		auto source = Script::readSource(argv[3]);
-		auto output = glob2GzipWritePath(argv[4]);
-		if (std::filesystem::exists(output) || std::filesystem::exists(argv[4]))
+		auto source = Script::readSource(request.positionals.at(1));
+		auto output = glob2GzipWritePath(request.positionals.at(2));
+		if (std::filesystem::exists(output) || std::filesystem::exists(request.positionals.at(2)))
 			throw std::invalid_argument("Output already exists");
 		GlobalContainer globals("glob2-script-tools");
 		globalContainer = &globals;
 		globals.runNoX = true;
+		for (const auto &directory : request.all("--data-dir"))
+			globals.fileManager->addDir(directory);
 		globals.load();
-		GameGUI gui;
-		GAGCore::BinaryInputStream input(
-			glob2OpenMapOrSaveInputStreamBackend(*Toolkit::getFileManager(), argv[2]));
+		// Loading a map for conversion must not persist GUI preferences on destruction.
+		GameGUI gui(false);
+		GAGCore::BinaryInputStream input(glob2OpenMapOrSaveInputStreamBackend(
+			*Toolkit::getFileManager(), request.positionals.at(0)));
 		if (!gui.load(&input))
 			throw std::invalid_argument("Cannot load input map");
 		auto &script = gui.game.mapscript;
@@ -102,7 +103,8 @@ int runScriptCommand(int argc, char **argv)
 		std::string bytes;
 		{
 			GAGCore::BinaryOutputStream stream(memory);
-			gui.game.save(&stream, true, std::filesystem::path(argv[4]).stem().string());
+			gui.game.save(&stream, true,
+						  std::filesystem::path(request.positionals.at(2)).stem().string());
 			bytes = memory->takeContents();
 		}
 		if (!GAGCore::writeGzipAtomicToPath(output, bytes))
@@ -113,6 +115,6 @@ int runScriptCommand(int argc, char **argv)
 	catch (const std::exception &ex)
 	{
 		std::cerr << ex.what() << '\n';
-		return 2;
+		return dynamic_cast<const std::invalid_argument *>(&ex) ? 2 : 3;
 	}
 }

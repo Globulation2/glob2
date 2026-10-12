@@ -255,14 +255,23 @@ TEST_CASE("material harvesting consumes stock and never invents a delivery")
     CHECK(map.materialAmountAt(tile,MaterialId::Stone)==1);
 }
 
-TEST_CASE("growth at capacity stays capped and persistent fruit depletes")
+TEST_CASE("growth at capacity oscillates and persistent fruit depletes")
 {
     glob2test::HeadlessGlobals globals;
     Map map;
     map.setSize(4,4,GRASS);
-    REQUIRE(map.incResourceByIndex(8,8,WHEAT,0));
     const auto tile=map.coordToIndex(8,8);
-    map.setResourceAmount(tile,5);
+    for (int type : {WOOD,WHEAT,PAPYRUS,ALGA,CHERRY,ORANGE,PRUNE})
+    {
+        const auto capacity=map.resourceRegistry().yields(static_cast<ResourceId>(type))[
+            materialIndex(map.resourcePropertiesByIndex(type).primaryMaterial)].capacity;
+        map.replaceResource(tile,Resource{Uint16(type),0,capacity,0});
+        CHECK(map.growResourceStock(tile));
+        CHECK(map.getResource(tile).amount==capacity-1);
+        CHECK(map.growResourceStock(tile));
+        CHECK(map.getResource(tile).amount==capacity);
+    }
+    map.replaceResource(tile,Resource{STONE,0,5,0});
     CHECK_FALSE(map.growResourceStock(tile));
     CHECK(map.getResource(tile).amount==5);
     map.replaceResource(tile,Resource{});
@@ -1327,7 +1336,7 @@ TEST_CASE("frozen seeded resource compositions preserve invariants and exact sim
         }
     }
     glob2test::writeFile(glob2test::artifactDir()/"seeded-compositions.trace",trace.str());
-    glob2test::expectGolden("resources/seeded-compositions.trace",trace.str());
+    glob2test::expectGolden("resources/seeded-compositions-units.trace",trace.str());
 }
 
 TEST_CASE("legacy resource saves ignore reordered modified installed defaults in a fresh process" * doctest::test_suite("RuntimeResources"))

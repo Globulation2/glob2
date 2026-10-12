@@ -77,8 +77,8 @@ jobs:
           TSAN_OPTIONS: halt_on_error=1 exitcode=66 second_deadlock_stack=1 suppressions=${{ github.workspace }}/test/tsan.supp
         run: |
           mkdir -p artifacts/tsan
-          build/tsan/src/glob2 --run-game --map-file "$PWD/maps/balanced.map.gz" --game-seed 7 \
-            --player maxima --player cortex --player warrush --player cabino --ticks 600 --replay true \
+          build/tsan/src/glob2 game run --map-file "$PWD/maps/balanced.map.gz" --game-seed 7 \
+            --player maxima --player cortex --player warrush --player cabino --ticks 600 --write-replay \
             --output-dir "$PWD/artifacts/tsan/headless" > artifacts/tsan/headless.log 2>&1
 
       - name: Windowed game (simulation thread, input and drawing)
@@ -108,8 +108,8 @@ jobs:
         run: |
           mkdir -p artifacts/tsan
           xvfb-run -a -s '-screen 0 1280x1024x24' \
-            build/tsan/src/glob2 -test-games 1 --map balanced --matchup maxima,cortex,maxima,cortex \
-            -G -m -s 1024x768 > artifacts/tsan/windowed.log 2>&1
+            build/tsan/src/glob2 dev random-games --display --runs 1 --map balanced --matchup maxima,cortex,maxima,cortex \
+            --renderer software --mute --window-size 1024x768 > artifacts/tsan/windowed.log 2>&1
 
       - name: Show sanitizer reports
         if: failure()

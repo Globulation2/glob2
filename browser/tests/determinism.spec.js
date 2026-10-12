@@ -6,7 +6,7 @@ const {openRuntimeHost} = require('./runtime-host');
 
 // Run the compiled engine with the same fixture and orders as the native CI
 // lanes. A minimal host supplies CLI arguments without changing the game shell.
-for (const [variant, threads] of [['serial',1], ['threaded',1], ['threaded',2], ['threaded',4]]) {
+for (const [variant, threads] of [['serial',1], ['threaded',1], ['threaded',2], ['threaded',4], ['threaded','auto']]) {
 test(`WebAssembly produces a complete per-tick simulation trace (${variant}/${threads})`, async ({page}, info) => {
   const root = path.resolve(__dirname, '../..');
   const fixture = fs.readFileSync(path.join(root, 'games/cross-replay.game.gz'));
@@ -24,7 +24,7 @@ test(`WebAssembly produces a complete per-tick simulation trace (${variant}/${th
           FS.writeFile('/tmp/initial.game.gz', Uint8Array.from(atob('${fixture.toString('base64')}'), c => c.charCodeAt(0)));
         }],
         async onRuntimeInitialized() {
-          const code = await Module.start(['--nox', '/tmp/initial.game.gz', '1500', '1', '--compute-threads', '${threads}']);
+          const code = await Module.start(['game', 'repeat', '/tmp/initial.game.gz', '--ticks', '1500', '--runs', '1', '--compute-threads', '${threads}']);
           if (code !== 0) throw new Error('Engine exited: ' + code);
           // Avoid millions of individually serialized Playwright values.
           // Chunk the conversion so large traces do not overflow the call stack.
@@ -80,7 +80,7 @@ test(`WebAssembly verifies the committed match record (${variant})`, async ({pag
         }],
         async onRuntimeInitialized() {
           window.verifyThreaded = typeof SharedArrayBuffer !== 'undefined' && HEAP8.buffer instanceof SharedArrayBuffer;
-          window.verifyExit = await Module.start(['--verify-match', '/tmp/match.g2mr', '--map', '/tmp/FourSquares1.map.gz', '--out', '/tmp/verify']);
+          window.verifyExit = await Module.start(['match', 'verify', '/tmp/match.g2mr', '--map-file', '/tmp/FourSquares1.map.gz', '--output-dir', '/tmp/verify']);
           window.verifyTrace = FS.readFile('/tmp/verify/checksums.txt', {encoding: 'utf8'});
           window.verifyVerdict = FS.readFile('/tmp/verify/verdict.json', {encoding: 'utf8'});
         }
@@ -317,8 +317,10 @@ for (const variant of ['serial', 'threaded']) {
   for (const selection of [
     {name:'registry', suite:'ResourceRegistry', cases:'*'},
     {name:'composition', suite:'RuntimeResources', cases:'frozen seeded resource compositions*'},
+    {name:'unit-registry', suite:'UnitCatalog', cases:'*'},
+    {name:'unit-composition', suite:'UnitCustomization', cases:'all locked capability ablations*'},
   ]) {
-    test(`WebAssembly preserves runtime resource ${selection.name} contracts (${variant})`, async ({page}, info) => {
+    test(`WebAssembly preserves runtime catalog ${selection.name} contracts (${variant})`, async ({page}, info) => {
       test.setTimeout(300000);
       const root=path.resolve(__dirname,'../..');
       const output=path.join(root,'artifacts/browser-determinism/resources',variant,info.project.name,selection.name);
@@ -367,10 +369,17 @@ for (const variant of ['serial', 'threaded']) {
       if(selection.name==='composition'){
         const traces=Object.entries(result.files).filter(([name])=>name.endsWith('/seeded-compositions.trace'));
         expect(traces).toHaveLength(1);
-        const committed=fs.readFileSync(path.join(root,'test/fixtures/resources/seeded-compositions.trace'),'utf8');
+        const committed=fs.readFileSync(path.join(root,'test/fixtures/resources/seeded-compositions-units.trace'),'utf8');
         expect(traces[0][1].replace(/\r\n/g,'\n')).toEqual(committed.replace(/\r\n/g,'\n'));
         expect(traces[0][1].trim().split('\n')).toHaveLength(150);
-      } else expect(result.files['tests.xml']).toContain('stock catalog separates map identities');
+      } else if(selection.name==='unit-composition'){
+        const traces=Object.entries(result.files).filter(([name])=>name.endsWith('/unit-ablations.trace'));
+        expect(traces).toHaveLength(1);
+        const committed=fs.readFileSync(path.join(root,'test/fixtures/unit-catalog/ablation-checksums.txt'),'utf8');
+        expect(traces[0][1].replace(/\r\n/g,'\n')).toEqual(committed.replace(/\r\n/g,'\n'));
+        expect(traces[0][1].trim().split('\n')).toHaveLength(97);
+      } else if(selection.name==='registry') expect(result.files['tests.xml']).toContain('stock catalog separates map identities');
+      else expect(result.files['tests.xml']).toContain('UnitCatalog');
     });
   }
 }

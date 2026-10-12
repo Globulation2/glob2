@@ -10,6 +10,7 @@
 #include <SDL3/SDL_main.h>
 #define DOCTEST_CONFIG_IMPLEMENT
 #include "Glob2Test.h"
+#include "field/GradientDeviceService.h"
 #include <glob2/TestBuildProvenance.h>
 
 #include <cstdio>
@@ -118,6 +119,9 @@ int main(int argc, char **argv)
 	doctest::Context context(argc, argv);
 	context.setOption("no-breaks", true);
 	const int result = context.run();
+	// Direct backend tests can start a coordinator without a GlobalContainer.
+	// Join it before driver exit handlers run, after every fixture has drained.
+	gradient_kernel::shutdownGradientDeviceCoordinator();
 	teardown();
 	return result;
 }

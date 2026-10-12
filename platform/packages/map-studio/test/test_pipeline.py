@@ -115,7 +115,7 @@ class NativeImportTests(unittest.TestCase):
                         subprocess.run(
                             [
                                 binary,
-                                "--import-map-image",
+                                "map", "import-image",
                                 str(image),
                                 "--width",
                                 str(width),
@@ -127,7 +127,7 @@ class NativeImportTests(unittest.TestCase):
                                 "19",
                                 "--output",
                                 str(saved),
-                                "--json",
+                                "--report-file",
                                 str(report),
                             ],
                             env=env,
@@ -149,11 +149,11 @@ class NativeImportTests(unittest.TestCase):
                         subprocess.run(
                             [
                                 binary,
-                                "--preview-map",
+                                "map", "preview",
                                 str(saved) + ".gz",
                                 "--output",
                                 str(folder / "preview.png"),
-                                "--json",
+                                "--report-file",
                                 str(reloaded),
                             ],
                             env=env,

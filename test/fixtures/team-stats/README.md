@@ -22,7 +22,7 @@ Use a disposable profile whose name starts with `glob2-save-test-`.
 
 `version129-muka-1100.game.gz` predates worker time use and the defence snapshot
 (format 133). It was written at `f007962b4` by
-`glob2 --run-game --map-file maps/Muka.map.gz --game-seed 7 --player warrush
+`glob2 game run --map-file maps/Muka.map.gz --game-seed 7 --player warrush
 --player cortex --ticks 1100 --save final`, so it holds three packed 512-tick
 measurement history samples per team (ticks 0, 512 and 1024).
 

@@ -43,19 +43,19 @@ def main(binary=None):
             while target.exists():
                 suffix += 1
                 target = output/(name+f'-{suffix}')
-            run(target.name, ['--run-game', '--load-game', initial, '--ticks',ticks,'--telemetry','checksums','--save','final','--output-dir',target,*options],extra)
+            run(target.name, ['game', 'run', '--load-game', initial, '--ticks',ticks,'--telemetry','checksums','--save','final','--output-dir',target,*options],extra)
             require(json.loads((target/'result.json').read_text())['status']=='completed', name+' did not complete')
             return target
         initial_run = output / ('initial-'+str(time.time_ns()))
-        run('initial', ['--run-game','--generator','15','--map-seed','42','--param','width=6','--param','height=6','--param','teams=2','--game-seed','731','--player','maxima','--player','maxima','--ticks','1','--save','initial','--output-dir',initial_run])
+        run('initial', ['game', 'run','--generator','15','--map-seed','42','--set','width=6','--set','height=6','--set','teams=2','--game-seed','731','--player','maxima','--player','maxima','--ticks','1','--save','initial','--output-dir',initial_run])
         initial = initial_run/'initial.game.gz'
         require(initial.exists(),'missing initial save')
         original = hashlib.sha256(initial.read_bytes()).hexdigest()
         baseline = game('off')
         options = ['--diagnostic-fields','maxima','--diagnostic-interval','500']
         fields = game('fields',options)
-        painted = game('png',options+['--diagnostic-png','true'])
-        threaded = game('threaded',options+['--diagnostic-png','true'],{'GLOB2_SIM_THREAD':'1'})
+        painted = game('png',options+['--diagnostic-png'])
+        threaded = game('threaded',options+['--diagnostic-png'],{'GLOB2_SIM_THREAD':'1'})
         for target in (fields, painted, threaded):
             require((target/'game.replay.checksums').read_bytes() == (baseline/'game.replay.checksums').read_bytes(), 'diagnostics changed per-tick simulation: '+str(target))
             require(gzip.decompress((target/'final.game.gz').read_bytes()) == gzip.decompress((baseline/'final.game.gz').read_bytes()), 'diagnostics changed final save: '+str(target))
@@ -82,23 +82,23 @@ def main(binary=None):
         require((continued/'game.replay.checksums').read_bytes()==(continued_png/'game.replay.checksums').read_bytes(),'diagnostic save continuation diverged')
         initial = initial_run/'initial.game.gz'
         rendered=output/'standalone.png'
-        run('render',['--render-game',initial,'--output',rendered,'--render-max-pixels','128'])
+        run('render',['map', 'render',initial,'--output',rendered,'--render-max-pixels','128'])
         width,height,pixels=png(rendered)
         require((width,height)==(128,128) and len(set(pixels))>8,'blank or wrongly sized render')
         large=output/'large.map.gz'
-        run('large-map',['--generate-map','maze','--seed','7','--width','512','--height','512','--teams','2','--output',large])
-        run('large-render',['--render-game',large,'--output',output/'large.png','--render-max-pixels','128'])
+        run('large-map',['map', 'generate','maze','--seed','7','--width','512','--height','512','--teams','2','--output',large])
+        run('large-render',['map', 'render',large,'--output',output/'large.png','--render-max-pixels','128'])
         require(png(output/'large.png')[:2]==(128,128),'large map ignored output cap')
         captured_field = next((fields/'diagnostics').glob('tick-*/threat.field'))
-        run('overlay',['--render-game',initial,'--output',output/'overlay.png','--render-max-pixels','128','--render-field',captured_field,'--field-color','255,40,40'])
+        run('overlay',['map', 'render',initial,'--output',output/'overlay.png','--render-max-pixels','128','--render-field',captured_field,'--field-color','255,40,40'])
         for i, extra in enumerate((['--render-max-pixels','0'],['--render-max-pixels','8193'],['--field-color','1,2,3'],['--render-field',captured_field,'--field-color','256,0,0'],['--preview-size','128'])):
-            run('invalid-render-'+str(i),['--render-game',initial,'--output',rendered,*extra],ok=False)
+            run('invalid-render-'+str(i),['map', 'render',initial,'--output',rendered,*extra],ok=False)
         for i, extra in enumerate((['--diagnostic-interval','1'],['--diagnostic-fields','unknown'],['--diagnostic-fields','maxima','--diagnostic-interval','0'],['--diagnostic-fields','maxima','--diagnostic-png','maybe'])):
-            run('invalid-run-'+str(i),['--run-game','--load-game',initial,'--ticks','1','--output-dir',output/('invalid-'+str(i)),*extra],ok=False)
+            run('invalid-run-'+str(i),['game', 'run','--load-game',initial,'--ticks','1','--output-dir',output/('invalid-'+str(i)),*extra],ok=False)
         # A file where the diagnostics directory should be must not abort the game.
         failure=output/('write-failure-'+str(time.time_ns()))
         failure.mkdir(); (failure/'diagnostics').write_text('blocked')
-        run('write-failure',['--run-game','--load-game',initial,'--ticks','1200','--output-dir',failure,'--telemetry','checksums',*options])
+        run('write-failure',['game', 'run','--load-game',initial,'--ticks','1200','--output-dir',failure,'--telemetry','checksums',*options])
         require((failure/'game.replay.checksums').read_bytes()==(baseline/'game.replay.checksums').read_bytes(),'output failure changed simulation')
         for target in (fields,painted,threaded,failure):
             require(not any(path.name.endswith('.tmp') or '.tmp-' in path.name for path in target.rglob('*')),'partial capture directories leaked: '+str(target))

@@ -43,7 +43,7 @@ using namespace MapGeneration;
 // then layBeaches itself is run and must change nothing: the shores are already what it would
 // make of them.
 //
-// WHY IT PLAYS WELL (docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md). Rivers are the map's
+// WHY IT PLAYS WELL (docs/map-generators/game-rules-for-map-design.md). Rivers are the map's
 // walls and its wealth at once: wheat and wood regrow only near water, so the best land is right
 // against the channels a colony cannot cross, and fords are the few places armies can. Colonies
 // start on the floodplain (5 to 11 steps from water), preferably on different banks, so a

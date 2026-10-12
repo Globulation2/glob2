@@ -261,7 +261,7 @@ class Planner:
                 # below: each of sample_games draws its own format/matchup/
                 # generator/size independently, rather than every combination of
                 # every AI x format x generator x seed x size (which can reach
-                # hundreds of thousands of games -- see docs/tournaments.md).
+                # hundreds of thousands of games -- see docs/tools/tournaments.md).
                 rng = random.Random(config.get('sample_seed', 1))
                 sample_methods = methods
                 default_params = {'width': 7, 'height': 7}

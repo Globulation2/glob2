@@ -40,6 +40,7 @@ class MapAssetBundle;
 #include "BitArray.h"
 
 namespace SimulationSnapshot { struct Handle; }
+namespace gradient_kernel { enum class Family; }
 
 class Unit;
 
@@ -118,7 +119,7 @@ class Map
 	void resetBuildingGradientPipeline() noexcept;
 	Building *buildingGradientDestination(int team, int id, Uint32 identity) const;
 	void saveBuildingGradientPipeline(GAGCore::OutputStream *stream) const;
-	void loadBuildingGradientPipeline(GAGCore::InputStream *stream, bool packed);
+	void loadBuildingGradientPipeline(GAGCore::InputStream *stream, bool packed, int versionMinor);
 	// The live cell view minus the game's growth settings, rebound by
 	// refreshLiveView() whenever an input is replaced. Per-cell queries read
 	// it directly instead of assembling a view on every call.
@@ -146,7 +147,7 @@ class Map
 	mutable std::mutex waterSnapshotMutex;
 	mutable std::shared_ptr<const std::vector<Uint8>> waterSnapshot;
 	mutable std::shared_ptr<const std::vector<TerrainType>> vertexSnapshot;
-	mutable std::array<std::shared_ptr<const TerrainMovementSnapshot>, 7> terrainMovementSnapshots;
+	mutable std::array<std::shared_ptr<const TerrainMovementSnapshot>, SWIM_CLASS_COUNT> terrainMovementSnapshots;
 	std::shared_ptr<const ResourceRegistry> resourceRegistryValue = ResourceRegistry::availableDefaults();
 	// Single-yield tiles keep stock inline. The index plane is allocated only
 	// when a multi-yield deposit is first placed; zero means no sidecar slot.
@@ -176,9 +177,9 @@ class Map
 	std::vector<std::size_t> cellRuleCounts;
 	std::array<unsigned, 6> terrainFeatures{};
 	unsigned terrainBucketCount = 64;
-	std::array<std::array<unsigned, 182>, 7> terrainGroundCostCounts{};
+	std::array<std::array<unsigned, 182>, SWIM_CLASS_COUNT> terrainGroundCostCounts{};
 	std::array<unsigned, 41> terrainAirCostCounts{};
-	std::array<unsigned, 7> terrainMinimumGround = gradient_kernel::MINIMUM_TERRAIN_ENTRY_COSTS;
+	std::array<unsigned, SWIM_CLASS_COUNT> terrainMinimumGround = gradient_kernel::MINIMUM_TERRAIN_ENTRY_COSTS;
 	unsigned terrainMinimumAir = GRADIENT_STEP;
 	void adjustTerrainFeatures(std::uint16_t rule, bool add);
 	std::uint64_t terrainGenerationValue = 1;
@@ -243,6 +244,7 @@ public:
 	Uint16 *acquireBuildingGradientBuffer();
 	void recycleBuildingGradientBuffer(Uint16 *buffer);
 	void configureCompute(unsigned threads);
+    std::vector<std::pair<std::string,Uint64>> gradientExecutionMetrics() const;
 	ComputeExecutor &computeExecutor() { return compute; }
 	// Live field seeding retains its serial production order.
 	template<class Function> void initializeGradientCells(Function function) const
@@ -256,7 +258,9 @@ public:
 		unsigned workers = 0, delay = 0;
 		std::size_t pending = 0;
 		std::uint64_t jobs = 0, published = 0, discarded = 0;
-		std::uint64_t maxPending = 0, waitNs = 0, activeElapsedNs = 0, preparationNs = 0;
+		std::uint64_t maxPending = 0, waitNs = 0, activeElapsedNs = 0, preparationNs = 0, publicationWaitNs = 0;
+        // Owner-only O(1) last-advance telemetry, no pending-job scan.
+        std::uint64_t lastPublicationWaitNs=0,lastGpuPublicationWaitNs=0,lastGpuDeviceOverlapWaitNs=0;
 	};
 	bool gradientPipelineEnabled() const;
 	GradientPipelineStatus gradientPipelineStatus() const;
@@ -824,7 +828,7 @@ public:
 		return getResource(x, y).type != NO_RES_TYPE;
 	}
 
-    bool isClearableResourceForMaterials(int x,int y,bool materials[MaterialCount]) const
+    bool isClearableResourceForMaterials(int x,int y,const bool materials[MaterialCount]) const
     {
         const auto index=coordToIndex(x,y);
         const auto& r=resourceCells[index].resource;
@@ -1149,6 +1153,7 @@ public:
 	//! swimClass must be in [0, SWIM_CLASS_COUNT).
     GAGCore::CooperativeTask updateGlobalGradientTask(Uint8 *gradient);
 	void propagateGradient(Uint16 *gradient, int swimClass, int maxCost = GRADIENT_COST_LIMIT);
+	void propagateGradient(Uint16 *gradient, int swimClass, int maxCost, gradient_kernel::Family family);
 	//! Step toward the neighbour with the highest value minus step cost. strict requires
 	//! real progress; otherwise a random sidestep to an equal cell is accepted when blocked.
 	//! With guardAreaMask, only neighbours painted as a guard area for those teams count

@@ -8,14 +8,17 @@
 #include <algorithm>
 #include <utility>
 #include <chrono>
+#include <thread>
 #include <cstdlib>
 #include <cstdint>
 #include <iterator>
 #include "Engine.h"
+#include "OutcomeReason.h"
 #include "NetEngine.h"
 #include "Player.h"
 #include "sim/SimulationRunner.h"
 #include "sim/presentation/SceneInputs.h"
+#include "sim/presentation/ScenePreparation.h"
 #include "MenuColony.h"
 #include "GameGUITouch.h"
 #include <GraphicContext.h>
@@ -77,6 +80,126 @@ GAGCore::CooperativeSlice fixedSlice()
 
 TEST_SUITE("EngineSession")
 {
+
+    TEST_CASE("automatic GUI sessions poll asset finalizers on the presentation thread [display]")
+    {
+        for (const char* mode : {"0", "1"})
+        {
+            CAPTURE(mode);
+            glob2test::ScopedEnvironment threading("GLOB2_SIM_THREAD", mode);
+            glob2test::HeadlessGlobals globals({.display = true, .loadStrings = true});
+            REQUIRE(NET_Init());
+            struct NetworkScope { ~NetworkScope() { NET_Quit(); } } network;
+            globals->runNoX = false;
+            globals->automaticEndingGame = true;
+            globals->automaticGameGlobalEndConditions = true;
+            globals->automaticEndingSteps = 8;
+            globals->settings.gameSpeed = 10;
+            globals->settings.autosaveGames = false;
+            Engine engine;
+            REQUIRE(engine.initCampaign("maps/balanced.map") == Engine::EE_NO_ERROR);
+            auto& loader = GAGCore::Toolkit::assets();
+            auto handle = loader.request<unsigned>("automatic-gui-finalizer", {},
+                [] { return std::make_shared<const unsigned>(9); });
+            REQUIRE(loader.wait(handle));
+            auto lifetime = std::make_shared<int>(0);
+            const auto owner = std::this_thread::get_id();
+            bool published = false;
+            loader.onReady<unsigned>(handle, lifetime, [&](std::shared_ptr<const unsigned> value) {
+                CHECK(std::this_thread::get_id() == owner);
+                REQUIRE(value);
+                CHECK(*value == 9);
+                published = true;
+            });
+            CHECK_FALSE(published);
+            bool restart = false;
+            engine.runOneGameSession(restart);
+            CHECK_FALSE(restart);
+            CHECK(published);
+            CHECK(engine.gui.game.stepCounter == 8);
+        }
+    }
+
+    TEST_CASE("eliminated prestige leaders cannot make every survivor lose")
+    {
+        glob2test::HeadlessGlobals globals;
+        for (bool timer : {false, true})
+        for (int eliminated = 0; eliminated < 3; ++eliminated)
+        {
+            Engine engine;
+            auto& game = engine.gui.game;
+            game.map.setSize(5, 5, GRASS);
+            game.map.setGame(&game);
+            for (int t = 0; t < 3; ++t)
+            {
+                game.addTeam();
+                game.teams[t]->allies = game.teams[t]->me;
+            }
+            CAPTURE(timer); CAPTURE(eliminated);
+            const int winner = (eliminated + 1) % 3;
+            const int loser = (eliminated + 2) % 3;
+            game.teams[eliminated]->isAlive = false;
+            game.teams[eliminated]->prestige = 100;
+            game.teams[winner]->prestige = -2;
+            game.teams[loser]->prestige = -5;
+            game.prestigeToReach = 50;
+            game.stepCounter = 100;
+            if (timer)
+            {
+                WinningCondition::setPrestigeWinCondition(game.gameHeader.getWinningConditions(), false);
+                WinningCondition::setSuddenDeathWinCondition(game.gameHeader.getWinningConditions(), 100);
+            }
+            game.prestigeSyncStep();
+            game.wonSyncStep();
+            CHECK(game.teams[eliminated]->hasLost);
+            CHECK(game.teams[winner]->hasWon);
+            CHECK_FALSE(game.teams[winner]->hasLost);
+            CHECK(game.teams[loser]->hasLost);
+            CHECK(std::string(outcomeReasonKey(game, winner)) == (timer ? "[outcome reason timer]" : "[outcome reason prestige]"));
+            CHECK(std::string(outcomeReasonKey(game, loser)) == (timer ? "[outcome reason timer]" : "[outcome reason prestige]"));
+            CHECK(std::string(outcomeReasonKey(game, eliminated)) == "[outcome reason eliminated]");
+            CHECK(game.isGameEnded);
+        }
+    }
+    TEST_CASE("disabled prestige victory cannot end automatic matches")
+    {
+        glob2test::HeadlessGlobals globals;
+        Engine engine;
+        auto& game = engine.gui.game;
+        game.map.setSize(5, 5, GRASS);
+        game.map.setGame(&game);
+        game.addTeam();
+        game.addTeam();
+        engine.gui.localTeamNo = 0;
+        for (int t = 0; t < 2; ++t)
+            game.teams[t]->allies = game.teams[t]->me;
+        game.prestigeToReach = 100;
+        game.teams[0]->prestige = 100;
+        WinningCondition::setPrestigeWinCondition(game.gameHeader.getWinningConditions(), false);
+        globalContainer->automaticEndingGame = true;
+        globalContainer->automaticGameGlobalEndConditions = true;
+        game.prestigeSyncStep();
+        game.wonSyncStep();
+        CHECK(game.totalPrestige == 100);
+        CHECK_FALSE(game.totalPrestigeReached);
+        CHECK_FALSE(game.isGameEnded);
+        CHECK_FALSE(game.teams[0]->hasWon);
+        CHECK_FALSE(game.teams[1]->hasLost);
+        engine.gui.isRunning = true;
+        engine.pollAutomaticEndingConditions(1000);
+        CHECK(engine.gui.isRunning);
+
+        WinningCondition::setPrestigeWinCondition(game.gameHeader.getWinningConditions(), true);
+        game.prestigeSyncStep();
+        game.wonSyncStep();
+        CHECK(game.totalPrestigeReached);
+        CHECK(game.isGameEnded);
+        CHECK(game.teams[0]->hasWon);
+        CHECK(game.teams[1]->hasLost);
+        engine.pollAutomaticEndingConditions(1001);
+        CHECK_FALSE(engine.gui.isRunning);
+    }
+
     TEST_CASE("observation players preserve seat order and spectator readiness")
     {
         glob2test::HeadlessGlobals globals;
@@ -172,6 +295,79 @@ TEST_SUITE("EngineSession")
         CHECK_FALSE(runner.admitPresentation());
     }
 
+    TEST_CASE("camera refreshes cannot starve advancing presentation worlds")
+    {
+        for (bool native : {true,false})
+        {
+            INFO((native ? "native mailbox" : "serial producer"));
+            glob2test::HeadlessGlobals globals;
+            Engine engine;
+            struct RestoreHeadless { ~RestoreHeadless() { globalContainer->runNoX=true; } } restore;
+            globalContainer->runNoX=false;
+            auto& game=engine.gui.game;
+            game.map.setSize(4,4,GRASS);
+            game.map.setGame(&game);
+            game.addTeam();
+            game.teams[0]->race.loadDefault();
+            auto& executor=game.map.computeExecutor();
+            executor.configure(1);
+            if (native) engine.runner=std::make_unique<SimulationRunner>(engine);
+            const auto camera=[&](int x) {
+                engine.gui.clientRequests.publishViewport(x,0,4,4);
+                if (engine.runner) engine.runner->requestScene(engine.gui.sceneRequest(false));
+            };
+            const auto finish=[&] {
+                while(executor.pumpPresentation()) {}
+                if (engine.runner) REQUIRE(engine.runner->acquireScene());
+                else REQUIRE(engine.serialPresentation->acquire());
+            };
+            engine.gui.recordTick(1000,33);
+            camera(0);
+            engine.openReadBoundary({},true,true);
+            finish();
+
+            // A completed camera refresh consumes the client request before the
+            // next tick. That same request must still admit the newer world.
+            camera(1);
+            engine.refreshRetainedPresentation();
+            finish();
+            ++game.stepCounter;
+            engine.gui.recordTick(1033,33);
+            engine.openReadBoundary({},true,true);
+            REQUIRE(engine.retainedPresentation->world.tick==game.stepCounter);
+            CHECK(engine.retainedPresentation->request.tickTime==1033);
+            finish();
+
+            // This camera preparation spans a tick, so its world is now stale.
+            // Further input must leave capacity for a fresh boundary instead of
+            // repeatedly submitting the old world during pacing waits.
+            camera(2);
+            engine.refreshRetainedPresentation();
+            ++game.stepCounter;
+            engine.gui.recordTick(1066,33);
+            engine.openReadBoundary({},true,true);
+            CHECK(engine.retainedPresentation->world.tick==game.stepCounter-1);
+            finish();
+            camera(3);
+            const auto retained=engine.retainedPresentation;
+            engine.refreshRetainedPresentation();
+            CHECK(engine.retainedPresentation==retained);
+            engine.openReadBoundary({},true,true);
+            REQUIRE(engine.retainedPresentation->world.tick==game.stepCounter);
+            CHECK(engine.retainedPresentation->request.tickTime==1066);
+            finish();
+
+            // Camera-only refreshes remain available while game time is stopped.
+            const auto captures=game.snapshots().metrics.captures;
+            camera(4);
+            engine.refreshRetainedPresentation();
+            CHECK(engine.retainedPresentation->request.view.viewportX==4);
+            CHECK(engine.retainedPresentation->request.tickTime==1066);
+            CHECK(game.snapshots().metrics.captures==captures);
+            finish();
+        }
+    }
+
     TEST_CASE("menu colony rendering consumes its shared boundary without recapture [display]")
     {
         glob2test::HeadlessGlobals globals({.display=true, .width=800, .height=600});
@@ -218,6 +414,27 @@ TEST_SUITE("EngineSession")
         CHECK(work->status() == ComputeExecutor::Presentation::Status::Canceled);
     }
 
+    TEST_CASE("a retained version-152 stock replay preserves recorded simulation checksums [save-format]")
+    {
+        glob2test::HeadlessGlobals globals({.loadStrings=true});
+        REQUIRE(NET_Init());
+        struct NetworkScope {~NetworkScope(){NET_Quit();}} network;
+        globals->automaticEndingGame=false;
+        const auto path=glob2test::inflated("unit-catalog/legacy152-stock.replay.gz");
+        Engine engine; REQUIRE(engine.loadReplayTask(path.string()).run());
+        auto& reader=*globals->replayReader;
+        REQUIRE(reader.formatVersion()==152);
+        REQUIRE(reader.getNumStepsTotal()==128);
+        engine.beginSession(0);
+        for(unsigned tick=0;tick<128;++tick) {
+            reader.setCheckSum(engine.gui.game.checkSum(nullptr,nullptr,nullptr,false,true));
+            REQUIRE(engine.stepSession(tick*40,{}));
+            REQUIRE(reader.isValid());
+            CHECK(engine.gui.game.stepCounter==tick+1);
+        }
+        engine.gui.isRunning=false; engine.finishSession();
+    }
+
     TEST_CASE("external replay retains recorded simulation checksums [benchmark][artifacts]")
     {
         const char* path=SDL_getenv_unsafe("GLOB2_REFERENCE_REPLAY");REQUIRE(path);
@@ -228,15 +445,16 @@ TEST_SUITE("EngineSession")
         Engine engine;REQUIRE(engine.loadReplayTask(path).run());
         auto& reader=*globals->replayReader;
         const auto ticks=reader.getNumStepsTotal();REQUIRE(ticks>0);
+        const auto initialTick=engine.gui.game.stepCounter;
         engine.beginSession(0);
         std::ofstream trace(glob2test::artifactDir()/"external-replay.checksums.txt");
         for(unsigned tick=0;tick<ticks;++tick) {
-            const auto checksum=engine.gui.game.checkSum(nullptr,nullptr,nullptr,SDL_getenv_unsafe("GLOB2_REFERENCE_HEAVY")!=nullptr);
+            const auto checksum=engine.gui.game.checkSum(nullptr,nullptr,nullptr,SDL_getenv_unsafe("GLOB2_REFERENCE_HEAVY")!=nullptr,reader.formatVersion()<=152);
             trace<<engine.gui.game.stepCounter<<' '<<checksum<<'\n';
             reader.setCheckSum(checksum);
             REQUIRE(engine.stepSession(tick*40,{}));
             REQUIRE(reader.isValid());
-            CHECK(engine.gui.game.stepCounter==tick+1);
+            CHECK(engine.gui.game.stepCounter==initialTick+tick+1);
         }
         engine.gui.isRunning=false;engine.finishSession();
     }

@@ -57,13 +57,17 @@ const pages = (): { name: string; path: string; signedIn?: boolean }[] => [
 
 for (const scheme of ['light', 'dark'] as const) {
   test(`every page passes axe and fits the screen (${scheme})`, async ({ page }) => {
+    // This scans every route; phone emulation takes longer than a single-page test.
+    test.setTimeout(300_000);
     await page.emulateMedia({ colorScheme: scheme });
     const found: Record<string, unknown> = {};
     for (const entry of pages()) {
       await page.context().clearCookies();
       if (entry.signedIn) await signIn(page, seed.userSession);
       await page.goto(entry.path);
-      await expect(page.getByRole('heading', { level: 1 }).first()).toBeVisible();
+      if (entry.name.startsWith('skins'))
+        await expect(page.getByRole('region', { name: 'Skin designer' })).toBeVisible();
+      else await expect(page.getByRole('heading', { level: 1 }).first()).toBeVisible();
       await page.waitForLoadState('networkidle');
       const violations = await axe(page);
       const overflow = await sidewaysScroll(page);

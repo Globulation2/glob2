@@ -2,11 +2,12 @@
 // hue = team * 360 / teamCount, HSV saturation 0.8, value 0.9), and chart
 // inks derived from them that keep at least 3:1 contrast on the chart
 // background of either theme (WCAG 1.4.11 for graphical objects).
+import { chartBackground } from '@glob2/design-system/tokens';
 import type { Theme } from './theme.tsx';
 
 type Rgb = [number, number, number];
 
-export const CHART_BACKGROUND: Record<Theme, string> = { light: '#fbfbf3', dark: '#2b1c42' };
+export const CHART_BACKGROUND: Record<Theme, string> = chartBackground;
 
 function hsvToRgb(h: number, s: number, v: number): Rgb {
   const f = (n: number) => {

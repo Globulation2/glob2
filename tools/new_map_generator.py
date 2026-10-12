@@ -4,7 +4,7 @@
   tools/new_map_generator.py marches "Marches"
 
 Writes src/map/generator/generators/<Name>Generator.{h,cpp} from the designed-generator
-shape (design, generate, validateWorld; docs/map-generators/ADDING_A_GENERATOR.md), with
+shape (design, generate, validateWorld; docs/map-generators/adding-a-generator.md), with
 colonies on the roomiest lattice the torus holds (Orbits.h), a round home and pond for
 each, the starter kit and the crop guarantee, and three controls to start from. Then:
 
@@ -17,8 +17,8 @@ What is left is the map itself and the verification the docs ask for:
 
   scons --build=build/native-tests release=1 -j12 map-generator-golden-test engine-tests map-generator-study build/native-tests/src/glob2
   build/native-tests/src/MapGeneratorGoldenTest <profile> --update     # records its golden rows
-  build/native-tests/src/glob2 --generate-map <id> --preview artifacts/<id>.png
-  See docs/map-generators/CLI.md for comparisons with nearest generators.
+  build/native-tests/src/glob2 map generate <id> --preview artifacts/<id>.png
+  See docs/map-generators/cli.md for comparisons with nearest generators.
 """
 import argparse
 import re
@@ -65,7 +65,7 @@ using namespace MapGeneration;
 
 // {Display}: TODO say what the landscape is, in a sentence a player would recognise.
 //
-// WHY IT PLAYS WELL (docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md). TODO: where contact happens and
+// WHY IT PLAYS WELL (docs/map-generators/game-rules-for-map-design.md). TODO: where contact happens and
 // when, what remote ground pays, what keeps the map traversable.
 //
 // Scaffolded by tools/new_map_generator.py: colonies on the roomiest lattice the torus holds, each with
@@ -221,7 +221,7 @@ def camel(identifier):
     return ''.join(part.capitalize() for part in identifier.split('-'))
 
 
-# Legacy ids of generators that were dropped; docs/map-generators/MAP_GENERATOR_FRAMEWORK.md keeps the
+# Legacy ids of generators that were dropped; docs/map-generators/map-generator-framework.md keeps the
 # list. They stay taken: a saved game or a replay that names one must not resolve to a newer map.
 RETIRED_LEGACY_IDS = {25, 33}
 
@@ -298,8 +298,8 @@ def main():
     print('(English placeholders: translate them). Next:')
     print(f'  scons release=1 -j12 map-generator-golden-test engine-tests map-generator-study {native_binary()}')
     print(f'  {native_binary("MapGeneratorGoldenTest")} <profile> --update')
-    print(f'  {native_binary()} --generate-map {args.id} --preview artifacts/{args.id}.png')
-    print('  Compare nearest generators at 128, 256, 512: docs/map-generators/CLI.md')
+    print(f'  {native_binary()} map generate {args.id} --preview artifacts/{args.id}.png')
+    print('  Compare nearest generators at 128, 256, 512: docs/map-generators/cli.md')
 
 
 if __name__ == '__main__':

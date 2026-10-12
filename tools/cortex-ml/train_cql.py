@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 # Copyright (C) 2026 The Globulation 2 Authors
 #
-# Cortex ML pilot — offline RL trainer (Conservative Q-Learning / fitted-Q).
+# Cortex ML tools — offline RL trainer (Conservative Q-Learning / fitted-Q).
 #
 # Learns Q(s, a) over the 20 absolute caps by fitted-Q iteration with a frozen
 # target net, plus the CQL conservatism penalty (push DOWN the log-sum-exp over
@@ -17,7 +17,7 @@
 #
 #   python3 train_cql.py --data <corpus_dir> --out <weights.json>
 #
-# See docs/AI/cortex/PILOT.md ("Method", "Reward") and ML_CONTRACT.md.
+# See tools/cortex-ml/training.md and tools/cortex-ml-infer/format.md.
 
 import argparse
 import copy

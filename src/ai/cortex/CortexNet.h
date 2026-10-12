@@ -7,16 +7,16 @@
 #include <string>
 #include <vector>
 
-// Deterministic fixed-point (I16F16) inference for the Cortex ML pilot nets.
+// Deterministic fixed-point (I16F16) inference for the optional Cortex models.
 // Train in f32 in Python, quantize to a versioned I16F16 blob
-// (tools/cortex-ml-infer/FORMAT.md), then run an INTEGER forward pass here so the
+// (tools/cortex-ml-infer/format.md), then run an INTEGER forward pass here so the
 // AI emits bit-identical orders in lockstep on every client.
 //
 // One class, two nets (same integer arithmetic, same blob layout, different
 // dims + inference rule):
-//   * worker-cap net  16 -> 32 -> 32 -> 20  (ML_CONTRACT.md):
+//   * worker-cap net  16 -> 32 -> 32 -> 20  (tools/cortex-ml-infer/format.md):
 //       load() + chooseSwarmWorkers().
-//   * decision net     48 -> 64 -> 64 -> 18 (DECIDE_CONTRACT.md):
+//   * decision net     48 -> 64 -> 64 -> 18 (tools/cortex-ml-infer/format.md):
 //       loadDecide() + scoreDecision() + forwardDecide().
 // The integer core (forwardWide) is dim-agnostic, driven entirely by the blob's
 // architecture header; only the two public load() siblings differ — each pins the
@@ -25,12 +25,12 @@
 // I16F16 == a signed 32-bit integer holding value * 2^16. A fixed-point multiply
 // is (int64(a) * int64(b)) >> 16 (arithmetic shift). RAW integer features are
 // promoted to I16F16 (x << 16) so the whole matmul is one uniform dot product.
-// The numpy reference (tools/cortex-ml-infer/int_ref.py) implements the SAME
-// arithmetic and inference rule; the parity test proves they agree bit-for-bit.
+// The Python integer reference (tools/cortex-ml-infer/int_ref.py) implements the SAME
+// arithmetic and inference rule; the parity harness compares them on its tested models and inputs.
 //
-// This module is standalone and NOT wired into CortexPolicy/AICortex yet (that is
-// a later integration step). It only depends on CortexConstants.h for the
-// inference-rule constants — no engine headers.
+// CortexPolicy selects these models at construction; AICortex saves model
+// snapshots for continuation. See tools/cortex-ml-infer/format.md for inputs,
+// loader validation, masking and numeric range limits.
 
 namespace Cortex
 {
@@ -45,10 +45,10 @@ namespace Cortex
 		/// Load a cortex-i16f16-v1 blob for the WORKER-CAP net. Returns true on
 		/// success. On failure leaves the net unloaded and writes one diagnostic to
 		/// std::cerr. The architecture
-		/// is validated against the worker-cap contract (16 -> 32 -> 32 -> 20).
+		/// pins endpoints 16..20; hidden widths are declared by the blob.
 		bool load(const std::string& path);
 
-		/// Load a cortex-decide-i16f16-v1 blob for the DECISION net. Same blob
+		/// Load a cortex-i16f16-v1 blob for the DECISION net. Same blob
 		/// layout/arithmetic as load(); validates the decision-net architecture
 		/// endpoints (48 -> ... -> 18) instead. Used by scoreDecision()/forwardDecide().
 		bool loadDecide(const std::string& path);
@@ -64,21 +64,21 @@ namespace Cortex
 		// environment variables or a model file that may have changed.
 		std::vector<Uint8> snapshotBlob() const;
 
-		// --- worker-cap net (ML_CONTRACT.md) -------------------------------------
-		/// The 16 input features in ML_CONTRACT.md order.
+		// --- worker-cap net (tools/cortex-ml-infer/format.md) -------------------------------------
+		/// The 16 input features in tools/cortex-ml-infer/format.md order.
 		static const int NUM_FEATURES = 16;
 		/// The 20-way categorical output (action = class index + 1).
 		static const int NUM_LOGITS = 20;
 
-		// --- decision net (DECIDE_CONTRACT.md) -----------------------------------
-		/// The 48 input features in DECIDE_CONTRACT.md order. Mirrors
+		// --- decision net (tools/cortex-ml-infer/format.md) -----------------------------------
+		/// The 48 input features in tools/cortex-ml-infer/format.md order. Mirrors
 		/// CortexPolicy::NUM_DECIDE_FEATURES (kept consistent by contract; this
 		/// header must not include CortexPolicy.h, hence a local mirror).
 		static const int NUM_DECIDE_FEATURES = 48;
 		/// The 18-way categorical output: one utility score per decide() candidate.
 		static const int NUM_DECIDE_LOGITS = 18;
 
-		/// Run the full WORKER-CAP inference rule from ML_CONTRACT.md and return the
+		/// Run the full WORKER-CAP inference rule from tools/cortex-ml-infer/format.md and return the
 		/// chosen swarm worker cap (maxUnitWorking target):
 		///   1. food-starved hard clamp (bypass the net),
 		///   2. integer forward pass -> 20 logits,
@@ -91,7 +91,7 @@ namespace Cortex
 		                       int maxBuildLevel, int freeWorkers,
 		                       int harvestableFoodSourcesNearby) const;
 
-		/// Run the DECISION inference rule from DECIDE_CONTRACT.md and return the
+		/// Run the DECISION inference rule from tools/cortex-ml-infer/format.md and return the
 		/// chosen class index (= decide() candidate index):
 		///   1. integer forward pass -> 18 logits,
 		///   2. mask every class k whose `eligibleMask` bit k is 0,

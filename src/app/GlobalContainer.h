@@ -30,6 +30,7 @@ class ReplayReader;
 class ReplayWriter;
 class DatasetWriter;
 
+namespace Cli { struct Request; }
 namespace TerrainVisual { class Compositor; }
 
 class GlobalContainer
@@ -52,7 +53,10 @@ public:
 	explicit GlobalContainer(const char *profileName="glob2", const std::string& buildingCatalog="");
 	virtual ~GlobalContainer(void);
 
-	void parseArgs(int argc, char *argv[]);
+	void applyCommand(const Cli::Request &request);
+	bool gpuComputeEnabled() const;
+	void configureGradientBackend() const;
+    std::optional<GAGCore::RendererBackend> rendererLaunchOverride;
 	void loadClient(void);
     bool deferAssetLoading = false;
     //! Advance required preparation without painting; the host schedules drawing.
@@ -128,6 +132,7 @@ public:
 	// Zero selects the reported logical CPU count (one if unavailable). Structured
 	// --run-game configures its own compute executor instead.
 	unsigned computeThreads = 0;
+	std::optional<bool> gpuComputeOverride;
 	std::string runNoXGameName;
 	int runNoXCountRuns; //!< The number of runs you want to repeat the no X run
 	bool automaticEndingGame;

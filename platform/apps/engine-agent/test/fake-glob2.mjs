@@ -7,7 +7,7 @@
 // Behaviour switches (environment is not passed through by the agent, so they
 // travel in the inputs instead):
 //   generator param  moat=9          generation refused (exit 2, result.json status invalid_request)
-//   map name         "hang"          --preview-map never exits (timeout test)
+//   map name         "hang"          map preview never exits (timeout test)
 //   record JSON      {"verdict":…}   written to verdict.json; "exit" overrides the exit code;
 //                                    "noVerdict": true writes nothing
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
@@ -15,7 +15,7 @@ import { join } from 'node:path';
 import { gzipSync } from 'node:zlib';
 
 const args = process.argv.slice(2);
-const command = args[0];
+const command = args.slice(0, 2).join(' ');
 
 function option(name) {
   const i = args.indexOf(name);
@@ -103,7 +103,11 @@ const GENERATORS = [
 ];
 
 switch (command) {
-  case '--headless-catalog': {
+  case 'help --format': {
+    process.stdout.write(JSON.stringify({ schema_version: 1, cli_version: 2, commands: [] }));
+    break;
+  }
+  case 'info catalog': {
     process.stderr.write('startup noise on stderr\n');
     process.stdout.write(
       JSON.stringify({
@@ -116,15 +120,15 @@ switch (command) {
     );
     break;
   }
-  case '--sim-version': {
+  case 'info sim-version': {
     // Like an old binary without the flag: never returns.
     setInterval(() => {}, 1000);
     break;
   }
-  case '--generate-map': {
+  case 'map study': {
     const out = option('--output-dir');
     mkdirSync(out, { recursive: true });
-    const params = Object.fromEntries(options('--param').map((p) => p.split('=')));
+    const params = Object.fromEntries(options('--set').map((p) => p.split('=')));
     if (params.moat === '9') {
       json(join(out, 'result.json'), {
         schema_version: 1,
@@ -133,7 +137,7 @@ switch (command) {
       });
       process.exit(2);
     }
-    const seed = Number(option('--map-seed'));
+    const seed = Number(option('--seed'));
     const side = 2 ** Number(params.width ?? 7);
     const teams = Number(params.teams ?? 2);
     const map = fakeMap({ name: `study-15-${seed}-r0`, teams, width: side, height: side });
@@ -161,8 +165,8 @@ switch (command) {
     });
     break;
   }
-  case '--preview-map': {
-    const input = args[1];
+  case 'map preview': {
+    const input = args[2];
     const map = readFakeMap(readFileSync(input));
     if (!map) {
       process.stderr.write(`Map command: Cannot load map/save: ${input}\n`);
@@ -170,7 +174,7 @@ switch (command) {
     }
     if (map.name === 'hang') setInterval(() => {}, 1000);
     else {
-      const report = option('--json');
+      const report = option('--report-file');
       if (report) {
         json(report, {
           schema_version: 2,
@@ -204,9 +208,9 @@ switch (command) {
     }
     break;
   }
-  case '--verify-match': {
-    const record = JSON.parse(readFileSync(args[1], 'utf8'));
-    const out = option('--out');
+  case 'match verify': {
+    const record = JSON.parse(readFileSync(args[2], 'utf8'));
+    const out = option('--output-dir');
     mkdirSync(out, { recursive: true });
     if (!record.noVerdict) {
       json(join(out, 'verdict.json'), {

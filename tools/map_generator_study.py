@@ -75,6 +75,6 @@ if __name__=='__main__':
     if a.configs:
         c=json.loads(Path(a.configs).read_text())
     else:
-        catalog=json.loads(subprocess.check_output([BINARY,'--headless-catalog']+[v for p in PACKAGES for v in ['--generator-package',str(p)]],text=True))
+        catalog=json.loads(subprocess.check_output([BINARY,'info', 'catalog', '--format', 'json']+[v for p in PACKAGES for v in ['--generator-package',str(p)]],text=True))
         c=[{'id':'modular-'+str(d['method']),'method':d['id'] if ':' in d['id'] else d['method'],'preset':True} for d in catalog['generators'] if not d.get('editorOnly',d['method']==0)]
     run(c,a.count,a.start,a.label,a.workers)

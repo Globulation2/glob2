@@ -114,3 +114,5 @@ ordinary construction when other demand appears.
 Economic recovery restricts growth and development, while military activity
 continues to follow defence needs, eligible forces, reachability, target safety
 and cooldowns. Food pressure alone does not veto attacks.
+
+Related: [AI documentation](../README.md).

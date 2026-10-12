@@ -2937,5 +2937,9 @@
   "Presentation": "Presentazione",
   "{value0} source": "Sorgente di {value0}",
   "{value0} decor source": "Sorgente delle decorazioni di {value0}",
-  "Your draft changed while the design was loading. Your changes were kept; try opening the design again.": "La bozza è cambiata durante il caricamento del design. Le modifiche sono state conservate; prova ad aprire di nuovo il design."
+  "Your draft changed while the design was loading. Your changes were kept; try opening the design again.": "La bozza è cambiata durante il caricamento del design. Le modifiche sono state conservate; prova ad aprire di nuovo il design.",
+  "More filters": "Altri filtri",
+  "Clear filters": "Cancella filtri",
+  "No results match these filters.": "Nessun risultato corrisponde a questi filtri.",
+  "Results: {value0}": "Risultati: {value0}"
 }

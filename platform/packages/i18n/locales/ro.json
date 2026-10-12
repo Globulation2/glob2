@@ -2937,5 +2937,9 @@
   "Presentation": "Prezentare",
   "{value0} source": "Sursa {value0}",
   "{value0} decor source": "Sursa decorațiunilor {value0}",
-  "Your draft changed while the design was loading. Your changes were kept; try opening the design again.": "Schița ta s-a schimbat în timp ce se încărca designul. Modificările tale au fost păstrate; încearcă să deschizi designul din nou."
+  "Your draft changed while the design was loading. Your changes were kept; try opening the design again.": "Schița ta s-a schimbat în timp ce se încărca designul. Modificările tale au fost păstrate; încearcă să deschizi designul din nou.",
+  "More filters": "Mai multe filtre",
+  "Clear filters": "Șterge filtrele",
+  "No results match these filters.": "Niciun rezultat nu corespunde acestor filtre.",
+  "Results: {value0}": "Rezultate: {value0}"
 }

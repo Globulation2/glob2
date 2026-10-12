@@ -111,3 +111,5 @@ Rejected by ear, with the reason heard and what the measurements showed:
    levels and switching sets is not jarring.
 8. **Let a person listen.** Nobody hearing it in game means it isn't done. Put
    candidates on an audition page with in-sync mood switching before shipping.
+
+Related: [asset production](README.md).

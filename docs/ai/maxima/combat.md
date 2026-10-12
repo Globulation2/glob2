@@ -105,3 +105,5 @@ recovery do not automatically cancel supply, and there is no population gate.
 Useful visible, building-covered or stocked supply keeps enemy fV inn advertising
 available. Fruit collection does not enable enemy mV. Disabling `fruit.enabled`
 removes these missions and their advertising.
+
+Related: [AI documentation](../README.md).

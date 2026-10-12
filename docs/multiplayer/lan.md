@@ -22,8 +22,8 @@ which is the shared `RoomScreen` on the `LanRoom` backend.
 
 ## Connection and discovery
 
-The host listens on a pinned WSS endpoint (the `/yog` path is kept from the former
-YOG LAN server so pairing strings stay compatible):
+The host listens on a pinned WSS endpoint. Its `/yog` path is retained for pairing
+string compatibility:
 `wss://<address>:7489/yog#sha256=<fingerprint>`, with a session-only certificate from
 `provisionLanIdentity`. `GLOB2_LAN_ADDRESS` picks the advertised address. Discovery is
 unchanged: `NetBroadcaster` announces the endpoint without the fingerprint, so a guest
@@ -76,7 +76,7 @@ embedded building catalog without changing the turn-message frame size.
 | `mapReady` | guest → host | `hash` |
 | `chat` | both | `text` (guest → host); `from`, `text` (host → all) |
 | `start` | host → guest | `setup` (with the seed), `seat`, `ticket`, `mapName`, `mapBytes` |
-| `leave` | guest → host | |
+| `leave` | guest → host |  |
 | `closed` | host → all | `reason`: `host-left` or `cancelled` |
 
 The room state is the `MatchSetup` the match will start from, so starting needs no
@@ -111,7 +111,7 @@ with `version`.
   transport then delivers `Reject(MatchOver)`, which ends its session cleanly, and the
   room shows "The host left the game."
 - **Record.** The host writes the match record to `<user dir>/replays/lan-last.g2mr`;
-  `glob2 --verify-match` replays it. Next to it, `lan-last.network.json` holds the
+  `glob2 match verify` replays it. Next to it, `lan-last.network.json` holds the
   relay's per-seat network summary ([network telemetry](../development/network-telemetry.md)).
 
 ## In-game connection notice
@@ -120,4 +120,7 @@ Turn games replace the "waiting for X" box (`GameGUIDraw.cpp`) with connection l
 from `TurnMatchPresenter::notice`, whenever there is something to report: the local
 connection being lost or everyone loading, a rejoin or catch-up of more than 25 turns,
 and other players who are reconnecting, lagging, catching up or not yet connected. The
-always-on connection panel of the multiplayer revamp will replace this box.
+shared [connection panel](connection-quality.md#in-game-panel) presents per-seat
+quality and state alongside these notices.
+
+[Multiplayer index](README.md) · [Documentation index](../README.md).

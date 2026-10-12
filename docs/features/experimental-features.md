@@ -1,11 +1,11 @@
 # Experimental features
 
-Experiments are gameplay features we are still testing. They are off by default;
-a player switches them on under **Settings → Experiments**. New local or hosted
-games retain enabled built-in experiments and enabled building experiments declared
-by their destination catalog, plus any terrain or resource experiments required by the map.
-That selection stays with the game for its whole life. This guide
-covers what players see, the compatibility rules, and how to add an experiment.
+## On this page
+
+- [What players see](#what-players-see)
+- [Compatibility](#compatibility)
+- [Current experiments](#current-experiments)
+- [Adding an experiment](#adding-an-experiment)
 
 ## What players see
 
@@ -15,7 +15,7 @@ covers what players see, the compatibility rules, and how to add an experiment.
   take precedence when available; untranslated catalog entries use that English
   text. The page says when a build has none.
 - The set applies to **new games only**: a custom game, a map file played from the
-  load screen, a headless `-test-games` match, and a multiplayer game the player
+  load screen, a headless `dev random-games --display` match, and a multiplayer game the player
   hosts online or on LAN. A joiner plays with the host's set, whatever their own
   settings say.
 - **Campaign missions and the tutorial ignore local experiment preferences**:
@@ -85,7 +85,7 @@ Built-in keys retain their existing serialized order; dynamic keys follow them
 in byte-wise order. The existing limit of 64 enabled keys still applies.
 
 Headless runs: `GLOB2_TEST_RULES` accepts every experiment key as a 0/1 rule for
-`-test-games` matches, and `--run-game` takes `--experiment <key>` (repeatable;
+`dev random-games --display` matches, and `game run` takes `--experiment <key>` (repeatable;
 the profile's settings do not apply to structured runs). `result.json` lists the
 game's experiments. See [headless replays](../development/headless-replays.md).
 
@@ -117,7 +117,7 @@ external terrain name `road`. Existing preferences, maps, saves, scripts, map
 reports and `select road` editor actions keep working. The Trail artwork replaces
 the former cobblestone frames without changing movement, ecology or building
 rules. Its generated source and classic-frame recipe are recorded in
-[`datasrc/gfx/trail/`](../../datasrc/gfx/trail/).
+[`datasrc/gfx/trail/`](../../datasrc/gfx/trail).
 
 ## Adding an experiment
 
@@ -174,3 +174,5 @@ For a built-in engine experiment:
    golden match record as required by the simulation-version policy.
 6. In the pull request, describe the feel changes with the experiment on; a
    maintainer playing it is part of review.
+
+Related: [features and content](README.md).

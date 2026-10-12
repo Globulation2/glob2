@@ -44,7 +44,7 @@ using MapGeneration::topShare;
 // applied to every corner at once, per-tile random clumps by deterministic growth, and the
 // amounts the engine RNG gives each resource tile are equalised over its orbit. validateWorld then checks the invariance on the finished world.
 //
-// WHY IT PLAYS WELL (docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md). It is the tournament map:
+// WHY IT PLAYS WELL (docs/map-generators/game-rules-for-map-design.md). It is the tournament map:
 // no colony can blame its start, because every colony's ground is an exact image of every other's.
 // The prize in the middle is the strongest a map can offer, an orchard of all three fruits (an inn
 // stocked with all three pulls hungry enemy units across) with stone among it, and the moat, which

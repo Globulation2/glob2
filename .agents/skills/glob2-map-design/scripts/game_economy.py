@@ -4,9 +4,9 @@
 Play a quick calibration game with telemetry (sizes are exponents; `--candidates 5` picks the
 roll the lobby would):
 
-  build/src/glob2 --generate-map --generator 39 --map-seed 101 --param teams=4 --param width=8 \
-      --param height=8 --candidates 5 --write-map true --output-dir /tmp/gen
-  SDL_VIDEODRIVER=dummy build/src/glob2 --run-game --map-file /tmp/gen/map-r0.map --game-seed 1 \
+  build/src/glob2 map study 39 --seed 101 --set teams=4 --set width=8 \
+      --set height=8 --candidates 5 --write-map --output-dir /tmp/gen
+  SDL_VIDEODRIVER=dummy build/src/glob2 game run --map-file /tmp/gen/map-r0.map --game-seed 1 \
       --player nicowar --player nicowar --player nicowar --player nicowar --ticks 20000 \
       --telemetry team-timeline --save final --output-dir /tmp/play > /tmp/play.log 2>&1
   python3 game_economy.py /tmp/play.log --result /tmp/play/result.json --ai <telemetry name fragments>

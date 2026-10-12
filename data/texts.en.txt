@@ -1670,6 +1670,10 @@ Automatic torus view
 Automatically show the torus overview while moving around the map (OpenGL).
 [settings Autosave]
 Autosave
+[settings GPU compute]
+GPU compute
+[settings Use GPU for gradient calculations. Applies to the next game.]
+Use GPU for gradient calculations. Applies to the next game.
 [settings Save the game automatically about every 10 seconds.]
 Save the game automatically about every 10 seconds.
 [Channel width]
@@ -5996,3 +6000,39 @@ File selection is unavailable.
 Package export is unavailable.
 [stat band area upkeep]
 Area upkeep
+[outcome reason eliminated]
+Colony eliminated.
+[outcome reason opponents defeated]
+All opponents defeated.
+[outcome reason ally won]
+An allied colony won.
+[outcome reason prestige]
+Prestige goal reached.
+[outcome reason scenario]
+Scenario rules decided the outcome.
+[outcome reason timer]
+Time limit reached.
+[outcome reason probability]
+Win probability threshold reached.
+[Destroy this building?]
+Destroy this building?
+[Discord community]
+Discord community
+[Globulation 2 Discord]
+Globulation 2 Discord
+[discord community intro]
+Find opponents, ask for help, and share your maps with the Globulation 2 community.
+[discord opens externally]
+Join our Discord server. This opens Discord or your browser.
+[Join Discord]
+Join Discord
+[Copy link]
+Copy link
+[discord opened]
+Discord opened. You can return to the game at any time.
+[discord open failed]
+Could not open Discord. Copy the invitation link and open it in your browser.
+[discord link copied]
+Invitation link copied.
+[discord copy failed]
+Could not copy the link. Select the invitation above to copy it manually.

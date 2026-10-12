@@ -1,96 +1,17 @@
-=======================================
-Globulation 2 Installation Instructions
-=======================================
+# Install Globulation 2
 
+For packaged downloads, use the [public download page](https://glob2online.com/) and the installation instructions included with your package. Store and release procedures are in the [release guides](docs/releases/README.md).
 
-Basic Installation
-==================
+## Build from source
 
-The simplest way to compile this package is:
+Follow [Build and run](docs/development/building.md) for current macOS, Linux and Windows prerequisites, pinned SDL3 setup, build commands and executable paths. Run commands from the repository root. Use `python3 tools/dev_build.py` for routine development and `scons release=1` for an optimized build.
 
-  1. `cd' to the directory containing the package's source code and type
-     `scons' to build the package for your system.  If you're
-     using `csh' on an old version of System V, you might need to type
-     `sh scons' instead to prevent `csh' from trying to execute
-     `scons' itself.
+## Install a Linux source build
 
-     Running `scons' takes awhile.  While running, it prints some
-     messages telling which source files it is compiling.
+After setting up the build dependencies, `scons release=1 install` installs the executable and runtime assets. The default destinations are `/usr/local/bin/glob2` and `/usr/local/share/glob2`; writing there requires appropriate filesystem permissions. Follow [the installation contract](docs/development/building.md#install-a-linux-source-build) for a user-writable destination and runtime data-path options.
 
-  2. When compiled, type (probably as root) `scons install' to install
-     the programs and any data files and documentation.
+Use the platform packaging guide for [macOS and Windows](docs/releases/desktop.md), the [browser](docs/releases/browser.md), or [mobile](docs/mobile/README.md). Clean the selected build configuration with `scons -c`; cleaning build output is separate from uninstalling installed files.
 
-  3. You can remove the program binaries and object files from the
-     source code directory by typing `scons -c'.
-
-
-Dependencies
-============
-
-   Glob 2 needs a C++20 compiler, Python 3 and SCons. It builds against native SDL 3 and its image, ttf and net libraries.
-
-   On Debian and Ubuntu, the build dependencies are:
-
-     apt install g++ python3 scons pkg-config \
-       cmake libfreetype-dev libx11-dev libxext-dev libxcursor-dev libxi-dev libxrandr-dev libasound2-dev libpulse-dev \
-       libopusfile-dev libopus-dev libogg-dev libspeex-dev \
-       libboost-dev libssl-dev \
-       zlib1g-dev libfribidi-dev libpcre3-dev \
-       libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev
-
-   Build the checksum-pinned SDL3 dependencies before compiling:
-
-     python3 scons/sdl3_dependencies.py --prefix build/sdl3/prefix --work build/sdl3/sources
-     export GLOB2_SDL3_PREFIX="$PWD/build/sdl3/prefix"
-
-   Native clients enable secure WebSocket transport by default and require
-OpenSSL development headers and libraries, and the Boost.Beast and Boost.Asio
-headers (libboost-dev). Use `scons wss=0` for a TCP-only client, which needs
-neither.
-The browser target uses the browser's WebSocket implementation.
-
-   The test suite (`scons tests', then `python3 test/run_tests.py') needs no
-extra library; add `xvfb', `xauth' and `libgl1-mesa-dri' for the tests that
-need a display.
-
-   This list is kept in sync with the dependencies installed by the CI build in
-`.github/workflows/build.yml', which is what the project actually builds against.
-
-
-Compilers and Options
-=====================
-
-   Some systems require unusual options for compilation or linking that
-the `scons' script does not know about.  Run `scons --help'
-for details on some of the pertinent environment variables.
-
-   You can give `scons' initial values for configuration parameters
-by setting variables in the command line or in the environment.  Here
-is an example:
-
-     scons CXXFLAGS=" -g -pg" INSTALLDIR="/usr/local/share/games"
-
-Installation Names
-==================
-
-   By default, `scons install' will install the package's files in
-`/usr/local/bin' and `/usr/local/share'.  You can specify installation
-paths other than `/usr/local/*' by giving `scons' the options `INSTALLDIR'
-and `BINDIR'. If you wanted to install into your home directory for example
-(if you dont have permissions for root installtion), you would run:
-
-     scons BINDIR="/home/user/glob2/bin" INSTALLDIR="/home/user/glob2/share"
-
-Out of source compliation
-=========================
-
-   To compile Globulation 2 in a given directory, pass the `--build` flag to
-`scons`, for example `scons --build=/home/$USER/build/glob2`.
-
-Specifying the System Type
-==========================
-
-   `scons' will work on most Unix/Linux systems. However, to compile on Windows,
-the flag `mingw=true' must be called. The MSYS2/MINGW64 package list used by the
-CI build is in `.github/workflows/build.yml'. More information on compiling on
-Windows can be found at https://globulation2.org/wiki/Mingw_compilation
+If this source archive does not include `docs/`, start from the maintained
+[documentation index](https://github.com/Globulation2/glob2/blob/master/docs/README.md)
+in the repository.

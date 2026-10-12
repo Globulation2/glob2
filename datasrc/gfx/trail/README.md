@@ -43,3 +43,5 @@ source and runtime provenance hashes, tile dimensions and opacity, distinct
 variants, every pair of horizontal and vertical joins, and the fifteen edge
 masks' coverage and cell bounds. After intentionally revising artwork, update
 the source/runtime hashes in `provenance.json` with the selected outputs.
+
+Related: [artwork production](../../../docs/assets/artwork-workflow.md).

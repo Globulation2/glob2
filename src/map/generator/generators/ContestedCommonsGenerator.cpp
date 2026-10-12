@@ -33,7 +33,7 @@ using namespace MapGeneration;
 // three kinds - behind a forced ring of water with a few bridges. So the whole game is about the
 // commons: who gets onto it first, who holds the bridges, and later who swims round them.
 //
-// GAME RULES IT LEANS ON (docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md):
+// GAME RULES IT LEANS ON (docs/map-generators/game-rules-for-map-design.md):
 // - Water blocks walking until a colony can swim: the moat makes the bridges chokepoints, and the
 //   moat is forced to water so no colony's peninsula can reach the commons on foot unfairly.
 // - Fruit is a weapon: fruit groves exist only on the commons, so holding it is how a colony wins

@@ -14,6 +14,7 @@
 #include "terrain/TerrainCatalogIO.h"
 #include "scene/SceneMap.h"
 #include "SoftwareTerrainCache.h"
+#include "OverviewTerrainCache.h"
 #include <Toolkit.h>
 #include "MapRenderState.h"
 #include "MapThumbnail.h"
@@ -24,6 +25,8 @@
 #include "StreamBackend.h"
 #include <SDL3_image/SDL_image.h>
 #include <RenderBackend.h>
+#include <RenderDevice.h>
+#include <RendererSelection.h>
 #ifdef HAVE_OPENGL
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
@@ -35,9 +38,82 @@
 #include <cstring>
 #include <cmath>
 #include <string_view>
+#include <map>
 
 namespace
 {
+// Keep the real accelerated device, sampling, upload path and presentation
+// surface while selecting the existing CPU compositor as the reference.
+class CPUCompositionDevice : public GAGCore::RenderDevice
+{
+    GAGCore::RenderDevice &device;
+  public:
+    bool forceCPU=true, retainCoverage=false;
+    std::size_t telemetryFloor=0;
+    std::map<const GAGCore::CoverageData *,std::shared_ptr<const GAGCore::CoverageData>> heldCoverage;
+    explicit CPUCompositionDevice(GAGCore::RenderDevice &device):device(device) {}
+    GAGCore::RenderDeviceCapabilities capabilities() const override {
+        auto result=device.capabilities();if(forceCPU)result.terrainComposition=false;return result;
+    }
+    bool canBeginFrame() override {return device.canBeginFrame();}
+    GAGCore::RenderSubmission submit(GAGCore::RenderFrame frame) override {
+        if(retainCoverage)for(const auto &packet:frame.packets)
+            if(packet.weightedCompose && packet.weightedCompose->coverage)
+                heldCoverage.emplace(packet.weightedCompose->coverage.get(),packet.weightedCompose->coverage);
+        return device.submit(std::move(frame));
+    }
+    std::size_t heldCoverageBytes() const {
+        std::size_t bytes=0;for(const auto &[key,data]:heldCoverage)
+            bytes+=sizeof(GAGCore::CoverageData)+data->samples.capacity()*sizeof(GAGCore::CoverageSample);
+        return bytes;
+    }
+    GAGCore::RenderCompletion completion(GAGCore::RenderSubmission value) override {return device.completion(value);}
+    void present() override {device.present();}
+    void discardFrame() override {device.discardFrame();}
+    void reset() override {device.reset();}
+    std::uint64_t generation() const override {return device.generation();}
+    GAGCore::RenderTelemetry telemetry() const override {auto result=device.telemetry();result.resourceBytes=std::max(result.resourceBytes,telemetryFloor);return result;}
+    bool capture(GAGCore::CaptureRequest request) override {return device.capture(std::move(request));}
+    bool pollCapture(GAGCore::CaptureResult &result) override {return device.pollCapture(result);}
+    SDL_Surface *captureSynchronously(GAGCore::CaptureRequest request) override {return device.captureSynchronously(std::move(request));}
+    void cancelCaptures() override {device.cancelCaptures();}
+    void outputSize(int &width,int &height) override {device.outputSize(width,height);}
+};
+class ScopedCPUComposition
+{
+    GAGCore::GraphicContext &context;
+    std::unique_ptr<GAGCore::RenderDevice> original;
+  public:
+    explicit ScopedCPUComposition(GAGCore::GraphicContext &context):context(context),original(std::move(context.presentationDevice)) {
+        REQUIRE(original);
+        context.presentationDevice=std::make_unique<CPUCompositionDevice>(*original);
+    }
+    ~ScopedCPUComposition() {context.presentationDevice=std::move(original);}
+    CPUCompositionDevice &device(){return static_cast<CPUCompositionDevice &>(*context.presentationDevice);}
+};
+// Model a slow retirement consumer retaining CPU restoration sources after
+// actual GPU completion. It does not pin GPU allocations or fake their fences.
+class ScopedCoverageRetention
+{
+    GAGCore::GraphicContext &context;
+    std::unique_ptr<GAGCore::RenderDevice> original;
+    std::unique_ptr<GAGCore::RenderBackend> adapter;
+    GAGCore::RenderBackend *previous;
+  public:
+    explicit ScopedCoverageRetention(GAGCore::GraphicContext &context):context(context),
+        original(std::move(context.presentationDevice)),adapter(std::move(context.deviceRenderer)),previous(context.renderer) {
+        auto proxy=std::make_unique<CPUCompositionDevice>(*original);
+        proxy->forceCPU=false;proxy->retainCoverage=true;
+        context.presentationDevice=std::move(proxy);
+        context.deviceRenderer=GAGCore::makeDeviceRenderBackend(*context.presentationDevice,*context.renderResources(),512,512);
+        context.renderer=context.deviceRenderer.get();
+    }
+    ~ScopedCoverageRetention() {
+        context.deviceRenderer.reset();context.presentationDevice.reset();
+        context.presentationDevice=std::move(original);context.deviceRenderer=std::move(adapter);context.renderer=previous;
+    }
+    CPUCompositionDevice &device(){return static_cast<CPUCompositionDevice &>(*context.presentationDevice);}
+};
 SDL_Surface *chunkPixels(const SoftwareTerrainCache::Chunk &chunk)
 {
 	return chunk.image ? chunk.image->getSDLSurface() : chunk.parked.get();
@@ -69,10 +145,10 @@ class LimitedTerrainBackend final : public GAGCore::RenderBackend
 	int limit = 1024, largestTexture = 0;
 	explicit LimitedTerrainBackend(GAGCore::RenderBackend &backend) : delegate(backend) {}
 	int maximumTextureSize() const override { return limit; }
-	void prepareTexture(const void *key, SDL_Surface *pixels, std::uint64_t revision) override
+	void prepareTexture(const void *key, SDL_Surface *pixels, std::uint64_t revision, bool linear = false) override
 	{
 		check(pixels);
-		delegate.prepareTexture(key, pixels, revision);
+		delegate.prepareTexture(key, pixels, revision, linear);
 	}
 	void blit(const void *key, SDL_Surface *pixels, std::uint64_t revision, bool opaque,
 			  const SDL_Rect &src, const SDL_FRect &dst, Uint8 alpha) override
@@ -321,6 +397,148 @@ void layeredCache(bool gpu, bool hd = false)
 } // namespace
 TEST_SUITE("TerrainPresentation")
 {
+    GLOB2_TEST_CASE("GPU terrain pages match CPU composition through edits wrapping recovery and live switches", "[display][isolated][artifacts][writes-preferences]")
+    {
+        using namespace GAGCore;
+        glob2test::HeadlessGlobals globals({.display=true,.width=512,.height=512,
+            .beforeLoad=[](GlobalContainer &container){container.settings.rendererBackend=RendererBackend::Software;}});
+        auto &gfx=*globals->gfx;
+        std::vector<RendererBackend> available;
+        for(const auto &choice:gfx.rendererAvailability())
+            if(choice.available && (choice.backend==RendererBackend::SDLGPU || choice.backend==RendererBackend::ProgrammableGL))available.push_back(choice.backend);
+        if(available.empty()){MESSAGE("GPU terrain integration omitted: no compiled native renderer assets/device path");return;}
+        glob2test::HeadlessGame fixture({.wDec=5,.hDec=5,.discovered=true});auto &map=fixture.game.map;
+        for(int y=0;y<32;++y)for(int x=0;x<32;++x)
+            map.setVertexTerrain(x,y,((x+y)%5==0)?WATER:((x*3+y)%7==0)?SAND:GRASS);
+        SceneMap scene;glob2test::observeMap(map,scene);
+        SoftwareTerrainCache retained;
+        unsigned comparisons=0;
+        const auto switchTo=[&](RendererBackend backend) {
+            REQUIRE(gfx.requestBackendSwitch(backend));gfx.nextFrame();INFO(gfx.backendSwitchStatus().reason);
+            REQUIRE(gfx.backendSwitchStatus().phase==RendererSwitchPhase::Complete);REQUIRE(gfx.backendSwitchStatus().active==backend);
+        };
+        const auto draw=[&](SoftwareTerrainCache &cache,int vx,int vy,int scale,int reduction,int animation,bool whole) {
+            for(unsigned attempt=0;attempt<32;++attempt) {
+                gfx.setClipRect();gfx.drawFilledRect(0,0,512,512,17,29,41);
+                gfx.beginMapTransform(1,0,0,0,0,512,512);
+                REQUIRE(cache.prepareAtResolution(scene,*globals->terrain,0,0,15,15,vx,vy,fixture.team->me,whole,animation,scale,false,reduction));
+                cache.draw(gfx);gfx.endMapTransform();gfx.renderer->flush();
+                CHECK(cache.bytes()<=SoftwareTerrainCache::GPUCacheBudget);
+                CHECK(cache.residentTextureBytes()<=SoftwareTerrainCache::GPUBudget);
+                if(didRecordDeviceFrame(*gfx.renderer))break;
+                // Dense retained CPU pages can require several bounded upload
+                // submissions. Retry the same view until it is published.
+                gfx.nextFrame();
+            }
+            REQUIRE(didRecordDeviceFrame(*gfx.renderer));
+            std::unique_ptr<SDL_Surface,decltype(&SDL_DestroySurface)> pixels(gfx.renderer->capture(),SDL_DestroySurface);REQUIRE(pixels);
+            std::unique_ptr<SDL_Surface,decltype(&SDL_DestroySurface)> rgba(SDL_ConvertSurface(pixels.get(),SDL_PIXELFORMAT_RGBA32),SDL_DestroySurface);REQUIRE(rgba);
+            std::vector<Uint8> result(std::size_t(rgba->w)*rgba->h*4);
+            for(int y=0;y<rgba->h;++y)std::memcpy(result.data()+std::size_t(y)*rgba->w*4,static_cast<Uint8 *>(rgba->pixels)+y*rgba->pitch,rgba->w*4);
+            CHECK(cache.bytes()<=SoftwareTerrainCache::GPUCacheBudget);CHECK(cache.residentTextureBytes()<=SoftwareTerrainCache::GPUBudget);
+            CHECK(gfx.renderDevice()->telemetry().resourceBytes<=256u*1024*1024);
+            gfx.nextFrame();return result;
+        };
+        const auto compare=[&](int vx,int vy,int scale,int reduction,int animation,bool whole) {
+            const auto checksum=fixture.checksum();
+            const auto actual=draw(retained,vx,vy,scale,reduction,animation,whole);
+            const bool gpu=bool(retained.gpuPages);
+            std::vector<Uint8> expected;
+            {ScopedCPUComposition reference(gfx);SoftwareTerrainCache cpu;expected=draw(cpu,vx,vy,scale,reduction,animation,whole);CHECK_FALSE(bool(cpu.gpuPages));}
+            REQUIRE(actual.size()==expected.size());
+            unsigned differences=0,maximum=0;
+            for(std::size_t i=0;i<actual.size();++i){const auto difference=unsigned(std::abs(int(actual[i])-expected[i]));differences+=difference!=0;maximum=std::max(maximum,difference);}
+            INFO("view="<<vx<<","<<vy<<" scale="<<scale<<" reduction="<<reduction<<" animation="<<animation<<" gpu="<<gpu<<" channelDifferences="<<differences<<" max="<<maximum);
+            CHECK(maximum==0);CHECK(fixture.checksum()==checksum);++comparisons;
+            if(scale==4)CHECK_FALSE(gpu); // One HD coverage page exceeds the32MiB preflight bound.
+            else REQUIRE(gpu);
+        };
+        for(auto backend:available) {
+            switchTo(backend);REQUIRE(gfx.renderDevice());
+            if(!gfx.renderDevice()->capabilities().terrainComposition){MESSAGE("Terrain shaders unavailable for this backend; integration omitted");continue;}
+            compare(0,0,1,0,19,true);
+            const auto rebuilds=retained.cacheRebuilds();compare(0,0,1,0,19,true);CHECK(retained.cacheRebuilds()==rebuilds);
+            map.paintCell(0,0,ICE);glob2test::observeMap(map,scene);compare(0,0,1,0,25,true);CHECK(retained.cacheRebuilds()>rebuilds);
+            compare(31,31,1,0,25,true);compare(63,63,1,0,25,true);
+            for(int divisor:{2,4,8,16,32})compare(0,0,1,divisor,25,true);
+            map.unsetMapDiscovered();map.setMapDiscovered(0,0,8,16,fixture.team->me);glob2test::observeMap(map,scene);compare(31,31,1,0,25,false);
+            compare(0,0,4,0,25,true);
+            {
+                ScopedCPUComposition composition(gfx);
+                SoftwareTerrainCache migration;
+                const auto cpuPixels=draw(migration,0,0,4,0,25,true);
+                CHECK_FALSE(bool(migration.gpuPages));
+                composition.device().forceCPU=false;
+                draw(migration,0,0,1,0,25,true);
+                REQUIRE(bool(migration.gpuPages));
+                const auto beforeReturn=migration.cacheRebuilds();
+                composition.device().forceCPU=true;
+                const auto restored=draw(migration,0,0,4,0,25,true);
+                CHECK_FALSE(bool(migration.gpuPages));
+                CHECK(migration.cacheRebuilds()==beforeReturn);
+                CHECK(restored==cpuPixels);
+                // Retaining several densities must still leave room for new
+                // composed targets and masks, including queued mask leases.
+                for(int density:{4,2,1})
+                    for(int vy:{0,16})for(int vx:{0,16})
+                        draw(migration,vx,vy,density,0,25,true);
+                composition.device().forceCPU=false;
+                const auto bounded=draw(migration,15,15,1,0,25,true);
+                REQUIRE(bool(migration.gpuPages));
+                composition.device().forceCPU=true;
+                SoftwareTerrainCache reference;
+                CHECK(bounded==draw(reference,15,15,1,0,25,true));
+            }
+            {
+                // Model concurrent retained atlas/geometry allocations without
+                // allocating fake GPU resources or weakening the actual cap.
+                ScopedCPUComposition pressure(gfx);pressure.device().forceCPU=false;
+                pressure.device().telemetryFloor=252u*1024*1024;
+                SoftwareTerrainCache constrained;
+                const auto reference=draw(constrained,0,0,1,0,25,true);
+                CHECK_FALSE(bool(constrained.gpuPages));
+                pressure.device().telemetryFloor=0;
+                SoftwareTerrainCache promoted;
+                const auto actual=draw(promoted,0,0,1,0,25,true);
+                REQUIRE(bool(promoted.gpuPages));CHECK(actual==reference);
+            }
+            for(unsigned iteration=0;iteration<3;++iteration) {
+                const auto checksum=fixture.checksum();switchTo(RendererBackend::Software);CHECK(fixture.checksum()==checksum);switchTo(backend);
+                compare(0,0,1,0,25,true);
+            }
+            gfx.recoverPresentationDevice();compare(0,0,1,0,25,true);
+            retained=SoftwareTerrainCache{};
+            {
+                ScopedCoverageRetention retirement(gfx);
+                bool exhausted=false;
+                for(unsigned iteration=0;iteration<64 && !exhausted;++iteration) {
+                    // Rotating palette assignments creates fresh mixed recipes.
+                    for(int y=0;y<32;++y)for(int x=0;x<32;++x)
+                        map.setVertexTerrain(x,y,TerrainType((x*3+y+iteration)%3));
+                    glob2test::observeMap(map,scene);SoftwareTerrainCache pressure;
+                    const bool admitted=pressure.prepareAtResolution(scene,*globals->terrain,0,0,15,15,0,0,fixture.team->me,true,25,1,false,0);
+                    if(!admitted){exhausted=true;break;}
+                    pressure.draw(gfx);gfx.renderer->flush();REQUIRE(didRecordDeviceFrame(*gfx.renderer));
+                    std::unique_ptr<SDL_Surface,decltype(&SDL_DestroySurface)> completed(gfx.renderer->capture(),SDL_DestroySurface);REQUIRE(completed);
+                    gfx.nextFrame();
+                    CHECK(retirement.device().heldCoverageBytes()<=40u*1024*1024);
+                }
+                REQUIRE(exhausted);CHECK(retirement.device().heldCoverageBytes()>0);
+                retirement.device().heldCoverage.clear();gfx.nextFrame();
+                SoftwareTerrainCache restored;
+                REQUIRE(restored.prepareAtResolution(scene,*globals->terrain,0,0,15,15,0,0,fixture.team->me,true,25,1,false,0));
+                REQUIRE(bool(restored.gpuPages));
+                restored.draw(gfx);gfx.renderer->flush();gfx.nextFrame();
+            }
+            // The retirement proxy used an independent command recorder. Draw
+            // through the restored adapter before capturing its frame identity
+            // for the next switch, just as a normal presentation owner does.
+            compare(0,0,1,0,25,true);
+        }
+        CHECK(comparisons>0);
+        std::ofstream report(glob2test::artifactDir()/"gpu-terrain-integration.txt");report<<"exact CPU comparisons="<<comparisons<<"\n";
+    }
+
 	TEST_CASE("overview palette follows detailed shore coverage across both wrapped axes [display] "
 			  "[artifacts]")
 	{
@@ -691,6 +909,112 @@ TEST_SUITE("TerrainPresentation")
 				CHECK(holes == 0);
 				CHECK(fixture.checksum() == checksum);
 			}
+	}
+	TEST_CASE("overview pages retain wrapped samples and invalidate edits, resources and visibility [display]")
+	{
+		glob2test::HeadlessGlobals globals({.display = true, .width = 256, .height = 256});
+		glob2test::HeadlessGame fixture({.wDec = 5, .hDec = 5, .discovered = true});
+		auto &map = fixture.game.map;
+		map.paintCell(0, 0, ICE);
+		map.paintCell(31, 31, SAND);
+		SceneMap scene;
+		glob2test::observeMap(map, scene);
+		auto &compositor = globals->terrainCompositor();
+		compositor.prepare(false, 0);
+		constexpr int samples = TerrainVisual::Compositor::OverviewSamples;
+		GAGCore::DrawableSurface actual(40 * samples, 24 * samples), expected(40 * samples, 24 * samples);
+		OverviewTerrainCache cache;
+		const auto check = [&](int vx, int vy, bool wholeMap = true)
+		{
+			cache.copy(scene, -3, -2, 36, 21, vx, vy, fixture.team->me, wholeMap, actual.getSDLSurface());
+			for (int y = -2; y <= 21; ++y)
+				for (int x = -3; x <= 36; ++x)
+					compositor.composeOverview(compositor.describe(scene, x + vx, y + vy),
+						expected.getSDLSurface(), (x + 3) * samples, (y + 2) * samples);
+			CHECK(std::memcmp(actual.getSDLSurface()->pixels, expected.getSDLSurface()->pixels,
+				actual.getSDLSurface()->pitch * actual.getH()) == 0);
+		};
+		check(29, 30);
+		const auto cold = cache.composedCells();
+		check(29, 30);
+		check(-3, -2);
+		CHECK(cache.composedCells() == cold);
+		map.setVertexTerrain(31, 0, GRASS); // Halo edit across both page and map seams.
+		glob2test::observeMap(map, scene);
+		check(29, 30);
+		CHECK(cache.composedCells() > cold);
+		map.setTerrainSeed(197);
+		glob2test::observeMap(map, scene);
+		check(29, 30);
+		const auto seeded = cache.composedCells();
+		map.setResourceByIndex(9, 9, WHEAT, 1);
+		glob2test::observeMap(map, scene);
+		cache.copy(scene, -3, -2, 36, 21, 29, 30, fixture.team->me, true, actual.getSDLSurface());
+		CHECK(cache.composedCells() == seeded + 1);
+		CHECK(std::memcmp(actual.getSDLSurface()->pixels, expected.getSDLSurface()->pixels,
+			actual.getSDLSurface()->pitch * actual.getH()) != 0);
+		// Hiding the resource restores its untinted ground, and revealing it
+		// composes it once again rather than accumulating the tint.
+		map.unsetMapDiscovered();
+		glob2test::observeMap(map, scene);
+		check(29, 30, false);
+		CHECK(cache.composedCells() == seeded + 2);
+		cache.copy(scene, -3, -2, 36, 21, 29, 30, fixture.team->me, true, actual.getSDLSurface());
+		CHECK(cache.composedCells() == seeded + 3);
+		map.setNoResource(9, 9, 1);
+		glob2test::observeMap(map, scene);
+		check(29, 30);
+		CHECK(cache.composedCells() == seeded + 4);
+	}
+#if defined(HAVE_OPENGL) && !defined(GLOB2_WEBGL2)
+	TEST_CASE("generated terrain mip uploads stay uncompressed across animation updates [display]")
+	{
+		glob2test::HeadlessGlobals globals({.display = true, .width = 256, .height = 256,
+			.screenFlags = Uint32(GAGCore::GraphicContext::USEGPU)});
+		std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> pixels(
+			SDL_CreateSurface(128, 128, SDL_PIXELFORMAT_ARGB8888), SDL_DestroySurface);
+		REQUIRE(pixels);
+		TerrainVisual::Surface image(pixels.get(), true);
+		pixels.release();
+		for (Uint32 color : {0xFF319ABCu, 0xFFAD6712u})
+		{
+			SDL_FillSurfaceRect(image.getSDLSurface(), nullptr, color);
+			image.markPixelsChanged();
+			image.prepareTexture();
+			GLint compressed = 1, width = 0;
+			glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_COMPRESSED, &compressed);
+			glGetTexLevelParameteriv(GL_TEXTURE_2D, 1, GL_TEXTURE_WIDTH, &width);
+			CHECK(compressed == GL_FALSE);
+			CHECK(width == 64);
+			CHECK(glGetError() == GL_NO_ERROR);
+		}
+	}
+#endif
+	TEST_CASE("complete torus terrain working set survives repeated atlas sweeps [display]")
+	{
+		glob2test::HeadlessGlobals globals({.display = true, .width = 256, .height = 256,
+			.screenFlags = Uint32(GAGCore::GraphicContext::PORTABLEGPU)});
+		glob2test::HeadlessGame fixture({.wDec = 8, .hDec = 8, .discovered = true});
+		SceneMap scene;
+		glob2test::observeMap(fixture.game.map, scene);
+		SoftwareTerrainCache cache;
+		const auto sweep = [&]()
+		{
+			for (int y = 0; y < 256; y += 64)
+				for (int x = 0; x < 256; x += 64)
+				{
+					REQUIRE(cache.prepare(scene, *globals->terrain, 0, 0, 65, 65, x - 1, y - 1,
+						fixture.team->me, true, 19, true));
+					cache.draw(*globals->gfx);
+					CHECK(cache.bytes() <= SoftwareTerrainCache::GPUCacheBudget);
+					CHECK(cache.residentTextureBytes() <= SoftwareTerrainCache::GPUBudget);
+				}
+		};
+		sweep();
+		const auto rebuilds = cache.cacheRebuilds();
+		CHECK(rebuilds == 256);
+		sweep();
+		CHECK(cache.cacheRebuilds() == rebuilds);
 	}
 	TEST_CASE("tiled capture keeps whole-map density and warm pages at narrow edges [display]")
 	{
@@ -1142,12 +1466,14 @@ TEST_SUITE("TerrainPresentation")
 			gfx.drawableW = gfx.getW() * windowScale;
 			gfx.drawableH = gfx.getH() * windowScale;
 			// Torus captures compensate for the shown zoom: .25 * 4 gives
-			// 32 physical pixels per tile, irrespective of the window DPI.
+			// native raster scale, irrespective of the window DPI. The terrain
+			// working set still has to fit the complete capture budget.
 			gfx.setRenderTargetScale(4);
 			SoftwareTerrainCache cache;
 			REQUIRE(cache.prepare(scene, *globals->terrain, 0, 0, 15, 15, 0, 0, fixture.team->me,
 								  true, 19, true));
-			CHECK(chunkPixels(*cache.copies.front().chunk)->w == SoftwareTerrainCache::ChunkPixels);
+			CHECK(chunkPixels(*cache.copies.front().chunk)->w == SoftwareTerrainCache::ChunkPixels *
+				SoftwareTerrainCache::capturePixelsPerCell(scene.getW(), scene.getH()) / 32);
 			// The same map captured at 8px per cell needs reduced pages. A
 			// narrow edge must retain the complete capture's sampling density.
 			gfx.setRenderTargetScale(1);

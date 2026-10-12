@@ -20,28 +20,19 @@ namespace
 		return aInBsAllies && bInAsAllies;
 	}
 
-	int maximumPrestige(const Game* game)
+	int maximumSurvivingPrestige(const Game* game)
 	{
 		int maximum = 0;
+		bool found = false;
 		for (int i = 0; i < game->mapHeader.getNumberOfTeams(); ++i)
-			maximum = std::max(maximum, game->teams[i]->prestige);
-		return maximum;
-	}
-
-	// Custom-game "sudden-death timer" rule: like maximumPrestige() above, but
-	// without its floor at 0. WinningConditionPrestige can share that floor
-	// safely -- its own totalPrestige<prestigeToReach guard keeps it from ever
-	// evaluating while every team could plausibly be negative -- but sudden
-	// death's only guard is the tick count, so it must handle an all-negative
-	// standing correctly: with the floor, maximum could come out as 0 even
-	// though no team is actually at 0, making hasTeamWon() false and
-	// hasTeamLost() true for every team simultaneously instead of the
-	// intended tie among whoever is actually least-negative.
-	int actualMaximumPrestige(const Game* game)
-	{
-		int maximum = game->teams[0]->prestige;
-		for (int i = 1; i < game->mapHeader.getNumberOfTeams(); ++i)
-			maximum = std::max(maximum, game->teams[i]->prestige);
+		{
+			const Team* team = game->teams[i];
+			if (!team->isAlive) continue;
+			// A defeated colony may retain its schools and prestige. It must
+			// not make every survivor lose. Preserve all-negative standings too.
+			if (!found || team->prestige > maximum) maximum = team->prestige;
+			found = true;
+		}
 		return maximum;
 	}
 
@@ -303,7 +294,7 @@ bool WinningConditionPrestige::hasTeamWon(int team, const Game* game) const
 {
 	if(game->totalPrestige < game->prestigeToReach)
 		return false;
-	return game->teams[team]->prestige == maximumPrestige(game);
+	return game->teams[team]->isAlive && game->teams[team]->prestige == maximumSurvivingPrestige(game);
 }
 
 
@@ -312,7 +303,7 @@ bool WinningConditionPrestige::hasTeamLost(int team, const Game* game) const
 {
 	if(game->totalPrestige < game->prestigeToReach)
 		return false;
-	return game->teams[team]->prestige < maximumPrestige(game);
+	return !game->teams[team]->isAlive || game->teams[team]->prestige < maximumSurvivingPrestige(game);
 }
 
 
@@ -424,7 +415,7 @@ bool WinningConditionSuddenDeath::hasTeamWon(int team, const Game* game) const
 {
 	if (game->stepCounter < endStepTick)
 		return false;
-	return game->teams[team]->prestige == actualMaximumPrestige(game);
+	return game->teams[team]->isAlive && game->teams[team]->prestige == maximumSurvivingPrestige(game);
 }
 
 
@@ -433,7 +424,7 @@ bool WinningConditionSuddenDeath::hasTeamLost(int team, const Game* game) const
 {
 	if (game->stepCounter < endStepTick)
 		return false;
-	return game->teams[team]->prestige < actualMaximumPrestige(game);
+	return !game->teams[team]->isAlive || game->teams[team]->prestige < maximumSurvivingPrestige(game);
 }
 
 

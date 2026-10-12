@@ -125,8 +125,7 @@ TEST_SUITE("ResourceGrowthBenchmark")
 						Json global = Json::array();
 						for (unsigned material = 0; material < MaterialCount; ++material)
 						{
-							REQUIRE(totals[material] == initial[material] + a.growthGlobal[1][material]);
-							REQUIRE(a.growthGlobal[2][material] == 0);
+							REQUIRE(totals[material] + a.growthGlobal[2][material] == initial[material] + a.growthGlobal[1][material]);
 							added += a.growthGlobal[1][material];
 							for (unsigned kind = 0; kind < 3; ++kind)
 							{
@@ -444,11 +443,10 @@ TEST_SUITE("ResourceGrowthBenchmark")
 						const auto &a = game.teams[0]->stats.measurements;
 						for (unsigned m = 0; m < MaterialCount; ++m)
 						{
-							REQUIRE(counts[0][m] - initial[0][m] ==
-								a.growthGlobal[1][m] - baseline.growthGlobal[1][m]);
+							REQUIRE(counts[0][m] + a.growthGlobal[2][m] - baseline.growthGlobal[2][m] ==
+								initial[0][m] + a.growthGlobal[1][m] - baseline.growthGlobal[1][m]);
 							REQUIRE(counts[1][m] - initial[1][m] ==
 								a.growthGlobal[0][m] - baseline.growthGlobal[0][m]);
-							REQUIRE(a.growthGlobal[2][m] == baseline.growthGlobal[2][m]);
 							for (unsigned k = 0; k < 3; ++k)
 							{
 								REQUIRE(a.growthGlobal[k][m] == game.teams[1]->stats.measurements.growthGlobal[k][m]);
@@ -485,8 +483,8 @@ TEST_SUITE("ResourceGrowthBenchmark")
 						const auto flushed = scan();
 						const auto &after = game.teams[0]->stats.measurements;
 						for (unsigned material = 0; material < MaterialCount; ++material)
-							REQUIRE(flushed[0][material] - initial[0][material] ==
-								after.growthGlobal[1][material] - baseline.growthGlobal[1][material]);
+							REQUIRE(flushed[0][material] + after.growthGlobal[2][material] - baseline.growthGlobal[2][material] ==
+								initial[0][material] + after.growthGlobal[1][material] - baseline.growthGlobal[1][material]);
 						REQUIRE(map.gradientRuntime->growth.count() == 0);
 					}
 					report["samples"].push_back(sample);
@@ -749,7 +747,8 @@ TEST_SUITE("ResourceGrowthBenchmark")
 					const auto food = stocks(map);
 					REQUIRE(deposits + depleted >= initialDeposits);
 					const auto seeds = deposits + depleted - initialDeposits;
-					REQUIRE(food + harvested >= initialFood + seeds);
+                    const auto removed = world.game.teams[0]->stats.measurements.growthGlobal[2][materialIndex(MaterialId::Food)];
+					REQUIRE(food + harvested + removed >= initialFood + seeds);
 					report["samples"].push_back(
 						{{"seed", seed},
 						 {"harvest_policy", deplete ? "deplete" : "reserve"},
@@ -758,8 +757,8 @@ TEST_SUITE("ResourceGrowthBenchmark")
 						 {"deposits", deposits},
 						 {"depleted", depleted},
 						 {"seeded", seeds},
-						 {"replenished", food + harvested - initialFood - seeds},
-						 {"harvested", harvested}});
+						 {"replenished", food + harvested + removed - initialFood - seeds},
+						 {"harvested", harvested}, {"naturally_removed", removed}});
 				}
 		if (const char *path = std::getenv("GLOB2_GROWTH_ECOLOGY_OUTPUT"))
 		{

@@ -14,7 +14,7 @@ namespace Cortex
 {
 	// Reduce a per-level upgrade-state histogram (attackStrength/walk/build) to one
 	// RAW feature for the decision vector: the highest unit level that has any units
-	// (the achieved tech tier, 0..CORTEX_UNIT_LEVELS-1). The DECIDE_CONTRACT names
+	// (the achieved tech tier, 0..CORTEX_UNIT_LEVELS-1). The candidate array names
 	// these as the *array* fields (obs.attackStrengthLevel/walkLevel/buildLevel) but
 	// the 48-wide vector takes one scalar per row, so a reduction is needed. The max
 	// occupied level is the threshold-free choice — it bakes in NONE of the teacher's
@@ -86,13 +86,13 @@ namespace Cortex
 		, mlSwarmCaps_(false)
 		, mlDecide_(false)
 	{
-		// Opt into a learned policy (effort B pilots) only when asked AND the net
+		// Opt into a learned policy (optional model modes) only when asked AND the net
 		// actually loads; otherwise stay on the hand rule. Reading the env + loading
 		// the blob happens once here, at AI construction — never during a tick — so
 		// the per-tick decision stays a pure, deterministic function of the
 		// observation. The two modes are mutually exclusive env values (a user picks
-		// one); each loads its own net independently. See docs/AI/cortex/PILOT.md and
-		// docs/AI/cortex/DECIDE_PILOT.md.
+		// one); each loads its own net independently. See tools/cortex-ml/training.md and
+		// tools/cortex-ml/decide_reward.py.
 		const char* mode = getenv("GLOB2_CORTEX_POLICY");
 		const std::string modeStr = (mode ? mode : "");
 		if (modeStr == "ml")
@@ -297,7 +297,7 @@ namespace Cortex
         if (facts.panic) { out[0] = out[1] = 0; out[2] = 1; }
     }
 
-	// DECIDE_CONTRACT action-map class indices for the three war-flag decisions.
+	// candidate array action-map class indices for the three war-flag decisions.
 	// They are still EVALUATED inside decide() (for the 19-class eligibility mask +
 	// trace), but their SELECTION moved to decideCombat() so a busy economy can never
 	// starve a war-flag move (and vice versa). Identified by explicit class index
@@ -305,7 +305,7 @@ namespace Cortex
 	// in decide(): the contract has since grown to 19 classes with class 18 =
 	// ForwardBase (economy, selectable), appended after Offense (class 17) exactly so
 	// these combat indices did not move. Keep in lockstep with CortexPolicy::decide()'s
-	// candidates[] order and docs/AI/cortex/DECIDE_CONTRACT.md.
+	// candidates[] order and tools/cortex-ml/training.md.
 	enum {
 		DECIDE_CLASS_DEFENSE     = 15,
 		DECIDE_CLASS_RETIRE_FLAG = 16,
@@ -464,7 +464,7 @@ namespace Cortex
 		};
 		// Per-candidate required feasibility gates (CortexGate bits), in EXACT
 		// lockstep with candidates[] above — the shared array index IS the
-		// DECIDE_CONTRACT class index; never reorder either, append only. A
+		// candidate array class index; never reorder either, append only. A
 		// candidate whose required gate failed this cycle is treated exactly as
 		// if its scorer had declined. Mask 0 = never gated: the candidate either
 		// has no shared feasibility precondition, or its precondition is
@@ -504,9 +504,9 @@ namespace Cortex
 		// runs them on its own parallel pass in getOrder(). decide() must NOT also
 		// select them or it would double-emit the same flag action this cycle. They
 		// are still EVALUATED here so the full 19-class eligibleMask + trace stay
-		// intact for the DECIDE_CONTRACT pilot (training continuity); only the
+		// intact for the candidate trace (training continuity); only the
 		// economyMask feeds selection. Combat classes are excluded by explicit class
-		// index (DECIDE_CONTRACT action map), so the appended ForwardBase economy
+		// index (candidate array action map), so the appended ForwardBase economy
 		// candidate (class 18) stays selectable here.
 		Uint32 eligibleMask = 0; // full 19-class mask: trace + ML contract.
 		Uint32 economyMask = 0;  // economy-only subset that decide() may select.
@@ -524,7 +524,7 @@ namespace Cortex
 				continue;
 			// Eligibility (the decline gate): a positive score means this candidate
 			// did not decline this cycle — the ML mask bit. The candidate array index
-			// IS the class index (DECIDE_CONTRACT action map); never reorder it.
+			// IS the class index (candidate array action map); never reorder it.
 			if (c.score > SCORE_NONE)
 			{
 				eligibleMask |= (Uint32(1) << k);
@@ -555,12 +555,12 @@ namespace Cortex
 			trace->failedGates = failedGates; // why a gated candidate was vetoed (CortexGate bits)
 		}
 
-		// ML decision-selection (DECIDE pilot): select among the eligible candidates
+		// ML decision-selection (optional decision model): select among the eligible candidates
 		// with the learned net's utility scores instead of the hand SCORE_* argmax.
 		// The eligible set (decline gates) is identical to the hand path — only the
-		// selection differs (DECIDE_CONTRACT.md §Inference rule). The net is integer/
+		// selection differs (tools/cortex-ml-infer/format.md). The net is integer/
 		// I16F16 and loaded once in the ctor, so the choice stays deterministic in
-		// lockstep (no per-tick load, no new save/load state). When mlDecide_ is off
+		// lockstep (no per-tick load; AICortex persists the chosen mode and model). When mlDecide_ is off
 		// this whole block is skipped and behaviour is byte-identical to the hand path.
 		if (mlDecide_)
 		{
@@ -620,7 +620,7 @@ namespace Cortex
 		// 20-21) come straight from computeFacts, so the trace and the live policy
 		// can never disagree on those derivations. Everything else is a raw
 		// CortexObservation scalar — the net relearns the teacher's thresholds, so
-		// the derived judgment booleans are deliberately NOT exposed (DECIDE_CONTRACT).
+		// the derived judgment booleans are deliberately NOT exposed (candidate array).
 		CortexObservation projected = obs;
         if (obs.hasModelProjection)
             for (int role = 0; role < CORTEX_BUILDING_TYPES; ++role)

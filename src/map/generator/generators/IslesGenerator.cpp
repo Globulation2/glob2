@@ -40,7 +40,7 @@ using namespace MapGeneration;
 // from their shapes; noise of up to 45 either way roughens every coast. Because 45 is almost the
 // whole gap between the sea (50) and the water line (90), coasts wander several tiles in and out.
 //
-// GAME RULES IT LEANS ON (docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md):
+// GAME RULES IT LEANS ON (docs/map-generators/game-rules-for-map-design.md):
 // - Water blocks walking until a colony can swim, so bridges are the only early routes.
 // - Resources block movement: divideUpPlayerLands keeps fields on the coast zones and stone in the
 //   interior, and the algae patch is kept off the bridges so it cannot choke one.

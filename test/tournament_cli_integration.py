@@ -52,11 +52,15 @@ def main():
         with (output/(name+'.log')).open('w') as log:
             result=subprocess.run(full,cwd=root,env=env,stdout=log,stderr=subprocess.STDOUT,timeout=180)
         assert result.returncode==expected,(name,result.returncode,(output/(name+'.log')).read_text()[-4000:])
-        value=json.loads((target/'result.json').read_text())
+        if not (target/'result.json').exists():
+            assert expected == 2 and not target.exists(), 'syntax errors must precede job output creation'
+            value={'schema_version':1,'status':'invalid_request'}
+        else:
+            value=json.loads((target/'result.json').read_text())
         records.append({'name':name,'command':full,'exit_code':result.returncode,'status':value['status']})
         return value,target
     if args.initial:
-        _,target=run('cross-platform',['--run-game','--load-game',str(Path(args.initial).resolve()),'--ticks',str(args.ticks),'--telemetry','checksums','--save','final'])
+        _,target=run('cross-platform',['game', 'run','--load-game',str(Path(args.initial).resolve()),'--ticks',str(args.ticks),'--telemetry','checksums','--save','final'])
         print(target/'game.replay.checksums');return
     # Linux FileManager used to assert for executable paths longer than 99 bytes.
     import shutil
@@ -65,20 +69,20 @@ def main():
     long_binary=long_dir/binary.name
     try:os.link(binary,long_binary)
     except OSError:shutil.copy2(binary,long_binary)
-    catalog=json.loads(subprocess.check_output([str(long_binary),'--headless-catalog'],cwd=root))
+    catalog=json.loads(subprocess.check_output([str(long_binary),'info', 'catalog', '--format', 'json'],cwd=root))
     long_binary.unlink()
 
     assert {a['name'] for a in catalog['ais']}=={'numbi','castor','warrush','econo','nicowar','cortex','maxima','cabino'}
     (output/'catalog.json').write_text(json.dumps(catalog,indent=2))
-    generated,map_dir=run('map',['--generate-map','--generator','15','--map-seed','42','--param','teams=2','--write-map','true','--rotations','2'])
+    generated,map_dir=run('map',['map', 'study','15','--seed','42','--set','teams=2','--write-map','--rotations','2'])
     assert catalog['map_report_version']==2 and catalog['generation_telemetry_version']==1
     report=generated['map_report']
     assert report['schema_version']==2 and report['report_type']=='map'
     assert report['generation']['telemetry']['enabled']
     assert report['generation']['telemetry']['records']
     native_report=output/'native-map-report.json'
-    subprocess.run([str(binary),'--generate-map','symmetric-arena','--seed','42','--teams','2',
-                    '--json',str(native_report)],cwd=root,check=True,stdout=subprocess.DEVNULL,
+    subprocess.run([str(binary),'map', 'generate','symmetric-arena','--seed','42','--teams','2',
+                    '--report-file',str(native_report)],cwd=root,check=True,stdout=subprocess.DEVNULL,
                    env=dict(os.environ,GLOB2_USER_DIR=str(output/'native-profile')))
     assert json.loads(native_report.read_text())==report, 'native and distributed report contracts diverged'
     assert generated['rotations_verified'] and generated['request']['teams']==2
@@ -88,16 +92,16 @@ def main():
     # the reload-idempotence or full team-rotation byte equality checks.
     for generator,seed in [(24,4143377922),(23,2306931438),(22,3110978615)]:
         rotated,directory=run(f'rotation-offset-{generator}',[
-            '--generate-map','--generator',str(generator),'--map-seed',str(seed),
-            '--param','width=7','--param','height=7','--param','teams=2',
-            '--param','workers=4','--candidates','0','--rotations','2','--write-map','true'])
+            'map', 'study',str(generator),'--seed',str(seed),
+            '--set','width=7','--set','height=7','--set','teams=2',
+            '--set','workers=4','--candidates','0','--rotations','2','--write-map'])
         assert rotated['rotations_verified'],(generator,seed)
         assert all((directory/f'map-r{rotation}.map.gz').is_file() for rotation in range(2))
-    invalid,_=run('invalid-generator',['--generate-map','--generator','15','--map-seed','42','--param','teams=0'],2)
+    invalid,_=run('invalid-generator',['map', 'study','15','--seed','42','--set','teams=0'],2)
     assert invalid['status']=='invalid_request'
     assert invalid['map_report']['report_type']=='generation_failure'
     assert invalid['map_report']['generation']['telemetry']['records']
-    base=['--run-game','--map-file',str(map_dir/'map-r0.map.gz'),'--player','cortex','--player','cortex',
+    base=['game', 'run','--map-file',str(map_dir/'map-r0.map.gz'),'--player','cortex','--player','cortex',
           '--game-seed','19','--ticks',str(args.ticks),'--telemetry','checksums']
     params=['--ai-param','0:swarmWorkerCap=4','--ai-param','1:swarmWorkerCap=7',
             '--ai-param','0:expandDebounceCycles=3','--ai-param','1:expandDebounceCycles=5']
@@ -108,7 +112,7 @@ def main():
     assert all('standard_statistics' in t and 'history' in t for t in value['teams'])
     original_ticks=tick_records(original/'game.replay.checksums')
     for name,save in [('initial-reload','initial.game.gz'),('continuation','checkpoint-512.game.gz')]:
-        restored,target=run(name,['--run-game','--load-game',str(original/save),'--ticks',str(args.ticks),'--telemetry','checksums','--save','final'],
+        restored,target=run(name,['game', 'run','--load-game',str(original/save),'--ticks',str(args.ticks),'--telemetry','checksums','--save','final'],
                             environment={'GLOB2_CORTEX_TUNING':'/nonexistent/ambient','GLOB2_MAXIMA_OVERRIDES':'invalid=1','GLOB2_CORTEX_POLICY':'ml'})
         trace=tick_records(target/'game.replay.checksums')
         assert trace and all(original_ticks[t]==record for t,record in trace.items()),name
@@ -120,36 +124,36 @@ def main():
     run('invalid-override',base+['--ai-param','0:tierMidDiv=0'],2)
     run('duplicate-override',base+['--ai-param','0:swarmWorkerCap=4','--ai-param','0:swarmWorkerCap=5'],2)
     assert value['resolved']['experiments']==[],value['resolved']
-    experiment,_=run('experiment',['--run-game','--map-file',str(map_dir/'map-r0.map.gz'),'--player','cortex','--player','cortex',
+    experiment,_=run('experiment',['game', 'run','--map-file',str(map_dir/'map-r0.map.gz'),'--player','cortex','--player','cortex',
                      '--game-seed','19','--ticks','64','--experiment','guard-area-balancing'])
     assert experiment['resolved']['experiments']==['guard-area-balancing'],experiment['resolved']
     unknown,_=run('unknown-experiment',base+['--experiment','retired-experiment'],2)
     assert unknown['status']=='invalid_request',unknown
-    run('experiment-on-save',['--run-game','--load-game',str(original/'initial.game.gz'),'--ticks',str(args.ticks),
+    run('experiment-on-save',['game', 'run','--load-game',str(original/'initial.game.gz'),'--ticks',str(args.ticks),
         '--experiment','guard-area-balancing'],2)
     ruled, directory=run('custom-rules', base+['--rule','noUpgrades=1','--rule','noHunger=1',
                                              '--rule','scarcity=3','--save','initial','--save','final'])
     assert ruled['resolved']['rules']['noUpgrades']==1
     assert ruled['resolved']['rules']['noHunger']==1 and ruled['resolved']['rules']['scarcity']==3
-    restored, target=run('custom-rules-reload',['--run-game','--load-game',str(directory/'initial.game.gz'),
+    restored, target=run('custom-rules-reload',['game', 'run','--load-game',str(directory/'initial.game.gz'),
                         '--ticks',str(args.ticks),'--telemetry','checksums'])
     assert restored['resolved']['rules']==ruled['resolved']['rules']
     assert tick_records(target/'game.replay.checksums')==tick_records(directory/'game.replay.checksums')
-    run('rules-on-save',['--run-game','--load-game',str(directory/'initial.game.gz'),
+    run('rules-on-save',['game', 'run','--load-game',str(directory/'initial.game.gz'),
         '--ticks',str(args.ticks),'--rule','noHunger=0'],2)
     run('invalid-rule-range',base+['--rule','scarcity=4'],2)
     run('unknown-rule',base+['--rule','retired-rule=1'],2)
     for name in ('maxima',):
-        config=['--run-game','--map-file',str(map_dir/'map-r0.map.gz'),'--player','maxima','--player','maxima',
+        config=['game', 'run','--map-file',str(map_dir/'map-r0.map.gz'),'--player','maxima','--player','maxima',
                 '--game-seed','23','--ticks',str(args.ticks),'--telemetry','checksums',
                 '--ai-param','0:staffing.new_inn_workers=3','--ai-param','1:staffing.new_inn_workers=5','--save','every:512']
         maximum,directory=run(name,config)
-        restored,target=run('maxima-continuation',['--run-game','--load-game',str(directory/'checkpoint-512.game.gz'),
+        restored,target=run('maxima-continuation',['game', 'run','--load-game',str(directory/'checkpoint-512.game.gz'),
                             '--ticks',str(args.ticks),'--telemetry','checksums'])
         first=tick_records(directory/'game.replay.checksums');second=tick_records(target/'game.replay.checksums')
         assert all(first[t]==record for t,record in second.items()),'Maxima configured continuation'
         assert maximum['players']==restored['players']
-    allied,target=run('allied-winners',['--run-game','--generator','15','--map-seed','76','--param','teams=4',
+    allied,target=run('allied-winners',['game', 'run','--generator','15','--map-seed','76','--set','teams=4',
                       '--game-seed','5','--player','econo','--player','econo','--player','econo','--player','econo',
                       '--alliance','1','--alliance','1','--alliance','1','--alliance','1','--ticks','256','--save','initial'])
     assert allied['winning_teams']==[0,1,2,3] and allied['winning_alliances']==[1],allied
@@ -160,10 +164,10 @@ def main():
     legacy_fixtures=Path(tempfile.mkdtemp(prefix='glob2-legacy-fixtures-'))
     legacy=legacy_fixtures/'version88.game'
     legacy.write_bytes(gzip.decompress((root/'test/fixtures/team-stats/version88.game.gz').read_bytes()))
-    run('empty-player-save',['--run-game','--load-game',str(legacy),'--ticks','10000'],2)
+    run('empty-player-save',['game', 'run','--load-game',str(legacy),'--ticks','10000'],2)
     legacy_v84=legacy_fixtures/'gd-small-2ai.game'
     legacy_v84.write_bytes(gzip.decompress((root/'games/gd-small-2ai.game.gz').read_bytes()))
-    run('legacy-v84',['--run-game','--load-game',str(legacy_v84),'--ticks','10000'])
+    run('legacy-v84',['game', 'run','--load-game',str(legacy_v84),'--ticks','10000'])
     (output/'verification.json').write_text(json.dumps({'passed':True,'cases':records,'ticks':args.ticks,'binary_sha256':hashlib.sha256(binary.read_bytes()).hexdigest(),'platform':platform.platform()},indent=2))
     print(f'PASS {len(records)} main-binary cases; retained artifacts: {output}')
 

@@ -19,10 +19,10 @@ class Order;
 //! Malformed or truncated replay bodies are rejected, including partial recordings.
 
 //! Oldest replay format (the VERSION_MINOR the replay was written with) that
-//! the reader still accepts. Version 152 moves world/story decisions onto
-//! private salted PCG32 streams, changing all earlier replay trajectories.
+//! the reader still accepts. Version 154 restores mature resource stock
+//! oscillation, changing earlier replay trajectories.
 //! Save compatibility has a separate floor in Version.h.
-static constexpr Uint16 REPLAY_MINIMUM_VERSION_MINOR = 152;
+static constexpr Uint16 REPLAY_MINIMUM_VERSION_MINOR = 154;
 
 /// This class is used for reading replays.
 /// The replay stream is kept open and read every time you do retrieveOrder.
@@ -59,6 +59,7 @@ public:
 
 	/// Returns the total number of steps
 	Uint32 getNumStepsTotal() const;
+    Uint32 formatVersion() const { return versionMinor; }
 
 	/// Returns true if the replay has finished
 	bool isFinished() const;

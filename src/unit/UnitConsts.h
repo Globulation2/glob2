@@ -38,7 +38,10 @@ enum Abilities
 //! up bucket the unit's walk/swim speed ratio, from water being cheaper than
 //! land to water being three times dearer (see Map::swimClass). The map keeps
 //! one gradient per class so units share routes at their quantized water cost.
-static constexpr int SWIM_CLASS_COUNT = 7;
+static constexpr int LEGACY_SWIM_CLASS_COUNT = 7;
+static constexpr int WATER_ONLY_CLASS = LEGACY_SWIM_CLASS_COUNT;
+static constexpr int SWIM_CLASS_COUNT = LEGACY_SWIM_CLASS_COUNT + 1;
+inline constexpr unsigned swimAccessVariant(int swim) { return swim==WATER_ONLY_CLASS?2u:unsigned(swim>0); }
 const int NB_MOVE=9;
 const int NB_ABILITY=17;
 

@@ -4,6 +4,7 @@
 #include "GlobalContainer.h"
 #include "TorusGeometry.h"
 #include <GraphicContext.h>
+#include <RenderDevice.h>
 #include <algorithm>
 #include <cmath>
 
@@ -41,9 +42,12 @@ void TorusView::reset()
 
 bool TorusView::available() const
 {
+    if (globalContainer->gfx && globalContainer->gfx->renderDevice())
+        return globalContainer->gfx->renderDevice()->capabilities().torus &&
+            !(failed && graphicsGeneration == globalContainer->gfx->getGLContextGeneration());
 #ifdef GLOB2_TORUS_OPENGL
     if (!globalContainer->gfx ||
-        !(globalContainer->gfx->getOptionFlags() & GAGCore::GraphicContext::USEGPU) ||
+        !globalContainer->gfx->rendererCapabilities().torus ||
         !SDL_GL_GetCurrentContext())
         return false;
     if (failed && graphicsGeneration == globalContainer->gfx->getGLContextGeneration())

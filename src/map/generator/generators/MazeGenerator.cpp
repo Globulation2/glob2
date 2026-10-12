@@ -38,7 +38,7 @@ using namespace MapGeneration;
 // reaches gets a pond as wide as a wall's water instead. Nothing else is ever drawn, so a passage
 // is simply ground no wall comes near, and its shape follows the cells'.
 //
-// WHY A MAZE PLAYS WELL (docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md). Walls are stone,
+// WHY A MAZE PLAYS WELL (docs/map-generators/game-rules-for-map-design.md). Walls are stone,
 // which can never be cleared, flanked by water, which ground units cannot cross until they swim,
 // so the maze's routes are permanent for the whole early game. A spanning tree means exactly one
 // route between any two cells, so every junction is a chokepoint worth holding, and each home is a

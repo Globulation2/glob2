@@ -147,13 +147,13 @@ export async function inviteRoutes(app: FastifyInstance, rooms: RoomService): Pr
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="robots" content="noindex" />`;
       const browserButton = pageHtml(reply)`<a
-        class="button${appFirst ? '' : ' primary'}"
+        class="btn button${appFirst ? '' : ' primary'}"
         id="play-browser"
         href="${browserLink}"
         >Play in browser</a
       >`;
       const appButton = pageHtml(reply)`<a
-        class="button${appFirst ? ' primary' : ''}"
+        class="btn button${appFirst ? ' primary' : ''}"
         id="open-app"
         href="${appLink}"
         aria-describedby="app-note"
@@ -205,7 +205,7 @@ export async function inviteRoutes(app: FastifyInstance, rooms: RoomService): Pr
                 : ''
             }
             <p>${pageText(reply, description)}</p>
-            <a class="button primary" href="${browserJoinLink(clientUrl, undefined)}"
+            <a class="btn button primary" href="${browserJoinLink(clientUrl, undefined)}"
               >${pageText(reply, closed ? 'Create your own room' : 'Play in browser')}</a
             >
             ${
@@ -216,7 +216,7 @@ export async function inviteRoutes(app: FastifyInstance, rooms: RoomService): Pr
                   </p>`
                 : ''
             }
-            <a class="button" href="${`${origin}/`}">Go to ${instanceName}</a>
+            <a class="btn button" href="${`${origin}/`}">Go to ${instanceName}</a>
           </div>`;
       return sendPage(reply, title, body, live ? 200 : 404, {
         head,

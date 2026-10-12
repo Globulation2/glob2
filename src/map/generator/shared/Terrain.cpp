@@ -34,7 +34,7 @@
 // generator only has to shape the field (islands, craters, a river), and the map always comes out
 // in the shares the player asked for, whatever the shape.
 //
-// GAME RULES IT LEANS ON (docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md):
+// GAME RULES IT LEANS ON (docs/map-generators/game-rules-for-map-design.md):
 // - Wheat and wood regrow only near water, so farmland is the band of grass just above the
 //   waterline, and its thickness is capped by whichever of water and grass is scarcer.
 // - Algae needs water with sand in reach, which the shallow rim of the deepest water gives; stone

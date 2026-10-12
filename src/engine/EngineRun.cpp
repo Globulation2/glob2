@@ -5,6 +5,7 @@
 #include <PerformanceTelemetry.h>
 #include <EventQueue.h>
 #include <ApplicationHost.h>
+#include <Toolkit.h>
 #include <FormatableString.h>
 
 #include "AINames.h"
@@ -187,14 +188,15 @@ void Engine::gatherAndAdvanceOrders(bool wasReadyLastTick)
 	if (wasReadyLastTick)
 	{
 		PERF_SCOPE_TIME(Replay);
-		Uint32 checksum = gui.game.checkSum(NULL, NULL, NULL);
+		const bool legacy152 = globalContainer->replayReader && globalContainer->replayReader->formatVersion() <= 152;
+		Uint32 checksum = gui.game.checkSum(NULL, NULL, NULL, false, legacy152);
 		net->advanceStep(checksum);
 
 		if (globalContainer->replayWriter) globalContainer->replayWriter->setCheckSum(checksum);
 
 		if (checksumSidecar)
         {
-			checksumSidecar->writeTick(gui.game.stepCounter, checksum, gui.game);
+			checksumSidecar->writeTick(gui.game.stepCounter, checksum, gui.game,legacy152);
             // Explicit verification only: joins private growth and hashes every
             // resource and pending proposal without slowing routine checksums.
             if (!headlessOutput.empty())
@@ -337,7 +339,8 @@ std::vector<unsigned> Engine::observationPlayers(bool wasReadyLastTick) const
 
 SimulationSnapshot::Handle Engine::openReadBoundary(std::span<const unsigned> players, bool paused, bool present)
 {
-    const auto presentation=present ? admitPresentation() : std::optional<SceneRequest>{};
+    const bool worldAdvanced=!retainedPresentation || retainedPresentation->world.tick!=gui.game.stepCounter;
+    const auto presentation=present ? admitPresentation(worldAdvanced) : std::optional<SceneRequest>{};
     const auto world=gui.game.captureReadBoundary(players,paused,
         (presentation ? presentationRequirements(*presentation) : 0)
         | (diagnostics ? diagnostics->observationRequirements(gui.game.stepCounter) : 0));
@@ -346,10 +349,10 @@ SimulationSnapshot::Handle Engine::openReadBoundary(std::span<const unsigned> pl
     return world;
 }
 
-std::optional<SceneRequest> Engine::admitPresentation()
+std::optional<SceneRequest> Engine::admitPresentation(bool worldAdvanced)
 {
     if (globalContainer->runNoX) return {};
-    auto request=runner ? runner->admitPresentation() : std::optional<SceneRequest>{};
+    auto request=runner ? runner->admitPresentation(worldAdvanced) : std::optional<SceneRequest>{};
     if (!runner) {
         if (!serialPresentation) serialPresentation=std::make_unique<ScenePreparation>(gui.game.map.computeExecutor());
         if (serialPresentation->readyToCapture()) request=gui.sceneRequest();
@@ -373,6 +376,9 @@ void Engine::publishPresentation(const SimulationSnapshot::Handle& world,SceneRe
 void Engine::refreshRetainedPresentation()
 {
     if (!retainedPresentation) return;
+    // If preparation overlapped a tick, leave the slot free for the next fresh
+    // boundary. Continuous camera input must not keep resubmitting that old world.
+    if (retainedPresentation->world.tick!=gui.game.stepCounter) return;
     auto request=admitPresentation();
     if (!request) return;
     // A view-only change uses the exact clock and order revision associated
@@ -904,6 +910,7 @@ void Engine::beginSession(Uint64 now)
 {
     if (session) throw std::logic_error("Engine session is already active");
     if (!net) throw std::logic_error("Engine session requires an initialized game");
+    globalContainer->configureGradientBackend();
 	if (!globalContainer->structuredHeadless || turn)
 		gui.game.map.configureCompute(resolveComputeThreadCount(globalContainer->computeThreads));
     sessionEndingTarget = globalContainer->automaticEndingSteps;
@@ -933,9 +940,7 @@ void Engine::beginSession(Uint64 now)
 				 << " players=" << gui.game.gameHeader.getNumberOfPlayers()
 				 << " teams=" << gui.game.mapHeader.getNumberOfTeams() << " renderer="
 				 << (globalContainer->runNoX ? "headless"
-					 : (globalContainer->gfx->getOptionFlags() & GraphicContext::USEGPU)
-						 ? "opengl"
-						 : "software")
+					 : GAGCore::rendererBackendName(globalContainer->gfx->backendSwitchStatus().active))
 				 << " width=" << (globalContainer->runNoX ? 0 : globalContainer->gfx->getW())
 				 << " height=" << (globalContainer->runNoX ? 0 : globalContainer->gfx->getH());
 #ifdef __VERSION__
@@ -1242,6 +1247,7 @@ void Engine::runOneGameSession(bool& doRunOnceAgain)
         // GLOB2_SIM_THREAD test switch and then only take scenes.
         for (;;)
         {
+            if (!globalContainer->runNoX) GAGCore::Toolkit::pollAssets();
             GAGCore::EventQueue events;
             if (!globalContainer->runNoX)
             {
@@ -1268,6 +1274,7 @@ void Engine::runOneGameSession(bool& doRunOnceAgain)
         return;
     }
     while (gui.isRunning) {
+        if (!globalContainer->runNoX) GAGCore::Toolkit::pollAssets();
         stepSession(SDL_GetTicks());
         if (globalContainer->runNoX || globalContainer->gfx->beginRenderFrame()) drawSession();
         if (!globalContainer->runNoX) {

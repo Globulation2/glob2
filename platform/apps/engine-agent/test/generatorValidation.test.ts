@@ -73,8 +73,8 @@ async function executor() {
     const path = (arg: string) => join(scratch, arg.slice('/job/'.length));
     let code = 0,
       stderr = '';
-    if (args.includes('--inspect-generator-package')) {
-      const bytes = await readFile(path(args[args.indexOf('--inspect-generator-package') + 1]!));
+    if (args.includes('inspect-package')) {
+      const bytes = await readFile(path(args[args.indexOf('inspect-package') + 1]!));
       const manifest = JSON.parse(bytes.toString()).manifest;
       if (manifest.id === 'author:test' && failure === 'import') {
         code = 1;
@@ -82,7 +82,7 @@ async function executor() {
       } else {
         await writeFile(path(args[args.indexOf('--output') + 1]!), bytes);
         await writeFile(
-          path(args[args.indexOf('--json') + 1]!),
+          path(args[args.indexOf('--report-file') + 1]!),
           JSON.stringify({
             ...manifest,
             description: '',
@@ -91,7 +91,7 @@ async function executor() {
           }),
         );
       }
-    } else if (args.includes('--generate-map')) {
+    } else if (args.includes('study')) {
       const out = path(args[args.indexOf('--output-dir') + 1]!);
       const probe = out.endsWith('/probe');
       if (!probe && failure === 'isolation')
@@ -105,7 +105,7 @@ async function executor() {
         };
       if (!probe && failure === 'timeout')
         return { code: 1, signal: null, timedOut: true, ms: 120000, stdout: '', stderr: '' };
-      const seed = Number(args[args.indexOf('--map-seed') + 1]);
+      const seed = Number(args[args.indexOf('--seed') + 1]);
       const refused = !probe && seed === 20 && failure === 'refusal';
       const invalid = !probe && failure === 'invalid_world';
       await writeFile(
@@ -123,7 +123,7 @@ async function executor() {
         join(out, 'map-r0.map.gz'),
         gzipSync(Buffer.from(!repeatable && out.includes('repeat-') ? 'different' : 'world')),
       );
-    } else if (args.includes('--preview-map')) {
+    } else if (args.includes('preview')) {
       await writeFile(path(args[args.indexOf('--output') + 1]!), Buffer.from('png'));
     }
     return { code, signal: null, timedOut: false, ms: 1, stdout: '', stderr };

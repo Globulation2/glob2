@@ -74,8 +74,8 @@ namespace
 		// The kernel before the low-level rewrite, kept verbatim as a differential oracle.
 		void legacyPropagateGradient(Uint16 *gradient, int swimClass, int maxCost = GRADIENT_COST_LIMIT) const
 		{
-			constexpr int WATER_STEP[SWIM_CLASS_COUNT] = { 0, 5, 7, 10, 13, 20, 30 };
-			constexpr int MAX_STEP = WATER_STEP[SWIM_CLASS_COUNT - 1] * GRADIENT_DIAGONAL_STEP / GRADIENT_STEP;
+			constexpr int WATER_STEP[SWIM_CLASS_COUNT] = { 0, 5, 7, 10, 13, 20, 30, GRADIENT_STEP };
+			constexpr int MAX_STEP = WATER_STEP[LEGACY_SWIM_CLASS_COUNT - 1] * GRADIENT_DIAGONAL_STEP / GRADIENT_STEP;
 			constexpr int BUCKETS = MAX_STEP + 1;
 			constexpr int COST_LIMIT = GRADIENT_AT_GOAL - GRADIENT_UNREACHABLE - 1 - MAX_STEP;
 			static std::vector<int> buckets[BUCKETS];
@@ -395,19 +395,22 @@ void GradientTest::testSwimClassFromSpeeds()
 	// A slow walker that swims fast prefers water; a fast walker avoids it.
 	CHECK(Map::swimClass(16, 30) < Map::SWIM_CLASS_EVEN);
 	CHECK(Map::swimClass(30, 10) > Map::SWIM_CLASS_EVEN);
-	CHECK_EQ(SWIM_CLASS_COUNT - 1, Map::swimClass(30, 10));
+	CHECK_EQ(LEGACY_SWIM_CLASS_COUNT - 1, Map::swimClass(30, 10));
+	CHECK_EQ(WATER_ONLY_CLASS, Map::swimClass(0, 16));
 }
 
 void GradientTest::testRandomFieldsAgainstReference()
 {
 	std::mt19937 random(184);
-	constexpr int waterCosts[] = {0, 5, 7, 10, 13, 20, 30};
+	constexpr int waterCosts[] = {0, 5, 7, 10, 13, 20, 30, 10};
+	static_assert(std::size(waterCosts) == SWIM_CLASS_COUNT);
 	for (int trial = 0; trial < 700; ++trial)
 	{
 		// Include one-cell axes, rectangular maps and all movement classes.
 		const int width = 1 << (trial % 6);
 		const int height = 1 << ((trial / 6) % 6);
 		const int swimClass = trial % SWIM_CLASS_COUNT;
+		CAPTURE(trial); CAPTURE(swimClass);
 		GrassMap map(trial % 6, (trial / 6) % 6);
 		auto input = blank(map);
 		for (size_t i = 0; i < map.cells(); ++i)
@@ -419,7 +422,8 @@ void GradientTest::testRandomFieldsAgainstReference()
 			water[i] = map.terrainPropertiesAt(i).swimmable;
 		for (size_t i = 0; i < map.cells(); ++i)
 		{
-			if (random() % 4 == 0 || (water[i] && swimClass == 0))
+			if (random() % 4 == 0 || (water[i] && swimClass == 0) ||
+				(swimClass == WATER_ONLY_CLASS && !water[i]))
 				input[i] = GRADIENT_FORBIDDEN;
 			else if (trial % 10 != 0 && random() % 12 == 0)
 				input[i] = GRADIENT_AT_GOAL - random() % 43;

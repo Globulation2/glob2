@@ -18,7 +18,7 @@ async function referenceTrace(page) {
       preRun:[()=>{ENV.GLOB2_REPLAY_PATH='/tmp/reference.replay';ENV.GLOB2_CHECKSUM_SIDECAR='1';
         FS.writeFile('/tmp/initial.game.gz',Uint8Array.from(atob('${fs.readFileSync(fixture).toString('base64')}'),c=>c.charCodeAt(0)));}],
       async onRuntimeInitialized(){
-        const code=await Module.start(['--nox','/tmp/initial.game.gz','1500','1','--compute-threads','1']);
+        const code=await Module.start(['game', 'repeat','/tmp/initial.game.gz', '--ticks', '1500', '--runs', '1','--compute-threads','1']);
         if(code!==0)throw new Error('Reference engine exited: '+code);
         const bytes=FS.readFile('/tmp/reference.replay.checksums');let binary='';
         for(let i=0;i<bytes.length;i+=32768)binary+=String.fromCharCode(...bytes.subarray(i,i+32768));

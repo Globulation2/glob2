@@ -13,6 +13,7 @@ class PreviewImages;
 }
 #include "QuickMatchScreen.h"
 #include "ui/FrontendUI.h"
+#include "ui/DiscordCommunity.h"
 #include "ui/MapPictures.h"
 #include <ScreenStack.h>
 #include <functional>
@@ -134,6 +135,7 @@ class OnlineHubScreen : public Glob2UI::Screen
 	void onEscape() override;
 
   private:
+	Glob2UI::DiscordCommunity community;
 	GAGGUI::ScreenStack &screens;
 	Model data;
 	bool previewing = false;

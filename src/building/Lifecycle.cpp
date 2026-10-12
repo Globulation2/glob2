@@ -100,13 +100,14 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 
 	// preferred parameters
 
+	configureProductionState();
 	resetProduction();
 	totalRatio = 0;
-	for (int i = 0; i < NB_UNIT_TYPE; ++i)
+	for (unsigned i = 0; i < productionTypeCount(); ++i)
 	{
-		ratio[i] = type->semantics.production.initialRatios[i];
-		totalRatio += ratio[i];
-		percentUsed[i] = 0;
+		productionRatio(i) = type->semantics.production.initialRatios[i];
+		totalRatio += productionRatio(i);
+		productionUsed(i) = 0;
 	}
 
 	receiveMaterialMask=0;
@@ -117,6 +118,7 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 	bullets=0;
 
 	seenByMask=0;
+
 
 	inCanFeedUnit=LS_UNKNOWN;
 	inCanHealUnit=LS_UNKNOWN;
@@ -152,8 +154,8 @@ BuildingRoute Building::resolveRoute(BuildingRoute route) const
 	if (route != BuildingRoute::Automatic) return route;
 	if (!type->semantics.occupiesGround)
 	{
-		if (type->zonable[WORKER]) return BuildingRoute::Clearing;
-		if (type->zonable[WARRIOR]) return BuildingRoute::Combat;
+		if (runtime->attractsRole(0)) return BuildingRoute::Clearing;
+		if (runtime->attractsRole(2)) return BuildingRoute::Combat;
 	}
 	return BuildingRoute::Footprint;
 }
@@ -360,6 +362,7 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 	if (typeNum < 0 || static_cast<size_t>(typeNum) >= types->size())
 		throw std::runtime_error("Invalid building type");
 	bindType(typeNum,types);
+	configureProductionState();
 	assert(type);
 	updateMaterialsPointer();
 
@@ -377,7 +380,7 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 	owner->prestige += type->prestige;
 
 	minWorkerLevelToFlag = 0;
-	explorersRequireBombing = type->zonable[EXPLORER] && minLevelToFlag != 0;
+	explorersRequireBombing = runtime->attractsRole(1) && minLevelToFlag != 0;
 	siteCompletionPending = false;
 	productionUnit = -1;
 	if (versionMinor >= FILE_FORMAT_VERSION_BUILDING_CATALOG)
@@ -420,7 +423,7 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 				throw std::runtime_error("Invalid saved construction budget");
 		}
 		productionUnit = stream->readSint32("productionUnit");
-		if (productionUnit < -1 || productionUnit >= NB_UNIT_TYPE)
+		if (productionUnit < -1 || (productionUnit >= 0 && unsigned(productionUnit) >= productionTypeCount()))
 			throw std::runtime_error("Invalid saved production recipe");
 	}
 	if (versionMinor < FILE_FORMAT_VERSION_BUILDING_CATALOG && constructionResultState != NO_CONSTRUCTION)
@@ -454,6 +457,18 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 		areaFunded=funded;
 		areaFundingTeam=Sint8(fundingTeam);
 	}
+
+    if (versionMinor>=FILE_FORMAT_VERSION_UNIT_CATALOG) {
+        const unsigned count=stream->readUint32("additionalProductionTypes");
+        if (count!=extraProductionRatios.size()) throw std::runtime_error("Building production state does not match unit catalog");
+        for (unsigned i=0;i<count;++i) {
+            stream->readEnterSection(i);
+            extraProductionRatios[i]=stream->readSint32("ratio"); extraProductionUsed[i]=stream->readSint32("used");
+            extraConstructionOriginRatios[i]=stream->readSint32("originRatio");
+            if (extraProductionRatios[i]<0 || extraProductionRatios[i]>32767 || extraProductionUsed[i]<0 || extraProductionUsed[i]>32767 || extraConstructionOriginRatios[i]<0 || extraConstructionOriginRatios[i]>32767) throw std::runtime_error("Invalid additional production preference");
+            stream->readLeaveSection();
+        }
+    }
 
 	inCanFeedUnit=LS_UNKNOWN;
 	inCanHealUnit=LS_UNKNOWN;
@@ -576,6 +591,13 @@ void Building::save(GAGCore::OutputStream *stream)
 	stream->writeSint32(areaFundingType, "areaFundingType");
 	stream->writeUint32(areaFundingTick, "areaFundingTick");
 	stream->writeSint32(areaFundingTeam, "areaFundingTeam");
+    stream->writeUint32(extraProductionRatios.size(),"additionalProductionTypes");
+    for (unsigned i=0;i<extraProductionRatios.size();++i) {
+        stream->writeEnterSection(i);
+        stream->writeSint32(extraProductionRatios[i],"ratio"); stream->writeSint32(extraProductionUsed[i],"used");
+        stream->writeSint32(extraConstructionOriginRatios[i],"originRatio"); stream->writeLeaveSection();
+    }
+
 
 	stream->writeLeaveSection();
 }
@@ -785,4 +807,10 @@ void Building::bindType(Sint32 id, BuildingsTypes* catalog)
     type=catalog->get(id);
     runtime=catalog->getRuntime(id);
     owner->game->areaEffects.changed(gid);
+}
+
+void Building::configureProductionState()
+{
+    const auto count=type->semantics.production.recipes.size()-NB_UNIT_TYPE;
+    extraProductionRatios.resize(count); extraProductionUsed.resize(count); extraConstructionOriginRatios.resize(count);
 }

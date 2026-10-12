@@ -5996,3 +5996,39 @@ Dosya seçimi kullanılamıyor.
 Paket dışa aktarma kullanılamıyor.
 [stat band area upkeep]
 Alan bakımı
+[outcome reason eliminated]
+Koloni yok oldu.
+[outcome reason opponents defeated]
+Tüm rakipler yenildi.
+[outcome reason ally won]
+Müttefik bir koloni kazandı.
+[outcome reason prestige]
+Prestij hedefine ulaşıldı.
+[outcome reason scenario]
+Senaryo kuralları sonucu belirledi.
+[outcome reason timer]
+Süre sınırına ulaşıldı.
+[outcome reason probability]
+Kazanma olasılığı eşiğine ulaşıldı.
+[Destroy this building?]
+Bu bina yıkılsın mı?
+[Discord community]
+Discord community
+[Globulation 2 Discord]
+Globulation 2 Discord
+[discord community intro]
+Find opponents, ask for help, and share your maps with the Globulation 2 community.
+[discord opens externally]
+Join our Discord server. This opens Discord or your browser.
+[Join Discord]
+Join Discord
+[Copy link]
+Copy link
+[discord opened]
+Discord opened. You can return to the game at any time.
+[discord open failed]
+Could not open Discord. Copy the invitation link and open it in your browser.
+[discord link copied]
+Invitation link copied.
+[discord copy failed]
+Could not copy the link. Select the invitation above to copy it manually.

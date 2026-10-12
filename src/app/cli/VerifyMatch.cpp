@@ -23,6 +23,7 @@
 #include "GlobalContainer.h"
 #include "ComputeThreads.h"
 #include "Headless.h"
+#include "CommandLine.h"
 #include "ReplayWriter.h"
 #include "Sha256.h"
 #include "SimVersion.h"
@@ -371,35 +372,16 @@ int MatchVerifier::run(const std::string& recordPath, const std::string& mapPath
 	return 0;
 }
 
-int runVerifyMatch(int argc, char** argv)
+int runVerifyMatch(const Cli::Request &request)
 {
 	fs::path output;
 	try
 	{
-		if (argc < 3)
-			throw Usage("usage: --verify-match <record> --map <file> --out <dir> [--profile <name>] [--compute-threads auto|N]");
-		const std::string record = argv[2];
-		std::string map, out, profile = "glob2-verify";
-		unsigned computeThreads = 0;
-		for (int i = 3; i < argc; i += 2)
-		{
-			const std::string key = argv[i];
-			if (isRemovedComputeOption(key)) throw Usage(key + " has been removed; use --compute-threads auto|N");
-			if (i + 1 >= argc)
-				throw Usage("missing value for " + key);
-			if (key == "--map")
-				map = argv[i + 1];
-			else if (key == "--out" || key == "--output-dir")
-				out = argv[i + 1];
-			else if (key == "--compute-threads")
-				computeThreads = parseComputeThreadCount(argv[i + 1]);
-			else if (key == "--profile")
-				profile = argv[i + 1];
-			else
-				throw Usage("unknown option: " + key);
-		}
-		if (map.empty() || out.empty())
-			throw Usage("--map and --out are required");
+		const auto record = request.positionals.at(0);
+        const auto map = request.get("--map-file");
+        const auto out = request.get("--output-dir");
+        const auto profile = request.get("--profile");
+        const auto computeThreads = parseComputeThreadCount(request.get("--compute-threads"));
 		output = fs::absolute(out);
 		fs::create_directories(output / "profile");
 		// Both profile variables, as the other headless commands set them (#554).

@@ -1,0 +1,66 @@
+# Who Ate the Map?
+
+A novelty island with rounded biscuit bites missing from its coast, a patchy wooded
+heartland, ponds and grass clearings. Positions are intentionally unequal. Bites can
+leave peninsulas, narrow approaches and detached islands. Colonies on different
+islands must build their own swimming pools; no extra buildings are granted.
+
+## Controls and supported maps
+
+`who-ate-the-map` (numeric ID 66) supports sides of 128, 256 and 512 tiles,
+with aspect ratios up to 2:1. Maps with a 128-tile side support one to four
+colonies; larger maps support one to eight.
+
+`appetite` is 0 **A Little Nibble**, 1 **Hungry** (default), or 2 **Who Ate the Map?**.
+The first two keep starting colonies on connected land. The last permits large
+neighbouring bites to join and detach pieces; separation is seed-dependent.
+
+The standard wheat, wood, stone, algae and fruit amounts scale ambient deposits.
+Opening wheat, wood and a small quarry are guarantees independent of those settings.
+Wood abundance controls finite inland reserves as well as renewable woods near
+water. Dense resources are cleared where necessary to keep starts usable.
+
+The outer shape, bites and ponds depend on dimensions, seed and Appetite, not on
+resource amounts or colony count. Starts are selected from the finished landscape;
+settlement never stamps home islands or edits the coastline. Invalid geometry is
+reported, not repaired by filling bite marks or constructing bridges.
+
+## Construction and play
+
+A few low-frequency harmonics shape the island. Each bite combines a broad jaw
+with round tooth cuts along its curved front. Teeth retain their proportions on
+rectangular maps. Shallow, deep and slightly lopsided profiles, uneven placements
+and varying tooth sizes avoid a repeated mechanical stamp. Narrow terminal slivers
+and tiny detached specks are removed before beaches.
+
+Ponds are scattered in the interior, keeping away from the outer coast. Correlated
+woodland patches leave grass clearings; dry inland wood provides finite reserves.
+Colonies occupy roomy fertile sites, separated by land travel where possible.
+The site search requires connected local capacity for both farms and buildings.
+Detached starting islands additionally need at least 1,200 pure-grass tiles, 400
+inland service tiles and ten separate 4×4 service footprints with two-tile spacing
+per colony. At least two service footprints per colony must remain clear after
+settlement. Smaller fragments remain scenery. These budgets prevent narrow fertile
+crescents from filling with crops before their colonies can build local pools.
+Each colony gets nearby crops and construction room, including space for its own
+pool. Deposit-only repairs open routes between colonies sharing an island and give
+each colony an approach to its shore. They never bridge the sea.
+
+No simulation, growth, save-format or network rules are changed. Generated maps use
+the existing serializer and ordinary terrain/resource behavior. Wood can regrow near
+water, so an opening route is not a promise of permanent unrestricted movement.
+
+## Verification
+
+The source definition and its request/world validators define accepted settings and
+finished-map guarantees. Run the focused `MapGeneratorDefaults` contracts and the
+platform golden rows, inspect small/large rectangles and resource extremes, then
+check populated games with complete seat rotations. See [generator verification](verification.md)
+for commands, revisions, save/replay checks and evidence requirements.
+
+## Implementation source
+
+[WhoAteTheMapGenerator.cpp](../../src/map/generator/generators/WhoAteTheMapGenerator.cpp) owns this landscape's construction, controls and validation.
+See the [catalog](catalog.md) for its stable command and legacy IDs.
+
+Related: [map generators](README.md).

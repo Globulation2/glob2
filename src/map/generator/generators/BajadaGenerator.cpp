@@ -47,7 +47,7 @@ using namespace MapGeneration;
 // lengths, each ringed by a salt flat of sand and a meadow beyond it, with salt-flat crossings
 // between the lakes.
 //
-// WHY IT PLAYS WELL (docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md). Every colony starts beside a
+// WHY IT PLAYS WELL (docs/map-generators/game-rules-for-map-design.md). Every colony starts beside a
 // fan of its own: a town on the dry gravel of the fan's shoulder, sealed from crops by a ring of sand
 // corners, a garden with its kit and a pond between the ring and the streams, and the range's stone a
 // short walk away. Crops grow only where the

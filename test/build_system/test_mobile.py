@@ -341,6 +341,46 @@ class EmulatorEnvironmentTests(unittest.TestCase):
 
 
 class IOSSmokeFailureTests(unittest.TestCase):
+    def test_unified_log_readiness_is_scoped_to_each_launched_process(self):
+        import json
+        sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'mobile'))
+        import ios_smoke
+        root = Path(__file__).resolve().parents[2]
+        scratch = root/'build/test-profiles'
+        scratch.mkdir(parents=True, exist_ok=True)
+        with tempfile.TemporaryDirectory(dir=scratch) as temporary:
+            output = Path(temporary)/'diagnostics'
+            launch_count = 0
+            predicates = []
+            def command(argv, **kwargs):
+                nonlocal launch_count
+                arguments = argv[4:]
+                if arguments[:2] == ['list', 'devices']:
+                    return json.dumps({'devices': {'runtime': [{'udid': 'owned-test', 'name': 'Glob2-Mobile', 'state': 'Booted'}]}})
+                if arguments[0] == 'launch' and arguments[-1] == ios_smoke.PACKAGE:
+                    launch_count += 1
+                    return ios_smoke.PACKAGE + ': ' + ('123' if launch_count < 3 else '456')
+                if arguments[:4] == ['spawn', 'owned-test', 'log', 'show']:
+                    self.assertIn('--start', arguments)
+                    predicates.append(arguments[-1])
+                    return 'Glob2 screen ready: 14MainMenuScreen\n'
+                return ''
+            with patch.object(sys, 'argv', ['ios_smoke.py', '--device', 'owned-test', '--output', str(output)]), patch.object(ios_smoke.subprocess, 'check_output', side_effect=command), patch.object(ios_smoke.time, 'sleep'):
+                ios_smoke.main()
+            self.assertEqual(predicates, [
+                'processIdentifier == 123 AND eventMessage CONTAINS "Glob2 screen ready:"',
+                'processIdentifier == 456 AND eventMessage CONTAINS "Glob2 screen ready:"'])
+            result = json.loads((output/'result.json').read_text())
+            self.assertTrue(result['passed'])
+            self.assertEqual(len(result['checks']), 3)
+            self.assertTrue((output/'startup-readiness-system.log').exists())
+
+    def test_main_menu_readiness_requires_one_complete_message(self):
+        sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'mobile'))
+        import ios_smoke
+        self.assertFalse(ios_smoke.main_menu_ready('Glob2 screen ready: SettingsScreen\nOld MainMenuScreen'))
+        self.assertTrue(ios_smoke.main_menu_ready('Glob2 screen ready: 14MainMenuScreen'))
+
     def test_launch_timeout_survives_failed_diagnostics_without_stopping_unstarted_apps(self):
         import json
         import subprocess
@@ -406,3 +446,32 @@ class AndroidSymbolTests(unittest.TestCase):
             notes='Build ID: '+('a'*40)+'\n'
             with patch('subprocess.check_output',side_effect=[notes,notes]):
                 self.assertEqual(verify_android_archive_symbols(bundle,library,member,'readelf'),'a'*40)
+
+
+class IOSNumericGuardTests(unittest.TestCase):
+    def test_ios_guard_uses_its_own_compiled_objects_without_android_mapping(self):
+        import ast
+        from unittest.mock import Mock
+        root = Path(__file__).resolve().parents[2]
+        tree = ast.parse((root / 'scons/mobile_build.py').read_text())
+        branch = next(node for node in ast.walk(tree) if isinstance(node, ast.If)
+                      and ast.unparse(node.test) == "identity['target'] == 'android'"
+                      and any(isinstance(n, ast.Assign) and any(isinstance(t, ast.Name) and t.id == 'by_source' for t in n.targets) for n in node.body))
+        guard = next(node for node in branch.orelse if isinstance(node, ast.Expr)
+                     and isinstance(node.value, ast.Call) and isinstance(node.value.func, ast.Name)
+                     and node.value.func.id == 'numeric_guard')
+        predicate = next(node for node in ast.parse((root / 'scons/javascript.py').read_text()).body
+                         if isinstance(node, ast.FunctionDef) and node.name == 'guarded_numeric_source')
+        namespace = {}
+        exec(compile(ast.Module(body=[predicate], type_ignores=[]), '<numeric-selection>', 'exec'), namespace)
+        files = ['src/app/Main.cpp', 'src/scripting/javascript/Runtime.cpp',
+                 'mobile/ios/Documents.mm', 'src/ai/javascript/AIJavaScript.cpp',
+                 'src/map/generator/javascript/ToolkitBinding.cpp']
+        objects = [object() for _ in files]
+        script = object()
+        callback = Mock()
+        strict = object()
+        namespace.update(files=files, objects=objects + [script], strict=strict, numeric_guard=callback)
+        # No Android-only by_source map is available in an iOS graph.
+        exec(compile(ast.Module(body=[guard], type_ignores=[]), '<ios-guard>', 'exec'), namespace)
+        callback.assert_called_once_with(strict, [objects[1], objects[3], objects[4]])

@@ -1,6 +1,6 @@
 // Extra rows for the browser smoke test on top of the history seed: catalog
 // maps with real engine-rendered previews (fixtures/maps, made with
-// `glob2 --generate-map <generator> --preview <png> --preview-size 384`), and
+// `glob2 map generate <generator> --preview <png> --preview-size 384`), and
 // an open room so the invite page (/j/<code>) has something to join.
 import { randomBytes } from 'node:crypto';
 import { readFileSync } from 'node:fs';

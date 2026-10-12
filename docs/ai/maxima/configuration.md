@@ -62,3 +62,5 @@ All clients simulating a new multiplayer match must use identical resolved
 settings. Resuming a saved game uses its stored strategy rather than the local
 files. `GLOB2_MAXIMA_TELEMETRY=1` emits `MAXIMA_TELEMETRY` decision records;
 [AI telemetry](../telemetry.md) describes the common telemetry interface.
+
+Related: [AI documentation](../README.md).

@@ -82,6 +82,16 @@ describe('building assembly', () => {
     expect(result.variants[0]!.previous).toBe(result.variants[1]!.key);
     expect(result.namespace).toBe(base.namespace);
   });
+  it('rejects material-cost construction sites without worker slots', () => {
+    const { base, plan } = fixture();
+    base.variants[0]!.properties['isBuildingSite'] = 1;
+    base.variants[0]!.semantics = { constructionCost: { wood: 20 }, assignmentLimit: 0 };
+    expect(() => assemble(base, plan, {})).toThrow(
+      'construction costs require a positive assignmentLimit',
+    );
+    plan.entries[0]!.semanticsJson = '{"assignmentLimit":6}';
+    expect(() => assemble(base, plan, {})).not.toThrow();
+  });
   it('rejects dangling links, new property-only variants and recursive prototype keys', () => {
     const { base, plan } = fixture();
     plan.entries[0]!.next = 'missing';

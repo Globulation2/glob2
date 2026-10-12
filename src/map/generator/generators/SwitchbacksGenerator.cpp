@@ -56,7 +56,7 @@ using namespace MapGeneration;
 // farms filling a rectangle's ends. The design is a pure function of the request, so validateWorld
 // rebuilds it and checks the finished world.
 //
-// GAME RULES BEHIND IT (docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md): stone can never be cleared,
+// GAME RULES BEHIND IT (docs/map-generators/game-rules-for-map-design.md): stone can never be cleared,
 // so a mountain's walls are permanent and its trail is the only door; a tower scans round its footprint
 // with no line of sight (BuildingUtils::turretScanTile), which is what makes a thin wall between two legs
 // a firing line; grass may never touch water, so a coast wall always stands a tile in from its sand lane;

@@ -132,7 +132,7 @@ def prepare(request, output):
         folder.mkdir()
         command = [
             str(binary),
-            "--generate-map",
+            "map", "generate",
             identifier,
             "--width",
             str(width),
@@ -144,7 +144,7 @@ def prepare(request, output):
             "101",
             "--map-image",
             str(folder / "tile.png"),
-            "--json",
+            "--report-file",
             str(folder / "report.json"),
         ]
         result = subprocess.run(

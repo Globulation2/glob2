@@ -3,7 +3,7 @@
 
 #include <string>
 
-// The platform's REST paths (platform/apps/api, docs/multiplayer/platform.md),
+// The platform's REST paths (platform/apps/api, docs/multiplayer/contracts.md),
 // built in one place: the /api/v1 prefix and the encoding of path segments
 // live here, not in screens. Every function returns a path relative to the
 // instance origin, for PlatformClient::rest()/restRaw() or apiUrl().

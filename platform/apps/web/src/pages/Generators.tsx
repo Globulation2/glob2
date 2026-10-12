@@ -540,7 +540,7 @@ export function GeneratorPublish({ id }: { id?: string }) {
           source={'Upload the portable JSON exported from Settings → Map generators. {slot0}'}
           slots={{
             slot0: (
-              <a href="https://github.com/Globulation2/glob2/blob/master/docs/map-generators/JAVASCRIPT.md">
+              <a href="https://github.com/Globulation2/glob2/blob/master/docs/map-generators/javascript.md">
                 {t('Authoring guide')}
               </a>
             ),

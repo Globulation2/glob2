@@ -2883,5 +2883,9 @@
   "Presentation": "外觀",
   "{value0} source": "{value0} 的來源資料",
   "{value0} decor source": "{value0} 的裝飾來源資料",
-  "Your draft changed while the design was loading. Your changes were kept; try opening the design again.": "載入設計時，你的草稿發生了變更。你的變更已保留；請嘗試重新開啟設計。"
+  "Your draft changed while the design was loading. Your changes were kept; try opening the design again.": "載入設計時，你的草稿發生了變更。你的變更已保留；請嘗試重新開啟設計。",
+  "More filters": "更多篩選條件",
+  "Clear filters": "清除篩選條件",
+  "No results match these filters.": "沒有符合這些篩選條件的結果。",
+  "Results: {value0}": "結果: {value0}"
 }

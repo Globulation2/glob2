@@ -35,7 +35,7 @@ using namespace MapGeneration;
 // up, then swim" map: nobody can reach anybody on foot, so the early game is pure economy and the
 // first contact comes when someone builds a swimming pool.
 //
-// GAME RULES IT LEANS ON (docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md):
+// GAME RULES IT LEANS ON (docs/map-generators/game-rules-for-map-design.md):
 // - Water blocks walking until a colony can swim, so separate islands delay all contact.
 // - Grass may not touch water: Map::layBeaches rings every island in sand, and spreadBeaches can
 //   widen that ring. Sand is walkable but unbuildable, so wide beaches shrink a colony's room.

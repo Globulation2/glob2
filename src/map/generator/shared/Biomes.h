@@ -17,7 +17,7 @@ namespace MapGeneration
 //
 // The worth is an estimate for sharing out ground, not a measurement: it adds up what each layer is
 // usually worth to a young colony per tile, from the start scorer's weights (StartQuality.h). Tune a
-// map's kits with the fairness tournament (docs/map-generators/FAIRNESS_TOURNAMENT.md), and measure
+// map's kits with the fairness tournament (docs/map-generators/fairness-tournament.md), and measure
 // the finished starts with scoreStarts, before trusting it.
 
 struct BiomeKit

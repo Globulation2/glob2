@@ -23,9 +23,9 @@ def main():
     output = Path(temporary.name) if temporary else args.output.resolve()
     output.mkdir(parents=True, exist_ok=True)
     fixture = output / 'fixture'
-    execute(baseline, ['--generator', '15', '--map-seed', '4242', '--param', 'width=7', '--param', 'height=7', '--param', 'teams=4', '--game-seed', '19', '--player', 'maxima', '--player', 'cortex', '--player', 'nicowar', '--player', 'maxima', '--ticks', '1', '--save', 'initial'], fixture)
+    execute(baseline, ['--generator', '15', '--map-seed', '4242', '--set', 'width=7', '--set', 'height=7', '--set', 'teams=4', '--game-seed', '19', '--player', 'maxima', '--player', 'cortex', '--player', 'nicowar', '--player', 'maxima', '--ticks', '1', '--save', 'initial'], fixture)
     initial = str(fixture / 'initial.game')
-    common = ['--load-game', initial, '--ticks', '1024', '--telemetry', 'checksums', '--replay', 'true', '--save', 'final']
+    common = ['--load-game', initial, '--ticks', '1024', '--telemetry', 'checksums', '--write-replay', '--save', 'final']
     references = {}
     counts = (1, 2, 4, 8, 'auto')
     for label, exe, extra in [('baseline', baseline, ['--compute-threads', '1']),
@@ -77,7 +77,7 @@ def main():
         for ai in players: setup += ['--player', ai]
         execute(binary, setup + ['--ticks', '1', '--save', 'initial'], fixture)
         common = ['--load-game', str(fixture / 'initial.game.gz'),
-                  '--ticks', '1024', '--telemetry', 'checksums', '--replay', 'true',
+                  '--ticks', '1024', '--telemetry', 'checksums', '--write-replay',
                   '--save', 'final']
         reference = None
         for n in counts:

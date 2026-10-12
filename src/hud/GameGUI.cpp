@@ -19,6 +19,7 @@
 #include "online/SkinDownloads.h"
 #include "render/ColonySkinPreview.h"
 #include "GameGUITouch.h"
+#include "HudUnitConversionIcon.h"
 #include "GameGUIDialog.h"
 #include "GameGUIInternal.h"
 #include "LoadSaveDialog.h"
@@ -47,6 +48,10 @@ GameGUI::GameGUI(bool persistPreferences)
 	         128, //height
 	         Minimap::ShowFOW) // minimap mode
 {
+	// Headless clients may consume simulation events before the full GUI init.
+	selectionMode = NO_SELECTION;
+	inGameMenu = IGM_NONE;
+	displayMode = CONSTRUCTION_VIEW;
 	this->persistPreferences = persistPreferences;
 }
 
@@ -75,7 +80,6 @@ void GameGUI::requestPause(bool pause)
 
 GameGUI::~GameGUI()
 {
-	if (!globalContainer->runNoX) Sprite::requestHighResolution(false);
 	for (ParticleSet::iterator it = particles.begin(); it != particles.end(); ++it)
 		delete *it;
 	if (persistPreferences && globalContainer->settings.rememberUnit)
@@ -93,11 +97,13 @@ std::array<Sint32, NB_UNIT_TYPE> GameGUI::displayedRatio(const Building& b) cons
 
 void GameGUI::init()
 {
+    pendingSettings = false;
 	torusView.reset();
 	torusPointerDown = false;
 	camera=MapCamera();zoomControlPushed=false;
 	if (!globalContainer->runNoX) Sprite::requestHighResolution(globalContainer->settings.highResolutionArtwork);
     touch = std::make_unique<GameGUITouch>(*this);
+	unitConversionIcon = std::make_unique<HudUnitConversionIcon>();
 	notmenu = false;
 	isRunning=true;
 	gamePaused=false;

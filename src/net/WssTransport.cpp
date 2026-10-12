@@ -581,6 +581,10 @@ class WssTransport final : public NetTransport
 				session->cancel();
 			pending.clear();
 		}
+		uint16_t localPort() const override
+		{
+			return acceptor.local_endpoint().port();
+		}
 		bool listening() const override
 		{
 			return acceptor.is_open();

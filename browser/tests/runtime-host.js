@@ -5,7 +5,8 @@ const path = require('node:path');
 const {randomUUID} = require('node:crypto');
 exports.openRuntimeHost = async (page, body, search = '') => {
   const name = 'test-host-' + randomUUID() + '.html';
-  const file = path.resolve(__dirname, '../../build/emscripten/client/release', name);
+  const directory = process.env.GLOB2_TEST_BUILD_DIR || path.resolve(__dirname, '../../build/emscripten/client/release');
+  const file = path.resolve(directory, name);
   fs.writeFileSync(file, body);
   try { await page.goto('/' + name + search); }
   finally { fs.unlinkSync(file); }

@@ -1,16 +1,85 @@
 """The pinned source SDK must apply reviewed fixes or fail explicitly."""
 import importlib.util
+import hashlib
+import io
 import json
 import os
 from pathlib import Path
 import tempfile
 import unittest
+import urllib.error
 from unittest import mock
 
 spec = importlib.util.spec_from_file_location(
     'sdl3_dependencies', Path(__file__).resolve().parents[2] / 'scons/sdl3_dependencies.py')
 module = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(module)
+
+
+class DownloadTests(unittest.TestCase):
+    def setUp(self):
+        self.payload = b'pinned dependency bytes'
+        self.versions = {'dependency': dict(archive='dependency.tar.gz',
+            url='https://example.invalid/dependency.tar.gz',
+            sha256=hashlib.sha256(self.payload).hexdigest())}
+
+    def test_dns_and_server_failure_retry_exact_url_then_verify_bytes(self):
+        failures = [urllib.error.URLError('DNS unavailable'),
+                    urllib.error.HTTPError(self.versions['dependency']['url'], 503,
+                                           'unavailable', {}, None), io.BytesIO(self.payload)]
+        with tempfile.TemporaryDirectory() as temporary, \
+                mock.patch.object(module.urllib.request, 'urlopen', side_effect=failures) as request, \
+                mock.patch.object(module.time, 'sleep') as sleep:
+            module.download(temporary, self.versions)
+            self.assertEqual((Path(temporary) / 'dependency.tar.gz').read_bytes(), self.payload)
+            self.assertEqual(request.call_args_list,
+                             [mock.call(self.versions['dependency']['url'], timeout=60)] * 3)
+            self.assertEqual(sleep.call_args_list, [mock.call(1), mock.call(2)])
+            self.assertFalse(list(Path(temporary).glob('*.download')))
+
+    def test_exhausted_transient_failure_never_installs_archive(self):
+        with tempfile.TemporaryDirectory() as temporary, \
+                mock.patch.object(module.urllib.request, 'urlopen',
+                                  side_effect=urllib.error.URLError('DNS unavailable')) as request, \
+                mock.patch.object(module.time, 'sleep') as sleep:
+            with self.assertRaises(urllib.error.URLError):
+                module.download(temporary, self.versions)
+            self.assertEqual(request.call_count, 3)
+            self.assertEqual(sleep.call_count, 2)
+            self.assertEqual(list(Path(temporary).iterdir()), [])
+
+    def test_permanent_http_failure_is_not_retried(self):
+        with tempfile.TemporaryDirectory() as temporary, \
+                mock.patch.object(module.urllib.request, 'urlopen',
+                    side_effect=urllib.error.HTTPError('https://example.invalid', 404,
+                                                       'missing', {}, None)) as request, \
+                mock.patch.object(module.time, 'sleep') as sleep:
+            with self.assertRaises(urllib.error.HTTPError):
+                module.download(temporary, self.versions)
+            self.assertEqual(request.call_count, 1)
+            sleep.assert_not_called()
+
+    def test_invalid_final_bytes_are_not_installed_or_retried(self):
+        with tempfile.TemporaryDirectory() as temporary, \
+                mock.patch.object(module.urllib.request, 'urlopen',
+                                  return_value=io.BytesIO(b'corrupt')) as request, \
+                mock.patch.object(module.time, 'sleep') as sleep:
+            with self.assertRaisesRegex(ValueError, 'checksum mismatch'):
+                module.download(temporary, self.versions)
+            self.assertEqual(request.call_count, 1)
+            sleep.assert_not_called()
+            self.assertEqual(list(Path(temporary).iterdir()), [])
+
+    def test_existing_archive_is_verified_without_network(self):
+        with tempfile.TemporaryDirectory() as temporary, \
+                mock.patch.object(module.urllib.request, 'urlopen') as request:
+            archive = Path(temporary) / 'dependency.tar.gz'
+            archive.write_bytes(self.payload)
+            module.download(temporary, self.versions)
+            archive.write_bytes(b'corrupt')
+            with self.assertRaisesRegex(ValueError, 'checksum mismatch'):
+                module.download(temporary, self.versions)
+            request.assert_not_called()
 
 
 class SourcePatchTests(unittest.TestCase):

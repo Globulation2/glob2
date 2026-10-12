@@ -5,9 +5,11 @@
 
 #include "Header.h"
 #include "ExperimentalFeatures.h"
+#include <RendererSelection.h>
 #include <string>
 #include <cstdint>
 #include <map>
+#include <optional>
 #include "IntBuildingType.h"
 class BuildingType;
 class BuildingsTypes;
@@ -52,6 +54,7 @@ public:
     int targetRenderFps = 60;
     static constexpr int RENDER_FPS_PRESETS[] = {25, 30, 60, 90, 120, 144, 165, 240, 0};
 	Uint32 screenFlags;
+    GAGCore::RendererBackend rendererBackend = GAGCore::RendererBackend::Auto;
 	Uint32 optionFlags;
 	bool automaticTorus; // Opt-in movement-triggered overview; local presentation only.
 	std::string language;
@@ -93,6 +96,9 @@ public:
 	static constexpr Uint32 LEGACY_LOW_DETAIL = 0x1;
 	/// Periodically saves the game in progress as "Auto save".
 	bool autosaveGames;
+	// Local compute preference. An absent value defaults off with graphics, on headless.
+	std::optional<bool> gpuCompute;
+	bool gpuComputeEnabled(bool headless = false) const { return gpuCompute.value_or(headless); }
 	/// Experimental features to bake into every new game this player starts or
 	/// hosts (Settings > Experiments). Saved as comma-separated keys; a key this
 	/// build no longer knows is dropped on load.

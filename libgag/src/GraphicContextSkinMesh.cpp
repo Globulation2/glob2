@@ -518,6 +518,7 @@ void GraphicContext::destroySkinRenderer()
 void GraphicContext::prepareSkinMeshes(const std::vector<SkinMeshRequest> &requests)
 {
 	PERF_SCOPE_TIME(SkinPrepare);
+    if (presentationDevice && renderer == deviceRenderer.get()) { prepareDeviceSkinMeshes(requests); return; }
 	auto &r = skinResources;
 	if (!context || renderer || requests.empty() || (r.attempted && !r.program))
 		return;
@@ -638,6 +639,10 @@ void GraphicContext::prepareSkinMeshes(const std::vector<SkinMeshRequest> &reque
 	unsigned boundPage = ~0u;
 	for (const auto &[key, request] : unique)
 	{
+#ifdef GLOB2_WEBGL2
+        request.texture->prepareTexture();
+        request.material->prepareTexture();
+#endif
 		if (!request.texture->texture || !request.material->texture)
 			continue;
 		const unsigned slot = r.slots.reserve(key);
@@ -710,6 +715,7 @@ void GraphicContext::prepareSkinMeshes(const std::vector<SkinMeshRequest> &reque
 }
 bool GraphicContext::readSkinMesh(const SkinMeshRequest &request, std::vector<std::uint8_t> &rgba)
 {
+    if (presentationDevice && renderer == deviceRenderer.get()) return readDeviceSkinMesh(request, rgba);
     if (!valid(request)) return false;
     prepareSkinMeshes({request});
     auto &r = skinResources;
@@ -738,6 +744,7 @@ bool GraphicContext::drawSkinMesh(const SkinMesh &mesh, unsigned frame, Drawable
 {
     PERF_SCOPE_TIME(SkinComposite);
     const SkinMeshRequest request{&mesh, frame, &texture, &material, region};
+    if (presentationDevice && renderer == deviceRenderer.get()) return drawDeviceSkinMesh(request, x, y, w, h, underlay, alpha);
     if (!valid(request)) return false;
     if (alpha == 0) return true;
     const auto key = keyFor(request);
@@ -774,9 +781,9 @@ bool GraphicContext::drawSkinMesh(const SkinMesh &mesh, unsigned frame, Drawable
 #else
 namespace GAGCore
 {
-bool GraphicContext::readSkinMesh(const SkinMeshRequest &, std::vector<std::uint8_t> &) { return false; }
+bool GraphicContext::readSkinMesh(const SkinMeshRequest &request, std::vector<std::uint8_t> &rgba) { return presentationDevice && renderer == deviceRenderer.get() && readDeviceSkinMesh(request, rgba); }
 void GraphicContext::destroySkinRenderer() { skinResources = {}; }
-void GraphicContext::prepareSkinMeshes(const std::vector<SkinMeshRequest> &) {}
-bool GraphicContext::drawSkinMesh(const SkinMesh &, unsigned, DrawableSurface &, DrawableSurface &, std::uint8_t, float,float,float,float, DrawableSurface *, Uint8) { return false; }
+void GraphicContext::prepareSkinMeshes(const std::vector<SkinMeshRequest> &requests) { if (presentationDevice && renderer == deviceRenderer.get()) prepareDeviceSkinMeshes(requests); }
+bool GraphicContext::drawSkinMesh(const SkinMesh &mesh, unsigned frame, DrawableSurface &paint, DrawableSurface &material, std::uint8_t region, float x,float y,float w,float h, DrawableSurface *underlay, Uint8 alpha) { return presentationDevice && renderer == deviceRenderer.get() && drawDeviceSkinMesh({&mesh, frame, &paint, &material, region}, x,y,w,h,underlay,alpha); }
 }
 #endif

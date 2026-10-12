@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include <nlohmann/json.hpp>
 #include "PowerOfTwo.h"
 #include "HiveWorker.h"
 #include "scripting/javascript/ScriptRuntime.h"

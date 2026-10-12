@@ -5,6 +5,13 @@ import { skinAssetUrl } from './assetUrls.ts';
 /* WebGL previews use the same texture and material renderer as the workspace. */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { useEffect, useState } from 'react';
+import {
+  LibraryHeader,
+  LibraryGrid,
+  LibraryCard,
+  LibraryResults,
+  LibraryEmpty,
+} from '../components/library.tsx';
 import { MeshPreview } from './MeshPreview.tsx';
 import { DEFAULT_CAMERA } from './geometry.ts';
 import { MODELS, decodeMaterials } from './atlas.ts';
@@ -45,22 +52,22 @@ export function SkinLibrary({
     end = start + 6;
   const designCount = collection?.designs.length ?? 0;
   return (
-    <section className="skin-collection" aria-label={t('My skins')}>
-      <header className="skin-collection-header">
-        <div>
-          <span className="skin-eyebrow">{t('YOUR COLONY')}</span>
-          <h1>{t('My skins')}</h1>
-          <p className="skin-muted">{t('Create a look. Use it in your next match.')}</p>
-        </div>
-        <div>
-          <button onClick={onShop}>{t('Shop')}</button>
-          <button className="skin-primary" disabled={busy || !collection} onClick={onNew}>
-            {t('New skin')}
-          </button>
-        </div>
-      </header>
+    <section className="skin-collection library-page" aria-label={t('My skins')}>
+      <LibraryHeader
+        art="swarm"
+        title={t('My skins')}
+        description={t('Create a look. Use it in your next match.')}
+        actions={
+          <>
+            <button className="primary" disabled={busy || !collection} onClick={onNew}>
+              {t('New skin')}
+            </button>
+            <button onClick={onShop}>{t('Shop')}</button>
+          </>
+        }
+      />
       {collection?.activeArtworkStatus && collection.activeArtworkStatus !== 'ready' && (
-        <details className="skin-artwork-note">
+        <details className="library-help">
           <summary>{t('Compatibility of your active skin')}</summary>
           <p>
             {collection.activeArtworkStatus === 'pending'
@@ -73,118 +80,143 @@ export function SkinLibrary({
           </p>
         </details>
       )}
-      {error && (
-        <div>
-          <p role="alert">{displayMessage(error)}</p>
-          <button onClick={onRetry}>{t('Retry loading skins')}</button>
-        </div>
-      )}
-      {!collection && !error && <p role="status">{t('Loading your skins…')}</p>}
-      <div className="skin-library-grid">
-        <article>
-          <div className="skin-thumbnail skin-default-preview">
-            <img src="/skins/thumbs/swarm.png" alt={t('Default colony')} />
-          </div>
-          <h3>{t('Default colony')}</h3>
-          <p className="skin-card-state">
-            {collection?.activeSkinId === null ? t('In use') : t('Original game artwork')}
-          </p>
-          <button
-            disabled={busy || !collection || collection.activeSkinId === null}
-            onClick={() => onUse(null)}
-          >
-            {collection?.activeSkinId === null ? t('In use') : t('Use in game')}
-          </button>
-        </article>
-        {collection?.designs.slice(start, end).map((s) => {
-          const active = collection.activeSkinId === s.skinId;
-          const changed =
-            s.appliedRevision !== s.revision || s.appliedVersionId !== collection.equippedVersionId;
-          return (
-            <article key={s.skinId} data-skin-id={s.skinId}>
-              <button
-                className="skin-card-open"
-                disabled={busy}
-                onClick={() => onOpen(s)}
-                aria-label={t('Edit {value0}', { value0: s.name })}
+      <LibraryResults
+        count={() => Math.min(6, count - start) + 1}
+        load={
+          error
+            ? { status: 'error', error: new Error(displayMessage(error)) }
+            : collection
+              ? { status: 'ready', data: collection }
+              : { status: 'loading' }
+        }
+        retry={onRetry}
+      >
+        {() => (
+          <>
+            <LibraryGrid>
+              <LibraryCard>
+                <div className="skin-thumbnail skin-default-preview">
+                  <img src="/skins/thumbs/swarm.png" alt={t('Default colony')} />
+                </div>
+                <h2>{t('Default colony')}</h2>
+                <p className="skin-card-state">
+                  {collection?.activeSkinId === null ? t('In use') : t('Original game artwork')}
+                </p>
+                <button
+                  disabled={busy || !collection || collection.activeSkinId === null}
+                  onClick={() => onUse(null)}
+                >
+                  {collection?.activeSkinId === null ? t('In use') : t('Use in game')}
+                </button>
+              </LibraryCard>
+              {collection?.designs.slice(start, end).map((s) => {
+                const active = collection.activeSkinId === s.skinId;
+                const changed =
+                  s.appliedRevision !== s.revision ||
+                  s.appliedVersionId !== collection.equippedVersionId;
+                return (
+                  <LibraryCard key={s.skinId} skinId={s.skinId}>
+                    <button
+                      className="skin-card-open"
+                      disabled={busy}
+                      onClick={() => onOpen(s)}
+                      aria-label={t('Edit {value0}', { value0: s.name })}
+                    >
+                      <DraftThumbnail skin={s} />
+                      <h2>{s.name}</h2>
+                    </button>
+                    <p className="skin-card-state">
+                      {active
+                        ? changed
+                          ? t('In use · changes not applied')
+                          : t('In use')
+                        : t('Saved')}
+                    </p>
+                    <div className="skin-card-actions">
+                      <button
+                        className={active && !changed ? '' : 'primary'}
+                        disabled={busy || (active && !changed)}
+                        onClick={() => onUse(s)}
+                      >
+                        {active && !changed ? t('In use') : t('Use in game')}
+                      </button>
+                      <details>
+                        <summary aria-label={t('More actions for {value0}', { value0: s.name })}>
+                          {t('•••')}
+                        </summary>
+                        <button disabled={busy} onClick={() => onDuplicate(s.skinId, s.name)}>
+                          {t('Duplicate')}
+                        </button>
+                        <button disabled={busy} onClick={() => onDelete(s)}>
+                          {t('Delete')}
+                        </button>
+                      </details>
+                    </div>
+                  </LibraryCard>
+                );
+              })}
+              {collection?.presets
+                .slice(Math.max(0, start - designCount), Math.max(0, end - designCount))
+                .map((s) => (
+                  <LibraryCard key={s.skinId}>
+                    <SkinThumbnail skin={{ ...s, kind: 'preset', entitlement: '' }} />
+                    <h2>{s.name}</h2>
+                    <p className="skin-card-state">
+                      {collection.activeSkinId === s.skinId ? t('In use') : t('Owned')}
+                    </p>
+                    <div className="skin-card-actions">
+                      <button
+                        className={collection.equippedVersionId === s.id ? '' : 'primary'}
+                        disabled={busy || collection.equippedVersionId === s.id}
+                        onClick={() => onUse(s.id)}
+                      >
+                        {collection.equippedVersionId === s.id ? t('In use') : t('Use in game')}
+                      </button>
+                      <button disabled={busy} onClick={() => onDuplicate(s.skinId, s.name)}>
+                        {t('Customize')}
+                      </button>
+                    </div>
+                  </LibraryCard>
+                ))}
+            </LibraryGrid>
+            {collection && !collection.designs.length && (
+              <LibraryEmpty
+                art="swarm"
+                action={
+                  <button className="primary" disabled={busy} onClick={onNew}>
+                    {t('Create')}
+                  </button>
+                }
               >
-                <DraftThumbnail skin={s} />
-                <h3>{s.name}</h3>
-              </button>
-              <p className="skin-card-state">
-                {active ? (changed ? t('In use · changes not applied') : t('In use')) : t('Saved')}
-              </p>
-              <div className="skin-card-actions">
+                {t('Your first design starts with New skin. Your work saves automatically.')}
+              </LibraryEmpty>
+            )}
+            {pages > 1 && (
+              <nav className="skin-pagination" aria-label={t('Skin collection pages')}>
                 <button
-                  className="skin-primary"
-                  disabled={busy || (active && !changed)}
-                  onClick={() => onUse(s)}
+                  disabled={busy || currentPage === 0}
+                  onClick={() => setPage(currentPage - 1)}
                 >
-                  {active && !changed ? t('In use') : t('Use in game')}
+                  {t('Previous')}
                 </button>
-                <details>
-                  <summary aria-label={t('More actions for {value0}', { value0: s.name })}>
-                    {t('•••')}
-                  </summary>
-                  <button disabled={busy} onClick={() => onDuplicate(s.skinId, s.name)}>
-                    {t('Duplicate')}
-                  </button>
-                  <button disabled={busy} onClick={() => onDelete(s)}>
-                    {t('Delete')}
-                  </button>
-                </details>
-              </div>
-            </article>
-          );
-        })}
-        {collection?.presets
-          .slice(Math.max(0, start - designCount), Math.max(0, end - designCount))
-          .map((s) => (
-            <article key={s.skinId}>
-              <SkinThumbnail skin={{ ...s, kind: 'preset', entitlement: '' }} />
-              <h3>{s.name}</h3>
-              <p className="skin-card-state">
-                {collection.activeSkinId === s.skinId ? t('In use') : t('Owned')}
-              </p>
-              <div className="skin-card-actions">
+                <span>
+                  <RichMessage
+                    source={'{slot0} / {slot1}'}
+                    slots={{ slot0: currentPage + 1, slot1: pages }}
+                  />
+                </span>
                 <button
-                  disabled={busy || collection.equippedVersionId === s.id}
-                  onClick={() => onUse(s.id)}
+                  disabled={busy || currentPage + 1 >= pages}
+                  onClick={() => setPage(currentPage + 1)}
                 >
-                  {collection.equippedVersionId === s.id ? t('In use') : t('Use in game')}
+                  {t('Next')}
                 </button>
-                <button disabled={busy} onClick={() => onDuplicate(s.skinId, s.name)}>
-                  {t('Customize')}
-                </button>
-              </div>
-            </article>
-          ))}
-      </div>
-      {collection && !collection.designs.length && (
-        <p className="skin-muted">
-          {t('Your first design starts with New skin. Your work saves automatically.')}
-        </p>
-      )}
-      {pages > 1 && (
-        <nav className="skin-pagination" aria-label={t('Skin collection pages')}>
-          <button disabled={busy || currentPage === 0} onClick={() => setPage(currentPage - 1)}>
-            {t('Previous')}
-          </button>
-          <span>
-            <RichMessage
-              source={'{slot0} / {slot1}'}
-              slots={{ slot0: currentPage + 1, slot1: pages }}
-            />
-          </span>
-          <button
-            disabled={busy || currentPage + 1 >= pages}
-            onClick={() => setPage(currentPage + 1)}
-          >
-            {t('Next')}
-          </button>
-        </nav>
-      )}
-      <p role="status">{message}</p>
+              </nav>
+            )}
+            <p role="status">{message}</p>
+          </>
+        )}
+      </LibraryResults>
     </section>
   );
 }

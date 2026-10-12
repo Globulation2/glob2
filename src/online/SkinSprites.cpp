@@ -366,24 +366,36 @@ void SkinSprites::poll()
 	diskChanged = false;
 }
 
-bool SkinSprites::draw(GAGCore::GraphicContext &gfx, int team, unsigned clip, unsigned frame,
-					   float x, float y, float w, float h, GAGCore::DrawableSurface *shadow,
-					   unsigned char alpha)
+SkinSprites::Page *SkinSprites::requestPage(int team, unsigned clip, unsigned frame)
 {
 	if (team < 0 || team >= 32 || clip >= 8)
-		return false;
+		return nullptr;
 	const auto &manifest = teams[team].manifest;
 	const auto found = std::find_if(
 		manifest.pages.begin(), manifest.pages.end(), [&](const auto &page)
 		{ return page.clip == clip && frame >= page.first && frame < page.first + page.frames; });
 	if (found == manifest.pages.end())
-		return false;
+		return nullptr;
 	auto &page = pages[found->hash];
 	page.info = *found;
 	page.version = teams[team].skin.versionId;
 	page.bundle = teams[team].skin.spriteManifestHash;
 	page.touched = clock;
 	page.requested = true;
+	return &page;
+}
+void SkinSprites::prefetch(int team, unsigned clip, unsigned frame)
+{
+    requestPage(team, clip, frame);
+}
+
+bool SkinSprites::draw(GAGCore::GraphicContext &gfx, int team, unsigned clip, unsigned frame,
+					   float x, float y, float w, float h, GAGCore::DrawableSurface *shadow,
+					   unsigned char alpha)
+{
+	auto *requested = requestPage(team, clip, frame);
+	if (!requested) return false;
+	auto &page = *requested;
 	if (!page.surface)
 	{
 		++metrics.misses;
@@ -398,7 +410,7 @@ bool SkinSprites::draw(GAGCore::GraphicContext &gfx, int team, unsigned clip, un
 	y -= h * 0.125f;
 	w *= 1.25f;
 	h *= 1.25f;
-	const unsigned cell = frame - found->first;
+	const unsigned cell = frame - page.info.first;
 	const auto &bounds = page.frames[cell];
 	x += w * bounds.x / TileSize;
 	y += h * bounds.y / TileSize;

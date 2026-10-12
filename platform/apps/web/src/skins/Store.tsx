@@ -1,3 +1,4 @@
+import { useFeatures } from '../features.tsx';
 import { statusLabel } from '../i18n.tsx';
 import { MessageError } from '../i18n.tsx';
 import { message as sourceMessage } from '../i18n.tsx';
@@ -40,7 +41,7 @@ function price(product: Product) {
     currency: product.currency,
   }).format(product.amount / (ZERO_DECIMAL.has(product.currency) ? 1 : 100));
 }
-export function SkinStore({
+function EnabledSkinStore({
   onChange,
   beforeCheckout,
 }: {
@@ -164,4 +165,9 @@ export function SkinStore({
       )}
     </section>
   );
+}
+
+export function SkinStore(props: Parameters<typeof EnabledSkinStore>[0]) {
+  const features = useFeatures();
+  return features.includes('skins.sales') ? <EnabledSkinStore {...props} /> : null;
 }

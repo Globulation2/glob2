@@ -24,7 +24,7 @@ def main():
         for first in ("maxima", "nicowar"):
             case = root / first
             baseline = case / "full"
-            command = [str(binary), "--run-game", "--map-file", str(map_file),
+            command = [str(binary), "game", "run", "--map-file", str(map_file),
                        "--game-seed", "6101", "--player", first, "--player", "nicowar",
                        "--ticks", "8192", "--save", "every:2048", "--telemetry", "checksums",
                        "--output-dir", str(baseline)]
@@ -32,7 +32,7 @@ def main():
             parent = baseline
             for tick in (4096, 6144):
                 child = case / f"resumed-{tick}"
-                run([str(binary), "--run-game", "--load-game", str(parent / f"checkpoint-{tick}.game"),
+                run([str(binary), "game", "run", "--load-game", str(parent / f"checkpoint-{tick}.game"),
                      "--ticks", "8192", "--save", "every:2048", "--telemetry", "checksums",
                      "--output-dir", str(child)])
                 count = compare(baseline / "game.replay.checksums", child / "game.replay.checksums")

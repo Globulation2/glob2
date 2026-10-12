@@ -17,6 +17,7 @@
 html,body{width:100%;height:100%;margin:0;overflow:hidden;background:var(--bg)}
 body{display:flex;align-items:center;justify-content:center;color:var(--ink);
   background:radial-gradient(ellipse at 50% 40%,var(--surface),var(--bg) 70%)}
+#presentation-host{width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--bg)}
 canvas{display:block;outline:none;touch-action:none;opacity:0;transition:opacity .2s ease}
 body.ready canvas{opacity:1}
 #loading{position:fixed;z-index:1;box-sizing:border-box;width:min(440px,calc(100% - 32px));max-height:calc(100% - 32px);overflow:auto;
@@ -73,8 +74,10 @@ body.ready #loading{opacity:0;pointer-events:none}
   <p id="language-error" role="alert" data-i18n="Could not load this language. Please try again." hidden>Could not load this language. Please try again.</p>
   <p id="loading-note" data-i18n="The first visit downloads the game once. Later visits start from this device's copy." hidden>The first visit downloads the game once. Later visits start from this device's copy.</p>
 </div>
-<canvas id="canvas" width="800" height="600" tabindex="0" aria-label="Globulation 2" oncontextmenu="event.preventDefault()"></canvas>
+<div id="presentation-host"><canvas id="canvas" width="800" height="600" tabindex="0" aria-label="Globulation 2" oncontextmenu="event.preventDefault()"></canvas>
+<script src="presentation-surface.js"></script>
 <div id="open-link" role="alert" hidden><span id="open-link-text"></span><a id="open-link-anchor" target="_blank" rel="noopener"></a><button type="button" id="open-link-close" aria-label="Close" data-i18n-aria="Close">×</button></div>
+</div>
 <script>
 // Browser chrome shares the website's locale; the game's saved profile remains independent.
 function browserText(source, params) {
@@ -123,7 +126,7 @@ if (globalThis.Glob2I18n) {
   });
   addEventListener('glob2:localechange', refreshBrowserLanguage);
 } else languagePicker.hidden = true;
-const canvas = document.getElementById('canvas');
+let canvas = document.getElementById('canvas');
 const loading = document.getElementById('loading');
 const loadingStatus = document.getElementById('loading-status');
 function fitCanvas() {
@@ -132,7 +135,8 @@ function fitCanvas() {
   canvas.style.height = innerHeight + 'px';
 }
 addEventListener('resize', fitCanvas);
-new MutationObserver(fitCanvas).observe(canvas, {attributes:true,attributeFilter:['width','height']});
+const canvasSizeObserver = new MutationObserver(fitCanvas);
+canvasSizeObserver.observe(canvas, {attributes:true,attributeFilter:['width','height']});
 fitCanvas();
 // Download progress for the WebAssembly module and the startup data packages, with a
 // time estimate from the rate so far. Downloads report decoded bytes; responses
@@ -229,10 +233,19 @@ function browserMapLaunchArguments(search, origin) {
   const map = query.get('map'), version = query.get('version'), mode = query.get('mode');
   if (!map || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(map) ||
       !version || !/^[0-9a-f]{64}$/i.test(version) || (mode && mode !== 'local' && mode !== 'multiplayer')) return [];
-  return [mode === 'local' ? '--local-map' : '--room-map', map, version.toLowerCase(),
-    (query.get('title') || '').slice(0, 128), '--instance', origin];
+  return ['online', mode === 'local' ? 'play-map' : 'host-map', map, '--hash', version.toLowerCase(),
+    '--title', (query.get('title') || 'Map').slice(0, 128), '--instance', origin];
 }
 // End browser map launch arguments.
+
+function browserSetPreviewResult(code, files) {
+  if (code !== 0 && code !== 2) throw Error('Preview engine exited with code ' + code);
+  const report = JSON.parse(files.readFile('/tmp/report.json', {encoding: 'utf8'}));
+  if (!report || typeof report.valid !== 'boolean') throw Error('Invalid set validation report');
+  return {report, png: report.valid ? files.readFile('/tmp/preview.png') : null};
+}
+// End browser set preview result.
+
 
 function browserInstanceConfig(text, origin) {
   if (text === null) return JSON.stringify({version:1, selected:origin, instances:{}});
@@ -288,7 +301,7 @@ function chooseRenderer() {
       // Chrome doesn't flag SwiftShader as a performance caveat, so check the rasterizer too.
       return !/SwiftShader|llvmpipe|softpipe|Software Rasterizer|Basic Render Driver/i.test(name);
     };
-    return requested === 'webgl2' || (requested !== 'software' && accelerated());
+    return ['webgl2','gpu','legacy-gl','programmable-gl','portable-sdl','sdl','webgpu'].includes(requested) || (requested !== 'software' && accelerated());
  }
 var Module = {
   noInitialRun: true,
@@ -428,10 +441,12 @@ var Module = {
     // Invite links land here as ?join=<code> (see docs/multiplayer/client.md); the
     // instance serving this page is the one to join.
     const join = new URLSearchParams(location.search).get('join');
-    const invite = join && /^[A-Za-z0-9]{6,16}$/.test(join) ? ['--join', join, '--instance', location.origin] : [];
+    const invite = join && /^[A-Za-z0-9]{6,16}$/.test(join) ? ['online', 'join', join, '--instance', location.origin] : [];
     const roomMap = browserMapLaunchArguments(location.search, location.origin);
-    const args = ['-s', width + 'x' + height, '-F', '-C', gpu ? '-g' : '-G', ...invite, ...roomMap];
-    if (watchReplay && watchReplay.status === 'ready') args.push('-replay', watchReplay.path);
+    const requestedBackend = new URLSearchParams(location.search).get('renderer');
+    const graphics = ['--window-size', width + 'x' + height, '--no-fullscreen', '--no-custom-cursor', ...(requestedBackend ? ['--renderer', requestedBackend] : [])];
+    const launch = watchReplay && watchReplay.status === 'ready' ? ['replay', watchReplay.path] : roomMap.length ? roomMap : invite.length ? invite : ['play'];
+    const args = [...launch, ...graphics];
     if (Module.storageRestore === 'ready') {
       const path = '/home/web_user/.glob2/online/instances.json';
       const previous = FS.analyzePath(path).exists ? FS.readFile(path, {encoding:'utf8'}) : null;
@@ -445,11 +460,8 @@ var Module = {
     // Startup packages were in place before main(); only later ones are news.
     Module.glob2Assets?.takeInstalled();
     if(globalThis.glob2SetPreview) {
-      Module.start(['--validate-set','/tmp/set.json','--json','/tmp/report.json','--preview','/tmp/preview.png',...(new URLSearchParams(location.search).get('gallery')==='1'?['--gallery','1','--phase',new URLSearchParams(location.search).get('phase')||'0','--variation',new URLSearchParams(location.search).get('variant')||'0']:[])]).then(code=>{
-        if(code!==0)throw Error('Preview engine exited with code '+code);
-        const report=JSON.parse(FS.readFile('/tmp/report.json',{encoding:'utf8'}));
-        const png=report.valid?FS.readFile('/tmp/preview.png'):null;
-        globalThis.glob2SetPreview.send('complete',{report,png});
+      Module.start(['map','validate-set','/tmp/set.json','--report-file','/tmp/report.json','--preview','/tmp/preview.png',...(new URLSearchParams(location.search).get('gallery')==='1'?['--gallery','1','--phase',new URLSearchParams(location.search).get('phase')||'0','--variation',new URLSearchParams(location.search).get('variant')||'0']:[])]).then(code=>{
+        globalThis.glob2SetPreview.send('complete', browserSetPreviewResult(code, FS));
       }).catch(error=>globalThis.glob2SetPreview.send('error',{text:String(error).slice(0,2000)}));
       return;
     }
@@ -472,6 +484,14 @@ var Module = {
   },
   onAbort(reason) { globalThis.glob2SetPreview?.send('error',{text:String(reason).slice(0,2000)}); Module.printErr('Game stopped: ' + reason); globalThis.glob2Studio?.send('error', {text:String(reason).slice(0,2000)}); }
 };
+Module.glob2PresentationSurface = Glob2PresentationSurface.create(Module);
+Module.glob2PresentationSurface.bind(next => {
+  canvasSizeObserver.disconnect();
+  canvas = next;
+  canvasSizeObserver.observe(canvas, {attributes:true,attributeFilter:['width','height']});
+  fitCanvas();
+  return () => canvasSizeObserver.disconnect();
+});
 const preferencesPath = '/home/web_user/.glob2/preferences.txt';
 function savedPreference(name) {
   try {
@@ -557,6 +577,8 @@ Object.defineProperty(window, 'glob2Diagnostics', {value: Object.freeze({
     return Object.freeze({version:1, executionMode:Module.executionMode || 'loading', threadFallback:Module.threadFallback || null, workerCount:Module.glob2ApplicationStarted ? (Module._glob2_worker_count?.() || 0) : 0, renderer:Module.renderer || 'loading', renderContext:Module.glob2RenderContext || null, contextLost:Boolean(Module.gpuLost), contextRestores:Module.gpuRestores || 0, screen:Module.glob2Screen || 'loading',
       screenClass:Module.glob2ScreenClass || '', roomCanStart:Boolean(Module.glob2RoomCanStart), customGameReady:Boolean(Module.glob2CustomGameReady), tick:Module.glob2Tick || 0, frames:Module.glob2Frames || 0, loop:Module.glob2Loop || 0,
       paused:Boolean(Module.glob2Paused), torus:Module.glob2Screen === 'match' && Boolean(Module.glob2Torus), torusSettled:Module.glob2Screen === 'match' && Boolean(Module.glob2TorusSettled), width:Module.glob2RenderContext?.width || canvas.width, height:Module.glob2RenderContext?.height || canvas.height,
+      heapBytes:typeof HEAPU8 === 'undefined' ? 0 : HEAPU8.buffer.byteLength,
+      artworkReady:Boolean(Module.glob2ArtworkReady),
       restore:Module.storageRestore || 'restoring',
       watchReplay:watchReplay ? watchReplay.status : 'none',
       import:Module.importState || 'idle',
@@ -643,7 +665,7 @@ Module.textBridge = (() => {
               event.preventDefault();field.action=event.key==='Enter' ? 1 : 2;field.dirty=true;element.blur();
             }
           });
-        document.body.appendChild(element);element.value=value;
+        (Module.glob2PresentationSurface.fullscreenHost || document.body).appendChild(element);element.value=value;
         // A field shown for copying by hand (a failed Copy) opens with its text
         // selected, ready for Ctrl+C or the phone's Copy menu.
         if (selectAll) { element.readOnly=true; element.focus({preventScroll:true}); element.select(); }
@@ -746,15 +768,21 @@ window.visualViewport?.addEventListener('resize',publishPresentationMetrics);
 window.visualViewport?.addEventListener('scroll',publishPresentationMetrics);
 publishPresentationMetrics();
 Module.visibilityPending = true;
-canvas.addEventListener('webglcontextlost', event => {
-  event.preventDefault();
-  Module.gpuLost = true;
-  Module.visibilityPending = true;
+Module.glob2PresentationSurface.bind(target => {
+  const lost = event => { event.preventDefault(); Module.gpuLost = true; Module.visibilityPending = true; };
+  const restored = () => { Module.gpuRestorePending = true; };
+  target.addEventListener('webglcontextlost', lost);
+  target.addEventListener('webglcontextrestored', restored);
+  target.addEventListener('pointerdown', focusGame);
+  target.addEventListener('keydown', activateAudio);
+  return () => {
+    target.removeEventListener('webglcontextlost', lost);
+    target.removeEventListener('webglcontextrestored', restored);
+    target.removeEventListener('pointerdown', focusGame);
+    target.removeEventListener('keydown', activateAudio);
+  };
 });
-canvas.addEventListener('webglcontextrestored', () => { Module.gpuRestorePending = true; });
 document.addEventListener('visibilitychange', () => { Module.visibilityPending = true; });
-canvas.addEventListener('pointerdown', focusGame);
-canvas.addEventListener('keydown', activateAudio);
 // SDL consumes navigation keys even when the browser needs them. Reserve reload
 // and address-bar shortcuts without cancelling their browser default action.
 // Key releases still reach SDL so a previously held game key cannot stick.
@@ -764,10 +792,10 @@ function preserveBrowserShortcut(event) {
 }
 document.addEventListener('keydown', preserveBrowserShortcut, true);
 document.addEventListener('keypress', preserveBrowserShortcut, true);
-// SDL 2.32's browser button callback uses the last motion position instead of
-// the button event's coordinates. Synchronize it before SDL sees the button:
-// browsers can omit/coalesce the intervening motion, especially across focus
-// and viewport changes. Keep this SDK adaptation out of gameplay input code.
+// Legacy SDL 2.32 compatibility: its browser button callback used the last
+// motion position, so synchronize it before the button when motion is coalesced
+// across focus or viewport changes. Pinned SDL 3 handles pointer-event coordinates
+// directly; retain this compatibility hook without changing gameplay input.
 let canvasPointerDown = false;
 function syncButtonPosition(event) {
   if (event.target !== canvas && !canvasPointerDown) return;

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "HiveWorker.h"
+#include <nlohmann/json.hpp>
 #include "online/PlatformClient.h"
 #include "scripting/javascript/ScriptObservations.h"
 #include <future>

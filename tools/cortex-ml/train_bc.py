@@ -1,13 +1,13 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 # Copyright (C) 2026 The Globulation 2 Authors
 #
-# Cortex ML pilot — behavior-cloning trainer.  Fits the numpy MLP to reproduce
+# Cortex ML tools — behavior-cloning trainer.  Fits the numpy MLP to reproduce
 # the hand rule's swarm worker cap (`desired`), applies the contract's eval-time
 # masking, reports BC parity metrics, and exports the cortex-mlp-f32-v1 JSON.
 #
 #   python3 train_bc.py --data <dir> --out <weights.json> [--epochs N]
 #
-# See docs/AI/cortex/ML_CONTRACT.md (binding spec) and PILOT.md.
+# See tools/cortex-ml-infer/format.md (binding spec) and reward.py.
 
 import argparse
 import numpy as np
@@ -21,7 +21,7 @@ SEED = 1234
 
 
 def masked_argmax(logits, X_raw, consts):
-    """Contract step 3+4 (eval-time masking). Valid actions are
+    """Eval-time worker-cap masking. Valid actions are
     [WORKER_MIN .. swarmWorkerCap(row)]; class index k -> action k+1. Classes
     outside the band are masked (-inf). Ties -> lowest class index.
     Returns predicted ACTIONS (1..20), shape (N,)."""

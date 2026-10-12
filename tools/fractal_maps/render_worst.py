@@ -59,17 +59,17 @@ def render(studies, bundle, output):
         params = job['config']['params']
         identity = f'{generator}-{criterion}-{job["id"][:10]}'
         root = output / identity
-        args = [str(executable), '--generate-map', str(generator),
+        args = [str(executable), 'map', 'generate', str(generator),
                 '--seed', str(job['seeds']['map']), '--width', str(1 << params['width']),
                 '--height', str(1 << params['height']), '--teams', str(params['teams']),
                 '--workers', str(params.get('workers', 4)),
                 '--output', str(root.with_suffix('.map')),
                 '--preview', str(root.with_suffix('.png')),
-                '--json', str(root.with_suffix('.json'))]
+                '--report-file', str(root.with_suffix('.json'))]
         for key, number in sorted(params.items()):
             if key not in ('width', 'height', 'teams', 'workers'):
                 args.extend(['--set', f'{key}={number}'])
-        args.extend(['-d', str(data)])
+        args.extend(['--data-dir', str(data)])
         outcome = subprocess.run(args, text=True, capture_output=True)
         root.with_suffix('.log').write_text(outcome.stdout + outcome.stderr)
         selected.append(dict(criterion=criterion, value=value, study=record['experiment'],

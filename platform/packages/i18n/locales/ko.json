@@ -2883,5 +2883,9 @@
   "Presentation": "표현",
   "{value0} source": "{value0} 소스",
   "{value0} decor source": "{value0} 장식 소스",
-  "Your draft changed while the design was loading. Your changes were kept; try opening the design again.": "디자인을 불러오는 동안 초안이 변경되었습니다. 변경 사항은 보존되었습니다. 디자인을 다시 열어 보세요."
+  "Your draft changed while the design was loading. Your changes were kept; try opening the design again.": "디자인을 불러오는 동안 초안이 변경되었습니다. 변경 사항은 보존되었습니다. 디자인을 다시 열어 보세요.",
+  "More filters": "추가 필터",
+  "Clear filters": "필터 지우기",
+  "No results match these filters.": "이 필터와 일치하는 결과가 없습니다.",
+  "Results: {value0}": "결과: {value0}"
 }

@@ -150,7 +150,9 @@ jobs:
         if: ${{ inputs.compiler == 'g++-13' && !inputs.generator_only }}
         id: test_compiler_cache_integration
         continue-on-error: true
-        run: python3 test/test-ccache.py
+        run: |
+          python3 test/test-ccache.py
+          python3 test/test-dev-compile.py
 
       - name: Build glob2 and the regression harnesses
         id: build_glob2_and_the_regression_harnesses

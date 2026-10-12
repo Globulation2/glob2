@@ -81,6 +81,55 @@ TEST_SUITE("ResourceGrowth")
             actual.emplace_back(p.tile,p.type,p.material,p.delta);
         CHECK(actual==expected);
     }
+    TEST_CASE("mature growth events oscillate and respect intervening harvests")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.header = true});
+        auto& map = world.game.map;
+        const auto id = crop(map);
+        for (int y=0; y<map.getH(); ++y)
+            for (int x=0; x<map.getW(); ++x) {
+                map.setResource(x,y,id,0);
+                map.setResourceAmount(map.coordToIndex(x,y),5);
+            }
+        ResourceGrowth::Batch calculated;
+        MersenneTwister rng(991);
+        ResourceGrowth::calculate(map.stateView(),rng,calculated);
+        REQUIRE(!calculated.proposals.empty());
+        const auto op = calculated.proposals.front();
+        ResourceGrowth::Batch batch;
+        batch.proposals = {op};
+        ResourceGrowth::Metrics metrics;
+        ResourceGrowth::apply(map,batch,metrics);
+        CHECK(map.getResource(op.tile).amount==4);
+        ResourceGrowth::apply(map,batch,metrics);
+        CHECK(map.getResource(op.tile).amount==5);
+        // A full-stock observation followed by harvesting must regrow.
+        map.setResourceAmount(op.tile,3);
+        ResourceGrowth::apply(map,batch,metrics);
+        CHECK(map.getResource(op.tile).amount==4);
+        // Neighbor spread into a matching mature deposit follows the same rule.
+        map.setResourceAmount(op.tile,5);
+        batch.proposals.front().kind=ResourceGrowth::Proposal::Kind::Seed;
+        batch.proposals.front().incrementMask=materialBit(MaterialId::Food);
+        ResourceGrowth::apply(map,batch,metrics);
+        CHECK(map.getResource(op.tile).amount==4);
+        // Natural growth cannot extinguish custom single-unit deposits.
+        auto catalog=nlohmann::json::parse(map.resourceRegistry().serialize());
+        for (auto& resource:catalog["resources"])
+            if (resource["key"]=="growth-test") {
+                resource["yields"]["food"]["capacity"]=1;
+                resource["yields"]["food"]["placementMaximum"]=0;
+            }
+        map.installResourceDefinitions(catalog.dump());
+        map.setResource(4,4,id,0);
+        const auto single=map.coordToIndex(4,4);
+        batch.proposals={increment(map,single,id)};
+        ResourceGrowth::apply(map,batch,metrics);
+        CHECK(map.getResource(single).amount==1);
+        CHECK_FALSE(map.growResourceStock(single));
+        CHECK(map.getResource(single).amount==1);
+    }
 	TEST_CASE("signed proposals use only current resource type and apply in order")
 	{
 		glob2test::HeadlessGlobals globals;
@@ -124,7 +173,7 @@ TEST_SUITE("ResourceGrowth")
 		ResourceGrowth::apply(m, b, metrics);
 		CHECK(m.materialAmountAt(at, MaterialId::Food) == 0);
 	}
-	TEST_CASE("material deltas cap independently and create configured seed stocks")
+	TEST_CASE("material growth events oscillate independently and create configured seed stocks")
 	{
 		glob2test::HeadlessGlobals globals;
 		glob2test::HeadlessGame world({.loadDefaultRace = true, .header = true});
@@ -143,7 +192,7 @@ TEST_SUITE("ResourceGrowth")
 		ResourceGrowth::apply(m, b, metrics);
 		CHECK(m.materialAmountAt(at, MaterialId::Food) == 5);
 		CHECK(m.materialAmountAt(at, MaterialId::Paper) == 3);
-		CHECK(metrics.clamped == 2);
+		CHECK(metrics.clamped == 0);
 		food.delta = -1;
 		paper.delta = -1;
 		b.proposals = {food, paper, paper, paper};
@@ -157,9 +206,9 @@ TEST_SUITE("ResourceGrowth")
 		const auto &stats = world.game.teams[0]->stats.measurements;
 		CHECK(stats.growthGlobal[0][materialIndex(MaterialId::Food)] == 1);
 		CHECK(stats.growthGlobal[0][materialIndex(MaterialId::Paper)] == 1);
-		CHECK(stats.growthGlobal[1][materialIndex(MaterialId::Food)] == 5);
+		CHECK(stats.growthGlobal[1][materialIndex(MaterialId::Food)] == 6);
 		CHECK(stats.growthGlobal[1][materialIndex(MaterialId::Paper)] == 3);
-		CHECK(stats.growthGlobal[2][materialIndex(MaterialId::Food)] == 1);
+		CHECK(stats.growthGlobal[2][materialIndex(MaterialId::Food)] == 2);
 		CHECK(stats.growthGlobal[2][materialIndex(MaterialId::Paper)] == 3);
 	}
 	TEST_CASE("proposal capacity grows safely and is retained for reuse")
@@ -317,13 +366,14 @@ TEST_SUITE("ResourceGrowth")
 			const auto initialFood = foodStocks();
 			const auto initialAdded =
 				shared.game.teams[0]->stats.measurements.growthGlobal[1][materialIndex(MaterialId::Food)];
+            const auto initialRemoved = shared.game.teams[0]->stats.measurements.growthGlobal[2][materialIndex(MaterialId::Food)];
 			for (int tick = 0; tick < 40; ++tick)
 			{
 				fallback.step();
 				shared.step();
 				const auto &metrics = shared.game.map.resourceGrowthMetrics();
 				CHECK(metrics.publishedProposals == metrics.accepted + metrics.rejected);
-				CHECK(foodStocks() == initialFood + metrics.stockAdded);
+				CHECK(foodStocks() + shared.game.teams[0]->stats.measurements.growthGlobal[2][materialIndex(MaterialId::Food)] - initialRemoved == initialFood + metrics.stockAdded);
 				CHECK(shared.game.teams[0]->stats.measurements.growthGlobal[1][materialIndex(MaterialId::Food)] ==
 					  initialAdded + metrics.stockAdded);
 				CHECK(shared.game.checkSum(nullptr, nullptr, nullptr, true) ==
@@ -568,17 +618,27 @@ TEST_CASE("both format 144 and 145 lineages and compact growth saves retain cont
         CHECK(restored.game.map.gradientRuntime->growth.count() == pending);
         CHECK((restored.game.gameHeader.getBuildingArtwork() ? restored.game.gameHeader.getBuildingArtwork()->bytes() : std::string{}) == artwork);
         CHECK(restored.game.map.frozenAssetBundle()->serialize() == original.game.map.frozenAssetBundle()->serialize());
-        // Save version is the only intentional header checksum difference.
-        const auto headerDelta = std::rotr(original.game.mapHeader.checkSum() ^ restored.game.mapHeader.checkSum(),
-            4 + original.game.mapHeader.getNumberOfTeams() + original.game.gameHeader.getNumberOfPlayers());
+        const auto components=[](Game& game) {
+            std::vector<Uint32> state,buildings,units;
+            game.checkSum(&state,&buildings,&units,true);
+            // Normalize only the saved header version through its current
+            // writer. Keep every other header field and all current unit,
+            // building, catalog and pending-work checksum components.
+            auto* bytes=new GAGCore::MemoryStreamBackend;
+            GAGCore::BinaryOutputStream output(bytes); game.mapHeader.save(&output);
+            GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(*bytes));
+            input.seekFromStart(0);
+            MapHeader canonical; REQUIRE(canonical.load(&input));
+            state.front()=canonical.checkSum();
+            return std::tuple(std::move(state),std::move(buildings),std::move(units));
+        };
         original.game.map.configureCompute(1);
         original.game.map.setResourceGrowthDelay(8);
         restored.game.map.configureCompute(4);
         restored.game.map.setResourceGrowthDelay(8);
         for (unsigned tick = 0; tick < 24; ++tick)
         {
-            CHECK((original.game.checkSum(nullptr, nullptr, nullptr, true) ^ headerDelta) ==
-                restored.game.checkSum(nullptr, nullptr, nullptr, true));
+            CHECK(components(original.game)==components(restored.game));
             original.step();
             restored.step();
         }
@@ -644,7 +704,7 @@ TEST_CASE("configured seeds preserve rates variety collisions and saved output" 
     CHECK(map.materialAmountAt(at, MaterialId::Paper) == 1);
     batch.proposals[0].incrementMask = materialBit(MaterialId::Food) | materialBit(MaterialId::Paper);
     ResourceGrowth::apply(map, batch, metrics);
-    CHECK(map.materialAmountAt(at, MaterialId::Food) == 5);
+    CHECK(map.materialAmountAt(at, MaterialId::Food) == 4);
     CHECK(map.materialAmountAt(at, MaterialId::Paper) == 2);
 
     // Replenishment in flight can recreate a deposit, using its configured seed stocks.

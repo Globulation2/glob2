@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include <nlohmann/json.hpp>
 #include "hive/HiveWorker.h"
 #include <emscripten.h>
 extern "C" EMSCRIPTEN_KEEPALIVE const char *glob2_hive_invoke(const char *input)

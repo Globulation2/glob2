@@ -7,10 +7,16 @@ if env.get('role') == 'relay':
     relay_env = env.Clone()
     relay_env.Append(CPPPATH=['#src/relay'])
     relay_env['LIBS'] = [lib for lib in relay_env.get('LIBS', []) if lib in ('ssl', 'crypto', 'pthread')]
-    relay_objects = [relay_env.Object(source) for source in RELAY_SOURCES]
+    from dev_compile import objects as development_objects, unique
+    from build_timing import record
+    relay_mapping = development_objects(relay_env, list(RELAY_SOURCES), lambda source: relay_env.File(source[:-4] + '.o').abspath)
+    relay_objects = unique(relay_mapping.values())
     relay_objects += [relay_env.Object('relay-gag-' + source.replace('.cpp', '.o'), '#libgag/src/' + source)
                       for source in RELAY_GAG_SOURCES]
-    relay = relay_env.Program('glob2-relay', relay_objects + [relay_env.Object('relay/RelayMain.cpp')])
+    record(relay_env, relay_objects, 'compile')
+    relay_main = relay_env.Object('relay/RelayMain.cpp')
+    record(relay_env, relay_main, 'compile')
+    relay = record(relay_env, relay_env.Program('glob2-relay', relay_objects + relay_main), 'link')
     relay_env.Default(relay)
     relay_env.Alias('relay', relay)
     tests_env = relay_env.Clone()
@@ -43,15 +49,26 @@ strict.Append(CXXFLAGS=['-fno-fast-math', '-ffp-contract=off'])
 from javascript import numeric_guard, strict_numeric_source, guarded_numeric_source
 strict_sources = [source for source in source_files
                   if isinstance(source, str) and strict_numeric_source(source)]
-strict_objects = dict(zip(strict_sources, [strict.Object(source)[0] for source in strict_sources]))
+from dev_compile import objects as development_objects, unique
+strict_mapping = development_objects(strict, strict_sources,
+    lambda source: local.File(source.removeprefix('#src/')[:-4] + '.o').abspath)
+strict_objects = {source: strict_mapping[source] for source in strict_sources}
 numeric_guard(strict, [obj for source, obj in strict_objects.items() if guarded_numeric_source(source)])
+ordinary_sources = [source for source in source_files if isinstance(source, str) and source.endswith('.cpp') and source not in strict_objects]
+ordinary_mapping = development_objects(local, ordinary_sources,
+    lambda source: local.File(source.removeprefix('#src/')[:-4] + '.o').abspath)
+strict_objects.update({source: ordinary_mapping[source] for source in ordinary_sources})
+def development_program(target, sources):
+    from build_timing import record
+    return record(local, local.Program(target, unique([strict_objects.get(source, source) if isinstance(source, str) else source for source in sources])), "link")
+
 # Resolve these sources explicitly so Program does not compile them with generic flags.
-program_sources = [strict_objects.get(source, source) for source in source_files]
+program_sources = unique([strict_objects.get(source, source) for source in source_files])
 
 #Add libgag and USL, not as a library, but as an object
 source_files.append("../libgag/src/libgag.a")
 source_files.append("../libusl/src/libusl.a")
-p1 = local.Program("glob2", program_sources + ["../libgag/src/libgag.a", "../libusl/src/libusl.a"])
+p1 = development_program("glob2", program_sources + ["../libgag/src/libgag.a", "../libusl/src/libusl.a"])
 if env.get("RUNTIME_ASSET_STAMP"):
     local.Depends(p1, env["RUNTIME_ASSET_STAMP"])
 
@@ -61,6 +78,7 @@ client_cpp_sources = [source for source in source_files if isinstance(source, st
 client_objects = [strict_objects[source] if source in strict_objects else local.Object(source)[0]
                   for source in client_cpp_sources]
 client_object_by_source = dict(zip(client_cpp_sources, client_objects))
+client_objects = unique(client_objects)
 client_objects += platform_trust_sources
 client_libs = [local.File(source) for source in source_files if isinstance(source, str) and not source.endswith('.cpp')]
 Export('client_objects', 'client_object_by_source', 'client_libs')
@@ -68,16 +86,16 @@ Export('client_objects', 'client_object_by_source', 'client_libs')
 
 lan_sources = [strict_objects.get(source, source) for source in source_files if source != 'app/Glob2.cpp']
 lan_sources += local.Object('LANSessionHarness.o', '#src/net/lan/LANSessionHarness.cpp')
-lan_test = local.Program('LANSessionHarness', lan_sources)
+lan_test = development_program('LANSessionHarness', lan_sources)
 local.Alias('lan-test', lan_test)
-online_play_test = local.Program('OnlinePlayHarness', [strict_objects.get(source, source) for source in source_files if source != 'app/Glob2.cpp']
+online_play_test = development_program('OnlinePlayHarness', [strict_objects.get(source, source) for source in source_files if source != 'app/Glob2.cpp']
                                  # It reads the engine's game state to report what it sees.
                                  + local.Object('OnlinePlayHarness.o', '#src/online/OnlinePlayHarness.cpp',
                                                 CXXFLAGS=local['CXXFLAGS'] + ['-fno-access-control']))
 local.Alias('online-play-test', online_play_test)
 
 # Twelve-team sprite benchmark; not part of the default build.
-twelve_team_benchmark = local.Program('twelve-team-benchmark',
+twelve_team_benchmark = development_program('twelve-team-benchmark',
     local.Object('TwelveTeamBenchmark.o', '#tools/unit-animation/twelve-team-benchmark.cpp')
     + ['../libgag/src/libgag.a', '../libusl/src/libusl.a'])
 local.Alias('twelve-team-benchmark', twelve_team_benchmark)
@@ -88,37 +106,37 @@ for alias, target in [('map-generator-study', 'MapGeneratorStudy'),
                       ('map-generator-profile-fixture', 'MapGeneratorProfileFixture')]:
     sources = [strict_objects.get(source, source) for source in source_files if source != 'app/Glob2.cpp']
     sources += local.Object(target + '.o', '#src/map/generator/' + target + '.cpp')
-    local.Alias(alias, local.Program(target, sources))
+    local.Alias(alias, development_program(target, sources))
 transport_sources = [strict_objects.get(source, source) for source in source_files if source != 'app/Glob2.cpp']
 transport_sources += local.Object('NetConnectionHarness.o', '#src/net/NetConnectionHarness.cpp')
-transport_test = local.Program('net-connection-test', transport_sources)
+transport_test = development_program('net-connection-test', transport_sources)
 local.Alias('transport-test', transport_test)
-discovery_test = local.Program('lan-discovery-test', [
+discovery_test = development_program('lan-discovery-test', [
     'net/NetBroadcastListener.cpp', 'net/NetBroadcaster.cpp', 'net/NetworkConfig.cpp', 'net/LanIdentity.cpp',
     local.Object('LANDiscoveryHarness.o', '#src/net/LANDiscoveryHarness.cpp')])
 local.Alias('transport-test', discovery_test)
 if env.get('wss', True):
-    wss_test = local.Program('wss-transport-test', [
+    wss_test = development_program('wss-transport-test', [
         'net/NetTransport.cpp', 'net/TcpTransport.cpp', 'net/WssTransport.cpp', 'net/NetworkConfig.cpp', 'net/LanIdentity.cpp',
         local.Object('WssTransportHarness.o', '#src/net/WssTransportHarness.cpp')] + platform_trust_sources)
     local.Alias('transport-test', wss_test)
-    listener_test = local.Program('wss-listener-test', [
+    listener_test = development_program('wss-listener-test', [
         'net/NetTransport.cpp', 'net/TcpTransport.cpp', 'net/WssTransport.cpp', 'net/NetworkConfig.cpp', 'net/LanIdentity.cpp',
         local.Object('WssListenerHarness.o', '#src/net/WssListenerHarness.cpp')] + platform_trust_sources)
     local.Alias('transport-test', listener_test)
-    http_test = local.Program('http-fetch-test', [
+    http_test = development_program('http-fetch-test', [
         'online/HttpFetch.cpp', 'online/HttpFetchCommon.cpp',
         local.Object('HttpFetchHarness.o', '#src/online/HttpFetchHarness.cpp')] + platform_trust_sources)
     local.Alias('transport-test', http_test)
     probe_file_manager = local.Object('OnlineProbeFileManager.o', '#src/online/OnlineProbeFileManager.cpp')
-    platform_probe = local.Program('platform-client-probe', [
+    platform_probe = development_program('platform-client-probe', [
         'online/HttpFetch.cpp', 'online/HttpFetchCommon.cpp', 'online/InstanceConfig.cpp',
         'online/MemoryStorage.cpp', 'online/PlatformClient.cpp', 'online/PlatformProtocol.cpp',
         'online/SimVersion.cpp', 'online/Sha256.cpp',
         'net/NetTransport.cpp', 'net/TcpTransport.cpp', 'net/WssTransport.cpp', 'net/NetworkConfig.cpp', 'net/LanIdentity.cpp',
         local.Object('PlatformClientProbe.o', '#src/online/PlatformClientProbe.cpp')] + probe_file_manager + platform_trust_sources)
     local.Alias('transport-test', platform_probe)
-    screens_probe = local.Program('online-screens-probe', [
+    screens_probe = development_program('online-screens-probe', [
         'online/HttpFetch.cpp', 'online/HttpFetchCommon.cpp', 'online/InstanceConfig.cpp',
         'online/MemoryStorage.cpp', 'online/PlatformClient.cpp', 'online/PlatformProtocol.cpp',
         'online/OnlineResources.cpp', 'online/QuickMatch.cpp', 'online/RelayProbe.cpp',
@@ -147,19 +165,19 @@ if 'dist' in COMMAND_LINE_TARGETS or 'install' in COMMAND_LINE_TARGETS:
 # Offline production-screen capture for the mobile design review gallery.
 gallery_sources = [strict_objects.get(source, source) for source in source_files if source != 'app/Glob2.cpp']
 gallery_sources += local.Object('MobileGalleryHarness.o', '#tools/MobileGalleryHarness.cpp')
-local.Alias('mobile-gallery', local.Program('mobile-gallery', gallery_sources))
+local.Alias('mobile-gallery', development_program('mobile-gallery', gallery_sources))
 
 # Original-derived skin comparison and full game render diagnostics.
-skin_preview = local.Program('skin-preview',
+skin_preview = development_program('skin-preview',
     local.Object('SkinPreview.o', '#tools/skins/preview.cpp')
     + ['../libgag/src/libgag.a', '../libusl/src/libusl.a'])
 local.Alias('skin-preview', skin_preview)
 # Diagnostic harness inspects view-owned appearance, as engine render tests do.
 skin_game_env = local.Clone()
 skin_game_env.Append(CXXFLAGS=['-fno-access-control'])
-local.Alias('skin-rig-benchmark', local.Program('skin-rig-benchmark',
+local.Alias('skin-rig-benchmark', development_program('skin-rig-benchmark',
     skin_game_env.Object('SkinRigBenchmark.o', '#tools/skins/rig_benchmark.cpp')
     + ['../libgag/src/libgag.a', '../libusl/src/libusl.a']))
-local.Alias('skin-game-preview', local.Program('skin-game-preview',
+local.Alias('skin-game-preview', development_program('skin-game-preview',
     [skin_game_env.Object('SkinGamePreview.o', '#tools/skins/game_preview.cpp')]
     + client_objects + client_libs))

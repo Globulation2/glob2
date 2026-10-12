@@ -5996,3 +5996,39 @@ Filvalg er ikke tilgængeligt.
 Pakkeeksport er ikke tilgængelig.
 [stat band area upkeep]
 Områdevedligeholdelse
+[outcome reason eliminated]
+Kolonien er udslettet.
+[outcome reason opponents defeated]
+Alle modstandere er besejret.
+[outcome reason ally won]
+En allieret koloni har vundet.
+[outcome reason prestige]
+Prestigemålet er nået.
+[outcome reason scenario]
+Scenariets regler afgjorde udfaldet.
+[outcome reason timer]
+Tidsgrænsen er nået.
+[outcome reason probability]
+Tærsklen for sejrsandsynlighed er nået.
+[Destroy this building?]
+Ødelæg denne bygning?
+[Discord community]
+Discord community
+[Globulation 2 Discord]
+Globulation 2 Discord
+[discord community intro]
+Find opponents, ask for help, and share your maps with the Globulation 2 community.
+[discord opens externally]
+Join our Discord server. This opens Discord or your browser.
+[Join Discord]
+Join Discord
+[Copy link]
+Copy link
+[discord opened]
+Discord opened. You can return to the game at any time.
+[discord open failed]
+Could not open Discord. Copy the invitation link and open it in your browser.
+[discord link copied]
+Invitation link copied.
+[discord copy failed]
+Could not copy the link. Select the invitation above to copy it manually.

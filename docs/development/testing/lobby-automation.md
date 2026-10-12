@@ -1,0 +1,66 @@
+# Native lobby automation on macOS
+
+Use deterministic SDL event injection to verify the real custom-game screens,
+then separately check packaged application input on the target platform.
+
+## Reliable approach for this SDL application
+
+Use `CustomGameSetupHarness` to drive the **production SDL event loop** with
+`SDL_PushEvent`. Queue mouse down/up pairs and keyboard events, run the real lobby
+and nested profile screen, then assert the resulting setup and launched game
+state. Drive controls through their keys (`host().bounds("start")`) and render
+screenshots with `paintFrame` / `printScreen` from the production screens. This
+exercises compiled application code, not an HTML mockup.
+
+Run from the repository root:
+
+```sh
+scons --build=build/native-tests -j8 release=1 engine-tests build/native-tests/src/glob2
+python3 test/run_tests.py --build-dir build/native-tests --filter 'CustomGameSetup/*'
+```
+
+Use deterministic interaction assertions for selection, scrolling, dropdown
+cancellation, controller assignments, rules and preview ownership. Keep random
+map generation random; assert invariants, not a particular terrain image.
+A bounded watchdog should fail a stalled event-loop test rather than leave a
+modal screen open indefinitely. Timer callbacks should enqueue events only;
+rendering and game state changes belong on the main thread.
+
+## What this does and does not verify
+
+SDL injection verifies game-side input handling, layout, rendering and launch
+behavior. It does not verify delivery of physical mouse/keyboard input through
+macOS, accessibility permissions, Retina/window coordinate translation, or
+bundle relocation. Separately smoke-test the packaged app's launch and inspect
+its window. Report physical platform-input coverage separately from injected-event coverage.
+
+Random previews now run automatically after a 500 ms edit debounce. The UI driver
+allows the timer to run after selecting Random; it must not click a Generate
+button. The control tests also drive the timer before/after its deadline and
+while a slider is held, and check that a failed attempt is consumed.
+
+## Localized lobby captures
+
+The menu harness can render the three lobby tabs using the actual string table.
+Use the catalog's legacy language code (`br` for Brazilian Portuguese, `si` for
+Slovenian, `cz` for Czech, and `dk` for Danish):
+
+```sh
+scons --build=build/native-tests -j8 release=1 server=0 menu-colony-harness
+mkdir -p artifacts/localized-lobby
+GLOB2_PREVIEW_LANGUAGE=fr build/native-tests/test/MenuColonyHarness capture custom-rules artifacts/localized-lobby/fr-rules.png 1000 700
+GLOB2_PREVIEW_LANGUAGE=ko build/native-tests/test/MenuColonyHarness capture custom-players artifacts/localized-lobby/ko-players.png 1000 700
+GLOB2_PREVIEW_LANGUAGE=ar build/native-tests/test/MenuColonyHarness capture custom artifacts/localized-lobby/ar-map.png 640 480
+```
+
+`custom-rules-all` shows every rule starting from the Blitz ruleset and
+`custom-rules-sandbox` the Summary view of a ruleset away from Standard. The
+capture's bounds check counts controls scrolled out of view, so it fails when a
+list overflows the window; capture those at a larger size. These are static
+rendering checks. Use the custom setup harness above for
+interaction coverage. Font coverage and placeholder checks do not establish
+linguistic accuracy; translation changes also need a wording review.
+
+## Related guides
+
+See [native tests](../../../test/README.md), [custom-game setup](../../features/custom-game-setup/README.md), and [testing overview](README.md).

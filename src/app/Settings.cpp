@@ -115,6 +115,8 @@ void Settings::setTextSizePercent(int percent)
 
 void Settings::load(std::string filename)
 {
+    gpuCompute.reset();
+    rendererBackend = GAGCore::RendererBackend::Auto;
     targetRenderFps = 60;
 #ifdef __EMSCRIPTEN__
 	setGraphicsDetail(false);
@@ -156,6 +158,16 @@ void Settings::load(std::string filename)
 		READ_PARSED_INT(screenWidth);
 		READ_PARSED_INT(screenHeight);
 		READ_PARSED_INT(screenFlags);
+		if (const auto value = parsed.find("gpuCompute"); value != parsed.end())
+		{
+			if (value->second == "0") gpuCompute = false;
+			else if (value->second == "1") gpuCompute = true;
+		}
+        if (const auto backend = parsed.find("rendererBackend"); backend != parsed.end())
+            rendererBackend = GAGCore::parseRendererBackend(backend->second).value_or(GAGCore::RendererBackend::Auto);
+        else if (parsed.count("screenFlags"))
+            rendererBackend = (screenFlags & GraphicContext::PORTABLEGPU) ? GAGCore::RendererBackend::PortableSDL :
+                (screenFlags & GraphicContext::USEGPU) ? GAGCore::RendererBackend::LegacyGL : GAGCore::RendererBackend::Software;
 		READ_PARSED_INT(uiScale);
         if (const auto value = parsed.find("targetRenderFps"); value != parsed.end())
         {
@@ -232,6 +244,10 @@ void Settings::load(std::string filename)
             return result.ec==std::errc{} && result.ptr==text.data()+text.size() && value>=0 && value<=1024;
         };
         const int savedVersion=parsed.count("version") ? std::atoi(parsed["version"].c_str()) : 0;
+        // Stock JSON now omits production costs to inherit the unit catalog.
+        // This exact known identity shares the frozen stock's preference slots;
+        // arbitrary installed/custom catalog identities are never migration targets.
+        constexpr std::string_view inheritedStock = "2c785bf450d48ee267480a599a0fcad53b3ca26f89758793f68ef90657734f71";
         if(savedVersion>=2)
         {
             for(const auto& [key,text]:parsed)
@@ -257,6 +273,13 @@ void Settings::load(std::string filename)
                     buildingAssignments.try_emplace(newKey, std::clamp(old->second, 0, type.semantics.assignmentLimit));
                 if (const auto old = buildingRadii.find(oldKey); old != buildingRadii.end())
                     buildingRadii.try_emplace(newKey, std::clamp(old->second, 0, type.maxUnitStayRange));
+                // Chain the two reviewed stock vocabulary migrations; explicit
+                // preferences already written for a newer identity take precedence.
+                const auto inheritedKey = std::string(inheritedStock) + "/" + type.key;
+                if (const auto old = buildingAssignments.find(newKey); old != buildingAssignments.end())
+                    buildingAssignments.try_emplace(inheritedKey, std::clamp(old->second, 0, type.semantics.assignmentLimit));
+                if (const auto old = buildingRadii.find(newKey); old != buildingRadii.end())
+                    buildingRadii.try_emplace(inheritedKey, std::clamp(old->second, 0, type.maxUnitStayRange));
             }
         }
         else if(savedVersion>=1)
@@ -271,11 +294,19 @@ void Settings::load(std::string filename)
                 const int slot=type.level*2+(type.isBuildingSite?0:1);
                 const std::string key="defaultUnitsAssigned["+std::to_string(type.shortTypeNum)+"]["+std::to_string(slot)+"]";
                 int value=0;
-                if(parsed.count(key) && readPreference(parsed[key],value)) setBuildingAssignment(catalog,type,value);
+                if(parsed.count(key) && readPreference(parsed[key],value))
+                {
+                    setBuildingAssignment(catalog,type,value);
+                    setBuildingAssignment(std::string(inheritedStock),type,value);
+                }
                 if(type.shortTypeNum>=IntBuildingType::EXPLORATION_FLAG && type.shortTypeNum<=IntBuildingType::CLEARING_FLAG)
                 {
                     const auto radiusKey="defaultFlagRadius["+std::to_string(type.shortTypeNum-IntBuildingType::EXPLORATION_FLAG)+"]";
-                    if(parsed.count(radiusKey) && readPreference(parsed[radiusKey],value)) setBuildingRadius(catalog,type,value);
+                    if(parsed.count(radiusKey) && readPreference(parsed[radiusKey],value))
+                    {
+                        setBuildingRadius(catalog,type,value);
+                        setBuildingRadius(std::string(inheritedStock),type,value);
+                    }
                 }
             }
         }
@@ -312,6 +343,7 @@ bool Settings::save(std::string filename)
 		Utilities::streamprintf(stream, "screenWidth=%d\n", screenWidth);
 		Utilities::streamprintf(stream, "screenHeight=%d\n", screenHeight);
 		Utilities::streamprintf(stream, "screenFlags=%d\n", screenFlags);
+        Utilities::streamprintf(stream, "rendererBackend=%s\n", std::string(GAGCore::rendererBackendName(rendererBackend)).c_str());
 		Utilities::streamprintf(stream, "uiScale=%d\n", uiScale);
         Utilities::streamprintf(stream, "interfacePresentation=%s\n", interfacePresentation.c_str());
         Utilities::streamprintf(stream, "menuTheme=%s\n", menuTheme.c_str());
@@ -344,6 +376,8 @@ bool Settings::save(std::string filename)
 		Utilities::streamprintf(stream, "adaptiveZoomDetail=%d\n", adaptiveZoomDetail);
 		Utilities::streamprintf(stream, "smoothFog=%d\n", smoothFog);
 		Utilities::streamprintf(stream, "autosaveGames=%d\n", autosaveGames);
+		if (gpuCompute.has_value())
+			Utilities::streamprintf(stream, "gpuCompute=%d\n", *gpuCompute);
 		Utilities::streamprintf(stream, "experiments=%s\n", experiments.toText().c_str());
 		Utilities::streamprintf(stream, "gameSpeed=%d\n", gameSpeed);
         Utilities::streamprintf(stream,"textSizePercent=%d\n",textSizePercent);

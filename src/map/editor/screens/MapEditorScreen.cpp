@@ -4,6 +4,7 @@
 #include "MessageScreen.h"
 #include "EditorLoadScreen.h"
 #include "OnlineMapsScreen.h"
+#include "SettingsScreen.h"
 #include <Toolkit.h>
 #include <StringTable.h>
 #include <stdexcept>
@@ -32,6 +33,11 @@ void MapEditorScreen::updateExecution(Uint32 tick)
 		endExecute(editor->editingReturnCode());
 		return;
 	}
+    if (editor->takeSettingsRequest()) {
+        editor->suspendInput();
+        screens.push(std::make_unique<SettingsScreen>(&screens));
+        return;
+    }
 	const auto shared = editor->takeShareRequest();
 	if (!shared.empty())
 	{

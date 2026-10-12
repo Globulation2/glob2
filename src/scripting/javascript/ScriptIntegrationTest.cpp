@@ -63,6 +63,33 @@ TEST_CASE("JavaScript observations visibility memory pagination and stale refere
 	game.map.switchFogOfWar();
 	Observations fair(game, 0), full(game, -1);
 	fair.observe();
+	// Capability/cargo queries are explicit so existing script records keep their shape.
+	auto definitions = full.query("unitTypes", {Value::object().set("offset", 1).set("limit", 1)});
+	REQUIRE(definitions.items.size() == 1);
+	CHECK(definitions.items[0].get("id").number == EXPLORER);
+	CHECK(definitions.items[0].get("key").text == "explorer");
+	CHECK(definitions.items[0].get("performanceLevels").items.size() == 4);
+	auto ownRef = Value::object().set("id", unsigned(own->gid)).set("generation", own->scriptIdentity);
+	auto ordinary = full.query("unit", {ownRef});
+	CHECK(ordinary.get("capabilities").kind == Value::Null);
+	CHECK(ordinary.get("cargo").kind == Value::Null);
+	auto behavior = full.query("unitBehavior", {ownRef});
+	CHECK(behavior.get("typeKey").text == "worker");
+	CHECK(behavior.get("foodCapacity").number == 150000);
+	CHECK(behavior.get("cargo").kind == Value::Array);
+	CHECK(behavior.get("cargo").items.empty());
+	std::size_t emptyWork = 0, packetWork = 0;
+	full.query("unitBehavior", {ownRef}, [&](std::size_t nodes, std::size_t) { emptyWork += nodes; });
+	own->receiveCargoPacket(materialIndex(MaterialId::Food), {2, 3});
+	auto laden = full.query("unitBehavior", {ownRef}, [&](std::size_t nodes, std::size_t) { packetWork += nodes; });
+	REQUIRE(laden.get("cargo").items.size() == 1);
+	CHECK(laden.get("cargo").items[0].get("numerator").text == "2");
+	CHECK(laden.get("cargo").items[0].get("denominator").text == "3");
+	CHECK(packetWork >= emptyWork + 8);
+	CHECK_THROWS_AS(full.query("unitBehavior", {ownRef}, [&](std::size_t nodes, std::size_t) {
+		if (nodes == 8) throw std::runtime_error("query budget exhausted");
+	}), std::runtime_error);
+	own->clearCargo();
 	auto all = full.query("units", {});
 	GLOB2_REQUIRE(all.items.size() == 2, "JavaScript contract");
 	auto seen = fair.query("units", {});
@@ -70,6 +97,7 @@ TEST_CASE("JavaScript observations visibility memory pagination and stale refere
 	auto enemyRef =
 		Value::object().set("id", unsigned(enemy->gid)).set("generation", enemy->scriptIdentity);
 	GLOB2_REQUIRE(fair.query("unit", {enemyRef}).kind == Value::Null, "JavaScript contract");
+	CHECK(fair.query("unitBehavior", {enemyRef}).kind == Value::Null);
 	GLOB2_REQUIRE(
 		fair.query("unit", {Value::object().set("id", 65535).set("generation", 1)}).kind ==
 			Value::Null,
@@ -1575,6 +1603,32 @@ TEST_CASE("JavaScript custom building descriptors and orders follow services" * 
     CHECK(buildingVariantDescendsFrom(world.game.buildingsTypes, b->type->prevLevel, b->typeNum));
 }
 
+TEST_CASE("JavaScript production updates retain developer recipes beyond the builtins" * doctest::test_suite("JavaScriptIntegration"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.discovered=true,.clearImmobile=true,.header=true});
+    world.game.gameHeader.setUnitCatalog(UnitCatalog::fromJson(R"({"schemaVersion":1,"units":[{"key":"fixture:producer-unit","extends":"worker"}]})"));
+    const int variant=world.game.buildingsTypes.getFinishedTypeNum("inn");
+    auto definitions=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());
+    auto& production=definitions["variants"][variant]["semantics"]["production"];
+    production["scheduling"]="weighted_committed_job";
+    production["recipes"]={{"fixture:producer-unit",{{"enabled",true},{"duration",20},{"cost",nlohmann::json::object()}}}};
+    production["fallbackUnit"]=WORKER;
+    production["initialRatios"]={{"fixture:producer-unit",7}};
+    world.game.buildingsTypes.loadSnapshotJson(definitions.dump()); world.game.configureBuildingCatalog();
+    auto* building=world.game.addBuilding(4,4,variant,0,1,1); REQUIRE(building);
+    REQUIRE(building->type->semantics.production.enabledUnitMask==0);
+    REQUIRE(building->productionRatio(3)==7);
+    auto ref=Value::object().set("id",unsigned(building->gid)).set("generation",building->scriptIdentity);
+    Value ratios=Value::array(); ratios.items={Value(0),Value(0),Value(0)};
+    auto command=Value::object().set("type","production").set("building",ref).set("ratios",ratios);
+    auto order=Script::order(world.game,0,command); REQUIRE(order);
+    order->sender=0; world.game.executeOrder(order,0);
+    CHECK(building->productionRatio(3)==7);
+    ratios.items[WORKER]=Value(1); command.set("ratios",ratios);
+    CHECK_THROWS(Script::order(world.game,0,command));
+}
+
 TEST_CASE("JavaScript managed controls use capabilities and independent bombing filter" * doctest::test_suite("JavaScriptIntegration"))
 {
     glob2test::HeadlessGlobals globals;
@@ -1817,4 +1871,36 @@ TEST_CASE("JavaScript building clearing materials retain full fixed slots and le
     REQUIRE(descriptor.get("clearingMaterials").items.size()==MaterialCount);
     for(unsigned m=0;m<MaterialCount;++m)
         CHECK(descriptor.get("clearingMaterials").items[m].number==((m%2)!=0));
+}
+
+TEST_CASE("JavaScript flag orders use explicit custom attraction roles" * doctest::test_suite("JavaScriptIntegration"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.discovered=true,.clearImmobile=true,.header=true});
+    auto units=nlohmann::json::parse(world.game.unitCatalog().serialize());
+    auto hybrid=units["units"][WORKER]; hybrid["key"]="fixture:script-flag-hybrid";
+    hybrid["behaviors"]["clear"]=true; hybrid["behaviors"]["explore"]=true;
+    hybrid["behaviors"]["melee"]=true;
+    units["units"].push_back(hybrid);
+    world.game.gameHeader.setUnitCatalog(UnitCatalog::deserialize(units.dump()));
+    auto buildings=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());
+    const int type=world.game.buildingsTypes.getFinishedTypeNum("clearingflag");
+    auto& flag=buildings["variants"][type]; flag["properties"]["zonable"]={0,0,0};
+    for(const auto* role:{"clear","explore","defend"})
+        flag["semantics"]["attractionUnits"][role]={"fixture:script-flag-hybrid"};
+    world.game.buildingsTypes.loadSnapshotJson(buildings.dump()); world.game.configureBuildingCatalog();
+    auto* building=world.addBuilding("clearingflag",8,8); REQUIRE(building);
+    CHECK(building->type->zonable[WORKER]==0); CHECK(building->runtime->attractionRoles==7);
+    auto reference=Value::object().set("id",building->gid).set("generation",building->scriptIdentity);
+    auto command=[&](const char* name){return Value::object().set("type",name).set("building",reference);};
+    CHECK_NOTHROW(order(world.game,0,command("range").set("range",9)));
+    CHECK_NOTHROW(order(world.game,0,command("minimumLevel").set("level",1)));
+    CHECK_NOTHROW(order(world.game,0,command("workerMinimumLevel").set("workerMinimumLevel",1)));
+    CHECK_NOTHROW(order(world.game,0,command("requireBombing").set("requireBombing",true)));
+    auto materials=Value::array(); for(unsigned m=0;m<MaterialCount;++m)materials.items.emplace_back(true);
+    CHECK_NOTHROW(order(world.game,0,command("clearingMaterials").set("materials",materials)));
+    const auto create=order(world.game,0,Value::object().set("type","create").set("buildingType",type)
+        .set("x",20).set("y",20).set("workers",1).set("futureWorkers",1).set("range",9));
+    const auto* parsed=dynamic_cast<const OrderCreate*>(create.get()); REQUIRE(parsed);
+    CHECK(parsed->flagRadius==9);
 }

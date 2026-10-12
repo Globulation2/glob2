@@ -18,7 +18,7 @@ require a paint to advance loading, networking, input handling or persistence.
 DOM text-field changes and actions are delivered in `frame()` before transitions
 and SDL events; `draw()` must not dispatch input or admit screen transitions.
 The **Target render FPS** preference applies to screen and dialog drawing as well
-as matches and the editor; see [render pacing](reference.md#target-render-fps).
+as matches and the editor; see [render pacing](../architecture/rendering.md#target-render-fps).
 
 ## Rules
 
@@ -127,7 +127,9 @@ Element LANFindScreen::build(const Presentation &p)
 ```
 
 `Glob2UI::Screen` paints the live colony background and keeps the frontend theme
-active for its lifetime. `Glob2UI::Dialog`
+active for its lifetime. Startup prepares the colony's first scene before showing
+the menu; colony backdrops never show a scaled screenshot first. Later colony
+scenes are prepared asynchronously. `Glob2UI::Dialog`
 is the same for frontend modals; `Glob2UI::InGameDialog` takes a `Surface`
 (`Match` by default, `Editor` for editor dialogs) and wears the theme
 `themeFor()` maps it to, on every host. On big

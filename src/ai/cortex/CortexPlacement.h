@@ -9,8 +9,8 @@ class Player;
 
 
 // AICortex placement helper. This is the one piece of spatial reasoning the
-// direct (AIImplementation) binding does not inherit from Runtime — see
-// docs/AI/cortex/NEXT.md "Verdict on open question #1". It answers a single
+// direct AIImplementation binding implements itself. See docs/ai/development.md.
+// It answers a single
 // question: "where could I put a building of this type?", ranked best-first.
 //
 // It lives on the observation side of the three-layer split: Cortex::observeWorld()

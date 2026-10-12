@@ -21,7 +21,7 @@ using namespace MapGeneration;
 // passes added the ambient scatter and bank deposits, after playtesters found the map had lost
 // personality with only counted deposits, and then the central lake and the lake-connected switch.
 //
-// THE DESIGN, IN GAME TERMS (docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md):
+// THE DESIGN, IN GAME TERMS (docs/map-generators/game-rules-for-map-design.md):
 // - Home is the peninsula's tip, as far from the core as the peninsula allows. Neighbours are a
 //   fjord apart: close as the crow flies, but ground units must walk the long way round through
 //   the core until they can swim. A map where everyone is near everyone becomes one where

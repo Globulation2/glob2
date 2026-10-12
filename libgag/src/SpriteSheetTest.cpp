@@ -2,14 +2,18 @@
 // GAGCore::Sprite's sheet loader (the <name>.sheet index tools/package_assets.py
 // writes for packaged builds) and its fallback to one file per frame.
 #include "Glob2Test.h"
+#include "HighResolutionInputs.h"
 #include "LossyAlphaFixture.h"
 #include "SpritePatternFixture.h"
 #include "ScopedEnvironment.h"
+#include "SpriteHighResolution.h"
 #include <FileManager.h>
 #include <GraphicContext.h>
 #include <Toolkit.h>
+#include <RenderDevice.h>
 #include <SDL3/SDL.h>
 #include <SDL3_image/SDL_image.h>
+#include <cstring>
 #include <filesystem>
 #include <fstream>
 #include <string>
@@ -114,7 +118,10 @@ TEST_CASE("portable HD uses standalone frames without requesting GL atlases [dis
     frame.close();
     std::ofstream index(hd / "frames.txt");
     index << "GLOB2_HIGHRES 1\n";
-    for (int i = 0; i < 16; ++i) index << "terrain" << i << " 4 2 4 frame.webp -\n";
+    for (int i = 0; i < 16; ++i) {
+        std::filesystem::copy_file(hd / "frame.webp", hd / ("frame" + std::to_string(i) + ".webp"));
+        index << "terrain" << i << " 4 2 4 frame" << i << ".webp -\n";
+    }
     index.close();
     glob2test::ScopedEnvironment assets("GLOB2_ASSET_DIR", scratch.path.string().c_str());
     glob2test::ScopedEnvironment pack("GLOB2_EXPERIMENT_TEXTURE_DIR", hd.string().c_str());
@@ -124,6 +131,39 @@ TEST_CASE("portable HD uses standalone frames without requesting GL atlases [dis
     REQUIRE(sprite.load("data/gfx/terrain"));
     // Each requested frame contributes its base image; no four GL atlas mips.
     CHECK(GAGCore::Sprite::prefetchHighResolution("data/gfx/terrain", 16).size() == 16);
+    {
+        auto inputs = GAGCore::prefetchHighResolutionIncremental("data/gfx/terrain", 16);
+        for (int i = 0; i < 16; ++i) {
+            const auto state = inputs.state(hd.string() + "/frame" + std::to_string(i) + ".webp", false);
+            CHECK((state != GAGCore::AssetLoader::State::Cancelled) == (i < 8));
+        }
+        GAGCore::highResolutionFrameReady("data/gfx/terrain", 8, inputs);
+        CHECK(inputs.state(hd.string() + "/frame8.webp", false) != GAGCore::AssetLoader::State::Cancelled);
+    }
+    for (bool shared : {false, true}) {
+        auto inputs = GAGCore::Sprite::prefetchHighResolution("data/gfx/terrain", 1);
+        auto inspect = GAGCore::Toolkit::assets().requestImage(hd.string() + "/frame0.webp",
+            GAGCore::AssetLoader::Priority::Required, false);
+        REQUIRE(GAGCore::Toolkit::assets().wait(inspect));
+        CHECK(inspect.get()->mips.empty()); // SDL sampling never consumes CPU mip levels.
+        std::weak_ptr<const GAGCore::AssetImage> decoded = inspect.get();
+        auto* pixels = inspect.get()->surface;
+        auto independent = shared ? inspect.retain() : GAGCore::AssetLoader::Handle<GAGCore::AssetImage>{};
+        inspect = {};
+        GAGCore::Sprite prepared;
+        sprite.appendHighResolutionFrame(0, prepared, inputs);
+        REQUIRE(prepared.experimentImages[0]);
+        CHECK(prepared.experimentImages[0]->preparedMips.empty());
+        CHECK(inputs.size() == 0);
+        if (shared) {
+            REQUIRE(independent.get());
+            CHECK(independent.get()->surface == pixels);
+            CHECK(prepared.experimentImages[0]->getSDLSurface() != pixels);
+        } else {
+            CHECK(decoded.expired());
+            CHECK(prepared.experimentImages[0]->getSDLSurface() == pixels);
+        }
+    }
     for (unsigned i = 0; i < 16; ++i) {
         REQUIRE(sprite.baseFrame(i));
         CHECK(sprite.baseFrame(i)->getW() == 16);
@@ -134,7 +174,207 @@ TEST_CASE("portable HD uses standalone frames without requesting GL atlases [dis
 #ifdef HAVE_OPENGL
     CHECK(sprite.highResolutionAtlas == nullptr);
 #endif
+    // A failed optional frame is terminal for this prefetch, rather than
+    // restarting its decode on every readiness poll and hanging publication.
+    std::ofstream missing(hd / "frames.txt");
+    missing << "GLOB2_HIGHRES 1\n";
+    for (int i = 0; i < 16; ++i) missing << "terrain" << i << " 4 2 4 missing.webp -\n";
+    missing.close();
+    GAGCore::Sprite::requestHighResolution(true);
+    const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(10);
+    bool complete = false;
+    while (std::chrono::steady_clock::now() < deadline) {
+        GAGCore::Toolkit::assets().poll();
+        if ((complete = GAGCore::Sprite::pollHighResolution(1))) break;
+        SDL_Delay(1);
+    }
+    REQUIRE(complete);
+    REQUIRE(sprite.baseFrame(0));
+    CHECK(sprite.baseFrame(0)->getW() == 4);
 }
+
+namespace {
+void checkModernStandaloneHD(GAGCore::RendererBackend backend, bool switchDuringDecode = false, bool publishBeforeSwitch = false, bool failUpgrade = false, bool initialLegacy = false)
+{
+    glob2test::TempDir scratch("modern-hd");
+    const auto artwork = scratch.path / "data/gfx";
+    const auto hd = scratch.path / "hd";
+    std::filesystem::create_directories(artwork);
+    std::filesystem::create_directories(hd);
+    std::filesystem::copy_file(glob2test::sourceRoot() / "test/fixtures/image-assets/native-sheet.webp",
+        artwork / "native-sheet.webp");
+    std::ofstream(artwork / "terrain.sheet") << "native-sheet.webp image 0 16 4 2\n";
+    std::ofstream frame(hd / "frame.webp", std::ios::binary);
+    frame.write(reinterpret_cast<const char*>(lossyAlphaFixture::webp), sizeof(lossyAlphaFixture::webp));
+    frame.close();
+    std::ofstream index(hd / "frames.txt");
+    index << "GLOB2_HIGHRES 1\n";
+    for (int i = 0; i < 16; ++i) index << "terrain" << i << " 4 2 4 frame.webp -\n";
+    index.close();
+    glob2test::ScopedEnvironment assets("GLOB2_ASSET_DIR", scratch.path.string().c_str());
+    glob2test::ScopedEnvironment pack("GLOB2_EXPERIMENT_TEXTURE_DIR", hd.string().c_str());
+    const std::string requested(GAGCore::rendererBackendName((switchDuringDecode || publishBeforeSwitch) ? (initialLegacy ? GAGCore::RendererBackend::LegacyGL : GAGCore::RendererBackend::PortableSDL) : backend));
+    glob2test::ScopedEnvironment selection("GLOB2_RENDERER", requested.c_str());
+    glob2test::ToolkitScope toolkit;
+    auto *context = GAGCore::Toolkit::initGraphic(64, 64, 0, "modern standalone HD frames");
+    const auto choices = context->rendererAvailability();
+    const auto choice = std::find_if(choices.begin(), choices.end(), [backend](const auto &entry) { return entry.backend == backend; });
+    REQUIRE(choice != choices.end());
+    if (!choice->available) {
+        MESSAGE("HD backend coverage unavailable: ", choice->reason);
+        return;
+    }
+    if (initialLegacy && context->backendSwitchStatus().active != GAGCore::RendererBackend::LegacyGL) {
+        MESSAGE("Legacy HD boundary coverage unavailable in this build.");
+        return;
+    }
+    GAGCore::Sprite sprite;
+    REQUIRE(sprite.load("data/gfx/terrain"));
+    auto inputs = GAGCore::Sprite::prefetchHighResolution("data/gfx/terrain", 16);
+    REQUIRE(inputs.size() == (initialLegacy ? 20 : 16)); // optional legacy atlas files are absent
+    if (publishBeforeSwitch) {
+        GAGCore::Sprite::setHighResolution(true);
+        REQUIRE(sprite.experimentImages[0]);
+        CHECK(sprite.experimentImages[0]->preparedMips.empty());
+        auto *published = sprite.experimentImages[0];
+        if (failUpgrade) std::filesystem::remove(hd / "frame.webp");
+        context->drawFilledRect(0, 0, context->getW(), context->getH(), GAGCore::Color(0, 0, 0));
+        context->nextFrame();
+        REQUIRE(context->requestBackendSwitch(backend));
+        auto deadline = SDL_GetTicks() + 10000;
+        do { context->nextFrame(); SDL_Delay(1); }
+        while (context->backendSwitchStatus().active != backend && SDL_GetTicks() < deadline);
+        REQUIRE(context->backendSwitchStatus().active == backend);
+        CHECK(sprite.experimentImages[0] == published);
+        CHECK_FALSE(GAGCore::Sprite::pollHighResolution(0));
+        bool complete = false;
+        while (!(complete = GAGCore::Sprite::pollHighResolution(1)) && SDL_GetTicks() < deadline) {
+            CHECK(sprite.experimentImages[0] == published);
+            GAGCore::Toolkit::assets().poll(); SDL_Delay(1);
+        }
+        REQUIRE(complete);
+        REQUIRE(sprite.experimentImages[0]);
+        if (failUpgrade) CHECK(sprite.experimentImages[0] == published);
+        else CHECK(sprite.experimentImages[0]->preparedMips.size() == 5);
+        const auto submitted = GAGCore::Toolkit::assets().metrics().submitted;
+        for (int repeat = 0; repeat < 3; ++repeat) GAGCore::Sprite::refreshHighResolutionForRenderer();
+        CHECK(GAGCore::Toolkit::assets().metrics().submitted == submitted);
+        REQUIRE(context->requestBackendSwitch(GAGCore::RendererBackend::PortableSDL));
+        deadline = SDL_GetTicks() + 10000;
+        do { context->nextFrame(); SDL_Delay(1); }
+        while (context->backendSwitchStatus().active != GAGCore::RendererBackend::PortableSDL && SDL_GetTicks() < deadline);
+        REQUIRE(context->backendSwitchStatus().active == GAGCore::RendererBackend::PortableSDL);
+        while (!(complete = GAGCore::Sprite::pollHighResolution(1)) && SDL_GetTicks() < deadline) {
+            GAGCore::Toolkit::assets().poll(); SDL_Delay(1);
+        }
+        REQUIRE(complete); REQUIRE(sprite.experimentImages[0]);
+        CHECK(sprite.experimentImages[0]->getW() == 16);
+        CHECK(sprite.experimentImages[0]->getH() == 8);
+        context->drawSurface(0, 0, 4, 2, sprite.experimentImages[0]);
+        // Portable SDL clears its backbuffer after presentation. Inspect the
+        // submitted artwork before presenting, as its capture contract requires.
+        context->renderer->flush();
+        std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> pixels(context->renderer->capture(), SDL_DestroySurface);
+        REQUIRE(pixels);
+        bool visible = false;
+        for (int y = 0; y < 2; ++y) for (int x = 0; x < 4; ++x) {
+            Uint8 red, green, blue, alpha;
+            Uint32 pixel = 0;
+            std::memcpy(&pixel, static_cast<Uint8*>(pixels->pixels) + y*pixels->pitch + x*4, 4);
+            SDL_GetRGBA(pixel, SDL_GetPixelFormatDetails(pixels->format), nullptr, &red, &green, &blue, &alpha);
+            visible = visible || red || green || blue;
+        }
+        CHECK(visible);
+        return;
+    }
+    if (switchDuringDecode) {
+        CHECK_FALSE(context->rendererCapabilities().textureMipmaps);
+        context->drawFilledRect(0, 0, context->getW(), context->getH(), GAGCore::Color(0, 0, 0));
+        context->nextFrame();
+        REQUIRE(context->requestBackendSwitch(backend));
+        const auto deadline = SDL_GetTicks() + 5000;
+        do { context->nextFrame(); SDL_Delay(1); }
+        while (context->backendSwitchStatus().active != backend && SDL_GetTicks() < deadline);
+        REQUIRE(context->backendSwitchStatus().active == backend);
+        bool ready = false;
+        while (!(ready = GAGCore::highResolutionFrameReady("data/gfx/terrain", 0, inputs)) && SDL_GetTicks() < deadline) {
+            GAGCore::Toolkit::assets().poll(); SDL_Delay(1);
+        }
+        REQUIRE(ready);
+    }
+    REQUIRE(context->backendSwitchStatus().requested == backend);
+    REQUIRE(context->backendSwitchStatus().active == backend);
+    REQUIRE(context->rendererCapabilities().textureFiltering);
+    REQUIRE(context->rendererCapabilities().textureMipmaps);
+    // Modern devices intentionally clear both legacy option bits.
+    CHECK((context->getOptionFlags() & (GAGCore::GraphicContext::USEGPU |
+        GAGCore::GraphicContext::PORTABLEGPU)) == 0);
+    auto inspect = GAGCore::Toolkit::assets().requestImage(hd.string() + "/frame.webp",
+        GAGCore::AssetLoader::Priority::Required, true);
+    REQUIRE(GAGCore::Toolkit::assets().wait(inspect));
+    REQUIRE(inspect.get()->mips.size() == 5);
+    CHECK(inspect.get()->mips.front().width == 16);
+    CHECK(inspect.get()->mips.front().height == 8);
+    CHECK(inspect.get()->mips.back().width == 1);
+    CHECK(inspect.get()->mips.back().height == 1);
+    inspect = {};
+    GAGCore::Sprite prepared;
+    sprite.appendHighResolutionFrame(0, prepared, inputs);
+    REQUIRE(prepared.experimentImages[0]);
+    REQUIRE(prepared.experimentImages[0]->preparedMips.size() == 5);
+    CHECK(prepared.experimentImages[0]->preparedMips.back().width == 1);
+    if (switchDuringDecode) {
+        context->drawSurface(0, 0, 4, 2, prepared.experimentImages[0]);
+        context->nextFrame();
+        REQUIRE(context->renderDevice());
+        GAGCore::CaptureRequest capture;
+        std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> pixels(
+            context->renderDevice()->captureSynchronously(capture), SDL_DestroySurface);
+        REQUIRE(pixels);
+        bool visible = false;
+        for (int y = 0; y < 2; ++y) for (int x = 0; x < 4; ++x) {
+            Uint32 value = 0;
+            std::memcpy(&value, static_cast<Uint8*>(pixels->pixels) + y*pixels->pitch + x*4, 4);
+            Uint8 red, green, blue, alpha;
+            SDL_GetRGBA(value, SDL_GetPixelFormatDetails(pixels->format), nullptr, &red, &green, &blue, &alpha);
+            visible = visible || red || green || blue;
+        }
+        CHECK(visible);
+    } else {
+        for (unsigned i = 0; i < 16; ++i) {
+            REQUIRE(sprite.baseFrame(i));
+            CHECK(sprite.baseFrame(i)->getW() == 16);
+            CHECK(sprite.baseFrame(i)->getH() == 8);
+            CHECK(sprite.baseFrame(i)->preparedMips.size() == 5);
+            CHECK(sprite.getW(i) == 4);
+            CHECK(sprite.getH(i) == 2);
+        }
+    }
+#ifdef HAVE_OPENGL
+    CHECK(sprite.highResolutionAtlas == nullptr);
+#endif
+}
+}
+TEST_CASE("portable HD prefetch upgrades across a live programmable GL switch [display][writes-preferences]") {
+    checkModernStandaloneHD(GAGCore::RendererBackend::ProgrammableGL, true);
+}
+TEST_CASE("published portable HD upgrades after a live GL switch and survives switching back [display][writes-preferences]") {
+    checkModernStandaloneHD(GAGCore::RendererBackend::ProgrammableGL, false, true);
+}
+TEST_CASE("legacy HD without retained CPU levels restores authored mips on a live GL device switch [display][writes-preferences]") {
+    checkModernStandaloneHD(GAGCore::RendererBackend::ProgrammableGL, false, true, false, true);
+}
+TEST_CASE("failed published HD mip upgrade retains valid artwork without retry [display][writes-preferences]") {
+    checkModernStandaloneHD(GAGCore::RendererBackend::ProgrammableGL, false, true, true);
+}
+TEST_CASE("programmable GL retains standalone HD authored mips [display]") {
+    checkModernStandaloneHD(GAGCore::RendererBackend::ProgrammableGL);
+}
+#ifndef __EMSCRIPTEN__
+TEST_CASE("SDL GPU retains standalone HD authored mips [display]") {
+    checkModernStandaloneHD(GAGCore::RendererBackend::SDLGPU);
+}
+#endif
 
 #ifdef HAVE_OPENGL
 TEST_CASE("independently encoded lossy HD atlases keep exact frame alpha [display]") {
@@ -195,6 +435,69 @@ TEST_CASE("independently encoded lossy HD atlases keep exact frame alpha [displa
     REQUIRE(complete);
     CHECK(sprite.experimentImages[0] != previous);
     CHECK(sprite.highResolutionAtlas != nullptr);
+    const auto generation = GAGCore::Toolkit::assets().sourceGeneration();
+    auto *published = sprite.experimentImages[0];
+    for (int i = 0; i < 4; ++i) GAGCore::Sprite::requestHighResolution(true);
+    CHECK(GAGCore::Sprite::pollHighResolution(0));
+    CHECK(GAGCore::Toolkit::assets().sourceGeneration() == generation);
+    CHECK(sprite.experimentImages[0] == published);
+    GAGCore::Sprite::setHighResolution(true);
+    CHECK(GAGCore::Toolkit::assets().sourceGeneration() != generation);
+    CHECK(sprite.experimentImages[0] != published);
+    // Cancellation must release staging inputs without publishing a partial sprite.
+    {
+        glob2test::ScopedEnvironment disabledPack("GLOB2_EXPERIMENT_TEXTURE_DIR", hd.string().c_str());
+        glob2test::unsetEnv("GLOB2_EXPERIMENT_TEXTURE_DIR");
+        GAGCore::Sprite::requestHighResolution(false);
+    }
+    GAGCore::Sprite::requestHighResolution(true);
+    // An explicit experimental directory forces HD even with the preference
+    // disabled. Remove that override while testing ordinary cancellation.
+    {
+        glob2test::ScopedEnvironment disabledPack("GLOB2_EXPERIMENT_TEXTURE_DIR", hd.string().c_str());
+        glob2test::unsetEnv("GLOB2_EXPERIMENT_TEXTURE_DIR");
+        GAGCore::Sprite::requestHighResolution(false);
+        const auto cancellationDeadline = std::chrono::steady_clock::now() + std::chrono::seconds(10);
+        bool cancelled = false;
+        while (std::chrono::steady_clock::now() < cancellationDeadline) {
+            cancelled = GAGCore::Toolkit::pollAssets(2);
+            if (cancelled) break;
+            SDL_Delay(1);
+        }
+        REQUIRE(cancelled);
+        CHECK(sprite.highResolutionAtlas == nullptr);
+        CHECK(sprite.experimentImages[0] == nullptr);
+    }
+    for (int toggle = 0; toggle < 3; ++toggle) {
+        GAGCore::Sprite::setHighResolution(true);
+        REQUIRE(sprite.highResolutionAtlas != nullptr);
+        REQUIRE(sprite.experimentImages[0] != nullptr);
+        auto* surface = sprite.experimentImages[0]->getSDLSurface();
+        for (int y = 0; y < lossyAlphaFixture::height; ++y)
+            for (int x = 0; x < lossyAlphaFixture::width; ++x) {
+                Uint8 r, g, b, a;
+                REQUIRE(SDL_ReadSurfacePixel(surface, x, y, &r, &g, &b, &a));
+                CHECK(a == lossyAlphaFixture::alpha[y * lossyAlphaFixture::width + x]);
+            }
+        glob2test::ScopedEnvironment disabledPack("GLOB2_EXPERIMENT_TEXTURE_DIR", hd.string().c_str());
+        glob2test::unsetEnv("GLOB2_EXPERIMENT_TEXTURE_DIR");
+        GAGCore::Sprite::setHighResolution(false);
+    }
+    // Missing optional mips preserve the valid standalone HD frames.
+    std::filesystem::remove(hd / "terrain-atlas-mip1.webp");
+    GAGCore::Sprite::setHighResolution(true);
+    CHECK(sprite.highResolutionAtlas == nullptr);
+    REQUIRE(sprite.experimentImages[0] != nullptr);
+    // An invalid supplied mip preserves the established native-art fallback.
+    std::filesystem::copy_file(hd / "frame.webp", hd / "terrain-atlas-mip1.webp");
+    GAGCore::Sprite::setHighResolution(true);
+    CHECK(sprite.highResolutionAtlas == nullptr);
+    CHECK(sprite.experimentImages[0] == nullptr);
+    std::filesystem::copy_file(fixtures / "terrain-atlas-mip1.webp", hd / "terrain-atlas-mip1.webp",
+        std::filesystem::copy_options::overwrite_existing);
+    GAGCore::Sprite::setHighResolution(true);
+    REQUIRE(sprite.highResolutionAtlas != nullptr);
+    REQUIRE(sprite.experimentImages[0] != nullptr);
 }
 #endif
 

@@ -1,6 +1,18 @@
 import { displayMessage } from '../i18n.tsx';
 import { translateError } from '../i18n.tsx';
 import { t, useLocale, RichMessage } from '../i18n.tsx';
+import {
+  LibraryHeader,
+  LibraryNav,
+  LibraryFilters,
+  LibraryField,
+  LibraryGrid,
+  LibraryCard,
+  LibraryResults,
+  LibraryEmpty,
+  useLibrarySearch,
+} from '../components/library.tsx';
+import { GameArt } from '../art.tsx';
 import { useState } from 'react';
 import type { SetInfo, SetList, SetDraft, SetDraftSummary, SetPackage } from '@glob2/protocol';
 import { request } from '../api.ts';
@@ -16,16 +28,17 @@ export function SetLibrary({ mine = false }: { mine?: boolean }) {
     [sort, setSort] = useState('newest'),
     [kind, setKind] = useState(''),
     [license, setLicense] = useState('');
+  const [query, setQuery] = useState('');
   const [cursor, setCursor] = useState('');
   const [draftCursor, setDraftCursor] = useState(''),
     [draftPages, setDraftPages] = useState<SetDraftSummary[]>([]);
   const data = useLoad(
     (signal) =>
       request<SetList>('GET', '/api/v1/sets', {
-        query: { q, sort, kind, license, owner: mine ? 'me' : undefined, cursor },
+        query: { q: query, sort, kind, license, owner: mine ? 'me' : undefined, cursor },
         signal,
       }),
-    [q, sort, kind, license, mine, cursor],
+    [query, sort, kind, license, mine, cursor, account?.id],
   );
   const drafts = useLoad(
     (signal) =>
@@ -43,40 +56,62 @@ export function SetLibrary({ mine = false }: { mine?: boolean }) {
   ].filter(
     (d, i, all) => all.findIndex((other) => other.id === d.id) === i && !d.publishedVersionId,
   );
+  const applySearch = useLibrarySearch(q, query, (value) => {
+    setQuery(value);
+    setCursor('');
+  });
+  const reset = () => {
+    setQ('');
+    setQuery('');
+    setKind('');
+    setLicense('');
+    setSort('newest');
+    setCursor('');
+  };
+  const filtered = Boolean(query || kind || license);
   return (
-    <section className="set-library">
-      <header className="set-heading">
-        <div>
-          <h1>{mine ? t('My sets') : t('Terrain & resource sets')}</h1>
-          <p>{t('Build a consistent world with custom terrain, resources, and artwork.')}</p>
-        </div>
-        <div>
-          <Link to={mine ? '/sets' : '/sets/mine'}>
-            {mine ? t('Browse library') : t('My sets')}
-          </Link>
-          <Link className="button" to="/sets/new">
-            {t('Create a set')}
-          </Link>
-          <Link className="button" to="/terrain-studio">
-            {t('Create with AI')}
-          </Link>
-        </div>
-      </header>
+    <section className="set-library library-page">
+      <LibraryHeader
+        art="wood"
+        title={mine ? t('My sets') : t('Terrain & resource sets')}
+        description={t('Build a consistent world with custom terrain, resources, and artwork.')}
+        actions={
+          <>
+            <Link className="btn primary" to="/sets/new">
+              {t('Create a set')}
+            </Link>
+            <Link className="btn" to="/terrain-studio">
+              {t('Create with AI')}
+            </Link>
+          </>
+        }
+      />
+      <LibraryNav label={t('Terrain & resource sets')}>
+        <Link to="/sets" className={mine ? '' : 'on'} aria-current={mine ? undefined : 'page'}>
+          {t('Browse')}
+        </Link>
+        <Link to="/sets/mine" className={mine ? 'on' : ''} aria-current={mine ? 'page' : undefined}>
+          {t('My sets')}
+        </Link>
+      </LibraryNav>
       {isModerator(account) && <Link to="/sets/reports">{t('Moderation reports')}</Link>}
-      <div className="set-filters">
-        <label>
-          {t('Search')}
+      <LibraryFilters
+        onSubmit={(event) => {
+          event.preventDefault();
+          applySearch();
+        }}
+      >
+        <LibraryField label={t('Search')} search>
           <input
+            type="search"
             value={q}
             onChange={(e) => {
               setQ(e.target.value);
-              setCursor('');
             }}
             placeholder={t('Theme, title or creator')}
           />
-        </label>
-        <label>
-          {t('Contents')}
+        </LibraryField>
+        <LibraryField label={t('Contents')}>
           <select
             value={kind}
             onChange={(e) => {
@@ -89,9 +124,8 @@ export function SetLibrary({ mine = false }: { mine?: boolean }) {
             <option value="resource">{t('Resources')}</option>
             <option value="both">{t('Both')}</option>
           </select>
-        </label>
-        <label>
-          {t('License')}
+        </LibraryField>
+        <LibraryField label={t('License')}>
           <select
             value={license}
             onChange={(e) => {
@@ -103,9 +137,8 @@ export function SetLibrary({ mine = false }: { mine?: boolean }) {
             <option value="CC0-1.0">{t('CC0')}</option>
             <option value="CC-BY-4.0">{t('CC BY')}</option>
           </select>
-        </label>
-        <label>
-          {t('Sort')}
+        </LibraryField>
+        <LibraryField label={t('Sort')}>
           <select
             value={sort}
             onChange={(e) => {
@@ -113,12 +146,22 @@ export function SetLibrary({ mine = false }: { mine?: boolean }) {
               setCursor('');
             }}
           >
-            {['newest', 'updated', 'likes', 'downloads'].map((x) => (
-              <option key={x}>{x}</option>
+            {[
+              ['newest', t('Newest')],
+              ['updated', t('Recently updated')],
+              ['likes', t('Most liked')],
+              ['downloads', t('Most downloaded')],
+            ].map(([value, label]) => (
+              <option key={value} value={value}>
+                {label}
+              </option>
             ))}
           </select>
-        </label>
-      </div>
+        </LibraryField>
+        <button type="button" onClick={reset}>
+          {t('Reset filters')}
+        </button>
+      </LibraryFilters>
       {mine && (
         <div className="set-drafts" aria-label={t('Your drafts')}>
           <h2>{t('Drafts')}</h2>
@@ -142,26 +185,40 @@ export function SetLibrary({ mine = false }: { mine?: boolean }) {
           )}
         </div>
       )}
-      {data.status === 'loading' ? (
-        <p role="status">{t('Loading sets…')}</p>
-      ) : data.status === 'error' ? (
-        <p role="alert">{translateError(data.error)}</p>
-      ) : (
-        <>
-          <div className="set-cards">
-            {data.data.items.map((s) => (
-              <SetCard key={s.id} set={s} />
-            ))}
-          </div>
-          {!data.data.items.length && (
-            <p>{t('No sets found. Try another search or create the first one.')}</p>
-          )}
-          {data.data.nextCursor && (
-            <button onClick={() => setCursor(data.data.nextCursor ?? '')}>{t('Next page')}</button>
-          )}
-          {cursor && <button onClick={() => setCursor('')}>{t('First page')}</button>}
-        </>
-      )}
+      <LibraryResults count={(data) => data.items.length} load={data} retry={data.reload}>
+        {(result) => (
+          <>
+            {result.items.length ? (
+              <LibraryGrid>
+                {result.items.map((set) => (
+                  <SetCard key={set.id} set={set} />
+                ))}
+              </LibraryGrid>
+            ) : (
+              <LibraryEmpty
+                art="wood"
+                action={
+                  filtered ? (
+                    <button onClick={reset}>{t('Clear filters')}</button>
+                  ) : (
+                    <Link className="btn primary" to="/sets/new">
+                      {t('Create a set')}
+                    </Link>
+                  )
+                }
+              >
+                {filtered
+                  ? t('No results match these filters.')
+                  : t('No sets found. Try another search or create the first one.')}
+              </LibraryEmpty>
+            )}
+            {result.nextCursor && (
+              <button onClick={() => setCursor(result.nextCursor ?? '')}>{t('Next page')}</button>
+            )}
+            {cursor && <button onClick={() => setCursor('')}>{t('First page')}</button>}
+          </>
+        )}
+      </LibraryResults>
     </section>
   );
 }
@@ -169,15 +226,23 @@ function SetCard({ set: s }: { set: SetInfo }) {
   useLocale();
   const latest = s.versions[0];
   return (
-    <article className="set-card">
+    <LibraryCard>
       <Link to={'/sets/' + s.id}>
-        {latest && (
-          <img src={`/api/v1/sets/${s.id}/versions/${latest.id}/preview`} alt="" loading="lazy" />
+        {latest ? (
+          <img
+            className="library-preview"
+            src={`/api/v1/sets/${s.id}/versions/${latest.id}/preview`}
+            alt=""
+            loading="lazy"
+          />
+        ) : (
+          <div className="library-preview library-preview-placeholder">
+            <GameArt name="wood" size={72} />
+          </div>
         )}
         <h2>{s.title}</h2>
       </Link>
-      <p>{s.description}</p>
-      <p>
+      <p className="library-metadata">
         <RichMessage
           source={'By {slot0} · {slot1} terrains · {slot2} resources'}
           slots={{
@@ -189,13 +254,14 @@ function SetCard({ set: s }: { set: SetInfo }) {
           count={Number(latest?.terrainCount ?? 0)}
         />
       </p>
+      <p className="library-description">{s.description}</p>
       <small>
         <RichMessage
           source={'{slot0} likes · {slot1} downloads · {slot2}'}
           slots={{ slot0: s.likes, slot1: s.downloads, slot2: latest?.license }}
         />
       </small>
-    </article>
+    </LibraryCard>
   );
 }
 export function SetDetail({ id }: { id: string }) {

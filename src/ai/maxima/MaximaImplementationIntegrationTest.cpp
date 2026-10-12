@@ -664,6 +664,7 @@ static void directorExecutionRegressions()
     REQUIRE((ai.budget.desired_warriors>0 && ai.budget.warrior_ratio>0));
     const auto birthRatio=[&](int warriors) {
         stat->numberUnitPerType[WARRIOR]=warriors;
+        stat->meleeUnits=warriors; // Synthetic stock warriors have effective melee ability.
         c.managementOrders.clear(); ai.manage_swarm(c,0);
         int ratio=-1;
         for(auto order:c.managementOrders)
@@ -822,6 +823,7 @@ static void economyStaffingRegressions()
     for(int count:{6,5,4})
     {
         stat->numberUnitPerType[WARRIOR]=count;
+        stat->meleeUnits=count; // Keep current stock population capabilities synchronized.
         // The runtime must use the current stats, not the older director sample.
         ai.snapshot.warriors=0;
         ai.manage_swarm(c,0);
@@ -1091,7 +1093,13 @@ static void placementMaintenanceRegressions()
         for(int y=0;y<64;++y)for(int x=0;x<64;++x)
         {
             game.map.setMapDiscovered(x,y,player.team->me);
-            if(x<20||x>=24||y<20||y>=24)game.map.setResourceByIndex(x,y,WOOD,1);
+            if(x<20||x>=24||y<20||y>=24)
+            {
+                game.map.setResourceByIndex(x,y,WOOD,1);
+                // Placement randomizes stock. Equal costs make this fixture's
+                // one-tile entrance expectation independent of the game seed.
+                game.map.setResourceAmount(y*64+x,1);
+            }
         }
         game.map.setNoResource(17,21,0);
         REQUIRE(game.addUnit(17,21,0,WORKER,0,0,0,0));
@@ -1377,6 +1385,7 @@ static void explorerSwarmStaffingRegressions()
     }
     // Reaching demand still disables the stream at every swarm.
     stat->numberUnitPerType[EXPLORER]=ai.budget.desired_explorers;
+    stat->scouts=ai.budget.desired_explorers; // Synthetic stock explorers are mobile scouts.
     for(int id=0;id<3;++id)
     {
         c.managementOrders.clear(); ai.manage_swarm(c,id);

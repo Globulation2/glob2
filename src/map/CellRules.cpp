@@ -101,7 +101,7 @@ std::uint16_t CellRuleTable::add(const Key &key, bool prepare)
 		}
 		m.profileIds.push_back(static_cast<std::uint8_t>(profile));
 		const auto &p = rule.properties;
-		if (p.walkable || (sw && p.swimmable)) m.minimum = std::min(m.minimum, cost.cardinal);
+		if (gradient_kernel::terrainAllowsGround(p,sw)) m.minimum = std::min(m.minimum, cost.cardinal);
 		if (prepare) m.prepare();
 	}
 	rules_.push_back(std::move(rule));

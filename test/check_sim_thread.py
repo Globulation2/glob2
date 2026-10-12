@@ -21,8 +21,8 @@ OUTPUTS = ('game.replay.checksums', 'game.replay', 'final.game')
 
 def scenarios(work, baseline):
     generated = work / 'generated-fixture'
-    execute(baseline, ['--generator', '15', '--map-seed', '4242', '--param', 'width=7',
-                       '--param', 'height=7', '--param', 'teams=4', '--game-seed', '19',
+    execute(baseline, ['--generator', '15', '--map-seed', '4242', '--set', 'width=7',
+                       '--set', 'height=7', '--set', 'teams=4', '--game-seed', '19',
                        '--player', 'maxima', '--player', 'cortex', '--player', 'nicowar',
                        '--player', 'maxima', '--ticks', '1', '--save', 'initial'], generated)
     yield 'new-game', ['--map-file', str(ROOT / 'maps/FourSquares1.map.gz'), '--game-seed', '123',
@@ -37,7 +37,7 @@ def scenarios(work, baseline):
 
 
 def run(binary, args, extra, output):
-    execute(binary, args + extra + ['--telemetry', 'checksums', '--replay', 'true', '--save', 'final'], output)
+    execute(binary, args + extra + ['--telemetry', 'checksums', '--write-replay', '--save', 'final'], output)
     return output
 
 

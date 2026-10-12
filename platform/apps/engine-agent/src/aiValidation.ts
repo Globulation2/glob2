@@ -168,12 +168,13 @@ export async function createAiValidator(
   // Probe the actual engine inside isolation before advertising this job kind.
   await withScratchDir(options.scratchRoot, async (scratch) => {
     await writeFile(join(scratch, 'probe.js'), 'function step() {}');
-    const p = await run(scratch, ['--check-ai-json', '/job/probe.js']);
+    const p = await run(scratch, ['ai', 'check', '--format', 'json', '/job/probe.js']);
     if (p.code !== 0 || !p.stdout.includes('"valid":true'))
       throw Error('Isolated AI validator probe failed: ' + p.stderr.slice(-500));
     await mkdir(join(scratch, 'probe'));
     const game = await run(scratch, [
-      '--run-game',
+      'game',
+      'run',
       '--map-file',
       '/fixtures/two.map.gz',
       '--game-seed',
@@ -227,7 +228,11 @@ export async function createAiValidator(
         await progress?.(report).catch((error) => {
           throw new InfrastructureError(String(error));
         });
-        const checked = await run(scratch, ['--check-ai-json', '/job/source.js'], signal);
+        const checked = await run(
+          scratch,
+          ['ai', 'check', '--format', 'json', '/job/source.js'],
+          signal,
+        );
         if (checked.timedOut || checked.signal)
           throw Error('Startup exceeded the validation resource limits.');
         const checkedJson = JSON.parse(checked.stdout) as {
@@ -262,7 +267,8 @@ export async function createAiValidator(
           const p = await run(
             scratch,
             [
-              '--run-game',
+              'game',
+              'run',
               ...args,
               '--ticks',
               '4096',
@@ -274,8 +280,7 @@ export async function createAiValidator(
               'every:2048',
               '--save',
               'final',
-              '--replay',
-              'true',
+              '--write-replay',
               '--output-dir',
               '/job/' + name,
             ],
@@ -338,7 +343,8 @@ export async function createAiValidator(
           const prepared = await run(
             scratch,
             [
-              '--run-game',
+              'game',
+              'run',
               ...args,
               '--ticks',
               '1',

@@ -2,6 +2,7 @@
 #pragma once
 
 #include <charconv>
+#include <algorithm>
 #include <stdexcept>
 #include <string_view>
 #include <thread>
@@ -11,7 +12,13 @@
 // and match deadlines are independent of this local execution setting.
 inline unsigned defaultComputeThreadCount(unsigned hardware = std::thread::hardware_concurrency())
 {
+#ifdef __EMSCRIPTEN__
+    // Browser workers share a bounded Wasm heap with artwork and encoders;
+    // logical CPU counts on large hosts are not a useful allocation budget.
+    return std::min(hardware ? hardware : 1, 8u);
+#else
     return hardware ? hardware : 1;
+#endif
 }
 
 // Zero represents automatic sizing in application configuration. The explicit

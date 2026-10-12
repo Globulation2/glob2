@@ -34,7 +34,7 @@ class FrontendTheme : public GAGGUI::Style
   private:
 	GAGCore::DrawableSurface *backdropImage();
 	void terrain(GAGCore::DrawableSurface *);
-	bool attempted = false, painted = false;
+	bool attempted = false;
 	std::string fallbackPath;
 	std::unique_ptr<GAGCore::DrawableSurface> fallback, fittedFallback;
 };
