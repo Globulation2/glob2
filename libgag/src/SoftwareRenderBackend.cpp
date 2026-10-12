@@ -109,9 +109,10 @@ class SoftwareRenderBackend final : public RenderBackend
         command.opaque = opaque;
         counts.rasterSnapshotBytes += bytes;
         // Reserve both slots before changing recorder ownership.
-        commands.reserve(std::min(MaximumCommands, std::max(std::size_t(32), commands.size() * 2)));
-        snapshots.reserve(
-            std::min(MaximumCommands, std::max(std::size_t(32), snapshots.size() * 2)));
+        if (commands.size() == commands.capacity())
+            commands.reserve(std::min(MaximumCommands, std::max(std::size_t(32), commands.capacity()*2)));
+        if (snapshots.size() == snapshots.capacity())
+            snapshots.reserve(std::min(MaximumCommands, std::max(std::size_t(32), snapshots.capacity()*2)));
         snapshots.push_back(std::move(pixels));
         commands.push_back(command);
         sourceBytes += bytes;
