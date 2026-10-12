@@ -23,6 +23,8 @@ import subprocess
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+from tools.tournaments.resources import PROFILES
 PATTERNS = ('classic', 'road', 'ice', 'sparse', 'network', 'dense', 'isolated')
 CASE_INTEGER_KEYS = {'size', 'width', 'height', 'swim', 'registry', 'travel', 'cap'}
 CASE_STRING_KEYS = {'pattern', 'costs', 'seeds', 'mode'}
@@ -252,6 +254,7 @@ def write_manifest(args, snapshot, binary, command):
         platform=platform.platform(),
         cpu=args.cpu,
         instrumented=args.instrumented,
+        execution_objective=kernel_execution_objective(args),
         baseline_source_sha256=sha(args.baseline_dir / 'field/TerrainGradient.h'),
         adapter_sha256=sha(args.output / 'baseline_gradient.h'),
         baseline_travel_source_sha256=sha(args.baseline_dir / 'field/TerrainTravel.h'),
@@ -267,6 +270,20 @@ def write_manifest(args, snapshot, binary, command):
     (args.output / 'manifest.json').write_text(
         json.dumps(manifest, indent=2, default=str) + '\n'
     )
+
+
+def kernel_execution_objective(args):
+    """A standalone sequential kernel has no application resource resolver."""
+    return {'requested_execution_profile': getattr(args, 'execution_profile', 'fast-simulation'),
+            'execution_policy_applied': False,
+            'reason': 'Standalone CPU kernel harness, not an engine CLI or session; profile is objective metadata only.',
+            'cpu_ids': [args.cpu] if args.cpu is not None else None,
+            'cpu_enforcement': 'taskset_single_cpu' if args.cpu is not None else 'not_enforced',
+            'compute_participants': 1,
+            'memory_planning_bytes': None,
+            'backend': args.backend, 'algorithm': 'buckets', 'verification': 'independent_heap_oracle',
+            'repeats': args.repeats,
+            'input_scope': 'Each command and sample records fixture configuration/seed; repetition -1 is cold.'}
 
 
 def run_cases(args, binary, matrix):
@@ -323,6 +340,8 @@ def parse_args():
     parser.add_argument('--flags', default='-O3 -DNDEBUG -std=c++20')
     parser.add_argument('--scalar', action='store_true', help='Legacy build-time scalar reference')
     parser.add_argument('--backend', choices=('cpu','scalar','sse2','neon'), default='cpu', help='Select a CPU kernel at runtime in this standalone harness; use game run for GPU comparisons')
+    parser.add_argument('--execution-profile', choices=PROFILES, default='fast-simulation',
+                        help='Requested objective metadata only; this standalone kernel does not resolve engine profiles')
     parser.add_argument('--instrumented', action='store_true',
                         help='collect counters/allocations; never use these timings for performance claims')
     parser.add_argument('--cpu', type=int, help='pin benchmark subprocess to a CPU')
@@ -335,6 +354,8 @@ def parse_args():
         parser.error('--repeats must be positive.')
     if args.cpu is not None and args.cpu < 0:
         parser.error('--cpu must be non-negative.')
+    if args.cpu is not None and hasattr(os, 'sched_getaffinity') and args.cpu not in os.sched_getaffinity(0):
+        parser.error('--cpu is outside the observed caller allocation.')
     return args
 
 

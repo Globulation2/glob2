@@ -94,6 +94,35 @@ Use the same retained save, seed, animation, viewport, warmup and compute budget
 for `GLOB2_RENDER_EXECUTION=auto`, `serial` and `parallel` in separate processes.
 Both standalone tools apply the launch `--compute-threads auto|N` budget to their
 map executor; keep that budget fixed between modes.
+
+For paired saved-game software measurements, supply a caller-owned CPU mask and
+an owner-inclusive compute participant count within that mask:
+
+```sh
+python3 tools/software_render_benchmark.py \
+  --baseline /absolute/path/to/baseline/software-render-benchmark \
+  --candidate /absolute/path/to/candidate/software-render-benchmark \
+  --save /absolute/path/to/checkpoint.game.gz \
+  --cpu-ids "$BENCH_CPU_IDS" --compute-participants "$BENCH_PARTICIPANTS" \
+  --execution-profile fast-simulation --output artifacts/renderer-pair
+```
+
+Choose `BENCH_CPU_IDS` from the allocation assigned to this experiment; the count
+includes the owner and must not exceed its mask width. The launcher defaults to
+`fast-simulation` intent, pins both children to the same mask, and checks the
+reported resolved plan and actual/frozen participant counts. The named intent
+does not establish calibrated tuning or an optimal worker count. Optional
+`--memory-planning-budget-bytes` records a soft planning budget, not an RSS cap.
+
+For a pre-resource-profile CLI2 baseline harness, add
+`--baseline-execution-compatibility legacy_argv`. It omits the newer profile and
+memory flags but still passes the same existing `--compute-threads` count when a
+mask is supplied. A reported actual count must match; missing legacy plan/count
+markers remain explicitly unverified. Use `--execution-compatibility legacy_argv`
+only when both harnesses require that compatibility. Non-CLI2 harnesses are not
+supported by this compatibility mode; unsupported arguments fail rather than
+triggering silent fallback. Existing frozen benchmark protocols remain unchanged.
+
 `auto` measures the conservative immediate path; `serial` measures packed CPU
 terrain and recorder overhead; `parallel` requests worker execution where bounds
 permit it. Use `GLOB2_RENDER_WORKERS=1` to test the rendering concurrency ceiling

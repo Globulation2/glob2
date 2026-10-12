@@ -92,13 +92,22 @@ git archive 3266c8e51 src/field src/map/TerrainProperties.h src/map/TerrainType.
   tar -x -C artifacts/gradient-baseline
 python3 tools/gradient_benchmark.py \
   --baseline-dir artifacts/gradient-baseline/src \
-  --output artifacts/gradient-bench --suite representative --repeats 11
+  --output artifacts/gradient-bench --suite representative --repeats 11 \
+  --cpu "$BENCH_CPU_ID" --backend cpu --execution-profile fast-simulation
 ```
 
 The runner copies candidate headers (the field kernels and the header-only
 terrain and resource tables they include) and harness source before compiling, records
 compiler/flags and SHA-256 hashes, and writes raw JSONL samples plus per-case
 median comparisons. `--cpu N` pins the subprocess on Linux. `--backend cpu|scalar|sse2|neon` selects kernels in the same executable.
+Choose `BENCH_CPU_ID` from the caller's assigned allocation, and keep it fixed
+across paired runs. This harness runs one sequential CPU kernel; it has no engine
+session or application resource resolver. `--execution-profile` defaults to
+`fast-simulation` and records the requested objective only. Its manifest explicitly
+states that execution policy is not applied; no profile flag is forwarded to the
+standalone executable. Backend, algorithm, configuration, seed layout, repetitions,
+source hashes and commands remain the actual microbenchmark inputs. An omitted
+CPU pin is recorded as unenforced, not as an exclusive machine-wide allocation.
 `--scalar` retains the older build-time scalar reference switch.
 `--suite full` adds 64² and 256² cases; `--suite smoke` reduces the main timing
 matrix to 32² while retaining the correctness corner cases. The baseline adapter

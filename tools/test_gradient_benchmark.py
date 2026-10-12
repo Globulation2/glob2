@@ -18,7 +18,10 @@ from gradient_benchmark import (
     main,
     prepare_output,
     run_cases,
+    kernel_execution_objective,
+    parse_args,
 )
+from software_render_benchmark import execution_request, validate_execution_output
 
 # Minimal excerpts with each syntax anchor used by the historical adapters.
 # Tests deliberately mutate the hooks: losing instrumentation must fail before
@@ -197,6 +200,61 @@ class BenchmarkProtocolTest(unittest.TestCase):
                 self.assertEqual(call.args[0], [
                     '/unused/benchmark', '--repeats', '2', '--layout', layout, '--size', '32',
                 ])
+
+
+class BenchmarkResourceContracts(unittest.TestCase):
+    def test_kernel_pin_respects_injected_caller_allocation(self):
+        argv = ['gradient_benchmark.py', '--baseline-dir', '/baseline', '--output', '/output', '--cpu', '7']
+        with patch('sys.argv', argv), patch('gradient_benchmark.os.sched_getaffinity', return_value={7, 8}, create=True):
+            self.assertEqual(parse_args().cpu, 7)
+        with patch('sys.argv', argv), patch('gradient_benchmark.os.sched_getaffinity', return_value={8}, create=True), \
+                patch('sys.stderr', io.StringIO()), self.assertRaises(SystemExit):
+            parse_args()
+
+    def test_standalone_kernel_objective_never_claims_engine_policy(self):
+        args = SimpleNamespace(cpu=7, backend='scalar', repeats=11, execution_profile='eco')
+        receipt = kernel_execution_objective(args)
+        self.assertEqual(receipt['requested_execution_profile'], 'eco')
+        self.assertFalse(receipt['execution_policy_applied'])
+        self.assertEqual(receipt['cpu_ids'], [7])
+        self.assertEqual(receipt['compute_participants'], 1)
+        self.assertEqual(receipt['backend'], 'scalar')
+        args.cpu = None
+        self.assertEqual(kernel_execution_objective(args)['cpu_enforcement'], 'not_enforced')
+
+    def test_renderer_allocation_argv_and_explicit_legacy(self):
+        modes = {'baseline': 'legacy_argv', 'candidate': 'require_profile'}
+        receipt = execution_request([3, 4, 19, 20], 'fast-simulation', modes, 2, 1024)
+        self.assertEqual(receipt['flags']['baseline'], ['--compute-threads', '2'])
+        self.assertEqual(receipt['flags']['candidate'], ['--execution-profile', 'fast-simulation',
+                         '--compute-threads', '2', '--memory-budget-bytes', '1024'])
+        self.assertEqual(receipt['participants'], 2)
+        self.assertEqual(validate_execution_output('compute_threads=2\n', receipt, 'baseline')['compute_threads'], 2)
+        with self.assertRaisesRegex(ValueError, 'legacy renderer actual participants'):
+            validate_execution_output('compute_threads=4\n', receipt, 'baseline')
+        for mask, count in [(None, None), ([3], 2), ([3], True), ([3], 0)]:
+            with self.subTest(mask=mask, count=count), self.assertRaises(ValueError):
+                execution_request(mask, 'fast-simulation', modes, count)
+        legacy = execution_request(None, 'fast-simulation', {'baseline': 'legacy_argv', 'candidate': 'legacy_argv'})
+        self.assertEqual(validate_execution_output('old timing only', legacy, 'baseline')['scope'],
+                         'explicit_legacy_resolved_plan_unknown')
+
+    def test_renderer_markers_require_actual_frozen_pool_and_plan(self):
+        receipt = execution_request([3, 19], 'auto', {'candidate': 'require_profile'}, 1, 1024)
+        plan = {'schema_version': 1, 'policy_version': 1, 'requested_execution_profile': 'auto',
+                'selected_execution_profile': 'auto', 'profile_source': 'explicit_profile',
+                'profile_tuning_pending': True,
+                'resolved_resources': {'compute_participants': 1, 'planning_memory_budget_bytes': 1024},
+                'device_capabilities': {'allocated_cpu_participants': 2}}
+        stdout = 'execution_resources=' + json.dumps(plan) + '\ncompute_threads=1\ncompute_resolved_threads=1\n'
+        self.assertEqual(validate_execution_output(stdout, receipt, 'candidate')['compute_threads'], 1)
+        for bad in (stdout.replace('compute_threads=1', 'compute_threads=2'),
+                    stdout.replace('compute_resolved_threads=1', 'compute_resolved_threads=2'),
+                    stdout + 'compute_threads=1\n',
+                    stdout.replace('explicit_profile', 'validated_default'),
+                    stdout.replace('execution_resources=', 'unrecognized=')):
+            with self.subTest(bad=bad), self.assertRaises(ValueError):
+                validate_execution_output(bad, receipt, 'candidate')
 
 
 if __name__ == '__main__':

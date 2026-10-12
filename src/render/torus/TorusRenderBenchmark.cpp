@@ -11,7 +11,7 @@
 #undef private
 #include "GameGUI.h"
 #include "Engine.h"
-#include "ComputeThreads.h"
+#include <nlohmann/json.hpp>
 #include "Team.h"
 #include "Unit.h"
 #include "Player.h"
@@ -267,7 +267,11 @@ static int run(int argc, char **argv)
             gameHeader.setNumberOfPlayers(mapHeader.getNumberOfTeams());
             assert(gui.loadFromHeaders(mapHeader, gameHeader, true, true));
         }
-        gui.game.map.configureCompute(resolveComputeThreadCount(globalContainer->computeThreads));
+        globalContainer->refreshResourcePlan();
+        gui.game.map.configureCompute(globalContainer->resolvedComputeParticipants());
+        std::printf("compute_threads=%zu\ncompute_resolved_threads=%u\nexecution_resources=%s\n",
+            gui.game.map.computeExecutor().threadCount(), globalContainer->resolvedComputeParticipants(),
+            globalContainer->resourcePlanJson().dump().c_str());
         gui.localPlayer = gui.localTeamNo = 0;
         gui.adjustLocalTeam();
         gui.adjustInitialViewport();
