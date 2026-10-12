@@ -1,0 +1,126 @@
+{
+  "tested_commit": "3f4a275d623fe628ebe58d239a3f23229ef31f89",
+  "base": "2d5cf67e8ea20ad8ebb983c9b207e24234e0356c",
+  "environment": "Linux x86_64, GCC13.3, SDL3 external prefix, fast dev -O0 -g1, -j16; native NVIDIA RTX3070Ti Laptop driver2435612928; Chromium SwiftShader compute",
+  "build_command": "GLOB2_GLSLANG=artifacts/gradient-tools/glslang-build/StandAlone/glslang GLOB2_SDL3_PREFIX=/home/bradley/glob2/build/sdl3/prefix python3 tools/dev_build.py unit-tests engine-tests build/linux/client/debug/dev-dev_fast-true-linker-auto/src/glob2 -j16",
+  "results": {
+    "native_unit": "130 cases, 691810 assertions passed with GLOB2_REQUIRE_VULKAN=1",
+    "engine": {
+      "tests": "101",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    "build_contracts": "564 tests passed, 4 skipped using pinned asset-encoder Python; system Python run is not valid tooling evidence",
+    "translations": "5 tests and strict audit passed; no structural errors",
+    "browser": "10 lifecycle tests and36 real SwiftShader compute comparisons passed",
+    "wasm_platform_wait": "actual em++ pthread Node smoke: owner=0 worker=1",
+    "prior_integration_continuations": "16/16 succeeded and all per-tick checksums matched",
+    "final_continuations": [
+      {
+        "label": "continuation-scalar-buckets-1",
+        "exit": 0,
+        "checksums_match": true,
+        "gpu_fields": 0
+      },
+      {
+        "label": "continuation-scalar-buckets-2",
+        "exit": 0,
+        "checksums_match": true,
+        "gpu_fields": 0
+      },
+      {
+        "label": "continuation-scalar-buckets-4",
+        "exit": 0,
+        "checksums_match": true,
+        "gpu_fields": 0
+      },
+      {
+        "label": "continuation-scalar-buckets-8",
+        "exit": 0,
+        "checksums_match": true,
+        "gpu_fields": 0
+      },
+      {
+        "label": "continuation-opencl-frozen8-1",
+        "exit": 0,
+        "checksums_match": true,
+        "gpu_fields": 0
+      },
+      {
+        "label": "continuation-opencl-frozen8-2",
+        "exit": 0,
+        "checksums_match": true,
+        "gpu_fields": 161
+      },
+      {
+        "label": "continuation-opencl-frozen8-4",
+        "exit": 0,
+        "checksums_match": true,
+        "gpu_fields": 157
+      },
+      {
+        "label": "continuation-opencl-frozen8-8",
+        "exit": 0,
+        "checksums_match": true,
+        "gpu_fields": 132
+      },
+      {
+        "label": "continuation-vulkan-frozen8-1",
+        "exit": 0,
+        "checksums_match": true,
+        "gpu_fields": 0
+      },
+      {
+        "label": "continuation-vulkan-frozen8-2",
+        "exit": 0,
+        "checksums_match": true,
+        "gpu_fields": 39
+      },
+      {
+        "label": "continuation-vulkan-frozen8-4",
+        "exit": 0,
+        "checksums_match": true,
+        "gpu_fields": 12
+      },
+      {
+        "label": "continuation-vulkan-frozen8-8",
+        "exit": 0,
+        "checksums_match": true,
+        "gpu_fields": 16
+      },
+      {
+        "label": "continuation-vulkan-jacobi-1",
+        "exit": 0,
+        "checksums_match": true,
+        "gpu_fields": 0
+      },
+      {
+        "label": "continuation-vulkan-jacobi-2",
+        "exit": 0,
+        "checksums_match": true,
+        "gpu_fields": 29
+      },
+      {
+        "label": "continuation-vulkan-jacobi-4",
+        "exit": 0,
+        "checksums_match": true,
+        "gpu_fields": 13
+      },
+      {
+        "label": "continuation-vulkan-jacobi-8",
+        "exit": 3,
+        "checksums_match": null,
+        "gpu_fields": null
+      }
+    ],
+    "canonical_match": "842 scalar checksums match prior canonical trace"
+  },
+  "limitations": [
+    "Vulkan Frozen8 and Jacobi unqualified: reproduced proof failures stop before publication; final Jacobi8 continuation failed",
+    "Resident GPU preparation kernels/stores absent and disabled",
+    "No release performance or Apple/non-Linux device/full threaded-browser qualification",
+    "Hardware syntax/mocked tests do not establish correctness"
+  ],
+  "retained_failure": "artifacts/gradient-proof-vulkan-jacobi-110745987169842-0.bin"
+}

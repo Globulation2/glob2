@@ -1,0 +1,7 @@
+Using CPython 3.11.15
+Resolved 1 package in 271ms
+Downloading clang-format (1.7MiB)
+ Downloaded clang-format
+Prepared 1 package in 235ms
+Installed 1 package in 3ms
+ + clang-format==19.1.7

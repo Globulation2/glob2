@@ -1,0 +1,4 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="2" failures="0" errors="0" skipped="0"><testsuite name="GradientPreparation"><testcase classname="GradientPreparation" name="movement profile rejection rolls back previously appended swim classes" time="0.214675" status="run" />
+  <testcase classname="GradientPreparation" name="rejected corner identities preserve all compiled gradient tables" time="0.208064" status="run" />
+  </testsuite></testsuites>

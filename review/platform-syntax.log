@@ -1,0 +1,6 @@
+windows src/field/VulkanGradient.cpp
+windows src/field/GradientPreparationContractTest.cpp
+android src/field/VulkanGradient.cpp
+android src/field/GradientPreparationContractTest.cpp
+web-threaded src/field/WebGPUGradient.cpp
+All selected syntax checks passed.

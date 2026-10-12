@@ -1,0 +1,250 @@
+[
+  {
+    "fixture": "artifacts/gradient-proof-vulkan-frozen8-108285169698217-0.bin",
+    "width": 128,
+    "height": 128,
+    "cap": 65491,
+    "wrong_cells": 451,
+    "above_oracle": 0,
+    "below_oracle": 451,
+    "lost_goals": 0,
+    "examples": [
+      {
+        "cell": 14208,
+        "seed": 1,
+        "expected": 65339,
+        "actual": 1,
+        "cost": 917514
+      },
+      {
+        "cell": 14209,
+        "seed": 1,
+        "expected": 65349,
+        "actual": 1,
+        "cost": 917514
+      },
+      {
+        "cell": 14210,
+        "seed": 1,
+        "expected": 65359,
+        "actual": 1,
+        "cost": 917514
+      },
+      {
+        "cell": 14211,
+        "seed": 1,
+        "expected": 65369,
+        "actual": 1,
+        "cost": 917514
+      },
+      {
+        "cell": 14212,
+        "seed": 1,
+        "expected": 65379,
+        "actual": 1,
+        "cost": 917514
+      },
+      {
+        "cell": 14213,
+        "seed": 1,
+        "expected": 65389,
+        "actual": 1,
+        "cost": 917514
+      },
+      {
+        "cell": 14262,
+        "seed": 1,
+        "expected": 65409,
+        "actual": 1,
+        "cost": 917514
+      },
+      {
+        "cell": 14263,
+        "seed": 1,
+        "expected": 65399,
+        "actual": 1,
+        "cost": 917514
+      },
+      {
+        "cell": 14264,
+        "seed": 1,
+        "expected": 65389,
+        "actual": 1,
+        "cost": 917514
+      },
+      {
+        "cell": 14265,
+        "seed": 1,
+        "expected": 65379,
+        "actual": 1,
+        "cost": 917514
+      },
+      {
+        "cell": 14266,
+        "seed": 1,
+        "expected": 65369,
+        "actual": 1,
+        "cost": 917514
+      },
+      {
+        "cell": 14267,
+        "seed": 1,
+        "expected": 65359,
+        "actual": 1,
+        "cost": 917514
+      },
+      {
+        "cell": 14268,
+        "seed": 1,
+        "expected": 65349,
+        "actual": 1,
+        "cost": 917514
+      },
+      {
+        "cell": 14271,
+        "seed": 1,
+        "expected": 65323,
+        "actual": 1,
+        "cost": 917514
+      },
+      {
+        "cell": 14272,
+        "seed": 1,
+        "expected": 65333,
+        "actual": 1,
+        "cost": 917514
+      },
+      {
+        "cell": 14273,
+        "seed": 1,
+        "expected": 65343,
+        "actual": 1,
+        "cost": 917514
+      }
+    ]
+  },
+  {
+    "fixture": "artifacts/gradient-proof-vulkan-jacobi-108306663445367-0.bin",
+    "width": 128,
+    "height": 128,
+    "cap": 65491,
+    "wrong_cells": 139,
+    "above_oracle": 139,
+    "below_oracle": 0,
+    "lost_goals": 0,
+    "examples": [
+      {
+        "cell": 75,
+        "seed": 1,
+        "expected": 65361,
+        "actual": 65365,
+        "cost": 917514
+      },
+      {
+        "cell": 76,
+        "seed": 1,
+        "expected": 65357,
+        "actual": 65364,
+        "cost": 917514
+      },
+      {
+        "cell": 77,
+        "seed": 1,
+        "expected": 65353,
+        "actual": 65363,
+        "cost": 917514
+      },
+      {
+        "cell": 78,
+        "seed": 1,
+        "expected": 65349,
+        "actual": 65362,
+        "cost": 917514
+      },
+      {
+        "cell": 79,
+        "seed": 1,
+        "expected": 65345,
+        "actual": 65361,
+        "cost": 917514
+      },
+      {
+        "cell": 80,
+        "seed": 1,
+        "expected": 65341,
+        "actual": 65357,
+        "cost": 917514
+      },
+      {
+        "cell": 15310,
+        "seed": 1,
+        "expected": 65429,
+        "actual": 65432,
+        "cost": 917514
+      },
+      {
+        "cell": 15311,
+        "seed": 1,
+        "expected": 65425,
+        "actual": 65431,
+        "cost": 917514
+      },
+      {
+        "cell": 15312,
+        "seed": 1,
+        "expected": 65421,
+        "actual": 65430,
+        "cost": 917514
+      },
+      {
+        "cell": 15435,
+        "seed": 1,
+        "expected": 65431,
+        "actual": 65434,
+        "cost": 917514
+      },
+      {
+        "cell": 15436,
+        "seed": 1,
+        "expected": 65427,
+        "actual": 65433,
+        "cost": 917514
+      },
+      {
+        "cell": 15437,
+        "seed": 1,
+        "expected": 65423,
+        "actual": 65432,
+        "cost": 917514
+      },
+      {
+        "cell": 15438,
+        "seed": 1,
+        "expected": 65419,
+        "actual": 65431,
+        "cost": 917514
+      },
+      {
+        "cell": 15439,
+        "seed": 1,
+        "expected": 65415,
+        "actual": 65430,
+        "cost": 917514
+      },
+      {
+        "cell": 15440,
+        "seed": 1,
+        "expected": 65411,
+        "actual": 65429,
+        "cost": 917514
+      },
+      {
+        "cell": 15551,
+        "seed": 1,
+        "expected": 65425,
+        "actual": 65435,
+        "cost": 917514
+      }
+    ]
+  }
+]

@@ -1,0 +1,16 @@
+test_current_bundle_is_complete (test_gradient_compute.GradientComputeTest.test_current_bundle_is_complete) ... ok
+test_every_shipped_input_is_checked (test_gradient_compute.GradientComputeTest.test_every_shipped_input_is_checked) ... ok
+test_missing_compiler_argument_is_an_error (test_gradient_compute.GradientComputeTest.test_missing_compiler_argument_is_an_error) ... ok
+test_omitted_receipts_cannot_bypass_verification (test_gradient_compute.GradientComputeTest.test_omitted_receipts_cannot_bypass_verification) ... ok
+test_translation_normalization_is_idempotent_and_preserves_tokens (test_gradient_compute.GradientComputeTest.test_translation_normalization_is_idempotent_and_preserves_tokens) ... ok
+test_unknown_receipts_and_contract_versions_fail (test_gradient_compute.GradientComputeTest.test_unknown_receipts_and_contract_versions_fail) ... ok
+test_accepts_uint32_boundaries_and_only_constant_shifts (test_gradient_preparation_rules.PreparationRuleSourceTest.test_accepts_uint32_boundaries_and_only_constant_shifts) ... ok
+test_committed_outputs_match_restricted_source (test_gradient_preparation_rules.PreparationRuleSourceTest.test_committed_outputs_match_restricted_source) ... ok
+test_rejects_code_and_nonportable_identifiers (test_gradient_preparation_rules.PreparationRuleSourceTest.test_rejects_code_and_nonportable_identifiers) ... ok
+test_rejects_invalid_expression_language (test_gradient_preparation_rules.PreparationRuleSourceTest.test_rejects_invalid_expression_language) ... ok
+test_rejects_invalid_or_ambiguous_schema (test_gradient_preparation_rules.PreparationRuleSourceTest.test_rejects_invalid_or_ambiguous_schema) ... ok
+
+----------------------------------------------------------------------
+Ran 11 tests in 0.191s
+
+OK

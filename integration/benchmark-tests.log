@@ -1,0 +1,17 @@
+test_gradient_adapter_preserves_body_and_instruments_every_hook (test_gradient_benchmark.BaselineAdapterTest.test_gradient_adapter_preserves_body_and_instruments_every_hook) ... ok
+test_missing_or_duplicated_gradient_hooks_fail_closed (test_gradient_benchmark.BaselineAdapterTest.test_missing_or_duplicated_gradient_hooks_fail_closed) ... ok
+test_travel_adapter_preserves_body_and_rejects_counter_drift (test_gradient_benchmark.BaselineAdapterTest.test_travel_adapter_preserves_body_and_rejects_counter_drift) ... ok
+test_unknown_gradient_function_boundary_fails_closed (test_gradient_benchmark.BaselineAdapterTest.test_unknown_gradient_function_boundary_fails_closed) ... ok
+test_custom_cases_cannot_override_paired_protocol (test_gradient_benchmark.BenchmarkProtocolTest.test_custom_cases_cannot_override_paired_protocol) ... ok
+test_custom_cases_validate_types_before_compilation (test_gradient_benchmark.BenchmarkProtocolTest.test_custom_cases_validate_types_before_compilation) ... ok
+test_default_suites_retain_correctness_corners_and_all_profiles (test_gradient_benchmark.BenchmarkProtocolTest.test_default_suites_retain_correctness_corners_and_all_profiles) ... ok
+test_existing_evidence_is_rejected_before_sources_are_modified (test_gradient_benchmark.BenchmarkProtocolTest.test_existing_evidence_is_rejected_before_sources_are_modified) ... ok
+test_failed_case_reports_command_and_stderr_and_preserves_partial_rows (test_gradient_benchmark.BenchmarkProtocolTest.test_failed_case_reports_command_and_stderr_and_preserves_partial_rows) ... ok
+test_fresh_output_can_be_created_or_precreated (test_gradient_benchmark.BenchmarkProtocolTest.test_fresh_output_can_be_created_or_precreated) ... ok
+test_summary_excludes_cold_samples_and_preserves_both_layouts (test_gradient_benchmark.BenchmarkProtocolTest.test_summary_excludes_cold_samples_and_preserves_both_layouts) ... 1/1 cases
+ok
+
+----------------------------------------------------------------------
+Ran 11 tests in 0.037s
+
+OK

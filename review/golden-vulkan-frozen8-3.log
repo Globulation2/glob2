@@ -1,0 +1,2 @@
+Settings::load("preferences.txt") : error, can't open file.
+verify-match: vulkan-frozen8 gradient failed exact fixed-point proof; fixture artifacts/gradient-proof-vulkan-frozen8-108285169698217-0.bin

@@ -1,0 +1,31 @@
+GLOB2_TEST_BUILD compiler=13.3.0 platform=Linux pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": false, "flags": {"CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/home/bradley/.codex/worktrees/cc21/glob2=.", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H GLOB2_RENDER_SHADER_DIR \\\"/home/bradley/.codex/worktrees/cc21/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC", "LINKFLAGS": "-Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -Wl,-rpath,/home/bradley/glob2/build/sdl3/prefix/lib -Wl,--enable-new-dtags"}, "revision": "3f4a275d623fe628ebe58d239a3f23229ef31f89", "sourceStatus": [], "sourceTreeSha256": "707eb5ada5b28b9d409d96420732cc18cc8e18403bf649215759a1ad734990f6"}
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+src/common/ComputeExecutorHarness.cpp:75:
+TEST SUITE: ComputeExecutor
+TEST CASE:  exclusive slots; nested batches; reuse; errors; barriers and reconfiguration
+
+src/common/ComputeExecutorHarness.cpp:112: MESSAGE: PASS executor: exclusive slots, nested batches, reuse, errors, barriers, reconfiguration
+
+===============================================================================
+src/map/gradient/GradientPipelineHarness.cpp:46:
+TEST SUITE: GradientPipeline
+TEST CASE:  fixed publication; supersession; bounded buffers; scheduling stress; fallback; exceptions and teardown
+
+src/map/gradient/GradientPipelineHarness.cpp:112: MESSAGE: PASS fixed publication, supersession, bounded buffers, scheduling stress, fallback, exceptions and teardown
+
+PASS parallel eager/lazy gradients at 1, 2, 4, 8 threads
+PASS lazy building gradients: paused terrain snapshots, query ordering, equal-cost movement, unreachable cells, toroidal geometry, independent frontiers and rebuilds
+===============================================================================
+src/map/gradient/PathGradientHarness.cpp:395:
+TEST SUITE: PathGradient
+TEST CASE:  boundary; random and exhaustive seeds against the heap oracle
+
+src/map/gradient/PathGradientHarness.cpp:452: MESSAGE: cases=1526 exact_cells=2032787 digest=4997011635117408762
+
+===============================================================================
+[doctest] test cases:    130 |    130 passed | 0 failed | 1015 skipped
+[doctest] assertions: 691810 | 691810 passed | 0 failed |
+[doctest] Status: SUCCESS!

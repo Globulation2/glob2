@@ -1,0 +1,5 @@
+backend "vulkan-jacobi"
+device "NVIDIA GeForce RTX 3070 Ti Laptop GPU"
+driver "2435612928"
+shader "f628549a478f612d15c729e828f030e3f9897c32031af487b76f01fa3fa0456f"
+generation 26

@@ -1,0 +1,13 @@
+test_bad_download_never_becomes_cached (test_moltenvk.MoltenVKTest.test_bad_download_never_becomes_cached) ... ok
+test_corrupted_cache_is_rejected_without_network (test_moltenvk.MoltenVKTest.test_corrupted_cache_is_rejected_without_network) ... ok
+test_extracted_binary_corruption_is_rejected (test_moltenvk.MoltenVKTest.test_extracted_binary_corruption_is_rejected) ... ok
+test_incomplete_or_malformed_package_is_not_published (test_moltenvk.MoltenVKTest.test_incomplete_or_malformed_package_is_not_published) ... ok
+test_invalid_platform_does_not_fetch_runtime (test_moltenvk.MoltenVKTest.test_invalid_platform_does_not_fetch_runtime) ... ok
+test_partial_extraction_is_not_published_and_can_retry (test_moltenvk.MoltenVKTest.test_partial_extraction_is_not_published_and_can_retry) ... ok
+test_selects_exact_platform_slice_and_reuses_verified_cache (test_moltenvk.MoltenVKTest.test_selects_exact_platform_slice_and_reuses_verified_cache) ... ok
+test_unrequested_platform_variant_is_not_a_device_slice (test_moltenvk.MoltenVKTest.test_unrequested_platform_variant_is_not_a_device_slice) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.035s
+
+OK

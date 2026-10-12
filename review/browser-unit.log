@@ -1,0 +1,18 @@
+✔ missing WebGPU resolves initialization failure without retaining a device (5.44655ms)
+✔ completion is atomically published after owned async execution (0.825489ms)
+✔ rejection and cancellation resolve exactly one failure completion (1.204545ms)
+✔ shutdown destroys only the compute device (0.667053ms)
+✔ initialization pipeline rejection destroys unpublished device (4.857853ms)
+✔ initialization second shader failure leaves no partially usable generation (0.961783ms)
+✔ device loss during asynchronous initialization retires unpublished device (0.760648ms)
+✔ successful initialization is published atomically and reused (1.43279ms)
+✔ canceled execution destroys all buffers even when error-scope read rejects (1.146016ms)
+✔ late canceled completion retains timing storage until queue retirement (3.803979ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 72.248694

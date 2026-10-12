@@ -1,0 +1,5 @@
+backend "vulkan-frozen8"
+device "NVIDIA GeForce RTX 3070 Ti Laptop GPU"
+driver "2435612928"
+shader "9da3ff77b663ba19c5502f4e93b920786ea3e5820b2f6ffd13ef5ca299e17b85"
+generation 19

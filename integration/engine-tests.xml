@@ -1,0 +1,111 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="101" failures="1" errors="0" skipped="0"><testsuite name="CommandLine"><testcase classname="CommandLine" name="completion scripts contain all command options without running jobs" time="0.00484" status="run" />
+  <testcase classname="CommandLine" name="default launch groups URLs and help paths" time="0.003174" status="run" />
+  <testcase classname="CommandLine" name="every leaf accepts a minimal request and rejects missing required inputs" time="0.030952" status="run" />
+  <testcase classname="CommandLine" name="malformed input fails before handlers" time="0.004095" status="run" />
+  <testcase classname="CommandLine" name="registry describes every executable command and help is asset independent" time="0.065992" status="run" />
+  <testcase classname="CommandLine" name="saved games can use the normal presentation loop with explicit display" time="0.003629" status="run" />
+  <testcase classname="CommandLine" name="typed options equals ordered repeats and literal filenames" time="0.00323" status="run" />
+  </testsuite><testsuite name="GradientBackendSwitch"><testcase classname="GradientBackendSwitch" name="backend switch drains privately and preserves pending publication" time="1.01464" status="run" />
+  <testcase classname="GradientBackendSwitch" name="repeated backend requests coalesce without moving publication ticks" time="0.876792" status="run" />
+  </testsuite><testsuite name="GradientPreparation"><testcase classname="GradientPreparation" name="all supported team masks match the scalar fields" time="1.75825" status="run" />
+  <testcase classname="GradientPreparation" name="cached natural goals follow immobile occupancy and live overlays" time="2.46053" status="run" />
+  <testcase classname="GradientPreparation" name="compact clearing traits preserve custom high-ID property combinations" time="1.32532" status="run" />
+  <testcase classname="GradientPreparation" name="compiled preparation tables preserve rule and catalog interpretation" time="1.37573" status="run" />
+  <testcase classname="GradientPreparation" name="compound passable material goals track depletion visibility and overlapping suppliers" time="1.34327" status="run" />
+  <testcase classname="GradientPreparation" name="concurrent lazy requests publish one complete resource field" time="1.21957" status="run" />
+  <testcase classname="GradientPreparation" name="concurrent preparation owns buffers and serializes dirty cache refresh" time="1.1901" status="run" />
+  <testcase classname="GradientPreparation" name="custom terrain and registry replacement preserve cached and direct seeds" time="1.35306" status="run" />
+  <testcase classname="GradientPreparation" name="explicit clearing overrides farm crop protection but never forbidden paint" time="1.03479" status="run" />
+  <testcase classname="GradientPreparation" name="map dimensions enforce power-of-two exponents before mutation" time="1.14597" status="run" />
+  <testcase classname="GradientPreparation" name="material plane and cache keys retain legacy seven-class identity" time="0.03035" status="run" />
+  <testcase classname="GradientPreparation" name="movement profile rejection rolls back previously appended swim classes" time="0.475479" status="run" />
+  <testcase classname="GradientPreparation" name="mutation and reset boundaries use current state" time="1.27637" status="run" />
+  <testcase classname="GradientPreparation" name="optional cache storage can be unavailable or over budget" time="5.03628" status="run" />
+  <testcase classname="GradientPreparation" name="periodic supplier snapshots subtract reservations and retain overlay seeds" time="1.43241" status="run" />
+  <testcase classname="GradientPreparation" name="published plane registry matches a sweep of live material fields" time="1.1759" status="run" />
+  <testcase classname="GradientPreparation" name="rejected corner identities preserve all compiled gradient tables" time="0.622527" status="run" />
+  <testcase classname="GradientPreparation" name="resource cache tracks cell writes and falls back through mutation bursts" time="6.94231" status="run" />
+  <testcase classname="GradientPreparation" name="seed cells match scalar predicates across policies and changing overlays" time="37.2227" status="run" />
+  <testcase classname="GradientPreparation" name="snapshot material templates refresh changed chunks and accept older snapshots" time="4.0556" status="run" />
+  <testcase classname="GradientPreparation" name="snapshot seeds preserve every periodic kind after the live world changes" time="1.49244" status="run" />
+  <testcase classname="GradientPreparation" name="supplier seed indexing rejects foreign and invalid building IDs in cached and direct fields" time="1.29701" status="run" />
+  <testcase classname="GradientPreparation" name="warm preparation keeps custom supplier unions exclusions penalties and overlays live" time="1.03547" status="run" />
+  </testsuite><testsuite name="src/map/gradient/GradientPreparationTest.cpp"><testcase classname="src/map/gradient/GradientPreparationTest.cpp" name="GradientPreparation/explicit snapshot batches isolate invalid fields and retain exact output" time="1.23701" status="run" />
+  <testcase classname="src/map/gradient/GradientPreparationTest.cpp" name="GradientPreparation/minimal GPU views release source graphs and recover exact CPU fields" time="14.2621" status="run" />
+  <testcase classname="src/map/gradient/GradientPreparationTest.cpp" name="GradientPreparation/minimal view pressure declines without moving original seeds" time="1.19631" status="run" />
+  <testcase classname="src/map/gradient/GradientPreparationTest.cpp" name="GradientPreparation/modified terrain costs remain exact when field obstacles change" time="1.70924" status="run" />
+  </testsuite><testsuite name="src/mcp/MCPTest.cpp"><testcase classname="src/mcp/MCPTest.cpp" name="MCP/HTTP restrictions bounded bodies restart and disconnect cancellation [network]" time="0.053466" status="run" />
+  <testcase classname="src/mcp/MCPTest.cpp" name="MCP/OpenGL capture dimensions orientation cancellation [display][artifacts]" time="4.26717" status="run" />
+  <testcase classname="src/mcp/MCPTest.cpp" name="MCP/SDL GPU capture dimensions orientation cancellation [display][artifacts]" time="3.40605" status="run">
+      <failure message="5 == 1" type="REQUIRE">
+src/mcp/MCPTest.cpp:999:
+REQUIRE( gfx.backendSwitchStatus().active == backend ) is NOT correct!
+  values: REQUIRE( 5 == 1 )
+  logged: Offline shader assets unavailable for vulkan
+
+      </failure>
+    </testcase>
+  <testcase classname="src/mcp/MCPTest.cpp" name="MCP/held input and drag clocks begin at actual dispatch [network]" time="2.65929" status="run" />
+  <testcase classname="src/mcp/MCPTest.cpp" name="MCP/hidden suspension resolves buffered receipts before later work [network]" time="2.1877" status="run" />
+  <testcase classname="src/mcp/MCPTest.cpp" name="MCP/input boundaries preserve observation and cancel truncated batches [network]" time="2.40641" status="run" />
+  <testcase classname="src/mcp/MCPTest.cpp" name="MCP/key events honor SDL keycode options for modifier chords [network]" time="2.4092" status="run" />
+  <testcase classname="src/mcp/MCPTest.cpp" name="MCP/leases input dispatch cancellation viewport and capture [network]" time="2.50084" status="run" />
+  <testcase classname="src/mcp/MCPTest.cpp" name="MCP/pending coordinates cancel when viewport changes before consumption [network]" time="1.77773" status="run" />
+  <testcase classname="src/mcp/MCPTest.cpp" name="MCP/pending keys cancel when UI becomes unavailable before consumption [network]" time="1.94473" status="run" />
+  <testcase classname="src/mcp/MCPTest.cpp" name="MCP/preferences retain desktop defaults and reject malformed ports" time="0.376665" status="run" />
+  <testcase classname="src/mcp/MCPTest.cpp" name="MCP/protocol adapters validate metadata and discover all tools" time="0.020343" status="run" />
+  <testcase classname="src/mcp/MCPTest.cpp" name="MCP/software capture dimensions orientation cancellation [display][artifacts]" time="3.30753" status="run" />
+  <testcase classname="src/mcp/MCPTest.cpp" name="MCP/staged release cancellation does not acknowledge undelivered cleanup [network]" time="2.10493" status="run" />
+  </testsuite><testsuite name="RendererSwitchIntegration"><testcase classname="RendererSwitchIntegration" name="all ordered gameplay and torus backend pairs preserve camera and simulation [display][isolated][writes-preferences][slow]" time="46.0729" status="run" />
+  </testsuite><testsuite name="ScreenExecution"><testcase classname="ScreenExecution" name="a top screen with unsaved work can veto window close" time="0.008009" status="run" />
+  <testcase classname="ScreenExecution" name="additional input follows human dispatch and reports an interrupted prefix" time="0.001826" status="run" />
+  <testcase classname="ScreenExecution" name="cancelled buffered ranges preserve later human text and defer receipt completion" time="0.00169" status="run" />
+  <testcase classname="ScreenExecution" name="screen phases; completion; reuse; quit and compatibility host" time="0.503653" status="run" />
+  </testsuite><testsuite name="SettingsGraphics"><testcase classname="SettingsGraphics" name="GPU local preference preserves graphical and headless defaults" time="0.5849" status="run" />
+  <testcase classname="SettingsGraphics" name="edge scrolling defaults migrate and independent modes round trip" time="0.917603" status="run" />
+  <testcase classname="SettingsGraphics" name="first-launch hand choice persists and migrates existing side preferences" time="0.822426" status="run" />
+  <testcase classname="SettingsGraphics" name="gradient settings preserve explicit variants and CLI precedence" time="0.821196" status="run" />
+  <testcase classname="SettingsGraphics" name="hand-choice screen saves both sides and retains a choice after write failure [writes-preferences]" time="0.491835" status="run" />
+  <testcase classname="SettingsGraphics" name="illustrated hand choices activate through their phone overlay [display][writes-preferences]" time="4.28723" status="run" />
+  <testcase classname="SettingsGraphics" name="legacy preferences migrate and independent effects round trip" time="1.00375" status="run" />
+  <testcase classname="SettingsGraphics" name="render ceiling defaults migrates validates and round trips" time="0.906369" status="run" />
+  <testcase classname="SettingsGraphics" name="renderer preference migrates flags and round trips without startup overrides" time="0.7429" status="run" />
+  <testcase classname="SettingsGraphics" name="text size applies to desktop and touch independently of interface scale" time="0.802466" status="run" />
+  <testcase classname="SettingsGraphics" name="verification environment and explicit CLI override saved preference" time="0.495023" status="run" />
+  </testsuite><testsuite name="SharedWorkerLifecycle"><testcase classname="SharedWorkerLifecycle" name="background saves finish on a worker and remain readable after teardown" time="0.769269" status="run" />
+  <testcase classname="SharedWorkerLifecycle" name="no-AI completed ticks agree across shared worker counts [artifacts]" time="6.73623" status="run" />
+  <testcase classname="SharedWorkerLifecycle" name="pending gradient work survives a save and continues at the same deadlines" time="3.31912" status="run" />
+  <testcase classname="SharedWorkerLifecycle" name="reduced saved AI rosters retire trailing controllers and preserve continuation" time="23.6259" status="run" />
+  <testcase classname="SharedWorkerLifecycle" name="resource catalog import drains deferred material preparation before replacing stocks" time="1.37527" status="run" />
+  </testsuite><testsuite name="WorldSnapshot"><testcase classname="WorldSnapshot" name="AI boundary validates each captured map array before fast reads" time="0.437974" status="run" />
+  <testcase classname="WorldSnapshot" name="AI fast scalar reads preserve checked values and frozen lease isolation" time="0.631205" status="run" />
+  <testcase classname="WorldSnapshot" name="a retained consumer leaves the newest free buffer to absorb only later changes" time="0.800704" status="run" />
+  <testcase classname="WorldSnapshot" name="building snapshots copy shared scalar records and freeze selected stock" time="0.787275" status="run" />
+  <testcase classname="WorldSnapshot" name="capture requirements exclude arrays that no scheduled consumer requests" time="0.621616" status="run" />
+  <testcase classname="WorldSnapshot" name="capture verification rejects writes that bypass the change trackers" time="0.856966" status="run" />
+  <testcase classname="WorldSnapshot" name="catalog refresh survives intervening projections and rules reuse independently" time="0.860276" status="run" />
+  <testcase classname="WorldSnapshot" name="component leases and weak control blocks outlive the owning store" time="0.830575" status="run" />
+  <testcase classname="WorldSnapshot" name="component mutation generations preserve isolation and reuse unchanged arrays" time="0.709599" status="run" />
+  <testcase classname="WorldSnapshot" name="coordinate wrapping preserves signed edges for power of two and general dimensions" time="0.000458" status="run" />
+  <testcase classname="WorldSnapshot" name="explicit observation boundaries refresh paused state and retain old leases" time="0.628892" status="run" />
+  <testcase classname="WorldSnapshot" name="farm paint queries match frozen growth and resource inputs" time="1.0827" status="run" />
+  <testcase classname="WorldSnapshot" name="flat relationship ranges preserve every building list in order" time="0.968548" status="run" />
+  <testcase classname="WorldSnapshot" name="map snapshots bulk copy authoritative records without translation" time="0.658187" status="run" />
+  <testcase classname="WorldSnapshot" name="memory metrics distinguish held epochs from reusable high water capacity" time="0.789812" status="run" />
+  <testcase classname="WorldSnapshot" name="narrow component queries preserve combined tile values and projection defaults" time="0.645984" status="run" />
+  <testcase classname="WorldSnapshot" name="no-op map writes reuse components while changed values remain isolated" time="0.647046" status="run" />
+  <testcase classname="WorldSnapshot" name="on-demand construction feasibility matches live helpers and remains frozen" time="0.905937" status="run" />
+  <testcase classname="WorldSnapshot" name="outcome reasons survive the read boundary without changing simulation state" time="0.937289" status="run" />
+  <testcase classname="WorldSnapshot" name="pooled captures never overwrite a held worker projection" time="1.07309" status="run" />
+  <testcase classname="WorldSnapshot" name="projected terrain lease cannot retain unrelated world components" time="0.653169" status="run" />
+  <testcase classname="WorldSnapshot" name="resource copy metrics include multi-material stock sidecars" time="0.613068" status="run" />
+  <testcase classname="WorldSnapshot" name="reused buffers copy sparse chunks and refresh dense changes contiguously" time="0.808656" status="run" />
+  <testcase classname="WorldSnapshot" name="same tick component expansion preserves narrow leases and captures arrays once" time="0.788173" status="run" />
+  <testcase classname="WorldSnapshot" name="shared entity indices preserve empty slots and canonical record addresses" time="0.87096" status="run" />
+  <testcase classname="WorldSnapshot" name="snapshot capability tables share authoritative immutable catalog data" time="0.600647" status="run" />
+  <testcase classname="WorldSnapshot" name="unit snapshots share authoritative scalar state and remain frozen" time="0.60056" status="run" />
+  <testcase classname="WorldSnapshot" name="vertex changes preserve retained terrain and reuse unchanged versions" time="0.736977" status="run" />
+  <testcase classname="WorldSnapshot" name="warm component buffers stop allocating at a fixed population" time="1.02302" status="run" />
+  <testcase classname="WorldSnapshot" name="worker final lease release synchronizes owner buffer reuse" time="0.092424" status="run" />
+  </testsuite></testsuites>

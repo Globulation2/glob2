@@ -1,0 +1,134 @@
+{
+  "status": "Two team review rounds complete; Vulkan correctness and resident preparation qualification remain blocked",
+  "base": "8862b09302487f68325c87fce9ce99ff6dbe7076",
+  "fetched_master": "2d5cf67e8ea20ad8ebb983c9b207e24234e0356c",
+  "master_integration": "Pinned requested base retained. Newer master also changes ComputeExecutor/settings; merge integration remains unverified.",
+  "source_tree_sha256": "d7c5d1d491cadbc033514bb72eb590b5a9d378f8e6230a2cf95657ee1b09e2d5",
+  "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
+  "compiler": "g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+  "build": "python3 tools/dev_build.py unit-tests engine-tests build/linux/client/debug/dev-dev_fast-true-linker-auto/src/glob2; dev_fast=1 -O0 -g1; SDL3 prefix /home/bradley/glob2/build/sdl3/prefix; -j6 then -j16",
+  "reviews": [
+    "gpu_review: adapter ownership, synchronization, proof errors and browser lifecycle",
+    "runtime_review: captured selection, dispatch, recovery, admission, UI and CLI",
+    "preparation_review: rules, representations, residency model, catalogs, rollback and tooling",
+    "Root integration and cross-review: shader receipt contracts, Apple cache transactions, API pointer bounds, batch references, evidence write errors and actual catalog limits"
+  ],
+  "native_unit": {
+    "cases": 97,
+    "assertions": 553902,
+    "status": "passed; GLOB2_REQUIRE_VULKAN=1",
+    "log": "unit-final.log"
+  },
+  "native_engine": {
+    "cases": 160,
+    "status": "158 isolated cases passed; two newly added fixture initialization failures fixed and both isolated retries passed",
+    "reports": [
+      "engine-isolated.xml",
+      "engine-rollback.xml",
+      "engine-reconciled.xml"
+    ],
+    "focused_final_in_process": "90 cases / 342206 assertions passed; complements isolated evidence",
+    "logs": [
+      "engine-isolated.log",
+      "engine-rollback.log",
+      "engine-final.log",
+      "terrain-capacity-fixture.log"
+    ]
+  },
+  "tooling": {
+    "gradient_shader_and_rules": 10,
+    "moltenvk": 8,
+    "benchmark": 11,
+    "renderer_shader_regressions": 16,
+    "status": "all passed",
+    "documentation": "308 documents, zero errors"
+  },
+  "browser": {
+    "protocol_cases": 10,
+    "real_webgpu_solver_cases": 36,
+    "driver": "Chromium SwiftShader software GPU",
+    "limits": "No full threaded-game/worker integration or hardware browser qualification"
+  },
+  "cross_platform": "Windows/Android Vulkan+preparation contracts and actual threaded em++ WebGPU syntax passed. No native device execution or Apple packaging/signing qualification.",
+  "apple_inputs": "Real pinned macOS and iOS simulator archives selected and receipts checked on Linux; packaging/device execution unverified.",
+  "save_continuation": {
+    "runs": 16,
+    "counts": [
+      1,
+      2,
+      4,
+      8
+    ],
+    "backends": [
+      "scalar/buckets",
+      "opencl/frozen8",
+      "vulkan/frozen8",
+      "vulkan/jacobi"
+    ],
+    "all_512_tick_checksums_match": true,
+    "finalChecksum": 2198223686,
+    "multi_worker_accelerator_gpu_commits": true,
+    "details": "continuation-runs.json"
+  },
+  "golden_replay_runs": [
+    {
+      "label": "golden-scalar-buckets-0",
+      "exit": 0,
+      "full_trace_matches_scalar": true
+    },
+    {
+      "label": "golden-opencl-frozen8-0",
+      "exit": 0,
+      "full_trace_matches_scalar": true
+    },
+    {
+      "label": "golden-vulkan-frozen8-0",
+      "exit": 0,
+      "full_trace_matches_scalar": true
+    },
+    {
+      "label": "golden-vulkan-frozen8-1",
+      "exit": 0,
+      "full_trace_matches_scalar": true
+    },
+    {
+      "label": "golden-vulkan-frozen8-2",
+      "exit": 0,
+      "full_trace_matches_scalar": true
+    },
+    {
+      "label": "golden-vulkan-frozen8-3",
+      "exit": 3,
+      "full_trace_matches_scalar": false
+    },
+    {
+      "label": "golden-vulkan-jacobi-0",
+      "exit": 0,
+      "full_trace_matches_scalar": true
+    },
+    {
+      "label": "golden-vulkan-jacobi-1",
+      "exit": 3,
+      "full_trace_matches_scalar": false
+    }
+  ],
+  "blocking_failures": {
+    "frozen8": "../gradient-proof-vulkan-frozen8-108285169698217-0.bin",
+    "jacobi": "../gradient-proof-vulkan-jacobi-108306663445367-0.bin",
+    "analysis": "proof-analysis.json",
+    "semantics": "fatal original completion ticket; erroneous field never publishes; not CPU recovery or a passing run"
+  },
+  "corrections": [
+    "Invalid validation --save arguments rejected before simulation; corrected matrix retained separately",
+    "Obsolete literal terrain builtin count and overflowing random corner fixture corrected and maximum catalog case passed",
+    "In-process cached-catalog failures require registry isolation; both relevant compatibility cases passed isolated",
+    "Two new rollback tests now initialize explicit HeadlessGlobals and pass isolated"
+  ],
+  "unfinished": [
+    "NVIDIA Vulkan corruption diagnosis and runtime qualification",
+    "Adapter residency stores and production GPU material/clear preparation kernels are absent and disabled",
+    "Release performance gates, full threaded browser games, other device/platform checks",
+    "Per-tick acceptance on affected non-Linux platforms; no hardware correctness claim from mocks or syntax checks"
+  ],
+  "performance": "Functional development evidence only. No release CPU/runtime savings claim or preparation enablement."
+}

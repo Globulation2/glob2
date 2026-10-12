@@ -1,0 +1,2 @@
+Settings::load("preferences.txt") : error, can't open file.
+verify-match: vulkan-jacobi gradient failed exact fixed-point proof; fixture artifacts/gradient-proof-vulkan-jacobi-108306663445367-0.bin

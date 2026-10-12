@@ -1,0 +1,4 @@
+PASS MCP/SDL GPU capture dimensions orientation cancellation [display][artifacts] (3.2s)
+
+1 passed, 0 failed, 0 skipped (3.2s of test time)
+[run_tests] JUnit report: artifacts/gradient-merge/mcp-retry.xml (1 cases)

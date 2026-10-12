@@ -1,0 +1,6 @@
+Settings::load("preferences.txt") : error, can't open file.
+nox::game started
+nox::gui.game.checkSum() = d46f72d8
+automaticEndingGame ended: 512 ticks, 0 minutes, 17 seconds
+GLOB2_GAME_END ticks=512 winner_team=-1 seed=713 map="FourSquares1" orders=0 players=team0:Castor,team1:Cortex,team2:Castor,team3:Cortex
+final: wrote /home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-review/continuation-vulkan-frozen8-2/final.game.gz

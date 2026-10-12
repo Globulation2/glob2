@@ -1,0 +1,5 @@
+PASS GradientPreparation/movement profile rejection rolls back previously appended swim classes (0.3s)
+PASS GradientPreparation/rejected corner identities preserve all compiled gradient tables (0.3s)
+
+2 passed, 0 failed, 0 skipped (0.5s of test time)
+[run_tests] JUnit report: artifacts/gradient-review/engine-rollback.xml (2 cases)

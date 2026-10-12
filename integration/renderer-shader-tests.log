@@ -1,0 +1,21 @@
+test_artifact_manifest_advertises_only_produced_formats (test_renderer_shaders.RendererShaderTest.test_artifact_manifest_advertises_only_produced_formats) ... ok
+test_build_prebuilt_route_preserves_artifacts_without_local_tools (test_renderer_shaders.RendererShaderTest.test_build_prebuilt_route_preserves_artifacts_without_local_tools) ... ok
+test_generated_outputs_are_deterministic (test_renderer_shaders.RendererShaderTest.test_generated_outputs_are_deterministic) ... ok
+test_integer_terrain_contracts (test_renderer_shaders.RendererShaderTest.test_integer_terrain_contracts) ... ok
+test_metal_offline_compilation_receipts_and_tool_lock (test_renderer_shaders.RendererShaderTest.test_metal_offline_compilation_receipts_and_tool_lock) ... ok
+test_native_compiler_version_is_fail_closed (test_renderer_shaders.RendererShaderTest.test_native_compiler_version_is_fail_closed) ... ok
+test_native_translation_is_optional_and_fail_closed (test_renderer_shaders.RendererShaderTest.test_native_translation_is_optional_and_fail_closed) ... ok
+test_prebuilt_bundle_rejects_rewritten_authoritative_sources (test_renderer_shaders.RendererShaderTest.test_prebuilt_bundle_rejects_rewritten_authoritative_sources) ... ok
+test_primitive_matches_sdl_vertex (test_renderer_shaders.RendererShaderTest.test_primitive_matches_sdl_vertex) ... ok
+test_rejects_overlapping_vertex_attributes (test_renderer_shaders.RendererShaderTest.test_rejects_overlapping_vertex_attributes) ... ok
+test_source_identity_and_authoritative_materials (test_renderer_shaders.RendererShaderTest.test_source_identity_and_authoritative_materials) ... ok
+test_source_regeneration_invalidates_old_binaries (test_renderer_shaders.RendererShaderTest.test_source_regeneration_invalidates_old_binaries) ... ok
+test_std140_rig_layout (test_renderer_shaders.RendererShaderTest.test_std140_rig_layout) ... ok
+test_verified_prebuilt_bundle_import_and_tampering (test_renderer_shaders.RendererShaderTest.test_verified_prebuilt_bundle_import_and_tampering) ... ok
+test_webgpu_derives_material_and_separate_samplers (test_renderer_shaders.RendererShaderTest.test_webgpu_derives_material_and_separate_samplers) ... ok
+test_world_and_point_contracts (test_renderer_shaders.RendererShaderTest.test_world_and_point_contracts) ... ok
+
+----------------------------------------------------------------------
+Ran 16 tests in 1.066s
+
+OK

@@ -1,0 +1,1 @@
+{"schema_version":1,"status":"artifact_failure","diagnostic":"vulkan-jacobi gradient failed exact fixed-point proof; fixture artifacts/gradient-proof-vulkan-jacobi-110745987169842-0.bin"}
