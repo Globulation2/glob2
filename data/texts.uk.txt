@@ -6013,23 +6013,23 @@ FFmpeg недоступний, тому запис вимкнено. Устан�
 [Destroy this building?]
 Знищити цю будівлю?
 [Discord community]
-Discord community
+
 [Globulation 2 Discord]
-Globulation 2 Discord
+
 [discord community intro]
-Find opponents, ask for help, and share your maps with the Globulation 2 community.
+
 [discord opens externally]
-Join our Discord server. This opens Discord or your browser.
+
 [Join Discord]
-Join Discord
+
 [Copy link]
-Copy link
+
 [discord opened]
-Discord opened. You can return to the game at any time.
+
 [discord open failed]
-Could not open Discord. Copy the invitation link and open it in your browser.
+
 [discord link copied]
-Invitation link copied.
+
 [settings CPU automatic]
 
 [settings Scalar]
@@ -6060,8 +6060,6 @@ Invitation link copied.
 
 [settings CPU fallbacks]
 
-[discord copy failed]
-Could not copy the link. Select the invitation above to copy it manually.
 [settings MCP server]
 
 [settings Enabling the MCP server permits local clients to see and operate the game.]
@@ -6103,4 +6101,6 @@ Could not copy the link. Select the invitation above to copy it manually.
 [Left hand]
 
 [Right hand]
+
+[discord copy failed]
 

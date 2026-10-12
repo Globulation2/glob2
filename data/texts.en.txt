@@ -6060,8 +6060,6 @@ CPU fallback
 GPU fields
 [settings CPU fallbacks]
 CPU fallbacks
-[discord copy failed]
-Could not copy the link. Select the invitation above to copy it manually.
 [settings MCP server]
 MCP server
 [settings Enabling the MCP server permits local clients to see and operate the game.]
@@ -6104,3 +6102,5 @@ Could not save your choice. Please try again.
 Left hand
 [Right hand]
 Right hand
+[discord copy failed]
+Could not copy the link. Select the invitation above to copy it manually.
