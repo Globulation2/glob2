@@ -39,6 +39,8 @@ struct Layout
 	Torus t{1, 1};
 	TerrainSketch terrain;
 	std::vector<unsigned char> wall, gates, roads, reserved;
+	// Lane vertices: 1 outer lane, 2 the folded gate corridor; piers are lane vertices drawn over water.
+	std::vector<unsigned char> lane, pier, arm;
 	std::vector<int> homeOf, cropOf, keyOf;
 	std::vector<ShapePoint> homes;
 	std::vector<Key> keys;
@@ -80,8 +82,12 @@ void localLane(Layout &L, const std::vector<StrokePoint> &path, bool gate, bool 
 			if (!mask[i])
 				continue;
 			L.roads[i] = 1;
+			L.lane[i] = std::max<unsigned char>(L.lane[i], paintNow ? 2 : 1);
 			if (paintNow)
+			{
+				L.pier[i] |= L.terrain[i] == WATER;
 				L.terrain[i] = SAND;
+			}
 			for (int dy = -1; dy <= 0; ++dy)
 				for (int dx = -1; dx <= 0; ++dx)
 				{
@@ -157,7 +163,10 @@ void fort(Layout &L, int team, const BastionKeysOptions &o, GenerationContext &c
 			const double a = std::atan2(v - harbourY, u);
 			const double outer = 19 + std::sin(3 * a + phase);
 			if (d >= 13 && d <= outer && (v > harbourY - 10 || std::abs(u) > 9))
+			{
 				L.terrain[L.at(team, u, v)] = GRASS;
+				L.arm[L.at(team, u, v)] = 1;
+			}
 		}
 	for (int v = cy - r - 8; v <= cy - r + 2; ++v)
 		for (int u = -6; u <= 6; ++u)
@@ -235,10 +244,208 @@ void plantation(Layout &L, Key &key, GenerationContext &context)
 		// wheat from timber. The court overwrites their centres.
 		if (std::abs(d) > 5)
 		{
-			L.terrain[L.t.at(x + d, y)] = SAND;
-			L.terrain[L.t.at(x, y + d)] = SAND;
+			for (const int i : {L.t.at(x + d, y), L.t.at(x, y + d)})
+			{
+				L.lane[i] = std::max<unsigned char>(L.lane[i], 1);
+				L.pier[i] |= L.terrain[i] == WATER;
+				L.terrain[i] = SAND;
+			}
 		}
 	}
+}
+
+// Lanes are dressed in catalogue ground once the beaches are laid. Piers over open water are
+// boardwalk. Outer lanes inland are dirt track: nothing grows on a track, so it parts the crops as
+// sand did, and hauling is quicker along it. The folded gate corridor stays sand, which nothing can
+// be built on, so a town can never wall in its own gate; a lane that touches a beach stays sand too.
+void dressLanes(Layout &L)
+{
+	const Torus &t = L.t;
+	const auto before = L.terrain;
+	for (int i = 0; i < t.size(); ++i)
+	{
+		if (!L.lane[i] || L.lane[i] == 2 || before[i] != SAND)
+			continue;
+		if (L.pier[i])
+		{
+			L.terrain[i] = BOARDWALK;
+			continue;
+		}
+		bool beach = false;
+		for (int dy = -1; dy <= 1 && !beach; ++dy)
+			for (int dx = -1; dx <= 1; ++dx)
+				beach = beach || before[t.at(t.remainderX(i) + dx, i / t.w + dy)] == WATER;
+		if (!beach)
+			L.terrain[i] = DIRT_TRACK;
+	}
+}
+
+// Ground character, laid once every tile's job is fixed. A tile takes its rules from its four corner
+// vertices, so each change is made on corners and kept off every tile that must stay pure grass: the
+// towns, the ramparts, the service courts, the landing fields and the lanes. Barren ground, like sand,
+// holds back crops yet can be built on; fertile ground feeds the crops that stand on it.
+void dressGround(Layout &L, GenerationContext &context)
+{
+	const Torus &t = L.t;
+	const int n = t.size();
+	const auto tileAt = [&](int i, int dx, int dy) { return t.at(t.remainderX(i) + dx, i / t.w + dy); };
+	std::vector<unsigned char> keep(n, 0), crop(n, 0), water(n, 0);
+	const auto mark = [&](int i, int r)
+	{
+		for (int dy = -r; dy <= r; ++dy)
+			for (int dx = -r; dx <= r; ++dx)
+				keep[tileAt(i, dx, dy)] = 1;
+	};
+	for (int i = 0; i < n; ++i)
+	{
+		water[i] = L.terrain[i] == WATER;
+		if (L.homeOf[i] >= 0)
+			keep[i] = 1;
+		if (L.wall[i])
+			mark(i, 2);
+		if (L.lane[i])
+			mark(i, 1);
+	}
+	for (const auto &key : L.keys)
+	{
+		for (int i : key.court)
+			mark(i, 1);
+		for (int kind = 0; kind < 2; ++kind)
+			for (int i : key.crops[kind])
+				crop[i] = 1 + kind;
+	}
+	for (const auto &field : L.landingFields)
+		for (int i : field)
+			mark(i, 1);
+	// A vertex may change only when none of the four tiles it corners is spoken for.
+	const auto unspoken = [&](int v, bool cropsToo)
+	{
+		for (int dy = -1; dy <= 0; ++dy)
+			for (int dx = -1; dx <= 0; ++dx)
+			{
+				const int i = tileAt(v, dx, dy);
+				if (keep[i] || (cropsToo ? crop[i] != 0 : crop[i] == 2))
+					return false;
+			}
+		return true;
+	};
+	const auto free = [&](int v) { return unspoken(v, true); };
+	const auto fromWall = stepsFrom(t, L.wall);
+	const auto fromSea = stepsFrom(t, water);
+	auto &stream = context.stream("bastion-keys-ground");
+	const PeriodicNoise scrub(t.w, t.h, 7, stream), clay(t.w, t.h, 11, stream),
+		soil(t.w, t.h, 9, stream);
+	int armFrom = 0;
+	for (int i = 0; i < n; ++i)
+		if (L.arm[i] && fromWall[i] >= 0)
+			armFrom = std::max(armFrom, fromWall[i]);
+	armFrom -= 7;
+	int glacis = 0, dry = 0, loam = 0, meadow = 0, battery = 0, arms = 0, meadows = 0;
+	TerrainSketch next = L.terrain;
+	for (int i = 0; i < n; ++i)
+	{
+		if (L.terrain[i] != GRASS || !free(i))
+			continue;
+		const int x = t.remainderX(i), y = i / t.w;
+		if (fromWall[i] >= 3 && fromWall[i] <= 6 && L.homeOf[i] < 0)
+		{
+			next[i] = clay.at(x, y) > .72 ? DIRT : GRAVEL;
+			++glacis;
+		}
+		else if (L.arm[i])
+		{
+			// A harbour arm is a rocky headland: shingle, with outcrop on its far half so it reads
+			// as a breakwater rather than a strip of lawn.
+			const bool far = fromWall[i] >= armFrom;
+			next[i] = far && scrub.at(x, y) > .5 ? OUTCROP : clay.at(x, y) > .8 ? DIRT : GRAVEL;
+			++arms;
+		}
+		else if (fromSea[i] <= 3 && scrub.at(x, y) > .55)
+		{
+			next[i] = clay.at(x, y) > .6 ? CLAY : DIRT;
+			++dry;
+		}
+		else if (fromWall[i] >= 8 && clay.at(x, y) > .66)
+		{
+			next[i] = FLOWER_MEADOW;
+			++meadows;
+		}
+	}
+	// Each neutral key takes the ground of its calling: wheat on loam, fruit on moss and meadow, stone on
+	// gravel. A colony's own plantations stay grass (see below).
+	for (const auto &key : L.keys)
+		for (int i : key.crops[0])
+			for (int dy = 0; dy <= 1; ++dy)
+				for (int dx = 0; dx <= 1; ++dx)
+				{
+					const int v = tileAt(i, dx, dy);
+					if (L.terrain[v] != GRASS || !unspoken(v, false))
+						continue;
+					const int x = t.remainderX(v), y = v / t.w;
+					// A colony's own plantations stay grass: paired AI games on loam fields grew 30% fewer
+					// units and harvested a third less wheat than on grass, with nothing else changed.
+					if (key.kind == 0 && key.owner >= 0)
+						continue;
+					if (key.kind == 0)
+					{
+						next[v] = soil.at(x, y) > .7 ? MOSS : LOAM;
+						++loam;
+					}
+					else if (key.kind == 1)
+					{
+						next[v] = soil.at(x, y) > .5 ? SPRING_MEADOW : MOSS;
+						++meadow;
+					}
+					else
+					{
+						next[v] = clay.at(x, y) > .7 ? DIRT : GRAVEL;
+						++battery;
+					}
+				}
+	for (int i = 0; i < n; ++i)
+		L.terrain[i] = next[i];
+	context.telemetry.measure("bastion-keys.ground.glacis", glacis);
+	context.telemetry.measure("bastion-keys.ground.dry", dry);
+	context.telemetry.measure("bastion-keys.ground.loam", loam);
+	context.telemetry.measure("bastion-keys.ground.meadow", meadow);
+	context.telemetry.measure("bastion-keys.ground.battery", battery);
+	context.telemetry.measure("bastion-keys.ground.arms", arms);
+	context.telemetry.measure("bastion-keys.ground.meadows", meadows);
+}
+
+// Shoals of rock in the open water between the estates: a ridge stone ringed by outcrop.
+// No ground unit crosses rock, so a reef sits only where every vertex within three of it is open
+// water and the nearest land is seven or more steps off, which leaves every channel open.
+int raiseReefs(Layout &L, GenerationContext &context)
+{
+	const Torus &t = L.t;
+	std::vector<unsigned char> land(t.size());
+	for (int i = 0; i < t.size(); ++i)
+		land[i] = L.terrain[i] != WATER;
+	const auto offshore = stepsFrom(t, land);
+	const int cell = 20;
+	int placed = 0;
+	for (int cy = 0; cy < t.h; cy += cell)
+		for (int cx = 0; cx < t.w; cx += cell)
+		{
+			const int x = cx + int(context.bounded("bastion-keys-reefs", cell));
+			const int y = cy + int(context.bounded("bastion-keys-reefs", cell));
+			const int chance = int(context.bounded("bastion-keys-reefs", 3));
+			const int i = t.at(x, y);
+			if (chance != 0 || offshore[i] < 7 || offshore[i] > 15)
+				continue;
+			bool open = true;
+			for (int dy = -3; dy <= 3 && open; ++dy)
+				for (int dx = -3; dx <= 3; ++dx)
+					open = open && L.terrain[t.at(x + dx, y + dy)] == WATER;
+			if (!open)
+				continue;
+			L.terrain[i] = RIDGE_ROCK;
+			for (const auto &step : kCardinalSteps)
+				L.terrain[t.at(x + step[0], y + step[1])] = OUTCROP;
+			++placed;
+		}
+	return placed;
 }
 
 std::string requestFailure(const GenerationRequest &r)
@@ -266,6 +473,9 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	L.gates.assign(t.size(), 0);
 	L.roads.assign(t.size(), 0);
 	L.reserved.assign(t.size(), 0);
+	L.lane.assign(t.size(), 0);
+	L.pier.assign(t.size(), 0);
+	L.arm.assign(t.size(), 0);
 	L.homeOf.assign(t.size(), -1);
 	L.cropOf.assign(t.size(), -1);
 	L.keyOf.assign(t.size(), -1);
@@ -365,7 +575,10 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	// Sand lanes are confined to each estate's folded landing and supply piers.
 	for (int i = 0; i < t.size(); ++i)
 		if (L.roads[i])
+		{
+			L.pier[i] |= L.terrain[i] == WATER;
 			L.terrain[i] = SAND;
+		}
 	for (const auto &key : L.keys)
 		for (int i : key.court)
 			for (int dy = 0; dy <= 1; ++dy)
@@ -405,6 +618,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 			L.landingFields.push_back(std::move(field));
 		}
 	layBeaches(L.terrain, t);
+	dressLanes(L);
 	const auto grass = pureTiles(L.terrain, t, GRASS);
 	std::vector<unsigned char> landing(t.size());
 	for (const auto &field : L.landingFields)
@@ -439,6 +653,8 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 				L.cropOf[i] = int(k) * 2 + timber;
 			}
 	}
+	dressGround(L, context);
+	context.telemetry.measure("bastion-keys.reefs", raiseReefs(L, context));
 	context.telemetry.choice("bastion-keys.fort.design",
 							 std::vector<const char *>{"square-bastions", "round-bastions",
 													   "diamond-bastions"}[L.fortDesign]);
@@ -581,7 +797,14 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	if (const auto error = designMismatch(L, game.map, "bastion keys"); !error.empty())
 		return error;
 	const Torus &t = L.t;
-	auto growthGround = pureTiles(game.map, GRASS);
+	// Any land a crop can take root in: grass and fertile soil, and the tiles where the two meet.
+	// Sand, barren ground, tracks and a pier stop crops, as does every tile that touches water.
+	std::vector<unsigned char> growthGround(t.size());
+	for (int i = 0; i < t.size(); ++i)
+	{
+		const auto p = game.map.terrainPropertiesAt(t.remainderX(i), i / t.w);
+		growthGround[i] = p.walkable && p.resourcesGrow && (p.allowedResources & 3) == 3;
+	}
 	std::vector<unsigned char> cropSeeds(t.size());
 	for (int i = 0; i < t.size(); ++i)
 	{
@@ -599,6 +822,15 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 		for (int i : key.court)
 			if (spread.steps[i] >= 0)
 				return "Crops can spread into an island service court.";
+	// The folded gate corridor is the town's only way out by land. It stays sand, which nothing can be
+	// built on, so no dressing of the ground may reach its vertices.
+	for (int i = 0; i < t.size(); ++i)
+		if (L.lane[i] == 2)
+		{
+			const auto v = game.map.vertexTerrainAt(t.remainderX(i), i / t.w);
+			if (v != SAND && v != GRASS)
+				return "A gate corridor was dressed with buildable ground.";
+		}
 	if (const auto error = wallStanding(game.map, t, L.wall, L.gates, "bastion ramparts");
 		!error.empty())
 		return error;
@@ -663,6 +895,11 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 		if (wheat < 72 || wood < 32)
 			return "The external starter plantations lost their crops.";
 	}
+	// The ground is the design's, vertex for vertex: piers, tracks, soils and rock are promises.
+	for (int i = 0; i < t.size(); ++i)
+		if (game.map.vertexTerrainAt(t.remainderX(i), i / t.w) != L.terrain[i])
+			return "The ground differs from the bastion keys design at (" + std::to_string(t.remainderX(i)) +
+				   ", " + std::to_string(i / t.w) + ").";
 	return {};
 }
 } // namespace
@@ -679,7 +916,7 @@ GeneratorDefinition bastionKeysDefinition()
 		"bastion-keys",
 		68,
 		"Bastion Keys",
-		2,
+		3,
 		false,
 		{GeneratorControl{"home-size", "Home size", 13, 15, 1, 14, ControlGroup::Layout}
 			 .withSearchRange(13, 15),
