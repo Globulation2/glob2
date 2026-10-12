@@ -45,7 +45,7 @@ def validate(app, architecture):
 def sign(app, output, architecture, identity, keychain, key, key_id, issuer):
     if not identity.startswith('Developer ID Application:'):
         raise ValueError('Direct downloads require a Developer ID Application identity')
-    for path in [*validate(app, architecture), app]:
+    for path in [*validate(app, architecture), *sorted(app.rglob("*.framework"), key=lambda p:len(p.parts), reverse=True), app]:
         subprocess.run(['codesign', '--force', '--sign', identity, '--keychain', str(keychain),
                         '--timestamp', '--options', 'runtime', str(path)], check=True)
     subprocess.run(['codesign', '--verify', '--deep', '--strict', str(app)], check=True)

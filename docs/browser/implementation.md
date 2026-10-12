@@ -224,3 +224,16 @@ retains the legacy backend, and omits fixed-function shader and texture-unit
 workarounds. The backend selector still exposes software, direct WebGL2 and
 WebGPU where their generated assets are available. This option does not promote
 a backend to the platform default.
+
+### Gradient compute
+
+Threaded builds include `browser/gradient-compute.js`, whose WebGPU compute device
+is independent of presentation. Owned seeds/costs are copied out of shared Wasm
+memory before asynchronous work; atomic completion signals return private output
+to the coordinator. Simulation workers can wait while the browser owner services
+callbacks. Canceled storage remains retained until completion. Serial builds expose
+CPU gradients only. Frozen8/Jacobi WGSL is translated from the same GLSL as Vulkan;
+CPU shadow checks are optional. Backend changes preserve publication deadlines.
+`browser/GradientCompute.cpp` owns the browser thread check and bounded futex wait;
+shared field code uses this platform interface without importing Emscripten APIs.
+Browser-owner execution is declined before submitting callbacks or reserving tasks.

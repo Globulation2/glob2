@@ -56,6 +56,7 @@ public:
 
 	void applyCommand(const Cli::Request &request);
 	bool gpuComputeEnabled() const;
+    gradient_kernel::Configuration gradientConfiguration() const;
 	void configureGradientBackend() const;
     std::optional<GAGCore::RendererBackend> rendererLaunchOverride;
 	void loadClient(void);
@@ -135,6 +136,9 @@ public:
 	unsigned computeThreads = 0;
     ComputeTelemetryMode computeTelemetry = ComputeTelemetryMode::Off;
 	std::optional<bool> gpuComputeOverride;
+    std::optional<gradient_kernel::Backend> gradientBackendOverride;
+    std::optional<gradient_kernel::Algorithm> gradientAlgorithmOverride;
+    std::optional<bool> gradientVerifyOverride;
 	std::string runNoXGameName;
 	int runNoXCountRuns; //!< The number of runs you want to repeat the no X run
 	bool automaticEndingGame;

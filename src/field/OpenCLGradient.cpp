@@ -43,6 +43,7 @@ struct MemoryBudget {
     }
 };
 MemoryBudget hostBudget{OpenCLHostBudget};
+MemoryBudget globalDeviceBudget{OpenCLDeviceBudget};
 struct BudgetExceeded : std::runtime_error { BudgetExceeded():std::runtime_error("OpenCL payload budget exceeded") {} };
 struct RequiredCanceled : std::exception {const char* what() const noexcept override{return "Required OpenCL execution canceled";}};
 } // namespace
@@ -308,12 +309,12 @@ struct KernelVariant : ExecutionPlan
 {
     Handle program = nullptr, kernel = nullptr;
 };
-static_assert(PLANS.size()==2 && PLANS[1].id==Plan::Frozen8 && PLANS[1].steps==8 &&
+static_assert(PLANS[1].id==Plan::Frozen8 && PLANS[1].steps==8 &&
     PLANS[1].threads==128 && PLANS[1].tileWidth==16 && PLANS[1].tileHeight==16 &&
     PLANS[1].colored && PLANS[1].frozen);
 constexpr auto kernelVariants()
 {
-    std::array<KernelVariant, PLANS.size() - 1> variants{};
+    std::array<KernelVariant, 1> variants{};
     for (std::size_t i = 0; i < variants.size(); ++i)
         static_cast<ExecutionPlan&>(variants[i]) = PLANS[i + 1];
     return variants;
@@ -332,10 +333,10 @@ struct Device
     std::atomic<bool> failed{false};
     OpenCLRequiredLifetimePool requiredLifetime;
     bool requiredQueryFailureDiagnostics=false;
-    MemoryBudget deviceBudget{OpenCLDeviceBudget};
+    MemoryBudget& deviceBudget=globalDeviceBudget;
     Handle device = nullptr, context = nullptr;
     OpenCLStatus status;
-    std::array<KernelVariant, PLANS.size() - 1> variants = kernelVariants();
+    std::array<KernelVariant, 1> variants = kernelVariants();
     std::size_t selectedVariant = 0;
     Handle kernel = nullptr;
     struct Plane
@@ -614,7 +615,7 @@ struct Runtime : std::enable_shared_from_this<Runtime>
     OpenCLStatus status;
     bool probed = false;
     Handle device = nullptr, context = nullptr, queue = nullptr;
-    std::array<KernelVariant, PLANS.size() - 1> variants = kernelVariants();
+    std::array<KernelVariant, 1> variants = kernelVariants();
     std::size_t selectedVariant = 0;
     Handle kernel = nullptr;
     Handle first = nullptr, second = nullptr, changed = nullptr, descriptors = nullptr;
@@ -771,53 +772,81 @@ struct Runtime : std::enable_shared_from_this<Runtime>
         if(!readyPlans.load(std::memory_order_acquire)) throw std::runtime_error("OpenCL plans not ready");
         if(!shared->status.available || shared->failed.load()) throw std::runtime_error("OpenCL device unavailable");
         context=shared->context;device=shared->device;
-        Int error=0;
-        queue=api.CreateCommandQueue(context,device,0,&error);check(error);
-        for(std::size_t i=0;i<variants.size();++i) if(shared->variants[i].kernel) {
-            variants[i].program=shared->variants[i].program;
-            variants[i].kernel=api.CreateKernel(variants[i].program,"propagate",&error);check(error);
-        }
-        selectedVariant=shared->selectedVariant;selectVariant(selectedVariant);
-        status.available=true;probed=true;
-    }
-    template<class... Args> Int fill(Args... args) {
-        const auto result=api.EnqueueFillBuffer(args...);
-        if(required)required->proof.enqueueUnobserved(result);return result;
-    }
-    template<class... Args> Int enqueueKernel(Args... args) {
-        const auto result=api.EnqueueNDRangeKernel(args...);
-        if(required)required->proof.enqueueUnobserved(result);return result;
-    }
-    template <class T> void argumentTo(Handle target,UInt index,T value)
-    {
-        check(api.SetKernelArg(target,index,sizeof(T),&value));++status.kernelArgumentUpdates;
-    }
-    template <class T> void argument(UInt index,T value) {argumentTo(kernel,index,value);}
-    struct Event {
-        API& api;Handle value=nullptr;bool owns=true;
-        explicit Event(API& api):api(api) {}
-        ~Event(){if(value && owns) api.ReleaseEvent(value);}
-        Event(const Event&)=delete;
-    };
-    void await(Event& event) {
-        if(!event.value || (!required && !shared->status.pollMicros))return;
-        check(api.Flush(queue));
-        for(;;) {
-            if(required && required->canceled())throw RequiredCanceled();
-            Int state=1;
-            if(required && required->diagnosticQueryFailures){--required->diagnosticQueryFailures;throw std::runtime_error("Injected required event query failure");}
-            check(api.GetEventInfo(event.value,0x11D3,sizeof state,&state,nullptr));
-            if(state<0)check(state);
+		Int error = 0;
+		queue = api.CreateCommandQueue(context, device, 0, &error);
+		check(error);
+		for (std::size_t i = 0; i < variants.size(); ++i)
+			if (shared->variants[i].kernel)
+			{
+				variants[i].program = shared->variants[i].program;
+				variants[i].kernel = api.CreateKernel(variants[i].program, "propagate", &error);
+				check(error);
+			}
+		selectedVariant = shared->selectedVariant;
+		selectVariant(selectedVariant);
+		status.available = true;
+		probed = true;
+	}
+	template <class... Args> Int fill(Args... args)
+	{
+		const auto result = api.EnqueueFillBuffer(args...);
+		if (required)
+			required->proof.enqueueUnobserved(result);
+		return result;
+	}
+	template <class... Args> Int enqueueKernel(Args... args)
+	{
+		const auto result = api.EnqueueNDRangeKernel(args...);
+		if (required)
+			required->proof.enqueueUnobserved(result);
+		return result;
+	}
+	template <class T> void argumentTo(Handle target, UInt index, T value)
+	{
+		check(api.SetKernelArg(target, index, sizeof(T), &value));
+		++status.kernelArgumentUpdates;
+	}
+	template <class T> void argument(UInt index, T value) { argumentTo(kernel, index, value); }
+	struct Event
+	{
+		API &api;
+		Handle value = nullptr;
+		bool owns = true;
+		explicit Event(API &api) : api(api) {}
+		~Event()
+		{
+			if (value && owns)
+				api.ReleaseEvent(value);
+		}
+		Event(const Event &) = delete;
+	};
+	void await(Event &event)
+	{
+		if (!event.value || (!required && !shared->status.pollMicros))
+			return;
+		check(api.Flush(queue));
+		for (;;)
+		{
+			if (required && required->canceled())
+				throw RequiredCanceled();
+			Int state = 1;
+			if (required && required->diagnosticQueryFailures)
+			{
+				--required->diagnosticQueryFailures;
+				throw std::runtime_error("Injected required event query failure");
+			}
+			check(api.GetEventInfo(event.value, 0x11D3, sizeof state, &state, nullptr));
+			if(state<0)check(state);
             if(!state) {if(required)required->proof.eventCompleted();return;}
             // Polling remains interruptible by required publication/save/stop.
             const auto delay=std::chrono::microseconds(shared->status.pollMicros ? shared->status.pollMicros : 100);
             if(required && required->controls[0])required->controls[0]->waitFor(delay);
             else std::this_thread::sleep_for(delay);
-        }
-        // Failure unwinds only into batch's nonblocking proof/quarantine guard.
+		}
+		// Failure unwinds only into batch's nonblocking proof/quarantine guard.
         // All transfer endpoints and retained events already belong to it.
-    }
-    void read(Handle buffer,void* output,std::size_t bytes,bool /*finalOutput*/) {
+	}
+	void read(Handle buffer,void* output,std::size_t bytes,bool /*finalOutput*/) {
         if(required && required->canceled())throw RequiredCanceled();
         Event event(api);
         const bool asynchronous=required || shared->status.pollMicros!=0;
@@ -1124,7 +1153,7 @@ struct Runtime : std::enable_shared_from_this<Runtime>
             if(request.deviceExecutionObserved)*request.deviceExecutionObserved=false;
         }
         if(input.empty()) return true;
-        if(plan==Plan::CPU || unsigned(plan)>=PLANS.size() ||
+        if(plan!=Plan::Frozen8 || unsigned(plan)>=PLANS.size() ||
            !(readyPlans.load(std::memory_order_acquire)&(1u<<unsigned(plan)))) return false;
         if(shared->failed.load()) {
             for(const auto& r:input) r.session.fail();
@@ -1273,7 +1302,8 @@ void prepare()
     unsigned mask=0;
     if(device.status.available && !device.failed.load())
         for(std::size_t i=0;i<device.variants.size();++i) if(device.variants[i].kernel) mask|=1u<<unsigned(device.variants[i].id);
-    readyPlans.store(mask,std::memory_order_release);
+    readyPlans.fetch_and(~(1u<<unsigned(Plan::Frozen8)),std::memory_order_release);
+    readyPlans.fetch_or(mask,std::memory_order_release);
 #endif
 }
 struct Register
@@ -1286,6 +1316,8 @@ struct Register
     }
 } registration;
 } // namespace
+bool reserveGradientDeviceBytes(std::size_t bytes) noexcept {return globalDeviceBudget.reserve(bytes);}
+void releaseGradientDeviceBytes(std::size_t bytes) noexcept {globalDeviceBudget.release(bytes);}
 bool reserveOpenCLHostBytes(std::size_t bytes) noexcept {return hostBudget.reserve(bytes);}
 void releaseOpenCLHostBytes(std::size_t bytes) noexcept {hostBudget.release(bytes);}
 std::size_t openCLHostBytes() noexcept {return hostBudget.current.load(std::memory_order_relaxed);}
@@ -1326,9 +1358,9 @@ bool reapOpenCLRequiredQuarantine() noexcept {
 bool initializeOpenCL() {
     unsigned empty=0;
     initializationState.compare_exchange_strong(empty,1);
-    try {prepare();} catch(...) {readyPlans.store(0,std::memory_order_release);}
+    try {prepare();} catch(...) {readyPlans.fetch_and(~(1u<<unsigned(Plan::Frozen8)),std::memory_order_release);}
     initializationState.store(2,std::memory_order_release);
-    return readyPlans.load(std::memory_order_acquire)!=0;
+    return (readyPlans.load(std::memory_order_acquire)&(1u<<unsigned(Plan::Frozen8)))!=0;
 }
 bool executeOpenCLDevice(std::span<const BackendRequest> requests,Plan plan) {
     return executeBatch(requests,plan);
@@ -1342,6 +1374,7 @@ OpenCLStatus openCLStatus()
 #else
     auto status=runtime().status;
     status.hostBytes=hostBudget.current.load();status.peakHostBytes=hostBudget.peak.load();
+    status.deviceBytes=globalDeviceBudget.current.load();status.peakDeviceBytes=globalDeviceBudget.peak.load();
     return status;
 #endif
 }

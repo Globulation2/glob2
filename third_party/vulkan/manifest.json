@@ -1,0 +1,9 @@
+{
+  "version": "1.2.162",
+  "source": "https://raw.githubusercontent.com/KhronosGroup/Vulkan-Headers/v1.2.162/",
+  "files": {
+    "vk_platform.h": "93344c52406d1c4651fdc0f0f6659dc697ba2658d3e772125c8ad2a1f3439da4",
+    "vulkan_core.h": "abbf6f18f018b0a928929a17784d341b7669f617c1cc03f743afec3ac594fa2a",
+    "LICENSE.txt": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+  }
+}

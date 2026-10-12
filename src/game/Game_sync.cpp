@@ -216,6 +216,7 @@ void Game::prestigeSyncStep()
 
 void Game::syncStep(Sint32 localTeam, PreparationCompletion completion)
 {
+	map.applyGradientBackendRequest();
 	map.preparePendingWorld();
 	applyClientRequests();
 	if (!anyPlayerWaited)

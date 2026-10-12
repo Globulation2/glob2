@@ -6010,26 +6010,54 @@ FFmpeg غير متاح، لذا التسجيل معطّل. ثبّت FFmpeg وت�
 انتهت المهلة الزمنية.
 [outcome reason probability]
 تم بلوغ عتبة احتمال الفوز.
-[Destroy this building?]
-هل تريد تدمير هذا المبنى؟
 [Discord community]
-Discord community
+
 [Globulation 2 Discord]
-Globulation 2 Discord
+
 [discord community intro]
-Find opponents, ask for help, and share your maps with the Globulation 2 community.
+
 [discord opens externally]
-Join our Discord server. This opens Discord or your browser.
+
 [Join Discord]
-Join Discord
+
 [Copy link]
-Copy link
+
 [discord opened]
-Discord opened. You can return to the game at any time.
+
 [discord open failed]
-Could not open Discord. Copy the invitation link and open it in your browser.
+
 [discord link copied]
-Invitation link copied.
+
+[settings CPU automatic]
+
+[settings Scalar]
+
+[settings Unavailable]
+
+[settings Initializing]
+
+[settings Gradient backend]
+
+[settings Applies at the next simulation boundary. Unsupported work uses CPU automatic; rendering is independent.]
+
+[settings Gradient algorithm]
+
+[settings All choices compute the same exact field.]
+
+[settings Bucket propagation]
+
+[settings Verify gradient results]
+
+[settings Compare GPU results with scalar CPU before publication. Adds computation and stops the game on a mismatch.]
+
+[settings Gradient computation]
+
+[settings CPU fallback]
+
+[settings GPU fields]
+
+[settings CPU fallbacks]
+
 [settings MCP server]
 
 [settings Enabling the MCP server permits local clients to see and operate the game.]
@@ -6057,6 +6085,7 @@ Invitation link copied.
 [settings None]
 
 [settings Starting]
+
 [Which hand holds your phone?]
 
 [hand preference explanation]
@@ -6071,9 +6100,7 @@ Invitation link copied.
 
 [Right hand]
 
-[settings GPU compute]
-
-[settings Use GPU for gradient calculations. Applies to the next game.]
-
 [discord copy failed]
-Could not copy the link. Select the invitation above to copy it manually.
+
+[Destroy this building?]
+هل تريد تدمير هذا المبنى؟

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "field/GradientWorkspace.h"
+#include "field/GradientAccelerators.h"
 #include "field/GradientDeviceService.h"
 #include "common/ThreadCpuClock.h"
 #include "map/TerrainType.h"
@@ -125,6 +126,13 @@ private:
 		job.crowding = &scratch.crowding;
 		try
 		{
+            // Capture execution before preparation. Later availability/admission
+            // changes may recover this job, but cannot reinterpret its choice.
+            const auto captured = gradient_kernel::configuration();
+            const auto choice = captured.backend;
+            const auto family=gradient_preparation::backendFamily(job.request.kind);
+            const auto decision=backendSession->choose(family,1,captured);
+            gradient_kernel::CPUSelectionScope cpuSelection(decision.configuration.backend);
 			const auto preparationStart = clockTime<Collect>();
             const auto preparationCpu = cpuTime<Collect>();
 			try { if (job.seed) job.seed(job); }
@@ -133,10 +141,7 @@ private:
             const auto preparedCpu=cpuTime<Collect>();
             if constexpr (Collect) { seedCpu.fetch_add(glob2::threadCpuDeltaNs(preparationCpu,preparedCpu),std::memory_order_relaxed); }
             const auto handoffStart=diagnostics ? cpuTime<Collect>() : 0;
-            const auto choice = gradient_kernel::backend();
-            if constexpr (Collect) { if(choice==gradient_kernel::Backend::OpenCL) requestedGpu.fetch_add(1,std::memory_order_relaxed); }
-            const auto family=gradient_preparation::backendFamily(job.request.kind);
-            const auto decision=backendSession->choose(family,1,choice);
+            if constexpr (Collect) { if(gradient_kernel::isGPU(choice)) requestedGpu.fetch_add(1,std::memory_order_relaxed); }
             const bool selectedGPU = decision.plan != gradient_kernel::Plan::CPU;
             if constexpr (Collect) { if(selectedGPU) selectedGpu.fetch_add(1,std::memory_order_relaxed); }
             if(selectedGPU && deviceService && asyncWork && executor->slot()) {
@@ -176,13 +181,15 @@ private:
                 const std::array jobs{&job};
                 batchWork(jobs, std::span(&scratch.propagation, 1));
             } else {
-                const auto reason=choice==gradient_kernel::Backend::CPU ? CPUReason::ExplicitCPU
+                const auto reason=!gradient_kernel::isGPU(choice) ? CPUReason::ExplicitCPU
                     : !executor->slot() ? CPUReason::OwnerExcluded
                     : backendSession->failed.load() ? CPUReason::FailedSession
                     : CPUReason::Unavailable;
             if constexpr (Collect) { cpuReasons[unsigned(reason)].fetch_add(1,std::memory_order_relaxed); }
                 const auto cpuStart=cpuTime<Collect>();
             if constexpr (Collect) { if(diagnostics)handoffCpu.fetch_add(glob2::threadCpuDeltaNs(handoffStart,cpuStart),std::memory_order_relaxed); }
+                if(gradient_kernel::isGPU(choice))gradient_kernel::recordGradientFallback(choice);
+                if(gradient_kernel::isGPU(choice))job.cpuOnly=true;
                 work(job,scratch.propagation);
             if constexpr (Collect) { propagationCpu.fetch_add(glob2::threadCpuDeltaNs(cpuStart,cpuTime<Collect>()),std::memory_order_relaxed); }
             if constexpr (Collect) { cpuFields.fetch_add(1,std::memory_order_relaxed); }
@@ -240,7 +247,7 @@ private:
             if(job.deviceField->error) job.error=job.deviceField->error;
             propagationCpu.fetch_add(job.deviceField->fallbackCpuNs,std::memory_order_relaxed);
             if(diagnostics)cleanupCpu.fetch_add(job.deviceField->fallbackCleanupCpuNs,std::memory_order_relaxed);
-            (job.deviceField->executedGPU ? gpuFields : cpuFields).fetch_add(1,std::memory_order_relaxed);
+            if(!job.deviceField->error)(job.deviceField->executedGPU ? gpuFields : cpuFields).fetch_add(1,std::memory_order_relaxed);
             job.deviceField.reset();
         }
 		metrics.preparationNs += std::exchange(job.preparationNs, 0);
@@ -273,7 +280,8 @@ public:
 	}
 	void configure(ComputeExecutor& target, bool sharedExecution, unsigned ticks, std::size_t size, Work callback) {
 		reset(); batchWork = {}; asyncWork = {}; metrics = {}; activeNs = 0; seedCpu=0; propagationCpu=0; cpuFields=0; gpuFields=0; selectedGpu=0; requestedGpu=0;
-        for(auto& reason:cpuReasons) reason=0; cells = size; work = std::move(callback);
+        for(auto& reason:cpuReasons) reason=0;
+        cells = size; work = std::move(callback);
         diagnostics=gradient_kernel::gradientDiagnosticsRequested();
         ownedInputCpu=0;handoffCpu=0;cleanupCpu=0;
 		executor = &target; shared = sharedExecution;

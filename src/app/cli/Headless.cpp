@@ -18,6 +18,7 @@
 #include "AIJavaScript.h"
 #include "ComputeThreads.h"
 #include "field/OpenCLGradient.h"
+#include "field/GradientAccelerators.h"
 #include "AIMaximaStrategy.h"
 #include "ai/cortex/CortexTuning.h"
 #include "Game.h"
@@ -299,7 +300,10 @@ struct HeadlessRunner
         for(const auto &directory:many(options,"--data-dir"))globals.fileManager->addDir(directory);
 		globals.runNoX=true;
 		if (options.count("--gpu")) globals.gpuComputeOverride = one(options, "--gpu") == "on";
-		globals.structuredHeadless=true;
+		if(options.count("--gradient-backend"))globals.gradientBackendOverride=*gradient_kernel::parseBackend(one(options,"--gradient-backend"));
+        if(options.count("--gradient-algorithm"))globals.gradientAlgorithmOverride=*gradient_kernel::parseAlgorithm(one(options,"--gradient-algorithm"));
+        if(options.count("--gradient-verify"))globals.gradientVerifyOverride=one(options,"--gradient-verify")=="on";
+        globals.structuredHeadless=true;
 		globals.automaticEndingGame=true;
 		globals.automaticGameGlobalEndConditions=true;
 		globals.automaticEndingSteps=integer(one(options, "--ticks", std::to_string(Cli::DefaultTicks)), 1, std::numeric_limits<int>::max());
@@ -538,7 +542,8 @@ struct HeadlessRunner
 		Game &game=engine.gui.game;
 		const auto pipelineResult = game.map.gradientPipelineStatus();
 		const auto buildingResult = game.map.buildingGradientPipelineStatus();
-		const auto opencl = gradient_kernel::openCLStatus();
+		const auto gradient=gradient_kernel::configuration();
+        const auto accelerator=gradient_kernel::acceleratorStatus(gradient.backend);
         std::sort(tickDurations.begin(),tickDurations.end());
         const auto percentile=[&](unsigned p)->Uint64 {return tickDurations.empty()?0:tickDurations[(tickDurations.size()-1)*p/100];};
 		engine.trackTeamEliminations();
@@ -635,9 +640,18 @@ struct HeadlessRunner
 			<< ",\"compute_threads\":" << game.map.computeExecutor().threadCount()
 			<< ",\"compute_requested_threads\":" << quote(requestedSizing)
 			<< ",\"compute_resolved_threads\":" << computeThreads
-			<< ",\"gpu_requested\":" << globals.gpuComputeEnabled()
-			<< ",\"gpu_device\":" << quote(opencl.device)
-			<< ",\"gpu_error\":" << quote(opencl.error)
+			<< ",\"gradient_backend\":" << quote(gradient_kernel::backendName(gradient.backend))
+            << ",\"gradient_algorithm\":" << quote(gradient_kernel::algorithmName(gradient.algorithm))
+            << ",\"gradient_device\":" << quote(accelerator.device)
+            << ",\"gradient_driver\":" << quote(accelerator.driver)
+            << ",\"gradient_shader\":" << quote(accelerator.shaderIdentity)
+            << ",\"gradient_gpu_fields\":" << accelerator.fields
+            << ",\"gradient_cpu_fallbacks\":" << accelerator.fallbacks
+            << ",\"gradient_verified\":" << accelerator.verified
+            << ",\"gradient_verification_ns\":" << accelerator.verificationNs
+            << ",\"gpu_requested\":" << globals.gpuComputeEnabled()
+			<< ",\"gpu_device\":" << quote(accelerator.device)
+			<< ",\"gpu_error\":" << quote(accelerator.error)
 			<< ",\"compute_workers\":" << game.map.computeExecutor().threadCount() - 1
 			<< ",\"compute_batches\":" << measured(game.map.computeExecutor().metrics().batches, summaryAvailable)
 			<< ",\"compute_jobs\":" << measured(game.map.computeExecutor().metrics().jobs, summaryAvailable)

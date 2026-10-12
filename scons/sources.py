@@ -2,6 +2,9 @@
 
 CLIENT_SOURCES = (
     'field/OpenCLGradient.cpp',
+    'field/GradientAccelerators.cpp',
+    'field/VulkanGradient.cpp',
+    'field/WebGPUGradient.cpp',
     'field/GradientDeviceService.cpp',
     'ai/castor/Control.cpp',
     'ai/castor/GetOrder.cpp',

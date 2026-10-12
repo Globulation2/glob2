@@ -356,6 +356,14 @@ See [save and file compatibility tests](persistence.md).
 
 ## Optional GPU gradients
 
+`RuntimeGradientBackend` checks runtime CPU variants and Vulkan Frozen8/Jacobi
+against an independent heap oracle, including weighted capped fields and thin or
+partial wrapped tiles. `GradientBackendSwitch` protects pending publication across
+live changes. A missing Vulkan driver is reported; set `GLOB2_REQUIRE_VULKAN=1`
+when qualifying a GPU machine. Browser `gradient-compute.spec.js` exercises WGSL
+and cancellation, while unit tests cover asynchronous completion/failure ownership.
+
+
 The `OpenCLGradient` suite checks the fixed Frozen8 kernel against an independent
 heap oracle across movement classes, caps, seeds, obstacles, custom costs and
 wrapped grids. It verifies immutable cost reuse, exact original-seed recovery,

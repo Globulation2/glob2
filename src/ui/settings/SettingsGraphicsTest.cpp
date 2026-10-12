@@ -19,6 +19,55 @@ const std::array<bool Settings::*, 8> effects = {
 }
 TEST_SUITE("SettingsGraphics")
 {
+    TEST_CASE("gradient settings preserve explicit variants and CLI precedence")
+    {
+        using namespace gradient_kernel;
+        glob2test::ScopedEnvironment environment("GLOB2_GRADIENT_BACKEND", "");
+        glob2test::HeadlessGlobals globals;
+        const std::string file="gradient-backend-test.txt";
+        const auto path=std::filesystem::path(GAGCore::Toolkit::getFileManager()->getDir(0))/file;
+        Settings settings;
+        for(const auto backend:{Backend::Scalar,Backend::SSE2,Backend::NEON,Backend::OpenCL,Backend::Vulkan,Backend::WebGPU}){
+            settings.gradientBackend=backend;settings.gradientAlgorithm=backend==Backend::Vulkan || backend==Backend::WebGPU?Algorithm::Jacobi:Algorithm::Frozen8;settings.gradientVerify=true;
+            REQUIRE(settings.save(file));Settings loaded;loaded.load(file);
+            CHECK(loaded.gradientBackend==backend);CHECK(loaded.gradientConfiguration()==settings.gradientConfiguration());
+        }
+        for(bool legacy:{false,true}){
+            {std::ofstream out(path);out<<"gpuCompute="<<legacy<<'\n';}
+            settings.load(file);CHECK(settings.gradientConfiguration().backend==(legacy?Backend::OpenCL:Backend::CPU));
+        }
+        globals->applyCommand(Cli::parse({"play","--gpu=off","--gradient-backend=vulkan","--gradient-algorithm=jacobi","--gradient-verify=on"}));
+        CHECK(globals->gradientConfiguration().backend==Backend::Vulkan);
+        CHECK(globals->gradientConfiguration().algorithm==Algorithm::Jacobi);
+        CHECK(globals->gradientConfiguration().verify);
+        globals->applyCommand(Cli::parse({"play","--gradient-backend=scalar","--gradient-algorithm=jacobi"}));
+        CHECK_THROWS_AS(globals->gradientConfiguration(),std::invalid_argument);
+        std::filesystem::remove(path);
+    }
+    TEST_CASE("verification environment and explicit CLI override saved preference")
+    {
+        glob2test::ScopedEnvironment backend("GLOB2_GRADIENT_BACKEND", "");
+        glob2test::ScopedEnvironment algorithm("GLOB2_GRADIENT_ALGORITHM", "");
+        glob2test::HeadlessGlobals globals;
+        globals->settings.gradientVerify=false;
+        for(const char* value:{"1","on","true"}) {
+            glob2test::ScopedEnvironment verify("GLOB2_GRADIENT_VERIFY",value);
+            CHECK(globals->gradientConfiguration().verify);
+            globals->applyCommand(Cli::parse({"play","--gradient-verify=off"}));
+            CHECK_FALSE(globals->gradientConfiguration().verify);
+            globals->gradientVerifyOverride.reset();
+        }
+        globals->settings.gradientVerify=true;
+        for(const char* value:{"0","off","false","unknown"}) {
+            glob2test::ScopedEnvironment verify("GLOB2_GRADIENT_VERIFY",value);
+            CHECK_FALSE(globals->gradientConfiguration().verify);
+            globals->applyCommand(Cli::parse({"play","--gradient-verify=on"}));
+            CHECK(globals->gradientConfiguration().verify);
+            globals->gradientVerifyOverride.reset();
+        }
+        glob2test::ScopedEnvironment absent("GLOB2_GRADIENT_VERIFY", "");
+        CHECK(globals->gradientConfiguration().verify);
+    }
     TEST_CASE("first-launch hand choice persists and migrates existing side preferences")
     {
         glob2test::HeadlessGlobals globals;
