@@ -26,7 +26,9 @@ ENGINE_SUPPORT = [
 
 # glob2-engine-tests: every client object except the entry point, plus these.
 ENGINE_TESTS = [
+    '#libgag/src/ToolkitAssetOptionsTest.cpp',
     '#src/replay/ReplayTelemetryTest.cpp',
+    ('#src/mcp/MCPTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/unit/types/UnitCatalogTest.cpp',
     ('#src/unit/UnitCustomizationTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/app/cli/CommandLineTest.cpp',
@@ -343,6 +345,9 @@ UNIT_TESTS = [
     '#src/common/ResourcePolicyTest.cpp',
     '#src/app/ResourcePlanJsonTest.cpp',
     '#src/app/ApplicationResourcePlanTest.cpp',
+    '#src/app/ApplicationPhaseResourcesTest.cpp',
+    '#src/app/ApplicationResourceObservationsTest.cpp',
+    '#src/app/AndroidResourceObservationsTest.cpp',
     '#src/map/gradient/GradientPipelineHarness.cpp',
     ('#mobile/MobileCertificateHarness.cpp', dict(require={'wss'})),
     '#mobile/MobileDocumentsHarness.cpp',
@@ -377,6 +382,10 @@ UNIT_PRODUCTION_SOURCES = [
     '#src/common/ResourcePolicy.cpp',
     '#src/app/ResourcePlanJson.cpp',
     '#src/app/ApplicationResourcePlan.cpp',
+    '#src/app/ApplicationPhaseResources.cpp',
+    '#src/app/ApplicationResourceObservations.cpp',
+    '#src/app/AndroidResourceObservations.cpp',
+
     '#src/field/OpenCLGradient.cpp',
     '#src/field/GradientDeviceService.cpp',
     '#src/app/cli/CommandLine.cpp',
@@ -592,7 +601,9 @@ def scripting_entries():
     """
     selected = {'#src/map/generator/javascript/ScriptGeneratorTest.cpp', '#src/scripting/javascript/ScriptCompatibilityTest.cpp', '#src/scripting/javascript/ScriptIntegrationTest.cpp', '#src/scripting/javascript/ScriptPresentationTest.cpp',
                 '#src/scripting/javascript/ScriptRealisticTest.cpp', '#src/scripting/javascript/ScriptSessionTest.cpp', '#src/scripting/javascript/ScriptSimulationTest.cpp',
-                '#src/team/stats/TeamStatsSaveHarness.cpp', '#src/scripting/javascript/ScriptRuntimeTest.cpp', '#src/scripting/javascript/ScriptNumericTest.cpp', '#libgag/src/ImageAssetTest.cpp'}
+                '#src/team/stats/TeamStatsSaveHarness.cpp', '#src/scripting/javascript/ScriptRuntimeTest.cpp', '#src/scripting/javascript/ScriptNumericTest.cpp', '#libgag/src/ImageAssetTest.cpp', '#src/common/ResourcePolicyTest.cpp',
+                '#src/app/ResourcePlanJsonTest.cpp', '#src/app/ApplicationResourcePlanTest.cpp',
+                '#src/app/ApplicationPhaseResourcesTest.cpp', '#src/app/ApplicationResourceObservationsTest.cpp', '#src/app/AndroidResourceObservationsTest.cpp'}
     return [entry for entry in ENGINE_TESTS + UNIT_TESTS
             if (entry if isinstance(entry, str) else entry[0]) in selected]
 

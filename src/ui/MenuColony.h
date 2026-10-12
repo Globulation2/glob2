@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "Game.h"
+#include "ResourcePolicy.h"
 #include "Utilities.h"
 #include <memory>
 #include <string>
@@ -19,7 +20,9 @@ public:
 	bool ready() const { return bool(game); }
 	Uint32 tick() const { return game ? game->stepCounter : 0; }
 	Uint32 checksum() const;
+    const resource_policy::ResourcePlan &resourcePlan() const { return localResources; }
 private:
+    resource_policy::ResourcePlan localResources;
 	std::unique_ptr<Game> game;
 	Game::ViewState view;
 	std::unique_ptr<ScenePreparation> presentation;

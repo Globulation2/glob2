@@ -3,6 +3,8 @@
 #include "GeneratorPackage.h"
 #include "GenerationService.h"
 #include "GeneratorRegistry.h"
+#include "GlobalContainer.h"
+#include "ApplicationPhaseResources.h"
 #include "Game.h"
 #include "Team.h"
 #include "AI.h"
@@ -53,6 +55,12 @@ void GeneratorStudioScreen::generate()
 {
 	using Json = nlohmann::json;
 	const auto begin = std::chrono::steady_clock::now();
+	const auto backgroundResources = [&] {
+		return Json{{"requested_workers", 1},
+			{"resolved_workers", resolvedBackgroundWorkers ? Json(*resolvedBackgroundWorkers) : Json(nullptr)},
+			{"actual_workers", actualBackgroundWorkers},
+			{"scope", "one generation; owner plus background worker; direct generation has no resolved plan"}};
+	};
 	try
 	{
 		const auto package = MapGeneration::JavaScript::Package::parse(read(packagePath.c_str()));
@@ -102,6 +110,7 @@ void GeneratorStudioScreen::generate()
 			telemetry.push_back(std::move(item));
 		}
 		Json details{{"success", static_cast<bool>(result)},
+					 {"background_resources", backgroundResources()},
 					 {"packageHash", result.packageHash},
 					 {"seed", result.seed},
 					 {"stage", result.stage},
@@ -153,6 +162,7 @@ void GeneratorStudioScreen::generate()
 		error = e.what();
 		report =
 			Json{{"success", false},
+				 {"background_resources", backgroundResources()},
 				 {"diagnostic", error.substr(0, 2000)},
 				 {"seconds",
 				  std::chrono::duration<double>(std::chrono::steady_clock::now() - begin).count()}}
@@ -160,25 +170,29 @@ void GeneratorStudioScreen::generate()
 	}
 	complete.store(true, std::memory_order_release);
 }
+void GeneratorStudioScreen::startGeneration(const resource_policy::PhaseResourceInputs &input)
+{
+	if (started) return;
+	// Resolve once on the owner. Generation inputs and publication remain unchanged.
+	const auto plan = resource_policy::resolveBackgroundPhase(input, 1);
+	resolvedBackgroundWorkers = resource_policy::backgroundWorkers(plan);
+	started = true;
+	if constexpr (GAGCore::ThreadSupport::available)
+	{
+		if (*resolvedBackgroundWorkers)
+		{
+			// Publish before launch: generate() may finish before launch returns.
+			actualBackgroundWorkers = 1;
+			try { worker = GAGCore::ThreadSupport::launch([this] { generate(); }); }
+			catch (const std::system_error &) { actualBackgroundWorkers = 0; generate(); }
+			return;
+		}
+	}
+	generate(); // Existing cooperative fallback, now also used by an owner-only plan.
+}
 void GeneratorStudioScreen::updateExecution(Uint32)
 {
-	if (!started)
-	{
-		started = true;
-		if constexpr (GAGCore::ThreadSupport::available)
-		{
-			try
-			{
-				worker = GAGCore::ThreadSupport::launch([this] { generate(); });
-			}
-			catch (const std::system_error &)
-			{
-				generate();
-			}
-		}
-		else
-			generate(); // Same bounded synchronous fallback as landscape previews.
-	}
+	if (!started) startGeneration(globalContainer->phaseResourceInputs());
 	if (!complete.load(std::memory_order_acquire))
 		return;
 	if (!delivered)

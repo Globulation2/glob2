@@ -7,6 +7,8 @@
 #include <atomic>
 #include <memory>
 #include <thread>
+#include <optional>
+namespace resource_policy { struct PhaseResourceInputs; }
 
 // Embedded generator authoring preview. Owns one frozen world for its whole life.
 class GeneratorStudioScreen : public GAGGUI::Screen
@@ -31,10 +33,13 @@ class GeneratorStudioScreen : public GAGGUI::Screen
 	const std::string packagePath, settingsPath;
 	MapPreview preview;
 	std::thread worker;
+	std::optional<unsigned> resolvedBackgroundWorkers;
+	unsigned actualBackgroundWorkers = 0;
 	std::atomic<bool> complete{false};
 	bool started = false, delivered = false, playable = false;
 	std::string report, error;
 	MapThumbnail terrain;
 	std::vector<MapStart> starts;
+	void startGeneration(const resource_policy::PhaseResourceInputs &);
 	void generate();
 };

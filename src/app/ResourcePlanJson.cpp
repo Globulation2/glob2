@@ -84,6 +84,8 @@ nlohmann::json describeExecutionProfiles()
         profiles.push_back(executionProfileName(value));
     return {{"policy_version", ResourcePlan::Version}, {"resource_plan_schema_version", 1}, {"profiles", profiles}};
 }
+nlohmann::json describeRuntimeConstraints(const RuntimeConstraints &value) { return constraints(value); }
+
 nlohmann::json describeResourcePlan(const ResourcePlan &plan)
 {
     if (plan.version != ResourcePlan::Version) throw std::invalid_argument("Unsupported resource policy version for JSON observation");

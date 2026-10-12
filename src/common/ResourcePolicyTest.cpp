@@ -237,4 +237,52 @@ TEST_CASE("workload participant bounds preserve device capabilities and reject u
     CHECK(resolveResourcePlan(request, device, requirements).resources.computeParticipants == 6);
 }
 
+TEST_CASE("explicit resources and constraints survive every profile precedence stratum")
+{
+    const std::array<ExecutionProfile,6> profiles{ExecutionProfile::Auto,ExecutionProfile::Eco,
+        ExecutionProfile::Balanced,ExecutionProfile::Luxurious,ExecutionProfile::FastSimulation,ExecutionProfile::EfficientThroughput};
+    for(const auto profile:profiles) {
+        ExecutionRequest request; request.contextDefault=ExecutionProfile::FastSimulation;
+        request.savedProfile=ExecutionProfile::Luxurious; request.explicitProfile=profile;
+        request.computeParticipants=3; request.planningMemoryBytes=700; request.recoverableMemoryBytes=100;
+        request.renderFrameRate=0; request.renderResolutionScale=.75; request.renderDetail=1; request.renderPreparationBudgetUs=0;
+        request.renderGpu=GpuPolicy::Disabled; request.computeGpu=GpuPolicy::Enabled;
+        request.constraints.onBattery=false; request.constraints.batterySaver=true;
+        request.constraints.backgrounded=true; request.constraints.memoryPressure=true; request.constraints.memoryLimitBytes=768;
+        const auto plan=resolveResourcePlan(request,supported(),workload());
+        CHECK(plan.selectedProfile==profile); CHECK(plan.profileSource==ProfileSource::ExplicitProfile); CHECK(plan.profileTuningPending);
+        CHECK(plan.resources.computeParticipants==3); CHECK(plan.resources.planningMemoryBytes==700); CHECK(plan.resources.recoverableMemoryBytes==100);
+        CHECK((plan.resources.render==RenderResources{0,.75,1,0}));
+        CHECK(plan.resources.renderGpu==GpuPolicy::Disabled); CHECK(plan.resources.computeGpu==GpuPolicy::Enabled);
+        CHECK(plan.request.constraints==request.constraints);
+        CHECK(plan.participantSource==ValueSource::ExplicitOverride); CHECK(plan.frameRateSource==ValueSource::ExplicitOverride);
+        request.explicitProfile.reset(); const auto saved=resolveResourcePlan(request,supported(),workload());
+        CHECK(saved.selectedProfile==ExecutionProfile::Luxurious); CHECK(saved.resources==plan.resources);
+        request.savedProfile.reset(); const auto context=resolveResourcePlan(request,supported(),workload());
+        CHECK(context.selectedProfile==ExecutionProfile::FastSimulation); CHECK(context.resources==plan.resources);
+    }
+}
+TEST_CASE("invalid capability defaults and enum overrides fail while unknown support stays distinct")
+{
+    auto request=ExecutionRequest{}; auto device=supported(); auto requirements=workload();
+    device.allocatedCpuParticipants=0; CHECK_THROWS_AS(resolveResourcePlan(request,device,requirements),std::invalid_argument);
+    device=supported(); device.hardParticipantLimit=0; CHECK_THROWS_AS(resolveResourcePlan(request,device,requirements),std::invalid_argument);
+    device=supported(); requirements.defaults.computeParticipants=0; CHECK_THROWS_AS(resolveResourcePlan(request,device,requirements),std::invalid_argument);
+    requirements=workload(); request.explicitProfile=static_cast<ExecutionProfile>(99);
+    CHECK_THROWS_AS(resolveResourcePlan(request,device,requirements),std::invalid_argument);
+    request.explicitProfile=ExecutionProfile::Auto; request.savedProfile=static_cast<ExecutionProfile>(99);
+    CHECK_THROWS_AS(resolveResourcePlan(request,device,requirements),std::invalid_argument);
+    request.explicitProfile.reset(); request.savedProfile.reset();
+    requirements.maximumRenderDetail=0; request.renderDetail=1;
+    CHECK_THROWS_AS(resolveResourcePlan(request,device,requirements),std::invalid_argument);
+    request.renderDetail=0; requirements.maximumRenderPreparationBudgetUs=0; request.renderPreparationBudgetUs=1;
+    CHECK_THROWS_AS(resolveResourcePlan(request,device,requirements),std::invalid_argument);
+    request.renderPreparationBudgetUs=0;
+    CHECK(resolveResourcePlan(request,device,requirements).resources.render.preparationBudgetUs==0);
+    request.computeParticipants=2; device.threadsSupported.reset();
+    CHECK(resolveResourcePlan(request,device,requirements).resources.computeParticipants==2);
+    device.threadsSupported=false;
+    CHECK_THROWS_AS(resolveResourcePlan(request,device,requirements),std::invalid_argument);
+}
+
 }

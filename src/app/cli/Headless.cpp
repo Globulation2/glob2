@@ -885,7 +885,7 @@ int runHeadlessCommand(const Cli::Request &request)
 				generation.options["--write-map"] = {"true"};
 				generation.options["--seed"] = {one(options, "--map-seed")};
 				for (const auto &key : {"--param", "--candidates", "--building-catalog",
-										"--building-artwork", "--data-dir"})
+										"--building-artwork", "--data-dir", "--execution-profile", "--memory-budget-bytes"})
 				{
 					if (options.count(key))
 						generation.options[std::string(key) == "--param" ? "--set" : key] =

@@ -142,4 +142,28 @@ TEST_CASE("workload support is distinct from device allocation in serialized pla
     CHECK(describeResourcePlan(resolveResourcePlan({}, jsonDevice(), requirements))["workload"]["maximum_compute_participants"].is_null());
 }
 
+TEST_CASE("all selected intents serialize pending tuning and explicit resource precedence")
+{
+    for(const char *name:{"auto","eco","balanced","luxurious","fast-simulation","efficient-throughput"}) {
+        ExecutionRequest request; request.explicitProfile=parseExecutionProfile(name);
+        request.savedProfile=ExecutionProfile::Eco; request.contextDefault=ExecutionProfile::Balanced;
+        request.computeParticipants=3; request.renderFrameRate=0; request.computeGpu=GpuPolicy::Enabled;
+        request.constraints.batterySaver=true; request.constraints.backgrounded=false; request.constraints.memoryPressure=true;
+        auto device=jsonDevice(); device.computeGpuSupported=false;
+        const auto value=describeResourcePlan(resolveResourcePlan(request,device,jsonWorkload()));
+        CHECK(value["schema_version"]==1); CHECK(value["policy_version"]==1);
+        CHECK(value["requested_execution_profile"]==name); CHECK(value["selected_execution_profile"]==name);
+        CHECK(value["profile_source"]=="explicit_profile"); CHECK(value["profile_tuning_pending"]==true);
+        CHECK(value["resolved_resources"]["compute_participants"]==3);
+        CHECK(value["resource_sources"]["compute_participants"]=="explicit_override");
+        CHECK(value["resolved_resources"]["render_frame_rate_limit"]==0);
+        CHECK(value["resolved_resources"]["gpu_compute_policy"]=="disabled");
+        CHECK(value["original_request"]["resource_overrides"]["gpu_compute_policy"]=="enabled");
+        CHECK(value["runtime_constraints"]["on_battery"].is_null());
+        CHECK(value["runtime_constraints"]["battery_saver"]==true);
+        CHECK(value["runtime_constraints"]["backgrounded"]==false);
+        CHECK(value["runtime_constraints"]["memory_pressure"]==true);
+    }
+}
+
 }

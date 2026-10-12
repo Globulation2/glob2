@@ -3,6 +3,7 @@
 
 #pragma once
 #include <atomic>
+#include "ApplicationPhaseResources.h"
 
 #include <memory>
 #include <CooperativeTask.h>
@@ -11,6 +12,7 @@
 #include "BuildingType.h"
 #include "Settings.h"
 #include "ResourcePolicy.h"
+#include "ComputeThreads.h"
 #include <nlohmann/json_fwd.hpp>
 #include "TerrainType.h"
 class MapAssetBundle;
@@ -60,6 +62,13 @@ public:
 	void configureGradientBackend() const;
     // Resolve only at an explicit owner/session setup boundary. Queries never rediscover.
     void refreshResourcePlan(bool ownerOnly = false);
+    resource_policy::PhaseResourceInputs phaseResourceInputs() const;
+    resource_policy::ResourcePlan ownerPhaseResourcePlan() const;
+    void prepareStartupResources();
+    void refreshPresentationResources();
+    unsigned resolvedRenderFrameRate() const;
+    std::optional<resource_policy::ResourcePlan> presentationResources;
+    std::optional<resource_policy::AssetPhaseResources> startupAssetResources;
     const resource_policy::ResourcePlan &resourcePlan() const;
     unsigned resolvedComputeParticipants() const;
     bool resolvedGpuComputeEnabled() const;
@@ -143,6 +152,8 @@ public:
 	std::optional<bool> gpuComputeOverride;
     resource_policy::ExecutionRequest executionResourceRequest;
     std::optional<resource_policy::ResourcePlan> frozenResourcePlan;
+    CpuAvailabilityObservation frozenCpuAvailability;
+    std::uint64_t frozenResourceObservationNs=0;
 	std::string runNoXGameName;
 	int runNoXCountRuns; //!< The number of runs you want to repeat the no X run
 	bool automaticEndingGame;

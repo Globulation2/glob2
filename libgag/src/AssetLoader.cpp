@@ -139,8 +139,11 @@ void AssetImage::prepareUpload(bool highResolution) {
     }
 }
 AssetLoader::Options AssetLoader::Options::environment() {
+    return environment(std::max(1u, std::thread::hardware_concurrency()));
+}
+AssetLoader::Options AssetLoader::Options::environment(unsigned allocatedCpuParticipants) {
     Options result;
-    const auto cores = std::max(1u, std::thread::hardware_concurrency());
+    const auto cores = std::max(1u, allocatedCpuParticipants);
     // Bundled artwork consists mostly of small independent images. Beyond eight
     // decoders, queue contention and memory traffic outweighed extra compute in
     // the asset benchmark. Keep a core free and allow explicit hardware tuning.

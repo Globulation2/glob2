@@ -6,6 +6,7 @@
 #include <functional>
 #include <memory>
 #include <vector>
+#include <HostResourceObservations.h>
 
 namespace GAGCore { struct ViewportMetrics; struct InputCapabilities; }
 namespace GAGCore::ApplicationHost
@@ -45,6 +46,9 @@ bool takeViewportSize(int &width, int &height);
 bool presentationMetrics(ViewportMetrics& metrics, InputCapabilities& input);
 // Visibility edges are retained even when no frame ran while hidden.
 bool takeVisibilityChange(bool &hidden);
+// Non-consuming host-owner snapshot; memoryPressure is a sticky low-memory event,
+// not a current pressure gauge. Native foreground unknown until lifecycle edges.
+ResourceObservations resourceObservations();
 
 enum class FileSelectionState
 {
@@ -67,6 +71,12 @@ class FileSelection
 	virtual FileSelectionState state() const = 0;
 	virtual SelectedFile takeFile() = 0;
 };
+// True while a desktop OS file picker is open; game events cannot operate it.
+#ifndef __EMSCRIPTEN__
+bool nativeDialogOpen();
+#else
+inline bool nativeDialogOpen() { return false; }
+#endif
 bool canImportFiles();
 std::unique_ptr<FileSelection> selectFile(const std::string &extension);
 

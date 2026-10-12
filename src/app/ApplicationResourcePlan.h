@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "ResourcePolicy.h"
+#include "ComputeThreads.h"
 
 namespace resource_policy
 {
@@ -19,7 +20,8 @@ struct ApplicationResourceInputs
     DeviceCapabilities capabilities;
 };
 // One platform hint discovery per explicit refresh. No GPU initialization/probe.
-DeviceCapabilities discoverApplicationResourceCapabilities();
+DeviceCapabilities applicationCapabilitiesFromCpuAvailability(const CpuAvailabilityObservation&, bool threadsSupported);
+DeviceCapabilities discoverApplicationResourceCapabilities(CpuAvailabilityObservation* observation = nullptr);
 std::uint64_t parsePlanningMemoryBytes(std::string_view);
 // Pure injected bridge, suitable for tests without querying this machine.
 ResourcePlan resolveApplicationResourcePlan(const ApplicationResourceInputs &);

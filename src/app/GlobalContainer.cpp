@@ -35,6 +35,7 @@
 #include "field/GradientDeviceService.h"
 
 #include <ApplicationHost.h>
+#include <algorithm>
 
 
 /**
@@ -187,13 +188,18 @@ void GlobalContainer::updateLoadProgressScreen(int value)
 			}
 		gfx->finishDrawingSprite(terrain, 255);
 	}
-	gfx->drawSurface((gfx->getW()-title->getW())>>1, (gfx->getH()-title->getH())>>1, title.get());
+	// Keep the splash wordmark inside portrait viewports without stretching it.
+	const float titleWidth = std::min(float(title->getW()), gfx->getW() * 0.8f);
+	const float titleHeight = title->getH() * (titleWidth / title->getW());
+	gfx->drawSurface((gfx->getW() - titleWidth) / 2, (gfx->getH() - titleHeight) / 2,
+					 titleWidth, titleHeight, title.get());
 	gfx->nextFrame();
 }
 
 // glob2-client specific actions here.
 void GlobalContainer::loadClient(void)
 {
+    prepareStartupResources();
 	// Native builds have every data package; the browser installs game sprites
 	// before startup and menu music afterward (scons/web_assets.py).
 	const bool gameData = GAGCore::ApplicationHost::assetPackageReady("game");
@@ -214,7 +220,7 @@ void GlobalContainer::loadClient(void)
             settings.rendererBackend = selected;
             if (!settings.save()) std::cerr << "Could not save renderer preference." << std::endl;
         });
-        gfx->setTargetRenderFps(settings.targetRenderFps);
+        refreshPresentationResources();
 #if !defined(GLOB2_MOBILE) && !defined(__EMSCRIPTEN__)
 		gfx->setDisplayPreferenceCallback([this](int w, int h, bool fullscreen)
 		{
@@ -478,6 +484,7 @@ void GlobalContainer::loadGameFonts()
 }
 void GlobalContainer::loadOffscreenGraphics()
 {
+    prepareStartupResources();
 	if (!gfx) gfx = Toolkit::initGraphic(640, 480, 0, "Glob2 export", "glob2");
 	if (!standardFont || !littleFont) loadGameFonts();
 	if (!gameGraphics) loadGameGraphics(false);

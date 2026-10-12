@@ -41,6 +41,9 @@ TEST_CASE("moments; nesting; work/sleep/present separation; budgets; jitter; sam
 	for (auto n : {11, 12, 9, 15})
 		budget.add(n, 10);
 	REQUIRE((budget.exceeded == 3 && budget.excess == 8 && budget.longest == 2 && budget.worst == 5));
+    REQUIRE(budget.headroom==1);
+    Budget unused; unused.add(5,0); REQUIRE(unused.count==0); REQUIRE(unused.headroom==0);
+    Budget merged; merged.add(3,10); merged.merge(budget); REQUIRE(merged.headroom==8);
 	auto &c = collector();
 	c.clock = fakeClock;
 	timeNs = 100;

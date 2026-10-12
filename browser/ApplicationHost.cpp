@@ -56,10 +56,11 @@ struct HostState {
     bool active = false;
     // Keep this packed-double layout in sync with sampleHostState's JS writes.
     enum Slot { FrameGate, RestorePending, Visibility, Width, Height, Presentation,
-                Count = Presentation + 10 };
+                ResourceVisibility = Presentation + 10, Count = ResourceVisibility + 1 };
     double values[Count]{};
 };
 thread_local HostState hostState;
+thread_local ResourceObservations observedResources;
 void publishDiagnostics(bool hostTurn = false) {
     auto &d = diagnostics;
     static const bool checkErrors = std::getenv("GLOB2_WEBGL_ERRORS") != nullptr;
@@ -113,6 +114,7 @@ void sampleHostState(bool consume = true)
     MAIN_THREAD_EM_ASM({
         const offset = $0 >> 3;
         HEAPF64.fill(0, offset, offset + $2);
+        HEAPF64[offset + $4] = typeof document==="undefined" ? -1 : +!!document.hidden;
         HEAPF64[offset] = Module.glob2FrameGate?.() === false ? 1 : 0;
         if (HEAPF64[offset]) return;
         HEAPF64[offset + 1] = +!!Module.gpuRestorePending;
@@ -135,7 +137,7 @@ void sampleHostState(bool consume = true)
         const v = Module.presentationMetrics;
         if (v) HEAPF64.set([v.width,v.height,v.safe.left,v.safe.top,v.safe.right,v.safe.bottom,
             v.keyboardInset,+v.touch,+v.pointer,+v.hover], offset + 5);
-    }, host.values, EM_ASM_INT({ return typeof GLctx !== 'undefined' && GLctx && GLctx.isContextLost() ? 1 : 0; }), HostState::Count, consume);
+    }, host.values, EM_ASM_INT({ return typeof GLctx !== 'undefined' && GLctx && GLctx.isContextLost() ? 1 : 0; }), HostState::Count, consume, HostState::ResourceVisibility);
 }
 struct HostFrameScope {
     HostFrameScope() { hostState.active = true; }
@@ -241,7 +243,7 @@ void scheduledFrame(void* opaque)
     {
         GAGCore::EventQueue events;
         SDL_Event event;
-        while (SDL_PollEvent(&event)) events.push_back(event);
+        while (SDL_PollEvent(&event)) { observedResources.observe(event); events.push_back(event); }
         const HostFrameScope scope;
         running = state->loop->frame(SDL_GetTicks(), events.events());
     }
@@ -281,6 +283,15 @@ void wait(std::uint32_t)
 {
     throw std::logic_error("Blocking application loops are unavailable in the browser; use scheduled screens or jobs");
 }
+ResourceObservations resourceObservations()
+{
+    auto result=observedResources;
+    const int hidden=hostState.active ? int(hostState.values[HostState::ResourceVisibility]) :
+        MAIN_THREAD_EM_ASM_INT({ return typeof document==='undefined' ? -1 : +!!document.hidden; });
+    if(hidden>=0) result.backgrounded=hidden!=0;
+    return result;
+}
+
 bool takeVisibilityChange(bool& hidden)
 {
     if (hostState.active) {

@@ -88,9 +88,10 @@ inline constexpr unsigned peekPressMs = 400;
 inline constexpr double peekZoomStep = 1.25;
 inline constexpr double peekButtonColumn = 96; // Landscape: buttons beside the map.
 inline constexpr double dragThreshold = 8;
-// Map release momentum needs more intent than the pan/tap threshold. Screen
-// points keep this independent of both map zoom and display density.
+// Map release momentum needs recent travel and movement beyond the settling
+// slop. Screen points keep both independent of map zoom and display density.
 inline constexpr double mapFlingTravelPoints = 16;
+inline constexpr double mapReleaseSlopPoints = 3;
 inline constexpr double fingerLift = 48;
 inline constexpr double edgePanMargin = 24;
 inline constexpr double edgePanPixelsPerSecond = 240;

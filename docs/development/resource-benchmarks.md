@@ -169,3 +169,39 @@ nanoseconds. Worker elapsed time is not process CPU. Snapshot capture/copy and
 memory costs appear in the shared snapshot metrics. Wait time combines deadline
 joins, zero-worker fallback computation and explicit drains; final draining completes computation without applying
 future mutations. Report end-to-end regressions even when owner computation falls.
+
+## Independent application resource phases
+
+ApplicationPhaseResources resolves immutable local plans for startup assets,
+landscape previews, decorative menu games and the editor. These plans copy profile
+intent and observed constraints while excluding simulation CPU/GPU overrides;
+the active game session plan is unchanged. Profile tier tuning remains pending.
+Asset participants count the owner, decoder workers and IO workers together: IO
+callbacks allocate/copy buffers and execute ordinary CPU work. The IO count remains
+a separate role; when a small allocation cannot fit an IO worker, reads run
+cooperatively. Explicit asset role overrides remain explicit and may report
+oversubscription. A positive explicit IO request without a decoder is rejected
+before cooperative normalization. CPU zero with no positive explicit IO remains
+cooperative. Explicit positive worker requests on serial-only platforms are
+rejected rather than relabelled as zero; legacy non-explicit defaults still
+normalize cooperatively. Asset IO has a separate platform hard limit:
+browser startup supplies zero even for threaded builds because MEMFS reads
+remain on the owner. Automatic IO is bounded by it, positive explicit IO is
+rejected, and explicit IO zero remains valid alongside CPU decoder workers.
+Native startup leaves this role limit unknown; existing parser bounds remain. Automatic defaults preserve existing asset decoder cap8 and
+preview fallback cap4, while the landscape picker keeps its current2worker default.
+Unknown allocation resolves cooperatively rather than claiming host CPUs.
+
+Toolkit.configureAssets accepts owner-supplied options after init and before
+first use. A late call returns false without replacing the live loader; close
+drains it and clears pending options. Startup settings and CLI parsing precede
+this phase. Asset memoryBytes controls working/encoded admission credits and
+allows an oversized job for progress; it is neither recoverable cache nor an RSS
+limit. Planning memory does not silently evict retained fonts/images or rewrite
+this admission credit. Existing named renderer preferences stay independent.
+
+Presentation frame-rate defaults resolve centrally at startup and explicit UI
+changes refresh only the presentation plan/pacer. Telemetry reads the cached
+effective FPS; no policy resolution occurs per frame. Menu/editor retain owner-only
+execution and pacing. Validate injected allocation1/2/6/unknown, cooperative IO,
+explicit role overrides and immutable service identity before applying this phase.

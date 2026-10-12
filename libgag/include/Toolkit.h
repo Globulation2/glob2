@@ -5,6 +5,8 @@
 
 #include <string>
 #include <map>
+#include <AssetLoader.h>
+#include <optional>
 
 namespace GAGCore
 {
@@ -51,6 +53,10 @@ namespace GAGCore
 		static FileManager *getFileManager(void) { return fileManager; }
 		//! Shared CPU asset service, owned and stopped before the graphics backend.
 		static AssetLoader &assets();
+        //! Owner-only, before the first asset request. False leaves a live loader unchanged.
+        static bool configureAssets(AssetLoader::Options options);
+        //! Does not initialize the service. Report actual post-launch/fallback counts.
+        static std::optional<AssetLoader::Metrics> assetMetrics();
 		static StringTable *const getStringTable(void) { return strings; }
 		
 	protected:

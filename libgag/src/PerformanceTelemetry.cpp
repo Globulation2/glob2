@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <PerformanceTelemetry.h>
+#include <ApplicationHost.h>
 #include <algorithm>
 #include <chrono>
 #include <cmath>
@@ -30,7 +31,8 @@ unsigned index(Id id)
 void printBudget(std::ostream &out, const char *name, const Budget &b)
 {
 	out << ' ' << name << ".count=" << b.count << ' ' << name << ".overruns=" << b.exceeded << ' '
-		<< name << ".excess_ns=" << b.excess << ' ' << name << ".worst_ns=" << b.worst << ' '
+		<< name << ".headroom_ns=" << b.headroom << ' '
+        << name << ".excess_ns=" << b.excess << ' ' << name << ".worst_ns=" << b.worst << ' '
 		<< name << ".longest_streak=" << b.longest;
 }
 void printMetric(std::ostream &out, const Metric &m, unsigned stride)
@@ -100,6 +102,7 @@ void Budget::add(std::uint64_t duration, std::uint64_t budget)
 	if (!budget)
 		return;
 	++count;
+    if(duration<=budget) headroom+=budget-duration;
 	if (duration > budget)
 	{
 		++exceeded;
@@ -128,6 +131,7 @@ void Budget::merge(const Budget &other)
 	count += other.count;
 	exceeded += other.exceeded;
 	excess += other.excess;
+    headroom += other.headroom;
 	worst = std::max(worst, other.worst);
 	longest = std::max(longest, other.longest);
 	streak = other.streak;
@@ -325,7 +329,12 @@ void Collector::write(std::ostream &out, const char *record, std::uint64_t tick,
 		out << '\n';
 	}
 	prefix();
-	out << " scope=budgets";
+	out << " scope=budgets headroom_scope=observed_wall_budget_intervals_not_cpu_gpu_capacity";
+    const auto host=GAGCore::ApplicationHost::resourceObservations();
+    out << " host.backgrounded=" << (host.backgrounded ? (*host.backgrounded ? "true" : "false") : "unknown")
+        << " host.memory_pressure=" << (host.memoryPressure ? (*host.memoryPressure ? "true" : "false") : "unknown")
+        << " host.low_memory_events=" << host.lowMemoryEvents
+        << " host.memory_pressure_scope=sticky_event_no_clear_signal";
 	printBudget(out, "work", cumulative ? totalWorkBudget : workBudget);
 	printBudget(out, "presentation", cumulative ? totalFrameBudget : frameBudget);
 	out << " saved_total=" << saved << " failed_total=" << failed

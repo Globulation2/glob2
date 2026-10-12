@@ -13,6 +13,8 @@
 #include <SpriteLoad.h>
 #include <chrono>
 #include <algorithm>
+#include <optional>
+#include <thread>
 
 #include <GraphicContext.h>
 
@@ -20,12 +22,28 @@ namespace GAGCore
 {
 	namespace {
         std::unique_ptr<AssetLoader> assetLoader;
+        std::optional<AssetLoader::Options> assetOptions;
+        std::thread::id assetOwner;
         std::map<std::string, std::unique_ptr<SpriteLoad>> loadingSprites;
         size_t completedSpriteLoads = 0, submittedSpriteLoads = 0;
     }
+    bool Toolkit::configureAssets(AssetLoader::Options options)
+    {
+        if (!fileManager || std::this_thread::get_id()!=assetOwner) throw std::logic_error("Asset options require the Toolkit owner after init");
+        if (!options.memoryBytes) throw std::invalid_argument("Asset admission bytes must be positive");
+        if (assetLoader) return false;
+        assetOptions = options;
+        return true;
+    }
+    std::optional<AssetLoader::Metrics> Toolkit::assetMetrics()
+    {
+        if(!fileManager) return std::nullopt;
+        if(std::this_thread::get_id()!=assetOwner) throw std::logic_error("Asset metrics require Toolkit owner");
+        return assetLoader ? std::optional<AssetLoader::Metrics>(assetLoader->metrics()) : std::nullopt;
+    }
 	AssetLoader &Toolkit::assets()
 	{
-		if (!assetLoader) assetLoader = std::make_unique<AssetLoader>(*fileManager, AssetLoader::Options::environment());
+		if (!assetLoader) assetLoader = std::make_unique<AssetLoader>(*fileManager, assetOptions ? *assetOptions : AssetLoader::Options::environment());
 		return *assetLoader;
 	}
 	Toolkit::SpriteMap Toolkit::spriteMap;
@@ -38,6 +56,7 @@ namespace GAGCore
 	{
 		if (!fileManager)
 		{
+			assetOwner=std::this_thread::get_id();
 			fileManager = new FileManager(gameName);
 			strings = new StringTable();
 		}
@@ -55,6 +74,7 @@ namespace GAGCore
 	{
         loadingSprites.clear();
 		assetLoader.reset();
+        assetOptions.reset();
         completedSpriteLoads = submittedSpriteLoads = 0;
 		for (SpriteMap::iterator it=spriteMap.begin(); it!=spriteMap.end(); ++it)
 			delete (*it).second;

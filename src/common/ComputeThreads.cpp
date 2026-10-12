@@ -13,7 +13,7 @@
 // Linux affinity is per thread: query the executor-creating thread, whose
 // workers inherit this mask. Affinity includes cpuset restrictions, but not
 // CPU-time quotas or an estimate of physical-core/SMT throughput.
-unsigned availableComputeCpuCount(unsigned hardware) noexcept
+CpuAvailabilityObservation discoverComputeCpuAvailability(unsigned hardware) noexcept
 {
 #if defined(__linux__) && !defined(__EMSCRIPTEN__)
     try
@@ -31,13 +31,19 @@ unsigned availableComputeCpuCount(unsigned hardware) noexcept
                 const auto* bits = reinterpret_cast<const unsigned char*>(mask.data());
                 for (std::size_t i = 0; i < bytes; ++i)
                     eligible += std::popcount(bits[i]);
-                return availableComputeCpuCount(hardware, eligible);
+                return cpuAvailabilityObservation(hardware, eligible);
             }
             if (errno != EINVAL) break;
         }
     }
     catch (const std::bad_alloc&) {} // Discovery must not prevent the portable fallback.
 #endif
-    return availableComputeCpuCount(hardware, 0);
+    return cpuAvailabilityObservation(hardware);
+}
+// Legacy API intentionally keeps hardware-hint fallback and min(hardware,mask).
+// Historical callers are not migrated implicitly by adding typed provenance.
+unsigned availableComputeCpuCount(unsigned hardware) noexcept {
+    const auto observation=discoverComputeCpuAvailability(hardware);
+    return availableComputeCpuCount(hardware,observation.eligibleLogicalCpuCount.value_or(0));
 }
 

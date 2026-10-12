@@ -110,6 +110,9 @@ public:
 	/// higher values progressively reduce delays and then skip rendered frames.
 	int gameSpeed;
     std::string interfacePresentation = "automatic";
+    // Local desktop automation preferences; never part of simulation or saved games.
+    bool mcpEnabled = false;
+    int mcpPort = 27202;
     // Interface theme ids (data/themes) for menus and for matches and the editor.
     std::string menuTheme = "light";
     std::string gameTheme = "dark";
@@ -144,6 +147,7 @@ public:
 		THUMB_LEFT = 1,
 	};
 	int thumbSide;
+	bool thumbSideChosen = false; ///< First-launch hand selection has been saved.
 	/// Resolves the platform default: Google Maps (Android) zooms in on a
 	/// downward drag, Apple Maps and others on an upward drag.
 	bool dragUpZoomsIn(void) const;

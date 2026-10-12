@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "MapThumbnail.h"
 #include "GeneratorStudioScreen.h"
+#include "ApplicationPhaseResources.h"
+#include <ThreadSupport.h>
 #include "Game.h"
 #include <nlohmann/json.hpp>
 #include <vector>
@@ -120,6 +122,30 @@ struct MapPreviewHarness
 		REQUIRE(report.at("success") == true);
 		REQUIRE(report.at("seed") == 19);
 		REQUIRE(screen.players.getNumberOfPlayers() == 4);
+		// The same frozen inputs publish the identical world through both owner-only
+		// and background execution. No generation count, RNG seed or save path changes.
+		for (const unsigned allocation : {1u, 6u})
+		{
+			resource_policy::PhaseResourceInputs resources;
+			resources.capabilities.allocatedCpuParticipants = allocation;
+			resources.capabilities.threadsSupported = GAGCore::ThreadSupport::available;
+			resources.intent.computeParticipants = 12; // Simulation override does not size this phase.
+			GeneratorStudioScreen scheduled(packagePath, settingsPath);
+			scheduled.startGeneration(resources);
+			if (scheduled.worker.joinable()) scheduled.worker.join();
+			REQUIRE(scheduled.complete.load(std::memory_order_acquire));
+			REQUIRE(scheduled.error.empty()); REQUIRE(scheduled.snapshot);
+			REQUIRE(*scheduled.snapshot == *screen.snapshot);
+			const unsigned expectedWorkers = GAGCore::ThreadSupport::available && allocation > 1 ? 1 : 0;
+			REQUIRE(scheduled.resolvedBackgroundWorkers == expectedWorkers);
+			REQUIRE(scheduled.actualBackgroundWorkers == expectedWorkers);
+			const auto status = Json::parse(scheduled.report);
+			REQUIRE(status.at("background_resources").at("requested_workers") == 1);
+			REQUIRE(status.at("background_resources").at("resolved_workers") == expectedWorkers);
+			REQUIRE(status.at("background_resources").at("actual_workers") == expectedWorkers);
+			REQUIRE(status.at("checksum") == report.at("checksum"));
+		}
+
 		std::ofstream(directory / "native-report.json") << report.dump(2);
 		std::filesystem::copy_file(packagePath, directory / "frozen-package.json",
 								   std::filesystem::copy_options::overwrite_existing);

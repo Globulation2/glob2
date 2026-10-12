@@ -636,8 +636,13 @@ int main(int argc, char **argv)
 		require(GAGGUI::Style::style == style &&
 					globals.standardFont->getStyle().color == font.color,
 				"theme/font restoration");
+		const auto sessionPlanBefore=globals.frozenResourcePlan;
+        const auto savedComputeRequest=globals.computeThreads; globals.computeThreads=6;
 		MenuColony a, b;
 		require(a.load(argv[2]) && b.load(argv[2]), "two sessions load");
+        require(a.resourcePlan().resources.computeParticipants==1 && b.resourcePlan().resources.computeParticipants==1,"menu ignores simulation CPU override");
+        require(globals.frozenResourcePlan==sessionPlanBefore,"menu preserves active session plan");
+        globals.computeThreads=savedComputeRequest;
 		for (int i = 0; i < 300; ++i)
 		{
 			a.update(1000 + i * 40);
@@ -834,7 +839,12 @@ int main(int argc, char **argv)
 		globals.replaying = false;
 		globals.replayFastForward = false;
 		{
+			const auto sessionPlanBefore=globals.frozenResourcePlan;
+            const auto savedComputeRequest=globals.computeThreads; globals.computeThreads=6;
 			auto editor = std::make_unique<MapEdit>();
+            require(editor->resourcePlan().resources.computeParticipants==1,"editor ignores simulation CPU override");
+            require(globals.frozenResourcePlan==sessionPlanBefore,"editor preserves active session plan");
+            globals.computeThreads=savedComputeRequest;
 			require(editor->load("maps/balanced.map"), "load editor fixture");
 			GAGGUI::ScreenStack screens(*globals.gfx);
 			screens.push(std::make_unique<MapEditorScreen>(screens, std::move(editor)));

@@ -199,7 +199,7 @@ void SettingsScreen::buildGeneral()
                        if (v < 0 || v >= int(std::size(Settings::RENDER_FPS_PRESETS))) return;
                        auto &settings = globalContainer->settings;
                        settings.targetRenderFps = Settings::RENDER_FPS_PRESETS[v];
-                       globalContainer->gfx->setTargetRenderFps(settings.targetRenderFps);
+                       globalContainer->refreshPresentationResources();
                        commit();
                    });
         }
@@ -251,6 +251,7 @@ void SettingsScreen::buildGeneral()
 				   {
 					   globalContainer->settings.thumbSide =
 						   std::clamp(v, int(Settings::THUMB_RIGHT), int(Settings::THUMB_LEFT));
+					   globalContainer->settings.thumbSideChosen = true;
 					   commit();
 				   });
 	}

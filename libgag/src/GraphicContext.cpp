@@ -805,7 +805,7 @@ int GraphicContext::maximumTextureSize() const
 		if (watchingEvents) SDL_RemoveEventWatch(watchWindow, this);
 		watchingEvents = false;
 		releaseFrameCache();
-        cancelRecordingCaptures();
+        cancelCaptures();
         if (renderer) {
             try { renderer->flush(); }
             catch (const std::exception &error) { SDL_LogWarn(SDL_LOG_CATEGORY_APPLICATION, "Retiring renderer: %s", error.what()); }
@@ -1107,7 +1107,7 @@ int GraphicContext::maximumTextureSize() const
 		const auto title = windowTitle + suffix;
 		if (window && title != SDL_GetWindowTitle(window))
 			SDL_SetWindowTitle(window, title.c_str());
-        pollRecordingCaptures();
+        pollCaptures();
         if (presentationDevice) {
             if (nextBackend || changingBackend) return;
             auto ticket = capture.reserveCapture();
@@ -1215,6 +1215,7 @@ int GraphicContext::maximumTextureSize() const
 			// A transformed software pass may end before nextFrame. Keep the
 			// request independent of the borrowed active-backend pointer.
             captureScreenshot();
+            captureMemoryFrame();
 
 			if (renderer && !nativeSoftware)
 			{

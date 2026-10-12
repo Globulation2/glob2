@@ -124,4 +124,67 @@ TEST_CASE("owner only workloads retain actual allocation and threading support")
     CHECK(resolveApplicationResourcePlan(input).resources.computeParticipants == 6);
 }
 
+TEST_CASE("application explicit resources retain precedence over saved and context intent")
+{
+    auto input=application(); input.headless=true; input.savedProfile=ExecutionProfile::Luxurious;
+    input.request.explicitProfile=ExecutionProfile::Eco;
+    input.legacyRequestedComputeParticipants=3; input.legacyGpuComputeEnabled=true; input.legacyGpuComputeExplicit=true;
+    input.request.planningMemoryBytes=128; input.request.constraints.memoryLimitBytes=256;
+    input.request.constraints.backgrounded=true; input.request.constraints.batterySaver=true;
+    const auto explicitPlan=resolveApplicationResourcePlan(input);
+    CHECK(explicitPlan.resources.computeParticipants==3); CHECK(explicitPlan.resources.computeGpu==GpuPolicy::Enabled);
+    CHECK(explicitPlan.resources.planningMemoryBytes==128); CHECK(explicitPlan.profileSource==ProfileSource::ExplicitProfile);
+    CHECK(explicitPlan.request.constraints==input.request.constraints); CHECK(explicitPlan.profileTuningPending);
+    input.request.explicitProfile.reset(); const auto saved=resolveApplicationResourcePlan(input);
+    CHECK(saved.selectedProfile==ExecutionProfile::Luxurious); CHECK(saved.resources==explicitPlan.resources);
+    input.savedProfile.reset(); const auto context=resolveApplicationResourcePlan(input);
+    CHECK(context.selectedProfile==ExecutionProfile::FastSimulation); CHECK(context.resources==explicitPlan.resources);
+}
+
+}
+
+TEST_SUITE("ApplicationResourcePlan") {
+TEST_CASE("CPU observation distinguishes allocation from portable hints") {
+    auto known=cpuAvailabilityObservation(32,6);
+    CHECK(known.source==CpuAvailabilitySource::AffinityMask); CHECK(known.hardwareHint==32);
+    CHECK(known.eligibleLogicalCpuCount==6);
+    auto hinted=cpuAvailabilityObservation(32); CHECK(hinted.source==CpuAvailabilitySource::HardwareHint);
+    CHECK_FALSE(hinted.eligibleLogicalCpuCount);
+    auto absent=cpuAvailabilityObservation(0); CHECK(absent.source==CpuAvailabilitySource::Unknown);
+    CHECK_FALSE(absent.eligibleLogicalCpuCount);
+    auto input=application();
+    input.capabilities=applicationCapabilitiesFromCpuAvailability(known,true);
+    CHECK(resolveApplicationResourcePlan(input).resources.computeParticipants==6);
+    for(auto observation : {hinted,absent}) {
+        input.capabilities=applicationCapabilitiesFromCpuAvailability(observation,true);
+        CHECK_FALSE(input.capabilities.allocatedCpuParticipants);
+        auto plan=resolveApplicationResourcePlan(input); CHECK(plan.resources.computeParticipants==1);
+        input.legacyRequestedComputeParticipants=12;
+        CHECK(resolveApplicationResourcePlan(input).resources.computeParticipants==12);
+        input.legacyRequestedComputeParticipants=0;
+    }
+    input.capabilities=applicationCapabilitiesFromCpuAvailability(hinted,false);
+    CHECK(resolveApplicationResourcePlan(input).resources.computeParticipants==1);
+    input.legacyRequestedComputeParticipants=2;
+    CHECK_THROWS_AS(resolveApplicationResourcePlan(input),std::invalid_argument);
+    input.capabilities=applicationCapabilitiesFromCpuAvailability(known,true);
+    input.legacyRequestedComputeParticipants=12;
+    auto explicitPlan=resolveApplicationResourcePlan(input);
+    CHECK(explicitPlan.resources.computeParticipants==12);
+    CHECK(std::find(explicitPlan.diagnostics.begin(),explicitPlan.diagnostics.end(),Diagnostic::ExplicitCpuOversubscription)!=explicitPlan.diagnostics.end());
+}
+TEST_CASE("legacy sizing injection retains fallback while new caller allocation stays explicit") {
+    CHECK(availableComputeCpuCount(32,0)==32); CHECK(availableComputeCpuCount(0,0)==1);
+    CHECK(availableComputeCpuCount(32,6)==6); CHECK(availableComputeCpuCount(2,6)==2);
+    auto input=application();
+    // Observed eligibility is not reduced by a smaller portable hardware hint.
+    const auto observed=cpuAvailabilityObservation(2,6);
+    CHECK(observed.hardwareHint==2); CHECK(observed.eligibleLogicalCpuCount==6);
+    input.capabilities=applicationCapabilitiesFromCpuAvailability(observed,true);
+    CHECK(resolveApplicationResourcePlan(input).resources.computeParticipants==6);
+    CHECK(availableComputeCpuCount(2,6)==2); // Legacy contract remains separate.
+    input.capabilities=applicationCapabilitiesFromCpuAvailability(cpuAvailabilityObservation(32),true);
+    input.capabilities.allocatedCpuParticipants=6; // Caller-owned allocation, not inferred hint.
+    CHECK(resolveApplicationResourcePlan(input).resources.computeParticipants==6);
+}
 }

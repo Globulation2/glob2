@@ -42,6 +42,7 @@ public:
         unsigned cpuThreads = 0, ioThreads = 0; // explicit zero = cooperative
         size_t memoryBytes = 64u * 1024u * 1024u;
         static Options environment();
+        static Options environment(unsigned allocatedCpuParticipants);
     };
     struct Metrics {
         size_t submitted = 0, completed = 0, failed = 0, cancelled = 0;

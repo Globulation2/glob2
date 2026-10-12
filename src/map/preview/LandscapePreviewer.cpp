@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "LandscapePreviewer.h"
 #include "Game.h"
+#include "ApplicationPhaseResources.h"
+#include "ApplicationResourcePlan.h"
 #include "GenerationContext.h"
 #include "GenerationService.h"
 #include <algorithm>
@@ -20,8 +22,11 @@ LandscapePreviewer::LandscapePreviewer(std::vector<GenerationRequest> requests, 
 	{
 		if (threads == 0)
 		{
-			const unsigned cores = std::thread::hardware_concurrency();
-			threads = int(std::clamp(cores == 0 ? 1u : cores - 1, 1u, 4u));
+			resource_policy::PhaseResourceInputs input;
+            input.capabilities=resource_policy::discoverApplicationResourceCapabilities();
+            const auto cores=input.capabilities.allocatedCpuParticipants.value_or(1);
+            const auto validatedWorkers=std::min(4u,cores>1 ? cores-1 : 0);
+            threads=int(resource_policy::backgroundWorkers(resource_policy::resolveBackgroundPhase(input,validatedWorkers)));
 		}
 		threads = std::min(std::max(0, threads), int(std::max<std::size_t>(1, this->requests.size())));
 		try

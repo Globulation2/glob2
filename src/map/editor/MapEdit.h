@@ -23,6 +23,7 @@
 #include "WidgetRectangle.h"
 #include <algorithm>
 #include <optional>
+#include "ResourcePolicy.h"
 #include <set>
 #include "render/Minimap.h"
 #include "OverlayAreas.h"
@@ -470,6 +471,7 @@ class MapEdit
     bool quitAfterSave = false;
 public:
 	MapEdit();
+    const resource_policy::ResourcePlan &resourcePlan() const { return localResources; }
 	~MapEdit();
 	///Loads the game given by a particular file name
 	bool load(const std::string filename);
@@ -491,7 +493,8 @@ public:
     // "Share online…" from the menu: the saved map file to upload to the catalog.
     std::string takeShareRequest() { return std::exchange(pendingShareFilename, {}); }
     void suspendInput();
-    bool advanceEditing(const std::vector<SDL_Event>& events, Uint32 tick);
+    bool advanceEditing(const std::vector<SDL_Event>& events, Uint32 tick,
+                        std::size_t *consumed = nullptr);
     void drawEditing();
 	///The dialog receiving input: a menu, file dialog, editor or the area name box.
 	bool hasDialog() const;
@@ -509,6 +512,7 @@ public:
 	///This function regenerates a game header for use in campaigns
 	void regenerateGameHeader();
 
+    resource_policy::ResourcePlan localResources;
 	Game game;
 
 	///Per-client viewer state (selection + mouse). NOT simulation state — see

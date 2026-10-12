@@ -69,7 +69,8 @@ ScrollPhysicsConfig editorTray();   // horizontal editor tool strip
 Ticks widenTicks(std::uint32_t stamp, Ticks reference);
 
 // Release velocity from recent (time, position) samples: a second-order least
-// squares fit over the last `window` ms, evaluated at the query time. Two
+// squares fit over the last `window` ms, evaluated at the query time. Movement
+// gaps longer than `stale` break history; equal timestamps replace a sample. Two
 // samples fit a line; one, none, a zero time span or a newest sample older than
 // `stale` ms (the finger paused before lifting) give zero.
 class VelocityTracker
@@ -79,6 +80,8 @@ class VelocityTracker
 	void reset();
 	void add(Ticks t, double position);
 	double velocity(Ticks t) const;
+	// Net travel in the current continuous movement segment within this horizon.
+	double displacement(Ticks t, Ticks horizon = window) const;
 	std::size_t size() const { return count; }
 
   private:
@@ -121,6 +124,8 @@ class ScrollAxis
 	Phase phase() const { return state; }
 	bool isAnimating() const { return state == Phase::Decelerating || state == Phase::Bouncing; }
 	bool isDragging() const { return state == Phase::Dragging; }
+	double recentTravel(Ticks t, Ticks horizon = VelocityTracker::window) const
+	{ return tracker.displacement(t, horizon); }
 
 	// A finger landed: anchor at the current offset (also while coasting or
 	// bouncing, which stop). In wrap mode the offset restarts at zero.
@@ -185,7 +190,9 @@ struct ScrollMotion
 	void setConfig(const ScrollPhysicsConfig &config);
 	void beginDrag(Ticks t);
 	void drag(Ticks t, double dx, double dy);
-	void endDrag(Ticks t);
+	// Optional radial release gates, in scroll units: recent travel and travel
+	// during the last stale interval. Dragging itself remains unfiltered.
+	void endDrag(Ticks t, double minimumTravel = 0, double settleSlop = 0);
 	void interrupt();
 	bool isAnimating() const { return x.isAnimating() || y.isAnimating(); }
 	bool isDragging() const { return x.isDragging() || y.isDragging(); }

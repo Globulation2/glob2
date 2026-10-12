@@ -50,6 +50,7 @@ MenuColony::~MenuColony() = default;
 bool MenuColony::load(const std::string& path)
 {
 	ColonyContext context;
+    localResources=globalContainer->ownerPhaseResourcePlan();
 	pause();
 	presentation.reset();
 	view = Game::ViewState();

@@ -32,7 +32,7 @@ struct Metric
 };
 struct Budget
 {
-	std::uint64_t count = 0, exceeded = 0, excess = 0, worst = 0, streak = 0, longest = 0;
+	std::uint64_t count = 0, exceeded = 0, excess = 0, headroom = 0, worst = 0, streak = 0, longest = 0;
 	void add(std::uint64_t duration, std::uint64_t budget);
 	void merge(const Budget &other);
 };

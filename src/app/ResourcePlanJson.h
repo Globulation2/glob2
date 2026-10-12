@@ -10,6 +10,8 @@ namespace resource_policy
 // preparation is discretionary microseconds; zero grants no discretionary work,
 // and required preparation is excluded. No current runtime consumer is implied.
 nlohmann::json describeResourcePlan(const ResourcePlan &);
+// Serialize observations without constructing/resolving another resource plan.
+nlohmann::json describeRuntimeConstraints(const RuntimeConstraints &);
 // Marker payload for a future capability adapter's "execution_profiles" field.
 // Defining this serializer does not advertise support in existing CLI commands.
 nlohmann::json describeExecutionProfiles();

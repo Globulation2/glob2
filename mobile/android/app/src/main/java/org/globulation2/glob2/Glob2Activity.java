@@ -10,6 +10,24 @@ public final class Glob2Activity extends SDLActivity {
     public static boolean verifyServerCertificates(byte[][] chain, String hostname) { return CertificateTrust.verify(chain, hostname); }
     private android.widget.LinearLayout assetPreparation;
 
+    // Per-call setup/end observation. No UI mutation, listener or policy action.
+    public int[] resourceObservations() {
+        final int[] result = {1, -1, -1};
+        final android.os.PowerManager power;
+        try {
+            power = (android.os.PowerManager)getSystemService(android.content.Context.POWER_SERVICE);
+        } catch (RuntimeException unavailable) { return result; }
+        if (power == null) return result;
+        // API21 is below the application's pinned minimum API24.
+        try { result[1] = power.isPowerSaveMode() ? 1 : 0; }
+        catch (RuntimeException unavailable) { /* unknown, independent of thermal */ }
+        if (Build.VERSION.SDK_INT >= 29) {
+            try { result[2] = power.getCurrentThermalStatus(); }
+            catch (RuntimeException unavailable) { /* unknown, independent of saver */ }
+        }
+        return result;
+    }
+
     // Called by the native startup thread. All view state stays on the UI thread.
     public void setPreparingAssets(boolean preparing) {
         runOnUiThread(() -> {

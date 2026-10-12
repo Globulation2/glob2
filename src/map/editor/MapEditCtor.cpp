@@ -28,6 +28,7 @@ MapEdit::MapEdit()
             128, // height
             Minimap::HideFOW)
 {
+    localResources=globalContainer->ownerPhaseResourcePlan();
 	Sprite::requestHighResolution(globalContainer->settings.highResolutionArtwork);
     // The initial presentation; viewportResized() switches it live.
     if(wantedPresentation()==EditorPresentation::Phone) phone=std::make_unique<PhoneEditor>(*this);

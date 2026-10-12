@@ -19,18 +19,24 @@ std::uint64_t parsePlanningMemoryBytes(std::string_view text)
         throw std::invalid_argument("--memory-budget-bytes expects 1..INT64_MAX");
     return bytes;
 }
-DeviceCapabilities discoverApplicationResourceCapabilities()
+DeviceCapabilities applicationCapabilitiesFromCpuAvailability(const CpuAvailabilityObservation& observation, bool threadsSupported)
 {
     DeviceCapabilities device;
-    // The existing portable hint incorporates Linux creating-thread affinity and
-    // its serial fallback; it does not measure quotas, physical cores or memory.
-    device.allocatedCpuParticipants = availableComputeCpuCount();
-    device.threadsSupported = GAGCore::ThreadSupport::available;
+    // Only an observed eligible logical mask is a known allocation. A caller
+    // may separately inject its own explicit allocation through capabilities.
+    device.allocatedCpuParticipants = observation.eligibleLogicalCpuCount;
+    device.threadsSupported = threadsSupported;
 #if defined(__EMSCRIPTEN__) || defined(SDL_PLATFORM_ANDROID) || defined(SDL_PLATFORM_IOS)
     device.computeGpuSupported = false; // Current native OpenCL backend is absent.
 #endif
     // Driver availability, renderer support and memory allocation remain unknown.
     return device;
+}
+DeviceCapabilities discoverApplicationResourceCapabilities(CpuAvailabilityObservation* observation)
+{
+    const auto sampled=discoverComputeCpuAvailability();
+    if(observation) *observation=sampled;
+    return applicationCapabilitiesFromCpuAvailability(sampled,GAGCore::ThreadSupport::available);
 }
 ResourcePlan resolveApplicationResourcePlan(const ApplicationResourceInputs &input)
 {
