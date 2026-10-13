@@ -117,6 +117,12 @@ simulation behavior and is rejected while a loaded queue is pending.
 
 ## CLI Flags
 
+`--rule teamStatsDelay=N` (0 through 8, default 8 for new games) controls
+statistics publication latency. All teams sample the shared between-tick world;
+workers calculate privately and the owner publishes exactly N ticks later.
+Older saves migrate to this boundary with N=0. This changes AI/script inputs and
+replay trajectories; pre-format-157 replays are not accepted.
+
 ### `game repeat <game-file> --ticks <steps> --runs <runs>`
 
 Runs a saved `.game` file headlessly.

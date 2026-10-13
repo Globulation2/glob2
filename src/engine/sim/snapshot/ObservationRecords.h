@@ -45,6 +45,11 @@ struct SectorEffects
     std::vector<DeathRecord> deaths;
 };
 struct Effects { std::vector<SectorEffects> sectors; };
+struct StatisticsInputs {
+    std::vector<GameplayEventCounters> events;
+    std::vector<Uint32> enemies;
+    std::vector<std::vector<TeamStats::CoverageBuilding>> coverage;
+};
 struct Statistics { std::vector<std::shared_ptr<const TeamStats>> teams; };
 struct Telemetry
 {

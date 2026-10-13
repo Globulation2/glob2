@@ -475,7 +475,7 @@ void Unit::syncStep(void)
 			Unit *enemy=owner->game->teams[enemyTeam]->myUnits[enemyID];
 
 			const int damage=int(std::clamp<Sint64>(Sint64(getRealAttackStrength())-enemy->getRealArmor(false),1,INT_MAX));
-			++owner->stats.measurements.shots[GameplayMeasurements::MELEE];
+			++owner->stats.events().shots[GameplayMeasurements::MELEE];
 			TeamStats::recordDamage(owner, enemy->owner, GameplayMeasurements::MELEE,
 									GameplayMeasurements::UNIT, enemy->hp, damage);
 			enemy->recordLethalDamage(damage, GameplayMeasurements::COMBAT);
@@ -496,7 +496,7 @@ void Unit::syncStep(void)
 				int enemyTeam=Building::GIDtoTeam(enemyGBID);
 				Building *enemy=owner->game->teams[enemyTeam]->myBuildings[enemyID];
 				const int damage=int(std::clamp<Sint64>(Sint64(getRealAttackStrength())-enemy->getEffectiveArmor(),1,INT_MAX));
-				++owner->stats.measurements.shots[GameplayMeasurements::MELEE];
+				++owner->stats.events().shots[GameplayMeasurements::MELEE];
 				TeamStats::recordDamage(owner, enemy->owner, GameplayMeasurements::MELEE,
 										GameplayMeasurements::BUILDING, enemy->hp, damage);
 				enemy->hp=int(std::max<Sint64>(INT_MIN,Sint64(enemy->hp)-damage));
@@ -694,7 +694,7 @@ void Unit::clearCargo()
 void Unit::receiveCarriedMaterial(int resource, MaterialPacket packet)
 {
 	if (!hasCapability(UnitRuntimeTraits::ExtendedCargo)) {
-		if (carriedMaterial>=0) ++owner->stats.measurements.materialSpillageEvents;
+		if (carriedMaterial>=0) ++owner->stats.events().materialSpillageEvents;
 		if (widePrimaryCargo) clearCargo();
 		carriedMaterial=resource; carriedPacket=packet; return;
 	}

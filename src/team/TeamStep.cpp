@@ -398,10 +398,10 @@ void Team::syncStep(void)
 			{
 				if (!building->type->isVirtual)
 				{
-					stats.measurements.variants.resize(game->buildingsTypes.size());
-					++stats.measurements.variants[building->typeNum].removed[GameplayMeasurements::DEMOLISHED];
+					stats.events().variants.resize(game->buildingsTypes.size());
+					++stats.events().variants[building->typeNum].removed[GameplayMeasurements::DEMOLISHED];
 					if (building->type->shortTypeNum>=0 && building->type->shortTypeNum<IntBuildingType::NB_BUILDING && building->getLongLevel()<NB_BUILDING_LONG_LEVELS)
-						++stats.measurements.removed[GameplayMeasurements::DEMOLISHED][building->type->shortTypeNum][building->getLongLevel()];
+						++stats.events().removed[GameplayMeasurements::DEMOLISHED][building->type->shortTypeNum][building->getLongLevel()];
 					map->setBuilding(building->posX, building->posY, building->type->width, building->type->height, NOGBID);
 					isDirtyGlobalGradient=true;
 				}
@@ -496,7 +496,7 @@ void Team::syncStep(void)
 	}
 
 	buildingTime.stop();
-	stats.step(this);
+
 	updateEvents();
 }
 

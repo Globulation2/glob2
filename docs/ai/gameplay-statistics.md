@@ -70,19 +70,58 @@ buildings into six bins.
 
 ## Sampling and saves
 
-Ordinary snapshots share existing unit/building scans. Worker time use adds a few
-comparisons per worker to the same per-tick unit scan; a combat death adds one
-tile read; the defence snapshot adds one tile read per warrior of the team and of
-its enemies at each 512-tick sample, save refresh and final export. Blockage and health bands
-use a separate bounded entity scan only on ticks divisible by 512, save refresh,
-and final export.
-Growth events read one packed tile word with all three team distance masks.
-Per-team overlap counts update only the changed building footprints at a sampled
-boundary. There are no new pathfinding calls, per-event allocations or
-per-event log records. History allocation occurs at sample time. At most one
-sample is retained per 512-tick slot in the engine's
-32-bit tick range (8,388,608 slots); loading checks count, cadence, ordering and
-coverage before accepting samples, and binary fields use checked reads.
+Statistics read the shared between-tick world snapshot. One deferred batch per
+advancing tick computes all teams in team order on one dedicated executor lane.
+The simulation owner publishes each sample at `sourceTick + teamStatsDelay` in
+source-tick/team order, joining late work at that deadline. Worker completion
+order never selects visible statistics. Zero workers use the same calculation
+at the deadline; delay zero calculates and publishes at the observation boundary.
+AI, scripts, victory calculations and presentation all read published values.
+
+The match-wide `teamStatsDelay` rule accepts 0 through 8 ticks, defaulting to 8.
+Per-tick samples retain the 32-sample smoothing/aggregate cadence and 512-tick
+history cadence. Histories carry source ticks, not publication ticks. The standard simulation
+snapshot contains map inputs; statistics jobs retain those buffers only for the
+512-tick diagnostics. Growth and combat
+attribution continue to use the last published building coverage.
+
+Aggregate smoothing uses the current raw sample plus the latest 31 published raw
+samples captured at submission. K=0/1 retain exact consecutive windows; K>1 skips
+K-1 recent pending rows and uses older rows instead. Cadence stays 32 samples,
+and histories stay at source ticks every 512. Raw ring entries remain consecutive,
+so this approximation does not compound. Delayed maxima can change AI decisions.
+
+Live event hooks write an owner-only collector. Snapshots capture its cumulative
+counters, while workers compute instantaneous measurements and labour deltas.
+The statistics batch job then accumulates those deltas and retains the latest
+periodic diagnostics in a complete frame. Publication installs that frame by
+swapping ownership; readers receive a const measurement accessor. Labour totals
+remain exact despite the approximate smoothing window.
+The live collector keeps events from later ticks independently of publication.
+Snapshot input buffers are pooled, and publication takes ownership of completed
+measurement frames. Replaced frames reuse existing batch storage only when no
+reader retains them. Routine checksums cover queue identities and published
+simulation-driving statistics/smoothing; full checks
+join and hash complete pending results, published diagnostics and live counters.
+Consequently routine checks detect differing pending simulation statistics when
+they publish; diagnostic measurements are covered by full verification.
+AI telemetry collection remains on the owner. Ordinary pauses do not admit new
+samples, and repeated reads of a boundary do not duplicate them.
+
+Save format **155** introduced collected and published measurements, smoothing
+state, publication timestamps and completed pending samples with their original
+deadlines. Format **156** removes the redundant snapshot input digest; format-155
+loads read and discard it. Format **157** distinguishes worker-finalized aggregates
+from older raw aggregates. Raw pending aggregates from formats 155/156 retain their
+original exact publication reduction, including after resaving. Format **158**
+persists complete measurement frames; loading formats 155–157 completes their
+measurement deltas in source order without publishing early. Saved aggregate
+modes and deadlines are preserved. Saving joins private computation without
+publishing future samples.
+Older saves migrate to the shared snapshot boundary with delay zero, preserving
+loaded published/smoothing state; their continuation can change. The minimum
+readable save version stays 58. Match termination does not finish reporting:
+results use published samples and pending samples are discarded during teardown.
 
 Save format **108** stores totals, current snapshots, sampled history, coverage
 start and pending lethal/projectile attribution. The minimum readable save
@@ -96,8 +135,7 @@ The expanded fields have a separate `extended_coverage_start`. Older saved sampl
 remain unavailable for these fields, including a sample at the old save's load tick.
 Save format 108 stores the building footprints
 used for the current 512-tick growth interval, so a mid-interval load reconstructs
-the same proximity masks. Blockage and health bands are checked at 512-tick samples
-and final export; building coverage changes at the next sample. The masks are
+the same proximity masks. Blockage and health bands are checked at published 512-tick samples; building coverage changes at the next sample. The masks are
 derived, tile-indexed bit arrays rather than saved map fields.
 
 Save format **133** adds worker time use, combat-death places and assignments and
@@ -113,7 +151,7 @@ catalog mapping. Old blockage counts lacked a level: import preserves each famil
 aggregate once, for the total blockage metric. New metrics and their labels use
 the game's concrete catalog, including in saved histories.
 
-The current replay floor is **137** and network protocol **57**. The save loader
+The current replay floor is **158** and network protocol **70**. The save loader
 still supports the durable format-58 floor.
 
 ## Existing timeline output
@@ -139,8 +177,8 @@ GLOB2_MEASURE team=0 tick=777 coverage_start=0 final=1 births_0=... ...
 Records contain all named fields listed above, flattened with underscore-separated
 zero-based indices. `GLOB2_MEASURE` is emitted at each sample. The automatic
 ending summary exports retained history as `GLOB2_MEASURE_HISTORY` (including
-history from loaded saves), then an exact final snapshot even between sample
-ticks. Distinguish record types rather than summing them: history repeats samples
+history from loaded saves), then the last published measurements. Pending
+samples are not published early at termination. Distinguish record types rather than summing them: history repeats samples
 already emitted during the run. Formatting/output occurs only when enabled.
 `extended_coverage_start` marks when the new growth, blockage and threshold fields
 first became available, and `labour_coverage_start` when worker time use, combat
@@ -217,6 +255,15 @@ through the same metrics as charts of the player's own colony.
 
 ## Verification
 
+The fast unit suites `ComputeExecutor` and `ReadOnlyPhase` cover normal serial and
+threaded batches, ordered lanes, empty groups, external completion/resumption,
+failures and lifecycle barriers. They require no world or catalog setup. Build
+with `python3 tools/dev_build.py unit-tests`, then use `test/run_tests.py` with
+`--binary unit --filter 'ComputeExecutor/*' --filter 'ReadOnlyPhase/*'` and the
+selected build directory. The engine suite `TeamStatsPipeline` covers calculation
+equivalence, publication deadlines, smoothing, retained readers and save migration,
+including immediate and deferred calculation failures.
+
 The existing `team-stats-save-test` and `savegame-safety-test` targets cover the
 new fields; both already run in Linux and Windows CI. `src/team/stats/TeamLabourStatsTest.cpp`
 (suite `TeamStatsSave`) checks that each worker-tick lands in one bucket, compares
@@ -239,3 +286,12 @@ Actual results and platform/performance coverage are recorded with the change's
 validation artifacts; CI compilation alone is not deterministic execution proof.
 
 Related: [AI documentation](README.md).
+
+The opt-in `TeamStatsPipeline` benchmark uses a fixed seed, 256 stationary units,
+shared snapshot capture and no orders for 1,024 ticks. Run the release test binary
+with an isolated `GLOB2_USER_DATA_DIR`, dummy SDL drivers,
+`GLOB2_STATS_BENCHMARK=1`, `GLOB2_PERF_DISABLE=1`,
+`--test-suite=TeamStatsPipeline --test-case='pipeline versus*'`. It prints
+`STATS_BENCH` rows for synchronous, immediate-snapshot and delayed-snapshot modes.
+These isolate scheduling/capture costs; they do not establish whole-game speedup.
+Never use a fast-development build for the performance comparison.

@@ -138,6 +138,7 @@ struct Handle
 	std::shared_ptr<const Session> session;
 	std::shared_ptr<const Effects> effects;
 	std::shared_ptr<const Statistics> statistics;
+	std::shared_ptr<const StatisticsInputs> statisticsInputs;
 	std::shared_ptr<const History> history;
 	std::shared_ptr<const Telemetry> telemetry;
 	std::shared_ptr<const EntityDiagnostics> entityDiagnostics;
@@ -158,6 +159,8 @@ struct Handle
 	std::array<Uint64, 5> mapGenerations{};
 	//! Named views share existing buffers and retain only their consumer's inputs.
 	Handle simulationView() const;
+    // Retain map inputs only on spatial-diagnostic sample ticks.
+    Handle statisticsView() const;
 	Handle gradientView() const;
 	Handle buildingGradientView() const;
 	Handle growthView() const;
@@ -194,7 +197,8 @@ private:
 std::shared_ptr<const std::vector<BuildingKindView>> captureCatalog(const Game& game);
 struct Storage;
 Handle capture(const Game& game, std::shared_ptr<const std::vector<BuildingKindView>> catalog,
-	Requirements requirements = All, const Handle* previous = nullptr, Storage* storage = nullptr);
+	Requirements requirements = All, const Handle* previous = nullptr, Storage* storage = nullptr,
+	bool unchangedBoundary = false);
 //! Throw if a captured map array or entity list differs from the live game.
 void verifyCapture(const Game& game, const Handle& handle);
 } // namespace SimulationSnapshot

@@ -25,6 +25,7 @@ struct Storage
 	BufferPool<Session> session;
 	BufferPool<Effects> effects;
 	BufferPool<Statistics> statistics;
+	BufferPool<StatisticsInputs> statisticsInputs;
 	BufferPool<History> history;
 	BufferPool<Telemetry> telemetry;
 	BufferPool<EntityDiagnostics> entityDiagnostics;
@@ -48,6 +49,7 @@ struct Storage
 	//! After each capture, compare every captured map array and entity list
 	//! with the live state and throw on a mismatch (an unmarked write).
 	bool verify = false;
+	bool profiling = false;
 	MemoryMetrics memoryMetrics() const;
 };
 

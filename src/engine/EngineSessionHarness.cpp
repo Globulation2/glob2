@@ -386,9 +386,23 @@ TEST_SUITE("EngineSession")
                 if (engine.runner) REQUIRE(engine.runner->acquireScene());
                 else REQUIRE(engine.serialPresentation->acquire());
             };
+            const auto simulationOnly=[](const SimulationSnapshot::Handle& world) {
+                CHECK_NOTHROW(world.simulationView());
+                REQUIRE(world.entities);
+                REQUIRE(world.resourceFields);
+                REQUIRE(world.statisticsInputs);
+                CHECK_FALSE(world.session);
+                CHECK_FALSE(world.effects);
+                CHECK_FALSE(world.statistics);
+            };
             engine.gui.recordTick(1000,33);
             camera(0);
-            engine.openReadBoundary(true);
+            const auto initial=engine.openReadBoundary(false);
+            simulationOnly(initial);
+            CHECK_FALSE(engine.retainedPresentation);
+            const auto firstFrame=engine.openReadBoundary(true);
+            CHECK(firstFrame.entities==initial.entities);
+            CHECK(firstFrame.supportsPresentation());
             finish();
 
             // A completed camera refresh consumes the client request before the
@@ -410,19 +424,23 @@ TEST_SUITE("EngineSession")
             engine.refreshRetainedPresentation();
             ++game.stepCounter;
             engine.gui.recordTick(1066,33);
-            engine.openReadBoundary(true);
+            const auto busy=engine.openReadBoundary(true);
+            simulationOnly(busy);
             CHECK(engine.retainedPresentation->world.tick==game.stepCounter-1);
             finish();
             camera(3);
             const auto retained=engine.retainedPresentation;
             engine.refreshRetainedPresentation();
             CHECK(engine.retainedPresentation==retained);
-            engine.openReadBoundary(true);
+            const auto admitted=engine.openReadBoundary(true);
+            CHECK(admitted.entities==busy.entities);
+            CHECK(admitted.supportsPresentation());
             REQUIRE(engine.retainedPresentation->world.tick==game.stepCounter);
             CHECK(engine.retainedPresentation->request.tickTime==1066);
             finish();
 
             // Camera-only refreshes remain available while game time is stopped.
+            engine.gui.gamePaused=true;
             const auto captures=game.snapshots().metrics.captures;
             camera(4);
             engine.refreshRetainedPresentation();
@@ -479,25 +497,18 @@ TEST_SUITE("EngineSession")
         CHECK(work->status() == ComputeExecutor::Presentation::Status::Canceled);
     }
 
-    TEST_CASE("a retained version-152 stock replay preserves recorded simulation checksums [save-format]")
+    TEST_CASE("retained version-152 replay is rejected by the delayed-statistics replay floor [save-format]")
     {
+        static_assert(REPLAY_MINIMUM_VERSION_MINOR > 152);
         glob2test::HeadlessGlobals globals({.loadStrings=true});
         REQUIRE(NET_Init());
         struct NetworkScope {~NetworkScope(){NET_Quit();}} network;
         globals->automaticEndingGame=false;
         const auto path=glob2test::inflated("unit-catalog/legacy152-stock.replay.gz");
-        Engine engine; REQUIRE(engine.loadReplayTask(path.string()).run());
-        auto& reader=*globals->replayReader;
-        REQUIRE(reader.formatVersion()==152);
-        REQUIRE(reader.getNumStepsTotal()==128);
-        engine.beginSession(0);
-        for(unsigned tick=0;tick<128;++tick) {
-            reader.setCheckSum(engine.gui.game.checkSum(nullptr,nullptr,nullptr,false,true));
-            REQUIRE(engine.stepSession(tick*40,{}));
-            REQUIRE(reader.isValid());
-            CHECK(engine.gui.game.stepCounter==tick+1);
-        }
-        engine.gui.isRunning=false; engine.finishSession();
+        Engine engine;
+        CHECK_FALSE(engine.loadReplayTask(path.string()).run());
+        // Saved state from this era remains readable; replay acceptance follows
+        // the new simulation timing and has its own, deliberately newer floor.
     }
 
     TEST_CASE("external replay retains recorded simulation checksums [benchmark][artifacts]")

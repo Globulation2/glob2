@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "WorldSnapshot.h"
 #include "TerrainResourceProperties.h"
+#include "TeamStat.h"
 #include <bit>
 #include <algorithm>
 namespace SimulationSnapshot
@@ -12,10 +13,17 @@ constexpr auto MapInputs = bit(Component::Catalogs) | bit(Component::Terrain)
 Requirements presentationRequirements(CaptureOptions options)
 {
     options.presentation = true;
-    return captureRequirements(options) & ~bit(Component::ResourceFields);
+    return captureRequirements(options) & ~(bit(Component::ResourceFields) | bit(Component::StatisticsInputs));
 }
 }
 Handle Handle::simulationView() const { return project(Simulation); }
+Handle Handle::statisticsView() const
+{
+    auto requested = bit(Component::Catalogs) | bit(Component::Entities) | bit(Component::Teams)
+        | bit(Component::Rules) | bit(Component::StatisticsInputs);
+    if (!(tick & END_OF_GAME_STAT_INTERVAL_MASK)) requested |= MapInputs;
+    return project(requested);
+}
 Handle Handle::gradientView() const
 { return project(MapInputs | bit(Component::Visibility) | bit(Component::Entities)); }
 Handle Handle::buildingGradientView() const { return project(MapInputs); }
@@ -43,6 +51,7 @@ Handle Handle::project(Requirements requested) const
 	result.configurationRevision = configurationRevision; result.worldIdentity = worldIdentity; result.mapGenerations = mapGenerations;
 	if (needs(requested, Component::Session)) result.session = session;
 	if (needs(requested, Component::Effects)) result.effects = effects;
+	if (needs(requested, Component::StatisticsInputs)) result.statisticsInputs = statisticsInputs;
 	if (needs(requested, Component::Statistics)) result.statistics = statistics;
 	if (needs(requested, Component::History)) result.history = history;
 	if (needs(requested, Component::Telemetry)) result.telemetry = telemetry;
