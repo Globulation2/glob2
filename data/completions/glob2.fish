@@ -145,6 +145,8 @@ complete -c glob2 -n "__glob2_at 'play'" -l gradient-backend -r -f -a 'cpu scala
 complete -c glob2 -n "__glob2_at 'play'" -l gradient-algorithm -r -f -a 'buckets frozen8 jacobi'
 complete -c glob2 -n "__glob2_at 'play'" -l gradient-verify -r -f -a 'on off'
 complete -c glob2 -n "__glob2_at 'play'" -l help
+complete -c glob2 -n "__glob2_at 'play'" -l execution-profile -r -f -a 'auto eco balanced luxurious fast-simulation efficient-throughput'
+complete -c glob2 -n "__glob2_at 'play'" -l memory-budget-bytes -r
 complete -c glob2 -n "__glob2_at 'replay'" -l fullscreen
 complete -c glob2 -n "__glob2_at 'replay'" -l no-fullscreen
 complete -c glob2 -n "__glob2_at 'replay'" -l resizable
@@ -173,6 +175,8 @@ complete -c glob2 -n "__glob2_at 'replay'" -l gradient-backend -r -f -a 'cpu sca
 complete -c glob2 -n "__glob2_at 'replay'" -l gradient-algorithm -r -f -a 'buckets frozen8 jacobi'
 complete -c glob2 -n "__glob2_at 'replay'" -l gradient-verify -r -f -a 'on off'
 complete -c glob2 -n "__glob2_at 'replay'" -l help
+complete -c glob2 -n "__glob2_at 'replay'" -l execution-profile -r -f -a 'auto eco balanced luxurious fast-simulation efficient-throughput'
+complete -c glob2 -n "__glob2_at 'replay'" -l memory-budget-bytes -r
 complete -c glob2 -n "__glob2_at 'map generate'" -l seed -r
 complete -c glob2 -n "__glob2_at 'map generate'" -l set -r
 complete -c glob2 -n "__glob2_at 'map generate'" -l width -r
@@ -190,6 +194,8 @@ complete -c glob2 -n "__glob2_at 'map generate'" -l config -r
 complete -c glob2 -n "__glob2_at 'map generate'" -l map-image -r
 complete -c glob2 -n "__glob2_at 'map generate'" -l export-generator-package -r
 complete -c glob2 -n "__glob2_at 'map generate'" -l help
+complete -c glob2 -n "__glob2_at 'map generate'" -l execution-profile -r -f -a 'auto eco balanced luxurious fast-simulation efficient-throughput'
+complete -c glob2 -n "__glob2_at 'map generate'" -l memory-budget-bytes -r
 complete -c glob2 -n "__glob2_at 'map study'" -l output-dir -r -f -a '(__fish_complete_directories)'
 complete -c glob2 -n "__glob2_at 'map study'" -l profile -r
 complete -c glob2 -n "__glob2_at 'map study'" -l building-catalog -r
@@ -204,6 +210,8 @@ complete -c glob2 -n "__glob2_at 'map study'" -l report -r -f -a 'headroom diagn
 complete -c glob2 -n "__glob2_at 'map study'" -l perturb -r
 complete -c glob2 -n "__glob2_at 'map study'" -l building-artwork -r
 complete -c glob2 -n "__glob2_at 'map study'" -l help
+complete -c glob2 -n "__glob2_at 'map study'" -l execution-profile -r -f -a 'auto eco balanced luxurious fast-simulation efficient-throughput'
+complete -c glob2 -n "__glob2_at 'map study'" -l memory-budget-bytes -r
 complete -c glob2 -n "__glob2_at 'map generators'" -l format -r -f -a 'text json'
 complete -c glob2 -n "__glob2_at 'map generators'" -l data-dir -r -f -a '(__fish_complete_directories)'
 complete -c glob2 -n "__glob2_at 'map generators'" -l generator-package -r
@@ -216,6 +224,8 @@ complete -c glob2 -n "__glob2_at 'map preview'" -l preview -r
 complete -c glob2 -n "__glob2_at 'map preview'" -l preview-size -r
 complete -c glob2 -n "__glob2_at 'map preview'" -l preview-scale -r -f -a '2 4 8'
 complete -c glob2 -n "__glob2_at 'map preview'" -l help
+complete -c glob2 -n "__glob2_at 'map preview'" -l execution-profile -r -f -a 'auto eco balanced luxurious fast-simulation efficient-throughput'
+complete -c glob2 -n "__glob2_at 'map preview'" -l memory-budget-bytes -r
 complete -c glob2 -n "__glob2_at 'map render'" -l data-dir -r -f -a '(__fish_complete_directories)'
 complete -c glob2 -n "__glob2_at 'map render'" -l generator-package -r
 complete -c glob2 -n "__glob2_at 'map render'" -l output -r
@@ -223,6 +233,8 @@ complete -c glob2 -n "__glob2_at 'map render'" -l render-max-pixels -r
 complete -c glob2 -n "__glob2_at 'map render'" -l render-field -r
 complete -c glob2 -n "__glob2_at 'map render'" -l field-color -r
 complete -c glob2 -n "__glob2_at 'map render'" -l help
+complete -c glob2 -n "__glob2_at 'map render'" -l execution-profile -r -f -a 'auto eco balanced luxurious fast-simulation efficient-throughput'
+complete -c glob2 -n "__glob2_at 'map render'" -l memory-budget-bytes -r
 complete -c glob2 -n "__glob2_at 'map import-image'" -l seed -r
 complete -c glob2 -n "__glob2_at 'map import-image'" -l set -r
 complete -c glob2 -n "__glob2_at 'map import-image'" -l width -r
@@ -238,10 +250,14 @@ complete -c glob2 -n "__glob2_at 'map import-image'" -l output -r
 complete -c glob2 -n "__glob2_at 'map import-image'" -l report-file -r
 complete -c glob2 -n "__glob2_at 'map import-image'" -l image-seam-width -r
 complete -c glob2 -n "__glob2_at 'map import-image'" -l help
+complete -c glob2 -n "__glob2_at 'map import-image'" -l execution-profile -r -f -a 'auto eco balanced luxurious fast-simulation efficient-throughput'
+complete -c glob2 -n "__glob2_at 'map import-image'" -l memory-budget-bytes -r
 complete -c glob2 -n "__glob2_at 'map export-image'" -l data-dir -r -f -a '(__fish_complete_directories)'
 complete -c glob2 -n "__glob2_at 'map export-image'" -l generator-package -r
 complete -c glob2 -n "__glob2_at 'map export-image'" -l output -r
 complete -c glob2 -n "__glob2_at 'map export-image'" -l help
+complete -c glob2 -n "__glob2_at 'map export-image'" -l execution-profile -r -f -a 'auto eco balanced luxurious fast-simulation efficient-throughput'
+complete -c glob2 -n "__glob2_at 'map export-image'" -l memory-budget-bytes -r
 complete -c glob2 -n "__glob2_at 'map inspect-package'" -l output -r
 complete -c glob2 -n "__glob2_at 'map inspect-package'" -l report-file -r
 complete -c glob2 -n "__glob2_at 'map inspect-package'" -l help
@@ -291,6 +307,8 @@ complete -c glob2 -n "__glob2_at 'game run'" -l diagnostic-interval -r
 complete -c glob2 -n "__glob2_at 'game run'" -l diagnostic-png
 complete -c glob2 -n "__glob2_at 'game run'" -l building-artwork -r
 complete -c glob2 -n "__glob2_at 'game run'" -l help
+complete -c glob2 -n "__glob2_at 'game run'" -l execution-profile -r -f -a 'auto eco balanced luxurious fast-simulation efficient-throughput'
+complete -c glob2 -n "__glob2_at 'game run'" -l memory-budget-bytes -r
 complete -c glob2 -n "__glob2_at 'game repeat'" -l data-dir -r -f -a '(__fish_complete_directories)'
 complete -c glob2 -n "__glob2_at 'game repeat'" -l generator-package -r
 complete -c glob2 -n "__glob2_at 'game repeat'" -l fullscreen
@@ -322,11 +340,15 @@ complete -c glob2 -n "__glob2_at 'game repeat'" -l ticks -r
 complete -c glob2 -n "__glob2_at 'game repeat'" -l runs -r
 complete -c glob2 -n "__glob2_at 'game repeat'" -l building-catalog -r
 complete -c glob2 -n "__glob2_at 'game repeat'" -l help
+complete -c glob2 -n "__glob2_at 'game repeat'" -l execution-profile -r -f -a 'auto eco balanced luxurious fast-simulation efficient-throughput'
+complete -c glob2 -n "__glob2_at 'game repeat'" -l memory-budget-bytes -r
 complete -c glob2 -n "__glob2_at 'match verify'" -l output-dir -r -f -a '(__fish_complete_directories)'
 complete -c glob2 -n "__glob2_at 'match verify'" -l profile -r
 complete -c glob2 -n "__glob2_at 'match verify'" -l compute-threads -r
 complete -c glob2 -n "__glob2_at 'match verify'" -l map-file -r
 complete -c glob2 -n "__glob2_at 'match verify'" -l help
+complete -c glob2 -n "__glob2_at 'match verify'" -l execution-profile -r -f -a 'auto eco balanced luxurious fast-simulation efficient-throughput'
+complete -c glob2 -n "__glob2_at 'match verify'" -l memory-budget-bytes -r
 complete -c glob2 -n "__glob2_at 'online join'" -l fullscreen
 complete -c glob2 -n "__glob2_at 'online join'" -l no-fullscreen
 complete -c glob2 -n "__glob2_at 'online join'" -l resizable
@@ -356,6 +378,8 @@ complete -c glob2 -n "__glob2_at 'online join'" -l gradient-algorithm -r -f -a '
 complete -c glob2 -n "__glob2_at 'online join'" -l gradient-verify -r -f -a 'on off'
 complete -c glob2 -n "__glob2_at 'online join'" -l instance -r
 complete -c glob2 -n "__glob2_at 'online join'" -l help
+complete -c glob2 -n "__glob2_at 'online join'" -l execution-profile -r -f -a 'auto eco balanced luxurious fast-simulation efficient-throughput'
+complete -c glob2 -n "__glob2_at 'online join'" -l memory-budget-bytes -r
 complete -c glob2 -n "__glob2_at 'online play-map'" -l fullscreen
 complete -c glob2 -n "__glob2_at 'online play-map'" -l no-fullscreen
 complete -c glob2 -n "__glob2_at 'online play-map'" -l resizable
@@ -387,6 +411,8 @@ complete -c glob2 -n "__glob2_at 'online play-map'" -l instance -r
 complete -c glob2 -n "__glob2_at 'online play-map'" -l hash -r
 complete -c glob2 -n "__glob2_at 'online play-map'" -l title -r
 complete -c glob2 -n "__glob2_at 'online play-map'" -l help
+complete -c glob2 -n "__glob2_at 'online play-map'" -l execution-profile -r -f -a 'auto eco balanced luxurious fast-simulation efficient-throughput'
+complete -c glob2 -n "__glob2_at 'online play-map'" -l memory-budget-bytes -r
 complete -c glob2 -n "__glob2_at 'online host-map'" -l fullscreen
 complete -c glob2 -n "__glob2_at 'online host-map'" -l no-fullscreen
 complete -c glob2 -n "__glob2_at 'online host-map'" -l resizable
@@ -418,6 +444,8 @@ complete -c glob2 -n "__glob2_at 'online host-map'" -l instance -r
 complete -c glob2 -n "__glob2_at 'online host-map'" -l hash -r
 complete -c glob2 -n "__glob2_at 'online host-map'" -l title -r
 complete -c glob2 -n "__glob2_at 'online host-map'" -l help
+complete -c glob2 -n "__glob2_at 'online host-map'" -l execution-profile -r -f -a 'auto eco balanced luxurious fast-simulation efficient-throughput'
+complete -c glob2 -n "__glob2_at 'online host-map'" -l memory-budget-bytes -r
 complete -c glob2 -n "__glob2_at 'online turn-client'" -l output-dir -r -f -a '(__fish_complete_directories)'
 complete -c glob2 -n "__glob2_at 'online turn-client'" -l profile -r
 complete -c glob2 -n "__glob2_at 'online turn-client'" -l compute-threads -r
@@ -426,6 +454,8 @@ complete -c glob2 -n "__glob2_at 'online turn-client'" -l orders-per-second -r
 complete -c glob2 -n "__glob2_at 'online turn-client'" -l max-seconds -r
 complete -c glob2 -n "__glob2_at 'online turn-client'" -l seed -r
 complete -c glob2 -n "__glob2_at 'online turn-client'" -l help
+complete -c glob2 -n "__glob2_at 'online turn-client'" -l execution-profile -r -f -a 'auto eco balanced luxurious fast-simulation efficient-throughput'
+complete -c glob2 -n "__glob2_at 'online turn-client'" -l memory-budget-bytes -r
 complete -c glob2 -n "__glob2_at 'ai check'" -l format -r -f -a 'text json'
 complete -c glob2 -n "__glob2_at 'ai check'" -l help
 complete -c glob2 -n "__glob2_at 'script check'" -l help
@@ -479,6 +509,8 @@ complete -c glob2 -n "__glob2_at 'dev random-games'" -l matchup -r
 complete -c glob2 -n "__glob2_at 'dev random-games'" -l save-game-as -r
 complete -c glob2 -n "__glob2_at 'dev random-games'" -l building-catalog -r
 complete -c glob2 -n "__glob2_at 'dev random-games'" -l help
+complete -c glob2 -n "__glob2_at 'dev random-games'" -l execution-profile -r -f -a 'auto eco balanced luxurious fast-simulation efficient-throughput'
+complete -c glob2 -n "__glob2_at 'dev random-games'" -l memory-budget-bytes -r
 complete -c glob2 -n "__glob2_at 'dev stress-maps'" -l data-dir -r -f -a '(__fish_complete_directories)'
 complete -c glob2 -n "__glob2_at 'dev stress-maps'" -l generator-package -r
 complete -c glob2 -n "__glob2_at 'dev stress-maps'" -l help
@@ -511,6 +543,8 @@ complete -c glob2 -n "__glob2_at 'dev textshots'" -l gradient-algorithm -r -f -a
 complete -c glob2 -n "__glob2_at 'dev textshots'" -l gradient-verify -r -f -a 'on off'
 complete -c glob2 -n "__glob2_at 'dev textshots'" -l output-dir -r -f -a '(__fish_complete_directories)'
 complete -c glob2 -n "__glob2_at 'dev textshots'" -l help
+complete -c glob2 -n "__glob2_at 'dev textshots'" -l execution-profile -r -f -a 'auto eco balanced luxurious fast-simulation efficient-throughput'
+complete -c glob2 -n "__glob2_at 'dev textshots'" -l memory-budget-bytes -r
 complete -c glob2 -n "__glob2_at 'dev dump-resources'" -l data-dir -r -f -a '(__fish_complete_directories)'
 complete -c glob2 -n "__glob2_at 'dev dump-resources'" -l generator-package -r
 complete -c glob2 -n "__glob2_at 'dev dump-resources'" -l help

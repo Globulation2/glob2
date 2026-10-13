@@ -94,6 +94,8 @@ _glob2() {
       '--gradient-algorithm[gradient-algorithm]:value:(buckets frozen8 jacobi)' \
       '--gradient-verify[gradient-verify]:value:(on off)' \
       '--help[help]' \
+      '--execution-profile[execution-profile]:value:(auto eco balanced luxurious fast-simulation efficient-throughput)' \
+      '--memory-budget-bytes[memory-budget-bytes]:value:' \
       '*:file:_files';;
     'replay') _arguments -s \
       '--fullscreen[fullscreen]' \
@@ -124,6 +126,8 @@ _glob2() {
       '--gradient-algorithm[gradient-algorithm]:value:(buckets frozen8 jacobi)' \
       '--gradient-verify[gradient-verify]:value:(on off)' \
       '--help[help]' \
+      '--execution-profile[execution-profile]:value:(auto eco balanced luxurious fast-simulation efficient-throughput)' \
+      '--memory-budget-bytes[memory-budget-bytes]:value:' \
       '*:file:_files';;
     'map generate') _arguments -s \
       '--seed[seed]:value:' \
@@ -143,6 +147,8 @@ _glob2() {
       '--map-image[map-image]:value:_files' \
       '--export-generator-package[export-generator-package]:value:_files' \
       '--help[help]' \
+      '--execution-profile[execution-profile]:value:(auto eco balanced luxurious fast-simulation efficient-throughput)' \
+      '--memory-budget-bytes[memory-budget-bytes]:value:' \
       '*:file:_files';;
     'map study') _arguments -s \
       '--output-dir[output-dir]:value:_files -/' \
@@ -159,6 +165,8 @@ _glob2() {
       '*--perturb[perturb]:value:' \
       '--building-artwork[building-artwork]:value:_files' \
       '--help[help]' \
+      '--execution-profile[execution-profile]:value:(auto eco balanced luxurious fast-simulation efficient-throughput)' \
+      '--memory-budget-bytes[memory-budget-bytes]:value:' \
       '*:file:_files';;
     'map generators') _arguments -s \
       '--format[format]:value:(text json)' \
@@ -175,6 +183,8 @@ _glob2() {
       '--preview-size[preview-size]:value:' \
       '--preview-scale[preview-scale]:value:(2 4 8)' \
       '--help[help]' \
+      '--execution-profile[execution-profile]:value:(auto eco balanced luxurious fast-simulation efficient-throughput)' \
+      '--memory-budget-bytes[memory-budget-bytes]:value:' \
       '*:file:_files';;
     'map render') _arguments -s \
       '*--data-dir[data-dir]:value:_files -/' \
@@ -184,6 +194,8 @@ _glob2() {
       '--render-field[render-field]:value:_files' \
       '--field-color[field-color]:value:' \
       '--help[help]' \
+      '--execution-profile[execution-profile]:value:(auto eco balanced luxurious fast-simulation efficient-throughput)' \
+      '--memory-budget-bytes[memory-budget-bytes]:value:' \
       '*:file:_files';;
     'map import-image') _arguments -s \
       '--seed[seed]:value:' \
@@ -201,12 +213,16 @@ _glob2() {
       '--report-file[report-file]:value:_files' \
       '--image-seam-width[image-seam-width]:value:' \
       '--help[help]' \
+      '--execution-profile[execution-profile]:value:(auto eco balanced luxurious fast-simulation efficient-throughput)' \
+      '--memory-budget-bytes[memory-budget-bytes]:value:' \
       '*:file:_files';;
     'map export-image') _arguments -s \
       '*--data-dir[data-dir]:value:_files -/' \
       '*--generator-package[generator-package]:value:_files' \
       '--output[output]:value:_files' \
       '--help[help]' \
+      '--execution-profile[execution-profile]:value:(auto eco balanced luxurious fast-simulation efficient-throughput)' \
+      '--memory-budget-bytes[memory-budget-bytes]:value:' \
       '*:file:_files';;
     'map inspect-package') _arguments -s \
       '--output[output]:value:_files' \
@@ -262,6 +278,8 @@ _glob2() {
       '--diagnostic-png[diagnostic-png]' \
       '--building-artwork[building-artwork]:value:_files' \
       '--help[help]' \
+      '--execution-profile[execution-profile]:value:(auto eco balanced luxurious fast-simulation efficient-throughput)' \
+      '--memory-budget-bytes[memory-budget-bytes]:value:' \
       '*:file:_files';;
     'game repeat') _arguments -s \
       '*--data-dir[data-dir]:value:_files -/' \
@@ -295,6 +313,8 @@ _glob2() {
       '--runs[runs]:value:' \
       '--building-catalog[building-catalog]:value:_files' \
       '--help[help]' \
+      '--execution-profile[execution-profile]:value:(auto eco balanced luxurious fast-simulation efficient-throughput)' \
+      '--memory-budget-bytes[memory-budget-bytes]:value:' \
       '*:file:_files';;
     'match verify') _arguments -s \
       '--output-dir[output-dir]:value:_files -/' \
@@ -302,6 +322,8 @@ _glob2() {
       '--compute-threads[compute-threads]:value:' \
       '--map-file[map-file]:value:_files' \
       '--help[help]' \
+      '--execution-profile[execution-profile]:value:(auto eco balanced luxurious fast-simulation efficient-throughput)' \
+      '--memory-budget-bytes[memory-budget-bytes]:value:' \
       '*:file:_files';;
     'online join') _arguments -s \
       '--fullscreen[fullscreen]' \
@@ -333,6 +355,8 @@ _glob2() {
       '--gradient-verify[gradient-verify]:value:(on off)' \
       '--instance[instance]:value:' \
       '--help[help]' \
+      '--execution-profile[execution-profile]:value:(auto eco balanced luxurious fast-simulation efficient-throughput)' \
+      '--memory-budget-bytes[memory-budget-bytes]:value:' \
       '*:file:_files';;
     'online play-map') _arguments -s \
       '--fullscreen[fullscreen]' \
@@ -366,6 +390,8 @@ _glob2() {
       '--hash[hash]:value:' \
       '--title[title]:value:' \
       '--help[help]' \
+      '--execution-profile[execution-profile]:value:(auto eco balanced luxurious fast-simulation efficient-throughput)' \
+      '--memory-budget-bytes[memory-budget-bytes]:value:' \
       '*:file:_files';;
     'online host-map') _arguments -s \
       '--fullscreen[fullscreen]' \
@@ -399,6 +425,8 @@ _glob2() {
       '--hash[hash]:value:' \
       '--title[title]:value:' \
       '--help[help]' \
+      '--execution-profile[execution-profile]:value:(auto eco balanced luxurious fast-simulation efficient-throughput)' \
+      '--memory-budget-bytes[memory-budget-bytes]:value:' \
       '*:file:_files';;
     'online turn-client') _arguments -s \
       '--output-dir[output-dir]:value:_files -/' \
@@ -409,6 +437,8 @@ _glob2() {
       '--max-seconds[max-seconds]:value:' \
       '--seed[seed]:value:' \
       '--help[help]' \
+      '--execution-profile[execution-profile]:value:(auto eco balanced luxurious fast-simulation efficient-throughput)' \
+      '--memory-budget-bytes[memory-budget-bytes]:value:' \
       '*:file:_files';;
     'ai check') _arguments -s \
       '--format[format]:value:(text json)' \
@@ -476,6 +506,8 @@ _glob2() {
       '--save-game-as[save-game-as]:value:_files' \
       '--building-catalog[building-catalog]:value:_files' \
       '--help[help]' \
+      '--execution-profile[execution-profile]:value:(auto eco balanced luxurious fast-simulation efficient-throughput)' \
+      '--memory-budget-bytes[memory-budget-bytes]:value:' \
       '*:file:_files';;
     'dev stress-maps') _arguments -s \
       '*--data-dir[data-dir]:value:_files -/' \
@@ -512,6 +544,8 @@ _glob2() {
       '--gradient-verify[gradient-verify]:value:(on off)' \
       '--output-dir[output-dir]:value:_files -/' \
       '--help[help]' \
+      '--execution-profile[execution-profile]:value:(auto eco balanced luxurious fast-simulation efficient-throughput)' \
+      '--memory-budget-bytes[memory-budget-bytes]:value:' \
       '*:file:_files';;
     'dev dump-resources') _arguments -s \
       '*--data-dir[data-dir]:value:_files -/' \

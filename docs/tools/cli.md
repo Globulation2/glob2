@@ -274,9 +274,9 @@ Platform: all.
 | `--gradient-backend` | cpu, scalar, sse2, neon, opencl, vulkan, webgpu | Gradient computation backend. |
 | `--gradient-algorithm` | buckets, frozen8, jacobi | Gradient computation algorithm. |
 | `--gradient-verify` | on, off | Compare accelerated fields with scalar CPU output. |
+| `--help` | flag; default false | Show this command's help (also -h). |
 | `--execution-profile` | auto, eco, balanced, luxurious, fast-simulation, efficient-throughput | Execution resource intent; calibrated tier tuning is pending. |
 | `--memory-budget-bytes` | integer; bytes; 1..9223372036854775807 | Planning budget for recoverable storage; does not enforce a process RSS limit. |
-| `--help` | flag; default false | Show this command's help (also -h). |
 
 Unspecified display, audio and editor settings inherit saved preferences.
 
@@ -343,9 +343,9 @@ Platform: all.
 | `--gradient-backend` | cpu, scalar, sse2, neon, opencl, vulkan, webgpu | Gradient computation backend. |
 | `--gradient-algorithm` | buckets, frozen8, jacobi | Gradient computation algorithm. |
 | `--gradient-verify` | on, off | Compare accelerated fields with scalar CPU output. |
+| `--help` | flag; default false | Show this command's help (also -h). |
 | `--execution-profile` | auto, eco, balanced, luxurious, fast-simulation, efficient-throughput | Execution resource intent; calibrated tier tuning is pending. |
 | `--memory-budget-bytes` | integer; bytes; 1..9223372036854775807 | Planning budget for recoverable storage; does not enforce a process RSS limit. |
-| `--help` | flag; default false | Show this command's help (also -h). |
 
 Unspecified display, audio and editor settings inherit saved preferences.
 
@@ -401,9 +401,9 @@ Platform: all.
 | `--config` | file | KEY=VALUE configuration; CLI settings override it. |
 | `--map-image` | file | Export categorical terrain PNG. |
 | `--export-generator-package` | file | Export selected custom generator package. |
+| `--help` | flag; default false | Show this command's help (also -h). |
 | `--execution-profile` | auto, eco, balanced, luxurious, fast-simulation, efficient-throughput | Execution resource intent; calibrated tier tuning is pending. |
 | `--memory-budget-bytes` | integer; bytes; 1..9223372036854775807 | Planning budget for recoverable storage; does not enforce a process RSS limit. |
-| `--help` | flag; default false | Show this command's help (also -h). |
 
 At least one output is required.
 
@@ -444,9 +444,9 @@ Platform: all.
 | `--report` | headroom, diagnostics, timing, terrain | Additional report. Repeatable. |
 | `--perturb` | string | Study perturbation specification. Repeatable. |
 | `--building-artwork` | file | Building artwork bundle. |
+| `--help` | flag; default false | Show this command's help (also -h). |
 | `--execution-profile` | auto, eco, balanced, luxurious, fast-simulation, efficient-throughput | Execution resource intent; calibrated tier tuning is pending. |
 | `--memory-budget-bytes` | integer; bytes; 1..9223372036854775807 | Planning budget for recoverable storage; does not enforce a process RSS limit. |
-| `--help` | flag; default false | Show this command's help (also -h). |
 
 ```sh
 glob2 map study river --seed 713 --write-map --output-dir artifacts/study
@@ -496,9 +496,9 @@ Platform: all.
 | `--preview` | file | Overview PNG output. |
 | `--preview-size` | integer; pixels; 128..4096 | Longest preview side in pixels. |
 | `--preview-scale` | 2, 4, 8; default 2 | Scale retained thumbnail pixels. |
+| `--help` | flag; default false | Show this command's help (also -h). |
 | `--execution-profile` | auto, eco, balanced, luxurious, fast-simulation, efficient-throughput | Execution resource intent; calibrated tier tuning is pending. |
 | `--memory-budget-bytes` | integer; bytes; 1..9223372036854775807 | Planning budget for recoverable storage; does not enforce a process RSS limit. |
-| `--help` | flag; default false | Show this command's help (also -h). |
 
 Choose at most one: `--output`, `--preview`.
 
@@ -528,9 +528,9 @@ Platform: all.
 | `--render-max-pixels` | integer; default 4096; pixels; 1..8192 | Maximum side in pixels. |
 | `--render-field` | file | Diagnostic field overlay. |
 | `--field-color` | string | Field color as r,g,b. |
+| `--help` | flag; default false | Show this command's help (also -h). |
 | `--execution-profile` | auto, eco, balanced, luxurious, fast-simulation, efficient-throughput | Execution resource intent; calibrated tier tuning is pending. |
 | `--memory-budget-bytes` | integer; bytes; 1..9223372036854775807 | Planning budget for recoverable storage; does not enforce a process RSS limit. |
-| `--help` | flag; default false | Show this command's help (also -h). |
 
 `--field-color` requires `--render-field`.
 
@@ -566,9 +566,9 @@ Platform: all.
 | `--output` | file | Playable gzip map output. Required. |
 | `--report-file` | file | Import report JSON. |
 | `--image-seam-width` | integer; 0..16 | Seam repair width in tiles; default short side / 32 clamped 2..12. |
+| `--help` | flag; default false | Show this command's help (also -h). |
 | `--execution-profile` | auto, eco, balanced, luxurious, fast-simulation, efficient-throughput | Execution resource intent; calibrated tier tuning is pending. |
 | `--memory-budget-bytes` | integer; bytes; 1..9223372036854775807 | Planning budget for recoverable storage; does not enforce a process RSS limit. |
-| `--help` | flag; default false | Show this command's help (also -h). |
 
 Choose at most one: `--preview-scale`, `--preview-size`.
 
@@ -593,9 +593,9 @@ Platform: all.
 | `--data-dir` | directory | Add an asset search directory (in order). Repeatable. |
 | `--generator-package` | file | Load a custom generator package or directory. Repeatable. |
 | `--output` | file | Categorical PNG output. Required. |
+| `--help` | flag; default false | Show this command's help (also -h). |
 | `--execution-profile` | auto, eco, balanced, luxurious, fast-simulation, efficient-throughput | Execution resource intent; calibrated tier tuning is pending. |
 | `--memory-budget-bytes` | integer; bytes; 1..9223372036854775807 | Planning budget for recoverable storage; does not enforce a process RSS limit. |
-| `--help` | flag; default false | Show this command's help (also -h). |
 
 ```sh
 glob2 map export-image maps/FourSquares1.map.gz --output artifacts/terrain.png
@@ -701,9 +701,9 @@ Platform: all.
 | `--diagnostic-interval` | integer; default 2500; ticks; 1..2147483647 | Diagnostic interval in ticks. |
 | `--diagnostic-png` | flag; default false | Export diagnostic PNGs. |
 | `--building-artwork` | file | Artwork for generated maps. |
+| `--help` | flag; default false | Show this command's help (also -h). |
 | `--execution-profile` | auto, eco, balanced, luxurious, fast-simulation, efficient-throughput | Execution resource intent; calibrated tier tuning is pending. |
 | `--memory-budget-bytes` | integer; bytes; 1..9223372036854775807 | Planning budget for recoverable storage; does not enforce a process RSS limit. |
-| `--help` | flag; default false | Show this command's help (also -h). |
 
 Exactly one of --map-file, --load-game or --generator.
 
@@ -777,9 +777,9 @@ Platform: all.
 | `--ticks` | integer; default 0; ticks; 0..2147483647 | Steps per run; 0 runs until the game ends. |
 | `--runs` | integer; default 1; 1..2147483647 | Number of saved-game runs. |
 | `--building-catalog` | file | Building catalog. |
+| `--help` | flag; default false | Show this command's help (also -h). |
 | `--execution-profile` | auto, eco, balanced, luxurious, fast-simulation, efficient-throughput | Execution resource intent; calibrated tier tuning is pending. |
 | `--memory-budget-bytes` | integer; bytes; 1..9223372036854775807 | Planning budget for recoverable storage; does not enforce a process RSS limit. |
-| `--help` | flag; default false | Show this command's help (also -h). |
 
 Unspecified display, audio and editor settings inherit saved preferences.
 
@@ -827,9 +827,9 @@ Platform: all.
 | `--profile` | string; default glob2-verify | Isolated profile label. |
 | `--compute-threads` | compute; default auto | Shared compute pool; auto respects available logical CPUs. |
 | `--map-file` | file | Recorded match's map. Required. |
+| `--help` | flag; default false | Show this command's help (also -h). |
 | `--execution-profile` | auto, eco, balanced, luxurious, fast-simulation, efficient-throughput | Execution resource intent; calibrated tier tuning is pending. |
 | `--memory-budget-bytes` | integer; bytes; 1..9223372036854775807 | Planning budget for recoverable storage; does not enforce a process RSS limit. |
-| `--help` | flag; default false | Show this command's help (also -h). |
 
 ```sh
 glob2 match verify test/fixtures/multiplayer/FourSquares1.g2mr --map-file maps/FourSquares1.map.gz --output-dir artifacts/verified
@@ -877,9 +877,9 @@ Platform: all.
 | `--gradient-algorithm` | buckets, frozen8, jacobi | Gradient computation algorithm. |
 | `--gradient-verify` | on, off | Compare accelerated fields with scalar CPU output. |
 | `--instance` | string | Online instance origin. |
+| `--help` | flag; default false | Show this command's help (also -h). |
 | `--execution-profile` | auto, eco, balanced, luxurious, fast-simulation, efficient-throughput | Execution resource intent; calibrated tier tuning is pending. |
 | `--memory-budget-bytes` | integer; bytes; 1..9223372036854775807 | Planning budget for recoverable storage; does not enforce a process RSS limit. |
-| `--help` | flag; default false | Show this command's help (also -h). |
 
 Unspecified display, audio and editor settings inherit saved preferences.
 
@@ -949,9 +949,9 @@ Platform: all.
 | `--instance` | string | Online instance origin. |
 | `--hash` | string | Catalog map SHA-256. Required. |
 | `--title` | string | Catalog map title. Required. |
+| `--help` | flag; default false | Show this command's help (also -h). |
 | `--execution-profile` | auto, eco, balanced, luxurious, fast-simulation, efficient-throughput | Execution resource intent; calibrated tier tuning is pending. |
 | `--memory-budget-bytes` | integer; bytes; 1..9223372036854775807 | Planning budget for recoverable storage; does not enforce a process RSS limit. |
-| `--help` | flag; default false | Show this command's help (also -h). |
 
 Unspecified display, audio and editor settings inherit saved preferences.
 
@@ -1021,9 +1021,9 @@ Platform: all.
 | `--instance` | string | Online instance origin. |
 | `--hash` | string | Catalog map SHA-256. Required. |
 | `--title` | string | Catalog map title. Required. |
+| `--help` | flag; default false | Show this command's help (also -h). |
 | `--execution-profile` | auto, eco, balanced, luxurious, fast-simulation, efficient-throughput | Execution resource intent; calibrated tier tuning is pending. |
 | `--memory-budget-bytes` | integer; bytes; 1..9223372036854775807 | Planning budget for recoverable storage; does not enforce a process RSS limit. |
-| `--help` | flag; default false | Show this command's help (also -h). |
 
 Unspecified display, audio and editor settings inherit saved preferences.
 
@@ -1070,9 +1070,9 @@ Platform: all.
 | `--orders-per-second` | real; default 0.5; 0..2147483647 | Synthetic order rate. |
 | `--max-seconds` | real; default 1800; seconds; 0..2147483647 | Maximum runtime in seconds. |
 | `--seed` | integer; default 1; 0..4294967295 | Synthetic-order seed. |
+| `--help` | flag; default false | Show this command's help (also -h). |
 | `--execution-profile` | auto, eco, balanced, luxurious, fast-simulation, efficient-throughput | Execution resource intent; calibrated tier tuning is pending. |
 | `--memory-budget-bytes` | integer; bytes; 1..9223372036854775807 | Planning budget for recoverable storage; does not enforce a process RSS limit. |
-| `--help` | flag; default false | Show this command's help (also -h). |
 
 ```sh
 glob2 online turn-client assignment.json --map-file map.map.gz --output-dir artifacts/client
@@ -1258,9 +1258,9 @@ Platform: all.
 | `--matchup` | string | Comma-separated per-team AIs; requires --map. |
 | `--save-game-as` | file | Write the initial game before running. |
 | `--building-catalog` | file | Building catalog manifest. |
+| `--help` | flag; default false | Show this command's help (also -h). |
 | `--execution-profile` | auto, eco, balanced, luxurious, fast-simulation, efficient-throughput | Execution resource intent; calibrated tier tuning is pending. |
 | `--memory-budget-bytes` | integer; bytes; 1..9223372036854775807 | Planning budget for recoverable storage; does not enforce a process RSS limit. |
-| `--help` | flag; default false | Show this command's help (also -h). |
 
 Unspecified display, audio and editor settings inherit saved preferences.
 
@@ -1358,9 +1358,9 @@ Platform: all.
 | `--gradient-algorithm` | buckets, frozen8, jacobi | Gradient computation algorithm. |
 | `--gradient-verify` | on, off | Compare accelerated fields with scalar CPU output. |
 | `--output-dir` | directory; default . | Translation screenshot directory. |
+| `--help` | flag; default false | Show this command's help (also -h). |
 | `--execution-profile` | auto, eco, balanced, luxurious, fast-simulation, efficient-throughput | Execution resource intent; calibrated tier tuning is pending. |
 | `--memory-budget-bytes` | integer; bytes; 1..9223372036854775807 | Planning budget for recoverable storage; does not enforce a process RSS limit. |
-| `--help` | flag; default false | Show this command's help (also -h). |
 
 Unspecified display, audio and editor settings inherit saved preferences.
 

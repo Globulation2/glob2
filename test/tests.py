@@ -603,13 +603,17 @@ def scripting_entries():
 
     TeamStatsSaveHarness owns the production conversion fixture and lifecycle
     cases. Its unrelated registered cases are excluded by the JavaScript* suite
-    filter. Both desktop binaries and Android use the full registry above.
+    filter. Both desktop binaries and Android use the full registry above. Resource policy
+    and gradient backend/preparation cases are also compiled in this shared corpus;
+    the iOS JavaScript-only runner filter does not execute those extra suites.
     """
     selected = {'#src/map/generator/javascript/ScriptGeneratorTest.cpp', '#src/scripting/javascript/ScriptCompatibilityTest.cpp', '#src/scripting/javascript/ScriptIntegrationTest.cpp', '#src/scripting/javascript/ScriptPresentationTest.cpp',
                 '#src/scripting/javascript/ScriptRealisticTest.cpp', '#src/scripting/javascript/ScriptSessionTest.cpp', '#src/scripting/javascript/ScriptSimulationTest.cpp',
                 '#src/team/stats/TeamStatsSaveHarness.cpp', '#src/scripting/javascript/ScriptRuntimeTest.cpp', '#src/scripting/javascript/ScriptNumericTest.cpp', '#libgag/src/ImageAssetTest.cpp', '#src/common/ResourcePolicyTest.cpp',
                 '#src/app/ResourcePlanJsonTest.cpp', '#src/app/ApplicationResourcePlanTest.cpp',
-                '#src/app/ApplicationPhaseResourcesTest.cpp', '#src/app/ApplicationResourceObservationsTest.cpp', '#src/app/AndroidResourceObservationsTest.cpp'}
+                '#src/app/ApplicationPhaseResourcesTest.cpp', '#src/app/ApplicationResourceObservationsTest.cpp', '#src/app/AndroidResourceObservationsTest.cpp',
+                '#src/field/RuntimeGradientBackendTest.cpp', '#src/field/GradientPreparationContractTest.cpp',
+                '#src/map/gradient/GradientBackendSwitchTest.cpp'}
     return [entry for entry in ENGINE_TESTS + UNIT_TESTS
             if (entry if isinstance(entry, str) else entry[0]) in selected]
 
