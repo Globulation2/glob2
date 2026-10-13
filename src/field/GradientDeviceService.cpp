@@ -587,12 +587,18 @@ DeviceBroker &broker()
 } // namespace
 void shutdownGradientDeviceCoordinator() noexcept
 {
+	// No coordinator means no profiled device-service work. Preserve the CPU
+	// drain without environment lookups, TLS sessions or diagnostic output.
+	auto *coordinator = existingBroker.load(std::memory_order_acquire);
+	if (!coordinator) {
+		shutdownGradientAccelerators();
+		return;
+	}
 	{
 		GradientProfileSession profile(configuration().backend, gradientProfilingRequested());
 		GradientPhaseScope phase(GradientPhase::Shutdown);
 		// CPU-only applications must not initialize an otherwise unused backend.
-		if (auto *value = existingBroker.load(std::memory_order_acquire))
-			value->shutdown();
+		coordinator->shutdown();
 		shutdownGradientAccelerators();
 	}
 	// Result files precede application teardown. Preserve a separate cumulative

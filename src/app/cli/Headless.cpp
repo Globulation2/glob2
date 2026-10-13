@@ -635,8 +635,15 @@ struct HeadlessRunner
 			stats->writeCsv(csv);
 			if (!csv) throw std::runtime_error("cannot write gradient-stats.csv");
 		}
-		result << ",\"gradient_host_diagnostics\":";
-        gradient_kernel::writeGradientDiagnostics(result, gradient_kernel::gradientDiagnosticSnapshot(gradient.backend));
+        // Disabled diagnostics retain the ordinary result schema and avoid
+        // formatting a full set of empty samples on CPU-only runs.
+        if (gradient_kernel::isGPU(gradient.backend)) {
+            const auto gradientDiagnostics = gradient_kernel::gradientDiagnosticSnapshot(gradient.backend);
+            if (gradientDiagnostics.collected) {
+                result << ",\"gradient_host_diagnostics\":";
+                gradient_kernel::writeGradientDiagnostics(result, gradientDiagnostics);
+            }
+        }
 		result << ",\"compute_telemetry\":";
         ComputeTelemetry::writeJson(result, computeSnapshot);
 		result

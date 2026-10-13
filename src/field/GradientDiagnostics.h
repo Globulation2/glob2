@@ -2,8 +2,12 @@
 #pragma once
 #include "GradientSelection.h"
 #include "common/ThreadCpuClock.h"
+#include <array>
+#include <atomic>
 #include <chrono>
 #include <cstdint>
+#include <cstdlib>
+#include <cstring>
 #include <ostream>
 
 namespace gradient_kernel
@@ -13,7 +17,7 @@ namespace gradient_kernel
 enum class GradientPhase : unsigned
 {
 	Initialization,
-	SnapshotCapture,
+	SnapshotCapture, // Reserved schema slot; generic snapshot capture is not instrumented.
 	Preparation,
 	InputConversion,
 	Allocation,
@@ -164,6 +168,8 @@ class GradientProfileSession
 		  elapsedClock(elapsed), cpuClock(cpu)
 	{
 		activeGradientProfile = totals ? this : nullptr;
+		// Bridge adapter sessions to the surrounding job scope so their work is
+		// subtracted once from the parent, even when totals belong to a different backend.
 		active = previous ? previous->active : nullptr;
 		if (totals)
 			totals->collected.store(true, std::memory_order_relaxed);
@@ -225,6 +231,8 @@ class GradientPhaseScope
 		}
 		else
 			p.cpuInvalid.fetch_add(1, std::memory_order_relaxed);
+		// Propagate inclusive child time: each phase reports exclusive host work,
+		// while its parent must also exclude the child's nested descendants.
 		if (parent)
 		{
 			parent->childElapsed += elapsed;
@@ -264,6 +272,7 @@ inline void writeGradientDiagnostics(std::ostream &out, const GradientDiagnostic
 		const auto &p = snapshot.phases[i];
 		out << (i ? "," : "") << '"' << gradientPhaseNames[i] << "\":{\"samples\":" << p.samples
 			<< ",\"elapsed_ns\":" << p.elapsedNs << ",\"cpu_ns\":";
+		// A mixed valid/invalid aggregate is partial; callers must inspect cpu_invalid.
 		if (p.cpuValid)
 			out << p.cpuNs;
 		else

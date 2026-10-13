@@ -50,30 +50,58 @@ void orderMappedWrites() noexcept
 	std::atomic_thread_fence(std::memory_order_seq_cst);
 #endif
 }
-#define VULKAN_FUNCTIONS(X)                                                                        \
-	X(CreateInstance)                                                                              \
-	X(DestroyInstance)                                                                             \
-	X(EnumerateInstanceExtensionProperties)                                                        \
-	X(EnumeratePhysicalDevices)                                                                    \
-	X(GetPhysicalDeviceProperties)                                                                 \
-	X(GetPhysicalDeviceQueueFamilyProperties)                                                      \
-	X(GetPhysicalDeviceMemoryProperties)                                                           \
-	X(EnumerateDeviceExtensionProperties)                                                          \
-	X(CreateDevice)                                                                                \
-	X(DestroyDevice) X(GetDeviceQueue) X(CreateBuffer) X(DestroyBuffer)                            \
-		X(GetBufferMemoryRequirements) X(AllocateMemory) X(FreeMemory) X(BindBufferMemory)         \
-			X(MapMemory) X(UnmapMemory) X(CreateDescriptorSetLayout) X(DestroyDescriptorSetLayout) \
-				X(CreatePipelineLayout) X(DestroyPipelineLayout) X(CreateShaderModule)             \
-					X(DestroyShaderModule) X(CreateComputePipelines) X(DestroyPipeline)            \
-						X(CreateDescriptorPool) X(DestroyDescriptorPool) X(AllocateDescriptorSets) \
-							X(UpdateDescriptorSets) X(CreateCommandPool) X(DestroyCommandPool)     \
-								X(AllocateCommandBuffers) X(ResetCommandBuffer)                    \
-									X(BeginCommandBuffer) X(EndCommandBuffer) X(CmdBindPipeline)   \
-										X(CmdBindDescriptorSets) X(CmdDispatch)                    \
-											X(CmdPipelineBarrier) X(CmdCopyBuffer)                 \
-												X(CmdFillBuffer) X(CreateFence) X(DestroyFence)    \
-													X(ResetFences) X(QueueSubmit) X(WaitForFences) \
-														X(GetFenceStatus)
+// clang-format off
+#define VULKAN_FUNCTIONS(X) \
+	X(CreateInstance) \
+	X(DestroyInstance) \
+	X(EnumerateInstanceExtensionProperties) \
+	X(EnumeratePhysicalDevices) \
+	X(GetPhysicalDeviceProperties) \
+	X(GetPhysicalDeviceQueueFamilyProperties) \
+	X(GetPhysicalDeviceMemoryProperties) \
+	X(EnumerateDeviceExtensionProperties) \
+	X(CreateDevice) \
+	X(DestroyDevice) \
+	X(GetDeviceQueue) \
+	X(CreateBuffer) \
+	X(DestroyBuffer) \
+	X(GetBufferMemoryRequirements) \
+	X(AllocateMemory) \
+	X(FreeMemory) \
+	X(BindBufferMemory) \
+	X(MapMemory) \
+	X(UnmapMemory) \
+	X(CreateDescriptorSetLayout) \
+	X(DestroyDescriptorSetLayout) \
+	X(CreatePipelineLayout) \
+	X(DestroyPipelineLayout) \
+	X(CreateShaderModule) \
+	X(DestroyShaderModule) \
+	X(CreateComputePipelines) \
+	X(DestroyPipeline) \
+	X(CreateDescriptorPool) \
+	X(DestroyDescriptorPool) \
+	X(AllocateDescriptorSets) \
+	X(UpdateDescriptorSets) \
+	X(CreateCommandPool) \
+	X(DestroyCommandPool) \
+	X(AllocateCommandBuffers) \
+	X(ResetCommandBuffer) \
+	X(BeginCommandBuffer) \
+	X(EndCommandBuffer) \
+	X(CmdBindPipeline) \
+	X(CmdBindDescriptorSets) \
+	X(CmdDispatch) \
+	X(CmdPipelineBarrier) \
+	X(CmdCopyBuffer) \
+	X(CmdFillBuffer) \
+	X(CreateFence) \
+	X(DestroyFence) \
+	X(ResetFences) \
+	X(QueueSubmit) \
+	X(WaitForFences) \
+	X(GetFenceStatus)
+// clang-format on
 enum BufferSlot : unsigned
 {
 	InputA,
@@ -665,7 +693,7 @@ struct Runtime
 			return {};
 		return result;
 	}
-	bool gpuOnlyProof(const BackendRequest &request) const
+	bool canSkipCpuFixedPointCheck(const BackendRequest &request) const
 	{
 #if defined(__linux__) && defined(__x86_64__) && !defined(__ANDROID__)
 		// Experiment restricted to the actual device/driver and shader bundle
@@ -692,6 +720,19 @@ struct Runtime
 		const auto w = unsigned(request.grid.width()), h = unsigned(request.grid.height()),
 				   pitch = (w + 15) / 16, rows = (h + 15) / 16;
 		const auto tiles = std::size_t(pitch) * rows;
+		const auto expectedCosts = [&](std::size_t i)
+		{
+			return request.gradient[i] || request.identity.allCells
+					   ? request.costAt(request.context, i)
+					   : LAND_STEPS;
+		};
+		const auto proofContext = [&]
+		{
+			return GradientProofContext{
+				status.device, status.driver, status.shaderIdentity,
+				request.capturedGeneration.value_or(request.session.currentGeneration())};
+		};
+
 		if (!cells || cells > properties.limits.maxStorageBufferRange / 4 || cells > UINT32_MAX ||
 			request.limit < 0)
 			return false;
@@ -793,13 +834,15 @@ struct Runtime
 				};
 				for (std::size_t i = 0; i < bytes / 4; ++i)
 					if (staging[i] != expectedAt(i))
-						failGradientTransfer(
-							destination, std::span<const std::uint16_t>(request.gradient, cells),
-							std::span<const std::uint32_t>(staging, bytes / 4), request.grid,
-							request.limit, expectedAt,
-							{status.device, status.driver, status.shaderIdentity,
-							 request.capturedGeneration.value_or(
-								 request.session.currentGeneration())});
+						preserveGradientProofFailure(
+							[&]
+							{
+								failGradientTransfer(
+									destination,
+									std::span<const std::uint16_t>(request.gradient, cells),
+									std::span<const std::uint32_t>(staging, bytes / 4),
+									request.grid, request.limit, expectedAt, proofContext());
+							});
 			}
 			return true;
 		};
@@ -888,18 +931,14 @@ struct Runtime
 					return false;
 				const auto failedReadback = [&]() -> void
 				{
-					failGradientControlProof(
-						std::span<const std::uint16_t>(request.gradient, cells), request.grid,
-						request.limit,
-						[&](std::size_t i)
+					preserveGradientProofFailure(
+						[&]
 						{
-							return request.gradient[i] || request.identity.allCells
-									   ? request.costAt(request.context, i)
-									   : LAND_STEPS;
-						},
-						gpuProof,
-						{status.device, status.driver, status.shaderIdentity,
-						 request.capturedGeneration.value_or(request.session.currentGeneration())});
+							failGradientControlProof(
+								std::span<const std::uint16_t>(request.gradient, cells),
+								request.grid, request.limit, expectedCosts, gpuProof,
+								proofContext());
+						});
 				};
 				const auto readback = monotonicNs();
 				try
@@ -944,37 +983,36 @@ struct Runtime
 					static_cast<const std::uint32_t *>(work->buffers[Transfer].mapped);
 				countGradientWork(GradientCounter::ConvergedFields);
 				phase.setPhase(GradientPhase::Validation);
-				const bool checkCPU = !gpuProof.valid || !gpuOnlyProof(request);
-				countGradientWork(checkCPU ? GradientCounter::CpuFixedPointChecks
-										   : GradientCounter::CpuFixedPointChecksSkipped);
+				const bool checkCPU = gpuProof.valid && !canSkipCpuFixedPointCheck(request);
+				if (gpuProof.valid)
+					countGradientWork(checkCPU ? GradientCounter::CpuFixedPointChecks
+											   : GradientCounter::CpuFixedPointChecksSkipped);
 				const bool cpuProof =
-					!checkCPU ||
-					exactGradientFixedPoint(
-						std::span<const std::uint16_t>(request.gradient, cells),
-						std::span<const std::uint32_t>(out, cells), request.grid, request.limit,
-						[&](std::size_t i)
-						{
-							return request.gradient[i] || request.identity.allCells
-									   ? request.costAt(request.context, i)
-									   : LAND_STEPS;
-						});
+					gpuProof.valid &&
+					(!checkCPU || exactGradientFixedPoint(
+									  std::span<const std::uint16_t>(request.gradient, cells),
+									  std::span<const std::uint32_t>(out, cells), request.grid,
+									  request.limit, expectedCosts));
 				if (!gpuProof.valid || !cpuProof)
 				{
-					failGradientProof(
-						!gpuProof.valid ? "vulkan-validator"
-						: frozen        ? "vulkan-frozen8"
-										: "vulkan-jacobi",
-						std::span<const std::uint16_t>(request.gradient, cells),
-						std::span<const std::uint32_t>(out, cells), request.grid, request.limit,
-						[&](std::size_t i)
+					preserveGradientProofFailure(
+						[&]
 						{
-							return request.gradient[i] || request.identity.allCells
-									   ? request.costAt(request.context, i)
-									   : LAND_STEPS;
-						},
-						{status.device, status.driver, status.shaderIdentity,
-						 request.capturedGeneration.value_or(request.session.currentGeneration()),
-						 gpuProof.valid ? std::nullopt : std::optional(gpuProof.firstInvalid)});
+							failGradientProof(
+								!gpuProof.valid ? "vulkan-validator"
+								: frozen        ? "vulkan-frozen8"
+												: "vulkan-jacobi",
+								std::span<const std::uint16_t>(request.gradient, cells),
+								std::span<const std::uint32_t>(out, cells), request.grid,
+								request.limit, expectedCosts,
+								[&]
+								{
+									auto context = proofContext();
+									if (!gpuProof.valid)
+										context.validationCell = gpuProof.firstInvalid;
+									return context;
+								}());
+						});
 				}
 				countGradientWork(GradientCounter::ValidatedFields);
 				phase.setPhase(GradientPhase::OutputConversion);
@@ -1238,9 +1276,15 @@ bool executeVulkanGradient(std::span<const BackendRequest> requests, Plan plan)
 	}
 	catch (const GradientProofFailure &e)
 	{
-		r.status.error = e.what();
 		r.status.availability = Availability::Failed;
-		r.publish();
+		try
+		{
+			r.status.error = e.what();
+			r.publish();
+		}
+		catch (...)
+		{
+		} // Reporting cannot downgrade a proven mismatch to recovery.
 		throw;
 	}
 	catch (const MemoryDecline &e)
@@ -1278,23 +1322,30 @@ AcceleratorStatus vulkanGradientStatus()
 }
 void maintainVulkanGradient() noexcept
 {
-	GradientProfileSession profile(Backend::Vulkan, gradientProfilingRequested());
-	GradientPhaseScope phase(GradientPhase::Retirement);
 	auto &r = runtime();
 	std::lock_guard lock(r.mutex);
 	if (r.device)
+	{
+		GradientProfileSession profile(Backend::Vulkan, gradientProfilingRequested());
+		GradientPhaseScope phase(GradientPhase::Retirement);
 		r.maintain();
+	}
 }
 void shutdownVulkanGradient() noexcept
 {
-	GradientProfileSession profile(Backend::Vulkan, gradientProfilingRequested());
-	GradientPhaseScope phase(GradientPhase::Shutdown);
 	auto &r = runtime();
 	std::lock_guard lock(r.mutex);
 	if (r.device)
+	{
+		GradientProfileSession profile(Backend::Vulkan, gradientProfilingRequested());
+		GradientPhaseScope phase(GradientPhase::Shutdown);
 		r.maintain();
-	r.shutdown();
+		r.shutdown();
+	}
+	else
+		r.shutdown();
 }
+
 #else
 bool initializeVulkanGradient()
 {
