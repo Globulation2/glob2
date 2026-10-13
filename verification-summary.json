@@ -1,0 +1,15 @@
+{
+  "commit": "389b821843ebda0492c88794ebefc93f5e209b45",
+  "base": "277510840054b1416f2defd7d86fe1431dd0ddc0",
+  "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
+  "compiler": "g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+  "flags": "dev_fast=1 -O0 -g1; SDL3 pinned prefix; no release performance acceptance",
+  "shader": "f628549a478f612d15c729e828f030e3f9897c32031af487b76f01fa3fa0456f",
+  "match_runs": 23,
+  "gpu_fields": 8458,
+  "matching_traces": true,
+  "source_sha256": {
+    "src/field/VulkanGradient.cpp": "2c60819e0bccad39ae60e1af04ccffc6b81c2fa9470133763a485c31808da611",
+    "test/fixtures/gradients/RetainedVulkanSeeds.h": "e24a4dec42dfa668aadd29983366c7f1369ecf52cee6eed0b6ace96ba0daaa3f"
+  }
+}
