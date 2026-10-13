@@ -1,0 +1,4079 @@
+{
+  "callgrind": [
+    {
+      "case": "animated-warm",
+      "variant": "immediate",
+      "repeats": 3,
+      "instructions_per_frame": {
+        "mean": 34092544.6,
+        "min": 34060373.2,
+        "max": 34120960.1,
+        "range_percent": 0.17788090472243834
+      },
+      "branches_per_frame": {
+        "mean": 3423031.8333333335,
+        "min": 3417226.6999999997,
+        "max": 3428835.0,
+        "range_percent": 0.3396994410701515
+      },
+      "data_references_per_frame": {
+        "mean": 11008540.3,
+        "min": 10995157.0,
+        "max": 11019604.600000001,
+        "range_percent": 0.22234880320490813
+      },
+      "owner_instruction_fraction": {
+        "mean": 0.9995767496555951,
+        "min": 0.999501637704503,
+        "max": 0.9996239152103906,
+        "range_percent": 0.012233847477083337
+      },
+      "graphics_worker_instruction_fraction": {
+        "mean": 0.0,
+        "min": 0.0,
+        "max": 0.0,
+        "range_percent": null
+      },
+      "top_functions": [
+        {
+          "function": "TerrainVisual::Compositor::composePixels(TerrainVisual::Catalog const&, TerrainVisual::Recipe const&, SDL_Surface*, int, int, int, std::span<TerrainVisual::Compositor::PreparedMaterialView const, 18446744073709551615ul>, TerrainVisual::Compositor::CellMask const*)",
+          "instruction_fraction": 0.5823985801626778
+        },
+        {
+          "function": "Blit8888to8888PixelAlphaSwizzleAVX2",
+          "instruction_fraction": 0.1371588392705537
+        },
+        {
+          "function": "TerrainVisual::Compositor::prepare(bool, int)",
+          "instruction_fraction": 0.10017926724924307
+        },
+        {
+          "function": "__memcpy_avx_unaligned_erms",
+          "instruction_fraction": 0.026319283524615815
+        },
+        {
+          "function": "SDL_BlitCopy",
+          "instruction_fraction": 0.024731920696205736
+        },
+        {
+          "function": "bool (anonymous namespace)::allAlpha<255u>(SDL_Surface const&, SDL_Rect) [clone .isra.0]",
+          "instruction_fraction": 0.024284335480912366
+        },
+        {
+          "function": "TerrainVisual::Compositor::materialFor(SceneMap const&, TerrainType) const",
+          "instruction_fraction": 0.010043083706398
+        },
+        {
+          "function": "SoftwareTerrainCache::prepareAtResolution(SceneMap const&, GAGCore::Sprite&, int, int, int, int, int, int, unsigned int, bool, int, int, bool, int)",
+          "instruction_fraction": 0.009505488725968965
+        },
+        {
+          "function": "TerrainVisual::CompiledPack::matches(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, SDL_Surface*) const",
+          "instruction_fraction": 0.007076292631806198
+        },
+        {
+          "function": "TerrainVisual::Catalog::profileFor(unsigned short, unsigned short) const",
+          "instruction_fraction": 0.005804266066930047
+        },
+        {
+          "function": "SceneMap::vertexTerrainAt(int, int) const",
+          "instruction_fraction": 0.005737748586536536
+        },
+        {
+          "function": "TerrainVisual::Compositor::describe(SceneMap const&, int, int) const",
+          "instruction_fraction": 0.005592395573824791
+        },
+        {
+          "function": "__memset_avx2_unaligned_erms",
+          "instruction_fraction": 0.005227924947458743
+        },
+        {
+          "function": "GAGCore::SurfaceRaster::blit(SDL_Surface*, SDL_Surface*, SDL_Rect const&, SDL_Rect, unsigned char, bool, GAGCore::SurfaceRaster::BlitBlend)",
+          "instruction_fraction": 0.004079592153993364
+        },
+        {
+          "function": "TerrainVisual::Compositor::decorMaterial(SceneMap const&, int, int) const",
+          "instruction_fraction": 0.0034314573218874583
+        }
+      ]
+    },
+    {
+      "case": "animated-warm",
+      "variant": "parallel1",
+      "repeats": 3,
+      "instructions_per_frame": {
+        "mean": 34296662.96666667,
+        "min": 34267012.7,
+        "max": 34353765.7,
+        "range_percent": 0.2531676769127911
+      },
+      "branches_per_frame": {
+        "mean": 3455496.6333333333,
+        "min": 3449971.0,
+        "max": 3465929.0,
+        "range_percent": 0.4625546127779101
+      },
+      "data_references_per_frame": {
+        "mean": 11069334.433333334,
+        "min": 11057190.8,
+        "max": 11093254.3,
+        "range_percent": 0.3261542705765841
+      },
+      "owner_instruction_fraction": {
+        "mean": 0.39121303427626797,
+        "min": 0.39080556035746883,
+        "max": 0.39202138471824066,
+        "range_percent": 0.31110723185712175
+      },
+      "graphics_worker_instruction_fraction": {
+        "mean": 0.6075662375983021,
+        "min": 0.6065876120241456,
+        "max": 0.6080642915219744,
+        "range_percent": 0.24344043111945712
+      },
+      "top_functions": [
+        {
+          "function": "TerrainVisual::Compositor::composePixels(TerrainVisual::Catalog const&, TerrainVisual::Recipe const&, SDL_Surface*, int, int, int, std::span<TerrainVisual::Compositor::PreparedMaterialView const, 18446744073709551615ul>, TerrainVisual::Compositor::CellMask const*)",
+          "instruction_fraction": 0.5794971733850613
+        },
+        {
+          "function": "Blit8888to8888PixelAlphaSwizzleAVX2",
+          "instruction_fraction": 0.1364755381784418
+        },
+        {
+          "function": "TerrainVisual::Compositor::prepare(bool, int)",
+          "instruction_fraction": 0.0996801918481794
+        },
+        {
+          "function": "__memcpy_avx_unaligned_erms",
+          "instruction_fraction": 0.026307901651432836
+        },
+        {
+          "function": "SDL_BlitCopy",
+          "instruction_fraction": 0.0246087106390806
+        },
+        {
+          "function": "bool (anonymous namespace)::allAlpha<255u>(SDL_Surface const&, SDL_Rect) [clone .isra.0]",
+          "instruction_fraction": 0.024163355214211597
+        },
+        {
+          "function": "TerrainVisual::Compositor::materialFor(SceneMap const&, TerrainType) const",
+          "instruction_fraction": 0.009993050838656852
+        },
+        {
+          "function": "TerrainVisual::CompiledPack::matches(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, SDL_Surface*) const",
+          "instruction_fraction": 0.007041039792768396
+        },
+        {
+          "function": "TerrainVisual::Catalog::profileFor(unsigned short, unsigned short) const",
+          "instruction_fraction": 0.005775350239386347
+        },
+        {
+          "function": "SceneMap::vertexTerrainAt(int, int) const",
+          "instruction_fraction": 0.005709164137322072
+        },
+        {
+          "function": "TerrainVisual::Compositor::describe(SceneMap const&, int, int) const",
+          "instruction_fraction": 0.005564535247626064
+        },
+        {
+          "function": "__memset_avx2_unaligned_erms",
+          "instruction_fraction": 0.005195810371879893
+        },
+        {
+          "function": "SoftwareTerrainCache::prepareAtResolution(SceneMap const&, GAGCore::Sprite&, int, int, int, int, int, int, unsigned int, bool, int, int, bool, int)",
+          "instruction_fraction": 0.005015289821280511
+        },
+        {
+          "function": "GAGCore::SurfaceRaster::blit(SDL_Surface*, SDL_Surface*, SDL_Rect const&, SDL_Rect, unsigned char, bool, GAGCore::SurfaceRaster::BlitBlend)",
+          "instruction_fraction": 0.004059268347018764
+        },
+        {
+          "function": "TerrainVisual::Compositor::decorMaterial(SceneMap const&, int, int) const",
+          "instruction_fraction": 0.003414362408077667
+        }
+      ]
+    },
+    {
+      "case": "animated-warm",
+      "variant": "parallel2",
+      "repeats": 3,
+      "instructions_per_frame": {
+        "mean": 34337413.66666667,
+        "min": 34269824.2,
+        "max": 34392876.7,
+        "range_percent": 0.35906953966808874
+      },
+      "branches_per_frame": {
+        "mean": 3461746.0,
+        "min": 3450701.1,
+        "max": 3469282.5999999996,
+        "range_percent": 0.5384847734276166
+      },
+      "data_references_per_frame": {
+        "mean": 11087975.866666667,
+        "min": 11057562.7,
+        "max": 11115707.3,
+        "range_percent": 0.5258355894287803
+      },
+      "owner_instruction_fraction": {
+        "mean": 0.39182476022052476,
+        "min": 0.3908376658669874,
+        "max": 0.3929412133181636,
+        "range_percent": 0.5382151299337945
+      },
+      "graphics_worker_instruction_fraction": {
+        "mean": 0.6068873686548073,
+        "min": 0.6058598494612113,
+        "max": 0.608068444658085,
+        "range_percent": 0.36453896042751843
+      },
+      "top_functions": [
+        {
+          "function": "TerrainVisual::Compositor::composePixels(TerrainVisual::Catalog const&, TerrainVisual::Recipe const&, SDL_Surface*, int, int, int, std::span<TerrainVisual::Compositor::PreparedMaterialView const, 18446744073709551615ul>, TerrainVisual::Compositor::CellMask const*)",
+          "instruction_fraction": 0.5781048870578619
+        },
+        {
+          "function": "Blit8888to8888PixelAlphaSwizzleAVX2",
+          "instruction_fraction": 0.13614764524896797
+        },
+        {
+          "function": "TerrainVisual::Compositor::prepare(bool, int)",
+          "instruction_fraction": 0.09944070255543247
+        },
+        {
+          "function": "__memcpy_avx_unaligned_erms",
+          "instruction_fraction": 0.0263095574895339
+        },
+        {
+          "function": "SDL_BlitCopy",
+          "instruction_fraction": 0.02454958632764926
+        },
+        {
+          "function": "bool (anonymous namespace)::allAlpha<255u>(SDL_Surface const&, SDL_Rect) [clone .isra.0]",
+          "instruction_fraction": 0.02410530090328633
+        },
+        {
+          "function": "TerrainVisual::Compositor::materialFor(SceneMap const&, TerrainType) const",
+          "instruction_fraction": 0.009969041768917308
+        },
+        {
+          "function": "TerrainVisual::CompiledPack::matches(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, SDL_Surface*) const",
+          "instruction_fraction": 0.007024123155581929
+        },
+        {
+          "function": "TerrainVisual::Catalog::profileFor(unsigned short, unsigned short) const",
+          "instruction_fraction": 0.005761474518257087
+        },
+        {
+          "function": "SceneMap::vertexTerrainAt(int, int) const",
+          "instruction_fraction": 0.0056954474333704395
+        },
+        {
+          "function": "TerrainVisual::Compositor::describe(SceneMap const&, int, int) const",
+          "instruction_fraction": 0.005551166025655173
+        },
+        {
+          "function": "__memset_avx2_unaligned_erms",
+          "instruction_fraction": 0.005183050471176468
+        },
+        {
+          "function": "SoftwareTerrainCache::prepareAtResolution(SceneMap const&, GAGCore::Sprite&, int, int, int, int, int, int, unsigned int, bool, int, int, bool, int)",
+          "instruction_fraction": 0.0050032402034983865
+        },
+        {
+          "function": "GAGCore::SurfaceRaster::blit(SDL_Surface*, SDL_Surface*, SDL_Rect const&, SDL_Rect, unsigned char, bool, GAGCore::SurfaceRaster::BlitBlend)",
+          "instruction_fraction": 0.004049515644024591
+        },
+        {
+          "function": "TerrainVisual::Compositor::decorMaterial(SceneMap const&, int, int) const",
+          "instruction_fraction": 0.0034061591409778437
+        }
+      ]
+    },
+    {
+      "case": "animated-warm",
+      "variant": "parallel4",
+      "repeats": 3,
+      "instructions_per_frame": {
+        "mean": 34311513.0,
+        "min": 34272973.8,
+        "max": 34371578.1,
+        "range_percent": 0.287702784635524
+      },
+      "branches_per_frame": {
+        "mean": 3457843.9,
+        "min": 3450997.4,
+        "max": 3468778.1,
+        "range_percent": 0.515233653899605
+      },
+      "data_references_per_frame": {
+        "mean": 11075120.533333333,
+        "min": 11059484.1,
+        "max": 11099366.8,
+        "range_percent": 0.3606198954615003
+      },
+      "owner_instruction_fraction": {
+        "mean": 0.39111111861523085,
+        "min": 0.39082288213927907,
+        "max": 0.3914408573518479,
+        "range_percent": 0.15812155347358914
+      },
+      "graphics_worker_instruction_fraction": {
+        "mean": 0.6073835043660368,
+        "min": 0.6065177117951416,
+        "max": 0.6079581865755693,
+        "range_percent": 0.23749921105589156
+      },
+      "top_functions": [
+        {
+          "function": "TerrainVisual::Compositor::composePixels(TerrainVisual::Catalog const&, TerrainVisual::Recipe const&, SDL_Surface*, int, int, int, std::span<TerrainVisual::Compositor::PreparedMaterialView const, 18446744073709551615ul>, TerrainVisual::Compositor::CellMask const*)",
+          "instruction_fraction": 0.5791089084428381
+        },
+        {
+          "function": "Blit8888to8888PixelAlphaSwizzleAVX2",
+          "instruction_fraction": 0.1363840991354587
+        },
+        {
+          "function": "TerrainVisual::Compositor::prepare(bool, int)",
+          "instruction_fraction": 0.09961340580381846
+        },
+        {
+          "function": "__memcpy_avx_unaligned_erms",
+          "instruction_fraction": 0.026303229492903483
+        },
+        {
+          "function": "SDL_BlitCopy",
+          "instruction_fraction": 0.024592222724983178
+        },
+        {
+          "function": "bool (anonymous namespace)::allAlpha<255u>(SDL_Surface const&, SDL_Rect) [clone .isra.0]",
+          "instruction_fraction": 0.024147165689659883
+        },
+        {
+          "function": "TerrainVisual::Compositor::materialFor(SceneMap const&, TerrainType) const",
+          "instruction_fraction": 0.009986355462933376
+        },
+        {
+          "function": "TerrainVisual::CompiledPack::matches(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, SDL_Surface*) const",
+          "instruction_fraction": 0.0070363222737986975
+        },
+        {
+          "function": "TerrainVisual::Catalog::profileFor(unsigned short, unsigned short) const",
+          "instruction_fraction": 0.005771480736427573
+        },
+        {
+          "function": "SceneMap::vertexTerrainAt(int, int) const",
+          "instruction_fraction": 0.005705338979261384
+        },
+        {
+          "function": "TerrainVisual::Compositor::describe(SceneMap const&, int, int) const",
+          "instruction_fraction": 0.005560806991379708
+        },
+        {
+          "function": "__memset_avx2_unaligned_erms",
+          "instruction_fraction": 0.005191775064855595
+        },
+        {
+          "function": "SoftwareTerrainCache::prepareAtResolution(SceneMap const&, GAGCore::Sprite&, int, int, int, int, int, int, unsigned int, bool, int, int, bool, int)",
+          "instruction_fraction": 0.0050119295612100125
+        },
+        {
+          "function": "GAGCore::SurfaceRaster::blit(SDL_Surface*, SDL_Surface*, SDL_Rect const&, SDL_Rect, unsigned char, bool, GAGCore::SurfaceRaster::BlitBlend)",
+          "instruction_fraction": 0.004056548624365041
+        },
+        {
+          "function": "TerrainVisual::Compositor::decorMaterial(SceneMap const&, int, int) const",
+          "instruction_fraction": 0.003412074774446328
+        }
+      ]
+    },
+    {
+      "case": "animated-warm",
+      "variant": "serial",
+      "repeats": 3,
+      "instructions_per_frame": {
+        "mean": 34214791.1,
+        "min": 34192134.6,
+        "max": 34245843.8,
+        "range_percent": 0.15708057021979194
+      },
+      "branches_per_frame": {
+        "mean": 3439659.933333333,
+        "min": 3436024.1999999997,
+        "max": 3445551.9,
+        "range_percent": 0.27728850105306346
+      },
+      "data_references_per_frame": {
+        "mean": 11040186.0,
+        "min": 11029859.2,
+        "max": 11053073.0,
+        "range_percent": 0.21046324870583888
+      },
+      "owner_instruction_fraction": {
+        "mean": 0.9995749420181891,
+        "min": 0.9994672755004507,
+        "max": 0.9996305398438816,
+        "range_percent": 0.01633513647050222
+      },
+      "graphics_worker_instruction_fraction": {
+        "mean": 0.0,
+        "min": 0.0,
+        "max": 0.0,
+        "range_percent": null
+      },
+      "top_functions": [
+        {
+          "function": "TerrainVisual::Compositor::composePixels(TerrainVisual::Catalog const&, TerrainVisual::Recipe const&, SDL_Surface*, int, int, int, std::span<TerrainVisual::Compositor::PreparedMaterialView const, 18446744073709551615ul>, TerrainVisual::Compositor::CellMask const*)",
+          "instruction_fraction": 0.5798553867141099
+        },
+        {
+          "function": "Blit8888to8888PixelAlphaSwizzleAVX2",
+          "instruction_fraction": 0.13655989986148334
+        },
+        {
+          "function": "TerrainVisual::Compositor::prepare(bool, int)",
+          "instruction_fraction": 0.09974180866876464
+        },
+        {
+          "function": "__memcpy_avx_unaligned_erms",
+          "instruction_fraction": 0.026385525942275074
+        },
+        {
+          "function": "SDL_BlitCopy",
+          "instruction_fraction": 0.024623922392591185
+        },
+        {
+          "function": "bool (anonymous namespace)::allAlpha<255u>(SDL_Surface const&, SDL_Rect) [clone .isra.0]",
+          "instruction_fraction": 0.024178291673455567
+        },
+        {
+          "function": "TerrainVisual::Compositor::materialFor(SceneMap const&, TerrainType) const",
+          "instruction_fraction": 0.009999227993909147
+        },
+        {
+          "function": "TerrainVisual::CompiledPack::matches(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, SDL_Surface*) const",
+          "instruction_fraction": 0.007045392176904107
+        },
+        {
+          "function": "TerrainVisual::Catalog::profileFor(unsigned short, unsigned short) const",
+          "instruction_fraction": 0.005778920243746484
+        },
+        {
+          "function": "SceneMap::vertexTerrainAt(int, int) const",
+          "instruction_fraction": 0.005712693229068574
+        },
+        {
+          "function": "TerrainVisual::Compositor::describe(SceneMap const&, int, int) const",
+          "instruction_fraction": 0.005567974937735364
+        },
+        {
+          "function": "__memset_avx2_unaligned_erms",
+          "instruction_fraction": 0.00519874473059414
+        },
+        {
+          "function": "SoftwareTerrainCache::prepareAtResolution(SceneMap const&, GAGCore::Sprite&, int, int, int, int, int, int, unsigned int, bool, int, int, bool, int)",
+          "instruction_fraction": 0.0050183899980294835
+        },
+        {
+          "function": "GAGCore::SurfaceRaster::blit(SDL_Surface*, SDL_Surface*, SDL_Rect const&, SDL_Rect, unsigned char, bool, GAGCore::SurfaceRaster::BlitBlend)",
+          "instruction_fraction": 0.004061777563793011
+        },
+        {
+          "function": "TerrainVisual::Compositor::decorMaterial(SceneMap const&, int, int) const",
+          "instruction_fraction": 0.003416472979415972
+        }
+      ]
+    },
+    {
+      "case": "gui-half-pan",
+      "variant": "immediate",
+      "repeats": 3,
+      "instructions_per_frame": {
+        "mean": 186539318.93333334,
+        "min": 186500035.2,
+        "max": 186572362.6,
+        "range_percent": 0.03878144040156961
+      },
+      "branches_per_frame": {
+        "mean": 18046538.5,
+        "min": 18037211.1,
+        "max": 18053479.599999998,
+        "range_percent": 0.09019409879831297
+      },
+      "data_references_per_frame": {
+        "mean": 28553403.733333334,
+        "min": 28536150.6,
+        "max": 28577838.0,
+        "range_percent": 0.14608627696266474
+      },
+      "owner_instruction_fraction": {
+        "mean": 0.9998248457130001,
+        "min": 0.9996107060071072,
+        "max": 0.9999319560450142,
+        "range_percent": 0.03213751473212234
+      },
+      "graphics_worker_instruction_fraction": {
+        "mean": 0.0,
+        "min": 0.0,
+        "max": 0.0,
+        "range_percent": null
+      },
+      "top_functions": [
+        {
+          "function": "SDL_Blit_ARGB8888_ARGB8888_Modulate_Blend",
+          "instruction_fraction": 0.4950118694589549
+        },
+        {
+          "function": "SDL_BlendFillRect_ARGB8888",
+          "instruction_fraction": 0.20132340329810455
+        },
+        {
+          "function": "GAGCore::SurfaceRaster::executeCommand(GAGCore::SurfaceRaster::RasterCommand const&, GAGCore::SurfaceRaster::WritablePixelView, SDL_Rect)",
+          "instruction_fraction": 0.06743304702086675
+        },
+        {
+          "function": "SDL_Blit_ARGB8888_ARGB8888_Blend_Scale",
+          "instruction_fraction": 0.0575407410314908
+        },
+        {
+          "function": "SDL_StretchSurface_REAL",
+          "instruction_fraction": 0.041278094422330054
+        },
+        {
+          "function": "__memset_avx2_unaligned_erms",
+          "instruction_fraction": 0.0244382181608285
+        },
+        {
+          "function": "SDL_Blit_ARGB8888_ARGB8888_Modulate_Blend_Scale",
+          "instruction_fraction": 0.01603412187266797
+        },
+        {
+          "function": "SceneMap::isMapDiscovered(int, int, unsigned int) const",
+          "instruction_fraction": 0.007621305643475836
+        },
+        {
+          "function": "SceneMap::isMapPartiallyDiscovered(int, int, int, int, unsigned int) const",
+          "instruction_fraction": 0.006295557303512433
+        },
+        {
+          "function": "SDL_FindInHashTable",
+          "instruction_fraction": 0.005467580973860702
+        },
+        {
+          "function": "SDL_BlitCopy",
+          "instruction_fraction": 0.004519785182802847
+        },
+        {
+          "function": "Game::drawMapTerritory(int, int, int, int, int, int, int, unsigned int, PresentationFrame const&, float)",
+          "instruction_fraction": 0.003351155504957946
+        },
+        {
+          "function": "__memcpy_avx_unaligned_erms",
+          "instruction_fraction": 0.0032883375192891513
+        },
+        {
+          "function": "SDL_RenderGeometryRaw_REAL",
+          "instruction_fraction": 0.003226362102143418
+        },
+        {
+          "function": "_int_malloc",
+          "instruction_fraction": 0.0029751893167053673
+        }
+      ]
+    },
+    {
+      "case": "gui-half-pan",
+      "variant": "parallel1",
+      "repeats": 3,
+      "instructions_per_frame": {
+        "mean": 187075226.26666668,
+        "min": 187025920.2,
+        "max": 187160609.3,
+        "range_percent": 0.07201627445863057
+      },
+      "branches_per_frame": {
+        "mean": 18103417.633333333,
+        "min": 18093667.200000003,
+        "max": 18120269.9,
+        "range_percent": 0.14702768491285934
+      },
+      "data_references_per_frame": {
+        "mean": 28825888.966666665,
+        "min": 28802848.1,
+        "max": 28859615.5,
+        "range_percent": 0.1970895371280923
+      },
+      "owner_instruction_fraction": {
+        "mean": 0.9770701313516473,
+        "min": 0.9770561402997142,
+        "max": 0.9770870744862444,
+        "range_percent": 0.0031660602962668705
+      },
+      "graphics_worker_instruction_fraction": {
+        "mean": 0.02282656021649669,
+        "min": 0.022816075540527746,
+        "max": 0.022832509501535928,
+        "range_percent": 0.07202799175076713
+      },
+      "top_functions": [
+        {
+          "function": "SDL_Blit_ARGB8888_ARGB8888_Modulate_Blend",
+          "instruction_fraction": 0.49381141341926144
+        },
+        {
+          "function": "SDL_BlendFillRect_ARGB8888",
+          "instruction_fraction": 0.2008351727922684
+        },
+        {
+          "function": "GAGCore::SurfaceRaster::executeCommand(GAGCore::SurfaceRaster::RasterCommand const&, GAGCore::SurfaceRaster::WritablePixelView, SDL_Rect)",
+          "instruction_fraction": 0.06788151977235934
+        },
+        {
+          "function": "SDL_Blit_ARGB8888_ARGB8888_Blend_Scale",
+          "instruction_fraction": 0.05740119866016304
+        },
+        {
+          "function": "SDL_StretchSurface_REAL",
+          "instruction_fraction": 0.041177990685806555
+        },
+        {
+          "function": "__memset_avx2_unaligned_erms",
+          "instruction_fraction": 0.024372804556317323
+        },
+        {
+          "function": "SDL_Blit_ARGB8888_ARGB8888_Modulate_Blend_Scale",
+          "instruction_fraction": 0.01599523743447407
+        },
+        {
+          "function": "SceneMap::isMapDiscovered(int, int, unsigned int) const",
+          "instruction_fraction": 0.0076028231727422345
+        },
+        {
+          "function": "SceneMap::isMapPartiallyDiscovered(int, int, int, int, unsigned int) const",
+          "instruction_fraction": 0.006280289912456744
+        },
+        {
+          "function": "SDL_FindInHashTable",
+          "instruction_fraction": 0.00582151981305958
+        },
+        {
+          "function": "__memcpy_avx_unaligned_erms",
+          "instruction_fraction": 0.005251122405652519
+        },
+        {
+          "function": "SDL_BlitCopy",
+          "instruction_fraction": 0.004508824226600437
+        },
+        {
+          "function": "Game::drawMapTerritory(int, int, int, int, int, int, int, unsigned int, PresentationFrame const&, float)",
+          "instruction_fraction": 0.003343028599091475
+        },
+        {
+          "function": "SDL_RenderGeometryRaw_REAL",
+          "instruction_fraction": 0.00321853783345267
+        },
+        {
+          "function": "_int_malloc",
+          "instruction_fraction": 0.0029348942617847896
+        }
+      ]
+    },
+    {
+      "case": "gui-half-pan",
+      "variant": "parallel2",
+      "repeats": 3,
+      "instructions_per_frame": {
+        "mean": 187031135.03333333,
+        "min": 186977536.7,
+        "max": 187130381.7,
+        "range_percent": 0.08174511371663584
+      },
+      "branches_per_frame": {
+        "mean": 18096041.6,
+        "min": 18085198.1,
+        "max": 18115865.2,
+        "range_percent": 0.1695701635692659
+      },
+      "data_references_per_frame": {
+        "mean": 28818250.533333335,
+        "min": 28806281.1,
+        "max": 28839956.1,
+        "range_percent": 0.11690158782766691
+      },
+      "owner_instruction_fraction": {
+        "mean": 0.9770625072519835,
+        "min": 0.9770504513431449,
+        "max": 0.9770691898303356,
+        "range_percent": 0.0019178628048344137
+      },
+      "graphics_worker_instruction_fraction": {
+        "mean": 0.0228317112724475,
+        "min": 0.022819486933157898,
+        "max": 0.02283811026375555,
+        "range_percent": 0.08161152199521737
+      },
+      "top_functions": [
+        {
+          "function": "SDL_Blit_ARGB8888_ARGB8888_Modulate_Blend",
+          "instruction_fraction": 0.4939391952102875
+        },
+        {
+          "function": "SDL_BlendFillRect_ARGB8888",
+          "instruction_fraction": 0.20088714218257214
+        },
+        {
+          "function": "GAGCore::SurfaceRaster::executeCommand(GAGCore::SurfaceRaster::RasterCommand const&, GAGCore::SurfaceRaster::WritablePixelView, SDL_Rect)",
+          "instruction_fraction": 0.06789909057562207
+        },
+        {
+          "function": "SDL_Blit_ARGB8888_ARGB8888_Blend_Scale",
+          "instruction_fraction": 0.05741605216045185
+        },
+        {
+          "function": "SDL_StretchSurface_REAL",
+          "instruction_fraction": 0.04118864616532302
+        },
+        {
+          "function": "__memset_avx2_unaligned_erms",
+          "instruction_fraction": 0.024379002314666817
+        },
+        {
+          "function": "SDL_Blit_ARGB8888_ARGB8888_Modulate_Blend_Scale",
+          "instruction_fraction": 0.015999376464135438
+        },
+        {
+          "function": "SceneMap::isMapDiscovered(int, int, unsigned int) const",
+          "instruction_fraction": 0.007604790527759691
+        },
+        {
+          "function": "SceneMap::isMapPartiallyDiscovered(int, int, int, int, unsigned int) const",
+          "instruction_fraction": 0.006281915040332222
+        },
+        {
+          "function": "SDL_FindInHashTable",
+          "instruction_fraction": 0.005569341207392214
+        },
+        {
+          "function": "__memcpy_avx_unaligned_erms",
+          "instruction_fraction": 0.005252267290138067
+        },
+        {
+          "function": "SDL_BlitCopy",
+          "instruction_fraction": 0.004509990958716058
+        },
+        {
+          "function": "Game::drawMapTerritory(int, int, int, int, int, int, int, unsigned int, PresentationFrame const&, float)",
+          "instruction_fraction": 0.003343893662494699
+        },
+        {
+          "function": "SDL_RenderGeometryRaw_REAL",
+          "instruction_fraction": 0.003219370682831335
+        },
+        {
+          "function": "_int_malloc",
+          "instruction_fraction": 0.0029261226223010776
+        }
+      ]
+    },
+    {
+      "case": "gui-half-pan",
+      "variant": "parallel4",
+      "repeats": 3,
+      "instructions_per_frame": {
+        "mean": 187081368.06666666,
+        "min": 186967994.5,
+        "max": 187205073.8,
+        "range_percent": 0.12680207681214917
+      },
+      "branches_per_frame": {
+        "mean": 18101696.866666667,
+        "min": 18082803.6,
+        "max": 18123031.7,
+        "range_percent": 0.2224660560931957
+      },
+      "data_references_per_frame": {
+        "mean": 28823114.8,
+        "min": 28804046.7,
+        "max": 28860079.1,
+        "range_percent": 0.19452961100776545
+      },
+      "owner_instruction_fraction": {
+        "mean": 0.9770617870644616,
+        "min": 0.9770485953570346,
+        "max": 0.9770695357548934,
+        "range_percent": 0.0021432299230905727
+      },
+      "graphics_worker_instruction_fraction": {
+        "mean": 0.022825777901157748,
+        "min": 0.022810302163936327,
+        "max": 0.022839330396732686,
+        "range_percent": 0.12725930848147549
+      },
+      "top_functions": [
+        {
+          "function": "SDL_Blit_ARGB8888_ARGB8888_Modulate_Blend",
+          "instruction_fraction": 0.49396440415902304
+        },
+        {
+          "function": "SDL_BlendFillRect_ARGB8888",
+          "instruction_fraction": 0.2008973947677446
+        },
+        {
+          "function": "GAGCore::SurfaceRaster::executeCommand(GAGCore::SurfaceRaster::RasterCommand const&, GAGCore::SurfaceRaster::WritablePixelView, SDL_Rect)",
+          "instruction_fraction": 0.06790255591044488
+        },
+        {
+          "function": "SDL_Blit_ARGB8888_ARGB8888_Blend_Scale",
+          "instruction_fraction": 0.05741898247723891
+        },
+        {
+          "function": "SDL_StretchSurface_REAL",
+          "instruction_fraction": 0.04119074829141412
+        },
+        {
+          "function": "__memset_avx2_unaligned_erms",
+          "instruction_fraction": 0.024380459405312818
+        },
+        {
+          "function": "SDL_Blit_ARGB8888_ARGB8888_Modulate_Blend_Scale",
+          "instruction_fraction": 0.016000193016992542
+        },
+        {
+          "function": "SceneMap::isMapDiscovered(int, int, unsigned int) const",
+          "instruction_fraction": 0.007605178649974769
+        },
+        {
+          "function": "SceneMap::isMapPartiallyDiscovered(int, int, int, int, unsigned int) const",
+          "instruction_fraction": 0.006282235647556245
+        },
+        {
+          "function": "SDL_FindInHashTable",
+          "instruction_fraction": 0.005533319233415642
+        },
+        {
+          "function": "__memcpy_avx_unaligned_erms",
+          "instruction_fraction": 0.005252781913965494
+        },
+        {
+          "function": "SDL_BlitCopy",
+          "instruction_fraction": 0.00451022113306136
+        },
+        {
+          "function": "Game::drawMapTerritory(int, int, int, int, int, int, int, unsigned int, PresentationFrame const&, float)",
+          "instruction_fraction": 0.003344064323265766
+        },
+        {
+          "function": "SDL_RenderGeometryRaw_REAL",
+          "instruction_fraction": 0.0032195349883800566
+        },
+        {
+          "function": "_int_malloc",
+          "instruction_fraction": 0.0029166863636653066
+        }
+      ]
+    },
+    {
+      "case": "gui-half-pan",
+      "variant": "serial",
+      "repeats": 3,
+      "instructions_per_frame": {
+        "mean": 187008184.63333333,
+        "min": 186903919.2,
+        "max": 187064483.3,
+        "range_percent": 0.08590729433994859
+      },
+      "branches_per_frame": {
+        "mean": 18089882.7,
+        "min": 18064891.0,
+        "max": 18106537.400000002,
+        "range_percent": 0.2305377873578207
+      },
+      "data_references_per_frame": {
+        "mean": 28813837.0,
+        "min": 28748903.0,
+        "max": 28855857.3,
+        "range_percent": 0.37202915186016483
+      },
+      "owner_instruction_fraction": {
+        "mean": 0.9999213801253688,
+        "min": 0.9999117373875108,
+        "max": 0.9999354347407392,
+        "range_percent": 0.0023699445003355635
+      },
+      "graphics_worker_instruction_fraction": {
+        "mean": 0.0,
+        "min": 0.0,
+        "max": 0.0,
+        "range_percent": null
+      },
+      "top_functions": [
+        {
+          "function": "SDL_Blit_ARGB8888_ARGB8888_Modulate_Blend",
+          "instruction_fraction": 0.49370961483846787
+        },
+        {
+          "function": "SDL_BlendFillRect_ARGB8888",
+          "instruction_fraction": 0.20079377088253503
+        },
+        {
+          "function": "GAGCore::SurfaceRaster::executeCommand(GAGCore::SurfaceRaster::RasterCommand const&, GAGCore::SurfaceRaster::WritablePixelView, SDL_Rect)",
+          "instruction_fraction": 0.0675686088402437
+        },
+        {
+          "function": "SDL_Blit_ARGB8888_ARGB8888_Blend_Scale",
+          "instruction_fraction": 0.05738936547769568
+        },
+        {
+          "function": "SDL_StretchSurface_REAL",
+          "instruction_fraction": 0.04116950189656873
+        },
+        {
+          "function": "__memset_avx2_unaligned_erms",
+          "instruction_fraction": 0.024371317951834847
+        },
+        {
+          "function": "SDL_Blit_ARGB8888_ARGB8888_Modulate_Blend_Scale",
+          "instruction_fraction": 0.015991940037074905
+        },
+        {
+          "function": "SceneMap::isMapDiscovered(int, int, unsigned int) const",
+          "instruction_fraction": 0.0076012558606308135
+        },
+        {
+          "function": "SceneMap::isMapPartiallyDiscovered(int, int, int, int, unsigned int) const",
+          "instruction_fraction": 0.006278995238857295
+        },
+        {
+          "function": "SDL_FindInHashTable",
+          "instruction_fraction": 0.0058913134153456915
+        },
+        {
+          "function": "__memcpy_avx_unaligned_erms",
+          "instruction_fraction": 0.005303464786572877
+        },
+        {
+          "function": "SDL_BlitCopy",
+          "instruction_fraction": 0.0045078947383487625
+        },
+        {
+          "function": "Game::drawMapTerritory(int, int, int, int, int, int, int, unsigned int, PresentationFrame const&, float)",
+          "instruction_fraction": 0.003342339438092576
+        },
+        {
+          "function": "SDL_RenderGeometryRaw_REAL",
+          "instruction_fraction": 0.003217874336063237
+        },
+        {
+          "function": "_int_malloc",
+          "instruction_fraction": 0.0030077328954940105
+        }
+      ]
+    },
+    {
+      "case": "static-warm",
+      "variant": "immediate",
+      "repeats": 3,
+      "instructions_per_frame": {
+        "mean": 8266903.733333333,
+        "min": 8255471.3,
+        "max": 8280980.5,
+        "range_percent": 0.3089975008452983
+      },
+      "branches_per_frame": {
+        "mean": 654096.0333333333,
+        "min": 652274.3,
+        "max": 656092.1000000001,
+        "range_percent": 0.5853059058129384
+      },
+      "data_references_per_frame": {
+        "mean": 2884112.6,
+        "min": 2878943.9000000004,
+        "max": 2890637.7,
+        "range_percent": 0.4061836703382671
+      },
+      "owner_instruction_fraction": {
+        "mean": 0.9973361609992025,
+        "min": 0.9953964509395958,
+        "max": 0.9984358494468996,
+        "range_percent": 0.30534552382970315
+      },
+      "graphics_worker_instruction_fraction": {
+        "mean": 0.0,
+        "min": 0.0,
+        "max": 0.0,
+        "range_percent": null
+      },
+      "top_functions": [
+        {
+          "function": "Blit8888to8888PixelAlphaSwizzleAVX2",
+          "instruction_fraction": 0.5647409748157238
+        },
+        {
+          "function": "SDL_BlitCopy",
+          "instruction_fraction": 0.10183178187655435
+        },
+        {
+          "function": "__memcpy_avx_unaligned_erms",
+          "instruction_fraction": 0.09955868148705338
+        },
+        {
+          "function": "GAGCore::SurfaceRaster::blit(SDL_Surface*, SDL_Surface*, SDL_Rect const&, SDL_Rect, unsigned char, bool, GAGCore::SurfaceRaster::BlitBlend)",
+          "instruction_fraction": 0.016797407022030784
+        },
+        {
+          "function": "TerrainVisual::Compositor::decorMaterial(SceneMap const&, int, int) const",
+          "instruction_fraction": 0.014128761684682146
+        },
+        {
+          "function": "TerrainVisual::Compositor::materialFor(SceneMap const&, TerrainType) const",
+          "instruction_fraction": 0.013111490843385032
+        },
+        {
+          "function": "SDL_GetRectIntersection_REAL",
+          "instruction_fraction": 0.011283204929657786
+        },
+        {
+          "function": "SceneMap::vertexTerrainAt(int, int) const",
+          "instruction_fraction": 0.009991570442654708
+        },
+        {
+          "function": "Game::drawMapArea(int, int, int, int, int, int, int, int, int, unsigned int, SceneMap const&, bool (SceneMap::*)(int, int) const, int, AreaType, MapRenderState const&, Utilities::BitArray const*)",
+          "instruction_fraction": 0.008805237495728918
+        },
+        {
+          "function": "ResourcePresentation::frame(unsigned int, int, int, unsigned int) const",
+          "instruction_fraction": 0.008520609365038356
+        },
+        {
+          "function": "SDL_BlitSurface_REAL",
+          "instruction_fraction": 0.008436682105458405
+        },
+        {
+          "function": "__memset_avx2_unaligned_erms",
+          "instruction_fraction": 0.008294162750413432
+        },
+        {
+          "function": "GAGCore::Sprite::checkBound(int)",
+          "instruction_fraction": 0.007969346142041997
+        },
+        {
+          "function": "Utilities::BitArray::get(unsigned long) const",
+          "instruction_fraction": 0.007607794753290386
+        },
+        {
+          "function": "Game::drawMapResources(int, int, int, int, int, int, int, unsigned int, SceneMap const&)",
+          "instruction_fraction": 0.007373522978347794
+        }
+      ]
+    },
+    {
+      "case": "static-warm",
+      "variant": "parallel1",
+      "repeats": 3,
+      "instructions_per_frame": {
+        "mean": 8267246.833333334,
+        "min": 8254477.7,
+        "max": 8279815.9,
+        "range_percent": 0.30696309228626095
+      },
+      "branches_per_frame": {
+        "mean": 654224.1666666666,
+        "min": 652129.8,
+        "max": 655952.0,
+        "range_percent": 0.5861103111681087
+      },
+      "data_references_per_frame": {
+        "mean": 2884120.4666666663,
+        "min": 2878462.7,
+        "max": 2890134.0999999996,
+        "range_percent": 0.4054733799399024
+      },
+      "owner_instruction_fraction": {
+        "mean": 0.9984648935484367,
+        "min": 0.9983687225133554,
+        "max": 0.9985903045083034,
+        "range_percent": 0.022194404727571282
+      },
+      "graphics_worker_instruction_fraction": {
+        "mean": 0.0,
+        "min": 0.0,
+        "max": 0.0,
+        "range_percent": null
+      },
+      "top_functions": [
+        {
+          "function": "Blit8888to8888PixelAlphaSwizzleAVX2",
+          "instruction_fraction": 0.5656654414073105
+        },
+        {
+          "function": "SDL_BlitCopy",
+          "instruction_fraction": 0.10199847790978857
+        },
+        {
+          "function": "__memcpy_avx_unaligned_erms",
+          "instruction_fraction": 0.09980047165467733
+        },
+        {
+          "function": "GAGCore::SurfaceRaster::blit(SDL_Surface*, SDL_Surface*, SDL_Rect const&, SDL_Rect, unsigned char, bool, GAGCore::SurfaceRaster::BlitBlend)",
+          "instruction_fraction": 0.016824903949488927
+        },
+        {
+          "function": "TerrainVisual::Compositor::decorMaterial(SceneMap const&, int, int) const",
+          "instruction_fraction": 0.014151890107694553
+        },
+        {
+          "function": "TerrainVisual::Compositor::materialFor(SceneMap const&, TerrainType) const",
+          "instruction_fraction": 0.013132954019940545
+        },
+        {
+          "function": "SDL_GetRectIntersection_REAL",
+          "instruction_fraction": 0.011301675248739729
+        },
+        {
+          "function": "SceneMap::vertexTerrainAt(int, int) const",
+          "instruction_fraction": 0.010007926388979892
+        },
+        {
+          "function": "Game::drawMapArea(int, int, int, int, int, int, int, int, int, unsigned int, SceneMap const&, bool (SceneMap::*)(int, int) const, int, AreaType, MapRenderState const&, Utilities::BitArray const*)",
+          "instruction_fraction": 0.008819651445236377
+        },
+        {
+          "function": "ResourcePresentation::frame(unsigned int, int, int, unsigned int) const",
+          "instruction_fraction": 0.00853455738554547
+        },
+        {
+          "function": "SDL_BlitSurface_REAL",
+          "instruction_fraction": 0.00845049273917925
+        },
+        {
+          "function": "__memset_avx2_unaligned_erms",
+          "instruction_fraction": 0.008307510266561253
+        },
+        {
+          "function": "GAGCore::Sprite::checkBound(int)",
+          "instruction_fraction": 0.007982391758693969
+        },
+        {
+          "function": "Utilities::BitArray::get(unsigned long) const",
+          "instruction_fraction": 0.007620248519527836
+        },
+        {
+          "function": "Game::drawMapResources(int, int, int, int, int, int, int, unsigned int, SceneMap const&)",
+          "instruction_fraction": 0.007385593247656662
+        }
+      ]
+    },
+    {
+      "case": "static-warm",
+      "variant": "parallel2",
+      "repeats": 3,
+      "instructions_per_frame": {
+        "mean": 8256767.233333333,
+        "min": 8254756.6,
+        "max": 8259289.7,
+        "range_percent": 0.054915005004518846
+      },
+      "branches_per_frame": {
+        "mean": 652516.0333333333,
+        "min": 652117.7,
+        "max": 652977.0,
+        "range_percent": 0.13177069108845085
+      },
+      "data_references_per_frame": {
+        "mean": 2879517.3666666667,
+        "min": 2878506.4,
+        "max": 2880711.5,
+        "range_percent": 0.07660570078982243
+      },
+      "owner_instruction_fraction": {
+        "mean": 0.9984087547942817,
+        "min": 0.9982937636876934,
+        "max": 0.9985603815380819,
+        "range_percent": 0.026707354096222602
+      },
+      "graphics_worker_instruction_fraction": {
+        "mean": 0.0,
+        "min": 0.0,
+        "max": 0.0,
+        "range_percent": null
+      },
+      "top_functions": [
+        {
+          "function": "Blit8888to8888PixelAlphaSwizzleAVX2",
+          "instruction_fraction": 0.5664322109027781
+        },
+        {
+          "function": "SDL_BlitCopy",
+          "instruction_fraction": 0.1021367386478863
+        },
+        {
+          "function": "__memcpy_avx_unaligned_erms",
+          "instruction_fraction": 0.09985683097933234
+        },
+        {
+          "function": "GAGCore::SurfaceRaster::blit(SDL_Surface*, SDL_Surface*, SDL_Rect const&, SDL_Rect, unsigned char, bool, GAGCore::SurfaceRaster::BlitBlend)",
+          "instruction_fraction": 0.016847710403919917
+        },
+        {
+          "function": "TerrainVisual::Compositor::decorMaterial(SceneMap const&, int, int) const",
+          "instruction_fraction": 0.01417107324465762
+        },
+        {
+          "function": "TerrainVisual::Compositor::materialFor(SceneMap const&, TerrainType) const",
+          "instruction_fraction": 0.013150755971042271
+        },
+        {
+          "function": "SDL_GetRectIntersection_REAL",
+          "instruction_fraction": 0.011316994869126747
+        },
+        {
+          "function": "SceneMap::vertexTerrainAt(int, int) const",
+          "instruction_fraction": 0.010021492309939928
+        },
+        {
+          "function": "Game::drawMapArea(int, int, int, int, int, int, int, int, int, unsigned int, SceneMap const&, bool (SceneMap::*)(int, int) const, int, AreaType, MapRenderState const&, Utilities::BitArray const*)",
+          "instruction_fraction": 0.008831606638525257
+        },
+        {
+          "function": "ResourcePresentation::frame(unsigned int, int, int, unsigned int) const",
+          "instruction_fraction": 0.008546126128801684
+        },
+        {
+          "function": "SDL_BlitSurface_REAL",
+          "instruction_fraction": 0.008461947531322735
+        },
+        {
+          "function": "__memset_avx2_unaligned_erms",
+          "instruction_fraction": 0.008321532785916482
+        },
+        {
+          "function": "GAGCore::Sprite::checkBound(int)",
+          "instruction_fraction": 0.007993212031691753
+        },
+        {
+          "function": "Utilities::BitArray::get(unsigned long) const",
+          "instruction_fraction": 0.007630577900969488
+        },
+        {
+          "function": "Game::drawMapResources(int, int, int, int, int, int, int, unsigned int, SceneMap const&)",
+          "instruction_fraction": 0.007395604549733285
+        }
+      ]
+    },
+    {
+      "case": "static-warm",
+      "variant": "parallel4",
+      "repeats": 3,
+      "instructions_per_frame": {
+        "mean": 8260443.9,
+        "min": 8254626.5,
+        "max": 8268520.0,
+        "range_percent": 0.1683116734597201
+      },
+      "branches_per_frame": {
+        "mean": 653204.8,
+        "min": 652207.0,
+        "max": 654751.9,
+        "range_percent": 0.3901982039444585
+      },
+      "data_references_per_frame": {
+        "mean": 2881074.233333333,
+        "min": 2878606.0999999996,
+        "max": 2884430.8,
+        "range_percent": 0.20234446109177462
+      },
+      "owner_instruction_fraction": {
+        "mean": 0.998293688192188,
+        "min": 0.9981245152990756,
+        "max": 0.9985578027061551,
+        "range_percent": 0.0434101557909905
+      },
+      "graphics_worker_instruction_fraction": {
+        "mean": 0.0,
+        "min": 0.0,
+        "max": 0.0,
+        "range_percent": null
+      },
+      "top_functions": [
+        {
+          "function": "Blit8888to8888PixelAlphaSwizzleAVX2",
+          "instruction_fraction": 0.5662998451524192
+        },
+        {
+          "function": "SDL_BlitCopy",
+          "instruction_fraction": 0.1021128709973712
+        },
+        {
+          "function": "__memcpy_avx_unaligned_erms",
+          "instruction_fraction": 0.09986535540520453
+        },
+        {
+          "function": "GAGCore::SurfaceRaster::blit(SDL_Surface*, SDL_Surface*, SDL_Rect const&, SDL_Rect, unsigned char, bool, GAGCore::SurfaceRaster::BlitBlend)",
+          "instruction_fraction": 0.016843773375293157
+        },
+        {
+          "function": "TerrainVisual::Compositor::decorMaterial(SceneMap const&, int, int) const",
+          "instruction_fraction": 0.01416776170144501
+        },
+        {
+          "function": "TerrainVisual::Compositor::materialFor(SceneMap const&, TerrainType) const",
+          "instruction_fraction": 0.01314768285894097
+        },
+        {
+          "function": "SDL_GetRectIntersection_REAL",
+          "instruction_fraction": 0.011314350276377914
+        },
+        {
+          "function": "SceneMap::vertexTerrainAt(int, int) const",
+          "instruction_fraction": 0.010019150454509062
+        },
+        {
+          "function": "Game::drawMapArea(int, int, int, int, int, int, int, int, int, unsigned int, SceneMap const&, bool (SceneMap::*)(int, int) const, int, AreaType, MapRenderState const&, Utilities::BitArray const*)",
+          "instruction_fraction": 0.008829542839509097
+        },
+        {
+          "function": "ResourcePresentation::frame(unsigned int, int, int, unsigned int) const",
+          "instruction_fraction": 0.008544129041814175
+        },
+        {
+          "function": "SDL_BlitSurface_REAL",
+          "instruction_fraction": 0.008459970115467985
+        },
+        {
+          "function": "__memset_avx2_unaligned_erms",
+          "instruction_fraction": 0.008319358107880651
+        },
+        {
+          "function": "GAGCore::Sprite::checkBound(int)",
+          "instruction_fraction": 0.007991344151497111
+        },
+        {
+          "function": "Utilities::BitArray::get(unsigned long) const",
+          "instruction_fraction": 0.007628794762316544
+        },
+        {
+          "function": "Game::drawMapResources(int, int, int, int, int, int, int, unsigned int, SceneMap const&)",
+          "instruction_fraction": 0.007393876320429336
+        }
+      ]
+    },
+    {
+      "case": "static-warm",
+      "variant": "serial",
+      "repeats": 3,
+      "instructions_per_frame": {
+        "mean": 8260189.0,
+        "min": 8255005.2,
+        "max": 8270033.1,
+        "range_percent": 0.1820459180328582
+      },
+      "branches_per_frame": {
+        "mean": 653159.9333333333,
+        "min": 652257.2999999999,
+        "max": 654885.7000000001,
+        "range_percent": 0.40296980961349593
+      },
+      "data_references_per_frame": {
+        "mean": 2880987.6,
+        "min": 2878824.9000000004,
+        "max": 2885082.3,
+        "range_percent": 0.21735952054602325
+      },
+      "owner_instruction_fraction": {
+        "mean": 0.9982871477320296,
+        "min": 0.9979797541560022,
+        "max": 0.998461079103863,
+        "range_percent": 0.04822993110393803
+      },
+      "graphics_worker_instruction_fraction": {
+        "mean": 0.0,
+        "min": 0.0,
+        "max": 0.0,
+        "range_percent": null
+      },
+      "top_functions": [
+        {
+          "function": "Blit8888to8888PixelAlphaSwizzleAVX2",
+          "instruction_fraction": 0.5665179956518985
+        },
+        {
+          "function": "SDL_BlitCopy",
+          "instruction_fraction": 0.10215220700284962
+        },
+        {
+          "function": "__memcpy_avx_unaligned_erms",
+          "instruction_fraction": 0.09987286258765773
+        },
+        {
+          "function": "GAGCore::SurfaceRaster::blit(SDL_Surface*, SDL_Surface*, SDL_Rect const&, SDL_Rect, unsigned char, bool, GAGCore::SurfaceRaster::BlitBlend)",
+          "instruction_fraction": 0.01685026194774535
+        },
+        {
+          "function": "TerrainVisual::Compositor::decorMaterial(SceneMap const&, int, int) const",
+          "instruction_fraction": 0.01417321941844446
+        },
+        {
+          "function": "TerrainVisual::Compositor::materialFor(SceneMap const&, TerrainType) const",
+          "instruction_fraction": 0.013152747620316459
+        },
+        {
+          "function": "SDL_GetRectIntersection_REAL",
+          "instruction_fraction": 0.011318708799844245
+        },
+        {
+          "function": "SceneMap::vertexTerrainAt(int, int) const",
+          "instruction_fraction": 0.010023010040017903
+        },
+        {
+          "function": "Game::drawMapArea(int, int, int, int, int, int, int, int, int, unsigned int, SceneMap const&, bool (SceneMap::*)(int, int) const, int, AreaType, MapRenderState const&, Utilities::BitArray const*)",
+          "instruction_fraction": 0.008832944163378601
+        },
+        {
+          "function": "ResourcePresentation::frame(unsigned int, int, int, unsigned int) const",
+          "instruction_fraction": 0.008547420418342075
+        },
+        {
+          "function": "SDL_BlitSurface_REAL",
+          "instruction_fraction": 0.008463229072223964
+        },
+        {
+          "function": "__memset_avx2_unaligned_erms",
+          "instruction_fraction": 0.008320491427431203
+        },
+        {
+          "function": "GAGCore::Sprite::checkBound(int)",
+          "instruction_fraction": 0.007994422583767724
+        },
+        {
+          "function": "Utilities::BitArray::get(unsigned long) const",
+          "instruction_fraction": 0.007631733533008556
+        },
+        {
+          "function": "Game::drawMapResources(int, int, int, int, int, int, int, unsigned int, SceneMap const&)",
+          "instruction_fraction": 0.007396724595642896
+        }
+      ]
+    },
+    {
+      "case": "streamed-pages",
+      "variant": "immediate",
+      "repeats": 3,
+      "instructions_per_frame": {
+        "mean": 297107095.40000004,
+        "min": 297097459.6,
+        "max": 297118985.6,
+        "range_percent": 0.0072454338818639386
+      },
+      "branches_per_frame": {
+        "mean": 31311572.733333334,
+        "min": 31309014.2,
+        "max": 31313602.6,
+        "range_percent": 0.014655204314939496
+      },
+      "data_references_per_frame": {
+        "mean": 82376869.4,
+        "min": 82374074.2,
+        "max": 82380684.4,
+        "range_percent": 0.00802461219042705
+      },
+      "owner_instruction_fraction": {
+        "mean": 0.9999580871634471,
+        "min": 0.9999544537882504,
+        "max": 0.9999603173988231,
+        "range_percent": 0.0005863877650114091
+      },
+      "graphics_worker_instruction_fraction": {
+        "mean": 0.0,
+        "min": 0.0,
+        "max": 0.0,
+        "range_percent": null
+      },
+      "top_functions": [
+        {
+          "function": "TerrainVisual::PreparedCoverage::WarpLayer::at(int, int) const",
+          "instruction_fraction": 0.29831708463386675
+        },
+        {
+          "function": "TerrainVisual::Compositor::composePixels(TerrainVisual::Catalog const&, TerrainVisual::Recipe const&, SDL_Surface*, int, int, int, std::span<TerrainVisual::Compositor::PreparedMaterialView const, 18446744073709551615ul>, TerrainVisual::Compositor::CellMask const*)",
+          "instruction_fraction": 0.2086585428346086
+        },
+        {
+          "function": "TerrainVisual::PreparedCoverage::at(int, int) const",
+          "instruction_fraction": 0.1613026178834415
+        },
+        {
+          "function": "TerrainVisual::Compositor::buildMask(TerrainVisual::Catalog const&, TerrainVisual::Recipe const&, int, TerrainVisual::Compositor::CellMask&)",
+          "instruction_fraction": 0.0966181401841916
+        },
+        {
+          "function": "TerrainVisual::PreparedCoverage::patchCoverage(int, int, std::array<int, 2ul> const*) const",
+          "instruction_fraction": 0.06458644926090779
+        },
+        {
+          "function": "TerrainVisual::PreparedCoverage::prepareBorders(TerrainVisual::Catalog const&, TerrainVisual::Recipe const&)",
+          "instruction_fraction": 0.03563248576495065
+        },
+        {
+          "function": "bool (anonymous namespace)::allAlpha<255u>(SDL_Surface const&, SDL_Rect) [clone .isra.0]",
+          "instruction_fraction": 0.02418535658189115
+        },
+        {
+          "function": "__memset_avx2_unaligned_erms",
+          "instruction_fraction": 0.022205180781020722
+        },
+        {
+          "function": "Blit8888to8888PixelAlphaSwizzleAVX2",
+          "instruction_fraction": 0.01574099289269049
+        },
+        {
+          "function": "TerrainVisual::PreparedCoverage::PebbleField::at(int, int) const",
+          "instruction_fraction": 0.013005631233610185
+        },
+        {
+          "function": "TerrainVisual::Catalog::profileFor(unsigned short, unsigned short) const",
+          "instruction_fraction": 0.010013360612390776
+        },
+        {
+          "function": "TerrainVisual::PreparedCoverage::pebbleField(TerrainVisual::Catalog const&, TerrainVisual::Recipe const&, unsigned short) [clone .part.0]",
+          "instruction_fraction": 0.00974570433519789
+        },
+        {
+          "function": "TerrainVisual::hash(unsigned int, unsigned int, unsigned int)",
+          "instruction_fraction": 0.008713399984925351
+        },
+        {
+          "function": "TerrainVisual::PreparedCoverage::PreparedCoverage(TerrainVisual::Catalog const&, TerrainVisual::Recipe const&)",
+          "instruction_fraction": 0.004450728060011995
+        },
+        {
+          "function": "TerrainVisual::PreparedCoverage::Curve::wave(int) const",
+          "instruction_fraction": 0.0034107057036579253
+        }
+      ]
+    },
+    {
+      "case": "streamed-pages",
+      "variant": "parallel1",
+      "repeats": 3,
+      "instructions_per_frame": {
+        "mean": 300961543.6666667,
+        "min": 300949905.6,
+        "max": 300970548.8,
+        "range_percent": 0.0068593475577971574
+      },
+      "branches_per_frame": {
+        "mean": 32341315.933333334,
+        "min": 32339084.6,
+        "max": 32342436.799999997,
+        "range_percent": 0.010365785059973653
+      },
+      "data_references_per_frame": {
+        "mean": 84468140.39999999,
+        "min": 84463799.0,
+        "max": 84472434.6,
+        "range_percent": 0.010224025087945954
+      },
+      "owner_instruction_fraction": {
+        "mean": 0.06521642082462716,
+        "min": 0.06520668642911416,
+        "max": 0.06522690116070114,
+        "range_percent": 0.03100101031656699
+      },
+      "graphics_worker_instruction_fraction": {
+        "mean": 0.9342527746259368,
+        "min": 0.9342366816988706,
+        "max": 0.9342791440304077,
+        "range_percent": 0.004545136405886829
+      },
+      "top_functions": [
+        {
+          "function": "TerrainVisual::PreparedCoverage::WarpLayer::at(int, int) const",
+          "instruction_fraction": 0.29447814197559785
+        },
+        {
+          "function": "TerrainVisual::Compositor::composePixels(TerrainVisual::Catalog const&, TerrainVisual::Recipe const&, SDL_Surface*, int, int, int, std::span<TerrainVisual::Compositor::PreparedMaterialView const, 18446744073709551615ul>, TerrainVisual::Compositor::CellMask const*)",
+          "instruction_fraction": 0.20596998359860783
+        },
+        {
+          "function": "TerrainVisual::PreparedCoverage::at(int, int) const",
+          "instruction_fraction": 0.1592268685127905
+        },
+        {
+          "function": "TerrainVisual::Compositor::buildMask(TerrainVisual::Catalog const&, TerrainVisual::Recipe const&, int, TerrainVisual::Compositor::CellMask&)",
+          "instruction_fraction": 0.09683508607803024
+        },
+        {
+          "function": "TerrainVisual::PreparedCoverage::patchCoverage(int, int, std::array<int, 2ul> const*) const",
+          "instruction_fraction": 0.06375530787482818
+        },
+        {
+          "function": "TerrainVisual::PreparedCoverage::prepareBorders(TerrainVisual::Catalog const&, TerrainVisual::Recipe const&)",
+          "instruction_fraction": 0.0351739432386615
+        },
+        {
+          "function": "bool (anonymous namespace)::allAlpha<255u>(SDL_Surface const&, SDL_Rect) [clone .isra.0]",
+          "instruction_fraction": 0.02387412332751144
+        },
+        {
+          "function": "__memset_avx2_unaligned_erms",
+          "instruction_fraction": 0.02191961115897729
+        },
+        {
+          "function": "Blit8888to8888PixelAlphaSwizzleAVX2",
+          "instruction_fraction": 0.015538427326680676
+        },
+        {
+          "function": "TerrainVisual::PreparedCoverage::PebbleField::at(int, int) const",
+          "instruction_fraction": 0.012838266120741446
+        },
+        {
+          "function": "TerrainVisual::Catalog::profileFor(unsigned short, unsigned short) const",
+          "instruction_fraction": 0.00988450202806023
+        },
+        {
+          "function": "TerrainVisual::PreparedCoverage::pebbleField(TerrainVisual::Catalog const&, TerrainVisual::Recipe const&, unsigned short) [clone .part.0]",
+          "instruction_fraction": 0.0096202901298627
+        },
+        {
+          "function": "TerrainVisual::hash(unsigned int, unsigned int, unsigned int)",
+          "instruction_fraction": 0.008601270158563767
+        },
+        {
+          "function": "__memcpy_avx_unaligned_erms",
+          "instruction_fraction": 0.0048243557576953195
+        },
+        {
+          "function": "TerrainVisual::PreparedCoverage::PreparedCoverage(TerrainVisual::Catalog const&, TerrainVisual::Recipe const&)",
+          "instruction_fraction": 0.00439345313111912
+        }
+      ]
+    },
+    {
+      "case": "streamed-pages",
+      "variant": "parallel2",
+      "repeats": 3,
+      "instructions_per_frame": {
+        "mean": 300969537.4666667,
+        "min": 300956128.8,
+        "max": 300992708.6,
+        "range_percent": 0.012154529015862003
+      },
+      "branches_per_frame": {
+        "mean": 32344701.133333333,
+        "min": 32340441.0,
+        "max": 32351554.4,
+        "range_percent": 0.03436378619574576
+      },
+      "data_references_per_frame": {
+        "mean": 84468579.2,
+        "min": 84466160.8,
+        "max": 84473328.4,
+        "range_percent": 0.008485765106547305
+      },
+      "owner_instruction_fraction": {
+        "mean": 0.06523397208108059,
+        "min": 0.06520563686625563,
+        "max": 0.0652692441998909,
+        "range_percent": 0.09754882659260833
+      },
+      "graphics_worker_instruction_fraction": {
+        "mean": 0.9342409447880059,
+        "min": 0.9341967986795279,
+        "max": 0.9342708533058944,
+        "range_percent": 0.007927090573556228
+      },
+      "top_functions": [
+        {
+          "function": "TerrainVisual::PreparedCoverage::WarpLayer::at(int, int) const",
+          "instruction_fraction": 0.2944564617935067
+        },
+        {
+          "function": "TerrainVisual::Compositor::composePixels(TerrainVisual::Catalog const&, TerrainVisual::Recipe const&, SDL_Surface*, int, int, int, std::span<TerrainVisual::Compositor::PreparedMaterialView const, 18446744073709551615ul>, TerrainVisual::Compositor::CellMask const*)",
+          "instruction_fraction": 0.20595481959791234
+        },
+        {
+          "function": "TerrainVisual::PreparedCoverage::at(int, int) const",
+          "instruction_fraction": 0.15921514585154306
+        },
+        {
+          "function": "TerrainVisual::Compositor::buildMask(TerrainVisual::Catalog const&, TerrainVisual::Recipe const&, int, TerrainVisual::Compositor::CellMask&)",
+          "instruction_fraction": 0.09682795684838726
+        },
+        {
+          "function": "TerrainVisual::PreparedCoverage::patchCoverage(int, int, std::array<int, 2ul> const*) const",
+          "instruction_fraction": 0.06375061405723367
+        },
+        {
+          "function": "TerrainVisual::PreparedCoverage::prepareBorders(TerrainVisual::Catalog const&, TerrainVisual::Recipe const&)",
+          "instruction_fraction": 0.035171353649196005
+        },
+        {
+          "function": "bool (anonymous namespace)::allAlpha<255u>(SDL_Surface const&, SDL_Rect) [clone .isra.0]",
+          "instruction_fraction": 0.02387236565769753
+        },
+        {
+          "function": "__memset_avx2_unaligned_erms",
+          "instruction_fraction": 0.021917997385003763
+        },
+        {
+          "function": "Blit8888to8888PixelAlphaSwizzleAVX2",
+          "instruction_fraction": 0.01553728335065722
+        },
+        {
+          "function": "TerrainVisual::PreparedCoverage::PebbleField::at(int, int) const",
+          "instruction_fraction": 0.012837320937016214
+        },
+        {
+          "function": "TerrainVisual::Catalog::profileFor(unsigned short, unsigned short) const",
+          "instruction_fraction": 0.00988377430748168
+        },
+        {
+          "function": "TerrainVisual::PreparedCoverage::pebbleField(TerrainVisual::Catalog const&, TerrainVisual::Recipe const&, unsigned short) [clone .part.0]",
+          "instruction_fraction": 0.009619581861193298
+        },
+        {
+          "function": "TerrainVisual::hash(unsigned int, unsigned int, unsigned int)",
+          "instruction_fraction": 0.008600636912571376
+        },
+        {
+          "function": "__memcpy_avx_unaligned_erms",
+          "instruction_fraction": 0.004824451086387546
+        },
+        {
+          "function": "TerrainVisual::PreparedCoverage::PreparedCoverage(TerrainVisual::Catalog const&, TerrainVisual::Recipe const&)",
+          "instruction_fraction": 0.004393129674636909
+        }
+      ]
+    },
+    {
+      "case": "streamed-pages",
+      "variant": "parallel4",
+      "repeats": 3,
+      "instructions_per_frame": {
+        "mean": 300975971.4666667,
+        "min": 300966412.0,
+        "max": 300986929.6,
+        "range_percent": 0.006817239127676622
+      },
+      "branches_per_frame": {
+        "mean": 32343310.933333334,
+        "min": 32341575.599999998,
+        "max": 32345350.4,
+        "range_percent": 0.011671663887646844
+      },
+      "data_references_per_frame": {
+        "mean": 84475031.26666667,
+        "min": 84471225.2,
+        "max": 84480691.0,
+        "range_percent": 0.011205946140346867
+      },
+      "owner_instruction_fraction": {
+        "mean": 0.06524419923231296,
+        "min": 0.06521594841619735,
+        "max": 0.06527899143697567,
+        "range_percent": 0.0966681039061168
+      },
+      "graphics_worker_instruction_fraction": {
+        "mean": 0.9342133697452876,
+        "min": 0.9341698205090432,
+        "max": 0.9342391735061785,
+        "range_percent": 0.007424024584468114
+      },
+      "top_functions": [
+        {
+          "function": "TerrainVisual::PreparedCoverage::WarpLayer::at(int, int) const",
+          "instruction_fraction": 0.29446211540741934
+        },
+        {
+          "function": "TerrainVisual::Compositor::composePixels(TerrainVisual::Catalog const&, TerrainVisual::Recipe const&, SDL_Surface*, int, int, int, std::span<TerrainVisual::Compositor::PreparedMaterialView const, 18446744073709551615ul>, TerrainVisual::Compositor::CellMask const*)",
+          "instruction_fraction": 0.20595877396531306
+        },
+        {
+          "function": "TerrainVisual::PreparedCoverage::at(int, int) const",
+          "instruction_fraction": 0.1592182028092957
+        },
+        {
+          "function": "TerrainVisual::Compositor::buildMask(TerrainVisual::Catalog const&, TerrainVisual::Recipe const&, int, TerrainVisual::Compositor::CellMask&)",
+          "instruction_fraction": 0.09682981596154998
+        },
+        {
+          "function": "TerrainVisual::PreparedCoverage::patchCoverage(int, int, std::array<int, 2ul> const*) const",
+          "instruction_fraction": 0.06375183807981541
+        },
+        {
+          "function": "TerrainVisual::PreparedCoverage::prepareBorders(TerrainVisual::Catalog const&, TerrainVisual::Recipe const&)",
+          "instruction_fraction": 0.035172028945139946
+        },
+        {
+          "function": "bool (anonymous namespace)::allAlpha<255u>(SDL_Surface const&, SDL_Rect) [clone .isra.0]",
+          "instruction_fraction": 0.02387282401115932
+        },
+        {
+          "function": "__memset_avx2_unaligned_erms",
+          "instruction_fraction": 0.02191841821426388
+        },
+        {
+          "function": "Blit8888to8888PixelAlphaSwizzleAVX2",
+          "instruction_fraction": 0.015537581669127734
+        },
+        {
+          "function": "TerrainVisual::PreparedCoverage::PebbleField::at(int, int) const",
+          "instruction_fraction": 0.012837567415751332
+        },
+        {
+          "function": "TerrainVisual::Catalog::profileFor(unsigned short, unsigned short) const",
+          "instruction_fraction": 0.00988396407762153
+        },
+        {
+          "function": "TerrainVisual::PreparedCoverage::pebbleField(TerrainVisual::Catalog const&, TerrainVisual::Recipe const&, unsigned short) [clone .part.0]",
+          "instruction_fraction": 0.009619766558793456
+        },
+        {
+          "function": "TerrainVisual::hash(unsigned int, unsigned int, unsigned int)",
+          "instruction_fraction": 0.008600802046256031
+        },
+        {
+          "function": "__memcpy_avx_unaligned_erms",
+          "instruction_fraction": 0.004824250680684707
+        },
+        {
+          "function": "TerrainVisual::PreparedCoverage::PreparedCoverage(TerrainVisual::Catalog const&, TerrainVisual::Recipe const&)",
+          "instruction_fraction": 0.00439321402347034
+        }
+      ]
+    },
+    {
+      "case": "streamed-pages",
+      "variant": "serial",
+      "repeats": 3,
+      "instructions_per_frame": {
+        "mean": 300623883.93333334,
+        "min": 300619065.6,
+        "max": 300629844.0,
+        "range_percent": 0.003585401337891092
+      },
+      "branches_per_frame": {
+        "mean": 32295424.666666668,
+        "min": 32293383.599999998,
+        "max": 32298010.8,
+        "range_percent": 0.01432863170152121
+      },
+      "data_references_per_frame": {
+        "mean": 84331019.73333333,
+        "min": 84330601.6,
+        "max": 84331506.2,
+        "range_percent": 0.001072682967806493
+      },
+      "owner_instruction_fraction": {
+        "mean": 0.9999580474905259,
+        "min": 0.9999553965880895,
+        "max": 0.99996174094954,
+        "range_percent": 0.0006344644443379011
+      },
+      "graphics_worker_instruction_fraction": {
+        "mean": 0.0,
+        "min": 0.0,
+        "max": 0.0,
+        "range_percent": null
+      },
+      "top_functions": [
+        {
+          "function": "TerrainVisual::PreparedCoverage::WarpLayer::at(int, int) const",
+          "instruction_fraction": 0.294811875031276
+        },
+        {
+          "function": "TerrainVisual::Compositor::composePixels(TerrainVisual::Catalog const&, TerrainVisual::Recipe const&, SDL_Surface*, int, int, int, std::span<TerrainVisual::Compositor::PreparedMaterialView const, 18446744073709551615ul>, TerrainVisual::Compositor::CellMask const*)",
+          "instruction_fraction": 0.2062034100646375
+        },
+        {
+          "function": "TerrainVisual::PreparedCoverage::at(int, int) const",
+          "instruction_fraction": 0.15940732085135234
+        },
+        {
+          "function": "TerrainVisual::Compositor::buildMask(TerrainVisual::Catalog const&, TerrainVisual::Recipe const&, int, TerrainVisual::Compositor::CellMask&)",
+          "instruction_fraction": 0.09694482960247952
+        },
+        {
+          "function": "TerrainVisual::PreparedCoverage::patchCoverage(int, int, std::array<int, 2ul> const*) const",
+          "instruction_fraction": 0.06382756197684751
+        },
+        {
+          "function": "TerrainVisual::PreparedCoverage::prepareBorders(TerrainVisual::Catalog const&, TerrainVisual::Recipe const&)",
+          "instruction_fraction": 0.0352138059852767
+        },
+        {
+          "function": "bool (anonymous namespace)::allAlpha<255u>(SDL_Surface const&, SDL_Rect) [clone .isra.0]",
+          "instruction_fraction": 0.02390117995071707
+        },
+        {
+          "function": "__memset_avx2_unaligned_erms",
+          "instruction_fraction": 0.02194445272705527
+        },
+        {
+          "function": "Blit8888to8888PixelAlphaSwizzleAVX2",
+          "instruction_fraction": 0.015556037077942269
+        },
+        {
+          "function": "TerrainVisual::PreparedCoverage::PebbleField::at(int, int) const",
+          "instruction_fraction": 0.012852815770346472
+        },
+        {
+          "function": "TerrainVisual::Catalog::profileFor(unsigned short, unsigned short) const",
+          "instruction_fraction": 0.009895704167015434
+        },
+        {
+          "function": "TerrainVisual::PreparedCoverage::pebbleField(TerrainVisual::Catalog const&, TerrainVisual::Recipe const&, unsigned short) [clone .part.0]",
+          "instruction_fraction": 0.009631192836596756
+        },
+        {
+          "function": "TerrainVisual::hash(unsigned int, unsigned int, unsigned int)",
+          "instruction_fraction": 0.008611018006582207
+        },
+        {
+          "function": "__memcpy_avx_unaligned_erms",
+          "instruction_fraction": 0.004829634279423037
+        },
+        {
+          "function": "TerrainVisual::PreparedCoverage::PreparedCoverage(TerrainVisual::Catalog const&, TerrainVisual::Recipe const&)",
+          "instruction_fraction": 0.004398432246134552
+        }
+      ]
+    }
+  ],
+  "native": [
+    {
+      "case": "animated-warm",
+      "variant": "immediate",
+      "repeats": 3,
+      "instructions:u": {
+        "mean": 33399715.7,
+        "min": 33398099.4,
+        "max": 33400832.7,
+        "range_percent": 0.008183998637956158
+      },
+      "instructions:k": {
+        "mean": 421693.4666666667,
+        "min": 394876.4,
+        "max": 440568.8,
+        "range_percent": 11.57131699944589
+      },
+      "branches:u": {
+        "mean": 3912750.033333333,
+        "min": 3912349.1,
+        "max": 3912975.3,
+        "range_percent": 0.016005729141088665
+      },
+      "branches:k": {
+        "mean": 89222.73333333334,
+        "min": 83841.8,
+        "max": 92931.2,
+        "range_percent": 10.841131750511067
+      }
+    },
+    {
+      "case": "animated-warm",
+      "variant": "parallel1",
+      "repeats": 3,
+      "instructions:u": {
+        "mean": 33612068.0,
+        "min": 33600654.3,
+        "max": 33618643.9,
+        "range_percent": 0.05353943360562052
+      },
+      "instructions:k": {
+        "mean": 1263779.5999999999,
+        "min": 1105119.9,
+        "max": 1577105.0,
+        "range_percent": 42.70894949950681
+      },
+      "branches:u": {
+        "mean": 3963050.4,
+        "min": 3959715.4,
+        "max": 3964925.3,
+        "range_percent": 0.13157258726219645
+      },
+      "branches:k": {
+        "mean": 264585.5,
+        "min": 234023.2,
+        "max": 324550.1,
+        "range_percent": 38.68287417657734
+      }
+    },
+    {
+      "case": "animated-warm",
+      "variant": "parallel2",
+      "repeats": 3,
+      "instructions:u": {
+        "mean": 33608019.2,
+        "min": 33607148.5,
+        "max": 33609184.1,
+        "range_percent": 0.006057044679064205
+      },
+      "instructions:k": {
+        "mean": 1076599.2666666666,
+        "min": 1018829.4,
+        "max": 1148710.1,
+        "range_percent": 12.748032202447245
+      },
+      "branches:u": {
+        "mean": 3961916.1333333333,
+        "min": 3961626.7,
+        "max": 3962328.6,
+        "range_percent": 0.017717469442546374
+      },
+      "branches:k": {
+        "mean": 227293.30000000002,
+        "min": 216332.6,
+        "max": 240580.6,
+        "range_percent": 11.2086666549563
+      }
+    },
+    {
+      "case": "animated-warm",
+      "variant": "parallel4",
+      "repeats": 3,
+      "instructions:u": {
+        "mean": 33606407.1,
+        "min": 33606031.6,
+        "max": 33606691.9,
+        "range_percent": 0.0019648258617888104
+      },
+      "instructions:k": {
+        "mean": 1067198.1,
+        "min": 1028577.8,
+        "max": 1114796.6,
+        "range_percent": 8.382331409447108
+      },
+      "branches:u": {
+        "mean": 3961520.3,
+        "min": 3961211.3,
+        "max": 3961684.0,
+        "range_percent": 0.011933218508186627
+      },
+      "branches:k": {
+        "mean": 226266.1,
+        "min": 217190.7,
+        "max": 236408.4,
+        "range_percent": 8.848307040771065
+      }
+    },
+    {
+      "case": "animated-warm",
+      "variant": "serial",
+      "repeats": 3,
+      "instructions:u": {
+        "mean": 33529342.633333333,
+        "min": 33528976.7,
+        "max": 33529611.0,
+        "range_percent": 0.00189179647704929
+      },
+      "instructions:k": {
+        "mean": 448807.5333333333,
+        "min": 416014.5,
+        "max": 477415.8,
+        "range_percent": 14.759413433906744
+      },
+      "branches:u": {
+        "mean": 3939912.2333333334,
+        "min": 3939706.5,
+        "max": 3940047.5,
+        "range_percent": 0.008655467101426062
+      },
+      "branches:k": {
+        "mean": 94469.03333333334,
+        "min": 87746.0,
+        "max": 100709.5,
+        "range_percent": 14.77389282702346
+      }
+    },
+    {
+      "case": "gui-half-pan",
+      "variant": "immediate",
+      "repeats": 3,
+      "instructions:u": {
+        "mean": 181545999.29999998,
+        "min": 181492506.0,
+        "max": 181589352.7,
+        "range_percent": 0.053361266607887536
+      },
+      "instructions:k": {
+        "mean": 1032132.2666666666,
+        "min": 800245.1,
+        "max": 1311151.7,
+        "range_percent": 63.84376486653902
+      },
+      "branches:u": {
+        "mean": 14576668.466666667,
+        "min": 14564223.1,
+        "max": 14586195.6,
+        "range_percent": 0.15086626900133737
+      },
+      "branches:k": {
+        "mean": 213849.36666666667,
+        "min": 167601.4,
+        "max": 269321.3,
+        "range_percent": 60.69155746909036
+      }
+    },
+    {
+      "case": "gui-half-pan",
+      "variant": "parallel1",
+      "repeats": 3,
+      "instructions:u": {
+        "mean": 182081873.53333333,
+        "min": 182044962.5,
+        "max": 182125240.3,
+        "range_percent": 0.04409778710576795
+      },
+      "instructions:k": {
+        "mean": 1336284.9,
+        "min": 1039661.1,
+        "max": 1604997.7,
+        "range_percent": 54.37700804617967
+      },
+      "branches:u": {
+        "mean": 14643647.433333334,
+        "min": 14635591.5,
+        "max": 14653080.0,
+        "range_percent": 0.1194929497724706
+      },
+      "branches:k": {
+        "mean": 277603.3,
+        "min": 218723.2,
+        "max": 330316.7,
+        "range_percent": 51.020422159149106
+      }
+    },
+    {
+      "case": "gui-half-pan",
+      "variant": "parallel2",
+      "repeats": 3,
+      "instructions:u": {
+        "mean": 182135559.86666667,
+        "min": 182018195.9,
+        "max": 182280878.9,
+        "range_percent": 0.14431689024339
+      },
+      "instructions:k": {
+        "mean": 1287921.0666666667,
+        "min": 1168606.8,
+        "max": 1367918.6,
+        "range_percent": 17.055505752662057
+      },
+      "branches:u": {
+        "mean": 14655847.0,
+        "min": 14628671.6,
+        "max": 14690157.4,
+        "range_percent": 0.4203102077976917
+      },
+      "branches:k": {
+        "mean": 266068.8,
+        "min": 243119.9,
+        "max": 280069.9,
+        "range_percent": 15.198262256606743
+      }
+    },
+    {
+      "case": "gui-half-pan",
+      "variant": "parallel4",
+      "repeats": 3,
+      "instructions:u": {
+        "mean": 182049291.36666667,
+        "min": 182022927.9,
+        "max": 182100392.7,
+        "range_percent": 0.04255771560961463
+      },
+      "instructions:k": {
+        "mean": 1382129.7333333334,
+        "min": 1226997.3,
+        "max": 1635390.9,
+        "range_percent": 33.28398522148337
+      },
+      "branches:u": {
+        "mean": 14635275.6,
+        "min": 14628849.8,
+        "max": 14647182.2,
+        "range_percent": 0.12531675593523417
+      },
+      "branches:k": {
+        "mean": 284669.1,
+        "min": 253850.6,
+        "max": 335003.6,
+        "range_percent": 31.9688036979231
+      }
+    },
+    {
+      "case": "gui-half-pan",
+      "variant": "serial",
+      "repeats": 3,
+      "instructions:u": {
+        "mean": 181981496.36666667,
+        "min": 181912219.8,
+        "max": 182044216.4,
+        "range_percent": 0.0725606010113733
+      },
+      "instructions:k": {
+        "mean": 892764.8,
+        "min": 758246.2,
+        "max": 1148040.8,
+        "range_percent": 51.40739248017334
+      },
+      "branches:u": {
+        "mean": 14625354.333333334,
+        "min": 14609051.4,
+        "max": 14640269.5,
+        "range_percent": 0.21369012364484963
+      },
+      "branches:k": {
+        "mean": 186162.56666666665,
+        "min": 159213.3,
+        "max": 237029.1,
+        "range_percent": 48.87518819093633
+      }
+    },
+    {
+      "case": "static-warm",
+      "variant": "immediate",
+      "repeats": 3,
+      "instructions:u": {
+        "mean": 7772470.366666666,
+        "min": 7772253.7,
+        "max": 7772877.1,
+        "range_percent": 0.008020839566769133
+      },
+      "instructions:k": {
+        "mean": 353255.6333333333,
+        "min": 332454.6,
+        "max": 387569.3,
+        "range_percent": 16.578113222076052
+      },
+      "branches:u": {
+        "mean": 630071.5333333333,
+        "min": 630003.8,
+        "max": 630192.3,
+        "range_percent": 0.02992045444805136
+      },
+      "branches:k": {
+        "mean": 75146.46666666667,
+        "min": 71042.6,
+        "max": 82113.2,
+        "range_percent": 15.583044539473478
+      }
+    },
+    {
+      "case": "static-warm",
+      "variant": "parallel1",
+      "repeats": 3,
+      "instructions:u": {
+        "mean": 7772589.633333333,
+        "min": 7771682.0,
+        "max": 7774087.6,
+        "range_percent": 0.030953402365141436
+      },
+      "instructions:k": {
+        "mean": 358741.6666666667,
+        "min": 330789.5,
+        "max": 404492.0,
+        "range_percent": 22.280785816962158
+      },
+      "branches:u": {
+        "mean": 630165.5666666667,
+        "min": 629981.8,
+        "max": 630450.7,
+        "range_percent": 0.07443072164941
+      },
+      "branches:k": {
+        "mean": 76047.6,
+        "min": 70703.7,
+        "max": 84500.8,
+        "range_percent": 19.513971687478882
+      }
+    },
+    {
+      "case": "static-warm",
+      "variant": "parallel2",
+      "repeats": 3,
+      "instructions:u": {
+        "mean": 7772784.766666667,
+        "min": 7772232.1,
+        "max": 7773395.8,
+        "range_percent": 0.0149725327940331
+      },
+      "instructions:k": {
+        "mean": 370410.6666666667,
+        "min": 330382.0,
+        "max": 422380.0,
+        "range_percent": 27.84594802380276
+      },
+      "branches:u": {
+        "mean": 630157.9,
+        "min": 630024.2,
+        "max": 630336.3,
+        "range_percent": 0.0495377796599028
+      },
+      "branches:k": {
+        "mean": 77864.73333333334,
+        "min": 70341.5,
+        "max": 88270.9,
+        "range_percent": 25.489078282379516
+      }
+    },
+    {
+      "case": "static-warm",
+      "variant": "parallel4",
+      "repeats": 3,
+      "instructions:u": {
+        "mean": 7772697.2,
+        "min": 7772109.6,
+        "max": 7773481.2,
+        "range_percent": 0.017647718194813145
+      },
+      "instructions:k": {
+        "mean": 348825.93333333335,
+        "min": 340224.0,
+        "max": 354052.4,
+        "range_percent": 4.064498683220474
+      },
+      "branches:u": {
+        "mean": 630166.1666666666,
+        "min": 630064.2,
+        "max": 630362.6,
+        "range_percent": 0.04736025312976899
+      },
+      "branches:k": {
+        "mean": 74086.16666666667,
+        "min": 72497.8,
+        "max": 75184.5,
+        "range_percent": 3.7059055585134892
+      }
+    },
+    {
+      "case": "static-warm",
+      "variant": "serial",
+      "repeats": 3,
+      "instructions:u": {
+        "mean": 7773121.833333333,
+        "min": 7772132.6,
+        "max": 7774575.2,
+        "range_percent": 0.031427667613392885
+      },
+      "instructions:k": {
+        "mean": 384330.8,
+        "min": 324951.2,
+        "max": 476932.9,
+        "range_percent": 46.77062278889876
+      },
+      "branches:u": {
+        "mean": 630216.6333333333,
+        "min": 630025.6,
+        "max": 630506.9,
+        "range_percent": 0.0763937211440302
+      },
+      "branches:k": {
+        "mean": 81063.2,
+        "min": 69190.8,
+        "max": 99473.9,
+        "range_percent": 43.76752400608173
+      }
+    },
+    {
+      "case": "streamed-pages",
+      "variant": "immediate",
+      "repeats": 3,
+      "instructions:u": {
+        "mean": 289632146.26666665,
+        "min": 289630713.6,
+        "max": 289634972.2,
+        "range_percent": 0.001470355110844146
+      },
+      "instructions:k": {
+        "mean": 1657501.2,
+        "min": 1251496.4,
+        "max": 1871883.0,
+        "range_percent": 49.57158486432722
+      },
+      "branches:u": {
+        "mean": 29855271.066666666,
+        "min": 29854446.2,
+        "max": 29855754.4,
+        "range_percent": 0.004381926870244968
+      },
+      "branches:k": {
+        "mean": 342484.13333333336,
+        "min": 262492.4,
+        "max": 383311.8,
+        "range_percent": 46.02777070879003
+      }
+    },
+    {
+      "case": "streamed-pages",
+      "variant": "parallel1",
+      "repeats": 3,
+      "instructions:u": {
+        "mean": 293009469.0,
+        "min": 293003482.0,
+        "max": 293015881.0,
+        "range_percent": 0.004231690325107174
+      },
+      "instructions:k": {
+        "mean": 6636696.333333333,
+        "min": 6548358.8,
+        "max": 6731496.0,
+        "range_percent": 2.796688538202896
+      },
+      "branches:u": {
+        "mean": 30646599.933333334,
+        "min": 30644979.4,
+        "max": 30647793.4,
+        "range_percent": 0.009182580817790331
+      },
+      "branches:k": {
+        "mean": 1403277.3333333333,
+        "min": 1387552.0,
+        "max": 1421661.0,
+        "range_percent": 2.4582141786397838
+      }
+    },
+    {
+      "case": "streamed-pages",
+      "variant": "parallel2",
+      "repeats": 3,
+      "instructions:u": {
+        "mean": 292895339.46666664,
+        "min": 292846841.2,
+        "max": 292925721.4,
+        "range_percent": 0.026935649937964712
+      },
+      "instructions:k": {
+        "mean": 6296118.6,
+        "min": 5230587.4,
+        "max": 8388490.8,
+        "range_percent": 60.373781346240364
+      },
+      "branches:u": {
+        "mean": 30614965.866666667,
+        "min": 30599973.4,
+        "max": 30625281.0,
+        "range_percent": 0.08270464705697478
+      },
+      "branches:k": {
+        "mean": 1315751.6666666667,
+        "min": 1102846.6,
+        "max": 1727971.6,
+        "range_percent": 56.6828605175008
+      }
+    },
+    {
+      "case": "streamed-pages",
+      "variant": "parallel4",
+      "repeats": 3,
+      "instructions:u": {
+        "mean": 292837352.1333333,
+        "min": 292818634.6,
+        "max": 292850426.4,
+        "range_percent": 0.010857164211341974
+      },
+      "instructions:k": {
+        "mean": 5959177.266666667,
+        "min": 5154911.6,
+        "max": 7516465.6,
+        "range_percent": 45.81172643193339
+      },
+      "branches:u": {
+        "mean": 30597894.4,
+        "min": 30593378.0,
+        "max": 30600870.4,
+        "range_percent": 0.024490267142129873
+      },
+      "branches:k": {
+        "mean": 1238711.6666666667,
+        "min": 1077827.6,
+        "max": 1546252.4,
+        "range_percent": 43.46008582448619
+      }
+    },
+    {
+      "case": "streamed-pages",
+      "variant": "serial",
+      "repeats": 3,
+      "instructions:u": {
+        "mean": 292451945.1333333,
+        "min": 292438917.4,
+        "max": 292463407.4,
+        "range_percent": 0.008374398393251603
+      },
+      "instructions:k": {
+        "mean": 1452843.2666666666,
+        "min": 1234363.2,
+        "max": 1666914.2,
+        "range_percent": 35.04244131710992
+      },
+      "branches:u": {
+        "mean": 30490317.6,
+        "min": 30486849.2,
+        "max": 30494039.6,
+        "range_percent": 0.02358525130896627
+      },
+      "branches:k": {
+        "mean": 302270.4,
+        "min": 258584.2,
+        "max": 344936.0,
+        "range_percent": 33.39407434792998
+      }
+    }
+  ],
+  "native_inventory": [
+    {
+      "directory": "static-warm-2-immediate-stat",
+      "values_per_frame": {
+        "instructions:u": 7772253.7,
+        "instructions:k": 332454.6,
+        "branches:u": 630003.8,
+        "branches:k": 71042.6
+      },
+      "coverage_percent": [
+        100.0,
+        100.0,
+        100.0,
+        100.0
+      ]
+    },
+    {
+      "directory": "streamed-pages-1-parallel2-stat",
+      "values_per_frame": {
+        "instructions:u": 292846841.2,
+        "instructions:k": 8388490.8,
+        "branches:u": 30599973.4,
+        "branches:k": 1727971.6
+      },
+      "coverage_percent": [
+        100.0,
+        100.0,
+        100.0,
+        100.0
+      ]
+    },
+    {
+      "directory": "animated-warm-2-serial-stat",
+      "values_per_frame": {
+        "instructions:u": 33529611.0,
+        "instructions:k": 416014.5,
+        "branches:u": 3940047.5,
+        "branches:k": 87746.0
+      },
+      "coverage_percent": [
+        100.0,
+        100.0,
+        100.0,
+        100.0
+      ]
+    },
+    {
+      "directory": "gui-half-pan-0-parallel2-stat",
+      "values_per_frame": {
+        "instructions:u": 182280878.9,
+        "instructions:k": 1327237.8,
+        "branches:u": 14690157.4,
+        "branches:k": 275016.6
+      },
+      "coverage_percent": [
+        100.0,
+        100.0,
+        100.0,
+        100.0
+      ]
+    },
+    {
+      "directory": "streamed-pages-0-parallel4-stat",
+      "values_per_frame": {
+        "instructions:u": 292850426.4,
+        "instructions:k": 5154911.6,
+        "branches:u": 30600870.4,
+        "branches:k": 1077827.6
+      },
+      "coverage_percent": [
+        100.0,
+        100.0,
+        100.0,
+        100.0
+      ]
+    },
+    {
+      "directory": "animated-warm-2-parallel1-stat",
+      "values_per_frame": {
+        "instructions:u": 33616905.8,
+        "instructions:k": 1105119.9,
+        "branches:u": 3964510.5,
+        "branches:k": 234023.2
+      },
+      "coverage_percent": [
+        100.0,
+        100.0,
+        100.0,
+        100.0
+      ]
+    },
+    {
+      "directory": "static-warm-2-serial-stat",
+      "values_per_frame": {
+        "instructions:u": 7772132.6,
+        "instructions:k": 351108.3,
+        "branches:u": 630025.6,
+        "branches:k": 74524.9
+      },
+      "coverage_percent": [
+        100.0,
+        100.0,
+        100.0,
+        100.0
+      ]
+    },
+    {
+      "directory": "static-warm-1-immediate-stat",
+      "values_per_frame": {
+        "instructions:u": 7772280.3,
+        "instructions:k": 339743.0,
+        "branches:u": 630018.5,
+        "branches:k": 72283.6
+      },
+      "coverage_percent": [
+        100.0,
+        100.0,
+        100.0,
+        100.0
+      ]
+    },
+    {
+      "directory": "gui-half-pan-1-serial-stat",
+      "values_per_frame": {
+        "instructions:u": 181912219.8,
+        "instructions:k": 772007.4,
+        "branches:u": 14609051.4,
+        "branches:k": 162245.3
+      },
+      "coverage_percent": [
+        100.0,
+        100.0,
+        100.0,
+        100.0
+      ]
+    },
+    {
+      "directory": "streamed-pages-1-parallel4-stat",
+      "values_per_frame": {
+        "instructions:u": 292818634.6,
+        "instructions:k": 7516465.6,
+        "branches:u": 30593378.0,
+        "branches:k": 1546252.4
+      },
+      "coverage_percent": [
+        100.0,
+        100.0,
+        100.0,
+        100.0
+      ]
+    },
+    {
+      "directory": "static-warm-0-parallel1-stat",
+      "values_per_frame": {
+        "instructions:u": 7774087.6,
+        "instructions:k": 404492.0,
+        "branches:u": 630450.7,
+        "branches:k": 84500.8
+      },
+      "coverage_percent": [
+        100.0,
+        100.0,
+        100.0,
+        100.0
+      ]
+    },
+    {
+      "directory": "gui-half-pan-1-parallel2-stat",
+      "values_per_frame": {
+        "instructions:u": 182107604.8,
+        "instructions:k": 1367918.6,
+        "branches:u": 14648712.0,
+        "branches:k": 280069.9
+      },
+      "coverage_percent": [
+        100.0,
+        100.0,
+        100.0,
+        100.0
+      ]
+    },
+    {
+      "directory": "gui-half-pan-1-parallel1-stat",
+      "values_per_frame": {
+        "instructions:u": 182125240.3,
+        "instructions:k": 1604997.7,
+        "branches:u": 14653080.0,
+        "branches:k": 330316.7
+      },
+      "coverage_percent": [
+        100.0,
+        100.0,
+        100.0,
+        100.0
+      ]
+    },
+    {
+      "directory": "gui-half-pan-2-immediate-stat",
+      "values_per_frame": {
+        "instructions:u": 181556139.2,
+        "instructions:k": 800245.1,
+        "branches:u": 14579586.7,
+        "branches:k": 167601.4
+      },
+      "coverage_percent": [
+        100.0,
+        100.0,
+        100.0,
+        100.0
+      ]
+    },
+    {
+      "directory": "streamed-pages-1-serial-stat",
+      "values_per_frame": {
+        "instructions:u": 292438917.4,
+        "instructions:k": 1234363.2,
+        "branches:u": 30486849.2,
+        "branches:k": 258584.2
+      },
+      "coverage_percent": [
+        100.0,
+        100.0,
+        100.0,
+        100.0
+      ]
+    },
+    {
+      "directory": "streamed-pages-0-parallel2-stat",
+      "values_per_frame": {
+        "instructions:u": 292913455.8,
+        "instructions:k": 5269277.6,
+        "branches:u": 30619643.2,
+        "branches:k": 1116436.8
+      },
+      "coverage_percent": [
+        100.0,
+        100.0,
+        100.0,
+        100.0
+      ]
+    },
+    {
+      "directory": "animated-warm-1-immediate-stat",
+      "values_per_frame": {
+        "instructions:u": 33400215.0,
+        "instructions:k": 429635.2,
+        "branches:u": 3912975.3,
+        "branches:k": 90895.2
+      },
+      "coverage_percent": [
+        100.0,
+        100.0,
+        100.0,
+        100.0
+      ]
+    },
+    {
+      "directory": "streamed-pages-2-parallel2-stat",
+      "values_per_frame": {
+        "instructions:u": 292925721.4,
+        "instructions:k": 5230587.4,
+        "branches:u": 30625281.0,
+        "branches:k": 1102846.6
+      },
+      "coverage_percent": [
+        100.0,
+        100.0,
+        100.0,
+        100.0
+      ]
+    },
+    {
+      "directory": "static-warm-0-immediate-stat",
+      "values_per_frame": {
+        "instructions:u": 7772877.1,
+        "instructions:k": 387569.3,
+        "branches:u": 630192.3,
+        "branches:k": 82113.2
+      },
+      "coverage_percent": [
+        100.0,
+        100.0,
+        100.0,
+        100.0
+      ]
+    },
+    {
+      "directory": "gui-half-pan-1-immediate-stat",
+      "values_per_frame": {
+        "instructions:u": 181589352.7,
+        "instructions:k": 1311151.7,
+        "branches:u": 14586195.6,
+        "branches:k": 269321.3
+      },
+      "coverage_percent": [
+        100.0,
+        100.0,
+        100.0,
+        100.0
+      ]
+    },
+    {
+      "directory": "static-warm-1-parallel1-stat",
+      "values_per_frame": {
+        "instructions:u": 7771682.0,
+        "instructions:k": 330789.5,
+        "branches:u": 629981.8,
+        "branches:k": 70703.7
+      },
+      "coverage_percent": [
+        100.0,
+        100.0,
+        100.0,
+        100.0
+      ]
+    },
+    {
+      "directory": "static-warm-2-parallel4-stat",
+      "values_per_frame": {
+        "instructions:u": 7772500.8,
+        "instructions:k": 340224.0,
+        "branches:u": 630064.2,
+        "branches:k": 72497.8
+      },
+      "coverage_percent": [
+        100.0,
+        100.0,
+        100.0,
+        100.0
+      ]
+    },
+    {
+      "directory": "gui-half-pan-2-parallel4-stat",
+      "values_per_frame": {
+        "instructions:u": 182022927.9,
+        "instructions:k": 1226997.3,
+        "branches:u": 14628849.8,
+        "branches:k": 253850.6
+      },
+      "coverage_percent": [
+        100.0,
+        100.0,
+        100.0,
+        100.0
+      ]
+    },
+    {
+      "directory": "streamed-pages-2-parallel1-stat",
+      "values_per_frame": {
+        "instructions:u": 293003482.0,
+        "instructions:k": 6630234.2,
+        "branches:u": 30644979.4,
+        "branches:k": 1400619.0
+      },
+      "coverage_percent": [
+        100.0,
+        100.0,
+        100.0,
+        100.0
+      ]
+    },
+    {
+      "directory": "static-warm-0-parallel4-stat",
+      "values_per_frame": {
+        "instructions:u": 7773481.2,
+        "instructions:k": 352201.4,
+        "branches:u": 630362.6,
+        "branches:k": 74576.2
+      },
+      "coverage_percent": [
+        100.0,
+        100.0,
+        100.0,
+        100.0
+      ]
+    },
+    {
+      "directory": "animated-warm-2-parallel4-stat",
+      "values_per_frame": {
+        "instructions:u": 33606691.9,
+        "instructions:k": 1028577.8,
+        "branches:u": 3961684.0,
+        "branches:k": 217190.7
+      },
+      "coverage_percent": [
+        100.0,
+        100.0,
+        100.0,
+        100.0
+      ]
+    },
+    {
+      "directory": "streamed-pages-2-serial-stat",
+      "values_per_frame": {
+        "instructions:u": 292463407.4,
+        "instructions:k": 1457252.4,
+        "branches:u": 30494039.6,
+        "branches:k": 303291.0
+      },
+      "coverage_percent": [
+        100.0,
+        100.0,
+        100.0,
+        100.0
+      ]
+    },
+    {
+      "directory": "static-warm-0-parallel2-stat",
+      "values_per_frame": {
+        "instructions:u": 7773395.8,
+        "instructions:k": 422380.0,
+        "branches:u": 630336.3,
+        "branches:k": 88270.9
+      },
+      "coverage_percent": [
+        100.0,
+        100.0,
+        100.0,
+        100.0
+      ]
+    },
+    {
+      "directory": "animated-warm-0-parallel2-stat",
+      "values_per_frame": {
+        "instructions:u": 33609184.1,
+        "instructions:k": 1018829.4,
+        "branches:u": 3962328.6,
+        "branches:k": 216332.6
+      },
+      "coverage_percent": [
+        100.0,
+        100.0,
+        100.0,
+        100.0
+      ]
+    },
+    {
+      "directory": "animated-warm-2-parallel2-stat",
+      "values_per_frame": {
+        "instructions:u": 33607725.0,
+        "instructions:k": 1062258.3,
+        "branches:u": 3961793.1,
+        "branches:k": 224966.7
+      },
+      "coverage_percent": [
+        100.0,
+        100.0,
+        100.0,
+        100.0
+      ]
+    },
+    {
+      "directory": "animated-warm-0-parallel1-stat",
+      "values_per_frame": {
+        "instructions:u": 33618643.9,
+        "instructions:k": 1109113.9,
+        "branches:u": 3964925.3,
+        "branches:k": 235183.2
+      },
+      "coverage_percent": [
+        100.0,
+        100.0,
+        100.0,
+        100.0
+      ]
+    },
+    {
+      "directory": "gui-half-pan-0-immediate-stat",
+      "values_per_frame": {
+        "instructions:u": 181492506.0,
+        "instructions:k": 985000.0,
+        "branches:u": 14564223.1,
+        "branches:k": 204625.4
+      },
+      "coverage_percent": [
+        100.0,
+        100.0,
+        100.0,
+        100.0
+      ]
+    },
+    {
+      "directory": "streamed-pages-1-parallel1-stat",
+      "values_per_frame": {
+        "instructions:u": 293015881.0,
+        "instructions:k": 6548358.8,
+        "branches:u": 30647793.4,
+        "branches:k": 1387552.0
+      },
+      "coverage_percent": [
+        100.0,
+        100.0,
+        100.0,
+        100.0
+      ]
+    },
+    {
+      "directory": "streamed-pages-0-serial-stat",
+      "values_per_frame": {
+        "instructions:u": 292453510.6,
+        "instructions:k": 1666914.2,
+        "branches:u": 30490064.0,
+        "branches:k": 344936.0
+      },
+      "coverage_percent": [
+        100.0,
+        100.0,
+        100.0,
+        100.0
+      ]
+    },
+    {
+      "directory": "streamed-pages-1-immediate-stat",
+      "values_per_frame": {
+        "instructions:u": 289630713.6,
+        "instructions:k": 1871883.0,
+        "branches:u": 29854446.2,
+        "branches:k": 383311.8
+      },
+      "coverage_percent": [
+        100.0,
+        100.0,
+        100.0,
+        100.0
+      ]
+    },
+    {
+      "directory": "gui-half-pan-0-parallel1-stat",
+      "values_per_frame": {
+        "instructions:u": 182044962.5,
+        "instructions:k": 1364195.9,
+        "branches:u": 14635591.5,
+        "branches:k": 283770.0
+      },
+      "coverage_percent": [
+        100.0,
+        100.0,
+        100.0,
+        100.0
+      ]
+    },
+    {
+      "directory": "static-warm-1-parallel4-stat",
+      "values_per_frame": {
+        "instructions:u": 7772109.6,
+        "instructions:k": 354052.4,
+        "branches:u": 630071.7,
+        "branches:k": 75184.5
+      },
+      "coverage_percent": [
+        100.0,
+        100.0,
+        100.0,
+        100.0
+      ]
+    },
+    {
+      "directory": "static-warm-1-serial-stat",
+      "values_per_frame": {
+        "instructions:u": 7772657.7,
+        "instructions:k": 324951.2,
+        "branches:u": 630117.4,
+        "branches:k": 69190.8
+      },
+      "coverage_percent": [
+        100.0,
+        100.0,
+        100.0,
+        100.0
+      ]
+    },
+    {
+      "directory": "static-warm-1-parallel2-stat",
+      "values_per_frame": {
+        "instructions:u": 7772726.4,
+        "instructions:k": 358470.0,
+        "branches:u": 630113.2,
+        "branches:k": 74981.8
+      },
+      "coverage_percent": [
+        100.0,
+        100.0,
+        100.0,
+        100.0
+      ]
+    },
+    {
+      "directory": "gui-half-pan-0-parallel4-stat",
+      "values_per_frame": {
+        "instructions:u": 182024553.5,
+        "instructions:k": 1284001.0,
+        "branches:u": 14629794.8,
+        "branches:k": 265153.1
+      },
+      "coverage_percent": [
+        100.0,
+        100.0,
+        100.0,
+        100.0
+      ]
+    },
+    {
+      "directory": "animated-warm-1-parallel2-stat",
+      "values_per_frame": {
+        "instructions:u": 33607148.5,
+        "instructions:k": 1148710.1,
+        "branches:u": 3961626.7,
+        "branches:k": 240580.6
+      },
+      "coverage_percent": [
+        100.0,
+        100.0,
+        100.0,
+        100.0
+      ]
+    },
+    {
+      "directory": "static-warm-2-parallel1-stat",
+      "values_per_frame": {
+        "instructions:u": 7771999.3,
+        "instructions:k": 340943.5,
+        "branches:u": 630064.2,
+        "branches:k": 72938.3
+      },
+      "coverage_percent": [
+        100.0,
+        100.0,
+        100.0,
+        100.0
+      ]
+    },
+    {
+      "directory": "animated-warm-1-parallel4-stat",
+      "values_per_frame": {
+        "instructions:u": 33606497.8,
+        "instructions:k": 1058219.9,
+        "branches:u": 3961665.6,
+        "branches:k": 225199.2
+      },
+      "coverage_percent": [
+        100.0,
+        100.0,
+        100.0,
+        100.0
+      ]
+    },
+    {
+      "directory": "animated-warm-0-immediate-stat",
+      "values_per_frame": {
+        "instructions:u": 33400832.7,
+        "instructions:k": 440568.8,
+        "branches:u": 3912925.7,
+        "branches:k": 92931.2
+      },
+      "coverage_percent": [
+        100.0,
+        100.0,
+        100.0,
+        100.0
+      ]
+    },
+    {
+      "directory": "gui-half-pan-2-parallel1-stat",
+      "values_per_frame": {
+        "instructions:u": 182075417.8,
+        "instructions:k": 1039661.1,
+        "branches:u": 14642270.8,
+        "branches:k": 218723.2
+      },
+      "coverage_percent": [
+        100.0,
+        100.0,
+        100.0,
+        100.0
+      ]
+    },
+    {
+      "directory": "animated-warm-1-parallel1-stat",
+      "values_per_frame": {
+        "instructions:u": 33600654.3,
+        "instructions:k": 1577105.0,
+        "branches:u": 3959715.4,
+        "branches:k": 324550.1
+      },
+      "coverage_percent": [
+        100.0,
+        100.0,
+        100.0,
+        100.0
+      ]
+    },
+    {
+      "directory": "streamed-pages-2-parallel4-stat",
+      "values_per_frame": {
+        "instructions:u": 292842995.4,
+        "instructions:k": 5206154.6,
+        "branches:u": 30599434.8,
+        "branches:k": 1092055.0
+      },
+      "coverage_percent": [
+        100.0,
+        100.0,
+        100.0,
+        100.0
+      ]
+    },
+    {
+      "directory": "streamed-pages-2-immediate-stat",
+      "values_per_frame": {
+        "instructions:u": 289630753.0,
+        "instructions:k": 1251496.4,
+        "branches:u": 29855612.6,
+        "branches:k": 262492.4
+      },
+      "coverage_percent": [
+        100.0,
+        100.0,
+        100.0,
+        100.0
+      ]
+    },
+    {
+      "directory": "animated-warm-0-parallel4-stat",
+      "values_per_frame": {
+        "instructions:u": 33606031.6,
+        "instructions:k": 1114796.6,
+        "branches:u": 3961211.3,
+        "branches:k": 236408.4
+      },
+      "coverage_percent": [
+        100.0,
+        100.0,
+        100.0,
+        100.0
+      ]
+    },
+    {
+      "directory": "static-warm-0-serial-stat",
+      "values_per_frame": {
+        "instructions:u": 7774575.2,
+        "instructions:k": 476932.9,
+        "branches:u": 630506.9,
+        "branches:k": 99473.9
+      },
+      "coverage_percent": [
+        100.0,
+        100.0,
+        100.0,
+        100.0
+      ]
+    },
+    {
+      "directory": "animated-warm-0-serial-stat",
+      "values_per_frame": {
+        "instructions:u": 33528976.7,
+        "instructions:k": 477415.8,
+        "branches:u": 3939706.5,
+        "branches:k": 100709.5
+      },
+      "coverage_percent": [
+        100.0,
+        100.0,
+        100.0,
+        100.0
+      ]
+    },
+    {
+      "directory": "static-warm-2-parallel2-stat",
+      "values_per_frame": {
+        "instructions:u": 7772232.1,
+        "instructions:k": 330382.0,
+        "branches:u": 630024.2,
+        "branches:k": 70341.5
+      },
+      "coverage_percent": [
+        100.0,
+        100.0,
+        100.0,
+        100.0
+      ]
+    },
+    {
+      "directory": "gui-half-pan-1-parallel4-stat",
+      "values_per_frame": {
+        "instructions:u": 182100392.7,
+        "instructions:k": 1635390.9,
+        "branches:u": 14647182.2,
+        "branches:k": 335003.6
+      },
+      "coverage_percent": [
+        100.0,
+        100.0,
+        100.0,
+        100.0
+      ]
+    },
+    {
+      "directory": "gui-half-pan-2-parallel2-stat",
+      "values_per_frame": {
+        "instructions:u": 182018195.9,
+        "instructions:k": 1168606.8,
+        "branches:u": 14628671.6,
+        "branches:k": 243119.9
+      },
+      "coverage_percent": [
+        100.0,
+        100.0,
+        100.0,
+        100.0
+      ]
+    },
+    {
+      "directory": "animated-warm-2-immediate-stat",
+      "values_per_frame": {
+        "instructions:u": 33398099.4,
+        "instructions:k": 394876.4,
+        "branches:u": 3912349.1,
+        "branches:k": 83841.8
+      },
+      "coverage_percent": [
+        100.0,
+        100.0,
+        100.0,
+        100.0
+      ]
+    },
+    {
+      "directory": "streamed-pages-0-immediate-stat",
+      "values_per_frame": {
+        "instructions:u": 289634972.2,
+        "instructions:k": 1849124.2,
+        "branches:u": 29855754.4,
+        "branches:k": 381648.2
+      },
+      "coverage_percent": [
+        100.0,
+        100.0,
+        100.0,
+        100.0
+      ]
+    },
+    {
+      "directory": "gui-half-pan-2-serial-stat",
+      "values_per_frame": {
+        "instructions:u": 182044216.4,
+        "instructions:k": 758246.2,
+        "branches:u": 14640269.5,
+        "branches:k": 159213.3
+      },
+      "coverage_percent": [
+        100.0,
+        100.0,
+        100.0,
+        100.0
+      ]
+    },
+    {
+      "directory": "gui-half-pan-0-serial-stat",
+      "values_per_frame": {
+        "instructions:u": 181988052.9,
+        "instructions:k": 1148040.8,
+        "branches:u": 14626742.1,
+        "branches:k": 237029.1
+      },
+      "coverage_percent": [
+        100.0,
+        100.0,
+        100.0,
+        100.0
+      ]
+    },
+    {
+      "directory": "animated-warm-1-serial-stat",
+      "values_per_frame": {
+        "instructions:u": 33529440.2,
+        "instructions:k": 452992.3,
+        "branches:u": 3939982.7,
+        "branches:k": 94951.6
+      },
+      "coverage_percent": [
+        100.0,
+        100.0,
+        100.0,
+        100.0
+      ]
+    },
+    {
+      "directory": "streamed-pages-0-parallel1-stat",
+      "values_per_frame": {
+        "instructions:u": 293009044.0,
+        "instructions:k": 6731496.0,
+        "branches:u": 30647027.0,
+        "branches:k": 1421661.0
+      },
+      "coverage_percent": [
+        100.0,
+        100.0,
+        100.0,
+        100.0
+      ]
+    }
+  ],
+  "samples": [
+    {
+      "directory": "streamed-pages-0-parallel4-record",
+      "count": 2913,
+      "lost": 0,
+      "unknown_leaf": 6,
+      "owner_sample_fraction": 0.03982148987298318,
+      "missing_callchain": 2792,
+      "instruction_period": 500000,
+      "top_leaf_symbols": [
+        [
+          "TerrainVisual::PreparedCoverage::WarpLayer::at(int, int) const",
+          747
+        ],
+        [
+          "TerrainVisual::PreparedCoverage::at(int, int) const",
+          679
+        ],
+        [
+          "TerrainVisual::Compositor::composePixels(TerrainVisual::Catalog const&, TerrainVisual::Recipe const&, SDL_Surface*, int, int, int, std::span<TerrainVisual::Compositor::PreparedMaterialView const, 18446744073709551615ul>, TerrainVisual::Compositor::CellMask const*)",
+          633
+        ],
+        [
+          "TerrainVisual::Compositor::buildMask(TerrainVisual::Catalog const&, TerrainVisual::Recipe const&, int, TerrainVisual::Compositor::CellMask&)",
+          202
+        ],
+        [
+          "TerrainVisual::PreparedCoverage::patchCoverage(int, int, std::array<int, 2ul> const*) const",
+          163
+        ],
+        [
+          "TerrainVisual::PreparedCoverage::prepareBorders(TerrainVisual::Catalog const&, TerrainVisual::Recipe const&)",
+          130
+        ],
+        [
+          "TerrainVisual::PreparedCoverage::PebbleField::at(int, int) const",
+          57
+        ],
+        [
+          "bool (anonymous namespace)::allAlpha<255u>(SDL_Surface const&, SDL_Rect) [clone .isra.0]",
+          57
+        ],
+        [
+          "Blit8888to8888PixelAlphaSwizzleAVX2",
+          45
+        ],
+        [
+          "TerrainVisual::Catalog::profileFor(unsigned short, unsigned short) const",
+          28
+        ],
+        [
+          "TerrainVisual::PreparedCoverage::pebbleField(TerrainVisual::Catalog const&, TerrainVisual::Recipe const&, unsigned short) [clone .part.0]",
+          27
+        ],
+        [
+          "TerrainVisual::hash(unsigned int, unsigned int, unsigned int)",
+          17
+        ],
+        [
+          "TerrainVisual::PreparedCoverage::PreparedCoverage(TerrainVisual::Catalog const&, TerrainVisual::Recipe const&)",
+          16
+        ],
+        [
+          "TerrainVisual::PreparedCoverage::Curve::wave(int) const",
+          16
+        ],
+        [
+          "SDL_BlitCopy",
+          9
+        ]
+      ],
+      "scope": "Leaf IP attribution is validated. DWARF worker stacks often absent, so native inclusive callgraphs are incomplete; Callgrind supplies complete function call graphs."
+    },
+    {
+      "directory": "streamed-pages-0-immediate-record",
+      "count": 2896,
+      "lost": 0,
+      "unknown_leaf": 1,
+      "owner_sample_fraction": 1.0,
+      "missing_callchain": 0,
+      "instruction_period": 500000,
+      "top_leaf_symbols": [
+        [
+          "TerrainVisual::PreparedCoverage::at(int, int) const",
+          781
+        ],
+        [
+          "TerrainVisual::PreparedCoverage::WarpLayer::at(int, int) const",
+          701
+        ],
+        [
+          "TerrainVisual::Compositor::composePixels(TerrainVisual::Catalog const&, TerrainVisual::Recipe const&, SDL_Surface*, int, int, int, std::span<TerrainVisual::Compositor::PreparedMaterialView const, 18446744073709551615ul>, TerrainVisual::Compositor::CellMask const*)",
+          621
+        ],
+        [
+          "TerrainVisual::Compositor::buildMask(TerrainVisual::Catalog const&, TerrainVisual::Recipe const&, int, TerrainVisual::Compositor::CellMask&)",
+          175
+        ],
+        [
+          "TerrainVisual::PreparedCoverage::patchCoverage(int, int, std::array<int, 2ul> const*) const",
+          163
+        ],
+        [
+          "TerrainVisual::PreparedCoverage::prepareBorders(TerrainVisual::Catalog const&, TerrainVisual::Recipe const&)",
+          103
+        ],
+        [
+          "bool (anonymous namespace)::allAlpha<255u>(SDL_Surface const&, SDL_Rect) [clone .isra.0]",
+          60
+        ],
+        [
+          "TerrainVisual::PreparedCoverage::PebbleField::at(int, int) const",
+          60
+        ],
+        [
+          "Blit8888to8888PixelAlphaSwizzleAVX2",
+          45
+        ],
+        [
+          "TerrainVisual::PreparedCoverage::pebbleField(TerrainVisual::Catalog const&, TerrainVisual::Recipe const&, unsigned short) [clone .part.0]",
+          27
+        ],
+        [
+          "TerrainVisual::Catalog::profileFor(unsigned short, unsigned short) const",
+          24
+        ],
+        [
+          "TerrainVisual::hash(unsigned int, unsigned int, unsigned int)",
+          21
+        ],
+        [
+          "TerrainVisual::PreparedCoverage::PreparedCoverage(TerrainVisual::Catalog const&, TerrainVisual::Recipe const&)",
+          19
+        ],
+        [
+          "TerrainVisual::PreparedCoverage::Curve::wave(int) const",
+          18
+        ],
+        [
+          "SoftwareTerrainCache::prepareAtResolution(SceneMap const&, GAGCore::Sprite&, int, int, int, int, int, int, unsigned int, bool, int, int, bool, int)",
+          13
+        ]
+      ],
+      "scope": "Leaf IP attribution is validated. DWARF worker stacks often absent, so native inclusive callgraphs are incomplete; Callgrind supplies complete function call graphs."
+    },
+    {
+      "directory": "gui-half-pan-0-parallel4-record",
+      "count": 3623,
+      "lost": 0,
+      "unknown_leaf": 3,
+      "owner_sample_fraction": 0.9804029809550097,
+      "missing_callchain": 71,
+      "instruction_period": 500000,
+      "top_leaf_symbols": [
+        [
+          "SDL_Blit_ARGB8888_ARGB8888_Modulate_Blend",
+          1848
+        ],
+        [
+          "SDL_BlendFillRect_ARGB8888",
+          749
+        ],
+        [
+          "GAGCore::SurfaceRaster::executeCommand(GAGCore::SurfaceRaster::RasterCommand const&, GAGCore::SurfaceRaster::WritablePixelView, SDL_Rect)",
+          237
+        ],
+        [
+          "SDL_Blit_ARGB8888_ARGB8888_Blend_Scale",
+          210
+        ],
+        [
+          "SDL_StretchSurface_REAL",
+          151
+        ],
+        [
+          "SDL_Blit_ARGB8888_ARGB8888_Modulate_Blend_Scale",
+          60
+        ],
+        [
+          "SceneMap::isMapDiscovered(int, int, unsigned int) const",
+          41
+        ],
+        [
+          "SDL_BlitCopy",
+          17
+        ],
+        [
+          "SDL_FindInHashTable",
+          17
+        ],
+        [
+          "__memmove_avx_unaligned_erms",
+          16
+        ],
+        [
+          "SDL_RenderGeometryRaw_REAL",
+          14
+        ],
+        [
+          "_int_malloc",
+          13
+        ],
+        [
+          "SceneMap::isMapPartiallyDiscovered(int, int, int, int, unsigned int) const",
+          11
+        ],
+        [
+          "GAGCore::SurfaceRaster::opaque(SDL_Surface*)",
+          11
+        ],
+        [
+          "__libc_calloc",
+          11
+        ]
+      ],
+      "scope": "Leaf IP attribution is validated. DWARF worker stacks often absent, so native inclusive callgraphs are incomplete; Callgrind supplies complete function call graphs."
+    },
+    {
+      "directory": "gui-half-pan-0-immediate-record",
+      "count": 3624,
+      "lost": 0,
+      "unknown_leaf": 7,
+      "owner_sample_fraction": 1.0,
+      "missing_callchain": 0,
+      "instruction_period": 500000,
+      "top_leaf_symbols": [
+        [
+          "SDL_Blit_ARGB8888_ARGB8888_Modulate_Blend",
+          1841
+        ],
+        [
+          "SDL_BlendFillRect_ARGB8888",
+          757
+        ],
+        [
+          "GAGCore::SurfaceRaster::executeCommand(GAGCore::SurfaceRaster::RasterCommand const&, GAGCore::SurfaceRaster::WritablePixelView, SDL_Rect)",
+          258
+        ],
+        [
+          "SDL_Blit_ARGB8888_ARGB8888_Blend_Scale",
+          192
+        ],
+        [
+          "SDL_StretchSurface_REAL",
+          156
+        ],
+        [
+          "SDL_Blit_ARGB8888_ARGB8888_Modulate_Blend_Scale",
+          59
+        ],
+        [
+          "SceneMap::isMapDiscovered(int, int, unsigned int) const",
+          29
+        ],
+        [
+          "SDL_FindInHashTable",
+          17
+        ],
+        [
+          "__memmove_avx_unaligned_erms",
+          15
+        ],
+        [
+          "SDL_BlitCopy",
+          15
+        ],
+        [
+          "_int_malloc",
+          14
+        ],
+        [
+          "GAGCore::SurfaceRaster::opaque(SDL_Surface*)",
+          13
+        ],
+        [
+          "SceneMap::isMapPartiallyDiscovered(int, int, int, int, unsigned int) const",
+          12
+        ],
+        [
+          "Game::drawMapTerritory(int, int, int, int, int, int, int, unsigned int, PresentationFrame const&, float)",
+          11
+        ],
+        [
+          "pthread_rwlock_rdlock@GLIBC_2.2.5",
+          11
+        ]
+      ],
+      "scope": "Leaf IP attribution is validated. DWARF worker stacks often absent, so native inclusive callgraphs are incomplete; Callgrind supplies complete function call graphs."
+    },
+    {
+      "directory": "animated-warm-0-immediate-record",
+      "count": 666,
+      "lost": 0,
+      "unknown_leaf": 3,
+      "owner_sample_fraction": 1.0,
+      "missing_callchain": 0,
+      "instruction_period": 500000,
+      "top_leaf_symbols": [
+        [
+          "TerrainVisual::Compositor::composePixels(TerrainVisual::Catalog const&, TerrainVisual::Recipe const&, SDL_Surface*, int, int, int, std::span<TerrainVisual::Compositor::PreparedMaterialView const, 18446744073709551615ul>, TerrainVisual::Compositor::CellMask const*)",
+          387
+        ],
+        [
+          "Blit8888to8888PixelAlphaSwizzleAVX2",
+          86
+        ],
+        [
+          "TerrainVisual::Compositor::prepare(bool, int)",
+          68
+        ],
+        [
+          "bool (anonymous namespace)::allAlpha<255u>(SDL_Surface const&, SDL_Rect) [clone .isra.0]",
+          22
+        ],
+        [
+          "__memmove_avx_unaligned_erms",
+          15
+        ],
+        [
+          "SDL_BlitCopy",
+          13
+        ],
+        [
+          "SoftwareTerrainCache::prepareAtResolution(SceneMap const&, GAGCore::Sprite&, int, int, int, int, int, int, unsigned int, bool, int, int, bool, int)",
+          11
+        ],
+        [
+          "TerrainVisual::Catalog::profileFor(unsigned short, unsigned short) const",
+          7
+        ],
+        [
+          "TerrainVisual::CompiledPack::matches(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, SDL_Surface*) const",
+          6
+        ],
+        [
+          "TerrainVisual::Compositor::materialFor(SceneMap const&, TerrainType) const",
+          6
+        ],
+        [
+          "SceneMap::vertexTerrainAt(int, int) const",
+          5
+        ],
+        [
+          "TerrainVisual::Compositor::describe(SceneMap const&, int, int) const",
+          5
+        ],
+        [
+          "[unknown]",
+          3
+        ],
+        [
+          "GAGCore::Sprite::getW(int)",
+          3
+        ],
+        [
+          "ResourcePresentation::frame(unsigned int, int, int, unsigned int) const",
+          3
+        ]
+      ],
+      "scope": "Leaf IP attribution is validated. DWARF worker stacks often absent, so native inclusive callgraphs are incomplete; Callgrind supplies complete function call graphs."
+    },
+    {
+      "directory": "gui-half-pan-0-parallel2-record",
+      "count": 3637,
+      "lost": 0,
+      "unknown_leaf": 0,
+      "owner_sample_fraction": 0.9780038493263679,
+      "missing_callchain": 81,
+      "instruction_period": 500000,
+      "top_leaf_symbols": [
+        [
+          "SDL_Blit_ARGB8888_ARGB8888_Modulate_Blend",
+          1845
+        ],
+        [
+          "SDL_BlendFillRect_ARGB8888",
+          746
+        ],
+        [
+          "GAGCore::SurfaceRaster::executeCommand(GAGCore::SurfaceRaster::RasterCommand const&, GAGCore::SurfaceRaster::WritablePixelView, SDL_Rect)",
+          251
+        ],
+        [
+          "SDL_Blit_ARGB8888_ARGB8888_Blend_Scale",
+          223
+        ],
+        [
+          "SDL_StretchSurface_REAL",
+          152
+        ],
+        [
+          "SDL_Blit_ARGB8888_ARGB8888_Modulate_Blend_Scale",
+          56
+        ],
+        [
+          "SceneMap::isMapDiscovered(int, int, unsigned int) const",
+          44
+        ],
+        [
+          "SDL_FindInHashTable",
+          21
+        ],
+        [
+          "__memmove_avx_unaligned_erms",
+          18
+        ],
+        [
+          "SDL_BlitCopy",
+          15
+        ],
+        [
+          "Game::drawMapTerritory(int, int, int, int, int, int, int, unsigned int, PresentationFrame const&, float)",
+          12
+        ],
+        [
+          "SceneMap::vertexTerrainAt(int, int) const",
+          10
+        ],
+        [
+          "SceneMap::isMapPartiallyDiscovered(int, int, int, int, unsigned int) const",
+          9
+        ],
+        [
+          "_int_malloc",
+          9
+        ],
+        [
+          "SDL_RenderGeometryRaw_REAL",
+          9
+        ]
+      ],
+      "scope": "Leaf IP attribution is validated. DWARF worker stacks often absent, so native inclusive callgraphs are incomplete; Callgrind supplies complete function call graphs."
+    },
+    {
+      "directory": "streamed-pages-0-parallel2-record",
+      "count": 2915,
+      "lost": 0,
+      "unknown_leaf": 6,
+      "owner_sample_fraction": 0.03979416809605489,
+      "missing_callchain": 2795,
+      "instruction_period": 500000,
+      "top_leaf_symbols": [
+        [
+          "TerrainVisual::PreparedCoverage::WarpLayer::at(int, int) const",
+          769
+        ],
+        [
+          "TerrainVisual::PreparedCoverage::at(int, int) const",
+          744
+        ],
+        [
+          "TerrainVisual::Compositor::composePixels(TerrainVisual::Catalog const&, TerrainVisual::Recipe const&, SDL_Surface*, int, int, int, std::span<TerrainVisual::Compositor::PreparedMaterialView const, 18446744073709551615ul>, TerrainVisual::Compositor::CellMask const*)",
+          633
+        ],
+        [
+          "TerrainVisual::PreparedCoverage::patchCoverage(int, int, std::array<int, 2ul> const*) const",
+          165
+        ],
+        [
+          "TerrainVisual::Compositor::buildMask(TerrainVisual::Catalog const&, TerrainVisual::Recipe const&, int, TerrainVisual::Compositor::CellMask&)",
+          159
+        ],
+        [
+          "TerrainVisual::PreparedCoverage::prepareBorders(TerrainVisual::Catalog const&, TerrainVisual::Recipe const&)",
+          105
+        ],
+        [
+          "TerrainVisual::PreparedCoverage::PebbleField::at(int, int) const",
+          55
+        ],
+        [
+          "bool (anonymous namespace)::allAlpha<255u>(SDL_Surface const&, SDL_Rect) [clone .isra.0]",
+          53
+        ],
+        [
+          "Blit8888to8888PixelAlphaSwizzleAVX2",
+          46
+        ],
+        [
+          "TerrainVisual::Catalog::profileFor(unsigned short, unsigned short) const",
+          22
+        ],
+        [
+          "TerrainVisual::PreparedCoverage::pebbleField(TerrainVisual::Catalog const&, TerrainVisual::Recipe const&, unsigned short) [clone .part.0]",
+          21
+        ],
+        [
+          "TerrainVisual::hash(unsigned int, unsigned int, unsigned int)",
+          13
+        ],
+        [
+          "TerrainVisual::PreparedCoverage::Curve::wave(int) const",
+          12
+        ],
+        [
+          "TerrainVisual::Catalog::variantIndex(unsigned short, int, int, unsigned int) const",
+          11
+        ],
+        [
+          "SDL_BlitCopy",
+          9
+        ]
+      ],
+      "scope": "Leaf IP attribution is validated. DWARF worker stacks often absent, so native inclusive callgraphs are incomplete; Callgrind supplies complete function call graphs."
+    },
+    {
+      "directory": "animated-warm-0-parallel4-record",
+      "count": 661,
+      "lost": 0,
+      "unknown_leaf": 2,
+      "owner_sample_fraction": 0.3812405446293495,
+      "missing_callchain": 410,
+      "instruction_period": 500000,
+      "top_leaf_symbols": [
+        [
+          "TerrainVisual::Compositor::composePixels(TerrainVisual::Catalog const&, TerrainVisual::Recipe const&, SDL_Surface*, int, int, int, std::span<TerrainVisual::Compositor::PreparedMaterialView const, 18446744073709551615ul>, TerrainVisual::Compositor::CellMask const*)",
+          392
+        ],
+        [
+          "Blit8888to8888PixelAlphaSwizzleAVX2",
+          85
+        ],
+        [
+          "TerrainVisual::Compositor::prepare(bool, int)",
+          70
+        ],
+        [
+          "__memmove_avx_unaligned_erms",
+          14
+        ],
+        [
+          "SDL_BlitCopy",
+          14
+        ],
+        [
+          "bool (anonymous namespace)::allAlpha<255u>(SDL_Surface const&, SDL_Rect) [clone .isra.0]",
+          12
+        ],
+        [
+          "SceneMap::vertexTerrainAt(int, int) const",
+          8
+        ],
+        [
+          "TerrainVisual::Compositor::materialFor(SceneMap const&, TerrainType) const",
+          6
+        ],
+        [
+          "Game::drawMapArea(int, int, int, int, int, int, int, int, int, unsigned int, SceneMap const&, bool (SceneMap::*)(int, int) const, int, AreaType, MapRenderState const&, Utilities::BitArray const*)",
+          5
+        ],
+        [
+          "TerrainVisual::CompiledPack::matches(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, SDL_Surface*) const",
+          5
+        ],
+        [
+          "SDL_BlitSurface_REAL",
+          4
+        ],
+        [
+          "SoftwareTerrainCache::prepareAtResolution(SceneMap const&, GAGCore::Sprite&, int, int, int, int, int, int, unsigned int, bool, int, int, bool, int)",
+          4
+        ],
+        [
+          "TerrainVisual::Compositor::describe(SceneMap const&, int, int) const",
+          3
+        ],
+        [
+          "SoftwareTerrainCache::tryBuildCpuPage(SoftwareTerrainCache::Chunk&, std::array<SoftwareTerrainCache::Tile, 256ul> const&, TerrainVisual::Compositor&, SDL_Surface*, bool, unsigned long)::{lambda(unsigned short)#1}::operator()(unsigned short) const [clone .isra.0]",
+          3
+        ],
+        [
+          "TerrainVisual::Catalog::profileFor(unsigned short, unsigned short) const",
+          3
+        ]
+      ],
+      "scope": "Leaf IP attribution is validated. DWARF worker stacks often absent, so native inclusive callgraphs are incomplete; Callgrind supplies complete function call graphs."
+    },
+    {
+      "directory": "animated-warm-0-parallel2-record",
+      "count": 664,
+      "lost": 0,
+      "unknown_leaf": 1,
+      "owner_sample_fraction": 0.37801204819277107,
+      "missing_callchain": 413,
+      "instruction_period": 500000,
+      "top_leaf_symbols": [
+        [
+          "TerrainVisual::Compositor::composePixels(TerrainVisual::Catalog const&, TerrainVisual::Recipe const&, SDL_Surface*, int, int, int, std::span<TerrainVisual::Compositor::PreparedMaterialView const, 18446744073709551615ul>, TerrainVisual::Compositor::CellMask const*)",
+          389
+        ],
+        [
+          "Blit8888to8888PixelAlphaSwizzleAVX2",
+          88
+        ],
+        [
+          "TerrainVisual::Compositor::prepare(bool, int)",
+          68
+        ],
+        [
+          "SDL_BlitCopy",
+          18
+        ],
+        [
+          "bool (anonymous namespace)::allAlpha<255u>(SDL_Surface const&, SDL_Rect) [clone .isra.0]",
+          17
+        ],
+        [
+          "__memmove_avx_unaligned_erms",
+          12
+        ],
+        [
+          "ResourcePresentation::frame(unsigned int, int, int, unsigned int) const",
+          7
+        ],
+        [
+          "TerrainVisual::Catalog::profileFor(unsigned short, unsigned short) const",
+          7
+        ],
+        [
+          "SoftwareTerrainCache::prepareAtResolution(SceneMap const&, GAGCore::Sprite&, int, int, int, int, int, int, unsigned int, bool, int, int, bool, int)",
+          6
+        ],
+        [
+          "TerrainVisual::CompiledPack::matches(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, SDL_Surface*) const",
+          4
+        ],
+        [
+          "SceneMap::vertexTerrainAt(int, int) const",
+          4
+        ],
+        [
+          "TerrainVisual::Compositor::materialFor(SceneMap const&, TerrainType) const",
+          3
+        ],
+        [
+          "Game::drawMapResources(int, int, int, int, int, int, int, unsigned int, SceneMap const&)",
+          3
+        ],
+        [
+          "SDL_BlitSurface_REAL",
+          3
+        ],
+        [
+          "SceneMap::getBuilding(int, int) const",
+          2
+        ]
+      ],
+      "scope": "Leaf IP attribution is validated. DWARF worker stacks often absent, so native inclusive callgraphs are incomplete; Callgrind supplies complete function call graphs."
+    }
+  ],
+  "scope": "Instructions/branches only. No elapsed-time, FPS, CPU-time, bandwidth or energy improvement inferred."
+}
