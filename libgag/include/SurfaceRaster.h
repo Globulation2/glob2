@@ -18,7 +18,9 @@ enum class BlitBlend
 enum class FillBlend
 {
 	Native,
-	SourceOver
+	SourceOver,
+	// One /255 rounding of the combined RGB terms; alpha is source-over.
+	PortableSourceOver
 };
 // Owner-resolved views. No surface, lock, modulation or backend state reaches
 // the regional kernels. Owners retain pixels until all regions have completed.
@@ -41,17 +43,34 @@ struct RasterCommand
         Fill,
         Blit
     } kind = Kind::Fill;
+    // Nearest uses rational pixel centers; SDLNearest preserves the historical
+    // SDL quad path's truncated 16.16 step. Both refer to the full destination.
+    enum class Sampling { Nearest, SDLNearest, LinearPremultiplied };
+    enum class Blending { Triangle, Portable };
     ReadOnlyPixelView source;
     SDL_Rect sourceRect{}, destination{}, clip{};
     Uint32 color = 0;
     Uint8 opacity = 255;
     bool opaque = false;
+    // SDL static ARGB copies historically force destination alpha on coverage.
+    bool forceOpaqueAlpha = false;
     FillBlend fillBlend = FillBlend::SourceOver;
+    Blending blend = Blending::Triangle;
+    Sampling sampling = Sampling::Nearest;
+    // Linear sampling preserves fractional pixel-center geometry. destination
+    // remains its integer coverage bounds for clipping and command binning.
+    SDL_FRect destinationFloat{};
+    Uint8 red = 255, green = 255, blue = 255;
 };
+enum class KernelMode { Automatic, Scalar };
+// Portable commands require packed 32-bit views with eight-bit RGB and optional
+// eight-bit alpha. Sources may differ from the destination channel layout.
 // Half-open regions partition writes. Source sampling uses the full captured
 // destination even when a tile or captured clip cuts through a sprite.
-void executeRegion(std::span<const RasterCommand>, WritablePixelView, SDL_Rect region);
-void executeCommand(const RasterCommand &, WritablePixelView, SDL_Rect region);
+void executeRegion(std::span<const RasterCommand>, WritablePixelView, SDL_Rect region,
+                   KernelMode mode = KernelMode::Automatic);
+void executeCommand(const RasterCommand &, WritablePixelView, SDL_Rect region,
+                    KernelMode mode = KernelMode::Automatic);
 // Raster operations borrow their surfaces and restore source SDL modulation state.
 // Scale sampling uses the complete destination rectangle; clipping is applied by
 // the raster operation afterwards, so clipping cannot stretch the remaining source pixels.

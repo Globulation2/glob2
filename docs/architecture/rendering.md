@@ -125,10 +125,11 @@ borrowed from standard snapshot components. There is no second entity extraction
 or map-array capture. `Game::drawMap` requires an explicitly supplied frame;
 `Game::drawSceneMap` accepts it directly.
 
-- Interactive engines capture the standard simulation and presentation presets
-  at each read boundary. The engine admits presentation preparation when its
-  bounded producer has capacity; admission requests only optional history,
-  telemetry, entity diagnostics or annotations. AI, map jobs and presentation
+- Interactive engines capture the standard simulation preset at each read
+  boundary. When the bounded producer admits presentation preparation, capture
+  also includes its session, effects and statistics payloads and any requested
+  history, telemetry, entity diagnostics or annotations. Diagnostic requests can
+  independently add the payloads they need. AI, map jobs and presentation
   borrow the same captured data through standard views.
   `SceneExtractor::prepare` accepts an immutable handle and request, never live
   simulation objects. Preparation runs on the shared compute executor. A complete
@@ -228,8 +229,9 @@ also remains the headless default and the equivalence reference.
 
 - The simulation thread paces itself with the speed presets and runs ticks
   (`Engine::simulationStep`: orders, network, `Game::syncStep`). Before pacing,
-  the engine publishes the completed world's standard simulation and presentation
-  snapshot, including any admitted optional UI payloads. Presentation preparation
+  the engine publishes the completed world's standard simulation snapshot,
+  adding presentation payloads only when preparation is admitted (or diagnostics
+  require them). Presentation preparation
   borrows that publication and runs on the compute executor. A worker publishes
   the completed `PresentationFrame` into a `SceneBuffer` (lock-free triple buffer);
   only one preparation is in flight, and a newer complete frame can supersede an

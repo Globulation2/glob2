@@ -1188,6 +1188,10 @@ public:
                                                       function(context.index);
                                               });
         finishPresentationBatch(ticket);
+        // Asynchronous callers may inspect a canceled ticket after draining.
+        // Synchronous raster callers require every job before publishing pixels.
+        if (ticket.status() == Presentation::Status::Canceled)
+            throw std::runtime_error("Synchronous graphics batch was canceled");
 	}
     // Drains using the old mode before selecting new specializations. Tags and
     // observations never enter scheduler state, save data or checksums.

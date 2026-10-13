@@ -33,6 +33,11 @@ pending buildings so recycled slots cannot receive stale work.
 Read resolved building capabilities, resource-to-material supplies and game rules.
 A catalog need not provide every stock service. Handle an absent capability and
 bounded path/placement failure without spinning or using unbounded retries.
+Nicowar validates a complete stone-avoiding dig-out route before enqueueing
+clearing orders. Missing reachable starts, stationary steps and repeated tiles
+reject the attempt without activating a partial dig. Valid routes retain the
+existing neighbor preference and clearing-flag spacing.
+
 Respect rules that disable training or building upgrades and release obsolete
 worker assignments where appropriate.
 

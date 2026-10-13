@@ -7,31 +7,42 @@ CPU rasterization, retained terrain and backend ownership. See [rendering benchm
 `GraphicContext` remains the drawing facade and retains existing capability queries.
 It owns the accelerated backend and software backend independently; transformed passes
 borrow them through scoped transform/clip state (`RenderStateScope.h`). The CPU backend
-in `SoftwareRenderBackend.cpp` implements verified same-format opaque sprite blits and
-opaque rectangle fills directly on its borrowed framebuffer. Translucent draws and
-mixed pixel formats retain SDL geometry rasterization so platform-specific blending
-rounding and source modulation match the reference. General triangles use that same
-lazy SDL renderer; its queue flushes before direct writes or target replacement.
-Large existing images expanded past 512 pixels retain SDL geometry
-rasterization because its fixed-point overflow behavior is visible at some transformed
-sizes. Borrowed terrain run views use direct rasterization: they replace small tiles and must not acquire that
+in `SoftwareRenderBackend.cpp` resolves ordinary sprite draws and rectangle fills
+into immutable raster commands. Opaque copies, transparent and draw-opacity-modulated
+blits, mixed packed pixel formats, nearest scaling and premultiplied linear sampling
+share the same kernels whether executed immediately or through a recorded segment.
+Uniform axis-aligned quad pairs in triangle batches enter that same command stream,
+including their vertex tint and opacity; arbitrary triangles keep SDL's rasterizer.
+Color-keyed sources, non-sRGB textured inputs and unsupported formats retain a lazy SDL
+geometry fallback; its queue flushes before direct writes or target replacement.
+Large existing images expanded past 512 pixels also retain SDL geometry because its
+fixed-point overflow behavior is visible at some transformed sizes. Borrowed terrain
+run views use direct rasterization: they replace small tiles and must not acquire that
 large-triangle behavior. Correcting the legacy large-image appearance needs separate
-visual acceptance.
-`RenderBackend.cpp` contains the accelerated SDL implementation and its texture uploads.
+visual acceptance. `RenderBackend.cpp` contains the accelerated SDL implementation
+and its texture uploads.
 
-`SurfaceRaster.cpp` owns pixel arithmetic. Unscaled sprites use opaque copies only
-when their pixels are verified opaque and draw opacity is 255; other sprites use the
-conservative blending path. Native drawing preserves the existing draw-opacity arithmetic. Fully unclipped native
-scaling uses SDL's optimized nearest scaler without classifying mutable UI surfaces.
-Clipped and transformed blits sample nearest source pixel centers from
-the original destination rectangle; clipping cannot change sampling. Transformed
-rectangles round both endpoints with `floor(edge + 0.5)` and derive their size afterward,
-so adjacent tiles share a boundary at fractional zoom. This can change fractional-scale
-sampling and boundary placement by one output pixel. Source blend/alpha modulation is
-restored after each operation. Transformed primitives preserve SDL triangle blending
-rounding, including independent source/destination truncation for textured draws. Native
-rectangle alpha arithmetic retains the legacy `/256` rounding. Sprite modulation uses
-exact `/255` arithmetic and zero-alpha sprite pixels leave the destination untouched.
+`SurfaceRaster.cpp` owns pixel arithmetic. The software backend uses portable integer
+source-over arithmetic for nearest sprite blending and translucent fills, including
+zero-alpha no-ops and destination alpha. This deliberately replaces SDL's varying
+channel-rounding rules; it does not change coverage, sampling or filtering semantics.
+Exact opaque native-size copies preserve their stored pixels. Sprite draw opacity is
+captured in the command; geometry draws continue to ignore mutable SDL surface tint
+and alpha modulation, matching their existing vertex-modulation semantics.
+The owner resolves coverage and sampling according to the historical drawing entry
+point before recording. Opaque direct draws use shared rounded endpoints and rational
+nearest pixel centers. Draws formerly handled as SDL uniform quads retain truncated
+integer origins/extents and the truncated 16.16 nearest step, including their source
+rectangle conversion. Translucent geometry fills retain the same quad coverage rule.
+These distinctions preserve existing geometry rather than choosing a different render
+pipeline. Every worker samples from the original complete destination, so clipping and
+tile boundaries cannot change source coordinates. Unsupported out-of-bounds textured
+quads remain ordered owner fallbacks. Linear sampling retains fractional pixel-center
+geometry and filters in premultiplied space, preventing invisible RGB from bleeding
+into edges. Scalar and SSE2 nearest-blending kernels use identical integer arithmetic;
+other platforms retain the portable scalar implementation. Native bitmap/fog helpers
+outside this command backend retain their existing arithmetic and SDL state-restoration
+contracts.
 
 Surface content revisions are independent of texture upload revisions. Each accelerated
 backend tracks its own uploaded revision; opacity classification is cached against the
@@ -95,8 +106,6 @@ replacement frame completes. Letterboxing and minimized-window handling remain i
 window presentation boundary; failed spare-buffer allocation uses the prior frame-cache
 copy path. `completedFrame()` provides the retained software image; normal screenshot
 requests continue to capture the current drawing frame.
-
-Build the opt-in saved-game benchmark with optimized production objects:
 
 See [software renderer benchmarks](../development/software-rendering-benchmarks.md) for commands and validation.
 
@@ -167,36 +176,54 @@ alive. Installation keeps the page invalid until its pixels, masks, revisions an
 runs are consistent. Allocation failure discards the invalid cache rather than
 publishing partial output.
 
-The software recorder captures supported opaque nearest blits, backing-pixel
-triangle-style blits and rectangle fills. Unsupported geometry, linear sampling, color
-keys, mixed formats and legacy large-image cases flush the preceding segment before
-owner execution. Keyed sources follow the existing content-revision and forget contract:
-raw writes require `markPixelsChanged()`, and destruction forgets the source key.
-The first eligible draw copies the requested source region into immutable owned pixels;
-subsequent draws of the same revision reuse it when that region covers their requested
-crop. A different crop takes a new regional snapshot; queued commands keep previous
+The software recorder captures ordinary nearest and premultiplied linear blits,
+backing-pixel sprite draws and opaque/translucent rectangle fills. Unsupported geometry,
+color keys and legacy large-image cases flush the preceding segment before owner
+execution. Owner execution uses the same raster commands and arithmetic for supported
+operations; the execution override changes scheduling rather than their appearance.
+Triangle batches preserve SDL's greedy quad pairing even when a recognized pair needs
+fallback. Logical blits that previously used geometry retain its null-key untextured
+contract; direct backing-pixel blits still accept anonymous pixel sources.
+Keyed sources follow the existing content-revision and forget contract: raw writes
+require `markPixelsChanged()`, and destruction forgets the source key.
+The first eligible recorded draw copies the requested source region into immutable
+ARGB pixels, converting supported packed formats on the owner. Subsequent draws of
+the same revision reuse that snapshot when it covers their requested crop. Opacity
+and sampling remain command state rather than being baked into cached pixels.
+A different crop takes a new regional snapshot; queued commands keep previous
 snapshots alive across replacement or eviction. This also supports keyed terrain run
 views, which are forgotten before their backing page changes. Regions up to the
 1 MiB warm-cache limit can reuse revisions regardless of the complete image size.
 Larger regions and anonymous borrowed sources take fresh regional copies per draw.
-No capture copies unrequested offscreen pixels. Overlapping backing ranges, including negative pitches,
-flush earlier drawing before a fresh snapshot and never use the revision cache. Source mutation or destruction cannot change
-a captured command. Supported fully clipped or zero-opacity commands are discarded
-before recording or allocating source storage. Owned source arrays are allocated without
-initialization and completely filled before publication. Each segment is bounded by
-1,024 commands. Cached and in-flight snapshots share a 4 MiB allocation bound,
-within the shared 8 MiB reservation. Presentation trims the warm source cache to
-1 MiB so retained pixels do not crowd out next-frame terrain work. Cache entries
-are bounded by the command limit; bin bookkeeping is bounded by 4,096 tiles
-and 65,536 references. Excessive tile work uses serial command traversal in regions at
-most 128 pixels wide within each command's visible bounds, bounding sampling scratch
-independently of target width. Tile, reference and job vectors retain bounded capacity
-between segments. Segment cleanup destroys commands before releasing source leases.
-Consecutive populated tiles share a job with at most sixteen total command references.
-Each reference covers at most 128×128 pixels, preserving the former maximum callback
-work of 262,144 sampled pixels while reducing dispatches for sparse tiles. Current
-candidates are 128-pixel tiles and at most sixteen command references per tile; these are conservative
-experimental bounds, not measured performance thresholds.
+No capture copies unrequested offscreen pixels. Overlapping backing ranges, including
+negative pitches, flush earlier drawing before a fresh snapshot and never use the
+revision cache. Source mutation or destruction cannot change a captured command.
+Supported fully clipped or zero-opacity commands are discarded before recording or
+allocating source storage. Synchronous owner execution can borrow supported packed
+source pixels directly; when snapshot admission fails, nonaliased packed inputs also
+retain that same-kernel owner path.
+
+Owned source arrays are allocated without initialization and completely filled before
+publication. Each segment is bounded by 1,024 commands. Cached and in-flight snapshots
+share a 4 MiB allocation bound within the shared 8 MiB reservation. Presentation trims
+the warm source cache to 1 MiB so retained pixels do not crowd out next-frame terrain
+work. Cache entries are bounded by the command limit; bin bookkeeping is bounded by
+4,096 regions and 65,536 references. Tile, reference and job vectors retain bounded
+capacity between segments. Segment cleanup destroys commands before releasing source
+leases.
+
+Parallel drawing initially partitions output into 128-pixel tiles. Dense regions split
+along their longest dimension until their summed clipped work fits 262,144 sampled
+pixels; linear filtering charges four samples per output pixel. Each region retains
+original painter order. Sparse neighboring regions share jobs while respecting the
+same sampled-work ceiling and a sixteen-reference packing target. Dense regions can
+carry more references when their smaller area bounds the actual work. Metadata overflow
+completes ordered command prefixes rather than serializing an entire dense frame.
+A single-command overflow uses serial traversal in regions at most 128 pixels wide,
+bounding sampling scratch independently of target width. These are conservative work
+and storage bounds, not measured performance thresholds. Terrain preparation and raster
+jobs use the existing shared compute executor; no operation-specific pools or handoff
+queues are introduced.
 
 The owner drains earlier SDL geometry, locks the target once, and captures its
 format/pitch before dispatch. Jobs write disjoint half-open regions in painter order and
@@ -207,8 +234,10 @@ target backing ranges are disjoint; aliased views retain ordered per-pixel execu
 accelerated contexts retain their existing CPU facade and need explicit capture for
 readback. Callers holding a base-class alias or an earlier raw target pointer must flush
 the owner before reading or modifying it. The owner unlocks after all jobs return,
-before fallback drawing, capture, target rotation or presentation. Failed work blocks
-capture and commit.
+before fallback drawing, capture, target rotation or presentation. Cancellation drains
+claimed callbacks and raises an error for synchronous drawing. Any drawing exception,
+including owner capture or binning failure after a completed prefix, abandons the frame
+and blocks further drawing, capture and commit.
 `GraphicContext::discardFrame()` discards recorded drawing and restores the
 presenter's previous completed image, permitting a subsequent full or partial
 redraw. A capture of an offscreen target still fails with its drawing operation;
