@@ -10,6 +10,7 @@
 #include <map>
 #include <optional>
 #include <tuple>
+#include <thread>
 
 namespace TurretTargeting
 {
@@ -44,10 +45,13 @@ struct Pipeline::State
         const Observation* observation=nullptr;
         unsigned capacity=0,margin=0;
         bool profile=false; Uint64 cpu=0;
+        std::thread::id ownerThread;
+        bool ranOnOwner=false;
         std::vector<Source> sources;
         std::vector<Record> output;
         static void run(void* context,std::size_t) {
             auto& job=*static_cast<Job*>(context);
+            if (job.profile) job.ranOnOwner=std::this_thread::get_id()==job.ownerThread;
             const auto cpuStart=job.profile ? threadCpuNs() : 0;
             job.output.reserve(job.sources.size());
             for (auto& source:job.sources) {
@@ -91,7 +95,10 @@ struct Pipeline::State
             try { executor.join(generation.batch); } catch (...) { generation.error=std::current_exception(); }
             if (rules.profileCpu) metrics.joinCpu+=threadCpuNs()-joinStart;
             metrics.waitNs+=std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now()-start).count();
-            for (const auto& job:generation.jobs) metrics.planningCpu+=job->cpu;
+            for (const auto& job:generation.jobs) {
+                metrics.planningCpu+=job->cpu;
+                if (job->ranOnOwner) metrics.ownerPlanningCpu+=job->cpu;
+            }
             generation.observation.reset(); // Completed jobs need no world lease.
         }
     }
@@ -150,6 +157,7 @@ void Pipeline::admit(const Game& game,const SimulationSnapshot::Handle& captured
         std::sort(selected.begin(),selected.end(),[](const auto* a,const auto* b){return IdentityLess{}(Game::refOf(a),Game::refOf(b));});
         auto job=std::make_unique<State::Job>();
         job->capacity=s.rules.capacity; job->margin=s.rules.margin; job->profile=s.rules.profileCpu;
+        if (job->profile) job->ownerThread=std::this_thread::get_id();
         job->sources.reserve(selected.size());
         if (!generation) {
             generation=std::make_unique<State::Generation>();

@@ -636,6 +636,30 @@ one of its ten paired seeds, retaining warmup and rotated mode order. This allow
 an external runner to rotate separately built before/after binaries per pair;
 unset it for the usual ten repetitions in one process.
 
+For owner/worker attribution, add `--separate-threads=yes` to Callgrind and
+inspect thread 1 separately from the worker dumps. The explicit measured-region
+dump belongs to the calling thread; worker counts are in their final thread
+dumps. Inclusive function counts overlap and must not be summed as separate costs.
+With workers available, deferred joins wait without executing planning on the
+owner. With one participant, deferred planning executes on the owner at joins.
+
+`TURRET_PROFILE_CPU=1` also emits `turret_owner` rows with fixture, participants,
+repeat and mode, followed by nanoseconds for whole-region owner CPU, `syncStep`
+CPU, `syncStep` elapsed time, explicit read-boundary CPU, admission CPU, turret
+join CPU, owner planning CPU and worker planning CPU. Whole-region owner CPU
+includes initial admission and final drains. Read-boundary CPU includes admission;
+subtract admission to isolate that boundary's capture/requirements work. Publication
+CPU in `turret_cpu` excludes join CPU but includes completed observation release.
+Join elapsed time includes bookkeeping as well as waiting. Whole owner CPU and
+`syncStep` are enclosing scopes, not additional components to sum. Compare paired
+original/shadow capture costs to estimate incremental capture on the unchanged
+reference trajectory. Keep probes separate from uninstrumented timing, since
+per-attempt clocks can dominate cheap firing validation.
+Use `TURRET_PROFILE_OWNER=1` alone for a lighter owner measurement: it enables
+only whole-region, `syncStep` and explicit read-boundary clocks. Per-shot and
+pipeline clocks stay disabled; the component fields in `turret_owner` are then
+zero and cannot be used to subtract admission from read-boundary time.
+
 Preparation allocates jobs only for admitted sources and sorts lightweight
 references before constructing them. Unchanged occupancy reuses the immutable
 index itself; entity combat facts remain fresh. Published records are kept in

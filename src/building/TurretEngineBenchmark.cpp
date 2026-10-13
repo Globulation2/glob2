@@ -30,7 +30,7 @@ struct Selection {
     unsigned attempts=0,found=0,shadowValid=0;
     bool diagnostics=false;
     Uint32 networkDigest=0;
-    Uint64 scanCpu=0,consumptionCpu=0,boundaryCpu=0;
+    Uint64 scanCpu=0,consumptionCpu=0,boundaryCpu=0,syncCpu=0,syncWall=0;
     struct Window { TurretTargeting::Entry reference; unsigned start=0; };
     std::map<std::pair<Uint16,Uint32>,Window> windows;
     unsigned opportunities=0,agreement=0,missed=0;
@@ -40,6 +40,7 @@ struct Selection {
 thread_local Selection* selection=nullptr;
 unsigned capacity=8;
 bool forecast=true,reusePreparation=true,profileCpu=false,opportunities=false;
+bool profileOwner=false;
 bool callgrindRegion=false;
 const char* variant="combined";
 void configure() {
@@ -48,12 +49,13 @@ void configure() {
     reusePreparation=std::string(variant)=="preparation" || std::string(variant)=="combined";
     if (const auto* value=std::getenv("TURRET_CAPACITY")) capacity=std::stoul(value);
     profileCpu=std::getenv("TURRET_PROFILE_CPU")!=nullptr;
+    profileOwner=profileCpu || std::getenv("TURRET_PROFILE_OWNER")!=nullptr;
     opportunities=std::getenv("TURRET_OPPORTUNITIES")!=nullptr;
 }
 constexpr std::array<unsigned,2> seats{0,1};
 const char* modeName(Mode mode) { return mode==Original ? "original" : mode==Shadow ? "shadow" : "cached"; }
 struct Run {
-    Uint64 wall=0,cpu=0;
+    Uint64 wall=0,cpu=0,ownerCpu=0;
     Selection targeting;
     Uint64 shots=0,units=0,turrets=0,captures=0,indexBytes=0,listBytes=0;
     TurretTargeting::Pipeline::Statistics pipeline;
@@ -112,9 +114,9 @@ void setup(glob2test::HeadlessGame& world,unsigned fixture,unsigned seed,unsigne
 void advance(glob2test::HeadlessGame& fixture,Run* evidence)
 {
     auto& game=fixture.game;
-    const auto boundaryStart=profileCpu ? TurretTargeting::threadCpuNs() : 0;
+    const auto boundaryStart=profileOwner ? TurretTargeting::threadCpuNs() : 0;
     const auto world=game.captureReadBoundary(seats,false);
-    if (profileCpu && selection) selection->boundaryCpu+=TurretTargeting::threadCpuNs()-boundaryStart;
+    if (profileOwner && selection) selection->boundaryCpu+=TurretTargeting::threadCpuNs()-boundaryStart;
     for (auto [seat,order]:game.prepareAIOrders(seats,false,{},&world)) {
         order=game.validateAIOrder(order,seat); order->sender=seat;
         if (evidence) {
@@ -125,11 +127,17 @@ void advance(glob2test::HeadlessGame& fixture,Run* evidence)
         const auto accepted=game.executeOrder(order,seat); game.settleAIOrder(order,accepted);
     }
     if (selection) selection->networkDigest^=game.checkSum(nullptr,nullptr,nullptr,false);
+    const auto syncStart=profileOwner ? TurretTargeting::threadCpuNs() : 0;
+    const auto syncWallStart=profileOwner ? std::chrono::steady_clock::now() : std::chrono::steady_clock::time_point{};
     game.syncStep(0,Game::PreparationCompletion::Deferred);
+    if (profileOwner && selection) {
+        selection->syncCpu+=TurretTargeting::threadCpuNs()-syncStart;
+        selection->syncWall+=std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now()-syncWallStart).count();
+    }
     fixture.gui.consumeClientEvents();
-    const auto completedStart=profileCpu ? TurretTargeting::threadCpuNs() : 0;
+    const auto completedStart=profileOwner ? TurretTargeting::threadCpuNs() : 0;
     game.captureReadBoundary(seats,false); // Engine completed boundary, before pacing/next orders.
-    if (profileCpu && selection) selection->boundaryCpu+=TurretTargeting::threadCpuNs()-completedStart;
+    if (profileOwner && selection) selection->boundaryCpu+=TurretTargeting::threadCpuNs()-completedStart;
     if (evidence) evidence->checksums.push_back(game.checkSum(nullptr,nullptr,nullptr,true));
 }
 Run run(unsigned fixture,unsigned seed,unsigned participants,Mode mode,bool correctness,unsigned ticks=256)
@@ -142,12 +150,14 @@ Run run(unsigned fixture,unsigned seed,unsigned participants,Mode mode,bool corr
     TurretTargeting::ScopedAttemptObserver observer(opportunities ? followWindow : nullptr,nullptr);
     if (callgrindRegion) { CALLGRIND_START_INSTRUMENTATION; CALLGRIND_ZERO_STATS; }
     const auto start=std::chrono::steady_clock::now(); const auto cpu=std::clock();
-    const auto firstBoundary=profileCpu ? TurretTargeting::threadCpuNs() : 0;
+    const auto ownerStart=profileOwner ? TurretTargeting::threadCpuNs() : 0;
+    const auto firstBoundary=profileOwner ? TurretTargeting::threadCpuNs() : 0;
     world.game.captureReadBoundary(seats,false);
-    if (profileCpu) result.targeting.boundaryCpu+=TurretTargeting::threadCpuNs()-firstBoundary;
+    if (profileOwner) result.targeting.boundaryCpu+=TurretTargeting::threadCpuNs()-firstBoundary;
     for (unsigned t=0;t<ticks;++t) advance(world,correctness ? &result : nullptr);
     world.game.drainAI(); // Include all admitted computation, never publish early.
     world.game.map.finishGradientPipeline(); world.game.map.finishResourceGrowth();
+    if (profileOwner) result.ownerCpu=TurretTargeting::threadCpuNs()-ownerStart;
     result.cpu=Uint64(double(std::clock()-cpu)*1e9/CLOCKS_PER_SEC);
     result.wall=std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now()-start).count();
     if (callgrindRegion) {
@@ -276,6 +286,12 @@ TEST_SUITE("TurretEngine")
                     (unsigned long long)r.targeting.consumptionCpu,(unsigned long long)r.pipeline.sources,(unsigned long long)r.pipeline.skipped,
                     (unsigned long long)(r.pipeline.admissionCpu-r.pipeline.sourceCpu-r.pipeline.indexCpu),
                     (unsigned long long)r.pipeline.waitNs);
+                if (profileOwner) std::printf("turret_owner,%s,%u,%u,%s,%llu,%llu,%llu,%llu,%llu,%llu,%llu,%llu\n",
+                    fixture==0 ? "empty100" : fixture==1 ? "combat100" : "ordinary4",participants,repeat,modeName(mode),
+                    (unsigned long long)r.ownerCpu,(unsigned long long)r.targeting.syncCpu,(unsigned long long)r.targeting.syncWall,
+                    (unsigned long long)r.targeting.boundaryCpu,(unsigned long long)r.pipeline.admissionCpu,
+                    (unsigned long long)r.pipeline.joinCpu,(unsigned long long)r.pipeline.ownerPlanningCpu,
+                    (unsigned long long)(r.pipeline.planningCpu-r.pipeline.ownerPlanningCpu));
             }
         }
     }

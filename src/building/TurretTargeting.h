@@ -122,6 +122,7 @@ public:
         Uint64 admissions=0, teamJobs=0, observations=0, publications=0;
         Uint64 indexNs=0, waitNs=0, failedGenerations=0;
         Uint64 sourceCpu=0,indexCpu=0,planningCpu=0,publicationCpu=0,admissionCpu=0,joinCpu=0;
+        Uint64 ownerPlanningCpu=0;
         Uint64 sources=0,skipped=0;
         std::size_t pendingPeak=0, indexBytes=0, shortlistBytes=0;
     };
