@@ -14,7 +14,6 @@
 #include <climits>
 #include <map>
 #include <queue>
-#include <set>
 #include <tuple>
 
 namespace HiringPlanner
@@ -253,18 +252,27 @@ Inputs capture(const Game& game,SimulationSnapshot::Handle world)
     }
     return inputs;
 }
-bool better(const Candidate& a,const Candidate& b,Job job)
-{
-    if(a.level!=b.level) return job==Job::Delivery||job==Job::Fetch||job==Job::Defend ? a.level>b.level : a.level<b.level;
-    if(a.value!=b.value) return a.value<b.value;
-    return std::tie(a.unit.gid,a.unit.generation)<std::tie(b.unit.gid,b.unit.generation);
+namespace {
+// Ordering direction is constant for a job. Keep the small comparison inline
+// in partition/sort instead of passing the job through every comparison.
+struct CandidateOrder {
+    bool higherLevelFirst;
+    explicit CandidateOrder(Job job):higherLevelFirst(job==Job::Delivery||job==Job::Fetch||job==Job::Defend) {}
+    bool operator()(const Candidate& a,const Candidate& b) const {
+        if(a.level!=b.level)return higherLevelFirst?a.level>b.level:a.level<b.level;
+        if(a.value!=b.value)return a.value<b.value;
+        if(a.unit.gid!=b.unit.gid)return a.unit.gid<b.unit.gid;
+        return a.unit.generation<b.unit.generation;
+    }
+};
 }
+bool better(const Candidate& a,const Candidate& b,Job job) { return CandidateOrder(job)(a,b); }
 unsigned busyCapacity(unsigned total){return total<2?0:std::max(1u,total/4);}
 List shortlist(Key key,std::vector<Candidate> candidates,unsigned capacity,Pools pools)
 {
     if(capacity<1 || capacity>128)throw std::invalid_argument("Hiring capacity must be 1..128");
     List result{key,{},{},{}};
-    const auto compare=[&](const auto& a,const auto& b){return better(a,b,key.job);};
+    const CandidateOrder compare(key.job);
     const auto keep=[&](auto begin,auto end,unsigned limit,auto& destination) {
         const auto count=std::min<std::size_t>(limit,end-begin);
         if(!count)return;
@@ -384,6 +392,14 @@ Output Cache::rank(const Inputs& input,unsigned team,unsigned capacity,Pools poo
             if(!any){++output.metrics.skippedJobs;result.jobs.push_back(std::move(list));continue;}
             std::array<std::shared_ptr<SharedBuildingGradient>,SWIM_CLASS_COUNT> buildings{};
             std::array<const std::vector<Uint16>*,SWIM_CLASS_COUNT> resources{};
+            // Plane identity is fixed for this job's immutable inputs. Resolve
+            // it once per movement class, rather than once per candidate.
+            std::array<std::span<const Uint16>,SWIM_CLASS_COUNT> publishedResources{};
+            if(key.job==Job::Fetch) {
+                const auto modes=supply->modes[key.material];
+                if(modes==0 || (modes==1&&!supply->consumerSpecific[key.material]))
+                    for(int swim=0;swim<SWIM_CLASS_COUNT;++swim)publishedResources[swim]=world.resourceGradient(team,key.material,swim,modes==1);
+            }
             const auto route=key.job==Job::Delivery||key.job==Job::Fetch?BuildingRoute::Footprint:
                 key.job==Job::Clear?BuildingRoute::Clearing:key.job==Job::Defend?BuildingRoute::Combat:BuildingRoute::Footprint;
             // Explore attraction follows the building's automatic route.
@@ -394,7 +410,7 @@ Output Cache::rank(const Inputs& input,unsigned team,unsigned capacity,Pools poo
             const unsigned vacancies=key.material>=0?supply->vacancies[key.material]:supply->seats;
             const unsigned limit=options.extras<0?capacity:std::min(capacity,(canCoordinate?teamSeats:vacancies)+unsigned(options.extras));
             const auto effectivePools=options.availableOnly?Pools::Combined:pools;
-            const auto compare=[&](const Candidate& a,const Candidate& b){return better(a,b,key.job);};
+            const CandidateOrder compare(key.job);
             using Heap=std::priority_queue<Candidate,std::vector<Candidate>,decltype(compare)>;
             Heap combined(compare),free(compare),busy(compare);
             const auto couldWin=[&](const Candidate& bound) {
@@ -414,6 +430,7 @@ Output Cache::rank(const Inputs& input,unsigned team,unsigned capacity,Pools poo
             };
             const auto evaluationStart=Clock::now();
             const auto& indexed=(key.job==Job::Delivery||key.job==Job::Fetch)?transport:roles[unsigned(key.job)-unsigned(Job::Clear)];
+            candidates.reserve(indexed.size());
             for(const auto* unit:indexed)
             {
                 ++output.candidateVisits;const auto& u=*unit;const auto& traits=world.unitTraits(u.typeNum);
@@ -433,9 +450,7 @@ Output Cache::rank(const Inputs& input,unsigned team,unsigned capacity,Pools poo
                 const int swim=swimClass(u);int distance;
                 int knownResourceDistance=-1;
                 if(key.job==Job::Fetch&&!u.performance[FLY]) {
-                    const auto modes=supply->modes[key.material];
-                    const bool shared=modes==0||(modes==1&&!supply->consumerSpecific[key.material]);
-                    const auto published=shared?world.resourceGradient(team,key.material,swim,modes==1):std::span<const Uint16>{};
+                    const auto published=publishedResources[swim];
                     if(!published.empty()) {
                         ++output.metrics.publishedResourceReads;
                         const auto v=published[world.tileIndex(u.posX,u.posY)];
@@ -489,8 +504,7 @@ Output Cache::rank(const Inputs& input,unsigned team,unsigned capacity,Pools poo
                         if(knownResourceDistance>=0)resourceDistance=knownResourceDistance;
                         else if(!u.performance[FLY]) {
                             const auto modes=supply->modes[key.material];
-                            const bool shared=modes==0 || (modes==1&&!supply->consumerSpecific[key.material]);
-                            const auto published=shared?world.resourceGradient(team,key.material,swim,modes==1):std::span<const Uint16>{};
+                            const auto published=publishedResources[swim];
                             if(!published.empty()) {
                                 ++output.metrics.publishedResourceReads;
                                 const auto v=published[world.tileIndex(u.posX,u.posY)];if(v>GRADIENT_UNREACHABLE)resourceDistance=gradientTiles(v);
@@ -564,9 +578,11 @@ Output Cache::rank(const Inputs& input,unsigned team,unsigned capacity,Pools poo
             order.push_back(i);
         }
         std::sort(order.begin(),order.end(),[&](unsigned a,unsigned b){return needs[a]->visitRank<needs[b]->visitRank;});
-        using Identity=std::pair<Uint16,Uint32>;
-        std::set<Identity> chosen;
-        std::vector<std::vector<std::vector<Candidate>>> primary(output.buildings.size());
+        // Every candidate belongs to this team and this immutable snapshot,
+        // which has one incarnation per slot. Membership needs no tree lookup.
+        std::array<bool,Unit::MAX_COUNT> chosen{};
+        struct Planned { std::vector<Candidate> entries; unsigned cursor=0; };
+        std::vector<std::vector<Planned>> primary(output.buildings.size());
         std::vector<unsigned> assigned(output.buildings.size());
         std::vector<std::array<unsigned,MaterialCount>> materialAssigned(output.buildings.size());
         for(unsigned bi=0;bi<output.buildings.size();++bi)primary[bi].resize(output.buildings[bi].jobs.size());
@@ -584,13 +600,18 @@ Output Cache::rank(const Inputs& input,unsigned team,unsigned capacity,Pools poo
                     const Candidate* best=nullptr;unsigned jobIndex=0;
                     for(auto wanted:{Job::Delivery,Job::Fetch}) {
                         for(unsigned j=0;j<building.jobs.size();++j)if(building.jobs[j].key.job==wanted && materialAssigned[bi][building.jobs[j].key.material]<needs[bi]->vacancies[building.jobs[j].key.material])
-                            for(const auto& c:building.jobs[j].combined) {
-                                if(chosen.contains({c.unit.gid,c.unit.generation}))continue;
-                                if(!best||better(c,*best,wanted)){best=&c;jobIndex=j;}
+                            {
+                                const auto& entries=building.jobs[j].combined;auto& cursor=primary[bi][j].cursor;
+                                // Prefixes are sorted; chosen membership only grows.
+                                // The first remaining entry is this job's best offer.
+                                while(cursor<entries.size() && chosen[Unit::GIDtoID(entries[cursor].unit.gid)])++cursor;
+                                if(cursor<entries.size()) { const auto& c=entries[cursor];
+                                    if(!best||better(c,*best,wanted)){best=&c;jobIndex=j;}
+                                }
                             }
                         if(best)break;
                     }
-                    if(best){chosen.insert({best->unit.gid,best->unit.generation});primary[bi][jobIndex].push_back(*best);++materialAssigned[bi][building.jobs[jobIndex].key.material];++assigned[bi];progress=true;}
+                    if(best){chosen[Unit::GIDtoID(best->unit.gid)]=true;primary[bi][jobIndex].entries.push_back(*best);++materialAssigned[bi][building.jobs[jobIndex].key.material];++assigned[bi];progress=true;}
                 }
             }
             begin=end;
@@ -601,8 +622,8 @@ Output Cache::rank(const Inputs& input,unsigned team,unsigned capacity,Pools poo
             const unsigned vacancies=list.key.material>=0?needs[bi]->vacancies[list.key.material]:needs[bi]->seats;
             const auto limit=std::min(capacity,vacancies+unsigned(options.extras));
             std::vector<Candidate> published;if(!list.combined.empty())published.reserve(limit);
-            for(const auto& c:primary[bi][j])if(published.size()<limit)published.push_back(c);
-            for(const auto& c:list.combined)if(published.size()<limit&&!chosen.contains({c.unit.gid,c.unit.generation}))published.push_back(c);
+            for(const auto& c:primary[bi][j].entries)if(published.size()<limit)published.push_back(c);
+            for(const auto& c:list.combined)if(published.size()<limit&&!chosen[Unit::GIDtoID(c.unit.gid)])published.push_back(c);
             list.combined=std::move(published);
             output.retainedBytes+=(list.combined.capacity()+list.available.capacity()+list.busy.capacity())*sizeof(Candidate);
         }

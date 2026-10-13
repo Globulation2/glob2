@@ -138,6 +138,11 @@ rounds choose distinct primary suggestions across buildings, then add backups.
 Workers are not reserved or assigned in the live world. A wider private ranking
 buffer supports this projection; only vacancy-sized lists are published. Other
 job shapes fall back to independent lists and increment `coordinationSkipped`.
+The projection advances through sorted prefixes with pass-local cursors and
+a team-slot membership table; captured snapshots contain one incarnation per
+slot, and published suggestions keep their full incarnation references. These
+changes preserve the previous full-scan projection order. Resource-plane identity
+is looked up once per job/movement class; route locks still cover individual queries.
 This is a policy experiment, not proof of equivalent hires or live delay.
 The `hiring-study --prepare opportunities OUTPUT_DIR` harness compares warmed,
 static real-engine opportunities with rotated repeated planner controls and a
