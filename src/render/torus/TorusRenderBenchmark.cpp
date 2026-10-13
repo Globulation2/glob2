@@ -176,6 +176,14 @@ class TorusRenderBenchmark
         if (!path) path = std::getenv("GLOB2_BENCH_CAPTURE");
         if (!path) return;
         auto *gfx=globalContainer->gfx;
+        if(gfx->backendSwitchStatus().active==GAGCore::RendererBackend::Software) {
+            std::unique_ptr<SDL_Surface,decltype(&SDL_DestroySurface)> pixels(SDL_ConvertSurface(gfx->completedFrame(),SDL_PIXELFORMAT_RGB24),SDL_DestroySurface);
+            if(!pixels)throw std::runtime_error("Benchmark software capture failed");
+            std::ofstream image(path,std::ios::binary);image<<"P6\n"<<pixels->w<<" "<<pixels->h<<"\n255\n";
+            for(int y=0;y<pixels->h;++y)image.write(static_cast<const char *>(pixels->pixels)+y*pixels->pitch,pixels->w*3);
+            if(!image.good())throw std::runtime_error("Benchmark capture write failed");
+            return;
+        }
         if(auto *device=gfx->renderDevice()) {
             ContextAccess::backend(*gfx)->flush();
             std::unique_ptr<SDL_Surface,decltype(&SDL_DestroySurface)> original(device->captureSynchronously({}),SDL_DestroySurface);
