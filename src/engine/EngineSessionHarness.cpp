@@ -13,6 +13,7 @@
 #include <cstdint>
 #include <iterator>
 #include "Engine.h"
+#include "CommandLine.h"
 #include "OutcomeReason.h"
 #include "NetEngine.h"
 #include "Player.h"
