@@ -43,6 +43,10 @@ std::vector<std::pair<std::string,Uint64>> Game::aiMetrics() const {
  const auto& waits=compute.summary.joins[unsigned(ComputeProducer::AI)][unsigned(JoinReason::TickDeadline)];
  const auto& capture=worldSnapshots.metrics;const auto& scheduling=aiPipeline->schedulingMetrics();const auto memory=worldSnapshots.memoryMetrics();const auto queryMemory=aiPipeline->queryVectorMemory();
  return {{"captures",capture.captures},{"extraction_ns",capture.captureNs},{"preparation_ns",capture.preparationNs},
+  {"snapshot_request_calls",capture.requestCalls},{"snapshot_observed_ticks",capture.observedTicks},
+  {"snapshot_core_only_ticks",capture.coreOnlyTicks},{"snapshot_detail_ticks",capture.detailTicks},{"snapshot_no_unit_ticks",capture.noUnitTicks},
+  {"snapshot_core_captures",capture.coreCaptures},{"snapshot_detail_captures",capture.detailCaptures},
+  {"snapshot_core_state_bytes_copied",capture.coreStateBytesCopied},{"snapshot_detail_state_bytes_copied",capture.detailStateBytesCopied},
   {"bytes_copied",capture.bytesCopied},{"unit_state_bytes_copied",capture.unitStateBytesCopied},{"unit_record_payload_bytes",capture.unitRecordPayloadBytes},{"component_reuses",capture.reusedComponents},{"allocations",capture.allocations},
   {"computation_ns",aiPipeline->computationNs()},{"controller_query_vector_bytes",queryMemory.first},
   {"controller_query_vector_peak_bytes",aiPipeline->peakQueryVectorMemory()},

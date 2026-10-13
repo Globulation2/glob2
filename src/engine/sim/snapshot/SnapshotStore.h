@@ -19,16 +19,22 @@ class Store
 	Storage storage;
 	mutable MemoryMetrics memoryPeaks;
 	Uint64 observationRevision = 0;
+    std::optional<Uint32> requestTick;
+    Requirements tickRequirements = 0;
 public:
 	struct Metrics
 	{
 		Uint64 captures = 0, captureNs = 0, bytesCopied = 0, reusedComponents = 0, allocations = 0;
 		Uint64 preparationNs = 0;
         Uint64 unitStateBytesCopied = 0, unitRecordPayloadBytes = 0;
+        // Distinct requested logical ticks, including same-tick requirement upgrades.
+        // Observed ticks are the denominator; ticks with no store request are absent.
+        Uint64 requestCalls = 0, observedTicks = 0, coreOnlyTicks = 0, detailTicks = 0, noUnitTicks = 0;
+        Uint64 coreCaptures = 0, detailCaptures = 0, coreStateBytesCopied = 0, detailStateBytesCopied = 0;
 	} metrics;
 	// GLOB2_SNAPSHOT_VERIFY=1 turns capture verification on for every store.
 	Store() { if (const char* value = std::getenv("GLOB2_SNAPSHOT_VERIFY")) storage.verify = *value && *value != '0'; }
-	void reset() { const bool verify = storage.verify; latest.reset(); catalog.reset(); catalogConfigurationRevision = 0; observationRevision = 0; storage = {}; storage.verify = verify; metrics = {}; memoryPeaks = {}; }
+	void reset() { const bool verify = storage.verify; latest.reset(); catalog.reset(); catalogConfigurationRevision = 0; observationRevision = 0; storage = {}; storage.verify = verify; metrics = {}; memoryPeaks = {}; requestTick.reset(); tickRequirements = 0; }
 	//! Owner announces a new observation boundary without advancing game time
 	//! (paused edits, configuration changes). Existing handles remain immutable;
 	//! unchanged map components can still be shared by the next capture.

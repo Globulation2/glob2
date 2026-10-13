@@ -6,10 +6,26 @@ namespace SimulationSnapshot
 {
 Handle Store::captureBoundary(const Game& game, Requirements required)
 {
+    if (latest && latest->worldIdentity != game.map.identity()) reset();
     required=normalize(required);
+    ++metrics.requestCalls;
+    const auto category = [&](Requirements mask) -> Uint64& {
+        if (needs(mask, Component::UnitDetails)) return metrics.detailTicks;
+        if (needs(mask, Component::UnitCores)) return metrics.coreOnlyTicks;
+        return metrics.noUnitTicks;
+    };
+    if (!requestTick || *requestTick != game.stepCounter) {
+        requestTick = game.stepCounter;
+        tickRequirements = required;
+        ++metrics.observedTicks;
+        ++category(tickRequirements);
+    } else if ((required & tickRequirements) != required) {
+        --category(tickRequirements);
+        tickRequirements |= required;
+        ++category(tickRequirements);
+    }
 	const auto requested = required;
     bool unchangedBoundary=false;
-	if (latest && latest->worldIdentity != game.map.identity()) reset();
 	if (latest && latest->tick == game.stepCounter && latest->observationRevision == observationRevision
         && latest->configurationRevision == game.gameHeader.observationRevision()
         && latest->mapGenerations == game.map.snapshotGenerations()
@@ -59,12 +75,16 @@ Handle Store::captureBoundary(const Game& game, Requirements required)
 	}
     if(next.unitCores && next.unitCores!=previous.unitCores) {
         const auto count=next.unitCores->units.size();
+        ++metrics.coreCaptures;
+        metrics.coreStateBytesCopied+=count*sizeof(UnitCoreState);
         metrics.unitStateBytesCopied+=count*sizeof(UnitCoreState);
         metrics.unitRecordPayloadBytes+=count*sizeof(UnitCoreView);
         metrics.bytesCopied+=count*sizeof(UnitCoreView)+next.unitCores->unitSlotIndices.size()*sizeof(Uint32);
     }
     if(next.unitDetails && next.unitDetails!=previous.unitDetails) {
         const auto bytes=next.unitDetails->units.size()*sizeof(UnitDetailState);
+        ++metrics.detailCaptures;
+        metrics.detailStateBytesCopied+=bytes;
         metrics.unitStateBytesCopied+=bytes;metrics.unitRecordPayloadBytes+=bytes;metrics.bytesCopied+=bytes;
     }
 	if (next.teams) {

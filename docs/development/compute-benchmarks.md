@@ -423,6 +423,19 @@ each request alone and in combination: shared capture changes marginal cost, and
 an AI or panel already requesting details changes the reference workload.
 The unit state-copy and record-payload counters distinguish copied authoritative
 bytes from populated metadata and retained buffer capacity.
+The `ai_pipeline` result also reports `snapshot_observed_ticks`,
+`snapshot_core_only_ticks`, `snapshot_detail_ticks` and `snapshot_no_unit_ticks`.
+These categories partition distinct logical tick numbers that requested a snapshot;
+repeated captures, paused observations and same-tick invalidations do not add ticks.
+A same-tick upgrade to details reclassifies that tick. Details imply cores, so
+core-only and detail percentages are mutually exclusive; the percentage requesting
+any core is their sum. Ticks with no store request are absent from this denominator.
+Compare it with the simulation tick range before reporting a whole-match percentage.
+`snapshot_request_calls` includes reuse hits, while `snapshot_core_captures` and
+`snapshot_detail_captures` count actual component captures. Their corresponding
+`*_state_bytes_copied` counters count authoritative state bytes, excluding relationship
+metadata, slot indexes and cargo sidecars. Requested details can reuse a component
+without copying it again; request frequency and copy volume answer different questions.
 
 Owner request/output storage, private cache/workspace peaks and pooled snapshot
 retention are reported separately. Snapshot payloads are shared with other

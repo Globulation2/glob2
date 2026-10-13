@@ -977,6 +977,33 @@ TEST_SUITE("CompactUnitSnapshot")
         }
         CHECK(retiredDetails.expired());REQUIRE(independentCore.unitCores);
     }
+    TEST_CASE("request metrics union repeated and upgraded logical ticks")
+    {
+        using namespace SimulationSnapshot;
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame fixture({.wDec=5,.hDec=5,.teams=2,.discovered=true,.clearImmobile=true,.loadDefaultRace=true});
+        REQUIRE(fixture.addUnit(WORKER,10,10,0));
+        Store store;
+        store.captureBoundary(fixture.game,bit(Component::BuildingEntities));
+        CHECK(store.metrics.observedTicks==1);CHECK(store.metrics.noUnitTicks==1);
+        store.captureBoundary(fixture.game,bit(Component::UnitCores));
+        store.captureBoundary(fixture.game,bit(Component::UnitCores));
+        CHECK(store.metrics.coreOnlyTicks==1);CHECK(store.metrics.noUnitTicks==0);
+        store.captureBoundary(fixture.game,bit(Component::UnitDetails));
+        store.invalidateBoundary();
+        store.captureBoundary(fixture.game,bit(Component::Entities));
+        CHECK(store.metrics.observedTicks==1);CHECK(store.metrics.detailTicks==1);CHECK(store.metrics.coreOnlyTicks==0);
+        CHECK(store.metrics.requestCalls==5);CHECK(store.metrics.coreCaptures==2);CHECK(store.metrics.detailCaptures==2);
+        CHECK(store.metrics.coreStateBytesCopied==2*sizeof(UnitCoreState));
+        CHECK(store.metrics.detailStateBytesCopied==2*sizeof(UnitDetailState));
+        ++fixture.game.stepCounter;
+        store.captureBoundary(fixture.game,bit(Component::UnitCores));
+        ++fixture.game.stepCounter;
+        store.captureBoundary(fixture.game,bit(Component::BuildingEntities));
+        CHECK(store.metrics.observedTicks==3);CHECK(store.metrics.coreOnlyTicks==1);CHECK(store.metrics.detailTicks==1);CHECK(store.metrics.noUnitTicks==1);
+        store.reset();CHECK(store.metrics.observedTicks==0);CHECK(store.metrics.requestCalls==0);
+        store.captureBoundary(fixture.game,bit(Component::UnitCores));CHECK(store.metrics.observedTicks==1);
+    }
     TEST_CASE("standalone building requests capture no unit records or cargo")
     {
         using namespace SimulationSnapshot;
