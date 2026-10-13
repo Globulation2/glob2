@@ -244,15 +244,15 @@ GAGCore::CooperativeTask Team::loadTask(GAGCore::InputStream *stream, BuildingsT
 					// through current resaves only with private migration provenance.
 					// Authored catalogs and all declared visits stay strictly checked.
 					const bool legacyOpaqueVisit=unit->hasCapability(UnitRuntimeTraits::LegacyPerformancePolicies)
-						&& unit->activity==Unit::ACT_RANDOM && purpose==-1 && !unit->serviceResourcesReserved;
+						&& unit->activity==Unit::ACT_RANDOM && purpose==-1 && !unit->serviceResourcesReserved();
 					if (visits[id] || unit->attachedBuilding!=building
 						|| (!legacyOpaqueVisit && (unit->activity!=Unit::ACT_UPGRADING || !validService))
-						|| (unit->serviceResourcesReserved && unit->displacement==Unit::DIS_EXITING_BUILDING))
+						|| (unit->serviceResourcesReserved() && unit->displacement==Unit::DIS_EXITING_BUILDING))
 						throw std::runtime_error("Invalid saved building service membership");
 					visits[id]=true;
 				}
 		for (int id=0; id<Unit::MAX_COUNT; ++id)
-			if (myUnits[id] && myUnits[id]->serviceResourcesReserved && !visits[id])
+			if (myUnits[id] && myUnits[id]->serviceResourcesReserved() && !visits[id])
 				throw std::runtime_error("Saved unit reservation has no building service visit");
 	}
 
@@ -269,7 +269,17 @@ GAGCore::CooperativeTask Team::loadTask(GAGCore::InputStream *stream, BuildingsT
 			b->reservedMaterials.fill(0);
 			b->restoreServiceReservations();
 			b->restoreProductionReservations();
+            const bool cappedPrivate=!b->usesTeamMaterials() && b->privateStockClampedOnLoad;
+            if(cappedPrivate) {
+                // Services and committed production retain their existing load
+                // priority. Keep only construction funding still backed by stock.
+                for(int r=0;r<MaterialSlotCount;++r)
+                    b->constructionReserved[r]=std::min(b->constructionReserved[r],b->availableMaterial(r));
+                if(b->constructionReserved!=b->constructionBudget) b->siteCompletionPending=false;
+            }
 			b->restoreConstructionReservations();
+            if(cappedPrivate) b->updateCallLists();
+            b->privateStockClampedOnLoad=false;
 		}
 	stream->readLeaveSection();
 	co_return true;

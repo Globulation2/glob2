@@ -10,7 +10,7 @@ void MapEdit::refreshSelectedUnitPerformance(int stat)
 {
 	Unit* u=game.teams[Unit::GIDtoTeam(selectedUnitGID)]->myUnits[Unit::GIDtoID(selectedUnitGID)];
 	const UnitType *ut = u->race->getUnitType(u->typeNum, u->level[stat]);
-	u->performance[stat] = ut->performance[stat];
+	u->setPerformance(stat,ut->performance[stat]);
 	game.snapshots().invalidateBoundary();
 		hasMapBeenModified = true;
 }

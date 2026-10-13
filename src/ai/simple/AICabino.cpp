@@ -1709,7 +1709,7 @@ bool GeneralsDefense::updateDefenseFlags()
 					if(provides(*ai.game,*b,AttractWarriors) && b->posX==i->x && b->posY==i->y)
 					{
 						i->flag=b->identity.gid;
-						ai.enqueueOrder(std::shared_ptr<Order>(new OrderModifyFlag(i->flag, std::min(eb->unitStayRange,AIEngine::ObservationQueries::buildingType(*ai.game,*b).maxUnitStayRange))));
+						ai.enqueueOrder(std::shared_ptr<Order>(new OrderModifyFlag(i->flag, std::min(int(eb->unitStayRange),AIEngine::ObservationQueries::buildingType(*ai.game,*b).maxUnitStayRange))));
 						ai.enqueueOrder(std::shared_ptr<Order>(new OrderModifyBuilding(i->flag, std::min(eb->maxUnitWorking,AIEngine::ObservationQueries::buildingType(*ai.game,*b).semantics.assignmentLimit))));
 						ai.enqueueOrder(std::shared_ptr<Order>(new OrderModifyMinLevelToFlag(i->flag, ai.game->configuration->isUnitUpgradesDisabled() ? 0 : eb->minLevelToFlag)));
 						break;
@@ -2003,7 +2003,7 @@ bool PrioritizedBuildingAttack::attack()
 		const AIEngine::BuildingView* b = ai.game->buildingSlots(enemy()->number)[i];
 		if(b)
 		{
-			if(!b->locked[1])
+			if(!b->isLocked(1))
 			{
     if(AIEngine::ObservationQueries::buildingType(*ai.game,*b).semantics.occupiesGround) {
      unsigned pos=0;

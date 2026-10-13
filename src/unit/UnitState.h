@@ -8,6 +8,9 @@
 #include "UnitConsts.h"
 #include <type_traits>
 
+using UnitPerformanceStorage = Uint16;
+inline constexpr Sint32 UnitPerformanceLimit = 65535;
+
 enum class UnitJobPurpose : Uint8 { None, Transport, Clear, Explore, Defend };
 
 // Authoritative pointer-free unit state. Both live units and captured units use
@@ -81,59 +84,78 @@ struct UnitState
 		HUNGRY_MAX=150000
 	};
 
+	// Naturally aligned wide arithmetic state precedes the compact byte fields.
 	Uint16 typeNum;
-	UnitJobPurpose jobPurpose = UnitJobPurpose::None;
-	Uint8 regenerationRemainder = 0;
-	// Keep frequently queried capabilities beside the identity in existing padding.
-	Uint32 capabilityFlags = 0;
-	EntityRandom entityRandom;
-	Uint32 scriptIdentity = 0; // Stable identity, excluded from legacy checksums.
 	Uint16 gid;
-	bool serviceResourcesReserved = false;
-	bool widePrimaryCargo = false; // First sidecar packet owns the inline material's amount.
+	Uint32 scriptIdentity = 0; // Stable identity, excluded from legacy checksums.
+	EntityRandom entityRandom;
+	Uint32 capabilityFlags = 0;
 	Sint32 isDead;
-	Sint32 posX, posY, delta, dx, dy;
-	Uint8 direction;
-	Sint16 terrainHealthRemainder = 0;
+	Sint32 posX, posY, delta;
 	Sint32 insideTimeout;
 	Sint32 configuredFoodCapacity = HUNGRY_MAX;
-	Sint32 speed;
-	bool needToRecheckMedical;
+	Sint32 speed; // Keep arithmetic and surplus movement wide.
+	Sint32 targetX, targetY;
+	Sint32 magicActionTimeout;
+	Sint32 hp, trigHP;
+	Sint32 hungry, hungriness, trigHungry, trigHungryCarrying;
+	Uint32 fruitMask, fruitCount;
+	UnitPerformanceStorage performance[NB_ABILITY];
+	Uint32 stateFlags = 0; // Learning and independent flags; unused bits stay zero.
+	Sint32 experience, experienceLevel;
+	MaterialPacket carriedPacket{};
+	Sint32 jobTimer;
+	Uint32 areaLastPulseTick = Uint32(-1);
+	Sint16 terrainHealthRemainder = 0; // Signed continuation debt; arithmetic is wide.
+	UnitJobPurpose jobPurpose = UnitJobPurpose::None;
+	Uint8 regenerationRemainder = 0;
+	Sint8 dx, dy;
+	Uint8 direction;
 	Medical medical;
 	Activity activity;
 	Displacement displacement;
 	Movement movement;
-	Uint8 action = WALK; // Game::addUnit selects movement; loads restore saved action.
-	Sint32 targetX, targetY; // Target lines and movement destination.
-	bool validTarget;
-	Sint32 magicActionTimeout;
-	Uint8 underAttackTimer; // Counts down 240 frames after being attacked.
-	// Catalog-derived visibility cache occupies existing alignment padding.
+	Uint8 action = WALK; // Game::addUnit chooses movement; loading restores action.
+	Uint8 underAttackTimer;
 	Uint8 configuredVisionRadius = 1;
-	Sint32 hp, trigHP;
-	Sint32 hungry, hungriness, trigHungry, trigHungryCarrying;
-	Uint32 fruitMask, fruitCount;
-	Sint32 performance[NB_ABILITY];
 	Uint8 level[NB_ABILITY];
-	Uint8 constructionLevel = 0; // Independent of work/harvest speed.
-	// Explicit unsigned masks avoid implementation-defined bitfield layout.
-	Uint32 learningFlags = 0;
-	bool canLearn(int ability) const { return (learningFlags & (Uint32(1) << ability)) != 0; }
+	Uint8 constructionLevel = 0;
+	Sint8 destinationPurpose;
+	Sint8 carriedMaterial;
+	Uint8 levelUpAnimation = 0, magicActionAnimation = 0; // Presentation clocks are captured.
+	std::array<Uint8,3> areaServiceRemainders{};
+
+    // Cached abilities have a deliberate runtime cap; catalog tables stay wide.
+    // Apply rule arithmetic (notably HP division) before committing the cache.
+    void setPerformance(int ability,Sint64 value) {
+        assert(ability>=0 && ability<NB_ABILITY);
+        performance[ability]=UnitPerformanceStorage(value<0 ? 0 : value>UnitPerformanceLimit ? UnitPerformanceLimit : value);
+    }
+	static constexpr Uint32 LearningMask = (Uint32(1) << NB_ABILITY) - 1;
+	static_assert(NB_ABILITY<=28);
+	enum Flag : Uint32 {
+		ServiceReserved = Uint32(1)<<NB_ABILITY,
+		WidePrimaryCargo = Uint32(1)<<(NB_ABILITY+1),
+		MedicalRecheck = Uint32(1)<<(NB_ABILITY+2),
+		ValidTarget = Uint32(1)<<(NB_ABILITY+3)
+	};
+	Uint32 learningFlags() const { return stateFlags & LearningMask; }
+	void setLearningFlags(Uint32 mask) { stateFlags=(stateFlags & ~LearningMask) | (mask & LearningMask); }
+	bool canLearn(int ability) const { return (stateFlags & (Uint32(1) << ability)) != 0; }
 	void setCanLearn(int ability, bool enabled)
 	{
 		const Uint32 mask = Uint32(1) << ability;
-		learningFlags = enabled ? learningFlags | mask : learningFlags & ~mask;
+		stateFlags = enabled ? stateFlags | mask : stateFlags & ~mask;
 	}
-	Sint32 experience, experienceLevel;
-	Sint8 destinationPurpose;
-	Sint8 carriedMaterial;
-	MaterialPacket carriedPacket{};
-	// Authoritative animation clocks; copied with the rest of unit state.
-	Uint8 levelUpAnimation = 0, magicActionAnimation = 0;
-	Sint32 jobTimer; // Waits 32 ticks for a job before seeking training or healing.
-	// Keep optional aura bookkeeping after existing hot simulation fields.
-	std::array<Uint8,3> areaServiceRemainders{};
-	Uint32 areaLastPulseTick = Uint32(-1);
+	void setFlag(Flag mask, bool enabled) { stateFlags=enabled ? stateFlags | mask : stateFlags & ~Uint32(mask); }
+	bool serviceResourcesReserved() const { return (stateFlags & ServiceReserved)!=0; }
+	void setServiceResourcesReserved(bool enabled) { setFlag(ServiceReserved,enabled); }
+	bool widePrimaryCargo() const { return (stateFlags & WidePrimaryCargo)!=0; }
+	void setWidePrimaryCargo(bool enabled) { setFlag(WidePrimaryCargo,enabled); }
+	bool needToRecheckMedical() const { return (stateFlags & MedicalRecheck)!=0; }
+	void setNeedToRecheckMedical(bool enabled) { setFlag(MedicalRecheck,enabled); }
+	bool validTarget() const { return (stateFlags & ValidTarget)!=0; }
+	void setValidTarget(bool enabled) { setFlag(ValidTarget,enabled); }
 	bool operator==(const UnitState&) const = default;
 };
 static_assert(std::is_trivially_copyable_v<UnitState>);

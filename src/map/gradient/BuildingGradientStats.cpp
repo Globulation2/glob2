@@ -66,7 +66,7 @@ BuildingGradientStats::Context BuildingGradientStats::context(const Building &bu
 			int delivered = 0, needed = 0;
 			for (int r = 0; r < MaterialSlotCount; ++r)
 			{
-				delivered += std::max(0, building.localMaterials[r]);
+				delivered += std::max(0, Sint32(building.localMaterials[r]));
 				needed += std::max(0, type->maxMaterial[r]);
 			}
 			value.progress = std::int8_t(needed > 0 ? std::min(3, delivered * 4 / needed) : 3);
@@ -110,7 +110,7 @@ BuildingGradientStats::Row BuildingGradientStats::previousRow(const Building &bu
 	if (!hasPrevious)
 		return row;
 	row.age = std::int64_t(tick) - std::int64_t(building.lastGlobalGradientUpdateStepCounter[slot]);
-	row.prevLocked = building.locked[access];
+	row.prevLocked = building.isLocked(access);
 	if (const auto &search = building.globalGradientSearch[slot])
 	{
 		row.prevSearch = true;

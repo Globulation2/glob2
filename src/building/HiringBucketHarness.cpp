@@ -38,7 +38,7 @@ static void hiringRoundIsFair()
     require(first && second, "create competing inns");
     for (auto* building : {first, second}) {
         building->maxUnitWorking = 2;
-        building->materials[WHEAT] = 0;
+        building->setMaterial(WHEAT, 0);
         building->updateCallLists();
     }
     for (int n = 0; n < 2; ++n) {

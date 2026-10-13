@@ -366,22 +366,30 @@ public:
 	void draw();
 	void handleClick(int relMouseX, int relMouseY);
 	void setValues(Sint32* value, Sint32* max, EditorValueReader readValue, EditorValueReader readMax);
+	void setValues(Sint32* value, Uint16* max, EditorValueReader readValue, EditorValueReader readMax);
     // Semantic value access shared by desktop and touch presentations.
     int currentValue() const;
     int maximumValue() const;
     void setValue(int requested);
 	void setValues(Sint32* value, EditorValueReader readValue);
 	void setValues(Uint8* value, EditorValueReader readValue);
+	void setValues(Uint16* value, EditorValueReader readValue);
+	void setValues(Uint16* value, Sint32* max, EditorValueReader readValue, EditorValueReader readMax);
+	void setMaterialValues(Building* building, int material, EditorValueReader readValue, EditorValueReader readMax);
 private:
 	Sint32* value;
 	Uint8* byteValue = nullptr;
-	int liveValue() const { return byteValue ? int(*byteValue) : *value; }
-	void writeLiveValue(int requested) { if (byteValue) *byteValue = Uint8(requested); else *value = requested; }
+	Uint16* wordValue = nullptr;
+	Building* materialBuilding = nullptr;
+	int materialIndex = 0;
+	int liveValue() const;
+	void writeLiveValue(int requested);
     EditorValueReader readValue,readMax;
 	Sint32* max = nullptr;
+	Uint16* wordMax = nullptr;
 	Sint32 fixedMax = 0;
 	bool isMaxPreset;
-	int liveMaximum() const { return isMaxPreset ? fixedMax : *max; }
+	int liveMaximum() const;
 };
 
 

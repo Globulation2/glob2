@@ -77,6 +77,18 @@ public:
 	void directionFromDxDy(void);
 private:
 	bool continueExtendedCargoCollection();
+public:
+	// Wide pathfinding outputs can change even on failure. Preserve both writes
+	// before storing the audited one-cell displacement in its compact fields.
+	template<class Search> bool findDisplacement(Search search)
+	{
+		int x=dx, y=dy;
+		const bool found=search(&x, &y);
+		assert(x>=-1 && x<=1 && y>=-1 && y<=1);
+		dx=Sint8(x); dy=Sint8(y);
+		return found;
+	}
+private:
 	void dxDyFromDirection(void);
 public:
 	static int directionFromDxDy(int dx, int dy);

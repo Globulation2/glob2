@@ -379,7 +379,7 @@ Handle capture(const Game& game,
                     append(entities->extraProduction, ExtraProductionState{b->productionRatio(id),b->productionUsed(id),b->originProductionRatio(id)});
                 }
 				v.maxHp = b->getEffectiveMaxHp();
-				v.usesTeamResources = b->materials == team->teamMaterials;
+				v.usesTeamResources = b->usesTeamMaterials();
 				v.availableSupplyMask = 0;
 				for (unsigned supplied=b->runtime->suppliesStockMask; supplied; supplied &= supplied-1) {
 					const unsigned material=std::countr_zero(supplied);
@@ -693,7 +693,7 @@ void verifyCapture(const Game& game, const Handle& handle)
                     if (live->availableMaterial(material) > 0) supplyMask |= MaterialMask(1u << material);
                 }
                 if (building.maxHp != live->getEffectiveMaxHp()
-                    || building.usesTeamResources != (live->materials == team->teamMaterials)
+                    || building.usesTeamResources != (live->usesTeamMaterials())
                     || building.availableSupplyMask != supplyMask)
                     throw std::logic_error("snapshot verification: building query values differ from the game");
                 compareRelationships(building.working, live->unitsWorking);

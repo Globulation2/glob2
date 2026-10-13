@@ -104,7 +104,7 @@ TEST_SUITE("EditorActionCoverage")
         editor.performAction("next building level page"); CHECK(editor.buildingLevel==0);
         auto* building=editor.game.addBuilding(4,4,3,0); REQUIRE(building);
         for (unsigned material=materialIndex(MaterialId::Gold);material<MaterialCount;++material)
-            building->materials[material]=1; // Existing owned stock makes each configured row relevant.
+            building->setMaterial(material, 1); // Existing owned stock makes each configured row relevant.
         cursor(editor,4,4); editor.performAction("select map building");
         REQUIRE(editor.selectedBuildingGID==building->gid);
         editor.drawMap(0,0,globalContainer->gfx->getW(),globalContainer->gfx->getH());
@@ -113,7 +113,7 @@ TEST_SUITE("EditorActionCoverage")
         {
             CHECK(editor.buildingResourceControls[resource]->maximumValue()==30);
             editor.buildingResourceControls[resource]->setValue(resource+1);
-            CHECK(building->materials[resource]==resource+1);
+            CHECK(building->material(resource)==resource+1);
         }
         editor.buildingEditFirstRow=100; editor.layoutBuildingEditRows();
         CHECK(editor.buildingWorkerLevelScrollBox->enabled);
@@ -160,13 +160,13 @@ TEST_SUITE("EditorActionCoverage")
             CAPTURE(source);
             select();CHECK_FALSE(shown(gold));CHECK_FALSE(shown(metal));
             if(source==0)editor.game.map.setResource(24,24,deposit,0);
-            if(source==1)supplier->materials[gold]=1;
+            if(source==1)supplier->setMaterial(gold, 1);
             if(source==2)worker->carriedMaterial=gold;
             if(source==3)team.teamMaterials[gold]=1;
             if(source==4)team.reservedTeamMaterials[gold]=1;
             select();CHECK(shown(gold));CHECK_FALSE(shown(metal));
             editor.game.map.replaceResource(24,24,Resource{});
-            supplier->materials[gold]=0;worker->carriedMaterial=-1;
+            supplier->setMaterial(gold, 0);worker->carriedMaterial=-1;
             team.teamMaterials[gold]=team.reservedTeamMaterials[gold]=0;
             select();CHECK_FALSE(shown(gold));CHECK_FALSE(shown(metal));
         }

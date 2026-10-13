@@ -14,6 +14,7 @@
 #include "Version.h"
 #include <BinaryStream.h>
 #include <stdexcept>
+#include <algorithm>
 #include "Game.h"
 #include "Team.h"
 #include "Unit.h"
@@ -80,8 +81,7 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 
 	// flag useful :
 	unitStayRange=type->defaultUnitStayRange;
-	for(int i=0; i<MaterialCount; i++)
-		clearingMaterials[i]=true;
+	clearingMaterialMask=AllMaterials;
 	// Clearance is gated by each deposit's clearable property, not its material.
 	minLevelToFlag=0;
 	minWorkerLevelToFlag=0;
@@ -105,7 +105,7 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 	totalRatio = 0;
 	for (unsigned i = 0; i < productionTypeCount(); ++i)
 	{
-		productionRatio(i) = type->semantics.production.initialRatios[i];
+		setProductionRatio(i, type->semantics.production.initialRatios[i]);
 		totalRatio += productionRatio(i);
 		productionUsed(i) = 0;
 	}
@@ -164,8 +164,7 @@ void Building::dirtyGradients()
 {
 	for (int i=0; i<BUILDING_GRADIENT_COUNT; i++)
 		dirtyGradient[i] = true;
-	for (int i=0; i<BUILDING_ACCESS_COUNT; i++)
-		locked[i] = false;
+	lockedMask=0;
 }
 
 // With scheduled building gradients, an edit elsewhere (a team-wide reset or a
@@ -186,7 +185,7 @@ void Building::resetPathfindGradients(GradientDrop cause)
 	const Uint32 due = now >= GRADIENT_DIRTY_REBUILD_TICKS ? now - GRADIENT_DIRTY_REBUILD_TICKS : 0;
 	std::bitset<BUILDING_GRADIENT_COUNT> kept;
 	for (int i=0; i<BUILDING_GRADIENT_COUNT; i++)
-		kept[i] = keep && globalGradient[i] && !locked[routeAccess(i % SWIM_CLASS_COUNT, BuildingRoute(i / SWIM_CLASS_COUNT))];
+		kept[i] = keep && globalGradient[i] && !isLocked(routeAccess(i % SWIM_CLASS_COUNT, BuildingRoute(i / SWIM_CLASS_COUNT)));
 	dirtyGradients();
 	auto *stats = owner->game->map.gradientStats.get();
 	for (int i=0; i<BUILDING_GRADIENT_COUNT; i++)
@@ -301,10 +300,11 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 	}
 
 	// Flag specific
-	unitStayRange = stream->readUint32("unitStayRange");
-	if (unitStayRange < 0 || unitStayRange > 32767) throw std::runtime_error("Invalid flag range");
+	const Uint32 savedStayRange = stream->readUint32("unitStayRange");
+	if (savedStayRange > 32767) throw std::runtime_error("Invalid flag range");
+	unitStayRange = Uint16(savedStayRange);
 
-	std::fill(std::begin(clearingMaterials),std::end(clearingMaterials),false);
+	clearingMaterialMask=0;
 	const unsigned clearingSlots=versionMinor>=FILE_FORMAT_VERSION_RUNTIME_RESOURCES ? MaterialCount : BASIC_COUNT;
 	for (unsigned i=0; i<clearingSlots; i++)
 	{
@@ -312,7 +312,7 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 		oss << "clearingRessources[" << i << "]";
 		const auto enabled = stream->readSint32(oss.str().c_str());
         if (enabled != 0 && enabled != 1) throw std::runtime_error("Invalid clearing material switch");
-        clearingMaterials[i] = enabled != 0;
+        setClearsMaterial(i,enabled != 0);
 	}
 
 
@@ -320,13 +320,15 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 	if (savedMinLevelToFlag < 0 || savedMinLevelToFlag >= NB_UNIT_LEVELS) throw std::runtime_error("Invalid flag level");
 	minLevelToFlag = Uint8(savedMinLevelToFlag);
 
+	// Preserve raw credits for pre-catalog repairs: those values were not stock.
+	std::array<Sint32,MaterialSlotCount> savedPrivateStock{};
+	privateStockClampedOnLoad = false;
 	// Building Specific
 	for (int i=0; i<MaterialSlotCount; i++)
 	{
 		std::ostringstream oss;
 		oss << "localRessource[" << i << "]";
-		localMaterials[i] = stream->readSint32(oss.str().c_str());
-		if (localMaterials[i]<0) throw std::runtime_error("Invalid negative building inventory");
+		savedPrivateStock[i] = stream->readSint32(oss.str().c_str());
 	}
 
 	// quality parameters
@@ -340,8 +342,9 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 		{
 			std::ostringstream oss;
 			oss << "ratio[" << i << "]";
-			ratio[i] = stream->readSint32(oss.str().c_str());
-			if (ratio[i] < 0 || ratio[i] > 32767) throw std::runtime_error("Invalid swarm ratio");
+			const Sint32 savedRatio = stream->readSint32(oss.str().c_str());
+			if (savedRatio < 0 || savedRatio > 32767) throw std::runtime_error("Invalid swarm ratio");
+			setProductionRatio(i, savedRatio);
 		}
 		{
 			std::ostringstream oss;
@@ -359,10 +362,10 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 	bullets = stream->readSint32("bullets");
 
 	// type
-	typeNum = stream->readSint32("typeNum");
-	if (typeNum < 0 || static_cast<size_t>(typeNum) >= types->size())
+	const Sint32 savedTypeNum = stream->readSint32("typeNum");
+	if (savedTypeNum < 0 || static_cast<size_t>(savedTypeNum) >= types->size())
 		throw std::runtime_error("Invalid building type");
-	bindType(typeNum,types);
+	bindType(savedTypeNum,types);
 	configureProductionState();
 	assert(type);
 	updateMaterialsPointer();
@@ -392,11 +395,13 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 		explorersRequireBombing = stream->readUint8("explorersRequireBombing") != 0;
 		siteCompletionPending = stream->readUint8("siteCompletionPending") != 0;
 		for (int unit=0; unit<NB_UNIT_TYPE; ++unit) {
-			constructionOriginRatios[unit]=stream->readSint32(("constructionOriginRatio["+std::to_string(unit)+"]").c_str());
-			if (constructionOriginRatios[unit]<0 || constructionOriginRatios[unit]>32767) throw std::runtime_error("Invalid saved construction production preference");
+			const Sint32 savedOriginRatio=stream->readSint32(("constructionOriginRatio["+std::to_string(unit)+"]").c_str());
+			if (savedOriginRatio<0 || savedOriginRatio>32767) throw std::runtime_error("Invalid saved construction production preference");
+			setOriginProductionRatio(unit, savedOriginRatio);
 		}
-		constructionOriginTypeNum = stream->readSint32("constructionOriginTypeNum");
-		if (constructionOriginTypeNum < -1 || constructionOriginTypeNum >= int(types->size())) throw std::runtime_error("Invalid saved construction origin");
+		const Sint32 savedOriginType = stream->readSint32("constructionOriginTypeNum");
+		if (savedOriginType < -1 || savedOriginType >= int(types->size())) throw std::runtime_error("Invalid saved construction origin");
+		constructionOriginTypeNum = Sint16(savedOriginType);
 		const bool pending = buildingState==WAITING_FOR_CONSTRUCTION || buildingState==WAITING_FOR_CONSTRUCTION_ROOM;
 		bool validOrigin=false;
 		if (constructionResultState==NO_CONSTRUCTION)
@@ -439,23 +444,30 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 			for (int r=0; r<MaterialSlotCount; ++r)
 				if (constructionResultState == REPAIR)
 				{
-					constructionBudget[r] = std::max(0, constructionBudget[r]-localMaterials[r]);
-					localMaterials[r] = 0; // Old repair credits were never real inventory.
+					constructionBudget[r] = Sint32(std::max<Sint64>(0,Sint64(constructionBudget[r])-std::max(0,savedPrivateStock[r])));
+					savedPrivateStock[r] = 0; // Old repair credits were never real inventory.
 				}
-				else constructionReserved[r] = std::min(constructionBudget[r], localMaterials[r]);
+				else constructionReserved[r] = std::min(constructionBudget[r], std::max(0,savedPrivateStock[r]));
 		}
 	}
+    // Retain the signed 32-bit stream encoding; select bounded storage only
+    // after historical credit migration. Demand and job budgets remain wide.
+    for(int r=0;r<MaterialSlotCount;++r) {
+        privateStockClampedOnLoad |= savedPrivateStock[r]<0 || savedPrivateStock[r]>PrivateBuildingStockLimit;
+        setPrivateMaterial(r,savedPrivateStock[r]);
+    }
 	seenByMask = stream->readUint32("seenByMask");
 	areaFunded=false; areaFundingType=-1; areaFundingTeam=-1; areaFundingTick=0;
 	if (versionMinor>=FILE_FORMAT_VERSION_AREA_EFFECTS) {
 		const auto funded=stream->readUint8("areaFunded");
-		areaFundingType=stream->readSint32("areaFundingType");
+		const Sint32 savedFundingType=stream->readSint32("areaFundingType");
 		areaFundingTick=stream->readUint32("areaFundingTick");
 		const auto fundingTeam=stream->readSint32("areaFundingTeam");
-		if (funded>1 || areaFundingType < -1 || areaFundingType>=Sint32(types->size()) ||
-			(funded && areaFundingType<0) || fundingTeam < -1 || fundingTeam>=Team::MAX_COUNT ||
-			(areaFundingType>=0 && ((areaFundingTick&15) || fundingTeam<0)))
+		if (funded>1 || savedFundingType < -1 || savedFundingType>=Sint32(types->size()) ||
+			(funded && savedFundingType<0) || fundingTeam < -1 || fundingTeam>=Team::MAX_COUNT ||
+			(savedFundingType>=0 && ((areaFundingTick&15) || fundingTeam<0)))
 			throw std::runtime_error("Invalid area effect funding state");
+		areaFundingType=Sint16(savedFundingType);
 		areaFunded=funded;
 		areaFundingTeam=Sint8(fundingTeam);
 	}
@@ -531,7 +543,7 @@ void Building::save(GAGCore::OutputStream *stream)
 	{
 		std::ostringstream oss;
 		oss << "clearingRessources[" << i << "]";
-		stream->writeSint32(clearingMaterials[i], oss.str().c_str());
+		stream->writeSint32(clearsMaterial(i), oss.str().c_str());
 	}
 	stream->writeSint32(minLevelToFlag, "minLevelToFlag");
 
@@ -806,9 +818,9 @@ void Building::saveCrossRef(GAGCore::OutputStream *stream)
 void Building::bindType(Sint32 id, BuildingsTypes* catalog)
 {
     if (!catalog) catalog=&owner->game->buildingsTypes;
-    typeNum=id;
     type=catalog->get(id);
     runtime=catalog->getRuntime(id);
+    typeNum=Uint16(id);
     owner->game->areaEffects.changed(gid);
 }
 

@@ -59,6 +59,7 @@
     "BuildingLibrary/*",
     "BuildingServices/*",
     "BuildingProductionCombat/*",
+    "BuildingStock/*",
     "BuildingCapabilities/*",
     "SceneExtract/*",
     "BuildingCatalogFixtures/*",

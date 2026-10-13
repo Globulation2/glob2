@@ -109,7 +109,7 @@ void Map::updateGlobalGradient(Building *building, int swimClass, BuildingRoute 
 					{
 						size_t addr = coordToIndex(posX+w+xi, posY+h+yi);
 						if(resourceCells[addr].resource.type != NO_RES_TYPE && resourcePropertiesByIndex(resourceCells[addr].resource.type).clearable &&
-						   isClearableResourceForMaterials(int(addr & wMask), int(addr >> wDec), building->clearingMaterials))
+						   isClearableResourceForMaterials(int(addr & wMask), int(addr >> wDec), building->clearingMaterialMask))
 						{
 							if(gradient[addr] == GRADIENT_UNREACHABLE)
 								gradient[addr] = GRADIENT_AT_GOAL;
@@ -165,7 +165,7 @@ void Map::updateGlobalGradient(Building *building, int swimClass, BuildingRoute 
 			for (int y=0; y<height && !reachable; ++y)
 				reachable=gradient[coordToIndex(posX-1,posY+y)]>GRADIENT_FORBIDDEN || gradient[coordToIndex(posX+posW,posY+y)]>GRADIENT_FORBIDDEN;
 		}
-		building->locked[access] = !reachable;
+		building->setLocked(access,!reachable);
 		if (!reachable)
 		{
 			recycleBuildingGradientSearch(std::move(building->globalGradientSearch[slot]));
@@ -173,7 +173,7 @@ void Map::updateGlobalGradient(Building *building, int swimClass, BuildingRoute 
 		}
 	}
 	else
-		building->locked[access]=false;
+		building->setLocked(access,false);
 
 	auto &search = building->globalGradientSearch[slot];
 	if (!search) search = acquireBuildingGradientSearch();

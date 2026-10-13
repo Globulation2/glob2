@@ -245,21 +245,40 @@ frame is never overwritten. The legacy live calculation is a cold reference path
 The single `UnitState` record retains pointer-free, standard-layout, trivially
 copyable storage. Medical, activity, displacement and movement enums use explicit
 byte backing and retain their historical numeric values and gaps. The action
-selector and direction are bytes; global ability IDs retain their existing enum.
+selector, direction and one-cell displacement components are bytes; global ability
+IDs retain their existing enum. Wide pathfinding outputs are stored even on failure.
 Training levels and construction qualification are bytes, destination and carried
 material IDs are signed bytes, animation clocks are bytes, and the terrain health
 remainder is signed 16-bit storage. Terrain exposure accumulates in an `int`
 before signed division and remainder. Seventeen learning flags use an unsigned
-mask with value getters and explicit setters that preserve neighboring bits.
+mask shared with service reservation, primary-cargo ownership, medical recheck
+and target-validity flags. Value getters and explicit setters preserve neighboring
+bits; natural field ordering groups byte storage without packed structs.
 Editor level controls bind the byte fields explicitly and retain wide arithmetic.
 
-Building lifecycle enums and recruitment levels use explicit byte storage. Inside
-capacity uses unsigned 16-bit storage, preserving accepted values through 65535.
-Live inventory bindings retain their existing ordering outside the state record.
-Private stock, cached demand, production counters and ratios, staffing, priorities,
-exchange masks, unrestricted simulation timers and identifiers also remain wide.
-All fifteen inventory slots use the same lossless inline storage for ordinary and
-exceptional values.
+Cached unit performance uses unsigned 16-bit storage with an explicit 0–65535
+cap. Catalog and per-team race tables remain wide; HP rule division occurs in wide
+arithmetic before a newly computed cache value is capped. Actual HP, hunger,
+speed, movement surplus, experience and unrestricted timers remain wide. Loaded
+cache values outside the cap are deliberately normalized, so this part of the
+change alters historical or authored extreme-value continuation; it is not a
+lossless narrowing. See [persistence](persistence.md#entity-storage-and-serialized-values)
+for validation and save normalization.
+
+Building lifecycle enums and recruitment levels use byte storage. Inside capacity
+uses unsigned 16-bit storage through 65535. Catalog-bounded identifiers, stay range,
+and builtin production preferences use 16-bit storage; production counters remain
+wide because valid ratio changes can carry them beyond that range. Named unsigned
+masks store clearing preferences and footprint locks; wire encodings still write
+individual logical flags.
+Private building stock contains fifteen bytes and saturates at 255. Shared team
+stock remains wide. Live accessors select the active pool, while immutable stock
+views return logical values without widening the captured private array. Bindings
+retain inactive private stock; private-to-team upgrades transfer it once. Demand,
+staffing, failure counters, exchange masks and unrestricted timers remain wide.
+A private commitment needing more than 255 of any material cannot be funded under
+this cap; catalog costs are not silently reduced. See [persistence](persistence.md#entity-storage-and-serialized-values)
+for the deliberate normalization of historical stock and reservation migration.
 Snapshot views inherit the authoritative records for bulk capture; only those
 base records have a standard-layout guarantee, and views only promise trivial
 copyability. Natural alignment is retained without packed structs.

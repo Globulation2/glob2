@@ -242,8 +242,8 @@ TEST_SUITE("WorldSnapshot")
         static_assert(std::is_base_of_v<UnitState,SimulationSnapshot::UnitView>);
         CHECK(observed.typeNum==unit->typeNum); CHECK(observed.posX==unit->posX); CHECK(observed.posY==unit->posY);
         CHECK(observed.configuredVisionRadius==unit->configuredVisionRadius);
-        CHECK(observed.action==unit->action); CHECK(observed.needToRecheckMedical==unit->needToRecheckMedical);
-        CHECK(observed.serviceResourcesReserved==unit->serviceResourcesReserved);
+        CHECK(observed.action==unit->action); CHECK(observed.needToRecheckMedical()==unit->needToRecheckMedical());
+        CHECK(observed.serviceResourcesReserved()==unit->serviceResourcesReserved());
         CHECK(observed.trigHP==unit->trigHP); CHECK(observed.trigHungryCarrying==unit->trigHungryCarrying);
         CHECK(observed.delta==unit->delta); CHECK(observed.jobTimer==17); CHECK(observed.terrainHealthRemainder==9);
         for(int i=0;i<NB_ABILITY;++i) {
@@ -695,12 +695,12 @@ TEST_SUITE("WorldSnapshot")
 		local->localMaterials[WOOD] = 17;
 		shared->localMaterials[WOOD] = 19;
 		// Exercise the actual runtime binding independently of the catalog flag.
-		shared->materials = fixture.game.teams[0]->teamMaterials;
+		shared->sharedMaterials = fixture.game.teams[0]->teamMaterials;
 		fixture.game.teams[0]->teamMaterials[WOOD] = 23;
 		local->priority = -1; local->maxUnitWorking = 3;
 		shared->minWorkerLevelToFlag = 2;
 		shared->explorersRequireBombing = true;
-		local->locked[4] = true;
+		local->setLocked(4,true);
 		const auto catalog = SimulationSnapshot::captureCatalog(fixture.game);
 		auto captured = SimulationSnapshot::capture(fixture.game, catalog);
 		AIEngine::AIWorldView held(captured);
@@ -715,8 +715,8 @@ TEST_SUITE("WorldSnapshot")
 		}
 		CHECK_FALSE(frozenLocal->usesTeamResources);
 		CHECK(frozenShared->usesTeamResources);
-		CHECK(held.buildingResources(*frozenLocal).data() == frozenLocal->localMaterials);
-		CHECK(held.buildingResources(*frozenShared).data() == held.teams[0].materials.data());
+		CHECK(held.buildingResources(*frozenLocal).privateData() == frozenLocal->localMaterials);
+		CHECK(held.buildingResources(*frozenShared).teamData() == held.teams[0].materials.data());
 		CHECK(held.buildingResources(*frozenLocal)[WOOD] == 17);
 		CHECK(held.buildingResources(*frozenShared)[WOOD] == 23);
 		local->localMaterials[WOOD] = 31;
@@ -1129,7 +1129,7 @@ TEST_SUITE("WorldSnapshot")
         CHECK_NOTHROW(SimulationSnapshot::verifyCapture(fixture.game,second));
         CHECK(second.entities!=first.entities);
         CHECK(second.entities->units.front().levelUpAnimation==LEVEL_UP_ANIMATION_FRAME_COUNT);
-        building->localMaterials[MaterialSlotCount-1]=65536;
+        building->setPrivateMaterial(MaterialSlotCount-1,255);
         CHECK_THROWS_AS(SimulationSnapshot::verifyCapture(fixture.game,second),std::logic_error);
         CHECK(first.entities->buildings.front().localMaterials[MaterialSlotCount-1]==0);
     }
@@ -1300,7 +1300,7 @@ TEST_SUITE("WorldSnapshot")
             for(int i=0;i<buildings;++i) {
                 auto* b=fixture.addBuilding("inn",4+(i%16)*6,4+(i/16)*6); REQUIRE(b);
                 for(int material=0;material<MaterialSlotCount;++material) {
-                    b->localMaterials[material]=(scenario==3 || (scenario==4 && i%2)) ? 100000 : 200;
+                    b->setPrivateMaterial(material,(scenario==3 || (scenario==4 && i%2)) ? 100000 : 200);
                     b->wishedMaterials[material]=(scenario==3 || (scenario==4 && i%2)) ? -40000 : 0;
                 }
             }
@@ -1328,13 +1328,13 @@ TEST_SUITE("WorldSnapshot")
             for(auto* building:fixture.team->liveBuildings.entries()) {
                 initialPrivateReservations.push_back(building->reservedMaterials);
                 if(!sharedInventory) building->reservedMaterials.fill(7);
-                REQUIRE(building->materials==(sharedInventory ? fixture.team->teamMaterials : building->localMaterials));
+                REQUIRE(building->usesTeamMaterials()==sharedInventory);
                 const auto base=reinterpret_cast<std::uintptr_t>(building);
                 if(!layout.contains("offsets")) {
                     const auto offset=[&](const void* field) {return reinterpret_cast<std::uintptr_t>(field)-base;};
                     layout["offsets"]={{"localMaterials",offset(building->localMaterials)},{"wishedMaterials",offset(building->wishedMaterials)},
                         {"type",offset(&building->type)},{"owner",offset(&building->owner)},
-                        {"materials",offset(&building->materials)},{"reservedMaterials",offset(&building->reservedMaterials)}};
+                        {"materials",offset(&building->sharedMaterials)},{"reservedMaterials",offset(&building->reservedMaterials)}};
                 }
                 histogram(addressMod64,base);
                 histogram(stockMod64,reinterpret_cast<std::uintptr_t>(building->localMaterials));
@@ -1385,7 +1385,7 @@ TEST_SUITE("WorldSnapshot")
             };
             const auto update=[&](int) {
                 Sint64 sum=0;
-                for(auto* b:fixture.team->liveBuildings.entries()) {b->materials[WHEAT]^=1;sum+=b->availableMaterial(WHEAT);}
+                for(auto* b:fixture.team->liveBuildings.entries()) {b->setMaterial(WHEAT, b->material(WHEAT) ^ (1));sum+=b->availableMaterial(WHEAT);}
                 sink=sum;
             };
             for(int i=0;i<128;++i)read(i);
@@ -1403,7 +1403,7 @@ TEST_SUITE("WorldSnapshot")
                 auto* building=fixture.team->liveBuildings.entries()[i];
                 building->reservedMaterials=initialPrivateReservations[i];
                 for(int material=0;material<MaterialSlotCount;++material)
-                    REQUIRE(building->localMaterials[material]==((scenario==3 || (scenario==4 && i%2)) ? 100000 : 200));
+                    REQUIRE(building->localMaterials[material]==((scenario==3 || (scenario==4 && i%2)) ? 255 : 200));
             }
             fixture.step(128);
             const auto owner=measure("owner",count(config,"owner",512),[&](int){fixture.step();});

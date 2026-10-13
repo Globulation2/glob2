@@ -516,7 +516,7 @@ static void reviewBugRegressions()
         Unit* walker=game.addUnit(6+i,7,0,WARRIOR,1,1,1,1); REQUIRE(walker);
         walker->medical=Unit::MED_FREE; walker->activity=Unit::ACT_RANDOM;
         walker->level[ATTACK_SPEED]=walker->level[ATTACK_STRENGTH]=1;
-        walker->performance[SWIM]=0;
+        walker->setPerformance(SWIM,0);
     }
     // Walkers cannot reach the far island, so no offense is planned.
     ai.plan_offense(c);
@@ -526,7 +526,7 @@ static void reviewBugRegressions()
         Unit* swimmer=game.addUnit(6+i,8,0,WARRIOR,1,1,1,1); REQUIRE(swimmer);
         swimmer->medical=Unit::MED_FREE; swimmer->activity=Unit::ACT_RANDOM;
         swimmer->level[ATTACK_SPEED]=swimmer->level[ATTACK_STRENGTH]=1;
-        swimmer->performance[SWIM]=1;
+        swimmer->setPerformance(SWIM,1);
     }
     ai.plan_offense(c);
     REQUIRE(ai.budget.tactical_kind==AIMaxima::Tactics::MissionSiege);
@@ -633,7 +633,7 @@ static void applyClearingGeometry(Context& c, ::Building* flag)
         auto selector=std::dynamic_pointer_cast<OrderModifyClearingFlag>(order);
         if(selector && selector->gid==flag->gid)
             for(int r=0; r<BASIC_COUNT; ++r)
-                flag->clearingMaterials[r]=selector->clearingMaterials[r];
+                flag->setClearsMaterial(r,selector->clearingMaterials[r]);
     }
     c.orders.clear();
 }
@@ -1038,7 +1038,7 @@ static void innCompletionStaffingRegressions()
     // Finish through the engine so its one-worker post-construction default
     // is in place before the completion callback runs.
     for(int resource=0;resource<MaterialCount;++resource)
-        inn->materials[resource]=inn->type->maxMaterial[resource];
+        inn->setMaterial(resource, inn->type->maxMaterial[resource]);
     inn->updateBuildingSite();
     REQUIRE(inn->constructionResultState==Building::NO_CONSTRUCTION);
     REQUIRE(inn->maxUnitWorking==1);
@@ -1341,7 +1341,7 @@ static void explorerSwarmStaffingRegressions()
     // apportionment to check: what matters is that the empty one ends up with
     // more carriers than the full ones.
     for(int id=0;id<3;++id)
-        game.teams[0]->myBuildings[Building::GIDtoID(c.buildings.found().at(id).gid)]->materials[WHEAT]=id ? 20 : 0;
+        game.teams[0]->myBuildings[Building::GIDtoID(c.buildings.found().at(id).gid)]->setMaterial(WHEAT, id ? 20 : 0);
     ai.budget.staffing_window_samples=2;
     ai.budget.staffing_cooldown_passes=0;
     ai.budget.staffing_minimum_workers=1;
@@ -1420,7 +1420,7 @@ static void completedSwarmBudgetRegressions()
             ai.strategy.economy.swarm_pressure_sensitivity,ai.strategy.economy.swarm_workers_per_building).workers);
     };
     verify(1);
-    for(int resource=0;resource<MaterialCount;++resource) site->materials[resource]=site->type->maxMaterial[resource];
+    for(int resource=0;resource<MaterialCount;++resource) site->setMaterial(resource, site->type->maxMaterial[resource]);
     site->updateBuildingSite(); verify(2);
     // Repair changes available producers, not the colony-wide labor budget.
     complete->hp/=2; complete->launchConstruction(1,1);
@@ -1456,11 +1456,11 @@ static void economicResourceAccessRegressions()
         REQUIRE(ai.environment.accessible_stone==stone);
     };
     verify(0,0);
-    worker->performance[SWIM]=1; verify(1,1);
+    worker->setPerformance(SWIM,1); verify(1,1);
     // Deposits reserved against harvesting must not become available supply.
     game.map.setAreaMask(game.map.coordToIndex(19,12), &Tile::forbidden, game.map.getTile(19,12).forbidden | (player.team->me)); verify(0,1);
     game.map.setAreaMask(game.map.coordToIndex(19,12), &Tile::forbidden, game.map.getTile(19,12).forbidden & (~player.team->me));
-    worker->performance[SWIM]=0; verify(0,0);
+    worker->setPerformance(SWIM,0); verify(0,0);
     // A local worker on the second island can reach its resources without swimming.
     REQUIRE(game.addUnit(20,16,0,WORKER,0,0,0,0)); verify(1,1);
 
@@ -1473,7 +1473,7 @@ static void economicResourceAccessRegressions()
     ai.update_environment_model(c);
     REQUIRE((ai.known_algae_units==7 && ai.walk_accessible_algae_units==4));
     REQUIRE((ai.accessible_algae_units==4 && ai.environment.accessible_algae==1));
-    worker->performance[SWIM]=1; ai.update_environment_model(c);
+    worker->setPerformance(SWIM,1); ai.update_environment_model(c);
     REQUIRE((ai.accessible_algae_units==7 && ai.environment.accessible_algae==2));
 }
 

@@ -94,13 +94,13 @@ struct CatalogWorld
             const int offset=32*team;
             auto* building=game.addBuilding(4+offset,4+offset,anchor,team,4,4);
             REQUIRE(building);
-            building->materials[WHEAT]=building->type->maxMaterial[WHEAT];
+            building->setMaterial(WHEAT, building->type->maxMaterial[WHEAT]);
             game.teams[team]->addToStaticAbilitiesLists(building);
             game.teams[team]->startPosX=4+offset;game.teams[team]->startPosY=4+offset;
             game.teams[team]->startPosSet=Team::START_POS_FROM_UNIT;
             if(populatedProvider) {
                 auto* provider=game.addBuilding(10+offset,4+offset,completed,team,3,3);
-                REQUIRE(provider);provider->materials[WHEAT]=32;
+                REQUIRE(provider);provider->setMaterial(WHEAT, 32);
                 game.teams[team]->addToStaticAbilitiesLists(provider);
             }
             for(int i=0;i<12;++i)world.addUnit(i<10?WORKER:WARRIOR,4+offset+i,12+offset,team);
@@ -969,7 +969,7 @@ TEST_CASE("keyed worker courses retain qualification grants and exclude unrelate
     auto* worker=world.addUnit(WORKER,10,10);worker->constructionLevel=0;
     auto* custom=world.addUnit(3,11,10);custom->constructionLevel=0;
     auto* carrier=world.addUnit(4,12,10);carrier->constructionLevel=0;
-    auto* inactive=world.addUnit(WORKER,13,10);inactive->performance[HARVEST]=0;
+    auto* inactive=world.addUnit(WORKER,13,10);inactive->setPerformance(HARVEST,0);
     auto* defender=world.addUnit(3,14,10);defender->jobPurpose=UnitJobPurpose::Defend;
     const auto view=AIEngine::AIWorldView::capture(game,AIEngine::AIWorldView::captureCatalog(game));
     const auto projection=AIEngine::ObservationQueries::workerTrainingProjection(*view,false);
@@ -1023,12 +1023,12 @@ TEST_CASE("Castor swimming workforce excludes inactive carriers")
     auto* worker=world.addUnit(WORKER,10,10);
     for(int i=0;i<3;++i) {
         auto* inactive=world.addUnit(WORKER,11+i,10);
-        inactive->performance[SWIM]=10;inactive->performance[HARVEST]=0;
+        inactive->setPerformance(SWIM,10);inactive->setPerformance(HARVEST,0);
     }
     AICastor ai(world.game.players[0]);
     withCastorObservation(ai,world.game,[&]{ai.computeCanSwim();});
     CHECK_FALSE(ai.canSwim);
-    worker->performance[SWIM]=10;
+    worker->setPerformance(SWIM,10);
     withCastorObservation(ai,world.game,[&]{ai.computeCanSwim();});
     CHECK(ai.canSwim);
 }

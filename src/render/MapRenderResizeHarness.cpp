@@ -278,7 +278,7 @@ void run(bool gpu)
 	gui.clearSelection();
 	std::cout << "PASS building, worker and resource selection copies\n";
 
-	unit->validTarget=true;
+	unit->setValidTarget(true);
 	unit->targetX=5; unit->targetY=3;
 	clear();
 	{ const PresentationFrame &pathScene = glob2test::sceneOf(game); game.drawUnitPathLine(0,0,52,34,1600,1100,0,0,0,0, *pathScene.entities.unit(unit->gid), pathScene); }
@@ -488,7 +488,7 @@ void run(bool gpu)
 	}
 
 	// A complete production map frame catches the separate virtual-flag pass.
-	unit->validTarget=false;
+	unit->setValidTarget(false);
 	globals->settings.setGraphicsDetail(false);
 	clear();
 	glob2test::drawMap(game,0,0,1800,1100,160,0,0,0,0,view,Game::DRAW_WHOLE_MAP);
@@ -590,7 +590,7 @@ void run(bool gpu)
 		const int mapW=world.map.getW(), mapH=world.map.getH();
 		for(int y=0;y<mapH;++y) for(int x=0;x<mapW;++x) world.map.clearImmobileUnit(x,y);
 		auto *walker=world.addUnit(1,1,0,WORKER,0,255,0,0);
-		REQUIRE(walker); walker->validTarget=true;
+		REQUIRE(walker); walker->setValidTarget(true);
 		for(int width : {640,1200,1800}) for(int reverse : {0,1})
 		{
 			resize(width);

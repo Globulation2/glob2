@@ -52,13 +52,13 @@ void Unit::flyToTarget()
     if (owner->map->hasAirTerrainConstraints())
     {
         dx = dy = 0;
-        owner->map->pathfindAirPointToPoint(posX,posY,targetX,targetY,&dx,&dy);
+        findDisplacement([&](int* pathDx, int* pathDy) { return owner->map->pathfindAirPointToPoint(posX,posY,targetX,targetY,pathDx,pathDy); });
         directionFromDxDy();
         return;
     }
 	int ldx=targetX-posX;
 	int ldy=targetY-posY;
-	simplifyDirection(ldx, ldy, &dx, &dy);
+	findDisplacement([&](int* pathDx, int* pathDy) { simplifyDirection(ldx, ldy, pathDx, pathDy); return true; });
 	directionFromDxDy();
 	Map *map=owner->map;
 	if (map->isFreeForAirUnit(posX+dx, posY+dy))
@@ -104,7 +104,7 @@ void Unit::escapeGroundTarget()
 {
 	int ldx=posX-targetX;
 	int ldy=posY-targetY;
-	simplifyDirection(ldx, ldy, &dx, &dy);
+	findDisplacement([&](int* pathDx, int* pathDy) { simplifyDirection(ldx, ldy, pathDx, pathDy); return true; });
 	directionFromDxDy();
 	bool canSwim=performance[SWIM];
 	Map *map=owner->map;
@@ -173,7 +173,7 @@ void Unit::directionFromDxDy(void)
 
 void Unit::dxDyFromDirection(void)
 {
-	dxDyFromDirection(direction,&dx,&dy);
+	findDisplacement([&](int* pathDx, int* pathDy) { dxDyFromDirection(direction,pathDx,pathDy); return true; });
 }
 
 int Unit::swimClass() const

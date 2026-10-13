@@ -296,8 +296,8 @@ void Unit::handleMovementAttackingAround()
 	if (movement == MOV_RANDOM_GROUND)
 	{
 		if (performance[FLY] && !attachedBuilding && !owner->map->isGuardArea(posX,posY,owner->me)) {
-			validTarget=findAirGuardDestination(&targetX,&targetY);
-			movement=validTarget?MOV_FLYING_TARGET:MOV_RANDOM_FLY;
+			setValidTarget(findAirGuardDestination(&targetX,&targetY));
+			movement=validTarget()?MOV_FLYING_TARGET:MOV_RANDOM_FLY;
 			return;
 		}
 		// Under guard-area balancing a crowded area's tiles sit below the goal
@@ -309,13 +309,13 @@ void Unit::handleMovementAttackingAround()
 				return owner->map->isGuardArea(x, y, owner->me);
 			return owner->map->getGuardAreasGradient(owner->teamNumber, swimClass())[owner->map->coordToIndex(x, y)] == GRADIENT_AT_GOAL;
 		};
-		if (!performance[FLY] && !attachedBuilding && owner->map->pathfindArea(entityRandom, Map::AreaKind::Guard, owner->teamNumber, swimClass(), posX, posY, &dx, &dy))
+		if (!performance[FLY] && !attachedBuilding && findDisplacement([&](int* pathDx, int* pathDy) { return owner->map->pathfindArea(entityRandom, Map::AreaKind::Guard, owner->teamNumber, swimClass(), posX, posY, pathDx, pathDy); }))
 		{
 			directionFromDxDy();
 			movement = MOV_GOING_DX_DY;
 			// get the target position of guard area for display
 			owner->map->getGlobalGradientDestination(owner->map->getGuardAreasGradient(owner->teamNumber, swimClass()), posX, posY, &targetX, &targetY);
-			validTarget=true;
+			setValidTarget(true);
 		}
 		else if (attachedBuilding || insideGuardArea(posX, posY))
 		{
@@ -359,19 +359,19 @@ void Unit::handleMovementAttackingAround()
 				direction = bestDirection;
 				dxDyFromDirection();
 				movement = MOV_GOING_DX_DY;
-				validTarget = false;
+				setValidTarget(false);
 			}
 			else
 			{
 				movement = MOV_RANDOM_GROUND;
-				validTarget = false;
+				setValidTarget(false);
 			}
 		}
 		else
 		{
 			// this case happens when no movement could be found because of busy places or because we are in a guard area or because there is no guard area
 			movement = MOV_RANDOM_GROUND;
-			validTarget = false;
+			setValidTarget(false);
 		}
 	}
 	if (performance[FLY] && movement==MOV_RANDOM_GROUND) movement=MOV_RANDOM_FLY;
@@ -381,7 +381,7 @@ void Unit::tryAcquireAttackTarget(int x, int y, int newQuality, int& quality)
 {
 	if (newQuality >= quality)
 		return;
-	bool pathfind = performance[FLY] ? owner->map->pathfindAirPointToPoint(posX,posY,posX+x,posY+y,&dx,&dy) : owner->map->pathfindPointToPoint(posX, posY, posX+x, posY+y, &dx, &dy, swimClass(), owner->me, GOING_TARGET_MAX_PATH_LENGTH);
+	bool pathfind = performance[FLY] ? findDisplacement([&](int* pathDx, int* pathDy) { return owner->map->pathfindAirPointToPoint(posX,posY,posX+x,posY+y,pathDx,pathDy); }) : findDisplacement([&](int* pathDx, int* pathDy) { return owner->map->pathfindPointToPoint(posX, posY, posX+x, posY+y, pathDx, pathDy, swimClass(), owner->me, GOING_TARGET_MAX_PATH_LENGTH); });
 	if (!pathfind)
 		return;
 	if (abs(x)<=1 && abs(y)<=1)
@@ -396,7 +396,7 @@ void Unit::tryAcquireAttackTarget(int x, int y, int newQuality, int& quality)
 	}
 	targetX=posX+x;
 	targetY=posY+y;
-	validTarget=true;
+	setValidTarget(true);
 	quality=newQuality;
 }
 
@@ -427,7 +427,7 @@ void Unit::handleMovementClearingResources()
 		{
 			int x=posX+tdx;
 			int y=posY+tdy;
-			if (map->warpDistSquare(x, y, bx, by)<=usr2 && map->isClearableResourceForMaterials(x, y, attachedBuilding->clearingMaterials) && !(owner->map->isForbidden(x, y, owner->me)))
+			if (map->warpDistSquare(x, y, bx, by)<=usr2 && map->isClearableResourceForMaterials(x, y, attachedBuilding->clearingMaterialMask) && !(owner->map->isForbidden(x, y, owner->me)))
 			{
 				dx=tdx;
 				dy=tdy;
@@ -438,12 +438,12 @@ void Unit::handleMovementClearingResources()
 	if (performance[FLY]) {
 		int distance;
 		if (findAirClearingDestination(attachedBuilding,&targetX,&targetY,&distance)) {
-			validTarget=true; movement=MOV_FLYING_TARGET;
+			setValidTarget(true); movement=MOV_FLYING_TARGET;
 		} else { stopAttachedForBuilding(false); movement=MOV_RANDOM_FLY; }
 		return;
 	}
 	assert(attachedBuilding);
-	if (map->pathfindBuilding(entityRandom, attachedBuilding, swimClass(), posX, posY, &dx, &dy, BuildingRoute::Clearing))
+	if (findDisplacement([&](int* pathDx, int* pathDy) { return map->pathfindBuilding(entityRandom, attachedBuilding, swimClass(), posX, posY, pathDx, pathDy, BuildingRoute::Clearing); }))
 	{
 		directionFromDxDy();
 		movement=MOV_GOING_DX_DY;
@@ -481,12 +481,12 @@ void Unit::handleMovementRandom()
 			previousClearingArea=ClearingAreaClaim{Uint32(targetX),Uint32(targetY)};
 			previousClearingAreaDistance=distance;
 			map->setClearingAreaClaimed(targetX,targetY,owner->teamNumber,gid);
-			validTarget=true; movement=MOV_FLYING_TARGET;
+			setValidTarget(true); movement=MOV_FLYING_TARGET;
 		} else movement=MOV_RANDOM_FLY;
 	}
 	else if (map->getForbidden(posX, posY)&owner->me)
 	{
-		if (map->pathfindForbidden(NULL, owner->teamNumber, swimClass(), posX, posY, &dx, &dy))
+		if (findDisplacement([&](int* pathDx, int* pathDy) { return map->pathfindForbidden(NULL, owner->teamNumber, swimClass(), posX, posY, pathDx, pathDy); }))
 			directionFromDxDy();
 		else
 		{
@@ -519,7 +519,7 @@ void Unit::handleMovementRandom()
 			{
 				dx=0;
 				dy=0;
-				owner->map->pathfindArea(entityRandom, Map::AreaKind::Clear, owner->teamNumber, swimClass(), posX, posY, &dx, &dy);
+				findDisplacement([&](int* pathDx, int* pathDy) { return owner->map->pathfindArea(entityRandom, Map::AreaKind::Clear, owner->teamNumber, swimClass(), posX, posY, pathDx, pathDy); });
 
 				targetX = tempTargetX;
 				targetY = tempTargetY;
@@ -543,7 +543,7 @@ void Unit::handleMovementRandom()
 				directionFromDxDy();
 				movement = MOV_GOING_DX_DY;
 				owner->map->setClearingAreaClaimed(targetX, targetY, owner->teamNumber, gid);
-				validTarget=true;
+				setValidTarget(true);
 			}
 			else
 				movement=MOV_RANDOM_GROUND;
@@ -572,8 +572,8 @@ void Unit::handleMovementGoingToFlagOrBuilding()
 	{
 		movement=MOV_FLYING_TARGET;
 	}
-	else if (map->pathfindBuilding(entityRandom, targetBuilding, swimClass(), posX, posY, &dx, &dy,
-		activity == ACT_FLAG ? (jobPurpose == UnitJobPurpose::Clear ? BuildingRoute::Clearing : BuildingRoute::Combat) : BuildingRoute::Footprint))
+	else if (findDisplacement([&](int* pathDx, int* pathDy) { return map->pathfindBuilding(entityRandom, targetBuilding, swimClass(), posX, posY, pathDx, pathDy,
+		activity == ACT_FLAG ? (jobPurpose == UnitJobPurpose::Clear ? BuildingRoute::Clearing : BuildingRoute::Combat) : BuildingRoute::Footprint); }))
 	{
 		movement=MOV_GOING_DX_DY;
 	}
@@ -598,9 +598,9 @@ void Unit::handleMovementExitingBuilding()
 {
 	bool exitFound;
 	if (performance[FLY])
-		exitFound=attachedBuilding->findAirExit(&posX, &posY, &dx, &dy);
+		exitFound=findDisplacement([&](int* pathDx, int* pathDy) { return attachedBuilding->findAirExit(&posX, &posY, pathDx, pathDy); });
 	else
-		exitFound=attachedBuilding->findGroundExit(&posX, &posY, &dx, &dy, performance[SWIM],performance[WALK]>0);
+		exitFound=findDisplacement([&](int* pathDx, int* pathDy) { return attachedBuilding->findGroundExit(&posX, &posY, pathDx, pathDy, performance[SWIM],performance[WALK]>0); });
 	if (exitFound)
 	{
 		jobPurpose=UnitJobPurpose::None;
@@ -611,7 +611,7 @@ void Unit::handleMovementExitingBuilding()
 		attachedBuilding=NULL;
 		setTargetBuilding(NULL);
 		assert(ownExchangeBuilding==NULL);
-		assert(needToRecheckMedical);
+		assert(needToRecheckMedical());
 	}
 	else
 	{
@@ -624,17 +624,17 @@ void Unit::handleMovementGoingToResource()
 	Map *map=owner->map;
 	if (performance[FLY]) {
 		int distance;
-		if (!validTarget || (!map->isMaterialTakeableSlot(targetX,targetY,destinationPurpose) && map->getBuilding(targetX,targetY)==NOGBID))
+		if (!validTarget() || (!map->isMaterialTakeableSlot(targetX,targetY,destinationPurpose) && map->getBuilding(targetX,targetY)==NOGBID))
 			if (!findMaterialDestination(destinationPurpose,&targetX,&targetY,&distance,attachedBuilding && attachedBuilding->fetchesFromMarkets(),attachedBuilding)) {
 				stopAttachedForBuilding(false); movement=MOV_RANDOM_FLY; return;
 			}
-		validTarget=true; movement=MOV_FLYING_TARGET; return;
+		setValidTarget(true); movement=MOV_FLYING_TARGET; return;
 	}
 	int teamNumber=owner->teamNumber;
 	int swim=swimClass();
 	bool stopWork;
 	const bool withMarkets=attachedBuilding && attachedBuilding->fetchesFromMarkets();
-	if (map->pathfindMaterial(entityRandom, teamNumber, destinationPurpose, swim, posX, posY, &dx, &dy, &stopWork, attachedBuilding, withMarkets))
+	if (findDisplacement([&](int* pathDx, int* pathDy) { return map->pathfindMaterial(entityRandom, teamNumber, destinationPurpose, swim, posX, posY, pathDx, pathDy, &stopWork, attachedBuilding, withMarkets); }))
 	{
 		directionFromDxDy();
 		movement=MOV_GOING_DX_DY;

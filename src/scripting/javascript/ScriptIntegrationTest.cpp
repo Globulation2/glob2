@@ -354,8 +354,8 @@ TEST_CASE("JavaScript orders execute and survive save load" *
 	GLOB2_REQUIRE(clearingLoaded.game.load(&clearingIn), "JavaScript contract");
 	auto *restoredFlag =
 		clearingLoaded.game.teams[0]->myBuildings[Building::GIDtoID(clearing->gid)];
-	GLOB2_REQUIRE(restoredFlag && !restoredFlag->clearingMaterials[STONE] &&
-					  restoredFlag->clearingMaterials[WOOD],
+	GLOB2_REQUIRE(restoredFlag && !restoredFlag->clearsMaterial(STONE) &&
+					  restoredFlag->clearsMaterial(WOOD),
 				  "JavaScript contract");
 }
 TEST_CASE("JavaScript scenario effects commit atomically and resume" *
@@ -1861,7 +1861,7 @@ TEST_CASE("JavaScript building clearing materials retain full fixed slots and le
     glob2test::HeadlessGame world({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
     auto* building=world.game.addBuilding(5,5,world.game.buildingsTypes.getFinishedTypeNum("inn"),0);
     REQUIRE(building);
-    for(unsigned m=0;m<MaterialCount;++m) building->clearingMaterials[m]=(m%2)!=0;
+    for(unsigned m=0;m<MaterialCount;++m) building->setClearsMaterial(m,(m%2)!=0);
     Observations observations(world.game,-1);
     const auto buildings=observations.query("buildings",{});
     REQUIRE(buildings.items.size()==1);

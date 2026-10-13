@@ -27,7 +27,7 @@ MaterialMask editorMaterialPresence(const Game& game, MaterialMask requested)
         for (int id=0;id<Building::MAX_COUNT;++id)
             if (const Building* building=team->myBuildings[id])
                 for (unsigned m=0;m<MaterialCount;++m)
-                    if (building->materials[m]) present|=MaterialMask(1u<<m);
+                    if (building->material(m)) present|=MaterialMask(1u<<m);
     }
     return present;
 }
@@ -125,7 +125,7 @@ bool MapEdit::performBuildingAction(const std::string& action, float relMouseX, 
 			for (int resource=0; resource<MaterialCount; ++resource)
 			{
 				buildingResourceLabels[resource]->setValues([resource](const PresentationFrame& frame) { const auto* value=frame.entities.building(frame.entities.selectedBuilding.ref); return value ? Sint32(frame.entities.materials(*value)[resource]) : 0; }, [resource](const PresentationFrame& frame) { const auto* value=frame.entities.building(frame.entities.selectedBuilding.ref); return value ? Sint32(frame.entities.type(*value)->maxMaterial[resource]) : 0; });
-				buildingResourceControls[resource]->setValues(&b->materials[resource],&b->type->maxMaterial[resource], [resource](const PresentationFrame& frame) { const auto* value=frame.entities.building(frame.entities.selectedBuilding.ref); return value ? Sint32(frame.entities.materials(*value)[resource]) : 0; }, [resource](const PresentationFrame& frame) { const auto* value=frame.entities.building(frame.entities.selectedBuilding.ref); return value ? Sint32(frame.entities.type(*value)->maxMaterial[resource]) : 0; });
+				buildingResourceControls[resource]->setMaterialValues(b,resource, [resource](const PresentationFrame& frame) { const auto* value=frame.entities.building(frame.entities.selectedBuilding.ref); return value ? Sint32(frame.entities.materials(*value)[resource]) : 0; }, [resource](const PresentationFrame& frame) { const auto* value=frame.entities.building(frame.entities.selectedBuilding.ref); return value ? std::min(Sint32(frame.entities.type(*value)->maxMaterial[resource]), value->usesTeamResources ? INT_MAX : PrivateBuildingStockLimit) : 0; });
 				addBuildingEditRow(buildingResourceLabels[resource],buildingResourceControls[resource],b->type->maxMaterial[resource]>0 &&
 					(resource < int(MaterialId::Gold) || (present&(1u<<resource))));
 			}

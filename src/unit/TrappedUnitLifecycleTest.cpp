@@ -58,7 +58,7 @@ struct Fixture {
         unit->destinationPurpose = purpose;
         unit->insideTimeout = 0;
         unit->medical = purpose == FEED ? Unit::MED_HUNGRY : Unit::MED_FREE;
-        unit->needToRecheckMedical = true;
+        unit->setNeedToRecheckMedical(true);
         unit->hungry = 10;
         unit->hungriness = 2;
         unit->hp = 2;
@@ -75,7 +75,7 @@ struct Fixture {
         Building* food = purpose == FEED ? building : game.addBuilding(30, 30,
             globalContainer->buildingsTypes.getTypeNum("inn", 0, false), 0);
         REQUIRE(food);
-        food->materials[WHEAT] = 10;
+        food->setMaterial(WHEAT, 10);
         food->updateConstructionState();
         int x, y, dx, dy;
         REQUIRE(!building->findGroundExit(&x, &y, &dx, &dy, false));
@@ -189,7 +189,7 @@ void productionRecovery(bool stocked, bool blocked) {
         globalContainer->buildingsTypes.getTypeNum("swarm", 0, false), 0);
     REQUIRE(swarm);
     f.game.teams[0]->addToStaticAbilitiesLists(swarm);
-    swarm->materials[WHEAT] = stocked ? swarm->type->foodPerUnit : 0;
+    swarm->setMaterial(WHEAT, stocked ? swarm->type->foodPerUnit : 0);
     swarm->productionTimeout = 100;
     // A player can enable production even when all sliders are at zero.
     for (int t = 0; t < NB_UNIT_TYPE; ++t) swarm->ratio[t] = 0;

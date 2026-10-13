@@ -220,18 +220,18 @@ static void disconnectedArmy() {
     auto target=f.building(38,30,1); f.islands();
     std::vector<Unit*> warriors;
     for(int i=0;i<12;++i) {
-        auto u=f.warrior(6+i,6);u->performance[SWIM]=0;warriors.push_back(u);
+        auto u=f.warrior(6+i,6);u->setPerformance(SWIM,0);warriors.push_back(u);
     }
     auto& a=*f.ai; auto& c=a.context; c.initialize(); f.remember(target);
     a.plan_offense(c);
     REQUIRE(a.budget.tactical_kind==Tactics::MissionNone);
-    for(int i=0;i<4;++i) warriors[i]->performance[SWIM]=1;
+    for(int i=0;i<4;++i) warriors[i]->setPerformance(SWIM,1);
     a.plan_offense(c);
     REQUIRE(a.budget.tactical_kind==Tactics::MissionSiege);
     REQUIRE(a.budget.tactical_requested_force==a.offense_diagnostics.eligibleWarriors);
     // Warriors already in the destination component need no swimming ability.
     for(int i=0;i<4;++i) {
-        auto u=warriors[i];u->performance[SWIM]=0;
+        auto u=warriors[i];u->setPerformance(SWIM,0);
         f.game.map.setGroundUnit(u->posX,u->posY,NOGUID);
         u->posX=30+i;u->posY=20;f.game.map.setGroundUnit(u->posX,u->posY,u->gid);
     }

@@ -246,7 +246,7 @@ namespace
 			u->setTargetBuilding(NULL);
 			b->owner->map->materialAvailableUpdateSlot(b->owner->teamNumber, resource, u->swimClass(), u->posX, u->posY, &u->targetX, &u->targetY, NULL, b->fetchesFromMarkets(), b);
 		}
-		u->validTarget = true;
+		u->setValidTarget(true);
 	}
 }
 
@@ -478,7 +478,7 @@ void Team::syncStep(void)
 
 	for (std::list<Building *>::iterator it=swarms.begin(); it!=swarms.end(); ++it)
 		{
-			if (!(*it)->locked[SWIM_VARIANT_CAN_SWIM])
+			if (!(*it)->isLocked(SWIM_VARIANT_CAN_SWIM))
 				for (unsigned unitType : (*it)->type->semantics.production.enabledUnits)
 					if ((*it)->canAffordProduction(unitType)) { isEnoughFoodInSwarm = true; break; }
 			(*it)->swarmStep();

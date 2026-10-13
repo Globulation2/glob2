@@ -90,8 +90,8 @@ static void aUnitIsJudgedOnTheWalkToTheResource()
 	Unit* unit = new Unit(siteX - 2, siteY, 0, WORKER, team, 0);
 	team->myUnits[0] = unit;
 	team->rebuildLiveLists();
-	unit->performance[WALK] = 10;
-	unit->performance[HARVEST] = 10;
+	unit->setPerformance(WALK,10);
+	unit->setPerformance(HARVEST,10);
 	unit->activity = Unit::ACT_RANDOM;
 	unit->displacement = Unit::DIS_RANDOM;
 	unit->medical = Unit::MED_FREE;
@@ -156,8 +156,8 @@ static void theScoreEstimatesTheWholeTrip()
 	Unit* unit = new Unit(siteX - 2, siteY, 0, WORKER, team, 0);
 	team->myUnits[0] = unit;
 	team->rebuildLiveLists();
-	unit->performance[WALK] = 10;
-	unit->performance[HARVEST] = 10;
+	unit->setPerformance(WALK,10);
+	unit->setPerformance(HARVEST,10);
 	unit->activity = Unit::ACT_RANDOM;
 	unit->displacement = Unit::DIS_RANDOM;
 	unit->medical = Unit::MED_FREE;
@@ -195,7 +195,7 @@ TEST_SUITE("FetchHiringScore")
             .loadDefaultRace=true, .header=true});
         auto* inn=world.addBuilding("inn",8,8,0,0);
         REQUIRE(inn);
-        inn->materials[WHEAT]=0;
+        inn->setMaterial(WHEAT, 0);
         REQUIRE(world.game.map.incResourceByIndex(18,8,WHEAT,0));
         auto* unit=world.addUnit(WORKER,6,8);
         REQUIRE(unit);
@@ -243,7 +243,7 @@ TEST_SUITE("FetchHiringScore")
         glob2test::HeadlessGame world({.teams=1, .discovered=true, .clearImmobile=true,
             .loadDefaultRace=true, .header=true});
         auto* inn=world.addBuilding("inn",8,8,0,0);
-        REQUIRE(inn); inn->materials[WHEAT]=0;
+        REQUIRE(inn); inn->setMaterial(WHEAT, 0);
         for(int slot : {Unit::MAX_COUNT-1,3}) {
             auto* unit=new Unit(6,8,Unit::GIDfrom(slot,world.team->teamNumber),WORKER,world.team,0);
             world.team->myUnits[slot]=unit; world.team->attachUnit(slot);
@@ -265,7 +265,7 @@ TEST_SUITE("FetchHiringScore")
         auto* team = world.game.teams[0];
         auto* inn = world.addBuilding("inn", 8, 8, 0, 0);
         REQUIRE(inn);
-        inn->materials[WHEAT] = 0;
+        inn->setMaterial(WHEAT, 0);
         // Identical positions and hunger deliberately tie the candidates.
         // Attach in reverse order to exercise sorted traversal rather than insertion order.
         for (int slot : {Unit::MAX_COUNT-1, 3})
@@ -273,7 +273,7 @@ TEST_SUITE("FetchHiringScore")
             auto* unit = new Unit(6, 8, slot, WORKER, team, 0);
             team->myUnits[slot] = unit;
             team->attachUnit(slot);
-            unit->performance[HARVEST] = 10;
+            unit->setPerformance(HARVEST,10);
             unit->activity = Unit::ACT_RANDOM;
             unit->medical = Unit::MED_FREE;
             unit->carriedMaterial = WHEAT;

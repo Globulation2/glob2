@@ -58,21 +58,21 @@ void Unit::refreshEffectiveAbilities()
 	const auto& traits=runtimeTraits();
 	const std::pair<Abilities,UnitRuntimeTraits::Flag> gates[]={{WALK,UnitRuntimeTraits::Walk},{SWIM,UnitRuntimeTraits::Swim},{FLY,UnitRuntimeTraits::Fly},{ATTACK_SPEED,UnitRuntimeTraits::Melee},{ATTACK_STRENGTH,UnitRuntimeTraits::Melee},{MAGIC_ATTACK_AIR,UnitRuntimeTraits::MagicAir},{MAGIC_ATTACK_GROUND,UnitRuntimeTraits::MagicGround},{MAGIC_CREATE_WOOD,UnitRuntimeTraits::MagicCreateWood},{MAGIC_CREATE_WHEAT,UnitRuntimeTraits::MagicCreateWheat},{MAGIC_CREATE_ALGA,UnitRuntimeTraits::MagicCreateAlga}};
 	for (const auto& [ability,flag]:gates) {
-		if (!traits.has(flag)) performance[ability]=0;
+		if (!traits.has(flag)) setPerformance(ability,0);
 	}
-	if (!traits.has(UnitRuntimeTraits::Construct) && !traits.has(UnitRuntimeTraits::Transport)) performance[BUILD]=0;
-	if (!traits.has(UnitRuntimeTraits::Clear) && !traits.has(UnitRuntimeTraits::Transport)) performance[HARVEST]=0;
+	if (!traits.has(UnitRuntimeTraits::Construct) && !traits.has(UnitRuntimeTraits::Transport)) setPerformance(BUILD,0);
+	if (!traits.has(UnitRuntimeTraits::Clear) && !traits.has(UnitRuntimeTraits::Transport)) setPerformance(HARVEST,0);
 	const Uint32 learningMask=(Uint32(1)<<NB_ABILITY)-1;
-	learningFlags=traits.learnableMask & learningMask;
+	setLearningFlags(traits.learnableMask & learningMask);
 }
 
 void Unit::rebindDefinitionForSetup()
 {
 	// Parallel training derives its reservation from the original learnability.
 	// Capture that amount before replacing flags and cached abilities.
-	const auto oldServiceCost=serviceResourcesReserved && attachedBuilding
+	const auto oldServiceCost=serviceResourcesReserved() && attachedBuilding
 		? attachedBuilding->serviceCost(this,destinationPurpose) : BuildingMaterialCost{};
-	const int oldHP=std::max(1,performance[HP]);
+	const int oldHP=std::max(1,int(performance[HP]));
 	const int oldFood=std::max(1,configuredFoodCapacity);
 	const auto& traits=runtimeTraits();
 	bool trainingDefinitionChanged=hasCapability(UnitRuntimeTraits::LearnConstruction)!=traits.has(UnitRuntimeTraits::LearnConstruction);
@@ -81,9 +81,10 @@ void Unit::rebindDefinitionForSetup()
 	capabilityFlags=traits.flags;
 	configuredFoodCapacity=traits.foodCapacity;
 	configuredVisionRadius=Uint8(traits.visionRadius);
-	for (int ability=0;ability<NB_ABILITY;++ability)
-		performance[ability]=race->getUnitType(typeNum,level[ability])->performance[ability];
-	performance[HP]=std::max(1,performance[HP]/owner->game->gameHeader.getGlassCannonScale());
+	for (int ability=0;ability<NB_ABILITY;++ability) {
+        const Sint32 raw=race->getUnitType(typeNum,level[ability])->performance[ability];
+        setPerformance(ability,ability==HP ? std::max(1,raw/owner->game->gameHeader.getGlassCannonScale()) : raw);
+    }
 	refreshEffectiveAbilities();
 	hp=int(std::clamp<Sint64>(Sint64(hp)*performance[HP]/oldHP,INT_MIN,performance[HP]));
 	hungry=int(std::clamp<Sint64>(Sint64(hungry)*configuredFoodCapacity/oldFood,INT_MIN,configuredFoodCapacity));
@@ -119,9 +120,9 @@ void Unit::rebindDefinitionForSetup()
 	}
 	if (cancelTask) {
 		if (attachedBuilding) {
-			if (serviceResourcesReserved) {
+			if (serviceResourcesReserved()) {
 				attachedBuilding->releaseMaterials(oldServiceCost);
-				serviceResourcesReserved=false;
+				setServiceResourcesReserved(false);
 			}
 			attachedBuilding->removeUnitFromWorking(this);
 			attachedBuilding->removeUnitFromInside(this);
@@ -131,23 +132,23 @@ void Unit::rebindDefinitionForSetup()
 		dx=dy=0;
 		direction=UNIT_DIRECTION_NONE;
 		selectPreferredMovement();
-		speed=std::max(1,performance[action]);
+		speed=std::max(1,int(performance[action]));
 	} else if (!inService && action>=STOP_WALK && action<NB_ABILITY && !performance[action]) {
 		// Idle exploration, interrupted melee and adjacent clearing can run
 		// without a building subscription and still carry an obsolete action.
 		displacement=DIS_RANDOM;
 		movement=performance[FLY]?MOV_RANDOM_FLY:MOV_RANDOM_GROUND;
-		validTarget=false;
+		setValidTarget(false);
 		dx=dy=0;
 		direction=UNIT_DIRECTION_NONE;
 		selectPreferredMovement();
-		speed=std::max(1,performance[action]);
+		speed=std::max(1,int(performance[action]));
 	}
 	if (action==WALK || action==SWIM || action==FLY || action==STOP_WALK || action==STOP_SWIM || action==STOP_FLY) {
 		selectPreferredMovement();
-		speed=std::max(1,performance[action]);
+		speed=std::max(1,int(performance[action]));
 	}
-	needToRecheckMedical=true;
+	setNeedToRecheckMedical(true);
 }
 
 void Unit::init(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
@@ -163,8 +164,7 @@ void Unit::init(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
 	configuredVisionRadius=Uint8(race->getRuntime(typeNum).visionRadius);
 	jobPurpose=UnitJobPurpose::None;
 	regenerationRemainder=0;
-	widePrimaryCargo=false;
-	learningFlags=0;
+	stateFlags=0;
 
 	// identity
 	this->gid=gid;
@@ -179,7 +179,7 @@ void Unit::init(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
 	dy=0;
 	direction=UNIT_DIRECTION_NONE;
 	insideTimeout=0;
-	serviceResourcesReserved=false;
+	setServiceResourcesReserved(false);
 	constructionLevel=level;
 	terrainHealthRemainder=0;
 	areaServiceRemainders[BuildingAreaEffects::Healing]=0;
@@ -194,9 +194,8 @@ void Unit::init(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
 	// quality parameters
 	for (int i=0; i<NB_ABILITY; i++)
 	{
-		this->performance[i]=race->getUnitType(typeNum, level)->performance[i];
-		if (i==HP)
-			this->performance[i]=std::max(1, this->performance[i]/hpDivisor);
+		const Sint32 raw=race->getUnitType(typeNum,level)->performance[i];
+        setPerformance(i,i==HP ? std::max(1,raw/hpDivisor) : raw);
 		this->level[i]=level;
 		setCanLearn(i,(bool)race->getUnitType(typeNum, 3)->performance[i]); //TODO: is is a better way to hack this?
 		// This hack prevent units from unlearning. Units level 3 must have all the abilities of all preceding levels
@@ -207,7 +206,7 @@ void Unit::init(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
 	experienceLevel = 0;
 
 	// states
-	needToRecheckMedical=true;
+	setNeedToRecheckMedical(true);
 	medical=MED_FREE;
 	activity=ACT_RANDOM;
 	displacement=DIS_RANDOM;
@@ -218,7 +217,7 @@ void Unit::init(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
 
 	targetX = 0;
 	targetY = 0;
-	validTarget = false;
+	setValidTarget(false);
 	magicActionTimeout = 0;
 
 	underAttackTimer = 0;
@@ -323,14 +322,14 @@ void Unit::subscriptionSuccess(Building* building, bool inside, bool attraction,
 				{
 					displacement=DIS_GOING_TO_FLAG;
 					assert(targetBuilding==attachedBuilding);
-					validTarget=true;
+					setValidTarget(true);
 				}
 				break;
 				case ACT_UPGRADING:
 				{
 					displacement=DIS_GOING_TO_BUILDING;
 					assert(targetBuilding==attachedBuilding);
-					validTarget=true;
+					setValidTarget(true);
 				}
 				break;
 				case ACT_FILLING:
@@ -340,21 +339,21 @@ void Unit::subscriptionSuccess(Building* building, bool inside, bool attraction,
 					{
 						displacement=DIS_GOING_TO_BUILDING;
 						setTargetBuilding(attachedBuilding);
-						validTarget=true;
+						setValidTarget(true);
 					}
 					else
 					{
 						displacement=DIS_GOING_TO_RESOURCE;
 						targetBuilding=NULL;
 						findMaterialDestination(destinationPurpose,&targetX,&targetY,nullptr,attachedBuilding->fetchesFromMarkets(),attachedBuilding);
-						validTarget=true;
+						setValidTarget(true);
 					}
 				}
 				break;
 				case ACT_RANDOM :
 				{
 					displacement=DIS_RANDOM;
-					validTarget=false;
+					setValidTarget(false);
 				}
 				break;
 				default:
@@ -397,7 +396,7 @@ void Unit::applyTerrainHealthRate(int rate)
 	hp = int(std::clamp<Sint64>(Sint64(hp)+change,INT_MIN,performance[HP]));
 	if (hp>=performance[HP] && owner->game->areaEffects.enabled()) areaServiceRemainders[BuildingAreaEffects::Healing]=0;
 	if (hp >= performance[HP] && terrainHealthRemainder > 0) terrainHealthRemainder = 0;
-	if (change) needToRecheckMedical = true;
+	if (change) setNeedToRecheckMedical(true);
 	resolveDeath();
 }
 
@@ -439,7 +438,7 @@ void Unit::applyAreaServices()
 		areaServiceRemainders[Healing] = 0;
 	else
 	{
-		hp = std::min(performance[HP], hp + amount(Healing));
+		hp = std::min(int(performance[HP]), hp + amount(Healing));
 		if (hp >= performance[HP])
 			areaServiceRemainders[Healing] = 0;
 	}
@@ -452,7 +451,7 @@ void Unit::applyAreaServices()
 			areaServiceRemainders[Feeding] = 0;
 	}
 	if (hp != beforeHp || hungry != beforeHunger)
-		needToRecheckMedical = true;
+		setNeedToRecheckMedical(true);
 }
 
 void Unit::syncStep(void)
@@ -463,7 +462,7 @@ void Unit::syncStep(void)
 	if (hasCapability(UnitRuntimeTraits::Regenerate) && hp<performance[HP] && displacement!=DIS_INSIDE) {
 		if (hp<UNIT_HP_DEATH_THRESHOLD) { resolveDeath(); if (isDead) return; }
 		const int value=runtimeTraits().regenerationQ8+regenerationRemainder;
-		hp=std::min(performance[HP], hp+value/256);
+		hp=std::min(int(performance[HP]), hp+value/256);
 		regenerationRemainder=hp==performance[HP]?0:value%256;
 	}
 	assert(speed>=0);
@@ -573,7 +572,7 @@ void Unit::setWorkerLevel(Sint32 newLevel)
 	for (int ability : {(int)BUILD, (int)HARVEST})
 	{
 		level[ability] = newLevel;
-		performance[ability] = race->getUnitType(typeNum, newLevel)->performance[ability];
+		setPerformance(ability,race->getUnitType(typeNum,newLevel)->performance[ability]);
 	}
 	refreshEffectiveAbilities();
 }
@@ -624,8 +623,8 @@ void Unit::applyTrainingUnchecked(const BuildingTrainingSpec& training, int abil
 	if (level[ability] < training.targetLevel)
 	{
 		level[ability] = training.targetLevel;
-		performance[ability] = race->getUnitType(typeNum, training.targetLevel)->performance[ability];
-		if (ability == HP) performance[ability] = std::max(1, performance[ability] / owner->game->gameHeader.getGlassCannonScale());
+		const Sint32 raw=race->getUnitType(typeNum,training.targetLevel)->performance[ability];
+        setPerformance(ability,ability==HP ? std::max(1,raw/owner->game->gameHeader.getGlassCannonScale()) : raw);
 	}
 	if (hasCapability(UnitRuntimeTraits::LearnConstruction)) constructionLevel = std::max(int(constructionLevel), training.constructionLevel);
 	refreshEffectiveAbilities();
@@ -641,7 +640,7 @@ unsigned Unit::carriedPacketCount() const
 {
 	if (!hasCapability(UnitRuntimeTraits::ExtendedCargo)) return carriedMaterial>=0;
 	const auto* extra=owner->game->unitCargo.find(gid);
-	return (carriedMaterial>=0)+(extra?extra->size():0)-(widePrimaryCargo?1:0);
+	return (carriedMaterial>=0)+(extra?extra->size():0)-(widePrimaryCargo()?1:0);
 }
 
 bool Unit::hasCarriedMaterial(int material) const
@@ -655,7 +654,7 @@ bool Unit::hasCarriedMaterial(int material) const
 
 bool Unit::hasDeliverableCargo(const Building& building, int material) const
 {
-	if (building.materialDeliveryNeed(material)<=0 || building.materials[material]==std::numeric_limits<Sint32>::max()) return false;
+	if (building.materialDeliveryNeed(material)<=0 || building.material(material)>=building.materialStockLimit()) return false;
 	const Uint64 multiplier=building.type->materialMultiplier[material];
 	const auto usable=[&](WideMaterialPacket packet) {
 		const Uint64 divisor=std::gcd(packet.numerator,packet.denominator);
@@ -666,7 +665,7 @@ bool Unit::hasDeliverableCargo(const Building& building, int material) const
 		return packet.numerator<=maximum/scale && packet.denominator<=maximum/scale
 			&& packet.numerator*scale>=packet.denominator/common;
 	};
-	if (carriedMaterial==material && !widePrimaryCargo && usable({carriedPacket.numerator,carriedPacket.denominator})) return true;
+	if (carriedMaterial==material && !widePrimaryCargo() && usable({carriedPacket.numerator,carriedPacket.denominator})) return true;
 	if (const auto* extra=owner->game->unitCargo.find(gid))
 		for (const auto& entry:*extra) if (entry.material==material && usable(entry.packet)) return true;
 	return false;
@@ -689,7 +688,7 @@ void Unit::clearCargo()
 {
 	carriedMaterial=UNIT_CARRIED_RESOURCE_NONE;
 	carriedPacket={};
-	widePrimaryCargo=false;
+	setWidePrimaryCargo(false);
 	owner->game->unitCargo.erase(gid);
 }
 
@@ -697,7 +696,7 @@ void Unit::receiveCarriedMaterial(int resource, MaterialPacket packet)
 {
 	if (!hasCapability(UnitRuntimeTraits::ExtendedCargo)) {
 		if (carriedMaterial>=0) ++owner->stats.events().materialSpillageEvents;
-		if (widePrimaryCargo) clearCargo();
+		if (widePrimaryCargo()) clearCargo();
 		carriedMaterial=resource; carriedPacket=packet; return;
 	}
 	receiveCargoPacket(resource,{packet.numerator,packet.denominator});
@@ -713,7 +712,7 @@ void Unit::receiveCargoPacket(int resource, WideMaterialPacket packet)
 		carriedMaterial=resource;
 		if (packet.denominator<=1000000 && packet.numerator<=std::numeric_limits<Uint32>::max())
 			carriedPacket={Uint32(packet.numerator),Uint32(packet.denominator)};
-		else { widePrimaryCargo=true; carriedPacket={}; owner->game->unitCargo.overflow(gid).push_back({resource,packet}); }
+		else { setWidePrimaryCargo(true); carriedPacket={}; owner->game->unitCargo.overflow(gid).push_back({resource,packet}); }
 	} else owner->game->unitCargo.overflow(gid).push_back({resource,packet});
 }
 
@@ -721,7 +720,7 @@ bool Unit::deliverCargo(Building& building)
 {
 	// Keep the one-packet path identical, including the building's established
 	// fractional packet settlement and discard accounting.
-	if (!hasCapability(UnitRuntimeTraits::ExtendedCargo) && !widePrimaryCargo) {
+	if (!hasCapability(UnitRuntimeTraits::ExtendedCargo) && !widePrimaryCargo()) {
 		if (carriedMaterial<0 || building.materialDeliveryNeed(carriedMaterial)<=0) return false;
 		building.deliverMaterialPacket(carriedMaterial,carriedPacket);
 		carriedMaterial=UNIT_CARRIED_RESOURCE_NONE; carriedPacket={}; return true;
@@ -735,7 +734,7 @@ bool Unit::deliverCargo(Building& building)
 			if (result.residual.numerator) retained.push_back({entry.material,result.residual});
 		} else retained.push_back(entry);
 	};
-	if (carriedMaterial>=0 && !widePrimaryCargo) offer({carriedMaterial,{carriedPacket.numerator,carriedPacket.denominator}});
+	if (carriedMaterial>=0 && !widePrimaryCargo()) offer({carriedMaterial,{carriedPacket.numerator,carriedPacket.denominator}});
 	if (const auto* extra=owner->game->unitCargo.find(gid)) for (const auto& entry:*extra) offer(entry);
 	clearCargo();
 	for (const auto& entry:retained) receiveCargoPacket(entry.material,entry.packet);
@@ -757,7 +756,7 @@ bool Unit::continueExtendedCargoCollection()
 		const int stock=packet.numerator>std::numeric_limits<Uint64>::max()/std::max(Uint64(1),multiplier)?1:int(packet.numerator*multiplier/packet.denominator);
 		wished[material]=int(std::max<Sint64>(0,Sint64(wished[material])-std::max(1,stock)));
 	};
-	if (carriedMaterial>=0 && !widePrimaryCargo) subtract(carriedMaterial,{carriedPacket.numerator,carriedPacket.denominator});
+	if (carriedMaterial>=0 && !widePrimaryCargo()) subtract(carriedMaterial,{carriedPacket.numerator,carriedPacket.denominator});
 	if (const auto* extra=owner->game->unitCargo.find(gid)) for (const auto& entry:*extra) subtract(entry.material,entry.packet);
 	int selected=-1, best=INT_MAX;
 	for (int material=0;material<MaterialCount;++material) {
@@ -772,7 +771,7 @@ bool Unit::continueExtendedCargoCollection()
 	int distance;
 	if (!findMaterialDestination(selected,&targetX,&targetY,&distance,attachedBuilding->fetchesFromMarkets(),attachedBuilding)) return false;
 	destinationPurpose=selected; setTargetBuilding(nullptr);
-	displacement=DIS_GOING_TO_RESOURCE; validTarget=true;
+	displacement=DIS_GOING_TO_RESOURCE; setValidTarget(true);
 	return true;
 }
 
@@ -824,7 +823,7 @@ bool Unit::findAirClearingDestination(const Building* zone,Sint32* x,Sint32* y,i
 		if (map.isForbidden(px,py,owner->me)) continue;
 		if (zone) {
 			if (map.warpDistSquare(px,py,zone->posX,zone->posY)>zone->unitStayRange*zone->unitStayRange
-				|| !map.isClearableResourceForMaterials(px,py,zone->clearingMaterials)) continue;
+				|| !map.isClearableResourceForMaterials(px,py,zone->clearingMaterialMask)) continue;
 		} else if (!map.isClearingTarget(map.coordToIndex(px,py),owner->me,farms)) continue;
 		const unsigned cost=air.enabled()?air.costTo(px,py):unsigned(map.warpDistMax(posX,posY,px,py))*GRADIENT_STEP;
 		if (!zone) {

@@ -10,6 +10,8 @@
 #include "TeamDisplay.h"
 #include "UnitDisplayNames.h"
 #include "Unit.h"
+#include "Building.h"
+#include "BuildingType.h"
 #include "render/UnitAnimation.h"
 #include "UnitType.h"
 #include <SDL3/SDL.h>
@@ -210,8 +212,9 @@ void ValueScrollBox::setValues(Sint32* aValue, Sint32* aMax, EditorValueReader r
 	isMaxPreset=false;
 	value=aValue;
 	byteValue=nullptr;
+	wordValue=nullptr; materialBuilding=nullptr;
     readValue=std::move(reader);
-	max=aMax;
+	max=aMax; wordMax=nullptr;
     readMax=std::move(maxReader);
 }
 
@@ -221,6 +224,7 @@ void ValueScrollBox::setValues(Sint32* aValue, EditorValueReader reader)
 {
 	value=aValue;
 	byteValue=nullptr;
+	wordValue=nullptr; materialBuilding=nullptr;
     readValue=std::move(reader);
 }
 
@@ -239,5 +243,52 @@ void ValueScrollBox::setValues(Uint8* aValue, EditorValueReader reader)
 {
     value=nullptr;
     byteValue=aValue;
+    wordValue=nullptr; materialBuilding=nullptr;
     readValue=std::move(reader);
+}
+
+void ValueScrollBox::setValues(Uint16* aValue, EditorValueReader reader)
+{
+    value=nullptr; byteValue=nullptr; materialBuilding=nullptr;
+    wordValue=aValue; readValue=std::move(reader);
+}
+
+void ValueScrollBox::setValues(Uint16* aValue, Sint32* aMax, EditorValueReader reader, EditorValueReader maximum)
+{
+    setValues(aValue, std::move(reader));
+    max=aMax; wordMax=nullptr; isMaxPreset=false; readMax=std::move(maximum);
+}
+
+void ValueScrollBox::setMaterialValues(Building* building, int material, EditorValueReader reader, EditorValueReader maximum)
+{
+    value=nullptr; byteValue=nullptr; wordValue=nullptr;
+    materialBuilding=building; materialIndex=material;
+    isMaxPreset=false; wordMax=nullptr; max=&building->type->maxMaterial[material];
+    readValue=std::move(reader); readMax=std::move(maximum);
+}
+
+int ValueScrollBox::liveValue() const
+{
+    if (materialBuilding) return materialBuilding->material(materialIndex);
+    return byteValue ? int(*byteValue) : wordValue ? int(*wordValue) : *value;
+}
+
+void ValueScrollBox::writeLiveValue(int requested)
+{
+    if (materialBuilding) materialBuilding->setMaterial(materialIndex, requested);
+    else if (byteValue) *byteValue=Uint8(requested);
+    else if (wordValue) *wordValue=Uint16(requested);
+    else *value=requested;
+}
+
+int ValueScrollBox::liveMaximum() const
+{
+    const int result=isMaxPreset ? fixedMax : wordMax ? int(*wordMax) : *max;
+    return materialBuilding ? std::min(result, materialBuilding->materialStockLimit()) : result;
+}
+
+void ValueScrollBox::setValues(Sint32* aValue, Uint16* aMax, EditorValueReader reader, EditorValueReader maximum)
+{
+    setValues(aValue,std::move(reader));
+    wordMax=aMax;max=nullptr;isMaxPreset=false;readMax=std::move(maximum);
 }

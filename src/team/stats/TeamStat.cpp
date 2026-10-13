@@ -1378,9 +1378,9 @@ void TeamStats::observeMeasurementUnit(Unit *u)
 {
 	if (u && !u->isDead)
 	{
-		if (!u->widePrimaryCargo && u->carriedMaterial >= 0 && u->carriedMaterial < MaterialSlotCount)
+		if (!u->widePrimaryCargo() && u->carriedMaterial >= 0 && u->carriedMaterial < MaterialSlotCount)
 			++editMeasurements().carried[u->carriedMaterial];
-        if (u->hasCapability(UnitRuntimeTraits::ExtendedCargo) || u->widePrimaryCargo)
+        if (u->hasCapability(UnitRuntimeTraits::ExtendedCargo) || u->widePrimaryCargo())
             if (const auto* cargo=u->owner->game->unitCargo.find(u->gid))
                 for (const auto& packet:*cargo) ++editMeasurements().carried[packet.material];
 		if (u->isUnitHungry())
@@ -1409,7 +1409,7 @@ void TeamStats::observeMeasurementBuilding(Building *b)
 			++editMeasurements().buildings[b->type->shortTypeNum][b->getLongLevel()];
 		if (!b->type->useTeamMaterials)
 			for (int r = 0; r < MaterialSlotCount; ++r)
-				editMeasurements().stock[r] += std::max(0, b->materials[r]);
+				editMeasurements().stock[r] += std::max(0, b->material(r));
 	}
 }
 GameplayMeasurements::Place TeamStats::placeOf(const Team *team, int x, int y)

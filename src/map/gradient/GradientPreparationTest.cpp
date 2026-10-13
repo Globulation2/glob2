@@ -184,8 +184,8 @@ TEST_SUITE("GradientPreparation")
 		auto* consumer=world.addBuilding(names[3],44,8);
 		REQUIRE(unified); REQUIRE(direct); REQUIRE(shared); REQUIRE(consumer);
 		auto* foreign=world.addBuilding(names[0],56,8,0,1); REQUIRE(foreign);
-		foreign->materials[WHEAT]=10;
-		unified->materials[WHEAT]=10; direct->materials[WHEAT]=10; shared->materials[WHEAT]=10;
+		foreign->setMaterial(WHEAT, 10);
+		unified->setMaterial(WHEAT, 10); direct->setMaterial(WHEAT, 10); shared->setMaterial(WHEAT, 10);
 		auto& cache=m.gradientRuntime->resourceSeeds;
 		std::vector<Uint16> expected(m.size), actual(m.size);
 		cache.allocationFailed=true;
@@ -200,11 +200,11 @@ TEST_SUITE("GradientPreparation")
 		CHECK(actual[m.coordToIndex(44,8)]==GRADIENT_FORBIDDEN);
 		CHECK(actual[m.coordToIndex(56,8)]==GRADIENT_FORBIDDEN);
 		// Live stock changes must not wait for template invalidation.
-		direct->materials[WHEAT]=0;
+		direct->setMaterial(WHEAT, 0);
 		m.seedMaterialGradient(0,WHEAT,0,actual.data(),true,consumer,3);
 		CHECK(cache.valid);
 		CHECK(actual[m.coordToIndex(20,8)]==GRADIENT_UNREACHABLE);
-		direct->materials[WHEAT]=10;
+		direct->setMaterial(WHEAT, 10);
 		m.addForbidden(20,8,0); m.markImmobileUnit(21,8,0);
 		m.seedMaterialGradient(0,WHEAT,0,actual.data(),true,consumer,3);
 		CHECK(actual[m.coordToIndex(20,8)]==GRADIENT_FORBIDDEN);
@@ -658,8 +658,8 @@ TEST_SUITE("GradientPreparation")
 				world.game.teams[0]->allies = phase & 1 ? 3 : 1;
 				for (int r=0; r<int(MaterialCount); ++r)
 				{
-					market0->materials[r] = phase & 1 ? 0 : 10;
-					market1->materials[r] = phase & 1 ? 10 : 0;
+					market0->setMaterial(r, phase & 1 ? 0 : 10);
+					market1->setMaterial(r, phase & 1 ? 10 : 0);
 				}
 				for (int team=0; team<2; ++team)
 				for (int swim=0; swim<SWIM_CLASS_COUNT; ++swim)
@@ -1190,7 +1190,7 @@ TEST_CASE("periodic supplier snapshots subtract reservations and retain overlay 
     game.gameHeader.getExperiments().set(ExperimentId::MarketsV2,true);
     game.configureBuildingCatalog();
     auto* supplier=world.addBuilding("inn",8,8); REQUIRE(supplier);
-    supplier->materials[WHEAT]=10;
+    supplier->setMaterial(WHEAT, 10);
     using namespace gradient_preparation;
     Request request{Kind::Markets,0,WHEAT,0};
     CrowdingScratch scratch;
@@ -1199,10 +1199,10 @@ TEST_CASE("periodic supplier snapshots subtract reservations and retain overlay 
         auto snapshot=SimulationSnapshot::capture(game,SimulationSnapshot::captureCatalog(game),SimulationSnapshot::Simulation);
         std::vector<Uint16> expected(m.size),actual(m.size);
         m.seedMaterialGradient(0,WHEAT,0,expected.data(),true);
-        supplier->materials[WHEAT]=0;
+        supplier->setMaterial(WHEAT, 0);
         seed(request,snapshot,actual.data(),scratch);
         requireSameField(m,"supplier snapshot",actual,expected);
-        supplier->materials[WHEAT]=10;
+        supplier->setMaterial(WHEAT, 10);
     }
 }
 

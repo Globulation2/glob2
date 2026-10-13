@@ -72,9 +72,9 @@ static void staleTargetIsRefreshedAfterGradientRebuild(int expectedClass, int sw
 	unit->destinationPurpose = WHEAT;
 	unit->activity = Unit::ACT_FILLING;
 	unit->displacement = Unit::DIS_GOING_TO_RESOURCE;
-	unit->validTarget = true;
-	unit->performance[WALK] = swimOnly?0:10;
-	unit->performance[SWIM] = swimSpeed;
+	unit->setValidTarget(true);
+	unit->setPerformance(WALK,swimOnly?0:10);
+	unit->setPerformance(SWIM,swimSpeed);
 	const int swimClass = unit->swimClass();
 	require(swimClass == expectedClass, "exercise the requested swim class");
 
@@ -158,7 +158,7 @@ static void targetTracksTheGradientTheUnitActuallyFollows()
 	unit->destinationPurpose = WHEAT;
 	unit->activity = Unit::ACT_FILLING;
 	unit->displacement = Unit::DIS_GOING_TO_RESOURCE;
-	unit->validTarget = true;
+	unit->setValidTarget(true);
 	const int swimClass = unit->swimClass();
 
 	require(game.map.getGlobalGradientDestination(game.map.getMaterialGradientSlot(teamNumber, WHEAT, swimClass), unit->posX, unit->posY, &unit->targetX, &unit->targetY),
@@ -192,7 +192,7 @@ static void targetTracksTheGradientTheUnitActuallyFollows()
 	const int marketType=game.buildingsTypes.getTypeNum("market",0,false);
 	auto* market=game.addBuilding(24,24,marketType,0);
 	require(market!=nullptr, "fruit-only market placed");
-	market->materials[CHERRY]=1;
+	market->setMaterial(CHERRY, 1);
 	require(!team->directStockSuppliers.empty(), "fruit-only market is a direct supplier");
 	require(game.map.materialSupplyModesSlot(inn,WHEAT)==0, "fruit-only supplier cannot alter wheat routing");
 	require(game.map.getMaterialGradientSlot(teamNumber,WHEAT,swimClass,true,inn)==natural,

@@ -334,10 +334,10 @@ TeamStatsSample computeTeamStatsSample(const SimulationSnapshot::Handle &snapsho
 	{
 		if (!u.isDead)
 		{
-			if (!u.widePrimaryCargo && u.carriedMaterial >= 0 &&
+			if (!u.widePrimaryCargo() && u.carriedMaterial >= 0 &&
 				u.carriedMaterial < MaterialSlotCount)
 				++m.carried[u.carriedMaterial];
-			if (has(u, UnitRuntimeTraits::ExtendedCargo) || u.widePrimaryCargo)
+			if (has(u, UnitRuntimeTraits::ExtendedCargo) || u.widePrimaryCargo())
 				if (const auto *cargo = world.extraCargo(u))
 					for (const auto &p : *cargo)
 						++m.carried[p.material];
@@ -371,7 +371,7 @@ TeamStatsSample computeTeamStatsSample(const SimulationSnapshot::Handle &snapsho
 				++m.buildings[family][level];
 			if (!t.useTeamMaterials)
 				for (int r = 0; r < MaterialSlotCount; ++r)
-					m.stock[r] += std::max(0, b.localMaterials[r]);
+					m.stock[r] += std::max(0, Sint32(b.localMaterials[r]));
 		}
 		if (t.foodable || t.fillable || t.attractsRole(0))
 		{

@@ -72,7 +72,7 @@ struct SceneEntities
             completed=b.constructionOriginTypeNum>=0 ? b.constructionOriginTypeNum : type(b)->isBuildingSite ? type(b)->nextLevel : b.typeNum;
         return &typeDefinitions->at(typeDefinitions->at(completed).terminalTypeNum);
     }
-    const Sint32* materials(const SnapshotBuilding& b) const { return b.usesTeamResources ? world.teams->values.at(b.team).materials.data() : b.localMaterials; }
+    BuildingStockView materials(const SnapshotBuilding& b) const { return b.usesTeamResources ? BuildingStockView(world.teams->values.at(b.team).materials.data()) : BuildingStockView(b.localMaterials); }
     Uint8 connections(const SnapshotBuilding& b) const { return connectionMasks.at(buildingIndex[b.gid]); }
 	const SceneTeam &owner(const SnapshotUnit &u) const { return teams[u.team]; }
 	const SceneTeam &owner(const SnapshotBuilding &b) const { return teams[b.team]; }

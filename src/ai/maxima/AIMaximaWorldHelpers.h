@@ -31,7 +31,7 @@ namespace WorldHelpers
 		const Sint64 rate=Sint64(AIEngine::ObservationQueries::realAttackStrength(world,*warrior))
 			*warrior->performance[ATTACK_SPEED];
 		if (rate<=0) return 1;
-		const Sint64 maximumHealth=std::max(1,warrior->performance[HP]);
+		const Sint64 maximumHealth=std::max(1,int(warrior->performance[HP]));
 		// Avoid overflowing even the wide numerator when importing old cached
 		// performances. Ordinary units take only the original division below.
 		if (rate>INT_MAX && rate>Sint64(INT_MAX)*maximumHealth/warrior->hp) return INT_MAX;
