@@ -1,0 +1,62 @@
+{
+  "implementation": "5ca02001d4de81e437597e47b52228082e29659e",
+  "integrated_head": "c96908b3ab4defd54ec363c5eab70ccf0d194d8b",
+  "archive_sha256": "b59cdf544b7b8a298d8b0ba6397bd2dd84ca57cb6f701f8d1e7340c52212e50b",
+  "parts": [
+    {
+      "name": "optimization-evidence.tar.gz.part-00",
+      "bytes": 25165824,
+      "sha256": "9350023dfbe37195b4c7468a5bff2d83a0cca968967a236515e63b83759440c6"
+    },
+    {
+      "name": "optimization-evidence.tar.gz.part-01",
+      "bytes": 25165824,
+      "sha256": "e8d63afdad590d6cc4a19f96c2842e1e20aa3596e858c0b72bb7fb230189a840"
+    },
+    {
+      "name": "optimization-evidence.tar.gz.part-02",
+      "bytes": 25165824,
+      "sha256": "93c68169466c65b01c13f92aaf6ce29231a6024bdc6a90ed93c8d70c10087fa6"
+    },
+    {
+      "name": "optimization-evidence.tar.gz.part-03",
+      "bytes": 25165824,
+      "sha256": "5cefe2a9ccbe3d4796adf1fa89fc047fce4ec053edcd27f1aa575565a06ed3d7"
+    },
+    {
+      "name": "optimization-evidence.tar.gz.part-04",
+      "bytes": 25165824,
+      "sha256": "a43dbb0f6bc93f9182c151f9af32f7b83990d6651858d8cbc168d7fee4bcfc94"
+    },
+    {
+      "name": "optimization-evidence.tar.gz.part-05",
+      "bytes": 25165824,
+      "sha256": "eafda757d1829319b44c478a4e63beff4544466db47242919781e0237e4f4278"
+    },
+    {
+      "name": "optimization-evidence.tar.gz.part-06",
+      "bytes": 24682094,
+      "sha256": "c30b00bfd6f5a955a776df4aca302ecf148d78d23e1a148c17b81e78e37a84a7"
+    }
+  ],
+  "status": "Complete isolation campaign and separate integrated-head qualification; live activation blocked",
+  "direct_files": {
+    "integrated-reserved-provenance.json": "a39a879cad3c65bbb940a508dae88249057c974d6680f17cbd354e1188ac36cd",
+    "report.md": "7b9a5bee285632c75fbf153df4b572bffe0ea1f0762b9714badedb89434a82ae",
+    "summary.md": "284987c37fda756f818de98e0bb6d2d9db314a4ca4c96c1064f98046477dff39",
+    "integrated-delta.svg": "e3361e91d5aeafcdb76a079f3bcf56f0ed2db26b66ccb818225d05eb15dd281d",
+    "timing.csv": "0821c3b931fe9c059a33dabf3c1f6707423317e1b6973493f29e493c98275b13",
+    "optimization-delta.svg": "d487d1f8c0fcbbd0f79b4686ab66dbbd3ac0680ea27aa5bc589a3ee9348dc47c",
+    "integrated-report.md": "d5e7778ec8e0bf976204e1dcc5c043c78b7ee2362d4508edce2a6aa08f03fb9f",
+    "integrated-timing.csv": "f6118e4f09c516dcd811277d7e1008b18fb30bafd116d10ed7855bd1b3b4e44f",
+    "optimization-delta.png": "745cf32bc65124e2dec1ed0c904eca5a864769b7365cd51ad25b0f271b70bcd4",
+    "stock-summary.json": "81c6087cb6e23b1d6de1939637f071da1a94a56fbea7ed7613384e73a0bbe4dc",
+    "integrated-verification.json": "16bf7c5e61cd4470d22f4cc33008dc9385d6f2dd31c9311cbe97a4c86f298cc3",
+    "integrated-delta.png": "f1c8855825589e990d82bc0de2701defbd0ab30c0084c12c54ee5e6804a7e1ea",
+    "cpu-breakdown.svg": "356bcb49edd2cdfd4737877688969ccffa08c3b14143f38c8f5bb456a7997c27",
+    "cpu-breakdown.png": "56a2793ad2095a825dba963699cd1c83a0a8b318d628e3c5740e2260c8abd868",
+    "integrated-summary.md": "210c2e54163d909165831f4966718d00d3af5d05b3d6b1be4175037e0ca239d8",
+    "summary.json": "9a1fcd519d7ab6dd2140ce1b79d7b1a34b9b7be00a614aa0c3b9f4ebc87a9bab",
+    "integrated-summary.json": "6eb8d03c30f961f9f8ed02f7995f767ee333c9dbe241c6de0bcd37153b849cfc"
+  }
+}

@@ -1,0 +1,152 @@
+{
+  "head": "c96908b3ab4defd54ec363c5eab70ccf0d194d8b",
+  "records": [
+    {
+      "label": "engine",
+      "command": [
+        "taskset",
+        "-c",
+        "8-15",
+        "/home/bradley/.codex/worktrees/9dc2/glob2/build/linux/client/release/dev-linker-auto/test/glob2-engine-tests",
+        "--test-suite=TurretTargeting,WorldSnapshot,BuildingAreaEffects,SimulationReadPhase,SharedWorkerLifecycle,GradientPipeline,GradientPreparation,GradientPreparationContract,RuntimeResources,VertexTerrain",
+        "--test-case-exclude=*benchmark*,Numbi Castor stock combat*,embedded resource save starts with an invalid installed catalog,legacy resource saves ignore reordered modified installed defaults in a fresh process",
+        "--no-colors=true"
+      ],
+      "environment": {
+        "TURRET_VARIANT": "combined",
+        "GLOB2_TEST_ARTIFACTS": "/home/bradley/.codex/worktrees/9dc2/glob2/artifacts/turret-targeting/optimization/merged-head/engine-evidence"
+      },
+      "exit": 0,
+      "sha256": "4581052be12281ea1d96e064233376bfed78d9c8d59bf0d6eef8748b9c77ce67"
+    },
+    {
+      "label": "unit",
+      "command": [
+        "taskset",
+        "-c",
+        "8-15",
+        "/home/bradley/.codex/worktrees/9dc2/glob2/build/linux/client/release/dev-linker-auto/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor,TurnSession,TurnMatchRecord,ReplayStepCounter,BulletSaveLoad,RuntimeGradientBackend",
+        "--no-colors=true"
+      ],
+      "environment": {
+        "TURRET_VARIANT": "combined",
+        "GLOB2_TEST_ARTIFACTS": "/home/bradley/.codex/worktrees/9dc2/glob2/artifacts/turret-targeting/optimization/merged-head/unit-evidence"
+      },
+      "exit": 0,
+      "sha256": "9743779261daf4603f57752e8c0699fd2cac777250085278d494ef7e77305a13"
+    },
+    {
+      "label": "whole-engine",
+      "command": [
+        "taskset",
+        "-c",
+        "8-15",
+        "/home/bradley/.codex/worktrees/9dc2/glob2/build/linux/client/release/dev-linker-auto/test/glob2-turret-engine-benchmark",
+        "--test-suite=TurretEngine",
+        "--test-case=whole engine*",
+        "--no-colors=true"
+      ],
+      "environment": {
+        "TURRET_VARIANT": "combined",
+        "GLOB2_TEST_ARTIFACTS": "/home/bradley/.codex/worktrees/9dc2/glob2/artifacts/turret-targeting/optimization/merged-head/whole-engine-evidence"
+      },
+      "exit": 0,
+      "sha256": "17aa5b3664c3d2b73968cc0e73dfce085652576e302af5d32a7efe0e8b7c9674"
+    },
+    {
+      "label": "opportunities",
+      "command": [
+        "taskset",
+        "-c",
+        "8-15",
+        "/home/bradley/.codex/worktrees/9dc2/glob2/build/linux/client/release/dev-linker-auto/test/glob2-turret-engine-benchmark",
+        "--test-suite=TurretEngine",
+        "--test-case=reference trajectory*",
+        "--no-colors=true"
+      ],
+      "environment": {
+        "TURRET_VARIANT": "combined",
+        "GLOB2_TEST_ARTIFACTS": "/home/bradley/.codex/worktrees/9dc2/glob2/artifacts/turret-targeting/optimization/merged-head/opportunities-evidence"
+      },
+      "exit": 0,
+      "sha256": "17aa5b3664c3d2b73968cc0e73dfce085652576e302af5d32a7efe0e8b7c9674"
+    },
+    {
+      "label": "stock-L4",
+      "command": [
+        "taskset",
+        "-c",
+        "8-15",
+        "/home/bradley/.codex/worktrees/9dc2/glob2/build/linux/client/release/dev-linker-auto/test/glob2-engine-tests",
+        "--test-suite=TurretTargeting",
+        "--test-case=Numbi Castor stock combat*",
+        "--no-colors=true"
+      ],
+      "environment": {
+        "TURRET_VARIANT": "combined",
+        "GLOB2_TEST_ARTIFACTS": "/home/bradley/.codex/worktrees/9dc2/glob2/artifacts/turret-targeting/optimization/merged-head/stock-L4-evidence",
+        "TURRET_PIPELINE_ONLY": "1",
+        "TURRET_CAPACITY": "4"
+      },
+      "exit": 0,
+      "sha256": "4581052be12281ea1d96e064233376bfed78d9c8d59bf0d6eef8748b9c77ce67"
+    },
+    {
+      "label": "stock-L8",
+      "command": [
+        "taskset",
+        "-c",
+        "8-15",
+        "/home/bradley/.codex/worktrees/9dc2/glob2/build/linux/client/release/dev-linker-auto/test/glob2-engine-tests",
+        "--test-suite=TurretTargeting",
+        "--test-case=Numbi Castor stock combat*",
+        "--no-colors=true"
+      ],
+      "environment": {
+        "TURRET_VARIANT": "combined",
+        "GLOB2_TEST_ARTIFACTS": "/home/bradley/.codex/worktrees/9dc2/glob2/artifacts/turret-targeting/optimization/merged-head/stock-L8-evidence",
+        "TURRET_PIPELINE_ONLY": "1",
+        "TURRET_CAPACITY": "8"
+      },
+      "exit": 0,
+      "sha256": "4581052be12281ea1d96e064233376bfed78d9c8d59bf0d6eef8748b9c77ce67"
+    },
+    {
+      "label": "invalid-installed-catalog",
+      "command": [
+        "taskset",
+        "-c",
+        "8-15",
+        "/home/bradley/.codex/worktrees/9dc2/glob2/build/linux/client/release/dev-linker-auto/test/glob2-engine-tests",
+        "--test-suite=RuntimeResources",
+        "--test-case=embedded resource save starts with an invalid installed catalog",
+        "--no-colors=true"
+      ],
+      "environment": {
+        "TURRET_VARIANT": "combined",
+        "GLOB2_TEST_ARTIFACTS": "/home/bradley/.codex/worktrees/9dc2/glob2/artifacts/turret-targeting/optimization/merged-head/invalid-installed-catalog-evidence"
+      },
+      "exit": 0,
+      "sha256": "4581052be12281ea1d96e064233376bfed78d9c8d59bf0d6eef8748b9c77ce67"
+    },
+    {
+      "label": "legacy-installed-catalog",
+      "command": [
+        "taskset",
+        "-c",
+        "8-15",
+        "/home/bradley/.codex/worktrees/9dc2/glob2/build/linux/client/release/dev-linker-auto/test/glob2-engine-tests",
+        "--test-suite=RuntimeResources",
+        "--test-case=legacy resource saves ignore reordered modified installed defaults in a fresh process",
+        "--no-colors=true"
+      ],
+      "environment": {
+        "TURRET_VARIANT": "combined",
+        "GLOB2_TEST_ARTIFACTS": "/home/bradley/.codex/worktrees/9dc2/glob2/artifacts/turret-targeting/optimization/merged-head/legacy-installed-catalog-evidence"
+      },
+      "exit": 0,
+      "sha256": "4581052be12281ea1d96e064233376bfed78d9c8d59bf0d6eef8748b9c77ce67"
+    }
+  ]
+}

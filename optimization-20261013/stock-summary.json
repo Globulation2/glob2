@@ -1,0 +1,112 @@
+[
+  {
+    "label": "baseline-L4-stock",
+    "opportunities": 868,
+    "agreement": 756,
+    "agreement_pct": 87.09677419354838,
+    "missed": 0,
+    "censored": 0,
+    "p95": 0,
+    "max_completed_delay": 2,
+    "delay_histogram": {
+      "0": 864,
+      "2": 4
+    }
+  },
+  {
+    "label": "baseline-L8-stock",
+    "opportunities": 868,
+    "agreement": 758,
+    "agreement_pct": 87.32718894009217,
+    "missed": 0,
+    "censored": 0,
+    "p95": 0,
+    "max_completed_delay": 2,
+    "delay_histogram": {
+      "0": 866,
+      "2": 2
+    }
+  },
+  {
+    "label": "combined-L4-stock",
+    "opportunities": 868,
+    "agreement": 756,
+    "agreement_pct": 87.09677419354838,
+    "missed": 2,
+    "censored": 0,
+    "p95": 0,
+    "max_completed_delay": 4,
+    "delay_histogram": {
+      "0": 864,
+      "4": 2
+    }
+  },
+  {
+    "label": "combined-L8-stock",
+    "opportunities": 868,
+    "agreement": 758,
+    "agreement_pct": 87.32718894009217,
+    "missed": 2,
+    "censored": 0,
+    "p95": 0,
+    "max_completed_delay": 0,
+    "delay_histogram": {
+      "0": 866
+    }
+  },
+  {
+    "label": "forecast-L4-stock",
+    "opportunities": 868,
+    "agreement": 756,
+    "agreement_pct": 87.09677419354838,
+    "missed": 2,
+    "censored": 0,
+    "p95": 0,
+    "max_completed_delay": 4,
+    "delay_histogram": {
+      "0": 864,
+      "4": 2
+    }
+  },
+  {
+    "label": "forecast-L8-stock",
+    "opportunities": 868,
+    "agreement": 758,
+    "agreement_pct": 87.32718894009217,
+    "missed": 2,
+    "censored": 0,
+    "p95": 0,
+    "max_completed_delay": 0,
+    "delay_histogram": {
+      "0": 866
+    }
+  },
+  {
+    "label": "preparation-L4-stock",
+    "opportunities": 868,
+    "agreement": 756,
+    "agreement_pct": 87.09677419354838,
+    "missed": 0,
+    "censored": 0,
+    "p95": 0,
+    "max_completed_delay": 2,
+    "delay_histogram": {
+      "0": 864,
+      "2": 4
+    }
+  },
+  {
+    "label": "preparation-L8-stock",
+    "opportunities": 868,
+    "agreement": 758,
+    "agreement_pct": 87.32718894009217,
+    "missed": 0,
+    "censored": 0,
+    "p95": 0,
+    "max_completed_delay": 2,
+    "delay_histogram": {
+      "0": 866,
+      "2": 2
+    }
+  }
+]
