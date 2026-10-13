@@ -1216,6 +1216,26 @@ TEST_SUITE("TurretTargeting")
             CHECK(firstValid(*turret,game.turretTargeting()->entries(*turret)).found());
         }
     }
+    TEST_CASE("saved targeting rules reject retired preparation variants")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.header=true});
+        auto* backend=new GAGCore::MemoryStreamBackend;
+        GAGCore::BinaryOutputStream out(backend);
+        world.game.turretTargeting()->save(world.game,&out);
+        out.flush();
+        const auto bytes=backend->takeContents();
+        // Four uint32 rule fields precede the two reserved format-159 flags.
+        REQUIRE(bytes.size()>17);
+        for (unsigned offset : {16,17}) for (unsigned value : {0,2}) {
+            auto retired=bytes;
+            retired[offset]=value;
+            GAGCore::BinaryInputStream in(new GAGCore::MemoryStreamBackend(retired.data(),retired.size()));
+            in.seekFromStart(0);
+            Pipeline restored(world.game,{});
+            CHECK_FALSE(restored.load(world.game,&in));
+        }
+    }
     TEST_CASE("new cached saves roundtrip and earlier saved matches are rejected")
     {
         glob2test::HeadlessGlobals globals;
