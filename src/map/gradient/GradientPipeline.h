@@ -2,6 +2,7 @@
 #pragma once
 #include "field/GradientWorkspace.h"
 #include "field/GradientAccelerators.h"
+#include "field/GradientDiagnostics.h"
 #include "field/GradientDeviceService.h"
 #include "common/ThreadCpuClock.h"
 #include "map/TerrainType.h"
@@ -124,18 +125,25 @@ private:
 	void execute(Job &job, Workspace &scratch) noexcept {
 		const auto start = clockTime<Collect>();
 		job.crowding = &scratch.crowding;
+        const auto captured = gradient_kernel::configuration();
+        std::optional<gradient_kernel::GradientProfileSession> profile;
+        if constexpr (Collect) if (diagnostics)
+            profile.emplace(captured.backend, true);
+        gradient_kernel::GradientPhaseScope phase(gradient_kernel::GradientPhase::Bookkeeping);
 		try
 		{
             // Capture execution before preparation. Later availability/admission
             // changes may recover this job, but cannot reinterpret its choice.
-            const auto captured = gradient_kernel::configuration();
             const auto choice = captured.backend;
             const auto family=gradient_preparation::backendFamily(job.request.kind);
             const auto decision=backendSession->choose(family,1,captured);
             gradient_kernel::CPUSelectionScope cpuSelection(decision.configuration.backend);
 			const auto preparationStart = clockTime<Collect>();
             const auto preparationCpu = cpuTime<Collect>();
-			try { if (job.seed) job.seed(job); }
+			try {
+                gradient_kernel::GradientPhaseScope preparation(gradient_kernel::GradientPhase::Preparation);
+                if (job.seed) job.seed(job);
+            }
 			catch (...) { if constexpr (Collect) job.preparationNs = elapsed<Collect>(preparationStart); throw; }
 			if constexpr (Collect) job.preparationNs = elapsed<Collect>(preparationStart);
             const auto preparedCpu=cpuTime<Collect>();
@@ -146,7 +154,10 @@ private:
             if constexpr (Collect) { if(selectedGPU) selectedGpu.fetch_add(1,std::memory_order_relaxed); }
             if(selectedGPU && deviceService && asyncWork && executor->slot()) {
                 const auto ownedStart=diagnostics ? cpuTime<Collect>() : 0;
-                job.deviceField=asyncWork(job,decision);
+                {
+                    gradient_kernel::GradientPhaseScope conversion(gradient_kernel::GradientPhase::InputConversion);
+                    job.deviceField=asyncWork(job,decision);
+                }
                 if(!job.deviceField) {
                     // A bounded owned-view admission can decline before seed
                     // ownership moves. Recovery stays on this original worker
@@ -157,7 +168,10 @@ private:
             if constexpr (Collect) { handoffCpu.fetch_add(glob2::threadCpuDeltaNs(handoffStart,ownedStart),std::memory_order_relaxed); }
                     }
                     job.cpuOnly=true;
-                    work(job,scratch.propagation);
+                    {
+                        gradient_kernel::GradientPhaseScope solving(gradient_kernel::GradientPhase::CpuSolving);
+                        work(job,scratch.propagation);
+                    }
                     const auto cpuEnd=cpuTime<Collect>();
             if constexpr (Collect) { propagationCpu.fetch_add(glob2::threadCpuDeltaNs(cpuStart,cpuEnd),std::memory_order_relaxed); }
             if constexpr (Collect) { cpuReasons[unsigned(CPUReason::OwnedInputDecline)].fetch_add(1,std::memory_order_relaxed); }
@@ -193,7 +207,10 @@ private:
                 // accelerator request construction and a second configuration
                 // read, including when this is an explicit CPU choice.
                 job.cpuOnly=true;
-                work(job,scratch.propagation);
+                {
+                    gradient_kernel::GradientPhaseScope solving(gradient_kernel::GradientPhase::CpuSolving);
+                    work(job,scratch.propagation);
+                }
             if constexpr (Collect) { propagationCpu.fetch_add(glob2::threadCpuDeltaNs(cpuStart,cpuTime<Collect>()),std::memory_order_relaxed); }
             if constexpr (Collect) { cpuFields.fetch_add(1,std::memory_order_relaxed); }
             }
@@ -203,6 +220,7 @@ private:
 			job.error = std::current_exception();
 		}
 		// Completion releases all borrowed immutable inputs, including failures.
+        phase.setPhase(gradient_kernel::GradientPhase::Retirement);
         const auto cleanupStart=diagnostics ? cpuTime<Collect>() : 0;
 		job.water.reset(); job.terrain.reset(); job.registry.reset(); job.profiles.reset();
 		job.snapshotLease.reset(); job.seed = {}; job.crowding = nullptr;

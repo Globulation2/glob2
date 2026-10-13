@@ -4,6 +4,7 @@
 #include "GradientAccelerators.h"
 #include "OpenCLGradient.h"
 #include "GradientGpuValidation.h"
+#include "GradientDiagnostics.h"
 #include "test/fixtures/gradients/WrappedMaterialSeeds.h"
 #include "test/fixtures/gradients/RetainedVulkanSeeds.h"
 #include "GradientPropagation.h"
@@ -14,6 +15,9 @@
 
 namespace
 {
+thread_local std::uint64_t profileElapsed = 1, profileCpu = 1, profileProbes = 0;
+std::uint64_t testElapsed() noexcept { ++profileProbes; return profileElapsed; }
+std::uint64_t testCpu() noexcept { ++profileProbes; return profileCpu; }
 struct ConfigurationGuard
 {
 	gradient_kernel::Configuration applied = gradient_kernel::configuration(),
@@ -58,6 +62,60 @@ std::vector<std::uint16_t> oracle(std::vector<std::uint16_t> values, field::Grid
 } // namespace
 TEST_SUITE("RuntimeGradientBackend")
 {
+	TEST_CASE("diagnostic phases partition nested work across captured sessions")
+	{
+		using namespace gradient_kernel;
+		GradientDiagnosticTotals totals;
+		profileElapsed = profileCpu = 100;
+		{
+			GradientProfileSession session(Backend::Vulkan, true, testElapsed, testCpu, &totals);
+			GradientPhaseScope outer(GradientPhase::Recording);
+			profileElapsed += 10; profileCpu += 3;
+			{
+				GradientProfileSession nested(Backend::Vulkan, true, testElapsed, testCpu, &totals);
+				GradientPhaseScope wait(GradientPhase::Waiting);
+				profileElapsed += 40; profileCpu += 2;
+				countGradientWork(GradientCounter::Submissions, 2);
+			}
+			profileElapsed += 20; profileCpu += 7;
+		}
+		const auto result = totals.snapshot();
+		CHECK(result.phases[unsigned(GradientPhase::Recording)].elapsedNs == 30);
+		CHECK(result.phases[unsigned(GradientPhase::Recording)].cpuNs == 10);
+		CHECK(result.phases[unsigned(GradientPhase::Waiting)].elapsedNs == 40);
+		CHECK(result.phases[unsigned(GradientPhase::Waiting)].cpuNs == 2);
+		CHECK(result.counters[unsigned(GradientCounter::Submissions)] == 2);
+		CHECK(activeGradientProfile == nullptr);
+	}
+	TEST_CASE("disabled diagnostics perform no probes and missing CPU remains unavailable")
+	{
+		using namespace gradient_kernel;
+		GradientDiagnosticTotals totals;
+		profileProbes = 0;
+		{
+			GradientProfileSession session(Backend::Vulkan, false, testElapsed, testCpu, &totals);
+			GradientPhaseScope wait(GradientPhase::Waiting);
+			countGradientWork(GradientCounter::Dispatches);
+		}
+		CHECK(profileProbes == 0);
+		CHECK_FALSE(totals.snapshot().collected);
+		profileElapsed = 100; profileCpu = 0;
+		try {
+			GradientProfileSession session(Backend::Vulkan, true, testElapsed, testCpu, &totals);
+			GradientPhaseScope wait(GradientPhase::Waiting);
+			profileElapsed += 50;
+			throw std::runtime_error("test cleanup");
+		} catch (const std::runtime_error&) {}
+		const auto result = totals.snapshot();
+		const auto& wait = result.phases[unsigned(GradientPhase::Waiting)];
+		CHECK(wait.elapsedNs == 50);
+		CHECK(wait.cpuNs == 0);
+		CHECK(wait.cpuInvalid == 1);
+		CHECK(activeGradientProfile == nullptr);
+		std::ostringstream json;
+		writeGradientDiagnostics(json, result);
+		CHECK(json.str().find("\"cpu_ns\":null") != std::string::npos);
+	}
 	TEST_CASE("stable selection IDs and unsupported algorithm normalization")
 	{
 		using namespace gradient_kernel;
@@ -337,6 +395,49 @@ TEST_SUITE("RuntimeGradientBackend")
 					CHECK(values == scalarLayers[cost]);
 			}
 			CHECK(values == oracle(seeds, grid, costs, 300));
+		}
+	}
+	TEST_CASE("Vulkan diagnostic admission is captured and counts confirmed work")
+	{
+		using namespace gradient_kernel;
+		glob2test::ScopedEnvironment enabled("GLOB2_GRADIENT_DIAGNOSTICS", "1");
+		if (!initializeVulkanGradient()) {
+			if (std::getenv("GLOB2_REQUIRE_VULKAN")) FAIL(vulkanGradientStatus().error);
+			MESSAGE("Vulkan unavailable: ", vulkanGradientStatus().error);
+			return;
+		}
+		BackendSession session;
+		const field::Grid grid{17, 19};
+		std::vector<std::uint16_t> seeds(grid.cells(), 1);
+		seeds[0] = 65535;
+		std::vector<EntrySteps> costs(grid.cells(), LAND_STEPS);
+		for (bool diagnostics : {false, true}) {
+			auto actual = seeds;
+			BackendRequest request{actual.data(), COST_LIMIT, grid, session, &costs,
+				[](void* p, std::size_t i) { return (*static_cast<std::vector<EntrySteps>*>(p))[i]; }, nullptr};
+			request.diagnostics = diagnostics;
+			bool committed = false, observed = false;
+			request.executedOnDevice = &committed;
+			request.deviceExecutionObserved = &observed;
+			const auto before = gradientDiagnosticSnapshot(Backend::Vulkan);
+			REQUIRE(executeVulkanGradient(std::span(&request, 1), Plan::VulkanFrozen8));
+			const auto after = gradientDiagnosticSnapshot(Backend::Vulkan);
+			CHECK(actual == oracle(seeds, grid, costs, COST_LIMIT));
+			CHECK(committed);
+			CHECK(observed);
+			const auto delta = [&](GradientCounter c) { return after.counters[unsigned(c)] - before.counters[unsigned(c)]; };
+			CHECK(delta(GradientCounter::AttemptedFields) == unsigned(diagnostics));
+			CHECK(delta(GradientCounter::ExecutedFields) == unsigned(diagnostics));
+			CHECK(delta(GradientCounter::CommittedFields) == unsigned(diagnostics));
+            CHECK(delta(GradientCounter::ConvergedFields) == unsigned(diagnostics));
+            CHECK(delta(GradientCounter::ValidatedFields) == unsigned(diagnostics));
+			if (diagnostics) {
+				CHECK(delta(GradientCounter::Dispatches) > 0);
+				CHECK(delta(GradientCounter::Submissions) > delta(GradientCounter::Dispatches));
+				CHECK(delta(GradientCounter::ConvergenceChecks) == delta(GradientCounter::Dispatches));
+				CHECK(delta(GradientCounter::UploadBytes) > 0);
+				CHECK(delta(GradientCounter::ReadbackBytes) == grid.cells() * sizeof(std::uint32_t));
+			}
 		}
 	}
 	TEST_CASE("Vulkan algorithms agree with oracle for weighted capped wrapped fields")
@@ -669,11 +770,18 @@ TEST_SUITE("RuntimeGradientBackend")
 			std::array<bool, 2> committed{true, true}, observed{true, true};
 			for (unsigned i = 0; i < 2; ++i)
 			{
-				requests[i].executedOnDevice = &committed[i];
+				requests[i].diagnostics = true;
+                requests[i].executedOnDevice = &committed[i];
 				requests[i].deviceExecutionObserved = &observed[i];
 			}
 			const auto before = vulkanGradientStatus();
+            const auto profileBefore = gradientDiagnosticSnapshot(Backend::Vulkan);
 			CHECK_FALSE(executeVulkanGradient(requests, plan));
+            const auto profileAfter = gradientDiagnosticSnapshot(Backend::Vulkan);
+            CHECK(profileAfter.counters[unsigned(GradientCounter::ValidatedFields)] -
+                profileBefore.counters[unsigned(GradientCounter::ValidatedFields)] == 1);
+            CHECK(profileAfter.counters[unsigned(GradientCounter::CommittedFields)] ==
+                profileBefore.counters[unsigned(GradientCounter::CommittedFields)]);
 			CHECK(observed[0]);
 			CHECK_FALSE(observed[1]);
 			CHECK_FALSE(committed[0]);
