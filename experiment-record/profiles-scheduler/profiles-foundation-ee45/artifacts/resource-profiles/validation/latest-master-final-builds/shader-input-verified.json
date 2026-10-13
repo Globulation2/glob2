@@ -1,0 +1,10 @@
+{
+  "passed": true,
+  "source": "ee45c0a0389660bc7d2885b572b94b1a2b01d7a3",
+  "renderer_bundle": "/home/bradley/.codex/worktrees/execution-resource-profiles/glob2/artifacts/resource-profiles/validation/renderer-bundle-v2/shaders",
+  "metadata_sha256": "b652ccac23a17afb143c0ac51a23a823e15ae6aa743ad950acac1c7d4a784010",
+  "source_inputs_verified": true,
+  "compute_header_verified": true,
+  "preparation_rules_verified": true,
+  "scope": "ExistingVulkan/WebGL/desktopGLrendererbundle; noWebGPU/Metalrendererqualification"
+}

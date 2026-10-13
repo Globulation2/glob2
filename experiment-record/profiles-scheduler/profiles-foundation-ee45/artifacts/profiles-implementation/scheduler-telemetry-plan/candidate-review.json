@@ -1,0 +1,69 @@
+{
+  "state": "independent_static_review_no_source_blocker_build_and_runtime_pending",
+  "baseline": "ee45c0a0389660bc7d2885b572b94b1a2b01d7a3",
+  "inspected_candidate": "570acc85467e84d081ace9e4db92f73fbbc12a31",
+  "candidate_final_binding": "96da258e5a6b24a57a8848f2bfa0178031331322",
+  "source_sha256": {
+    "src/common/ComputeExecutor.h": "703bebfc297849e07c95f69e294640d630875308082cb9e3c415c609774f2553",
+    "src/common/ComputeExecutorHarness.cpp": "9f61dab8e763176b5d8c95d349c33583c41442ea2e0dba9b1b311d97d4764af2"
+  },
+  "diff_sha256": "2ef1c0f58576478a64eec937980522f68c797e7f27be6313f1b34d33fa6ced51",
+  "review_findings": [
+    {
+      "scope": "shutdown/generation",
+      "lines": "ComputeExecutor.h838\u2013868",
+      "finding": "selectedreset on eachpredicate, stopping/generation shortcircuit noselection; stopping exits and generation invokeunlocks thencontinues. No cachedclaim crossunlock."
+    },
+    {
+      "scope": "presentationfairness",
+      "lines": "850\u2013858,870\u2013872",
+      "finding": "Existing designatedworker eightclaim quota unchanged. Prioritycallback mayunlock butalwayscontinues, dropping readonlyselected. Otherworkers maydrain/free/reuse oldslot safely; freshnextpredicate reselects. NoClaim tracefor abandonedselection."
+    },
+    {
+      "scope": "maintenance",
+      "lines": "875\u2013908",
+      "finding": "takeinvalidbranch onlyafterselectionfoundnojobs undercontinuousschedulerlock. Existingmaintenance/presentationreadiness/orderandunlocks unchanged. Maintenance standaloneClaim trace remainsseparateexecutionKind4, notdeferredslotclaim."
+    },
+    {
+      "scope": "orderedlanes/externalcontinuations",
+      "lines": "693\u2013719,747\u2013782,1539\u20131554",
+      "finding": "pick/firstClaimable/laneReady/due+serial comparisons unchanged. Otherclaims, completions/resume/settle/free requirethesamemutex. Thus cachedslot/index remainvalid untiltake, and resumedjob originalsequence/horizon unchanged."
+    },
+    {
+      "scope": "Traceclaims",
+      "lines": "722\u2013736,392\u2013413,872",
+      "finding": "take mutatesclaimed/unclaimed/firstUnclaimed thenemitsoriginalevent<Mode>(Claim,slot,index,thread). Selectionpredicate emitsnoevent orclock. Off/Waits compileeventaway. Traceevent serial/lane/job/publicationtags remainsame, but elapsedtimestamps notbyteidentical."
+    },
+    {
+      "scope": "ownerassert/due-limit",
+      "lines": "722\u2013736,1547\u20131552",
+      "finding": "Ownerclaim retainspre-pick assertion anddue-limit argument. takealsoretainsownerassert; debugduplicate assertion isharmless, releaseelided. Ownerinlinejoin stillrunsdue<=limit withlaneorder, workerneverhelpsownerjobs."
+    }
+  ],
+  "blockers": [],
+  "test_gaps": [
+    "Changedtracefixture proves2claims initial+continuation andmetadata, but doesnot itselfcheck noClaim afterpresentation-priority slotfree/reuse. Requiredfocusedprioritydiscardfixture oldartifactmustbeadapted/tested forOff/Waits/Trace beforeadoption.",
+    "Trace/Waits/Off compiletemplates requireactualreleaseclosure; old f7singleworker codegen isnottransferrable.",
+    "Baselineee45 displayfixture knownTracecounteroptin gap mustremainrecorded; candidate testonlyrepair canqualifyfixturewithout claimingproductionfix."
+  ],
+  "performance_plan": {
+    "single_native_children_max": 48,
+    "warm_excluded": 16,
+    "measured": 32,
+    "paired": 16,
+    "cells": 8,
+    "cellmatched_extra_diagnostics": 16,
+    "existing_current_candidate_acceptance": 18,
+    "concurrent_proposal_separate": true,
+    "no_launches": true
+  },
+  "codegen_gate": "Inspectcurrentshippingapp uniqueobject/linked Off/Waits/Trace bodies andverifysecondscanremoved foractualcurrentbuild. Evenifremoved, fasterexecution notestablished.",
+  "simplicity": "Privatepureselection +privateclaimmutation helper; no wakepolicy, taskqueue, poolsize, budgetheuristic, newlock, callbacks orlivepoolresize. Cache lifetimeone schedulerlocked iteration.",
+  "adoption_limits": [
+    "Singlehost onefixtureseed each, two pairedmeasurements perstratum; no fineCIclaim.",
+    "Loadedmaturecheckpoint resetscaches/processhistory; notfullwinner/e2e.",
+    "GPUonpermission nothealth/benefit.",
+    "Profiletuningpending; requestedobjectives differ butsameexplicitresources, no validatedtier/automaticallocationpolicy."
+  ],
+  "final_test_addendum": "96 isTerrainMaterialsTestmetricsTraceoptin testonly, no Offmeasurementclock/counterchange."
+}

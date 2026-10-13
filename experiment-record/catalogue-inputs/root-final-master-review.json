@@ -1,0 +1,19 @@
+{
+  "passed": true,
+  "source": "d2ddb6793777eac9e8c62421f2803313e0b83b52",
+  "tree": "35c1ceab56eb99e5a542e22d6364508d70ee9057",
+  "native_build_sha256": "c1dedce36bd45fa9704f67fb751927afad0cdad7276efc78a726d97ebe420ae6",
+  "focused_complete_sha256": "cf7fefc6b67b19740e69645a25c6249caaf783133cd35c80d0751ebff6170e27",
+  "compiled_selected_executed_counts": [
+    1,
+    86,
+    83
+  ],
+  "focused_failures": 0,
+  "focused_skipped": 0,
+  "map_complete_sha256": "6e48141d29905405b51e0e43c148aaf477fe8e26f8e7c9de8b319490a58982c5",
+  "map_requests": 9,
+  "map_generation_calls": 8,
+  "legacy_refusals": 1,
+  "scope": "Native focused integration correctness only. Accepted9e performance and earlierplatform/device evidence retain separate exactsource scope. Current combined branch is not rebenchmarked or calibrated."
+}

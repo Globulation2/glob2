@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "natural_completed": true,
+  "ticks": 156930,
+  "winning_teams": [
+    4
+  ],
+  "initialChecksum": 3888665164,
+  "finalChecksum": 3869592529,
+  "rss_censored": false,
+  "diagnostic": false,
+  "timing_excluded": false
+}

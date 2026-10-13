@@ -1,0 +1,13 @@
+H03 candidate: suppress lane-completion broadcast when no lane successor is admitted
+
+Minimal change solely in completeJob: increment laneCompleted as before; ready.notify_all only if laneCompleted[lane] < laneIssued[lane]. No narrower notify policy elsewhere, no ready queue or worker-placement change.
+
+Safety argument under existing scheduler mutex
+1. Lane admission increases laneIssued and stores contiguous sequence positions. A worker claims lane index only when laneCompleted equals its exact predecessor position; only one active/suspended job per lane can run.
+2. Completion increments laneCompleted once, including failure. If completed==issued afterward, every admitted lane job is now complete; completion cannot make an unadmitted job claimable. No simulation worker needs a lane-successor notification. If completed<issued, an admitted next sequence exists; retain the original broadcast.
+3. Completion and submit share the same mutex. If submit precedes completion it updates issued and candidate sees successor. If completion precedes submit the candidate may suppress, but submit performs its unchanged broadcast. There is no gap in which admission can silently appear without notification.
+4. Batch joins/shutdown are driven by unchanged slotDone/runFinished/stop broadcasts; completed result and exceptions remain unchanged. Owner cannot deadlock waiting for a completed last lane merely because ready was not notified.
+5. GPU continuation settle/resume remains unchanged. A suspended callback does not advance laneCompleted prematurely. Early complete/resume remains guarded by running/resolved ticket state, so successor notification occurs only on actual completion.
+6. Pinned presentation uses its unchanged submit/chunk completion broadcasts. Maintenance registration remains broadcast; returning workers can process optional maintenance. Removing otherwise fruitless lane wakeups may reduce optional idle-tail observation opportunities if all other workers sleep, but existing contract explicitly permits pending optional observations until another normal opportunity; required GPU initialization/execution must not rely on such optional wakeups. Verify the service boundary and harness tests; do not generalize this patch to maintenance/presentation wakes.
+
+Expected limit: if the owner stays many ticks ahead or expensive lane jobs keep admitted successors queued, completed<issued almost always and this guard saves little. A low-backlog tiny-job workload should benefit; a pipelined backlog control may not. Any gains are specific to no-successor completion broadcasts, not submit/run/presentation wakeups. No feature/rule/serialization change intended.

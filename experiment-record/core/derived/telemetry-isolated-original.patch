@@ -1,0 +1,664 @@
+--- a/src/replay/ReplayTelemetry.h
++++ b/src/replay/ReplayTelemetry.h
+@@ -2,6 +2,9 @@
+ #pragma once
+ #include "AITelemetry.h"
+ #include <map>
++#include <set>
++#include <string_view>
++#include <tuple>
+ class Game;
+ namespace ReplayTelemetry
+ {
+@@ -21,8 +24,51 @@
+ // Diagnostic data is bounded independently of the gameplay order stream.
+ class Stream
+ {
+-	std::map<int, Row> current;
+-	std::vector<Frame> frames;
++	using MetadataView = std::tuple<std::string_view, std::string_view, std::string_view>;
++	struct Metadata
++	{
++		std::string name, unit, meaning;
++		MetadataView view() const { return {name, unit, meaning}; }
++	};
++	using Schema = std::vector<Metadata>;
++	using SchemaView = std::vector<MetadataView>;
++	using SchemaPtr = std::shared_ptr<const Schema>;
++	struct SchemaLess
++	{
++		using is_transparent = void;
++		bool operator()(const SchemaPtr &, const SchemaPtr &) const;
++		bool operator()(const SchemaPtr &, const SchemaView &) const;
++		bool operator()(const SchemaView &, const SchemaPtr &) const;
++	};
++	struct StoredValue
++	{
++		std::string value;
++		Uint32 updated = 0;
++		bool operator==(const StoredValue &) const = default;
++	};
++	struct StoredRow
++	{
++		int team = 0, player = 0;
++		std::string name;
++		bool available = false;
++		SchemaPtr schema;
++		std::vector<StoredValue> values;
++		// Accepted rows use canonical immutable schemas: pointer equality is
++		// descriptor equality. retainSchemas must run before a row enters current.
++		bool operator==(const StoredRow &) const = default;
++	};
++	struct StoredFrame
++	{
++		Uint32 step = 0;
++		std::vector<StoredRow> changes;
++	};
++	// One immutable ordered descriptor list per distinct schema. Rows still
++	// retain every value and update stamp; this is not a delta or wire format.
++	std::set<SchemaPtr, SchemaLess> schemas;
++	std::map<int, StoredRow> current;
++	std::vector<StoredFrame> frames;
++	SchemaPtr schemaFor(const SchemaView &) const;
++	void retainSchemas(StoredFrame &, std::map<int, StoredRow> *latest = nullptr);
+ 	size_t bytes = 0, cursor = 0;
+ 	bool present = false, truncated = false;
+ 	Uint32 until = 0;
+--- a/src/replay/ReplayTelemetry.cpp
++++ b/src/replay/ReplayTelemetry.cpp
+@@ -7,6 +7,8 @@
+ #include <sstream>
+ #include <iomanip>
+ #include <cmath>
++#include <algorithm>
++#include <functional>
+ namespace ReplayTelemetry
+ {
+ namespace
+@@ -44,38 +46,86 @@
+ 		s->write(v.data(), v.size(), "text");
+ }
+ } // namespace
++bool Stream::SchemaLess::operator()(const SchemaPtr &a, const SchemaPtr &b) const
++{
++	if (a == b)
++		return false;
++	return std::lexicographical_compare(a->begin(), a->end(), b->begin(), b->end(),
++		[](const Metadata &x, const Metadata &y) { return x.view() < y.view(); });
++}
++bool Stream::SchemaLess::operator()(const SchemaPtr &a, const SchemaView &b) const
++{
++	return std::ranges::lexicographical_compare(*a, b, {}, &Metadata::view);
++}
++bool Stream::SchemaLess::operator()(const SchemaView &a, const SchemaPtr &b) const
++{
++	return std::ranges::lexicographical_compare(a, *b, {}, std::identity{}, &Metadata::view);
++}
++Stream::SchemaPtr Stream::schemaFor(const SchemaView &view) const
++{
++	if (const auto found = schemas.find(view); found != schemas.end())
++		return *found;
++	auto schema = std::make_shared<Schema>();
++	schema->reserve(view.size());
++	for (const auto &[name, unit, meaning] : view)
++		schema->push_back({std::string(name), std::string(unit), std::string(meaning)});
++	return schema;
++}
++void Stream::retainSchemas(StoredFrame &frame, std::map<int, StoredRow> *latest)
++{
++	// A rejected capture or incomplete decoded frame must not retain descriptors.
++	auto retain = [&](StoredRow &row) { row.schema = *schemas.insert(row.schema).first; };
++	for (auto &row : frame.changes)
++		retain(row);
++	if (latest)
++		for (auto &[player, row] : *latest)
++			retain(row);
++}
+ void Stream::capture(const Game &game, Uint32 step)
+ {
+ 	if (truncated)
+ 		return;
+ 	present = true;
+ 	until = step;
+-	Frame frame;
++	StoredFrame frame;
+ 	frame.step = step;
+-	std::map<int, Row> latest;
++	std::map<int, StoredRow> latest;
+ 	for (int t = 0; t < game.mapHeader.getNumberOfTeams(); ++t)
+ 		if (game.teams[t])
+ 			for (const auto &s : game.teams[t]->stats.aiTelemetry)
+ 				if (s->active)
+ 				{
+-					Row row;
++					StoredRow row;
++					SchemaView descriptors;
+ 					row.team = t;
+ 					row.player = s->player;
+ 					row.name = s->playerName;
+ 					row.available = s->current.available;
+ 					if (row.available)
+ 					{
+-						for (size_t f = 0; f < s->fields.size() && f < s->current.values.size();
+-							 ++f)
++						const auto fieldCount = std::min(s->fields.size(), s->current.values.size());
++						size_t count = s->named.size();
++						for (size_t f = 0; f < fieldCount; ++f)
++							count += s->current.values[f].valid;
++						row.values.reserve(count);
++						descriptors.reserve(count);
++						for (size_t f = 0; f < fieldCount; ++f)
+ 						{
+ 							const auto &v = s->current.values[f];
+ 							const auto &d = s->fields[f];
+ 							if (v.valid)
+-								row.values.push_back(
+-									{d.name, display(d, v), d.unit, d.meaning, v.updated});
++							{
++								descriptors.emplace_back(d.name, d.unit, d.meaning);
++								row.values.push_back({display(d, v), v.updated});
++							}
+ 						}
+-						row.values.insert(row.values.end(), s->named.begin(), s->named.end());
++						for (const auto &v : s->named)
++						{
++							descriptors.emplace_back(v.name, v.unit, v.meaning);
++							row.values.push_back({v.value, v.updated});
++						}
+ 					}
++					row.schema = schemaFor(descriptors);
+ 					latest[row.player] = row;
+ 					if (!current.count(row.player) || !(current.at(row.player) == row))
+ 						frame.changes.push_back(std::move(row));
+@@ -86,6 +136,7 @@
+ 			auto gone = row;
+ 			gone.available = false;
+ 			gone.values.clear();
++			gone.schema = schemaFor({});
+ 			frame.changes.push_back(std::move(gone));
+ 		}
+ 	if (frame.changes.empty())
+@@ -94,8 +145,11 @@
+ 	for (const auto &r : frame.changes)
+ 	{
+ 		cost += 32 + r.name.size();
+-		for (const auto &v : r.values)
+-			cost += 24 + v.name.size() + v.value.size() + v.unit.size() + v.meaning.size();
++		for (size_t f = 0; f < r.values.size(); ++f)
++		{
++			const auto &d = (*r.schema)[f];
++			cost += 24 + d.name.size() + r.values[f].value.size() + d.unit.size() + d.meaning.size();
++		}
+ 	}
+ 	if (cost > Limit - bytes || frames.size() >= 65536)
+ 	{
+@@ -104,6 +158,7 @@
+ 		return;
+ 	}
+ 	bytes += cost;
++	retainSchemas(frame, &latest);
+ 	current = std::move(latest);
+ 	frames.push_back(std::move(frame));
+ }
+@@ -125,12 +180,14 @@
+ 			writeText(s, r.name);
+ 			s->writeUint8(r.available, "available");
+ 			s->writeUint32(r.values.size(), "fields");
+-			for (const auto &v : r.values)
++			for (size_t f = 0; f < r.values.size(); ++f)
+ 			{
+-				writeText(s, v.name);
++				const auto &v = r.values[f];
++				const auto &d = (*r.schema)[f];
++				writeText(s, d.name);
+ 				writeText(s, v.value);
+-				writeText(s, v.unit);
+-				writeText(s, v.meaning);
++				writeText(s, d.unit);
++				writeText(s, d.meaning);
+ 				s->writeUint32(v.updated, "updated");
+ 			}
+ 		}
+@@ -151,7 +208,7 @@
+ 		if (budget < 8)
+ 			throw std::runtime_error("Oversized replay telemetry frames");
+ 		budget -= 8;
+-		Frame frame;
++		StoredFrame frame;
+ 		frame.step = s->readUint32("step");
+ 		auto rows = s->readUint32("changes");
+ 		if (frame.step > until || (i && frame.step <= frames.back().step) ||
+@@ -162,7 +219,9 @@
+ 			if (budget < 32)
+ 				throw std::runtime_error("Oversized replay telemetry rows");
+ 			budget -= 32;
+-			Row row;
++			StoredRow row;
++			SchemaView descriptors;
++			Schema decoded;
+ 			row.team = s->readUint32("team");
+ 			row.player = s->readUint32("player");
+ 			row.name = readText(s, budget);
+@@ -174,18 +233,30 @@
+ 			if (fields > AITelemetry::MaximumPresentationValues || size_t(fields) * 24 > budget)
+ 				throw std::runtime_error("Oversized telemetry fields");
+ 			budget -= size_t(fields) * 24;
++			row.values.reserve(fields);
++			decoded.reserve(fields);
++			descriptors.reserve(fields);
+ 			for (unsigned f = 0; f < fields; ++f)
+ 			{
+-				AITelemetry::NamedValue v;
+-				v.name = readText(s, budget);
++				Metadata d;
++				StoredValue v;
++				d.name = readText(s, budget);
+ 				v.value = readText(s, budget);
+-				v.unit = readText(s, budget);
+-				v.meaning = readText(s, budget);
++				d.unit = readText(s, budget);
++				d.meaning = readText(s, budget);
+ 				v.updated = s->readUint32("updated");
++				decoded.push_back(std::move(d));
+ 				row.values.push_back(std::move(v));
+ 			}
++			for (const auto &d : decoded)
++				descriptors.push_back(d.view());
++			if (const auto found = schemas.find(descriptors); found != schemas.end())
++				row.schema = *found;
++			else
++				row.schema = std::make_shared<Schema>(std::move(decoded));
+ 			frame.changes.push_back(std::move(row));
+ 		}
++		retainSchemas(frame);
+ 		frames.push_back(std::move(frame));
+ 	}
+ 	current.clear();
+@@ -221,7 +292,15 @@
+ 					s->current.tick = game.stepCounter;
+ 					s->current.available = row.available && !(truncated && step > until);
+ 					if (s->current.available)
+-						s->named = row.values;
++					{
++						s->named.reserve(row.values.size());
++						for (size_t f = 0; f < row.values.size(); ++f)
++						{
++							const auto &d = (*row.schema)[f];
++							const auto &v = row.values[f];
++							s->named.push_back({d.name, v.value, d.unit, d.meaning, v.updated});
++						}
++					}
+ 					series.push_back(std::move(s));
+ 				}
+ 		}
+--- a/src/replay/ReplayTelemetryTest.cpp
++++ b/src/replay/ReplayTelemetryTest.cpp
+@@ -0,0 +1,350 @@
++// SPDX-License-Identifier: GPL-3.0-or-later
++#include "EngineFixtures.h"
++#include "ReplayTelemetry.h"
++#include "Version.h"
++#include <BinaryStream.h>
++#include <StreamBackend.h>
++#include <limits>
++#include <utility>
++
++namespace
++{
++using namespace GAGCore;
++using ReplayTelemetry::Frame;
++using ReplayTelemetry::Row;
++using TelemetryStream = ReplayTelemetry::Stream;
++
++void text(OutputStream &out, const std::string &value)
++{
++	out.writeUint32(value.size(), "length");
++	if (!value.empty())
++		out.write(value.data(), value.size(), "text");
++}
++void frame(OutputStream &out, const Frame &value)
++{
++	out.writeUint32(value.step, "step");
++	out.writeUint32(value.changes.size(), "changes");
++	for (const auto &row : value.changes)
++	{
++		out.writeUint32(row.team, "team");
++		out.writeUint32(row.player, "player");
++		text(out, row.name);
++		out.writeUint8(row.available, "available");
++		out.writeUint32(row.values.size(), "fields");
++		for (const auto &v : row.values)
++		{
++			text(out, v.name);
++			text(out, v.value);
++			text(out, v.unit);
++			text(out, v.meaning);
++			out.writeUint32(v.updated, "updated");
++		}
++	}
++}
++// Independent encoder of the existing AIT1 contract, using public legacy rows.
++std::string legacyBytes(const std::vector<Frame> &frames, Uint32 until, bool truncated = false)
++{
++	auto *memory = new MemoryStreamBackend;
++	BinaryOutputStream out(memory);
++	out.writeUint32(0x41495431, "magic");
++	out.writeUint32(1, "version");
++	out.writeUint32(until, "until");
++	out.writeUint8(truncated, "truncated");
++	out.writeUint32(frames.size(), "frames");
++	for (const auto &f : frames)
++		frame(out, f);
++	return memory->takeContents();
++}
++std::string encoded(const TelemetryStream &stream)
++{
++	auto *memory = new MemoryStreamBackend;
++	BinaryOutputStream out(memory);
++	stream.write(&out);
++	return memory->takeContents();
++}
++void read(TelemetryStream &stream, const std::string &bytes)
++{
++	BinaryInputStream in(new MemoryStreamBackend(bytes.data(), bytes.size()));
++	in.seekFromStart(0);
++	BinaryInputStream::CheckedReads checked(&in);
++	stream.read(&in);
++	CHECK(in.getPosition() == bytes.size());
++}
++std::shared_ptr<AITelemetry::Series> attach(Game &game, int team = 0)
++{
++	auto series = std::make_shared<AITelemetry::Series>();
++	series->player = team;
++	series->playerName = "AI";
++	series->current.available = true;
++	game.teams[team]->stats.aiTelemetry = {series};
++	return series;
++}
++std::vector<Frame> unusualFrames()
++{
++	Row a{0, 0, std::string("A\0I", 3), true,
++		{{"same", "0", "units", "first", 0},
++		 {"same", std::string("1\0x", 3), "units", "first", 1},
++		 {std::string("N\0", 2), "", std::string("U\0", 2), std::string("M\0", 2), 2}}};
++	Row b{1, 1, "other", true, {{"same", "2", "units", "second", 3}}};
++	std::vector<Frame> frames{{0, {a, b}}};
++	std::swap(a.values[0], a.values[2]);
++	a.values[1].updated = 32; // Same text; update stamp is part of the payload.
++	frames.push_back({32, {a}});
++	a.available = false;
++	a.values.clear();
++	frames.push_back({64, {a}});
++	a.available = true;
++	a.values = {{"new", "value", "", "new schema", 96},
++				{"new", "value", "", "new schema", 97}};
++	frames.push_back({96, {a, b}});
++	return frames;
++}
++} // namespace
++
++TEST_SUITE("ReplayTelemetry")
++{
++	TEST_CASE("legacy bytes preserve duplicate fields NUL order schemas copy and move")
++	{
++		const auto bytes = legacyBytes(unusualFrames(), 128);
++		TelemetryStream stream;
++		read(stream, bytes);
++		CHECK(encoded(stream) == bytes);
++		TelemetryStream copy = stream;
++		stream = {};
++		CHECK(encoded(copy) == bytes);
++		TelemetryStream moved = std::move(copy);
++		CHECK(encoded(moved) == bytes);
++		TelemetryStream assigned;
++		assigned = moved;
++		moved = {};
++		CHECK(encoded(assigned) == bytes);
++	}
++	TEST_CASE("playback expands exact values stamps unavailability and reloaded history")
++	{
++		glob2test::HeadlessGlobals globals;
++		glob2test::HeadlessGame world({.teams = 2});
++		const auto frames = unusualFrames();
++		const auto bytes = legacyBytes(frames, 128, true);
++		TelemetryStream playback;
++		read(playback, bytes);
++		const auto checksum = world.checksum();
++		for (Uint32 step : {0u, 31u, 32u, 64u, 96u, 128u, 129u})
++		{
++			playback.apply(world.game, step);
++			const Row *expected = nullptr;
++			for (const auto &f : frames)
++				if (f.step <= step)
++					for (const auto &r : f.changes)
++						if (r.player == 0)
++							expected = &r;
++			REQUIRE(expected);
++			const auto &series = *world.game.teams[0]->stats.aiTelemetry.at(0);
++			CHECK(series.playerName == expected->name);
++			CHECK(series.current.available == (expected->available && step <= 128));
++			CHECK(series.named == (series.current.available ? expected->values
++															   : std::vector<AITelemetry::NamedValue>{}));
++			CHECK(world.checksum() == checksum);
++		}
++		// Replay rewind loads a fresh stream, rather than rewinding apply's cursor.
++		TelemetryStream reloaded;
++		read(reloaded, bytes);
++		// The synthetic AIT1 row includes stamps 1 and 2 at replay step zero.
++		// Saves independently require stamps not to exceed the world's current tick.
++		world.game.stepCounter = 128;
++		reloaded.apply(world.game, 0);
++		CHECK(world.game.teams[0]->stats.aiTelemetry[0]->named == frames[0].changes[0].values);
++		// Presentation-only values keep their existing final-state save representation.
++		auto *memory = new MemoryStreamBackend;
++		BinaryOutputStream saved(memory);
++		AITelemetry::save(&saved, world.game.teams[0]->stats.aiTelemetry);
++		const auto savedBytes = memory->takeContents();
++		BinaryInputStream in(new MemoryStreamBackend(savedBytes.data(), savedBytes.size()));
++		in.seekFromStart(0);
++		std::vector<std::shared_ptr<AITelemetry::Series>> restored;
++		AITelemetry::load(&in, restored, VERSION_MINOR);
++		REQUIRE(restored.size() == 1);
++		CHECK(restored[0]->named == frames[0].changes[0].values);
++	}
++	TEST_CASE("capture skips invalid fields and retains exact changes and disappearance")
++	{
++		glob2test::HeadlessGlobals globals;
++		glob2test::HeadlessGame world;
++		auto series = attach(world.game);
++		series->fields = {{"signed", "x", "signed", AITelemetry::Signed},
++						  {"omitted", "", "invalid", AITelemetry::Unsigned}};
++		series->current.values = {{static_cast<Uint64>(Sint64(-4)), 0, true}, {9, 0, false}};
++		series->named = {{"named", std::string("v\0", 2), "", "named", 0},
++						 {"named", "duplicate", "", "named", 0}};
++		TelemetryStream recording;
++		Row row{0, 0, "AI", true,
++			{{"signed", "-4", "x", "signed", 0}, series->named[0], series->named[1]}};
++		std::vector<Frame> expected{{0, {row}}};
++		recording.capture(world.game, 0);
++		recording.capture(world.game, 31); // No changed row, but coverage advances.
++		CHECK(encoded(recording) == legacyBytes(expected, 31));
++		series->named[0].updated = 32;
++		row.values[1].updated = 32;
++		expected.push_back({32, {row}});
++		recording.capture(world.game, 32);
++		series->fields[0].meaning = "changed metadata";
++		row.values[0].meaning = "changed metadata";
++		expected.push_back({64, {row}});
++		recording.capture(world.game, 64);
++		series->current.values[0].valid = false;
++		row.values.erase(row.values.begin());
++		expected.push_back({96, {row}});
++		recording.capture(world.game, 96);
++		series->active = false;
++		row.available = false;
++		row.values.clear();
++		expected.push_back({128, {row}});
++		recording.capture(world.game, 128);
++		CHECK(encoded(recording) == legacyBytes(expected, 128));
++		series->active = true;
++		series->current.available = false;
++		expected.push_back({160, {row}});
++		recording.capture(world.game, 160);
++		CHECK(encoded(recording) == legacyBytes(expected, 160));
++	}
++	TEST_CASE("duplicate players compare with prior capture and schemas can return")
++	{
++		glob2test::HeadlessGlobals globals;
++		glob2test::HeadlessGame world;
++		auto first = attach(world.game);
++		first->playerName = "first";
++		first->fields = {{"typed", "u", "original", AITelemetry::Unsigned},
++						 {"missing", "", "no value", AITelemetry::Unsigned}};
++		first->current.values = {{1, 0, true}}; // Extra descriptors are ignored.
++		Row a{0, 0, "first", true, {{"typed", "1", "u", "original", 0}}};
++		TelemetryStream recording;
++		std::vector<Frame> expected{{0, {a}}};
++		recording.capture(world.game, 0);
++		auto second = std::make_shared<AITelemetry::Series>();
++		second->player = 0;
++		second->playerName = "second";
++		second->current.available = true;
++		second->named = {{"other", "2", "", "second", 0}};
++		world.game.teams[0]->stats.aiTelemetry.push_back(second);
++		Row b{0, 0, "second", true, second->named};
++		expected.push_back({32, {b}});
++		recording.capture(world.game, 32);
++		first->fields[0].meaning = "changed";
++		a.values[0].meaning = "changed";
++		// Each duplicate compares against the previous capture, not the preceding
++		// row in this capture. The second row equals old current and is omitted,
++		// while still becoming current for the next capture.
++		expected.push_back({64, {a}});
++		recording.capture(world.game, 64);
++		CHECK(encoded(recording) == legacyBytes(expected, 64));
++		world.game.teams[0]->stats.aiTelemetry.pop_back();
++		expected.push_back({96, {a}});
++		recording.capture(world.game, 96);
++		first->fields.resize(1);
++		first->current.values.push_back({999, 99, true}); // Extra values are ignored.
++		first->fields[0].meaning = "original";
++		a.values[0].meaning = "original";
++		expected.push_back({128, {a}});
++		recording.capture(world.game, 128);
++		recording.capture(world.game, 160); // Returning schema is canonical too.
++		CHECK(encoded(recording) == legacyBytes(expected, 160));
++	}
++	TEST_CASE("schema lookup distinguishes prefixes and each metadata component")
++	{
++		glob2test::HeadlessGlobals globals;
++		glob2test::HeadlessGame world;
++		auto series = attach(world.game);
++		TelemetryStream recording;
++		std::vector<Frame> expected;
++		// Inserting in mixed order exercises both lookup comparison directions;
++		// revisiting every schema also verifies canonical equality after lookup.
++		const std::vector<std::vector<AITelemetry::NamedValue>> variants{
++			{{"b", "v", "u", "m", 0}},
++			{{"a", "v", "u", "m", 0}},
++			{{"b", "v", "u", "m", 0}, {"b", "v", "u", "m", 0}},
++			{{"b", "v", "t", "m", 0}},
++			{{"b", "v", "u", "n", 0}},
++			{}};
++		Uint32 step = 0;
++		for (int repeat = 0; repeat < 2; ++repeat)
++			for (const auto &values : variants)
++			{
++				series->named = values;
++				expected.push_back({step, {{0, 0, "AI", true, values}}});
++				recording.capture(world.game, step);
++				recording.capture(world.game, step + 1);
++				CHECK(encoded(recording) == legacyBytes(expected, step + 1));
++				step += 2;
++			}
++	}
++	TEST_CASE("logical byte budget and frame limit retain legacy truncation points")
++	{
++		glob2test::HeadlessGlobals globals;
++		glob2test::HeadlessGame world;
++		for (bool large : {false, true})
++		{
++			auto series = attach(world.game);
++			const std::string part = large ? std::string(4096, 'x') : "x";
++			series->named = {{part, part, part, part, 0}};
++			const size_t cost = 8 + 32 + series->playerName.size() + 24 + 4 * part.size();
++			const Uint32 accepted = std::min<size_t>(65536, (16 * 1024 * 1024) / cost);
++			TelemetryStream recording;
++			for (Uint32 step = 0; step <= accepted + 2; ++step)
++			{
++				series->named[0].updated = step;
++				recording.capture(world.game, step);
++			}
++			auto *memory = new MemoryStreamBackend;
++			BinaryOutputStream out(memory);
++			out.writeUint32(0x41495431, "magic");
++			out.writeUint32(1, "version");
++			out.writeUint32(accepted - 1, "until");
++			out.writeUint8(1, "truncated");
++			out.writeUint32(accepted, "frames");
++			for (Uint32 step = 0; step < accepted; ++step)
++				frame(out, {step, {{0, 0, "AI", true, {{part, part, part, part, step}}}}});
++			const auto expected = memory->takeContents();
++			CHECK(encoded(recording) == expected);
++			TelemetryStream restored;
++			read(restored, expected);
++			CHECK(encoded(restored) == expected);
++		}
++	}
++	TEST_CASE("loader limits and incomplete-frame state keep the existing contract")
++	{
++		const auto frames = unusualFrames();
++		const auto valid = legacyBytes(frames, 128);
++		for (size_t offset : {size_t(0), size_t(4), size_t(13)})
++		{
++			auto bad = valid;
++			for (size_t i = 0; i < 4; ++i)
++				bad[offset + i] = '\xff'; // Magic/version/count must fail before row allocation.
++			TelemetryStream rejected;
++			CHECK_THROWS(read(rejected, bad));
++			CHECK_FALSE(rejected.available());
++		}
++		for (int malformed : {0, 1, 2, 3, 4, 5})
++		{
++			auto badFrames = frames;
++			if (malformed == 0)
++				badFrames[1].step = 0;
++			if (malformed == 1)
++				badFrames[1].changes[0].team = Team::MAX_COUNT;
++			if (malformed == 2)
++				badFrames[1].changes[0].values[0].name.assign(4097, 'x');
++			if (malformed == 3)
++				badFrames[1].changes[0].values.resize(AITelemetry::MaximumPresentationValues + 1);
++			if (malformed == 4)
++				badFrames[1].changes[0].player = Team::MAX_COUNT;
++			if (malformed == 5)
++				badFrames[1].changes.resize(Team::MAX_COUNT * 2 + 1);
++			TelemetryStream rejected;
++			CHECK_THROWS(read(rejected, legacyBytes(badFrames, 128)));
++			CHECK_FALSE(rejected.available());
++			// Previously completed frames survive; the incomplete second frame does not.
++			CHECK(encoded(rejected) == legacyBytes({frames[0]}, 128));
++		}
++		TelemetryStream empty;
++		CHECK_FALSE(empty.available());
++		CHECK(encoded(empty) == legacyBytes({}, 0));
++	}
++}
+--- a/test/tests.py
++++ b/test/tests.py
+@@ -26,6 +26,7 @@
+ 
+ # glob2-engine-tests: every client object except the entry point, plus these.
+ ENGINE_TESTS = [
++    '#src/replay/ReplayTelemetryTest.cpp',
+     '#src/unit/types/UnitCatalogTest.cpp',
+     ('#src/unit/UnitCustomizationTest.cpp', dict(cxxflags=['-fno-access-control'])),
+     '#src/app/cli/CommandLineTest.cpp',
+@@ -369,6 +370,7 @@
+ # Production sources the unit binary links. Plain entries reuse the client build's
+ # object; entries with `defines` are compiled again for the unit binary only.
+ UNIT_PRODUCTION_SOURCES = [
++    '#src/common/ComputeThreads.cpp',
+     '#src/field/OpenCLGradient.cpp',
+     '#src/field/GradientDeviceService.cpp',
+     '#src/app/cli/CommandLine.cpp',

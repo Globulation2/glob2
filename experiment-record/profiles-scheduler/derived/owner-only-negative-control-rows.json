@@ -1,0 +1,333 @@
+{
+  "source_control": "ee45c0a0",
+  "source_candidate": "96da258e",
+  "scope": "6completed nativechildren: oneexcluded warm pair plus two measured owner-only N1pairs. No workerpath performance experiment complete.",
+  "rows": [
+    {
+      "command": [
+        "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/build/linux/client/release/src/glob2",
+        "game",
+        "run",
+        "--profile",
+        "scheduler-telemetry-timing",
+        "--load-game",
+        "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/correctness/small-ni-164298751/fixture/initial.game.gz",
+        "--ticks",
+        "8192",
+        "--compute-threads",
+        "1",
+        "--gpu",
+        "off",
+        "--execution-profile",
+        "fast-simulation",
+        "--memory-budget-bytes",
+        "536870912",
+        "--compute-telemetry",
+        "off",
+        "--output-dir",
+        "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/timing/timing-small-ni-n1-gpuoff-r-1-baseline"
+      ],
+      "wall_s": 1.0451591489836574,
+      "cpu_s": 1.036247,
+      "user_s": 1.004209,
+      "system_s": 0.032038,
+      "peak_rss_bytes": 58572800,
+      "runner_peak_rss_bytes": 51130368,
+      "observer": {
+        "directory": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/observations/timing-small-ni-n1-gpuoff-r-1-baseline",
+        "complete_sha256": "fefbaaf1e0e115f215493dee8bbf7843aa438635c52beb776b937ef6f0781470",
+        "expected_sha256": "7223566db36fe7b91c16d2f7db02dbdfb3621c3adba5915628478d792e99dc7f"
+      },
+      "scenario": "small-ni-n1-gpuoff",
+      "variant": "baseline",
+      "repeat": -1,
+      "measured_ticks": 8192,
+      "request_sha256": "1f5145bb0325bec01b0261bffd6fa4ab66006ab0f40f9751f6db9028efb4b20f",
+      "bindings_sha256": "5de0386482b93727b3d45a1ceeb6d6f67c149b7bd59981a7572042638fd17c41",
+      "binary_sha256": "18b640357036e457470338e092fb3108debc3ab252adbb631b0094d18852e36c",
+      "cpu_ids": [
+        0
+      ],
+      "scope": "nativeprocessCPU/wall/RSS; noheavytracing; warmrepeat-1excluded",
+      "original_file_sha256": "092af7a40820278645294beeaa70b4a6f6b8e556b23a2730e081f79b75a113f1",
+      "original_path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/timing/timing-small-ni-n1-gpuoff-r-1-baseline/native-row.json"
+    },
+    {
+      "command": [
+        "/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2/build/linux/client/release/src/glob2",
+        "game",
+        "run",
+        "--profile",
+        "scheduler-telemetry-timing",
+        "--load-game",
+        "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/correctness/small-ni-164298751/fixture/initial.game.gz",
+        "--ticks",
+        "8192",
+        "--compute-threads",
+        "1",
+        "--gpu",
+        "off",
+        "--execution-profile",
+        "fast-simulation",
+        "--memory-budget-bytes",
+        "536870912",
+        "--compute-telemetry",
+        "off",
+        "--output-dir",
+        "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/timing/timing-small-ni-n1-gpuoff-r-1-candidate"
+      ],
+      "wall_s": 1.033787526190281,
+      "cpu_s": 1.024249,
+      "user_s": 0.98424,
+      "system_s": 0.040008999999999996,
+      "peak_rss_bytes": 58716160,
+      "runner_peak_rss_bytes": 52989952,
+      "observer": {
+        "directory": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/observations/timing-small-ni-n1-gpuoff-r-1-candidate",
+        "complete_sha256": "af823b3b99123d4d7c49e06dbf9f2db2818688b5a05e794f225de3566161dcbd",
+        "expected_sha256": "221df4adf39cedbd7f71d11fb2ac7edbf624fcf306cba9020b9d1d0d1d54e4c0"
+      },
+      "scenario": "small-ni-n1-gpuoff",
+      "variant": "candidate",
+      "repeat": -1,
+      "measured_ticks": 8192,
+      "request_sha256": "3aca004b9d0dd93f23797df8bcaed4e2faa8a4f0cbd9907aa00110dd6c109935",
+      "bindings_sha256": "5de0386482b93727b3d45a1ceeb6d6f67c149b7bd59981a7572042638fd17c41",
+      "binary_sha256": "42de4e7766bf7bdb8f0e1abf7bb6b9da7465bffbee2b4a00b2437e965e0d7f61",
+      "cpu_ids": [
+        0
+      ],
+      "scope": "nativeprocessCPU/wall/RSS; noheavytracing; warmrepeat-1excluded",
+      "original_file_sha256": "e7887627c7161767e11cbd62358d7a38a17a51db2b6286fed8a2f373c9cf8172",
+      "original_path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/timing/timing-small-ni-n1-gpuoff-r-1-candidate/native-row.json"
+    },
+    {
+      "command": [
+        "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/build/linux/client/release/src/glob2",
+        "game",
+        "run",
+        "--profile",
+        "scheduler-telemetry-timing",
+        "--load-game",
+        "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/correctness/small-ni-164298751/fixture/initial.game.gz",
+        "--ticks",
+        "8192",
+        "--compute-threads",
+        "1",
+        "--gpu",
+        "off",
+        "--execution-profile",
+        "fast-simulation",
+        "--memory-budget-bytes",
+        "536870912",
+        "--compute-telemetry",
+        "off",
+        "--output-dir",
+        "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/timing/timing-small-ni-n1-gpuoff-r0-baseline"
+      ],
+      "wall_s": 1.0665537458844483,
+      "cpu_s": 1.057025,
+      "user_s": 1.015104,
+      "system_s": 0.041921,
+      "peak_rss_bytes": 58757120,
+      "runner_peak_rss_bytes": 50987008,
+      "observer": {
+        "directory": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/observations/timing-small-ni-n1-gpuoff-r0-baseline",
+        "complete_sha256": "5e8cfeede9d1dfabd5e8ef208c4610ecad8dc0c538586b418a6f3e89e45d0e2c",
+        "expected_sha256": "c6bc69efd1fa0d35f935a60fcb0095b17bae6673eb805289ed3db836bc0849ec"
+      },
+      "scenario": "small-ni-n1-gpuoff",
+      "variant": "baseline",
+      "repeat": 0,
+      "measured_ticks": 8192,
+      "request_sha256": "0dfe9877e19655fd5c87136f6aa89143fb2737df2d20df934073faa550481bdd",
+      "bindings_sha256": "5de0386482b93727b3d45a1ceeb6d6f67c149b7bd59981a7572042638fd17c41",
+      "binary_sha256": "18b640357036e457470338e092fb3108debc3ab252adbb631b0094d18852e36c",
+      "cpu_ids": [
+        0
+      ],
+      "scope": "nativeprocessCPU/wall/RSS; noheavytracing; warmrepeat-1excluded",
+      "original_file_sha256": "c36e0214449bb7c3f9fac7cf24f805af9504ed0739f72fbd133f710b2e87081e",
+      "original_path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/timing/timing-small-ni-n1-gpuoff-r0-baseline/native-row.json"
+    },
+    {
+      "command": [
+        "/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2/build/linux/client/release/src/glob2",
+        "game",
+        "run",
+        "--profile",
+        "scheduler-telemetry-timing",
+        "--load-game",
+        "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/correctness/small-ni-164298751/fixture/initial.game.gz",
+        "--ticks",
+        "8192",
+        "--compute-threads",
+        "1",
+        "--gpu",
+        "off",
+        "--execution-profile",
+        "fast-simulation",
+        "--memory-budget-bytes",
+        "536870912",
+        "--compute-telemetry",
+        "off",
+        "--output-dir",
+        "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/timing/timing-small-ni-n1-gpuoff-r0-candidate"
+      ],
+      "wall_s": 1.0582075011916459,
+      "cpu_s": 1.050684,
+      "user_s": 0.996701,
+      "system_s": 0.053982999999999996,
+      "peak_rss_bytes": 59121664,
+      "runner_peak_rss_bytes": 53211136,
+      "observer": {
+        "directory": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/observations/timing-small-ni-n1-gpuoff-r0-candidate",
+        "complete_sha256": "1dbd6544fc7b4a68ac8b0200bd1981d1071f283086b0a4dd17ab8611807f75f4",
+        "expected_sha256": "24a8553bef208b1e0f6974f8b7a7c9c414ac6799784a1c096f11fe0828b0a0ee"
+      },
+      "scenario": "small-ni-n1-gpuoff",
+      "variant": "candidate",
+      "repeat": 0,
+      "measured_ticks": 8192,
+      "request_sha256": "5f315ac29cf7b7b46a71cd84d7de947a3b2eae0a16ef829873571a40223aa960",
+      "bindings_sha256": "5de0386482b93727b3d45a1ceeb6d6f67c149b7bd59981a7572042638fd17c41",
+      "binary_sha256": "42de4e7766bf7bdb8f0e1abf7bb6b9da7465bffbee2b4a00b2437e965e0d7f61",
+      "cpu_ids": [
+        0
+      ],
+      "scope": "nativeprocessCPU/wall/RSS; noheavytracing; warmrepeat-1excluded",
+      "original_file_sha256": "b6ed3337a8352e5a60459d83d5104c38dcfafc275fae54825b13d169467ad4d7",
+      "original_path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/timing/timing-small-ni-n1-gpuoff-r0-candidate/native-row.json"
+    },
+    {
+      "command": [
+        "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/build/linux/client/release/src/glob2",
+        "game",
+        "run",
+        "--profile",
+        "scheduler-telemetry-timing",
+        "--load-game",
+        "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/correctness/small-ni-164298751/fixture/initial.game.gz",
+        "--ticks",
+        "8192",
+        "--compute-threads",
+        "1",
+        "--gpu",
+        "off",
+        "--execution-profile",
+        "fast-simulation",
+        "--memory-budget-bytes",
+        "536870912",
+        "--compute-telemetry",
+        "off",
+        "--output-dir",
+        "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/timing/timing-small-ni-n1-gpuoff-r1-baseline"
+      ],
+      "wall_s": 1.0692252670414746,
+      "cpu_s": 1.060136,
+      "user_s": 1.020131,
+      "system_s": 0.040005,
+      "peak_rss_bytes": 58376192,
+      "runner_peak_rss_bytes": 52682752,
+      "observer": {
+        "directory": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/observations/timing-small-ni-n1-gpuoff-r1-baseline",
+        "complete_sha256": "611308464542be8e0a60ae62c4e189611991f7f5c8fce099341130fee99c76b8",
+        "expected_sha256": "655b6b5db547c709d979d13f26a865e9ac31cdbcfbcf66018340df70654f94e0"
+      },
+      "scenario": "small-ni-n1-gpuoff",
+      "variant": "baseline",
+      "repeat": 1,
+      "measured_ticks": 8192,
+      "request_sha256": "a6d4d43db68f5947880eb79d347a3fcf81e1b23e0dee4525d8ab530d21a837ae",
+      "bindings_sha256": "5de0386482b93727b3d45a1ceeb6d6f67c149b7bd59981a7572042638fd17c41",
+      "binary_sha256": "18b640357036e457470338e092fb3108debc3ab252adbb631b0094d18852e36c",
+      "cpu_ids": [
+        0
+      ],
+      "scope": "nativeprocessCPU/wall/RSS; noheavytracing; warmrepeat-1excluded",
+      "original_file_sha256": "7d690d0d876bd8541b514f6692c0e174574ae10923fddf468d433ac661ac45dd",
+      "original_path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/timing/timing-small-ni-n1-gpuoff-r1-baseline/native-row.json"
+    },
+    {
+      "command": [
+        "/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2/build/linux/client/release/src/glob2",
+        "game",
+        "run",
+        "--profile",
+        "scheduler-telemetry-timing",
+        "--load-game",
+        "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/correctness/small-ni-164298751/fixture/initial.game.gz",
+        "--ticks",
+        "8192",
+        "--compute-threads",
+        "1",
+        "--gpu",
+        "off",
+        "--execution-profile",
+        "fast-simulation",
+        "--memory-budget-bytes",
+        "536870912",
+        "--compute-telemetry",
+        "off",
+        "--output-dir",
+        "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/timing/timing-small-ni-n1-gpuoff-r1-candidate"
+      ],
+      "wall_s": 1.0757714943028986,
+      "cpu_s": 1.066953,
+      "user_s": 1.026955,
+      "system_s": 0.039998,
+      "peak_rss_bytes": 58425344,
+      "runner_peak_rss_bytes": 51445760,
+      "observer": {
+        "directory": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/observations/timing-small-ni-n1-gpuoff-r1-candidate",
+        "complete_sha256": "257a9e531d9e04149be09f11a42cde596944dd31ddd711882c2556255c735386",
+        "expected_sha256": "3fa8528fdab7a54e06f4f4dcb34918017a425557ceadc6c3693fe7cd78f29d9b"
+      },
+      "scenario": "small-ni-n1-gpuoff",
+      "variant": "candidate",
+      "repeat": 1,
+      "measured_ticks": 8192,
+      "request_sha256": "8bf5b591e035e53587061ba7771938e013668f0e0b6fc5f3156ebb36cd327457",
+      "bindings_sha256": "5de0386482b93727b3d45a1ceeb6d6f67c149b7bd59981a7572042638fd17c41",
+      "binary_sha256": "42de4e7766bf7bdb8f0e1abf7bb6b9da7465bffbee2b4a00b2437e965e0d7f61",
+      "cpu_ids": [
+        0
+      ],
+      "scope": "nativeprocessCPU/wall/RSS; noheavytracing; warmrepeat-1excluded",
+      "original_file_sha256": "13cb62634dcf2ed4179452afc4c1b0976e5c7b0927d5107e80de9b09a2eaa612",
+      "original_path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/timing/timing-small-ni-n1-gpuoff-r1-candidate/native-row.json"
+    }
+  ],
+  "pairs": [
+    {
+      "repeat": -1,
+      "warm_excluded": true,
+      "changed_worker_path_exercised": false,
+      "percent_changes": {
+        "cpu_s": -1.157832061274966,
+        "wall_s": -1.0880278668023435,
+        "peak_rss_bytes": 0.2447552447552459
+      }
+    },
+    {
+      "repeat": 0,
+      "warm_excluded": false,
+      "changed_worker_path_exercised": false,
+      "percent_changes": {
+        "cpu_s": -0.5998912040869553,
+        "wall_s": -0.782543282512338,
+        "peak_rss_bytes": 0.6204252352736139
+      }
+    },
+    {
+      "repeat": 1,
+      "warm_excluded": false,
+      "changed_worker_path_exercised": false,
+      "percent_changes": {
+        "cpu_s": 0.6430307054944073,
+        "wall_s": 0.6122402325505538,
+        "peak_rss_bytes": 0.08419870895313153
+      }
+    }
+  ]
+}

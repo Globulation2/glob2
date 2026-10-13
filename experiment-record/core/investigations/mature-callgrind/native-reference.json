@@ -1,0 +1,58 @@
+[
+  {
+    "id": "mature-callgrind-oazis132192-original-reference",
+    "phase": "mature-callgrind-native-gate",
+    "variant": "original",
+    "reference_variant": "original",
+    "seed": 1056243202,
+    "repetition": 0,
+    "ticks": 132192,
+    "threads": 3,
+    "gpu": "off",
+    "map": "Oazis",
+    "width": 256,
+    "height": 256,
+    "teams": 11,
+    "controllers": 12,
+    "cwd": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/snapshots/2026-10-11-9a08b91f4/runtime",
+    "asset_dir": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/snapshots/2026-10-11-9a08b91f4/runtime",
+    "commit": "9a08b91f4350649862e788135e99bb1f5f469e3a",
+    "binary": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/snapshots/2026-10-11-9a08b91f4/source/build/linux/client/release/src/glob2",
+    "expected_binary_sha256": "3c23c53e1f0103eab935996ed4c7dd21b63f0464867346c9dcadc46926608a95",
+    "depth": "table",
+    "diagnostic": false,
+    "instrumented": true,
+    "timing_excluded": true,
+    "extra_env": {
+      "GLOB2_INV_MATURE_CALLGRIND": "0"
+    }
+  },
+  {
+    "id": "mature-callgrind-oazis132192-prototype-native-opt1",
+    "phase": "mature-callgrind-native-gate",
+    "variant": "prototype1",
+    "reference_variant": "original",
+    "seed": 1056243202,
+    "repetition": 0,
+    "ticks": 132192,
+    "threads": 3,
+    "gpu": "off",
+    "map": "Oazis",
+    "width": 256,
+    "height": 256,
+    "teams": 11,
+    "controllers": 12,
+    "cwd": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/snapshots/2026-10-11-9a08b91f4/runtime",
+    "asset_dir": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/snapshots/2026-10-11-9a08b91f4/runtime",
+    "commit": "9a08b91f4350649862e788135e99bb1f5f469e3a",
+    "binary": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/mature-callgrind/source/build/linux/client/release/src/glob2",
+    "expected_binary_sha256": "8948b4bb1ea9ba8baa032e68f17ce683d1afc8480f288ce7f4dc62042781f2fe",
+    "depth": "table",
+    "diagnostic": false,
+    "instrumented": true,
+    "timing_excluded": true,
+    "extra_env": {
+      "GLOB2_INV_MATURE_CALLGRIND": "1"
+    }
+  }
+]

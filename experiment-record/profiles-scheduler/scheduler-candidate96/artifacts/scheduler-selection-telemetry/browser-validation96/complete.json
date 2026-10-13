@@ -1,0 +1,1592 @@
+{
+  "complete": true,
+  "passed": false,
+  "source": "96da258e5a6b24a57a8848f2bfa0178031331322",
+  "tree": "63d18b69950651b00e9e40a4d96a14d1a25b62cd",
+  "preparation_sha256": "9d84d5034e60e29a93891ad37b48956e2f536556a55d22b216881bd4b12dc9ba",
+  "matrix": {
+    "startTime": "2026-10-13T03:46:25.149Z",
+    "duration": 408958.777,
+    "expected": 11,
+    "skipped": 0,
+    "unexpected": 1,
+    "flaky": 0
+  },
+  "compute": {
+    "startTime": "2026-10-13T03:53:19.541Z",
+    "duration": 2889.2109999999993,
+    "expected": 1,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "compiled_registered_per_combination": 79,
+  "compiled_executions": 474,
+  "compiled_combinations": [
+    {
+      "runtime": "serial",
+      "project": "chromium",
+      "suites": [
+        "ResourcePolicy",
+        "ResourcePlanJson",
+        "ApplicationResourcePlan",
+        "ApplicationPhaseResources",
+        "ApplicationResourceObservations",
+        "AndroidResourceObservations",
+        "RuntimeGradientBackend",
+        "GradientPreparationContract",
+        "GradientBackendSwitch"
+      ],
+      "actualRegistered": 79,
+      "actualExecuted": 79,
+      "listedSharedHeap": false,
+      "ranSharedHeap": false
+    },
+    {
+      "runtime": "serial",
+      "project": "firefox",
+      "suites": [
+        "ResourcePolicy",
+        "ResourcePlanJson",
+        "ApplicationResourcePlan",
+        "ApplicationPhaseResources",
+        "ApplicationResourceObservations",
+        "AndroidResourceObservations",
+        "RuntimeGradientBackend",
+        "GradientPreparationContract",
+        "GradientBackendSwitch"
+      ],
+      "actualRegistered": 79,
+      "actualExecuted": 79,
+      "listedSharedHeap": false,
+      "ranSharedHeap": false
+    },
+    {
+      "runtime": "serial",
+      "project": "webkit",
+      "suites": [
+        "ResourcePolicy",
+        "ResourcePlanJson",
+        "ApplicationResourcePlan",
+        "ApplicationPhaseResources",
+        "ApplicationResourceObservations",
+        "AndroidResourceObservations",
+        "RuntimeGradientBackend",
+        "GradientPreparationContract",
+        "GradientBackendSwitch"
+      ],
+      "actualRegistered": 79,
+      "actualExecuted": 79,
+      "listedSharedHeap": false,
+      "ranSharedHeap": false
+    },
+    {
+      "runtime": "threaded",
+      "project": "chromium",
+      "suites": [
+        "ResourcePolicy",
+        "ResourcePlanJson",
+        "ApplicationResourcePlan",
+        "ApplicationPhaseResources",
+        "ApplicationResourceObservations",
+        "AndroidResourceObservations",
+        "RuntimeGradientBackend",
+        "GradientPreparationContract",
+        "GradientBackendSwitch"
+      ],
+      "actualRegistered": 79,
+      "actualExecuted": 79,
+      "listedSharedHeap": true,
+      "ranSharedHeap": true
+    },
+    {
+      "runtime": "threaded",
+      "project": "firefox",
+      "suites": [
+        "ResourcePolicy",
+        "ResourcePlanJson",
+        "ApplicationResourcePlan",
+        "ApplicationPhaseResources",
+        "ApplicationResourceObservations",
+        "AndroidResourceObservations",
+        "RuntimeGradientBackend",
+        "GradientPreparationContract",
+        "GradientBackendSwitch"
+      ],
+      "actualRegistered": 79,
+      "actualExecuted": 79,
+      "listedSharedHeap": true,
+      "ranSharedHeap": true
+    },
+    {
+      "runtime": "threaded",
+      "project": "webkit",
+      "suites": [
+        "ResourcePolicy",
+        "ResourcePlanJson",
+        "ApplicationResourcePlan",
+        "ApplicationPhaseResources",
+        "ApplicationResourceObservations",
+        "AndroidResourceObservations",
+        "RuntimeGradientBackend",
+        "GradientPreparationContract",
+        "GradientBackendSwitch"
+      ],
+      "actualRegistered": 79,
+      "actualExecuted": 79,
+      "listedSharedHeap": true,
+      "ranSharedHeap": true
+    }
+  ],
+  "studio_completed_flows": 5,
+  "studio_observations": [
+    {
+      "runtime": "serial",
+      "report": {
+        "background_resources": {
+          "actual_workers": 0,
+          "requested_workers": 1,
+          "resolved_workers": 0,
+          "scope": "one generation; owner plus background worker; direct generation has no resolved plan"
+        },
+        "checksum": 4067363999,
+        "diagnostic": "examples:swamp revision 1 seed 19 [complete]: ",
+        "packageHash": "85e817c7e6a323513d50ed22ffe6ac948ee0e4476c4433ccd7f7723b21d3f023",
+        "playable": true,
+        "seconds": 0.97701,
+        "seed": 19,
+        "simRevision": 48,
+        "simVersion": "154-69-502a71a1336725a7a30d90f85c1af24b32e7fc87efdd18723ff33866810e9b5d",
+        "stage": "complete",
+        "success": true,
+        "telemetry": [
+          {
+            "key": "swamp.field.shape",
+            "kind": "choice",
+            "subject": -1,
+            "value": "noise"
+          },
+          {
+            "key": "swamp.field.smoothing",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 30
+          },
+          {
+            "key": "terrain.height_field.smoothing_factor",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 30
+          },
+          {
+            "key": "terrain.height_field.patch_width",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 128
+          },
+          {
+            "key": "terrain.height_field.patch_height",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 128
+          },
+          {
+            "key": "terrain.height_field.repeat_x",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 1
+          },
+          {
+            "key": "terrain.height_field.repeat_y",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 1
+          },
+          {
+            "key": "terrain.height_field.water_threshold",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 0.478515625
+          },
+          {
+            "key": "terrain.height_field.sand_threshold",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 0.47900390625
+          },
+          {
+            "key": "terrain.height_field.grass_threshold",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 0.9150390625
+          },
+          {
+            "key": "terrain.height_field.wheat_threshold",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 0.56396484375
+          },
+          {
+            "key": "terrain.height_field.wood_threshold",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 0.56396484375
+          },
+          {
+            "key": "terrain.height_field.stone_threshold",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 0.5087890625
+          },
+          {
+            "key": "terrain.height_field.stone_floor",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 0.787109375
+          },
+          {
+            "key": "terrain.height_field.algae_threshold",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 0.2724609375
+          },
+          {
+            "key": "terrain.starts.min_distance_squared",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 819
+          },
+          {
+            "key": "starts.balanced.min_distance_squared",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 819
+          },
+          {
+            "key": "starts.balanced.candidate_sites",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 5969
+          },
+          {
+            "key": "starts.balanced.shortlisted_sites",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 900
+          },
+          {
+            "key": "starts.balanced.viable_built_sites",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 900
+          },
+          {
+            "key": "starts.balanced.selected_sites",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 4
+          },
+          {
+            "key": "starts.balanced.resource_cost_spread",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 0
+          },
+          {
+            "key": "starts.balanced.outcome",
+            "kind": "choice",
+            "subject": -1,
+            "value": "selected"
+          },
+          {
+            "key": "terrain.starts.method",
+            "kind": "choice",
+            "subject": -1,
+            "value": "balanced"
+          },
+          {
+            "key": "resources.starting.wheat_range",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 24
+          },
+          {
+            "key": "resources.starting.wood_range",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 32
+          },
+          {
+            "key": "resources.starting.clear_radius",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 6
+          },
+          {
+            "key": "resources.starting_wheat.before_distance",
+            "kind": "measurement",
+            "subject": 0,
+            "value": 1
+          },
+          {
+            "key": "resources.starting_wood.before_distance",
+            "kind": "measurement",
+            "subject": 0,
+            "value": 1
+          },
+          {
+            "key": "resources.starting.wall_clear_rounds",
+            "kind": "measurement",
+            "subject": 0,
+            "value": 0
+          },
+          {
+            "key": "resources.starting_wheat.topup_needed",
+            "kind": "measurement",
+            "subject": 0,
+            "value": false
+          },
+          {
+            "key": "resources.starting_wood.topup_needed",
+            "kind": "measurement",
+            "subject": 0,
+            "value": false
+          },
+          {
+            "key": "resources.starting_wheat.before_distance",
+            "kind": "measurement",
+            "subject": 1,
+            "value": 3
+          },
+          {
+            "key": "resources.starting_wood.before_distance",
+            "kind": "measurement",
+            "subject": 1,
+            "value": 3
+          },
+          {
+            "key": "resources.starting.wall_clear_rounds",
+            "kind": "measurement",
+            "subject": 1,
+            "value": 0
+          },
+          {
+            "key": "resources.starting_wheat.topup_needed",
+            "kind": "measurement",
+            "subject": 1,
+            "value": false
+          },
+          {
+            "key": "resources.starting_wood.topup_needed",
+            "kind": "measurement",
+            "subject": 1,
+            "value": false
+          },
+          {
+            "key": "resources.starting_wheat.before_distance",
+            "kind": "measurement",
+            "subject": 2,
+            "value": 3
+          },
+          {
+            "key": "resources.starting_wood.before_distance",
+            "kind": "measurement",
+            "subject": 2,
+            "value": 1
+          },
+          {
+            "key": "resources.starting.wall_clear_rounds",
+            "kind": "measurement",
+            "subject": 2,
+            "value": 0
+          }
+        ],
+        "versionMinor": 154,
+        "worldFingerprint": "ca0b5dd70f3539ac19dcc2122f51c60ba39cf1beaf03efd8932eea7dc6e49b0f",
+        "channel": "glob2-generator-studio",
+        "version": 1,
+        "runId": "11111111-1111-4111-8111-111111111111",
+        "revision": 1,
+        "type": "generated"
+      },
+      "scope": "Studio generation role only; browser allocation unknown resolves cooperative0; not aggregate activeWorkers or simulation participants"
+    },
+    {
+      "runtime": "serial",
+      "report": {
+        "background_resources": {
+          "actual_workers": 0,
+          "requested_workers": 1,
+          "resolved_workers": 0,
+          "scope": "one generation; owner plus background worker; direct generation has no resolved plan"
+        },
+        "checksum": 4067363999,
+        "diagnostic": "examples:swamp revision 1 seed 19 [complete]: ",
+        "packageHash": "85e817c7e6a323513d50ed22ffe6ac948ee0e4476c4433ccd7f7723b21d3f023",
+        "playable": true,
+        "seconds": 0.66566,
+        "seed": 19,
+        "simRevision": 48,
+        "simVersion": "154-69-502a71a1336725a7a30d90f85c1af24b32e7fc87efdd18723ff33866810e9b5d",
+        "stage": "complete",
+        "success": true,
+        "telemetry": [
+          {
+            "key": "swamp.field.shape",
+            "kind": "choice",
+            "subject": -1,
+            "value": "noise"
+          },
+          {
+            "key": "swamp.field.smoothing",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 30
+          },
+          {
+            "key": "terrain.height_field.smoothing_factor",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 30
+          },
+          {
+            "key": "terrain.height_field.patch_width",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 128
+          },
+          {
+            "key": "terrain.height_field.patch_height",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 128
+          },
+          {
+            "key": "terrain.height_field.repeat_x",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 1
+          },
+          {
+            "key": "terrain.height_field.repeat_y",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 1
+          },
+          {
+            "key": "terrain.height_field.water_threshold",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 0.478515625
+          },
+          {
+            "key": "terrain.height_field.sand_threshold",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 0.47900390625
+          },
+          {
+            "key": "terrain.height_field.grass_threshold",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 0.9150390625
+          },
+          {
+            "key": "terrain.height_field.wheat_threshold",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 0.56396484375
+          },
+          {
+            "key": "terrain.height_field.wood_threshold",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 0.56396484375
+          },
+          {
+            "key": "terrain.height_field.stone_threshold",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 0.5087890625
+          },
+          {
+            "key": "terrain.height_field.stone_floor",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 0.787109375
+          },
+          {
+            "key": "terrain.height_field.algae_threshold",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 0.2724609375
+          },
+          {
+            "key": "terrain.starts.min_distance_squared",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 819
+          },
+          {
+            "key": "starts.balanced.min_distance_squared",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 819
+          },
+          {
+            "key": "starts.balanced.candidate_sites",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 5969
+          },
+          {
+            "key": "starts.balanced.shortlisted_sites",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 900
+          },
+          {
+            "key": "starts.balanced.viable_built_sites",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 900
+          },
+          {
+            "key": "starts.balanced.selected_sites",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 4
+          },
+          {
+            "key": "starts.balanced.resource_cost_spread",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 0
+          },
+          {
+            "key": "starts.balanced.outcome",
+            "kind": "choice",
+            "subject": -1,
+            "value": "selected"
+          },
+          {
+            "key": "terrain.starts.method",
+            "kind": "choice",
+            "subject": -1,
+            "value": "balanced"
+          },
+          {
+            "key": "resources.starting.wheat_range",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 24
+          },
+          {
+            "key": "resources.starting.wood_range",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 32
+          },
+          {
+            "key": "resources.starting.clear_radius",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 6
+          },
+          {
+            "key": "resources.starting_wheat.before_distance",
+            "kind": "measurement",
+            "subject": 0,
+            "value": 1
+          },
+          {
+            "key": "resources.starting_wood.before_distance",
+            "kind": "measurement",
+            "subject": 0,
+            "value": 1
+          },
+          {
+            "key": "resources.starting.wall_clear_rounds",
+            "kind": "measurement",
+            "subject": 0,
+            "value": 0
+          },
+          {
+            "key": "resources.starting_wheat.topup_needed",
+            "kind": "measurement",
+            "subject": 0,
+            "value": false
+          },
+          {
+            "key": "resources.starting_wood.topup_needed",
+            "kind": "measurement",
+            "subject": 0,
+            "value": false
+          },
+          {
+            "key": "resources.starting_wheat.before_distance",
+            "kind": "measurement",
+            "subject": 1,
+            "value": 3
+          },
+          {
+            "key": "resources.starting_wood.before_distance",
+            "kind": "measurement",
+            "subject": 1,
+            "value": 3
+          },
+          {
+            "key": "resources.starting.wall_clear_rounds",
+            "kind": "measurement",
+            "subject": 1,
+            "value": 0
+          },
+          {
+            "key": "resources.starting_wheat.topup_needed",
+            "kind": "measurement",
+            "subject": 1,
+            "value": false
+          },
+          {
+            "key": "resources.starting_wood.topup_needed",
+            "kind": "measurement",
+            "subject": 1,
+            "value": false
+          },
+          {
+            "key": "resources.starting_wheat.before_distance",
+            "kind": "measurement",
+            "subject": 2,
+            "value": 3
+          },
+          {
+            "key": "resources.starting_wood.before_distance",
+            "kind": "measurement",
+            "subject": 2,
+            "value": 1
+          },
+          {
+            "key": "resources.starting.wall_clear_rounds",
+            "kind": "measurement",
+            "subject": 2,
+            "value": 0
+          }
+        ],
+        "versionMinor": 154,
+        "worldFingerprint": "ca0b5dd70f3539ac19dcc2122f51c60ba39cf1beaf03efd8932eea7dc6e49b0f",
+        "channel": "glob2-generator-studio",
+        "version": 1,
+        "runId": "11111111-1111-4111-8111-111111111111",
+        "revision": 1,
+        "type": "generated"
+      },
+      "scope": "Studio generation role only; browser allocation unknown resolves cooperative0; not aggregate activeWorkers or simulation participants"
+    },
+    {
+      "runtime": "serial",
+      "report": {
+        "background_resources": {
+          "actual_workers": 0,
+          "requested_workers": 1,
+          "resolved_workers": 0,
+          "scope": "one generation; owner plus background worker; direct generation has no resolved plan"
+        },
+        "checksum": 4067363999,
+        "diagnostic": "examples:swamp revision 1 seed 19 [complete]: ",
+        "packageHash": "85e817c7e6a323513d50ed22ffe6ac948ee0e4476c4433ccd7f7723b21d3f023",
+        "playable": true,
+        "seconds": 0.53016,
+        "seed": 19,
+        "simRevision": 48,
+        "simVersion": "154-69-502a71a1336725a7a30d90f85c1af24b32e7fc87efdd18723ff33866810e9b5d",
+        "stage": "complete",
+        "success": true,
+        "telemetry": [
+          {
+            "key": "swamp.field.shape",
+            "kind": "choice",
+            "subject": -1,
+            "value": "noise"
+          },
+          {
+            "key": "swamp.field.smoothing",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 30
+          },
+          {
+            "key": "terrain.height_field.smoothing_factor",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 30
+          },
+          {
+            "key": "terrain.height_field.patch_width",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 128
+          },
+          {
+            "key": "terrain.height_field.patch_height",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 128
+          },
+          {
+            "key": "terrain.height_field.repeat_x",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 1
+          },
+          {
+            "key": "terrain.height_field.repeat_y",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 1
+          },
+          {
+            "key": "terrain.height_field.water_threshold",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 0.478515625
+          },
+          {
+            "key": "terrain.height_field.sand_threshold",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 0.47900390625
+          },
+          {
+            "key": "terrain.height_field.grass_threshold",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 0.9150390625
+          },
+          {
+            "key": "terrain.height_field.wheat_threshold",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 0.56396484375
+          },
+          {
+            "key": "terrain.height_field.wood_threshold",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 0.56396484375
+          },
+          {
+            "key": "terrain.height_field.stone_threshold",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 0.5087890625
+          },
+          {
+            "key": "terrain.height_field.stone_floor",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 0.787109375
+          },
+          {
+            "key": "terrain.height_field.algae_threshold",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 0.2724609375
+          },
+          {
+            "key": "terrain.starts.min_distance_squared",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 819
+          },
+          {
+            "key": "starts.balanced.min_distance_squared",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 819
+          },
+          {
+            "key": "starts.balanced.candidate_sites",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 5969
+          },
+          {
+            "key": "starts.balanced.shortlisted_sites",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 900
+          },
+          {
+            "key": "starts.balanced.viable_built_sites",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 900
+          },
+          {
+            "key": "starts.balanced.selected_sites",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 4
+          },
+          {
+            "key": "starts.balanced.resource_cost_spread",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 0
+          },
+          {
+            "key": "starts.balanced.outcome",
+            "kind": "choice",
+            "subject": -1,
+            "value": "selected"
+          },
+          {
+            "key": "terrain.starts.method",
+            "kind": "choice",
+            "subject": -1,
+            "value": "balanced"
+          },
+          {
+            "key": "resources.starting.wheat_range",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 24
+          },
+          {
+            "key": "resources.starting.wood_range",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 32
+          },
+          {
+            "key": "resources.starting.clear_radius",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 6
+          },
+          {
+            "key": "resources.starting_wheat.before_distance",
+            "kind": "measurement",
+            "subject": 0,
+            "value": 1
+          },
+          {
+            "key": "resources.starting_wood.before_distance",
+            "kind": "measurement",
+            "subject": 0,
+            "value": 1
+          },
+          {
+            "key": "resources.starting.wall_clear_rounds",
+            "kind": "measurement",
+            "subject": 0,
+            "value": 0
+          },
+          {
+            "key": "resources.starting_wheat.topup_needed",
+            "kind": "measurement",
+            "subject": 0,
+            "value": false
+          },
+          {
+            "key": "resources.starting_wood.topup_needed",
+            "kind": "measurement",
+            "subject": 0,
+            "value": false
+          },
+          {
+            "key": "resources.starting_wheat.before_distance",
+            "kind": "measurement",
+            "subject": 1,
+            "value": 3
+          },
+          {
+            "key": "resources.starting_wood.before_distance",
+            "kind": "measurement",
+            "subject": 1,
+            "value": 3
+          },
+          {
+            "key": "resources.starting.wall_clear_rounds",
+            "kind": "measurement",
+            "subject": 1,
+            "value": 0
+          },
+          {
+            "key": "resources.starting_wheat.topup_needed",
+            "kind": "measurement",
+            "subject": 1,
+            "value": false
+          },
+          {
+            "key": "resources.starting_wood.topup_needed",
+            "kind": "measurement",
+            "subject": 1,
+            "value": false
+          },
+          {
+            "key": "resources.starting_wheat.before_distance",
+            "kind": "measurement",
+            "subject": 2,
+            "value": 3
+          },
+          {
+            "key": "resources.starting_wood.before_distance",
+            "kind": "measurement",
+            "subject": 2,
+            "value": 1
+          },
+          {
+            "key": "resources.starting.wall_clear_rounds",
+            "kind": "measurement",
+            "subject": 2,
+            "value": 0
+          }
+        ],
+        "versionMinor": 154,
+        "worldFingerprint": "ca0b5dd70f3539ac19dcc2122f51c60ba39cf1beaf03efd8932eea7dc6e49b0f",
+        "channel": "glob2-generator-studio",
+        "version": 1,
+        "runId": "11111111-1111-4111-8111-111111111111",
+        "revision": 1,
+        "type": "generated"
+      },
+      "scope": "Studio generation role only; browser allocation unknown resolves cooperative0; not aggregate activeWorkers or simulation participants"
+    },
+    {
+      "runtime": "threaded",
+      "report": {
+        "background_resources": {
+          "actual_workers": 0,
+          "requested_workers": 1,
+          "resolved_workers": 0,
+          "scope": "one generation; owner plus background worker; direct generation has no resolved plan"
+        },
+        "checksum": 4067363999,
+        "diagnostic": "examples:swamp revision 1 seed 19 [complete]: ",
+        "packageHash": "85e817c7e6a323513d50ed22ffe6ac948ee0e4476c4433ccd7f7723b21d3f023",
+        "playable": true,
+        "seconds": 0.449519872,
+        "seed": 19,
+        "simRevision": 48,
+        "simVersion": "154-69-502a71a1336725a7a30d90f85c1af24b32e7fc87efdd18723ff33866810e9b5d",
+        "stage": "complete",
+        "success": true,
+        "telemetry": [
+          {
+            "key": "swamp.field.shape",
+            "kind": "choice",
+            "subject": -1,
+            "value": "noise"
+          },
+          {
+            "key": "swamp.field.smoothing",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 30
+          },
+          {
+            "key": "terrain.height_field.smoothing_factor",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 30
+          },
+          {
+            "key": "terrain.height_field.patch_width",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 128
+          },
+          {
+            "key": "terrain.height_field.patch_height",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 128
+          },
+          {
+            "key": "terrain.height_field.repeat_x",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 1
+          },
+          {
+            "key": "terrain.height_field.repeat_y",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 1
+          },
+          {
+            "key": "terrain.height_field.water_threshold",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 0.478515625
+          },
+          {
+            "key": "terrain.height_field.sand_threshold",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 0.47900390625
+          },
+          {
+            "key": "terrain.height_field.grass_threshold",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 0.9150390625
+          },
+          {
+            "key": "terrain.height_field.wheat_threshold",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 0.56396484375
+          },
+          {
+            "key": "terrain.height_field.wood_threshold",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 0.56396484375
+          },
+          {
+            "key": "terrain.height_field.stone_threshold",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 0.5087890625
+          },
+          {
+            "key": "terrain.height_field.stone_floor",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 0.787109375
+          },
+          {
+            "key": "terrain.height_field.algae_threshold",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 0.2724609375
+          },
+          {
+            "key": "terrain.starts.min_distance_squared",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 819
+          },
+          {
+            "key": "starts.balanced.min_distance_squared",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 819
+          },
+          {
+            "key": "starts.balanced.candidate_sites",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 5969
+          },
+          {
+            "key": "starts.balanced.shortlisted_sites",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 900
+          },
+          {
+            "key": "starts.balanced.viable_built_sites",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 900
+          },
+          {
+            "key": "starts.balanced.selected_sites",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 4
+          },
+          {
+            "key": "starts.balanced.resource_cost_spread",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 0
+          },
+          {
+            "key": "starts.balanced.outcome",
+            "kind": "choice",
+            "subject": -1,
+            "value": "selected"
+          },
+          {
+            "key": "terrain.starts.method",
+            "kind": "choice",
+            "subject": -1,
+            "value": "balanced"
+          },
+          {
+            "key": "resources.starting.wheat_range",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 24
+          },
+          {
+            "key": "resources.starting.wood_range",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 32
+          },
+          {
+            "key": "resources.starting.clear_radius",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 6
+          },
+          {
+            "key": "resources.starting_wheat.before_distance",
+            "kind": "measurement",
+            "subject": 0,
+            "value": 1
+          },
+          {
+            "key": "resources.starting_wood.before_distance",
+            "kind": "measurement",
+            "subject": 0,
+            "value": 1
+          },
+          {
+            "key": "resources.starting.wall_clear_rounds",
+            "kind": "measurement",
+            "subject": 0,
+            "value": 0
+          },
+          {
+            "key": "resources.starting_wheat.topup_needed",
+            "kind": "measurement",
+            "subject": 0,
+            "value": false
+          },
+          {
+            "key": "resources.starting_wood.topup_needed",
+            "kind": "measurement",
+            "subject": 0,
+            "value": false
+          },
+          {
+            "key": "resources.starting_wheat.before_distance",
+            "kind": "measurement",
+            "subject": 1,
+            "value": 3
+          },
+          {
+            "key": "resources.starting_wood.before_distance",
+            "kind": "measurement",
+            "subject": 1,
+            "value": 3
+          },
+          {
+            "key": "resources.starting.wall_clear_rounds",
+            "kind": "measurement",
+            "subject": 1,
+            "value": 0
+          },
+          {
+            "key": "resources.starting_wheat.topup_needed",
+            "kind": "measurement",
+            "subject": 1,
+            "value": false
+          },
+          {
+            "key": "resources.starting_wood.topup_needed",
+            "kind": "measurement",
+            "subject": 1,
+            "value": false
+          },
+          {
+            "key": "resources.starting_wheat.before_distance",
+            "kind": "measurement",
+            "subject": 2,
+            "value": 3
+          },
+          {
+            "key": "resources.starting_wood.before_distance",
+            "kind": "measurement",
+            "subject": 2,
+            "value": 1
+          },
+          {
+            "key": "resources.starting.wall_clear_rounds",
+            "kind": "measurement",
+            "subject": 2,
+            "value": 0
+          }
+        ],
+        "versionMinor": 154,
+        "worldFingerprint": "ca0b5dd70f3539ac19dcc2122f51c60ba39cf1beaf03efd8932eea7dc6e49b0f",
+        "channel": "glob2-generator-studio",
+        "version": 1,
+        "runId": "11111111-1111-4111-8111-111111111111",
+        "revision": 1,
+        "type": "generated"
+      },
+      "scope": "Studio generation role only; browser allocation unknown resolves cooperative0; not aggregate activeWorkers or simulation participants"
+    },
+    {
+      "runtime": "threaded",
+      "report": {
+        "background_resources": {
+          "actual_workers": 0,
+          "requested_workers": 1,
+          "resolved_workers": 0,
+          "scope": "one generation; owner plus background worker; direct generation has no resolved plan"
+        },
+        "checksum": 4067363999,
+        "diagnostic": "examples:swamp revision 1 seed 19 [complete]: ",
+        "packageHash": "85e817c7e6a323513d50ed22ffe6ac948ee0e4476c4433ccd7f7723b21d3f023",
+        "playable": true,
+        "seconds": 0.579379712,
+        "seed": 19,
+        "simRevision": 48,
+        "simVersion": "154-69-502a71a1336725a7a30d90f85c1af24b32e7fc87efdd18723ff33866810e9b5d",
+        "stage": "complete",
+        "success": true,
+        "telemetry": [
+          {
+            "key": "swamp.field.shape",
+            "kind": "choice",
+            "subject": -1,
+            "value": "noise"
+          },
+          {
+            "key": "swamp.field.smoothing",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 30
+          },
+          {
+            "key": "terrain.height_field.smoothing_factor",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 30
+          },
+          {
+            "key": "terrain.height_field.patch_width",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 128
+          },
+          {
+            "key": "terrain.height_field.patch_height",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 128
+          },
+          {
+            "key": "terrain.height_field.repeat_x",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 1
+          },
+          {
+            "key": "terrain.height_field.repeat_y",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 1
+          },
+          {
+            "key": "terrain.height_field.water_threshold",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 0.478515625
+          },
+          {
+            "key": "terrain.height_field.sand_threshold",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 0.47900390625
+          },
+          {
+            "key": "terrain.height_field.grass_threshold",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 0.9150390625
+          },
+          {
+            "key": "terrain.height_field.wheat_threshold",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 0.56396484375
+          },
+          {
+            "key": "terrain.height_field.wood_threshold",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 0.56396484375
+          },
+          {
+            "key": "terrain.height_field.stone_threshold",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 0.5087890625
+          },
+          {
+            "key": "terrain.height_field.stone_floor",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 0.787109375
+          },
+          {
+            "key": "terrain.height_field.algae_threshold",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 0.2724609375
+          },
+          {
+            "key": "terrain.starts.min_distance_squared",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 819
+          },
+          {
+            "key": "starts.balanced.min_distance_squared",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 819
+          },
+          {
+            "key": "starts.balanced.candidate_sites",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 5969
+          },
+          {
+            "key": "starts.balanced.shortlisted_sites",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 900
+          },
+          {
+            "key": "starts.balanced.viable_built_sites",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 900
+          },
+          {
+            "key": "starts.balanced.selected_sites",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 4
+          },
+          {
+            "key": "starts.balanced.resource_cost_spread",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 0
+          },
+          {
+            "key": "starts.balanced.outcome",
+            "kind": "choice",
+            "subject": -1,
+            "value": "selected"
+          },
+          {
+            "key": "terrain.starts.method",
+            "kind": "choice",
+            "subject": -1,
+            "value": "balanced"
+          },
+          {
+            "key": "resources.starting.wheat_range",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 24
+          },
+          {
+            "key": "resources.starting.wood_range",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 32
+          },
+          {
+            "key": "resources.starting.clear_radius",
+            "kind": "measurement",
+            "subject": -1,
+            "value": 6
+          },
+          {
+            "key": "resources.starting_wheat.before_distance",
+            "kind": "measurement",
+            "subject": 0,
+            "value": 1
+          },
+          {
+            "key": "resources.starting_wood.before_distance",
+            "kind": "measurement",
+            "subject": 0,
+            "value": 1
+          },
+          {
+            "key": "resources.starting.wall_clear_rounds",
+            "kind": "measurement",
+            "subject": 0,
+            "value": 0
+          },
+          {
+            "key": "resources.starting_wheat.topup_needed",
+            "kind": "measurement",
+            "subject": 0,
+            "value": false
+          },
+          {
+            "key": "resources.starting_wood.topup_needed",
+            "kind": "measurement",
+            "subject": 0,
+            "value": false
+          },
+          {
+            "key": "resources.starting_wheat.before_distance",
+            "kind": "measurement",
+            "subject": 1,
+            "value": 3
+          },
+          {
+            "key": "resources.starting_wood.before_distance",
+            "kind": "measurement",
+            "subject": 1,
+            "value": 3
+          },
+          {
+            "key": "resources.starting.wall_clear_rounds",
+            "kind": "measurement",
+            "subject": 1,
+            "value": 0
+          },
+          {
+            "key": "resources.starting_wheat.topup_needed",
+            "kind": "measurement",
+            "subject": 1,
+            "value": false
+          },
+          {
+            "key": "resources.starting_wood.topup_needed",
+            "kind": "measurement",
+            "subject": 1,
+            "value": false
+          },
+          {
+            "key": "resources.starting_wheat.before_distance",
+            "kind": "measurement",
+            "subject": 2,
+            "value": 3
+          },
+          {
+            "key": "resources.starting_wood.before_distance",
+            "kind": "measurement",
+            "subject": 2,
+            "value": 1
+          },
+          {
+            "key": "resources.starting.wall_clear_rounds",
+            "kind": "measurement",
+            "subject": 2,
+            "value": 0
+          }
+        ],
+        "versionMinor": 154,
+        "worldFingerprint": "ca0b5dd70f3539ac19dcc2122f51c60ba39cf1beaf03efd8932eea7dc6e49b0f",
+        "channel": "glob2-generator-studio",
+        "version": 1,
+        "runId": "11111111-1111-4111-8111-111111111111",
+        "revision": 1,
+        "type": "generated"
+      },
+      "scope": "Studio generation role only; browser allocation unknown resolves cooperative0; not aggregate activeWorkers or simulation participants"
+    }
+  ],
+  "failures": [
+    {
+      "title": "threaded: picker evidence is scoped and Studio reports its own generation workers",
+      "project": "chromium",
+      "status": "unexpected",
+      "errors": [
+        [
+          {
+            "location": {
+              "file": "/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2/artifacts/scheduler-selection-telemetry/browser-validation96/resource-harness.spec.cjs",
+              "column": 136,
+              "line": 37
+            },
+            "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m\n\nExpected substring: \u001b[32m\"MainMenuScreen\"\u001b[39m\nReceived string:    \u001b[31m\"loading\"\u001b[39m\n\nCall Log:\n- Timeout 30000ms exceeded while waiting on the predicate\n\n  35 |  });\n  36 |  test(`${variant}: picker evidence is scoped and Studio reports its own generation workers`,async({page},info)=>{\n> 37 |   await page.goto('/?renderer=software&threads='+variant);await expect.poll(()=>page.evaluate(()=>glob2Diagnostics.snapshot().screen)).toContain('MainMenuScreen');\n     |                                                                                                                                        ^\n  38 |   expect(await page.evaluate(()=>glob2Diagnostics.snapshot().executionMode)).toBe(variant);\n  39 |   await clickMainMenu(page,'custom');await expect.poll(()=>page.evaluate(()=>glob2Diagnostics.snapshot().screen)).toContain('CustomGameScreen');await clickControl(page,'map/mode/1');await clickControl(page,'generator/landscape');await expect.poll(()=>page.evaluate(()=>glob2Diagnostics.snapshot().screen)).toContain('LandscapePickerScreen');\n  40 |   const picker=await page.evaluate(()=>glob2Diagnostics.snapshot());fs.writeFileSync(info.outputPath('picker-observation.json'),JSON.stringify({runtime:variant,snapshot:picker,actual_preview_workers:null,qualification:'Aggregate activeWorkers/workerCount does not identify preview role; no role-specific picker export in this source. Actual picker role coverage pending.'},null,2));\n    at /home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2/artifacts/scheduler-selection-telemetry/browser-validation96/resource-harness.spec.cjs:37:136"
+          }
+        ]
+      ]
+    }
+  ],
+  "source_native_web_unchanged": true,
+  "owned_processes_remaining": [],
+  "no_retries": true,
+  "limitations": [
+    "One Chromium threaded startup loading timeout remains unresolved; no simulation failure or build-contention cause established.",
+    "Selected79 suites do not constitute full ComputeExecutor telemetry suite coverage.",
+    "Software UI; SwiftShader36 weighted fields and pre-cancel output/completion only, no physical-device calibration/native OpenCL/in-flight cancellation proof.",
+    "Correctness run concurrent with Android compilation; no performance inference.",
+    "Picker counters are aggregate and do not independently identify preview workers."
+  ],
+  "raw_sha256": {
+    "__pycache__/run.cpython-314.pyc": "daf13c5c0bc1e1f39333f6b72f349688475f3bb8891c90e073d910be4f2d96a9",
+    "compute-invocation.json": "317bf402dedf8d6a08078273277cedbcdac0f0cfa70ce51ce124c390e622d4c2",
+    "compute-playwright-results.json": "15611d6ba098897bfea091cd70f20c6e8ca9446bd8ce2ef0246e5e0253a87fff",
+    "compute-results/.last-run.json": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903",
+    "compute-runner.log": "d33a406284af679a6ea24b1a3f279b56e17a1f5ed77099592220914e3f61ec5e",
+    "compute-terminal.json": "f1d86c5ea86347001598893981747aa427ce67583403557d744c4300cb4a3dc8",
+    "compute.config.cjs": "1696c8fd343211055cfc557b1dffea81fc6b5dd9cb632e7dc87598ff4b6a93a3",
+    "expected-inventory.json": "63236f97184f2a4a6d40a98ee06cb2064d1ece71153cf17c74c08a22ff3539b0",
+    "gradient-compute.spec.cjs": "2f6c4039199efa0a976aa0f9849f73a440b2b4982682ab9c657882e5478c5681",
+    "matrix-invocation.json": "b3dabe9952b8c68d07f384ba4f81879716cf0a538a650c58c3077c3131968778",
+    "matrix-runner.log": "aefa5ed0913e73d9769ea78225fdd3c81753ef4f5b81a53979c791618b6ed299",
+    "matrix-terminal.json": "f7c966354ec1471b79ba8d791945d174d6791f8a893238cac712dc16fb238e92",
+    "playwright-results.json": "55cba4a5ed74f8216150289062c9ea0af33aa62aa1db40bd5b0a6a6f5658224a",
+    "playwright.config.cjs": "2e705e3b756f5edbd613617adf5f6c4bc854c44849f3142ec4d8142a7b82b68a",
+    "preparation.json": "9d84d5034e60e29a93891ad37b48956e2f536556a55d22b216881bd4b12dc9ba",
+    "resource-harness.spec.cjs": "a51b06c59aee53ac7298f5b52e3d1b92ff14e1992bf3a3682dad9db41f9edf12",
+    "results/.last-run.json": "23c7582ff5c5be099637d583c8375912605d8d91d11cef4d55c25cb6e5645334",
+    "results/resource-harness-serial-ac-9cb20-adient-suites-list-and-pass-chromium/actual-coverage.json": "f6da6e4bab0a2444d69aab07fb8b78e891032ba2a77470562de1df2b5a021ee4",
+    "results/resource-harness-serial-ac-9cb20-adient-suites-list-and-pass-chromium/actual-junit.xml": "167dc10ce8fd2fc937cf2522765d4db364795c3a7c5672973670fe7a32049a9c",
+    "results/resource-harness-serial-ac-9cb20-adient-suites-list-and-pass-chromium/actual-listing.xml": "04dd0d0d7ac03fa1573d8be7b981b1fb1db8118a46d49129a2d7a914a5476d06",
+    "results/resource-harness-serial-ac-9cb20-adient-suites-list-and-pass-chromium/console.log": "574cb71965d7ede808ffa150ef7f68c51a6ee8e02bccfbbb5abb25d60b4e0d38",
+    "results/resource-harness-serial-ac-9cb20-adient-suites-list-and-pass-firefox/actual-coverage.json": "90981bef496493147eb1cf1d41b815555dd8ca95489c85bc48dce8688d004736",
+    "results/resource-harness-serial-ac-9cb20-adient-suites-list-and-pass-firefox/actual-junit.xml": "6b8a85e2de56b666353f90e738fa6c0d7dfc49a60191c5397170e8bcb8369b5a",
+    "results/resource-harness-serial-ac-9cb20-adient-suites-list-and-pass-firefox/actual-listing.xml": "04dd0d0d7ac03fa1573d8be7b981b1fb1db8118a46d49129a2d7a914a5476d06",
+    "results/resource-harness-serial-ac-9cb20-adient-suites-list-and-pass-firefox/console.log": "a3df820e2cd7a4fcc1cde8f49da41a3e8660cd2023bf3834f4b16dbfa5575bfb",
+    "results/resource-harness-serial-ac-9cb20-adient-suites-list-and-pass-webkit/actual-coverage.json": "e5d83fc740f6d5cc457eb70d081d330e3504818ac49c90ac0e57f5f82bf62f4d",
+    "results/resource-harness-serial-ac-9cb20-adient-suites-list-and-pass-webkit/actual-junit.xml": "12980fb36668281fa7e94a098e09578973480bb81038dd34b27605a1b878c1dd",
+    "results/resource-harness-serial-ac-9cb20-adient-suites-list-and-pass-webkit/actual-listing.xml": "04dd0d0d7ac03fa1573d8be7b981b1fb1db8118a46d49129a2d7a914a5476d06",
+    "results/resource-harness-serial-ac-9cb20-adient-suites-list-and-pass-webkit/console.log": "574cb71965d7ede808ffa150ef7f68c51a6ee8e02bccfbbb5abb25d60b4e0d38",
+    "results/resource-harness-serial-pi-5792b--its-own-generation-workers-chromium/picker-observation.json": "a5ab9bcd7ce12b2213afdbe59f1e391b43ed210a0cb50f3c9d7eeb0ce9fdde61",
+    "results/resource-harness-serial-pi-5792b--its-own-generation-workers-chromium/studio-observation.json": "aafd334b9cf32d76ad76943469dd4f0bb98add8ed3d7faaf754f03d4b9498782",
+    "results/resource-harness-serial-pi-5792b--its-own-generation-workers-chromium/studio-runtime-observation.json": "9ea1fcf9cf09df7aaee5acefa4c6f31b1d5dd87a794db362c3202b9307f94854",
+    "results/resource-harness-serial-pi-5792b--its-own-generation-workers-firefox/picker-observation.json": "6073af88276561f6c4da3483bd130467010138fe5f9456869f8241a15546f9e0",
+    "results/resource-harness-serial-pi-5792b--its-own-generation-workers-firefox/studio-observation.json": "56c168584be88e274daff858a05e3d5caa2ebbbf30d190d97199fd327313d3d8",
+    "results/resource-harness-serial-pi-5792b--its-own-generation-workers-firefox/studio-runtime-observation.json": "7a4ade9dbb686951ca5a848869cd5ecaf1cd81ad0e833ac2d61bfa95eb735af0",
+    "results/resource-harness-serial-pi-5792b--its-own-generation-workers-webkit/picker-observation.json": "280df0bd755e606fccfe934d9719eafc306fd815598d083ff87ff863864c12d5",
+    "results/resource-harness-serial-pi-5792b--its-own-generation-workers-webkit/studio-observation.json": "a4f2f49fca3bf035dd893b4b3b31184da3233591010fd68769707fd127ad0ee2",
+    "results/resource-harness-serial-pi-5792b--its-own-generation-workers-webkit/studio-runtime-observation.json": "690775beda3371ba0ce91107af20297a670d8614f156ab548ff46636502d530e",
+    "results/resource-harness-threaded--1abea--its-own-generation-workers-chromium/error-context.md": "b4c37dc45eae9a6fd2357aa149a924cf7be7f410ce7ee9da89dc9f1b404566c1",
+    "results/resource-harness-threaded--1abea--its-own-generation-workers-chromium/test-failed-1.png": "f2f243f18fb080b4ce4386c1522698b9defb71ee8646ef5887d260eae57d8ad2",
+    "results/resource-harness-threaded--1abea--its-own-generation-workers-chromium/trace.zip": "d67f716db127640dde179a469e841ce744bf04160f15d433dba8813a492e008d",
+    "results/resource-harness-threaded--1abea--its-own-generation-workers-firefox/picker-observation.json": "712501e1f5a1faf71ccc1211a3237ea26aee38b6474123351cd6976214a7f94e",
+    "results/resource-harness-threaded--1abea--its-own-generation-workers-firefox/studio-observation.json": "38748d14828f0db7940f79c8e0e1ae7483a31bdf64e5f9af238388120955dc0a",
+    "results/resource-harness-threaded--1abea--its-own-generation-workers-firefox/studio-runtime-observation.json": "19949ddad0e3ec6161b2e8f066e50a1f83c4a7e415d7b3d0e96db2d9ede1fae0",
+    "results/resource-harness-threaded--1abea--its-own-generation-workers-webkit/picker-observation.json": "6715c24a41d5f4ac2e503e78973bb15826f63f9085525abd59ff37743b8d0f41",
+    "results/resource-harness-threaded--1abea--its-own-generation-workers-webkit/studio-observation.json": "7b94e7912d31c4f20225a8fd018cad01ca461593c0116aa961f0055b4f68c345",
+    "results/resource-harness-threaded--1abea--its-own-generation-workers-webkit/studio-runtime-observation.json": "03ace9faed2f097f58b646f8c7288b47763f8df4b893f7546f102f793c826fad",
+    "results/resource-harness-threaded--cd346-adient-suites-list-and-pass-chromium/actual-coverage.json": "694cc3f0d0cd1999594d7f016c3d4bd7441910e21f88434fecdb5e7f20d22e7b",
+    "results/resource-harness-threaded--cd346-adient-suites-list-and-pass-chromium/actual-junit.xml": "054076cfe6f8c7cb774d1d3ecb081701eca86281a653ec7313a6d654168d9d29",
+    "results/resource-harness-threaded--cd346-adient-suites-list-and-pass-chromium/actual-listing.xml": "04dd0d0d7ac03fa1573d8be7b981b1fb1db8118a46d49129a2d7a914a5476d06",
+    "results/resource-harness-threaded--cd346-adient-suites-list-and-pass-chromium/console.log": "34d82dc29dff5a92821d54a3fdf3fb189aa99c54fea578f75e5c42faa84f107c",
+    "results/resource-harness-threaded--cd346-adient-suites-list-and-pass-firefox/actual-coverage.json": "ee9463f25dad76725a2bb4c385d25f1650814e595b22c6990710d8b3b4a2d321",
+    "results/resource-harness-threaded--cd346-adient-suites-list-and-pass-firefox/actual-junit.xml": "73eade972609a9ffb1cc4f83cf5554641f48bc0544e9375c399eb09de1bda106",
+    "results/resource-harness-threaded--cd346-adient-suites-list-and-pass-firefox/actual-listing.xml": "04dd0d0d7ac03fa1573d8be7b981b1fb1db8118a46d49129a2d7a914a5476d06",
+    "results/resource-harness-threaded--cd346-adient-suites-list-and-pass-firefox/console.log": "c7a3e1c46e557cfaa9370de51792ad7d586fbcb44b0f04b1acd0aaf2ad5a81f9",
+    "results/resource-harness-threaded--cd346-adient-suites-list-and-pass-webkit/actual-coverage.json": "4e368c3309fb05c80d25417b1e7a03378f6f38a9c1a0adbf0391f0b34ffcc393",
+    "results/resource-harness-threaded--cd346-adient-suites-list-and-pass-webkit/actual-junit.xml": "fb9553992d4949c9f5a9ebcddb29e0befc695722496eaa4303b3424f4d058ccf",
+    "results/resource-harness-threaded--cd346-adient-suites-list-and-pass-webkit/actual-listing.xml": "04dd0d0d7ac03fa1573d8be7b981b1fb1db8118a46d49129a2d7a914a5476d06",
+    "results/resource-harness-threaded--cd346-adient-suites-list-and-pass-webkit/console.log": "f0a0c7badf1eb0b7473d18b482baad54ebb778e77444cf2ec4b2fc0d98abae31",
+    "run.py": "4eec37f3a92a2096acca9a52e7ce4d572d0e9dbe8b5dd39796a2b8d47fb5b8e0",
+    "runner-terminal.json": "16dccc37e1cb670d777374816eeab2f2cb85eb6561941876cbe2e45498a9a54f",
+    "source-sha256.json": "b7f11b6917b036d63a657e6e94b7283c7a924057f59e1a83c06578cc22844388"
+  }
+}

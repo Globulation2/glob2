@@ -1,0 +1,143 @@
+--- a/src/common/ComputeExecutor.h
++++ b/src/common/ComputeExecutor.h
+@@ -339,6 +339,15 @@
+ 		slot.total = slot.unclaimed = slot.completed = slot.firstUnclaimed = 0; slot.error = nullptr;
+ 		--live;
+ 	}
++	// Under mutex: one completion/requeue exposes at most one deferred job.
++	// Keep the broadcast while presentation can run: its designated worker
++	// may take a fairness chunk before required work, so a spare worker must
++	// also have the opportunity to claim the newly available deferred job.
++	void notifyDeferredReady()
++	{
++		if (presentation || presentationPending) ready.notify_all();
++		else ready.notify_one();
++	}
+ 	// Under mutex: settle a synchronous or externally completed job.
+ 	void completeJob(Slot& slot, std::size_t index, std::exception_ptr failure)
+ 	{
+@@ -346,7 +355,7 @@
+ 		if (auto& ticket = slot.completions[index]) ticket->owner.store(nullptr, std::memory_order_release);
+ 		slot.completions[index].reset();
+ 		const auto lane = slot.groups[group(slot, index)].lane;
+-		if (lane != NoLane) { ++laneCompleted[lane]; ready.notify_all(); }
++		if (lane != NoLane) { ++laneCompleted[lane]; notifyDeferredReady(); }
+ 		if (++slot.completed == slot.total) slotDone.notify_all();
+ 	}
+ 	void settle(Completion& ticket)
+@@ -358,7 +367,7 @@
+ 			slot.firstUnclaimed = std::min(slot.firstUnclaimed, ticket.index);
+ 			ticket.owner.store(nullptr, std::memory_order_release);
+ 			slot.completions[ticket.index].reset();
+-			ready.notify_all();
++			notifyDeferredReady();
+ 		} else completeJob(slot, ticket.index, ticket.error);
+ 	}
+ 	bool resolve(Completion& ticket, Job continuation, std::exception_ptr failure)
+--- a/src/common/ComputeExecutorHarness.cpp
++++ b/src/common/ComputeExecutorHarness.cpp
+@@ -774,3 +774,104 @@
+     }
+     CHECK_FALSE(ticket->complete());
+ }
++
++// Prepared test fragment for ComputeExecutorHarness.cpp; unbuilt/unrun.
++TEST_CASE("externally resumed lanes progress while an optional worker stays busy" * doctest::test_suite("ComputeExecutor"))
++{
++    if constexpr (!GAGCore::ThreadSupport::available) return;
++    for (unsigned threads : {3u, 5u, 8u}) for (bool usePresentation : {false, true})
++    {
++        CAPTURE(threads); CAPTURE(usePresentation);
++        ComputeExecutor executor; executor.configure(threads);
++        struct State {
++            ComputeExecutor& executor;
++            std::mutex mutex;
++            std::condition_variable ready;
++            ComputeExecutor::CompletionTicket ticket;
++            bool abandon = false;
++            std::vector<unsigned> order;
++        } first{executor}, second{executor};
++        const auto job = [](void* data, std::size_t index) {
++            auto& state = *static_cast<State*>(data);
++            { std::lock_guard lock(state.mutex); state.order.push_back(index == 2 ? 3 : unsigned(index)); }
++            if (index == 1) {
++                auto ticket = state.executor.defer();
++                bool abandon;
++                { std::lock_guard lock(state.mutex); abandon = state.abandon; if (!abandon) state.ticket = ticket; }
++                if (abandon) ticket->complete();
++                state.ready.notify_one();
++            }
++        };
++        const std::array<ComputeExecutor::Group, 2> groups{{{3, {job, &first}, 9}, {3, {job, &second}, 10}}};
++        auto batch = executor.submit(groups, 20);
++        const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(5);
++        bool published = true;
++        for (auto* state : {&first, &second}) {
++            std::unique_lock lock(state->mutex);
++            published &= state->ready.wait_until(lock, deadline, [&] { return bool(state->ticket); });
++        }
++        // Published tickets must be resolved even on a failed assertion, so
++        // executor destruction can drain every suspended slot.
++        if (!published) {
++            for (auto* state : {&first, &second}) {
++                ComputeExecutor::CompletionTicket ticket;
++                { std::lock_guard lock(state->mutex); state->abandon = true; ticket = state->ticket; }
++                if (ticket) ticket->complete();
++            }
++            CHECK(published);
++            executor.join(batch);
++            continue;
++        }
++        std::atomic<bool> entered{false}, release{false}, timedOut{false};
++        std::atomic<unsigned> optionalSlot{0};
++        struct Service : ComputeExecutor::WorkerOnly {
++            std::atomic<bool>& entered; std::atomic<bool>& release; std::atomic<unsigned>& slot;
++            Service(std::atomic<bool>& e, std::atomic<bool>& r, std::atomic<unsigned>& s):entered(e),release(r),slot(s) {}
++            bool pending() const noexcept override { return !entered.load(); }
++            void process() noexcept override {
++                slot = unsigned(ComputeExecutor::workerSlot()); entered = true;
++                while (!release.load()) std::this_thread::yield();
++            }
++        };
++        ComputeExecutor::PresentationTicket presentation;
++        if (usePresentation) presentation = executor.submitPresentation(1, [&](std::size_t) {
++            optionalSlot = unsigned(ComputeExecutor::workerSlot()); entered = true; while (!release.load()) std::this_thread::yield();
++        });
++        else executor.setWorkerOnly(std::make_shared<Service>(entered, release, optionalSlot));
++        while (!entered.load() && std::chrono::steady_clock::now() < deadline) std::this_thread::yield();
++        const bool optionalEntered = entered.load();
++        std::thread watchdog([&] {
++            while (!release.load() && std::chrono::steady_clock::now() < deadline) std::this_thread::yield();
++            if (!release.exchange(true)) timedOut = true;
++        });
++        std::atomic<bool> resumed{true};
++        std::thread external([&] {
++            for (auto* state : {&first, &second}) {
++                const auto continuation = [](void* data, std::size_t) {
++                    auto& state = *static_cast<State*>(data);
++                    std::lock_guard lock(state.mutex); state.order.push_back(2);
++                };
++                if (!state->ticket->resume({continuation, state})) resumed = false;
++                if (state->ticket->resume({continuation, state})) resumed = false;
++            }
++        });
++        // No fresh submit/run after resume: their broadcasts could conceal a
++        // lost deferred-release wake. Only external ticket resolution wakes.
++        executor.join(batch); executor.joinAll(); external.join();
++        CHECK(optionalEntered); CHECK(resumed.load()); CHECK_FALSE(release.load());
++        CHECK(optionalSlot.load() != 0);
++        if (usePresentation) CHECK(optionalSlot.load() == threads - 1);
++        else CHECK(optionalSlot.load() != threads - 1);
++        CHECK(executor.metrics().ownerJobs == 0);
++        for (auto* state : {&first, &second}) {
++            std::lock_guard lock(state->mutex);
++            CHECK(state->order == std::vector<unsigned>{0, 1, 2, 3});
++        }
++        release = true; watchdog.join(); CHECK_FALSE(timedOut.load());
++        if (presentation) executor.cancelPresentationAndWait();
++        executor.setWorkerOnly({});
++        // Quiesce callbacks before local gate references leave scope; service
++        // replacement alone does not wait for an already running process().
++        executor.configure(1);
++    }
++}

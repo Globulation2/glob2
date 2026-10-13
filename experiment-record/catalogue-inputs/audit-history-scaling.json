@@ -1,0 +1,305 @@
+{
+  "schema_version": 1,
+  "generated_utc": "2026-10-13T09:51:02.300833+00:00",
+  "scope": "Read-only evidence audit; no experiment launches, code changes or hold changes. Generated audit JSON is ignored local evidence.",
+  "inventory_exhaustive": false,
+  "aggregate_game_total": null,
+  "aggregate_game_total_reason": "Natural games, bounded simulation windows, warmups and kernel timings are different units; do not sum as games.",
+  "cohorts": [
+    {
+      "name": "Playground historical baseline",
+      "kind": "natural games",
+      "attempts": 448,
+      "winners": 448,
+      "caps": 0,
+      "revisions": 14,
+      "seeds_per_revision": 32,
+      "separate_serial_baseline_games": 16,
+      "evidence": [
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/runs.csv",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/summary.json"
+      ],
+      "qualifications": [
+        "Historical revisions change gameplay and trajectories; TPS and end-to-end time are not pure same-rule causal comparisons.",
+        "Original historical configuration preserved."
+      ]
+    },
+    {
+      "name": "Oazis historical baseline",
+      "kind": "natural game attempts",
+      "attempts": 192,
+      "winners": 190,
+      "caps": 2,
+      "revisions_completed": 6,
+      "revisions_planned": 14,
+      "seeds_per_revision": 32,
+      "remaining_attempts": 256,
+      "state": "held",
+      "evidence": [
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/runs.csv",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/summary.json",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/compile-dispatch-hold.flag"
+      ],
+      "qualifications": [
+        "Two one-hour caps excluded from completed-game duration; remaining revisions unrun.",
+        "progress.json state running is stale; active is empty and hold flag exists."
+      ]
+    },
+    {
+      "name": "Mature V1 optimization comparisons",
+      "kind": "paired bounded simulation windows",
+      "jobs": 96,
+      "native_process_runs_including_warmups": 768,
+      "measured_pairs": 288,
+      "window_ticks": [
+        4096,
+        8192
+      ],
+      "start_ticks": {
+        "Playground": 20000,
+        "Oazis": 50000
+      },
+      "variants": [
+        "worker sizing",
+        "snapshot ownership",
+        "telemetry",
+        "scheduler",
+        "combined",
+        "affinity auto"
+      ],
+      "gpu_strata": [
+        "off",
+        "on"
+      ],
+      "evidence": [
+        "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/v1-complete-audit.json",
+        "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/plan.json"
+      ],
+      "qualifications": [
+        "These are mature windows, not 768 completed full games.",
+        "Earlier candidate cohort; final accepted package is separate."
+      ]
+    },
+    {
+      "name": "Final accepted package",
+      "kind": "paired bounded simulation windows",
+      "jobs": 21,
+      "native_process_runs": 186,
+      "layouts": 10,
+      "primary_seeds_per_layout": 2,
+      "third_seed_holdout": "large mixed",
+      "aggregate_percent_change": {
+        "cpu": -1.5393396350663502,
+        "wall": -2.1960656391879163,
+        "peak_rss": -26.033965710090566
+      },
+      "evidence": [
+        "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/final-report/analysis.json"
+      ],
+      "qualifications": [
+        "Fixed-three release comparisons, listed layouts weighted equally on one machine.",
+        "Do not attribute combined package ratios to only one change.",
+        "Current final resource-profile branch not rebenchmarked by these receipts."
+      ]
+    },
+    {
+      "name": "Final natural confirmation",
+      "kind": "natural games",
+      "games": 18,
+      "matched_pairs": 9,
+      "layouts": [
+        "Playground",
+        "Oazis",
+        "large mixed Comb"
+      ],
+      "seeds_per_layout": 3,
+      "evidence": [
+        "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/final-report/analysis.json",
+        "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/final-analysis/natural9-review.json"
+      ],
+      "qualifications": [
+        "Exact winners, ticks, native checksums and replay/AIT1 agreement; full every-tick trace not asserted.",
+        "One game per variant/seed; speed uncertainty and adverse seeds retained."
+      ]
+    },
+    {
+      "name": "Thread scaling",
+      "kind": "bounded simulation windows",
+      "native_process_runs": 480,
+      "warmups": 120,
+      "measured_runs": 360,
+      "cells": 60,
+      "detailed_conformance_jobs": 36,
+      "layouts": 3,
+      "seeds_per_layout": 2,
+      "measured_repetitions": 3,
+      "logical_cpu_allocations": [
+        6,
+        24
+      ],
+      "participant_requests": [
+        1,
+        3,
+        6,
+        12,
+        "auto"
+      ],
+      "gpu_strata": [
+        "off",
+        "on"
+      ],
+      "evidence": [
+        "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/thread-scaling-v2/gate-receipt.json",
+        "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/thread-scaling-v2/conformance-complete.json",
+        "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/thread-scaling-v2/analysis/root-descriptive-acceptance.json",
+        "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/thread-scaling-v2/analysis/analysis.json"
+      ],
+      "qualifications": [
+        "One host, two fixed seeds; descriptive curves, no universal thread optimum selected.",
+        "Context switches/system CPU are indicators, not exclusive scheduler cost attribution."
+      ]
+    },
+    {
+      "name": "Gradient chunk alternatives",
+      "kind": "native kernel timings",
+      "valid_timings": 540,
+      "fixtures": 18,
+      "variants": [
+        16,
+        64,
+        128
+      ],
+      "decision": "Retain chunk64; alternatives rejected as universal improvement",
+      "evidence": [
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/k1-current-chunks/timing-summary.json"
+      ],
+      "qualifications": [
+        "Exact outputs for tested full-field workloads; not general paused-search policy."
+      ]
+    },
+    {
+      "name": "AI FIFO batching alternatives",
+      "kind": "native kernel timings",
+      "valid_timings": 750,
+      "fixtures": 25,
+      "variants": [
+        "original FIFO",
+        "batch32",
+        "batch128"
+      ],
+      "decision": "Retain original FIFO; alternatives rejected as universal improvement",
+      "evidence": [
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/k3-current-bfs/timing-summary.json"
+      ],
+      "qualifications": [
+        "Exact tested cell and visitation order; narrow uniform no-stop/no-admission workload."
+      ]
+    }
+  ],
+  "top_findings": [
+    {
+      "finding": "Work covered at least fourteen initial causal hypothesis families, not only accepted changes",
+      "families": [
+        "worker sizing",
+        "GPU startup/quarantine/pacing",
+        "wakeups",
+        "speculative depth",
+        "allocator arenas",
+        "telemetry storage/reserve",
+        "autosaves",
+        "chamfer dispatch",
+        "exact-gradient kernel",
+        "AI/gradient pipeline",
+        "retained pools",
+        "instruction owners/chunks/FIFO",
+        "trajectory changes",
+        "build caching/parallelism"
+      ],
+      "evidence": [
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/hypotheses.json",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/summary.json",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/extended-summary.json"
+      ],
+      "qualification": "Initial ledger contains stale pending statements superseded by later completion receipts."
+    },
+    {
+      "finding": "Resource sizing intervention had substantial allocation-specific gains",
+      "games": 24,
+      "seeds": 8,
+      "comparison": "Explicit four versus legacy auto32 on same six logical CPU allocation, GPU enabled",
+      "percent_change": {
+        "wall": -26.6494,
+        "cpu": -44.4138,
+        "peak_rss": -5.8337
+      },
+      "affinity_auto6_percent_change": {
+        "wall": -18.155,
+        "cpu": -29.8119,
+        "peak_rss": -5.2764
+      },
+      "evidence": [
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/hypotheses.json",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/extended-summary.json"
+      ],
+      "qualification": "Full winner/tick logs; separate bounded detailed conformance. Not universal four-thread policy or sustained GPU utilization."
+    },
+    {
+      "finding": "Scaling showed speed versus CPU tradeoffs, supporting profile-specific objectives",
+      "examples": {
+        "Playground_6logical_N3_vs_N1_GPUoff": {
+          "cpu_percent": 2.131156699540604,
+          "wall_percent": -48.93203904288691
+        },
+        "Playground_6logical_N6_vs_N1_GPUoff": {
+          "cpu_percent": 58.99217038878894,
+          "wall_percent": -36.533030052385385
+        },
+        "Oazis_6logical_N6_vs_N1_GPUoff": {
+          "cpu_percent": 39.15506389164665,
+          "wall_percent": -52.57318310626411
+        },
+        "Playground_24logical_auto24_vs_N1_GPUoff": {
+          "cpu_percent": 426.8415684312138,
+          "wall_percent": -11.30082844942162
+        }
+      },
+      "evidence": [
+        "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/thread-scaling-v2/analysis/analysis.json"
+      ],
+      "qualification": "Descriptive two-seed single-host windows, no global policy selected."
+    },
+    {
+      "finding": "Mature native sampled CPU attribution obtained",
+      "window": [
+        120064,
+        128000
+      ],
+      "samples": 8986,
+      "exclusive_observed_shares_percent": {
+        "gradient_kernel": 24.860894725127977,
+        "building_gradient_search": 14.867571778321834,
+        "gradient_preparation": 12.530603160471845,
+        "buildings": 12.997996884041843,
+        "shared_AI_runtime": 10.661028266191853,
+        "snapshots": 5.909192076563544
+      },
+      "empty_callchain_fraction": 0.5686623636768307,
+      "evidence": [
+        "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/leading-namespace-supplement-v1.json",
+        "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/independent-sample-accounting.json"
+      ],
+      "qualifications": [
+        "Exclusive sample ranking, not full causal caller accounting or whole-game CPU fraction.",
+        "Earlier snapshot share around31.54percent was a template-argument misclassification and corrected."
+      ]
+    },
+    {
+      "finding": "Build trend measured for fourteen snapshots; normalization cannot be inferred from jobs alone",
+      "snapshots": 14,
+      "evidence": [
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/build-times.json"
+      ],
+      "qualification": "Cache warmth, asset encoding and incomplete compiler CPU accounting prevent reliable historical max-parallelism normalization."
+    }
+  ]
+}

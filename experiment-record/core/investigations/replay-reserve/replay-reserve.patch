@@ -1,0 +1,79 @@
+--- a/src/replay/ReplayTelemetry.cpp
++++ b/src/replay/ReplayTelemetry.cpp
+@@ -7,10 +7,30 @@
+ #include <sstream>
+ #include <iomanip>
+ #include <cmath>
++#include <algorithm>
++#include <cstdlib>
++#include <cstring>
++#include <iostream>
+ namespace ReplayTelemetry
+ {
+ namespace
+ {
++bool reserveReplayValues()
++{
++    static const bool enabled = [] {
++        const char* value = std::getenv("GLOB2_INV_REPLAY_RESERVE");
++        return !value || std::strcmp(value, "off") != 0;
++    }();
++    return enabled;
++}
++bool reportReplayCapacity()
++{
++    static const bool enabled = [] {
++        const char* value = std::getenv("GLOB2_INV_REPLAY_CAPACITY");
++        return value && std::strcmp(value, "1") == 0;
++    }();
++    return enabled;
++}
+ std::string display(const AITelemetry::Field &field, const AITelemetry::Value &value)
+ {
+ 	if (field.type == AITelemetry::Signed)
+@@ -65,6 +85,13 @@
+ 					row.available = s->current.available;
+ 					if (row.available)
+ 					{
++                        if (reserveReplayValues()) {
++                            const auto schemaCount = std::min(s->fields.size(), s->current.values.size());
++                            size_t values = s->named.size();
++                            for (size_t f = 0; f < schemaCount; ++f)
++                                if (s->current.values[f].valid) ++values;
++                            row.values.reserve(values);
++                        }
+ 						for (size_t f = 0; f < s->fields.size() && f < s->current.values.size();
+ 							 ++f)
+ 						{
+@@ -109,6 +136,31 @@
+ }
+ void Stream::write(GAGCore::OutputStream *s) const
+ {
++    if (reportReplayCapacity()) {
++        size_t rows = 0, rowCapacity = 0, values = 0, valueCapacity = 0;
++        size_t textLengths = 0, textCapacities = 0;
++        for (const auto& frame : frames) {
++            rows += frame.changes.size(); rowCapacity += frame.changes.capacity();
++            for (const auto& row : frame.changes) {
++                values += row.values.size(); valueCapacity += row.values.capacity();
++                textLengths += row.name.size(); textCapacities += row.name.capacity();
++                for (const auto& value : row.values) {
++                    textLengths += value.name.size()+value.value.size()+value.unit.size()+value.meaning.size();
++                    textCapacities += value.name.capacity()+value.value.capacity()+value.unit.capacity()+value.meaning.capacity();
++                }
++            }
++        }
++        std::cout << "GLOB2_INV_REPLAY_CAPACITY {\"reserve\":" << (reserveReplayValues()?"true":"false")
++            << ",\"frames\":" << frames.size() << ",\"frames_capacity\":" << frames.capacity()
++            << ",\"rows\":" << rows << ",\"rows_capacity\":" << rowCapacity
++            << ",\"values\":" << values << ",\"values_capacity\":" << valueCapacity
++            << ",\"named_value_sizeof\":" << sizeof(AITelemetry::NamedValue)
++            << ",\"row_sizeof\":" << sizeof(Row) << ",\"frame_sizeof\":" << sizeof(Frame)
++            << ",\"value_vector_storage_bytes\":" << valueCapacity*sizeof(AITelemetry::NamedValue)
++            << ",\"text_lengths\":" << textLengths << ",\"text_capacities_including_sso\":" << textCapacities
++            << ",\"logical_budget_used\":" << bytes << ",\"logical_budget_limit\":" << Limit
++            << ",\"truncated\":" << (truncated?"true":"false") << ",\"until\":" << until << "}" << std::endl;
++    }
+ 	s->writeUint32(0x41495431, "telemetryMagic");
+ 	s->writeUint32(1, "telemetryVersion");
+ 	s->writeUint32(until, "telemetryUntil");

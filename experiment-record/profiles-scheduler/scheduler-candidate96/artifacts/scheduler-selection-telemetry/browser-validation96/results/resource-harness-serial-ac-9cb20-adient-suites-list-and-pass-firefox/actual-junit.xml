@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="./this.program" errors="0" failures="0" tests="36053" time="1.033" timestamp="2026-10-13T03:49:12Z" doctest_version="2.4.11">
+    <testcase classname="src/app/AndroidResourceObservationsTest.cpp" name="packet bounds and future thermal status never imply known healthy" time="0" status="run"/>
+    <testcase classname="src/app/AndroidResourceObservationsTest.cpp" name="caller saver precedence and battery use remain separate" time="0" status="run"/>
+    <testcase classname="src/app/ApplicationPhaseResourcesTest.cpp" name="independent owner phases retain allocation and ignore simulation CPU mandates" time="0" status="run"/>
+    <testcase classname="src/app/ApplicationPhaseResourcesTest.cpp" name="background workers include owner and retain caller defaults instead of machine heuristics" time="0.001" status="run"/>
+    <testcase classname="src/app/ApplicationPhaseResourcesTest.cpp" name="typed FPS overrides respect pacer integer range without forbidding uncapped zero" time="0.002" status="run"/>
+    <testcase classname="src/app/ApplicationPhaseResourcesTest.cpp" name="asset admission and IO budgets remain separate from soft planning and recoverable memory" time="0.001" status="run"/>
+    <testcase classname="src/app/ApplicationPhaseResourcesTest.cpp" name="explicit asset roles are validated before cooperative normalization" time="0.002" status="run"/>
+    <testcase classname="src/app/ApplicationPhaseResourcesTest.cpp" name="asset IO hard limit applies independently of threaded CPU support" time="0.001" status="run"/>
+    <testcase classname="src/app/ApplicationResourceObservationsTest.cpp" name="unknown is distinct from foreground no pressure and battery saver" time="0" status="run"/>
+    <testcase classname="src/app/ApplicationResourceObservationsTest.cpp" name="lifecycle edges and low memory evidence do not invent pressure recovery" time="0" status="run"/>
+    <testcase classname="src/app/ApplicationResourcePlanTest.cpp" name="planning byte parser rejects partial signed and unsupported requests" time="0.005" status="run"/>
+    <testcase classname="src/app/ApplicationResourcePlanTest.cpp" name="application context and saved intent do not tune current defaults" time="0" status="run"/>
+    <testcase classname="src/app/ApplicationResourcePlanTest.cpp" name="legacy positive CPU override and GPU override retain explicit provenance" time="0" status="run"/>
+    <testcase classname="src/app/ApplicationResourcePlanTest.cpp" name="typed CPU request merges only absent or equal legacy explicit values" time="0.002" status="run"/>
+    <testcase classname="src/app/ApplicationResourcePlanTest.cpp" name="typed GPU permission takes precedence over defaults and rejects explicit conflicts" time="0.002" status="run"/>
+    <testcase classname="src/app/ApplicationResourcePlanTest.cpp" name="typed automatic GPU permission is retained unless a different explicit legacy value exists" time="0.001" status="run"/>
+    <testcase classname="src/app/ApplicationResourcePlanTest.cpp" name="serial platform enforces support while a threaded allocation remains a soft override bound" time="0.001" status="run"/>
+    <testcase classname="src/app/ApplicationResourcePlanTest.cpp" name="unknown allocation stays conservative without using the test host" time="0" status="run"/>
+    <testcase classname="src/app/ApplicationResourcePlanTest.cpp" name="GPU offload permission preserves exact fallback on an unsupported platform" time="0" status="run"/>
+    <testcase classname="src/app/ApplicationResourcePlanTest.cpp" name="planning requests and runtime constraints are snapshots with no guessed live census" time="0" status="run"/>
+    <testcase classname="src/app/ApplicationResourcePlanTest.cpp" name="explicit refresh inputs resolve repeatably without implicit updates" time="0" status="run"/>
+    <testcase classname="src/app/ApplicationResourcePlanTest.cpp" name="owner only workloads retain actual allocation and threading support" time="0.001" status="run"/>
+    <testcase classname="src/app/ApplicationResourcePlanTest.cpp" name="application explicit resources retain precedence over saved and context intent" time="0" status="run"/>
+    <testcase classname="src/app/ApplicationResourcePlanTest.cpp" name="CPU observation distinguishes allocation from portable hints" time="0.001" status="run"/>
+    <testcase classname="src/app/ApplicationResourcePlanTest.cpp" name="legacy sizing injection retains fallback while new caller allocation stays explicit" time="0" status="run"/>
+    <testcase classname="src/app/ApplicationResourcePlanTest.cpp" name="CPU observation does not infer which gradient accelerator is available" time="0" status="run"/>
+    <testcase classname="src/app/ResourcePlanJsonTest.cpp" name="capability payload lists exactly six intents and does not imply current CLI support" time="0" status="run"/>
+    <testcase classname="src/app/ResourcePlanJsonTest.cpp" name="unknown null and known false true capability and constraints remain distinct" time="0" status="run"/>
+    <testcase classname="src/app/ResourcePlanJsonTest.cpp" name="explicit resource provenance describes winning input before effective GPU fallback" time="0" status="run"/>
+    <testcase classname="src/app/ResourcePlanJsonTest.cpp" name="planning memory and discretionary preparation are observable not RSS promises" time="0.001" status="run"/>
+    <testcase classname="src/app/ResourcePlanJsonTest.cpp" name="Uint64 byte budgets survive JSON text roundtrip without signed or float conversion" time="0" status="run"/>
+    <testcase classname="src/app/ResourcePlanJsonTest.cpp" name="serializer reads the frozen plan rather than changed callers and is deterministic" time="0.002" status="run"/>
+    <testcase classname="src/app/ResourcePlanJsonTest.cpp" name="unsupported policy version cannot be disguised as schema version one" time="0.001" status="run"/>
+    <testcase classname="src/app/ResourcePlanJsonTest.cpp" name="battery saver null false true is independent of battery power in both snapshots" time="0.001" status="run"/>
+    <testcase classname="src/app/ResourcePlanJsonTest.cpp" name="workload support is distinct from device allocation in serialized plans" time="0" status="run"/>
+    <testcase classname="src/app/ResourcePlanJsonTest.cpp" name="all selected intents serialize pending tuning and explicit resource precedence" time="0.004" status="run"/>
+    <testcase classname="src/common/ResourcePolicyTest.cpp" name="six profile names preserve intent without claiming tier tuning" time="0.008" status="run"/>
+    <testcase classname="src/common/ResourcePolicyTest.cpp" name="profile precedence includes an explicit auto and records each source" time="0" status="run"/>
+    <testcase classname="src/common/ResourcePolicyTest.cpp" name="explicit resource overrides win while all original inputs remain frozen" time="0" status="run"/>
+    <testcase classname="src/common/ResourcePolicyTest.cpp" name="known allocation bounds automatic participants but is not an explicit hard cap" time="0.005" status="run"/>
+    <testcase classname="src/common/ResourcePolicyTest.cpp" name="unknown CPU and threading use serial without guessing an allocation" time="0" status="run"/>
+    <testcase classname="src/common/ResourcePolicyTest.cpp" name="GPU request and capability are separate from guaranteed device execution" time="0" status="run"/>
+    <testcase classname="src/common/ResourcePolicyTest.cpp" name="memory constraints reserve live state before recoverable retention" time="0.005" status="run"/>
+    <testcase classname="src/common/ResourcePolicyTest.cpp" name="invalid requests and validated rendering bounds reject clearly" time="0.014" status="run"/>
+    <testcase classname="src/common/ResourcePolicyTest.cpp" name="repeated resolutions preserve capability and constraint provenance deterministically" time="0" status="run"/>
+    <testcase classname="src/common/ResourcePolicyTest.cpp" name="memory arithmetic preserves zero headroom and Uint64 live requirements" time="0.001" status="run"/>
+    <testcase classname="src/common/ResourcePolicyTest.cpp" name="a caller supplied browser automatic default is not an explicit hard limit" time="0.001" status="run"/>
+    <testcase classname="src/common/ResourcePolicyTest.cpp" name="battery use and battery saver are independent observed constraints without tuning" time="0" status="run"/>
+    <testcase classname="src/common/ResourcePolicyTest.cpp" name="workload participant bounds preserve device capabilities and reject unsupported overrides" time="0.001" status="run"/>
+    <testcase classname="src/common/ResourcePolicyTest.cpp" name="explicit resources and constraints survive every profile precedence stratum" time="0" status="run"/>
+    <testcase classname="src/common/ResourcePolicyTest.cpp" name="invalid capability defaults and enum overrides fail while unknown support stays distinct" time="0.006" status="run"/>
+    <testcase classname="src/field/GradientPreparationContractTest.cpp" name="Generated predicates preserve independent seed precedence" time="0.001" status="run"/>
+    <testcase classname="src/field/GradientPreparationContractTest.cpp" name="Shared residency model preserves exact versions and retirement" time="0" status="run"/>
+    <testcase classname="src/field/GradientPreparationContractTest.cpp" name="Transfer planning charges widened coalesced bytes and speculative limits" time="0.001" status="run"/>
+    <testcase classname="src/field/GradientPreparationContractTest.cpp" name="Residency invalidation retains owners until the final lease and transfer retire" time="0.001" status="run"/>
+    <testcase classname="src/field/GradientPreparationContractTest.cpp" name="Upload ranges cover changed cells without escaping the original owner" time="0.017" status="run"/>
+    <testcase classname="src/field/GradientPreparationContractTest.cpp" name="Native records retain explicit decode layouts" time="0" status="run"/>
+    <testcase classname="src/field/RuntimeGradientBackendTest.cpp" name="stable selection IDs and unsupported algorithm normalization" time="0" status="run"/>
+    <testcase classname="src/field/RuntimeGradientBackendTest.cpp" name="verification environment accepts CLI and boolean spellings" time="0" status="run"/>
+    <testcase classname="src/field/RuntimeGradientBackendTest.cpp" name="invalid preferences normalize before indexed dispatch" time="0.005" status="run"/>
+    <testcase classname="src/field/RuntimeGradientBackendTest.cpp" name="CPU scopes have one restoration owner and restore after exceptions" time="0" status="run"/>
+    <testcase classname="src/field/RuntimeGradientBackendTest.cpp" name="plan decisions retain the captured backend and compatible algorithm" time="0" status="run"/>
+    <testcase classname="src/field/RuntimeGradientBackendTest.cpp" name="shadow verification rejects mismatches with original-input evidence" time="0.014" status="run"/>
+    <testcase classname="src/field/RuntimeGradientBackendTest.cpp" name="shadow telemetry follows admitted configuration after preferences change" time="0" status="run"/>
+    <testcase classname="src/field/RuntimeGradientBackendTest.cpp" name="direct CPU recovery honors explicit variant rather than process preference" time="0" status="run"/>
+    <testcase classname="src/field/RuntimeGradientBackendTest.cpp" name="runtime CPU variants agree with independent heap oracle" time="0.025" status="run"/>
+    <testcase classname="src/field/RuntimeGradientBackendTest.cpp" name="runtime terrain kernels preserve every completed cost layer" time="0" status="run"/>
+    <testcase classname="src/field/RuntimeGradientBackendTest.cpp" name="Vulkan algorithms agree with oracle for weighted capped wrapped fields" time="0.001" status="run"/>
+    <testcase classname="src/field/RuntimeGradientBackendTest.cpp" name="wrapped dense sources reject invented paths before GPU publication" time="0.002" status="run"/>
+    <testcase classname="src/field/RuntimeGradientBackendTest.cpp" name="Vulkan cancellation leaves original seeds untouched" time="0" status="run"/>
+    <testcase classname="src/field/RuntimeGradientBackendTest.cpp" name="fixed-point proof agrees with independent weighted oracle on narrow tori" time="0.001" status="run"/>
+    <testcase classname="src/field/RuntimeGradientBackendTest.cpp" name="fixed-point proof rejects malformed spans costs caps and fabricated sources" time="0" status="run"/>
+    <testcase classname="src/field/RuntimeGradientBackendTest.cpp" name="proof evidence preserves original seeds and out-of-range readback portably" time="0.004" status="run"/>
+    <testcase classname="src/field/RuntimeGradientBackendTest.cpp" name="discovery distinguishes supported devices from selectable status" time="0" status="run"/>
+    <testcase classname="src/field/RuntimeGradientBackendTest.cpp" name="malformed direct groups reject before touching fields or diagnostics" time="0.004" status="run"/>
+    <testcase classname="src/field/RuntimeGradientBackendTest.cpp" name="direct group accepts one owned batch recovery without individual callbacks" time="0.003" status="run"/>
+    <testcase classname="src/field/RuntimeGradientBackendTest.cpp" name="shadow mismatch reports evidence failure without losing the primary error" time="0.004" status="run"/>
+    <testcase classname="src/map/gradient/GradientBackendSwitchTest.cpp" name="backend switch drains privately and preserves pending publication" time="0.558" status="run"/>
+    <testcase classname="src/map/gradient/GradientBackendSwitchTest.cpp" name="repeated backend requests coalesce without moving publication ticks" time="0.322" status="run"/>
+  </testsuite>
+</testsuites>

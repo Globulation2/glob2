@@ -1,0 +1,83 @@
+{
+  "passed": true,
+  "source": "ee45c0a0389660bc7d2885b572b94b1a2b01d7a3",
+  "source_tree": "c4f8f7ebd7888effb0800dd0b14e70f8fc2c3224",
+  "native_invocations": 18,
+  "records": [
+    {
+      "id": "d80-small-n1-off",
+      "exit": 0
+    },
+    {
+      "id": "d80-small-n4-waits",
+      "exit": 0
+    },
+    {
+      "id": "d80-small-n12-trace",
+      "exit": 0
+    },
+    {
+      "id": "d80-mixed-n1-off",
+      "exit": 0
+    },
+    {
+      "id": "d80-mixed-n4-waits",
+      "exit": 0
+    },
+    {
+      "id": "d80-mixed-n12-trace",
+      "exit": 0
+    },
+    {
+      "id": "d80-mature-n1-off",
+      "exit": 0
+    },
+    {
+      "id": "d80-mature-n4-waits",
+      "exit": 0
+    },
+    {
+      "id": "d80-mature-n12-trace",
+      "exit": 0
+    },
+    {
+      "id": "d80-pg-n4-gpuon-off",
+      "exit": 0
+    },
+    {
+      "id": "d80-pg-n12-gpuon-trace",
+      "exit": 0
+    },
+    {
+      "id": "d80-mature-save-n4-trace",
+      "exit": 0
+    },
+    {
+      "id": "d80-mature-resume-n4-trace",
+      "exit": 0
+    },
+    {
+      "id": "d80-small-n4-eco-off",
+      "exit": 0
+    },
+    {
+      "id": "d80-small-n4-balanced-off",
+      "exit": 0
+    },
+    {
+      "id": "d80-small-n4-luxurious-off",
+      "exit": 0
+    },
+    {
+      "id": "d80-small-n4-fast-simulation-off",
+      "exit": 0
+    },
+    {
+      "id": "d80-small-n4-efficient-throughput-off",
+      "exit": 0
+    }
+  ],
+  "bindings_sha256": "699835830eb187d5788018e43939e73b154aed653bd098ebc70f6e5fff320206",
+  "finished_utc": "2026-10-13T02:12:47.580186+00:00",
+  "scope": "Full diagnostic simulation/save/replay equality; no timing/tunedpolicy/hardware qualification"
+}

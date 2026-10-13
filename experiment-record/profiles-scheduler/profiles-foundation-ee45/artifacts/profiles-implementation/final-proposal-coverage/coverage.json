@@ -1,0 +1,194 @@
+{
+  "source_commit": "ee45c0a0389660bc7d2885b572b94b1a2b01d7a3",
+  "source_tree": "c4f8f7ebd7888effb0800dd0b14e70f8fc2c3224",
+  "scope": "Read-only ignored proposal coverage. No production edits/builds/testcase/games/hold signals. Runtime acceptance results not claimed by this report.",
+  "implemented_pending": [
+    {
+      "feature": "Six exact profile names",
+      "status": "Implemented intent; tuning pending",
+      "evidence": "ResourcePolicy.cpp12 / ResourcePolicy.h79",
+      "detail": "auto, eco, balanced, luxurious, fast-simulation, efficient-throughput parse and persist. selected intent is not six distinct calibrated resource policies."
+    },
+    {
+      "feature": "Precedence and explicit compatibility",
+      "status": "Implemented",
+      "evidence": "ApplicationResourcePlan.cpp39; Settings.cpp170; tools/tournaments/local.py54",
+      "detail": "Explicit resource overrides validated; conflicting typed/legacy CPU/GPU reject. Explicit profile > saved profile > context default. New game jobs default efficient-throughput; headless native context fast-simulation. Non-game local explicit requests now fail rather than silently disappear."
+    },
+    {
+      "feature": "CPU participants including owner",
+      "status": "Implemented scoped allocation",
+      "evidence": "ResourcePolicy.cpp75; ComputeThreads.cpp; GlobalContainerArgs.cpp185",
+      "detail": "Linux observed logical affinity/cpuset supports automatic ceiling; explicit counts preserved with oversubscription diagnostic and hard serial/workload rejection. Unknown allocation auto1 is real behavior. No quota/physical-core-optimal/device-class guarantee."
+    },
+    {
+      "feature": "Execution paths and phase pools",
+      "status": "Mostly migrated; total simultaneous budget pending",
+      "evidence": "GlobalContainerArgs.cpp287; GeneratorStudioScreen.cpp177; LandscapePickerScreen.cpp254",
+      "detail": "Game/headless/turn/verify and owner-only map paths resolve plans; assets/preview/Studio have phase plans. Independently admitted app-owned phases can overlap; their totals are not a process-wide participant ceiling. Service/driver/audio/network threads are outside this pool contract."
+    },
+    {
+      "feature": "Batch throughput allocation",
+      "status": "Implemented caller-owned game contract",
+      "evidence": "tools/tournaments/resources.py; jobs.py; worker.py",
+      "detail": "Coordinator partitions caller CPU/memory-planning allocations and validates actual game affinity/count/provenance. No throughput optimization learned from profile names. Mixed legacy/non-game local explicit allocations reject."
+    },
+    {
+      "feature": "Direct Python map/scene provenance",
+      "status": "Pending",
+      "evidence": "tools/map_telemetry.py47; map_generation_study.py55; skins/benchmark_rigs.py135",
+      "detail": "Native owner-only map policy still runs, but wrappers lack requested/resolved resource receipt; production scene wrapper retains legacy explicit flags. Historical signed/benchmark data stay immutable, not silently migrated."
+    },
+    {
+      "feature": "Compute GPU permission and capability",
+      "status": "Setup permission implemented; capability discovery pending",
+      "evidence": "ApplicationResourcePlan.cpp25; GlobalContainerArgs.cpp164",
+      "detail": "Resolved setup CPU/GPU configuration honors permission. Application capability adapter leaves actual GPU support unknown; backend status/fallback provides execution evidence separately. Permission does not prove device work."
+    },
+    {
+      "feature": "Live menu GPU selection",
+      "status": "Preserved; live central GPU policy pending",
+      "evidence": "SettingsScreenGeneral.cpp329-339; GlobalContainerArgs.cpp228",
+      "detail": "Later explicit menu backend/algorithm/verify choice requests legacy configuration directly and may supersede typed setup permission. Setup/current_requested/current_applied remain distinct. Frozen pool and per-job backend generation/publication safety must survive future reconciliation."
+    },
+    {
+      "feature": "Renderer backend selection",
+      "status": "Legacy behavior retained; profile control pending",
+      "evidence": "ApplicationResourcePlan.cpp25; GlobalContainerArgs.cpp260",
+      "detail": "Separate renderGpu/computeGpu fields exist; no automatic renderer switch or capability-derived named fallback is applied by profiles. Existing Vulkan/WebGPU/OpenGL/software selection contracts stay intact."
+    },
+    {
+      "feature": "FPS, resolution, detail, preparation",
+      "status": "Existing FPS consumer; tier actions pending",
+      "evidence": "ApplicationPhaseResources.cpp20; GlobalContainerArgs.cpp328",
+      "detail": "Plan carries current FPS, preserves0 uncapped and int bound; presentation refresh sets pacer. No profile-derived resolution scaling, numeric detail tier or preparation budget is applied. Existing appearance flags are unchanged; richer luxury presentation cannot be claimed."
+    },
+    {
+      "feature": "Memory planning and recoverable retention",
+      "status": "Planning validation implemented; retention actions pending",
+      "evidence": "ResourcePolicy.cpp97; ApplicationResourcePlan.cpp62; ApplicationPhaseResources.cpp79",
+      "detail": "Known allocation/limit can clamp planning or reject explicit excess; no real application live-byte lower-bound census here, no cache eviction/retention action/RSS cap. Asset admission credits exist separately and planning memory does not alter them. Simulation-visible/resume caches cannot be trimmed indiscriminately."
+    },
+    {
+      "feature": "Power, visibility, thermal and pressure",
+      "status": "Observations implemented; policy response pending",
+      "evidence": "ApplicationResourceObservations.cpp13; AndroidResourceObservations.cpp; GlobalContainerArgs.cpp247",
+      "detail": "Optional caller values win; SDL power/lifecycle/low-memory and Android signals recorded. false/thermal0 differ from unknown. Sticky low-memory lacks cleared event. Sampling is setup/end, not live adaptation or promised process memory enforcement."
+    },
+    {
+      "feature": "Automatic tier selection and hysteresis",
+      "status": "Pending",
+      "evidence": "ResourcePolicy.h79; GlobalContainerArgs.cpp260",
+      "detail": "No high-end\u2192luxury/low-end\u2192eco automatic classifier, cooldown/hysteresis or battery/thermal downgrade. No core-count/OS-name/this-hostN3 tier rule. Compute remains session-boundary frozen."
+    },
+    {
+      "feature": "Visible preference and Reset Automatic",
+      "status": "Persistence implemented; interactive control pending",
+      "evidence": "Settings.cpp120,170,406; src/ui/settings",
+      "detail": "Optional saved profile load/save/invalid reset exists, CLI distinct from --profile. No visible six-intent picker/Reset Automatic wired in settings UI."
+    },
+    {
+      "feature": "Preserved simulation and feel",
+      "status": "Engine validation ongoing; physical experience pending",
+      "evidence": "runtime-acceptance-d80/plan.json; current platform evidence",
+      "detail": "Finite exact GCS/world/RNG/replay/save checks are separate from worker/render timings. Automated native/browser/APK evidence cannot establish real Android battery/thermal/input feel or richer assets/visual quality."
+    }
+  ],
+  "next_steps": [
+    {
+      "priority": 1,
+      "change": "Make pending scope visible and complete explicit user intent controls",
+      "smallest_action": "Add six-intent preference selection and visible Reset Automatic using existing optional settings; show pending calibrated behavior and actual allocation. Preserve explicit CPU/GPU/backend override precedence and saved graphics values. Do not describe luxury/eco as active tiers yet.",
+      "validation": "Pure precedence/settings cases plus real menu preference/reset/lifecycle checks; same per-tick simulation and save continuation."
+    },
+    {
+      "priority": 2,
+      "change": "Calibrate compute objectives using one global caller allocation",
+      "smallest_action": "Use current frozen session-boundary planner and measured counts; compare serial full-allocation completion versus disjoint concurrent allocations. Derive policy from workload/device envelope and objective, not constant3 or CPU-model class. Keep GPUoff/on strata independent.",
+      "validation": "See bounded16-attempt pilot below; complete/timeout outcomes and totalCPU/memory/health all retained. Expand only adverse/ambiguous cells if needed, not another historical matrix."
+    },
+    {
+      "priority": 3,
+      "change": "Apply one already-supported presentation control before adding knobs",
+      "smallest_action": "After multi-device evidence, let profiles choose only existing FPS pacing with explicit user override and background state precedence. Keep live presentation hysteresis/cooldown separate from frozen compute. Do not invent resolution/detail/preparation actions without actual consumers and visual/input qualification.",
+      "validation": "Real UI cancellation/repaint/input at owner-only allocation, frame pacing and event latency on desktop/browser/Android; zero uncapped semantics preserved; logical game traces unchanged."
+    },
+    {
+      "priority": 4,
+      "change": "Reconcile overlapping app-owned roles and live GPU provenance",
+      "smallest_action": "Use one explicit lifecycle allocation for simultaneous simulation/presentation/asset workers, retaining cooperative progress; exclude opaque service threads from the claim. Route later menu GPU changes through a user-authorized update of permission/provenance without pool resizing or weakening backend lifetime guards.",
+      "validation": "Menu/editor/preview/load/game lifecycle overlap, cancellation and asset owner-help progress; actual count/affinity and current backend-generation reports; GPU fallback/cancellation proofs."
+    },
+    {
+      "priority": 5,
+      "change": "Ground memory behavior in ownership before retaining less",
+      "smallest_action": "Add bounded owner/capacity/live-vs-recoverable census to existing plan telemetry; wire only proven discardable presentation/asset caches to a recoverable budget after required-live estimate. Do not shrink deferred search/frontiers/snapshots merely because they look like caches.",
+      "validation": "RSS/PSS/GPU allocations plus lease/generation fences, active/paused save/load, publication/order/RNG and mixed clients; reject infeasible live budget clearly, do not advertise RSS enforcement."
+    }
+  ],
+  "completion_vs_throughput_pilot": {
+    "status": "proposal_only_no_launch",
+    "purpose": "Separate fastest single completion from highest completed-games throughput without changing the global allocation or selecting a universal default count.",
+    "pilot_native_attempts": 16,
+    "layouts": [
+      "Playground128x128 eight Nicowar FFA",
+      "Oazis256x256 exactly eleven Nicowar FFA; no additional controller"
+    ],
+    "seeds": "Two fixed seeds per layout, exact controller count and initial save header/seed provenance sealed before launch. Reuse only verified eleven-Nicowar FFA saves; if two exact matching Oazis seeds are not already available, prepare and seal them explicitly. Never substitute the older observer workload.",
+    "gpu_strata": [
+      "CPUoff",
+      "GPUon permitted; record actual field execution/commit/fallback/cancellation health"
+    ],
+    "schedules": [
+      "Serial batch: same two arrivals, one game at a time, each allowed total admitted participant allocationB including owner.",
+      "Concurrent batch: same two arrivals, two fixed disjoint masks partitioning exactlyB; per-game participants equal its allocated logical share."
+    ],
+    "arithmetic": "2layouts \u00d72GPUstrata \u00d72schedules \u00d72games =16 natural attempts. Counterbalance schedule order by layout/GPU; seed assignment and complete batch identities fixed.",
+    "allocation": "Same caller-owned CPU-ID union and memory-planning total in both schedules; no compiling/profile/background jobs, no cpu mask based policy inference. Reserve OS capacity identically. GPU shared capacity is observed, not declared partitioned.",
+    "stopping": "Winner or existing1hour per-game cap, preserving all censors. Batch makespan includes queues/startup; do not compute completed-game means with cap substituted or drop failed runs.",
+    "metrics": [
+      "Per-game e2e and service wall separately; winner/ticks/status",
+      "Batch completedgames/makespan, all arrivals and unfinished work retained",
+      "Total waited-game user/systemCPU, CPU/tick and context switches/tick",
+      "Sum/concurrent peaks of native RSS or platformPSS, allocator/cache ownership and GPU memory where available",
+      "Actual requested/resolved count/mask/profile/GPU fields/fallbacks/health",
+      "Cold startup versus retained process/cache state qualified; no pooling different envelopes"
+    ],
+    "acceptance": "Evaluate Pareto frontier: completion latency, batch throughput, total CPU, peak memory and correctness. Efficient-throughput must deliver credible throughput/resource benefit without hiding latency/censors; fast-simulation targets completion latency. Neither gains adoption solely by pooled mean or a selected seed. Pilot two seeds is descriptive; adopt only after replication across adverse layouts/devices and mature stages.",
+    "correctness": "Use existing canonical diagnostics outside timed natural workloads; exact same-start per-tick GCS/world/RNG/replay and saved continuation. Never change simulation order, deadlines/publication, rules or features for the objective.",
+    "adoption_qualification": "Sixteen attempts are a descriptive pilot and rejection screen only; insufficient to adopt calibrated profiles or general device thresholds."
+  },
+  "interactive_platform_validation": {
+    "required": [
+      "Desktop low/surplus allocation and at least one real high-end device",
+      "Actual low-end Android plus capable Android, measured battery/thermal/background/lifecycle/pressure",
+      "Browser serial/threaded variants and actual renderer capability/fallback; separate unavailable from zero failures"
+    ],
+    "interactive_metrics": [
+      "Frame time p50/p95/p99 and missed/stalled frames",
+      "Input-event\u2192visible-response and cancellation/repaint responsiveness (Studio/previewowner-only tradeoff)",
+      "Simulation headroom per logical tick with presentation active",
+      "PeakRSS/PSS/GPU memory, pressure events and retained ownership",
+      "Thermal/battery state and sustained session trend; signal unknowns explicit"
+    ],
+    "limits": "Prior APK/build/mock/browser/native equality does not prove Android hardware rendering, power, sustained thermal or feel. Observation samples are not calibrated thresholds. No auto tier thresholds ship until evidence supports them."
+  },
+  "source_sha256": {
+    "src/common/ResourcePolicy.cpp": "349e59cf6191d022a2a4a033512551a693251a93b35329c8241e7b6e906249ce",
+    "src/common/ResourcePolicy.h": "17f2a8e850f8aa2bf755333e44709ab275663529c6bcff6b109532e4b29020df",
+    "src/app/ApplicationResourcePlan.cpp": "40a86be34ad14ec23db3dc8fcaaaa29fe36dc55c53ea3cac9ad9f6ed4c1d7ec2",
+    "src/app/ApplicationPhaseResources.cpp": "3942f0fe7470f38a4e3c0ae109e85150b32b7461c6f41955c9f914c37de66d55",
+    "src/app/GlobalContainerArgs.cpp": "9fb2861310692ee0f5ffac4a4f0e4b28988468b15cab5c73b5ffa41706f2f48d",
+    "src/ui/settings/SettingsScreenGeneral.cpp": "f5d083237e1fcc7d30b4658b14dcf726b50562c0e5ca13f871b223f557cff747",
+    "src/app/Settings.cpp": "95d056f9be6cd0acf48ad96531c36d876eeb55e55064b4c20bd04c54dfd32528",
+    "tools/tournaments/local.py": "a0023177cfbdb7d1c02fb310596d07a3a2e0f5763913712423a283a42231fe42"
+  },
+  "closed_gap": "local.run_job/execute_jobs explicit non-game/mixed allocation silentdrop fixed in d80; legacy omitted requests unchanged. Direct-tool provenance and live-menuGPU scope remain qualified.",
+  "non_goals": [
+    "No new profile names",
+    "No default3 heuristic",
+    "No global hard cap on driver/audio/network threads",
+    "No feature deletion or simulation-visible cache reduction",
+    "No inference that profiling leaf time is whole-game waste"
+  ]
+}

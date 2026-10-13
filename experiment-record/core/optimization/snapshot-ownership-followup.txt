@@ -1,0 +1,17 @@
+No pooled umbrella World exists in current source.
+Storage.resourceFields pool holds one shared_ptr per descriptor.
+Store.latest optional<Handle> owns directly leased descriptor; no parent World/shared_ptr wrapper.
+capture localHandle next leases a new descriptor; previous latest remains legitimately leased for key+generation sharing and metrics until latest=move(next).
+Consumer Handle.project(requested) copies only requested component shared_ptrs, no umbrella parent. AIWorldView stores one Handle by value and is freshly make_shared, not pooled.
+Storage.resourcePlanes pool holds one shared_ptr per vector. ResourceField descriptor entries hold const plane shared_ptrs, including obsolete descriptors even when descriptor.use_count()==1.
+discardUnused clears only pool-exclusive descriptors, releasing their plane refs and preserving descriptor/plane vector capacity. Latest/previous/consumer leases have count>1 and are excluded.
+Published GPU/gradient/AI consumers can legitimately keep handles or direct planes; clearing their references would mutate observations or terminate needed lifetime.
+PresentationFrame retired slots already releaseWorld only with exclusive producer/consumer ownership; active/pending/published frames are genuine leases.
+
+Cleanup runs only when ResourceFields is requested. Descriptor refs can remain idle during captures that omit it; next requested ResourceFields capture clears them before acquiring planes. No whole-World pool is involved.
+use_count>1 does not identify whether a lease is latest vs consumer; current bounded counters count both legitimately, not inactive umbrella objects.
+Physical vector arrays stay allocated; lower leased bytes is not lower retained bytes/RSS. Benefit requires avoiding new plane buffers/high-water capacity.
+Scan + clear ref decrements introduces work per requested ResourceFields capture; provisional CPU increase is compatible with overhead but is not a source-established cause.
+No snapshot-memory.json plane-detail sidecars presently exist in implementation ART; native exports only aggregatecomponent metrics, insufficient exactplane/key attribution.
+
+See JSON for source hashes, qualified native census and future test design.

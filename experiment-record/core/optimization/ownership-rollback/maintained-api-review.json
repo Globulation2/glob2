@@ -1,0 +1,38 @@
+{
+  "conclusion": "Remove unconsumed search census from maintained production change. Prefer query-only plane capacity diagnostics only if --telemetry gradient-stats sidecar has a durable troubleshooting audience; per-plane running copy/reuse counters optional and not needed to prove ownership correctness.",
+  "exact_caller_inventory": {
+    "BuildingGradientSearch::memoryMetrics": "Only MapGradientInvalidationTest/search memory census preserves paused and resumed queue state. No runtimecaller. Borrowed field/sharedinputs excluded; callingwhileworkerexpandswouldrace.",
+    "buildingGradientSearchPoolMemoryMetrics": "No runtime or test caller. Mutex-protected idlepool but unconsumed API surface.",
+    "Storage::resourcePlaneMemoryMetrics": "Store forwarding method and WorldSnapshot new tests.",
+    "Store::resourcePlaneMemoryMetrics": "Headless.cpp existing gradientStats requested result-export only; new WorldSnapshot tests. No default per-tick query.",
+    "new plane cumulative counters": "ThreeStorage members updatedin WorldCapture changed/reused-plane paths, returnedin newendmetrics and3newJSONkeys; two copies/reuse assertions only. Pointer/generation/bytes immutabilitytests canverifysemantics withoutthese counters.",
+    "original MemoryMetrics": "Already consumedby GameAI::aiTimings andResourceGrowthBenchmark; neverremovebaseline MemoryMetrics/capture metrics/retainedBytes."
+  },
+  "recommendations": [
+    "Alwaysomit newly addedsearchcensus API andsinglecountertest unlessmaintainer suppliesreal maintainedconsumer; pool APIcurrentlyhaszero consumer.",
+    "Ifsnapshotownership isrejected oncompletedflatperf, no reasonretain itshelper/eagerclear orcleanup-specifictests. Keepindependent ResourceFields sparseindex clear/add/findtest (tests existingbehavior).",
+    "Endonly capacity+descriptor census is smallest maintaineduse:10numericfields, computedonly optin CLIexport, nohotpath state. Valuableto distinguishobsolete descriptorpins fromtrueconsumerleases; notRSS, notpeakmemory.",
+    "Drop generationCopies/Reuses/BytesCopied newrunningfields ifnotactivelymaintained. Existing Store mixedcapturecopy/reuse metrics remain. Removingcountertax aloneis not demonstratedCPUgain.",
+    "Omitentire addedendcensus if no durabletroubleshooting audience; gradient-stats.csv and all originalsnapshot/gradientfeatures remain. Currentexperiment frozenvariant stillretains fullinstrumentation as historicalevidence."
+  ],
+  "retained_scope_by_option": {
+    "01": "Current ownercleanup+countermetrics/endcensus; removeunusedsearch API/test/docclaim.",
+    "02": "Current ownercleanup+queryonly10fieldendcensus; removeunusedsearch/cumulativecounterstate/exportkeys/counterchecks.",
+    "03": "Baseline ownerbehavior+queryonly10fieldendcensus +sparseindextest; removeallnewcleanupbehavior/helper/tests andunusedsearch/counters.",
+    "04": "Baseline ownership+original existingdiagnostics only +sparseindextest; omitall newly addedsnapshot/searchinstrumentation."
+  },
+  "build_tests_docs": {
+    "searchfiles": "BuildingGradientSearch.h/.cpp +MapGradientInvalidationTest.cpp; all existingregistered, no source registryremoval. Existing retainedBytes/recycle/clear/whole-cost-layer Dijkstra untouched.",
+    "ownership": "BufferPool.h discardUnused +WorldCapture.cpp eagerclear. Newcleanup3tests dependon helper. Original concurrent bufferhandoff andallplatformfallbacktests retained.",
+    "queryonly": "SnapshotStorage.h/.cpp +SnapshotStore.h; Headless.cpp ONLY17lineoptionalendexportblock; headless-replays.md ONLYnewsidecarparagraph; simulation.md ONLYownership/censusbullet.",
+    "sharedfilepreservation": "headless-replays compute-thread affinitydocs, Headless existinggameJSON/CLI flags/gradientStats CSV, test/tests.py ReplayTelemetryregistration andscons/sources worker registration untouched.",
+    "variants": "Do notapplytosealed source artifacts, source/binaryreceipts or datasets. Main currentlyV1ownerlogic; patchesmustregenerate ifrootadoptsV2lazy first."
+  },
+  "limitations": [
+    "Read-only source inventory/templates only; git apply --check confirms syntactic applicability, not compiler/test/behavior success.",
+    "Performancequeue running96+68+24 reads frozen binaries/assets; templates unapplied androot alone scheduleslaterchanges.",
+    "No recommendationclaimmemory/perfgain; awaitfull paireddata andsamplecensus. Requestedcapacity andreleaseddescriptorreferences do not establishnativeRSSsavings.",
+    "Allnumberedpatches aresupersets againstsameCURRENT main; chooseone, notsequential application."
+  ],
+  "artifacts": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/ownership-rollback/manifest.json"
+}

@@ -1,0 +1,16 @@
+{
+  "approved_plan_expected_sha256": "afb6d4fa827e488e1d495713f5afa0055229cd431b0a4c772934cc5f5616a002",
+  "current_plan_sha256": "f63a6fe17eefb30d379f86f791beb25afa0bba3c9ca7310f4373add7da96f806",
+  "stream_reconstructed_before_scope_sha256": "afb6d4fa827e488e1d495713f5afa0055229cd431b0a4c772934cc5f5616a002",
+  "reconstruction_matches_approved": true,
+  "semantic_changes": {
+    "scope": {
+      "before": "Currentcandidate eighteen native-only diagnostics allmode/perTick/world/save/replay/match acceptance vsactualeee. No allplatformqualification.",
+      "after": "Currentcandidate exactly18 native game-run diagnostics Off/Waits/Trace,sixprofileintents,fullGCS/world/AIT1/replay/save-resume vsacceptedeee. No matchverify command inthisinventory; no allplatformproof."
+    }
+  },
+  "reason": "Coverageclarification changedsealedhash afterreadyhandoff; agent coordination mistake, notengine/source/binary change.",
+  "otherchange": "run-finite18.py changedafterready tobounded signal/freshreceipt runner; case.py unchanged.",
+  "currentfolder_mutated_by_this_audit": false,
+  "large_fullJSONdiff_attempt": "Interrupted owned analysishelper because370MBplan producedlargeJSONgraphs; current audit usesstreaminghash/one-line diff."
+}

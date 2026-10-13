@@ -1,0 +1,177 @@
+{
+  "scope": "Two Off-mode current-network match verifier regressions; Trace unavailable in frozen match CLI, not silently imitated. No timing or games beyond recorded match.",
+  "launches_default": 0,
+  "root_approved": false,
+  "record": {
+    "match_id": "ci-fixture-foursquares1",
+    "sim_version": "154-69-502a71a1336725a7a30d90f85c1af24b32e7fc87efdd18723ff33866810e9b5d",
+    "end_tick": 841,
+    "setup": {
+      "experiments": [],
+      "map": {
+        "hash": "5b470a3432a21d483be12f3fc63116f4a86c25e89a549a0fe71d753257e89c98",
+        "kind": "catalog"
+      },
+      "rules": {
+        "aiOrderDelay": 8,
+        "allyTeamsFixed": true,
+        "buildingGradientDelay": 8,
+        "buildingHpLevel": 0,
+        "glassCannonLevel": 0,
+        "hungerDisabled": false,
+        "instantConstruction": false,
+        "mapDiscovered": false,
+        "peacefulMode": false,
+        "permadeathDisabled": false,
+        "prestigeVictory": true,
+        "resourceGrowthDisabled": false,
+        "resourceScarcityLevel": 0,
+        "stockpileStartLevel": 0,
+        "suddenDeathMinutes": 0,
+        "unitUpgradesDisabled": false,
+        "unitsFearless": false
+      },
+      "schemaVersion": 1,
+      "seats": [
+        {
+          "kind": "human",
+          "name": "Player 1",
+          "seat": 0,
+          "team": 0
+        },
+        {
+          "kind": "human",
+          "name": "Player 2",
+          "seat": 1,
+          "team": 1
+        },
+        {
+          "ai": "nicowar",
+          "kind": "ai",
+          "name": "AI 1",
+          "seat": 2,
+          "team": 2
+        },
+        {
+          "ai": "warrush",
+          "kind": "ai",
+          "name": "AI 2",
+          "seat": 3,
+          "team": 3
+        }
+      ],
+      "seed": 2026,
+      "simVersion": {
+        "dataHash": "502a71a1336725a7a30d90f85c1af24b32e7fc87efdd18723ff33866810e9b5d",
+        "netProtocol": 69,
+        "versionMinor": 154
+      },
+      "teams": [
+        {
+          "alliance": 0,
+          "team": 0
+        },
+        {
+          "alliance": 1,
+          "team": 1
+        },
+        {
+          "alliance": 2,
+          "team": 2
+        },
+        {
+          "alliance": 3,
+          "team": 3
+        }
+      ]
+    },
+    "trace_records": 842
+  },
+  "inputs_sha256": {
+    "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/test/fixtures/multiplayer/FourSquares1.g2mr": "f8f74795337dd3a85bd2bdd46bce936b058d5db8095ea6ded9466475177bc3b8",
+    "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/maps/FourSquares1.map.gz": "3f2ba4e3313fa31801449e057adaff679951abba7c599c271442a29578931869",
+    "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/test/fixtures/multiplayer/FourSquares1.verify-trace.txt": "2287760e6a3f627e08584369f4cb7c202019d69458be4751d42790ebd19b3601",
+    "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/src/game/SimRevision.h": "cbd16aec44fd338ac101f882a3b14a03b109607cbf4b5772c166a6681210ee0f"
+  },
+  "mask": "0-5,16-21",
+  "environment": {
+    "GLOB2_GRADIENT_BACKEND": "cpu",
+    "SDL_VIDEO_DRIVER": "dummy",
+    "SDL_VIDEODRIVER": "dummy",
+    "SDL_AUDIO_DRIVER": "dummy",
+    "SDL_AUDIODRIVER": "dummy"
+  },
+  "requests": [
+    {
+      "role": "ee45",
+      "source": "ee45c0a0389660bc7d2885b572b94b1a2b01d7a3",
+      "tree": "c4f8f7ebd7888effb0800dd0b14e70f8fc2c3224",
+      "binary": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/build/linux/client/release/src/glob2",
+      "binary_sha256": "18b640357036e457470338e092fb3108debc3ab252adbb631b0094d18852e36c",
+      "cwd": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2",
+      "output": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/match-regression-ee45-96da/runs/ee45",
+      "argv": [
+        "taskset",
+        "-c",
+        "0-5,16-21",
+        "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/build/linux/client/release/src/glob2",
+        "match",
+        "verify",
+        "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/test/fixtures/multiplayer/FourSquares1.g2mr",
+        "--map-file",
+        "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/maps/FourSquares1.map.gz",
+        "--output-dir",
+        "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/match-regression-ee45-96da/runs/ee45",
+        "--profile",
+        "profile-migration-match",
+        "--execution-profile",
+        "fast-simulation",
+        "--compute-threads",
+        "4",
+        "--memory-budget-bytes",
+        "536870912"
+      ]
+    },
+    {
+      "role": "candidate96da",
+      "source": "96da258e5a6b24a57a8848f2bfa0178031331322",
+      "tree": "63d18b69950651b00e9e40a4d96a14d1a25b62cd",
+      "binary": "/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2/build/linux/client/release/src/glob2",
+      "binary_sha256": "42de4e7766bf7bdb8f0e1abf7bb6b9da7465bffbee2b4a00b2437e965e0d7f61",
+      "cwd": "/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2",
+      "output": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/match-regression-ee45-96da/runs/candidate96da",
+      "argv": [
+        "taskset",
+        "-c",
+        "0-5,16-21",
+        "/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2/build/linux/client/release/src/glob2",
+        "match",
+        "verify",
+        "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/test/fixtures/multiplayer/FourSquares1.g2mr",
+        "--map-file",
+        "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/maps/FourSquares1.map.gz",
+        "--output-dir",
+        "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/match-regression-ee45-96da/runs/candidate96da",
+        "--profile",
+        "profile-migration-match",
+        "--execution-profile",
+        "fast-simulation",
+        "--compute-threads",
+        "4",
+        "--memory-budget-bytes",
+        "536870912"
+      ]
+    }
+  ],
+  "acceptance": [
+    "verdict verified/status completed",
+    "record/verifier sim versions exactly committed record",
+    "complete golden perTick checksum bytes",
+    "raw match.replay exact across roles (includes orders/AIT1)",
+    "verification order_checks and canonical result equal, excluding execution_resources/compute_telemetry",
+    "requested/resolved/actual4, fast-simulation tuningPending, compute telemetry Off actual",
+    "gradient_configuration current_applied CPU and backend_source environment; permission independently reported, no fabricated dispatch counter"
+  ],
+  "trace_pending_reason": "CommandLine.cpp match verify lacks --compute-telemetry; VerifyMatch directly constructs GlobalContainer whose default is Off and no telemetry ENV input exists.",
+  "gpu_scope": "Existing backend ENV selects CPU. Match result lacks gradient dispatch counters: do not assert measured dispatch0 from absent counter."
+}

@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "policy_version": 1,
+  "requested_execution_profile": "efficient-throughput",
+  "machine_budget": {
+    "cpu_ids": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21
+    ],
+    "memory_planning_bytes": 1073741824
+  },
+  "allocations": [
+    {
+      "cpu_ids": [
+        0,
+        1,
+        2,
+        16,
+        17,
+        18
+      ],
+      "participants": 6,
+      "participants_include_simulation_owner": true,
+      "memory_planning_bytes": 536870912,
+      "memory_enforcement": "soft_planning_only"
+    },
+    {
+      "cpu_ids": [
+        3,
+        4,
+        5,
+        19,
+        20,
+        21
+      ],
+      "participants": 6,
+      "participants_include_simulation_owner": true,
+      "memory_planning_bytes": 536870912,
+      "memory_enforcement": "soft_planning_only"
+    }
+  ],
+  "measured": false,
+  "allocation_frozen": true,
+  "scope": "caller_supplied_budget_only"
+}

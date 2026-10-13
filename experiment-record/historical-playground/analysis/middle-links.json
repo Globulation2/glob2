@@ -1,0 +1,240 @@
+[
+  {
+    "snapshot": "2026-09-26",
+    "sha": "1c49596f5195188e7f078768f610454f7068d7c6",
+    "subject": "Add the browser platform with durable saves and YOG cross-play (#379)",
+    "commit_url": "https://github.com/Globulation2/glob2/commit/1c49596f5195188e7f078768f610454f7068d7c6",
+    "pr_url": "https://github.com/Globulation2/glob2/pull/379"
+  },
+  {
+    "snapshot": "2026-09-29",
+    "sha": "93c83c5b00e612068e6445c8597c56d038efd63c",
+    "subject": "Compute building gradients on demand (#380)",
+    "commit_url": "https://github.com/Globulation2/glob2/commit/93c83c5b00e612068e6445c8597c56d038efd63c",
+    "pr_url": "https://github.com/Globulation2/glob2/pull/380"
+  },
+  {
+    "snapshot": "2026-09-29",
+    "sha": "49b0844621847ce75064cf251c7035aca56d5f76",
+    "subject": "Add native mobile builds and responsive UI across native and browser (#208)",
+    "commit_url": "https://github.com/Globulation2/glob2/commit/49b0844621847ce75064cf251c7035aca56d5f76",
+    "pr_url": "https://github.com/Globulation2/glob2/pull/208"
+  },
+  {
+    "snapshot": "2026-09-29",
+    "sha": "de84ffc189659f249b6cce91dd3335baa6f2b5c5",
+    "subject": "Speed up the gradient kernel without changing its results (#391)",
+    "commit_url": "https://github.com/Globulation2/glob2/commit/de84ffc189659f249b6cce91dd3335baa6f2b5c5",
+    "pr_url": "https://github.com/Globulation2/glob2/pull/391"
+  },
+  {
+    "snapshot": "2026-09-29",
+    "sha": "508942f082ed22e699792cb82b95a5feca65385d",
+    "subject": "Pipeline periodic gradients by default with one worker and eight-tick publication (#390)",
+    "commit_url": "https://github.com/Globulation2/glob2/commit/508942f082ed22e699792cb82b95a5feca65385d",
+    "pr_url": "https://github.com/Globulation2/glob2/pull/390"
+  },
+  {
+    "snapshot": "2026-09-29",
+    "sha": "c154179a4094676e6bbdc7a0b5b2f12573eb8e31",
+    "subject": "Custom assembly ARM gradient kernel (#395)",
+    "commit_url": "https://github.com/Globulation2/glob2/commit/c154179a4094676e6bbdc7a0b5b2f12573eb8e31",
+    "pr_url": "https://github.com/Globulation2/glob2/pull/395"
+  },
+  {
+    "snapshot": "2026-09-29",
+    "sha": "832e6c3f0a2d26f2eda29c33270f4147978b6629",
+    "subject": "Speed up Cortex placement and building resource hiring (#396)",
+    "commit_url": "https://github.com/Globulation2/glob2/commit/832e6c3f0a2d26f2eda29c33270f4147978b6629",
+    "pr_url": "https://github.com/Globulation2/glob2/pull/396"
+  },
+  {
+    "snapshot": "2026-09-29",
+    "sha": "6e391686d915ab972dbf4641a19518f518859a55",
+    "subject": "Give each AI controller an independent saved random stream (#398)",
+    "commit_url": "https://github.com/Globulation2/glob2/commit/6e391686d915ab972dbf4641a19518f518859a55",
+    "pr_url": "https://github.com/Globulation2/glob2/pull/398"
+  },
+  {
+    "snapshot": "2026-09-29",
+    "sha": "87219e72f8b1e0ac8fbe3a5f84448e09a0db3146",
+    "subject": "Run all AI polling in parallel by default",
+    "commit_url": "https://github.com/Globulation2/glob2/commit/87219e72f8b1e0ac8fbe3a5f84448e09a0db3146",
+    "pr_url": null
+  },
+  {
+    "snapshot": "2026-09-29",
+    "sha": "a18be298d3dc3dd9064d4d8947fd462a23117f8f",
+    "subject": "Scope forbidden-zone gradient invalidation and bound escape staleness (#388)",
+    "commit_url": "https://github.com/Globulation2/glob2/commit/a18be298d3dc3dd9064d4d8947fd462a23117f8f",
+    "pr_url": "https://github.com/Globulation2/glob2/pull/388"
+  },
+  {
+    "snapshot": "2026-09-29",
+    "sha": "746599e62dccb61af86311e96612281229f60cc4",
+    "subject": "Reuse gradient and AI scratch storage to reduce memory churn (#416)",
+    "commit_url": "https://github.com/Globulation2/glob2/commit/746599e62dccb61af86311e96612281229f60cc4",
+    "pr_url": "https://github.com/Globulation2/glob2/pull/416"
+  },
+  {
+    "snapshot": "2026-10-02",
+    "sha": "17cf9a9d06c9c669543b0fbd5310cefe0a8d48f4",
+    "subject": "Add experimental features with a settings page, baked into every new game; first one: guard-area balancing (#451)",
+    "commit_url": "https://github.com/Globulation2/glob2/commit/17cf9a9d06c9c669543b0fbd5310cefe0a8d48f4",
+    "pr_url": "https://github.com/Globulation2/glob2/pull/451"
+  },
+  {
+    "snapshot": "2026-10-02",
+    "sha": "0cadfa23b916fe381f6a600ef38fb293981196a0",
+    "subject": "Add deterministic JavaScript foundation for AI and map scripts (#478)",
+    "commit_url": "https://github.com/Globulation2/glob2/commit/0cadfa23b916fe381f6a600ef38fb293981196a0",
+    "pr_url": "https://github.com/Globulation2/glob2/pull/478"
+  },
+  {
+    "snapshot": "2026-10-02",
+    "sha": "98301f7cb6d77307a143d8a08a01a121ffd3560f",
+    "subject": "Speed up software rendering and separate raster, scene and presentation ownership (#496)",
+    "commit_url": "https://github.com/Globulation2/glob2/commit/98301f7cb6d77307a143d8a08a01a121ffd3560f",
+    "pr_url": "https://github.com/Globulation2/glob2/pull/496"
+  },
+  {
+    "snapshot": "2026-10-02",
+    "sha": "2d9da6be050fa7eb303087fcfd0c83bf032f0ed3",
+    "subject": "Give each game its own synchronized random stream (#522)",
+    "commit_url": "https://github.com/Globulation2/glob2/commit/2d9da6be050fa7eb303087fcfd0c83bf032f0ed3",
+    "pr_url": "https://github.com/Globulation2/glob2/pull/522"
+  },
+  {
+    "snapshot": "2026-10-02",
+    "sha": "394ec25c1b7255f268d5acc89973b673822f80f3",
+    "subject": "Enable real browser multithreading through shared engine workers (#535)",
+    "commit_url": "https://github.com/Globulation2/glob2/commit/394ec25c1b7255f268d5acc89973b673822f80f3",
+    "pr_url": "https://github.com/Globulation2/glob2/pull/535"
+  },
+  {
+    "snapshot": "2026-10-02",
+    "sha": "7ca31c802a8ad7d7a5fd9aab714071ba3b739acb",
+    "subject": "Decouple rendering and the GUI from live simulation state (threaded renderer phase 0) (#534)",
+    "commit_url": "https://github.com/Globulation2/glob2/commit/7ca31c802a8ad7d7a5fd9aab714071ba3b739acb",
+    "pr_url": "https://github.com/Globulation2/glob2/pull/534"
+  },
+  {
+    "snapshot": "2026-10-02",
+    "sha": "5243ad06bc0b4644bee52009b95d4c7c3a18db82",
+    "subject": "Run the simulation on its own thread and draw everything from the Scene (threaded renderer phases 2\u20133) (#536)",
+    "commit_url": "https://github.com/Globulation2/glob2/commit/5243ad06bc0b4644bee52009b95d4c7c3a18db82",
+    "pr_url": "https://github.com/Globulation2/glob2/pull/536"
+  },
+  {
+    "snapshot": "2026-10-02",
+    "sha": "0605485aa606a55a76fc26b06c4a3e21904c7061",
+    "subject": "Reduce engine memory and eliminate save/load buffer peaks (#577)",
+    "commit_url": "https://github.com/Globulation2/glob2/commit/0605485aa606a55a76fc26b06c4a3e21904c7061",
+    "pr_url": "https://github.com/Globulation2/glob2/pull/577"
+  },
+  {
+    "snapshot": "2026-10-02",
+    "sha": "fe33142db145d3025bc28ea6c1ee52a3d96511eb",
+    "subject": "Migrate supported builds to SDL3 with OS scaling, IPv6 and default-device audio (#487)",
+    "commit_url": "https://github.com/Globulation2/glob2/commit/fe33142db145d3025bc28ea6c1ee52a3d96511eb",
+    "pr_url": "https://github.com/Globulation2/glob2/pull/487"
+  },
+  {
+    "snapshot": "2026-10-02",
+    "sha": "78770803102a049439323e6c01fd949a4d575a16",
+    "subject": "Smooth unit motion setting, simulation-thread telemetry, ThreadSanitizer workflow and Scene boundary (threaded renderer phase 4) (#537)",
+    "commit_url": "https://github.com/Globulation2/glob2/commit/78770803102a049439323e6c01fd949a4d575a16",
+    "pr_url": "https://github.com/Globulation2/glob2/pull/537"
+  },
+  {
+    "snapshot": "2026-10-05",
+    "sha": "1ba640b52b4bc25f0b2bff7924a03cb44e776f25",
+    "subject": "Improve local browser frame pacing and accelerated simulation (#641)",
+    "commit_url": "https://github.com/Globulation2/glob2/commit/1ba640b52b4bc25f0b2bff7924a03cb44e776f25",
+    "pr_url": "https://github.com/Globulation2/glob2/pull/641"
+  },
+  {
+    "snapshot": "2026-10-05",
+    "sha": "d46638d859e228a63e0471e2dd45108b112e9454",
+    "subject": "Capture Maxima placement fields and render bounded game diagnostics through Scenes (#344)",
+    "commit_url": "https://github.com/Globulation2/glob2/commit/d46638d859e228a63e0471e2dd45108b112e9454",
+    "pr_url": "https://github.com/Globulation2/glob2/pull/344"
+  },
+  {
+    "snapshot": "2026-10-05",
+    "sha": "92212e671185095a8df7e640345e1e9ef250a814",
+    "subject": "Add a fitted win-probability model and spectator display (#361)",
+    "commit_url": "https://github.com/Globulation2/glob2/commit/92212e671185095a8df7e640345e1e9ef250a814",
+    "pr_url": "https://github.com/Globulation2/glob2/pull/361"
+  },
+  {
+    "snapshot": "2026-10-05",
+    "sha": "138976153a5da0d2401420359bb593e1a6a8c0c9",
+    "subject": "Add an optional probability-based victory condition (#363)",
+    "commit_url": "https://github.com/Globulation2/glob2/commit/138976153a5da0d2401420359bb593e1a6a8c0c9",
+    "pr_url": "https://github.com/Globulation2/glob2/pull/363"
+  },
+  {
+    "snapshot": "2026-10-05",
+    "sha": "283d9ca42e32a3cb522aeba90d336b97a64fcac9",
+    "subject": "Preserve AI continuation state across saved-game reloads (#664)",
+    "commit_url": "https://github.com/Globulation2/glob2/commit/283d9ca42e32a3cb522aeba90d336b97a64fcac9",
+    "pr_url": "https://github.com/Globulation2/glob2/pull/664"
+  },
+  {
+    "snapshot": "2026-10-05",
+    "sha": "1fdf69e1416dd2200b001165409d90dcd004893b",
+    "subject": "Make native and JavaScript AIs respect custom game rules (#678)",
+    "commit_url": "https://github.com/Globulation2/glob2/commit/1fdf69e1416dd2200b001165409d90dcd004893b",
+    "pr_url": "https://github.com/Globulation2/glob2/pull/678"
+  },
+  {
+    "snapshot": "2026-10-05",
+    "sha": "feaae0bd86e8de99b7aa9dffce63db01dcbc023b",
+    "subject": "Default periodic gradient computation to two workers (#727)",
+    "commit_url": "https://github.com/Globulation2/glob2/commit/feaae0bd86e8de99b7aa9dffce63db01dcbc023b",
+    "pr_url": "https://github.com/Globulation2/glob2/pull/727"
+  },
+  {
+    "snapshot": "2026-10-05",
+    "sha": "42c7c07a51efe62bceebb36c425416704e8bc5a1",
+    "subject": "Compare replay acceleration against the same normal playback workload (#767)",
+    "commit_url": "https://github.com/Globulation2/glob2/commit/42c7c07a51efe62bceebb36c425416704e8bc5a1",
+    "pr_url": "https://github.com/Globulation2/glob2/pull/767"
+  },
+  {
+    "snapshot": "2026-10-05",
+    "sha": "598524bb0dbad2c796eaa6eb645c15ee54d380ac",
+    "subject": "Refactor terrain around compile-time gameplay and presentation properties (#773)",
+    "commit_url": "https://github.com/Globulation2/glob2/commit/598524bb0dbad2c796eaa6eb645c15ee54d380ac",
+    "pr_url": "https://github.com/Globulation2/glob2/pull/773"
+  },
+  {
+    "snapshot": "2026-10-05",
+    "sha": "9bfee5aeedac41e12f771f7aa3f05f419fb9a2a1",
+    "subject": "Make ecology rebuilds faster and invalidate only changed inputs (#787)",
+    "commit_url": "https://github.com/Globulation2/glob2/commit/9bfee5aeedac41e12f771f7aa3f05f419fb9a2a1",
+    "pr_url": "https://github.com/Globulation2/glob2/pull/787"
+  },
+  {
+    "snapshot": "2026-10-05",
+    "sha": "dd0eb26b753e2ce3fbba8eb71927655950226af7",
+    "subject": "Accelerate prepared terrain gradients and strategic distance fields (#791)",
+    "commit_url": "https://github.com/Globulation2/glob2/commit/dd0eb26b753e2ce3fbba8eb71927655950226af7",
+    "pr_url": "https://github.com/Globulation2/glob2/pull/791"
+  },
+  {
+    "snapshot": "2026-10-05",
+    "sha": "9c5e53cc69b4ecf333e210ec4e79e287573af475",
+    "subject": "Add runtime terrain definitions with compiled movement profiles (#799)",
+    "commit_url": "https://github.com/Globulation2/glob2/commit/9c5e53cc69b4ecf333e210ec4e79e287573af475",
+    "pr_url": "https://github.com/Globulation2/glob2/pull/799"
+  },
+  {
+    "snapshot": "2026-10-05",
+    "sha": "72f8c9373fbdd9bf6206cfdf4903d12595e91de1",
+    "subject": "Reduce synchronous gradient preparation with adaptive resource templates (#806)",
+    "commit_url": "https://github.com/Globulation2/glob2/commit/72f8c9373fbdd9bf6206cfdf4903d12595e91de1",
+    "pr_url": "https://github.com/Globulation2/glob2/pull/806"
+  }
+]

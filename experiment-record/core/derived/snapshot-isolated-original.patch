@@ -1,0 +1,410 @@
+--- a/src/engine/sim/snapshot/BufferPool.h
++++ b/src/engine/sim/snapshot/BufferPool.h
+@@ -32,6 +32,19 @@
+ 	template<class Visit> void inspect(Visit&& visit) const
+ 	{
+ 		for (const auto& buffer : buffers) visit(*buffer, buffer.use_count() > 1);
++	}
++	// Owner-only cleanup of references held by reusable component buffers.
++	// As with acquire(), consumers must retain a strong lease while reading;
++	// they may not resurrect an unleased buffer through a concurrent weak_ptr
++	// promotion. Cleanup never visits the latest capture or worker-held buffers.
++	template<class Discard> void discardUnused(Discard&& discard)
++	{
++		for (const auto& buffer : buffers)
++			if (buffer.use_count() == 1)
++			{
++				std::atomic_thread_fence(std::memory_order_acquire);
++				discard(*buffer);
++			}
+ 	}
+ 	std::shared_ptr<T> acquire(std::uint64_t& allocations)
+ 	{
+--- a/src/engine/sim/snapshot/SnapshotStorage.h
++++ b/src/engine/sim/snapshot/SnapshotStorage.h
+@@ -17,6 +17,17 @@
+ 	Uint64 retainedBytes = 0, capacityBytes = 0, leasedBytes = 0;
+ 	Uint64 peakAllocatedBuffers = 0, peakReusableBuffers = 0, peakLeasedBuffers = 0;
+ 	Uint64 peakRetainedBytes = 0, peakCapacityBytes = 0, peakLeasedBytes = 0;
++};
++// Queried on the owner, never collected per tick. Plane leases include references
++// from descriptor buffers, so unused-descriptor references are reported separately.
++// Bytes are vector capacity only, excluding allocator/control-block overhead.
++struct ResourcePlaneMemoryMetrics
++{
++	Uint64 allocatedPlanes = 0, leasedPlanes = 0, reusablePlanes = 0;
++	Uint64 capacityBytes = 0, leasedCapacityBytes = 0, reusableCapacityBytes = 0;
++	Uint64 leasedDescriptors = 0, reusableDescriptors = 0;
++	Uint64 leasedDescriptorReferences = 0, reusableDescriptorReferences = 0;
++	Uint64 generationReuses = 0, generationCopies = 0, bytesCopied = 0;
+ };
+ struct Storage
+ {
+@@ -45,10 +56,12 @@
+ 	Uint64 preparationNs = 0;
+ 	//! Bytes of map arrays actually copied (changed chunks and full fills).
+ 	Uint64 bytesCopied = 0;
++	Uint64 resourcePlaneReuses = 0, resourcePlaneCopies = 0, resourcePlaneBytesCopied = 0;
+ 	//! After each capture, compare every captured map array and entity list
+ 	//! with the live state and throw on a mismatch (an unmarked write).
+ 	bool verify = false;
+ 	MemoryMetrics memoryMetrics() const;
++	ResourcePlaneMemoryMetrics resourcePlaneMemoryMetrics() const;
+ };
+ 
+ } // namespace SimulationSnapshot
+--- a/src/engine/sim/snapshot/SnapshotStorage.cpp
++++ b/src/engine/sim/snapshot/SnapshotStorage.cpp
+@@ -89,4 +89,28 @@
+ 	}
+ 	return result;
+ }
++ResourcePlaneMemoryMetrics Storage::resourcePlaneMemoryMetrics() const
++{
++	ResourcePlaneMemoryMetrics result;
++	resourceFields.inspect([&](const ResourceFields& fields, bool leased) {
++		if (leased) {
++			++result.leasedDescriptors;
++			result.leasedDescriptorReferences += fields.planes.size();
++		} else {
++			++result.reusableDescriptors;
++			result.reusableDescriptorReferences += fields.planes.size();
++		}
++	});
++	resourcePlanes.inspect([&](const std::vector<Uint16>& values, bool leased) {
++		const auto bytes = Uint64(values.capacity()) * sizeof(Uint16);
++		++result.allocatedPlanes;
++		result.capacityBytes += bytes;
++		if (leased) { ++result.leasedPlanes; result.leasedCapacityBytes += bytes; }
++		else { ++result.reusablePlanes; result.reusableCapacityBytes += bytes; }
++	});
++	result.generationReuses = resourcePlaneReuses;
++	result.generationCopies = resourcePlaneCopies;
++	result.bytesCopied = resourcePlaneBytesCopied;
++	return result;
++}
+ } // namespace SimulationSnapshot
+--- a/src/engine/sim/snapshot/SnapshotStore.h
++++ b/src/engine/sim/snapshot/SnapshotStore.h
+@@ -43,5 +43,6 @@
+ 	void setVerification(bool on) { storage.verify = on; }
+ 	Handle captureBoundary(const Game& game, Requirements required);
+ 	MemoryMetrics memoryMetrics() const;
++	ResourcePlaneMemoryMetrics resourcePlaneMemoryMetrics() const { return storage.resourcePlaneMemoryMetrics(); }
+ };
+ } // namespace SimulationSnapshot
+--- a/src/engine/sim/snapshot/WorldCapture.cpp
++++ b/src/engine/sim/snapshot/WorldCapture.cpp
+@@ -518,6 +518,9 @@
+ 	}
+ 	if (needs(requirements, Component::ResourceFields))
+ 	{
++		// An unused descriptor component must not pin obsolete plane generations.
++		// Keep its descriptor capacity, while making its unleased payloads reusable.
++		if (storage) storage->resourceFields.discardUnused([](ResourceFields& unused) { unused.clear(); });
+ 		auto fields = acquire(&Storage::resourceFields, Component::ResourceFields);
+ 		fields->clear();
+ 		const auto planeCells = std::size_t(game.map.getW()) * game.map.getH();
+@@ -527,10 +530,17 @@
+ 		for (const auto &plane : game.map.publishedResourceFields())
+ 		{
+ 			if (storage && fields->planes.size() == fields->planes.capacity()) ++storage->allocations;
+-			if (kept) if (const auto* same = kept->find(plane.key); same && same->generation == plane.generation) { fields->add(*same); continue; }
++			if (kept) if (const auto* same = kept->find(plane.key); same && same->generation == plane.generation) {
++				if (storage) ++storage->resourcePlaneReuses;
++				fields->add(*same); continue;
++			}
+ 			auto values = storage ? storage->resourcePlanes.acquire(storage->allocations) : std::make_shared<std::vector<Uint16>>();
+ 			if (storage && values->capacity() < planeCells) ++storage->allocations;
+ 			values->resize(planeCells); std::copy_n(*plane.slot, planeCells, values->begin());
++			if (storage) {
++				++storage->resourcePlaneCopies;
++				storage->resourcePlaneBytesCopied += planeCells * sizeof(Uint16);
++			}
+ 			fields->add(ResourceField{plane.key, plane.generation, std::move(values)});
+ 		}
+ 		result->resourceFields = std::move(fields);
+--- a/src/engine/sim/snapshot/WorldSnapshotTest.cpp
++++ b/src/engine/sim/snapshot/WorldSnapshotTest.cpp
+@@ -363,6 +363,128 @@
+ 		// reference died with the store.
+ 		weak.reset();
+ 	}
++	TEST_CASE("resource field sparse index is empty and reusable after repeated clear")
++	{
++		SimulationSnapshot::ResourceFields fields;
++		const std::array<Uint16, 3> keys{0, 7, Uint16(MapState::PlaneCount - 1)};
++		for (auto key : keys) CHECK(fields.find(key) == nullptr);
++		auto values = std::make_shared<const std::vector<Uint16>>(16, 41);
++		for (Uint64 generation = 1; generation <= 4; ++generation) {
++			for (auto key : keys) fields.add({key, generation, values});
++			for (auto key : keys) {
++				const auto* plane = fields.find(key);
++				REQUIRE(plane); CHECK(plane->key == key);
++				CHECK(plane->generation == generation); CHECK(plane->values == values);
++			}
++			const auto capacity = fields.planes.capacity();
++			fields.clear(); fields.clear();
++			CHECK(fields.planes.empty()); CHECK(fields.planes.capacity() == capacity);
++			for (auto key : keys) CHECK(fields.find(key) == nullptr);
++		}
++	}
++	TEST_CASE("unused resource descriptors release planes while live generations stay shared")
++	{
++		SimulationSnapshot::Storage storage;
++		auto workerFields = storage.resourceFields.acquire(storage.allocations);
++		auto idleFields = storage.resourceFields.acquire(storage.allocations);
++		auto latestFields = storage.resourceFields.acquire(storage.allocations);
++		auto workerPlane = storage.resourcePlanes.acquire(storage.allocations);
++		auto idlePlane = storage.resourcePlanes.acquire(storage.allocations);
++		auto latestPlane = storage.resourcePlanes.acquire(storage.allocations);
++		workerPlane->assign(32, 11); idlePlane->assign(32, 22); latestPlane->assign(32, 33);
++		auto* idleIdentity = idlePlane.get();
++		workerFields->add({0, 1, std::move(workerPlane)});
++		idleFields->add({1, 2, std::move(idlePlane)});
++		latestFields->add({2, 3, std::move(latestPlane)});
++		const auto descriptorCapacity = idleFields->planes.capacity();
++		idleFields.reset();
++		const auto before = storage.resourcePlaneMemoryMetrics();
++		CHECK(before.allocatedPlanes == 3); CHECK(before.leasedPlanes == 3);
++		CHECK(before.reusableDescriptorReferences == 1);
++		storage.resourceFields.discardUnused([](auto& fields) { fields.clear(); });
++		const auto after = storage.resourcePlaneMemoryMetrics();
++		CHECK(after.allocatedPlanes == 3); CHECK(after.leasedPlanes == 2); CHECK(after.reusablePlanes == 1);
++		CHECK(after.capacityBytes == before.capacityBytes);
++		CHECK(after.reusableDescriptorReferences == 0); CHECK(after.leasedDescriptorReferences == 2);
++		REQUIRE(workerFields->find(0)); CHECK(workerFields->find(0)->generation == 1);
++		CHECK(workerFields->find(0)->values->front() == 11);
++		REQUIRE(latestFields->find(2)); CHECK(latestFields->find(2)->generation == 3);
++		CHECK(latestFields->find(2)->values->front() == 33);
++		// Another descriptor for the same published generation shares its plane.
++		auto same = storage.resourceFields.acquire(storage.allocations);
++		CHECK(same->planes.capacity() == descriptorCapacity);
++		same->add(*latestFields->find(2));
++		CHECK(same->find(2)->values == latestFields->find(2)->values);
++		const auto allocations = storage.allocations;
++		auto reused = storage.resourcePlanes.acquire(storage.allocations);
++		CHECK(reused.get() == idleIdentity); CHECK(storage.allocations == allocations);
++		reused->assign(32, 44);
++		CHECK(workerFields->find(0)->values->front() == 11);
++		CHECK(latestFields->find(2)->values->front() == 33);
++	}
++	TEST_CASE("capture releases unused plane descriptors without touching old observations")
++	{
++		glob2test::HeadlessGlobals globals;
++		glob2test::HeadlessGame fixture{glob2test::GameOptions{.wDec=5, .hDec=4, .teams=1, .discovered=true, .clearImmobile=true, .loadDefaultRace=true}};
++		auto& game = fixture.game;
++		game.map.setResourceByIndex(20, 10, WHEAT, 1);
++		game.map.getMaterialGradientSlot(0, materialIndex(MaterialId::Food), 0);
++		SimulationSnapshot::Store store;
++		const auto required = SimulationSnapshot::bit(SimulationSnapshot::Component::ResourceFields);
++		std::array<SimulationSnapshot::Handle, 3> held;
++		for (auto& handle : held) {
++			++game.stepCounter;
++			game.map.updateMaterialGradient(0, Uint8(materialIndex(MaterialId::Food)), 0);
++			handle = store.captureBoundary(game, required);
++		}
++		REQUIRE(held.back().resourceFields); REQUIRE_FALSE(held.back().resourceFields->planes.empty());
++		const auto oldPlane = held.back().resourceFields->planes.front();
++		const auto oldValues = *oldPlane.values;
++		held[0] = {}; held[1] = {};
++		CHECK(store.resourcePlaneMemoryMetrics().reusableDescriptorReferences == 2);
++		++game.stepCounter;
++		game.map.updateMaterialGradient(0, Uint8(materialIndex(MaterialId::Food)), 0);
++		auto changed = store.captureBoundary(game, required);
++		CHECK(store.resourcePlaneMemoryMetrics().reusableDescriptorReferences == 0);
++		CHECK(*oldPlane.values == oldValues);
++		const auto* current = changed.resourceFields->find(oldPlane.key);
++		REQUIRE(current); CHECK(current->generation != oldPlane.generation);
++		CHECK(current->values != oldPlane.values);
++		// A later boundary with unchanged publication retains the same vector.
++		++game.stepCounter;
++		auto same = store.captureBoundary(game, required);
++		REQUIRE(same.resourceFields->find(oldPlane.key));
++		CHECK(same.resourceFields->find(oldPlane.key)->values == current->values);
++		const auto metrics = store.resourcePlaneMemoryMetrics();
++		CHECK(metrics.generationCopies == 4); CHECK(metrics.generationReuses == 1);
++		CHECK(metrics.bytesCopied == 4 * 32 * 16 * sizeof(Uint16));
++	}
++	TEST_CASE("unused descriptor cleanup leaves a worker-held plane immutable")
++	{
++		if constexpr (GAGCore::ThreadSupport::available)
++		{
++			SimulationSnapshot::BufferPool<SimulationSnapshot::ResourceFields> pool;
++			Uint64 allocations = 0;
++			auto held = pool.acquire(allocations);
++			auto values = std::make_shared<std::vector<Uint16>>(128, 71);
++			held->add({0, 1, values});
++			std::atomic<bool> reading{false}, release{false};
++			Uint64 sum = 0;
++			auto worker = GAGCore::ThreadSupport::launch([held = std::move(held), &reading, &release, &sum]() {
++				reading.store(true, std::memory_order_release);
++				while (!release.load(std::memory_order_acquire)) std::this_thread::yield();
++				for (auto value : *held->find(0)->values) sum += value;
++			});
++			while (!reading.load(std::memory_order_acquire)) std::this_thread::yield();
++			unsigned visited = 0;
++			pool.discardUnused([&](auto& fields) { ++visited; fields.clear(); });
++			CHECK(visited == 0);
++			release.store(true, std::memory_order_release); worker.join();
++			CHECK(sum == 128 * 71);
++			pool.discardUnused([&](auto& fields) { ++visited; fields.clear(); });
++			CHECK(visited == 1);
++		}
++	}
+ 	TEST_CASE("worker final lease release synchronizes owner buffer reuse")
+ 	{
+ 		if constexpr (GAGCore::ThreadSupport::available)
+--- a/src/map/gradient/BuildingGradientSearch.h
++++ b/src/map/gradient/BuildingGradientSearch.h
+@@ -83,6 +83,20 @@
+ 	bool complete() const { return pending == 0; }
+ 	bool resolved(std::size_t target) const;
+ 	std::uint64_t poppedEntries() const { return popped; }
++	// Read only at an owner/quiescent boundary, never while a worker expands
++	// this search. The output field and shared cost inputs are borrowed, so
++	// these counts describe queue storage rather than total field ownership.
++	struct MemoryMetrics
++	{
++		std::size_t pendingEntries = 0, logicalEntries = 0;
++		std::size_t storageEntries = 0, capacityEntries = 0;
++		std::size_t inactiveStorageEntries = 0, inactiveCapacityEntries = 0;
++		std::size_t populatedBuckets = 0, allocatedBuckets = 0;
++		std::size_t retainedBytes = 0, fieldCells = 0;
++		int settledCost = 0, requiredCost = 0;
++		bool customCosts = false;
++	};
++	MemoryMetrics memoryMetrics() const;
+ 	std::size_t retainedBytes() const;
+ 	void clearForReuse();
+ };
+@@ -91,3 +105,12 @@
+ std::unique_ptr<BuildingGradientSearch> acquireBuildingGradientSearch();
+ void recycleBuildingGradientSearch(std::unique_ptr<BuildingGradientSearch> search);
+ void clearBuildingGradientSearchPool();
++
++// Idle-pool accounting is protected by its existing mutex. Active published or
++// staged searches are not part of this pool, and must be queried separately.
++struct BuildingGradientSearchPoolMemoryMetrics
++{
++	std::size_t searches = 0, retainedBytes = 0;
++	std::size_t storageEntries = 0, capacityEntries = 0;
++};
++BuildingGradientSearchPoolMemoryMetrics buildingGradientSearchPoolMemoryMetrics();
+--- a/src/map/gradient/BuildingGradientSearch.cpp
++++ b/src/map/gradient/BuildingGradientSearch.cpp
+@@ -178,6 +178,34 @@
+ 	}
+ }
+ 
++BuildingGradientSearch::MemoryMetrics BuildingGradientSearch::memoryMetrics() const
++{
++	MemoryMetrics result;
++	result.pendingEntries = pending;
++	result.fieldCells = cells;
++	result.settledCost = currentCost;
++	result.requiredCost = readerCost;
++	result.customCosts = modifiedCosts;
++	result.retainedBytes = retainedBytes();
++	const auto account = [&](const auto& queues, bool active) {
++		for (const auto& bucket : queues) {
++			if (active) {
++				result.logicalEntries += bucket.size;
++				result.storageEntries += bucket.cells.size();
++				result.capacityEntries += bucket.cells.capacity();
++				result.populatedBuckets += bucket.size != 0;
++				result.allocatedBuckets += !bucket.cells.empty();
++			} else {
++				result.inactiveStorageEntries += bucket.cells.size();
++				result.inactiveCapacityEntries += bucket.cells.capacity();
++			}
++		}
++	};
++	account(buckets, !modifiedCosts);
++	if (custom) account(custom->buckets, modifiedCosts);
++	return result;
++}
++
+ std::size_t BuildingGradientSearch::retainedBytes() const
+ {
+ 	std::size_t bytes = sizeof(*this);
+@@ -267,3 +295,18 @@
+ 		pool.searches[--pool.count].reset();
+ 	pool.bytes = 0;
+ }
++
++BuildingGradientSearchPoolMemoryMetrics buildingGradientSearchPoolMemoryMetrics()
++{
++	auto& pool = searchPool();
++	std::lock_guard<std::mutex> lock(pool.mutex);
++	BuildingGradientSearchPoolMemoryMetrics result;
++	result.searches = pool.count;
++	result.retainedBytes = pool.bytes;
++	for (std::size_t i = 0; i < pool.count; ++i) {
++		const auto memory = pool.searches[i]->memoryMetrics();
++		result.storageEntries += memory.storageEntries + memory.inactiveStorageEntries;
++		result.capacityEntries += memory.capacityEntries + memory.inactiveCapacityEntries;
++	}
++	return result;
++}
+--- a/src/map/gradient/MapGradientInvalidationTest.cpp
++++ b/src/map/gradient/MapGradientInvalidationTest.cpp
+@@ -53,6 +53,32 @@
+ 
+ TEST_SUITE("MapGradientInvalidation")
+ {
++ TEST_CASE("search memory census preserves paused and resumed queue state")
++ {
++  std::vector<Uint16> field(8 * 4, GRADIENT_UNREACHABLE);
++  field[0] = GRADIENT_AT_GOAL;
++  BuildingGradientSearch search;
++  search.begin(BuildingGradientSearch::Inputs{}, field.data(), 0, 8, 4);
++  const auto initial = search.memoryMetrics();
++  CHECK(initial.pendingEntries == 1); CHECK(initial.logicalEntries == 1);
++  CHECK(initial.fieldCells == field.size()); CHECK(initial.storageEntries >= initial.logicalEntries);
++  CHECK(initial.capacityEntries >= initial.storageEntries);
++  search.resolveToCost(GRADIENT_STEP);
++  const auto pausedField = field;
++  const auto paused = search.memoryMetrics();
++  CHECK(paused.pendingEntries == paused.logicalEntries);
++  CHECK(paused.settledCost == search.settledCost()); CHECK(paused.requiredCost == search.requiredCost());
++  CHECK(paused.retainedBytes == search.retainedBytes()); CHECK(field == pausedField);
++  search.finish();
++  const auto complete = search.memoryMetrics();
++  CHECK(complete.pendingEntries == 0); CHECK(complete.logicalEntries == 0);
++  CHECK(complete.capacityEntries >= initial.capacityEntries);
++  search.clearForReuse();
++  const auto idle = search.memoryMetrics();
++  CHECK(idle.pendingEntries == 0); CHECK(idle.logicalEntries == 0); CHECK(idle.fieldCells == 0);
++  CHECK(idle.capacityEntries == complete.capacityEntries);
++ }
++
+  TEST_CASE("forbidden painting refreshes routes across passable resources")
+  {
+   glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.loadStrings = true});
+--- a/src/app/cli/Headless.cpp
++++ b/src/app/cli/Headless.cpp
+@@ -615,6 +615,23 @@
+ 			std::ofstream csv(output/"gradient-stats.csv");
+ 			stats->writeCsv(csv);
+ 			if (!csv) throw std::runtime_error("cannot write gradient-stats.csv");
++			const auto planes = game.snapshotStore().resourcePlaneMemoryMetrics();
++			Headless::writeJson((output/"snapshot-memory.json").string(), nlohmann::json{
++				{"scope", "Resource-plane capacity at result export; not peak heap or RSS"},
++				{"allocated_planes", planes.allocatedPlanes},
++				{"leased_planes", planes.leasedPlanes},
++				{"reusable_planes", planes.reusablePlanes},
++				{"capacity_bytes", planes.capacityBytes},
++				{"leased_capacity_bytes", planes.leasedCapacityBytes},
++				{"reusable_capacity_bytes", planes.reusableCapacityBytes},
++				{"leased_descriptors", planes.leasedDescriptors},
++				{"reusable_descriptors", planes.reusableDescriptors},
++				{"leased_descriptor_references", planes.leasedDescriptorReferences},
++				{"reusable_descriptor_references", planes.reusableDescriptorReferences},
++				{"generation_reuses", planes.generationReuses},
++				{"generation_copies", planes.generationCopies},
++				{"bytes_copied", planes.bytesCopied}
++			}.dump());
+ 		}
+ 		result
+ 			<< ",\"compute_threads\":" << game.map.computeExecutor().threadCount()

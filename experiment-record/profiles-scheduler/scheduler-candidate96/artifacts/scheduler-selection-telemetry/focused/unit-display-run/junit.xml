@@ -1,0 +1,4 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="2" failures="0" errors="0" skipped="0"><testsuite name="SurfaceCoverage"><testcase classname="SurfaceCoverage" name="bounded alpha map chunks preserve clipped cell interpolation [display]" time="0.183137" status="run" />
+  <testcase classname="SurfaceCoverage" name="legacy float alpha chunks preserve original fans and integer centers [display]" time="0.248545" status="run" />
+  </testsuite></testsuites>

@@ -1,0 +1,99 @@
+{
+  "base_commit": "2ced60e06b8e7fa7a4a4ecff944c40bda494bcf4",
+  "variant": "gpu-recovery",
+  "prepared_utc": "2026-10-12T08:05:07.881424+00:00",
+  "source": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/variants/gpu-recovery/source",
+  "built": false,
+  "tested": false,
+  "launch_authorized": false,
+  "accepted": false,
+  "changes": [
+    {
+      "path": "src/app/cli/Headless.cpp",
+      "base_sha256": "17290fab62305218b960a443f9239554f375dc2d118b606b462a5095aa30b136",
+      "candidate_sha256": "62d87c341b571f59a04e59228ab6a2e4cf4fd9af3a07d489d030cc85b8793b8a",
+      "bytes": 50616
+    },
+    {
+      "path": "src/field/GradientDeviceService.cpp",
+      "base_sha256": "aaa0ceca63850a65e447e9dc0b02ffb1d0783058b0f51b704d36e7700f93656c",
+      "candidate_sha256": "11e22d0e5a055bf96e6ab5b0e73e444438ba2cf2d8a0ced538d4d8218024a36a",
+      "bytes": 20143
+    },
+    {
+      "path": "src/field/OpenCLGradient.cpp",
+      "base_sha256": "0c7f6404d1b9a62306fe7bd9a1b8971de1c7e6a25d84ee5d0510c7a3079b18bd",
+      "candidate_sha256": "2774a8dd65e3a149a3e9e1926f0f24dca3cc695a5562afa745e994dc1d57494e",
+      "bytes": 73994
+    },
+    {
+      "path": "src/field/OpenCLGradient.h",
+      "base_sha256": "a7952a364a16c72d6856cebb1097eef823c123b9d7a2c78355af4a057e791116",
+      "candidate_sha256": "2a924b29ddbffd1522e2cac6ce8dd3cbb473d66a064ee52d5c0601f01f72ac12",
+      "bytes": 3452
+    },
+    {
+      "path": "src/field/OpenCLGradientTest.cpp",
+      "base_sha256": "a314bf7cfe94daddb519e6841ec152d31539df038bc2eb7a77f014b16f6501a7",
+      "candidate_sha256": "a3cc3e7957a5b51cab50b44fbea28e26e21fc5dbd7a663f0a531b84652a62484",
+      "bytes": 58675
+    },
+    {
+      "path": "src/field/OpenCLTransferProof.h",
+      "base_sha256": "18f92c44b44ab1e32bcaebcea1cd2374bab636c3041c3f0dadbed972b973bc22",
+      "candidate_sha256": "b79afc833b32a0c629c4e3a97f38f985355d40441f04454c1aa25e1f8412b338",
+      "bytes": 1543
+    },
+    {
+      "path": "src/field/OpenCLTransferProofTest.cpp",
+      "base_sha256": "d6a05dcc22be10db6633d162f8e7bad1b60b8a034b55287aa1c38510aa92672e",
+      "candidate_sha256": "1eeba6595c68596ae2033136ac0b2230bc1191685a98cd51204a3b42c8b593d2",
+      "bytes": 6342
+    },
+    {
+      "path": "src/map/gradient/GradientPreparationTest.cpp",
+      "base_sha256": "ac67d316fb7a4d99f929810cbf11c0a1541ba561bf914a1a3e7d9fbd726ea64c",
+      "candidate_sha256": "9f572957cf43a342307707878a9187de520e753f190c115ebfd9ed44956b021c",
+      "bytes": 70020
+    },
+    {
+      "path": "src/field/OpenCLDeviceHealth.h",
+      "base_sha256": null,
+      "candidate_sha256": "a2ac0dc5ccd68c85c486d7780b61acc089a03c3b8000871357b1fe77204915f1",
+      "bytes": 1333
+    }
+  ],
+  "unchanged_archived_tracked_files_verified": 20482,
+  "total_base_tracked_files": 20510,
+  "git_archive_export_ignored_files": [
+    "debian/README.Debian",
+    "debian/README.source",
+    "debian/SConscript",
+    "debian/changelog",
+    "debian/compat",
+    "debian/control",
+    "debian/copyright",
+    "debian/glob2-data.dirs",
+    "debian/glob2-data.install",
+    "debian/glob2-sdl3-runtime.install",
+    "debian/glob2.6",
+    "debian/glob2.dirs",
+    "debian/glob2.docs",
+    "debian/glob2.install",
+    "debian/glob2.menu",
+    "debian/patches/01_remove_home_directory_browsing.patch",
+    "debian/patches/02_upstream_changelog.patch",
+    "debian/patches/03_headers_order.patch",
+    "debian/patches/series",
+    "debian/rules"
+  ],
+  "verification": "Git blob SHA1 of every archived tracked file/symlink target against base tree; Debian export-ignore excluded; listed differences SHA256 sealed",
+  "patch_sha256": "ea3561dbd89b1bb6f4d1f8fe16f2a04fa04fe0ec1bdb254822cba737ef08ce34",
+  "scope": "host acquire prerequisite plus cancellation-only recovery",
+  "runtime_dependencies_added": false,
+  "budgets_unchanged": {
+    "host_MiB": 64,
+    "device_MiB": 128,
+    "required_slots": 64
+  }
+}

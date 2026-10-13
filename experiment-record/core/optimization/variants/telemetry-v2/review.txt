@@ -1,0 +1,9 @@
+Telemetry V2 source review (unbuilt)
+
+The hint refers only to the previous accepted current row. std::ranges::equal checks ordered descriptor triples with length equality, embedded NUL bytes, and duplicate positions; payloads and timestamps are not part of schema equality. If the exact schema differs or no prior row exists, the original heterogeneous set lookup/allocation path is retained. Schemas are immutable shared objects, so copied Stream instances can safely reuse their own current pointers.
+
+current.find is performed once per captured row. Duplicate players still compare against prior current, never the preceding latest row; current is not mutated until acceptance. Truncation budget, retention, frame assembly, capture ordering, wire encoding, playback expansion, loader validation and save/replay compatibility boundaries are untouched. No simulation revision change is justified by this representation-only proposal.
+
+No new state or map is introduced. Stable schemas replace repeated tree lexicographic search with a single linear exact equality; changed schemas pay this equality before the existing lookup, so benefit is workload-dependent and must be measured. retainSchemas still performs canonical insertion for accepted rows, unchanged here. No claim of removing all schema comparisons or fixing aggregate performance.
+
+Required before adoption: release ReplayTelemetry tests including all eight tests; native old/new byte-equivalent telemetry + seek/save/load/replay tests and per-tick checksums; browser serial/threaded test coverage and checksum corpus; paired stable and mixed large-map timings against original and V1, retaining CPU/wall/RSS uncertainty. Existing V1 evidence does not validate this source or copied inherited binaries.

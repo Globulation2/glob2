@@ -1,0 +1,50 @@
+{
+  "prepared_utc": "2026-10-12T20:16:01.073053+00:00",
+  "state": "one narrow unbuilt/unmeasured artifact-only candidate; not adopted",
+  "candidate": "Skip empty cost-layer setup in BuildingGradientSearch::advance only; no layer jumping or frontier representation changes",
+  "accepted_commit": "9e370bcb83209cf99f43c346750a6d4bd440f4f2",
+  "source_sha256": "11f0ed7b5ee7ab00561d2730c09aa8fbe2678a97359306d1d40965fd29ed0c5e",
+  "patch_sha256": "c38e62b88998949623754179cdb72e3be0d87488ac30e53ff462f5ccfed80071",
+  "proposed_sha256": "28fc0f9a8ac05fdb6c95327424e1cf0a8f6894b630d6184fe002de650c7d803c",
+  "symbolic_binary_sha256": "7aba6318664aab4fe94ec26a2733e432c1f8898c961fc0ae9d5b5d113ee73ae5",
+  "recorded_assembly_sha256": "f0936b6fa680fb86025a18cce8319347446ac7daa2e1f2547a37c8e3b829ea6a",
+  "evidence": {
+    "source": "BuildingGradientSearch.cpp:129-159 calls setup for every currentCost while pending, regardless bucket size. TerrainGradient.h:26 already returns on empty range only after wrapper Grid/variant setup. GradientRelaxation classic setup precedes zero-count loop.",
+    "runtime_symbol": "resolveToCost advance VA0x1261a50 size0x5135 in text-identical relink",
+    "actual_assembly": "Uniform bucket.size load0x1264fa3, adds popped0x1264fad and depth histogram0x1264fe8, depthBin division0x1264fc1 then Grid/geometry setup0x1264ff0 onward, before later count test. Modified256 size load0x1261b12/counters0x1261b16/1b52 and grid/prepared-variant setup0x1261b5f..1c14 precede empty test0x1261c1a. Thus compiler has not already hoisted an early empty guard.",
+    "sample_scope": "~10.95% leaf resolveToCost advance and14.87% leading family in one continuous mature Oazis GPUoff N3 late window; statistical taskclock ownership with missing callchains. Empty-layer frequency/period share unmeasured, not a10.95% removable cost claim."
+  },
+  "invariants": [
+    "Every while iteration still tests pending then done(); every empty layer increments currentCost exactly once, no jumping to next occupied bucket. Whole-layer query/preparation cutoffs, settledCost and requiredCost histories unchanged.",
+    "A zero logical bucket has no entries; expansion runs no neighbor loop, makes no queue appends/reserve or field writes, pending delta0; clear() only reassigns existing size0. Omitting counters+=0 and clear0 preserves values.",
+    "Nonempty stale-only buckets must still expand to consume pending stale entries. Guard reads logical size not gradient values; never skips them.",
+    "No visited allocation exists: gradient values encode tentative/settled states, currentCost provides settled boundary; adding bitsets/cache/frontier structures is unnecessary.",
+    "Unchanged positive-edge/ring rules, current bucket no new appends, geometry/weights/SIMD/order/publication/lease lifetime; final profiles/water release remains after while exactly as before.",
+    "Pools/retainedBytes/generation/reset/save serialization unchanged. Modified variant prepared costs validated by begin() and immutable; only valid-input empty setup omitted."
+  ],
+  "required_tests": [
+    "Existing UNIT FieldGradient independent weighted/thin/alias/cap/deferredseed heap oracles and Gradient randomized/reference/legacy suites, bothrelease roles.",
+    "Existing ENGINE BuildingGradientInvalidation partial/resume depth0/7/40/160 + query/finish/fullfield/popped equality (cpp:489-510), familyroutes/swim/terrainmodified sizes64/128/256 and save/load/publication invalidation; GradientPreparation material/clear exact tests.",
+    "Add focused meaningful regression fixture before adoption: goal on small wrapped grid with cardinal10/diagonal14 gives empty costs1..9; prepare/query at interior empty cutoffs1,7,13 and across ringwrap, blocked/unreachable and target==cells; compare to unchanged independent heap and baseline completed-layer boundary, popped/queries/extensions/histogram plus resumed all-cell answer. Repeat modified positive costs with gaps and stale-only entries; never weaken whole-layer assertion.",
+    "Exact per-tick GCS/world/replay + savecontinuation on frozen small/large/mixed/mature CPU/GPU cases beforetiming, using actual build seals; no simulation-version bump if exact established.",
+    "Native ordinaryrelease object/app disassembly must verify setup guard emitted, then small paired early/mature hot-map measurements; compare individual regressions. Sharedcpp portability Windows/browser/Android affected; runtime coverage not yet provided."
+  ],
+  "risk": "Extra predictable occupancy branch may regress dense-frontier workloads; existing modified range already returns early, so savings there limited to wrapper/depth bookkeeping. No claim of reduced allocations or large speedup. Stop if flat/adverse; do not reopen rejected CHUNK/FIFO/pool/snapshot policies.",
+  "launches": 0,
+  "production_source_modified": false,
+  "revised_utc": "2026-10-12T20:19:51.787864+00:00",
+  "prior_version_archive": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/building-search-empty-layer-review/before-loop-bottom-review",
+  "simplification": "Wrap original counters/expand in if(count); retain original single ++currentCost at bottom in both loops. No continue/duplicated increments.",
+  "fixture_draft": {
+    "patch": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/building-search-empty-layer-review/empty-gap-resume-test.patch",
+    "sha256": "34d37a5b043f4f1efdc4705e97bf6bacee2c1a687c637b29686a2c0a22bb1414",
+    "source": "/home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/gradient/PathGradientHarness.cpp",
+    "source_sha256": "950534000e5cb84ca4b459394fbcfb484bd4332fffd82dc1b7566b9f301765b7",
+    "registry": "Existing PathGradient UNIT_TESTS entry test/tests.py:357 with -fno-access-control; browser web_build.py:222 also registered. Apply test patch identically to both roles; no registry changes needed.",
+    "cases": "Four32x32 worlds grass/trail/weightedwater/ice; independent existing heaporacle, realemptygap aftergoal, prepare0/cardinal-1 and ringwrap64/127, settled/popped/hist/reader preservation, blocked/goal/noexpansion and unreachable exhaustion, exact final allcell output. Existing broader suites cover thin/alias/stale-only cases.",
+    "executed": false,
+    "scope_limit": "Draft validates gaps/ringwrap and resume against an independent oracle; it does not itself force stale-only buckets or every64/128/256 dynamic layout, which remain separate existing-suite requirements."
+  },
+  "candidate_codegen_measured": false,
+  "patch_apply_checked_in_disposable_shadow": true
+}

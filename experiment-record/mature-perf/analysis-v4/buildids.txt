@@ -1,0 +1,6 @@
+8395f72b073c0bf7d58721c2e1a3f35a779cb6a9 /home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/glob2
+211c3e0d19fbf51196213b652fc16b0aad252ad1 /home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/build/sdl3-ci/prefix/lib/libSDL3.so.0.4.16
+296b7ed9b3833792e28f576996b748934d6c80c9 /tmp/perf-vdso.so-AFwlss
+066527e430a32768d82741e00b81eebb1a872294 /usr/lib/x86_64-linux-gnu/libc.so.6
+3a7a8c6bd922e6314edb7a710fdc0293265c2c42 /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.35
+b9c951cf62b1cef8e0473f530b31e4012f920db0 /proc/kcore

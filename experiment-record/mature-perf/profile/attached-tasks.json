@@ -1,0 +1,48 @@
+{
+  "pid": 1624173,
+  "uid": 1000,
+  "exe": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/glob2",
+  "proc_starttime": "309330380",
+  "tasks": [
+    {
+      "tid": 1624173,
+      "name": "glob2",
+      "allowed_cpus": [
+        0,
+        1,
+        2,
+        16,
+        17,
+        18
+      ],
+      "starttime": "309330380"
+    },
+    {
+      "tid": 1624178,
+      "name": "glob2",
+      "allowed_cpus": [
+        0,
+        1,
+        2,
+        16,
+        17,
+        18
+      ],
+      "starttime": "309330421"
+    },
+    {
+      "tid": 1624179,
+      "name": "glob2",
+      "allowed_cpus": [
+        0,
+        1,
+        2,
+        16,
+        17,
+        18
+      ],
+      "starttime": "309330421"
+    }
+  ],
+  "monotonic_ns": 3093592704126098
+}

@@ -1,0 +1,26 @@
+{
+  "observed_utc": "2026-10-12T16:50:11.644591+00:00",
+  "descriptive_measurements_accepted": true,
+  "engine_candidate_adopted": false,
+  "global_thread_optimum_selected": false,
+  "source_scope": "Accepted9e only; Linux host, twofixedseeds, six/24logicalCPUallocations;PG20000,Oazis8192,largeMixed4096;360measured+120warmup;GPUstrata separate.",
+  "checks": [
+    "Genuine36conformance24performance480nativecompletionproof andallnative/request/source/replay hashes gated.",
+    "Numerics finitepositiveCPU/wall/RSS and CPU=user+system; nativeRSS above helperHWM.",
+    "Independent60cell absolute andpairedstatistics recomputation exact.",
+    "Existing frozenplotfunction invoked oncompleteJSON only; CPUfigure visuallyinspected."
+  ],
+  "bound_sha256": {
+    "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/thread-scaling-v2/analysis/analysis.json": "95e8d519f2bc3865b284007ef4df4ce45978594224b9345bef36e8534afc7c1e",
+    "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/thread-scaling-v2/analysis/report.html": "e257e642fd340ee5180636d72e8d2a763aae65c20a3daf119c951971b113902a",
+    "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/thread-scaling-v2/analysis/completed-independent-review.json": "2f14f2f5d5eb7bb44f548c444d388caf525ce0a9cf240b0ff6b98e1b32dd9c0b",
+    "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/thread-scaling-v2/gate-receipt.json": "f84bb32d953868087fa8d5d4e389316eebe29e6190e374f5205addecc8ece119"
+  },
+  "qualifications": [
+    "Two-seed intervals descriptive, no broad population or universalmachine/default claim.",
+    "Context switches/systemCPU indicators are not exclusive scheduler attribution.",
+    "Wholeprocess CPU includes useful parallelwork; none declared whollywasted.",
+    "GPUcount1vsparallel path/memory differences require initialization qualification.",
+    "Exactfinal/replay equivalence overtimingwindows; detailed2048GCS conformance separate; no allplatformruntime orfullwinner/mature claim."
+  ]
+}

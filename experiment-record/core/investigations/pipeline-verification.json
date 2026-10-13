@@ -1,0 +1,28 @@
+{
+  "all_identical": true,
+  "cases": [
+    "pipeline-check-ai1-g0",
+    "pipeline-check-ai1-g1",
+    "pipeline-check-ai1-g2",
+    "pipeline-check-ai4-g0",
+    "pipeline-check-ai4-g1",
+    "pipeline-check-ai4-g2"
+  ],
+  "sha256": "59a6bed1d86302ec62563477f751c28ebc3d25599ffa606c94d32f9541fffb01",
+  "ticks": [
+    8192,
+    8192,
+    8192,
+    8192,
+    8192,
+    8192
+  ],
+  "byte_counts": [
+    194753628,
+    194753628,
+    194753628,
+    194753628,
+    194753628,
+    194753628
+  ]
+}

@@ -1,0 +1,348 @@
+{
+  "state": "read-only followup; source/variants frozen",
+  "conclusion": "No World/Handle pool exists in frozen2ced or current candidate; no inactive pooled umbrella owner defeats descriptor cleanup. Proposed WorldPool cleanup targets an absent owner.",
+  "source_sha256": {
+    "src/engine/sim/snapshot/BufferPool.h": "eb15f6ea8e9cf431d9c74b4787c812c9efbee94232fd3fdf0d705f1b36213b25",
+    "src/engine/sim/snapshot/SnapshotStorage.h": "6ca26df2d82348437ef8088e458cbca7c32e19fb2ed049e0ef206749a46bd4db",
+    "src/engine/sim/snapshot/SnapshotStorage.cpp": "d7f16e388ee0cdbc569e150e45953994a54f8c19ffe2b6a4ed66edc8fd6adec4",
+    "src/engine/sim/snapshot/SnapshotStore.h": "f32c58466a51219b5005655074f62a399976a028d8c0bb18b38e6e4c30fced69",
+    "src/engine/sim/snapshot/SnapshotStore.cpp": "491f5370c130dc92d0c8403309b977789e19f2755b11ed82857fe6dfb95f8e4e",
+    "src/engine/sim/snapshot/WorldSnapshot.h": "8b7a94ae2819ad092bd647064e2a46e286aa5fba87bf6885ffd2eb342a105d9f",
+    "src/engine/sim/snapshot/WorldSnapshot.cpp": "4908bd66152cf2bea02fae03ff6648de3ab3dfde74b0f01e96401287a26524f3",
+    "src/engine/sim/snapshot/WorldCapture.cpp": "9802869e44fe1b217e8c3696d29d500e27c2f0780a78129eb90e52dda485b688",
+    "src/ai/observation/AIWorldCapture.cpp": "633874affc2c57f6b291b1a8a6127795c81cf96490787303266d56d943ab3564",
+    "src/render/scene/Scene.h": "ce5d628ca1be8c7942bc3d67cbdc666fb37881de5fd149f3fa597e7d46ebd643",
+    "src/render/scene/SceneBuffer.h": "6c436519640f01500c909c97c712dc6df8c91d60a079de0f53e61a5b88c182ea"
+  },
+  "references": {
+    "component_pools": "SnapshotStorage.h:34-56",
+    "value_handle": "WorldSnapshot.h:132-159",
+    "projection": "WorldSnapshot.cpp:8-34",
+    "store_latest": "SnapshotStore.h:14-16;SnapshotStore.cpp:23-26,99-101",
+    "local_capture": "WorldCapture.cpp:76-78",
+    "descriptor_cleanup": "WorldCapture.cpp:519-546",
+    "strong_lease_fence": "BufferPool.h:17-22,37-49",
+    "plane_metrics": "SnapshotStorage.cpp:92-120",
+    "AI_nonpooled": "AIWorldCapture.cpp:66-67",
+    "retired_presentation": "Scene.h:44-53;SceneBuffer.h:52"
+  },
+  "ownership_graph": [
+    "Storage.resourceFields pool holds one shared_ptr per descriptor.",
+    "Store.latest optional<Handle> owns directly leased descriptor; no parent World/shared_ptr wrapper.",
+    "capture localHandle next leases a new descriptor; previous latest remains legitimately leased for key+generation sharing and metrics until latest=move(next).",
+    "Consumer Handle.project(requested) copies only requested component shared_ptrs, no umbrella parent. AIWorldView stores one Handle by value and is freshly make_shared, not pooled.",
+    "Storage.resourcePlanes pool holds one shared_ptr per vector. ResourceField descriptor entries hold const plane shared_ptrs, including obsolete descriptors even when descriptor.use_count()==1.",
+    "discardUnused clears only pool-exclusive descriptors, releasing their plane refs and preserving descriptor/plane vector capacity. Latest/previous/consumer leases have count>1 and are excluded.",
+    "Published GPU/gradient/AI consumers can legitimately keep handles or direct planes; clearing their references would mutate observations or terminate needed lifetime.",
+    "PresentationFrame retired slots already releaseWorld only with exclusive producer/consumer ownership; active/pending/published frames are genuine leases."
+  ],
+  "weak_promotion_audit": "No production weak_ptr<ResourceFields>, weak_ptr<Handle> or pooled AIWorldView found. SnapshotGradient terrain/minimal-view weak caches are a separate component/cache concern; no ResourceFields resurrection path. Same acquire strong-lease contract requires no weak promotion of unleased descriptor during owner mutation.",
+  "behavior_limits": [
+    "Cleanup runs only when ResourceFields is requested. Descriptor refs can remain idle during captures that omit it; next requested ResourceFields capture clears them before acquiring planes. No whole-World pool is involved.",
+    "use_count>1 does not identify whether a lease is latest vs consumer; current bounded counters count both legitimately, not inactive umbrella objects.",
+    "Physical vector arrays stay allocated; lower leased bytes is not lower retained bytes/RSS. Benefit requires avoiding new plane buffers/high-water capacity.",
+    "Scan + clear ref decrements introduces work per requested ResourceFields capture; provisional CPU increase is compatible with overhead but is not a source-established cause.",
+    "No snapshot-memory.json plane-detail sidecars presently exist in implementation ART; native exports only aggregatecomponent metrics, insufficient exactplane/key attribution."
+  ],
+  "existing_tests": {
+    "completed_utc": "2026-10-12T04:01:45.780244+00:00",
+    "command": [
+      "taskset",
+      "-c",
+      "3,4,19,20",
+      "python3",
+      "test/run_tests.py",
+      "--build-dir",
+      "build/linux/client/release",
+      "--binary",
+      "engine",
+      "--filter",
+      "WorldSnapshot/*",
+      "--filter",
+      "MapGradientInvalidation/*",
+      "--no-display",
+      "-j2",
+      "--artifacts",
+      "artifacts/engine-optimization/tests/snapshot",
+      "--junit",
+      "artifacts/engine-optimization/tests/snapshot/junit.xml",
+      "--write-inventory",
+      "artifacts/engine-optimization/tests/snapshot/inventory.json"
+    ],
+    "binary": "/home/bradley/.codex/worktrees/engine-optimization/glob2/build/linux/client/release/test/glob2-engine-tests",
+    "binary_sha256": "16b55ce531af8901bf546a44e2bd07c902753a38c3dfdddaf08c279242883465",
+    "result": {
+      "passed": 37,
+      "failed": 0,
+      "skipped": 0,
+      "test_seconds": 9.7
+    },
+    "not_compiled_in_tested_binary": [
+      "WorldSnapshot/resource field sparse index is empty and reusable after repeated clear"
+    ],
+    "source_frozen": true,
+    "scope": "Existing releaseengine37focusedcases including3newlease/capturecases+searchcensus. Optionaltestaddedafterbuildrequiresrootrebuild. No performance/fullgame/save-load/platform equivalence claim. Current sourcegitdiff--checkclean."
+  },
+  "native_census_examples": [
+    {
+      "job": "oazis-ni-164298751-snapshot-t3-gpuoff",
+      "source": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/oazis-ni-164298751-snapshot-t3-gpuoff/measurements.jsonl",
+      "repeat": 0,
+      "census": {
+        "candidate": {
+          "captures": 8193,
+          "extraction_ns": 2161248806,
+          "allocations": 1318,
+          "snapshot_allocated_buffers": 177,
+          "snapshot_reusable_buffers": 65,
+          "snapshot_leased_buffers": 112,
+          "snapshot_retained_bytes": 45079800,
+          "snapshot_capacity_bytes": 44957000,
+          "snapshot_leased_bytes": 18241604,
+          "snapshot_peak_allocated_buffers": 177,
+          "snapshot_peak_reusable_buffers": 65,
+          "snapshot_peak_leased_buffers": 112,
+          "snapshot_peak_retained_bytes": 45079800,
+          "snapshot_peak_capacity_bytes": 44957000,
+          "snapshot_peak_leased_bytes": 18241604
+        },
+        "baseline": {
+          "captures": 8193,
+          "extraction_ns": 2074999590,
+          "allocations": 1321,
+          "snapshot_allocated_buffers": 178,
+          "snapshot_reusable_buffers": 59,
+          "snapshot_leased_buffers": 119,
+          "snapshot_retained_bytes": 46128456,
+          "snapshot_capacity_bytes": 46005576,
+          "snapshot_leased_bytes": 19159276,
+          "snapshot_peak_allocated_buffers": 178,
+          "snapshot_peak_reusable_buffers": 59,
+          "snapshot_peak_leased_buffers": 119,
+          "snapshot_peak_retained_bytes": 46128456,
+          "snapshot_peak_capacity_bytes": 46005576,
+          "snapshot_peak_leased_bytes": 19159276
+        }
+      },
+      "scope": "One matched native repetition, result-export component capacity census, not RSS; illustrative only, no timing inference."
+    },
+    {
+      "job": "oazis-ni-902381047-snapshot-t3-gpuoff",
+      "source": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/oazis-ni-902381047-snapshot-t3-gpuoff/measurements.jsonl",
+      "repeat": 0,
+      "census": {
+        "candidate": {
+          "captures": 8193,
+          "extraction_ns": 1844072781,
+          "allocations": 1260,
+          "snapshot_allocated_buffers": 148,
+          "snapshot_reusable_buffers": 66,
+          "snapshot_leased_buffers": 82,
+          "snapshot_retained_bytes": 41725696,
+          "snapshot_capacity_bytes": 41603536,
+          "snapshot_leased_bytes": 14308724,
+          "snapshot_peak_allocated_buffers": 148,
+          "snapshot_peak_reusable_buffers": 66,
+          "snapshot_peak_leased_buffers": 82,
+          "snapshot_peak_retained_bytes": 41725696,
+          "snapshot_peak_capacity_bytes": 41603536,
+          "snapshot_peak_leased_bytes": 14308724
+        },
+        "baseline": {
+          "captures": 8193,
+          "extraction_ns": 1754117235,
+          "allocations": 1260,
+          "snapshot_allocated_buffers": 148,
+          "snapshot_reusable_buffers": 59,
+          "snapshot_leased_buffers": 89,
+          "snapshot_retained_bytes": 41725696,
+          "snapshot_capacity_bytes": 41603536,
+          "snapshot_leased_bytes": 15226396,
+          "snapshot_peak_allocated_buffers": 148,
+          "snapshot_peak_reusable_buffers": 59,
+          "snapshot_peak_leased_buffers": 89,
+          "snapshot_peak_retained_bytes": 41725696,
+          "snapshot_peak_capacity_bytes": 41603536,
+          "snapshot_peak_leased_bytes": 15226396
+        }
+      },
+      "scope": "One matched native repetition, result-export component capacity census, not RSS; illustrative only, no timing inference."
+    },
+    {
+      "job": "rect-mixed-164298751-snapshot-t3-gpuoff",
+      "source": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/rect-mixed-164298751-snapshot-t3-gpuoff/measurements.jsonl",
+      "repeat": 0,
+      "census": {
+        "candidate": {
+          "captures": 8193,
+          "extraction_ns": 173355282,
+          "allocations": 581,
+          "snapshot_allocated_buffers": 91,
+          "snapshot_reusable_buffers": 59,
+          "snapshot_leased_buffers": 32,
+          "snapshot_retained_bytes": 4859060,
+          "snapshot_capacity_bytes": 4738620,
+          "snapshot_leased_bytes": 1675588,
+          "snapshot_peak_allocated_buffers": 91,
+          "snapshot_peak_reusable_buffers": 59,
+          "snapshot_peak_leased_buffers": 32,
+          "snapshot_peak_retained_bytes": 4859060,
+          "snapshot_peak_capacity_bytes": 4738620,
+          "snapshot_peak_leased_bytes": 1675588
+        },
+        "baseline": {
+          "captures": 8193,
+          "extraction_ns": 162111041,
+          "allocations": 587,
+          "snapshot_allocated_buffers": 93,
+          "snapshot_reusable_buffers": 54,
+          "snapshot_leased_buffers": 39,
+          "snapshot_retained_bytes": 4941100,
+          "snapshot_capacity_bytes": 4820540,
+          "snapshot_leased_bytes": 1790444,
+          "snapshot_peak_allocated_buffers": 93,
+          "snapshot_peak_reusable_buffers": 54,
+          "snapshot_peak_leased_buffers": 39,
+          "snapshot_peak_retained_bytes": 4941100,
+          "snapshot_peak_capacity_bytes": 4820540,
+          "snapshot_peak_leased_bytes": 1790444
+        }
+      },
+      "scope": "One matched native repetition, result-export component capacity census, not RSS; illustrative only, no timing inference."
+    },
+    {
+      "job": "rect-mixed-902381047-snapshot-t3-gpuoff",
+      "source": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/rect-mixed-902381047-snapshot-t3-gpuoff/measurements.jsonl",
+      "repeat": 0,
+      "census": {
+        "candidate": {
+          "captures": 8193,
+          "extraction_ns": 188056224,
+          "allocations": 578,
+          "snapshot_allocated_buffers": 94,
+          "snapshot_reusable_buffers": 60,
+          "snapshot_leased_buffers": 34,
+          "snapshot_retained_bytes": 4908212,
+          "snapshot_capacity_bytes": 4787700,
+          "snapshot_leased_bytes": 1708404,
+          "snapshot_peak_allocated_buffers": 94,
+          "snapshot_peak_reusable_buffers": 60,
+          "snapshot_peak_leased_buffers": 34,
+          "snapshot_peak_retained_bytes": 4908212,
+          "snapshot_peak_capacity_bytes": 4787700,
+          "snapshot_peak_leased_bytes": 1708404
+        },
+        "baseline": {
+          "captures": 8193,
+          "extraction_ns": 175578305,
+          "allocations": 578,
+          "snapshot_allocated_buffers": 94,
+          "snapshot_reusable_buffers": 57,
+          "snapshot_leased_buffers": 37,
+          "snapshot_retained_bytes": 4908212,
+          "snapshot_capacity_bytes": 4787700,
+          "snapshot_leased_bytes": 1757628,
+          "snapshot_peak_allocated_buffers": 94,
+          "snapshot_peak_reusable_buffers": 57,
+          "snapshot_peak_leased_buffers": 37,
+          "snapshot_peak_retained_bytes": 4908212,
+          "snapshot_peak_capacity_bytes": 4787700,
+          "snapshot_peak_leased_bytes": 1757628
+        }
+      },
+      "scope": "One matched native repetition, result-export component capacity census, not RSS; illustrative only, no timing inference."
+    },
+    {
+      "job": "small-ni-164298751-snapshot-t3-gpuoff",
+      "source": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/small-ni-164298751-snapshot-t3-gpuoff/measurements.jsonl",
+      "repeat": 0,
+      "census": {
+        "candidate": {
+          "captures": 8193,
+          "extraction_ns": 88243449,
+          "allocations": 475,
+          "snapshot_allocated_buffers": 82,
+          "snapshot_reusable_buffers": 61,
+          "snapshot_leased_buffers": 21,
+          "snapshot_retained_bytes": 2965380,
+          "snapshot_capacity_bytes": 2845044,
+          "snapshot_leased_bytes": 1151036,
+          "snapshot_peak_allocated_buffers": 82,
+          "snapshot_peak_reusable_buffers": 61,
+          "snapshot_peak_leased_buffers": 21,
+          "snapshot_peak_retained_bytes": 2965380,
+          "snapshot_peak_capacity_bytes": 2845044,
+          "snapshot_peak_leased_bytes": 1151036
+        },
+        "baseline": {
+          "captures": 8193,
+          "extraction_ns": 97948011,
+          "allocations": 478,
+          "snapshot_allocated_buffers": 84,
+          "snapshot_reusable_buffers": 58,
+          "snapshot_leased_buffers": 26,
+          "snapshot_retained_bytes": 3014564,
+          "snapshot_capacity_bytes": 2894196,
+          "snapshot_leased_bytes": 1192116,
+          "snapshot_peak_allocated_buffers": 84,
+          "snapshot_peak_reusable_buffers": 58,
+          "snapshot_peak_leased_buffers": 26,
+          "snapshot_peak_retained_bytes": 3014564,
+          "snapshot_peak_capacity_bytes": 2894196,
+          "snapshot_peak_leased_bytes": 1192116
+        }
+      },
+      "scope": "One matched native repetition, result-export component capacity census, not RSS; illustrative only, no timing inference."
+    },
+    {
+      "job": "small-ni-902381047-snapshot-t3-gpuoff",
+      "source": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/small-ni-902381047-snapshot-t3-gpuoff/measurements.jsonl",
+      "repeat": 0,
+      "census": {
+        "candidate": {
+          "captures": 8193,
+          "extraction_ns": 110506777,
+          "allocations": 498,
+          "snapshot_allocated_buffers": 81,
+          "snapshot_reusable_buffers": 60,
+          "snapshot_leased_buffers": 21,
+          "snapshot_retained_bytes": 2917764,
+          "snapshot_capacity_bytes": 2797660,
+          "snapshot_leased_bytes": 1151036,
+          "snapshot_peak_allocated_buffers": 81,
+          "snapshot_peak_reusable_buffers": 60,
+          "snapshot_peak_leased_buffers": 21,
+          "snapshot_peak_retained_bytes": 2917764,
+          "snapshot_peak_capacity_bytes": 2797660,
+          "snapshot_peak_leased_bytes": 1151036
+        },
+        "baseline": {
+          "captures": 8193,
+          "extraction_ns": 95196888,
+          "allocations": 503,
+          "snapshot_allocated_buffers": 83,
+          "snapshot_reusable_buffers": 55,
+          "snapshot_leased_buffers": 28,
+          "snapshot_retained_bytes": 2975308,
+          "snapshot_capacity_bytes": 2855004,
+          "snapshot_leased_bytes": 1208548,
+          "snapshot_peak_allocated_buffers": 83,
+          "snapshot_peak_reusable_buffers": 55,
+          "snapshot_peak_leased_buffers": 28,
+          "snapshot_peak_retained_bytes": 2975308,
+          "snapshot_peak_capacity_bytes": 2855004,
+          "snapshot_peak_leased_bytes": 1208548
+        }
+      },
+      "scope": "One matched native repetition, result-export component capacity census, not RSS; illustrative only, no timing inference."
+    }
+  ],
+  "future_test_design_only": [
+    "No WorldPool optimization recommended; first obtain existing query-only plane sidecar on baseline/candidate equal state in diagnostic root queue.",
+    "Classify reusableDescriptorReferences, leasedDescriptorReferences, allocated/leased/reusablePlanes and capacities separately; compare generationCopies/Reuses with exactGCS gate.",
+    "Hold Handle withResourceFields + separate direct plane, drop otherHandles, then capture changedgeneration: assert heldimmutability and newlyidle descriptor releases plane; current tests cover this mechanism.",
+    "Transition requestedFields\u2192noFields acrossnewtick\u2192requestedFields; prove idle descriptor refs persist only until subsequentFields capture and latest/consumer excluded.",
+    "Measure capture workload with many descriptors but few generationchanges; candidate scan cost vsallocation avoidance. No blind constant/tuning; no release of active consumers, no forcedcapacityfree."
+  ],
+  "no_actions": "No source edits, builds, engines, maps or profilers launched; mature plan left unchanged."
+}

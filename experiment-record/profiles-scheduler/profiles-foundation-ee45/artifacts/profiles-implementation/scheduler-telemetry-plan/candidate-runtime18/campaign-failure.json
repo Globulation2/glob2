@@ -1,0 +1,14 @@
+{
+  "passed": false,
+  "records": [
+    {
+      "id": "candidate-d80-small-n1-off",
+      "exit": 0
+    },
+    {
+      "id": "candidate-d80-small-n4-waits",
+      "exit": 1
+    }
+  ],
+  "no_retries": true
+}

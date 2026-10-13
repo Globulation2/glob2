@@ -1,0 +1,28 @@
+{
+  "argv": [
+    "taskset",
+    "-c",
+    "0,1,2,16,17,18",
+    "/home/bradley/.codex/worktrees/engine-optimization/glob2/build/linux/client/release/src/glob2",
+    "game",
+    "run",
+    "--load-game",
+    "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/full-fixtures/oazis-ni-1738462951/fixture/initial.game.gz",
+    "--ticks",
+    "128192",
+    "--compute-threads",
+    "3",
+    "--gpu",
+    "off",
+    "--write-replay",
+    "--output-dir",
+    "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/continuous-sealed"
+  ],
+  "environment_overrides": {
+    "SDL_VIDEODRIVER": "dummy",
+    "SDL_AUDIODRIVER": "dummy",
+    "GLOB2_USER_DIR": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/continuous-sealed/user",
+    "GLOB2_USER_DATA_DIR": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/continuous-sealed/user"
+  },
+  "timing_excluded": true
+}

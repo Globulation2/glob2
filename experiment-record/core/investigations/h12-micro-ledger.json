@@ -1,0 +1,708 @@
+{
+  "id": "H12",
+  "generated_utc": "2026-10-12T01:16:34.985426+00:00",
+  "state": "microcontrols_complete",
+  "baseline_qualification": "Frozenlatest9a08b91f4 exact release header kernels, isolated synthetic fixture inputs; standalone kernel clocks. No actual AI/world snapshot/seed integration or game speedup inferred.",
+  "K1": {
+    "valid_cases": 540,
+    "expected_cases": 540,
+    "complete_variant_block_pairs": 360,
+    "all_cell_oracle_fixtures": 108,
+    "cells_per_variant": 1476792,
+    "decision": "Neither globalchunk16 nor globalchunk128 earns live-engine transplantation from this matrix. Keep current64.128 has small weighted medians mostly with intervals spanning1, significant unweighted regression and more retained scratch/cold allocation work. Any weighted-only128 adaptation is a new untested candidate, not measured by current genericchunkvariant.",
+    "examples": {
+      "weighted_sparse128swim6_chunk128": {
+        "variant": "chunk128",
+        "complete_pairs": 10,
+        "expected_pairs": 10,
+        "wall_ratio": {
+          "n": 10,
+          "median": 0.9853396169909805,
+          "minimum": 0.9396133034430187,
+          "maximum": 1.0036083076793498,
+          "bootstrap_median_ci95": [
+            0.9771010772980402,
+            0.9944457886990432
+          ]
+        },
+        "cpu_ratio": {
+          "n": 10,
+          "median": 0.9859803056878875,
+          "minimum": 0.9397673615109985,
+          "maximum": 1.0026001361976105,
+          "bootstrap_median_ci95": [
+            0.9772063580103609,
+            0.9942562818327657
+          ]
+        },
+        "baseline_wall_ns_per_kernel": {
+          "n": 10,
+          "median": 257210.7421875,
+          "minimum": 251222.265625,
+          "maximum": 287816.703125,
+          "bootstrap_median_ci95": [
+            251554.90625,
+            270468.046875
+          ]
+        },
+        "candidate_wall_ns_per_kernel": {
+          "n": 10,
+          "median": 253298.984375,
+          "minimum": 246969.328125,
+          "maximum": 283728.765625,
+          "bootstrap_median_ci95": [
+            248163.890625,
+            261507.3359375
+          ]
+        },
+        "baseline_cpu_ns_per_kernel": {
+          "n": 10,
+          "median": 258039.0625,
+          "minimum": 252046.875,
+          "maximum": 288796.875,
+          "bootstrap_median_ci95": [
+            252390.625,
+            271343.75
+          ]
+        },
+        "candidate_cpu_ns_per_kernel": {
+          "n": 10,
+          "median": 254023.4375,
+          "minimum": 247812.5,
+          "maximum": 284687.5,
+          "bootstrap_median_ci95": [
+            248812.5,
+            262476.5625
+          ]
+        },
+        "pairs": [
+          {
+            "fixture": "128x128-s6-sparse-c65491",
+            "repetition": 0,
+            "variant": "chunk128",
+            "baseline_id": "k1-current-128x128-s6-sparse-c65491-r0-chunk64",
+            "candidate_id": "k1-current-128x128-s6-sparse-c65491-r0-chunk128",
+            "baseline_position": 0,
+            "candidate_position": 2,
+            "baseline_wall_ns_per_kernel": 262553.28125,
+            "candidate_wall_ns_per_kernel": 260805.828125,
+            "baseline_cpu_ns_per_kernel": 263468.75,
+            "candidate_cpu_ns_per_kernel": 261671.875,
+            "wall_ratio": 0.9933443866453298,
+            "cpu_ratio": 0.9931799312062626
+          },
+          {
+            "fixture": "128x128-s6-sparse-c65491",
+            "repetition": 1,
+            "variant": "chunk128",
+            "baseline_id": "k1-current-128x128-s6-sparse-c65491-r1-chunk64",
+            "candidate_id": "k1-current-128x128-s6-sparse-c65491-r1-chunk128",
+            "baseline_position": 2,
+            "candidate_position": 0,
+            "baseline_wall_ns_per_kernel": 254734.25,
+            "candidate_wall_ns_per_kernel": 255093.46875,
+            "baseline_cpu_ns_per_kernel": 255546.875,
+            "candidate_cpu_ns_per_kernel": 256046.875,
+            "wall_ratio": 1.0014101705993599,
+            "cpu_ratio": 1.0019565881993273
+          },
+          {
+            "fixture": "128x128-s6-sparse-c65491",
+            "repetition": 2,
+            "variant": "chunk128",
+            "baseline_id": "k1-current-128x128-s6-sparse-c65491-r2-chunk64",
+            "candidate_id": "k1-current-128x128-s6-sparse-c65491-r2-chunk128",
+            "baseline_position": 0,
+            "candidate_position": 2,
+            "baseline_wall_ns_per_kernel": 251309.9375,
+            "candidate_wall_ns_per_kernel": 248163.890625,
+            "baseline_cpu_ns_per_kernel": 252203.125,
+            "candidate_cpu_ns_per_kernel": 248812.5,
+            "wall_ratio": 0.9874814067987264,
+            "cpu_ratio": 0.9865559754662041
+          },
+          {
+            "fixture": "128x128-s6-sparse-c65491",
+            "repetition": 3,
+            "variant": "chunk128",
+            "baseline_id": "k1-current-128x128-s6-sparse-c65491-r3-chunk64",
+            "candidate_id": "k1-current-128x128-s6-sparse-c65491-r3-chunk128",
+            "baseline_position": 2,
+            "candidate_position": 0,
+            "baseline_wall_ns_per_kernel": 252818.96875,
+            "candidate_wall_ns_per_kernel": 247375.890625,
+            "baseline_cpu_ns_per_kernel": 253687.5,
+            "candidate_cpu_ns_per_kernel": 248203.125,
+            "wall_ratio": 0.9784704519921431,
+            "cpu_ratio": 0.9783813747228381
+          },
+          {
+            "fixture": "128x128-s6-sparse-c65491",
+            "repetition": 4,
+            "variant": "chunk128",
+            "baseline_id": "k1-current-128x128-s6-sparse-c65491-r4-chunk64",
+            "candidate_id": "k1-current-128x128-s6-sparse-c65491-r4-chunk128",
+            "baseline_position": 0,
+            "candidate_position": 2,
+            "baseline_wall_ns_per_kernel": 251554.90625,
+            "candidate_wall_ns_per_kernel": 252462.59375,
+            "baseline_cpu_ns_per_kernel": 252390.625,
+            "candidate_cpu_ns_per_kernel": 253046.875,
+            "wall_ratio": 1.0036083076793498,
+            "cpu_ratio": 1.0026001361976105
+          },
+          {
+            "fixture": "128x128-s6-sparse-c65491",
+            "repetition": 5,
+            "variant": "chunk128",
+            "baseline_id": "k1-current-128x128-s6-sparse-c65491-r5-chunk64",
+            "candidate_id": "k1-current-128x128-s6-sparse-c65491-r5-chunk128",
+            "baseline_position": 2,
+            "candidate_position": 0,
+            "baseline_wall_ns_per_kernel": 251222.265625,
+            "candidate_wall_ns_per_kernel": 246969.328125,
+            "baseline_cpu_ns_per_kernel": 252046.875,
+            "candidate_cpu_ns_per_kernel": 247812.5,
+            "wall_ratio": 0.9830710168566493,
+            "cpu_ratio": 0.9832000495939496
+          },
+          {
+            "fixture": "128x128-s6-sparse-c65491",
+            "repetition": 6,
+            "variant": "chunk128",
+            "baseline_id": "k1-current-128x128-s6-sparse-c65491-r6-chunk64",
+            "candidate_id": "k1-current-128x128-s6-sparse-c65491-r6-chunk128",
+            "baseline_position": 0,
+            "candidate_position": 2,
+            "baseline_wall_ns_per_kernel": 259687.234375,
+            "candidate_wall_ns_per_kernel": 252190.359375,
+            "baseline_cpu_ns_per_kernel": 260531.25,
+            "candidate_cpu_ns_per_kernel": 253031.25,
+            "wall_ratio": 0.9711311377394309,
+            "cpu_ratio": 0.9712126664267722
+          },
+          {
+            "fixture": "128x128-s6-sparse-c65491",
+            "repetition": 7,
+            "variant": "chunk128",
+            "baseline_id": "k1-current-128x128-s6-sparse-c65491-r7-chunk64",
+            "candidate_id": "k1-current-128x128-s6-sparse-c65491-r7-chunk128",
+            "baseline_position": 2,
+            "candidate_position": 0,
+            "baseline_wall_ns_per_kernel": 270468.046875,
+            "candidate_wall_ns_per_kernel": 254135.375,
+            "baseline_cpu_ns_per_kernel": 271343.75,
+            "candidate_cpu_ns_per_kernel": 255000.0,
+            "wall_ratio": 0.9396133034430187,
+            "cpu_ratio": 0.9397673615109985
+          },
+          {
+            "fixture": "128x128-s6-sparse-c65491",
+            "repetition": 8,
+            "variant": "chunk128",
+            "baseline_id": "k1-current-128x128-s6-sparse-c65491-r8-chunk64",
+            "candidate_id": "k1-current-128x128-s6-sparse-c65491-r8-chunk128",
+            "baseline_position": 0,
+            "candidate_position": 2,
+            "baseline_wall_ns_per_kernel": 272033.671875,
+            "candidate_wall_ns_per_kernel": 267921.203125,
+            "baseline_cpu_ns_per_kernel": 272671.875,
+            "candidate_cpu_ns_per_kernel": 268906.25,
+            "wall_ratio": 0.9848825010460849,
+            "cpu_ratio": 0.9861899031574122
+          },
+          {
+            "fixture": "128x128-s6-sparse-c65491",
+            "repetition": 9,
+            "variant": "chunk128",
+            "baseline_id": "k1-current-128x128-s6-sparse-c65491-r9-chunk64",
+            "candidate_id": "k1-current-128x128-s6-sparse-c65491-r9-chunk128",
+            "baseline_position": 2,
+            "candidate_position": 0,
+            "baseline_wall_ns_per_kernel": 287816.703125,
+            "candidate_wall_ns_per_kernel": 283728.765625,
+            "baseline_cpu_ns_per_kernel": 288796.875,
+            "candidate_cpu_ns_per_kernel": 284687.5,
+            "wall_ratio": 0.9857967329358762,
+            "cpu_ratio": 0.9857707082183628
+          }
+        ]
+      },
+      "unweighted_clustered256_chunk128": {
+        "variant": "chunk128",
+        "complete_pairs": 10,
+        "expected_pairs": 10,
+        "wall_ratio": {
+          "n": 10,
+          "median": 1.3028190474045607,
+          "minimum": 1.0128019407910742,
+          "maximum": 1.5778124124901065,
+          "bootstrap_median_ci95": [
+            1.1073006037541302,
+            1.5303226611227683
+          ]
+        },
+        "cpu_ratio": {
+          "n": 10,
+          "median": 1.3028281479429316,
+          "minimum": 1.0123022847100176,
+          "maximum": 1.5777821965930934,
+          "bootstrap_median_ci95": [
+            1.1072017201052233,
+            1.5295882075673823
+          ]
+        },
+        "baseline_wall_ns_per_kernel": {
+          "n": 10,
+          "median": 723770.328125,
+          "minimum": 705825.75,
+          "maximum": 823635.984375,
+          "bootstrap_median_ci95": [
+            706907.46875,
+            741899.984375
+          ]
+        },
+        "candidate_wall_ns_per_kernel": {
+          "n": 10,
+          "median": 921325.15625,
+          "minimum": 746441.28125,
+          "maximum": 1126236.640625,
+          "bootstrap_median_ci95": [
+            798783.765625,
+            1116150.2421875
+          ]
+        },
+        "baseline_cpu_ns_per_kernel": {
+          "n": 10,
+          "median": 724796.875,
+          "minimum": 706875.0,
+          "maximum": 824781.25,
+          "bootstrap_median_ci95": [
+            707687.5,
+            742828.125
+          ]
+        },
+        "candidate_cpu_ns_per_kernel": {
+          "n": 10,
+          "median": 922421.875,
+          "minimum": 747000.0,
+          "maximum": 1127203.125,
+          "bootstrap_median_ci95": [
+            799812.5,
+            1117203.125
+          ]
+        },
+        "pairs": [
+          {
+            "fixture": "256x256-s0-clustered-c65491",
+            "repetition": 0,
+            "variant": "chunk128",
+            "baseline_id": "k1-current-256x256-s0-clustered-c65491-r0-chunk64",
+            "candidate_id": "k1-current-256x256-s0-clustered-c65491-r0-chunk128",
+            "baseline_position": 0,
+            "candidate_position": 2,
+            "baseline_wall_ns_per_kernel": 739561.765625,
+            "candidate_wall_ns_per_kernel": 755103.546875,
+            "baseline_cpu_ns_per_kernel": 740484.375,
+            "candidate_cpu_ns_per_kernel": 756109.375,
+            "wall_ratio": 1.0210148522711497,
+            "cpu_ratio": 1.021101052942542
+          },
+          {
+            "fixture": "256x256-s0-clustered-c65491",
+            "repetition": 1,
+            "variant": "chunk128",
+            "baseline_id": "k1-current-256x256-s0-clustered-c65491-r1-chunk64",
+            "candidate_id": "k1-current-256x256-s0-clustered-c65491-r1-chunk128",
+            "baseline_position": 2,
+            "candidate_position": 0,
+            "baseline_wall_ns_per_kernel": 707101.515625,
+            "candidate_wall_ns_per_kernel": 917787.671875,
+            "baseline_cpu_ns_per_kernel": 708171.875,
+            "candidate_cpu_ns_per_kernel": 918953.125,
+            "wall_ratio": 1.2979574383513752,
+            "cpu_ratio": 1.2976413741367518
+          },
+          {
+            "fixture": "256x256-s0-clustered-c65491",
+            "repetition": 2,
+            "variant": "chunk128",
+            "baseline_id": "k1-current-256x256-s0-clustered-c65491-r2-chunk64",
+            "candidate_id": "k1-current-256x256-s0-clustered-c65491-r2-chunk128",
+            "baseline_position": 0,
+            "candidate_position": 2,
+            "baseline_wall_ns_per_kernel": 719277.5625,
+            "candidate_wall_ns_per_kernel": 1117822.96875,
+            "baseline_cpu_ns_per_kernel": 720312.5,
+            "candidate_cpu_ns_per_kernel": 1118906.25,
+            "wall_ratio": 1.5540912535416396,
+            "cpu_ratio": 1.5533622559652929
+          },
+          {
+            "fixture": "256x256-s0-clustered-c65491",
+            "repetition": 3,
+            "variant": "chunk128",
+            "baseline_id": "k1-current-256x256-s0-clustered-c65491-r3-chunk64",
+            "candidate_id": "k1-current-256x256-s0-clustered-c65491-r3-chunk128",
+            "baseline_position": 2,
+            "candidate_position": 0,
+            "baseline_wall_ns_per_kernel": 706560.734375,
+            "candidate_wall_ns_per_kernel": 1114820.296875,
+            "baseline_cpu_ns_per_kernel": 707203.125,
+            "candidate_cpu_ns_per_kernel": 1115812.5,
+            "wall_ratio": 1.5778124124901065,
+            "cpu_ratio": 1.5777821965930934
+          },
+          {
+            "fixture": "256x256-s0-clustered-c65491",
+            "repetition": 4,
+            "variant": "chunk128",
+            "baseline_id": "k1-current-256x256-s0-clustered-c65491-r4-chunk64",
+            "candidate_id": "k1-current-256x256-s0-clustered-c65491-r4-chunk128",
+            "baseline_position": 0,
+            "candidate_position": 2,
+            "baseline_wall_ns_per_kernel": 707254.203125,
+            "candidate_wall_ns_per_kernel": 924862.640625,
+            "baseline_cpu_ns_per_kernel": 707859.375,
+            "candidate_cpu_ns_per_kernel": 925890.625,
+            "wall_ratio": 1.307680656457746,
+            "cpu_ratio": 1.3080149217491115
+          },
+          {
+            "fixture": "256x256-s0-clustered-c65491",
+            "repetition": 5,
+            "variant": "chunk128",
+            "baseline_id": "k1-current-256x256-s0-clustered-c65491-r5-chunk64",
+            "candidate_id": "k1-current-256x256-s0-clustered-c65491-r5-chunk128",
+            "baseline_position": 2,
+            "candidate_position": 0,
+            "baseline_wall_ns_per_kernel": 705825.75,
+            "candidate_wall_ns_per_kernel": 842463.984375,
+            "baseline_cpu_ns_per_kernel": 706875.0,
+            "candidate_cpu_ns_per_kernel": 843515.625,
+            "wall_ratio": 1.1935863552371107,
+            "cpu_ratio": 1.1933023872679045
+          },
+          {
+            "fixture": "256x256-s0-clustered-c65491",
+            "repetition": 6,
+            "variant": "chunk128",
+            "baseline_id": "k1-current-256x256-s0-clustered-c65491-r6-chunk64",
+            "candidate_id": "k1-current-256x256-s0-clustered-c65491-r6-chunk128",
+            "baseline_position": 0,
+            "candidate_position": 2,
+            "baseline_wall_ns_per_kernel": 737006.171875,
+            "candidate_wall_ns_per_kernel": 746441.28125,
+            "baseline_cpu_ns_per_kernel": 737921.875,
+            "candidate_cpu_ns_per_kernel": 747000.0,
+            "wall_ratio": 1.0128019407910742,
+            "cpu_ratio": 1.0123022847100176
+          },
+          {
+            "fixture": "256x256-s0-clustered-c65491",
+            "repetition": 7,
+            "variant": "chunk128",
+            "baseline_id": "k1-current-256x256-s0-clustered-c65491-r7-chunk64",
+            "candidate_id": "k1-current-256x256-s0-clustered-c65491-r7-chunk128",
+            "baseline_position": 2,
+            "candidate_position": 0,
+            "baseline_wall_ns_per_kernel": 746793.796875,
+            "candidate_wall_ns_per_kernel": 832335.4375,
+            "baseline_cpu_ns_per_kernel": 747734.375,
+            "candidate_cpu_ns_per_kernel": 833343.75,
+            "wall_ratio": 1.1145451943802342,
+            "cpu_ratio": 1.114491693657925
+          },
+          {
+            "fixture": "256x256-s0-clustered-c65491",
+            "repetition": 8,
+            "variant": "chunk128",
+            "baseline_id": "k1-current-256x256-s0-clustered-c65491-r8-chunk64",
+            "candidate_id": "k1-current-256x256-s0-clustered-c65491-r8-chunk128",
+            "baseline_position": 0,
+            "candidate_position": 2,
+            "baseline_wall_ns_per_kernel": 823635.984375,
+            "candidate_wall_ns_per_kernel": 1126236.640625,
+            "baseline_cpu_ns_per_kernel": 824781.25,
+            "candidate_cpu_ns_per_kernel": 1127203.125,
+            "wall_ratio": 1.3673961094349496,
+            "cpu_ratio": 1.366669192588944
+          },
+          {
+            "fixture": "256x256-s0-clustered-c65491",
+            "repetition": 9,
+            "variant": "chunk128",
+            "baseline_id": "k1-current-256x256-s0-clustered-c65491-r9-chunk64",
+            "candidate_id": "k1-current-256x256-s0-clustered-c65491-r9-chunk128",
+            "baseline_position": 2,
+            "candidate_position": 0,
+            "baseline_wall_ns_per_kernel": 728263.09375,
+            "candidate_wall_ns_per_kernel": 1114477.515625,
+            "baseline_cpu_ns_per_kernel": 729281.25,
+            "candidate_cpu_ns_per_kernel": 1115500.0,
+            "wall_ratio": 1.5303226611227683,
+            "cpu_ratio": 1.5295882075673823
+          }
+        ]
+      },
+      "unweighted_barrier128_chunk16": {
+        "variant": "chunk16",
+        "complete_pairs": 10,
+        "expected_pairs": 10,
+        "wall_ratio": {
+          "n": 10,
+          "median": 1.08700604578907,
+          "minimum": 0.8719496638080748,
+          "maximum": 1.238707081529546,
+          "bootstrap_median_ci95": [
+            1.0196334752049303,
+            1.177928625070651
+          ]
+        },
+        "cpu_ratio": {
+          "n": 10,
+          "median": 1.0864421424700534,
+          "minimum": 0.8721713464012715,
+          "maximum": 1.2375774161025492,
+          "bootstrap_median_ci95": [
+            1.019047619047619,
+            1.1768112996646682
+          ]
+        },
+        "baseline_wall_ns_per_kernel": {
+          "n": 10,
+          "median": 157711.8359375,
+          "minimum": 152902.515625,
+          "maximum": 216067.375,
+          "bootstrap_median_ci95": [
+            153126.59375,
+            188157.734375
+          ]
+        },
+        "candidate_wall_ns_per_kernel": {
+          "n": 10,
+          "median": 179659.1875,
+          "minimum": 159679.03125,
+          "maximum": 267644.1875,
+          "bootstrap_median_ci95": [
+            164961.328125,
+            185312.2734375
+          ]
+        },
+        "baseline_cpu_ns_per_kernel": {
+          "n": 10,
+          "median": 158570.3125,
+          "minimum": 153765.625,
+          "maximum": 216968.75,
+          "bootstrap_median_ci95": [
+            153937.5,
+            189062.5
+          ]
+        },
+        "candidate_cpu_ns_per_kernel": {
+          "n": 10,
+          "median": 180507.8125,
+          "minimum": 160500.0,
+          "maximum": 268515.625,
+          "bootstrap_median_ci95": [
+            165750.0,
+            186054.6875
+          ]
+        },
+        "pairs": [
+          {
+            "fixture": "128x128-s0-barrier-c65491",
+            "repetition": 0,
+            "variant": "chunk16",
+            "baseline_id": "k1-current-128x128-s0-barrier-c65491-r0-chunk64",
+            "candidate_id": "k1-current-128x128-s0-barrier-c65491-r0-chunk16",
+            "baseline_position": 0,
+            "candidate_position": 1,
+            "baseline_wall_ns_per_kernel": 158819.328125,
+            "candidate_wall_ns_per_kernel": 161523.71875,
+            "baseline_cpu_ns_per_kernel": 159640.625,
+            "candidate_cpu_ns_per_kernel": 162421.875,
+            "wall_ratio": 1.0170280951124002,
+            "cpu_ratio": 1.017421943819125
+          },
+          {
+            "fixture": "128x128-s0-barrier-c65491",
+            "repetition": 1,
+            "variant": "chunk16",
+            "baseline_id": "k1-current-128x128-s0-barrier-c65491-r1-chunk64",
+            "candidate_id": "k1-current-128x128-s0-barrier-c65491-r1-chunk16",
+            "baseline_position": 2,
+            "candidate_position": 1,
+            "baseline_wall_ns_per_kernel": 170787.40625,
+            "candidate_wall_ns_per_kernel": 181736.828125,
+            "baseline_cpu_ns_per_kernel": 171671.875,
+            "candidate_cpu_ns_per_kernel": 182359.375,
+            "wall_ratio": 1.0641114126352627,
+            "cpu_ratio": 1.0622553927368708
+          },
+          {
+            "fixture": "128x128-s0-barrier-c65491",
+            "repetition": 2,
+            "variant": "chunk16",
+            "baseline_id": "k1-current-128x128-s0-barrier-c65491-r2-chunk64",
+            "candidate_id": "k1-current-128x128-s0-barrier-c65491-r2-chunk16",
+            "baseline_position": 0,
+            "candidate_position": 1,
+            "baseline_wall_ns_per_kernel": 205528.0625,
+            "candidate_wall_ns_per_kernel": 179210.125,
+            "baseline_cpu_ns_per_kernel": 206453.125,
+            "candidate_cpu_ns_per_kernel": 180062.5,
+            "wall_ratio": 0.8719496638080748,
+            "cpu_ratio": 0.8721713464012715
+          },
+          {
+            "fixture": "128x128-s0-barrier-c65491",
+            "repetition": 3,
+            "variant": "chunk16",
+            "baseline_id": "k1-current-128x128-s0-barrier-c65491-r3-chunk64",
+            "candidate_id": "k1-current-128x128-s0-barrier-c65491-r3-chunk16",
+            "baseline_position": 2,
+            "candidate_position": 1,
+            "baseline_wall_ns_per_kernel": 172228.90625,
+            "candidate_wall_ns_per_kernel": 188887.71875,
+            "baseline_cpu_ns_per_kernel": 173140.625,
+            "candidate_cpu_ns_per_kernel": 189750.0,
+            "wall_ratio": 1.0967248347720375,
+            "cpu_ratio": 1.0959299702192944
+          },
+          {
+            "fixture": "128x128-s0-barrier-c65491",
+            "repetition": 4,
+            "variant": "chunk16",
+            "baseline_id": "k1-current-128x128-s0-barrier-c65491-r4-chunk64",
+            "candidate_id": "k1-current-128x128-s0-barrier-c65491-r4-chunk16",
+            "baseline_position": 0,
+            "candidate_position": 1,
+            "baseline_wall_ns_per_kernel": 156604.34375,
+            "candidate_wall_ns_per_kernel": 159679.03125,
+            "baseline_cpu_ns_per_kernel": 157500.0,
+            "candidate_cpu_ns_per_kernel": 160500.0,
+            "wall_ratio": 1.0196334752049303,
+            "cpu_ratio": 1.019047619047619
+          },
+          {
+            "fixture": "128x128-s0-barrier-c65491",
+            "repetition": 5,
+            "variant": "chunk16",
+            "baseline_id": "k1-current-128x128-s0-barrier-c65491-r5-chunk64",
+            "candidate_id": "k1-current-128x128-s0-barrier-c65491-r5-chunk16",
+            "baseline_position": 2,
+            "candidate_position": 1,
+            "baseline_wall_ns_per_kernel": 153126.59375,
+            "candidate_wall_ns_per_kernel": 164961.328125,
+            "baseline_cpu_ns_per_kernel": 153906.25,
+            "candidate_cpu_ns_per_kernel": 165750.0,
+            "wall_ratio": 1.0772872568061027,
+            "cpu_ratio": 1.0769543147208123
+          },
+          {
+            "fixture": "128x128-s0-barrier-c65491",
+            "repetition": 6,
+            "variant": "chunk16",
+            "baseline_id": "k1-current-128x128-s0-barrier-c65491-r6-chunk64",
+            "candidate_id": "k1-current-128x128-s0-barrier-c65491-r6-chunk16",
+            "baseline_position": 0,
+            "candidate_position": 1,
+            "baseline_wall_ns_per_kernel": 153118.90625,
+            "candidate_wall_ns_per_kernel": 175180.140625,
+            "baseline_cpu_ns_per_kernel": 153937.5,
+            "candidate_cpu_ns_per_kernel": 176093.75,
+            "wall_ratio": 1.1440791011070848,
+            "cpu_ratio": 1.1439301664636623
+          },
+          {
+            "fixture": "128x128-s0-barrier-c65491",
+            "repetition": 7,
+            "variant": "chunk16",
+            "baseline_id": "k1-current-128x128-s0-barrier-c65491-r7-chunk64",
+            "candidate_id": "k1-current-128x128-s0-barrier-c65491-r7-chunk16",
+            "baseline_position": 2,
+            "candidate_position": 1,
+            "baseline_wall_ns_per_kernel": 216067.375,
+            "candidate_wall_ns_per_kernel": 267644.1875,
+            "baseline_cpu_ns_per_kernel": 216968.75,
+            "candidate_cpu_ns_per_kernel": 268515.625,
+            "wall_ratio": 1.238707081529546,
+            "cpu_ratio": 1.2375774161025492
+          },
+          {
+            "fixture": "128x128-s0-barrier-c65491",
+            "repetition": 8,
+            "variant": "chunk16",
+            "baseline_id": "k1-current-128x128-s0-barrier-c65491-r8-chunk64",
+            "candidate_id": "k1-current-128x128-s0-barrier-c65491-r8-chunk16",
+            "baseline_position": 0,
+            "candidate_position": 1,
+            "baseline_wall_ns_per_kernel": 153185.328125,
+            "candidate_wall_ns_per_kernel": 185205.890625,
+            "baseline_cpu_ns_per_kernel": 154062.5,
+            "candidate_cpu_ns_per_kernel": 186031.25,
+            "wall_ratio": 1.2090315233967515,
+            "cpu_ratio": 1.2075050709939148
+          },
+          {
+            "fixture": "128x128-s0-barrier-c65491",
+            "repetition": 9,
+            "variant": "chunk16",
+            "baseline_id": "k1-current-128x128-s0-barrier-c65491-r9-chunk64",
+            "candidate_id": "k1-current-128x128-s0-barrier-c65491-r9-chunk16",
+            "baseline_position": 2,
+            "candidate_position": 1,
+            "baseline_wall_ns_per_kernel": 152902.515625,
+            "candidate_wall_ns_per_kernel": 180108.25,
+            "baseline_cpu_ns_per_kernel": 153765.625,
+            "candidate_cpu_ns_per_kernel": 180953.125,
+            "wall_ratio": 1.177928625070651,
+            "cpu_ratio": 1.1768112996646682
+          }
+        ]
+      }
+    },
+    "limits": "Warm kernel timings only; no measured cold timing, full-field outputs not partial/resume/layer-boundary proof. Shared relaxation production changes still require building-search/platform boundaries. Exploratory unadjusted bootstrap intervals across10repeat blocks."
+  },
+  "K3": {
+    "valid_cases": 750,
+    "expected_cases": 750,
+    "complete_variant_block_pairs": 500,
+    "all_cell_oracle_fixtures": 97,
+    "cells_per_variant": 846008,
+    "actual_visitation_digest_passed": true,
+    "decision": "Reject this public-API stack batching32/128 direction for live-engine transplant. All25fixture median CPU/wall ratios regress;24of25 wall intervals entirelyabove1 forbothvariants. Pops/item unchanged, stack copying adds work, and pending-ring allocation-failure behavior also differs.",
+    "limits": "Actual visitation/full-field equality passes; generic stop/resume/exception pending state and weighted-travel path not changed or established. Synthetic narrow entry, no mature game conclusion."
+  },
+  "H03": {
+    "state": "complete",
+    "exact_GCS_passed": 8,
+    "native_pairs": 24,
+    "decision": "Measured auto32 benefits occur with32participants inside6eligibleCPUs; treat this guard as secondary to fixing affinity/count resolution, not an additive speedup or a replacement for the count fix. N4/N6 do not establish a reliable general wall/CPU improvement. Keep experimental pending broader evidence; standalone N6horizon8 regression remains relevant. No micro-to-game or mature-game extrapolation; preserve each native stratum."
+  },
+  "no_new_builds_children_games_or_microtimings_launched": true,
+  "evidence": [
+    "k1-current-chunks/timing-summary.json",
+    "k1-current-chunks/timing-report.txt",
+    "k1-current-chunks/allocation-work.json",
+    "k3-current-bfs/timing-summary.json",
+    "k3-current-bfs/timing-report.txt",
+    "k3-current-bfs/allocation-work.json",
+    "h03-lane-wake/game-summary.json",
+    "h03-lane-wake/game-ledger.json"
+  ],
+  "optimization_plan": {
+    "path": "optimization-gameplan.json",
+    "html": "optimization-gameplan.html",
+    "updated_utc": "2026-10-12T02:56:13.208719+00:00",
+    "priority": 6,
+    "decision": "Retain currentkernels/FIFO; no testedgenericmicrovariant transplanted",
+    "playground_sizing": "Fresh8seed N3vsN4GPUon complete; N3 preferred only within testedPG6SMT/3physical allocation",
+    "oazis_sizing": "Complete2seed fullwinnerpilot;N3fastest/leastCPU both, noCI; earlyN6ranking differs",
+    "guard_n3_evidence": "4GCS/16windows/8nativepairs pass;PGflat/mixed,Oazisearly~1.58%wall/1.16%CPU, conditionalmaturefollow-up only",
+    "maturity": "N3peaks628.49/575.30MiB; scopedprofile/heap queued, no newmeasurementclaim",
+    "telemetry": "Freshmodel12exact; native reserve32four-seed windows mixed CPU/wall, modestRSS gain; no genericreserve speedclaim",
+    "mature_memory": "Completed521.535MB global requestedheap; fields130.770/search74.081/snapshots92.605MB dominate. Boundedowner/capacity/lease census beforepatch; unchangedsharing exists. LateCPUunmeasured."
+  }
+}

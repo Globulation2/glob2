@@ -1,0 +1,334 @@
+{
+  "source_commit": "9e370bcb83209cf99f43c346750a6d4bd440f4f2",
+  "source_hashes": {
+    "/home/bradley/.codex/worktrees/engine-optimization/glob2/src/engine/sim/snapshot/WorldCapture.cpp": "335d262772f06879da6445c319cd5693a387a372aca09f2b169d2641433e77fc",
+    "/home/bradley/.codex/worktrees/engine-optimization/glob2/src/field/PreparedTerrainCosts.h": "bf6c30d27a354b65f502f31952e2f2f588ef3cacaff3c770b5961f49584816d9",
+    "/home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/Map.cpp": "b7741d43b9ff57c9a0e18180eb0b1cb1157b4e258341721637a3de3b0ba9c96a",
+    "/home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/Map.h": "06ae3197868ba34362208d5a6d74ff374a1445e445eeacb221846fc1b1e943f5",
+    "/home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/MapCells.cpp": "f46f2efc15391ed8427c2139e24cf5269e622cc5137d832240329601e64a671e",
+    "/home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/MapMisc.cpp": "835d0f11eecbab1f6c48f57f898dba07dca5f7eda16839eeb3da47e73f0ba20d",
+    "/home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/MapStep.cpp": "b7221e1ec49e63aa023cec67c37058192649c8666138d61321ab9789c31daef5",
+    "/home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/TerrainPropertiesTest.cpp": "7cc80760c5f9fc058a8e47cd61944d6058bc298359dd3c965979db9639471a56",
+    "/home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/gradient/BuildingGradientSearch.h": "3258b0c8192028a9f63d278b4e2d2e25764a0adf93ca2212070e182ccccdf33c",
+    "/home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/gradient/MapGradientBuilding.cpp": "f25021f0169c20b88219f61028be8d1ef9537f036ca38a168d61c5a987574a51",
+    "/home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/gradient/MapGradientMaterial.cpp": "96a6191e1b1c2bf95019ab3bcd81a95d77be736150b8b9dd42f0566e8b15db0d",
+    "/home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/gradient/MapGradientScheduling.cpp": "91b792a4619e1db27d1cd24d2e0edbe8e083d3c3b27b2d99709383fc67a45a1b",
+    "/home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/gradient/ResourceSeedCache.cpp": "297228a9a10e9c822112f842fe993cbec3addcabc0bea31e332d948aa6d7a48a",
+    "/home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/gradient/ResourceSeedCache.h": "e8c22285520377cdc8069f4e7ea1c0f66b5a7be1e81fcd28fe4bbfc9f199b80d",
+    "/home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/gradient/SnapshotGradient.cpp": "c36124e29004abc42b25a0b6b6886c9b7bba91ddf68a8d674264f9eea7af84c5",
+    "/home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/gradient/SnapshotGradient.h": "e17eeeabc66df3bb99d3ffb92502a49479411a006aad52f14a6478f23dd55dff",
+    "/home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/gradient/TerrainSafetyCache.h": "9c148caf6ce87ba2f92eebb607e31d09d7a11cbb122792064e31e600678ae075",
+    "/home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/io/MapIO.cpp": "97b9b8b5e7a4ee44579771101fe8458a1af07d1d9b15f2cc2aacc4d3521aa854",
+    "/home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/pathfind/MapPathfindBuilding.cpp": "fc4beba7e7819c90e10ccd816496fac4b88e69e655f22901ec3ec7a0c55211ab",
+    "/home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/pathfind/MapTerrainSafety.cpp": "fa448af6441243b0a51c70da67d09381a3e2f3b1da260ad6e000fc549cb97e1e"
+  },
+  "scope": "Read-only current accepted source audit; no engine/native/profiler/build launches or source edits.",
+  "families": [
+    {
+      "family": "Frozen terrain and movement inputs",
+      "existing_reuse": "Water, vertex and per-swim movement snapshots shared; equal movement profiles interned; prepared cost tables reused.",
+      "dependencies": "Terrain rules, registry, swim class, modified costs and edit lifetime. In-batch changes reset frozen snapshots before the batch terrain generation advances.",
+      "evidence": [
+        {
+          "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/Map.cpp",
+          "line": 106,
+          "note": "water sharing"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/Map.cpp",
+          "line": 131,
+          "note": "movement sharing"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/Map.cpp",
+          "line": 357,
+          "note": "cell edit invalidation"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/Map.cpp",
+          "line": 443,
+          "note": "terrain completion"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/src/field/PreparedTerrainCosts.h",
+          "line": 1,
+          "note": "prepared built-in costs"
+        }
+      ]
+    },
+    {
+      "family": "Immutable world components and published field planes",
+      "existing_reuse": "Generation-matched components reused; pooled buffers copy changed chunks relative to their own stamps. Published plane key + generation shares immutable values.",
+      "dependencies": "World identity, dimensions, configuration/terrain/catalog generations, component/chunk stamps and individual plane generation. Pooled address or tick alone is insufficient.",
+      "evidence": [
+        {
+          "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/src/engine/sim/snapshot/WorldCapture.cpp",
+          "line": 72,
+          "note": "world/config identities"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/src/engine/sim/snapshot/WorldCapture.cpp",
+          "line": 96,
+          "note": "component dependencies"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/src/engine/sim/snapshot/WorldCapture.cpp",
+          "line": 201,
+          "note": "buffer-specific chunk stamps"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/src/engine/sim/snapshot/WorldCapture.cpp",
+          "line": 519,
+          "note": "published field sharing"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/Map.h",
+          "line": 1292,
+          "note": "per-plane generations"
+        }
+      ]
+    },
+    {
+      "family": "Material seed templates",
+      "existing_reuse": "Incremental map seed cache and per-worker immutable-snapshot seed cache already reuse base terrain/resource/building/team templates, with bounded fallback.",
+      "dependencies": "Terrain/resource/occupancy/area stamps, world/catalog identities, material availability and immobile/building signatures. Visibility, supplier stock/policy, costs, consumer exclusion and live overlays are not interchangeable with the base template.",
+      "evidence": [
+        {
+          "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/gradient/ResourceSeedCache.h",
+          "line": 1,
+          "note": "bounded incremental templates"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/gradient/ResourceSeedCache.cpp",
+          "line": 119,
+          "note": "dirty notification"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/gradient/SnapshotGradient.h",
+          "line": 40,
+          "note": "per-worker seed storage"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/gradient/SnapshotGradient.cpp",
+          "line": 32,
+          "note": "snapshot stamp/signature refresh"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/gradient/SnapshotGradient.cpp",
+          "line": 140,
+          "note": "component requirements"
+        }
+      ]
+    },
+    {
+      "family": "Natural, market and consumer material fields",
+      "existing_reuse": "Shared natural unreachable planes and consumer-specific cached fields; supplier preparation and base seed reuse.",
+      "dependencies": "Team/material/swim/mode/consumer key; stock revision; topology; consumer script identity/type/position; 128-tick age and deterministic recency/eviction. Age and cache metadata are simulation-visible, so a byte-identical rebuild is not automatically removable.",
+      "evidence": [
+        {
+          "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/gradient/MapGradientMaterial.cpp",
+          "line": 21,
+          "note": "mode and consumer dispatch"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/gradient/MapGradientMaterial.cpp",
+          "line": 156,
+          "note": "field identity"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/gradient/MapGradientMaterial.cpp",
+          "line": 174,
+          "note": "refresh conditions"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/MapMisc.cpp",
+          "line": 51,
+          "note": "cache metadata contributes to checksum"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/io/MapIO.cpp",
+          "line": 1323,
+          "note": "cache save/load metadata"
+        }
+      ]
+    },
+    {
+      "family": "Building fields and resumable searches",
+      "existing_reuse": "Private incremental search settles needed cost layers; existing fields remain until scheduled publication; full-field completion retained for save/read contracts.",
+      "dependencies": "Building script identity and refresh epoch; team/route/swim, footprint/goals/range/permissions/resources/immobile occupants; frozen movement costs, topology and age. Whole equal-cost layers must settle for equal-distance direction selection.",
+      "evidence": [
+        {
+          "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/gradient/BuildingGradientSearch.h",
+          "line": 19,
+          "note": "frozen inputs/private frontier"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/pathfind/MapPathfindBuilding.cpp",
+          "line": 28,
+          "note": "lazy and aged refresh"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/gradient/MapGradientBuilding.cpp",
+          "line": 28,
+          "note": "supersession/reset"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/gradient/MapGradientScheduling.cpp",
+          "line": 146,
+          "note": "publication destination lifetime guards"
+        }
+      ]
+    },
+    {
+      "family": "Periodic publication and forbidden fields",
+      "existing_reuse": "Round-robin periodic field work; forbidden partition comparison avoids rebuilding unchanged obstacle/goal partitions.",
+      "dependencies": "Capture tick, publication deadline, topology, epochs and request order. Cost-only terrain changes force refresh even where the forbidden partition is unchanged. Observers must see publication at the prescribed boundary.",
+      "evidence": [
+        {
+          "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/gradient/MapGradientScheduling.cpp",
+          "line": 1,
+          "note": "publication sequencing"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/gradient/MapGradientScheduling.cpp",
+          "line": 287,
+          "note": "request validity"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/MapStep.cpp",
+          "line": 273,
+          "note": "frozen snapshot requirements"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/MapStep.cpp",
+          "line": 325,
+          "note": "publication hook/deadline"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/MapStep.cpp",
+          "line": 380,
+          "note": "forbidden partition reuse"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/Map.cpp",
+          "line": 467,
+          "note": "cost-only terrain refresh"
+        }
+      ]
+    },
+    {
+      "family": "Terrain safety escape fields",
+      "existing_reuse": "Ground fields already keyed by team/swim/escape-forbidden; flyers share one field. Separate ground/air invalidation and bounded 64 MiB LRU. Moving occupancy tested at descent rather than included in propagated field.",
+      "dependencies": "Terrain walk/fly/swim/health/entry costs, resource blocking, buildings, own-team forbidden mask. Current forbidden changes invalidate the entire ground generation, even for other teams.",
+      "evidence": [
+        {
+          "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/pathfind/MapTerrainSafety.cpp",
+          "line": 12,
+          "note": "exact profile inputs"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/pathfind/MapTerrainSafety.cpp",
+          "line": 120,
+          "note": "live descent occupancy"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/pathfind/MapTerrainSafety.cpp",
+          "line": 147,
+          "note": "key and generation"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/gradient/TerrainSafetyCache.h",
+          "line": 26,
+          "note": "capacity and generations"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/MapCells.cpp",
+          "line": 5,
+          "note": "ground/air invalidation"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/MapCells.cpp",
+          "line": 21,
+          "note": "blocking-property comparison"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/MapCells.cpp",
+          "line": 61,
+          "note": "forbidden mask edits"
+        }
+      ]
+    },
+    {
+      "family": "GPU minimal cost views",
+      "existing_reuse": "Bounded weak-owner cache by immutable terrain source/dimensions/swim/revision/modified state; canonicalizes concurrent cold constructions on insertion.",
+      "dependencies": "Immutable owner lifetime, host budget and cancellation semantics. Two simultaneous misses may construct the same view before the second locked lookup.",
+      "evidence": [
+        {
+          "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/gradient/SnapshotGradient.cpp",
+          "line": 447,
+          "note": "bounded cache"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/gradient/SnapshotGradient.cpp",
+          "line": 490,
+          "note": "matching key"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/gradient/SnapshotGradient.cpp",
+          "line": 526,
+          "note": "explicit concurrent duplicate construction"
+        }
+      ],
+      "classification": "Source-proven possible duplicate preparation, not measured frequency or CPU cost; GPU-specific path cannot be justified by forthcoming GPU-off attribution."
+    }
+  ],
+  "conclusion": "Existing reuse is substantial. No source audit proves wholesale propagated fields can be skipped safely. Identical plane bytes or heap plane-equivalents do not establish identical dependencies, search frontier, ownership, publication or simulation-visible cache state.",
+  "one_conditional_candidate": {
+    "status": "Conditional audit proposal only; no patch/build/test added",
+    "mechanism": "Narrow only terrain-safety ground permission invalidation by changed team bits, keeping global terrain/building/resource-blocking invalidation and existing caches.",
+    "reason": "EscapeProfile.initialCost reads only profile.team forbidden bits. A permission edit exclusively for team A cannot alter the propagated safety cost plane for team B if all other inputs are unchanged. Current global groundGeneration discards both.",
+    "not_claimed": "No evidence this family dominates accepted Oazis late CPU, nor that false invalidations occur enough to matter. Do not optimize until observed leaf attribution and bounded miss-reason evidence support it.",
+    "gate": "Continuous perf shows buildEscapeField/pathfindTerrainSafety materially hot; diagnostics establish unrelated-team forbidden edits cause significant rebuilds. No new profile cohort requested.",
+    "implementation_risks": [
+      "All mutation paths must supply old XOR new team bits, including replaceTile and bulk edits; unknown edits retain conservative all-team invalidation.",
+      "Preserve air invalidation for terrain/resource blocking and all ground invalidation for terrain/buildings/blocking resources.",
+      "Preserve wrap/reset/load/registry changes, bounded LRU, exact directions and tie order. No changes to global topology, scheduled fields, epochs, publication, cache save/checksum metadata."
+    ],
+    "tests": [
+      "Affected team rebuild and unchanged other-team exact field/direction reuse for single/multi-bit add/remove/replaceTile edits.",
+      "Terrain/cost/health/swim/building/resource blocking edits invalidate all relevant fields; stock-only changes retain cache; flyers ignore permission edits.",
+      "Moving/immobile occupancy and forbidden escape mode, rectangular torus, query order, LRU eviction, generation wrap and map/world/load resets.",
+      "Exact per-tick world/GCS/RNG, replay payload and save continuation for multi-team routed games, all existing safety fixtures plus varied maps/classes/platform coverage."
+    ],
+    "existing_test_references": [
+      {
+        "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/TerrainPropertiesTest.cpp",
+        "line": 1250,
+        "note": "team-specific forbidden safety fields"
+      },
+      {
+        "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/TerrainPropertiesTest.cpp",
+        "line": 1269,
+        "note": "flyer sharing and terrain invalidation"
+      },
+      {
+        "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/TerrainPropertiesTest.cpp",
+        "line": 1299,
+        "note": "resource blocking vs stock changes"
+      },
+      {
+        "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/TerrainPropertiesTest.cpp",
+        "line": 1354,
+        "note": "eviction and generation wrap"
+      }
+    ]
+  },
+  "prior_evidence": [
+    "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/adoption-review/snapshot-v2-completed-analysis.json",
+    "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/adoption-review/v2-followup-completed68.json",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/extended-summary.json"
+  ],
+  "prior_control_limits": "Depth/retention controls trade CPU, wall and storage; K1 periodic/chunk and K3 FIFO candidates did not establish adopted benefits. Snapshot ownership V1/V2 changes rejected; unchanged published-plane sharing already existed. These controls do not show safely redundant work in a particular field family.",
+  "perf_status": "Continuous privileged CPU sampling queued; no actual late sample evidence assumed. Statistical GPU-off attribution must include workers, exclusive leaf ownership and unknown/library/kernel buckets.",
+  "followup": "No speculative cache implementation. Await existing continuous attribution; reject this optional candidate if safety escape fields are not material."
+}

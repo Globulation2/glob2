@@ -1,0 +1,648 @@
+{
+  "generated_utc": "2026-10-12T01:21:26.026532+00:00",
+  "historical_rows": [
+    {
+      "snapshot": "2026-10-05-f5d1bc51e",
+      "runs": 32,
+      "peak_rss_mean_mib": 130.7279052734375,
+      "peak_rss_range_mib": [
+        120.8046875,
+        148.4765625
+      ],
+      "gpu_preference_entries": [],
+      "per_run_environment_recorded": false,
+      "per_run_threads_recorded": false,
+      "gpu_cli_flag_present_runs": 0,
+      "compute_cli_flag_present_runs": 0,
+      "representative_command": [
+        "taskset",
+        "-c",
+        "0,1,2,16,17,18",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/snapshots/2026-10-05-f5d1bc51e/source/build/linux/client/release/src/glob2",
+        "-test-games-nox",
+        "--map",
+        "Playground",
+        "--matchup",
+        "nicowar,nicowar,nicowar,nicowar,nicowar,nicowar,nicowar,nicowar"
+      ]
+    },
+    {
+      "snapshot": "2026-10-08-d341b5f20",
+      "runs": 32,
+      "peak_rss_mean_mib": 188.96337890625,
+      "peak_rss_range_mib": [
+        164.8515625,
+        229.0546875
+      ],
+      "gpu_preference_entries": [],
+      "per_run_environment_recorded": false,
+      "per_run_threads_recorded": false,
+      "gpu_cli_flag_present_runs": 0,
+      "compute_cli_flag_present_runs": 0,
+      "representative_command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/snapshots/2026-10-08-d341b5f20/source/build/linux/client/release/src/glob2",
+        "-test-games-nox",
+        "--map",
+        "Playground",
+        "--matchup",
+        "nicowar,nicowar,nicowar,nicowar,nicowar,nicowar,nicowar,nicowar"
+      ]
+    },
+    {
+      "snapshot": "2026-10-11-9a08b91f4",
+      "runs": 32,
+      "peak_rss_mean_mib": 304.3072509765625,
+      "peak_rss_range_mib": [
+        283.28515625,
+        351.90234375
+      ],
+      "gpu_preference_entries": [],
+      "per_run_environment_recorded": false,
+      "per_run_threads_recorded": false,
+      "gpu_cli_flag_present_runs": 0,
+      "compute_cli_flag_present_runs": 0,
+      "representative_command": [
+        "taskset",
+        "-c",
+        "0,1,2,16,17,18",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/snapshots/2026-10-11-9a08b91f4/source/build/linux/client/release/src/glob2",
+        "dev",
+        "random-games",
+        "--runs",
+        "1",
+        "--ticks",
+        "2147483647",
+        "--map",
+        "Playground",
+        "--matchup",
+        "nicowar,nicowar,nicowar,nicowar,nicowar,nicowar,nicowar,nicowar"
+      ]
+    }
+  ],
+  "historical_mean_deltas_mib": {
+    "Oct5\u2192Oct8": 58.2354736328125,
+    "Oct8\u2192Oct11": 115.3438720703125
+  },
+  "matched_latest_controls": {
+    "original t4 / GPU off": {
+      "mean_peak_rss_mib": 168.97135416666666,
+      "planned": 6,
+      "completed": 6
+    },
+    "original tauto / GPU off": {
+      "mean_peak_rss_mib": 187.42122395833334,
+      "planned": 6,
+      "completed": 6
+    },
+    "original tauto / GPU on": {
+      "mean_peak_rss_mib": 302.4251302083333,
+      "planned": 6,
+      "completed": 6
+    }
+  },
+  "source_commits": [
+    {
+      "sha": "0661f9605046958047d06fb6600546c24f139cd5",
+      "pr": 1045,
+      "interval": "Oct8\u2192Oct11",
+      "change": "Introduces actual OpenCLcompute sources/linkobjects, headless-on/graphical-off GPU default, CLIoverride/persistedpreference/envpriority, backgroundeager device initialization whencompute>=2.",
+      "status": "Exact source mechanism identified; main per-run device initialization/health not recorded",
+      "sources": [
+        "src/app/Settings.h:100\u2013101",
+        "src/app/GlobalContainerArgs.cpp:129\u2013144",
+        "src/engine/EngineRun.cpp:922\u2013924",
+        "src/map/Map.cpp:565\u2013576",
+        "src/field/GradientDeviceService.cpp:88\u201397,254\u2013264"
+      ],
+      "commit_url": "https://github.com/Globulation2/glob2/commit/0661f9605046958047d06fb6600546c24f139cd5",
+      "pr_url": "https://github.com/Globulation2/glob2/pull/1045"
+    },
+    {
+      "sha": "b5c9f3ed276b82a557f582eb0be1b910b93a9a49",
+      "pr": 961,
+      "interval": "Oct5\u2192Oct8",
+      "change": "Replaces capped4 game-aware defaultAIThreadCount with unbounded hardwarelogicalcount defaultComputeThreadCount,32on this host regardlesssixCPUaffinity.",
+      "status": "Exact default change; current matched sizing RSS control supports a component, not full interval attribution",
+      "sources": [
+        "Oct5/src/ai/AIThreading.h:12\u201319",
+        "Oct5/src/engine/EngineRun.cpp:842\u2013843",
+        "Oct8/src/common/ComputeThreads.h:12\u201315"
+      ],
+      "commit_url": "https://github.com/Globulation2/glob2/commit/b5c9f3ed276b82a557f582eb0be1b910b93a9a49",
+      "pr_url": "https://github.com/Globulation2/glob2/pull/961"
+    },
+    {
+      "sha": "fc08c1221ba82dd40226155f49bbf40600fd80c0",
+      "pr": 857,
+      "interval": "Oct5\u2192Oct8",
+      "change": "Shared snapshot foundation/chunk tracking/compute executor; component buffers and projection ownership.",
+      "status": "Candidate owner for remaining interval, requires Oct8 allocation census",
+      "commit_url": "https://github.com/Globulation2/glob2/commit/fc08c1221ba82dd40226155f49bbf40600fd80c0",
+      "pr_url": "https://github.com/Globulation2/glob2/pull/857"
+    },
+    {
+      "sha": "a60018aa0066d1f4dc5e733cb86d0085b80bd604",
+      "pr": 886,
+      "interval": "Oct5\u2192Oct8",
+      "change": "Periodic fields prepare from shared snapshots; materialseed caches/scratch retained per executor slot.",
+      "status": "Candidate; cache budgets/identities must remain preserved",
+      "commit_url": "https://github.com/Globulation2/glob2/commit/a60018aa0066d1f4dc5e733cb86d0085b80bd604",
+      "pr_url": "https://github.com/Globulation2/glob2/pull/886"
+    },
+    {
+      "sha": "68aa1075b365efab78083fe5587051e689cb7ed1",
+      "pr": 944,
+      "interval": "Oct5\u2192Oct8",
+      "change": "Building walking fields scheduled on workers by default, delayed publication and strict executor; simultaneously removes historical roundtrip fields.",
+      "status": "Candidate with opposing memory effects; no net allocation attribution yet",
+      "commit_url": "https://github.com/Globulation2/glob2/commit/68aa1075b365efab78083fe5587051e689cb7ed1",
+      "pr_url": "https://github.com/Globulation2/glob2/pull/944"
+    },
+    {
+      "sha": "6a1d2e588b6a026e6caa3bb649c82f6ae752298b",
+      "pr": 897,
+      "interval": "Oct5\u2192Oct8",
+      "change": "Delayed resource growth from snapshots/shared executor.",
+      "status": "Candidate retained inputs/staging, not measured component contribution",
+      "commit_url": "https://github.com/Globulation2/glob2/commit/6a1d2e588b6a026e6caa3bb649c82f6ae752298b",
+      "pr_url": "https://github.com/Globulation2/glob2/pull/897"
+    },
+    {
+      "sha": "538197447cc7a492d5390fc28849475f9de01abc",
+      "pr": 1057,
+      "interval": "Oct8\u2192Oct11",
+      "change": "Configurable unit catalogs/capability-driven foundation.",
+      "status": "Other late memory owner candidate; currentunitstats/entity/context widths differ, not isolated",
+      "commit_url": "https://github.com/Globulation2/glob2/commit/538197447cc7a492d5390fc28849475f9de01abc",
+      "pr_url": "https://github.com/Globulation2/glob2/pull/1057"
+    },
+    {
+      "sha": "132f6b5136886bc53664cb41fba008f6a2f640ba",
+      "pr": 1022,
+      "interval": "Oct8\u2192Oct11",
+      "change": "Premature victory correction/match outcomes.",
+      "status": "Workload/game-length trajectory confound for full-game peak RSS",
+      "commit_url": "https://github.com/Globulation2/glob2/commit/132f6b5136886bc53664cb41fba008f6a2f640ba",
+      "pr_url": "https://github.com/Globulation2/glob2/pull/1022"
+    }
+  ],
+  "exact_negative_evidence": "FrozenOct8 source has no OpenCLGradient/BackendSession/GradientDeviceService orGPU compute preference; original linkargv contains noOpenCL/DeviceService object. It cannot initialize this computeGPU backend regardless inherited GLOB2_GRADIENT_BACKEND. GPUrender code is distinct.",
+  "latest_default_evidence": "All32 main commands have no--gpu/--compute-threads; all32 fresh latest preferences have no gpuCompute value. Source default therefore expectsGPUon for noX. CLI override > nonemptylegacy GLOB2_GRADIENT_BACKEND > persistedpreference > headlessdefault. Environment was inherited from parentos.environ.copy, not logged/cleared; actual latest per-run backend/driver init/health cannot be proven retrospectively.",
+  "startup_memory_mechanism": "Current matched GPUon/off native initialization controls (~114\u2013116MiB RSS before dispatch) and heap/smaps attribution (driverinit~30.62MB live requested heap, NVIDIAdevice/library/anonymous mappings) establish causal startup memory in current code. MainOct8\u219211 mean+115.344MiB aligns, and exact enablingcommit liesininterval; this supports principal-mechanism interpretation without proving per-run historical GPUmode or assigning100% of interval.",
+  "next_interval_qualification": "Oct5\u2192Oct8+58.235MiB is a separate earlier CPU/snapshot/default-sizing interval. GPU compute implementation is absent on both endpoints; do not call it GPU startup. ReplayTelemetry.cpp unchanged Oct5\u21928, so introduction identified Oct2\u21925 is not automatically the cause here. Current N4CPUoff168.971 vsauto32CPUoff187.421MiB isolates18.45MiB sizing difference under latest workload; other snapshots/building/growth owners and changed game trajectories remain.",
+  "plans": [
+    "oct8-symbolic-plan.json",
+    "oct8-heap-plan.json"
+  ],
+  "plan_scope": "Plan-only matching-text relink and tick1auto/8192auto/8192explicit4 heapcases. No commands executed. Original source/object/binary hash preserved; symbolichash intentionally unsealed until root performs read-only relink/text+allocatedsectionproof. No--gpu/--ai-threads atOct8; legacy-test-games-nox plus--compute-threads is verified.",
+  "limitations": "Historical peakRSS associations depend on different game trajectories/lengths, threaddefaults, caches, process mappings and simultaneous host work. No historical environment or per-run GPUstatus/threadsampling was recorded. Latest clear error absence is not health proof. Preserve all capabilities; no feature deletion or GPU recovery guard changes proposed.",
+  "completed_oct8_heap_census": {
+    "generated_utc": "2026-10-12T01:21:26.026532+00:00",
+    "profiles": [
+      {
+        "id": "heap-2026-10-05-playground-ticks8192-t4",
+        "exact_peak_live_requested_bytes": 89163276,
+        "owners": {
+          "Unresolved allocation child/owner": 75383,
+          "Other resolved/unclassified": 1891612,
+          "Assets/SDL/audio/render": 11524,
+          "Other game/AI scheduling (not entity ownership proof)": 4744891,
+          "Localization/string tables": 8963323,
+          "Terrain registry/ecology": 21563,
+          "Entity allocation/load": 2110186,
+          "Team statistics/history": 2763296,
+          "AI runtime/gradients/planning": 3751249,
+          "AI telemetry presentation": 1236352,
+          "Map gradient fields/pipeline/cache": 2925888,
+          "Building gradient search/frontiers": 5062696,
+          "Resource growth": 196608,
+          "Replay telemetry retained rows/values": 55408705,
+          "Recording buffers": 0
+        },
+        "direct_capture_bytes": 55408705,
+        "top_raw_stacks": [
+          {
+            "bytes": 46235648,
+            "stack": "main;Glob2::run(int, char**);Glob2::runTestGames();Engine::run();Engine::runOneGameSession(bool&);Engine::stepSession(unsigned long);Engine::stepSession(unsigned long, std::vector<> const&);Engine::stepSessionImpl(unsigned long, std::vector<> const&);Engine::advanceSession(unsigned long, std::function<> const&, bool);Engine::executeOrdersAndStep(bool);Game::syncStep(int);ReplayTelemetry::Stream::capture(Game const&, unsigned int);"
+          },
+          {
+            "bytes": 7401821,
+            "stack": "main;Glob2::run(int, char**);Glob2::runTestGames();Engine::run();Engine::runOneGameSession(bool&);Engine::stepSession(unsigned long);Engine::stepSession(unsigned long, std::vector<> const&);Engine::stepSessionImpl(unsigned long, std::vector<> const&);Engine::advanceSession(unsigned long, std::function<> const&, bool);Engine::executeOrdersAndStep(bool);Game::syncStep(int);ReplayTelemetry::Stream::capture(Game const&, unsigned int);"
+          },
+          {
+            "bytes": 5699584,
+            "stack": "main;Glob2::run(int, char**);GlobalContainer::load();GAGCore::StringTable::load(std::__cxx11::basic_string<>);"
+          },
+          {
+            "bytes": 3238912,
+            "stack": "main;Glob2::run(int, char**);Glob2::runTestGames();Engine::run();Engine::runOneGameSession(bool&);Engine::stepSession(unsigned long);Engine::stepSession(unsigned long, std::vector<> const&);Engine::stepSessionImpl(unsigned long, std::vector<> const&);Engine::advanceSession(unsigned long, std::function<> const&, bool);Engine::executeOrdersAndStep(bool);Game::syncStep(int);Team::syncStep();Unit::syncStep();Unit::endOfAction();Unit::handleMovementGoingToResource();Map::pathfindResource(int, unsigned char, int, int, int, int*, int*, bool*, Building*, bool);Map::roundTripGradient(Building*, int, int);Map::updateRoundTripGradient(Building*, int, int);BuildingGradientSearch::resolve(unsigned long) [clone .cold];GradientBucket::grow(unsigned long);"
+          },
+          {
+            "bytes": 2818048,
+            "stack": "main;Glob2::run(int, char**);Glob2::runTestGames();Engine::run();Engine::runOneGameSession(bool&);Engine::stepSession(unsigned long);Engine::stepSession(unsigned long, std::vector<> const&);Engine::stepSessionImpl(unsigned long, std::vector<> const&);Engine::advanceSession(unsigned long, std::function<> const&, bool);Engine::executeOrdersAndStep(bool);Game::syncStep(int);Team::syncStep();Unit::syncStep();Unit::endOfAction();Unit::handleMovementGoingToResource();Map::pathfindResource(int, unsigned char, int, int, int, int*, int*, bool*, Building*, bool);Map::roundTripGradient(Building*, int, int);"
+          },
+          {
+            "bytes": 2320335,
+            "stack": "main;Glob2::run(int, char**);GlobalContainer::load();GAGCore::StringTable::load(std::__cxx11::basic_string<>);"
+          },
+          {
+            "bytes": 1699328,
+            "stack": "main;Glob2::run(int, char**);Glob2::runTestGames();Engine::createRandomGame();Engine::initGame(MapHeader&, GameHeader&, bool, bool, bool, std::__cxx11::basic_string<> const&);Game::loadTask(Game::loadTask(GAGCore::InputStream*)::_ZN4Game8loadTaskEPN7GAGCore11InputStreamE.Frame*) [clone .actor];"
+          },
+          {
+            "bytes": 1376256,
+            "stack": "main;Glob2::run(int, char**);Glob2::runTestGames();Engine::run();Engine::runOneGameSession(bool&);Engine::stepSession(unsigned long);Engine::stepSession(unsigned long, std::vector<> const&);Engine::stepSessionImpl(unsigned long, std::vector<> const&);Engine::advanceSession(unsigned long, std::function<> const&, bool);Engine::executeOrdersAndStep(bool);Game::syncStep(int);Team::syncStep();Team::updateAllBuildingTasks();Building::subscribeToBringResourcesStep();Building::gatherBringResourcesCandidates(Building::BringResourcesCandidate*, int);Building::considerUnitForResource(Unit*, int, int*);Map::resourceAvailable(int, int, int, int, int, int*, bool);Map::getResourceGradient(int, int, int, bool);"
+          },
+          {
+            "bytes": 1343488,
+            "stack": "__clone3 (clone3.S);start_thread (pthread_create.c);0x7eb7e1af5ef8;std::thread::_State_impl<>::_M_run();std::_Function_handler<>::_M_invoke(std::_Any_data const&);std::_Function_handler<>::_M_invoke(std::_Any_data const&, unsigned long&&);AI::getOrder(bool);AISharedRuntime::Runtime::getOrder();AISharedRuntime::Gradients::GradientManager::update();AISharedRuntime::Gradients::Gradient::recalculate(Map*, field::Frontier&);"
+          },
+          {
+            "bytes": 1201002,
+            "stack": "main;Glob2::run(int, char**);Glob2::runTestGames();Engine::run();Engine::runOneGameSession(bool&);Engine::stepSession(unsigned long);Engine::stepSession(unsigned long, std::vector<> const&);Engine::stepSessionImpl(unsigned long, std::vector<> const&);Engine::advanceSession(unsigned long, std::function<> const&, bool);Engine::executeOrdersAndStep(bool);Game::syncStep(int);ReplayTelemetry::Stream::capture(Game const&, unsigned int);"
+          },
+          {
+            "bytes": 1141760,
+            "stack": "main;Glob2::run(int, char**);Glob2::runTestGames();Engine::run();Engine::runOneGameSession(bool&);Engine::stepSession(unsigned long);Engine::stepSession(unsigned long, std::vector<> const&);Engine::stepSessionImpl(unsigned long, std::vector<> const&);Engine::advanceSession(unsigned long, std::function<> const&, bool);Engine::executeOrdersAndStep(bool);Game::syncStep(int);Team::syncStep();TeamStats::step(Team*, bool);std::vector<>::push_back(GameplayMeasurements const&);"
+          },
+          {
+            "bytes": 819200,
+            "stack": "main;Glob2::run(int, char**);Glob2::runTestGames();Engine::run();Engine::runOneGameSession(bool&);Engine::stepSession(unsigned long);Engine::stepSession(unsigned long, std::vector<> const&);Engine::stepSessionImpl(unsigned long, std::vector<> const&);Engine::advanceSession(unsigned long, std::function<> const&, bool);Engine::executeOrdersAndStep(bool);Game::syncStep(int);Team::syncStep();Team::updateAllBuildingTasks();Building::subscribeToBringResourcesStep();Building::gatherBringResourcesCandidates(Building::BringResourcesCandidate*, int);Building::considerUnitForResource(Unit*, int, int*);Building::considerUnitForBuilding(Unit*, int*);Map::buildingAvailable(Building*, int, int, int, int*);Map::prepareBuildingGradient(Building*, int);"
+          }
+        ],
+        "final_checksum": "ed09da9b",
+        "actual_max_sampled_os_threads": 9,
+        "instrumented_max_sampled_game_rss_kib": 107512,
+        "cumulative_requested_bytes": 237231884,
+        "raw_stack_sha256": "8840d32941a41a48f2ff593eb1d48facb9cf7efa73dbcc3dbd3e9c53d604f953"
+      },
+      {
+        "id": "heap-oct8-playground-ticks8192-t4",
+        "exact_peak_live_requested_bytes": 105480016,
+        "owners": {
+          "Unresolved allocation child/owner": 73728,
+          "Other resolved/unclassified": 2460186,
+          "Assets/SDL/audio/render": 13248,
+          "Other game/AI scheduling (not entity ownership proof)": 1831775,
+          "Localization/string tables": 9779876,
+          "Terrain registry/ecology": 45941,
+          "Entity allocation/load": 2622250,
+          "Team statistics/history": 3656976,
+          "AI runtime/gradients/planning": 4428051,
+          "AI telemetry presentation": 1686904,
+          "Map gradient fields/pipeline/cache": 5064216,
+          "Simulation snapshots": 11744290,
+          "Building gradient search/frontiers": 5873664,
+          "Replay telemetry retained rows/values": 55406395,
+          "Resource growth": 116580,
+          "Material seed cache/crowding scratch": 675936,
+          "Recording buffers": 0
+        },
+        "direct_capture_bytes": 55406395,
+        "top_raw_stacks": [
+          {
+            "bytes": 46235648,
+            "stack": "main;Glob2::run(int, char**);Glob2::runTestGames();Engine::run();Engine::runOneGameSession(bool&);Engine::stepSession(unsigned long);Engine::stepSession(unsigned long, std::vector<> const&);Engine::stepSessionImpl(unsigned long, std::vector<> const&);Engine::advanceSession(unsigned long, std::function<> const&, bool);Engine::executeOrdersAndStep(bool);Game::syncStep(int, Game::PreparationCompletion);ReplayTelemetry::Stream::capture(Game const&, unsigned int);"
+          },
+          {
+            "bytes": 7400672,
+            "stack": "main;Glob2::run(int, char**);Glob2::runTestGames();Engine::run();Engine::runOneGameSession(bool&);Engine::stepSession(unsigned long);Engine::stepSession(unsigned long, std::vector<> const&);Engine::stepSessionImpl(unsigned long, std::vector<> const&);Engine::advanceSession(unsigned long, std::function<> const&, bool);Engine::executeOrdersAndStep(bool);Game::syncStep(int, Game::PreparationCompletion);ReplayTelemetry::Stream::capture(Game const&, unsigned int);"
+          },
+          {
+            "bytes": 6141952,
+            "stack": "main;Glob2::run(int, char**);GlobalContainer::load();GAGCore::StringTable::load(std::__cxx11::basic_string<>);"
+          },
+          {
+            "bytes": 3524608,
+            "stack": "__clone3 (clone3.S);start_thread (pthread_create.c);0x7f48696f5ef8;std::thread::_State_impl<>::_M_run();ComputeExecutor::worker(unsigned long);ComputeExecutor::execute(ComputeExecutor::Claim const&, unsigned long);BuildingGradientPipeline<>::run(void*, unsigned long);(anonymous namespace)::buildScheduled(BuildingGradientPipeline<>::Job&);gradient_preparation::buildBuilding(gradient_preparation::BuildingSeed const&, SimulationSnapshot::Handle const&, BuildingGradientSearch::Inputs const&, unsigned short*, BuildingGradientSearch&, int);BuildingGradientSearch::resolveToCost(int);void BuildingGradientSearch::advance<>(BuildingGradientSearch::resolveToCost(int)::{lambda()#1}) [clone .cold];GradientBucket::grow(unsigned long);"
+          },
+          {
+            "bytes": 2785280,
+            "stack": "main;Glob2::run(int, char**);Glob2::runTestGames();Engine::run();Engine::runOneGameSession(bool&);Engine::stepSession(unsigned long);Engine::stepSession(unsigned long, std::vector<> const&);Engine::stepSessionImpl(unsigned long, std::vector<> const&);Engine::advanceSession(unsigned long, std::function<> const&, bool);Engine::executeOrdersAndStep(bool);Game::syncStep(int, Game::PreparationCompletion);Map::stagePeriodicGradientPreparation();Map::stageBuildingGradientPreparation();"
+          },
+          {
+            "bytes": 2598408,
+            "stack": "main;Glob2::run(int, char**);GlobalContainer::load();GAGCore::StringTable::load(std::__cxx11::basic_string<>);"
+          },
+          {
+            "bytes": 2359296,
+            "stack": "main;Glob2::run(int, char**);Glob2::runTestGames();Engine::run();Engine::runOneGameSession(bool&);Engine::stepSession(unsigned long);Engine::stepSession(unsigned long, std::vector<> const&);Engine::stepSessionImpl(unsigned long, std::vector<> const&);Engine::advanceSession(unsigned long, std::function<> const&, bool);Engine::gatherAndAdvanceOrders(bool);Engine::openReadBoundary(std::span<>, bool, bool);Game::captureReadBoundary(std::span<>, bool, unsigned int) const;SimulationSnapshot::Store::captureBoundary(Game const&, unsigned int);SimulationSnapshot::capture(Game const&, std::shared_ptr<>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*);auto SimulationSnapshot::capture(Game const&, std::shared_ptr<>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(auto:1&, unsigned long)#1}::operator()<>(std::vector<>&, unsigned long) const [clone .isra.0];"
+          },
+          {
+            "bytes": 2359296,
+            "stack": "__clone3 (clone3.S);start_thread (pthread_create.c);0x7f48696f5ef8;std::thread::_State_impl<>::_M_run();ComputeExecutor::worker(unsigned long);ComputeExecutor::execute(ComputeExecutor::Claim const&, unsigned long);AIEngine::OrderScheduler::Pending::run(void*, unsigned long);std::_Function_handler<>::_M_invoke(std::_Any_data const&, AIEngine::AIWorldView const&);AI::decide(AIEngine::DecisionContext const&);AISharedRuntime::Runtime::getOrder(AIEngine::DecisionContext const&);AISharedRuntime::Runtime::decide();AISharedRuntime::Gradients::GradientManager::update();AISharedRuntime::Gradients::Gradient::recalculate(AIEngine::AIWorldView const&, field::Frontier&);"
+          },
+          {
+            "bytes": 2031616,
+            "stack": "main;Glob2::run(int, char**);Glob2::runTestGames();Engine::run();Engine::runOneGameSession(bool&);Engine::stepSession(unsigned long);Engine::stepSession(unsigned long, std::vector<> const&);Engine::stepSessionImpl(unsigned long, std::vector<> const&);Engine::advanceSession(unsigned long, std::function<> const&, bool);Engine::gatherAndAdvanceOrders(bool);Engine::openReadBoundary(std::span<>, bool, bool);Game::captureReadBoundary(std::span<>, bool, unsigned int) const;SimulationSnapshot::Store::captureBoundary(Game const&, unsigned int);SimulationSnapshot::capture(Game const&, std::shared_ptr<>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*);std::vector<>::resize(unsigned long);"
+          },
+          {
+            "bytes": 1769472,
+            "stack": "main;Glob2::run(int, char**);Glob2::runTestGames();Engine::run();Engine::runOneGameSession(bool&);Engine::stepSession(unsigned long);Engine::stepSession(unsigned long, std::vector<> const&);Engine::stepSessionImpl(unsigned long, std::vector<> const&);Engine::advanceSession(unsigned long, std::function<> const&, bool);Engine::gatherAndAdvanceOrders(bool);Engine::openReadBoundary(std::span<>, bool, bool);Game::captureReadBoundary(std::span<>, bool, unsigned int) const;SimulationSnapshot::Store::captureBoundary(Game const&, unsigned int);SimulationSnapshot::capture(Game const&, std::shared_ptr<>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*);auto SimulationSnapshot::capture(Game const&, std::shared_ptr<>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(auto:1&, unsigned long)#1}::operator()<>(std::vector<>&, unsigned long) const [clone .isra.0];"
+          },
+          {
+            "bytes": 1749824,
+            "stack": "main;Glob2::run(int, char**);Glob2::runTestGames();Engine::createRandomGame();Engine::initGame(MapHeader&, GameHeader&, bool, bool, bool, std::__cxx11::basic_string<> const&);Game::loadTask(Game::loadTask(GAGCore::InputStream*)::_ZN4Game8loadTaskEPN7GAGCore11InputStreamE.Frame*) [clone .actor];"
+          },
+          {
+            "bytes": 1277952,
+            "stack": "main;Glob2::run(int, char**);Glob2::runTestGames();Engine::run();Engine::runOneGameSession(bool&);Engine::stepSession(unsigned long);Engine::stepSession(unsigned long, std::vector<> const&);Engine::stepSessionImpl(unsigned long, std::vector<> const&);Engine::advanceSession(unsigned long, std::function<> const&, bool);Engine::executeOrdersAndStep(bool);Game::syncStep(int, Game::PreparationCompletion);Team::syncStep();Team::updateAllBuildingTasks();Building::subscribeToBringMaterialsStep(bool) [clone .part.0];Building::gatherBringMaterialsCandidates(Building::BringMaterialsCandidate*, int);Building::considerUnitForMaterial(Unit*, int, int*);Map::materialAvailableSlot(int, int, int, int, int, int*, bool, Building const*);Map::getMaterialGradientSlot(int, int, int, bool, Building const*);"
+          }
+        ],
+        "final_checksum": "d31df59a",
+        "actual_max_sampled_os_threads": 7,
+        "instrumented_max_sampled_game_rss_kib": 131720,
+        "cumulative_requested_bytes": 867188192,
+        "raw_stack_sha256": "4207a023683cbdfd14484dbf5a04220d26759e47da15e82c6ac219bd4c703453"
+      },
+      {
+        "id": "heap-oct8-playground-ticks8192-tauto",
+        "exact_peak_live_requested_bytes": 113345584,
+        "owners": {
+          "Unresolved allocation child/owner": 73728,
+          "Other resolved/unclassified": 2562109,
+          "Assets/SDL/audio/render": 13254,
+          "Other game/AI scheduling (not entity ownership proof)": 1836620,
+          "Localization/string tables": 9779876,
+          "Terrain registry/ecology": 45941,
+          "Entity allocation/load": 2622250,
+          "Team statistics/history": 3656976,
+          "AI runtime/gradients/planning": 4430973,
+          "AI telemetry presentation": 1686904,
+          "Map gradient fields/pipeline/cache": 5154040,
+          "Simulation snapshots": 10693154,
+          "Building gradient search/frontiers": 8282112,
+          "Replay telemetry retained rows/values": 55406395,
+          "Resource growth": 116580,
+          "Material seed cache/crowding scratch": 6984672,
+          "Recording buffers": 0
+        },
+        "direct_capture_bytes": 55406395,
+        "top_raw_stacks": [
+          {
+            "bytes": 46235648,
+            "stack": "main;Glob2::run(int, char**);Glob2::runTestGames();Engine::run();Engine::runOneGameSession(bool&);Engine::stepSession(unsigned long);Engine::stepSession(unsigned long, std::vector<> const&);Engine::stepSessionImpl(unsigned long, std::vector<> const&);Engine::advanceSession(unsigned long, std::function<> const&, bool);Engine::executeOrdersAndStep(bool);Game::syncStep(int, Game::PreparationCompletion);ReplayTelemetry::Stream::capture(Game const&, unsigned int);"
+          },
+          {
+            "bytes": 7400672,
+            "stack": "main;Glob2::run(int, char**);Glob2::runTestGames();Engine::run();Engine::runOneGameSession(bool&);Engine::stepSession(unsigned long);Engine::stepSession(unsigned long, std::vector<> const&);Engine::stepSessionImpl(unsigned long, std::vector<> const&);Engine::advanceSession(unsigned long, std::function<> const&, bool);Engine::executeOrdersAndStep(bool);Game::syncStep(int, Game::PreparationCompletion);ReplayTelemetry::Stream::capture(Game const&, unsigned int);"
+          },
+          {
+            "bytes": 6141952,
+            "stack": "main;Glob2::run(int, char**);GlobalContainer::load();GAGCore::StringTable::load(std::__cxx11::basic_string<>);"
+          },
+          {
+            "bytes": 3524608,
+            "stack": "__clone3 (clone3.S);start_thread (pthread_create.c);0x7554b36f5ef8;std::thread::_State_impl<>::_M_run();ComputeExecutor::worker(unsigned long);ComputeExecutor::execute(ComputeExecutor::Claim const&, unsigned long);BuildingGradientPipeline<>::run(void*, unsigned long);(anonymous namespace)::buildScheduled(BuildingGradientPipeline<>::Job&);gradient_preparation::buildBuilding(gradient_preparation::BuildingSeed const&, SimulationSnapshot::Handle const&, BuildingGradientSearch::Inputs const&, unsigned short*, BuildingGradientSearch&, int);BuildingGradientSearch::resolveToCost(int);void BuildingGradientSearch::advance<>(BuildingGradientSearch::resolveToCost(int)::{lambda()#1}) [clone .cold];GradientBucket::grow(unsigned long);"
+          },
+          {
+            "bytes": 2785280,
+            "stack": "main;Glob2::run(int, char**);Glob2::runTestGames();Engine::run();Engine::runOneGameSession(bool&);Engine::stepSession(unsigned long);Engine::stepSession(unsigned long, std::vector<> const&);Engine::stepSessionImpl(unsigned long, std::vector<> const&);Engine::advanceSession(unsigned long, std::function<> const&, bool);Engine::executeOrdersAndStep(bool);Game::syncStep(int, Game::PreparationCompletion);Map::stagePeriodicGradientPreparation();Map::stageBuildingGradientPreparation();"
+          },
+          {
+            "bytes": 2598408,
+            "stack": "main;Glob2::run(int, char**);GlobalContainer::load();GAGCore::StringTable::load(std::__cxx11::basic_string<>);"
+          },
+          {
+            "bytes": 2359296,
+            "stack": "__clone3 (clone3.S);start_thread (pthread_create.c);0x7554b36f5ef8;std::thread::_State_impl<>::_M_run();ComputeExecutor::worker(unsigned long);ComputeExecutor::execute(ComputeExecutor::Claim const&, unsigned long);AIEngine::OrderScheduler::Pending::run(void*, unsigned long);std::_Function_handler<>::_M_invoke(std::_Any_data const&, AIEngine::AIWorldView const&);AI::decide(AIEngine::DecisionContext const&);AISharedRuntime::Runtime::getOrder(AIEngine::DecisionContext const&);AISharedRuntime::Runtime::decide();AISharedRuntime::Gradients::GradientManager::update();AISharedRuntime::Gradients::Gradient::recalculate(AIEngine::AIWorldView const&, field::Frontier&);"
+          },
+          {
+            "bytes": 2031616,
+            "stack": "main;Glob2::run(int, char**);Glob2::runTestGames();Engine::run();Engine::runOneGameSession(bool&);Engine::stepSession(unsigned long);Engine::stepSession(unsigned long, std::vector<> const&);Engine::stepSessionImpl(unsigned long, std::vector<> const&);Engine::advanceSession(unsigned long, std::function<> const&, bool);Engine::gatherAndAdvanceOrders(bool);Engine::openReadBoundary(std::span<>, bool, bool);Game::captureReadBoundary(std::span<>, bool, unsigned int) const;SimulationSnapshot::Store::captureBoundary(Game const&, unsigned int);SimulationSnapshot::capture(Game const&, std::shared_ptr<>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*);std::vector<>::resize(unsigned long);"
+          },
+          {
+            "bytes": 2031616,
+            "stack": "__clone3 (clone3.S);start_thread (pthread_create.c);0x7554b36f5ef8;std::thread::_State_impl<>::_M_run();ComputeExecutor::worker(unsigned long);ComputeExecutor::execute(ComputeExecutor::Claim const&, unsigned long);GradientPipeline::run(void*, unsigned long);gradient_preparation::seed(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, gradient_preparation::CrowdingScratch&);gradient_preparation::MaterialSeedCache::trySeed(SimulationSnapshot::Handle const&, int, int, int, unsigned short*, unsigned short const*);"
+          },
+          {
+            "bytes": 1769472,
+            "stack": "main;Glob2::run(int, char**);Glob2::runTestGames();Engine::run();Engine::runOneGameSession(bool&);Engine::stepSession(unsigned long);Engine::stepSession(unsigned long, std::vector<> const&);Engine::stepSessionImpl(unsigned long, std::vector<> const&);Engine::advanceSession(unsigned long, std::function<> const&, bool);Engine::gatherAndAdvanceOrders(bool);Engine::openReadBoundary(std::span<>, bool, bool);Game::captureReadBoundary(std::span<>, bool, unsigned int) const;SimulationSnapshot::Store::captureBoundary(Game const&, unsigned int);SimulationSnapshot::capture(Game const&, std::shared_ptr<>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*);auto SimulationSnapshot::capture(Game const&, std::shared_ptr<>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(auto:1&, unsigned long)#1}::operator()<>(std::vector<>&, unsigned long) const [clone .isra.0];"
+          },
+          {
+            "bytes": 1749824,
+            "stack": "main;Glob2::run(int, char**);Glob2::runTestGames();Engine::createRandomGame();Engine::initGame(MapHeader&, GameHeader&, bool, bool, bool, std::__cxx11::basic_string<> const&);Game::loadTask(Game::loadTask(GAGCore::InputStream*)::_ZN4Game8loadTaskEPN7GAGCore11InputStreamE.Frame*) [clone .actor];"
+          },
+          {
+            "bytes": 1337344,
+            "stack": "__clone3 (clone3.S);start_thread (pthread_create.c);0x7554b36f5ef8;std::thread::_State_impl<>::_M_run();ComputeExecutor::worker(unsigned long);ComputeExecutor::execute(ComputeExecutor::Claim const&, unsigned long);GradientPipeline::run(void*, unsigned long);gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&) [clone .cold];GradientBucket::grow(unsigned long);"
+          }
+        ],
+        "final_checksum": "d31df59a",
+        "actual_max_sampled_os_threads": 35,
+        "instrumented_max_sampled_game_rss_kib": 151512,
+        "cumulative_requested_bytes": 876539004,
+        "raw_stack_sha256": "37aad78f924a549bca620b97b362ccf8cc9d47c943ebdfe37e53ffacb98e154f"
+      },
+      {
+        "id": "heap-playground-ticks8192-t4-gpuoff",
+        "exact_peak_live_requested_bytes": 106940618,
+        "owners": {
+          "Unresolved allocation child/owner": 73728,
+          "Other resolved/unclassified": 2745322,
+          "Assets/SDL/audio/render": 13274,
+          "Other game/AI scheduling (not entity ownership proof)": 1963504,
+          "Localization/string tables": 9846525,
+          "Terrain registry/ecology": 51570,
+          "Entity allocation/load": 2879748,
+          "Team statistics/history": 3706096,
+          "AI runtime/gradients/planning": 4353459,
+          "AI telemetry presentation": 1686904,
+          "Map gradient fields/pipeline/cache": 4975376,
+          "Simulation snapshots": 12029433,
+          "Building gradient search/frontiers": 6416384,
+          "Replay telemetry retained rows/values": 55406395,
+          "Resource growth": 116964,
+          "Material seed cache/crowding scratch": 675936,
+          "Recording buffers": 0
+        },
+        "direct_capture_bytes": 55406395,
+        "top_raw_stacks": [
+          {
+            "bytes": 46235648,
+            "stack": "main;Glob2::run(Cli::Request const&);Glob2::runTestGames();Engine::run();Engine::runOneGameSession(bool&);Engine::stepSession(unsigned long);Engine::stepSession(unsigned long, std::vector<> const&);Engine::stepSessionImpl(unsigned long, std::vector<> const&);Engine::advanceSession(unsigned long, std::function<> const&, bool);Engine::executeOrdersAndStep(bool);Game::syncStep(int, Game::PreparationCompletion);ReplayTelemetry::Stream::capture(Game const&, unsigned int);"
+          },
+          {
+            "bytes": 7400672,
+            "stack": "main;Glob2::run(Cli::Request const&);Glob2::runTestGames();Engine::run();Engine::runOneGameSession(bool&);Engine::stepSession(unsigned long);Engine::stepSession(unsigned long, std::vector<> const&);Engine::stepSessionImpl(unsigned long, std::vector<> const&);Engine::advanceSession(unsigned long, std::function<> const&, bool);Engine::executeOrdersAndStep(bool);Game::syncStep(int, Game::PreparationCompletion);ReplayTelemetry::Stream::capture(Game const&, unsigned int);"
+          },
+          {
+            "bytes": 6178816,
+            "stack": "main;Glob2::run(Cli::Request const&);GlobalContainer::load();GAGCore::StringTable::load(std::__cxx11::basic_string<>);"
+          },
+          {
+            "bytes": 3433472,
+            "stack": "__clone3 (clone3.S);start_thread (pthread_create.c);0x7964d9af5ef8;std::thread::_State_impl<>::_M_run();ComputeExecutor::worker(unsigned long);ComputeExecutor::execute(ComputeExecutor::Claim const&, unsigned long);BuildingGradientPipeline<>::run(void*, unsigned long);(anonymous namespace)::buildScheduled(BuildingGradientPipeline<>::Job&);gradient_preparation::buildBuilding(gradient_preparation::BuildingSeed const&, SimulationSnapshot::Handle const&, BuildingGradientSearch::Inputs const&, unsigned short*, BuildingGradientSearch&, int);BuildingGradientSearch::resolveToCost(int);void BuildingGradientSearch::advance<>(BuildingGradientSearch::resolveToCost(int)::{lambda()#1}) [clone .cold];GradientBucket::grow(unsigned long);"
+          },
+          {
+            "bytes": 2719744,
+            "stack": "main;Glob2::run(Cli::Request const&);Glob2::runTestGames();Engine::run();Engine::runOneGameSession(bool&);Engine::stepSession(unsigned long);Engine::stepSession(unsigned long, std::vector<> const&);Engine::stepSessionImpl(unsigned long, std::vector<> const&);Engine::advanceSession(unsigned long, std::function<> const&, bool);Engine::executeOrdersAndStep(bool);Game::syncStep(int, Game::PreparationCompletion);Map::stagePeriodicGradientPreparation();Map::stageBuildingGradientPreparation();"
+          },
+          {
+            "bytes": 2616795,
+            "stack": "main;Glob2::run(Cli::Request const&);GlobalContainer::load();GAGCore::StringTable::load(std::__cxx11::basic_string<>);"
+          },
+          {
+            "bytes": 2359296,
+            "stack": "main;Glob2::run(Cli::Request const&);Glob2::runTestGames();Engine::run();Engine::runOneGameSession(bool&);Engine::stepSession(unsigned long);Engine::stepSession(unsigned long, std::vector<> const&);Engine::stepSessionImpl(unsigned long, std::vector<> const&);Engine::advanceSession(unsigned long, std::function<> const&, bool);Engine::gatherAndAdvanceOrders(bool);Engine::openReadBoundary(std::span<>, bool, bool);Game::captureReadBoundary(std::span<>, bool, unsigned int) const;SimulationSnapshot::Store::captureBoundary(Game const&, unsigned int);SimulationSnapshot::capture(Game const&, std::shared_ptr<>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*);auto SimulationSnapshot::capture(Game const&, std::shared_ptr<>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(auto:1&, unsigned long)#1}::operator()<>(std::vector<>&, unsigned long) const [clone .isra.0];"
+          },
+          {
+            "bytes": 2293760,
+            "stack": "__clone3 (clone3.S);start_thread (pthread_create.c);0x7964d9af5ef8;std::thread::_State_impl<>::_M_run();ComputeExecutor::worker(unsigned long);ComputeExecutor::execute(ComputeExecutor::Claim const&, unsigned long);AIEngine::OrderScheduler::Pending::run(void*, unsigned long);std::_Function_handler<>::_M_invoke(std::_Any_data const&, AIEngine::AIWorldView const&);AI::decide(AIEngine::DecisionContext const&);AISharedRuntime::Runtime::getOrder(AIEngine::DecisionContext const&);AISharedRuntime::Runtime::decide();AISharedRuntime::Gradients::GradientManager::update();AISharedRuntime::Gradients::Gradient::recalculate(AIEngine::AIWorldView const&, field::Frontier&);"
+          },
+          {
+            "bytes": 1998848,
+            "stack": "main;Glob2::run(Cli::Request const&);Glob2::runTestGames();Engine::run();Engine::runOneGameSession(bool&);Engine::stepSession(unsigned long);Engine::stepSession(unsigned long, std::vector<> const&);Engine::stepSessionImpl(unsigned long, std::vector<> const&);Engine::advanceSession(unsigned long, std::function<> const&, bool);Engine::gatherAndAdvanceOrders(bool);Engine::openReadBoundary(std::span<>, bool, bool);Game::captureReadBoundary(std::span<>, bool, unsigned int) const;SimulationSnapshot::Store::captureBoundary(Game const&, unsigned int);SimulationSnapshot::capture(Game const&, std::shared_ptr<>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*);std::vector<>::resize(unsigned long);"
+          },
+          {
+            "bytes": 1886976,
+            "stack": "main;Glob2::run(Cli::Request const&);Glob2::runTestGames();Engine::createRandomGame();Engine::initGame(MapHeader&, GameHeader&, bool, bool, bool, std::__cxx11::basic_string<> const&);Game::loadTask(Game::loadTask(GAGCore::InputStream*)::_ZN4Game8loadTaskEPN7GAGCore11InputStreamE.Frame*) [clone .actor];"
+          },
+          {
+            "bytes": 1769472,
+            "stack": "main;Glob2::run(Cli::Request const&);Glob2::runTestGames();Engine::run();Engine::runOneGameSession(bool&);Engine::stepSession(unsigned long);Engine::stepSession(unsigned long, std::vector<> const&);Engine::stepSessionImpl(unsigned long, std::vector<> const&);Engine::advanceSession(unsigned long, std::function<> const&, bool);Engine::gatherAndAdvanceOrders(bool);Engine::openReadBoundary(std::span<>, bool, bool);Game::captureReadBoundary(std::span<>, bool, unsigned int) const;SimulationSnapshot::Store::captureBoundary(Game const&, unsigned int);SimulationSnapshot::capture(Game const&, std::shared_ptr<>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*);auto SimulationSnapshot::capture(Game const&, std::shared_ptr<>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(auto:1&, unsigned long)#1}::operator()<>(std::vector<>&, unsigned long) const [clone .isra.0];"
+          },
+          {
+            "bytes": 1245184,
+            "stack": "main;Glob2::run(Cli::Request const&);Glob2::runTestGames();Engine::run();Engine::runOneGameSession(bool&);Engine::stepSession(unsigned long);Engine::stepSession(unsigned long, std::vector<> const&);Engine::stepSessionImpl(unsigned long, std::vector<> const&);Engine::advanceSession(unsigned long, std::function<> const&, bool);Engine::executeOrdersAndStep(bool);Game::syncStep(int, Game::PreparationCompletion);Team::syncStep();Team::updateAllBuildingTasks();Building::subscribeToBringMaterialsStep(bool);Building::hireMaterialUnit(int const*, int const*, int const*);Building::gatherBringMaterialsCandidates(Building::BringMaterialsCandidate*, int, int const*);Building::considerUnitForMaterial(Unit*, int, int*, int);Map::materialAvailableSlot(int, int, int, int, int, int*, bool, Building const*);Map::getMaterialGradientSlot(int, int, int, bool, Building const*);"
+          }
+        ],
+        "final_checksum": "cd20aae7",
+        "actual_max_sampled_os_threads": 7,
+        "instrumented_max_sampled_game_rss_kib": 135128,
+        "cumulative_requested_bytes": 874918251,
+        "raw_stack_sha256": "d93d1563c7794463d06a8eb379ed9d8beda6b31755877458f4ad6279ba725bc5"
+      },
+      {
+        "id": "heap-playground-ticks8192-tauto-gpuoff",
+        "exact_peak_live_requested_bytes": 116854207,
+        "owners": {
+          "Unresolved allocation child/owner": 73728,
+          "Other resolved/unclassified": 2847417,
+          "Assets/SDL/audio/render": 13280,
+          "Other game/AI scheduling (not entity ownership proof)": 1940316,
+          "Localization/string tables": 9846525,
+          "Terrain registry/ecology": 51570,
+          "Entity allocation/load": 2878808,
+          "Team statistics/history": 3706096,
+          "AI runtime/gradients/planning": 4496915,
+          "AI telemetry presentation": 1686904,
+          "Map gradient fields/pipeline/cache": 4960248,
+          "Simulation snapshots": 11504017,
+          "Building gradient search/frontiers": 10340352,
+          "Replay telemetry retained rows/values": 55406395,
+          "Resource growth": 116964,
+          "Material seed cache/crowding scratch": 6984672,
+          "Recording buffers": 0
+        },
+        "direct_capture_bytes": 55406395,
+        "top_raw_stacks": [
+          {
+            "bytes": 46235648,
+            "stack": "main;Glob2::run(Cli::Request const&);Glob2::runTestGames();Engine::run();Engine::runOneGameSession(bool&);Engine::stepSession(unsigned long);Engine::stepSession(unsigned long, std::vector<> const&);Engine::stepSessionImpl(unsigned long, std::vector<> const&);Engine::advanceSession(unsigned long, std::function<> const&, bool);Engine::executeOrdersAndStep(bool);Game::syncStep(int, Game::PreparationCompletion);ReplayTelemetry::Stream::capture(Game const&, unsigned int);"
+          },
+          {
+            "bytes": 7400672,
+            "stack": "main;Glob2::run(Cli::Request const&);Glob2::runTestGames();Engine::run();Engine::runOneGameSession(bool&);Engine::stepSession(unsigned long);Engine::stepSession(unsigned long, std::vector<> const&);Engine::stepSessionImpl(unsigned long, std::vector<> const&);Engine::advanceSession(unsigned long, std::function<> const&, bool);Engine::executeOrdersAndStep(bool);Game::syncStep(int, Game::PreparationCompletion);ReplayTelemetry::Stream::capture(Game const&, unsigned int);"
+          },
+          {
+            "bytes": 6178816,
+            "stack": "main;Glob2::run(Cli::Request const&);GlobalContainer::load();GAGCore::StringTable::load(std::__cxx11::basic_string<>);"
+          },
+          {
+            "bytes": 3420160,
+            "stack": "__clone3 (clone3.S);start_thread (pthread_create.c);0x7b2d060f5ef8;std::thread::_State_impl<>::_M_run();ComputeExecutor::worker(unsigned long);ComputeExecutor::execute(ComputeExecutor::Claim const&, unsigned long);BuildingGradientPipeline<>::run(void*, unsigned long);(anonymous namespace)::buildScheduled(BuildingGradientPipeline<>::Job&);gradient_preparation::buildBuilding(gradient_preparation::BuildingSeed const&, SimulationSnapshot::Handle const&, BuildingGradientSearch::Inputs const&, unsigned short*, BuildingGradientSearch&, int);BuildingGradientSearch::resolveToCost(int);void BuildingGradientSearch::advance<>(BuildingGradientSearch::resolveToCost(int)::{lambda()#1}) [clone .cold];GradientBucket::grow(unsigned long);"
+          },
+          {
+            "bytes": 2621440,
+            "stack": "main;Glob2::run(Cli::Request const&);Glob2::runTestGames();Engine::run();Engine::runOneGameSession(bool&);Engine::stepSession(unsigned long);Engine::stepSession(unsigned long, std::vector<> const&);Engine::stepSessionImpl(unsigned long, std::vector<> const&);Engine::advanceSession(unsigned long, std::function<> const&, bool);Engine::executeOrdersAndStep(bool);Game::syncStep(int, Game::PreparationCompletion);Map::stagePeriodicGradientPreparation();Map::stageBuildingGradientPreparation();"
+          },
+          {
+            "bytes": 2616795,
+            "stack": "main;Glob2::run(Cli::Request const&);GlobalContainer::load();GAGCore::StringTable::load(std::__cxx11::basic_string<>);"
+          },
+          {
+            "bytes": 2424832,
+            "stack": "__clone3 (clone3.S);start_thread (pthread_create.c);0x7b2d060f5ef8;std::thread::_State_impl<>::_M_run();ComputeExecutor::worker(unsigned long);ComputeExecutor::execute(ComputeExecutor::Claim const&, unsigned long);AIEngine::OrderScheduler::Pending::run(void*, unsigned long);std::_Function_handler<>::_M_invoke(std::_Any_data const&, AIEngine::AIWorldView const&);AI::decide(AIEngine::DecisionContext const&);AISharedRuntime::Runtime::getOrder(AIEngine::DecisionContext const&);AISharedRuntime::Runtime::decide();AISharedRuntime::Gradients::GradientManager::update();AISharedRuntime::Gradients::Gradient::recalculate(AIEngine::AIWorldView const&, field::Frontier&);"
+          },
+          {
+            "bytes": 2031616,
+            "stack": "__clone3 (clone3.S);start_thread (pthread_create.c);0x7b2d060f5ef8;std::thread::_State_impl<>::_M_run();ComputeExecutor::worker(unsigned long);ComputeExecutor::execute(ComputeExecutor::Claim const&, unsigned long);GradientPipeline::execute(GradientPipeline::Job&, GradientPipeline::Workspace&);gradient_preparation::seed(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, gradient_preparation::CrowdingScratch&);gradient_preparation::MaterialSeedCache::trySeed(SimulationSnapshot::Handle const&, int, int, int, unsigned short*, unsigned short const*);"
+          },
+          {
+            "bytes": 1998848,
+            "stack": "main;Glob2::run(Cli::Request const&);Glob2::runTestGames();Engine::run();Engine::runOneGameSession(bool&);Engine::stepSession(unsigned long);Engine::stepSession(unsigned long, std::vector<> const&);Engine::stepSessionImpl(unsigned long, std::vector<> const&);Engine::advanceSession(unsigned long, std::function<> const&, bool);Engine::gatherAndAdvanceOrders(bool);Engine::openReadBoundary(std::span<>, bool, bool);Game::captureReadBoundary(std::span<>, bool, unsigned int) const;SimulationSnapshot::Store::captureBoundary(Game const&, unsigned int);SimulationSnapshot::capture(Game const&, std::shared_ptr<>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*);std::vector<>::resize(unsigned long);"
+          },
+          {
+            "bytes": 1886976,
+            "stack": "main;Glob2::run(Cli::Request const&);Glob2::runTestGames();Engine::createRandomGame();Engine::initGame(MapHeader&, GameHeader&, bool, bool, bool, std::__cxx11::basic_string<> const&);Game::loadTask(Game::loadTask(GAGCore::InputStream*)::_ZN4Game8loadTaskEPN7GAGCore11InputStreamE.Frame*) [clone .actor];"
+          },
+          {
+            "bytes": 1835008,
+            "stack": "main;Glob2::run(Cli::Request const&);Glob2::runTestGames();Engine::run();Engine::runOneGameSession(bool&);Engine::stepSession(unsigned long);Engine::stepSession(unsigned long, std::vector<> const&);Engine::stepSessionImpl(unsigned long, std::vector<> const&);Engine::advanceSession(unsigned long, std::function<> const&, bool);Engine::gatherAndAdvanceOrders(bool);Engine::openReadBoundary(std::span<>, bool, bool);Game::captureReadBoundary(std::span<>, bool, unsigned int) const;SimulationSnapshot::Store::captureBoundary(Game const&, unsigned int);SimulationSnapshot::capture(Game const&, std::shared_ptr<>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*);auto SimulationSnapshot::capture(Game const&, std::shared_ptr<>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(auto:1&, unsigned long)#1}::operator()<>(std::vector<>&, unsigned long) const [clone .isra.0];"
+          },
+          {
+            "bytes": 1769472,
+            "stack": "main;Glob2::run(Cli::Request const&);Glob2::runTestGames();Engine::run();Engine::runOneGameSession(bool&);Engine::stepSession(unsigned long);Engine::stepSession(unsigned long, std::vector<> const&);Engine::stepSessionImpl(unsigned long, std::vector<> const&);Engine::advanceSession(unsigned long, std::function<> const&, bool);Engine::gatherAndAdvanceOrders(bool);Engine::openReadBoundary(std::span<>, bool, bool);Game::captureReadBoundary(std::span<>, bool, unsigned int) const;SimulationSnapshot::Store::captureBoundary(Game const&, unsigned int);SimulationSnapshot::capture(Game const&, std::shared_ptr<>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*);auto SimulationSnapshot::capture(Game const&, std::shared_ptr<>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(auto:1&, unsigned long)#1}::operator()<>(std::vector<>&, unsigned long) const [clone .isra.0];"
+          }
+        ],
+        "final_checksum": "cd20aae7",
+        "actual_max_sampled_os_threads": 35,
+        "instrumented_max_sampled_game_rss_kib": 156820,
+        "cumulative_requested_bytes": 887131731,
+        "raw_stack_sha256": "467d55226d45a111ad38512cea9a440da1764e708c1a6926e95b0e1a21a46a7c"
+      }
+    ],
+    "oct8_participant_owner_deltas_bytes": {
+      "Resource growth": 0,
+      "Localization/string tables": 0,
+      "AI runtime/gradients/planning": 2922,
+      "Team statistics/history": 0,
+      "Building gradient search/frontiers": 2408448,
+      "Simulation snapshots": -1051136,
+      "Unresolved allocation child/owner": 0,
+      "AI telemetry presentation": 0,
+      "Other resolved/unclassified": 101923,
+      "Assets/SDL/audio/render": 6,
+      "Material seed cache/crowding scratch": 6308736,
+      "Map gradient fields/pipeline/cache": 89824,
+      "Replay telemetry retained rows/values": 0,
+      "Terrain registry/ecology": 0,
+      "Recording buffers": 0,
+      "Entity allocation/load": 0,
+      "Other game/AI scheduling (not entity ownership proof)": 4845
+    },
+    "oct5_to_oct8_owner_deltas_bytes": {
+      "Resource growth": -80028,
+      "Localization/string tables": 816553,
+      "AI runtime/gradients/planning": 676802,
+      "Team statistics/history": 893680,
+      "Building gradient search/frontiers": 810968,
+      "Simulation snapshots": 11744290,
+      "Unresolved allocation child/owner": -1655,
+      "AI telemetry presentation": 450552,
+      "Other resolved/unclassified": 568574,
+      "Assets/SDL/audio/render": 1724,
+      "Material seed cache/crowding scratch": 675936,
+      "Map gradient fields/pipeline/cache": 2138328,
+      "Replay telemetry retained rows/values": -2310,
+      "Terrain registry/ecology": 24378,
+      "Recording buffers": 0,
+      "Entity allocation/load": 512064,
+      "Other game/AI scheduling (not entity ownership proof)": -2913116
+    },
+    "qualifications": [
+      "Oct8 explicit4 versus auto uses identical release text, map, initial seed and capped8192 workload. FinalCRC d31df59a matches. Traced peak live requested heap is105480016 versus113345584bytes, difference7865568bytes. Observed maximum OSthreads7 versus35 includes profiler overhead; requested compute participants4 versus hardwareauto32.",
+      "At respective global peaks, material seed/crowding scratch675936\u21926984672bytes (+6308736); building search/frontiers5873664\u21928282112 (+2408448); snapshots11744290\u219210693154 (-1051136). Replay retained owner remains55406395bytes. These are live bytes at different peak times, not independently maximal owners or native RSS. Total roughly7.87MB is not a causal estimate of the58.24MiB historical RSS interval.",
+      "Oct5 explicit AI4 plus default gradient2 versus Oct8 unifiedcompute4 is a descriptive feature/placement comparison:89163276\u2192105480016bytes (+16316740). Oct8 snapshots11744290 and seed/crowding675936bytes appear; map gradients2925888\u21925064216 (+2138328), buildingsearch5062696\u21925873664 (+810968), statistics2763296\u21923656976 (+893680). Retained replay55408705\u219255406395 is effectively unchanged. Version CRCs/trajectories differ; category sums do not establish exact feature causality or explain mature full-game/nativeRSS peaks.",
+      "Oct8 explicit4 and latestCPUoff explicit4 have105480016 versus106940618bytes; auto113345584 versus116854207. Latest retains same telemetry55406395 and auto seed/crowding6984672bytes. Additional late costs include building search/cache/layout and changed trajectory; latestGPU initialization is excluded by theseCPUoff profiles. No GPU implementation exists inOct8, so its earlier growth cannot be GPUdriver startup.",
+      "The historical Oct5\u2192Oct8 mean peakRSS increase58.235MiB likely combines snapshot/cache/pool features, worker default4\u2192hardware32 and longer/different trajectories. These first8192 capped owner censuses identify mechanisms and rule out a new replay telemetry allocation bundle here; they do not close the full historical RSS decomposition. Mature/cross-version populations and native allocation phase differ.",
+      "Heaptrack owns requested heap; process RSS also includes stack/BSS, allocator slack, mapped assets and libraries, profiler buffers and driver mappings. Instrumented timings are excluded. Root native-wrapper audit found no material high-watermark contamination: wrapperHWM22,976KiB below game minimum42.12MiB, sampled gameHWM corroborates wait4 peaks to roughly1percent. Small sampling/accounting differences remain; a separate telemetry-model wrapper issue does not invalidate native game cohorts. The original historical raw cohort and all heap exports remain unchanged."
+    ],
+    "raw_files_unchanged": true,
+    "games_launched": 0
+  }
+}

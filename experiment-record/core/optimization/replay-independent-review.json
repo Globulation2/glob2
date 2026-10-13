@@ -1,0 +1,63 @@
+{
+  "reviewed_utc": "2026-10-12T03:19:58.612588+00:00",
+  "scope": "Independent read-only source review; no replay files edited, builds/tests/performance/children launched.",
+  "source_sha256": {
+    "src/replay/ReplayTelemetry.h": "8dd015b3c1803d27715c45d06879d606227a09c14776d30ce08f07249fd5aa4f",
+    "src/replay/ReplayTelemetry.cpp": "4afd65a81d55239ef334e05bb95c22b9c3d452b52f3dec524305de4bdbe66ea2",
+    "src/replay/ReplayTelemetryTest.cpp": "f015d305561516ea0f3e414e9883b4588832c610fcd1da13a11b804280a4a10f"
+  },
+  "conclusion": "No demonstrated correctness regression from the reviewed representation change. Acceptance still requires the root release/test/conformance and varied-workload measurements. Two important invariants and a few edge-case test additions are noted below.",
+  "checked_reasoning": [
+    {
+      "topic": "Ordered schema equality",
+      "finding": "Whole schema consists of ordered(name,unit,meaning) strings, not a dictionary keyed by name. Lexicographic comparison uses length-aware string_view, preserving duplicate descriptors, field order and embeddedNUL. Stored dynamic value text and updated stamps remain separate and default-equal."
+    },
+    {
+      "topic": "Pointer equality invariant",
+      "finding": "StoredRow default equality compares schema shared_ptr identity. This is equivalent to prior metadata content equality because accepted frames and latest rows are canonicalized into schemas before becoming current, and later schemaFor finds that canonical schema. read canonicalizes every completed frame before apply. Copies/moves retain consistent shared immutable pointers across set/current/frames. This invariant deserves an explicit comment; no public constructor exposes malformed StoredRow."
+    },
+    {
+      "topic": "Invalid and missing values",
+      "finding": "Capture uses min(fields.size,current.values.size), skips exactly old invalid flags, then appends all named entries in unchanged order. Counting/reserve adds allocation timing and a validity pass, not value semantics. An unavailable row has empty descriptors/values as before."
+    },
+    {
+      "topic": "Duplicate controller IDs",
+      "finding": "Both versions compare every active series against old current, then overwrite latest[player] with the last series; changed rows remain ordered in frame.changes. This can yield unusual intermediate changed rows when a later duplicate equals old current, but the representation preserves that preexisting behavior rather than silently normalizing it."
+    },
+    {
+      "topic": "Schema transitions/disappearance",
+      "finding": "Metadata-only changes create a new canonical schema and therefore a changed row. Switching back finds earlier schema. Gone rows keepteam/player/name, set availablefalse and clear values plus empty schema. A reappearing unavailable series remains subject to old current/disappearance behavior."
+    },
+    {
+      "topic": "Budget/truncation",
+      "finding": "Logicalcost formula is byte-for-byte unchanged:8frame,32row+name,24field+all four stringlengths. Until advancement, no-change capture return,16MiB and65536frame limits, step-1 on rejectedframe remain unchanged. Schema retention starts only after a frame passesbudget, avoiding retention of rejected descriptors. This does not redefine logical budget as physical heap."
+    },
+    {
+      "topic": "Read boundaries/malformed input",
+      "finding": "Magic/version/count/frameorder/controllerbounds/text4096/fieldcount/logicalbudget checks are retained. Decoded metadata vectors reserve before pushes, views are built after decoding, and lookup occurs before movingdecoded storage, so no observed string_view invalidation. Metadata for incompleteframes is not inserted; previously completedframes survive exactly as old decoder. String readers/writers preserve NUL via explicitlength."
+    },
+    {
+      "topic": "Wire reconstruction",
+      "finding": "AIT1 magic/version and every frame/row/field ordering are unchanged. write expands schema metadata alongside value+updated in original order. apply reconstructs exact NamedValue sequence and availability; reserve changes capacity only. copy/move/assignment tests preserve whole wirebytes. Noncanonical available-byte normalization and read-on-existing-Stream behavior remain preexisting, not introduced fixes."
+    },
+    {
+      "topic": "Seek/load",
+      "finding": "apply remains forward-only cursor with same current overwrite ordering. A backward seek requires ReplayReader reload, which resets telemetry={} before read; tests reload fresh stream. Rewind semantics are not broadened by this patch. Save presentation values retain existing NamedValue wire representation."
+    }
+  ],
+  "nonblocking_concerns": [
+    {
+      "priority": "maintainability",
+      "action": "Document canonical schema identity invariant near StoredRow equality/schemaFor/retainSchemas. A future change comparing uncached temporary rows to noncanonical current could silently emit redundant frames or alter budget."
+    },
+    {
+      "priority": "focused test coverage",
+      "action": "Add direct capture duplicate-player case (different schema and later duplicate equal to old current), fields/current.values length mismatch in both directions, and metadata transitions back to prior schema. Decoded duplicate values alone does not exercise capture old-current comparison."
+    },
+    {
+      "priority": "measurement",
+      "action": "Ordered schema set is simple and bounded by accepted history, but per-capture SchemaView construction and O(logS) full-list comparison add CPU work. Test stable schemas and highly variable valid subsets/named metadata under mixedAI and variedmaps. No performance win/regression is established by source review."
+    }
+  ],
+  "limits": "Source review only; no platform, replay-run, save-load, release-build or native-performance evidence produced. OOM exception timing shifts with extra allocation/interning as expected for representation changes; strong exception guarantees were not established by prior Stream implementation either."
+}

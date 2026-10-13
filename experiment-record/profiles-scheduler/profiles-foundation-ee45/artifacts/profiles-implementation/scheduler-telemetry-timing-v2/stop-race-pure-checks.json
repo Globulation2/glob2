@@ -1,0 +1,34 @@
+{
+  "native_or_observer_launches": 0,
+  "checks": [
+    {
+      "test": "prioralive_freshgone",
+      "expected_active": false,
+      "passed": true
+    },
+    {
+      "test": "prioralive_PIDreused",
+      "expected_active": false,
+      "passed": true
+    },
+    {
+      "test": "prioralive_freshzombie",
+      "expected_active": false,
+      "passed": true
+    },
+    {
+      "test": "prioralive_sameidentityactive",
+      "expected_active": true,
+      "passed": true
+    },
+    {
+      "test": "lookuppermissionerror failsclosed",
+      "passed": true
+    },
+    {
+      "test": "stopduring scan permittedbyfreshEND",
+      "passed": true
+    }
+  ],
+  "raw_scan_observations_discarded": false
+}

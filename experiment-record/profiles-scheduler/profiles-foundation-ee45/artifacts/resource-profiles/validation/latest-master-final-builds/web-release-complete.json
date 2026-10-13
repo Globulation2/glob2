@@ -1,0 +1,82 @@
+{
+  "passed": true,
+  "source": "ee45c0a0389660bc7d2885b572b94b1a2b01d7a3",
+  "tree": "c4f8f7ebd7888effb0800dd0b14e70f8fc2c3224",
+  "argv": [
+    "taskset",
+    "-c",
+    "0-31",
+    "scons",
+    "target=web",
+    "release=1",
+    "web_variant=both",
+    "emsdk=/home/bradley/.local/share/glob2/development/toolchains/emscripten/Linux-x86_64-88a621bc131cd4954413aa39",
+    "web-tests",
+    "build/emscripten/client/release/index.html",
+    "-j32"
+  ],
+  "cwd": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2",
+  "environment": {
+    "CCACHE": "1",
+    "CCACHE_MAXSIZE": "12G",
+    "GLOB2_SDL3_PREFIX": "/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/build/sdl3-ci/prefix",
+    "GLOB2_RENDER_SHADER_INPUT": "/home/bradley/.codex/worktrees/execution-resource-profiles/glob2/artifacts/resource-profiles/validation/renderer-bundle-v2/shaders"
+  },
+  "started_utc": "2026-10-13T01:58:27.512625+00:00",
+  "finished_utc": "2026-10-13T01:59:47.482122+00:00",
+  "elapsed_s": 79.96952967438847,
+  "exit": 0,
+  "source_unchanged": true,
+  "log_sha256": "143d472e33b2df92c70dce6b59a51870dbdbeb236636cd23dbe675c4c03b0155",
+  "outputs": {
+    "build/emscripten/client/release/index.js": {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/build/emscripten/client/release/index.js",
+      "sha256": "df59c27504cafbd1fe63a44a28979bec71b46e475d6d73acba4364cf5427ed0c"
+    },
+    "build/emscripten/client/release/index.wasm": {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/build/emscripten/client/release/index.wasm",
+      "sha256": "ece76f3701d442b43a30eca3a940583ba6bfc8c782e8eb4c67ab13da4d4c3b98"
+    },
+    "build/emscripten/client/release/index.data": {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/build/emscripten/client/release/index.data",
+      "sha256": "4260504966a4fcd88cef28ccb635824e9f7063816548d9e38fcf77a48c687f05"
+    },
+    "build/emscripten/client/release/script-tests.js": {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/build/emscripten/client/release/script-tests.js",
+      "sha256": "55460c26f80a0e608fde61966dd5150946c6b823731d0209ddb30cbe297ce599"
+    },
+    "build/emscripten/client/release/script-tests.wasm": {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/build/emscripten/client/release/script-tests.wasm",
+      "sha256": "add0ae0cfb52bc4494983fa8d8d55b690935b3b5daf22b9a2f043e0cf08984af"
+    },
+    "build/emscripten/client/release/script-tests.data": {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/build/emscripten/client/release/script-tests.data",
+      "sha256": "37ecc83c91bf01fdb6435e47e29d5de4b300c66ef640f50341d1f1b576423fd8"
+    },
+    "build/emscripten/client/release/threaded/index.js": {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/build/emscripten/client/release/threaded/index.js",
+      "sha256": "8668c5a3e57119ea30fd1604ca2cf8f0ef7f6d3d6720adf23b31e7fafd8dba12"
+    },
+    "build/emscripten/client/release/threaded/index.wasm": {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/build/emscripten/client/release/threaded/index.wasm",
+      "sha256": "5c2f52d2797b4ac51711f114f35be3a481cc7e29f1a150ab0c67d36d46ee3248"
+    },
+    "build/emscripten/client/release/threaded/index.data": {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/build/emscripten/client/release/threaded/index.data",
+      "sha256": "4260504966a4fcd88cef28ccb635824e9f7063816548d9e38fcf77a48c687f05"
+    },
+    "build/emscripten/client/release/threaded/script-tests.js": {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/build/emscripten/client/release/threaded/script-tests.js",
+      "sha256": "99a27df65f5fc6b6d547567673622ab1825d741df55a38ca2735194f9a1cdd78"
+    },
+    "build/emscripten/client/release/threaded/script-tests.wasm": {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/build/emscripten/client/release/threaded/script-tests.wasm",
+      "sha256": "c3b3b68fe4cd89b2ffe0dbd7fbe7007b65cd243fcf61badff20e071a8a027e75"
+    },
+    "build/emscripten/client/release/threaded/script-tests.data": {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/build/emscripten/client/release/threaded/script-tests.data",
+      "sha256": "37ecc83c91bf01fdb6435e47e29d5de4b300c66ef640f50341d1f1b576423fd8"
+    }
+  },
+  "scope": "Ordinaryrelease compilation/package only; cache/sharedhost timingnotisolated; no runtime/hardware/installation/signingqualification"
+}

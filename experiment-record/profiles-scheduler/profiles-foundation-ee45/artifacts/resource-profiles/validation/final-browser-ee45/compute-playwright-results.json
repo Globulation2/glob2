@@ -1,0 +1,160 @@
+{
+  "config": {
+    "argv": [
+      "/usr/bin/node",
+      "/home/bradley/.codex/worktrees/execution-resource-profiles/glob2/browser/node_modules/.bin/playwright",
+      "test",
+      "--config",
+      "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/final-browser-ee45/compute.config.cjs",
+      "--project",
+      "chromium"
+    ],
+    "configFile": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/final-browser-ee45/compute.config.cjs",
+    "rootDir": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/final-browser-ee45",
+    "failOnFlakyTests": false,
+    "forbidOnly": true,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/final-browser-ee45/compute-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/final-browser-ee45",
+        "testIgnore": [],
+        "testMatch": [
+          "gradient-compute.spec.cjs"
+        ],
+        "timeout": 180000
+      },
+      {
+        "outputDir": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/final-browser-ee45/compute-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "firefox",
+        "name": "firefox",
+        "testDir": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/final-browser-ee45",
+        "testIgnore": [],
+        "testMatch": [
+          "gradient-compute.spec.cjs"
+        ],
+        "timeout": 180000
+      },
+      {
+        "outputDir": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/final-browser-ee45/compute-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "webkit",
+        "name": "webkit",
+        "testDir": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/final-browser-ee45",
+        "testIgnore": [],
+        "testMatch": [
+          "gradient-compute.spec.cjs"
+        ],
+        "timeout": 180000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/final-browser-ee45/compute-playwright-results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.63.0",
+    "workers": 1,
+    "webServer": {
+      "command": "python3 browser/serve.py 8770 --bind 127.0.0.1 --directory build/emscripten/client/release",
+      "cwd": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2",
+      "url": "http://127.0.0.1:8770",
+      "reuseExistingServer": false
+    }
+  },
+  "suites": [
+    {
+      "title": "gradient-compute.spec.cjs",
+      "file": "gradient-compute.spec.cjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "WebGPU compute algorithms match exact weighted fields and preserve canceled output",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 180000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1456,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-13T02:13:57.560Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "6a3d678fe33de3e82ca7-5f984d29f9647cd35d62",
+          "file": "gradient-compute.spec.cjs",
+          "line": 7,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-10-13T02:13:56.558Z",
+    "duration": 2543.7479999999996,
+    "expected": 1,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "coordinator_pid": 855199,
+  "flags": {
+    "GLOB2_GRADIENT_BACKEND": null,
+    "GLOB2_PERF_DISABLE": null,
+    "GLOB2_BUILDING_DEPTH": null,
+    "GLOB2_SIM_THREAD": null,
+    "GLOB2_COMPUTE_THREADS": null,
+    "GLOB2_AI_THREADS": null,
+    "GLOB2_GRADIENT_WORKERS": null
+  }
+}

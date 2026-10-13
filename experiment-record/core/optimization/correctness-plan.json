@@ -1,0 +1,30 @@
+{
+  "fixtures": 20,
+  "matched_runs_per_fixture": 16,
+  "continuation_runs_per_fixture": 7,
+  "ticks": 2048,
+  "affinity": [
+    12,
+    13,
+    14,
+    28,
+    29,
+    30
+  ],
+  "baseline_and_combined_counts": [
+    1,
+    3,
+    6,
+    "auto"
+  ],
+  "individual_counts": [
+    3
+  ],
+  "gpu": "off all; on baseline/combined/snapshot and optional scheduler at3",
+  "notes": [
+    "No engine launches without --run.",
+    "All inputs immutable and hashed.",
+    "Detailed continuation ignores aggregate save/header checksums.",
+    "No performance conclusions from trace/replay cases."
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "passed": true,
+  "source": "ee45c0a0389660bc7d2885b572b94b1a2b01d7a3",
+  "APK_exact_current_source_completion_bytes": {
+    "assets/glob2-bundle/data/completions/_glob2": "b0d10f21633c76a488948b72d68eaef660c65330a1f916beff8223504d46a2fb",
+    "assets/glob2-bundle/data/completions/glob2.bash": "92920d419d07287be57b4f3363fa30dc06faacd11dbd95d1406be23d15e081ea",
+    "assets/glob2-bundle/data/completions/glob2.fish": "7d346b9c1070c55d85a7466eed159a4e33f60c986345e1134a9665c5fd48c1ab"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "candidate": "/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2/artifacts/scheduler-selection-telemetry/focused/engine-run/junit.xml",
+  "candidate_sha256": "3cbd160112373984219a87232637f73bb95ddb1199042183a62534c0cc2bf44e",
+  "ee45": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/d80-native-focused/engine-run/junit.xml",
+  "ee45_sha256": "9f907dbc11728a1c402dcf56a072aaf485669e3cfc3ffa3ad177975899140dd9",
+  "exact_failure_equal": true,
+  "failure": [
+    {
+      "name": "a retained version-152 stock replay preserves recorded simulation checksums [save-format]",
+      "classname": "EngineSession",
+      "type": "REQUIRE",
+      "message": "false",
+      "text": "\nsrc/engine/EngineSessionHarness.cpp:489:\nREQUIRE( engine.loadReplayTask(path.string()).run() ) is NOT correct!\n  values: REQUIRE( false )\n\n      "
+    }
+  ],
+  "earlier_c7_f7_a134_comparison": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/d80-native-focused/inherited-152-comparison.json",
+  "earlier_comparison_sha256": "9c148e1569df274b64a04a8a5c144e460033c960782787dd270e6babb6515592"
+}

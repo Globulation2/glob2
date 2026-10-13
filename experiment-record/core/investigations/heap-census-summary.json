@@ -1,0 +1,314 @@
+{
+  "cases": [
+    {
+      "id": "heap-mature-oazis-s1056243202-t3-gpuon-winner",
+      "summary": {
+        "peak_live_heap": {
+          "reported": "521.54M",
+          "approximate_bytes": 521539999.99999994
+        },
+        "end_live_heap": {
+          "reported": "31.12M",
+          "approximate_bytes": 31120000.0
+        },
+        "peak": {
+          "cost_type": "peak",
+          "unit": "bytes",
+          "exact_export_sum": 521535011,
+          "stack_rows": 27738,
+          "unresolved_export_cost": 73816,
+          "legacy_unresolved_export_cost": 0,
+          "domain_costs": {
+            "Unresolved allocation child/owner": 73816,
+            "Other resolved/unclassified": 8588568,
+            "Assets/SDL/audio/render": 13435,
+            "Other game/AI scheduling (not entity ownership proof)": 31966675,
+            "Localization/string tables": 9846525,
+            "Terrain registry/ecology": 51570,
+            "Entity allocation/load": 3613312,
+            "Team statistics/history": 47304992,
+            "AI runtime/gradients/planning": 31823438,
+            "AI telemetry presentation": 2025418,
+            "Map gradient fields/pipeline/cache": 130770461,
+            "Simulation snapshots": 93259930,
+            "GPU initialization/runtime (driver symbols may be unresolved)": 30620604,
+            "Building gradient search/frontiers": 74081280,
+            "Replay telemetry retained rows/values": 55243755,
+            "Resource growth": 448928,
+            "Material seed cache/crowding scratch": 1802304,
+            "Recording buffers": 0
+          },
+          "legacy_domain_costs": {
+            "Other resolved/unclassified": 21443940,
+            "Assets/SDL/audio/render": 13435,
+            "Game/unit/building/team state": 107727093,
+            "AI/simulation snapshots": 194219660,
+            "Terrain registry/ecology": 51570,
+            "Gradient fields/frontiers/cache": 198079313
+          },
+          "attribution_version": 2,
+          "qualification": "Qualified owner symbol heuristic, not exact C++ object or module ownership. Prior ancestor-keyword categories preserved in legacy_domain_costs; unresolved driver frames under initializeOpenCL are initialization/runtime, not field bytes. Replay telemetry is distinct from generic Game ancestor. Peak export is live bytes at GLOBAL peak; end-live is not automatically a leak."
+        },
+        "leaked": {
+          "cost_type": "leaked",
+          "unit": "bytes",
+          "exact_export_sum": 31115877,
+          "stack_rows": 27738,
+          "unresolved_export_cost": 88,
+          "legacy_unresolved_export_cost": 0,
+          "domain_costs": {
+            "Unresolved allocation child/owner": 88,
+            "Other resolved/unclassified": 73952,
+            "Assets/SDL/audio/render": 11018,
+            "Other game/AI scheduling (not entity ownership proof)": 468,
+            "Localization/string tables": 0,
+            "Terrain registry/ecology": 0,
+            "Entity allocation/load": 102048,
+            "Team statistics/history": 0,
+            "AI runtime/gradients/planning": 0,
+            "AI telemetry presentation": 0,
+            "Map gradient fields/pipeline/cache": 604901,
+            "Simulation snapshots": 0,
+            "GPU initialization/runtime (driver symbols may be unresolved)": 30323402,
+            "Building gradient search/frontiers": 0,
+            "Replay telemetry retained rows/values": 0,
+            "Resource growth": 0,
+            "Material seed cache/crowding scratch": 0,
+            "Recording buffers": 0
+          },
+          "legacy_domain_costs": {
+            "Other resolved/unclassified": 176088,
+            "Assets/SDL/audio/render": 11018,
+            "Game/unit/building/team state": 468,
+            "AI/simulation snapshots": 8040,
+            "Terrain registry/ecology": 0,
+            "Gradient fields/frontiers/cache": 30920263
+          },
+          "attribution_version": 2,
+          "qualification": "Qualified owner symbol heuristic, not exact C++ object or module ownership. Prior ancestor-keyword categories preserved in legacy_domain_costs; unresolved driver frames under initializeOpenCL are initialization/runtime, not field bytes. Replay telemetry is distinct from generic Game ancestor. Peak export is live bytes at GLOBAL peak; end-live is not automatically a leak."
+        },
+        "allocations": {
+          "cost_type": "allocations",
+          "unit": "allocation count",
+          "exact_export_sum": 29362569,
+          "stack_rows": 27738,
+          "unresolved_export_cost": 3722,
+          "legacy_unresolved_export_cost": 0,
+          "domain_costs": {
+            "Unresolved allocation child/owner": 3722,
+            "Other resolved/unclassified": 635946,
+            "Assets/SDL/audio/render": 546,
+            "Other game/AI scheduling (not entity ownership proof)": 20870419,
+            "Localization/string tables": 491032,
+            "Terrain registry/ecology": 136,
+            "Entity allocation/load": 231352,
+            "Team statistics/history": 400494,
+            "AI runtime/gradients/planning": 4904456,
+            "AI telemetry presentation": 14318,
+            "Map gradient fields/pipeline/cache": 386800,
+            "Simulation snapshots": 3886,
+            "GPU initialization/runtime (driver symbols may be unresolved)": 29089,
+            "Building gradient search/frontiers": 843859,
+            "Replay telemetry retained rows/values": 508818,
+            "Resource growth": 2558,
+            "Material seed cache/crowding scratch": 35133,
+            "Recording buffers": 5
+          },
+          "legacy_domain_costs": {
+            "Other resolved/unclassified": 1098005,
+            "Assets/SDL/audio/render": 546,
+            "Game/unit/building/team state": 7729253,
+            "AI/simulation snapshots": 20021508,
+            "Terrain registry/ecology": 136,
+            "Gradient fields/frontiers/cache": 513121
+          },
+          "attribution_version": 2,
+          "qualification": "Qualified owner symbol heuristic, not exact C++ object or module ownership. Prior ancestor-keyword categories preserved in legacy_domain_costs; unresolved driver frames under initializeOpenCL are initialization/runtime, not field bytes. Replay telemetry is distinct from generic Game ancestor. Peak export is live bytes at GLOBAL peak; end-live is not automatically a leak."
+        },
+        "temporary": {
+          "cost_type": "temporary",
+          "unit": "allocation count",
+          "exact_export_sum": 4484859,
+          "stack_rows": 27738,
+          "unresolved_export_cost": 6,
+          "legacy_unresolved_export_cost": 0,
+          "domain_costs": {
+            "Unresolved allocation child/owner": 6,
+            "Other resolved/unclassified": 99048,
+            "Assets/SDL/audio/render": 4,
+            "Other game/AI scheduling (not entity ownership proof)": 3722299,
+            "Localization/string tables": 68,
+            "Terrain registry/ecology": 0,
+            "Entity allocation/load": 71348,
+            "Team statistics/history": 365677,
+            "AI runtime/gradients/planning": 139658,
+            "AI telemetry presentation": 0,
+            "Map gradient fields/pipeline/cache": 75625,
+            "Simulation snapshots": 1,
+            "GPU initialization/runtime (driver symbols may be unresolved)": 3193,
+            "Building gradient search/frontiers": 163,
+            "Replay telemetry retained rows/values": 2,
+            "Resource growth": 0,
+            "Material seed cache/crowding scratch": 7767,
+            "Recording buffers": 0
+          },
+          "legacy_domain_costs": {
+            "Other resolved/unclassified": 99515,
+            "Assets/SDL/audio/render": 4,
+            "Game/unit/building/team state": 3810727,
+            "AI/simulation snapshots": 495777,
+            "Terrain registry/ecology": 0,
+            "Gradient fields/frontiers/cache": 78836
+          },
+          "attribution_version": 2,
+          "qualification": "Qualified owner symbol heuristic, not exact C++ object or module ownership. Prior ancestor-keyword categories preserved in legacy_domain_costs; unresolved driver frames under initializeOpenCL are initialization/runtime, not field bytes. Replay telemetry is distinct from generic Game ancestor. Peak export is live bytes at GLOBAL peak; end-live is not automatically a leak."
+        },
+        "total_requested_heap_bytes": {
+          "value": 18214830756,
+          "allocation_count": 29362569,
+          "exact_size_rows": 7052,
+          "qualification": "Cumulative requested allocation size, not live or peak bytes. Includes traced allocation events; realloc semantics follow heaptrack. Exact-size histogram verified against upstream1.5.0 and summary allocation count.",
+          "upstream_source": "https://github.com/KDE/heaptrack/blob/v1.5.0/src/analyze/print/heaptrack_print.cpp",
+          "upstream_source_sha256": "fcf6afdb475cb31694416e13ecc1ddd59047ac0e30ef395db4a2af0a33c6eb06"
+        },
+        "trace": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/heap-census/heap-mature-oazis-s1056243202-t3-gpuon-winner/heaptrack.988320.zst",
+        "trace_sha256": "9237b2153e5bfd327073e4003cebaa934042cd7d518669311f80990ac8346427",
+        "analysis_commands": [
+          {
+            "argv": [
+              "heaptrack_print",
+              "--file",
+              "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/heap-census/heap-mature-oazis-s1056243202-t3-gpuon-winner/heaptrack.988320.zst",
+              "--merge-backtraces",
+              "0",
+              "--disable-embedded-suppressions",
+              "--peak-limit",
+              "30",
+              "--sub-peak-limit",
+              "30",
+              "--print-peaks",
+              "1",
+              "--print-allocators",
+              "1",
+              "--print-temporary",
+              "1",
+              "--print-leaks",
+              "1",
+              "--print-histogram",
+              "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/heap-census/heap-mature-oazis-s1056243202-t3-gpuon-winner/allocation-histogram.txt",
+              "--print-massif",
+              "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/heap-census/heap-mature-oazis-s1056243202-t3-gpuon-winner/massif.txt"
+            ],
+            "returncode": 0
+          },
+          {
+            "argv": [
+              "heaptrack_print",
+              "--file",
+              "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/heap-census/heap-mature-oazis-s1056243202-t3-gpuon-winner/heaptrack.988320.zst",
+              "--merge-backtraces",
+              "0",
+              "--disable-embedded-suppressions",
+              "--peak-limit",
+              "30",
+              "--sub-peak-limit",
+              "30",
+              "--print-peaks",
+              "0",
+              "--print-allocators",
+              "0",
+              "--print-temporary",
+              "0",
+              "--print-flamegraph",
+              "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/heap-census/heap-mature-oazis-s1056243202-t3-gpuon-winner/stacks-peak.txt",
+              "--flamegraph-cost-type",
+              "peak"
+            ],
+            "returncode": 0
+          },
+          {
+            "argv": [
+              "heaptrack_print",
+              "--file",
+              "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/heap-census/heap-mature-oazis-s1056243202-t3-gpuon-winner/heaptrack.988320.zst",
+              "--merge-backtraces",
+              "0",
+              "--disable-embedded-suppressions",
+              "--peak-limit",
+              "30",
+              "--sub-peak-limit",
+              "30",
+              "--print-peaks",
+              "0",
+              "--print-allocators",
+              "0",
+              "--print-temporary",
+              "0",
+              "--print-flamegraph",
+              "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/heap-census/heap-mature-oazis-s1056243202-t3-gpuon-winner/stacks-leaked.txt",
+              "--flamegraph-cost-type",
+              "leaked"
+            ],
+            "returncode": 0
+          },
+          {
+            "argv": [
+              "heaptrack_print",
+              "--file",
+              "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/heap-census/heap-mature-oazis-s1056243202-t3-gpuon-winner/heaptrack.988320.zst",
+              "--merge-backtraces",
+              "0",
+              "--disable-embedded-suppressions",
+              "--peak-limit",
+              "30",
+              "--sub-peak-limit",
+              "30",
+              "--print-peaks",
+              "0",
+              "--print-allocators",
+              "0",
+              "--print-temporary",
+              "0",
+              "--print-flamegraph",
+              "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/heap-census/heap-mature-oazis-s1056243202-t3-gpuon-winner/stacks-allocations.txt",
+              "--flamegraph-cost-type",
+              "allocations"
+            ],
+            "returncode": 0
+          },
+          {
+            "argv": [
+              "heaptrack_print",
+              "--file",
+              "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/heap-census/heap-mature-oazis-s1056243202-t3-gpuon-winner/heaptrack.988320.zst",
+              "--merge-backtraces",
+              "0",
+              "--disable-embedded-suppressions",
+              "--peak-limit",
+              "30",
+              "--sub-peak-limit",
+              "30",
+              "--print-peaks",
+              "0",
+              "--print-allocators",
+              "0",
+              "--print-temporary",
+              "0",
+              "--print-flamegraph",
+              "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/heap-census/heap-mature-oazis-s1056243202-t3-gpuon-winner/stacks-temporary.txt",
+              "--flamegraph-cost-type",
+              "temporary"
+            ],
+            "returncode": 0
+          }
+        ],
+        "analysis_cpu_affinity": [
+          15,
+          31
+        ],
+        "qualification": "Heap allocation accounting differs from process RSS, allocator arenas, shared mappings and GPU device memory. All profiling timings diagnostic only."
+      }
+    }
+  ],
+  "timing_scope": "Diagnostic only; excluded from all primary control/historical timings"
+}

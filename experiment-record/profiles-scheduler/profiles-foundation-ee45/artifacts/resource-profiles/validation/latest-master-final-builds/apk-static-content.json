@@ -1,0 +1,25 @@
+{
+  "passed": true,
+  "apk_sha256": "96d617e5ee5633d35116cfa2a4c248050ed7b8664c36636843f31d68a3b4ebf0",
+  "packaged_libmain_sha256": "5cc535f39696eaf274a199aa95e9f014451987bbb27d54a744bd53e4f34c992e",
+  "gradle_stripped_output_sha256": "5cc535f39696eaf274a199aa95e9f014451987bbb27d54a744bd53e4f34c992e",
+  "built_and_gradle_merge_input_identical": true,
+  "recording_notices": {
+    "sources.json": "264d868e3eb117595546456250ccfefd99203355ac74d0dbd68eab53d5db5629",
+    "configuration.json": "b34df3424b92b846b95e7ce8c422d8690b4f6e3a6035c1fe5c1e4a0643240603",
+    "nvEncodeAPI.h": "4fe4094541ef0f8a13249d97a8692dc5f835a6e9dd42eeadb3e2f7321d54dc7e",
+    "x264-COPYING": "32b1062f7da84967e7019d01ab805935caa7ab7321a7ced0e30ebe75e5df1670",
+    "ffmpeg-COPYING.LGPLv2.1": "246041b6ecf9bc32d718a62c57877c78b5eb397b6467e74ed7ae2626ab189c30",
+    "ffmpeg-COPYING.GPLv2": "8177f97513213526df2cf6184d8ff986c675afb514d4e68a404010521b880643",
+    "ffmpeg-COPYING.LGPLv3": "da7eabb7bafdf7d3ae5e9f223aa5bdc1eece45ac569dc21b3b037520b4464768",
+    "ffmpeg-COPYING.GPLv3": "8ceb4b9ee5adedde47b31e975c1d90c73ad27b6b165a1dcd80c7c545eb65b903"
+  },
+  "resolved_staged_apk_notices_identical": true,
+  "completion_member_paths": [
+    "assets/glob2-bundle/data/completions/_glob2",
+    "assets/glob2-bundle/data/completions/glob2.bash",
+    "assets/glob2-bundle/data/completions/glob2.fish"
+  ],
+  "alias_absent": true,
+  "scope": "StaticAPKassets/notices/actualGradleliblineage; builderverifiedELFbuildIDs, no device/signing"
+}

@@ -1,0 +1,73 @@
+{
+  "state": "passed",
+  "corpora": [
+    {
+      "project": "chromium",
+      "mode": "serial",
+      "selected_cases": 186,
+      "passed": 186,
+      "failed": 0,
+      "unselected_compiled_cases": 487,
+      "assertions": 8115148,
+      "log": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/final-validation/runs/browser/fresh-fixed/worker-lifecycle/chromium-serial.log",
+      "log_sha256": "6501ea57ee94deb294e48579e5210e0dabbe67567f8f77968a4c0ad8e0fa40cb"
+    },
+    {
+      "project": "chromium",
+      "mode": "threaded",
+      "selected_cases": 186,
+      "passed": 186,
+      "failed": 0,
+      "unselected_compiled_cases": 487,
+      "assertions": 8115791,
+      "log": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/final-validation/runs/browser/fresh-fixed/worker-lifecycle/chromium-threaded.log",
+      "log_sha256": "9cbf76ef307650990d2791a86bba0d1d9991d4a84ff6d7a13520153ef3034d12"
+    },
+    {
+      "project": "firefox",
+      "mode": "serial",
+      "selected_cases": 186,
+      "passed": 186,
+      "failed": 0,
+      "unselected_compiled_cases": 487,
+      "assertions": 8115148,
+      "log": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/final-validation/runs/browser/fresh-fixed/worker-lifecycle/firefox-serial.log",
+      "log_sha256": "f336862a09c403f9bd2ffc42620d9b1fd9a15a4cbb6817571bd865fd918bd47c"
+    },
+    {
+      "project": "firefox",
+      "mode": "threaded",
+      "selected_cases": 186,
+      "passed": 186,
+      "failed": 0,
+      "unselected_compiled_cases": 487,
+      "assertions": 8115791,
+      "log": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/final-validation/runs/browser/fresh-fixed/worker-lifecycle/firefox-threaded.log",
+      "log_sha256": "07e1063ef9fabc4e4848a24ac0a51993646b6826d965971f52e36f8f0aa42efb"
+    },
+    {
+      "project": "webkit",
+      "mode": "serial",
+      "selected_cases": 186,
+      "passed": 186,
+      "failed": 0,
+      "unselected_compiled_cases": 487,
+      "assertions": 8115148,
+      "log": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/final-validation/runs/browser/fresh-fixed/worker-lifecycle/webkit-serial.log",
+      "log_sha256": "62dd4030e49995cc0c3ec461fcbf43bcfb857dc64fc769c7a479166bed590a68"
+    },
+    {
+      "project": "webkit",
+      "mode": "threaded",
+      "selected_cases": 186,
+      "passed": 186,
+      "failed": 0,
+      "unselected_compiled_cases": 487,
+      "assertions": 8115791,
+      "log": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/final-validation/runs/browser/fresh-fixed/worker-lifecycle/webkit-threaded.log",
+      "log_sha256": "c7629ba69c42e787c1214c0789699d16fb52920294a4395c81e8eed71cdb9f57"
+    }
+  ],
+  "compiled_inventory_scope": "Fresh final compiled doctest selected and unselected totals from each raw corpus, source suite list sealed; no historical188case assumption.",
+  "historical_receipts_promoted": false
+}

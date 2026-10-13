@@ -1,0 +1,2003 @@
+{
+  "start_requested_tick": 120000,
+  "end_requested_tick": 128192,
+  "progress_interval_ticks": 256,
+  "observations": [
+    {
+      "tick": 256,
+      "observed_monotonic_ns": 3093304619468227
+    },
+    {
+      "tick": 512,
+      "observed_monotonic_ns": 3093304914468129
+    },
+    {
+      "tick": 768,
+      "observed_monotonic_ns": 3093305231028994
+    },
+    {
+      "tick": 1024,
+      "observed_monotonic_ns": 3093305393927931
+    },
+    {
+      "tick": 1280,
+      "observed_monotonic_ns": 3093305546593098
+    },
+    {
+      "tick": 1536,
+      "observed_monotonic_ns": 3093305689103052
+    },
+    {
+      "tick": 1792,
+      "observed_monotonic_ns": 3093305831398737
+    },
+    {
+      "tick": 2048,
+      "observed_monotonic_ns": 3093305964503654
+    },
+    {
+      "tick": 2304,
+      "observed_monotonic_ns": 3093306096821526
+    },
+    {
+      "tick": 2560,
+      "observed_monotonic_ns": 3093306249450123
+    },
+    {
+      "tick": 2816,
+      "observed_monotonic_ns": 3093306412430249
+    },
+    {
+      "tick": 3072,
+      "observed_monotonic_ns": 3093306575259057
+    },
+    {
+      "tick": 3328,
+      "observed_monotonic_ns": 3093306707599629
+    },
+    {
+      "tick": 3584,
+      "observed_monotonic_ns": 3093306839931451
+    },
+    {
+      "tick": 3840,
+      "observed_monotonic_ns": 3093306982419836
+    },
+    {
+      "tick": 4096,
+      "observed_monotonic_ns": 3093307124378094
+    },
+    {
+      "tick": 4352,
+      "observed_monotonic_ns": 3093307316799745
+    },
+    {
+      "tick": 4608,
+      "observed_monotonic_ns": 3093307489088080
+    },
+    {
+      "tick": 4864,
+      "observed_monotonic_ns": 3093307662115119
+    },
+    {
+      "tick": 5120,
+      "observed_monotonic_ns": 3093307824888097
+    },
+    {
+      "tick": 5376,
+      "observed_monotonic_ns": 3093308018631737
+    },
+    {
+      "tick": 5632,
+      "observed_monotonic_ns": 3093308222191442
+    },
+    {
+      "tick": 5888,
+      "observed_monotonic_ns": 3093308405369263
+    },
+    {
+      "tick": 6144,
+      "observed_monotonic_ns": 3093308608982687
+    },
+    {
+      "tick": 6400,
+      "observed_monotonic_ns": 3093308792262928
+    },
+    {
+      "tick": 6656,
+      "observed_monotonic_ns": 3093309077259666
+    },
+    {
+      "tick": 6912,
+      "observed_monotonic_ns": 3093309454204178
+    },
+    {
+      "tick": 7168,
+      "observed_monotonic_ns": 3093309953077461
+    },
+    {
+      "tick": 7424,
+      "observed_monotonic_ns": 3093310391034783
+    },
+    {
+      "tick": 7680,
+      "observed_monotonic_ns": 3093310930580524
+    },
+    {
+      "tick": 7936,
+      "observed_monotonic_ns": 3093311379088685
+    },
+    {
+      "tick": 8192,
+      "observed_monotonic_ns": 3093311816860938
+    },
+    {
+      "tick": 8448,
+      "observed_monotonic_ns": 3093312254661222
+    },
+    {
+      "tick": 8704,
+      "observed_monotonic_ns": 3093312713043927
+    },
+    {
+      "tick": 8960,
+      "observed_monotonic_ns": 3093313324859492
+    },
+    {
+      "tick": 9216,
+      "observed_monotonic_ns": 3093313844090649
+    },
+    {
+      "tick": 9472,
+      "observed_monotonic_ns": 3093314322895057
+    },
+    {
+      "tick": 9728,
+      "observed_monotonic_ns": 3093314872513420
+    },
+    {
+      "tick": 9984,
+      "observed_monotonic_ns": 3093315607421049
+    },
+    {
+      "tick": 10240,
+      "observed_monotonic_ns": 3093316270825487
+    },
+    {
+      "tick": 10496,
+      "observed_monotonic_ns": 3093316852461964
+    },
+    {
+      "tick": 10752,
+      "observed_monotonic_ns": 3093317475401043
+    },
+    {
+      "tick": 11008,
+      "observed_monotonic_ns": 3093317893831926
+    },
+    {
+      "tick": 11264,
+      "observed_monotonic_ns": 3093318649749473
+    },
+    {
+      "tick": 11520,
+      "observed_monotonic_ns": 3093319212048468
+    },
+    {
+      "tick": 11776,
+      "observed_monotonic_ns": 3093319733024842
+    },
+    {
+      "tick": 12032,
+      "observed_monotonic_ns": 3093320244952935
+    },
+    {
+      "tick": 12288,
+      "observed_monotonic_ns": 3093320757433684
+    },
+    {
+      "tick": 12544,
+      "observed_monotonic_ns": 3093321208395156
+    },
+    {
+      "tick": 12800,
+      "observed_monotonic_ns": 3093321823060859
+    },
+    {
+      "tick": 13056,
+      "observed_monotonic_ns": 3093322459484595
+    },
+    {
+      "tick": 13312,
+      "observed_monotonic_ns": 3093323005555646
+    },
+    {
+      "tick": 13568,
+      "observed_monotonic_ns": 3093323458952999
+    },
+    {
+      "tick": 13824,
+      "observed_monotonic_ns": 3093323963663178
+    },
+    {
+      "tick": 14080,
+      "observed_monotonic_ns": 3093324365505647
+    },
+    {
+      "tick": 14336,
+      "observed_monotonic_ns": 3093325056071767
+    },
+    {
+      "tick": 14592,
+      "observed_monotonic_ns": 3093325818892101
+    },
+    {
+      "tick": 14848,
+      "observed_monotonic_ns": 3093326375235073
+    },
+    {
+      "tick": 15104,
+      "observed_monotonic_ns": 3093327024414720
+    },
+    {
+      "tick": 15360,
+      "observed_monotonic_ns": 3093327745771073
+    },
+    {
+      "tick": 15616,
+      "observed_monotonic_ns": 3093328384733939
+    },
+    {
+      "tick": 15872,
+      "observed_monotonic_ns": 3093329054309370
+    },
+    {
+      "tick": 16128,
+      "observed_monotonic_ns": 3093329724801724
+    },
+    {
+      "tick": 16384,
+      "observed_monotonic_ns": 3093330395115769
+    },
+    {
+      "tick": 16640,
+      "observed_monotonic_ns": 3093331096460646
+    },
+    {
+      "tick": 16896,
+      "observed_monotonic_ns": 3093331798084160
+    },
+    {
+      "tick": 17152,
+      "observed_monotonic_ns": 3093332571353353
+    },
+    {
+      "tick": 17408,
+      "observed_monotonic_ns": 3093333320177365
+    },
+    {
+      "tick": 17664,
+      "observed_monotonic_ns": 3093334037753077
+    },
+    {
+      "tick": 17920,
+      "observed_monotonic_ns": 3093334767077788
+    },
+    {
+      "tick": 18176,
+      "observed_monotonic_ns": 3093335478373638
+    },
+    {
+      "tick": 18432,
+      "observed_monotonic_ns": 3093336241513139
+    },
+    {
+      "tick": 18688,
+      "observed_monotonic_ns": 3093336908723099
+    },
+    {
+      "tick": 18944,
+      "observed_monotonic_ns": 3093337545587171
+    },
+    {
+      "tick": 19200,
+      "observed_monotonic_ns": 3093338243724092
+    },
+    {
+      "tick": 19456,
+      "observed_monotonic_ns": 3093338910882052
+    },
+    {
+      "tick": 19712,
+      "observed_monotonic_ns": 3093339835336743
+    },
+    {
+      "tick": 19968,
+      "observed_monotonic_ns": 3093340739153682
+    },
+    {
+      "tick": 20224,
+      "observed_monotonic_ns": 3093341591471408
+    },
+    {
+      "tick": 20480,
+      "observed_monotonic_ns": 3093342493978068
+    },
+    {
+      "tick": 20736,
+      "observed_monotonic_ns": 3093343423903076
+    },
+    {
+      "tick": 20992,
+      "observed_monotonic_ns": 3093344220907407
+    },
+    {
+      "tick": 21248,
+      "observed_monotonic_ns": 3093345245832215
+    },
+    {
+      "tick": 21504,
+      "observed_monotonic_ns": 3093346012718158
+    },
+    {
+      "tick": 21760,
+      "observed_monotonic_ns": 3093346760139960
+    },
+    {
+      "tick": 22016,
+      "observed_monotonic_ns": 3093347608262998
+    },
+    {
+      "tick": 22272,
+      "observed_monotonic_ns": 3093348498500672
+    },
+    {
+      "tick": 22528,
+      "observed_monotonic_ns": 3093349186193403
+    },
+    {
+      "tick": 22784,
+      "observed_monotonic_ns": 3093350106746794
+    },
+    {
+      "tick": 23040,
+      "observed_monotonic_ns": 3093350934457379
+    },
+    {
+      "tick": 23296,
+      "observed_monotonic_ns": 3093351813893646
+    },
+    {
+      "tick": 23552,
+      "observed_monotonic_ns": 3093352836668991
+    },
+    {
+      "tick": 23808,
+      "observed_monotonic_ns": 3093353564435864
+    },
+    {
+      "tick": 24064,
+      "observed_monotonic_ns": 3093354412816990
+    },
+    {
+      "tick": 24320,
+      "observed_monotonic_ns": 3093355261852301
+    },
+    {
+      "tick": 24576,
+      "observed_monotonic_ns": 3093356080470926
+    },
+    {
+      "tick": 24832,
+      "observed_monotonic_ns": 3093356837176696
+    },
+    {
+      "tick": 25088,
+      "observed_monotonic_ns": 3093357819398053
+    },
+    {
+      "tick": 25344,
+      "observed_monotonic_ns": 3093358617110738
+    },
+    {
+      "tick": 25600,
+      "observed_monotonic_ns": 3093359547871271
+    },
+    {
+      "tick": 25856,
+      "observed_monotonic_ns": 3093360448106048
+    },
+    {
+      "tick": 26112,
+      "observed_monotonic_ns": 3093361368291901
+    },
+    {
+      "tick": 26368,
+      "observed_monotonic_ns": 3093362176896353
+    },
+    {
+      "tick": 26624,
+      "observed_monotonic_ns": 3093362882845844
+    },
+    {
+      "tick": 26880,
+      "observed_monotonic_ns": 3093363721393686
+    },
+    {
+      "tick": 27136,
+      "observed_monotonic_ns": 3093364641838607
+    },
+    {
+      "tick": 27392,
+      "observed_monotonic_ns": 3093365552528624
+    },
+    {
+      "tick": 27648,
+      "observed_monotonic_ns": 3093366412615580
+    },
+    {
+      "tick": 27904,
+      "observed_monotonic_ns": 3093367271286337
+    },
+    {
+      "tick": 28160,
+      "observed_monotonic_ns": 3093368204319311
+    },
+    {
+      "tick": 28416,
+      "observed_monotonic_ns": 3093368982167710
+    },
+    {
+      "tick": 28672,
+      "observed_monotonic_ns": 3093369966839958
+    },
+    {
+      "tick": 28928,
+      "observed_monotonic_ns": 3093370704370416
+    },
+    {
+      "tick": 29184,
+      "observed_monotonic_ns": 3093371563794027
+    },
+    {
+      "tick": 29440,
+      "observed_monotonic_ns": 3093372433175611
+    },
+    {
+      "tick": 29696,
+      "observed_monotonic_ns": 3093373405079247
+    },
+    {
+      "tick": 29952,
+      "observed_monotonic_ns": 3093374275141646
+    },
+    {
+      "tick": 30208,
+      "observed_monotonic_ns": 3093375054140905
+    },
+    {
+      "tick": 30464,
+      "observed_monotonic_ns": 3093375990552004
+    },
+    {
+      "tick": 30720,
+      "observed_monotonic_ns": 3093376761687624
+    },
+    {
+      "tick": 30976,
+      "observed_monotonic_ns": 3093377512959746
+    },
+    {
+      "tick": 31232,
+      "observed_monotonic_ns": 3093378387798229
+    },
+    {
+      "tick": 31488,
+      "observed_monotonic_ns": 3093379275987698
+    },
+    {
+      "tick": 31744,
+      "observed_monotonic_ns": 3093380173957133
+    },
+    {
+      "tick": 32000,
+      "observed_monotonic_ns": 3093381038968101
+    },
+    {
+      "tick": 32256,
+      "observed_monotonic_ns": 3093382072744651
+    },
+    {
+      "tick": 32512,
+      "observed_monotonic_ns": 3093383065814774
+    },
+    {
+      "tick": 32768,
+      "observed_monotonic_ns": 3093383977614402
+    },
+    {
+      "tick": 33024,
+      "observed_monotonic_ns": 3093384960578233
+    },
+    {
+      "tick": 33280,
+      "observed_monotonic_ns": 3093385811225942
+    },
+    {
+      "tick": 33536,
+      "observed_monotonic_ns": 3093386753763054
+    },
+    {
+      "tick": 33792,
+      "observed_monotonic_ns": 3093387460188451
+    },
+    {
+      "tick": 34048,
+      "observed_monotonic_ns": 3093388259241576
+    },
+    {
+      "tick": 34304,
+      "observed_monotonic_ns": 3093389099099337
+    },
+    {
+      "tick": 34560,
+      "observed_monotonic_ns": 3093389938573322
+    },
+    {
+      "tick": 34816,
+      "observed_monotonic_ns": 3093390696639372
+    },
+    {
+      "tick": 35072,
+      "observed_monotonic_ns": 3093391311064797
+    },
+    {
+      "tick": 35328,
+      "observed_monotonic_ns": 3093392089071854
+    },
+    {
+      "tick": 35584,
+      "observed_monotonic_ns": 3093392785323680
+    },
+    {
+      "tick": 35840,
+      "observed_monotonic_ns": 3093393522397641
+    },
+    {
+      "tick": 36096,
+      "observed_monotonic_ns": 3093394269410447
+    },
+    {
+      "tick": 36352,
+      "observed_monotonic_ns": 3093395027337829
+    },
+    {
+      "tick": 36608,
+      "observed_monotonic_ns": 3093395611057570
+    },
+    {
+      "tick": 36864,
+      "observed_monotonic_ns": 3093396450867462
+    },
+    {
+      "tick": 37120,
+      "observed_monotonic_ns": 3093397292817287
+    },
+    {
+      "tick": 37376,
+      "observed_monotonic_ns": 3093397948624033
+    },
+    {
+      "tick": 37632,
+      "observed_monotonic_ns": 3093398645973591
+    },
+    {
+      "tick": 37888,
+      "observed_monotonic_ns": 3093399108557423
+    },
+    {
+      "tick": 38144,
+      "observed_monotonic_ns": 3093399764308391
+    },
+    {
+      "tick": 38400,
+      "observed_monotonic_ns": 3093400470837667
+    },
+    {
+      "tick": 38656,
+      "observed_monotonic_ns": 3093401239964692
+    },
+    {
+      "tick": 38912,
+      "observed_monotonic_ns": 3093401916618269
+    },
+    {
+      "tick": 39168,
+      "observed_monotonic_ns": 3093402644848049
+    },
+    {
+      "tick": 39424,
+      "observed_monotonic_ns": 3093403444021563
+    },
+    {
+      "tick": 39680,
+      "observed_monotonic_ns": 3093404171782826
+    },
+    {
+      "tick": 39936,
+      "observed_monotonic_ns": 3093404971560526
+    },
+    {
+      "tick": 40192,
+      "observed_monotonic_ns": 3093405638475458
+    },
+    {
+      "tick": 40448,
+      "observed_monotonic_ns": 3093406387320539
+    },
+    {
+      "tick": 40704,
+      "observed_monotonic_ns": 3093407054630617
+    },
+    {
+      "tick": 40960,
+      "observed_monotonic_ns": 3093407835150335
+    },
+    {
+      "tick": 41216,
+      "observed_monotonic_ns": 3093408542640595
+    },
+    {
+      "tick": 41472,
+      "observed_monotonic_ns": 3093409341344982
+    },
+    {
+      "tick": 41728,
+      "observed_monotonic_ns": 3093410264804261
+    },
+    {
+      "tick": 41984,
+      "observed_monotonic_ns": 3093411248451067
+    },
+    {
+      "tick": 42240,
+      "observed_monotonic_ns": 3093411975276127
+    },
+    {
+      "tick": 42496,
+      "observed_monotonic_ns": 3093412823566794
+    },
+    {
+      "tick": 42752,
+      "observed_monotonic_ns": 3093413672797833
+    },
+    {
+      "tick": 43008,
+      "observed_monotonic_ns": 3093414401126112
+    },
+    {
+      "tick": 43264,
+      "observed_monotonic_ns": 3093415149834744
+    },
+    {
+      "tick": 43520,
+      "observed_monotonic_ns": 3093416162467457
+    },
+    {
+      "tick": 43776,
+      "observed_monotonic_ns": 3093417004765950
+    },
+    {
+      "tick": 44032,
+      "observed_monotonic_ns": 3093417836162366
+    },
+    {
+      "tick": 44288,
+      "observed_monotonic_ns": 3093418636413142
+    },
+    {
+      "tick": 44544,
+      "observed_monotonic_ns": 3093419320905088
+    },
+    {
+      "tick": 44800,
+      "observed_monotonic_ns": 3093420088169498
+    },
+    {
+      "tick": 45056,
+      "observed_monotonic_ns": 3093420834925705
+    },
+    {
+      "tick": 45312,
+      "observed_monotonic_ns": 3093421614048494
+    },
+    {
+      "tick": 45568,
+      "observed_monotonic_ns": 3093422363080933
+    },
+    {
+      "tick": 45824,
+      "observed_monotonic_ns": 3093423111664067
+    },
+    {
+      "tick": 46080,
+      "observed_monotonic_ns": 3093423769041382
+    },
+    {
+      "tick": 46336,
+      "observed_monotonic_ns": 3093424476377582
+    },
+    {
+      "tick": 46592,
+      "observed_monotonic_ns": 3093425112546990
+    },
+    {
+      "tick": 46848,
+      "observed_monotonic_ns": 3093425779574300
+    },
+    {
+      "tick": 47104,
+      "observed_monotonic_ns": 3093426302398450
+    },
+    {
+      "tick": 47360,
+      "observed_monotonic_ns": 3093427081724137
+    },
+    {
+      "tick": 47616,
+      "observed_monotonic_ns": 3093427871633142
+    },
+    {
+      "tick": 47872,
+      "observed_monotonic_ns": 3093428538181536
+    },
+    {
+      "tick": 48128,
+      "observed_monotonic_ns": 3093429264849578
+    },
+    {
+      "tick": 48384,
+      "observed_monotonic_ns": 3093429970786359
+    },
+    {
+      "tick": 48640,
+      "observed_monotonic_ns": 3093430554364711
+    },
+    {
+      "tick": 48896,
+      "observed_monotonic_ns": 3093431168718787
+    },
+    {
+      "tick": 49152,
+      "observed_monotonic_ns": 3093432027990699
+    },
+    {
+      "tick": 49408,
+      "observed_monotonic_ns": 3093432856350879
+    },
+    {
+      "tick": 49664,
+      "observed_monotonic_ns": 3093433532481339
+    },
+    {
+      "tick": 49920,
+      "observed_monotonic_ns": 3093434298999505
+    },
+    {
+      "tick": 50176,
+      "observed_monotonic_ns": 3093435049236436
+    },
+    {
+      "tick": 50432,
+      "observed_monotonic_ns": 3093435949781240
+    },
+    {
+      "tick": 50688,
+      "observed_monotonic_ns": 3093436738281667
+    },
+    {
+      "tick": 50944,
+      "observed_monotonic_ns": 3093437496279858
+    },
+    {
+      "tick": 51200,
+      "observed_monotonic_ns": 3093438457828173
+    },
+    {
+      "tick": 51456,
+      "observed_monotonic_ns": 3093439297356807
+    },
+    {
+      "tick": 51712,
+      "observed_monotonic_ns": 3093440004577549
+    },
+    {
+      "tick": 51968,
+      "observed_monotonic_ns": 3093440833267006
+    },
+    {
+      "tick": 52224,
+      "observed_monotonic_ns": 3093441622603276
+    },
+    {
+      "tick": 52480,
+      "observed_monotonic_ns": 3093442432353289
+    },
+    {
+      "tick": 52736,
+      "observed_monotonic_ns": 3093443139343512
+    },
+    {
+      "tick": 52992,
+      "observed_monotonic_ns": 3093443949780069
+    },
+    {
+      "tick": 53248,
+      "observed_monotonic_ns": 3093444614575837
+    },
+    {
+      "tick": 53504,
+      "observed_monotonic_ns": 3093445238342490
+    },
+    {
+      "tick": 53760,
+      "observed_monotonic_ns": 3093445913291810
+    },
+    {
+      "tick": 54016,
+      "observed_monotonic_ns": 3093446630363315
+    },
+    {
+      "tick": 54272,
+      "observed_monotonic_ns": 3093447449270978
+    },
+    {
+      "tick": 54528,
+      "observed_monotonic_ns": 3093448299806487
+    },
+    {
+      "tick": 54784,
+      "observed_monotonic_ns": 3093449058642402
+    },
+    {
+      "tick": 55040,
+      "observed_monotonic_ns": 3093449942558624
+    },
+    {
+      "tick": 55296,
+      "observed_monotonic_ns": 3093450730055278
+    },
+    {
+      "tick": 55552,
+      "observed_monotonic_ns": 3093451487456544
+    },
+    {
+      "tick": 55808,
+      "observed_monotonic_ns": 3093452316367219
+    },
+    {
+      "tick": 56064,
+      "observed_monotonic_ns": 3093453156176171
+    },
+    {
+      "tick": 56320,
+      "observed_monotonic_ns": 3093453953782138
+    },
+    {
+      "tick": 56576,
+      "observed_monotonic_ns": 3093454751123086
+    },
+    {
+      "tick": 56832,
+      "observed_monotonic_ns": 3093455437076761
+    },
+    {
+      "tick": 57088,
+      "observed_monotonic_ns": 3093456214923199
+    },
+    {
+      "tick": 57344,
+      "observed_monotonic_ns": 3093456716239504
+    },
+    {
+      "tick": 57600,
+      "observed_monotonic_ns": 3093457526037356
+    },
+    {
+      "tick": 57856,
+      "observed_monotonic_ns": 3093458191628068
+    },
+    {
+      "tick": 58112,
+      "observed_monotonic_ns": 3093459091814515
+    },
+    {
+      "tick": 58368,
+      "observed_monotonic_ns": 3093459993187714
+    },
+    {
+      "tick": 58624,
+      "observed_monotonic_ns": 3093460760760851
+    },
+    {
+      "tick": 58880,
+      "observed_monotonic_ns": 3093461437115719
+    },
+    {
+      "tick": 59136,
+      "observed_monotonic_ns": 3093462094679833
+    },
+    {
+      "tick": 59392,
+      "observed_monotonic_ns": 3093462742296262
+    },
+    {
+      "tick": 59648,
+      "observed_monotonic_ns": 3093463523346196
+    },
+    {
+      "tick": 59904,
+      "observed_monotonic_ns": 3093464294894263
+    },
+    {
+      "tick": 60160,
+      "observed_monotonic_ns": 3093465066326271
+    },
+    {
+      "tick": 60416,
+      "observed_monotonic_ns": 3093465982895822
+    },
+    {
+      "tick": 60672,
+      "observed_monotonic_ns": 3093466961363177
+    },
+    {
+      "tick": 60928,
+      "observed_monotonic_ns": 3093467795143755
+    },
+    {
+      "tick": 61184,
+      "observed_monotonic_ns": 3093468782333474
+    },
+    {
+      "tick": 61440,
+      "observed_monotonic_ns": 3093469873090196
+    },
+    {
+      "tick": 61696,
+      "observed_monotonic_ns": 3093470869938500
+    },
+    {
+      "tick": 61952,
+      "observed_monotonic_ns": 3093471679837002
+    },
+    {
+      "tick": 62208,
+      "observed_monotonic_ns": 3093472428223647
+    },
+    {
+      "tick": 62464,
+      "observed_monotonic_ns": 3093473381632375
+    },
+    {
+      "tick": 62720,
+      "observed_monotonic_ns": 3093474246303655
+    },
+    {
+      "tick": 62976,
+      "observed_monotonic_ns": 3093475354035386
+    },
+    {
+      "tick": 63232,
+      "observed_monotonic_ns": 3093476378162491
+    },
+    {
+      "tick": 63488,
+      "observed_monotonic_ns": 3093477350746222
+    },
+    {
+      "tick": 63744,
+      "observed_monotonic_ns": 3093478374426209
+    },
+    {
+      "tick": 64000,
+      "observed_monotonic_ns": 3093479265063720
+    },
+    {
+      "tick": 64256,
+      "observed_monotonic_ns": 3093480043364775
+    },
+    {
+      "tick": 64512,
+      "observed_monotonic_ns": 3093481028280171
+    },
+    {
+      "tick": 64768,
+      "observed_monotonic_ns": 3093481911787937
+    },
+    {
+      "tick": 65024,
+      "observed_monotonic_ns": 3093482682450090
+    },
+    {
+      "tick": 65280,
+      "observed_monotonic_ns": 3093483443575627
+    },
+    {
+      "tick": 65536,
+      "observed_monotonic_ns": 3093484039420955
+    },
+    {
+      "tick": 65792,
+      "observed_monotonic_ns": 3093484892388486
+    },
+    {
+      "tick": 66048,
+      "observed_monotonic_ns": 3093485756857138
+    },
+    {
+      "tick": 66304,
+      "observed_monotonic_ns": 3093486815664575
+    },
+    {
+      "tick": 66560,
+      "observed_monotonic_ns": 3093487692775560
+    },
+    {
+      "tick": 66816,
+      "observed_monotonic_ns": 3093488379517809
+    },
+    {
+      "tick": 67072,
+      "observed_monotonic_ns": 3093489035661023
+    },
+    {
+      "tick": 67328,
+      "observed_monotonic_ns": 3093489766216255
+    },
+    {
+      "tick": 67584,
+      "observed_monotonic_ns": 3093490486212788
+    },
+    {
+      "tick": 67840,
+      "observed_monotonic_ns": 3093491299108527
+    },
+    {
+      "tick": 68096,
+      "observed_monotonic_ns": 3093491895775539
+    },
+    {
+      "tick": 68352,
+      "observed_monotonic_ns": 3093492317742254
+    },
+    {
+      "tick": 68608,
+      "observed_monotonic_ns": 3093492832315276
+    },
+    {
+      "tick": 68864,
+      "observed_monotonic_ns": 3093493316064216
+    },
+    {
+      "tick": 69120,
+      "observed_monotonic_ns": 3093493903057072
+    },
+    {
+      "tick": 69376,
+      "observed_monotonic_ns": 3093494602728362
+    },
+    {
+      "tick": 69632,
+      "observed_monotonic_ns": 3093495261144738
+    },
+    {
+      "tick": 69888,
+      "observed_monotonic_ns": 3093495847765967
+    },
+    {
+      "tick": 70144,
+      "observed_monotonic_ns": 3093496423500020
+    },
+    {
+      "tick": 70400,
+      "observed_monotonic_ns": 3093497041120360
+    },
+    {
+      "tick": 70656,
+      "observed_monotonic_ns": 3093497534674175
+    },
+    {
+      "tick": 70912,
+      "observed_monotonic_ns": 3093498048918860
+    },
+    {
+      "tick": 71168,
+      "observed_monotonic_ns": 3093498643945804
+    },
+    {
+      "tick": 71424,
+      "observed_monotonic_ns": 3093499238255484
+    },
+    {
+      "tick": 71680,
+      "observed_monotonic_ns": 3093499832353925
+    },
+    {
+      "tick": 71936,
+      "observed_monotonic_ns": 3093500469477026
+    },
+    {
+      "tick": 72192,
+      "observed_monotonic_ns": 3093501125107124
+    },
+    {
+      "tick": 72448,
+      "observed_monotonic_ns": 3093501740711240
+    },
+    {
+      "tick": 72704,
+      "observed_monotonic_ns": 3093502388604887
+    },
+    {
+      "tick": 72960,
+      "observed_monotonic_ns": 3093502862360524
+    },
+    {
+      "tick": 73216,
+      "observed_monotonic_ns": 3093503471244412
+    },
+    {
+      "tick": 73472,
+      "observed_monotonic_ns": 3093504048919729
+    },
+    {
+      "tick": 73728,
+      "observed_monotonic_ns": 3093504635449549
+    },
+    {
+      "tick": 73984,
+      "observed_monotonic_ns": 3093505305936793
+    },
+    {
+      "tick": 74240,
+      "observed_monotonic_ns": 3093505892355503
+    },
+    {
+      "tick": 74496,
+      "observed_monotonic_ns": 3093506469216887
+    },
+    {
+      "tick": 74752,
+      "observed_monotonic_ns": 3093507157846601
+    },
+    {
+      "tick": 75008,
+      "observed_monotonic_ns": 3093507756078031
+    },
+    {
+      "tick": 75264,
+      "observed_monotonic_ns": 3093508366478967
+    },
+    {
+      "tick": 75520,
+      "observed_monotonic_ns": 3093508894299168
+    },
+    {
+      "tick": 75776,
+      "observed_monotonic_ns": 3093509371063121
+    },
+    {
+      "tick": 76032,
+      "observed_monotonic_ns": 3093509855877193
+    },
+    {
+      "tick": 76288,
+      "observed_monotonic_ns": 3093510403872359
+    },
+    {
+      "tick": 76544,
+      "observed_monotonic_ns": 3093511025205911
+    },
+    {
+      "tick": 76800,
+      "observed_monotonic_ns": 3093511655272435
+    },
+    {
+      "tick": 77056,
+      "observed_monotonic_ns": 3093512203679848
+    },
+    {
+      "tick": 77312,
+      "observed_monotonic_ns": 3093512718723137
+    },
+    {
+      "tick": 77568,
+      "observed_monotonic_ns": 3093513387787052
+    },
+    {
+      "tick": 77824,
+      "observed_monotonic_ns": 3093513912244769
+    },
+    {
+      "tick": 78080,
+      "observed_monotonic_ns": 3093514568467783
+    },
+    {
+      "tick": 78336,
+      "observed_monotonic_ns": 3093515317451603
+    },
+    {
+      "tick": 78592,
+      "observed_monotonic_ns": 3093515799667545
+    },
+    {
+      "tick": 78848,
+      "observed_monotonic_ns": 3093516282152394
+    },
+    {
+      "tick": 79104,
+      "observed_monotonic_ns": 3093516725119198
+    },
+    {
+      "tick": 79360,
+      "observed_monotonic_ns": 3093517219476426
+    },
+    {
+      "tick": 79616,
+      "observed_monotonic_ns": 3093517734209478
+    },
+    {
+      "tick": 79872,
+      "observed_monotonic_ns": 3093518238185372
+    },
+    {
+      "tick": 80128,
+      "observed_monotonic_ns": 3093518577752571
+    },
+    {
+      "tick": 80384,
+      "observed_monotonic_ns": 3093519019284345
+    },
+    {
+      "tick": 80640,
+      "observed_monotonic_ns": 3093519460839350
+    },
+    {
+      "tick": 80896,
+      "observed_monotonic_ns": 3093519954307515
+    },
+    {
+      "tick": 81152,
+      "observed_monotonic_ns": 3093520529804669
+    },
+    {
+      "tick": 81408,
+      "observed_monotonic_ns": 3093521105678711
+    },
+    {
+      "tick": 81664,
+      "observed_monotonic_ns": 3093521795101419
+    },
+    {
+      "tick": 81920,
+      "observed_monotonic_ns": 3093522494527710
+    },
+    {
+      "tick": 82176,
+      "observed_monotonic_ns": 3093523080815620
+    },
+    {
+      "tick": 82432,
+      "observed_monotonic_ns": 3093523626035408
+    },
+    {
+      "tick": 82688,
+      "observed_monotonic_ns": 3093524172531025
+    },
+    {
+      "tick": 82944,
+      "observed_monotonic_ns": 3093524728629309
+    },
+    {
+      "tick": 83200,
+      "observed_monotonic_ns": 3093525224549145
+    },
+    {
+      "tick": 83456,
+      "observed_monotonic_ns": 3093525708191826
+    },
+    {
+      "tick": 83712,
+      "observed_monotonic_ns": 3093526253678151
+    },
+    {
+      "tick": 83968,
+      "observed_monotonic_ns": 3093526789448141
+    },
+    {
+      "tick": 84224,
+      "observed_monotonic_ns": 3093527344228124
+    },
+    {
+      "tick": 84480,
+      "observed_monotonic_ns": 3093527877714852
+    },
+    {
+      "tick": 84736,
+      "observed_monotonic_ns": 3093528329221469
+    },
+    {
+      "tick": 84992,
+      "observed_monotonic_ns": 3093528842657251
+    },
+    {
+      "tick": 85248,
+      "observed_monotonic_ns": 3093529315181297
+    },
+    {
+      "tick": 85504,
+      "observed_monotonic_ns": 3093529880843997
+    },
+    {
+      "tick": 85760,
+      "observed_monotonic_ns": 3093530324172818
+    },
+    {
+      "tick": 86016,
+      "observed_monotonic_ns": 3093530982302657
+    },
+    {
+      "tick": 86272,
+      "observed_monotonic_ns": 3093531515284088
+    },
+    {
+      "tick": 86528,
+      "observed_monotonic_ns": 3093532029432215
+    },
+    {
+      "tick": 86784,
+      "observed_monotonic_ns": 3093532727172899
+    },
+    {
+      "tick": 87040,
+      "observed_monotonic_ns": 3093533189185536
+    },
+    {
+      "tick": 87296,
+      "observed_monotonic_ns": 3093533549141488
+    },
+    {
+      "tick": 87552,
+      "observed_monotonic_ns": 3093534104135940
+    },
+    {
+      "tick": 87808,
+      "observed_monotonic_ns": 3093534597232178
+    },
+    {
+      "tick": 88064,
+      "observed_monotonic_ns": 3093535213418909
+    },
+    {
+      "tick": 88320,
+      "observed_monotonic_ns": 3093535716735869
+    },
+    {
+      "tick": 88576,
+      "observed_monotonic_ns": 3093536116890192
+    },
+    {
+      "tick": 88832,
+      "observed_monotonic_ns": 3093536578725260
+    },
+    {
+      "tick": 89088,
+      "observed_monotonic_ns": 3093536970216159
+    },
+    {
+      "tick": 89344,
+      "observed_monotonic_ns": 3093537340015596
+    },
+    {
+      "tick": 89600,
+      "observed_monotonic_ns": 3093537699728709
+    },
+    {
+      "tick": 89856,
+      "observed_monotonic_ns": 3093538161467168
+    },
+    {
+      "tick": 90112,
+      "observed_monotonic_ns": 3093538685208491
+    },
+    {
+      "tick": 90368,
+      "observed_monotonic_ns": 3093539188680219
+    },
+    {
+      "tick": 90624,
+      "observed_monotonic_ns": 3093539897232560
+    },
+    {
+      "tick": 90880,
+      "observed_monotonic_ns": 3093540349060706
+    },
+    {
+      "tick": 91136,
+      "observed_monotonic_ns": 3093540811440420
+    },
+    {
+      "tick": 91392,
+      "observed_monotonic_ns": 3093541263582033
+    },
+    {
+      "tick": 91648,
+      "observed_monotonic_ns": 3093541695539491
+    },
+    {
+      "tick": 91904,
+      "observed_monotonic_ns": 3093542168018748
+    },
+    {
+      "tick": 92160,
+      "observed_monotonic_ns": 3093542610861762
+    },
+    {
+      "tick": 92416,
+      "observed_monotonic_ns": 3093542919348110
+    },
+    {
+      "tick": 92672,
+      "observed_monotonic_ns": 3093543320622384
+    },
+    {
+      "tick": 92928,
+      "observed_monotonic_ns": 3093543791293214
+    },
+    {
+      "tick": 93184,
+      "observed_monotonic_ns": 3093544398425636
+    },
+    {
+      "tick": 93440,
+      "observed_monotonic_ns": 3093544850565098
+    },
+    {
+      "tick": 93696,
+      "observed_monotonic_ns": 3093545354176905
+    },
+    {
+      "tick": 93952,
+      "observed_monotonic_ns": 3093545714144207
+    },
+    {
+      "tick": 94208,
+      "observed_monotonic_ns": 3093546175982556
+    },
+    {
+      "tick": 94464,
+      "observed_monotonic_ns": 3093546771713925
+    },
+    {
+      "tick": 94720,
+      "observed_monotonic_ns": 3093547182600995
+    },
+    {
+      "tick": 94976,
+      "observed_monotonic_ns": 3093547593805742
+    },
+    {
+      "tick": 95232,
+      "observed_monotonic_ns": 3093548055641201
+    },
+    {
+      "tick": 95488,
+      "observed_monotonic_ns": 3093548610169507
+    },
+    {
+      "tick": 95744,
+      "observed_monotonic_ns": 3093549061914492
+    },
+    {
+      "tick": 96000,
+      "observed_monotonic_ns": 3093549698607876
+    },
+    {
+      "tick": 96256,
+      "observed_monotonic_ns": 3093550212189867
+    },
+    {
+      "tick": 96512,
+      "observed_monotonic_ns": 3093550602561605
+    },
+    {
+      "tick": 96768,
+      "observed_monotonic_ns": 3093551084772967
+    },
+    {
+      "tick": 97024,
+      "observed_monotonic_ns": 3093551485218807
+    },
+    {
+      "tick": 97280,
+      "observed_monotonic_ns": 3093551864994797
+    },
+    {
+      "tick": 97536,
+      "observed_monotonic_ns": 3093552398343815
+    },
+    {
+      "tick": 97792,
+      "observed_monotonic_ns": 3093552716864385
+    },
+    {
+      "tick": 98048,
+      "observed_monotonic_ns": 3093553004919100
+    },
+    {
+      "tick": 98304,
+      "observed_monotonic_ns": 3093553405245132
+    },
+    {
+      "tick": 98560,
+      "observed_monotonic_ns": 3093553775492015
+    },
+    {
+      "tick": 98816,
+      "observed_monotonic_ns": 3093554176403201
+    },
+    {
+      "tick": 99072,
+      "observed_monotonic_ns": 3093554607883624
+    },
+    {
+      "tick": 99328,
+      "observed_monotonic_ns": 3093555019052651
+    },
+    {
+      "tick": 99584,
+      "observed_monotonic_ns": 3093555439499638
+    },
+    {
+      "tick": 99840,
+      "observed_monotonic_ns": 3093555809660892
+    },
+    {
+      "tick": 100096,
+      "observed_monotonic_ns": 3093556251437934
+    },
+    {
+      "tick": 100352,
+      "observed_monotonic_ns": 3093556683293483
+    },
+    {
+      "tick": 100608,
+      "observed_monotonic_ns": 3093557084418408
+    },
+    {
+      "tick": 100864,
+      "observed_monotonic_ns": 3093557412676684
+    },
+    {
+      "tick": 101120,
+      "observed_monotonic_ns": 3093557761872169
+    },
+    {
+      "tick": 101376,
+      "observed_monotonic_ns": 3093558121245175
+    },
+    {
+      "tick": 101632,
+      "observed_monotonic_ns": 3093558593563283
+    },
+    {
+      "tick": 101888,
+      "observed_monotonic_ns": 3093559107176523
+    },
+    {
+      "tick": 102144,
+      "observed_monotonic_ns": 3093559538395057
+    },
+    {
+      "tick": 102400,
+      "observed_monotonic_ns": 3093559929350360
+    },
+    {
+      "tick": 102656,
+      "observed_monotonic_ns": 3093560342390804
+    },
+    {
+      "tick": 102912,
+      "observed_monotonic_ns": 3093560795014983
+    },
+    {
+      "tick": 103168,
+      "observed_monotonic_ns": 3093561257551216
+    },
+    {
+      "tick": 103424,
+      "observed_monotonic_ns": 3093561791939797
+    },
+    {
+      "tick": 103680,
+      "observed_monotonic_ns": 3093562212646262
+    },
+    {
+      "tick": 103936,
+      "observed_monotonic_ns": 3093562582825055
+    },
+    {
+      "tick": 104192,
+      "observed_monotonic_ns": 3093562994166402
+    },
+    {
+      "tick": 104448,
+      "observed_monotonic_ns": 3093563569942524
+    },
+    {
+      "tick": 104704,
+      "observed_monotonic_ns": 3093564125417422
+    },
+    {
+      "tick": 104960,
+      "observed_monotonic_ns": 3093564618914727
+    },
+    {
+      "tick": 105216,
+      "observed_monotonic_ns": 3093565009733922
+    },
+    {
+      "tick": 105472,
+      "observed_monotonic_ns": 3093565533596283
+    },
+    {
+      "tick": 105728,
+      "observed_monotonic_ns": 3093566069071345
+    },
+    {
+      "tick": 105984,
+      "observed_monotonic_ns": 3093566635133232
+    },
+    {
+      "tick": 106240,
+      "observed_monotonic_ns": 3093567180104011
+    },
+    {
+      "tick": 106496,
+      "observed_monotonic_ns": 3093567570776767
+    },
+    {
+      "tick": 106752,
+      "observed_monotonic_ns": 3093567982266723
+    },
+    {
+      "tick": 107008,
+      "observed_monotonic_ns": 3093568445196963
+    },
+    {
+      "tick": 107264,
+      "observed_monotonic_ns": 3093568774994637
+    },
+    {
+      "tick": 107520,
+      "observed_monotonic_ns": 3093569154825266
+    },
+    {
+      "tick": 107776,
+      "observed_monotonic_ns": 3093569617921664
+    },
+    {
+      "tick": 108032,
+      "observed_monotonic_ns": 3093570019684945
+    },
+    {
+      "tick": 108288,
+      "observed_monotonic_ns": 3093570587080201
+    },
+    {
+      "tick": 108544,
+      "observed_monotonic_ns": 3093571103468030
+    },
+    {
+      "tick": 108800,
+      "observed_monotonic_ns": 3093571525806992
+    },
+    {
+      "tick": 109056,
+      "observed_monotonic_ns": 3093571948967158
+    },
+    {
+      "tick": 109312,
+      "observed_monotonic_ns": 3093572351570092
+    },
+    {
+      "tick": 109568,
+      "observed_monotonic_ns": 3093572795638547
+    },
+    {
+      "tick": 109824,
+      "observed_monotonic_ns": 3093573362696656
+    },
+    {
+      "tick": 110080,
+      "observed_monotonic_ns": 3093573868644956
+    },
+    {
+      "tick": 110336,
+      "observed_monotonic_ns": 3093574425519193
+    },
+    {
+      "tick": 110592,
+      "observed_monotonic_ns": 3093574910640022
+    },
+    {
+      "tick": 110848,
+      "observed_monotonic_ns": 3093575343125157
+    },
+    {
+      "tick": 111104,
+      "observed_monotonic_ns": 3093575838923874
+    },
+    {
+      "tick": 111360,
+      "observed_monotonic_ns": 3093576333368882
+    },
+    {
+      "tick": 111616,
+      "observed_monotonic_ns": 3093576828734932
+    },
+    {
+      "tick": 111872,
+      "observed_monotonic_ns": 3093577333836368
+    },
+    {
+      "tick": 112128,
+      "observed_monotonic_ns": 3093577859986782
+    },
+    {
+      "tick": 112384,
+      "observed_monotonic_ns": 3093578375021261
+    },
+    {
+      "tick": 112640,
+      "observed_monotonic_ns": 3093578848662379
+    },
+    {
+      "tick": 112896,
+      "observed_monotonic_ns": 3093579547950811
+    },
+    {
+      "tick": 113152,
+      "observed_monotonic_ns": 3093580134981237
+    },
+    {
+      "tick": 113408,
+      "observed_monotonic_ns": 3093580638937861
+    },
+    {
+      "tick": 113664,
+      "observed_monotonic_ns": 3093581009521521
+    },
+    {
+      "tick": 113920,
+      "observed_monotonic_ns": 3093581452318436
+    },
+    {
+      "tick": 114176,
+      "observed_monotonic_ns": 3093581957285953
+    },
+    {
+      "tick": 114432,
+      "observed_monotonic_ns": 3093582349911213
+    },
+    {
+      "tick": 114688,
+      "observed_monotonic_ns": 3093582969967375
+    },
+    {
+      "tick": 114944,
+      "observed_monotonic_ns": 3093583621119828
+    },
+    {
+      "tick": 115200,
+      "observed_monotonic_ns": 3093584013329152
+    },
+    {
+      "tick": 115456,
+      "observed_monotonic_ns": 3093584774942115
+    },
+    {
+      "tick": 115712,
+      "observed_monotonic_ns": 3093585258498806
+    },
+    {
+      "tick": 115968,
+      "observed_monotonic_ns": 3093585628947577
+    },
+    {
+      "tick": 116224,
+      "observed_monotonic_ns": 3093585999341689
+    },
+    {
+      "tick": 116480,
+      "observed_monotonic_ns": 3093586431278217
+    },
+    {
+      "tick": 116736,
+      "observed_monotonic_ns": 3093586924990550
+    },
+    {
+      "tick": 116992,
+      "observed_monotonic_ns": 3093587378282535
+    },
+    {
+      "tick": 117248,
+      "observed_monotonic_ns": 3093587851999572
+    },
+    {
+      "tick": 117504,
+      "observed_monotonic_ns": 3093588355814267
+    },
+    {
+      "tick": 117760,
+      "observed_monotonic_ns": 3093588995677907
+    },
+    {
+      "tick": 118016,
+      "observed_monotonic_ns": 3093589510043461
+    },
+    {
+      "tick": 118272,
+      "observed_monotonic_ns": 3093589880899559
+    },
+    {
+      "tick": 118528,
+      "observed_monotonic_ns": 3093590364126253
+    },
+    {
+      "tick": 118784,
+      "observed_monotonic_ns": 3093590828328614
+    },
+    {
+      "tick": 119040,
+      "observed_monotonic_ns": 3093591240480664
+    },
+    {
+      "tick": 119296,
+      "observed_monotonic_ns": 3093591622126709
+    },
+    {
+      "tick": 119552,
+      "observed_monotonic_ns": 3093591972050818
+    },
+    {
+      "tick": 119808,
+      "observed_monotonic_ns": 3093592362424776
+    },
+    {
+      "tick": 120064,
+      "observed_monotonic_ns": 3093592702522691
+    },
+    {
+      "tick": 120832,
+      "observed_monotonic_ns": 3093593702217673
+    },
+    {
+      "tick": 121088,
+      "observed_monotonic_ns": 3093594103174160
+    },
+    {
+      "tick": 121344,
+      "observed_monotonic_ns": 3093594463572288
+    },
+    {
+      "tick": 121600,
+      "observed_monotonic_ns": 3093594979600069
+    },
+    {
+      "tick": 121856,
+      "observed_monotonic_ns": 3093595381396950
+    },
+    {
+      "tick": 122112,
+      "observed_monotonic_ns": 3093595711362932
+    },
+    {
+      "tick": 122368,
+      "observed_monotonic_ns": 3093596010384603
+    },
+    {
+      "tick": 122624,
+      "observed_monotonic_ns": 3093596265795319
+    },
+    {
+      "tick": 122880,
+      "observed_monotonic_ns": 3093596554682167
+    },
+    {
+      "tick": 123136,
+      "observed_monotonic_ns": 3093596874267979
+    },
+    {
+      "tick": 123392,
+      "observed_monotonic_ns": 3093597203795855
+    },
+    {
+      "tick": 123648,
+      "observed_monotonic_ns": 3093597440694133
+    },
+    {
+      "tick": 123904,
+      "observed_monotonic_ns": 3093597691712833
+    },
+    {
+      "tick": 124160,
+      "observed_monotonic_ns": 3093598033715613
+    },
+    {
+      "tick": 124416,
+      "observed_monotonic_ns": 3093598436962332
+    },
+    {
+      "tick": 124672,
+      "observed_monotonic_ns": 3093598830856893
+    },
+    {
+      "tick": 124928,
+      "observed_monotonic_ns": 3093599297614173
+    },
+    {
+      "tick": 125184,
+      "observed_monotonic_ns": 3093599681725080
+    },
+    {
+      "tick": 125440,
+      "observed_monotonic_ns": 3093599930425017
+    },
+    {
+      "tick": 125696,
+      "observed_monotonic_ns": 3093600168940853
+    },
+    {
+      "tick": 125952,
+      "observed_monotonic_ns": 3093600386264452
+    },
+    {
+      "tick": 126208,
+      "observed_monotonic_ns": 3093600614843804
+    },
+    {
+      "tick": 126464,
+      "observed_monotonic_ns": 3093600832330532
+    },
+    {
+      "tick": 126720,
+      "observed_monotonic_ns": 3093601049576921
+    },
+    {
+      "tick": 126976,
+      "observed_monotonic_ns": 3093601288123126
+    },
+    {
+      "tick": 127232,
+      "observed_monotonic_ns": 3093601516146793
+    },
+    {
+      "tick": 127488,
+      "observed_monotonic_ns": 3093601755095055
+    },
+    {
+      "tick": 127744,
+      "observed_monotonic_ns": 3093601983133021
+    },
+    {
+      "tick": 128000,
+      "observed_monotonic_ns": 3093602242440257
+    }
+  ],
+  "game_exit_observed_ns": 3093603015451933,
+  "sampler_reaped_ns": 3093603779215359,
+  "stop_scope": "Sampler SIGINT requested after firstobserved128000 progress boundary, before128192gamecap. Beginfirstobserved>=120000 normally120064; nominalobserved7936ticks. Poll/spawn/stop latency andprogress256tick granularity mean boundaries areapproximate, notexactwindowcounts; rare skippedobservations mustbereviewed.",
+  "native_performance_claimed": false
+}

@@ -1,0 +1,219 @@
+{
+  "passed": true,
+  "source": "ee45c0a0389660bc7d2885b572b94b1a2b01d7a3",
+  "native_invocations": 18,
+  "gcs_records": 59392,
+  "world_records": 59392,
+  "all_six_profile_intents": true,
+  "save_load_full_suffix_records": 4096,
+  "cpu_participants": [
+    1,
+    4,
+    12
+  ],
+  "records": [
+    {
+      "id": "d80-small-n1-off",
+      "passed": true,
+      "records": 2048,
+      "telemetry_mode": "off",
+      "trace_lost_events": null,
+      "gpu_fields": 0,
+      "gpu_error": "",
+      "passed_receipt_sha256": "a83ff5b2596199664b8e8acb70ada82a4bde31048f2d5d769feca81c543e573b",
+      "continuation": null
+    },
+    {
+      "id": "d80-small-n4-waits",
+      "passed": true,
+      "records": 2048,
+      "telemetry_mode": "waits",
+      "trace_lost_events": null,
+      "gpu_fields": 0,
+      "gpu_error": "",
+      "passed_receipt_sha256": "927ebd6c90aa6009a8391f3ed0fd0494e6385af3aca91c9831c34e59b1b811ec",
+      "continuation": null
+    },
+    {
+      "id": "d80-small-n12-trace",
+      "passed": true,
+      "records": 2048,
+      "telemetry_mode": "trace",
+      "trace_lost_events": 12233,
+      "gpu_fields": 0,
+      "gpu_error": "",
+      "passed_receipt_sha256": "aeaa3828db5765aecd1111f0c0627a865245bfec10b9c4cee1364ac3984f1f8c",
+      "continuation": null
+    },
+    {
+      "id": "d80-mixed-n1-off",
+      "passed": true,
+      "records": 2048,
+      "telemetry_mode": "off",
+      "trace_lost_events": null,
+      "gpu_fields": 0,
+      "gpu_error": "",
+      "passed_receipt_sha256": "08790571a51c1206c174caa19d96a80ad0d10837c5cd2678780ac54514f85369",
+      "continuation": null
+    },
+    {
+      "id": "d80-mixed-n4-waits",
+      "passed": true,
+      "records": 2048,
+      "telemetry_mode": "waits",
+      "trace_lost_events": null,
+      "gpu_fields": 0,
+      "gpu_error": "",
+      "passed_receipt_sha256": "96e2b082f3acf3c9336f33308c5549ed6d0a246df1d8c0e202590188436e977d",
+      "continuation": null
+    },
+    {
+      "id": "d80-mixed-n12-trace",
+      "passed": true,
+      "records": 2048,
+      "telemetry_mode": "trace",
+      "trace_lost_events": 12429,
+      "gpu_fields": 0,
+      "gpu_error": "",
+      "passed_receipt_sha256": "ea53edf354368452632da93f05cd9bb97e97694758525188b1191e0857c298f4",
+      "continuation": null
+    },
+    {
+      "id": "d80-mature-n1-off",
+      "passed": true,
+      "records": 8192,
+      "telemetry_mode": "off",
+      "trace_lost_events": null,
+      "gpu_fields": 0,
+      "gpu_error": "",
+      "passed_receipt_sha256": "9b6433947a662c367b2aa966ed1f46f8291dfaea0558c6033e466a7c95a1ef33",
+      "continuation": null
+    },
+    {
+      "id": "d80-mature-n4-waits",
+      "passed": true,
+      "records": 8192,
+      "telemetry_mode": "waits",
+      "trace_lost_events": null,
+      "gpu_fields": 0,
+      "gpu_error": "",
+      "passed_receipt_sha256": "582447a1b54091f2dcaef57972d7c3f8276a8176da05939a1ce53834dd3a316e",
+      "continuation": null
+    },
+    {
+      "id": "d80-mature-n12-trace",
+      "passed": true,
+      "records": 8192,
+      "telemetry_mode": "trace",
+      "trace_lost_events": 235100,
+      "gpu_fields": 0,
+      "gpu_error": "",
+      "passed_receipt_sha256": "b9783cb634317dc49244a467b1d25276641b5b649101582ae10dc02850602db7",
+      "continuation": null
+    },
+    {
+      "id": "d80-pg-n4-gpuon-off",
+      "passed": true,
+      "records": 2048,
+      "telemetry_mode": "off",
+      "trace_lost_events": null,
+      "gpu_fields": 1,
+      "gpu_error": "",
+      "passed_receipt_sha256": "23f63f350acc0d751e3dce1ab88422e5ffd4c6de0bb9a5c1cf4cc45140f0dce2",
+      "continuation": null
+    },
+    {
+      "id": "d80-pg-n12-gpuon-trace",
+      "passed": true,
+      "records": 2048,
+      "telemetry_mode": "trace",
+      "trace_lost_events": 12705,
+      "gpu_fields": 16,
+      "gpu_error": "",
+      "passed_receipt_sha256": "19e150cceb085f1fdea75567f3841999b09b2ca792f09781a0eacdea73ad14a9",
+      "continuation": null
+    },
+    {
+      "id": "d80-mature-save-n4-trace",
+      "passed": true,
+      "records": 4096,
+      "telemetry_mode": "trace",
+      "trace_lost_events": 99080,
+      "gpu_fields": 0,
+      "gpu_error": "",
+      "passed_receipt_sha256": "3e9e6ccce82959e37bb28a6a719343053132aa05c4d6abd9a59a60c34de2ad16",
+      "continuation": null
+    },
+    {
+      "id": "d80-mature-resume-n4-trace",
+      "passed": true,
+      "records": 4096,
+      "telemetry_mode": "trace",
+      "trace_lost_events": 52824,
+      "gpu_fields": 0,
+      "gpu_error": "",
+      "passed_receipt_sha256": "fe907aff84b09e2d90b09cafd74eae83d6d6f6cc1310c5db5a9a38b5f54dca0d",
+      "continuation": {
+        "world_suffix_records": 4096,
+        "detailed_suffix_records": 4096,
+        "aggregate_header_excluded": "existingcompare_save_continuation documented saveheader representation; same-start comparisons remain exactworld/GCS/replay"
+      }
+    },
+    {
+      "id": "d80-small-n4-eco-off",
+      "passed": true,
+      "records": 2048,
+      "telemetry_mode": "off",
+      "trace_lost_events": null,
+      "gpu_fields": 0,
+      "gpu_error": "",
+      "passed_receipt_sha256": "bff59a23d485eb1c838d4f1a0a833e105b4d8f91af831f50fbb5451bd4191404",
+      "continuation": null
+    },
+    {
+      "id": "d80-small-n4-balanced-off",
+      "passed": true,
+      "records": 2048,
+      "telemetry_mode": "off",
+      "trace_lost_events": null,
+      "gpu_fields": 0,
+      "gpu_error": "",
+      "passed_receipt_sha256": "d8958043397e86ed247eefe50fdc6ebb7788deea6f59bf87727abdf999376bfa",
+      "continuation": null
+    },
+    {
+      "id": "d80-small-n4-luxurious-off",
+      "passed": true,
+      "records": 2048,
+      "telemetry_mode": "off",
+      "trace_lost_events": null,
+      "gpu_fields": 0,
+      "gpu_error": "",
+      "passed_receipt_sha256": "8f30a65567a5b7c69757872e360f24f41b9d3af1755d54b8f83ef0b3d02bba03",
+      "continuation": null
+    },
+    {
+      "id": "d80-small-n4-fast-simulation-off",
+      "passed": true,
+      "records": 2048,
+      "telemetry_mode": "off",
+      "trace_lost_events": null,
+      "gpu_fields": 0,
+      "gpu_error": "",
+      "passed_receipt_sha256": "09c703db8117bd4da7f2e63a882dda89950b77fbc1fc02b9dd7f78a49fd9c9ac",
+      "continuation": null
+    },
+    {
+      "id": "d80-small-n4-efficient-throughput-off",
+      "passed": true,
+      "records": 2048,
+      "telemetry_mode": "off",
+      "trace_lost_events": null,
+      "gpu_fields": 0,
+      "gpu_error": "",
+      "passed_receipt_sha256": "fa6b18c5a1f0e71a080cc5a6c8d3f9656989eaf2da024937c6156e99f34f6d3e",
+      "continuation": null
+    }
+  ],
+  "scope": "Same setup per-tick GCS/world/RNG, whole replay/orders, save header and resume continuity. Telemetry bounded trace losses explicitly recorded; not a complete scheduler event graph. Profile intents still caller defaults pending tuning. No timing or thermal/physicalplatform qualification."
+}

@@ -1,0 +1,11 @@
+{
+  "all_identical": true,
+  "full_checksum_sha256": "c95bcc473064f6fb4c7b17470e53a6e8a1f33368970ee1b7083355ae87c93a4e",
+  "ticks": 8192,
+  "cases": [
+    "final-checksum-check-original",
+    "final-checksum-check-status-marker-off",
+    "final-checksum-check-status-marker-on"
+  ],
+  "qualification": "The automatic winner branch must additionally emit and match final CRC during the first full match; it is not exercised by a fixed8192-tick cap."
+}

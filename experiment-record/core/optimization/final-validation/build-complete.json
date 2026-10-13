@@ -1,0 +1,7 @@
+{
+  "complete": true,
+  "build_manifest": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/final-integration/build.json",
+  "build_manifest_sha256": "2df42aebca03f2727c8993cc6e7f70a8113402907004ddfa9e1a430b3bffd1a8",
+  "browser_manifest_sha256": "63875ba1d1595464710b0269271f17526e01497b9dac0506130f495892260ca8",
+  "final_tests_pending": true
+}

@@ -1,0 +1,149 @@
+{
+  "source": "ee45c0a0389660bc7d2885b572b94b1a2b01d7a3",
+  "source_tree": "c4f8f7ebd7888effb0800dd0b14e70f8fc2c3224",
+  "source_clean": true,
+  "flags_comparisons": {
+    "native-release": {
+      "argv_equal": true,
+      "environment_equal": true
+    },
+    "web-release": {
+      "argv_equal": true,
+      "environment_equal": true
+    },
+    "android-release": {
+      "argv_equal": true,
+      "environment_equal": true
+    },
+    "android-apk": {
+      "argv_equal": true,
+      "environment_equal": true
+    }
+  },
+  "binary_comparisons": {
+    "build/linux/client/release/src/glob2": {
+      "before_sha256": "18b640357036e457470338e092fb3108debc3ab252adbb631b0094d18852e36c",
+      "after_sha256": "18b640357036e457470338e092fb3108debc3ab252adbb631b0094d18852e36c",
+      "equal": true
+    },
+    "build/linux/client/release/test/glob2-unit-tests": {
+      "before_sha256": "e8ccb54f3f2596ec2cd6b4f85f61331a4c627066dfcc78fa3849af3bc6f71c4d",
+      "after_sha256": "1e1b9bf63d22649ec61d1e763cf3c17cb88d24cc7cd256c6494605671769c7ee",
+      "equal": false
+    },
+    "build/linux/client/release/test/glob2-engine-tests": {
+      "before_sha256": "62efaaa9791780903241e2b89a1c13a1c4abba9f27f0d1b6cc3c2e0b0feb21f3",
+      "after_sha256": "e065df0f9dd078b5cee551d619aae380bcff5a02f98e947af0c953419a98b216",
+      "equal": false
+    },
+    "build/linux/client/release/test/SoftwareRenderBenchmark": {
+      "before_sha256": "e07cefc8ed15935307b52b3fd51d971aff99d2ca27c2c1e37072e64dd58f9110",
+      "after_sha256": "e07cefc8ed15935307b52b3fd51d971aff99d2ca27c2c1e37072e64dd58f9110",
+      "equal": true
+    },
+    "build/linux/client/release/test/torus-render-benchmark": {
+      "before_sha256": "fac567e64cf74c5a62bc06ed700e8671fc86c7566cf5f7d060e216789dd3b37a",
+      "after_sha256": "fac567e64cf74c5a62bc06ed700e8671fc86c7566cf5f7d060e216789dd3b37a",
+      "equal": true
+    },
+    "build/emscripten/client/release/index.js": {
+      "before_sha256": "a89f65616bbcf68b97d72d62d861641a5c670dd810577f53910b1946cba961be",
+      "after_sha256": "df59c27504cafbd1fe63a44a28979bec71b46e475d6d73acba4364cf5427ed0c",
+      "equal": false
+    },
+    "build/emscripten/client/release/index.wasm": {
+      "before_sha256": "ece76f3701d442b43a30eca3a940583ba6bfc8c782e8eb4c67ab13da4d4c3b98",
+      "after_sha256": "ece76f3701d442b43a30eca3a940583ba6bfc8c782e8eb4c67ab13da4d4c3b98",
+      "equal": true
+    },
+    "build/emscripten/client/release/index.data": {
+      "before_sha256": "4260504966a4fcd88cef28ccb635824e9f7063816548d9e38fcf77a48c687f05",
+      "after_sha256": "4260504966a4fcd88cef28ccb635824e9f7063816548d9e38fcf77a48c687f05",
+      "equal": true
+    },
+    "build/emscripten/client/release/script-tests.js": {
+      "before_sha256": "c02b46f62759ed4fd57fe6886275bbac30b1989e087bd27fc0285402bc086de7",
+      "after_sha256": "55460c26f80a0e608fde61966dd5150946c6b823731d0209ddb30cbe297ce599",
+      "equal": false
+    },
+    "build/emscripten/client/release/script-tests.wasm": {
+      "before_sha256": "a8253891ef7aa0d44423da4875a874b097de6488b07ca4c346bfabac9c24064c",
+      "after_sha256": "add0ae0cfb52bc4494983fa8d8d55b690935b3b5daf22b9a2f043e0cf08984af",
+      "equal": false
+    },
+    "build/emscripten/client/release/script-tests.data": {
+      "before_sha256": "655200d3c97d2c3c9cba8fffbdbe72e1c1303185842a0d56a1b749f5f8c3c3b0",
+      "after_sha256": "37ecc83c91bf01fdb6435e47e29d5de4b300c66ef640f50341d1f1b576423fd8",
+      "equal": false
+    },
+    "build/emscripten/client/release/threaded/index.js": {
+      "before_sha256": "0d3db5634977431d57b72547aff200399ff3cfe65ff70061955a983e0e709dbb",
+      "after_sha256": "8668c5a3e57119ea30fd1604ca2cf8f0ef7f6d3d6720adf23b31e7fafd8dba12",
+      "equal": false
+    },
+    "build/emscripten/client/release/threaded/index.wasm": {
+      "before_sha256": "5c2f52d2797b4ac51711f114f35be3a481cc7e29f1a150ab0c67d36d46ee3248",
+      "after_sha256": "5c2f52d2797b4ac51711f114f35be3a481cc7e29f1a150ab0c67d36d46ee3248",
+      "equal": true
+    },
+    "build/emscripten/client/release/threaded/index.data": {
+      "before_sha256": "4260504966a4fcd88cef28ccb635824e9f7063816548d9e38fcf77a48c687f05",
+      "after_sha256": "4260504966a4fcd88cef28ccb635824e9f7063816548d9e38fcf77a48c687f05",
+      "equal": true
+    },
+    "build/emscripten/client/release/threaded/script-tests.js": {
+      "before_sha256": "bb4ecedae096c377fde54bc07c0118bad38c9407a9d7d571215c8d2b816cf059",
+      "after_sha256": "99a27df65f5fc6b6d547567673622ab1825d741df55a38ca2735194f9a1cdd78",
+      "equal": false
+    },
+    "build/emscripten/client/release/threaded/script-tests.wasm": {
+      "before_sha256": "0f636872ec840aedcf5c09f3cb601b256c2fd843793c8048d72893b0fc626f14",
+      "after_sha256": "c3b3b68fe4cd89b2ffe0dbd7fbe7007b65cd243fcf61badff20e071a8a027e75",
+      "equal": false
+    },
+    "build/emscripten/client/release/threaded/script-tests.data": {
+      "before_sha256": "655200d3c97d2c3c9cba8fffbdbe72e1c1303185842a0d56a1b749f5f8c3c3b0",
+      "after_sha256": "37ecc83c91bf01fdb6435e47e29d5de4b300c66ef640f50341d1f1b576423fd8",
+      "equal": false
+    },
+    "build/android/device/arm64-v8a/24/client/release/lib/libmain.so": {
+      "before_sha256": "040ee45111669b05038aa46438ca04e85d2352b0fd62855acf84ee237f14357c",
+      "after_sha256": "040ee45111669b05038aa46438ca04e85d2352b0fd62855acf84ee237f14357c",
+      "equal": true
+    },
+    "build/android/device/arm64-v8a/24/client/release/android-project/app/build/outputs/apk/release/app-release-unsigned.apk": {
+      "before_sha256": "40f2bf3d6cf44dfb5dc42fb0a30b4d413effbe71a1e90ee5d9a4e4758a4e4801",
+      "after_sha256": "96d617e5ee5633d35116cfa2a4c248050ed7b8664c36636843f31d68a3b4ebf0",
+      "equal": false
+    },
+    "build/android/device/arm64-v8a/24/client/release/tests/glob2-unit-tests": {
+      "before_sha256_from_bound_prior_receipt": "43df7bcebbf6007b11c9e4f7195a846ce1a007a07c3f672958060e3ded582fc6",
+      "after_sha256": "dcd26a421d1ea143cd9a9a2f0391dd075f8a587de4d9c32a7227c9a59d66a1dc",
+      "equal": false
+    },
+    "build/android/device/arm64-v8a/24/client/release/tests/glob2-engine-tests": {
+      "before_sha256_from_bound_prior_receipt": "c64a360f5bb7d4e4f5289397ea497018e31331ba62383c2992c89708dc904c95",
+      "after_sha256": "24c69e3cfd93208ba9f1de074ff24bd2a09544f9bd84b8369f97a4b3425fdc1d",
+      "equal": false
+    }
+  },
+  "runtime_header_count_before": 13,
+  "runtime_header_count_after": 13,
+  "runtime_headers_equal": false,
+  "runtime_header_sha256_after": {
+    "build/linux/client/release/include/glob2/BuildConfig.h": "da0deb190421844180e6b8f81f46bef9a88003655f62568a6e0ed6d573a70d93",
+    "build/linux/client/release/include/glob2/SkinMaterials.h": "7263ac1f66063d221ab1ded3cda61fef779fb5dc1f9d98442fc5ab7658b0f7f9",
+    "build/linux/client/release/include/glob2/TestBuildProvenance.h": "c32d012f6feac913d85721b9ab35316623ee5cf92c2981361ebec432ae6bd6e9",
+    "build/linux/client/release/shaders/RendererShaderLayouts.h": "aadd16a274ccbe868c91f41b484d635d8641ddb6b0b26f43113159231eb87074",
+    "build/emscripten/client/release/include/glob2/BuildConfig.h": "0e9ae441099a109ee6c7725141dce28930c34c12c8da37821db9e194cf802699",
+    "build/emscripten/client/release/include/glob2/SkinMaterials.h": "7263ac1f66063d221ab1ded3cda61fef779fb5dc1f9d98442fc5ab7658b0f7f9",
+    "build/emscripten/client/release/include/glob2/TestBuildProvenance.h": "08c573b223f2fdab68073f03b60ef739d41120f9cf197c5dd2ee47647185f019",
+    "build/emscripten/client/release/threaded/include/glob2/BuildConfig.h": "0e9ae441099a109ee6c7725141dce28930c34c12c8da37821db9e194cf802699",
+    "build/emscripten/client/release/threaded/include/glob2/SkinMaterials.h": "7263ac1f66063d221ab1ded3cda61fef779fb5dc1f9d98442fc5ab7658b0f7f9",
+    "build/emscripten/client/release/threaded/include/glob2/TestBuildProvenance.h": "6e8e219f2528f72abcc3ec1fd614b94da5bb72871b8c144f499264bd054c59c2",
+    "build/android/device/arm64-v8a/24/client/release/include/glob2/BuildConfig.h": "a6b5d7431c5cc366a3f8acf307ccef9c72d5cf7fc9ca286c815a109ff607dd49",
+    "build/android/device/arm64-v8a/24/client/release/include/glob2/SkinMaterials.h": "7263ac1f66063d221ab1ded3cda61fef779fb5dc1f9d98442fc5ab7658b0f7f9",
+    "build/android/device/arm64-v8a/24/client/release/include/glob2/TestBuildProvenance.h": "7e584e4b19dce8607615cedce69507d212085781ad82450b78e3196218df00cb"
+  },
+  "scope": "Actualbefore/afterbytes; source-reference-onlychange doesnotimplyalloutputsidentical; no test/game/deviceexecution"
+}

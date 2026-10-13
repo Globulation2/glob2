@@ -1,0 +1,1016 @@
+{
+  "generated_utc": "2026-10-12T02:22:44.004639+00:00",
+  "planned": 32,
+  "present": 32,
+  "valid": 32,
+  "complete": true,
+  "passed": true,
+  "missing": [],
+  "errors": [],
+  "records": [
+    {
+      "id": "replay-confirm-playground-s1056243202-gpuoff-r0-off",
+      "seed": 1056243202,
+      "gpu": "off",
+      "repetition": 0,
+      "variant": "off",
+      "state": "valid",
+      "errors": [],
+      "final_checksum": "73d2089b",
+      "replay": {
+        "bytes": 19750233,
+        "sha256": "64a1d3e126142108bbad0a4f393a4aa2a5c28edd2394bd6144a5d90119937ed2",
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/runs/replay-confirm-playground-s1056243202-gpuoff-r0-off/replay.replay"
+      },
+      "raw_result_sha256": "1927d8ec08dcf3a80883ff8b5ceddc44f0e68722df85504f615296e8ad67eb9b"
+    },
+    {
+      "id": "replay-confirm-playground-s1056243202-gpuoff-r0-on",
+      "seed": 1056243202,
+      "gpu": "off",
+      "repetition": 0,
+      "variant": "on",
+      "state": "valid",
+      "errors": [],
+      "final_checksum": "73d2089b",
+      "replay": {
+        "bytes": 19750233,
+        "sha256": "64a1d3e126142108bbad0a4f393a4aa2a5c28edd2394bd6144a5d90119937ed2",
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/runs/replay-confirm-playground-s1056243202-gpuoff-r0-on/replay.replay"
+      },
+      "raw_result_sha256": "de07e929e0688dea9cdcc2d32456a2b7acfd59123ca7d1535694f8953a66dc62"
+    },
+    {
+      "id": "replay-confirm-playground-s1056243202-gpuoff-r1-on",
+      "seed": 1056243202,
+      "gpu": "off",
+      "repetition": 1,
+      "variant": "on",
+      "state": "valid",
+      "errors": [],
+      "final_checksum": "73d2089b",
+      "replay": {
+        "bytes": 19750233,
+        "sha256": "64a1d3e126142108bbad0a4f393a4aa2a5c28edd2394bd6144a5d90119937ed2",
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/runs/replay-confirm-playground-s1056243202-gpuoff-r1-on/replay.replay"
+      },
+      "raw_result_sha256": "48219675c3bec85eff3ddcf87edc60fe736fd66c5e0f5c5840327b9c2374046f"
+    },
+    {
+      "id": "replay-confirm-playground-s1056243202-gpuoff-r1-off",
+      "seed": 1056243202,
+      "gpu": "off",
+      "repetition": 1,
+      "variant": "off",
+      "state": "valid",
+      "errors": [],
+      "final_checksum": "73d2089b",
+      "replay": {
+        "bytes": 19750233,
+        "sha256": "64a1d3e126142108bbad0a4f393a4aa2a5c28edd2394bd6144a5d90119937ed2",
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/runs/replay-confirm-playground-s1056243202-gpuoff-r1-off/replay.replay"
+      },
+      "raw_result_sha256": "925a42985c1d48d5ef9535908da3a0158bc65a54be54878d712f1385c431ffde"
+    },
+    {
+      "id": "replay-confirm-playground-s1056243202-gpuon-r0-off",
+      "seed": 1056243202,
+      "gpu": "on",
+      "repetition": 0,
+      "variant": "off",
+      "state": "valid",
+      "errors": [],
+      "final_checksum": "73d2089b",
+      "replay": {
+        "bytes": 19750233,
+        "sha256": "64a1d3e126142108bbad0a4f393a4aa2a5c28edd2394bd6144a5d90119937ed2",
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/runs/replay-confirm-playground-s1056243202-gpuon-r0-off/replay.replay"
+      },
+      "raw_result_sha256": "25e2b46083ed16ab2911b3d300bded8dc2b3ac19b18e21484176194e2d47a719"
+    },
+    {
+      "id": "replay-confirm-playground-s1056243202-gpuon-r0-on",
+      "seed": 1056243202,
+      "gpu": "on",
+      "repetition": 0,
+      "variant": "on",
+      "state": "valid",
+      "errors": [],
+      "final_checksum": "73d2089b",
+      "replay": {
+        "bytes": 19750233,
+        "sha256": "64a1d3e126142108bbad0a4f393a4aa2a5c28edd2394bd6144a5d90119937ed2",
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/runs/replay-confirm-playground-s1056243202-gpuon-r0-on/replay.replay"
+      },
+      "raw_result_sha256": "fee441a650180f36078a61aa18943fe43d5102431ad2897e5b5d7c0096394062"
+    },
+    {
+      "id": "replay-confirm-playground-s1056243202-gpuon-r1-on",
+      "seed": 1056243202,
+      "gpu": "on",
+      "repetition": 1,
+      "variant": "on",
+      "state": "valid",
+      "errors": [],
+      "final_checksum": "73d2089b",
+      "replay": {
+        "bytes": 19750233,
+        "sha256": "64a1d3e126142108bbad0a4f393a4aa2a5c28edd2394bd6144a5d90119937ed2",
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/runs/replay-confirm-playground-s1056243202-gpuon-r1-on/replay.replay"
+      },
+      "raw_result_sha256": "447b7c935621f6a191825da34caa7071b8403a7e2f1f286c41f7fe14f3b0309e"
+    },
+    {
+      "id": "replay-confirm-playground-s1056243202-gpuon-r1-off",
+      "seed": 1056243202,
+      "gpu": "on",
+      "repetition": 1,
+      "variant": "off",
+      "state": "valid",
+      "errors": [],
+      "final_checksum": "73d2089b",
+      "replay": {
+        "bytes": 19750233,
+        "sha256": "64a1d3e126142108bbad0a4f393a4aa2a5c28edd2394bd6144a5d90119937ed2",
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/runs/replay-confirm-playground-s1056243202-gpuon-r1-off/replay.replay"
+      },
+      "raw_result_sha256": "8e206b9578f82fe898c3ee44f3f3d496d326cad684adfdd1ca9ef4923b30082c"
+    },
+    {
+      "id": "replay-confirm-playground-s744345666-gpuon-r0-on",
+      "seed": 744345666,
+      "gpu": "on",
+      "repetition": 0,
+      "variant": "on",
+      "state": "valid",
+      "errors": [],
+      "final_checksum": "2e8c926c",
+      "replay": {
+        "bytes": 19838415,
+        "sha256": "614a7007d311fa61014deb78548702f554fc3dd0a4f30dc80d2dc5287fcc7616",
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/runs/replay-confirm-playground-s744345666-gpuon-r0-on/replay.replay"
+      },
+      "raw_result_sha256": "71d4e49633703bfeeee71b2067e4f54bb7558f8e71532c06f9f589d1ca864b5a"
+    },
+    {
+      "id": "replay-confirm-playground-s744345666-gpuon-r0-off",
+      "seed": 744345666,
+      "gpu": "on",
+      "repetition": 0,
+      "variant": "off",
+      "state": "valid",
+      "errors": [],
+      "final_checksum": "2e8c926c",
+      "replay": {
+        "bytes": 19838415,
+        "sha256": "614a7007d311fa61014deb78548702f554fc3dd0a4f30dc80d2dc5287fcc7616",
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/runs/replay-confirm-playground-s744345666-gpuon-r0-off/replay.replay"
+      },
+      "raw_result_sha256": "15f0e534f1a7e70c1344f3100c7c1132f3b5f573d5197c798864ec4a12b40113"
+    },
+    {
+      "id": "replay-confirm-playground-s744345666-gpuon-r1-off",
+      "seed": 744345666,
+      "gpu": "on",
+      "repetition": 1,
+      "variant": "off",
+      "state": "valid",
+      "errors": [],
+      "final_checksum": "2e8c926c",
+      "replay": {
+        "bytes": 19838415,
+        "sha256": "614a7007d311fa61014deb78548702f554fc3dd0a4f30dc80d2dc5287fcc7616",
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/runs/replay-confirm-playground-s744345666-gpuon-r1-off/replay.replay"
+      },
+      "raw_result_sha256": "835d661e36c8f709d71d9c0dd45c55f31dc690627697fa444fc46355810cc288"
+    },
+    {
+      "id": "replay-confirm-playground-s744345666-gpuon-r1-on",
+      "seed": 744345666,
+      "gpu": "on",
+      "repetition": 1,
+      "variant": "on",
+      "state": "valid",
+      "errors": [],
+      "final_checksum": "2e8c926c",
+      "replay": {
+        "bytes": 19838415,
+        "sha256": "614a7007d311fa61014deb78548702f554fc3dd0a4f30dc80d2dc5287fcc7616",
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/runs/replay-confirm-playground-s744345666-gpuon-r1-on/replay.replay"
+      },
+      "raw_result_sha256": "ad997b78ba8ebe9afbbc5d13dcd605aaf8da9c38f29b23bc517a9b77f38fe4ca"
+    },
+    {
+      "id": "replay-confirm-playground-s744345666-gpuoff-r0-on",
+      "seed": 744345666,
+      "gpu": "off",
+      "repetition": 0,
+      "variant": "on",
+      "state": "valid",
+      "errors": [],
+      "final_checksum": "2e8c926c",
+      "replay": {
+        "bytes": 19838415,
+        "sha256": "614a7007d311fa61014deb78548702f554fc3dd0a4f30dc80d2dc5287fcc7616",
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/runs/replay-confirm-playground-s744345666-gpuoff-r0-on/replay.replay"
+      },
+      "raw_result_sha256": "ecd774a69011825e609f645bf24de0c3978729a41228ec7756a94297672ab0c6"
+    },
+    {
+      "id": "replay-confirm-playground-s744345666-gpuoff-r0-off",
+      "seed": 744345666,
+      "gpu": "off",
+      "repetition": 0,
+      "variant": "off",
+      "state": "valid",
+      "errors": [],
+      "final_checksum": "2e8c926c",
+      "replay": {
+        "bytes": 19838415,
+        "sha256": "614a7007d311fa61014deb78548702f554fc3dd0a4f30dc80d2dc5287fcc7616",
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/runs/replay-confirm-playground-s744345666-gpuoff-r0-off/replay.replay"
+      },
+      "raw_result_sha256": "78bea69c5746de457591f83000d41dd241280c7edb463817ce6117b14b6a6fc0"
+    },
+    {
+      "id": "replay-confirm-playground-s744345666-gpuoff-r1-off",
+      "seed": 744345666,
+      "gpu": "off",
+      "repetition": 1,
+      "variant": "off",
+      "state": "valid",
+      "errors": [],
+      "final_checksum": "2e8c926c",
+      "replay": {
+        "bytes": 19838415,
+        "sha256": "614a7007d311fa61014deb78548702f554fc3dd0a4f30dc80d2dc5287fcc7616",
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/runs/replay-confirm-playground-s744345666-gpuoff-r1-off/replay.replay"
+      },
+      "raw_result_sha256": "4a66228938cb920e4d9614a7f39fe7280ef27e7c4474ec03abf6ebd21754cbdb"
+    },
+    {
+      "id": "replay-confirm-playground-s744345666-gpuoff-r1-on",
+      "seed": 744345666,
+      "gpu": "off",
+      "repetition": 1,
+      "variant": "on",
+      "state": "valid",
+      "errors": [],
+      "final_checksum": "2e8c926c",
+      "replay": {
+        "bytes": 19838415,
+        "sha256": "614a7007d311fa61014deb78548702f554fc3dd0a4f30dc80d2dc5287fcc7616",
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/runs/replay-confirm-playground-s744345666-gpuoff-r1-on/replay.replay"
+      },
+      "raw_result_sha256": "3a23e4b35600ba5e1a21a3adf9d85ec69ca767ef69c26d079f75fce1df780f67"
+    },
+    {
+      "id": "replay-confirm-playground-s1064623205-gpuoff-r0-off",
+      "seed": 1064623205,
+      "gpu": "off",
+      "repetition": 0,
+      "variant": "off",
+      "state": "valid",
+      "errors": [],
+      "final_checksum": "2391c1c4",
+      "replay": {
+        "bytes": 19893129,
+        "sha256": "0e5628130daec271b8ca0ee9666bbed5a35e619dfcbf176c7d05b0dcf9a4053a",
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/runs/replay-confirm-playground-s1064623205-gpuoff-r0-off/replay.replay"
+      },
+      "raw_result_sha256": "8922f9a0d6465f33a7634ef74e9c545f526209e9456b95574c387e9ddeaa3a98"
+    },
+    {
+      "id": "replay-confirm-playground-s1064623205-gpuoff-r0-on",
+      "seed": 1064623205,
+      "gpu": "off",
+      "repetition": 0,
+      "variant": "on",
+      "state": "valid",
+      "errors": [],
+      "final_checksum": "2391c1c4",
+      "replay": {
+        "bytes": 19893129,
+        "sha256": "0e5628130daec271b8ca0ee9666bbed5a35e619dfcbf176c7d05b0dcf9a4053a",
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/runs/replay-confirm-playground-s1064623205-gpuoff-r0-on/replay.replay"
+      },
+      "raw_result_sha256": "11e8dd4690fac402e73c6ead2187707de90d56d3b867198c51dbcb06ed83c013"
+    },
+    {
+      "id": "replay-confirm-playground-s1064623205-gpuoff-r1-on",
+      "seed": 1064623205,
+      "gpu": "off",
+      "repetition": 1,
+      "variant": "on",
+      "state": "valid",
+      "errors": [],
+      "final_checksum": "2391c1c4",
+      "replay": {
+        "bytes": 19893129,
+        "sha256": "0e5628130daec271b8ca0ee9666bbed5a35e619dfcbf176c7d05b0dcf9a4053a",
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/runs/replay-confirm-playground-s1064623205-gpuoff-r1-on/replay.replay"
+      },
+      "raw_result_sha256": "f38cab88ccecc76117eb60ceaa934311a39a553399cf4454dbe88624777383dd"
+    },
+    {
+      "id": "replay-confirm-playground-s1064623205-gpuoff-r1-off",
+      "seed": 1064623205,
+      "gpu": "off",
+      "repetition": 1,
+      "variant": "off",
+      "state": "valid",
+      "errors": [],
+      "final_checksum": "2391c1c4",
+      "replay": {
+        "bytes": 19893129,
+        "sha256": "0e5628130daec271b8ca0ee9666bbed5a35e619dfcbf176c7d05b0dcf9a4053a",
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/runs/replay-confirm-playground-s1064623205-gpuoff-r1-off/replay.replay"
+      },
+      "raw_result_sha256": "f0fa0b22e09a4f240d57e2332cc35eec61b078651e9b236980ac34131cdc5f72"
+    },
+    {
+      "id": "replay-confirm-playground-s1064623205-gpuon-r0-off",
+      "seed": 1064623205,
+      "gpu": "on",
+      "repetition": 0,
+      "variant": "off",
+      "state": "valid",
+      "errors": [],
+      "final_checksum": "2391c1c4",
+      "replay": {
+        "bytes": 19893129,
+        "sha256": "0e5628130daec271b8ca0ee9666bbed5a35e619dfcbf176c7d05b0dcf9a4053a",
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/runs/replay-confirm-playground-s1064623205-gpuon-r0-off/replay.replay"
+      },
+      "raw_result_sha256": "bd1cd95ff5a4a64ca86c2467b1ca8e0d2614b8aaee05b12ba80e98fb85902025"
+    },
+    {
+      "id": "replay-confirm-playground-s1064623205-gpuon-r0-on",
+      "seed": 1064623205,
+      "gpu": "on",
+      "repetition": 0,
+      "variant": "on",
+      "state": "valid",
+      "errors": [],
+      "final_checksum": "2391c1c4",
+      "replay": {
+        "bytes": 19893129,
+        "sha256": "0e5628130daec271b8ca0ee9666bbed5a35e619dfcbf176c7d05b0dcf9a4053a",
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/runs/replay-confirm-playground-s1064623205-gpuon-r0-on/replay.replay"
+      },
+      "raw_result_sha256": "d6ff95a79f57e87c23fe40ac4284b9300d5603e27c20eb1c5b1ec82813ec2bc5"
+    },
+    {
+      "id": "replay-confirm-playground-s1064623205-gpuon-r1-on",
+      "seed": 1064623205,
+      "gpu": "on",
+      "repetition": 1,
+      "variant": "on",
+      "state": "valid",
+      "errors": [],
+      "final_checksum": "2391c1c4",
+      "replay": {
+        "bytes": 19893129,
+        "sha256": "0e5628130daec271b8ca0ee9666bbed5a35e619dfcbf176c7d05b0dcf9a4053a",
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/runs/replay-confirm-playground-s1064623205-gpuon-r1-on/replay.replay"
+      },
+      "raw_result_sha256": "4c9c44a1a4a023b31320a50fbe621dc8b6294b00b5cd43c274267d54dbe2cf97"
+    },
+    {
+      "id": "replay-confirm-playground-s1064623205-gpuon-r1-off",
+      "seed": 1064623205,
+      "gpu": "on",
+      "repetition": 1,
+      "variant": "off",
+      "state": "valid",
+      "errors": [],
+      "final_checksum": "2391c1c4",
+      "replay": {
+        "bytes": 19893129,
+        "sha256": "0e5628130daec271b8ca0ee9666bbed5a35e619dfcbf176c7d05b0dcf9a4053a",
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/runs/replay-confirm-playground-s1064623205-gpuon-r1-off/replay.replay"
+      },
+      "raw_result_sha256": "f7ff0279226d6702430affce0c6d5091c2f40a46777dd58fb6b850fd991632b7"
+    },
+    {
+      "id": "replay-confirm-playground-s725864695-gpuon-r0-on",
+      "seed": 725864695,
+      "gpu": "on",
+      "repetition": 0,
+      "variant": "on",
+      "state": "valid",
+      "errors": [],
+      "final_checksum": "25ef41ba",
+      "replay": {
+        "bytes": 19954243,
+        "sha256": "3bef2cefbe25fac127e44a41173dbdb12116639bf2825bf7af264ee3eda1f6b6",
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/runs/replay-confirm-playground-s725864695-gpuon-r0-on/replay.replay"
+      },
+      "raw_result_sha256": "2551d055808d1e8cbaf86857cb5c848a3c66cb9b7994e7b2e051f78c6a49a17b"
+    },
+    {
+      "id": "replay-confirm-playground-s725864695-gpuon-r0-off",
+      "seed": 725864695,
+      "gpu": "on",
+      "repetition": 0,
+      "variant": "off",
+      "state": "valid",
+      "errors": [],
+      "final_checksum": "25ef41ba",
+      "replay": {
+        "bytes": 19954243,
+        "sha256": "3bef2cefbe25fac127e44a41173dbdb12116639bf2825bf7af264ee3eda1f6b6",
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/runs/replay-confirm-playground-s725864695-gpuon-r0-off/replay.replay"
+      },
+      "raw_result_sha256": "760aa98887bfdf2e35f4351a66726f66f3535e8932fa4a85541feb4c68cd92ec"
+    },
+    {
+      "id": "replay-confirm-playground-s725864695-gpuon-r1-off",
+      "seed": 725864695,
+      "gpu": "on",
+      "repetition": 1,
+      "variant": "off",
+      "state": "valid",
+      "errors": [],
+      "final_checksum": "25ef41ba",
+      "replay": {
+        "bytes": 19954243,
+        "sha256": "3bef2cefbe25fac127e44a41173dbdb12116639bf2825bf7af264ee3eda1f6b6",
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/runs/replay-confirm-playground-s725864695-gpuon-r1-off/replay.replay"
+      },
+      "raw_result_sha256": "4f26fdb4ce98022508a284032c9ba0a6abc12c54ae8d4a061699bcfd1cd69ecc"
+    },
+    {
+      "id": "replay-confirm-playground-s725864695-gpuon-r1-on",
+      "seed": 725864695,
+      "gpu": "on",
+      "repetition": 1,
+      "variant": "on",
+      "state": "valid",
+      "errors": [],
+      "final_checksum": "25ef41ba",
+      "replay": {
+        "bytes": 19954243,
+        "sha256": "3bef2cefbe25fac127e44a41173dbdb12116639bf2825bf7af264ee3eda1f6b6",
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/runs/replay-confirm-playground-s725864695-gpuon-r1-on/replay.replay"
+      },
+      "raw_result_sha256": "7c1c65170777f0a3822cbd3379bf979e7ca52776c361eb3a3b3d85a562ff0f20"
+    },
+    {
+      "id": "replay-confirm-playground-s725864695-gpuoff-r0-on",
+      "seed": 725864695,
+      "gpu": "off",
+      "repetition": 0,
+      "variant": "on",
+      "state": "valid",
+      "errors": [],
+      "final_checksum": "25ef41ba",
+      "replay": {
+        "bytes": 19954243,
+        "sha256": "3bef2cefbe25fac127e44a41173dbdb12116639bf2825bf7af264ee3eda1f6b6",
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/runs/replay-confirm-playground-s725864695-gpuoff-r0-on/replay.replay"
+      },
+      "raw_result_sha256": "062c12e4d62efb2db518e489541d7f231bbca41604963b5cf5e0be68f047abaf"
+    },
+    {
+      "id": "replay-confirm-playground-s725864695-gpuoff-r0-off",
+      "seed": 725864695,
+      "gpu": "off",
+      "repetition": 0,
+      "variant": "off",
+      "state": "valid",
+      "errors": [],
+      "final_checksum": "25ef41ba",
+      "replay": {
+        "bytes": 19954243,
+        "sha256": "3bef2cefbe25fac127e44a41173dbdb12116639bf2825bf7af264ee3eda1f6b6",
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/runs/replay-confirm-playground-s725864695-gpuoff-r0-off/replay.replay"
+      },
+      "raw_result_sha256": "9a05d5e498371b693ed00af9cefdd92f3358ed8ef5af65a5755975fee23b9c0c"
+    },
+    {
+      "id": "replay-confirm-playground-s725864695-gpuoff-r1-off",
+      "seed": 725864695,
+      "gpu": "off",
+      "repetition": 1,
+      "variant": "off",
+      "state": "valid",
+      "errors": [],
+      "final_checksum": "25ef41ba",
+      "replay": {
+        "bytes": 19954243,
+        "sha256": "3bef2cefbe25fac127e44a41173dbdb12116639bf2825bf7af264ee3eda1f6b6",
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/runs/replay-confirm-playground-s725864695-gpuoff-r1-off/replay.replay"
+      },
+      "raw_result_sha256": "ddd974cd4c80e251a5874adad6eab70ea15579db1b47b74056d9191068e2d9fd"
+    },
+    {
+      "id": "replay-confirm-playground-s725864695-gpuoff-r1-on",
+      "seed": 725864695,
+      "gpu": "off",
+      "repetition": 1,
+      "variant": "on",
+      "state": "valid",
+      "errors": [],
+      "final_checksum": "25ef41ba",
+      "replay": {
+        "bytes": 19954243,
+        "sha256": "3bef2cefbe25fac127e44a41173dbdb12116639bf2825bf7af264ee3eda1f6b6",
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/runs/replay-confirm-playground-s725864695-gpuoff-r1-on/replay.replay"
+      },
+      "raw_result_sha256": "0ec34ff25cc129a0774fbd1df496fff7591540d0c7dafa51df78bf0da6ee02ed"
+    }
+  ],
+  "reserve_pairs": [
+    {
+      "seed": 1056243202,
+      "gpu": "off",
+      "repetition": 0,
+      "complete": true,
+      "passed": true,
+      "final_checksum_matches": true,
+      "exact_replay_matches": true
+    },
+    {
+      "seed": 1056243202,
+      "gpu": "off",
+      "repetition": 1,
+      "complete": true,
+      "passed": true,
+      "final_checksum_matches": true,
+      "exact_replay_matches": true
+    },
+    {
+      "seed": 1056243202,
+      "gpu": "on",
+      "repetition": 0,
+      "complete": true,
+      "passed": true,
+      "final_checksum_matches": true,
+      "exact_replay_matches": true
+    },
+    {
+      "seed": 1056243202,
+      "gpu": "on",
+      "repetition": 1,
+      "complete": true,
+      "passed": true,
+      "final_checksum_matches": true,
+      "exact_replay_matches": true
+    },
+    {
+      "seed": 744345666,
+      "gpu": "off",
+      "repetition": 0,
+      "complete": true,
+      "passed": true,
+      "final_checksum_matches": true,
+      "exact_replay_matches": true
+    },
+    {
+      "seed": 744345666,
+      "gpu": "off",
+      "repetition": 1,
+      "complete": true,
+      "passed": true,
+      "final_checksum_matches": true,
+      "exact_replay_matches": true
+    },
+    {
+      "seed": 744345666,
+      "gpu": "on",
+      "repetition": 0,
+      "complete": true,
+      "passed": true,
+      "final_checksum_matches": true,
+      "exact_replay_matches": true
+    },
+    {
+      "seed": 744345666,
+      "gpu": "on",
+      "repetition": 1,
+      "complete": true,
+      "passed": true,
+      "final_checksum_matches": true,
+      "exact_replay_matches": true
+    },
+    {
+      "seed": 1064623205,
+      "gpu": "off",
+      "repetition": 0,
+      "complete": true,
+      "passed": true,
+      "final_checksum_matches": true,
+      "exact_replay_matches": true
+    },
+    {
+      "seed": 1064623205,
+      "gpu": "off",
+      "repetition": 1,
+      "complete": true,
+      "passed": true,
+      "final_checksum_matches": true,
+      "exact_replay_matches": true
+    },
+    {
+      "seed": 1064623205,
+      "gpu": "on",
+      "repetition": 0,
+      "complete": true,
+      "passed": true,
+      "final_checksum_matches": true,
+      "exact_replay_matches": true
+    },
+    {
+      "seed": 1064623205,
+      "gpu": "on",
+      "repetition": 1,
+      "complete": true,
+      "passed": true,
+      "final_checksum_matches": true,
+      "exact_replay_matches": true
+    },
+    {
+      "seed": 725864695,
+      "gpu": "off",
+      "repetition": 0,
+      "complete": true,
+      "passed": true,
+      "final_checksum_matches": true,
+      "exact_replay_matches": true
+    },
+    {
+      "seed": 725864695,
+      "gpu": "off",
+      "repetition": 1,
+      "complete": true,
+      "passed": true,
+      "final_checksum_matches": true,
+      "exact_replay_matches": true
+    },
+    {
+      "seed": 725864695,
+      "gpu": "on",
+      "repetition": 0,
+      "complete": true,
+      "passed": true,
+      "final_checksum_matches": true,
+      "exact_replay_matches": true
+    },
+    {
+      "seed": 725864695,
+      "gpu": "on",
+      "repetition": 1,
+      "complete": true,
+      "passed": true,
+      "final_checksum_matches": true,
+      "exact_replay_matches": true
+    }
+  ],
+  "optional_cross_gpu_output_comparisons": [
+    {
+      "seed": 1056243202,
+      "rep": 0,
+      "reserve": "off",
+      "final_checksum_matches": true,
+      "exact_replay_matches": true
+    },
+    {
+      "seed": 1056243202,
+      "rep": 0,
+      "reserve": "on",
+      "final_checksum_matches": true,
+      "exact_replay_matches": true
+    },
+    {
+      "seed": 1056243202,
+      "rep": 1,
+      "reserve": "off",
+      "final_checksum_matches": true,
+      "exact_replay_matches": true
+    },
+    {
+      "seed": 1056243202,
+      "rep": 1,
+      "reserve": "on",
+      "final_checksum_matches": true,
+      "exact_replay_matches": true
+    },
+    {
+      "seed": 744345666,
+      "rep": 0,
+      "reserve": "off",
+      "final_checksum_matches": true,
+      "exact_replay_matches": true
+    },
+    {
+      "seed": 744345666,
+      "rep": 0,
+      "reserve": "on",
+      "final_checksum_matches": true,
+      "exact_replay_matches": true
+    },
+    {
+      "seed": 744345666,
+      "rep": 1,
+      "reserve": "off",
+      "final_checksum_matches": true,
+      "exact_replay_matches": true
+    },
+    {
+      "seed": 744345666,
+      "rep": 1,
+      "reserve": "on",
+      "final_checksum_matches": true,
+      "exact_replay_matches": true
+    },
+    {
+      "seed": 1064623205,
+      "rep": 0,
+      "reserve": "off",
+      "final_checksum_matches": true,
+      "exact_replay_matches": true
+    },
+    {
+      "seed": 1064623205,
+      "rep": 0,
+      "reserve": "on",
+      "final_checksum_matches": true,
+      "exact_replay_matches": true
+    },
+    {
+      "seed": 1064623205,
+      "rep": 1,
+      "reserve": "off",
+      "final_checksum_matches": true,
+      "exact_replay_matches": true
+    },
+    {
+      "seed": 1064623205,
+      "rep": 1,
+      "reserve": "on",
+      "final_checksum_matches": true,
+      "exact_replay_matches": true
+    },
+    {
+      "seed": 725864695,
+      "rep": 0,
+      "reserve": "off",
+      "final_checksum_matches": true,
+      "exact_replay_matches": true
+    },
+    {
+      "seed": 725864695,
+      "rep": 0,
+      "reserve": "on",
+      "final_checksum_matches": true,
+      "exact_replay_matches": true
+    },
+    {
+      "seed": 725864695,
+      "rep": 1,
+      "reserve": "off",
+      "final_checksum_matches": true,
+      "exact_replay_matches": true
+    },
+    {
+      "seed": 725864695,
+      "rep": 1,
+      "reserve": "on",
+      "final_checksum_matches": true,
+      "exact_replay_matches": true
+    }
+  ],
+  "metrics": {
+    "wall_seconds": {
+      "reserve_on_vs_off_by_gpu": {
+        "off": {
+          "available": true,
+          "seed_clusters": 4,
+          "geometric_ratio": 0.9896453252757034,
+          "change_percent": -1.035467472429664,
+          "per_seed_geometric_ratio": {
+            "1056243202": 0.984481180908773,
+            "744345666": 1.036130646167414,
+            "1064623205": 0.9497243676025541,
+            "725864695": 0.9901449828331713
+          },
+          "descriptive_seed_cluster_bootstrap_95_percentile_change_percent": [
+            -4.032786769770906,
+            2.296963840749207
+          ],
+          "interval_qualification": "Exact enumeration of256 empirical bootstrap draws of four whole seed clusters, each containing both repetitions and paired variants. Descriptive uncertainty for these four seeds; weak population coverage, no independence claimed for repetitions."
+        },
+        "on": {
+          "available": true,
+          "seed_clusters": 4,
+          "geometric_ratio": 1.0120125535113644,
+          "change_percent": 1.201255351136448,
+          "per_seed_geometric_ratio": {
+            "1056243202": 1.0040941878338714,
+            "744345666": 0.9938701514498905,
+            "1064623205": 1.0531280815523272,
+            "725864695": 0.998063801722786
+          },
+          "descriptive_seed_cluster_bootstrap_95_percentile_change_percent": [
+            -0.4035230655783268,
+            3.9083554121497777
+          ],
+          "interval_qualification": "Exact enumeration of256 empirical bootstrap draws of four whole seed clusters, each containing both repetitions and paired variants. Descriptive uncertainty for these four seeds; weak population coverage, no independence claimed for repetitions."
+        }
+      },
+      "gpu_interaction_ratio_of_ratios": {
+        "available": true,
+        "seed_clusters": 4,
+        "geometric_ratio": 1.0226012568992127,
+        "change_percent": 2.2601256899212734,
+        "per_seed_geometric_ratio": {
+          "1056243202": 1.019922175563573,
+          "744345666": 0.9592131601609869,
+          "1064623205": 1.1088776043630442,
+          "725864695": 1.0079976357269982
+        },
+        "descriptive_seed_cluster_bootstrap_95_percentile_change_percent": [
+          -2.595705515204797,
+          8.274849205915329
+        ],
+        "interval_qualification": "Exact enumeration of256 empirical bootstrap draws of four whole seed clusters, each containing both repetitions and paired variants. Descriptive uncertainty for these four seeds; weak population coverage, no independence claimed for repetitions."
+      },
+      "interaction_interpretation": "(reserve on/off ratio with GPUon)/(reserve on/off ratio with GPUoff); positive change means reserve penalty larger or benefit smaller with GPUon. Never pooled GPU strata."
+    },
+    "run_wall_seconds": {
+      "reserve_on_vs_off_by_gpu": {
+        "off": {
+          "available": true,
+          "seed_clusters": 4,
+          "geometric_ratio": 0.9889695725707011,
+          "change_percent": -1.1030427429298966,
+          "per_seed_geometric_ratio": {
+            "1056243202": 0.9829902873527104,
+            "744345666": 1.0380006897745802,
+            "1064623205": 0.9470230345709274,
+            "725864695": 0.989975184680597
+          },
+          "descriptive_seed_cluster_bootstrap_95_percentile_change_percent": [
+            -4.241687522514505,
+            2.3966004232226275
+          ],
+          "interval_qualification": "Exact enumeration of256 empirical bootstrap draws of four whole seed clusters, each containing both repetitions and paired variants. Descriptive uncertainty for these four seeds; weak population coverage, no independence claimed for repetitions."
+        },
+        "on": {
+          "available": true,
+          "seed_clusters": 4,
+          "geometric_ratio": 1.0125941587415013,
+          "change_percent": 1.259415874150122,
+          "per_seed_geometric_ratio": {
+            "1056243202": 1.0040559028455747,
+            "744345666": 0.9942490722241771,
+            "1064623205": 1.0553908541002588,
+            "725864695": 0.9978729652549947
+          },
+          "descriptive_seed_cluster_bootstrap_95_percentile_change_percent": [
+            -0.39406293285690946,
+            4.070779842923933
+          ],
+          "interval_qualification": "Exact enumeration of256 empirical bootstrap draws of four whole seed clusters, each containing both repetitions and paired variants. Descriptive uncertainty for these four seeds; weak population coverage, no independence claimed for repetitions."
+        }
+      },
+      "gpu_interaction_ratio_of_ratios": {
+        "available": true,
+        "seed_clusters": 4,
+        "geometric_ratio": 1.0238880819248979,
+        "change_percent": 2.3888081924897917,
+        "per_seed_geometric_ratio": {
+          "1056243202": 1.0214301359473204,
+          "744345666": 0.9578501074407719,
+          "1064623205": 1.1144299722112148,
+          "725864695": 1.007977756106024
+        },
+        "descriptive_seed_cluster_bootstrap_95_percentile_change_percent": [
+          -2.663588524553853,
+          8.680674450474314
+        ],
+        "interval_qualification": "Exact enumeration of256 empirical bootstrap draws of four whole seed clusters, each containing both repetitions and paired variants. Descriptive uncertainty for these four seeds; weak population coverage, no independence claimed for repetitions."
+      },
+      "interaction_interpretation": "(reserve on/off ratio with GPUon)/(reserve on/off ratio with GPUoff); positive change means reserve penalty larger or benefit smaller with GPUon. Never pooled GPU strata."
+    },
+    "total_cpu_seconds": {
+      "reserve_on_vs_off_by_gpu": {
+        "off": {
+          "available": true,
+          "seed_clusters": 4,
+          "geometric_ratio": 0.9887999875263771,
+          "change_percent": -1.1200012473622882,
+          "per_seed_geometric_ratio": {
+            "1056243202": 0.9840094152997281,
+            "744345666": 1.031210391963193,
+            "1064623205": 0.9459718722760794,
+            "725864695": 0.9958846788053332
+          },
+          "descriptive_seed_cluster_bootstrap_95_percentile_change_percent": [
+            -4.17894897789711,
+            1.9202016357460094
+          ],
+          "interval_qualification": "Exact enumeration of256 empirical bootstrap draws of four whole seed clusters, each containing both repetitions and paired variants. Descriptive uncertainty for these four seeds; weak population coverage, no independence claimed for repetitions."
+        },
+        "on": {
+          "available": true,
+          "seed_clusters": 4,
+          "geometric_ratio": 1.008503524108807,
+          "change_percent": 0.8503524108806922,
+          "per_seed_geometric_ratio": {
+            "1056243202": 0.9988548584602306,
+            "744345666": 0.9998883154807178,
+            "1064623205": 1.0376513203434063,
+            "725864695": 0.9981696434497803
+          },
+          "descriptive_seed_cluster_bootstrap_95_percentile_change_percent": [
+            -0.14878078223936242,
+            2.781317140394234
+          ],
+          "interval_qualification": "Exact enumeration of256 empirical bootstrap draws of four whole seed clusters, each containing both repetitions and paired variants. Descriptive uncertainty for these four seeds; weak population coverage, no independence claimed for repetitions."
+        }
+      },
+      "gpu_interaction_ratio_of_ratios": {
+        "available": true,
+        "seed_clusters": 4,
+        "geometric_ratio": 1.0199267160507566,
+        "change_percent": 1.9926716050756619,
+        "per_seed_geometric_ratio": {
+          "1056243202": 1.0150866881248088,
+          "744345666": 0.9696259107485865,
+          "1064623205": 1.0969156174239507,
+          "725864695": 1.0022944068656505
+        },
+        "descriptive_seed_cluster_bootstrap_95_percentile_change_percent": [
+          -1.9203420928805202,
+          7.245416844337563
+        ],
+        "interval_qualification": "Exact enumeration of256 empirical bootstrap draws of four whole seed clusters, each containing both repetitions and paired variants. Descriptive uncertainty for these four seeds; weak population coverage, no independence claimed for repetitions."
+      },
+      "interaction_interpretation": "(reserve on/off ratio with GPUon)/(reserve on/off ratio with GPUoff); positive change means reserve penalty larger or benefit smaller with GPUon. Never pooled GPU strata."
+    },
+    "peak_rss_kib": {
+      "reserve_on_vs_off_by_gpu": {
+        "off": {
+          "available": true,
+          "seed_clusters": 4,
+          "geometric_ratio": 0.9799794670847973,
+          "change_percent": -2.0020532915202707,
+          "per_seed_geometric_ratio": {
+            "1056243202": 0.9803562474875334,
+            "744345666": 0.98044969543352,
+            "1064623205": 0.9774908151650908,
+            "725864695": 0.9816258421806572
+          },
+          "descriptive_seed_cluster_bootstrap_95_percentile_change_percent": [
+            -2.177030296736911,
+            -1.8691710550290366
+          ],
+          "interval_qualification": "Exact enumeration of256 empirical bootstrap draws of four whole seed clusters, each containing both repetitions and paired variants. Descriptive uncertainty for these four seeds; weak population coverage, no independence claimed for repetitions."
+        },
+        "on": {
+          "available": true,
+          "seed_clusters": 4,
+          "geometric_ratio": 0.9874864696979437,
+          "change_percent": -1.2513530302056308,
+          "per_seed_geometric_ratio": {
+            "1056243202": 0.9889207525926123,
+            "744345666": 0.9831764709178433,
+            "1064623205": 0.9884441736182704,
+            "725864695": 0.9894173048119823
+          },
+          "descriptive_seed_cluster_bootstrap_95_percentile_change_percent": [
+            -1.5390594363551704,
+            -1.0826067767319512
+          ],
+          "interval_qualification": "Exact enumeration of256 empirical bootstrap draws of four whole seed clusters, each containing both repetitions and paired variants. Descriptive uncertainty for these four seeds; weak population coverage, no independence claimed for repetitions."
+        }
+      },
+      "gpu_interaction_ratio_of_ratios": {
+        "available": true,
+        "seed_clusters": 4,
+        "geometric_ratio": 1.007660367247773,
+        "change_percent": 0.766036724777298,
+        "per_seed_geometric_ratio": {
+          "1056243202": 1.0087361151897873,
+          "744345666": 1.0027811477702766,
+          "1064623205": 1.0112055870840377,
+          "725864695": 1.0079373039059532
+        },
+        "descriptive_seed_cluster_bootstrap_95_percentile_change_percent": [
+          0.42665857549187297,
+          1.038752410823548
+        ],
+        "interval_qualification": "Exact enumeration of256 empirical bootstrap draws of four whole seed clusters, each containing both repetitions and paired variants. Descriptive uncertainty for these four seeds; weak population coverage, no independence claimed for repetitions."
+      },
+      "interaction_interpretation": "(reserve on/off ratio with GPUon)/(reserve on/off ratio with GPUoff); positive change means reserve penalty larger or benefit smaller with GPUon. Never pooled GPU strata."
+    }
+  },
+  "plan_sha256": "e1b9424fa3a74405bdf4c3c1bc5f08756f7428440de1d867bcc3be9191125244",
+  "frozen_map_sha256": "2a323a2d02475fb1ddd2ddfac99c51890aa7b2a2f3537ad7bee93aba85d84eaf",
+  "separate_8192_full_trace_gate_passed": true,
+  "qualification": "Unknown/missing/invalid records fail and are never imputed. Native timing includes identical replay writing. Exact whole replay equality and final CRC are checked after timing; this20k cohort does not contain full per-tick sidecars. Earlier8192 diagnostic fullGCS is separate. Requested compute4, identical sixlogicalCPU allocation, four whole seed clusters. GPU enabled policy health is not captured by reserve binary; no sustained GPU utilization claim. Background host cache/power/memory/GPU contention remains possible. Root queues fresh one-controller-per-game wrappers. No game/profiler launched by this checker.",
+  "rss_accounting_audit": "rss-accounting-audit.json",
+  "rss_qualification": "Root audited328nativefiles: game sampledHWM corroborates wait4 peaks; Oaziswrapper33420KiB below game\u226569MB. No observed material native wrapper contamination; separate telemetry-model wrapper issue does not invalidate these games."
+}

@@ -1,0 +1,9 @@
+{
+  "all_identical": true,
+  "full_checksum_sha256": "422d1592da7fdfb64a5cb31b13eb83d99f565568d76c652bacf5c2eb31a78168",
+  "ticks": 4096,
+  "cases": [
+    "pacing-check-playground-us0",
+    "pacing-check-playground-us5000"
+  ]
+}

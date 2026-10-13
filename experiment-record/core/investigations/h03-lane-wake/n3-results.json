@@ -1,0 +1,360 @@
+{
+  "state": "passed",
+  "checks_only": false,
+  "checks": [
+    {
+      "id": "h03-n3-check-gpuon-original",
+      "state": "complete",
+      "passed": true,
+      "raw_GCS_sha256": "c95bcc473064f6fb4c7b17470e53a6e8a1f33368970ee1b7083355ae87c93a4e",
+      "final_checksum": "cd20aae7",
+      "ticks": 8192
+    },
+    {
+      "id": "h03-n3-check-gpuon-guarded",
+      "state": "complete",
+      "passed": true,
+      "raw_GCS_sha256": "c95bcc473064f6fb4c7b17470e53a6e8a1f33368970ee1b7083355ae87c93a4e",
+      "final_checksum": "cd20aae7",
+      "ticks": 8192
+    },
+    {
+      "id": "h03-n3-check-gpuoff-original",
+      "state": "complete",
+      "passed": true,
+      "raw_GCS_sha256": "c95bcc473064f6fb4c7b17470e53a6e8a1f33368970ee1b7083355ae87c93a4e",
+      "final_checksum": "cd20aae7",
+      "ticks": 8192
+    },
+    {
+      "id": "h03-n3-check-gpuoff-guarded",
+      "state": "complete",
+      "passed": true,
+      "raw_GCS_sha256": "c95bcc473064f6fb4c7b17470e53a6e8a1f33368970ee1b7083355ae87c93a4e",
+      "final_checksum": "cd20aae7",
+      "ticks": 8192
+    }
+  ],
+  "expected_checks": 4,
+  "window_states": [
+    {
+      "id": "h03-n3-window-playground-s1056243202-r0-original",
+      "state": "complete"
+    },
+    {
+      "id": "h03-n3-window-playground-s1056243202-r0-guarded",
+      "state": "complete"
+    },
+    {
+      "id": "h03-n3-window-playground-s1056243202-r1-guarded",
+      "state": "complete"
+    },
+    {
+      "id": "h03-n3-window-playground-s1056243202-r1-original",
+      "state": "complete"
+    },
+    {
+      "id": "h03-n3-window-playground-s744345666-r0-original",
+      "state": "complete"
+    },
+    {
+      "id": "h03-n3-window-playground-s744345666-r0-guarded",
+      "state": "complete"
+    },
+    {
+      "id": "h03-n3-window-playground-s744345666-r1-guarded",
+      "state": "complete"
+    },
+    {
+      "id": "h03-n3-window-playground-s744345666-r1-original",
+      "state": "complete"
+    },
+    {
+      "id": "h03-n3-window-oazis-s1056243202-r0-original",
+      "state": "complete"
+    },
+    {
+      "id": "h03-n3-window-oazis-s1056243202-r0-guarded",
+      "state": "complete"
+    },
+    {
+      "id": "h03-n3-window-oazis-s1056243202-r1-guarded",
+      "state": "complete"
+    },
+    {
+      "id": "h03-n3-window-oazis-s1056243202-r1-original",
+      "state": "complete"
+    },
+    {
+      "id": "h03-n3-window-oazis-s744345666-r0-original",
+      "state": "complete"
+    },
+    {
+      "id": "h03-n3-window-oazis-s744345666-r0-guarded",
+      "state": "complete"
+    },
+    {
+      "id": "h03-n3-window-oazis-s744345666-r1-guarded",
+      "state": "complete"
+    },
+    {
+      "id": "h03-n3-window-oazis-s744345666-r1-original",
+      "state": "complete"
+    }
+  ],
+  "expected_windows": 16,
+  "errors": [],
+  "pairs": [
+    {
+      "pair_id": "h03-n3-window-playground-s1056243202-r0",
+      "map": "Playground",
+      "seed": 1056243202,
+      "repetition": 0,
+      "ticks": 20000,
+      "native_final_checksum": "73d2089b",
+      "ratios": {
+        "run_wall_seconds": 0.993062686839643,
+        "wall_seconds": 0.9950722737980691,
+        "total_cpu_seconds": 0.9940412210712464,
+        "system_cpu_seconds": 1.0076473957496086,
+        "voluntary_context_switches": 0.9711438654764376,
+        "peak_rss_kib": 0.9992925735271982,
+        "cpu_seconds_per_tick": 0.9940412210712464
+      }
+    },
+    {
+      "pair_id": "h03-n3-window-playground-s1056243202-r1",
+      "map": "Playground",
+      "seed": 1056243202,
+      "repetition": 1,
+      "ticks": 20000,
+      "native_final_checksum": "73d2089b",
+      "ratios": {
+        "run_wall_seconds": 1.0061053473982104,
+        "wall_seconds": 1.006483152564577,
+        "total_cpu_seconds": 1.0084837567586131,
+        "system_cpu_seconds": 1.038646513766669,
+        "voluntary_context_switches": 0.9523235189783611,
+        "peak_rss_kib": 0.9976115008487434,
+        "cpu_seconds_per_tick": 1.0084837567586131
+      }
+    },
+    {
+      "pair_id": "h03-n3-window-playground-s744345666-r0",
+      "map": "Playground",
+      "seed": 744345666,
+      "repetition": 0,
+      "ticks": 20000,
+      "native_final_checksum": "2e8c926c",
+      "ratios": {
+        "run_wall_seconds": 1.0162389459524304,
+        "wall_seconds": 1.0153035062806148,
+        "total_cpu_seconds": 1.0243205738300085,
+        "system_cpu_seconds": 1.0461462864740654,
+        "voluntary_context_switches": 0.9722329755410875,
+        "peak_rss_kib": 1.000549271102402,
+        "cpu_seconds_per_tick": 1.0243205738300085
+      }
+    },
+    {
+      "pair_id": "h03-n3-window-playground-s744345666-r1",
+      "map": "Playground",
+      "seed": 744345666,
+      "repetition": 1,
+      "ticks": 20000,
+      "native_final_checksum": "2e8c926c",
+      "ratios": {
+        "run_wall_seconds": 0.9881811384662504,
+        "wall_seconds": 0.9895823743569222,
+        "total_cpu_seconds": 0.9869743684515165,
+        "system_cpu_seconds": 1.026538481643999,
+        "voluntary_context_switches": 0.9807209286538592,
+        "peak_rss_kib": 1.0004751722499405,
+        "cpu_seconds_per_tick": 0.9869743684515165
+      }
+    },
+    {
+      "pair_id": "h03-n3-window-oazis-s1056243202-r0",
+      "map": "Oazis",
+      "seed": 1056243202,
+      "repetition": 0,
+      "ticks": 8192,
+      "native_final_checksum": "a5bbba43",
+      "ratios": {
+        "run_wall_seconds": 0.9887251887421985,
+        "wall_seconds": 0.9943414667481866,
+        "total_cpu_seconds": 0.9987807927972989,
+        "system_cpu_seconds": 1.0425143215288695,
+        "voluntary_context_switches": 0.9766522544780729,
+        "peak_rss_kib": 1.0015279462536157,
+        "cpu_seconds_per_tick": 0.9987807927972989
+      }
+    },
+    {
+      "pair_id": "h03-n3-window-oazis-s1056243202-r1",
+      "map": "Oazis",
+      "seed": 1056243202,
+      "repetition": 1,
+      "ticks": 8192,
+      "native_final_checksum": "a5bbba43",
+      "ratios": {
+        "run_wall_seconds": 0.980388830065443,
+        "wall_seconds": 0.9836129747298998,
+        "total_cpu_seconds": 0.9760567009227307,
+        "system_cpu_seconds": 1.0253190065856823,
+        "voluntary_context_switches": 0.9813576754949859,
+        "peak_rss_kib": 0.9993479197475518,
+        "cpu_seconds_per_tick": 0.9760567009227307
+      }
+    },
+    {
+      "pair_id": "h03-n3-window-oazis-s744345666-r0",
+      "map": "Oazis",
+      "seed": 744345666,
+      "repetition": 0,
+      "ticks": 8192,
+      "native_final_checksum": "faca9180",
+      "ratios": {
+        "run_wall_seconds": 0.9855790351356923,
+        "wall_seconds": 0.9873135436792623,
+        "total_cpu_seconds": 0.9939654068332053,
+        "system_cpu_seconds": 0.9340432873723696,
+        "voluntary_context_switches": 0.9387372613330209,
+        "peak_rss_kib": 0.9998112539813613,
+        "cpu_seconds_per_tick": 0.9939654068332053
+      }
+    },
+    {
+      "pair_id": "h03-n3-window-oazis-s744345666-r1",
+      "map": "Oazis",
+      "seed": 744345666,
+      "repetition": 1,
+      "ticks": 8192,
+      "native_final_checksum": "faca9180",
+      "ratios": {
+        "run_wall_seconds": 0.9819617749756822,
+        "wall_seconds": 0.9880387074721465,
+        "total_cpu_seconds": 0.985117961322695,
+        "system_cpu_seconds": 0.9661282921021639,
+        "voluntary_context_switches": 0.9877645502645502,
+        "peak_rss_kib": 0.9978703878012049,
+        "cpu_seconds_per_tick": 0.985117961322695
+      }
+    }
+  ],
+  "groups": [
+    {
+      "map": "Playground",
+      "pairs": 4,
+      "seeds": 2,
+      "metrics": {
+        "run_wall_seconds": {
+          "pairs": 4,
+          "median_ratio": 0.9995840171189267,
+          "geometric_ratio": 1.0008364851859919,
+          "minimum": 0.9881811384662504,
+          "maximum": 1.0162389459524304
+        },
+        "wall_seconds": {
+          "pairs": 4,
+          "median_ratio": 1.0007777131813231,
+          "geometric_ratio": 1.0015606264289516,
+          "minimum": 0.9895823743569222,
+          "maximum": 1.0153035062806148
+        },
+        "total_cpu_seconds": {
+          "pairs": 4,
+          "median_ratio": 1.0012624889149297,
+          "geometric_ratio": 1.0033530332872214,
+          "minimum": 0.9869743684515165,
+          "maximum": 1.0243205738300085
+        },
+        "system_cpu_seconds": {
+          "pairs": 4,
+          "median_ratio": 1.032592497705334,
+          "geometric_ratio": 1.0296414123766937,
+          "minimum": 1.0076473957496086,
+          "maximum": 1.0461462864740654
+        },
+        "voluntary_context_switches": {
+          "pairs": 4,
+          "median_ratio": 0.9716884205087626,
+          "geometric_ratio": 0.9690495135462219,
+          "minimum": 0.9523235189783611,
+          "maximum": 0.9807209286538592
+        },
+        "peak_rss_kib": {
+          "pairs": 4,
+          "median_ratio": 0.9998838728885694,
+          "geometric_ratio": 0.9994814211877567,
+          "minimum": 0.9976115008487434,
+          "maximum": 1.000549271102402
+        },
+        "cpu_seconds_per_tick": {
+          "pairs": 4,
+          "median_ratio": 1.0012624889149297,
+          "geometric_ratio": 1.0033530332872214,
+          "minimum": 0.9869743684515165,
+          "maximum": 1.0243205738300085
+        }
+      }
+    },
+    {
+      "map": "Oazis",
+      "pairs": 4,
+      "seeds": 2,
+      "metrics": {
+        "run_wall_seconds": {
+          "pairs": 4,
+          "median_ratio": 0.9837704050556872,
+          "geometric_ratio": 0.9841583872109471,
+          "minimum": 0.980388830065443,
+          "maximum": 0.9887251887421985
+        },
+        "wall_seconds": {
+          "pairs": 4,
+          "median_ratio": 0.9876761255757044,
+          "geometric_ratio": 0.9883191564968548,
+          "minimum": 0.9836129747298998,
+          "maximum": 0.9943414667481866
+        },
+        "total_cpu_seconds": {
+          "pairs": 4,
+          "median_ratio": 0.9895416840779502,
+          "geometric_ratio": 0.9884419849556757,
+          "minimum": 0.9760567009227307,
+          "maximum": 0.9987807927972989
+        },
+        "system_cpu_seconds": {
+          "pairs": 4,
+          "median_ratio": 0.9957236493439231,
+          "geometric_ratio": 0.9910275103824785,
+          "minimum": 0.9340432873723696,
+          "maximum": 1.0425143215288695
+        },
+        "voluntary_context_switches": {
+          "pairs": 4,
+          "median_ratio": 0.9790049649865293,
+          "geometric_ratio": 0.9709373173446392,
+          "minimum": 0.9387372613330209,
+          "maximum": 0.9877645502645502
+        },
+        "peak_rss_kib": {
+          "pairs": 4,
+          "median_ratio": 0.9995795868644566,
+          "geometric_ratio": 0.9996385254230171,
+          "minimum": 0.9978703878012049,
+          "maximum": 1.0015279462536157
+        },
+        "cpu_seconds_per_tick": {
+          "pairs": 4,
+          "median_ratio": 0.9895416840779502,
+          "geometric_ratio": 0.9884419849556757,
+          "minimum": 0.9760567009227307,
+          "maximum": 0.9987807927972989
+        }
+      }
+    }
+  ],
+  "scope": "Raw whole per-tick GCS SHA256 at PG8192, N3 GPUoff/on, one seed. Timed PG20k/Oazis8192 GPUon paired2seeds\u00d72reps, exact native finalCRC/end/winner/ticks comparison. No fullwinner/mature, Oazis wholeGCS,save/load/network/nonLinux platform proof. No timing or game launched by checker; no raw files rewritten."
+}

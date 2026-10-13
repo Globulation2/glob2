@@ -1,0 +1,29 @@
+{
+  "source_json": "mature-memory-attribution.json",
+  "source_sha256": "b3acaaaa9a6dad19312b24db78d6e5160d87af28094b60f16b2256c9e28165f9",
+  "exact_total_bytes": 521535011,
+  "unit": "MiB (1048576bytes)",
+  "groups_bytes": {
+    "Map gradient fields / cache": 130770461,
+    "Simulation snapshots": 92604570,
+    "Building search frontiers": 74081280,
+    "Replay telemetry": 55243755,
+    "Team statistics / history": 34664480,
+    "GPU initialization / runtime": 30616019,
+    "Other owners (including AI)": 103554446
+  },
+  "other_group_members_bytes": {
+    "No resolved substantive owner": 8664120,
+    "Assets/SDL/audio/render": 16284,
+    "Other game/AI scheduling (not entity ownership proof)": 32148857,
+    "Localization/string tables": 9846525,
+    "Terrain registry/ecology": 51570,
+    "Entity allocation/load": 3431130,
+    "Resource growth": 5958032,
+    "AI runtime/gradients/planning": 31823438,
+    "AI telemetry presentation": 9812186,
+    "Material seed cache/crowding scratch": 1802304,
+    "Recording buffers": 0
+  },
+  "qualification": "Qualified nearest substantive caller ownership. Mutually exclusive GLOBALpeak live allocations, not inclusive sites or independently maximal owners. Heaptrack diagnostic only; no nativeRSS causal subtraction."
+}

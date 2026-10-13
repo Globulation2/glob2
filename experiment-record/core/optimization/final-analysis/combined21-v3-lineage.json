@@ -1,0 +1,1878 @@
+{
+  "passed": true,
+  "jobs": 21,
+  "native_processes": 186,
+  "floor_min_MiB": 21.21484375,
+  "floor_max_MiB": 21.4375,
+  "native_peak_min_MiB": 53.65234375,
+  "min_margin_MiB": 32.36328125,
+  "exact_broker_lineage": true,
+  "auditors_siblings_source_review": true,
+  "per_game_request_response_sha_verified": true,
+  "all_before_after_job_and_plan_audits_passed": true,
+  "source_commit": "9e370bcb83209cf99f43c346750a6d4bd440f4f2",
+  "app_sha256": "ea5dbd7f5e30c129b0f554796beb8a67ec96041baef4b70c9310df7863faa406",
+  "phase_seal_sha256": "ddd5626c3840184f03ef072462a6b34626db3ddd1dc721a4cda657ae08d82331",
+  "rows": [
+    {
+      "job": "small-ni-164298751-final-combined",
+      "repeat": -1,
+      "variant": "baseline",
+      "controller_pid": 1385593,
+      "broker_pid": 1385403,
+      "lane_pid": 1385398,
+      "floor": 22253568,
+      "peak": 84676608
+    },
+    {
+      "job": "small-ni-164298751-final-combined",
+      "repeat": -1,
+      "variant": "candidate",
+      "controller_pid": 1385607,
+      "broker_pid": 1385403,
+      "lane_pid": 1385398,
+      "floor": 22253568,
+      "peak": 57155584
+    },
+    {
+      "job": "small-ni-164298751-final-combined",
+      "repeat": 0,
+      "variant": "candidate",
+      "controller_pid": 1385627,
+      "broker_pid": 1385403,
+      "lane_pid": 1385398,
+      "floor": 22253568,
+      "peak": 57344000
+    },
+    {
+      "job": "small-ni-164298751-final-combined",
+      "repeat": 0,
+      "variant": "baseline",
+      "controller_pid": 1385637,
+      "broker_pid": 1385403,
+      "lane_pid": 1385398,
+      "floor": 22253568,
+      "peak": 85606400
+    },
+    {
+      "job": "small-ni-164298751-final-combined",
+      "repeat": 1,
+      "variant": "baseline",
+      "controller_pid": 1385655,
+      "broker_pid": 1385403,
+      "lane_pid": 1385398,
+      "floor": 22253568,
+      "peak": 84131840
+    },
+    {
+      "job": "small-ni-164298751-final-combined",
+      "repeat": 1,
+      "variant": "candidate",
+      "controller_pid": 1385673,
+      "broker_pid": 1385403,
+      "lane_pid": 1385398,
+      "floor": 22253568,
+      "peak": 56528896
+    },
+    {
+      "job": "small-ni-164298751-final-combined",
+      "repeat": 2,
+      "variant": "candidate",
+      "controller_pid": 1385691,
+      "broker_pid": 1385403,
+      "lane_pid": 1385398,
+      "floor": 22253568,
+      "peak": 56832000
+    },
+    {
+      "job": "small-ni-164298751-final-combined",
+      "repeat": 2,
+      "variant": "baseline",
+      "controller_pid": 1385706,
+      "broker_pid": 1385403,
+      "lane_pid": 1385398,
+      "floor": 22253568,
+      "peak": 84725760
+    },
+    {
+      "job": "small-ni-902381047-final-combined",
+      "repeat": -1,
+      "variant": "baseline",
+      "controller_pid": 1385587,
+      "broker_pid": 1385399,
+      "lane_pid": 1385394,
+      "floor": 22323200,
+      "peak": 85680128
+    },
+    {
+      "job": "small-ni-902381047-final-combined",
+      "repeat": -1,
+      "variant": "candidate",
+      "controller_pid": 1385608,
+      "broker_pid": 1385399,
+      "lane_pid": 1385394,
+      "floor": 22323200,
+      "peak": 56258560
+    },
+    {
+      "job": "small-ni-902381047-final-combined",
+      "repeat": 0,
+      "variant": "candidate",
+      "controller_pid": 1385629,
+      "broker_pid": 1385399,
+      "lane_pid": 1385394,
+      "floor": 22323200,
+      "peak": 57110528
+    },
+    {
+      "job": "small-ni-902381047-final-combined",
+      "repeat": 0,
+      "variant": "baseline",
+      "controller_pid": 1385646,
+      "broker_pid": 1385399,
+      "lane_pid": 1385394,
+      "floor": 22323200,
+      "peak": 84549632
+    },
+    {
+      "job": "small-ni-902381047-final-combined",
+      "repeat": 1,
+      "variant": "baseline",
+      "controller_pid": 1385667,
+      "broker_pid": 1385399,
+      "lane_pid": 1385394,
+      "floor": 22323200,
+      "peak": 85118976
+    },
+    {
+      "job": "small-ni-902381047-final-combined",
+      "repeat": 1,
+      "variant": "candidate",
+      "controller_pid": 1385685,
+      "broker_pid": 1385399,
+      "lane_pid": 1385394,
+      "floor": 22323200,
+      "peak": 56303616
+    },
+    {
+      "job": "small-ni-902381047-final-combined",
+      "repeat": 2,
+      "variant": "candidate",
+      "controller_pid": 1385703,
+      "broker_pid": 1385399,
+      "lane_pid": 1385394,
+      "floor": 22323200,
+      "peak": 57114624
+    },
+    {
+      "job": "small-ni-902381047-final-combined",
+      "repeat": 2,
+      "variant": "baseline",
+      "controller_pid": 1385730,
+      "broker_pid": 1385399,
+      "lane_pid": 1385394,
+      "floor": 22323200,
+      "peak": 84525056
+    },
+    {
+      "job": "rect-mixed-164298751-final-combined",
+      "repeat": -1,
+      "variant": "baseline",
+      "controller_pid": 1385585,
+      "broker_pid": 1385404,
+      "lane_pid": 1385397,
+      "floor": 22388736,
+      "peak": 101871616
+    },
+    {
+      "job": "rect-mixed-164298751-final-combined",
+      "repeat": -1,
+      "variant": "candidate",
+      "controller_pid": 1385617,
+      "broker_pid": 1385404,
+      "lane_pid": 1385397,
+      "floor": 22388736,
+      "peak": 64004096
+    },
+    {
+      "job": "rect-mixed-164298751-final-combined",
+      "repeat": 0,
+      "variant": "candidate",
+      "controller_pid": 1385645,
+      "broker_pid": 1385404,
+      "lane_pid": 1385397,
+      "floor": 22388736,
+      "peak": 63467520
+    },
+    {
+      "job": "rect-mixed-164298751-final-combined",
+      "repeat": 0,
+      "variant": "baseline",
+      "controller_pid": 1385675,
+      "broker_pid": 1385404,
+      "lane_pid": 1385397,
+      "floor": 22388736,
+      "peak": 101416960
+    },
+    {
+      "job": "rect-mixed-164298751-final-combined",
+      "repeat": 1,
+      "variant": "baseline",
+      "controller_pid": 1385705,
+      "broker_pid": 1385404,
+      "lane_pid": 1385397,
+      "floor": 22388736,
+      "peak": 101969920
+    },
+    {
+      "job": "rect-mixed-164298751-final-combined",
+      "repeat": 1,
+      "variant": "candidate",
+      "controller_pid": 1385750,
+      "broker_pid": 1385404,
+      "lane_pid": 1385397,
+      "floor": 22388736,
+      "peak": 63877120
+    },
+    {
+      "job": "rect-mixed-164298751-final-combined",
+      "repeat": 2,
+      "variant": "candidate",
+      "controller_pid": 1385782,
+      "broker_pid": 1385404,
+      "lane_pid": 1385397,
+      "floor": 22388736,
+      "peak": 63758336
+    },
+    {
+      "job": "rect-mixed-164298751-final-combined",
+      "repeat": 2,
+      "variant": "baseline",
+      "controller_pid": 1385810,
+      "broker_pid": 1385404,
+      "lane_pid": 1385397,
+      "floor": 22388736,
+      "peak": 102125568
+    },
+    {
+      "job": "rect-mixed-902381047-final-combined",
+      "repeat": -1,
+      "variant": "baseline",
+      "controller_pid": 1385578,
+      "broker_pid": 1385401,
+      "lane_pid": 1385396,
+      "floor": 22323200,
+      "peak": 103305216
+    },
+    {
+      "job": "rect-mixed-902381047-final-combined",
+      "repeat": -1,
+      "variant": "candidate",
+      "controller_pid": 1385611,
+      "broker_pid": 1385401,
+      "lane_pid": 1385396,
+      "floor": 22323200,
+      "peak": 64290816
+    },
+    {
+      "job": "rect-mixed-902381047-final-combined",
+      "repeat": 0,
+      "variant": "candidate",
+      "controller_pid": 1385635,
+      "broker_pid": 1385401,
+      "lane_pid": 1385396,
+      "floor": 22323200,
+      "peak": 65110016
+    },
+    {
+      "job": "rect-mixed-902381047-final-combined",
+      "repeat": 0,
+      "variant": "baseline",
+      "controller_pid": 1385657,
+      "broker_pid": 1385401,
+      "lane_pid": 1385396,
+      "floor": 22323200,
+      "peak": 103346176
+    },
+    {
+      "job": "rect-mixed-902381047-final-combined",
+      "repeat": 1,
+      "variant": "baseline",
+      "controller_pid": 1385687,
+      "broker_pid": 1385401,
+      "lane_pid": 1385396,
+      "floor": 22323200,
+      "peak": 103419904
+    },
+    {
+      "job": "rect-mixed-902381047-final-combined",
+      "repeat": 1,
+      "variant": "candidate",
+      "controller_pid": 1385711,
+      "broker_pid": 1385401,
+      "lane_pid": 1385396,
+      "floor": 22323200,
+      "peak": 66105344
+    },
+    {
+      "job": "rect-mixed-902381047-final-combined",
+      "repeat": 2,
+      "variant": "candidate",
+      "controller_pid": 1385748,
+      "broker_pid": 1385401,
+      "lane_pid": 1385396,
+      "floor": 22323200,
+      "peak": 63840256
+    },
+    {
+      "job": "rect-mixed-902381047-final-combined",
+      "repeat": 2,
+      "variant": "baseline",
+      "controller_pid": 1385780,
+      "broker_pid": 1385401,
+      "lane_pid": 1385396,
+      "floor": 22323200,
+      "peak": 102993920
+    },
+    {
+      "job": "rect-cortex-164298751-final-combined",
+      "repeat": -1,
+      "variant": "baseline",
+      "controller_pid": 1386241,
+      "broker_pid": 1386004,
+      "lane_pid": 1386003,
+      "floor": 22343680,
+      "peak": 96473088
+    },
+    {
+      "job": "rect-cortex-164298751-final-combined",
+      "repeat": -1,
+      "variant": "candidate",
+      "controller_pid": 1386267,
+      "broker_pid": 1386004,
+      "lane_pid": 1386003,
+      "floor": 22343680,
+      "peak": 59994112
+    },
+    {
+      "job": "rect-cortex-164298751-final-combined",
+      "repeat": 0,
+      "variant": "candidate",
+      "controller_pid": 1386281,
+      "broker_pid": 1386004,
+      "lane_pid": 1386003,
+      "floor": 22343680,
+      "peak": 61353984
+    },
+    {
+      "job": "rect-cortex-164298751-final-combined",
+      "repeat": 0,
+      "variant": "baseline",
+      "controller_pid": 1386315,
+      "broker_pid": 1386004,
+      "lane_pid": 1386003,
+      "floor": 22343680,
+      "peak": 97304576
+    },
+    {
+      "job": "rect-cortex-164298751-final-combined",
+      "repeat": 1,
+      "variant": "baseline",
+      "controller_pid": 1386330,
+      "broker_pid": 1386004,
+      "lane_pid": 1386003,
+      "floor": 22343680,
+      "peak": 96727040
+    },
+    {
+      "job": "rect-cortex-164298751-final-combined",
+      "repeat": 1,
+      "variant": "candidate",
+      "controller_pid": 1386366,
+      "broker_pid": 1386004,
+      "lane_pid": 1386003,
+      "floor": 22343680,
+      "peak": 60379136
+    },
+    {
+      "job": "rect-cortex-164298751-final-combined",
+      "repeat": 2,
+      "variant": "candidate",
+      "controller_pid": 1386378,
+      "broker_pid": 1386004,
+      "lane_pid": 1386003,
+      "floor": 22343680,
+      "peak": 60809216
+    },
+    {
+      "job": "rect-cortex-164298751-final-combined",
+      "repeat": 2,
+      "variant": "baseline",
+      "controller_pid": 1386394,
+      "broker_pid": 1386004,
+      "lane_pid": 1386003,
+      "floor": 22343680,
+      "peak": 96346112
+    },
+    {
+      "job": "rect-cortex-902381047-final-combined",
+      "repeat": -1,
+      "variant": "baseline",
+      "controller_pid": 1386268,
+      "broker_pid": 1386011,
+      "lane_pid": 1386010,
+      "floor": 22286336,
+      "peak": 96641024
+    },
+    {
+      "job": "rect-cortex-902381047-final-combined",
+      "repeat": -1,
+      "variant": "candidate",
+      "controller_pid": 1386297,
+      "broker_pid": 1386011,
+      "lane_pid": 1386010,
+      "floor": 22286336,
+      "peak": 60477440
+    },
+    {
+      "job": "rect-cortex-902381047-final-combined",
+      "repeat": 0,
+      "variant": "candidate",
+      "controller_pid": 1386322,
+      "broker_pid": 1386011,
+      "lane_pid": 1386010,
+      "floor": 22286336,
+      "peak": 59596800
+    },
+    {
+      "job": "rect-cortex-902381047-final-combined",
+      "repeat": 0,
+      "variant": "baseline",
+      "controller_pid": 1386350,
+      "broker_pid": 1386011,
+      "lane_pid": 1386010,
+      "floor": 22286336,
+      "peak": 96473088
+    },
+    {
+      "job": "rect-cortex-902381047-final-combined",
+      "repeat": 1,
+      "variant": "baseline",
+      "controller_pid": 1386374,
+      "broker_pid": 1386011,
+      "lane_pid": 1386010,
+      "floor": 22286336,
+      "peak": 97595392
+    },
+    {
+      "job": "rect-cortex-902381047-final-combined",
+      "repeat": 1,
+      "variant": "candidate",
+      "controller_pid": 1386386,
+      "broker_pid": 1386011,
+      "lane_pid": 1386010,
+      "floor": 22286336,
+      "peak": 60755968
+    },
+    {
+      "job": "rect-cortex-902381047-final-combined",
+      "repeat": 2,
+      "variant": "candidate",
+      "controller_pid": 1386404,
+      "broker_pid": 1386011,
+      "lane_pid": 1386010,
+      "floor": 22286336,
+      "peak": 60547072
+    },
+    {
+      "job": "rect-cortex-902381047-final-combined",
+      "repeat": 2,
+      "variant": "baseline",
+      "controller_pid": 1386428,
+      "broker_pid": 1386011,
+      "lane_pid": 1386010,
+      "floor": 22286336,
+      "peak": 96563200
+    },
+    {
+      "job": "playground-ni-164298751-final-combined",
+      "repeat": -1,
+      "variant": "baseline",
+      "controller_pid": 1386360,
+      "broker_pid": 1386139,
+      "lane_pid": 1386138,
+      "floor": 22339584,
+      "peak": 155197440
+    },
+    {
+      "job": "playground-ni-164298751-final-combined",
+      "repeat": -1,
+      "variant": "candidate",
+      "controller_pid": 1386477,
+      "broker_pid": 1386139,
+      "lane_pid": 1386138,
+      "floor": 22339584,
+      "peak": 117563392
+    },
+    {
+      "job": "playground-ni-164298751-final-combined",
+      "repeat": 0,
+      "variant": "candidate",
+      "controller_pid": 1386524,
+      "broker_pid": 1386139,
+      "lane_pid": 1386138,
+      "floor": 22339584,
+      "peak": 118804480
+    },
+    {
+      "job": "playground-ni-164298751-final-combined",
+      "repeat": 0,
+      "variant": "baseline",
+      "controller_pid": 1386586,
+      "broker_pid": 1386139,
+      "lane_pid": 1386138,
+      "floor": 22339584,
+      "peak": 155353088
+    },
+    {
+      "job": "playground-ni-164298751-final-combined",
+      "repeat": 1,
+      "variant": "baseline",
+      "controller_pid": 1386653,
+      "broker_pid": 1386139,
+      "lane_pid": 1386138,
+      "floor": 22339584,
+      "peak": 155840512
+    },
+    {
+      "job": "playground-ni-164298751-final-combined",
+      "repeat": 1,
+      "variant": "candidate",
+      "controller_pid": 1386711,
+      "broker_pid": 1386139,
+      "lane_pid": 1386138,
+      "floor": 22339584,
+      "peak": 118603776
+    },
+    {
+      "job": "playground-ni-164298751-final-combined",
+      "repeat": 2,
+      "variant": "candidate",
+      "controller_pid": 1386768,
+      "broker_pid": 1386139,
+      "lane_pid": 1386138,
+      "floor": 22339584,
+      "peak": 119050240
+    },
+    {
+      "job": "playground-ni-164298751-final-combined",
+      "repeat": 2,
+      "variant": "baseline",
+      "controller_pid": 1386841,
+      "broker_pid": 1386139,
+      "lane_pid": 1386138,
+      "floor": 22339584,
+      "peak": 155246592
+    },
+    {
+      "job": "playground-ni-902381047-final-combined",
+      "repeat": -1,
+      "variant": "baseline",
+      "controller_pid": 1386310,
+      "broker_pid": 1386124,
+      "lane_pid": 1386123,
+      "floor": 22282240,
+      "peak": 157847552
+    },
+    {
+      "job": "playground-ni-902381047-final-combined",
+      "repeat": -1,
+      "variant": "candidate",
+      "controller_pid": 1386438,
+      "broker_pid": 1386124,
+      "lane_pid": 1386123,
+      "floor": 22282240,
+      "peak": 117690368
+    },
+    {
+      "job": "playground-ni-902381047-final-combined",
+      "repeat": 0,
+      "variant": "candidate",
+      "controller_pid": 1386497,
+      "broker_pid": 1386124,
+      "lane_pid": 1386123,
+      "floor": 22282240,
+      "peak": 119283712
+    },
+    {
+      "job": "playground-ni-902381047-final-combined",
+      "repeat": 0,
+      "variant": "baseline",
+      "controller_pid": 1386552,
+      "broker_pid": 1386124,
+      "lane_pid": 1386123,
+      "floor": 22282240,
+      "peak": 155045888
+    },
+    {
+      "job": "playground-ni-902381047-final-combined",
+      "repeat": 1,
+      "variant": "baseline",
+      "controller_pid": 1386603,
+      "broker_pid": 1386124,
+      "lane_pid": 1386123,
+      "floor": 22282240,
+      "peak": 155529216
+    },
+    {
+      "job": "playground-ni-902381047-final-combined",
+      "repeat": 1,
+      "variant": "candidate",
+      "controller_pid": 1386666,
+      "broker_pid": 1386124,
+      "lane_pid": 1386123,
+      "floor": 22282240,
+      "peak": 118902784
+    },
+    {
+      "job": "playground-ni-902381047-final-combined",
+      "repeat": 2,
+      "variant": "candidate",
+      "controller_pid": 1386720,
+      "broker_pid": 1386124,
+      "lane_pid": 1386123,
+      "floor": 22282240,
+      "peak": 118661120
+    },
+    {
+      "job": "playground-ni-902381047-final-combined",
+      "repeat": 2,
+      "variant": "baseline",
+      "controller_pid": 1386776,
+      "broker_pid": 1386124,
+      "lane_pid": 1386123,
+      "floor": 22282240,
+      "peak": 156958720
+    },
+    {
+      "job": "river-cortex-164298751-final-combined",
+      "repeat": -1,
+      "variant": "baseline",
+      "controller_pid": 1386828,
+      "broker_pid": 1386688,
+      "lane_pid": 1386687,
+      "floor": 22327296,
+      "peak": 103919616
+    },
+    {
+      "job": "river-cortex-164298751-final-combined",
+      "repeat": -1,
+      "variant": "candidate",
+      "controller_pid": 1386864,
+      "broker_pid": 1386688,
+      "lane_pid": 1386687,
+      "floor": 22327296,
+      "peak": 66838528
+    },
+    {
+      "job": "river-cortex-164298751-final-combined",
+      "repeat": 0,
+      "variant": "candidate",
+      "controller_pid": 1386902,
+      "broker_pid": 1386688,
+      "lane_pid": 1386687,
+      "floor": 22327296,
+      "peak": 66375680
+    },
+    {
+      "job": "river-cortex-164298751-final-combined",
+      "repeat": 0,
+      "variant": "baseline",
+      "controller_pid": 1386922,
+      "broker_pid": 1386688,
+      "lane_pid": 1386687,
+      "floor": 22327296,
+      "peak": 104550400
+    },
+    {
+      "job": "river-cortex-164298751-final-combined",
+      "repeat": 1,
+      "variant": "baseline",
+      "controller_pid": 1386939,
+      "broker_pid": 1386688,
+      "lane_pid": 1386687,
+      "floor": 22327296,
+      "peak": 103718912
+    },
+    {
+      "job": "river-cortex-164298751-final-combined",
+      "repeat": 1,
+      "variant": "candidate",
+      "controller_pid": 1386976,
+      "broker_pid": 1386688,
+      "lane_pid": 1386687,
+      "floor": 22327296,
+      "peak": 68542464
+    },
+    {
+      "job": "river-cortex-164298751-final-combined",
+      "repeat": 2,
+      "variant": "candidate",
+      "controller_pid": 1387002,
+      "broker_pid": 1386688,
+      "lane_pid": 1386687,
+      "floor": 22327296,
+      "peak": 66609152
+    },
+    {
+      "job": "river-cortex-164298751-final-combined",
+      "repeat": 2,
+      "variant": "baseline",
+      "controller_pid": 1387023,
+      "broker_pid": 1386688,
+      "lane_pid": 1386687,
+      "floor": 22327296,
+      "peak": 104546304
+    },
+    {
+      "job": "river-cortex-902381047-final-combined",
+      "repeat": -1,
+      "variant": "baseline",
+      "controller_pid": 1386894,
+      "broker_pid": 1386710,
+      "lane_pid": 1386709,
+      "floor": 22401024,
+      "peak": 105209856
+    },
+    {
+      "job": "river-cortex-902381047-final-combined",
+      "repeat": -1,
+      "variant": "candidate",
+      "controller_pid": 1386914,
+      "broker_pid": 1386710,
+      "lane_pid": 1386709,
+      "floor": 22401024,
+      "peak": 67551232
+    },
+    {
+      "job": "river-cortex-902381047-final-combined",
+      "repeat": 0,
+      "variant": "candidate",
+      "controller_pid": 1386935,
+      "broker_pid": 1386710,
+      "lane_pid": 1386709,
+      "floor": 22401024,
+      "peak": 67338240
+    },
+    {
+      "job": "river-cortex-902381047-final-combined",
+      "repeat": 0,
+      "variant": "baseline",
+      "controller_pid": 1386972,
+      "broker_pid": 1386710,
+      "lane_pid": 1386709,
+      "floor": 22401024,
+      "peak": 105025536
+    },
+    {
+      "job": "river-cortex-902381047-final-combined",
+      "repeat": 1,
+      "variant": "baseline",
+      "controller_pid": 1387000,
+      "broker_pid": 1386710,
+      "lane_pid": 1386709,
+      "floor": 22401024,
+      "peak": 104828928
+    },
+    {
+      "job": "river-cortex-902381047-final-combined",
+      "repeat": 1,
+      "variant": "candidate",
+      "controller_pid": 1387025,
+      "broker_pid": 1386710,
+      "lane_pid": 1386709,
+      "floor": 22401024,
+      "peak": 67256320
+    },
+    {
+      "job": "river-cortex-902381047-final-combined",
+      "repeat": 2,
+      "variant": "candidate",
+      "controller_pid": 1387057,
+      "broker_pid": 1386710,
+      "lane_pid": 1386709,
+      "floor": 22401024,
+      "peak": 68648960
+    },
+    {
+      "job": "river-cortex-902381047-final-combined",
+      "repeat": 2,
+      "variant": "baseline",
+      "controller_pid": 1387076,
+      "broker_pid": 1386710,
+      "lane_pid": 1386709,
+      "floor": 22401024,
+      "peak": 104882176
+    },
+    {
+      "job": "isles-mixed-164298751-final-combined",
+      "repeat": -1,
+      "variant": "baseline",
+      "controller_pid": 1387421,
+      "broker_pid": 1387271,
+      "lane_pid": 1387270,
+      "floor": 22269952,
+      "peak": 238944256
+    },
+    {
+      "job": "isles-mixed-164298751-final-combined",
+      "repeat": -1,
+      "variant": "candidate",
+      "controller_pid": 1387562,
+      "broker_pid": 1387271,
+      "lane_pid": 1387270,
+      "floor": 22269952,
+      "peak": 202440704
+    },
+    {
+      "job": "isles-mixed-164298751-final-combined",
+      "repeat": 0,
+      "variant": "candidate",
+      "controller_pid": 1387654,
+      "broker_pid": 1387271,
+      "lane_pid": 1387270,
+      "floor": 22269952,
+      "peak": 204083200
+    },
+    {
+      "job": "isles-mixed-164298751-final-combined",
+      "repeat": 0,
+      "variant": "baseline",
+      "controller_pid": 1387709,
+      "broker_pid": 1387271,
+      "lane_pid": 1387270,
+      "floor": 22269952,
+      "peak": 236404736
+    },
+    {
+      "job": "isles-mixed-164298751-final-combined",
+      "repeat": 1,
+      "variant": "baseline",
+      "controller_pid": 1387782,
+      "broker_pid": 1387271,
+      "lane_pid": 1387270,
+      "floor": 22269952,
+      "peak": 238305280
+    },
+    {
+      "job": "isles-mixed-164298751-final-combined",
+      "repeat": 1,
+      "variant": "candidate",
+      "controller_pid": 1387841,
+      "broker_pid": 1387271,
+      "lane_pid": 1387270,
+      "floor": 22269952,
+      "peak": 201793536
+    },
+    {
+      "job": "isles-mixed-164298751-final-combined",
+      "repeat": 2,
+      "variant": "candidate",
+      "controller_pid": 1387899,
+      "broker_pid": 1387271,
+      "lane_pid": 1387270,
+      "floor": 22269952,
+      "peak": 204341248
+    },
+    {
+      "job": "isles-mixed-164298751-final-combined",
+      "repeat": 2,
+      "variant": "baseline",
+      "controller_pid": 1387970,
+      "broker_pid": 1387271,
+      "lane_pid": 1387270,
+      "floor": 22269952,
+      "peak": 235171840
+    },
+    {
+      "job": "isles-mixed-902381047-final-combined",
+      "repeat": -1,
+      "variant": "baseline",
+      "controller_pid": 1387341,
+      "broker_pid": 1387214,
+      "lane_pid": 1387213,
+      "floor": 22249472,
+      "peak": 232792064
+    },
+    {
+      "job": "isles-mixed-902381047-final-combined",
+      "repeat": -1,
+      "variant": "candidate",
+      "controller_pid": 1387395,
+      "broker_pid": 1387214,
+      "lane_pid": 1387213,
+      "floor": 22249472,
+      "peak": 197980160
+    },
+    {
+      "job": "isles-mixed-902381047-final-combined",
+      "repeat": 0,
+      "variant": "candidate",
+      "controller_pid": 1387530,
+      "broker_pid": 1387214,
+      "lane_pid": 1387213,
+      "floor": 22249472,
+      "peak": 196370432
+    },
+    {
+      "job": "isles-mixed-902381047-final-combined",
+      "repeat": 0,
+      "variant": "baseline",
+      "controller_pid": 1387627,
+      "broker_pid": 1387214,
+      "lane_pid": 1387213,
+      "floor": 22249472,
+      "peak": 232349696
+    },
+    {
+      "job": "isles-mixed-902381047-final-combined",
+      "repeat": 1,
+      "variant": "baseline",
+      "controller_pid": 1387683,
+      "broker_pid": 1387214,
+      "lane_pid": 1387213,
+      "floor": 22249472,
+      "peak": 230780928
+    },
+    {
+      "job": "isles-mixed-902381047-final-combined",
+      "repeat": 1,
+      "variant": "candidate",
+      "controller_pid": 1387748,
+      "broker_pid": 1387214,
+      "lane_pid": 1387213,
+      "floor": 22249472,
+      "peak": 197353472
+    },
+    {
+      "job": "isles-mixed-902381047-final-combined",
+      "repeat": 2,
+      "variant": "candidate",
+      "controller_pid": 1387804,
+      "broker_pid": 1387214,
+      "lane_pid": 1387213,
+      "floor": 22249472,
+      "peak": 197136384
+    },
+    {
+      "job": "isles-mixed-902381047-final-combined",
+      "repeat": 2,
+      "variant": "baseline",
+      "controller_pid": 1387861,
+      "broker_pid": 1387214,
+      "lane_pid": 1387213,
+      "floor": 22249472,
+      "peak": 232501248
+    },
+    {
+      "job": "oazis-ni-164298751-final-combined",
+      "repeat": -1,
+      "variant": "baseline",
+      "controller_pid": 1387560,
+      "broker_pid": 1387316,
+      "lane_pid": 1387315,
+      "floor": 22446080,
+      "peak": 241676288
+    },
+    {
+      "job": "oazis-ni-164298751-final-combined",
+      "repeat": -1,
+      "variant": "candidate",
+      "controller_pid": 1387646,
+      "broker_pid": 1387316,
+      "lane_pid": 1387315,
+      "floor": 22446080,
+      "peak": 204234752
+    },
+    {
+      "job": "oazis-ni-164298751-final-combined",
+      "repeat": 0,
+      "variant": "candidate",
+      "controller_pid": 1387698,
+      "broker_pid": 1387316,
+      "lane_pid": 1387315,
+      "floor": 22446080,
+      "peak": 204402688
+    },
+    {
+      "job": "oazis-ni-164298751-final-combined",
+      "repeat": 0,
+      "variant": "baseline",
+      "controller_pid": 1387760,
+      "broker_pid": 1387316,
+      "lane_pid": 1387315,
+      "floor": 22446080,
+      "peak": 241778688
+    },
+    {
+      "job": "oazis-ni-164298751-final-combined",
+      "repeat": 1,
+      "variant": "baseline",
+      "controller_pid": 1387812,
+      "broker_pid": 1387316,
+      "lane_pid": 1387315,
+      "floor": 22446080,
+      "peak": 240824320
+    },
+    {
+      "job": "oazis-ni-164298751-final-combined",
+      "repeat": 1,
+      "variant": "candidate",
+      "controller_pid": 1387863,
+      "broker_pid": 1387316,
+      "lane_pid": 1387315,
+      "floor": 22446080,
+      "peak": 203026432
+    },
+    {
+      "job": "oazis-ni-164298751-final-combined",
+      "repeat": 2,
+      "variant": "candidate",
+      "controller_pid": 1387925,
+      "broker_pid": 1387316,
+      "lane_pid": 1387315,
+      "floor": 22446080,
+      "peak": 203558912
+    },
+    {
+      "job": "oazis-ni-164298751-final-combined",
+      "repeat": 2,
+      "variant": "baseline",
+      "controller_pid": 1387986,
+      "broker_pid": 1387316,
+      "lane_pid": 1387315,
+      "floor": 22446080,
+      "peak": 241319936
+    },
+    {
+      "job": "oazis-ni-902381047-final-combined",
+      "repeat": -1,
+      "variant": "baseline",
+      "controller_pid": 1387632,
+      "broker_pid": 1387367,
+      "lane_pid": 1387366,
+      "floor": 22458368,
+      "peak": 220422144
+    },
+    {
+      "job": "oazis-ni-902381047-final-combined",
+      "repeat": -1,
+      "variant": "candidate",
+      "controller_pid": 1387697,
+      "broker_pid": 1387367,
+      "lane_pid": 1387366,
+      "floor": 22458368,
+      "peak": 183152640
+    },
+    {
+      "job": "oazis-ni-902381047-final-combined",
+      "repeat": 0,
+      "variant": "candidate",
+      "controller_pid": 1387768,
+      "broker_pid": 1387367,
+      "lane_pid": 1387366,
+      "floor": 22458368,
+      "peak": 184160256
+    },
+    {
+      "job": "oazis-ni-902381047-final-combined",
+      "repeat": 0,
+      "variant": "baseline",
+      "controller_pid": 1387833,
+      "broker_pid": 1387367,
+      "lane_pid": 1387366,
+      "floor": 22458368,
+      "peak": 220614656
+    },
+    {
+      "job": "oazis-ni-902381047-final-combined",
+      "repeat": 1,
+      "variant": "baseline",
+      "controller_pid": 1387897,
+      "broker_pid": 1387367,
+      "lane_pid": 1387366,
+      "floor": 22458368,
+      "peak": 221143040
+    },
+    {
+      "job": "oazis-ni-902381047-final-combined",
+      "repeat": 1,
+      "variant": "candidate",
+      "controller_pid": 1387982,
+      "broker_pid": 1387367,
+      "lane_pid": 1387366,
+      "floor": 22458368,
+      "peak": 183865344
+    },
+    {
+      "job": "oazis-ni-902381047-final-combined",
+      "repeat": 2,
+      "variant": "candidate",
+      "controller_pid": 1388099,
+      "broker_pid": 1387367,
+      "lane_pid": 1387366,
+      "floor": 22458368,
+      "peak": 184623104
+    },
+    {
+      "job": "oazis-ni-902381047-final-combined",
+      "repeat": 2,
+      "variant": "baseline",
+      "controller_pid": 1388162,
+      "broker_pid": 1387367,
+      "lane_pid": 1387366,
+      "floor": 22458368,
+      "peak": 221118464
+    },
+    {
+      "job": "swamp-wide-164298751-final-combined",
+      "repeat": -1,
+      "variant": "baseline",
+      "controller_pid": 1388570,
+      "broker_pid": 1388317,
+      "lane_pid": 1388315,
+      "floor": 22245376,
+      "peak": 117850112
+    },
+    {
+      "job": "swamp-wide-164298751-final-combined",
+      "repeat": -1,
+      "variant": "candidate",
+      "controller_pid": 1388607,
+      "broker_pid": 1388317,
+      "lane_pid": 1388315,
+      "floor": 22245376,
+      "peak": 81874944
+    },
+    {
+      "job": "swamp-wide-164298751-final-combined",
+      "repeat": 0,
+      "variant": "candidate",
+      "controller_pid": 1388638,
+      "broker_pid": 1388317,
+      "lane_pid": 1388315,
+      "floor": 22245376,
+      "peak": 81555456
+    },
+    {
+      "job": "swamp-wide-164298751-final-combined",
+      "repeat": 0,
+      "variant": "baseline",
+      "controller_pid": 1388660,
+      "broker_pid": 1388317,
+      "lane_pid": 1388315,
+      "floor": 22245376,
+      "peak": 118464512
+    },
+    {
+      "job": "swamp-wide-164298751-final-combined",
+      "repeat": 1,
+      "variant": "baseline",
+      "controller_pid": 1388681,
+      "broker_pid": 1388317,
+      "lane_pid": 1388315,
+      "floor": 22245376,
+      "peak": 118079488
+    },
+    {
+      "job": "swamp-wide-164298751-final-combined",
+      "repeat": 1,
+      "variant": "candidate",
+      "controller_pid": 1388702,
+      "broker_pid": 1388317,
+      "lane_pid": 1388315,
+      "floor": 22245376,
+      "peak": 81768448
+    },
+    {
+      "job": "swamp-wide-164298751-final-combined",
+      "repeat": 2,
+      "variant": "candidate",
+      "controller_pid": 1388721,
+      "broker_pid": 1388317,
+      "lane_pid": 1388315,
+      "floor": 22245376,
+      "peak": 82579456
+    },
+    {
+      "job": "swamp-wide-164298751-final-combined",
+      "repeat": 2,
+      "variant": "baseline",
+      "controller_pid": 1388740,
+      "broker_pid": 1388317,
+      "lane_pid": 1388315,
+      "floor": 22245376,
+      "peak": 119164928
+    },
+    {
+      "job": "swamp-wide-902381047-final-combined",
+      "repeat": -1,
+      "variant": "baseline",
+      "controller_pid": 1388372,
+      "broker_pid": 1388246,
+      "lane_pid": 1388245,
+      "floor": 22441984,
+      "peak": 119468032
+    },
+    {
+      "job": "swamp-wide-902381047-final-combined",
+      "repeat": -1,
+      "variant": "candidate",
+      "controller_pid": 1388384,
+      "broker_pid": 1388246,
+      "lane_pid": 1388245,
+      "floor": 22441984,
+      "peak": 82432000
+    },
+    {
+      "job": "swamp-wide-902381047-final-combined",
+      "repeat": 0,
+      "variant": "candidate",
+      "controller_pid": 1388396,
+      "broker_pid": 1388246,
+      "lane_pid": 1388245,
+      "floor": 22441984,
+      "peak": 82657280
+    },
+    {
+      "job": "swamp-wide-902381047-final-combined",
+      "repeat": 0,
+      "variant": "baseline",
+      "controller_pid": 1388415,
+      "broker_pid": 1388246,
+      "lane_pid": 1388245,
+      "floor": 22441984,
+      "peak": 119586816
+    },
+    {
+      "job": "swamp-wide-902381047-final-combined",
+      "repeat": 1,
+      "variant": "baseline",
+      "controller_pid": 1388444,
+      "broker_pid": 1388246,
+      "lane_pid": 1388245,
+      "floor": 22441984,
+      "peak": 120078336
+    },
+    {
+      "job": "swamp-wide-902381047-final-combined",
+      "repeat": 1,
+      "variant": "candidate",
+      "controller_pid": 1388456,
+      "broker_pid": 1388246,
+      "lane_pid": 1388245,
+      "floor": 22441984,
+      "peak": 82698240
+    },
+    {
+      "job": "swamp-wide-902381047-final-combined",
+      "repeat": 2,
+      "variant": "candidate",
+      "controller_pid": 1388565,
+      "broker_pid": 1388246,
+      "lane_pid": 1388245,
+      "floor": 22441984,
+      "peak": 82817024
+    },
+    {
+      "job": "swamp-wide-902381047-final-combined",
+      "repeat": 2,
+      "variant": "baseline",
+      "controller_pid": 1388603,
+      "broker_pid": 1388246,
+      "lane_pid": 1388245,
+      "floor": 22441984,
+      "peak": 119640064
+    },
+    {
+      "job": "large-ni-164298751-final-combined",
+      "repeat": -1,
+      "variant": "baseline",
+      "controller_pid": 1388581,
+      "broker_pid": 1388323,
+      "lane_pid": 1388322,
+      "floor": 22417408,
+      "peak": 293892096
+    },
+    {
+      "job": "large-ni-164298751-final-combined",
+      "repeat": -1,
+      "variant": "candidate",
+      "controller_pid": 1388648,
+      "broker_pid": 1388323,
+      "lane_pid": 1388322,
+      "floor": 22417408,
+      "peak": 262479872
+    },
+    {
+      "job": "large-ni-164298751-final-combined",
+      "repeat": 0,
+      "variant": "candidate",
+      "controller_pid": 1388693,
+      "broker_pid": 1388323,
+      "lane_pid": 1388322,
+      "floor": 22417408,
+      "peak": 262504448
+    },
+    {
+      "job": "large-ni-164298751-final-combined",
+      "repeat": 0,
+      "variant": "baseline",
+      "controller_pid": 1388732,
+      "broker_pid": 1388323,
+      "lane_pid": 1388322,
+      "floor": 22417408,
+      "peak": 293691392
+    },
+    {
+      "job": "large-ni-164298751-final-combined",
+      "repeat": 1,
+      "variant": "baseline",
+      "controller_pid": 1388805,
+      "broker_pid": 1388323,
+      "lane_pid": 1388322,
+      "floor": 22417408,
+      "peak": 294350848
+    },
+    {
+      "job": "large-ni-164298751-final-combined",
+      "repeat": 1,
+      "variant": "candidate",
+      "controller_pid": 1388842,
+      "broker_pid": 1388323,
+      "lane_pid": 1388322,
+      "floor": 22417408,
+      "peak": 262766592
+    },
+    {
+      "job": "large-ni-164298751-final-combined",
+      "repeat": 2,
+      "variant": "candidate",
+      "controller_pid": 1388875,
+      "broker_pid": 1388323,
+      "lane_pid": 1388322,
+      "floor": 22417408,
+      "peak": 263077888
+    },
+    {
+      "job": "large-ni-164298751-final-combined",
+      "repeat": 2,
+      "variant": "baseline",
+      "controller_pid": 1388917,
+      "broker_pid": 1388323,
+      "lane_pid": 1388322,
+      "floor": 22417408,
+      "peak": 293507072
+    },
+    {
+      "job": "large-ni-902381047-final-combined",
+      "repeat": -1,
+      "variant": "baseline",
+      "controller_pid": 1388795,
+      "broker_pid": 1388597,
+      "lane_pid": 1388596,
+      "floor": 22257664,
+      "peak": 301207552
+    },
+    {
+      "job": "large-ni-902381047-final-combined",
+      "repeat": -1,
+      "variant": "candidate",
+      "controller_pid": 1388833,
+      "broker_pid": 1388597,
+      "lane_pid": 1388596,
+      "floor": 22257664,
+      "peak": 268247040
+    },
+    {
+      "job": "large-ni-902381047-final-combined",
+      "repeat": 0,
+      "variant": "candidate",
+      "controller_pid": 1388873,
+      "broker_pid": 1388597,
+      "lane_pid": 1388596,
+      "floor": 22257664,
+      "peak": 268214272
+    },
+    {
+      "job": "large-ni-902381047-final-combined",
+      "repeat": 0,
+      "variant": "baseline",
+      "controller_pid": 1388923,
+      "broker_pid": 1388597,
+      "lane_pid": 1388596,
+      "floor": 22257664,
+      "peak": 301932544
+    },
+    {
+      "job": "large-ni-902381047-final-combined",
+      "repeat": 1,
+      "variant": "baseline",
+      "controller_pid": 1388975,
+      "broker_pid": 1388597,
+      "lane_pid": 1388596,
+      "floor": 22257664,
+      "peak": 301453312
+    },
+    {
+      "job": "large-ni-902381047-final-combined",
+      "repeat": 1,
+      "variant": "candidate",
+      "controller_pid": 1389039,
+      "broker_pid": 1388597,
+      "lane_pid": 1388596,
+      "floor": 22257664,
+      "peak": 267374592
+    },
+    {
+      "job": "large-ni-902381047-final-combined",
+      "repeat": 2,
+      "variant": "candidate",
+      "controller_pid": 1389077,
+      "broker_pid": 1388597,
+      "lane_pid": 1388596,
+      "floor": 22257664,
+      "peak": 267534336
+    },
+    {
+      "job": "large-ni-902381047-final-combined",
+      "repeat": 2,
+      "variant": "baseline",
+      "controller_pid": 1389146,
+      "broker_pid": 1388597,
+      "lane_pid": 1388596,
+      "floor": 22257664,
+      "peak": 301178880
+    },
+    {
+      "job": "large-mixed-164298751-final-combined",
+      "repeat": -1,
+      "variant": "baseline",
+      "controller_pid": 1389277,
+      "broker_pid": 1389100,
+      "lane_pid": 1389099,
+      "floor": 22478848,
+      "peak": 233824256
+    },
+    {
+      "job": "large-mixed-164298751-final-combined",
+      "repeat": -1,
+      "variant": "candidate",
+      "controller_pid": 1389311,
+      "broker_pid": 1389100,
+      "lane_pid": 1389099,
+      "floor": 22478848,
+      "peak": 197533696
+    },
+    {
+      "job": "large-mixed-164298751-final-combined",
+      "repeat": 0,
+      "variant": "candidate",
+      "controller_pid": 1389337,
+      "broker_pid": 1389100,
+      "lane_pid": 1389099,
+      "floor": 22478848,
+      "peak": 199901184
+    },
+    {
+      "job": "large-mixed-164298751-final-combined",
+      "repeat": 0,
+      "variant": "baseline",
+      "controller_pid": 1389373,
+      "broker_pid": 1389100,
+      "lane_pid": 1389099,
+      "floor": 22478848,
+      "peak": 229965824
+    },
+    {
+      "job": "large-mixed-164298751-final-combined",
+      "repeat": 1,
+      "variant": "baseline",
+      "controller_pid": 1389397,
+      "broker_pid": 1389100,
+      "lane_pid": 1389099,
+      "floor": 22478848,
+      "peak": 230436864
+    },
+    {
+      "job": "large-mixed-164298751-final-combined",
+      "repeat": 1,
+      "variant": "candidate",
+      "controller_pid": 1389422,
+      "broker_pid": 1389100,
+      "lane_pid": 1389099,
+      "floor": 22478848,
+      "peak": 200663040
+    },
+    {
+      "job": "large-mixed-164298751-final-combined",
+      "repeat": 2,
+      "variant": "candidate",
+      "controller_pid": 1389484,
+      "broker_pid": 1389100,
+      "lane_pid": 1389099,
+      "floor": 22478848,
+      "peak": 197316608
+    },
+    {
+      "job": "large-mixed-164298751-final-combined",
+      "repeat": 2,
+      "variant": "baseline",
+      "controller_pid": 1389515,
+      "broker_pid": 1389100,
+      "lane_pid": 1389099,
+      "floor": 22478848,
+      "peak": 231714816
+    },
+    {
+      "job": "large-mixed-164298751-final-combined",
+      "repeat": 3,
+      "variant": "baseline",
+      "controller_pid": 1389556,
+      "broker_pid": 1389100,
+      "lane_pid": 1389099,
+      "floor": 22478848,
+      "peak": 231981056
+    },
+    {
+      "job": "large-mixed-164298751-final-combined",
+      "repeat": 3,
+      "variant": "candidate",
+      "controller_pid": 1389602,
+      "broker_pid": 1389100,
+      "lane_pid": 1389099,
+      "floor": 22478848,
+      "peak": 197562368
+    },
+    {
+      "job": "large-mixed-164298751-final-combined",
+      "repeat": 4,
+      "variant": "candidate",
+      "controller_pid": 1389631,
+      "broker_pid": 1389100,
+      "lane_pid": 1389099,
+      "floor": 22478848,
+      "peak": 197976064
+    },
+    {
+      "job": "large-mixed-164298751-final-combined",
+      "repeat": 4,
+      "variant": "baseline",
+      "controller_pid": 1389655,
+      "broker_pid": 1389100,
+      "lane_pid": 1389099,
+      "floor": 22478848,
+      "peak": 232943616
+    },
+    {
+      "job": "large-mixed-164298751-final-combined",
+      "repeat": 5,
+      "variant": "baseline",
+      "controller_pid": 1389682,
+      "broker_pid": 1389100,
+      "lane_pid": 1389099,
+      "floor": 22478848,
+      "peak": 232009728
+    },
+    {
+      "job": "large-mixed-164298751-final-combined",
+      "repeat": 5,
+      "variant": "candidate",
+      "controller_pid": 1389706,
+      "broker_pid": 1389100,
+      "lane_pid": 1389099,
+      "floor": 22478848,
+      "peak": 197160960
+    },
+    {
+      "job": "large-mixed-902381047-final-combined",
+      "repeat": -1,
+      "variant": "baseline",
+      "controller_pid": 1389133,
+      "broker_pid": 1388942,
+      "lane_pid": 1388941,
+      "floor": 22286336,
+      "peak": 232620032
+    },
+    {
+      "job": "large-mixed-902381047-final-combined",
+      "repeat": -1,
+      "variant": "candidate",
+      "controller_pid": 1389158,
+      "broker_pid": 1388942,
+      "lane_pid": 1388941,
+      "floor": 22286336,
+      "peak": 206077952
+    },
+    {
+      "job": "large-mixed-902381047-final-combined",
+      "repeat": 0,
+      "variant": "candidate",
+      "controller_pid": 1389180,
+      "broker_pid": 1388942,
+      "lane_pid": 1388941,
+      "floor": 22286336,
+      "peak": 201760768
+    },
+    {
+      "job": "large-mixed-902381047-final-combined",
+      "repeat": 0,
+      "variant": "baseline",
+      "controller_pid": 1389216,
+      "broker_pid": 1388942,
+      "lane_pid": 1388941,
+      "floor": 22286336,
+      "peak": 236044288
+    },
+    {
+      "job": "large-mixed-902381047-final-combined",
+      "repeat": 1,
+      "variant": "baseline",
+      "controller_pid": 1389236,
+      "broker_pid": 1388942,
+      "lane_pid": 1388941,
+      "floor": 22286336,
+      "peak": 235307008
+    },
+    {
+      "job": "large-mixed-902381047-final-combined",
+      "repeat": 1,
+      "variant": "candidate",
+      "controller_pid": 1389271,
+      "broker_pid": 1388942,
+      "lane_pid": 1388941,
+      "floor": 22286336,
+      "peak": 197132288
+    },
+    {
+      "job": "large-mixed-902381047-final-combined",
+      "repeat": 2,
+      "variant": "candidate",
+      "controller_pid": 1389303,
+      "broker_pid": 1388942,
+      "lane_pid": 1388941,
+      "floor": 22286336,
+      "peak": 202018816
+    },
+    {
+      "job": "large-mixed-902381047-final-combined",
+      "repeat": 2,
+      "variant": "baseline",
+      "controller_pid": 1389330,
+      "broker_pid": 1388942,
+      "lane_pid": 1388941,
+      "floor": 22286336,
+      "peak": 233570304
+    },
+    {
+      "job": "large-mixed-902381047-final-combined",
+      "repeat": 3,
+      "variant": "baseline",
+      "controller_pid": 1389365,
+      "broker_pid": 1388942,
+      "lane_pid": 1388941,
+      "floor": 22286336,
+      "peak": 232845312
+    },
+    {
+      "job": "large-mixed-902381047-final-combined",
+      "repeat": 3,
+      "variant": "candidate",
+      "controller_pid": 1389389,
+      "broker_pid": 1388942,
+      "lane_pid": 1388941,
+      "floor": 22286336,
+      "peak": 198311936
+    },
+    {
+      "job": "large-mixed-902381047-final-combined",
+      "repeat": 4,
+      "variant": "candidate",
+      "controller_pid": 1389414,
+      "broker_pid": 1388942,
+      "lane_pid": 1388941,
+      "floor": 22286336,
+      "peak": 200753152
+    },
+    {
+      "job": "large-mixed-902381047-final-combined",
+      "repeat": 4,
+      "variant": "baseline",
+      "controller_pid": 1389460,
+      "broker_pid": 1388942,
+      "lane_pid": 1388941,
+      "floor": 22286336,
+      "peak": 239616000
+    },
+    {
+      "job": "large-mixed-902381047-final-combined",
+      "repeat": 5,
+      "variant": "baseline",
+      "controller_pid": 1389503,
+      "broker_pid": 1388942,
+      "lane_pid": 1388941,
+      "floor": 22286336,
+      "peak": 232976384
+    },
+    {
+      "job": "large-mixed-902381047-final-combined",
+      "repeat": 5,
+      "variant": "candidate",
+      "controller_pid": 1389543,
+      "broker_pid": 1388942,
+      "lane_pid": 1388941,
+      "floor": 22286336,
+      "peak": 207441920
+    },
+    {
+      "job": "large-mixed-1738462951-final-combined",
+      "repeat": -1,
+      "variant": "baseline",
+      "controller_pid": 1389448,
+      "broker_pid": 1389291,
+      "lane_pid": 1389290,
+      "floor": 22249472,
+      "peak": 234979328
+    },
+    {
+      "job": "large-mixed-1738462951-final-combined",
+      "repeat": -1,
+      "variant": "candidate",
+      "controller_pid": 1389491,
+      "broker_pid": 1389291,
+      "lane_pid": 1389290,
+      "floor": 22249472,
+      "peak": 202199040
+    },
+    {
+      "job": "large-mixed-1738462951-final-combined",
+      "repeat": 0,
+      "variant": "candidate",
+      "controller_pid": 1389523,
+      "broker_pid": 1389291,
+      "lane_pid": 1389290,
+      "floor": 22249472,
+      "peak": 201031680
+    },
+    {
+      "job": "large-mixed-1738462951-final-combined",
+      "repeat": 0,
+      "variant": "baseline",
+      "controller_pid": 1389567,
+      "broker_pid": 1389291,
+      "lane_pid": 1389290,
+      "floor": 22249472,
+      "peak": 233500672
+    },
+    {
+      "job": "large-mixed-1738462951-final-combined",
+      "repeat": 1,
+      "variant": "baseline",
+      "controller_pid": 1389610,
+      "broker_pid": 1389291,
+      "lane_pid": 1389290,
+      "floor": 22249472,
+      "peak": 234475520
+    },
+    {
+      "job": "large-mixed-1738462951-final-combined",
+      "repeat": 1,
+      "variant": "candidate",
+      "controller_pid": 1389633,
+      "broker_pid": 1389291,
+      "lane_pid": 1389290,
+      "floor": 22249472,
+      "peak": 201424896
+    },
+    {
+      "job": "large-mixed-1738462951-final-combined",
+      "repeat": 2,
+      "variant": "candidate",
+      "controller_pid": 1389659,
+      "broker_pid": 1389291,
+      "lane_pid": 1389290,
+      "floor": 22249472,
+      "peak": 200286208
+    },
+    {
+      "job": "large-mixed-1738462951-final-combined",
+      "repeat": 2,
+      "variant": "baseline",
+      "controller_pid": 1389686,
+      "broker_pid": 1389291,
+      "lane_pid": 1389290,
+      "floor": 22249472,
+      "peak": 235790336
+    },
+    {
+      "job": "large-mixed-1738462951-final-combined",
+      "repeat": 3,
+      "variant": "baseline",
+      "controller_pid": 1389710,
+      "broker_pid": 1389291,
+      "lane_pid": 1389290,
+      "floor": 22249472,
+      "peak": 235982848
+    },
+    {
+      "job": "large-mixed-1738462951-final-combined",
+      "repeat": 3,
+      "variant": "candidate",
+      "controller_pid": 1389748,
+      "broker_pid": 1389291,
+      "lane_pid": 1389290,
+      "floor": 22249472,
+      "peak": 199782400
+    },
+    {
+      "job": "large-mixed-1738462951-final-combined",
+      "repeat": 4,
+      "variant": "candidate",
+      "controller_pid": 1389773,
+      "broker_pid": 1389291,
+      "lane_pid": 1389290,
+      "floor": 22249472,
+      "peak": 203182080
+    },
+    {
+      "job": "large-mixed-1738462951-final-combined",
+      "repeat": 4,
+      "variant": "baseline",
+      "controller_pid": 1389795,
+      "broker_pid": 1389291,
+      "lane_pid": 1389290,
+      "floor": 22249472,
+      "peak": 235180032
+    },
+    {
+      "job": "large-mixed-1738462951-final-combined",
+      "repeat": 5,
+      "variant": "baseline",
+      "controller_pid": 1389822,
+      "broker_pid": 1389291,
+      "lane_pid": 1389290,
+      "floor": 22249472,
+      "peak": 234545152
+    },
+    {
+      "job": "large-mixed-1738462951-final-combined",
+      "repeat": 5,
+      "variant": "candidate",
+      "controller_pid": 1389845,
+      "broker_pid": 1389291,
+      "lane_pid": 1389290,
+      "floor": 22249472,
+      "peak": 199905280
+    }
+  ]
+}

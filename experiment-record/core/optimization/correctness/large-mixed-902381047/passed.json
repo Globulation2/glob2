@@ -1,0 +1,34 @@
+{
+  "passed": true,
+  "fixture_sha256": "b69a5e8c937c94c6bed5b762cba349f2ba69fe1bb4f0e2e5ff698f82dd8dd670",
+  "identity": {
+    "sealed": {
+      "script_sha256": "bdb9991fe1cc45fbdf138fede2e2fc6fba0f92068c1c3e9dd33c518acb1ca2a8",
+      "binaries": {
+        "baseline": "c5ed10029619f8e3e91538bd69f6d2ad01abf30703a45b4ef2f75369a14203c0",
+        "combined": "311ddc675aa0bbd7dafe5fb911e177c19458d0b0d739ddfe5a89d5c820041dc3",
+        "worker": "a3794ae9d3261e8b75acc48fe231258be34c91f5469ffec6dc455e40b2441feb",
+        "snapshot": "207563dd68bbd995c1725a28ad4c901590edd85acce3eb9f82e6f2123fd99af2",
+        "telemetry": "c7161baf12e460e7d18aaf48b412b6b65057006ab0b2b988abdb60cb53f612e1",
+        "scheduler": "79be48eaf95fe08725cd2fc7041d5df713899ca9e3ba797ae3747b6fb9a6a822"
+      },
+      "acceptance_plan_sha256": "a2404059c94801ce86492729e1fccb762e53c01e68b859d8c4ec5640e23fc78b",
+      "map_preparation_sha256": "cfd03d1cb8dc685f5c1e4fa86e8b51db972f1df537a082bf0b793271c79036e8"
+    },
+    "map_sha256": "a1e1ee42cddbacbd9ebbee16d1cf868de9fbb68822a0db6866f6decd49b9cfaa",
+    "scenario": {
+      "id": "large-mixed",
+      "generator": "river",
+      "width": 512,
+      "height": 256,
+      "ais": [
+        "cortex",
+        "maxima",
+        "nicowar",
+        "cabino"
+      ],
+      "ticks": 4096
+    },
+    "seed": 902381047
+  }
+}

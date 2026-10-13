@@ -1,0 +1,1207 @@
+{
+  "created_utc": "2026-10-13T11:33:37.868484+00:00",
+  "purpose": "Small evidence allowlist for authorizedPR1162 supplementary evidence branch; no source modifications or native/build/browser runs.",
+  "source_scopes": {
+    "foundation": "ee45c0a0389660bc7d2885b572b94b1a2b01d7a3",
+    "scheduler_experiment": "96da258e5a6b24a57a8848f2bfa0178031331322",
+    "final_native_PR": "d2ddb6793777eac9e8c62421f2803313e0b83b52"
+  },
+  "status": {
+    "scheduler_adopted": false,
+    "accepted_changed_worker_path_timing_pairs": 0,
+    "accepted_owner_only_measured_negative_control_pairs": 2,
+    "six_profile_tiers_calibrated": false,
+    "physical_android_validated": false,
+    "final_source_crossplatform_validated": false,
+    "prepared_completion_throughput_attempts_executed": 0
+  },
+  "counts": {
+    "files": 146,
+    "uncompressed_bytes": 2263549
+  },
+  "selected_files": [
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profile-map-tools/glob2/artifacts/engine-optimization-conclusion/audit-profiles-scheduler.json",
+      "sha256": "a1922d441a668102e1abaf4bf207a3864810f93d0862bd1b247e71b179bced42",
+      "bytes": 12234,
+      "reason": "Experiment catalogue, actual counts, decisions, missing gates",
+      "archive_path": "profiles-scheduler/final-native-d2/artifacts/engine-optimization-conclusion/audit-profiles-scheduler.json",
+      "scope": "source qualified, not performance proof"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/profile-foundation-delivery/delivery-current.json",
+      "sha256": "0923a4902c28beae04abbabc56c47f3c6250096118268eb4a1ee15000916322c",
+      "bytes": 15060,
+      "reason": "Full source-qualified foundation delivery inventory and limits",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/profiles-implementation/profile-foundation-delivery/delivery-current.json",
+      "scope": "source qualified, not performance proof"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/final-proposal-coverage/coverage.json",
+      "sha256": "60182e38eff2033095f42dcbf23d2a64302493243b9f64244389a3bd836e2193",
+      "bytes": 16229,
+      "reason": "Full 15-row proposal matrix at the earlier integration revision, with unimplemented flags",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/profiles-implementation/final-proposal-coverage/coverage.json",
+      "scope": "source qualified, not performance proof"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/final-proposal-coverage/next-integration-audit.json",
+      "sha256": "136d1b80c07faec43f7fb4582b303b9fe5ad21f0f268dac4820e04d2bb80a6b1",
+      "bytes": 5392,
+      "reason": "Earlier phase overlap/CPU quota and integration gaps",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/profiles-implementation/final-proposal-coverage/next-integration-audit.json",
+      "scope": "source qualified, not performance proof"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/every-path-integration-audit/review.json",
+      "sha256": "3a0a49b8053ba31b614553a41f6cdffe95329a085c312e4803492dd4abb6c656",
+      "bytes": 8000,
+      "reason": "Call-site migration audit, source and exact limitations",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/profiles-implementation/every-path-integration-audit/review.json",
+      "scope": "source qualified, not performance proof"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/final-proposal-coverage/completion-throughput-pilot/plan.json",
+      "sha256": "e64296932195d5f8efb7b27e71f0482acdc9a82b67063e714b1c185b0be8227b",
+      "bytes": 72626,
+      "reason": "Sixteen-attempt follow-up design; zero attempts launched",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/profiles-implementation/final-proposal-coverage/completion-throughput-pilot/plan.json",
+      "scope": "PREPARED_UNLAUNCHED, no completed-game/throughput result"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/final-proposal-coverage/completion-throughput-pilot/coordinator-manifests/oazis-ni-off-concurrent-throughput.json",
+      "sha256": "353535f53cc4f7e46871820efa2239bed5ad39956e7c8164620312ab26142e7e",
+      "bytes": 981,
+      "reason": "Frozen same-budget serial/concurrent allocations",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/profiles-implementation/final-proposal-coverage/completion-throughput-pilot/coordinator-manifests/oazis-ni-off-concurrent-throughput.json",
+      "scope": "PREPARED_UNLAUNCHED"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/final-proposal-coverage/completion-throughput-pilot/coordinator-manifests/oazis-ni-off-serial-completion.json",
+      "sha256": "4f6ad8c05f6c877da36d2cb3a13817f3fb050073b10845aa2e2821f252023bf4",
+      "bytes": 774,
+      "reason": "Frozen same-budget serial/concurrent allocations",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/profiles-implementation/final-proposal-coverage/completion-throughput-pilot/coordinator-manifests/oazis-ni-off-serial-completion.json",
+      "scope": "PREPARED_UNLAUNCHED"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/final-proposal-coverage/completion-throughput-pilot/coordinator-manifests/oazis-ni-on-concurrent-throughput.json",
+      "sha256": "353535f53cc4f7e46871820efa2239bed5ad39956e7c8164620312ab26142e7e",
+      "bytes": 981,
+      "reason": "Frozen same-budget serial/concurrent allocations",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/profiles-implementation/final-proposal-coverage/completion-throughput-pilot/coordinator-manifests/oazis-ni-on-concurrent-throughput.json",
+      "scope": "PREPARED_UNLAUNCHED"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/final-proposal-coverage/completion-throughput-pilot/coordinator-manifests/oazis-ni-on-serial-completion.json",
+      "sha256": "4f6ad8c05f6c877da36d2cb3a13817f3fb050073b10845aa2e2821f252023bf4",
+      "bytes": 774,
+      "reason": "Frozen same-budget serial/concurrent allocations",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/profiles-implementation/final-proposal-coverage/completion-throughput-pilot/coordinator-manifests/oazis-ni-on-serial-completion.json",
+      "scope": "PREPARED_UNLAUNCHED"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/final-proposal-coverage/completion-throughput-pilot/coordinator-manifests/playground-ni-off-concurrent-throughput.json",
+      "sha256": "353535f53cc4f7e46871820efa2239bed5ad39956e7c8164620312ab26142e7e",
+      "bytes": 981,
+      "reason": "Frozen same-budget serial/concurrent allocations",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/profiles-implementation/final-proposal-coverage/completion-throughput-pilot/coordinator-manifests/playground-ni-off-concurrent-throughput.json",
+      "scope": "PREPARED_UNLAUNCHED"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/final-proposal-coverage/completion-throughput-pilot/coordinator-manifests/playground-ni-off-serial-completion.json",
+      "sha256": "4f6ad8c05f6c877da36d2cb3a13817f3fb050073b10845aa2e2821f252023bf4",
+      "bytes": 774,
+      "reason": "Frozen same-budget serial/concurrent allocations",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/profiles-implementation/final-proposal-coverage/completion-throughput-pilot/coordinator-manifests/playground-ni-off-serial-completion.json",
+      "scope": "PREPARED_UNLAUNCHED"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/final-proposal-coverage/completion-throughput-pilot/coordinator-manifests/playground-ni-on-concurrent-throughput.json",
+      "sha256": "353535f53cc4f7e46871820efa2239bed5ad39956e7c8164620312ab26142e7e",
+      "bytes": 981,
+      "reason": "Frozen same-budget serial/concurrent allocations",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/profiles-implementation/final-proposal-coverage/completion-throughput-pilot/coordinator-manifests/playground-ni-on-concurrent-throughput.json",
+      "scope": "PREPARED_UNLAUNCHED"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/final-proposal-coverage/completion-throughput-pilot/coordinator-manifests/playground-ni-on-serial-completion.json",
+      "sha256": "4f6ad8c05f6c877da36d2cb3a13817f3fb050073b10845aa2e2821f252023bf4",
+      "bytes": 774,
+      "reason": "Frozen same-budget serial/concurrent allocations",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/profiles-implementation/final-proposal-coverage/completion-throughput-pilot/coordinator-manifests/playground-ni-on-serial-completion.json",
+      "scope": "PREPARED_UNLAUNCHED"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/latest-master-final-builds/builds-complete.json",
+      "sha256": "3ea0c0875c40946dc09f132e8a65867db1ecc9142fb201f7379868f05b39d157",
+      "bytes": 317,
+      "reason": "Actual ee45 release build/package receipt or bound input plan",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/resource-profiles/validation/latest-master-final-builds/builds-complete.json",
+      "scope": "ee45 source only; Android build/package is not physical-device runtime"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/latest-master-final-builds/native-release-complete.json",
+      "sha256": "91a76ad1af293a3ebd14ea3d62ec1289577768a9f175a3abe3309977beb879e3",
+      "bytes": 2732,
+      "reason": "Actual ee45 release build/package receipt or bound input plan",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/resource-profiles/validation/latest-master-final-builds/native-release-complete.json",
+      "scope": "ee45 source only; Android build/package is not physical-device runtime"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/latest-master-final-builds/web-release-complete.json",
+      "sha256": "f6ae6ca2a789130f8250f3bd8e7fb57da3aa2fc8f8eed7904e8f01f407fa00fc",
+      "bytes": 4720,
+      "reason": "Actual ee45 release build/package receipt or bound input plan",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/resource-profiles/validation/latest-master-final-builds/web-release-complete.json",
+      "scope": "ee45 source only; Android build/package is not physical-device runtime"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/latest-master-final-builds/android-release-complete.json",
+      "sha256": "7449f8db28719b3afe74103dc601c271105d7e7d5bb053fe2cb2c4937ece753f",
+      "bytes": 1669,
+      "reason": "Actual ee45 release build/package receipt or bound input plan",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/resource-profiles/validation/latest-master-final-builds/android-release-complete.json",
+      "scope": "ee45 source only; Android build/package is not physical-device runtime"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/latest-master-final-builds/android-apk-complete.json",
+      "sha256": "5ebf4e549f3105bea32e24c34417ac833ae5925f3e8d2d49f31b19fc8ef45a8e",
+      "bytes": 1736,
+      "reason": "Actual ee45 release build/package receipt or bound input plan",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/resource-profiles/validation/latest-master-final-builds/android-apk-complete.json",
+      "scope": "ee45 source only; Android build/package is not physical-device runtime"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/latest-master-final-builds/android-all-binaries.json",
+      "sha256": "ec78593dfd9fa5b7db7db0ff67667dacadf9d8fb8b7f578e80df35dd01090fef",
+      "bytes": 1306,
+      "reason": "Actual ee45 release build/package receipt or bound input plan",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/resource-profiles/validation/latest-master-final-builds/android-all-binaries.json",
+      "scope": "ee45 source only; Android build/package is not physical-device runtime"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/latest-master-final-builds/apk-static-content.json",
+      "sha256": "06eabbe037307c1d6790919307f2060822bd388a8f566b3483d1d5cc8c055a63",
+      "bytes": 1508,
+      "reason": "Actual ee45 release build/package receipt or bound input plan",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/resource-profiles/validation/latest-master-final-builds/apk-static-content.json",
+      "scope": "ee45 source only; Android build/package is not physical-device runtime"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/latest-master-final-builds/completion-assets-proof.json",
+      "sha256": "dbe8cf7f79177cb89fc561e963aa40de306335fc33db777f05896038349b0d0a",
+      "bytes": 495,
+      "reason": "Actual ee45 release build/package receipt or bound input plan",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/resource-profiles/validation/latest-master-final-builds/completion-assets-proof.json",
+      "scope": "ee45 source only; Android build/package is not physical-device runtime"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/latest-master-final-builds/before-after-comparison.json",
+      "sha256": "097b141d4b2836ef932b0eed84d5667ab8067891aebf7daf93147de916b0d9dd",
+      "bytes": 8488,
+      "reason": "Actual ee45 release build/package receipt or bound input plan",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/resource-profiles/validation/latest-master-final-builds/before-after-comparison.json",
+      "scope": "ee45 source only; Android build/package is not physical-device runtime"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/latest-master-final-builds/execution-plan.json",
+      "sha256": "15095edd1c4f6b8489b82d4f79d185df888ac2e022a784f4b026c521e64d521c",
+      "bytes": 4016,
+      "reason": "Actual ee45 release build/package receipt or bound input plan",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/resource-profiles/validation/latest-master-final-builds/execution-plan.json",
+      "scope": "ee45 source only; Android build/package is not physical-device runtime"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/latest-master-final-builds/shader-input-verified.json",
+      "sha256": "e71086bffd0a3b92f1329b32cc34a2cd958617f296f58c0d99b57a48c60ec4e9",
+      "bytes": 524,
+      "reason": "Actual ee45 release build/package receipt or bound input plan",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/resource-profiles/validation/latest-master-final-builds/shader-input-verified.json",
+      "scope": "ee45 source only; Android build/package is not physical-device runtime"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2/artifacts/scheduler-selection-telemetry/build/native-release-complete.json",
+      "sha256": "f8ca3618744a1de69b58a568cf94e621726a3b20dad9775f93db4fdcfd43b0b5",
+      "bytes": 2082,
+      "reason": "Actual scheduler candidate release native build",
+      "archive_path": "profiles-scheduler/scheduler-candidate96/artifacts/scheduler-selection-telemetry/build/native-release-complete.json",
+      "scope": "source qualified, not performance proof"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2/artifacts/scheduler-selection-telemetry/platform-builds/platform-final-summary.json",
+      "sha256": "b127248cc01fe29901a317827acca53a2670f2b45fa4faf6f55ec1b999267dc8",
+      "bytes": 2388,
+      "reason": "Actual96 web/Android build and APK compiled-to-packaged-ELF proof",
+      "archive_path": "profiles-scheduler/scheduler-candidate96/artifacts/scheduler-selection-telemetry/platform-builds/platform-final-summary.json",
+      "scope": "96 source only; unsigned APK build proof, no physical Android runtime"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2/artifacts/scheduler-selection-telemetry/platform-builds/builds-complete.json",
+      "sha256": "c18b660b2bcd7ce00e0653844beb0b28f94a98115ac84c86bf31df865882828b",
+      "bytes": 295,
+      "reason": "Actual96 web/Android build and APK compiled-to-packaged-ELF proof",
+      "archive_path": "profiles-scheduler/scheduler-candidate96/artifacts/scheduler-selection-telemetry/platform-builds/builds-complete.json",
+      "scope": "96 source only; unsigned APK build proof, no physical Android runtime"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2/artifacts/scheduler-selection-telemetry/platform-builds/web-release-complete.json",
+      "sha256": "8f854369384531bc992102e5968a109ed86b988e337f9067761a5d706484dd7a",
+      "bytes": 4720,
+      "reason": "Actual96 web/Android build and APK compiled-to-packaged-ELF proof",
+      "archive_path": "profiles-scheduler/scheduler-candidate96/artifacts/scheduler-selection-telemetry/platform-builds/web-release-complete.json",
+      "scope": "96 source only; unsigned APK build proof, no physical Android runtime"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2/artifacts/scheduler-selection-telemetry/platform-builds/android-release-complete.json",
+      "sha256": "1387a06e6206d682a736246ada119f52fd871a28c064355fdc785d5e37509cdd",
+      "bytes": 1668,
+      "reason": "Actual96 web/Android build and APK compiled-to-packaged-ELF proof",
+      "archive_path": "profiles-scheduler/scheduler-candidate96/artifacts/scheduler-selection-telemetry/platform-builds/android-release-complete.json",
+      "scope": "96 source only; unsigned APK build proof, no physical Android runtime"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2/artifacts/scheduler-selection-telemetry/platform-builds/android-apk-complete.json",
+      "sha256": "d5224bb5a35c947cc4b0610ccf6e1b35a502da6c70acddc9618d08efec111384",
+      "bytes": 1737,
+      "reason": "Actual96 web/Android build and APK compiled-to-packaged-ELF proof",
+      "archive_path": "profiles-scheduler/scheduler-candidate96/artifacts/scheduler-selection-telemetry/platform-builds/android-apk-complete.json",
+      "scope": "96 source only; unsigned APK build proof, no physical Android runtime"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2/artifacts/scheduler-selection-telemetry/platform-builds/android-all-binaries.json",
+      "sha256": "cfba69d22cbff198c575e7eeffd9c8df6cee0cf8633ae1fe65d2a91ce52ba58b",
+      "bytes": 432,
+      "reason": "Actual96 web/Android build and APK compiled-to-packaged-ELF proof",
+      "archive_path": "profiles-scheduler/scheduler-candidate96/artifacts/scheduler-selection-telemetry/platform-builds/android-all-binaries.json",
+      "scope": "96 source only; unsigned APK build proof, no physical Android runtime"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2/artifacts/scheduler-selection-telemetry/platform-builds/apk-static-proof.json",
+      "sha256": "f11517db6d336aa8f0dd4933a612f1ddade8d9b82ada85abfc511981bd47ee38",
+      "bytes": 9199,
+      "reason": "Actual96 web/Android build and APK compiled-to-packaged-ELF proof",
+      "archive_path": "profiles-scheduler/scheduler-candidate96/artifacts/scheduler-selection-telemetry/platform-builds/apk-static-proof.json",
+      "scope": "96 source only; unsigned APK build proof, no physical Android runtime"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2/artifacts/scheduler-selection-telemetry/platform-builds/native-preservation-bindings.json",
+      "sha256": "5cac525194455fc7fa9ca69170929bc0f57540efbc7749da6180848b9f19e8b4",
+      "bytes": 802,
+      "reason": "Actual96 web/Android build and APK compiled-to-packaged-ELF proof",
+      "archive_path": "profiles-scheduler/scheduler-candidate96/artifacts/scheduler-selection-telemetry/platform-builds/native-preservation-bindings.json",
+      "scope": "96 source only; unsigned APK build proof, no physical Android runtime"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2/artifacts/scheduler-selection-telemetry/platform-builds/execution-plan.json",
+      "sha256": "416bf6f72db8c7d3045527e251e9f1b22c5bb6b477135b21a34b3f5b4f37908e",
+      "bytes": 3250,
+      "reason": "Actual96 web/Android build and APK compiled-to-packaged-ELF proof",
+      "archive_path": "profiles-scheduler/scheduler-candidate96/artifacts/scheduler-selection-telemetry/platform-builds/execution-plan.json",
+      "scope": "96 source only; unsigned APK build proof, no physical Android runtime"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2/artifacts/scheduler-selection-telemetry/platform-builds/shader-input-verified.json",
+      "sha256": "6cd6e4a17264fbb91d73bc30eda746063999dc71a0addcb80d7f86a6edb69262",
+      "bytes": 5200,
+      "reason": "Actual96 web/Android build and APK compiled-to-packaged-ELF proof",
+      "archive_path": "profiles-scheduler/scheduler-candidate96/artifacts/scheduler-selection-telemetry/platform-builds/shader-input-verified.json",
+      "scope": "96 source only; unsigned APK build proof, no physical Android runtime"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/d80-native-focused/final-actual-summary.json",
+      "sha256": "957807cb84eaf16e1b9c9dbe3346ee468b049684b3616a474370bfc5d9727e8a",
+      "bytes": 56451,
+      "reason": "Actual native cases and original stale replay/display fixture failures",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/resource-profiles/validation/d80-native-focused/final-actual-summary.json",
+      "scope": "ee45 source; stale152 acceptance mismatch retained, later intentional floor154 test fix is in final PR"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/d80-native-focused/ee45-final-cause-summary.json",
+      "sha256": "17fbb1a6ccdb322ebfb725aa1fd580036008d9cb0e86860e5e91c1a30cfcd68c",
+      "bytes": 2028,
+      "reason": "Actual native cases and original stale replay/display fixture failures",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/resource-profiles/validation/d80-native-focused/ee45-final-cause-summary.json",
+      "scope": "ee45 source; stale152 acceptance mismatch retained, later intentional floor154 test fix is in final PR"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/d80-native-focused/inherited-152-comparison.json",
+      "sha256": "9c148e1569df274b64a04a8a5c144e460033c960782787dd270e6babb6515592",
+      "bytes": 1993,
+      "reason": "Actual native cases and original stale replay/display fixture failures",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/resource-profiles/validation/d80-native-focused/inherited-152-comparison.json",
+      "scope": "ee45 source; stale152 acceptance mismatch retained, later intentional floor154 test fix is in final PR"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/d80-native-focused/unit-run/junit.xml",
+      "sha256": "bd9bc2f6b2eaaf431ba96b6dc72f8c196531d119b895a3a2010108fef382d23c",
+      "bytes": 33393,
+      "reason": "Actual native cases and original stale replay/display fixture failures",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/resource-profiles/validation/d80-native-focused/unit-run/junit.xml",
+      "scope": "ee45 source; stale152 acceptance mismatch retained, later intentional floor154 test fix is in final PR"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/d80-native-focused/engine-run/junit.xml",
+      "sha256": "9f907dbc11728a1c402dcf56a072aaf485669e3cfc3ffa3ad177975899140dd9",
+      "bytes": 42335,
+      "reason": "Actual native cases and original stale replay/display fixture failures",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/resource-profiles/validation/d80-native-focused/engine-run/junit.xml",
+      "scope": "ee45 source; stale152 acceptance mismatch retained, later intentional floor154 test fix is in final PR"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/d80-native-focused/display-x11-retry/final-actual-summary.json",
+      "sha256": "811654944046a08800ca6face65e4edeaa7adef231d9a990bbb633ff024c60fa",
+      "bytes": 6399,
+      "reason": "Actual native cases and original stale replay/display fixture failures",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/resource-profiles/validation/d80-native-focused/display-x11-retry/final-actual-summary.json",
+      "scope": "ee45 source; stale152 acceptance mismatch retained, later intentional floor154 test fix is in final PR"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/d80-native-focused/display-x11-retry/unit-run/junit.xml",
+      "sha256": "223ad45d65208e5f3c903c5ff6e2717ca42e124c38e16439a2c50b54c73ca779",
+      "bytes": 464,
+      "reason": "Actual native cases and original stale replay/display fixture failures",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/resource-profiles/validation/d80-native-focused/display-x11-retry/unit-run/junit.xml",
+      "scope": "ee45 source; stale152 acceptance mismatch retained, later intentional floor154 test fix is in final PR"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/d80-native-focused/display-x11-retry/engine-run/junit.xml",
+      "sha256": "a2ffd3d906221475844704fe60267e01399660336d713033a801fdddb49f8ed6",
+      "bytes": 4942,
+      "reason": "Actual native cases and original stale replay/display fixture failures",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/resource-profiles/validation/d80-native-focused/display-x11-retry/engine-run/junit.xml",
+      "scope": "ee45 source; stale152 acceptance mismatch retained, later intentional floor154 test fix is in final PR"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2/artifacts/scheduler-selection-telemetry/focused/complete.json",
+      "sha256": "61674620c460e8af803443496bd774a9638739f99740e09df94ec0f8612624fd",
+      "bytes": 11685,
+      "reason": "Actual native executor/gradient/resource/display conformance at96",
+      "archive_path": "profiles-scheduler/scheduler-candidate96/artifacts/scheduler-selection-telemetry/focused/complete.json",
+      "scope": "96 source, old replay152 negative boundary mismatch preserved"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2/artifacts/scheduler-selection-telemetry/focused/final-conformance-summary.json",
+      "sha256": "00b6f0d1e21dbdedaf0e9d66ef74f936b11305800fa4f7d471abfb03880857e2",
+      "bytes": 1503,
+      "reason": "Actual native executor/gradient/resource/display conformance at96",
+      "archive_path": "profiles-scheduler/scheduler-candidate96/artifacts/scheduler-selection-telemetry/focused/final-conformance-summary.json",
+      "scope": "96 source, old replay152 negative boundary mismatch preserved"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2/artifacts/scheduler-selection-telemetry/focused/inherited-152-comparison.json",
+      "sha256": "863537b547d3af72b8e13e15bd32226d1128c774d037a9f2d52ea769266376a1",
+      "bytes": 1208,
+      "reason": "Actual native executor/gradient/resource/display conformance at96",
+      "archive_path": "profiles-scheduler/scheduler-candidate96/artifacts/scheduler-selection-telemetry/focused/inherited-152-comparison.json",
+      "scope": "96 source, old replay152 negative boundary mismatch preserved"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2/artifacts/scheduler-selection-telemetry/focused/unit-run/junit.xml",
+      "sha256": "5395fa5e7ac42fa797ef2e4b0b5fb57fd20e96169bd760c8a9ea74ef5a11f45d",
+      "bytes": 33360,
+      "reason": "Actual native executor/gradient/resource/display conformance at96",
+      "archive_path": "profiles-scheduler/scheduler-candidate96/artifacts/scheduler-selection-telemetry/focused/unit-run/junit.xml",
+      "scope": "96 source, old replay152 negative boundary mismatch preserved"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2/artifacts/scheduler-selection-telemetry/focused/engine-run/junit.xml",
+      "sha256": "3cbd160112373984219a87232637f73bb95ddb1199042183a62534c0cc2bf44e",
+      "bytes": 42342,
+      "reason": "Actual native executor/gradient/resource/display conformance at96",
+      "archive_path": "profiles-scheduler/scheduler-candidate96/artifacts/scheduler-selection-telemetry/focused/engine-run/junit.xml",
+      "scope": "96 source, old replay152 negative boundary mismatch preserved"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2/artifacts/scheduler-selection-telemetry/focused/unit-display-run/junit.xml",
+      "sha256": "a151f343180ad4f968c946980c099a3e1d56c18ac84bfa0435602c08c1cb6aa9",
+      "bytes": 464,
+      "reason": "Actual native executor/gradient/resource/display conformance at96",
+      "archive_path": "profiles-scheduler/scheduler-candidate96/artifacts/scheduler-selection-telemetry/focused/unit-display-run/junit.xml",
+      "scope": "96 source, old replay152 negative boundary mismatch preserved"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2/artifacts/scheduler-selection-telemetry/focused/engine-display-run/junit.xml",
+      "sha256": "9395b301f725e9dec8610ba1967847f3c198d6b273f3c34be5c8c8372637f180",
+      "bytes": 4705,
+      "reason": "Actual native executor/gradient/resource/display conformance at96",
+      "archive_path": "profiles-scheduler/scheduler-candidate96/artifacts/scheduler-selection-telemetry/focused/engine-display-run/junit.xml",
+      "scope": "96 source, old replay152 negative boundary mismatch preserved"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2/artifacts/scheduler-selection-telemetry/focused/commands.json",
+      "sha256": "8331924b2dbb37cac2fb988795ba1077ad3b056134b8d1b669e960f2898ab880",
+      "bytes": 8468,
+      "reason": "Actual native executor/gradient/resource/display conformance at96",
+      "archive_path": "profiles-scheduler/scheduler-candidate96/artifacts/scheduler-selection-telemetry/focused/commands.json",
+      "scope": "96 source, old replay152 negative boundary mismatch preserved"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/final-python/receipt.json",
+      "sha256": "c2ffd09ca474477ea130f5fc1b4dd93d87cfcfa0851151b21455469e5e52de77",
+      "bytes": 656,
+      "reason": "121 Python tooling contract cases; subprocess mocks distinguished",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/resource-profiles/validation/final-python/receipt.json",
+      "scope": "source qualified, not performance proof"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/final-browser-ee45/complete.json",
+      "sha256": "6825230186447cc7ca7739f65a4bb0b4cb9179ef43a30573a520c32838d864d9",
+      "bytes": 17613,
+      "reason": "Browser flow/oracle completion, exact case inventory and original failed flows",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/resource-profiles/validation/final-browser-ee45/complete.json",
+      "scope": "ee45 or96 as receipt states; SwiftShader correctness, not physical GPU speed"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/final-browser-ee45/expected-inventory.json",
+      "sha256": "35ed927639281898a20ee3385544887df2e0614c993a39a22bfd866f5f8b205f",
+      "bytes": 8958,
+      "reason": "Browser flow/oracle completion, exact case inventory and original failed flows",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/resource-profiles/validation/final-browser-ee45/expected-inventory.json",
+      "scope": "ee45 or96 as receipt states; SwiftShader correctness, not physical GPU speed"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/final-browser-ee45/playwright-results.json",
+      "sha256": "de8c8d6526886d9a9822f899cf3fe0a5898f89371e480dbd1a383dd354c88354",
+      "bytes": 17114,
+      "reason": "Browser flow/oracle completion, exact case inventory and original failed flows",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/resource-profiles/validation/final-browser-ee45/playwright-results.json",
+      "scope": "ee45 or96 as receipt states; SwiftShader correctness, not physical GPU speed"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/final-browser-ee45/compute-playwright-results.json",
+      "sha256": "dba09c204c2ab67acf995739ffcd688be8c5bef3f629298ae8795f6e1949f8de",
+      "bytes": 5172,
+      "reason": "Browser flow/oracle completion, exact case inventory and original failed flows",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/resource-profiles/validation/final-browser-ee45/compute-playwright-results.json",
+      "scope": "ee45 or96 as receipt states; SwiftShader correctness, not physical GPU speed"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/final-browser-ee45/result-files-sha256.json",
+      "sha256": "abb60256125cc675adbb38c185d6d1ff146a77a40b6e9ce9cb37be55d9f950fb",
+      "bytes": 9002,
+      "reason": "Browser flow/oracle completion, exact case inventory and original failed flows",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/resource-profiles/validation/final-browser-ee45/result-files-sha256.json",
+      "scope": "ee45 or96 as receipt states; SwiftShader correctness, not physical GPU speed"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/final-browser-ee45/results/resource-harness-serial-ac-9cb20-adient-suites-list-and-pass-chromium/actual-junit.xml",
+      "sha256": "8ceeff669f04bfecf2e15eeadbcccdb36d8fd7180e0e183bbc0f73966ac30256",
+      "bytes": 13683,
+      "reason": "Actual79 compiled case executions per browser/variant, six combinations",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/resource-profiles/validation/final-browser-ee45/results/resource-harness-serial-ac-9cb20-adient-suites-list-and-pass-chromium/actual-junit.xml",
+      "scope": "source qualified, not performance proof"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/final-browser-ee45/results/resource-harness-serial-ac-9cb20-adient-suites-list-and-pass-firefox/actual-junit.xml",
+      "sha256": "dadecc109ca7628caedc60d138c58358e5ecc14491a805e2a778e2cb2d1c22dc",
+      "bytes": 13680,
+      "reason": "Actual79 compiled case executions per browser/variant, six combinations",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/resource-profiles/validation/final-browser-ee45/results/resource-harness-serial-ac-9cb20-adient-suites-list-and-pass-firefox/actual-junit.xml",
+      "scope": "source qualified, not performance proof"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/final-browser-ee45/results/resource-harness-serial-ac-9cb20-adient-suites-list-and-pass-webkit/actual-junit.xml",
+      "sha256": "f6094495349357e7b7968e3ddaad17352c65df6908927906c20f3355dc6e233e",
+      "bytes": 13662,
+      "reason": "Actual79 compiled case executions per browser/variant, six combinations",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/resource-profiles/validation/final-browser-ee45/results/resource-harness-serial-ac-9cb20-adient-suites-list-and-pass-webkit/actual-junit.xml",
+      "scope": "source qualified, not performance proof"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/final-browser-ee45/results/resource-harness-threaded--cd346-adient-suites-list-and-pass-chromium/actual-junit.xml",
+      "sha256": "053aa56cfe45471d03ce12458c5bcf8f77772addd9b8f50155101e321220091f",
+      "bytes": 13671,
+      "reason": "Actual79 compiled case executions per browser/variant, six combinations",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/resource-profiles/validation/final-browser-ee45/results/resource-harness-threaded--cd346-adient-suites-list-and-pass-chromium/actual-junit.xml",
+      "scope": "source qualified, not performance proof"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/final-browser-ee45/results/resource-harness-threaded--cd346-adient-suites-list-and-pass-firefox/actual-junit.xml",
+      "sha256": "70ceaeaaed8ccc0277d81d6eb15f55475471caffa429f1de29c56a3da3546ecf",
+      "bytes": 13678,
+      "reason": "Actual79 compiled case executions per browser/variant, six combinations",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/resource-profiles/validation/final-browser-ee45/results/resource-harness-threaded--cd346-adient-suites-list-and-pass-firefox/actual-junit.xml",
+      "scope": "source qualified, not performance proof"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/final-browser-ee45/results/resource-harness-threaded--cd346-adient-suites-list-and-pass-webkit/actual-junit.xml",
+      "sha256": "59532f460ef56baa9343a2fd9607959d95ef47bbe9f20824570e3298547bab59",
+      "bytes": 13659,
+      "reason": "Actual79 compiled case executions per browser/variant, six combinations",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/resource-profiles/validation/final-browser-ee45/results/resource-harness-threaded--cd346-adient-suites-list-and-pass-webkit/actual-junit.xml",
+      "scope": "source qualified, not performance proof"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/final-browser-ee45/results/resource-harness-serial-ac-9cb20-adient-suites-list-and-pass-chromium/actual-coverage.json",
+      "sha256": "f6da6e4bab0a2444d69aab07fb8b78e891032ba2a77470562de1df2b5a021ee4",
+      "bytes": 451,
+      "reason": "Actual compiled suite count and nonzero execution",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/resource-profiles/validation/final-browser-ee45/results/resource-harness-serial-ac-9cb20-adient-suites-list-and-pass-chromium/actual-coverage.json",
+      "scope": "source qualified, not performance proof"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/final-browser-ee45/results/resource-harness-serial-ac-9cb20-adient-suites-list-and-pass-firefox/actual-coverage.json",
+      "sha256": "90981bef496493147eb1cf1d41b815555dd8ca95489c85bc48dce8688d004736",
+      "bytes": 450,
+      "reason": "Actual compiled suite count and nonzero execution",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/resource-profiles/validation/final-browser-ee45/results/resource-harness-serial-ac-9cb20-adient-suites-list-and-pass-firefox/actual-coverage.json",
+      "scope": "source qualified, not performance proof"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/final-browser-ee45/results/resource-harness-serial-ac-9cb20-adient-suites-list-and-pass-webkit/actual-coverage.json",
+      "sha256": "e5d83fc740f6d5cc457eb70d081d330e3504818ac49c90ac0e57f5f82bf62f4d",
+      "bytes": 449,
+      "reason": "Actual compiled suite count and nonzero execution",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/resource-profiles/validation/final-browser-ee45/results/resource-harness-serial-ac-9cb20-adient-suites-list-and-pass-webkit/actual-coverage.json",
+      "scope": "source qualified, not performance proof"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/final-browser-ee45/results/resource-harness-threaded--cd346-adient-suites-list-and-pass-chromium/actual-coverage.json",
+      "sha256": "694cc3f0d0cd1999594d7f016c3d4bd7441910e21f88434fecdb5e7f20d22e7b",
+      "bytes": 451,
+      "reason": "Actual compiled suite count and nonzero execution",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/resource-profiles/validation/final-browser-ee45/results/resource-harness-threaded--cd346-adient-suites-list-and-pass-chromium/actual-coverage.json",
+      "scope": "source qualified, not performance proof"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/final-browser-ee45/results/resource-harness-threaded--cd346-adient-suites-list-and-pass-firefox/actual-coverage.json",
+      "sha256": "ee9463f25dad76725a2bb4c385d25f1650814e595b22c6990710d8b3b4a2d321",
+      "bytes": 450,
+      "reason": "Actual compiled suite count and nonzero execution",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/resource-profiles/validation/final-browser-ee45/results/resource-harness-threaded--cd346-adient-suites-list-and-pass-firefox/actual-coverage.json",
+      "scope": "source qualified, not performance proof"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/final-browser-ee45/results/resource-harness-threaded--cd346-adient-suites-list-and-pass-webkit/actual-coverage.json",
+      "sha256": "4e368c3309fb05c80d25417b1e7a03378f6f38a9c1a0adbf0391f0b34ffcc393",
+      "bytes": 449,
+      "reason": "Actual compiled suite count and nonzero execution",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/resource-profiles/validation/final-browser-ee45/results/resource-harness-threaded--cd346-adient-suites-list-and-pass-webkit/actual-coverage.json",
+      "scope": "source qualified, not performance proof"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/final-browser-ee45/results/resource-harness-serial-ac-9cb20-adient-suites-list-and-pass-chromium/actual-listing.xml",
+      "sha256": "04dd0d0d7ac03fa1573d8be7b981b1fb1db8118a46d49129a2d7a914a5476d06",
+      "bytes": 16428,
+      "reason": "Actual compiled listing, remaining combinations carry same expected inventory",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/resource-profiles/validation/final-browser-ee45/results/resource-harness-serial-ac-9cb20-adient-suites-list-and-pass-chromium/actual-listing.xml",
+      "scope": "source qualified, not performance proof"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2/artifacts/scheduler-selection-telemetry/browser-validation96/complete.json",
+      "sha256": "5174a3cd3219977e5a63a3bc9b4c16a4f7a2750c6d9cda9dbcf86b6349ef3332",
+      "bytes": 56348,
+      "reason": "Browser flow/oracle completion, exact case inventory and original failed flows",
+      "archive_path": "profiles-scheduler/scheduler-candidate96/artifacts/scheduler-selection-telemetry/browser-validation96/complete.json",
+      "scope": "ee45 or96 as receipt states; SwiftShader correctness, not physical GPU speed"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2/artifacts/scheduler-selection-telemetry/browser-validation96/expected-inventory.json",
+      "sha256": "63236f97184f2a4a6d40a98ee06cb2064d1ece71153cf17c74c08a22ff3539b0",
+      "bytes": 8958,
+      "reason": "Browser flow/oracle completion, exact case inventory and original failed flows",
+      "archive_path": "profiles-scheduler/scheduler-candidate96/artifacts/scheduler-selection-telemetry/browser-validation96/expected-inventory.json",
+      "scope": "ee45 or96 as receipt states; SwiftShader correctness, not physical GPU speed"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2/artifacts/scheduler-selection-telemetry/browser-validation96/playwright-results.json",
+      "sha256": "55cba4a5ed74f8216150289062c9ea0af33aa62aa1db40bd5b0a6a6f5658224a",
+      "bytes": 23544,
+      "reason": "Browser flow/oracle completion, exact case inventory and original failed flows",
+      "archive_path": "profiles-scheduler/scheduler-candidate96/artifacts/scheduler-selection-telemetry/browser-validation96/playwright-results.json",
+      "scope": "ee45 or96 as receipt states; SwiftShader correctness, not physical GPU speed"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2/artifacts/scheduler-selection-telemetry/browser-validation96/compute-playwright-results.json",
+      "sha256": "15611d6ba098897bfea091cd70f20c6e8ca9446bd8ce2ef0246e5e0253a87fff",
+      "bytes": 5202,
+      "reason": "Browser flow/oracle completion, exact case inventory and original failed flows",
+      "archive_path": "profiles-scheduler/scheduler-candidate96/artifacts/scheduler-selection-telemetry/browser-validation96/compute-playwright-results.json",
+      "scope": "ee45 or96 as receipt states; SwiftShader correctness, not physical GPU speed"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2/artifacts/scheduler-selection-telemetry/browser-validation96/results/resource-harness-serial-ac-9cb20-adient-suites-list-and-pass-chromium/actual-junit.xml",
+      "sha256": "167dc10ce8fd2fc937cf2522765d4db364795c3a7c5672973670fe7a32049a9c",
+      "bytes": 13738,
+      "reason": "Actual79 compiled case executions per browser/variant, six combinations",
+      "archive_path": "profiles-scheduler/scheduler-candidate96/artifacts/scheduler-selection-telemetry/browser-validation96/results/resource-harness-serial-ac-9cb20-adient-suites-list-and-pass-chromium/actual-junit.xml",
+      "scope": "source qualified, not performance proof"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2/artifacts/scheduler-selection-telemetry/browser-validation96/results/resource-harness-serial-ac-9cb20-adient-suites-list-and-pass-firefox/actual-junit.xml",
+      "sha256": "6b8a85e2de56b666353f90e738fa6c0d7dfc49a60191c5397170e8bcb8369b5a",
+      "bytes": 13699,
+      "reason": "Actual79 compiled case executions per browser/variant, six combinations",
+      "archive_path": "profiles-scheduler/scheduler-candidate96/artifacts/scheduler-selection-telemetry/browser-validation96/results/resource-harness-serial-ac-9cb20-adient-suites-list-and-pass-firefox/actual-junit.xml",
+      "scope": "source qualified, not performance proof"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2/artifacts/scheduler-selection-telemetry/browser-validation96/results/resource-harness-serial-ac-9cb20-adient-suites-list-and-pass-webkit/actual-junit.xml",
+      "sha256": "12980fb36668281fa7e94a098e09578973480bb81038dd34b27605a1b878c1dd",
+      "bytes": 13654,
+      "reason": "Actual79 compiled case executions per browser/variant, six combinations",
+      "archive_path": "profiles-scheduler/scheduler-candidate96/artifacts/scheduler-selection-telemetry/browser-validation96/results/resource-harness-serial-ac-9cb20-adient-suites-list-and-pass-webkit/actual-junit.xml",
+      "scope": "source qualified, not performance proof"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2/artifacts/scheduler-selection-telemetry/browser-validation96/results/resource-harness-threaded--cd346-adient-suites-list-and-pass-chromium/actual-junit.xml",
+      "sha256": "054076cfe6f8c7cb774d1d3ecb081701eca86281a653ec7313a6d654168d9d29",
+      "bytes": 13710,
+      "reason": "Actual79 compiled case executions per browser/variant, six combinations",
+      "archive_path": "profiles-scheduler/scheduler-candidate96/artifacts/scheduler-selection-telemetry/browser-validation96/results/resource-harness-threaded--cd346-adient-suites-list-and-pass-chromium/actual-junit.xml",
+      "scope": "source qualified, not performance proof"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2/artifacts/scheduler-selection-telemetry/browser-validation96/results/resource-harness-threaded--cd346-adient-suites-list-and-pass-firefox/actual-junit.xml",
+      "sha256": "73eade972609a9ffb1cc4f83cf5554641f48bc0544e9375c399eb09de1bda106",
+      "bytes": 13713,
+      "reason": "Actual79 compiled case executions per browser/variant, six combinations",
+      "archive_path": "profiles-scheduler/scheduler-candidate96/artifacts/scheduler-selection-telemetry/browser-validation96/results/resource-harness-threaded--cd346-adient-suites-list-and-pass-firefox/actual-junit.xml",
+      "scope": "source qualified, not performance proof"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2/artifacts/scheduler-selection-telemetry/browser-validation96/results/resource-harness-threaded--cd346-adient-suites-list-and-pass-webkit/actual-junit.xml",
+      "sha256": "fb9553992d4949c9f5a9ebcddb29e0befc695722496eaa4303b3424f4d058ccf",
+      "bytes": 13670,
+      "reason": "Actual79 compiled case executions per browser/variant, six combinations",
+      "archive_path": "profiles-scheduler/scheduler-candidate96/artifacts/scheduler-selection-telemetry/browser-validation96/results/resource-harness-threaded--cd346-adient-suites-list-and-pass-webkit/actual-junit.xml",
+      "scope": "source qualified, not performance proof"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2/artifacts/scheduler-selection-telemetry/browser-validation96/results/resource-harness-serial-ac-9cb20-adient-suites-list-and-pass-chromium/actual-coverage.json",
+      "sha256": "f6da6e4bab0a2444d69aab07fb8b78e891032ba2a77470562de1df2b5a021ee4",
+      "bytes": 451,
+      "reason": "Actual compiled suite count and nonzero execution",
+      "archive_path": "profiles-scheduler/scheduler-candidate96/artifacts/scheduler-selection-telemetry/browser-validation96/results/resource-harness-serial-ac-9cb20-adient-suites-list-and-pass-chromium/actual-coverage.json",
+      "scope": "source qualified, not performance proof"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2/artifacts/scheduler-selection-telemetry/browser-validation96/results/resource-harness-serial-ac-9cb20-adient-suites-list-and-pass-firefox/actual-coverage.json",
+      "sha256": "90981bef496493147eb1cf1d41b815555dd8ca95489c85bc48dce8688d004736",
+      "bytes": 450,
+      "reason": "Actual compiled suite count and nonzero execution",
+      "archive_path": "profiles-scheduler/scheduler-candidate96/artifacts/scheduler-selection-telemetry/browser-validation96/results/resource-harness-serial-ac-9cb20-adient-suites-list-and-pass-firefox/actual-coverage.json",
+      "scope": "source qualified, not performance proof"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2/artifacts/scheduler-selection-telemetry/browser-validation96/results/resource-harness-serial-ac-9cb20-adient-suites-list-and-pass-webkit/actual-coverage.json",
+      "sha256": "e5d83fc740f6d5cc457eb70d081d330e3504818ac49c90ac0e57f5f82bf62f4d",
+      "bytes": 449,
+      "reason": "Actual compiled suite count and nonzero execution",
+      "archive_path": "profiles-scheduler/scheduler-candidate96/artifacts/scheduler-selection-telemetry/browser-validation96/results/resource-harness-serial-ac-9cb20-adient-suites-list-and-pass-webkit/actual-coverage.json",
+      "scope": "source qualified, not performance proof"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2/artifacts/scheduler-selection-telemetry/browser-validation96/results/resource-harness-threaded--cd346-adient-suites-list-and-pass-chromium/actual-coverage.json",
+      "sha256": "694cc3f0d0cd1999594d7f016c3d4bd7441910e21f88434fecdb5e7f20d22e7b",
+      "bytes": 451,
+      "reason": "Actual compiled suite count and nonzero execution",
+      "archive_path": "profiles-scheduler/scheduler-candidate96/artifacts/scheduler-selection-telemetry/browser-validation96/results/resource-harness-threaded--cd346-adient-suites-list-and-pass-chromium/actual-coverage.json",
+      "scope": "source qualified, not performance proof"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2/artifacts/scheduler-selection-telemetry/browser-validation96/results/resource-harness-threaded--cd346-adient-suites-list-and-pass-firefox/actual-coverage.json",
+      "sha256": "ee9463f25dad76725a2bb4c385d25f1650814e595b22c6990710d8b3b4a2d321",
+      "bytes": 450,
+      "reason": "Actual compiled suite count and nonzero execution",
+      "archive_path": "profiles-scheduler/scheduler-candidate96/artifacts/scheduler-selection-telemetry/browser-validation96/results/resource-harness-threaded--cd346-adient-suites-list-and-pass-firefox/actual-coverage.json",
+      "scope": "source qualified, not performance proof"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2/artifacts/scheduler-selection-telemetry/browser-validation96/results/resource-harness-threaded--cd346-adient-suites-list-and-pass-webkit/actual-coverage.json",
+      "sha256": "4e368c3309fb05c80d25417b1e7a03378f6f38a9c1a0adbf0391f0b34ffcc393",
+      "bytes": 449,
+      "reason": "Actual compiled suite count and nonzero execution",
+      "archive_path": "profiles-scheduler/scheduler-candidate96/artifacts/scheduler-selection-telemetry/browser-validation96/results/resource-harness-threaded--cd346-adient-suites-list-and-pass-webkit/actual-coverage.json",
+      "scope": "source qualified, not performance proof"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2/artifacts/scheduler-selection-telemetry/browser-validation96/results/resource-harness-serial-ac-9cb20-adient-suites-list-and-pass-chromium/actual-listing.xml",
+      "sha256": "04dd0d0d7ac03fa1573d8be7b981b1fb1db8118a46d49129a2d7a914a5476d06",
+      "bytes": 16428,
+      "reason": "Actual compiled listing, remaining combinations carry same expected inventory",
+      "archive_path": "profiles-scheduler/scheduler-candidate96/artifacts/scheduler-selection-telemetry/browser-validation96/results/resource-harness-serial-ac-9cb20-adient-suites-list-and-pass-chromium/actual-listing.xml",
+      "scope": "source qualified, not performance proof"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2/artifacts/scheduler-selection-telemetry/browser96-failed-startup-quiet/complete.json",
+      "sha256": "7cd12798744198f7ba4dd05a8d80fc076b8e0ef30dc776e8c7b6b193d704fda8",
+      "bytes": 9942,
+      "reason": "Separate same-bytes quiet startup pass; original30-second failure remains",
+      "archive_path": "profiles-scheduler/scheduler-candidate96/artifacts/scheduler-selection-telemetry/browser96-failed-startup-quiet/complete.json",
+      "scope": "96 only; cause of original loading timeout unresolved, no clean12/12 original matrix claim"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2/artifacts/scheduler-selection-telemetry/browser96-failed-startup-quiet/plan.json",
+      "sha256": "d1839608677fb9ab8b359c20d854c9f602da5a93050f337f3841e943cbf04bc5",
+      "bytes": 3078,
+      "reason": "Separate same-bytes quiet startup pass; original30-second failure remains",
+      "archive_path": "profiles-scheduler/scheduler-candidate96/artifacts/scheduler-selection-telemetry/browser96-failed-startup-quiet/plan.json",
+      "scope": "96 only; cause of original loading timeout unresolved, no clean12/12 original matrix claim"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2/artifacts/scheduler-selection-telemetry/browser96-failed-startup-quiet/original-startup-trace-observations.json",
+      "sha256": "7b37e5f30ba384b142c9366240d5f96129fe742702ed2d2ca992219b3500a95d",
+      "bytes": 34408,
+      "reason": "Separate same-bytes quiet startup pass; original30-second failure remains",
+      "archive_path": "profiles-scheduler/scheduler-candidate96/artifacts/scheduler-selection-telemetry/browser96-failed-startup-quiet/original-startup-trace-observations.json",
+      "scope": "96 only; cause of original loading timeout unresolved, no clean12/12 original matrix claim"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2/artifacts/scheduler-selection-telemetry/browser96-failed-startup-quiet/playwright-results.json",
+      "sha256": "13f3c66722791d104ce7f6181e12740b25f5c80528244f1c3656f23774513003",
+      "bytes": 5376,
+      "reason": "Separate same-bytes quiet startup pass; original30-second failure remains",
+      "archive_path": "profiles-scheduler/scheduler-candidate96/artifacts/scheduler-selection-telemetry/browser96-failed-startup-quiet/playwright-results.json",
+      "scope": "96 only; cause of original loading timeout unresolved, no clean12/12 original matrix claim"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/runtime-acceptance-d80/campaign-complete.json",
+      "sha256": "5635023229d3f384634543959406f44ff204f41312f148078d16f78275fb4a19",
+      "bytes": 1639,
+      "reason": "Actual18 native diagnostic cases;59392 checksums/world records and4096 saved suffix",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/profiles-implementation/runtime-acceptance-d80/campaign-complete.json",
+      "scope": "ee45 exact source; correctness rather than runtime speed"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/runtime-acceptance-d80/result-review.json",
+      "sha256": "a39a2eef5b4825c30277e441da0624fe5f4b3c065cdda408388a4a3fd07a5423",
+      "bytes": 6848,
+      "reason": "Actual18 native diagnostic cases;59392 checksums/world records and4096 saved suffix",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/profiles-implementation/runtime-acceptance-d80/result-review.json",
+      "scope": "ee45 exact source; correctness rather than runtime speed"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/runtime-acceptance-d80/plan.json",
+      "sha256": "916719e9b923dfa12330d811b6a2495257476605e74ffd7c23bb3718288e7dbc",
+      "bytes": 71126,
+      "reason": "Actual18 native diagnostic cases;59392 checksums/world records and4096 saved suffix",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/profiles-implementation/runtime-acceptance-d80/plan.json",
+      "scope": "ee45 exact source; correctness rather than runtime speed"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/runtime-acceptance-d80/native-argv.txt",
+      "sha256": "d43119f1ac947498f67dbaca695db793fe851ce0e02de939ef44a30861004095",
+      "bytes": 12501,
+      "reason": "Actual18 native diagnostic cases;59392 checksums/world records and4096 saved suffix",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/profiles-implementation/runtime-acceptance-d80/native-argv.txt",
+      "scope": "ee45 exact source; correctness rather than runtime speed"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/candidate-runtime18-v2/campaign-complete.json",
+      "sha256": "ef0f1a8ab81d8f0a6b8c6301fe5b8a3c0e09d7be776b26e35673f4406edbc285",
+      "bytes": 1924,
+      "reason": "Fresh96 repeat of18 conformance cases",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/profiles-implementation/scheduler-telemetry-plan/candidate-runtime18-v2/campaign-complete.json",
+      "scope": "96 exact source; corrected fresh V2, not retroactive acceptance of first attempt"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/candidate-runtime18-v2/root-review.json",
+      "sha256": "eb38d91d4ad705e046652009db80b1740cc80c3c7454dedd4320443691c12925",
+      "bytes": 972,
+      "reason": "Fresh96 repeat of18 conformance cases",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/profiles-implementation/scheduler-telemetry-plan/candidate-runtime18-v2/root-review.json",
+      "scope": "96 exact source; corrected fresh V2, not retroactive acceptance of first attempt"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profile-map-tools/glob2/artifacts/engine-optimization-conclusion/pr-notes/profiles-derived/native18-each-compact.json",
+      "sha256": "420c45e922292e906f9c371b09e9369cb021c96ee6bcb587d112d6d18ac38cf7",
+      "bytes": 399461,
+      "reason": "Compact all36 native diagnostic receipts and requested setup, raw trace event payloads omitted",
+      "archive_path": "profiles-scheduler/derived/native18-each-compact.json",
+      "scope": "DERIVED compact extract, originals retained locally and hash bound"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/diagnostics-complete.json",
+      "sha256": "ad0e0b3b4fdf0537af2eee4315e1216ab76adfa27d4d363d797b61f9469b444a",
+      "bytes": 2198,
+      "reason": "Actual eight-cell16-child paired conformance or exact cell/request/seed plan",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/profiles-implementation/scheduler-telemetry-plan/diagnostics-complete.json",
+      "scope": "16 actual children; no measured worker-path speed"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/plan.json",
+      "sha256": "5ea01bf3a16d3d392db18bc651c6c36f20e214b247cbaca582f1344ccd889a12",
+      "bytes": 19753,
+      "reason": "Actual eight-cell16-child paired conformance or exact cell/request/seed plan",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/profiles-implementation/scheduler-telemetry-plan/plan.json",
+      "scope": "16 actual children; no measured worker-path speed"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/commands.json",
+      "sha256": "5e7ba88d47fc472bf87f7fef575f91a95e1d0a156ea637a4c082580e69fe2945",
+      "bytes": 42004,
+      "reason": "Actual eight-cell16-child paired conformance or exact cell/request/seed plan",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/profiles-implementation/scheduler-telemetry-plan/commands.json",
+      "scope": "16 actual children; no measured worker-path speed"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profile-map-tools/glob2/artifacts/engine-optimization-conclusion/pr-notes/profiles-derived/eight-cell-native-compact.json",
+      "sha256": "7254454a499d225cd21fbd9ec024fc7359269bdb586f594dbd14b4c8155f428c",
+      "bytes": 70863,
+      "reason": "Compact all16 paired-cell conformance receipts",
+      "archive_path": "profiles-scheduler/derived/eight-cell-native-compact.json",
+      "scope": "DERIVED compact extract, originals retained locally and hash bound"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/coordinator-acceptance-ee45/independent-result-review.json",
+      "sha256": "91e1a4c992004ffc533d43b0bc6308abdfea2b078eeee54287d008e16a584934",
+      "bytes": 2103,
+      "reason": "Actual two concurrent game jobs, disjoint6logical shares/4participants each and7overlap observations",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/profiles-implementation/coordinator-acceptance-ee45/independent-result-review.json",
+      "scope": "Actual allocation contract equality, not throughput optimality or RSS cap"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/coordinator-acceptance-ee45/slot-smoke.json",
+      "sha256": "ef3a2cf50a7cb7f7580833709e05428a4e6d78934115588a3e254b158c3f3c80",
+      "bytes": 2751,
+      "reason": "Actual two concurrent game jobs, disjoint6logical shares/4participants each and7overlap observations",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/profiles-implementation/coordinator-acceptance-ee45/slot-smoke.json",
+      "scope": "Actual allocation contract equality, not throughput optimality or RSS cap"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/coordinator-acceptance-ee45/runs/two-slot-smoke/passed.json",
+      "sha256": "f24e037227d9ac145268b1fccdc1dab0ce72bf398ba62b1a64518c38a79ddd12",
+      "bytes": 230,
+      "reason": "Actual two concurrent game jobs, disjoint6logical shares/4participants each and7overlap observations",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/profiles-implementation/coordinator-acceptance-ee45/runs/two-slot-smoke/passed.json",
+      "scope": "Actual allocation contract equality, not throughput optimality or RSS cap"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/match-regression-ee45-96da/complete.json",
+      "sha256": "b98ddf57cced35a5295bbae2ec734b23fe7456c7294c6e17818a9f3dd4fe5c0c",
+      "bytes": 131748,
+      "reason": "Actual golden match verification,842 trace rows each and exact outcomes/replays",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/resource-profiles/validation/match-regression-ee45-96da/complete.json",
+      "scope": "Two source-qualified CLI verifications; not currentd2 exported842row runtime proof"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/match-regression-ee45-96da/plan.json",
+      "sha256": "2114791284e64888e5c222763b82390b100bc26a120f8811348f31dbbca6584c",
+      "bytes": 7140,
+      "reason": "Actual golden match verification,842 trace rows each and exact outcomes/replays",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/resource-profiles/validation/match-regression-ee45-96da/plan.json",
+      "scope": "Two source-qualified CLI verifications; not currentd2 exported842row runtime proof"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/match-regression-ee45-96da/commands.txt",
+      "sha256": "f0418e65f1c62c047b699ef958a5002cb0c5a8c41eb762d94caa43d90a549386",
+      "bytes": 1269,
+      "reason": "Actual golden match verification,842 trace rows each and exact outcomes/replays",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/resource-profiles/validation/match-regression-ee45-96da/commands.txt",
+      "scope": "Two source-qualified CLI verifications; not currentd2 exported842row runtime proof"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/match-regression-ee45-96da/runs/ee45/verdict.json",
+      "sha256": "fb0545d0bdac77e31c16d92b22f271910b3006fb918fe42c65a616efa4d3fbb5",
+      "bytes": 430,
+      "reason": "Actual golden match verification,842 trace rows each and exact outcomes/replays",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/resource-profiles/validation/match-regression-ee45-96da/runs/ee45/verdict.json",
+      "scope": "Two source-qualified CLI verifications; not currentd2 exported842row runtime proof"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/match-regression-ee45-96da/runs/candidate96da/verdict.json",
+      "sha256": "b59d036fdb409e62a3ceaa21981ce16a288aa8d188a5e1a0b0e1e40d2b67eeec",
+      "bytes": 430,
+      "reason": "Actual golden match verification,842 trace rows each and exact outcomes/replays",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/resource-profiles/validation/match-regression-ee45-96da/runs/candidate96da/verdict.json",
+      "scope": "Two source-qualified CLI verifications; not currentd2 exported842row runtime proof"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/match-regression-ee45-96da/runs/ee45/checksums.txt",
+      "sha256": "2287760e6a3f627e08584369f4cb7c202019d69458be4751d42790ebd19b3601",
+      "bytes": 10914,
+      "reason": "Actual golden match verification,842 trace rows each and exact outcomes/replays",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/resource-profiles/validation/match-regression-ee45-96da/runs/ee45/checksums.txt",
+      "scope": "Two source-qualified CLI verifications; not currentd2 exported842row runtime proof"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/match-regression-ee45-96da/runs/candidate96da/checksums.txt",
+      "sha256": "2287760e6a3f627e08584369f4cb7c202019d69458be4751d42790ebd19b3601",
+      "bytes": 10914,
+      "reason": "Actual golden match verification,842 trace rows each and exact outcomes/replays",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/resource-profiles/validation/match-regression-ee45-96da/runs/candidate96da/checksums.txt",
+      "scope": "Two source-qualified CLI verifications; not currentd2 exported842row runtime proof"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profile-map-tools/glob2/artifacts/engine-optimization-conclusion/pr-notes/profiles-derived/scheduler-ee45-to96.patch",
+      "sha256": "9715ddbb301a8c1dba84894946f3c5bd6c5757d0aa4eaf51e0f19e6b115724ec",
+      "bytes": 5753,
+      "reason": "Exact complete3file prototype diff; production change is ComputeExecutor.h, extra changes are test fixtures",
+      "archive_path": "profiles-scheduler/derived/scheduler-ee45-to96.patch",
+      "scope": "NOT_ADOPTED; static/correctness proof, zero accepted worker-path timing pairs"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/candidate-review.json",
+      "sha256": "66fa28a77bba146d56d896f227deaf5aeb4e8ef8891f04e4a4841a02d55871d3",
+      "bytes": 4430,
+      "reason": "Static scheduler review or original failed run/discard fixture",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/profiles-implementation/scheduler-telemetry-plan/candidate-review.json",
+      "scope": "Priority fixture is PREPARED_NOT_EXECUTED; independent static review is not finished adoption"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/candidate-review.txt",
+      "sha256": "e9340582cdc9a41bfe1bab09480861c006d2a5112b70b1bc8ac56ecdca4a8586",
+      "bytes": 1379,
+      "reason": "Static scheduler review or original failed run/discard fixture",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/profiles-implementation/scheduler-telemetry-plan/candidate-review.txt",
+      "scope": "Priority fixture is PREPARED_NOT_EXECUTED; independent static review is not finished adoption"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/priority-fixture-plan.json",
+      "sha256": "cf595577a810f8bfc21b9fb7ee30c8665573de47fbc67b5a1e34ec751d140c0a",
+      "bytes": 1381,
+      "reason": "Static scheduler review or original failed run/discard fixture",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/profiles-implementation/scheduler-telemetry-plan/priority-fixture-plan.json",
+      "scope": "Priority fixture is PREPARED_NOT_EXECUTED; independent static review is not finished adoption"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/priority-discard-all-modes.patch",
+      "sha256": "d3111474e602172d4504f0054e083a3eb1f8df26851303022f807e6b82ba1147",
+      "bytes": 8633,
+      "reason": "Static scheduler review or original failed run/discard fixture",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/profiles-implementation/scheduler-telemetry-plan/priority-discard-all-modes.patch",
+      "scope": "Priority fixture is PREPARED_NOT_EXECUTED; independent static review is not finished adoption"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/priority-discard-fixture.cpp",
+      "sha256": "158bb49cf586ee983e31671d794fcdce0fc1ed662c003252e47ee55b556ddf02",
+      "bytes": 8311,
+      "reason": "Static scheduler review or original failed run/discard fixture",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/profiles-implementation/scheduler-telemetry-plan/priority-discard-fixture.cpp",
+      "scope": "Priority fixture is PREPARED_NOT_EXECUTED; independent static review is not finished adoption"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/candidate-runtime18/campaign-failure.json",
+      "sha256": "39c72b2ee0e2b1918c9e7a23fd022856393843e3cd617eb9cc20638028223701",
+      "bytes": 207,
+      "reason": "Static scheduler review or original failed run/discard fixture",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/profiles-implementation/scheduler-telemetry-plan/candidate-runtime18/campaign-failure.json",
+      "scope": "Priority fixture is PREPARED_NOT_EXECUTED; independent static review is not finished adoption"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/candidate18-plan-drift-review/review-streaming-corrected.json",
+      "sha256": "18eede527409b559154f8357e31089cbf51ad6941c7a259e27e5c151a98a885b",
+      "bytes": 1238,
+      "reason": "Static scheduler review or original failed run/discard fixture",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/profiles-implementation/scheduler-telemetry-plan/candidate18-plan-drift-review/review-streaming-corrected.json",
+      "scope": "Priority fixture is PREPARED_NOT_EXECUTED; independent static review is not finished adoption"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/candidate18-plan-drift-review/scope-change-only-corrected.diff",
+      "sha256": "6955d2ecc09caac4f9242c5e25948dfe7ae860f017621b39aeaa4e16ff2b9ca2",
+      "bytes": 462,
+      "reason": "Static scheduler review or original failed run/discard fixture",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/profiles-implementation/scheduler-telemetry-plan/candidate18-plan-drift-review/scope-change-only-corrected.diff",
+      "scope": "Priority fixture is PREPARED_NOT_EXECUTED; independent static review is not finished adoption"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/scheduler-selection-telemetry/assembly/comparison.json",
+      "sha256": "6c6d6d57b3993c5f96b158cd5e2486e4171603060b3e261a97779b02973dca99",
+      "bytes": 5586,
+      "reason": "Actual linked Off/Trace worker2\u21921 selection scans with relocation/TLS qualification",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/scheduler-selection-telemetry/assembly/comparison.json",
+      "scope": "Static codegen only; no runtimegain inference"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/scheduler-selection-telemetry/assembly/comparison.txt",
+      "sha256": "8e036eb9faa27a9e212a57e4cd83ef334b8ba5e39cf0997792c0f66baf492644",
+      "bytes": 1031,
+      "reason": "Actual linked Off/Trace worker2\u21921 selection scans with relocation/TLS qualification",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/scheduler-selection-telemetry/assembly/comparison.txt",
+      "scope": "Static codegen only; no runtimegain inference"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/scheduler-selection-telemetry/assembly/extract.py",
+      "sha256": "38d3ca898728a7ae657de19f63906e10661ff9519f0029762f5c859516e8b861",
+      "bytes": 5564,
+      "reason": "Actual linked Off/Trace worker2\u21921 selection scans with relocation/TLS qualification",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/scheduler-selection-telemetry/assembly/extract.py",
+      "scope": "Static codegen only; no runtimegain inference"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/scheduler-selection-telemetry/assembly/baseline-linked/binding.json",
+      "sha256": "c123b01ee5b8dc41f4c5252104b6f42be9189739bb2f2778c6388099fb7c828d",
+      "bytes": 97006,
+      "reason": "Actual linked Off/Trace worker2\u21921 selection scans with relocation/TLS qualification",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/scheduler-selection-telemetry/assembly/baseline-linked/binding.json",
+      "scope": "Static codegen only; no runtimegain inference"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/scheduler-selection-telemetry/assembly/candidate-linked/binding.json",
+      "sha256": "1392e69cef905884cec61aee1b425ca8a83a00bd192be53eed0f85bf247a46fc",
+      "bytes": 54882,
+      "reason": "Actual linked Off/Trace worker2\u21921 selection scans with relocation/TLS qualification",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/scheduler-selection-telemetry/assembly/candidate-linked/binding.json",
+      "scope": "Static codegen only; no runtimegain inference"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/scheduler-selection-telemetry/assembly/baseline-linked/worker-0.runtime.asm.txt",
+      "sha256": "037ac8ce81602b699c6759bb8dcb10b561e4091de591fa5dfc92fb33b40b8795",
+      "bytes": 59509,
+      "reason": "Actual linked Off/Trace worker2\u21921 selection scans with relocation/TLS qualification",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/scheduler-selection-telemetry/assembly/baseline-linked/worker-0.runtime.asm.txt",
+      "scope": "Static codegen only; no runtimegain inference"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/scheduler-selection-telemetry/assembly/baseline-linked/worker-2.runtime.asm.txt",
+      "sha256": "2d54afe2d788d695bfb1281b2e686322be1983de80c6a798d5da6c24dd3be634",
+      "bytes": 65234,
+      "reason": "Actual linked Off/Trace worker2\u21921 selection scans with relocation/TLS qualification",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/scheduler-selection-telemetry/assembly/baseline-linked/worker-2.runtime.asm.txt",
+      "scope": "Static codegen only; no runtimegain inference"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/scheduler-selection-telemetry/assembly/candidate-linked/worker-0.runtime.asm.txt",
+      "sha256": "794ee6437a97f76f341989cf193e133d80e0057fec23664baa34707999b1b1bb",
+      "bytes": 59228,
+      "reason": "Actual linked Off/Trace worker2\u21921 selection scans with relocation/TLS qualification",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/scheduler-selection-telemetry/assembly/candidate-linked/worker-0.runtime.asm.txt",
+      "scope": "Static codegen only; no runtimegain inference"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/scheduler-selection-telemetry/assembly/candidate-linked/worker-2.runtime.asm.txt",
+      "sha256": "068862d2b16f317e80db6b176a0b087986bf91b107e1c7bd8406c5676e66a99e",
+      "bytes": 65917,
+      "reason": "Actual linked Off/Trace worker2\u21921 selection scans with relocation/TLS qualification",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/scheduler-selection-telemetry/assembly/candidate-linked/worker-2.runtime.asm.txt",
+      "scope": "Static codegen only; no runtimegain inference"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/pairs/small-ni-n1-gpuoff-r-1.json",
+      "sha256": "dff57516e0597389178406d552633821b4b1b88d69f1c6c1c61c99c5a25417f3",
+      "bytes": 30389,
+      "reason": "Original owner-only negative controls and failed N12 observer qualification",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/profiles-implementation/scheduler-telemetry-plan/pairs/small-ni-n1-gpuoff-r-1.json",
+      "scope": "N1does NOTexecute changed worker path; warm r-1 excluded; failed N12 not accepted"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/pairs/small-ni-n1-gpuoff-r0.json",
+      "sha256": "31f21ac28db8171b5444087d4c1dc240645d31c5241967d7701511fc09cb5a0a",
+      "bytes": 30387,
+      "reason": "Original owner-only negative controls and failed N12 observer qualification",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/profiles-implementation/scheduler-telemetry-plan/pairs/small-ni-n1-gpuoff-r0.json",
+      "scope": "N1does NOTexecute changed worker path; warm r-1 excluded; failed N12 not accepted"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/pairs/small-ni-n1-gpuoff-r1.json",
+      "sha256": "bf1f2e8f78b0abf41c0fde103431a791ba6d95f252bd88aa18be65422b7ebb5a",
+      "bytes": 30387,
+      "reason": "Original owner-only negative controls and failed N12 observer qualification",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/profiles-implementation/scheduler-telemetry-plan/pairs/small-ni-n1-gpuoff-r1.json",
+      "scope": "N1does NOTexecute changed worker path; warm r-1 excluded; failed N12 not accepted"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/timing-campaign-failure.json",
+      "sha256": "b5dd5b0045268cd45052eb8fe161eb427eae7655ebf7709f33cf89fbd7f293ca",
+      "bytes": 642,
+      "reason": "Original owner-only negative controls and failed N12 observer qualification",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/profiles-implementation/scheduler-telemetry-plan/timing-campaign-failure.json",
+      "scope": "N1does NOTexecute changed worker path; warm r-1 excluded; failed N12 not accepted"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profile-map-tools/glob2/artifacts/engine-optimization-conclusion/pr-notes/profiles-derived/owner-only-negative-control-rows.json",
+      "sha256": "423370af626fca9d82bd5dc47564028ad27998557f00834967df0ed25f5b636f",
+      "bytes": 15046,
+      "reason": "Actual native wait4 wall/user/systemCPU/RSS negative-control rows and recomputed paired percentages",
+      "archive_path": "profiles-scheduler/derived/owner-only-negative-control-rows.json",
+      "scope": "DERIVED compact extract, originals retained locally and hash bound"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-timing-v2/campaign-failure.json",
+      "sha256": "05922dcff9f9832725edddd47997ec2741a125b587284ff71e51a37473391e6b",
+      "bytes": 145,
+      "reason": "Timing guard fault, corrected observer, two foreign-build preflight refusals",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/profiles-implementation/scheduler-telemetry-timing-v2/campaign-failure.json",
+      "scope": "Two V2launches each0nativechildren; no worker-speed samples or causal foreignbuild claim"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-timing-v2/resumed-launch/campaign-failure.json",
+      "sha256": "05922dcff9f9832725edddd47997ec2741a125b587284ff71e51a37473391e6b",
+      "bytes": 145,
+      "reason": "Timing guard fault, corrected observer, two foreign-build preflight refusals",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/profiles-implementation/scheduler-telemetry-timing-v2/resumed-launch/campaign-failure.json",
+      "scope": "Two V2launches each0nativechildren; no worker-speed samples or causal foreignbuild claim"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-timing-v2/error-review.json",
+      "sha256": "564724e23bc6213780c80f772bac0b6b397247010b53b4f11781643afe8181c1",
+      "bytes": 1494,
+      "reason": "Timing guard fault, corrected observer, two foreign-build preflight refusals",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/profiles-implementation/scheduler-telemetry-timing-v2/error-review.json",
+      "scope": "Two V2launches each0nativechildren; no worker-speed samples or causal foreignbuild claim"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-timing-v2/stop-race-pure-checks.json",
+      "sha256": "e7f9356b1f8ebbd51f8f831c10253455bbd10d71674ba90bb93a5527194cdc75",
+      "bytes": 699,
+      "reason": "Timing guard fault, corrected observer, two foreign-build preflight refusals",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/profiles-implementation/scheduler-telemetry-timing-v2/stop-race-pure-checks.json",
+      "scope": "Two V2launches each0nativechildren; no worker-speed samples or causal foreignbuild claim"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-timing-v2/observer-fix.diff",
+      "sha256": "077220813d669f9252194bfa17a9d0da3e5fcfed5bd5d7b092a775ace2de85fa",
+      "bytes": 2965,
+      "reason": "Timing guard fault, corrected observer, two foreign-build preflight refusals",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/profiles-implementation/scheduler-telemetry-timing-v2/observer-fix.diff",
+      "scope": "Two V2launches each0nativechildren; no worker-speed samples or causal foreignbuild claim"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-timing-v2/plan.json",
+      "sha256": "cd1e403bec15c0f78a4b8e36ff90d1d207d30f048f2fa3d816770381f3d6367a",
+      "bytes": 18679,
+      "reason": "Timing guard fault, corrected observer, two foreign-build preflight refusals",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/profiles-implementation/scheduler-telemetry-timing-v2/plan.json",
+      "scope": "Two V2launches each0nativechildren; no worker-speed samples or causal foreignbuild claim"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/timing-observer-first-n12-review/review.json",
+      "sha256": "4d43c37a41670898607fd6b971932443d7f576eb2d1b67f379f0c2b27eb67d49",
+      "bytes": 5411,
+      "reason": "Detailed original N12 observer scope failure, sample not accepted",
+      "archive_path": "profiles-scheduler/profiles-foundation-ee45/artifacts/resource-profiles/validation/timing-observer-first-n12-review/review.json",
+      "scope": "source qualified, not performance proof"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profile-map-tools/glob2/artifacts/engine-optimization-conclusion/pr-notes/profiles-derived/profile-coverage-current-qualification.json",
+      "sha256": "b14ecea6ee06eb7d3924b0a044b1ccbd03a1bee8cb3670fac26a7c9b0c93343c",
+      "bytes": 2244,
+      "reason": "Current completion versus earlier coverage matrix; unimplemented concepts explicitly distinct",
+      "archive_path": "profiles-scheduler/derived/profile-coverage-current-qualification.json",
+      "scope": "DERIVED compact extract, originals retained locally and hash bound"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profile-map-tools/glob2/artifacts/engine-optimization-conclusion/pr-notes/profiles-derived/README.txt",
+      "sha256": "6f66b726fcc9ad8f99744741e1d1a94704b9dcc88daa06312a1a345a98e4b513",
+      "bytes": 3453,
+      "reason": "Human-readable completed/rejected/unmeasured distinctions",
+      "archive_path": "profiles-scheduler/README.txt",
+      "scope": "Curated synthesis; original source-qualified files provide supporting receipts"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profile-map-tools/glob2/artifacts/engine-optimization-conclusion/pr-notes/profiles-compact-extract.py",
+      "sha256": "dbcef89bcba902b114664803e4b835481c5a9bdfa219fa6b01b2ff4a4e90d0c7",
+      "bytes": 23065,
+      "reason": "Reproduce compact extraction from explicitly specified prior originals",
+      "archive_path": "profiles-scheduler/derived/profiles-compact-extract.py",
+      "scope": "Does not rebuild,run games,or publish"
+    }
+  ],
+  "derived_files": [
+    "/home/bradley/.codex/worktrees/resource-profile-map-tools/glob2/artifacts/engine-optimization-conclusion/pr-notes/profiles-derived/native18-each-compact.json",
+    "/home/bradley/.codex/worktrees/resource-profile-map-tools/glob2/artifacts/engine-optimization-conclusion/pr-notes/profiles-derived/eight-cell-native-compact.json",
+    "/home/bradley/.codex/worktrees/resource-profile-map-tools/glob2/artifacts/engine-optimization-conclusion/pr-notes/profiles-derived/owner-only-negative-control-rows.json",
+    "/home/bradley/.codex/worktrees/resource-profile-map-tools/glob2/artifacts/engine-optimization-conclusion/pr-notes/profiles-derived/profile-coverage-current-qualification.json"
+  ],
+  "exclusions": [
+    "387MBplans",
+    "allsource/alltrace/trace_streams inventories",
+    "APKs,binaries,objects",
+    "fullscreenshots/browsertraces",
+    "allrawprofilingdata",
+    "wholeoriginalnative/gameartifacts"
+  ],
+  "publication_warning": "Original paths are provenance only, not weblinks. Root should create an archive-relative index and source-qualified PR comment; do not transfer old platform results to finald2 or claim workers were timed."
+}

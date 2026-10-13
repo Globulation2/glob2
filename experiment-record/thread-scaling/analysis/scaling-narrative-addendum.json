@@ -1,0 +1,669 @@
+{
+  "generated_utc": "2026-10-12T16:49:48.705490+00:00",
+  "scope": "Unsealed descriptive scaling addendum using only completed reviewed60cells. No new experiment/productionpolicy/historicalcausal inference.",
+  "paragraphs": [
+    "The completed experiment shows a CPU/wall tradeoff, not a universal worker count. It contains60 separate cells across two eligibleCPU budgets, three workloads, GPU off/on and five requested counts. All480 native rows passed;120 warmups were excluded from the360 measured rows. Each cell has two fixed seeds and three paired measured blocks, referenced toN1 within the same workload, budget and GPU mode.",
+    "On the six logical CPU mask, Playground GPU off N3 reduced wall by48.93% while CPU changed+2.13%;N6 reduced wall by36.53% while CPU rose58.99%. Oazis on that same mask had a different tradeoff: N6 wall\u221252.57%,N3 wall\u221249.48%, with CPU+39.16% and+8.19% respectively. These marginal ratios against N1 do not constitute a direct significance test ofN6 versusN3. They do show why a fixed-three production recommendation would exceed the evidence.",
+    "Auto on the six logical CPU mask resolves to6, exactly as explicit 6. The six workload/GPU strata below show similar estimates with run-to-run variation; they are a count-resolution control, not a formal equivalence claim. Production remains auto 0 with the affinity-aware eligibility ceiling and explicit positive overrides. The experiment does not select a new default or infer the best physical-core/SMT/quota policy.",
+    "On the24 logicalCPU mask, Playground GPU off auto 24 had CPU+426.84% [386.64%,453.26%] and wall\u221211.30% [\u221214.24%,\u22127.53%] relative to N1. Its arithmetic means were81.97 CPU seconds and13.79 wall seconds;N1 means are retained below. Extra CPU is not all proven waste: concurrent useful computation also consumes CPU, and the measured wall improvement remains real. Larger counts were not monotonically faster. Each budget stratum is paired internally; differences between budgets include scheduling/placement and experiment order, and are not isolated physical-core effects.",
+    "System CPU and voluntary/involuntary context switches are observed process counters, not function-exclusive synchronization attribution. For Playground GPU off auto 24, system CPU per tick averaged0.002343 s, voluntary switches112.93/tick and involuntary switches0.143/tick. Near-zeroN1 switch denominators make percentage ratios huge; absolute values and zero-denominator qualifications are the meaningful companion. The forthcoming mature CPU sampler is a separate diagnostic and is not an inferred result of these counters.",
+    "GPU on memory comparisons against N1 include count-dependent initialization and backend eligibility. SerialN1 and parallel paths can initialize/use the device differently; GPU on does not establish sustained useful offload. End completed/requested field counters are not GPU time, transfer utilization or chronological health. Do not treat the roughly doubledPG GPU on RSS at parallel counts as an intrinsic extra-worker allocation effect without that initialization qualification.",
+    "The intervals are descriptive nested bootstrap intervals: two seed clusters resampled, then the three paired blocks within each seed;4000 draws. The tested initial windows are Playground20000 ticks, Oazis8192 ticks and large mixed4096 ticks. Whole process CPU/wall include loading, replay writing and teardown; separate engine clocks have different boundaries. These are not mature/end-to-winner curves, interactive-rendering measurements or nativeWindows/macOS/mobile proof. One host/two-seed evidence does not establish a global optimum, a quota policy or the causal percentage of any historical revision regression."
+  ],
+  "sources": [
+    {
+      "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/thread-scaling-v2/analysis/analysis.json",
+      "sha256": "95e8d519f2bc3865b284007ef4df4ce45978594224b9345bef36e8534afc7c1e"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/thread-scaling-v2/analysis/report.html",
+      "sha256": "e257e642fd340ee5180636d72e8d2a763aae65c20a3daf119c951971b113902a"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/thread-scaling-v2/analysis/completed-independent-review.json",
+      "sha256": "2f14f2f5d5eb7bb44f548c444d388caf525ce0a9cf240b0ff6b98e1b32dd9c0b"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/thread-scaling-v2/gate-receipt.json",
+      "sha256": "f84bb32d953868087fa8d5d4e389316eebe29e6190e374f5205addecc8ece119"
+    }
+  ],
+  "examples": [
+    {
+      "context": {
+        "budget": "six-logical-three-physical",
+        "mask": [
+          0,
+          1,
+          2,
+          16,
+          17,
+          18
+        ],
+        "layout": "playground-ni",
+        "gpu": "off",
+        "requested_count": 3,
+        "actual_count": 3,
+        "window": 20000
+      },
+      "metrics": {
+        "cpu_s": {
+          "ratio": 1.021311566995406,
+          "percent_change": 2.131156699540604,
+          "ci95": [
+            0.9987806505404749,
+            1.0537060865361467
+          ],
+          "percent_ci95": [
+            -0.12193494595250653,
+            5.370608653614672
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "wall_s": {
+          "ratio": 0.5106796095711309,
+          "percent_change": -48.93203904288691,
+          "ci95": [
+            0.49752183015249846,
+            0.521678055683809
+          ],
+          "percent_ci95": [
+            -50.24781698475016,
+            -47.8321944316191
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "peak_rss_bytes": {
+          "ratio": 0.9961321901835124,
+          "percent_change": -0.38678098164875996,
+          "ci95": [
+            0.991044033593409,
+            1.0037127659633316
+          ],
+          "percent_ci95": [
+            -0.895596640659102,
+            0.3712765963331588
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        }
+      }
+    },
+    {
+      "context": {
+        "budget": "six-logical-three-physical",
+        "mask": [
+          0,
+          1,
+          2,
+          16,
+          17,
+          18
+        ],
+        "layout": "playground-ni",
+        "gpu": "off",
+        "requested_count": 6,
+        "actual_count": 6,
+        "window": 20000
+      },
+      "metrics": {
+        "cpu_s": {
+          "ratio": 1.5899217038878894,
+          "percent_change": 58.99217038878894,
+          "ci95": [
+            1.5570155965494137,
+            1.6114638981062666
+          ],
+          "percent_ci95": [
+            55.70155965494137,
+            61.14638981062666
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": true
+        },
+        "wall_s": {
+          "ratio": 0.6346696994761462,
+          "percent_change": -36.533030052385385,
+          "ci95": [
+            0.6091375509267344,
+            0.6559780908823407
+          ],
+          "percent_ci95": [
+            -39.08624490732656,
+            -34.40219091176593
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "peak_rss_bytes": {
+          "ratio": 1.0181538100377308,
+          "percent_change": 1.8153810037730755,
+          "ci95": [
+            1.0156704367465008,
+            1.022062064191406
+          ],
+          "percent_ci95": [
+            1.5670436746500815,
+            2.2062064191405995
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        }
+      }
+    },
+    {
+      "context": {
+        "budget": "six-logical-three-physical",
+        "mask": [
+          0,
+          1,
+          2,
+          16,
+          17,
+          18
+        ],
+        "layout": "playground-ni",
+        "gpu": "off",
+        "requested_count": "auto",
+        "actual_count": 6,
+        "window": 20000
+      },
+      "metrics": {
+        "cpu_s": {
+          "ratio": 1.5919349292677252,
+          "percent_change": 59.19349292677252,
+          "ci95": [
+            1.5530092625094145,
+            1.6302078201382393
+          ],
+          "percent_ci95": [
+            55.30092625094145,
+            63.020782013823926
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": true
+        },
+        "wall_s": {
+          "ratio": 0.630738464593506,
+          "percent_change": -36.926153540649395,
+          "ci95": [
+            0.6055355110968165,
+            0.6504696210483467
+          ],
+          "percent_ci95": [
+            -39.44644889031835,
+            -34.95303789516533
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "peak_rss_bytes": {
+          "ratio": 1.0169678657320498,
+          "percent_change": 1.696786573204978,
+          "ci95": [
+            1.0108682412225987,
+            1.0206905995451097
+          ],
+          "percent_ci95": [
+            1.0868241222598662,
+            2.0690599545109656
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        }
+      }
+    },
+    {
+      "context": {
+        "budget": "24-logical-12-physical",
+        "mask": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24,
+          25,
+          26,
+          27
+        ],
+        "layout": "playground-ni",
+        "gpu": "off",
+        "requested_count": 3,
+        "actual_count": 3,
+        "window": 20000
+      },
+      "metrics": {
+        "cpu_s": {
+          "ratio": 1.3277801999343872,
+          "percent_change": 32.778019993438726,
+          "ci95": [
+            1.287341399545268,
+            1.369442182763553
+          ],
+          "percent_ci95": [
+            28.734139954526803,
+            36.9442182763553
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": true
+        },
+        "wall_s": {
+          "ratio": 0.6548221672716602,
+          "percent_change": -34.51778327283398,
+          "ci95": [
+            0.6351748511711037,
+            0.6751326497795376
+          ],
+          "percent_ci95": [
+            -36.482514882889625,
+            -32.48673502204624
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "peak_rss_bytes": {
+          "ratio": 0.9920188049730935,
+          "percent_change": -0.7981195026906529,
+          "ci95": [
+            0.9872911195811194,
+            0.9976083123676928
+          ],
+          "percent_ci95": [
+            -1.270888041888063,
+            -0.23916876323072378
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        }
+      }
+    },
+    {
+      "context": {
+        "budget": "24-logical-12-physical",
+        "mask": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24,
+          25,
+          26,
+          27
+        ],
+        "layout": "playground-ni",
+        "gpu": "off",
+        "requested_count": "auto",
+        "actual_count": 24,
+        "window": 20000
+      },
+      "metrics": {
+        "cpu_s": {
+          "ratio": 5.268415684312138,
+          "percent_change": 426.8415684312138,
+          "ci95": [
+            4.866425073783748,
+            5.532583960356113
+          ],
+          "percent_ci95": [
+            386.6425073783748,
+            453.25839603561127
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": true
+        },
+        "wall_s": {
+          "ratio": 0.8869917155057838,
+          "percent_change": -11.30082844942162,
+          "ci95": [
+            0.8575704922057712,
+            0.9247161017042836
+          ],
+          "percent_ci95": [
+            -14.24295077942288,
+            -7.528389829571635
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "peak_rss_bytes": {
+          "ratio": 1.0755922528872548,
+          "percent_change": 7.55922528872548,
+          "ci95": [
+            1.0720411986674812,
+            1.07787976619754
+          ],
+          "percent_ci95": [
+            7.204119866748115,
+            7.787976619753989
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        }
+      }
+    },
+    {
+      "context": {
+        "budget": "six-logical-three-physical",
+        "mask": [
+          0,
+          1,
+          2,
+          16,
+          17,
+          18
+        ],
+        "layout": "oazis-ni",
+        "gpu": "off",
+        "requested_count": 3,
+        "actual_count": 3,
+        "window": 8192
+      },
+      "metrics": {
+        "cpu_s": {
+          "ratio": 1.0818852205708338,
+          "percent_change": 8.18852205708338,
+          "ci95": [
+            1.0430509780032204,
+            1.127563241924433
+          ],
+          "percent_ci95": [
+            4.305097800322044,
+            12.756324192443302
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "wall_s": {
+          "ratio": 0.505175753203021,
+          "percent_change": -49.4824246796979,
+          "ci95": [
+            0.4750296113571739,
+            0.5401401318591295
+          ],
+          "percent_ci95": [
+            -52.49703886428261,
+            -45.985986814087056
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "peak_rss_bytes": {
+          "ratio": 1.0079542657146472,
+          "percent_change": 0.7954265714647191,
+          "ci95": [
+            1.0060933013321773,
+            1.0098815715637581
+          ],
+          "percent_ci95": [
+            0.6093301332177337,
+            0.9881571563758129
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        }
+      }
+    },
+    {
+      "context": {
+        "budget": "six-logical-three-physical",
+        "mask": [
+          0,
+          1,
+          2,
+          16,
+          17,
+          18
+        ],
+        "layout": "oazis-ni",
+        "gpu": "off",
+        "requested_count": 6,
+        "actual_count": 6,
+        "window": 8192
+      },
+      "metrics": {
+        "cpu_s": {
+          "ratio": 1.3915506389164665,
+          "percent_change": 39.15506389164665,
+          "ci95": [
+            1.3508270367047956,
+            1.4416312081150096
+          ],
+          "percent_ci95": [
+            35.08270367047957,
+            44.16312081150095
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": true
+        },
+        "wall_s": {
+          "ratio": 0.47426816893735885,
+          "percent_change": -52.57318310626411,
+          "ci95": [
+            0.44629826760768876,
+            0.50954667401038
+          ],
+          "percent_ci95": [
+            -55.37017323923112,
+            -49.045332598962
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "peak_rss_bytes": {
+          "ratio": 1.0216933890031232,
+          "percent_change": 2.169338900312323,
+          "ci95": [
+            1.0186252555079918,
+            1.0268554904973977
+          ],
+          "percent_ci95": [
+            1.8625255507991767,
+            2.685549049739766
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        }
+      }
+    }
+  ],
+  "auto6_explicit6_controls": [
+    {
+      "budget": "six-logical-three-physical",
+      "layout": "playground-ni",
+      "gpu": "off",
+      "auto_actual": 6,
+      "explicit_actual": 6,
+      "cpu_percent_vs1": {
+        "auto": 59.19349292677252,
+        "explicit6": 58.99217038878894
+      },
+      "wall_percent_vs1": {
+        "auto": -36.926153540649395,
+        "explicit6": -36.533030052385385
+      }
+    },
+    {
+      "budget": "six-logical-three-physical",
+      "layout": "playground-ni",
+      "gpu": "on",
+      "auto_actual": 6,
+      "explicit_actual": 6,
+      "cpu_percent_vs1": {
+        "auto": 58.81329874742362,
+        "explicit6": 59.67113891336238
+      },
+      "wall_percent_vs1": {
+        "auto": -36.444624220606535,
+        "explicit6": -36.13600425370539
+      }
+    },
+    {
+      "budget": "six-logical-three-physical",
+      "layout": "oazis-ni",
+      "gpu": "off",
+      "auto_actual": 6,
+      "explicit_actual": 6,
+      "cpu_percent_vs1": {
+        "auto": 39.75782139267305,
+        "explicit6": 39.15506389164665
+      },
+      "wall_percent_vs1": {
+        "auto": -52.164245048363725,
+        "explicit6": -52.57318310626411
+      }
+    },
+    {
+      "budget": "six-logical-three-physical",
+      "layout": "oazis-ni",
+      "gpu": "on",
+      "auto_actual": 6,
+      "explicit_actual": 6,
+      "cpu_percent_vs1": {
+        "auto": 43.514252473413336,
+        "explicit6": 43.098705702924825
+      },
+      "wall_percent_vs1": {
+        "auto": -50.718441424235024,
+        "explicit6": -50.975458173742716
+      }
+    },
+    {
+      "budget": "six-logical-three-physical",
+      "layout": "large-mixed",
+      "gpu": "off",
+      "auto_actual": 6,
+      "explicit_actual": 6,
+      "cpu_percent_vs1": {
+        "auto": 47.33341365250039,
+        "explicit6": 46.8147210754869
+      },
+      "wall_percent_vs1": {
+        "auto": -46.13453485656605,
+        "explicit6": -46.22244179880541
+      }
+    },
+    {
+      "budget": "six-logical-three-physical",
+      "layout": "large-mixed",
+      "gpu": "on",
+      "auto_actual": 6,
+      "explicit_actual": 6,
+      "cpu_percent_vs1": {
+        "auto": 52.858301748566674,
+        "explicit6": 52.34184207817596
+      },
+      "wall_percent_vs1": {
+        "auto": -44.099374288782656,
+        "explicit6": -44.26118152862626
+      }
+    }
+  ],
+  "auto24_vs1_absolute_observations": {
+    "cpu_s": {
+      "auto24_absolute_mean": 81.97103433333334,
+      "n1_absolute_mean": 15.5349825
+    },
+    "wall_s": {
+      "auto24_absolute_mean": 13.787193863963088,
+      "n1_absolute_mean": 15.538218336412683
+    },
+    "system_cpu_per_tick_s": {
+      "auto24_absolute_mean": 0.0023433438916666666,
+      "n1_absolute_mean": 9.991274999999999e-06
+    },
+    "voluntary_switches_per_tick": {
+      "auto24_absolute_mean": 112.93305833333334,
+      "n1_absolute_mean": 0.0010916666666666666
+    },
+    "involuntary_switches_per_tick": {
+      "auto24_absolute_mean": 0.14291666666666666,
+      "n1_absolute_mean": 0.0018416666666666668
+    }
+  },
+  "plots": [
+    "cpu_s-curves.png",
+    "involuntary_switches_per_tick-curves.png",
+    "peak_rss_bytes-curves.png",
+    "system_cpu_per_tick_s-curves.png",
+    "voluntary_switches_per_tick-curves.png",
+    "wall_s-curves.png"
+  ],
+  "default_selected": false,
+  "historical_attribution_claimed": false
+}

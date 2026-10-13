@@ -1,0 +1,67 @@
+{
+  "reviewed_at_utc": "2026-10-13T03:09:07.358443+00:00",
+  "raw_sha256": {
+    "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/observations/timing-small-ni-n12-gpuoff-r-1-baseline/failure.json": "82a537449ac7eba3afbd0553a6d7bde1e65c6529be6600b1afa6a964c2eb1afc",
+    "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/observations/timing-small-ni-n12-gpuoff-r-1-baseline/samples.jsonl": "e08282a1dbb0d65f761eb23c7caaa27bb6685830edc1a84ee8b45e59037b4683",
+    "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/observations/timing-small-ni-n12-gpuoff-r-1-baseline/native-identity.json": "0e640061817e0b86d9498cc702f9aef9764b6bcaf30898411d6090f648405c9e",
+    "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/observations/timing-small-ni-n12-gpuoff-r-1-baseline/stop.json": "e85acfba54272b4ad9b053107ff5c64b7de7da87ad1de6f57680f52fc89417bd",
+    "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/timing/timing-small-ni-n12-gpuoff-r-1-baseline/native-unaccepted-row.json": "248d3eb92889b5b2d79323c65f449bb559789305b3ec7032c883354b72ae707e",
+    "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/observer.py": "592748a94bd67ef24fd278c5f94844a1de8107a94666808c93f0e1016e335255",
+    "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/monitor.py": "99946515f279afb32435d5a6288e4cd7790f20a88fc4a2f6f9f26ae8c2a861e4",
+    "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/pair.py": "3d8351ba3cf9ce98b55b6242c673b76bf3b338e077b6d46732ec8d4693c6b71f",
+    "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/build-bindings-approved.json": "5de0386482b93727b3d45a1ceeb6d6f67c149b7bd59981a7572042638fd17c41"
+  },
+  "last_scan_begin_monotonic": 3127781.355603956,
+  "child_reaped_finished_monotonic": 3127781.395744027,
+  "stop_after_scan_begin_seconds": 0.04014007095247507,
+  "last_scan_native_empty": true,
+  "all_external_samples_empty": true,
+  "native_identity": {
+    "pid": 2288981,
+    "starttime": 312778027,
+    "uid": 1000,
+    "bound_monotonic": 3127780.275068185
+  },
+  "native_result": {
+    "status": "completed",
+    "ticks": 8192,
+    "termination": "tick_cap",
+    "compute_threads": 12,
+    "compute_resolved_threads": 12,
+    "gpu_requested": 0
+  },
+  "cause": "Observer captures now before /proc scan; after scan and log flush it detects stop.json, but final monotonic assertion incorrectly requires stop.finished_monotonic<=that earlier now. Stop was written40.140ms after last scan began yet was present at later stop read: this contradicts the asserted bound without indicating a game failure or contamination. Scan completion/read timestamp was not recorded.",
+  "acceptance": "Failed attempt remains excluded/unaccepted, despite completed8192tick native result. Empty sampled external records are not exhaustive isolation proof. No timing metrics accepted in this review.",
+  "suggested_bounded_fix": "Use separately recorded final scan-completion/stop-read monotonic timestamp to bound stop, preserving original start/bind/reap identity gates; independent v2 owner handles correction.",
+  "n1_original_pair_reverification": [
+    {
+      "pair_id": "small-ni-n1-gpuoff-r-1",
+      "repeat": -1,
+      "warm_excluded": true,
+      "verified": true,
+      "pair_path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/pairs/small-ni-n1-gpuoff-r-1.json",
+      "pair_sha256": "dff57516e0597389178406d552633821b4b1b88d69f1c6c1c61c99c5a25417f3",
+      "scope": "Original immutable endpoint/configuration/row/observer binding verifier; no perTick/replay or performance acceptance expansion."
+    },
+    {
+      "pair_id": "small-ni-n1-gpuoff-r0",
+      "repeat": 0,
+      "warm_excluded": false,
+      "verified": true,
+      "pair_path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/pairs/small-ni-n1-gpuoff-r0.json",
+      "pair_sha256": "31f21ac28db8171b5444087d4c1dc240645d31c5241967d7701511fc09cb5a0a",
+      "scope": "Original immutable endpoint/configuration/row/observer binding verifier; no perTick/replay or performance acceptance expansion."
+    },
+    {
+      "pair_id": "small-ni-n1-gpuoff-r1",
+      "repeat": 1,
+      "warm_excluded": false,
+      "verified": true,
+      "pair_path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/pairs/small-ni-n1-gpuoff-r1.json",
+      "pair_sha256": "bf1f2e8f78b0abf41c0fde103431a791ba6d95f252bd88aa18be65422b7ebb5a",
+      "scope": "Original immutable endpoint/configuration/row/observer binding verifier; no perTick/replay or performance acceptance expansion."
+    }
+  ],
+  "native_runs": 0,
+  "source_edits": 0
+}

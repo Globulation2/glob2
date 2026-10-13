@@ -1,0 +1,41 @@
+{
+  "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/correctness/isles-mixed-164298751/fixture/initial.game.gz",
+  "header": {
+    "major": 0,
+    "minor": 154,
+    "teams": 8,
+    "width": 256,
+    "height": 256,
+    "map_offset": 2507286,
+    "gzip_sha256": "aedac071261dd07f61b0dcb22f24af14040bdaec07e1c28f1f11bdefef0da4b7"
+  },
+  "start_tick": 0,
+  "start_tick_evidence": "save occurs before first simulation tick; loaded trace checked below",
+  "preparation_trace": {
+    "sha256": "9a1a3237c0299d385ef1264139fbcc22b7518cb7e5bde61358958dd6e8ce00e9",
+    "teams": 8,
+    "players": 8,
+    "count": 1,
+    "first_tick": 0,
+    "last_tick": 0,
+    "flags": 0
+  },
+  "scenario": {
+    "id": "isles-mixed",
+    "generator": "isles",
+    "width": 256,
+    "height": 256,
+    "ais": [
+      "nicowar",
+      "cortex",
+      "cabino",
+      "maxima",
+      "nicowar",
+      "cortex",
+      "cabino",
+      "maxima"
+    ],
+    "ticks": 8192
+  },
+  "seed": 164298751
+}

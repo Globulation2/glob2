@@ -1,0 +1,41 @@
+{
+  "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/correctness/playground-ni-902381047/fixture/initial.game.gz",
+  "header": {
+    "major": 0,
+    "minor": 154,
+    "teams": 8,
+    "width": 128,
+    "height": 128,
+    "map_offset": 2513993,
+    "gzip_sha256": "2f32c1b4f632ca3afb52ce491d53ae6bbf2928f747fbfd6b15e809a9e871a40c"
+  },
+  "start_tick": 0,
+  "start_tick_evidence": "save occurs before first simulation tick; loaded trace checked below",
+  "preparation_trace": {
+    "sha256": "26361c290a9f5620eb5d3d5230f945639ace7eaba92e9305e83fc9e29e98490c",
+    "teams": 8,
+    "players": 8,
+    "count": 1,
+    "first_tick": 0,
+    "last_tick": 0,
+    "flags": 0
+  },
+  "scenario": {
+    "id": "playground-ni",
+    "map": "Playground",
+    "width": 128,
+    "height": 128,
+    "ais": [
+      "nicowar",
+      "nicowar",
+      "nicowar",
+      "nicowar",
+      "nicowar",
+      "nicowar",
+      "nicowar",
+      "nicowar"
+    ],
+    "ticks": 20000
+  },
+  "seed": 902381047
+}

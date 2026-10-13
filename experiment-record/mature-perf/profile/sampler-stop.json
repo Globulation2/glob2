@@ -1,0 +1,18 @@
+{
+  "observed_tick": 128000,
+  "request_before_ns": 3093602242443677,
+  "reaped_ns": 3093603005034883,
+  "sampler_process_tree": {
+    "1626083": {
+      "ppid": 1624158,
+      "starttime": "309359270",
+      "name": "sudo"
+    },
+    "1626085": {
+      "ppid": 1626083,
+      "starttime": "309359272",
+      "name": "perf"
+    }
+  },
+  "scope": "First observed256tick boundary at/after128000; requested128192 endpoint is not a256multiple. Leaves192nominalticks unsampled; observation/signal latency remains separatelyrecorded."
+}

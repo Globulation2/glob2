@@ -1,0 +1,47 @@
+{
+  "all_identical": true,
+  "cases": [
+    {
+      "case": "check-t1-gpuoff",
+      "sha256": "c95bcc473064f6fb4c7b17470e53a6e8a1f33368970ee1b7083355ae87c93a4e",
+      "tick_records": 8192,
+      "byte_count": 226631420
+    },
+    {
+      "case": "check-t3-gpuoff",
+      "sha256": "c95bcc473064f6fb4c7b17470e53a6e8a1f33368970ee1b7083355ae87c93a4e",
+      "tick_records": 8192,
+      "byte_count": 226631420
+    },
+    {
+      "case": "check-t4-gpuoff",
+      "sha256": "c95bcc473064f6fb4c7b17470e53a6e8a1f33368970ee1b7083355ae87c93a4e",
+      "tick_records": 8192,
+      "byte_count": 226631420
+    },
+    {
+      "case": "check-t4-gpuon",
+      "sha256": "c95bcc473064f6fb4c7b17470e53a6e8a1f33368970ee1b7083355ae87c93a4e",
+      "tick_records": 8192,
+      "byte_count": 226631420
+    },
+    {
+      "case": "check-t6-gpuoff",
+      "sha256": "c95bcc473064f6fb4c7b17470e53a6e8a1f33368970ee1b7083355ae87c93a4e",
+      "tick_records": 8192,
+      "byte_count": 226631420
+    },
+    {
+      "case": "check-tauto-gpuoff",
+      "sha256": "c95bcc473064f6fb4c7b17470e53a6e8a1f33368970ee1b7083355ae87c93a4e",
+      "tick_records": 8192,
+      "byte_count": 226631420
+    },
+    {
+      "case": "check-tauto-gpuon",
+      "sha256": "c95bcc473064f6fb4c7b17470e53a6e8a1f33368970ee1b7083355ae87c93a4e",
+      "tick_records": 8192,
+      "byte_count": 226631420
+    }
+  ]
+}

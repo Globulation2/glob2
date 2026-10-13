@@ -1,0 +1,1297 @@
+{
+  "id": "H03",
+  "state": "complete",
+  "feature_preservation": "Only pending-successor completionbroadcast guard; originalcounts/defaultGPU/features retained",
+  "candidate_sha256": "204f97c4d514b0969480861aa7caca5ec6731c26ecff927102c899c6c0003e95",
+  "correctness": {
+    "exact8192PGControls": 8,
+    "expectedControls": 8,
+    "native_window_pairs_matching": 24,
+    "cross_platform": false,
+    "save_load": false,
+    "fullwinner": false,
+    "N3_exact8192PGControls": 4,
+    "N3_native_window_pairs_matching": 8
+  },
+  "native_results": [
+    {
+      "map": "Oazis",
+      "threads": "4",
+      "pairs": 4,
+      "seeds": 2,
+      "ratios": {
+        "run_wall_seconds": {
+          "n": 4,
+          "median": 1.0005322837707598,
+          "minimum": 0.9661822935414811,
+          "maximum": 1.062298926230093
+        },
+        "wall_seconds": {
+          "n": 4,
+          "median": 1.0042186731885854,
+          "minimum": 0.9728778924776886,
+          "maximum": 1.0649571516489436
+        },
+        "total_cpu_seconds": {
+          "n": 4,
+          "median": 1.0045139283922295,
+          "minimum": 0.9797191076473332,
+          "maximum": 1.0867975265819356
+        },
+        "user_cpu_seconds": {
+          "n": 4,
+          "median": 1.003760762722721,
+          "minimum": 0.9804383320536906,
+          "maximum": 1.0880333029452527
+        },
+        "system_cpu_seconds": {
+          "n": 4,
+          "median": 1.0292211815285197,
+          "minimum": 0.9599548545828538,
+          "maximum": 1.0486633904536509
+        },
+        "voluntary_context_switches": {
+          "n": 4,
+          "median": 0.9012745051763569,
+          "minimum": 0.7566946489705951,
+          "maximum": 1.0088041903488243
+        },
+        "involuntary_context_switches": {
+          "n": 4,
+          "median": 0.7592592592592593,
+          "minimum": 0.47058823529411764,
+          "maximum": 0.9259259259259259
+        },
+        "peak_rss_kib": {
+          "n": 4,
+          "median": 0.9981230097812834,
+          "minimum": 0.9972788643021734,
+          "maximum": 1.001985924325831
+        },
+        "cpu_seconds_per_tick": {
+          "n": 4,
+          "median": 1.0045139283922295,
+          "minimum": 0.9797191076473332,
+          "maximum": 1.0867975265819356
+        }
+      },
+      "seed_ratios": [
+        {
+          "seed": 744345666,
+          "ratios": {
+            "run_wall_seconds": {
+              "n": 2,
+              "median": 1.0279371927344485,
+              "minimum": 0.9935754592388041,
+              "maximum": 1.062298926230093
+            },
+            "wall_seconds": {
+              "n": 2,
+              "median": 1.0306903734131685,
+              "minimum": 0.9964235951773933,
+              "maximum": 1.0649571516489436
+            },
+            "total_cpu_seconds": {
+              "n": 2,
+              "median": 1.046787212864452,
+              "minimum": 1.0067768991469683,
+              "maximum": 1.0867975265819356
+            },
+            "user_cpu_seconds": {
+              "n": 2,
+              "median": 1.0468276333098618,
+              "minimum": 1.0056219636744712,
+              "maximum": 1.0880333029452527
+            },
+            "system_cpu_seconds": {
+              "n": 2,
+              "median": 1.047198764149539,
+              "minimum": 1.045734137845427,
+              "maximum": 1.0486633904536509
+            },
+            "voluntary_context_switches": {
+              "n": 2,
+              "median": 0.8827494196597097,
+              "minimum": 0.7566946489705951,
+              "maximum": 1.0088041903488243
+            },
+            "involuntary_context_switches": {
+              "n": 2,
+              "median": 0.8888888888888888,
+              "minimum": 0.8518518518518519,
+              "maximum": 0.9259259259259259
+            },
+            "peak_rss_kib": {
+              "n": 2,
+              "median": 0.9981230097812834,
+              "minimum": 0.9977591627950632,
+              "maximum": 0.9984868567675038
+            },
+            "cpu_seconds_per_tick": {
+              "n": 2,
+              "median": 1.046787212864452,
+              "minimum": 1.0067768991469683,
+              "maximum": 1.0867975265819356
+            }
+          }
+        },
+        {
+          "seed": 1056243202,
+          "ratios": {
+            "run_wall_seconds": {
+              "n": 2,
+              "median": 0.9868357009220983,
+              "minimum": 0.9661822935414811,
+              "maximum": 1.0074891083027153
+            },
+            "wall_seconds": {
+              "n": 2,
+              "median": 0.9924458218387331,
+              "minimum": 0.9728778924776886,
+              "maximum": 1.0120137511997775
+            },
+            "total_cpu_seconds": {
+              "n": 2,
+              "median": 0.9909850326424119,
+              "minimum": 0.9797191076473332,
+              "maximum": 1.0022509576374907
+            },
+            "user_cpu_seconds": {
+              "n": 2,
+              "median": 0.9911689469123306,
+              "minimum": 0.9804383320536906,
+              "maximum": 1.0018995617709707
+            },
+            "system_cpu_seconds": {
+              "n": 2,
+              "median": 0.9863315398972331,
+              "minimum": 0.9599548545828538,
+              "maximum": 1.0127082252116124
+            },
+            "voluntary_context_switches": {
+              "n": 2,
+              "median": 0.9012745051763569,
+              "minimum": 0.8794808092075243,
+              "maximum": 0.9230682011451896
+            },
+            "involuntary_context_switches": {
+              "n": 2,
+              "median": 0.5686274509803921,
+              "minimum": 0.47058823529411764,
+              "maximum": 0.6666666666666666
+            },
+            "peak_rss_kib": {
+              "n": 2,
+              "median": 0.9996323943140022,
+              "minimum": 0.9972788643021734,
+              "maximum": 1.001985924325831
+            },
+            "cpu_seconds_per_tick": {
+              "n": 2,
+              "median": 0.9909850326424119,
+              "minimum": 0.9797191076473332,
+              "maximum": 1.0022509576374907
+            }
+          }
+        }
+      ],
+      "pair_ids": [
+        "h03-n4-oazis-s1056243202-r0",
+        "h03-n4-oazis-s1056243202-r1",
+        "h03-n4-oazis-s744345666-r0",
+        "h03-n4-oazis-s744345666-r1"
+      ]
+    },
+    {
+      "map": "Oazis",
+      "threads": "6",
+      "pairs": 4,
+      "seeds": 2,
+      "ratios": {
+        "run_wall_seconds": {
+          "n": 4,
+          "median": 0.9875553279568288,
+          "minimum": 0.9762543671088191,
+          "maximum": 0.9923476562922576
+        },
+        "wall_seconds": {
+          "n": 4,
+          "median": 0.9900715859081746,
+          "minimum": 0.9802153251140756,
+          "maximum": 0.9910517668585478
+        },
+        "total_cpu_seconds": {
+          "n": 4,
+          "median": 0.9988616717594261,
+          "minimum": 0.9929017001175783,
+          "maximum": 1.0053883394717407
+        },
+        "user_cpu_seconds": {
+          "n": 4,
+          "median": 1.001543836871365,
+          "minimum": 0.9942314474403299,
+          "maximum": 1.0062731674174392
+        },
+        "system_cpu_seconds": {
+          "n": 4,
+          "median": 0.9370974408451154,
+          "minimum": 0.8780957253587781,
+          "maximum": 1.0683358273554329
+        },
+        "voluntary_context_switches": {
+          "n": 4,
+          "median": 0.8540011311107445,
+          "minimum": 0.8470834763444551,
+          "maximum": 0.859135236544486
+        },
+        "involuntary_context_switches": {
+          "n": 4,
+          "median": 0.9007601188409152,
+          "minimum": 0.8300653594771242,
+          "maximum": 1.0696202531645569
+        },
+        "peak_rss_kib": {
+          "n": 4,
+          "median": 0.9971475011989288,
+          "minimum": 0.9961748254980817,
+          "maximum": 1.0020695461029394
+        },
+        "cpu_seconds_per_tick": {
+          "n": 4,
+          "median": 0.9988616717594261,
+          "minimum": 0.9929017001175783,
+          "maximum": 1.0053883394717407
+        }
+      },
+      "seed_ratios": [
+        {
+          "seed": 744345666,
+          "ratios": {
+            "run_wall_seconds": {
+              "n": 2,
+              "median": 0.9802477211386316,
+              "minimum": 0.9762543671088191,
+              "maximum": 0.984241075168444
+            },
+            "wall_seconds": {
+              "n": 2,
+              "median": 0.9856335459863117,
+              "minimum": 0.9802153251140756,
+              "maximum": 0.9910517668585478
+            },
+            "total_cpu_seconds": {
+              "n": 2,
+              "median": 0.9948442345019637,
+              "minimum": 0.9929017001175783,
+              "maximum": 0.9967867688863492
+            },
+            "user_cpu_seconds": {
+              "n": 2,
+              "median": 0.9956394423517072,
+              "minimum": 0.9942314474403299,
+              "maximum": 0.9970474372630844
+            },
+            "system_cpu_seconds": {
+              "n": 2,
+              "median": 0.9764299339427993,
+              "minimum": 0.8845240405301656,
+              "maximum": 1.0683358273554329
+            },
+            "voluntary_context_switches": {
+              "n": 2,
+              "median": 0.8590328693401457,
+              "minimum": 0.8589305021358054,
+              "maximum": 0.859135236544486
+            },
+            "involuntary_context_switches": {
+              "n": 2,
+              "median": 0.9498428063208406,
+              "minimum": 0.8300653594771242,
+              "maximum": 1.0696202531645569
+            },
+            "peak_rss_kib": {
+              "n": 2,
+              "median": 0.9993536803994152,
+              "minimum": 0.996637814695891,
+              "maximum": 1.0020695461029394
+            },
+            "cpu_seconds_per_tick": {
+              "n": 2,
+              "median": 0.9948442345019637,
+              "minimum": 0.9929017001175783,
+              "maximum": 0.9967867688863492
+            }
+          }
+        },
+        {
+          "seed": 1056243202,
+          "ratios": {
+            "run_wall_seconds": {
+              "n": 2,
+              "median": 0.9916086185187356,
+              "minimum": 0.9908695807452137,
+              "maximum": 0.9923476562922576
+            },
+            "wall_seconds": {
+              "n": 2,
+              "median": 0.9900715859081746,
+              "minimum": 0.9898865047821032,
+              "maximum": 0.990256667034246
+            },
+            "total_cpu_seconds": {
+              "n": 2,
+              "median": 1.0031624570521218,
+              "minimum": 1.000936574632503,
+              "maximum": 1.0053883394717407
+            },
+            "user_cpu_seconds": {
+              "n": 2,
+              "median": 1.0061567019485422,
+              "minimum": 1.0060402364796455,
+              "maximum": 1.0062731674174392
+            },
+            "system_cpu_seconds": {
+              "n": 2,
+              "median": 0.9338832832594217,
+              "minimum": 0.8780957253587781,
+              "maximum": 0.9896708411600652
+            },
+            "voluntary_context_switches": {
+              "n": 2,
+              "median": 0.8480776182150693,
+              "minimum": 0.8470834763444551,
+              "maximum": 0.8490717600856836
+            },
+            "involuntary_context_switches": {
+              "n": 2,
+              "median": 0.9007601188409152,
+              "minimum": 0.8895705521472392,
+              "maximum": 0.9119496855345912
+            },
+            "peak_rss_kib": {
+              "n": 2,
+              "median": 0.9969160066000241,
+              "minimum": 0.9961748254980817,
+              "maximum": 0.9976571877019665
+            },
+            "cpu_seconds_per_tick": {
+              "n": 2,
+              "median": 1.0031624570521218,
+              "minimum": 1.000936574632503,
+              "maximum": 1.0053883394717407
+            }
+          }
+        }
+      ],
+      "pair_ids": [
+        "h03-n6-oazis-s1056243202-r0",
+        "h03-n6-oazis-s1056243202-r1",
+        "h03-n6-oazis-s744345666-r0",
+        "h03-n6-oazis-s744345666-r1"
+      ]
+    },
+    {
+      "map": "Oazis",
+      "threads": "auto",
+      "pairs": 4,
+      "seeds": 2,
+      "ratios": {
+        "run_wall_seconds": {
+          "n": 4,
+          "median": 0.929736522231345,
+          "minimum": 0.9279821988193281,
+          "maximum": 0.932361403264329
+        },
+        "wall_seconds": {
+          "n": 4,
+          "median": 0.9351408631092626,
+          "minimum": 0.9288832163288037,
+          "maximum": 0.9354771705924518
+        },
+        "total_cpu_seconds": {
+          "n": 4,
+          "median": 0.9137246902079251,
+          "minimum": 0.9121130473170467,
+          "maximum": 0.914824159835273
+        },
+        "user_cpu_seconds": {
+          "n": 4,
+          "median": 0.97741141044468,
+          "minimum": 0.969183197881634,
+          "maximum": 0.9862808914082406
+        },
+        "system_cpu_seconds": {
+          "n": 4,
+          "median": 0.6856030433184371,
+          "minimum": 0.6683289822774063,
+          "maximum": 0.7102249123290159
+        },
+        "voluntary_context_switches": {
+          "n": 4,
+          "median": 0.6155436189098704,
+          "minimum": 0.6099882873283745,
+          "maximum": 0.6172599126261873
+        },
+        "involuntary_context_switches": {
+          "n": 4,
+          "median": 0.35582835485364206,
+          "minimum": 0.3519997131314097,
+          "maximum": 0.36215785928602046
+        },
+        "peak_rss_kib": {
+          "n": 4,
+          "median": 0.9998306434693233,
+          "minimum": 0.9961828832448665,
+          "maximum": 1.0020528231609245
+        },
+        "cpu_seconds_per_tick": {
+          "n": 4,
+          "median": 0.9137246902079251,
+          "minimum": 0.9121130473170467,
+          "maximum": 0.914824159835273
+        }
+      },
+      "seed_ratios": [
+        {
+          "seed": 744345666,
+          "ratios": {
+            "run_wall_seconds": {
+              "n": 2,
+              "median": 0.9318558801863255,
+              "minimum": 0.931350357108322,
+              "maximum": 0.932361403264329
+            },
+            "wall_seconds": {
+              "n": 2,
+              "median": 0.9352501872071863,
+              "minimum": 0.935023203821921,
+              "maximum": 0.9354771705924518
+            },
+            "total_cpu_seconds": {
+              "n": 2,
+              "median": 0.9146612576264509,
+              "minimum": 0.9144983554176288,
+              "maximum": 0.914824159835273
+            },
+            "user_cpu_seconds": {
+              "n": 2,
+              "median": 0.9720283201013216,
+              "minimum": 0.969183197881634,
+              "maximum": 0.9748734423210093
+            },
+            "system_cpu_seconds": {
+              "n": 2,
+              "median": 0.7004801538660512,
+              "minimum": 0.6907353954030866,
+              "maximum": 0.7102249123290159
+            },
+            "voluntary_context_switches": {
+              "n": 2,
+              "median": 0.6136240999772808,
+              "minimum": 0.6099882873283745,
+              "maximum": 0.6172599126261873
+            },
+            "involuntary_context_switches": {
+              "n": 2,
+              "median": 0.35582835485364206,
+              "minimum": 0.3547637018821066,
+              "maximum": 0.3568930078251776
+            },
+            "peak_rss_kib": {
+              "n": 2,
+              "median": 0.9991178532028955,
+              "minimum": 0.9961828832448665,
+              "maximum": 1.0020528231609245
+            },
+            "cpu_seconds_per_tick": {
+              "n": 2,
+              "median": 0.9146612576264509,
+              "minimum": 0.9144983554176288,
+              "maximum": 0.914824159835273
+            }
+          }
+        },
+        {
+          "seed": 1056243202,
+          "ratios": {
+            "run_wall_seconds": {
+              "n": 2,
+              "median": 0.928052443086848,
+              "minimum": 0.9279821988193281,
+              "maximum": 0.9281226873543678
+            },
+            "wall_seconds": {
+              "n": 2,
+              "median": 0.9320708693627039,
+              "minimum": 0.9288832163288037,
+              "maximum": 0.9352585223966041
+            },
+            "total_cpu_seconds": {
+              "n": 2,
+              "median": 0.9125320361576341,
+              "minimum": 0.9121130473170467,
+              "maximum": 0.9129510249982214
+            },
+            "user_cpu_seconds": {
+              "n": 2,
+              "median": 0.9831151349882958,
+              "minimum": 0.979949378568351,
+              "maximum": 0.9862808914082406
+            },
+            "system_cpu_seconds": {
+              "n": 2,
+              "median": 0.674399836755597,
+              "minimum": 0.6683289822774063,
+              "maximum": 0.6804706912337877
+            },
+            "voluntary_context_switches": {
+              "n": 2,
+              "median": 0.6155436189098704,
+              "minimum": 0.6148024449755206,
+              "maximum": 0.6162847928442202
+            },
+            "involuntary_context_switches": {
+              "n": 2,
+              "median": 0.3570787862087151,
+              "minimum": 0.3519997131314097,
+              "maximum": 0.36215785928602046
+            },
+            "peak_rss_kib": {
+              "n": 2,
+              "median": 0.9998306434693233,
+              "minimum": 0.9984999318150825,
+              "maximum": 1.001161355123564
+            },
+            "cpu_seconds_per_tick": {
+              "n": 2,
+              "median": 0.9125320361576341,
+              "minimum": 0.9121130473170467,
+              "maximum": 0.9129510249982214
+            }
+          }
+        }
+      ],
+      "pair_ids": [
+        "h03-nauto-oazis-s1056243202-r0",
+        "h03-nauto-oazis-s1056243202-r1",
+        "h03-nauto-oazis-s744345666-r0",
+        "h03-nauto-oazis-s744345666-r1"
+      ]
+    },
+    {
+      "map": "Playground",
+      "threads": "4",
+      "pairs": 4,
+      "seeds": 2,
+      "ratios": {
+        "run_wall_seconds": {
+          "n": 4,
+          "median": 0.9757332126043499,
+          "minimum": 0.9292479144221066,
+          "maximum": 1.0064492455609257
+        },
+        "wall_seconds": {
+          "n": 4,
+          "median": 0.9769505798802341,
+          "minimum": 0.9330820254234384,
+          "maximum": 1.0056935938738343
+        },
+        "total_cpu_seconds": {
+          "n": 4,
+          "median": 0.984320153503639,
+          "minimum": 0.9369102590791241,
+          "maximum": 1.0082656632900737
+        },
+        "user_cpu_seconds": {
+          "n": 4,
+          "median": 0.9851548105813355,
+          "minimum": 0.9363448408887345,
+          "maximum": 1.0139302727757566
+        },
+        "system_cpu_seconds": {
+          "n": 4,
+          "median": 0.9379358534425107,
+          "minimum": 0.8790277171886804,
+          "maximum": 1.0027500063018477
+        },
+        "voluntary_context_switches": {
+          "n": 4,
+          "median": 0.9541418461878044,
+          "minimum": 0.8962672437111171,
+          "maximum": 1.0144564598747865
+        },
+        "involuntary_context_switches": {
+          "n": 4,
+          "median": 0.9526315789473685,
+          "minimum": 0.6923076923076923,
+          "maximum": 1.1515151515151516
+        },
+        "peak_rss_kib": {
+          "n": 4,
+          "median": 0.9997464680286252,
+          "minimum": 0.9978835508983809,
+          "maximum": 1.001288930187944
+        },
+        "cpu_seconds_per_tick": {
+          "n": 4,
+          "median": 0.984320153503639,
+          "minimum": 0.936910259079124,
+          "maximum": 1.0082656632900737
+        }
+      },
+      "seed_ratios": [
+        {
+          "seed": 744345666,
+          "ratios": {
+            "run_wall_seconds": {
+              "n": 2,
+              "median": 0.9757332126043499,
+              "minimum": 0.9736213934642677,
+              "maximum": 0.9778450317444322
+            },
+            "wall_seconds": {
+              "n": 2,
+              "median": 0.9769505798802341,
+              "minimum": 0.9740780849412116,
+              "maximum": 0.9798230748192567
+            },
+            "total_cpu_seconds": {
+              "n": 2,
+              "median": 0.984320153503639,
+              "minimum": 0.9791126204687541,
+              "maximum": 0.9895276865385237
+            },
+            "user_cpu_seconds": {
+              "n": 2,
+              "median": 0.9851548105813355,
+              "minimum": 0.9813202445970916,
+              "maximum": 0.9889893765655793
+            },
+            "system_cpu_seconds": {
+              "n": 2,
+              "median": 0.9641921982608472,
+              "minimum": 0.9256343902198467,
+              "maximum": 1.0027500063018477
+            },
+            "voluntary_context_switches": {
+              "n": 2,
+              "median": 0.9541418461878044,
+              "minimum": 0.942822740733509,
+              "maximum": 0.9654609516420998
+            },
+            "involuntary_context_switches": {
+              "n": 2,
+              "median": 0.921911421911422,
+              "minimum": 0.6923076923076923,
+              "maximum": 1.1515151515151516
+            },
+            "peak_rss_kib": {
+              "n": 2,
+              "median": 0.9983129469935932,
+              "minimum": 0.9978835508983809,
+              "maximum": 0.9987423430888054
+            },
+            "cpu_seconds_per_tick": {
+              "n": 2,
+              "median": 0.984320153503639,
+              "minimum": 0.9791126204687544,
+              "maximum": 0.9895276865385237
+            }
+          }
+        },
+        {
+          "seed": 1056243202,
+          "ratios": {
+            "run_wall_seconds": {
+              "n": 2,
+              "median": 0.9678485799915162,
+              "minimum": 0.9292479144221066,
+              "maximum": 1.0064492455609257
+            },
+            "wall_seconds": {
+              "n": 2,
+              "median": 0.9693878096486364,
+              "minimum": 0.9330820254234384,
+              "maximum": 1.0056935938738343
+            },
+            "total_cpu_seconds": {
+              "n": 2,
+              "median": 0.9725879611845989,
+              "minimum": 0.9369102590791241,
+              "maximum": 1.0082656632900737
+            },
+            "user_cpu_seconds": {
+              "n": 2,
+              "median": 0.9751375568322456,
+              "minimum": 0.9363448408887345,
+              "maximum": 1.0139302727757566
+            },
+            "system_cpu_seconds": {
+              "n": 2,
+              "median": 0.9146325169269276,
+              "minimum": 0.8790277171886804,
+              "maximum": 0.9502373166651747
+            },
+            "voluntary_context_switches": {
+              "n": 2,
+              "median": 0.9553618517929519,
+              "minimum": 0.8962672437111171,
+              "maximum": 1.0144564598747865
+            },
+            "involuntary_context_switches": {
+              "n": 2,
+              "median": 0.9526315789473685,
+              "minimum": 0.8,
+              "maximum": 1.105263157894737
+            },
+            "peak_rss_kib": {
+              "n": 2,
+              "median": 1.0010197615781946,
+              "minimum": 1.000750592968445,
+              "maximum": 1.001288930187944
+            },
+            "cpu_seconds_per_tick": {
+              "n": 2,
+              "median": 0.9725879611845989,
+              "minimum": 0.936910259079124,
+              "maximum": 1.0082656632900737
+            }
+          }
+        }
+      ],
+      "pair_ids": [
+        "h03-n4-playground-s1056243202-r0",
+        "h03-n4-playground-s1056243202-r1",
+        "h03-n4-playground-s744345666-r0",
+        "h03-n4-playground-s744345666-r1"
+      ]
+    },
+    {
+      "map": "Playground",
+      "threads": "6",
+      "pairs": 4,
+      "seeds": 2,
+      "ratios": {
+        "run_wall_seconds": {
+          "n": 4,
+          "median": 0.9972998789816838,
+          "minimum": 0.9815737750947634,
+          "maximum": 1.0374686518184275
+        },
+        "wall_seconds": {
+          "n": 4,
+          "median": 0.9979914540442765,
+          "minimum": 0.981099705077864,
+          "maximum": 1.0382042042175847
+        },
+        "total_cpu_seconds": {
+          "n": 4,
+          "median": 0.9912594819461092,
+          "minimum": 0.9824339425742018,
+          "maximum": 1.0440061361004978
+        },
+        "user_cpu_seconds": {
+          "n": 4,
+          "median": 1.000408652014267,
+          "minimum": 0.9910245673176157,
+          "maximum": 1.052621653414388
+        },
+        "system_cpu_seconds": {
+          "n": 4,
+          "median": 0.8691773367900656,
+          "minimum": 0.8471512786992839,
+          "maximum": 0.9252847659490289
+        },
+        "voluntary_context_switches": {
+          "n": 4,
+          "median": 0.7997049705388222,
+          "minimum": 0.7934368160999933,
+          "maximum": 0.8104495054584842
+        },
+        "involuntary_context_switches": {
+          "n": 4,
+          "median": 0.593350054665895,
+          "minimum": 0.3698630136986301,
+          "maximum": 0.8268156424581006
+        },
+        "peak_rss_kib": {
+          "n": 4,
+          "median": 1.001539148285981,
+          "minimum": 0.999778982731184,
+          "maximum": 1.0087380674506987
+        },
+        "cpu_seconds_per_tick": {
+          "n": 4,
+          "median": 0.9912594819461091,
+          "minimum": 0.9824339425742018,
+          "maximum": 1.0440061361004978
+        }
+      },
+      "seed_ratios": [
+        {
+          "seed": 744345666,
+          "ratios": {
+            "run_wall_seconds": {
+              "n": 2,
+              "median": 0.9972998789816838,
+              "minimum": 0.9906144324071375,
+              "maximum": 1.00398532555623
+            },
+            "wall_seconds": {
+              "n": 2,
+              "median": 0.9979914540442765,
+              "minimum": 0.9907646046552684,
+              "maximum": 1.0052183034332844
+            },
+            "total_cpu_seconds": {
+              "n": 2,
+              "median": 0.9886377082608553,
+              "minimum": 0.9824339425742018,
+              "maximum": 0.9948414739475088
+            },
+            "user_cpu_seconds": {
+              "n": 2,
+              "median": 0.9970325168849208,
+              "minimum": 0.9910245673176157,
+              "maximum": 1.0030404664522259
+            },
+            "system_cpu_seconds": {
+              "n": 2,
+              "median": 0.8691773367900656,
+              "minimum": 0.8628375067626242,
+              "maximum": 0.875517166817507
+            },
+            "voluntary_context_switches": {
+              "n": 2,
+              "median": 0.8054990374072692,
+              "minimum": 0.8005485693560543,
+              "maximum": 0.8104495054584842
+            },
+            "involuntary_context_switches": {
+              "n": 2,
+              "median": 0.7373514832008813,
+              "minimum": 0.647887323943662,
+              "maximum": 0.8268156424581006
+            },
+            "peak_rss_kib": {
+              "n": 2,
+              "median": 1.0008688295391632,
+              "minimum": 0.999778982731184,
+              "maximum": 1.0019586763471422
+            },
+            "cpu_seconds_per_tick": {
+              "n": 2,
+              "median": 0.9886377082608553,
+              "minimum": 0.9824339425742018,
+              "maximum": 0.9948414739475087
+            }
+          }
+        },
+        {
+          "seed": 1056243202,
+          "ratios": {
+            "run_wall_seconds": {
+              "n": 2,
+              "median": 1.0095212134565954,
+              "minimum": 0.9815737750947634,
+              "maximum": 1.0374686518184275
+            },
+            "wall_seconds": {
+              "n": 2,
+              "median": 1.0096519546477243,
+              "minimum": 0.981099705077864,
+              "maximum": 1.0382042042175847
+            },
+            "total_cpu_seconds": {
+              "n": 2,
+              "median": 1.0158418130226037,
+              "minimum": 0.9876774899447097,
+              "maximum": 1.0440061361004978
+            },
+            "user_cpu_seconds": {
+              "n": 2,
+              "median": 1.025199245495348,
+              "minimum": 0.9977768375763082,
+              "maximum": 1.052621653414388
+            },
+            "system_cpu_seconds": {
+              "n": 2,
+              "median": 0.8862180223241564,
+              "minimum": 0.8471512786992839,
+              "maximum": 0.9252847659490289
+            },
+            "voluntary_context_switches": {
+              "n": 2,
+              "median": 0.7961490939107916,
+              "minimum": 0.7934368160999933,
+              "maximum": 0.79886137172159
+            },
+            "involuntary_context_switches": {
+              "n": 2,
+              "median": 0.454337899543379,
+              "minimum": 0.3698630136986301,
+              "maximum": 0.5388127853881278
+            },
+            "peak_rss_kib": {
+              "n": 2,
+              "median": 1.0049288438377593,
+              "minimum": 1.0011196202248198,
+              "maximum": 1.0087380674506987
+            },
+            "cpu_seconds_per_tick": {
+              "n": 2,
+              "median": 1.0158418130226037,
+              "minimum": 0.9876774899447097,
+              "maximum": 1.0440061361004978
+            }
+          }
+        }
+      ],
+      "pair_ids": [
+        "h03-n6-playground-s1056243202-r0",
+        "h03-n6-playground-s1056243202-r1",
+        "h03-n6-playground-s744345666-r0",
+        "h03-n6-playground-s744345666-r1"
+      ]
+    },
+    {
+      "map": "Playground",
+      "threads": "auto",
+      "pairs": 4,
+      "seeds": 2,
+      "ratios": {
+        "run_wall_seconds": {
+          "n": 4,
+          "median": 0.8927724104638063,
+          "minimum": 0.8740479286643136,
+          "maximum": 0.895124840600925
+        },
+        "wall_seconds": {
+          "n": 4,
+          "median": 0.8970404371811059,
+          "minimum": 0.8811744012159128,
+          "maximum": 0.8995416732287814
+        },
+        "total_cpu_seconds": {
+          "n": 4,
+          "median": 0.8326358175180233,
+          "minimum": 0.7951415496046296,
+          "maximum": 0.8352718892210903
+        },
+        "user_cpu_seconds": {
+          "n": 4,
+          "median": 0.9569409779109386,
+          "minimum": 0.9384140336727285,
+          "maximum": 0.969306751214742
+        },
+        "system_cpu_seconds": {
+          "n": 4,
+          "median": 0.6655130623267458,
+          "minimum": 0.624279660975794,
+          "maximum": 0.6732855064162782
+        },
+        "voluntary_context_switches": {
+          "n": 4,
+          "median": 0.6736335882281834,
+          "minimum": 0.6588619232828088,
+          "maximum": 0.6760769105471566
+        },
+        "involuntary_context_switches": {
+          "n": 4,
+          "median": 0.24214294001360248,
+          "minimum": 0.22031197776689115,
+          "maximum": 0.24808255828767997
+        },
+        "peak_rss_kib": {
+          "n": 4,
+          "median": 0.9980848924448644,
+          "minimum": 0.997557810123226,
+          "maximum": 0.9993220434739623
+        },
+        "cpu_seconds_per_tick": {
+          "n": 4,
+          "median": 0.8326358175180233,
+          "minimum": 0.7951415496046296,
+          "maximum": 0.8352718892210903
+        }
+      },
+      "seed_ratios": [
+        {
+          "seed": 744345666,
+          "ratios": {
+            "run_wall_seconds": {
+              "n": 2,
+              "median": 0.8941612568534686,
+              "minimum": 0.8931976731060122,
+              "maximum": 0.895124840600925
+            },
+            "wall_seconds": {
+              "n": 2,
+              "median": 0.8978771304992196,
+              "minimum": 0.8962125877696577,
+              "maximum": 0.8995416732287814
+            },
+            "total_cpu_seconds": {
+              "n": 2,
+              "median": 0.8326358175180233,
+              "minimum": 0.8317711967532209,
+              "maximum": 0.8335004382828258
+            },
+            "user_cpu_seconds": {
+              "n": 2,
+              "median": 0.9569409779109386,
+              "minimum": 0.9565611591358504,
+              "maximum": 0.9573207966860268
+            },
+            "system_cpu_seconds": {
+              "n": 2,
+              "median": 0.6705731687444685,
+              "minimum": 0.6678608310726588,
+              "maximum": 0.6732855064162782
+            },
+            "voluntary_context_switches": {
+              "n": 2,
+              "median": 0.6736335882281834,
+              "minimum": 0.6734504935962836,
+              "maximum": 0.6738166828600831
+            },
+            "involuntary_context_switches": {
+              "n": 2,
+              "median": 0.24559397015740644,
+              "minimum": 0.24310538202713292,
+              "maximum": 0.24808255828767997
+            },
+            "peak_rss_kib": {
+              "n": 2,
+              "median": 0.9978306015487063,
+              "minimum": 0.997557810123226,
+              "maximum": 0.9981033929741866
+            },
+            "cpu_seconds_per_tick": {
+              "n": 2,
+              "median": 0.8326358175180233,
+              "minimum": 0.8317711967532209,
+              "maximum": 0.8335004382828258
+            }
+          }
+        },
+        {
+          "seed": 1056243202,
+          "ratios": {
+            "run_wall_seconds": {
+              "n": 2,
+              "median": 0.883197538242957,
+              "minimum": 0.8740479286643136,
+              "maximum": 0.8923471478216004
+            },
+            "wall_seconds": {
+              "n": 2,
+              "median": 0.8895213439042335,
+              "minimum": 0.8811744012159128,
+              "maximum": 0.8978682865925541
+            },
+            "total_cpu_seconds": {
+              "n": 2,
+              "median": 0.8152067194128599,
+              "minimum": 0.7951415496046296,
+              "maximum": 0.8352718892210903
+            },
+            "user_cpu_seconds": {
+              "n": 2,
+              "median": 0.9538603924437352,
+              "minimum": 0.9384140336727285,
+              "maximum": 0.969306751214742
+            },
+            "system_cpu_seconds": {
+              "n": 2,
+              "median": 0.6437224772783134,
+              "minimum": 0.624279660975794,
+              "maximum": 0.6631652935808329
+            },
+            "voluntary_context_switches": {
+              "n": 2,
+              "median": 0.6674694169149826,
+              "minimum": 0.6588619232828088,
+              "maximum": 0.6760769105471566
+            },
+            "involuntary_context_switches": {
+              "n": 2,
+              "median": 0.23074623788348161,
+              "minimum": 0.22031197776689115,
+              "maximum": 0.24118049800007207
+            },
+            "peak_rss_kib": {
+              "n": 2,
+              "median": 0.9986942176947522,
+              "minimum": 0.9980663919155423,
+              "maximum": 0.9993220434739623
+            },
+            "cpu_seconds_per_tick": {
+              "n": 2,
+              "median": 0.8152067194128599,
+              "minimum": 0.7951415496046296,
+              "maximum": 0.8352718892210903
+            }
+          }
+        }
+      ],
+      "pair_ids": [
+        "h03-nauto-playground-s1056243202-r0",
+        "h03-nauto-playground-s1056243202-r1",
+        "h03-nauto-playground-s744345666-r0",
+        "h03-nauto-playground-s744345666-r1"
+      ]
+    }
+  ],
+  "limits": "GPUon feature-preserving PG20k/Oazis8192 initial windows; wallrun excludes processstartup/shutdown while wait4CPU/sys/switches/RSS include them. Timed windows are uninstrumented and final native CRC/end/winner/ticks match for each pair, but no full per-tick trace recorded there. Eight8192PG exactrawGCS controls coverN4/N6GPUon/off forone seed. Noauto32GCS/OazisGCS/mature/fullwinner/platform/save/load proof. Ratios are workload-dependent; auxiliary observed threads are not participantcounts.",
+  "decision": "Measured auto32 benefits occur with32participants inside6eligibleCPUs; treat this guard as secondary to fixing affinity/count resolution, not an additive speedup or a replacement for the count fix. N4/N6 do not establish a reliable general wall/CPU improvement. Keep experimental pending broader evidence; standalone N6horizon8 regression remains relevant. No micro-to-game or mature-game extrapolation; preserve each native stratum.",
+  "evidence": [
+    "full/build.json",
+    "full/final-audit.json",
+    "game-summary.json",
+    "game-report.txt",
+    "game-check-results.json",
+    "summary.json"
+  ],
+  "optimization_plan": {
+    "path": "optimization-gameplan.json",
+    "html": "optimization-gameplan.html",
+    "updated_utc": "2026-10-12T02:56:13.208719+00:00",
+    "priority": 5,
+    "decision": "Secondary to countfix; selectedcount evidence required; no additiveauto32benefit",
+    "playground_sizing": "Fresh8seed N3vsN4GPUon complete; N3 preferred only within testedPG6SMT/3physical allocation",
+    "oazis_sizing": "Complete2seed fullwinnerpilot;N3fastest/leastCPU both, noCI; earlyN6ranking differs",
+    "guard_n3_evidence": "Complete4GCS/16windows/8nativepairs; no genericguard adoption. Remainingrootpipelineonlymatureheap/oneCallgrind.",
+    "maturity": "N3peaks628.49/575.30MiB; scopedprofile/heap queued, no newmeasurementclaim",
+    "telemetry": "Freshmodel12exact; native reserve32four-seed windows mixed CPU/wall, modestRSS gain; no genericreserve speedclaim",
+    "mature_memory": "Completed521.535MB global requestedheap; fields130.770/search74.081/snapshots92.605MB dominate. Boundedowner/capacity/lease census beforepatch; unchangedsharing exists. LateCPUunmeasured."
+  },
+  "N3_followup": {
+    "state": "complete",
+    "exactPG8192controls": 4,
+    "timed_windows": 16,
+    "nativeCRC_winner_ticks_pairs": 8,
+    "groups": [
+      {
+        "map": "Playground",
+        "pairs": 4,
+        "seeds": 2,
+        "metrics": {
+          "run_wall_seconds": {
+            "pairs": 4,
+            "median_ratio": 0.9995840171189267,
+            "geometric_ratio": 1.0008364851859919,
+            "minimum": 0.9881811384662504,
+            "maximum": 1.0162389459524304
+          },
+          "wall_seconds": {
+            "pairs": 4,
+            "median_ratio": 1.0007777131813231,
+            "geometric_ratio": 1.0015606264289516,
+            "minimum": 0.9895823743569222,
+            "maximum": 1.0153035062806148
+          },
+          "total_cpu_seconds": {
+            "pairs": 4,
+            "median_ratio": 1.0012624889149297,
+            "geometric_ratio": 1.0033530332872214,
+            "minimum": 0.9869743684515165,
+            "maximum": 1.0243205738300085
+          },
+          "system_cpu_seconds": {
+            "pairs": 4,
+            "median_ratio": 1.032592497705334,
+            "geometric_ratio": 1.0296414123766937,
+            "minimum": 1.0076473957496086,
+            "maximum": 1.0461462864740654
+          },
+          "voluntary_context_switches": {
+            "pairs": 4,
+            "median_ratio": 0.9716884205087626,
+            "geometric_ratio": 0.9690495135462219,
+            "minimum": 0.9523235189783611,
+            "maximum": 0.9807209286538592
+          },
+          "peak_rss_kib": {
+            "pairs": 4,
+            "median_ratio": 0.9998838728885694,
+            "geometric_ratio": 0.9994814211877567,
+            "minimum": 0.9976115008487434,
+            "maximum": 1.000549271102402
+          },
+          "cpu_seconds_per_tick": {
+            "pairs": 4,
+            "median_ratio": 1.0012624889149297,
+            "geometric_ratio": 1.0033530332872214,
+            "minimum": 0.9869743684515165,
+            "maximum": 1.0243205738300085
+          }
+        }
+      },
+      {
+        "map": "Oazis",
+        "pairs": 4,
+        "seeds": 2,
+        "metrics": {
+          "run_wall_seconds": {
+            "pairs": 4,
+            "median_ratio": 0.9837704050556872,
+            "geometric_ratio": 0.9841583872109471,
+            "minimum": 0.980388830065443,
+            "maximum": 0.9887251887421985
+          },
+          "wall_seconds": {
+            "pairs": 4,
+            "median_ratio": 0.9876761255757044,
+            "geometric_ratio": 0.9883191564968548,
+            "minimum": 0.9836129747298998,
+            "maximum": 0.9943414667481866
+          },
+          "total_cpu_seconds": {
+            "pairs": 4,
+            "median_ratio": 0.9895416840779502,
+            "geometric_ratio": 0.9884419849556757,
+            "minimum": 0.9760567009227307,
+            "maximum": 0.9987807927972989
+          },
+          "system_cpu_seconds": {
+            "pairs": 4,
+            "median_ratio": 0.9957236493439231,
+            "geometric_ratio": 0.9910275103824785,
+            "minimum": 0.9340432873723696,
+            "maximum": 1.0425143215288695
+          },
+          "voluntary_context_switches": {
+            "pairs": 4,
+            "median_ratio": 0.9790049649865293,
+            "geometric_ratio": 0.9709373173446392,
+            "minimum": 0.9387372613330209,
+            "maximum": 0.9877645502645502
+          },
+          "peak_rss_kib": {
+            "pairs": 4,
+            "median_ratio": 0.9995795868644566,
+            "geometric_ratio": 0.9996385254230171,
+            "minimum": 0.9978703878012049,
+            "maximum": 1.0015279462536157
+          },
+          "cpu_seconds_per_tick": {
+            "pairs": 4,
+            "median_ratio": 0.9895416840779502,
+            "geometric_ratio": 0.9884419849556757,
+            "minimum": 0.9760567009227307,
+            "maximum": 0.9987807927972989
+          }
+        }
+      }
+    ],
+    "decision": "Decision: Playground N3 isflat/mixed inwall/CPU;Oazis N3initial8k shows small~1.58%runwall/~1.16%CPU benefit. Do notpromote a general wakeguard or addauto32 benefit toworkerfix. AnyOazisfollow-up must be mature/fullgame atchosenN3; thisearlytwo-seedwindow cannotestablish it.",
+    "limits": "Raw whole per-tick GCS SHA256 at PG8192, N3 GPUoff/on, one seed. Timed PG20k/Oazis8192 GPUon paired2seeds\u00d72reps, exact native finalCRC/end/winner/ticks comparison. No fullwinner/mature, Oazis wholeGCS,save/load/network/nonLinux platform proof. No timing or game launched by checker; no raw files rewritten.",
+    "evidence": [
+      "n3-results.json",
+      "n3-report.txt",
+      "n3-plan-manifest.json"
+    ]
+  },
+  "current_decision": "PreferredN3 checks complete:PGflat/mixed,smallinitialOazisbenefit; no genericguard adoption or additional guardcohort scheduled."
+}

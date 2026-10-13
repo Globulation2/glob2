@@ -1,0 +1,54 @@
+{
+  "source": "ee45c0a0389660bc7d2885b572b94b1a2b01d7a3",
+  "candidate": "96da258e5a6b24a57a8848f2bfa0178031331322",
+  "read_only": true,
+  "recommendation": "Next narrow integration patch: explicit direct map launcher request/provenance, using native owner-only policy that already exists. This closes a demonstrable caller-contract gap without choosing calibrated tiers or inventing pool thresholds.",
+  "concrete_patch": {
+    "paths": [
+      "tools/map_telemetry.py:47-85",
+      "tools/map_generation_study.py:39-87",
+      "tools/tournaments/cli.py:86",
+      "src/app/cli/MapCommand.cpp:637,703",
+      "test/test_map_telemetry.py",
+      "test/test_map_generation_study.py",
+      "test/test_tournament_cli.py",
+      "docs/tools/tournaments.md"
+    ],
+    "design": [
+      "Add optionalNone execution-profile/memory-planning inputs only to direct map helpers. Preserve omitted argv/env/results and native serial generation; do not expose participants as though map generation were parallel.",
+      "Reuse profile parsing and advertised option validation with exact command path map generate/map study; game execution envelope remains game-only. No removal of local.run_job/execute_jobs non-game allocation rejection.",
+      "Validate explicit unsupported binary request before launch; retain intentional legacy omitted calls with resource provenance marked unavailable instead of pretending migration.",
+      "Persist requested intent/soft-budget and native execution_resources in per-attempt manifest/row. Require explicit selected profile/source, owner compute1, reported budget and memory/render-actions pending flags; never claim planning bytes enforce RSS.",
+      "MapCommand success already appends execution_resources at703; generation_failure path637 writes report before that append. Use one existing report append helper for successful/failed generation reports to preserve refusal outcome plus actual setup plan, without adding simulation work.",
+      "Do not fold skins/benchmark_rigs legacy renderer path into the same patch: its renderer/raw output needs separate actual command/result contract audit. Keep gap documented rather than overpromising one universal adapter."
+    ],
+    "validation": [
+      "Pure mocked omitted argv/manifest behavior, six explicit intents and memorybounds",
+      "Mock advertised map option capabilities; unsupported explicit request fails before native launch",
+      "Mock correct/absent/mismatched ownercount/profile/budget provenance; failure/refusal remains retained",
+      "Current native map generate/map study one tiny same-seed output/report equivalence case later, only after root builds; no generation count/order/RNG change",
+      "Retain legacy map-study wrappers and tournament signed-job identity tests"
+    ],
+    "why_not_quota_first": "Quota discovery is useful but a different CPU-time unit and hierarchy scope. Current ComputeThreads.cpp15 observes affinity only. A correct Linux reader must resolve cgroupv1/v2/mount namespaces and ancestor constraints; an observed quota is not a per-game reserved CPU count. Add rational/unknown provenance first if later requested, not a guessed /sys/fs/cgroup/cpu.max\u2192integer allocation or automatic participant clamp hidden in this adapter."
+  },
+  "additional_real_gap": "Live menu GPU choices use direct gradientConfiguration requests; caller precedence/frozen pool preserved. Fixing that centrally needs explicit live-request provenance separate from frozen setup, not blindly reapplying old typedDisabled setting. Already documented, not part of map patch.",
+  "novel_calibration_findings": [
+    {
+      "issue": "Serial batch service vs user completion latency",
+      "detail": "Both jobs must have arrivaltime0 for throughput comparison. Record launch/service, queue wait, and arrival-to-completion independently. Otherwise serial second job queue disappears and fast-simulation latency appears artificially better."
+    },
+    {
+      "issue": "Counterbalance is currently across layouts/GPU, not within fixed workload",
+      "detail": "A first/second seed can have different length and cold GPU/cache state. Serial orderAB vs concurrent startsAB cannot isolate this with one batch. Preserve16 as descriptive screen; later matched replication must swap serial seed order within the same layout/GPU and define cold/setup state, with explicit additionalcount rather than silently adding runs."
+    },
+    {
+      "issue": "Same global allocation does not mean work-conserving throughput",
+      "detail": "If one concurrent game ends early, the other remains on its fixed halfmask because compute is session-frozen. The16 design measures two-job fixedpartition policy, not steady-state backlog throughput or optimalsharing. Report unused allocation/finished-job intervals, do not infer universal efficient-throughput defaults."
+    },
+    {
+      "issue": "Concurrent memory peak and censors need exact scope",
+      "detail": "Sum of per-game peakRSS is only an upper bound, not observed simultaneous machinepeak. Use aligned timestamped nativeRSS/PSS samples or label the bound. Keep per-game1h servicecaps and batch observation/makespan separate so serial queue has no hidden extra completion horizon."
+    }
+  ],
+  "limits": "No source edits/builds/games/candidate adoption. Names remain intents; adaptive tiers/quotas/physicaldevices not claimed."
+}

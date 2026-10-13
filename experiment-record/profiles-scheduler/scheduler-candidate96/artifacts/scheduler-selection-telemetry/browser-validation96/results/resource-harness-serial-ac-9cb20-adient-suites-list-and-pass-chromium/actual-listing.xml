@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doctest binary="./this.program" version="2.4.11">
+  <Options order_by="file" rand_seed="0" first="0" last="4294967295" abort_after="0" subcase_filter_levels="2147483647" case_sensitive="false" no_throw="false" no_skip="false"/>
+  <TestCase name="packet bounds and future thermal status never imply known healthy" testsuite="AndroidResourceObservations" filename="src/app/AndroidResourceObservationsTest.cpp" line="6" skipped="false"/>
+  <TestCase name="caller saver precedence and battery use remain separate" testsuite="AndroidResourceObservations" filename="src/app/AndroidResourceObservationsTest.cpp" line="21" skipped="false"/>
+  <TestCase name="independent owner phases retain allocation and ignore simulation CPU mandates" testsuite="ApplicationPhaseResources" filename="src/app/ApplicationPhaseResourcesTest.cpp" line="8" skipped="false"/>
+  <TestCase name="background workers include owner and retain caller defaults instead of machine heuristics" testsuite="ApplicationPhaseResources" filename="src/app/ApplicationPhaseResourcesTest.cpp" line="18" skipped="false"/>
+  <TestCase name="typed FPS overrides respect pacer integer range without forbidding uncapped zero" testsuite="ApplicationPhaseResources" filename="src/app/ApplicationPhaseResourcesTest.cpp" line="30" skipped="false"/>
+  <TestCase name="asset admission and IO budgets remain separate from soft planning and recoverable memory" testsuite="ApplicationPhaseResources" filename="src/app/ApplicationPhaseResourcesTest.cpp" line="40" skipped="false"/>
+  <TestCase name="explicit asset roles are validated before cooperative normalization" testsuite="ApplicationPhaseResources" filename="src/app/ApplicationPhaseResourcesTest.cpp" line="71" skipped="false"/>
+  <TestCase name="asset IO hard limit applies independently of threaded CPU support" testsuite="ApplicationPhaseResources" filename="src/app/ApplicationPhaseResourcesTest.cpp" line="91" skipped="false"/>
+  <TestCase name="unknown is distinct from foreground no pressure and battery saver" testsuite="ApplicationResourceObservations" filename="src/app/ApplicationResourceObservationsTest.cpp" line="6" skipped="false"/>
+  <TestCase name="lifecycle edges and low memory evidence do not invent pressure recovery" testsuite="ApplicationResourceObservations" filename="src/app/ApplicationResourceObservationsTest.cpp" line="16" skipped="false"/>
+  <TestCase name="planning byte parser rejects partial signed and unsupported requests" testsuite="ApplicationResourcePlan" filename="src/app/ApplicationResourcePlanTest.cpp" line="20" skipped="false"/>
+  <TestCase name="application context and saved intent do not tune current defaults" testsuite="ApplicationResourcePlan" filename="src/app/ApplicationResourcePlanTest.cpp" line="27" skipped="false"/>
+  <TestCase name="legacy positive CPU override and GPU override retain explicit provenance" testsuite="ApplicationResourcePlan" filename="src/app/ApplicationResourcePlanTest.cpp" line="49" skipped="false"/>
+  <TestCase name="typed CPU request merges only absent or equal legacy explicit values" testsuite="ApplicationResourcePlan" filename="src/app/ApplicationResourcePlanTest.cpp" line="61" skipped="false"/>
+  <TestCase name="typed GPU permission takes precedence over defaults and rejects explicit conflicts" testsuite="ApplicationResourcePlan" filename="src/app/ApplicationResourcePlanTest.cpp" line="84" skipped="false"/>
+  <TestCase name="typed automatic GPU permission is retained unless a different explicit legacy value exists" testsuite="ApplicationResourcePlan" filename="src/app/ApplicationResourcePlanTest.cpp" line="108" skipped="false"/>
+  <TestCase name="serial platform enforces support while a threaded allocation remains a soft override bound" testsuite="ApplicationResourcePlan" filename="src/app/ApplicationResourcePlanTest.cpp" line="120" skipped="false"/>
+  <TestCase name="unknown allocation stays conservative without using the test host" testsuite="ApplicationResourcePlan" filename="src/app/ApplicationResourcePlanTest.cpp" line="129" skipped="false"/>
+  <TestCase name="GPU offload permission preserves exact fallback on an unsupported platform" testsuite="ApplicationResourcePlan" filename="src/app/ApplicationResourcePlanTest.cpp" line="138" skipped="false"/>
+  <TestCase name="planning requests and runtime constraints are snapshots with no guessed live census" testsuite="ApplicationResourcePlan" filename="src/app/ApplicationResourcePlanTest.cpp" line="147" skipped="false"/>
+  <TestCase name="explicit refresh inputs resolve repeatably without implicit updates" testsuite="ApplicationResourcePlan" filename="src/app/ApplicationResourcePlanTest.cpp" line="160" skipped="false"/>
+  <TestCase name="owner only workloads retain actual allocation and threading support" testsuite="ApplicationResourcePlan" filename="src/app/ApplicationResourcePlanTest.cpp" line="169" skipped="false"/>
+  <TestCase name="application explicit resources retain precedence over saved and context intent" testsuite="ApplicationResourcePlan" filename="src/app/ApplicationResourcePlanTest.cpp" line="186" skipped="false"/>
+  <TestCase name="CPU observation distinguishes allocation from portable hints" testsuite="ApplicationResourcePlan" filename="src/app/ApplicationResourcePlanTest.cpp" line="206" skipped="false"/>
+  <TestCase name="legacy sizing injection retains fallback while new caller allocation stays explicit" testsuite="ApplicationResourcePlan" filename="src/app/ApplicationResourcePlanTest.cpp" line="235" skipped="false"/>
+  <TestCase name="CPU observation does not infer which gradient accelerator is available" testsuite="ApplicationResourcePlan" filename="src/app/ApplicationResourcePlanTest.cpp" line="250" skipped="false"/>
+  <TestCase name="capability payload lists exactly six intents and does not imply current CLI support" testsuite="ResourcePlanJson" filename="src/app/ResourcePlanJsonTest.cpp" line="32" skipped="false"/>
+  <TestCase name="unknown null and known false true capability and constraints remain distinct" testsuite="ResourcePlanJson" filename="src/app/ResourcePlanJsonTest.cpp" line="41" skipped="false"/>
+  <TestCase name="explicit resource provenance describes winning input before effective GPU fallback" testsuite="ResourcePlanJson" filename="src/app/ResourcePlanJsonTest.cpp" line="55" skipped="false"/>
+  <TestCase name="planning memory and discretionary preparation are observable not RSS promises" testsuite="ResourcePlanJson" filename="src/app/ResourcePlanJsonTest.cpp" line="74" skipped="false"/>
+  <TestCase name="Uint64 byte budgets survive JSON text roundtrip without signed or float conversion" testsuite="ResourcePlanJson" filename="src/app/ResourcePlanJsonTest.cpp" line="89" skipped="false"/>
+  <TestCase name="serializer reads the frozen plan rather than changed callers and is deterministic" testsuite="ResourcePlanJson" filename="src/app/ResourcePlanJsonTest.cpp" line="98" skipped="false"/>
+  <TestCase name="unsupported policy version cannot be disguised as schema version one" testsuite="ResourcePlanJson" filename="src/app/ResourcePlanJsonTest.cpp" line="111" skipped="false"/>
+  <TestCase name="battery saver null false true is independent of battery power in both snapshots" testsuite="ResourcePlanJson" filename="src/app/ResourcePlanJsonTest.cpp" line="116" skipped="false"/>
+  <TestCase name="workload support is distinct from device allocation in serialized plans" testsuite="ResourcePlanJson" filename="src/app/ResourcePlanJsonTest.cpp" line="133" skipped="false"/>
+  <TestCase name="all selected intents serialize pending tuning and explicit resource precedence" testsuite="ResourcePlanJson" filename="src/app/ResourcePlanJsonTest.cpp" line="145" skipped="false"/>
+  <TestCase name="six profile names preserve intent without claiming tier tuning" testsuite="ResourcePolicy" filename="src/common/ResourcePolicyTest.cpp" line="37" skipped="false"/>
+  <TestCase name="profile precedence includes an explicit auto and records each source" testsuite="ResourcePolicy" filename="src/common/ResourcePolicyTest.cpp" line="55" skipped="false"/>
+  <TestCase name="explicit resource overrides win while all original inputs remain frozen" testsuite="ResourcePolicy" filename="src/common/ResourcePolicyTest.cpp" line="67" skipped="false"/>
+  <TestCase name="known allocation bounds automatic participants but is not an explicit hard cap" testsuite="ResourcePolicy" filename="src/common/ResourcePolicyTest.cpp" line="87" skipped="false"/>
+  <TestCase name="unknown CPU and threading use serial without guessing an allocation" testsuite="ResourcePolicy" filename="src/common/ResourcePolicyTest.cpp" line="101" skipped="false"/>
+  <TestCase name="GPU request and capability are separate from guaranteed device execution" testsuite="ResourcePolicy" filename="src/common/ResourcePolicyTest.cpp" line="112" skipped="false"/>
+  <TestCase name="memory constraints reserve live state before recoverable retention" testsuite="ResourcePolicy" filename="src/common/ResourcePolicyTest.cpp" line="125" skipped="false"/>
+  <TestCase name="invalid requests and validated rendering bounds reject clearly" testsuite="ResourcePolicy" filename="src/common/ResourcePolicyTest.cpp" line="142" skipped="false"/>
+  <TestCase name="repeated resolutions preserve capability and constraint provenance deterministically" testsuite="ResourcePolicy" filename="src/common/ResourcePolicyTest.cpp" line="164" skipped="false"/>
+  <TestCase name="memory arithmetic preserves zero headroom and Uint64 live requirements" testsuite="ResourcePolicy" filename="src/common/ResourcePolicyTest.cpp" line="177" skipped="false"/>
+  <TestCase name="a caller supplied browser automatic default is not an explicit hard limit" testsuite="ResourcePolicy" filename="src/common/ResourcePolicyTest.cpp" line="191" skipped="false"/>
+  <TestCase name="battery use and battery saver are independent observed constraints without tuning" testsuite="ResourcePolicy" filename="src/common/ResourcePolicyTest.cpp" line="203" skipped="false"/>
+  <TestCase name="workload participant bounds preserve device capabilities and reject unsupported overrides" testsuite="ResourcePolicy" filename="src/common/ResourcePolicyTest.cpp" line="221" skipped="false"/>
+  <TestCase name="explicit resources and constraints survive every profile precedence stratum" testsuite="ResourcePolicy" filename="src/common/ResourcePolicyTest.cpp" line="240" skipped="false"/>
+  <TestCase name="invalid capability defaults and enum overrides fail while unknown support stays distinct" testsuite="ResourcePolicy" filename="src/common/ResourcePolicyTest.cpp" line="265" skipped="false"/>
+  <TestCase name="Generated predicates preserve independent seed precedence" testsuite="GradientPreparationContract" filename="src/field/GradientPreparationContractTest.cpp" line="15" skipped="false"/>
+  <TestCase name="Shared residency model preserves exact versions and retirement" testsuite="GradientPreparationContract" filename="src/field/GradientPreparationContractTest.cpp" line="46" skipped="false"/>
+  <TestCase name="Transfer planning charges widened coalesced bytes and speculative limits" testsuite="GradientPreparationContract" filename="src/field/GradientPreparationContractTest.cpp" line="87" skipped="false"/>
+  <TestCase name="Residency invalidation retains owners until the final lease and transfer retire" testsuite="GradientPreparationContract" filename="src/field/GradientPreparationContractTest.cpp" line="112" skipped="false"/>
+  <TestCase name="Upload ranges cover changed cells without escaping the original owner" testsuite="GradientPreparationContract" filename="src/field/GradientPreparationContractTest.cpp" line="171" skipped="false"/>
+  <TestCase name="Native records retain explicit decode layouts" testsuite="GradientPreparationContract" filename="src/field/GradientPreparationContractTest.cpp" line="232" skipped="false"/>
+  <TestCase name="stable selection IDs and unsupported algorithm normalization" testsuite="RuntimeGradientBackend" filename="src/field/RuntimeGradientBackendTest.cpp" line="59" skipped="false"/>
+  <TestCase name="verification environment accepts CLI and boolean spellings" testsuite="RuntimeGradientBackend" filename="src/field/RuntimeGradientBackendTest.cpp" line="71" skipped="false"/>
+  <TestCase name="invalid preferences normalize before indexed dispatch" testsuite="RuntimeGradientBackend" filename="src/field/RuntimeGradientBackendTest.cpp" line="92" skipped="false"/>
+  <TestCase name="CPU scopes have one restoration owner and restore after exceptions" testsuite="RuntimeGradientBackend" filename="src/field/RuntimeGradientBackendTest.cpp" line="118" skipped="false"/>
+  <TestCase name="plan decisions retain the captured backend and compatible algorithm" testsuite="RuntimeGradientBackend" filename="src/field/RuntimeGradientBackendTest.cpp" line="142" skipped="false"/>
+  <TestCase name="shadow verification rejects mismatches with original-input evidence" testsuite="RuntimeGradientBackend" filename="src/field/RuntimeGradientBackendTest.cpp" line="162" skipped="false"/>
+  <TestCase name="shadow telemetry follows admitted configuration after preferences change" testsuite="RuntimeGradientBackend" filename="src/field/RuntimeGradientBackendTest.cpp" line="196" skipped="false"/>
+  <TestCase name="direct CPU recovery honors explicit variant rather than process preference" testsuite="RuntimeGradientBackend" filename="src/field/RuntimeGradientBackendTest.cpp" line="221" skipped="false"/>
+  <TestCase name="runtime CPU variants agree with independent heap oracle" testsuite="RuntimeGradientBackend" filename="src/field/RuntimeGradientBackendTest.cpp" line="245" skipped="false"/>
+  <TestCase name="runtime terrain kernels preserve every completed cost layer" testsuite="RuntimeGradientBackend" filename="src/field/RuntimeGradientBackendTest.cpp" line="284" skipped="false"/>
+  <TestCase name="Vulkan algorithms agree with oracle for weighted capped wrapped fields" testsuite="RuntimeGradientBackend" filename="src/field/RuntimeGradientBackendTest.cpp" line="321" skipped="false"/>
+  <TestCase name="wrapped dense sources reject invented paths before GPU publication" testsuite="RuntimeGradientBackend" filename="src/field/RuntimeGradientBackendTest.cpp" line="385" skipped="false"/>
+  <TestCase name="Vulkan cancellation leaves original seeds untouched" testsuite="RuntimeGradientBackend" filename="src/field/RuntimeGradientBackendTest.cpp" line="433" skipped="false"/>
+  <TestCase name="fixed-point proof agrees with independent weighted oracle on narrow tori" testsuite="RuntimeGradientBackend" filename="src/field/RuntimeGradientBackendTest.cpp" line="452" skipped="false"/>
+  <TestCase name="fixed-point proof rejects malformed spans costs caps and fabricated sources" testsuite="RuntimeGradientBackend" filename="src/field/RuntimeGradientBackendTest.cpp" line="483" skipped="false"/>
+  <TestCase name="proof evidence preserves original seeds and out-of-range readback portably" testsuite="RuntimeGradientBackend" filename="src/field/RuntimeGradientBackendTest.cpp" line="511" skipped="false"/>
+  <TestCase name="discovery distinguishes supported devices from selectable status" testsuite="RuntimeGradientBackend" filename="src/field/RuntimeGradientBackendTest.cpp" line="556" skipped="false"/>
+  <TestCase name="malformed direct groups reject before touching fields or diagnostics" testsuite="RuntimeGradientBackend" filename="src/field/RuntimeGradientBackendTest.cpp" line="581" skipped="false"/>
+  <TestCase name="direct group accepts one owned batch recovery without individual callbacks" testsuite="RuntimeGradientBackend" filename="src/field/RuntimeGradientBackendTest.cpp" line="617" skipped="false"/>
+  <TestCase name="shadow mismatch reports evidence failure without losing the primary error" testsuite="RuntimeGradientBackend" filename="src/field/RuntimeGradientBackendTest.cpp" line="655" skipped="false"/>
+  <TestCase name="backend switch drains privately and preserves pending publication" testsuite="GradientBackendSwitch" filename="src/map/gradient/GradientBackendSwitchTest.cpp" line="7" skipped="false"/>
+  <TestCase name="repeated backend requests coalesce without moving publication ticks" testsuite="GradientBackendSwitch" filename="src/map/gradient/GradientBackendSwitchTest.cpp" line="72" skipped="false"/>
+  <OverallResultsTestCases unskipped="79"/>
+</doctest>

@@ -1,0 +1,75 @@
+{
+  "base_commit": "2ced60e06b8e7fa7a4a4ecff944c40bda494bcf4",
+  "variant": "gpu-sync",
+  "prepared_utc": "2026-10-12T08:05:06.607230+00:00",
+  "source": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/variants/gpu-sync/source",
+  "built": false,
+  "tested": false,
+  "launch_authorized": false,
+  "accepted": false,
+  "changes": [
+    {
+      "path": "src/app/cli/Headless.cpp",
+      "base_sha256": "17290fab62305218b960a443f9239554f375dc2d118b606b462a5095aa30b136",
+      "candidate_sha256": "5cadae246b4ec4cd9efebc106dca12a89c0171b30dc2bf27816bb1cfb31d5270",
+      "bytes": 49929
+    },
+    {
+      "path": "src/field/OpenCLGradient.cpp",
+      "base_sha256": "0c7f6404d1b9a62306fe7bd9a1b8971de1c7e6a25d84ee5d0510c7a3079b18bd",
+      "candidate_sha256": "55709f59c27231a1737312fb9f6a0c7a5d48ca91bde03e6d63bca56cce87caed",
+      "bytes": 69402
+    },
+    {
+      "path": "src/field/OpenCLGradient.h",
+      "base_sha256": "a7952a364a16c72d6856cebb1097eef823c123b9d7a2c78355af4a057e791116",
+      "candidate_sha256": "01c040c02d39b5f43132a3deb989fbe3d9e30b15fe459a2e8f70700d074593ba",
+      "bytes": 2919
+    },
+    {
+      "path": "src/field/OpenCLGradientTest.cpp",
+      "base_sha256": "a314bf7cfe94daddb519e6841ec152d31539df038bc2eb7a77f014b16f6501a7",
+      "candidate_sha256": "77334aa04ac3a1c75e64bfcb2579c6433d39a94373104e349e0b9ec841110515",
+      "bytes": 49737
+    },
+    {
+      "path": "src/map/gradient/GradientPreparationTest.cpp",
+      "base_sha256": "ac67d316fb7a4d99f929810cbf11c0a1541ba561bf914a1a3e7d9fbd726ea64c",
+      "candidate_sha256": "9f572957cf43a342307707878a9187de520e753f190c115ebfd9ed44956b021c",
+      "bytes": 70020
+    }
+  ],
+  "unchanged_archived_tracked_files_verified": 20485,
+  "total_base_tracked_files": 20510,
+  "git_archive_export_ignored_files": [
+    "debian/README.Debian",
+    "debian/README.source",
+    "debian/SConscript",
+    "debian/changelog",
+    "debian/compat",
+    "debian/control",
+    "debian/copyright",
+    "debian/glob2-data.dirs",
+    "debian/glob2-data.install",
+    "debian/glob2-sdl3-runtime.install",
+    "debian/glob2.6",
+    "debian/glob2.dirs",
+    "debian/glob2.docs",
+    "debian/glob2.install",
+    "debian/glob2.menu",
+    "debian/patches/01_remove_home_directory_browsing.patch",
+    "debian/patches/02_upstream_changelog.patch",
+    "debian/patches/03_headers_order.patch",
+    "debian/patches/series",
+    "debian/rules"
+  ],
+  "verification": "Git blob SHA1 of every archived tracked file/symlink target against base tree; Debian export-ignore excluded; listed differences SHA256 sealed",
+  "patch_sha256": "715f9e2d18ee6bffd13174d7a26fb2c75680d3c7c4b896877b85b353a43697ac",
+  "scope": "host acquire only",
+  "runtime_dependencies_added": false,
+  "budgets_unchanged": {
+    "host_MiB": 64,
+    "device_MiB": 128,
+    "required_slots": 64
+  }
+}

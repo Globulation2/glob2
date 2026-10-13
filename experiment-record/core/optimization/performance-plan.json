@@ -1,0 +1,73 @@
+{
+  "layouts": 10,
+  "seeds": 2,
+  "main_factors": [
+    [
+      "worker",
+      3
+    ],
+    [
+      "worker",
+      "auto"
+    ],
+    [
+      "snapshot",
+      3
+    ],
+    [
+      "telemetry",
+      3
+    ],
+    [
+      "combined",
+      3
+    ],
+    [
+      "combined",
+      "auto"
+    ],
+    [
+      "scheduler",
+      3
+    ]
+  ],
+  "main_gpu": "off",
+  "repeats": 3,
+  "discarded_warmup_pairs": 1,
+  "slots": [
+    [
+      0,
+      1,
+      2,
+      16,
+      17,
+      18
+    ],
+    [
+      3,
+      4,
+      5,
+      19,
+      20,
+      21
+    ],
+    [
+      6,
+      7,
+      8,
+      22,
+      23,
+      24
+    ],
+    [
+      9,
+      10,
+      11,
+      25,
+      26,
+      27
+    ]
+  ],
+  "additional_gpuon": "combined Playground/Oazis at3, both seeds",
+  "launch_requires": "all builds complete, all correctness fixtures passed, root confirms idle compilers and historical slots held"
+}

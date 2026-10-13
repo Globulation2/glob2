@@ -1,0 +1,38 @@
+{
+  "plans_only_no_builds_or_games": true,
+  "plan_a": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/sizing-full.json",
+  "plan_b": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/oazis-sizing-full.json",
+  "playground_runs": 16,
+  "oazis_runs": 8,
+  "playground_seeds": [
+    1056243202,
+    744345666,
+    1064623205,
+    725864695,
+    599004658,
+    117787757,
+    85910194,
+    769116511
+  ],
+  "oazis_seeds": [
+    1056243202,
+    744345666
+  ],
+  "baseline_variant": "explicit4",
+  "tick_sentinel": 2147483647,
+  "wall_cap_seconds": 3600,
+  "binary_sha256": "3c23c53e1f0103eab935996ed4c7dd21b63f0464867346c9dcadc46926608a95",
+  "game_cpus": [
+    12,
+    13,
+    14,
+    28,
+    29,
+    30
+  ],
+  "fresh_ids_no_retained_results": true,
+  "ordering": "Playground: alternating3/4 vs4/3 byseed. Oazis:3/4/6/auto thenauto/6/4/3; mean position equal across counts.",
+  "grouping": "No thread stratum: compute counts are variants compared within seed/map/fullwinner workload. Separate phase for each map campaign; never alias previous full/feature-full ids or combine PG/Oazis.",
+  "analysis_limitations": "Full winner mode usually emits no final CRC/GCS; no checksum equivalence claim from absent CRC. Native winner/team/ticks consistency is required within each seed. Existing detailed8192 trace controls provide separate partial determinism evidence. Flag all 1h capped runs separately; never impute a completed winner or completed-game time.",
+  "runner_cap_note": "Shared run_controls.py writes capped status then raises for failed/missing output; root orchestration must retain capped result and explicitly decide continuation. This plan does not alter runner or engine."
+}

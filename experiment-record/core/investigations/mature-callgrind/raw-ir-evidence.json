@@ -1,0 +1,29 @@
+{
+  "state": "timed-out-before-labelled-window",
+  "window_measured": false,
+  "mature_CPU_attribution_available": false,
+  "process_pid": 995161,
+  "diagnostic_wall_seconds": 3600.3806166457944,
+  "diagnostic_CPU_seconds": 3637.4514010000003,
+  "termination": "1hour diagnostic cap; SIGTERM; no START/STOP marker or final checksum/result",
+  "observed_start_markers": 0,
+  "observed_stop_markers": 0,
+  "stdout_collected_Ir": 0,
+  "raw_files": [
+    {
+      "file": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/mature-callgrind/profile/callgrind.995161",
+      "sha256": "605d9aebca5c95bc6cd3ffc14b6a156ef03548158ae92dcc27b71df3d4768bb8",
+      "bytes": 544,
+      "metadata": {
+        "pid": "995161",
+        "part": "1"
+      },
+      "exclusive_Ir": 0,
+      "counted_window": false
+    }
+  ],
+  "native_gates": "All4 native controls had passed; this diagnostic timeout does not invalidate those controls or establish a profile result.",
+  "qualification": "Instrumentationoff prefix still VEX/thread-interleaving; processCPU/time are diagnostic overhead, not native performance. No measured124000\u2013132192 interval, no function attribution or causal mature-phase conclusion. Retain files; no retry/new experiment launched.",
+  "raw_files_unchanged": true,
+  "profile_result_sha256": "dbdf62147cb5718fe3c4a27d0f7f11204851bf42fa020a75e7a02502eceee40e"
+}

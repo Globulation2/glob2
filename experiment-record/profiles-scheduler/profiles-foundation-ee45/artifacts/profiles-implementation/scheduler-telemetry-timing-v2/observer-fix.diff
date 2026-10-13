@@ -1,0 +1,21 @@
+--- original-observer.py
++++ v2-observer.py
+@@ -54,13 +54,15 @@
+       seen_identity=r;observed.append(r);native_seen=True
+      else:external.append(r)
+     assert len(observed)<=1,'duplicate native workload';events+=external
+-    log.write(json.dumps({'monotonic':now,'native':observed,'external':external})+'\n');log.flush();samples+=1
++    scan_end=time.monotonic()
++    log.write(json.dumps({'monotonic':now,'scan_start_monotonic':now,'scan_end_monotonic':scan_end,'native':observed,'external':external})+'\n');log.flush();samples+=1
+     if not ack:write(d/'ready.json',{'monotonic':now,'pid':os.getpid(),'starttime':process(os.getpid())['starttime'],'expected_sha256':sha(d/'expected.json'),'observer_sha256':sha(__file__)});ack=True
+     if (d/'stop.json').exists():
+      stop=load(d/'stop.json');assert identity is not None and stop['native_identity_sha256']==sha(d/'native-identity.json') and stop['child_reaped'] is True;assert not observed,'child remainsactive afterreap';break
+     time.sleep(0.5)
+-  assert identity is not None and native_seen,'native never bound/periodically observed';assert start<=identity['bound_monotonic']<=stop['finished_monotonic']<=now,'phase monotonic scope'
+-  report={'passed':not events,'contaminated':bool(events),'errors':[],'start_monotonic':start,'last_monotonic':now,'native_identity':identity,'native_seen_in_periodic_scan':native_seen,'samples':samples,'expected_sha256':sha(d/'expected.json'),'native_identity_sha256':sha(d/'native-identity.json'),'stop_sha256':sha(d/'stop.json'),'samples_sha256':sha(d/'samples.jsonl'),'observer_sha256':sha(__file__),'external_events':events,'scope':'0.5s sampled externalprocess activity with exactparent PIDbind; subinterval workloads mayescape samples. No exclusivehost proof.'};write(d/'complete.json',report)
++  assert identity is not None and native_seen,'native never bound/periodically observed';end=time.monotonic()
++  assert start<=identity['bound_monotonic']<=stop['finished_monotonic']<=end,'phase monotonic scope'
++  report={'passed':not events,'contaminated':bool(events),'errors':[],'start_monotonic':start,'last_monotonic':end,'last_scan_start_monotonic':now,'last_scan_end_monotonic':scan_end,'native_identity':identity,'native_seen_in_periodic_scan':native_seen,'samples':samples,'expected_sha256':sha(d/'expected.json'),'native_identity_sha256':sha(d/'native-identity.json'),'stop_sha256':sha(d/'stop.json'),'samples_sha256':sha(d/'samples.jsonl'),'observer_sha256':sha(__file__),'external_events':events,'scope':'0.5s sampled externalprocess activity with exactparent PIDbind; subinterval workloads mayescape samples. No exclusivehost proof.'};write(d/'complete.json',report)
+   if events:raise RuntimeError('contaminated attempt retained')
+  except BaseException as error:write(d/'failure.json',{'passed':False,'error':repr(error),'external_events':events,'samples':samples,'expected_sha256':sha(d/'expected.json')});raise
+ if __name__=='__main__':main()

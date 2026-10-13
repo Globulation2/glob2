@@ -1,0 +1,34 @@
+{
+  "passed": false,
+  "records": [
+    {
+      "id": "timing-small-ni-n1-gpuoff-r-1-baseline",
+      "exit": 0
+    },
+    {
+      "id": "timing-small-ni-n1-gpuoff-r-1-candidate",
+      "exit": 0
+    },
+    {
+      "id": "timing-small-ni-n1-gpuoff-r0-baseline",
+      "exit": 0
+    },
+    {
+      "id": "timing-small-ni-n1-gpuoff-r0-candidate",
+      "exit": 0
+    },
+    {
+      "id": "timing-small-ni-n1-gpuoff-r1-candidate",
+      "exit": 0
+    },
+    {
+      "id": "timing-small-ni-n1-gpuoff-r1-baseline",
+      "exit": 0
+    },
+    {
+      "id": "timing-small-ni-n12-gpuoff-r-1-baseline",
+      "exit": 1
+    }
+  ],
+  "no_retry": true
+}

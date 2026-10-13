@@ -1,0 +1,16 @@
+--- a/src/common/ComputeExecutor.h
++++ b/src/common/ComputeExecutor.h
+@@ -346,7 +346,12 @@
+ 		if (auto& ticket = slot.completions[index]) ticket->owner.store(nullptr, std::memory_order_release);
+ 		slot.completions[index].reset();
+ 		const auto lane = slot.groups[group(slot, index)].lane;
+-		if (lane != NoLane) { ++laneCompleted[lane]; ready.notify_all(); }
++		if (lane != NoLane) {
++            ++laneCompleted[lane];
++            // Only admitted lane successors can become newly claimable here.
++            // A future submit still notifies under the same scheduling mutex.
++            if (laneCompleted[lane] < laneIssued[lane]) ready.notify_all();
++        }
+ 		if (++slot.completed == slot.total) slotDone.notify_all();
+ 	}
+ 	void settle(Completion& ticket)

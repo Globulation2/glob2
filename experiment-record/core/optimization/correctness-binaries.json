@@ -1,0 +1,26 @@
+{
+  "baseline": {
+    "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/baseline/source/build/linux/client/release/src/glob2",
+    "sha256": "c5ed10029619f8e3e91538bd69f6d2ad01abf30703a45b4ef2f75369a14203c0"
+  },
+  "combined": {
+    "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/build/linux/client/release/src/glob2",
+    "sha256": "311ddc675aa0bbd7dafe5fb911e177c19458d0b0d739ddfe5a89d5c820041dc3"
+  },
+  "worker": {
+    "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/variants/worker/source/build/linux/client/release/src/glob2",
+    "sha256": "a3794ae9d3261e8b75acc48fe231258be34c91f5469ffec6dc455e40b2441feb"
+  },
+  "snapshot": {
+    "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/variants/snapshot/source/build/linux/client/release/src/glob2",
+    "sha256": "207563dd68bbd995c1725a28ad4c901590edd85acce3eb9f82e6f2123fd99af2"
+  },
+  "telemetry": {
+    "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/variants/telemetry/source/build/linux/client/release/src/glob2",
+    "sha256": "c7161baf12e460e7d18aaf48b412b6b65057006ab0b2b988abdb60cb53f612e1"
+  },
+  "scheduler": {
+    "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/variants/scheduler/source/build/linux/client/release/src/glob2",
+    "sha256": "79be48eaf95fe08725cd2fc7041d5df713899ca9e3ba797ae3747b6fb9a6a822"
+  }
+}

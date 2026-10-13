@@ -1,0 +1,98 @@
+{
+  "state": "passed",
+  "errors": [],
+  "pending": [],
+  "native_gates": [
+    {
+      "id": "mature-callgrind-pg8192-prototype-opt0",
+      "plan": "early-checks.json",
+      "passed": true,
+      "final_checksum": "cd20aae7",
+      "reported": {
+        "ticks": "8192",
+        "ended": "0",
+        "winner": "-1",
+        "width": "128",
+        "height": "128",
+        "teams": "8",
+        "controllers": "9"
+      },
+      "starts": [],
+      "stops": [],
+      "actual_map_alias_sha256": "2a323a2d02475fb1ddd2ddfac99c51890aa7b2a2f3537ad7bee93aba85d84eaf",
+      "alias_scope": "Current immutable alias checked; pre-hardening native records retain original metadata, no rerun"
+    },
+    {
+      "id": "mature-callgrind-pg8192-prototype-opt1",
+      "plan": "early-checks.json",
+      "passed": true,
+      "final_checksum": "cd20aae7",
+      "reported": {
+        "ticks": "8192",
+        "ended": "0",
+        "winner": "-1",
+        "width": "128",
+        "height": "128",
+        "teams": "8",
+        "controllers": "9"
+      },
+      "starts": [],
+      "stops": [],
+      "actual_map_alias_sha256": "2a323a2d02475fb1ddd2ddfac99c51890aa7b2a2f3537ad7bee93aba85d84eaf",
+      "alias_scope": "Current immutable alias checked; pre-hardening native records retain original metadata, no rerun"
+    },
+    {
+      "id": "mature-callgrind-oazis132192-original-reference",
+      "plan": "native-reference.json",
+      "passed": true,
+      "final_checksum": "6c67d7f9",
+      "reported": {
+        "ticks": "132192",
+        "ended": "0",
+        "winner": "-1",
+        "width": "256",
+        "height": "256",
+        "teams": "11",
+        "controllers": "12"
+      },
+      "starts": [],
+      "stops": [],
+      "actual_map_alias_sha256": "cd80d8c9a72643a95bb0bd3c22deb594aeed125d12cb3294859e7fffbc131448",
+      "alias_scope": "Current immutable alias checked; pre-hardening native records retain original metadata, no rerun"
+    },
+    {
+      "id": "mature-callgrind-oazis132192-prototype-native-opt1",
+      "plan": "native-reference.json",
+      "passed": true,
+      "final_checksum": "6c67d7f9",
+      "reported": {
+        "ticks": "132192",
+        "ended": "0",
+        "winner": "-1",
+        "width": "256",
+        "height": "256",
+        "teams": "11",
+        "controllers": "12"
+      },
+      "starts": [
+        [
+          "124000",
+          "132192",
+          "0"
+        ]
+      ],
+      "stops": [
+        [
+          "132192",
+          "8192",
+          "0"
+        ]
+      ],
+      "actual_map_alias_sha256": "cd80d8c9a72643a95bb0bd3c22deb594aeed125d12cb3294859e7fffbc131448",
+      "alias_scope": "Current immutable alias checked; pre-hardening native records retain original metadata, no rerun"
+    }
+  ],
+  "profile": {},
+  "timing_excluded": true,
+  "all_features_preserved": true
+}

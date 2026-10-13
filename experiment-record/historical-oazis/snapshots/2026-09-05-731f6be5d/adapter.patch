@@ -1,0 +1,134 @@
+--- a/SConstruct
++++ b/SConstruct
+@@ -19,7 +19,7 @@
+     if isDarwinPlatform:
+         opts.Add(PathVariable("INSTALLDIR", "Installation Directory", "./"))
+     else:
+-	    opts.Add("INSTALLDIR", "Installation Directory", "/usr/local/share")
++        opts.Add("INSTALLDIR", "Installation Directory", "/usr/local/share")
+     opts.Add("BINDIR", "Binary Installation Directory", "/usr/local/bin")
+     opts.Add("DATADIR", "Directory where data will be put, set to the same as INSTALLDIR", "/usr/local/share")
+     opts.Add(BoolVariable("release", "Build for release", 0))
+@@ -56,7 +56,7 @@
+     if isDarwinPlatform:
+         configfile.add("PACKAGE_DATA_DIR", "data directory", "\"" + env["DATADIR"] + "../Resources/\"")
+     else:
+-    	configfile.add("PACKAGE_DATA_DIR", "data directory", "\"" + env["DATADIR"] + "\"")
++        configfile.add("PACKAGE_DATA_DIR", "data directory", "\"" + env["DATADIR"] + "\"")
+     configfile.add("PACKAGE_SOURCE_DIR", "source directory", "\"" +env.Dir("#").abspath.replace("\\", "\\\\") + "\"")
+     configfile.add("PACKAGE_NAME", "Define to the full name of this package.", "\"Globulation 2\"")
+     configfile.add("PACKAGE_TARNAME", "Define to the one symbol short name of this package.", "\"glob2\"")
+@@ -244,7 +244,7 @@
+     AddOption('--build',
+               default='build',
+               help='build directory')
+-    env = Environment()
++    env = Environment(CC="gcc-13", CXX="g++-13")
+     # SCons scrubs the shell environment for build commands; without TMPDIR,
+     # tools like ar fall back to /tmp, which sandboxed environments may block.
+     if 'TMPDIR' in os.environ:
+--- a/src/EngineLoaders.cpp
++++ b/src/EngineLoaders.cpp
+@@ -108,34 +108,7 @@
+ // catches that and picks again).
+ std::optional<MapHeader> Engine::chooseRandomMap()
+ {
+-	if (!globalContainer->testGamesMap.empty())
+-	{
+-		std::string fullPath = std::string("maps") + DIR_SEPARATOR
+-			+ globalContainer->testGamesMap + ".map";
+-		return loadMapHeader(fullPath);
+-	}
+-
+-	std::vector<std::string> maps;
+-
+-	std::string fullDir = "maps";
+-
+-	// we add the other files
+-	if (Toolkit::getFileManager()->initDirectoryListing(fullDir.c_str(), "map", false))
+-	{
+-		std::string fileName;
+-		while (!(fileName = (Toolkit::getFileManager()->getNextDirectoryEntry())).empty())
+-		{
+-			std::string fullFileName = fullDir + DIR_SEPARATOR + fileName;
+-			maps.push_back(fullFileName);
+-		}
+-	}
+-
+-	if (maps.empty())
+-		return std::nullopt;
+-
+-	int number = syncRand() % maps.size();
+-
+-	return loadMapHeader(maps[number]);
++    return loadMapHeader("maps/Playground.map");
+ }
+ 
+ 
+@@ -143,6 +116,7 @@
+ GameHeader Engine::createRandomGame(int numberOfTeams)
+ {
+ 	GameHeader gameHeader;
++    gameHeader.setRandomSeed(strtoul(getenv("GLOB2_TEST_SEED"), NULL, 10));
+ 	int count = 0;
+ 	for (int i=0; i<numberOfTeams+1; i++)
+ 	{
+--- a/src/EngineRun.cpp
++++ b/src/EngineRun.cpp
+@@ -253,6 +253,15 @@
+ void Engine::printAutomaticEndingSummary()
+ {
+ 	int time = gui.game.stepCounter;
++        int historyWinner=-1;
++        for(int t=0;t<gui.game.mapHeader.getNumberOfTeams();++t)
++            if(gui.game.teams[t]->hasWon) historyWinner=t;
++        std::cout << "HISTORY_RESULT ticks=" << time << " ended=" << gui.game.isGameEnded
++                  << " winner=" << historyWinner << " width=" << gui.game.map.getW()
++                  << " height=" << gui.game.map.getH()
++                  << " teams=" << gui.game.mapHeader.getNumberOfTeams()
++                  << " controllers=" << gui.game.gameHeader.getNumberOfPlayers() << std::endl;
++
+ 	int seconds = (time / GAME_TICKS_PER_SECOND) % 60;
+ 	int minutes = (time / GAME_TICKS_PER_SECOND) / 60;
+ 	std::cout << "automaticEndingGame ended: " << time << " ticks, " << minutes << " minutes, " << seconds << " seconds" << std::endl;
+--- a/src/Glob2.cpp
++++ b/src/Glob2.cpp
+@@ -1,3 +1,4 @@
++#include <chrono>
+ // SPDX-License-Identifier: GPL-3.0-or-later
+ // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
+ 
+@@ -125,7 +126,7 @@
+ 
+ int Glob2::runTestGames()
+ {
+-	globalContainer->automaticEndingSteps=90000;
++	globalContainer->automaticEndingSteps=atoi(getenv("GLOB2_TEST_MAX_TICKS"));
+ 	int maxRuns = globalContainer->runTestGamesCount;
+ 	int run = 0;
+ 	while(maxRuns == 0 || run < maxRuns)
+@@ -148,7 +149,12 @@
+ 		std::cout<<"Random Seed initial: "<<t<<std::endl;
+ 		Engine engine;
+ 		engine.createRandomGame();
+-		engine.run();
++		const auto historyStart = std::chrono::steady_clock::now();
++        engine.run();
++        std::cout << "HISTORY_TIMING run_wall_seconds="
++                  << std::chrono::duration<double>(std::chrono::steady_clock::now()-historyStart).count()
++                  << std::endl;
++        return 0;
+ 		run++;
+ 	}
+ 	return 0;
+--- a/libgag/src/FileManager.cpp
++++ b/libgag/src/FileManager.cpp
+@@ -91,7 +91,7 @@
+ 		/* Find own path
+ 		 * TODO: Make nicer */
+ 
+-		char link[100];
++		char link[4096];
+ 		#ifdef __FreeBSD__
+ 		char proc[]="/proc/curproc/file";
+ 		#else

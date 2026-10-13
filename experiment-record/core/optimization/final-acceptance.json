@@ -1,0 +1,17 @@
+{
+  "complete": true,
+  "accepted": true,
+  "closed_utc": "2026-10-12T11:05:07.435472+00:00",
+  "source_commit": "9e370bcb83209cf99f43c346750a6d4bd440f4f2",
+  "required_evidence_complete": true,
+  "historical_oazis_background_pending": true,
+  "outputs": {
+    "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/final-report/summary.html": "176ce723070b64fb3a64e631b50398900d8d8677724f8fb72e15061b01c0eb33",
+    "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/final-report/details.html": "57a44f883824048aa8a0a48cb79c72ad7ed351b7dd95a379c987bdd8d2ebe42f",
+    "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/final-report/analysis.json": "7d656dc4235267a7db5e55b0aa36f00998349961cb1b0e673d3fe87975ea63c2",
+    "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/final-report/final-layout-metrics.svg": "d754927b55793f6766efefbbe74d691fd2d0ce12e4067a7a24b82f1e147fe36d",
+    "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/final-report/final-layout-metrics.png": "24be197d33159aeb9d9280fff694268ef93b08db0e26a1415a3989b5da542897",
+    "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/adoption-decisions.json": "5cd80e33f9e7e41b33146cdafc714e62d1356782150b4715f502388d37fc5579",
+    "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/final-analysis/natural9-review.json": "7148b65f7aee50399fb9d30eafb48a4ac5a212bbae69eeb13b9353588875cee6"
+  }
+}

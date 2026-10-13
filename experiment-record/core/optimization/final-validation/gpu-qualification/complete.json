@@ -1,0 +1,57 @@
+{
+  "passed": true,
+  "gpu_decision": "sync",
+  "selected_cases": 4,
+  "participant_counts": [
+    1,
+    3,
+    6
+  ],
+  "material_participant_counts": [
+    1,
+    2,
+    3,
+    4,
+    6
+  ],
+  "build_manifest_sha256": "2df42aebca03f2727c8993cc6e7f70a8113402907004ddfa9e1a430b3bffd1a8",
+  "source_freeze_sha256": "5cf3ea78cc16d4140c5c59ce85e5a1592257b31623dbcad6cd56f84de5efd189",
+  "qualifier_sha256": "10f660822b8aa316ceea868a0faa4f0975c4437a9da086c0a12e4970f5b98449",
+  "approval_sha256": "361f0f4cc010b23ba362ae07f2e2486489145c229a938ed7ffaf8ec035c378ca",
+  "receipts": [
+    {
+      "test_name": "OpenCLGradient/isolated configured participant fields match independent weighted blocked oracle",
+      "role": "unit",
+      "junit": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/final-validation/gpu-qualification/field-oracle/junit.xml",
+      "junit_sha256": "dfecd72b7cf340dd4ed6b65ed804109284904c67e0e68226b6da7799edf42f31",
+      "proof_log": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/final-validation/gpu-qualification/field-oracle/output.log",
+      "proof_log_sha256": "351b0ad61a43d7ce13d8eba79cbabf38d896c38c349ee505d7d134febb04a23f"
+    },
+    {
+      "test_name": "GradientPreparation/seed cells match scalar predicates across policies and changing overlays",
+      "role": "engine",
+      "junit": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/final-validation/gpu-qualification/material-oracle/junit.xml",
+      "junit_sha256": "fcca362564949fd752757690a0f0a78a7aa533414535b68249a4ec1efa96d0fd",
+      "proof_log": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/final-validation/gpu-qualification/material-oracle/output.log",
+      "proof_log_sha256": "e72ba1e6948275be56c01ddc0df9d2a59c41595c5c4f0a67bfcb0b1ba6e6dc42"
+    },
+    {
+      "test_name": "OpenCLGradient/isolated host event acquisition commits exact output or fails closed",
+      "role": "unit",
+      "junit": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/final-validation/gpu-qualification/host-acquire-normal/junit.xml",
+      "junit_sha256": "ccfe4265449ea792b4df2239eb1e7fa55f82beaa9774b404ecfa26f66cbf1e7a",
+      "proof_log": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/final-validation/gpu-qualification/host-acquire-normal/output.log",
+      "proof_log_sha256": "3dbbaf82eb3735b0120f5ce52d44bd7e4882731eba2c1ec5071ad46f45350f33"
+    },
+    {
+      "test_name": "OpenCLGradient/isolated host event acquisition commits exact output or fails closed",
+      "role": "unit",
+      "junit": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/final-validation/gpu-qualification/host-acquire-failed-wait/junit.xml",
+      "junit_sha256": "d18471b0ce7833cefa2c324c018beeca8958c8664f86a42825d413b4ca16375d",
+      "proof_log": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/final-validation/gpu-qualification/host-acquire-failed-wait/output.log",
+      "proof_log_sha256": "8ed4aa943c1881b0d4ca5d0fb968dad0302bb561f0c7e50c1bafe1c798f796c0"
+    }
+  ],
+  "diagnostic_only": true,
+  "timing_excluded": true
+}

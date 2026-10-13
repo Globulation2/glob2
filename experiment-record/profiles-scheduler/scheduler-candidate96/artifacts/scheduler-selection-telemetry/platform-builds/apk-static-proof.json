@@ -1,0 +1,287 @@
+{
+  "passed": true,
+  "source": "96da258e5a6b24a57a8848f2bfa0178031331322",
+  "apk_sha256": "ef6b48cf8a371ef84fd43f92a072759b953f7e9cf38705d99568c7e5b0526009",
+  "compiled_sha256": "db98fe2873c7a72b72efd29a6df8082a9b7edc3f0829bbe4fcb218a7ca3f2135",
+  "compiled_unchanged": true,
+  "merged_sha256": "db98fe2873c7a72b72efd29a6df8082a9b7edc3f0829bbe4fcb218a7ca3f2135",
+  "stripped_sha256": "60651a6cb437f0228cfca28c84d4a67e63659b4acc33fdbb43529f6a7c458634",
+  "apk_lib_sha256": "60651a6cb437f0228cfca28c84d4a67e63659b4acc33fdbb43529f6a7c458634",
+  "exact_strip_output_equals_apk": true,
+  "all_SHF_ALLOC_descriptors_and_contents_equal": true,
+  "alloc_sections": {
+    ".note.android.ident": {
+      "type": 7,
+      "flags": 2,
+      "address": 624,
+      "bytes": 152,
+      "alignment": 4,
+      "entry_bytes": 0,
+      "zero_fill": false,
+      "sha256": "f95d8db63a74e14b2f0b87cbc368e3cf2097c2b342963e758d52930c3edc42b6"
+    },
+    ".note.gnu.build-id": {
+      "type": 7,
+      "flags": 2,
+      "address": 776,
+      "bytes": 36,
+      "alignment": 4,
+      "entry_bytes": 0,
+      "zero_fill": false,
+      "sha256": "9d522e2d02771395ab1bb9048882af8a1618c95c5bcc38b7436585ecbad44cb8"
+    },
+    ".dynsym": {
+      "type": 11,
+      "flags": 2,
+      "address": 816,
+      "bytes": 1050144,
+      "alignment": 8,
+      "entry_bytes": 24,
+      "zero_fill": false,
+      "sha256": "bc0eb2be59d9f909e2cc93e51ee3acc3d86ab97d65e2cd0327a9bc4dd8a5fb09"
+    },
+    ".gnu.version": {
+      "type": 1879048191,
+      "flags": 2,
+      "address": 1050960,
+      "bytes": 87512,
+      "alignment": 2,
+      "entry_bytes": 2,
+      "zero_fill": false,
+      "sha256": "448f18514cc643f2634424aed022bc61b29f72a085c93ff8458f48348d64cc87"
+    },
+    ".gnu.version_r": {
+      "type": 1879048190,
+      "flags": 2,
+      "address": 1138472,
+      "bytes": 144,
+      "alignment": 4,
+      "entry_bytes": 0,
+      "zero_fill": false,
+      "sha256": "a3e7a8c8b8011251448d16cd5ffe01e5ec324ee82e0d80468ccf520309a06c9f"
+    },
+    ".gnu.hash": {
+      "type": 1879048182,
+      "flags": 2,
+      "address": 1138616,
+      "bytes": 279452,
+      "alignment": 8,
+      "entry_bytes": 0,
+      "zero_fill": false,
+      "sha256": "b89300fa8cf8b6aaa1d2c99491437d34bab990561ff2405ce8bb4d2e3320f8ef"
+    },
+    ".dynstr": {
+      "type": 3,
+      "flags": 2,
+      "address": 1418068,
+      "bytes": 5417810,
+      "alignment": 1,
+      "entry_bytes": 0,
+      "zero_fill": false,
+      "sha256": "f6157531e77cace8eb9ca81871df605a2c1eaf2b0c94fa8ac0aaf39765a817f1"
+    },
+    ".rela.dyn": {
+      "type": 4,
+      "flags": 2,
+      "address": 6835880,
+      "bytes": 2635608,
+      "alignment": 8,
+      "entry_bytes": 24,
+      "zero_fill": false,
+      "sha256": "df05144927e6618bb263a7f3d42749a31c9f9754c695cacd64b0cc8871d5f1aa"
+    },
+    ".rela.plt": {
+      "type": 4,
+      "flags": 66,
+      "address": 9471488,
+      "bytes": 530136,
+      "alignment": 8,
+      "entry_bytes": 24,
+      "zero_fill": false,
+      "sha256": "59779085547c2148ddbb7b786890edd5d6038424ce006578af4bc60979f97b81"
+    },
+    ".gcc_except_table": {
+      "type": 1,
+      "flags": 2,
+      "address": 10001624,
+      "bytes": 1345020,
+      "alignment": 4,
+      "entry_bytes": 0,
+      "zero_fill": false,
+      "sha256": "aa20b1be20192dcc3bf14e224d9b80a9eff4fefb5c6249e539f647132a04b179"
+    },
+    ".rodata": {
+      "type": 1,
+      "flags": 50,
+      "address": 11350016,
+      "bytes": 4819336,
+      "alignment": 4096,
+      "entry_bytes": 0,
+      "zero_fill": false,
+      "sha256": "ec3c1840442a4178548fac59fdceda14974485d5fc1cd85daefc133bbdeb7f8f"
+    },
+    ".eh_frame_hdr": {
+      "type": 1,
+      "flags": 2,
+      "address": 16169352,
+      "bytes": 639228,
+      "alignment": 4,
+      "entry_bytes": 0,
+      "zero_fill": false,
+      "sha256": "a215d79f8016ad9b5a2ee07305d211d51d59866cc8512b09381476836395f975"
+    },
+    ".eh_frame": {
+      "type": 1,
+      "flags": 2,
+      "address": 16808584,
+      "bytes": 3487036,
+      "alignment": 8,
+      "entry_bytes": 0,
+      "zero_fill": false,
+      "sha256": "7a0c4bf689d703749a4b2780872432f95aced6339b268a469ceb486257df5375"
+    },
+    ".text": {
+      "type": 1,
+      "flags": 6,
+      "address": 20312064,
+      "bytes": 29227412,
+      "alignment": 4096,
+      "entry_bytes": 0,
+      "zero_fill": false,
+      "sha256": "3a8a7ce6b88a9be04dc2bdda0a9f8e5182eff959028874e691096967cc4aa5ba"
+    },
+    ".plt": {
+      "type": 1,
+      "flags": 6,
+      "address": 49539488,
+      "bytes": 353456,
+      "alignment": 16,
+      "entry_bytes": 0,
+      "zero_fill": false,
+      "sha256": "1ced05c4fb2a8a6a0de50d5be28ce053dd075c9fbe395993d100c9f1f2628c76"
+    },
+    ".data.rel.ro": {
+      "type": 1,
+      "flags": 3,
+      "address": 49909328,
+      "bytes": 1297584,
+      "alignment": 8,
+      "entry_bytes": 0,
+      "zero_fill": false,
+      "sha256": "8660f7aeefe8ea362efe66dfcf179a2976f598c3668f025e537ed26c766f388c"
+    },
+    ".fini_array": {
+      "type": 15,
+      "flags": 3,
+      "address": 51206912,
+      "bytes": 16,
+      "alignment": 8,
+      "entry_bytes": 0,
+      "zero_fill": false,
+      "sha256": "374708fff7719dd5979ec875d56cd2286f6d3cf7ec317a3b25632aab28ec37bb"
+    },
+    ".init_array": {
+      "type": 14,
+      "flags": 3,
+      "address": 51206928,
+      "bytes": 408,
+      "alignment": 8,
+      "entry_bytes": 0,
+      "zero_fill": false,
+      "sha256": "c76903cde8580d1c809ac5352aab33af5a310ad05126294d66e06db880c463ed"
+    },
+    ".dynamic": {
+      "type": 6,
+      "flags": 3,
+      "address": 51207336,
+      "bytes": 496,
+      "alignment": 8,
+      "entry_bytes": 16,
+      "zero_fill": false,
+      "sha256": "82a775f999411a15cf8689c1374552f89d506bc081b264986c6e3a2982dd8d6a"
+    },
+    ".got": {
+      "type": 1,
+      "flags": 3,
+      "address": 51207832,
+      "bytes": 56432,
+      "alignment": 8,
+      "entry_bytes": 0,
+      "zero_fill": false,
+      "sha256": "f5e90bcd9a733a0542cc1e2c0a3199f7ad2f0f5673c27f7a01cda34fedbcbc28"
+    },
+    ".got.plt": {
+      "type": 1,
+      "flags": 3,
+      "address": 51264264,
+      "bytes": 176736,
+      "alignment": 8,
+      "entry_bytes": 0,
+      "zero_fill": false,
+      "sha256": "2990abd0238127f8d52b34c692fa3b34252c3abca802a4162114b7a5e7fc7ca6"
+    },
+    ".relro_padding": {
+      "type": 8,
+      "flags": 3,
+      "address": 51441000,
+      "bytes": 664,
+      "alignment": 1,
+      "entry_bytes": 0,
+      "zero_fill": true,
+      "sha256": null
+    },
+    ".data": {
+      "type": 1,
+      "flags": 3,
+      "address": 51457384,
+      "bytes": 34216,
+      "alignment": 8,
+      "entry_bytes": 0,
+      "zero_fill": false,
+      "sha256": "eea99b70b543bc77b7b9371ec3120a4b05847de0c4318fefaa7fd1b61abb2c30"
+    },
+    ".bss": {
+      "type": 8,
+      "flags": 2097155,
+      "address": 51491600,
+      "bytes": 17962920,
+      "alignment": 16,
+      "entry_bytes": 0,
+      "zero_fill": true,
+      "sha256": null
+    }
+  },
+  "strip_argv": [
+    "/home/bradley/.local/share/glob2/development/toolchains/mobile/Linux-x86_64-8dbf18a4a97410f6b6a92b4a/android-sdk/ndk/28.2.13676358/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip",
+    "--strip-unneeded",
+    "-o",
+    "/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2/artifacts/scheduler-selection-telemetry/platform-builds/reproduced-gradle-stripped-libmain.so",
+    "/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2/build/android/device/arm64-v8a/24/client/release/lib/libmain.so"
+  ],
+  "strip_sha256": "1da35c6bcee9649adcaadf8a493132c3b7205901149622836d28e42d7fca7267",
+  "build_ids": {
+    "compiled": "87d534f97d5728615e37c920ff3bb139955dcf49",
+    "merged": "87d534f97d5728615e37c920ff3bb139955dcf49",
+    "stripped": "87d534f97d5728615e37c920ff3bb139955dcf49",
+    "reproduced": "87d534f97d5728615e37c920ff3bb139955dcf49"
+  },
+  "recording_notices": {
+    "sources.json": "264d868e3eb117595546456250ccfefd99203355ac74d0dbd68eab53d5db5629",
+    "configuration.json": "b34df3424b92b846b95e7ce8c422d8690b4f6e3a6035c1fe5c1e4a0643240603",
+    "nvEncodeAPI.h": "4fe4094541ef0f8a13249d97a8692dc5f835a6e9dd42eeadb3e2f7321d54dc7e",
+    "x264-COPYING": "32b1062f7da84967e7019d01ab805935caa7ab7321a7ced0e30ebe75e5df1670",
+    "ffmpeg-COPYING.LGPLv2.1": "246041b6ecf9bc32d718a62c57877c78b5eb397b6467e74ed7ae2626ab189c30",
+    "ffmpeg-COPYING.GPLv2": "8177f97513213526df2cf6184d8ff986c675afb514d4e68a404010521b880643",
+    "ffmpeg-COPYING.LGPLv3": "da7eabb7bafdf7d3ae5e9f223aa5bdc1eece45ac569dc21b3b037520b4464768",
+    "ffmpeg-COPYING.GPLv3": "8ceb4b9ee5adedde47b31e975c1d90c73ad27b6b165a1dcd80c7c545eb65b903"
+  },
+  "resolved_staged_apk_notices_identical": true,
+  "alias_absent": true,
+  "completion_assets": {
+    "_glob2": "b0d10f21633c76a488948b72d68eaef660c65330a1f916beff8223504d46a2fb",
+    "glob2.bash": "92920d419d07287be57b4f3363fa30dc06faacd11dbd95d1406be23d15e081ea",
+    "glob2.fish": "7d346b9c1070c55d85a7466eed159a4e33f60c986345e1134a9665c5fd48c1ab"
+  },
+  "helper_sha256": "3ca3e8a9d41f808f7ebca76d47706dc8bedf1b4611a58334abf86025694a9d89",
+  "scope": "Static compiled/merged/stripped/APK lineage and authentic notices; no device/runtime/signing qualification"
+}

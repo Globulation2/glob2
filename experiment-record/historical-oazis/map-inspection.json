@@ -1,0 +1,10 @@
+{
+  "map": "Oazis",
+  "sha256": "cd80d8c9a72643a95bb0bd3c22deb594aeed125d12cb3294859e7fffbc131448",
+  "native_team_count": 11,
+  "map_format": [
+    0,
+    70
+  ],
+  "state": "awaiting_team_count_choice"
+}

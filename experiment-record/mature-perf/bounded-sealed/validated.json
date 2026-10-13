@@ -1,0 +1,56 @@
+{
+  "outcome": {
+    "ticks": 50512,
+    "termination": "tick_cap",
+    "winning_teams": [],
+    "initialChecksum": 3899589070,
+    "finalChecksum": 1074634925,
+    "game_seed": 164298751,
+    "compute_threads": 3
+  },
+  "fixture_header": {
+    "major": 0,
+    "minor": 154,
+    "teams": 11,
+    "width": 256,
+    "height": 256,
+    "map_offset": 4560641,
+    "gzip_sha256": "c569c89abecf6caef00d1035125b66d1addf7e58ca2003f97b667c8351109626"
+  },
+  "geometry_scope": "ExactSHA fixture-derived 256x256/11teams/saveversion; native result exports no dimensions",
+  "replay_sha256": "cde960f2ec292ad372ccd2a74d316b43bddf7af1a4d7fae8b8387b0bcb4631c1",
+  "ait1": {
+    "offset": 83186259,
+    "bytes": 2894185,
+    "sha256": "0c36d68fc3c8c04c1ae03cba7832eb41fa6f395d5b2b1fbccfef9379f3a529b5",
+    "frames": 17,
+    "rows": 107,
+    "values": 36199,
+    "until": 497,
+    "truncated": false
+  },
+  "gcs": {
+    "sha256": "c8510ed17ec8b0768ae8afce68f8ea42d659f749bfc702dfe152cf4ac5693e46",
+    "teams": 11,
+    "players": 11,
+    "count": 512,
+    "first_tick": 50000,
+    "last_tick": 50511,
+    "flags": 0
+  },
+  "world": {
+    "sha256": "1d5944bf88ba9bfe3de69265fd536578a004e66b71c2dbe3f1768e56effbed2b",
+    "count": 512,
+    "first_tick": 50000,
+    "last_tick": 50511,
+    "scope": "per-tick full world/resource/pending proposal checksum; decimal source format"
+  },
+  "save_boundary": {
+    "major": 0,
+    "minor": 154,
+    "width": 256,
+    "height": 256,
+    "teams": 11,
+    "scope": "Version/geometry boundary only; whole save bytes may differ, exact GCS/world validates loaded execution"
+  }
+}

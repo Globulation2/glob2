@@ -1,0 +1,35 @@
+{
+  "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/correctness/small-ni-902381047/fixture/initial.game.gz",
+  "header": {
+    "major": 0,
+    "minor": 154,
+    "teams": 2,
+    "width": 64,
+    "height": 64,
+    "map_offset": 670801,
+    "gzip_sha256": "4ef768f429e598a9a8b6d65108f1563a1c18a1541d3d43023aa692d6ba406c92"
+  },
+  "start_tick": 0,
+  "start_tick_evidence": "save occurs before first simulation tick; loaded trace checked below",
+  "preparation_trace": {
+    "sha256": "3d897cee34fda5961f31d574fde7a77a273c41eda0325bffc97d18930efb7d27",
+    "teams": 2,
+    "players": 2,
+    "count": 1,
+    "first_tick": 0,
+    "last_tick": 0,
+    "flags": 0
+  },
+  "scenario": {
+    "id": "small-ni",
+    "generator": "river",
+    "width": 64,
+    "height": 64,
+    "ais": [
+      "nicowar",
+      "nicowar"
+    ],
+    "ticks": 8192
+  },
+  "seed": 902381047
+}

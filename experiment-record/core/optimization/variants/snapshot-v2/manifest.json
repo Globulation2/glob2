@@ -1,0 +1,126 @@
+{
+  "state": "complete",
+  "accepted": false,
+  "parent_factor": "snapshot-v1",
+  "base_commit": "2ced60e06b8e7fa7a4a4ecff944c40bda494bcf4",
+  "source": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/variants/snapshot-v2/source",
+  "frozen_v1_source": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/variants/snapshot/source",
+  "frozen_v1_binary": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/variants/snapshot/source/build/linux/client/release/src/glob2",
+  "frozen_v1_binary_sha256": "207563dd68bbd995c1725a28ad4c901590edd85acce3eb9f82e6f2123fd99af2",
+  "frozen_v1_variant_manifest_sha256": "13d561d3ebda15c0ca03bf77a67c817de92864045f88b47c54f534341e27e731",
+  "changed_source_files": {
+    "src/engine/sim/snapshot/BufferPool.h": {
+      "before_sha256": "eb15f6ea8e9cf431d9c74b4787c812c9efbee94232fd3fdf0d705f1b36213b25",
+      "after_sha256": "9461751f3d4c49200a9e92a755df3161a70354a4bc0a3d9177681d596f9e618e"
+    },
+    "src/engine/sim/snapshot/WorldCapture.cpp": {
+      "before_sha256": "9802869e44fe1b217e8c3696d29d500e27c2f0780a78129eb90e52dda485b688",
+      "after_sha256": "3cfb2bdf310f34b12f36fca38b019070cdd43617fa8e0521bac205883e2e164f"
+    },
+    "src/engine/sim/snapshot/WorldSnapshotTest.cpp": {
+      "before_sha256": "cf5acf5987324ed09a460e196ca59a88fcdafa3779f12f7b92365fd2fe5dee9c",
+      "after_sha256": "874908afe42bb42f3db16b7f289c54ba3a5e8b8870bebb77a2b7b27eed72ac9b"
+    }
+  },
+  "all_other_source_bytes_verified": true,
+  "excluded_generated": [
+    "build",
+    ".sconsign*",
+    "__pycache__",
+    ".cache"
+  ],
+  "patch_sha256": "bf72c11f30da428ad29e63b071763b2e9b7228c297005430a63fdbac1f15a714",
+  "test_suites": [
+    "WorldSnapshot",
+    "MapGradientInvalidation"
+  ],
+  "new_cases": [
+    "WorldSnapshot/nullable buffer acquisition preserves capacity and the consumer horizon",
+    "WorldSnapshot/unchanged resource generations do not sweep idle descriptors",
+    "WorldSnapshot/resource plane pressure reclaims idle references before allocating"
+  ],
+  "adapted_case": "WorldSnapshot/capture reuses unleased planes without touching old observations",
+  "semantic_scope": "Allocation/reclaim scheduling only; immutable observations/field values/order/key generations/horizons/save/load unchanged. Capacities retained.",
+  "algorithm": "tryAcquire nullable roundrobin+existing usecount/fence; unchanged-generation bypass; normal descriptor reuse clear; once-percapture reclaim on firstchangedplane allocationmiss; subsequentmisses normalacquire once.",
+  "build_command_example": [
+    "scons",
+    "release=1",
+    "CC=gcc-13",
+    "CXX=g++-13",
+    "LINKFLAGS=-L/usr/lib/gcc/x86_64-linux-gnu/15",
+    "-j20",
+    "build/linux/client/release/src/glob2",
+    "engine-tests"
+  ],
+  "qualification": "Not built/tested/timed. No production/sealedV1 changes or adoption. Root owns queue.",
+  "root": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/variants/snapshot-v2/source",
+  "binary": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/variants/snapshot-v2/source/build/linux/client/release/src/glob2",
+  "binary_sha256": "eb0f4eaece6685f334d18901489a57b736be2f2820afec8b6b7c84fa1c836fa5",
+  "engine_binary": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/variants/snapshot-v2/source/build/linux/client/release/test/glob2-engine-tests",
+  "engine_binary_sha256": "9688c03b416f7b00030608f9e47b53b9cffc005dc9138de783c3856ba3b5db7a",
+  "build_returncode": 0,
+  "build_command": [
+    "scons",
+    "release=1",
+    "CC=gcc-13",
+    "CXX=g++-13",
+    "LINKFLAGS=-L/usr/lib/gcc/x86_64-linux-gnu/15",
+    "-j32",
+    "build/linux/client/release/src/glob2",
+    "engine-tests"
+  ],
+  "build_affinity": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31
+  ],
+  "build_log_sha256": "25bf25b46bf3c71245d0a268c28cfc9ee26f2a1eccf2b834ed85bd9f3388bc52",
+  "build_elapsed_s": null,
+  "build_elapsed_note": "No exact whole-build timer collected; do not infer comparable compile time.",
+  "test_setup_fix": {
+    "reason": "Two addedfixtures had no natural Food/Stone resource, so slot query returned absentMaterialField and direct update asserted null; not observed productionengine regression.",
+    "before_test_source_sha256": "0e15753963787db612225949154de11df86e303ceefd9c3ffd62faba1e624dda",
+    "after_test_source_sha256": "874908afe42bb42f3db16b7f289c54ba3a5e8b8870bebb77a2b7b27eed72ac9b",
+    "failure_evidence": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/tests/failed-first-snapshot-v2",
+    "pending": "Root rebuildengineharness andrerun41focusedcases; no performanceclaim.",
+    "application_sources_unchanged": true,
+    "application_binary_sha256": "eb0f4eaece6685f334d18901489a57b736be2f2820afec8b6b7c84fa1c836fa5",
+    "source_provenance": "Nestedarchivedsource Gitqueries inheritouter worktree; actualsource hashes +buildreceipts authoritative."
+  },
+  "source_sha256": {
+    "src/engine/sim/snapshot/BufferPool.h": "9461751f3d4c49200a9e92a755df3161a70354a4bc0a3d9177681d596f9e618e",
+    "src/engine/sim/snapshot/WorldCapture.cpp": "3cfb2bdf310f34b12f36fca38b019070cdd43617fa8e0521bac205883e2e164f",
+    "src/engine/sim/snapshot/WorldSnapshotTest.cpp": "874908afe42bb42f3db16b7f289c54ba3a5e8b8870bebb77a2b7b27eed72ac9b"
+  },
+  "harness_rebuild_returncode": 0,
+  "harness_rebuild_log_sha256": "b11099830a822365277a3543ee1e925b853cf4b747dee13a7ee8b1dee7804b8b"
+}

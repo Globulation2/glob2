@@ -1,0 +1,20 @@
+{
+  "plan_only": true,
+  "cases": 750,
+  "fixtures": 25,
+  "repetitions": 10,
+  "iterations": 64,
+  "cpu": 12,
+  "helpers": [
+    15,
+    31
+  ],
+  "variants": [
+    "baseline",
+    "batch32",
+    "batch128"
+  ],
+  "order": "ABC/CBA alternating repetitions within each fixture",
+  "preflight": "97fixture all-cell and actual visitation digest proof from separate counter binaries; each timing invocation selected-fixture oracle gate before timer and all-cell checks afterward.",
+  "limitations": "Current no-stop/no-filter uniform AI kernel only; no weighted/geometric admission/seeding production coverage, generic earlystop/resume/exception checkpoint claim. Predrain preserves full FIFO visit/discovery/output sequence but changes momentary pending queue and bad_alloc pending state. Existing public API pops/item unchanged. Synthetic fixtures and kernel-only timings cannot establish game benefit. No engines or timing launched during preparation."
+}

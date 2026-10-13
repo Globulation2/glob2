@@ -1,0 +1,679 @@
+--- a/src/app/cli/Headless.cpp
++++ b/src/app/cli/Headless.cpp
+@@ -18,6 +18,7 @@
+ #include "AIJavaScript.h"
+ #include "ComputeThreads.h"
+ #include "field/OpenCLGradient.h"
++#include "field/BackendSession.h"
+ #include "AIMaximaStrategy.h"
+ #include "ai/cortex/CortexTuning.h"
+ #include "Game.h"
+@@ -622,6 +623,15 @@
+ 			<< ",\"compute_resolved_threads\":" << computeThreads
+ 			<< ",\"gpu_host_event_waits\":" << opencl.hostEventWaits
+ 			<< ",\"gpu_requested\":" << globals.gpuComputeEnabled()
++			<< ",\"gpu_available\":" << opencl.available
++			<< ",\"gpu_ready_plans\":" << gradient_kernel::readyPlans.load()
++			<< ",\"gpu_required_quarantine_pending\":" << opencl.requiredQuarantinePending
++			<< ",\"gpu_required_quarantines\":" << opencl.requiredQuarantines
++			<< ",\"gpu_required_proof_failures\":" << opencl.requiredProofFailures
++			<< ",\"gpu_required_cancellations\":" << opencl.requiredCancellations
++			<< ",\"gpu_cancellation_suspended\":" << opencl.requiredCancellationSuspended
++			<< ",\"gpu_cancellation_recoveries\":" << opencl.requiredCancellationRecoveries
++			<< ",\"gpu_cancellation_fences\":" << opencl.requiredCancellationFences
+ 			<< ",\"gpu_device\":" << quote(opencl.device)
+ 			<< ",\"gpu_error\":" << quote(opencl.error)
+ 			<< ",\"compute_workers\":" << game.map.computeExecutor().threadCount() - 1
+--- a/src/field/GradientDeviceService.cpp
++++ b/src/field/GradientDeviceService.cpp
+@@ -91,7 +91,8 @@
+             if(state->hooks.initialize)ready=state->hooks.initialize();
+             else {
+                 if(!realInitialized){realReady=initializeOpenCL();realInitialized=true;}
+-                ready=realReady && (readyPlans.load(std::memory_order_acquire)&(1u<<unsigned(Plan::Frozen8)));
++                ready=realReady && ((readyPlans.load(std::memory_order_acquire)&(1u<<unsigned(Plan::Frozen8))) ||
++                    openCLCancellationRecoveryPending());
+             }
+         }catch(...){}
+         std::lock_guard lock(state->mutex);state->initialized=true;state->started=ready && !state->canceled;
+@@ -191,7 +192,7 @@
+             std::shared_ptr<GradientDeviceState> selected;bool initialization=false;
+             {
+                 std::unique_lock lock(mutex);
+-                if(realInitialized && requiredOpenCLQuarantinePending())
++                if(realInitialized && (requiredOpenCLQuarantinePending() || openCLCancellationRecoveryPending()))
+                     wake.wait_for(lock,std::chrono::milliseconds(100),[&]{return stopping || pending();});
+                 else wake.wait(lock,[&]{return stopping || pending();});
+                 for(auto at=registrations.begin();at!=registrations.end();) {
+@@ -208,7 +209,7 @@
+                 if(!selected && stopping)break;
+             }
+             if(selected){if(initialization)initialize(selected);else execute(selected);}
+-            if(realInitialized && requiredOpenCLQuarantinePending())reapOpenCLRequiredQuarantine();
++            if(realInitialized && (requiredOpenCLQuarantinePending() || openCLCancellationRecoveryPending()))reapOpenCLRequiredQuarantine();
+             brokerCpuNs=glob2::threadCpuDeltaNs(start,glob2::threadCpuNs());
+         }
+         brokerCpuNs=glob2::threadCpuDeltaNs(start,glob2::threadCpuNs());brokerThreads=0;
+--- /dev/null
++++ b/src/field/OpenCLDeviceHealth.h
+@@ -0,0 +1,32 @@
++// SPDX-License-Identifier: GPL-3.0-or-later
++#pragma once
++#include <atomic>
++#include <cstdint>
++
++namespace gradient_kernel
++{
++// Local device admission only. A permanent failure can never be rehabilitated.
++// Device serializes admission/readiness publication under its failure mutex.
++class OpenCLDeviceHealth
++{
++public:
++    enum class State { Ready, CancellationSuspended, PermanentFailure };
++private:
++    std::atomic<State> value{State::Ready};
++public:
++    State state() const noexcept { return value.load(std::memory_order_acquire); }
++    bool ready() const noexcept { return state()==State::Ready; }
++    bool failed() const noexcept { return state()==State::PermanentFailure; }
++    bool suspended() const noexcept { return state()==State::CancellationSuspended; }
++    void fail() noexcept { value.store(State::PermanentFailure,std::memory_order_release); }
++    void suspend() noexcept {
++        auto expected=State::Ready;
++        value.compare_exchange_strong(expected,State::CancellationSuspended,std::memory_order_acq_rel);
++    }
++    bool recover(bool retainedProofPending,std::uint64_t activeLanes) noexcept {
++        if(retainedProofPending || activeLanes)return false;
++        auto expected=State::CancellationSuspended;
++        return value.compare_exchange_strong(expected,State::Ready,std::memory_order_acq_rel);
++    }
++};
++}
+--- a/src/field/OpenCLGradient.cpp
++++ b/src/field/OpenCLGradient.cpp
+@@ -2,6 +2,7 @@
+ #include "OpenCLGradient.h"
+ #include "OpenCLRequiredLifetimePool.h"
+ #include "OpenCLTransferProof.h"
++#include "OpenCLDeviceHealth.h"
+ #include "OpenCLLaneRegistry.h"
+ #include "GradientBackend.h"
+ #include "ThreadCpuClock.h"
+@@ -133,6 +134,7 @@
+                 const Handle *, Handle *);
+     CL_FUNCTION(EnqueueNDRangeKernel, Int, Handle, Handle, UInt, const std::size_t *, const std::size_t *,
+                 const std::size_t *, UInt, const Handle *, Handle *);
++    CL_FUNCTION(EnqueueMarkerWithWaitList, Int, Handle, UInt, const Handle*, Handle*);
+     CL_FUNCTION(Flush, Int, Handle);
+     CL_FUNCTION(GetEventInfo, Int, Handle, UInt, std::size_t, void*, std::size_t*);
+     CL_FUNCTION(WaitForEvents, Int, UInt, const Handle*);
+@@ -180,6 +182,8 @@
+         LOAD(EnqueueFillBuffer);
+         LOAD(EnqueueReadBuffer);
+         LOAD(EnqueueNDRangeKernel);
++        // Optional: absence preserves ordinary GPU execution and fail-stop cancellation.
++        EnqueueMarkerWithWaitList=reinterpret_cast<decltype(EnqueueMarkerWithWaitList)>(SDL_LoadFunction(library,"clEnqueueMarkerWithWaitList"));
+         LOAD(Flush);
+         LOAD(GetEventInfo);
+         LOAD(WaitForEvents);
+@@ -331,10 +335,12 @@
+     API api;
+     std::mutex initialization, cacheMutex, lanesMutex, failureMutex;
+     bool probed = false;
+-    bool waitFailureDiagnostics=false;
+-    std::atomic<bool> failed{false};
++    bool waitFailureDiagnostics=false,costWaiterDiagnostics=false;
++    std::atomic<unsigned> costWaiters{0};
++    OpenCLDeviceHealth health;
+     OpenCLRequiredLifetimePool requiredLifetime;
+-    bool requiredQueryFailureDiagnostics=false;
++    bool requiredQueryFailureDiagnostics=false,cancelBeforeReadDiagnostics=false;
++    std::atomic<bool> cancellationInjected{false};
+     MemoryBudget deviceBudget{OpenCLDeviceBudget};
+     Handle device = nullptr, context = nullptr;
+     OpenCLStatus status;
+@@ -371,6 +377,9 @@
+         // A fixed preallocated failure cannot retain an arbitrary callback's
+         // exception graph in a published promise or quarantined cost plane.
+         std::exception_ptr preparationFailure=std::make_exception_ptr(std::runtime_error("OpenCL cost preparation failed"));
++        // The shared future preserves cancellation for every same-plane waiter.
++        // Preallocate both bounded exceptions inside the charged Plane metadata.
++        std::exception_ptr cancellationFailure=std::make_exception_ptr(RequiredCanceled());
+         std::promise<void> completed;
+         std::shared_future<void> ready = completed.get_future().share();
+         std::atomic<bool> published{false};
+@@ -409,7 +418,7 @@
+     std::uint64_t retiredSequence = 0;
+     std::atomic<std::uint64_t> sequence{0}, active{0}, maximumActive{0};
+     std::atomic<std::uint64_t> noopFields{0}, threadCPUNs{0},threadCPUInvalidMeasurements{0},laneBudgetDeclines{0};
+-    std::atomic<std::uint64_t> requiredQuarantines{0},requiredProofFailures{0};
++    std::atomic<std::uint64_t> requiredQuarantines{0},requiredProofFailures{0},cancellationRecoveries{0},cancellationFences{0};
+     std::atomic<bool> threadCPUAvailable{false};
+     void reapExpiredLanes() noexcept {std::lock_guard lock(lanesMutex);lanes.clearExpired();}
+     void evictUnusedPlanes() {
+@@ -439,7 +448,9 @@
+         try
+         {
+             requiredQueryFailureDiagnostics=numericOverride("GLOB2_TEST_OPENCL_REQUIRED_QUERY_FAILURE",0,1)!=0;
++            cancelBeforeReadDiagnostics=numericOverride("GLOB2_TEST_OPENCL_CANCEL_BEFORE_READ",0,1)!=0;
+             waitFailureDiagnostics=numericOverride("GLOB2_TEST_OPENCL_WAIT_FAILURE",0,1)!=0;
++            costWaiterDiagnostics=numericOverride("GLOB2_TEST_OPENCL_COST_CANCELLATION",0,1)!=0;
+             api.load();
+             const auto requestedDevice=numericOverride("GLOB2_OPENCL_DEVICE",0,std::numeric_limits<unsigned>::max());
+             const bool explicitDevice=std::getenv("GLOB2_OPENCL_DEVICE")!=nullptr;
+@@ -589,9 +600,31 @@
+         for(std::size_t i=0;i<planes.size();++i)
+             if(planes[i]==plane) {used[i]=++age;break;}
+     }
++    unsigned compiledMask() const noexcept {
++        unsigned mask=0;
++        if(status.available)for(const auto& variant:variants)if(variant.kernel)mask|=1u<<unsigned(variant.id);
++        return mask;
++    }
++    void publishReadyPlans() {
++        std::lock_guard lock(failureMutex);
++        readyPlans.store(health.ready()?compiledMask():0,std::memory_order_release);
++    }
+     void fail(std::string_view message) noexcept {
+-        failed.store(true);
+-        try { std::lock_guard lock(failureMutex); if(status.error.empty()) status.error.assign(message.substr(0,4096)); } catch(...) {}
++        try {
++            std::lock_guard lock(failureMutex);health.fail();readyPlans.store(0,std::memory_order_release);
++            if(status.error.empty())status.error.assign(message.substr(0,4096));
++        }catch(...) {health.fail();readyPlans.store(0,std::memory_order_release);}
++    }
++    void suspendCancellation() noexcept {
++        try {std::lock_guard lock(failureMutex);health.suspend();readyPlans.store(0,std::memory_order_release);}
++        catch(...) {health.fail();readyPlans.store(0,std::memory_order_release);}
++    }
++    void recoverCancellation() noexcept {
++        try {
++            std::lock_guard lock(failureMutex);
++            if(!compiledMask() || !health.recover(requiredLifetime.quarantined(),active.load()))return;
++            ++cancellationRecoveries;readyPlans.store(compiledMask(),std::memory_order_release);
++        }catch(...) {health.fail();readyPlans.store(0,std::memory_order_release);}
+     }
+ };
+ std::weak_ptr<Device> existingDevice;
+@@ -664,9 +697,12 @@
+         static bool terminalProof(void* value) noexcept {
+             auto& transaction=*static_cast<RequiredTransaction*>(value);
+             if(!transaction.event || !transaction.proof.canPollEvent())return false;
+-            if(transaction.diagnosticQueryFailures){--transaction.diagnosticQueryFailures;return false;}
++            if(transaction.diagnosticQueryFailures){--transaction.diagnosticQueryFailures;transaction.lane->shared->fail("OpenCL terminal query unavailable");return false;}
+             Int state=1;
+-            if(transaction.lane->api.GetEventInfo(transaction.event,0x11D3,sizeof state,&state,nullptr) || state!=0)return false;
++            if(transaction.lane->api.GetEventInfo(transaction.event,0x11D3,sizeof state,&state,nullptr) || state<0) {
++                transaction.lane->shared->fail("OpenCL terminal query failed");return false;
++            }
++            if(state!=0)return false;
+             transaction.proof.eventCompleted();return !transaction.proof.needsProof();
+         }
+     };
+@@ -747,11 +783,14 @@
+         for(auto& l:live) if(l) { std::lock_guard lock(l->mutex);accumulate(out,l->status);
+             if(l->statusSequence>=last) {parameters(out,l->status);last=l->statusSequence;}
+         }
+-        out.available=out.available&&!shared->failed.load();
++        out.available=out.available&&shared->health.ready();
+         out.budgetDeclines+=shared->laneBudgetDeclines.load();
+         out.requiredQuarantines=shared->requiredQuarantines.load();
+         out.requiredProofFailures=shared->requiredProofFailures.load();
+         out.requiredQuarantinePending=shared->requiredLifetime.quarantined();
++        out.requiredCancellationSuspended=shared->health.suspended();
++        out.requiredCancellationRecoveries=shared->cancellationRecoveries.load();
++        out.requiredCancellationFences=shared->cancellationFences.load();
+         out.hostBytes=hostBudget.current.load();out.peakHostBytes=hostBudget.peak.load();
+         out.deviceBytes=shared->deviceBudget.current.load();out.peakDeviceBytes=shared->deviceBudget.peak.load();
+         out.noopFields=shared->noopFields.load();out.threadCPUNs=shared->threadCPUNs.load();
+@@ -774,7 +813,7 @@
+     void probe() {
+         if(probed) return;
+         if(!readyPlans.load(std::memory_order_acquire)) throw std::runtime_error("OpenCL plans not ready");
+-        if(!shared->status.available || shared->failed.load()) throw std::runtime_error("OpenCL device unavailable");
++        if(!shared->status.available || shared->health.failed()) throw std::runtime_error("OpenCL device unavailable");
+         context=shared->context;device=shared->device;
+         Int error=0;
+         queue=api.CreateCommandQueue(context,device,0,&error);check(error);
+@@ -832,6 +871,8 @@
+         // All transfer endpoints and retained events already belong to it.
+     }
+     void read(Handle buffer,void* output,std::size_t bytes,bool /*finalOutput*/) {
++        if(required && shared->cancelBeforeReadDiagnostics && required->controls[0] &&
++           !shared->cancellationInjected.exchange(true))required->controls[0]->requestCancel();
+         if(required && required->canceled())throw RequiredCanceled();
+         Event event(api);
+         const bool asynchronous=required || shared->status.pollMicros!=0;
+@@ -857,9 +898,16 @@
+         await(event);
+     }
+     void awaitPlane(const std::shared_ptr<Device::Plane>& p) {
++        struct Waiter {
++            Device& device;bool counted;
++            explicit Waiter(Device& device):device(device),counted(device.costWaiterDiagnostics) {
++                if(counted)++device.costWaiters;
++            }
++            ~Waiter(){if(counted)--device.costWaiters;}
++        } waiter(*shared);
+         while(p->ready.wait_for(std::chrono::milliseconds(1))!=std::future_status::ready) {
+             if(required && required->canceled())throw RequiredCanceled();
+-            if(shared->failed.load()) throw std::runtime_error("OpenCL cost preparation failed on another lane");
++            if(shared->health.failed()) throw std::runtime_error("OpenCL cost preparation failed on another lane");
+         }
+         p->ready.get();
+     }
+@@ -899,6 +947,11 @@
+                 shared->planes[slot]=p;shared->used[slot]=++shared->age;reserved=true;break;
+             }
+         }
++        const auto failPreparation=[&](const std::exception_ptr& failure) {
++            try {p->completed.set_exception(failure);} catch(...) {}
++            std::lock_guard lock(shared->cacheMutex);
++            for(auto& cached:shared->planes)if(cached==p)cached.reset();
++        };
+         try {
+             const auto n=r.grid.cells();
+             if(knownUniform)p->data[0]=packed;
+@@ -939,15 +992,17 @@
+                 shared->planes[slot]=p;shared->used[slot]=++shared->age;
+             }
+             return p;
++        } catch(const RequiredCanceled&) {
++            failPreparation(p->cancellationFailure);
++            throw;
+         } catch(...) {
+-            try {p->completed.set_exception(p->preparationFailure);} catch(...) {}
+-            {std::lock_guard lock(shared->cacheMutex);for(auto& cached:shared->planes) if(cached==p) cached.reset();}
++            failPreparation(p->preparationFailure);
+             throw;
+         }
+     }
+     void computeBatch(std::span<const BackendRequest *const> requests,std::span<std::uint16_t> staging)
+     {
+-        if(shared->failed.load()) throw std::runtime_error("OpenCL device failed on another lane");
++        if(shared->health.failed()) throw std::runtime_error("OpenCL device failed on another lane");
+         std::size_t total = 0;
+         UInt width = 0, height = 0;
+         for (auto *r : requests)
+@@ -1056,7 +1111,7 @@
+         bool deviceObserved=false;
+         for (UInt round = 0; round < 65536;)
+         {
+-            if(shared->failed.load()) throw std::runtime_error("OpenCL device failed on another lane");
++            if(shared->health.failed()) throw std::runtime_error("OpenCL device failed on another lane");
+             if(required && required->canceled())throw RequiredCanceled();
+             const auto count=std::min<UInt>(checkInterval,65536-round);
+             for (unsigned dispatch = 0; dispatch < count; ++dispatch)
+@@ -1140,7 +1195,7 @@
+         if(input.empty()) return true;
+         if(plan==Plan::CPU || unsigned(plan)>=PLANS.size() ||
+            !(readyPlans.load(std::memory_order_acquire)&(1u<<unsigned(plan)))) return false;
+-        if(shared->failed.load()) {
++        if(shared->health.failed()) {
+             for(const auto& r:input) r.session.fail();
+             return false;
+         }
+@@ -1157,10 +1212,15 @@
+         }
+         std::lock_guard lock(mutex);
+         struct Active {
+-            Device& d;
+-            Active(Device& d):d(d) {const auto n=++d.active;auto old=d.maximumActive.load();while(old<n&&!d.maximumActive.compare_exchange_weak(old,n)){} }
+-            ~Active(){--d.active;}
++            Device& d;bool admitted=false;
++            Active(Device& d):d(d) {
++                std::lock_guard lock(d.failureMutex);
++                if(!d.health.ready())return;
++                admitted=true;const auto n=++d.active;auto old=d.maximumActive.load();while(old<n&&!d.maximumActive.compare_exchange_weak(old,n)){}
++            }
++            ~Active(){if(admitted)--d.active;}
+         } activeLane(*shared);
++        if(!activeLane.admitted)return false;
+         statusSequence=++shared->sequence;
+         auto* slot=shared->requiredLifetime.tryReserve();
+         if(!slot){++status.budgetDeclines;return false;}
+@@ -1199,7 +1259,7 @@
+                 status.fields+=count;
+             }
+             if(std::any_of(input.begin(),input.end(),[](const auto& r){return r.requiredControl && r.requiredControl->shouldCancel(monotonicNs());}))throw RequiredCanceled();
+-            if(shared->failed.load() || std::any_of(input.begin(),input.end(),[](const auto& r){return r.session.failed.load();}))
++            if(shared->health.failed() || std::any_of(input.begin(),input.end(),[](const auto& r){return r.session.failed.load();}))
+                 throw std::runtime_error("OpenCL device or session failed on another lane");
+             outputOffset=0;
+             for(const auto& r:input) {
+@@ -1213,7 +1273,7 @@
+             return true;
+         } catch(const RequiredCanceled&) {
+             ++status.requiredCancellations;
+-            if(transaction && transaction->proof.needsProof())protectFailedTransaction(transaction);
++            if(transaction && transaction->proof.needsProof())protectFailedTransaction(transaction,true);
+             return false;
+         } catch(const BudgetExceeded&) {
+             ++status.budgetDeclines;
+@@ -1233,12 +1293,22 @@
+             return false;
+         }
+     }
+-    void protectFailedTransaction(const std::shared_ptr<RequiredTransaction>& transaction) noexcept {
+-        // A covered positive event is proof. Failure/absence is never permission
+-        // to block on Finish or release borrowed endpoints during CPU recovery.
++    void protectFailedTransaction(const std::shared_ptr<RequiredTransaction>& transaction,bool cancellation=false) noexcept {
++        // Existing proof is unchanged. Never accept abandoned GPU output.
+         if(RequiredTransaction::terminalProof(transaction.get()))return;
++        bool covered=transaction->proof.canPollEvent();
++        if(cancellation && !transaction->proof.ambiguousCommands() && !shared->health.failed()) {
++            if(!covered && api.EnqueueMarkerWithWaitList) {
++                Handle event=nullptr;
++                const auto result=api.EnqueueMarkerWithWaitList(queue,0,nullptr,&event);
++                transaction->remember(event);transaction->proof.enqueue(result,event!=nullptr);
++                covered=result==0 && event && api.Flush(queue)==0;
++                if(covered)++shared->cancellationFences;
++            }
++            if(covered)shared->suspendCancellation();
++            else shared->fail("OpenCL cancellation lacks a covering terminal fence");
++        }else shared->fail({});
+         ++shared->requiredProofFailures;++shared->requiredQuarantines;
+-        shared->failed.store(true,std::memory_order_release);readyPlans.store(0,std::memory_order_release);
+         if(!transaction->admission.slot->quarantine(transaction))std::terminate();
+     }
+     bool run(const BackendRequest& r, Plan plan) { return batch(std::span(&r,1),plan); }
+@@ -1284,10 +1354,7 @@
+ #if !defined(SDL_PLATFORM_EMSCRIPTEN) && !defined(SDL_PLATFORM_ANDROID) && !defined(SDL_PLATFORM_IOS)
+     auto& device=*runtime().shared;
+     device.initialize();
+-    unsigned mask=0;
+-    if(device.status.available && !device.failed.load())
+-        for(std::size_t i=0;i<device.variants.size();++i) if(device.variants[i].kernel) mask|=1u<<unsigned(device.variants[i].id);
+-    readyPlans.store(mask,std::memory_order_release);
++    device.publishReadyPlans();
+ #endif
+ }
+ struct Register
+@@ -1329,10 +1396,27 @@
+     return false;
+ #endif
+ }
++unsigned openCLCostPreparationWaiters() noexcept {
++#if !defined(SDL_PLATFORM_EMSCRIPTEN) && !defined(SDL_PLATFORM_ANDROID) && !defined(SDL_PLATFORM_IOS)
++    std::lock_guard lock(existingDeviceMutex);const auto device=existingDevice.lock();
++    return device ? device->costWaiters.load() : 0;
++#else
++    return 0;
++#endif
++}
++bool openCLCancellationRecoveryPending() noexcept {
++#if !defined(SDL_PLATFORM_EMSCRIPTEN) && !defined(SDL_PLATFORM_ANDROID) && !defined(SDL_PLATFORM_IOS)
++    std::shared_ptr<Device> device;
++    {std::lock_guard lock(existingDeviceMutex);device=existingDevice.lock();}
++    return device && device->health.suspended();
++#else
++    return false;
++#endif
++}
+ bool reapOpenCLRequiredQuarantine() noexcept {
+ #if !defined(SDL_PLATFORM_EMSCRIPTEN) && !defined(SDL_PLATFORM_ANDROID) && !defined(SDL_PLATFORM_IOS)
+     try {auto device=runtime().shared;const bool reaped=device->requiredLifetime.tryReap(&Runtime::RequiredTransaction::terminalProof);
+-        device->reapExpiredLanes();return reaped;}catch(...){return false;}
++        device->reapExpiredLanes();device->recoverCancellation();return reaped;}catch(...){return false;}
+ #else
+     return false;
+ #endif
+--- a/src/field/OpenCLGradient.h
++++ b/src/field/OpenCLGradient.h
+@@ -39,16 +39,24 @@
+     bool deviceOrdinalKnown=false;
+     std::uint64_t requiredQuarantines=0,requiredProofFailures=0,requiredCancellations=0;
+     bool requiredQuarantinePending=false;
++    bool requiredCancellationSuspended=false;
++    std::uint64_t requiredCancellationRecoveries=0,requiredCancellationFences=0;
+ };
+ // Status only: never initializes or compiles. Worker-only maintenance publishes
+ // readiness; required callers keep using CPU until a selected plan is ready.
+ OpenCLStatus openCLStatus();
+ // These operations are also valid on an owned device-service thread without an
+ // executor worker slot. Execution never selects a plan or performs CPU recovery.
+-// Background single coordinator only. No waits, initialization or GPU restart.
++// Background single coordinator only. Positive proof may resume a cancellation
++// suspension with zero active lanes; permanent failure never restarts.
+ bool reapOpenCLRequiredQuarantine() noexcept;
+ // Bounded metadata only: no driver query, allocation or initialization.
+ bool requiredOpenCLQuarantinePending() noexcept;
++// Keeps background maintenance alive if proof is already reaped but another
++// healthy lane still has to retire before cancellation admission resumes.
++bool openCLCancellationRecoveryPending() noexcept;
++// Opt-in isolated fault rendezvous: atomic metadata only; no lane/driver query.
++unsigned openCLCostPreparationWaiters() noexcept;
+ bool initializeOpenCL();
+ bool executeOpenCLDevice(std::span<const BackendRequest> requests, Plan plan);
+ // Process-owned coordinators retain this lease until after their thread joins.
+--- a/src/field/OpenCLGradientTest.cpp
++++ b/src/field/OpenCLGradientTest.cpp
+@@ -3,7 +3,6 @@
+ #include "Glob2Test.h"
+ #include "GradientPropagation.h"
+ #include "TerrainGradient.h"
+-#include <iostream>
+ #include <barrier>
+ #include <cstdlib>
+ #include <cstring>
+@@ -11,6 +10,7 @@
+ #include <queue>
+ #include <random>
+ #include <thread>
++#include <iostream>
+ 
+ namespace
+ {
+@@ -800,6 +800,67 @@
+ 
+ }
+ 
++TEST_CASE("isolated cancellation tail reaps before a fresh field commits real GPU output" * doctest::test_suite("OpenCLGradient"))
++{
++    const auto* enabled=std::getenv("GLOB2_TEST_OPENCL_CANCEL_BEFORE_READ");
++    if(!enabled || std::strcmp(enabled,"1"))return;
++    if constexpr(!GAGCore::ThreadSupport::available)return;
++    using namespace gradient_kernel;
++    REQUIRE(initializeOpenCL());REQUIRE(openCLStatus().available);
++    onWorker([&]{
++        BackendSession session;const auto generation=session.currentGeneration();
++        const field::Grid grid(31,17);
++        auto costs=std::make_shared<std::vector<EntrySteps>>(grid.cells(),LAND_STEPS);
++        std::vector<std::uint16_t> seeds(grid.cells(),1);seeds[0]=65535;seeds[17]=65300;seeds[13]=0;
++        const auto original=seeds,expected=oracle(seeds,grid,*costs,700);
++        struct Context {const std::vector<EntrySteps>* costs;const std::vector<std::uint16_t>* original;
++            const std::vector<std::uint16_t>* expected;unsigned cpu=0;} context{costs.get(),&original,&expected};
++        bool executed=false;
++        BackendRequest request{seeds.data(),700,grid,session,&context,
++            [](void* value,std::size_t cell){return (*static_cast<Context*>(value)->costs)[cell];},
++            [](void* value,std::uint16_t* out){auto& c=*static_cast<Context*>(value);++c.cpu;
++                CHECK(std::equal(c.original->begin(),c.original->end(),out));
++                std::copy(c.expected->begin(),c.expected->end(),out);},
++            {costs,71981823,1,false,sizeof(*costs)+costs->capacity()*sizeof(EntrySteps)}};
++        request.executedOnDevice=&executed;request.requiredControl=makeOpenCLRequiredControl();
++        REQUIRE(request.requiredControl);
++        const auto before=openCLStatus();
++        executeGradientGroup(std::span(&request,1),Backend::OpenCL);
++        CHECK(context.cpu==1);CHECK(seeds==expected);CHECK_FALSE(executed);
++        CHECK_FALSE(session.failed.load());CHECK(session.currentGeneration()==generation);
++        const auto retained=openCLStatus();
++        REQUIRE(retained.requiredQuarantinePending);REQUIRE(retained.requiredCancellationSuspended);
++        CHECK(retained.requiredCancellationFences==before.requiredCancellationFences+1);
++        CHECK(readyPlans.load()==0);
++        // Models the sole background coordinator; owner publication already
++        // recovered the original seeds and never waits on these driver queries.
++        const auto deadline=std::chrono::steady_clock::now()+std::chrono::seconds(5);
++        while(openCLCancellationRecoveryPending() && std::chrono::steady_clock::now()<deadline) {
++            reapOpenCLRequiredQuarantine();std::this_thread::yield();
++        }
++        REQUIRE_FALSE(openCLCancellationRecoveryPending());
++        const auto recovered=openCLStatus();REQUIRE(recovered.available);
++        CHECK_FALSE(recovered.requiredQuarantinePending);
++        CHECK(recovered.requiredCancellationRecoveries==before.requiredCancellationRecoveries+1);
++        CHECK_FALSE(session.failed.load());
++        // A NEW control/field is essential: canceled work is never recommitted.
++        request.requiredControl=makeOpenCLRequiredControl();REQUIRE(request.requiredControl);
++        seeds=original;request.gradient=seeds.data();executed=false;
++        executeGradientGroup(std::span(&request,1),Backend::OpenCL);
++        REQUIRE(executed);CHECK(context.cpu==1);CHECK(seeds==expected);
++        CHECK(openCLStatus().committedFields>recovered.committedFields);
++        const auto final=openCLStatus();
++        std::cout<<"GLOB2_OPENCL_CANCEL_RECOVERY_PROOF {\"cpu_fallbacks\":"<<context.cpu
++            <<",\"fresh_gpu_executed\":"<<executed
++            <<",\"fresh_gpu_commits\":"<<(final.committedFields-recovered.committedFields)
++            <<",\"recovery_delta\":"<<(final.requiredCancellationRecoveries-before.requiredCancellationRecoveries)
++            <<",\"fence_delta\":"<<(final.requiredCancellationFences-before.requiredCancellationFences)
++            <<",\"quarantine_pending\":"<<final.requiredQuarantinePending
++            <<",\"session_failed\":"<<session.failed.load()
++            <<",\"ready_plans\":"<<readyPlans.load()<<"}\n";
++    });
++}
++
+ TEST_CASE("isolated required query failure retains cost graph through exact CPU recovery" * doctest::test_suite("OpenCLGradient"))
+ {
+     const auto* enabled=std::getenv("GLOB2_TEST_OPENCL_REQUIRED_QUERY_FAILURE");
+@@ -833,6 +894,8 @@
+         while(!reaped && std::chrono::steady_clock::now()<deadline){reaped=reapOpenCLRequiredQuarantine();if(!reaped)std::this_thread::yield();}
+         REQUIRE(reaped);CHECK(weakCosts.expired());CHECK_FALSE(openCLStatus().requiredQuarantinePending);
+         CHECK(openCLStatus().hostBytes<retained.hostBytes);CHECK(context.cpu==1);CHECK(seeds==expected);
++        CHECK_FALSE(openCLStatus().available);CHECK(readyPlans.load()==0);
++        CHECK(session.failed.load());CHECK_FALSE(openCLCancellationRecoveryPending());
+     });
+ }
+ 
+@@ -930,6 +993,65 @@
+             <<",\"session_failed\":"<<session.failed.load()
+             <<",\"ready_plans\":"<<readyPlans.load()<<"}\n";
+     });
++}
++
++TEST_CASE("isolated shared cost cancellation preserves both sessions and exact fallback" * doctest::test_suite("OpenCLGradient"))
++{
++    const auto* enabled=std::getenv("GLOB2_TEST_OPENCL_COST_CANCELLATION");
++    if(!enabled || std::strcmp(enabled,"1"))return;
++    if constexpr(!GAGCore::ThreadSupport::available)return;
++    using namespace gradient_kernel;
++    REQUIRE(initializeOpenCL());REQUIRE(openCLStatus().available);
++    const field::Grid grid(31,17);
++    auto costs=std::make_shared<std::vector<EntrySteps>>(grid.cells(),LAND_STEPS);
++    std::vector<std::uint16_t> original(grid.cells(),1);original[0]=65535;original[17]=65300;
++    const auto expected=oracle(original,grid,*costs,700);
++    auto producerSeeds=original,waiterSeeds=original;
++    BackendSession producerSession,waiterSession;
++    std::promise<void> entered,release;auto enteredFuture=entered.get_future();
++    const auto released=release.get_future().share();
++    struct Context {const std::vector<EntrySteps>* costs;const std::vector<std::uint16_t>* original;
++        const std::vector<std::uint16_t>* expected;std::promise<void>* entered=nullptr;
++        std::shared_future<void> released;unsigned cpu=0;bool first=true;};
++    Context producer{costs.get(),&original,&expected,&entered,released},waiter{costs.get(),&original,&expected};
++    const auto readCost=[](void* value,std::size_t cell){auto& c=*static_cast<Context*>(value);
++        if(c.entered && c.first){c.first=false;c.entered->set_value();c.released.wait();}
++        return (*c.costs)[cell];};
++    const auto cpu=[](void* value,std::uint16_t* out){auto& c=*static_cast<Context*>(value);++c.cpu;
++        CHECK(std::equal(c.original->begin(),c.original->end(),out));
++        std::copy(c.expected->begin(),c.expected->end(),out);};
++    const CostIdentity identity{costs,8374912,1,true,sizeof(*costs)+costs->capacity()*sizeof(EntrySteps)};
++    BackendRequest a{producerSeeds.data(),700,grid,producerSession,&producer,readCost,cpu,identity};
++    BackendRequest b{waiterSeeds.data(),700,grid,waiterSession,&waiter,readCost,cpu,identity};
++    a.requiredControl=makeOpenCLRequiredControl();b.requiredControl=makeOpenCLRequiredControl();
++    REQUIRE(a.requiredControl);REQUIRE(b.requiredControl);
++    std::thread producerThread,waiterThread;std::exception_ptr producerError,waiterError;
++    struct Cleanup {std::promise<void>& release;std::thread& producer;std::thread& waiter;bool released=false;
++        void unblock(){if(!released){released=true;release.set_value();}}
++        ~Cleanup(){unblock();if(producer.joinable())producer.join();if(waiter.joinable())waiter.join();}
++    } cleanup{release,producerThread,waiterThread};
++    producerThread=std::thread([&]{try{onWorker([&]{executeGradientGroup(std::span(&a,1),Backend::OpenCL);});}catch(...){producerError=std::current_exception();}});
++    const bool enteredProducer=enteredFuture.wait_for(std::chrono::seconds(5))==std::future_status::ready;
++    REQUIRE(enteredProducer);
++    waiterThread=std::thread([&]{try{onWorker([&]{executeGradientGroup(std::span(&b,1),Backend::OpenCL);});}catch(...){waiterError=std::current_exception();}});
++    const auto deadline=std::chrono::steady_clock::now()+std::chrono::seconds(5);
++    while(!openCLCostPreparationWaiters() && std::chrono::steady_clock::now()<deadline)std::this_thread::yield();
++    const bool overlapped=openCLCostPreparationWaiters()!=0;
++    a.requiredControl->requestCancel();cleanup.unblock();
++    producerThread.join();waiterThread.join();
++    REQUIRE(overlapped);if(producerError)std::rethrow_exception(producerError);if(waiterError)std::rethrow_exception(waiterError);
++    CHECK(producer.cpu==1);CHECK(waiter.cpu==1);
++    CHECK(producerSeeds==expected);CHECK(waiterSeeds==expected);
++    CHECK_FALSE(producerSession.failed.load());CHECK_FALSE(waiterSession.failed.load());
++    REQUIRE(openCLStatus().available);CHECK_FALSE(openCLCancellationRecoveryPending());
++    bool executed=false;producer.entered=nullptr;producerSeeds=original;a.gradient=producerSeeds.data();
++    a.requiredControl=makeOpenCLRequiredControl();REQUIRE(a.requiredControl);a.executedOnDevice=&executed;
++    onWorker([&]{executeGradientGroup(std::span(&a,1),Backend::OpenCL);});
++    REQUIRE(executed);CHECK(producerSeeds==expected);CHECK(producer.cpu==1);
++    std::cout<<"GLOB2_OPENCL_COST_CANCEL_PROOF {\"overlapped\":"<<overlapped
++        <<",\"producer_cpu\":"<<producer.cpu<<",\"waiter_cpu\":"<<waiter.cpu
++        <<",\"producer_failed\":"<<producerSession.failed.load()
++        <<",\"waiter_failed\":"<<waiterSession.failed.load()<<",\"fresh_gpu_executed\":"<<executed<<"}\n";
+ }
+ 
+ TEST_CASE("isolated configured participant fields match independent weighted blocked oracle" * doctest::test_suite("OpenCLGradient"))
+--- a/src/field/OpenCLTransferProof.h
++++ b/src/field/OpenCLTransferProof.h
+@@ -25,6 +25,7 @@
+         pending=true;afterEvent=true;if(result)ambiguous=true;
+     }
+     bool needsProof() const noexcept {return pending || ambiguous;}
++    bool ambiguousCommands() const noexcept {return ambiguous;}
+     bool canPollEvent() const noexcept {return pending && !ambiguous && !afterEvent;}
+     void eventCompleted() noexcept {if(canPollEvent())pending=false;}
+     // Only a successful blocking command or separately verified queue proof may call
+--- a/src/field/OpenCLTransferProofTest.cpp
++++ b/src/field/OpenCLTransferProofTest.cpp
+@@ -2,9 +2,57 @@
+ #include "OpenCLTransferProof.h"
+ #include "OpenCLBorrowedLifetime.h"
+ #include "OpenCLGradient.h"
++#include "OpenCLDeviceHealth.h"
+ #include "Glob2Test.h"
++#include <ThreadSupport.h>
+ #include <array>
+ #include <memory>
++#include <thread>
++
++TEST_CASE("cancellation health resumes only after proof and idle lanes; permanent failure wins" * doctest::test_suite("OpenCLGradient"))
++{
++    using Health=gradient_kernel::OpenCLDeviceHealth;
++    Health health;
++    CHECK(health.ready());
++    health.suspend();CHECK(health.suspended());
++    CHECK_FALSE(health.recover(true,0));CHECK_FALSE(health.recover(false,1));
++    CHECK(health.recover(false,0));CHECK(health.ready());
++    CHECK_FALSE(health.recover(false,0));
++    health.fail();health.suspend();
++    CHECK_FALSE(health.recover(false,0));CHECK(health.failed());
++    // Both possible publication orders must finish in permanent failure.
++    if constexpr(GAGCore::ThreadSupport::available) for(unsigned repeat=0;repeat<32;++repeat) {
++        Health racing;racing.suspend();
++        std::thread recovery([&]{racing.recover(false,0);});
++        std::thread failure([&]{racing.fail();});
++        recovery.join();failure.join();CHECK(racing.failed());
++    }
++}
++
++TEST_CASE("cancellation marker covers accepted tail but never erases enqueue ambiguity" * doctest::test_suite("OpenCLGradient"))
++{
++    using namespace gradient_kernel;
++    OpenCLTransferProof proof;OpenCLDeviceHealth health;
++    proof.enqueue(0,true);proof.eventCompleted(); // Completed old upload.
++    proof.enqueueUnobserved(0);proof.eventCompleted();
++    CHECK(proof.needsProof());CHECK_FALSE(proof.canPollEvent());
++    health.suspend();CHECK_FALSE(health.recover(proof.needsProof(),0));
++    proof.enqueue(0,true); // Successful same-queue trailing marker.
++    CHECK(proof.canPollEvent());proof.eventCompleted();
++    CHECK_FALSE(proof.needsProof());CHECK(health.recover(proof.needsProof(),0));
++    for(int fault : {0,-5}) {
++        OpenCLTransferProof bad;OpenCLDeviceHealth failed;
++        bad.enqueueUnobserved(0);bad.enqueue(fault,false); // Missing/error marker.
++        failed.fail();CHECK(bad.ambiguousCommands());
++        bad.enqueue(0,true);bad.eventCompleted();
++        CHECK(bad.needsProof());CHECK_FALSE(failed.recover(bad.needsProof(),0));
++    }
++    // Query/negative-status failures stay hard even after a later positive proof
++    // can safely release retained storage; readiness is never reset from it.
++    OpenCLTransferProof query;OpenCLDeviceHealth failed;
++    query.enqueue(0,true);failed.fail();query.eventCompleted();
++    CHECK_FALSE(query.needsProof());CHECK_FALSE(failed.recover(false,0));
++}
+ 
+ TEST_CASE("required completion proof rejects old events and ambiguous commands" * doctest::test_suite("OpenCLGradient"))
+ {

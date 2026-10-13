@@ -1,0 +1,6 @@
+{
+  "passed": true,
+  "actual_native_overlap_samples": 7,
+  "binary_sha256": "18b640357036e457470338e092fb3108debc3ab252adbb631b0094d18852e36c",
+  "scope": "two-slotmigrationacceptance, not performance; planningmemorynotRSScap"
+}

@@ -1,0 +1,94 @@
+{
+  "base": "2ced60e06",
+  "state": "complete",
+  "variants": {
+    "worker": {
+      "root": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/variants/worker/source",
+      "source_sha256": {
+        "src/common/ComputeThreads.h": "98fed29ce73250b074433a267821e9597b54c2158c4c128221bad42e52dad940",
+        "src/common/ComputeThreads.cpp": "6da03d329e3b3d5af0c14317d99d390d0aafdd3223ddf90b3e75e805ae7b786a",
+        "src/common/ComputeExecutorHarness.cpp": "a546b10fbe42e24620ee1cd44928d83580d6d707c5595b96f808039997603a44",
+        "scons/sources.py": "6484a8e7067f26f23d5a7c70a4646ce0e67bfc3c6a635761f2b9fc2801463e0e",
+        "src/app/GlobalContainer.h": "36668f3663427aebcbc24cf049dafea046b3247b6d28343bfb9feed5d6699de3",
+        "src/app/cli/CommandLine.cpp": "91708eff99fcd0668fafa6c5bcb11b3d20e6bfbcb31c81ed9db65e726a4513fa"
+      },
+      "state": "complete",
+      "command": [
+        "taskset",
+        "-c",
+        "0-5,9-11,15-21,25-27,31",
+        "scons",
+        "release=1",
+        "CC=gcc-13",
+        "CXX=g++-13",
+        "LINKFLAGS=-L/usr/lib/gcc/x86_64-linux-gnu/15",
+        "-j20",
+        "build/linux/client/release/src/glob2"
+      ],
+      "returncode": 0,
+      "wall_seconds": 110.85136890877038,
+      "binary": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/variants/worker/source/build/linux/client/release/src/glob2",
+      "binary_sha256": "a3794ae9d3261e8b75acc48fe231258be34c91f5469ffec6dc455e40b2441feb"
+    },
+    "snapshot": {
+      "root": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/variants/snapshot/source",
+      "source_sha256": {
+        "src/engine/sim/snapshot/BufferPool.h": "eb15f6ea8e9cf431d9c74b4787c812c9efbee94232fd3fdf0d705f1b36213b25",
+        "src/engine/sim/snapshot/SnapshotStorage.h": "6ca26df2d82348437ef8088e458cbca7c32e19fb2ed049e0ef206749a46bd4db",
+        "src/engine/sim/snapshot/SnapshotStorage.cpp": "d7f16e388ee0cdbc569e150e45953994a54f8c19ffe2b6a4ed66edc8fd6adec4",
+        "src/engine/sim/snapshot/SnapshotStore.h": "f32c58466a51219b5005655074f62a399976a028d8c0bb18b38e6e4c30fced69",
+        "src/engine/sim/snapshot/WorldCapture.cpp": "9802869e44fe1b217e8c3696d29d500e27c2f0780a78129eb90e52dda485b688",
+        "src/engine/sim/snapshot/WorldSnapshotTest.cpp": "cf5acf5987324ed09a460e196ca59a88fcdafa3779f12f7b92365fd2fe5dee9c",
+        "src/map/gradient/BuildingGradientSearch.h": "28a03ed66f18092d5f394a23b48216e01306350486895e590f0a794def19270b",
+        "src/map/gradient/BuildingGradientSearch.cpp": "4a8fe631a8fe1b1ab492b5b1816ed3c72682fa15a65a90fc39c83ef90d502d06",
+        "src/map/gradient/MapGradientInvalidationTest.cpp": "b63e3b1a0e7f08fad1ddbe0ac40bc767878a599e77f53294692e5c202da35c6c",
+        "src/app/cli/Headless.cpp": "30e308da18f1ee96f49f6e7eea08ea54ad85910139a2ac1b2c12301799611b1a"
+      },
+      "state": "complete",
+      "command": [
+        "taskset",
+        "-c",
+        "0-5,9-11,15-21,25-27,31",
+        "scons",
+        "release=1",
+        "CC=gcc-13",
+        "CXX=g++-13",
+        "LINKFLAGS=-L/usr/lib/gcc/x86_64-linux-gnu/15",
+        "-j20",
+        "build/linux/client/release/src/glob2"
+      ],
+      "returncode": 0,
+      "wall_seconds": 127.59145766682923,
+      "binary": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/variants/snapshot/source/build/linux/client/release/src/glob2",
+      "binary_sha256": "207563dd68bbd995c1725a28ad4c901590edd85acce3eb9f82e6f2123fd99af2"
+    },
+    "telemetry": {
+      "root": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/variants/telemetry/source",
+      "source_sha256": {
+        "src/replay/ReplayTelemetry.h": "6d4cb9820f0a66507a2adfae3f2e9d46a622134d5aed35677dc4d8297cce050d",
+        "src/replay/ReplayTelemetry.cpp": "7d06517f869b8e2f008d318dfdcd5a87daff5854873e598eafe1a850fe81b695",
+        "src/replay/ReplayTelemetryTest.cpp": "0d1c0f3444536202c8c8c6b1606742fd2eb4cc1106e7f26509ca875d0066844d",
+        "test/tests.py": "895782f19931d4804aac6e57fddf84faa7e8b21dbff52bf912df995d2bd569bc"
+      },
+      "state": "complete",
+      "command": [
+        "taskset",
+        "-c",
+        "0-5,9-11,15-21,25-27,31",
+        "scons",
+        "release=1",
+        "CC=gcc-13",
+        "CXX=g++-13",
+        "LINKFLAGS=-L/usr/lib/gcc/x86_64-linux-gnu/15",
+        "-j20",
+        "build/linux/client/release/src/glob2"
+      ],
+      "returncode": 0,
+      "wall_seconds": 128.11535423761234,
+      "binary": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/variants/telemetry/source/build/linux/client/release/src/glob2",
+      "binary_sha256": "c7161baf12e460e7d18aaf48b412b6b65057006ab0b2b988abdb60cb53f612e1"
+    }
+  },
+  "jobs": 20,
+  "mask": "0-5,9-11,15-21,25-27,31"
+}

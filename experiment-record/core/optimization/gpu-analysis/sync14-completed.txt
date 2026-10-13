@@ -1,0 +1,7 @@
+GPU synchronization: 14/14 paired timing jobs complete and input verified.
+
+Keep this as the required host-visibility correctness fix. No measured whole-process CPU/wall cell has a descriptive interval entirely above zero, and no severe regression is established. Initial Playground, Oazis and large-ni improve CPU/wall point estimates with intervals below zero. Small-ni and large-mixed are close to flat or uncertain; loaded Oazis has CPU +1.67% [-1.19%, +6.19%] and wall +1.30% [-1.36%, +5.17%]. Preserve that upper-tail uncertainty rather than claim nonregression equivalence. RSS is nearly unchanged.
+
+GPU completion fractions remain very low: candidate initial small-ni 0.002%, Playground 0.027%, Oazis 0.149%, large-ni 0.024%, large-mixed 0.028%; loaded Playground 0.222% and loaded Oazis 4.628%. These are summed completed/requested field counts over measured processes, not GPU utilization or time. Most enabled-GPU work still falls back to CPU, so this matrix cannot establish the cost or speed of sustained healthy GPU execution.
+
+Two seeds and three pairs per cell give descriptive intervals only. Source/hash/input audits, fresh actual UNIT host-acquisition success/failure proofs and 29 exact conformance runs are separate evidence. Keep synchronization for correctness even if future performance is flat. Recovery timings compare against synchronization and are still pending; do not infer recovery benefit from this baseline comparison. No new benchmark, game, compiler or profiler was launched by this analysis.

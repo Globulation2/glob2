@@ -1,0 +1,81 @@
+--- a/src/engine/EngineRun.cpp
++++ b/src/engine/EngineRun.cpp
+@@ -40,6 +40,9 @@
+ #include <sstream>
+ #include <iomanip>
+ #include <cstdlib>
++#include <cstring>
++#include <cstdio>
++#include <valgrind/callgrind.h>
+ #include <chrono>
+ #include "Version.h"
+ #include "sim/SimulationRunner.h"
+@@ -55,6 +58,44 @@
+ 
+ namespace
+ {
++
++// Isolated Linux diagnostic. No game state, queue, RNG or deadline mutation.
++// Counts the elapsed concurrent process window while owner stepCounter advances
++// 124000 -> 132192. Pending jobs can cross either boundary; no artificial drain.
++struct MatureCallgrindWindow
++{
++    static constexpr Uint32 Begin = 124000, End = Begin + 8192;
++    bool enabled = false, started = false, stopped = false;
++    void reset(bool noX)
++    {
++        const char* flag = std::getenv("GLOB2_INV_MATURE_CALLGRIND");
++        enabled = noX && flag && std::strcmp(flag,"1")==0;
++        started = stopped = false;
++    }
++    void before(Uint32 tick)
++    {
++        if (!enabled || started || tick != Begin) return;
++        started = true;
++        std::printf("MATURE_CALLGRIND_START counter=%u end=%u running_on_valgrind=%u\n",tick,End,unsigned(RUNNING_ON_VALGRIND));
++        std::fflush(stdout);
++        // With --instr-atstart=no no cost counters exist before this boundary.
++        // --separate-threads=no combines all process threads in one cost set.
++        CALLGRIND_START_INSTRUMENTATION;
++    }
++    void after(Uint32 tick)
++    {
++        if (!enabled || !started || stopped || tick != End) return;
++        stopped = true;
++        // DUMP resets the shared aggregate cost set. STOP must follow immediately;
++        // its tiny request tail can produce an unlabelled final residual dump,
++        // which is explicitly excluded, never silently added to the window.
++        CALLGRIND_DUMP_STATS_AT("OAZIS_MATURE_COUNTER_124000_TO_132192");
++        CALLGRIND_STOP_INSTRUMENTATION;
++        std::printf("MATURE_CALLGRIND_STOP counter=%u ticks=%u running_on_valgrind=%u\n",tick,End-Begin,unsigned(RUNNING_ON_VALGRIND));
++        std::fflush(stdout);
++    }
++};
++thread_local MatureCallgrindWindow matureCallgrindWindow;
+ // Every host preserves the same failure cleanup and user-facing error contract.
+ template<class Step>
+ bool guardedSessionStep(Engine& engine, Step&& step)
+@@ -1132,6 +1173,7 @@
+ 
+ bool Engine::advanceSession(Uint64 now, const std::function<void()>& clientWork, bool handleExit)
+ {
++    if (globalContainer->runNoX && !gui.simulationThreaded) matureCallgrindWindow.before(gui.game.stepCounter);
+     auto& st = *session;
+     updateTickSpeedAndDrawCadence(st, now);
+     auto &perf = PerformanceTelemetry::collector();
+@@ -1156,6 +1198,7 @@
+         if (gui.game.stepCounter != tickBefore)
+             gui.recordTick(SDL_GetTicks(), Uint32(st.speed));
+     }
++    if (globalContainer->runNoX && !gui.simulationThreaded) matureCallgrindWindow.after(gui.game.stepCounter);
+     if (globalContainer->automaticEndingGame && (int)gui.game.stepCounter == sessionEndingTarget) {
+         gui.isRunning = false;
+         automaticGameEndTick = now;
+@@ -1248,6 +1291,7 @@
+ 
+ void Engine::runOneGameSession(bool& doRunOnceAgain)
+ {
++    matureCallgrindWindow.reset(globalContainer->runNoX);
+     beginSession(SDL_GetTicks());
+     if (startSimulationThread(SDL_GetTicks()))
+     {

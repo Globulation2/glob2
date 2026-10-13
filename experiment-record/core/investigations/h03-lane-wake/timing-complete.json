@@ -1,0 +1,12 @@
+{
+  "records": 120,
+  "paired_rounds": 10,
+  "affinity": "15,31",
+  "physical_cores": 1,
+  "smt_threads": 2,
+  "rounds_per_process": 8192,
+  "checksums": [
+    17635315211814556286
+  ],
+  "elapsed_seconds": 54.443073607981205
+}

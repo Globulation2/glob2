@@ -1,0 +1,6536 @@
+{
+  "complete": true,
+  "accepted": false,
+  "recommendation": "Reject recovery for production optimization; retain synchronization correctness prerequisite",
+  "all_cells": [
+    {
+      "context": {
+        "factor": "gpu-recovery",
+        "comparator": "gpu-sync",
+        "cohort": "initial",
+        "layout": "small-ni",
+        "compute_threads": 3,
+        "gpu": "on",
+        "checkpoint_tick": 0,
+        "window": 8192,
+        "expected_end": 8192
+      },
+      "metrics": {
+        "simulation_cpu_s": {
+          "ratio": 1.0532460767645668,
+          "percent_change": 5.324607676456683,
+          "ci95": [
+            0.9968537960595787,
+            1.1368740388576726
+          ],
+          "percent_ci95": [
+            -0.31462039404213105,
+            13.687403885767257
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "simulation_wall_s": {
+          "ratio": 1.068485023282844,
+          "percent_change": 6.8485023282844,
+          "ci95": [
+            1.0095718051198515,
+            1.1414172356377161
+          ],
+          "percent_ci95": [
+            0.9571805119851451,
+            14.141723563771613
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "cpu_s": {
+          "ratio": 1.0534718236711642,
+          "percent_change": 5.347182367116421,
+          "ci95": [
+            1.0110207412821592,
+            1.1431128913527022
+          ],
+          "percent_ci95": [
+            1.102074128215924,
+            14.311289135270222
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "wall_s": {
+          "ratio": 1.1004575526774973,
+          "percent_change": 10.045755267749733,
+          "ci95": [
+            0.9972724747475926,
+            1.235571492240383
+          ],
+          "percent_ci95": [
+            -0.2727525252407381,
+            23.55714922403831
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "peak_rss_bytes": {
+          "ratio": 0.9955280224381865,
+          "percent_change": -0.44719775618135005,
+          "ci95": [
+            0.9922375768316273,
+            0.9994786990960862
+          ],
+          "percent_ci95": [
+            -0.7762423168372723,
+            -0.05213009039137795
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        }
+      },
+      "health": {
+        "baseline": {
+          "measured_processes": 6,
+          "reported_gpu_processes": 6,
+          "requested_fields_sum": 49152,
+          "gpu_completed_fields_sum": 1,
+          "gpu_completion_fraction": 2.0345052083333332e-05,
+          "device_committed_fields": [
+            0,
+            0,
+            0,
+            0,
+            1,
+            0
+          ],
+          "host_event_waits": [
+            3,
+            7,
+            3,
+            3,
+            40,
+            3
+          ],
+          "recovery_events": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "accepted_cancellation_flushes": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "quarantine_pending": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "suspended": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "gpu_errors": [
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        "candidate": {
+          "measured_processes": 6,
+          "reported_gpu_processes": 6,
+          "requested_fields_sum": 49152,
+          "gpu_completed_fields_sum": 123,
+          "gpu_completion_fraction": 0.00250244140625,
+          "device_committed_fields": [
+            10,
+            10,
+            10,
+            13,
+            12,
+            70
+          ],
+          "host_event_waits": [
+            105,
+            166,
+            245,
+            161,
+            943,
+            958
+          ],
+          "recovery_events": [
+            18,
+            19,
+            48,
+            22,
+            155,
+            115
+          ],
+          "accepted_cancellation_flushes": [
+            16,
+            16,
+            46,
+            19,
+            144,
+            110
+          ],
+          "quarantine_pending": [
+            1,
+            1,
+            0,
+            0,
+            1,
+            0
+          ],
+          "suspended": [
+            1,
+            1,
+            1,
+            0,
+            1,
+            0
+          ],
+          "gpu_errors": [
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        "scope": "Summed requested/completed field counts over measured processes, warmups excluded; diagnostic request weighting, not GPUtime, equal-seed speed or chronological recovery proof."
+      },
+      "completed_seeds": 2,
+      "end_health_statuses": [
+        {
+          "gpu_requested": 1,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 1,
+          "gpu_cancellation_suspended": 1,
+          "gpu_cancellation_recoveries": 18,
+          "gpu_cancellation_fences": 16,
+          "gpu_required_quarantines": 19,
+          "gpu_required_proof_failures": 19,
+          "gpu_required_cancellations": 46,
+          "gpu_host_event_waits": 105
+        },
+        {
+          "gpu_requested": 1,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 1,
+          "gpu_cancellation_suspended": 1,
+          "gpu_cancellation_recoveries": 19,
+          "gpu_cancellation_fences": 16,
+          "gpu_required_quarantines": 20,
+          "gpu_required_proof_failures": 20,
+          "gpu_required_cancellations": 94,
+          "gpu_host_event_waits": 166
+        },
+        {
+          "gpu_requested": 1,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 0,
+          "gpu_cancellation_suspended": 1,
+          "gpu_cancellation_recoveries": 48,
+          "gpu_cancellation_fences": 46,
+          "gpu_required_quarantines": 49,
+          "gpu_required_proof_failures": 49,
+          "gpu_required_cancellations": 181,
+          "gpu_host_event_waits": 245
+        },
+        {
+          "gpu_requested": 1,
+          "gpu_available": 1,
+          "gpu_ready_plans": 2,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 0,
+          "gpu_cancellation_suspended": 0,
+          "gpu_cancellation_recoveries": 22,
+          "gpu_cancellation_fences": 19,
+          "gpu_required_quarantines": 22,
+          "gpu_required_proof_failures": 22,
+          "gpu_required_cancellations": 95,
+          "gpu_host_event_waits": 161
+        },
+        {
+          "gpu_requested": 1,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 1,
+          "gpu_cancellation_suspended": 1,
+          "gpu_cancellation_recoveries": 155,
+          "gpu_cancellation_fences": 144,
+          "gpu_required_quarantines": 156,
+          "gpu_required_proof_failures": 156,
+          "gpu_required_cancellations": 844,
+          "gpu_host_event_waits": 943
+        },
+        {
+          "gpu_requested": 1,
+          "gpu_available": 1,
+          "gpu_ready_plans": 2,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 0,
+          "gpu_cancellation_suspended": 0,
+          "gpu_cancellation_recoveries": 115,
+          "gpu_cancellation_fences": 110,
+          "gpu_required_quarantines": 115,
+          "gpu_required_proof_failures": 115,
+          "gpu_required_cancellations": 585,
+          "gpu_host_event_waits": 958
+        }
+      ]
+    },
+    {
+      "context": {
+        "factor": "gpu-recovery",
+        "comparator": "gpu-sync",
+        "cohort": "initial",
+        "layout": "small-ni",
+        "compute_threads": 3,
+        "gpu": "off",
+        "checkpoint_tick": 0,
+        "window": 8192,
+        "expected_end": 8192
+      },
+      "metrics": {
+        "simulation_cpu_s": {
+          "ratio": 0.9672267015898279,
+          "percent_change": -3.277329841017207,
+          "ci95": [
+            0.9137951479204008,
+            1.0401233427421683
+          ],
+          "percent_ci95": [
+            -8.620485207959916,
+            4.012334274216833
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "simulation_wall_s": {
+          "ratio": 0.9650236069555965,
+          "percent_change": -3.4976393044403475,
+          "ci95": [
+            0.9054021469348563,
+            1.0419184060127566
+          ],
+          "percent_ci95": [
+            -9.459785306514368,
+            4.191840601275665
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "cpu_s": {
+          "ratio": 0.9739107994081725,
+          "percent_change": -2.608920059182751,
+          "ci95": [
+            0.9309973355949764,
+            1.0360033639714454
+          ],
+          "percent_ci95": [
+            -6.900266440502357,
+            3.6003363971445435
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "wall_s": {
+          "ratio": 0.9769290333404496,
+          "percent_change": -2.307096665955044,
+          "ci95": [
+            0.9343398280120443,
+            1.0341260791921223
+          ],
+          "percent_ci95": [
+            -6.566017198795571,
+            3.4126079192122294
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "peak_rss_bytes": {
+          "ratio": 1.0004334367812493,
+          "percent_change": 0.043343678124929674,
+          "ci95": [
+            0.9889268920517045,
+            1.0073213337275735
+          ],
+          "percent_ci95": [
+            -1.1073107948295524,
+            0.7321333727573487
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        }
+      },
+      "health": {
+        "baseline": {
+          "measured_processes": 6,
+          "reported_gpu_processes": 6,
+          "requested_fields_sum": 0,
+          "gpu_completed_fields_sum": 0,
+          "gpu_completion_fraction": null,
+          "device_committed_fields": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "host_event_waits": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "recovery_events": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "accepted_cancellation_flushes": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "quarantine_pending": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "suspended": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "gpu_errors": [
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        "candidate": {
+          "measured_processes": 6,
+          "reported_gpu_processes": 6,
+          "requested_fields_sum": 0,
+          "gpu_completed_fields_sum": 0,
+          "gpu_completion_fraction": null,
+          "device_committed_fields": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "host_event_waits": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "recovery_events": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "accepted_cancellation_flushes": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "quarantine_pending": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "suspended": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "gpu_errors": [
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        "scope": "Summed requested/completed field counts over measured processes, warmups excluded; diagnostic request weighting, not GPUtime, equal-seed speed or chronological recovery proof."
+      },
+      "completed_seeds": 2,
+      "end_health_statuses": [
+        {
+          "gpu_requested": 0,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 0,
+          "gpu_cancellation_suspended": 0,
+          "gpu_cancellation_recoveries": 0,
+          "gpu_cancellation_fences": 0,
+          "gpu_required_quarantines": 0,
+          "gpu_required_proof_failures": 0,
+          "gpu_required_cancellations": 0,
+          "gpu_host_event_waits": 0
+        },
+        {
+          "gpu_requested": 0,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 0,
+          "gpu_cancellation_suspended": 0,
+          "gpu_cancellation_recoveries": 0,
+          "gpu_cancellation_fences": 0,
+          "gpu_required_quarantines": 0,
+          "gpu_required_proof_failures": 0,
+          "gpu_required_cancellations": 0,
+          "gpu_host_event_waits": 0
+        },
+        {
+          "gpu_requested": 0,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 0,
+          "gpu_cancellation_suspended": 0,
+          "gpu_cancellation_recoveries": 0,
+          "gpu_cancellation_fences": 0,
+          "gpu_required_quarantines": 0,
+          "gpu_required_proof_failures": 0,
+          "gpu_required_cancellations": 0,
+          "gpu_host_event_waits": 0
+        },
+        {
+          "gpu_requested": 0,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 0,
+          "gpu_cancellation_suspended": 0,
+          "gpu_cancellation_recoveries": 0,
+          "gpu_cancellation_fences": 0,
+          "gpu_required_quarantines": 0,
+          "gpu_required_proof_failures": 0,
+          "gpu_required_cancellations": 0,
+          "gpu_host_event_waits": 0
+        },
+        {
+          "gpu_requested": 0,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 0,
+          "gpu_cancellation_suspended": 0,
+          "gpu_cancellation_recoveries": 0,
+          "gpu_cancellation_fences": 0,
+          "gpu_required_quarantines": 0,
+          "gpu_required_proof_failures": 0,
+          "gpu_required_cancellations": 0,
+          "gpu_host_event_waits": 0
+        },
+        {
+          "gpu_requested": 0,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 0,
+          "gpu_cancellation_suspended": 0,
+          "gpu_cancellation_recoveries": 0,
+          "gpu_cancellation_fences": 0,
+          "gpu_required_quarantines": 0,
+          "gpu_required_proof_failures": 0,
+          "gpu_required_cancellations": 0,
+          "gpu_host_event_waits": 0
+        }
+      ]
+    },
+    {
+      "context": {
+        "factor": "gpu-recovery",
+        "comparator": "gpu-sync",
+        "cohort": "initial",
+        "layout": "rect-mixed",
+        "compute_threads": 3,
+        "gpu": "on",
+        "checkpoint_tick": 0,
+        "window": 8192,
+        "expected_end": 8192
+      },
+      "metrics": {
+        "simulation_cpu_s": {
+          "ratio": 1.0165342775503556,
+          "percent_change": 1.6534277550355636,
+          "ci95": [
+            0.9503171262641488,
+            1.0570526509068412
+          ],
+          "percent_ci95": [
+            -4.968287373585123,
+            5.70526509068412
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "simulation_wall_s": {
+          "ratio": 1.0143129649061193,
+          "percent_change": 1.431296490611933,
+          "ci95": [
+            0.9426640436989085,
+            1.077232914199381
+          ],
+          "percent_ci95": [
+            -5.733595630109145,
+            7.723291419938105
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "cpu_s": {
+          "ratio": 1.0088961586733005,
+          "percent_change": 0.8896158673300514,
+          "ci95": [
+            0.9532625307149829,
+            1.0444624368133177
+          ],
+          "percent_ci95": [
+            -4.67374692850171,
+            4.446243681331774
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "wall_s": {
+          "ratio": 1.0068912456897152,
+          "percent_change": 0.689124568971522,
+          "ci95": [
+            0.9507320789654381,
+            1.0708932729502694
+          ],
+          "percent_ci95": [
+            -4.92679210345619,
+            7.089327295026937
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "peak_rss_bytes": {
+          "ratio": 0.9980306191843424,
+          "percent_change": -0.1969380815657562,
+          "ci95": [
+            0.9957280560244992,
+            1.0015751481189283
+          ],
+          "percent_ci95": [
+            -0.42719439755007915,
+            0.15751481189283378
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        }
+      },
+      "health": {
+        "baseline": {
+          "measured_processes": 6,
+          "reported_gpu_processes": 6,
+          "requested_fields_sum": 49152,
+          "gpu_completed_fields_sum": 1,
+          "gpu_completion_fraction": 2.0345052083333332e-05,
+          "device_committed_fields": [
+            0,
+            0,
+            1,
+            0,
+            0,
+            0
+          ],
+          "host_event_waits": [
+            4,
+            3,
+            9,
+            0,
+            4,
+            10
+          ],
+          "recovery_events": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "accepted_cancellation_flushes": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "quarantine_pending": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "suspended": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "gpu_errors": [
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        "candidate": {
+          "measured_processes": 6,
+          "reported_gpu_processes": 6,
+          "requested_fields_sum": 49152,
+          "gpu_completed_fields_sum": 448,
+          "gpu_completion_fraction": 0.009114583333333334,
+          "device_committed_fields": [
+            40,
+            24,
+            78,
+            56,
+            12,
+            238
+          ],
+          "host_event_waits": [
+            218,
+            141,
+            533,
+            195,
+            142,
+            840
+          ],
+          "recovery_events": [
+            17,
+            10,
+            53,
+            16,
+            19,
+            92
+          ],
+          "accepted_cancellation_flushes": [
+            7,
+            3,
+            26,
+            11,
+            13,
+            81
+          ],
+          "quarantine_pending": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "suspended": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "gpu_errors": [
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        "scope": "Summed requested/completed field counts over measured processes, warmups excluded; diagnostic request weighting, not GPUtime, equal-seed speed or chronological recovery proof."
+      },
+      "completed_seeds": 2,
+      "end_health_statuses": [
+        {
+          "gpu_requested": 1,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 1,
+          "gpu_cancellation_suspended": 1,
+          "gpu_cancellation_recoveries": 17,
+          "gpu_cancellation_fences": 7,
+          "gpu_required_quarantines": 18,
+          "gpu_required_proof_failures": 18,
+          "gpu_required_cancellations": 65,
+          "gpu_host_event_waits": 218
+        },
+        {
+          "gpu_requested": 1,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 1,
+          "gpu_cancellation_suspended": 1,
+          "gpu_cancellation_recoveries": 10,
+          "gpu_cancellation_fences": 3,
+          "gpu_required_quarantines": 11,
+          "gpu_required_proof_failures": 11,
+          "gpu_required_cancellations": 40,
+          "gpu_host_event_waits": 141
+        },
+        {
+          "gpu_requested": 1,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 1,
+          "gpu_cancellation_suspended": 1,
+          "gpu_cancellation_recoveries": 53,
+          "gpu_cancellation_fences": 26,
+          "gpu_required_quarantines": 54,
+          "gpu_required_proof_failures": 54,
+          "gpu_required_cancellations": 205,
+          "gpu_host_event_waits": 533
+        },
+        {
+          "gpu_requested": 1,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 1,
+          "gpu_cancellation_suspended": 1,
+          "gpu_cancellation_recoveries": 16,
+          "gpu_cancellation_fences": 11,
+          "gpu_required_quarantines": 17,
+          "gpu_required_proof_failures": 17,
+          "gpu_required_cancellations": 42,
+          "gpu_host_event_waits": 195
+        },
+        {
+          "gpu_requested": 1,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 1,
+          "gpu_cancellation_suspended": 1,
+          "gpu_cancellation_recoveries": 19,
+          "gpu_cancellation_fences": 13,
+          "gpu_required_quarantines": 20,
+          "gpu_required_proof_failures": 20,
+          "gpu_required_cancellations": 58,
+          "gpu_host_event_waits": 142
+        },
+        {
+          "gpu_requested": 1,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 1,
+          "gpu_cancellation_suspended": 1,
+          "gpu_cancellation_recoveries": 92,
+          "gpu_cancellation_fences": 81,
+          "gpu_required_quarantines": 93,
+          "gpu_required_proof_failures": 93,
+          "gpu_required_cancellations": 227,
+          "gpu_host_event_waits": 840
+        }
+      ]
+    },
+    {
+      "context": {
+        "factor": "gpu-recovery",
+        "comparator": "gpu-sync",
+        "cohort": "initial",
+        "layout": "rect-cortex",
+        "compute_threads": 3,
+        "gpu": "on",
+        "checkpoint_tick": 0,
+        "window": 8192,
+        "expected_end": 8192
+      },
+      "metrics": {
+        "simulation_cpu_s": {
+          "ratio": 1.0402209874850652,
+          "percent_change": 4.02209874850652,
+          "ci95": [
+            1.0186300997475146,
+            1.0642509867612047
+          ],
+          "percent_ci95": [
+            1.8630099747514617,
+            6.4250986761204665
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "simulation_wall_s": {
+          "ratio": 1.0320104640864494,
+          "percent_change": 3.2010464086449364,
+          "ci95": [
+            1.0178681534298932,
+            1.0455158464920538
+          ],
+          "percent_ci95": [
+            1.786815342989323,
+            4.551584649205376
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "cpu_s": {
+          "ratio": 1.0300754666859981,
+          "percent_change": 3.0075466685998142,
+          "ci95": [
+            1.0103551103414876,
+            1.0426287072958456
+          ],
+          "percent_ci95": [
+            1.0355110341487617,
+            4.262870729584556
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "wall_s": {
+          "ratio": 1.0080244011780428,
+          "percent_change": 0.8024401178042817,
+          "ci95": [
+            0.9681208276197141,
+            1.0315830921042284
+          ],
+          "percent_ci95": [
+            -3.1879172380285925,
+            3.1583092104228383
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "peak_rss_bytes": {
+          "ratio": 1.0010730143495135,
+          "percent_change": 0.1073014349513457,
+          "ci95": [
+            0.994596583716232,
+            1.0064296472165546
+          ],
+          "percent_ci95": [
+            -0.5403416283767948,
+            0.642964721655459
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        }
+      },
+      "health": {
+        "baseline": {
+          "measured_processes": 6,
+          "reported_gpu_processes": 6,
+          "requested_fields_sum": 49152,
+          "gpu_completed_fields_sum": 12,
+          "gpu_completion_fraction": 0.000244140625,
+          "device_committed_fields": [
+            0,
+            0,
+            0,
+            0,
+            9,
+            3
+          ],
+          "host_event_waits": [
+            3,
+            4,
+            4,
+            1,
+            31,
+            17
+          ],
+          "recovery_events": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "accepted_cancellation_flushes": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "quarantine_pending": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "suspended": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "gpu_errors": [
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        "candidate": {
+          "measured_processes": 6,
+          "reported_gpu_processes": 6,
+          "requested_fields_sum": 49152,
+          "gpu_completed_fields_sum": 1098,
+          "gpu_completion_fraction": 0.0223388671875,
+          "device_committed_fields": [
+            175,
+            138,
+            138,
+            298,
+            219,
+            130
+          ],
+          "host_event_waits": [
+            724,
+            674,
+            621,
+            1421,
+            1159,
+            598
+          ],
+          "recovery_events": [
+            54,
+            59,
+            49,
+            78,
+            71,
+            44
+          ],
+          "accepted_cancellation_flushes": [
+            43,
+            53,
+            40,
+            52,
+            57,
+            30
+          ],
+          "quarantine_pending": [
+            1,
+            1,
+            0,
+            0,
+            0,
+            1
+          ],
+          "suspended": [
+            1,
+            1,
+            0,
+            0,
+            0,
+            1
+          ],
+          "gpu_errors": [
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        "scope": "Summed requested/completed field counts over measured processes, warmups excluded; diagnostic request weighting, not GPUtime, equal-seed speed or chronological recovery proof."
+      },
+      "completed_seeds": 2,
+      "end_health_statuses": [
+        {
+          "gpu_requested": 1,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 1,
+          "gpu_cancellation_suspended": 1,
+          "gpu_cancellation_recoveries": 54,
+          "gpu_cancellation_fences": 43,
+          "gpu_required_quarantines": 55,
+          "gpu_required_proof_failures": 55,
+          "gpu_required_cancellations": 216,
+          "gpu_host_event_waits": 724
+        },
+        {
+          "gpu_requested": 1,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 1,
+          "gpu_cancellation_suspended": 1,
+          "gpu_cancellation_recoveries": 59,
+          "gpu_cancellation_fences": 53,
+          "gpu_required_quarantines": 60,
+          "gpu_required_proof_failures": 60,
+          "gpu_required_cancellations": 272,
+          "gpu_host_event_waits": 674
+        },
+        {
+          "gpu_requested": 1,
+          "gpu_available": 1,
+          "gpu_ready_plans": 2,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 0,
+          "gpu_cancellation_suspended": 0,
+          "gpu_cancellation_recoveries": 49,
+          "gpu_cancellation_fences": 40,
+          "gpu_required_quarantines": 49,
+          "gpu_required_proof_failures": 49,
+          "gpu_required_cancellations": 203,
+          "gpu_host_event_waits": 621
+        },
+        {
+          "gpu_requested": 1,
+          "gpu_available": 1,
+          "gpu_ready_plans": 2,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 0,
+          "gpu_cancellation_suspended": 0,
+          "gpu_cancellation_recoveries": 78,
+          "gpu_cancellation_fences": 52,
+          "gpu_required_quarantines": 78,
+          "gpu_required_proof_failures": 78,
+          "gpu_required_cancellations": 420,
+          "gpu_host_event_waits": 1421
+        },
+        {
+          "gpu_requested": 1,
+          "gpu_available": 1,
+          "gpu_ready_plans": 2,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 0,
+          "gpu_cancellation_suspended": 0,
+          "gpu_cancellation_recoveries": 71,
+          "gpu_cancellation_fences": 57,
+          "gpu_required_quarantines": 71,
+          "gpu_required_proof_failures": 71,
+          "gpu_required_cancellations": 348,
+          "gpu_host_event_waits": 1159
+        },
+        {
+          "gpu_requested": 1,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 1,
+          "gpu_cancellation_suspended": 1,
+          "gpu_cancellation_recoveries": 44,
+          "gpu_cancellation_fences": 30,
+          "gpu_required_quarantines": 45,
+          "gpu_required_proof_failures": 45,
+          "gpu_required_cancellations": 153,
+          "gpu_host_event_waits": 598
+        }
+      ]
+    },
+    {
+      "context": {
+        "factor": "gpu-recovery",
+        "comparator": "gpu-sync",
+        "cohort": "initial",
+        "layout": "playground-ni",
+        "compute_threads": 3,
+        "gpu": "on",
+        "checkpoint_tick": 0,
+        "window": 20000,
+        "expected_end": 20000
+      },
+      "metrics": {
+        "simulation_cpu_s": {
+          "ratio": 1.0356245702450473,
+          "percent_change": 3.5624570245047282,
+          "ci95": [
+            0.9504259034685428,
+            1.1274112561845517
+          ],
+          "percent_ci95": [
+            -4.957409653145717,
+            12.741125618455174
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "simulation_wall_s": {
+          "ratio": 1.0109514850765895,
+          "percent_change": 1.0951485076589496,
+          "ci95": [
+            0.9061037510784807,
+            1.1292633064236002
+          ],
+          "percent_ci95": [
+            -9.389624892151927,
+            12.926330642360018
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "cpu_s": {
+          "ratio": 1.0356178513670993,
+          "percent_change": 3.5617851367099274,
+          "ci95": [
+            0.9522914778870227,
+            1.1250682507162155
+          ],
+          "percent_ci95": [
+            -4.770852211297727,
+            12.506825071621552
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "wall_s": {
+          "ratio": 1.0130799987517405,
+          "percent_change": 1.3079998751740485,
+          "ci95": [
+            0.9135202891559223,
+            1.1220160515097124
+          ],
+          "percent_ci95": [
+            -8.647971084407768,
+            12.20160515097124
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "peak_rss_bytes": {
+          "ratio": 1.0013027483978099,
+          "percent_change": 0.13027483978098608,
+          "ci95": [
+            0.9974807428359129,
+            1.0049988303318946
+          ],
+          "percent_ci95": [
+            -0.2519257164087074,
+            0.49988303318946326
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        }
+      },
+      "health": {
+        "baseline": {
+          "measured_processes": 6,
+          "reported_gpu_processes": 6,
+          "requested_fields_sum": 120000,
+          "gpu_completed_fields_sum": 8,
+          "gpu_completion_fraction": 6.666666666666667e-05,
+          "device_committed_fields": [
+            1,
+            0,
+            5,
+            1,
+            0,
+            1
+          ],
+          "host_event_waits": [
+            7,
+            3,
+            26,
+            7,
+            5,
+            8
+          ],
+          "recovery_events": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "accepted_cancellation_flushes": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "quarantine_pending": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "suspended": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "gpu_errors": [
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        "candidate": {
+          "measured_processes": 6,
+          "reported_gpu_processes": 6,
+          "requested_fields_sum": 120000,
+          "gpu_completed_fields_sum": 16749,
+          "gpu_completion_fraction": 0.139575,
+          "device_committed_fields": [
+            1355,
+            1370,
+            1435,
+            4923,
+            4236,
+            3434
+          ],
+          "host_event_waits": [
+            4549,
+            4650,
+            4523,
+            16320,
+            13919,
+            12366
+          ],
+          "recovery_events": [
+            99,
+            98,
+            94,
+            87,
+            81,
+            82
+          ],
+          "accepted_cancellation_flushes": [
+            25,
+            23,
+            26,
+            33,
+            28,
+            29
+          ],
+          "quarantine_pending": [
+            1,
+            1,
+            0,
+            1,
+            1,
+            1
+          ],
+          "suspended": [
+            1,
+            1,
+            0,
+            1,
+            1,
+            1
+          ],
+          "gpu_errors": [
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        "scope": "Summed requested/completed field counts over measured processes, warmups excluded; diagnostic request weighting, not GPUtime, equal-seed speed or chronological recovery proof."
+      },
+      "completed_seeds": 2,
+      "end_health_statuses": [
+        {
+          "gpu_requested": 1,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 1,
+          "gpu_cancellation_suspended": 1,
+          "gpu_cancellation_recoveries": 99,
+          "gpu_cancellation_fences": 25,
+          "gpu_required_quarantines": 100,
+          "gpu_required_proof_failures": 100,
+          "gpu_required_cancellations": 261,
+          "gpu_host_event_waits": 4549
+        },
+        {
+          "gpu_requested": 1,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 1,
+          "gpu_cancellation_suspended": 1,
+          "gpu_cancellation_recoveries": 98,
+          "gpu_cancellation_fences": 23,
+          "gpu_required_quarantines": 99,
+          "gpu_required_proof_failures": 99,
+          "gpu_required_cancellations": 243,
+          "gpu_host_event_waits": 4650
+        },
+        {
+          "gpu_requested": 1,
+          "gpu_available": 1,
+          "gpu_ready_plans": 2,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 0,
+          "gpu_cancellation_suspended": 0,
+          "gpu_cancellation_recoveries": 94,
+          "gpu_cancellation_fences": 26,
+          "gpu_required_quarantines": 94,
+          "gpu_required_proof_failures": 94,
+          "gpu_required_cancellations": 211,
+          "gpu_host_event_waits": 4523
+        },
+        {
+          "gpu_requested": 1,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 1,
+          "gpu_cancellation_suspended": 1,
+          "gpu_cancellation_recoveries": 87,
+          "gpu_cancellation_fences": 33,
+          "gpu_required_quarantines": 88,
+          "gpu_required_proof_failures": 88,
+          "gpu_required_cancellations": 213,
+          "gpu_host_event_waits": 16320
+        },
+        {
+          "gpu_requested": 1,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 1,
+          "gpu_cancellation_suspended": 1,
+          "gpu_cancellation_recoveries": 81,
+          "gpu_cancellation_fences": 28,
+          "gpu_required_quarantines": 82,
+          "gpu_required_proof_failures": 82,
+          "gpu_required_cancellations": 238,
+          "gpu_host_event_waits": 13919
+        },
+        {
+          "gpu_requested": 1,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 1,
+          "gpu_cancellation_suspended": 1,
+          "gpu_cancellation_recoveries": 82,
+          "gpu_cancellation_fences": 29,
+          "gpu_required_quarantines": 83,
+          "gpu_required_proof_failures": 83,
+          "gpu_required_cancellations": 287,
+          "gpu_host_event_waits": 12366
+        }
+      ]
+    },
+    {
+      "context": {
+        "factor": "gpu-recovery",
+        "comparator": "gpu-sync",
+        "cohort": "initial",
+        "layout": "playground-ni",
+        "compute_threads": 3,
+        "gpu": "off",
+        "checkpoint_tick": 0,
+        "window": 20000,
+        "expected_end": 20000
+      },
+      "metrics": {
+        "simulation_cpu_s": {
+          "ratio": 1.0018004329098587,
+          "percent_change": 0.18004329098586513,
+          "ci95": [
+            0.987426009357258,
+            1.0130666771523031
+          ],
+          "percent_ci95": [
+            -1.2573990642742006,
+            1.306667715230314
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "simulation_wall_s": {
+          "ratio": 0.9911854260121024,
+          "percent_change": -0.8814573987897645,
+          "ci95": [
+            0.9703555990613544,
+            1.011403066270386
+          ],
+          "percent_ci95": [
+            -2.964440093864562,
+            1.1403066270385898
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "cpu_s": {
+          "ratio": 1.0015507362476919,
+          "percent_change": 0.1550736247691864,
+          "ci95": [
+            0.9876586675113661,
+            1.0126537591066613
+          ],
+          "percent_ci95": [
+            -1.2341332488633894,
+            1.2653759106661333
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "wall_s": {
+          "ratio": 0.9911517418079012,
+          "percent_change": -0.8848258192098779,
+          "ci95": [
+            0.9711910391599224,
+            1.0121954926848897
+          ],
+          "percent_ci95": [
+            -2.8808960840077558,
+            1.219549268488973
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "peak_rss_bytes": {
+          "ratio": 0.9997201642928402,
+          "percent_change": -0.027983570715983674,
+          "ci95": [
+            0.9926187252549667,
+            1.007489157742886
+          ],
+          "percent_ci95": [
+            -0.738127474503325,
+            0.7489157742885943
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        }
+      },
+      "health": {
+        "baseline": {
+          "measured_processes": 6,
+          "reported_gpu_processes": 6,
+          "requested_fields_sum": 0,
+          "gpu_completed_fields_sum": 0,
+          "gpu_completion_fraction": null,
+          "device_committed_fields": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "host_event_waits": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "recovery_events": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "accepted_cancellation_flushes": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "quarantine_pending": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "suspended": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "gpu_errors": [
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        "candidate": {
+          "measured_processes": 6,
+          "reported_gpu_processes": 6,
+          "requested_fields_sum": 0,
+          "gpu_completed_fields_sum": 0,
+          "gpu_completion_fraction": null,
+          "device_committed_fields": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "host_event_waits": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "recovery_events": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "accepted_cancellation_flushes": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "quarantine_pending": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "suspended": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "gpu_errors": [
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        "scope": "Summed requested/completed field counts over measured processes, warmups excluded; diagnostic request weighting, not GPUtime, equal-seed speed or chronological recovery proof."
+      },
+      "completed_seeds": 2,
+      "end_health_statuses": [
+        {
+          "gpu_requested": 0,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 0,
+          "gpu_cancellation_suspended": 0,
+          "gpu_cancellation_recoveries": 0,
+          "gpu_cancellation_fences": 0,
+          "gpu_required_quarantines": 0,
+          "gpu_required_proof_failures": 0,
+          "gpu_required_cancellations": 0,
+          "gpu_host_event_waits": 0
+        },
+        {
+          "gpu_requested": 0,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 0,
+          "gpu_cancellation_suspended": 0,
+          "gpu_cancellation_recoveries": 0,
+          "gpu_cancellation_fences": 0,
+          "gpu_required_quarantines": 0,
+          "gpu_required_proof_failures": 0,
+          "gpu_required_cancellations": 0,
+          "gpu_host_event_waits": 0
+        },
+        {
+          "gpu_requested": 0,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 0,
+          "gpu_cancellation_suspended": 0,
+          "gpu_cancellation_recoveries": 0,
+          "gpu_cancellation_fences": 0,
+          "gpu_required_quarantines": 0,
+          "gpu_required_proof_failures": 0,
+          "gpu_required_cancellations": 0,
+          "gpu_host_event_waits": 0
+        },
+        {
+          "gpu_requested": 0,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 0,
+          "gpu_cancellation_suspended": 0,
+          "gpu_cancellation_recoveries": 0,
+          "gpu_cancellation_fences": 0,
+          "gpu_required_quarantines": 0,
+          "gpu_required_proof_failures": 0,
+          "gpu_required_cancellations": 0,
+          "gpu_host_event_waits": 0
+        },
+        {
+          "gpu_requested": 0,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 0,
+          "gpu_cancellation_suspended": 0,
+          "gpu_cancellation_recoveries": 0,
+          "gpu_cancellation_fences": 0,
+          "gpu_required_quarantines": 0,
+          "gpu_required_proof_failures": 0,
+          "gpu_required_cancellations": 0,
+          "gpu_host_event_waits": 0
+        },
+        {
+          "gpu_requested": 0,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 0,
+          "gpu_cancellation_suspended": 0,
+          "gpu_cancellation_recoveries": 0,
+          "gpu_cancellation_fences": 0,
+          "gpu_required_quarantines": 0,
+          "gpu_required_proof_failures": 0,
+          "gpu_required_cancellations": 0,
+          "gpu_host_event_waits": 0
+        }
+      ]
+    },
+    {
+      "context": {
+        "factor": "gpu-recovery",
+        "comparator": "gpu-sync",
+        "cohort": "initial",
+        "layout": "river-cortex",
+        "compute_threads": 3,
+        "gpu": "on",
+        "checkpoint_tick": 0,
+        "window": 8192,
+        "expected_end": 8192
+      },
+      "metrics": {
+        "simulation_cpu_s": {
+          "ratio": 1.0385512411031232,
+          "percent_change": 3.8551241103123246,
+          "ci95": [
+            1.0163878938682906,
+            1.0693250903865168
+          ],
+          "percent_ci95": [
+            1.6387893868290648,
+            6.93250903865168
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "simulation_wall_s": {
+          "ratio": 1.0276484877722005,
+          "percent_change": 2.7648487772200525,
+          "ci95": [
+            0.9989058308122305,
+            1.0606056581116707
+          ],
+          "percent_ci95": [
+            -0.10941691877695003,
+            6.0605658111670735
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "cpu_s": {
+          "ratio": 1.03449023825516,
+          "percent_change": 3.4490238255159955,
+          "ci95": [
+            1.0100397730705086,
+            1.0642452780701652
+          ],
+          "percent_ci95": [
+            1.0039773070508629,
+            6.424527807016522
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "wall_s": {
+          "ratio": 1.0225634910801908,
+          "percent_change": 2.2563491080190845,
+          "ci95": [
+            0.9948379618815817,
+            1.0532258034589121
+          ],
+          "percent_ci95": [
+            -0.5162038118418311,
+            5.322580345891215
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "peak_rss_bytes": {
+          "ratio": 0.9999977147826071,
+          "percent_change": -0.00022852173928722408,
+          "ci95": [
+            0.9959529444346235,
+            1.004232622073853
+          ],
+          "percent_ci95": [
+            -0.4047055565376545,
+            0.42326220738531095
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        }
+      },
+      "health": {
+        "baseline": {
+          "measured_processes": 6,
+          "reported_gpu_processes": 6,
+          "requested_fields_sum": 49152,
+          "gpu_completed_fields_sum": 11,
+          "gpu_completion_fraction": 0.00022379557291666666,
+          "device_committed_fields": [
+            0,
+            0,
+            1,
+            0,
+            7,
+            3
+          ],
+          "host_event_waits": [
+            3,
+            4,
+            14,
+            8,
+            35,
+            18
+          ],
+          "recovery_events": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "accepted_cancellation_flushes": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "quarantine_pending": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "suspended": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "gpu_errors": [
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        "candidate": {
+          "measured_processes": 6,
+          "reported_gpu_processes": 6,
+          "requested_fields_sum": 49152,
+          "gpu_completed_fields_sum": 3038,
+          "gpu_completion_fraction": 0.061808268229166664,
+          "device_committed_fields": [
+            596,
+            383,
+            406,
+            690,
+            394,
+            571
+          ],
+          "host_event_waits": [
+            1397,
+            949,
+            1297,
+            2183,
+            1138,
+            1522
+          ],
+          "recovery_events": [
+            29,
+            35,
+            51,
+            69,
+            42,
+            49
+          ],
+          "accepted_cancellation_flushes": [
+            16,
+            19,
+            33,
+            44,
+            18,
+            27
+          ],
+          "quarantine_pending": [
+            1,
+            1,
+            0,
+            1,
+            1,
+            1
+          ],
+          "suspended": [
+            1,
+            1,
+            0,
+            1,
+            1,
+            1
+          ],
+          "gpu_errors": [
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        "scope": "Summed requested/completed field counts over measured processes, warmups excluded; diagnostic request weighting, not GPUtime, equal-seed speed or chronological recovery proof."
+      },
+      "completed_seeds": 2,
+      "end_health_statuses": [
+        {
+          "gpu_requested": 1,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 1,
+          "gpu_cancellation_suspended": 1,
+          "gpu_cancellation_recoveries": 29,
+          "gpu_cancellation_fences": 16,
+          "gpu_required_quarantines": 30,
+          "gpu_required_proof_failures": 30,
+          "gpu_required_cancellations": 119,
+          "gpu_host_event_waits": 1397
+        },
+        {
+          "gpu_requested": 1,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 1,
+          "gpu_cancellation_suspended": 1,
+          "gpu_cancellation_recoveries": 35,
+          "gpu_cancellation_fences": 19,
+          "gpu_required_quarantines": 36,
+          "gpu_required_proof_failures": 36,
+          "gpu_required_cancellations": 88,
+          "gpu_host_event_waits": 949
+        },
+        {
+          "gpu_requested": 1,
+          "gpu_available": 1,
+          "gpu_ready_plans": 2,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 0,
+          "gpu_cancellation_suspended": 0,
+          "gpu_cancellation_recoveries": 51,
+          "gpu_cancellation_fences": 33,
+          "gpu_required_quarantines": 51,
+          "gpu_required_proof_failures": 51,
+          "gpu_required_cancellations": 167,
+          "gpu_host_event_waits": 1297
+        },
+        {
+          "gpu_requested": 1,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 1,
+          "gpu_cancellation_suspended": 1,
+          "gpu_cancellation_recoveries": 69,
+          "gpu_cancellation_fences": 44,
+          "gpu_required_quarantines": 70,
+          "gpu_required_proof_failures": 70,
+          "gpu_required_cancellations": 238,
+          "gpu_host_event_waits": 2183
+        },
+        {
+          "gpu_requested": 1,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 1,
+          "gpu_cancellation_suspended": 1,
+          "gpu_cancellation_recoveries": 42,
+          "gpu_cancellation_fences": 18,
+          "gpu_required_quarantines": 43,
+          "gpu_required_proof_failures": 43,
+          "gpu_required_cancellations": 104,
+          "gpu_host_event_waits": 1138
+        },
+        {
+          "gpu_requested": 1,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 1,
+          "gpu_cancellation_suspended": 1,
+          "gpu_cancellation_recoveries": 49,
+          "gpu_cancellation_fences": 27,
+          "gpu_required_quarantines": 50,
+          "gpu_required_proof_failures": 50,
+          "gpu_required_cancellations": 143,
+          "gpu_host_event_waits": 1522
+        }
+      ]
+    },
+    {
+      "context": {
+        "factor": "gpu-recovery",
+        "comparator": "gpu-sync",
+        "cohort": "initial",
+        "layout": "isles-mixed",
+        "compute_threads": 3,
+        "gpu": "on",
+        "checkpoint_tick": 0,
+        "window": 8192,
+        "expected_end": 8192
+      },
+      "metrics": {
+        "simulation_cpu_s": {
+          "ratio": 1.0626046118998447,
+          "percent_change": 6.2604611899844675,
+          "ci95": [
+            1.0481515399062196,
+            1.0787422469632582
+          ],
+          "percent_ci95": [
+            4.8151539906219565,
+            7.874224696325816
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "simulation_wall_s": {
+          "ratio": 1.026625574416902,
+          "percent_change": 2.6625574416901943,
+          "ci95": [
+            1.0050296675917445,
+            1.0513388892800128
+          ],
+          "percent_ci95": [
+            0.5029667591744502,
+            5.1338889280012845
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "cpu_s": {
+          "ratio": 1.0605100812973876,
+          "percent_change": 6.051008129738755,
+          "ci95": [
+            1.043435641218111,
+            1.0790046132792825
+          ],
+          "percent_ci95": [
+            4.343564121811094,
+            7.900461327928254
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "wall_s": {
+          "ratio": 1.0244393707210895,
+          "percent_change": 2.443937072108948,
+          "ci95": [
+            0.9990290842859281,
+            1.052291683731439
+          ],
+          "percent_ci95": [
+            -0.09709157140719293,
+            5.229168373143911
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "peak_rss_bytes": {
+          "ratio": 1.0042956967553645,
+          "percent_change": 0.4295696755364453,
+          "ci95": [
+            1.0009249567716298,
+            1.009452963359228
+          ],
+          "percent_ci95": [
+            0.09249567716298479,
+            0.9452963359227962
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        }
+      },
+      "health": {
+        "baseline": {
+          "measured_processes": 6,
+          "reported_gpu_processes": 6,
+          "requested_fields_sum": 49152,
+          "gpu_completed_fields_sum": 50,
+          "gpu_completion_fraction": 0.0010172526041666667,
+          "device_committed_fields": [
+            29,
+            4,
+            1,
+            11,
+            2,
+            3
+          ],
+          "host_event_waits": [
+            87,
+            9,
+            7,
+            38,
+            11,
+            13
+          ],
+          "recovery_events": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "accepted_cancellation_flushes": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "quarantine_pending": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "suspended": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "gpu_errors": [
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        "candidate": {
+          "measured_processes": 6,
+          "reported_gpu_processes": 6,
+          "requested_fields_sum": 49152,
+          "gpu_completed_fields_sum": 14235,
+          "gpu_completion_fraction": 0.28961181640625,
+          "device_committed_fields": [
+            2361,
+            2549,
+            2728,
+            1741,
+            2356,
+            2502
+          ],
+          "host_event_waits": [
+            8997,
+            9727,
+            10569,
+            6749,
+            9590,
+            9481
+          ],
+          "recovery_events": [
+            66,
+            70,
+            57,
+            71,
+            70,
+            79
+          ],
+          "accepted_cancellation_flushes": [
+            18,
+            25,
+            18,
+            13,
+            23,
+            37
+          ],
+          "quarantine_pending": [
+            1,
+            1,
+            1,
+            0,
+            0,
+            0
+          ],
+          "suspended": [
+            1,
+            1,
+            1,
+            0,
+            0,
+            0
+          ],
+          "gpu_errors": [
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        "scope": "Summed requested/completed field counts over measured processes, warmups excluded; diagnostic request weighting, not GPUtime, equal-seed speed or chronological recovery proof."
+      },
+      "completed_seeds": 2,
+      "end_health_statuses": [
+        {
+          "gpu_requested": 1,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 1,
+          "gpu_cancellation_suspended": 1,
+          "gpu_cancellation_recoveries": 66,
+          "gpu_cancellation_fences": 18,
+          "gpu_required_quarantines": 67,
+          "gpu_required_proof_failures": 67,
+          "gpu_required_cancellations": 116,
+          "gpu_host_event_waits": 8997
+        },
+        {
+          "gpu_requested": 1,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 1,
+          "gpu_cancellation_suspended": 1,
+          "gpu_cancellation_recoveries": 70,
+          "gpu_cancellation_fences": 25,
+          "gpu_required_quarantines": 71,
+          "gpu_required_proof_failures": 71,
+          "gpu_required_cancellations": 141,
+          "gpu_host_event_waits": 9727
+        },
+        {
+          "gpu_requested": 1,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 1,
+          "gpu_cancellation_suspended": 1,
+          "gpu_cancellation_recoveries": 57,
+          "gpu_cancellation_fences": 18,
+          "gpu_required_quarantines": 58,
+          "gpu_required_proof_failures": 58,
+          "gpu_required_cancellations": 120,
+          "gpu_host_event_waits": 10569
+        },
+        {
+          "gpu_requested": 1,
+          "gpu_available": 1,
+          "gpu_ready_plans": 2,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 0,
+          "gpu_cancellation_suspended": 0,
+          "gpu_cancellation_recoveries": 71,
+          "gpu_cancellation_fences": 13,
+          "gpu_required_quarantines": 71,
+          "gpu_required_proof_failures": 71,
+          "gpu_required_cancellations": 127,
+          "gpu_host_event_waits": 6749
+        },
+        {
+          "gpu_requested": 1,
+          "gpu_available": 1,
+          "gpu_ready_plans": 2,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 0,
+          "gpu_cancellation_suspended": 0,
+          "gpu_cancellation_recoveries": 70,
+          "gpu_cancellation_fences": 23,
+          "gpu_required_quarantines": 70,
+          "gpu_required_proof_failures": 70,
+          "gpu_required_cancellations": 147,
+          "gpu_host_event_waits": 9590
+        },
+        {
+          "gpu_requested": 1,
+          "gpu_available": 1,
+          "gpu_ready_plans": 2,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 0,
+          "gpu_cancellation_suspended": 0,
+          "gpu_cancellation_recoveries": 79,
+          "gpu_cancellation_fences": 37,
+          "gpu_required_quarantines": 79,
+          "gpu_required_proof_failures": 79,
+          "gpu_required_cancellations": 172,
+          "gpu_host_event_waits": 9481
+        }
+      ]
+    },
+    {
+      "context": {
+        "factor": "gpu-recovery",
+        "comparator": "gpu-sync",
+        "cohort": "initial",
+        "layout": "oazis-ni",
+        "compute_threads": 3,
+        "gpu": "on",
+        "checkpoint_tick": 0,
+        "window": 8192,
+        "expected_end": 8192
+      },
+      "metrics": {
+        "simulation_cpu_s": {
+          "ratio": 0.9972767235997739,
+          "percent_change": -0.2723276400226071,
+          "ci95": [
+            0.9711357782450407,
+            1.0162753788747578
+          ],
+          "percent_ci95": [
+            -2.8864221754959285,
+            1.6275378874757829
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "simulation_wall_s": {
+          "ratio": 1.006620598510966,
+          "percent_change": 0.6620598510965969,
+          "ci95": [
+            0.9886749639103957,
+            1.0245569438869027
+          ],
+          "percent_ci95": [
+            -1.1325036089604334,
+            2.455694388690266
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "cpu_s": {
+          "ratio": 0.9980301498833031,
+          "percent_change": -0.1969850116696925,
+          "ci95": [
+            0.9728286378445063,
+            1.0166534238862512
+          ],
+          "percent_ci95": [
+            -2.717136215549365,
+            1.665342388625124
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "wall_s": {
+          "ratio": 1.0087808502025437,
+          "percent_change": 0.8780850202543711,
+          "ci95": [
+            0.9907509070621583,
+            1.0258790563476086
+          ],
+          "percent_ci95": [
+            -0.9249092937841707,
+            2.5879056347608564
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "peak_rss_bytes": {
+          "ratio": 1.0041478021143557,
+          "percent_change": 0.41478021143557253,
+          "ci95": [
+            1.0018653562910884,
+            1.0066548356825575
+          ],
+          "percent_ci95": [
+            0.18653562910884158,
+            0.6654835682557536
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        }
+      },
+      "health": {
+        "baseline": {
+          "measured_processes": 6,
+          "reported_gpu_processes": 6,
+          "requested_fields_sum": 49152,
+          "gpu_completed_fields_sum": 48,
+          "gpu_completion_fraction": 0.0009765625,
+          "device_committed_fields": [
+            9,
+            1,
+            14,
+            5,
+            3,
+            16
+          ],
+          "host_event_waits": [
+            31,
+            7,
+            44,
+            28,
+            18,
+            54
+          ],
+          "recovery_events": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "accepted_cancellation_flushes": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "quarantine_pending": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "suspended": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "gpu_errors": [
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        "candidate": {
+          "measured_processes": 6,
+          "reported_gpu_processes": 6,
+          "requested_fields_sum": 49152,
+          "gpu_completed_fields_sum": 12326,
+          "gpu_completion_fraction": 0.2507731119791667,
+          "device_committed_fields": [
+            1918,
+            2268,
+            1935,
+            2548,
+            2136,
+            1521
+          ],
+          "host_event_waits": [
+            6360,
+            7308,
+            6280,
+            8158,
+            7332,
+            5205
+          ],
+          "recovery_events": [
+            48,
+            43,
+            55,
+            41,
+            50,
+            51
+          ],
+          "accepted_cancellation_flushes": [
+            12,
+            10,
+            12,
+            11,
+            12,
+            6
+          ],
+          "quarantine_pending": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "suspended": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "gpu_errors": [
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        "scope": "Summed requested/completed field counts over measured processes, warmups excluded; diagnostic request weighting, not GPUtime, equal-seed speed or chronological recovery proof."
+      },
+      "completed_seeds": 2,
+      "end_health_statuses": [
+        {
+          "gpu_requested": 1,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 1,
+          "gpu_cancellation_suspended": 1,
+          "gpu_cancellation_recoveries": 48,
+          "gpu_cancellation_fences": 12,
+          "gpu_required_quarantines": 49,
+          "gpu_required_proof_failures": 49,
+          "gpu_required_cancellations": 70,
+          "gpu_host_event_waits": 6360
+        },
+        {
+          "gpu_requested": 1,
+          "gpu_available": 1,
+          "gpu_ready_plans": 2,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 0,
+          "gpu_cancellation_suspended": 0,
+          "gpu_cancellation_recoveries": 43,
+          "gpu_cancellation_fences": 10,
+          "gpu_required_quarantines": 43,
+          "gpu_required_proof_failures": 43,
+          "gpu_required_cancellations": 91,
+          "gpu_host_event_waits": 7308
+        },
+        {
+          "gpu_requested": 1,
+          "gpu_available": 1,
+          "gpu_ready_plans": 2,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 0,
+          "gpu_cancellation_suspended": 0,
+          "gpu_cancellation_recoveries": 55,
+          "gpu_cancellation_fences": 12,
+          "gpu_required_quarantines": 55,
+          "gpu_required_proof_failures": 55,
+          "gpu_required_cancellations": 86,
+          "gpu_host_event_waits": 6280
+        },
+        {
+          "gpu_requested": 1,
+          "gpu_available": 1,
+          "gpu_ready_plans": 2,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 0,
+          "gpu_cancellation_suspended": 0,
+          "gpu_cancellation_recoveries": 41,
+          "gpu_cancellation_fences": 11,
+          "gpu_required_quarantines": 41,
+          "gpu_required_proof_failures": 41,
+          "gpu_required_cancellations": 79,
+          "gpu_host_event_waits": 8158
+        },
+        {
+          "gpu_requested": 1,
+          "gpu_available": 1,
+          "gpu_ready_plans": 2,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 0,
+          "gpu_cancellation_suspended": 0,
+          "gpu_cancellation_recoveries": 50,
+          "gpu_cancellation_fences": 12,
+          "gpu_required_quarantines": 50,
+          "gpu_required_proof_failures": 50,
+          "gpu_required_cancellations": 84,
+          "gpu_host_event_waits": 7332
+        },
+        {
+          "gpu_requested": 1,
+          "gpu_available": 1,
+          "gpu_ready_plans": 2,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 0,
+          "gpu_cancellation_suspended": 0,
+          "gpu_cancellation_recoveries": 51,
+          "gpu_cancellation_fences": 6,
+          "gpu_required_quarantines": 51,
+          "gpu_required_proof_failures": 51,
+          "gpu_required_cancellations": 90,
+          "gpu_host_event_waits": 5205
+        }
+      ]
+    },
+    {
+      "context": {
+        "factor": "gpu-recovery",
+        "comparator": "gpu-sync",
+        "cohort": "initial",
+        "layout": "oazis-ni",
+        "compute_threads": 3,
+        "gpu": "off",
+        "checkpoint_tick": 0,
+        "window": 8192,
+        "expected_end": 8192
+      },
+      "metrics": {
+        "simulation_cpu_s": {
+          "ratio": 0.9895148432003568,
+          "percent_change": -1.0485156799643236,
+          "ci95": [
+            0.9432124860262456,
+            1.0283873752677195
+          ],
+          "percent_ci95": [
+            -5.678751397375437,
+            2.8387375267719506
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "simulation_wall_s": {
+          "ratio": 0.9924423280493092,
+          "percent_change": -0.7557671950690792,
+          "ci95": [
+            0.9510062775636752,
+            1.0250149995678888
+          ],
+          "percent_ci95": [
+            -4.899372243632483,
+            2.5014999567888774
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "cpu_s": {
+          "ratio": 0.9896511690648914,
+          "percent_change": -1.0348830935108633,
+          "ci95": [
+            0.9450170210181191,
+            1.0270897637688747
+          ],
+          "percent_ci95": [
+            -5.498297898188087,
+            2.708976376887473
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "wall_s": {
+          "ratio": 0.9925548118548746,
+          "percent_change": -0.7445188145125403,
+          "ci95": [
+            0.9543215271022153,
+            1.0230724185229856
+          ],
+          "percent_ci95": [
+            -4.56784728977847,
+            2.3072418522985583
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "peak_rss_bytes": {
+          "ratio": 1.002020089113169,
+          "percent_change": 0.2020089113168977,
+          "ci95": [
+            0.9993756898964085,
+            1.0065279463417314
+          ],
+          "percent_ci95": [
+            -0.062431010359154104,
+            0.6527946341731372
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        }
+      },
+      "health": {
+        "baseline": {
+          "measured_processes": 6,
+          "reported_gpu_processes": 6,
+          "requested_fields_sum": 0,
+          "gpu_completed_fields_sum": 0,
+          "gpu_completion_fraction": null,
+          "device_committed_fields": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "host_event_waits": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "recovery_events": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "accepted_cancellation_flushes": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "quarantine_pending": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "suspended": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "gpu_errors": [
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        "candidate": {
+          "measured_processes": 6,
+          "reported_gpu_processes": 6,
+          "requested_fields_sum": 0,
+          "gpu_completed_fields_sum": 0,
+          "gpu_completion_fraction": null,
+          "device_committed_fields": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "host_event_waits": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "recovery_events": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "accepted_cancellation_flushes": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "quarantine_pending": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "suspended": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "gpu_errors": [
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        "scope": "Summed requested/completed field counts over measured processes, warmups excluded; diagnostic request weighting, not GPUtime, equal-seed speed or chronological recovery proof."
+      },
+      "completed_seeds": 2,
+      "end_health_statuses": [
+        {
+          "gpu_requested": 0,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 0,
+          "gpu_cancellation_suspended": 0,
+          "gpu_cancellation_recoveries": 0,
+          "gpu_cancellation_fences": 0,
+          "gpu_required_quarantines": 0,
+          "gpu_required_proof_failures": 0,
+          "gpu_required_cancellations": 0,
+          "gpu_host_event_waits": 0
+        },
+        {
+          "gpu_requested": 0,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 0,
+          "gpu_cancellation_suspended": 0,
+          "gpu_cancellation_recoveries": 0,
+          "gpu_cancellation_fences": 0,
+          "gpu_required_quarantines": 0,
+          "gpu_required_proof_failures": 0,
+          "gpu_required_cancellations": 0,
+          "gpu_host_event_waits": 0
+        },
+        {
+          "gpu_requested": 0,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 0,
+          "gpu_cancellation_suspended": 0,
+          "gpu_cancellation_recoveries": 0,
+          "gpu_cancellation_fences": 0,
+          "gpu_required_quarantines": 0,
+          "gpu_required_proof_failures": 0,
+          "gpu_required_cancellations": 0,
+          "gpu_host_event_waits": 0
+        },
+        {
+          "gpu_requested": 0,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 0,
+          "gpu_cancellation_suspended": 0,
+          "gpu_cancellation_recoveries": 0,
+          "gpu_cancellation_fences": 0,
+          "gpu_required_quarantines": 0,
+          "gpu_required_proof_failures": 0,
+          "gpu_required_cancellations": 0,
+          "gpu_host_event_waits": 0
+        },
+        {
+          "gpu_requested": 0,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 0,
+          "gpu_cancellation_suspended": 0,
+          "gpu_cancellation_recoveries": 0,
+          "gpu_cancellation_fences": 0,
+          "gpu_required_quarantines": 0,
+          "gpu_required_proof_failures": 0,
+          "gpu_required_cancellations": 0,
+          "gpu_host_event_waits": 0
+        },
+        {
+          "gpu_requested": 0,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 0,
+          "gpu_cancellation_suspended": 0,
+          "gpu_cancellation_recoveries": 0,
+          "gpu_cancellation_fences": 0,
+          "gpu_required_quarantines": 0,
+          "gpu_required_proof_failures": 0,
+          "gpu_required_cancellations": 0,
+          "gpu_host_event_waits": 0
+        }
+      ]
+    },
+    {
+      "context": {
+        "factor": "gpu-recovery",
+        "comparator": "gpu-sync",
+        "cohort": "initial",
+        "layout": "swamp-wide",
+        "compute_threads": 3,
+        "gpu": "on",
+        "checkpoint_tick": 0,
+        "window": 8192,
+        "expected_end": 8192
+      },
+      "metrics": {
+        "simulation_cpu_s": {
+          "ratio": 0.9858433590916329,
+          "percent_change": -1.4156640908367102,
+          "ci95": [
+            0.8969755090565281,
+            1.095607621269395
+          ],
+          "percent_ci95": [
+            -10.302449094347189,
+            9.560762126939505
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "simulation_wall_s": {
+          "ratio": 0.9553009108594215,
+          "percent_change": -4.469908914057852,
+          "ci95": [
+            0.8384018887506944,
+            1.1139743363868613
+          ],
+          "percent_ci95": [
+            -16.159811124930556,
+            11.397433638686127
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "cpu_s": {
+          "ratio": 0.9837057351240703,
+          "percent_change": -1.6294264875929665,
+          "ci95": [
+            0.902350157048842,
+            1.0842089191696431
+          ],
+          "percent_ci95": [
+            -9.764984295115797,
+            8.420891916964312
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "wall_s": {
+          "ratio": 0.9567063098056423,
+          "percent_change": -4.329369019435769,
+          "ci95": [
+            0.8589671610197451,
+            1.0831002757599826
+          ],
+          "percent_ci95": [
+            -14.103283898025488,
+            8.310027575998259
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "peak_rss_bytes": {
+          "ratio": 1.0010510542592548,
+          "percent_change": 0.105105425925478,
+          "ci95": [
+            0.9976531878789526,
+            1.005773766862013
+          ],
+          "percent_ci95": [
+            -0.23468121210473702,
+            0.577376686201303
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        }
+      },
+      "health": {
+        "baseline": {
+          "measured_processes": 6,
+          "reported_gpu_processes": 6,
+          "requested_fields_sum": 49152,
+          "gpu_completed_fields_sum": 10,
+          "gpu_completion_fraction": 0.00020345052083333334,
+          "device_committed_fields": [
+            0,
+            0,
+            9,
+            0,
+            0,
+            1
+          ],
+          "host_event_waits": [
+            5,
+            6,
+            30,
+            3,
+            3,
+            11
+          ],
+          "recovery_events": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "accepted_cancellation_flushes": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "quarantine_pending": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "suspended": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "gpu_errors": [
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        "candidate": {
+          "measured_processes": 6,
+          "reported_gpu_processes": 6,
+          "requested_fields_sum": 49152,
+          "gpu_completed_fields_sum": 1013,
+          "gpu_completion_fraction": 0.020609537760416668,
+          "device_committed_fields": [
+            98,
+            62,
+            121,
+            503,
+            76,
+            155
+          ],
+          "host_event_waits": [
+            465,
+            317,
+            426,
+            1538,
+            723,
+            899
+          ],
+          "recovery_events": [
+            41,
+            26,
+            30,
+            61,
+            55,
+            63
+          ],
+          "accepted_cancellation_flushes": [
+            23,
+            7,
+            13,
+            44,
+            42,
+            51
+          ],
+          "quarantine_pending": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            0
+          ],
+          "suspended": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            0
+          ],
+          "gpu_errors": [
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        "scope": "Summed requested/completed field counts over measured processes, warmups excluded; diagnostic request weighting, not GPUtime, equal-seed speed or chronological recovery proof."
+      },
+      "completed_seeds": 2,
+      "end_health_statuses": [
+        {
+          "gpu_requested": 1,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 1,
+          "gpu_cancellation_suspended": 1,
+          "gpu_cancellation_recoveries": 41,
+          "gpu_cancellation_fences": 23,
+          "gpu_required_quarantines": 42,
+          "gpu_required_proof_failures": 42,
+          "gpu_required_cancellations": 84,
+          "gpu_host_event_waits": 465
+        },
+        {
+          "gpu_requested": 1,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 1,
+          "gpu_cancellation_suspended": 1,
+          "gpu_cancellation_recoveries": 26,
+          "gpu_cancellation_fences": 7,
+          "gpu_required_quarantines": 27,
+          "gpu_required_proof_failures": 27,
+          "gpu_required_cancellations": 44,
+          "gpu_host_event_waits": 317
+        },
+        {
+          "gpu_requested": 1,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 1,
+          "gpu_cancellation_suspended": 1,
+          "gpu_cancellation_recoveries": 30,
+          "gpu_cancellation_fences": 13,
+          "gpu_required_quarantines": 31,
+          "gpu_required_proof_failures": 31,
+          "gpu_required_cancellations": 64,
+          "gpu_host_event_waits": 426
+        },
+        {
+          "gpu_requested": 1,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 1,
+          "gpu_cancellation_suspended": 1,
+          "gpu_cancellation_recoveries": 61,
+          "gpu_cancellation_fences": 44,
+          "gpu_required_quarantines": 62,
+          "gpu_required_proof_failures": 62,
+          "gpu_required_cancellations": 128,
+          "gpu_host_event_waits": 1538
+        },
+        {
+          "gpu_requested": 1,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 1,
+          "gpu_cancellation_suspended": 1,
+          "gpu_cancellation_recoveries": 55,
+          "gpu_cancellation_fences": 42,
+          "gpu_required_quarantines": 56,
+          "gpu_required_proof_failures": 56,
+          "gpu_required_cancellations": 237,
+          "gpu_host_event_waits": 723
+        },
+        {
+          "gpu_requested": 1,
+          "gpu_available": 1,
+          "gpu_ready_plans": 2,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 0,
+          "gpu_cancellation_suspended": 0,
+          "gpu_cancellation_recoveries": 63,
+          "gpu_cancellation_fences": 51,
+          "gpu_required_quarantines": 63,
+          "gpu_required_proof_failures": 63,
+          "gpu_required_cancellations": 225,
+          "gpu_host_event_waits": 899
+        }
+      ]
+    },
+    {
+      "context": {
+        "factor": "gpu-recovery",
+        "comparator": "gpu-sync",
+        "cohort": "initial",
+        "layout": "large-ni",
+        "compute_threads": 3,
+        "gpu": "on",
+        "checkpoint_tick": 0,
+        "window": 4096,
+        "expected_end": 4096
+      },
+      "metrics": {
+        "simulation_cpu_s": {
+          "ratio": 1.0111821333596531,
+          "percent_change": 1.1182133359653124,
+          "ci95": [
+            0.9742198695181639,
+            1.0425829095602412
+          ],
+          "percent_ci95": [
+            -2.578013048183614,
+            4.258290956024124
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "simulation_wall_s": {
+          "ratio": 1.0064246944213555,
+          "percent_change": 0.6424694421355515,
+          "ci95": [
+            0.9814413650983429,
+            1.0432593458419683
+          ],
+          "percent_ci95": [
+            -1.85586349016571,
+            4.325934584196833
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "cpu_s": {
+          "ratio": 1.0104756919019482,
+          "percent_change": 1.0475691901948192,
+          "ci95": [
+            0.975377156234971,
+            1.0402124266440393
+          ],
+          "percent_ci95": [
+            -2.462284376502899,
+            4.0212426644039345
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "wall_s": {
+          "ratio": 1.0040277690783177,
+          "percent_change": 0.40277690783177,
+          "ci95": [
+            0.9738573756720423,
+            1.0402278628799542
+          ],
+          "percent_ci95": [
+            -2.6142624327957664,
+            4.022786287995417
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "peak_rss_bytes": {
+          "ratio": 1.0200046069004698,
+          "percent_change": 2.000460690046979,
+          "ci95": [
+            1.016193311949053,
+            1.0261652082357742
+          ],
+          "percent_ci95": [
+            1.6193311949052935,
+            2.6165208235774173
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        }
+      },
+      "health": {
+        "baseline": {
+          "measured_processes": 6,
+          "reported_gpu_processes": 6,
+          "requested_fields_sum": 24576,
+          "gpu_completed_fields_sum": 21,
+          "gpu_completion_fraction": 0.0008544921875,
+          "device_committed_fields": [
+            1,
+            0,
+            0,
+            0,
+            9,
+            11
+          ],
+          "host_event_waits": [
+            6,
+            5,
+            3,
+            5,
+            38,
+            61
+          ],
+          "recovery_events": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "accepted_cancellation_flushes": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "quarantine_pending": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "suspended": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "gpu_errors": [
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        "candidate": {
+          "measured_processes": 6,
+          "reported_gpu_processes": 6,
+          "requested_fields_sum": 24576,
+          "gpu_completed_fields_sum": 1119,
+          "gpu_completion_fraction": 0.0455322265625,
+          "device_committed_fields": [
+            172,
+            123,
+            125,
+            253,
+            196,
+            257
+          ],
+          "host_event_waits": [
+            1266,
+            1135,
+            1029,
+            1720,
+            1499,
+            2041
+          ],
+          "recovery_events": [
+            71,
+            84,
+            75,
+            82,
+            82,
+            107
+          ],
+          "accepted_cancellation_flushes": [
+            32,
+            43,
+            30,
+            37,
+            29,
+            58
+          ],
+          "quarantine_pending": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "suspended": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "gpu_errors": [
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        "scope": "Summed requested/completed field counts over measured processes, warmups excluded; diagnostic request weighting, not GPUtime, equal-seed speed or chronological recovery proof."
+      },
+      "completed_seeds": 2,
+      "end_health_statuses": [
+        {
+          "gpu_requested": 1,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 1,
+          "gpu_cancellation_suspended": 1,
+          "gpu_cancellation_recoveries": 71,
+          "gpu_cancellation_fences": 32,
+          "gpu_required_quarantines": 72,
+          "gpu_required_proof_failures": 72,
+          "gpu_required_cancellations": 133,
+          "gpu_host_event_waits": 1266
+        },
+        {
+          "gpu_requested": 1,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 1,
+          "gpu_cancellation_suspended": 1,
+          "gpu_cancellation_recoveries": 84,
+          "gpu_cancellation_fences": 43,
+          "gpu_required_quarantines": 85,
+          "gpu_required_proof_failures": 85,
+          "gpu_required_cancellations": 137,
+          "gpu_host_event_waits": 1135
+        },
+        {
+          "gpu_requested": 1,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 1,
+          "gpu_cancellation_suspended": 1,
+          "gpu_cancellation_recoveries": 75,
+          "gpu_cancellation_fences": 30,
+          "gpu_required_quarantines": 76,
+          "gpu_required_proof_failures": 76,
+          "gpu_required_cancellations": 126,
+          "gpu_host_event_waits": 1029
+        },
+        {
+          "gpu_requested": 1,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 1,
+          "gpu_cancellation_suspended": 1,
+          "gpu_cancellation_recoveries": 82,
+          "gpu_cancellation_fences": 37,
+          "gpu_required_quarantines": 83,
+          "gpu_required_proof_failures": 83,
+          "gpu_required_cancellations": 138,
+          "gpu_host_event_waits": 1720
+        },
+        {
+          "gpu_requested": 1,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 1,
+          "gpu_cancellation_suspended": 1,
+          "gpu_cancellation_recoveries": 82,
+          "gpu_cancellation_fences": 29,
+          "gpu_required_quarantines": 83,
+          "gpu_required_proof_failures": 83,
+          "gpu_required_cancellations": 135,
+          "gpu_host_event_waits": 1499
+        },
+        {
+          "gpu_requested": 1,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 1,
+          "gpu_cancellation_suspended": 1,
+          "gpu_cancellation_recoveries": 107,
+          "gpu_cancellation_fences": 58,
+          "gpu_required_quarantines": 108,
+          "gpu_required_proof_failures": 108,
+          "gpu_required_cancellations": 179,
+          "gpu_host_event_waits": 2041
+        }
+      ]
+    },
+    {
+      "context": {
+        "factor": "gpu-recovery",
+        "comparator": "gpu-sync",
+        "cohort": "initial",
+        "layout": "large-ni",
+        "compute_threads": 3,
+        "gpu": "off",
+        "checkpoint_tick": 0,
+        "window": 4096,
+        "expected_end": 4096
+      },
+      "metrics": {
+        "simulation_cpu_s": {
+          "ratio": 0.9914718965347643,
+          "percent_change": -0.8528103465235692,
+          "ci95": [
+            0.9564906012291811,
+            1.0270826795897132
+          ],
+          "percent_ci95": [
+            -4.350939877081894,
+            2.708267958971322
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "simulation_wall_s": {
+          "ratio": 0.9947614784504967,
+          "percent_change": -0.5238521549503328,
+          "ci95": [
+            0.9632926085830028,
+            1.0263542797555383
+          ],
+          "percent_ci95": [
+            -3.6707391416997193,
+            2.635427975553828
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "cpu_s": {
+          "ratio": 0.9924685377061705,
+          "percent_change": -0.7531462293829505,
+          "ci95": [
+            0.9592927031226995,
+            1.026314108705509
+          ],
+          "percent_ci95": [
+            -4.070729687730045,
+            2.6314108705508987
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "wall_s": {
+          "ratio": 0.9968628622691381,
+          "percent_change": -0.3137137730861883,
+          "ci95": [
+            0.9694397516858952,
+            1.0246187465666468
+          ],
+          "percent_ci95": [
+            -3.0560248314104754,
+            2.4618746566646754
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "peak_rss_bytes": {
+          "ratio": 0.9980279413936034,
+          "percent_change": -0.19720586063965984,
+          "ci95": [
+            0.9898333343580752,
+            1.0026281962801953
+          ],
+          "percent_ci95": [
+            -1.016666564192481,
+            0.2628196280195283
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        }
+      },
+      "health": {
+        "baseline": {
+          "measured_processes": 6,
+          "reported_gpu_processes": 6,
+          "requested_fields_sum": 0,
+          "gpu_completed_fields_sum": 0,
+          "gpu_completion_fraction": null,
+          "device_committed_fields": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "host_event_waits": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "recovery_events": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "accepted_cancellation_flushes": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "quarantine_pending": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "suspended": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "gpu_errors": [
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        "candidate": {
+          "measured_processes": 6,
+          "reported_gpu_processes": 6,
+          "requested_fields_sum": 0,
+          "gpu_completed_fields_sum": 0,
+          "gpu_completion_fraction": null,
+          "device_committed_fields": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "host_event_waits": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "recovery_events": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "accepted_cancellation_flushes": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "quarantine_pending": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "suspended": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "gpu_errors": [
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        "scope": "Summed requested/completed field counts over measured processes, warmups excluded; diagnostic request weighting, not GPUtime, equal-seed speed or chronological recovery proof."
+      },
+      "completed_seeds": 2,
+      "end_health_statuses": [
+        {
+          "gpu_requested": 0,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 0,
+          "gpu_cancellation_suspended": 0,
+          "gpu_cancellation_recoveries": 0,
+          "gpu_cancellation_fences": 0,
+          "gpu_required_quarantines": 0,
+          "gpu_required_proof_failures": 0,
+          "gpu_required_cancellations": 0,
+          "gpu_host_event_waits": 0
+        },
+        {
+          "gpu_requested": 0,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 0,
+          "gpu_cancellation_suspended": 0,
+          "gpu_cancellation_recoveries": 0,
+          "gpu_cancellation_fences": 0,
+          "gpu_required_quarantines": 0,
+          "gpu_required_proof_failures": 0,
+          "gpu_required_cancellations": 0,
+          "gpu_host_event_waits": 0
+        },
+        {
+          "gpu_requested": 0,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 0,
+          "gpu_cancellation_suspended": 0,
+          "gpu_cancellation_recoveries": 0,
+          "gpu_cancellation_fences": 0,
+          "gpu_required_quarantines": 0,
+          "gpu_required_proof_failures": 0,
+          "gpu_required_cancellations": 0,
+          "gpu_host_event_waits": 0
+        },
+        {
+          "gpu_requested": 0,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 0,
+          "gpu_cancellation_suspended": 0,
+          "gpu_cancellation_recoveries": 0,
+          "gpu_cancellation_fences": 0,
+          "gpu_required_quarantines": 0,
+          "gpu_required_proof_failures": 0,
+          "gpu_required_cancellations": 0,
+          "gpu_host_event_waits": 0
+        },
+        {
+          "gpu_requested": 0,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 0,
+          "gpu_cancellation_suspended": 0,
+          "gpu_cancellation_recoveries": 0,
+          "gpu_cancellation_fences": 0,
+          "gpu_required_quarantines": 0,
+          "gpu_required_proof_failures": 0,
+          "gpu_required_cancellations": 0,
+          "gpu_host_event_waits": 0
+        },
+        {
+          "gpu_requested": 0,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 0,
+          "gpu_cancellation_suspended": 0,
+          "gpu_cancellation_recoveries": 0,
+          "gpu_cancellation_fences": 0,
+          "gpu_required_quarantines": 0,
+          "gpu_required_proof_failures": 0,
+          "gpu_required_cancellations": 0,
+          "gpu_host_event_waits": 0
+        }
+      ]
+    },
+    {
+      "context": {
+        "factor": "gpu-recovery",
+        "comparator": "gpu-sync",
+        "cohort": "initial",
+        "layout": "large-mixed",
+        "compute_threads": 3,
+        "gpu": "on",
+        "checkpoint_tick": 0,
+        "window": 4096,
+        "expected_end": 4096
+      },
+      "metrics": {
+        "simulation_cpu_s": {
+          "ratio": 1.0672634976705624,
+          "percent_change": 6.726349767056239,
+          "ci95": [
+            1.0290783997005526,
+            1.1151389325065468
+          ],
+          "percent_ci95": [
+            2.9078399700552593,
+            11.513893250654682
+          ],
+          "seed_count": 3,
+          "paired_repeats": 9,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "simulation_wall_s": {
+          "ratio": 1.0439287193292315,
+          "percent_change": 4.392871932923148,
+          "ci95": [
+            1.0166482292014127,
+            1.0824159455331062
+          ],
+          "percent_ci95": [
+            1.6648229201412734,
+            8.241594553310616
+          ],
+          "seed_count": 3,
+          "paired_repeats": 9,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "cpu_s": {
+          "ratio": 1.0621990954591016,
+          "percent_change": 6.219909545910163,
+          "ci95": [
+            1.0278100347833177,
+            1.1057643741719525
+          ],
+          "percent_ci95": [
+            2.781003478331767,
+            10.576437417195251
+          ],
+          "seed_count": 3,
+          "paired_repeats": 9,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "wall_s": {
+          "ratio": 1.0382098661857928,
+          "percent_change": 3.8209866185792807,
+          "ci95": [
+            1.015181395874915,
+            1.0701137320782506
+          ],
+          "percent_ci95": [
+            1.518139587491496,
+            7.011373207825056
+          ],
+          "seed_count": 3,
+          "paired_repeats": 9,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "peak_rss_bytes": {
+          "ratio": 1.0033559299909522,
+          "percent_change": 0.33559299909522444,
+          "ci95": [
+            0.9950542785827826,
+            1.0090120504299105
+          ],
+          "percent_ci95": [
+            -0.4945721417217386,
+            0.901205042991049
+          ],
+          "seed_count": 3,
+          "paired_repeats": 9,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        }
+      },
+      "health": {
+        "baseline": {
+          "measured_processes": 9,
+          "reported_gpu_processes": 9,
+          "requested_fields_sum": 36864,
+          "gpu_completed_fields_sum": 28,
+          "gpu_completion_fraction": 0.0007595486111111111,
+          "device_committed_fields": [
+            8,
+            0,
+            3,
+            3,
+            7,
+            1,
+            4,
+            2,
+            0
+          ],
+          "host_event_waits": [
+            45,
+            6,
+            22,
+            22,
+            35,
+            8,
+            19,
+            13,
+            8
+          ],
+          "recovery_events": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "accepted_cancellation_flushes": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "quarantine_pending": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "suspended": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "gpu_errors": [
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        "candidate": {
+          "measured_processes": 9,
+          "reported_gpu_processes": 9,
+          "requested_fields_sum": 36864,
+          "gpu_completed_fields_sum": 2411,
+          "gpu_completion_fraction": 0.0654025607638889,
+          "device_committed_fields": [
+            437,
+            243,
+            278,
+            222,
+            284,
+            348,
+            181,
+            237,
+            182
+          ],
+          "host_event_waits": [
+            1594,
+            976,
+            1100,
+            1035,
+            1190,
+            1417,
+            785,
+            981,
+            881
+          ],
+          "recovery_events": [
+            48,
+            45,
+            41,
+            47,
+            51,
+            44,
+            38,
+            40,
+            50
+          ],
+          "accepted_cancellation_flushes": [
+            20,
+            12,
+            15,
+            16,
+            21,
+            17,
+            8,
+            13,
+            22
+          ],
+          "quarantine_pending": [
+            1,
+            0,
+            1,
+            1,
+            1,
+            0,
+            0,
+            1,
+            1
+          ],
+          "suspended": [
+            1,
+            0,
+            1,
+            1,
+            1,
+            0,
+            0,
+            1,
+            1
+          ],
+          "gpu_errors": [
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        "scope": "Summed requested/completed field counts over measured processes, warmups excluded; diagnostic request weighting, not GPUtime, equal-seed speed or chronological recovery proof."
+      },
+      "completed_seeds": 3,
+      "end_health_statuses": [
+        {
+          "gpu_requested": 1,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 1,
+          "gpu_cancellation_suspended": 1,
+          "gpu_cancellation_recoveries": 48,
+          "gpu_cancellation_fences": 20,
+          "gpu_required_quarantines": 49,
+          "gpu_required_proof_failures": 49,
+          "gpu_required_cancellations": 89,
+          "gpu_host_event_waits": 1594
+        },
+        {
+          "gpu_requested": 1,
+          "gpu_available": 1,
+          "gpu_ready_plans": 2,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 0,
+          "gpu_cancellation_suspended": 0,
+          "gpu_cancellation_recoveries": 45,
+          "gpu_cancellation_fences": 12,
+          "gpu_required_quarantines": 45,
+          "gpu_required_proof_failures": 45,
+          "gpu_required_cancellations": 79,
+          "gpu_host_event_waits": 976
+        },
+        {
+          "gpu_requested": 1,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 1,
+          "gpu_cancellation_suspended": 1,
+          "gpu_cancellation_recoveries": 41,
+          "gpu_cancellation_fences": 15,
+          "gpu_required_quarantines": 42,
+          "gpu_required_proof_failures": 42,
+          "gpu_required_cancellations": 85,
+          "gpu_host_event_waits": 1100
+        },
+        {
+          "gpu_requested": 1,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 1,
+          "gpu_cancellation_suspended": 1,
+          "gpu_cancellation_recoveries": 47,
+          "gpu_cancellation_fences": 16,
+          "gpu_required_quarantines": 48,
+          "gpu_required_proof_failures": 48,
+          "gpu_required_cancellations": 80,
+          "gpu_host_event_waits": 1035
+        },
+        {
+          "gpu_requested": 1,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 1,
+          "gpu_cancellation_suspended": 1,
+          "gpu_cancellation_recoveries": 51,
+          "gpu_cancellation_fences": 21,
+          "gpu_required_quarantines": 52,
+          "gpu_required_proof_failures": 52,
+          "gpu_required_cancellations": 88,
+          "gpu_host_event_waits": 1190
+        },
+        {
+          "gpu_requested": 1,
+          "gpu_available": 1,
+          "gpu_ready_plans": 2,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 0,
+          "gpu_cancellation_suspended": 0,
+          "gpu_cancellation_recoveries": 44,
+          "gpu_cancellation_fences": 17,
+          "gpu_required_quarantines": 44,
+          "gpu_required_proof_failures": 44,
+          "gpu_required_cancellations": 78,
+          "gpu_host_event_waits": 1417
+        },
+        {
+          "gpu_requested": 1,
+          "gpu_available": 1,
+          "gpu_ready_plans": 2,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 0,
+          "gpu_cancellation_suspended": 0,
+          "gpu_cancellation_recoveries": 38,
+          "gpu_cancellation_fences": 8,
+          "gpu_required_quarantines": 38,
+          "gpu_required_proof_failures": 38,
+          "gpu_required_cancellations": 57,
+          "gpu_host_event_waits": 785
+        },
+        {
+          "gpu_requested": 1,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 1,
+          "gpu_cancellation_suspended": 1,
+          "gpu_cancellation_recoveries": 40,
+          "gpu_cancellation_fences": 13,
+          "gpu_required_quarantines": 41,
+          "gpu_required_proof_failures": 41,
+          "gpu_required_cancellations": 72,
+          "gpu_host_event_waits": 981
+        },
+        {
+          "gpu_requested": 1,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 1,
+          "gpu_cancellation_suspended": 1,
+          "gpu_cancellation_recoveries": 50,
+          "gpu_cancellation_fences": 22,
+          "gpu_required_quarantines": 51,
+          "gpu_required_proof_failures": 51,
+          "gpu_required_cancellations": 108,
+          "gpu_host_event_waits": 881
+        }
+      ]
+    },
+    {
+      "context": {
+        "factor": "gpu-recovery",
+        "comparator": "gpu-sync",
+        "cohort": "initial",
+        "layout": "large-mixed",
+        "compute_threads": 3,
+        "gpu": "off",
+        "checkpoint_tick": 0,
+        "window": 4096,
+        "expected_end": 4096
+      },
+      "metrics": {
+        "simulation_cpu_s": {
+          "ratio": 1.0474271011187535,
+          "percent_change": 4.742710111875348,
+          "ci95": [
+            0.9963105127919683,
+            1.0869519673681372
+          ],
+          "percent_ci95": [
+            -0.368948720803175,
+            8.695196736813715
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "simulation_wall_s": {
+          "ratio": 1.0450404177211834,
+          "percent_change": 4.504041772118339,
+          "ci95": [
+            0.996751473526751,
+            1.0853935590008066
+          ],
+          "percent_ci95": [
+            -0.3248526473249025,
+            8.539355900080658
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "cpu_s": {
+          "ratio": 1.046110963840445,
+          "percent_change": 4.611096384044511,
+          "ci95": [
+            0.9955559734933815,
+            1.0848819357223876
+          ],
+          "percent_ci95": [
+            -0.4444026506618459,
+            8.488193572238757
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "wall_s": {
+          "ratio": 1.0426014143871998,
+          "percent_change": 4.260141438719978,
+          "ci95": [
+            0.9940585461439022,
+            1.0795393424818747
+          ],
+          "percent_ci95": [
+            -0.5941453856097789,
+            7.953934248187466
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "peak_rss_bytes": {
+          "ratio": 1.0053756045952438,
+          "percent_change": 0.5375604595243777,
+          "ci95": [
+            0.998985352109159,
+            1.0120195526190057
+          ],
+          "percent_ci95": [
+            -0.10146478908410472,
+            1.201955261900567
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        }
+      },
+      "health": {
+        "baseline": {
+          "measured_processes": 6,
+          "reported_gpu_processes": 6,
+          "requested_fields_sum": 0,
+          "gpu_completed_fields_sum": 0,
+          "gpu_completion_fraction": null,
+          "device_committed_fields": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "host_event_waits": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "recovery_events": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "accepted_cancellation_flushes": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "quarantine_pending": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "suspended": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "gpu_errors": [
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        "candidate": {
+          "measured_processes": 6,
+          "reported_gpu_processes": 6,
+          "requested_fields_sum": 0,
+          "gpu_completed_fields_sum": 0,
+          "gpu_completion_fraction": null,
+          "device_committed_fields": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "host_event_waits": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "recovery_events": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "accepted_cancellation_flushes": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "quarantine_pending": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "suspended": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "gpu_errors": [
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        "scope": "Summed requested/completed field counts over measured processes, warmups excluded; diagnostic request weighting, not GPUtime, equal-seed speed or chronological recovery proof."
+      },
+      "completed_seeds": 2,
+      "end_health_statuses": [
+        {
+          "gpu_requested": 0,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 0,
+          "gpu_cancellation_suspended": 0,
+          "gpu_cancellation_recoveries": 0,
+          "gpu_cancellation_fences": 0,
+          "gpu_required_quarantines": 0,
+          "gpu_required_proof_failures": 0,
+          "gpu_required_cancellations": 0,
+          "gpu_host_event_waits": 0
+        },
+        {
+          "gpu_requested": 0,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 0,
+          "gpu_cancellation_suspended": 0,
+          "gpu_cancellation_recoveries": 0,
+          "gpu_cancellation_fences": 0,
+          "gpu_required_quarantines": 0,
+          "gpu_required_proof_failures": 0,
+          "gpu_required_cancellations": 0,
+          "gpu_host_event_waits": 0
+        },
+        {
+          "gpu_requested": 0,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 0,
+          "gpu_cancellation_suspended": 0,
+          "gpu_cancellation_recoveries": 0,
+          "gpu_cancellation_fences": 0,
+          "gpu_required_quarantines": 0,
+          "gpu_required_proof_failures": 0,
+          "gpu_required_cancellations": 0,
+          "gpu_host_event_waits": 0
+        },
+        {
+          "gpu_requested": 0,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 0,
+          "gpu_cancellation_suspended": 0,
+          "gpu_cancellation_recoveries": 0,
+          "gpu_cancellation_fences": 0,
+          "gpu_required_quarantines": 0,
+          "gpu_required_proof_failures": 0,
+          "gpu_required_cancellations": 0,
+          "gpu_host_event_waits": 0
+        },
+        {
+          "gpu_requested": 0,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 0,
+          "gpu_cancellation_suspended": 0,
+          "gpu_cancellation_recoveries": 0,
+          "gpu_cancellation_fences": 0,
+          "gpu_required_quarantines": 0,
+          "gpu_required_proof_failures": 0,
+          "gpu_required_cancellations": 0,
+          "gpu_host_event_waits": 0
+        },
+        {
+          "gpu_requested": 0,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 0,
+          "gpu_cancellation_suspended": 0,
+          "gpu_cancellation_recoveries": 0,
+          "gpu_cancellation_fences": 0,
+          "gpu_required_quarantines": 0,
+          "gpu_required_proof_failures": 0,
+          "gpu_required_cancellations": 0,
+          "gpu_host_event_waits": 0
+        }
+      ]
+    },
+    {
+      "context": {
+        "factor": "gpu-recovery",
+        "comparator": "gpu-sync",
+        "cohort": "mature",
+        "layout": "playground-ni",
+        "compute_threads": 3,
+        "gpu": "on",
+        "checkpoint_tick": 20000,
+        "window": 4096,
+        "expected_end": 24096
+      },
+      "metrics": {
+        "simulation_cpu_s": {
+          "ratio": 1.029109173567056,
+          "percent_change": 2.910917356705589,
+          "ci95": [
+            1.0171867055341914,
+            1.0402391040674654
+          ],
+          "percent_ci95": [
+            1.7186705534191438,
+            4.023910406746545
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "simulation_wall_s": {
+          "ratio": 0.9999821717290666,
+          "percent_change": -0.001782827093343986,
+          "ci95": [
+            0.9598849038530757,
+            1.036364347188015
+          ],
+          "percent_ci95": [
+            -4.011509614692432,
+            3.6364347188015067
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "cpu_s": {
+          "ratio": 1.0224687763274476,
+          "percent_change": 2.2468776327447593,
+          "ci95": [
+            1.0129258457594787,
+            1.0333869140014045
+          ],
+          "percent_ci95": [
+            1.292584575947875,
+            3.3386914001404477
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "wall_s": {
+          "ratio": 0.9957598779771883,
+          "percent_change": -0.42401220228116543,
+          "ci95": [
+            0.9604559118510714,
+            1.028909069477692
+          ],
+          "percent_ci95": [
+            -3.9544088148928624,
+            2.8909069477691896
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "peak_rss_bytes": {
+          "ratio": 0.9999861825183459,
+          "percent_change": -0.0013817481654077035,
+          "ci95": [
+            0.9980047143525504,
+            1.0028269403872914
+          ],
+          "percent_ci95": [
+            -0.19952856474495517,
+            0.28269403872913657
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        }
+      },
+      "health": {
+        "baseline": {
+          "measured_processes": 6,
+          "reported_gpu_processes": 6,
+          "requested_fields_sum": 24576,
+          "gpu_completed_fields_sum": 74,
+          "gpu_completion_fraction": 0.0030110677083333335,
+          "device_committed_fields": [
+            2,
+            2,
+            16,
+            0,
+            53,
+            1
+          ],
+          "host_event_waits": [
+            19,
+            16,
+            76,
+            5,
+            176,
+            19
+          ],
+          "recovery_events": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "accepted_cancellation_flushes": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "quarantine_pending": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "suspended": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "gpu_errors": [
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        "candidate": {
+          "measured_processes": 6,
+          "reported_gpu_processes": 6,
+          "requested_fields_sum": 24576,
+          "gpu_completed_fields_sum": 5199,
+          "gpu_completion_fraction": 0.2115478515625,
+          "device_committed_fields": [
+            957,
+            766,
+            863,
+            927,
+            882,
+            804
+          ],
+          "host_event_waits": [
+            3530,
+            2886,
+            3163,
+            3336,
+            3155,
+            2935
+          ],
+          "recovery_events": [
+            30,
+            35,
+            29,
+            26,
+            25,
+            34
+          ],
+          "accepted_cancellation_flushes": [
+            6,
+            17,
+            11,
+            9,
+            6,
+            10
+          ],
+          "quarantine_pending": [
+            0,
+            1,
+            1,
+            1,
+            0,
+            0
+          ],
+          "suspended": [
+            0,
+            1,
+            1,
+            1,
+            0,
+            0
+          ],
+          "gpu_errors": [
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        "scope": "Summed requested/completed field counts over measured processes, warmups excluded; diagnostic request weighting, not GPUtime, equal-seed speed or chronological recovery proof."
+      },
+      "completed_seeds": 2,
+      "end_health_statuses": [
+        {
+          "gpu_requested": 1,
+          "gpu_available": 1,
+          "gpu_ready_plans": 2,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 0,
+          "gpu_cancellation_suspended": 0,
+          "gpu_cancellation_recoveries": 30,
+          "gpu_cancellation_fences": 6,
+          "gpu_required_quarantines": 30,
+          "gpu_required_proof_failures": 30,
+          "gpu_required_cancellations": 82,
+          "gpu_host_event_waits": 3530
+        },
+        {
+          "gpu_requested": 1,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 1,
+          "gpu_cancellation_suspended": 1,
+          "gpu_cancellation_recoveries": 35,
+          "gpu_cancellation_fences": 17,
+          "gpu_required_quarantines": 36,
+          "gpu_required_proof_failures": 36,
+          "gpu_required_cancellations": 93,
+          "gpu_host_event_waits": 2886
+        },
+        {
+          "gpu_requested": 1,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 1,
+          "gpu_cancellation_suspended": 1,
+          "gpu_cancellation_recoveries": 29,
+          "gpu_cancellation_fences": 11,
+          "gpu_required_quarantines": 30,
+          "gpu_required_proof_failures": 30,
+          "gpu_required_cancellations": 70,
+          "gpu_host_event_waits": 3163
+        },
+        {
+          "gpu_requested": 1,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 1,
+          "gpu_cancellation_suspended": 1,
+          "gpu_cancellation_recoveries": 26,
+          "gpu_cancellation_fences": 9,
+          "gpu_required_quarantines": 27,
+          "gpu_required_proof_failures": 27,
+          "gpu_required_cancellations": 94,
+          "gpu_host_event_waits": 3336
+        },
+        {
+          "gpu_requested": 1,
+          "gpu_available": 1,
+          "gpu_ready_plans": 2,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 0,
+          "gpu_cancellation_suspended": 0,
+          "gpu_cancellation_recoveries": 25,
+          "gpu_cancellation_fences": 6,
+          "gpu_required_quarantines": 25,
+          "gpu_required_proof_failures": 25,
+          "gpu_required_cancellations": 56,
+          "gpu_host_event_waits": 3155
+        },
+        {
+          "gpu_requested": 1,
+          "gpu_available": 1,
+          "gpu_ready_plans": 2,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 0,
+          "gpu_cancellation_suspended": 0,
+          "gpu_cancellation_recoveries": 34,
+          "gpu_cancellation_fences": 10,
+          "gpu_required_quarantines": 34,
+          "gpu_required_proof_failures": 34,
+          "gpu_required_cancellations": 85,
+          "gpu_host_event_waits": 2935
+        }
+      ]
+    },
+    {
+      "context": {
+        "factor": "gpu-recovery",
+        "comparator": "gpu-sync",
+        "cohort": "mature",
+        "layout": "playground-ni",
+        "compute_threads": 3,
+        "gpu": "on",
+        "checkpoint_tick": 20000,
+        "window": 8192,
+        "expected_end": 28192
+      },
+      "metrics": {
+        "simulation_cpu_s": {
+          "ratio": 1.0380885561892093,
+          "percent_change": 3.8088556189209255,
+          "ci95": [
+            0.9884614016854242,
+            1.0769176288268905
+          ],
+          "percent_ci95": [
+            -1.153859831457582,
+            7.691762882689046
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "simulation_wall_s": {
+          "ratio": 1.0246116139323083,
+          "percent_change": 2.4611613932308263,
+          "ci95": [
+            0.9899452754117039,
+            1.0597397852853154
+          ],
+          "percent_ci95": [
+            -1.005472458829615,
+            5.973978528531543
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "cpu_s": {
+          "ratio": 1.0313744480263354,
+          "percent_change": 3.1374448026335378,
+          "ci95": [
+            0.9873130757201192,
+            1.0679660815606364
+          ],
+          "percent_ci95": [
+            -1.268692427988083,
+            6.796608156063644
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "wall_s": {
+          "ratio": 1.0147861435962084,
+          "percent_change": 1.4786143596208445,
+          "ci95": [
+            0.9853563470450073,
+            1.048225969775483
+          ],
+          "percent_ci95": [
+            -1.4643652954992703,
+            4.822596977548299
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "peak_rss_bytes": {
+          "ratio": 1.000660320809585,
+          "percent_change": 0.06603208095850022,
+          "ci95": [
+            0.9998510474281639,
+            1.0013009321701432
+          ],
+          "percent_ci95": [
+            -0.014895257183611399,
+            0.13009321701431542
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        }
+      },
+      "health": {
+        "baseline": {
+          "measured_processes": 6,
+          "reported_gpu_processes": 6,
+          "requested_fields_sum": 49152,
+          "gpu_completed_fields_sum": 301,
+          "gpu_completion_fraction": 0.006123860677083333,
+          "device_committed_fields": [
+            1,
+            23,
+            0,
+            6,
+            182,
+            89
+          ],
+          "host_event_waits": [
+            15,
+            102,
+            4,
+            20,
+            657,
+            338
+          ],
+          "recovery_events": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "accepted_cancellation_flushes": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "quarantine_pending": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "suspended": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "gpu_errors": [
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        "candidate": {
+          "measured_processes": 6,
+          "reported_gpu_processes": 6,
+          "requested_fields_sum": 49152,
+          "gpu_completed_fields_sum": 8315,
+          "gpu_completion_fraction": 0.16916910807291666,
+          "device_committed_fields": [
+            1821,
+            1314,
+            892,
+            1409,
+            1774,
+            1107
+          ],
+          "host_event_waits": [
+            6792,
+            4830,
+            3323,
+            5247,
+            6467,
+            3976
+          ],
+          "recovery_events": [
+            58,
+            53,
+            59,
+            69,
+            60,
+            51
+          ],
+          "accepted_cancellation_flushes": [
+            22,
+            13,
+            21,
+            32,
+            19,
+            12
+          ],
+          "quarantine_pending": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "suspended": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "gpu_errors": [
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        "scope": "Summed requested/completed field counts over measured processes, warmups excluded; diagnostic request weighting, not GPUtime, equal-seed speed or chronological recovery proof."
+      },
+      "completed_seeds": 2,
+      "end_health_statuses": [
+        {
+          "gpu_requested": 1,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 1,
+          "gpu_cancellation_suspended": 1,
+          "gpu_cancellation_recoveries": 58,
+          "gpu_cancellation_fences": 22,
+          "gpu_required_quarantines": 59,
+          "gpu_required_proof_failures": 59,
+          "gpu_required_cancellations": 135,
+          "gpu_host_event_waits": 6792
+        },
+        {
+          "gpu_requested": 1,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 1,
+          "gpu_cancellation_suspended": 1,
+          "gpu_cancellation_recoveries": 53,
+          "gpu_cancellation_fences": 13,
+          "gpu_required_quarantines": 54,
+          "gpu_required_proof_failures": 54,
+          "gpu_required_cancellations": 147,
+          "gpu_host_event_waits": 4830
+        },
+        {
+          "gpu_requested": 1,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 1,
+          "gpu_cancellation_suspended": 1,
+          "gpu_cancellation_recoveries": 59,
+          "gpu_cancellation_fences": 21,
+          "gpu_required_quarantines": 60,
+          "gpu_required_proof_failures": 60,
+          "gpu_required_cancellations": 120,
+          "gpu_host_event_waits": 3323
+        },
+        {
+          "gpu_requested": 1,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 1,
+          "gpu_cancellation_suspended": 1,
+          "gpu_cancellation_recoveries": 69,
+          "gpu_cancellation_fences": 32,
+          "gpu_required_quarantines": 70,
+          "gpu_required_proof_failures": 70,
+          "gpu_required_cancellations": 206,
+          "gpu_host_event_waits": 5247
+        },
+        {
+          "gpu_requested": 1,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 1,
+          "gpu_cancellation_suspended": 1,
+          "gpu_cancellation_recoveries": 60,
+          "gpu_cancellation_fences": 19,
+          "gpu_required_quarantines": 61,
+          "gpu_required_proof_failures": 61,
+          "gpu_required_cancellations": 158,
+          "gpu_host_event_waits": 6467
+        },
+        {
+          "gpu_requested": 1,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 1,
+          "gpu_cancellation_suspended": 1,
+          "gpu_cancellation_recoveries": 51,
+          "gpu_cancellation_fences": 12,
+          "gpu_required_quarantines": 52,
+          "gpu_required_proof_failures": 52,
+          "gpu_required_cancellations": 117,
+          "gpu_host_event_waits": 3976
+        }
+      ]
+    },
+    {
+      "context": {
+        "factor": "gpu-recovery",
+        "comparator": "gpu-sync",
+        "cohort": "mature",
+        "layout": "oazis-ni",
+        "compute_threads": 3,
+        "gpu": "on",
+        "checkpoint_tick": 50000,
+        "window": 4096,
+        "expected_end": 54096
+      },
+      "metrics": {
+        "simulation_cpu_s": {
+          "ratio": 1.0346656058321426,
+          "percent_change": 3.466560583214262,
+          "ci95": [
+            0.9573729233286208,
+            1.118201612102801
+          ],
+          "percent_ci95": [
+            -4.262707667137922,
+            11.820161210280089
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "simulation_wall_s": {
+          "ratio": 1.0389819764297392,
+          "percent_change": 3.898197642973922,
+          "ci95": [
+            0.965692698976696,
+            1.133771319417299
+          ],
+          "percent_ci95": [
+            -3.4307301023304038,
+            13.377131941729893
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "cpu_s": {
+          "ratio": 1.0262374003409502,
+          "percent_change": 2.6237400340950234,
+          "ci95": [
+            0.9604743709201662,
+            1.1021548276995747
+          ],
+          "percent_ci95": [
+            -3.9525629079833813,
+            10.215482769957474
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "wall_s": {
+          "ratio": 1.0247798679091285,
+          "percent_change": 2.477986790912845,
+          "ci95": [
+            0.9693914623852753,
+            1.1044498792435802
+          ],
+          "percent_ci95": [
+            -3.0608537614724707,
+            10.444987924358017
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "peak_rss_bytes": {
+          "ratio": 1.000723010835841,
+          "percent_change": 0.07230108358409204,
+          "ci95": [
+            0.9992565110146294,
+            1.0015924056504422
+          ],
+          "percent_ci95": [
+            -0.07434889853705773,
+            0.15924056504421635
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        }
+      },
+      "health": {
+        "baseline": {
+          "measured_processes": 6,
+          "reported_gpu_processes": 6,
+          "requested_fields_sum": 24576,
+          "gpu_completed_fields_sum": 2021,
+          "gpu_completion_fraction": 0.08223470052083333,
+          "device_committed_fields": [
+            58,
+            541,
+            4,
+            51,
+            764,
+            603
+          ],
+          "host_event_waits": [
+            273,
+            2439,
+            22,
+            225,
+            3480,
+            2780
+          ],
+          "recovery_events": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "accepted_cancellation_flushes": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "quarantine_pending": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "suspended": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "gpu_errors": [
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        "candidate": {
+          "measured_processes": 6,
+          "reported_gpu_processes": 6,
+          "requested_fields_sum": 24576,
+          "gpu_completed_fields_sum": 12648,
+          "gpu_completion_fraction": 0.5146484375,
+          "device_committed_fields": [
+            2242,
+            1956,
+            2233,
+            2098,
+            2102,
+            2017
+          ],
+          "host_event_waits": [
+            9960,
+            8676,
+            9904,
+            9574,
+            9582,
+            9201
+          ],
+          "recovery_events": [
+            4,
+            13,
+            5,
+            17,
+            17,
+            20
+          ],
+          "accepted_cancellation_flushes": [
+            1,
+            2,
+            1,
+            4,
+            5,
+            8
+          ],
+          "quarantine_pending": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "suspended": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "gpu_errors": [
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        "scope": "Summed requested/completed field counts over measured processes, warmups excluded; diagnostic request weighting, not GPUtime, equal-seed speed or chronological recovery proof."
+      },
+      "completed_seeds": 2,
+      "end_health_statuses": [
+        {
+          "gpu_requested": 1,
+          "gpu_available": 1,
+          "gpu_ready_plans": 2,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 0,
+          "gpu_cancellation_suspended": 0,
+          "gpu_cancellation_recoveries": 4,
+          "gpu_cancellation_fences": 1,
+          "gpu_required_quarantines": 4,
+          "gpu_required_proof_failures": 4,
+          "gpu_required_cancellations": 4,
+          "gpu_host_event_waits": 9960
+        },
+        {
+          "gpu_requested": 1,
+          "gpu_available": 1,
+          "gpu_ready_plans": 2,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 0,
+          "gpu_cancellation_suspended": 0,
+          "gpu_cancellation_recoveries": 13,
+          "gpu_cancellation_fences": 2,
+          "gpu_required_quarantines": 13,
+          "gpu_required_proof_failures": 13,
+          "gpu_required_cancellations": 19,
+          "gpu_host_event_waits": 8676
+        },
+        {
+          "gpu_requested": 1,
+          "gpu_available": 1,
+          "gpu_ready_plans": 2,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 0,
+          "gpu_cancellation_suspended": 0,
+          "gpu_cancellation_recoveries": 5,
+          "gpu_cancellation_fences": 1,
+          "gpu_required_quarantines": 5,
+          "gpu_required_proof_failures": 5,
+          "gpu_required_cancellations": 13,
+          "gpu_host_event_waits": 9904
+        },
+        {
+          "gpu_requested": 1,
+          "gpu_available": 1,
+          "gpu_ready_plans": 2,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 0,
+          "gpu_cancellation_suspended": 0,
+          "gpu_cancellation_recoveries": 17,
+          "gpu_cancellation_fences": 4,
+          "gpu_required_quarantines": 17,
+          "gpu_required_proof_failures": 17,
+          "gpu_required_cancellations": 35,
+          "gpu_host_event_waits": 9574
+        },
+        {
+          "gpu_requested": 1,
+          "gpu_available": 1,
+          "gpu_ready_plans": 2,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 0,
+          "gpu_cancellation_suspended": 0,
+          "gpu_cancellation_recoveries": 17,
+          "gpu_cancellation_fences": 5,
+          "gpu_required_quarantines": 17,
+          "gpu_required_proof_failures": 17,
+          "gpu_required_cancellations": 52,
+          "gpu_host_event_waits": 9582
+        },
+        {
+          "gpu_requested": 1,
+          "gpu_available": 1,
+          "gpu_ready_plans": 2,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 0,
+          "gpu_cancellation_suspended": 0,
+          "gpu_cancellation_recoveries": 20,
+          "gpu_cancellation_fences": 8,
+          "gpu_required_quarantines": 20,
+          "gpu_required_proof_failures": 20,
+          "gpu_required_cancellations": 41,
+          "gpu_host_event_waits": 9201
+        }
+      ]
+    },
+    {
+      "context": {
+        "factor": "gpu-recovery",
+        "comparator": "gpu-sync",
+        "cohort": "mature",
+        "layout": "oazis-ni",
+        "compute_threads": 3,
+        "gpu": "on",
+        "checkpoint_tick": 50000,
+        "window": 8192,
+        "expected_end": 58192
+      },
+      "metrics": {
+        "simulation_cpu_s": {
+          "ratio": 1.0284339834510792,
+          "percent_change": 2.843398345107917,
+          "ci95": [
+            0.9892188656678478,
+            1.0641536663345992
+          ],
+          "percent_ci95": [
+            -1.078113433215222,
+            6.415366633459918
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "simulation_wall_s": {
+          "ratio": 1.0424952165579773,
+          "percent_change": 4.249521655797728,
+          "ci95": [
+            0.9958375426096406,
+            1.0936896161379377
+          ],
+          "percent_ci95": [
+            -0.4162457390359364,
+            9.368961613793768
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "cpu_s": {
+          "ratio": 1.0223115997494965,
+          "percent_change": 2.231159974949648,
+          "ci95": [
+            0.9840956636319506,
+            1.0567208321387156
+          ],
+          "percent_ci95": [
+            -1.5904336368049443,
+            5.672083213871559
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "wall_s": {
+          "ratio": 1.0290323723823915,
+          "percent_change": 2.9032372382391536,
+          "ci95": [
+            0.9847327506103432,
+            1.0748928207004753
+          ],
+          "percent_ci95": [
+            -1.5267249389656845,
+            7.4892820700475315
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "peak_rss_bytes": {
+          "ratio": 0.9992875621723771,
+          "percent_change": -0.07124378276228693,
+          "ci95": [
+            0.9972504338694899,
+            1.0007125946073805
+          ],
+          "percent_ci95": [
+            -0.27495661305101393,
+            0.07125946073804901
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        }
+      },
+      "health": {
+        "baseline": {
+          "measured_processes": 6,
+          "reported_gpu_processes": 6,
+          "requested_fields_sum": 49152,
+          "gpu_completed_fields_sum": 1865,
+          "gpu_completion_fraction": 0.037943522135416664,
+          "device_committed_fields": [
+            382,
+            542,
+            512,
+            52,
+            260,
+            117
+          ],
+          "host_event_waits": [
+            1718,
+            2462,
+            2321,
+            229,
+            1210,
+            523
+          ],
+          "recovery_events": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "accepted_cancellation_flushes": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "quarantine_pending": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "suspended": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "gpu_errors": [
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        "candidate": {
+          "measured_processes": 6,
+          "reported_gpu_processes": 6,
+          "requested_fields_sum": 49152,
+          "gpu_completed_fields_sum": 24998,
+          "gpu_completion_fraction": 0.5085856119791666,
+          "device_committed_fields": [
+            3865,
+            4255,
+            4200,
+            3946,
+            4242,
+            4491
+          ],
+          "host_event_waits": [
+            17111,
+            18695,
+            18495,
+            18083,
+            19467,
+            20612
+          ],
+          "recovery_events": [
+            37,
+            15,
+            20,
+            39,
+            46,
+            40
+          ],
+          "accepted_cancellation_flushes": [
+            11,
+            6,
+            5,
+            8,
+            17,
+            16
+          ],
+          "quarantine_pending": [
+            1,
+            0,
+            0,
+            1,
+            1,
+            0
+          ],
+          "suspended": [
+            1,
+            0,
+            0,
+            1,
+            1,
+            0
+          ],
+          "gpu_errors": [
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        "scope": "Summed requested/completed field counts over measured processes, warmups excluded; diagnostic request weighting, not GPUtime, equal-seed speed or chronological recovery proof."
+      },
+      "completed_seeds": 2,
+      "end_health_statuses": [
+        {
+          "gpu_requested": 1,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 1,
+          "gpu_cancellation_suspended": 1,
+          "gpu_cancellation_recoveries": 37,
+          "gpu_cancellation_fences": 11,
+          "gpu_required_quarantines": 38,
+          "gpu_required_proof_failures": 38,
+          "gpu_required_cancellations": 101,
+          "gpu_host_event_waits": 17111
+        },
+        {
+          "gpu_requested": 1,
+          "gpu_available": 1,
+          "gpu_ready_plans": 2,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 0,
+          "gpu_cancellation_suspended": 0,
+          "gpu_cancellation_recoveries": 15,
+          "gpu_cancellation_fences": 6,
+          "gpu_required_quarantines": 15,
+          "gpu_required_proof_failures": 15,
+          "gpu_required_cancellations": 37,
+          "gpu_host_event_waits": 18695
+        },
+        {
+          "gpu_requested": 1,
+          "gpu_available": 1,
+          "gpu_ready_plans": 2,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 0,
+          "gpu_cancellation_suspended": 0,
+          "gpu_cancellation_recoveries": 20,
+          "gpu_cancellation_fences": 5,
+          "gpu_required_quarantines": 20,
+          "gpu_required_proof_failures": 20,
+          "gpu_required_cancellations": 53,
+          "gpu_host_event_waits": 18495
+        },
+        {
+          "gpu_requested": 1,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 1,
+          "gpu_cancellation_suspended": 1,
+          "gpu_cancellation_recoveries": 39,
+          "gpu_cancellation_fences": 8,
+          "gpu_required_quarantines": 40,
+          "gpu_required_proof_failures": 40,
+          "gpu_required_cancellations": 107,
+          "gpu_host_event_waits": 18083
+        },
+        {
+          "gpu_requested": 1,
+          "gpu_available": 0,
+          "gpu_ready_plans": 0,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 1,
+          "gpu_cancellation_suspended": 1,
+          "gpu_cancellation_recoveries": 46,
+          "gpu_cancellation_fences": 17,
+          "gpu_required_quarantines": 47,
+          "gpu_required_proof_failures": 47,
+          "gpu_required_cancellations": 108,
+          "gpu_host_event_waits": 19467
+        },
+        {
+          "gpu_requested": 1,
+          "gpu_available": 1,
+          "gpu_ready_plans": 2,
+          "gpu_error": "",
+          "gpu_required_quarantine_pending": 0,
+          "gpu_cancellation_suspended": 0,
+          "gpu_cancellation_recoveries": 40,
+          "gpu_cancellation_fences": 16,
+          "gpu_required_quarantines": 40,
+          "gpu_required_proof_failures": 40,
+          "gpu_required_cancellations": 105,
+          "gpu_host_event_waits": 20612
+        }
+      ]
+    }
+  ],
+  "slowdowns": [
+    {
+      "context": {
+        "factor": "gpu-recovery",
+        "comparator": "gpu-sync",
+        "cohort": "initial",
+        "layout": "small-ni",
+        "compute_threads": 3,
+        "gpu": "on",
+        "checkpoint_tick": 0,
+        "window": 8192,
+        "expected_end": 8192
+      },
+      "metric": "simulation_wall_s",
+      "estimate": {
+        "ratio": 1.068485023282844,
+        "percent_change": 6.8485023282844,
+        "ci95": [
+          1.0095718051198515,
+          1.1414172356377161
+        ],
+        "percent_ci95": [
+          0.9571805119851451,
+          14.141723563771613
+        ],
+        "seed_count": 2,
+        "paired_repeats": 6,
+        "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+        "credible_over5percent_regression": false
+      },
+      "provisional": false
+    },
+    {
+      "context": {
+        "factor": "gpu-recovery",
+        "comparator": "gpu-sync",
+        "cohort": "initial",
+        "layout": "small-ni",
+        "compute_threads": 3,
+        "gpu": "on",
+        "checkpoint_tick": 0,
+        "window": 8192,
+        "expected_end": 8192
+      },
+      "metric": "cpu_s",
+      "estimate": {
+        "ratio": 1.0534718236711642,
+        "percent_change": 5.347182367116421,
+        "ci95": [
+          1.0110207412821592,
+          1.1431128913527022
+        ],
+        "percent_ci95": [
+          1.102074128215924,
+          14.311289135270222
+        ],
+        "seed_count": 2,
+        "paired_repeats": 6,
+        "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+        "credible_over5percent_regression": false
+      },
+      "provisional": false
+    },
+    {
+      "context": {
+        "factor": "gpu-recovery",
+        "comparator": "gpu-sync",
+        "cohort": "initial",
+        "layout": "rect-cortex",
+        "compute_threads": 3,
+        "gpu": "on",
+        "checkpoint_tick": 0,
+        "window": 8192,
+        "expected_end": 8192
+      },
+      "metric": "simulation_cpu_s",
+      "estimate": {
+        "ratio": 1.0402209874850652,
+        "percent_change": 4.02209874850652,
+        "ci95": [
+          1.0186300997475146,
+          1.0642509867612047
+        ],
+        "percent_ci95": [
+          1.8630099747514617,
+          6.4250986761204665
+        ],
+        "seed_count": 2,
+        "paired_repeats": 6,
+        "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+        "credible_over5percent_regression": false
+      },
+      "provisional": false
+    },
+    {
+      "context": {
+        "factor": "gpu-recovery",
+        "comparator": "gpu-sync",
+        "cohort": "initial",
+        "layout": "rect-cortex",
+        "compute_threads": 3,
+        "gpu": "on",
+        "checkpoint_tick": 0,
+        "window": 8192,
+        "expected_end": 8192
+      },
+      "metric": "simulation_wall_s",
+      "estimate": {
+        "ratio": 1.0320104640864494,
+        "percent_change": 3.2010464086449364,
+        "ci95": [
+          1.0178681534298932,
+          1.0455158464920538
+        ],
+        "percent_ci95": [
+          1.786815342989323,
+          4.551584649205376
+        ],
+        "seed_count": 2,
+        "paired_repeats": 6,
+        "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+        "credible_over5percent_regression": false
+      },
+      "provisional": false
+    },
+    {
+      "context": {
+        "factor": "gpu-recovery",
+        "comparator": "gpu-sync",
+        "cohort": "initial",
+        "layout": "rect-cortex",
+        "compute_threads": 3,
+        "gpu": "on",
+        "checkpoint_tick": 0,
+        "window": 8192,
+        "expected_end": 8192
+      },
+      "metric": "cpu_s",
+      "estimate": {
+        "ratio": 1.0300754666859981,
+        "percent_change": 3.0075466685998142,
+        "ci95": [
+          1.0103551103414876,
+          1.0426287072958456
+        ],
+        "percent_ci95": [
+          1.0355110341487617,
+          4.262870729584556
+        ],
+        "seed_count": 2,
+        "paired_repeats": 6,
+        "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+        "credible_over5percent_regression": false
+      },
+      "provisional": false
+    },
+    {
+      "context": {
+        "factor": "gpu-recovery",
+        "comparator": "gpu-sync",
+        "cohort": "initial",
+        "layout": "river-cortex",
+        "compute_threads": 3,
+        "gpu": "on",
+        "checkpoint_tick": 0,
+        "window": 8192,
+        "expected_end": 8192
+      },
+      "metric": "simulation_cpu_s",
+      "estimate": {
+        "ratio": 1.0385512411031232,
+        "percent_change": 3.8551241103123246,
+        "ci95": [
+          1.0163878938682906,
+          1.0693250903865168
+        ],
+        "percent_ci95": [
+          1.6387893868290648,
+          6.93250903865168
+        ],
+        "seed_count": 2,
+        "paired_repeats": 6,
+        "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+        "credible_over5percent_regression": false
+      },
+      "provisional": false
+    },
+    {
+      "context": {
+        "factor": "gpu-recovery",
+        "comparator": "gpu-sync",
+        "cohort": "initial",
+        "layout": "river-cortex",
+        "compute_threads": 3,
+        "gpu": "on",
+        "checkpoint_tick": 0,
+        "window": 8192,
+        "expected_end": 8192
+      },
+      "metric": "cpu_s",
+      "estimate": {
+        "ratio": 1.03449023825516,
+        "percent_change": 3.4490238255159955,
+        "ci95": [
+          1.0100397730705086,
+          1.0642452780701652
+        ],
+        "percent_ci95": [
+          1.0039773070508629,
+          6.424527807016522
+        ],
+        "seed_count": 2,
+        "paired_repeats": 6,
+        "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+        "credible_over5percent_regression": false
+      },
+      "provisional": false
+    },
+    {
+      "context": {
+        "factor": "gpu-recovery",
+        "comparator": "gpu-sync",
+        "cohort": "initial",
+        "layout": "isles-mixed",
+        "compute_threads": 3,
+        "gpu": "on",
+        "checkpoint_tick": 0,
+        "window": 8192,
+        "expected_end": 8192
+      },
+      "metric": "simulation_cpu_s",
+      "estimate": {
+        "ratio": 1.0626046118998447,
+        "percent_change": 6.2604611899844675,
+        "ci95": [
+          1.0481515399062196,
+          1.0787422469632582
+        ],
+        "percent_ci95": [
+          4.8151539906219565,
+          7.874224696325816
+        ],
+        "seed_count": 2,
+        "paired_repeats": 6,
+        "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+        "credible_over5percent_regression": false
+      },
+      "provisional": false
+    },
+    {
+      "context": {
+        "factor": "gpu-recovery",
+        "comparator": "gpu-sync",
+        "cohort": "initial",
+        "layout": "isles-mixed",
+        "compute_threads": 3,
+        "gpu": "on",
+        "checkpoint_tick": 0,
+        "window": 8192,
+        "expected_end": 8192
+      },
+      "metric": "simulation_wall_s",
+      "estimate": {
+        "ratio": 1.026625574416902,
+        "percent_change": 2.6625574416901943,
+        "ci95": [
+          1.0050296675917445,
+          1.0513388892800128
+        ],
+        "percent_ci95": [
+          0.5029667591744502,
+          5.1338889280012845
+        ],
+        "seed_count": 2,
+        "paired_repeats": 6,
+        "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+        "credible_over5percent_regression": false
+      },
+      "provisional": false
+    },
+    {
+      "context": {
+        "factor": "gpu-recovery",
+        "comparator": "gpu-sync",
+        "cohort": "initial",
+        "layout": "isles-mixed",
+        "compute_threads": 3,
+        "gpu": "on",
+        "checkpoint_tick": 0,
+        "window": 8192,
+        "expected_end": 8192
+      },
+      "metric": "cpu_s",
+      "estimate": {
+        "ratio": 1.0605100812973876,
+        "percent_change": 6.051008129738755,
+        "ci95": [
+          1.043435641218111,
+          1.0790046132792825
+        ],
+        "percent_ci95": [
+          4.343564121811094,
+          7.900461327928254
+        ],
+        "seed_count": 2,
+        "paired_repeats": 6,
+        "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+        "credible_over5percent_regression": false
+      },
+      "provisional": false
+    },
+    {
+      "context": {
+        "factor": "gpu-recovery",
+        "comparator": "gpu-sync",
+        "cohort": "initial",
+        "layout": "large-mixed",
+        "compute_threads": 3,
+        "gpu": "on",
+        "checkpoint_tick": 0,
+        "window": 4096,
+        "expected_end": 4096
+      },
+      "metric": "simulation_cpu_s",
+      "estimate": {
+        "ratio": 1.0672634976705624,
+        "percent_change": 6.726349767056239,
+        "ci95": [
+          1.0290783997005526,
+          1.1151389325065468
+        ],
+        "percent_ci95": [
+          2.9078399700552593,
+          11.513893250654682
+        ],
+        "seed_count": 3,
+        "paired_repeats": 9,
+        "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+        "credible_over5percent_regression": false
+      },
+      "provisional": false
+    },
+    {
+      "context": {
+        "factor": "gpu-recovery",
+        "comparator": "gpu-sync",
+        "cohort": "initial",
+        "layout": "large-mixed",
+        "compute_threads": 3,
+        "gpu": "on",
+        "checkpoint_tick": 0,
+        "window": 4096,
+        "expected_end": 4096
+      },
+      "metric": "simulation_wall_s",
+      "estimate": {
+        "ratio": 1.0439287193292315,
+        "percent_change": 4.392871932923148,
+        "ci95": [
+          1.0166482292014127,
+          1.0824159455331062
+        ],
+        "percent_ci95": [
+          1.6648229201412734,
+          8.241594553310616
+        ],
+        "seed_count": 3,
+        "paired_repeats": 9,
+        "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+        "credible_over5percent_regression": false
+      },
+      "provisional": false
+    },
+    {
+      "context": {
+        "factor": "gpu-recovery",
+        "comparator": "gpu-sync",
+        "cohort": "initial",
+        "layout": "large-mixed",
+        "compute_threads": 3,
+        "gpu": "on",
+        "checkpoint_tick": 0,
+        "window": 4096,
+        "expected_end": 4096
+      },
+      "metric": "cpu_s",
+      "estimate": {
+        "ratio": 1.0621990954591016,
+        "percent_change": 6.219909545910163,
+        "ci95": [
+          1.0278100347833177,
+          1.1057643741719525
+        ],
+        "percent_ci95": [
+          2.781003478331767,
+          10.576437417195251
+        ],
+        "seed_count": 3,
+        "paired_repeats": 9,
+        "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+        "credible_over5percent_regression": false
+      },
+      "provisional": false
+    },
+    {
+      "context": {
+        "factor": "gpu-recovery",
+        "comparator": "gpu-sync",
+        "cohort": "initial",
+        "layout": "large-mixed",
+        "compute_threads": 3,
+        "gpu": "on",
+        "checkpoint_tick": 0,
+        "window": 4096,
+        "expected_end": 4096
+      },
+      "metric": "wall_s",
+      "estimate": {
+        "ratio": 1.0382098661857928,
+        "percent_change": 3.8209866185792807,
+        "ci95": [
+          1.015181395874915,
+          1.0701137320782506
+        ],
+        "percent_ci95": [
+          1.518139587491496,
+          7.011373207825056
+        ],
+        "seed_count": 3,
+        "paired_repeats": 9,
+        "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+        "credible_over5percent_regression": false
+      },
+      "provisional": false
+    },
+    {
+      "context": {
+        "factor": "gpu-recovery",
+        "comparator": "gpu-sync",
+        "cohort": "mature",
+        "layout": "playground-ni",
+        "compute_threads": 3,
+        "gpu": "on",
+        "checkpoint_tick": 20000,
+        "window": 4096,
+        "expected_end": 24096
+      },
+      "metric": "simulation_cpu_s",
+      "estimate": {
+        "ratio": 1.029109173567056,
+        "percent_change": 2.910917356705589,
+        "ci95": [
+          1.0171867055341914,
+          1.0402391040674654
+        ],
+        "percent_ci95": [
+          1.7186705534191438,
+          4.023910406746545
+        ],
+        "seed_count": 2,
+        "paired_repeats": 6,
+        "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+        "credible_over5percent_regression": false
+      },
+      "provisional": false
+    },
+    {
+      "context": {
+        "factor": "gpu-recovery",
+        "comparator": "gpu-sync",
+        "cohort": "mature",
+        "layout": "playground-ni",
+        "compute_threads": 3,
+        "gpu": "on",
+        "checkpoint_tick": 20000,
+        "window": 4096,
+        "expected_end": 24096
+      },
+      "metric": "cpu_s",
+      "estimate": {
+        "ratio": 1.0224687763274476,
+        "percent_change": 2.2468776327447593,
+        "ci95": [
+          1.0129258457594787,
+          1.0333869140014045
+        ],
+        "percent_ci95": [
+          1.292584575947875,
+          3.3386914001404477
+        ],
+        "seed_count": 2,
+        "paired_repeats": 6,
+        "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+        "credible_over5percent_regression": false
+      },
+      "provisional": false
+    }
+  ],
+  "regressions": [],
+  "source_analysis_sha256": "d2172cb5d22c7647a335257ebea5194203a153946f7f980002a4124b5b132bd0",
+  "phase_seals": [
+    {
+      "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/gpu-recovery-campaign/plan.json",
+      "exists": true,
+      "sha256": "5e9fb853396eb6de02744bcad811290bfcd02b0672096428dedf745e64d27e6a"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/gpu-recovery-campaign/run.py",
+      "exists": true,
+      "sha256": "c4b2e5b4fdc2c3d91a43c2aa02f3f7820c66393e1b3da51d6b8e0ee706549482"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/gpu-recovery-campaign/performance-complete.json",
+      "exists": true,
+      "sha256": "8ad64f0351516e84cb087a16145e46d17471f8fdf7d30157b3900841351064c5"
+    }
+  ],
+  "limitations": [
+    "Conclusion: actual GPU fraction rises e.g initialPG .0067% ->13.9575%, initialOazis .0977% ->25.0773%, largeMixed .0760% ->6.5403%, loadedOazis4k8.2235% ->51.4648%/8k3.7944% ->50.8586%. This work increase brings adverse CPU cells and no convincing corresponding speed benefit.",
+    "CPUoff controls: smallNi -2.61%CPU, PG+.16%, Oazis-1.03%, largeNi-.75%, largeMixed+4.61%; all CPU/wall intervals cross0. Preserve largeMixed uncertainty, not an unconditional no-overhead claim.",
+    "RSS adverse intervals: GPUon islesMixed+.43%[+.09,+.95], initialOazis+.41%[+.19,+.67], largeNi+2.00%[+1.62,+2.62]. Other cells nearflat/uncertain; no broad memory benefit.",
+    "Cancellation fence counters mean accepted flush, NOT terminal completion. End counters+commits are not a chronological fresh commit after recovery proof. Hardware raw proof separately validates the narrow actual mechanism.",
+    "Pending/suspended at exit occurs in several windows; bounded CPU fallback remains exact, but do not claim all jobs recovered. Actual no-error strings/proof-failure/quarantine counters listed per cell. Timing needs final integration/platform qualification independently."
+  ],
+  "aggregate_runtime_health_qualified": {
+    "measured_GPUon_processes": 87,
+    "available_at_exit": 31,
+    "suspended_at_exit": 56,
+    "quarantine_pending_at_exit": 55,
+    "sum_recoveries": 4439,
+    "sum_accepted_flushes": 2100,
+    "sum_required_cancellations": 12133,
+    "sum_required_quarantines": 4495,
+    "sum_required_proof_failures": 4495,
+    "scope": "87 separate measured GPUon processes; cumulative sum is diagnostic repeated workload counting, not unique events across one game. ProofFailure here counts missing terminal proof at quarantine, including recoverable cancellation; it is not a failed output oracle or evidence of corruption."
+  }
+}

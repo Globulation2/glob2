@@ -1,0 +1,296 @@
+{
+  "audit_kind": "read-only original reports and completion receipts; no engine/build/test launch",
+  "scope": "Original investigation and accepted9e campaign; current profile/scheduler/global-history audit handled separately by root",
+  "headline_correction": "Final1.5%CPU/2.2%wall headline describes fixed-three final confirmation, not whole48h or largest affinity-sizing fix.",
+  "families": [
+    {
+      "family": "CPU resource sizing",
+      "actual_work": "Isolated worker change in the completed initial 144 paired-job factor matrix; 24 earlier full Playground games (8 seeds \u00d7 auto32/explicit4/affinity-auto6), plus separate fresh 16 Playground and 8 Oazis participant-count games.",
+      "code": "Affinity-aware auto participant discovery implemented and retained; explicit counts preserved.",
+      "outcome": "Largest underreported accepted fix: auto32\u2192auto6 within six eligible logical CPUs reduced whole-process CPU 46.98%, wall34.25%, RSS14.32% in ten-layout initial matrix. Fixed-three negative control essentially flat. Earlier eight-seed full Playground affinity-auto6 CPU29.81% and whole elapsed18.16% lower.",
+      "decision": "Accepted general eligible-CPU ceiling; no global optimum3, no unrestricted-host speed promise.",
+      "evidence": [
+        "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance-analysis.json",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/extended-summary.json",
+        "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/adoption-decisions.json"
+      ]
+    },
+    {
+      "family": "Scheduler wake guard",
+      "actual_work": "48 native timed windows/24 pairs at N4/N6/auto32 plus16 windows/8 pairs at N3; twelve separate full8192-tick control traces. Later ten-layout preferred-participant factor and mature factor controls.",
+      "code": "Built isolated conditional broadcast/wake prototypes.",
+      "outcome": "Benefits strongest in oversubscribed auto32; at N3 Playground wall+0.16%,CPU+0.34%; Oazis wall\u22121.17%,CPU\u22121.16%. N4/N6 mixed.",
+      "decision": "Rejected for final source; extra scheduling policy did not justify complexity after fixing allocation.",
+      "evidence": [
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/h03-lane-wake/game-report.txt",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/h03-lane-wake/n3-report.txt",
+        "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/adoption-decisions.json"
+      ]
+    },
+    {
+      "family": "Snapshot ownership V1 and V2",
+      "actual_work": "Initial eager reclamation factor;96-job mature factor matrix;44 snapshot-V2 jobs inside completed68-job follow-up (20 initial,24 mature/direct comparison jobs).",
+      "code": "Eager unleased-descriptor cleanup then lazy pressure-based tryAcquire/reclaim implemented separately.",
+      "outcome": "Negligible independent memory benefit; mixed CPU, small-Nicowar/Oazis slowdowns, adverse Playground GPU-on wall result.",
+      "decision": "Both ownership candidates rolled back; original simpler ownership retained with optional query-only census.",
+      "evidence": [
+        "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/extension-analysis.json",
+        "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/adoption-review/v2-followup-completed68.txt",
+        "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/adoption-decisions.json"
+      ]
+    },
+    {
+      "family": "Replay telemetry representation",
+      "actual_work": "Earlier reserve prototype16 GPU-on+16 CPU-off windows and32 fresh confirmation windows; initial V1 factor, mature V1/V2 comparisons;24 selected fresh paired jobs (21 V2/fresh baseline plus3 V1 large-mixed), with three large-mixed seeds and six counterbalanced pairs each.",
+      "code": "Lossless immutable descriptor schema and compact numeric values; V2 reuses matching prior schema/one-find lookup without wire changes.",
+      "outcome": "Initial V2 RSS10.8\u201337.5% lower across ten layouts; mature Playground about22\u201323% lower GPU-off and13% GPU-on, Oazis11%/8\u20139%. Adverse mature PG GPU-on direct V2/V1 CPU+2.015% retained; V1 original large-mixed CPU signal did not recur at same size.",
+      "decision": "V2 accepted with exact outputs/replay/lifetime gates; no universal speed claim.",
+      "evidence": [
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/extended-summary.json",
+        "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/adoption-review/telemetry-selected24-completed.txt",
+        "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/adoption-review/v2-followup-completed68.txt",
+        "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/adoption-decisions.json"
+      ]
+    },
+    {
+      "family": "GPU cancellation and recovery",
+      "actual_work": "Actual first-quarantine event observer, device/pacing controls;14 paired timing jobs for host synchronization,39 recovery-vs-sync jobs; actual hardware cancellation/reap/fresh-field and scalar material/clear/guard oracle cases.",
+      "code": "Required host synchronization retained; recovery prototype implemented, exercised on real GPU and rejected.",
+      "outcome": "Startup GPU contexts cost roughly114\u2013116MiB while useful completion low; recovery increased committed GPU fields but added CPU and wall cost across varied workloads.",
+      "decision": "Keep synchronization correctness and permanent-failure safe CPU fallback; reject recovery as optimization.",
+      "evidence": [
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/hypotheses.json",
+        "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/gpu-analysis/sync14-completed.txt",
+        "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/gpu-analysis/recovery39-completed.json",
+        "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/adoption-decisions.json"
+      ]
+    },
+    {
+      "family": "Field depth scheduling",
+      "actual_work": "24 native table/lazy/full windows (two maps\u00d7two seeds\u00d7two repeats\u00d7three variants), separate exact8192-tick traces.",
+      "code": "Existing depth execution controls exercised; no replacement adopted.",
+      "outcome": "Lazy Playground wall+5.39%,CPU+0.42%; Oazis wall+4.09%,CPU\u22123.23%. Full Playground wall\u22122.76%,CPU+1.49%; Oazis wall\u22120.48%,CPU+9.58%.",
+      "decision": "No universal switch: lower computed-work counters did not ensure faster completion.",
+      "evidence": [
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/hypotheses.json",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/extended-summary.json"
+      ]
+    },
+    {
+      "family": "Allocator and retained pools",
+      "actual_work": "16 native malloc-arena cases;24 pool cap0/16/64 cases; symbolic heap ownership controls.",
+      "code": "Isolated configuration/control variants, retained-cap admission controls.",
+      "outcome": "Arena cap tiny RSS reduction (<1.2%) with CPU generally higher. Pool0 reduced PG RSS2.39% but CPU+1.86%, wall+1.60%; Oazis mixed. Heap showed removal raised total requested allocation and calls.",
+      "decision": "No arena global cap or wholesale pool removal adopted.",
+      "evidence": [
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/hypotheses.json",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/extended-summary.json"
+      ]
+    },
+    {
+      "family": "Historical autosave cost",
+      "actual_work": "Eight same-release native Sep11 windows, original/clone/on/off exact traces.",
+      "code": "Feature-off diagnostic only.",
+      "outcome": "Autosave-off CPU and wall31.36% lower in that historical workload.",
+      "decision": "Explains cost; not accepted optimization because autosave must remain. Current serialization optimization not established by this probe.",
+      "evidence": [
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/hypotheses.json",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/extended-summary.json"
+      ]
+    },
+    {
+      "family": "Historical chamfer/BFS dispatch",
+      "actual_work": "Two corrected historical dispatch cohorts:28 controls+16 native timing runs, common torus corrections, reached-field oracle and cross-binary traces.",
+      "code": "Historical isolated dispatch replacement, not current feature rollback.",
+      "outcome": "Chamfer/BFS CPU ratios2.57/3.10 for transitional policy (PG/Oazis),2.29/2.73 with cap256.",
+      "decision": "Causal historical dispatch cost demonstrated; cannot attribute whole historical interval or infer current replacement.",
+      "evidence": [
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/hypotheses.json"
+      ]
+    },
+    {
+      "family": "Historical exact gradient kernel",
+      "actual_work": "Exact #341 parent-kernel TU replacement:16 native windows plus22 microprocesses over18 synthetic fixtures; full PG8192 trace.",
+      "code": "Historical parent/current comparison, no additional newly adopted optimization.",
+      "outcome": "Existing optimized kernel CPU/wall about22.4% lower PG and20.6% lower Oazis.",
+      "decision": "Confirmed prior optimization payoff, not fresh48h shipping speedup.",
+      "evidence": [
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/hypotheses.json",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/extended-summary.json"
+      ]
+    },
+    {
+      "family": "Pipeline AI/gradient scheduling",
+      "actual_work": "Six Sep29 AI1/4\u00d7gradient0/1/2 exact trace controls and24 native windows with same eight-tick publication.",
+      "code": "Historical execution-factor configuration controls.",
+      "outcome": "AI1/grad0 wall+16.44%,CPU\u221214.75% vs AI4/grad2; AI1/grad2 wall\u22120.51%,CPU\u22126.93%.",
+      "decision": "Established CPU/latency tradeoff, not general current default policy.",
+      "evidence": [
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/hypotheses.json",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/extended-summary.json"
+      ]
+    },
+    {
+      "family": "Gradient chunk and FIFO batching",
+      "actual_work": "540 verified warm K1 timings across18 fixtures and750 K3 timings across25 fixtures, independent field output and visitation oracle evidence.",
+      "code": "Isolated chunk16/128 and public FIFO batching32/128 prototypes.",
+      "outcome": "Chunk128 sometimes~1.5% faster but one256\u00b2 fixture~30.3% slower with more capacity. FIFO alternatives all25 median CPU/wall regress,24/25 intervals entirely adverse.",
+      "decision": "Rejected both general replacements; keep current64 and current FIFO. Warm kernel microbench only, not mature game evidence.",
+      "evidence": [
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/h12-micro-report.txt"
+      ]
+    },
+    {
+      "family": "Mature memory and CPU attribution",
+      "actual_work": "Initial whole-game Callgrind, symbolized natural-winner Oazis heap; attempted one-hour mature Callgrind. Later accepted-source continuous native perf is audited separately by root.",
+      "code": "Diagnostics/source ownership audit rather than optimization.",
+      "outcome": "Mature heap peak521,535,011 requested bytes: gradient fields130.8MB,snapshots93.3MB,search frontiers74.1MB,replay55.2MB. Mature Callgrind timed out before target START/STOP and produced no valid mature attribution.",
+      "decision": "Useful ownership priorities; failed one-hour instrumented attempt is real effort but no result. New cache invalidation/ownership redesign remains unimplemented.",
+      "evidence": [
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/mature-memory-attribution.json",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/mature-callgrind/raw-ir-evidence.json"
+      ]
+    }
+  ],
+  "distinct_cohorts": [
+    {
+      "cohort": "Initial factor matrix",
+      "actual": "144/144 paired timing jobs",
+      "factors": [
+        "worker explicit3",
+        "worker auto",
+        "snapshot V1",
+        "telemetry V1",
+        "combined explicit3",
+        "combined auto",
+        "scheduler explicit3",
+        "combined GPU-on"
+      ],
+      "scope": "Ten actual layouts, two game seeds; paired repeats/warmups are within jobs. Not144different algorithms.",
+      "evidence": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance-analysis.json"
+    },
+    {
+      "cohort": "Mature factor matrix",
+      "actual": "96/96 paired timing jobs",
+      "scope": "Loaded checkpoints, separate from uninterrupted maturity.",
+      "evidence": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/extension-analysis.json"
+    },
+    {
+      "cohort": "V2 follow-up",
+      "actual": "68/68 paired timing jobs:44snapshot+24maturetelemetry",
+      "scope": "Snapshot44 ledger is subset, do not add44again.",
+      "evidence": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/adoption-review/v2-followup-completed68.txt"
+    },
+    {
+      "cohort": "Fresh telemetry replication",
+      "actual": "24/24 selected jobs of45 overall plan",
+      "scope": "Remaining21 final combined-source jobs are separate final campaign; do not call all45 fresh telemetry jobs.",
+      "evidence": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/adoption-review/telemetry-selected24-completed.txt"
+    },
+    {
+      "cohort": "GPU host sync and recovery",
+      "actual": "14 sync and39 recovery paired timing jobs",
+      "scope": "Recovery uses sync control; cells represent workload/window/count/GPU/comparator strata.",
+      "evidence": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/gpu-analysis/analysis.json"
+    },
+    {
+      "cohort": "Final accepted9e fixed-window confirmation",
+      "actual": "21 paired jobs,186 native children including warmups",
+      "scope": "10layouts,two seeds+thirdlargeMixed,explicit3/GPUoff; no auto32\u21926 attribution.",
+      "evidence": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/final-report/analysis.json"
+    },
+    {
+      "cohort": "Final accepted9e natural winners",
+      "actual": "18 attempts/9 matched pairs,allcompleted",
+      "scope": "PG/Oazis/largeMixed,3seeds,explicit3/GPUon; full-game CPU/wall estimates often uncertain.",
+      "evidence": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/final-report/analysis.json"
+    }
+  ],
+  "not_claimed_implemented": [
+    "Explicit scheduler ready queue",
+    "Simulation owner help during deferred waits",
+    "New exact cache invalidation/reuse design",
+    "Task granularity replacement for whole live engine",
+    "Tuned six runtime profiles",
+    "New improved GPU batching/transfer economics"
+  ],
+  "limits": [
+    "No grand total pooled across games,paired jobs,warm kernel microtimes,test cases,profile samples or observer traces.",
+    "Hypotheses file has14 narrative families; not14 newly shipped optimizations.",
+    "Fixed-window,loaded-checkpoint,naturalwinner,microbench and instrumented attribution outcomes remain separate.",
+    "No causal sum of percentage gains across different baselines and cohorts.",
+    "Crossplatform/current-profile coverage is outside this audit."
+  ],
+  "evidence_sha256": {
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/hypotheses.json": "2da5ac5fc56aa083f6f662a0308732f74577636c01b92570b9eec6e35c420bad",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/extended-summary.json": "8cf3b41f2c69dfc78eab6e942af0dd55d211cddbc5235367fad01f138db95d00",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/h12-micro-report.txt": "42dfd0a68ac7641cc64509a3fa5a85ea6831ab33963eb4dfd601118cab1b9507",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/h03-lane-wake/game-report.txt": "075a50f1f2df458f5dcb7c1f117470c17fd6f85b5de1d89ba4511553dea42ccf",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/h03-lane-wake/n3-report.txt": "2ec65d2f4ed903da0e9869d90b1927ec04cb82496f77c5a92295ee38225c4e94",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/mature-memory-attribution.json": "b3acaaaa9a6dad19312b24db78d6e5160d87af28094b60f16b2256c9e28165f9",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/mature-callgrind/raw-ir-evidence.json": "911175f68630d64b9adefe449614e185828d8c2dc302b2ce32019bc9dc362f7d",
+    "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance-analysis.json": "aae6f384e56c2305a55323a5635520f2ab84c71aeabd11111a7e8ca78a8371e6",
+    "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/extension-analysis.json": "9f71db6622adbfd8b26f06dcef008307aab110dd3247e2738248d1329cdd731a",
+    "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/adoption-decisions.json": "5cd80e33f9e7e41b33146cdafc714e62d1356782150b4715f502388d37fc5579",
+    "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/adoption-review/v2-followup-completed68.txt": "e0c8eca2676edb32fd28a4908ab4c5c176832c994ddf70ec43e956ef1f5f0789",
+    "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/adoption-review/telemetry-selected24-completed.txt": "e4c2260f7b40599d80e4ef81417a193dc8e83a7455ded311b8b6302e58045a9d",
+    "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/gpu-analysis/recovery39-completed.json": "caddd5ec5a4adeba97f4408878f40100d8a3fce7e4b256eed998ac92d88e3a44",
+    "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/gpu-analysis/sync14-completed.txt": "eeb63d4fe130b46929c433d7c18b4fed3f86932714d415fc639b34e747c38c82",
+    "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/final-report/analysis.json": "7d656dc4235267a7db5e55b0aa36f00998349961cb1b0e673d3fe87975ea63c2"
+  },
+  "worker_auto_actual_count_receipt": {
+    "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/small-ni-164298751-worker-tauto-gpuoff/measurements.jsonl",
+    "sha256": "3fd14cfbc7ca72da7578bface68be79686d590cc23f8e4236979a9ecda2b966c",
+    "actual_counts": [
+      {
+        "repeat": -1,
+        "variant": "baseline",
+        "compute_resolved_threads": 32,
+        "compute_threads": 32
+      },
+      {
+        "repeat": -1,
+        "variant": "candidate",
+        "compute_resolved_threads": 6,
+        "compute_threads": 6
+      },
+      {
+        "repeat": 0,
+        "variant": "candidate",
+        "compute_resolved_threads": 6,
+        "compute_threads": 6
+      },
+      {
+        "repeat": 0,
+        "variant": "baseline",
+        "compute_resolved_threads": 32,
+        "compute_threads": 32
+      },
+      {
+        "repeat": 1,
+        "variant": "baseline",
+        "compute_resolved_threads": 32,
+        "compute_threads": 32
+      },
+      {
+        "repeat": 1,
+        "variant": "candidate",
+        "compute_resolved_threads": 6,
+        "compute_threads": 6
+      },
+      {
+        "repeat": 2,
+        "variant": "candidate",
+        "compute_resolved_threads": 6,
+        "compute_threads": 6
+      },
+      {
+        "repeat": 2,
+        "variant": "baseline",
+        "compute_resolved_threads": 32,
+        "compute_threads": 32
+      }
+    ],
+    "scope": "One raw eight-child example corroborates old baseline auto32/candidate auto6; ten-layout matrix aggregate uses all20seedjobs. This is isolated-worker baseline c5ed100\u2026/worker variant, not final9e combined timing."
+  }
+}

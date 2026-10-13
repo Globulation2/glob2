@@ -1,0 +1,25 @@
+{
+  "reviewed_utc": "2026-10-12T04:07:17.081952+00:00",
+  "conclusion": "No blocker identified in conditional helper or prepared test under its controlled nonthrowing callback assumptions. Variant remains unbuilt/unrun/unaccepted.",
+  "production_invariants": [
+    "Both modified notifications execute under existing executor mutex: completeJob called from locked completion/execute path; settle from locked resolve/execute. Helper reads presentation and presentationPending only under that mutex.",
+    "One lane completion advances exactly one ordered-lane index; continuation requeue exposes the same single deferred index. Initial submits, arbitrary new batches, retirement, shutdown, group and presentation notifications remain unchanged. No changes to cancellation, sequence bases, errors, tickets, shared owner lifetime or claim predicates.",
+    "Presence of active or pending presentation retains broadcast, preserving designated-worker fairness opportunity. No special device, CPUcount, map or AI constant is introduced. Headless WorkerOnly service policy is unchanged.",
+    "The test combines two lane groups, externally published tickets, single continuations, duplicate resume rejection, exact originalindex order, busy optionalWorkerOnly orPresentation callback and no freshsubmit/run broadcast afterresume. N3/5/8 coverage is generic test input, not productionhardcoding."
+  ],
+  "test_lifetime_review": [
+    "State::ticket publication usesmutex+conditionvar; main observesunderlock then starts external thread, so subsequent immutableticket reads have ordered publication. Ordervector is mutex-protected.",
+    "On missingticket timeout, abandonment is published underState mutex and presenttickets completed; latejob publication sees abandonment and completesits own ticket. execute tracks ticket.running, so an inlinecomplete doesnot retire payload beforecallbackreturns. join drains batchbeforelocalsleave.",
+    "Busy optional callback references gateatomics; afterassertions release set, watchdogjoined, presentationcancelled-and-waited ifpresent, WorkerOnly service removed thenconfigure(1) quiesces worker callbacks beforegate/state lifetime ends. Removingservice alone is correctly not assumedto wait.",
+    "Five-second watchdog bounds optionalblockedcallback and reports lost-progress without masking it: release/timedOut flags markforcedescape. joinAll doesnotcountpresentation asdeferredwork; explicitquiescence handlesitlater.",
+    "Fragment doesnot add RAIIguards for unexpected thrown join orbad_alloc beforethreadjoins; callbacks are controlled and nonthrowing exceptresourcefailure. This is a testexception-path limitation, not observed productionbug or measured performanceeffect."
+  ],
+  "required_next_gates": [
+    "Root releasecompile and existing+focusedComputeExecutor tests",
+    "Per-tickGCS/exactreplay on variedmaps/sizes/mixedAI and serial/parallelcounts",
+    "LiveGPUhealth at nativepace and optionalpresentation fairness/stopping tests",
+    "Counterbalanced CPU/wall/contextswitch/RSS controls; rejectnoise/unprovenwholegame benefit"
+  ],
+  "files_untouched": "Allbase code/build/test inputs outside ComputeExecutor.h and harness match gitarchive2ced60e06. Current productionworktree edits and3variantdriver untouched.",
+  "no_build_test_or_performance_launched": true
+}

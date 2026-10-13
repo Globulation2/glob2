@@ -1,0 +1,68 @@
+{
+  "updated_utc": "2026-10-12T11:04:32.876655+00:00",
+  "snapshot": {
+    "decision": "reject V1 eager and V2 lazy ownership optimizations",
+    "evidence": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/adoption-review/snapshot-v2-completed-analysis.json",
+    "evidence_sha256": "a2b2d35bab37de02062f2c33117f9fc5296ed7fbe4f12945402f300e061d50e2",
+    "reason": "No useful independent memory improvement; mixed initial timing with small-Nicowar/Oazis slowdowns and adverse Playground direct GPU-on comparison. Simpler original ownership remains.",
+    "integration_pending": false,
+    "prepared_patch": "ownership-rollback/03-reject-owner-change-retain-end-census.patch",
+    "maintained_diagnostics": "Optional query-only managed-pool capacity/end references; excludes overflow/external-only buffers."
+  },
+  "scheduler": {
+    "decision": "remain outside final source",
+    "reason": "Mixed preferred-participant results do not justify added policy."
+  },
+  "worker": {
+    "decision": "accepted: affinity-aware eligible logical CPU sizing; explicit counts preserved",
+    "qualification": "Linux/Android eligibleCPU ceiling; portable fallback elsewhere; no universal three-core or SMT heuristic.",
+    "integration_pending": false
+  },
+  "telemetry": {
+    "decision": "accepted: lossless immutable replay telemetry schema and compact values",
+    "independent_evidence": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/adoption-review/telemetry-selected24-completed.json",
+    "qualification": "Initial10layouts2seeds +mixedholdout3\u00d76pairs selected24 complete; preserves adverse PGmature GPUon direct +2.015percent CPU interval and wide cells. No universal speed claim.",
+    "integrated_source": true,
+    "integration_pending": false
+  },
+  "gpu": {
+    "sync": "accepted: mandatory OpenCL host synchronization before consuming transfer data",
+    "recovery": "rejected; functional but CPU/wall regressions across varied workloads, without useful independent memory improvement",
+    "evidence": "gpu-analysis/analysis.json",
+    "evidence_sha256": "381742703e6b2759f3acb9ca765fa59e593fafa1eb0634b06a48bbd5b1d2cbd6",
+    "qualification": "39 paired jobs versus Sync completed. Do not infer universality beyond the measured driver/workloads. Existing permanent-failure CPU fallback retained.",
+    "integration_pending": false
+  },
+  "final_package": {
+    "accepted": true,
+    "accepted_utc": "2026-10-12T11:04:32.876655+00:00",
+    "source_commit": "9e370bcb83209cf99f43c346750a6d4bd440f4f2",
+    "base_commit": "2ced60e06b8e7fa7a4a4ecff944c40bda494bcf4",
+    "binary_sha256": "ea5dbd7f5e30c129b0f554796beb8a67ec96041baef4b70c9310df7863faa406",
+    "build_manifest_sha256": "2df42aebca03f2727c8993cc6e7f70a8113402907004ddfa9e1a430b3bffd1a8",
+    "final_window_jobs": 21,
+    "natural_attempts": 18,
+    "natural_pairs": 9,
+    "evidence_complete": true,
+    "independent_reviews": {
+      "final-analysis/natural9-review.json": "7148b65f7aee50399fb9d30eafb48a4ac5a212bbae69eeb13b9353588875cee6",
+      "final-analysis/combined21-v3.json": "e1a11c484d37c1ce831ff4ad515e8bcf079337b49ea712b3be34a9efbbb6dba8",
+      "final-analysis/combined21-v3-lineage.json": "8ebb4318470340133880ff171a096e5f29ee9441602354bcc45df902020f783f",
+      "final-validation/final-commit-review.json": "6f5a5915ce01dc337b301bcc43735e3220672850c02362924e86b690079ba315"
+    },
+    "performance_scope": "Release fixed-three comparisons:10 initial layouts repeated,3 full natural layouts \u00d73 seeds. Initial equal-layout aggregate CPU\u22121.54%,wall\u22122.20%,RSS\u221226.03%; full RSS\u22122.72%..\u221210.60%. Full Playground/Oazis speed uncertain. Per-seed slowdowns retained. Separate prior automatic worker experiments do not define these fixed-three ratios.",
+    "compatibility_scope": "130 selected native detailed diagnostic runs, focused274 native checks,4 actual hardware cases,27 browser cases;9 natural pairs exact outcomes/end checksums/replay. Natural full every-tick equality not asserted.",
+    "known_baseline_failures": 4,
+    "unverified": [
+      "Windows/macOS/mobile native runtime",
+      "interactive GPU graphics and play feel"
+    ],
+    "rejected": [
+      "V1/V2 snapshot ownership",
+      "preferred-participant scheduler policy",
+      "GPU cancellation recovery"
+    ],
+    "features_preserved": true,
+    "historical_oazis_background": "resumed after all optimization native timing slots released"
+  }
+}

@@ -1,0 +1,86 @@
+{
+  "source": "96da258e5a6b24a57a8848f2bfa0178031331322",
+  "tree": "63d18b69950651b00e9e40a4d96a14d1a25b62cd",
+  "helper_sha256": "c36743012657ebbf75478e0adfdf9e78224c5534063e6425e589f32d5feecdaf",
+  "source_tree_inventory_sha256": "3c2fe11dba772a01172e70b429af56b2b7a55df006fb3d832f15418fcb29c80f",
+  "shader_receipt_sha256": "6cd6e4a17264fbb91d73bc30eda746063999dc71a0addcb80d7f86a6edb69262",
+  "stages": [
+    {
+      "stage": "web-release",
+      "argv": [
+        "taskset",
+        "-c",
+        "0-31",
+        "scons",
+        "target=web",
+        "release=1",
+        "web_variant=both",
+        "emsdk=/home/bradley/.local/share/glob2/development/toolchains/emscripten/Linux-x86_64-88a621bc131cd4954413aa39",
+        "web-tests",
+        "build/emscripten/client/release/index.html",
+        "-j32"
+      ],
+      "outputs": [
+        "build/emscripten/client/release/index.js",
+        "build/emscripten/client/release/index.wasm",
+        "build/emscripten/client/release/index.data",
+        "build/emscripten/client/release/script-tests.js",
+        "build/emscripten/client/release/script-tests.wasm",
+        "build/emscripten/client/release/script-tests.data",
+        "build/emscripten/client/release/threaded/index.js",
+        "build/emscripten/client/release/threaded/index.wasm",
+        "build/emscripten/client/release/threaded/index.data",
+        "build/emscripten/client/release/threaded/script-tests.js",
+        "build/emscripten/client/release/threaded/script-tests.wasm",
+        "build/emscripten/client/release/threaded/script-tests.data"
+      ]
+    },
+    {
+      "stage": "android-release",
+      "argv": [
+        "taskset",
+        "-c",
+        "0-31",
+        "scons",
+        "target=android",
+        "arch=arm64-v8a",
+        "release=1",
+        "android_sdk=/home/bradley/.local/share/glob2/development/toolchains/mobile/Linux-x86_64-8dbf18a4a97410f6b6a92b4a/android-sdk",
+        "build/android/device/arm64-v8a/24/client/release/lib/libmain.so",
+        "android-tests",
+        "-j32"
+      ],
+      "outputs": [
+        "build/android/device/arm64-v8a/24/client/release/lib/libmain.so"
+      ]
+    },
+    {
+      "stage": "android-apk",
+      "argv": [
+        "taskset",
+        "-c",
+        "0-31",
+        "python3",
+        "mobile/android.py",
+        "build",
+        "--arch",
+        "arm64-v8a",
+        "--release",
+        "--android-sdk",
+        "/home/bradley/.local/share/glob2/development/toolchains/mobile/Linux-x86_64-8dbf18a4a97410f6b6a92b4a/android-sdk",
+        "--jobs",
+        "32"
+      ],
+      "outputs": [
+        "build/android/device/arm64-v8a/24/client/release/android-project/app/build/outputs/apk/release/app-release-unsigned.apk"
+      ]
+    }
+  ],
+  "environment": {
+    "CCACHE": "1",
+    "CCACHE_MAXSIZE": "12G",
+    "GLOB2_SDL3_PREFIX": "/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/build/sdl3-ci/prefix",
+    "GLOB2_RENDER_SHADER_INPUT": "/home/bradley/.codex/worktrees/execution-resource-profiles/glob2/artifacts/resource-profiles/validation/renderer-bundle-v2/shaders"
+  },
+  "scope": "Rootauthorizedsequential ordinaryrelease builds only; reusedcache/sharedhost elapsednotcompilebenchmark; noPCH/unity/device/game/testcaseexecution"
+}

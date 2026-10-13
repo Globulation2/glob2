@@ -1,0 +1,52 @@
+{
+  "source": "ee45c0a0389660bc7d2885b572b94b1a2b01d7a3",
+  "selected_headless": {
+    "unit": {
+      "executed": 215,
+      "passed": 215,
+      "failed": 0
+    },
+    "engine": {
+      "executed": 238,
+      "passed": 237,
+      "failed": 1
+    }
+  },
+  "original_display_attempt": {
+    "executed": 29,
+    "passed": 0,
+    "failed_setup": 29,
+    "cause": "Toolkit startup reported no displays; inherited Wayland session was present despite Xvfb. Explicit modern SDL x11/dummy hints resolved setup in all29 retry cases; exact original driver selection not directly captured."
+  },
+  "qualified_x11_retry": {
+    "unit": {
+      "executed": 2,
+      "passed": 2
+    },
+    "engine": {
+      "executed": 27,
+      "passed": 26,
+      "failed": 1
+    }
+  },
+  "known_failures": [
+    {
+      "case": "a retained version-152 stock replay preserves recorded simulation checksums [save-format]",
+      "classification": "Exact failure matches retained c7/f7/a134 evidence; compatibility remains qualified."
+    },
+    {
+      "case": "CPU terrain retires coverage when cells leave discovery [display]",
+      "classification": "Unchanged inherited fixture asserts Trace-only graphics metric with telemetry Off; test-only opt-in draft prepared separately, not rerun on ee45."
+    }
+  ],
+  "evidence_sha256": {
+    "unit-actual.json": "dfefbdb40a369c31ea369145c2cea33f161f2d1e20e9717247faed08425bd355",
+    "engine-actual.json": "0d19ced3bd592b6773d537a48eb68e032e15ae15ff2489e6872c9d7e77d5ef08",
+    "inherited-152-comparison.json": "9c148e1569df274b64a04a8a5c144e460033c960782787dd270e6babb6515592",
+    "final-actual-summary.json": "957807cb84eaf16e1b9c9dbe3346ee468b049684b3616a474370bfc5d9727e8a",
+    "display-x11-retry/final-actual-summary.json": "811654944046a08800ca6face65e4edeaa7adef231d9a990bbb633ff024c60fa",
+    "terrain-trace-fixture-draft/proof.json": "dcb0de66f3a36a113a941791c37be89f541e5be33e537e7df4fb24627097e541"
+  },
+  "source_and_all_five_binaries_unchanged": true,
+  "no_benchmark_or_device_claim": true
+}

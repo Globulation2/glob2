@@ -1,0 +1,45 @@
+{
+  "state": "passed",
+  "checks_only": true,
+  "checks": [
+    {
+      "id": "h03-n3-check-gpuon-original",
+      "state": "complete",
+      "passed": true,
+      "raw_GCS_sha256": "c95bcc473064f6fb4c7b17470e53a6e8a1f33368970ee1b7083355ae87c93a4e",
+      "final_checksum": "cd20aae7",
+      "ticks": 8192
+    },
+    {
+      "id": "h03-n3-check-gpuon-guarded",
+      "state": "complete",
+      "passed": true,
+      "raw_GCS_sha256": "c95bcc473064f6fb4c7b17470e53a6e8a1f33368970ee1b7083355ae87c93a4e",
+      "final_checksum": "cd20aae7",
+      "ticks": 8192
+    },
+    {
+      "id": "h03-n3-check-gpuoff-original",
+      "state": "complete",
+      "passed": true,
+      "raw_GCS_sha256": "c95bcc473064f6fb4c7b17470e53a6e8a1f33368970ee1b7083355ae87c93a4e",
+      "final_checksum": "cd20aae7",
+      "ticks": 8192
+    },
+    {
+      "id": "h03-n3-check-gpuoff-guarded",
+      "state": "complete",
+      "passed": true,
+      "raw_GCS_sha256": "c95bcc473064f6fb4c7b17470e53a6e8a1f33368970ee1b7083355ae87c93a4e",
+      "final_checksum": "cd20aae7",
+      "ticks": 8192
+    }
+  ],
+  "expected_checks": 4,
+  "window_states": [],
+  "expected_windows": 0,
+  "errors": [],
+  "pairs": [],
+  "groups": [],
+  "scope": "Raw whole per-tick GCS SHA256 at PG8192, N3 GPUoff/on, one seed. Timed PG20k/Oazis8192 GPUon paired2seeds\u00d72reps, exact native finalCRC/end/winner/ticks comparison. No fullwinner/mature, Oazis wholeGCS,save/load/network/nonLinux platform proof. No timing or game launched by checker; no raw files rewritten."
+}

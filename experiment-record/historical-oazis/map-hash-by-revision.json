@@ -1,0 +1,72 @@
+[
+  {
+    "commit": "14b99bc82de940a095b816933ae4653274f6425a",
+    "path": "maps/Oazis.map",
+    "sha256": "cd80d8c9a72643a95bb0bd3c22deb594aeed125d12cb3294859e7fffbc131448"
+  },
+  {
+    "commit": "731f6be5d6367c2d98bf555abab75836b9cdc1f7",
+    "path": "maps/Oazis.map",
+    "sha256": "cd80d8c9a72643a95bb0bd3c22deb594aeed125d12cb3294859e7fffbc131448"
+  },
+  {
+    "commit": "d3ac1ed3fd0bbd23636e48b6ec96d4f95fcaaae0",
+    "path": "maps/Oazis.map",
+    "sha256": "cd80d8c9a72643a95bb0bd3c22deb594aeed125d12cb3294859e7fffbc131448"
+  },
+  {
+    "commit": "982b12730c2e8d6a813c5e9215291957476aa2b1",
+    "path": "maps/Oazis.map",
+    "sha256": "cd80d8c9a72643a95bb0bd3c22deb594aeed125d12cb3294859e7fffbc131448"
+  },
+  {
+    "commit": "3bb33a627a2b7b2d5a7be833e468266cd8eca8d5",
+    "path": "maps/Oazis.map",
+    "sha256": "cd80d8c9a72643a95bb0bd3c22deb594aeed125d12cb3294859e7fffbc131448"
+  },
+  {
+    "commit": "326c05fda1a4ad22ee784647540157c7181e6bce",
+    "path": "maps/Oazis.map",
+    "sha256": "cd80d8c9a72643a95bb0bd3c22deb594aeed125d12cb3294859e7fffbc131448"
+  },
+  {
+    "commit": "568fe9274e3d7519e72794e1134dfef9cf7fb2ed",
+    "path": "maps/Oazis.map",
+    "sha256": "cd80d8c9a72643a95bb0bd3c22deb594aeed125d12cb3294859e7fffbc131448"
+  },
+  {
+    "commit": "a494a331929c6104c44be1bf395ef1c445bbd4c2",
+    "path": "maps/Oazis.map",
+    "sha256": "cd80d8c9a72643a95bb0bd3c22deb594aeed125d12cb3294859e7fffbc131448"
+  },
+  {
+    "commit": "1c49596f5195188e7f078768f610454f7068d7c6",
+    "path": "maps/Oazis.map",
+    "sha256": "cd80d8c9a72643a95bb0bd3c22deb594aeed125d12cb3294859e7fffbc131448"
+  },
+  {
+    "commit": "05b29faf5fed8d8cc6e4cd8c8a413708458bd345",
+    "path": "maps/Oazis.map.gz",
+    "sha256": "cd80d8c9a72643a95bb0bd3c22deb594aeed125d12cb3294859e7fffbc131448"
+  },
+  {
+    "commit": "98dee3ed57b7cac41570619b8bb7732bd858936b",
+    "path": "maps/Oazis.map.gz",
+    "sha256": "cd80d8c9a72643a95bb0bd3c22deb594aeed125d12cb3294859e7fffbc131448"
+  },
+  {
+    "commit": "f5d1bc51ef61795d4cc165e9ac530f5d2ad21a42",
+    "path": "maps/Oazis.map.gz",
+    "sha256": "cd80d8c9a72643a95bb0bd3c22deb594aeed125d12cb3294859e7fffbc131448"
+  },
+  {
+    "commit": "d341b5f20a114314727226882a8511f70a176dda",
+    "path": "maps/Oazis.map.gz",
+    "sha256": "cd80d8c9a72643a95bb0bd3c22deb594aeed125d12cb3294859e7fffbc131448"
+  },
+  {
+    "commit": "9a08b91f4350649862e788135e99bb1f5f469e3a",
+    "path": "maps/Oazis.map.gz",
+    "sha256": "cd80d8c9a72643a95bb0bd3c22deb594aeed125d12cb3294859e7fffbc131448"
+  }
+]

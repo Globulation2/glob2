@@ -1,0 +1,3018 @@
+{
+  "rows": 3320,
+  "source_files": [
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/isles-mixed-164298751-combined-t3-gpuoff/measurements.jsonl",
+      "sha256": "c45460a1007f06984c1946163fcf337e4962359229289d1e2f99eb1e7f5d55d4",
+      "source_bytes": 677371,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/isles-mixed-164298751-combined-tauto-gpuoff/measurements.jsonl",
+      "sha256": "80bb28b893a38518a6c70a2a1ccab9f6867a7b9768aa80b87e99bc964106a987",
+      "source_bytes": 677452,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/isles-mixed-164298751-scheduler-t3-gpuoff/measurements.jsonl",
+      "sha256": "57857addc134d889fb3e837dc4a68075a520bbd59660ea36d140d022db8abfb1",
+      "source_bytes": 677647,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/isles-mixed-164298751-snapshot-t3-gpuoff/measurements.jsonl",
+      "sha256": "19c8eaba8a7552e80264ce1b932ec24020aac84de21654508205bb0e5ea3589d",
+      "source_bytes": 677630,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/isles-mixed-164298751-telemetry-t3-gpuoff/measurements.jsonl",
+      "sha256": "a28c0bf2216a79aa6ff513851cdc87499caa82d96f7a45accfe02209c98b0d61",
+      "source_bytes": 677647,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/isles-mixed-164298751-worker-t3-gpuoff/measurements.jsonl",
+      "sha256": "51749ce096ec7eda178ef5dff87011c561d6f745fcb754fbe2490c9a27c83cf7",
+      "source_bytes": 677610,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/isles-mixed-164298751-worker-tauto-gpuoff/measurements.jsonl",
+      "sha256": "3052afa1d55ff798097c09c2880ceed07e1f1daf9083fdaad27ede1b4619916a",
+      "source_bytes": 677609,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/isles-mixed-902381047-combined-t3-gpuoff/measurements.jsonl",
+      "sha256": "6adc3315f2fdc1c4123c631f4d4e902c08508e4a19712f3cbe0cfb4a837cd9c9",
+      "source_bytes": 677526,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/isles-mixed-902381047-combined-tauto-gpuoff/measurements.jsonl",
+      "sha256": "bab8d858c8afffcd49cdec5ddb0e7a7226b918777ff1b4b49491be08f7455914",
+      "source_bytes": 677454,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/isles-mixed-902381047-scheduler-t3-gpuoff/measurements.jsonl",
+      "sha256": "1fe395fada6404dab250d3fae73e21f527f09acb0277af0aaba867ee0ffe6694",
+      "source_bytes": 677664,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/isles-mixed-902381047-snapshot-t3-gpuoff/measurements.jsonl",
+      "sha256": "a2997b7b55884cb37e3d57be45660635b42efd8142606991df4d62cb469f76a1",
+      "source_bytes": 677680,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/isles-mixed-902381047-telemetry-t3-gpuoff/measurements.jsonl",
+      "sha256": "7f22046e880636700bc130a6ad3d0d1af84fb7ff8931442e84697390e65de75f",
+      "source_bytes": 677713,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/isles-mixed-902381047-worker-t3-gpuoff/measurements.jsonl",
+      "sha256": "579ce8c0406e50dc86d3acd0df25dbd03fe6238336099f31aec9c3934535da5d",
+      "source_bytes": 677710,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/isles-mixed-902381047-worker-tauto-gpuoff/measurements.jsonl",
+      "sha256": "2a154ccbcd3e33f79fc4a6e7349abd9e49dfa96dcf2a183e836678fbd8a285d2",
+      "source_bytes": 677684,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/large-mixed-164298751-combined-t3-gpuoff/measurements.jsonl",
+      "sha256": "4309bc2e7740403700cdd696c803c9d79a99d8832197e660df6c55fd9313fac0",
+      "source_bytes": 385455,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/large-mixed-164298751-combined-tauto-gpuoff/measurements.jsonl",
+      "sha256": "e752526c39d013f87b6edcb25b95a6b792327653cfc498e4854aab662d7d632d",
+      "source_bytes": 385636,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/large-mixed-164298751-scheduler-t3-gpuoff/measurements.jsonl",
+      "sha256": "3fed2c167d7425f6cb89934021f92c79e62e3b192e86c891ff951133eca1f854",
+      "source_bytes": 385624,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/large-mixed-164298751-snapshot-t3-gpuoff/measurements.jsonl",
+      "sha256": "45fb29f6478f845dc7bfee7ca91061d12961238b271d1d2e1e384e060e46302a",
+      "source_bytes": 385742,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/large-mixed-164298751-telemetry-t3-gpuoff/measurements.jsonl",
+      "sha256": "d5b85760edc575bd9af6dff4b19b12f0a79ecacb08ca157225372104e0de5748",
+      "source_bytes": 385684,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/large-mixed-164298751-worker-t3-gpuoff/measurements.jsonl",
+      "sha256": "6ffdb2d67d9bd3f6b0d0777c1bb2195d29ebd64a14849d7dc4f74441360b9c78",
+      "source_bytes": 385597,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/large-mixed-164298751-worker-tauto-gpuoff/measurements.jsonl",
+      "sha256": "22310c81589ce650ad8315d50db13d2d2b35bfd81c408d218255527ad43bf377",
+      "source_bytes": 385775,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/large-mixed-902381047-combined-t3-gpuoff/measurements.jsonl",
+      "sha256": "f01663a88f216238eca7f2f70598991be695526e54a25148a7dd245c914b4168",
+      "source_bytes": 385477,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/large-mixed-902381047-combined-tauto-gpuoff/measurements.jsonl",
+      "sha256": "8eb429a77794e1597a9702df27323bff517c6180f22659cc92a69e93eb9896fb",
+      "source_bytes": 385587,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/large-mixed-902381047-scheduler-t3-gpuoff/measurements.jsonl",
+      "sha256": "bcaaef3f96dc90f00e9584a4affacd356dcc264f99bbc3baeacb6cc0f65a3f17",
+      "source_bytes": 385833,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/large-mixed-902381047-snapshot-t3-gpuoff/measurements.jsonl",
+      "sha256": "e9afb75576c2609fe70a6de1ff0978e794dbceb724f4f2acdf54945a785ad87c",
+      "source_bytes": 385736,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/large-mixed-902381047-telemetry-t3-gpuoff/measurements.jsonl",
+      "sha256": "6360dda314c0af0f62d435863c7cb098c2de4571678dfa7fc7190794330dc25b",
+      "source_bytes": 385767,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/large-mixed-902381047-worker-t3-gpuoff/measurements.jsonl",
+      "sha256": "ff52b21f027b1246fbfc9a21e4e70d9f307b35cb8257392eef902cc8815fc281",
+      "source_bytes": 385688,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/large-mixed-902381047-worker-tauto-gpuoff/measurements.jsonl",
+      "sha256": "73ac916d80bc9d5a1a7f0cc522f1fcf4e49b21db2793780e422743d3d20486ac",
+      "source_bytes": 385791,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/large-ni-164298751-combined-t3-gpuoff/measurements.jsonl",
+      "sha256": "c5b2554bfa1dc27323dc7100f127ed77fc365dcc679954ec6c3f70a736740d04",
+      "source_bytes": 198537,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/large-ni-164298751-combined-tauto-gpuoff/measurements.jsonl",
+      "sha256": "d08c5574c2f4f01c6e72cc78db0a22938a7773932f979f6c7ff38a2f97d81c5c",
+      "source_bytes": 198506,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/large-ni-164298751-scheduler-t3-gpuoff/measurements.jsonl",
+      "sha256": "5be8c70af15c511eb27a6b5792d548df599127279938bf1951b0a0098ad599ee",
+      "source_bytes": 198732,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/large-ni-164298751-snapshot-t3-gpuoff/measurements.jsonl",
+      "sha256": "10626b26e9fcfcf143193c1d41f92d30fd93dd9d40b6463e49ed56f07665ed11",
+      "source_bytes": 198764,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/large-ni-164298751-telemetry-t3-gpuoff/measurements.jsonl",
+      "sha256": "284ea546fd325a32c116d7d94971d52203b21eb62b2983148a242640e530c40b",
+      "source_bytes": 198788,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/large-ni-164298751-worker-t3-gpuoff/measurements.jsonl",
+      "sha256": "340c66d26f1f997eb219e7d1d99d8e97659c4630b1f0d11bc2f6636caf5b32ae",
+      "source_bytes": 198704,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/large-ni-164298751-worker-tauto-gpuoff/measurements.jsonl",
+      "sha256": "d330afcc546b8b136979092d17c2dfc924f2a413d5c921b54d8dd5686e429535",
+      "source_bytes": 198713,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/large-ni-902381047-combined-t3-gpuoff/measurements.jsonl",
+      "sha256": "5a8c45a360cd76a8932126b176fbc267571cfef5dcaa43cfa1b8665ab81b93fc",
+      "source_bytes": 198592,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/large-ni-902381047-combined-tauto-gpuoff/measurements.jsonl",
+      "sha256": "b8392252fc385610c066736f91c3693380e845722c83c3882150bcc1c49a388b",
+      "source_bytes": 198656,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/large-ni-902381047-scheduler-t3-gpuoff/measurements.jsonl",
+      "sha256": "5c22f7d233c30adc65907e12f94f4b86c1fc736bf5d3ebaf96548a39c75ee74c",
+      "source_bytes": 198776,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/large-ni-902381047-snapshot-t3-gpuoff/measurements.jsonl",
+      "sha256": "fecff57ba1d97faa92e449bdf5cfbcb5d29acc6258aa86d6e83f803cccdf0e5f",
+      "source_bytes": 198804,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/large-ni-902381047-telemetry-t3-gpuoff/measurements.jsonl",
+      "sha256": "371aa69b012a0966942c93a4f02c584d48ed48a7db9311e612b7123027d4af1a",
+      "source_bytes": 198846,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/large-ni-902381047-worker-t3-gpuoff/measurements.jsonl",
+      "sha256": "0481a8fe8227e1f599d5575bdc151742a6985276ea3a7c4213d409e329a2800f",
+      "source_bytes": 198788,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/large-ni-902381047-worker-tauto-gpuoff/measurements.jsonl",
+      "sha256": "717da5a9b6380b2a86d9e9d9ae300ad653f0f1afb786cda90ad9ee496d9d5aaf",
+      "source_bytes": 198748,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/oazis-ni-164298751-combined-t3-gpuoff/measurements.jsonl",
+      "sha256": "ab8aec76aebf4a1864b43d8c79dce121c59ff2538d4a8ef6a2ccee4aed25b80f",
+      "source_bytes": 372495,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/oazis-ni-164298751-combined-t3-gpuon/measurements.jsonl",
+      "sha256": "6a25d890ae449d7f1aa6c082d981ccfb262c83a7354c804917e0eded4120dcd0",
+      "source_bytes": 373043,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/oazis-ni-164298751-combined-tauto-gpuoff/measurements.jsonl",
+      "sha256": "828553185a4bd2158edfd549c456a8e0d9c4da65e1ef5c1946852997c88be8f4",
+      "source_bytes": 372512,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/oazis-ni-164298751-scheduler-t3-gpuoff/measurements.jsonl",
+      "sha256": "f367bde14f546433c27b7b9841d72c7aa175970fed4eb9796ac0c1c0d84114a1",
+      "source_bytes": 372690,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/oazis-ni-164298751-snapshot-t3-gpuoff/measurements.jsonl",
+      "sha256": "f1301e15f8fe923a0d9bf88f3681b7c38a035b37a0dd6b158c39cd44272c5cb2",
+      "source_bytes": 372679,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/oazis-ni-164298751-telemetry-t3-gpuoff/measurements.jsonl",
+      "sha256": "8c619a82e70a89dc11e8b3ee29cd5bcbc3b3ddf3b8ec39feff429ffa6964d0cb",
+      "source_bytes": 372729,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/oazis-ni-164298751-worker-t3-gpuoff/measurements.jsonl",
+      "sha256": "ea7b6df58e1e0e7f7011d476514cacb4fd7427a3ef5a28746699fd9dc8423638",
+      "source_bytes": 372675,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/oazis-ni-164298751-worker-tauto-gpuoff/measurements.jsonl",
+      "sha256": "a9fd3a8b3585b660acadeeb6440cc05a047863111b0dabda465402ea8f0c3141",
+      "source_bytes": 372824,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/oazis-ni-902381047-combined-t3-gpuoff/measurements.jsonl",
+      "sha256": "86f4f62163abda2a3d39e7542476a44ce715d993e07f653a4b36be85fb2bf77f",
+      "source_bytes": 373323,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/oazis-ni-902381047-combined-t3-gpuon/measurements.jsonl",
+      "sha256": "4a482d2740724794183c727c59ad682f337fb7994fb070c184faaf8f5d97361a",
+      "source_bytes": 373866,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/oazis-ni-902381047-combined-tauto-gpuoff/measurements.jsonl",
+      "sha256": "000c5bd03647b4dcd0cdb513c6bc3a45632d22e76e41026eae79e090f35a04d1",
+      "source_bytes": 373432,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/oazis-ni-902381047-scheduler-t3-gpuoff/measurements.jsonl",
+      "sha256": "972a5b63b8165ac6962729b497f1eacdf5f9d0629bcd1533450adfb751f8c3c2",
+      "source_bytes": 373499,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/oazis-ni-902381047-snapshot-t3-gpuoff/measurements.jsonl",
+      "sha256": "4091c06cf9f3730cc4f236c16872b7078a58345fd034093e6d33c56e95a4df01",
+      "source_bytes": 373415,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/oazis-ni-902381047-telemetry-t3-gpuoff/measurements.jsonl",
+      "sha256": "11697c9376f0a3c0a49d1d3cfee760f11ba2f4a2b914177bf5557906363ce367",
+      "source_bytes": 373557,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/oazis-ni-902381047-worker-t3-gpuoff/measurements.jsonl",
+      "sha256": "9d8d9f051527fb569a6adfe2c4d4823fbf21b3a589cb488768fdce1b760ba632",
+      "source_bytes": 373559,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/oazis-ni-902381047-worker-tauto-gpuoff/measurements.jsonl",
+      "sha256": "8ffc87fc7f8cf5b8432921c3aa6c961dea5a071d418012c79752232f5bddd077",
+      "source_bytes": 373590,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/playground-ni-164298751-combined-t3-gpuoff/measurements.jsonl",
+      "sha256": "25ecd49b9c06a2eb34ffd138737d88e1f5eff620da5080f264b7e14a63734098",
+      "source_bytes": 340811,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/playground-ni-164298751-combined-t3-gpuon/measurements.jsonl",
+      "sha256": "8fe53b0a141e12b45b1ca366a757cde7bae5a157ee319bfd23c8026ac7c2cb70",
+      "source_bytes": 341335,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/playground-ni-164298751-combined-tauto-gpuoff/measurements.jsonl",
+      "sha256": "a9b56f774e2d7ab06fcbd8fca1928add5ea5e2acfcfeed528866eb584a0af15f",
+      "source_bytes": 340936,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/playground-ni-164298751-scheduler-t3-gpuoff/measurements.jsonl",
+      "sha256": "4f439ba5d45476b2f9ec090c6917176cb66a9f8ab18eab52418e5439858d44fe",
+      "source_bytes": 341005,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/playground-ni-164298751-snapshot-t3-gpuoff/measurements.jsonl",
+      "sha256": "c9eaabd3912326a10cd071162b2a2ba1c65e0c2b994bebc69270a2875bb71ae4",
+      "source_bytes": 340951,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/playground-ni-164298751-telemetry-t3-gpuoff/measurements.jsonl",
+      "sha256": "d13ca2ff97a3f132cf620c52274ad841818d69c946203debd4ab9d5af5c2aa6b",
+      "source_bytes": 340993,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/playground-ni-164298751-worker-t3-gpuoff/measurements.jsonl",
+      "sha256": "489302eb1280b5a178020560631d6dd90782ecfdf51cbfd6ba361f581420f5b3",
+      "source_bytes": 341021,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/playground-ni-164298751-worker-tauto-gpuoff/measurements.jsonl",
+      "sha256": "d2dd7b25081c6fbbae0a391d752453ae2b25fc3a932f952b8b859f080eae4e7c",
+      "source_bytes": 341151,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/playground-ni-902381047-combined-t3-gpuoff/measurements.jsonl",
+      "sha256": "e88a7d2e00bd00e2ccb710f7f08c3b18b8a5a67b75d584775b4dcd47dd866e4c",
+      "source_bytes": 342421,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/playground-ni-902381047-combined-t3-gpuon/measurements.jsonl",
+      "sha256": "aac52b2539d8e66cf5766660c7cee3405e51426ed2112e0b1d72faba1eebef1e",
+      "source_bytes": 342885,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/playground-ni-902381047-combined-tauto-gpuoff/measurements.jsonl",
+      "sha256": "049f829020899d1cd01349bca0fdb4f1888f19a4d902e6a09a6d9b3fbed1704c",
+      "source_bytes": 342347,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/playground-ni-902381047-scheduler-t3-gpuoff/measurements.jsonl",
+      "sha256": "f08bd25d05c403e7cec73ab10274146c0647ec2fedc30f0af9d3163010e3e185",
+      "source_bytes": 342429,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/playground-ni-902381047-snapshot-t3-gpuoff/measurements.jsonl",
+      "sha256": "2ce51913c6d29525d0ccb04acb0c3ac67dbd44ffd5082ba96e8759d0e674f596",
+      "source_bytes": 342454,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/playground-ni-902381047-telemetry-t3-gpuoff/measurements.jsonl",
+      "sha256": "0d8397f3c553ac53919f0a13ee7e034f7fb289017a38100e17ed3cef982c367f",
+      "source_bytes": 342483,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/playground-ni-902381047-worker-t3-gpuoff/measurements.jsonl",
+      "sha256": "24dd075ceb06b93fe8850e3d98a814110cfb03ce72d6e0591adb3a9a6765e376",
+      "source_bytes": 342451,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/playground-ni-902381047-worker-tauto-gpuoff/measurements.jsonl",
+      "sha256": "a67d21bdd14a9aedff9935c4d7d6ce8f36004a98d18f777984c5195f8ae55d73",
+      "source_bytes": 342546,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/rect-cortex-164298751-combined-t3-gpuoff/measurements.jsonl",
+      "sha256": "8ecd0fc35fde5aa7da8539a7f0b9e8ca0cc7c911ac1298ad5b93622f8d904137",
+      "source_bytes": 161182,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/rect-cortex-164298751-combined-tauto-gpuoff/measurements.jsonl",
+      "sha256": "ca60b7ad5300b45c84497be87594d64667b5046cf45b66a361a14165c8efa05a",
+      "source_bytes": 161259,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/rect-cortex-164298751-scheduler-t3-gpuoff/measurements.jsonl",
+      "sha256": "063c071583ee4941cdce3cdaf1b10fd0929bd686fd105270a5a20fd7d906b793",
+      "source_bytes": 161438,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/rect-cortex-164298751-snapshot-t3-gpuoff/measurements.jsonl",
+      "sha256": "cdb13876be2b91cda6dea6f757c8c1afd1bcbb543080ca9778221addbdbecb53",
+      "source_bytes": 161351,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/rect-cortex-164298751-telemetry-t3-gpuoff/measurements.jsonl",
+      "sha256": "59067f15d7d87784606bd413b0f4fef5d57676998c3d49f556129b37efa939ba",
+      "source_bytes": 161373,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/rect-cortex-164298751-worker-t3-gpuoff/measurements.jsonl",
+      "sha256": "85ad20622e5001d5fb705c2634df0084139691f48e2a3c0b0a6ee14ee97283a2",
+      "source_bytes": 161357,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/rect-cortex-164298751-worker-tauto-gpuoff/measurements.jsonl",
+      "sha256": "09993f3687e68fbbba76c46f4ea9402fbe9eb0238a980a88ef171eb861bc197c",
+      "source_bytes": 161436,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/rect-cortex-902381047-combined-t3-gpuoff/measurements.jsonl",
+      "sha256": "0886a219c313f7bb949a9ee046a7817a8ee18684759dd21be20c719a4563c7c8",
+      "source_bytes": 161294,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/rect-cortex-902381047-combined-tauto-gpuoff/measurements.jsonl",
+      "sha256": "d54956bde2fdcef6bbc04dd0f24872eaa2dd21e43f8c0e4437217405101f1d54",
+      "source_bytes": 161364,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/rect-cortex-902381047-scheduler-t3-gpuoff/measurements.jsonl",
+      "sha256": "c1840295974bbc082b7d410fa8501cd7967a7acbade265aee8e6ad3952622a19",
+      "source_bytes": 161404,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/rect-cortex-902381047-snapshot-t3-gpuoff/measurements.jsonl",
+      "sha256": "0adb9736ce146b13b5b8d6a62b01cf5894b964814eb0fd59dcff6801eaf9f549",
+      "source_bytes": 161461,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/rect-cortex-902381047-telemetry-t3-gpuoff/measurements.jsonl",
+      "sha256": "e2849301d6b44ff6287119c9c97134f9583ebde0993986f7a3a9242d7875898f",
+      "source_bytes": 161471,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/rect-cortex-902381047-worker-t3-gpuoff/measurements.jsonl",
+      "sha256": "7d868a607610ce0cfe08e9cbdabe0b5676b0034835b02068ce4a1bc9d3a7c0bb",
+      "source_bytes": 161359,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/rect-cortex-902381047-worker-tauto-gpuoff/measurements.jsonl",
+      "sha256": "faf5ca2b837ebb43a65ced44c11734f139beab85d792418b8c138a73073af56d",
+      "source_bytes": 161500,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/rect-mixed-164298751-combined-t3-gpuoff/measurements.jsonl",
+      "sha256": "4e82350cfa81c1b57971d5c96af07eff8483710c409f002b4d811ce5bf22ffc6",
+      "source_bytes": 204168,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/rect-mixed-164298751-combined-tauto-gpuoff/measurements.jsonl",
+      "sha256": "f1ac84060e07b6fa07c6c88f05e4afb0d3c9808df2b7c1cbaeee126df4aa4ad0",
+      "source_bytes": 204378,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/rect-mixed-164298751-scheduler-t3-gpuoff/measurements.jsonl",
+      "sha256": "e4db03c948ec8d5b8f2b3dbde37d756ed792f8110f95665a4e02c89f32d44855",
+      "source_bytes": 204471,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/rect-mixed-164298751-snapshot-t3-gpuoff/measurements.jsonl",
+      "sha256": "3d6d082970948bec5d01c2c25beff7284d5385631c8f2c844137611a04a7ed85",
+      "source_bytes": 204521,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/rect-mixed-164298751-telemetry-t3-gpuoff/measurements.jsonl",
+      "sha256": "04778149539133a884b5d11e0a147c12b05a2fa9d8795fa64b19781827fd3236",
+      "source_bytes": 204632,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/rect-mixed-164298751-worker-t3-gpuoff/measurements.jsonl",
+      "sha256": "4d41ce259e1faa32eb5d01c2fb9fcde5817e5fdbde823613dd76ec5051b21bdf",
+      "source_bytes": 204529,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/rect-mixed-164298751-worker-tauto-gpuoff/measurements.jsonl",
+      "sha256": "6803f2efb587e929e51837444b1601d548e78713a59568b87bfb5a8d85296486",
+      "source_bytes": 204527,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/rect-mixed-902381047-combined-t3-gpuoff/measurements.jsonl",
+      "sha256": "81a3a32f27e90259e201933993954f101e925fad1bebf08d096277338f46c3be",
+      "source_bytes": 203990,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/rect-mixed-902381047-combined-tauto-gpuoff/measurements.jsonl",
+      "sha256": "819c0e8e93fcf4c1b820502cf4393c5d6ea0d6237761e18a324bc173515c6ce9",
+      "source_bytes": 204181,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/rect-mixed-902381047-scheduler-t3-gpuoff/measurements.jsonl",
+      "sha256": "1c4cd0826e1497ad21c8f6c3353835b0ae151ad22818130bd6734b3419aa6b10",
+      "source_bytes": 204306,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/rect-mixed-902381047-snapshot-t3-gpuoff/measurements.jsonl",
+      "sha256": "67fed888cfc52ceaa8b119f148de2fd9bbf323fdb178ee1e307f1ffd346163a4",
+      "source_bytes": 204314,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/rect-mixed-902381047-telemetry-t3-gpuoff/measurements.jsonl",
+      "sha256": "07186a25d45df31afb57845c244eeef6ea8a365ca8deefe1e96ee776b33f28d2",
+      "source_bytes": 204319,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/rect-mixed-902381047-worker-t3-gpuoff/measurements.jsonl",
+      "sha256": "f0db3af16823e658dba09b0aa2b0c2a5d4ea55f41d3c03ae39474bfdd1e9f4dd",
+      "source_bytes": 204351,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/rect-mixed-902381047-worker-tauto-gpuoff/measurements.jsonl",
+      "sha256": "43eeabfd4c2ad4429c98cb825b118b88f26a42820a6afcfd71dfc040753bde00",
+      "source_bytes": 204448,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/river-cortex-164298751-combined-t3-gpuoff/measurements.jsonl",
+      "sha256": "c750fe9a2d39b33d15383682578cca7d204b669da52a9d973fcd1fe4eb619c8f",
+      "source_bytes": 220013,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/river-cortex-164298751-combined-tauto-gpuoff/measurements.jsonl",
+      "sha256": "27d960f5df769eee5d78186744f248d2233f7d27641663e1ee461b9fcbb996ad",
+      "source_bytes": 220172,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/river-cortex-164298751-scheduler-t3-gpuoff/measurements.jsonl",
+      "sha256": "f87399d845842ac81861d0a34b6324e076d2e0ab064fd0f50504c34a65bf8b7a",
+      "source_bytes": 220196,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/river-cortex-164298751-snapshot-t3-gpuoff/measurements.jsonl",
+      "sha256": "a169e4ee29c9dc8fe2f8a2a8141a6ced62ff62e85b33e0fc2327dc1d41850e60",
+      "source_bytes": 220260,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/river-cortex-164298751-telemetry-t3-gpuoff/measurements.jsonl",
+      "sha256": "27e63244978fa5be8842885fb592bd83e68e472b2efc27e2935eed7ec725a176",
+      "source_bytes": 220314,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/river-cortex-164298751-worker-t3-gpuoff/measurements.jsonl",
+      "sha256": "cf7d671791e38dc762bbfc11d0c247b4ca73e69742bb1571aa05b7915ac20726",
+      "source_bytes": 220200,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/river-cortex-164298751-worker-tauto-gpuoff/measurements.jsonl",
+      "sha256": "79ea43b8ed44fab6c306415dc62513ae297bd40bc7f02cc53e717777fa5611ea",
+      "source_bytes": 220314,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/river-cortex-902381047-combined-t3-gpuoff/measurements.jsonl",
+      "sha256": "936cc02cdefd84c7698bb160be970b8d297d874e3d0a9a762d5107f6b92440bb",
+      "source_bytes": 220190,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/river-cortex-902381047-combined-tauto-gpuoff/measurements.jsonl",
+      "sha256": "bd7c279d99310422426f5f37dd89c364f8637fe1865224f9640765074463d03c",
+      "source_bytes": 220174,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/river-cortex-902381047-scheduler-t3-gpuoff/measurements.jsonl",
+      "sha256": "922b800e20561a49c12e066e8a6b4e79fb7ff39e0a0c024ec33b9496d39f37b7",
+      "source_bytes": 220446,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/river-cortex-902381047-snapshot-t3-gpuoff/measurements.jsonl",
+      "sha256": "7ed9cdd192f1dc6f093cbe19103fe75a8410e9d580a3ee8467556fad77d6cc09",
+      "source_bytes": 220392,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/river-cortex-902381047-telemetry-t3-gpuoff/measurements.jsonl",
+      "sha256": "42db909f64d1c17d4d036b52303dbd2008d0db267e19840cbcde4e73350f263f",
+      "source_bytes": 220429,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/river-cortex-902381047-worker-t3-gpuoff/measurements.jsonl",
+      "sha256": "315dd06964e0413f3063b89a359f4b7604fcd5426d1b7f1a5addb918247d8a25",
+      "source_bytes": 220387,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/river-cortex-902381047-worker-tauto-gpuoff/measurements.jsonl",
+      "sha256": "fcd5fd00fe8decf0c716a2b6260369b61328ccca0f237ea26717c00fb7516cdb",
+      "source_bytes": 220386,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/small-ni-164298751-combined-t3-gpuoff/measurements.jsonl",
+      "sha256": "af77e00f6983286618d1e081bbf6416120ec71ac32ee61e8ceaf0ee4f745b6f1",
+      "source_bytes": 156527,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/small-ni-164298751-combined-tauto-gpuoff/measurements.jsonl",
+      "sha256": "78176b7f623471fab2c5210edcb3b5ec254d2059c3f3be96be25afabe57012c3",
+      "source_bytes": 156722,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/small-ni-164298751-scheduler-t3-gpuoff/measurements.jsonl",
+      "sha256": "ab7b4f77a60992edbb0626f2abf8f150fd9a5bc00242137a0643f4276f283a69",
+      "source_bytes": 156813,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/small-ni-164298751-snapshot-t3-gpuoff/measurements.jsonl",
+      "sha256": "69000a257e843e531e1e7dfe75fda9beb5025e17d1fb3ab1b2002c2acc2a6b16",
+      "source_bytes": 156814,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/small-ni-164298751-telemetry-t3-gpuoff/measurements.jsonl",
+      "sha256": "c51e2496269c67da2ef81d7d254ffa270f8f12d880fe9f4bab91f26cf18bb450",
+      "source_bytes": 156835,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/small-ni-164298751-worker-t3-gpuoff/measurements.jsonl",
+      "sha256": "1786c31c9b4ef3bb1fb066e56b1239d1d666747408402a8eeb3d9bed422490a3",
+      "source_bytes": 156771,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/small-ni-164298751-worker-tauto-gpuoff/measurements.jsonl",
+      "sha256": "3fd14cfbc7ca72da7578bface68be79686d590cc23f8e4236979a9ecda2b966c",
+      "source_bytes": 156849,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/small-ni-902381047-combined-t3-gpuoff/measurements.jsonl",
+      "sha256": "3829613307df049068c50d4b9196e366010534486bc7a7e187d12ecfe3782184",
+      "source_bytes": 156323,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/small-ni-902381047-combined-tauto-gpuoff/measurements.jsonl",
+      "sha256": "261bdc5f643a86924c3384bdf5b976ef6c04a9841624d8fb23fa4272aa2c483c",
+      "source_bytes": 156412,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/small-ni-902381047-scheduler-t3-gpuoff/measurements.jsonl",
+      "sha256": "55d90a0388382fa291092f30cf4f50758509d6140bf4bcbd6bbf78e97ade2d27",
+      "source_bytes": 156710,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/small-ni-902381047-snapshot-t3-gpuoff/measurements.jsonl",
+      "sha256": "758da8c7a7fdceb6096aa6e9b713cf166a2b812c21a6d7e2da28aa9025bb7e4b",
+      "source_bytes": 156571,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/small-ni-902381047-telemetry-t3-gpuoff/measurements.jsonl",
+      "sha256": "182917f4142c5ec09c1fd61b495d08935d99f53545122e2e8119bfef5307d7d6",
+      "source_bytes": 156644,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/small-ni-902381047-worker-t3-gpuoff/measurements.jsonl",
+      "sha256": "6adffea2e8674de075a0d54a3c29cc6b5878d35e11c5f6386d3d12690bb7e88a",
+      "source_bytes": 156522,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/small-ni-902381047-worker-tauto-gpuoff/measurements.jsonl",
+      "sha256": "d9a0db22d9b12502b3e8baacb04e1c36187dc2500af7361da3bdea26880a5515",
+      "source_bytes": 156617,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/swamp-wide-164298751-combined-t3-gpuoff/measurements.jsonl",
+      "sha256": "456a1fd469205f4bc260fe10fc57de51231359c3679264a354f2816475570856",
+      "source_bytes": 204355,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/swamp-wide-164298751-combined-tauto-gpuoff/measurements.jsonl",
+      "sha256": "cf4e2c10bc5f1419a3246856559608374c6350c3bf73c1f588864da70bdd9929",
+      "source_bytes": 204553,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/swamp-wide-164298751-scheduler-t3-gpuoff/measurements.jsonl",
+      "sha256": "ef4185ec4f2f34c5d73ed0e75899d0b5f865e3eb216ed97767bb0563fdac63f6",
+      "source_bytes": 204598,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/swamp-wide-164298751-snapshot-t3-gpuoff/measurements.jsonl",
+      "sha256": "662fbc5eba24f4d4679ee07de030addabce36b58cab347b3fa32b82b4725e4d2",
+      "source_bytes": 204567,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/swamp-wide-164298751-telemetry-t3-gpuoff/measurements.jsonl",
+      "sha256": "b6e8e120dfd6b4bdea494cdf6b21b340cfeab4c9caa4f690e2581abc8b491d24",
+      "source_bytes": 204667,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/swamp-wide-164298751-worker-t3-gpuoff/measurements.jsonl",
+      "sha256": "432c59eb96fe55587e991531af9417b82f4f4f0df8a364c9b104e3dbe0e4fb8f",
+      "source_bytes": 204594,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/swamp-wide-164298751-worker-tauto-gpuoff/measurements.jsonl",
+      "sha256": "b9b5a5d68462528ec1b2fb8715176c6f96bc52dd5cdebe3cffd848abdc277d5d",
+      "source_bytes": 204650,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/swamp-wide-902381047-combined-t3-gpuoff/measurements.jsonl",
+      "sha256": "c4e09f851a2c2b7aaff5f4f5ec22663d827cce54175407fbb5e157f347883b23",
+      "source_bytes": 204505,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/swamp-wide-902381047-combined-tauto-gpuoff/measurements.jsonl",
+      "sha256": "4f2b8ee210a63be59f21ab81082e8e1364390b123213aa3bdcd3d49335de7ecb",
+      "source_bytes": 204631,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/swamp-wide-902381047-scheduler-t3-gpuoff/measurements.jsonl",
+      "sha256": "282d1eaf1fd4f1f4a3cc0ae4c5b0830674d9bd36d005dee70bb7466d9f3049d0",
+      "source_bytes": 204640,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/swamp-wide-902381047-snapshot-t3-gpuoff/measurements.jsonl",
+      "sha256": "26ca73d76de4ec802088064e6d41e6524546aa058e683b3f4f2844cd2f7a07f0",
+      "source_bytes": 204733,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/swamp-wide-902381047-telemetry-t3-gpuoff/measurements.jsonl",
+      "sha256": "daac30eadbefaf920b36636f0af60853861167cb6d5f8064935b97a214c9a876",
+      "source_bytes": 204668,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/swamp-wide-902381047-worker-t3-gpuoff/measurements.jsonl",
+      "sha256": "433458c8174ba0edb8777ac5c2039f17deebdfbd87776297c781e39eea74114c",
+      "source_bytes": 204727,
+      "rows": 8
+    },
+    {
+      "cohort": "initial-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance/runs/swamp-wide-902381047-worker-tauto-gpuoff/measurements.jsonl",
+      "sha256": "90ad4c5c6123e9c4e2fb6de5beacd97b07c25786090709692c69f33b6c1c5dcf",
+      "source_bytes": 204786,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/oazis-ni-164298751-combined-gpuoff-w4096/measurements.jsonl",
+      "sha256": "04e0f196bdb958db5f65f4329f9c6c9d16a1ddc4218ad19c965c6acd4e1814c9",
+      "source_bytes": 597825,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/oazis-ni-164298751-combined-gpuoff-w8192/measurements.jsonl",
+      "sha256": "d5a97d0b354825e83f1e00ad9e7da84409f654648bb18aebef2eee5888798b1c",
+      "source_bytes": 615594,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/oazis-ni-164298751-combined-gpuon-w4096/measurements.jsonl",
+      "sha256": "eab2aa465b5696b4b54b747d011e7a88d18499637d7f29b17045457224784e9c",
+      "source_bytes": 598464,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/oazis-ni-164298751-combined-gpuon-w8192/measurements.jsonl",
+      "sha256": "f619d17e8405e8c606a85cd30282a47446679b3257604b36626426609397796f",
+      "source_bytes": 616343,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/oazis-ni-164298751-combinedauto-gpuoff-w4096/measurements.jsonl",
+      "sha256": "c3281b2b81aa8cc5734bf58fb7c0b8b583d05fa4c8d97a4ba93cd2b25599222a",
+      "source_bytes": 597971,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/oazis-ni-164298751-combinedauto-gpuoff-w8192/measurements.jsonl",
+      "sha256": "8bc773ba145d138343a9122ba99519192ad6bf1234a2ac5a91b153c5e528d0da",
+      "source_bytes": 615756,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/oazis-ni-164298751-scheduler-gpuoff-w4096/measurements.jsonl",
+      "sha256": "cd9e67dac81f1c2e0452f67eb68f1f598acbf95b6595ba475aa5d3bcd5df669b",
+      "source_bytes": 598130,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/oazis-ni-164298751-scheduler-gpuoff-w8192/measurements.jsonl",
+      "sha256": "94757d198bae5646bf860e6a076becb7695eaf29f6653596c5adcf29b0fae77d",
+      "source_bytes": 615790,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/oazis-ni-164298751-scheduler-gpuon-w4096/measurements.jsonl",
+      "sha256": "9f1299df7eb01841307bac21102e0eaa43457710344072b5b50bd69904f5a584",
+      "source_bytes": 598795,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/oazis-ni-164298751-scheduler-gpuon-w8192/measurements.jsonl",
+      "sha256": "2a10556bfe8b5c89f4d8ba576c05df3dce4043cadf45d2049873ba77ea51dbdd",
+      "source_bytes": 616601,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/oazis-ni-164298751-snapshot-gpuoff-w4096/measurements.jsonl",
+      "sha256": "718541e2b46a3dd0925e6e52301cdec5628743f04297eafa9c72843d1a6d1f24",
+      "source_bytes": 598051,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/oazis-ni-164298751-snapshot-gpuoff-w8192/measurements.jsonl",
+      "sha256": "0e78b0ebbfb63b4738a09dcf3e51ed60dfb3f35b199479590e2108acdd9b1324",
+      "source_bytes": 615793,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/oazis-ni-164298751-snapshot-gpuon-w4096/measurements.jsonl",
+      "sha256": "a1dbf85b4a9fc09d9108e9ca3b6a40fb7ed8e7aadbefa71cf948347be73e9b68",
+      "source_bytes": 598787,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/oazis-ni-164298751-snapshot-gpuon-w8192/measurements.jsonl",
+      "sha256": "74c70d3f31134e33c246c0f759f1d967a4ba3ae653849de3e2418685826fd14d",
+      "source_bytes": 616492,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/oazis-ni-164298751-telemetry-gpuoff-w4096/measurements.jsonl",
+      "sha256": "335f0369afca7f2a001ca5b3723a0f37882db4e015825c02c1095ced2fdd00d1",
+      "source_bytes": 598098,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/oazis-ni-164298751-telemetry-gpuoff-w8192/measurements.jsonl",
+      "sha256": "b63ba0e151a384e4e94bfd5e32d875c5ccc4c55ed17309fda3080abdd0ac8f7b",
+      "source_bytes": 615846,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/oazis-ni-164298751-telemetry-gpuon-w4096/measurements.jsonl",
+      "sha256": "20b6a6be56d8ed538b9183d14c2642e6780005fa30b26aa865bce64024c6f97f",
+      "source_bytes": 598811,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/oazis-ni-164298751-telemetry-gpuon-w8192/measurements.jsonl",
+      "sha256": "56ba6a66b2e658c92357b98e0b6806b2e7fd9bc235711f465d9883b1dc03cd46",
+      "source_bytes": 616616,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/oazis-ni-164298751-worker-gpuoff-w4096/measurements.jsonl",
+      "sha256": "d7804230f7cdfa1b6d2369b59bfa7b4834d19be9692b0aaa73bacd85c0c74cee",
+      "source_bytes": 598034,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/oazis-ni-164298751-worker-gpuoff-w8192/measurements.jsonl",
+      "sha256": "425679e1c22ca1b4236e990611d2cfffca7a4fdf40322823394db50368f10f9c",
+      "source_bytes": 615800,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/oazis-ni-164298751-worker-gpuon-w4096/measurements.jsonl",
+      "sha256": "fafb0d13c05af4ec353e144cfb7b2aa4438d81aa2768b8797817c1f6f13b0559",
+      "source_bytes": 598749,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/oazis-ni-164298751-worker-gpuon-w8192/measurements.jsonl",
+      "sha256": "f9380bebb0caabac921ed3fcbb395fb5ac0de5aa0211b7a790afc900ef9e2e17",
+      "source_bytes": 616491,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/oazis-ni-164298751-workerauto-gpuoff-w4096/measurements.jsonl",
+      "sha256": "1b103e7673236fd4d326de24290069785c2e131f78a627cf9b84d941221c4b0a",
+      "source_bytes": 598165,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/oazis-ni-164298751-workerauto-gpuoff-w8192/measurements.jsonl",
+      "sha256": "36867d26946cd821f21ec80f62f844f8abb902024d3573f1c7eae5163bc2a967",
+      "source_bytes": 615947,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/oazis-ni-902381047-combined-gpuoff-w4096/measurements.jsonl",
+      "sha256": "06cd3956c2ae90b2b6c6e30c773b26c982319a8b60e7e89053e878f08786369d",
+      "source_bytes": 592281,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/oazis-ni-902381047-combined-gpuoff-w8192/measurements.jsonl",
+      "sha256": "57d06cf2a2da68ccffa58648380dbdfa5b522d721964b68bd722b1796b9934c3",
+      "source_bytes": 610613,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/oazis-ni-902381047-combined-gpuon-w4096/measurements.jsonl",
+      "sha256": "a90d81d73083f016ff2f750f986cadbed5871637a7285ea28af17b798688c982",
+      "source_bytes": 592981,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/oazis-ni-902381047-combined-gpuon-w8192/measurements.jsonl",
+      "sha256": "713ab546b2b559943649db7610778f42325690edd7ccd5f064094ddbef4b18b7",
+      "source_bytes": 611137,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/oazis-ni-902381047-combinedauto-gpuoff-w4096/measurements.jsonl",
+      "sha256": "614b84df42e06b9c3d24de7dc380963183df83e9b613309345d6f7fdce1a2ba0",
+      "source_bytes": 592376,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/oazis-ni-902381047-combinedauto-gpuoff-w8192/measurements.jsonl",
+      "sha256": "940f46048446afa17e296074c1007f56e06ab609a35db7d4e12a533867604079",
+      "source_bytes": 610653,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/oazis-ni-902381047-scheduler-gpuoff-w4096/measurements.jsonl",
+      "sha256": "66f7d106ee715f15deb2da5baa0ca463fe222ac77778679a2b56aa53fe57056e",
+      "source_bytes": 592515,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/oazis-ni-902381047-scheduler-gpuoff-w8192/measurements.jsonl",
+      "sha256": "f18169956e6fd9734980c76bcc5ecb0df3504e8af100f581aa7dc564aba24a31",
+      "source_bytes": 610802,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/oazis-ni-902381047-scheduler-gpuon-w4096/measurements.jsonl",
+      "sha256": "d72ab87fa0bd46179749d2f630e8de9860d96dab368fb990ee9a42641f0f0308",
+      "source_bytes": 593150,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/oazis-ni-902381047-scheduler-gpuon-w8192/measurements.jsonl",
+      "sha256": "564c86c8890328524d5019dc2973508ee72e54fdc065ca333f9895f15b2d1645",
+      "source_bytes": 611403,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/oazis-ni-902381047-snapshot-gpuoff-w4096/measurements.jsonl",
+      "sha256": "97127638106fe3f95140c6603dcafdeaec083c4a05917f8463e836b41ba32131",
+      "source_bytes": 592521,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/oazis-ni-902381047-snapshot-gpuoff-w8192/measurements.jsonl",
+      "sha256": "5a2055127e1e4d53adf5d6c09ca6b6658430331351b2f621582f7d5fddc72b68",
+      "source_bytes": 610738,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/oazis-ni-902381047-snapshot-gpuon-w4096/measurements.jsonl",
+      "sha256": "7c3e45b4a9f58f98f31a9d2cf542113200823949888d32c2d7336de43d6e1ca6",
+      "source_bytes": 593199,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/oazis-ni-902381047-snapshot-gpuon-w8192/measurements.jsonl",
+      "sha256": "4d1a61e5b288208ff00f38233c48dc69f8cc3fd4f62e5388e447c17826368cb2",
+      "source_bytes": 611441,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/oazis-ni-902381047-telemetry-gpuoff-w4096/measurements.jsonl",
+      "sha256": "b41a852e1dd4840fce355a255b1e9d0f500a881be52c234628a70e86c91e2ace",
+      "source_bytes": 592497,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/oazis-ni-902381047-telemetry-gpuoff-w8192/measurements.jsonl",
+      "sha256": "4b8bdc181f24f5779032749557977a95d33037cf0f3c92a88fa7c658d802bcaf",
+      "source_bytes": 610743,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/oazis-ni-902381047-telemetry-gpuon-w4096/measurements.jsonl",
+      "sha256": "4a8f201935224c99914bc1525bd5c66868499680a18b43e28eba4e8dede80a50",
+      "source_bytes": 593213,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/oazis-ni-902381047-telemetry-gpuon-w8192/measurements.jsonl",
+      "sha256": "ba56b7fcb508eaef7fe4bc682c68bdf7fdeda414323c0d5d355c1b19d231ec51",
+      "source_bytes": 611366,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/oazis-ni-902381047-worker-gpuoff-w4096/measurements.jsonl",
+      "sha256": "69005d87626b619ae991cf05ed45af4fd6189c5e5445c1f980aac27a3703f985",
+      "source_bytes": 592444,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/oazis-ni-902381047-worker-gpuoff-w8192/measurements.jsonl",
+      "sha256": "3021b916048183037a9a69e3df888b2423bbae855f532880e967f3e6562c88d6",
+      "source_bytes": 610670,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/oazis-ni-902381047-worker-gpuon-w4096/measurements.jsonl",
+      "sha256": "d77597e2a37ec2e086cd292b3ade20b23765266c0880d4ea1680cf745f633f65",
+      "source_bytes": 593136,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/oazis-ni-902381047-worker-gpuon-w8192/measurements.jsonl",
+      "sha256": "72bea24b70ffc7d24e36d19990457501990aede0861887efe08edc3779d9bb99",
+      "source_bytes": 611413,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/oazis-ni-902381047-workerauto-gpuoff-w4096/measurements.jsonl",
+      "sha256": "af86757a24825788b4f8eca25afe503b045644f1a38b43474dab0485f1f082e5",
+      "source_bytes": 592628,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/oazis-ni-902381047-workerauto-gpuoff-w8192/measurements.jsonl",
+      "sha256": "cd0560506aa6d2ba7953d1e829e528331cd4dccb16e5fe1f86ea61716d5bae6d",
+      "source_bytes": 610846,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/playground-ni-164298751-combined-gpuoff-w4096/measurements.jsonl",
+      "sha256": "ffa8a829ea4e1045f4f705216d23b15ab1b3825ac36cb133ee91c4a482b68d14",
+      "source_bytes": 354617,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/playground-ni-164298751-combined-gpuoff-w8192/measurements.jsonl",
+      "sha256": "d507faf049609bc6956fe164c71c726fb0ef1c9333011f38710a4e25c3d5d281",
+      "source_bytes": 368038,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/playground-ni-164298751-combined-gpuon-w4096/measurements.jsonl",
+      "sha256": "32361ac19d36ee3fc84e46aa781feb0c61c30aed85e01c7e41ecca4c274475d1",
+      "source_bytes": 355238,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/playground-ni-164298751-combined-gpuon-w8192/measurements.jsonl",
+      "sha256": "7187935256977297ce8dc30dbfd9e3d01e0b08af95cde94015473cfbfc4af70c",
+      "source_bytes": 368587,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/playground-ni-164298751-combinedauto-gpuoff-w4096/measurements.jsonl",
+      "sha256": "1adab578a90b74df24df7cdcd633131fd48cf583bffeb9e7a334fc8855c04c0e",
+      "source_bytes": 354794,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/playground-ni-164298751-combinedauto-gpuoff-w8192/measurements.jsonl",
+      "sha256": "92822e11084060daedd7553f5c6316d154a70adac8e43bb387f3a9e971985f68",
+      "source_bytes": 368282,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/playground-ni-164298751-scheduler-gpuoff-w4096/measurements.jsonl",
+      "sha256": "6f3deca65f27983ca25fe76daedbbff25af523076842d715f527a8a536f99c5b",
+      "source_bytes": 354938,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/playground-ni-164298751-scheduler-gpuoff-w8192/measurements.jsonl",
+      "sha256": "5291c2eba45348aac8bc12471ac8abff327722d7e2b3faa48c8329803f274791",
+      "source_bytes": 368208,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/playground-ni-164298751-scheduler-gpuon-w4096/measurements.jsonl",
+      "sha256": "ebd9d1ee2153e7eec52c16b3c12bdfd031b15273cdf52c78421198baa76adcd7",
+      "source_bytes": 355489,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/playground-ni-164298751-scheduler-gpuon-w8192/measurements.jsonl",
+      "sha256": "58a4e7926e2f799f06e1b4b20ceae33d10269102a815252657812f1df8692771",
+      "source_bytes": 368821,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/playground-ni-164298751-snapshot-gpuoff-w4096/measurements.jsonl",
+      "sha256": "3d264c209cc2958055a68faef04d12e725c087515b297ca95bf835e8c9c8c1c2",
+      "source_bytes": 354924,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/playground-ni-164298751-snapshot-gpuoff-w8192/measurements.jsonl",
+      "sha256": "d53722c4602ea3a728f2bf24e1146342d5dd0f9756dbd407bb4ac734a9b1571e",
+      "source_bytes": 368210,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/playground-ni-164298751-snapshot-gpuon-w4096/measurements.jsonl",
+      "sha256": "2b72091cf8e175926d5cd83b638eda3421e4a70dce421b3fdb9375b639e0f0c0",
+      "source_bytes": 355430,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/playground-ni-164298751-snapshot-gpuon-w8192/measurements.jsonl",
+      "sha256": "b6a2e8c7c7f0b1d23bdf82be4144736e2bc8a7b23bcdb0103ce0cabea6b95276",
+      "source_bytes": 368748,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/playground-ni-164298751-telemetry-gpuoff-w4096/measurements.jsonl",
+      "sha256": "8751f1b8089af8bf11ff617dc3ab1cd297728c2f4ac474451870972fc0b6d910",
+      "source_bytes": 354919,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/playground-ni-164298751-telemetry-gpuoff-w8192/measurements.jsonl",
+      "sha256": "1df0900cd7ed8b5a5a81990a2de3d097320a2e57e21887cabb4aef69842df749",
+      "source_bytes": 368263,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/playground-ni-164298751-telemetry-gpuon-w4096/measurements.jsonl",
+      "sha256": "0252b3a7bee228b8c88d74180952786c26dd4b967cd630ec68da49d96ef57872",
+      "source_bytes": 355437,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/playground-ni-164298751-telemetry-gpuon-w8192/measurements.jsonl",
+      "sha256": "fab6fd7aa1805511689af7640120cc91d1cb9a2987cae6692f3dcb9e370c7818",
+      "source_bytes": 368808,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/playground-ni-164298751-worker-gpuoff-w4096/measurements.jsonl",
+      "sha256": "6c11f9b64ed22d7b4de7beef5da310097755bc7c3f615e47a36e36036c1d76b2",
+      "source_bytes": 354842,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/playground-ni-164298751-worker-gpuoff-w8192/measurements.jsonl",
+      "sha256": "4f16e38e0f5b8c4c5fbab7303cba78d58966dc8eb938b7e70220e2bb19057d51",
+      "source_bytes": 368173,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/playground-ni-164298751-worker-gpuon-w4096/measurements.jsonl",
+      "sha256": "e8d031c5d7ce88f1e19b582770cdb45dd295bf3db0caa8971bdefcbe9a563a8b",
+      "source_bytes": 355357,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/playground-ni-164298751-worker-gpuon-w8192/measurements.jsonl",
+      "sha256": "2d75bbdb20550eb5b20c14b49ebfcd4be51d22a2ae5765d00864e8d078c7c713",
+      "source_bytes": 368709,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/playground-ni-164298751-workerauto-gpuoff-w4096/measurements.jsonl",
+      "sha256": "fc614b71c90202a3c1340d9ad3264945001dc51094ae683f02d58a36608b4a6d",
+      "source_bytes": 354970,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/playground-ni-164298751-workerauto-gpuoff-w8192/measurements.jsonl",
+      "sha256": "93b544daeca923040683abd2aac6002c8270f278dd0eee5e46eaffae5a107ad7",
+      "source_bytes": 368389,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/playground-ni-902381047-combined-gpuoff-w4096/measurements.jsonl",
+      "sha256": "080fb1a33ea32f7ec86bc63187edbd619c1150bad7f1053d6a757ba8c72060db",
+      "source_bytes": 355073,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/playground-ni-902381047-combined-gpuoff-w8192/measurements.jsonl",
+      "sha256": "f21b1f7b0accf0fd413393d5ee77980f489f0605ccb370e5ac3796a0a86a5b30",
+      "source_bytes": 367544,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/playground-ni-902381047-combined-gpuon-w4096/measurements.jsonl",
+      "sha256": "9abb69f7eb069d106bef89581a9e0182e471a8f560c576b66d34939a1705ce93",
+      "source_bytes": 355671,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/playground-ni-902381047-combined-gpuon-w8192/measurements.jsonl",
+      "sha256": "7eb72f383c5d6934dc203e34ef24197cbe462f8b1db075230534857b0a31db2e",
+      "source_bytes": 368044,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/playground-ni-902381047-combinedauto-gpuoff-w4096/measurements.jsonl",
+      "sha256": "1b88524eb2919d7afcb9d60e94bf288a67ea6de8c418d9277d4a18ecb7a69d7d",
+      "source_bytes": 355233,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/playground-ni-902381047-combinedauto-gpuoff-w8192/measurements.jsonl",
+      "sha256": "440bc87267c2851956111ec8dc245d924fc0099b0df7675fcf8ace3d38e11fb8",
+      "source_bytes": 367742,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/playground-ni-902381047-scheduler-gpuoff-w4096/measurements.jsonl",
+      "sha256": "0c2eb5b5c01ac7461ab0093f08b12fdc0f0373deab313cd7ad45bacfa1e9355c",
+      "source_bytes": 355359,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/playground-ni-902381047-scheduler-gpuoff-w8192/measurements.jsonl",
+      "sha256": "a31ab83389f831386833918c12e532114a9f0cfcd0170e3960b2e421c928cc45",
+      "source_bytes": 367718,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/playground-ni-902381047-scheduler-gpuon-w4096/measurements.jsonl",
+      "sha256": "65c81a26211e748532cdb3c6b55c662ebffa1759aadfa0e408b35e2ff0b9e438",
+      "source_bytes": 355847,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/playground-ni-902381047-scheduler-gpuon-w8192/measurements.jsonl",
+      "sha256": "9ddf1108842388cd63b3d14cbd71835af5352a215e4f1937adc220985fd0751c",
+      "source_bytes": 368442,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/playground-ni-902381047-snapshot-gpuoff-w4096/measurements.jsonl",
+      "sha256": "539aa720915af8eac15358db24d026dc3656c25d051a91d50bb840f533b95124",
+      "source_bytes": 355313,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/playground-ni-902381047-snapshot-gpuoff-w8192/measurements.jsonl",
+      "sha256": "3c45e9ca344221c321390b17818a2093b43fcd05b840fd9786a801ef6be0c393",
+      "source_bytes": 367724,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/playground-ni-902381047-snapshot-gpuon-w4096/measurements.jsonl",
+      "sha256": "0d115f23bd2d72c4ba0ade226fd96f71d569728d444f06b1f91b188461dcd5ba",
+      "source_bytes": 355954,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/playground-ni-902381047-snapshot-gpuon-w8192/measurements.jsonl",
+      "sha256": "7b93ed0d74894ea953ea812c0406d99b5928c63c87a8096439556542591a752e",
+      "source_bytes": 368265,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/playground-ni-902381047-telemetry-gpuoff-w4096/measurements.jsonl",
+      "sha256": "55800d7b41d6d229315078f8fc179a41a0c0172ef7baa66d9d810c3a5f6f1b80",
+      "source_bytes": 355330,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/playground-ni-902381047-telemetry-gpuoff-w8192/measurements.jsonl",
+      "sha256": "8ffe01c185b9276007bb77b5532aff06995d1ddf15f8ddb3c9b230889ebb14cc",
+      "source_bytes": 367732,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/playground-ni-902381047-telemetry-gpuon-w4096/measurements.jsonl",
+      "sha256": "0392ce429b0b99784fedc6519fc29df31448ba81c143cebee31169b384a3a139",
+      "source_bytes": 355837,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/playground-ni-902381047-telemetry-gpuon-w8192/measurements.jsonl",
+      "sha256": "6467e3ae3049bc18d497ae234efb430a74ae9723d2119efbcf0742bc7226a55b",
+      "source_bytes": 368344,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/playground-ni-902381047-worker-gpuoff-w4096/measurements.jsonl",
+      "sha256": "a00fe2e37b45fbc6aff98c2722ec17ce73628e3367bcc858a16531cc77d5827f",
+      "source_bytes": 355248,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/playground-ni-902381047-worker-gpuoff-w8192/measurements.jsonl",
+      "sha256": "3d9dcb8d3b342fa8f58ea661d939b07cb6dd45cc27591ef6d8be12716c3823c3",
+      "source_bytes": 367689,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/playground-ni-902381047-worker-gpuon-w4096/measurements.jsonl",
+      "sha256": "7667057eda0c2568f236cdd6b637b0fd8424414908e1887a8e71414264665cdb",
+      "source_bytes": 355805,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/playground-ni-902381047-worker-gpuon-w8192/measurements.jsonl",
+      "sha256": "021659a7be1be978a4356b72b9931fa7678fc91e17a9b0fd74d56015ca27a01a",
+      "source_bytes": 368283,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/playground-ni-902381047-workerauto-gpuoff-w4096/measurements.jsonl",
+      "sha256": "df308fdf7d9590fc7b36859449f3e7c6b944e68332315f879bf9b9e4e377175d",
+      "source_bytes": 355402,
+      "rows": 8
+    },
+    {
+      "cohort": "mature-factor",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/performance/playground-ni-902381047-workerauto-gpuoff-w8192/measurements.jsonl",
+      "sha256": "00b2c7d6f7a88ea6503676703689b3a5efc8aa3bd0e079af38be26e9440675cb",
+      "source_bytes": 367822,
+      "rows": 8
+    },
+    {
+      "cohort": "v2-followup",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/v2-followup/runs/initial-isles-mixed-164298751-snapshot-v2-vs-baseline-gpuoff-w8192/measurements.jsonl",
+      "sha256": "c0b1693cc07a7871d98a68357628503bc2b712e8b8574304c833dc6907918626",
+      "source_bytes": 677179,
+      "rows": 8
+    },
+    {
+      "cohort": "v2-followup",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/v2-followup/runs/initial-isles-mixed-902381047-snapshot-v2-vs-baseline-gpuoff-w8192/measurements.jsonl",
+      "sha256": "cec07a535ef60818dae4989dd119b4e156e3c4ffe0789042f9e1a2ae30f3f622",
+      "source_bytes": 677212,
+      "rows": 8
+    },
+    {
+      "cohort": "v2-followup",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/v2-followup/runs/initial-large-mixed-164298751-snapshot-v2-vs-baseline-gpuoff-w4096/measurements.jsonl",
+      "sha256": "93c80f9ab154bf8fe0aa37f92e270ece378fb712f39378d04988e7ee84811fb4",
+      "source_bytes": 385289,
+      "rows": 8
+    },
+    {
+      "cohort": "v2-followup",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/v2-followup/runs/initial-large-mixed-902381047-snapshot-v2-vs-baseline-gpuoff-w4096/measurements.jsonl",
+      "sha256": "244e44e27b28156ebe3ea2e817348f92f56b4007aad1367b46e9cf347dbda916",
+      "source_bytes": 385312,
+      "rows": 8
+    },
+    {
+      "cohort": "v2-followup",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/v2-followup/runs/initial-large-ni-164298751-snapshot-v2-vs-baseline-gpuoff-w4096/measurements.jsonl",
+      "sha256": "47939f83146bf5cf92a663b3d120f6eae573923455fb4b3e6cbec3ba0b567f71",
+      "source_bytes": 198323,
+      "rows": 8
+    },
+    {
+      "cohort": "v2-followup",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/v2-followup/runs/initial-large-ni-902381047-snapshot-v2-vs-baseline-gpuoff-w4096/measurements.jsonl",
+      "sha256": "b21671539ff2bfdad684a85102e130573e114db6cd0e6df608e1eda65e97477b",
+      "source_bytes": 198318,
+      "rows": 8
+    },
+    {
+      "cohort": "v2-followup",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/v2-followup/runs/initial-oazis-ni-164298751-snapshot-v2-vs-baseline-gpuoff-w8192/measurements.jsonl",
+      "sha256": "ee0c39fff19fafc3aedef2668284b20b35d8ce2d9bbd80a6918a3e7e1d7c59a8",
+      "source_bytes": 372239,
+      "rows": 8
+    },
+    {
+      "cohort": "v2-followup",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/v2-followup/runs/initial-oazis-ni-902381047-snapshot-v2-vs-baseline-gpuoff-w8192/measurements.jsonl",
+      "sha256": "654ea0bdb94b535e45a7b03cc2d4a01eae9a3f518c4e81c79f660c1931fc37e2",
+      "source_bytes": 373106,
+      "rows": 8
+    },
+    {
+      "cohort": "v2-followup",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/v2-followup/runs/initial-playground-ni-164298751-snapshot-v2-vs-baseline-gpuoff-w20000/measurements.jsonl",
+      "sha256": "9026330a9ba7d2f08e7c208285ee69a23bc648a4c1421fe85f3d3e82391bc13b",
+      "source_bytes": 340628,
+      "rows": 8
+    },
+    {
+      "cohort": "v2-followup",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/v2-followup/runs/initial-playground-ni-902381047-snapshot-v2-vs-baseline-gpuoff-w20000/measurements.jsonl",
+      "sha256": "92d86773b357fa0f7b040cc3f6f3048d8fd75333a2f974d5a0b29a07f2515e00",
+      "source_bytes": 342089,
+      "rows": 8
+    },
+    {
+      "cohort": "v2-followup",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/v2-followup/runs/initial-rect-cortex-164298751-snapshot-v2-vs-baseline-gpuoff-w8192/measurements.jsonl",
+      "sha256": "df839986f06d73c84e924a93d8bbdc46044d1f235dd4c787ecda28782a7aed25",
+      "source_bytes": 161030,
+      "rows": 8
+    },
+    {
+      "cohort": "v2-followup",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/v2-followup/runs/initial-rect-cortex-902381047-snapshot-v2-vs-baseline-gpuoff-w8192/measurements.jsonl",
+      "sha256": "15133a0da7f864f65b7e076883f37ca7aa9982ac876b49a7da1cfc4396537156",
+      "source_bytes": 161064,
+      "rows": 8
+    },
+    {
+      "cohort": "v2-followup",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/v2-followup/runs/initial-rect-mixed-164298751-snapshot-v2-vs-baseline-gpuoff-w8192/measurements.jsonl",
+      "sha256": "cfd79e258e3761803ac39bfb2daf11c43df81970561ebf4efce5aabde1ff2f0d",
+      "source_bytes": 204047,
+      "rows": 8
+    },
+    {
+      "cohort": "v2-followup",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/v2-followup/runs/initial-rect-mixed-902381047-snapshot-v2-vs-baseline-gpuoff-w8192/measurements.jsonl",
+      "sha256": "f4ff1a0faf46a22ba0f47eef950562d6dde15735d6f7e97a9cecded08dcdf191",
+      "source_bytes": 203852,
+      "rows": 8
+    },
+    {
+      "cohort": "v2-followup",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/v2-followup/runs/initial-river-cortex-164298751-snapshot-v2-vs-baseline-gpuoff-w8192/measurements.jsonl",
+      "sha256": "fe699ac041cf6f0d773704d121b8fa9af1f746a5e8e55c94dbd3959393c33ff7",
+      "source_bytes": 219814,
+      "rows": 8
+    },
+    {
+      "cohort": "v2-followup",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/v2-followup/runs/initial-river-cortex-902381047-snapshot-v2-vs-baseline-gpuoff-w8192/measurements.jsonl",
+      "sha256": "60b0bb0acbcb83d19ee3b4b0509b057f901150b94843c360b56eb77e610b0b86",
+      "source_bytes": 219916,
+      "rows": 8
+    },
+    {
+      "cohort": "v2-followup",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/v2-followup/runs/initial-small-ni-164298751-snapshot-v2-vs-baseline-gpuoff-w8192/measurements.jsonl",
+      "sha256": "aefa4b1115964ef00985d2cccaef95846a19eb4e3e007887835d2e78a9ca7ee4",
+      "source_bytes": 156424,
+      "rows": 8
+    },
+    {
+      "cohort": "v2-followup",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/v2-followup/runs/initial-small-ni-902381047-snapshot-v2-vs-baseline-gpuoff-w8192/measurements.jsonl",
+      "sha256": "7e0a06e75f8d7c80a27acd8ef2e5b627b87456a040fd63182d5e327165694e42",
+      "source_bytes": 156159,
+      "rows": 8
+    },
+    {
+      "cohort": "v2-followup",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/v2-followup/runs/initial-swamp-wide-164298751-snapshot-v2-vs-baseline-gpuoff-w8192/measurements.jsonl",
+      "sha256": "e0df44289cceaac4d427e980bae3fa27834df6fa57e7407435f19f96260f0f04",
+      "source_bytes": 204176,
+      "rows": 8
+    },
+    {
+      "cohort": "v2-followup",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/v2-followup/runs/initial-swamp-wide-902381047-snapshot-v2-vs-baseline-gpuoff-w8192/measurements.jsonl",
+      "sha256": "1f0a78dcbb952de6fece5a51be6fe55a39e10b9a7cc0a7199c904882629d8bad",
+      "source_bytes": 204224,
+      "rows": 8
+    },
+    {
+      "cohort": "v2-followup",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/v2-followup/runs/mature-oazis-ni-164298751-snapshot-v2-vs-baseline-gpuoff-w4096/measurements.jsonl",
+      "sha256": "b83d4bfb56dcd2724bf55519eb7e18cfffcfc72a91af13c1f58be29dc162a202",
+      "source_bytes": 597268,
+      "rows": 8
+    },
+    {
+      "cohort": "v2-followup",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/v2-followup/runs/mature-oazis-ni-164298751-snapshot-v2-vs-baseline-gpuoff-w8192/measurements.jsonl",
+      "sha256": "12627de724cc15a7631531679fc380ad10b9be016739771713f90808fb9f465c",
+      "source_bytes": 614992,
+      "rows": 8
+    },
+    {
+      "cohort": "v2-followup",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/v2-followup/runs/mature-oazis-ni-164298751-snapshot-v2-vs-baseline-gpuon-w4096/measurements.jsonl",
+      "sha256": "86e04ed753c36298ca80cde9472a31cea433e24bd0c9eb8dd45c390a64b6a529",
+      "source_bytes": 597928,
+      "rows": 8
+    },
+    {
+      "cohort": "v2-followup",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/v2-followup/runs/mature-oazis-ni-164298751-snapshot-v2-vs-baseline-gpuon-w8192/measurements.jsonl",
+      "sha256": "0a1a401c5ba7c7dd412e78e0a85c6fe5522cb68c86aa094a066c76719f336756",
+      "source_bytes": 615693,
+      "rows": 8
+    },
+    {
+      "cohort": "v2-followup",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/v2-followup/runs/mature-oazis-ni-164298751-snapshot-v2-vs-snapshot-v1-gpuoff-w8192/measurements.jsonl",
+      "sha256": "eae7d01f8f2cd90d52a87cf0b9d6b36df25a99e5ed6fd5f45aaa3fd48557346b",
+      "source_bytes": 615136,
+      "rows": 8
+    },
+    {
+      "cohort": "v2-followup",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/v2-followup/runs/mature-oazis-ni-164298751-snapshot-v2-vs-snapshot-v1-gpuon-w8192/measurements.jsonl",
+      "sha256": "c29c6a622fbddb49564913a4b3110c61dff65e583e6fb4676f85bbf74e6aebb5",
+      "source_bytes": 615739,
+      "rows": 8
+    },
+    {
+      "cohort": "v2-followup",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/v2-followup/runs/mature-oazis-ni-164298751-telemetry-v2-vs-baseline-gpuoff-w4096/measurements.jsonl",
+      "sha256": "085774d3feb47d0de2209a8ecbc71b3278710dce1190bed71c421952a362ff3e",
+      "source_bytes": 597331,
+      "rows": 8
+    },
+    {
+      "cohort": "v2-followup",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/v2-followup/runs/mature-oazis-ni-164298751-telemetry-v2-vs-baseline-gpuoff-w8192/measurements.jsonl",
+      "sha256": "487c277d3da058056a903d61f9df5670942df0536a5c55907c69127b89dfbfae",
+      "source_bytes": 615104,
+      "rows": 8
+    },
+    {
+      "cohort": "v2-followup",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/v2-followup/runs/mature-oazis-ni-164298751-telemetry-v2-vs-baseline-gpuon-w4096/measurements.jsonl",
+      "sha256": "518730a4eda7e5864828512216b0f0326c956a63561572dd2e1b9b11be440992",
+      "source_bytes": 597937,
+      "rows": 8
+    },
+    {
+      "cohort": "v2-followup",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/v2-followup/runs/mature-oazis-ni-164298751-telemetry-v2-vs-baseline-gpuon-w8192/measurements.jsonl",
+      "sha256": "5e6334804173dda476e1417d446b3a0509096eb1d8e0cff4d6065fe16b662701",
+      "source_bytes": 615677,
+      "rows": 8
+    },
+    {
+      "cohort": "v2-followup",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/v2-followup/runs/mature-oazis-ni-164298751-telemetry-v2-vs-telemetry-v1-gpuoff-w8192/measurements.jsonl",
+      "sha256": "e6e2180ef963be568a4b6f3880a15b86963ea7bd8335098c1d359ac80db9ce93",
+      "source_bytes": 615128,
+      "rows": 8
+    },
+    {
+      "cohort": "v2-followup",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/v2-followup/runs/mature-oazis-ni-164298751-telemetry-v2-vs-telemetry-v1-gpuon-w8192/measurements.jsonl",
+      "sha256": "db1ee737e18f40ef51cd9495143f6bdd5edee25de9ad198587584d65d06578b9",
+      "source_bytes": 615817,
+      "rows": 8
+    },
+    {
+      "cohort": "v2-followup",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/v2-followup/runs/mature-oazis-ni-902381047-snapshot-v2-vs-baseline-gpuoff-w4096/measurements.jsonl",
+      "sha256": "c8655afabd1b23e4d2e70124f587be622dfd24c1a7d353c855ad662b6f4f6ef0",
+      "source_bytes": 591676,
+      "rows": 8
+    },
+    {
+      "cohort": "v2-followup",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/v2-followup/runs/mature-oazis-ni-902381047-snapshot-v2-vs-baseline-gpuoff-w8192/measurements.jsonl",
+      "sha256": "cf98a533c563122b18d77bce4104fe507efde096c4ffa1c8f7154b5aa0e9c6c5",
+      "source_bytes": 609899,
+      "rows": 8
+    },
+    {
+      "cohort": "v2-followup",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/v2-followup/runs/mature-oazis-ni-902381047-snapshot-v2-vs-baseline-gpuon-w4096/measurements.jsonl",
+      "sha256": "146ad7d04f146a2200ac6fde906c53f715ff16e69d1d591e6d54c4132d9ddd7f",
+      "source_bytes": 592373,
+      "rows": 8
+    },
+    {
+      "cohort": "v2-followup",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/v2-followup/runs/mature-oazis-ni-902381047-snapshot-v2-vs-baseline-gpuon-w8192/measurements.jsonl",
+      "sha256": "b6fc1b27673e4918176bf0b6091ebfd50aeb77d135447200b3ec337501f97559",
+      "source_bytes": 610465,
+      "rows": 8
+    },
+    {
+      "cohort": "v2-followup",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/v2-followup/runs/mature-oazis-ni-902381047-snapshot-v2-vs-snapshot-v1-gpuoff-w8192/measurements.jsonl",
+      "sha256": "3ce0466da2a94cf6734dd940ee0cc791098a3bb755a2674077ab0e62e660d706",
+      "source_bytes": 610020,
+      "rows": 8
+    },
+    {
+      "cohort": "v2-followup",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/v2-followup/runs/mature-oazis-ni-902381047-snapshot-v2-vs-snapshot-v1-gpuon-w8192/measurements.jsonl",
+      "sha256": "a1198c73a9b0c1dd5e187013c4e6b6934c5799875cb0c32e386043afebb47d27",
+      "source_bytes": 610606,
+      "rows": 8
+    },
+    {
+      "cohort": "v2-followup",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/v2-followup/runs/mature-oazis-ni-902381047-telemetry-v2-vs-baseline-gpuoff-w4096/measurements.jsonl",
+      "sha256": "ddf3b6a8f993f41a0e1d041ed9eeca0ac1ce7ad7f4e085d59cddba9422a2f04a",
+      "source_bytes": 591723,
+      "rows": 8
+    },
+    {
+      "cohort": "v2-followup",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/v2-followup/runs/mature-oazis-ni-902381047-telemetry-v2-vs-baseline-gpuoff-w8192/measurements.jsonl",
+      "sha256": "ae094a92210e92ef309590a9976b118c851500d8659734b9efcb48cb0168a2bf",
+      "source_bytes": 609974,
+      "rows": 8
+    },
+    {
+      "cohort": "v2-followup",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/v2-followup/runs/mature-oazis-ni-902381047-telemetry-v2-vs-baseline-gpuon-w4096/measurements.jsonl",
+      "sha256": "5ccfed9902ffc3b25b9b150c430ac827ccb523ef3bfb4712dbf565ea008677b9",
+      "source_bytes": 592415,
+      "rows": 8
+    },
+    {
+      "cohort": "v2-followup",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/v2-followup/runs/mature-oazis-ni-902381047-telemetry-v2-vs-baseline-gpuon-w8192/measurements.jsonl",
+      "sha256": "25220e20a904a0d63f2909afaec15e5da41869b58c7672bc843a8975a706b081",
+      "source_bytes": 610590,
+      "rows": 8
+    },
+    {
+      "cohort": "v2-followup",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/v2-followup/runs/mature-oazis-ni-902381047-telemetry-v2-vs-telemetry-v1-gpuoff-w8192/measurements.jsonl",
+      "sha256": "da17e36f83fbebeb72e400af3564f5bf9ccb5c06164e83e0d03517a126567fcf",
+      "source_bytes": 610055,
+      "rows": 8
+    },
+    {
+      "cohort": "v2-followup",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/v2-followup/runs/mature-oazis-ni-902381047-telemetry-v2-vs-telemetry-v1-gpuon-w8192/measurements.jsonl",
+      "sha256": "670db55122d042d900bf5833889dae4d832559739c211c9a08d7124504676322",
+      "source_bytes": 610736,
+      "rows": 8
+    },
+    {
+      "cohort": "v2-followup",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/v2-followup/runs/mature-playground-ni-164298751-snapshot-v2-vs-baseline-gpuoff-w4096/measurements.jsonl",
+      "sha256": "eea34f33b1513721f5c7e86a81992980e5e9acc141676d7e4c37a133c2078536",
+      "source_bytes": 354011,
+      "rows": 8
+    },
+    {
+      "cohort": "v2-followup",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/v2-followup/runs/mature-playground-ni-164298751-snapshot-v2-vs-baseline-gpuoff-w8192/measurements.jsonl",
+      "sha256": "2d702174198734fc70bfb3b1a5dee1eee2ca67effeb6b214706ce8800e576877",
+      "source_bytes": 367395,
+      "rows": 8
+    },
+    {
+      "cohort": "v2-followup",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/v2-followup/runs/mature-playground-ni-164298751-snapshot-v2-vs-baseline-gpuon-w4096/measurements.jsonl",
+      "sha256": "c14e49d1278f4dd9c67e1722d45887ad89f07037475075f4a38649f48d6b6cfb",
+      "source_bytes": 354558,
+      "rows": 8
+    },
+    {
+      "cohort": "v2-followup",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/v2-followup/runs/mature-playground-ni-164298751-snapshot-v2-vs-baseline-gpuon-w8192/measurements.jsonl",
+      "sha256": "6df4eaa6cc476210110471f8623f96b96bbb419a318e85a56a0d405322415f88",
+      "source_bytes": 367912,
+      "rows": 8
+    },
+    {
+      "cohort": "v2-followup",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/v2-followup/runs/mature-playground-ni-164298751-snapshot-v2-vs-snapshot-v1-gpuoff-w8192/measurements.jsonl",
+      "sha256": "154a4d7a6914bc3596d6d0d1f8fe7aced1f6dac9d54ebc040058f61adeb77b06",
+      "source_bytes": 367490,
+      "rows": 8
+    },
+    {
+      "cohort": "v2-followup",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/v2-followup/runs/mature-playground-ni-164298751-snapshot-v2-vs-snapshot-v1-gpuon-w8192/measurements.jsonl",
+      "sha256": "47e2de19631a06b22107e8d23d89c50f2c493d3dedb9988f620e9324061ae3a9",
+      "source_bytes": 368032,
+      "rows": 8
+    },
+    {
+      "cohort": "v2-followup",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/v2-followup/runs/mature-playground-ni-164298751-telemetry-v2-vs-baseline-gpuoff-w4096/measurements.jsonl",
+      "sha256": "33f01b6eb6d68a01dcd5453bc1caec8922ef366c684fcbbc03634cbd5e64ca47",
+      "source_bytes": 354040,
+      "rows": 8
+    },
+    {
+      "cohort": "v2-followup",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/v2-followup/runs/mature-playground-ni-164298751-telemetry-v2-vs-baseline-gpuoff-w8192/measurements.jsonl",
+      "sha256": "4aedd02edef1907045ce42d02ad329c96ff1be9ed2418fdb2e21924f10d6846d",
+      "source_bytes": 367386,
+      "rows": 8
+    },
+    {
+      "cohort": "v2-followup",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/v2-followup/runs/mature-playground-ni-164298751-telemetry-v2-vs-baseline-gpuon-w4096/measurements.jsonl",
+      "sha256": "1784f1a55855505fbbd5ce3d901819282565f8d9f1e5d1d44b89a357481b96b5",
+      "source_bytes": 354522,
+      "rows": 8
+    },
+    {
+      "cohort": "v2-followup",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/v2-followup/runs/mature-playground-ni-164298751-telemetry-v2-vs-baseline-gpuon-w8192/measurements.jsonl",
+      "sha256": "bc20c53eb9890e440f695747868198cdf58519ba716bb53e9fe58dcdbd368cb3",
+      "source_bytes": 367958,
+      "rows": 8
+    },
+    {
+      "cohort": "v2-followup",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/v2-followup/runs/mature-playground-ni-164298751-telemetry-v2-vs-telemetry-v1-gpuoff-w8192/measurements.jsonl",
+      "sha256": "fa988865e78624aa9e6c9a26d8290c2a1c002689b6a468c6216dfb356a2c50c2",
+      "source_bytes": 367581,
+      "rows": 8
+    },
+    {
+      "cohort": "v2-followup",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/v2-followup/runs/mature-playground-ni-164298751-telemetry-v2-vs-telemetry-v1-gpuon-w8192/measurements.jsonl",
+      "sha256": "548b23ff9487752a6c2045b32ddd24032005aa5829988bd99fa5bc0cc2385f0f",
+      "source_bytes": 368097,
+      "rows": 8
+    },
+    {
+      "cohort": "v2-followup",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/v2-followup/runs/mature-playground-ni-902381047-snapshot-v2-vs-baseline-gpuoff-w4096/measurements.jsonl",
+      "sha256": "fbe383caad5c8fb8493c80b84afc75a35c62dfd790b5937671ce3e463c5c52fb",
+      "source_bytes": 354518,
+      "rows": 8
+    },
+    {
+      "cohort": "v2-followup",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/v2-followup/runs/mature-playground-ni-902381047-snapshot-v2-vs-baseline-gpuoff-w8192/measurements.jsonl",
+      "sha256": "2a9cd943f50e8f88ae6a0ab496a50f985a365df20cd3801793f4d29663f745f4",
+      "source_bytes": 366944,
+      "rows": 8
+    },
+    {
+      "cohort": "v2-followup",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/v2-followup/runs/mature-playground-ni-902381047-snapshot-v2-vs-baseline-gpuon-w4096/measurements.jsonl",
+      "sha256": "e2ab7807a1970e15105a56d2d1dbe683f545d18f6a9d104bb652f02e197e52b2",
+      "source_bytes": 355048,
+      "rows": 8
+    },
+    {
+      "cohort": "v2-followup",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/v2-followup/runs/mature-playground-ni-902381047-snapshot-v2-vs-baseline-gpuon-w8192/measurements.jsonl",
+      "sha256": "8db38f416f7461d347eba771b7fbe3a304c18a0d065311523e4b8b4c7a63dac4",
+      "source_bytes": 367572,
+      "rows": 8
+    },
+    {
+      "cohort": "v2-followup",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/v2-followup/runs/mature-playground-ni-902381047-snapshot-v2-vs-snapshot-v1-gpuoff-w8192/measurements.jsonl",
+      "sha256": "0e80f7483b2482a8520ee0b8456ed97cd3cc015e8755238b2e5c173cc0eb5b04",
+      "source_bytes": 366984,
+      "rows": 8
+    },
+    {
+      "cohort": "v2-followup",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/v2-followup/runs/mature-playground-ni-902381047-snapshot-v2-vs-snapshot-v1-gpuon-w8192/measurements.jsonl",
+      "sha256": "ad7c617f0c20be142f95c23881301bb74aa5a0455340e82738936473e0c09fef",
+      "source_bytes": 367580,
+      "rows": 8
+    },
+    {
+      "cohort": "v2-followup",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/v2-followup/runs/mature-playground-ni-902381047-telemetry-v2-vs-baseline-gpuoff-w4096/measurements.jsonl",
+      "sha256": "e3528f27bc477c3662a8655d8990ac8ffea3fb225ccf4eb9d699ef1f594e5aca",
+      "source_bytes": 354458,
+      "rows": 8
+    },
+    {
+      "cohort": "v2-followup",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/v2-followup/runs/mature-playground-ni-902381047-telemetry-v2-vs-baseline-gpuoff-w8192/measurements.jsonl",
+      "sha256": "1393ae57df6e643411738d4328ce7c4fee6b25a0a64f12f1303d98b1c2b4db51",
+      "source_bytes": 366905,
+      "rows": 8
+    },
+    {
+      "cohort": "v2-followup",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/v2-followup/runs/mature-playground-ni-902381047-telemetry-v2-vs-baseline-gpuon-w4096/measurements.jsonl",
+      "sha256": "1752ec147a2693e0655113d7e3df2a0ddfeec9eaea63c8876252c041e717b0a9",
+      "source_bytes": 355060,
+      "rows": 8
+    },
+    {
+      "cohort": "v2-followup",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/v2-followup/runs/mature-playground-ni-902381047-telemetry-v2-vs-baseline-gpuon-w8192/measurements.jsonl",
+      "sha256": "7d7c8e852b905be82dc3b6b04de44db6e13f888ae0db9f295e7fbcda49005e4d",
+      "source_bytes": 367488,
+      "rows": 8
+    },
+    {
+      "cohort": "v2-followup",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/v2-followup/runs/mature-playground-ni-902381047-telemetry-v2-vs-telemetry-v1-gpuoff-w8192/measurements.jsonl",
+      "sha256": "84d3400cbaa429148967cb6d41bd52c547485e09e5943d62dbf0ca4989a0f4ea",
+      "source_bytes": 367121,
+      "rows": 8
+    },
+    {
+      "cohort": "v2-followup",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/v2-followup/runs/mature-playground-ni-902381047-telemetry-v2-vs-telemetry-v1-gpuon-w8192/measurements.jsonl",
+      "sha256": "4dd24e808f59c12529b342f489a986b96bcafd33151f12a67c59bd97f71d913e",
+      "source_bytes": 367687,
+      "rows": 8
+    },
+    {
+      "cohort": "fresh-telemetry",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/telemetry-replication/runs/isles-mixed-164298751-telemetry-v2/measurements.jsonl",
+      "sha256": "681ab5714178531d5285e00cb378e28b36c449d7a16ed38ea3b78e6acb146b33",
+      "source_bytes": 676305,
+      "rows": 8
+    },
+    {
+      "cohort": "fresh-telemetry",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/telemetry-replication/runs/isles-mixed-902381047-telemetry-v2/measurements.jsonl",
+      "sha256": "c7af8d85845ab9b4298944e1f96821f84fa4e2613b0e9c717077b1ca36da825c",
+      "source_bytes": 676327,
+      "rows": 8
+    },
+    {
+      "cohort": "fresh-telemetry",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/telemetry-replication/runs/large-mixed-164298751-telemetry-v1/measurements.jsonl",
+      "sha256": "089aed82a2c77916e4b053c587e6485926a74d9a8f9cf7c4939df878e5ea8388",
+      "source_bytes": 672536,
+      "rows": 14
+    },
+    {
+      "cohort": "fresh-telemetry",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/telemetry-replication/runs/large-mixed-164298751-telemetry-v2/measurements.jsonl",
+      "sha256": "94c84f5b8da5490d691c1283d1fe8b78bbaafb708ac547917f4f2e1766f1d47e",
+      "source_bytes": 672561,
+      "rows": 14
+    },
+    {
+      "cohort": "fresh-telemetry",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/telemetry-replication/runs/large-mixed-1738462951-telemetry-v1/measurements.jsonl",
+      "sha256": "dea71a4a0efe0a22784985dc46a23af069c877964b1b9cdb2665232e0964cfc7",
+      "source_bytes": 672950,
+      "rows": 14
+    },
+    {
+      "cohort": "fresh-telemetry",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/telemetry-replication/runs/large-mixed-1738462951-telemetry-v2/measurements.jsonl",
+      "sha256": "6726757981bd839d3e5974e4c222d7f042b0d609261aeffe5839500fa5598ac6",
+      "source_bytes": 672911,
+      "rows": 14
+    },
+    {
+      "cohort": "fresh-telemetry",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/telemetry-replication/runs/large-mixed-902381047-telemetry-v1/measurements.jsonl",
+      "sha256": "ef6f64d44a003de58ea028c204af3f1977bbd3a8a425a174a13fdc8163da029f",
+      "source_bytes": 672664,
+      "rows": 14
+    },
+    {
+      "cohort": "fresh-telemetry",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/telemetry-replication/runs/large-mixed-902381047-telemetry-v2/measurements.jsonl",
+      "sha256": "3970c1bd7f1e5d5aa18e1040eed3590920f2096c9df532c34c495e3f884c5394",
+      "source_bytes": 672797,
+      "rows": 14
+    },
+    {
+      "cohort": "fresh-telemetry",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/telemetry-replication/runs/large-ni-164298751-telemetry-v2/measurements.jsonl",
+      "sha256": "f342ceca3fce20404446674dabeee9a7938dd9558af72c23661c1dc1eeac19a7",
+      "source_bytes": 197395,
+      "rows": 8
+    },
+    {
+      "cohort": "fresh-telemetry",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/telemetry-replication/runs/large-ni-902381047-telemetry-v2/measurements.jsonl",
+      "sha256": "3e0a2ead4f545e3381b7e5777d6c71844e85a093ca64b11d01672eae33a7d013",
+      "source_bytes": 197422,
+      "rows": 8
+    },
+    {
+      "cohort": "fresh-telemetry",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/telemetry-replication/runs/oazis-ni-164298751-telemetry-v2/measurements.jsonl",
+      "sha256": "794fe137bd23900b6eda0c147bffa054652e8ddc10904db530ecf8eca5b5f13e",
+      "source_bytes": 371474,
+      "rows": 8
+    },
+    {
+      "cohort": "fresh-telemetry",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/telemetry-replication/runs/oazis-ni-902381047-telemetry-v2/measurements.jsonl",
+      "sha256": "1eb9a34b67a4f44704b4fa2c9096b026669af3284051751fabfb981daa316325",
+      "source_bytes": 372267,
+      "rows": 8
+    },
+    {
+      "cohort": "fresh-telemetry",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/telemetry-replication/runs/playground-ni-164298751-telemetry-v2/measurements.jsonl",
+      "sha256": "7c328644a0d110db13c1ca727415b42e98b5e5340f907e78ea4ef726edeb9a4f",
+      "source_bytes": 339701,
+      "rows": 8
+    },
+    {
+      "cohort": "fresh-telemetry",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/telemetry-replication/runs/playground-ni-902381047-telemetry-v2/measurements.jsonl",
+      "sha256": "dc89906fd3a33e47adcd64c25c5bc098399e2abd8e8178a4b9c9de7838e48bdd",
+      "source_bytes": 341199,
+      "rows": 8
+    },
+    {
+      "cohort": "fresh-telemetry",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/telemetry-replication/runs/rect-cortex-164298751-telemetry-v2/measurements.jsonl",
+      "sha256": "6aeb301a0e842024d59755282d29c3b157c8a3e284775b127b77f6af4f196193",
+      "source_bytes": 160102,
+      "rows": 8
+    },
+    {
+      "cohort": "fresh-telemetry",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/telemetry-replication/runs/rect-cortex-902381047-telemetry-v2/measurements.jsonl",
+      "sha256": "e4a0df4b0607e0daf9035d5e66a5d5f5e512517108caa87f09e4dcda1471be02",
+      "source_bytes": 160158,
+      "rows": 8
+    },
+    {
+      "cohort": "fresh-telemetry",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/telemetry-replication/runs/rect-mixed-164298751-telemetry-v2/measurements.jsonl",
+      "sha256": "c9b9e8a579149eae0452dde0b8c86fc69afb9ecb2005d1c70a9a4a490e80bc60",
+      "source_bytes": 203137,
+      "rows": 8
+    },
+    {
+      "cohort": "fresh-telemetry",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/telemetry-replication/runs/rect-mixed-902381047-telemetry-v2/measurements.jsonl",
+      "sha256": "94fcca982f7cfe044ef0dccb24461e106af883d6b57131b6e4106dbf70010ae9",
+      "source_bytes": 203002,
+      "rows": 8
+    },
+    {
+      "cohort": "fresh-telemetry",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/telemetry-replication/runs/river-cortex-164298751-telemetry-v2/measurements.jsonl",
+      "sha256": "32ae1e98660602e94ef93999b410c3574eb3c0e4927b1f2e3697b89187fe4c97",
+      "source_bytes": 218805,
+      "rows": 8
+    },
+    {
+      "cohort": "fresh-telemetry",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/telemetry-replication/runs/river-cortex-902381047-telemetry-v2/measurements.jsonl",
+      "sha256": "79c0824ae5df32f6385a8e165ff1a3bb530cd55eecebd77d6592f1dbed205774",
+      "source_bytes": 218998,
+      "rows": 8
+    },
+    {
+      "cohort": "fresh-telemetry",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/telemetry-replication/runs/small-ni-164298751-telemetry-v2/measurements.jsonl",
+      "sha256": "e1f48457dc124012d674d7e7494909b4b0f320802ced93769e76a94a90baacdb",
+      "source_bytes": 155602,
+      "rows": 8
+    },
+    {
+      "cohort": "fresh-telemetry",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/telemetry-replication/runs/small-ni-902381047-telemetry-v2/measurements.jsonl",
+      "sha256": "a866a7015be1cfabe7b17cd1fccc6ab0d4771057d4f264f2036a4c21cd4f6559",
+      "source_bytes": 155216,
+      "rows": 8
+    },
+    {
+      "cohort": "fresh-telemetry",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/telemetry-replication/runs/swamp-wide-164298751-telemetry-v2/measurements.jsonl",
+      "sha256": "907e833e9a53cf2d60d25a3aa5dbdb3ff776de74271c441a372b0cbde1fe1f7d",
+      "source_bytes": 203304,
+      "rows": 8
+    },
+    {
+      "cohort": "fresh-telemetry",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/telemetry-replication/runs/swamp-wide-902381047-telemetry-v2/measurements.jsonl",
+      "sha256": "9f2cde7f9dc8d0d9a2623f7bb5695df34eaa7a08d9e780f548912503d8973064",
+      "source_bytes": 203310,
+      "rows": 8
+    },
+    {
+      "cohort": "gpu-sync",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/gpu-sync-campaign/performance/initial-large-mixed-164298751-t3-gpuon-end4096/measurements.jsonl",
+      "sha256": "be94f2a16d9685f90067f84fc58f09da6b19697e183759c3ddddcbc152dd4911",
+      "source_bytes": 386785,
+      "rows": 8
+    },
+    {
+      "cohort": "gpu-sync",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/gpu-sync-campaign/performance/initial-large-mixed-902381047-t3-gpuon-end4096/measurements.jsonl",
+      "sha256": "0be685b9fcec9695a875e7609bfdc1b7d90fac6623c7aa81ba34e8efd7471357",
+      "source_bytes": 386956,
+      "rows": 8
+    },
+    {
+      "cohort": "gpu-sync",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/gpu-sync-campaign/performance/initial-large-ni-164298751-t3-gpuon-end4096/measurements.jsonl",
+      "sha256": "d47dbfa4018d601eb2aa7e5934b1bba9bf8e854774edb0827d36025a14540adc",
+      "source_bytes": 199919,
+      "rows": 8
+    },
+    {
+      "cohort": "gpu-sync",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/gpu-sync-campaign/performance/initial-large-ni-902381047-t3-gpuon-end4096/measurements.jsonl",
+      "sha256": "81a6e1bdd9157828b9ad16d0560eb0a8ac27cd12b49cae82052de28879ef4835",
+      "source_bytes": 199981,
+      "rows": 8
+    },
+    {
+      "cohort": "gpu-sync",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/gpu-sync-campaign/performance/initial-oazis-ni-164298751-t3-gpuon-end8192/measurements.jsonl",
+      "sha256": "db9323a00ff7b35de55416d17624bd81647641afea4b6455571d6011578a1b7f",
+      "source_bytes": 373950,
+      "rows": 8
+    },
+    {
+      "cohort": "gpu-sync",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/gpu-sync-campaign/performance/initial-oazis-ni-902381047-t3-gpuon-end8192/measurements.jsonl",
+      "sha256": "343a8f6a108e99e126a95a42aa0d35f383e8c89d679a9ab42d9bcb8271f059b8",
+      "source_bytes": 374729,
+      "rows": 8
+    },
+    {
+      "cohort": "gpu-sync",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/gpu-sync-campaign/performance/initial-playground-ni-164298751-t3-gpuon-end20000/measurements.jsonl",
+      "sha256": "b005bb3807baccc90558d8523460158a13c934f3edb674e6267ccb8bb233a3ca",
+      "source_bytes": 342325,
+      "rows": 8
+    },
+    {
+      "cohort": "gpu-sync",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/gpu-sync-campaign/performance/initial-playground-ni-902381047-t3-gpuon-end20000/measurements.jsonl",
+      "sha256": "6eab8252cece3e926eb5bb04fbf02374fe37305553ed570014fc9e4b3adce46c",
+      "source_bytes": 343748,
+      "rows": 8
+    },
+    {
+      "cohort": "gpu-sync",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/gpu-sync-campaign/performance/initial-small-ni-164298751-t3-gpuon-end8192/measurements.jsonl",
+      "sha256": "acd6167283237011af6bbb2b5138771322b499a0a8748eab0cdc437db4bc4b6f",
+      "source_bytes": 158191,
+      "rows": 8
+    },
+    {
+      "cohort": "gpu-sync",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/gpu-sync-campaign/performance/initial-small-ni-902381047-t3-gpuon-end8192/measurements.jsonl",
+      "sha256": "36c7cfbef6363f64d3aec582ae12ca97fa5bf7e6eb03166ce1881ed3617bb6b8",
+      "source_bytes": 157837,
+      "rows": 8
+    },
+    {
+      "cohort": "gpu-sync",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/gpu-sync-campaign/performance/mature-oazis-ni-164298751-t3-gpuon-end58192/measurements.jsonl",
+      "sha256": "86666350779b284f2eec238af517b6c683f64485218845cbb84dfcdabe0d8267",
+      "source_bytes": 616803,
+      "rows": 8
+    },
+    {
+      "cohort": "gpu-sync",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/gpu-sync-campaign/performance/mature-oazis-ni-902381047-t3-gpuon-end58192/measurements.jsonl",
+      "sha256": "37a0eed55217c6ab615c9ef53c7e6efc11eca4c0aeed223fe35d6af4102aaabe",
+      "source_bytes": 611618,
+      "rows": 8
+    },
+    {
+      "cohort": "gpu-sync",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/gpu-sync-campaign/performance/mature-playground-ni-164298751-t3-gpuon-end28192/measurements.jsonl",
+      "sha256": "d70d31206f14258456c6bb1f44fb9088425b6c21ed81363ebd206f5bfa729cd1",
+      "source_bytes": 369081,
+      "rows": 8
+    },
+    {
+      "cohort": "gpu-sync",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/gpu-sync-campaign/performance/mature-playground-ni-902381047-t3-gpuon-end28192/measurements.jsonl",
+      "sha256": "8619cc1ea98b0d1b87ed956d9efcbe64501d3f8a3c5c2560e55f859d45a4b900",
+      "source_bytes": 368641,
+      "rows": 8
+    },
+    {
+      "cohort": "gpu-recovery",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/gpu-recovery-campaign/performance/initial-isles-mixed-164298751-t3-gpuon-end8192/measurements.jsonl",
+      "sha256": "f261ab3b693515578af3c9913def2191d98f66ae731b7807058a8302cec9eddb",
+      "source_bytes": 680286,
+      "rows": 8
+    },
+    {
+      "cohort": "gpu-recovery",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/gpu-recovery-campaign/performance/initial-isles-mixed-902381047-t3-gpuon-end8192/measurements.jsonl",
+      "sha256": "52e4ec4eb6845996b305d4842416042ae0256a21e765021d83234fea9b9e0956",
+      "source_bytes": 680396,
+      "rows": 8
+    },
+    {
+      "cohort": "gpu-recovery",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/gpu-recovery-campaign/performance/initial-large-mixed-164298751-t3-gpuoff-end4096/measurements.jsonl",
+      "sha256": "d4f034240fb972910411d78ce6caab422e98a08c5dd1e65bc0c759a0cbe03bb0",
+      "source_bytes": 387568,
+      "rows": 8
+    },
+    {
+      "cohort": "gpu-recovery",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/gpu-recovery-campaign/performance/initial-large-mixed-164298751-t3-gpuon-end4096/measurements.jsonl",
+      "sha256": "569cecd00495ff1f1dc5bed83952bb550ea2f9bf4dc1df6eed30fb504520758d",
+      "source_bytes": 388331,
+      "rows": 8
+    },
+    {
+      "cohort": "gpu-recovery",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/gpu-recovery-campaign/performance/initial-large-mixed-1738462951-t3-gpuon-end4096/measurements.jsonl",
+      "sha256": "c018571658b9250862f765b40ab623937b758aed249331af8db5bbf9abac5ca2",
+      "source_bytes": 388448,
+      "rows": 8
+    },
+    {
+      "cohort": "gpu-recovery",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/gpu-recovery-campaign/performance/initial-large-mixed-902381047-t3-gpuoff-end4096/measurements.jsonl",
+      "sha256": "ae718366aec5542b97a4df4673400083a921ae0f559c0690a9fd9d5453785bda",
+      "source_bytes": 387736,
+      "rows": 8
+    },
+    {
+      "cohort": "gpu-recovery",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/gpu-recovery-campaign/performance/initial-large-mixed-902381047-t3-gpuon-end4096/measurements.jsonl",
+      "sha256": "db57162e25cb7e57c54618475856b25fb9a07f455d73c0dd3d2558841d44b4ea",
+      "source_bytes": 388401,
+      "rows": 8
+    },
+    {
+      "cohort": "gpu-recovery",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/gpu-recovery-campaign/performance/initial-large-ni-164298751-t3-gpuoff-end4096/measurements.jsonl",
+      "sha256": "617da56c8b5891cdd6327410df3a8e125fde233cb6ed9ca6c13aaa7178258167",
+      "source_bytes": 200736,
+      "rows": 8
+    },
+    {
+      "cohort": "gpu-recovery",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/gpu-recovery-campaign/performance/initial-large-ni-164298751-t3-gpuon-end4096/measurements.jsonl",
+      "sha256": "c8b06d23c1246bfc9fc45c23c7757301b21f58a2fa3813c31ae1466defda33f0",
+      "source_bytes": 201291,
+      "rows": 8
+    },
+    {
+      "cohort": "gpu-recovery",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/gpu-recovery-campaign/performance/initial-large-ni-902381047-t3-gpuoff-end4096/measurements.jsonl",
+      "sha256": "00c447ea5a4e9e2cffcc7c12b4db046f40d6ad9823fbfdb55ac0059a88528829",
+      "source_bytes": 200675,
+      "rows": 8
+    },
+    {
+      "cohort": "gpu-recovery",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/gpu-recovery-campaign/performance/initial-large-ni-902381047-t3-gpuon-end4096/measurements.jsonl",
+      "sha256": "e5c2ed3db09e4572908cc4d25ebd622cfcc766754c43cb7c1d6e270997611238",
+      "source_bytes": 201427,
+      "rows": 8
+    },
+    {
+      "cohort": "gpu-recovery",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/gpu-recovery-campaign/performance/initial-oazis-ni-164298751-t3-gpuoff-end8192/measurements.jsonl",
+      "sha256": "d183744dc3762cc9905754b44e5b7574800a0b937e2dff7b8032fe09042be98a",
+      "source_bytes": 374662,
+      "rows": 8
+    },
+    {
+      "cohort": "gpu-recovery",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/gpu-recovery-campaign/performance/initial-oazis-ni-164298751-t3-gpuon-end8192/measurements.jsonl",
+      "sha256": "05b643572de7e618de4c3e5ef8245e29a08b4485b4ec176447f33b77fee749f7",
+      "source_bytes": 375436,
+      "rows": 8
+    },
+    {
+      "cohort": "gpu-recovery",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/gpu-recovery-campaign/performance/initial-oazis-ni-902381047-t3-gpuoff-end8192/measurements.jsonl",
+      "sha256": "8cb9d52dac2b940a67c214b1cf1af649a933b7edf23fa045f6c199cdbcc7864c",
+      "source_bytes": 375530,
+      "rows": 8
+    },
+    {
+      "cohort": "gpu-recovery",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/gpu-recovery-campaign/performance/initial-oazis-ni-902381047-t3-gpuon-end8192/measurements.jsonl",
+      "sha256": "2d0df44cf82322b1d48ad783b1edb10989da8f7b948d88589201de8a71d60823",
+      "source_bytes": 376247,
+      "rows": 8
+    },
+    {
+      "cohort": "gpu-recovery",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/gpu-recovery-campaign/performance/initial-playground-ni-164298751-t3-gpuoff-end20000/measurements.jsonl",
+      "sha256": "27da8d33a6afa808abbffbdc9f6111d3ecfa5f12480b9c2680d7095c2dfb28e0",
+      "source_bytes": 343023,
+      "rows": 8
+    },
+    {
+      "cohort": "gpu-recovery",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/gpu-recovery-campaign/performance/initial-playground-ni-164298751-t3-gpuon-end20000/measurements.jsonl",
+      "sha256": "ba0afc24e465e5661d74c644e7c0b0217e8f1988a61e674a1b4e709c018d06c2",
+      "source_bytes": 343709,
+      "rows": 8
+    },
+    {
+      "cohort": "gpu-recovery",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/gpu-recovery-campaign/performance/initial-playground-ni-902381047-t3-gpuoff-end20000/measurements.jsonl",
+      "sha256": "feb9cb268d58d1d5df7edc9bb3cbefae006b6515fa482fa7811275728657cae8",
+      "source_bytes": 344428,
+      "rows": 8
+    },
+    {
+      "cohort": "gpu-recovery",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/gpu-recovery-campaign/performance/initial-playground-ni-902381047-t3-gpuon-end20000/measurements.jsonl",
+      "sha256": "87159effa966ce1d659d30f507fbad42e1918142b47724df89faff6ef3a003b7",
+      "source_bytes": 345206,
+      "rows": 8
+    },
+    {
+      "cohort": "gpu-recovery",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/gpu-recovery-campaign/performance/initial-rect-cortex-164298751-t3-gpuon-end8192/measurements.jsonl",
+      "sha256": "dbed5aece1afab07b54e1b7a4d7ff4b45c996615d917448bc8356d4dbae91336",
+      "source_bytes": 164113,
+      "rows": 8
+    },
+    {
+      "cohort": "gpu-recovery",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/gpu-recovery-campaign/performance/initial-rect-cortex-902381047-t3-gpuon-end8192/measurements.jsonl",
+      "sha256": "8f5eb27d974f587be62d3a02c5569ec0f22390ab9b7245b849d6d68e8ecb7eae",
+      "source_bytes": 164116,
+      "rows": 8
+    },
+    {
+      "cohort": "gpu-recovery",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/gpu-recovery-campaign/performance/initial-rect-mixed-164298751-t3-gpuon-end8192/measurements.jsonl",
+      "sha256": "0ac7df9efba8993564b526c28be9a9c547cadf619909b0b653451279ef2051ff",
+      "source_bytes": 207173,
+      "rows": 8
+    },
+    {
+      "cohort": "gpu-recovery",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/gpu-recovery-campaign/performance/initial-rect-mixed-902381047-t3-gpuon-end8192/measurements.jsonl",
+      "sha256": "5528c3d0a446750aa152aca1473c9bc5ae12d324fadec211986ada85f07a52e1",
+      "source_bytes": 207037,
+      "rows": 8
+    },
+    {
+      "cohort": "gpu-recovery",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/gpu-recovery-campaign/performance/initial-river-cortex-164298751-t3-gpuon-end8192/measurements.jsonl",
+      "sha256": "efe46597d693cdb795bd5c7752a6c47869c76e8a6427e7420ab5b6c039159e00",
+      "source_bytes": 222865,
+      "rows": 8
+    },
+    {
+      "cohort": "gpu-recovery",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/gpu-recovery-campaign/performance/initial-river-cortex-902381047-t3-gpuon-end8192/measurements.jsonl",
+      "sha256": "555a59f1991cf0bcc575f862c2bece7e9c64059cd4f238d3673d8c22531b631a",
+      "source_bytes": 222958,
+      "rows": 8
+    },
+    {
+      "cohort": "gpu-recovery",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/gpu-recovery-campaign/performance/initial-small-ni-164298751-t3-gpuoff-end8192/measurements.jsonl",
+      "sha256": "7ed10d03bda9d404e36c2f841e3fd7470a589df74204fa0b31a11b7d0e049d31",
+      "source_bytes": 158870,
+      "rows": 8
+    },
+    {
+      "cohort": "gpu-recovery",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/gpu-recovery-campaign/performance/initial-small-ni-164298751-t3-gpuon-end8192/measurements.jsonl",
+      "sha256": "0ee2bdfa50a573cbcbd66a59b09b54576337e896f581e399ba831adc572ac465",
+      "source_bytes": 159492,
+      "rows": 8
+    },
+    {
+      "cohort": "gpu-recovery",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/gpu-recovery-campaign/performance/initial-small-ni-902381047-t3-gpuoff-end8192/measurements.jsonl",
+      "sha256": "9fb48abae8ca498aa29e2c2fd02f8546d58a71e90c6a828c3827deaef664bf8d",
+      "source_bytes": 158591,
+      "rows": 8
+    },
+    {
+      "cohort": "gpu-recovery",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/gpu-recovery-campaign/performance/initial-small-ni-902381047-t3-gpuon-end8192/measurements.jsonl",
+      "sha256": "9ad98e5c616a2f1d1da80433c493c6b19fda5818b398f2381c087f22c96305b6",
+      "source_bytes": 159258,
+      "rows": 8
+    },
+    {
+      "cohort": "gpu-recovery",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/gpu-recovery-campaign/performance/initial-swamp-wide-164298751-t3-gpuon-end8192/measurements.jsonl",
+      "sha256": "3e43f9e5e2c96618c9c5bf3cc416cd0ac24d92cd3ddb521ecba81b2c5baf5269",
+      "source_bytes": 207154,
+      "rows": 8
+    },
+    {
+      "cohort": "gpu-recovery",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/gpu-recovery-campaign/performance/initial-swamp-wide-902381047-t3-gpuon-end8192/measurements.jsonl",
+      "sha256": "04acd20f8d903fb52792d21b6a2f8a3f451eca33237ccdd5d68eff71b8256f72",
+      "source_bytes": 207320,
+      "rows": 8
+    },
+    {
+      "cohort": "gpu-recovery",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/gpu-recovery-campaign/performance/mature-oazis-ni-164298751-t3-gpuon-end54096/measurements.jsonl",
+      "sha256": "cad9625042110220b0dc365c9d42f8fa35e961e780497600bf9702b13fd04e94",
+      "source_bytes": 600343,
+      "rows": 8
+    },
+    {
+      "cohort": "gpu-recovery",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/gpu-recovery-campaign/performance/mature-oazis-ni-164298751-t3-gpuon-end58192/measurements.jsonl",
+      "sha256": "e4de52eb4e37be3aba3bcd294f017a60ab49d393245a03e3f4cd5c11cb36cc58",
+      "source_bytes": 618131,
+      "rows": 8
+    },
+    {
+      "cohort": "gpu-recovery",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/gpu-recovery-campaign/performance/mature-oazis-ni-902381047-t3-gpuon-end54096/measurements.jsonl",
+      "sha256": "fcf1db7a31c71fc7004b8bacab8b93ab9edbd45ca55e338f6a6f7140e86ab891",
+      "source_bytes": 594749,
+      "rows": 8
+    },
+    {
+      "cohort": "gpu-recovery",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/gpu-recovery-campaign/performance/mature-oazis-ni-902381047-t3-gpuon-end58192/measurements.jsonl",
+      "sha256": "45f1ed3db711579126e955c6ef1df717f42b56404df73a0b314160df57814d04",
+      "source_bytes": 613047,
+      "rows": 8
+    },
+    {
+      "cohort": "gpu-recovery",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/gpu-recovery-campaign/performance/mature-playground-ni-164298751-t3-gpuon-end24096/measurements.jsonl",
+      "sha256": "fc82199bf94d389eb7acdeeeee03873e9d3fa6a624f3a91776c8b9b7b8acdddf",
+      "source_bytes": 357054,
+      "rows": 8
+    },
+    {
+      "cohort": "gpu-recovery",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/gpu-recovery-campaign/performance/mature-playground-ni-164298751-t3-gpuon-end28192/measurements.jsonl",
+      "sha256": "eb3f604dbab6c6eafe354db47705904d9003728d7d4196d38e31dfa26bce5005",
+      "source_bytes": 370562,
+      "rows": 8
+    },
+    {
+      "cohort": "gpu-recovery",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/gpu-recovery-campaign/performance/mature-playground-ni-902381047-t3-gpuon-end24096/measurements.jsonl",
+      "sha256": "90722c1d2edccdb8b5267be3c994de68fec398a91381efff5635c7cebb30e9ad",
+      "source_bytes": 357593,
+      "rows": 8
+    },
+    {
+      "cohort": "gpu-recovery",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/gpu-recovery-campaign/performance/mature-playground-ni-902381047-t3-gpuon-end28192/measurements.jsonl",
+      "sha256": "0e8980cd6a6118ed8a5d289e7fcb629f435684741222f21b602bec0e48bf76e4",
+      "source_bytes": 370025,
+      "rows": 8
+    },
+    {
+      "cohort": "final-fixed3",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/final-combined-performance-v3/performance/isles-mixed-164298751-final-combined/measurements.jsonl",
+      "sha256": "fb66a2ce582ea70d171b528708809992f65b4928bc9851e5e6f991345009cf03",
+      "source_bytes": 677641,
+      "rows": 8
+    },
+    {
+      "cohort": "final-fixed3",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/final-combined-performance-v3/performance/isles-mixed-902381047-final-combined/measurements.jsonl",
+      "sha256": "f430bc1dc9390d36b77d98a8d2a97e236c7eb9d76b07d9f32bbe7198cc830f4d",
+      "source_bytes": 677719,
+      "rows": 8
+    },
+    {
+      "cohort": "final-fixed3",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/final-combined-performance-v3/performance/large-mixed-164298751-final-combined/measurements.jsonl",
+      "sha256": "4f414b44a5302a28736aad2086d4f48c0bfabac5c99ce92906174bad5c4eb5ee",
+      "source_bytes": 674939,
+      "rows": 14
+    },
+    {
+      "cohort": "final-fixed3",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/final-combined-performance-v3/performance/large-mixed-1738462951-final-combined/measurements.jsonl",
+      "sha256": "68ec06c15599bafb5b5e50261983e9e80e18077fe2a054a5d75bbf0d882f15e0",
+      "source_bytes": 675282,
+      "rows": 14
+    },
+    {
+      "cohort": "final-fixed3",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/final-combined-performance-v3/performance/large-mixed-902381047-final-combined/measurements.jsonl",
+      "sha256": "68931fbc9025cb8537ba8c3957babd934f143378ef23312cb18c14bd4e049882",
+      "source_bytes": 675092,
+      "rows": 14
+    },
+    {
+      "cohort": "final-fixed3",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/final-combined-performance-v3/performance/large-ni-164298751-final-combined/measurements.jsonl",
+      "sha256": "c684170046ce00515d5fccf9cc253eaf4c4fab451e63f8fd8b72404278e97524",
+      "source_bytes": 198683,
+      "rows": 8
+    },
+    {
+      "cohort": "final-fixed3",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/final-combined-performance-v3/performance/large-ni-902381047-final-combined/measurements.jsonl",
+      "sha256": "b845d3bf2882d8fe0b6b0080f93ecb700b30fb46cb1b73226b0671cab0ab0f5f",
+      "source_bytes": 198735,
+      "rows": 8
+    },
+    {
+      "cohort": "final-fixed3",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/final-combined-performance-v3/performance/oazis-ni-164298751-final-combined/measurements.jsonl",
+      "sha256": "587ad153c16b571480eb465df88611ec14ea82a76fbabcb0209955e2b0bed628",
+      "source_bytes": 372702,
+      "rows": 8
+    },
+    {
+      "cohort": "final-fixed3",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/final-combined-performance-v3/performance/oazis-ni-902381047-final-combined/measurements.jsonl",
+      "sha256": "5075900ae02e63c04f9195c47e4e6d92f0a669a9ef37bd58b487d20da19e503a",
+      "source_bytes": 373487,
+      "rows": 8
+    },
+    {
+      "cohort": "final-fixed3",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/final-combined-performance-v3/performance/playground-ni-164298751-final-combined/measurements.jsonl",
+      "sha256": "651cd6e7c87006b1e07a45b376f0b70af31d276936f3d650ad84d1e6fb14ce96",
+      "source_bytes": 341115,
+      "rows": 8
+    },
+    {
+      "cohort": "final-fixed3",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/final-combined-performance-v3/performance/playground-ni-902381047-final-combined/measurements.jsonl",
+      "sha256": "497a152bc1fba3e69f4725719f96c94090d927f0424e27746fec80c85ef228a8",
+      "source_bytes": 342436,
+      "rows": 8
+    },
+    {
+      "cohort": "final-fixed3",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/final-combined-performance-v3/performance/rect-cortex-164298751-final-combined/measurements.jsonl",
+      "sha256": "ed09a3b3855047e52c48fa23d71fde90aa65c3d2678b34b338adf70ae38c8b52",
+      "source_bytes": 161452,
+      "rows": 8
+    },
+    {
+      "cohort": "final-fixed3",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/final-combined-performance-v3/performance/rect-cortex-902381047-final-combined/measurements.jsonl",
+      "sha256": "216b2ed52fc2e083ba79197bf1220f4b1b814e1c259cccb51667294d79fc5485",
+      "source_bytes": 161575,
+      "rows": 8
+    },
+    {
+      "cohort": "final-fixed3",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/final-combined-performance-v3/performance/rect-mixed-164298751-final-combined/measurements.jsonl",
+      "sha256": "7913b4c74217c2ec2e92e91baf5c8bdc9179b67ce6fbf48d526139c4ddb9c6e3",
+      "source_bytes": 204511,
+      "rows": 8
+    },
+    {
+      "cohort": "final-fixed3",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/final-combined-performance-v3/performance/rect-mixed-902381047-final-combined/measurements.jsonl",
+      "sha256": "320e7b4564fcd51abb6f40a190d7ad6d87f015335d694096dd298eebeb171578",
+      "source_bytes": 204356,
+      "rows": 8
+    },
+    {
+      "cohort": "final-fixed3",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/final-combined-performance-v3/performance/river-cortex-164298751-final-combined/measurements.jsonl",
+      "sha256": "1a93cf345c5c9f487dfd3ad6815d07646cd0d74faf7396e19d6e19e6241d9a65",
+      "source_bytes": 220272,
+      "rows": 8
+    },
+    {
+      "cohort": "final-fixed3",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/final-combined-performance-v3/performance/river-cortex-902381047-final-combined/measurements.jsonl",
+      "sha256": "84fd1b7cc16014f9544532308584b712c6caa12a161d6cc4eae085bb74d72bbd",
+      "source_bytes": 220339,
+      "rows": 8
+    },
+    {
+      "cohort": "final-fixed3",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/final-combined-performance-v3/performance/small-ni-164298751-final-combined/measurements.jsonl",
+      "sha256": "baac5ad9807527b91bc140986cced46bfd174948d68d2f8ea79e71297b3930e0",
+      "source_bytes": 156845,
+      "rows": 8
+    },
+    {
+      "cohort": "final-fixed3",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/final-combined-performance-v3/performance/small-ni-902381047-final-combined/measurements.jsonl",
+      "sha256": "5995ebe3b5d8987fb21eb44bdf9c9bdd71af7212ad443979946ddff62a9b4b99",
+      "source_bytes": 156725,
+      "rows": 8
+    },
+    {
+      "cohort": "final-fixed3",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/final-combined-performance-v3/performance/swamp-wide-164298751-final-combined/measurements.jsonl",
+      "sha256": "a1657223e7fad64860a33b167da3d35cf990041f7d3ba0024faf4df6ee4462fb",
+      "source_bytes": 204563,
+      "rows": 8
+    },
+    {
+      "cohort": "final-fixed3",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/final-combined-performance-v3/performance/swamp-wide-902381047-final-combined/measurements.jsonl",
+      "sha256": "5c173cb131ab79ea12fe4ff9748bec219055425e7c3f2b1a56ea96a7f2813284",
+      "source_bytes": 204696,
+      "rows": 8
+    },
+    {
+      "cohort": "final-natural-winner",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/final-full-natural/native/holdout-comb-164298751-baseline/measurement.json",
+      "sha256": "776558466044d0eb1c649a311548e2f9f1499246c77165b745e4af0732eb8e29",
+      "source_bytes": 177089,
+      "rows": 1
+    },
+    {
+      "cohort": "final-natural-winner",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/final-full-natural/native/holdout-comb-164298751-final/measurement.json",
+      "sha256": "fe7945cb37daa49c792a4a29239789ee6f1cdef49403f87bfd189320a0456a6e",
+      "source_bytes": 176955,
+      "rows": 1
+    },
+    {
+      "cohort": "final-natural-winner",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/final-full-natural/native/holdout-comb-1738462951-baseline/measurement.json",
+      "sha256": "0c445d87644fad9d78ead25fc1034b0b2c6f7b4a2c881205c5c7b70ed08fdd53",
+      "source_bytes": 184453,
+      "rows": 1
+    },
+    {
+      "cohort": "final-natural-winner",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/final-full-natural/native/holdout-comb-1738462951-final/measurement.json",
+      "sha256": "59ea6b809d5bf8212f50c510ef38e0b0859bd0cd371dfb7ca7b53774e6d7b250",
+      "source_bytes": 184337,
+      "rows": 1
+    },
+    {
+      "cohort": "final-natural-winner",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/final-full-natural/native/holdout-comb-902381047-baseline/measurement.json",
+      "sha256": "c05d8f1ca58c8f5c2a3186b13fbea16e970a4a6d097e6b9d896550e28df74707",
+      "source_bytes": 227437,
+      "rows": 1
+    },
+    {
+      "cohort": "final-natural-winner",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/final-full-natural/native/holdout-comb-902381047-final/measurement.json",
+      "sha256": "86c06e9d99223ba9a43ec8cd417495600d4c185dfac32404b8c0d1d0aac8aede",
+      "source_bytes": 227313,
+      "rows": 1
+    },
+    {
+      "cohort": "final-natural-winner",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/final-full-natural/native/oazis-ni-164298751-baseline/measurement.json",
+      "sha256": "6b622e5c31aab0749c277b6de3a8165b3153faeb4f882543d51afeb52d0f3a35",
+      "source_bytes": 348521,
+      "rows": 1
+    },
+    {
+      "cohort": "final-natural-winner",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/final-full-natural/native/oazis-ni-164298751-final/measurement.json",
+      "sha256": "d7c25af59f972bfb3264329c3a8ae867d8a43566160c7949f119867a18f5d53b",
+      "source_bytes": 348386,
+      "rows": 1
+    },
+    {
+      "cohort": "final-natural-winner",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/final-full-natural/native/oazis-ni-1738462951-baseline/measurement.json",
+      "sha256": "6bee3c4a7f17448dcd29e4585ece866a7e18c7387f631ca540b4564b6460d487",
+      "source_bytes": 551097,
+      "rows": 1
+    },
+    {
+      "cohort": "final-natural-winner",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/final-full-natural/native/oazis-ni-1738462951-final/measurement.json",
+      "sha256": "3bf79b749e04ba01603aa13cf1e7c061b40195350fca6461744128445a2d65ce",
+      "source_bytes": 550984,
+      "rows": 1
+    },
+    {
+      "cohort": "final-natural-winner",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/final-full-natural/native/oazis-ni-902381047-baseline/measurement.json",
+      "sha256": "7781c8e05e0f2da558c17f0939eda4e55acd823f49624c7baf2d0af4261e093e",
+      "source_bytes": 359490,
+      "rows": 1
+    },
+    {
+      "cohort": "final-natural-winner",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/final-full-natural/native/oazis-ni-902381047-final/measurement.json",
+      "sha256": "1cf014460e40be492372122cc9fce1cfbec41e2b0d3cec795503708bef2187c6",
+      "source_bytes": 359364,
+      "rows": 1
+    },
+    {
+      "cohort": "final-natural-winner",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/final-full-natural/native/playground-ni-164298751-baseline/measurement.json",
+      "sha256": "c5669d5a9da74cad302b1e1ed79f97a16db8c128f2d37bc609764ee252dd5c9b",
+      "source_bytes": 196353,
+      "rows": 1
+    },
+    {
+      "cohort": "final-natural-winner",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/final-full-natural/native/playground-ni-164298751-final/measurement.json",
+      "sha256": "f077ae47cf21df87ca54f88f378b7c044699ddc096c8b0f25f8b20cb48b53e5c",
+      "source_bytes": 196215,
+      "rows": 1
+    },
+    {
+      "cohort": "final-natural-winner",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/final-full-natural/native/playground-ni-1738462951-baseline/measurement.json",
+      "sha256": "03365bc5113a87c73e8674441b4a2ec73e747249f4924c8468752271ea15aa7b",
+      "source_bytes": 193762,
+      "rows": 1
+    },
+    {
+      "cohort": "final-natural-winner",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/final-full-natural/native/playground-ni-1738462951-final/measurement.json",
+      "sha256": "d9b0049cc31859bbc4b50f246c785fed51d5423ea7e310a26fff2e5d6c3b34b0",
+      "source_bytes": 193617,
+      "rows": 1
+    },
+    {
+      "cohort": "final-natural-winner",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/final-full-natural/native/playground-ni-902381047-baseline/measurement.json",
+      "sha256": "965055fc054859362d090fbcaf4bc2b70a8f5425bd38727ab8aeff848d18dfe0",
+      "source_bytes": 188571,
+      "rows": 1
+    },
+    {
+      "cohort": "final-natural-winner",
+      "original_path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/final-full-natural/native/playground-ni-902381047-final/measurement.json",
+      "sha256": "3aa106ad6749c07d0322cc698ab9fe5df8b39d062764ccd82fc0708d741e8305",
+      "source_bytes": 188490,
+      "rows": 1
+    }
+  ],
+  "selection_columns": [
+    "scenario",
+    "repeat",
+    "variant",
+    "command",
+    "wall_s",
+    "cpu_s",
+    "user_s",
+    "system_s",
+    "peak_rss_bytes",
+    "runner_peak_rss_bytes",
+    "measured_ticks",
+    "process_cpu_per_tick_s",
+    "simulation_cpu_per_tick_s",
+    "ticks_per_run_second",
+    "simulation_cpu_s",
+    "setup_cpu_s",
+    "save_cpu_s",
+    "simulation_wall_s",
+    "system_load_before",
+    "system_load_after"
+  ],
+  "result_columns": [
+    "status",
+    "ticks",
+    "initialChecksum",
+    "finalChecksum",
+    "benchmark_measured_ticks",
+    "benchmark_setup_cpu_ns",
+    "benchmark_run_cpu_ns",
+    "benchmark_save_cpu_ns",
+    "setup_ns",
+    "run_ns",
+    "compute_threads",
+    "compute_requested_threads",
+    "compute_resolved_threads",
+    "compute_workers",
+    "gpu_requested",
+    "gpu_device",
+    "gpu_error",
+    "gradient_execution",
+    "winner",
+    "ended"
+  ],
+  "qualification": "Values copied verbatim; source hashes/line numbers identify omitted full records. Warmups remain labeled and must be excluded from statistical inference. Loaded checkpoint, natural winner, GPU strata and factors must remain separate. No full per-tick trace copied."
+}

@@ -1,0 +1,1621 @@
+{
+  "scope": "16completed native diagnostic invocations,8cells,2048ticks each; total32768checksum/world records. Correctness not throughput.",
+  "records": [
+    {
+      "original_path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/runs/diagnostic-holdout-comb-n4-gpuoff-baseline/passed.json",
+      "original_sha256": "f337ed6fd5ed2ce045c41c439d92af351dcff803b7d9337a106201901aaeaafa",
+      "original_bytes": 3456,
+      "passed": true,
+      "request_sha256": "180f77c1e8c51039de7b25aca89ab828170a5a5cdf8e8729c45e1ee76ae1a9af",
+      "bindings_sha256": "5de0386482b93727b3d45a1ceeb6d6f67c149b7bd59981a7572042638fd17c41",
+      "binary_sha256": "18b640357036e457470338e092fb3108debc3ab252adbb631b0094d18852e36c",
+      "validated": {
+        "final_header": {
+          "major": 0,
+          "minor": 154,
+          "teams": 4,
+          "width": 256,
+          "height": 512,
+          "map_offset": 1616698,
+          "gzip_sha256": "326b1c7dd667681394e4397527137e0b9f0105a2d7f3db570d9c3a6fdfa41b10"
+        },
+        "result": {
+          "ticks": 2048,
+          "initialChecksum": 3345591052,
+          "finalChecksum": 1327840619,
+          "termination": "tick_cap",
+          "winning_teams": [],
+          "resolved": {
+            "tick_limit": 2048,
+            "map": "holdout-comb",
+            "save_version": 154,
+            "winning_conditions": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "experiments": [],
+            "rules": {
+              "aiOrderDelay": 8,
+              "buildingGradientDelay": 8,
+              "noGrowth": 0,
+              "scarcity": 0,
+              "instantConstruction": 0,
+              "stockpile": 0,
+              "noHunger": 0,
+              "noUpgrades": 0,
+              "glassCannon": 0,
+              "fearless": 0,
+              "noPermadeath": 0,
+              "peaceful": 0,
+              "fortress": 0,
+              "suddenDeathTick": 0,
+              "winProbabilityPermille": 0
+            },
+            "fork": []
+          }
+        },
+        "gcs": {
+          "sha256": "51d4d1e92d227359889861ec62150336942ea48029b74a97cbd4b903ab1fd17d",
+          "teams": 4,
+          "players": 4,
+          "count": 2048,
+          "first_tick": 0,
+          "last_tick": 2047,
+          "flags": 0
+        },
+        "world": {
+          "sha256": "ff4a2298cc47b18762fe35f5ca4ba89fcc912407b8b8469b7ae0ca028ac86d12",
+          "count": 2048,
+          "first_tick": 0,
+          "last_tick": 2047,
+          "scope": "per-tick full world/resource/pending proposal checksum; decimal source format"
+        },
+        "ait1": {
+          "offset": 2060032,
+          "bytes": 12216192,
+          "sha256": "344b1316bd74f0e2c573653f0708bf67561219f5e912a7fd2f3fd783e5ff6a4e",
+          "frames": 64,
+          "rows": 256,
+          "values": 123356,
+          "until": 2017,
+          "truncated": false
+        },
+        "replay_sha256": "bb09d5ebfe5bae1c6e080f67c05c75c8d42c435a5219271b21d0c6a74140d902",
+        "final_gzip_sha256": "326b1c7dd667681394e4397527137e0b9f0105a2d7f3db570d9c3a6fdfa41b10"
+      },
+      "output_sha256": {
+        "invocation.json": "45b322a54cd0998493860189aa87c438b4462e2ee317199fe833ffdaf5399667",
+        "stdout.log": "8ecda2c48c3b473780e8257f9adb062f5fcf22df10785c883cfb377d82e9cbee",
+        "stderr.log": "b969d7ac460e66efe0d7d75c690104527a1fc0ee060d63ecf7851062374d69fc",
+        "game.replay.checksums": "51d4d1e92d227359889861ec62150336942ea48029b74a97cbd4b903ab1fd17d",
+        "game.replay": "bb09d5ebfe5bae1c6e080f67c05c75c8d42c435a5219271b21d0c6a74140d902",
+        "world.checksums": "ff4a2298cc47b18762fe35f5ca4ba89fcc912407b8b8469b7ae0ca028ac86d12",
+        "progress.jsonl": "b48c60e54c1f9891fe0aa8696f3a3c25a688e6d633009f20b9a0548b1e262efe",
+        "final.game.gz": "326b1c7dd667681394e4397527137e0b9f0105a2d7f3db570d9c3a6fdfa41b10",
+        "result.json": "0585e153c95d6aae5f17673aa3551d1a08a1a80ead5589e76c0e7f7f6cd7af15",
+        "artifacts.json": "796885157e705f042851973f1799ea2675b5dc98d7e7c99342fd5ef9448beddf"
+      },
+      "finished_utc": "2026-10-13T02:57:43.563308+00:00",
+      "scope": "diagnosticmigrationequivalence; no tunedprofile or performanceclaim",
+      "omission": "Trace event streams and detailed per-producer/histogram arrays omitted; aggregate loss/open-work/coverage and tick wait metadata preserved. Raw outputs remain local, hashes are commitments rather than uploaded raw proof."
+    },
+    {
+      "original_path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/runs/diagnostic-holdout-comb-n4-gpuoff-candidate/passed.json",
+      "original_sha256": "41ddfc630be1e1af05f0c1b64c2f73639e32eae4910d40aa3acb1def063beaf5",
+      "original_bytes": 3456,
+      "passed": true,
+      "request_sha256": "bebfc84b01dc267c567b79f68386cece6788e9497d333c31d35307728aad5099",
+      "bindings_sha256": "5de0386482b93727b3d45a1ceeb6d6f67c149b7bd59981a7572042638fd17c41",
+      "binary_sha256": "42de4e7766bf7bdb8f0e1abf7bb6b9da7465bffbee2b4a00b2437e965e0d7f61",
+      "validated": {
+        "final_header": {
+          "major": 0,
+          "minor": 154,
+          "teams": 4,
+          "width": 256,
+          "height": 512,
+          "map_offset": 1616698,
+          "gzip_sha256": "326b1c7dd667681394e4397527137e0b9f0105a2d7f3db570d9c3a6fdfa41b10"
+        },
+        "result": {
+          "ticks": 2048,
+          "initialChecksum": 3345591052,
+          "finalChecksum": 1327840619,
+          "termination": "tick_cap",
+          "winning_teams": [],
+          "resolved": {
+            "tick_limit": 2048,
+            "map": "holdout-comb",
+            "save_version": 154,
+            "winning_conditions": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "experiments": [],
+            "rules": {
+              "aiOrderDelay": 8,
+              "buildingGradientDelay": 8,
+              "noGrowth": 0,
+              "scarcity": 0,
+              "instantConstruction": 0,
+              "stockpile": 0,
+              "noHunger": 0,
+              "noUpgrades": 0,
+              "glassCannon": 0,
+              "fearless": 0,
+              "noPermadeath": 0,
+              "peaceful": 0,
+              "fortress": 0,
+              "suddenDeathTick": 0,
+              "winProbabilityPermille": 0
+            },
+            "fork": []
+          }
+        },
+        "gcs": {
+          "sha256": "51d4d1e92d227359889861ec62150336942ea48029b74a97cbd4b903ab1fd17d",
+          "teams": 4,
+          "players": 4,
+          "count": 2048,
+          "first_tick": 0,
+          "last_tick": 2047,
+          "flags": 0
+        },
+        "world": {
+          "sha256": "ff4a2298cc47b18762fe35f5ca4ba89fcc912407b8b8469b7ae0ca028ac86d12",
+          "count": 2048,
+          "first_tick": 0,
+          "last_tick": 2047,
+          "scope": "per-tick full world/resource/pending proposal checksum; decimal source format"
+        },
+        "ait1": {
+          "offset": 2060032,
+          "bytes": 12216192,
+          "sha256": "344b1316bd74f0e2c573653f0708bf67561219f5e912a7fd2f3fd783e5ff6a4e",
+          "frames": 64,
+          "rows": 256,
+          "values": 123356,
+          "until": 2017,
+          "truncated": false
+        },
+        "replay_sha256": "bb09d5ebfe5bae1c6e080f67c05c75c8d42c435a5219271b21d0c6a74140d902",
+        "final_gzip_sha256": "326b1c7dd667681394e4397527137e0b9f0105a2d7f3db570d9c3a6fdfa41b10"
+      },
+      "output_sha256": {
+        "invocation.json": "b31408ce94ff0e80ae4067224257d5bba2427785849e33c0ade8ccd79f5a0145",
+        "stdout.log": "e9d09fceae560120e0606025e1d1b6d071674d9bdf313bf6a9dffe3c18846e43",
+        "stderr.log": "b969d7ac460e66efe0d7d75c690104527a1fc0ee060d63ecf7851062374d69fc",
+        "game.replay.checksums": "51d4d1e92d227359889861ec62150336942ea48029b74a97cbd4b903ab1fd17d",
+        "game.replay": "bb09d5ebfe5bae1c6e080f67c05c75c8d42c435a5219271b21d0c6a74140d902",
+        "world.checksums": "ff4a2298cc47b18762fe35f5ca4ba89fcc912407b8b8469b7ae0ca028ac86d12",
+        "progress.jsonl": "b48c60e54c1f9891fe0aa8696f3a3c25a688e6d633009f20b9a0548b1e262efe",
+        "final.game.gz": "326b1c7dd667681394e4397527137e0b9f0105a2d7f3db570d9c3a6fdfa41b10",
+        "result.json": "99bb245fb52fe902c9a9ab5b7c69a8cd8e29d8825914a5c803905927a3155397",
+        "artifacts.json": "f5ed202a6448624cd9229df1e2020e19b653cb7f9936fc3883e00918f4c7336e"
+      },
+      "finished_utc": "2026-10-13T02:57:50.130067+00:00",
+      "scope": "diagnosticmigrationequivalence; no tunedprofile or performanceclaim",
+      "omission": "Trace event streams and detailed per-producer/histogram arrays omitted; aggregate loss/open-work/coverage and tick wait metadata preserved. Raw outputs remain local, hashes are commitments rather than uploaded raw proof."
+    },
+    {
+      "original_path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/runs/diagnostic-oazis-ni-n12-gpuoff-baseline/passed.json",
+      "original_sha256": "4eec6ebdf164716dd0909b2af5023bb56a3598219514da9b97f37ad04ea778fb",
+      "original_bytes": 3465,
+      "passed": true,
+      "request_sha256": "1109193ad3dd716aa9718146f531eba4fba526b15a841e3e130f481401ee25cc",
+      "bindings_sha256": "5de0386482b93727b3d45a1ceeb6d6f67c149b7bd59981a7572042638fd17c41",
+      "binary_sha256": "18b640357036e457470338e092fb3108debc3ab252adbb631b0094d18852e36c",
+      "validated": {
+        "final_header": {
+          "major": 0,
+          "minor": 154,
+          "teams": 11,
+          "width": 256,
+          "height": 256,
+          "map_offset": 4549588,
+          "gzip_sha256": "c87b3f168a4ef49abb80602cf8d4b10ef56ae54926f678d408a5210fc3c203b7"
+        },
+        "result": {
+          "ticks": 52048,
+          "initialChecksum": 3899589070,
+          "finalChecksum": 2548795235,
+          "termination": "tick_cap",
+          "winning_teams": [],
+          "resolved": {
+            "tick_limit": 52048,
+            "map": "Oazis",
+            "save_version": 154,
+            "winning_conditions": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "experiments": [],
+            "rules": {
+              "aiOrderDelay": 8,
+              "buildingGradientDelay": 8,
+              "noGrowth": 0,
+              "scarcity": 0,
+              "instantConstruction": 0,
+              "stockpile": 0,
+              "noHunger": 0,
+              "noUpgrades": 0,
+              "glassCannon": 0,
+              "fearless": 0,
+              "noPermadeath": 0,
+              "peaceful": 0,
+              "fortress": 0,
+              "suddenDeathTick": 0,
+              "winProbabilityPermille": 0
+            },
+            "fork": []
+          }
+        },
+        "gcs": {
+          "sha256": "5b198d81b29d76ae5ecafe9d616aef0024b0145b9e61673aecfe1389d9e74acf",
+          "teams": 11,
+          "players": 11,
+          "count": 2048,
+          "first_tick": 50000,
+          "last_tick": 52047,
+          "flags": 0
+        },
+        "world": {
+          "sha256": "d2d9b4f686e3f867f72194f9457bf11a1e2996300a207d335190606d7705a9ac",
+          "count": 2048,
+          "first_tick": 50000,
+          "last_tick": 52047,
+          "scope": "per-tick full world/resource/pending proposal checksum; decimal source format"
+        },
+        "ait1": {
+          "offset": 83499606,
+          "bytes": 10692598,
+          "sha256": "c970384e5a6c4f8becb2ccd6dbc28521169b475ed4569eb77ec546a812da31b0",
+          "frames": 65,
+          "rows": 395,
+          "values": 133687,
+          "until": 2033,
+          "truncated": false
+        },
+        "replay_sha256": "9d20a007054e9815147518809b92d98602c6bf31bc096345fa06d998581c8bed",
+        "final_gzip_sha256": "c87b3f168a4ef49abb80602cf8d4b10ef56ae54926f678d408a5210fc3c203b7"
+      },
+      "output_sha256": {
+        "invocation.json": "9fab2fffd5d35683514176d2b825364775ea9d39116a590b1d3e3b0cd130fe93",
+        "stdout.log": "ba54e9eee6cb77160fae35e3c7fbf7e21a59bdc0016811835d614d203c161a9b",
+        "stderr.log": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9",
+        "game.replay.checksums": "5b198d81b29d76ae5ecafe9d616aef0024b0145b9e61673aecfe1389d9e74acf",
+        "game.replay": "9d20a007054e9815147518809b92d98602c6bf31bc096345fa06d998581c8bed",
+        "world.checksums": "d2d9b4f686e3f867f72194f9457bf11a1e2996300a207d335190606d7705a9ac",
+        "progress.jsonl": "d16e2e1bd38425fda96f16c87c1b00e4ec44db9fb5c80fca236b889acf922f9b",
+        "final.game.gz": "c87b3f168a4ef49abb80602cf8d4b10ef56ae54926f678d408a5210fc3c203b7",
+        "result.json": "deb91e4e39002196d8f362cada6bc4251d20895808f6611a01336180adc6bfde",
+        "artifacts.json": "802f72d398b32408d13f575a5ae4238efeba5aa38f1483277bf8b1fb87a98a97"
+      },
+      "finished_utc": "2026-10-13T02:59:07.947326+00:00",
+      "scope": "diagnosticmigrationequivalence; no tunedprofile or performanceclaim",
+      "omission": "Trace event streams and detailed per-producer/histogram arrays omitted; aggregate loss/open-work/coverage and tick wait metadata preserved. Raw outputs remain local, hashes are commitments rather than uploaded raw proof."
+    },
+    {
+      "original_path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/runs/diagnostic-oazis-ni-n12-gpuoff-candidate/passed.json",
+      "original_sha256": "042d4f1458ef06683b45304d703b61df7bbe44d52f41bc9bbadcbbb5af5f104f",
+      "original_bytes": 3465,
+      "passed": true,
+      "request_sha256": "10bc2b85e6410943a4ce183fd88896c9a9b9a80b188eb783e1c7edb155e490c0",
+      "bindings_sha256": "5de0386482b93727b3d45a1ceeb6d6f67c149b7bd59981a7572042638fd17c41",
+      "binary_sha256": "42de4e7766bf7bdb8f0e1abf7bb6b9da7465bffbee2b4a00b2437e965e0d7f61",
+      "validated": {
+        "final_header": {
+          "major": 0,
+          "minor": 154,
+          "teams": 11,
+          "width": 256,
+          "height": 256,
+          "map_offset": 4549588,
+          "gzip_sha256": "c87b3f168a4ef49abb80602cf8d4b10ef56ae54926f678d408a5210fc3c203b7"
+        },
+        "result": {
+          "ticks": 52048,
+          "initialChecksum": 3899589070,
+          "finalChecksum": 2548795235,
+          "termination": "tick_cap",
+          "winning_teams": [],
+          "resolved": {
+            "tick_limit": 52048,
+            "map": "Oazis",
+            "save_version": 154,
+            "winning_conditions": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "experiments": [],
+            "rules": {
+              "aiOrderDelay": 8,
+              "buildingGradientDelay": 8,
+              "noGrowth": 0,
+              "scarcity": 0,
+              "instantConstruction": 0,
+              "stockpile": 0,
+              "noHunger": 0,
+              "noUpgrades": 0,
+              "glassCannon": 0,
+              "fearless": 0,
+              "noPermadeath": 0,
+              "peaceful": 0,
+              "fortress": 0,
+              "suddenDeathTick": 0,
+              "winProbabilityPermille": 0
+            },
+            "fork": []
+          }
+        },
+        "gcs": {
+          "sha256": "5b198d81b29d76ae5ecafe9d616aef0024b0145b9e61673aecfe1389d9e74acf",
+          "teams": 11,
+          "players": 11,
+          "count": 2048,
+          "first_tick": 50000,
+          "last_tick": 52047,
+          "flags": 0
+        },
+        "world": {
+          "sha256": "d2d9b4f686e3f867f72194f9457bf11a1e2996300a207d335190606d7705a9ac",
+          "count": 2048,
+          "first_tick": 50000,
+          "last_tick": 52047,
+          "scope": "per-tick full world/resource/pending proposal checksum; decimal source format"
+        },
+        "ait1": {
+          "offset": 83499606,
+          "bytes": 10692598,
+          "sha256": "c970384e5a6c4f8becb2ccd6dbc28521169b475ed4569eb77ec546a812da31b0",
+          "frames": 65,
+          "rows": 395,
+          "values": 133687,
+          "until": 2033,
+          "truncated": false
+        },
+        "replay_sha256": "9d20a007054e9815147518809b92d98602c6bf31bc096345fa06d998581c8bed",
+        "final_gzip_sha256": "c87b3f168a4ef49abb80602cf8d4b10ef56ae54926f678d408a5210fc3c203b7"
+      },
+      "output_sha256": {
+        "invocation.json": "e21e2bdc054e7f5eb3c69560da0af015cbe176ac23360cbc1cc3b1fa4a81e828",
+        "stdout.log": "4a7bcb3a5e1538169a20cb679c7de157a4ffa4fa3f762ea8797337698e034235",
+        "stderr.log": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9",
+        "game.replay.checksums": "5b198d81b29d76ae5ecafe9d616aef0024b0145b9e61673aecfe1389d9e74acf",
+        "game.replay": "9d20a007054e9815147518809b92d98602c6bf31bc096345fa06d998581c8bed",
+        "world.checksums": "d2d9b4f686e3f867f72194f9457bf11a1e2996300a207d335190606d7705a9ac",
+        "progress.jsonl": "d16e2e1bd38425fda96f16c87c1b00e4ec44db9fb5c80fca236b889acf922f9b",
+        "final.game.gz": "c87b3f168a4ef49abb80602cf8d4b10ef56ae54926f678d408a5210fc3c203b7",
+        "result.json": "306fe131d278a9f4239196e8244a89874c5ce7f971e4057d3b83f25e96aa9f73",
+        "artifacts.json": "4415940eebd09af091546a89b6369ee524be7589c46b2cd82f15de629026219e"
+      },
+      "finished_utc": "2026-10-13T02:59:27.032774+00:00",
+      "scope": "diagnosticmigrationequivalence; no tunedprofile or performanceclaim",
+      "omission": "Trace event streams and detailed per-producer/histogram arrays omitted; aggregate loss/open-work/coverage and tick wait metadata preserved. Raw outputs remain local, hashes are commitments rather than uploaded raw proof."
+    },
+    {
+      "original_path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/runs/diagnostic-oazis-ni-n4-gpuoff-baseline/passed.json",
+      "original_sha256": "e55bfa93e5c83b57d89ed1aea0d572582050c046c2f489b94ce1ea948d60a1fe",
+      "original_bytes": 3465,
+      "passed": true,
+      "request_sha256": "d090b323ab10af4386a89510690ff8edc61e17bc35254353c133eae56d2f40d0",
+      "bindings_sha256": "5de0386482b93727b3d45a1ceeb6d6f67c149b7bd59981a7572042638fd17c41",
+      "binary_sha256": "18b640357036e457470338e092fb3108debc3ab252adbb631b0094d18852e36c",
+      "validated": {
+        "final_header": {
+          "major": 0,
+          "minor": 154,
+          "teams": 11,
+          "width": 256,
+          "height": 256,
+          "map_offset": 4549588,
+          "gzip_sha256": "c87b3f168a4ef49abb80602cf8d4b10ef56ae54926f678d408a5210fc3c203b7"
+        },
+        "result": {
+          "ticks": 52048,
+          "initialChecksum": 3899589070,
+          "finalChecksum": 2548795235,
+          "termination": "tick_cap",
+          "winning_teams": [],
+          "resolved": {
+            "tick_limit": 52048,
+            "map": "Oazis",
+            "save_version": 154,
+            "winning_conditions": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "experiments": [],
+            "rules": {
+              "aiOrderDelay": 8,
+              "buildingGradientDelay": 8,
+              "noGrowth": 0,
+              "scarcity": 0,
+              "instantConstruction": 0,
+              "stockpile": 0,
+              "noHunger": 0,
+              "noUpgrades": 0,
+              "glassCannon": 0,
+              "fearless": 0,
+              "noPermadeath": 0,
+              "peaceful": 0,
+              "fortress": 0,
+              "suddenDeathTick": 0,
+              "winProbabilityPermille": 0
+            },
+            "fork": []
+          }
+        },
+        "gcs": {
+          "sha256": "5b198d81b29d76ae5ecafe9d616aef0024b0145b9e61673aecfe1389d9e74acf",
+          "teams": 11,
+          "players": 11,
+          "count": 2048,
+          "first_tick": 50000,
+          "last_tick": 52047,
+          "flags": 0
+        },
+        "world": {
+          "sha256": "d2d9b4f686e3f867f72194f9457bf11a1e2996300a207d335190606d7705a9ac",
+          "count": 2048,
+          "first_tick": 50000,
+          "last_tick": 52047,
+          "scope": "per-tick full world/resource/pending proposal checksum; decimal source format"
+        },
+        "ait1": {
+          "offset": 83499606,
+          "bytes": 10692598,
+          "sha256": "c970384e5a6c4f8becb2ccd6dbc28521169b475ed4569eb77ec546a812da31b0",
+          "frames": 65,
+          "rows": 395,
+          "values": 133687,
+          "until": 2033,
+          "truncated": false
+        },
+        "replay_sha256": "9d20a007054e9815147518809b92d98602c6bf31bc096345fa06d998581c8bed",
+        "final_gzip_sha256": "c87b3f168a4ef49abb80602cf8d4b10ef56ae54926f678d408a5210fc3c203b7"
+      },
+      "output_sha256": {
+        "invocation.json": "56a33f0ca135837280d52c5d7fcfebff959eab6085a4d83535b5553b97791b76",
+        "stdout.log": "9167b9e36c07437f6c6dcbf1b625e72b2d3ed6b47307843b28588d552ae2ef05",
+        "stderr.log": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9",
+        "game.replay.checksums": "5b198d81b29d76ae5ecafe9d616aef0024b0145b9e61673aecfe1389d9e74acf",
+        "game.replay": "9d20a007054e9815147518809b92d98602c6bf31bc096345fa06d998581c8bed",
+        "world.checksums": "d2d9b4f686e3f867f72194f9457bf11a1e2996300a207d335190606d7705a9ac",
+        "progress.jsonl": "d16e2e1bd38425fda96f16c87c1b00e4ec44db9fb5c80fca236b889acf922f9b",
+        "final.game.gz": "c87b3f168a4ef49abb80602cf8d4b10ef56ae54926f678d408a5210fc3c203b7",
+        "result.json": "ec42556722e01e8af1024e6fbb06a68f734f60758af76f92668169d0565773c2",
+        "artifacts.json": "994104d1c787ebbcd95fa22001e31be54b770562a6d3ec6ab339a860a44e9c61"
+      },
+      "finished_utc": "2026-10-13T02:58:29.201376+00:00",
+      "scope": "diagnosticmigrationequivalence; no tunedprofile or performanceclaim",
+      "omission": "Trace event streams and detailed per-producer/histogram arrays omitted; aggregate loss/open-work/coverage and tick wait metadata preserved. Raw outputs remain local, hashes are commitments rather than uploaded raw proof."
+    },
+    {
+      "original_path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/runs/diagnostic-oazis-ni-n4-gpuoff-candidate/passed.json",
+      "original_sha256": "ed106c0375027691c309c783727b077128ac53640e67d04467c94fd0306a72e0",
+      "original_bytes": 3465,
+      "passed": true,
+      "request_sha256": "9e663073f2d7b0983b1d7c9fcc179820da94785de48add18c6498bec5b272777",
+      "bindings_sha256": "5de0386482b93727b3d45a1ceeb6d6f67c149b7bd59981a7572042638fd17c41",
+      "binary_sha256": "42de4e7766bf7bdb8f0e1abf7bb6b9da7465bffbee2b4a00b2437e965e0d7f61",
+      "validated": {
+        "final_header": {
+          "major": 0,
+          "minor": 154,
+          "teams": 11,
+          "width": 256,
+          "height": 256,
+          "map_offset": 4549588,
+          "gzip_sha256": "c87b3f168a4ef49abb80602cf8d4b10ef56ae54926f678d408a5210fc3c203b7"
+        },
+        "result": {
+          "ticks": 52048,
+          "initialChecksum": 3899589070,
+          "finalChecksum": 2548795235,
+          "termination": "tick_cap",
+          "winning_teams": [],
+          "resolved": {
+            "tick_limit": 52048,
+            "map": "Oazis",
+            "save_version": 154,
+            "winning_conditions": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "experiments": [],
+            "rules": {
+              "aiOrderDelay": 8,
+              "buildingGradientDelay": 8,
+              "noGrowth": 0,
+              "scarcity": 0,
+              "instantConstruction": 0,
+              "stockpile": 0,
+              "noHunger": 0,
+              "noUpgrades": 0,
+              "glassCannon": 0,
+              "fearless": 0,
+              "noPermadeath": 0,
+              "peaceful": 0,
+              "fortress": 0,
+              "suddenDeathTick": 0,
+              "winProbabilityPermille": 0
+            },
+            "fork": []
+          }
+        },
+        "gcs": {
+          "sha256": "5b198d81b29d76ae5ecafe9d616aef0024b0145b9e61673aecfe1389d9e74acf",
+          "teams": 11,
+          "players": 11,
+          "count": 2048,
+          "first_tick": 50000,
+          "last_tick": 52047,
+          "flags": 0
+        },
+        "world": {
+          "sha256": "d2d9b4f686e3f867f72194f9457bf11a1e2996300a207d335190606d7705a9ac",
+          "count": 2048,
+          "first_tick": 50000,
+          "last_tick": 52047,
+          "scope": "per-tick full world/resource/pending proposal checksum; decimal source format"
+        },
+        "ait1": {
+          "offset": 83499606,
+          "bytes": 10692598,
+          "sha256": "c970384e5a6c4f8becb2ccd6dbc28521169b475ed4569eb77ec546a812da31b0",
+          "frames": 65,
+          "rows": 395,
+          "values": 133687,
+          "until": 2033,
+          "truncated": false
+        },
+        "replay_sha256": "9d20a007054e9815147518809b92d98602c6bf31bc096345fa06d998581c8bed",
+        "final_gzip_sha256": "c87b3f168a4ef49abb80602cf8d4b10ef56ae54926f678d408a5210fc3c203b7"
+      },
+      "output_sha256": {
+        "invocation.json": "fff2f94115add7de41c34193a2f6da87704244940db8109ad4ba45d8ed292b9a",
+        "stdout.log": "b269b9fa81cb2b443e75d5141334f48d443cd20454fb5abdd935186ed84f7d57",
+        "stderr.log": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9",
+        "game.replay.checksums": "5b198d81b29d76ae5ecafe9d616aef0024b0145b9e61673aecfe1389d9e74acf",
+        "game.replay": "9d20a007054e9815147518809b92d98602c6bf31bc096345fa06d998581c8bed",
+        "world.checksums": "d2d9b4f686e3f867f72194f9457bf11a1e2996300a207d335190606d7705a9ac",
+        "progress.jsonl": "d16e2e1bd38425fda96f16c87c1b00e4ec44db9fb5c80fca236b889acf922f9b",
+        "final.game.gz": "c87b3f168a4ef49abb80602cf8d4b10ef56ae54926f678d408a5210fc3c203b7",
+        "result.json": "3601a7d9fc14f22b474df7c6934a259bf1d94b188fdaf388f9bdcb17dcf26afd",
+        "artifacts.json": "5efa532186c77176abd268c17db9ff476a4fdf5d90844f5e80ffcc7a54ec9cbc"
+      },
+      "finished_utc": "2026-10-13T02:58:48.252087+00:00",
+      "scope": "diagnosticmigrationequivalence; no tunedprofile or performanceclaim",
+      "omission": "Trace event streams and detailed per-producer/histogram arrays omitted; aggregate loss/open-work/coverage and tick wait metadata preserved. Raw outputs remain local, hashes are commitments rather than uploaded raw proof."
+    },
+    {
+      "original_path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/runs/diagnostic-playground-ni-n12-gpuon-baseline/passed.json",
+      "original_sha256": "cbcab2f3e7527e6ac05a91d48cf18b3d81608778148703a9a2434f4b3b72c86c",
+      "original_bytes": 3454,
+      "passed": true,
+      "request_sha256": "b0ed26f6aaf4c1793642361e6173293131c47ce9d94240c88f7dfb3241b39a54",
+      "bindings_sha256": "5de0386482b93727b3d45a1ceeb6d6f67c149b7bd59981a7572042638fd17c41",
+      "binary_sha256": "18b640357036e457470338e092fb3108debc3ab252adbb631b0094d18852e36c",
+      "validated": {
+        "final_header": {
+          "major": 0,
+          "minor": 154,
+          "teams": 8,
+          "width": 128,
+          "height": 128,
+          "map_offset": 2900104,
+          "gzip_sha256": "ab265f0001b88f412ecf11728d1824099ae9ce4494fc1967dd728dd52d265b14"
+        },
+        "result": {
+          "ticks": 2048,
+          "initialChecksum": 1179943318,
+          "finalChecksum": 3901569466,
+          "termination": "tick_cap",
+          "winning_teams": [],
+          "resolved": {
+            "tick_limit": 2048,
+            "map": "Playground",
+            "save_version": 154,
+            "winning_conditions": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "experiments": [],
+            "rules": {
+              "aiOrderDelay": 8,
+              "buildingGradientDelay": 8,
+              "noGrowth": 0,
+              "scarcity": 0,
+              "instantConstruction": 0,
+              "stockpile": 0,
+              "noHunger": 0,
+              "noUpgrades": 0,
+              "glassCannon": 0,
+              "fearless": 0,
+              "noPermadeath": 0,
+              "peaceful": 0,
+              "fortress": 0,
+              "suddenDeathTick": 0,
+              "winProbabilityPermille": 0
+            },
+            "fork": []
+          }
+        },
+        "gcs": {
+          "sha256": "ed3686b5266da402eff6e7d3733c43358077345ce202431a65a7512bff240ed2",
+          "teams": 8,
+          "players": 8,
+          "count": 2048,
+          "first_tick": 0,
+          "last_tick": 2047,
+          "flags": 0
+        },
+        "world": {
+          "sha256": "8a00393b4d8e84847d3a5de5160dac86836a7915ef5d1b06fab86f27df8038f6",
+          "count": 2048,
+          "first_tick": 0,
+          "last_tick": 2047,
+          "scope": "per-tick full world/resource/pending proposal checksum; decimal source format"
+        },
+        "ait1": {
+          "offset": 3144434,
+          "bytes": 11986791,
+          "sha256": "797771fe2d066d86d30e448dcdb24a22b64a0b122e3202d3b9d536e155f50e30",
+          "frames": 64,
+          "rows": 512,
+          "values": 159758,
+          "until": 2017,
+          "truncated": false
+        },
+        "replay_sha256": "aaca73792411ee81acf49a331d21eb9581a5c3b2ee13a49ce6ab4d527ce577af",
+        "final_gzip_sha256": "ab265f0001b88f412ecf11728d1824099ae9ce4494fc1967dd728dd52d265b14"
+      },
+      "output_sha256": {
+        "invocation.json": "c7f6cd814f54db571a5ea7512528f81cf7f528e593d89280009e79d71abfb518",
+        "stdout.log": "73cd9a6b911c98041da381a18a7b99099d1797287003d8c38d751f57eb789dea",
+        "stderr.log": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9",
+        "game.replay.checksums": "ed3686b5266da402eff6e7d3733c43358077345ce202431a65a7512bff240ed2",
+        "game.replay": "aaca73792411ee81acf49a331d21eb9581a5c3b2ee13a49ce6ab4d527ce577af",
+        "world.checksums": "8a00393b4d8e84847d3a5de5160dac86836a7915ef5d1b06fab86f27df8038f6",
+        "progress.jsonl": "b48c60e54c1f9891fe0aa8696f3a3c25a688e6d633009f20b9a0548b1e262efe",
+        "final.game.gz": "ab265f0001b88f412ecf11728d1824099ae9ce4494fc1967dd728dd52d265b14",
+        "result.json": "a474a9e6f3c13161c1728880301baca48a9c586a21e2280122bd8c40fe45313d",
+        "artifacts.json": "f7d12857c3e56044c30fd149a2e4103db7eb153308e2ec796e8f6c20adb296de"
+      },
+      "finished_utc": "2026-10-13T02:58:04.766035+00:00",
+      "scope": "diagnosticmigrationequivalence; no tunedprofile or performanceclaim",
+      "omission": "Trace event streams and detailed per-producer/histogram arrays omitted; aggregate loss/open-work/coverage and tick wait metadata preserved. Raw outputs remain local, hashes are commitments rather than uploaded raw proof."
+    },
+    {
+      "original_path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/runs/diagnostic-playground-ni-n12-gpuon-candidate/passed.json",
+      "original_sha256": "5e10d90851bd8cc82c65ebb969002a53699099dbaeb9a007206fc26e59ac4d44",
+      "original_bytes": 3454,
+      "passed": true,
+      "request_sha256": "9497660d94929d314721df42943a069ab213025bfb45eb18cbc2e47866b0d94c",
+      "bindings_sha256": "5de0386482b93727b3d45a1ceeb6d6f67c149b7bd59981a7572042638fd17c41",
+      "binary_sha256": "42de4e7766bf7bdb8f0e1abf7bb6b9da7465bffbee2b4a00b2437e965e0d7f61",
+      "validated": {
+        "final_header": {
+          "major": 0,
+          "minor": 154,
+          "teams": 8,
+          "width": 128,
+          "height": 128,
+          "map_offset": 2900104,
+          "gzip_sha256": "ab265f0001b88f412ecf11728d1824099ae9ce4494fc1967dd728dd52d265b14"
+        },
+        "result": {
+          "ticks": 2048,
+          "initialChecksum": 1179943318,
+          "finalChecksum": 3901569466,
+          "termination": "tick_cap",
+          "winning_teams": [],
+          "resolved": {
+            "tick_limit": 2048,
+            "map": "Playground",
+            "save_version": 154,
+            "winning_conditions": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "experiments": [],
+            "rules": {
+              "aiOrderDelay": 8,
+              "buildingGradientDelay": 8,
+              "noGrowth": 0,
+              "scarcity": 0,
+              "instantConstruction": 0,
+              "stockpile": 0,
+              "noHunger": 0,
+              "noUpgrades": 0,
+              "glassCannon": 0,
+              "fearless": 0,
+              "noPermadeath": 0,
+              "peaceful": 0,
+              "fortress": 0,
+              "suddenDeathTick": 0,
+              "winProbabilityPermille": 0
+            },
+            "fork": []
+          }
+        },
+        "gcs": {
+          "sha256": "ed3686b5266da402eff6e7d3733c43358077345ce202431a65a7512bff240ed2",
+          "teams": 8,
+          "players": 8,
+          "count": 2048,
+          "first_tick": 0,
+          "last_tick": 2047,
+          "flags": 0
+        },
+        "world": {
+          "sha256": "8a00393b4d8e84847d3a5de5160dac86836a7915ef5d1b06fab86f27df8038f6",
+          "count": 2048,
+          "first_tick": 0,
+          "last_tick": 2047,
+          "scope": "per-tick full world/resource/pending proposal checksum; decimal source format"
+        },
+        "ait1": {
+          "offset": 3144434,
+          "bytes": 11986791,
+          "sha256": "797771fe2d066d86d30e448dcdb24a22b64a0b122e3202d3b9d536e155f50e30",
+          "frames": 64,
+          "rows": 512,
+          "values": 159758,
+          "until": 2017,
+          "truncated": false
+        },
+        "replay_sha256": "aaca73792411ee81acf49a331d21eb9581a5c3b2ee13a49ce6ab4d527ce577af",
+        "final_gzip_sha256": "ab265f0001b88f412ecf11728d1824099ae9ce4494fc1967dd728dd52d265b14"
+      },
+      "output_sha256": {
+        "invocation.json": "a1b3d3b4cadbbae987bf3563a515b11a774b677a540b7d018e82d4860d2b0ceb",
+        "stdout.log": "34a5d60bdc61841d33f8e4c65f231a8f5587cadad9c02cf14464788bd1dc150d",
+        "stderr.log": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9",
+        "game.replay.checksums": "ed3686b5266da402eff6e7d3733c43358077345ce202431a65a7512bff240ed2",
+        "game.replay": "aaca73792411ee81acf49a331d21eb9581a5c3b2ee13a49ce6ab4d527ce577af",
+        "world.checksums": "8a00393b4d8e84847d3a5de5160dac86836a7915ef5d1b06fab86f27df8038f6",
+        "progress.jsonl": "b48c60e54c1f9891fe0aa8696f3a3c25a688e6d633009f20b9a0548b1e262efe",
+        "final.game.gz": "ab265f0001b88f412ecf11728d1824099ae9ce4494fc1967dd728dd52d265b14",
+        "result.json": "fb3052d5050fe47b3d6ec6b8e2692d44c9b3681aac353c0d053b232f63f05ff0",
+        "artifacts.json": "a7c29e716f199e80da0cf6dd57b06407f71fa3c48d719b07b58ad67325a2c578"
+      },
+      "finished_utc": "2026-10-13T02:58:09.656051+00:00",
+      "scope": "diagnosticmigrationequivalence; no tunedprofile or performanceclaim",
+      "omission": "Trace event streams and detailed per-producer/histogram arrays omitted; aggregate loss/open-work/coverage and tick wait metadata preserved. Raw outputs remain local, hashes are commitments rather than uploaded raw proof."
+    },
+    {
+      "original_path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/runs/diagnostic-playground-ni-n4-gpuon-baseline/passed.json",
+      "original_sha256": "80720cdf2ec0897c1fee3cb964932e77182c83de2d0aa6a4a1ef73dc5f9a9a38",
+      "original_bytes": 3454,
+      "passed": true,
+      "request_sha256": "5f584cfeeec03aefbfdf874ee2cf1f49cbbd01e6ed6577e1ad46891ad001dbe3",
+      "bindings_sha256": "5de0386482b93727b3d45a1ceeb6d6f67c149b7bd59981a7572042638fd17c41",
+      "binary_sha256": "18b640357036e457470338e092fb3108debc3ab252adbb631b0094d18852e36c",
+      "validated": {
+        "final_header": {
+          "major": 0,
+          "minor": 154,
+          "teams": 8,
+          "width": 128,
+          "height": 128,
+          "map_offset": 2900104,
+          "gzip_sha256": "ab265f0001b88f412ecf11728d1824099ae9ce4494fc1967dd728dd52d265b14"
+        },
+        "result": {
+          "ticks": 2048,
+          "initialChecksum": 1179943318,
+          "finalChecksum": 3901569466,
+          "termination": "tick_cap",
+          "winning_teams": [],
+          "resolved": {
+            "tick_limit": 2048,
+            "map": "Playground",
+            "save_version": 154,
+            "winning_conditions": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "experiments": [],
+            "rules": {
+              "aiOrderDelay": 8,
+              "buildingGradientDelay": 8,
+              "noGrowth": 0,
+              "scarcity": 0,
+              "instantConstruction": 0,
+              "stockpile": 0,
+              "noHunger": 0,
+              "noUpgrades": 0,
+              "glassCannon": 0,
+              "fearless": 0,
+              "noPermadeath": 0,
+              "peaceful": 0,
+              "fortress": 0,
+              "suddenDeathTick": 0,
+              "winProbabilityPermille": 0
+            },
+            "fork": []
+          }
+        },
+        "gcs": {
+          "sha256": "ed3686b5266da402eff6e7d3733c43358077345ce202431a65a7512bff240ed2",
+          "teams": 8,
+          "players": 8,
+          "count": 2048,
+          "first_tick": 0,
+          "last_tick": 2047,
+          "flags": 0
+        },
+        "world": {
+          "sha256": "8a00393b4d8e84847d3a5de5160dac86836a7915ef5d1b06fab86f27df8038f6",
+          "count": 2048,
+          "first_tick": 0,
+          "last_tick": 2047,
+          "scope": "per-tick full world/resource/pending proposal checksum; decimal source format"
+        },
+        "ait1": {
+          "offset": 3144434,
+          "bytes": 11986791,
+          "sha256": "797771fe2d066d86d30e448dcdb24a22b64a0b122e3202d3b9d536e155f50e30",
+          "frames": 64,
+          "rows": 512,
+          "values": 159758,
+          "until": 2017,
+          "truncated": false
+        },
+        "replay_sha256": "aaca73792411ee81acf49a331d21eb9581a5c3b2ee13a49ce6ab4d527ce577af",
+        "final_gzip_sha256": "ab265f0001b88f412ecf11728d1824099ae9ce4494fc1967dd728dd52d265b14"
+      },
+      "output_sha256": {
+        "invocation.json": "be9f7208a1f480b66c72eb2d9a1ebeb3766c7a2bed81a20b5f191c41ab1449d9",
+        "stdout.log": "111092a17ea2de10ecb1e8a52e196fefd613b61624242fc9398f3fa9e5e8588f",
+        "stderr.log": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9",
+        "game.replay.checksums": "ed3686b5266da402eff6e7d3733c43358077345ce202431a65a7512bff240ed2",
+        "game.replay": "aaca73792411ee81acf49a331d21eb9581a5c3b2ee13a49ce6ab4d527ce577af",
+        "world.checksums": "8a00393b4d8e84847d3a5de5160dac86836a7915ef5d1b06fab86f27df8038f6",
+        "progress.jsonl": "b48c60e54c1f9891fe0aa8696f3a3c25a688e6d633009f20b9a0548b1e262efe",
+        "final.game.gz": "ab265f0001b88f412ecf11728d1824099ae9ce4494fc1967dd728dd52d265b14",
+        "result.json": "cd388c124ab391ae608fdcd341eb47491af408c6380fd5ccdd97f5e4560f0991",
+        "artifacts.json": "c1fd0444b33cf37c2d77d0311bf45d924f323c28491001f6fa35f6a95739f4b8"
+      },
+      "finished_utc": "2026-10-13T02:57:54.943760+00:00",
+      "scope": "diagnosticmigrationequivalence; no tunedprofile or performanceclaim",
+      "omission": "Trace event streams and detailed per-producer/histogram arrays omitted; aggregate loss/open-work/coverage and tick wait metadata preserved. Raw outputs remain local, hashes are commitments rather than uploaded raw proof."
+    },
+    {
+      "original_path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/runs/diagnostic-playground-ni-n4-gpuon-candidate/passed.json",
+      "original_sha256": "bf1300d7f0801209a45abdd0194bf9fa64434b155d5e06072906b11815ee3c36",
+      "original_bytes": 3454,
+      "passed": true,
+      "request_sha256": "2ae2f88194f69e1361aa2a0511fe211e9b2eefea05d519ae1c9e35fe2f451457",
+      "bindings_sha256": "5de0386482b93727b3d45a1ceeb6d6f67c149b7bd59981a7572042638fd17c41",
+      "binary_sha256": "42de4e7766bf7bdb8f0e1abf7bb6b9da7465bffbee2b4a00b2437e965e0d7f61",
+      "validated": {
+        "final_header": {
+          "major": 0,
+          "minor": 154,
+          "teams": 8,
+          "width": 128,
+          "height": 128,
+          "map_offset": 2900104,
+          "gzip_sha256": "ab265f0001b88f412ecf11728d1824099ae9ce4494fc1967dd728dd52d265b14"
+        },
+        "result": {
+          "ticks": 2048,
+          "initialChecksum": 1179943318,
+          "finalChecksum": 3901569466,
+          "termination": "tick_cap",
+          "winning_teams": [],
+          "resolved": {
+            "tick_limit": 2048,
+            "map": "Playground",
+            "save_version": 154,
+            "winning_conditions": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "experiments": [],
+            "rules": {
+              "aiOrderDelay": 8,
+              "buildingGradientDelay": 8,
+              "noGrowth": 0,
+              "scarcity": 0,
+              "instantConstruction": 0,
+              "stockpile": 0,
+              "noHunger": 0,
+              "noUpgrades": 0,
+              "glassCannon": 0,
+              "fearless": 0,
+              "noPermadeath": 0,
+              "peaceful": 0,
+              "fortress": 0,
+              "suddenDeathTick": 0,
+              "winProbabilityPermille": 0
+            },
+            "fork": []
+          }
+        },
+        "gcs": {
+          "sha256": "ed3686b5266da402eff6e7d3733c43358077345ce202431a65a7512bff240ed2",
+          "teams": 8,
+          "players": 8,
+          "count": 2048,
+          "first_tick": 0,
+          "last_tick": 2047,
+          "flags": 0
+        },
+        "world": {
+          "sha256": "8a00393b4d8e84847d3a5de5160dac86836a7915ef5d1b06fab86f27df8038f6",
+          "count": 2048,
+          "first_tick": 0,
+          "last_tick": 2047,
+          "scope": "per-tick full world/resource/pending proposal checksum; decimal source format"
+        },
+        "ait1": {
+          "offset": 3144434,
+          "bytes": 11986791,
+          "sha256": "797771fe2d066d86d30e448dcdb24a22b64a0b122e3202d3b9d536e155f50e30",
+          "frames": 64,
+          "rows": 512,
+          "values": 159758,
+          "until": 2017,
+          "truncated": false
+        },
+        "replay_sha256": "aaca73792411ee81acf49a331d21eb9581a5c3b2ee13a49ce6ab4d527ce577af",
+        "final_gzip_sha256": "ab265f0001b88f412ecf11728d1824099ae9ce4494fc1967dd728dd52d265b14"
+      },
+      "output_sha256": {
+        "invocation.json": "13bc9fc0b87ea7e9f48b1b1959233a5fbac06130ac8e5c5f6ecb4a539614abec",
+        "stdout.log": "c36fd1b4f217b5b79b69a6f573efc5eec8b097cd60483ec18fffa6676217fc8f",
+        "stderr.log": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9",
+        "game.replay.checksums": "ed3686b5266da402eff6e7d3733c43358077345ce202431a65a7512bff240ed2",
+        "game.replay": "aaca73792411ee81acf49a331d21eb9581a5c3b2ee13a49ce6ab4d527ce577af",
+        "world.checksums": "8a00393b4d8e84847d3a5de5160dac86836a7915ef5d1b06fab86f27df8038f6",
+        "progress.jsonl": "b48c60e54c1f9891fe0aa8696f3a3c25a688e6d633009f20b9a0548b1e262efe",
+        "final.game.gz": "ab265f0001b88f412ecf11728d1824099ae9ce4494fc1967dd728dd52d265b14",
+        "result.json": "2bfc0f6638dbb21540ea5da62219c186b021041d37597807b56b95340678de49",
+        "artifacts.json": "559637ee160f40519aeffb2bbe15f1eee4bb4b552c8076dd2d3f425dab2910b7"
+      },
+      "finished_utc": "2026-10-13T02:57:59.858785+00:00",
+      "scope": "diagnosticmigrationequivalence; no tunedprofile or performanceclaim",
+      "omission": "Trace event streams and detailed per-producer/histogram arrays omitted; aggregate loss/open-work/coverage and tick wait metadata preserved. Raw outputs remain local, hashes are commitments rather than uploaded raw proof."
+    },
+    {
+      "original_path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/runs/diagnostic-rect-mixed-n4-gpuoff-baseline/passed.json",
+      "original_sha256": "67ed2e4c8a3462af8946592d67fda58a8a9ad958d6d8b98d755e912a963d7029",
+      "original_bytes": 3451,
+      "passed": true,
+      "request_sha256": "d1e84e029cb167a7aec3a6f4e118015c28f437fff0e79c66472564dfd9798571",
+      "bindings_sha256": "5de0386482b93727b3d45a1ceeb6d6f67c149b7bd59981a7572042638fd17c41",
+      "binary_sha256": "18b640357036e457470338e092fb3108debc3ab252adbb631b0094d18852e36c",
+      "validated": {
+        "final_header": {
+          "major": 0,
+          "minor": 154,
+          "teams": 4,
+          "width": 128,
+          "height": 64,
+          "map_offset": 1461123,
+          "gzip_sha256": "df9a7960b7ec67174eff3a3c391acc712e09d718a8464678cf9eeb8204fa1a26"
+        },
+        "result": {
+          "ticks": 2048,
+          "initialChecksum": 2552561530,
+          "finalChecksum": 2840335719,
+          "termination": "tick_cap",
+          "winning_teams": [],
+          "resolved": {
+            "tick_limit": 2048,
+            "map": "rect-mixed",
+            "save_version": 154,
+            "winning_conditions": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "experiments": [],
+            "rules": {
+              "aiOrderDelay": 8,
+              "buildingGradientDelay": 8,
+              "noGrowth": 0,
+              "scarcity": 0,
+              "instantConstruction": 0,
+              "stockpile": 0,
+              "noHunger": 0,
+              "noUpgrades": 0,
+              "glassCannon": 0,
+              "fearless": 0,
+              "noPermadeath": 0,
+              "peaceful": 0,
+              "fortress": 0,
+              "suddenDeathTick": 0,
+              "winProbabilityPermille": 0
+            },
+            "fork": []
+          }
+        },
+        "gcs": {
+          "sha256": "b6fb5c4cdac0f2840ea807ebf7c935a16b5b86e9b4790f45e503ef20dba5f12b",
+          "teams": 4,
+          "players": 4,
+          "count": 2048,
+          "first_tick": 0,
+          "last_tick": 2047,
+          "flags": 0
+        },
+        "world": {
+          "sha256": "0c785b50fc5e94215736ad1e9b06f8578cd3d75749043547c3a53aa9ec5d40c8",
+          "count": 2048,
+          "first_tick": 0,
+          "last_tick": 2047,
+          "scope": "per-tick full world/resource/pending proposal checksum; decimal source format"
+        },
+        "ait1": {
+          "offset": 1441834,
+          "bytes": 5825396,
+          "sha256": "a5eb772dae1b5b252cc0aa522f1b812f03095dad59a294e78939cc3245f56b78",
+          "frames": 64,
+          "rows": 256,
+          "values": 78734,
+          "until": 2017,
+          "truncated": false
+        },
+        "replay_sha256": "e1e4793640f86d03b06543d2f1c634e7e81de15a0017b80380896c2175192584",
+        "final_gzip_sha256": "df9a7960b7ec67174eff3a3c391acc712e09d718a8464678cf9eeb8204fa1a26"
+      },
+      "output_sha256": {
+        "invocation.json": "c63cc75750361c9bdb97faff2452a8644519cd6e7fd65f08125e685e42e4cfc1",
+        "stdout.log": "58cffcb151b90b4d18efff871b49a7147b41cc0a0ea33637124c018465a93f15",
+        "stderr.log": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9",
+        "game.replay.checksums": "b6fb5c4cdac0f2840ea807ebf7c935a16b5b86e9b4790f45e503ef20dba5f12b",
+        "game.replay": "e1e4793640f86d03b06543d2f1c634e7e81de15a0017b80380896c2175192584",
+        "world.checksums": "0c785b50fc5e94215736ad1e9b06f8578cd3d75749043547c3a53aa9ec5d40c8",
+        "progress.jsonl": "b48c60e54c1f9891fe0aa8696f3a3c25a688e6d633009f20b9a0548b1e262efe",
+        "final.game.gz": "df9a7960b7ec67174eff3a3c391acc712e09d718a8464678cf9eeb8204fa1a26",
+        "result.json": "527f6d2a8fc0dfdf33f6db33f85f6dc1e8897027da7767ce09291c638d225505",
+        "artifacts.json": "e8f4caeb043e5db8a44295e29cf8932dbe8512b49296ab491bc7f974a61f600d"
+      },
+      "finished_utc": "2026-10-13T02:57:33.141049+00:00",
+      "scope": "diagnosticmigrationequivalence; no tunedprofile or performanceclaim",
+      "omission": "Trace event streams and detailed per-producer/histogram arrays omitted; aggregate loss/open-work/coverage and tick wait metadata preserved. Raw outputs remain local, hashes are commitments rather than uploaded raw proof."
+    },
+    {
+      "original_path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/runs/diagnostic-rect-mixed-n4-gpuoff-candidate/passed.json",
+      "original_sha256": "34f4381fcac2571ef953a8bc497d2411802dce3a9cdd99a9ffbeac519bd2c40a",
+      "original_bytes": 3451,
+      "passed": true,
+      "request_sha256": "2267ef245c6154c2e36bb2b441783a9f43e0a7606818ebcf8924e0c15f7751ef",
+      "bindings_sha256": "5de0386482b93727b3d45a1ceeb6d6f67c149b7bd59981a7572042638fd17c41",
+      "binary_sha256": "42de4e7766bf7bdb8f0e1abf7bb6b9da7465bffbee2b4a00b2437e965e0d7f61",
+      "validated": {
+        "final_header": {
+          "major": 0,
+          "minor": 154,
+          "teams": 4,
+          "width": 128,
+          "height": 64,
+          "map_offset": 1461123,
+          "gzip_sha256": "df9a7960b7ec67174eff3a3c391acc712e09d718a8464678cf9eeb8204fa1a26"
+        },
+        "result": {
+          "ticks": 2048,
+          "initialChecksum": 2552561530,
+          "finalChecksum": 2840335719,
+          "termination": "tick_cap",
+          "winning_teams": [],
+          "resolved": {
+            "tick_limit": 2048,
+            "map": "rect-mixed",
+            "save_version": 154,
+            "winning_conditions": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "experiments": [],
+            "rules": {
+              "aiOrderDelay": 8,
+              "buildingGradientDelay": 8,
+              "noGrowth": 0,
+              "scarcity": 0,
+              "instantConstruction": 0,
+              "stockpile": 0,
+              "noHunger": 0,
+              "noUpgrades": 0,
+              "glassCannon": 0,
+              "fearless": 0,
+              "noPermadeath": 0,
+              "peaceful": 0,
+              "fortress": 0,
+              "suddenDeathTick": 0,
+              "winProbabilityPermille": 0
+            },
+            "fork": []
+          }
+        },
+        "gcs": {
+          "sha256": "b6fb5c4cdac0f2840ea807ebf7c935a16b5b86e9b4790f45e503ef20dba5f12b",
+          "teams": 4,
+          "players": 4,
+          "count": 2048,
+          "first_tick": 0,
+          "last_tick": 2047,
+          "flags": 0
+        },
+        "world": {
+          "sha256": "0c785b50fc5e94215736ad1e9b06f8578cd3d75749043547c3a53aa9ec5d40c8",
+          "count": 2048,
+          "first_tick": 0,
+          "last_tick": 2047,
+          "scope": "per-tick full world/resource/pending proposal checksum; decimal source format"
+        },
+        "ait1": {
+          "offset": 1441834,
+          "bytes": 5825396,
+          "sha256": "a5eb772dae1b5b252cc0aa522f1b812f03095dad59a294e78939cc3245f56b78",
+          "frames": 64,
+          "rows": 256,
+          "values": 78734,
+          "until": 2017,
+          "truncated": false
+        },
+        "replay_sha256": "e1e4793640f86d03b06543d2f1c634e7e81de15a0017b80380896c2175192584",
+        "final_gzip_sha256": "df9a7960b7ec67174eff3a3c391acc712e09d718a8464678cf9eeb8204fa1a26"
+      },
+      "output_sha256": {
+        "invocation.json": "d1c3ead136aa4031bc0cbbb37e7f79cb969788047aa6ad05cc44cd4beff1b568",
+        "stdout.log": "1ba3f4caf2752b1a7c5f7d8d37bd7e5448af4e669385e1d34e62f4a888df9fdd",
+        "stderr.log": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9",
+        "game.replay.checksums": "b6fb5c4cdac0f2840ea807ebf7c935a16b5b86e9b4790f45e503ef20dba5f12b",
+        "game.replay": "e1e4793640f86d03b06543d2f1c634e7e81de15a0017b80380896c2175192584",
+        "world.checksums": "0c785b50fc5e94215736ad1e9b06f8578cd3d75749043547c3a53aa9ec5d40c8",
+        "progress.jsonl": "b48c60e54c1f9891fe0aa8696f3a3c25a688e6d633009f20b9a0548b1e262efe",
+        "final.game.gz": "df9a7960b7ec67174eff3a3c391acc712e09d718a8464678cf9eeb8204fa1a26",
+        "result.json": "ab2c0bc97171bf16c7819599a0a3eb43535b90d54f02d09e0604348209dc0308",
+        "artifacts.json": "64b41a98812af2552d9188722367f3cc26ad9dd52e88e0592facbd68b512850c"
+      },
+      "finished_utc": "2026-10-13T02:57:36.891962+00:00",
+      "scope": "diagnosticmigrationequivalence; no tunedprofile or performanceclaim",
+      "omission": "Trace event streams and detailed per-producer/histogram arrays omitted; aggregate loss/open-work/coverage and tick wait metadata preserved. Raw outputs remain local, hashes are commitments rather than uploaded raw proof."
+    },
+    {
+      "original_path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/runs/diagnostic-small-ni-n1-gpuoff-baseline/passed.json",
+      "original_sha256": "57eca91dc58597b02457ae98973fd7f07b20eb985682d4b2df74522a1aeba0dd",
+      "original_bytes": 3444,
+      "passed": true,
+      "request_sha256": "3a1270c25c80f6ac4a75ecaaa90989706bea529665205cdf307fda0b36526b71",
+      "bindings_sha256": "5de0386482b93727b3d45a1ceeb6d6f67c149b7bd59981a7572042638fd17c41",
+      "binary_sha256": "18b640357036e457470338e092fb3108debc3ab252adbb631b0094d18852e36c",
+      "validated": {
+        "final_header": {
+          "major": 0,
+          "minor": 154,
+          "teams": 2,
+          "width": 64,
+          "height": 64,
+          "map_offset": 807896,
+          "gzip_sha256": "c8d02b6ecdf5df779fd4cad7ef53baa88b6aae03f05efbad9ad5927136eec49f"
+        },
+        "result": {
+          "ticks": 2048,
+          "initialChecksum": 81734799,
+          "finalChecksum": 2877099230,
+          "termination": "tick_cap",
+          "winning_teams": [],
+          "resolved": {
+            "tick_limit": 2048,
+            "map": "small-ni",
+            "save_version": 154,
+            "winning_conditions": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "experiments": [],
+            "rules": {
+              "aiOrderDelay": 8,
+              "buildingGradientDelay": 8,
+              "noGrowth": 0,
+              "scarcity": 0,
+              "instantConstruction": 0,
+              "stockpile": 0,
+              "noHunger": 0,
+              "noUpgrades": 0,
+              "glassCannon": 0,
+              "fearless": 0,
+              "noPermadeath": 0,
+              "peaceful": 0,
+              "fortress": 0,
+              "suddenDeathTick": 0,
+              "winProbabilityPermille": 0
+            },
+            "fork": []
+          }
+        },
+        "gcs": {
+          "sha256": "acf7a1244979437f8e78afd8083dc7e86a15796dce13a33a58eeed3edff4c848",
+          "teams": 2,
+          "players": 2,
+          "count": 2048,
+          "first_tick": 0,
+          "last_tick": 2047,
+          "flags": 0
+        },
+        "world": {
+          "sha256": "b10fefebde46ba122b676f71b910c17e45f7ab811ac407dce57bbc531688f6d8",
+          "count": 2048,
+          "first_tick": 0,
+          "last_tick": 2047,
+          "scope": "per-tick full world/resource/pending proposal checksum; decimal source format"
+        },
+        "ait1": {
+          "offset": 753268,
+          "bytes": 3003077,
+          "sha256": "b374e3376088c6dcf2e601cb65f9040d90bb7436a66efcf06670ef2f795fc5dc",
+          "frames": 64,
+          "rows": 128,
+          "values": 39988,
+          "until": 2017,
+          "truncated": false
+        },
+        "replay_sha256": "6e6d7c373d8e0fb4910ce9c2c753fe2382fe5c5fa2918386512dd0a5e7534e4d",
+        "final_gzip_sha256": "c8d02b6ecdf5df779fd4cad7ef53baa88b6aae03f05efbad9ad5927136eec49f"
+      },
+      "output_sha256": {
+        "invocation.json": "d495c821243b488566a741c464bc089aad914b91d95d106f966a4fba2bb1d81d",
+        "stdout.log": "41086a7448664a07a5f6a55df489c5d7ee2486c79328344340315e89fde778a3",
+        "stderr.log": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9",
+        "game.replay.checksums": "acf7a1244979437f8e78afd8083dc7e86a15796dce13a33a58eeed3edff4c848",
+        "game.replay": "6e6d7c373d8e0fb4910ce9c2c753fe2382fe5c5fa2918386512dd0a5e7534e4d",
+        "world.checksums": "b10fefebde46ba122b676f71b910c17e45f7ab811ac407dce57bbc531688f6d8",
+        "progress.jsonl": "b48c60e54c1f9891fe0aa8696f3a3c25a688e6d633009f20b9a0548b1e262efe",
+        "final.game.gz": "c8d02b6ecdf5df779fd4cad7ef53baa88b6aae03f05efbad9ad5927136eec49f",
+        "result.json": "6e50300ba58c21f06410ed4e87d14268e7507ec3ae39c3dc74a1374d81ecdf3a",
+        "artifacts.json": "b2391ee26543e93a365269fda2236e540245d9d05f53d06ca2be8ad6cd5779a6"
+      },
+      "finished_utc": "2026-10-13T02:57:18.748185+00:00",
+      "scope": "diagnosticmigrationequivalence; no tunedprofile or performanceclaim",
+      "omission": "Trace event streams and detailed per-producer/histogram arrays omitted; aggregate loss/open-work/coverage and tick wait metadata preserved. Raw outputs remain local, hashes are commitments rather than uploaded raw proof."
+    },
+    {
+      "original_path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/runs/diagnostic-small-ni-n1-gpuoff-candidate/passed.json",
+      "original_sha256": "d87cc01a6c155403a3f307e82f4cd75ca6fccb7aa23ad6d6fdd639d86a4481c7",
+      "original_bytes": 3444,
+      "passed": true,
+      "request_sha256": "129275dc766b775e95244165d359df1777f5c6d0e23d373c157ba5af71b6d431",
+      "bindings_sha256": "5de0386482b93727b3d45a1ceeb6d6f67c149b7bd59981a7572042638fd17c41",
+      "binary_sha256": "42de4e7766bf7bdb8f0e1abf7bb6b9da7465bffbee2b4a00b2437e965e0d7f61",
+      "validated": {
+        "final_header": {
+          "major": 0,
+          "minor": 154,
+          "teams": 2,
+          "width": 64,
+          "height": 64,
+          "map_offset": 807896,
+          "gzip_sha256": "c8d02b6ecdf5df779fd4cad7ef53baa88b6aae03f05efbad9ad5927136eec49f"
+        },
+        "result": {
+          "ticks": 2048,
+          "initialChecksum": 81734799,
+          "finalChecksum": 2877099230,
+          "termination": "tick_cap",
+          "winning_teams": [],
+          "resolved": {
+            "tick_limit": 2048,
+            "map": "small-ni",
+            "save_version": 154,
+            "winning_conditions": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "experiments": [],
+            "rules": {
+              "aiOrderDelay": 8,
+              "buildingGradientDelay": 8,
+              "noGrowth": 0,
+              "scarcity": 0,
+              "instantConstruction": 0,
+              "stockpile": 0,
+              "noHunger": 0,
+              "noUpgrades": 0,
+              "glassCannon": 0,
+              "fearless": 0,
+              "noPermadeath": 0,
+              "peaceful": 0,
+              "fortress": 0,
+              "suddenDeathTick": 0,
+              "winProbabilityPermille": 0
+            },
+            "fork": []
+          }
+        },
+        "gcs": {
+          "sha256": "acf7a1244979437f8e78afd8083dc7e86a15796dce13a33a58eeed3edff4c848",
+          "teams": 2,
+          "players": 2,
+          "count": 2048,
+          "first_tick": 0,
+          "last_tick": 2047,
+          "flags": 0
+        },
+        "world": {
+          "sha256": "b10fefebde46ba122b676f71b910c17e45f7ab811ac407dce57bbc531688f6d8",
+          "count": 2048,
+          "first_tick": 0,
+          "last_tick": 2047,
+          "scope": "per-tick full world/resource/pending proposal checksum; decimal source format"
+        },
+        "ait1": {
+          "offset": 753268,
+          "bytes": 3003077,
+          "sha256": "b374e3376088c6dcf2e601cb65f9040d90bb7436a66efcf06670ef2f795fc5dc",
+          "frames": 64,
+          "rows": 128,
+          "values": 39988,
+          "until": 2017,
+          "truncated": false
+        },
+        "replay_sha256": "6e6d7c373d8e0fb4910ce9c2c753fe2382fe5c5fa2918386512dd0a5e7534e4d",
+        "final_gzip_sha256": "c8d02b6ecdf5df779fd4cad7ef53baa88b6aae03f05efbad9ad5927136eec49f"
+      },
+      "output_sha256": {
+        "invocation.json": "3f7e339b706eef962a2c4278cd375f5499e589672a80d3365bcf588788b91bc1",
+        "stdout.log": "9ea91c30f11dc77cad67299694660ed53d47bf3bdf1e5f8b384378a388fcb8ea",
+        "stderr.log": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9",
+        "game.replay.checksums": "acf7a1244979437f8e78afd8083dc7e86a15796dce13a33a58eeed3edff4c848",
+        "game.replay": "6e6d7c373d8e0fb4910ce9c2c753fe2382fe5c5fa2918386512dd0a5e7534e4d",
+        "world.checksums": "b10fefebde46ba122b676f71b910c17e45f7ab811ac407dce57bbc531688f6d8",
+        "progress.jsonl": "b48c60e54c1f9891fe0aa8696f3a3c25a688e6d633009f20b9a0548b1e262efe",
+        "final.game.gz": "c8d02b6ecdf5df779fd4cad7ef53baa88b6aae03f05efbad9ad5927136eec49f",
+        "result.json": "225987860566144fa8149427a638879a42de1d445069f023424137c26fce871e",
+        "artifacts.json": "7a9905a9b7e217e2ab7e0ef8de92fe6a93bf69ed2eec0c2eb2114e2539f6a534"
+      },
+      "finished_utc": "2026-10-13T02:57:22.333339+00:00",
+      "scope": "diagnosticmigrationequivalence; no tunedprofile or performanceclaim",
+      "omission": "Trace event streams and detailed per-producer/histogram arrays omitted; aggregate loss/open-work/coverage and tick wait metadata preserved. Raw outputs remain local, hashes are commitments rather than uploaded raw proof."
+    },
+    {
+      "original_path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/runs/diagnostic-small-ni-n12-gpuoff-baseline/passed.json",
+      "original_sha256": "9055ea44f37a37f40564ec2d21441693e5242b7f33719d9a1b1d9b503694899f",
+      "original_bytes": 3444,
+      "passed": true,
+      "request_sha256": "783663ebfd9ac4a05e49db667cf2d6630e95e6412774304a04b1a3a7cb7a2819",
+      "bindings_sha256": "5de0386482b93727b3d45a1ceeb6d6f67c149b7bd59981a7572042638fd17c41",
+      "binary_sha256": "18b640357036e457470338e092fb3108debc3ab252adbb631b0094d18852e36c",
+      "validated": {
+        "final_header": {
+          "major": 0,
+          "minor": 154,
+          "teams": 2,
+          "width": 64,
+          "height": 64,
+          "map_offset": 807896,
+          "gzip_sha256": "c8d02b6ecdf5df779fd4cad7ef53baa88b6aae03f05efbad9ad5927136eec49f"
+        },
+        "result": {
+          "ticks": 2048,
+          "initialChecksum": 81734799,
+          "finalChecksum": 2877099230,
+          "termination": "tick_cap",
+          "winning_teams": [],
+          "resolved": {
+            "tick_limit": 2048,
+            "map": "small-ni",
+            "save_version": 154,
+            "winning_conditions": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "experiments": [],
+            "rules": {
+              "aiOrderDelay": 8,
+              "buildingGradientDelay": 8,
+              "noGrowth": 0,
+              "scarcity": 0,
+              "instantConstruction": 0,
+              "stockpile": 0,
+              "noHunger": 0,
+              "noUpgrades": 0,
+              "glassCannon": 0,
+              "fearless": 0,
+              "noPermadeath": 0,
+              "peaceful": 0,
+              "fortress": 0,
+              "suddenDeathTick": 0,
+              "winProbabilityPermille": 0
+            },
+            "fork": []
+          }
+        },
+        "gcs": {
+          "sha256": "acf7a1244979437f8e78afd8083dc7e86a15796dce13a33a58eeed3edff4c848",
+          "teams": 2,
+          "players": 2,
+          "count": 2048,
+          "first_tick": 0,
+          "last_tick": 2047,
+          "flags": 0
+        },
+        "world": {
+          "sha256": "b10fefebde46ba122b676f71b910c17e45f7ab811ac407dce57bbc531688f6d8",
+          "count": 2048,
+          "first_tick": 0,
+          "last_tick": 2047,
+          "scope": "per-tick full world/resource/pending proposal checksum; decimal source format"
+        },
+        "ait1": {
+          "offset": 753268,
+          "bytes": 3003077,
+          "sha256": "b374e3376088c6dcf2e601cb65f9040d90bb7436a66efcf06670ef2f795fc5dc",
+          "frames": 64,
+          "rows": 128,
+          "values": 39988,
+          "until": 2017,
+          "truncated": false
+        },
+        "replay_sha256": "6e6d7c373d8e0fb4910ce9c2c753fe2382fe5c5fa2918386512dd0a5e7534e4d",
+        "final_gzip_sha256": "c8d02b6ecdf5df779fd4cad7ef53baa88b6aae03f05efbad9ad5927136eec49f"
+      },
+      "output_sha256": {
+        "invocation.json": "77e2d2e3de74ddf9f949dbce09c806a9f50d14b71908c1a9317e714ff57c6421",
+        "stdout.log": "da47850ac6fa0cd1c0eda56b5c0a40402b288a20be97953f3cbc0979b8bbd62f",
+        "stderr.log": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9",
+        "game.replay.checksums": "acf7a1244979437f8e78afd8083dc7e86a15796dce13a33a58eeed3edff4c848",
+        "game.replay": "6e6d7c373d8e0fb4910ce9c2c753fe2382fe5c5fa2918386512dd0a5e7534e4d",
+        "world.checksums": "b10fefebde46ba122b676f71b910c17e45f7ab811ac407dce57bbc531688f6d8",
+        "progress.jsonl": "b48c60e54c1f9891fe0aa8696f3a3c25a688e6d633009f20b9a0548b1e262efe",
+        "final.game.gz": "c8d02b6ecdf5df779fd4cad7ef53baa88b6aae03f05efbad9ad5927136eec49f",
+        "result.json": "7aedff74889a0e20640620a4c9e0b14465ea499ad4605188c34f21386261efd9",
+        "artifacts.json": "1396e713e189b87453fac46110dac683ad13b41cd02768b09931ab12b2b817ab"
+      },
+      "finished_utc": "2026-10-13T02:57:26.005352+00:00",
+      "scope": "diagnosticmigrationequivalence; no tunedprofile or performanceclaim",
+      "omission": "Trace event streams and detailed per-producer/histogram arrays omitted; aggregate loss/open-work/coverage and tick wait metadata preserved. Raw outputs remain local, hashes are commitments rather than uploaded raw proof."
+    },
+    {
+      "original_path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/runs/diagnostic-small-ni-n12-gpuoff-candidate/passed.json",
+      "original_sha256": "c6efd2524dfc498910b04551c55b95daeebd4362caa43d58f1eede55407dd99d",
+      "original_bytes": 3444,
+      "passed": true,
+      "request_sha256": "4d5c52848b370c1d32205ceb713825570198f0cb4e54e60bf048c139ee9a1e0c",
+      "bindings_sha256": "5de0386482b93727b3d45a1ceeb6d6f67c149b7bd59981a7572042638fd17c41",
+      "binary_sha256": "42de4e7766bf7bdb8f0e1abf7bb6b9da7465bffbee2b4a00b2437e965e0d7f61",
+      "validated": {
+        "final_header": {
+          "major": 0,
+          "minor": 154,
+          "teams": 2,
+          "width": 64,
+          "height": 64,
+          "map_offset": 807896,
+          "gzip_sha256": "c8d02b6ecdf5df779fd4cad7ef53baa88b6aae03f05efbad9ad5927136eec49f"
+        },
+        "result": {
+          "ticks": 2048,
+          "initialChecksum": 81734799,
+          "finalChecksum": 2877099230,
+          "termination": "tick_cap",
+          "winning_teams": [],
+          "resolved": {
+            "tick_limit": 2048,
+            "map": "small-ni",
+            "save_version": 154,
+            "winning_conditions": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "experiments": [],
+            "rules": {
+              "aiOrderDelay": 8,
+              "buildingGradientDelay": 8,
+              "noGrowth": 0,
+              "scarcity": 0,
+              "instantConstruction": 0,
+              "stockpile": 0,
+              "noHunger": 0,
+              "noUpgrades": 0,
+              "glassCannon": 0,
+              "fearless": 0,
+              "noPermadeath": 0,
+              "peaceful": 0,
+              "fortress": 0,
+              "suddenDeathTick": 0,
+              "winProbabilityPermille": 0
+            },
+            "fork": []
+          }
+        },
+        "gcs": {
+          "sha256": "acf7a1244979437f8e78afd8083dc7e86a15796dce13a33a58eeed3edff4c848",
+          "teams": 2,
+          "players": 2,
+          "count": 2048,
+          "first_tick": 0,
+          "last_tick": 2047,
+          "flags": 0
+        },
+        "world": {
+          "sha256": "b10fefebde46ba122b676f71b910c17e45f7ab811ac407dce57bbc531688f6d8",
+          "count": 2048,
+          "first_tick": 0,
+          "last_tick": 2047,
+          "scope": "per-tick full world/resource/pending proposal checksum; decimal source format"
+        },
+        "ait1": {
+          "offset": 753268,
+          "bytes": 3003077,
+          "sha256": "b374e3376088c6dcf2e601cb65f9040d90bb7436a66efcf06670ef2f795fc5dc",
+          "frames": 64,
+          "rows": 128,
+          "values": 39988,
+          "until": 2017,
+          "truncated": false
+        },
+        "replay_sha256": "6e6d7c373d8e0fb4910ce9c2c753fe2382fe5c5fa2918386512dd0a5e7534e4d",
+        "final_gzip_sha256": "c8d02b6ecdf5df779fd4cad7ef53baa88b6aae03f05efbad9ad5927136eec49f"
+      },
+      "output_sha256": {
+        "invocation.json": "5211873bb5eef1b131dfe2c1ffe4c31aa8b423bdf19a5c644ac6f7b59be4d1d0",
+        "stdout.log": "f0e286e51a1a7ec2846d265fc131788d1fecaac34496018cadac2de71fe1929e",
+        "stderr.log": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9",
+        "game.replay.checksums": "acf7a1244979437f8e78afd8083dc7e86a15796dce13a33a58eeed3edff4c848",
+        "game.replay": "6e6d7c373d8e0fb4910ce9c2c753fe2382fe5c5fa2918386512dd0a5e7534e4d",
+        "world.checksums": "b10fefebde46ba122b676f71b910c17e45f7ab811ac407dce57bbc531688f6d8",
+        "progress.jsonl": "b48c60e54c1f9891fe0aa8696f3a3c25a688e6d633009f20b9a0548b1e262efe",
+        "final.game.gz": "c8d02b6ecdf5df779fd4cad7ef53baa88b6aae03f05efbad9ad5927136eec49f",
+        "result.json": "04cace8a426f6b93d6934efa59b397dcb78715bd5cc0376337f476ed32a156e7",
+        "artifacts.json": "fb548e346202d566adf93591eccabc438eb5f7b856ccf05f45c16ec85806503c"
+      },
+      "finished_utc": "2026-10-13T02:57:29.441440+00:00",
+      "scope": "diagnosticmigrationequivalence; no tunedprofile or performanceclaim",
+      "omission": "Trace event streams and detailed per-producer/histogram arrays omitted; aggregate loss/open-work/coverage and tick wait metadata preserved. Raw outputs remain local, hashes are commitments rather than uploaded raw proof."
+    }
+  ]
+}

@@ -1,0 +1,131 @@
+{
+  "state": "plan-only",
+  "sealed": false,
+  "launches": 0,
+  "source_commit": "9e370bcb83209cf99f43c346750a6d4bd440f4f2",
+  "final_sha256": "ea5dbd7f5e30c129b0f554796beb8a67ec96041baef4b70c9310df7863faa406",
+  "scopes": [
+    {
+      "id": "six-logical-three-physical",
+      "mask": [
+        0,
+        1,
+        2,
+        16,
+        17,
+        18
+      ],
+      "expected_auto": 6
+    },
+    {
+      "id": "24-logical-12-physical",
+      "mask": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27
+      ],
+      "expected_auto": 24
+    }
+  ],
+  "counts": [
+    1,
+    3,
+    6,
+    12,
+    "auto"
+  ],
+  "fixtures": [
+    {
+      "id": "playground-ni-164298751",
+      "layout": "playground-ni",
+      "seed": 164298751,
+      "ticks": 20000,
+      "fixture": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/correctness/playground-ni-164298751/fixture/initial.game.gz",
+      "fixture_sha256": "941f58ab62b44969b870ce87b055a686b514ee8fe45dcbc2e4e6ed4c83e7edfe"
+    },
+    {
+      "id": "playground-ni-902381047",
+      "layout": "playground-ni",
+      "seed": 902381047,
+      "ticks": 20000,
+      "fixture": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/correctness/playground-ni-902381047/fixture/initial.game.gz",
+      "fixture_sha256": "2f32c1b4f632ca3afb52ce491d53ae6bbf2928f747fbfd6b15e809a9e871a40c"
+    },
+    {
+      "id": "oazis-ni-164298751",
+      "layout": "oazis-ni",
+      "seed": 164298751,
+      "ticks": 8192,
+      "fixture": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/correctness/oazis-ni-164298751/fixture/initial.game.gz",
+      "fixture_sha256": "8f8c8f15e043c96eb19995d4504dd8a4da268422506d290004dfc2cab32208ea"
+    },
+    {
+      "id": "oazis-ni-902381047",
+      "layout": "oazis-ni",
+      "seed": 902381047,
+      "ticks": 8192,
+      "fixture": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/correctness/oazis-ni-902381047/fixture/initial.game.gz",
+      "fixture_sha256": "c927fa224161e9eb6219fec44829a086aaa70a50d784a626fbc28f377e7eb8e0"
+    },
+    {
+      "id": "large-mixed-164298751",
+      "layout": "large-mixed",
+      "seed": 164298751,
+      "ticks": 4096,
+      "fixture": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/correctness/large-mixed-164298751/fixture/initial.game.gz",
+      "fixture_sha256": "359a5317a2713785e5d33a218d84c7d442ce448df66c9da9729f2d21f7d46a5f"
+    },
+    {
+      "id": "large-mixed-902381047",
+      "layout": "large-mixed",
+      "seed": 902381047,
+      "ticks": 4096,
+      "fixture": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/correctness/large-mixed-902381047/fixture/initial.game.gz",
+      "fixture_sha256": "b69a5e8c937c94c6bed5b762cba349f2ba69fe1bb4f0e2e5ff698f82dd8dd670"
+    }
+  ],
+  "measured_repetitions": 3,
+  "planned_conformance_children": 36,
+  "planned_native_children": 480,
+  "conformance_counts": [
+    12,
+    24,
+    "auto"
+  ],
+  "conformance_ticks": 2048,
+  "reference": "Frozen original2ced baseline1GPUoff raw GCS/world/replay perexistingfixture; finalonly counts for timing.",
+  "counterbalance": "For eachscope/fixture/block rotate5counts by block+seedoffset+scopeoffset and reversealternateblocks. Fourblocks/fixture cannot perfectly balance5positions; pairedN1reference fromsameblock/seed, no poolacrossbudgets/layouts.",
+  "full32_supplement": "Static availableCPUquery only: unrestrictedeligible32 impliesauto32 on thishost; no engineperformance/optimality claim. Linux/Androidlogicalaffinity ceiling, quotas not detected; browser8cap unchanged.",
+  "hardcoded3": false,
+  "other_scope": "Explicit12on6 deliberate oversubscriptioncontrol; explicit24on6 diagnostics only. Auto6/24 checked actualcount.",
+  "historical_gate": "Must fullyterminate or rootverifybetweenrevisionplot hold+zeroactivegames; no other engines/compilers/profilers. Launchzero untilrootapprovedreceipts.",
+  "warmup_runs_per_count": 1,
+  "gpu_settings": [
+    "off",
+    "on"
+  ],
+  "planned_performance_jobs": 24,
+  "GPU_qualification": "Separate GPUoff CPUparallelism from GPUon service/cancellation/fallback. Neverpoolstrata; samecount may changeGPUhealth.",
+  "GPU_order": "Alternate GPUstratumorder byfixture+budget; countblocks rotate/reverse independently withinstratum."
+}

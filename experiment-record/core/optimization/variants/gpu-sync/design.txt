@@ -1,0 +1,52 @@
+GPU host acquisition prerequisite — isolated, UNBUILT, UNTESTED, NOT ACCEPTED.
+Base: 2ced60e06b8e7fa7a4a4ecff944c40bda494bcf4.
+
+The current Runtime::await polls clGetEventInfo(CL_EVENT_COMMAND_EXECUTION_STATUS),
+then returns on CL_COMPLETE and marks transfer proof complete. clGetEventInfo is
+explicitly not a host synchronization point. Nonblocking read callers then read
+host staging/flags. This is a correctness prerequisite, not a measured speed fix.
+
+Minimal isolated change:
+Bind core OpenCL1.0 clWaitForEvents through the existing dynamic API loader.
+After a successful event query reports CL_COMPLETE, require successful
+clWaitForEvents(1,&event) BEFORE proof.eventCompleted() or returning to consumers.
+Count successful waits in existing per-lane status; end-only headless JSON emits
+gpu_host_event_waits. No change to blocking-read paths, kernels, caps, descriptors,
+CPU fallback, budgets, device/context/queue selection, saves or simulation version.
+Binding/query/wait failures still unwind through existing permanent device/session
+failure and retention proof guard. No host output is committed on failure.
+
+Thread scope: owned field execution follows DeviceBroker::run -> execute ->
+executeOpenCLDevice -> Runtime::await. Legacy direct accelerated helpers select
+GPU only when ComputeExecutor::workerSlot() via BackendSession::choose, hence
+compute workers may also call await. Direct executeOpenCLDevice test entry points
+retain their prior caller threading responsibility. No wait was added to reaper terminalProof. Public synchronous backend APIs
+retain caller responsibility and may execute on the caller/owner; no universal
+owner-free or bounded driver-call latency guarantee is claimed. The wait follows a positive
+completion query, but correctness must not depend on undocumented driver behavior.
+Cancellation remains interruptible before positive completion; no clFinish.
+
+Terminal lifetime proof and host data acquisition are different:
+The reaper only abandons output and releases retained endpoints after covering
+positive command completion. It does not consume abandoned host output. Therefore
+terminalProof remains nonblocking GetEventInfo+strict covering-prefix proof; the
+new wait is restricted to successful host acquisition in await. Recovery layers
+this prerequisite separately; recovery-only.patch is relative to this source.
+
+Focused actual-hardware tests (fresh isolated processes, pending release build):
+OpenCLGradient/isolated host event acquisition commits exact output or fails closed
+Run GLOB2_TEST_OPENCL_HOST_ACQUIRE=1 normally and separately with
+GLOB2_TEST_OPENCL_WAIT_FAILURE=1. The diagnostic injects a wait failure after
+positive query; it tests failure handling, not an actual broken driver.
+Require genuine GPU execution/commits and successful waits in normal test;
+require exact original-seed CPU fallback once, no commit/waits, session failed and
+zero readiness in injected failure. Skipped tests emit NO proof marker.
+Retain all existing independent field oracle, query-failure/lifetime, deadline,
+CPU-original fallback and pipeline tests. Root selects actual release build/test
+commands, then the late agent's finite 29 conformance/14 timing gates. NO launches.
+
+Primary specifications:
+https://registry.khronos.org/OpenCL/specs/unified/refpages/man/html/clGetEventInfo.html
+https://registry.khronos.org/OpenCL/specs/unified/refpages/man/html/clWaitForEvents.html
+https://registry.khronos.org/OpenCL/specs/unified/refpages/man/html/clEnqueueReadBuffer.html
+No measured benefit or platform conformance claim; preserve all raw baseline data.

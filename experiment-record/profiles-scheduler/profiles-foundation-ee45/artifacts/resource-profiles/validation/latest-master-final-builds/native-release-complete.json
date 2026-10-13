@@ -1,0 +1,57 @@
+{
+  "passed": true,
+  "source": "ee45c0a0389660bc7d2885b572b94b1a2b01d7a3",
+  "tree": "c4f8f7ebd7888effb0800dd0b14e70f8fc2c3224",
+  "argv": [
+    "taskset",
+    "-c",
+    "0-31",
+    "scons",
+    "release=1",
+    "CC=gcc-13",
+    "CXX=g++-13",
+    "LINKFLAGS=-L/usr/lib/gcc/x86_64-linux-gnu/15",
+    "-j32",
+    "build/linux/client/release/src/glob2",
+    "unit-tests",
+    "engine-tests",
+    "software-render-benchmark",
+    "torus-render-benchmark"
+  ],
+  "cwd": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2",
+  "environment": {
+    "CCACHE": "1",
+    "CCACHE_MAXSIZE": "12G",
+    "GLOB2_SDL3_PREFIX": "/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/build/sdl3-ci/prefix",
+    "GLOB2_RENDER_SHADER_INPUT": "/home/bradley/.codex/worktrees/execution-resource-profiles/glob2/artifacts/resource-profiles/validation/renderer-bundle-v2/shaders"
+  },
+  "started_utc": "2026-10-13T01:58:02.644181+00:00",
+  "finished_utc": "2026-10-13T01:58:27.259994+00:00",
+  "elapsed_s": 24.61586813814938,
+  "exit": 0,
+  "source_unchanged": true,
+  "log_sha256": "503a26ff0681f509b5f2c116fa791ba3332f8a2cf06cb6e163291afd645cbe67",
+  "outputs": {
+    "build/linux/client/release/src/glob2": {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/build/linux/client/release/src/glob2",
+      "sha256": "18b640357036e457470338e092fb3108debc3ab252adbb631b0094d18852e36c"
+    },
+    "build/linux/client/release/test/glob2-unit-tests": {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/build/linux/client/release/test/glob2-unit-tests",
+      "sha256": "1e1b9bf63d22649ec61d1e763cf3c17cb88d24cc7cd256c6494605671769c7ee"
+    },
+    "build/linux/client/release/test/glob2-engine-tests": {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/build/linux/client/release/test/glob2-engine-tests",
+      "sha256": "e065df0f9dd078b5cee551d619aae380bcff5a02f98e947af0c953419a98b216"
+    },
+    "build/linux/client/release/test/SoftwareRenderBenchmark": {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/build/linux/client/release/test/SoftwareRenderBenchmark",
+      "sha256": "e07cefc8ed15935307b52b3fd51d971aff99d2ca27c2c1e37072e64dd58f9110"
+    },
+    "build/linux/client/release/test/torus-render-benchmark": {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/build/linux/client/release/test/torus-render-benchmark",
+      "sha256": "fac567e64cf74c5a62bc06ed700e8671fc86c7566cf5f7d060e216789dd3b37a"
+    }
+  },
+  "scope": "Ordinaryrelease compilation/package only; cache/sharedhost timingnotisolated; no runtime/hardware/installation/signingqualification"
+}

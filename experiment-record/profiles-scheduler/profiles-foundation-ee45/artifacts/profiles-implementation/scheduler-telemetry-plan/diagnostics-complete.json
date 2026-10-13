@@ -1,0 +1,25 @@
+{
+  "passed": true,
+  "count": 16,
+  "plan_sha256": "5ea01bf3a16d3d392db18bc651c6c36f20e214b247cbaca582f1344ccd889a12",
+  "bindings_sha256": "5de0386482b93727b3d45a1ceeb6d6f67c149b7bd59981a7572042638fd17c41",
+  "proof_sha256": {
+    "diagnostic-small-ni-n1-gpuoff-baseline": "57eca91dc58597b02457ae98973fd7f07b20eb985682d4b2df74522a1aeba0dd",
+    "diagnostic-small-ni-n1-gpuoff-candidate": "d87cc01a6c155403a3f307e82f4cd75ca6fccb7aa23ad6d6fdd639d86a4481c7",
+    "diagnostic-small-ni-n12-gpuoff-baseline": "9055ea44f37a37f40564ec2d21441693e5242b7f33719d9a1b1d9b503694899f",
+    "diagnostic-small-ni-n12-gpuoff-candidate": "c6efd2524dfc498910b04551c55b95daeebd4362caa43d58f1eede55407dd99d",
+    "diagnostic-rect-mixed-n4-gpuoff-baseline": "67ed2e4c8a3462af8946592d67fda58a8a9ad958d6d8b98d755e912a963d7029",
+    "diagnostic-rect-mixed-n4-gpuoff-candidate": "34f4381fcac2571ef953a8bc497d2411802dce3a9cdd99a9ffbeac519bd2c40a",
+    "diagnostic-holdout-comb-n4-gpuoff-baseline": "f337ed6fd5ed2ce045c41c439d92af351dcff803b7d9337a106201901aaeaafa",
+    "diagnostic-holdout-comb-n4-gpuoff-candidate": "41ddfc630be1e1af05f0c1b64c2f73639e32eae4910d40aa3acb1def063beaf5",
+    "diagnostic-playground-ni-n4-gpuon-baseline": "80720cdf2ec0897c1fee3cb964932e77182c83de2d0aa6a4a1ef73dc5f9a9a38",
+    "diagnostic-playground-ni-n4-gpuon-candidate": "bf1300d7f0801209a45abdd0194bf9fa64434b155d5e06072906b11815ee3c36",
+    "diagnostic-playground-ni-n12-gpuon-baseline": "cbcab2f3e7527e6ac05a91d48cf18b3d81608778148703a9a2434f4b3b72c86c",
+    "diagnostic-playground-ni-n12-gpuon-candidate": "5e10d90851bd8cc82c65ebb969002a53699099dbaeb9a007206fc26e59ac4d44",
+    "diagnostic-oazis-ni-n4-gpuoff-baseline": "e55bfa93e5c83b57d89ed1aea0d572582050c046c2f489b94ce1ea948d60a1fe",
+    "diagnostic-oazis-ni-n4-gpuoff-candidate": "ed106c0375027691c309c783727b077128ac53640e67d04467c94fd0306a72e0",
+    "diagnostic-oazis-ni-n12-gpuoff-baseline": "4eec6ebdf164716dd0909b2af5023bb56a3598219514da9b97f37ad04ea778fb",
+    "diagnostic-oazis-ni-n12-gpuoff-candidate": "042d4f1458ef06683b45304d703b61df7bbe44d52f41bc9bbadcbbb5af5f104f"
+  },
+  "scope": "Fresh current source results; no historical proof reuse, no N12 presentation proof."
+}

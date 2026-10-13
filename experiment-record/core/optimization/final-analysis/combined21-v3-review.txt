@@ -1,0 +1,67 @@
+Independent final combined21 review: ACCEPT tested fixed3/GPUoff package with stated limits.
+Final9e370b vs untouched2ced, explicit3/GPUoff fixed masks and replayON. Automatic eligible sizing is a separate prior experiment. One warmup excluded;3 paired reps,largeMixed6. Descriptive2seed intervals, mixed3. No aggregate over mismatched workloads.
+Completed21/21,186native processes including excludedwarmups. EverylayoutRSS95interval negative; noCPU/wall interval whollypositive. No universal nonregression claim or completednaturalgameclaim.
+
+small-ni ticks8192 seeds2
+  simulation_cpu_s: -5.4762% [-7.6169,-2.7283]
+  simulation_wall_s: -8.8184% [-11.3683,-6.4180]
+  cpu_s: -4.7995% [-6.5743,-2.6438]
+  wall_s: -6.2233% [-7.4235,-4.6942]
+  peak_rss_bytes: -32.9152% [-33.3857,-32.6233]
+rect-mixed ticks8192 seeds2
+  simulation_cpu_s: -0.7777% [-7.3377,+9.5683]
+  simulation_wall_s: -3.7965% [-10.2578,+5.0860]
+  cpu_s: -1.1347% [-6.5349,+7.1461]
+  wall_s: -3.5617% [-8.0779,+1.8849]
+  peak_rss_bytes: -37.2427% [-37.6782,-36.5603]
+rect-cortex ticks8192 seeds2
+  simulation_cpu_s: -2.4203% [-3.6087,-0.3529]
+  simulation_wall_s: -2.7461% [-3.3431,-1.7311]
+  cpu_s: -2.4147% [-3.5279,-0.4903]
+  wall_s: -2.6282% [-3.5544,-1.4995]
+  peak_rss_bytes: -37.4481% [-37.9862,-37.0007]
+playground-ni ticks20000 seeds2
+  simulation_cpu_s: -2.4983% [-4.3870,-0.2730]
+  simulation_wall_s: -2.8667% [-5.2780,-0.1975]
+  cpu_s: -2.4694% [-4.2521,-0.3405]
+  wall_s: -2.7924% [-5.1708,-0.2850]
+  peak_rss_bytes: -23.6263% [-24.0376,-23.3065]
+river-cortex ticks8192 seeds2
+  simulation_cpu_s: +0.1608% [-3.3047,+3.2565]
+  simulation_wall_s: -0.0156% [-2.7684,+2.7525]
+  cpu_s: -0.0388% [-3.4608,+3.2977]
+  wall_s: -0.3916% [-3.1655,+2.3072]
+  peak_rss_bytes: -35.5049% [-36.1994,-34.7156]
+isles-mixed ticks8192 seeds2
+  simulation_cpu_s: -2.4883% [-5.8274,+1.2031]
+  simulation_wall_s: -2.2212% [-5.5188,+1.0403]
+  cpu_s: -2.5478% [-5.7879,+0.9396]
+  wall_s: -2.3743% [-5.4729,+0.4301]
+  peak_rss_bytes: -14.5519% [-15.3022,-13.5760]
+oazis-ni ticks8192 seeds2
+  simulation_cpu_s: +0.2343% [-2.4038,+3.2754]
+  simulation_wall_s: -0.1578% [-2.4074,+2.3192]
+  cpu_s: +0.1789% [-2.3950,+3.0483]
+  wall_s: -0.2563% [-2.4875,+2.0842]
+  peak_rss_bytes: -16.1163% [-16.6906,-15.5533]
+swamp-wide ticks8192 seeds2
+  simulation_cpu_s: -1.0589% [-3.0989,+1.1727]
+  simulation_wall_s: -2.9083% [-6.7427,-0.5491]
+  cpu_s: -1.0885% [-3.1282,+1.0372]
+  wall_s: -2.6871% [-6.4801,-0.4591]
+  peak_rss_bytes: -30.8999% [-31.0469,-30.7565]
+large-ni ticks4096 seeds2
+  simulation_cpu_s: -1.1942% [-5.4767,+2.4184]
+  simulation_wall_s: -1.4508% [-5.8259,+1.9477]
+  cpu_s: -1.1949% [-5.3472,+2.2496]
+  wall_s: -1.4287% [-5.4891,+1.6852]
+  peak_rss_bytes: -10.8940% [-11.2379,-10.4933]
+large-mixed ticks4096 seeds3
+  simulation_cpu_s: +0.3451% [-1.1981,+2.1824]
+  simulation_wall_s: +0.8605% [-0.5157,+2.3835]
+  cpu_s: +0.2290% [-1.2225,+1.9630]
+  wall_s: +0.5585% [-0.6430,+1.8786]
+  peak_rss_bytes: -14.3835% [-14.9184,-13.7799]
+
+Independent raw lineage/audit qualification: {'passed': True, 'jobs': 21, 'native_processes': 186, 'floor_min_MiB': 21.21484375, 'floor_max_MiB': 21.4375, 'native_peak_min_MiB': 53.65234375, 'min_margin_MiB': 32.36328125, 'exact_broker_lineage': True, 'auditors_siblings_source_review': True, 'per_game_request_response_sha_verified': True, 'all_before_after_job_and_plan_audits_passed': True, 'source_commit': '9e370bcb83209cf99f43c346750a6d4bd440f4f2', 'app_sha256': 'ea5dbd7f5e30c129b0f554796beb8a67ec96041baef4b70c9310df7863faa406', 'phase_seal_sha256': 'ddd5626c3840184f03ef072462a6b34626db3ddd1dc721a4cda657ae08d82331'}
+Natural18 matrix still pending and excluded. Fixed3 baseline vsfinal cannot substantiate affinity-auto speed gain; prior automatic-sizing evidence is distinct. Browser/nativecompatibility receipts separately qualify finalsamebinary/source. Coldwarmup rows retained separate. Failed v1/v2/pilot raw remain excluded, not silently retried or merged.

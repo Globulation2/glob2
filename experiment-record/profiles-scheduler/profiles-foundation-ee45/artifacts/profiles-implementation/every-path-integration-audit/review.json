@@ -1,0 +1,139 @@
+{
+  "source_commit": "66575e0c1293ea831627662fdb463a0874a46f74",
+  "scope": "Bounded read-only current integration audit; no source/build/game/profile changes",
+  "conclusion": "No demonstrated production engine compute-sizing bypass. Cannot claim every launcher/request or six tuned adaptive profiles complete; two Python request/provenance gaps remain.",
+  "consumers": [
+    {
+      "paths": [
+        "src/app/cli/Headless.cpp:479",
+        "src/engine/EngineRun.cpp:1010",
+        "src/app/cli/VerifyMatch.cpp:170",
+        "src/app/cli/TurnClientCommand.cpp:201"
+      ],
+      "status": "Headless and normal/turn/replay setup share frozen resource plan and native executor count; verifier/turn invoke common Engine.beginSession."
+    },
+    {
+      "paths": [
+        "src/app/cli/MapStudy.cpp:624",
+        "src/app/cli/MapCommand.cpp:621"
+      ],
+      "status": "Native map operations use owner-only central plan; absence of Python explicit intent does not bypass native CPU resolver."
+    },
+    {
+      "paths": [
+        "src/app/GlobalContainerArgs.cpp:319",
+        "src/map/preview/LandscapePreviewer.cpp:29",
+        "src/game/screens/LandscapePickerScreen.cpp:254",
+        "src/game/screens/GeneratorStudioScreen.cpp:177"
+      ],
+      "status": "Assets, preview, validation and Studio resolve phase-specific counts; explicit asset CPU/IO preserved and browser IO0; independent phases do not establish total concurrent process budget."
+    },
+    {
+      "paths": [
+        "tools/tournaments/model.py:57",
+        "tools/tournaments/jobs.py:145",
+        "tools/tournaments/jobs.py:294",
+        "tools/tournaments/jobs.py:319"
+      ],
+      "status": "New game jobs get versioned execution intent by default, capability validate allocated CLI flags; result validates resolved allocation, memory provenance and actual count, measured count exact. Engine result retained and orchestration record attached separately."
+    }
+  ],
+  "actionable_gaps": [
+    {
+      "priority": 1,
+      "paths": [
+        "tools/tournaments/local.py:55",
+        "tools/tournaments/local.py:59"
+      ],
+      "problem": "run_job accepts requested_execution_profile and compatibility_mode for every kind but sets execution=None for non-game generate_map. A caller supplying eco/legacy resource intent gets no forwarded intent nor validation; native MapStudy resolves context owner-only instead. Current map_generator_study uses defaults, so no demonstrated current run regression.",
+      "smallest_fix": "Fail fast on unsupported explicitly supplied non-game policy arguments, or add a narrow owner-only map-generation request/receipt adapter. Do not silently discard explicit intent.",
+      "acceptance": "Fix or explicitly qualify before claiming all launcher APIs support the resource request contract; not blocker for approved game-run campaign."
+    },
+    {
+      "priority": 2,
+      "paths": [
+        "tools/map_telemetry.py:47",
+        "tools/map_generation_study.py:55",
+        "tools/skins/benchmark_rigs.py:135"
+      ],
+      "problem": "Direct map and production-scene wrappers do not prepare an execution request/capability receipt or validate the native resolved plan; map wrappers retain implicit native owner-only context. Scene wrapper uses supported legacy aliases, not a frozen historical receipt selecting resource compatibility.",
+      "smallest_fix": "Expose optional request/budget compatibility through existing native execution adapter where command supports it and persist requested/resolved provenance. For specialised renderer-only binary keep explicit non-engine scope.",
+      "acceptance": "Provenance/API coverage gap, not proof that native engine skips resolver. Limit every-path claims rather than changing historical measurement defaults."
+    }
+  ],
+  "intentional_compatibility": [
+    {
+      "paths": [
+        "tools/tournaments/jobs.py:79",
+        "tools/tournaments/jobs.py:104"
+      ],
+      "status": "Existing signed jobs with no execution field retain original command/identity; new game job default is profile aware. Explicit legacy_argv requires older CLI2; no silent fallback."
+    },
+    {
+      "paths": [
+        "tools/software_render_benchmark.py:36",
+        "tools/release/benchmark_profiles.py:97",
+        "tools/memory_benchmark.py:127"
+      ],
+      "status": "Current native benchmarks have explicit role compatibility/resource adapters and validated plan receipts. Old sealed artifacts and copied historical benchmark primitive remain deliberately unchanged; standalone shader/decoder/build/rig kernels are not game execution plans."
+    }
+  ],
+  "known_phase1_limits": [
+    {
+      "paths": [
+        "src/common/ResourcePolicy.h:79"
+      ],
+      "limit": "Intent is recognised but tier tuning/adaptive observations/hysteresis are pending; no high-end luxury/low-end eco policy proven."
+    },
+    {
+      "paths": [
+        "src/common/ComputeThreads.cpp:14",
+        "src/app/ApplicationResourcePlan.cpp:27"
+      ],
+      "limit": "Eligible logical affinity/cpuset ceiling only, no CPU-time quota/physical-core throughput discovery. Other-platform unknown allocation auto1 is explicit behaviour, not unchanged default claim."
+    },
+    {
+      "paths": [
+        "src/app/ApplicationResourcePlan.cpp:30",
+        "src/app/GlobalContainerArgs.cpp:264"
+      ],
+      "limit": "GPU permission/capability unknown kept distinct; actual backend status/fallback must qualify device work. Render detail/resolution/preparation remain planning metadata, renderer choices are not tier guesses."
+    },
+    {
+      "paths": [
+        "src/app/ApplicationResourcePlan.cpp:62",
+        "src/app/ApplicationPhaseResources.cpp:79"
+      ],
+      "limit": "No live memory census or enforced recoverable-cache/retained-buffer budget; AssetLoader admission credits are separate from recoverable/RSS budgets. Preserve required/leased/simulation-visible caches."
+    },
+    {
+      "paths": [
+        "src/app/Settings.cpp:170",
+        "src/ui/settings/SettingsScreenGeneral.cpp"
+      ],
+      "limit": "Saved optional intent persists and CLI precedence works; interactive profile picker/visible reset automatic is absent. Ordinary FPS/graphics settings remain active, not a six-profile UI."
+    },
+    {
+      "paths": [
+        "src/engine/sim/SimulationRunner.cpp:27",
+        "src/field/GradientDeviceService.cpp:556",
+        "libgag/src/BackgroundFileWriter.cpp:185"
+      ],
+      "limit": "Separate mandatory owner/service roles and app-owned pools have no unified simultaneous accounting/partition yet. IO/network/audio/driver threads must not be capped with a processwide blind ceiling."
+    }
+  ],
+  "requires_new_campaign": false,
+  "acceptance_recommendation": "Accept only scoped central-plan migration with these limits; handle explicit Python intent discard before an every-path guarantee. No speculative tuning or scheduler change proposed.",
+  "source_sha256": {
+    "src/app/GlobalContainerArgs.cpp": "9fb2861310692ee0f5ffac4a4f0e4b28988468b15cab5c73b5ffa41706f2f48d",
+    "src/app/ApplicationResourcePlan.cpp": "40a86be34ad14ec23db3dc8fcaaaa29fe36dc55c53ea3cac9ad9f6ed4c1d7ec2",
+    "src/app/ApplicationPhaseResources.cpp": "3942f0fe7470f38a4e3c0ae109e85150b32b7461c6f41955c9f914c37de66d55",
+    "src/common/ResourcePolicy.h": "17f2a8e850f8aa2bf755333e44709ab275663529c6bcff6b109532e4b29020df",
+    "tools/tournaments/local.py": "c2c6a23200e4697bcf29cb83142fceac7dbfa2022782598e502b0f28fb4296e3",
+    "tools/tournaments/model.py": "b125c64a730cb3b299892e0ac67b332a0956f7819b2a588d7bd0d5221f140580",
+    "tools/tournaments/jobs.py": "5f58d1f5007e4c9976be46a583822d6dc81da31f9bc9848b3c53599f74ccfe2b",
+    "tools/map_telemetry.py": "a9e07ff4e1eff054557cfda7e2c756d211263586c772353f3b8c0d02591b6c4a",
+    "tools/map_generation_study.py": "112eeb3dca2414f76f513470ffcc3faea71175b9a73833f84483face5cd1b17f",
+    "tools/skins/benchmark_rigs.py": "8244d733c5a029e5b1a60ded388c6cef9ec0f56df04a25adc099777ceacf8afb"
+  }
+}

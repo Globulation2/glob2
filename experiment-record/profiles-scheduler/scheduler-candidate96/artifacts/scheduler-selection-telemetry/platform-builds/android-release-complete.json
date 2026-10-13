@@ -1,0 +1,38 @@
+{
+  "passed": true,
+  "source": "96da258e5a6b24a57a8848f2bfa0178031331322",
+  "tree": "63d18b69950651b00e9e40a4d96a14d1a25b62cd",
+  "argv": [
+    "taskset",
+    "-c",
+    "0-31",
+    "scons",
+    "target=android",
+    "arch=arm64-v8a",
+    "release=1",
+    "android_sdk=/home/bradley/.local/share/glob2/development/toolchains/mobile/Linux-x86_64-8dbf18a4a97410f6b6a92b4a/android-sdk",
+    "build/android/device/arm64-v8a/24/client/release/lib/libmain.so",
+    "android-tests",
+    "-j32"
+  ],
+  "cwd": "/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2",
+  "environment": {
+    "CCACHE": "1",
+    "CCACHE_MAXSIZE": "12G",
+    "GLOB2_SDL3_PREFIX": "/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/build/sdl3-ci/prefix",
+    "GLOB2_RENDER_SHADER_INPUT": "/home/bradley/.codex/worktrees/execution-resource-profiles/glob2/artifacts/resource-profiles/validation/renderer-bundle-v2/shaders"
+  },
+  "started_utc": "2026-10-13T03:41:18.954373+00:00",
+  "finished_utc": "2026-10-13T03:52:09.323765+00:00",
+  "elapsed_s": 650.3694249573164,
+  "exit": 0,
+  "source_unchanged": true,
+  "log_sha256": "19951bea01f8cb5ae74403e75e25ebc037523fb2b009a6d656395e4b320a6668",
+  "outputs": {
+    "build/android/device/arm64-v8a/24/client/release/lib/libmain.so": {
+      "path": "/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2/build/android/device/arm64-v8a/24/client/release/lib/libmain.so",
+      "sha256": "db98fe2873c7a72b72efd29a6df8082a9b7edc3f0829bbe4fcb218a7ca3f2135"
+    }
+  },
+  "scope": "Ordinaryrelease compilation/package only; cache/sharedhost timingnotisolated; no runtime/hardware/installation/signingqualification"
+}

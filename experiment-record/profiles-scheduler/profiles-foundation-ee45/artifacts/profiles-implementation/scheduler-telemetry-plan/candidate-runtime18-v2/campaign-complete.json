@@ -1,0 +1,84 @@
+{
+  "passed": true,
+  "source": "96da258e5a6b24a57a8848f2bfa0178031331322",
+  "source_tree": "63d18b69950651b00e9e40a4d96a14d1a25b62cd",
+  "native_invocations": 18,
+  "records": [
+    {
+      "id": "candidate-d80-small-n1-off",
+      "exit": 0
+    },
+    {
+      "id": "candidate-d80-small-n4-waits",
+      "exit": 0
+    },
+    {
+      "id": "candidate-d80-small-n12-trace",
+      "exit": 0
+    },
+    {
+      "id": "candidate-d80-mixed-n1-off",
+      "exit": 0
+    },
+    {
+      "id": "candidate-d80-mixed-n4-waits",
+      "exit": 0
+    },
+    {
+      "id": "candidate-d80-mixed-n12-trace",
+      "exit": 0
+    },
+    {
+      "id": "candidate-d80-mature-n1-off",
+      "exit": 0
+    },
+    {
+      "id": "candidate-d80-mature-n4-waits",
+      "exit": 0
+    },
+    {
+      "id": "candidate-d80-mature-n12-trace",
+      "exit": 0
+    },
+    {
+      "id": "candidate-d80-pg-n4-gpuon-off",
+      "exit": 0
+    },
+    {
+      "id": "candidate-d80-pg-n12-gpuon-trace",
+      "exit": 0
+    },
+    {
+      "id": "candidate-d80-mature-save-n4-trace",
+      "exit": 0
+    },
+    {
+      "id": "candidate-d80-mature-resume-n4-trace",
+      "exit": 0
+    },
+    {
+      "id": "candidate-d80-small-n4-eco-off",
+      "exit": 0
+    },
+    {
+      "id": "candidate-d80-small-n4-balanced-off",
+      "exit": 0
+    },
+    {
+      "id": "candidate-d80-small-n4-luxurious-off",
+      "exit": 0
+    },
+    {
+      "id": "candidate-d80-small-n4-fast-simulation-off",
+      "exit": 0
+    },
+    {
+      "id": "candidate-d80-small-n4-efficient-throughput-off",
+      "exit": 0
+    }
+  ],
+  "bindings_sha256": "5ef7be21c1a3e2983c8a8e8170622dd60065f7e5baaa14e688ff944857f0558c",
+  "runner_sha256": "37f8a7c0e50ce350afa35e3f2e2cbc40e36aaec4bd9584be76fabb71e5f7a984",
+  "finished_utc": "2026-10-13T02:48:32.374412+00:00",
+  "scope": "Nativeonly game-run fullGCS/world/AIT1/replay/save-resume equality; no matchverify/browser/device/timing claim."
+}

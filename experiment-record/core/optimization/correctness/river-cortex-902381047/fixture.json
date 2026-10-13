@@ -1,0 +1,37 @@
+{
+  "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/correctness/river-cortex-902381047/fixture/initial.game.gz",
+  "header": {
+    "major": 0,
+    "minor": 154,
+    "teams": 4,
+    "width": 128,
+    "height": 128,
+    "map_offset": 1226851,
+    "gzip_sha256": "82549adaf9703224fb00279d69bb63b2c4d77660a56def6b9bcc10b550095cb8"
+  },
+  "start_tick": 0,
+  "start_tick_evidence": "save occurs before first simulation tick; loaded trace checked below",
+  "preparation_trace": {
+    "sha256": "e5e035fa938b8d41f3cce4bdc9a67e41705a54f95d25200db729ffab0038093c",
+    "teams": 4,
+    "players": 4,
+    "count": 1,
+    "first_tick": 0,
+    "last_tick": 0,
+    "flags": 0
+  },
+  "scenario": {
+    "id": "river-cortex",
+    "generator": "river",
+    "width": 128,
+    "height": 128,
+    "ais": [
+      "cortex",
+      "cortex",
+      "cortex",
+      "cortex"
+    ],
+    "ticks": 8192
+  },
+  "seed": 902381047
+}

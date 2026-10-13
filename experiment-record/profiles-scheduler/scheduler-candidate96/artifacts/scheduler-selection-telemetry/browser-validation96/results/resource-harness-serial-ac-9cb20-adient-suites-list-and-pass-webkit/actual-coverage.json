@@ -1,0 +1,19 @@
+{
+  "runtime": "serial",
+  "project": "webkit",
+  "suites": [
+    "ResourcePolicy",
+    "ResourcePlanJson",
+    "ApplicationResourcePlan",
+    "ApplicationPhaseResources",
+    "ApplicationResourceObservations",
+    "AndroidResourceObservations",
+    "RuntimeGradientBackend",
+    "GradientPreparationContract",
+    "GradientBackendSwitch"
+  ],
+  "actualRegistered": 79,
+  "actualExecuted": 79,
+  "listedSharedHeap": false,
+  "ranSharedHeap": false
+}

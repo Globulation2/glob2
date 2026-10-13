@@ -1,0 +1,37 @@
+{
+  "utc": "2026-10-12T02:48:11.328469+00:00",
+  "read_only_source_audit": true,
+  "script_only_hardening_authorized": true,
+  "production_source_unchanged": true,
+  "built_binary_unchanged": true,
+  "script_hashes": {
+    "build-prototype.py": "33c6c0782b023e1aa4edca4c763450098993aa162b83b653a631fbf213df5325",
+    "verify.py": "f05ec88cc11756caeaf6be5c240cd644c2306518bd478bc9c9652ed5cc6774c5",
+    "run-profile.py": "79bbd463a11d8d08c67fc716270609dfd53d01f34a54410c9950e2c2491e0079"
+  },
+  "source_window": [
+    124000,
+    132192
+  ],
+  "aggregate_only": true,
+  "hardening": [
+    "Actual legacyPlayground.mapalias currenthash matchescanonicalOazis hash and is captured atprofilelaunch",
+    "argv/build/marker/native-cap schema andrecordedcommand+PID consistency validated",
+    "Every rawfile inventoried; unexpected filename/PID/header rejectedandretained, onlylabelleddescpart counted, finalresidualexcluded",
+    "SIGTERMexitrace catchesProcessLookupError thencontinueswait4 tocollectstatus/rusage/result"
+  ],
+  "old_sealed_plan_preserved": "profile-plan.pre-hardening.json",
+  "gate_status": "pending",
+  "gate_errors": [],
+  "pending_gates": [
+    "mature-callgrind-oazis132192-original-reference",
+    "mature-callgrind-oazis132192-prototype-native-opt1"
+  ],
+  "no_build_game_profiler_or_micro_launches": true,
+  "limits": [
+    "AllValgrindexecutiondiagnostic, no nativeprefixspeedclaim",
+    "Crossingjobs/clientrequestcost/truncatedcallcontext included",
+    "Current132192reference cap isnot fullGCS; early2completeGCSgate separate",
+    "InitialN4 vs matureN3 isconfounded; no strict phasecausality or perthreadattribution"
+  ]
+}

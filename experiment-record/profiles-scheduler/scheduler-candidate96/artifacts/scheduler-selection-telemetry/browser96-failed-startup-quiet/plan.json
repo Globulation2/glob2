@@ -1,0 +1,63 @@
+{
+  "approved": false,
+  "launches": 0,
+  "scope": "One new quiet-host startup qualification, not retry/deletion of original campaign; same source/web/fixture/timeout bytes. Correctness only.",
+  "argv": [
+    "taskset",
+    "-c",
+    "15,31",
+    "/home/bradley/.codex/worktrees/execution-resource-profiles/glob2/browser/node_modules/.bin/playwright",
+    "test",
+    "--config",
+    "/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2/artifacts/scheduler-selection-telemetry/browser96-failed-startup-quiet/playwright.config.cjs",
+    "--project",
+    "chromium",
+    "--grep",
+    "threaded: picker evidence is scoped and Studio reports its own generation workers$"
+  ],
+  "cwd": "/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2",
+  "environment": {
+    "NODE_PATH": "/home/bradley/.codex/worktrees/execution-resource-profiles/glob2/browser/node_modules",
+    "GLOB2_TEST_BUILD_DIR": "/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2/build/emscripten/client/release",
+    "clear": "all inherited GLOB2_* before applying explicit test-build variable"
+  },
+  "expected_test_count": 1,
+  "required_before_launch": [
+    "Root explicit approval",
+    "All compilation/foreign workloads quiet",
+    "Original preparation/source/native/web hashes verified",
+    "Port8778 absent, fresh outputs"
+  ],
+  "required_after": [
+    "Original preparation/source/native/web hashes unchanged",
+    "Actual1result, errors/failure retained, no automatic retry",
+    "Owned browser/server cleanup confirmed"
+  ],
+  "original_preparation": "/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2/artifacts/scheduler-selection-telemetry/browser-validation96/preparation.json",
+  "original_preparation_sha256": "9d84d5034e60e29a93891ad37b48956e2f536556a55d22b216881bd4b12dc9ba",
+  "source": "96da258e5a6b24a57a8848f2bfa0178031331322",
+  "tree": "63d18b69950651b00e9e40a4d96a14d1a25b62cd",
+  "fixtures_sha256": {
+    "resource-harness.spec.cjs": "a51b06c59aee53ac7298f5b52e3d1b92ff14e1992bf3a3682dad9db41f9edf12",
+    "expected-inventory.json": "63236f97184f2a4a6d40a98ee06cb2064d1ece71153cf17c74c08a22ff3539b0",
+    "playwright.config.cjs": "2e705e3b756f5edbd613617adf5f6c4bc854c44849f3142ec4d8142a7b82b68a"
+  },
+  "source_references": {
+    "src/common/ComputeThreads.cpp": {
+      "sha256": "0468f1e201b1b1d818b0239db18eeb81d0a3fb13f9319714412c34924fa1ae3f",
+      "lines": "16-44 browser no Linux eligible mask"
+    },
+    "src/app/ApplicationResourcePlan.cpp": {
+      "sha256": "40a86be34ad14ec23db3dc8fcaaaa29fe36dc55c53ea3cac9ad9f6ed4c1d7ec2",
+      "lines": "22-27,59 unknown eligible -> owner1 default"
+    },
+    "browser/shell.html": {
+      "sha256": "1a3400b2779595788146a464335418ab6df2ab76d32e525bc7e73d828435288e",
+      "lines": "426-468 onRuntimeInitialized -> Module.start;577 screen diagnostic loading"
+    },
+    "src/common/ComputeExecutor.h": {
+      "sha256": "703bebfc297849e07c95f69e294640d630875308082cb9e3c415c609774f2553",
+      "lines": "832 worker;983 configure;1333 count includes owner"
+    }
+  }
+}

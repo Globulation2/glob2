@@ -1,0 +1,32 @@
+{
+  "launch_authorized": false,
+  "default": "plan-only; root centrally builds after timing queue ends",
+  "cwd": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/variants/gpu-sync/source",
+  "command": [
+    "taskset",
+    "-c",
+    "15,31",
+    "scons",
+    "release=1",
+    "CC=gcc-13",
+    "CXX=g++-13",
+    "LINKFLAGS=-L/usr/lib/gcc/x86_64-linux-gnu/15",
+    "-j2",
+    "build/linux/client/release/src/glob2",
+    "unit-tests",
+    "engine-tests"
+  ],
+  "env": {
+    "CCACHE": "1",
+    "CCACHE_MAXSIZE": "12G",
+    "GLOB2_SDL3_PREFIX": "/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/build/sdl3-ci/prefix"
+  },
+  "source_manifest_sha256": "af41b638ef3eb2739f8062261d0c34875b8304083cba1e2ab6550450ff55f304",
+  "targets_note": "Root may expand its central compilation allocation only after all native measurements stop; release flags/prefix remain matched. No auto-launch.",
+  "closures": "Actual SCons declares header downstream closure; no manual ABI-affected object reuse.",
+  "fault_suites": [
+    "OpenCLGradient/*",
+    "GradientPipeline/*"
+  ],
+  "platform_limits": "Unbuilt/unrun; Linux GCC13 first, other supported platforms unverified."
+}

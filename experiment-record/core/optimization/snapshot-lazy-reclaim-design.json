@@ -1,0 +1,31 @@
+{
+  "state": "Designonly; no sourcepatch/build/run/adoption",
+  "problem": "Eager cleanup scans descriptorpool eachrequestedResourceFields capture evenwhen unchangedgenerations shareplanes and no allocationneeded.",
+  "wrong_trigger": "HardLimit reached istoo late: buffers alreadygrew tohighwater. KeephardLimit unchangedas horizoninvariant. Exhaustionmeans no reusablevector in currentpool, beforeallocate.",
+  "small_generic_API": "BufferPool::tryAcquire() scans existingroundrobin freebuffers, usesexistinguse_count==1+acquirefence, returnsnullable strongpointer withoutallocate. Existingacquire(allocations) delegatestryAcquire elseallocate. Keep scoredacquire distinct; no overloadcollisionwithexistingScoretemplate.",
+  "caller_design": [
+    "ResourceFields capture acquires descriptor andclearsthatdescriptor asnow; previous/latest stillleasedforgeneration sharing.",
+    "Unchangedkey+generation sharesexistingplane asnow; no poolscan/reclaim.",
+    "Changedplane first tryresourcePlanes.tryAcquire(); ifmissing andnotyetreclaimedthiscapture, resourceFields.discardUnused(clear), thenretryexistingacquire.",
+    "One boundeddescriptor reclaim pass percapture, onlyon allocationmiss. Subsequentmisses normalallocate; limits/budgets/horizonsunchanged. No eager clearingofeveryinactivearray/forcedfree.",
+    "Concurrentconsumerfinalrelease canmake additionalbuffers reusable; ownershipmutationcontractsameasexistingacquire, no weakresurrectionofpool-exclusivebuffer. No privatestagedsearch reads.",
+    "Atcaptureend oldlatest newlyidle remainsuntilfutureallocationpressure, soleased-metrics includeinactive descriptorrefs; reporttheirreusableDescriptorReferences explicitly. CapacitynotRSS."
+  ],
+  "correctness_risks": [
+    "Neverclear count>1 descriptors; latest/previous/worker mustremainimmutable.",
+    "Do not useweak_ptr promotionto acquire unleasedbuffers concurrently; owner-only tryAcquire+fence samecontract.",
+    "No changesrecordedfields/order/generation, save/load orAI/Dijkstra semantics. Newaddresses/capacityselection only.",
+    "Allocationmissreclaimmaynotchangephysicalcapacity ifpoolalreadygrew; benefitCPUandfutureavoidedgrowth are hypotheses.",
+    "No proof improvedCPU/RSS: eager currentcandidate preliminarycpuoverhead needscompletedpairedresults; lazydesign mustindependentlybuild/conformance/timeifparentapproves."
+  ],
+  "focused_test_design": [
+    "TryAcquire empty/free/held roundrobincursor, no allocationsincrement orLimitthrow.",
+    "Poolhasreusableplane\u2192no descriptorreclaim; idleplane oldrefs persist butusableexistingvector selected.",
+    "No reusableplanes +idle descriptor\u2192singlepassclear andsamevectorreused; descriptorcapacity preserved, allocationsunchanged.",
+    "All planesgenuinelyleased\u2192no clearingactiveobservations; fallbackallocate untilunchangedLimit.",
+    "Holdlatest+workerhandles anddirectplane lease whileoldidle descriptorsclear; unchangedgeneration pointershared andoldcontents immutable.",
+    "Morethanonechangedplane inonecapture, one boundedreclaim attempt; normalgrowthfallback retains poolbounds.",
+    "Varied32x16/16x32/64/128/256/512, mixedAIcounts1/3/auto, samefullGCS+world+wholeAIT1 andmaturememory beforeperformanceacceptance."
+  ],
+  "no_umbrella_pool": "No WorldPool present in2ced/candidate; architecturedoesnotneedumbrellaowner cleanup."
+}

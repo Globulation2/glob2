@@ -1,0 +1,182 @@
+{
+  "reviewed_utc": "2026-10-12T17:41:59.390308+00:00",
+  "passed": true,
+  "scope": "Independent observed exclusive sample-period reconciliation only",
+  "analysis_sha256": "a5c85b32a3fd5e5d267ba7235813df09ccb20c49a3379f883c5c957c5b67a3a7",
+  "metadata_sha256": "08ce92e7d77de463cc127ea76861f9825a235de56b9bd8d0294ece6f28a0da28",
+  "samples": 8986,
+  "total_observed_period": 18008015888,
+  "raw_sample_records": 8986,
+  "all_table_period_sums_exact": true,
+  "mode_period": {
+    "2": 17935871600,
+    "1": 72144288
+  },
+  "unknown_leaf_period": 32064128,
+  "empty_callchains": 5110,
+  "empty_callchain_fraction": 0.5686623636768307,
+  "sampled_tids": {
+    "1624173": 7723446832,
+    "1624178": 5144288536,
+    "1624179": 5140280520
+  },
+  "cpus": [
+    0,
+    1,
+    2,
+    16,
+    18
+  ],
+  "no_observed_loss_or_throttle": true,
+  "source_exact_text": true,
+  "native_replay_qualified_separately": true,
+  "top_raw_symbols": [
+    {
+      "mode": 2,
+      "dso": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/glob2",
+      "symbol": "void gradient_kernel::propagateFieldCPU<gradient_kernel::propagateTerrainField<gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)::{lambda(unsigned long)#1}>(unsigned short*, int, int, field::Grid, GradientWorkspace&, gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)::{lambda(unsigned long)#1}, bool, CellRuleTable const&, unsigned int, gradient_kernel::CostIdentity)::{lambda(unsigned long)#1}>(unsigned short*, int, int, field::Grid, GradientWorkspace&, gradient_kernel::propagateTerrainField<gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)::{lambda(unsigned long)#1}>(unsigned short*, int, int, field::Grid, GradientWorkspace&, gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)::{lambda(unsigned long)#1}, bool, CellRuleTable const&, unsigned int, gradient_kernel::CostIdentity)::{lambda(unsigned long)#1})",
+      "period": 3374749472,
+      "observed_share": 0.18740262630758958
+    },
+    {
+      "mode": 2,
+      "dso": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/glob2",
+      "symbol": "void BuildingGradientSearch::advance<BuildingGradientSearch::resolveToCost(int)::{lambda()#1}>(BuildingGradientSearch::resolveToCost(int)::{lambda()#1})",
+      "period": 1971943872,
+      "observed_share": 0.10950367237925662
+    },
+    {
+      "mode": 2,
+      "dso": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/glob2",
+      "symbol": "AISharedRuntime::Construction::BuildingOrder::find_location(AISharedRuntime::Runtime&, AIEngine::AIWorldView const&, AISharedRuntime::Gradients::GradientManager&)",
+      "period": 1168336664,
+      "observed_share": 0.0648787002003116
+    },
+    {
+      "mode": 2,
+      "dso": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/glob2",
+      "symbol": "void gradient_kernel::propagateFieldCPU<Map::propagateGradient(unsigned short*, int, int, gradient_kernel::Family)::{lambda(unsigned long)#1}>(unsigned short*, int, int, field::Grid, GradientWorkspace&, Map::propagateGradient(unsigned short*, int, int, gradient_kernel::Family)::{lambda(unsigned long)#1})",
+      "period": 1102204400,
+      "observed_share": 0.06120632094369018
+    },
+    {
+      "mode": 2,
+      "dso": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/glob2",
+      "symbol": "Building::gatherBringMaterialsCandidates(Building::BringMaterialsCandidate*, int, int const*)",
+      "period": 1020040072,
+      "observed_share": 0.056643667927887824
+    },
+    {
+      "mode": 2,
+      "dso": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/glob2",
+      "symbol": "gradient_preparation::seedBuilding(gradient_preparation::BuildingSeed const&, SimulationSnapshot::Handle const&, unsigned short*)",
+      "period": 911823640,
+      "observed_share": 0.05063432005341643
+    },
+    {
+      "mode": 2,
+      "dso": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/glob2",
+      "symbol": "gradient_preparation::MaterialSeedCache::trySeed(SimulationSnapshot::Handle const&, int, int, int, unsigned short*, unsigned short const*)",
+      "period": 851703400,
+      "observed_share": 0.04729579345648787
+    },
+    {
+      "mode": 2,
+      "dso": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/glob2",
+      "symbol": "SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)",
+      "period": 446893784,
+      "observed_share": 0.02481638103716893
+    },
+    {
+      "mode": 2,
+      "dso": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/glob2",
+      "symbol": "void BuildingGradientSearch::advance<BuildingGradientSearch::resolve(unsigned long)::{lambda()#1}>(BuildingGradientSearch::resolve(unsigned long)::{lambda()#1})",
+      "period": 310621240,
+      "observed_share": 0.01724905408413087
+    },
+    {
+      "mode": 2,
+      "dso": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/glob2",
+      "symbol": "gradient_preparation::seed(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, gradient_preparation::CrowdingScratch&)",
+      "period": 288577152,
+      "observed_share": 0.016024927665257066
+    },
+    {
+      "mode": 2,
+      "dso": "/usr/lib/x86_64-linux-gnu/libc.so.6",
+      "symbol": "__memmove_avx_unaligned_erms",
+      "period": 282565128,
+      "observed_share": 0.01569107500556421
+    },
+    {
+      "mode": 2,
+      "dso": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/glob2",
+      "symbol": "BuildingGradientSearch::begin(BuildingGradientSearch::Inputs const&, unsigned short*, int, int, int)",
+      "period": 270541080,
+      "observed_share": 0.0150233696861785
+    },
+    {
+      "mode": 2,
+      "dso": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/glob2",
+      "symbol": "auto SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(SimulationSnapshot::ChunkStamps&, MapState::ChangeTracker const&, bool, auto:1)#1}::operator()<SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(unsigned long, unsigned long)#3}>(SimulationSnapshot::ChunkStamps&, MapState::ChangeTracker const&, bool, SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(unsigned long, unsigned long)#3}) const",
+      "period": 260521040,
+      "observed_share": 0.014466948586690407
+    },
+    {
+      "mode": 2,
+      "dso": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/glob2",
+      "symbol": "ResourceGrowth::calculate(MapState::View const&, MersenneTwister&, ResourceGrowth::Batch&)",
+      "period": 242484968,
+      "observed_share": 0.01346539060761184
+    },
+    {
+      "mode": 2,
+      "dso": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/glob2",
+      "symbol": "Team::syncStep()",
+      "period": 222444888,
+      "observed_share": 0.012352548408635656
+    },
+    {
+      "mode": 2,
+      "dso": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/glob2",
+      "symbol": "(anonymous namespace)::considerBuildingCandidate(Building&, Unit*, int*, int, int&)",
+      "period": 196392784,
+      "observed_share": 0.010905853549966614
+    },
+    {
+      "mode": 2,
+      "dso": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/glob2",
+      "symbol": "Building::considerUnitForMaterial(Unit*, int, int*, int)",
+      "period": 196392784,
+      "observed_share": 0.010905853549966614
+    },
+    {
+      "mode": 2,
+      "dso": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/glob2",
+      "symbol": "Map::updateForbiddenGradient(int, int)",
+      "period": 188376752,
+      "observed_share": 0.01046071667037614
+    },
+    {
+      "mode": 2,
+      "dso": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/glob2",
+      "symbol": "auto SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(SimulationSnapshot::ChunkStamps&, MapState::ChangeTracker const&, bool, auto:1)#1}::operator()<SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(unsigned long, unsigned long)#4}>(SimulationSnapshot::ChunkStamps&, MapState::ChangeTracker const&, bool, SimulationSnapshot::capture(Game const&, std::shared_ptr<std::vector<SimulationSnapshot::BuildingKindView, std::allocator<SimulationSnapshot::BuildingKindView> > const>, unsigned int, SimulationSnapshot::Handle const*, SimulationSnapshot::Storage*)::{lambda(unsigned long, unsigned long)#4}) const",
+      "period": 186372744,
+      "observed_share": 0.010349432450478523
+    },
+    {
+      "mode": 2,
+      "dso": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/glob2",
+      "symbol": "Building::noteUnitFailing(Unit*, Building::UnitCantWorkReason)",
+      "period": 172344688,
+      "observed_share": 0.009570442911195192
+    }
+  ],
+  "limits": [
+    "Single11NicowarOazis seed1738462951 explicit3 GPUoff sampled mature phase; no cross-host/wholegame CPU fraction claim.",
+    "Observed progress120064 through128000; asynchronous sampler control boundaries not exacttick edges.",
+    "5110/8986 empty chains; direct leaf accounting usable, caller ownership incomplete.",
+    "Category regex can match template argument types; exact raw names retained.",
+    "No new implementation, workload or sampler launched."
+  ]
+}

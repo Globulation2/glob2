@@ -1,0 +1,46 @@
+{
+  "passed": true,
+  "source": "96da258e5a6b24a57a8848f2bfa0178031331322",
+  "tree": "63d18b69950651b00e9e40a4d96a14d1a25b62cd",
+  "source_clean": true,
+  "native_three_preserved": {
+    "build/linux/client/release/src/glob2": {
+      "path": "/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2/build/linux/client/release/src/glob2",
+      "sha256": "42de4e7766bf7bdb8f0e1abf7bb6b9da7465bffbee2b4a00b2437e965e0d7f61"
+    },
+    "build/linux/client/release/test/glob2-unit-tests": {
+      "path": "/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2/build/linux/client/release/test/glob2-unit-tests",
+      "sha256": "8577aaf990bfcf01d21fdc59af03bb9737ee027224a13df0e915651638ed800d"
+    },
+    "build/linux/client/release/test/glob2-engine-tests": {
+      "path": "/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2/build/linux/client/release/test/glob2-engine-tests",
+      "sha256": "8633defcf13b50da7c7d24bd4f35e9fcc5efcaa423052895eeece82642899dbe"
+    }
+  },
+  "stages": {
+    "web-release": {
+      "passed": true,
+      "elapsed_s": 946.4532944336534,
+      "receipt_sha256": "8f854369384531bc992102e5968a109ed86b988e337f9067761a5d706484dd7a"
+    },
+    "android-release": {
+      "passed": true,
+      "elapsed_s": 650.3694249573164,
+      "receipt_sha256": "1387a06e6206d682a736246ada119f52fd871a28c064355fdc785d5e37509cdd"
+    },
+    "android-apk": {
+      "passed": true,
+      "elapsed_s": 112.58411766728386,
+      "receipt_sha256": "d5224bb5a35c947cc4b0610ccf6e1b35a502da6c70acddc9618d08efec111384"
+    }
+  },
+  "android_all_binaries_sha256": {
+    "build/android/device/arm64-v8a/24/client/release/lib/libmain.so": "db98fe2873c7a72b72efd29a6df8082a9b7edc3f0829bbe4fcb218a7ca3f2135",
+    "build/android/device/arm64-v8a/24/client/release/tests/glob2-unit-tests": "03838c2481f26b5803272eac72c5d30089e72094cb5acab5fe41ab32b9700863",
+    "build/android/device/arm64-v8a/24/client/release/tests/glob2-engine-tests": "12a20f48cdba171a7686ab648d9deb4bd5223d2284a208b86fea2250314ad1f2"
+  },
+  "apk_static_proof_sha256": "f11517db6d336aa8f0dd4933a612f1ddade8d9b82ada85abfc511981bd47ee38",
+  "runtime_tests_or_games": 0,
+  "devices_installed_or_signed": 0,
+  "scope": "Ordinary release builds/unsigned package/static notice+ELF lineage; reusedcache/sharedhost including foreignbuild; not compile performance or hardware correctness."
+}

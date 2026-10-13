@@ -1,0 +1,102 @@
+{
+  "baseline_source": "ee45c0a0389660bc7d2885b572b94b1a2b01d7a3",
+  "baseline_tree": "c4f8f7ebd7888effb0800dd0b14e70f8fc2c3224",
+  "baseline_app_sha256": "18b640357036e457470338e092fb3108debc3ab252adbb631b0094d18852e36c",
+  "candidate_source": "96da258e5a6b24a57a8848f2bfa0178031331322",
+  "candidate_tree": "63d18b69950651b00e9e40a4d96a14d1a25b62cd",
+  "candidate_app_sha256": "42de4e7766bf7bdb8f0e1abf7bb6b9da7465bffbee2b4a00b2437e965e0d7f61",
+  "evidence": {
+    "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/scheduler-selection-telemetry/assembly/baseline-linked/binding.json": "c123b01ee5b8dc41f4c5252104b6f42be9189739bb2f2778c6388099fb7c828d",
+    "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/scheduler-selection-telemetry/assembly/candidate-linked/binding.json": "1392e69cef905884cec61aee1b425ca8a83a00bd192be53eed0f85bf247a46fc",
+    "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/scheduler-selection-telemetry/assembly/extract.py": "38d3ca898728a7ae657de19f63906e10661ff9519f0029762f5c859516e8b861"
+  },
+  "rows": [
+    {
+      "mode": "Off",
+      "baseline_bytes": 3486,
+      "candidate_bytes": 3395,
+      "byte_delta": -91,
+      "byte_percent_delta": -2.6104417670682722,
+      "baseline_object_instructions": 722,
+      "candidate_object_instructions": 698,
+      "baseline_runtime_VA": "0x932600",
+      "candidate_runtime_VA": "0x932a90",
+      "baseline65slot_scan_count": 2,
+      "candidate65slot_scan_count": 1,
+      "loop_start_backedge_offsets": {
+        "baseline": [
+          [
+            "0x1f0",
+            "0x321"
+          ],
+          [
+            "0x530",
+            "0x662"
+          ]
+        ],
+        "candidate": [
+          [
+            "0x240",
+            "0x372"
+          ]
+        ]
+      },
+      "no_out_of_line_second_pick_claim_take_call_in_candidate_worker": true,
+      "baseline_linked_producer": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/build/linux/client/release/src/engine/EngineRun.o",
+      "candidate_linked_producer": "/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2/build/linux/client/release/src/engine/EngineRun.o",
+      "full_nonrelocation_identity_baseline": false,
+      "full_nonrelocation_identity_candidate": false,
+      "nonreloc_byte_differences_baseline": 42,
+      "nonreloc_byte_differences_candidate": 42,
+      "qualification": "All42 nonrelocation byte differences per role/mode are explicitly retained in6 TLSGD linker-relaxation windows. Outside relocations/TLS windows exact code match identifies actual linked worker."
+    },
+    {
+      "mode": "Trace",
+      "baseline_bytes": 4111,
+      "candidate_bytes": 4137,
+      "byte_delta": 26,
+      "byte_percent_delta": 0.6324495256628593,
+      "baseline_object_instructions": 872,
+      "candidate_object_instructions": 866,
+      "baseline_runtime_VA": "0x934b30",
+      "candidate_runtime_VA": "0x934fb0",
+      "baseline65slot_scan_count": 2,
+      "candidate65slot_scan_count": 1,
+      "loop_start_backedge_offsets": {
+        "baseline": [
+          [
+            "0x550",
+            "0x67c"
+          ],
+          [
+            "0x820",
+            "0x953"
+          ]
+        ],
+        "candidate": [
+          [
+            "0x570",
+            "0x6af"
+          ]
+        ]
+      },
+      "no_out_of_line_second_pick_claim_take_call_in_candidate_worker": true,
+      "baseline_linked_producer": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/build/linux/client/release/src/engine/EngineRun.o",
+      "candidate_linked_producer": "/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2/build/linux/client/release/src/engine/EngineRun.o",
+      "full_nonrelocation_identity_baseline": false,
+      "full_nonrelocation_identity_candidate": false,
+      "nonreloc_byte_differences_baseline": 42,
+      "nonreloc_byte_differences_candidate": 42,
+      "qualification": "All42 nonrelocation byte differences per role/mode are explicitly retained in6 TLSGD linker-relaxation windows. Outside relocations/TLS windows exact code match identifies actual linked worker."
+    }
+  ],
+  "conclusion": "Compiler did not eliminate duplicate pick in baseline Off/Trace. Candidate actual shipping-linked worker performs one selection scan and consumes its cached selection; both modes structurally remove second65slot scan on ordinary successful predicate-to-claim path. Offcode shrinks but Tracecode grows slightly; no runtime speed/frequency gain claimed.",
+  "path_invariant": "Predicate, stopping/presentation priority, generation check and selection take occur under same worker mutex; priority branches continue before consuming cached selection. No candidate selection is reused across unlock/wait/presentation callback. No extra ready-queue state introduced.",
+  "scope_limits": [
+    "Wait wakeups may repeat the first scan and optional priority work can divert; not all worker iterations claim a job.",
+    "Code-size/instruction counts are static and do not quantify executed cycles/cache effects or whole-game performance.",
+    "Offworker is also used for waits telemetry per configure mode branch; tracer instrumentation remains different.",
+    "Map.o was not the selected shipping COMDAT for ee45 or96da; broad mismatches rejected rather than falsely masked. Actual EngineRun.o bound independently with fresh addresses for each role.",
+    "Native suite/game conformance and timing still owned by root; no runtime execution performed by assembly review."
+  ]
+}

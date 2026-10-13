@@ -1,0 +1,11 @@
+V2 follow-up: all 68 paired jobs complete. No adoption is implied by completion.
+
+Snapshot V2: roll back ownership changes. All 44 jobs showed mixed CPU changes and negligible memory gains; keep only a separately justified diagnostic census. The initial small-ni and Oazis slowdowns and direct Playground GPU-on wall regression remain visible.
+
+Telemetry V2: retain as the leading representation candidate, conditional on fresh initial replication. Loaded Playground RSS fell about 22–23% with GPU off and 13% with GPU on; Oazis about 11% off and 8–9% on. Most CPU effects versus baseline are flat or beneficial; the 8k Playground CPU-off window is -5.01%, interval [-7.65%, -2.66%].
+
+Direct V2 versus V1 is not universally favorable. At Playground 8k GPU off, CPU is -3.81% [-7.28%, -0.75%] and wall -3.61% [-5.70%, -1.11%]. At GPU on, CPU is +2.01% [+0.34%, +3.69%], while wall +1.50% crosses zero. Oazis direct comparisons are close to flat in both GPU modes. These effects are separate from initial large-mixed replication; do not pool them or discard the adverse Playground signal.
+
+Two seeds and three repeats per group limit the descriptive bootstrap intervals; many comparisons also limit interpretation. The JSON preserves all layout/comparator/GPU/window strata, process versus run metrics, slowdowns and source hashes. Loaded-state windows cannot establish uninterrupted maturity or continuous peak heap.
+
+Pending: the explicit 24-job early telemetry stage (21 V2 versus fresh baseline, three fresh V1 large-mixed jobs). The full replication plan has 45 jobs because later combined-source measurements remain separate and pending; 24/24 selected completion must not be mislabeled 45/45. Large-mixed uses three seeds and six counterbalanced pairs per variant; prior initial V1 jobs stay historical context.

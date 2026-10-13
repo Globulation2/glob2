@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="27" failures="0" errors="0" skipped="0"><testsuite name="EngineSession"><testcase classname="EngineSession" name="automatic GUI sessions poll asset finalizers on the presentation thread [display]" time="1.59454" status="run" />
+  <testcase classname="EngineSession" name="buffered input receipts wait for GUI dispatch and cancel exact ranges [display]" time="0.803195" status="run" />
+  <testcase classname="EngineSession" name="menu colony rendering consumes its shared boundary without recapture [display]" time="0.850697" status="run" />
+  <testcase classname="EngineSession" name="momentum uses the SDL clock after session suspension [display][artifacts]" time="2.00771" status="run" />
+  <testcase classname="EngineSession" name="paced sessions publish completed worlds before waiting and AI reuses them [display]" time="0.872843" status="run" />
+  <testcase classname="EngineSession" name="render ceilings preserve per tick simulation checksums [display][artifacts]" time="2.73218" status="run" />
+  <testcase classname="EngineSession" name="routine snapshot input needs no simulation boundary [display][artifacts][writes-preferences]" time="1.84544" status="run" />
+  </testsuite><testsuite name="src/mcp/MCPTest.cpp"><testcase classname="src/mcp/MCPTest.cpp" name="MCP/OpenGL capture dimensions orientation cancellation [display][artifacts]" time="1.10767" status="run" />
+  <testcase classname="src/mcp/MCPTest.cpp" name="MCP/SDL GPU capture dimensions orientation cancellation [display][artifacts]" time="3.11898" status="run" />
+  <testcase classname="src/mcp/MCPTest.cpp" name="MCP/software capture dimensions orientation cancellation [display][artifacts]" time="0.898497" status="run" />
+  </testsuite><testsuite name="MapPreview"><testcase classname="MapPreview" name="native widget events and custom lobby captures [display][artifacts]" time="2.5734" status="run" />
+  </testsuite><testsuite name="SettingsGraphics"><testcase classname="SettingsGraphics" name="illustrated hand choices activate through their phone overlay [display][writes-preferences]" time="1.01178" status="run" />
+  </testsuite><testsuite name="SoftwareRenderer"><testcase classname="SoftwareRenderer" name="terrain cache matches integer-transformed coastlines and discovery across wraps and mutations [display][artifacts]" time="9.13812" status="run" />
+  </testsuite><testsuite name="TerrainMaterials"><testcase classname="TerrainMaterials" name="CPU terrain groups preserve incremental pages under serial and parallel schedules [display]" time="1.057" status="run" />
+  <testcase classname="TerrainMaterials" name="CPU terrain retires coverage when cells leave discovery [display]" time="0.792715" status="run" />
+  <testcase classname="TerrainMaterials" name="an additional material and a 64-material catalog compose without renderer branches [display]" time="0.74789" status="run" />
+  <testcase classname="TerrainMaterials" name="animation invalidates only pages using that material [display]" time="0.792617" status="run" />
+  <testcase classname="TerrainMaterials" name="compositor preserves native artwork overridden before startup [display] [artifacts]" time="0.76471" status="run" />
+  <testcase classname="TerrainMaterials" name="failed CPU terrain groups retire invalid pages and recover on the next prepare [display]" time="0.777377" status="run" />
+  <testcase classname="TerrainMaterials" name="halo edits invalidate adjacent terrain pages including wrap and undo [display]" time="0.747802" status="run" />
+  <testcase classname="TerrainMaterials" name="mixed cells compose exactly as a direct per-pixel coverage blend [display]" time="0.734906" status="run" />
+  <testcase classname="TerrainMaterials" name="natural border visual fixture and cold composition timings [display] [artifacts]" time="6.80927" status="run" />
+  <testcase classname="TerrainMaterials" name="owned prepared materials survive animation and share unchanged revisions [display]" time="0.743211" status="run" />
+  <testcase classname="TerrainMaterials" name="seam treatment tones only the lower material beside a higher edge [display]" time="0.699458" status="run" />
+  <testcase classname="TerrainMaterials" name="shared reservation pressure preserves serial terrain before readmitting jobs [display]" time="0.790068" status="run" />
+  <testcase classname="TerrainMaterials" name="sparse CPU terrain edits snapshot only changed materials [display]" time="0.741983" status="run" />
+  <testcase classname="TerrainMaterials" name="terrain crossfade preserves endpoints midpoint loop and paused revisions [display]" time="0.668595" status="run" />
+  </testsuite></testsuites>

@@ -1,0 +1,30 @@
+{
+  "reviewed_utc": "2026-10-12T17:16:25.488111+00:00",
+  "state": "revised_static_review_no_remaining_concrete_blocker",
+  "source_sha256": {
+    "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/run.py": "7a9bd577134cbf1b77b232a1f181c472022749a17ad1c3f33dfd99c388c72c3f",
+    "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/plan.json": "8b5a3386c031af8f90928347764ae5fe628a041054455f3f9742088674496bb0",
+    "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/run_profile_release_relink.py": "bd99f4fad24c3b04c9c72e5505a8731f2bb0f0e622c678e20ebceb5ba2bcc466",
+    "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/profile-release-relink-config-template.json": "60818be8972603718f96af98b02eb8a3dc62ef98efa9ad9ec0253a4e16109267"
+  },
+  "native_or_tool_launches": 0,
+  "findings": [],
+  "accepted_static_invariants": [
+    "Only standalone -s removed and output changed; exact original632 object/archive inputs and original cwd retained.",
+    "All allocated section bytes/address/type/size/alignment except build-id, text, RUNPATH and35 runtime dependency hashes fail closed.",
+    "Safe objcopy explicit /dev/null output with input binary SHA guard.",
+    "Existing qualify/profile receipts compatible with overridden build and verify_built.",
+    "Same held historical boundary, absent old PIDs, finite3 phases; no repeated wide/native timings or retirement signals.",
+    "Masked spawn/ownership/cleanup and default zero-launch preserved."
+  ],
+  "limits": [
+    "No actual relink, native gate or sampling success established.",
+    "Symtab and eh_frame presence do not establish usable exact function coverage or sampling unwind quality. Inspect actual symbols/sample stacks later.",
+    "No inlined source/debug-line attribution claim; statistical sampled ownership remains separate from exact GuestIr/native performance."
+  ],
+  "recommendation": "Minimal original-object relink is ready for root sealing; actual exact ELF/code/dependency/native/profile gates remain mandatory.",
+  "resolved_findings": [
+    "Failure-observation template now matches actual text-mismatch gate.",
+    "PATH-selected compiler resolves to recorded executable and both hashes match during prebuild and later verify_built."
+  ]
+}

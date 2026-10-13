@@ -1,0 +1,52 @@
+Independent natural review: 9/9pairs, complete=True. No partial aggregate promoted.
+Accept tested final package: exactnativepair outcomes/replay plus separately passed detailedcontinuations/nativebrowser/hardware gates and strong fixedwindowmemory benefit. Fullnatural performance remains perlayout descriptive; no universalgain/nonregression or unsupportedplatform claim.
+Final report correctly requires18-attempt seal, excludes caps from completion means, pairs only matching winner/ticks/nativeCRC/replay/AIT1, excludes floor-censored RSS, reports separate perlayout3-seed log ratios. One sample/seed means seed-only bootstrap; descriptive intervals cannot support universal nonregression. CPU/tick ratio equals CPU ratio within exactsame-endpairs.
+Explicit3/GPUon,9pairs across3layouts3seeds; one native sample pervariant/seed. Prior automatic sizing and fixedGPUoffwindow effects separate.
+Canonical complete replay bytes and bounded AIT1 stream match, plus winner/endticks/nativeCRC. Native games have no per-tick GCS; AIT1 bounded timelines may truncate.
+Linuxx86_64/GCC13 plus separately passed Emscripten/browser coverage; Windows/macOS/mobile native execution and interactive GPU graphics/playfeel not verified.
+holdout-comb
+ wall_s: -2.7349% [-4.1327,-1.3616]
+ cpu_s: -2.7273% [-4.2515,-1.2799]
+ cpu_per_tick_s: -2.7273% [-4.2515,-1.2799]
+ peak_rss_bytes: -2.7232% [-3.2459,-1.9694]
+oazis-ni
+ wall_s: -1.4992% [-4.2103,+1.3933]
+ cpu_s: -1.6144% [-4.3015,+1.1259]
+ cpu_per_tick_s: -1.6144% [-4.3015,+1.1259]
+ peak_rss_bytes: -4.8468% [-5.2949,-4.3972]
+playground-ni
+ wall_s: -0.5558% [-9.2567,+7.2070]
+ cpu_s: -0.2617% [-8.5456,+5.5171]
+ cpu_per_tick_s: -0.2617% [-8.5456,+5.5171]
+ peak_rss_bytes: -10.5967% [-11.0129,-10.2504]
+
+Adverse seed point estimates (one sample per variant; do not conflate with group intervals):
+[
+  {
+    "pair_id": "oazis-ni-1738462951",
+    "percent_changes": {
+      "wall_s": 1.3933246211712547,
+      "cpu_s": 1.1259265602236335,
+      "cpu_per_tick_s": 1.1259265602236557,
+      "peak_rss_bytes": -4.397238153572025
+    }
+  },
+  {
+    "pair_id": "playground-ni-1738462951",
+    "percent_changes": {
+      "wall_s": 1.0882560029786825,
+      "cpu_s": 2.8155208299215584,
+      "cpu_per_tick_s": 2.8155208299215584,
+      "peak_rss_bytes": -11.012913270446012
+    }
+  },
+  {
+    "pair_id": "playground-ni-902381047",
+    "percent_changes": {
+      "wall_s": 7.206961926616051,
+      "cpu_s": 5.517090179206274,
+      "cpu_per_tick_s": 5.517090179206274,
+      "peak_rss_bytes": -10.250435464707175
+    }
+  }
+]

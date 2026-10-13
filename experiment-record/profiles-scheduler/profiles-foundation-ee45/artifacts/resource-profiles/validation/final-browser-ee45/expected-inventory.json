@@ -1,0 +1,143 @@
+{
+  "source_commit_preparation": "ee45c0a0389660bc7d2885b572b94b1a2b01d7a3",
+  "source_binding_status": "EXACT_FINAL_SOURCE_RELEASE_BUILD_BOUND",
+  "suites": {
+    "ResourcePolicy": {
+      "source": "src/common/ResourcePolicyTest.cpp",
+      "source_sha256": "97d2a975f1f458c04d43bd1f66c82426cd82c7b7d66d51b4ae78155fa664e035",
+      "cases": [
+        "six profile names preserve intent without claiming tier tuning",
+        "profile precedence includes an explicit auto and records each source",
+        "explicit resource overrides win while all original inputs remain frozen",
+        "known allocation bounds automatic participants but is not an explicit hard cap",
+        "unknown CPU and threading use serial without guessing an allocation",
+        "GPU request and capability are separate from guaranteed device execution",
+        "memory constraints reserve live state before recoverable retention",
+        "invalid requests and validated rendering bounds reject clearly",
+        "repeated resolutions preserve capability and constraint provenance deterministically",
+        "memory arithmetic preserves zero headroom and Uint64 live requirements",
+        "a caller supplied browser automatic default is not an explicit hard limit",
+        "battery use and battery saver are independent observed constraints without tuning",
+        "workload participant bounds preserve device capabilities and reject unsupported overrides",
+        "explicit resources and constraints survive every profile precedence stratum",
+        "invalid capability defaults and enum overrides fail while unknown support stays distinct"
+      ]
+    },
+    "ResourcePlanJson": {
+      "source": "src/app/ResourcePlanJsonTest.cpp",
+      "source_sha256": "e0b019632875a72d88584ccc64f42923be2ba9f65a4b8f6d503e965db53aebb4",
+      "cases": [
+        "capability payload lists exactly six intents and does not imply current CLI support",
+        "unknown null and known false true capability and constraints remain distinct",
+        "explicit resource provenance describes winning input before effective GPU fallback",
+        "planning memory and discretionary preparation are observable not RSS promises",
+        "Uint64 byte budgets survive JSON text roundtrip without signed or float conversion",
+        "serializer reads the frozen plan rather than changed callers and is deterministic",
+        "unsupported policy version cannot be disguised as schema version one",
+        "battery saver null false true is independent of battery power in both snapshots",
+        "workload support is distinct from device allocation in serialized plans",
+        "all selected intents serialize pending tuning and explicit resource precedence"
+      ]
+    },
+    "ApplicationResourcePlan": {
+      "source": "src/app/ApplicationResourcePlanTest.cpp",
+      "source_sha256": "29772537cb23b30b24f82dac287e014beaabc6c32510ec90352bd62de76f3a11",
+      "cases": [
+        "planning byte parser rejects partial signed and unsupported requests",
+        "application context and saved intent do not tune current defaults",
+        "legacy positive CPU override and GPU override retain explicit provenance",
+        "typed CPU request merges only absent or equal legacy explicit values",
+        "typed GPU permission takes precedence over defaults and rejects explicit conflicts",
+        "typed automatic GPU permission is retained unless a different explicit legacy value exists",
+        "serial platform enforces support while a threaded allocation remains a soft override bound",
+        "unknown allocation stays conservative without using the test host",
+        "GPU offload permission preserves exact fallback on an unsupported platform",
+        "planning requests and runtime constraints are snapshots with no guessed live census",
+        "explicit refresh inputs resolve repeatably without implicit updates",
+        "owner only workloads retain actual allocation and threading support",
+        "application explicit resources retain precedence over saved and context intent",
+        "CPU observation distinguishes allocation from portable hints",
+        "legacy sizing injection retains fallback while new caller allocation stays explicit",
+        "CPU observation does not infer which gradient accelerator is available"
+      ]
+    },
+    "ApplicationPhaseResources": {
+      "source": "src/app/ApplicationPhaseResourcesTest.cpp",
+      "source_sha256": "09ed6ee77e52ef196d9361bcd6a5d3b6afe44e8b61d27e4f843de8e28dea087b",
+      "cases": [
+        "independent owner phases retain allocation and ignore simulation CPU mandates",
+        "background workers include owner and retain caller defaults instead of machine heuristics",
+        "typed FPS overrides respect pacer integer range without forbidding uncapped zero",
+        "asset admission and IO budgets remain separate from soft planning and recoverable memory",
+        "explicit asset roles are validated before cooperative normalization",
+        "asset IO hard limit applies independently of threaded CPU support"
+      ]
+    },
+    "ApplicationResourceObservations": {
+      "source": "src/app/ApplicationResourceObservationsTest.cpp",
+      "source_sha256": "df7c229c40b2e274f0e37017ae565314dc2fd2962a7d7d0467ef821e1de7b267",
+      "cases": [
+        "unknown is distinct from foreground no pressure and battery saver",
+        "lifecycle edges and low memory evidence do not invent pressure recovery"
+      ]
+    },
+    "AndroidResourceObservations": {
+      "source": "src/app/AndroidResourceObservationsTest.cpp",
+      "source_sha256": "1749e3615f226f809a076d5dbef0868004cd9de7a64cc7d112c02ccd5e4febb2",
+      "cases": [
+        "packet bounds and future thermal status never imply known healthy",
+        "caller saver precedence and battery use remain separate"
+      ]
+    },
+    "RuntimeGradientBackend": {
+      "source": "src/field/RuntimeGradientBackendTest.cpp",
+      "source_sha256": "14099ffcfc7b83347b7246d68ffe0d3e7c37370826bd4a818ce2f4456d1a3618",
+      "cases": [
+        "stable selection IDs and unsupported algorithm normalization",
+        "verification environment accepts CLI and boolean spellings",
+        "invalid preferences normalize before indexed dispatch",
+        "CPU scopes have one restoration owner and restore after exceptions",
+        "plan decisions retain the captured backend and compatible algorithm",
+        "shadow verification rejects mismatches with original-input evidence",
+        "shadow telemetry follows admitted configuration after preferences change",
+        "direct CPU recovery honors explicit variant rather than process preference",
+        "runtime CPU variants agree with independent heap oracle",
+        "runtime terrain kernels preserve every completed cost layer",
+        "Vulkan algorithms agree with oracle for weighted capped wrapped fields",
+        "wrapped dense sources reject invented paths before GPU publication",
+        "Vulkan cancellation leaves original seeds untouched",
+        "fixed-point proof agrees with independent weighted oracle on narrow tori",
+        "fixed-point proof rejects malformed spans costs caps and fabricated sources",
+        "proof evidence preserves original seeds and out-of-range readback portably",
+        "discovery distinguishes supported devices from selectable status",
+        "malformed direct groups reject before touching fields or diagnostics",
+        "direct group accepts one owned batch recovery without individual callbacks",
+        "shadow mismatch reports evidence failure without losing the primary error"
+      ]
+    },
+    "GradientPreparationContract": {
+      "source": "src/field/GradientPreparationContractTest.cpp",
+      "source_sha256": "ae94518f10e3891e930b75ed14795465aef25b1e848928378b7097458a758cfa",
+      "cases": [
+        "Generated predicates preserve independent seed precedence",
+        "Shared residency model preserves exact versions and retirement",
+        "Transfer planning charges widened coalesced bytes and speculative limits",
+        "Residency invalidation retains owners until the final lease and transfer retire",
+        "Upload ranges cover changed cells without escaping the original owner",
+        "Native records retain explicit decode layouts"
+      ]
+    },
+    "GradientBackendSwitch": {
+      "source": "src/map/gradient/GradientBackendSwitchTest.cpp",
+      "source_sha256": "33176b6456a0c8b4b609519225899749b6389d599cd6ffaa4b6722a395f8c458",
+      "cases": [
+        "backend switch drains privately and preserves pending publication",
+        "repeated backend requests coalesce without moving publication ticks"
+      ]
+    }
+  },
+  "expected_case_count": 79,
+  "count_status": "79 names sealed beforelaunch; actual finalruntime listing+JUnit must match.",
+  "browser_registration_blocker": [],
+  "scope": "Pure/portable registered cases; optional backend availability returns are not hardware execution evidence"
+}

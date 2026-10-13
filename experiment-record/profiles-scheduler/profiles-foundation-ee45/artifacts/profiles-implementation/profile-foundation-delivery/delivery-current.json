@@ -1,0 +1,207 @@
+{
+  "state": "CURRENT_SOURCE_BOUND_REPORT_NOT_ADOPTION",
+  "foundation": {
+    "commit": "ee45c0a0389660bc7d2885b572b94b1a2b01d7a3",
+    "tree": "c4f8f7ebd7888effb0800dd0b14e70f8fc2c3224",
+    "app_sha256": "18b640357036e457470338e092fb3108debc3ab252adbb631b0094d18852e36c"
+  },
+  "candidate": {
+    "commit": "96da258e5a6b24a57a8848f2bfa0178031331322",
+    "tree": "63d18b69950651b00e9e40a4d96a14d1a25b62cd",
+    "app_sha256": "42de4e7766bf7bdb8f0e1abf7bb6b9da7465bffbee2b4a00b2437e965e0d7f61",
+    "adopted": false,
+    "fastest_claim": false
+  },
+  "implemented": [
+    "Six names, CLI distinct from --profile, optional saved intent/precedence and explicit conflict guards",
+    "Frozen session compute participant plan incl owner; known Linux logical allocation ceiling, hard serial/owner-only limits; unknown auto1 documented",
+    "Game/map/verifier/turn and asset/preview/Studio phase adapters; deliberate legacy/non-game request scope with silentdrop rejection",
+    "Caller-owned local coordinator disjoint game allocation and actual native requested/resolved/affinity provenance",
+    "Separate compute/renderGPU permission metadata; setup permission/currentbackend observability; power/lifecycle/Android optional observations",
+    "Stable Android/iOS resolved recording-prefix/license staging; newmaster shader/backend/test registries preserved"
+  ],
+  "pending": [
+    "Profile-specific calibrated thread/render/cache behavior and automatically selected tiers",
+    "Visible interactive profile picker/Reset Automatic",
+    "Live GPU resource-policy reconciliation, respecting later user menu choices and frozen pool",
+    "Simultaneous app-owned roles budget, CPU quotas, complete live/recoverable memory census and cache policy actions",
+    "Presentation resolution/detail/preparation actions, hysteresis/cooldown and memory/power/thermal response",
+    "Actual Android/high-end device rendering, latency, cancellation/repaint feel, sustained thermal/energy and performance tradeoff evidence"
+  ],
+  "verified_facts": [
+    {
+      "area": "Foundation ee45",
+      "status": "Source-bound implemented checkpoint",
+      "qualification": "Profiles/resource request precedence, participant allocation and launcher/phase provenance implemented. Six calibrated tiers/live adaptation/memory actions remain pending."
+    },
+    {
+      "area": "Final ee45 release/platform/Python/browser",
+      "status": "PASS within stated scope",
+      "qualification": "Native/browser/Androidrelease+unsignedAPK and focused mockedPython checks; browser12 cases/474 portablecontracts+36 softwareWebGPU fieldoracles. No physicalAndroid/GPU/frame/thermal/input claim."
+    },
+    {
+      "area": "Foundation ee45 native",
+      "status": "215UNIT PASS;237/238ENGINE;display2+26/29",
+      "qualification": "One exact inherited stock152 replay assertion; original displaystartup failure preserved and X11retry qualified. Originalee45 displayfixture Trace-only metric asserted underOff; unchanged product path, corrective candidate fixture separate."
+    },
+    {
+      "area": "Candidate96da focused native",
+      "status": "215UNIT PASS;237/238ENGINE;29displayPASS",
+      "qualification": "Same inherited stock152 failure remains. Test-only Trace opt-in corrects metric fixture and observes intended parallelBatches path. Candidate code not declared accepted by focused correctness alone."
+    },
+    {
+      "area": "Candidate runtime18 V2",
+      "status": "18PASS;59392GCS/worldrecords",
+      "qualification": "Fresh18 after prior plan-description drift failure, no retrospective promotion. Allcounts1/4/12/off-waits-trace/profile intents; exact currentee45 same-start detailed simulation/world/RNG/replay and4096 save-continuation suffix. Trace lostevents remain explicit."
+    },
+    {
+      "area": "Eightcell differential diagnostics",
+      "status": "16PASS;32768GCS/worldrecords",
+      "qualification": "Current roles paired for small/mixed/holdout/PGGPUon/loadedOazis/counts1/4/12. Per-tick proof separate from native timing; no fullgame completion or scheduler waste percentage claim."
+    },
+    {
+      "area": "Golden match verify",
+      "status": "2actualPASS;842trace rows perrole",
+      "qualification": "Raw checksum/replay/order/verification reports match. ActualCPU backend/buckets/disabledGPU permission and computeOff. Trace CLI unsupported on this command; no trace dispatch counts implied."
+    },
+    {
+      "area": "Shipping-linked assembly",
+      "status": "Actual2\u21921slot-selection scans inOff/Trace",
+      "qualification": "Fresh EngineRun.o COMDAT linked-byte proofs for both strippedapps; compiler retained duplicatebaseline scan. Off\u221291bytes,Trace+26bytes; explicit TLS linker differences retained. Static structural result only, not runtime gain."
+    },
+    {
+      "area": "Timingsv1",
+      "status": "Incomplete;candidate efficacy unresolved",
+      "qualification": "OnlyN1 discardedwarmup+2 measuredpairs accepted. N1 is owner-only and does not exercise background worker scan. FirstN12 warmup rejected by final sampler timestamp race despite completednative result; failedrawsample excluded/preserved. No aggregate speedup/adoption. Separate observerV2 prepared byowner, not pooled with v1."
+    },
+    {
+      "area": "Coordinator ee45",
+      "status": "2actualjobs PASS",
+      "qualification": "Seven observed non-zombie overlap samples; exact binary/disjoint6CPU shares/4participants+512MiB planning each, GPUoff/EffThroughput; rawsimulation/replay equality. No throughput or RSSenforcement claim."
+    }
+  ],
+  "timing_acceptance": "No runtime improvement/adoption established. Retain v1 original failure+accepted owner-only controls. New versioned observer phase must complete and qualify all intended cells; adverseCPU/wall/RSS/systemCPU/context-switch points retained, not pooled acrossGPU/count/map/start windows.",
+  "next_steps": [
+    "Finish root-reviewed observerV2 finite measurements and independently analyze allcells; candidate may be rejected if flat/regressive despite source simplification.",
+    "Choose candidate integration only after correctness+whole relevant performance evidence; preserve tests and inherited failures explicit, no automatic source adoption.",
+    "Keep sixprofile tuning separate from cached-selection candidate and host-specific participant experiments.",
+    "Use corrected proposal16-attempt serial/concurrent calibration only after exact11NIseed/save seals and explicit approval; descriptive rejection screen, not tier adoption.",
+    "Complete visible intent/reset, real GPU capability/current-user policy, simultaneous phase allocation and proven recoverable-memory census before claiming everypath adaptive behavior.",
+    "Collect actual Android/high-end frame/input/thermal/battery/memory evidence before any automatic presentation tier/hysteresis thresholds."
+  ],
+  "evidence": {
+    "builds": {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/latest-master-final-builds/builds-complete.json",
+      "sha256": "3ea0c0875c40946dc09f132e8a65867db1ecc9142fb201f7379868f05b39d157"
+    },
+    "native_build": {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/latest-master-final-builds/native-release-complete.json",
+      "sha256": "91a76ad1af293a3ebd14ea3d62ec1289577768a9f175a3abe3309977beb879e3"
+    },
+    "python": {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/final-python/receipt.json",
+      "sha256": "c2ffd09ca474477ea130f5fc1b4dd93d87cfcfa0851151b21455469e5e52de77"
+    },
+    "native_initial": {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/d80-native-focused/final-actual-summary.json",
+      "sha256": "957807cb84eaf16e1b9c9dbe3346ee468b049684b3616a474370bfc5d9727e8a"
+    },
+    "native_152": {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/d80-native-focused/inherited-152-comparison.json",
+      "sha256": "9c148e1569df274b64a04a8a5c144e460033c960782787dd270e6babb6515592"
+    },
+    "display_retry": {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/d80-native-focused/display-x11-retry/final-actual-summary.json",
+      "sha256": "811654944046a08800ca6face65e4edeaa7adef231d9a990bbb633ff024c60fa"
+    },
+    "display_initial_environment": {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/d80-native-focused/display-environment-observation.json",
+      "sha256": "f33a44f80bf46a4d32a4c84af8754f4802316079fbef8f155b5a364c1515ad47"
+    },
+    "browser": {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/final-browser-ee45/complete.json",
+      "sha256": "6825230186447cc7ca7739f65a4bb0b4cb9179ef43a30573a520c32838d864d9"
+    },
+    "native18": {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/runtime-acceptance-d80/result-review.json",
+      "sha256": "a39a2eef5b4825c30277e441da0624fe5f4b3c065cdda408388a4a3fd07a5423"
+    },
+    "native18_completion": {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/runtime-acceptance-d80/campaign-complete.json",
+      "sha256": "5635023229d3f384634543959406f44ff204f41312f148078d16f78275fb4a19"
+    },
+    "coordinator": {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/coordinator-acceptance-ee45/runs/two-slot-smoke/passed.json",
+      "sha256": "f24e037227d9ac145268b1fccdc1dab0ce72bf398ba62b1a64518c38a79ddd12"
+    },
+    "coordinator_review": {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/coordinator-acceptance-ee45/independent-result-review.json",
+      "sha256": "91e1a4c992004ffc533d43b0bc6308abdfea2b078eeee54287d008e16a584934"
+    },
+    "proposal_coverage": {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/final-proposal-coverage/coverage.json",
+      "sha256": "60182e38eff2033095f42dcbf23d2a64302493243b9f64244389a3bd836e2193"
+    },
+    "ee45_final_cause": {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/d80-native-focused/ee45-final-cause-summary.json",
+      "sha256": "17fbb1a6ccdb322ebfb725aa1fd580036008d9cb0e86860e5e91c1a30cfcd68c"
+    },
+    "candidate_build": {
+      "path": "/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2/artifacts/scheduler-selection-telemetry/build/native-release-complete.json",
+      "sha256": "f8ca3618744a1de69b58a568cf94e621726a3b20dad9775f93db4fdcfd43b0b5"
+    },
+    "candidate_focused": {
+      "path": "/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2/artifacts/scheduler-selection-telemetry/focused/final-conformance-summary.json",
+      "sha256": "00b6f0d1e21dbdedaf0e9d66ef74f936b11305800fa4f7d471abfb03880857e2"
+    },
+    "candidate18_v2": {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/candidate-runtime18-v2/campaign-complete.json",
+      "sha256": "ef0f1a8ab81d8f0a6b8c6301fe5b8a3c0e09d7be776b26e35673f4406edbc285"
+    },
+    "candidate18_v2_root_gate": {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/candidate-runtime18-v2/root-review.json",
+      "sha256": "eb38d91d4ad705e046652009db80b1740cc80c3c7454dedd4320443691c12925"
+    },
+    "paired16_diagnostics": {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/diagnostics-complete.json",
+      "sha256": "ad0e0b3b4fdf0537af2eee4315e1216ab76adfa27d4d363d797b61f9469b444a"
+    },
+    "golden_match2": {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/match-regression-ee45-96da/complete.json",
+      "sha256": "b98ddf57cced35a5295bbae2ec734b23fe7456c7294c6e17818a9f3dd4fe5c0c"
+    },
+    "assembly_comparison": {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/scheduler-selection-telemetry/assembly/comparison.json",
+      "sha256": "6c6d6d57b3993c5f96b158cd5e2486e4171603060b3e261a97779b02973dca99"
+    },
+    "assembly_baseline_binding": {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/scheduler-selection-telemetry/assembly/baseline-linked/binding.json",
+      "sha256": "c123b01ee5b8dc41f4c5252104b6f42be9189739bb2f2778c6388099fb7c828d"
+    },
+    "assembly_candidate_binding": {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/scheduler-selection-telemetry/assembly/candidate-linked/binding.json",
+      "sha256": "1392e69cef905884cec61aee1b425ca8a83a00bd192be53eed0f85bf247a46fc"
+    },
+    "v1_timing_failure": {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/timing-campaign-failure.json",
+      "sha256": "b5dd5b0045268cd45052eb8fe161eb427eae7655ebf7709f33cf89fbd7f293ca"
+    },
+    "v1_monitor_review": {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/timing-observer-first-n12-review/review.json",
+      "sha256": "4d43c37a41670898607fd6b971932443d7f576eb2d1b67f379f0c2b27eb67d49"
+    },
+    "v1_small-ni-n1-gpuoff-r-1": {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/pairs/small-ni-n1-gpuoff-r-1.json",
+      "sha256": "dff57516e0597389178406d552633821b4b1b88d69f1c6c1c61c99c5a25417f3"
+    },
+    "v1_small-ni-n1-gpuoff-r0": {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/pairs/small-ni-n1-gpuoff-r0.json",
+      "sha256": "31f21ac28db8171b5444087d4c1dc240645d31c5241967d7701511fc09cb5a0a"
+    },
+    "v1_small-ni-n1-gpuoff-r1": {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/pairs/small-ni-n1-gpuoff-r1.json",
+      "sha256": "bf1f2e8f78b0abf41c0fde103431a791ba6d95f252bd88aa18be65422b7ebb5a"
+    }
+  },
+  "report_constraints": "Ignored freshreport; original delivery-template preserved. No source changes, builds, games, timings, profiling or historyhold actions."
+}

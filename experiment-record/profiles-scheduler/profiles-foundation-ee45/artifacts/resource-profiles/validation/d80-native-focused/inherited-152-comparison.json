@@ -1,0 +1,37 @@
+{
+  "current": {
+    "classname": "EngineSession",
+    "name": "a retained version-152 stock replay preserves recorded simulation checksums [save-format]",
+    "failure": "<testcase classname=\"EngineSession\" name=\"a retained version-152 stock replay preserves recorded simulation checksums [save-format]\" time=\"0.279773\" status=\"run\">\n      <failure message=\"false\" type=\"REQUIRE\">\nsrc/engine/EngineSessionHarness.cpp:489:\nREQUIRE( engine.loadReplayTask(path.string()).run() ) is NOT correct!\n  values: REQUIRE( false )\n\n      </failure>\n    </testcase>\n  "
+  },
+  "prior": {
+    "baseline": {
+      "receipt": "/home/bradley/.codex/worktrees/execution-resource-profiles/glob2/artifacts/resource-profiles/validation/current-native-tests/baseline-engine/junit.xml",
+      "junit_sha256": "cd796b08fe79b25ec3a0ee0541a9edcedb76748c3a1b7b91b8663da38039a2b9",
+      "same_name": true,
+      "same_class": true,
+      "same_failure_type": true,
+      "same_failure_message": true,
+      "same_failure_text": true
+    },
+    "profiles": {
+      "receipt": "/home/bradley/.codex/worktrees/execution-resource-profiles/glob2/artifacts/resource-profiles/validation/current-native-tests/profiles-engine/junit.xml",
+      "junit_sha256": "dd8c58e626fd141e5ee2bf55e14ec90a1ae4a9da2386f21a574a6c797829ac39",
+      "same_name": true,
+      "same_class": true,
+      "same_failure_type": true,
+      "same_failure_message": true,
+      "same_failure_text": true
+    },
+    "scheduler": {
+      "receipt": "/home/bradley/.codex/worktrees/execution-resource-profiles/glob2/artifacts/resource-profiles/validation/current-native-tests/scheduler-engine/junit.xml",
+      "junit_sha256": "a6fb9a651466434e49828994206fe6c622014035a1b0c2aa15e7d4fd83fa2624",
+      "same_name": true,
+      "same_class": true,
+      "same_failure_type": true,
+      "same_failure_message": true,
+      "same_failure_text": true
+    }
+  },
+  "scope": "ActualJUnitidentity/failurecomparison, notwaivedcompatibility"
+}

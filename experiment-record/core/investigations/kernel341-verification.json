@@ -1,0 +1,12 @@
+{
+  "all_identical": true,
+  "sha256": "9f9960963c091fc9725d1cc15caf6c1733578338b032e6c1c75997e71ab40574",
+  "cases": [
+    "kernel-check-playground-s1056243202-r0-optimized",
+    "kernel-check-playground-s1056243202-r0-parent-kernel"
+  ],
+  "bytes": [
+    208134776,
+    208134776
+  ]
+}

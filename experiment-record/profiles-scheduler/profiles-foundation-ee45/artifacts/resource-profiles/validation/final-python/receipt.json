@@ -1,0 +1,20 @@
+{
+  "source": "ee45c0a0389660bc7d2885b572b94b1a2b01d7a3",
+  "argv": [
+    "python3",
+    "-m",
+    "unittest",
+    "test_tournament_resources",
+    "test_tournament_cli",
+    "test_benchmark_resource_refactor",
+    "build_system.test_mobile",
+    "build_system.test_gradient_compute",
+    "build_system.test_gradient_preparation_rules",
+    "build_system.test_moltenvk"
+  ],
+  "returncode": 0,
+  "elapsed_s": 3.908191124908626,
+  "source_unchanged": true,
+  "scope": "Python resource/tooling contracts; native/mobile/simulator subprocesses mocked, not physical devices",
+  "log_sha256": "1792cc74849a71aca760adf28b27f4afe0ffdac36062675e8aa2d5af6e4c6fe0"
+}

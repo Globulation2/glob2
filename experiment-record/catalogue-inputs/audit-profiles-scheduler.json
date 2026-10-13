@@ -1,0 +1,206 @@
+{
+  "scope": "Read-only audit of resource profiles, cached scheduler-selection prototype and their verification. Counts are source-qualified executions; repeated checks are not independent optimization hypotheses.",
+  "performance_hypotheses": [
+    {
+      "hypothesis": "Reuse the job selected by the worker wait predicate under the same uninterrupted mutex",
+      "source": "96da258e5a6b24a57a8848f2bfa0178031331322",
+      "implemented": true,
+      "adopted": false,
+      "assembly": "Actual shipping-linked Off and Trace workers reduce explicit selection scans from two to one; Off bytes3486\u21923395;Trace4111\u21924137. Static result is not runtime gain.",
+      "measured_worker_path_pairs": 0,
+      "accepted_negative_control_pairs": 2,
+      "negative_control": "Owner-only N1, not changed worker path; CPU -0.599891%/+0.643031%;wall -0.782543%/+0.612240%. One warm pair also completed, excluded from measured count.",
+      "unfinished": "First N12 warmup excluded after observer boundary fault. Two subsequent timing launches stopped at foreign-compilation preflight with zero new native samples. No runtime speed/adoption established.",
+      "evidence": [
+        "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/scheduler-selection-telemetry/assembly/comparison.json",
+        "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/pairs/small-ni-n1-gpuoff-r0.json",
+        "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/pairs/small-ni-n1-gpuoff-r1.json",
+        "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-timing-v2/campaign-failure.json",
+        "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-timing-v2/resumed-launch/campaign-failure.json"
+      ]
+    }
+  ],
+  "implemented_framework": [
+    {
+      "area": "Central resource policy",
+      "implemented": "Six exact profile intents; --execution-profile distinct from --profile; pure resolver; optional saved intent; explicit overrides/profile/preference/context precedence and conflict guards; owner-inclusive participant allocation; known affinity ceiling and unknown auto1; separate render/compute GPU permission; setup resource observations.",
+      "limit": "Six calibrated tradeoffs, automatic tier selection and adaptive presentation are not implemented."
+    },
+    {
+      "area": "Execution-path and launcher migration",
+      "implemented": "Game/headless/verifier/map resource plans; asset/preview/Studio phase plans; tournament/distributed job builder intent/allocation/provenance; benchmark explicit intent; Android/iOS staging integration.",
+      "limit": "No aggregate simultaneous phase ceiling, CPU quota discovery/enforcement, proven cache retention action or RSS cap."
+    },
+    {
+      "area": "Coordinator allocation",
+      "implemented": "Caller-owned machine allocation; fixed disjoint per-game CPU/memory planning shares; actual resolved count/mask/provenance verification.",
+      "limit": "Two-job runtime contract tested; throughput optimality not measured."
+    },
+    {
+      "area": "Direct map tool contract",
+      "implemented": "Optional profile/memory request, capability compatibility handling, explicit old-binary rejection and native resource metadata even on generation refusal.",
+      "limit": "Profile names do not produce calibrated map-generation speed tradeoffs."
+    },
+    {
+      "area": "Live GPU menu policy",
+      "implemented": "Central admission of backend/algorithm/verify menu choices without resizing frozen session pool; separate initial/current admission provenance; preserves atomic configuration/publication mechanism; verify-only backend precedence bug corrected.",
+      "limit": "Latest code native qualified; physical GPU/device and latest cross-platform validation incomplete."
+    },
+    {
+      "area": "Integration/test repairs",
+      "implemented": "Merged advancing master gradient/render/telemetry changes. Corrected stale152 acceptance test to intentional floor154 rejection, missing test include and epoch-zero pending-work fixture.",
+      "limit": "Test/build repairs are not separate performance optimizations; final integrated CPU-gradient source unbenchmarked."
+    }
+  ],
+  "actual_verification": [
+    {
+      "source": "ee45c0a0389660bc7d2885b572b94b1a2b01d7a3",
+      "type": "Native diagnostic game invocations",
+      "count": 18,
+      "tick_checksum_records": 59392,
+      "saved_continuation_records": 4096,
+      "coverage": "Small/mixed/mature; participants1/4/12; Off/Waits/Trace; six intents; CPU and positive nativeGPU fields",
+      "evidence": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/runtime-acceptance-d80/result-review.json"
+    },
+    {
+      "source": "96da258e5a6b24a57a8848f2bfa0178031331322",
+      "type": "Same18 diagnostic configurations rerun for scheduler candidate",
+      "count": 18,
+      "tick_checksum_records": 59392,
+      "saved_continuation_records": 4096,
+      "qualification": "Repeated configurations on changed source, correctness not speed",
+      "evidence": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/candidate-runtime18-v2/campaign-complete.json"
+    },
+    {
+      "sources": [
+        "ee45c0a0",
+        "96da258e"
+      ],
+      "type": "Eight-cell paired native diagnostics",
+      "invocations": 16,
+      "cells": 8,
+      "tick_checksum_records": 32768,
+      "qualification": "Full checksum/world/replay comparisons, not throughput/speed",
+      "evidence": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/diagnostics-complete.json"
+    },
+    {
+      "sources": [
+        "ee45c0a0",
+        "96da258e"
+      ],
+      "type": "Standalone golden match verification",
+      "invocations": 2,
+      "trace_rows_per_invocation": 842,
+      "qualification": "Exact current sim/checksum/replay/order verification",
+      "evidence": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/match-regression-ee45-96da/complete.json"
+    },
+    {
+      "source": "ee45c0a0",
+      "type": "Concurrent coordinator jobs",
+      "invocations": 2,
+      "overlap_observations": 7,
+      "qualification": "Disjoint6 logicalCPU shares/4participants/512MiBsoft planning pergame; allocation and equality proof, not optimizedthroughput",
+      "evidence": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/coordinator-acceptance-ee45/runs/two-slot-smoke/passed.json"
+    },
+    {
+      "sources": [
+        "ee45c0a0",
+        "96da258e"
+      ],
+      "type": "Platform release builds",
+      "coverage": "Each built native app/tests, serial+threaded web/harness, Android app/tests and unsignedAPK",
+      "qualification": "Build/package proof; no physicalAndroid run; repeatedbuilds notnewperformancehypotheses",
+      "evidence": [
+        "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/latest-master-final-builds/builds-complete.json",
+        "/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2/artifacts/scheduler-selection-telemetry/platform-builds/platform-final-summary.json"
+      ]
+    },
+    {
+      "source": "ee45c0a0",
+      "type": "Browser contracts and flows",
+      "unique_compiled_cases": 79,
+      "browser_runtime_combinations": 6,
+      "compiled_case_executions": 474,
+      "flows_passed": 12,
+      "flows_failed": 0,
+      "software_webgpu_weighted_oracles": 36,
+      "qualification": "79unique cases repeated acrossenvironments, softwareGPU correctness notphysicalGPU speed",
+      "evidence": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/final-browser-ee45/complete.json"
+    },
+    {
+      "source": "96da258e",
+      "type": "Browser contracts and flows",
+      "unique_compiled_cases": 79,
+      "browser_runtime_combinations": 6,
+      "compiled_case_executions": 474,
+      "original_flows_passed": 11,
+      "original_flows_failed": 1,
+      "separate_samebytes_quiet_qualification_passed": 1,
+      "software_webgpu_weighted_oracles": 36,
+      "qualification": "Original30sstartupfailure preserved; separatepass does notestablishcontention cause",
+      "evidence": [
+        "/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2/artifacts/scheduler-selection-telemetry/browser-validation96/complete.json",
+        "/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2/artifacts/scheduler-selection-telemetry/browser96-failed-startup-quiet/complete.json"
+      ]
+    },
+    {
+      "source": "ee45c0a0",
+      "type": "Python tooling contracts",
+      "test_cases": 121,
+      "qualification": "Native/mobile subprocessesmocked; nohardwareclaim",
+      "evidence": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/final-python/receipt.json"
+    },
+    {
+      "source": "06ea152e directmap contract",
+      "type": "Python directmap contracts",
+      "test_cases": 18,
+      "qualification": "Mock/fake-native toolcontracts, separately actualnativeCLI tested",
+      "evidence": "/home/bradley/.codex/worktrees/resource-profile-map-tools/glob2/artifacts/map-tools-resource-contract/review.json"
+    },
+    {
+      "source": "d2ddb6793777eac9e8c62421f2803313e0b83b52",
+      "type": "Final focused native tests",
+      "test_cases": 170,
+      "stages": [
+        1,
+        86,
+        83
+      ],
+      "failures": 0,
+      "combined_simulation_steps": 704,
+      "qualification": "Includes existingtests; not170optimizationhypotheses; finalbranch unbenchmarked",
+      "evidence": "/home/bradley/.codex/worktrees/resource-profile-map-tools/glob2/artifacts/profiles-implementation/live-gpu-permission-review/final-focused-master/complete.json"
+    },
+    {
+      "source": "d2ddb6793777eac9e8c62421f2803313e0b83b52",
+      "type": "Final native directmap requests",
+      "requests": 9,
+      "generation_service_calls": 8,
+      "real_legacy_rejections": 1,
+      "qualification": "Repeatedsame9 afterlatest-master integration; samebytes/reportcore verification notnewhypotheses",
+      "evidence": "/home/bradley/.codex/worktrees/resource-profile-map-tools/glob2/artifacts/map-tools-resource-contract/native-smoke-master/runs/complete.json"
+    }
+  ],
+  "prepared_not_executed": [
+    {
+      "experiment": "Same-global-allocation serialfast completion versus concurrentefficient throughput onPlayground andexact11NicowarOazis, GPUoff/on",
+      "planned_native_attempts": 16,
+      "actual_attempts": 0,
+      "status": "PREPARED_UNLAUNCHED",
+      "evidence": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/final-proposal-coverage/completion-throughput-pilot/plan.json"
+    }
+  ],
+  "unfinished_gates": [
+    "Scheduler worker-path timing and adoption",
+    "Six empirically tuned policy tradeoffs",
+    "Auto tier capability/performance selection, hysteresis/cooldowns",
+    "Visible profile picker/Reset Automatic",
+    "Aggregate simultaneous phase budget and CPUquota discovery",
+    "Live/recoverable ownership census and cache policy actions",
+    "Current finalsource cross-platform validation",
+    "Physical Android/high-end presentation,input,thermal,battery,memoryvalidation",
+    "Final combined source performancebenchmark"
+  ],
+  "accountability": "Latephase was framework/integration/compatibility-heavy; repeated builds, receiptbinding andtestrepairs mustnotbe presented as manydistinctperformanceexperiments. Cachedschedulerworker-path timing andsixprofiletradeoffs remainactualgaps.",
+  "evidence_summary": "/home/bradley/.codex/worktrees/resource-profile-map-tools/glob2/artifacts/engine-optimization-conclusion/conclusion.json"
+}

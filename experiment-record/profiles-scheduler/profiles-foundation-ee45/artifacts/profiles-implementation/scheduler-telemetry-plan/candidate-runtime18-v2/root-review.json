@@ -1,0 +1,10 @@
+{
+  "approved_native_only": true,
+  "reason": "Known plan-description mutation stopped priorcase2 postguard; source/binary/helper/request values unchanged. Originals retained. Fresh18 uniqueoutputs sealed after preparationfinalized; no retrospectivepromotion. Fullsame-start/currentee45perTick/save/replay/mode/profile gates retained.",
+  "previous_failed_campaign": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/candidate-runtime18/campaign-failure.json",
+  "plan_sha256": "740994cd4628c2aa9abfa269bc2e1f69753d57c2d8a17652cdf306779f69bd28",
+  "bindings_sha256": "5ef7be21c1a3e2983c8a8e8170622dd60065f7e5baaa14e688ff944857f0558c",
+  "helper_sha256": "eb94620bd9f454ee7e252455f3ea74cb3984a8845a6622f559ff0682f6e25629",
+  "runner_sha256": "37f8a7c0e50ce350afa35e3f2e2cbc40e36aaec4bd9584be76fabb71e5f7a984",
+  "no_further_mutation": "Newstaticplan/binding/helper/requestsfrozen throughall18"
+}

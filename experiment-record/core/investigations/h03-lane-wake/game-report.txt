@@ -1,0 +1,13 @@
+H03 actual games: complete; 48/48 validwindows; 24/24 native pairedcomparisons; 8/8 exactGCS controlspass.
+Paired guarded/original ratios within same map,compute count,seed and repetition. Report median/range of4pairs perstratum and bothseed breakdowns; only2seeds×2reps, no strong population interval or pooled cross-workload total.
+GPUon feature-preserving PG20k/Oazis8192 initial windows; wallrun excludes processstartup/shutdown while wait4CPU/sys/switches/RSS include them. Timed windows are uninstrumented and final native CRC/end/winner/ticks match for each pair, but no full per-tick trace recorded there. Eight8192PG exactrawGCS controls coverN4/N6GPUon/off forone seed. Noauto32GCS/OazisGCS/mature/fullwinner/platform/save/load proof. Ratios are workload-dependent; auxiliary observed threads are not participantcounts.
+
+Map | threads | pairs | runwall | CPU | systemCPU | voluntaryswitches | RSS (candidate/original median[min,max])
+Oazis | 4 | 4 | 1.0005[0.9662,1.0623] | 1.0045[0.9797,1.0868] | 1.0292[0.9600,1.0487] | 0.9013[0.7567,1.0088] | 0.9981[0.9973,1.0020]
+Oazis | 6 | 4 | 0.9876[0.9763,0.9923] | 0.9989[0.9929,1.0054] | 0.9371[0.8781,1.0683] | 0.8540[0.8471,0.8591] | 0.9971[0.9962,1.0021]
+Oazis | auto | 4 | 0.9297[0.9280,0.9324] | 0.9137[0.9121,0.9148] | 0.6856[0.6683,0.7102] | 0.6155[0.6100,0.6173] | 0.9998[0.9962,1.0021]
+Playground | 4 | 4 | 0.9757[0.9292,1.0064] | 0.9843[0.9369,1.0083] | 0.9379[0.8790,1.0028] | 0.9541[0.8963,1.0145] | 0.9997[0.9979,1.0013]
+Playground | 6 | 4 | 0.9973[0.9816,1.0375] | 0.9913[0.9824,1.0440] | 0.8692[0.8472,0.9253] | 0.7997[0.7934,0.8104] | 1.0015[0.9998,1.0087]
+Playground | auto | 4 | 0.8928[0.8740,0.8951] | 0.8326[0.7951,0.8353] | 0.6655[0.6243,0.6733] | 0.6736[0.6589,0.6761] | 0.9981[0.9976,0.9993]
+
+Measured auto32 benefits occur with32participants inside6eligibleCPUs; treat this guard as secondary to fixing affinity/count resolution, not an additive speedup or a replacement for the count fix. N4/N6 do not establish a reliable general wall/CPU improvement. Keep experimental pending broader evidence; standalone N6horizon8 regression remains relevant. No micro-to-game or mature-game extrapolation; preserve each native stratum.

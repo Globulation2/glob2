@@ -1,0 +1,190 @@
+{
+  "state": "sealed-scenario-design-inputs-not-generated",
+  "baseline_commit": "2ced60e06",
+  "preserve": "All new engine/gameplay, telemetry, snapshot, asynchronous search and GPU capabilities; no changed game rules/formats/SIM_REVISION intended.",
+  "candidates": [
+    "worker-eligibility",
+    "snapshot-unused-references",
+    "telemetry-shared-schemas",
+    "combined"
+  ],
+  "acceptance": [
+    "Independent source/design review, simpler ownership/representation or clearly isolated platform policy.",
+    "Focused regression/exception/lifetime/conformance tests; per-tick GCS traces, exact AIT1 and replay data, saved-game continuation, simulation/replay/network acceptance.",
+    "Release binary per individual change versus untouched master and final combined; same flags/compiler/assets/seed/CPU allocation; no compilers overlap timing.",
+    "At least listed geometry/AI variety, independent holdout seeds, single/parallel/auto counts, CPU/GPU conformance; paired counterbalanced timing with repeated seeds.",
+    "Review per-scenario CPU/wall/peak RSS, not just aggregate; investigate credible regressions before acceptance. Uncertain speed is not a speed claim.",
+    "Check Linux plus available browser serial/threaded toolchains and state any unavailable mobile/Windows/macOS runtime coverage explicitly."
+  ],
+  "scenario_design": [
+    {
+      "id": "small-ni",
+      "generator": "river",
+      "width": 64,
+      "height": 64,
+      "ais": [
+        "nicowar",
+        "nicowar"
+      ],
+      "ticks": 8192
+    },
+    {
+      "id": "rect-mixed",
+      "generator": "river",
+      "width": 128,
+      "height": 64,
+      "ais": [
+        "nicowar",
+        "castor",
+        "numbi",
+        "warrush"
+      ],
+      "ticks": 8192
+    },
+    {
+      "id": "rect-cortex",
+      "generator": "swamp",
+      "width": 64,
+      "height": 128,
+      "ais": [
+        "cortex",
+        "cabino"
+      ],
+      "ticks": 8192
+    },
+    {
+      "id": "playground-ni",
+      "map": "Playground",
+      "width": 128,
+      "height": 128,
+      "ais": [
+        "nicowar",
+        "nicowar",
+        "nicowar",
+        "nicowar",
+        "nicowar",
+        "nicowar",
+        "nicowar",
+        "nicowar"
+      ],
+      "ticks": 20000
+    },
+    {
+      "id": "river-cortex",
+      "generator": "river",
+      "width": 128,
+      "height": 128,
+      "ais": [
+        "cortex",
+        "cortex",
+        "cortex",
+        "cortex"
+      ],
+      "ticks": 8192
+    },
+    {
+      "id": "isles-mixed",
+      "generator": "isles",
+      "width": 256,
+      "height": 256,
+      "ais": [
+        "nicowar",
+        "cortex",
+        "cabino",
+        "maxima",
+        "nicowar",
+        "cortex",
+        "cabino",
+        "maxima"
+      ],
+      "ticks": 8192
+    },
+    {
+      "id": "oazis-ni",
+      "map": "Oazis",
+      "width": 256,
+      "height": 256,
+      "ais": [
+        "nicowar",
+        "nicowar",
+        "nicowar",
+        "nicowar",
+        "nicowar",
+        "nicowar",
+        "nicowar",
+        "nicowar",
+        "nicowar",
+        "nicowar",
+        "nicowar"
+      ],
+      "ticks": 8192
+    },
+    {
+      "id": "swamp-wide",
+      "generator": "swamp",
+      "width": 256,
+      "height": 128,
+      "ais": [
+        "castor",
+        "numbi",
+        "warrush",
+        "nicowar"
+      ],
+      "ticks": 8192
+    },
+    {
+      "id": "large-ni",
+      "generator": "isles",
+      "width": 512,
+      "height": 512,
+      "ais": [
+        "nicowar",
+        "nicowar",
+        "nicowar",
+        "nicowar"
+      ],
+      "ticks": 4096
+    },
+    {
+      "id": "large-mixed",
+      "generator": "river",
+      "width": 512,
+      "height": 256,
+      "ais": [
+        "cortex",
+        "maxima",
+        "nicowar",
+        "cabino"
+      ],
+      "ticks": 4096
+    }
+  ],
+  "map_seed": 713,
+  "new_game_seeds": [
+    164298751,
+    902381047
+  ],
+  "holdout_game_seed": 1738462951,
+  "correctness_ticks": 2048,
+  "explicit_counts": [
+    1,
+    3,
+    6
+  ],
+  "performance_counts": [
+    "auto",
+    3
+  ],
+  "timing_repetitions": 3,
+  "foreground_affinity": [
+    12,
+    13,
+    14,
+    28,
+    29,
+    30
+  ],
+  "completed_games": "Later final full-winner checks on fixed Playground/Oazis and at least one held-out layout; original one-hour cap retained.",
+  "boundaries": "Frozen saves created from baseline with exact width/height/team/seed/player validation and SHA256; do not silently substitute failed generators/layouts. These seeds were not the prior performance cohort.",
+  "raw_evidence": "artifacts/engine-optimization; no dated reports committed"
+}

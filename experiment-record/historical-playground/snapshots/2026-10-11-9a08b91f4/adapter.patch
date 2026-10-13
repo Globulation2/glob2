@@ -1,0 +1,90 @@
+--- a/SConstruct
++++ b/SConstruct
+@@ -28,7 +28,7 @@
+     if isDarwinPlatform:
+         opts.Add("INSTALLDIR", "Installation Directory", "./")
+     else:
+-	    opts.Add("INSTALLDIR", "Installation Directory", "/usr/local/share")
++        opts.Add("INSTALLDIR", "Installation Directory", "/usr/local/share")
+     opts.Add("BINDIR", "Binary Installation Directory", "/usr/local/bin")
+     opts.Add("DATADIR", "Directory where data will be put, set to the same as INSTALLDIR", "/usr/local/share")
+     opts.Add(BoolVariable("dev_fast", "Fast full-featured development build", 0))
+@@ -92,7 +92,7 @@
+     if isDarwinPlatform:
+         configfile.add("PACKAGE_DATA_DIR", "data directory", "\"" + env["DATADIR"] + "../Resources/\"")
+     else:
+-    	configfile.add("PACKAGE_DATA_DIR", "data directory", "\"" + env["DATADIR"] + "\"")
++        configfile.add("PACKAGE_DATA_DIR", "data directory", "\"" + env["DATADIR"] + "\"")
+     configfile.add("PACKAGE_SOURCE_DIR", "source directory", "\"" +env.Dir("#").abspath.replace("\\", "\\\\") + "\"")
+     configfile.add("PACKAGE_RUNTIME_ASSET_DIR", "generated WebP artwork for source builds", '\"' + str(Path(env["BUILDDIR"]).resolve() / "runtime-assets").replace("\\", "\\\\") + '\"')
+     configfile.add("PACKAGE_NAME", "Define to the full name of this package.", "\"Globulation 2\"")
+--- a/src/app/Glob2.cpp
++++ b/src/app/Glob2.cpp
+@@ -1,3 +1,4 @@
++#include <chrono>
+ #include <SDL3/SDL_main.h>
+ // SPDX-License-Identifier: GPL-3.0-or-later
+ // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
+@@ -144,7 +145,12 @@
+ 		std::cout<<"Random Seed initial: "<<t<<std::endl;
+ 		Engine engine;
+ 		engine.createRandomGame();
+-		engine.run();
++		const auto historyStart = std::chrono::steady_clock::now();
++        engine.run();
++        std::cout << "HISTORY_TIMING run_wall_seconds="
++                  << std::chrono::duration<double>(std::chrono::steady_clock::now()-historyStart).count()
++                  << std::endl;
++        return 0;
+ 		run++;
+ 	}
+ 	return 0;
+--- a/src/engine/EngineLoaders.cpp
++++ b/src/engine/EngineLoaders.cpp
+@@ -141,27 +141,7 @@
+ // catches that and picks again).
+ std::optional<MapHeader> Engine::chooseRandomMap()
+ {
+-	if (!globalContainer->testGamesMap.empty())
+-	{
+-		std::string fullPath = std::string("maps") + DIR_SEPARATOR
+-			+ globalContainer->testGamesMap + ".map";
+-		return loadMapHeader(fullPath);
+-	}
+-
+-	std::vector<std::string> maps = glob2ListMapOrSaveFiles(*Toolkit::getFileManager(), "maps", "map");
+-
+-	if (maps.empty())
+-		return std::nullopt;
+-
+-	if (!mapSelectionInitialized)
+-	{
+-		const Uint32 seed = globalContainer->testGamesSeedSet ? globalContainer->testGamesSeed : gui.game.gameHeader.getRandomSeed();
+-		mapSelectionRandom.initializeOwner(seed, unsigned(RandomDomain::MatchMap));
+-		mapSelectionInitialized = true;
+-	}
+-	int number = mapSelectionRandom.nextU32() % maps.size();
+-
+-	return loadMapHeader(maps[number]);
++    return loadMapHeader("maps/Playground.map");
+ }
+ 
+ 
+--- a/src/engine/EngineRun.cpp
++++ b/src/engine/EngineRun.cpp
+@@ -580,6 +580,15 @@
+ void Engine::printAutomaticEndingSummary()
+ {
+ 	int time = gui.game.stepCounter;
++        int historyWinner=-1;
++        for(int t=0;t<gui.game.mapHeader.getNumberOfTeams();++t)
++            if(gui.game.teams[t]->hasWon) historyWinner=t;
++        std::cout << "HISTORY_RESULT ticks=" << time << " ended=" << gui.game.isGameEnded
++                  << " winner=" << historyWinner << " width=" << gui.game.map.getW()
++                  << " height=" << gui.game.map.getH()
++                  << " teams=" << gui.game.mapHeader.getNumberOfTeams()
++                  << " controllers=" << gui.game.gameHeader.getNumberOfPlayers() << std::endl;
++
+ 	int seconds = (time / GAME_TICKS_PER_SECOND) % 60;
+ 	int minutes = (time / GAME_TICKS_PER_SECOND) / 60;
+ 	std::cout << "automaticEndingGame ended: " << time << " ticks, " << minutes << " minutes, " << seconds << " seconds" << std::endl;

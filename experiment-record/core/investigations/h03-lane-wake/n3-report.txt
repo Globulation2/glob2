@@ -1,0 +1,9 @@
+H03 preferred N3 follow-up COMPLETE:4/4 exactrawPG8192GCS gates,16/16timedwindows,8/8nativefinalCRC/end/winner/tick pairs.
+WholeGCS c95bcc473064f6fb4c7b17470e53a6e8a1f33368970ee1b7083355ae87c93a4e andfinalcd20aae7 match original/guarded GPUoff/on. Timed variants remainGPUon andfeaturepreserving.
+Same immutablebinaries/assets,CPU12-14,28-30,2seeds×2AB/BAreps permap. No acrossmap pooling.
+Ratios guarded/original, geometric mean of4pairedblocks; only2seedclusters/no generalpopulation interval.
+Playground: run_wall_seconds +0.0836%, wall_seconds +0.1561%, total_cpu_seconds +0.3353%, system_cpu_seconds +2.9641%, voluntary_context_switches -3.0950%, peak_rss_kib -0.0519%
+Oazis: run_wall_seconds -1.5842%, wall_seconds -1.1681%, total_cpu_seconds -1.1558%, system_cpu_seconds -0.8972%, voluntary_context_switches -2.9063%, peak_rss_kib -0.0361%
+Decision: Playground N3 isflat/mixed inwall/CPU;Oazis N3initial8k shows small~1.58%runwall/~1.16%CPU benefit. Do notpromote a general wakeguard or addauto32 benefit toworkerfix. AnyOazisfollow-up must be mature/fullgame atchosenN3; thisearlytwo-seedwindow cannotestablish it.
+Existingorderedlane/reentrancy/exception/pinned/maintenance correctness remains separate. No fullwinnermature/platform/save/load/OazisfullGCS proof claimed. Original48window/8controlrawplans preserved unchanged.
+StandaloneN6pipeline adversecase remains inoriginalreport;allfeatures retained.

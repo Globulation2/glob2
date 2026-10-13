@@ -1,0 +1,8 @@
+{
+  "source_commit": "9e370bcb83209cf99f43c346750a6d4bd440f4f2",
+  "base_commit": "2ced60e06b8e7fa7a4a4ecff944c40bda494bcf4",
+  "build_manifest_sha256": "2df42aebca03f2727c8993cc6e7f70a8113402907004ddfa9e1a430b3bffd1a8",
+  "binary_sha256": "ea5dbd7f5e30c129b0f554796beb8a67ec96041baef4b70c9310df7863faa406",
+  "working_source_matches_built_inventory": true,
+  "qualification": "Commit created from exact built source bytes before final integration diagnostics and all combined performance games. Native build contains no Git-derived version input."
+}

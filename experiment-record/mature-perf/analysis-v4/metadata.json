@@ -1,0 +1,93 @@
+{
+  "metadata_schema_version": 2,
+  "exporter_schema_version": 2,
+  "perf_data_sha256": "ef4110078e4fda3fc1bb97781e19afb539c78a9f76122b154f4a380c65f8d427",
+  "analyzer_sha256": "1d1d9e835d196dff40c6fee226cea2255f5710b90d9bec9ed69deabc521e04b4",
+  "exporter_sha256": "4693d67020f7631598b2ecdd9ac47f05ceb16331ad6a369a29cfc8987602e1e2",
+  "commands": [
+    {
+      "file": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/analysis-v4/structured-samples.jsonl",
+      "sha256": "aea0b613d6ae9aea0a8d864c64ac12b74157e476e0cb9f8b281b64a52880e15f",
+      "stderr": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/analysis-v4/structured-samples.jsonl.errors",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "argv": [
+        "sudo",
+        "-n",
+        "perf",
+        "script",
+        "--ns",
+        "-i",
+        "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/profile/perf.data",
+        "-s",
+        "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/analysis-v4/export-samples.py"
+      ]
+    },
+    {
+      "file": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/analysis-v4/raw-records.txt",
+      "sha256": "b44e8a919e6fed7185666cb0772bc0bb039fdb87e74327ae11382719aea825e6",
+      "stderr": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/analysis-v4/raw-records.txt.errors",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "argv": [
+        "sudo",
+        "-n",
+        "perf",
+        "script",
+        "-D",
+        "-i",
+        "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/profile/perf.data"
+      ]
+    },
+    {
+      "file": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/analysis-v4/header.txt",
+      "sha256": "27a9354b415b34f2e1c2bab34e945d61280d879246ba41f1fb7735320f99a497",
+      "stderr": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/analysis-v4/header.txt.errors",
+      "stderr_sha256": "19c9d979c84b0b2c6a4b0f74732c4fd4129b8235cae31732597b0b52984abe95",
+      "argv": [
+        "sudo",
+        "-n",
+        "perf",
+        "report",
+        "--header-only",
+        "--stdio",
+        "-i",
+        "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/profile/perf.data"
+      ]
+    },
+    {
+      "file": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/analysis-v4/buildids.txt",
+      "sha256": "b4bca1ee3b2a18440dbb1a77598f3c1aa4695329e2d3a7a7c17bbfe512df389f",
+      "stderr": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/analysis-v4/buildids.txt.errors",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "argv": [
+        "sudo",
+        "-n",
+        "perf",
+        "buildid-list",
+        "-i",
+        "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/profile/perf.data"
+      ]
+    },
+    {
+      "file": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/analysis-v4/elf-notes.txt",
+      "sha256": "33200d5f53577c574d455040e383cb62ce4011d74f0f525cc310e71b006640fe",
+      "stderr": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/analysis-v4/elf-notes.txt.errors",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "argv": [
+        "readelf",
+        "-n",
+        "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/glob2"
+      ]
+    }
+  ],
+  "profile_receipts": {
+    "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/profile/complete.json": "45db75b51f5971008b7803c1fed6b832da8bd17fcebc90500589221de8a5e2a9",
+    "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/profile/attached-tasks.json": "c3cf9282b7eb57a9f26ca27e1a7fe84e857ed903764f51412367d90130139226",
+    "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/profile/sampler-start.json": "687931a44ef436daed5fed0d147e7ab6a9ed13c5fea9773a02e70de3663bc425",
+    "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/profile/sampler-stop.json": "7ba5192166ff78112d57db6f876aac31c80f739b6c2a59fe00b069bb45e63751",
+    "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/profile/sampling-boundaries.json": "4240db40bbb92a4becfc18e1c4f909016c188ec4837a299a9a99581b8d477056",
+    "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/profile/validated.json": "03990997239641e87f5c6a53d9094ae4ced7741a0a423870ed53c1ac9fdf1eea"
+  },
+  "profile_reads_only": true,
+  "native_build_profile_launches": 0,
+  "primary_api": "https://raw.githubusercontent.com/torvalds/linux/v7.0/tools/perf/util/scripting-engines/trace-event-python.c"
+}

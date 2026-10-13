@@ -1,0 +1,25 @@
+H12 current microcontrols: completed; no tested K1/K3 candidate earns generic live-engine transplantation.
+
+K1:540/540 verifiedtimings,360 pairedvariantblocks;108fixture oracle preparation/1,476,792cells pervariant.
+Neither globalchunk16 nor globalchunk128 earns live-engine transplantation from this matrix. Keep current64.128 has small weighted medians mostly with intervals spanning1, significant unweighted regression and more retained scratch/cold allocation work. Any weighted-only128 adaptation is a new untested candidate, not measured by current genericchunkvariant.
+Examples (median candidate/baseline wallratio; paired-bootstrap95interval):
+-128²swim6 sparse CHUNK128:0.9853[0.9771,0.9944], about1.5%warm kernel benefit.
+-256²swim0 clustered CHUNK128:1.3028[1.1073,1.5303], about30.3%regression.
+-128²swim0 barrier CHUNK16:1.0870[1.0196,1.1779], about8.7%regression.
+CPUratios closely trackwall. Keep everyfixture separate; no blindpool across128/256/swim/seedprofile.
+Separate untimed allocation example128²swim6 sparse:CHUNK64→128reserveCalls1706→1086, cold allocationCalls64→91, allocationRequestedBytes98304→227552, retainedCapacity65536→132672bytes. Warm allocations0forboth. Fewer reservations are not overall resource savings. CHUNK16calls5386withlowerretained50176bytes butmedianwarmCPUregresses4.1%inthatfixture.
+
+K3:750/750 verifiedtimings,500pairedvariantblocks;97fixture oracle/846,008cells pervariant and exact actual visitordermatch.
+Reject this public-API stack batching32/128 direction for live-engine transplant. All25fixture median CPU/wall ratios regress;24of25 wall intervals entirelyabove1 forbothvariants. Pops/item unchanged, stack copying adds work, and pending-ring allocation-failure behavior also differs.
+Representative256²swim3clustered:batch32 wall1.3037[1.2558,1.4192],CPU1.3036;batch128 wall1.3304[1.2634,1.5456],CPU1.3302.
+Mostnearcapacity/wrappedcasesalso regress.1x8192thinbatch128median1.0339interval[0.9810,1.2184]isuncertain,notaspeedup.
+Separate memoryexample256²swim3clustered:baseline/batchesallcold4allocations/7680requestedbytes,retained4096bytes,warm0allocations;stack adds128/512bytes. Queue peakpending992→990doesnotchangecapacityandisnotamemorywin.
+
+Warm kernel timings only; no measured cold timing, full-field outputs not partial/resume/layer-boundary proof. Shared relaxation production changes still require building-search/platform boundaries. Exploratory unadjusted bootstrap intervals across10repeat blocks.
+Actual visitation/full-field equality passes; generic stop/resume/exception pending state and weighted-travel path not changed or established. Synthetic narrow entry, no mature game conclusion.
+No native game optimization is inferred from exclusiveValgrindIr or isolatedwarmmicrotimes. Investigate an alternative narrow reserve/queue design oractualsnapshot/cache demand before live transplantation; no sourcechangeornewexperimentpreparedhere.
+
+H03 actualgameevidence complete:48windows/24nativepairs,8exact8192GCScontrolspass. Measured auto32 benefits occur with32participants inside6eligibleCPUs; treat this guard as secondary to fixing affinity/count resolution, not an additive speedup or a replacement for the count fix. N4/N6 do not establish a reliable general wall/CPU improvement. Keep experimental pending broader evidence; standalone N6horizon8 regression remains relevant. No micro-to-game or mature-game extrapolation; preserve each native stratum.
+Focused nativegroupvalues are in h03-lane-wake/game-report.txt/game-ledger.json; medians of paired ratios differ from ratios of meanelapsed values.
+
+Read-only source/results analysis only; wrotefocused analyzers/reports/ledgers, touched no rootpipeline/refine/extended analyzer. No children/game/micro/build launched.

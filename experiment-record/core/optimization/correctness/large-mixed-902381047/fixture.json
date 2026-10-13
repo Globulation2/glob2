@@ -1,0 +1,37 @@
+{
+  "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/correctness/large-mixed-902381047/fixture/initial.game.gz",
+  "header": {
+    "major": 0,
+    "minor": 154,
+    "teams": 4,
+    "width": 512,
+    "height": 256,
+    "map_offset": 1325190,
+    "gzip_sha256": "b69a5e8c937c94c6bed5b762cba349f2ba69fe1bb4f0e2e5ff698f82dd8dd670"
+  },
+  "start_tick": 0,
+  "start_tick_evidence": "save occurs before first simulation tick; loaded trace checked below",
+  "preparation_trace": {
+    "sha256": "461a39aa1c4a2920668c35a27da579da0b60a95c19840d129735e53dcd345dad",
+    "teams": 4,
+    "players": 4,
+    "count": 1,
+    "first_tick": 0,
+    "last_tick": 0,
+    "flags": 0
+  },
+  "scenario": {
+    "id": "large-mixed",
+    "generator": "river",
+    "width": 512,
+    "height": 256,
+    "ais": [
+      "cortex",
+      "maxima",
+      "nicowar",
+      "cabino"
+    ],
+    "ticks": 4096
+  },
+  "seed": 902381047
+}

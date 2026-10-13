@@ -1,0 +1,9 @@
+Snapshot V2: all 44 factor jobs complete; the full follow-up remains at 66/68.
+
+Recommend reverting the ownership and reclaim changes, while retaining a separately useful query/export census. Initial CPU-off improvements on Playground (CPU -3.09%) and rect-cortex (-2.32%) coexist with descriptive slowdowns on small-ni (+3.21% CPU, +3.02% wall) and Oazis (+2.05% CPU, +1.92% wall). Their reported intervals exclude zero. RSS changes are mostly within 0.6%. Mature V2 versus baseline is generally flat and supplies no useful memory reduction. Direct V2 versus V1 comparisons are mostly flat; Playground 8k GPU-on wall +2.01%, interval [+0.09%, +4.13%], is adverse and is retained regardless of a 5% alert threshold.
+
+A pooled flat result does not justify shipping tryAcquire and per-capture pressure state. V1's eager sweep had no mature Oazis benefit; V2 does not establish a general improvement. Restore original acquisition and remove cleanup-dependent tests/APIs, while retaining immutable lease coverage and neutral census tests/documentation if the sidecar stays. The unconsumed search-queue census API is a separate optional diagnostic scope.
+
+The JSON preserves every layout, comparator, GPU mode and window separately. Two seeds, three paired repeats, 4,000 descriptive hierarchical bootstrap draws and many comparisons limit inference; these are not simultaneous or population-level 95% intervals. Loaded mature windows reconstruct caches and allocator state, so they do not establish continuous-process heap behavior.
+
+Telemetry V2's separate Playground GPU-on direct CPU regression (+2.01%) remains visible. Wait for the fresh large-mixed three-seed, six-pair replication before the final telemetry choice. No new measurement or source change was launched.

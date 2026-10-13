@@ -1,0 +1,183 @@
+--- a/src/engine/sim/snapshot/BufferPool.h
++++ b/src/engine/sim/snapshot/BufferPool.h
+@@ -46,7 +46,9 @@
+ 				discard(*buffer);
+ 			}
+ 	}
+-	std::shared_ptr<T> acquire(std::uint64_t& allocations)
++	// Owner-only probe: do not allocate when every existing buffer is leased.
++	// The same strong-lease and acquire-fence contract as acquire() applies.
++	std::shared_ptr<T> tryAcquire()
+ 	{
+ 		// Resume after the last hand-out so a large pool is not rescanned from
+ 		// its busiest end on every acquisition.
+@@ -60,6 +62,11 @@
+ 				return buffer;
+ 			}
+ 		}
++		return {};
++	}
++	std::shared_ptr<T> acquire(std::uint64_t& allocations)
++	{
++		if (auto buffer = tryAcquire()) return buffer;
+ 		return allocate(allocations);
+ 	}
+ 	// Prefer the free buffer with the highest score (its fill tick): the one
+--- a/src/engine/sim/snapshot/WorldCapture.cpp
++++ b/src/engine/sim/snapshot/WorldCapture.cpp
+@@ -518,11 +518,9 @@
+ 	}
+ 	if (needs(requirements, Component::ResourceFields))
+ 	{
+-		// An unused descriptor component must not pin obsolete plane generations.
+-		// Keep its descriptor capacity, while making its unleased payloads reusable.
+-		if (storage) storage->resourceFields.discardUnused([](ResourceFields& unused) { unused.clear(); });
+ 		auto fields = acquire(&Storage::resourceFields, Component::ResourceFields);
+ 		fields->clear();
++		bool reclaimedUnusedFields = false;
+ 		const auto planeCells = std::size_t(game.map.getW()) * game.map.getH();
+ 		const ResourceFields *kept = previous && previous->worldIdentity == result->worldIdentity
+ 										 ? previous->resourceFields.get()
+@@ -534,7 +532,19 @@
+ 				if (storage) ++storage->resourcePlaneReuses;
+ 				fields->add(*same); continue;
+ 			}
+-			auto values = storage ? storage->resourcePlanes.acquire(storage->allocations) : std::make_shared<std::vector<Uint16>>();
++			std::shared_ptr<std::vector<Uint16>> values;
++			if (storage) {
++				// Only allocation pressure needs a sweep of obsolete descriptors.
++				// Unchanged generations and already reusable planes avoid that work.
++				if (!reclaimedUnusedFields) {
++					values = storage->resourcePlanes.tryAcquire();
++					if (!values) {
++						storage->resourceFields.discardUnused([](ResourceFields& unused) { unused.clear(); });
++						reclaimedUnusedFields = true;
++					}
++				}
++				if (!values) values = storage->resourcePlanes.acquire(storage->allocations);
++			} else values = std::make_shared<std::vector<Uint16>>();
+ 			if (storage && values->capacity() < planeCells) ++storage->allocations;
+ 			values->resize(planeCells); std::copy_n(*plane.slot, planeCells, values->begin());
+ 			if (storage) {
+--- a/src/engine/sim/snapshot/WorldSnapshotTest.cpp
++++ b/src/engine/sim/snapshot/WorldSnapshotTest.cpp
+@@ -422,7 +422,7 @@
+ 		CHECK(workerFields->find(0)->values->front() == 11);
+ 		CHECK(latestFields->find(2)->values->front() == 33);
+ 	}
+-	TEST_CASE("capture releases unused plane descriptors without touching old observations")
++	TEST_CASE("capture reuses unleased planes without touching old observations")
+ 	{
+ 		glob2test::HeadlessGlobals globals;
+ 		glob2test::HeadlessGame fixture{glob2test::GameOptions{.wDec=5, .hDec=4, .teams=1, .discovered=true, .clearImmobile=true, .loadDefaultRace=true}};
+@@ -445,7 +445,8 @@
+ 		++game.stepCounter;
+ 		game.map.updateMaterialGradient(0, Uint8(materialIndex(MaterialId::Food)), 0);
+ 		auto changed = store.captureBoundary(game, required);
+-		CHECK(store.resourcePlaneMemoryMetrics().reusableDescriptorReferences == 0);
++		// Reusing one idle descriptor supplied a plane; the other need not be swept.
++		CHECK(store.resourcePlaneMemoryMetrics().reusableDescriptorReferences == 1);
+ 		CHECK(*oldPlane.values == oldValues);
+ 		const auto* current = changed.resourceFields->find(oldPlane.key);
+ 		REQUIRE(current); CHECK(current->generation != oldPlane.generation);
+@@ -458,6 +459,100 @@
+ 		const auto metrics = store.resourcePlaneMemoryMetrics();
+ 		CHECK(metrics.generationCopies == 4); CHECK(metrics.generationReuses == 1);
+ 		CHECK(metrics.bytesCopied == 4 * 32 * 16 * sizeof(Uint16));
++	}
++	TEST_CASE("nullable buffer acquisition preserves capacity and the consumer horizon")
++	{
++		SimulationSnapshot::BufferPool<std::vector<Uint16>, 2> pool;
++		Uint64 allocations = 0;
++		CHECK_FALSE(pool.tryAcquire()); CHECK(pool.size() == 0); CHECK(allocations == 0);
++		auto first = pool.acquire(allocations); first->assign(128, 71);
++		auto second = pool.acquire(allocations); second->assign(32, 93);
++		CHECK_FALSE(pool.tryAcquire()); CHECK(allocations == 2);
++		CHECK_THROWS_AS(pool.acquire(allocations), std::logic_error);
++		CHECK(allocations == 2); CHECK(pool.size() == 2);
++		auto* identity = first.get(); const auto capacity = first->capacity();
++		first.reset();
++		auto reusable = pool.tryAcquire();
++		REQUIRE(reusable); CHECK(reusable.get() == identity);
++		CHECK(reusable->capacity() == capacity); CHECK(reusable->front() == 71);
++		CHECK(allocations == 2); CHECK(second->front() == 93);
++		CHECK_FALSE(pool.tryAcquire());
++		reusable.reset();
++		CHECK(pool.acquire(allocations).get() == identity); CHECK(allocations == 2);
++	}
++	TEST_CASE("unchanged resource generations do not sweep idle descriptors")
++	{
++		glob2test::HeadlessGlobals globals;
++		glob2test::HeadlessGame fixture{glob2test::GameOptions{.wDec=5, .hDec=4, .teams=1, .discovered=true, .clearImmobile=true, .loadDefaultRace=true}};
++		auto& game = fixture.game;
++		game.map.setResourceByIndex(20, 10, WHEAT, 1);
++		const auto food = Uint8(materialIndex(MaterialId::Food));
++		game.map.getMaterialGradientSlot(0, food, 0);
++		SimulationSnapshot::Store store;
++		const auto required = SimulationSnapshot::bit(SimulationSnapshot::Component::ResourceFields);
++		std::array<SimulationSnapshot::Handle, 3> held;
++		for (auto& handle : held) {
++			++game.stepCounter; game.map.updateMaterialGradient(0, food, 0);
++			handle = store.captureBoundary(game, required);
++		}
++		REQUIRE(held.back().resourceFields); REQUIRE(held.back().resourceFields->planes.size() == 1);
++		const auto plane = held.back().resourceFields->planes.front();
++		const auto values = *plane.values;
++		held[0] = {}; held[1] = {};
++		const auto before = store.resourcePlaneMemoryMetrics();
++		CHECK(before.reusableDescriptorReferences == 2);
++		++game.stepCounter;
++		auto same = store.captureBoundary(game, required);
++		REQUIRE(same.resourceFields->find(plane.key));
++		CHECK(same.resourceFields->find(plane.key)->values == plane.values);
++		CHECK(*plane.values == values);
++		const auto after = store.resourcePlaneMemoryMetrics();
++		// One descriptor is cleared for normal reuse; its idle peer stays intact.
++		CHECK(after.reusableDescriptorReferences == 1);
++		CHECK(after.allocatedPlanes == before.allocatedPlanes);
++		CHECK(after.capacityBytes == before.capacityBytes);
++		CHECK(after.generationCopies == before.generationCopies);
++		CHECK(after.generationReuses == before.generationReuses + 1);
++	}
++	TEST_CASE("resource plane pressure reclaims idle references before allocating")
++	{
++		glob2test::HeadlessGlobals globals;
++		glob2test::HeadlessGame fixture{glob2test::GameOptions{.wDec=5, .hDec=4, .teams=1, .discovered=true, .clearImmobile=true, .loadDefaultRace=true}};
++		auto& game = fixture.game;
++		game.map.setResourceByIndex(20, 10, WHEAT, 1);
++		const auto food = Uint8(materialIndex(MaterialId::Food));
++		const auto stone = Uint8(materialIndex(MaterialId::Stone));
++		game.map.getMaterialGradientSlot(0, food, 0);
++		SimulationSnapshot::Store store;
++		const auto required = SimulationSnapshot::bit(SimulationSnapshot::Component::ResourceFields);
++		std::array<SimulationSnapshot::Handle, 3> held;
++		for (auto& handle : held) {
++			++game.stepCounter; game.map.updateMaterialGradient(0, food, 0);
++			handle = store.captureBoundary(game, required);
++		}
++		REQUIRE(held.back().resourceFields); REQUIRE(held.back().resourceFields->planes.size() == 1);
++		const auto old = held.back().resourceFields->planes.front();
++		const auto oldValues = *old.values;
++		held[0] = {}; held[1] = {};
++		const auto before = store.resourcePlaneMemoryMetrics();
++		CHECK(before.allocatedPlanes == 3); CHECK(before.reusableDescriptorReferences == 2);
++		// Two changed/new planes need both idle historical vectors: clearing the
++		// normally acquired descriptor supplies only the first one.
++		game.map.setResourceByIndex(21, 10, STONE, 1);
++		game.map.getMaterialGradientSlot(0, stone, 0);
++		++game.stepCounter; game.map.updateMaterialGradient(0, food, 0);
++		game.map.updateMaterialGradient(0, stone, 0);
++		auto changed = store.captureBoundary(game, required);
++		REQUIRE(changed.resourceFields); CHECK(changed.resourceFields->planes.size() == 2);
++		const auto after = store.resourcePlaneMemoryMetrics();
++		CHECK(after.reusableDescriptorReferences == 0);
++		CHECK(after.allocatedPlanes == before.allocatedPlanes);
++		CHECK(after.capacityBytes == before.capacityBytes);
++		CHECK(after.generationCopies == before.generationCopies + 2);
++		REQUIRE(changed.resourceFields->find(old.key));
++		CHECK(changed.resourceFields->find(old.key)->values != old.values);
++		CHECK(*old.values == oldValues);
++		CHECK(held.back().resourceFields->find(old.key)->values == old.values);
+ 	}
+ 	TEST_CASE("unused descriptor cleanup leaves a worker-held plane immutable")
+ 	{

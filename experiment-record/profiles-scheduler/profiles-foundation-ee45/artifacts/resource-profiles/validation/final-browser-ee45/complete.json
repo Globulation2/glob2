@@ -1,0 +1,309 @@
+{
+  "passed": true,
+  "source": "ee45c0a0389660bc7d2885b572b94b1a2b01d7a3",
+  "source_tree": "c4f8f7ebd7888effb0800dd0b14e70f8fc2c3224",
+  "native_build_receipt_sha256": "91a76ad1af293a3ebd14ea3d62ec1289577768a9f175a3abe3309977beb879e3",
+  "web_build_receipt_sha256": "f6ae6ca2a789130f8250f3bd8e7fb57da3aa2fc8f8eed7904e8f01f407fa00fc",
+  "preparation_sha256": "2973a0a04da0afaff6a032679865fedd5e3f8bab83d1d39d3b9b5fee850a91eb",
+  "outputs_sha256": {
+    "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/build/emscripten/client/release/index.js": "df59c27504cafbd1fe63a44a28979bec71b46e475d6d73acba4364cf5427ed0c",
+    "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/build/emscripten/client/release/index.wasm": "ece76f3701d442b43a30eca3a940583ba6bfc8c782e8eb4c67ab13da4d4c3b98",
+    "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/build/emscripten/client/release/index.data": "4260504966a4fcd88cef28ccb635824e9f7063816548d9e38fcf77a48c687f05",
+    "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/build/emscripten/client/release/script-tests.js": "55460c26f80a0e608fde61966dd5150946c6b823731d0209ddb30cbe297ce599",
+    "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/build/emscripten/client/release/script-tests.wasm": "add0ae0cfb52bc4494983fa8d8d55b690935b3b5daf22b9a2f043e0cf08984af",
+    "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/build/emscripten/client/release/script-tests.data": "37ecc83c91bf01fdb6435e47e29d5de4b300c66ef640f50341d1f1b576423fd8",
+    "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/build/emscripten/client/release/threaded/index.js": "8668c5a3e57119ea30fd1604ca2cf8f0ef7f6d3d6720adf23b31e7fafd8dba12",
+    "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/build/emscripten/client/release/threaded/index.wasm": "5c2f52d2797b4ac51711f114f35be3a481cc7e29f1a150ab0c67d36d46ee3248",
+    "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/build/emscripten/client/release/threaded/index.data": "4260504966a4fcd88cef28ccb635824e9f7063816548d9e38fcf77a48c687f05",
+    "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/build/emscripten/client/release/threaded/script-tests.js": "99a27df65f5fc6b6d547567673622ab1825d741df55a38ca2735194f9a1cdd78",
+    "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/build/emscripten/client/release/threaded/script-tests.wasm": "c3b3b68fe4cd89b2ffe0dbd7fbe7007b65cd243fcf61badff20e071a8a027e75",
+    "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/build/emscripten/client/release/threaded/script-tests.data": "37ecc83c91bf01fdb6435e47e29d5de4b300c66ef640f50341d1f1b576423fd8",
+    "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/build/linux/client/release/src/glob2": "18b640357036e457470338e092fb3108debc3ab252adbb631b0094d18852e36c",
+    "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/build/linux/client/release/test/glob2-unit-tests": "1e1b9bf63d22649ec61d1e763cf3c17cb88d24cc7cd256c6494605671769c7ee",
+    "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/build/linux/client/release/test/glob2-engine-tests": "e065df0f9dd078b5cee551d619aae380bcff5a02f98e947af0c953419a98b216",
+    "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/build/linux/client/release/test/SoftwareRenderBenchmark": "e07cefc8ed15935307b52b3fd51d971aff99d2ca27c2c1e37072e64dd58f9110",
+    "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/build/linux/client/release/test/torus-render-benchmark": "fac567e64cf74c5a62bc06ed700e8671fc86c7566cf5f7d060e216789dd3b37a",
+    "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/build/emscripten/client/release/index.html": "9f154742563798799a33fca4e26b1ac3bd7268f6ad95a39bf61897dbf25cff8b",
+    "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/build/emscripten/client/release/generator-studio.html": "9f154742563798799a33fca4e26b1ac3bd7268f6ad95a39bf61897dbf25cff8b"
+  },
+  "matrix": {
+    "passed": 12,
+    "failed": 0,
+    "skipped": 0,
+    "flaky": 0,
+    "retries": 0,
+    "compiled_cases_per_browser_variant": 79,
+    "compiled_case_executions": 474,
+    "actual_coverage": [
+      {
+        "runtime": "serial",
+        "project": "chromium",
+        "suites": [
+          "ResourcePolicy",
+          "ResourcePlanJson",
+          "ApplicationResourcePlan",
+          "ApplicationPhaseResources",
+          "ApplicationResourceObservations",
+          "AndroidResourceObservations",
+          "RuntimeGradientBackend",
+          "GradientPreparationContract",
+          "GradientBackendSwitch"
+        ],
+        "actualRegistered": 79,
+        "actualExecuted": 79,
+        "listedSharedHeap": false,
+        "ranSharedHeap": false,
+        "coverage_sha256": "f6da6e4bab0a2444d69aab07fb8b78e891032ba2a77470562de1df2b5a021ee4",
+        "junit_path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/final-browser-ee45/results/resource-harness-serial-ac-9cb20-adient-suites-list-and-pass-chromium/actual-junit.xml",
+        "junit_sha256": "8ceeff669f04bfecf2e15eeadbcccdb36d8fd7180e0e183bbc0f73966ac30256"
+      },
+      {
+        "runtime": "threaded",
+        "project": "chromium",
+        "suites": [
+          "ResourcePolicy",
+          "ResourcePlanJson",
+          "ApplicationResourcePlan",
+          "ApplicationPhaseResources",
+          "ApplicationResourceObservations",
+          "AndroidResourceObservations",
+          "RuntimeGradientBackend",
+          "GradientPreparationContract",
+          "GradientBackendSwitch"
+        ],
+        "actualRegistered": 79,
+        "actualExecuted": 79,
+        "listedSharedHeap": true,
+        "ranSharedHeap": true,
+        "coverage_sha256": "694cc3f0d0cd1999594d7f016c3d4bd7441910e21f88434fecdb5e7f20d22e7b",
+        "junit_path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/final-browser-ee45/results/resource-harness-threaded--cd346-adient-suites-list-and-pass-chromium/actual-junit.xml",
+        "junit_sha256": "053aa56cfe45471d03ce12458c5bcf8f77772addd9b8f50155101e321220091f"
+      },
+      {
+        "runtime": "serial",
+        "project": "firefox",
+        "suites": [
+          "ResourcePolicy",
+          "ResourcePlanJson",
+          "ApplicationResourcePlan",
+          "ApplicationPhaseResources",
+          "ApplicationResourceObservations",
+          "AndroidResourceObservations",
+          "RuntimeGradientBackend",
+          "GradientPreparationContract",
+          "GradientBackendSwitch"
+        ],
+        "actualRegistered": 79,
+        "actualExecuted": 79,
+        "listedSharedHeap": false,
+        "ranSharedHeap": false,
+        "coverage_sha256": "90981bef496493147eb1cf1d41b815555dd8ca95489c85bc48dce8688d004736",
+        "junit_path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/final-browser-ee45/results/resource-harness-serial-ac-9cb20-adient-suites-list-and-pass-firefox/actual-junit.xml",
+        "junit_sha256": "dadecc109ca7628caedc60d138c58358e5ecc14491a805e2a778e2cb2d1c22dc"
+      },
+      {
+        "runtime": "threaded",
+        "project": "firefox",
+        "suites": [
+          "ResourcePolicy",
+          "ResourcePlanJson",
+          "ApplicationResourcePlan",
+          "ApplicationPhaseResources",
+          "ApplicationResourceObservations",
+          "AndroidResourceObservations",
+          "RuntimeGradientBackend",
+          "GradientPreparationContract",
+          "GradientBackendSwitch"
+        ],
+        "actualRegistered": 79,
+        "actualExecuted": 79,
+        "listedSharedHeap": true,
+        "ranSharedHeap": true,
+        "coverage_sha256": "ee9463f25dad76725a2bb4c385d25f1650814e595b22c6990710d8b3b4a2d321",
+        "junit_path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/final-browser-ee45/results/resource-harness-threaded--cd346-adient-suites-list-and-pass-firefox/actual-junit.xml",
+        "junit_sha256": "70ceaeaaed8ccc0277d81d6eb15f55475471caffa429f1de29c56a3da3546ecf"
+      },
+      {
+        "runtime": "serial",
+        "project": "webkit",
+        "suites": [
+          "ResourcePolicy",
+          "ResourcePlanJson",
+          "ApplicationResourcePlan",
+          "ApplicationPhaseResources",
+          "ApplicationResourceObservations",
+          "AndroidResourceObservations",
+          "RuntimeGradientBackend",
+          "GradientPreparationContract",
+          "GradientBackendSwitch"
+        ],
+        "actualRegistered": 79,
+        "actualExecuted": 79,
+        "listedSharedHeap": false,
+        "ranSharedHeap": false,
+        "coverage_sha256": "e5d83fc740f6d5cc457eb70d081d330e3504818ac49c90ac0e57f5f82bf62f4d",
+        "junit_path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/final-browser-ee45/results/resource-harness-serial-ac-9cb20-adient-suites-list-and-pass-webkit/actual-junit.xml",
+        "junit_sha256": "f6094495349357e7b7968e3ddaad17352c65df6908927906c20f3355dc6e233e"
+      },
+      {
+        "runtime": "threaded",
+        "project": "webkit",
+        "suites": [
+          "ResourcePolicy",
+          "ResourcePlanJson",
+          "ApplicationResourcePlan",
+          "ApplicationPhaseResources",
+          "ApplicationResourceObservations",
+          "AndroidResourceObservations",
+          "RuntimeGradientBackend",
+          "GradientPreparationContract",
+          "GradientBackendSwitch"
+        ],
+        "actualRegistered": 79,
+        "actualExecuted": 79,
+        "listedSharedHeap": true,
+        "ranSharedHeap": true,
+        "coverage_sha256": "4e368c3309fb05c80d25417b1e7a03378f6f38a9c1a0adbf0391f0b34ffcc393",
+        "junit_path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/final-browser-ee45/results/resource-harness-threaded--cd346-adient-suites-list-and-pass-webkit/actual-junit.xml",
+        "junit_sha256": "59532f460ef56baa9343a2fd9607959d95ef47bbe9f20824570e3298547bab59"
+      }
+    ],
+    "software_studio_observations": [
+      {
+        "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/final-browser-ee45/results/resource-harness-serial-pi-5792b--its-own-generation-workers-chromium/studio-observation.json",
+        "sha256": "3728a606cf81845b7b2dea27ef3415695e5c0e9fa9b1d49c384c3a66c700dfe0",
+        "runtime": "serial",
+        "background_resources": {
+          "actual_workers": 0,
+          "requested_workers": 1,
+          "resolved_workers": 0,
+          "scope": "one generation; owner plus background worker; direct generation has no resolved plan"
+        },
+        "scope": "Studio generation role only; browser allocation unknown resolves cooperative0; not aggregate activeWorkers or simulation participants"
+      },
+      {
+        "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/final-browser-ee45/results/resource-harness-threaded--1abea--its-own-generation-workers-chromium/studio-observation.json",
+        "sha256": "cbe808e0200df219d936e7d071c4a433c6dabbde043e07bb2c3cafe6d774451b",
+        "runtime": "threaded",
+        "background_resources": {
+          "actual_workers": 0,
+          "requested_workers": 1,
+          "resolved_workers": 0,
+          "scope": "one generation; owner plus background worker; direct generation has no resolved plan"
+        },
+        "scope": "Studio generation role only; browser allocation unknown resolves cooperative0; not aggregate activeWorkers or simulation participants"
+      },
+      {
+        "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/final-browser-ee45/results/resource-harness-serial-pi-5792b--its-own-generation-workers-firefox/studio-observation.json",
+        "sha256": "dfd9c43dea4cd72302a27b1a093b942bbb0d9f48feec976dcf17f8d1d22dff40",
+        "runtime": "serial",
+        "background_resources": {
+          "actual_workers": 0,
+          "requested_workers": 1,
+          "resolved_workers": 0,
+          "scope": "one generation; owner plus background worker; direct generation has no resolved plan"
+        },
+        "scope": "Studio generation role only; browser allocation unknown resolves cooperative0; not aggregate activeWorkers or simulation participants"
+      },
+      {
+        "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/final-browser-ee45/results/resource-harness-threaded--1abea--its-own-generation-workers-firefox/studio-observation.json",
+        "sha256": "f6c52864e50c2d2bd4668b2f9c222c4ca3f4067750fef13cc24d1815c1a0761a",
+        "runtime": "threaded",
+        "background_resources": {
+          "actual_workers": 0,
+          "requested_workers": 1,
+          "resolved_workers": 0,
+          "scope": "one generation; owner plus background worker; direct generation has no resolved plan"
+        },
+        "scope": "Studio generation role only; browser allocation unknown resolves cooperative0; not aggregate activeWorkers or simulation participants"
+      },
+      {
+        "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/final-browser-ee45/results/resource-harness-serial-pi-5792b--its-own-generation-workers-webkit/studio-observation.json",
+        "sha256": "94b5dc5bb903139e26bfe720bb3b3e81b2a220c98decc15266ffbb2d9cc053f3",
+        "runtime": "serial",
+        "background_resources": {
+          "actual_workers": 0,
+          "requested_workers": 1,
+          "resolved_workers": 0,
+          "scope": "one generation; owner plus background worker; direct generation has no resolved plan"
+        },
+        "scope": "Studio generation role only; browser allocation unknown resolves cooperative0; not aggregate activeWorkers or simulation participants"
+      },
+      {
+        "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/resource-profiles/validation/final-browser-ee45/results/resource-harness-threaded--1abea--its-own-generation-workers-webkit/studio-observation.json",
+        "sha256": "62927d3d9554abb511dca011f395617d4ea0004ddf33175dbd3b280bb3dafa6d",
+        "runtime": "threaded",
+        "background_resources": {
+          "actual_workers": 0,
+          "requested_workers": 1,
+          "resolved_workers": 0,
+          "scope": "one generation; owner plus background worker; direct generation has no resolved plan"
+        },
+        "scope": "Studio generation role only; browser allocation unknown resolves cooperative0; not aggregate activeWorkers or simulation participants"
+      }
+    ],
+    "picker_scope": "Real screen path reached; aggregate diagnostics do not expose picker-role worker count, so actual role count remains unmeasured."
+  },
+  "compute": {
+    "passed": 1,
+    "failed": 0,
+    "skipped": 0,
+    "weighted_fields": 36,
+    "algorithms": [
+      "frozen8",
+      "jacobi"
+    ],
+    "shapes": [
+      [
+        1,
+        1
+      ],
+      [
+        1,
+        32
+      ],
+      [
+        32,
+        1
+      ],
+      [
+        2,
+        16
+      ],
+      [
+        17,
+        19
+      ],
+      [
+        32,
+        32
+      ]
+    ],
+    "caps": [
+      0,
+      70,
+      65500
+    ],
+    "oracle": "Independent iterative CPU toroidal weighted reference, exact everycell",
+    "cancellation": "Pre-canceled request rejected, host output unchanged, completion published; no inflight nativeOpenCL quarantine/recovery claim.",
+    "adapter": "Actual Chromium WebGPU device requested with explicit SwiftShader flags; software adapter, not physical GPU or throughput evidence.",
+    "actual_source_sha256": {
+      "browser/tests/gradient-compute.spec.js": "5240fef5486341e48c1d88c3c09580af4ea2227529115a16e7d803810a58c8ec",
+      "browser/gradient-compute.js": "26688e11681011695a0cd65b8054d68d300a9c17e7c0e94fdeb9aa80f92d3203",
+      "src/field/shaders/frozen8.wgsl": "fc052030fa865fa7c4810128479f88dff0317d07f3da5d9082146eae4c767f13",
+      "src/field/shaders/jacobi.wgsl": "524fb0e87baef48fc47462ab9ae9641e32398b0c7c0669bb860a4e688bbe5e10"
+    },
+    "results_sha256": "dba09c204c2ab67acf995739ffcd688be8c5bef3f629298ae8795f6e1949f8de"
+  },
+  "scope": "Fresh finalee45 execution against newly built serial/threaded outputs, not transferred f7 runtime evidence. Shared-host functional testing only.",
+  "source_outputs_unchanged": true,
+  "own_config_or_servers_remaining": [],
+  "raw_files_inventory_sha256": "abb60256125cc675adbb38c185d6d1ff146a77a40b6e9ce9cb37be55d9f950fb",
+  "limits": [
+    "Selected79 compiled portable contracts do not include wholeComputeExecutorHarness telemetry suite; its native final qualification is separate.",
+    "Serial/threaded heap identity proves selected runtime, not any hardware CPU budget/preset optimality.",
+    "Studio generation uses cooperative0 background workers under unknown browser allocation, accurately reported; this is not a successful parallel-generation budget test.",
+    "No physical GPU, Android device, scheduler timing, browser frame-latency, thermal or energy qualification.",
+    "Linked native hashes are identity bindings only; no native app tests/games launched in this browser replay."
+  ]
+}

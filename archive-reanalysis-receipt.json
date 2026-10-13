@@ -1,0 +1,18 @@
+{
+  "passed": true,
+  "source_head": "d2ddb6793777eac9e8c62421f2803313e0b83b52",
+  "archive_sha256": "d3287b4aec69af93b613560f53bbf97c43d639b3be8a0fc9d07a8a808a42d0fc",
+  "archive_files_verified": 1070,
+  "reanalysis": {
+    "passed": true,
+    "mismatches": [],
+    "historical_means_match": true,
+    "scaling_point_estimates_and_bootstrap_match": true,
+    "scope": "Saved scalar recalculation only, not a new performance or determinism experiment; two seeds x three paired blocks remain descriptive"
+  },
+  "historical_means_checked": 196,
+  "scaling_cells": 60,
+  "metrics_per_scaling_cell": 11,
+  "native_game_or_build_launches": 0,
+  "scope": "Recomputed directly from published-package bytes using standard-library script; no engine execution or new measurements."
+}

@@ -1,0 +1,5 @@
+{
+  "build/android/device/arm64-v8a/24/client/release/lib/libmain.so": "db98fe2873c7a72b72efd29a6df8082a9b7edc3f0829bbe4fcb218a7ca3f2135",
+  "build/android/device/arm64-v8a/24/client/release/tests/glob2-unit-tests": "03838c2481f26b5803272eac72c5d30089e72094cb5acab5fe41ab32b9700863",
+  "build/android/device/arm64-v8a/24/client/release/tests/glob2-engine-tests": "12a20f48cdba171a7686ab648d9deb4bd5223d2284a208b86fea2250314ad1f2"
+}

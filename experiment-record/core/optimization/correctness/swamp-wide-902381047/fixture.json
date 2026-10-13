@@ -1,0 +1,37 @@
+{
+  "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/correctness/swamp-wide-902381047/fixture/initial.game.gz",
+  "header": {
+    "major": 0,
+    "minor": 154,
+    "teams": 4,
+    "width": 256,
+    "height": 128,
+    "map_offset": 1187968,
+    "gzip_sha256": "484a22d355e7fc07a618a520bbf3d110f36298c2f0cc3967bcff94c814d4d7d6"
+  },
+  "start_tick": 0,
+  "start_tick_evidence": "save occurs before first simulation tick; loaded trace checked below",
+  "preparation_trace": {
+    "sha256": "53b4a055c25fa57d684f0244e702b8c2d977a4be114adbd7c5c4182bdcdc050f",
+    "teams": 4,
+    "players": 4,
+    "count": 1,
+    "first_tick": 0,
+    "last_tick": 0,
+    "flags": 0
+  },
+  "scenario": {
+    "id": "swamp-wide",
+    "generator": "swamp",
+    "width": 256,
+    "height": 128,
+    "ais": [
+      "castor",
+      "numbi",
+      "warrush",
+      "nicowar"
+    ],
+    "ticks": 8192
+  },
+  "seed": 902381047
+}

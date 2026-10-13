@@ -1,0 +1,14 @@
+{
+  "passed": true,
+  "manifest_sha256": "a08c878bee84e5c2daa278da8349d87ab213ef8c703caedbf3d31d6ae09930c7",
+  "runner_sha256": "4f176e3e98e511fb08d95d438d1cb6a5e84a2cf049400ec9fc7922634389a000",
+  "mask": [
+    3,
+    4,
+    5,
+    19,
+    20,
+    21
+  ],
+  "qualification_only": true
+}

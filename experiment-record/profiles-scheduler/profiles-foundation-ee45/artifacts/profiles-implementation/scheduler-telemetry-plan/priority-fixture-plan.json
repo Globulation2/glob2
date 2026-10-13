@@ -1,0 +1,23 @@
+{
+  "base": "96da258e5a6b24a57a8848f2bfa0178031331322",
+  "patch_sha256": "d3111474e602172d4504f0054e083a3eb1f8df26851303022f807e6b82ba1147",
+  "old_fixture_sha256": "8d1129a5f8e40faf74440a124856fba58957c1f6d375a1bea8d69dfdc527fe65",
+  "name": "ComputeExecutor/presentation priority discards deferred selection before slot reuse and generation",
+  "modes": [
+    "Off",
+    "Waits",
+    "Trace"
+  ],
+  "actual_configured_counts": [
+    3,
+    6,
+    12
+  ],
+  "count_rationale": "Atleast3 required tohold designatedpresentationworker while generalworker drains andowner frees/reuses; counts arestressfixtures, not recommendedpolicy.",
+  "watchdog": "10seconds per each9combination; releaseguard opensALLheldgates andjoins watchdog/releaser onfail/unwind; run_tests percase timeoutmustcovermaximum90s+cleanup, choose120s.",
+  "public_evidence": "CallbackthreadIDs/held lane ordering/slotreuse/new blockinggeneration/exactonce; no privatepick mirror or sleeps.",
+  "trace_evidence": "Afterdrain, no trace loss; due1/lane3 twelve oldjobs anddue2/lane3 two replacementjobs eachClaim exactlyonce nonowner. SpuriouscachedpickClaim wouldfail.",
+  "mode_waits_off_scope": "Existing exactonce/lane/generationchecks retained allmodes; Trace-onlycountclaim assertions excluded fromOff/Waits.",
+  "exact_tree_applycheck": "PASS isolatedindex; source unchanged",
+  "builds_tests_launched": 0
+}

@@ -1,0 +1,6 @@
+Isolated snapshot-v2; source-only clone of frozenV1.
+tryAcquire nullable roundrobin+existing usecount/fence; unchanged-generation bypass; normal descriptor reuse clear; once-percapture reclaim on firstchangedplane allocationmiss; subsequentmisses normalacquire once.
+Allocation/reclaim scheduling only; immutable observations/field values/order/key generations/horizons/save/load unchanged. Capacities retained.
+Not built/tested/timed. No production/sealedV1 changes or adoption. Root owns queue.
+GenericAPIaddsone nullable acquisitionprobe, normalacquiredelegatesit. Callerreclaims once aftermiss, retainingall capacities. A missed try followedbyreclaim needsone rescan; afterreclaimlaterchangedplanes use normalacquire directly (no gratuitousdouble scan).
+Newtests coverempty/miss/existingcapacity/hardLimit/livelease, actualunchangedpublication idle refs, actualnewsecondmaterial forcingreclaim beforeplane allocation. Existingconcurrent-worker release test remains unchanged.

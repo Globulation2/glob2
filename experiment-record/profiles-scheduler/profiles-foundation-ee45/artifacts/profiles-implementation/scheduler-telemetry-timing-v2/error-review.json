@@ -1,0 +1,25 @@
+{
+  "failure": {
+    "passed": false,
+    "error": "AssertionError('phase monotonic scope')",
+    "external_events": [],
+    "samples": 3,
+    "expected_sha256": "4edebe10e450ce01a4534361bb3a32faf91800a13fa401593f0691bfbb4af6e7"
+  },
+  "begin_scan_monotonic": 3127781.355603956,
+  "stop_finished_monotonic": 3127781.395744027,
+  "finish_arrived_after_scan_start_seconds": 0.04014007095247507,
+  "rootcause": "Oldnow captured atBEGINscan; stop canarriveDURINGscan. Validstopfinished timestampexceeded BEGIN, causingfalsephasefailure. V2comparesfresh END timeafterstopread, retainsseparatescanstart/end.",
+  "original_fail_not_accepted": true,
+  "failed_files_sha256": {
+    "expected.json": "4edebe10e450ce01a4534361bb3a32faf91800a13fa401593f0691bfbb4af6e7",
+    "observer.log": "738d0ad4f05d4c9e77f6be65e7abd9b6fc118d28feee244f3147c1e8a43f2a56",
+    "samples.jsonl": "e08282a1dbb0d65f761eb23c7caaa27bb6685830edc1a84ee8b45e59037b4683",
+    "ready.json": "c68de925bf5f8f7199012f42a2c954f654311cc8804779a77b05df5bbff38199",
+    "native-identity.json": "0e640061817e0b86d9498cc702f9aef9764b6bcaf30898411d6090f648405c9e",
+    "stop.json": "e85acfba54272b4ad9b053107ff5c64b7de7da87ad1de6f57680f52fc89417bd",
+    "failure.json": "82a537449ac7eba3afbd0553a6d7bde1e65c6529be6600b1afa6a964c2eb1afc",
+    "phase-failure.json": "94fd6334933744477753992050a6aa3b9383083203b5a71f3f03072574228760"
+  },
+  "scope": "Artifactobservermeasurement guard, notengine/simulationbug or externalcontamination claim."
+}

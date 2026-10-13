@@ -1,0 +1,13 @@
+{
+  "source_head": "d2ddb6793777eac9e8c62421f2803313e0b83b52",
+  "package_files": 1070,
+  "curated_original_files": 1067,
+  "uncompressed_bytes": 67979261,
+  "archive_bytes": 8772861,
+  "archive_sha256": "d3287b4aec69af93b613560f53bbf97c43d639b3be8a0fc9d07a8a808a42d0fc",
+  "manifest_sha256": "e284f7d42a9c330c8d4325eebba0ab8dae55c7fbbac1aa5034869d1926f5db81",
+  "catalogue_sha256": "531556deaa5e36b05b114e83dd0deb036e4ff175e468d91c227ecdd2aa28fa33",
+  "readme_sha256": "75feeaf2f8eeafd82c24ceaeb0c0dfcd3cfdc34b0bbed8d352c2550fbe894118",
+  "native_game_or_build_launches": 0,
+  "source_unchanged": true
+}

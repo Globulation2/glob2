@@ -1,0 +1,23 @@
+{
+  "passed": true,
+  "source": "ee45c0a0389660bc7d2885b572b94b1a2b01d7a3",
+  "receipt_sha256": "7449f8db28719b3afe74103dc601c271105d7e7d5bb053fe2cb2c4937ece753f",
+  "outputs": {
+    "build/android/device/arm64-v8a/24/client/release/lib/libmain.so": {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/build/android/device/arm64-v8a/24/client/release/lib/libmain.so",
+      "sha256": "040ee45111669b05038aa46438ca04e85d2352b0fd62855acf84ee237f14357c",
+      "bytes": 776685568
+    },
+    "build/android/device/arm64-v8a/24/client/release/tests/glob2-unit-tests": {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/build/android/device/arm64-v8a/24/client/release/tests/glob2-unit-tests",
+      "sha256": "dcd26a421d1ea143cd9a9a2f0391dd075f8a587de4d9c32a7227c9a59d66a1dc",
+      "bytes": 278452976
+    },
+    "build/android/device/arm64-v8a/24/client/release/tests/glob2-engine-tests": {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/build/android/device/arm64-v8a/24/client/release/tests/glob2-engine-tests",
+      "sha256": "24c69e3cfd93208ba9f1de074ff24bd2a09544f9bd84b8369f97a4b3425fdc1d",
+      "bytes": 1004942336
+    }
+  },
+  "scope": "Actualcross-builtbinaries only, no device/testcaseexecution"
+}

@@ -1,0 +1,387 @@
+{
+  "state": "TIMING_V2_PREPARED_ROOTREVIEW_PENDING_NO_LAUNCH",
+  "roles": {
+    "baseline": {
+      "root": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2",
+      "source_commit": "ee45c0a0389660bc7d2885b572b94b1a2b01d7a3",
+      "source_tree": "c4f8f7ebd7888effb0800dd0b14e70f8fc2c3224",
+      "binary": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/build/linux/client/release/src/glob2",
+      "build_binding": "PENDING_EXACT_RELEASE_RECEIPT_SOURCE_LIBRARIES_ROOT_APPROVAL"
+    },
+    "candidate": {
+      "root": "/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2",
+      "source_commit": "96da258e5a6b24a57a8848f2bfa0178031331322",
+      "source_tree": "63d18b69950651b00e9e40a4d96a14d1a25b62cd",
+      "binary": "/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2/build/linux/client/release/src/glob2",
+      "build_binding": "PENDING_EXACT_RELEASE_RECEIPT_SOURCE_LIBRARIES_ROOT_APPROVAL",
+      "inspected_source_commit": "570acc85467e84d081ace9e4db92f73fbbc12a31",
+      "test_only_addendum": "TerrainMaterialsTest1557 explicitlyoptsTrace toobserve parallelBatches, baselineee45 knownfixturegap remainsqualified; no productionpatch expansion."
+    }
+  },
+  "source_diff": [
+    "src/common/ComputeExecutor.h",
+    "src/common/ComputeExecutorHarness.cpp",
+    "src/render/terrain/TerrainMaterialsTest.cpp"
+  ],
+  "allocation_masks": {
+    "owner_control1": [
+      0
+    ],
+    "single_fixed12": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21
+    ]
+  },
+  "allocation_scope": "Caller-fixed logical CPU IDs, owner-inclusive participants equalshare1/4/12; no topology/quota/optimalcount inference. Roles alwaysmatchedwithinshare.",
+  "memory_planning_bytes": 536870912,
+  "diagnostic_order": [
+    "diagnostic-small-ni-n1-gpuoff-baseline",
+    "diagnostic-small-ni-n1-gpuoff-candidate",
+    "diagnostic-small-ni-n12-gpuoff-baseline",
+    "diagnostic-small-ni-n12-gpuoff-candidate",
+    "diagnostic-rect-mixed-n4-gpuoff-baseline",
+    "diagnostic-rect-mixed-n4-gpuoff-candidate",
+    "diagnostic-holdout-comb-n4-gpuoff-baseline",
+    "diagnostic-holdout-comb-n4-gpuoff-candidate",
+    "diagnostic-playground-ni-n4-gpuon-baseline",
+    "diagnostic-playground-ni-n4-gpuon-candidate",
+    "diagnostic-playground-ni-n12-gpuon-baseline",
+    "diagnostic-playground-ni-n12-gpuon-candidate",
+    "diagnostic-oazis-ni-n4-gpuoff-baseline",
+    "diagnostic-oazis-ni-n4-gpuoff-candidate",
+    "diagnostic-oazis-ni-n12-gpuoff-baseline",
+    "diagnostic-oazis-ni-n12-gpuoff-candidate"
+  ],
+  "diagnostic_count": 16,
+  "diagnostic_window_ticks": 2048,
+  "diagnostic_modes": "CLIcompute-telemetryoff; separate focusedHarness coversOff/Waits/Trace.",
+  "timing_order": [
+    "timing-small-ni-n12-gpuoff-r-1-baseline",
+    "timing-small-ni-n12-gpuoff-r-1-candidate",
+    "timing-small-ni-n12-gpuoff-r0-baseline",
+    "timing-small-ni-n12-gpuoff-r0-candidate",
+    "timing-small-ni-n12-gpuoff-r1-candidate",
+    "timing-small-ni-n12-gpuoff-r1-baseline",
+    "timing-rect-mixed-n4-gpuoff-r-1-baseline",
+    "timing-rect-mixed-n4-gpuoff-r-1-candidate",
+    "timing-rect-mixed-n4-gpuoff-r0-baseline",
+    "timing-rect-mixed-n4-gpuoff-r0-candidate",
+    "timing-rect-mixed-n4-gpuoff-r1-candidate",
+    "timing-rect-mixed-n4-gpuoff-r1-baseline",
+    "timing-holdout-comb-n4-gpuoff-r-1-baseline",
+    "timing-holdout-comb-n4-gpuoff-r-1-candidate",
+    "timing-holdout-comb-n4-gpuoff-r0-baseline",
+    "timing-holdout-comb-n4-gpuoff-r0-candidate",
+    "timing-holdout-comb-n4-gpuoff-r1-candidate",
+    "timing-holdout-comb-n4-gpuoff-r1-baseline",
+    "timing-playground-ni-n4-gpuon-r-1-baseline",
+    "timing-playground-ni-n4-gpuon-r-1-candidate",
+    "timing-playground-ni-n4-gpuon-r0-baseline",
+    "timing-playground-ni-n4-gpuon-r0-candidate",
+    "timing-playground-ni-n4-gpuon-r1-candidate",
+    "timing-playground-ni-n4-gpuon-r1-baseline",
+    "timing-playground-ni-n12-gpuon-r-1-baseline",
+    "timing-playground-ni-n12-gpuon-r-1-candidate",
+    "timing-playground-ni-n12-gpuon-r0-baseline",
+    "timing-playground-ni-n12-gpuon-r0-candidate",
+    "timing-playground-ni-n12-gpuon-r1-candidate",
+    "timing-playground-ni-n12-gpuon-r1-baseline",
+    "timing-oazis-ni-n4-gpuoff-r-1-baseline",
+    "timing-oazis-ni-n4-gpuoff-r-1-candidate",
+    "timing-oazis-ni-n4-gpuoff-r0-baseline",
+    "timing-oazis-ni-n4-gpuoff-r0-candidate",
+    "timing-oazis-ni-n4-gpuoff-r1-candidate",
+    "timing-oazis-ni-n4-gpuoff-r1-baseline",
+    "timing-oazis-ni-n12-gpuoff-r-1-baseline",
+    "timing-oazis-ni-n12-gpuoff-r-1-candidate",
+    "timing-oazis-ni-n12-gpuoff-r0-baseline",
+    "timing-oazis-ni-n12-gpuoff-r0-candidate",
+    "timing-oazis-ni-n12-gpuoff-r1-candidate",
+    "timing-oazis-ni-n12-gpuoff-r1-baseline"
+  ],
+  "timing_count": 42,
+  "timing_windows": {
+    "small-ni": 8192,
+    "playground-ni": 20000,
+    "large-mixed": 8192,
+    "oazis-ni": 8192
+  },
+  "timing_design": {
+    "eightcells": 8,
+    "warm_excluded": 16,
+    "measured_children": 32,
+    "measured_pairs": 16,
+    "order": "ExcludedwarmAB then measuredAB/BA eachcell",
+    "qualified_limits": "Two descriptive pairedreps eachcell. Likelyrejecttiny/noisybenefits; no universalcount/CIprecision."
+  },
+  "timing_acceptance": "No automaticadoption or universalcount. Exact endpoints/config/raw hashes withinpairs beforemeasurementacceptance;2048 fulltraces separate. Originalwait4 RSSfloorguard mandatory; no diagnosticpooling.",
+  "canonical_parser": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-timing-v2/parser-root/artifacts/engine-optimization/correctness_campaign.py",
+  "canonical_parser_sha256": "bdb9991fe1cc45fbdf138fede2e2fc6fba0f92068c1c3e9dd33c518acb1ca2a8",
+  "tracked_wait4_helper": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/test/benchmark_parallel_compute.py",
+  "tracked_wait4_sha256": "e737390c8fee7adeb6cdf5b30d5e60ff8cd150c5d33a21e4ba754c2e7eca5ac8",
+  "request_sha256": {
+    "timing-small-ni-n12-gpuoff-r-1-baseline": "4ca36cf0f41e8fd7934d8b5161a6d8bbcdc2ebff8f4fbbb7a38e354083eab367",
+    "timing-small-ni-n12-gpuoff-r-1-candidate": "3b0bf8c3a8b9c1677a5b91409847aef861309d634d32cc158448840af33ffc8f",
+    "timing-small-ni-n12-gpuoff-r0-baseline": "2ca26035bb8ea9e1be951fad2cf284153efe6290ca718828bc6d6c83fef7374c",
+    "timing-small-ni-n12-gpuoff-r0-candidate": "f3834c7b7d003fe61e91ff588add2ad541732c9c8898f46e02fdc85356b61f20",
+    "timing-small-ni-n12-gpuoff-r1-candidate": "92a0c576da2c4cf5bfdafd4e9847cd26ddb9e82ac6116551c30e44d91d15d5a7",
+    "timing-small-ni-n12-gpuoff-r1-baseline": "756e6d07a4676e28fc53442e030f39cb6c5db70dc3a387b9e05046fe0ccb2e7f",
+    "timing-rect-mixed-n4-gpuoff-r-1-baseline": "ce53be8cfac04f04626ba60434b98dea8e7e46e31519f7c070b86ee9b3ca830a",
+    "timing-rect-mixed-n4-gpuoff-r-1-candidate": "61092d47d303385b37e4d937b7f5477282913d50e72d345907b898f0fc77ccb8",
+    "timing-rect-mixed-n4-gpuoff-r0-baseline": "60ae275a36d7fe76406ecc7f0ff5f27087dd2d4ddec6e21672b43f5206190f3c",
+    "timing-rect-mixed-n4-gpuoff-r0-candidate": "992e1b567593ce9a8af8d854ee81836968b28a9421e0ebb034243505cd84bc31",
+    "timing-rect-mixed-n4-gpuoff-r1-candidate": "700e0cc924976a87b6bdc084c0458e043de6b4ff2f43a0d952e7bb75ef797eb5",
+    "timing-rect-mixed-n4-gpuoff-r1-baseline": "563c0b0b9068c03bc2b5954f0ee11b176bfbc6cb9f3e521c2df020cda5185ce8",
+    "timing-holdout-comb-n4-gpuoff-r-1-baseline": "a726bf6962175c422f0d3ddab7a048d3cbe5f0c0be7f1ff7d2495d6fbf02f597",
+    "timing-holdout-comb-n4-gpuoff-r-1-candidate": "2f83ec791d325108ff66fb50f016e497ec4478a6041213385eacdafedcb7379a",
+    "timing-holdout-comb-n4-gpuoff-r0-baseline": "9f2d6af5292dd7a76ed2af6b4eea74e47baedf4cfa73b6a2f30e00952880f8eb",
+    "timing-holdout-comb-n4-gpuoff-r0-candidate": "d38eb981c986d0ac8e6cb288d66b91904ae71b2a39c13a951f665070fe5817a9",
+    "timing-holdout-comb-n4-gpuoff-r1-candidate": "8be0c293717ce95dad552c741da85104b46a306d607421d742f04fe5d92b7168",
+    "timing-holdout-comb-n4-gpuoff-r1-baseline": "cc2319288a848d4d97c2bee5406d9db31c5cadfb988206256c6df519a8c2f00b",
+    "timing-playground-ni-n4-gpuon-r-1-baseline": "96c3f98aa0c85ee04436959699703c4281a4c326d7529d2bfce89d749bc43962",
+    "timing-playground-ni-n4-gpuon-r-1-candidate": "f85c983f3da1a50d54ef2039e55dad0723be244cba041d28495c6e6b867fc7ae",
+    "timing-playground-ni-n4-gpuon-r0-baseline": "9feed94b687c186e907b31f41e794a03d3ff317e191e674355065cd5f67023d0",
+    "timing-playground-ni-n4-gpuon-r0-candidate": "de1431c5e336cabe604a4671bfe69dea3a35c245610c1e300c77301d316ae35e",
+    "timing-playground-ni-n4-gpuon-r1-candidate": "41382be4721daccc77e2a664c0e746f179e4f56cf6426d7a16106db5f2f52680",
+    "timing-playground-ni-n4-gpuon-r1-baseline": "a5a058b5d2b979194977ec5c7f146c91bd5b0cd97c340c378a2c7c348d26ad5d",
+    "timing-playground-ni-n12-gpuon-r-1-baseline": "44a33157e0f8685ee8e55106c4895a75849866bfed09ef888ae4ec83257e4c03",
+    "timing-playground-ni-n12-gpuon-r-1-candidate": "cbbdbf8983003ca13307feec2d0f3852a30b64fcf0782ce6974a46b31c453de1",
+    "timing-playground-ni-n12-gpuon-r0-baseline": "ed55510d260cd61742821859920b559baadcfde3f6f4049e33bca354e0f22e8d",
+    "timing-playground-ni-n12-gpuon-r0-candidate": "ccd4090c60e1657f563634cfcf03a39d194baba31662895e75c95297c354a88f",
+    "timing-playground-ni-n12-gpuon-r1-candidate": "a22b8e1a97e36c8939b52f16d15d4cf23c2ad199c8dc1b3af7dbfcbb26441aef",
+    "timing-playground-ni-n12-gpuon-r1-baseline": "be9989a8a4cb2ab6f0be12c5851c024534f328ea07b76840388791aececf4c6f",
+    "timing-oazis-ni-n4-gpuoff-r-1-baseline": "536aca68a882e0d807428b5cc29a935b48b4855624e02e8ae06db6e1d735d15a",
+    "timing-oazis-ni-n4-gpuoff-r-1-candidate": "2df9dd4b21e76b1ff6ba05cb39b2e9c4675e48f7a911b3f1224215a55f2a12d3",
+    "timing-oazis-ni-n4-gpuoff-r0-baseline": "cc532483aac094aef2c5954025cdb8ec7bb2da6f16cbaed78a1af428a4bcd70c",
+    "timing-oazis-ni-n4-gpuoff-r0-candidate": "dc1d8fedd8172e222525460fbb218ae61f76a9e0a7dded5412422b0a04829c32",
+    "timing-oazis-ni-n4-gpuoff-r1-candidate": "51af594ee0fb2b7fc4064f116e0c32d09c37079bd7224bbafb83dd18f7a4b0fe",
+    "timing-oazis-ni-n4-gpuoff-r1-baseline": "a9cd5f6e436445537707aadc0c38f71f437e635e5441860d764d6c8b29b702e1",
+    "timing-oazis-ni-n12-gpuoff-r-1-baseline": "76f4f20272abe1f0675c2161ebe4bc1587c05c52b8187da7b56bfa0c4214dffa",
+    "timing-oazis-ni-n12-gpuoff-r-1-candidate": "9e9a2e6130ee4895946d82dae60b54c5dc5763bd127f1a4b31407c3a4bdd3361",
+    "timing-oazis-ni-n12-gpuoff-r0-baseline": "85ebcd586e6686017a66f0c7c60ec7f751c63e54a148ef8866a6c65952d6fb1c",
+    "timing-oazis-ni-n12-gpuoff-r0-candidate": "91b969b3ef10336dda7cc2909d8becfd488ba540d1e56b023ce02eefa793ae15",
+    "timing-oazis-ni-n12-gpuoff-r1-candidate": "ef7ba4a2d00cb1d1e02c9320a207136588eb53815a16f4dad613ae863ca8a987",
+    "timing-oazis-ni-n12-gpuoff-r1-baseline": "0d5b78620abfd30be2078ae8f1478c83c05ade712409cf8156744efabc56564e"
+  },
+  "historical_proof": "Priorf7/a13480PASS ismethod/protocolreference only; notee45/570evidence.",
+  "fresh_ee45_18_reference": {
+    "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/runtime-acceptance-d80/result-review.json",
+    "sha256": "a39a2eef5b4825c30277e441da0624fe5f4b3c065cdda408388a4a3fd07a5423",
+    "reuse_scope": "Reference exactsource proof only when fixture/hash/seed/count/allocation/GPU/profile/telemetry/end tick/parser allmatch; current48 requests differ in allocation/profile, so no automaticreuse."
+  },
+  "conditional_adoption_gates": [
+    "Exact currentshippingappcodegen Off/Waits/Trace: noCSE/newcost assumptions fromf7.",
+    "Currentreleaseapp+UNIT+ENGINE/headerABI closure build seals and rootapproval.",
+    "WholeComputeExecutor focusednonzero inventory inclTraceclaim andbounds/lane/externalcontinuation/presentationmaintenance/destruction.",
+    "Priority-discardslotfree/reuse fixture Off/Waits/Trace adaptation stillneeded beforeadoption; currentchangedfixture checkscontinuationclaims, notdiscardinterleaving.",
+    "Ifpilotmeaningful, broadenfull-windowGCS/world/replay/save/resume/network acceptance and actualpresentationmode beforeadoption, plusaffectedbrowserdeterminism."
+  ],
+  "limitations": [
+    "Singlehost onefixtureseed each, two pairedmeasurements perstratum; no fineCIclaim.",
+    "Loadedmaturecheckpoint resetscaches/processhistory; notfullwinner/e2e.",
+    "GPUonpermission nothealth/benefit.",
+    "Profiletuningpending; requestedobjectives differ butsameexplicitresources, no validatedtier/automaticallocationpolicy."
+  ],
+  "helper_sha256": "ec8f4a7160cf7fb92fb9f35a1a6c9dc25ca46dd73162f6d0d43a2992bb934465",
+  "timing_helper_sha256": "db5a346f203e9126a051a9be9ca9024a68d54a35001a7ca68605d844b38e478f",
+  "pair_helper_sha256": "3d8351ba3cf9ce98b55b6242c673b76bf3b338e077b6d46732ec8d4693c6b71f",
+  "timing_cells": [
+    {
+      "fixture": "small-ni",
+      "participants": 1,
+      "gpu": "off",
+      "cpu_ids": [
+        0
+      ],
+      "relative_ticks": 8192
+    },
+    {
+      "fixture": "small-ni",
+      "participants": 12,
+      "gpu": "off",
+      "cpu_ids": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21
+      ],
+      "relative_ticks": 8192
+    },
+    {
+      "fixture": "rect-mixed",
+      "participants": 4,
+      "gpu": "off",
+      "cpu_ids": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21
+      ],
+      "relative_ticks": 8192
+    },
+    {
+      "fixture": "holdout-comb",
+      "participants": 4,
+      "gpu": "off",
+      "cpu_ids": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21
+      ],
+      "relative_ticks": 8192
+    },
+    {
+      "fixture": "playground-ni",
+      "participants": 4,
+      "gpu": "on",
+      "cpu_ids": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21
+      ],
+      "relative_ticks": 20000
+    },
+    {
+      "fixture": "playground-ni",
+      "participants": 12,
+      "gpu": "on",
+      "cpu_ids": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21
+      ],
+      "relative_ticks": 20000
+    },
+    {
+      "fixture": "oazis-ni",
+      "participants": 4,
+      "gpu": "off",
+      "cpu_ids": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21
+      ],
+      "relative_ticks": 8192
+    },
+    {
+      "fixture": "oazis-ni",
+      "participants": 12,
+      "gpu": "off",
+      "cpu_ids": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21
+      ],
+      "relative_ticks": 8192
+    }
+  ],
+  "correctness_gate": "Existingcurrent18candidate conformance/profile/save/match first, then16 exactcellmatching2048GCS/world/AIT1/save/replay cases. No transferred f7 proof.",
+  "continuous_observer": {
+    "period_seconds": 0.5,
+    "control_cpu_ids": [
+      15,
+      31
+    ],
+    "expected_native_allowlist": "Exactone currentrequest nativeargv/binary/output/PIDstart/UID perphase; tasksetmask inherited andchecked",
+    "observed_external": [
+      "nativeengines",
+      "compilers",
+      "linkers",
+      "SCons/dev_build/native-test drivers"
+    ],
+    "coverage": "Observerfirstack beforetiming, lastsnapshot afterchildreaped; hashes/monotonic interval/rawobservations retained. Sampling cannotprove no subinterval foreignactivity.",
+    "contaminated": "Retainrow/raw+events, neverpromoteintopairsummary orsilentlyrerun",
+    "implementation": "Implemented observer.py+monitor.py+timing-case.py+pair.py strictpromotion. Monitor sampled0.5sec/control15,31, exactactualPopenPIDstart/UID/exe/argv/mask, waitsforfirstack, checksnativeperiodicpresence, preservesraw contamination/errors andfailclosed. Originaltrackedwait4 sourceunchanged; PIDbindingoverhead staysinwall."
+  },
+  "canonical_parser_dependencies_sha256": {
+    "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-timing-v2/parser-root/test/compare_save_continuation.py": "d080d2cf4c9222a852d293b39b09661f2716c3495fa91fb20eb2a8bda97b06ef"
+  },
+  "monitor_sha256": "99946515f279afb32435d5a6288e4cd7790f20a88fc4a2f6f9f26ae8c2a861e4",
+  "observer_sha256": "38959459a9e8f96763d408a2d507c6ec9056b64ccc8150cf66b92e4acf8e5ce5",
+  "qualifier_sha256": "997be7c34b68753def7d9a78112d43bedb6e9b102c95f7151c5787e98b0711f3",
+  "performance_readiness": "Helpersimplemented; rootreview/approval, focused/current18/cell16 andquiet gatesbefore anyexecution.",
+  "diagnostic_reuse": "Originalimmutable16 viaoriginalcase/helper/binding/rawseals; no copyingorretrospectivepromotion",
+  "original_package": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan",
+  "original_approved_binding_sha256": "5de0386482b93727b3d45a1ceeb6d6f67c149b7bd59981a7572042638fd17c41",
+  "original_plan_sha256": "5ea01bf3a16d3d392db18bc651c6c36f20e214b247cbaca582f1344ccd889a12",
+  "original_diagnostics_sha256": "ad0e0b3b4fdf0537af2eee4315e1216ab76adfa27d4d363d797b61f9469b444a",
+  "original_accepted_N1_pairs": {
+    "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/pairs/small-ni-n1-gpuoff-r-1.json": "dff57516e0597389178406d552633821b4b1b88d69f1c6c1c61c99c5a25417f3",
+    "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/pairs/small-ni-n1-gpuoff-r0.json": "31f21ac28db8171b5444087d4c1dc240645d31c5241967d7701511fc09cb5a0a",
+    "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-plan/pairs/small-ni-n1-gpuoff-r1.json": "bf1f2e8f78b0abf41c0fde103431a791ba6d95f252bd88aa18be65422b7ebb5a"
+  },
+  "original_package_inventory_sha256": "ad47bdcffa85819e5d15e956290764046f96c68570be3b32d5d546d10b8c6d95",
+  "reuse_helper_sha256": "52c3641f53709a690e85ff3b669e811503df58fce7df83b200f41dbe829fc787",
+  "observer_stop_scope": "Rawperscan nativeobservations preserved; afterstopread, freshlylookup exactPID/start:missing,reusedPID,Z noactiveexpectedchild; matchingactiveidentity failsclosed. Otheridentitylookup failuresfailclosed."
+}

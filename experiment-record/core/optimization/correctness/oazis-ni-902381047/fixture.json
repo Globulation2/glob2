@@ -1,0 +1,44 @@
+{
+  "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/correctness/oazis-ni-902381047/fixture/initial.game.gz",
+  "header": {
+    "major": 0,
+    "minor": 154,
+    "teams": 11,
+    "width": 256,
+    "height": 256,
+    "map_offset": 3398861,
+    "gzip_sha256": "c927fa224161e9eb6219fec44829a086aaa70a50d784a626fbc28f377e7eb8e0"
+  },
+  "start_tick": 0,
+  "start_tick_evidence": "save occurs before first simulation tick; loaded trace checked below",
+  "preparation_trace": {
+    "sha256": "3c6d706ad732ef2ab31df6c436be27eef3a4bcc2d28cd88a21ff5b808fa08e0b",
+    "teams": 11,
+    "players": 11,
+    "count": 1,
+    "first_tick": 0,
+    "last_tick": 0,
+    "flags": 0
+  },
+  "scenario": {
+    "id": "oazis-ni",
+    "map": "Oazis",
+    "width": 256,
+    "height": 256,
+    "ais": [
+      "nicowar",
+      "nicowar",
+      "nicowar",
+      "nicowar",
+      "nicowar",
+      "nicowar",
+      "nicowar",
+      "nicowar",
+      "nicowar",
+      "nicowar",
+      "nicowar"
+    ],
+    "ticks": 8192
+  },
+  "seed": 902381047
+}

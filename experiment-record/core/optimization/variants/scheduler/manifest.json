@@ -1,0 +1,72 @@
+{
+  "prepared_utc": "2026-10-12T04:06:15.073942+00:00",
+  "base_commit": "2ced60e06b8e7fa7a4a4ecff944c40bda494bcf4",
+  "source": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/variants/scheduler/source",
+  "state": "complete",
+  "factor": "Conditional presentation-aware notify_one for one newly eligible lane job/continuation; all other scheduling/policy unchanged",
+  "original_patch_sha256": "99111e1fd3527acc14ac154d9391e5ea23a959ce445667ae2e6ac7aabd63582c",
+  "fragment_sha256": "a805308272a57e99bb44fec1e3d8720e45a18c1c9f63bd651f4986ceb0901128",
+  "changed_source_files": [
+    "src/common/ComputeExecutor.h",
+    "src/common/ComputeExecutorHarness.cpp"
+  ],
+  "baseline_sha256": {
+    "src/common/ComputeExecutor.h": "1e689206dfade31f1057c6aa63826ae29a3a0c3afb3d9a5ab3910bc51c0a59dd",
+    "src/common/ComputeExecutorHarness.cpp": "d6adcb9fd6ea6ae9319cfe6427c76a4c90c80d8351a6be89d880f89602bf9111"
+  },
+  "variant_sha256": {
+    "src/common/ComputeExecutor.h": "a3e9434ba965329630982dbf87d096ee0342a5061a8aed47f4b7f0ce6869be91",
+    "src/common/ComputeExecutorHarness.cpp": "dd26bc703463ed743f3db2dbb55552593f0c5ea26f0dce1d705ebbbdf487cc12"
+  },
+  "unchanged_inputs_verified": {
+    "src/common/ComputeThreads.h": "4ecd07185fc2491415a222dd2abfec1e84dd401dcf93f93c6a3e841521947d26",
+    "src/SConscript": "a3187908381324551e9dc815d7f7f0512cf0510f1f10399870027431d852f768",
+    "SConstruct": "767abbb83a5470cf22644f4007ca172d113a665838c8b71f6558a3b111968e26"
+  },
+  "variant_patch_sha256": "1f66fed07353eafd74df5c395b8aae524707d171d79fe32eccc9b6a0274a1549",
+  "tests_to_select": [
+    "ComputeExecutor/*",
+    "ComputeExecutor/externally resumed lanes progress while an optional worker stays busy"
+  ],
+  "test_threads": [
+    3,
+    5,
+    8
+  ],
+  "presentation_modes": [
+    false,
+    true
+  ],
+  "qualification": "Baseline worker policy and test dependencies retained. Root CPUdiscovery test not copied. Added only prepared focusedfragment to baseline harness. No builddriver edits, no compilers/tests/performance launched. Conditionalcandidate unaccepted; require wholeGCS+liveGPUhealth and variedmap/AI schedules before adoption.",
+  "root_build_example": [
+    "scons",
+    "release=1",
+    "CXX=g++-13",
+    "CC=gcc-13",
+    "<root-selected-dependency-flags>",
+    "-j<root-selected-jobs>"
+  ],
+  "test_command_after_root_build": [
+    "taskset",
+    "-c",
+    "3,4,19,20",
+    "python3",
+    "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/variants/scheduler/source/test/run_tests.py",
+    "--build-dir",
+    "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/variants/scheduler/source/build/linux/client/release",
+    "--binary",
+    "unit",
+    "--filter",
+    "ComputeExecutor/*",
+    "--no-display",
+    "-j2",
+    "--artifacts",
+    "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/variants/scheduler/tests"
+  ],
+  "test_binary_kind": "unit (ComputeExecutor suite registered in glob2-unit-tests)",
+  "accepted": false,
+  "root": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/variants/scheduler/source",
+  "binary": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/variants/scheduler/source/build/linux/client/release/src/glob2",
+  "binary_sha256": "79be48eaf95fe08725cd2fc7041d5df713899ca9e3ba797ae3747b6fb9a6a822",
+  "test_status": "queued"
+}

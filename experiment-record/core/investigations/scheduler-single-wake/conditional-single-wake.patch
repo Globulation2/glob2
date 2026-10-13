@@ -1,0 +1,36 @@
+--- a/src/common/ComputeExecutor.h
++++ b/src/common/ComputeExecutor.h
+@@ -339,6 +339,15 @@
+ 		slot.total = slot.unclaimed = slot.completed = slot.firstUnclaimed = 0; slot.error = nullptr;
+ 		--live;
+ 	}
++	// Under mutex: one completion/requeue exposes at most one deferred job.
++	// Keep the broadcast while presentation can run: its designated worker
++	// may take a fairness chunk before required work, so a spare worker must
++	// also have the opportunity to claim the newly available deferred job.
++	void notifyDeferredReady()
++	{
++		if (presentation || presentationPending) ready.notify_all();
++		else ready.notify_one();
++	}
+ 	// Under mutex: settle a synchronous or externally completed job.
+ 	void completeJob(Slot& slot, std::size_t index, std::exception_ptr failure)
+ 	{
+@@ -346,7 +355,7 @@
+ 		if (auto& ticket = slot.completions[index]) ticket->owner.store(nullptr, std::memory_order_release);
+ 		slot.completions[index].reset();
+ 		const auto lane = slot.groups[group(slot, index)].lane;
+-		if (lane != NoLane) { ++laneCompleted[lane]; ready.notify_all(); }
++		if (lane != NoLane) { ++laneCompleted[lane]; notifyDeferredReady(); }
+ 		if (++slot.completed == slot.total) slotDone.notify_all();
+ 	}
+ 	void settle(Completion& ticket)
+@@ -358,7 +367,7 @@
+ 			slot.firstUnclaimed = std::min(slot.firstUnclaimed, ticket.index);
+ 			ticket.owner.store(nullptr, std::memory_order_release);
+ 			slot.completions[ticket.index].reset();
+-			ready.notify_all();
++			notifyDeferredReady();
+ 		} else completeJob(slot, ticket.index, ticket.error);
+ 	}
+ 	bool resolve(Completion& ticket, Job continuation, std::exception_ptr failure)

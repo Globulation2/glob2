@@ -1,0 +1,31 @@
+{
+  "earlier_matrix_source": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/final-proposal-coverage/coverage.json",
+  "earlier_matrix_sha256": "60182e38eff2033095f42dcbf23d2a64302493243b9f64244389a3bd836e2193",
+  "final_native_source": "d2ddb6793777eac9e8c62421f2803313e0b83b52",
+  "qualification": "Original earlier matrix retained verbatim; supersession below is source-qualified by final PR implementation and native evidence, not rewrite of older proof.",
+  "closed_since_earlier_matrix": [
+    "Direct Pythonmap profile/softmemory request compatibility and nativefailedgeneration resource metadata are now implemented with18toolcontract tests and9realnativeCLI requests.",
+    "Live menu gradientbackend/algorithm/verify central GPUadmission now implemented without resizing frozenpool, native combined ordered/savecontinuation test plus focusedUI/settings cases."
+  ],
+  "still_unimplemented_or_unvalidated": [
+    "Six tunedprofile tradeoffs: names still callerintent/defaults, profile_tuning_pending true.",
+    "Auto initialtier from sustained capability/headroom/memory; hysteresis/cooldowns and live adaptivepresentation.",
+    "Visible sixprofile picker and ResetAutomatic.",
+    "Aggregate simultaneousphase participant ceiling; CPUquota discovery/enforcement.",
+    "Memoryrequiredlive census, recoverable-cache retention actions, RSScap.",
+    "Current finald2 crossplatform/browser/Android builds andruntime validation.",
+    "Physical low-end/high-end Android anddesktop thermal,battery,input/framepacing,memory acceptance.",
+    "Final combinedd2 performance rebenchmark.",
+    "Scheduler workerpath timing andadoption."
+  ],
+  "prepared_not_executed": [
+    "16same-global-budget Playground/Oazis single-completion-versus-concurrent-throughput pilot.",
+    "Scheduler Off/Waits/Trace priority-discard fixture."
+  ],
+  "unimplemented_hypotheses": [
+    "Explicitready queues with correct deadline/order/presentation/GPUcontinuation restrictions.",
+    "Owner helps eligible CPUwork whilewaiting, preserving threadcontext restrictions.",
+    "New fieldinvalidation/reuse optimization.",
+    "Targeted wakeups beyond alreadyrejected conditionalbroadcast prototypes."
+  ]
+}

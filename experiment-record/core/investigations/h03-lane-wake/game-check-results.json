@@ -1,0 +1,87 @@
+{
+  "complete": true,
+  "passed": true,
+  "cases": [
+    {
+      "id": "h03-check-n4-gpuon-original",
+      "state": "complete",
+      "passed": true,
+      "raw_gcs_sha256": "c95bcc473064f6fb4c7b17470e53a6e8a1f33368970ee1b7083355ae87c93a4e",
+      "expected_gcs_sha256": "c95bcc473064f6fb4c7b17470e53a6e8a1f33368970ee1b7083355ae87c93a4e",
+      "ticks_actual": 8192,
+      "final_checksum": "cd20aae7",
+      "binary_sha256": "3c23c53e1f0103eab935996ed4c7dd21b63f0464867346c9dcadc46926608a95"
+    },
+    {
+      "id": "h03-check-n4-gpuon-guarded",
+      "state": "complete",
+      "passed": true,
+      "raw_gcs_sha256": "c95bcc473064f6fb4c7b17470e53a6e8a1f33368970ee1b7083355ae87c93a4e",
+      "expected_gcs_sha256": "c95bcc473064f6fb4c7b17470e53a6e8a1f33368970ee1b7083355ae87c93a4e",
+      "ticks_actual": 8192,
+      "final_checksum": "cd20aae7",
+      "binary_sha256": "204f97c4d514b0969480861aa7caca5ec6731c26ecff927102c899c6c0003e95"
+    },
+    {
+      "id": "h03-check-n4-gpuoff-original",
+      "state": "complete",
+      "passed": true,
+      "raw_gcs_sha256": "c95bcc473064f6fb4c7b17470e53a6e8a1f33368970ee1b7083355ae87c93a4e",
+      "expected_gcs_sha256": "c95bcc473064f6fb4c7b17470e53a6e8a1f33368970ee1b7083355ae87c93a4e",
+      "ticks_actual": 8192,
+      "final_checksum": "cd20aae7",
+      "binary_sha256": "3c23c53e1f0103eab935996ed4c7dd21b63f0464867346c9dcadc46926608a95"
+    },
+    {
+      "id": "h03-check-n4-gpuoff-guarded",
+      "state": "complete",
+      "passed": true,
+      "raw_gcs_sha256": "c95bcc473064f6fb4c7b17470e53a6e8a1f33368970ee1b7083355ae87c93a4e",
+      "expected_gcs_sha256": "c95bcc473064f6fb4c7b17470e53a6e8a1f33368970ee1b7083355ae87c93a4e",
+      "ticks_actual": 8192,
+      "final_checksum": "cd20aae7",
+      "binary_sha256": "204f97c4d514b0969480861aa7caca5ec6731c26ecff927102c899c6c0003e95"
+    },
+    {
+      "id": "h03-check-n6-gpuon-original",
+      "state": "complete",
+      "passed": true,
+      "raw_gcs_sha256": "c95bcc473064f6fb4c7b17470e53a6e8a1f33368970ee1b7083355ae87c93a4e",
+      "expected_gcs_sha256": "c95bcc473064f6fb4c7b17470e53a6e8a1f33368970ee1b7083355ae87c93a4e",
+      "ticks_actual": 8192,
+      "final_checksum": "cd20aae7",
+      "binary_sha256": "3c23c53e1f0103eab935996ed4c7dd21b63f0464867346c9dcadc46926608a95"
+    },
+    {
+      "id": "h03-check-n6-gpuon-guarded",
+      "state": "complete",
+      "passed": true,
+      "raw_gcs_sha256": "c95bcc473064f6fb4c7b17470e53a6e8a1f33368970ee1b7083355ae87c93a4e",
+      "expected_gcs_sha256": "c95bcc473064f6fb4c7b17470e53a6e8a1f33368970ee1b7083355ae87c93a4e",
+      "ticks_actual": 8192,
+      "final_checksum": "cd20aae7",
+      "binary_sha256": "204f97c4d514b0969480861aa7caca5ec6731c26ecff927102c899c6c0003e95"
+    },
+    {
+      "id": "h03-check-n6-gpuoff-original",
+      "state": "complete",
+      "passed": true,
+      "raw_gcs_sha256": "c95bcc473064f6fb4c7b17470e53a6e8a1f33368970ee1b7083355ae87c93a4e",
+      "expected_gcs_sha256": "c95bcc473064f6fb4c7b17470e53a6e8a1f33368970ee1b7083355ae87c93a4e",
+      "ticks_actual": 8192,
+      "final_checksum": "cd20aae7",
+      "binary_sha256": "3c23c53e1f0103eab935996ed4c7dd21b63f0464867346c9dcadc46926608a95"
+    },
+    {
+      "id": "h03-check-n6-gpuoff-guarded",
+      "state": "complete",
+      "passed": true,
+      "raw_gcs_sha256": "c95bcc473064f6fb4c7b17470e53a6e8a1f33368970ee1b7083355ae87c93a4e",
+      "expected_gcs_sha256": "c95bcc473064f6fb4c7b17470e53a6e8a1f33368970ee1b7083355ae87c93a4e",
+      "ticks_actual": 8192,
+      "final_checksum": "cd20aae7",
+      "binary_sha256": "204f97c4d514b0969480861aa7caca5ec6731c26ecff927102c899c6c0003e95"
+    }
+  ],
+  "scope": "Full raw per-tick checksum file SHA256; no normalization, sampled checksum, or replay-order substitution. N4/N6 \u00d7 GPUon/off. Linux GCC13 only; game/save/load/cross-platform boundaries not established by this check."
+}

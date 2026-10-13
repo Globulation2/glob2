@@ -1,0 +1,1184 @@
+{
+  "state": "complete-snapshot-factor-only;whole68cohortpartial66",
+  "snapshot_jobs_complete": 44,
+  "snapshot_jobs_planned": 44,
+  "whole_followup_jobs": 66,
+  "whole_followup_planned": 68,
+  "recommendation": "Rollback snapshot ownership V1/V2; retain independently useful query/export census ifdesired. No broad useful CPU/RSS improvement supports tryAcquire/reclaim complexity.",
+  "scopes": "Initial20CPUoffgames; mature4checkpoints2windowsCPUoff/GPUonanddirectV1comparisons; twoindependentseeds perlayout3pairedreps. No pooled acrosscomparator/GPU/window/cohort.",
+  "source_sha256": "61e1d68e93103633b93143fa91f2715b9a6b258e6f474ac3ffeff7ac34ac8498",
+  "groups": {
+    "initial/snapshot-v2-vs-baseline/gpuoff/w8192/checkpoint0/small-ni": {
+      "seed_count": 2,
+      "metrics": {
+        "cpu_s": {
+          "ratio": 1.0321026577552401,
+          "percent_change": 3.2102657755240127,
+          "ci95": [
+            1.0037190533182279,
+            1.0536827430183189
+          ],
+          "percent_ci95": [
+            0.37190533182278607,
+            5.368274301831888
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "wall_s": {
+          "ratio": 1.030225564827128,
+          "percent_change": 3.0225564827127904,
+          "ci95": [
+            1.0125783766650334,
+            1.0528529900387407
+          ],
+          "percent_ci95": [
+            1.2578376665033364,
+            5.285299003874067
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "peak_rss_bytes": {
+          "ratio": 1.00042275276353,
+          "percent_change": 0.04227527635300987,
+          "ci95": [
+            0.9950522729181178,
+            1.0068343413571168
+          ],
+          "percent_ci95": [
+            -0.49477270818821806,
+            0.6834341357116802
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        }
+      }
+    },
+    "initial/snapshot-v2-vs-baseline/gpuoff/w8192/checkpoint0/rect-mixed": {
+      "seed_count": 2,
+      "metrics": {
+        "cpu_s": {
+          "ratio": 1.017727067574035,
+          "percent_change": 1.7727067574035082,
+          "ci95": [
+            0.9478704234860401,
+            1.1610360371200048
+          ],
+          "percent_ci95": [
+            -5.212957651395989,
+            16.10360371200048
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "wall_s": {
+          "ratio": 1.018388680650615,
+          "percent_change": 1.8388680650615052,
+          "ci95": [
+            0.9379270116462263,
+            1.1600785185991578
+          ],
+          "percent_ci95": [
+            -6.207298835377372,
+            16.007851859915778
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "peak_rss_bytes": {
+          "ratio": 0.9941617641664983,
+          "percent_change": -0.5838235833501737,
+          "ci95": [
+            0.98800324264268,
+            0.9978638305967122
+          ],
+          "percent_ci95": [
+            -1.1996757357319976,
+            -0.21361694032877576
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        }
+      }
+    },
+    "initial/snapshot-v2-vs-baseline/gpuoff/w8192/checkpoint0/rect-cortex": {
+      "seed_count": 2,
+      "metrics": {
+        "cpu_s": {
+          "ratio": 0.9768312387502687,
+          "percent_change": -2.316876124973133,
+          "ci95": [
+            0.9573851757084928,
+            0.9952894269217798
+          ],
+          "percent_ci95": [
+            -4.26148242915072,
+            -0.4710573078220204
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "wall_s": {
+          "ratio": 0.9822747497247878,
+          "percent_change": -1.7725250275212212,
+          "ci95": [
+            0.9644614773624293,
+            1.0000511776960286
+          ],
+          "percent_ci95": [
+            -3.5538522637570735,
+            0.0051177696028581465
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "peak_rss_bytes": {
+          "ratio": 0.9941698350889926,
+          "percent_change": -0.5830164911007407,
+          "ci95": [
+            0.9917859529227561,
+            0.9966261811351879
+          ],
+          "percent_ci95": [
+            -0.8214047077243936,
+            -0.3373818864812139
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        }
+      }
+    },
+    "initial/snapshot-v2-vs-baseline/gpuoff/w20000/checkpoint0/playground-ni": {
+      "seed_count": 2,
+      "metrics": {
+        "cpu_s": {
+          "ratio": 0.9691071640334347,
+          "percent_change": -3.0892835966565335,
+          "ci95": [
+            0.958235894455541,
+            0.9804410794253416
+          ],
+          "percent_ci95": [
+            -4.176410554445898,
+            -1.9558920574658356
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "wall_s": {
+          "ratio": 0.9764499900915629,
+          "percent_change": -2.355000990843714,
+          "ci95": [
+            0.9610521897363363,
+            0.9976941466903921
+          ],
+          "percent_ci95": [
+            -3.8947810263663674,
+            -0.23058533096078637
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "peak_rss_bytes": {
+          "ratio": 1.0022517262460828,
+          "percent_change": 0.22517262460828302,
+          "ci95": [
+            0.997675788881721,
+            1.0061474727642443
+          ],
+          "percent_ci95": [
+            -0.23242111182789627,
+            0.6147472764244322
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        }
+      }
+    },
+    "initial/snapshot-v2-vs-baseline/gpuoff/w8192/checkpoint0/river-cortex": {
+      "seed_count": 2,
+      "metrics": {
+        "cpu_s": {
+          "ratio": 0.992788198327353,
+          "percent_change": -0.7211801672647011,
+          "ci95": [
+            0.9779817944796553,
+            1.0061703556866575
+          ],
+          "percent_ci95": [
+            -2.2018205520344725,
+            0.6170355686657469
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "wall_s": {
+          "ratio": 0.9892400438135457,
+          "percent_change": -1.0759956186454311,
+          "ci95": [
+            0.9691751193234774,
+            1.0089178466341533
+          ],
+          "percent_ci95": [
+            -3.082488067652256,
+            0.8917846634153292
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "peak_rss_bytes": {
+          "ratio": 0.9975517545403221,
+          "percent_change": -0.24482454596779224,
+          "ci95": [
+            0.9934499428548417,
+            1.000932695294475
+          ],
+          "percent_ci95": [
+            -0.6550057145158328,
+            0.09326952944750388
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        }
+      }
+    },
+    "initial/snapshot-v2-vs-baseline/gpuoff/w8192/checkpoint0/isles-mixed": {
+      "seed_count": 2,
+      "metrics": {
+        "cpu_s": {
+          "ratio": 0.9744628868433949,
+          "percent_change": -2.553711315660512,
+          "ci95": [
+            0.9541074472567729,
+            0.9950704712979658
+          ],
+          "percent_ci95": [
+            -4.589255274322712,
+            -0.4929528702034225
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "wall_s": {
+          "ratio": 0.9808300774389355,
+          "percent_change": -1.9169922561064534,
+          "ci95": [
+            0.9592209938311487,
+            1.0005144762048621
+          ],
+          "percent_ci95": [
+            -4.077900616885133,
+            0.05144762048621132
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "peak_rss_bytes": {
+          "ratio": 1.0008214031339144,
+          "percent_change": 0.08214031339144334,
+          "ci95": [
+            0.9927108530022674,
+            1.008059086081516
+          ],
+          "percent_ci95": [
+            -0.7289146997732643,
+            0.8059086081515954
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        }
+      }
+    },
+    "initial/snapshot-v2-vs-baseline/gpuoff/w8192/checkpoint0/oazis-ni": {
+      "seed_count": 2,
+      "metrics": {
+        "cpu_s": {
+          "ratio": 1.0204791443848662,
+          "percent_change": 2.04791443848662,
+          "ci95": [
+            1.007470436519298,
+            1.0329398241372878
+          ],
+          "percent_ci95": [
+            0.7470436519297907,
+            3.29398241372878
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "wall_s": {
+          "ratio": 1.0191794727934642,
+          "percent_change": 1.9179472793464214,
+          "ci95": [
+            1.0075901855212137,
+            1.029858072576987
+          ],
+          "percent_ci95": [
+            0.759018552121371,
+            2.9858072576987027
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "peak_rss_bytes": {
+          "ratio": 1.0001007454003124,
+          "percent_change": 0.010074540031235202,
+          "ci95": [
+            0.9981775289477839,
+            1.0017702164276252
+          ],
+          "percent_ci95": [
+            -0.18224710522161125,
+            0.17702164276252041
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        }
+      }
+    },
+    "initial/snapshot-v2-vs-baseline/gpuoff/w8192/checkpoint0/swamp-wide": {
+      "seed_count": 2,
+      "metrics": {
+        "cpu_s": {
+          "ratio": 0.988160584845189,
+          "percent_change": -1.1839415154811017,
+          "ci95": [
+            0.9160325940993561,
+            1.0283860390121706
+          ],
+          "percent_ci95": [
+            -8.39674059006439,
+            2.8386039012170627
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "wall_s": {
+          "ratio": 0.9852844673077492,
+          "percent_change": -1.4715532692250788,
+          "ci95": [
+            0.9213553815498586,
+            1.0153092809453204
+          ],
+          "percent_ci95": [
+            -7.864461845014137,
+            1.5309280945320358
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "peak_rss_bytes": {
+          "ratio": 0.9934688776214571,
+          "percent_change": -0.653112237854292,
+          "ci95": [
+            0.9892675459096499,
+            0.9988063559645117
+          ],
+          "percent_ci95": [
+            -1.0732454090350063,
+            -0.11936440354882727
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        }
+      }
+    },
+    "initial/snapshot-v2-vs-baseline/gpuoff/w4096/checkpoint0/large-ni": {
+      "seed_count": 2,
+      "metrics": {
+        "cpu_s": {
+          "ratio": 1.010331035878391,
+          "percent_change": 1.0331035878391015,
+          "ci95": [
+            0.976974340759051,
+            1.0415986618031976
+          ],
+          "percent_ci95": [
+            -2.3025659240949015,
+            4.15986618031976
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "wall_s": {
+          "ratio": 1.0052122293785137,
+          "percent_change": 0.5212229378513733,
+          "ci95": [
+            0.980954877545289,
+            1.028556537554034
+          ],
+          "percent_ci95": [
+            -1.9045122454711017,
+            2.855653755403398
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "peak_rss_bytes": {
+          "ratio": 0.999404286415618,
+          "percent_change": -0.05957135843820405,
+          "ci95": [
+            0.9981555226050511,
+            1.0011581560159037
+          ],
+          "percent_ci95": [
+            -0.18444773949488624,
+            0.1158156015903744
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        }
+      }
+    },
+    "initial/snapshot-v2-vs-baseline/gpuoff/w4096/checkpoint0/large-mixed": {
+      "seed_count": 2,
+      "metrics": {
+        "cpu_s": {
+          "ratio": 1.0210812440588828,
+          "percent_change": 2.1081244058882787,
+          "ci95": [
+            0.9972908982241541,
+            1.0534371401629872
+          ],
+          "percent_ci95": [
+            -0.27091017758459346,
+            5.343714016298717
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "wall_s": {
+          "ratio": 1.0179465993785606,
+          "percent_change": 1.794659937856058,
+          "ci95": [
+            0.9959092704104238,
+            1.0502178343860848
+          ],
+          "percent_ci95": [
+            -0.40907295895762363,
+            5.021783438608485
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "peak_rss_bytes": {
+          "ratio": 1.0020327223981629,
+          "percent_change": 0.20327223981628784,
+          "ci95": [
+            0.9888262209009346,
+            1.01000939063154
+          ],
+          "percent_ci95": [
+            -1.1173779099065362,
+            1.0009390631539938
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        }
+      }
+    },
+    "mature-baseline/snapshot-v2-vs-baseline/gpuoff/w4096/checkpoint20000/playground-ni": {
+      "seed_count": 2,
+      "metrics": {
+        "cpu_s": {
+          "ratio": 0.9866997279853953,
+          "percent_change": -1.3300272014604708,
+          "ci95": [
+            0.9618842842291446,
+            1.015719381002028
+          ],
+          "percent_ci95": [
+            -3.8115715770855374,
+            1.5719381002027966
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "wall_s": {
+          "ratio": 0.9904739097737495,
+          "percent_change": -0.9526090226250505,
+          "ci95": [
+            0.9716261842901247,
+            1.014668654988341
+          ],
+          "percent_ci95": [
+            -2.8373815709875294,
+            1.4668654988341023
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "peak_rss_bytes": {
+          "ratio": 0.9988228211375314,
+          "percent_change": -0.11771788624685975,
+          "ci95": [
+            0.9959347288421319,
+            1.0016852624358288
+          ],
+          "percent_ci95": [
+            -0.40652711578681444,
+            0.16852624358287827
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        }
+      }
+    },
+    "mature-baseline/snapshot-v2-vs-baseline/gpuoff/w8192/checkpoint20000/playground-ni": {
+      "seed_count": 2,
+      "metrics": {
+        "cpu_s": {
+          "ratio": 1.0173171033227986,
+          "percent_change": 1.7317103322798566,
+          "ci95": [
+            0.9978250859546324,
+            1.041214711054561
+          ],
+          "percent_ci95": [
+            -0.21749140453676263,
+            4.121471105456109
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "wall_s": {
+          "ratio": 1.0039122159779037,
+          "percent_change": 0.3912215977903699,
+          "ci95": [
+            0.9938680480190086,
+            1.012083495802333
+          ],
+          "percent_ci95": [
+            -0.6131951980991368,
+            1.2083495802333033
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "peak_rss_bytes": {
+          "ratio": 0.9984305096321698,
+          "percent_change": -0.1569490367830162,
+          "ci95": [
+            0.9967013087271026,
+            0.9998882399298843
+          ],
+          "percent_ci95": [
+            -0.32986912728973916,
+            -0.011176007011570732
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        }
+      }
+    },
+    "mature-direct/snapshot-v2-vs-snapshot-v1/gpuoff/w8192/checkpoint20000/playground-ni": {
+      "seed_count": 2,
+      "metrics": {
+        "cpu_s": {
+          "ratio": 0.9994779725618756,
+          "percent_change": -0.05220274381243506,
+          "ci95": [
+            0.982583397675526,
+            1.021579120681459
+          ],
+          "percent_ci95": [
+            -1.741660232447395,
+            2.1579120681459063
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "wall_s": {
+          "ratio": 1.0037507223807252,
+          "percent_change": 0.3750722380725158,
+          "ci95": [
+            0.9767677085549376,
+            1.0297031572692117
+          ],
+          "percent_ci95": [
+            -2.3232291445062447,
+            2.970315726921169
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "peak_rss_bytes": {
+          "ratio": 1.0010983881467324,
+          "percent_change": 0.10983881467323542,
+          "ci95": [
+            0.9990438695143019,
+            1.0031273405830883
+          ],
+          "percent_ci95": [
+            -0.09561304856980923,
+            0.31273405830882783
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        }
+      }
+    },
+    "mature-baseline/snapshot-v2-vs-baseline/gpuon/w4096/checkpoint20000/playground-ni": {
+      "seed_count": 2,
+      "metrics": {
+        "cpu_s": {
+          "ratio": 1.0092366198105691,
+          "percent_change": 0.9236619810569113,
+          "ci95": [
+            0.9800482639531,
+            1.02830091703988
+          ],
+          "percent_ci95": [
+            -1.9951736046900037,
+            2.8300917039880025
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "wall_s": {
+          "ratio": 0.9997640088669874,
+          "percent_change": -0.02359911330126474,
+          "ci95": [
+            0.9766213260948049,
+            1.01834459393566
+          ],
+          "percent_ci95": [
+            -2.33786739051951,
+            1.8344593935659903
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "peak_rss_bytes": {
+          "ratio": 0.9984395407550113,
+          "percent_change": -0.156045924498871,
+          "ci95": [
+            0.9968398431902743,
+            1.0001737952254206
+          ],
+          "percent_ci95": [
+            -0.31601568097257005,
+            0.01737952254206032
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        }
+      }
+    },
+    "mature-baseline/snapshot-v2-vs-baseline/gpuon/w8192/checkpoint20000/playground-ni": {
+      "seed_count": 2,
+      "metrics": {
+        "cpu_s": {
+          "ratio": 1.0087530286001567,
+          "percent_change": 0.8753028600156698,
+          "ci95": [
+            0.9662662048422915,
+            1.0502748300917761
+          ],
+          "percent_ci95": [
+            -3.373379515770847,
+            5.0274830091776135
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "wall_s": {
+          "ratio": 0.9952041433561578,
+          "percent_change": -0.4795856643842189,
+          "ci95": [
+            0.9615760117252974,
+            1.023026818164875
+          ],
+          "percent_ci95": [
+            -3.8423988274702614,
+            2.302681816487495
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "peak_rss_bytes": {
+          "ratio": 0.9979317642253188,
+          "percent_change": -0.2068235774681182,
+          "ci95": [
+            0.9960854902876658,
+            0.9998053391252524
+          ],
+          "percent_ci95": [
+            -0.3914509712334202,
+            -0.019466087474762084
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        }
+      }
+    },
+    "mature-direct/snapshot-v2-vs-snapshot-v1/gpuon/w8192/checkpoint20000/playground-ni": {
+      "seed_count": 2,
+      "metrics": {
+        "cpu_s": {
+          "ratio": 1.0145230850006446,
+          "percent_change": 1.4523085000644587,
+          "ci95": [
+            0.9886617845571037,
+            1.0411199872703094
+          ],
+          "percent_ci95": [
+            -1.133821544289626,
+            4.111998727030941
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "wall_s": {
+          "ratio": 1.0200744845594822,
+          "percent_change": 2.007448455948224,
+          "ci95": [
+            1.0009081380430056,
+            1.0413350384173368
+          ],
+          "percent_ci95": [
+            0.09081380430056019,
+            4.133503841733677
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "peak_rss_bytes": {
+          "ratio": 1.000148786124647,
+          "percent_change": 0.014878612464697127,
+          "ci95": [
+            0.9989057880730482,
+            1.0008582904675045
+          ],
+          "percent_ci95": [
+            -0.10942119269518047,
+            0.08582904675045189
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        }
+      }
+    },
+    "mature-baseline/snapshot-v2-vs-baseline/gpuoff/w4096/checkpoint50000/oazis-ni": {
+      "seed_count": 2,
+      "metrics": {
+        "cpu_s": {
+          "ratio": 1.0171251625259776,
+          "percent_change": 1.7125162525977622,
+          "ci95": [
+            0.9793565609157652,
+            1.0608766301851769
+          ],
+          "percent_ci95": [
+            -2.0643439084234827,
+            6.087663018517686
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "wall_s": {
+          "ratio": 0.9957587707053223,
+          "percent_change": -0.42412292946777397,
+          "ci95": [
+            0.9648597365269658,
+            1.0198531371698734
+          ],
+          "percent_ci95": [
+            -3.514026347303423,
+            1.9853137169873358
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "peak_rss_bytes": {
+          "ratio": 0.9979057876617705,
+          "percent_change": -0.20942123382294842,
+          "ci95": [
+            0.9959141796626443,
+            1.0006443486333594
+          ],
+          "percent_ci95": [
+            -0.40858203373557167,
+            0.06443486333593818
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        }
+      }
+    },
+    "mature-baseline/snapshot-v2-vs-baseline/gpuoff/w8192/checkpoint50000/oazis-ni": {
+      "seed_count": 2,
+      "metrics": {
+        "cpu_s": {
+          "ratio": 1.0003379985748435,
+          "percent_change": 0.033799857484351215,
+          "ci95": [
+            0.9714821251126203,
+            1.0223292802935373
+          ],
+          "percent_ci95": [
+            -2.851787488737967,
+            2.2329280293537312
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "wall_s": {
+          "ratio": 0.9949683016207606,
+          "percent_change": -0.5031698379239447,
+          "ci95": [
+            0.9661369039928309,
+            1.015169295493305
+          ],
+          "percent_ci95": [
+            -3.386309600716908,
+            1.5169295493304924
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "peak_rss_bytes": {
+          "ratio": 0.9969173269353303,
+          "percent_change": -0.3082673064669694,
+          "ci95": [
+            0.9952533916163775,
+            0.9987752487239725
+          ],
+          "percent_ci95": [
+            -0.4746608383622508,
+            -0.12247512760275026
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        }
+      }
+    },
+    "mature-direct/snapshot-v2-vs-snapshot-v1/gpuoff/w8192/checkpoint50000/oazis-ni": {
+      "seed_count": 2,
+      "metrics": {
+        "cpu_s": {
+          "ratio": 1.0103089708587292,
+          "percent_change": 1.0308970858729172,
+          "ci95": [
+            0.9793819071081208,
+            1.0425456158227384
+          ],
+          "percent_ci95": [
+            -2.0618092891879214,
+            4.254561582273841
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "wall_s": {
+          "ratio": 1.0155222818960128,
+          "percent_change": 1.552228189601279,
+          "ci95": [
+            0.988538207303543,
+            1.0506258248671776
+          ],
+          "percent_ci95": [
+            -1.1461792696456974,
+            5.062582486717759
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "peak_rss_bytes": {
+          "ratio": 1.0004148431930129,
+          "percent_change": 0.04148431930128815,
+          "ci95": [
+            0.9978793810850521,
+            1.0029664180280604
+          ],
+          "percent_ci95": [
+            -0.21206189149478583,
+            0.29664180280604135
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        }
+      }
+    },
+    "mature-baseline/snapshot-v2-vs-baseline/gpuon/w4096/checkpoint50000/oazis-ni": {
+      "seed_count": 2,
+      "metrics": {
+        "cpu_s": {
+          "ratio": 0.9788993831503667,
+          "percent_change": -2.110061684963327,
+          "ci95": [
+            0.9573036371836497,
+            1.0038942367174963
+          ],
+          "percent_ci95": [
+            -4.269636281635025,
+            0.38942367174963355
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "wall_s": {
+          "ratio": 0.9743209260068973,
+          "percent_change": -2.5679073993102652,
+          "ci95": [
+            0.9551243234961361,
+            0.9993155416226569
+          ],
+          "percent_ci95": [
+            -4.487567650386392,
+            -0.06844583773431001
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "peak_rss_bytes": {
+          "ratio": 0.9990406802147174,
+          "percent_change": -0.09593197852826307,
+          "ci95": [
+            0.9979301558000722,
+            0.9999252047955033
+          ],
+          "percent_ci95": [
+            -0.20698441999278394,
+            -0.007479520449671373
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        }
+      }
+    },
+    "mature-baseline/snapshot-v2-vs-baseline/gpuon/w8192/checkpoint50000/oazis-ni": {
+      "seed_count": 2,
+      "metrics": {
+        "cpu_s": {
+          "ratio": 0.9891543489301304,
+          "percent_change": -1.0845651069869566,
+          "ci95": [
+            0.9597185346011711,
+            1.0194939982970157
+          ],
+          "percent_ci95": [
+            -4.0281465398828935,
+            1.9493998297015702
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "wall_s": {
+          "ratio": 0.9986874117899551,
+          "percent_change": -0.13125882100448738,
+          "ci95": [
+            0.9754855264255582,
+            1.025937718712346
+          ],
+          "percent_ci95": [
+            -2.451447357444181,
+            2.593771871234596
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "peak_rss_bytes": {
+          "ratio": 1.0000072221645737,
+          "percent_change": 0.0007222164573716938,
+          "ci95": [
+            0.997753126479694,
+            1.0029996305069078
+          ],
+          "percent_ci95": [
+            -0.22468735203059476,
+            0.2999630506907769
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        }
+      }
+    },
+    "mature-direct/snapshot-v2-vs-snapshot-v1/gpuon/w8192/checkpoint50000/oazis-ni": {
+      "seed_count": 2,
+      "metrics": {
+        "cpu_s": {
+          "ratio": 1.003497326568093,
+          "percent_change": 0.34973265680930954,
+          "ci95": [
+            0.9965376573618175,
+            1.012766272674494
+          ],
+          "percent_ci95": [
+            -0.34623426381824585,
+            1.2766272674493928
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "wall_s": {
+          "ratio": 1.002810566662786,
+          "percent_change": 0.2810566662786007,
+          "ci95": [
+            0.9926716213928184,
+            1.0089199649736378
+          ],
+          "percent_ci95": [
+            -0.7328378607181607,
+            0.8919964973637784
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "peak_rss_bytes": {
+          "ratio": 1.0007260306326564,
+          "percent_change": 0.07260306326564159,
+          "ci95": [
+            0.999103974793195,
+            1.0024034281591545
+          ],
+          "percent_ci95": [
+            -0.08960252068049845,
+            0.2403428159154508
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        }
+      }
+    }
+  },
+  "limitations": [
+    "Descriptive hierarchicalseed\u2192repeat bootstrap4000drawsRNG7134;2seeds andmanycomparisons, notglobal95%coverage or universalperformance.",
+    "Maturewindowsloadcheckpoints, resettingcache/allocatorlifetime; no continuousheap claim.",
+    "Snapshotcorrectnessandcapacitymodel tests establishsafeleasebehavior, not useful nativeperformance gain.",
+    "TelemetryV2 andfreshlargeMixedreplication adoptionpending; do not infer fromsnapshotdecision."
+  ]
+}

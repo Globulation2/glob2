@@ -1,0 +1,28 @@
+Fresh telemetry stage: 24/24 selected jobs complete; the larger plan remains 24/45 because later combined-source jobs have not run.
+
+Recommend telemetry V2 as the minimal representation change, alongside worker sizing; revert snapshot ownership changes and keep an independently useful diagnostic census. GPU synchronization/recovery candidates remain separate and pending. This is an adoption recommendation, not final-source acceptance.
+
+Large-mixed, three fresh seeds and six balanced pairs per variant versus fresh baseline: V1 CPU +1.276% [-0.768%, +3.875%], wall +1.085% [-0.714%, +3.201%], RSS -14.190% [-14.850%, -13.584%]. V2 CPU -1.158% [-2.269%, +0.091%], wall -0.716% [-1.910%, +0.599%], RSS -14.388% [-15.052%, -13.624%]. V2 CPU point estimates improve on all three seeds (-2.178%, -1.160%, -0.127%); the holdout wall point estimate is +0.482%. V1 CPU seed estimates are +0.699%, -0.395%, +3.563%.
+
+These are two separately paired baseline comparisons in the same batch, not directly paired V2 versus V1 samples. Do not compute or advertise a direct V2/V1 speedup by dividing these aggregates. The original initial V1 +6.61% CPU interval above zero was not reproduced at that magnitude; retain the old adverse observation but describe the larger fresh replication as uncertainty around a smaller V1 cost.
+
+Across all ten initial CPU-off layouts, V2 RSS drops 10.8–37.5%, with every RSS interval below zero. CPU point estimates vary from -6.55% to +2.13%; no initial CPU/wall interval is wholly above zero. That does not prove absence of regression: rect-cortex has an especially wide CPU interval [-9.58%, +20.51%], and isles-mixed point estimates are +2.13% CPU, +2.49% wall. Playground and river-cortex CPU intervals are below zero.
+
+The completed mature follow-up strengthens the memory case (Playground about -22% CPU-off/-13% GPU-on; Oazis -11%/-9%) with predominantly flat or improved CPU versus baseline. Preserve the direct mature Playground GPU-on V2 versus V1 CPU +2.015% [+0.344%, +3.693%] adverse cell; the fresh initial CPU-off stage neither cancels it nor predicts GPU-on performance.
+
+Final integration should remain small: keep portable eligible-CPU auto sizing, replace telemetry V1 with the exact already-tested V2 hint/one-find refinement, restore baseline snapshot acquisition/cleanup behavior, and retain only justified independent census APIs/docs/tests. Avoid shipping scheduler notification heuristics or unmeasured pool/representation changes. Final integrated release hashes, 25-case conformance, browser/save/replay/network checks and finite final performance/native winner evidence still gate acceptance.
+
+Two or three seeds, three or six pairs and many comparisons limit descriptive bootstrap intervals. Do not pool old V1 jobs as fresh repeats, loaded checkpoints as continuous lifetime, process timing as simulation timing, or separate GPU/count/window strata.
+
+V2 versus baseline, each layout (whole-process CPU, elapsed wall, peak RSS; percent change and descriptive interval):
+
+small-ni: CPU -2.84% [-5.42, +0.13]; wall -2.80% [-6.35, +0.44]; RSS -32.99% [-33.30, -32.69].
+rect-mixed: CPU -6.55% [-11.68, +0.97]; wall -9.18% [-13.97, -3.77]; RSS -37.53% [-37.96, -37.21].
+rect-cortex: CPU -0.07% [-9.58, +20.51]; wall +1.59% [-6.88, +23.71]; RSS -37.51% [-37.95, -37.03].
+playground-ni: CPU -2.67% [-4.61, -0.61]; wall -2.37% [-4.91, +0.81]; RSS -23.76% [-24.12, -23.26].
+river-cortex: CPU -2.23% [-3.40, -1.13]; wall -2.49% [-3.71, -1.54]; RSS -34.29% [-34.65, -33.96].
+isles-mixed: CPU +2.13% [-2.84, +7.46]; wall +2.49% [-2.02, +7.38]; RSS -14.26% [-14.74, -13.49].
+oazis-ni: CPU +0.18% [-2.84, +3.07]; wall -0.19% [-2.62, +1.77]; RSS -15.77% [-16.89, -14.65].
+swamp-wide: CPU -3.08% [-11.19, +0.86]; wall -3.43% [-12.38, +0.60]; RSS -31.27% [-31.76, -30.66].
+large-ni: CPU -0.93% [-3.55, +2.96]; wall -1.19% [-3.21, +2.36]; RSS -10.80% [-11.42, -10.34].
+large-mixed: CPU -1.16% [-2.27, +0.09]; wall -0.72% [-1.91, +0.60]; RSS -14.39% [-15.05, -13.62].

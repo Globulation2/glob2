@@ -1,0 +1,401 @@
+{
+  "historical-playground": {
+    "attempts": 448,
+    "status_counts": {
+      "completed": 448
+    },
+    "revisions_by_sample_date": {
+      "2026-09-02": 32,
+      "2026-09-05": 32,
+      "2026-09-08": 32,
+      "2026-09-11": 32,
+      "2026-09-14": 32,
+      "2026-09-17": 32,
+      "2026-09-20": 32,
+      "2026-09-23": 32,
+      "2026-09-26": 32,
+      "2026-09-29": 32,
+      "2026-10-02": 32,
+      "2026-10-05": 32,
+      "2026-10-08": 32,
+      "2026-10-11": 32
+    },
+    "planned_attempts": 448,
+    "remaining_attempts": 0,
+    "map_sha256": "2a323a2d02475fb1ddd2ddfac99c51890aa7b2a2f3537ad7bee93aba85d84eaf",
+    "map_sha256_verified": true,
+    "seeds": [
+      1056243202,
+      744345666,
+      1064623205,
+      725864695,
+      599004658,
+      117787757,
+      85910194,
+      769116511,
+      1030656205,
+      79851807,
+      1480527227,
+      31444774,
+      1514826878,
+      1858401095,
+      1635872854,
+      1441583672,
+      741493568,
+      466374853,
+      2037486757,
+      1414753418,
+      1298936997,
+      1139586032,
+      1845486380,
+      275303672,
+      1013771484,
+      1961520297,
+      56523606,
+      7804900,
+      494353701,
+      2092499754,
+      1910481143,
+      2122112527
+    ],
+    "revision_list": [
+      {
+        "sample_date": "2026-09-02",
+        "commit": "14b99bc82de940a095b816933ae4653274f6425a",
+        "commit_date": "2025-09-06T18:00:18+02:00",
+        "subject": "french translation: typos and some other corrections"
+      },
+      {
+        "sample_date": "2026-09-05",
+        "commit": "731f6be5d6367c2d98bf555abab75836b9cdc1f7",
+        "commit_date": "2026-09-05T23:45:27-04:00",
+        "subject": "Fix LAN joining and shared map downloads (#161)"
+      },
+      {
+        "sample_date": "2026-09-08",
+        "commit": "d3ac1ed3fd0bbd23636e48b6ec96d4f95fcaaae0",
+        "commit_date": "2026-09-08T21:34:34-04:00",
+        "subject": "Use Tile for map cells and their accessor (#199)"
+      },
+      {
+        "sample_date": "2026-09-11",
+        "commit": "982b12730c2e8d6a813c5e9215291957476aa2b1",
+        "commit_date": "2026-09-11T23:19:36-04:00",
+        "subject": "Shrink the audio device buffer and skip opening it while muted (#252)"
+      },
+      {
+        "sample_date": "2026-09-14",
+        "commit": "3bb33a627a2b7b2d5a7be833e468266cd8eca8d5",
+        "commit_date": "2026-09-14T22:44:05-04:00",
+        "subject": "Prioritize Nicowar wheat over adjacent wood in all eight directions (#293)"
+      },
+      {
+        "sample_date": "2026-09-17",
+        "commit": "326c05fda1a4ad22ee784647540157c7181e6bce",
+        "commit_date": "2026-09-17T17:41:18-04:00",
+        "subject": "Add the Hidden Oasis map generator (#338)"
+      },
+      {
+        "sample_date": "2026-09-20",
+        "commit": "568fe9274e3d7519e72794e1134dfef9cf7fb2ed",
+        "commit_date": "2026-09-20T19:27:01-04:00",
+        "subject": "Add backup force growth for Maxima (#373)"
+      },
+      {
+        "sample_date": "2026-09-23",
+        "commit": "a494a331929c6104c44be1bf395ef1c445bbd4c2",
+        "commit_date": "2026-09-22T19:49:59-04:00",
+        "subject": "Share Maxima campuses and pack barracks without reserving future slots (#377)"
+      },
+      {
+        "sample_date": "2026-09-26",
+        "commit": "1c49596f5195188e7f078768f610454f7068d7c6",
+        "commit_date": "2026-09-24T18:25:25-04:00",
+        "subject": "Add the browser platform with durable saves and YOG cross-play (#379)"
+      },
+      {
+        "sample_date": "2026-09-29",
+        "commit": "05b29faf5fed8d8cc6e4cd8c8a413708458bd345",
+        "commit_date": "2026-09-29T22:35:36-04:00",
+        "subject": "Stabilize custom-game browser checks and zoom harness (#417)"
+      },
+      {
+        "sample_date": "2026-10-02",
+        "commit": "98dee3ed57b7cac41570619b8bb7732bd858936b",
+        "commit_date": "2026-10-02T23:52:14-04:00",
+        "subject": "Reduce CI duplication and gate development coverage by risk (#613)"
+      },
+      {
+        "sample_date": "2026-10-05",
+        "commit": "f5d1bc51ef61795d4cc165e9ac530f5d2ad21a42",
+        "commit_date": "2026-10-05T23:58:59-04:00",
+        "subject": "Avoid duplicate zero texture buffers in WebAssembly (#820)"
+      },
+      {
+        "sample_date": "2026-10-08",
+        "commit": "d341b5f20a114314727226882a8511f70a176dda",
+        "commit_date": "2026-10-08T23:59:04-04:00",
+        "subject": "Prepare version 0.11.0.0 across release channels (#990)"
+      },
+      {
+        "sample_date": "2026-10-11",
+        "commit": "9a08b91f4350649862e788135e99bb1f5f469e3a",
+        "commit_date": "2026-10-11T13:03:04-04:00",
+        "subject": "Restore mature resource stock oscillation (#1137)"
+      }
+    ],
+    "execution": "All binaries compiled first using CPUs 0-31; then four simultaneous games, each on three physical cores plus SMT siblings, without any experiment compilation.",
+    "accounting": "os.wait4: user+system process CPU seconds, peak RSS KiB; wall clock includes startup and shutdown",
+    "observer": "Legacy random-games driver: 8 AI controllers plus one idle local observer",
+    "qualification": "14x32 natural-winner games with one-hour cap, all winners observed. Historical rules/random streams/AI/replay defaults differ; trajectory changes prevent causal attribution from E2E alone. Earlier binaries can be serial despite six-CPU mask; CPU allocation is not proof of six compute participants. Frozen historical tip is not current master."
+  },
+  "historical-oazis": {
+    "attempts": 192,
+    "status_counts": {
+      "completed": 190,
+      "timeout": 2
+    },
+    "revisions_by_sample_date": {
+      "2026-09-02": 32,
+      "2026-09-05": 32,
+      "2026-09-08": 32,
+      "2026-09-11": 32,
+      "2026-09-14": 32,
+      "2026-09-17": 32
+    },
+    "planned_attempts": 448,
+    "remaining_attempts": 256,
+    "map_sha256": "cd80d8c9a72643a95bb0bd3c22deb594aeed125d12cb3294859e7fffbc131448",
+    "map_sha256_verified": true,
+    "seeds": [
+      1056243202,
+      744345666,
+      1064623205,
+      725864695,
+      599004658,
+      117787757,
+      85910194,
+      769116511,
+      1030656205,
+      79851807,
+      1480527227,
+      31444774,
+      1514826878,
+      1858401095,
+      1635872854,
+      1441583672,
+      741493568,
+      466374853,
+      2037486757,
+      1414753418,
+      1298936997,
+      1139586032,
+      1845486380,
+      275303672,
+      1013771484,
+      1961520297,
+      56523606,
+      7804900,
+      494353701,
+      2092499754,
+      1910481143,
+      2122112527
+    ],
+    "revision_list": [
+      {
+        "sample_date": "2026-09-02",
+        "commit": "14b99bc82de940a095b816933ae4653274f6425a",
+        "commit_date": "2025-09-06T18:00:18+02:00",
+        "subject": "french translation: typos and some other corrections"
+      },
+      {
+        "sample_date": "2026-09-05",
+        "commit": "731f6be5d6367c2d98bf555abab75836b9cdc1f7",
+        "commit_date": "2026-09-05T23:45:27-04:00",
+        "subject": "Fix LAN joining and shared map downloads (#161)"
+      },
+      {
+        "sample_date": "2026-09-08",
+        "commit": "d3ac1ed3fd0bbd23636e48b6ec96d4f95fcaaae0",
+        "commit_date": "2026-09-08T21:34:34-04:00",
+        "subject": "Use Tile for map cells and their accessor (#199)"
+      },
+      {
+        "sample_date": "2026-09-11",
+        "commit": "982b12730c2e8d6a813c5e9215291957476aa2b1",
+        "commit_date": "2026-09-11T23:19:36-04:00",
+        "subject": "Shrink the audio device buffer and skip opening it while muted (#252)"
+      },
+      {
+        "sample_date": "2026-09-14",
+        "commit": "3bb33a627a2b7b2d5a7be833e468266cd8eca8d5",
+        "commit_date": "2026-09-14T22:44:05-04:00",
+        "subject": "Prioritize Nicowar wheat over adjacent wood in all eight directions (#293)"
+      },
+      {
+        "sample_date": "2026-09-17",
+        "commit": "326c05fda1a4ad22ee784647540157c7181e6bce",
+        "commit_date": "2026-09-17T17:41:18-04:00",
+        "subject": "Add the Hidden Oasis map generator (#338)"
+      },
+      {
+        "sample_date": "2026-09-20",
+        "commit": "568fe9274e3d7519e72794e1134dfef9cf7fb2ed",
+        "commit_date": "2026-09-20T19:27:01-04:00",
+        "subject": "Add backup force growth for Maxima (#373)"
+      },
+      {
+        "sample_date": "2026-09-23",
+        "commit": "a494a331929c6104c44be1bf395ef1c445bbd4c2",
+        "commit_date": "2026-09-22T19:49:59-04:00",
+        "subject": "Share Maxima campuses and pack barracks without reserving future slots (#377)"
+      },
+      {
+        "sample_date": "2026-09-26",
+        "commit": "1c49596f5195188e7f078768f610454f7068d7c6",
+        "commit_date": "2026-09-24T18:25:25-04:00",
+        "subject": "Add the browser platform with durable saves and YOG cross-play (#379)"
+      },
+      {
+        "sample_date": "2026-09-29",
+        "commit": "05b29faf5fed8d8cc6e4cd8c8a413708458bd345",
+        "commit_date": "2026-09-29T22:35:36-04:00",
+        "subject": "Stabilize custom-game browser checks and zoom harness (#417)"
+      },
+      {
+        "sample_date": "2026-10-02",
+        "commit": "98dee3ed57b7cac41570619b8bb7732bd858936b",
+        "commit_date": "2026-10-02T23:52:14-04:00",
+        "subject": "Reduce CI duplication and gate development coverage by risk (#613)"
+      },
+      {
+        "sample_date": "2026-10-05",
+        "commit": "f5d1bc51ef61795d4cc165e9ac530f5d2ad21a42",
+        "commit_date": "2026-10-05T23:58:59-04:00",
+        "subject": "Avoid duplicate zero texture buffers in WebAssembly (#820)"
+      },
+      {
+        "sample_date": "2026-10-08",
+        "commit": "d341b5f20a114314727226882a8511f70a176dda",
+        "commit_date": "2026-10-08T23:59:04-04:00",
+        "subject": "Prepare version 0.11.0.0 across release channels (#990)"
+      },
+      {
+        "sample_date": "2026-10-11",
+        "commit": "9a08b91f4350649862e788135e99bb1f5f469e3a",
+        "commit_date": "2026-10-11T13:03:04-04:00",
+        "subject": "Restore mature resource stock oscillation (#1137)"
+      }
+    ],
+    "execution": "All binaries compiled first using CPUs 0-31; then four simultaneous games, each on three physical cores plus SMT siblings, without any experiment compilation.",
+    "accounting": "os.wait4: user+system process CPU seconds, peak RSS KiB; wall clock includes startup and shutdown",
+    "observer": "Legacy random-games driver:11 Nicowar controllers plus one idle local observer",
+    "current_hold_flag_sha256": "626444fec97a63000d8c97d74f190a57139b4edbb951f3dc9bbcbb22222f11ea",
+    "qualification": "Campaign held and incomplete: six revisions observed, eight unobserved. Existing progress/report state can say running, but hold prevents dispatch; no completion of remaining 256 claimed. Timeout CPU/wall remain consumption measurements, not completed-game E2E; missing ticks/TPS remain unknown. Same legacy runner has 11 AIs plus idle local observer; distinct from exact eleven-controller later fixtures."
+  },
+  "thread-scaling": {
+    "verified_native": 480,
+    "measured": 360,
+    "warmups": 120,
+    "paired_cells": 60,
+    "diagnostic_children": 36,
+    "source_commit": "9e370bcb83209cf99f43c346750a6d4bd440f4f2",
+    "scope": "Final9e only, six vs24logicalCPUbudgets; GPUoff/GPUon separate; requested1/3/6/12/auto, auto6/24. Every ratio pairs same seed/block withN1. No production optimum selection or transfer to othermachines. 2seeds\u00d73blocks are descriptive; no unmatched workload pooling.",
+    "compact_export_source_sha256": "95e8d519f2bc3865b284007ef4df4ce45978594224b9345bef36e8534afc7c1e"
+  },
+  "mature-perf": {
+    "exported_reconciled_samples": 8986,
+    "observed_period": 18008015888,
+    "empty_callchains": 5110,
+    "empty_callchain_fraction": 0.5686623636768307,
+    "source_commit": "9e370bcb83209cf99f43c346750a6d4bd440f4f2",
+    "qualification": "One continuously evolved late Oazis window near120064-128000; CPU task-clock sample ranking, not whole-game CPU fractions or prediction of speed savings. 56.8662% empty callchains: full caller/all-active-thread coverage unproven. Original substring category table in analysis-v4/analysis.json is explicitly superseded by leading-namespace-supplement-v1.json: snapshot handle type appearing in a gradient template does not make gradient work snapshot work. Exact binary text/outcome/replay proof is separate from loaded512tick checksum continuity; continuous every-tick late-window equivalence not claimed.",
+    "leading_namespace_observation": [
+      {
+        "namespace": "gradient_kernel",
+        "period": 4476953872,
+        "observed_share": 0.24860894725127977
+      },
+      {
+        "namespace": "BuildingGradientSearch",
+        "period": 2677354688,
+        "observed_share": 0.14867571778321834
+      },
+      {
+        "namespace": "Building",
+        "period": 2340681344,
+        "observed_share": 0.12997996884041843
+      },
+      {
+        "namespace": "gradient_preparation",
+        "period": 2256513008,
+        "observed_share": 0.12530603160471845
+      },
+      {
+        "namespace": "AISharedRuntime",
+        "period": 1919839664,
+        "observed_share": 0.10661028266191853
+      },
+      {
+        "namespace": "SimulationSnapshot",
+        "period": 1064128248,
+        "observed_share": 0.059091920765635436
+      },
+      {
+        "namespace": "unclassified application function",
+        "period": 1042084160,
+        "observed_share": 0.05786779434676163
+      },
+      {
+        "namespace": "Map",
+        "period": 681362720,
+        "observed_share": 0.037836634765190294
+      },
+      {
+        "namespace": "Team",
+        "period": 559118232,
+        "observed_share": 0.031048297351435567
+      },
+      {
+        "namespace": "resolved other DSO",
+        "period": 456913824,
+        "observed_share": 0.025372802136657022
+      },
+      {
+        "namespace": "Unit",
+        "period": 196392784,
+        "observed_share": 0.010905853549966614
+      },
+      {
+        "namespace": "Game",
+        "period": 80160320,
+        "observed_share": 0.00445136879590474
+      },
+      {
+        "namespace": "kernel",
+        "period": 72144288,
+        "observed_share": 0.0040062319163142665
+      },
+      {
+        "namespace": "AIEngine",
+        "period": 60120240,
+        "observed_share": 0.0033385265969285557
+      },
+      {
+        "namespace": "ComputeExecutor",
+        "period": 46092184,
+        "observed_share": 0.002559537057645226
+      },
+      {
+        "namespace": "NewNicowar",
+        "period": 46092184,
+        "observed_share": 0.002559537057645226
+      },
+      {
+        "namespace": "unknown user leaf",
+        "period": 32064128,
+        "observed_share": 0.0017805475183618963
+      }
+    ]
+  }
+}

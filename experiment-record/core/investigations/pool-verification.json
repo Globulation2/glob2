@@ -1,0 +1,10 @@
+{
+  "all_identical": true,
+  "cases": [
+    "pool-check-playground-pool64",
+    "pool-check-playground-pool16",
+    "pool-check-playground-pool0"
+  ],
+  "sha256": "c95bcc473064f6fb4c7b17470e53a6e8a1f33368970ee1b7083355ae87c93a4e",
+  "ticks": 8192
+}

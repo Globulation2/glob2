@@ -1,0 +1,705 @@
+
+/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2/build/linux/client/release/src/glob2:     file format elf64-x86-64
+
+
+Disassembly of section .text:
+
+0000000000932a90 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd2c90>:
+  932a90:	f3 0f 1e fa          	endbr64
+  932a94:	41 57                	push   %r15
+  932a96:	49 89 f7             	mov    %rsi,%r15
+  932a99:	41 56                	push   %r14
+  932a9b:	41 55                	push   %r13
+  932a9d:	41 54                	push   %r12
+  932a9f:	55                   	push   %rbp
+  932aa0:	53                   	push   %rbx
+  932aa1:	48 89 fb             	mov    %rdi,%rbx
+  932aa4:	48 83 ec 78          	sub    $0x78,%rsp
+  932aa8:	64 48 8b 04 25 28 00 00 00 	mov    %fs:0x28,%rax
+  932ab1:	48 89 44 24 68       	mov    %rax,0x68(%rsp)
+  932ab6:	31 c0                	xor    %eax,%eax
+  932ab8:	48 8d 47 30          	lea    0x30(%rdi),%rax
+  932abc:	c6 44 24 38 00       	movb   $0x0,0x38(%rsp)
+  932ac1:	48 89 c7             	mov    %rax,%rdi
+  932ac4:	48 89 44 24 08       	mov    %rax,0x8(%rsp)
+  932ac9:	48 89 44 24 30       	mov    %rax,0x30(%rsp)
+  932ace:	e8 2d f2 7d ff       	call   111d00 <pthread_mutex_lock@plt>
+  932ad3:	85 c0                	test   %eax,%eax
+  932ad5:	0f 85 42 0a 00 00    	jne    93351d <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd371d>
+  932adb:	48 8d 43 58          	lea    0x58(%rbx),%rax
+  932adf:	c6 44 24 38 01       	movb   $0x1,0x38(%rsp)
+  932ae4:	31 ed                	xor    %ebp,%ebp
+  932ae6:	48 c7 04 24 00 00 00 00 	movq   $0x0,(%rsp)
+  932aee:	48 89 44 24 10       	mov    %rax,0x10(%rsp)
+  932af3:	80 bb e8 00 00 00 00 	cmpb   $0x0,0xe8(%rbx)
+  932afa:	0f 85 8a 01 00 00    	jne    932c8a <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd2e8a>
+  932b00:	48 8b 04 24          	mov    (%rsp),%rax
+  932b04:	48 39 83 f0 00 00 00 	cmp    %rax,0xf0(%rbx)
+  932b0b:	0f 84 a7 01 00 00    	je     932cb8 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd2eb8>
+  932b11:	45 31 e4             	xor    %r12d,%r12d
+  932b14:	45 31 f6             	xor    %r14d,%r14d
+  932b17:	45 31 ed             	xor    %r13d,%r13d
+  932b1a:	8b 83 08 38 00 00    	mov    0x3808(%rbx),%eax
+  932b20:	4c 39 f8             	cmp    %r15,%rax
+  932b23:	75 0a                	jne    932b2f <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd2d2f>
+  932b25:	48 83 fd 07          	cmp    $0x7,%rbp
+  932b29:	0f 87 c0 08 00 00    	ja     9333ef <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd35ef>
+  932b2f:	48 8b 83 f0 00 00 00 	mov    0xf0(%rbx),%rax
+  932b36:	48 8b 3c 24          	mov    (%rsp),%rdi
+  932b3a:	48 89 44 24 18       	mov    %rax,0x18(%rsp)
+  932b3f:	48 39 f8             	cmp    %rdi,%rax
+  932b42:	0f 84 3a 04 00 00    	je     932f82 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd3182>
+  932b48:	48 83 83 08 01 00 00 01 	addq   $0x1,0x108(%rbx)
+  932b50:	80 7c 24 38 00       	cmpb   $0x0,0x38(%rsp)
+  932b55:	0f 84 70 0b 00 00    	je     9336cb <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd38cb>
+  932b5b:	48 8b 7c 24 30       	mov    0x30(%rsp),%rdi
+  932b60:	48 85 ff             	test   %rdi,%rdi
+  932b63:	74 0a                	je     932b6f <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd2d6f>
+  932b65:	e8 b6 ef 7d ff       	call   111b20 <pthread_mutex_unlock@plt>
+  932b6a:	c6 44 24 38 00       	movb   $0x0,0x38(%rsp)
+  932b6f:	64 48 8b 04 25 00 00 00 00 	mov    %fs:0x0,%rax
+  932b78:	48 8d 80 10 60 ff ff 	lea    -0x9ff0(%rax),%rax
+  932b7f:	4c 8b 28             	mov    (%rax),%r13
+  932b82:	49 89 c4             	mov    %rax,%r12
+  932b85:	64 48 8b 04 25 00 00 00 00 	mov    %fs:0x0,%rax
+  932b8e:	48 8d 80 08 60 ff ff 	lea    -0x9ff8(%rax),%rax
+  932b95:	49 89 1c 24          	mov    %rbx,(%r12)
+  932b99:	4c 8b 30             	mov    (%rax),%r14
+  932b9c:	4c 89 38             	mov    %r15,(%rax)
+  932b9f:	48 8d 44 24 28       	lea    0x28(%rsp),%rax
+  932ba4:	48 89 04 24          	mov    %rax,(%rsp)
+  932ba8:	eb 0a                	jmp    932bb4 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd2db4>
+  932baa:	48 8b 7c 24 08       	mov    0x8(%rsp),%rdi
+  932baf:	e8 6c ef 7d ff       	call   111b20 <pthread_mutex_unlock@plt>
+  932bb4:	b8 01 00 00 00       	mov    $0x1,%eax
+  932bb9:	f0 48 0f c1 83 10 01 00 00 	lock xadd %rax,0x110(%rbx)
+  932bc2:	48 3b 83 00 01 00 00 	cmp    0x100(%rbx),%rax
+  932bc9:	0f 83 40 03 00 00    	jae    932f0f <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd310f>
+  932bcf:	48 83 bb 28 01 00 00 00 	cmpq   $0x0,0x128(%rbx)
+  932bd7:	48 89 44 24 28       	mov    %rax,0x28(%rsp)
+  932bdc:	0f 84 b3 0a 00 00    	je     933695 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd3895>
+  932be2:	48 8b 34 24          	mov    (%rsp),%rsi
+  932be6:	48 8d bb 18 01 00 00 	lea    0x118(%rbx),%rdi
+  932bed:	ff 93 30 01 00 00    	call   *0x130(%rbx)
+  932bf3:	48 8b 7c 24 08       	mov    0x8(%rsp),%rdi
+  932bf8:	e8 03 f1 7d ff       	call   111d00 <pthread_mutex_lock@plt>
+  932bfd:	89 c7                	mov    %eax,%edi
+  932bff:	85 c0                	test   %eax,%eax
+  932c01:	0f 85 79 0a 00 00    	jne    933680 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd3880>
+  932c07:	48 8b 83 f8 00 00 00 	mov    0xf8(%rbx),%rax
+  932c0e:	48 83 c0 01          	add    $0x1,%rax
+  932c12:	48 89 83 f8 00 00 00 	mov    %rax,0xf8(%rbx)
+  932c19:	48 3b 83 00 01 00 00 	cmp    0x100(%rbx),%rax
+  932c20:	75 88                	jne    932baa <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd2daa>
+  932c22:	48 8d bb 88 00 00 00 	lea    0x88(%rbx),%rdi
+  932c29:	e8 c2 12 7e ff       	call   113ef0 <std::condition_variable::notify_all()@plt>
+  932c2e:	e9 77 ff ff ff       	jmp    932baa <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd2daa>
+  932c33:	48 8b 8b c8 37 00 00 	mov    0x37c8(%rbx),%rcx
+  932c3a:	48 85 d2             	test   %rdx,%rdx
+  932c3d:	0f 84 1d 07 00 00    	je     933360 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd3560>
+  932c43:	0f b6 42 59          	movzbl 0x59(%rdx),%eax
+  932c47:	84 c0                	test   %al,%al
+  932c49:	0f 85 e4 06 00 00    	jne    933333 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd3533>
+  932c4f:	48 8b 93 b8 37 00 00 	mov    0x37b8(%rbx),%rdx
+  932c56:	48 3b 4a 78          	cmp    0x78(%rdx),%rcx
+  932c5a:	0f 83 d4 01 00 00    	jae    932e34 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd3034>
+  932c60:	80 bb b0 37 00 00 00 	cmpb   $0x0,0x37b0(%rbx)
+  932c67:	0f 85 c7 01 00 00    	jne    932e34 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd3034>
+  932c6d:	48 83 bb 90 37 00 00 00 	cmpq   $0x0,0x3790(%rbx)
+  932c75:	0f 84 8f 08 00 00    	je     93350a <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd370a>
+  932c7b:	0f b6 83 e8 00 00 00 	movzbl 0xe8(%rbx),%eax
+  932c82:	84 c0                	test   %al,%al
+  932c84:	0f 84 90 fe ff ff    	je     932b1a <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd2d1a>
+  932c8a:	80 7c 24 38 00       	cmpb   $0x0,0x38(%rsp)
+  932c8f:	0f 85 4b 07 00 00    	jne    9333e0 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd35e0>
+  932c95:	48 8b 44 24 68       	mov    0x68(%rsp),%rax
+  932c9a:	64 48 2b 04 25 28 00 00 00 	sub    %fs:0x28,%rax
+  932ca3:	0f 85 cf 09 00 00    	jne    933678 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd3878>
+  932ca9:	48 83 c4 78          	add    $0x78,%rsp
+  932cad:	5b                   	pop    %rbx
+  932cae:	5d                   	pop    %rbp
+  932caf:	41 5c                	pop    %r12
+  932cb1:	41 5d                	pop    %r13
+  932cb3:	41 5e                	pop    %r14
+  932cb5:	41 5f                	pop    %r15
+  932cb7:	c3                   	ret
+  932cb8:	48 89 6c 24 18       	mov    %rbp,0x18(%rsp)
+  932cbd:	45 31 e4             	xor    %r12d,%r12d
+  932cc0:	45 31 f6             	xor    %r14d,%r14d
+  932cc3:	45 31 ed             	xor    %r13d,%r13d
+  932cc6:	48 8d bb 40 01 00 00 	lea    0x140(%rbx),%rdi
+  932ccd:	31 c0                	xor    %eax,%eax
+  932ccf:	90                   	nop
+  932cd0:	48 8b 17             	mov    (%rdi),%rdx
+  932cd3:	48 85 d2             	test   %rdx,%rdx
+  932cd6:	0f 84 14 02 00 00    	je     932ef0 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd30f0>
+  932cdc:	48 83 bf a8 00 00 00 00 	cmpq   $0x0,0xa8(%rdi)
+  932ce4:	0f 84 06 02 00 00    	je     932ef0 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd30f0>
+  932cea:	45 84 e4             	test   %r12b,%r12b
+  932ced:	74 2c                	je     932d1b <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd2f1b>
+  932cef:	4b 8d 4c ad 00       	lea    0x0(%r13,%r13,4),%rcx
+  932cf4:	48 8d 0c 89          	lea    (%rcx,%rcx,4),%rcx
+  932cf8:	48 8d 0c cb          	lea    (%rbx,%rcx,8),%rcx
+  932cfc:	48 8b b1 48 01 00 00 	mov    0x148(%rcx),%rsi
+  932d03:	48 39 77 08          	cmp    %rsi,0x8(%rdi)
+  932d07:	75 07                	jne    932d10 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd2f10>
+  932d09:	48 3b 91 40 01 00 00 	cmp    0x140(%rcx),%rdx
+  932d10:	0f 92 c2             	setb   %dl
+  932d13:	84 d2                	test   %dl,%dl
+  932d15:	0f 84 d5 01 00 00    	je     932ef0 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd30f0>
+  932d1b:	48 8b b7 b8 00 00 00 	mov    0xb8(%rdi),%rsi
+  932d22:	4c 8b 97 a0 00 00 00 	mov    0xa0(%rdi),%r10
+  932d29:	4c 39 d6             	cmp    %r10,%rsi
+  932d2c:	0f 83 be 01 00 00    	jae    932ef0 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd30f0>
+  932d32:	4c 8b 5f 58          	mov    0x58(%rdi),%r11
+  932d36:	66 2e 0f 1f 84 00 00 00 00 00 	cs nopw 0x0(%rax,%rax,1)
+  932d40:	41 80 3c 33 00       	cmpb   $0x0,(%r11,%rsi,1)
+  932d45:	0f 85 95 01 00 00    	jne    932ee0 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd30e0>
+  932d4b:	4c 8b 4f 28          	mov    0x28(%rdi),%r9
+  932d4f:	48 8b 57 30          	mov    0x30(%rdi),%rdx
+  932d53:	4c 29 ca             	sub    %r9,%rdx
+  932d56:	48 89 d1             	mov    %rdx,%rcx
+  932d59:	48 c1 f9 03          	sar    $0x3,%rcx
+  932d5d:	48 85 d2             	test   %rdx,%rdx
+  932d60:	0f 8e 9a 01 00 00    	jle    932f00 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd3100>
+  932d66:	4d 89 c8             	mov    %r9,%r8
+  932d69:	eb 18                	jmp    932d83 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd2f83>
+  932d6b:	0f 1f 44 00 00       	nopl   0x0(%rax,%rax,1)
+  932d70:	48 29 d1             	sub    %rdx,%rcx
+  932d73:	4c 8d 45 08          	lea    0x8(%rbp),%r8
+  932d77:	48 8d 51 ff          	lea    -0x1(%rcx),%rdx
+  932d7b:	48 85 d2             	test   %rdx,%rdx
+  932d7e:	7e 18                	jle    932d98 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd2f98>
+  932d80:	48 89 d1             	mov    %rdx,%rcx
+  932d83:	48 89 ca             	mov    %rcx,%rdx
+  932d86:	48 d1 fa             	sar    $1,%rdx
+  932d89:	49 8d 2c d0          	lea    (%r8,%rdx,8),%rbp
+  932d8d:	48 3b 75 00          	cmp    0x0(%rbp),%rsi
+  932d91:	73 dd                	jae    932d70 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd2f70>
+  932d93:	48 85 d2             	test   %rdx,%rdx
+  932d96:	75 e8                	jne    932d80 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd2f80>
+  932d98:	4d 29 c8             	sub    %r9,%r8
+  932d9b:	4c 89 c2             	mov    %r8,%rdx
+  932d9e:	48 c1 fa 03          	sar    $0x3,%rdx
+  932da2:	48 83 ea 01          	sub    $0x1,%rdx
+  932da6:	48 c1 e2 05          	shl    $0x5,%rdx
+  932daa:	48 8b 4f 10          	mov    0x10(%rdi),%rcx
+  932dae:	8b 54 11 18          	mov    0x18(%rcx,%rdx,1),%edx
+  932db2:	83 fa ff             	cmp    $0xffffffff,%edx
+  932db5:	74 22                	je     932dd9 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd2fd9>
+  932db7:	48 8b 4f 40          	mov    0x40(%rdi),%rcx
+  932dbb:	4a 8b 6c 01 f8       	mov    -0x8(%rcx,%r8,1),%rbp
+  932dc0:	48 01 f5             	add    %rsi,%rbp
+  932dc3:	48 89 e9             	mov    %rbp,%rcx
+  932dc6:	4b 2b 4c 01 f8       	sub    -0x8(%r9,%r8,1),%rcx
+  932dcb:	48 39 8c d3 18 35 00 00 	cmp    %rcx,0x3518(%rbx,%rdx,8)
+  932dd3:	0f 82 07 01 00 00    	jb     932ee0 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd30e0>
+  932dd9:	4c 39 d6             	cmp    %r10,%rsi
+  932ddc:	0f 84 0e 01 00 00    	je     932ef0 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd30f0>
+  932de2:	49 89 f6             	mov    %rsi,%r14
+  932de5:	49 89 c5             	mov    %rax,%r13
+  932de8:	ba 01 00 00 00       	mov    $0x1,%edx
+  932ded:	41 bc 01 00 00 00    	mov    $0x1,%r12d
+  932df3:	48 83 c0 01          	add    $0x1,%rax
+  932df7:	48 81 c7 c8 00 00 00 	add    $0xc8,%rdi
+  932dfe:	48 83 f8 41          	cmp    $0x41,%rax
+  932e02:	0f 85 c8 fe ff ff    	jne    932cd0 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd2ed0>
+  932e08:	48 8b 6c 24 18       	mov    0x18(%rsp),%rbp
+  932e0d:	84 d2                	test   %dl,%dl
+  932e0f:	0f 85 05 fd ff ff    	jne    932b1a <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd2d1a>
+  932e15:	8b 83 08 38 00 00    	mov    0x3808(%rbx),%eax
+  932e1b:	48 8b 93 b8 37 00 00 	mov    0x37b8(%rbx),%rdx
+  932e22:	4c 39 f8             	cmp    %r15,%rax
+  932e25:	0f 84 08 fe ff ff    	je     932c33 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd2e33>
+  932e2b:	48 85 d2             	test   %rdx,%rdx
+  932e2e:	0f 84 7f 03 00 00    	je     9331b3 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd33b3>
+  932e34:	0f b6 8b b0 37 00 00 	movzbl 0x37b0(%rbx),%ecx
+  932e3b:	48 03 8b c8 37 00 00 	add    0x37c8(%rbx),%rcx
+  932e42:	0f b6 42 59          	movzbl 0x59(%rdx),%eax
+  932e46:	84 c0                	test   %al,%al
+  932e48:	74 0f                	je     932e59 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd3059>
+  932e4a:	48 83 bb c8 37 00 00 00 	cmpq   $0x0,0x37c8(%rbx)
+  932e52:	ba 02 00 00 00       	mov    $0x2,%edx
+  932e57:	74 0b                	je     932e64 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd3064>
+  932e59:	48 8b 83 b8 37 00 00 	mov    0x37b8(%rbx),%rax
+  932e60:	48 8b 50 78          	mov    0x78(%rax),%rdx
+  932e64:	8b 83 08 38 00 00    	mov    0x3808(%rbx),%eax
+  932e6a:	48 39 d1             	cmp    %rdx,%rcx
+  932e6d:	73 4f                	jae    932ebe <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd30be>
+  932e6f:	48 8b bb b8 37 00 00 	mov    0x37b8(%rbx),%rdi
+  932e76:	49 39 c7             	cmp    %rax,%r15
+  932e79:	74 0d                	je     932e88 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd3088>
+  932e7b:	80 bb b0 37 00 00 00 	cmpb   $0x0,0x37b0(%rbx)
+  932e82:	0f 84 04 03 00 00    	je     93318c <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd338c>
+  932e88:	48 89 7c 24 18       	mov    %rdi,0x18(%rsp)
+  932e8d:	e8 6e ee 7d ff       	call   111d00 <pthread_mutex_lock@plt>
+  932e92:	48 8b 7c 24 18       	mov    0x18(%rsp),%rdi
+  932e97:	85 c0                	test   %eax,%eax
+  932e99:	0f 85 99 06 00 00    	jne    933538 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd3738>
+  932e9f:	48 8b 83 b8 37 00 00 	mov    0x37b8(%rbx),%rax
+  932ea6:	80 b8 80 00 00 00 00 	cmpb   $0x0,0x80(%rax)
+  932ead:	0f 84 47 04 00 00    	je     9332fa <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd34fa>
+  932eb3:	e8 68 ec 7d ff       	call   111b20 <pthread_mutex_unlock@plt>
+  932eb8:	8b 83 08 38 00 00    	mov    0x3808(%rbx),%eax
+  932ebe:	4c 39 f8             	cmp    %r15,%rax
+  932ec1:	0f 85 ec 02 00 00    	jne    9331b3 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd33b3>
+  932ec7:	48 8b 7c 24 10       	mov    0x10(%rsp),%rdi
+  932ecc:	48 8d 74 24 30       	lea    0x30(%rsp),%rsi
+  932ed1:	e8 ca fd 7d ff       	call   112ca0 <std::condition_variable::wait(std::unique_lock<std::mutex>&)@plt>
+  932ed6:	e9 18 fc ff ff       	jmp    932af3 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd2cf3>
+  932edb:	0f 1f 44 00 00       	nopl   0x0(%rax,%rax,1)
+  932ee0:	48 83 c6 01          	add    $0x1,%rsi
+  932ee4:	4c 39 d6             	cmp    %r10,%rsi
+  932ee7:	0f 85 53 fe ff ff    	jne    932d40 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd2f40>
+  932eed:	0f 1f 00             	nopl   (%rax)
+  932ef0:	44 89 e2             	mov    %r12d,%edx
+  932ef3:	e9 fb fe ff ff       	jmp    932df3 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd2ff3>
+  932ef8:	0f 1f 84 00 00 00 00 00 	nopl   0x0(%rax,%rax,1)
+  932f00:	48 c7 c2 e0 ff ff ff 	mov    $0xffffffffffffffe0,%rdx
+  932f07:	45 31 c0             	xor    %r8d,%r8d
+  932f0a:	e9 9b fe ff ff       	jmp    932daa <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd2faa>
+  932f0f:	64 48 8b 04 25 00 00 00 00 	mov    %fs:0x0,%rax
+  932f18:	48 8d 80 10 60 ff ff 	lea    -0x9ff0(%rax),%rax
+  932f1f:	4c 89 28             	mov    %r13,(%rax)
+  932f22:	64 48 8b 04 25 00 00 00 00 	mov    %fs:0x0,%rax
+  932f2b:	48 8d 80 08 60 ff ff 	lea    -0x9ff8(%rax),%rax
+  932f32:	48 8b 7c 24 30       	mov    0x30(%rsp),%rdi
+  932f37:	4c 89 30             	mov    %r14,(%rax)
+  932f3a:	48 85 ff             	test   %rdi,%rdi
+  932f3d:	0f 84 f7 06 00 00    	je     93363a <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd383a>
+  932f43:	80 7c 24 38 00       	cmpb   $0x0,0x38(%rsp)
+  932f48:	0f 85 d2 06 00 00    	jne    933620 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd3820>
+  932f4e:	e8 ad ed 7d ff       	call   111d00 <pthread_mutex_lock@plt>
+  932f53:	89 c7                	mov    %eax,%edi
+  932f55:	85 c0                	test   %eax,%eax
+  932f57:	0f 85 5d 06 00 00    	jne    9335ba <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd37ba>
+  932f5d:	48 83 ab 08 01 00 00 01 	subq   $0x1,0x108(%rbx)
+  932f65:	c6 44 24 38 01       	movb   $0x1,0x38(%rsp)
+  932f6a:	0f 84 bb 01 00 00    	je     93312b <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd332b>
+  932f70:	48 8b 44 24 18       	mov    0x18(%rsp),%rax
+  932f75:	48 83 c5 01          	add    $0x1,%rbp
+  932f79:	48 89 04 24          	mov    %rax,(%rsp)
+  932f7d:	e9 71 fb ff ff       	jmp    932af3 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd2cf3>
+  932f82:	8b 83 08 38 00 00    	mov    0x3808(%rbx),%eax
+  932f88:	85 c0                	test   %eax,%eax
+  932f8a:	0f 84 05 08 00 00    	je     933795 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd3995>
+  932f90:	45 84 e4             	test   %r12b,%r12b
+  932f93:	74 53                	je     932fe8 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd31e8>
+  932f95:	4b 8d 44 ad 00       	lea    0x0(%r13,%r13,4),%rax
+  932f9a:	48 8d 04 80          	lea    (%rax,%rax,4),%rax
+  932f9e:	48 8d 04 c3          	lea    (%rbx,%rax,8),%rax
+  932fa2:	48 8b 90 98 01 00 00 	mov    0x198(%rax),%rdx
+  932fa9:	42 c6 04 32 01       	movb   $0x1,(%rdx,%r14,1)
+  932fae:	48 8b 90 f8 01 00 00 	mov    0x1f8(%rax),%rdx
+  932fb5:	48 8b 88 e0 01 00 00 	mov    0x1e0(%rax),%rcx
+  932fbc:	48 83 a8 e8 01 00 00 01 	subq   $0x1,0x1e8(%rax)
+  932fc4:	48 39 ca             	cmp    %rcx,%rdx
+  932fc7:	73 1f                	jae    932fe8 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd31e8>
+  932fc9:	48 8b b0 98 01 00 00 	mov    0x198(%rax),%rsi
+  932fd0:	eb 10                	jmp    932fe2 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd31e2>
+  932fd2:	48 83 c2 01          	add    $0x1,%rdx
+  932fd6:	48 89 90 f8 01 00 00 	mov    %rdx,0x1f8(%rax)
+  932fdd:	48 39 d1             	cmp    %rdx,%rcx
+  932fe0:	74 06                	je     932fe8 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd31e8>
+  932fe2:	80 3c 16 00          	cmpb   $0x0,(%rsi,%rdx,1)
+  932fe6:	75 ea                	jne    932fd2 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd31d2>
+  932fe8:	4c 89 6c 24 50       	mov    %r13,0x50(%rsp)
+  932fed:	4c 89 74 24 58       	mov    %r14,0x58(%rsp)
+  932ff2:	44 88 64 24 60       	mov    %r12b,0x60(%rsp)
+  932ff7:	45 84 e4             	test   %r12b,%r12b
+  932ffa:	0f 85 3c 01 00 00    	jne    93313c <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd333c>
+  933000:	8b 83 08 38 00 00    	mov    0x3808(%rbx),%eax
+  933006:	48 8b 93 b8 37 00 00 	mov    0x37b8(%rbx),%rdx
+  93300d:	4c 39 f8             	cmp    %r15,%rax
+  933010:	0f 84 6f 03 00 00    	je     933385 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd3585>
+  933016:	48 85 d2             	test   %rdx,%rdx
+  933019:	0f 84 f5 01 00 00    	je     933214 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd3414>
+  93301f:	0f b6 8b b0 37 00 00 	movzbl 0x37b0(%rbx),%ecx
+  933026:	48 03 8b c8 37 00 00 	add    0x37c8(%rbx),%rcx
+  93302d:	0f b6 42 59          	movzbl 0x59(%rdx),%eax
+  933031:	84 c0                	test   %al,%al
+  933033:	74 0f                	je     933044 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd3244>
+  933035:	48 83 bb c8 37 00 00 00 	cmpq   $0x0,0x37c8(%rbx)
+  93303d:	ba 02 00 00 00       	mov    $0x2,%edx
+  933042:	74 0b                	je     93304f <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd324f>
+  933044:	48 8b 83 b8 37 00 00 	mov    0x37b8(%rbx),%rax
+  93304b:	48 8b 50 78          	mov    0x78(%rax),%rdx
+  93304f:	8b 83 08 38 00 00    	mov    0x3808(%rbx),%eax
+  933055:	48 39 d1             	cmp    %rdx,%rcx
+  933058:	0f 83 ad 01 00 00    	jae    93320b <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd340b>
+  93305e:	48 8b bb b8 37 00 00 	mov    0x37b8(%rbx),%rdi
+  933065:	4c 39 f8             	cmp    %r15,%rax
+  933068:	74 5d                	je     9330c7 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd32c7>
+  93306a:	80 bb b0 37 00 00 00 	cmpb   $0x0,0x37b0(%rbx)
+  933071:	75 54                	jne    9330c7 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd32c7>
+  933073:	48 83 bb 90 37 00 00 00 	cmpq   $0x0,0x3790(%rbx)
+  93307b:	0f 84 75 05 00 00    	je     9335f6 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd37f6>
+  933081:	48 8b 93 c8 37 00 00 	mov    0x37c8(%rbx),%rdx
+  933088:	48 85 ff             	test   %rdi,%rdi
+  93308b:	0f 84 57 05 00 00    	je     9335e8 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd37e8>
+  933091:	0f b6 47 59          	movzbl 0x59(%rdi),%eax
+  933095:	84 c0                	test   %al,%al
+  933097:	74 0f                	je     9330a8 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd32a8>
+  933099:	48 83 bb c8 37 00 00 00 	cmpq   $0x0,0x37c8(%rbx)
+  9330a1:	b8 01 00 00 00       	mov    $0x1,%eax
+  9330a6:	74 0f                	je     9330b7 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd32b7>
+  9330a8:	48 8b 83 b8 37 00 00 	mov    0x37b8(%rbx),%rax
+  9330af:	48 8b 40 78          	mov    0x78(%rax),%rax
+  9330b3:	48 83 e8 01          	sub    $0x1,%rax
+  9330b7:	48 39 c2             	cmp    %rax,%rdx
+  9330ba:	0f 83 45 01 00 00    	jae    933205 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd3405>
+  9330c0:	48 8b bb b8 37 00 00 	mov    0x37b8(%rbx),%rdi
+  9330c7:	48 89 7c 24 18       	mov    %rdi,0x18(%rsp)
+  9330cc:	e8 2f ec 7d ff       	call   111d00 <pthread_mutex_lock@plt>
+  9330d1:	48 8b 7c 24 18       	mov    0x18(%rsp),%rdi
+  9330d6:	85 c0                	test   %eax,%eax
+  9330d8:	0f 85 2b 05 00 00    	jne    933609 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd3809>
+  9330de:	48 8b 83 b8 37 00 00 	mov    0x37b8(%rbx),%rax
+  9330e5:	80 b8 80 00 00 00 00 	cmpb   $0x0,0x80(%rax)
+  9330ec:	0f 85 0e 01 00 00    	jne    933200 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd3400>
+  9330f2:	0f b6 40 58          	movzbl 0x58(%rax),%eax
+  9330f6:	84 c0                	test   %al,%al
+  9330f8:	0f 85 02 01 00 00    	jne    933200 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd3400>
+  9330fe:	48 8b 83 b8 37 00 00 	mov    0x37b8(%rbx),%rax
+  933105:	48 8b 70 68          	mov    0x68(%rax),%rsi
+  933109:	48 39 70 60          	cmp    %rsi,0x60(%rax)
+  93310d:	0f 83 ed 00 00 00    	jae    933200 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd3400>
+  933113:	48 8b 70 78          	mov    0x78(%rax),%rsi
+  933117:	48 39 70 70          	cmp    %rsi,0x70(%rax)
+  93311b:	0f 83 df 00 00 00    	jae    933200 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd3400>
+  933121:	e8 fa e9 7d ff       	call   111b20 <pthread_mutex_unlock@plt>
+  933126:	e9 1b 03 00 00       	jmp    933446 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd3646>
+  93312b:	48 8d bb 88 00 00 00 	lea    0x88(%rbx),%rdi
+  933132:	e8 b9 0d 7e ff       	call   113ef0 <std::condition_variable::notify_all()@plt>
+  933137:	e9 34 fe ff ff       	jmp    932f70 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd3170>
+  93313c:	48 8d 7c 24 30       	lea    0x30(%rsp),%rdi
+  933141:	48 83 c5 01          	add    $0x1,%rbp
+  933145:	e8 f6 d3 b2 ff       	call   460540 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::append(char const*, unsigned long)@@Base+0x8c40>
+  93314a:	48 8d 74 24 50       	lea    0x50(%rsp),%rsi
+  93314f:	4c 89 fa             	mov    %r15,%rdx
+  933152:	48 89 df             	mov    %rbx,%rdi
+  933155:	e8 c6 be d0 ff       	call   63f020 <std::ctype<char>::do_widen(char) const@@Base+0x51850>
+  93315a:	48 8b 7c 24 30       	mov    0x30(%rsp),%rdi
+  93315f:	48 85 ff             	test   %rdi,%rdi
+  933162:	0f 84 34 04 00 00    	je     93359c <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd379c>
+  933168:	80 7c 24 38 00       	cmpb   $0x0,0x38(%rsp)
+  93316d:	0f 85 0b 04 00 00    	jne    93357e <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd377e>
+  933173:	e8 88 eb 7d ff       	call   111d00 <pthread_mutex_lock@plt>
+  933178:	89 c7                	mov    %eax,%edi
+  93317a:	85 c0                	test   %eax,%eax
+  93317c:	0f 85 e3 03 00 00    	jne    933565 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd3765>
+  933182:	c6 44 24 38 01       	movb   $0x1,0x38(%rsp)
+  933187:	e9 67 f9 ff ff       	jmp    932af3 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd2cf3>
+  93318c:	48 83 bb 90 37 00 00 00 	cmpq   $0x0,0x3790(%rbx)
+  933194:	0f 84 5d 03 00 00    	je     9334f7 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd36f7>
+  93319a:	48 8b 93 c8 37 00 00 	mov    0x37c8(%rbx),%rdx
+  9331a1:	48 85 ff             	test   %rdi,%rdi
+  9331a4:	0f 85 12 03 00 00    	jne    9334bc <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd36bc>
+  9331aa:	48 85 d2             	test   %rdx,%rdx
+  9331ad:	0f 84 d5 fc ff ff    	je     932e88 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd3088>
+  9331b3:	48 8b bb 60 38 00 00 	mov    0x3860(%rbx),%rdi
+  9331ba:	48 85 ff             	test   %rdi,%rdi
+  9331bd:	0f 84 04 fd ff ff    	je     932ec7 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd30c7>
+  9331c3:	80 bb 70 38 00 00 00 	cmpb   $0x0,0x3870(%rbx)
+  9331ca:	0f 85 f7 fc ff ff    	jne    932ec7 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd30c7>
+  9331d0:	48 83 bb 90 37 00 00 00 	cmpq   $0x0,0x3790(%rbx)
+  9331d8:	0f 85 e9 fc ff ff    	jne    932ec7 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd30c7>
+  9331de:	48 83 bb a0 37 00 00 00 	cmpq   $0x0,0x37a0(%rbx)
+  9331e6:	0f 85 db fc ff ff    	jne    932ec7 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd30c7>
+  9331ec:	48 8b 07             	mov    (%rdi),%rax
+  9331ef:	ff 50 10             	call   *0x10(%rax)
+  9331f2:	84 c0                	test   %al,%al
+  9331f4:	0f 84 cd fc ff ff    	je     932ec7 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd30c7>
+  9331fa:	e9 7c fa ff ff       	jmp    932c7b <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd2e7b>
+  9331ff:	90                   	nop
+  933200:	e8 1b e9 7d ff       	call   111b20 <pthread_mutex_unlock@plt>
+  933205:	8b 83 08 38 00 00    	mov    0x3808(%rbx),%eax
+  93320b:	4c 39 f8             	cmp    %r15,%rax
+  93320e:	0f 84 df f8 ff ff    	je     932af3 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd2cf3>
+  933214:	48 8b bb 60 38 00 00 	mov    0x3860(%rbx),%rdi
+  93321b:	48 85 ff             	test   %rdi,%rdi
+  93321e:	0f 84 cf f8 ff ff    	je     932af3 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd2cf3>
+  933224:	80 bb 70 38 00 00 00 	cmpb   $0x0,0x3870(%rbx)
+  93322b:	0f 85 c2 f8 ff ff    	jne    932af3 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd2cf3>
+  933231:	48 83 bb 90 37 00 00 00 	cmpq   $0x0,0x3790(%rbx)
+  933239:	0f 85 b4 f8 ff ff    	jne    932af3 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd2cf3>
+  93323f:	48 83 bb a0 37 00 00 00 	cmpq   $0x0,0x37a0(%rbx)
+  933247:	0f 85 a6 f8 ff ff    	jne    932af3 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd2cf3>
+  93324d:	48 8b 07             	mov    (%rdi),%rax
+  933250:	ff 50 10             	call   *0x10(%rax)
+  933253:	84 c0                	test   %al,%al
+  933255:	0f 84 98 f8 ff ff    	je     932af3 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd2cf3>
+  93325b:	48 8b 83 60 38 00 00 	mov    0x3860(%rbx),%rax
+  933262:	48 8d 7c 24 48       	lea    0x48(%rsp),%rdi
+  933267:	4c 8d 74 24 30       	lea    0x30(%rsp),%r14
+  93326c:	48 8d b3 68 38 00 00 	lea    0x3868(%rbx),%rsi
+  933273:	48 89 44 24 40       	mov    %rax,0x40(%rsp)
+  933278:	e8 f3 d2 b2 ff       	call   460570 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::append(char const*, unsigned long)@@Base+0x8c70>
+  93327d:	c6 83 70 38 00 00 01 	movb   $0x1,0x3870(%rbx)
+  933284:	4c 89 f7             	mov    %r14,%rdi
+  933287:	e8 b4 d2 b2 ff       	call   460540 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::append(char const*, unsigned long)@@Base+0x8c40>
+  93328c:	64 48 8b 04 25 00 00 00 00 	mov    %fs:0x0,%rax
+  933295:	48 8d 80 10 60 ff ff 	lea    -0x9ff0(%rax),%rax
+  93329c:	48 89 18             	mov    %rbx,(%rax)
+  93329f:	49 89 c5             	mov    %rax,%r13
+  9332a2:	64 48 8b 04 25 00 00 00 00 	mov    %fs:0x0,%rax
+  9332ab:	48 8d 80 08 60 ff ff 	lea    -0x9ff8(%rax),%rax
+  9332b2:	48 8b 7c 24 40       	mov    0x40(%rsp),%rdi
+  9332b7:	4c 89 38             	mov    %r15,(%rax)
+  9332ba:	49 89 c4             	mov    %rax,%r12
+  9332bd:	48 8b 07             	mov    (%rdi),%rax
+  9332c0:	ff 50 18             	call   *0x18(%rax)
+  9332c3:	4c 89 f7             	mov    %r14,%rdi
+  9332c6:	49 c7 45 00 00 00 00 00 	movq   $0x0,0x0(%r13)
+  9332ce:	49 c7 04 24 00 00 00 00 	movq   $0x0,(%r12)
+  9332d6:	e8 e5 dc ff ff       	call   930fc0 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd11c0>
+  9332db:	48 8b 7c 24 48       	mov    0x48(%rsp),%rdi
+  9332e0:	c6 83 70 38 00 00 00 	movb   $0x0,0x3870(%rbx)
+  9332e7:	48 85 ff             	test   %rdi,%rdi
+  9332ea:	0f 84 03 f8 ff ff    	je     932af3 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd2cf3>
+  9332f0:	e8 9b 22 b1 ff       	call   445590 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&&)@@Base+0x130>
+  9332f5:	e9 f9 f7 ff ff       	jmp    932af3 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd2cf3>
+  9332fa:	0f b6 40 58          	movzbl 0x58(%rax),%eax
+  9332fe:	84 c0                	test   %al,%al
+  933300:	0f 85 ad fb ff ff    	jne    932eb3 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd30b3>
+  933306:	48 8b 83 b8 37 00 00 	mov    0x37b8(%rbx),%rax
+  93330d:	48 8b 70 68          	mov    0x68(%rax),%rsi
+  933311:	48 39 70 60          	cmp    %rsi,0x60(%rax)
+  933315:	0f 83 98 fb ff ff    	jae    932eb3 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd30b3>
+  93331b:	48 8b 70 78          	mov    0x78(%rax),%rsi
+  93331f:	48 39 70 70          	cmp    %rsi,0x70(%rax)
+  933323:	0f 83 8a fb ff ff    	jae    932eb3 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd30b3>
+  933329:	e8 f2 e7 7d ff       	call   111b20 <pthread_mutex_unlock@plt>
+  93332e:	e9 48 f9 ff ff       	jmp    932c7b <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd2e7b>
+  933333:	48 83 bb c8 37 00 00 00 	cmpq   $0x0,0x37c8(%rbx)
+  93333b:	0f 85 0e f9 ff ff    	jne    932c4f <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd2e4f>
+  933341:	48 83 f9 01          	cmp    $0x1,%rcx
+  933345:	0f 86 08 02 00 00    	jbe    933553 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd3753>
+  93334b:	48 8b 93 b8 37 00 00 	mov    0x37b8(%rbx),%rdx
+  933352:	48 85 d2             	test   %rdx,%rdx
+  933355:	0f 84 5d fb ff ff    	je     932eb8 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd30b8>
+  93335b:	e9 d4 fa ff ff       	jmp    932e34 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd3034>
+  933360:	48 83 f9 01          	cmp    $0x1,%rcx
+  933364:	0f 87 5d fb ff ff    	ja     932ec7 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd30c7>
+  93336a:	80 bb b0 37 00 00 00 	cmpb   $0x0,0x37b0(%rbx)
+  933371:	0f 84 f6 f8 ff ff    	je     932c6d <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd2e6d>
+  933377:	4c 39 f8             	cmp    %r15,%rax
+  93337a:	0f 84 47 fb ff ff    	je     932ec7 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd30c7>
+  933380:	e9 2e fe ff ff       	jmp    9331b3 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd33b3>
+  933385:	48 8b 8b c8 37 00 00 	mov    0x37c8(%rbx),%rcx
+  93338c:	48 85 d2             	test   %rdx,%rdx
+  93338f:	0f 84 0b 01 00 00    	je     9334a0 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd36a0>
+  933395:	0f b6 42 59          	movzbl 0x59(%rdx),%eax
+  933399:	84 c0                	test   %al,%al
+  93339b:	0f 85 c8 00 00 00    	jne    933469 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd3669>
+  9333a1:	48 8b 93 b8 37 00 00 	mov    0x37b8(%rbx),%rdx
+  9333a8:	48 3b 4a 78          	cmp    0x78(%rdx),%rcx
+  9333ac:	0f 83 6d fc ff ff    	jae    93301f <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd321f>
+  9333b2:	80 bb b0 37 00 00 00 	cmpb   $0x0,0x37b0(%rbx)
+  9333b9:	0f 85 60 fc ff ff    	jne    93301f <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd321f>
+  9333bf:	48 83 bb 90 37 00 00 00 	cmpq   $0x0,0x3790(%rbx)
+  9333c7:	75 7d                	jne    933446 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd3646>
+  9333c9:	48 83 bb a0 37 00 00 00 	cmpq   $0x0,0x37a0(%rbx)
+  9333d1:	75 73                	jne    933446 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd3646>
+  9333d3:	e9 a9 00 00 00       	jmp    933481 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd3681>
+  9333d8:	0f 1f 84 00 00 00 00 00 	nopl   0x0(%rax,%rax,1)
+  9333e0:	48 8d 7c 24 30       	lea    0x30(%rsp),%rdi
+  9333e5:	e8 56 d1 b2 ff       	call   460540 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::append(char const*, unsigned long)@@Base+0x8c40>
+  9333ea:	e9 a6 f8 ff ff       	jmp    932c95 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd2e95>
+  9333ef:	48 8b 83 b8 37 00 00 	mov    0x37b8(%rbx),%rax
+  9333f6:	48 8b 93 c8 37 00 00 	mov    0x37c8(%rbx),%rdx
+  9333fd:	48 85 c0             	test   %rax,%rax
+  933400:	74 60                	je     933462 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd3662>
+  933402:	0f b6 40 59          	movzbl 0x59(%rax),%eax
+  933406:	84 c0                	test   %al,%al
+  933408:	74 0a                	je     933414 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd3614>
+  93340a:	48 83 bb c8 37 00 00 00 	cmpq   $0x0,0x37c8(%rbx)
+  933412:	74 4e                	je     933462 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd3662>
+  933414:	48 8b 83 b8 37 00 00 	mov    0x37b8(%rbx),%rax
+  93341b:	48 8b 40 78          	mov    0x78(%rax),%rax
+  93341f:	48 39 c2             	cmp    %rax,%rdx
+  933422:	73 0d                	jae    933431 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd3631>
+  933424:	80 bb b0 37 00 00 00 	cmpb   $0x0,0x37b0(%rbx)
+  93342b:	0f 84 79 02 00 00    	je     9336aa <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd38aa>
+  933431:	4c 89 fa             	mov    %r15,%rdx
+  933434:	31 f6                	xor    %esi,%esi
+  933436:	48 89 df             	mov    %rbx,%rdi
+  933439:	e8 72 bf ff ff       	call   92f3b0 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xcf5b0>
+  93343e:	84 c0                	test   %al,%al
+  933440:	0f 84 e9 f6 ff ff    	je     932b2f <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd2d2f>
+  933446:	48 8d 74 24 30       	lea    0x30(%rsp),%rsi
+  93344b:	b9 01 00 00 00       	mov    $0x1,%ecx
+  933450:	4c 89 fa             	mov    %r15,%rdx
+  933453:	48 89 df             	mov    %rbx,%rdi
+  933456:	e8 65 f0 ff ff       	call   9324c0 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd26c0>
+  93345b:	31 ed                	xor    %ebp,%ebp
+  93345d:	e9 91 f6 ff ff       	jmp    932af3 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd2cf3>
+  933462:	b8 02 00 00 00       	mov    $0x2,%eax
+  933467:	eb b6                	jmp    93341f <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd361f>
+  933469:	48 83 bb c8 37 00 00 00 	cmpq   $0x0,0x37c8(%rbx)
+  933471:	0f 85 2a ff ff ff    	jne    9333a1 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd35a1>
+  933477:	48 83 f9 01          	cmp    $0x1,%rcx
+  93347b:	0f 86 52 01 00 00    	jbe    9335d3 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd37d3>
+  933481:	48 8b 93 b8 37 00 00 	mov    0x37b8(%rbx),%rdx
+  933488:	48 85 d2             	test   %rdx,%rdx
+  93348b:	0f 84 74 fd ff ff    	je     933205 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd3405>
+  933491:	e9 89 fb ff ff       	jmp    93301f <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd321f>
+  933496:	66 2e 0f 1f 84 00 00 00 00 00 	cs nopw 0x0(%rax,%rax,1)
+  9334a0:	48 83 f9 01          	cmp    $0x1,%rcx
+  9334a4:	0f 87 49 f6 ff ff    	ja     932af3 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd2cf3>
+  9334aa:	80 bb b0 37 00 00 00 	cmpb   $0x0,0x37b0(%rbx)
+  9334b1:	0f 84 08 ff ff ff    	je     9333bf <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd35bf>
+  9334b7:	e9 4f fd ff ff       	jmp    93320b <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd340b>
+  9334bc:	0f b6 47 59          	movzbl 0x59(%rdi),%eax
+  9334c0:	84 c0                	test   %al,%al
+  9334c2:	74 0f                	je     9334d3 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd36d3>
+  9334c4:	48 83 bb c8 37 00 00 00 	cmpq   $0x0,0x37c8(%rbx)
+  9334cc:	b8 01 00 00 00       	mov    $0x1,%eax
+  9334d1:	74 0f                	je     9334e2 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd36e2>
+  9334d3:	48 8b 83 b8 37 00 00 	mov    0x37b8(%rbx),%rax
+  9334da:	48 8b 40 78          	mov    0x78(%rax),%rax
+  9334de:	48 83 e8 01          	sub    $0x1,%rax
+  9334e2:	48 39 c2             	cmp    %rax,%rdx
+  9334e5:	0f 83 cd f9 ff ff    	jae    932eb8 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd30b8>
+  9334eb:	48 8b bb b8 37 00 00 	mov    0x37b8(%rbx),%rdi
+  9334f2:	e9 91 f9 ff ff       	jmp    932e88 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd3088>
+  9334f7:	48 83 bb a0 37 00 00 00 	cmpq   $0x0,0x37a0(%rbx)
+  9334ff:	0f 85 95 fc ff ff    	jne    93319a <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd339a>
+  933505:	e9 7e f9 ff ff       	jmp    932e88 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd3088>
+  93350a:	48 83 bb a0 37 00 00 00 	cmpq   $0x0,0x37a0(%rbx)
+  933512:	0f 85 63 f7 ff ff    	jne    932c7b <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd2e7b>
+  933518:	e9 2e fe ff ff       	jmp    93334b <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd354b>
+  93351d:	89 c7                	mov    %eax,%edi
+  93351f:	48 8b 44 24 68       	mov    0x68(%rsp),%rax
+  933524:	64 48 2b 04 25 28 00 00 00 	sub    %fs:0x28,%rax
+  93352d:	0f 85 45 01 00 00    	jne    933678 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd3878>
+  933533:	e8 38 ed 7d ff       	call   112270 <std::__throw_system_error(int)@plt>
+  933538:	48 8b 54 24 68       	mov    0x68(%rsp),%rdx
+  93353d:	64 48 2b 14 25 28 00 00 00 	sub    %fs:0x28,%rdx
+  933546:	0f 85 2c 01 00 00    	jne    933678 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd3878>
+  93354c:	89 c7                	mov    %eax,%edi
+  93354e:	e8 1d ed 7d ff       	call   112270 <std::__throw_system_error(int)@plt>
+  933553:	80 bb b0 37 00 00 00 	cmpb   $0x0,0x37b0(%rbx)
+  93355a:	0f 85 eb fd ff ff    	jne    93334b <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd354b>
+  933560:	e9 08 f7 ff ff       	jmp    932c6d <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd2e6d>
+  933565:	48 8b 44 24 68       	mov    0x68(%rsp),%rax
+  93356a:	64 48 2b 04 25 28 00 00 00 	sub    %fs:0x28,%rax
+  933573:	0f 85 ff 00 00 00    	jne    933678 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd3878>
+  933579:	e8 f2 ec 7d ff       	call   112270 <std::__throw_system_error(int)@plt>
+  93357e:	48 8b 44 24 68       	mov    0x68(%rsp),%rax
+  933583:	64 48 2b 04 25 28 00 00 00 	sub    %fs:0x28,%rax
+  93358c:	0f 85 e6 00 00 00    	jne    933678 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd3878>
+  933592:	bf 23 00 00 00       	mov    $0x23,%edi
+  933597:	e8 d4 ec 7d ff       	call   112270 <std::__throw_system_error(int)@plt>
+  93359c:	48 8b 44 24 68       	mov    0x68(%rsp),%rax
+  9335a1:	64 48 2b 04 25 28 00 00 00 	sub    %fs:0x28,%rax
+  9335aa:	0f 85 c8 00 00 00    	jne    933678 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd3878>
+  9335b0:	bf 01 00 00 00       	mov    $0x1,%edi
+  9335b5:	e8 b6 ec 7d ff       	call   112270 <std::__throw_system_error(int)@plt>
+  9335ba:	48 8b 44 24 68       	mov    0x68(%rsp),%rax
+  9335bf:	64 48 2b 04 25 28 00 00 00 	sub    %fs:0x28,%rax
+  9335c8:	0f 85 aa 00 00 00    	jne    933678 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd3878>
+  9335ce:	e8 9d ec 7d ff       	call   112270 <std::__throw_system_error(int)@plt>
+  9335d3:	80 bb b0 37 00 00 00 	cmpb   $0x0,0x37b0(%rbx)
+  9335da:	0f 85 a1 fe ff ff    	jne    933481 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd3681>
+  9335e0:	e9 da fd ff ff       	jmp    9333bf <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd35bf>
+  9335e5:	0f 1f 00             	nopl   (%rax)
+  9335e8:	48 85 d2             	test   %rdx,%rdx
+  9335eb:	0f 84 d6 fa ff ff    	je     9330c7 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd32c7>
+  9335f1:	e9 1e fc ff ff       	jmp    933214 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd3414>
+  9335f6:	48 83 bb a0 37 00 00 00 	cmpq   $0x0,0x37a0(%rbx)
+  9335fe:	0f 85 7d fa ff ff    	jne    933081 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd3281>
+  933604:	e9 be fa ff ff       	jmp    9330c7 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd32c7>
+  933609:	48 8b 54 24 68       	mov    0x68(%rsp),%rdx
+  93360e:	64 48 2b 14 25 28 00 00 00 	sub    %fs:0x28,%rdx
+  933617:	75 5f                	jne    933678 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd3878>
+  933619:	89 c7                	mov    %eax,%edi
+  93361b:	e8 50 ec 7d ff       	call   112270 <std::__throw_system_error(int)@plt>
+  933620:	48 8b 44 24 68       	mov    0x68(%rsp),%rax
+  933625:	64 48 2b 04 25 28 00 00 00 	sub    %fs:0x28,%rax
+  93362e:	75 48                	jne    933678 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd3878>
+  933630:	bf 23 00 00 00       	mov    $0x23,%edi
+  933635:	e8 36 ec 7d ff       	call   112270 <std::__throw_system_error(int)@plt>
+  93363a:	48 8b 44 24 68       	mov    0x68(%rsp),%rax
+  93363f:	64 48 2b 04 25 28 00 00 00 	sub    %fs:0x28,%rax
+  933648:	75 2e                	jne    933678 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd3878>
+  93364a:	bf 01 00 00 00       	mov    $0x1,%edi
+  93364f:	e8 1c ec 7d ff       	call   112270 <std::__throw_system_error(int)@plt>
+  933654:	e8 47 fe 7d ff       	call   1134a0 <__cxa_end_catch@plt>
+  933659:	80 7c 24 38 00       	cmpb   $0x0,0x38(%rsp)
+  93365e:	0f 85 0e 01 00 00    	jne    933772 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd3972>
+  933664:	48 8b 44 24 68       	mov    0x68(%rsp),%rax
+  933669:	64 48 2b 04 25 28 00 00 00 	sub    %fs:0x28,%rax
+  933672:	0f 84 09 01 00 00    	je     933781 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd3981>
+  933678:	e8 33 e7 7d ff       	call   111db0 <__stack_chk_fail@plt>
+  93367d:	0f 1f 00             	nopl   (%rax)
+  933680:	48 8b 44 24 68       	mov    0x68(%rsp),%rax
+  933685:	64 48 2b 04 25 28 00 00 00 	sub    %fs:0x28,%rax
+  93368e:	75 e8                	jne    933678 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd3878>
+  933690:	e8 db eb 7d ff       	call   112270 <std::__throw_system_error(int)@plt>
+  933695:	48 8b 44 24 68       	mov    0x68(%rsp),%rax
+  93369a:	64 48 2b 04 25 28 00 00 00 	sub    %fs:0x28,%rax
+  9336a3:	75 d3                	jne    933678 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd3878>
+  9336a5:	e8 46 0f 7e ff       	call   1145f0 <std::__throw_bad_function_call()@plt>
+  9336aa:	48 83 bb 90 37 00 00 00 	cmpq   $0x0,0x3790(%rbx)
+  9336b2:	0f 85 8e fd ff ff    	jne    933446 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd3646>
+  9336b8:	48 83 bb a0 37 00 00 00 	cmpq   $0x0,0x37a0(%rbx)
+  9336c0:	0f 85 80 fd ff ff    	jne    933446 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd3646>
+  9336c6:	e9 66 fd ff ff       	jmp    933431 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd3631>
+  9336cb:	48 8b 44 24 68       	mov    0x68(%rsp),%rax
+  9336d0:	64 48 2b 04 25 28 00 00 00 	sub    %fs:0x28,%rax
+  9336d9:	75 9d                	jne    933678 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd3878>
+  9336db:	bf 01 00 00 00       	mov    $0x1,%edi
+  9336e0:	e8 8b eb 7d ff       	call   112270 <std::__throw_system_error(int)@plt>
+  9336e5:	f3 0f 1e fa          	endbr64
+  9336e9:	48 89 c7             	mov    %rax,%rdi
+  9336ec:	eb 0c                	jmp    9336fa <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd38fa>
+  9336ee:	f3 0f 1e fa          	endbr64
+  9336f2:	48 89 c3             	mov    %rax,%rbx
+  9336f5:	e9 5f ff ff ff       	jmp    933659 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd3859>
+  9336fa:	e8 81 db 7d ff       	call   111280 <__cxa_begin_catch@plt>
+  9336ff:	48 8b 7c 24 08       	mov    0x8(%rsp),%rdi
+  933704:	e8 17 14 b1 ff       	call   444b20 <op_free@plt+0x32fec8>
+  933709:	48 83 bb 38 01 00 00 00 	cmpq   $0x0,0x138(%rbx)
+  933711:	75 4b                	jne    93375e <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd395e>
+  933713:	4c 8d 64 24 40       	lea    0x40(%rsp),%r12
+  933718:	4c 89 e7             	mov    %r12,%rdi
+  93371b:	e8 60 e9 7d ff       	call   112080 <std::current_exception()@plt>
+  933720:	48 8b 54 24 40       	mov    0x40(%rsp),%rdx
+  933725:	48 8b 83 38 01 00 00 	mov    0x138(%rbx),%rax
+  93372c:	31 c9                	xor    %ecx,%ecx
+  93372e:	48 89 4c 24 40       	mov    %rcx,0x40(%rsp)
+  933733:	48 89 44 24 50       	mov    %rax,0x50(%rsp)
+  933738:	48 89 93 38 01 00 00 	mov    %rdx,0x138(%rbx)
+  93373f:	48 85 c0             	test   %rax,%rax
+  933742:	74 0a                	je     93374e <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd394e>
+  933744:	48 8d 7c 24 50       	lea    0x50(%rsp),%rdi
+  933749:	e8 e2 e1 7d ff       	call   111930 <std::__exception_ptr::exception_ptr::_M_release()@plt>
+  93374e:	48 83 7c 24 40 00    	cmpq   $0x0,0x40(%rsp)
+  933754:	74 08                	je     93375e <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd395e>
+  933756:	4c 89 e7             	mov    %r12,%rdi
+  933759:	e8 d2 e1 7d ff       	call   111930 <std::__exception_ptr::exception_ptr::_M_release()@plt>
+  93375e:	48 8b 7c 24 08       	mov    0x8(%rsp),%rdi
+  933763:	e8 b8 e3 7d ff       	call   111b20 <pthread_mutex_unlock@plt>
+  933768:	e8 33 fd 7d ff       	call   1134a0 <__cxa_end_catch@plt>
+  93376d:	e9 81 f4 ff ff       	jmp    932bf3 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd2df3>
+  933772:	48 8d 7c 24 30       	lea    0x30(%rsp),%rdi
+  933777:	e8 c4 cd b2 ff       	call   460540 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::append(char const*, unsigned long)@@Base+0x8c40>
+  93377c:	e9 e3 fe ff ff       	jmp    933664 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd3864>
+  933781:	48 89 df             	mov    %rbx,%rdi
+  933784:	e8 d7 f5 7d ff       	call   112d60 <_Unwind_Resume@plt>
+  933789:	f3 0f 1e fa          	endbr64
+  93378d:	48 89 c3             	mov    %rax,%rbx
+  933790:	e9 bf fe ff ff       	jmp    933654 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd3854>
+  933795:	48 8d 0d cc 1b d1 01 	lea    0x1d11bcc(%rip),%rcx        # 2645368 <SharpYuvConvert@@Base+0x450e8>
+  93379c:	ba d4 02 00 00       	mov    $0x2d4,%edx
+  9337a1:	48 8d 35 0f 29 e2 01 	lea    0x1e2290f(%rip),%rsi        # 27560b7 <SharpYuvConvert@@Base+0x155e37>
+  9337a8:	48 8d 3d 25 29 e2 01 	lea    0x1e22925(%rip),%rdi        # 27560d4 <SharpYuvConvert@@Base+0x155e54>
+  9337af:	e8 7c df 7d ff       	call   111730 <__assert_fail@plt>
+  9337b4:	f3 0f 1e fa          	endbr64
+  9337b8:	48 89 c3             	mov    %rax,%rbx
+  9337bb:	48 8b 7c 24 48       	mov    0x48(%rsp),%rdi
+  9337c0:	48 85 ff             	test   %rdi,%rdi
+  9337c3:	0f 84 90 fe ff ff    	je     933659 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd3859>
+  9337c9:	e8 c2 1d b1 ff       	call   445590 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&&)@@Base+0x130>
+  9337ce:	e9 86 fe ff ff       	jmp    933659 <std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()@@Base+0xd3859>

@@ -1,0 +1,906 @@
+{
+  "state": "plan-only",
+  "design_version": 1,
+  "previous_design": "mature/design-v0",
+  "base_commit": "2ced60e06b8e7fa7a4a4ecff944c40bda494bcf4",
+  "correctness_name": "correctness",
+  "binaries": {
+    "baseline": {
+      "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/baseline/source/build/linux/client/release/src/glob2",
+      "root": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/baseline/source",
+      "sha256": "c5ed10029619f8e3e91538bd69f6d2ad01abf30703a45b4ef2f75369a14203c0"
+    },
+    "combined": {
+      "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/build/linux/client/release/src/glob2",
+      "root": "/home/bradley/.codex/worktrees/engine-optimization/glob2",
+      "sha256": "311ddc675aa0bbd7dafe5fb911e177c19458d0b0d739ddfe5a89d5c820041dc3"
+    },
+    "worker": {
+      "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/variants/worker/source/build/linux/client/release/src/glob2",
+      "root": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/variants/worker/source",
+      "sha256": "a3794ae9d3261e8b75acc48fe231258be34c91f5469ffec6dc455e40b2441feb"
+    },
+    "snapshot": {
+      "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/variants/snapshot/source/build/linux/client/release/src/glob2",
+      "root": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/variants/snapshot/source",
+      "sha256": "207563dd68bbd995c1725a28ad4c901590edd85acce3eb9f82e6f2123fd99af2"
+    },
+    "telemetry": {
+      "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/variants/telemetry/source/build/linux/client/release/src/glob2",
+      "root": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/variants/telemetry/source",
+      "sha256": "c7161baf12e460e7d18aaf48b412b6b65057006ab0b2b988abdb60cb53f612e1"
+    },
+    "scheduler": {
+      "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/variants/scheduler/source/build/linux/client/release/src/glob2",
+      "root": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/variants/scheduler/source",
+      "sha256": "79be48eaf95fe08725cd2fc7041d5df713899ca9e3ba797ae3747b6fb9a6a822",
+      "accepted": false
+    }
+  },
+  "checkpoints": [
+    {
+      "id": "playground-ni-164298751",
+      "scenario": {
+        "id": "playground-ni",
+        "map": "Playground",
+        "width": 128,
+        "height": 128,
+        "ais": [
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar"
+        ],
+        "ticks": 20000
+      },
+      "seed": 164298751,
+      "target_tick": 20000,
+      "canonical_fixture": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/correctness/playground-ni-164298751/fixture.json"
+    },
+    {
+      "id": "playground-ni-902381047",
+      "scenario": {
+        "id": "playground-ni",
+        "map": "Playground",
+        "width": 128,
+        "height": 128,
+        "ais": [
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar"
+        ],
+        "ticks": 20000
+      },
+      "seed": 902381047,
+      "target_tick": 20000,
+      "canonical_fixture": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/correctness/playground-ni-902381047/fixture.json"
+    },
+    {
+      "id": "oazis-ni-164298751",
+      "scenario": {
+        "id": "oazis-ni",
+        "map": "Oazis",
+        "width": 256,
+        "height": 256,
+        "ais": [
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar"
+        ],
+        "ticks": 8192
+      },
+      "seed": 164298751,
+      "target_tick": 50000,
+      "canonical_fixture": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/correctness/oazis-ni-164298751/fixture.json"
+    },
+    {
+      "id": "oazis-ni-902381047",
+      "scenario": {
+        "id": "oazis-ni",
+        "map": "Oazis",
+        "width": 256,
+        "height": 256,
+        "ais": [
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar"
+        ],
+        "ticks": 8192
+      },
+      "seed": 902381047,
+      "target_tick": 50000,
+      "canonical_fixture": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/correctness/oazis-ni-902381047/fixture.json"
+    }
+  ],
+  "window_lengths": [
+    4096,
+    8192
+  ],
+  "counts": [
+    3
+  ],
+  "gpu_strata": [
+    "off",
+    "on"
+  ],
+  "masks": [
+    [
+      0,
+      1,
+      2,
+      16,
+      17,
+      18
+    ],
+    [
+      3,
+      4,
+      5,
+      19,
+      20,
+      21
+    ],
+    [
+      6,
+      7,
+      8,
+      22,
+      23,
+      24
+    ],
+    [
+      9,
+      10,
+      11,
+      25,
+      26,
+      27
+    ]
+  ],
+  "full_cases": [
+    {
+      "id": "playground-ni-164298751-baseline",
+      "scenario": {
+        "id": "playground-ni",
+        "map": "Playground",
+        "width": 128,
+        "height": 128,
+        "ais": [
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar"
+        ],
+        "ticks": 20000
+      },
+      "seed": 164298751,
+      "variant": "baseline",
+      "fixture_record": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/correctness/playground-ni-164298751/fixture.json",
+      "affinity": [
+        0,
+        1,
+        2,
+        16,
+        17,
+        18
+      ],
+      "compute_threads": 3,
+      "gpu": "on",
+      "timeout_s": 3600,
+      "tick_sentinel": 2147483647,
+      "candidate_acceptance": "combined3 provisional; does not imply accepted scheduler",
+      "native_replay": "canonical --write-replay retained; no checksum observer"
+    },
+    {
+      "id": "playground-ni-164298751-combined",
+      "scenario": {
+        "id": "playground-ni",
+        "map": "Playground",
+        "width": 128,
+        "height": 128,
+        "ais": [
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar"
+        ],
+        "ticks": 20000
+      },
+      "seed": 164298751,
+      "variant": "combined",
+      "fixture_record": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/correctness/playground-ni-164298751/fixture.json",
+      "affinity": [
+        0,
+        1,
+        2,
+        16,
+        17,
+        18
+      ],
+      "compute_threads": 3,
+      "gpu": "on",
+      "timeout_s": 3600,
+      "tick_sentinel": 2147483647,
+      "candidate_acceptance": "combined3 provisional; does not imply accepted scheduler",
+      "native_replay": "canonical --write-replay retained; no checksum observer"
+    },
+    {
+      "id": "playground-ni-902381047-combined",
+      "scenario": {
+        "id": "playground-ni",
+        "map": "Playground",
+        "width": 128,
+        "height": 128,
+        "ais": [
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar"
+        ],
+        "ticks": 20000
+      },
+      "seed": 902381047,
+      "variant": "combined",
+      "fixture_record": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/correctness/playground-ni-902381047/fixture.json",
+      "affinity": [
+        3,
+        4,
+        5,
+        19,
+        20,
+        21
+      ],
+      "compute_threads": 3,
+      "gpu": "on",
+      "timeout_s": 3600,
+      "tick_sentinel": 2147483647,
+      "candidate_acceptance": "combined3 provisional; does not imply accepted scheduler",
+      "native_replay": "canonical --write-replay retained; no checksum observer"
+    },
+    {
+      "id": "playground-ni-902381047-baseline",
+      "scenario": {
+        "id": "playground-ni",
+        "map": "Playground",
+        "width": 128,
+        "height": 128,
+        "ais": [
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar"
+        ],
+        "ticks": 20000
+      },
+      "seed": 902381047,
+      "variant": "baseline",
+      "fixture_record": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/correctness/playground-ni-902381047/fixture.json",
+      "affinity": [
+        3,
+        4,
+        5,
+        19,
+        20,
+        21
+      ],
+      "compute_threads": 3,
+      "gpu": "on",
+      "timeout_s": 3600,
+      "tick_sentinel": 2147483647,
+      "candidate_acceptance": "combined3 provisional; does not imply accepted scheduler",
+      "native_replay": "canonical --write-replay retained; no checksum observer"
+    },
+    {
+      "id": "playground-ni-1738462951-baseline",
+      "scenario": {
+        "id": "playground-ni",
+        "map": "Playground",
+        "width": 128,
+        "height": 128,
+        "ais": [
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar"
+        ],
+        "ticks": 20000
+      },
+      "seed": 1738462951,
+      "variant": "baseline",
+      "fixture_record": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/full-fixtures/playground-ni-1738462951/fixture.json",
+      "affinity": [
+        6,
+        7,
+        8,
+        22,
+        23,
+        24
+      ],
+      "compute_threads": 3,
+      "gpu": "on",
+      "timeout_s": 3600,
+      "tick_sentinel": 2147483647,
+      "candidate_acceptance": "combined3 provisional; does not imply accepted scheduler",
+      "native_replay": "canonical --write-replay retained; no checksum observer"
+    },
+    {
+      "id": "playground-ni-1738462951-combined",
+      "scenario": {
+        "id": "playground-ni",
+        "map": "Playground",
+        "width": 128,
+        "height": 128,
+        "ais": [
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar"
+        ],
+        "ticks": 20000
+      },
+      "seed": 1738462951,
+      "variant": "combined",
+      "fixture_record": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/full-fixtures/playground-ni-1738462951/fixture.json",
+      "affinity": [
+        6,
+        7,
+        8,
+        22,
+        23,
+        24
+      ],
+      "compute_threads": 3,
+      "gpu": "on",
+      "timeout_s": 3600,
+      "tick_sentinel": 2147483647,
+      "candidate_acceptance": "combined3 provisional; does not imply accepted scheduler",
+      "native_replay": "canonical --write-replay retained; no checksum observer"
+    },
+    {
+      "id": "oazis-ni-164298751-combined",
+      "scenario": {
+        "id": "oazis-ni",
+        "map": "Oazis",
+        "width": 256,
+        "height": 256,
+        "ais": [
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar"
+        ],
+        "ticks": 8192
+      },
+      "seed": 164298751,
+      "variant": "combined",
+      "fixture_record": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/correctness/oazis-ni-164298751/fixture.json",
+      "affinity": [
+        9,
+        10,
+        11,
+        25,
+        26,
+        27
+      ],
+      "compute_threads": 3,
+      "gpu": "on",
+      "timeout_s": 3600,
+      "tick_sentinel": 2147483647,
+      "candidate_acceptance": "combined3 provisional; does not imply accepted scheduler",
+      "native_replay": "canonical --write-replay retained; no checksum observer"
+    },
+    {
+      "id": "oazis-ni-164298751-baseline",
+      "scenario": {
+        "id": "oazis-ni",
+        "map": "Oazis",
+        "width": 256,
+        "height": 256,
+        "ais": [
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar"
+        ],
+        "ticks": 8192
+      },
+      "seed": 164298751,
+      "variant": "baseline",
+      "fixture_record": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/correctness/oazis-ni-164298751/fixture.json",
+      "affinity": [
+        9,
+        10,
+        11,
+        25,
+        26,
+        27
+      ],
+      "compute_threads": 3,
+      "gpu": "on",
+      "timeout_s": 3600,
+      "tick_sentinel": 2147483647,
+      "candidate_acceptance": "combined3 provisional; does not imply accepted scheduler",
+      "native_replay": "canonical --write-replay retained; no checksum observer"
+    },
+    {
+      "id": "oazis-ni-902381047-baseline",
+      "scenario": {
+        "id": "oazis-ni",
+        "map": "Oazis",
+        "width": 256,
+        "height": 256,
+        "ais": [
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar"
+        ],
+        "ticks": 8192
+      },
+      "seed": 902381047,
+      "variant": "baseline",
+      "fixture_record": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/correctness/oazis-ni-902381047/fixture.json",
+      "affinity": [
+        0,
+        1,
+        2,
+        16,
+        17,
+        18
+      ],
+      "compute_threads": 3,
+      "gpu": "on",
+      "timeout_s": 3600,
+      "tick_sentinel": 2147483647,
+      "candidate_acceptance": "combined3 provisional; does not imply accepted scheduler",
+      "native_replay": "canonical --write-replay retained; no checksum observer"
+    },
+    {
+      "id": "oazis-ni-902381047-combined",
+      "scenario": {
+        "id": "oazis-ni",
+        "map": "Oazis",
+        "width": 256,
+        "height": 256,
+        "ais": [
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar"
+        ],
+        "ticks": 8192
+      },
+      "seed": 902381047,
+      "variant": "combined",
+      "fixture_record": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/correctness/oazis-ni-902381047/fixture.json",
+      "affinity": [
+        0,
+        1,
+        2,
+        16,
+        17,
+        18
+      ],
+      "compute_threads": 3,
+      "gpu": "on",
+      "timeout_s": 3600,
+      "tick_sentinel": 2147483647,
+      "candidate_acceptance": "combined3 provisional; does not imply accepted scheduler",
+      "native_replay": "canonical --write-replay retained; no checksum observer"
+    },
+    {
+      "id": "oazis-ni-1738462951-combined",
+      "scenario": {
+        "id": "oazis-ni",
+        "map": "Oazis",
+        "width": 256,
+        "height": 256,
+        "ais": [
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar"
+        ],
+        "ticks": 8192
+      },
+      "seed": 1738462951,
+      "variant": "combined",
+      "fixture_record": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/full-fixtures/oazis-ni-1738462951/fixture.json",
+      "affinity": [
+        3,
+        4,
+        5,
+        19,
+        20,
+        21
+      ],
+      "compute_threads": 3,
+      "gpu": "on",
+      "timeout_s": 3600,
+      "tick_sentinel": 2147483647,
+      "candidate_acceptance": "combined3 provisional; does not imply accepted scheduler",
+      "native_replay": "canonical --write-replay retained; no checksum observer"
+    },
+    {
+      "id": "oazis-ni-1738462951-baseline",
+      "scenario": {
+        "id": "oazis-ni",
+        "map": "Oazis",
+        "width": 256,
+        "height": 256,
+        "ais": [
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar"
+        ],
+        "ticks": 8192
+      },
+      "seed": 1738462951,
+      "variant": "baseline",
+      "fixture_record": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/full-fixtures/oazis-ni-1738462951/fixture.json",
+      "affinity": [
+        3,
+        4,
+        5,
+        19,
+        20,
+        21
+      ],
+      "compute_threads": 3,
+      "gpu": "on",
+      "timeout_s": 3600,
+      "tick_sentinel": 2147483647,
+      "candidate_acceptance": "combined3 provisional; does not imply accepted scheduler",
+      "native_replay": "canonical --write-replay retained; no checksum observer"
+    },
+    {
+      "id": "holdout-comb-164298751-baseline",
+      "scenario": {
+        "id": "holdout-comb",
+        "generator": "comb",
+        "width": 256,
+        "height": 512,
+        "ais": [
+          "nicowar",
+          "cortex",
+          "maxima",
+          "cabino"
+        ],
+        "map_seed": 1738462951
+      },
+      "seed": 164298751,
+      "variant": "baseline",
+      "fixture_record": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/full-fixtures/holdout-comb-164298751/fixture.json",
+      "affinity": [
+        6,
+        7,
+        8,
+        22,
+        23,
+        24
+      ],
+      "compute_threads": 3,
+      "gpu": "on",
+      "timeout_s": 3600,
+      "tick_sentinel": 2147483647,
+      "candidate_acceptance": "combined3 provisional; does not imply accepted scheduler",
+      "native_replay": "canonical --write-replay retained; no checksum observer"
+    },
+    {
+      "id": "holdout-comb-164298751-combined",
+      "scenario": {
+        "id": "holdout-comb",
+        "generator": "comb",
+        "width": 256,
+        "height": 512,
+        "ais": [
+          "nicowar",
+          "cortex",
+          "maxima",
+          "cabino"
+        ],
+        "map_seed": 1738462951
+      },
+      "seed": 164298751,
+      "variant": "combined",
+      "fixture_record": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/full-fixtures/holdout-comb-164298751/fixture.json",
+      "affinity": [
+        6,
+        7,
+        8,
+        22,
+        23,
+        24
+      ],
+      "compute_threads": 3,
+      "gpu": "on",
+      "timeout_s": 3600,
+      "tick_sentinel": 2147483647,
+      "candidate_acceptance": "combined3 provisional; does not imply accepted scheduler",
+      "native_replay": "canonical --write-replay retained; no checksum observer"
+    },
+    {
+      "id": "holdout-comb-902381047-combined",
+      "scenario": {
+        "id": "holdout-comb",
+        "generator": "comb",
+        "width": 256,
+        "height": 512,
+        "ais": [
+          "nicowar",
+          "cortex",
+          "maxima",
+          "cabino"
+        ],
+        "map_seed": 1738462951
+      },
+      "seed": 902381047,
+      "variant": "combined",
+      "fixture_record": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/full-fixtures/holdout-comb-902381047/fixture.json",
+      "affinity": [
+        9,
+        10,
+        11,
+        25,
+        26,
+        27
+      ],
+      "compute_threads": 3,
+      "gpu": "on",
+      "timeout_s": 3600,
+      "tick_sentinel": 2147483647,
+      "candidate_acceptance": "combined3 provisional; does not imply accepted scheduler",
+      "native_replay": "canonical --write-replay retained; no checksum observer"
+    },
+    {
+      "id": "holdout-comb-902381047-baseline",
+      "scenario": {
+        "id": "holdout-comb",
+        "generator": "comb",
+        "width": 256,
+        "height": 512,
+        "ais": [
+          "nicowar",
+          "cortex",
+          "maxima",
+          "cabino"
+        ],
+        "map_seed": 1738462951
+      },
+      "seed": 902381047,
+      "variant": "baseline",
+      "fixture_record": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/full-fixtures/holdout-comb-902381047/fixture.json",
+      "affinity": [
+        9,
+        10,
+        11,
+        25,
+        26,
+        27
+      ],
+      "compute_threads": 3,
+      "gpu": "on",
+      "timeout_s": 3600,
+      "tick_sentinel": 2147483647,
+      "candidate_acceptance": "combined3 provisional; does not imply accepted scheduler",
+      "native_replay": "canonical --write-replay retained; no checksum observer"
+    },
+    {
+      "id": "holdout-comb-1738462951-baseline",
+      "scenario": {
+        "id": "holdout-comb",
+        "generator": "comb",
+        "width": 256,
+        "height": 512,
+        "ais": [
+          "nicowar",
+          "cortex",
+          "maxima",
+          "cabino"
+        ],
+        "map_seed": 1738462951
+      },
+      "seed": 1738462951,
+      "variant": "baseline",
+      "fixture_record": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/full-fixtures/holdout-comb-1738462951/fixture.json",
+      "affinity": [
+        0,
+        1,
+        2,
+        16,
+        17,
+        18
+      ],
+      "compute_threads": 3,
+      "gpu": "on",
+      "timeout_s": 3600,
+      "tick_sentinel": 2147483647,
+      "candidate_acceptance": "combined3 provisional; does not imply accepted scheduler",
+      "native_replay": "canonical --write-replay retained; no checksum observer"
+    },
+    {
+      "id": "holdout-comb-1738462951-combined",
+      "scenario": {
+        "id": "holdout-comb",
+        "generator": "comb",
+        "width": 256,
+        "height": 512,
+        "ais": [
+          "nicowar",
+          "cortex",
+          "maxima",
+          "cabino"
+        ],
+        "map_seed": 1738462951
+      },
+      "seed": 1738462951,
+      "variant": "combined",
+      "fixture_record": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/full-fixtures/holdout-comb-1738462951/fixture.json",
+      "affinity": [
+        0,
+        1,
+        2,
+        16,
+        17,
+        18
+      ],
+      "compute_threads": 3,
+      "gpu": "on",
+      "timeout_s": 3600,
+      "tick_sentinel": 2147483647,
+      "candidate_acceptance": "combined3 provisional; does not imply accepted scheduler",
+      "native_replay": "canonical --write-replay retained; no checksum observer"
+    }
+  ],
+  "stages": [
+    "prepare-full-fixtures",
+    "checkpoints",
+    "correctness",
+    "performance",
+    "full-native",
+    "full-diagnostic"
+  ],
+  "worklist": {
+    "checkpoints": 4,
+    "mature_direct_diagnostic": 96,
+    "mature_save_continuation_diagnostic": 48,
+    "paired_window_jobs": 96,
+    "native_window_children": 768,
+    "native_full_children": 18,
+    "full_diagnostic_children": 18,
+    "heldout_map_generations": 1,
+    "additional_initial_fixtures": 5
+  },
+  "seals": {
+    "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature_campaign.py": "5685221a960e76702d4811ebdd8932d3359c5e29a5dc4fcd20f9fc30b1bf448f",
+    "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/acceptance-plan.json": "a2404059c94801ce86492729e1fccb762e53c01e68b859d8c4ec5640e23fc78b",
+    "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/campaign.json": "5e49473428b7bd148b022004f773478bc69a6cf73be910106079b270e9272a03",
+    "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/variant-builds.json": "13d561d3ebda15c0ca03bf77a67c817de92864045f88b47c54f534341e27e731",
+    "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/variants/scheduler/manifest.json": "bd391d825219f29cf8ddca6952cdc9fc5d8a43268c9f3deffe92cafb874a26f6",
+    "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/correctness_campaign.py": "bdb9991fe1cc45fbdf138fede2e2fc6fba0f92068c1c3e9dd33c518acb1ca2a8",
+    "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/performance_campaign.py": "aac8440636064bc50fc6f99a93108975ebab0358ecbcb42bdf0f96f6c8d833af",
+    "/home/bradley/.codex/worktrees/engine-optimization/glob2/test/benchmark_resource_refactor.py": "6b08e0cf1954082d4cacf64225cb48e39e452695c9bba76b15c11accef3638e9",
+    "/home/bradley/.codex/worktrees/engine-optimization/glob2/test/benchmark_parallel_compute.py": "e737390c8fee7adeb6cdf5b30d5e60ff8cd150c5d33a21e4ba754c2e7eca5ac8",
+    "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/map-preparation.json": "cfd03d1cb8dc685f5c1e4fa86e8b51db972f1df537a082bf0b793271c79036e8"
+  },
+  "caveats": [
+    "Plan only; no launches without explicit stage --run. No automatic scheduler adoption.",
+    "New canonical replay cohort; historical legacy seeds/settings are not pooled.",
+    "Checkpoint preparation GPUoff3 is diagnostic; early winner is retained and blocks windows.",
+    "Loaded windows measure cache rebuilding and subsequent work, not continuous-process peak retention.",
+    "Full native cases retain canonical replay output; AIT1 validation occurs after timing, separate heavy GCS cases.",
+    "Exact GCS/world/replay equality applies only matched loaded prefixes; save continuity compares detailed suffix records, not header-dependent aggregate CRC.",
+    "Two primary seeds plus one holdout per layout; repeated windows do not increase independent seed coverage.",
+    "One-hour timeout is censored/flagged, never completed-game timing or silently shortened.",
+    "Stock full fixtures must already be frozen; heldout generation deferred and hashed before simulation.",
+    "Full natural outcome agreement and separate diagnostic traces do not establish every native tick equivalence.",
+    "One candidate combined3 represents first three optimizations, excluding separate unaccepted scheduler."
+  ],
+  "checkpoint_decision": {
+    "utc": "2026-10-12T05:34:16.485203+00:00",
+    "reason": "First Oazis naturally ended at76802; 100k cannot prepare a common loaded state. Root explicitly chooses50000 for both seeds with max8192 laterwindow; second seed stillsubjecttoearlyending gate. Loadedwindow qualification unchanged.",
+    "preserved_early_ending": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/mature/rejected-checkpoints/oazis-ni-164298751-100k",
+    "previous_plan_sha256": "3a945abf940516c923007a9431a13009c2adbb5cf5118136c2e102f7c343da62",
+    "previous_requested_tick": 100000,
+    "observed_ending": {
+      "requested_tick": 100000,
+      "actual_tick": 76802,
+      "termination": "engine_end",
+      "action": "root must choose a paired window explicitly"
+    },
+    "new_target_tick": 50000,
+    "not_a_completion_measure": "Instrumented checkpoint prefix, no timing claim."
+  }
+}

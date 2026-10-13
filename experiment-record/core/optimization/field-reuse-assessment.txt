@@ -1,0 +1,89 @@
+Field reuse assessment — read-only accepted 9e370bcb83209cf99f43c346750a6d4bd440f4f2
+Existing reuse is substantial. No source audit proves wholesale propagated fields can be skipped safely. Identical plane bytes or heap plane-equivalents do not establish identical dependencies, search frontier, ownership, publication or simulation-visible cache state.
+
+Frozen terrain and movement inputs
+Already reused: Water, vertex and per-swim movement snapshots shared; equal movement profiles interned; prepared cost tables reused.
+Required inputs: Terrain rules, registry, swim class, modified costs and edit lifetime. In-batch changes reset frozen snapshots before the batch terrain generation advances.
+  /home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/Map.cpp:106 — water sharing
+  /home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/Map.cpp:131 — movement sharing
+  /home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/Map.cpp:357 — cell edit invalidation
+  /home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/Map.cpp:443 — terrain completion
+  /home/bradley/.codex/worktrees/engine-optimization/glob2/src/field/PreparedTerrainCosts.h:1 — prepared built-in costs
+
+Immutable world components and published field planes
+Already reused: Generation-matched components reused; pooled buffers copy changed chunks relative to their own stamps. Published plane key + generation shares immutable values.
+Required inputs: World identity, dimensions, configuration/terrain/catalog generations, component/chunk stamps and individual plane generation. Pooled address or tick alone is insufficient.
+  /home/bradley/.codex/worktrees/engine-optimization/glob2/src/engine/sim/snapshot/WorldCapture.cpp:72 — world/config identities
+  /home/bradley/.codex/worktrees/engine-optimization/glob2/src/engine/sim/snapshot/WorldCapture.cpp:96 — component dependencies
+  /home/bradley/.codex/worktrees/engine-optimization/glob2/src/engine/sim/snapshot/WorldCapture.cpp:201 — buffer-specific chunk stamps
+  /home/bradley/.codex/worktrees/engine-optimization/glob2/src/engine/sim/snapshot/WorldCapture.cpp:519 — published field sharing
+  /home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/Map.h:1292 — per-plane generations
+
+Material seed templates
+Already reused: Incremental map seed cache and per-worker immutable-snapshot seed cache already reuse base terrain/resource/building/team templates, with bounded fallback.
+Required inputs: Terrain/resource/occupancy/area stamps, world/catalog identities, material availability and immobile/building signatures. Visibility, supplier stock/policy, costs, consumer exclusion and live overlays are not interchangeable with the base template.
+  /home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/gradient/ResourceSeedCache.h:1 — bounded incremental templates
+  /home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/gradient/ResourceSeedCache.cpp:119 — dirty notification
+  /home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/gradient/SnapshotGradient.h:40 — per-worker seed storage
+  /home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/gradient/SnapshotGradient.cpp:32 — snapshot stamp/signature refresh
+  /home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/gradient/SnapshotGradient.cpp:140 — component requirements
+
+Natural, market and consumer material fields
+Already reused: Shared natural unreachable planes and consumer-specific cached fields; supplier preparation and base seed reuse.
+Required inputs: Team/material/swim/mode/consumer key; stock revision; topology; consumer script identity/type/position; 128-tick age and deterministic recency/eviction. Age and cache metadata are simulation-visible, so a byte-identical rebuild is not automatically removable.
+  /home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/gradient/MapGradientMaterial.cpp:21 — mode and consumer dispatch
+  /home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/gradient/MapGradientMaterial.cpp:156 — field identity
+  /home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/gradient/MapGradientMaterial.cpp:174 — refresh conditions
+  /home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/MapMisc.cpp:51 — cache metadata contributes to checksum
+  /home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/io/MapIO.cpp:1323 — cache save/load metadata
+
+Building fields and resumable searches
+Already reused: Private incremental search settles needed cost layers; existing fields remain until scheduled publication; full-field completion retained for save/read contracts.
+Required inputs: Building script identity and refresh epoch; team/route/swim, footprint/goals/range/permissions/resources/immobile occupants; frozen movement costs, topology and age. Whole equal-cost layers must settle for equal-distance direction selection.
+  /home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/gradient/BuildingGradientSearch.h:19 — frozen inputs/private frontier
+  /home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/pathfind/MapPathfindBuilding.cpp:28 — lazy and aged refresh
+  /home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/gradient/MapGradientBuilding.cpp:28 — supersession/reset
+  /home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/gradient/MapGradientScheduling.cpp:146 — publication destination lifetime guards
+
+Periodic publication and forbidden fields
+Already reused: Round-robin periodic field work; forbidden partition comparison avoids rebuilding unchanged obstacle/goal partitions.
+Required inputs: Capture tick, publication deadline, topology, epochs and request order. Cost-only terrain changes force refresh even where the forbidden partition is unchanged. Observers must see publication at the prescribed boundary.
+  /home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/gradient/MapGradientScheduling.cpp:1 — publication sequencing
+  /home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/gradient/MapGradientScheduling.cpp:287 — request validity
+  /home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/MapStep.cpp:273 — frozen snapshot requirements
+  /home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/MapStep.cpp:325 — publication hook/deadline
+  /home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/MapStep.cpp:380 — forbidden partition reuse
+  /home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/Map.cpp:467 — cost-only terrain refresh
+
+Terrain safety escape fields
+Already reused: Ground fields already keyed by team/swim/escape-forbidden; flyers share one field. Separate ground/air invalidation and bounded 64 MiB LRU. Moving occupancy tested at descent rather than included in propagated field.
+Required inputs: Terrain walk/fly/swim/health/entry costs, resource blocking, buildings, own-team forbidden mask. Current forbidden changes invalidate the entire ground generation, even for other teams.
+  /home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/pathfind/MapTerrainSafety.cpp:12 — exact profile inputs
+  /home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/pathfind/MapTerrainSafety.cpp:120 — live descent occupancy
+  /home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/pathfind/MapTerrainSafety.cpp:147 — key and generation
+  /home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/gradient/TerrainSafetyCache.h:26 — capacity and generations
+  /home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/MapCells.cpp:5 — ground/air invalidation
+  /home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/MapCells.cpp:21 — blocking-property comparison
+  /home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/MapCells.cpp:61 — forbidden mask edits
+
+GPU minimal cost views
+Already reused: Bounded weak-owner cache by immutable terrain source/dimensions/swim/revision/modified state; canonicalizes concurrent cold constructions on insertion.
+Required inputs: Immutable owner lifetime, host budget and cancellation semantics. Two simultaneous misses may construct the same view before the second locked lookup.
+  /home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/gradient/SnapshotGradient.cpp:447 — bounded cache
+  /home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/gradient/SnapshotGradient.cpp:490 — matching key
+  /home/bradley/.codex/worktrees/engine-optimization/glob2/src/map/gradient/SnapshotGradient.cpp:526 — explicit concurrent duplicate construction
+
+ONE conditional candidate
+Narrow only terrain-safety ground permission invalidation by changed team bits, keeping global terrain/building/resource-blocking invalidation and existing caches.
+EscapeProfile.initialCost reads only profile.team forbidden bits. A permission edit exclusively for team A cannot alter the propagated safety cost plane for team B if all other inputs are unchanged. Current global groundGeneration discards both.
+No evidence this family dominates accepted Oazis late CPU, nor that false invalidations occur enough to matter. Do not optimize until observed leaf attribution and bounded miss-reason evidence support it.
+Gate: Continuous perf shows buildEscapeField/pathfindTerrainSafety materially hot; diagnostics establish unrelated-team forbidden edits cause significant rebuilds. No new profile cohort requested.
+Tests:
+  Affected team rebuild and unchanged other-team exact field/direction reuse for single/multi-bit add/remove/replaceTile edits.
+  Terrain/cost/health/swim/building/resource blocking edits invalidate all relevant fields; stock-only changes retain cache; flyers ignore permission edits.
+  Moving/immobile occupancy and forbidden escape mode, rectangular torus, query order, LRU eviction, generation wrap and map/world/load resets.
+  Exact per-tick world/GCS/RNG, replay payload and save continuation for multi-team routed games, all existing safety fixtures plus varied maps/classes/platform coverage.
+
+Depth/retention controls trade CPU, wall and storage; K1 periodic/chunk and K3 FIFO candidates did not establish adopted benefits. Snapshot ownership V1/V2 changes rejected; unchanged published-plane sharing already existed. These controls do not show safely redundant work in a particular field family.
+Continuous privileged CPU sampling queued; no actual late sample evidence assumed. Statistical GPU-off attribution must include workers, exclusive leaf ownership and unknown/library/kernel buckets.
+No builds, games, profiles, production edits or new cohorts.

@@ -1,0 +1,322 @@
+{
+  "commit": "9e370bcb83209cf99f43c346750a6d4bd440f4f2",
+  "base": "2ced60e06b8e7fa7a4a4ecff944c40bda494bcf4",
+  "review_type": "Independent read-only final source review; no tests/builds/native/browser/profilers launched",
+  "changed_file_count": 31,
+  "worktree_clean": true,
+  "changed_files": {
+    "browser/tests/threading.spec.js": {
+      "git_blob": "260b1d9b516da85081f7cc596e6cb19926bd9fff",
+      "sha256": "26fd06d1da07b68e8300316eaf658c2988fe7a0bc58075a5c9a87dc487cc3341",
+      "worktree_matches_commit": true
+    },
+    "data/completions/_glob2": {
+      "git_blob": "c0e1a525a203cbaed4d14c5c598d78c524515994",
+      "sha256": "87932522f830619af13cf2888b1f7f31e08803737c7315fd9ca991f6ebfc18d3",
+      "worktree_matches_commit": true
+    },
+    "data/completions/glob2.bash": {
+      "git_blob": "7eeaa2930cd090b9beada186a2d38eb058bddbe9",
+      "sha256": "ea03b63c3498077c27504f35cbc4e5638da6add678ed2ff05b4d6469aeca9227",
+      "worktree_matches_commit": true
+    },
+    "data/completions/glob2.fish": {
+      "git_blob": "4533d5a2894bf1eb00f620ddc2317732c4ecc5ea",
+      "sha256": "67bf5b6cb31628a0b89f925bf1c7635a939f5c738c3345037a3febbf784eacd3",
+      "worktree_matches_commit": true
+    },
+    "debian/glob2.6": {
+      "git_blob": "b839334c21f8e24a108337fa1392cbf04bf22f74",
+      "sha256": "e794b4edaf01b8cd43f5c0cd0bdee2e40c4d3a9316e9eb4597b06862b5ceb9bb",
+      "worktree_matches_commit": true
+    },
+    "docs/ai/telemetry.md": {
+      "git_blob": "56169b5a7b6f695cee0bc62311fc331ce2824cd8",
+      "sha256": "57e285fecc14a54c85417fa211b6c1e69a7d1d877299339b6cb582645d37eb9c",
+      "worktree_matches_commit": true
+    },
+    "docs/architecture/simulation.md": {
+      "git_blob": "a543b86823ac5bb9977694960cd34ae4b2f93750",
+      "sha256": "190c237f340b62db187b7f970adc942bb49951841f01a88c009bbc45e70e6e96",
+      "worktree_matches_commit": true
+    },
+    "docs/development/compute-benchmarks.md": {
+      "git_blob": "7a56bf89502f7c8b69ae9e47ed78582f32b41b1e",
+      "sha256": "81c909dbaddc628c0a7242cc14181fa08fdefb93ac09259365f733799974db43",
+      "worktree_matches_commit": true
+    },
+    "docs/development/headless-replays.md": {
+      "git_blob": "67768787a4bff8a11eac4283fd9ea039982cce3f",
+      "sha256": "c9eef15d9edfae3a2c013eaa88f4dc6aba048daafaccd73f343f5dd45a7f8eb2",
+      "worktree_matches_commit": true
+    },
+    "docs/tools/cli.md": {
+      "git_blob": "53832044cf8d5a1686b7df64203b9fbbc59acad5",
+      "sha256": "b1230369c15d70b161db2a31cf8739c98830ea73770c0f4f373c1a5f916691d5",
+      "worktree_matches_commit": true
+    },
+    "docs/tools/tournaments.md": {
+      "git_blob": "f5e63c6fc8747f8450dff58ffc22a8003a99e330",
+      "sha256": "b5a0e48f84c759088b844f06a305e0a56b180d0d9c7d93bfaf5efd4becc898e8",
+      "worktree_matches_commit": true
+    },
+    "scons/sources.py": {
+      "git_blob": "4379ad2ca51034d25c725a2d075410456499cbb8",
+      "sha256": "6484a8e7067f26f23d5a7c70a4646ce0e67bfc3c6a635761f2b9fc2801463e0e",
+      "worktree_matches_commit": true
+    },
+    "scons/web_build.py": {
+      "git_blob": "033e26fb5952337e1fd6b44726341f0d0169fd36",
+      "sha256": "403fcd597c3931b38f0c31f2187d76f7e91b5c835413c1caa08846fbcda3534f",
+      "worktree_matches_commit": true
+    },
+    "src/app/GlobalContainer.h": {
+      "git_blob": "41cab57f65d0c6f9173070b4d5f21c7fbaae3120",
+      "sha256": "36668f3663427aebcbc24cf049dafea046b3247b6d28343bfb9feed5d6699de3",
+      "worktree_matches_commit": true
+    },
+    "src/app/cli/CommandLine.cpp": {
+      "git_blob": "17da57700ca601bb43da313b08bc2bbf2f621ebb",
+      "sha256": "91708eff99fcd0668fafa6c5bcb11b3d20e6bfbcb31c81ed9db65e726a4513fa",
+      "worktree_matches_commit": true
+    },
+    "src/app/cli/Headless.cpp": {
+      "git_blob": "61ce6cf8628ff2879ec6914f63a9face129ee030",
+      "sha256": "901d6141be3905be76a0fcf99ef140f5cd879d5b9252ea4734bc2ce4781275b2",
+      "worktree_matches_commit": true
+    },
+    "src/common/ComputeExecutorHarness.cpp": {
+      "git_blob": "b65e88fd64152d2f88ed7502589308e0424b26b2",
+      "sha256": "a546b10fbe42e24620ee1cd44928d83580d6d707c5595b96f808039997603a44",
+      "worktree_matches_commit": true
+    },
+    "src/common/ComputeThreads.cpp": {
+      "git_blob": "cff483021f560a015cae03e527aa62bda52b0c2b",
+      "sha256": "6da03d329e3b3d5af0c14317d99d390d0aafdd3223ddf90b3e75e805ae7b786a",
+      "worktree_matches_commit": true
+    },
+    "src/common/ComputeThreads.h": {
+      "git_blob": "c6ee91512f91e0b4a99f8258ffd71764fa172848",
+      "sha256": "98fed29ce73250b074433a267821e9597b54c2158c4c128221bad42e52dad940",
+      "worktree_matches_commit": true
+    },
+    "src/engine/sim/snapshot/SnapshotStorage.cpp": {
+      "git_blob": "67e2dc09c2623b6b830d6d6fae4b6abae3de0729",
+      "sha256": "3e23ca82ee07f963403b9a7780e459e1e3bce5d9ad1ec8c3c72b2f04fe4f1415",
+      "worktree_matches_commit": true
+    },
+    "src/engine/sim/snapshot/SnapshotStorage.h": {
+      "git_blob": "4bf9d4fa800a1ec24ceb5baf1103751a9385a317",
+      "sha256": "868df4fc92d19d822af76ece332652040ed194b7c5c6642ee2e566c32273b2f8",
+      "worktree_matches_commit": true
+    },
+    "src/engine/sim/snapshot/SnapshotStore.h": {
+      "git_blob": "662ca417122bbacf2dd504831b0bdaeb8716524e",
+      "sha256": "f32c58466a51219b5005655074f62a399976a028d8c0bb18b38e6e4c30fced69",
+      "worktree_matches_commit": true
+    },
+    "src/engine/sim/snapshot/WorldSnapshotTest.cpp": {
+      "git_blob": "2f0b874be35d89a028a0b30eed325d5aa636da25",
+      "sha256": "57d9a9d4846a68e64dffe8e5696d27e888e3cfe379a1bdcd564572930c17ef27",
+      "worktree_matches_commit": true
+    },
+    "src/field/OpenCLGradient.cpp": {
+      "git_blob": "b632b008a677a0b2fd15dd9cfee2792dab82ee01",
+      "sha256": "55709f59c27231a1737312fb9f6a0c7a5d48ca91bde03e6d63bca56cce87caed",
+      "worktree_matches_commit": true
+    },
+    "src/field/OpenCLGradient.h": {
+      "git_blob": "1b8330eee10cf42e9d3bb0df82af5328a0a3a1cc",
+      "sha256": "01c040c02d39b5f43132a3deb989fbe3d9e30b15fe459a2e8f70700d074593ba",
+      "worktree_matches_commit": true
+    },
+    "src/field/OpenCLGradientTest.cpp": {
+      "git_blob": "60a76c6356232e1b0d44a35156600b758063b735",
+      "sha256": "77334aa04ac3a1c75e64bfcb2579c6433d39a94373104e349e0b9ec841110515",
+      "worktree_matches_commit": true
+    },
+    "src/map/gradient/GradientPreparationTest.cpp": {
+      "git_blob": "427f24cd246bd108acebf66eaa9524b8da7c4add",
+      "sha256": "f87176f394f9a3cb3b2d93764beef56c83e1782a0bc2297ef9f6c774bdd69f40",
+      "worktree_matches_commit": true
+    },
+    "src/replay/ReplayTelemetry.cpp": {
+      "git_blob": "0724289f53129955b5b5222af370c14f9d639af9",
+      "sha256": "3527f2ddce0f6de70fcefb6a050be88ba6814d791d291bff5076113fd2f919b3",
+      "worktree_matches_commit": true
+    },
+    "src/replay/ReplayTelemetry.h": {
+      "git_blob": "9479fdaba62fd836ffd241e4f803ed40a44cc022",
+      "sha256": "781ea874f6b1c2a22cadf238107993e63bfa9405409481455e387a4d148bf248",
+      "worktree_matches_commit": true
+    },
+    "src/replay/ReplayTelemetryTest.cpp": {
+      "git_blob": "3f3a1ab59e1590b9b37159eec605c79b5a2442a4",
+      "sha256": "c1a28896362067cfedbbe8ce3c3901c284ca37e5f3ceedb8e65d2ea66c9ebe40",
+      "worktree_matches_commit": true
+    },
+    "test/tests.py": {
+      "git_blob": "c1c8ae4a916f38bce8591eee19f61fbb6a2779c7",
+      "sha256": "895782f19931d4804aac6e57fddf84faa7e8b21dbff52bf912df995d2bd569bc",
+      "worktree_matches_commit": true
+    }
+  },
+  "unchanged_boundaries": {
+    "src/common/ComputeExecutor.h": {
+      "identical_base": true,
+      "sha256": "1e689206dfade31f1057c6aa63826ae29a3a0c3afb3d9a5ab3910bc51c0a59dd"
+    },
+    "src/engine/sim/snapshot/BufferPool.h": {
+      "identical_base": true,
+      "sha256": "78b0b8d2c9dfacc301fcb2fe712104c98197aa0361db16b00b9f1b527de8438c"
+    },
+    "src/engine/sim/snapshot/WorldCapture.cpp": {
+      "identical_base": true,
+      "sha256": "335d262772f06879da6445c319cd5693a387a372aca09f2b169d2641433e77fc"
+    },
+    "src/map/gradient/BuildingGradientSearch.cpp": {
+      "identical_base": true,
+      "sha256": "11f0ed7b5ee7ab00561d2730c09aa8fbe2678a97359306d1d40965fd29ed0c5e"
+    },
+    "src/map/gradient/BuildingGradientSearch.h": {
+      "identical_base": true,
+      "sha256": "3258b0c8192028a9f63d278b4e2d2e25764a0adf93ca2212070e182ccccdf33c"
+    },
+    "src/field/OpenCLTransferProof.h": {
+      "identical_base": true,
+      "sha256": "18f92c44b44ab1e32bcaebcea1cd2374bab636c3041c3f0dadbed972b973bc22"
+    },
+    "src/field/OpenCLRequiredLifetimePool.h": {
+      "identical_base": true,
+      "sha256": "1e7373fa7716cb1fcf1e0a2a879b196d8837a39c88b816d3ca53f7423026072c"
+    },
+    "src/field/OpenCLBorrowedLifetime.h": {
+      "identical_base": true,
+      "sha256": "1552ef9a66d5f8fd4b9f7963b71845fa004a2cc5531563ccd3ac1f021224019d"
+    },
+    "src/field/GradientDeviceService.cpp": {
+      "identical_base": true,
+      "sha256": "aaa0ceca63850a65e447e9dc0b02ffb1d0783058b0f51b704d36e7700f93656c"
+    },
+    "src/game/Game_sync.cpp": {
+      "identical_base": true,
+      "sha256": "99d71efdc217d4b39fd948984951167e193a48f9f7d9834c198e5e46f40a53db"
+    },
+    "src/app/Version.h": {
+      "identical_base": true,
+      "sha256": "19f4c69e8acfd46a8f1b8f023fff60c6743011eff8b3565df908dbc10dd2325f"
+    },
+    "src/app/FileFormatVersions.h": {
+      "identical_base": true,
+      "sha256": "3de31795a2feb5e9104b2641997dff52a87a472e40a602f5eb40ea114a737589"
+    },
+    "src/game/SimRevision.h": {
+      "identical_base": true,
+      "sha256": "cbd16aec44fd338ac101f882a3b14a03b109607cbf4b5772c166a6681210ee0f"
+    },
+    "src/online/SimVersion.cpp": {
+      "identical_base": true,
+      "sha256": "d255829ca2b8b16defd8e77a5351992997e7b241bd0644deaff72db90db220f4"
+    },
+    "src/replay/ReplayReader.h": {
+      "identical_base": true,
+      "sha256": "11cd7f77a795d9792c4b54d09ed8ec62fe3691f2176b1537ec3a2c5aaa5cdcb9"
+    }
+  },
+  "exact_candidate_comparisons": {
+    "gpu-sync": {
+      "src/field/OpenCLGradient.cpp": {
+        "exact_frozen_candidate": true,
+        "sha256": "55709f59c27231a1737312fb9f6a0c7a5d48ca91bde03e6d63bca56cce87caed"
+      },
+      "src/field/OpenCLGradient.h": {
+        "exact_frozen_candidate": true,
+        "sha256": "01c040c02d39b5f43132a3deb989fbe3d9e30b15fe459a2e8f70700d074593ba"
+      },
+      "src/field/OpenCLGradientTest.cpp": {
+        "exact_frozen_candidate": true,
+        "sha256": "77334aa04ac3a1c75e64bfcb2579c6433d39a94373104e349e0b9ec841110515"
+      }
+    },
+    "telemetry-v2": {
+      "src/replay/ReplayTelemetry.cpp": {
+        "exact_frozen_candidate": true,
+        "sha256": "3527f2ddce0f6de70fcefb6a050be88ba6814d791d291bff5076113fd2f919b3"
+      },
+      "src/replay/ReplayTelemetry.h": {
+        "exact_frozen_candidate": true,
+        "sha256": "781ea874f6b1c2a22cadf238107993e63bfa9405409481455e387a4d148bf248"
+      },
+      "src/replay/ReplayTelemetryTest.cpp": {
+        "exact_frozen_candidate": true,
+        "sha256": "c1a28896362067cfedbbe8ce3c3901c284ca37e5f3ceedb8e65d2ea66c9ebe40"
+      }
+    }
+  },
+  "conclusion": "No source-review blocker found. Integrated production package is generic eligible-CPU automatic sizing, exact telemetryV2, exact Sync host acquisition, and cold managed-pool-only resource census. Snapshot cleanup/lazy reclaim, conditional single-wake scheduling, recovery/resume/marker and pool-cap prototypes are absent.",
+  "scope_findings": [
+    {
+      "area": "Worker sizing",
+      "source": "src/common/ComputeThreads.cpp:16",
+      "finding": "Linux owner-thread sched_getaffinity bounded-mask scan with portable hardware/one fallback; explicit counts remain untouched. Linux-specific headers guarded from Emscripten; browser existing8 cap preserved. New TU registered for client and unit closure. No N3/physical-core heuristic/cgroup CPU quota policy added."
+    },
+    {
+      "area": "TelemetryV2",
+      "source": "src/replay/ReplayTelemetry.cpp:49",
+      "finding": "Immutable ordered whole-schema intern table; rows retain all value text/update stamps and their order. Canonical schema invariant preserves prior-row equality; both changes/latest are canonicalized onlyafter admission. Duplicate controllers compare prior capture as before, last row current behavior preserved. Unavailability/disappearance empty schema, exact legacy logicalbudget/65536frame cap/AIT1 magicversion/field write order/read limits/apply expansion preserved. Copy/move share only immutable descriptor storage; no new delta/history dropping."
+    },
+    {
+      "area": "Sync",
+      "source": "src/field/OpenCLGradient.cpp:816",
+      "finding": "Exact frozen Sync production files and hardware test file. WaitForEvents is bound and positive wait checked afterCL_COMPLETE beforehost consumption/proof update, errors retain existing permanent failure/CPU fallback/lifetime machinery. Recovery remainoriginal failed atomic; no restore/reset/cancellation marker/costwaiterobserver path integrated."
+    },
+    {
+      "area": "Cold census",
+      "source": "src/engine/sim/snapshot/SnapshotStorage.cpp:92",
+      "finding": "Query-only existingpool inspect; no capture-hot counters/member state or ownership cleanup. Export restricted existinggradient-stats request atresult export. Managedvector capacity/direct descriptorarray references (includingempty entries), not RSS/globalpeak/externaloverflow nor unique planes. Owner-query immutablepayload contract matches existinginspect API."
+    },
+    {
+      "area": "Harness portability difference",
+      "source": "src/map/gradient/GradientPreparationTest.cpp:1428",
+      "finding": "Only difference against frozenSync material test: existinghostBytesUint64 bounded <=OpenCLHostBudget beforeexplicit size_t cast/subtraction for32bit browser portability. Retains1/2/3/4/6 oracle coverage; no simulation source modification."
+    },
+    {
+      "area": "Maintenance",
+      "finding": "Docs/CLI completions/manpage matcheligiblelogicalCPU policy and diagnostics; browser/shared test registries includeReplayTelemetry. No transientbenchmark reports or prototype runtime knobs incommit."
+    }
+  ],
+  "compatibility": {
+    "simulation_rules_and_orders_unchanged": true,
+    "save_floor_version_revision_files_identical_base": true,
+    "replay_reader_and_network_sim_gates_identical_base": true,
+    "simulation_revision_unchanged": true,
+    "interpretation": "No intended simulation, save or wire rule change; identical gatefiles alone are not execution proof. Final exact per-tick/savecontinuation/browser proof and omitted-platform reporting still required. Sync fixes an unspecified host visibility defect and must stay oracle-backed rather than assuming allpreviousdriver outputs were correct."
+  },
+  "residual_risks": [
+    {
+      "risk": "Native Linux affinity discovery sees allowed logical CPUs, not CPU-time quotas or physicalSMT throughput; AndroidLinux API availability still requires actual target compilation.",
+      "classification": "documented platform/budget limit; no source blocker"
+    },
+    {
+      "risk": "Wait aftercompleted event is required host acquisition; driver API latency can remain unbounded, and cancellation/quarantine globalfailed behavior remains asbaseline bydesign.",
+      "classification": "existing driver risk, correctness fix not recovery promise; external diagnostic watchdogs"
+    },
+    {
+      "risk": "Logical16MiB telemetrybudget is not strictphysicalheap bound. Schemas admitted in acceptedhistory persist; this still retains completehistory and doesnotpromise exactnativeRSS saving.",
+      "classification": "representation semantics preserved; pending final21+18 acceptance"
+    },
+    {
+      "risk": "Census query isowner/quiescent-scoped; snapshotplanes/descriptors immutable toworkers, poolinternals areowner-only. It must not be repurposed forconcurrentowner mutation or globalmemoryownership claims.",
+      "classification": "API contract/scope"
+    },
+    {
+      "risk": "Existingfourbaselinegolden/replay failures remain failures; source reviewdoesnot resolve/omit/update fixtures. Windows/macOS/mobile coverage notestablishedhere.",
+      "classification": "explicit verification limits"
+    }
+  ],
+  "performance_acceptance": {
+    "state": "PENDING",
+    "remaining_work": "Root final21+18 performance acceptance; no speed/RSS result inferred by source review",
+    "historical_or_isolated_proofs_not_final_acceptance": true
+  }
+}

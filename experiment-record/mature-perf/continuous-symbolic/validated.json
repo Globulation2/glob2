@@ -1,0 +1,32 @@
+{
+  "outcome": {
+    "ticks": 128192,
+    "termination": "tick_cap",
+    "winning_teams": [],
+    "initialChecksum": 3888665164,
+    "finalChecksum": 1487533587,
+    "game_seed": 1738462951,
+    "compute_threads": 3
+  },
+  "fixture_header": {
+    "major": 0,
+    "minor": 154,
+    "teams": 11,
+    "width": 256,
+    "height": 256,
+    "map_offset": 3398861,
+    "gzip_sha256": "11479be875672705cfffa86a3216708078c75e965d32e52f2df0bab30bdd7936"
+  },
+  "geometry_scope": "ExactSHA fixture-derived 256x256/11teams/saveversion; native result exports no dimensions",
+  "replay_sha256": "7d654834803701b90e39723d2bdce42fa0ae7b981c7ab09a9d70774cd0acdcd5",
+  "ait1": {
+    "offset": 32090859,
+    "bytes": 15694685,
+    "sha256": "f168c6efb15eaf4105c56b28f0020cac0492042eb0e30ee06a40e72d2be5d884",
+    "frames": 61,
+    "rows": 671,
+    "values": 209187,
+    "until": 1952,
+    "truncated": true
+  }
+}

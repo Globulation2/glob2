@@ -1,0 +1,47 @@
+{
+  "passed": true,
+  "source": "96da258e5a6b24a57a8848f2bfa0178031331322",
+  "tree": "63d18b69950651b00e9e40a4d96a14d1a25b62cd",
+  "argv": [
+    "taskset",
+    "-c",
+    "0-31",
+    "scons",
+    "release=1",
+    "CC=gcc-13",
+    "CXX=g++-13",
+    "LINKFLAGS=-L/usr/lib/gcc/x86_64-linux-gnu/15",
+    "-j32",
+    "build/linux/client/release/src/glob2",
+    "unit-tests",
+    "engine-tests"
+  ],
+  "cwd": "/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2",
+  "environment": {
+    "CCACHE": "1",
+    "CCACHE_MAXSIZE": "12G",
+    "GLOB2_SDL3_PREFIX": "/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/build/sdl3-ci/prefix",
+    "GLOB2_RENDER_SHADER_INPUT": "/home/bradley/.codex/worktrees/execution-resource-profiles/glob2/artifacts/resource-profiles/validation/renderer-bundle-v2/shaders"
+  },
+  "started_utc": "2026-10-13T02:21:13.061191+00:00",
+  "finished_utc": "2026-10-13T02:29:24.250354+00:00",
+  "elapsed_s": 491.18928886111826,
+  "exit": 0,
+  "source_unchanged": true,
+  "log_sha256": "32b2785ea9bcc868e9db8c8e6eb25a4a8a5b41a1156d616bce728d690293d574",
+  "outputs": {
+    "build/linux/client/release/src/glob2": {
+      "path": "/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2/build/linux/client/release/src/glob2",
+      "sha256": "42de4e7766bf7bdb8f0e1abf7bb6b9da7465bffbee2b4a00b2437e965e0d7f61"
+    },
+    "build/linux/client/release/test/glob2-unit-tests": {
+      "path": "/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2/build/linux/client/release/test/glob2-unit-tests",
+      "sha256": "8577aaf990bfcf01d21fdc59af03bb9737ee027224a13df0e915651638ed800d"
+    },
+    "build/linux/client/release/test/glob2-engine-tests": {
+      "path": "/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2/build/linux/client/release/test/glob2-engine-tests",
+      "sha256": "8633defcf13b50da7c7d24bd4f35e9fcc5efcaa423052895eeece82642899dbe"
+    }
+  },
+  "scope": "Ordinaryrelease compilation/package only; cache/sharedhost timingnotisolated; no runtime/hardware/installation/signingqualification"
+}

@@ -1,0 +1,126 @@
+[
+  {
+    "variant": "worker",
+    "patch": "worker-isolated-original.patch",
+    "base_commit": "2ced60e06b8e7fa7a4a4ecff944c40bda494bcf4",
+    "files": [
+      {
+        "path": "src/common/ComputeThreads.h",
+        "candidate_sha256": "98fed29ce73250b074433a267821e9597b54c2158c4c128221bad42e52dad940",
+        "baseline_sha256": "4ecd07185fc2491415a222dd2abfec1e84dd401dcf93f93c6a3e841521947d26"
+      },
+      {
+        "path": "src/common/ComputeThreads.cpp",
+        "candidate_sha256": "6da03d329e3b3d5af0c14317d99d390d0aafdd3223ddf90b3e75e805ae7b786a",
+        "baseline_sha256": null
+      },
+      {
+        "path": "src/common/ComputeExecutorHarness.cpp",
+        "candidate_sha256": "a546b10fbe42e24620ee1cd44928d83580d6d707c5595b96f808039997603a44",
+        "baseline_sha256": "d6adcb9fd6ea6ae9319cfe6427c76a4c90c80d8351a6be89d880f89602bf9111"
+      },
+      {
+        "path": "scons/sources.py",
+        "candidate_sha256": "6484a8e7067f26f23d5a7c70a4646ce0e67bfc3c6a635761f2b9fc2801463e0e",
+        "baseline_sha256": "11d4d58deb9c66224f089bebee5dc69287f619b6132022a9851cef1ed6e844cc"
+      },
+      {
+        "path": "src/app/GlobalContainer.h",
+        "candidate_sha256": "36668f3663427aebcbc24cf049dafea046b3247b6d28343bfb9feed5d6699de3",
+        "baseline_sha256": "2b886fd84e3b43f4aef7269abc4a7999c0eac0664231b34cebd9972802857eb2"
+      },
+      {
+        "path": "src/app/cli/CommandLine.cpp",
+        "candidate_sha256": "91708eff99fcd0668fafa6c5bcb11b3d20e6bfbcb31c81ed9db65e726a4513fa",
+        "baseline_sha256": "6b59e458f1210d8239612d3c349399d381512604e8e4393b0c9780be9f4d2ee6"
+      }
+    ],
+    "binary_sha256": "a3794ae9d3261e8b75acc48fe231258be34c91f5469ffec6dc455e40b2441feb"
+  },
+  {
+    "variant": "snapshot",
+    "patch": "snapshot-isolated-original.patch",
+    "base_commit": "2ced60e06b8e7fa7a4a4ecff944c40bda494bcf4",
+    "files": [
+      {
+        "path": "src/engine/sim/snapshot/BufferPool.h",
+        "candidate_sha256": "eb15f6ea8e9cf431d9c74b4787c812c9efbee94232fd3fdf0d705f1b36213b25",
+        "baseline_sha256": "78b0b8d2c9dfacc301fcb2fe712104c98197aa0361db16b00b9f1b527de8438c"
+      },
+      {
+        "path": "src/engine/sim/snapshot/SnapshotStorage.h",
+        "candidate_sha256": "6ca26df2d82348437ef8088e458cbca7c32e19fb2ed049e0ef206749a46bd4db",
+        "baseline_sha256": "0f5cf4318bc09e1b89e0730c32d3bb7e427b49b4f16bd9f92971f02dfa02363e"
+      },
+      {
+        "path": "src/engine/sim/snapshot/SnapshotStorage.cpp",
+        "candidate_sha256": "d7f16e388ee0cdbc569e150e45953994a54f8c19ffe2b6a4ed66edc8fd6adec4",
+        "baseline_sha256": "c00dea537ab74ba2f0d876c9c96c228eff3d25c6e1490e8c88eb6d120f326559"
+      },
+      {
+        "path": "src/engine/sim/snapshot/SnapshotStore.h",
+        "candidate_sha256": "f32c58466a51219b5005655074f62a399976a028d8c0bb18b38e6e4c30fced69",
+        "baseline_sha256": "2df69df1340eb05ed8206bd0bbda6d57487cc076a87db8c6d76cedb508bf9f56"
+      },
+      {
+        "path": "src/engine/sim/snapshot/WorldCapture.cpp",
+        "candidate_sha256": "9802869e44fe1b217e8c3696d29d500e27c2f0780a78129eb90e52dda485b688",
+        "baseline_sha256": "335d262772f06879da6445c319cd5693a387a372aca09f2b169d2641433e77fc"
+      },
+      {
+        "path": "src/engine/sim/snapshot/WorldSnapshotTest.cpp",
+        "candidate_sha256": "cf5acf5987324ed09a460e196ca59a88fcdafa3779f12f7b92365fd2fe5dee9c",
+        "baseline_sha256": "7e62fe7b733586dc03d3ae99a6c5e8d68ed086e382ec0f69c77df045a8108c09"
+      },
+      {
+        "path": "src/map/gradient/BuildingGradientSearch.h",
+        "candidate_sha256": "28a03ed66f18092d5f394a23b48216e01306350486895e590f0a794def19270b",
+        "baseline_sha256": "3258b0c8192028a9f63d278b4e2d2e25764a0adf93ca2212070e182ccccdf33c"
+      },
+      {
+        "path": "src/map/gradient/BuildingGradientSearch.cpp",
+        "candidate_sha256": "4a8fe631a8fe1b1ab492b5b1816ed3c72682fa15a65a90fc39c83ef90d502d06",
+        "baseline_sha256": "11f0ed7b5ee7ab00561d2730c09aa8fbe2678a97359306d1d40965fd29ed0c5e"
+      },
+      {
+        "path": "src/map/gradient/MapGradientInvalidationTest.cpp",
+        "candidate_sha256": "b63e3b1a0e7f08fad1ddbe0ac40bc767878a599e77f53294692e5c202da35c6c",
+        "baseline_sha256": "37eb7d886526fe663dde7025ac0d111aa9243d843bb82cb8ab807cc83f591f65"
+      },
+      {
+        "path": "src/app/cli/Headless.cpp",
+        "candidate_sha256": "30e308da18f1ee96f49f6e7eea08ea54ad85910139a2ac1b2c12301799611b1a",
+        "baseline_sha256": "17290fab62305218b960a443f9239554f375dc2d118b606b462a5095aa30b136"
+      }
+    ],
+    "binary_sha256": "207563dd68bbd995c1725a28ad4c901590edd85acce3eb9f82e6f2123fd99af2"
+  },
+  {
+    "variant": "telemetry",
+    "patch": "telemetry-isolated-original.patch",
+    "base_commit": "2ced60e06b8e7fa7a4a4ecff944c40bda494bcf4",
+    "files": [
+      {
+        "path": "src/replay/ReplayTelemetry.h",
+        "candidate_sha256": "6d4cb9820f0a66507a2adfae3f2e9d46a622134d5aed35677dc4d8297cce050d",
+        "baseline_sha256": "6283c868707842c12a873d902077a83d4638ec881e432ddba583801dd82d6e54"
+      },
+      {
+        "path": "src/replay/ReplayTelemetry.cpp",
+        "candidate_sha256": "7d06517f869b8e2f008d318dfdcd5a87daff5854873e598eafe1a850fe81b695",
+        "baseline_sha256": "0522e4c46ae639a76370b161b25c41921c6ed55b2269ddb69adf54fa27a2251c"
+      },
+      {
+        "path": "src/replay/ReplayTelemetryTest.cpp",
+        "candidate_sha256": "0d1c0f3444536202c8c8c6b1606742fd2eb4cc1106e7f26509ca875d0066844d",
+        "baseline_sha256": null
+      },
+      {
+        "path": "test/tests.py",
+        "candidate_sha256": "895782f19931d4804aac6e57fddf84faa7e8b21dbff52bf912df995d2bd569bc",
+        "baseline_sha256": "066c9bff36a2e57448ad946ab49779e3d12c2447bd1c494961eec95a408bc6df"
+      }
+    ],
+    "binary_sha256": "c7161baf12e460e7d18aaf48b412b6b65057006ab0b2b988abdb60cb53f612e1"
+  }
+]

@@ -1,0 +1,258 @@
+[
+  {
+    "id": "feature-full-s1056243202-explicit4",
+    "seed": 1056243202,
+    "repetition": 1,
+    "ticks": 2147483647,
+    "threads": 4,
+    "gpu": "on",
+    "variant": "explicit4",
+    "phase": "feature-full"
+  },
+  {
+    "id": "feature-full-s1056243202-default",
+    "seed": 1056243202,
+    "repetition": 1,
+    "ticks": 2147483647,
+    "threads": "auto",
+    "gpu": "on",
+    "variant": "default",
+    "phase": "feature-full"
+  },
+  {
+    "id": "feature-full-s1056243202-affinity-auto",
+    "seed": 1056243202,
+    "repetition": 1,
+    "ticks": 2147483647,
+    "threads": "auto",
+    "gpu": "on",
+    "variant": "affinity-auto",
+    "phase": "feature-full",
+    "binary": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/affinity-auto/source/build/linux/client/release/src/glob2",
+    "expected_binary_sha256": "b6afc8ac1270981ccb5478937c3cc0a709489ebb51c7325dfe033eac1e89ee83"
+  },
+  {
+    "id": "feature-full-s744345666-default",
+    "seed": 744345666,
+    "repetition": 1,
+    "ticks": 2147483647,
+    "threads": "auto",
+    "gpu": "on",
+    "variant": "default",
+    "phase": "feature-full"
+  },
+  {
+    "id": "feature-full-s744345666-affinity-auto",
+    "seed": 744345666,
+    "repetition": 1,
+    "ticks": 2147483647,
+    "threads": "auto",
+    "gpu": "on",
+    "variant": "affinity-auto",
+    "phase": "feature-full",
+    "binary": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/affinity-auto/source/build/linux/client/release/src/glob2",
+    "expected_binary_sha256": "b6afc8ac1270981ccb5478937c3cc0a709489ebb51c7325dfe033eac1e89ee83"
+  },
+  {
+    "id": "feature-full-s744345666-explicit4",
+    "seed": 744345666,
+    "repetition": 1,
+    "ticks": 2147483647,
+    "threads": 4,
+    "gpu": "on",
+    "variant": "explicit4",
+    "phase": "feature-full"
+  },
+  {
+    "id": "feature-full-s1064623205-explicit4",
+    "seed": 1064623205,
+    "repetition": 1,
+    "ticks": 2147483647,
+    "threads": 4,
+    "gpu": "on",
+    "variant": "explicit4",
+    "phase": "feature-full"
+  },
+  {
+    "id": "feature-full-s1064623205-affinity-auto",
+    "seed": 1064623205,
+    "repetition": 1,
+    "ticks": 2147483647,
+    "threads": "auto",
+    "gpu": "on",
+    "variant": "affinity-auto",
+    "phase": "feature-full",
+    "binary": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/affinity-auto/source/build/linux/client/release/src/glob2",
+    "expected_binary_sha256": "b6afc8ac1270981ccb5478937c3cc0a709489ebb51c7325dfe033eac1e89ee83"
+  },
+  {
+    "id": "feature-full-s1064623205-default",
+    "seed": 1064623205,
+    "repetition": 1,
+    "ticks": 2147483647,
+    "threads": "auto",
+    "gpu": "on",
+    "variant": "default",
+    "phase": "feature-full"
+  },
+  {
+    "id": "feature-full-s725864695-default",
+    "seed": 725864695,
+    "repetition": 1,
+    "ticks": 2147483647,
+    "threads": "auto",
+    "gpu": "on",
+    "variant": "default",
+    "phase": "feature-full"
+  },
+  {
+    "id": "feature-full-s725864695-affinity-auto",
+    "seed": 725864695,
+    "repetition": 1,
+    "ticks": 2147483647,
+    "threads": "auto",
+    "gpu": "on",
+    "variant": "affinity-auto",
+    "phase": "feature-full",
+    "binary": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/affinity-auto/source/build/linux/client/release/src/glob2",
+    "expected_binary_sha256": "b6afc8ac1270981ccb5478937c3cc0a709489ebb51c7325dfe033eac1e89ee83"
+  },
+  {
+    "id": "feature-full-s725864695-explicit4",
+    "seed": 725864695,
+    "repetition": 1,
+    "ticks": 2147483647,
+    "threads": 4,
+    "gpu": "on",
+    "variant": "explicit4",
+    "phase": "feature-full"
+  },
+  {
+    "id": "feature-full-s599004658-affinity-auto",
+    "seed": 599004658,
+    "repetition": 1,
+    "ticks": 2147483647,
+    "threads": "auto",
+    "gpu": "on",
+    "variant": "affinity-auto",
+    "phase": "feature-full",
+    "binary": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/affinity-auto/source/build/linux/client/release/src/glob2",
+    "expected_binary_sha256": "b6afc8ac1270981ccb5478937c3cc0a709489ebb51c7325dfe033eac1e89ee83"
+  },
+  {
+    "id": "feature-full-s599004658-default",
+    "seed": 599004658,
+    "repetition": 1,
+    "ticks": 2147483647,
+    "threads": "auto",
+    "gpu": "on",
+    "variant": "default",
+    "phase": "feature-full"
+  },
+  {
+    "id": "feature-full-s599004658-explicit4",
+    "seed": 599004658,
+    "repetition": 1,
+    "ticks": 2147483647,
+    "threads": 4,
+    "gpu": "on",
+    "variant": "explicit4",
+    "phase": "feature-full"
+  },
+  {
+    "id": "feature-full-s117787757-affinity-auto",
+    "seed": 117787757,
+    "repetition": 1,
+    "ticks": 2147483647,
+    "threads": "auto",
+    "gpu": "on",
+    "variant": "affinity-auto",
+    "phase": "feature-full",
+    "binary": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/affinity-auto/source/build/linux/client/release/src/glob2",
+    "expected_binary_sha256": "b6afc8ac1270981ccb5478937c3cc0a709489ebb51c7325dfe033eac1e89ee83"
+  },
+  {
+    "id": "feature-full-s117787757-explicit4",
+    "seed": 117787757,
+    "repetition": 1,
+    "ticks": 2147483647,
+    "threads": 4,
+    "gpu": "on",
+    "variant": "explicit4",
+    "phase": "feature-full"
+  },
+  {
+    "id": "feature-full-s117787757-default",
+    "seed": 117787757,
+    "repetition": 1,
+    "ticks": 2147483647,
+    "threads": "auto",
+    "gpu": "on",
+    "variant": "default",
+    "phase": "feature-full"
+  },
+  {
+    "id": "feature-full-s85910194-affinity-auto",
+    "seed": 85910194,
+    "repetition": 1,
+    "ticks": 2147483647,
+    "threads": "auto",
+    "gpu": "on",
+    "variant": "affinity-auto",
+    "phase": "feature-full",
+    "binary": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/affinity-auto/source/build/linux/client/release/src/glob2",
+    "expected_binary_sha256": "b6afc8ac1270981ccb5478937c3cc0a709489ebb51c7325dfe033eac1e89ee83"
+  },
+  {
+    "id": "feature-full-s85910194-default",
+    "seed": 85910194,
+    "repetition": 1,
+    "ticks": 2147483647,
+    "threads": "auto",
+    "gpu": "on",
+    "variant": "default",
+    "phase": "feature-full"
+  },
+  {
+    "id": "feature-full-s85910194-explicit4",
+    "seed": 85910194,
+    "repetition": 1,
+    "ticks": 2147483647,
+    "threads": 4,
+    "gpu": "on",
+    "variant": "explicit4",
+    "phase": "feature-full"
+  },
+  {
+    "id": "feature-full-s769116511-explicit4",
+    "seed": 769116511,
+    "repetition": 1,
+    "ticks": 2147483647,
+    "threads": 4,
+    "gpu": "on",
+    "variant": "explicit4",
+    "phase": "feature-full"
+  },
+  {
+    "id": "feature-full-s769116511-default",
+    "seed": 769116511,
+    "repetition": 1,
+    "ticks": 2147483647,
+    "threads": "auto",
+    "gpu": "on",
+    "variant": "default",
+    "phase": "feature-full"
+  },
+  {
+    "id": "feature-full-s769116511-affinity-auto",
+    "seed": 769116511,
+    "repetition": 1,
+    "ticks": 2147483647,
+    "threads": "auto",
+    "gpu": "on",
+    "variant": "affinity-auto",
+    "phase": "feature-full",
+    "binary": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/affinity-auto/source/build/linux/client/release/src/glob2",
+    "expected_binary_sha256": "b6afc8ac1270981ccb5478937c3cc0a709489ebb51c7325dfe033eac1e89ee83"
+  }
+]

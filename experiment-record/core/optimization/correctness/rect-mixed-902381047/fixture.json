@@ -1,0 +1,37 @@
+{
+  "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/correctness/rect-mixed-902381047/fixture/initial.game.gz",
+  "header": {
+    "major": 0,
+    "minor": 154,
+    "teams": 4,
+    "width": 128,
+    "height": 64,
+    "map_offset": 1187968,
+    "gzip_sha256": "17e407e28b39ffba2d2a507942464da662e4a1cc7a8bdfd353751d041206143d"
+  },
+  "start_tick": 0,
+  "start_tick_evidence": "save occurs before first simulation tick; loaded trace checked below",
+  "preparation_trace": {
+    "sha256": "542083236fa797a6e6268b6e7beb2620fcc060c3cb54af6c0b064fd6579e0c13",
+    "teams": 4,
+    "players": 4,
+    "count": 1,
+    "first_tick": 0,
+    "last_tick": 0,
+    "flags": 0
+  },
+  "scenario": {
+    "id": "rect-mixed",
+    "generator": "river",
+    "width": 128,
+    "height": 64,
+    "ais": [
+      "nicowar",
+      "castor",
+      "numbi",
+      "warrush"
+    ],
+    "ticks": 8192
+  },
+  "seed": 902381047
+}

@@ -1,0 +1,9 @@
+{
+  "execution_gates_passed": true,
+  "attribution_accepted": false,
+  "plan_sha256": "8b5a3386c031af8f90928347764ae5fe628a041054455f3f9742088674496bb0",
+  "symbolic_binary_sha256": "7aba6318664aab4fe94ec26a2733e432c1f8898c961fc0ae9d5b5d113ee73ae5",
+  "samples_sha256": "0adf0e09134729b6e669fc016aec37d1c089336ab192babc33cc9d46005cfe84",
+  "aggregate_owner_scope": "All attachedexisting sameuserTIDs and inheritedchildren; inspect rawsamplePID/TID andlost/throttledmetadata before owner accounting. Samples statistical, not Ir/nativeCPU fractions. No every-ticklateproof from profile.",
+  "analysis_pending": true
+}

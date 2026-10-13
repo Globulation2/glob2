@@ -1,0 +1,835 @@
+{
+  "generated_utc": "2026-10-12T01:16:41.135697+00:00",
+  "summary_sha256": "cb22c4a76c26c436629cfdd3b749f7980300096acb5b74e4c86a3d56cf7e3e23",
+  "source_sha256": "253adb15bc05c98ea15284924e242ce392b855b9ec984a6e4ed4bbcd4409574f",
+  "runner_sha256": "1aacd944612edbb079bdb091d532623f1f7b29a611474d4667c420a6ab1185b5",
+  "completed": 12,
+  "all_roundtrips_exact": true,
+  "groups": [
+    {
+      "input_case": "check-t4-gpuoff",
+      "mode": "full-grow",
+      "repetitions": 2,
+      "all_exact": true,
+      "native_means": {
+        "total_wall_seconds": 0.1071145,
+        "total_process_cpu_seconds": 0.1071175
+      },
+      "phase_rss_mean_kib": {
+        "before_input": 3894,
+        "after_input": 19414,
+        "after_storage": 63206,
+        "after_encode_exact_compare": 78654,
+        "after_output": 78718
+      },
+      "post_parse_storage_rss_increment_kib": 43792,
+      "capacity_bytes": {
+        "storage_vector_capacity_bytes": 46288128,
+        "stored_string_external_capacity_bytes": 8665937,
+        "metadata_registry_vector_capacity_bytes": 0,
+        "registry_key_external_capacity_bytes": 0,
+        "input_capacity_bytes": 15816941,
+        "encode_capacity_bytes": 15816941
+      },
+      "counts": {
+        "frames": 84,
+        "rows": 672,
+        "values": 210647,
+        "value_slots": 339968,
+        "sizeof_named_value": 136,
+        "sizeof_compact_value": 40,
+        "registry_unique_metadata_triples": 0
+      },
+      "raw_maxrss_kib": [
+        78852,
+        96704
+      ],
+      "native_raw_maxrss_kib": [
+        78596,
+        96704
+      ],
+      "maxrss_comparative_valid": false
+    },
+    {
+      "input_case": "check-t4-gpuoff",
+      "mode": "full-reserve",
+      "repetitions": 2,
+      "all_exact": true,
+      "native_means": {
+        "total_wall_seconds": 0.0932614,
+        "total_process_cpu_seconds": 0.09322835
+      },
+      "phase_rss_mean_kib": {
+        "before_input": 3900,
+        "after_input": 19420,
+        "after_storage": 60544,
+        "after_encode_exact_compare": 76000,
+        "after_output": 76068
+      },
+      "post_parse_storage_rss_increment_kib": 41124,
+      "capacity_bytes": {
+        "storage_vector_capacity_bytes": 28700472,
+        "stored_string_external_capacity_bytes": 8665937,
+        "metadata_registry_vector_capacity_bytes": 0,
+        "registry_key_external_capacity_bytes": 0,
+        "input_capacity_bytes": 15816941,
+        "encode_capacity_bytes": 15816941
+      },
+      "counts": {
+        "frames": 84,
+        "rows": 672,
+        "values": 210647,
+        "value_slots": 210647,
+        "sizeof_named_value": 136,
+        "sizeof_compact_value": 40,
+        "registry_unique_metadata_triples": 0
+      },
+      "raw_maxrss_kib": [
+        96488,
+        96704
+      ],
+      "native_raw_maxrss_kib": [
+        96488,
+        96704
+      ],
+      "maxrss_comparative_valid": false
+    },
+    {
+      "input_case": "check-t4-gpuoff",
+      "mode": "intern-reserve",
+      "repetitions": 2,
+      "all_exact": true,
+      "native_means": {
+        "total_wall_seconds": 0.0879591,
+        "total_process_cpu_seconds": 0.08796019999999999
+      },
+      "phase_rss_mean_kib": {
+        "before_input": 3870,
+        "after_input": 19390,
+        "after_storage": 27786,
+        "after_encode_exact_compare": 43234,
+        "after_output": 43298
+      },
+      "post_parse_storage_rss_increment_kib": 8396,
+      "capacity_bytes": {
+        "storage_vector_capacity_bytes": 8478360,
+        "stored_string_external_capacity_bytes": 13220,
+        "metadata_registry_vector_capacity_bytes": 49152,
+        "registry_key_external_capacity_bytes": 24949,
+        "input_capacity_bytes": 15816941,
+        "encode_capacity_bytes": 15816941
+      },
+      "counts": {
+        "frames": 84,
+        "rows": 672,
+        "values": 210647,
+        "value_slots": 210647,
+        "sizeof_named_value": 136,
+        "sizeof_compact_value": 40,
+        "registry_unique_metadata_triples": 319
+      },
+      "raw_maxrss_kib": [
+        96644,
+        96704
+      ],
+      "native_raw_maxrss_kib": [
+        96644,
+        96704
+      ],
+      "maxrss_comparative_valid": false
+    },
+    {
+      "input_case": "oazis-window-s1056243202-r1-t4-gpuoff",
+      "mode": "full-grow",
+      "repetitions": 2,
+      "all_exact": true,
+      "native_means": {
+        "total_wall_seconds": 0.1067075,
+        "total_process_cpu_seconds": 0.10668949999999999
+      },
+      "phase_rss_mean_kib": {
+        "before_input": 3942,
+        "after_input": 19346,
+        "after_storage": 62874,
+        "after_encode_exact_compare": 78206,
+        "after_output": 78270
+      },
+      "post_parse_storage_rss_increment_kib": 43528,
+      "capacity_bytes": {
+        "storage_vector_capacity_bytes": 46029440,
+        "stored_string_external_capacity_bytes": 8595543,
+        "metadata_registry_vector_capacity_bytes": 0,
+        "registry_key_external_capacity_bytes": 0,
+        "input_capacity_bytes": 15696090,
+        "encode_capacity_bytes": 15696090
+      },
+      "counts": {
+        "frames": 61,
+        "rows": 671,
+        "values": 209187,
+        "value_slots": 337920,
+        "sizeof_named_value": 136,
+        "sizeof_compact_value": 40,
+        "registry_unique_metadata_triples": 0
+      },
+      "raw_maxrss_kib": [
+        96944,
+        96944
+      ],
+      "native_raw_maxrss_kib": [
+        96944,
+        96944
+      ],
+      "maxrss_comparative_valid": false
+    },
+    {
+      "input_case": "oazis-window-s1056243202-r1-t4-gpuoff",
+      "mode": "full-reserve",
+      "repetitions": 2,
+      "all_exact": true,
+      "native_means": {
+        "total_wall_seconds": 0.09930415000000001,
+        "total_process_cpu_seconds": 0.09930605
+      },
+      "phase_rss_mean_kib": {
+        "before_input": 3942,
+        "after_input": 19346,
+        "after_storage": 60194,
+        "after_encode_exact_compare": 75534,
+        "after_output": 75602
+      },
+      "post_parse_storage_rss_increment_kib": 40848,
+      "capacity_bytes": {
+        "storage_vector_capacity_bytes": 28521752,
+        "stored_string_external_capacity_bytes": 8595543,
+        "metadata_registry_vector_capacity_bytes": 0,
+        "registry_key_external_capacity_bytes": 0,
+        "input_capacity_bytes": 15696090,
+        "encode_capacity_bytes": 15696090
+      },
+      "counts": {
+        "frames": 61,
+        "rows": 671,
+        "values": 209187,
+        "value_slots": 209187,
+        "sizeof_named_value": 136,
+        "sizeof_compact_value": 40,
+        "registry_unique_metadata_triples": 0
+      },
+      "raw_maxrss_kib": [
+        96944,
+        96944
+      ],
+      "native_raw_maxrss_kib": [
+        96944,
+        96944
+      ],
+      "maxrss_comparative_valid": false
+    },
+    {
+      "input_case": "oazis-window-s1056243202-r1-t4-gpuoff",
+      "mode": "intern-reserve",
+      "repetitions": 2,
+      "all_exact": true,
+      "native_means": {
+        "total_wall_seconds": 0.09840815,
+        "total_process_cpu_seconds": 0.0984104
+      },
+      "phase_rss_mean_kib": {
+        "before_input": 3940,
+        "after_input": 19344,
+        "after_storage": 27700,
+        "after_encode_exact_compare": 43036,
+        "after_output": 43100
+      },
+      "post_parse_storage_rss_increment_kib": 8356,
+      "capacity_bytes": {
+        "storage_vector_capacity_bytes": 8439800,
+        "stored_string_external_capacity_bytes": 13028,
+        "metadata_registry_vector_capacity_bytes": 49152,
+        "registry_key_external_capacity_bytes": 24607,
+        "input_capacity_bytes": 15696090,
+        "encode_capacity_bytes": 15696090
+      },
+      "counts": {
+        "frames": 61,
+        "rows": 671,
+        "values": 209187,
+        "value_slots": 209187,
+        "sizeof_named_value": 136,
+        "sizeof_compact_value": 40,
+        "registry_unique_metadata_triples": 317
+      },
+      "raw_maxrss_kib": [
+        96944,
+        96944
+      ],
+      "native_raw_maxrss_kib": [
+        96944,
+        96944
+      ],
+      "maxrss_comparative_valid": false
+    }
+  ],
+  "comparisons": [
+    {
+      "input_case": "check-t4-gpuoff",
+      "candidate": "full-reserve",
+      "reference": "full-grow",
+      "paired_repetitions": 2,
+      "native_change_percent": {
+        "total_wall_seconds": -12.986193853743345,
+        "total_process_cpu_seconds": -13.020661163214541
+      },
+      "scope": "Single fixed replay input; two model process repetitions, not game seeds or a statistical generalization"
+    },
+    {
+      "input_case": "check-t4-gpuoff",
+      "candidate": "intern-reserve",
+      "reference": "full-grow",
+      "paired_repetitions": 2,
+      "native_change_percent": {
+        "total_wall_seconds": -17.8831566342065,
+        "total_process_cpu_seconds": -17.884431040866446
+      },
+      "scope": "Single fixed replay input; two model process repetitions, not game seeds or a statistical generalization"
+    },
+    {
+      "input_case": "oazis-window-s1056243202-r1-t4-gpuoff",
+      "candidate": "full-reserve",
+      "reference": "full-grow",
+      "paired_repetitions": 2,
+      "native_change_percent": {
+        "total_wall_seconds": -6.939308482366413,
+        "total_process_cpu_seconds": -6.921798377417687
+      },
+      "scope": "Single fixed replay input; two model process repetitions, not game seeds or a statistical generalization"
+    },
+    {
+      "input_case": "oazis-window-s1056243202-r1-t4-gpuoff",
+      "candidate": "intern-reserve",
+      "reference": "full-grow",
+      "paired_repetitions": 2,
+      "native_change_percent": {
+        "total_wall_seconds": -7.777733875704129,
+        "total_process_cpu_seconds": -7.760037357632399
+      },
+      "scope": "Single fixed replay input; two model process repetitions, not game seeds or a statistical generalization"
+    }
+  ],
+  "interpretation": [
+    "All 12 model runs exactly re-encode original AIT1tails; independent SHA256/count/logicalbudget/EOF validation passes. Complete prefix game/order loading, seek, saves and platform compatibility remain untested.",
+    "This model imports original public ABI headers (NamedValue 136 bytes) and compactstring/schemaID/updated 40-byte value. Full-grow/full-reserve differ only value-vector reservation; intern mode retains ordered IDs and every byte of metadata/value/update/frame/row/truncation history.",
+    "Source retains entire input tail (~15.7\u201315.8MB) throughout. PhaseRSS includes input, allocator residency and model process; output encoding adds another full tail buffer. Phase afterstorage is a retained-state observation, not sampled peak or exactheap measurement.",
+    "Model full-grow reserves339,968/337,920 value slots for210,647/209,187 populated values; exactreserve/intern retain exact value count. Intern metadata registry has additional string/hash-map allocations recorded separately. Vector byte totals omit allocator headers/mapnodes and are not RSS.",
+    "Rawwait4/self ru_maxrss grows monotonically with case order:78596nativeKiB firstgrow, then ~96488\u201396944KiB in all later modes; all six Oazis native/wait4 values are exactly96944KiB. Do not interpret this as a proven compact-model allocation transient or comparative peak.",
+    "Runner performs independent output parsing into a largePython string/tuple graph aftereach child, then forks/execs nextchild. That enlarged wrapper pre-exec footprint plus Linux resource usage preserved across exec explains a plausible measurementartifact. The precise inherited contribution was not separately measured. Fresh lightweight wrappers/native VmHWM would be needed for clean peak confirmation.",
+    "NativeprocessCPU/wall timings measure onlythismodel pipeline (inputparse/store/intern/accounting/encode/output) and remain separatefrom wait4 launchaccounting and independentPythonvalidation. Two repeats, no confidenceinterval or whole-engine gain."
+  ],
+  "resource_semantics_source": "https://www.man7.org/linux/man-pages/man2/getrusage.2.html",
+  "resource_accounting_sources": [
+    "https://www.man7.org/linux/man-pages/man2/getrusage.2.html",
+    "https://www.man7.org/linux/man-pages/man2/fork.2.html",
+    "https://www.kernel.org/doc/html/latest/filesystems/proc.html"
+  ],
+  "resource_accounting_clarification": "Fork resets child resource counters while its initial memory contents duplicate the wrapper. A large pre-exec child memory footprint can enter its lifetime peak; accounting persists across exec, without copying the parent ru_maxrss counter. Fresh per-case wrappers remove the original plateau; the precise pre-exec contribution was not separately stamped. VmHWM/current RSS and lifetime usage differ in scope. No game raw data is changed.",
+  "fresh_wrapper_confirmation": {
+    "generated_utc": "2026-10-12T02:17:43.151954+00:00",
+    "completed": 12,
+    "all_roundtrips_exact": true,
+    "malformed_parser_checks": {
+      "embedded_NUL_exact_metadata_duplicates_and_update_only": true,
+      "truncated_tail": true,
+      "trailing_byte": true,
+      "bad_version": true,
+      "frame_count_over_limit": true,
+      "row_count_over_limit": true,
+      "text_length_over_limit": true
+    },
+    "old_oazis_native_peak_kib": [
+      96944,
+      96944,
+      96944,
+      96944,
+      96944,
+      96944
+    ],
+    "fresh_oazis_native_peak_kib": [
+      78084,
+      75260,
+      43012,
+      43008,
+      75524,
+      77812
+    ],
+    "old_plateau_removed": true,
+    "conclusion": "The fresh per-case wrapper removes the old identical Oazis high-water plateau and makes peak accounting responsive to mode. This supports the large verification-wrapper footprint before exec explanation; the precise pre-exec child-memory contribution was not separately stamped.",
+    "old_groups": [
+      {
+        "input_case": "check-t4-gpuoff",
+        "mode": "full-grow",
+        "repetitions": 2,
+        "mean_wait4_peak_rss_kib": 87778,
+        "mean_native_peak_rss_kib": 87650,
+        "mean_phase_rss_kib": {
+          "before_input": 3894,
+          "after_input": 19414,
+          "after_storage": 63206,
+          "after_encode_exact_compare": 78654,
+          "after_output": 78718
+        },
+        "mean_native_process_cpu_seconds": 0.1071175,
+        "mean_native_wall_seconds": 0.1071145,
+        "value_slots": 339968,
+        "vector_capacity_bytes": 46288128,
+        "external_string_capacity_bytes": 8665937
+      },
+      {
+        "input_case": "check-t4-gpuoff",
+        "mode": "full-reserve",
+        "repetitions": 2,
+        "mean_wait4_peak_rss_kib": 96596,
+        "mean_native_peak_rss_kib": 96596,
+        "mean_phase_rss_kib": {
+          "before_input": 3900,
+          "after_input": 19420,
+          "after_storage": 60544,
+          "after_encode_exact_compare": 76000,
+          "after_output": 76068
+        },
+        "mean_native_process_cpu_seconds": 0.09322835,
+        "mean_native_wall_seconds": 0.0932614,
+        "value_slots": 210647,
+        "vector_capacity_bytes": 28700472,
+        "external_string_capacity_bytes": 8665937
+      },
+      {
+        "input_case": "check-t4-gpuoff",
+        "mode": "intern-reserve",
+        "repetitions": 2,
+        "mean_wait4_peak_rss_kib": 96674,
+        "mean_native_peak_rss_kib": 96674,
+        "mean_phase_rss_kib": {
+          "before_input": 3870,
+          "after_input": 19390,
+          "after_storage": 27786,
+          "after_encode_exact_compare": 43234,
+          "after_output": 43298
+        },
+        "mean_native_process_cpu_seconds": 0.08796019999999999,
+        "mean_native_wall_seconds": 0.0879591,
+        "value_slots": 210647,
+        "vector_capacity_bytes": 8478360,
+        "external_string_capacity_bytes": 13220
+      },
+      {
+        "input_case": "oazis-window-s1056243202-r1-t4-gpuoff",
+        "mode": "full-grow",
+        "repetitions": 2,
+        "mean_wait4_peak_rss_kib": 96944,
+        "mean_native_peak_rss_kib": 96944,
+        "mean_phase_rss_kib": {
+          "before_input": 3942,
+          "after_input": 19346,
+          "after_storage": 62874,
+          "after_encode_exact_compare": 78206,
+          "after_output": 78270
+        },
+        "mean_native_process_cpu_seconds": 0.10668949999999999,
+        "mean_native_wall_seconds": 0.1067075,
+        "value_slots": 337920,
+        "vector_capacity_bytes": 46029440,
+        "external_string_capacity_bytes": 8595543
+      },
+      {
+        "input_case": "oazis-window-s1056243202-r1-t4-gpuoff",
+        "mode": "full-reserve",
+        "repetitions": 2,
+        "mean_wait4_peak_rss_kib": 96944,
+        "mean_native_peak_rss_kib": 96944,
+        "mean_phase_rss_kib": {
+          "before_input": 3942,
+          "after_input": 19346,
+          "after_storage": 60194,
+          "after_encode_exact_compare": 75534,
+          "after_output": 75602
+        },
+        "mean_native_process_cpu_seconds": 0.09930605,
+        "mean_native_wall_seconds": 0.09930415000000001,
+        "value_slots": 209187,
+        "vector_capacity_bytes": 28521752,
+        "external_string_capacity_bytes": 8595543
+      },
+      {
+        "input_case": "oazis-window-s1056243202-r1-t4-gpuoff",
+        "mode": "intern-reserve",
+        "repetitions": 2,
+        "mean_wait4_peak_rss_kib": 96944,
+        "mean_native_peak_rss_kib": 96944,
+        "mean_phase_rss_kib": {
+          "before_input": 3940,
+          "after_input": 19344,
+          "after_storage": 27700,
+          "after_encode_exact_compare": 43036,
+          "after_output": 43100
+        },
+        "mean_native_process_cpu_seconds": 0.0984104,
+        "mean_native_wall_seconds": 0.09840815,
+        "value_slots": 209187,
+        "vector_capacity_bytes": 8439800,
+        "external_string_capacity_bytes": 13028
+      }
+    ],
+    "fresh_groups": [
+      {
+        "input_case": "check-t4-gpuoff",
+        "mode": "full-grow",
+        "repetitions": 2,
+        "mean_wait4_peak_rss_kib": 78852,
+        "mean_native_peak_rss_kib": 78596,
+        "mean_phase_rss_kib": {
+          "before_input": 3940,
+          "after_input": 19460,
+          "after_storage": 63252,
+          "after_encode_exact_compare": 78700,
+          "after_output": 78764
+        },
+        "mean_native_process_cpu_seconds": 0.1121595,
+        "mean_native_wall_seconds": 0.112157,
+        "value_slots": 339968,
+        "vector_capacity_bytes": 46288128,
+        "external_string_capacity_bytes": 8665937
+      },
+      {
+        "input_case": "check-t4-gpuoff",
+        "mode": "full-reserve",
+        "repetitions": 2,
+        "mean_wait4_peak_rss_kib": 76024,
+        "mean_native_peak_rss_kib": 75768,
+        "mean_phase_rss_kib": {
+          "before_input": 3866,
+          "after_input": 19386,
+          "after_storage": 60510,
+          "after_encode_exact_compare": 75966,
+          "after_output": 76034
+        },
+        "mean_native_process_cpu_seconds": 0.10127749999999999,
+        "mean_native_wall_seconds": 0.1012815,
+        "value_slots": 210647,
+        "vector_capacity_bytes": 28700472,
+        "external_string_capacity_bytes": 8665937
+      },
+      {
+        "input_case": "check-t4-gpuoff",
+        "mode": "intern-reserve",
+        "repetitions": 2,
+        "mean_wait4_peak_rss_kib": 43488,
+        "mean_native_peak_rss_kib": 43232,
+        "mean_phase_rss_kib": {
+          "before_input": 3906,
+          "after_input": 19426,
+          "after_storage": 27822,
+          "after_encode_exact_compare": 43270,
+          "after_output": 43334
+        },
+        "mean_native_process_cpu_seconds": 0.10062650000000001,
+        "mean_native_wall_seconds": 0.1006305,
+        "value_slots": 210647,
+        "vector_capacity_bytes": 8478360,
+        "external_string_capacity_bytes": 13220
+      },
+      {
+        "input_case": "oazis-window-s1056243202-r1-t4-gpuoff",
+        "mode": "full-grow",
+        "repetitions": 2,
+        "mean_wait4_peak_rss_kib": 78204,
+        "mean_native_peak_rss_kib": 77948,
+        "mean_phase_rss_kib": {
+          "before_input": 3904,
+          "after_input": 19308,
+          "after_storage": 62836,
+          "after_encode_exact_compare": 78168,
+          "after_output": 78232
+        },
+        "mean_native_process_cpu_seconds": 0.1086805,
+        "mean_native_wall_seconds": 0.10867850000000001,
+        "value_slots": 337920,
+        "vector_capacity_bytes": 46029440,
+        "external_string_capacity_bytes": 8595543
+      },
+      {
+        "input_case": "oazis-window-s1056243202-r1-t4-gpuoff",
+        "mode": "full-reserve",
+        "repetitions": 2,
+        "mean_wait4_peak_rss_kib": 75648,
+        "mean_native_peak_rss_kib": 75392,
+        "mean_phase_rss_kib": {
+          "before_input": 3906,
+          "after_input": 19310,
+          "after_storage": 60158,
+          "after_encode_exact_compare": 75498,
+          "after_output": 75566
+        },
+        "mean_native_process_cpu_seconds": 0.10147149999999999,
+        "mean_native_wall_seconds": 0.101469,
+        "value_slots": 209187,
+        "vector_capacity_bytes": 28521752,
+        "external_string_capacity_bytes": 8595543
+      },
+      {
+        "input_case": "oazis-window-s1056243202-r1-t4-gpuoff",
+        "mode": "intern-reserve",
+        "repetitions": 2,
+        "mean_wait4_peak_rss_kib": 43266,
+        "mean_native_peak_rss_kib": 43010,
+        "mean_phase_rss_kib": {
+          "before_input": 3940,
+          "after_input": 19344,
+          "after_storage": 27700,
+          "after_encode_exact_compare": 43036,
+          "after_output": 43100
+        },
+        "mean_native_process_cpu_seconds": 0.09830355,
+        "mean_native_wall_seconds": 0.0983015,
+        "value_slots": 209187,
+        "vector_capacity_bytes": 8439800,
+        "external_string_capacity_bytes": 13028
+      }
+    ],
+    "old_fresh_comparisons": [
+      {
+        "input_case": "check-t4-gpuoff",
+        "mode": "full-grow",
+        "old_wait4_peak_rss_kib": 87778,
+        "fresh_wait4_peak_rss_kib": 78852,
+        "old_native_peak_rss_kib": 87650,
+        "fresh_native_peak_rss_kib": 78596,
+        "old_after_storage_rss_kib": 63206,
+        "fresh_after_storage_rss_kib": 63252,
+        "fresh_peak_above_highest_recorded_phase_kib": -168
+      },
+      {
+        "input_case": "check-t4-gpuoff",
+        "mode": "full-reserve",
+        "old_wait4_peak_rss_kib": 96596,
+        "fresh_wait4_peak_rss_kib": 76024,
+        "old_native_peak_rss_kib": 96596,
+        "fresh_native_peak_rss_kib": 75768,
+        "old_after_storage_rss_kib": 60544,
+        "fresh_after_storage_rss_kib": 60510,
+        "fresh_peak_above_highest_recorded_phase_kib": -266
+      },
+      {
+        "input_case": "check-t4-gpuoff",
+        "mode": "intern-reserve",
+        "old_wait4_peak_rss_kib": 96674,
+        "fresh_wait4_peak_rss_kib": 43488,
+        "old_native_peak_rss_kib": 96674,
+        "fresh_native_peak_rss_kib": 43232,
+        "old_after_storage_rss_kib": 27786,
+        "fresh_after_storage_rss_kib": 27822,
+        "fresh_peak_above_highest_recorded_phase_kib": -102
+      },
+      {
+        "input_case": "oazis-window-s1056243202-r1-t4-gpuoff",
+        "mode": "full-grow",
+        "old_wait4_peak_rss_kib": 96944,
+        "fresh_wait4_peak_rss_kib": 78204,
+        "old_native_peak_rss_kib": 96944,
+        "fresh_native_peak_rss_kib": 77948,
+        "old_after_storage_rss_kib": 62874,
+        "fresh_after_storage_rss_kib": 62836,
+        "fresh_peak_above_highest_recorded_phase_kib": -284
+      },
+      {
+        "input_case": "oazis-window-s1056243202-r1-t4-gpuoff",
+        "mode": "full-reserve",
+        "old_wait4_peak_rss_kib": 96944,
+        "fresh_wait4_peak_rss_kib": 75648,
+        "old_native_peak_rss_kib": 96944,
+        "fresh_native_peak_rss_kib": 75392,
+        "old_after_storage_rss_kib": 60194,
+        "fresh_after_storage_rss_kib": 60158,
+        "fresh_peak_above_highest_recorded_phase_kib": -174
+      },
+      {
+        "input_case": "oazis-window-s1056243202-r1-t4-gpuoff",
+        "mode": "intern-reserve",
+        "old_wait4_peak_rss_kib": 96944,
+        "fresh_wait4_peak_rss_kib": 43266,
+        "old_native_peak_rss_kib": 96944,
+        "fresh_native_peak_rss_kib": 43010,
+        "old_after_storage_rss_kib": 27700,
+        "fresh_after_storage_rss_kib": 27700,
+        "fresh_peak_above_highest_recorded_phase_kib": -90
+      }
+    ],
+    "fresh_model_effects": [
+      {
+        "input_case": "check-t4-gpuoff",
+        "candidate": "full-reserve",
+        "reference": "full-grow",
+        "native_peak_change_percent": -3.598147488421799,
+        "retained_phase_rss_change_percent": -4.335040789224054,
+        "native_cpu_change_percent": -9.70225437880875,
+        "native_wall_change_percent": -9.696675196376514,
+        "qualification": "Two model repetitions of one fixed input; mechanisms only, no game speed/peak/persistence/platform generalization"
+      },
+      {
+        "input_case": "check-t4-gpuoff",
+        "candidate": "intern-reserve",
+        "reference": "full-grow",
+        "native_peak_change_percent": -44.994656216601356,
+        "retained_phase_rss_change_percent": -56.01403908176816,
+        "native_cpu_change_percent": -10.282677793677742,
+        "native_wall_change_percent": -10.277111548989371,
+        "qualification": "Two model repetitions of one fixed input; mechanisms only, no game speed/peak/persistence/platform generalization"
+      },
+      {
+        "input_case": "oazis-window-s1056243202-r1-t4-gpuoff",
+        "candidate": "full-reserve",
+        "reference": "full-grow",
+        "native_peak_change_percent": -3.279109149689541,
+        "retained_phase_rss_change_percent": -4.26188808963015,
+        "native_cpu_change_percent": -6.63320466873083,
+        "native_wall_change_percent": -6.633786811558872,
+        "qualification": "Two model repetitions of one fixed input; mechanisms only, no game speed/peak/persistence/platform generalization"
+      },
+      {
+        "input_case": "oazis-window-s1056243202-r1-t4-gpuoff",
+        "candidate": "intern-reserve",
+        "reference": "full-grow",
+        "native_peak_change_percent": -44.82218915174219,
+        "retained_phase_rss_change_percent": -55.9169902603603,
+        "native_cpu_change_percent": -9.548125008626196,
+        "native_wall_change_percent": -9.548346729113867,
+        "qualification": "Two model repetitions of one fixed input; mechanisms only, no game speed/peak/persistence/platform generalization"
+      }
+    ],
+    "rss_game_audit": {
+      "native_cases": 328,
+      "phases": {
+        "arena-window": {
+          "runs": 16,
+          "minimum_wait4_peak_mib": 123.69921875,
+          "minimum_sampled_hwm_ratio": 0.9919387851497308,
+          "median_sampled_hwm_ratio": 1.0033817513144427
+        },
+        "autosave-window": {
+          "runs": 8,
+          "minimum_wait4_peak_mib": 42.125,
+          "minimum_sampled_hwm_ratio": 1.0022010271460016,
+          "median_sampled_hwm_ratio": 1.0032108218552702
+        },
+        "depth-window": {
+          "runs": 24,
+          "minimum_wait4_peak_mib": 258.80859375,
+          "minimum_sampled_hwm_ratio": 0.9946324178042253,
+          "median_sampled_hwm_ratio": 1.0026686365184876
+        },
+        "feature-full": {
+          "runs": 24,
+          "minimum_wait4_peak_mib": 265.66796875,
+          "minimum_sampled_hwm_ratio": 0.9958511303969312,
+          "median_sampled_hwm_ratio": 1.0038195768986322
+        },
+        "full": {
+          "runs": 42,
+          "minimum_wait4_peak_mib": 160.0625,
+          "minimum_sampled_hwm_ratio": 0.9955408753096614,
+          "median_sampled_hwm_ratio": 1.0046543645826373
+        },
+        "gpu-health": {
+          "runs": 16,
+          "minimum_wait4_peak_mib": 237.30078125,
+          "minimum_sampled_hwm_ratio": 0.986311662855276,
+          "median_sampled_hwm_ratio": 1.002037264678533
+        },
+        "kernel-window": {
+          "runs": 16,
+          "minimum_wait4_peak_mib": 48.6484375,
+          "minimum_sampled_hwm_ratio": 0.9943782513844605,
+          "median_sampled_hwm_ratio": 0.9995646541788188
+        },
+        "oazis-window": {
+          "runs": 24,
+          "minimum_wait4_peak_mib": 216.6171875,
+          "minimum_sampled_hwm_ratio": 0.9992812565738728,
+          "median_sampled_hwm_ratio": 1.0036278042405584
+        },
+        "pipeline-window": {
+          "runs": 24,
+          "minimum_wait4_peak_mib": 69.37109375,
+          "minimum_sampled_hwm_ratio": 0.9989976259562121,
+          "median_sampled_hwm_ratio": 1.0078856307474802
+        },
+        "pool-window": {
+          "runs": 24,
+          "minimum_wait4_peak_mib": 254.46484375,
+          "minimum_sampled_hwm_ratio": 1.0,
+          "median_sampled_hwm_ratio": 1.0036478045486537
+        },
+        "prototype-full": {
+          "runs": 12,
+          "minimum_wait4_peak_mib": 163.390625,
+          "minimum_sampled_hwm_ratio": 1.0036951063527406,
+          "median_sampled_hwm_ratio": 1.0056610026409052
+        },
+        "replay-cpu-window": {
+          "runs": 16,
+          "minimum_wait4_peak_mib": 142.41015625,
+          "minimum_sampled_hwm_ratio": 1.0014865941067161,
+          "median_sampled_hwm_ratio": 1.0049114258161786
+        },
+        "replay-window": {
+          "runs": 16,
+          "minimum_wait4_peak_mib": 257.3046875,
+          "minimum_sampled_hwm_ratio": 1.0021557133787116,
+          "median_sampled_hwm_ratio": 1.0032267995418265
+        },
+        "scheduler-window": {
+          "runs": 48,
+          "minimum_wait4_peak_mib": 260.2109375,
+          "minimum_sampled_hwm_ratio": 0.9996143463170073,
+          "median_sampled_hwm_ratio": 1.0037170739137142
+        },
+        "screen": {
+          "runs": 7,
+          "minimum_wait4_peak_mib": 123.6171875,
+          "minimum_sampled_hwm_ratio": 0.9957299843014129,
+          "median_sampled_hwm_ratio": 0.9998368385844115
+        },
+        "sizing-full": {
+          "runs": 11,
+          "minimum_wait4_peak_mib": 276.56640625,
+          "minimum_sampled_hwm_ratio": 1.002761444194098,
+          "median_sampled_hwm_ratio": 1.0040658615722229
+        }
+      },
+      "qualification": "The standalone storage-model wrapper builds a large validation graph between launches; its inherited high-water risk is tested separately by fresh workers. Game controllers stream hashes and retain small metadata and /proc samples. Native game VmHWM samples corroborate their own reported wait4 peaks and do not show the standalone model plateau. Sampling can miss transient peaks; /proc and rusage accounting differ slightly. Current wrapper snapshots do not establish historical wrapper RSS. These checks support measurement scope and are not a new timing or an exact correction to raw RSS."
+    },
+    "provenance": {
+      "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/telemetry-storage-model/fresh-summary.json": "66af8e308904f83ba02456eb32cf8c3f5e1f08f4aa3389a52e72d2833b919e42",
+      "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/telemetry-storage-model/summary.json": "cb22c4a76c26c436629cfdd3b749f7980300096acb5b74e4c86a3d56cf7e3e23",
+      "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/telemetry-storage-model/run_fresh.py": "fae47b69805805366407035941db3412d6430f3a2838c6c6c75ac50332e140ec",
+      "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/telemetry-storage-model/storage.cpp": "253adb15bc05c98ea15284924e242ce392b855b9ec984a6e4ed4bbcd4409574f",
+      "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/telemetry-storage-model/storage": "199616c13edf68034df8925c20564898d154bbffbb9fa605e77a7c2cb73ad173",
+      "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/replay-wire-analysis.json": "f348573a1c1fb7313bb2a9e67a2d1a783db7eb2aff768616e4570ba565790511",
+      "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/rss-accounting-audit.json": "fdf7d3aeb853dab305dbdb4dc1a3b00235e6538304757cb1bb2aa6e8a84cf85f"
+    },
+    "resource_accounting_sources": [
+      "https://www.man7.org/linux/man-pages/man2/getrusage.2.html",
+      "https://www.man7.org/linux/man-pages/man2/fork.2.html",
+      "https://www.kernel.org/doc/html/latest/filesystems/proc.html"
+    ],
+    "limits": [
+      "Fork resets child resource counters but initially duplicates wrapper memory; pre-exec footprint can enter child lifetime peak, and resource usage persists across exec. Parent ru_maxrss counters are not copied. Native VmHWM has current memory-image scope.",
+      "Original12 raw model runs unchanged; fresh12 are a separate cohort with same binary/input/cases.",
+      "Model uses original136byte NamedValue and40byte compact value; ordered metadata IDs preserve exact bytes including duplicates/NUL and schema changes. Exact full AIT1 is reconstructed, not a new file format.",
+      "Retained phases include original input buffer and allocator residency; encoding adds another full output buffer. Peak and retained phase are different measures.",
+      "Native and wait4 timings are model pipeline measurements only, with two repetitions and no interval; no whole-engine gains claimed.",
+      "Real game RSS audit is a separate328-record corroboration. Sampled nativeVmHWM closely matches wait4 in those cohorts, unlike modelplateau. Sampling misses short transients and current wrapper snapshots do not reconstruct historical footprint. No retroactive corrections to game data."
+    ]
+  },
+  "current_status": "Original12 and fresh12 complete with exact roundtrips; old common peak plateau removed by fresh single-case wrappers. Retained phase and native model peak savings remain mechanism evidence only, not engine gains."
+}

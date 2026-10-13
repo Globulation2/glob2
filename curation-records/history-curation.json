@@ -1,0 +1,3276 @@
+{
+  "schema_version": 1,
+  "scope": "Historical Playground/Oazis, final9e scaling, qualified mature CPU profile only",
+  "files": [
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/experiment.json",
+      "archive_path": "historical-playground/experiment.json",
+      "bytes": 141337,
+      "sha256": "e25128b49fa34b0efbdee178a9b3b7031ec2c2f8358eb7ed8f89ae310dd496e9",
+      "purpose": "Aggregate inputs, snapshot/seed identity, accounting definition, plotting/execution protocol, or scoped report"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/runs.csv",
+      "archive_path": "historical-playground/runs.csv",
+      "bytes": 104410,
+      "sha256": "9bbcdb985fe65c0e8ed1e878de394a3918874ac4a5ff2be5b780d3a51889f61c",
+      "purpose": "Aggregate inputs, snapshot/seed identity, accounting definition, plotting/execution protocol, or scoped report"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/summary.csv",
+      "archive_path": "historical-playground/summary.csv",
+      "bytes": 7433,
+      "sha256": "f0e4cc36898f4d21a9074acff417aabe891dcf4ac4b749f943beecfb5dee5f89",
+      "purpose": "Aggregate inputs, snapshot/seed identity, accounting definition, plotting/execution protocol, or scoped report"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/summary.json",
+      "archive_path": "historical-playground/summary.json",
+      "bytes": 17692,
+      "sha256": "a5d88870e5e60d4a0e4af65a2c7acbcfdb85ccadc23eb2e503b78267ea624e4e",
+      "purpose": "Aggregate inputs, snapshot/seed identity, accounting definition, plotting/execution protocol, or scoped report"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/build-times.csv",
+      "archive_path": "historical-playground/build-times.csv",
+      "bytes": 32188,
+      "sha256": "0c653fe83de1a7645e64cc7a0b47f1f9c9d610fb60142466bcad156f978cfc94",
+      "purpose": "Aggregate inputs, snapshot/seed identity, accounting definition, plotting/execution protocol, or scoped report"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/build-times.json",
+      "archive_path": "historical-playground/build-times.json",
+      "bytes": 50185,
+      "sha256": "84e7d638be6ad35b7ebeae9506a3b75d3f51a23895cf2549154e98d3517aa0eb",
+      "purpose": "Aggregate inputs, snapshot/seed identity, accounting definition, plotting/execution protocol, or scoped report"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/plot_build_times.py",
+      "archive_path": "historical-playground/plot_build_times.py",
+      "bytes": 5068,
+      "sha256": "7ff23d208248617b20cceb860511f2f82a84c6279211af83c14ed262fa72db57",
+      "purpose": "Aggregate inputs, snapshot/seed identity, accounting definition, plotting/execution protocol, or scoped report"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/plot_results.py",
+      "archive_path": "historical-playground/plot_results.py",
+      "bytes": 7465,
+      "sha256": "9e020d263969b46edd8cbb0dfbbe28f5cc7b6a0bd670c3440211b85410e50c82",
+      "purpose": "Aggregate inputs, snapshot/seed identity, accounting definition, plotting/execution protocol, or scoped report"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/run_experiment.py",
+      "archive_path": "historical-playground/run_experiment.py",
+      "bytes": 20441,
+      "sha256": "0ad4a2472a7dc7fce606825625a0f2727ed9ca59083e382e77a46ab653b6439f",
+      "purpose": "Aggregate inputs, snapshot/seed identity, accounting definition, plotting/execution protocol, or scoped report"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/report.html",
+      "archive_path": "historical-playground/report.html",
+      "bytes": 1025623,
+      "sha256": "4f2e62d4c4a75af78c6e378ac77254474f73b4d10b33469cb5d9e42686c101d0",
+      "purpose": "Aggregate inputs, snapshot/seed identity, accounting definition, plotting/execution protocol, or scoped report"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/Playground.map",
+      "archive_path": "historical-playground/map/Playground.map",
+      "bytes": 659316,
+      "sha256": "2a323a2d02475fb1ddd2ddfac99c51890aa7b2a2f3537ad7bee93aba85d84eaf",
+      "purpose": "Fixed workload input; not a raw simulation trace"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/snapshots/2026-09-02-14b99bc82/build.json",
+      "archive_path": "historical-playground/snapshots/2026-09-02-14b99bc82/build.json",
+      "bytes": 9454,
+      "sha256": "7d30008e26aa22182daacbc5adf3e556ef6e2d8eb4f1e3a12bbb89614c249b8e",
+      "purpose": "Per-revision compiler flags, dependency/binary hashes, build elapsed provenance"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/snapshots/2026-09-05-731f6be5d/build.json",
+      "archive_path": "historical-playground/snapshots/2026-09-05-731f6be5d/build.json",
+      "bytes": 9327,
+      "sha256": "17532ba02d57677787d1c853f7fc49f822401ef3383816309226254adb928069",
+      "purpose": "Per-revision compiler flags, dependency/binary hashes, build elapsed provenance"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/snapshots/2026-09-08-d3ac1ed3f/build.json",
+      "archive_path": "historical-playground/snapshots/2026-09-08-d3ac1ed3f/build.json",
+      "bytes": 9332,
+      "sha256": "a271d49852b97b32a82397f96f2b791b5baa5933a1e3233ff213a73e9ef3bb7e",
+      "purpose": "Per-revision compiler flags, dependency/binary hashes, build elapsed provenance"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/snapshots/2026-09-11-982b12730/build.json",
+      "archive_path": "historical-playground/snapshots/2026-09-11-982b12730/build.json",
+      "bytes": 9332,
+      "sha256": "017708d2e5c22325df5d629a97cf5a4666713adbcbda7bf39e606b2767ebe8cf",
+      "purpose": "Per-revision compiler flags, dependency/binary hashes, build elapsed provenance"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/snapshots/2026-09-14-3bb33a627/build.json",
+      "archive_path": "historical-playground/snapshots/2026-09-14-3bb33a627/build.json",
+      "bytes": 9377,
+      "sha256": "09bd0791923fb6f8f0d66d3d2ee8e018ec66982bdc6929450313f343400bd693",
+      "purpose": "Per-revision compiler flags, dependency/binary hashes, build elapsed provenance"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/snapshots/2026-09-17-326c05fda/build.json",
+      "archive_path": "historical-playground/snapshots/2026-09-17-326c05fda/build.json",
+      "bytes": 9369,
+      "sha256": "bc86eb6129a4a627c9fd889823996cb57f70122aef27638b8f16de99a7c2e1fb",
+      "purpose": "Per-revision compiler flags, dependency/binary hashes, build elapsed provenance"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/snapshots/2026-09-20-568fe9274/build.json",
+      "archive_path": "historical-playground/snapshots/2026-09-20-568fe9274/build.json",
+      "bytes": 9371,
+      "sha256": "b33223b844b8a20f3f74cd5592cdfad0a4798240837ac08032e1d2d8f4455459",
+      "purpose": "Per-revision compiler flags, dependency/binary hashes, build elapsed provenance"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/snapshots/2026-09-23-a494a3319/build.json",
+      "archive_path": "historical-playground/snapshots/2026-09-23-a494a3319/build.json",
+      "bytes": 9376,
+      "sha256": "6e5b1279f2b289220203ae9f0114ad2dc0949bdf4b59f4a0a4f1bc0535845b16",
+      "purpose": "Per-revision compiler flags, dependency/binary hashes, build elapsed provenance"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/snapshots/2026-09-26-1c49596f5/build.json",
+      "archive_path": "historical-playground/snapshots/2026-09-26-1c49596f5/build.json",
+      "bytes": 9272,
+      "sha256": "0b8dcfc95846483e4b23453a5e18f8d229a5d0dd7af258951281866b10b63a7a",
+      "purpose": "Per-revision compiler flags, dependency/binary hashes, build elapsed provenance"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/snapshots/2026-09-29-05b29faf5/build.json",
+      "archive_path": "historical-playground/snapshots/2026-09-29-05b29faf5/build.json",
+      "bytes": 9272,
+      "sha256": "26f7cfd3cf78c2e39c94b39ffb5e9c47c332a6cba0b9441d2a9145d6971e5593",
+      "purpose": "Per-revision compiler flags, dependency/binary hashes, build elapsed provenance"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/snapshots/2026-10-02-98dee3ed5/build.json",
+      "archive_path": "historical-playground/snapshots/2026-10-02-98dee3ed5/build.json",
+      "bytes": 4843,
+      "sha256": "135a2249535700cae287b9c21ab92f7a607dad74d8c54381ad710b1d54fabf39",
+      "purpose": "Per-revision compiler flags, dependency/binary hashes, build elapsed provenance"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/snapshots/2026-10-05-f5d1bc51e/build.json",
+      "archive_path": "historical-playground/snapshots/2026-10-05-f5d1bc51e/build.json",
+      "bytes": 5060,
+      "sha256": "4074e2b2ced5d8035b0d5626be9af38206e43c1fceac64bb20c7deccd912e05c",
+      "purpose": "Per-revision compiler flags, dependency/binary hashes, build elapsed provenance"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/snapshots/2026-10-08-d341b5f20/build.json",
+      "archive_path": "historical-playground/snapshots/2026-10-08-d341b5f20/build.json",
+      "bytes": 5060,
+      "sha256": "cf1dcaa9167c38f55a6692b149927f225511d74c5d93d1e7ff1af4c0ad940bdf",
+      "purpose": "Per-revision compiler flags, dependency/binary hashes, build elapsed provenance"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/snapshots/2026-10-11-9a08b91f4/build.json",
+      "archive_path": "historical-playground/snapshots/2026-10-11-9a08b91f4/build.json",
+      "bytes": 5060,
+      "sha256": "b3861748dfc7a58cc367881231558e7a3fddc0eb86a1a06b47fa3d379bbb5db7",
+      "purpose": "Per-revision compiler flags, dependency/binary hashes, build elapsed provenance"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/snapshots/2026-09-02-14b99bc82/adapter.patch",
+      "archive_path": "historical-playground/snapshots/2026-09-02-14b99bc82/adapter.patch",
+      "bytes": 5834,
+      "sha256": "dd4a4e40f31ab4f24f6d9fb79ae7af7e4786770728a683f9f91177172486bcd5",
+      "purpose": "Exact historical benchmark compatibility adapter; original code remains in Git"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/snapshots/2026-09-05-731f6be5d/adapter.patch",
+      "archive_path": "historical-playground/snapshots/2026-09-05-731f6be5d/adapter.patch",
+      "bytes": 4965,
+      "sha256": "79183c54bd49573c1b55c30ddd6e6cbb3caadbbc8cfc8f04df08b7a8bfa85437",
+      "purpose": "Exact historical benchmark compatibility adapter; original code remains in Git"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/snapshots/2026-09-08-d3ac1ed3f/adapter.patch",
+      "archive_path": "historical-playground/snapshots/2026-09-08-d3ac1ed3f/adapter.patch",
+      "bytes": 4965,
+      "sha256": "32b187e8617af5603de7abbde90f2f0f1072b8ea7d90e78d9d151555104b7e8f",
+      "purpose": "Exact historical benchmark compatibility adapter; original code remains in Git"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/snapshots/2026-09-11-982b12730/adapter.patch",
+      "archive_path": "historical-playground/snapshots/2026-09-11-982b12730/adapter.patch",
+      "bytes": 4583,
+      "sha256": "96eec2de8431a067563c5a08ab464940f0912612aff85cf245bd3c0b532e3c84",
+      "purpose": "Exact historical benchmark compatibility adapter; original code remains in Git"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/snapshots/2026-09-14-3bb33a627/adapter.patch",
+      "archive_path": "historical-playground/snapshots/2026-09-14-3bb33a627/adapter.patch",
+      "bytes": 4061,
+      "sha256": "abe126133901ed44815c23a796389da6947e171043d305e7134a386e687c2c05",
+      "purpose": "Exact historical benchmark compatibility adapter; original code remains in Git"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/snapshots/2026-09-17-326c05fda/adapter.patch",
+      "archive_path": "historical-playground/snapshots/2026-09-17-326c05fda/adapter.patch",
+      "bytes": 4061,
+      "sha256": "abe126133901ed44815c23a796389da6947e171043d305e7134a386e687c2c05",
+      "purpose": "Exact historical benchmark compatibility adapter; original code remains in Git"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/snapshots/2026-09-20-568fe9274/adapter.patch",
+      "archive_path": "historical-playground/snapshots/2026-09-20-568fe9274/adapter.patch",
+      "bytes": 4061,
+      "sha256": "abe126133901ed44815c23a796389da6947e171043d305e7134a386e687c2c05",
+      "purpose": "Exact historical benchmark compatibility adapter; original code remains in Git"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/snapshots/2026-09-23-a494a3319/adapter.patch",
+      "archive_path": "historical-playground/snapshots/2026-09-23-a494a3319/adapter.patch",
+      "bytes": 4061,
+      "sha256": "abe126133901ed44815c23a796389da6947e171043d305e7134a386e687c2c05",
+      "purpose": "Exact historical benchmark compatibility adapter; original code remains in Git"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/snapshots/2026-09-26-1c49596f5/adapter.patch",
+      "archive_path": "historical-playground/snapshots/2026-09-26-1c49596f5/adapter.patch",
+      "bytes": 4061,
+      "sha256": "9bf31818e2695347d9468434457792880e56dacb89eedb2aa79c79e6271ebe77",
+      "purpose": "Exact historical benchmark compatibility adapter; original code remains in Git"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/snapshots/2026-09-29-05b29faf5/adapter.patch",
+      "archive_path": "historical-playground/snapshots/2026-09-29-05b29faf5/adapter.patch",
+      "bytes": 3750,
+      "sha256": "7f70b39a55676880f711e8a6acea009e6cf75701a2f09d9ebc7955d2c1cb3f4d",
+      "purpose": "Exact historical benchmark compatibility adapter; original code remains in Git"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/snapshots/2026-10-02-98dee3ed5/adapter.patch",
+      "archive_path": "historical-playground/snapshots/2026-10-02-98dee3ed5/adapter.patch",
+      "bytes": 3762,
+      "sha256": "dd6901da56a6a06263c5a3a22d5daf8805326053b144b4d1665f8c0e1dbf897e",
+      "purpose": "Exact historical benchmark compatibility adapter; original code remains in Git"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/snapshots/2026-10-05-f5d1bc51e/adapter.patch",
+      "archive_path": "historical-playground/snapshots/2026-10-05-f5d1bc51e/adapter.patch",
+      "bytes": 3876,
+      "sha256": "98cef09c41f4cc2706b2f48116958fe8c338183dea04cd5921f5eefc407d3ed1",
+      "purpose": "Exact historical benchmark compatibility adapter; original code remains in Git"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/snapshots/2026-10-08-d341b5f20/adapter.patch",
+      "archive_path": "historical-playground/snapshots/2026-10-08-d341b5f20/adapter.patch",
+      "bytes": 3935,
+      "sha256": "a4c95de8b46d8be7dd123e79d88dee84daf997095c807429cb4972124dbeecb9",
+      "purpose": "Exact historical benchmark compatibility adapter; original code remains in Git"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/snapshots/2026-10-11-9a08b91f4/adapter.patch",
+      "archive_path": "historical-playground/snapshots/2026-10-11-9a08b91f4/adapter.patch",
+      "bytes": 3955,
+      "sha256": "f3465e8269c94a54210a26eab1f905c1cdbc96f9c1f609cfab8c5bb36f51a8bb",
+      "purpose": "Exact historical benchmark compatibility adapter; original code remains in Git"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/experiment.json",
+      "archive_path": "historical-oazis/experiment.json",
+      "bytes": 141626,
+      "sha256": "ae851d9af3b72802257a8edb480f5665f183f0f1e8d2b22495fd19ffe82a6f56",
+      "purpose": "Aggregate inputs, snapshot/seed identity, accounting definition, plotting/execution protocol, or scoped report"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/runs.csv",
+      "archive_path": "historical-oazis/runs.csv",
+      "bytes": 45001,
+      "sha256": "9c2070e52b88ba08acb01db1fffe4293abb05b179e7a6e100155b8ed53fa33fe",
+      "purpose": "Aggregate inputs, snapshot/seed identity, accounting definition, plotting/execution protocol, or scoped report"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/summary.csv",
+      "archive_path": "historical-oazis/summary.csv",
+      "bytes": 4860,
+      "sha256": "9ef96a2251c1a5f3b44b42410fe1bcd67a4f717677fd90bce4a985cb3aaa977e",
+      "purpose": "Aggregate inputs, snapshot/seed identity, accounting definition, plotting/execution protocol, or scoped report"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/summary.json",
+      "archive_path": "historical-oazis/summary.json",
+      "bytes": 15791,
+      "sha256": "ef74ffb4eb72385a5a58806163418dd3035a55784072648e95916dcb7981c187",
+      "purpose": "Aggregate inputs, snapshot/seed identity, accounting definition, plotting/execution protocol, or scoped report"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/build-times.csv",
+      "archive_path": "historical-oazis/build-times.csv",
+      "bytes": 32188,
+      "sha256": "0c653fe83de1a7645e64cc7a0b47f1f9c9d610fb60142466bcad156f978cfc94",
+      "purpose": "Aggregate inputs, snapshot/seed identity, accounting definition, plotting/execution protocol, or scoped report"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/build-times.json",
+      "archive_path": "historical-oazis/build-times.json",
+      "bytes": 50185,
+      "sha256": "84e7d638be6ad35b7ebeae9506a3b75d3f51a23895cf2549154e98d3517aa0eb",
+      "purpose": "Aggregate inputs, snapshot/seed identity, accounting definition, plotting/execution protocol, or scoped report"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/plot_build_times.py",
+      "archive_path": "historical-oazis/plot_build_times.py",
+      "bytes": 584,
+      "sha256": "0c5ca0a4c40a7d48512e2bd249312b0cbd35d10616a1fcd2af2f11dc727bbac3",
+      "purpose": "Aggregate inputs, snapshot/seed identity, accounting definition, plotting/execution protocol, or scoped report"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/plot_results.py",
+      "archive_path": "historical-oazis/plot_results.py",
+      "bytes": 7139,
+      "sha256": "1c4b9e3b986384e229ee5d8ee35b3c90b7393ae5cf7aa9e537a582db833c00b8",
+      "purpose": "Aggregate inputs, snapshot/seed identity, accounting definition, plotting/execution protocol, or scoped report"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/run_experiment.py",
+      "archive_path": "historical-oazis/run_experiment.py",
+      "bytes": 21877,
+      "sha256": "aba83ef09e6d81bf9d286bdd5fce61545780c0c8eb6954a8a33821e0e0ce21f1",
+      "purpose": "Aggregate inputs, snapshot/seed identity, accounting definition, plotting/execution protocol, or scoped report"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/report.html",
+      "archive_path": "historical-oazis/report.html",
+      "bytes": 876514,
+      "sha256": "d4d1beaff8702efd57c21e7f13b2a7a3021e89c5ebb5649e152a9dbf2f7598ec",
+      "purpose": "Aggregate inputs, snapshot/seed identity, accounting definition, plotting/execution protocol, or scoped report"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/Oazis.map",
+      "archive_path": "historical-oazis/map/Oazis.map",
+      "bytes": 2365234,
+      "sha256": "cd80d8c9a72643a95bb0bd3c22deb594aeed125d12cb3294859e7fffbc131448",
+      "purpose": "Fixed workload input; not a raw simulation trace"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/snapshots/2026-09-02-14b99bc82/build.json",
+      "archive_path": "historical-oazis/snapshots/2026-09-02-14b99bc82/build.json",
+      "bytes": 9454,
+      "sha256": "7d30008e26aa22182daacbc5adf3e556ef6e2d8eb4f1e3a12bbb89614c249b8e",
+      "purpose": "Per-revision compiler flags, dependency/binary hashes, build elapsed provenance"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/snapshots/2026-09-05-731f6be5d/build.json",
+      "archive_path": "historical-oazis/snapshots/2026-09-05-731f6be5d/build.json",
+      "bytes": 9327,
+      "sha256": "17532ba02d57677787d1c853f7fc49f822401ef3383816309226254adb928069",
+      "purpose": "Per-revision compiler flags, dependency/binary hashes, build elapsed provenance"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/snapshots/2026-09-08-d3ac1ed3f/build.json",
+      "archive_path": "historical-oazis/snapshots/2026-09-08-d3ac1ed3f/build.json",
+      "bytes": 9332,
+      "sha256": "a271d49852b97b32a82397f96f2b791b5baa5933a1e3233ff213a73e9ef3bb7e",
+      "purpose": "Per-revision compiler flags, dependency/binary hashes, build elapsed provenance"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/snapshots/2026-09-11-982b12730/build.json",
+      "archive_path": "historical-oazis/snapshots/2026-09-11-982b12730/build.json",
+      "bytes": 9332,
+      "sha256": "017708d2e5c22325df5d629a97cf5a4666713adbcbda7bf39e606b2767ebe8cf",
+      "purpose": "Per-revision compiler flags, dependency/binary hashes, build elapsed provenance"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/snapshots/2026-09-14-3bb33a627/build.json",
+      "archive_path": "historical-oazis/snapshots/2026-09-14-3bb33a627/build.json",
+      "bytes": 9377,
+      "sha256": "09bd0791923fb6f8f0d66d3d2ee8e018ec66982bdc6929450313f343400bd693",
+      "purpose": "Per-revision compiler flags, dependency/binary hashes, build elapsed provenance"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/snapshots/2026-09-17-326c05fda/build.json",
+      "archive_path": "historical-oazis/snapshots/2026-09-17-326c05fda/build.json",
+      "bytes": 9369,
+      "sha256": "bc86eb6129a4a627c9fd889823996cb57f70122aef27638b8f16de99a7c2e1fb",
+      "purpose": "Per-revision compiler flags, dependency/binary hashes, build elapsed provenance"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/snapshots/2026-09-20-568fe9274/build.json",
+      "archive_path": "historical-oazis/snapshots/2026-09-20-568fe9274/build.json",
+      "bytes": 9371,
+      "sha256": "b33223b844b8a20f3f74cd5592cdfad0a4798240837ac08032e1d2d8f4455459",
+      "purpose": "Per-revision compiler flags, dependency/binary hashes, build elapsed provenance"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/snapshots/2026-09-23-a494a3319/build.json",
+      "archive_path": "historical-oazis/snapshots/2026-09-23-a494a3319/build.json",
+      "bytes": 9376,
+      "sha256": "6e5b1279f2b289220203ae9f0114ad2dc0949bdf4b59f4a0a4f1bc0535845b16",
+      "purpose": "Per-revision compiler flags, dependency/binary hashes, build elapsed provenance"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/snapshots/2026-09-26-1c49596f5/build.json",
+      "archive_path": "historical-oazis/snapshots/2026-09-26-1c49596f5/build.json",
+      "bytes": 9272,
+      "sha256": "0b8dcfc95846483e4b23453a5e18f8d229a5d0dd7af258951281866b10b63a7a",
+      "purpose": "Per-revision compiler flags, dependency/binary hashes, build elapsed provenance"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/snapshots/2026-09-29-05b29faf5/build.json",
+      "archive_path": "historical-oazis/snapshots/2026-09-29-05b29faf5/build.json",
+      "bytes": 9272,
+      "sha256": "26f7cfd3cf78c2e39c94b39ffb5e9c47c332a6cba0b9441d2a9145d6971e5593",
+      "purpose": "Per-revision compiler flags, dependency/binary hashes, build elapsed provenance"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/snapshots/2026-10-02-98dee3ed5/build.json",
+      "archive_path": "historical-oazis/snapshots/2026-10-02-98dee3ed5/build.json",
+      "bytes": 4843,
+      "sha256": "135a2249535700cae287b9c21ab92f7a607dad74d8c54381ad710b1d54fabf39",
+      "purpose": "Per-revision compiler flags, dependency/binary hashes, build elapsed provenance"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/snapshots/2026-10-05-f5d1bc51e/build.json",
+      "archive_path": "historical-oazis/snapshots/2026-10-05-f5d1bc51e/build.json",
+      "bytes": 5060,
+      "sha256": "4074e2b2ced5d8035b0d5626be9af38206e43c1fceac64bb20c7deccd912e05c",
+      "purpose": "Per-revision compiler flags, dependency/binary hashes, build elapsed provenance"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/snapshots/2026-10-08-d341b5f20/build.json",
+      "archive_path": "historical-oazis/snapshots/2026-10-08-d341b5f20/build.json",
+      "bytes": 5060,
+      "sha256": "cf1dcaa9167c38f55a6692b149927f225511d74c5d93d1e7ff1af4c0ad940bdf",
+      "purpose": "Per-revision compiler flags, dependency/binary hashes, build elapsed provenance"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/snapshots/2026-10-11-9a08b91f4/build.json",
+      "archive_path": "historical-oazis/snapshots/2026-10-11-9a08b91f4/build.json",
+      "bytes": 5060,
+      "sha256": "b3861748dfc7a58cc367881231558e7a3fddc0eb86a1a06b47fa3d379bbb5db7",
+      "purpose": "Per-revision compiler flags, dependency/binary hashes, build elapsed provenance"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/snapshots/2026-09-02-14b99bc82/adapter.patch",
+      "archive_path": "historical-oazis/snapshots/2026-09-02-14b99bc82/adapter.patch",
+      "bytes": 5834,
+      "sha256": "dd4a4e40f31ab4f24f6d9fb79ae7af7e4786770728a683f9f91177172486bcd5",
+      "purpose": "Exact historical benchmark compatibility adapter; original code remains in Git"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/snapshots/2026-09-05-731f6be5d/adapter.patch",
+      "archive_path": "historical-oazis/snapshots/2026-09-05-731f6be5d/adapter.patch",
+      "bytes": 4965,
+      "sha256": "79183c54bd49573c1b55c30ddd6e6cbb3caadbbc8cfc8f04df08b7a8bfa85437",
+      "purpose": "Exact historical benchmark compatibility adapter; original code remains in Git"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/snapshots/2026-09-08-d3ac1ed3f/adapter.patch",
+      "archive_path": "historical-oazis/snapshots/2026-09-08-d3ac1ed3f/adapter.patch",
+      "bytes": 4965,
+      "sha256": "32b187e8617af5603de7abbde90f2f0f1072b8ea7d90e78d9d151555104b7e8f",
+      "purpose": "Exact historical benchmark compatibility adapter; original code remains in Git"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/snapshots/2026-09-11-982b12730/adapter.patch",
+      "archive_path": "historical-oazis/snapshots/2026-09-11-982b12730/adapter.patch",
+      "bytes": 4583,
+      "sha256": "96eec2de8431a067563c5a08ab464940f0912612aff85cf245bd3c0b532e3c84",
+      "purpose": "Exact historical benchmark compatibility adapter; original code remains in Git"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/snapshots/2026-09-14-3bb33a627/adapter.patch",
+      "archive_path": "historical-oazis/snapshots/2026-09-14-3bb33a627/adapter.patch",
+      "bytes": 4061,
+      "sha256": "abe126133901ed44815c23a796389da6947e171043d305e7134a386e687c2c05",
+      "purpose": "Exact historical benchmark compatibility adapter; original code remains in Git"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/snapshots/2026-09-17-326c05fda/adapter.patch",
+      "archive_path": "historical-oazis/snapshots/2026-09-17-326c05fda/adapter.patch",
+      "bytes": 4061,
+      "sha256": "abe126133901ed44815c23a796389da6947e171043d305e7134a386e687c2c05",
+      "purpose": "Exact historical benchmark compatibility adapter; original code remains in Git"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/snapshots/2026-09-20-568fe9274/adapter.patch",
+      "archive_path": "historical-oazis/snapshots/2026-09-20-568fe9274/adapter.patch",
+      "bytes": 4061,
+      "sha256": "abe126133901ed44815c23a796389da6947e171043d305e7134a386e687c2c05",
+      "purpose": "Exact historical benchmark compatibility adapter; original code remains in Git"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/snapshots/2026-09-23-a494a3319/adapter.patch",
+      "archive_path": "historical-oazis/snapshots/2026-09-23-a494a3319/adapter.patch",
+      "bytes": 4061,
+      "sha256": "abe126133901ed44815c23a796389da6947e171043d305e7134a386e687c2c05",
+      "purpose": "Exact historical benchmark compatibility adapter; original code remains in Git"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/snapshots/2026-09-26-1c49596f5/adapter.patch",
+      "archive_path": "historical-oazis/snapshots/2026-09-26-1c49596f5/adapter.patch",
+      "bytes": 4061,
+      "sha256": "9bf31818e2695347d9468434457792880e56dacb89eedb2aa79c79e6271ebe77",
+      "purpose": "Exact historical benchmark compatibility adapter; original code remains in Git"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/snapshots/2026-09-29-05b29faf5/adapter.patch",
+      "archive_path": "historical-oazis/snapshots/2026-09-29-05b29faf5/adapter.patch",
+      "bytes": 3750,
+      "sha256": "7f70b39a55676880f711e8a6acea009e6cf75701a2f09d9ebc7955d2c1cb3f4d",
+      "purpose": "Exact historical benchmark compatibility adapter; original code remains in Git"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/snapshots/2026-10-02-98dee3ed5/adapter.patch",
+      "archive_path": "historical-oazis/snapshots/2026-10-02-98dee3ed5/adapter.patch",
+      "bytes": 3762,
+      "sha256": "dd6901da56a6a06263c5a3a22d5daf8805326053b144b4d1665f8c0e1dbf897e",
+      "purpose": "Exact historical benchmark compatibility adapter; original code remains in Git"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/snapshots/2026-10-05-f5d1bc51e/adapter.patch",
+      "archive_path": "historical-oazis/snapshots/2026-10-05-f5d1bc51e/adapter.patch",
+      "bytes": 3876,
+      "sha256": "98cef09c41f4cc2706b2f48116958fe8c338183dea04cd5921f5eefc407d3ed1",
+      "purpose": "Exact historical benchmark compatibility adapter; original code remains in Git"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/snapshots/2026-10-08-d341b5f20/adapter.patch",
+      "archive_path": "historical-oazis/snapshots/2026-10-08-d341b5f20/adapter.patch",
+      "bytes": 3935,
+      "sha256": "a4c95de8b46d8be7dd123e79d88dee84daf997095c807429cb4972124dbeecb9",
+      "purpose": "Exact historical benchmark compatibility adapter; original code remains in Git"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/snapshots/2026-10-11-9a08b91f4/adapter.patch",
+      "archive_path": "historical-oazis/snapshots/2026-10-11-9a08b91f4/adapter.patch",
+      "bytes": 3955,
+      "sha256": "f3465e8269c94a54210a26eab1f905c1cdbc96f9c1f609cfab8c5bb36f51a8bb",
+      "purpose": "Exact historical benchmark compatibility adapter; original code remains in Git"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/history-summary.html",
+      "archive_path": "historical-playground/history-summary.html",
+      "bytes": 10870,
+      "sha256": "95429a7a01838dd753617182f56390969a64b775a5b83efcec11750bb952aeee",
+      "purpose": "Historical narrative/control/protocol; control cohort is excluded from primary 448"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/history-detailed.html",
+      "archive_path": "historical-playground/history-detailed.html",
+      "bytes": 76598,
+      "sha256": "d19088b97c9b6c40bec470ba4fbe6b8cdb16c4ba7aec07f81b5ca4476d7bc25d",
+      "purpose": "Historical narrative/control/protocol; control cohort is excluded from primary 448"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/cpu-affinity-evidence.json",
+      "archive_path": "historical-playground/cpu-affinity-evidence.json",
+      "bytes": 3062,
+      "sha256": "6f0d85d9842de291bbe9c6c065c2ef9b8abbdd28f1a0d5db2016b723fd044bbe",
+      "purpose": "Historical narrative/control/protocol; control cohort is excluded from primary 448"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/serial-baseline-experiment.json",
+      "archive_path": "historical-playground/serial-baseline-experiment.json",
+      "bytes": 139719,
+      "sha256": "62bdf6e997a9a5efb4a8bb77b90784a5d98cd221b8d6ccc97d5e483ffac82434",
+      "purpose": "Historical narrative/control/protocol; control cohort is excluded from primary 448"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/serial-baseline-runs.csv",
+      "archive_path": "historical-playground/serial-baseline-runs.csv",
+      "bytes": 3452,
+      "sha256": "3bc41362577620d25f6bcd4f761518409779b3a3242d4fec5995131b4d320d72",
+      "purpose": "Historical narrative/control/protocol; control cohort is excluded from primary 448"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/serial-baseline-summary.json",
+      "archive_path": "historical-playground/serial-baseline-summary.json",
+      "bytes": 14530,
+      "sha256": "ae2099accfd16f6f0315b480005e1429ee241e1c15f6abae9617389e4406e0ed",
+      "purpose": "Historical narrative/control/protocol; control cohort is excluded from primary 448"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/run_build_first.py",
+      "archive_path": "historical-playground/run_build_first.py",
+      "bytes": 2122,
+      "sha256": "d823839ba802b71aa57c9204ca6e3b85fd7dcc7adf88586ea6e82daa4fe5afff",
+      "purpose": "Historical narrative/control/protocol; control cohort is excluded from primary 448"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/prebuild.py",
+      "archive_path": "historical-playground/prebuild.py",
+      "bytes": 950,
+      "sha256": "c19553d5ca65eed057d0fdf450c35d40b11d6552c4d6a0625ad37502a299f3bf",
+      "purpose": "Historical narrative/control/protocol; control cohort is excluded from primary 448"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/plot-requirements.lock",
+      "archive_path": "historical-playground/plot-requirements.lock",
+      "bytes": 189,
+      "sha256": "2cd1ca646bc1c05789c6187b39ad5ff613fbca4359a1fe2da86b378a176810d5",
+      "purpose": "Historical narrative/control/protocol; control cohort is excluded from primary 448"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/map-hash-by-revision.json",
+      "archive_path": "historical-oazis/map-hash-by-revision.json",
+      "bytes": 2510,
+      "sha256": "bd68bea67b110622911f0e779baa1547d5be31adb1e1f4a31973f9a8d4abd5c1",
+      "purpose": "Historical map/controller/runtime lineage or explicit unfinished campaign hold"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/map-inspection.json",
+      "archive_path": "historical-oazis/map-inspection.json",
+      "bytes": 206,
+      "sha256": "b3ac0d0e1c673e3ada382a40419d08aea54736a5e2a8feea7287207e46714711",
+      "purpose": "Historical map/controller/runtime lineage or explicit unfinished campaign hold"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/inherited-compute-environment.json",
+      "archive_path": "historical-oazis/inherited-compute-environment.json",
+      "bytes": 282,
+      "sha256": "1058ae69d86570d3a95525a382f0fbbebdefdffb94ab875fe93e3f9a57ca01bc",
+      "purpose": "Historical map/controller/runtime lineage or explicit unfinished campaign hold"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/compile-dispatch-hold.flag",
+      "archive_path": "historical-oazis/compile-dispatch-hold.flag",
+      "bytes": 85,
+      "sha256": "626444fec97a63000d8c97d74f190a57139b4edbb951f3dc9bbcbb22222f11ea",
+      "purpose": "Historical map/controller/runtime lineage or explicit unfinished campaign hold"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/commit-inventory.json",
+      "archive_path": "historical-playground/analysis/commit-inventory.json",
+      "bytes": 3774647,
+      "sha256": "8663f9ccb038edc3e2ea2809e1b0e477b082feaccf75cfa2cde79af67d8e6585",
+      "purpose": "Chronological feature/change/evidence inventory, statistical or qualified attribution notes"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/accounting.json",
+      "archive_path": "historical-playground/analysis/accounting.json",
+      "bytes": 5188,
+      "sha256": "0809a78984bcf29f1a7e309e55f24fc34525b96a6ac8d70c9ec98612ce946da8",
+      "purpose": "Chronological feature/change/evidence inventory, statistical or qualified attribution notes"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/interval-statistics.json",
+      "archive_path": "historical-playground/analysis/interval-statistics.json",
+      "bytes": 10350,
+      "sha256": "43c511c9783c154e839cad8fe42701eb6679c404897e396517048b80d64d7de5",
+      "purpose": "Chronological feature/change/evidence inventory, statistical or qualified attribution notes"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/analyze_metrics.py",
+      "archive_path": "historical-playground/analysis/analyze_metrics.py",
+      "bytes": 2507,
+      "sha256": "6945b6f0243b4a049e2d298a18a06471be6bfe53bc26eab46d21010f225c837b",
+      "purpose": "Chronological feature/change/evidence inventory, statistical or qualified attribution notes"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/write_narrative.py",
+      "archive_path": "historical-playground/analysis/write_narrative.py",
+      "bytes": 73816,
+      "sha256": "198d53b74111b7e4559e8db1e1a147600f727a3313cb8d66726284edadc96542",
+      "purpose": "Chronological feature/change/evidence inventory, statistical or qualified attribution notes"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/early.txt",
+      "archive_path": "historical-playground/analysis/early.txt",
+      "bytes": 18339,
+      "sha256": "7a4c9a03b4204a98144468be012bd3fcee1e4ae37a530bb3431168d5fc098189",
+      "purpose": "Chronological feature/change/evidence inventory, statistical or qualified attribution notes"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/middle.txt",
+      "archive_path": "historical-playground/analysis/middle.txt",
+      "bytes": 19535,
+      "sha256": "1be242e234dcccbf51984550a908c20faf2d9f142818dd2f22e055fd5d8688c2",
+      "purpose": "Chronological feature/change/evidence inventory, statistical or qualified attribution notes"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/late.txt",
+      "archive_path": "historical-playground/analysis/late.txt",
+      "bytes": 18578,
+      "sha256": "47ed8117b83bdaa75a52ac52a80447149673dde41be58a753fef45e2bc808e9a",
+      "purpose": "Chronological feature/change/evidence inventory, statistical or qualified attribution notes"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/middle-links.json",
+      "archive_path": "historical-playground/analysis/middle-links.json",
+      "bytes": 12071,
+      "sha256": "dae1d3b241b468abc072e377867bcc30b3384c83d75c657642892d4cf9796405",
+      "purpose": "Chronological feature/change/evidence inventory, statistical or qualified attribution notes"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/mature-cpu-namespace-correction.json",
+      "archive_path": "historical-playground/analysis/mature-cpu-namespace-correction.json",
+      "bytes": 6609,
+      "sha256": "edab557d54861c03b477d4191008f5cf272e8b2450fdad21c5cd0bbf22ac622b",
+      "purpose": "Chronological feature/change/evidence inventory, statistical or qualified attribution notes"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/mature-cpu-namespace-correction.html",
+      "archive_path": "historical-playground/analysis/mature-cpu-namespace-correction.html",
+      "bytes": 2017,
+      "sha256": "7fcd3a54376aafeeb9ec989c71942f7e31c5e3428cd8fb3aaaede33b4b580ec0",
+      "purpose": "Chronological feature/change/evidence inventory, statistical or qualified attribution notes"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr-208.json",
+      "archive_path": "historical-playground/analysis/pr-208.json",
+      "bytes": 6247,
+      "sha256": "4419da156ba4e81af187c1fd8f34066b2426957e1902170df342c2382bc08f6f",
+      "purpose": "Captured public PR evidence referenced by the historical narrative"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr-344.json",
+      "archive_path": "historical-playground/analysis/pr-344.json",
+      "bytes": 3378,
+      "sha256": "738fe110bcf4622db8f7b041c50ce251154b82e1590e7a9fe0688b96c3f01500",
+      "purpose": "Captured public PR evidence referenced by the historical narrative"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr-361.json",
+      "archive_path": "historical-playground/analysis/pr-361.json",
+      "bytes": 4826,
+      "sha256": "f0e1c41f465be7616a071f531cc153ae0d65899ea838600a55bc4e59edbc0440",
+      "purpose": "Captured public PR evidence referenced by the historical narrative"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr-363.json",
+      "archive_path": "historical-playground/analysis/pr-363.json",
+      "bytes": 4872,
+      "sha256": "9df168b908bb1d857699819cf944041193bbbb1a702505f7c6cd7e1cb8121a2b",
+      "purpose": "Captured public PR evidence referenced by the historical narrative"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr-379.json",
+      "archive_path": "historical-playground/analysis/pr-379.json",
+      "bytes": 5410,
+      "sha256": "565930362de6430a7eb501479f9d088109cac7b06e75f5d3ca291c9b581353cc",
+      "purpose": "Captured public PR evidence referenced by the historical narrative"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr-380.json",
+      "archive_path": "historical-playground/analysis/pr-380.json",
+      "bytes": 9524,
+      "sha256": "808f6be3ff3acf176ffb02b107354a9f69bface8a4f92154e2744bf9aa66cb17",
+      "purpose": "Captured public PR evidence referenced by the historical narrative"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr-388.json",
+      "archive_path": "historical-playground/analysis/pr-388.json",
+      "bytes": 5604,
+      "sha256": "59de7c6a62874cea79e7ce604288864c9868d49238cccdeda83e93a1d8c3553d",
+      "purpose": "Captured public PR evidence referenced by the historical narrative"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr-390.json",
+      "archive_path": "historical-playground/analysis/pr-390.json",
+      "bytes": 6142,
+      "sha256": "62c7fb333d30b703e16857367ebe09c95b6c405cda89f6e8eb858267e05378bf",
+      "purpose": "Captured public PR evidence referenced by the historical narrative"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr-391.json",
+      "archive_path": "historical-playground/analysis/pr-391.json",
+      "bytes": 1507,
+      "sha256": "5c3c53672547065faddea544030504646ee23f1201c33daa9421162877b54d70",
+      "purpose": "Captured public PR evidence referenced by the historical narrative"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr-395.json",
+      "archive_path": "historical-playground/analysis/pr-395.json",
+      "bytes": 205,
+      "sha256": "001e5391cf6c5ccafbe9d5d8d446f0b7bf8d8010a3eba0ce350331bdbddaebaf",
+      "purpose": "Captured public PR evidence referenced by the historical narrative"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr-396.json",
+      "archive_path": "historical-playground/analysis/pr-396.json",
+      "bytes": 4582,
+      "sha256": "9692ea0f55d05e32fd582cfdb598b29fb694998632dbbf39e49ea1e74cbf7e0c",
+      "purpose": "Captured public PR evidence referenced by the historical narrative"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr-398.json",
+      "archive_path": "historical-playground/analysis/pr-398.json",
+      "bytes": 2195,
+      "sha256": "f6c2c1080fa9ee941c3655310815532c1f94d63fd0a58c09108dc2c2c500d276",
+      "purpose": "Captured public PR evidence referenced by the historical narrative"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr-416.json",
+      "archive_path": "historical-playground/analysis/pr-416.json",
+      "bytes": 6003,
+      "sha256": "67023130aa54c18cbeb0133351912401c19614c06d7f6386c143933ec2babf79",
+      "purpose": "Captured public PR evidence referenced by the historical narrative"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr-451.json",
+      "archive_path": "historical-playground/analysis/pr-451.json",
+      "bytes": 10176,
+      "sha256": "b5b62729f6ac089c20c9d76408f8920d87c6ba8b5a56203dd34ac222b6fe4e17",
+      "purpose": "Captured public PR evidence referenced by the historical narrative"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr-478.json",
+      "archive_path": "historical-playground/analysis/pr-478.json",
+      "bytes": 6593,
+      "sha256": "778fe0e74d93cb9649888e6c4536b1d62f6358f1e26496ca2461092ce0b7f6e3",
+      "purpose": "Captured public PR evidence referenced by the historical narrative"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr-487.json",
+      "archive_path": "historical-playground/analysis/pr-487.json",
+      "bytes": 6660,
+      "sha256": "d399a73a61c95915f38b737473939a755f349cdf0d6d93583d25605614b37525",
+      "purpose": "Captured public PR evidence referenced by the historical narrative"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr-496.json",
+      "archive_path": "historical-playground/analysis/pr-496.json",
+      "bytes": 4526,
+      "sha256": "a7696978cc3111a40f77292f3e1f5a67fc47cb48281c50c3fce5c6dc635f3d68",
+      "purpose": "Captured public PR evidence referenced by the historical narrative"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr-522.json",
+      "archive_path": "historical-playground/analysis/pr-522.json",
+      "bytes": 3531,
+      "sha256": "54604d0d2c95b25dd908f2c4d45ba07a61e2396286f1ada87af33512f50fa0d5",
+      "purpose": "Captured public PR evidence referenced by the historical narrative"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr-534.json",
+      "archive_path": "historical-playground/analysis/pr-534.json",
+      "bytes": 4131,
+      "sha256": "6725cc78ddabaf81d4a78ab1eb5dc4277783b6a3bcc87e8771e65179365e0ee8",
+      "purpose": "Captured public PR evidence referenced by the historical narrative"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr-535.json",
+      "archive_path": "historical-playground/analysis/pr-535.json",
+      "bytes": 2990,
+      "sha256": "28fd53177a068d54f4be32c31db1124c0a0e827f8fc1fbb3a36038422613ca02",
+      "purpose": "Captured public PR evidence referenced by the historical narrative"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr-536.json",
+      "archive_path": "historical-playground/analysis/pr-536.json",
+      "bytes": 7392,
+      "sha256": "cb70dd97586add17270bae055afa417aff03cb078175dc94c45776c7ac44afda",
+      "purpose": "Captured public PR evidence referenced by the historical narrative"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr-537.json",
+      "archive_path": "historical-playground/analysis/pr-537.json",
+      "bytes": 8818,
+      "sha256": "4bf6a772ac069ee09e4d2fd73ed46c8b1d656089ab924793115bb6c372118157",
+      "purpose": "Captured public PR evidence referenced by the historical narrative"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr-577.json",
+      "archive_path": "historical-playground/analysis/pr-577.json",
+      "bytes": 4708,
+      "sha256": "7d02048fd8636dc05d9900f6424efc9afc19ce079dafbb1f0fc5cc2ac19fe37f",
+      "purpose": "Captured public PR evidence referenced by the historical narrative"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr-641.json",
+      "archive_path": "historical-playground/analysis/pr-641.json",
+      "bytes": 4451,
+      "sha256": "d43418152d4611072e5076f357975e07d1cfeed72584467074f807d13e466170",
+      "purpose": "Captured public PR evidence referenced by the historical narrative"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr-664.json",
+      "archive_path": "historical-playground/analysis/pr-664.json",
+      "bytes": 5558,
+      "sha256": "30b2f1d34ce370fcaf36e5d2f6f5bafcc5223bad0164bec971b482b46af890d0",
+      "purpose": "Captured public PR evidence referenced by the historical narrative"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr-678.json",
+      "archive_path": "historical-playground/analysis/pr-678.json",
+      "bytes": 11932,
+      "sha256": "a9d129783b4bd62c8ed436f90e43faa694306413ae45b732dc408f9873e90c11",
+      "purpose": "Captured public PR evidence referenced by the historical narrative"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr-727.json",
+      "archive_path": "historical-playground/analysis/pr-727.json",
+      "bytes": 2923,
+      "sha256": "86311c86d7de9df1d4f2ccafa42486218a6320de584ffaa975aca60ec5b710fc",
+      "purpose": "Captured public PR evidence referenced by the historical narrative"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr-767.json",
+      "archive_path": "historical-playground/analysis/pr-767.json",
+      "bytes": 3427,
+      "sha256": "a9efbdeb1180c18a3d38c7c3acddcca60fc79f805924b5a91166c2efbb0919b7",
+      "purpose": "Captured public PR evidence referenced by the historical narrative"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr-773.json",
+      "archive_path": "historical-playground/analysis/pr-773.json",
+      "bytes": 9191,
+      "sha256": "e386b88bd78ca89afb72cab3bc8c69bec65a62cfa6d10cb9111287e0887a8cf0",
+      "purpose": "Captured public PR evidence referenced by the historical narrative"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr-787.json",
+      "archive_path": "historical-playground/analysis/pr-787.json",
+      "bytes": 6198,
+      "sha256": "0e403acef15b7aca9b3c4ee840d78545fbbef11b9c82d9294f57ce7920c29724",
+      "purpose": "Captured public PR evidence referenced by the historical narrative"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr-791.json",
+      "archive_path": "historical-playground/analysis/pr-791.json",
+      "bytes": 14641,
+      "sha256": "3601bbefdcd7804175fb3c0bf63516079f1bd08f12b6d957ae496391a5870546",
+      "purpose": "Captured public PR evidence referenced by the historical narrative"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr-799.json",
+      "archive_path": "historical-playground/analysis/pr-799.json",
+      "bytes": 12412,
+      "sha256": "be6116c3fc6bc1ec8dc42d153b32c8e433117bcb939847bdb01b8b27ab13831a",
+      "purpose": "Captured public PR evidence referenced by the historical narrative"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr-806.json",
+      "archive_path": "historical-playground/analysis/pr-806.json",
+      "bytes": 9126,
+      "sha256": "cf509e495f99c2db291c778e10b6e4d4584484deb97432eafeabd4737f62da90",
+      "purpose": "Captured public PR evidence referenced by the historical narrative"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr129.json",
+      "archive_path": "historical-playground/analysis/pr129.json",
+      "bytes": 23678,
+      "sha256": "03b4953d3ec0cb8ebfcabae359f0a17bb4f96043e93e41ab033e480c03e90c97",
+      "purpose": "Captured public PR evidence referenced by the historical narrative"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr131.json",
+      "archive_path": "historical-playground/analysis/pr131.json",
+      "bytes": 3115,
+      "sha256": "ceab2bcb3c445b781cc55b4b3df072cd8b163049dfbe0a80e1d62ec48386b2b6",
+      "purpose": "Captured public PR evidence referenced by the historical narrative"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr135.json",
+      "archive_path": "historical-playground/analysis/pr135.json",
+      "bytes": 531,
+      "sha256": "986a3080b2a34d2a4e98544c6835b5cf05664860aa74ed79d88b2e510641ccfb",
+      "purpose": "Captured public PR evidence referenced by the historical narrative"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr178.json",
+      "archive_path": "historical-playground/analysis/pr178.json",
+      "bytes": 107,
+      "sha256": "1eeb2b2e000f7ce6010e7a970de6fe5ca2dbc9b83775802b070cb587bcf4f075",
+      "purpose": "Captured public PR evidence referenced by the historical narrative"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr184.json",
+      "archive_path": "historical-playground/analysis/pr184.json",
+      "bytes": 20374,
+      "sha256": "d93eb2dce4df0695d18ee5cd238f5b342b600810eb16656a9a3d399fc3dfcf77",
+      "purpose": "Captured public PR evidence referenced by the historical narrative"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr191.json",
+      "archive_path": "historical-playground/analysis/pr191.json",
+      "bytes": 3854,
+      "sha256": "69adfd89b3fcbeb15bc3c13f4319eea1a8663dcab1eacfe9aaf3a8cf047709a5",
+      "purpose": "Captured public PR evidence referenced by the historical narrative"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr192.json",
+      "archive_path": "historical-playground/analysis/pr192.json",
+      "bytes": 3560,
+      "sha256": "ec55ba269c794f8ce1451239419dde66830f03bc079b503323d09de594611c95",
+      "purpose": "Captured public PR evidence referenced by the historical narrative"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr197.json",
+      "archive_path": "historical-playground/analysis/pr197.json",
+      "bytes": 45131,
+      "sha256": "8cbd3f2a93d714e0e1aa5538e4ecdf416114dac11eb981ba00455d0643eadcff",
+      "purpose": "Captured public PR evidence referenced by the historical narrative"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr223.json",
+      "archive_path": "historical-playground/analysis/pr223.json",
+      "bytes": 7586,
+      "sha256": "330350da1d8689f036fe0ae8a68d0b6eec5ad0937586db720165408c0112e6e7",
+      "purpose": "Captured public PR evidence referenced by the historical narrative"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr232.json",
+      "archive_path": "historical-playground/analysis/pr232.json",
+      "bytes": 43666,
+      "sha256": "ac6a71d85a0a7e8fc331b37f69363724a3a4af6aff2ba889fcd4837ce6b36f4d",
+      "purpose": "Captured public PR evidence referenced by the historical narrative"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr243.json",
+      "archive_path": "historical-playground/analysis/pr243.json",
+      "bytes": 1529,
+      "sha256": "d183e8606b02d99761d2a551a2bf398a140cb6fb10bb5051c53712e1e3cfb35c",
+      "purpose": "Captured public PR evidence referenced by the historical narrative"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr244.json",
+      "archive_path": "historical-playground/analysis/pr244.json",
+      "bytes": 10094,
+      "sha256": "319d7a8c05bb615a5aadeaa49d555c3a33fc35763beadc601513213bd098473a",
+      "purpose": "Captured public PR evidence referenced by the historical narrative"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr260.json",
+      "archive_path": "historical-playground/analysis/pr260.json",
+      "bytes": 15073,
+      "sha256": "c8ee6e4a69c129e8a1ef8604a5f9f9940c56715cb2bd81f449302f655c12a9ff",
+      "purpose": "Captured public PR evidence referenced by the historical narrative"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr286.json",
+      "archive_path": "historical-playground/analysis/pr286.json",
+      "bytes": 3543,
+      "sha256": "e967727816d7ec8c75e8770776151950bdffc49679f350a72f8a701299181c65",
+      "purpose": "Captured public PR evidence referenced by the historical narrative"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr288.json",
+      "archive_path": "historical-playground/analysis/pr288.json",
+      "bytes": 3829,
+      "sha256": "879ac4679e3373734bc0809300628701f791f33592103783be101330b9cc88a3",
+      "purpose": "Captured public PR evidence referenced by the historical narrative"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr289.json",
+      "archive_path": "historical-playground/analysis/pr289.json",
+      "bytes": 3358,
+      "sha256": "66f474691d615b5177e6c7f6004f30f50828d392d478fd26991833bd194bb899",
+      "purpose": "Captured public PR evidence referenced by the historical narrative"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr291.json",
+      "archive_path": "historical-playground/analysis/pr291.json",
+      "bytes": 3550,
+      "sha256": "0fba0fe7eca49eed028e781052369090cc3a8b6397c3ba0fad904f17536eb66d",
+      "purpose": "Captured public PR evidence referenced by the historical narrative"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr293.json",
+      "archive_path": "historical-playground/analysis/pr293.json",
+      "bytes": 2312,
+      "sha256": "22cccf2694a5e2b43235d8052c2a1d2ef30b064c07aa5e39455e44c2547f19ed",
+      "purpose": "Captured public PR evidence referenced by the historical narrative"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr307.json",
+      "archive_path": "historical-playground/analysis/pr307.json",
+      "bytes": 2831,
+      "sha256": "7d8522ff9a2bd1cad3fe8cfce255b6d0b1af01cabed3f7e269908709305e4371",
+      "purpose": "Captured public PR evidence referenced by the historical narrative"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr310.json",
+      "archive_path": "historical-playground/analysis/pr310.json",
+      "bytes": 2574,
+      "sha256": "5166d74a5dd33ba079118e2adbcb9ee4f84365960a41ac561e7a8822f77a3101",
+      "purpose": "Captured public PR evidence referenced by the historical narrative"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr320.json",
+      "archive_path": "historical-playground/analysis/pr320.json",
+      "bytes": 7178,
+      "sha256": "cb72f9b16cee686c075804aff1651b1b198a4ee2a31b92c146d730f5a40eb0c8",
+      "purpose": "Captured public PR evidence referenced by the historical narrative"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr341.json",
+      "archive_path": "historical-playground/analysis/pr341.json",
+      "bytes": 8631,
+      "sha256": "20017f633d51a28c70c0ea308370e741feb72c9920dc91f77147a4c2c1e27d5f",
+      "purpose": "Captured public PR evidence referenced by the historical narrative"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/thread-scaling-v2/README.txt",
+      "archive_path": "thread-scaling/README.txt",
+      "bytes": 5567,
+      "sha256": "07bfc944b1c458031465d2105a616d24bcfe68d8630170570ee12ec74d5f8148",
+      "purpose": "Original method/completion/review/qualified report; standalone scalar reanalysis does not need raw traces"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/thread-scaling-v2/design.json",
+      "archive_path": "thread-scaling/design.json",
+      "bytes": 4647,
+      "sha256": "7063ff74dcb54c7b66db762e7cbeb51ee9572fba6dd27b3b5a5ba342ea42f2c8",
+      "purpose": "Original method/completion/review/qualified report; standalone scalar reanalysis does not need raw traces"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/thread-scaling-v2/dispatch.json",
+      "archive_path": "thread-scaling/dispatch.json",
+      "bytes": 5633,
+      "sha256": "52847cdee673220bcd5ecb87256fc4ba833af000972ebcfe1d77140a4ca762c1",
+      "purpose": "Original method/completion/review/qualified report; standalone scalar reanalysis does not need raw traces"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/thread-scaling-v2/performance-complete.json",
+      "archive_path": "thread-scaling/performance-complete.json",
+      "bytes": 250,
+      "sha256": "449bf8ee324421ace9f2aed184f3a94dbd031dc6f9a69a8b84ac24d7fafcc443",
+      "purpose": "Original method/completion/review/qualified report; standalone scalar reanalysis does not need raw traces"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/thread-scaling-v2/conformance-complete.json",
+      "archive_path": "thread-scaling/conformance-complete.json",
+      "bytes": 249,
+      "sha256": "f5b4024a4729466adf9234abd0944532c3c20d8a1e5e7d6918ce2a8828908143",
+      "purpose": "Original method/completion/review/qualified report; standalone scalar reanalysis does not need raw traces"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/thread-scaling-v2/analyze.py",
+      "archive_path": "thread-scaling/analyze.py",
+      "bytes": 21824,
+      "sha256": "a1c3bd74fc10968e474fc843be51800afe7c06a40eeb009d68845b941b101e48",
+      "purpose": "Original method/completion/review/qualified report; standalone scalar reanalysis does not need raw traces"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/thread-scaling-v2/analysis/completed-independent-review.json",
+      "archive_path": "thread-scaling/analysis/completed-independent-review.json",
+      "bytes": 50665,
+      "sha256": "2f14f2f5d5eb7bb44f548c444d388caf525ce0a9cf240b0ff6b98e1b32dd9c0b",
+      "purpose": "Original method/completion/review/qualified report; standalone scalar reanalysis does not need raw traces"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/thread-scaling-v2/analysis/root-descriptive-acceptance.json",
+      "archive_path": "thread-scaling/analysis/root-descriptive-acceptance.json",
+      "bytes": 2110,
+      "sha256": "6e3fe16f9f7ac7f6223f4f65eb773c6914c40a082235538d2be2c56cfc81ad46",
+      "purpose": "Original method/completion/review/qualified report; standalone scalar reanalysis does not need raw traces"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/thread-scaling-v2/analysis/scaling-narrative-addendum.json",
+      "archive_path": "thread-scaling/analysis/scaling-narrative-addendum.json",
+      "bytes": 22546,
+      "sha256": "0b9beb76c451cbdc178dc366dcd15c72abd644bf215599bf3a12251bced781ff",
+      "purpose": "Original method/completion/review/qualified report; standalone scalar reanalysis does not need raw traces"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/thread-scaling-v2/analysis/report.html",
+      "archive_path": "thread-scaling/analysis/report.html",
+      "bytes": 41895,
+      "sha256": "e257e642fd340ee5180636d72e8d2a763aae65c20a3daf119c951971b113902a",
+      "purpose": "Original method/completion/review/qualified report; standalone scalar reanalysis does not need raw traces"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/analyze_performance.py",
+      "archive_path": "thread-scaling/analyze_performance.py",
+      "bytes": 16180,
+      "sha256": "a00c95beef216214afb848c3f02c9a4993d784a130deefb150bca7d687079a3c",
+      "purpose": "Original deterministic paired-seed bootstrap implementation used for aggregate calculations"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/resource-profile-map-tools/glob2/artifacts/engine-optimization-conclusion/pr-notes/history-derived/scaling-scalars.csv",
+      "archive_path": "thread-scaling/scaling-scalars.csv",
+      "bytes": 354554,
+      "sha256": "2811739677fc15eb32d9528080761b494320da1379376e834b15256b6c0d2ce9",
+      "purpose": "All 480 native scalar observations, warmups labelled; compact raw timing input, no trace payload"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/resource-profile-map-tools/glob2/artifacts/engine-optimization-conclusion/pr-notes/history-derived/scaling-summary.json",
+      "archive_path": "thread-scaling/scaling-summary.json",
+      "bytes": 559990,
+      "sha256": "e936a6d26f93b46d58a1346909a6a8c24f7b6174b593e23bf2ef3e6616a66918",
+      "purpose": "60-cell aggregate and source/fixture/method provenance; all source hashes retained"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/followup.html",
+      "archive_path": "mature-perf/followup.html",
+      "bytes": 4426,
+      "sha256": "1432d5a2accbd3c00bfe155dca3b39d55c676aca86d619bb523edf9a3ddbef62",
+      "purpose": "Qualified mature sample/namespace attribution and separate native continuity proofs; no raw perf, trace, replay, save or binary"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/leading-namespace-supplement-v1.json",
+      "archive_path": "mature-perf/leading-namespace-supplement-v1.json",
+      "bytes": 24019,
+      "sha256": "262f734eab608ef264e57f51429941589979a85f94024b19607a5ffce7a3111a",
+      "purpose": "Qualified mature sample/namespace attribution and separate native continuity proofs; no raw perf, trace, replay, save or binary"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/independent-sample-accounting.json",
+      "archive_path": "mature-perf/independent-sample-accounting.json",
+      "bytes": 11931,
+      "sha256": "6308758027b65338177a08432a49ea3ca2ae8c276fb430eb149917a74eb17a76",
+      "purpose": "Qualified mature sample/namespace attribution and separate native continuity proofs; no raw perf, trace, replay, save or binary"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/qualification.json",
+      "archive_path": "mature-perf/qualification.json",
+      "bytes": 3168,
+      "sha256": "49cd9affb1b35020fac78a15f65477b523a557ea76553c95e8e4290e5db88c87",
+      "purpose": "Qualified mature sample/namespace attribution and separate native continuity proofs; no raw perf, trace, replay, save or binary"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/revised-independent-review.json",
+      "archive_path": "mature-perf/revised-independent-review.json",
+      "bytes": 2465,
+      "sha256": "e296608431af3ede99c0551addc03a34f6e8ed4e3aef728eaa001b509e716237",
+      "purpose": "Qualified mature sample/namespace attribution and separate native continuity proofs; no raw perf, trace, replay, save or binary"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/independent-review.json",
+      "archive_path": "mature-perf/independent-review.json",
+      "bytes": 2855,
+      "sha256": "8b7fa62bab4b20f041f6b19191737b7d660dec355b87a025dfd71c242d252ab6",
+      "purpose": "Qualified mature sample/namespace attribution and separate native continuity proofs; no raw perf, trace, replay, save or binary"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/analysis-v4/analysis.json",
+      "archive_path": "mature-perf/analysis-v4/analysis.json",
+      "bytes": 204369,
+      "sha256": "a5c85b32a3fd5e5d267ba7235813df09ccb20c49a3379f883c5c957c5b67a3a7",
+      "purpose": "Qualified mature sample/namespace attribution and separate native continuity proofs; no raw perf, trace, replay, save or binary"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/analysis-v4/metadata.json",
+      "archive_path": "mature-perf/analysis-v4/metadata.json",
+      "bytes": 6100,
+      "sha256": "08ce92e7d77de463cc127ea76861f9825a235de56b9bd8d0294ece6f28a0da28",
+      "purpose": "Qualified mature sample/namespace attribution and separate native continuity proofs; no raw perf, trace, replay, save or binary"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/analysis-v4/header.txt",
+      "archive_path": "mature-perf/analysis-v4/header.txt",
+      "bytes": 4473,
+      "sha256": "27a9354b415b34f2e1c2bab34e945d61280d879246ba41f1fb7735320f99a497",
+      "purpose": "Qualified mature sample/namespace attribution and separate native continuity proofs; no raw perf, trace, replay, save or binary"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/analysis-v4/buildids.txt",
+      "archive_path": "mature-perf/analysis-v4/buildids.txt",
+      "bytes": 605,
+      "sha256": "b4bca1ee3b2a18440dbb1a77598f3c1aa4695329e2d3a7a7c17bbfe512df389f",
+      "purpose": "Qualified mature sample/namespace attribution and separate native continuity proofs; no raw perf, trace, replay, save or binary"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/analysis-v4/elf-notes.txt",
+      "archive_path": "mature-perf/analysis-v4/elf-notes.txt",
+      "bytes": 627,
+      "sha256": "33200d5f53577c574d455040e383cb62ce4011d74f0f525cc310e71b006640fe",
+      "purpose": "Qualified mature sample/namespace attribution and separate native continuity proofs; no raw perf, trace, replay, save or binary"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/profile/sampling-boundaries.json",
+      "archive_path": "mature-perf/profile/sampling-boundaries.json",
+      "bytes": 41483,
+      "sha256": "4240db40bbb92a4becfc18e1c4f909016c188ec4837a299a9a99581b8d477056",
+      "purpose": "Qualified mature sample/namespace attribution and separate native continuity proofs; no raw perf, trace, replay, save or binary"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/profile/attached-tasks.json",
+      "archive_path": "mature-perf/profile/attached-tasks.json",
+      "bytes": 835,
+      "sha256": "c3cf9282b7eb57a9f26ca27e1a7fe84e857ed903764f51412367d90130139226",
+      "purpose": "Qualified mature sample/namespace attribution and separate native continuity proofs; no raw perf, trace, replay, save or binary"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/profile/command.json",
+      "archive_path": "mature-perf/profile/command.json",
+      "bytes": 701,
+      "sha256": "29e223722a52033c01cc051a7ffa0f89c9efed17fc4439ad4e59617ec3e3f44b",
+      "purpose": "Qualified mature sample/namespace attribution and separate native continuity proofs; no raw perf, trace, replay, save or binary"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/profile/sampler-start.json",
+      "archive_path": "mature-perf/profile/sampler-start.json",
+      "bytes": 3136,
+      "sha256": "687931a44ef436daed5fed0d147e7ab6a9ed13c5fea9773a02e70de3663bc425",
+      "purpose": "Qualified mature sample/namespace attribution and separate native continuity proofs; no raw perf, trace, replay, save or binary"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/profile/sampler-stop.json",
+      "archive_path": "mature-perf/profile/sampler-stop.json",
+      "bytes": 531,
+      "sha256": "7ba5192166ff78112d57db6f876aac31c80f739b6c2a59fe00b069bb45e63751",
+      "purpose": "Qualified mature sample/namespace attribution and separate native continuity proofs; no raw perf, trace, replay, save or binary"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/profile/complete.json",
+      "archive_path": "mature-perf/profile/complete.json",
+      "bytes": 616,
+      "sha256": "45db75b51f5971008b7803c1fed6b832da8bd17fcebc90500589221de8a5e2a9",
+      "purpose": "Qualified mature sample/namespace attribution and separate native continuity proofs; no raw perf, trace, replay, save or binary"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/profile/validated.json",
+      "archive_path": "mature-perf/profile/validated.json",
+      "bytes": 894,
+      "sha256": "03990997239641e87f5c6a53d9094ae4ced7741a0a423870ed53c1ac9fdf1eea",
+      "purpose": "Qualified mature sample/namespace attribution and separate native continuity proofs; no raw perf, trace, replay, save or binary"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/continuous-sealed/command.json",
+      "archive_path": "mature-perf/continuous-sealed/command.json",
+      "bytes": 1122,
+      "sha256": "5b3f2a4c9f2f384628bb60c1de2f215d81dee95fa025c0e0798208df2cc2d9bf",
+      "purpose": "Qualified mature sample/namespace attribution and separate native continuity proofs; no raw perf, trace, replay, save or binary"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/continuous-sealed/validated.json",
+      "archive_path": "mature-perf/continuous-sealed/validated.json",
+      "bytes": 894,
+      "sha256": "03990997239641e87f5c6a53d9094ae4ced7741a0a423870ed53c1ac9fdf1eea",
+      "purpose": "Qualified mature sample/namespace attribution and separate native continuity proofs; no raw perf, trace, replay, save or binary"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/continuous-symbolic/command.json",
+      "archive_path": "mature-perf/continuous-symbolic/command.json",
+      "bytes": 1165,
+      "sha256": "b61c8e7050c415fa9ca2ac34d6297585a3734c87925436dee540a9997244fdc5",
+      "purpose": "Qualified mature sample/namespace attribution and separate native continuity proofs; no raw perf, trace, replay, save or binary"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/continuous-symbolic/validated.json",
+      "archive_path": "mature-perf/continuous-symbolic/validated.json",
+      "bytes": 894,
+      "sha256": "03990997239641e87f5c6a53d9094ae4ced7741a0a423870ed53c1ac9fdf1eea",
+      "purpose": "Qualified mature sample/namespace attribution and separate native continuity proofs; no raw perf, trace, replay, save or binary"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/bounded-sealed/command.json",
+      "archive_path": "mature-perf/bounded-sealed/command.json",
+      "bytes": 1174,
+      "sha256": "03754d8e1df0dbb6ef67f92b2560a692ef71806d2f15b0119a7bb95305191f83",
+      "purpose": "Qualified mature sample/namespace attribution and separate native continuity proofs; no raw perf, trace, replay, save or binary"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/bounded-sealed/validated.json",
+      "archive_path": "mature-perf/bounded-sealed/validated.json",
+      "bytes": 1599,
+      "sha256": "11865ccc3f17ac93324dfe9bcdea0740c213a7fe6fe73ac77a4b8560750ea8c4",
+      "purpose": "Qualified mature sample/namespace attribution and separate native continuity proofs; no raw perf, trace, replay, save or binary"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/bounded-symbolic/command.json",
+      "archive_path": "mature-perf/bounded-symbolic/command.json",
+      "bytes": 1217,
+      "sha256": "6df93060d9567dff129f541c2ce692f135cd1291c5bf24fe25ebc0c53e5b1f15",
+      "purpose": "Qualified mature sample/namespace attribution and separate native continuity proofs; no raw perf, trace, replay, save or binary"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/bounded-symbolic/validated.json",
+      "archive_path": "mature-perf/bounded-symbolic/validated.json",
+      "bytes": 1599,
+      "sha256": "11865ccc3f17ac93324dfe9bcdea0740c213a7fe6fe73ac77a4b8560750ea8c4",
+      "purpose": "Qualified mature sample/namespace attribution and separate native continuity proofs; no raw perf, trace, replay, save or binary"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/building-search-empty-layer-review/assessment.json",
+      "archive_path": "mature-perf/building-search-empty-layer-review/assessment.json",
+      "bytes": 6702,
+      "sha256": "bfa7b121f7f3288a9069ddc68b8e0fff6293f97b621c754ec8c4f8eb4c1751fe",
+      "purpose": "Qualified mature sample/namespace attribution and separate native continuity proofs; no raw perf, trace, replay, save or binary"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/scalar-relax-store-candidate.json",
+      "archive_path": "mature-perf/scalar-relax-store-candidate.json",
+      "bytes": 3792,
+      "sha256": "e8dcccd1cf5b4df5c93acc4a1a71252914c0f95bef1107ab7f3384621ead5303",
+      "purpose": "Qualified mature sample/namespace attribution and separate native continuity proofs; no raw perf, trace, replay, save or binary"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/resource-profile-map-tools/glob2/artifacts/engine-optimization-conclusion/pr-notes/history-derived/observed-counts.json",
+      "archive_path": "history-and-scaling-observed-counts.json",
+      "bytes": 14727,
+      "sha256": "c1b766945476fcc1d2cd74017abb87aac2090254396d9180e662401a6061e4d7",
+      "purpose": "Fresh read-only observed row counts, state/coverage caveats, no pending/completed substitution"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/resource-profile-map-tools/glob2/artifacts/engine-optimization-conclusion/pr-notes/history-derived/curate.py",
+      "archive_path": "curation/curate-history.py",
+      "bytes": 13158,
+      "sha256": "b95df5e56c62ffbfccf6430468955cb91df9c10ce9a654e6618d21cb1016b4ca",
+      "purpose": "Exact read-only export recipe; original absolute source paths documented, no native launches"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/resource-profile-map-tools/glob2/artifacts/engine-optimization-conclusion/pr-notes/history-derived/recompute-scalars.py",
+      "archive_path": "thread-scaling/recompute-scalars.py",
+      "bytes": 4719,
+      "sha256": "1f5f02644b06f1c53765dabdee52363b6b55f3c2dacfc7e00ae04ab6b14f32fa",
+      "purpose": "Standalone stdlib recalculation of CSV historical means and exact 60-cell paired bootstrap; no launches"
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/resource-profile-map-tools/glob2/artifacts/engine-optimization-conclusion/pr-notes/history-derived/reanalysis-verification.json",
+      "archive_path": "thread-scaling/reanalysis-verification.json",
+      "bytes": 1894,
+      "sha256": "ed0c5299c2692e7f5961eb08512777be3498c610fe78272e63f0a823634693ba",
+      "purpose": "Actually executed scalar-only recomputation passed: 196 historical means and60x11 scaling metrics/paired bootstrap source-matched"
+    }
+  ],
+  "total_files": 202,
+  "total_bytes": 12047242,
+  "observations": {
+    "historical-playground": {
+      "attempts": 448,
+      "status_counts": {
+        "completed": 448
+      },
+      "revisions_by_sample_date": {
+        "2026-09-02": 32,
+        "2026-09-05": 32,
+        "2026-09-08": 32,
+        "2026-09-11": 32,
+        "2026-09-14": 32,
+        "2026-09-17": 32,
+        "2026-09-20": 32,
+        "2026-09-23": 32,
+        "2026-09-26": 32,
+        "2026-09-29": 32,
+        "2026-10-02": 32,
+        "2026-10-05": 32,
+        "2026-10-08": 32,
+        "2026-10-11": 32
+      },
+      "planned_attempts": 448,
+      "remaining_attempts": 0,
+      "map_sha256": "2a323a2d02475fb1ddd2ddfac99c51890aa7b2a2f3537ad7bee93aba85d84eaf",
+      "map_sha256_verified": true,
+      "seeds": [
+        1056243202,
+        744345666,
+        1064623205,
+        725864695,
+        599004658,
+        117787757,
+        85910194,
+        769116511,
+        1030656205,
+        79851807,
+        1480527227,
+        31444774,
+        1514826878,
+        1858401095,
+        1635872854,
+        1441583672,
+        741493568,
+        466374853,
+        2037486757,
+        1414753418,
+        1298936997,
+        1139586032,
+        1845486380,
+        275303672,
+        1013771484,
+        1961520297,
+        56523606,
+        7804900,
+        494353701,
+        2092499754,
+        1910481143,
+        2122112527
+      ],
+      "revision_list": [
+        {
+          "sample_date": "2026-09-02",
+          "commit": "14b99bc82de940a095b816933ae4653274f6425a",
+          "commit_date": "2025-09-06T18:00:18+02:00",
+          "subject": "french translation: typos and some other corrections"
+        },
+        {
+          "sample_date": "2026-09-05",
+          "commit": "731f6be5d6367c2d98bf555abab75836b9cdc1f7",
+          "commit_date": "2026-09-05T23:45:27-04:00",
+          "subject": "Fix LAN joining and shared map downloads (#161)"
+        },
+        {
+          "sample_date": "2026-09-08",
+          "commit": "d3ac1ed3fd0bbd23636e48b6ec96d4f95fcaaae0",
+          "commit_date": "2026-09-08T21:34:34-04:00",
+          "subject": "Use Tile for map cells and their accessor (#199)"
+        },
+        {
+          "sample_date": "2026-09-11",
+          "commit": "982b12730c2e8d6a813c5e9215291957476aa2b1",
+          "commit_date": "2026-09-11T23:19:36-04:00",
+          "subject": "Shrink the audio device buffer and skip opening it while muted (#252)"
+        },
+        {
+          "sample_date": "2026-09-14",
+          "commit": "3bb33a627a2b7b2d5a7be833e468266cd8eca8d5",
+          "commit_date": "2026-09-14T22:44:05-04:00",
+          "subject": "Prioritize Nicowar wheat over adjacent wood in all eight directions (#293)"
+        },
+        {
+          "sample_date": "2026-09-17",
+          "commit": "326c05fda1a4ad22ee784647540157c7181e6bce",
+          "commit_date": "2026-09-17T17:41:18-04:00",
+          "subject": "Add the Hidden Oasis map generator (#338)"
+        },
+        {
+          "sample_date": "2026-09-20",
+          "commit": "568fe9274e3d7519e72794e1134dfef9cf7fb2ed",
+          "commit_date": "2026-09-20T19:27:01-04:00",
+          "subject": "Add backup force growth for Maxima (#373)"
+        },
+        {
+          "sample_date": "2026-09-23",
+          "commit": "a494a331929c6104c44be1bf395ef1c445bbd4c2",
+          "commit_date": "2026-09-22T19:49:59-04:00",
+          "subject": "Share Maxima campuses and pack barracks without reserving future slots (#377)"
+        },
+        {
+          "sample_date": "2026-09-26",
+          "commit": "1c49596f5195188e7f078768f610454f7068d7c6",
+          "commit_date": "2026-09-24T18:25:25-04:00",
+          "subject": "Add the browser platform with durable saves and YOG cross-play (#379)"
+        },
+        {
+          "sample_date": "2026-09-29",
+          "commit": "05b29faf5fed8d8cc6e4cd8c8a413708458bd345",
+          "commit_date": "2026-09-29T22:35:36-04:00",
+          "subject": "Stabilize custom-game browser checks and zoom harness (#417)"
+        },
+        {
+          "sample_date": "2026-10-02",
+          "commit": "98dee3ed57b7cac41570619b8bb7732bd858936b",
+          "commit_date": "2026-10-02T23:52:14-04:00",
+          "subject": "Reduce CI duplication and gate development coverage by risk (#613)"
+        },
+        {
+          "sample_date": "2026-10-05",
+          "commit": "f5d1bc51ef61795d4cc165e9ac530f5d2ad21a42",
+          "commit_date": "2026-10-05T23:58:59-04:00",
+          "subject": "Avoid duplicate zero texture buffers in WebAssembly (#820)"
+        },
+        {
+          "sample_date": "2026-10-08",
+          "commit": "d341b5f20a114314727226882a8511f70a176dda",
+          "commit_date": "2026-10-08T23:59:04-04:00",
+          "subject": "Prepare version 0.11.0.0 across release channels (#990)"
+        },
+        {
+          "sample_date": "2026-10-11",
+          "commit": "9a08b91f4350649862e788135e99bb1f5f469e3a",
+          "commit_date": "2026-10-11T13:03:04-04:00",
+          "subject": "Restore mature resource stock oscillation (#1137)"
+        }
+      ],
+      "execution": "All binaries compiled first using CPUs 0-31; then four simultaneous games, each on three physical cores plus SMT siblings, without any experiment compilation.",
+      "accounting": "os.wait4: user+system process CPU seconds, peak RSS KiB; wall clock includes startup and shutdown",
+      "observer": "Legacy random-games driver: 8 AI controllers plus one idle local observer",
+      "qualification": "14x32 natural-winner games with one-hour cap, all winners observed. Historical rules/random streams/AI/replay defaults differ; trajectory changes prevent causal attribution from E2E alone. Earlier binaries can be serial despite six-CPU mask; CPU allocation is not proof of six compute participants. Frozen historical tip is not current master."
+    },
+    "historical-oazis": {
+      "attempts": 192,
+      "status_counts": {
+        "completed": 190,
+        "timeout": 2
+      },
+      "revisions_by_sample_date": {
+        "2026-09-02": 32,
+        "2026-09-05": 32,
+        "2026-09-08": 32,
+        "2026-09-11": 32,
+        "2026-09-14": 32,
+        "2026-09-17": 32
+      },
+      "planned_attempts": 448,
+      "remaining_attempts": 256,
+      "map_sha256": "cd80d8c9a72643a95bb0bd3c22deb594aeed125d12cb3294859e7fffbc131448",
+      "map_sha256_verified": true,
+      "seeds": [
+        1056243202,
+        744345666,
+        1064623205,
+        725864695,
+        599004658,
+        117787757,
+        85910194,
+        769116511,
+        1030656205,
+        79851807,
+        1480527227,
+        31444774,
+        1514826878,
+        1858401095,
+        1635872854,
+        1441583672,
+        741493568,
+        466374853,
+        2037486757,
+        1414753418,
+        1298936997,
+        1139586032,
+        1845486380,
+        275303672,
+        1013771484,
+        1961520297,
+        56523606,
+        7804900,
+        494353701,
+        2092499754,
+        1910481143,
+        2122112527
+      ],
+      "revision_list": [
+        {
+          "sample_date": "2026-09-02",
+          "commit": "14b99bc82de940a095b816933ae4653274f6425a",
+          "commit_date": "2025-09-06T18:00:18+02:00",
+          "subject": "french translation: typos and some other corrections"
+        },
+        {
+          "sample_date": "2026-09-05",
+          "commit": "731f6be5d6367c2d98bf555abab75836b9cdc1f7",
+          "commit_date": "2026-09-05T23:45:27-04:00",
+          "subject": "Fix LAN joining and shared map downloads (#161)"
+        },
+        {
+          "sample_date": "2026-09-08",
+          "commit": "d3ac1ed3fd0bbd23636e48b6ec96d4f95fcaaae0",
+          "commit_date": "2026-09-08T21:34:34-04:00",
+          "subject": "Use Tile for map cells and their accessor (#199)"
+        },
+        {
+          "sample_date": "2026-09-11",
+          "commit": "982b12730c2e8d6a813c5e9215291957476aa2b1",
+          "commit_date": "2026-09-11T23:19:36-04:00",
+          "subject": "Shrink the audio device buffer and skip opening it while muted (#252)"
+        },
+        {
+          "sample_date": "2026-09-14",
+          "commit": "3bb33a627a2b7b2d5a7be833e468266cd8eca8d5",
+          "commit_date": "2026-09-14T22:44:05-04:00",
+          "subject": "Prioritize Nicowar wheat over adjacent wood in all eight directions (#293)"
+        },
+        {
+          "sample_date": "2026-09-17",
+          "commit": "326c05fda1a4ad22ee784647540157c7181e6bce",
+          "commit_date": "2026-09-17T17:41:18-04:00",
+          "subject": "Add the Hidden Oasis map generator (#338)"
+        },
+        {
+          "sample_date": "2026-09-20",
+          "commit": "568fe9274e3d7519e72794e1134dfef9cf7fb2ed",
+          "commit_date": "2026-09-20T19:27:01-04:00",
+          "subject": "Add backup force growth for Maxima (#373)"
+        },
+        {
+          "sample_date": "2026-09-23",
+          "commit": "a494a331929c6104c44be1bf395ef1c445bbd4c2",
+          "commit_date": "2026-09-22T19:49:59-04:00",
+          "subject": "Share Maxima campuses and pack barracks without reserving future slots (#377)"
+        },
+        {
+          "sample_date": "2026-09-26",
+          "commit": "1c49596f5195188e7f078768f610454f7068d7c6",
+          "commit_date": "2026-09-24T18:25:25-04:00",
+          "subject": "Add the browser platform with durable saves and YOG cross-play (#379)"
+        },
+        {
+          "sample_date": "2026-09-29",
+          "commit": "05b29faf5fed8d8cc6e4cd8c8a413708458bd345",
+          "commit_date": "2026-09-29T22:35:36-04:00",
+          "subject": "Stabilize custom-game browser checks and zoom harness (#417)"
+        },
+        {
+          "sample_date": "2026-10-02",
+          "commit": "98dee3ed57b7cac41570619b8bb7732bd858936b",
+          "commit_date": "2026-10-02T23:52:14-04:00",
+          "subject": "Reduce CI duplication and gate development coverage by risk (#613)"
+        },
+        {
+          "sample_date": "2026-10-05",
+          "commit": "f5d1bc51ef61795d4cc165e9ac530f5d2ad21a42",
+          "commit_date": "2026-10-05T23:58:59-04:00",
+          "subject": "Avoid duplicate zero texture buffers in WebAssembly (#820)"
+        },
+        {
+          "sample_date": "2026-10-08",
+          "commit": "d341b5f20a114314727226882a8511f70a176dda",
+          "commit_date": "2026-10-08T23:59:04-04:00",
+          "subject": "Prepare version 0.11.0.0 across release channels (#990)"
+        },
+        {
+          "sample_date": "2026-10-11",
+          "commit": "9a08b91f4350649862e788135e99bb1f5f469e3a",
+          "commit_date": "2026-10-11T13:03:04-04:00",
+          "subject": "Restore mature resource stock oscillation (#1137)"
+        }
+      ],
+      "execution": "All binaries compiled first using CPUs 0-31; then four simultaneous games, each on three physical cores plus SMT siblings, without any experiment compilation.",
+      "accounting": "os.wait4: user+system process CPU seconds, peak RSS KiB; wall clock includes startup and shutdown",
+      "observer": "Legacy random-games driver:11 Nicowar controllers plus one idle local observer",
+      "current_hold_flag_sha256": "626444fec97a63000d8c97d74f190a57139b4edbb951f3dc9bbcbb22222f11ea",
+      "qualification": "Campaign held and incomplete: six revisions observed, eight unobserved. Existing progress/report state can say running, but hold prevents dispatch; no completion of remaining 256 claimed. Timeout CPU/wall remain consumption measurements, not completed-game E2E; missing ticks/TPS remain unknown. Same legacy runner has 11 AIs plus idle local observer; distinct from exact eleven-controller later fixtures."
+    },
+    "thread-scaling": {
+      "verified_native": 480,
+      "measured": 360,
+      "warmups": 120,
+      "paired_cells": 60,
+      "diagnostic_children": 36,
+      "source_commit": "9e370bcb83209cf99f43c346750a6d4bd440f4f2",
+      "scope": "Final9e only, six vs24logicalCPUbudgets; GPUoff/GPUon separate; requested1/3/6/12/auto, auto6/24. Every ratio pairs same seed/block withN1. No production optimum selection or transfer to othermachines. 2seeds\u00d73blocks are descriptive; no unmatched workload pooling.",
+      "compact_export_source_sha256": "95e8d519f2bc3865b284007ef4df4ce45978594224b9345bef36e8534afc7c1e"
+    },
+    "mature-perf": {
+      "exported_reconciled_samples": 8986,
+      "observed_period": 18008015888,
+      "empty_callchains": 5110,
+      "empty_callchain_fraction": 0.5686623636768307,
+      "source_commit": "9e370bcb83209cf99f43c346750a6d4bd440f4f2",
+      "qualification": "One continuously evolved late Oazis window near120064-128000; CPU task-clock sample ranking, not whole-game CPU fractions or prediction of speed savings. 56.8662% empty callchains: full caller/all-active-thread coverage unproven. Original substring category table in analysis-v4/analysis.json is explicitly superseded by leading-namespace-supplement-v1.json: snapshot handle type appearing in a gradient template does not make gradient work snapshot work. Exact binary text/outcome/replay proof is separate from loaded512tick checksum continuity; continuous every-tick late-window equivalence not claimed.",
+      "leading_namespace_observation": [
+        {
+          "namespace": "gradient_kernel",
+          "period": 4476953872,
+          "observed_share": 0.24860894725127977
+        },
+        {
+          "namespace": "BuildingGradientSearch",
+          "period": 2677354688,
+          "observed_share": 0.14867571778321834
+        },
+        {
+          "namespace": "Building",
+          "period": 2340681344,
+          "observed_share": 0.12997996884041843
+        },
+        {
+          "namespace": "gradient_preparation",
+          "period": 2256513008,
+          "observed_share": 0.12530603160471845
+        },
+        {
+          "namespace": "AISharedRuntime",
+          "period": 1919839664,
+          "observed_share": 0.10661028266191853
+        },
+        {
+          "namespace": "SimulationSnapshot",
+          "period": 1064128248,
+          "observed_share": 0.059091920765635436
+        },
+        {
+          "namespace": "unclassified application function",
+          "period": 1042084160,
+          "observed_share": 0.05786779434676163
+        },
+        {
+          "namespace": "Map",
+          "period": 681362720,
+          "observed_share": 0.037836634765190294
+        },
+        {
+          "namespace": "Team",
+          "period": 559118232,
+          "observed_share": 0.031048297351435567
+        },
+        {
+          "namespace": "resolved other DSO",
+          "period": 456913824,
+          "observed_share": 0.025372802136657022
+        },
+        {
+          "namespace": "Unit",
+          "period": 196392784,
+          "observed_share": 0.010905853549966614
+        },
+        {
+          "namespace": "Game",
+          "period": 80160320,
+          "observed_share": 0.00445136879590474
+        },
+        {
+          "namespace": "kernel",
+          "period": 72144288,
+          "observed_share": 0.0040062319163142665
+        },
+        {
+          "namespace": "AIEngine",
+          "period": 60120240,
+          "observed_share": 0.0033385265969285557
+        },
+        {
+          "namespace": "ComputeExecutor",
+          "period": 46092184,
+          "observed_share": 0.002559537057645226
+        },
+        {
+          "namespace": "NewNicowar",
+          "period": 46092184,
+          "observed_share": 0.002559537057645226
+        },
+        {
+          "namespace": "unknown user leaf",
+          "period": 32064128,
+          "observed_share": 0.0017805475183618963
+        }
+      ]
+    }
+  },
+  "excluded": [
+    "Full source copies and executables",
+    "Detailed simulation/world checksums and full replays/saves",
+    "perf.data, structured samples and raw record/callchain exports",
+    "Full build stdout logs and generated plot duplicates",
+    "Unexecuted Oazis revisions, unexecuted profile policy calibration"
+  ],
+  "limits": "Compact evidence preserves per-run scalar inputs, tested workload identities, provenance and scoped conclusions; not a bit-for-bit complete reproduction of all raw diagnostics. Original scripts with absolute paths are historical records; use bundled standalone reanalysis for compact CSVs.",
+  "selected_files": [
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/experiment.json",
+      "sha256": "e25128b49fa34b0efbdee178a9b3b7031ec2c2f8358eb7ed8f89ae310dd496e9",
+      "bytes": 141337,
+      "reason": "Aggregate inputs, snapshot/seed identity, accounting definition, plotting/execution protocol, or scoped report",
+      "archive_path": "historical-playground/experiment.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/runs.csv",
+      "sha256": "9bbcdb985fe65c0e8ed1e878de394a3918874ac4a5ff2be5b780d3a51889f61c",
+      "bytes": 104410,
+      "reason": "Aggregate inputs, snapshot/seed identity, accounting definition, plotting/execution protocol, or scoped report",
+      "archive_path": "historical-playground/runs.csv"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/summary.csv",
+      "sha256": "f0e4cc36898f4d21a9074acff417aabe891dcf4ac4b749f943beecfb5dee5f89",
+      "bytes": 7433,
+      "reason": "Aggregate inputs, snapshot/seed identity, accounting definition, plotting/execution protocol, or scoped report",
+      "archive_path": "historical-playground/summary.csv"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/summary.json",
+      "sha256": "a5d88870e5e60d4a0e4af65a2c7acbcfdb85ccadc23eb2e503b78267ea624e4e",
+      "bytes": 17692,
+      "reason": "Aggregate inputs, snapshot/seed identity, accounting definition, plotting/execution protocol, or scoped report",
+      "archive_path": "historical-playground/summary.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/build-times.csv",
+      "sha256": "0c653fe83de1a7645e64cc7a0b47f1f9c9d610fb60142466bcad156f978cfc94",
+      "bytes": 32188,
+      "reason": "Aggregate inputs, snapshot/seed identity, accounting definition, plotting/execution protocol, or scoped report",
+      "archive_path": "historical-playground/build-times.csv"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/build-times.json",
+      "sha256": "84e7d638be6ad35b7ebeae9506a3b75d3f51a23895cf2549154e98d3517aa0eb",
+      "bytes": 50185,
+      "reason": "Aggregate inputs, snapshot/seed identity, accounting definition, plotting/execution protocol, or scoped report",
+      "archive_path": "historical-playground/build-times.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/plot_build_times.py",
+      "sha256": "7ff23d208248617b20cceb860511f2f82a84c6279211af83c14ed262fa72db57",
+      "bytes": 5068,
+      "reason": "Aggregate inputs, snapshot/seed identity, accounting definition, plotting/execution protocol, or scoped report",
+      "archive_path": "historical-playground/plot_build_times.py"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/plot_results.py",
+      "sha256": "9e020d263969b46edd8cbb0dfbbe28f5cc7b6a0bd670c3440211b85410e50c82",
+      "bytes": 7465,
+      "reason": "Aggregate inputs, snapshot/seed identity, accounting definition, plotting/execution protocol, or scoped report",
+      "archive_path": "historical-playground/plot_results.py"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/run_experiment.py",
+      "sha256": "0ad4a2472a7dc7fce606825625a0f2727ed9ca59083e382e77a46ab653b6439f",
+      "bytes": 20441,
+      "reason": "Aggregate inputs, snapshot/seed identity, accounting definition, plotting/execution protocol, or scoped report",
+      "archive_path": "historical-playground/run_experiment.py"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/report.html",
+      "sha256": "4f2e62d4c4a75af78c6e378ac77254474f73b4d10b33469cb5d9e42686c101d0",
+      "bytes": 1025623,
+      "reason": "Aggregate inputs, snapshot/seed identity, accounting definition, plotting/execution protocol, or scoped report",
+      "archive_path": "historical-playground/report.html"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/Playground.map",
+      "sha256": "2a323a2d02475fb1ddd2ddfac99c51890aa7b2a2f3537ad7bee93aba85d84eaf",
+      "bytes": 659316,
+      "reason": "Fixed workload input; not a raw simulation trace",
+      "archive_path": "historical-playground/map/Playground.map"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/snapshots/2026-09-02-14b99bc82/build.json",
+      "sha256": "7d30008e26aa22182daacbc5adf3e556ef6e2d8eb4f1e3a12bbb89614c249b8e",
+      "bytes": 9454,
+      "reason": "Per-revision compiler flags, dependency/binary hashes, build elapsed provenance",
+      "archive_path": "historical-playground/snapshots/2026-09-02-14b99bc82/build.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/snapshots/2026-09-05-731f6be5d/build.json",
+      "sha256": "17532ba02d57677787d1c853f7fc49f822401ef3383816309226254adb928069",
+      "bytes": 9327,
+      "reason": "Per-revision compiler flags, dependency/binary hashes, build elapsed provenance",
+      "archive_path": "historical-playground/snapshots/2026-09-05-731f6be5d/build.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/snapshots/2026-09-08-d3ac1ed3f/build.json",
+      "sha256": "a271d49852b97b32a82397f96f2b791b5baa5933a1e3233ff213a73e9ef3bb7e",
+      "bytes": 9332,
+      "reason": "Per-revision compiler flags, dependency/binary hashes, build elapsed provenance",
+      "archive_path": "historical-playground/snapshots/2026-09-08-d3ac1ed3f/build.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/snapshots/2026-09-11-982b12730/build.json",
+      "sha256": "017708d2e5c22325df5d629a97cf5a4666713adbcbda7bf39e606b2767ebe8cf",
+      "bytes": 9332,
+      "reason": "Per-revision compiler flags, dependency/binary hashes, build elapsed provenance",
+      "archive_path": "historical-playground/snapshots/2026-09-11-982b12730/build.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/snapshots/2026-09-14-3bb33a627/build.json",
+      "sha256": "09bd0791923fb6f8f0d66d3d2ee8e018ec66982bdc6929450313f343400bd693",
+      "bytes": 9377,
+      "reason": "Per-revision compiler flags, dependency/binary hashes, build elapsed provenance",
+      "archive_path": "historical-playground/snapshots/2026-09-14-3bb33a627/build.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/snapshots/2026-09-17-326c05fda/build.json",
+      "sha256": "bc86eb6129a4a627c9fd889823996cb57f70122aef27638b8f16de99a7c2e1fb",
+      "bytes": 9369,
+      "reason": "Per-revision compiler flags, dependency/binary hashes, build elapsed provenance",
+      "archive_path": "historical-playground/snapshots/2026-09-17-326c05fda/build.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/snapshots/2026-09-20-568fe9274/build.json",
+      "sha256": "b33223b844b8a20f3f74cd5592cdfad0a4798240837ac08032e1d2d8f4455459",
+      "bytes": 9371,
+      "reason": "Per-revision compiler flags, dependency/binary hashes, build elapsed provenance",
+      "archive_path": "historical-playground/snapshots/2026-09-20-568fe9274/build.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/snapshots/2026-09-23-a494a3319/build.json",
+      "sha256": "6e5b1279f2b289220203ae9f0114ad2dc0949bdf4b59f4a0a4f1bc0535845b16",
+      "bytes": 9376,
+      "reason": "Per-revision compiler flags, dependency/binary hashes, build elapsed provenance",
+      "archive_path": "historical-playground/snapshots/2026-09-23-a494a3319/build.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/snapshots/2026-09-26-1c49596f5/build.json",
+      "sha256": "0b8dcfc95846483e4b23453a5e18f8d229a5d0dd7af258951281866b10b63a7a",
+      "bytes": 9272,
+      "reason": "Per-revision compiler flags, dependency/binary hashes, build elapsed provenance",
+      "archive_path": "historical-playground/snapshots/2026-09-26-1c49596f5/build.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/snapshots/2026-09-29-05b29faf5/build.json",
+      "sha256": "26f7cfd3cf78c2e39c94b39ffb5e9c47c332a6cba0b9441d2a9145d6971e5593",
+      "bytes": 9272,
+      "reason": "Per-revision compiler flags, dependency/binary hashes, build elapsed provenance",
+      "archive_path": "historical-playground/snapshots/2026-09-29-05b29faf5/build.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/snapshots/2026-10-02-98dee3ed5/build.json",
+      "sha256": "135a2249535700cae287b9c21ab92f7a607dad74d8c54381ad710b1d54fabf39",
+      "bytes": 4843,
+      "reason": "Per-revision compiler flags, dependency/binary hashes, build elapsed provenance",
+      "archive_path": "historical-playground/snapshots/2026-10-02-98dee3ed5/build.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/snapshots/2026-10-05-f5d1bc51e/build.json",
+      "sha256": "4074e2b2ced5d8035b0d5626be9af38206e43c1fceac64bb20c7deccd912e05c",
+      "bytes": 5060,
+      "reason": "Per-revision compiler flags, dependency/binary hashes, build elapsed provenance",
+      "archive_path": "historical-playground/snapshots/2026-10-05-f5d1bc51e/build.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/snapshots/2026-10-08-d341b5f20/build.json",
+      "sha256": "cf1dcaa9167c38f55a6692b149927f225511d74c5d93d1e7ff1af4c0ad940bdf",
+      "bytes": 5060,
+      "reason": "Per-revision compiler flags, dependency/binary hashes, build elapsed provenance",
+      "archive_path": "historical-playground/snapshots/2026-10-08-d341b5f20/build.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/snapshots/2026-10-11-9a08b91f4/build.json",
+      "sha256": "b3861748dfc7a58cc367881231558e7a3fddc0eb86a1a06b47fa3d379bbb5db7",
+      "bytes": 5060,
+      "reason": "Per-revision compiler flags, dependency/binary hashes, build elapsed provenance",
+      "archive_path": "historical-playground/snapshots/2026-10-11-9a08b91f4/build.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/snapshots/2026-09-02-14b99bc82/adapter.patch",
+      "sha256": "dd4a4e40f31ab4f24f6d9fb79ae7af7e4786770728a683f9f91177172486bcd5",
+      "bytes": 5834,
+      "reason": "Exact historical benchmark compatibility adapter; original code remains in Git",
+      "archive_path": "historical-playground/snapshots/2026-09-02-14b99bc82/adapter.patch"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/snapshots/2026-09-05-731f6be5d/adapter.patch",
+      "sha256": "79183c54bd49573c1b55c30ddd6e6cbb3caadbbc8cfc8f04df08b7a8bfa85437",
+      "bytes": 4965,
+      "reason": "Exact historical benchmark compatibility adapter; original code remains in Git",
+      "archive_path": "historical-playground/snapshots/2026-09-05-731f6be5d/adapter.patch"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/snapshots/2026-09-08-d3ac1ed3f/adapter.patch",
+      "sha256": "32b187e8617af5603de7abbde90f2f0f1072b8ea7d90e78d9d151555104b7e8f",
+      "bytes": 4965,
+      "reason": "Exact historical benchmark compatibility adapter; original code remains in Git",
+      "archive_path": "historical-playground/snapshots/2026-09-08-d3ac1ed3f/adapter.patch"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/snapshots/2026-09-11-982b12730/adapter.patch",
+      "sha256": "96eec2de8431a067563c5a08ab464940f0912612aff85cf245bd3c0b532e3c84",
+      "bytes": 4583,
+      "reason": "Exact historical benchmark compatibility adapter; original code remains in Git",
+      "archive_path": "historical-playground/snapshots/2026-09-11-982b12730/adapter.patch"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/snapshots/2026-09-14-3bb33a627/adapter.patch",
+      "sha256": "abe126133901ed44815c23a796389da6947e171043d305e7134a386e687c2c05",
+      "bytes": 4061,
+      "reason": "Exact historical benchmark compatibility adapter; original code remains in Git",
+      "archive_path": "historical-playground/snapshots/2026-09-14-3bb33a627/adapter.patch"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/snapshots/2026-09-17-326c05fda/adapter.patch",
+      "sha256": "abe126133901ed44815c23a796389da6947e171043d305e7134a386e687c2c05",
+      "bytes": 4061,
+      "reason": "Exact historical benchmark compatibility adapter; original code remains in Git",
+      "archive_path": "historical-playground/snapshots/2026-09-17-326c05fda/adapter.patch"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/snapshots/2026-09-20-568fe9274/adapter.patch",
+      "sha256": "abe126133901ed44815c23a796389da6947e171043d305e7134a386e687c2c05",
+      "bytes": 4061,
+      "reason": "Exact historical benchmark compatibility adapter; original code remains in Git",
+      "archive_path": "historical-playground/snapshots/2026-09-20-568fe9274/adapter.patch"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/snapshots/2026-09-23-a494a3319/adapter.patch",
+      "sha256": "abe126133901ed44815c23a796389da6947e171043d305e7134a386e687c2c05",
+      "bytes": 4061,
+      "reason": "Exact historical benchmark compatibility adapter; original code remains in Git",
+      "archive_path": "historical-playground/snapshots/2026-09-23-a494a3319/adapter.patch"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/snapshots/2026-09-26-1c49596f5/adapter.patch",
+      "sha256": "9bf31818e2695347d9468434457792880e56dacb89eedb2aa79c79e6271ebe77",
+      "bytes": 4061,
+      "reason": "Exact historical benchmark compatibility adapter; original code remains in Git",
+      "archive_path": "historical-playground/snapshots/2026-09-26-1c49596f5/adapter.patch"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/snapshots/2026-09-29-05b29faf5/adapter.patch",
+      "sha256": "7f70b39a55676880f711e8a6acea009e6cf75701a2f09d9ebc7955d2c1cb3f4d",
+      "bytes": 3750,
+      "reason": "Exact historical benchmark compatibility adapter; original code remains in Git",
+      "archive_path": "historical-playground/snapshots/2026-09-29-05b29faf5/adapter.patch"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/snapshots/2026-10-02-98dee3ed5/adapter.patch",
+      "sha256": "dd6901da56a6a06263c5a3a22d5daf8805326053b144b4d1665f8c0e1dbf897e",
+      "bytes": 3762,
+      "reason": "Exact historical benchmark compatibility adapter; original code remains in Git",
+      "archive_path": "historical-playground/snapshots/2026-10-02-98dee3ed5/adapter.patch"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/snapshots/2026-10-05-f5d1bc51e/adapter.patch",
+      "sha256": "98cef09c41f4cc2706b2f48116958fe8c338183dea04cd5921f5eefc407d3ed1",
+      "bytes": 3876,
+      "reason": "Exact historical benchmark compatibility adapter; original code remains in Git",
+      "archive_path": "historical-playground/snapshots/2026-10-05-f5d1bc51e/adapter.patch"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/snapshots/2026-10-08-d341b5f20/adapter.patch",
+      "sha256": "a4c95de8b46d8be7dd123e79d88dee84daf997095c807429cb4972124dbeecb9",
+      "bytes": 3935,
+      "reason": "Exact historical benchmark compatibility adapter; original code remains in Git",
+      "archive_path": "historical-playground/snapshots/2026-10-08-d341b5f20/adapter.patch"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/snapshots/2026-10-11-9a08b91f4/adapter.patch",
+      "sha256": "f3465e8269c94a54210a26eab1f905c1cdbc96f9c1f609cfab8c5bb36f51a8bb",
+      "bytes": 3955,
+      "reason": "Exact historical benchmark compatibility adapter; original code remains in Git",
+      "archive_path": "historical-playground/snapshots/2026-10-11-9a08b91f4/adapter.patch"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/experiment.json",
+      "sha256": "ae851d9af3b72802257a8edb480f5665f183f0f1e8d2b22495fd19ffe82a6f56",
+      "bytes": 141626,
+      "reason": "Aggregate inputs, snapshot/seed identity, accounting definition, plotting/execution protocol, or scoped report",
+      "archive_path": "historical-oazis/experiment.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/runs.csv",
+      "sha256": "9c2070e52b88ba08acb01db1fffe4293abb05b179e7a6e100155b8ed53fa33fe",
+      "bytes": 45001,
+      "reason": "Aggregate inputs, snapshot/seed identity, accounting definition, plotting/execution protocol, or scoped report",
+      "archive_path": "historical-oazis/runs.csv"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/summary.csv",
+      "sha256": "9ef96a2251c1a5f3b44b42410fe1bcd67a4f717677fd90bce4a985cb3aaa977e",
+      "bytes": 4860,
+      "reason": "Aggregate inputs, snapshot/seed identity, accounting definition, plotting/execution protocol, or scoped report",
+      "archive_path": "historical-oazis/summary.csv"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/summary.json",
+      "sha256": "ef74ffb4eb72385a5a58806163418dd3035a55784072648e95916dcb7981c187",
+      "bytes": 15791,
+      "reason": "Aggregate inputs, snapshot/seed identity, accounting definition, plotting/execution protocol, or scoped report",
+      "archive_path": "historical-oazis/summary.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/build-times.csv",
+      "sha256": "0c653fe83de1a7645e64cc7a0b47f1f9c9d610fb60142466bcad156f978cfc94",
+      "bytes": 32188,
+      "reason": "Aggregate inputs, snapshot/seed identity, accounting definition, plotting/execution protocol, or scoped report",
+      "archive_path": "historical-oazis/build-times.csv"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/build-times.json",
+      "sha256": "84e7d638be6ad35b7ebeae9506a3b75d3f51a23895cf2549154e98d3517aa0eb",
+      "bytes": 50185,
+      "reason": "Aggregate inputs, snapshot/seed identity, accounting definition, plotting/execution protocol, or scoped report",
+      "archive_path": "historical-oazis/build-times.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/plot_build_times.py",
+      "sha256": "0c5ca0a4c40a7d48512e2bd249312b0cbd35d10616a1fcd2af2f11dc727bbac3",
+      "bytes": 584,
+      "reason": "Aggregate inputs, snapshot/seed identity, accounting definition, plotting/execution protocol, or scoped report",
+      "archive_path": "historical-oazis/plot_build_times.py"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/plot_results.py",
+      "sha256": "1c4b9e3b986384e229ee5d8ee35b3c90b7393ae5cf7aa9e537a582db833c00b8",
+      "bytes": 7139,
+      "reason": "Aggregate inputs, snapshot/seed identity, accounting definition, plotting/execution protocol, or scoped report",
+      "archive_path": "historical-oazis/plot_results.py"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/run_experiment.py",
+      "sha256": "aba83ef09e6d81bf9d286bdd5fce61545780c0c8eb6954a8a33821e0e0ce21f1",
+      "bytes": 21877,
+      "reason": "Aggregate inputs, snapshot/seed identity, accounting definition, plotting/execution protocol, or scoped report",
+      "archive_path": "historical-oazis/run_experiment.py"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/report.html",
+      "sha256": "d4d1beaff8702efd57c21e7f13b2a7a3021e89c5ebb5649e152a9dbf2f7598ec",
+      "bytes": 876514,
+      "reason": "Aggregate inputs, snapshot/seed identity, accounting definition, plotting/execution protocol, or scoped report",
+      "archive_path": "historical-oazis/report.html"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/Oazis.map",
+      "sha256": "cd80d8c9a72643a95bb0bd3c22deb594aeed125d12cb3294859e7fffbc131448",
+      "bytes": 2365234,
+      "reason": "Fixed workload input; not a raw simulation trace",
+      "archive_path": "historical-oazis/map/Oazis.map"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/snapshots/2026-09-02-14b99bc82/build.json",
+      "sha256": "7d30008e26aa22182daacbc5adf3e556ef6e2d8eb4f1e3a12bbb89614c249b8e",
+      "bytes": 9454,
+      "reason": "Per-revision compiler flags, dependency/binary hashes, build elapsed provenance",
+      "archive_path": "historical-oazis/snapshots/2026-09-02-14b99bc82/build.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/snapshots/2026-09-05-731f6be5d/build.json",
+      "sha256": "17532ba02d57677787d1c853f7fc49f822401ef3383816309226254adb928069",
+      "bytes": 9327,
+      "reason": "Per-revision compiler flags, dependency/binary hashes, build elapsed provenance",
+      "archive_path": "historical-oazis/snapshots/2026-09-05-731f6be5d/build.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/snapshots/2026-09-08-d3ac1ed3f/build.json",
+      "sha256": "a271d49852b97b32a82397f96f2b791b5baa5933a1e3233ff213a73e9ef3bb7e",
+      "bytes": 9332,
+      "reason": "Per-revision compiler flags, dependency/binary hashes, build elapsed provenance",
+      "archive_path": "historical-oazis/snapshots/2026-09-08-d3ac1ed3f/build.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/snapshots/2026-09-11-982b12730/build.json",
+      "sha256": "017708d2e5c22325df5d629a97cf5a4666713adbcbda7bf39e606b2767ebe8cf",
+      "bytes": 9332,
+      "reason": "Per-revision compiler flags, dependency/binary hashes, build elapsed provenance",
+      "archive_path": "historical-oazis/snapshots/2026-09-11-982b12730/build.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/snapshots/2026-09-14-3bb33a627/build.json",
+      "sha256": "09bd0791923fb6f8f0d66d3d2ee8e018ec66982bdc6929450313f343400bd693",
+      "bytes": 9377,
+      "reason": "Per-revision compiler flags, dependency/binary hashes, build elapsed provenance",
+      "archive_path": "historical-oazis/snapshots/2026-09-14-3bb33a627/build.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/snapshots/2026-09-17-326c05fda/build.json",
+      "sha256": "bc86eb6129a4a627c9fd889823996cb57f70122aef27638b8f16de99a7c2e1fb",
+      "bytes": 9369,
+      "reason": "Per-revision compiler flags, dependency/binary hashes, build elapsed provenance",
+      "archive_path": "historical-oazis/snapshots/2026-09-17-326c05fda/build.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/snapshots/2026-09-20-568fe9274/build.json",
+      "sha256": "b33223b844b8a20f3f74cd5592cdfad0a4798240837ac08032e1d2d8f4455459",
+      "bytes": 9371,
+      "reason": "Per-revision compiler flags, dependency/binary hashes, build elapsed provenance",
+      "archive_path": "historical-oazis/snapshots/2026-09-20-568fe9274/build.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/snapshots/2026-09-23-a494a3319/build.json",
+      "sha256": "6e5b1279f2b289220203ae9f0114ad2dc0949bdf4b59f4a0a4f1bc0535845b16",
+      "bytes": 9376,
+      "reason": "Per-revision compiler flags, dependency/binary hashes, build elapsed provenance",
+      "archive_path": "historical-oazis/snapshots/2026-09-23-a494a3319/build.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/snapshots/2026-09-26-1c49596f5/build.json",
+      "sha256": "0b8dcfc95846483e4b23453a5e18f8d229a5d0dd7af258951281866b10b63a7a",
+      "bytes": 9272,
+      "reason": "Per-revision compiler flags, dependency/binary hashes, build elapsed provenance",
+      "archive_path": "historical-oazis/snapshots/2026-09-26-1c49596f5/build.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/snapshots/2026-09-29-05b29faf5/build.json",
+      "sha256": "26f7cfd3cf78c2e39c94b39ffb5e9c47c332a6cba0b9441d2a9145d6971e5593",
+      "bytes": 9272,
+      "reason": "Per-revision compiler flags, dependency/binary hashes, build elapsed provenance",
+      "archive_path": "historical-oazis/snapshots/2026-09-29-05b29faf5/build.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/snapshots/2026-10-02-98dee3ed5/build.json",
+      "sha256": "135a2249535700cae287b9c21ab92f7a607dad74d8c54381ad710b1d54fabf39",
+      "bytes": 4843,
+      "reason": "Per-revision compiler flags, dependency/binary hashes, build elapsed provenance",
+      "archive_path": "historical-oazis/snapshots/2026-10-02-98dee3ed5/build.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/snapshots/2026-10-05-f5d1bc51e/build.json",
+      "sha256": "4074e2b2ced5d8035b0d5626be9af38206e43c1fceac64bb20c7deccd912e05c",
+      "bytes": 5060,
+      "reason": "Per-revision compiler flags, dependency/binary hashes, build elapsed provenance",
+      "archive_path": "historical-oazis/snapshots/2026-10-05-f5d1bc51e/build.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/snapshots/2026-10-08-d341b5f20/build.json",
+      "sha256": "cf1dcaa9167c38f55a6692b149927f225511d74c5d93d1e7ff1af4c0ad940bdf",
+      "bytes": 5060,
+      "reason": "Per-revision compiler flags, dependency/binary hashes, build elapsed provenance",
+      "archive_path": "historical-oazis/snapshots/2026-10-08-d341b5f20/build.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/snapshots/2026-10-11-9a08b91f4/build.json",
+      "sha256": "b3861748dfc7a58cc367881231558e7a3fddc0eb86a1a06b47fa3d379bbb5db7",
+      "bytes": 5060,
+      "reason": "Per-revision compiler flags, dependency/binary hashes, build elapsed provenance",
+      "archive_path": "historical-oazis/snapshots/2026-10-11-9a08b91f4/build.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/snapshots/2026-09-02-14b99bc82/adapter.patch",
+      "sha256": "dd4a4e40f31ab4f24f6d9fb79ae7af7e4786770728a683f9f91177172486bcd5",
+      "bytes": 5834,
+      "reason": "Exact historical benchmark compatibility adapter; original code remains in Git",
+      "archive_path": "historical-oazis/snapshots/2026-09-02-14b99bc82/adapter.patch"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/snapshots/2026-09-05-731f6be5d/adapter.patch",
+      "sha256": "79183c54bd49573c1b55c30ddd6e6cbb3caadbbc8cfc8f04df08b7a8bfa85437",
+      "bytes": 4965,
+      "reason": "Exact historical benchmark compatibility adapter; original code remains in Git",
+      "archive_path": "historical-oazis/snapshots/2026-09-05-731f6be5d/adapter.patch"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/snapshots/2026-09-08-d3ac1ed3f/adapter.patch",
+      "sha256": "32b187e8617af5603de7abbde90f2f0f1072b8ea7d90e78d9d151555104b7e8f",
+      "bytes": 4965,
+      "reason": "Exact historical benchmark compatibility adapter; original code remains in Git",
+      "archive_path": "historical-oazis/snapshots/2026-09-08-d3ac1ed3f/adapter.patch"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/snapshots/2026-09-11-982b12730/adapter.patch",
+      "sha256": "96eec2de8431a067563c5a08ab464940f0912612aff85cf245bd3c0b532e3c84",
+      "bytes": 4583,
+      "reason": "Exact historical benchmark compatibility adapter; original code remains in Git",
+      "archive_path": "historical-oazis/snapshots/2026-09-11-982b12730/adapter.patch"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/snapshots/2026-09-14-3bb33a627/adapter.patch",
+      "sha256": "abe126133901ed44815c23a796389da6947e171043d305e7134a386e687c2c05",
+      "bytes": 4061,
+      "reason": "Exact historical benchmark compatibility adapter; original code remains in Git",
+      "archive_path": "historical-oazis/snapshots/2026-09-14-3bb33a627/adapter.patch"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/snapshots/2026-09-17-326c05fda/adapter.patch",
+      "sha256": "abe126133901ed44815c23a796389da6947e171043d305e7134a386e687c2c05",
+      "bytes": 4061,
+      "reason": "Exact historical benchmark compatibility adapter; original code remains in Git",
+      "archive_path": "historical-oazis/snapshots/2026-09-17-326c05fda/adapter.patch"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/snapshots/2026-09-20-568fe9274/adapter.patch",
+      "sha256": "abe126133901ed44815c23a796389da6947e171043d305e7134a386e687c2c05",
+      "bytes": 4061,
+      "reason": "Exact historical benchmark compatibility adapter; original code remains in Git",
+      "archive_path": "historical-oazis/snapshots/2026-09-20-568fe9274/adapter.patch"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/snapshots/2026-09-23-a494a3319/adapter.patch",
+      "sha256": "abe126133901ed44815c23a796389da6947e171043d305e7134a386e687c2c05",
+      "bytes": 4061,
+      "reason": "Exact historical benchmark compatibility adapter; original code remains in Git",
+      "archive_path": "historical-oazis/snapshots/2026-09-23-a494a3319/adapter.patch"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/snapshots/2026-09-26-1c49596f5/adapter.patch",
+      "sha256": "9bf31818e2695347d9468434457792880e56dacb89eedb2aa79c79e6271ebe77",
+      "bytes": 4061,
+      "reason": "Exact historical benchmark compatibility adapter; original code remains in Git",
+      "archive_path": "historical-oazis/snapshots/2026-09-26-1c49596f5/adapter.patch"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/snapshots/2026-09-29-05b29faf5/adapter.patch",
+      "sha256": "7f70b39a55676880f711e8a6acea009e6cf75701a2f09d9ebc7955d2c1cb3f4d",
+      "bytes": 3750,
+      "reason": "Exact historical benchmark compatibility adapter; original code remains in Git",
+      "archive_path": "historical-oazis/snapshots/2026-09-29-05b29faf5/adapter.patch"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/snapshots/2026-10-02-98dee3ed5/adapter.patch",
+      "sha256": "dd6901da56a6a06263c5a3a22d5daf8805326053b144b4d1665f8c0e1dbf897e",
+      "bytes": 3762,
+      "reason": "Exact historical benchmark compatibility adapter; original code remains in Git",
+      "archive_path": "historical-oazis/snapshots/2026-10-02-98dee3ed5/adapter.patch"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/snapshots/2026-10-05-f5d1bc51e/adapter.patch",
+      "sha256": "98cef09c41f4cc2706b2f48116958fe8c338183dea04cd5921f5eefc407d3ed1",
+      "bytes": 3876,
+      "reason": "Exact historical benchmark compatibility adapter; original code remains in Git",
+      "archive_path": "historical-oazis/snapshots/2026-10-05-f5d1bc51e/adapter.patch"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/snapshots/2026-10-08-d341b5f20/adapter.patch",
+      "sha256": "a4c95de8b46d8be7dd123e79d88dee84daf997095c807429cb4972124dbeecb9",
+      "bytes": 3935,
+      "reason": "Exact historical benchmark compatibility adapter; original code remains in Git",
+      "archive_path": "historical-oazis/snapshots/2026-10-08-d341b5f20/adapter.patch"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/snapshots/2026-10-11-9a08b91f4/adapter.patch",
+      "sha256": "f3465e8269c94a54210a26eab1f905c1cdbc96f9c1f609cfab8c5bb36f51a8bb",
+      "bytes": 3955,
+      "reason": "Exact historical benchmark compatibility adapter; original code remains in Git",
+      "archive_path": "historical-oazis/snapshots/2026-10-11-9a08b91f4/adapter.patch"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/history-summary.html",
+      "sha256": "95429a7a01838dd753617182f56390969a64b775a5b83efcec11750bb952aeee",
+      "bytes": 10870,
+      "reason": "Historical narrative/control/protocol; control cohort is excluded from primary 448",
+      "archive_path": "historical-playground/history-summary.html"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/history-detailed.html",
+      "sha256": "d19088b97c9b6c40bec470ba4fbe6b8cdb16c4ba7aec07f81b5ca4476d7bc25d",
+      "bytes": 76598,
+      "reason": "Historical narrative/control/protocol; control cohort is excluded from primary 448",
+      "archive_path": "historical-playground/history-detailed.html"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/cpu-affinity-evidence.json",
+      "sha256": "6f0d85d9842de291bbe9c6c065c2ef9b8abbdd28f1a0d5db2016b723fd044bbe",
+      "bytes": 3062,
+      "reason": "Historical narrative/control/protocol; control cohort is excluded from primary 448",
+      "archive_path": "historical-playground/cpu-affinity-evidence.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/serial-baseline-experiment.json",
+      "sha256": "62bdf6e997a9a5efb4a8bb77b90784a5d98cd221b8d6ccc97d5e483ffac82434",
+      "bytes": 139719,
+      "reason": "Historical narrative/control/protocol; control cohort is excluded from primary 448",
+      "archive_path": "historical-playground/serial-baseline-experiment.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/serial-baseline-runs.csv",
+      "sha256": "3bc41362577620d25f6bcd4f761518409779b3a3242d4fec5995131b4d320d72",
+      "bytes": 3452,
+      "reason": "Historical narrative/control/protocol; control cohort is excluded from primary 448",
+      "archive_path": "historical-playground/serial-baseline-runs.csv"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/serial-baseline-summary.json",
+      "sha256": "ae2099accfd16f6f0315b480005e1429ee241e1c15f6abae9617389e4406e0ed",
+      "bytes": 14530,
+      "reason": "Historical narrative/control/protocol; control cohort is excluded from primary 448",
+      "archive_path": "historical-playground/serial-baseline-summary.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/run_build_first.py",
+      "sha256": "d823839ba802b71aa57c9204ca6e3b85fd7dcc7adf88586ea6e82daa4fe5afff",
+      "bytes": 2122,
+      "reason": "Historical narrative/control/protocol; control cohort is excluded from primary 448",
+      "archive_path": "historical-playground/run_build_first.py"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/prebuild.py",
+      "sha256": "c19553d5ca65eed057d0fdf450c35d40b11d6552c4d6a0625ad37502a299f3bf",
+      "bytes": 950,
+      "reason": "Historical narrative/control/protocol; control cohort is excluded from primary 448",
+      "archive_path": "historical-playground/prebuild.py"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/plot-requirements.lock",
+      "sha256": "2cd1ca646bc1c05789c6187b39ad5ff613fbca4359a1fe2da86b378a176810d5",
+      "bytes": 189,
+      "reason": "Historical narrative/control/protocol; control cohort is excluded from primary 448",
+      "archive_path": "historical-playground/plot-requirements.lock"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/map-hash-by-revision.json",
+      "sha256": "bd68bea67b110622911f0e779baa1547d5be31adb1e1f4a31973f9a8d4abd5c1",
+      "bytes": 2510,
+      "reason": "Historical map/controller/runtime lineage or explicit unfinished campaign hold",
+      "archive_path": "historical-oazis/map-hash-by-revision.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/map-inspection.json",
+      "sha256": "b3ac0d0e1c673e3ada382a40419d08aea54736a5e2a8feea7287207e46714711",
+      "bytes": 206,
+      "reason": "Historical map/controller/runtime lineage or explicit unfinished campaign hold",
+      "archive_path": "historical-oazis/map-inspection.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/inherited-compute-environment.json",
+      "sha256": "1058ae69d86570d3a95525a382f0fbbebdefdffb94ab875fe93e3f9a57ca01bc",
+      "bytes": 282,
+      "reason": "Historical map/controller/runtime lineage or explicit unfinished campaign hold",
+      "archive_path": "historical-oazis/inherited-compute-environment.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/compile-dispatch-hold.flag",
+      "sha256": "626444fec97a63000d8c97d74f190a57139b4edbb951f3dc9bbcbb22222f11ea",
+      "bytes": 85,
+      "reason": "Historical map/controller/runtime lineage or explicit unfinished campaign hold",
+      "archive_path": "historical-oazis/compile-dispatch-hold.flag"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/commit-inventory.json",
+      "sha256": "8663f9ccb038edc3e2ea2809e1b0e477b082feaccf75cfa2cde79af67d8e6585",
+      "bytes": 3774647,
+      "reason": "Chronological feature/change/evidence inventory, statistical or qualified attribution notes",
+      "archive_path": "historical-playground/analysis/commit-inventory.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/accounting.json",
+      "sha256": "0809a78984bcf29f1a7e309e55f24fc34525b96a6ac8d70c9ec98612ce946da8",
+      "bytes": 5188,
+      "reason": "Chronological feature/change/evidence inventory, statistical or qualified attribution notes",
+      "archive_path": "historical-playground/analysis/accounting.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/interval-statistics.json",
+      "sha256": "43c511c9783c154e839cad8fe42701eb6679c404897e396517048b80d64d7de5",
+      "bytes": 10350,
+      "reason": "Chronological feature/change/evidence inventory, statistical or qualified attribution notes",
+      "archive_path": "historical-playground/analysis/interval-statistics.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/analyze_metrics.py",
+      "sha256": "6945b6f0243b4a049e2d298a18a06471be6bfe53bc26eab46d21010f225c837b",
+      "bytes": 2507,
+      "reason": "Chronological feature/change/evidence inventory, statistical or qualified attribution notes",
+      "archive_path": "historical-playground/analysis/analyze_metrics.py"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/write_narrative.py",
+      "sha256": "198d53b74111b7e4559e8db1e1a147600f727a3313cb8d66726284edadc96542",
+      "bytes": 73816,
+      "reason": "Chronological feature/change/evidence inventory, statistical or qualified attribution notes",
+      "archive_path": "historical-playground/analysis/write_narrative.py"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/early.txt",
+      "sha256": "7a4c9a03b4204a98144468be012bd3fcee1e4ae37a530bb3431168d5fc098189",
+      "bytes": 18339,
+      "reason": "Chronological feature/change/evidence inventory, statistical or qualified attribution notes",
+      "archive_path": "historical-playground/analysis/early.txt"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/middle.txt",
+      "sha256": "1be242e234dcccbf51984550a908c20faf2d9f142818dd2f22e055fd5d8688c2",
+      "bytes": 19535,
+      "reason": "Chronological feature/change/evidence inventory, statistical or qualified attribution notes",
+      "archive_path": "historical-playground/analysis/middle.txt"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/late.txt",
+      "sha256": "47ed8117b83bdaa75a52ac52a80447149673dde41be58a753fef45e2bc808e9a",
+      "bytes": 18578,
+      "reason": "Chronological feature/change/evidence inventory, statistical or qualified attribution notes",
+      "archive_path": "historical-playground/analysis/late.txt"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/middle-links.json",
+      "sha256": "dae1d3b241b468abc072e377867bcc30b3384c83d75c657642892d4cf9796405",
+      "bytes": 12071,
+      "reason": "Chronological feature/change/evidence inventory, statistical or qualified attribution notes",
+      "archive_path": "historical-playground/analysis/middle-links.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/mature-cpu-namespace-correction.json",
+      "sha256": "edab557d54861c03b477d4191008f5cf272e8b2450fdad21c5cd0bbf22ac622b",
+      "bytes": 6609,
+      "reason": "Chronological feature/change/evidence inventory, statistical or qualified attribution notes",
+      "archive_path": "historical-playground/analysis/mature-cpu-namespace-correction.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/mature-cpu-namespace-correction.html",
+      "sha256": "7fcd3a54376aafeeb9ec989c71942f7e31c5e3428cd8fb3aaaede33b4b580ec0",
+      "bytes": 2017,
+      "reason": "Chronological feature/change/evidence inventory, statistical or qualified attribution notes",
+      "archive_path": "historical-playground/analysis/mature-cpu-namespace-correction.html"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr-208.json",
+      "sha256": "4419da156ba4e81af187c1fd8f34066b2426957e1902170df342c2382bc08f6f",
+      "bytes": 6247,
+      "reason": "Captured public PR evidence referenced by the historical narrative",
+      "archive_path": "historical-playground/analysis/pr-208.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr-344.json",
+      "sha256": "738fe110bcf4622db8f7b041c50ce251154b82e1590e7a9fe0688b96c3f01500",
+      "bytes": 3378,
+      "reason": "Captured public PR evidence referenced by the historical narrative",
+      "archive_path": "historical-playground/analysis/pr-344.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr-361.json",
+      "sha256": "f0e1c41f465be7616a071f531cc153ae0d65899ea838600a55bc4e59edbc0440",
+      "bytes": 4826,
+      "reason": "Captured public PR evidence referenced by the historical narrative",
+      "archive_path": "historical-playground/analysis/pr-361.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr-363.json",
+      "sha256": "9df168b908bb1d857699819cf944041193bbbb1a702505f7c6cd7e1cb8121a2b",
+      "bytes": 4872,
+      "reason": "Captured public PR evidence referenced by the historical narrative",
+      "archive_path": "historical-playground/analysis/pr-363.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr-379.json",
+      "sha256": "565930362de6430a7eb501479f9d088109cac7b06e75f5d3ca291c9b581353cc",
+      "bytes": 5410,
+      "reason": "Captured public PR evidence referenced by the historical narrative",
+      "archive_path": "historical-playground/analysis/pr-379.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr-380.json",
+      "sha256": "808f6be3ff3acf176ffb02b107354a9f69bface8a4f92154e2744bf9aa66cb17",
+      "bytes": 9524,
+      "reason": "Captured public PR evidence referenced by the historical narrative",
+      "archive_path": "historical-playground/analysis/pr-380.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr-388.json",
+      "sha256": "59de7c6a62874cea79e7ce604288864c9868d49238cccdeda83e93a1d8c3553d",
+      "bytes": 5604,
+      "reason": "Captured public PR evidence referenced by the historical narrative",
+      "archive_path": "historical-playground/analysis/pr-388.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr-390.json",
+      "sha256": "62c7fb333d30b703e16857367ebe09c95b6c405cda89f6e8eb858267e05378bf",
+      "bytes": 6142,
+      "reason": "Captured public PR evidence referenced by the historical narrative",
+      "archive_path": "historical-playground/analysis/pr-390.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr-391.json",
+      "sha256": "5c3c53672547065faddea544030504646ee23f1201c33daa9421162877b54d70",
+      "bytes": 1507,
+      "reason": "Captured public PR evidence referenced by the historical narrative",
+      "archive_path": "historical-playground/analysis/pr-391.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr-395.json",
+      "sha256": "001e5391cf6c5ccafbe9d5d8d446f0b7bf8d8010a3eba0ce350331bdbddaebaf",
+      "bytes": 205,
+      "reason": "Captured public PR evidence referenced by the historical narrative",
+      "archive_path": "historical-playground/analysis/pr-395.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr-396.json",
+      "sha256": "9692ea0f55d05e32fd582cfdb598b29fb694998632dbbf39e49ea1e74cbf7e0c",
+      "bytes": 4582,
+      "reason": "Captured public PR evidence referenced by the historical narrative",
+      "archive_path": "historical-playground/analysis/pr-396.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr-398.json",
+      "sha256": "f6c2c1080fa9ee941c3655310815532c1f94d63fd0a58c09108dc2c2c500d276",
+      "bytes": 2195,
+      "reason": "Captured public PR evidence referenced by the historical narrative",
+      "archive_path": "historical-playground/analysis/pr-398.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr-416.json",
+      "sha256": "67023130aa54c18cbeb0133351912401c19614c06d7f6386c143933ec2babf79",
+      "bytes": 6003,
+      "reason": "Captured public PR evidence referenced by the historical narrative",
+      "archive_path": "historical-playground/analysis/pr-416.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr-451.json",
+      "sha256": "b5b62729f6ac089c20c9d76408f8920d87c6ba8b5a56203dd34ac222b6fe4e17",
+      "bytes": 10176,
+      "reason": "Captured public PR evidence referenced by the historical narrative",
+      "archive_path": "historical-playground/analysis/pr-451.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr-478.json",
+      "sha256": "778fe0e74d93cb9649888e6c4536b1d62f6358f1e26496ca2461092ce0b7f6e3",
+      "bytes": 6593,
+      "reason": "Captured public PR evidence referenced by the historical narrative",
+      "archive_path": "historical-playground/analysis/pr-478.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr-487.json",
+      "sha256": "d399a73a61c95915f38b737473939a755f349cdf0d6d93583d25605614b37525",
+      "bytes": 6660,
+      "reason": "Captured public PR evidence referenced by the historical narrative",
+      "archive_path": "historical-playground/analysis/pr-487.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr-496.json",
+      "sha256": "a7696978cc3111a40f77292f3e1f5a67fc47cb48281c50c3fce5c6dc635f3d68",
+      "bytes": 4526,
+      "reason": "Captured public PR evidence referenced by the historical narrative",
+      "archive_path": "historical-playground/analysis/pr-496.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr-522.json",
+      "sha256": "54604d0d2c95b25dd908f2c4d45ba07a61e2396286f1ada87af33512f50fa0d5",
+      "bytes": 3531,
+      "reason": "Captured public PR evidence referenced by the historical narrative",
+      "archive_path": "historical-playground/analysis/pr-522.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr-534.json",
+      "sha256": "6725cc78ddabaf81d4a78ab1eb5dc4277783b6a3bcc87e8771e65179365e0ee8",
+      "bytes": 4131,
+      "reason": "Captured public PR evidence referenced by the historical narrative",
+      "archive_path": "historical-playground/analysis/pr-534.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr-535.json",
+      "sha256": "28fd53177a068d54f4be32c31db1124c0a0e827f8fc1fbb3a36038422613ca02",
+      "bytes": 2990,
+      "reason": "Captured public PR evidence referenced by the historical narrative",
+      "archive_path": "historical-playground/analysis/pr-535.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr-536.json",
+      "sha256": "cb70dd97586add17270bae055afa417aff03cb078175dc94c45776c7ac44afda",
+      "bytes": 7392,
+      "reason": "Captured public PR evidence referenced by the historical narrative",
+      "archive_path": "historical-playground/analysis/pr-536.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr-537.json",
+      "sha256": "4bf6a772ac069ee09e4d2fd73ed46c8b1d656089ab924793115bb6c372118157",
+      "bytes": 8818,
+      "reason": "Captured public PR evidence referenced by the historical narrative",
+      "archive_path": "historical-playground/analysis/pr-537.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr-577.json",
+      "sha256": "7d02048fd8636dc05d9900f6424efc9afc19ce079dafbb1f0fc5cc2ac19fe37f",
+      "bytes": 4708,
+      "reason": "Captured public PR evidence referenced by the historical narrative",
+      "archive_path": "historical-playground/analysis/pr-577.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr-641.json",
+      "sha256": "d43418152d4611072e5076f357975e07d1cfeed72584467074f807d13e466170",
+      "bytes": 4451,
+      "reason": "Captured public PR evidence referenced by the historical narrative",
+      "archive_path": "historical-playground/analysis/pr-641.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr-664.json",
+      "sha256": "30b2f1d34ce370fcaf36e5d2f6f5bafcc5223bad0164bec971b482b46af890d0",
+      "bytes": 5558,
+      "reason": "Captured public PR evidence referenced by the historical narrative",
+      "archive_path": "historical-playground/analysis/pr-664.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr-678.json",
+      "sha256": "a9d129783b4bd62c8ed436f90e43faa694306413ae45b732dc408f9873e90c11",
+      "bytes": 11932,
+      "reason": "Captured public PR evidence referenced by the historical narrative",
+      "archive_path": "historical-playground/analysis/pr-678.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr-727.json",
+      "sha256": "86311c86d7de9df1d4f2ccafa42486218a6320de584ffaa975aca60ec5b710fc",
+      "bytes": 2923,
+      "reason": "Captured public PR evidence referenced by the historical narrative",
+      "archive_path": "historical-playground/analysis/pr-727.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr-767.json",
+      "sha256": "a9efbdeb1180c18a3d38c7c3acddcca60fc79f805924b5a91166c2efbb0919b7",
+      "bytes": 3427,
+      "reason": "Captured public PR evidence referenced by the historical narrative",
+      "archive_path": "historical-playground/analysis/pr-767.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr-773.json",
+      "sha256": "e386b88bd78ca89afb72cab3bc8c69bec65a62cfa6d10cb9111287e0887a8cf0",
+      "bytes": 9191,
+      "reason": "Captured public PR evidence referenced by the historical narrative",
+      "archive_path": "historical-playground/analysis/pr-773.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr-787.json",
+      "sha256": "0e403acef15b7aca9b3c4ee840d78545fbbef11b9c82d9294f57ce7920c29724",
+      "bytes": 6198,
+      "reason": "Captured public PR evidence referenced by the historical narrative",
+      "archive_path": "historical-playground/analysis/pr-787.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr-791.json",
+      "sha256": "3601bbefdcd7804175fb3c0bf63516079f1bd08f12b6d957ae496391a5870546",
+      "bytes": 14641,
+      "reason": "Captured public PR evidence referenced by the historical narrative",
+      "archive_path": "historical-playground/analysis/pr-791.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr-799.json",
+      "sha256": "be6116c3fc6bc1ec8dc42d153b32c8e433117bcb939847bdb01b8b27ab13831a",
+      "bytes": 12412,
+      "reason": "Captured public PR evidence referenced by the historical narrative",
+      "archive_path": "historical-playground/analysis/pr-799.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr-806.json",
+      "sha256": "cf509e495f99c2db291c778e10b6e4d4584484deb97432eafeabd4737f62da90",
+      "bytes": 9126,
+      "reason": "Captured public PR evidence referenced by the historical narrative",
+      "archive_path": "historical-playground/analysis/pr-806.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr129.json",
+      "sha256": "03b4953d3ec0cb8ebfcabae359f0a17bb4f96043e93e41ab033e480c03e90c97",
+      "bytes": 23678,
+      "reason": "Captured public PR evidence referenced by the historical narrative",
+      "archive_path": "historical-playground/analysis/pr129.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr131.json",
+      "sha256": "ceab2bcb3c445b781cc55b4b3df072cd8b163049dfbe0a80e1d62ec48386b2b6",
+      "bytes": 3115,
+      "reason": "Captured public PR evidence referenced by the historical narrative",
+      "archive_path": "historical-playground/analysis/pr131.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr135.json",
+      "sha256": "986a3080b2a34d2a4e98544c6835b5cf05664860aa74ed79d88b2e510641ccfb",
+      "bytes": 531,
+      "reason": "Captured public PR evidence referenced by the historical narrative",
+      "archive_path": "historical-playground/analysis/pr135.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr178.json",
+      "sha256": "1eeb2b2e000f7ce6010e7a970de6fe5ca2dbc9b83775802b070cb587bcf4f075",
+      "bytes": 107,
+      "reason": "Captured public PR evidence referenced by the historical narrative",
+      "archive_path": "historical-playground/analysis/pr178.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr184.json",
+      "sha256": "d93eb2dce4df0695d18ee5cd238f5b342b600810eb16656a9a3d399fc3dfcf77",
+      "bytes": 20374,
+      "reason": "Captured public PR evidence referenced by the historical narrative",
+      "archive_path": "historical-playground/analysis/pr184.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr191.json",
+      "sha256": "69adfd89b3fcbeb15bc3c13f4319eea1a8663dcab1eacfe9aaf3a8cf047709a5",
+      "bytes": 3854,
+      "reason": "Captured public PR evidence referenced by the historical narrative",
+      "archive_path": "historical-playground/analysis/pr191.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr192.json",
+      "sha256": "ec55ba269c794f8ce1451239419dde66830f03bc079b503323d09de594611c95",
+      "bytes": 3560,
+      "reason": "Captured public PR evidence referenced by the historical narrative",
+      "archive_path": "historical-playground/analysis/pr192.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr197.json",
+      "sha256": "8cbd3f2a93d714e0e1aa5538e4ecdf416114dac11eb981ba00455d0643eadcff",
+      "bytes": 45131,
+      "reason": "Captured public PR evidence referenced by the historical narrative",
+      "archive_path": "historical-playground/analysis/pr197.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr223.json",
+      "sha256": "330350da1d8689f036fe0ae8a68d0b6eec5ad0937586db720165408c0112e6e7",
+      "bytes": 7586,
+      "reason": "Captured public PR evidence referenced by the historical narrative",
+      "archive_path": "historical-playground/analysis/pr223.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr232.json",
+      "sha256": "ac6a71d85a0a7e8fc331b37f69363724a3a4af6aff2ba889fcd4837ce6b36f4d",
+      "bytes": 43666,
+      "reason": "Captured public PR evidence referenced by the historical narrative",
+      "archive_path": "historical-playground/analysis/pr232.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr243.json",
+      "sha256": "d183e8606b02d99761d2a551a2bf398a140cb6fb10bb5051c53712e1e3cfb35c",
+      "bytes": 1529,
+      "reason": "Captured public PR evidence referenced by the historical narrative",
+      "archive_path": "historical-playground/analysis/pr243.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr244.json",
+      "sha256": "319d7a8c05bb615a5aadeaa49d555c3a33fc35763beadc601513213bd098473a",
+      "bytes": 10094,
+      "reason": "Captured public PR evidence referenced by the historical narrative",
+      "archive_path": "historical-playground/analysis/pr244.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr260.json",
+      "sha256": "c8ee6e4a69c129e8a1ef8604a5f9f9940c56715cb2bd81f449302f655c12a9ff",
+      "bytes": 15073,
+      "reason": "Captured public PR evidence referenced by the historical narrative",
+      "archive_path": "historical-playground/analysis/pr260.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr286.json",
+      "sha256": "e967727816d7ec8c75e8770776151950bdffc49679f350a72f8a701299181c65",
+      "bytes": 3543,
+      "reason": "Captured public PR evidence referenced by the historical narrative",
+      "archive_path": "historical-playground/analysis/pr286.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr288.json",
+      "sha256": "879ac4679e3373734bc0809300628701f791f33592103783be101330b9cc88a3",
+      "bytes": 3829,
+      "reason": "Captured public PR evidence referenced by the historical narrative",
+      "archive_path": "historical-playground/analysis/pr288.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr289.json",
+      "sha256": "66f474691d615b5177e6c7f6004f30f50828d392d478fd26991833bd194bb899",
+      "bytes": 3358,
+      "reason": "Captured public PR evidence referenced by the historical narrative",
+      "archive_path": "historical-playground/analysis/pr289.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr291.json",
+      "sha256": "0fba0fe7eca49eed028e781052369090cc3a8b6397c3ba0fad904f17536eb66d",
+      "bytes": 3550,
+      "reason": "Captured public PR evidence referenced by the historical narrative",
+      "archive_path": "historical-playground/analysis/pr291.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr293.json",
+      "sha256": "22cccf2694a5e2b43235d8052c2a1d2ef30b064c07aa5e39455e44c2547f19ed",
+      "bytes": 2312,
+      "reason": "Captured public PR evidence referenced by the historical narrative",
+      "archive_path": "historical-playground/analysis/pr293.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr307.json",
+      "sha256": "7d8522ff9a2bd1cad3fe8cfce255b6d0b1af01cabed3f7e269908709305e4371",
+      "bytes": 2831,
+      "reason": "Captured public PR evidence referenced by the historical narrative",
+      "archive_path": "historical-playground/analysis/pr307.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr310.json",
+      "sha256": "5166d74a5dd33ba079118e2adbcb9ee4f84365960a41ac561e7a8822f77a3101",
+      "bytes": 2574,
+      "reason": "Captured public PR evidence referenced by the historical narrative",
+      "archive_path": "historical-playground/analysis/pr310.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr320.json",
+      "sha256": "cb72f9b16cee686c075804aff1651b1b198a4ee2a31b92c146d730f5a40eb0c8",
+      "bytes": 7178,
+      "reason": "Captured public PR evidence referenced by the historical narrative",
+      "archive_path": "historical-playground/analysis/pr320.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/analysis/pr341.json",
+      "sha256": "20017f633d51a28c70c0ea308370e741feb72c9920dc91f77147a4c2c1e27d5f",
+      "bytes": 8631,
+      "reason": "Captured public PR evidence referenced by the historical narrative",
+      "archive_path": "historical-playground/analysis/pr341.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/thread-scaling-v2/README.txt",
+      "sha256": "07bfc944b1c458031465d2105a616d24bcfe68d8630170570ee12ec74d5f8148",
+      "bytes": 5567,
+      "reason": "Original method/completion/review/qualified report; standalone scalar reanalysis does not need raw traces",
+      "archive_path": "thread-scaling/README.txt"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/thread-scaling-v2/design.json",
+      "sha256": "7063ff74dcb54c7b66db762e7cbeb51ee9572fba6dd27b3b5a5ba342ea42f2c8",
+      "bytes": 4647,
+      "reason": "Original method/completion/review/qualified report; standalone scalar reanalysis does not need raw traces",
+      "archive_path": "thread-scaling/design.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/thread-scaling-v2/dispatch.json",
+      "sha256": "52847cdee673220bcd5ecb87256fc4ba833af000972ebcfe1d77140a4ca762c1",
+      "bytes": 5633,
+      "reason": "Original method/completion/review/qualified report; standalone scalar reanalysis does not need raw traces",
+      "archive_path": "thread-scaling/dispatch.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/thread-scaling-v2/performance-complete.json",
+      "sha256": "449bf8ee324421ace9f2aed184f3a94dbd031dc6f9a69a8b84ac24d7fafcc443",
+      "bytes": 250,
+      "reason": "Original method/completion/review/qualified report; standalone scalar reanalysis does not need raw traces",
+      "archive_path": "thread-scaling/performance-complete.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/thread-scaling-v2/conformance-complete.json",
+      "sha256": "f5b4024a4729466adf9234abd0944532c3c20d8a1e5e7d6918ce2a8828908143",
+      "bytes": 249,
+      "reason": "Original method/completion/review/qualified report; standalone scalar reanalysis does not need raw traces",
+      "archive_path": "thread-scaling/conformance-complete.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/thread-scaling-v2/analyze.py",
+      "sha256": "a1c3bd74fc10968e474fc843be51800afe7c06a40eeb009d68845b941b101e48",
+      "bytes": 21824,
+      "reason": "Original method/completion/review/qualified report; standalone scalar reanalysis does not need raw traces",
+      "archive_path": "thread-scaling/analyze.py"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/thread-scaling-v2/analysis/completed-independent-review.json",
+      "sha256": "2f14f2f5d5eb7bb44f548c444d388caf525ce0a9cf240b0ff6b98e1b32dd9c0b",
+      "bytes": 50665,
+      "reason": "Original method/completion/review/qualified report; standalone scalar reanalysis does not need raw traces",
+      "archive_path": "thread-scaling/analysis/completed-independent-review.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/thread-scaling-v2/analysis/root-descriptive-acceptance.json",
+      "sha256": "6e3fe16f9f7ac7f6223f4f65eb773c6914c40a082235538d2be2c56cfc81ad46",
+      "bytes": 2110,
+      "reason": "Original method/completion/review/qualified report; standalone scalar reanalysis does not need raw traces",
+      "archive_path": "thread-scaling/analysis/root-descriptive-acceptance.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/thread-scaling-v2/analysis/scaling-narrative-addendum.json",
+      "sha256": "0b9beb76c451cbdc178dc366dcd15c72abd644bf215599bf3a12251bced781ff",
+      "bytes": 22546,
+      "reason": "Original method/completion/review/qualified report; standalone scalar reanalysis does not need raw traces",
+      "archive_path": "thread-scaling/analysis/scaling-narrative-addendum.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/thread-scaling-v2/analysis/report.html",
+      "sha256": "e257e642fd340ee5180636d72e8d2a763aae65c20a3daf119c951971b113902a",
+      "bytes": 41895,
+      "reason": "Original method/completion/review/qualified report; standalone scalar reanalysis does not need raw traces",
+      "archive_path": "thread-scaling/analysis/report.html"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/analyze_performance.py",
+      "sha256": "a00c95beef216214afb848c3f02c9a4993d784a130deefb150bca7d687079a3c",
+      "bytes": 16180,
+      "reason": "Original deterministic paired-seed bootstrap implementation used for aggregate calculations",
+      "archive_path": "thread-scaling/analyze_performance.py"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profile-map-tools/glob2/artifacts/engine-optimization-conclusion/pr-notes/history-derived/scaling-scalars.csv",
+      "sha256": "2811739677fc15eb32d9528080761b494320da1379376e834b15256b6c0d2ce9",
+      "bytes": 354554,
+      "reason": "All 480 native scalar observations, warmups labelled; compact raw timing input, no trace payload",
+      "archive_path": "thread-scaling/scaling-scalars.csv"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profile-map-tools/glob2/artifacts/engine-optimization-conclusion/pr-notes/history-derived/scaling-summary.json",
+      "sha256": "e936a6d26f93b46d58a1346909a6a8c24f7b6174b593e23bf2ef3e6616a66918",
+      "bytes": 559990,
+      "reason": "60-cell aggregate and source/fixture/method provenance; all source hashes retained",
+      "archive_path": "thread-scaling/scaling-summary.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/followup.html",
+      "sha256": "1432d5a2accbd3c00bfe155dca3b39d55c676aca86d619bb523edf9a3ddbef62",
+      "bytes": 4426,
+      "reason": "Qualified mature sample/namespace attribution and separate native continuity proofs; no raw perf, trace, replay, save or binary",
+      "archive_path": "mature-perf/followup.html"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/leading-namespace-supplement-v1.json",
+      "sha256": "262f734eab608ef264e57f51429941589979a85f94024b19607a5ffce7a3111a",
+      "bytes": 24019,
+      "reason": "Qualified mature sample/namespace attribution and separate native continuity proofs; no raw perf, trace, replay, save or binary",
+      "archive_path": "mature-perf/leading-namespace-supplement-v1.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/independent-sample-accounting.json",
+      "sha256": "6308758027b65338177a08432a49ea3ca2ae8c276fb430eb149917a74eb17a76",
+      "bytes": 11931,
+      "reason": "Qualified mature sample/namespace attribution and separate native continuity proofs; no raw perf, trace, replay, save or binary",
+      "archive_path": "mature-perf/independent-sample-accounting.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/qualification.json",
+      "sha256": "49cd9affb1b35020fac78a15f65477b523a557ea76553c95e8e4290e5db88c87",
+      "bytes": 3168,
+      "reason": "Qualified mature sample/namespace attribution and separate native continuity proofs; no raw perf, trace, replay, save or binary",
+      "archive_path": "mature-perf/qualification.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/revised-independent-review.json",
+      "sha256": "e296608431af3ede99c0551addc03a34f6e8ed4e3aef728eaa001b509e716237",
+      "bytes": 2465,
+      "reason": "Qualified mature sample/namespace attribution and separate native continuity proofs; no raw perf, trace, replay, save or binary",
+      "archive_path": "mature-perf/revised-independent-review.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/independent-review.json",
+      "sha256": "8b7fa62bab4b20f041f6b19191737b7d660dec355b87a025dfd71c242d252ab6",
+      "bytes": 2855,
+      "reason": "Qualified mature sample/namespace attribution and separate native continuity proofs; no raw perf, trace, replay, save or binary",
+      "archive_path": "mature-perf/independent-review.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/analysis-v4/analysis.json",
+      "sha256": "a5c85b32a3fd5e5d267ba7235813df09ccb20c49a3379f883c5c957c5b67a3a7",
+      "bytes": 204369,
+      "reason": "Qualified mature sample/namespace attribution and separate native continuity proofs; no raw perf, trace, replay, save or binary",
+      "archive_path": "mature-perf/analysis-v4/analysis.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/analysis-v4/metadata.json",
+      "sha256": "08ce92e7d77de463cc127ea76861f9825a235de56b9bd8d0294ece6f28a0da28",
+      "bytes": 6100,
+      "reason": "Qualified mature sample/namespace attribution and separate native continuity proofs; no raw perf, trace, replay, save or binary",
+      "archive_path": "mature-perf/analysis-v4/metadata.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/analysis-v4/header.txt",
+      "sha256": "27a9354b415b34f2e1c2bab34e945d61280d879246ba41f1fb7735320f99a497",
+      "bytes": 4473,
+      "reason": "Qualified mature sample/namespace attribution and separate native continuity proofs; no raw perf, trace, replay, save or binary",
+      "archive_path": "mature-perf/analysis-v4/header.txt"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/analysis-v4/buildids.txt",
+      "sha256": "b4bca1ee3b2a18440dbb1a77598f3c1aa4695329e2d3a7a7c17bbfe512df389f",
+      "bytes": 605,
+      "reason": "Qualified mature sample/namespace attribution and separate native continuity proofs; no raw perf, trace, replay, save or binary",
+      "archive_path": "mature-perf/analysis-v4/buildids.txt"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/analysis-v4/elf-notes.txt",
+      "sha256": "33200d5f53577c574d455040e383cb62ce4011d74f0f525cc310e71b006640fe",
+      "bytes": 627,
+      "reason": "Qualified mature sample/namespace attribution and separate native continuity proofs; no raw perf, trace, replay, save or binary",
+      "archive_path": "mature-perf/analysis-v4/elf-notes.txt"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/profile/sampling-boundaries.json",
+      "sha256": "4240db40bbb92a4becfc18e1c4f909016c188ec4837a299a9a99581b8d477056",
+      "bytes": 41483,
+      "reason": "Qualified mature sample/namespace attribution and separate native continuity proofs; no raw perf, trace, replay, save or binary",
+      "archive_path": "mature-perf/profile/sampling-boundaries.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/profile/attached-tasks.json",
+      "sha256": "c3cf9282b7eb57a9f26ca27e1a7fe84e857ed903764f51412367d90130139226",
+      "bytes": 835,
+      "reason": "Qualified mature sample/namespace attribution and separate native continuity proofs; no raw perf, trace, replay, save or binary",
+      "archive_path": "mature-perf/profile/attached-tasks.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/profile/command.json",
+      "sha256": "29e223722a52033c01cc051a7ffa0f89c9efed17fc4439ad4e59617ec3e3f44b",
+      "bytes": 701,
+      "reason": "Qualified mature sample/namespace attribution and separate native continuity proofs; no raw perf, trace, replay, save or binary",
+      "archive_path": "mature-perf/profile/command.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/profile/sampler-start.json",
+      "sha256": "687931a44ef436daed5fed0d147e7ab6a9ed13c5fea9773a02e70de3663bc425",
+      "bytes": 3136,
+      "reason": "Qualified mature sample/namespace attribution and separate native continuity proofs; no raw perf, trace, replay, save or binary",
+      "archive_path": "mature-perf/profile/sampler-start.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/profile/sampler-stop.json",
+      "sha256": "7ba5192166ff78112d57db6f876aac31c80f739b6c2a59fe00b069bb45e63751",
+      "bytes": 531,
+      "reason": "Qualified mature sample/namespace attribution and separate native continuity proofs; no raw perf, trace, replay, save or binary",
+      "archive_path": "mature-perf/profile/sampler-stop.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/profile/complete.json",
+      "sha256": "45db75b51f5971008b7803c1fed6b832da8bd17fcebc90500589221de8a5e2a9",
+      "bytes": 616,
+      "reason": "Qualified mature sample/namespace attribution and separate native continuity proofs; no raw perf, trace, replay, save or binary",
+      "archive_path": "mature-perf/profile/complete.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/profile/validated.json",
+      "sha256": "03990997239641e87f5c6a53d9094ae4ced7741a0a423870ed53c1ac9fdf1eea",
+      "bytes": 894,
+      "reason": "Qualified mature sample/namespace attribution and separate native continuity proofs; no raw perf, trace, replay, save or binary",
+      "archive_path": "mature-perf/profile/validated.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/continuous-sealed/command.json",
+      "sha256": "5b3f2a4c9f2f384628bb60c1de2f215d81dee95fa025c0e0798208df2cc2d9bf",
+      "bytes": 1122,
+      "reason": "Qualified mature sample/namespace attribution and separate native continuity proofs; no raw perf, trace, replay, save or binary",
+      "archive_path": "mature-perf/continuous-sealed/command.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/continuous-sealed/validated.json",
+      "sha256": "03990997239641e87f5c6a53d9094ae4ced7741a0a423870ed53c1ac9fdf1eea",
+      "bytes": 894,
+      "reason": "Qualified mature sample/namespace attribution and separate native continuity proofs; no raw perf, trace, replay, save or binary",
+      "archive_path": "mature-perf/continuous-sealed/validated.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/continuous-symbolic/command.json",
+      "sha256": "b61c8e7050c415fa9ca2ac34d6297585a3734c87925436dee540a9997244fdc5",
+      "bytes": 1165,
+      "reason": "Qualified mature sample/namespace attribution and separate native continuity proofs; no raw perf, trace, replay, save or binary",
+      "archive_path": "mature-perf/continuous-symbolic/command.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/continuous-symbolic/validated.json",
+      "sha256": "03990997239641e87f5c6a53d9094ae4ced7741a0a423870ed53c1ac9fdf1eea",
+      "bytes": 894,
+      "reason": "Qualified mature sample/namespace attribution and separate native continuity proofs; no raw perf, trace, replay, save or binary",
+      "archive_path": "mature-perf/continuous-symbolic/validated.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/bounded-sealed/command.json",
+      "sha256": "03754d8e1df0dbb6ef67f92b2560a692ef71806d2f15b0119a7bb95305191f83",
+      "bytes": 1174,
+      "reason": "Qualified mature sample/namespace attribution and separate native continuity proofs; no raw perf, trace, replay, save or binary",
+      "archive_path": "mature-perf/bounded-sealed/command.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/bounded-sealed/validated.json",
+      "sha256": "11865ccc3f17ac93324dfe9bcdea0740c213a7fe6fe73ac77a4b8560750ea8c4",
+      "bytes": 1599,
+      "reason": "Qualified mature sample/namespace attribution and separate native continuity proofs; no raw perf, trace, replay, save or binary",
+      "archive_path": "mature-perf/bounded-sealed/validated.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/bounded-symbolic/command.json",
+      "sha256": "6df93060d9567dff129f541c2ce692f135cd1291c5bf24fe25ebc0c53e5b1f15",
+      "bytes": 1217,
+      "reason": "Qualified mature sample/namespace attribution and separate native continuity proofs; no raw perf, trace, replay, save or binary",
+      "archive_path": "mature-perf/bounded-symbolic/command.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/bounded-symbolic/validated.json",
+      "sha256": "11865ccc3f17ac93324dfe9bcdea0740c213a7fe6fe73ac77a4b8560750ea8c4",
+      "bytes": 1599,
+      "reason": "Qualified mature sample/namespace attribution and separate native continuity proofs; no raw perf, trace, replay, save or binary",
+      "archive_path": "mature-perf/bounded-symbolic/validated.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/building-search-empty-layer-review/assessment.json",
+      "sha256": "bfa7b121f7f3288a9069ddc68b8e0fff6293f97b621c754ec8c4f8eb4c1751fe",
+      "bytes": 6702,
+      "reason": "Qualified mature sample/namespace attribution and separate native continuity proofs; no raw perf, trace, replay, save or binary",
+      "archive_path": "mature-perf/building-search-empty-layer-review/assessment.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/scalar-relax-store-candidate.json",
+      "sha256": "e8dcccd1cf5b4df5c93acc4a1a71252914c0f95bef1107ab7f3384621ead5303",
+      "bytes": 3792,
+      "reason": "Qualified mature sample/namespace attribution and separate native continuity proofs; no raw perf, trace, replay, save or binary",
+      "archive_path": "mature-perf/scalar-relax-store-candidate.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profile-map-tools/glob2/artifacts/engine-optimization-conclusion/pr-notes/history-derived/observed-counts.json",
+      "sha256": "c1b766945476fcc1d2cd74017abb87aac2090254396d9180e662401a6061e4d7",
+      "bytes": 14727,
+      "reason": "Fresh read-only observed row counts, state/coverage caveats, no pending/completed substitution",
+      "archive_path": "history-and-scaling-observed-counts.json"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profile-map-tools/glob2/artifacts/engine-optimization-conclusion/pr-notes/history-derived/curate.py",
+      "sha256": "b95df5e56c62ffbfccf6430468955cb91df9c10ce9a654e6618d21cb1016b4ca",
+      "bytes": 13158,
+      "reason": "Exact read-only export recipe; original absolute source paths documented, no native launches",
+      "archive_path": "curation/curate-history.py"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profile-map-tools/glob2/artifacts/engine-optimization-conclusion/pr-notes/history-derived/recompute-scalars.py",
+      "sha256": "1f5f02644b06f1c53765dabdee52363b6b55f3c2dacfc7e00ae04ab6b14f32fa",
+      "bytes": 4719,
+      "reason": "Standalone stdlib recalculation of CSV historical means and exact 60-cell paired bootstrap; no launches",
+      "archive_path": "thread-scaling/recompute-scalars.py"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/resource-profile-map-tools/glob2/artifacts/engine-optimization-conclusion/pr-notes/history-derived/reanalysis-verification.json",
+      "sha256": "ed0c5299c2692e7f5961eb08512777be3498c610fe78272e63f0a823634693ba",
+      "bytes": 1894,
+      "reason": "Actually executed scalar-only recomputation passed: 196 historical means and60x11 scaling metrics/paired bootstrap source-matched",
+      "archive_path": "thread-scaling/reanalysis-verification.json"
+    }
+  ],
+  "standalone_reanalysis": {
+    "passed": true,
+    "native_launches": 0,
+    "verification": {
+      "passed": true,
+      "mismatches": [],
+      "historical_means_match": true,
+      "scaling_point_estimates_and_bootstrap_match": true,
+      "scope": "Saved scalar recalculation only, not a new performance or determinism experiment; two seeds x three paired blocks remain descriptive"
+    },
+    "inputs": {
+      "historical-playground/runs.csv": "9bbcdb985fe65c0e8ed1e878de394a3918874ac4a5ff2be5b780d3a51889f61c",
+      "historical-playground/summary.json": "a5d88870e5e60d4a0e4af65a2c7acbcfdb85ccadc23eb2e503b78267ea624e4e",
+      "historical-oazis/runs.csv": "9c2070e52b88ba08acb01db1fffe4293abb05b179e7a6e100155b8ed53fa33fe",
+      "historical-oazis/summary.json": "ef74ffb4eb72385a5a58806163418dd3035a55784072648e95916dcb7981c187",
+      "historical-playground/serial-baseline-runs.csv": "3bc41362577620d25f6bcd4f761518409779b3a3242d4fec5995131b4d320d72",
+      "historical-playground/serial-baseline-summary.json": "ae2099accfd16f6f0315b480005e1429ee241e1c15f6abae9617389e4406e0ed",
+      "thread-scaling/scaling-scalars.csv": "2811739677fc15eb32d9528080761b494320da1379376e834b15256b6c0d2ce9",
+      "thread-scaling/scaling-summary.json": "e936a6d26f93b46d58a1346909a6a8c24f7b6174b593e23bf2ef3e6616a66918",
+      "thread-scaling/recompute-scalars.py": "1f5f02644b06f1c53765dabdee52363b6b55f3c2dacfc7e00ae04ab6b14f32fa"
+    },
+    "recomputed_output_sha256": "6802bcfdffd01da16c44231fb079e9550443772c18267f8865e732e7f242c077",
+    "recomputed_output_locally_retained": true,
+    "historical_revision_summaries": 28,
+    "historical_means_checked": 196,
+    "scaling_cells_checked": 60,
+    "scaling_metrics_checked_per_cell": 11,
+    "qualification": "Read-only stdlib reanalysis matches original means, point estimates and deterministic bootstrap intervals within 1e-12 tolerance; no new native measurements, no raw trace archive, no larger sample inference."
+  }
+}

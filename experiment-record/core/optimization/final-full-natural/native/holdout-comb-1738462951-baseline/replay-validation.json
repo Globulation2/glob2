@@ -1,0 +1,14 @@
+{
+  "ait1": {
+    "offset": 4136273,
+    "bytes": 16104062,
+    "sha256": "3321624a14886c4e80a167d3912971bf27db5ce9ed8f19c15a873b1eb2bcb40d",
+    "frames": 84,
+    "rows": 336,
+    "values": 162572,
+    "until": 2688,
+    "truncated": true
+  },
+  "replay_sha256": "2d66a30730f1197b28db0614836dc461ade32eade4160efd50b9973c8f7dda44",
+  "replay_bytes": 20240335
+}

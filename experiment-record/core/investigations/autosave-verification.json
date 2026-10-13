@@ -1,0 +1,19 @@
+{
+  "all_identical": true,
+  "cases": [
+    "autosave-check-original-on",
+    "autosave-check-clone-on",
+    "autosave-check-clone-off"
+  ],
+  "sha256": "7371f20daf7da47617b7e52465024dd18248014e46b2654442e2b6817255d35c",
+  "ticks": [
+    8192,
+    8192,
+    8192
+  ],
+  "byte_counts": [
+    200863692,
+    200863692,
+    200863692
+  ]
+}

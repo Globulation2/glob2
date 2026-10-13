@@ -1,0 +1,67 @@
+{
+  "jobs": 2,
+  "machine_cpu_ids": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21
+  ],
+  "slots": 2,
+  "participants_per_game": 4,
+  "soft_memory_total_bytes": 1073741824,
+  "fixture": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/correctness/small-ni-164298751/fixture/initial.game.gz",
+  "job_ticks": 2048,
+  "profile": "efficient-throughput",
+  "api": "tools.tournaments.local.supplied_binary + model.job(game) + local.execute_jobs(...slots=2,cpu_ids=[0..5,16..21],memory_planning_budget_bytes=1073741824,participants_per_game=4)",
+  "expected_partition": [
+    [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    [
+      16,
+      17,
+      18,
+      19,
+      20,
+      21
+    ]
+  ],
+  "immutable_jobs": "Two distinct label-derived IDs; same exact save artifact and requested efficient-throughput; explicit GPUoff; caller frozen allocation plan/attempt/native resources retained. No timing claim.",
+  "validate": [
+    "Two actual non-zombie native processes overlap; exact binary and observed disjoint6 logical CPU shares; two immutable job labels",
+    "Explicit requested/resolved4 participants, explicit GPUoff permission/source; planning memory reservation512MiB per game, no RSS cap claim",
+    "Full GCS/world/RNG/AIT1/replay exact with sealed current ee45 small-ni N4 efficient-throughput CPUoff control"
+  ],
+  "requests": [
+    "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/coordinator-acceptance-ee45/requests/slot-A.json",
+    "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/coordinator-acceptance-ee45/requests/slot-B.json"
+  ],
+  "output": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/coordinator-acceptance-ee45/runs/two-slot-smoke",
+  "gpu_request_qualification": {
+    "expected_gpu_requested": 0,
+    "expected_resource_source": "explicit_override",
+    "expected_gpu_compute_policy": "disabled",
+    "explicit_gpu_override": "disabled",
+    "scope": "Permission pinning only, not GPU hardware execution proof"
+  },
+  "source_binding_status": "complete_pending_root_review",
+  "gpu": "off",
+  "source_commit": "ee45c0a0389660bc7d2885b572b94b1a2b01d7a3",
+  "source_tree": "c4f8f7ebd7888effb0800dd0b14e70f8fc2c3224",
+  "binary_sha256": "18b640357036e457470338e092fb3108debc3ab252adbb631b0094d18852e36c",
+  "control_request": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/runtime-acceptance-d80/requests/d80-small-n4-efficient-throughput-off.json",
+  "control_id": "d80-small-n4-efficient-throughput-off"
+}

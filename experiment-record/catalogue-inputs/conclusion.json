@@ -1,0 +1,234 @@
+{
+  "generated_utc": "2026-10-13T04:44:25.009921+00:00",
+  "state": "CONCLUDED_FINAL_MASTER_NATIVE_CHECKS_COMPLETE",
+  "source_scope": {
+    "accepted_performance_commit": "9e370bcb83209cf99f43c346750a6d4bd440f4f2",
+    "profile_foundation_commit": "ee45c0a0389660bc7d2885b572b94b1a2b01d7a3",
+    "unadopted_scheduler_commit": "96da258e5a6b24a57a8848f2bfa0178031331322",
+    "current_map_tools_source": "d2ddb6793777eac9e8c62421f2803313e0b83b52",
+    "new_master_integration_source": "d2ddb6793777eac9e8c62421f2803313e0b83b52",
+    "new_upstream_master": "26715e41b",
+    "current_tree": "35c1ceab56eb99e5a542e22d6364508d70ee9057",
+    "current_app_sha256": "695db33ff98172d43c58a4c32580e4a8f685cbb1706368faa49e51cd740ba9dd"
+  },
+  "summary": "Keep the measured memory improvement and modest CPU/wall gains from the accepted engine package. Resource profiles now have a validated policy/provenance foundation, but names are intents rather than calibrated behavior. No scheduler runtime gain or full device-adaptive profile acceptance is established.",
+  "accepted_window_performance": {
+    "scope": "186-run measured release cohort; paired fixed three participants/GPU off across ten layouts plus mixed holdout; one host, same allocation and fixtures. Distinct from auto-sizing evidence.",
+    "cpu_percent": -1.539,
+    "cpu_interval_percent": [
+      -2.612,
+      -0.448
+    ],
+    "wall_percent": -2.196,
+    "wall_interval_percent": [
+      -3.162,
+      -1.267
+    ],
+    "rss_percent": -26.034,
+    "rss_interval_percent": [
+      -26.205,
+      -25.85
+    ],
+    "full_games": "Nine natural pairs corroborate identical outcomes/replays with wide performance uncertainty; these window intervals are not whole-game confidence bounds.",
+    "compatibility": "World/RNG per-tick checks, save continuation and canonical replay evidence preserved within tested source/platform scopes."
+  },
+  "decisions": [
+    {
+      "action": "KEEP",
+      "item": "Eligible logical CPU auto sizing, lossless compact replay telemetry, mandatory GPU host synchronization",
+      "reason": "Accepted9e measured package and compatibility evidence; explicit counts preserved. Three is an experimental control, not the production default."
+    },
+    {
+      "action": "REJECT",
+      "item": "Prior wake guard, GPU cancellation recovery optimization, eager/lazy snapshot retention changes",
+      "reason": "Mixed/flat or adverse scoped timing and no justified independent memory gain; preserve required synchronization correctness and query-only diagnostics."
+    },
+    {
+      "action": "NOT ADOPTED",
+      "item": "96da cached scheduler selection",
+      "reason": "Correctness and actual shipping assembly confirm two scans become one in Off and Trace. Worker-path timing attempts blocked by foreign compilation. Zero new timing samples after preflight failures; original N1 negative control does not exercise workers and shows no established gain."
+    },
+    {
+      "action": "QUALIFIED FOUNDATION",
+      "item": "Six execution-profile names and resource metadata",
+      "reason": "Explicit requests, allocation provenance, session-bound policy and direct-map contracts now pass bounded native tests at final d2. Earlier ee45 platform evidence remains revision-specific. Six names are intents, not calibrated tiers or automatic adaptive actions."
+    }
+  ],
+  "pending_acceptance": {
+    "current_native_19": "Prior19 ordinary release buildPASS131.0096s; source19 map9PASS. Combined first-stage C++ fixture failed before first tick; rawfailure retained.",
+    "current_focused_cpp": "PASS on28:13selected/executed across3stages,0failures/0skips. Real pending-work fixture includes fourowner1/2variants,128ticks+48savecontinuation each=704steps, rawchecksums/saves/replays retained. NativeCPU/liveGPUpermission compatibility only; no physicalGPU execution/matureAI/currentcrossplatform claim.",
+    "finite_map_smoke_9": "PASS on19:9requests/8actual generation calls/1real legacy-option refusal. Rawreports/maps rehashed, production-identical19\u219228 and exactsameappSHA independentlyverified.",
+    "current_platforms": "UNVERIFIED for latest code; earlier ee45 actual platform checks remain source-bound",
+    "profile_pilot_16": "PREPARED_UNLAUNCHED; held for future deliberate calibration, not started",
+    "historical_oazis": "Held/paused at192 of448 separately planned attempts; not finished.",
+    "current_native_28": "PASS: clean28 ordinaryrelease app+UNIT+ENGINE build33.3687s; finalfocused13 cases and map9 functional checks qualified below.",
+    "master_integration": "PASS at d2ddb679/35c1ceab: ordinary release build683.4173s;170 focused cases (1+86+83),0 failures/skips;9 map requests,8 generation calls,1 real legacy-option rejection. New upstream26715 CPU-gradient integration validated within these checks, not benchmarked."
+  },
+  "not_implemented_or_validated": [
+    "Six tuned tier tradeoffs",
+    "Automatic luxury/eco selection from measured capability",
+    "Presentation hysteresis/cooldown and live adaptive actions",
+    "Memory/cache retention actions and whole-phase CPU ceilings",
+    "CPU quota discovery/enforcement",
+    "Real Android/high-end multi-device thermal, battery, input-latency and frame-time validation"
+  ],
+  "next_steps": "Conclude this phase; no new campaigns launched. The prepared16natural profile pilot remains unlaunched. Full profile adoption later requires same-global-allocation completion/throughput tradeoffs and physical-device interactive validation.",
+  "evidence": {
+    "accepted_optimization_report": {
+      "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/final-report/summary.html",
+      "sha256": "176ce723070b64fb3a64e631b50398900d8d8677724f8fb72e15061b01c0eb33"
+    },
+    "accepted_optimization_details": {
+      "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/final-report/details.html",
+      "sha256": "57a44f883824048aa8a0a48cb79c72ad7ed351b7dd95a379c987bdd8d2ebe42f"
+    },
+    "accepted_optimization_data": {
+      "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/final-report/analysis.json",
+      "sha256": "7d656dc4235267a7db5e55b0aa36f00998349961cb1b0e673d3fe87975ea63c2"
+    },
+    "natural_pairs_review": {
+      "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/final-analysis/natural9-review.json",
+      "sha256": "7148b65f7aee50399fb9d30eafb48a4ac5a212bbae69eeb13b9353588875cee6"
+    },
+    "gpu_recovery_rejection": {
+      "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/gpu-analysis/analysis.json",
+      "sha256": "381742703e6b2759f3acb9ca765fa59e593fafa1eb0634b06a48bbd5b1d2cbd6"
+    },
+    "snapshot_rejection": {
+      "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/adoption-review/snapshot-v2-completed-analysis.json",
+      "sha256": "a2b2d35bab37de02062f2c33117f9fc5296ed7fbe4f12945402f300e061d50e2"
+    },
+    "original_wake_guard": {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/h03-lane-wake/n3-report.txt",
+      "sha256": "2ec65d2f4ed903da0e9869d90b1927ec04cb82496f77c5a92295ee38225c4e94"
+    },
+    "profile_foundation_evidence": {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/profile-foundation-delivery/delivery-current.html",
+      "sha256": "68bf0088c6a9e3d0000653e4725b5f6b0764416faba54b416798125bbe4c79fc"
+    },
+    "proposal_coverage": {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/final-proposal-coverage/coverage.html",
+      "sha256": "862f9c78d5660c002f233d0af07e6aa829f3a87be4a4ea3d73183b45296c801b"
+    },
+    "unlaunched_profile_pilot": {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/final-proposal-coverage/completion-throughput-pilot/plan.json",
+      "sha256": "e64296932195d5f8efb7b27e71f0482acdc9a82b67063e714b1c185b0be8227b"
+    },
+    "blocked_scheduler_timing": {
+      "path": "/home/bradley/.codex/worktrees/resource-profiles-integration/glob2/artifacts/profiles-implementation/scheduler-telemetry-timing-v2/resumed-launch/campaign-failure.json",
+      "sha256": "05922dcff9f9832725edddd47997ec2741a125b587284ff71e51a37473391e6b"
+    },
+    "map_smoke_preparation": {
+      "path": "/home/bradley/.codex/worktrees/resource-profile-map-tools/glob2/artifacts/map-tools-resource-contract/native-smoke/preparation.json",
+      "sha256": "aac0ca02337342e4f0a63da4618219a3d8739d8a455c8ac669ef7e762eb7f124"
+    },
+    "map_tools_review": {
+      "path": "/home/bradley/.codex/worktrees/resource-profile-map-tools/glob2/artifacts/map-tools-resource-contract/review.json",
+      "sha256": "80bc7fdb7b71122d984132b37a798a0e9c65c371bb0cc28294fdc6c94502bdad"
+    },
+    "current_native_build": {
+      "path": "/home/bradley/.codex/worktrees/resource-profile-map-tools/glob2/artifacts/resource-profiles/validation/next-native-build19/native-release-complete.json",
+      "sha256": "374f399675e153f05692efd00966eba6f7b92188065adfd28b9ed07cbecfe1e4"
+    },
+    "native28_build": {
+      "path": "/home/bradley/.codex/worktrees/resource-profile-map-tools/glob2/artifacts/resource-profiles/validation/next-native-build28/native-release-complete.json",
+      "sha256": "049c210b335ef1d4202b3b271092214802fbaf4c36282a5796b3f3b4fda27b3f"
+    },
+    "map9_complete": {
+      "path": "/home/bradley/.codex/worktrees/resource-profile-map-tools/glob2/artifacts/map-tools-resource-contract/native-smoke/runs/complete.json",
+      "sha256": "d3b0a23f67face61830397eb980a5ab554e7badcb101c836d1613d9e64733319"
+    },
+    "map9_current_source_review": {
+      "path": "/home/bradley/.codex/worktrees/resource-profile-map-tools/glob2/artifacts/engine-optimization-conclusion/map9-source28-review.json",
+      "sha256": "8cbf02436f0d50c658b2f377ec3fcc82c57c628a269e058ddb02029e6396c953"
+    },
+    "prior19_cpp_failure": {
+      "path": "/home/bradley/.codex/worktrees/resource-profile-map-tools/glob2/artifacts/profiles-implementation/live-gpu-permission-review/final-focused19/0-combined-first/receipt.json",
+      "sha256": "170d562aeee0254f6e00253717c3033de5a63cc598c0d8b39092b26dddb79fb8"
+    },
+    "focused28_complete": {
+      "path": "/home/bradley/.codex/worktrees/resource-profile-map-tools/glob2/artifacts/profiles-implementation/live-gpu-permission-review/final-focused28/complete.json",
+      "sha256": "30cef53366a1002d0c9cdab373bb4a70c80a6bbfbd9fdad36115f47869723015"
+    },
+    "focused28_raw_hash_manifest": {
+      "path": "/home/bradley/.codex/worktrees/resource-profile-map-tools/glob2/artifacts/engine-optimization-conclusion/focused28-raw-hash-manifest.json",
+      "sha256": "400085e6f11b0fcd4a76a8c1a13b013c4d78582ae140cbf1e378ce3b2a68cfa9"
+    },
+    "final_master_build": {
+      "path": "/home/bradley/.codex/worktrees/resource-profile-map-tools/glob2/artifacts/resource-profiles/validation/final-master-build/native-release-complete.json",
+      "sha256": "c1dedce36bd45fa9704f67fb751927afad0cdad7276efc78a726d97ebe420ae6"
+    },
+    "final_master_focused": {
+      "path": "/home/bradley/.codex/worktrees/resource-profile-map-tools/glob2/artifacts/profiles-implementation/live-gpu-permission-review/final-focused-master/complete.json",
+      "sha256": "cf7fefc6b67b19740e69645a25c6249caaf783133cd35c80d0751ebff6170e27"
+    },
+    "final_master_map9": {
+      "path": "/home/bradley/.codex/worktrees/resource-profile-map-tools/glob2/artifacts/map-tools-resource-contract/native-smoke-master/runs/complete.json",
+      "sha256": "6e48141d29905405b51e0e43c148aaf477fe8e26f8e7c9de8b319490a58982c5"
+    },
+    "final_master_independent_review": {
+      "path": "/home/bradley/.codex/worktrees/resource-profile-map-tools/glob2/artifacts/engine-optimization-conclusion/final-master-independent-review.json",
+      "sha256": "af206c9c171ff20739d766d115d9ddfabff0c27a41821830e8b90a2406efebee"
+    },
+    "root_final_master_review": {
+      "path": "/home/bradley/.codex/worktrees/resource-profile-map-tools/glob2/artifacts/engine-optimization-conclusion/root-final-master-review.json",
+      "sha256": "4cdd2fed24b768d1be338623bee64411a7124b7a1c126cf6db4863954acd9ce6"
+    }
+  },
+  "claims_limits": [
+    "No globally maximal optimization claim",
+    "No universal fastest participant count",
+    "No transfer of old source validation to newer code",
+    "No runtime speed claim from assembly alone",
+    "No pooled whole-game/window or CPU/GPU cohorts",
+    "No new native/build/profile launched by this report"
+  ],
+  "build_failures_preserved": {
+    "prior_1e8_missing_include": "Failed640.66s retained; corrected19c test include is source-only repair, not performance evidence."
+  },
+  "native_foundation_acceptance": "Final master-merged d2 bounded Linux native compatibility and direct-map contracts passed. Current platform/device acceptance and calibrated profile behavior remain incomplete.",
+  "failure_qualifications": {
+    "prior19_cpp": "Epoch-zero test fixture staged preparation before a real tick. Failed receipt/raw retained;28 advances actualgame first, then validates live transitions and savecontinuation. No productionenginefix inferred.",
+    "prior1e8_build": "Missingtestinclude failed640.66s retained;19 include correction source-only, no performanceclaim.",
+    "scheduler_timing": "Foreignbuild blocked new workerpath timing at preflight; no rejected/blocked sample included."
+  },
+  "proposed_followups": [
+    {
+      "priority": 1,
+      "action": "Compare fast single-game completion against concurrent efficient throughput under the SAME machine-wide CPU and memory budget.",
+      "status": "Existing16pilot stays PROPOSED/UNLAUNCHED; fresh exact final source/binary/fixtures binding required before future execution.",
+      "scope": "Separate completion latency, aggregate throughput and totalCPU; Pareto tradeoffs, not six-tier calibration from onehost."
+    },
+    {
+      "priority": 2,
+      "action": "Rebase unadopted96da cached scheduler selection onto finald2/26715 control before any worker-path timing.",
+      "status": "NOTADOPTED; preparation only, no runtimegain.",
+      "scope": "Existing actual2\u21921assembly/correctness belongs to96da; neither transfers performance nor conformance to changedmaster. N1negativecontrol does not exerciseworkers."
+    },
+    {
+      "priority": 3,
+      "action": "Use bounded maturegradient/search/seed ownership and invalidation census to find proven duplicated work.",
+      "status": "Diagnostic followup only; no newoptimization selected or campaignlaunched.",
+      "scope": "Mature leafsample evidence is scoped; missingcallchains56.87% limit attribution. Do not infer callerownership or wholegameCPU from unresolvedunwinds; retain correctednamespace analysis."
+    },
+    {
+      "priority": 4,
+      "action": "Calibrate presentation and resource tradeoffs on actual low-endAndroid and high-end physicaldevices.",
+      "status": "PENDING physicaldevice acceptance.",
+      "scope": "Measure input/frame pacing, thermal/battery and memorypressure while preserving gamefeel/features. No Androidthreshold or luxury/eco automaticmapping invented from currenthost."
+    }
+  ],
+  "wrapup_scope": "Accepted9e measuredmodest gains are onehost windowcohort. Existing28Cpp13 and19Map9 proof preserved source-specific. Masterintegrationpending; historicalOazis held192/448. Followups are proposals, no additional launches or adoption.",
+  "final_native_evidence": {
+    "source": "d2ddb6793777eac9e8c62421f2803313e0b83b52",
+    "tree": "35c1ceab56eb99e5a542e22d6364508d70ee9057",
+    "build_s": 683.4172521270812,
+    "focused_cases": 170,
+    "failures": 0,
+    "skips": 0,
+    "combined_steps": 704,
+    "map_requests": 9,
+    "golden": "Actual compiled TurnEngineHarness committed match verification/golden assertion passed. Its TempDir checksum trace is not retained in raw outputs; no new exported842-row runtime artifact claim. Prior ee45/96 standalone CLI traces retain their own source qualification.",
+    "unbenchmarked": "Final d2 combines upstream26715 CPU-gradient changes; no new performance gain is claimed for this combined source."
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "state": "provisional-pending-mature-and-v2-timings",
+  "source_sha256": {
+    "src/common/ComputeThreads.h": "98fed29ce73250b074433a267821e9597b54c2158c4c128221bad42e52dad940",
+    "src/common/ComputeThreads.cpp": "6da03d329e3b3d5af0c14317d99d390d0aafdd3223ddf90b3e75e805ae7b786a",
+    "src/replay/ReplayTelemetry.h": "6d4cb9820f0a66507a2adfae3f2e9d46a622134d5aed35677dc4d8297cce050d",
+    "src/replay/ReplayTelemetry.cpp": "7d06517f869b8e2f008d318dfdcd5a87daff5854873e598eafe1a850fe81b695",
+    "src/engine/sim/snapshot/BufferPool.h": "eb15f6ea8e9cf431d9c74b4787c812c9efbee94232fd3fdf0d705f1b36213b25",
+    "src/engine/sim/snapshot/WorldCapture.cpp": "9802869e44fe1b217e8c3696d29d500e27c2f0780a78129eb90e52dda485b688",
+    "src/engine/sim/snapshot/SnapshotStorage.cpp": "d7f16e388ee0cdbc569e150e45953994a54f8c19ffe2b6a4ed66edc8fd6adec4",
+    "src/app/cli/Headless.cpp": "30e308da18f1ee96f49f6e7eea08ea54ad85910139a2ac1b2c12301799611b1a"
+  },
+  "isolated_patches": {
+    "snapshot-v2": "bf72c11f30da428ad29e63b071763b2e9b7228c297005430a63fdbac1f15a714",
+    "telemetry-v2": "0c264d67d80579ded21b96aa84a1eaa3f8baa3c12107736599661735b6c67ad2"
+  },
+  "preferred_order": [
+    "worker eligibleCPU auto ceiling",
+    "telemetryV2 only if CPU regression removed",
+    "optional independent resource-plane diagnostic sidecar",
+    "snapshotV2 only if useful measured CPU/capacity/RSS benefit"
+  ],
+  "scheduler_adoption": "hold",
+  "new_launches": 0,
+  "production_edits": 0,
+  "review_sha256": "0bde2ec5f1f51cccfad8966dcc68d48152f7e76112bc37025e7c2a5b6d6c58df"
+}

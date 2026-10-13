@@ -1,0 +1,67 @@
+# ========
+# captured on    : Mon Oct 12 13:33:18 2026
+# header version : 1
+# data offset    : 1960
+# data size      : 149522584
+# feat offset    : 149524544
+# hostname : therig
+# os release : 7.0.0-31-generic
+# perf version : 7.0.14
+# arch : x86_64
+# nrcpus online : 32
+# nrcpus avail : 32
+# cpudesc : AMD Ryzen Threadripper 2950X 16-Core Processor
+# cpuid : AuthenticAMD,23,8,2
+# total memory : 129402516 kB
+# cmdline : /usr/bin/perf 
+# event desc: not available or unable to read
+# CPU_TOPOLOGY info available, use -I to display
+# NUMA_TOPOLOGY info available, use -I to display
+# pmu mappings: cpu = 4, amd_iommu_0 = 10, breakpoint = 5, hwmon_asus_wmi_sensors = 4294901766, hwmon_asus = 4294901765, hwmon_k10temp = 4294901764, hwmon_k10temp = 4294901763, hwmon_nvme = 4294901762, hwmon_nvme = 4294901760, hwmon_nvme = 4294901761, hwmon_ucsi_source_psy_15_00081 = 4294901767, hwmon_ucsi_source_psy_16_00081 = 4294901768, kprobe = 8, msr = 11, power = 12, power_core = 13, software = 1, tool = 4294967294, tracepoint = 2, uprobe = 9
+# CACHE info available, use -I to display
+# time of first sample : 3093593.683444
+# time of last sample : 3093602.383545
+# sample duration :   8700.100 ms
+# MEM_TOPOLOGY info available, use -I to display
+# clockid frequency: 1000 MHz
+# bpf_prog_info 1292:
+# 	sub_prog 0: bpf_prog_3797a473ad1f59bd_sysctl_monitor addr 0xffffffffc02a4728 size 683
+# 	sub_prog 1: bpf_prog_417237dd50306dd0_cut_last addr 0xffffffffc02a2c54 size 104
+# bpf_prog_info 5299: bpf_prog_99aee04c1c96cc7e_sd_devices addr 0xffffffffc028e910 size 293
+# bpf_prog_info 5300: bpf_prog_772db7720b2728e9_sd_fw_egress addr 0xffffffffc028eaf4 size 59
+# bpf_prog_info 5301: bpf_prog_772db7720b2728e9_sd_fw_ingress addr 0xffffffffc0290868 size 59
+# bpf_prog_info 5302: bpf_prog_a97c143260cd9940_sd_devices addr 0xffffffffc0291bb0 size 263
+# bpf_prog_info 5303: bpf_prog_470479e7b2a42bb5_sd_devices addr 0xffffffffc0292274 size 106
+# bpf_prog_info 5304: bpf_prog_aca0dc3e8873f2f2_sd_devices addr 0xffffffffc0292a94 size 485
+# bpf_prog_info 5305: bpf_prog_772db7720b2728e9_sd_fw_egress addr 0xffffffffc0291cec size 59
+# bpf_prog_info 5306: bpf_prog_772db7720b2728e9_sd_fw_ingress addr 0xffffffffc029251c size 59
+# bpf_prog_info 5307: bpf_prog_ffd5b2d5493378a3_sd_devices addr 0xffffffffc02ad968 size 1106
+# bpf_prog_info 5308: bpf_prog_925aa739a35aee81_sd_devices addr 0xffffffffc0291d58 size 356
+# bpf_prog_info 5309: bpf_prog_a97c143260cd9940_sd_devices addr 0xffffffffc029ba10 size 263
+# bpf_prog_info 5310: bpf_prog_772db7720b2728e9_sd_fw_egress addr 0xffffffffc028ea6c size 59
+# bpf_prog_info 5311: bpf_prog_772db7720b2728e9_sd_fw_ingress addr 0xffffffffc028ffe8 size 59
+# bpf_prog_info 5312: bpf_prog_99aee04c1c96cc7e_sd_devices addr 0xffffffffc0291ecc size 293
+# bpf_prog_info 5313: bpf_prog_772db7720b2728e9_sd_fw_egress addr 0xffffffffc0292024 size 59
+# bpf_prog_info 5314: bpf_prog_772db7720b2728e9_sd_fw_ingress addr 0xffffffffc02925b0 size 59
+# bpf_prog_info 5315: bpf_prog_9f0126175d483e7a_sd_devices addr 0xffffffffc029bb54 size 314
+# bpf_prog_info 5316: bpf_prog_772db7720b2728e9_sd_fw_egress addr 0xffffffffc0292cb8 size 59
+# bpf_prog_info 5317: bpf_prog_772db7720b2728e9_sd_fw_ingress addr 0xffffffffc0292d1c size 59
+# bpf_prog_info 5318: bpf_prog_9f0126175d483e7a_sd_devices addr 0xffffffffc02a2f28 size 314
+# bpf_prog_info 5319: bpf_prog_99aee04c1c96cc7e_sd_devices addr 0xffffffffc029fa90 size 293
+# bpf_prog_info 5320: bpf_prog_772db7720b2728e9_sd_fw_egress addr 0xffffffffc029005c size 59
+# bpf_prog_info 5321: bpf_prog_772db7720b2728e9_sd_fw_ingress addr 0xffffffffc0290364 size 59
+# bpf_prog_info 5339: bpf_prog_5592a8780089fcce_s_firefox_firef addr 0xffffffffc02908d0 size 167
+# bpf_prog_info 5652: bpf_prog_772db7720b2728e9_sd_fw_egress addr 0xffffffffc028dfb4 size 59
+# bpf_prog_info 5653: bpf_prog_772db7720b2728e9_sd_fw_ingress addr 0xffffffffc028e894 size 59
+# bpf_prog_info 5732: bpf_prog_772db7720b2728e9_sd_fw_egress addr 0xffffffffc02b9e88 size 59
+# bpf_prog_info 5733: bpf_prog_772db7720b2728e9_sd_fw_ingress addr 0xffffffffc02ba088 size 59
+# btf info of id 243
+# cpu pmu capabilities: max_precise=0
+# clockid: monotonic (1)
+# reference time: 2026-10-12 13:33:09.166152 = 1791826389.166152 (TOD) = 3093593.294135371 (monotonic)
+# CPU_DOMAIN_INFO info available, use -I to display
+# e_machine : 62
+#   e_flags : 0
+# missing features: TRACING_DATA BUILD_ID BRANCH_STACK GROUP_DESC AUXTRACE STAT DIR_FORMAT COMPRESSED HYBRID_TOPOLOGY 
+# ========
+#

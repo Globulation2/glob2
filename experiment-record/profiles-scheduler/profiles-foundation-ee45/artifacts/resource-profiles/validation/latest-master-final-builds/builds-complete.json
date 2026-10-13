@@ -1,0 +1,14 @@
+{
+  "passed": true,
+  "source": "ee45c0a0389660bc7d2885b572b94b1a2b01d7a3",
+  "tree": "c4f8f7ebd7888effb0800dd0b14e70f8fc2c3224",
+  "source_unchanged": true,
+  "stages": [
+    "native-release",
+    "web-release",
+    "android-release",
+    "android-apk"
+  ],
+  "tests_or_games_executed": 0,
+  "devices_executed": 0
+}

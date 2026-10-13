@@ -1,0 +1,67 @@
+{
+  "passed_independent_review": true,
+  "source_commit": "ee45c0a0389660bc7d2885b572b94b1a2b01d7a3",
+  "native_invocations": 2,
+  "actual_overlap_samples": 7,
+  "raw_observation_sha256": "46bfbf46fd9621713860f65cdc3418f5937bb5cb7f6266b2958d41a67ea667d7",
+  "immutable_jobs_sha256": "9bdb1592777d2520c02375a5378b4236fa2719d7fa1d91465d40bb60ce7138f4",
+  "current_control_sha256": "fa6b18c5a1f0e71a080cc5a6c8d3f9656989eaf2da024937c6156e99f34f6d3e",
+  "completion_sha256": "f24e037227d9ac145268b1fccdc1dab0ce72bf398ba62b1a64518c38a79ddd12",
+  "records": [
+    {
+      "slot": "A",
+      "raw_simulation_equal": true,
+      "gcs_records": 2048,
+      "world_records": 2048,
+      "participants": 4,
+      "memory_planning_bytes": 536870912,
+      "cpu_ids": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "passed_sha256": "d4f7a1827aa8d5fb389d246e6f61bf80ded68dfd16dfa8351699595d885c19cf",
+      "ait1": {
+        "offset": 753268,
+        "bytes": 3003077,
+        "sha256": "b374e3376088c6dcf2e601cb65f9040d90bb7436a66efcf06670ef2f795fc5dc",
+        "frames": 64,
+        "rows": 128,
+        "values": 39988,
+        "until": 2017,
+        "truncated": false
+      }
+    },
+    {
+      "slot": "B",
+      "raw_simulation_equal": true,
+      "gcs_records": 2048,
+      "world_records": 2048,
+      "participants": 4,
+      "memory_planning_bytes": 536870912,
+      "cpu_ids": [
+        16,
+        17,
+        18,
+        19,
+        20,
+        21
+      ],
+      "passed_sha256": "efbf5ddb3f0d1ba0fca8cc759b793cc2be767a72b23ecb939ddaa4a23869b33f",
+      "ait1": {
+        "offset": 753268,
+        "bytes": 3003077,
+        "sha256": "b374e3376088c6dcf2e601cb65f9040d90bb7436a66efcf06670ef2f795fc5dc",
+        "frames": 64,
+        "rows": 128,
+        "values": 39988,
+        "until": 2017,
+        "truncated": false
+      }
+    }
+  ],
+  "scope": "Read-only parser/sha audit of completed native2slot proof; actual simultaneous child identities/masks and requested/resolved allocations. Planningmemory notRSScap, no throughput/GPU/device/render/feel timing claim."
+}

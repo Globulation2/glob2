@@ -1,0 +1,19 @@
+{
+  "runtime": "threaded",
+  "project": "chromium",
+  "suites": [
+    "ResourcePolicy",
+    "ResourcePlanJson",
+    "ApplicationResourcePlan",
+    "ApplicationPhaseResources",
+    "ApplicationResourceObservations",
+    "AndroidResourceObservations",
+    "RuntimeGradientBackend",
+    "GradientPreparationContract",
+    "GradientBackendSwitch"
+  ],
+  "actualRegistered": 79,
+  "actualExecuted": 79,
+  "listedSharedHeap": true,
+  "ranSharedHeap": true
+}

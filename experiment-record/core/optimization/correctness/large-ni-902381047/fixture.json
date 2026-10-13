@@ -1,0 +1,37 @@
+{
+  "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/correctness/large-ni-902381047/fixture/initial.game.gz",
+  "header": {
+    "major": 0,
+    "minor": 154,
+    "teams": 4,
+    "width": 512,
+    "height": 512,
+    "map_offset": 1198511,
+    "gzip_sha256": "67f806838aefe10591c4a0557424eb5fd6305c02a5730ec748022bbee2dbcc4e"
+  },
+  "start_tick": 0,
+  "start_tick_evidence": "save occurs before first simulation tick; loaded trace checked below",
+  "preparation_trace": {
+    "sha256": "80f730fb30ed989044788913e7dc143b48654a4da272a7c71bd40e40a0253a97",
+    "teams": 4,
+    "players": 4,
+    "count": 1,
+    "first_tick": 0,
+    "last_tick": 0,
+    "flags": 0
+  },
+  "scenario": {
+    "id": "large-ni",
+    "generator": "isles",
+    "width": 512,
+    "height": 512,
+    "ais": [
+      "nicowar",
+      "nicowar",
+      "nicowar",
+      "nicowar"
+    ],
+    "ticks": 4096
+  },
+  "seed": 902381047
+}

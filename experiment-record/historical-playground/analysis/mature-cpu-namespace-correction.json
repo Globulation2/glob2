@@ -1,0 +1,107 @@
+{
+  "generated_utc": "2026-10-12T19:37:04.193592+00:00",
+  "scope": "Read-only audit of historical summary/details and their first-level local report links; no accepted/sealed report mutation or data runs",
+  "reviewed": [
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/history-summary.html",
+      "sha256": "708396cebcbaa9e925207c6f6a1f5f5603ddb7cd48fc03545be97a778d2bc89d"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/history-detailed.html",
+      "sha256": "611bff6fc9f1ac0cac6620ca3a4896f00fa9460229a40baecdd9765ea94f989d"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/commit-inventory.html",
+      "sha256": "ae20150b553c9d8a3efae31514f1af9acb5ae3679a9d43fbb4eede4445965247"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/report.html",
+      "sha256": "4f2e62d4c4a75af78c6e378ac77254474f73b4d10b33469cb5d9e42686c101d0"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/investigation-update.html",
+      "sha256": "c63f4b76515c7831bcf997bafa1ffdc491747d3d995fed2ad677d9391f4a070a"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/telemetry-storage-model/fresh-analysis.html",
+      "sha256": "8b4560bb5c557c64a36122ae10ab297c03861f9be1459e06314a727f9323467c"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/replay-reserve/confirmation-report.html",
+      "sha256": "d0ced6d5a0c7fef0d5009106bda5433f236d1c132e7caa7d56910728900baa10"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/replay-wire-analysis.html",
+      "sha256": "59f9c5e67d6cefe92475340ff6019d436438158da6043b84bd8772193ededde0"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/telemetry-storage-model/model-analysis.html",
+      "sha256": "409ae3dc7bd0bf1abc1ba61adc878c1a884aa2bf51dca4e8b1c49f9d1c4fdbc5"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/mature-memory-attribution.html",
+      "sha256": "4746d52657e3de8f5e4c7d508c3277772b6e5a17a380b7d04335a9c511de33db"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/callgrind-manual-attribution.html",
+      "sha256": "95a92c730f6dd79ab166f8580c36f09672d367a302284427bd6e5563712a19ba"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/trajectory-decomposition.html",
+      "sha256": "28c50f4116640c2e78c2c9768bcd831d2562d707da539ce3fd55fb288528395f"
+    }
+  ],
+  "authoritative": [
+    {
+      "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/followup.html",
+      "sha256": "1432d5a2accbd3c00bfe155dca3b39d55c676aca86d619bb523edf9a3ddbef62"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/goal-audit/mature-perf-release-relink/leading-namespace-supplement-v1.json",
+      "sha256": "262f734eab608ef264e57f51429941589979a85f94024b19607a5ffce7a3111a"
+    }
+  ],
+  "finding": "No 31.54% snapshot CPU claim found in the 12 reviewed historical/linked HTML reports. Historical detailed narrative has stale pending mature-CPU language, not the faulty numerical claim.",
+  "locations": [
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/history-detailed.html",
+      "line": 25,
+      "exact_excerpt": "Late CPU attribution is still gate-pending; this memory result does not supply mature CPU hotspots.",
+      "correction": "Memory result still cannot supply CPU hotspots. A separate qualified late-window native perf sample ranking is now available; link corrected leading namespace supplement rather than obsolete full-signature category table."
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history/history-detailed.html",
+      "locator": "paragraph containing root-queued mature-state profiles are still needed",
+      "exact_excerpt": "root-queued mature-state profiles are still needed",
+      "correction": "The original thread-count/window observation remains scoped; one late Oazis CPU sample is now complete, without universal count/maturity inference."
+    }
+  ],
+  "corrected_observation": {
+    "workload": "Continuously evolved Oazis256x256,11Nicowars,seed1738462951,participants3 owner-inclusive,GPUoff,six logical CPU allocation; observed ticks near120064\u2013128000",
+    "samples": 8986,
+    "total_observed_period": 18008015888,
+    "shares_percent": {
+      "gradient_kernel": 24.860894725127977,
+      "BuildingGradientSearch": 14.867571778321834,
+      "Building": 12.997996884041843,
+      "gradient_preparation": 12.530603160471845,
+      "AISharedRuntime": 10.661028266191854,
+      "SimulationSnapshot": 5.909192076563544,
+      "unclassified application function": 5.786779434676163,
+      "Map": 3.7836634765190293,
+      "Team": 3.1048297351435568,
+      "resolved other DSO": 2.5372802136657024,
+      "Unit": 1.0905853549966613,
+      "Game": 0.44513687959047404,
+      "kernel": 0.4006231916314267,
+      "AIEngine": 0.33385265969285555,
+      "ComputeExecutor": 0.2559537057645226,
+      "NewNicowar": 0.2559537057645226,
+      "unknown user leaf": 0.17805475183618963
+    },
+    "field_family_sum_percent": 52.25906966392166,
+    "reason": "Leading function namespace owns the exclusive leaf period. The old substring regex matched SimulationSnapshot::Handle inside gradient function template arguments, falsely attributing that work to snapshots. Original category table is explicitly unqualified; raw leaf ranking/period accounting remain valid.",
+    "qualification": "One late window and host, not whole-game CPU fractions, predicted savings or historical causal attribution.56.87% empty callchains; complete caller/CPU-active-thread coverage not established. GPUoff ranking cannot establish GPU economics. Continuous finaloutcome/checksum+whole replay proof is distinct from every-tick continuous late-window equivalence; loaded512-tick conformance is a separate gate."
+  },
+  "historical_unchanged": "Historical Playground14x32 completed; Oazis campaign incomplete/live as managed by root. This correction does not revise historical means, memory owner bytes, raw reports or outstanding campaign status."
+}

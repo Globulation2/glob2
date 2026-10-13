@@ -1,0 +1,6676 @@
+{
+  "generated_utc": "2026-10-12T01:41:42.865429+00:00",
+  "source_sha256": "67aab27114302cdd04e09746f2ed527917d5470768b5d3bf11484e789d610b4c",
+  "wire_analysis_sha256": "f348573a1c1fb7313bb2a9e67a2d1a783db7eb2aff768616e4570ba565790511",
+  "wire_parser_sha256": "ae85842c44e8290496b650d86b9f1abb35afea1852988a417a80f6074ac81963",
+  "measured_model_summary_sha256": "cb22c4a76c26c436629cfdd3b749f7980300096acb5b74e4c86a3d56cf7e3e23",
+  "libstdcpp_SSO_source": {
+    "path": "/usr/include/c++/13/bits/basic_string.h",
+    "sha256": "8058fa81ecce2564d422c4fe505fbe04b6c77307942ad729084eafa581e45902",
+    "rule": "_S_local_capacity = 15 / sizeof(_CharT)"
+  },
+  "cases": [
+    {
+      "input_case": "check-t4-gpuoff",
+      "replay_sha256": "72bf3adf939931849b94952a5a7e501447c3e90e643c1912fa03d8dc648684a7",
+      "tail_sha256": "e4b3433f43bebb2b3d1d05318a9c9bf7f5efcdb275f26edb5308d48464465524",
+      "tail_offset": 3300242,
+      "tail_wire_bytes": 15816940,
+      "values_total": 210647,
+      "row_records": 672,
+      "unique_exact_value_strings": 642,
+      "unique_value_text_bytes": 2159,
+      "repeated_value_text_bytes": 228448,
+      "unique_value_length_prefixed_bytes": 4727,
+      "repeated_value_length_prefixed_bytes": 1071036,
+      "empty_value_occurrences": 0,
+      "unique_empty_values": 0,
+      "NUL_value_occurrences": 0,
+      "unique_values_with_NUL": 0,
+      "repeated_same_value_occurrences_within_rows": 200778,
+      "duplicate_metadata_occurrences_within_rows": 0,
+      "value_occurrences_SSO_length_eligible_15": 210647,
+      "value_occurrences_longer_than_15": 0,
+      "unique_values_SSO_length_eligible_15": 642,
+      "unique_values_longer_than_15": 0,
+      "length_histogram": {
+        "1": 200815,
+        "2": 4727,
+        "3": 2241,
+        "4": 2864
+      },
+      "unique_metadata_value_pairs": 3546,
+      "ordered_value_updated_fingerprint_sha256": "bd972f1aaf8d7a6127a35c3e9414ec37d2f4bb20c8f3f3f8968cc0722d993898",
+      "values": [
+        {
+          "exact_hex": "30",
+          "display": "0",
+          "text_bytes": 1,
+          "occurrences": 189544
+        },
+        {
+          "exact_hex": "31",
+          "display": "1",
+          "text_bytes": 1,
+          "occurrences": 4245
+        },
+        {
+          "exact_hex": "32",
+          "display": "2",
+          "text_bytes": 1,
+          "occurrences": 1335
+        },
+        {
+          "exact_hex": "36",
+          "display": "6",
+          "text_bytes": 1,
+          "occurrences": 1093
+        },
+        {
+          "exact_hex": "37",
+          "display": "7",
+          "text_bytes": 1,
+          "occurrences": 1050
+        },
+        {
+          "exact_hex": "35",
+          "display": "5",
+          "text_bytes": 1,
+          "occurrences": 968
+        },
+        {
+          "exact_hex": "34",
+          "display": "4",
+          "text_bytes": 1,
+          "occurrences": 937
+        },
+        {
+          "exact_hex": "33",
+          "display": "3",
+          "text_bytes": 1,
+          "occurrences": 848
+        },
+        {
+          "exact_hex": "38",
+          "display": "8",
+          "text_bytes": 1,
+          "occurrences": 411
+        },
+        {
+          "exact_hex": "39",
+          "display": "9",
+          "text_bytes": 1,
+          "occurrences": 384
+        },
+        {
+          "exact_hex": "3130",
+          "display": "10",
+          "text_bytes": 2,
+          "occurrences": 338
+        },
+        {
+          "exact_hex": "3132",
+          "display": "12",
+          "text_bytes": 2,
+          "occurrences": 328
+        },
+        {
+          "exact_hex": "3135",
+          "display": "15",
+          "text_bytes": 2,
+          "occurrences": 277
+        },
+        {
+          "exact_hex": "3231",
+          "display": "21",
+          "text_bytes": 2,
+          "occurrences": 227
+        },
+        {
+          "exact_hex": "3134",
+          "display": "14",
+          "text_bytes": 2,
+          "occurrences": 221
+        },
+        {
+          "exact_hex": "3138",
+          "display": "18",
+          "text_bytes": 2,
+          "occurrences": 206
+        },
+        {
+          "exact_hex": "3235",
+          "display": "25",
+          "text_bytes": 2,
+          "occurrences": 183
+        },
+        {
+          "exact_hex": "3131",
+          "display": "11",
+          "text_bytes": 2,
+          "occurrences": 163
+        },
+        {
+          "exact_hex": "3230",
+          "display": "20",
+          "text_bytes": 2,
+          "occurrences": 151
+        },
+        {
+          "exact_hex": "3137",
+          "display": "17",
+          "text_bytes": 2,
+          "occurrences": 148
+        },
+        {
+          "exact_hex": "3234",
+          "display": "24",
+          "text_bytes": 2,
+          "occurrences": 148
+        },
+        {
+          "exact_hex": "3133",
+          "display": "13",
+          "text_bytes": 2,
+          "occurrences": 143
+        },
+        {
+          "exact_hex": "3232",
+          "display": "22",
+          "text_bytes": 2,
+          "occurrences": 137
+        },
+        {
+          "exact_hex": "3139",
+          "display": "19",
+          "text_bytes": 2,
+          "occurrences": 136
+        },
+        {
+          "exact_hex": "3233",
+          "display": "23",
+          "text_bytes": 2,
+          "occurrences": 135
+        },
+        {
+          "exact_hex": "3136",
+          "display": "16",
+          "text_bytes": 2,
+          "occurrences": 133
+        },
+        {
+          "exact_hex": "3335",
+          "display": "35",
+          "text_bytes": 2,
+          "occurrences": 88
+        },
+        {
+          "exact_hex": "3536",
+          "display": "56",
+          "text_bytes": 2,
+          "occurrences": 86
+        },
+        {
+          "exact_hex": "3633",
+          "display": "63",
+          "text_bytes": 2,
+          "occurrences": 78
+        },
+        {
+          "exact_hex": "3439",
+          "display": "49",
+          "text_bytes": 2,
+          "occurrences": 77
+        },
+        {
+          "exact_hex": "3730",
+          "display": "70",
+          "text_bytes": 2,
+          "occurrences": 76
+        },
+        {
+          "exact_hex": "3238",
+          "display": "28",
+          "text_bytes": 2,
+          "occurrences": 74
+        },
+        {
+          "exact_hex": "3432",
+          "display": "42",
+          "text_bytes": 2,
+          "occurrences": 74
+        },
+        {
+          "exact_hex": "3835",
+          "display": "85",
+          "text_bytes": 2,
+          "occurrences": 69
+        },
+        {
+          "exact_hex": "3535",
+          "display": "55",
+          "text_bytes": 2,
+          "occurrences": 56
+        },
+        {
+          "exact_hex": "313132",
+          "display": "112",
+          "text_bytes": 3,
+          "occurrences": 49
+        },
+        {
+          "exact_hex": "313433",
+          "display": "143",
+          "text_bytes": 3,
+          "occurrences": 37
+        },
+        {
+          "exact_hex": "3236",
+          "display": "26",
+          "text_bytes": 2,
+          "occurrences": 34
+        },
+        {
+          "exact_hex": "3537",
+          "display": "57",
+          "text_bytes": 2,
+          "occurrences": 32
+        },
+        {
+          "exact_hex": "363333",
+          "display": "633",
+          "text_bytes": 3,
+          "occurrences": 32
+        },
+        {
+          "exact_hex": "313431",
+          "display": "141",
+          "text_bytes": 3,
+          "occurrences": 30
+        },
+        {
+          "exact_hex": "313735",
+          "display": "175",
+          "text_bytes": 3,
+          "occurrences": 30
+        },
+        {
+          "exact_hex": "323037",
+          "display": "207",
+          "text_bytes": 3,
+          "occurrences": 30
+        },
+        {
+          "exact_hex": "323338",
+          "display": "238",
+          "text_bytes": 3,
+          "occurrences": 30
+        },
+        {
+          "exact_hex": "323639",
+          "display": "269",
+          "text_bytes": 3,
+          "occurrences": 30
+        },
+        {
+          "exact_hex": "333031",
+          "display": "301",
+          "text_bytes": 3,
+          "occurrences": 30
+        },
+        {
+          "exact_hex": "333333",
+          "display": "333",
+          "text_bytes": 3,
+          "occurrences": 30
+        },
+        {
+          "exact_hex": "333537",
+          "display": "357",
+          "text_bytes": 3,
+          "occurrences": 30
+        },
+        {
+          "exact_hex": "333839",
+          "display": "389",
+          "text_bytes": 3,
+          "occurrences": 30
+        },
+        {
+          "exact_hex": "343231",
+          "display": "421",
+          "text_bytes": 3,
+          "occurrences": 30
+        },
+        {
+          "exact_hex": "343532",
+          "display": "452",
+          "text_bytes": 3,
+          "occurrences": 30
+        },
+        {
+          "exact_hex": "343834",
+          "display": "484",
+          "text_bytes": 3,
+          "occurrences": 30
+        },
+        {
+          "exact_hex": "3433",
+          "display": "43",
+          "text_bytes": 2,
+          "occurrences": 30
+        },
+        {
+          "exact_hex": "3434",
+          "display": "44",
+          "text_bytes": 2,
+          "occurrences": 30
+        },
+        {
+          "exact_hex": "31333335",
+          "display": "1335",
+          "text_bytes": 4,
+          "occurrences": 30
+        },
+        {
+          "exact_hex": "313131",
+          "display": "111",
+          "text_bytes": 3,
+          "occurrences": 26
+        },
+        {
+          "exact_hex": "363031",
+          "display": "601",
+          "text_bytes": 3,
+          "occurrences": 26
+        },
+        {
+          "exact_hex": "3538",
+          "display": "58",
+          "text_bytes": 2,
+          "occurrences": 26
+        },
+        {
+          "exact_hex": "3239",
+          "display": "29",
+          "text_bytes": 2,
+          "occurrences": 25
+        },
+        {
+          "exact_hex": "3839",
+          "display": "89",
+          "text_bytes": 2,
+          "occurrences": 24
+        },
+        {
+          "exact_hex": "3732",
+          "display": "72",
+          "text_bytes": 2,
+          "occurrences": 24
+        },
+        {
+          "exact_hex": "3833",
+          "display": "83",
+          "text_bytes": 2,
+          "occurrences": 24
+        },
+        {
+          "exact_hex": "31353835",
+          "display": "1585",
+          "text_bytes": 4,
+          "occurrences": 24
+        },
+        {
+          "exact_hex": "3539",
+          "display": "59",
+          "text_bytes": 2,
+          "occurrences": 21
+        },
+        {
+          "exact_hex": "373239",
+          "display": "729",
+          "text_bytes": 3,
+          "occurrences": 20
+        },
+        {
+          "exact_hex": "3939",
+          "display": "99",
+          "text_bytes": 2,
+          "occurrences": 20
+        },
+        {
+          "exact_hex": "31333337",
+          "display": "1337",
+          "text_bytes": 4,
+          "occurrences": 20
+        },
+        {
+          "exact_hex": "31333639",
+          "display": "1369",
+          "text_bytes": 4,
+          "occurrences": 20
+        },
+        {
+          "exact_hex": "31343031",
+          "display": "1401",
+          "text_bytes": 4,
+          "occurrences": 20
+        },
+        {
+          "exact_hex": "31343333",
+          "display": "1433",
+          "text_bytes": 4,
+          "occurrences": 20
+        },
+        {
+          "exact_hex": "313034",
+          "display": "104",
+          "text_bytes": 3,
+          "occurrences": 20
+        },
+        {
+          "exact_hex": "3237",
+          "display": "27",
+          "text_bytes": 2,
+          "occurrences": 19
+        },
+        {
+          "exact_hex": "3334",
+          "display": "34",
+          "text_bytes": 2,
+          "occurrences": 19
+        },
+        {
+          "exact_hex": "3438",
+          "display": "48",
+          "text_bytes": 2,
+          "occurrences": 19
+        },
+        {
+          "exact_hex": "3634",
+          "display": "64",
+          "text_bytes": 2,
+          "occurrences": 19
+        },
+        {
+          "exact_hex": "3836",
+          "display": "86",
+          "text_bytes": 2,
+          "occurrences": 19
+        },
+        {
+          "exact_hex": "313038",
+          "display": "108",
+          "text_bytes": 3,
+          "occurrences": 19
+        },
+        {
+          "exact_hex": "313133",
+          "display": "113",
+          "text_bytes": 3,
+          "occurrences": 19
+        },
+        {
+          "exact_hex": "313035",
+          "display": "105",
+          "text_bytes": 3,
+          "occurrences": 19
+        },
+        {
+          "exact_hex": "313733",
+          "display": "173",
+          "text_bytes": 3,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "323035",
+          "display": "205",
+          "text_bytes": 3,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "323336",
+          "display": "236",
+          "text_bytes": 3,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "3632",
+          "display": "62",
+          "text_bytes": 2,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "363634",
+          "display": "664",
+          "text_bytes": 3,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "363936",
+          "display": "696",
+          "text_bytes": 3,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "373238",
+          "display": "728",
+          "text_bytes": 3,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "373538",
+          "display": "758",
+          "text_bytes": 3,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "373930",
+          "display": "790",
+          "text_bytes": 3,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "383232",
+          "display": "822",
+          "text_bytes": 3,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "383436",
+          "display": "846",
+          "text_bytes": 3,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "3736",
+          "display": "76",
+          "text_bytes": 2,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "383738",
+          "display": "878",
+          "text_bytes": 3,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "393130",
+          "display": "910",
+          "text_bytes": 3,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "393431",
+          "display": "941",
+          "text_bytes": 3,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "393733",
+          "display": "973",
+          "text_bytes": 3,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "3834",
+          "display": "84",
+          "text_bytes": 2,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "31353833",
+          "display": "1583",
+          "text_bytes": 4,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "31363038",
+          "display": "1608",
+          "text_bytes": 4,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "313138",
+          "display": "118",
+          "text_bytes": 3,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "31363338",
+          "display": "1638",
+          "text_bytes": 4,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "31363730",
+          "display": "1670",
+          "text_bytes": 4,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "31373032",
+          "display": "1702",
+          "text_bytes": 4,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "31373333",
+          "display": "1733",
+          "text_bytes": 4,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "313437",
+          "display": "147",
+          "text_bytes": 3,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "32323530",
+          "display": "2250",
+          "text_bytes": 4,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "32353030",
+          "display": "2500",
+          "text_bytes": 4,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "3336",
+          "display": "36",
+          "text_bytes": 2,
+          "occurrences": 17
+        },
+        {
+          "exact_hex": "3435",
+          "display": "45",
+          "text_bytes": 2,
+          "occurrences": 17
+        },
+        {
+          "exact_hex": "3737",
+          "display": "77",
+          "text_bytes": 2,
+          "occurrences": 17
+        },
+        {
+          "exact_hex": "3731",
+          "display": "71",
+          "text_bytes": 2,
+          "occurrences": 17
+        },
+        {
+          "exact_hex": "3636",
+          "display": "66",
+          "text_bytes": 2,
+          "occurrences": 17
+        },
+        {
+          "exact_hex": "3930",
+          "display": "90",
+          "text_bytes": 2,
+          "occurrences": 17
+        },
+        {
+          "exact_hex": "313230",
+          "display": "120",
+          "text_bytes": 3,
+          "occurrences": 17
+        },
+        {
+          "exact_hex": "313332",
+          "display": "132",
+          "text_bytes": 3,
+          "occurrences": 17
+        },
+        {
+          "exact_hex": "2d31",
+          "display": "-1",
+          "text_bytes": 2,
+          "occurrences": 16
+        },
+        {
+          "exact_hex": "313231",
+          "display": "121",
+          "text_bytes": 3,
+          "occurrences": 16
+        },
+        {
+          "exact_hex": "3530",
+          "display": "50",
+          "text_bytes": 2,
+          "occurrences": 16
+        },
+        {
+          "exact_hex": "3832",
+          "display": "82",
+          "text_bytes": 2,
+          "occurrences": 16
+        },
+        {
+          "exact_hex": "3934",
+          "display": "94",
+          "text_bytes": 2,
+          "occurrences": 16
+        },
+        {
+          "exact_hex": "3938",
+          "display": "98",
+          "text_bytes": 2,
+          "occurrences": 16
+        },
+        {
+          "exact_hex": "313033",
+          "display": "103",
+          "text_bytes": 3,
+          "occurrences": 16
+        },
+        {
+          "exact_hex": "313036",
+          "display": "106",
+          "text_bytes": 3,
+          "occurrences": 16
+        },
+        {
+          "exact_hex": "313039",
+          "display": "109",
+          "text_bytes": 3,
+          "occurrences": 16
+        },
+        {
+          "exact_hex": "3931",
+          "display": "91",
+          "text_bytes": 2,
+          "occurrences": 15
+        },
+        {
+          "exact_hex": "3936",
+          "display": "96",
+          "text_bytes": 2,
+          "occurrences": 15
+        },
+        {
+          "exact_hex": "313139",
+          "display": "119",
+          "text_bytes": 3,
+          "occurrences": 15
+        },
+        {
+          "exact_hex": "313232",
+          "display": "122",
+          "text_bytes": 3,
+          "occurrences": 15
+        },
+        {
+          "exact_hex": "313334",
+          "display": "134",
+          "text_bytes": 3,
+          "occurrences": 15
+        },
+        {
+          "exact_hex": "313333",
+          "display": "133",
+          "text_bytes": 3,
+          "occurrences": 15
+        },
+        {
+          "exact_hex": "313137",
+          "display": "117",
+          "text_bytes": 3,
+          "occurrences": 15
+        },
+        {
+          "exact_hex": "363635",
+          "display": "665",
+          "text_bytes": 3,
+          "occurrences": 14
+        },
+        {
+          "exact_hex": "363937",
+          "display": "697",
+          "text_bytes": 3,
+          "occurrences": 14
+        },
+        {
+          "exact_hex": "3635",
+          "display": "65",
+          "text_bytes": 2,
+          "occurrences": 14
+        },
+        {
+          "exact_hex": "3935",
+          "display": "95",
+          "text_bytes": 2,
+          "occurrences": 14
+        },
+        {
+          "exact_hex": "3937",
+          "display": "97",
+          "text_bytes": 2,
+          "occurrences": 14
+        },
+        {
+          "exact_hex": "313134",
+          "display": "114",
+          "text_bytes": 3,
+          "occurrences": 14
+        },
+        {
+          "exact_hex": "31393435",
+          "display": "1945",
+          "text_bytes": 4,
+          "occurrences": 14
+        },
+        {
+          "exact_hex": "31393737",
+          "display": "1977",
+          "text_bytes": 4,
+          "occurrences": 14
+        },
+        {
+          "exact_hex": "32303039",
+          "display": "2009",
+          "text_bytes": 4,
+          "occurrences": 14
+        },
+        {
+          "exact_hex": "32303431",
+          "display": "2041",
+          "text_bytes": 4,
+          "occurrences": 14
+        },
+        {
+          "exact_hex": "32303733",
+          "display": "2073",
+          "text_bytes": 4,
+          "occurrences": 14
+        },
+        {
+          "exact_hex": "32313337",
+          "display": "2137",
+          "text_bytes": 4,
+          "occurrences": 14
+        },
+        {
+          "exact_hex": "32313639",
+          "display": "2169",
+          "text_bytes": 4,
+          "occurrences": 14
+        },
+        {
+          "exact_hex": "32323031",
+          "display": "2201",
+          "text_bytes": 4,
+          "occurrences": 14
+        },
+        {
+          "exact_hex": "32323333",
+          "display": "2233",
+          "text_bytes": 4,
+          "occurrences": 14
+        },
+        {
+          "exact_hex": "3638",
+          "display": "68",
+          "text_bytes": 2,
+          "occurrences": 13
+        },
+        {
+          "exact_hex": "3735",
+          "display": "75",
+          "text_bytes": 2,
+          "occurrences": 13
+        },
+        {
+          "exact_hex": "313436",
+          "display": "146",
+          "text_bytes": 3,
+          "occurrences": 13
+        },
+        {
+          "exact_hex": "313532",
+          "display": "152",
+          "text_bytes": 3,
+          "occurrences": 13
+        },
+        {
+          "exact_hex": "323637",
+          "display": "267",
+          "text_bytes": 3,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "323939",
+          "display": "299",
+          "text_bytes": 3,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "333331",
+          "display": "331",
+          "text_bytes": 3,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "333535",
+          "display": "355",
+          "text_bytes": 3,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "333837",
+          "display": "387",
+          "text_bytes": 3,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "343139",
+          "display": "419",
+          "text_bytes": 3,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "343530",
+          "display": "450",
+          "text_bytes": 3,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "3330",
+          "display": "30",
+          "text_bytes": 2,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "343832",
+          "display": "482",
+          "text_bytes": 3,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "353133",
+          "display": "513",
+          "text_bytes": 3,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "353132",
+          "display": "512",
+          "text_bytes": 3,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "353134",
+          "display": "514",
+          "text_bytes": 3,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "353434",
+          "display": "544",
+          "text_bytes": 3,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "353433",
+          "display": "543",
+          "text_bytes": 3,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "353435",
+          "display": "545",
+          "text_bytes": 3,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "353736",
+          "display": "576",
+          "text_bytes": 3,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "353737",
+          "display": "577",
+          "text_bytes": 3,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "363032",
+          "display": "602",
+          "text_bytes": 3,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "3333",
+          "display": "33",
+          "text_bytes": 2,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "363332",
+          "display": "632",
+          "text_bytes": 3,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "3436",
+          "display": "46",
+          "text_bytes": 2,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "363633",
+          "display": "663",
+          "text_bytes": 3,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "363935",
+          "display": "695",
+          "text_bytes": 3,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "373237",
+          "display": "727",
+          "text_bytes": 3,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "373536",
+          "display": "756",
+          "text_bytes": 3,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "373838",
+          "display": "788",
+          "text_bytes": 3,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "383230",
+          "display": "820",
+          "text_bytes": 3,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "383434",
+          "display": "844",
+          "text_bytes": 3,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "383736",
+          "display": "876",
+          "text_bytes": 3,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "393038",
+          "display": "908",
+          "text_bytes": 3,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "393339",
+          "display": "939",
+          "text_bytes": 3,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "393731",
+          "display": "971",
+          "text_bytes": 3,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31303035",
+          "display": "1005",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31303031",
+          "display": "1001",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31303030",
+          "display": "1000",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31303336",
+          "display": "1036",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31303333",
+          "display": "1033",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31303634",
+          "display": "1064",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31303637",
+          "display": "1067",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31303839",
+          "display": "1089",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31303932",
+          "display": "1092",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "3734",
+          "display": "74",
+          "text_bytes": 2,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31313231",
+          "display": "1121",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31313234",
+          "display": "1124",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31313534",
+          "display": "1154",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31313531",
+          "display": "1151",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31313836",
+          "display": "1186",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31313833",
+          "display": "1183",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31323138",
+          "display": "1218",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31323135",
+          "display": "1215",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31323439",
+          "display": "1249",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31323530",
+          "display": "1250",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31323435",
+          "display": "1245",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31323831",
+          "display": "1281",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31323735",
+          "display": "1275",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31333133",
+          "display": "1313",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31333037",
+          "display": "1307",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "313037",
+          "display": "107",
+          "text_bytes": 3,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31333633",
+          "display": "1363",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31333935",
+          "display": "1395",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31343237",
+          "display": "1427",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "313030",
+          "display": "100",
+          "text_bytes": 3,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31343634",
+          "display": "1464",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31343538",
+          "display": "1458",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31343936",
+          "display": "1496",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31343930",
+          "display": "1490",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31353231",
+          "display": "1521",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31353531",
+          "display": "1551",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31373637",
+          "display": "1767",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "313236",
+          "display": "126",
+          "text_bytes": 3,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31373634",
+          "display": "1764",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31373939",
+          "display": "1799",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31373936",
+          "display": "1796",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31383331",
+          "display": "1831",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31383238",
+          "display": "1828",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31383531",
+          "display": "1851",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31383833",
+          "display": "1883",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31393136",
+          "display": "1916",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31393436",
+          "display": "1946",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31393738",
+          "display": "1978",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "32303038",
+          "display": "2008",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "32303430",
+          "display": "2040",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "32303339",
+          "display": "2039",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "32303732",
+          "display": "2072",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "32303731",
+          "display": "2071",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "32303937",
+          "display": "2097",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "32303936",
+          "display": "2096",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "313531",
+          "display": "151",
+          "text_bytes": 3,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "32313237",
+          "display": "2127",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "32313235",
+          "display": "2125",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "32313630",
+          "display": "2160",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "32313536",
+          "display": "2156",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "32313932",
+          "display": "2192",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "32313838",
+          "display": "2188",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "32323234",
+          "display": "2224",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "32323230",
+          "display": "2220",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "32323533",
+          "display": "2253",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "32323835",
+          "display": "2285",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "32323739",
+          "display": "2279",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "32333137",
+          "display": "2317",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "32333131",
+          "display": "2311",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "32333431",
+          "display": "2341",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "32333335",
+          "display": "2335",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "32333733",
+          "display": "2373",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "32333637",
+          "display": "2367",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "32343035",
+          "display": "2405",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "32333939",
+          "display": "2399",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "32343336",
+          "display": "2436",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "32343331",
+          "display": "2431",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "32343638",
+          "display": "2468",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "32343632",
+          "display": "2462",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "32343934",
+          "display": "2494",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "32353330",
+          "display": "2530",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "3431",
+          "display": "41",
+          "text_bytes": 2,
+          "occurrences": 11
+        },
+        {
+          "exact_hex": "3332",
+          "display": "32",
+          "text_bytes": 2,
+          "occurrences": 11
+        },
+        {
+          "exact_hex": "3533",
+          "display": "53",
+          "text_bytes": 2,
+          "occurrences": 11
+        },
+        {
+          "exact_hex": "3733",
+          "display": "73",
+          "text_bytes": 2,
+          "occurrences": 11
+        },
+        {
+          "exact_hex": "3738",
+          "display": "78",
+          "text_bytes": 2,
+          "occurrences": 11
+        },
+        {
+          "exact_hex": "313136",
+          "display": "116",
+          "text_bytes": 3,
+          "occurrences": 11
+        },
+        {
+          "exact_hex": "313339",
+          "display": "139",
+          "text_bytes": 3,
+          "occurrences": 11
+        },
+        {
+          "exact_hex": "3339",
+          "display": "39",
+          "text_bytes": 2,
+          "occurrences": 10
+        },
+        {
+          "exact_hex": "3637",
+          "display": "67",
+          "text_bytes": 2,
+          "occurrences": 10
+        },
+        {
+          "exact_hex": "3830",
+          "display": "80",
+          "text_bytes": 2,
+          "occurrences": 10
+        },
+        {
+          "exact_hex": "3639",
+          "display": "69",
+          "text_bytes": 2,
+          "occurrences": 10
+        },
+        {
+          "exact_hex": "3739",
+          "display": "79",
+          "text_bytes": 2,
+          "occurrences": 10
+        },
+        {
+          "exact_hex": "313032",
+          "display": "102",
+          "text_bytes": 3,
+          "occurrences": 10
+        },
+        {
+          "exact_hex": "313235",
+          "display": "125",
+          "text_bytes": 3,
+          "occurrences": 10
+        },
+        {
+          "exact_hex": "313432",
+          "display": "142",
+          "text_bytes": 3,
+          "occurrences": 10
+        },
+        {
+          "exact_hex": "313237",
+          "display": "127",
+          "text_bytes": 3,
+          "occurrences": 10
+        },
+        {
+          "exact_hex": "313533",
+          "display": "153",
+          "text_bytes": 3,
+          "occurrences": 9
+        },
+        {
+          "exact_hex": "3531",
+          "display": "51",
+          "text_bytes": 2,
+          "occurrences": 9
+        },
+        {
+          "exact_hex": "3831",
+          "display": "81",
+          "text_bytes": 2,
+          "occurrences": 9
+        },
+        {
+          "exact_hex": "3933",
+          "display": "93",
+          "text_bytes": 2,
+          "occurrences": 9
+        },
+        {
+          "exact_hex": "3837",
+          "display": "87",
+          "text_bytes": 2,
+          "occurrences": 9
+        },
+        {
+          "exact_hex": "3932",
+          "display": "92",
+          "text_bytes": 2,
+          "occurrences": 9
+        },
+        {
+          "exact_hex": "313337",
+          "display": "137",
+          "text_bytes": 3,
+          "occurrences": 9
+        },
+        {
+          "exact_hex": "313635",
+          "display": "165",
+          "text_bytes": 3,
+          "occurrences": 9
+        },
+        {
+          "exact_hex": "313835",
+          "display": "185",
+          "text_bytes": 3,
+          "occurrences": 8
+        },
+        {
+          "exact_hex": "323137",
+          "display": "217",
+          "text_bytes": 3,
+          "occurrences": 8
+        },
+        {
+          "exact_hex": "323439",
+          "display": "249",
+          "text_bytes": 3,
+          "occurrences": 8
+        },
+        {
+          "exact_hex": "323831",
+          "display": "281",
+          "text_bytes": 3,
+          "occurrences": 8
+        },
+        {
+          "exact_hex": "333133",
+          "display": "313",
+          "text_bytes": 3,
+          "occurrences": 8
+        },
+        {
+          "exact_hex": "333435",
+          "display": "345",
+          "text_bytes": 3,
+          "occurrences": 8
+        },
+        {
+          "exact_hex": "333737",
+          "display": "377",
+          "text_bytes": 3,
+          "occurrences": 8
+        },
+        {
+          "exact_hex": "343039",
+          "display": "409",
+          "text_bytes": 3,
+          "occurrences": 8
+        },
+        {
+          "exact_hex": "343431",
+          "display": "441",
+          "text_bytes": 3,
+          "occurrences": 8
+        },
+        {
+          "exact_hex": "343733",
+          "display": "473",
+          "text_bytes": 3,
+          "occurrences": 8
+        },
+        {
+          "exact_hex": "353035",
+          "display": "505",
+          "text_bytes": 3,
+          "occurrences": 8
+        },
+        {
+          "exact_hex": "353337",
+          "display": "537",
+          "text_bytes": 3,
+          "occurrences": 8
+        },
+        {
+          "exact_hex": "353639",
+          "display": "569",
+          "text_bytes": 3,
+          "occurrences": 8
+        },
+        {
+          "exact_hex": "373631",
+          "display": "761",
+          "text_bytes": 3,
+          "occurrences": 8
+        },
+        {
+          "exact_hex": "373933",
+          "display": "793",
+          "text_bytes": 3,
+          "occurrences": 8
+        },
+        {
+          "exact_hex": "383235",
+          "display": "825",
+          "text_bytes": 3,
+          "occurrences": 8
+        },
+        {
+          "exact_hex": "383537",
+          "display": "857",
+          "text_bytes": 3,
+          "occurrences": 8
+        },
+        {
+          "exact_hex": "383839",
+          "display": "889",
+          "text_bytes": 3,
+          "occurrences": 8
+        },
+        {
+          "exact_hex": "3532",
+          "display": "52",
+          "text_bytes": 2,
+          "occurrences": 8
+        },
+        {
+          "exact_hex": "393231",
+          "display": "921",
+          "text_bytes": 3,
+          "occurrences": 8
+        },
+        {
+          "exact_hex": "393533",
+          "display": "953",
+          "text_bytes": 3,
+          "occurrences": 8
+        },
+        {
+          "exact_hex": "393835",
+          "display": "985",
+          "text_bytes": 3,
+          "occurrences": 8
+        },
+        {
+          "exact_hex": "31303137",
+          "display": "1017",
+          "text_bytes": 4,
+          "occurrences": 8
+        },
+        {
+          "exact_hex": "31303439",
+          "display": "1049",
+          "text_bytes": 4,
+          "occurrences": 8
+        },
+        {
+          "exact_hex": "31303831",
+          "display": "1081",
+          "text_bytes": 4,
+          "occurrences": 8
+        },
+        {
+          "exact_hex": "31313133",
+          "display": "1113",
+          "text_bytes": 4,
+          "occurrences": 8
+        },
+        {
+          "exact_hex": "31313435",
+          "display": "1145",
+          "text_bytes": 4,
+          "occurrences": 8
+        },
+        {
+          "exact_hex": "31313737",
+          "display": "1177",
+          "text_bytes": 4,
+          "occurrences": 8
+        },
+        {
+          "exact_hex": "31323039",
+          "display": "1209",
+          "text_bytes": 4,
+          "occurrences": 8
+        },
+        {
+          "exact_hex": "31323431",
+          "display": "1241",
+          "text_bytes": 4,
+          "occurrences": 8
+        },
+        {
+          "exact_hex": "31323733",
+          "display": "1273",
+          "text_bytes": 4,
+          "occurrences": 8
+        },
+        {
+          "exact_hex": "31333035",
+          "display": "1305",
+          "text_bytes": 4,
+          "occurrences": 8
+        },
+        {
+          "exact_hex": "31343635",
+          "display": "1465",
+          "text_bytes": 4,
+          "occurrences": 8
+        },
+        {
+          "exact_hex": "31343937",
+          "display": "1497",
+          "text_bytes": 4,
+          "occurrences": 8
+        },
+        {
+          "exact_hex": "31353239",
+          "display": "1529",
+          "text_bytes": 4,
+          "occurrences": 8
+        },
+        {
+          "exact_hex": "31353631",
+          "display": "1561",
+          "text_bytes": 4,
+          "occurrences": 8
+        },
+        {
+          "exact_hex": "31353933",
+          "display": "1593",
+          "text_bytes": 4,
+          "occurrences": 8
+        },
+        {
+          "exact_hex": "31363235",
+          "display": "1625",
+          "text_bytes": 4,
+          "occurrences": 8
+        },
+        {
+          "exact_hex": "31363537",
+          "display": "1657",
+          "text_bytes": 4,
+          "occurrences": 8
+        },
+        {
+          "exact_hex": "31363839",
+          "display": "1689",
+          "text_bytes": 4,
+          "occurrences": 8
+        },
+        {
+          "exact_hex": "31373231",
+          "display": "1721",
+          "text_bytes": 4,
+          "occurrences": 8
+        },
+        {
+          "exact_hex": "31373533",
+          "display": "1753",
+          "text_bytes": 4,
+          "occurrences": 8
+        },
+        {
+          "exact_hex": "31373835",
+          "display": "1785",
+          "text_bytes": 4,
+          "occurrences": 8
+        },
+        {
+          "exact_hex": "31383137",
+          "display": "1817",
+          "text_bytes": 4,
+          "occurrences": 8
+        },
+        {
+          "exact_hex": "31383439",
+          "display": "1849",
+          "text_bytes": 4,
+          "occurrences": 8
+        },
+        {
+          "exact_hex": "31383831",
+          "display": "1881",
+          "text_bytes": 4,
+          "occurrences": 8
+        },
+        {
+          "exact_hex": "31393133",
+          "display": "1913",
+          "text_bytes": 4,
+          "occurrences": 8
+        },
+        {
+          "exact_hex": "32313035",
+          "display": "2105",
+          "text_bytes": 4,
+          "occurrences": 8
+        },
+        {
+          "exact_hex": "313233",
+          "display": "123",
+          "text_bytes": 3,
+          "occurrences": 8
+        },
+        {
+          "exact_hex": "32323635",
+          "display": "2265",
+          "text_bytes": 4,
+          "occurrences": 8
+        },
+        {
+          "exact_hex": "32323937",
+          "display": "2297",
+          "text_bytes": 4,
+          "occurrences": 8
+        },
+        {
+          "exact_hex": "32333239",
+          "display": "2329",
+          "text_bytes": 4,
+          "occurrences": 8
+        },
+        {
+          "exact_hex": "32333631",
+          "display": "2361",
+          "text_bytes": 4,
+          "occurrences": 8
+        },
+        {
+          "exact_hex": "32333933",
+          "display": "2393",
+          "text_bytes": 4,
+          "occurrences": 8
+        },
+        {
+          "exact_hex": "32343235",
+          "display": "2425",
+          "text_bytes": 4,
+          "occurrences": 8
+        },
+        {
+          "exact_hex": "32343537",
+          "display": "2457",
+          "text_bytes": 4,
+          "occurrences": 8
+        },
+        {
+          "exact_hex": "32343839",
+          "display": "2489",
+          "text_bytes": 4,
+          "occurrences": 8
+        },
+        {
+          "exact_hex": "32353231",
+          "display": "2521",
+          "text_bytes": 4,
+          "occurrences": 8
+        },
+        {
+          "exact_hex": "32353533",
+          "display": "2553",
+          "text_bytes": 4,
+          "occurrences": 8
+        },
+        {
+          "exact_hex": "32353835",
+          "display": "2585",
+          "text_bytes": 4,
+          "occurrences": 8
+        },
+        {
+          "exact_hex": "32363137",
+          "display": "2617",
+          "text_bytes": 4,
+          "occurrences": 8
+        },
+        {
+          "exact_hex": "32363439",
+          "display": "2649",
+          "text_bytes": 4,
+          "occurrences": 8
+        },
+        {
+          "exact_hex": "3331",
+          "display": "31",
+          "text_bytes": 2,
+          "occurrences": 7
+        },
+        {
+          "exact_hex": "3337",
+          "display": "37",
+          "text_bytes": 2,
+          "occurrences": 7
+        },
+        {
+          "exact_hex": "313135",
+          "display": "115",
+          "text_bytes": 3,
+          "occurrences": 7
+        },
+        {
+          "exact_hex": "313330",
+          "display": "130",
+          "text_bytes": 3,
+          "occurrences": 7
+        },
+        {
+          "exact_hex": "313636",
+          "display": "166",
+          "text_bytes": 3,
+          "occurrences": 7
+        },
+        {
+          "exact_hex": "323636",
+          "display": "266",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "323938",
+          "display": "298",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "333330",
+          "display": "330",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "333534",
+          "display": "354",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "333836",
+          "display": "386",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "3430",
+          "display": "40",
+          "text_bytes": 2,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "343138",
+          "display": "418",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "343439",
+          "display": "449",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "343831",
+          "display": "481",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "353136",
+          "display": "516",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "353135",
+          "display": "515",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "353437",
+          "display": "547",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "353436",
+          "display": "546",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "353739",
+          "display": "579",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "353738",
+          "display": "578",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "353734",
+          "display": "574",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "353735",
+          "display": "575",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "363034",
+          "display": "604",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "3631",
+          "display": "61",
+          "text_bytes": 2,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "353939",
+          "display": "599",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "363030",
+          "display": "600",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "363335",
+          "display": "635",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "363331",
+          "display": "631",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "363637",
+          "display": "667",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "363631",
+          "display": "661",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "363939",
+          "display": "699",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "363933",
+          "display": "693",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "373235",
+          "display": "725",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "373539",
+          "display": "759",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "373537",
+          "display": "757",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "373534",
+          "display": "754",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "373931",
+          "display": "791",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "373839",
+          "display": "789",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "373836",
+          "display": "786",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "383233",
+          "display": "823",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "383231",
+          "display": "821",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "383138",
+          "display": "818",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "383437",
+          "display": "847",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "383435",
+          "display": "845",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "383432",
+          "display": "842",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "383739",
+          "display": "879",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "383737",
+          "display": "877",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "383734",
+          "display": "874",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "393131",
+          "display": "911",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "393039",
+          "display": "909",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "393036",
+          "display": "906",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "393432",
+          "display": "942",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "393430",
+          "display": "940",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "393337",
+          "display": "937",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "3630",
+          "display": "60",
+          "text_bytes": 2,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "393734",
+          "display": "974",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "393732",
+          "display": "972",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "393639",
+          "display": "969",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31303033",
+          "display": "1003",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31303034",
+          "display": "1004",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31303334",
+          "display": "1034",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31303331",
+          "display": "1031",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31303335",
+          "display": "1035",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31303332",
+          "display": "1032",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31303636",
+          "display": "1066",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31303638",
+          "display": "1068",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31303632",
+          "display": "1062",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31303633",
+          "display": "1063",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31303931",
+          "display": "1091",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31303933",
+          "display": "1093",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31303837",
+          "display": "1087",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31303838",
+          "display": "1088",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31313233",
+          "display": "1123",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31313235",
+          "display": "1125",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31313139",
+          "display": "1119",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31313230",
+          "display": "1120",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31313536",
+          "display": "1156",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31313532",
+          "display": "1152",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31313530",
+          "display": "1150",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31313535",
+          "display": "1155",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31313838",
+          "display": "1188",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31313834",
+          "display": "1184",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31313832",
+          "display": "1182",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31313837",
+          "display": "1187",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31323230",
+          "display": "1220",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31323136",
+          "display": "1216",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31323134",
+          "display": "1214",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31323139",
+          "display": "1219",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31323437",
+          "display": "1247",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31323436",
+          "display": "1246",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31323830",
+          "display": "1280",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31323737",
+          "display": "1277",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31323738",
+          "display": "1278",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31323739",
+          "display": "1279",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31333132",
+          "display": "1312",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31333039",
+          "display": "1309",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31333130",
+          "display": "1310",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31333131",
+          "display": "1311",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31333336",
+          "display": "1336",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31333638",
+          "display": "1368",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31333635",
+          "display": "1365",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31333636",
+          "display": "1366",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31333637",
+          "display": "1367",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31343030",
+          "display": "1400",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31333937",
+          "display": "1397",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31333938",
+          "display": "1398",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31333939",
+          "display": "1399",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31343332",
+          "display": "1432",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31343239",
+          "display": "1429",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31343330",
+          "display": "1430",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31343331",
+          "display": "1431",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31343633",
+          "display": "1463",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31343630",
+          "display": "1460",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31343631",
+          "display": "1461",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31343632",
+          "display": "1462",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31343935",
+          "display": "1495",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31343932",
+          "display": "1492",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31343933",
+          "display": "1493",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31343934",
+          "display": "1494",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31353235",
+          "display": "1525",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31353238",
+          "display": "1528",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31353139",
+          "display": "1519",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31353236",
+          "display": "1526",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31353230",
+          "display": "1520",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31353234",
+          "display": "1524",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31353536",
+          "display": "1556",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31353539",
+          "display": "1559",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31353530",
+          "display": "1550",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31353537",
+          "display": "1557",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31353532",
+          "display": "1552",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31353535",
+          "display": "1555",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31353832",
+          "display": "1582",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31363133",
+          "display": "1613",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31363136",
+          "display": "1616",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31363037",
+          "display": "1607",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31363134",
+          "display": "1614",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31363132",
+          "display": "1612",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31363434",
+          "display": "1644",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31363437",
+          "display": "1647",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31363435",
+          "display": "1645",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31363339",
+          "display": "1639",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31363433",
+          "display": "1643",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31363736",
+          "display": "1676",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31363739",
+          "display": "1679",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31363737",
+          "display": "1677",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31363731",
+          "display": "1671",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31363735",
+          "display": "1675",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31373038",
+          "display": "1708",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31373131",
+          "display": "1711",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31373039",
+          "display": "1709",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31373033",
+          "display": "1703",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31373037",
+          "display": "1707",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31373339",
+          "display": "1739",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31373432",
+          "display": "1742",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31373430",
+          "display": "1740",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31373334",
+          "display": "1734",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31373337",
+          "display": "1737",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31373734",
+          "display": "1774",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31373633",
+          "display": "1763",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31373632",
+          "display": "1762",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31373730",
+          "display": "1770",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31383036",
+          "display": "1806",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31373935",
+          "display": "1795",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31373934",
+          "display": "1794",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31383032",
+          "display": "1802",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31383335",
+          "display": "1835",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31383237",
+          "display": "1827",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31383236",
+          "display": "1826",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31383333",
+          "display": "1833",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31383534",
+          "display": "1854",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31383632",
+          "display": "1862",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31383530",
+          "display": "1850",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31383538",
+          "display": "1858",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31383532",
+          "display": "1852",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31383535",
+          "display": "1855",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31383836",
+          "display": "1886",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31383934",
+          "display": "1894",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31383832",
+          "display": "1882",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31383930",
+          "display": "1890",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31383834",
+          "display": "1884",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31383837",
+          "display": "1887",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31393138",
+          "display": "1918",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31393236",
+          "display": "1926",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31393135",
+          "display": "1915",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31393134",
+          "display": "1914",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31393230",
+          "display": "1920",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31393132",
+          "display": "1912",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31393439",
+          "display": "1949",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31393537",
+          "display": "1957",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31393531",
+          "display": "1951",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31393432",
+          "display": "1942",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31393437",
+          "display": "1947",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31393831",
+          "display": "1981",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31393839",
+          "display": "1989",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31393833",
+          "display": "1983",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31393734",
+          "display": "1974",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31393739",
+          "display": "1979",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "32303130",
+          "display": "2010",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "32303230",
+          "display": "2020",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "32303037",
+          "display": "2007",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "32303134",
+          "display": "2014",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "313430",
+          "display": "140",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "32303035",
+          "display": "2005",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "313234",
+          "display": "124",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "32303531",
+          "display": "2051",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "32303338",
+          "display": "2038",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "32303336",
+          "display": "2036",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "313438",
+          "display": "148",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "32303833",
+          "display": "2083",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "32303730",
+          "display": "2070",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "32303638",
+          "display": "2068",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "32313037",
+          "display": "2107",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "32303935",
+          "display": "2095",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "32303938",
+          "display": "2098",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "32303933",
+          "display": "2093",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "32313239",
+          "display": "2129",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "32313330",
+          "display": "2130",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "32313238",
+          "display": "2128",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "32313537",
+          "display": "2157",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "32313538",
+          "display": "2158",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "313238",
+          "display": "128",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "313536",
+          "display": "156",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "32313539",
+          "display": "2159",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "32313839",
+          "display": "2189",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "32313930",
+          "display": "2190",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "32313931",
+          "display": "2191",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "32323231",
+          "display": "2221",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "32323232",
+          "display": "2222",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "32323233",
+          "display": "2223",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "32323535",
+          "display": "2255",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "32323633",
+          "display": "2263",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "313537",
+          "display": "157",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "32323531",
+          "display": "2251",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "32323837",
+          "display": "2287",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "32323935",
+          "display": "2295",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "32323831",
+          "display": "2281",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "32323833",
+          "display": "2283",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "32333139",
+          "display": "2319",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "32333237",
+          "display": "2327",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "32333133",
+          "display": "2313",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "32333135",
+          "display": "2315",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "32333432",
+          "display": "2342",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "32333530",
+          "display": "2350",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "32333337",
+          "display": "2337",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "32333339",
+          "display": "2339",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "32333734",
+          "display": "2374",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "32333832",
+          "display": "2382",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "32333639",
+          "display": "2369",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "32333731",
+          "display": "2371",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "32343036",
+          "display": "2406",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "32343134",
+          "display": "2414",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "32343031",
+          "display": "2401",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "32343033",
+          "display": "2403",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "32343337",
+          "display": "2437",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "32343435",
+          "display": "2445",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "32343333",
+          "display": "2433",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "32343334",
+          "display": "2434",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "32343639",
+          "display": "2469",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "32343737",
+          "display": "2477",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "32343633",
+          "display": "2463",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "32343636",
+          "display": "2466",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "32353038",
+          "display": "2508",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "32343935",
+          "display": "2495",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "32343938",
+          "display": "2498",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "32353338",
+          "display": "2538",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "32353235",
+          "display": "2525",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "32353236",
+          "display": "2526",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "32353232",
+          "display": "2522",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "32353233",
+          "display": "2523",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "32353239",
+          "display": "2529",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "3338",
+          "display": "38",
+          "text_bytes": 2,
+          "occurrences": 5
+        },
+        {
+          "exact_hex": "3437",
+          "display": "47",
+          "text_bytes": 2,
+          "occurrences": 5
+        },
+        {
+          "exact_hex": "3534",
+          "display": "54",
+          "text_bytes": 2,
+          "occurrences": 5
+        },
+        {
+          "exact_hex": "313130",
+          "display": "110",
+          "text_bytes": 3,
+          "occurrences": 5
+        },
+        {
+          "exact_hex": "313338",
+          "display": "138",
+          "text_bytes": 3,
+          "occurrences": 5
+        },
+        {
+          "exact_hex": "313335",
+          "display": "135",
+          "text_bytes": 3,
+          "occurrences": 5
+        },
+        {
+          "exact_hex": "313439",
+          "display": "149",
+          "text_bytes": 3,
+          "occurrences": 5
+        },
+        {
+          "exact_hex": "313637",
+          "display": "167",
+          "text_bytes": 3,
+          "occurrences": 5
+        },
+        {
+          "exact_hex": "313730",
+          "display": "170",
+          "text_bytes": 3,
+          "occurrences": 5
+        },
+        {
+          "exact_hex": "313031",
+          "display": "101",
+          "text_bytes": 3,
+          "occurrences": 4
+        },
+        {
+          "exact_hex": "313331",
+          "display": "131",
+          "text_bytes": 3,
+          "occurrences": 4
+        },
+        {
+          "exact_hex": "313530",
+          "display": "150",
+          "text_bytes": 3,
+          "occurrences": 4
+        },
+        {
+          "exact_hex": "313435",
+          "display": "145",
+          "text_bytes": 3,
+          "occurrences": 4
+        },
+        {
+          "exact_hex": "313639",
+          "display": "169",
+          "text_bytes": 3,
+          "occurrences": 4
+        },
+        {
+          "exact_hex": "3838",
+          "display": "88",
+          "text_bytes": 2,
+          "occurrences": 3
+        },
+        {
+          "exact_hex": "313538",
+          "display": "158",
+          "text_bytes": 3,
+          "occurrences": 3
+        },
+        {
+          "exact_hex": "313631",
+          "display": "161",
+          "text_bytes": 3,
+          "occurrences": 3
+        },
+        {
+          "exact_hex": "313731",
+          "display": "171",
+          "text_bytes": 3,
+          "occurrences": 3
+        },
+        {
+          "exact_hex": "313434",
+          "display": "144",
+          "text_bytes": 3,
+          "occurrences": 2
+        },
+        {
+          "exact_hex": "313535",
+          "display": "155",
+          "text_bytes": 3,
+          "occurrences": 2
+        },
+        {
+          "exact_hex": "313239",
+          "display": "129",
+          "text_bytes": 3,
+          "occurrences": 1
+        },
+        {
+          "exact_hex": "313732",
+          "display": "172",
+          "text_bytes": 3,
+          "occurrences": 1
+        },
+        {
+          "exact_hex": "313734",
+          "display": "174",
+          "text_bytes": 3,
+          "occurrences": 1
+        },
+        {
+          "exact_hex": "313534",
+          "display": "154",
+          "text_bytes": 3,
+          "occurrences": 1
+        }
+      ],
+      "hypothetical_storage": {
+        "measured_compact_value_ABI_bytes": 40,
+        "actual_compact_populated_value_object_bytes": 8425880,
+        "unmeasured_ID_value_assumption_bytes": 12,
+        "measured_compact_total_vector_capacity_bytes": 8478360,
+        "hypothetical_exact_capacity_ID_vector_bytes": 2527764,
+        "hypothetical_total_vector_capacity_same_row_frame_slots_bytes": 2580244,
+        "arithmetic_value_object_capacity_difference_bytes": 5898116,
+        "hypothetical_value_dictionary_std_string_objects_32bytes": 20544,
+        "hypothetical_value_dictionary_text_bytes": 2159,
+        "source_metadata_unique_text_bytes": 17291,
+        "source_metadata_triples": 319,
+        "exclude": "Allocator headers, hash table keys/nodes/buckets, ID lookup, dictionary lifetime/reclamation, update/delta indexes and engine integration; no compiled12byte ABI or measured RSS/CPU savings"
+      }
+    },
+    {
+      "input_case": "oazis-window-s1056243202-r1-t4-gpuoff",
+      "replay_sha256": "0b1e62ce65db8397b1733596b4cee254aa9486039092c97ab62faa3e67105139",
+      "tail_sha256": "552cbf5e24f30eb95c703a187783c1a1389d23e653607bd98a803e7fc3710508",
+      "tail_offset": 6687458,
+      "tail_wire_bytes": 15696089,
+      "values_total": 209187,
+      "row_records": 671,
+      "unique_exact_value_strings": 451,
+      "unique_value_text_bytes": 1438,
+      "repeated_value_text_bytes": 225464,
+      "unique_value_length_prefixed_bytes": 3242,
+      "repeated_value_length_prefixed_bytes": 1062212,
+      "empty_value_occurrences": 0,
+      "unique_empty_values": 0,
+      "NUL_value_occurrences": 0,
+      "unique_values_with_NUL": 0,
+      "repeated_same_value_occurrences_within_rows": 199724,
+      "duplicate_metadata_occurrences_within_rows": 0,
+      "value_occurrences_SSO_length_eligible_15": 209187,
+      "value_occurrences_longer_than_15": 0,
+      "unique_values_SSO_length_eligible_15": 451,
+      "unique_values_longer_than_15": 0,
+      "length_histogram": {
+        "1": 199857,
+        "2": 4484,
+        "3": 2745,
+        "4": 2101
+      },
+      "unique_metadata_value_pairs": 2369,
+      "ordered_value_updated_fingerprint_sha256": "e824a774cf643f5dc69bb4d64994bdbc68467e6089d4eed9c47310cf3d7b3ce4",
+      "values": [
+        {
+          "exact_hex": "30",
+          "display": "0",
+          "text_bytes": 1,
+          "occurrences": 189347
+        },
+        {
+          "exact_hex": "31",
+          "display": "1",
+          "text_bytes": 1,
+          "occurrences": 3714
+        },
+        {
+          "exact_hex": "32",
+          "display": "2",
+          "text_bytes": 1,
+          "occurrences": 1330
+        },
+        {
+          "exact_hex": "33",
+          "display": "3",
+          "text_bytes": 1,
+          "occurrences": 1240
+        },
+        {
+          "exact_hex": "34",
+          "display": "4",
+          "text_bytes": 1,
+          "occurrences": 1051
+        },
+        {
+          "exact_hex": "36",
+          "display": "6",
+          "text_bytes": 1,
+          "occurrences": 893
+        },
+        {
+          "exact_hex": "35",
+          "display": "5",
+          "text_bytes": 1,
+          "occurrences": 859
+        },
+        {
+          "exact_hex": "37",
+          "display": "7",
+          "text_bytes": 1,
+          "occurrences": 792
+        },
+        {
+          "exact_hex": "3130",
+          "display": "10",
+          "text_bytes": 2,
+          "occurrences": 429
+        },
+        {
+          "exact_hex": "38",
+          "display": "8",
+          "text_bytes": 1,
+          "occurrences": 347
+        },
+        {
+          "exact_hex": "3135",
+          "display": "15",
+          "text_bytes": 2,
+          "occurrences": 331
+        },
+        {
+          "exact_hex": "3132",
+          "display": "12",
+          "text_bytes": 2,
+          "occurrences": 313
+        },
+        {
+          "exact_hex": "39",
+          "display": "9",
+          "text_bytes": 1,
+          "occurrences": 284
+        },
+        {
+          "exact_hex": "3138",
+          "display": "18",
+          "text_bytes": 2,
+          "occurrences": 268
+        },
+        {
+          "exact_hex": "3133",
+          "display": "13",
+          "text_bytes": 2,
+          "occurrences": 244
+        },
+        {
+          "exact_hex": "3136",
+          "display": "16",
+          "text_bytes": 2,
+          "occurrences": 213
+        },
+        {
+          "exact_hex": "3137",
+          "display": "17",
+          "text_bytes": 2,
+          "occurrences": 200
+        },
+        {
+          "exact_hex": "3134",
+          "display": "14",
+          "text_bytes": 2,
+          "occurrences": 189
+        },
+        {
+          "exact_hex": "3131",
+          "display": "11",
+          "text_bytes": 2,
+          "occurrences": 176
+        },
+        {
+          "exact_hex": "3730",
+          "display": "70",
+          "text_bytes": 2,
+          "occurrences": 120
+        },
+        {
+          "exact_hex": "3630",
+          "display": "60",
+          "text_bytes": 2,
+          "occurrences": 108
+        },
+        {
+          "exact_hex": "3430",
+          "display": "40",
+          "text_bytes": 2,
+          "occurrences": 102
+        },
+        {
+          "exact_hex": "3330",
+          "display": "30",
+          "text_bytes": 2,
+          "occurrences": 95
+        },
+        {
+          "exact_hex": "3535",
+          "display": "55",
+          "text_bytes": 2,
+          "occurrences": 94
+        },
+        {
+          "exact_hex": "3530",
+          "display": "50",
+          "text_bytes": 2,
+          "occurrences": 94
+        },
+        {
+          "exact_hex": "3230",
+          "display": "20",
+          "text_bytes": 2,
+          "occurrences": 92
+        },
+        {
+          "exact_hex": "313039",
+          "display": "109",
+          "text_bytes": 3,
+          "occurrences": 91
+        },
+        {
+          "exact_hex": "3835",
+          "display": "85",
+          "text_bytes": 2,
+          "occurrences": 89
+        },
+        {
+          "exact_hex": "3235",
+          "display": "25",
+          "text_bytes": 2,
+          "occurrences": 77
+        },
+        {
+          "exact_hex": "31303835",
+          "display": "1085",
+          "text_bytes": 4,
+          "occurrences": 66
+        },
+        {
+          "exact_hex": "313430",
+          "display": "140",
+          "text_bytes": 3,
+          "occurrences": 64
+        },
+        {
+          "exact_hex": "313732",
+          "display": "172",
+          "text_bytes": 3,
+          "occurrences": 60
+        },
+        {
+          "exact_hex": "323034",
+          "display": "204",
+          "text_bytes": 3,
+          "occurrences": 60
+        },
+        {
+          "exact_hex": "323335",
+          "display": "235",
+          "text_bytes": 3,
+          "occurrences": 60
+        },
+        {
+          "exact_hex": "323636",
+          "display": "266",
+          "text_bytes": 3,
+          "occurrences": 60
+        },
+        {
+          "exact_hex": "323938",
+          "display": "298",
+          "text_bytes": 3,
+          "occurrences": 60
+        },
+        {
+          "exact_hex": "3231",
+          "display": "21",
+          "text_bytes": 2,
+          "occurrences": 57
+        },
+        {
+          "exact_hex": "333330",
+          "display": "330",
+          "text_bytes": 3,
+          "occurrences": 48
+        },
+        {
+          "exact_hex": "333531",
+          "display": "351",
+          "text_bytes": 3,
+          "occurrences": 48
+        },
+        {
+          "exact_hex": "333833",
+          "display": "383",
+          "text_bytes": 3,
+          "occurrences": 48
+        },
+        {
+          "exact_hex": "343135",
+          "display": "415",
+          "text_bytes": 3,
+          "occurrences": 48
+        },
+        {
+          "exact_hex": "343436",
+          "display": "446",
+          "text_bytes": 3,
+          "occurrences": 48
+        },
+        {
+          "exact_hex": "343738",
+          "display": "478",
+          "text_bytes": 3,
+          "occurrences": 48
+        },
+        {
+          "exact_hex": "373230",
+          "display": "720",
+          "text_bytes": 3,
+          "occurrences": 48
+        },
+        {
+          "exact_hex": "383335",
+          "display": "835",
+          "text_bytes": 3,
+          "occurrences": 48
+        },
+        {
+          "exact_hex": "3139",
+          "display": "19",
+          "text_bytes": 2,
+          "occurrences": 45
+        },
+        {
+          "exact_hex": "3431",
+          "display": "41",
+          "text_bytes": 2,
+          "occurrences": 43
+        },
+        {
+          "exact_hex": "3237",
+          "display": "27",
+          "text_bytes": 2,
+          "occurrences": 42
+        },
+        {
+          "exact_hex": "373530",
+          "display": "750",
+          "text_bytes": 3,
+          "occurrences": 42
+        },
+        {
+          "exact_hex": "353130",
+          "display": "510",
+          "text_bytes": 3,
+          "occurrences": 36
+        },
+        {
+          "exact_hex": "353431",
+          "display": "541",
+          "text_bytes": 3,
+          "occurrences": 36
+        },
+        {
+          "exact_hex": "353733",
+          "display": "573",
+          "text_bytes": 3,
+          "occurrences": 36
+        },
+        {
+          "exact_hex": "353935",
+          "display": "595",
+          "text_bytes": 3,
+          "occurrences": 36
+        },
+        {
+          "exact_hex": "3731",
+          "display": "71",
+          "text_bytes": 2,
+          "occurrences": 34
+        },
+        {
+          "exact_hex": "3432",
+          "display": "42",
+          "text_bytes": 2,
+          "occurrences": 33
+        },
+        {
+          "exact_hex": "3639",
+          "display": "69",
+          "text_bytes": 2,
+          "occurrences": 32
+        },
+        {
+          "exact_hex": "313235",
+          "display": "125",
+          "text_bytes": 3,
+          "occurrences": 32
+        },
+        {
+          "exact_hex": "3537",
+          "display": "57",
+          "text_bytes": 2,
+          "occurrences": 31
+        },
+        {
+          "exact_hex": "363235",
+          "display": "625",
+          "text_bytes": 3,
+          "occurrences": 30
+        },
+        {
+          "exact_hex": "363536",
+          "display": "656",
+          "text_bytes": 3,
+          "occurrences": 30
+        },
+        {
+          "exact_hex": "3638",
+          "display": "68",
+          "text_bytes": 2,
+          "occurrences": 30
+        },
+        {
+          "exact_hex": "363838",
+          "display": "688",
+          "text_bytes": 3,
+          "occurrences": 30
+        },
+        {
+          "exact_hex": "3534",
+          "display": "54",
+          "text_bytes": 2,
+          "occurrences": 30
+        },
+        {
+          "exact_hex": "3838",
+          "display": "88",
+          "text_bytes": 2,
+          "occurrences": 30
+        },
+        {
+          "exact_hex": "3536",
+          "display": "56",
+          "text_bytes": 2,
+          "occurrences": 29
+        },
+        {
+          "exact_hex": "3533",
+          "display": "53",
+          "text_bytes": 2,
+          "occurrences": 29
+        },
+        {
+          "exact_hex": "3932",
+          "display": "92",
+          "text_bytes": 2,
+          "occurrences": 28
+        },
+        {
+          "exact_hex": "3834",
+          "display": "84",
+          "text_bytes": 2,
+          "occurrences": 26
+        },
+        {
+          "exact_hex": "3839",
+          "display": "89",
+          "text_bytes": 2,
+          "occurrences": 24
+        },
+        {
+          "exact_hex": "3236",
+          "display": "26",
+          "text_bytes": 2,
+          "occurrences": 24
+        },
+        {
+          "exact_hex": "363237",
+          "display": "627",
+          "text_bytes": 3,
+          "occurrences": 24
+        },
+        {
+          "exact_hex": "363538",
+          "display": "658",
+          "text_bytes": 3,
+          "occurrences": 24
+        },
+        {
+          "exact_hex": "363930",
+          "display": "690",
+          "text_bytes": 3,
+          "occurrences": 24
+        },
+        {
+          "exact_hex": "383134",
+          "display": "814",
+          "text_bytes": 3,
+          "occurrences": 24
+        },
+        {
+          "exact_hex": "383637",
+          "display": "867",
+          "text_bytes": 3,
+          "occurrences": 24
+        },
+        {
+          "exact_hex": "383939",
+          "display": "899",
+          "text_bytes": 3,
+          "occurrences": 24
+        },
+        {
+          "exact_hex": "393331",
+          "display": "931",
+          "text_bytes": 3,
+          "occurrences": 24
+        },
+        {
+          "exact_hex": "393632",
+          "display": "962",
+          "text_bytes": 3,
+          "occurrences": 24
+        },
+        {
+          "exact_hex": "393934",
+          "display": "994",
+          "text_bytes": 3,
+          "occurrences": 24
+        },
+        {
+          "exact_hex": "31323035",
+          "display": "1205",
+          "text_bytes": 4,
+          "occurrences": 24
+        },
+        {
+          "exact_hex": "3433",
+          "display": "43",
+          "text_bytes": 2,
+          "occurrences": 23
+        },
+        {
+          "exact_hex": "31363537",
+          "display": "1657",
+          "text_bytes": 4,
+          "occurrences": 23
+        },
+        {
+          "exact_hex": "31363839",
+          "display": "1689",
+          "text_bytes": 4,
+          "occurrences": 23
+        },
+        {
+          "exact_hex": "31373231",
+          "display": "1721",
+          "text_bytes": 4,
+          "occurrences": 23
+        },
+        {
+          "exact_hex": "2d31",
+          "display": "-1",
+          "text_bytes": 2,
+          "occurrences": 22
+        },
+        {
+          "exact_hex": "3333",
+          "display": "33",
+          "text_bytes": 2,
+          "occurrences": 22
+        },
+        {
+          "exact_hex": "3238",
+          "display": "28",
+          "text_bytes": 2,
+          "occurrences": 22
+        },
+        {
+          "exact_hex": "313231",
+          "display": "121",
+          "text_bytes": 3,
+          "occurrences": 20
+        },
+        {
+          "exact_hex": "3232",
+          "display": "22",
+          "text_bytes": 2,
+          "occurrences": 20
+        },
+        {
+          "exact_hex": "3836",
+          "display": "86",
+          "text_bytes": 2,
+          "occurrences": 20
+        },
+        {
+          "exact_hex": "3933",
+          "display": "93",
+          "text_bytes": 2,
+          "occurrences": 20
+        },
+        {
+          "exact_hex": "3837",
+          "display": "87",
+          "text_bytes": 2,
+          "occurrences": 20
+        },
+        {
+          "exact_hex": "3335",
+          "display": "35",
+          "text_bytes": 2,
+          "occurrences": 19
+        },
+        {
+          "exact_hex": "3733",
+          "display": "73",
+          "text_bytes": 2,
+          "occurrences": 19
+        },
+        {
+          "exact_hex": "3936",
+          "display": "96",
+          "text_bytes": 2,
+          "occurrences": 19
+        },
+        {
+          "exact_hex": "3938",
+          "display": "98",
+          "text_bytes": 2,
+          "occurrences": 19
+        },
+        {
+          "exact_hex": "313130",
+          "display": "110",
+          "text_bytes": 3,
+          "occurrences": 19
+        },
+        {
+          "exact_hex": "333238",
+          "display": "328",
+          "text_bytes": 3,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "333439",
+          "display": "349",
+          "text_bytes": 3,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "333831",
+          "display": "381",
+          "text_bytes": 3,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "343133",
+          "display": "413",
+          "text_bytes": 3,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "3437",
+          "display": "47",
+          "text_bytes": 2,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "343434",
+          "display": "444",
+          "text_bytes": 3,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "343736",
+          "display": "476",
+          "text_bytes": 3,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "353038",
+          "display": "508",
+          "text_bytes": 3,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "353339",
+          "display": "539",
+          "text_bytes": 3,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "353731",
+          "display": "571",
+          "text_bytes": 3,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "3539",
+          "display": "59",
+          "text_bytes": 2,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "353933",
+          "display": "593",
+          "text_bytes": 3,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "3732",
+          "display": "72",
+          "text_bytes": 2,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "3831",
+          "display": "81",
+          "text_bytes": 2,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "373531",
+          "display": "751",
+          "text_bytes": 3,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "373832",
+          "display": "782",
+          "text_bytes": 3,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "373831",
+          "display": "781",
+          "text_bytes": 3,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "373833",
+          "display": "783",
+          "text_bytes": 3,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "383133",
+          "display": "813",
+          "text_bytes": 3,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "383135",
+          "display": "815",
+          "text_bytes": 3,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "383336",
+          "display": "836",
+          "text_bytes": 3,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "383636",
+          "display": "866",
+          "text_bytes": 3,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "383638",
+          "display": "868",
+          "text_bytes": 3,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "383937",
+          "display": "897",
+          "text_bytes": 3,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "393030",
+          "display": "900",
+          "text_bytes": 3,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "393239",
+          "display": "929",
+          "text_bytes": 3,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "393332",
+          "display": "932",
+          "text_bytes": 3,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "393633",
+          "display": "963",
+          "text_bytes": 3,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "393935",
+          "display": "995",
+          "text_bytes": 3,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "31303235",
+          "display": "1025",
+          "text_bytes": 4,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "31303236",
+          "display": "1026",
+          "text_bytes": 4,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "31303536",
+          "display": "1056",
+          "text_bytes": 4,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "31303537",
+          "display": "1057",
+          "text_bytes": 4,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "313034",
+          "display": "104",
+          "text_bytes": 3,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "31313130",
+          "display": "1110",
+          "text_bytes": 4,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "31313131",
+          "display": "1111",
+          "text_bytes": 4,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "31313431",
+          "display": "1141",
+          "text_bytes": 4,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "31313432",
+          "display": "1142",
+          "text_bytes": 4,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "31313733",
+          "display": "1173",
+          "text_bytes": 4,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "31313734",
+          "display": "1174",
+          "text_bytes": 4,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "31323336",
+          "display": "1236",
+          "text_bytes": 4,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "31323335",
+          "display": "1235",
+          "text_bytes": 4,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "313134",
+          "display": "114",
+          "text_bytes": 3,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "31323638",
+          "display": "1268",
+          "text_bytes": 4,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "31333030",
+          "display": "1300",
+          "text_bytes": 4,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "31333238",
+          "display": "1328",
+          "text_bytes": 4,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "31333332",
+          "display": "1332",
+          "text_bytes": 4,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "31333533",
+          "display": "1353",
+          "text_bytes": 4,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "31333835",
+          "display": "1385",
+          "text_bytes": 4,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "31343137",
+          "display": "1417",
+          "text_bytes": 4,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "31363236",
+          "display": "1626",
+          "text_bytes": 4,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "31363534",
+          "display": "1654",
+          "text_bytes": 4,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "31363836",
+          "display": "1686",
+          "text_bytes": 4,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "31373138",
+          "display": "1718",
+          "text_bytes": 4,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "31373531",
+          "display": "1751",
+          "text_bytes": 4,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "31373439",
+          "display": "1749",
+          "text_bytes": 4,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "31373739",
+          "display": "1779",
+          "text_bytes": 4,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "31373833",
+          "display": "1783",
+          "text_bytes": 4,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "31383131",
+          "display": "1811",
+          "text_bytes": 4,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "31383135",
+          "display": "1815",
+          "text_bytes": 4,
+          "occurrences": 18
+        },
+        {
+          "exact_hex": "313038",
+          "display": "108",
+          "text_bytes": 3,
+          "occurrences": 17
+        },
+        {
+          "exact_hex": "3339",
+          "display": "39",
+          "text_bytes": 2,
+          "occurrences": 17
+        },
+        {
+          "exact_hex": "3637",
+          "display": "67",
+          "text_bytes": 2,
+          "occurrences": 17
+        },
+        {
+          "exact_hex": "313035",
+          "display": "105",
+          "text_bytes": 3,
+          "occurrences": 17
+        },
+        {
+          "exact_hex": "3939",
+          "display": "99",
+          "text_bytes": 2,
+          "occurrences": 17
+        },
+        {
+          "exact_hex": "313330",
+          "display": "130",
+          "text_bytes": 3,
+          "occurrences": 17
+        },
+        {
+          "exact_hex": "3736",
+          "display": "76",
+          "text_bytes": 2,
+          "occurrences": 16
+        },
+        {
+          "exact_hex": "3830",
+          "display": "80",
+          "text_bytes": 2,
+          "occurrences": 16
+        },
+        {
+          "exact_hex": "313030",
+          "display": "100",
+          "text_bytes": 3,
+          "occurrences": 16
+        },
+        {
+          "exact_hex": "313033",
+          "display": "103",
+          "text_bytes": 3,
+          "occurrences": 16
+        },
+        {
+          "exact_hex": "313236",
+          "display": "126",
+          "text_bytes": 3,
+          "occurrences": 16
+        },
+        {
+          "exact_hex": "3331",
+          "display": "31",
+          "text_bytes": 2,
+          "occurrences": 15
+        },
+        {
+          "exact_hex": "3636",
+          "display": "66",
+          "text_bytes": 2,
+          "occurrences": 15
+        },
+        {
+          "exact_hex": "3532",
+          "display": "52",
+          "text_bytes": 2,
+          "occurrences": 15
+        },
+        {
+          "exact_hex": "3937",
+          "display": "97",
+          "text_bytes": 2,
+          "occurrences": 15
+        },
+        {
+          "exact_hex": "3833",
+          "display": "83",
+          "text_bytes": 2,
+          "occurrences": 15
+        },
+        {
+          "exact_hex": "313230",
+          "display": "120",
+          "text_bytes": 3,
+          "occurrences": 15
+        },
+        {
+          "exact_hex": "313239",
+          "display": "129",
+          "text_bytes": 3,
+          "occurrences": 15
+        },
+        {
+          "exact_hex": "313031",
+          "display": "101",
+          "text_bytes": 3,
+          "occurrences": 14
+        },
+        {
+          "exact_hex": "3434",
+          "display": "44",
+          "text_bytes": 2,
+          "occurrences": 13
+        },
+        {
+          "exact_hex": "3338",
+          "display": "38",
+          "text_bytes": 2,
+          "occurrences": 13
+        },
+        {
+          "exact_hex": "3538",
+          "display": "58",
+          "text_bytes": 2,
+          "occurrences": 13
+        },
+        {
+          "exact_hex": "313032",
+          "display": "102",
+          "text_bytes": 3,
+          "occurrences": 13
+        },
+        {
+          "exact_hex": "3334",
+          "display": "34",
+          "text_bytes": 2,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "353338",
+          "display": "538",
+          "text_bytes": 3,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "353730",
+          "display": "570",
+          "text_bytes": 3,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "3531",
+          "display": "51",
+          "text_bytes": 2,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "353932",
+          "display": "592",
+          "text_bytes": 3,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "363234",
+          "display": "624",
+          "text_bytes": 3,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "363535",
+          "display": "655",
+          "text_bytes": 3,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "363837",
+          "display": "687",
+          "text_bytes": 3,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "373139",
+          "display": "719",
+          "text_bytes": 3,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "393539",
+          "display": "959",
+          "text_bytes": 3,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "393931",
+          "display": "991",
+          "text_bytes": 3,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31303234",
+          "display": "1024",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31303232",
+          "display": "1022",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31303535",
+          "display": "1055",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31303533",
+          "display": "1053",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "3832",
+          "display": "82",
+          "text_bytes": 2,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "3934",
+          "display": "94",
+          "text_bytes": 2,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31313039",
+          "display": "1109",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31313037",
+          "display": "1107",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31313430",
+          "display": "1140",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31313338",
+          "display": "1138",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31313732",
+          "display": "1172",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31323034",
+          "display": "1204",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31323036",
+          "display": "1206",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31323333",
+          "display": "1233",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31323337",
+          "display": "1237",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31323635",
+          "display": "1265",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31323634",
+          "display": "1264",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31323636",
+          "display": "1266",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31323937",
+          "display": "1297",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31323936",
+          "display": "1296",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31323938",
+          "display": "1298",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31333330",
+          "display": "1330",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31333439",
+          "display": "1349",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31333531",
+          "display": "1351",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31333831",
+          "display": "1381",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31333832",
+          "display": "1382",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31343133",
+          "display": "1413",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31343134",
+          "display": "1414",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31343433",
+          "display": "1443",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31343434",
+          "display": "1444",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31343438",
+          "display": "1448",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31343436",
+          "display": "1446",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31343739",
+          "display": "1479",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31343735",
+          "display": "1475",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31343736",
+          "display": "1476",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31343738",
+          "display": "1478",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31353131",
+          "display": "1511",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31353035",
+          "display": "1505",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31353036",
+          "display": "1506",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31353039",
+          "display": "1509",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31353335",
+          "display": "1535",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31353431",
+          "display": "1541",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31353337",
+          "display": "1537",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31353430",
+          "display": "1540",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31353637",
+          "display": "1567",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31353733",
+          "display": "1573",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31353639",
+          "display": "1569",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31353732",
+          "display": "1572",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31353839",
+          "display": "1589",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31353935",
+          "display": "1595",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31353931",
+          "display": "1591",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31353934",
+          "display": "1594",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31363231",
+          "display": "1621",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31363233",
+          "display": "1623",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31363532",
+          "display": "1652",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31363834",
+          "display": "1684",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31373136",
+          "display": "1716",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "31373437",
+          "display": "1747",
+          "text_bytes": 4,
+          "occurrences": 12
+        },
+        {
+          "exact_hex": "313533",
+          "display": "153",
+          "text_bytes": 3,
+          "occurrences": 11
+        },
+        {
+          "exact_hex": "313835",
+          "display": "185",
+          "text_bytes": 3,
+          "occurrences": 11
+        },
+        {
+          "exact_hex": "323137",
+          "display": "217",
+          "text_bytes": 3,
+          "occurrences": 11
+        },
+        {
+          "exact_hex": "323439",
+          "display": "249",
+          "text_bytes": 3,
+          "occurrences": 11
+        },
+        {
+          "exact_hex": "323831",
+          "display": "281",
+          "text_bytes": 3,
+          "occurrences": 11
+        },
+        {
+          "exact_hex": "333133",
+          "display": "313",
+          "text_bytes": 3,
+          "occurrences": 11
+        },
+        {
+          "exact_hex": "333435",
+          "display": "345",
+          "text_bytes": 3,
+          "occurrences": 11
+        },
+        {
+          "exact_hex": "333737",
+          "display": "377",
+          "text_bytes": 3,
+          "occurrences": 11
+        },
+        {
+          "exact_hex": "343039",
+          "display": "409",
+          "text_bytes": 3,
+          "occurrences": 11
+        },
+        {
+          "exact_hex": "343431",
+          "display": "441",
+          "text_bytes": 3,
+          "occurrences": 11
+        },
+        {
+          "exact_hex": "343733",
+          "display": "473",
+          "text_bytes": 3,
+          "occurrences": 11
+        },
+        {
+          "exact_hex": "353035",
+          "display": "505",
+          "text_bytes": 3,
+          "occurrences": 11
+        },
+        {
+          "exact_hex": "353337",
+          "display": "537",
+          "text_bytes": 3,
+          "occurrences": 11
+        },
+        {
+          "exact_hex": "353639",
+          "display": "569",
+          "text_bytes": 3,
+          "occurrences": 11
+        },
+        {
+          "exact_hex": "363031",
+          "display": "601",
+          "text_bytes": 3,
+          "occurrences": 11
+        },
+        {
+          "exact_hex": "363333",
+          "display": "633",
+          "text_bytes": 3,
+          "occurrences": 11
+        },
+        {
+          "exact_hex": "363635",
+          "display": "665",
+          "text_bytes": 3,
+          "occurrences": 11
+        },
+        {
+          "exact_hex": "363937",
+          "display": "697",
+          "text_bytes": 3,
+          "occurrences": 11
+        },
+        {
+          "exact_hex": "373239",
+          "display": "729",
+          "text_bytes": 3,
+          "occurrences": 11
+        },
+        {
+          "exact_hex": "373631",
+          "display": "761",
+          "text_bytes": 3,
+          "occurrences": 11
+        },
+        {
+          "exact_hex": "373933",
+          "display": "793",
+          "text_bytes": 3,
+          "occurrences": 11
+        },
+        {
+          "exact_hex": "383235",
+          "display": "825",
+          "text_bytes": 3,
+          "occurrences": 11
+        },
+        {
+          "exact_hex": "383537",
+          "display": "857",
+          "text_bytes": 3,
+          "occurrences": 11
+        },
+        {
+          "exact_hex": "383839",
+          "display": "889",
+          "text_bytes": 3,
+          "occurrences": 11
+        },
+        {
+          "exact_hex": "393231",
+          "display": "921",
+          "text_bytes": 3,
+          "occurrences": 11
+        },
+        {
+          "exact_hex": "393533",
+          "display": "953",
+          "text_bytes": 3,
+          "occurrences": 11
+        },
+        {
+          "exact_hex": "393835",
+          "display": "985",
+          "text_bytes": 3,
+          "occurrences": 11
+        },
+        {
+          "exact_hex": "31303137",
+          "display": "1017",
+          "text_bytes": 4,
+          "occurrences": 11
+        },
+        {
+          "exact_hex": "31303439",
+          "display": "1049",
+          "text_bytes": 4,
+          "occurrences": 11
+        },
+        {
+          "exact_hex": "31303831",
+          "display": "1081",
+          "text_bytes": 4,
+          "occurrences": 11
+        },
+        {
+          "exact_hex": "31313133",
+          "display": "1113",
+          "text_bytes": 4,
+          "occurrences": 11
+        },
+        {
+          "exact_hex": "31313435",
+          "display": "1145",
+          "text_bytes": 4,
+          "occurrences": 11
+        },
+        {
+          "exact_hex": "31313737",
+          "display": "1177",
+          "text_bytes": 4,
+          "occurrences": 11
+        },
+        {
+          "exact_hex": "31323039",
+          "display": "1209",
+          "text_bytes": 4,
+          "occurrences": 11
+        },
+        {
+          "exact_hex": "31323431",
+          "display": "1241",
+          "text_bytes": 4,
+          "occurrences": 11
+        },
+        {
+          "exact_hex": "31323733",
+          "display": "1273",
+          "text_bytes": 4,
+          "occurrences": 11
+        },
+        {
+          "exact_hex": "31333035",
+          "display": "1305",
+          "text_bytes": 4,
+          "occurrences": 11
+        },
+        {
+          "exact_hex": "31333337",
+          "display": "1337",
+          "text_bytes": 4,
+          "occurrences": 11
+        },
+        {
+          "exact_hex": "31333639",
+          "display": "1369",
+          "text_bytes": 4,
+          "occurrences": 11
+        },
+        {
+          "exact_hex": "31343031",
+          "display": "1401",
+          "text_bytes": 4,
+          "occurrences": 11
+        },
+        {
+          "exact_hex": "31343333",
+          "display": "1433",
+          "text_bytes": 4,
+          "occurrences": 11
+        },
+        {
+          "exact_hex": "31343635",
+          "display": "1465",
+          "text_bytes": 4,
+          "occurrences": 11
+        },
+        {
+          "exact_hex": "31343937",
+          "display": "1497",
+          "text_bytes": 4,
+          "occurrences": 11
+        },
+        {
+          "exact_hex": "31353239",
+          "display": "1529",
+          "text_bytes": 4,
+          "occurrences": 11
+        },
+        {
+          "exact_hex": "31353631",
+          "display": "1561",
+          "text_bytes": 4,
+          "occurrences": 11
+        },
+        {
+          "exact_hex": "313234",
+          "display": "124",
+          "text_bytes": 3,
+          "occurrences": 11
+        },
+        {
+          "exact_hex": "31353933",
+          "display": "1593",
+          "text_bytes": 4,
+          "occurrences": 11
+        },
+        {
+          "exact_hex": "31363235",
+          "display": "1625",
+          "text_bytes": 4,
+          "occurrences": 11
+        },
+        {
+          "exact_hex": "31373533",
+          "display": "1753",
+          "text_bytes": 4,
+          "occurrences": 11
+        },
+        {
+          "exact_hex": "31373835",
+          "display": "1785",
+          "text_bytes": 4,
+          "occurrences": 11
+        },
+        {
+          "exact_hex": "31383137",
+          "display": "1817",
+          "text_bytes": 4,
+          "occurrences": 11
+        },
+        {
+          "exact_hex": "31383439",
+          "display": "1849",
+          "text_bytes": 4,
+          "occurrences": 11
+        },
+        {
+          "exact_hex": "31383831",
+          "display": "1881",
+          "text_bytes": 4,
+          "occurrences": 11
+        },
+        {
+          "exact_hex": "31393133",
+          "display": "1913",
+          "text_bytes": 4,
+          "occurrences": 11
+        },
+        {
+          "exact_hex": "313338",
+          "display": "138",
+          "text_bytes": 3,
+          "occurrences": 10
+        },
+        {
+          "exact_hex": "3233",
+          "display": "23",
+          "text_bytes": 2,
+          "occurrences": 10
+        },
+        {
+          "exact_hex": "3737",
+          "display": "77",
+          "text_bytes": 2,
+          "occurrences": 10
+        },
+        {
+          "exact_hex": "3930",
+          "display": "90",
+          "text_bytes": 2,
+          "occurrences": 10
+        },
+        {
+          "exact_hex": "3935",
+          "display": "95",
+          "text_bytes": 2,
+          "occurrences": 10
+        },
+        {
+          "exact_hex": "313237",
+          "display": "127",
+          "text_bytes": 3,
+          "occurrences": 10
+        },
+        {
+          "exact_hex": "3239",
+          "display": "29",
+          "text_bytes": 2,
+          "occurrences": 9
+        },
+        {
+          "exact_hex": "313132",
+          "display": "112",
+          "text_bytes": 3,
+          "occurrences": 9
+        },
+        {
+          "exact_hex": "3931",
+          "display": "91",
+          "text_bytes": 2,
+          "occurrences": 9
+        },
+        {
+          "exact_hex": "313133",
+          "display": "113",
+          "text_bytes": 3,
+          "occurrences": 9
+        },
+        {
+          "exact_hex": "3436",
+          "display": "46",
+          "text_bytes": 2,
+          "occurrences": 8
+        },
+        {
+          "exact_hex": "3439",
+          "display": "49",
+          "text_bytes": 2,
+          "occurrences": 8
+        },
+        {
+          "exact_hex": "3735",
+          "display": "75",
+          "text_bytes": 2,
+          "occurrences": 8
+        },
+        {
+          "exact_hex": "3635",
+          "display": "65",
+          "text_bytes": 2,
+          "occurrences": 8
+        },
+        {
+          "exact_hex": "313037",
+          "display": "107",
+          "text_bytes": 3,
+          "occurrences": 8
+        },
+        {
+          "exact_hex": "313232",
+          "display": "122",
+          "text_bytes": 3,
+          "occurrences": 8
+        },
+        {
+          "exact_hex": "313334",
+          "display": "134",
+          "text_bytes": 3,
+          "occurrences": 8
+        },
+        {
+          "exact_hex": "313331",
+          "display": "131",
+          "text_bytes": 3,
+          "occurrences": 8
+        },
+        {
+          "exact_hex": "313135",
+          "display": "115",
+          "text_bytes": 3,
+          "occurrences": 8
+        },
+        {
+          "exact_hex": "313431",
+          "display": "141",
+          "text_bytes": 3,
+          "occurrences": 8
+        },
+        {
+          "exact_hex": "313238",
+          "display": "128",
+          "text_bytes": 3,
+          "occurrences": 7
+        },
+        {
+          "exact_hex": "313233",
+          "display": "123",
+          "text_bytes": 3,
+          "occurrences": 7
+        },
+        {
+          "exact_hex": "313730",
+          "display": "170",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "323032",
+          "display": "202",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "323333",
+          "display": "233",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "323634",
+          "display": "264",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "323936",
+          "display": "296",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "353037",
+          "display": "507",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "353039",
+          "display": "509",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "373232",
+          "display": "722",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "373532",
+          "display": "752",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "373830",
+          "display": "780",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "373834",
+          "display": "784",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "383132",
+          "display": "812",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "383635",
+          "display": "865",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "383938",
+          "display": "898",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "393330",
+          "display": "930",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "393630",
+          "display": "960",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "393631",
+          "display": "961",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "393932",
+          "display": "992",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "393933",
+          "display": "993",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31303233",
+          "display": "1023",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31303534",
+          "display": "1054",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31313038",
+          "display": "1108",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31313339",
+          "display": "1139",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31313730",
+          "display": "1170",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31313639",
+          "display": "1169",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31313731",
+          "display": "1171",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31323032",
+          "display": "1202",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31323031",
+          "display": "1201",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31323033",
+          "display": "1203",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31323334",
+          "display": "1234",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31323637",
+          "display": "1267",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31323631",
+          "display": "1261",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31323939",
+          "display": "1299",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31323933",
+          "display": "1293",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31333331",
+          "display": "1331",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31333235",
+          "display": "1325",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31333239",
+          "display": "1329",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31333532",
+          "display": "1352",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31333438",
+          "display": "1348",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31333436",
+          "display": "1346",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31333530",
+          "display": "1350",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31333834",
+          "display": "1384",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31333830",
+          "display": "1380",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31333738",
+          "display": "1378",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31333833",
+          "display": "1383",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31343136",
+          "display": "1416",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31343132",
+          "display": "1412",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31343130",
+          "display": "1410",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31343135",
+          "display": "1415",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31343437",
+          "display": "1447",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31343431",
+          "display": "1441",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31343435",
+          "display": "1445",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31343830",
+          "display": "1480",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31343733",
+          "display": "1473",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31343737",
+          "display": "1477",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31353130",
+          "display": "1510",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31353034",
+          "display": "1504",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31353038",
+          "display": "1508",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31353432",
+          "display": "1542",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31353336",
+          "display": "1536",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "313139",
+          "display": "119",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31353339",
+          "display": "1539",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31353734",
+          "display": "1574",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31353638",
+          "display": "1568",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31353730",
+          "display": "1570",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "313337",
+          "display": "137",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31353936",
+          "display": "1596",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31353930",
+          "display": "1590",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31353932",
+          "display": "1592",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31363238",
+          "display": "1628",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31363232",
+          "display": "1622",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31363237",
+          "display": "1627",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31363234",
+          "display": "1624",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31363539",
+          "display": "1659",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "313432",
+          "display": "142",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31363533",
+          "display": "1653",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "313435",
+          "display": "145",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31363536",
+          "display": "1656",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31363538",
+          "display": "1658",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31363931",
+          "display": "1691",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31363835",
+          "display": "1685",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31363838",
+          "display": "1688",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31363930",
+          "display": "1690",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31373233",
+          "display": "1723",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31373137",
+          "display": "1717",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31373230",
+          "display": "1720",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31373232",
+          "display": "1722",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31373532",
+          "display": "1752",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31373438",
+          "display": "1748",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "313436",
+          "display": "146",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "313530",
+          "display": "150",
+          "text_bytes": 3,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31373530",
+          "display": "1750",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31373834",
+          "display": "1784",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31373738",
+          "display": "1778",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31373831",
+          "display": "1781",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31373832",
+          "display": "1782",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31373830",
+          "display": "1780",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31383136",
+          "display": "1816",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31383130",
+          "display": "1810",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31383133",
+          "display": "1813",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31383134",
+          "display": "1814",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "31383132",
+          "display": "1812",
+          "text_bytes": 4,
+          "occurrences": 6
+        },
+        {
+          "exact_hex": "3438",
+          "display": "48",
+          "text_bytes": 2,
+          "occurrences": 5
+        },
+        {
+          "exact_hex": "313437",
+          "display": "147",
+          "text_bytes": 3,
+          "occurrences": 5
+        },
+        {
+          "exact_hex": "3332",
+          "display": "32",
+          "text_bytes": 2,
+          "occurrences": 4
+        },
+        {
+          "exact_hex": "3634",
+          "display": "64",
+          "text_bytes": 2,
+          "occurrences": 4
+        },
+        {
+          "exact_hex": "3734",
+          "display": "74",
+          "text_bytes": 2,
+          "occurrences": 4
+        },
+        {
+          "exact_hex": "313036",
+          "display": "106",
+          "text_bytes": 3,
+          "occurrences": 4
+        },
+        {
+          "exact_hex": "313434",
+          "display": "144",
+          "text_bytes": 3,
+          "occurrences": 4
+        },
+        {
+          "exact_hex": "3234",
+          "display": "24",
+          "text_bytes": 2,
+          "occurrences": 3
+        },
+        {
+          "exact_hex": "3336",
+          "display": "36",
+          "text_bytes": 2,
+          "occurrences": 3
+        },
+        {
+          "exact_hex": "3738",
+          "display": "78",
+          "text_bytes": 2,
+          "occurrences": 3
+        },
+        {
+          "exact_hex": "313138",
+          "display": "118",
+          "text_bytes": 3,
+          "occurrences": 3
+        },
+        {
+          "exact_hex": "313335",
+          "display": "135",
+          "text_bytes": 3,
+          "occurrences": 3
+        },
+        {
+          "exact_hex": "313439",
+          "display": "149",
+          "text_bytes": 3,
+          "occurrences": 3
+        },
+        {
+          "exact_hex": "3337",
+          "display": "37",
+          "text_bytes": 2,
+          "occurrences": 2
+        },
+        {
+          "exact_hex": "3435",
+          "display": "45",
+          "text_bytes": 2,
+          "occurrences": 2
+        },
+        {
+          "exact_hex": "313333",
+          "display": "133",
+          "text_bytes": 3,
+          "occurrences": 2
+        },
+        {
+          "exact_hex": "313336",
+          "display": "136",
+          "text_bytes": 3,
+          "occurrences": 2
+        },
+        {
+          "exact_hex": "313433",
+          "display": "143",
+          "text_bytes": 3,
+          "occurrences": 2
+        },
+        {
+          "exact_hex": "313534",
+          "display": "154",
+          "text_bytes": 3,
+          "occurrences": 2
+        },
+        {
+          "exact_hex": "313332",
+          "display": "132",
+          "text_bytes": 3,
+          "occurrences": 2
+        },
+        {
+          "exact_hex": "3739",
+          "display": "79",
+          "text_bytes": 2,
+          "occurrences": 1
+        },
+        {
+          "exact_hex": "313136",
+          "display": "116",
+          "text_bytes": 3,
+          "occurrences": 1
+        },
+        {
+          "exact_hex": "313137",
+          "display": "117",
+          "text_bytes": 3,
+          "occurrences": 1
+        },
+        {
+          "exact_hex": "313339",
+          "display": "139",
+          "text_bytes": 3,
+          "occurrences": 1
+        }
+      ],
+      "hypothetical_storage": {
+        "measured_compact_value_ABI_bytes": 40,
+        "actual_compact_populated_value_object_bytes": 8367480,
+        "unmeasured_ID_value_assumption_bytes": 12,
+        "measured_compact_total_vector_capacity_bytes": 8439800,
+        "hypothetical_exact_capacity_ID_vector_bytes": 2510244,
+        "hypothetical_total_vector_capacity_same_row_frame_slots_bytes": 2582564,
+        "arithmetic_value_object_capacity_difference_bytes": 5857236,
+        "hypothetical_value_dictionary_std_string_objects_32bytes": 14432,
+        "hypothetical_value_dictionary_text_bytes": 1438,
+        "source_metadata_unique_text_bytes": 17079,
+        "source_metadata_triples": 317,
+        "exclude": "Allocator headers, hash table keys/nodes/buckets, ID lookup, dictionary lifetime/reclamation, update/delta indexes and engine integration; no compiled12byte ABI or measured RSS/CPU savings"
+      }
+    }
+  ],
+  "limits": [
+    "Exact byte values preserve empty strings, NUL, duplicate occurrences, order and updated timestamps. No Unicode/numeric normalization. Histograms/dictionaries summarize redundancy; they do not replace the original ordered payload.",
+    "Length<=15 is SSO eligibility for this GCC13/libstdc++ ABI, not live-engine capacity measurement. The observed compact model40byte object already includes32byte std::string storage even when text is short.",
+    "12byte schemaID/valueID/updated arithmetic is an uncompiled hypothetical object capacity, not an engine layout, measured peak, RSS saving or CPU speedup. Dictionary/search/refcount/decode overhead is unknown.",
+    "Current AIT1 writer already stores changed rows, not every game tick. Most positional value/update pairs remain unchanged, but update-only timestamps and schema shifts must be represented exactly.",
+    "Interning/deltas must reconstruct exactly the existing completeAIT1 payload and its original until/truncated state. Lower internal memory must not silently extend recorded history or change limits/file acceptance.",
+    "Future qualification would require current game trace, exact fullreplay AIT1/order bytes, seek/application, save/load continuation, malformed-input budgets, and affectedplatforms. No model/engine/build/profiler children launched."
+  ]
+}

@@ -1,0 +1,186 @@
+[
+  {
+    "threads": 1,
+    "gpu": "off",
+    "driver_args": [
+      "-test-games-nox",
+      "--map",
+      "Playground",
+      "--matchup",
+      "nicowar,nicowar,nicowar,nicowar,nicowar,nicowar,nicowar,nicowar"
+    ],
+    "commit": "982b12730c2e8d6a813c5e9215291957476aa2b1",
+    "id": "autosave-window-s1056243202-r0-on",
+    "seed": 1056243202,
+    "repetition": 0,
+    "ticks": 30000,
+    "binary": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/sep11-autosave/source/build/src/glob2",
+    "expected_binary_sha256": "3afa529e98b8b8b81e6c2fbafea06ce5db470d97ceff65e2268620c47f915432",
+    "cwd": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/sep11-autosave/source",
+    "extra_env": {},
+    "phase": "autosave-window",
+    "variant": "on"
+  },
+  {
+    "threads": 1,
+    "gpu": "off",
+    "driver_args": [
+      "-test-games-nox",
+      "--map",
+      "Playground",
+      "--matchup",
+      "nicowar,nicowar,nicowar,nicowar,nicowar,nicowar,nicowar,nicowar"
+    ],
+    "commit": "982b12730c2e8d6a813c5e9215291957476aa2b1",
+    "id": "autosave-window-s1056243202-r0-off",
+    "seed": 1056243202,
+    "repetition": 0,
+    "ticks": 30000,
+    "binary": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/sep11-autosave/source/build/src/glob2",
+    "expected_binary_sha256": "3afa529e98b8b8b81e6c2fbafea06ce5db470d97ceff65e2268620c47f915432",
+    "cwd": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/sep11-autosave/source",
+    "extra_env": {
+      "GLOB2_INV_DISABLE_AUTOSAVE": "1"
+    },
+    "phase": "autosave-window",
+    "variant": "off"
+  },
+  {
+    "threads": 1,
+    "gpu": "off",
+    "driver_args": [
+      "-test-games-nox",
+      "--map",
+      "Playground",
+      "--matchup",
+      "nicowar,nicowar,nicowar,nicowar,nicowar,nicowar,nicowar,nicowar"
+    ],
+    "commit": "982b12730c2e8d6a813c5e9215291957476aa2b1",
+    "id": "autosave-window-s1056243202-r1-off",
+    "seed": 1056243202,
+    "repetition": 1,
+    "ticks": 30000,
+    "binary": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/sep11-autosave/source/build/src/glob2",
+    "expected_binary_sha256": "3afa529e98b8b8b81e6c2fbafea06ce5db470d97ceff65e2268620c47f915432",
+    "cwd": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/sep11-autosave/source",
+    "extra_env": {
+      "GLOB2_INV_DISABLE_AUTOSAVE": "1"
+    },
+    "phase": "autosave-window",
+    "variant": "off"
+  },
+  {
+    "threads": 1,
+    "gpu": "off",
+    "driver_args": [
+      "-test-games-nox",
+      "--map",
+      "Playground",
+      "--matchup",
+      "nicowar,nicowar,nicowar,nicowar,nicowar,nicowar,nicowar,nicowar"
+    ],
+    "commit": "982b12730c2e8d6a813c5e9215291957476aa2b1",
+    "id": "autosave-window-s1056243202-r1-on",
+    "seed": 1056243202,
+    "repetition": 1,
+    "ticks": 30000,
+    "binary": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/sep11-autosave/source/build/src/glob2",
+    "expected_binary_sha256": "3afa529e98b8b8b81e6c2fbafea06ce5db470d97ceff65e2268620c47f915432",
+    "cwd": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/sep11-autosave/source",
+    "extra_env": {},
+    "phase": "autosave-window",
+    "variant": "on"
+  },
+  {
+    "threads": 1,
+    "gpu": "off",
+    "driver_args": [
+      "-test-games-nox",
+      "--map",
+      "Playground",
+      "--matchup",
+      "nicowar,nicowar,nicowar,nicowar,nicowar,nicowar,nicowar,nicowar"
+    ],
+    "commit": "982b12730c2e8d6a813c5e9215291957476aa2b1",
+    "id": "autosave-window-s744345666-r0-off",
+    "seed": 744345666,
+    "repetition": 0,
+    "ticks": 30000,
+    "binary": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/sep11-autosave/source/build/src/glob2",
+    "expected_binary_sha256": "3afa529e98b8b8b81e6c2fbafea06ce5db470d97ceff65e2268620c47f915432",
+    "cwd": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/sep11-autosave/source",
+    "extra_env": {
+      "GLOB2_INV_DISABLE_AUTOSAVE": "1"
+    },
+    "phase": "autosave-window",
+    "variant": "off"
+  },
+  {
+    "threads": 1,
+    "gpu": "off",
+    "driver_args": [
+      "-test-games-nox",
+      "--map",
+      "Playground",
+      "--matchup",
+      "nicowar,nicowar,nicowar,nicowar,nicowar,nicowar,nicowar,nicowar"
+    ],
+    "commit": "982b12730c2e8d6a813c5e9215291957476aa2b1",
+    "id": "autosave-window-s744345666-r0-on",
+    "seed": 744345666,
+    "repetition": 0,
+    "ticks": 30000,
+    "binary": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/sep11-autosave/source/build/src/glob2",
+    "expected_binary_sha256": "3afa529e98b8b8b81e6c2fbafea06ce5db470d97ceff65e2268620c47f915432",
+    "cwd": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/sep11-autosave/source",
+    "extra_env": {},
+    "phase": "autosave-window",
+    "variant": "on"
+  },
+  {
+    "threads": 1,
+    "gpu": "off",
+    "driver_args": [
+      "-test-games-nox",
+      "--map",
+      "Playground",
+      "--matchup",
+      "nicowar,nicowar,nicowar,nicowar,nicowar,nicowar,nicowar,nicowar"
+    ],
+    "commit": "982b12730c2e8d6a813c5e9215291957476aa2b1",
+    "id": "autosave-window-s744345666-r1-on",
+    "seed": 744345666,
+    "repetition": 1,
+    "ticks": 30000,
+    "binary": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/sep11-autosave/source/build/src/glob2",
+    "expected_binary_sha256": "3afa529e98b8b8b81e6c2fbafea06ce5db470d97ceff65e2268620c47f915432",
+    "cwd": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/sep11-autosave/source",
+    "extra_env": {},
+    "phase": "autosave-window",
+    "variant": "on"
+  },
+  {
+    "threads": 1,
+    "gpu": "off",
+    "driver_args": [
+      "-test-games-nox",
+      "--map",
+      "Playground",
+      "--matchup",
+      "nicowar,nicowar,nicowar,nicowar,nicowar,nicowar,nicowar,nicowar"
+    ],
+    "commit": "982b12730c2e8d6a813c5e9215291957476aa2b1",
+    "id": "autosave-window-s744345666-r1-off",
+    "seed": 744345666,
+    "repetition": 1,
+    "ticks": 30000,
+    "binary": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/sep11-autosave/source/build/src/glob2",
+    "expected_binary_sha256": "3afa529e98b8b8b81e6c2fbafea06ce5db470d97ceff65e2268620c47f915432",
+    "cwd": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/sep11-autosave/source",
+    "extra_env": {
+      "GLOB2_INV_DISABLE_AUTOSAVE": "1"
+    },
+    "phase": "autosave-window",
+    "variant": "off"
+  }
+]

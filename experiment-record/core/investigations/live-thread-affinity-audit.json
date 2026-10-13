@@ -1,0 +1,528 @@
+{
+  "case": {
+    "id": "gpu-health-oazis-s1056243202-tauto",
+    "phase": "gpu-health",
+    "seed": 1056243202,
+    "ticks": 8192,
+    "threads": "auto",
+    "gpu": "on",
+    "map": "Oazis",
+    "width": 256,
+    "height": 256,
+    "teams": 11,
+    "binary": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/h02-opencl-status/source/build/linux/client/release/src/glob2",
+    "expected_binary_sha256": "88cb203039c584fda84f72dbdc8451f2c07c5217987b39d3aab2ceb5cd4a533d",
+    "extra_env": {
+      "GLOB2_INV_OPENCL_STATUS": "1"
+    },
+    "cwd": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/snapshots/2026-10-11-9a08b91f4/runtime",
+    "asset_dir": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/snapshots/2026-10-11-9a08b91f4/runtime"
+  },
+  "pid": 906084,
+  "threads": [
+    {
+      "tid": 906084,
+      "name": "glob2",
+      "affinity": [
+        12,
+        13,
+        14,
+        28,
+        29,
+        30
+      ]
+    },
+    {
+      "tid": 906085,
+      "name": "SDLNetRslv0",
+      "affinity": [
+        12,
+        13,
+        14,
+        28,
+        29,
+        30
+      ]
+    },
+    {
+      "tid": 906086,
+      "name": "SDLNetRslv1",
+      "affinity": [
+        12,
+        13,
+        14,
+        28,
+        29,
+        30
+      ]
+    },
+    {
+      "tid": 906091,
+      "name": "glob2",
+      "affinity": [
+        12,
+        13,
+        14,
+        28,
+        29,
+        30
+      ]
+    },
+    {
+      "tid": 906092,
+      "name": "glob2",
+      "affinity": [
+        12,
+        13,
+        14,
+        28,
+        29,
+        30
+      ]
+    },
+    {
+      "tid": 906093,
+      "name": "glob2",
+      "affinity": [
+        12,
+        13,
+        14,
+        28,
+        29,
+        30
+      ]
+    },
+    {
+      "tid": 906094,
+      "name": "glob2",
+      "affinity": [
+        12,
+        13,
+        14,
+        28,
+        29,
+        30
+      ]
+    },
+    {
+      "tid": 906095,
+      "name": "glob2",
+      "affinity": [
+        12,
+        13,
+        14,
+        28,
+        29,
+        30
+      ]
+    },
+    {
+      "tid": 906096,
+      "name": "glob2",
+      "affinity": [
+        12,
+        13,
+        14,
+        28,
+        29,
+        30
+      ]
+    },
+    {
+      "tid": 906097,
+      "name": "glob2",
+      "affinity": [
+        12,
+        13,
+        14,
+        28,
+        29,
+        30
+      ]
+    },
+    {
+      "tid": 906098,
+      "name": "glob2",
+      "affinity": [
+        12,
+        13,
+        14,
+        28,
+        29,
+        30
+      ]
+    },
+    {
+      "tid": 906099,
+      "name": "glob2",
+      "affinity": [
+        12,
+        13,
+        14,
+        28,
+        29,
+        30
+      ]
+    },
+    {
+      "tid": 906100,
+      "name": "glob2",
+      "affinity": [
+        12,
+        13,
+        14,
+        28,
+        29,
+        30
+      ]
+    },
+    {
+      "tid": 906101,
+      "name": "glob2",
+      "affinity": [
+        12,
+        13,
+        14,
+        28,
+        29,
+        30
+      ]
+    },
+    {
+      "tid": 906102,
+      "name": "glob2",
+      "affinity": [
+        12,
+        13,
+        14,
+        28,
+        29,
+        30
+      ]
+    },
+    {
+      "tid": 906103,
+      "name": "glob2",
+      "affinity": [
+        12,
+        13,
+        14,
+        28,
+        29,
+        30
+      ]
+    },
+    {
+      "tid": 906104,
+      "name": "glob2",
+      "affinity": [
+        12,
+        13,
+        14,
+        28,
+        29,
+        30
+      ]
+    },
+    {
+      "tid": 906105,
+      "name": "glob2",
+      "affinity": [
+        12,
+        13,
+        14,
+        28,
+        29,
+        30
+      ]
+    },
+    {
+      "tid": 906106,
+      "name": "glob2",
+      "affinity": [
+        12,
+        13,
+        14,
+        28,
+        29,
+        30
+      ]
+    },
+    {
+      "tid": 906107,
+      "name": "glob2",
+      "affinity": [
+        12,
+        13,
+        14,
+        28,
+        29,
+        30
+      ]
+    },
+    {
+      "tid": 906108,
+      "name": "glob2",
+      "affinity": [
+        12,
+        13,
+        14,
+        28,
+        29,
+        30
+      ]
+    },
+    {
+      "tid": 906109,
+      "name": "glob2",
+      "affinity": [
+        12,
+        13,
+        14,
+        28,
+        29,
+        30
+      ]
+    },
+    {
+      "tid": 906110,
+      "name": "glob2",
+      "affinity": [
+        12,
+        13,
+        14,
+        28,
+        29,
+        30
+      ]
+    },
+    {
+      "tid": 906111,
+      "name": "glob2",
+      "affinity": [
+        12,
+        13,
+        14,
+        28,
+        29,
+        30
+      ]
+    },
+    {
+      "tid": 906112,
+      "name": "glob2",
+      "affinity": [
+        12,
+        13,
+        14,
+        28,
+        29,
+        30
+      ]
+    },
+    {
+      "tid": 906113,
+      "name": "glob2",
+      "affinity": [
+        12,
+        13,
+        14,
+        28,
+        29,
+        30
+      ]
+    },
+    {
+      "tid": 906114,
+      "name": "glob2",
+      "affinity": [
+        12,
+        13,
+        14,
+        28,
+        29,
+        30
+      ]
+    },
+    {
+      "tid": 906115,
+      "name": "glob2",
+      "affinity": [
+        12,
+        13,
+        14,
+        28,
+        29,
+        30
+      ]
+    },
+    {
+      "tid": 906116,
+      "name": "glob2",
+      "affinity": [
+        12,
+        13,
+        14,
+        28,
+        29,
+        30
+      ]
+    },
+    {
+      "tid": 906117,
+      "name": "glob2",
+      "affinity": [
+        12,
+        13,
+        14,
+        28,
+        29,
+        30
+      ]
+    },
+    {
+      "tid": 906118,
+      "name": "glob2",
+      "affinity": [
+        12,
+        13,
+        14,
+        28,
+        29,
+        30
+      ]
+    },
+    {
+      "tid": 906119,
+      "name": "glob2",
+      "affinity": [
+        12,
+        13,
+        14,
+        28,
+        29,
+        30
+      ]
+    },
+    {
+      "tid": 906120,
+      "name": "glob2",
+      "affinity": [
+        12,
+        13,
+        14,
+        28,
+        29,
+        30
+      ]
+    },
+    {
+      "tid": 906121,
+      "name": "glob2",
+      "affinity": [
+        12,
+        13,
+        14,
+        28,
+        29,
+        30
+      ]
+    },
+    {
+      "tid": 906122,
+      "name": "glob2",
+      "affinity": [
+        12,
+        13,
+        14,
+        28,
+        29,
+        30
+      ]
+    },
+    {
+      "tid": 906123,
+      "name": "glob2",
+      "affinity": [
+        12,
+        13,
+        14,
+        28,
+        29,
+        30
+      ]
+    },
+    {
+      "tid": 906124,
+      "name": "cuda-EvtHandlr",
+      "affinity": [
+        12,
+        13,
+        14,
+        28,
+        29,
+        30
+      ]
+    },
+    {
+      "tid": 906125,
+      "name": "glob2",
+      "affinity": [
+        12,
+        13,
+        14,
+        28,
+        29,
+        30
+      ]
+    },
+    {
+      "tid": 906126,
+      "name": "glob2",
+      "affinity": [
+        12,
+        13,
+        14,
+        28,
+        29,
+        30
+      ]
+    },
+    {
+      "tid": 906127,
+      "name": "glob2",
+      "affinity": [
+        12,
+        13,
+        14,
+        28,
+        29,
+        30
+      ]
+    },
+    {
+      "tid": 906128,
+      "name": "glob2",
+      "affinity": [
+        12,
+        13,
+        14,
+        28,
+        29,
+        30
+      ]
+    },
+    {
+      "tid": 906129,
+      "name": "glob2",
+      "affinity": [
+        12,
+        13,
+        14,
+        28,
+        29,
+        30
+      ]
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "attempted_cases": 18,
+  "completed_pairs": [
+    "holdout-comb-164298751",
+    "holdout-comb-1738462951",
+    "holdout-comb-902381047",
+    "oazis-ni-164298751",
+    "oazis-ni-1738462951",
+    "oazis-ni-902381047",
+    "playground-ni-164298751",
+    "playground-ni-1738462951",
+    "playground-ni-902381047"
+  ],
+  "censored": [],
+  "passed": true,
+  "state": "complete",
+  "plan_sha256": "0e5b6503c9c1855e29f54afcb25ed53a951b7aa2b7419b7fba37809a03f0772b",
+  "diagnostic_only": false,
+  "timing_excluded": false,
+  "native_per_tick_equivalence": "Not established by natural outcomes/replay; only selected successful diagnostic pairs have full exact streams"
+}

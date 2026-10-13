@@ -1,0 +1,281 @@
+EARLY HISTORY AUDIT: baseline 14b99bc82 through 568fe9274 (Sep 20 sample)
+
+Coverage and interpretation
+---------------------------
+The six experiment intervals contain 653 reachable integrated commits and 180
+first-parent commits: Sep 5 492/19, Sep 8 30/30, Sep 11 25/25, Sep 14 36/36,
+Sep 17 42/42, Sep 20 28/28. The first sample interval integrates a long-lived
+branch with author dates from earlier months. It is not simply three days of
+small engine changes. early-inventory.json records every full SHA, commit body,
+changed path and subject/path category; selected substantive diffs and original
+PR bodies/comments received deeper examination. This is not a claim that every
+line of all 653 commits was manually reviewed. early.json supplies full SHAs for
+the 22 principal events and structured facts. prNNN.json files retain source
+material read through gh (read-only).
+
+All proposed feature-off tests below are DIAGNOSTIC ABLATIONS. Preserve every
+new gameplay/engine feature in the final implementation. Recommendations are
+about efficient implementations, caches, defaults and diagnostics; reverting
+pathfinding, diagonal timing, job swaps or starvation fixes is not recommended.
+
+Current 32-seed Playground, 128x128, eight Nicowar FFA measurements
+----------------------------------------------------------------
+Date     TPS mean   CPU ms/tick mean  E2E sec mean   RSS MiB mean  Ticks mean
+Sep 02   2099.51     0.48469            26.57          27.46         56768
+Sep 05   1026.42     0.98664            65.93          27.62         66939
+Sep 08   1189.01     0.84923            50.55          36.51         58912
+Sep 11    625.97     1.63972           118.07          44.98         71338
+Sep 14    735.66     1.39680            82.66          54.87         59050
+Sep 17    737.63     1.39297            82.43          59.37         59050
+Sep 20    929.02     1.10362            65.17          59.71         59050
+All 224 early games completed. Every seed's completion tick count is identical
+at Sep 14, Sep 17 and Sep 20. Equal completion ticks are useful evidence but do
+not establish equal per-tick state/checksums. Before Sep 14 trajectories clearly
+change, so CPU/tick is also affected by units/buildings and E2E by game duration.
+
+1. Sep 02 -> Sep 05: the first major regression needs isolated attribution
+-------------------------------------------------------------------------
+Observed: CPU/tick +103.6%, TPS -51.1%, RSS nearly flat; completion ticks +17.9%.
+The dominant integration is 2dcfc78ac (#129), after ce9130bf3 (#131 build/std
+modernization) and smaller mainline fixes. PR129 adds hundreds of refactoring,
+correctness and tooling commits. No clean pre-merge vs post-merge performance
+comparison is supplied in its original validation. It reports replay consistency
+and compatibility, which are not performance evidence.
+https://github.com/Globulation2/glob2/pull/129
+https://github.com/Globulation2/glob2/pull/131
+
+Ranked CODE CANDIDATES, not causal conclusions:
+
+A. BFS -> repeated raster chamfer sweeps. 1e228ce06 introduces the alternative,
+7ff6e3a1c makes it production, a518d7087 removes BFS, 487027aff simplifies the
+kernel. The Sep 5 MapGradientGlobal.cpp performs forward/backward full-map
+passes until no cell changes. Its own comment says obstacles and torus bends
+require multiple passes (~K/2 direction changes); it caps at 256 passes. This
+can increase total visits relative to the original queue, especially as colonies
+add obstacles. There is no retained same-field performance benchmark showing
+this caused the current 2x cost. It is the highest-value kernel ablation.
+
+B. Stable hiring order and Nicowar behavior. 419eb4bd4 adds gid as final building
+sort tiebreak: previous ties were implementation-dependent, consumed RNG in a
+different order, and produced a different end state. d36382e9a wraps Echo gradient
+external coordinate queries used by Nicowar farming; the old edge reads accessed
+wrong-row or uninitialized memory. c1797f53e zero-initializes strategy state.
+These fixes can change population/colony placement and computational work.
+More game ticks do not explain doubled CPU per tick by themselves; matched
+unit/building/field-count windows are necessary. Preserve these correctness fixes.
+
+C. Broad TU splitting and C++ modernization may change inlining/code layout.
+This is a weaker hypothesis without retired-instruction/call attribution. Build
+logs should be compared before invoking it; baseline and later binaries use the
+same GCC 13 release setup, with explicitly documented adapter changes. Do not
+blame 'modern C++' or code organization from temporal coincidence.
+
+Changes expected to HELP, not convincing slowdown explanations:
+- 46a6a2d3d repairs a Nicowar explorer-attack scratch leak: 1024 pointers (~8 KB)
+  per call, historically ~90 calls/game, scaling with AI count. Replay equality
+  is reported. Flat aggregate RSS does not negate the fix amid other changes.
+- Static type tables replace startup file loading (5ee9a56bf/9211f3757/
+  94a974e3c/79e738918).
+- Dead logFile/fprintf infrastructure removed from game/team/unit/building/AI
+  (612125b09/18a8377f3/756537860/d77ce64c9/cca806bd2).
+- New Cortex policy/training tooling is not the selected AI in this workload.
+
+Recommended diagnostic sequence: compare immediate parent/merge of #129 with
+all other inputs equal; then the chamfer transition commits. Clone actual
+Playground gradient inputs, compare BFS with corrected seed handling against
+chamfer, count visits/passes, CPU and field calls. Keep stable order, torus query
+fix and all new gameplay semantics identical in the final optimized version.
+
+2. Sep 05 -> Sep 08: weighted fields improved throughput at a memory cost
+----------------------------------------------------------------------
+#184 / cac37e999 replaces path gradients with Uint16 fields per seven swim
+classes, lazily built with bucket-queue Dijkstra. Building full-map fields replace
+32x32 local grids and 5x5 minigrad. f80d0ef50 matches movement timing to octile
+costs: diagonal speed is divided by sqrt(2), removing the old 41% diagonal speed
+advantage. These are intentional game pacing/route changes, not pure optimization.
+https://github.com/Globulation2/glob2/pull/184
+
+Original PR measurements: 512x512, eight Nicowars, 15000 ticks: wall 128 -> 75 s,
+peak RSS 140 -> 179 MB. At matched unit counts in 512-tick windows, Mazury
+128x128 two teams improved TPS 11-41%; a tiny 64x64 two-team map at 30/50 units
+regressed 14%/6%, becoming ~flat at 80 units. These observations demonstrate
+workload sensitivity, not a universal gain. Five-seed 15000-tick Mazury economy
+changed 72.1 -> 61.4 -> 59.5 units/team for old, old+diagonal fix, new respectively.
+
+9e8b378eb optimized wrapped neighbors, terrain costs and queue destinations.
+Original Apple M3 / Apple Clang -O3, median three alternating paired serial
+15000-tick runs: core CPU G2 2.870 -> 2.176 s (-24.2%), Playground eight Numbi
+3.327 -> 2.580 (-22.5%), Archipelago 2.989 -> 2.204 (-26.3%), BigArena256
+15.269 -> 11.139 (-27%). Whole-process elapsed fell 17-20%; core timer excluded
+most AI order generation, orders, load and replay output. Separate kernel timing
+fell 35-39% at equal calls. Replays/checksums matched 60000 ticks per fixture.
+
+Counterproductive METRIC example: dd58fe633 AI-helper sweep optimization showed
+whole-process CPU -2.6%, elapsed -0.6%, instructions -11.3%, but core-only CPU
++2.5% (11.370 -> 11.655 s). Helper propagation 3.337 -> 2.496 s at 3642 equal
+calls. Different timing scopes must not be presented as interchangeable.
+
+Current interval CPU/tick improves 13.9%, RSS rises ~8.89 MiB. Increased field
+width/class multiplicity is a direct memory mechanism; exact RSS attribution
+requires cache counts and allocation accounting. Correctness/save-load/Tile
+refactors and scheduling fixes are additional interval changes.
+
+3. Sep 08 -> Sep 11: round-trip fields are a proven cost candidate
+---------------------------------------------------------------
+cb7e39f4e (#244) adds building x resource x swim-class full-map round-trip fields,
+seeded with the carry-back cost. Refresh <=120 ticks, propagation capped 128
+tiles beyond cheapest fetch, unused fields freed after 500 ticks. Fields/stamps
+are saved so reload preserves hiring behavior.
+https://github.com/Globulation2/glob2/pull/244
+
+4e00c2b17 (#197) adds task and inn swaps: full teammate scans at hires/bookings,
+plus four fetchers per tick, trade if combined routes save >4 tiles. It also fixes
+resource target ascent after the field changes. #223 (62fdaed03) changes resource
+hiring to subscription-aware Sainte-Lague apportionment and charges loaded
+candidates a five-tile detour. Colonies no longer oversubscribe one resource.
+https://github.com/Globulation2/glob2/pull/197
+https://github.com/Globulation2/glob2/pull/223
+
+IMPORTANT revision of earlier evidence: initial PR197 comments called an
+8-team 512x512 throughput penalty of 13-18% 'swaps' cost. A later controlled
+four-variant study on macOS ARM64 release, four alternated rounds, finds:
+Variant                 Holiday Island 4teams8000ticks   Oazis11teams3000ticks
+master                  1.854 s                          4.588 s
+#244 alone              2.100 (+13.3%)                   5.422 (+18.2%)
+#244 + #197             2.158 (+16.4%)                   5.300 (+15.5%)
+plus read-only probes   2.166 (+16.8%)                   5.330 (+16.2%)
+Thus most measured cost belongs to round-trip gradients; marginal swaps cost
+is small/no measurable Oazis penalty. Later read-only scoring patch does not
+improve throughput on those fixtures; it fixes allocation side effects. The
+merged early diff lacks that later proposed peek* patch. Do not quote the old
+13-18% number as a proven swap-only overhead.
+
+Feature benefit: 48 scenarios (8 maps, 3 AI mixes, 2 seeds), round-trip alone
+median unit/building growth 0% at checkpoints; stacked swaps +6.7/+7.6% units
+and +9.1/+6.7% buildings mid/late. Nicowar subset round-trip +5.3% units/+4.8%
+buildings, stacked +13.8/+12.5%. Human-paced four AINone Petri colonies show
+round-trip +12% deliveries on one saturated 108-worker island, and larger gains
+with swaps. Preserve feature: optimize repeated field construction/scoring,
+not remove better routes or task exchange. Population gains themselves create
+more computational work.
+
+Current interval CPU/tick +93.1%, RSS +8.47 MiB. These features are plausible
+contributors, but historical 13-18% does not account for the whole measured
+93% delta. Autosave serialization amplification matters: every 256 ticks earlier
+headless code serializes all cached fields. Profile solver, hire comparisons,
+field counts/bytes and autosave serialization separately. Other changes include
+unit survival on building destruction, trapped-colony elimination, stats/save
+continuity and presentation/menu assets. Those are not automatically cost-free,
+but menu/render changes should not be blamed for recurring headless CPU without
+execution evidence.
+
+4. Sep 11 -> Sep 14: performance gains include a headless DEFAULT change
+-----------------------------------------------------------------------
+95c6a6071 (#232) adds topology-generation invalidation and changes dirty rebuild
+throttle 25 -> 100 ticks. Structural changes anywhere can stale distant fields;
+resources/immobile-unit transitions are deliberately excluded. Its historical
+cost is explicitly documented, not speculative:
+Oazis11teams8000ticks   rebuilds generation stuck   BFS sec   wall sec
+master                 2906     0          195     2.091     16.73
+25 ticks               12603    9755       1       9.183     +42.6%
+100 ticks (merged)     5296     2480       0       3.860     18.46 (+10.3%)
+200 ticks              4178     1222       57      3.058     +9%
+At 4000 ticks, independently instrumented extra BFS cost +1.83 s explains +1.91 s
+wall delta; ~25% of sim time rebuilding vs ~10% before. Preserve correct routes;
+optimize refresh/repair and collection. The global counter is O(1), but induced
+rebuilds are not. https://github.com/Globulation2/glob2/pull/232
+
+9196f4fdc (#260) moves autosave output to a background writer while still encoding
+on the game thread. Late snapshot sizes 65-160 MB; queued memory remains resident.
+At 1x over 35 seconds, excluding first save: 84MB save stall median52 -> 27.6ms,
+worst102 -> 39.6; 128MB median90 -> 36.4, worst138 -> 47.2. Different full-run
+master stall numbers are not directly comparable to these windows.
+https://github.com/Globulation2/glob2/pull/260
+
+9c3a4ef91 (#289) EXPLICITLY disables autosave for runNoX/runTestGames/structured
+headless. Earlier GameGUIStep saves unconditionally every256ticks at phase79;
+EngineRun calls gui.syncStep while headless. The experiment runner does not
+normalize autosave policy. Therefore Sep11->14 improvement includes removal of
+serialization/I/O, not only improved simulation kernels. #19216KiB save buffering
+and #260 background serialization explain additional earlier changes. Preserve
+this sensible default; diagnostically run older binaries with autosave off to
+separate sim trends from default headless experience.
+https://github.com/Globulation2/glob2/pull/289
+https://github.com/Globulation2/glob2/pull/192
+
+#289 historical 256x256 eight-team8192tick final-save/telemetry-disabled evidence:
+mixedAI CPU23.01 -> 12.15(-47%), eightCortex51.88 -> 22.55(-57%). #191 Cortex
+placement and #286 Maxima ledger greatly improve their selected-AI workloads;
+they are NOT valid direct explanations for eight Nicowar games. #286 also reports
+macOS RSS319.86 -> 1166.66MiB in one long pilot with attribution unresolved: don't
+hide that limitation or extrapolate memory to this experiment.
+
+b28b4333f (#288) adds gameplay event counters and history, AI snapshots and
+PerformanceTelemetry scopes. Source default collector enables unless
+GLOB2_PERF_DISABLE exists; GLOB2_TEAM_TIMELINE gates output separately. Runner
+does not set disable (check inherited environment before claiming it active).
+No sub1% overhead claim was made in original PR because timing was noisy.
+https://github.com/Globulation2/glob2/pull/288
+
+12bf1f3e8/#291 and 3bb33a627/#293 alter Nicowar wheat/wood protection and clearing
+orders (including all eight neighbors). Current mean completion ticks fall
+71338 -> 59050; game duration and computational work both change. New custom
+rules/Maxima/Cabino/generators and telemetry are also integrated in this interval.
+
+5. Sep 14 -> Sep 17: flat CPU with identifiable diagnostic-memory growth
+----------------------------------------------------------------------
+e2def556c (#310) extends sampled team stats at512tick boundaries: blockage,
+health/food bands and natural resource growth within8/16/32tiles. Allocates one
+Uint64 tile mask plus three Uint32 planes of tile x team overlap counts, with
+expanded history. At128x128eightteams, planes alone are1.5MiB plus128KiB mask;
+history/coverage vectors additional. Current RSS rises4.50MiB (+8.20%) with each
+seed's completion ticks unchanged; this is a strong memory-attribution candidate,
+not exact RSS proof. Original six mirrored ABBA/BAAB CPU blocks: fourAI8192ticks
+2.963 -> 2.948s(-0.48%), twelve teams2048ticks4.902 -> 4.891(-0.24%); twelve-team
+RSS +7.80MiB. Tiny negative CPU differences are not proof of negative overhead.
+https://github.com/Globulation2/glob2/pull/310
+
+Most other commits add map generators, landscape picker improvements, Maxima
+tuning and packaging. bcdd1e4ec (#320) improves 49-generator round robin total
+generation82.95 -> 54.94 -> 53.64s at seed77715rounds, exact fingerprints. Fixed
+Playground is loaded from file: don't attribute game TPS gains to generation work.
+#307 computes richer final-map metrics for generation/reporting, not ordinary
+per-tick routing. Larger linked code can still influence process RSS/startup.
+https://github.com/Globulation2/glob2/pull/320
+https://github.com/Globulation2/glob2/pull/307
+
+6. Sep 17 -> Sep 20: strong exact-field optimization candidate
+------------------------------------------------------------
+05207be36 (#341) specializes uniform-cost movement classes0/EVEN, reads weighted
+terrain cost once per settled cell, uses equivalent unsigned relaxation range
+comparison, and preserves queue order, caps and field values.
+https://github.com/Globulation2/glob2/pull/341
+
+Historical primary evidence: real-engine oracle1526cases/2032787cell comparisons;
+55,860 paired complete fields zero differences. macOS ARM64 sampled solver-work
+ratios for256x256eight-player checkpoints30000-33000ticks: Isles0.827,Maze0.839,
+Everglades0.770. Wider128/512sampling27780fields zero differences;128early ratios
+Everglades0.559,Isles0.671,Maze0.856,Arena0.791,only191-340originalobservations each.
+25,215/27,780calls were class0; classes1/2 absent and3/6 underrepresented. These are
+sampled solver-work estimates, NOT universal whole-engine CPU reductions.
+Actual candidate/baseline16games x3000ticks=48000 detailed records matched.
+
+Current interval CPU/tick -20.77%, TPS +25.95%, E2E -20.95%; each seed's end tick
+matches Sep17. This aligns with #341 and is the strongest early causal candidate.
+Still bundled with27other commits: use exact parent/candidate same-checkpoint
+paired tests to quantify attributable gain. Other changes mainly map generators,
+Maxima army development and UI/docs; inactive Maxima tuning is not a Nicowar
+simulation-throughput explanation.
+
+Priority core optimization investigations (preserving features)
+--------------------------------------------------------------
+1. Exact-field gradient kernel and allocation/rebuild accounting across all sizes.
+2. Better cache lifetime/refresh/repair with deterministic publication and saved
+   continuation semantics; record builds, cache hits, bytes and cause separately.
+3. Job/hiring scoring: prove it reads caches without allocation/refresh; efficient
+   stable eligible lists/budgets only if gameplay quality retained and measured.
+4. Diagnostic implementation: default-disabled performance timing, bounded/compressed
+   stat history and compact overlap counters if their required range permits.
+5. Maintain default autosave-off for headless; report old-policy costs separately.
+6. Separate whole-game E2E, fixed-tick sim CPU, unit/building-normalized windows and
+   field-kernel microbenchmarks; preserve determinism/save/replay compatibility.

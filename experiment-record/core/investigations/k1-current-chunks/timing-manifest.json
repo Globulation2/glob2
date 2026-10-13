@@ -1,0 +1,21 @@
+{
+  "plan_only": true,
+  "cases": 540,
+  "fixtures": 18,
+  "repetitions": 10,
+  "iterations": 64,
+  "variants": [
+    "chunk64",
+    "chunk16",
+    "chunk128"
+  ],
+  "cpu": 12,
+  "helper_cpus": [
+    15,
+    31
+  ],
+  "ordering": "ABC/CBA per repetition within each fixture",
+  "oracle_fixture_count": 108,
+  "gate": "All variants plus unchanged scalar64 all-cell output inventory identical; per-invocation selected-fixture heap gate before timer and all-cell equality after every iteration.",
+  "limitations": "Synthetic copied inputs; kernel-only warm timing excludes seed/snapshot/copy/workspace construction/pipeline/GPU and is no game speedup. Allocation counters are separate instrumented binaries. Does not establish generic BuildingGradientSearch partial/resume/settled-layer behavior, save/load, network, SIMDplatform portability. No microtiming launched during preparation."
+}

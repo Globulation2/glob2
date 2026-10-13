@@ -1,0 +1,32 @@
+Static GPU reachability for Nicowar — latest9a08b91f4, no games launched
+
+Frozen8 is NOT an8-bit-gradient variant. The8 names eight local sweeps with frozen one-cell halo per tiled kernel dispatch. Shipping OpenCL kernel uses ushort input/output (OpenCLGradient.cpp216),cap desc[d+4],uint packedcardinal/diagonal costs,each1..65535. It supportsUint16 weighted fields; ushort andweighted terrain are NOT blanket exclusions. Kernel cardinal/diagonal extraction at227,weighted relaxation255–260 andcapthreshold230 preserve fieldcostrepresentation.
+
+Reachable periodically refreshed fields
+MapGradientMaterial.cpp getMaterialGradientSlot lazily allocatesUint16 material fields when requested byunit resourcefetch routing; UnitMovement.cpp648 calls it fordestinationmaterial/swimclass/consumer. This includes ordinaryNicowar colonies' worker economy, not anAI-specificGPUimplementation.
+MapStep.cpp414–473 stagePeriodicGradientPreparation scans ALLOCATED materials/markets/guard/clearfields,atmostONEperiodic job perstep,roundrobin. No allocated fields means no jobs. Material source absent may use a sharedemptyfield,not allocatedperiodic slot. WithMarketsV2disabledordinarynatural fields stillparticipate. Guard/clearfields dependonactualAIzones/allocation.
+MapStep.cpp318–348 configures periodic jobseed+CPUrecovery+ownedGPUasyncwork. preparePendingGradient270–289 projects currentSimulationSnapshot,thenseedspreparedfieldonexecutorworker. GradientPipeline.hexecute127–132 requestsOpenCL, choosesFrozen8 viaBackendSession thenownPropagation handoff ifselected/asyncservice/worker slot available. This is a real sourcepath fromNicowar resourceworkers toGPUpipeline.
+BackendSession.h85–91 eligibility:CompleteField,executorworkerSlot,modeOpenCL,healthysession,readyFrozen8. NoAI-name,type-width,map-size,profitabilityoruniform-onlygate. Mainownerexecution is excluded;N1 thereforeCPUpath. Cold synchronousfullfields requestedonworker mayalsoaccelerate throughGradientPropagation.h79–97 ->tryAcceleratedGradient;owner calls stayCPU.
+OwnedGPUview ownPropagation SnapshotGradient.cpp558–607 validatesterrainqueueparameters,packsminimalcostowner,movesUint16seedbuffer,andsetsbackendfamily. MinimalCosts carriesoriginalswimclass/256costprofiles. Representation can decline whenmodifiedprofilesempty/>256/unprepared,invaliddimensions/ruleindices;smallordinarybuiltin map has noobvious staticrepresentationdisqualifier. Sharedhostbudget/allocationfailurecanstilldecline. Runtime actual admission/readiness isunknown untilcounters.
+CoordinatorGradientDeviceService.cpp135–158 convertsownedfields backintoBackendRequest(ushortdata,limit,grid,costAt,identity,family) andcalls executeOpenCLDevice(...Frozen8). OpenCLGradient.cpp1127–1140 acceptsCompleteField/nonnegativecap/readyhealthyplan;all-already-fixedfields returnhandledwithoutdispatch. Itsushortweightedcostpreparation893–897 validatescardinal/diagonal1..65535;invalidcostcausesrecovery. Batches canhaveup to8differentfieldcostplanes/shapes. Devicecapacity/hostbudget/cancellation/quarantinecanpreventGPUcompletion despiteeligibility.
+
+Building and AI gradient exclusions
+Scheduledbuildinggradient path MapGradientScheduling.cppbuildScheduled82 callsgradient_preparation::buildBuilding andretainedBuildingGradientSearch. BuildingGradientSearch.cpp141/155 expandsCPUbucketlayers. Itsobservablepartialfrontier/depthtarget cannotbe replaced withfullGPUfixedpointwithoutchangingpartialstate/doingextra work. GradientPropagation.h79 commentexplicitlystatesresumedsearchesexpandBucket. Thus shippinglazy/scheduledbuildinggradientsearches doNOT gainFrozen8 merelybyGPUswitch. Full ordinarypropagate callers canGPU, but doNOTinterpretallbuildingjobsasGPUsupported.
+AISharedRuntimeGradients maintainsseparatecontrollerplanningBFS; itisnotautomaticallythisMapperiodicfullfieldGPUbackend. NicowarAIpolls/snapshots,resourcegrowth andmanybuildingsearchesremainCPU. ThereforeGPUon canpayinitializationandworkonlyonaminority oftotalmatchCPU evenwithactualGPUdispatches.
+
+Testable hypotheses; no zero-job claim
+H1: Nicowarperiodicmaterialfields arereachableGPUcandidates;Uint16/weightedtype is notwhyGPUworkwouldbezero.
+H2: Nearinit/tick1caninitializeGPUwithfew/noeligibleperiodicjobs;initializeddriverRSSneednotmeangain. Eagerdeviceinit sourceconfirmedbutactual1tickreadiness/submissionunknown.
+H3: Short8192tick/wholegame maypaycontextcostwithout usefulcompletedGPUfields ifinitializationlate,owner-onlyjobs,alltrivialfields,supersession/cancellation,budgetdeclines/sessionfailures. This remainshypothesis; sourcehasno blanketNicowardisable,andactualGPUjobs cannotbeassertedzero beforestructuredmeasurements.
+H4: GPUon canexecuteperiodicfields successfully butbeinsignificant/sloweroverall duehostseedcopy/readback,snapshotprep,devicepolling/fixeddeadlinewaits,anddominantCPUbuilding/AI/growthwork. Requiredsame-outputsemantics andfixedpublicationcannotbedroppedtoimproveheadline.
+
+Counter interpretation
+- requested_fields>0,selected_fields0: worker-slot/readiness/failedsession gate;checkcpu_reason_owner_excluded/unavailable/failed_session andGPUerror.
+- selected>0,complete0: ownedview admission decline,service fallback,alltrivialhandledfields,cancellation,driver/sessionfailure;checkfallbackreason counters,coordinatorsubmitted/executed anddevice_dispatches/observed/committed.
+- device_dispatches>0,observed/committed0: submissionisnotcompletedwork;failure/cancellation/recoverypossible.
+- GPUcomplete>0 andidenticalper-tickchecksums:actualGPUresultscontribute,butcompareuninstrumentedtimingfornetbenefit.
+- Readiness/statusGPUrequestedtrue aloneprovesneithereligiblejobs noractualdispatches.
+Structuredprobescurrentlyqueuedbyroot collectthese; noadditionalprobe launchedhere.
+
+Exact queuedheap argv
+heap-census-commands.json containsfourcasesmatching-textsymbolicbinaryN4GPUoff/on,tick1/8192,seed1056243202,128Playground8NicowarFFA+idleobserver,isolatedprofiles,cwd/maphash,binaryhash,CPUaffinity12–14,28–30,clearinheritedflags andexplicitdeviceordinal0. heaptrack --help verified --record-only and--output supported; outputsnotcreatedyet. Rootqueuesallgames. 1tick isnear-init,NOT purezerofieldprobe,andstructuredfreshgameslacklegacyobserver;doNOTpooltimingorrawallocationtotalsacrossthosecohorts.

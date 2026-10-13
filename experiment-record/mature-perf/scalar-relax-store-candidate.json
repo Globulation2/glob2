@@ -1,0 +1,48 @@
+{
+  "state": "source_and_actual_assembly_supported_diagnostic_candidate_unimplemented",
+  "candidate": "Skip scalar gradient and queue stores when relaxation does not improve a cell",
+  "source_files_sha256": {
+    "src/field/GradientRelaxation.h": "83313285111feacced544248a38ef7a10535831c56b106058a328d23a978089d",
+    "src/field/GradientBucket.h": "2db5bc52090e0840adc84a40fe17b08ebee4aa594f5bdf4dab04fd6d0afd72ac",
+    "src/field/GradientPropagation.h": "f799de3a669ad0bd0385f446ac11b80d0f7bd646896d4dee40dcede79956240a",
+    "src/map/gradient/BuildingGradientSearch.cpp": "11f0ed7b5ee7ab00561d2730c09aa8fbe2678a97359306d1d40965fd29ed0c5e"
+  },
+  "assembly_sha256": "ff731802967183c196801e80e9e25b440feecd926a6f95b9f5d5558e6fe5c124",
+  "binary_sha256": "7aba6318664aab4fe94ec26a2733e432c1f8898c961fc0ae9d5b5d113ee73ae5",
+  "compiled_hot_function": {
+    "address": "0x12d6b00",
+    "size": 13742,
+    "instructions": 3207,
+    "observed_leaf_share": 0.1874
+  },
+  "code_evidence": [
+    "GradientRelaxation.h relax writes gradient[n]=better?value:g and *end=n even on rejection, then advances cursor only if better.",
+    "Actual accepted release ASM at0x12d7983 cmovb followed0x12d7987 mov ax,(rcx), then unconditional queue index store0x12d799e; similar0x12d79a8/0x12d79ac and scalar wrapped sequences.",
+    "GradientBucket contract explicitly says only cells[0..size) are live; rejected stores beyondsize must never be read."
+  ],
+  "proposed_one_factor": "Replace scalar relax body with if (unsigned(g)-1u < valueLimit) { gradient[n]=value; *end++=uint32_t(n); }. Keep SIMD bulk operation, neighbor sequence, queue reserve/chunk64, sentinels, edge costs and completed-layer publication unchanged.",
+  "correctness_invariants": [
+    "Same strictly improving test including forbidden0/unreachable1/equal/new limit.",
+    "Same order of successful queue entries and final cursor/logicalsize/pending.",
+    "Each neighbor still loads after previous write, preserving thin-torus alias behavior; no prefetch/reorder/grouping.",
+    "No dropped seeds/terrain/swimclass/rules/features; resumed Done checks still whole-layer.",
+    "Unused allocated slots may differ by existing non-observable contract; assert tests compare logicalsize+liveprefix, not inactive scratch garbage."
+  ],
+  "risks": [
+    "Added unpredictable branches can regress eager/open fields or architectures; dominant-function ranking does not measure rejected store fraction or promise gain.",
+    "SSE2 interior uses candidate only for two scalar horizontal relaxations; scalarseams and architecturefallback affect eight; NEONinterior already masksallrows, so benefit may be smaller.",
+    "RuntimeTerrainGradient modified-cost alternative separate and untouched; do not generalize gain to all kernels.",
+    "Prior K1 chunk16/128 and K3FIFO experiments were negative; retain64/FIFO. This is a distinct store-path factor."
+  ],
+  "finite_gate_proposal": [
+    "Root-controlled separate one-factor source clone and same release flags/assets/objects provenance.",
+    "Existing field traversal/scalar-reference oracles across weighted/unweighted, modified costs, masked/unmasked, thin aliases, caps/deferred seeds.",
+    "Building paused/resumed resolve-to-cost/resolve-target exact logicalfrontier+completed-layer/counter/cell output; no cache checkpoint semantics waived.",
+    "Existing strict save/load/replay/native CRC conformance before paired timing.",
+    "Small representative sparse/open/barrier kernels and native bothCPU/GPU strata acrossparticipants1/3/6/wide; regressions preserved, no architecture-universal adoption."
+  ],
+  "limits": [
+    "No patch/build/test/game/profile launched for this candidate.",
+    "Single mature11AI Oazis explicit3 GPUoff observedperiod data ranks opportunity only."
+  ]
+}

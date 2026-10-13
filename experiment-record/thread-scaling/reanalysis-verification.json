@@ -1,0 +1,29 @@
+{
+  "passed": true,
+  "native_launches": 0,
+  "verification": {
+    "passed": true,
+    "mismatches": [],
+    "historical_means_match": true,
+    "scaling_point_estimates_and_bootstrap_match": true,
+    "scope": "Saved scalar recalculation only, not a new performance or determinism experiment; two seeds x three paired blocks remain descriptive"
+  },
+  "inputs": {
+    "historical-playground/runs.csv": "9bbcdb985fe65c0e8ed1e878de394a3918874ac4a5ff2be5b780d3a51889f61c",
+    "historical-playground/summary.json": "a5d88870e5e60d4a0e4af65a2c7acbcfdb85ccadc23eb2e503b78267ea624e4e",
+    "historical-oazis/runs.csv": "9c2070e52b88ba08acb01db1fffe4293abb05b179e7a6e100155b8ed53fa33fe",
+    "historical-oazis/summary.json": "ef74ffb4eb72385a5a58806163418dd3035a55784072648e95916dcb7981c187",
+    "historical-playground/serial-baseline-runs.csv": "3bc41362577620d25f6bcd4f761518409779b3a3242d4fec5995131b4d320d72",
+    "historical-playground/serial-baseline-summary.json": "ae2099accfd16f6f0315b480005e1429ee241e1c15f6abae9617389e4406e0ed",
+    "thread-scaling/scaling-scalars.csv": "2811739677fc15eb32d9528080761b494320da1379376e834b15256b6c0d2ce9",
+    "thread-scaling/scaling-summary.json": "e936a6d26f93b46d58a1346909a6a8c24f7b6174b593e23bf2ef3e6616a66918",
+    "thread-scaling/recompute-scalars.py": "1f5f02644b06f1c53765dabdee52363b6b55f3c2dacfc7e00ae04ab6b14f32fa"
+  },
+  "recomputed_output_sha256": "6802bcfdffd01da16c44231fb079e9550443772c18267f8865e732e7f242c077",
+  "recomputed_output_locally_retained": true,
+  "historical_revision_summaries": 28,
+  "historical_means_checked": 196,
+  "scaling_cells_checked": 60,
+  "scaling_metrics_checked_per_cell": 11,
+  "qualification": "Read-only stdlib reanalysis matches original means, point estimates and deterministic bootstrap intervals within 1e-12 tolerance; no new native measurements, no raw trace archive, no larger sample inference."
+}

@@ -1,0 +1,5003 @@
+{
+  "state": "selected24complete;full45planstillpartial",
+  "selected_jobs": 24,
+  "full_plan_jobs": 45,
+  "groups": {
+    "telemetry-v2/small-ni": {
+      "factor": "telemetry-v2",
+      "layout": "small-ni",
+      "seeds": {
+        "164298751": {
+          "job": "small-ni-164298751-telemetry-v2",
+          "output": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/telemetry-replication/runs/small-ni-164298751-telemetry-v2",
+          "seed": 164298751,
+          "start_tick": 0,
+          "end_tick": 8192,
+          "measured_ticks": 8192,
+          "affinity": [
+            0,
+            1,
+            2,
+            16,
+            17,
+            18
+          ],
+          "metrics": {
+            "simulation_cpu_s": {
+              "paired_log_ratios": [
+                0.0424780898949336,
+                -0.08353937182160705,
+                -0.028803808517152495
+              ],
+              "baseline_values": [
+                1.006553602,
+                1.040708744,
+                1.124911603
+              ],
+              "candidate_values": [
+                1.050231179,
+                0.957301006,
+                1.092972063
+              ],
+              "baseline_median": 1.040708744,
+              "candidate_median": 1.050231179
+            },
+            "simulation_wall_s": {
+              "paired_log_ratios": [
+                0.04210017578373483,
+                -0.10900347037931626,
+                -0.015200280902949623
+              ],
+              "baseline_values": [
+                0.460547848,
+                0.460390331,
+                0.500561348
+              ],
+              "candidate_values": [
+                0.480350925,
+                0.412844581,
+                0.49301021
+              ],
+              "baseline_median": 0.460547848,
+              "candidate_median": 0.480350925
+            },
+            "cpu_s": {
+              "paired_log_ratios": [
+                0.02835451577424002,
+                -0.07935437698835818,
+                -0.026433691803920904
+              ],
+              "baseline_values": [
+                1.3660830000000002,
+                1.4265119999999998,
+                1.4992690000000002
+              ],
+              "candidate_values": [
+                1.405372,
+                1.317687,
+                1.460157
+              ],
+              "baseline_median": 1.4265119999999998,
+              "candidate_median": 1.405372
+            },
+            "wall_s": {
+              "paired_log_ratios": [
+                0.01849840413954116,
+                -0.08984500278980205,
+                -0.017096666199650775
+              ],
+              "baseline_values": [
+                0.820056680124253,
+                0.8462579241022468,
+                0.8750885389745235
+              ],
+              "candidate_values": [
+                0.8353675971738994,
+                0.7735413950867951,
+                0.8602546090260148
+              ],
+              "baseline_median": 0.8462579241022468,
+              "candidate_median": 0.8353675971738994
+            },
+            "peak_rss_bytes": {
+              "paired_log_ratios": [
+                -0.40596810815469825,
+                -0.40684107240535017,
+                -0.39638031441181676
+              ],
+              "baseline_values": [
+                85524480,
+                84897792,
+                85499904
+              ],
+              "candidate_values": [
+                56987648,
+                56520704,
+                57520128
+              ],
+              "baseline_median": 85499904,
+              "candidate_median": 56987648
+            }
+          },
+          "cpu_per_tick_s": {
+            "baseline": [
+              0.00016675817871093752,
+              0.00017413476562499997,
+              0.00018301623535156252
+            ],
+            "candidate": [
+              0.00017155419921875,
+              0.0001608504638671875,
+              0.0001782418212890625
+            ]
+          },
+          "engine_cpu_per_tick_s": {
+            "baseline": [
+              0.00012287031274414064,
+              0.0001270396416015625,
+              0.00013731831091308593
+            ],
+            "candidate": [
+              0.00012820204821777345,
+              0.00011685803295898438,
+              0.00013341944128417968
+            ]
+          },
+          "provenance": {
+            "pass_sha256": "78e7f2482a944996816364e895bf64275c7f3818db1cea4371d5552cdb48ee64",
+            "audit_sha256": "b223cb46de5565afa51bb6c6f73ef0cf2cd7bf75e37ff84c7e29ff0a04985a07",
+            "measurements_sha256": "e1f48457dc124012d674d7e7494909b4b0f320802ced93769e76a94a90baacdb"
+          }
+        },
+        "902381047": {
+          "job": "small-ni-902381047-telemetry-v2",
+          "output": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/telemetry-replication/runs/small-ni-902381047-telemetry-v2",
+          "seed": 902381047,
+          "start_tick": 0,
+          "end_tick": 8192,
+          "measured_ticks": 8192,
+          "affinity": [
+            3,
+            4,
+            5,
+            19,
+            20,
+            21
+          ],
+          "metrics": {
+            "simulation_cpu_s": {
+              "paired_log_ratios": [
+                -0.03791750649007713,
+                -0.010296591986348974,
+                -0.07296664689328011
+              ],
+              "baseline_values": [
+                1.26553582,
+                1.09729241,
+                1.175409686
+              ],
+              "candidate_values": [
+                1.218448221,
+                1.086052006,
+                1.092698264
+              ],
+              "baseline_median": 1.175409686,
+              "candidate_median": 1.092698264
+            },
+            "simulation_wall_s": {
+              "paired_log_ratios": [
+                -0.04273527867559524,
+                0.026396279691104148,
+                -0.11317079807719363
+              ],
+              "baseline_values": [
+                0.57294705,
+                0.475123491,
+                0.548990042
+              ],
+              "candidate_values": [
+                0.548977812,
+                0.487831974,
+                0.490247078
+              ],
+              "baseline_median": 0.548990042,
+              "candidate_median": 0.490247078
+            },
+            "cpu_s": {
+              "paired_log_ratios": [
+                -0.01349672177088006,
+                -0.014139865702738869,
+                -0.06759268659178624
+              ],
+              "baseline_values": [
+                1.621283,
+                1.48536,
+                1.5616079999999999
+              ],
+              "candidate_values": [
+                1.599548,
+                1.464505,
+                1.459543
+              ],
+              "baseline_median": 1.5616079999999999,
+              "candidate_median": 1.464505
+            },
+            "wall_s": {
+              "paired_log_ratios": [
+                0.0014600034596930324,
+                0.0034678839388608998,
+                -0.0870531781279702
+              ],
+              "baseline_values": [
+                0.9287099069915712,
+                0.8634259677492082,
+                0.935205603018403
+              ],
+              "candidate_values": [
+                0.9300668169744313,
+                0.8664254266768694,
+                0.8572359685786068
+              ],
+              "baseline_median": 0.9287099069915712,
+              "candidate_median": 0.8664254266768694
+            },
+            "peak_rss_bytes": {
+              "paired_log_ratios": [
+                -0.4017732093015623,
+                -0.3940801489721943,
+                -0.3969992724339178
+              ],
+              "baseline_values": [
+                85270528,
+                85139456,
+                85516288
+              ],
+              "candidate_values": [
+                57057280,
+                57409536,
+                57495552
+              ],
+              "baseline_median": 85270528,
+              "candidate_median": 57409536
+            }
+          },
+          "cpu_per_tick_s": {
+            "baseline": [
+              0.0001979105224609375,
+              0.000181318359375,
+              0.00019062597656249999
+            ],
+            "candidate": [
+              0.00019525732421875,
+              0.0001787725830078125,
+              0.0001781668701171875
+            ]
+          },
+          "engine_cpu_per_tick_s": {
+            "baseline": [
+              0.00015448435302734375,
+              0.00013394682739257814,
+              0.00014348262768554688
+            ],
+            "candidate": [
+              0.00014873635510253907,
+              0.00013257470776367188,
+              0.0001333860185546875
+            ]
+          },
+          "provenance": {
+            "pass_sha256": "453436b11edcd826d43380c61917880445a311a349284baa4c8932fc626af348",
+            "audit_sha256": "8885689cf54bbc80e2cf5beff8569ddd61741c7b170f10ec0e8f80bb72628e0b",
+            "measurements_sha256": "a866a7015be1cfabe7b17cd1fccc6ab0d4771057d4f264f2036a4c21cd4f6559"
+          }
+        }
+      },
+      "windows": {},
+      "census": [],
+      "metrics": {
+        "simulation_cpu_s": {
+          "ratio": 0.9686606133756316,
+          "percent_change": -3.1339386624368415,
+          "ci95": [
+            0.9386722595404403,
+            1.006907525108981
+          ],
+          "percent_ci95": [
+            -6.132774045955969,
+            0.6907525108980961
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "simulation_wall_s": {
+          "ratio": 0.9653458042829361,
+          "percent_change": -3.465419571706385,
+          "ci95": [
+            0.919597201423254,
+            1.0135408048690437
+          ],
+          "percent_ci95": [
+            -8.040279857674603,
+            1.3540804869043743
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "cpu_s": {
+          "ratio": 0.9716329805568266,
+          "percent_change": -2.8367019443173436,
+          "ci95": [
+            0.9457806440806297,
+            1.0012724746271466
+          ],
+          "percent_ci95": [
+            -5.421935591937032,
+            0.12724746271466358
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "wall_s": {
+          "ratio": 0.9719721836292667,
+          "percent_change": -2.802781637073326,
+          "ci95": [
+            0.9365095521972292,
+            1.0043909509207125
+          ],
+          "percent_ci95": [
+            -6.3490447802770795,
+            0.4390950920712511
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "peak_rss_bytes": {
+          "ratio": 0.6700919385599325,
+          "percent_change": -32.99080614400675,
+          "ci95": [
+            0.6670087473411656,
+            0.6731084310979456
+          ],
+          "percent_ci95": [
+            -33.29912526588345,
+            -32.68915689020544
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        }
+      },
+      "completed_seed_count": 2,
+      "expected_seed_count": 2,
+      "complete": true
+    },
+    "telemetry-v2/rect-mixed": {
+      "factor": "telemetry-v2",
+      "layout": "rect-mixed",
+      "seeds": {
+        "164298751": {
+          "job": "rect-mixed-164298751-telemetry-v2",
+          "output": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/telemetry-replication/runs/rect-mixed-164298751-telemetry-v2",
+          "seed": 164298751,
+          "start_tick": 0,
+          "end_tick": 8192,
+          "measured_ticks": 8192,
+          "affinity": [
+            6,
+            7,
+            8,
+            22,
+            23,
+            24
+          ],
+          "metrics": {
+            "simulation_cpu_s": {
+              "paired_log_ratios": [
+                -0.16200163122861336,
+                -0.0028157997778209304,
+                -0.11419566750966974
+              ],
+              "baseline_values": [
+                2.798987019,
+                2.226587193,
+                2.556744365
+              ],
+              "candidate_values": [
+                2.380370009,
+                2.220326388,
+                2.280829173
+              ],
+              "baseline_median": 2.556744365,
+              "candidate_median": 2.280829173
+            },
+            "simulation_wall_s": {
+              "paired_log_ratios": [
+                -0.21509421752786087,
+                -0.0032008229340912287,
+                -0.13213873700331627
+              ],
+              "baseline_values": [
+                1.337413116,
+                1.012874539,
+                1.205231589
+              ],
+              "candidate_values": [
+                1.078577475,
+                1.00963769,
+                1.056047327
+              ],
+              "baseline_median": 1.205231589,
+              "candidate_median": 1.056047327
+            },
+            "cpu_s": {
+              "paired_log_ratios": [
+                -0.14619944375378396,
+                -0.014313456605789197,
+                -0.14072566438600073
+              ],
+              "baseline_values": [
+                3.199347,
+                2.650458,
+                3.063043
+              ],
+              "candidate_values": [
+                2.764189,
+                2.612791,
+                2.6609499999999997
+              ],
+              "baseline_median": 3.063043,
+              "candidate_median": 2.6609499999999997
+            },
+            "wall_s": {
+              "paired_log_ratios": [
+                -0.17335917951810995,
+                -0.02436378942295427,
+                -0.175640130617663
+              ],
+              "baseline_values": [
+                1.7393405307084322,
+                1.4367247549816966,
+                1.7119663963094354
+              ],
+              "candidate_values": [
+                1.4624993512406945,
+                1.4021436693146825,
+                1.4362025591544807
+              ],
+              "baseline_median": 1.7119663963094354,
+              "candidate_median": 1.4362025591544807
+            },
+            "peak_rss_bytes": {
+              "paired_log_ratios": [
+                -0.46566049075392346,
+                -0.4699309897273844,
+                -0.4831674311200706
+              ],
+              "baseline_values": [
+                101068800,
+                101494784,
+                102481920
+              ],
+              "candidate_values": [
+                63442944,
+                63438848,
+                63213568
+              ],
+              "baseline_median": 101494784,
+              "candidate_median": 63438848
+            }
+          },
+          "cpu_per_tick_s": {
+            "baseline": [
+              0.0003905452880859375,
+              0.000323542236328125,
+              0.0003739066162109375
+            ],
+            "candidate": [
+              0.0003374254150390625,
+              0.0003189442138671875,
+              0.00032482299804687496
+            ]
+          },
+          "engine_cpu_per_tick_s": {
+            "baseline": [
+              0.00034167322009277345,
+              0.0002718001944580078,
+              0.0003121025836181641
+            ],
+            "candidate": [
+              0.0002905725108642578,
+              0.00027103593603515627,
+              0.00027842152990722655
+            ]
+          },
+          "provenance": {
+            "pass_sha256": "edab60ae321b2720c19f1b212160fc71651c0967f96ff251d6d87bb0b8593cff",
+            "audit_sha256": "cc78d501461760a0aed2e91a365ce241bfdb1c5fafd82240a2d7966388ac00df",
+            "measurements_sha256": "c9b9e8a579149eae0452dde0b8c86fc69afb9ecb2005d1c70a9a4a490e80bc60"
+          }
+        },
+        "902381047": {
+          "job": "rect-mixed-902381047-telemetry-v2",
+          "output": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/telemetry-replication/runs/rect-mixed-902381047-telemetry-v2",
+          "seed": 902381047,
+          "start_tick": 0,
+          "end_tick": 8192,
+          "measured_ticks": 8192,
+          "affinity": [
+            9,
+            10,
+            11,
+            25,
+            26,
+            27
+          ],
+          "metrics": {
+            "simulation_cpu_s": {
+              "paired_log_ratios": [
+                -0.08790469950938079,
+                -0.12083714771991028,
+                0.08678611370047351
+              ],
+              "baseline_values": [
+                1.871970851,
+                1.988458171,
+                1.805589994
+              ],
+              "candidate_values": [
+                1.714441047,
+                1.76212841,
+                1.96929088
+              ],
+              "baseline_median": 1.871970851,
+              "candidate_median": 1.76212841
+            },
+            "simulation_wall_s": {
+              "paired_log_ratios": [
+                -0.12535811262307253,
+                -0.17070885233746513,
+                0.008259671729496584
+              ],
+              "baseline_values": [
+                0.853507225,
+                0.916533509,
+                0.841223358
+              ],
+              "candidate_values": [
+                0.752947794,
+                0.772699151,
+                0.848200361
+              ],
+              "baseline_median": 0.853507225,
+              "candidate_median": 0.772699151
+            },
+            "cpu_s": {
+              "paired_log_ratios": [
+                -0.06993450628150552,
+                -0.09917944924909,
+                0.06407695883711144
+              ],
+              "baseline_values": [
+                2.257928,
+                2.3891489999999997,
+                2.202134
+              ],
+              "candidate_values": [
+                2.105416,
+                2.1635660000000003,
+                2.347859
+              ],
+              "baseline_median": 2.257928,
+              "candidate_median": 2.1635660000000003
+            },
+            "wall_s": {
+              "paired_log_ratios": [
+                -0.08022447581102025,
+                -0.11506607932804118,
+                -0.008883696837337455
+              ],
+              "baseline_values": [
+                1.2394776782020926,
+                1.3173074219375849,
+                1.2377033601514995
+              ],
+              "candidate_values": [
+                1.1439252933487296,
+                1.174125649034977,
+                1.2267566742375493
+              ],
+              "baseline_median": 1.2394776782020926,
+              "candidate_median": 1.174125649034977
+            },
+            "peak_rss_bytes": {
+              "paired_log_ratios": [
+                -0.4655316274584484,
+                -0.4744537014195866,
+                -0.46424778419052465
+              ],
+              "baseline_values": [
+                102719488,
+                102580224,
+                103030784
+              ],
+              "candidate_values": [
+                64487424,
+                63827968,
+                64765952
+              ],
+              "baseline_median": 102719488,
+              "candidate_median": 64487424
+            }
+          },
+          "cpu_per_tick_s": {
+            "baseline": [
+              0.0002756259765625,
+              0.00029164416503906247,
+              0.000268815185546875
+            ],
+            "candidate": [
+              0.0002570087890625,
+              0.00026410717773437504,
+              0.0002866038818359375
+            ]
+          },
+          "engine_cpu_per_tick_s": {
+            "baseline": [
+              0.00022851206677246093,
+              0.00024273171032714844,
+              0.00022040893481445312
+            ],
+            "candidate": [
+              0.0002092823543701172,
+              0.00021510356567382814,
+              0.000240391953125
+            ]
+          },
+          "provenance": {
+            "pass_sha256": "add3c97a378daf9254022b715a8e96ac2b063f486545358f13cf96edfdb25f79",
+            "audit_sha256": "cdaa00a858aaacd347f4e38d0ca1b58956166a782832d1185d8d9fc14e179014",
+            "measurements_sha256": "94fcca982f7cfe044ef0dccb24461e106af883d6b57131b6e4106dbf70010ae9"
+          }
+        }
+      },
+      "windows": {},
+      "census": [],
+      "metrics": {
+        "simulation_cpu_s": {
+          "ratio": 0.9353559390359049,
+          "percent_change": -6.464406096409514,
+          "ci95": [
+            0.8779804178311583,
+            1.0177337685361578
+          ],
+          "percent_ci95": [
+            -12.201958216884169,
+            1.7733768536157823
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "simulation_wall_s": {
+          "ratio": 0.8990887651042292,
+          "percent_change": -10.09112348957708,
+          "ci95": [
+            0.8423858084337942,
+            0.9622159351425699
+          ],
+          "percent_ci95": [
+            -15.761419156620581,
+            -3.7784064857430133
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "cpu_s": {
+          "ratio": 0.9345290246314478,
+          "percent_change": -6.547097536855217,
+          "ci95": [
+            0.8831868912573851,
+            1.0097049466470913
+          ],
+          "percent_ci95": [
+            -11.681310874261486,
+            0.9704946647091317
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "wall_s": {
+          "ratio": 0.9082312744621667,
+          "percent_change": -9.176872553783333,
+          "ci95": [
+            0.860340182342133,
+            0.9622597153133573
+          ],
+          "percent_ci95": [
+            -13.965981765786694,
+            -3.77402846866427
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "peak_rss_bytes": {
+          "ratio": 0.6246906756126593,
+          "percent_change": -37.53093243873407,
+          "ci95": [
+            0.6204417504390548,
+            0.6279356075117174
+          ],
+          "percent_ci95": [
+            -37.95582495609452,
+            -37.20643924882826
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        }
+      },
+      "completed_seed_count": 2,
+      "expected_seed_count": 2,
+      "complete": true
+    },
+    "telemetry-v2/rect-cortex": {
+      "factor": "telemetry-v2",
+      "layout": "rect-cortex",
+      "seeds": {
+        "164298751": {
+          "job": "rect-cortex-164298751-telemetry-v2",
+          "output": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/telemetry-replication/runs/rect-cortex-164298751-telemetry-v2",
+          "seed": 164298751,
+          "start_tick": 0,
+          "end_tick": 8192,
+          "measured_ticks": 8192,
+          "affinity": [
+            0,
+            1,
+            2,
+            16,
+            17,
+            18
+          ],
+          "metrics": {
+            "simulation_cpu_s": {
+              "paired_log_ratios": [
+                -0.14167145934110598,
+                -0.08418207258308844,
+                -0.03403024497571596
+              ],
+              "baseline_values": [
+                2.339440269,
+                1.85677678,
+                1.873025939
+              ],
+              "candidate_values": [
+                2.03041507,
+                1.706867805,
+                1.810358745
+              ],
+              "baseline_median": 1.873025939,
+              "candidate_median": 1.810358745
+            },
+            "simulation_wall_s": {
+              "paired_log_ratios": [
+                -0.10103773965285034,
+                -0.08060177929230118,
+                -0.021598885050655423
+              ],
+              "baseline_values": [
+                1.170146166,
+                0.930827272,
+                0.935824578
+              ],
+              "candidate_values": [
+                1.057693855,
+                0.85874494,
+                0.915828534
+              ],
+              "baseline_median": 0.935824578,
+              "candidate_median": 0.915828534
+            },
+            "cpu_s": {
+              "paired_log_ratios": [
+                -0.12585241792612706,
+                -0.07553858949689099,
+                -0.031880872506672625
+              ],
+              "baseline_values": [
+                2.74286,
+                2.248459,
+                2.263048
+              ],
+              "candidate_values": [
+                2.418503,
+                2.08487,
+                2.192038
+              ],
+              "baseline_median": 2.263048,
+              "candidate_median": 2.192038
+            },
+            "wall_s": {
+              "paired_log_ratios": [
+                -0.08479589111633545,
+                -0.06696136999772559,
+                -0.021650763845891752
+              ],
+              "baseline_values": [
+                1.5736666810698807,
+                1.3224849170073867,
+                1.325893553905189
+              ],
+              "candidate_values": [
+                1.44572723377496,
+                1.2368293260224164,
+                1.297495475038886
+              ],
+              "baseline_median": 1.325893553905189,
+              "candidate_median": 1.297495475038886
+            },
+            "peak_rss_bytes": {
+              "paired_log_ratios": [
+                -0.481911399779955,
+                -0.46171610134154595,
+                -0.47260616334109823
+              ],
+              "baseline_values": [
+                95780864,
+                96075776,
+                97390592
+              ],
+              "candidate_values": [
+                59154432,
+                60547072,
+                60710912
+              ],
+              "baseline_median": 96075776,
+              "candidate_median": 60547072
+            }
+          },
+          "cpu_per_tick_s": {
+            "baseline": [
+              0.00033482177734375,
+              0.0002744700927734375,
+              0.0002762509765625
+            ],
+            "candidate": [
+              0.0002952274169921875,
+              0.000254500732421875,
+              0.000267582763671875
+            ]
+          },
+          "engine_cpu_per_tick_s": {
+            "baseline": [
+              0.00028557620471191404,
+              0.00022665732177734374,
+              0.00022864086169433593
+            ],
+            "candidate": [
+              0.0002478534020996094,
+              0.00020835788635253905,
+              0.00022099105773925782
+            ]
+          },
+          "provenance": {
+            "pass_sha256": "c1f9818ceb11996b785752e426e299afde3e7e171d033896c626b5fa9369ebca",
+            "audit_sha256": "e4418047da45e8fc44d9dc415db5f044ffa938bf9db7511c5f7e3c631ee694be",
+            "measurements_sha256": "6aeb301a0e842024d59755282d29c3b157c8a3e284775b127b77f6af4f196193"
+          }
+        },
+        "902381047": {
+          "job": "rect-cortex-902381047-telemetry-v2",
+          "output": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/telemetry-replication/runs/rect-cortex-902381047-telemetry-v2",
+          "seed": 902381047,
+          "start_tick": 0,
+          "end_tick": 8192,
+          "measured_ticks": 8192,
+          "affinity": [
+            3,
+            4,
+            5,
+            19,
+            20,
+            21
+          ],
+          "metrics": {
+            "simulation_cpu_s": {
+              "paired_log_ratios": [
+                0.2912975620003445,
+                -0.023261127706992873,
+                -0.05457838926643788
+              ],
+              "baseline_values": [
+                2.107052196,
+                2.152332594,
+                2.199571141
+              ],
+              "candidate_values": [
+                2.819578679,
+                2.102844714,
+                2.082739337
+              ],
+              "baseline_median": 2.152332594,
+              "candidate_median": 2.102844714
+            },
+            "simulation_wall_s": {
+              "paired_log_ratios": [
+                0.33169140735237646,
+                -0.022637769389798366,
+                -0.057165375737975345
+              ],
+              "baseline_values": [
+                1.061505629,
+                1.083926188,
+                1.109834743
+              ],
+              "candidate_values": [
+                1.479020009,
+                1.059664172,
+                1.04816996
+              ],
+              "baseline_median": 1.083926188,
+              "candidate_median": 1.059664172
+            },
+            "cpu_s": {
+              "paired_log_ratios": [
+                0.3052497677154722,
+                -0.02542361630501531,
+                -0.050796003402762885
+              ],
+              "baseline_values": [
+                2.498813,
+                2.5657330000000003,
+                2.612773
+              ],
+              "candidate_values": [
+                3.390799,
+                2.501325,
+                2.4833689999999997
+              ],
+              "baseline_median": 2.5657330000000003,
+              "candidate_median": 2.501325
+            },
+            "wall_s": {
+              "paired_log_ratios": [
+                0.3441237183778,
+                -0.026259793296315285,
+                -0.04990759360286294
+              ],
+              "baseline_values": [
+                1.4533199626021087,
+                1.496986367739737,
+                1.522994683124125
+              ],
+              "candidate_values": [
+                2.0502757309004664,
+                1.4581874702125788,
+                1.448851232882589
+              ],
+              "baseline_median": 1.496986367739737,
+              "candidate_median": 1.4581874702125788
+            },
+            "peak_rss_bytes": {
+              "paired_log_ratios": [
+                -0.4758346975997417,
+                -0.45648532312449824,
+                -0.472728541864455
+              ],
+              "baseline_values": [
+                97079296,
+                97087488,
+                96935936
+              ],
+              "candidate_values": [
+                60321792,
+                61505536,
+                60420096
+              ],
+              "baseline_median": 97079296,
+              "candidate_median": 60420096
+            }
+          },
+          "cpu_per_tick_s": {
+            "baseline": [
+              0.0003050308837890625,
+              0.00031319982910156253,
+              0.0003189420166015625
+            ],
+            "candidate": [
+              0.0004139158935546875,
+              0.0003053375244140625,
+              0.00030314562988281247
+            ]
+          },
+          "engine_cpu_per_tick_s": {
+            "baseline": [
+              0.00025720852001953127,
+              0.00026273591235351565,
+              0.00026850233654785154
+            ],
+            "candidate": [
+              0.0003441868504638672,
+              0.00025669491137695315,
+              0.0002542406417236328
+            ]
+          },
+          "provenance": {
+            "pass_sha256": "a8a507de125610e0b6d7bd55ffbc439918df3cc982d0b307742dbceef21760e5",
+            "audit_sha256": "620d9824ea1f6ea456210d7742ed08091b4e9af61caa9cbb8afb45d7cba4c737",
+            "measurements_sha256": "e4a0df4b0607e0daf9035d5e66a5d5f5e512517108caa87f09e4dcda1471be02"
+          }
+        }
+      },
+      "windows": {},
+      "census": [],
+      "metrics": {
+        "simulation_cpu_s": {
+          "ratio": 0.9922922363576396,
+          "percent_change": -0.7707763642360366,
+          "ci95": [
+            0.8932160715404535,
+            1.1924447103805627
+          ],
+          "percent_ci95": [
+            -10.678392845954654,
+            19.244471038056265
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "simulation_wall_s": {
+          "ratio": 1.0081412710747044,
+          "percent_change": 0.8141271074704415,
+          "ci95": [
+            0.9190709674305301,
+            1.223936715408182
+          ],
+          "percent_ci95": [
+            -8.092903256946993,
+            22.393671540818193
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "cpu_s": {
+          "ratio": 0.9992932945137024,
+          "percent_change": -0.07067054862975874,
+          "ci95": [
+            0.9042083190491027,
+            1.2051063785607892
+          ],
+          "percent_ci95": [
+            -9.579168095089729,
+            20.510637856078915
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "wall_s": {
+          "ratio": 1.0158828639139492,
+          "percent_change": 1.588286391394922,
+          "ci95": [
+            0.9311831630816867,
+            1.2371123918836073
+          ],
+          "percent_ci95": [
+            -6.881683691831331,
+            23.711239188360732
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "peak_rss_bytes": {
+          "ratio": 0.6248687167509059,
+          "percent_change": -37.5131283249094,
+          "ci95": [
+            0.6204819392309472,
+            0.6297284430461515
+          ],
+          "percent_ci95": [
+            -37.95180607690528,
+            -37.02715569538485
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        }
+      },
+      "completed_seed_count": 2,
+      "expected_seed_count": 2,
+      "complete": true
+    },
+    "telemetry-v2/playground-ni": {
+      "factor": "telemetry-v2",
+      "layout": "playground-ni",
+      "seeds": {
+        "164298751": {
+          "job": "playground-ni-164298751-telemetry-v2",
+          "output": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/telemetry-replication/runs/playground-ni-164298751-telemetry-v2",
+          "seed": 164298751,
+          "start_tick": 0,
+          "end_tick": 20000,
+          "measured_ticks": 20000,
+          "affinity": [
+            6,
+            7,
+            8,
+            22,
+            23,
+            24
+          ],
+          "metrics": {
+            "simulation_cpu_s": {
+              "paired_log_ratios": [
+                -0.05154795695737308,
+                -0.0011350277138186865,
+                -0.007040858131568178
+              ],
+              "baseline_values": [
+                20.254168544,
+                20.149588462,
+                20.148609115
+              ],
+              "candidate_values": [
+                19.236560661,
+                20.126731095,
+                20.007243867
+              ],
+              "baseline_median": 20.149588462,
+              "candidate_median": 20.007243867
+            },
+            "simulation_wall_s": {
+              "paired_log_ratios": [
+                -0.08459179896844932,
+                0.029324254992545453,
+                0.010572809246039302
+              ],
+              "baseline_values": [
+                9.942814369,
+                9.613635062,
+                9.478856653
+              ],
+              "candidate_values": [
+                9.136325836,
+                9.899721889,
+                9.579606462
+              ],
+              "baseline_median": 9.613635062,
+              "candidate_median": 9.579606462
+            },
+            "cpu_s": {
+              "paired_log_ratios": [
+                -0.0504187477905299,
+                -0.0002803025259563717,
+                -0.006616541840510168
+              ],
+              "baseline_values": [
+                20.718009,
+                20.634172,
+                20.642635
+              ],
+              "candidate_values": [
+                19.699329000000002,
+                20.628389,
+                20.506503
+              ],
+              "baseline_median": 20.642635,
+              "candidate_median": 20.506503
+            },
+            "wall_s": {
+              "paired_log_ratios": [
+                -0.08077262950523266,
+                0.029603672346552676,
+                0.010568681003744144
+              ],
+              "baseline_values": [
+                10.406484726816416,
+                10.097925381269306,
+                9.972743397112936
+              ],
+              "candidate_values": [
+                9.598976841196418,
+                10.401329840999097,
+                10.078701070975512
+              ],
+              "baseline_median": 10.097925381269306,
+              "candidate_median": 10.078701070975512
+            },
+            "peak_rss_bytes": {
+              "paired_log_ratios": [
+                -0.26035877508938815,
+                -0.27396837143877184,
+                -0.2692324233340027
+              ],
+              "baseline_values": [
+                155066368,
+                155041792,
+                155590656
+              ],
+              "candidate_values": [
+                119521280,
+                117886976,
+                118865920
+              ],
+              "baseline_median": 155066368,
+              "candidate_median": 118865920
+            }
+          },
+          "cpu_per_tick_s": {
+            "baseline": [
+              0.00103590045,
+              0.0010317085999999999,
+              0.00103213175
+            ],
+            "candidate": [
+              0.00098496645,
+              0.00103141945,
+              0.00102532515
+            ]
+          },
+          "engine_cpu_per_tick_s": {
+            "baseline": [
+              0.0010127084272,
+              0.0010074794231,
+              0.00100743045575
+            ],
+            "candidate": [
+              0.0009618280330499999,
+              0.00100633655475,
+              0.00100036219335
+            ]
+          },
+          "provenance": {
+            "pass_sha256": "0437f46f9843f45d617dc072e78bc5cfed4737ffdd9a57f61102cb628671427c",
+            "audit_sha256": "fe2d27f4302322b456796ec1a354d2ef18cfdf7c4678ef47cdc29f752c44edae",
+            "measurements_sha256": "7c328644a0d110db13c1ca727415b42e98b5e5340f907e78ea4ef726edeb9a4f"
+          }
+        },
+        "902381047": {
+          "job": "playground-ni-902381047-telemetry-v2",
+          "output": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/telemetry-replication/runs/playground-ni-902381047-telemetry-v2",
+          "seed": 902381047,
+          "start_tick": 0,
+          "end_tick": 20000,
+          "measured_ticks": 20000,
+          "affinity": [
+            9,
+            10,
+            11,
+            25,
+            26,
+            27
+          ],
+          "metrics": {
+            "simulation_cpu_s": {
+              "paired_log_ratios": [
+                -0.05156608586675102,
+                -0.04487049880519538,
+                -0.007233635287544975
+              ],
+              "baseline_values": [
+                17.766294358,
+                17.97138701,
+                17.825128254
+              ],
+              "candidate_values": [
+                16.873376099,
+                17.182825779,
+                17.696653009
+              ],
+              "baseline_median": 17.825128254,
+              "candidate_median": 17.182825779
+            },
+            "simulation_wall_s": {
+              "paired_log_ratios": [
+                -0.04509890799755982,
+                -0.04071446458663024,
+                -0.014410212002775353
+              ],
+              "baseline_values": [
+                8.782715955,
+                8.831393816,
+                8.722083434
+              ],
+              "candidate_values": [
+                8.395423921,
+                8.479049766,
+                8.597297617
+              ],
+              "baseline_median": 8.782715955,
+              "candidate_median": 8.479049766
+            },
+            "cpu_s": {
+              "paired_log_ratios": [
+                -0.05308043875962292,
+                -0.04427477677842043,
+                -0.0077330616218709925
+              ],
+              "baseline_values": [
+                18.248028,
+                18.444892,
+                18.296331
+              ],
+              "candidate_values": [
+                17.304673,
+                17.646062999999998,
+                18.15539
+              ],
+              "baseline_median": 18.296331,
+              "candidate_median": 17.646062999999998
+            },
+            "wall_s": {
+              "paired_log_ratios": [
+                -0.048413689415270134,
+                -0.03974838469453711,
+                -0.015054319747708867
+              ],
+              "baseline_values": [
+                9.264477420132607,
+                9.304805568419397,
+                9.193272330798209
+              ],
+              "candidate_values": [
+                8.826634208206087,
+                8.942208637017757,
+                9.055910408962518
+              ],
+              "baseline_median": 9.264477420132607,
+              "candidate_median": 8.942208637017757
+            },
+            "peak_rss_bytes": {
+              "paired_log_ratios": [
+                -0.2772212651963301,
+                -0.2768737948625338,
+                -0.2699702770698234
+              ],
+              "baseline_values": [
+                157233152,
+                155795456,
+                154873856
+              ],
+              "candidate_values": [
+                119164928,
+                118116352,
+                118231040
+              ],
+              "baseline_median": 155795456,
+              "candidate_median": 118231040
+            }
+          },
+          "cpu_per_tick_s": {
+            "baseline": [
+              0.0009124014000000001,
+              0.0009222446,
+              0.0009148165499999999
+            ],
+            "candidate": [
+              0.0008652336500000001,
+              0.0008823031499999999,
+              0.0009077695000000001
+            ]
+          },
+          "engine_cpu_per_tick_s": {
+            "baseline": [
+              0.0008883147178999999,
+              0.0008985693505,
+              0.0008912564126999999
+            ],
+            "candidate": [
+              0.0008436688049500001,
+              0.0008591412889500001,
+              0.00088483265045
+            ]
+          },
+          "provenance": {
+            "pass_sha256": "a98d387a4101358e7e95086d7a08a46ba5be77b86aef34ca418ce8ab61211dca",
+            "audit_sha256": "847df7b2bcd9bb418cccddf04f28eac5fdfb9a513bfd0214b293f9d9a6fb8d80",
+            "measurements_sha256": "dc89906fd3a33e47adcd64c25c5bc098399e2abd8e8178a4b9c9de7838e48bdd"
+          }
+        }
+      },
+      "windows": {},
+      "census": [],
+      "metrics": {
+        "simulation_cpu_s": {
+          "ratio": 0.9731351133515882,
+          "percent_change": -2.68648866484118,
+          "ci95": [
+            0.9539897410967226,
+            0.9938659489414079
+          ],
+          "percent_ci95": [
+            -4.601025890327737,
+            -0.6134051058592105
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "simulation_wall_s": {
+          "ratio": 0.9761362975212103,
+          "percent_change": -2.386370247878966,
+          "ci95": [
+            0.9485030605394819,
+            1.0072390814208065
+          ],
+          "percent_ci95": [
+            -5.149693946051814,
+            0.7239081420806537
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "cpu_s": {
+          "ratio": 0.9732957252727416,
+          "percent_change": -2.670427472725845,
+          "ci95": [
+            0.953887062716107,
+            0.9938999196558561
+          ],
+          "percent_ci95": [
+            -4.611293728389299,
+            -0.6100080344143888
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "wall_s": {
+          "ratio": 0.9763155406214835,
+          "percent_change": -2.3684459378516487,
+          "ci95": [
+            0.9509198249830234,
+            1.0080674917216526
+          ],
+          "percent_ci95": [
+            -4.908017501697659,
+            0.8067491721652553
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "peak_rss_bytes": {
+          "ratio": 0.7624099942225065,
+          "percent_change": -23.759000577749344,
+          "ci95": [
+            0.758803242925419,
+            0.7673627835047252
+          ],
+          "percent_ci95": [
+            -24.1196757074581,
+            -23.26372164952748
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        }
+      },
+      "completed_seed_count": 2,
+      "expected_seed_count": 2,
+      "complete": true
+    },
+    "telemetry-v2/river-cortex": {
+      "factor": "telemetry-v2",
+      "layout": "river-cortex",
+      "seeds": {
+        "164298751": {
+          "job": "river-cortex-164298751-telemetry-v2",
+          "output": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/telemetry-replication/runs/river-cortex-164298751-telemetry-v2",
+          "seed": 164298751,
+          "start_tick": 0,
+          "end_tick": 8192,
+          "measured_ticks": 8192,
+          "affinity": [
+            0,
+            1,
+            2,
+            16,
+            17,
+            18
+          ],
+          "metrics": {
+            "simulation_cpu_s": {
+              "paired_log_ratios": [
+                -0.010946275714050128,
+                -0.002266071689871525,
+                -0.03539451560915497
+              ],
+              "baseline_values": [
+                4.681038658,
+                5.034950894,
+                5.02461437
+              ],
+              "candidate_values": [
+                4.630078141,
+                5.023554252,
+                4.849881119
+              ],
+              "baseline_median": 5.02461437,
+              "candidate_median": 4.849881119
+            },
+            "simulation_wall_s": {
+              "paired_log_ratios": [
+                -0.005553682908271785,
+                -0.005776429209054674,
+                -0.03695319725075231
+              ],
+              "baseline_values": [
+                2.154273359,
+                2.326478495,
+                2.32425248
+              ],
+              "candidate_values": [
+                2.142342369,
+                2.313078496,
+                2.23993148
+              ],
+              "baseline_median": 2.32425248,
+              "candidate_median": 2.23993148
+            },
+            "cpu_s": {
+              "paired_log_ratios": [
+                -0.013801217552577709,
+                -0.005759152042198736,
+                -0.033978425011632944
+              ],
+              "baseline_values": [
+                5.064489,
+                5.425243,
+                5.423819
+              ],
+              "candidate_values": [
+                4.995073,
+                5.394088,
+                5.242622
+              ],
+              "baseline_median": 5.423819,
+              "candidate_median": 5.242622
+            },
+            "wall_s": {
+              "paired_log_ratios": [
+                -0.012038872740835134,
+                -0.012270369232142916,
+                -0.033889828245695974
+              ],
+              "baseline_values": [
+                2.537752717733383,
+                2.7167619690299034,
+                2.7234849841333926
+              ],
+              "candidate_values": [
+                2.507384203840047,
+                2.6836299831047654,
+                2.632733015809208
+              ],
+              "baseline_median": 2.7167619690299034,
+              "candidate_median": 2.632733015809208
+            },
+            "peak_rss_bytes": {
+              "paired_log_ratios": [
+                -0.4208034511968343,
+                -0.416645598592995,
+                -0.42196833425701596
+              ],
+              "baseline_values": [
+                102256640,
+                102416384,
+                102100992
+              ],
+              "candidate_values": [
+                67133440,
+                67518464,
+                66953216
+              ],
+              "baseline_median": 102256640,
+              "candidate_median": 67133440
+            }
+          },
+          "cpu_per_tick_s": {
+            "baseline": [
+              0.0006182237548828125,
+              0.0006622611083984375,
+              0.0006620872802734375
+            ],
+            "candidate": [
+              0.0006097501220703125,
+              0.0006584580078125,
+              0.000639968505859375
+            ]
+          },
+          "engine_cpu_per_tick_s": {
+            "baseline": [
+              0.0005714158518066407,
+              0.0006146180290527343,
+              0.0006133562463378906
+            ],
+            "candidate": [
+              0.0005651950855712891,
+              0.0006132268374023438,
+              0.0005920265037841797
+            ]
+          },
+          "provenance": {
+            "pass_sha256": "41f21da1056c604e839ee038976cad6179a9ce8f2b8734fb88dd69465c2a830b",
+            "audit_sha256": "98688a97844ba8ca807ca03d0ff4efa25b11afc69800d76730137d9ab92ef2a6",
+            "measurements_sha256": "32ae1e98660602e94ef93999b410c3574eb3c0e4927b1f2e3697b89187fe4c97"
+          }
+        },
+        "902381047": {
+          "job": "river-cortex-902381047-telemetry-v2",
+          "output": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/telemetry-replication/runs/river-cortex-902381047-telemetry-v2",
+          "seed": 902381047,
+          "start_tick": 0,
+          "end_tick": 8192,
+          "measured_ticks": 8192,
+          "affinity": [
+            3,
+            4,
+            5,
+            19,
+            20,
+            21
+          ],
+          "metrics": {
+            "simulation_cpu_s": {
+              "paired_log_ratios": [
+                -0.0455154797051982,
+                -0.024891376271667362,
+                -0.016634040420465967
+              ],
+              "baseline_values": [
+                6.12125199,
+                6.10493088,
+                5.785246997
+              ],
+              "candidate_values": [
+                5.848885729,
+                5.954846402,
+                5.689810909
+              ],
+              "baseline_median": 6.10493088,
+              "candidate_median": 5.848885729
+            },
+            "simulation_wall_s": {
+              "paired_log_ratios": [
+                -0.051622587485394694,
+                -0.025962078371572096,
+                -0.02876987646369919
+              ],
+              "baseline_values": [
+                2.70473582,
+                2.693130099,
+                2.578259865
+              ],
+              "candidate_values": [
+                2.56865305,
+                2.624110665,
+                2.505140508
+              ],
+              "baseline_median": 2.693130099,
+              "candidate_median": 2.56865305
+            },
+            "cpu_s": {
+              "paired_log_ratios": [
+                -0.04377948149118014,
+                -0.025344725272277303,
+                -0.012676892984998118
+              ],
+              "baseline_values": [
+                6.513483,
+                6.511964,
+                6.184864999999999
+              ],
+              "candidate_values": [
+                6.234478,
+                6.348993999999999,
+                6.106955
+              ],
+              "baseline_median": 6.511964,
+              "candidate_median": 6.234478
+            },
+            "wall_s": {
+              "paired_log_ratios": [
+                -0.04720721277952018,
+                -0.026783654167963356,
+                -0.018862052928746452
+              ],
+              "baseline_values": [
+                3.0970825301483274,
+                3.100185868795961,
+                2.977913694921881
+              ],
+              "candidate_values": [
+                2.9542751843109727,
+                3.018253682181239,
+                2.9222705508582294
+              ],
+              "baseline_median": 3.0970825301483274,
+              "candidate_median": 2.9542751843109727
+            },
+            "peak_rss_bytes": {
+              "paired_log_ratios": [
+                -0.4097551533783621,
+                -0.41996434718595893,
+                -0.43061862905220255
+              ],
+              "baseline_values": [
+                102379520,
+                103149568,
+                103555072
+              ],
+              "candidate_values": [
+                67960832,
+                67776512,
+                67321856
+              ],
+              "baseline_median": 103149568,
+              "candidate_median": 67776512
+            }
+          },
+          "cpu_per_tick_s": {
+            "baseline": [
+              0.0007951029052734375,
+              0.00079491748046875,
+              0.0007549884033203124
+            ],
+            "candidate": [
+              0.000761044677734375,
+              0.0007750236816406249,
+              0.0007454779052734375
+            ]
+          },
+          "engine_cpu_per_tick_s": {
+            "baseline": [
+              0.0007472231433105469,
+              0.0007452308203125,
+              0.0007062069088134765
+            ],
+            "candidate": [
+              0.0007139753087158203,
+              0.0007269099611816407,
+              0.0006945569957275391
+            ]
+          },
+          "provenance": {
+            "pass_sha256": "782f421f4592771028edf06a4bb5b010cc14cd1077c2e3f81593a1f0c84c20cf",
+            "audit_sha256": "c500e7d593f59e8d775446399ef3b97051170167548ef1d5c2988b306a8b8a55",
+            "measurements_sha256": "79c0824ae5df32f6385a8e165ff1a3bb530cd55eecebd77d6592f1dbed205774"
+          }
+        }
+      },
+      "windows": {},
+      "census": [],
+      "metrics": {
+        "simulation_cpu_s": {
+          "ratio": 0.9776456849636547,
+          "percent_change": -2.235431503634533,
+          "ci95": [
+            0.9647480177181085,
+            0.9908083244259379
+          ],
+          "percent_ci95": [
+            -3.5251982281891525,
+            -0.9191675574062086
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "simulation_wall_s": {
+          "ratio": 0.9745563128688579,
+          "percent_change": -2.544368713114209,
+          "ci95": [
+            0.9578452155737787,
+            0.9892343096642663
+          ],
+          "percent_ci95": [
+            -4.215478442622134,
+            -1.0765690335733713
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "cpu_s": {
+          "ratio": 0.9776958500745012,
+          "percent_change": -2.2304149925498784,
+          "ci95": [
+            0.966028344196529,
+            0.9887346072652177
+          ],
+          "percent_ci95": [
+            -3.3971655803470946,
+            -1.1265392734782331
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "wall_s": {
+          "ratio": 0.9751389242907353,
+          "percent_change": -2.4861075709264657,
+          "ci95": [
+            0.9629451500657364,
+            0.9845923037330004
+          ],
+          "percent_ci95": [
+            -3.7054849934263556,
+            -1.540769626699956
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "peak_rss_bytes": {
+          "ratio": 0.6570735935221989,
+          "percent_change": -34.29264064778012,
+          "ci95": [
+            0.6535307651879338,
+            0.6604328997377746
+          ],
+          "percent_ci95": [
+            -34.64692348120661,
+            -33.95671002622254
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        }
+      },
+      "completed_seed_count": 2,
+      "expected_seed_count": 2,
+      "complete": true
+    },
+    "telemetry-v2/isles-mixed": {
+      "factor": "telemetry-v2",
+      "layout": "isles-mixed",
+      "seeds": {
+        "164298751": {
+          "job": "isles-mixed-164298751-telemetry-v2",
+          "output": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/telemetry-replication/runs/isles-mixed-164298751-telemetry-v2",
+          "seed": 164298751,
+          "start_tick": 0,
+          "end_tick": 8192,
+          "measured_ticks": 8192,
+          "affinity": [
+            6,
+            7,
+            8,
+            22,
+            23,
+            24
+          ],
+          "metrics": {
+            "simulation_cpu_s": {
+              "paired_log_ratios": [
+                -0.006804536977652916,
+                0.07471554044875424,
+                0.09581538078771629
+              ],
+              "baseline_values": [
+                23.365472847,
+                26.497632302,
+                24.535433685
+              ],
+              "candidate_values": [
+                23.207021329,
+                28.553254493,
+                27.002615356
+              ],
+              "baseline_median": 24.535433685,
+              "candidate_median": 27.002615356
+            },
+            "simulation_wall_s": {
+              "paired_log_ratios": [
+                -0.006837023245582397,
+                0.09356361454364125,
+                0.09255829887685083
+              ],
+              "baseline_values": [
+                9.105456035,
+                10.080331519,
+                9.411104159
+              ],
+              "candidate_values": [
+                9.043414153,
+                11.069015021,
+                10.323765675
+              ],
+              "baseline_median": 9.411104159,
+              "candidate_median": 10.323765675
+            },
+            "cpu_s": {
+              "paired_log_ratios": [
+                -0.007230952102024425,
+                0.07303513281570441,
+                0.09146108419395432
+              ],
+              "baseline_values": [
+                23.936442999999997,
+                27.063563,
+                25.129896
+              ],
+              "candidate_values": [
+                23.763983999999997,
+                29.114124,
+                27.53669
+              ],
+              "baseline_median": 25.129896,
+              "candidate_median": 27.53669
+            },
+            "wall_s": {
+              "paired_log_ratios": [
+                -0.007883558092551325,
+                0.08839897862846072,
+                0.08173232603438182
+              ],
+              "baseline_values": [
+                9.676488328259438,
+                10.646020048297942,
+                10.005492853932083
+              ],
+              "candidate_values": [
+                9.600503080990165,
+                11.62996662221849,
+                10.857613658998162
+              ],
+              "baseline_median": 10.005492853932083,
+              "candidate_median": 10.857613658998162
+            },
+            "peak_rss_bytes": {
+              "paired_log_ratios": [
+                -0.15945426886911143,
+                -0.13761394764236967,
+                -0.15827686177874078
+              ],
+              "baseline_values": [
+                238243840,
+                234962944,
+                236912640
+              ],
+              "candidate_values": [
+                203128832,
+                204754944,
+                202231808
+              ],
+              "baseline_median": 236912640,
+              "candidate_median": 203128832
+            }
+          },
+          "cpu_per_tick_s": {
+            "baseline": [
+              0.002921929077148437,
+              0.0033036575927734373,
+              0.0030676142578125
+            ],
+            "candidate": [
+              0.0029008769531249996,
+              0.00355397021484375,
+              0.003361412353515625
+            ]
+          },
+          "engine_cpu_per_tick_s": {
+            "baseline": [
+              0.0028522305721435546,
+              0.0032345742556152343,
+              0.0029950480572509767
+            ],
+            "candidate": [
+              0.0028328883458251953,
+              0.003485504698852539,
+              0.0032962176948242187
+            ]
+          },
+          "provenance": {
+            "pass_sha256": "23b1a30554e4659a7cf6bac9716f3f7d6c991f0a0091650dcb1a0a49ad780e4a",
+            "audit_sha256": "b5ac51bc2b9a815d548d0dfc4543875fde7dd0ad46c3647744c157600378274a",
+            "measurements_sha256": "681ab5714178531d5285e00cb378e28b36c449d7a16ed38ea3b78e6acb146b33"
+          }
+        },
+        "902381047": {
+          "job": "isles-mixed-902381047-telemetry-v2",
+          "output": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/telemetry-replication/runs/isles-mixed-902381047-telemetry-v2",
+          "seed": 902381047,
+          "start_tick": 0,
+          "end_tick": 8192,
+          "measured_ticks": 8192,
+          "affinity": [
+            9,
+            10,
+            11,
+            25,
+            26,
+            27
+          ],
+          "metrics": {
+            "simulation_cpu_s": {
+              "paired_log_ratios": [
+                -0.05680688008250814,
+                0.002146749526004516,
+                0.02179460256482194
+              ],
+              "baseline_values": [
+                21.982263093,
+                21.54758555,
+                21.161536148
+              ],
+              "candidate_values": [
+                20.768325739,
+                21.593892506,
+                21.627806045
+              ],
+              "baseline_median": 21.54758555,
+              "candidate_median": 21.593892506
+            },
+            "simulation_wall_s": {
+              "paired_log_ratios": [
+                -0.046277903321036276,
+                0.007104502475042915,
+                0.019992362561572066
+              ],
+              "baseline_values": [
+                8.896657055,
+                8.772039037,
+                8.642027995
+              ],
+              "candidate_values": [
+                8.494319883,
+                8.834581915,
+                8.816541205
+              ],
+              "baseline_median": 8.772039037,
+              "candidate_median": 8.816541205
+            },
+            "cpu_s": {
+              "paired_log_ratios": [
+                -0.055006497848457715,
+                0.0008862936789028348,
+                0.023447889039533175
+              ],
+              "baseline_values": [
+                22.514059,
+                22.101384,
+                21.680381
+              ],
+              "candidate_values": [
+                21.309084000000002,
+                22.120981,
+                22.194747
+              ],
+              "baseline_median": 22.101384,
+              "candidate_median": 22.120981
+            },
+            "wall_s": {
+              "paired_log_ratios": [
+                -0.04262769100969023,
+                0.0038426526246481845,
+                0.024038723841047507
+              ],
+              "baseline_values": [
+                9.428462424315512,
+                9.325794026721269,
+                9.16081992071122
+              ],
+              "candidate_values": [
+                9.034994730725884,
+                9.361698754131794,
+                9.383702514693141
+              ],
+              "baseline_median": 9.325794026721269,
+              "candidate_median": 9.361698754131794
+            },
+            "peak_rss_bytes": {
+              "paired_log_ratios": [
+                -0.14830924896757827,
+                -0.15923177915996242,
+                -0.16021845160281337
+              ],
+              "baseline_values": [
+                232235008,
+                232484864,
+                233709568
+              ],
+              "candidate_values": [
+                200224768,
+                198262784,
+                199110656
+              ],
+              "baseline_median": 232484864,
+              "candidate_median": 199110656
+            }
+          },
+          "cpu_per_tick_s": {
+            "baseline": [
+              0.0027482982177734375,
+              0.0026979228515625,
+              0.0026465308837890626
+            ],
+            "candidate": [
+              0.0026012065429687503,
+              0.0027003150634765626,
+              0.0027093197021484374
+            ]
+          },
+          "engine_cpu_per_tick_s": {
+            "baseline": [
+              0.0026833817252197266,
+              0.0026303205017089845,
+              0.002583195330566406
+            ],
+            "candidate": [
+              0.0025351960130615236,
+              0.002635973206298828,
+              0.002640113042602539
+            ]
+          },
+          "provenance": {
+            "pass_sha256": "7ccae3bd0c9e837a10ceca8f14528c470aebaa6c69e0ed05be5b9a874c0d905d",
+            "audit_sha256": "e15fee2d10d3f5771babcbf6eac73f4a4a8ef9f9e7649ed501c466fedb2f2139",
+            "measurements_sha256": "c7af8d85845ab9b4298944e1f96821f84fa4e2613b0e9c717077b1ca36da825c"
+          }
+        }
+      },
+      "windows": {},
+      "census": [],
+      "metrics": {
+        "simulation_cpu_s": {
+          "ratio": 1.0220497224596417,
+          "percent_change": 2.204972245964165,
+          "ci95": [
+            0.9698572474747383,
+            1.0780948127782357
+          ],
+          "percent_ci95": [
+            -3.0142752525261662,
+            7.809481277823571
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "simulation_wall_s": {
+          "ratio": 1.0270431804743556,
+          "percent_change": 2.704318047435561,
+          "ci95": [
+            0.9761023661744109,
+            1.079677755742301
+          ],
+          "percent_ci95": [
+            -2.389763382558907,
+            7.967775574230096
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "cpu_s": {
+          "ratio": 1.0213229788559128,
+          "percent_change": 2.1322978855912833,
+          "ci95": [
+            0.9715572955252084,
+            1.074592392147997
+          ],
+          "percent_ci95": [
+            -2.844270447479158,
+            7.4592392147996955
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "wall_s": {
+          "ratio": 1.024888239492688,
+          "percent_change": 2.4888239492687925,
+          "ci95": [
+            0.9798012316598844,
+            1.0738397543183602
+          ],
+          "percent_ci95": [
+            -2.019876834011558,
+            7.383975431836021
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "peak_rss_bytes": {
+          "ratio": 0.8573999701180366,
+          "percent_change": -14.26000298819634,
+          "ci95": [
+            0.8525907018826561,
+            0.865113942996415
+          ],
+          "percent_ci95": [
+            -14.740929811734393,
+            -13.488605700358502
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        }
+      },
+      "completed_seed_count": 2,
+      "expected_seed_count": 2,
+      "complete": true
+    },
+    "telemetry-v2/oazis-ni": {
+      "factor": "telemetry-v2",
+      "layout": "oazis-ni",
+      "seeds": {
+        "164298751": {
+          "job": "oazis-ni-164298751-telemetry-v2",
+          "output": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/telemetry-replication/runs/oazis-ni-164298751-telemetry-v2",
+          "seed": 164298751,
+          "start_tick": 0,
+          "end_tick": 8192,
+          "measured_ticks": 8192,
+          "affinity": [
+            0,
+            1,
+            2,
+            16,
+            17,
+            18
+          ],
+          "metrics": {
+            "simulation_cpu_s": {
+              "paired_log_ratios": [
+                0.005151066462609642,
+                -0.009540124364866282,
+                -0.007963627705050203
+              ],
+              "baseline_values": [
+                18.512957809,
+                18.411700329,
+                18.939420268
+              ],
+              "candidate_values": [
+                18.608565314,
+                18.236885621,
+                18.789192748
+              ],
+              "baseline_median": 18.512957809,
+              "candidate_median": 18.608565314
+            },
+            "simulation_wall_s": {
+              "paired_log_ratios": [
+                0.009369502515531402,
+                -0.008180882418954078,
+                -0.005244631225565881
+              ],
+              "baseline_values": [
+                8.029305604,
+                7.978368908,
+                8.166134579
+              ],
+              "candidate_values": [
+                8.104889743,
+                7.913365067,
+                8.123418328
+              ],
+              "baseline_median": 8.029305604,
+              "candidate_median": 8.104889743
+            },
+            "cpu_s": {
+              "paired_log_ratios": [
+                0.006962129979467746,
+                -0.012323431119994887,
+                -0.007756887520011192
+              ],
+              "baseline_values": [
+                19.075858999999998,
+                19.036385000000003,
+                19.530909
+              ],
+              "candidate_values": [
+                19.209131,
+                18.803231,
+                19.379996000000002
+              ],
+              "baseline_median": 19.075858999999998,
+              "candidate_median": 19.209131
+            },
+            "wall_s": {
+              "paired_log_ratios": [
+                0.013108474767392733,
+                -0.014428239286595083,
+                -0.004990832059356716
+              ],
+              "baseline_values": [
+                8.59222004096955,
+                8.603128758259118,
+                8.757610403932631
+              ],
+              "candidate_values": [
+                8.705592386424541,
+                8.479891940951347,
+                8.714011528994888
+              ],
+              "baseline_median": 8.603128758259118,
+              "candidate_median": 8.705592386424541
+            },
+            "peak_rss_bytes": {
+              "paired_log_ratios": [
+                -0.15545280971988784,
+                -0.161707064410979,
+                -0.16126432445383496
+              ],
+              "baseline_values": [
+                239747072,
+                240586752,
+                241057792
+              ],
+              "candidate_values": [
+                205230080,
+                204664832,
+                205156352
+              ],
+              "baseline_median": 240586752,
+              "candidate_median": 205156352
+            }
+          },
+          "cpu_per_tick_s": {
+            "baseline": [
+              0.002328596069335937,
+              0.002323777465820313,
+              0.0023841441650390626
+            ],
+            "candidate": [
+              0.0023448646240234374,
+              0.0022953162841796875,
+              0.0023657221679687502
+            ]
+          },
+          "engine_cpu_per_tick_s": {
+            "baseline": [
+              0.0022598825450439453,
+              0.0022475220128173826,
+              0.0023119409506835937
+            ],
+            "candidate": [
+              0.0022715533830566406,
+              0.0022261823267822264,
+              0.002293602630371094
+            ]
+          },
+          "provenance": {
+            "pass_sha256": "169ebe8975aa8df86f31de573f4f6e5a54935d61f519c850b40801785e0bb61d",
+            "audit_sha256": "66ae7f616276cea3f4978a74f8b07acd5438fad77bf27da5de2fd0344f57cfd7",
+            "measurements_sha256": "794fe137bd23900b6eda0c147bffa054652e8ddc10904db530ecf8eca5b5f13e"
+          }
+        },
+        "902381047": {
+          "job": "oazis-ni-902381047-telemetry-v2",
+          "output": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/telemetry-replication/runs/oazis-ni-902381047-telemetry-v2",
+          "seed": 902381047,
+          "start_tick": 0,
+          "end_tick": 8192,
+          "measured_ticks": 8192,
+          "affinity": [
+            3,
+            4,
+            5,
+            19,
+            20,
+            21
+          ],
+          "metrics": {
+            "simulation_cpu_s": {
+              "paired_log_ratios": [
+                -0.056527192964551325,
+                0.0323116642980416,
+                0.054583690139541056
+              ],
+              "baseline_values": [
+                23.304010255,
+                22.535004441,
+                23.033161049
+              ],
+              "candidate_values": [
+                22.023240161,
+                23.275039436,
+                24.325341145
+              ],
+              "baseline_median": 23.033161049,
+              "candidate_median": 23.275039436
+            },
+            "simulation_wall_s": {
+              "paired_log_ratios": [
+                -0.04723398050730575,
+                0.024020869146513732,
+                0.030672797437822714
+              ],
+              "baseline_values": [
+                10.210717979,
+                9.999255758,
+                10.270243397
+              ],
+              "candidate_values": [
+                9.739638192,
+                10.242354606,
+                10.590141497
+              ],
+              "baseline_median": 10.210717979,
+              "candidate_median": 10.242354606
+            },
+            "cpu_s": {
+              "paired_log_ratios": [
+                -0.05824549461855259,
+                0.029865311836208438,
+                0.05247358530422472
+              ],
+              "baseline_values": [
+                23.936332,
+                23.179268999999998,
+                23.664344
+              ],
+              "candidate_values": [
+                22.581974,
+                23.881966000000002,
+                24.939254000000002
+              ],
+              "baseline_median": 23.664344,
+              "candidate_median": 23.881966000000002
+            },
+            "wall_s": {
+              "paired_log_ratios": [
+                -0.051497047918974706,
+                0.019147904412873146,
+                0.027372999694492684
+              ],
+              "baseline_values": [
+                10.842929728794843,
+                10.643439827021211,
+                10.90143456403166
+              ],
+              "candidate_values": [
+                10.298684635199606,
+                10.849203076213598,
+                11.203961169812828
+              ],
+              "baseline_median": 10.842929728794843,
+              "candidate_median": 10.849203076213598
+            },
+            "peak_rss_bytes": {
+              "paired_log_ratios": [
+                -0.1808887056581041,
+                -0.18706612782471166,
+                -0.18329485072752083
+              ],
+              "baseline_values": [
+                220528640,
+                221184000,
+                220626944
+              ],
+              "candidate_values": [
+                184037376,
+                183447552,
+                183676928
+              ],
+              "baseline_median": 220626944,
+              "candidate_median": 183676928
+            }
+          },
+          "cpu_per_tick_s": {
+            "baseline": [
+              0.00292191552734375,
+              0.0028295006103515622,
+              0.0028887138671875
+            ],
+            "candidate": [
+              0.002756588623046875,
+              0.0029152790527343752,
+              0.0030443425292968752
+            ]
+          },
+          "engine_cpu_per_tick_s": {
+            "baseline": [
+              0.002844727814331055,
+              0.002750855034301758,
+              0.002811665167114258
+            ],
+            "candidate": [
+              0.0026883838087158204,
+              0.0028411913374023438,
+              0.0029694019952392577
+            ]
+          },
+          "provenance": {
+            "pass_sha256": "a65862197e4623164fe9fcd50b5df8320152d698003de3568a3c3eb0517f9b5c",
+            "audit_sha256": "0a1a57c14c89dd64828797330e93c5af62abdfdb56b493e1c63cc5ba85b5e7fe",
+            "measurements_sha256": "1eb9a34b67a4f44704b4fa2c9096b026669af3284051751fabfb981daa316325"
+          }
+        }
+      },
+      "windows": {},
+      "census": [],
+      "metrics": {
+        "simulation_cpu_s": {
+          "ratio": 1.003007091567219,
+          "percent_change": 0.30070915672189,
+          "ci95": [
+            0.9734447200346907,
+            1.0328822603890326
+          ],
+          "percent_ci95": [
+            -2.6555279965309264,
+            3.2882260389032636
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "simulation_wall_s": {
+          "ratio": 1.0005674400912585,
+          "percent_change": 0.05674400912585309,
+          "ci95": [
+            0.9778747259369556,
+            1.0179632736839344
+          ],
+          "percent_ci95": [
+            -2.212527406304443,
+            1.7963273683934355
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "cpu_s": {
+          "ratio": 1.0018308763213155,
+          "percent_change": 0.1830876321315511,
+          "ci95": [
+            0.9715564143714026,
+            1.0307146120060864
+          ],
+          "percent_ci95": [
+            -2.844358562859739,
+            3.0714612006086384
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "wall_s": {
+          "ratio": 0.9981206448053483,
+          "percent_change": -0.1879355194651655,
+          "ci95": [
+            0.9737722022748042,
+            1.017653043985988
+          ],
+          "percent_ci95": [
+            -2.622779772519579,
+            1.7653043985988104
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "peak_rss_bytes": {
+          "ratio": 0.8423056601584821,
+          "percent_change": -15.769433984151792,
+          "ci95": [
+            0.8310984768615857,
+            0.8535436744228692
+          ],
+          "percent_ci95": [
+            -16.890152313841433,
+            -14.645632557713084
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        }
+      },
+      "completed_seed_count": 2,
+      "expected_seed_count": 2,
+      "complete": true
+    },
+    "telemetry-v2/swamp-wide": {
+      "factor": "telemetry-v2",
+      "layout": "swamp-wide",
+      "seeds": {
+        "164298751": {
+          "job": "swamp-wide-164298751-telemetry-v2",
+          "output": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/telemetry-replication/runs/swamp-wide-164298751-telemetry-v2",
+          "seed": 164298751,
+          "start_tick": 0,
+          "end_tick": 8192,
+          "measured_ticks": 8192,
+          "affinity": [
+            6,
+            7,
+            8,
+            22,
+            23,
+            24
+          ],
+          "metrics": {
+            "simulation_cpu_s": {
+              "paired_log_ratios": [
+                -0.0009261594011579145,
+                -0.1810885562010455,
+                -0.0007133392972445865
+              ],
+              "baseline_values": [
+                6.538285206,
+                6.445962284,
+                5.372284327
+              ],
+              "candidate_values": [
+                6.532232515,
+                5.378262551,
+                5.368453432
+              ],
+              "baseline_median": 6.445962284,
+              "candidate_median": 5.378262551
+            },
+            "simulation_wall_s": {
+              "paired_log_ratios": [
+                0.013726801307436693,
+                -0.21226474772551923,
+                0.001390419549917207
+              ],
+              "baseline_values": [
+                2.416737946,
+                2.450078971,
+                1.979142201
+              ],
+              "candidate_values": [
+                2.45014076,
+                1.981502726,
+                1.981895953
+              ],
+              "baseline_median": 2.416737946,
+              "candidate_median": 1.981895953
+            },
+            "cpu_s": {
+              "paired_log_ratios": [
+                -0.0071901143011441435,
+                -0.17693152431228365,
+                -0.0021507800908682614
+              ],
+              "baseline_values": [
+                7.007078,
+                6.916794,
+                5.786912
+              ],
+              "candidate_values": [
+                6.9568769999999995,
+                5.795147,
+                5.7744789999999995
+              ],
+              "baseline_median": 6.916794,
+              "candidate_median": 5.795147
+            },
+            "wall_s": {
+              "paired_log_ratios": [
+                -0.0037165865863585165,
+                -0.19704098973596645,
+                -0.0024197949135148647
+              ],
+              "baseline_values": [
+                2.8854761198163033,
+                2.920723571907729,
+                2.393728760071099
+              ],
+              "candidate_values": [
+                2.874771901872009,
+                2.3983725290745497,
+                2.3879434298723936
+              ],
+              "baseline_median": 2.8854761198163033,
+              "candidate_median": 2.3983725290745497
+            },
+            "peak_rss_bytes": {
+              "paired_log_ratios": [
+                -0.38357973613427454,
+                -0.3749285138423032,
+                -0.38353552310373223
+              ],
+              "baseline_values": [
+                119955456,
+                118820864,
+                119156736
+              ],
+              "candidate_values": [
+                81739776,
+                81670144,
+                81199104
+              ],
+              "baseline_median": 119156736,
+              "candidate_median": 81670144
+            }
+          },
+          "cpu_per_tick_s": {
+            "baseline": [
+              0.000855356201171875,
+              0.000844335205078125,
+              0.00070641015625
+            ],
+            "candidate": [
+              0.0008492281494140624,
+              0.0007074154052734375,
+              0.0007048924560546874
+            ]
+          },
+          "engine_cpu_per_tick_s": {
+            "baseline": [
+              0.0007981305183105469,
+              0.0007868606303710938,
+              0.0006557964266357422
+            ],
+            "candidate": [
+              0.0007973916644287109,
+              0.0006565261903076172,
+              0.0006553287880859375
+            ]
+          },
+          "provenance": {
+            "pass_sha256": "aa999a88011fbdcbdb7edb82500d7f3ceaa48ef947f915e80a0bff1472552985",
+            "audit_sha256": "61c11194732eeb558a8b97d8f73bf849d970d26048b878deeed980a5f0cfbee1",
+            "measurements_sha256": "907e833e9a53cf2d60d25a3aa5dbdb3ff776de74271c441a372b0cbde1fe1f7d"
+          }
+        },
+        "902381047": {
+          "job": "swamp-wide-902381047-telemetry-v2",
+          "output": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/telemetry-replication/runs/swamp-wide-902381047-telemetry-v2",
+          "seed": 902381047,
+          "start_tick": 0,
+          "end_tick": 8192,
+          "measured_ticks": 8192,
+          "affinity": [
+            9,
+            10,
+            11,
+            25,
+            26,
+            27
+          ],
+          "metrics": {
+            "simulation_cpu_s": {
+              "paired_log_ratios": [
+                0.024858688763912132,
+                -0.03272967120978534,
+                0.017269165894660817
+              ],
+              "baseline_values": [
+                4.904627971,
+                5.598460628,
+                4.979213668
+              ],
+              "candidate_values": [
+                5.028078645,
+                5.418191027,
+                5.065947288
+              ],
+              "baseline_median": 4.979213668,
+              "candidate_median": 5.065947288
+            },
+            "simulation_wall_s": {
+              "paired_log_ratios": [
+                0.032449568084727085,
+                -0.029452673262163064,
+                0.018941939728603915
+              ],
+              "baseline_values": [
+                1.801181414,
+                2.044993687,
+                1.847800479
+              ],
+              "candidate_values": [
+                1.860587613,
+                1.985641487,
+                1.883135
+              ],
+              "baseline_median": 1.847800479,
+              "candidate_median": 1.883135
+            },
+            "cpu_s": {
+              "paired_log_ratios": [
+                0.01766000134777169,
+                -0.031978282295522964,
+                0.012928942191546137
+              ],
+              "baseline_values": [
+                5.337416,
+                6.046412,
+                5.415326
+              ],
+              "candidate_values": [
+                5.432512,
+                5.856117,
+                5.4857949999999995
+              ],
+              "baseline_median": 5.415326,
+              "candidate_median": 5.4857949999999995
+            },
+            "wall_s": {
+              "paired_log_ratios": [
+                0.013975471212763694,
+                -0.02821761117235356,
+                0.008301879896218046
+              ],
+              "baseline_values": [
+                2.23398926993832,
+                2.492978530935943,
+                2.284007232170552
+              ],
+              "candidate_values": [
+                2.265429507009685,
+                2.423615858890116,
+                2.3030477124266326
+              ],
+              "baseline_median": 2.284007232170552,
+              "candidate_median": 2.3030477124266326
+            },
+            "peak_rss_bytes": {
+              "paired_log_ratios": [
+                -0.37056042885017565,
+                -0.361691821514237,
+                -0.3757387843011572
+              ],
+              "baseline_values": [
+                119578624,
+                118681600,
+                119394304
+              ],
+              "candidate_values": [
+                82550784,
+                82661376,
+                81997824
+              ],
+              "baseline_median": 119394304,
+              "candidate_median": 82550784
+            }
+          },
+          "cpu_per_tick_s": {
+            "baseline": [
+              0.0006515400390625,
+              0.00073808740234375,
+              0.000661050537109375
+            ],
+            "candidate": [
+              0.0006631484375,
+              0.0007148580322265625,
+              0.0006696527099609374
+            ]
+          },
+          "engine_cpu_per_tick_s": {
+            "baseline": [
+              0.0005987094691162109,
+              0.0006834058383789062,
+              0.0006078141684570312
+            ],
+            "candidate": [
+              0.0006137791314697266,
+              0.0006614002718505859,
+              0.0006184017685546875
+            ]
+          },
+          "provenance": {
+            "pass_sha256": "a7dd2f9a2dd68b9b364ef7ae2c86082a21a105bfe0e1870eab2a9cfd1a2ec28c",
+            "audit_sha256": "2e7abf54b4f63f2c8d2e4a6331bd09ea804938a944790bb39836a607375d682c",
+            "measurements_sha256": "9f2cde7f9dc8d0d9a2623f7bb5695df34eaa7a08d9e780f548912503d8973064"
+          }
+        }
+      },
+      "windows": {},
+      "census": [],
+      "metrics": {
+        "simulation_cpu_s": {
+          "ratio": 0.9715249661766895,
+          "percent_change": -2.8475033823310514,
+          "ci95": [
+            0.8860663146884811,
+            1.0140941067314229
+          ],
+          "percent_ci95": [
+            -11.393368531151893,
+            1.4094106731422862
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "simulation_wall_s": {
+          "ratio": 0.9712207935732244,
+          "percent_change": -2.877920642677556,
+          "ci95": [
+            0.8720275762954162,
+            1.021254854909195
+          ],
+          "percent_ci95": [
+            -12.797242370458385,
+            2.12548549091951
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "cpu_s": {
+          "ratio": 0.9692071047107956,
+          "percent_change": -3.079289528920437,
+          "ci95": [
+            0.8880996922549309,
+            1.0086355170159316
+          ],
+          "percent_ci95": [
+            -11.190030774506909,
+            0.8635517015931571
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "wall_s": {
+          "ratio": 0.9657474300324559,
+          "percent_change": -3.425256996754411,
+          "ci95": [
+            0.8761944321818834,
+            1.0060157144311828
+          ],
+          "percent_ci95": [
+            -12.380556781811658,
+            0.6015714431182762
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "peak_rss_bytes": {
+          "ratio": 0.6872852916374439,
+          "percent_change": -31.27147083625561,
+          "ci95": [
+            0.682400966997235,
+            0.6934153385583299
+          ],
+          "percent_ci95": [
+            -31.759903300276505,
+            -30.658466144167008
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        }
+      },
+      "completed_seed_count": 2,
+      "expected_seed_count": 2,
+      "complete": true
+    },
+    "telemetry-v2/large-ni": {
+      "factor": "telemetry-v2",
+      "layout": "large-ni",
+      "seeds": {
+        "164298751": {
+          "job": "large-ni-164298751-telemetry-v2",
+          "output": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/telemetry-replication/runs/large-ni-164298751-telemetry-v2",
+          "seed": 164298751,
+          "start_tick": 0,
+          "end_tick": 4096,
+          "measured_ticks": 4096,
+          "affinity": [
+            0,
+            1,
+            2,
+            16,
+            17,
+            18
+          ],
+          "metrics": {
+            "simulation_cpu_s": {
+              "paired_log_ratios": [
+                0.06418521807983622,
+                -0.035527885506567346,
+                -0.03861629485504204
+              ],
+              "baseline_values": [
+                14.305934422,
+                14.781948972,
+                14.827168765
+              ],
+              "candidate_values": [
+                15.25427305,
+                14.265997189,
+                14.265512775
+              ],
+              "baseline_median": 14.781948972,
+              "candidate_median": 14.265997189
+            },
+            "simulation_wall_s": {
+              "paired_log_ratios": [
+                0.05536547733663334,
+                -0.04051786799197235,
+                -0.034454465588708634
+              ],
+              "baseline_values": [
+                5.760629599,
+                5.947835673,
+                5.933877608
+              ],
+              "candidate_values": [
+                6.088563963,
+                5.711659049,
+                5.732911005
+              ],
+              "baseline_median": 5.933877608,
+              "candidate_median": 5.732911005
+            },
+            "cpu_s": {
+              "paired_log_ratios": [
+                0.06388531981932317,
+                -0.03617328317111371,
+                -0.04035276921911199
+              ],
+              "baseline_values": [
+                14.873167,
+                15.371389,
+                15.443380000000001
+              ],
+              "candidate_values": [
+                15.854351999999999,
+                14.825292,
+                14.832603
+              ],
+              "baseline_median": 15.371389,
+              "candidate_median": 14.832603
+            },
+            "wall_s": {
+              "paired_log_ratios": [
+                0.055429531908182506,
+                -0.04159294236639877,
+                -0.038876847972517274
+              ],
+              "baseline_values": [
+                6.327998036053032,
+                6.5373897212557495,
+                6.549828686751425
+              ],
+              "candidate_values": [
+                6.688659310340881,
+                6.27105760993436,
+                6.3000782039016485
+              ],
+              "baseline_median": 6.5373897212557495,
+              "candidate_median": 6.3000782039016485
+            },
+            "peak_rss_bytes": {
+              "paired_log_ratios": [
+                -0.10734313920072992,
+                -0.11101789835218237,
+                -0.11102614745624778
+              ],
+              "baseline_values": [
+                292966400,
+                293408768,
+                293466112
+              ],
+              "candidate_values": [
+                263147520,
+                262578176,
+                262627328
+              ],
+              "baseline_median": 293408768,
+              "candidate_median": 262627328
+            }
+          },
+          "cpu_per_tick_s": {
+            "baseline": [
+              0.003631144287109375,
+              0.003752780517578125,
+              0.0037703564453125003
+            ],
+            "candidate": [
+              0.0038706914062499997,
+              0.0036194560546875,
+              0.003621240966796875
+            ]
+          },
+          "engine_cpu_per_tick_s": {
+            "baseline": [
+              0.0034926597709960937,
+              0.0036088742607421876,
+              0.003619914249267578
+            ],
+            "candidate": [
+              0.0037241877563476563,
+              0.003482909469970703,
+              0.0034827912048339842
+            ]
+          },
+          "provenance": {
+            "pass_sha256": "5292a0ec6e5dcd6f291f3927f0623d0adbaa0010a592426ba0d5db343b282313",
+            "audit_sha256": "1174690998dab1906a7ea4878042e10e3be32604294d99b1f751fb66b0c08d8b",
+            "measurements_sha256": "f342ceca3fce20404446674dabeee9a7938dd9558af72c23661c1dc1eeac19a7"
+          }
+        },
+        "902381047": {
+          "job": "large-ni-902381047-telemetry-v2",
+          "output": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/telemetry-replication/runs/large-ni-902381047-telemetry-v2",
+          "seed": 902381047,
+          "start_tick": 0,
+          "end_tick": 4096,
+          "measured_ticks": 4096,
+          "affinity": [
+            3,
+            4,
+            5,
+            19,
+            20,
+            21
+          ],
+          "metrics": {
+            "simulation_cpu_s": {
+              "paired_log_ratios": [
+                -0.036113875199256774,
+                -0.018624002307663524,
+                0.012864518722016091
+              ],
+              "baseline_values": [
+                17.851342016,
+                16.8359364,
+                15.922067238
+              ],
+              "candidate_values": [
+                17.218162968,
+                16.525285641,
+                16.128220156
+              ],
+              "baseline_median": 16.8359364,
+              "candidate_median": 16.525285641
+            },
+            "simulation_wall_s": {
+              "paired_log_ratios": [
+                -0.027498701135876606,
+                -0.023712341504924617,
+                0.007459367002627758
+              ],
+              "baseline_values": [
+                6.927623846,
+                6.61908294,
+                6.335705794
+              ],
+              "candidate_values": [
+                6.739718604,
+                6.463975236,
+                6.383142854
+              ],
+              "baseline_median": 6.61908294,
+              "candidate_median": 6.463975236
+            },
+            "cpu_s": {
+              "paired_log_ratios": [
+                -0.034735188536551685,
+                -0.017707582353515133,
+                0.009215168052271018
+              ],
+              "baseline_values": [
+                18.472241,
+                17.432817,
+                16.571182
+              ],
+              "candidate_values": [
+                17.84162,
+                17.126841,
+                16.724594
+              ],
+              "baseline_median": 17.432817,
+              "candidate_median": 17.126841
+            },
+            "wall_s": {
+              "paired_log_ratios": [
+                -0.02484859591747815,
+                -0.02104697913957126,
+                -0.0007160053522117497
+              ],
+              "baseline_values": [
+                7.548496752046049,
+                7.215940237976611,
+                6.984705769922584
+              ],
+              "candidate_values": [
+                7.363238443154842,
+                7.06565358210355,
+                6.979706473182887
+              ],
+              "baseline_median": 7.215940237976611,
+              "candidate_median": 7.06565358210355
+            },
+            "peak_rss_bytes": {
+              "paired_log_ratios": [
+                -0.11495800736712035,
+                -0.12767665679507448,
+                -0.11374527426634144
+              ],
+              "baseline_values": [
+                301514752,
+                300548096,
+                300929024
+              ],
+              "candidate_values": [
+                268771328,
+                264523776,
+                268574720
+              ],
+              "baseline_median": 300929024,
+              "candidate_median": 268574720
+            }
+          },
+          "cpu_per_tick_s": {
+            "baseline": [
+              0.004509824462890625,
+              0.004256058837890625,
+              0.00404569873046875
+            ],
+            "candidate": [
+              0.0043558642578125,
+              0.004181357666015625,
+              0.00408315283203125
+            ]
+          },
+          "engine_cpu_per_tick_s": {
+            "baseline": [
+              0.004358237796875,
+              0.00411033603515625,
+              0.003887223446777344
+            ],
+            "candidate": [
+              0.004203653068359375,
+              0.004034493564697266,
+              0.003937553749023438
+            ]
+          },
+          "provenance": {
+            "pass_sha256": "c3dff71304797fdc186c58cc8014d8068315fbee1496c50b26519911e909d180",
+            "audit_sha256": "9fdc84aa3436e54a15a3e0ddb702bb07bdd00eac7c9c101f81368f4c3344f317",
+            "measurements_sha256": "3e0a2ead4f545e3381b7e5777d6c71844e85a093ca64b11d01672eae33a7d013"
+          }
+        }
+      },
+      "windows": {},
+      "census": [],
+      "metrics": {
+        "simulation_cpu_s": {
+          "ratio": 0.9913984863493657,
+          "percent_change": -0.8601513650634329,
+          "ci95": [
+            0.96453045113177,
+            1.0303700886780465
+          ],
+          "percent_ci95": [
+            -3.546954886822995,
+            3.037008867804647
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "simulation_wall_s": {
+          "ratio": 0.9894958031691422,
+          "percent_change": -1.0504196830857793,
+          "ci95": [
+            0.9675407680014941,
+            1.0247154141357346
+          ],
+          "percent_ci95": [
+            -3.2459231998505866,
+            2.4715414135734637
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "cpu_s": {
+          "ratio": 0.9907318275099625,
+          "percent_change": -0.926817249003753,
+          "ci95": [
+            0.9644948204314331,
+            1.0295679931576343
+          ],
+          "percent_ci95": [
+            -3.5505179568566914,
+            2.9567993157634254
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "wall_s": {
+          "ratio": 0.988129049224392,
+          "percent_change": -1.1870950775607958,
+          "ci95": [
+            0.9679380745292723,
+            1.0236090482002431
+          ],
+          "percent_ci95": [
+            -3.2061925470727726,
+            2.360904820024312
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "peak_rss_bytes": {
+          "ratio": 0.8919952062525083,
+          "percent_change": -10.800479374749173,
+          "ci95": [
+            0.8857528371994912,
+            0.8965685554304684
+          ],
+          "percent_ci95": [
+            -11.424716280050884,
+            -10.343144456953157
+          ],
+          "seed_count": 2,
+          "paired_repeats": 6,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        }
+      },
+      "completed_seed_count": 2,
+      "expected_seed_count": 2,
+      "complete": true
+    },
+    "telemetry-v1/large-mixed": {
+      "factor": "telemetry-v1",
+      "layout": "large-mixed",
+      "seeds": {
+        "164298751": {
+          "job": "large-mixed-164298751-telemetry-v1",
+          "output": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/telemetry-replication/runs/large-mixed-164298751-telemetry-v1",
+          "seed": 164298751,
+          "start_tick": 0,
+          "end_tick": 4096,
+          "measured_ticks": 4096,
+          "affinity": [
+            6,
+            7,
+            8,
+            22,
+            23,
+            24
+          ],
+          "metrics": {
+            "simulation_cpu_s": {
+              "paired_log_ratios": [
+                0.003022993493808165,
+                -0.0354694044577691,
+                0.01672893642990296,
+                0.05489144043489154,
+                0.005986608508920477,
+                0.00507230211292064
+              ],
+              "baseline_values": [
+                8.029193811,
+                8.282721088,
+                7.816542286,
+                7.620006422,
+                7.893785045,
+                7.790071455
+              ],
+              "candidate_values": [
+                8.053502736,
+                7.994087003,
+                7.948404608,
+                8.04997232,
+                7.941183783,
+                7.829685433
+              ],
+              "baseline_median": 7.855163665499999,
+              "candidate_median": 7.9712458055
+            },
+            "simulation_wall_s": {
+              "paired_log_ratios": [
+                0.008578659535638425,
+                -0.035882378406627155,
+                0.005719053501715041,
+                0.06144829924108396,
+                0.02285479443566756,
+                0.008449291803373006
+              ],
+              "baseline_values": [
+                3.661491747,
+                3.803390779,
+                3.559553985,
+                3.460196266,
+                3.543364706,
+                3.533275984
+              ],
+              "candidate_values": [
+                3.693037555,
+                3.669335565,
+                3.579969588,
+                3.679487996,
+                3.625280092,
+                3.563256141
+              ],
+              "baseline_median": 3.5514593455,
+              "candidate_median": 3.6473078285
+            },
+            "cpu_s": {
+              "paired_log_ratios": [
+                0.0024235312981831254,
+                -0.036749933186743446,
+                0.013844738554008694,
+                0.05547024616114203,
+                0.0043359298687780205,
+                0.002480529463440683
+              ],
+              "baseline_values": [
+                8.508243,
+                8.794621,
+                8.306924,
+                8.103221,
+                8.394502999999998,
+                8.277472
+              ],
+              "candidate_values": [
+                8.528888,
+                8.477286,
+                8.422730999999999,
+                8.565408999999999,
+                8.43098,
+                8.29803
+              ],
+              "baseline_median": 8.3507135,
+              "candidate_median": 8.454132999999999
+            },
+            "wall_s": {
+              "paired_log_ratios": [
+                0.006649716871542686,
+                -0.03845207350304842,
+                0.0010927575271325344,
+                0.06184812145122046,
+                0.01740139768871396,
+                0.0027027103451404766
+              ],
+              "baseline_values": [
+                4.140849909745157,
+                4.3153089210391045,
+                4.049930862616748,
+                3.9433463541790843,
+                4.044066242873669,
+                4.020707670599222
+              ],
+              "candidate_values": [
+                4.168477144092321,
+                4.152526070829481,
+                4.0543588739819825,
+                4.194934864062816,
+                4.115054504014552,
+                4.031589176971465
+              ],
+              "baseline_median": 4.046998552745208,
+              "candidate_median": 4.133790287422016
+            },
+            "peak_rss_bytes": {
+              "paired_log_ratios": [
+                -0.17992796268720515,
+                -0.1722786715902659,
+                -0.13152426195676195,
+                -0.14614843043777237,
+                -0.16027017094181298,
+                -0.15287555046962945
+              ],
+              "baseline_values": [
+                235184128,
+                233095168,
+                230952960,
+                229244928,
+                230957056,
+                229527552
+              ],
+              "candidate_values": [
+                196456448,
+                196206592,
+                202489856,
+                198074368,
+                196755456,
+                196988928
+              ],
+              "baseline_median": 230955008.0,
+              "candidate_median": 196872192.0
+            }
+          },
+          "cpu_per_tick_s": {
+            "baseline": [
+              0.002077207763671875,
+              0.002147124267578125,
+              0.0020280576171875,
+              0.001978325439453125,
+              0.0020494392089843746,
+              0.0020208671875
+            ],
+            "candidate": [
+              0.002082248046875,
+              0.00206964990234375,
+              0.0020563308105468747,
+              0.0020911643066406247,
+              0.0020583447265625,
+              0.00202588623046875
+            ]
+          },
+          "engine_cpu_per_tick_s": {
+            "baseline": [
+              0.001960252395263672,
+              0.002022148703125,
+              0.0019083355190429687,
+              0.0018603531303710938,
+              0.001927193614501953,
+              0.0019018729138183593
+            ],
+            "candidate": [
+              0.00196618719140625,
+              0.0019516813972167968,
+              0.00194052846875,
+              0.0019653252734375,
+              0.0019387655720214843,
+              0.0019115442951660156
+            ]
+          },
+          "provenance": {
+            "pass_sha256": "8cdd7e817f55953c2538052a0271bc5628c26b276848f5ef30cd5108476e32ff",
+            "audit_sha256": "69d421458fd6e1618aaae51e495b4c6aa3152c81d277e6daa5a893ae8a054dfb",
+            "measurements_sha256": "089aed82a2c77916e4b053c587e6485926a74d9a8f9cf7c4939df878e5ea8388"
+          }
+        },
+        "902381047": {
+          "job": "large-mixed-902381047-telemetry-v1",
+          "output": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/telemetry-replication/runs/large-mixed-902381047-telemetry-v1",
+          "seed": 902381047,
+          "start_tick": 0,
+          "end_tick": 4096,
+          "measured_ticks": 4096,
+          "affinity": [
+            9,
+            10,
+            11,
+            25,
+            26,
+            27
+          ],
+          "metrics": {
+            "simulation_cpu_s": {
+              "paired_log_ratios": [
+                0.02820354789922061,
+                -0.007297380067114186,
+                -0.039025579479512386,
+                0.030679138334832837,
+                -0.01693702796475645,
+                -0.011221786011464598
+              ],
+              "baseline_values": [
+                7.788988254,
+                7.786417495,
+                7.995110349,
+                7.631152054,
+                7.8290942,
+                7.873935304
+              ],
+              "candidate_values": [
+                8.011792524,
+                7.729803864,
+                7.689106362,
+                7.868897489,
+                7.697609238,
+                7.786069614
+              ],
+              "baseline_median": 7.809041227,
+              "candidate_median": 7.757936739
+            },
+            "simulation_wall_s": {
+              "paired_log_ratios": [
+                0.016057277617602735,
+                0.0021128722735629254,
+                -0.03576699560786605,
+                0.03888193701938917,
+                -0.018675556524491207,
+                -0.0098423398971976
+              ],
+              "baseline_values": [
+                3.552707612,
+                3.551760119,
+                3.641664861,
+                3.456386693,
+                3.580050267,
+                3.575083852
+              ],
+              "candidate_values": [
+                3.610214894,
+                3.559272468,
+                3.513715276,
+                3.593424588,
+                3.513811286,
+                3.540069257
+              ],
+              "baseline_median": 3.5638957319999998,
+              "candidate_median": 3.5496708625
+            },
+            "cpu_s": {
+              "paired_log_ratios": [
+                0.02358418816951318,
+                -0.007875165943944811,
+                -0.03980056591133504,
+                0.02860241887283199,
+                -0.015372256049079625,
+                -0.012874221504894133
+              ],
+              "baseline_values": [
+                8.310505,
+                8.296918,
+                8.512766,
+                8.142746,
+                8.323792,
+                8.399976
+              ],
+              "candidate_values": [
+                8.508830999999999,
+                8.231835,
+                8.180607,
+                8.379011,
+                8.196814999999999,
+                8.292525999999999
+              ],
+              "baseline_median": 8.317148499999998,
+              "candidate_median": 8.2621805
+            },
+            "wall_s": {
+              "paired_log_ratios": [
+                0.008060509954908627,
+                -0.00024875893268294706,
+                -0.037724549383771254,
+                0.03355449413140243,
+                -0.015275315010555807,
+                -0.013415117350220223
+              ],
+              "baseline_values": [
+                4.074284988921136,
+                4.0624009389430285,
+                4.159256505314261,
+                3.9680751068517566,
+                4.074794426094741,
+                4.101244636811316
+              ],
+              "candidate_values": [
+                4.107258516829461,
+                4.061390506103635,
+                4.005273165181279,
+                4.103480891790241,
+                4.0130236428231,
+                4.04659335501492
+              ],
+              "baseline_median": 4.074539707507938,
+              "candidate_median": 4.0539919305592775
+            },
+            "peak_rss_bytes": {
+              "paired_log_ratios": [
+                -0.1344957104192191,
+                -0.13303054618358545,
+                -0.14426142617229457,
+                -0.16227295335622033,
+                -0.15468536460845483,
+                -0.1739820431684981
+              ],
+              "baseline_values": [
+                231907328,
+                233603072,
+                233066496,
+                240934912,
+                234987520,
+                239468544
+              ],
+              "candidate_values": [
+                202723328,
+                204505088,
+                201756672,
+                204845056,
+                201310208,
+                201228288
+              ],
+              "baseline_median": 234295296.0,
+              "candidate_median": 202240000.0
+            }
+          },
+          "cpu_per_tick_s": {
+            "baseline": [
+              0.002028931884765625,
+              0.00202561474609375,
+              0.00207831201171875,
+              0.00198797509765625,
+              0.00203217578125,
+              0.002050775390625
+            ],
+            "candidate": [
+              0.0020773513183593747,
+              0.002009725341796875,
+              0.001997218505859375,
+              0.002045656982421875,
+              0.0020011755371093748,
+              0.0020245424804687497
+            ]
+          },
+          "engine_cpu_per_tick_s": {
+            "baseline": [
+              0.0019016084604492188,
+              0.0019009808337402344,
+              0.0019519312375488281,
+              0.0018630742319335938,
+              0.001911399951171875,
+              0.001922347486328125
+            ],
+            "candidate": [
+              0.0019560040341796876,
+              0.001887159146484375,
+              0.0018772232329101564,
+              0.0019211175510253906,
+              0.0018792991303710938,
+              0.0019008959018554687
+            ]
+          },
+          "provenance": {
+            "pass_sha256": "51709ad42bd58d316eabceafb31a56cdafe703e95df3dfd0495a72d9c903c487",
+            "audit_sha256": "55ddf5beee55cb998717e6e8c9de58f051a47a7a0d7e43bd17d426299050ba7b",
+            "measurements_sha256": "ef6f64d44a003de58ea028c204af3f1977bbd3a8a425a174a13fdc8163da029f"
+          }
+        },
+        "1738462951": {
+          "job": "large-mixed-1738462951-telemetry-v1",
+          "output": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/telemetry-replication/runs/large-mixed-1738462951-telemetry-v1",
+          "seed": 1738462951,
+          "start_tick": 0,
+          "end_tick": 4096,
+          "measured_ticks": 4096,
+          "affinity": [
+            0,
+            1,
+            2,
+            16,
+            17,
+            18
+          ],
+          "metrics": {
+            "simulation_cpu_s": {
+              "paired_log_ratios": [
+                0.04582625248205554,
+                0.040656526334164465,
+                0.011043968864243671,
+                0.023710590072617603,
+                0.1192901038261995,
+                -0.01244265797566299
+              ],
+              "baseline_values": [
+                8.145456982,
+                8.468599316,
+                7.939390087,
+                7.846845,
+                7.638436601,
+                7.471157064
+              ],
+              "candidate_values": [
+                8.527417825,
+                8.819998071,
+                8.027558432,
+                8.035121579,
+                8.60620154,
+                7.378771962
+              ],
+              "baseline_median": 7.8931175435,
+              "candidate_median": 8.281269702
+            },
+            "simulation_wall_s": {
+              "paired_log_ratios": [
+                0.047619105952036785,
+                0.036070684494914004,
+                0.007648882352245577,
+                0.012933498200666908,
+                0.1070745138294385,
+                -0.00887846446600414
+              ],
+              "baseline_values": [
+                3.629707612,
+                3.79147286,
+                3.586202356,
+                3.57965381,
+                3.49685347,
+                3.434549321
+              ],
+              "candidate_values": [
+                3.806732476,
+                3.930730339,
+                3.61373797,
+                3.626251945,
+                3.892058011,
+                3.404190765
+              ],
+              "baseline_median": 3.5829280829999997,
+              "candidate_median": 3.7164922105000002
+            },
+            "cpu_s": {
+              "paired_log_ratios": [
+                0.04132187336952875,
+                0.0381764230020508,
+                0.011181884051159668,
+                0.021594400893021223,
+                0.10993035982264178,
+                -0.012134924204492166
+              ],
+              "baseline_values": [
+                8.662494,
+                8.978246,
+                8.441270000000001,
+                8.343989,
+                8.137455,
+                7.94182
+              ],
+              "candidate_values": [
+                9.027943,
+                9.327630000000001,
+                8.536189,
+                8.526132,
+                9.08303,
+                7.846029
+              ],
+              "baseline_median": 8.392629500000002,
+              "candidate_median": 8.782066
+            },
+            "wall_s": {
+              "paired_log_ratios": [
+                0.037983984926319735,
+                0.031267816823116926,
+                0.008334708659798688,
+                0.00987544863365333,
+                0.08920452251305491,
+                -0.008663197127914097
+              ],
+              "baseline_values": [
+                4.146786098834127,
+                4.301681923214346,
+                4.08815331524238,
+                4.076770492829382,
+                3.9959982079453766,
+                3.9052077610976994
+              ],
+              "candidate_values": [
+                4.3073272542096674,
+                4.438311041332781,
+                4.122369274031371,
+                4.117229878902435,
+                4.368841778952628,
+                3.871522299014032
+              ],
+              "baseline_median": 4.082461904035881,
+              "candidate_median": 4.214848264120519
+            },
+            "peak_rss_bytes": {
+              "paired_log_ratios": [
+                -0.14667186763907047,
+                -0.1523078142648538,
+                -0.1518209254943531,
+                -0.13902878112855566,
+                -0.16961053166212645,
+                -0.1494823250809469
+              ],
+              "baseline_values": [
+                233259008,
+                233160704,
+                234143744,
+                234278912,
+                235536384,
+                235323392
+              ],
+              "candidate_values": [
+                201437184,
+                200220672,
+                201162752,
+                203870208,
+                198791168,
+                202649600
+              ],
+              "baseline_median": 234211328.0,
+              "candidate_median": 201299968.0
+            }
+          },
+          "cpu_per_tick_s": {
+            "baseline": [
+              0.00211486669921875,
+              0.00219195458984375,
+              0.0020608569335937503,
+              0.002037106689453125,
+              0.001986683349609375,
+              0.0019389208984375
+            ],
+            "candidate": [
+              0.002204087646484375,
+              0.0022772534179687502,
+              0.002084030517578125,
+              0.0020815751953125,
+              0.00221753662109375,
+              0.001915534423828125
+            ]
+          },
+          "engine_cpu_per_tick_s": {
+            "baseline": [
+              0.001988636958496094,
+              0.0020675291298828126,
+              0.0019383276579589843,
+              0.001915733642578125,
+              0.0018648526857910157,
+              0.001824012955078125
+            ],
+            "candidate": [
+              0.0020818891174316408,
+              0.0021533198415527345,
+              0.0019598531328125,
+              0.001961699604248047,
+              0.0021011234228515627,
+              0.0018014579985351563
+            ]
+          },
+          "provenance": {
+            "pass_sha256": "c78d73865a1521177ab200c8a194cf01f53dad2948a753e8733ea0293061fdf4",
+            "audit_sha256": "e7a584afee00cec697073063834207919008d77d71b545de1f24421d02b2634d",
+            "measurements_sha256": "dea71a4a0efe0a22784985dc46a23af069c877964b1b9cdb2665232e0964cfc7"
+          }
+        }
+      },
+      "windows": {},
+      "census": [],
+      "metrics": {
+        "simulation_cpu_s": {
+          "ratio": 1.014702510336253,
+          "percent_change": 1.4702510336253027,
+          "ci95": [
+            0.99347565796447,
+            1.0422095932917703
+          ],
+          "percent_ci95": [
+            -0.6524342035529984,
+            4.220959329177032
+          ],
+          "seed_count": 3,
+          "paired_repeats": 18,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "simulation_wall_s": {
+          "ratio": 1.0149102390872462,
+          "percent_change": 1.4910239087246202,
+          "ci95": [
+            0.9955153131319884,
+            1.0387547170639342
+          ],
+          "percent_ci95": [
+            -0.44846868680116225,
+            3.8754717063934185
+          ],
+          "seed_count": 3,
+          "paired_repeats": 18,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "cpu_s": {
+          "ratio": 1.012755075066912,
+          "percent_change": 1.2755075066912092,
+          "ci95": [
+            0.9923247923493675,
+            1.0387511055680783
+          ],
+          "percent_ci95": [
+            -0.7675207650632454,
+            3.875110556807826
+          ],
+          "seed_count": 3,
+          "paired_repeats": 18,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "wall_s": {
+          "ratio": 1.0108471403548964,
+          "percent_change": 1.0847140354896423,
+          "ci95": [
+            0.9928573363825008,
+            1.032008369555928
+          ],
+          "percent_ci95": [
+            -0.7142663617499156,
+            3.2008369555927896
+          ],
+          "seed_count": 3,
+          "paired_repeats": 18,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "peak_rss_bytes": {
+          "ratio": 0.8580975264722258,
+          "percent_change": -14.190247352777419,
+          "ci95": [
+            0.8515002634822629,
+            0.8641565997056709
+          ],
+          "percent_ci95": [
+            -14.849973651773707,
+            -13.584340029432907
+          ],
+          "seed_count": 3,
+          "paired_repeats": 18,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        }
+      },
+      "completed_seed_count": 3,
+      "expected_seed_count": 3,
+      "complete": true
+    },
+    "telemetry-v2/large-mixed": {
+      "factor": "telemetry-v2",
+      "layout": "large-mixed",
+      "seeds": {
+        "164298751": {
+          "job": "large-mixed-164298751-telemetry-v2",
+          "output": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/telemetry-replication/runs/large-mixed-164298751-telemetry-v2",
+          "seed": 164298751,
+          "start_tick": 0,
+          "end_tick": 4096,
+          "measured_ticks": 4096,
+          "affinity": [
+            6,
+            7,
+            8,
+            22,
+            23,
+            24
+          ],
+          "metrics": {
+            "simulation_cpu_s": {
+              "paired_log_ratios": [
+                -0.022602850261322166,
+                -0.041739721478267856,
+                -0.03821638546239878,
+                -0.017856578840373737,
+                0.0066125301801785,
+                -0.024369943215079817
+              ],
+              "baseline_values": [
+                8.067754687,
+                7.948464475,
+                7.962748711,
+                7.739890821,
+                7.701798426,
+                7.935901038
+              ],
+              "candidate_values": [
+                7.887445859,
+                7.623526369,
+                7.664182632,
+                7.602909499,
+                7.752895555,
+                7.744841096
+              ],
+              "baseline_median": 7.942182756499999,
+              "candidate_median": 7.7045118640000005
+            },
+            "simulation_wall_s": {
+              "paired_log_ratios": [
+                -0.025243578575091036,
+                -0.035099882266132816,
+                -0.026692451779344453,
+                -0.017456788418123523,
+                0.0006429156184258659,
+                -0.02533682435490338
+              ],
+              "baseline_values": [
+                3.681613712,
+                3.636364247,
+                3.638863101,
+                3.53686101,
+                3.519678736,
+                3.607612881
+              ],
+              "candidate_values": [
+                3.589839831,
+                3.510942314,
+                3.543017787,
+                3.475654564,
+                3.52194232,
+                3.517355671
+              ],
+              "baseline_median": 3.621988564,
+              "candidate_median": 3.5196489955
+            },
+            "cpu_s": {
+              "paired_log_ratios": [
+                -0.020732285773584193,
+                -0.037930813863531546,
+                -0.04091603360723496,
+                -0.017685511933398127,
+                0.0057060761184870145,
+                -0.020535194390586917
+              ],
+              "baseline_values": [
+                8.558667,
+                8.417335,
+                8.45876,
+                8.20791,
+                8.171765,
+                8.397609999999998
+              ],
+              "candidate_values": [
+                8.383053,
+                8.104038,
+                8.119646,
+                8.064024999999999,
+                8.218527,
+                8.226922
+              ],
+              "baseline_median": 8.407472499999999,
+              "candidate_median": 8.169086499999999
+            },
+            "wall_s": {
+              "paired_log_ratios": [
+                -0.02109881658460015,
+                -0.028130539868620387,
+                -0.03355764422714089,
+                -0.01713470217999212,
+                -0.000503754330505079,
+                -0.01735014362907393
+              ],
+              "baseline_values": [
+                4.172589465975761,
+                4.105280129704624,
+                4.134942050091922,
+                4.004868438001722,
+                3.989670201204717,
+                4.069395152386278
+              ],
+              "candidate_values": [
+                4.085475003812462,
+                3.9914055690169334,
+                3.9984855209477246,
+                3.936830777209252,
+                3.987660893704742,
+                3.999399534892291
+              ],
+              "baseline_median": 4.087337641045451,
+              "candidate_median": 3.994945544982329
+            },
+            "peak_rss_bytes": {
+              "paired_log_ratios": [
+                -0.1621992652245021,
+                -0.14116439760959915,
+                -0.16608591013778984,
+                -0.172902553535104,
+                -0.15734015520590233,
+                -0.15396765669793744
+              ],
+              "baseline_values": [
+                235126784,
+                231473152,
+                233725952,
+                234156032,
+                231743488,
+                231235584
+              ],
+              "candidate_values": [
+                199921664,
+                200998912,
+                197959680,
+                196976640,
+                198004736,
+                198238208
+              ],
+              "baseline_median": 232734720.0,
+              "candidate_median": 198121472.0
+            }
+          },
+          "cpu_per_tick_s": {
+            "baseline": [
+              0.002089518310546875,
+              0.002055013427734375,
+              0.002065126953125,
+              0.00200388427734375,
+              0.001995059814453125,
+              0.0020501977539062496
+            ],
+            "candidate": [
+              0.002046643798828125,
+              0.00197852490234375,
+              0.00198233544921875,
+              0.0019687561035156248,
+              0.002006476318359375,
+              0.00200852587890625
+            ]
+          },
+          "engine_cpu_per_tick_s": {
+            "baseline": [
+              0.0019696666716308596,
+              0.0019405430847167968,
+              0.0019440304470214843,
+              0.0018896217824707032,
+              0.0018803218813476562,
+              0.0019374758393554687
+            ],
+            "candidate": [
+              0.0019256459616699218,
+              0.0018612124924316407,
+              0.001871138337890625,
+              0.0018561790769042969,
+              0.001892796766357422,
+              0.001890830345703125
+            ]
+          },
+          "provenance": {
+            "pass_sha256": "82aeae3dbfce7d96de405ab9be5f08f7ef21feb796c0b78574d9817541b3c9f5",
+            "audit_sha256": "668d8d601f5f36dbe8da94e4c219050263a2ac2cf34a04822cb6228f2af42e2c",
+            "measurements_sha256": "94c84f5b8da5490d691c1283d1fe8b78bbaafb708ac547917f4f2e1766f1d47e"
+          }
+        },
+        "902381047": {
+          "job": "large-mixed-902381047-telemetry-v2",
+          "output": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/telemetry-replication/runs/large-mixed-902381047-telemetry-v2",
+          "seed": 902381047,
+          "start_tick": 0,
+          "end_tick": 4096,
+          "measured_ticks": 4096,
+          "affinity": [
+            9,
+            10,
+            11,
+            25,
+            26,
+            27
+          ],
+          "metrics": {
+            "simulation_cpu_s": {
+              "paired_log_ratios": [
+                -0.02421117684460459,
+                -0.02884699826788795,
+                -0.023661945911880564,
+                -0.0009361364366617777,
+                0.002844598911735946,
+                0.007945876766747694
+              ],
+              "baseline_values": [
+                8.047422407,
+                7.910923989,
+                7.959172915,
+                8.005345546,
+                7.587080706,
+                7.605299186
+              ],
+              "candidate_values": [
+                7.854924543,
+                7.68597769,
+                7.773054047,
+                7.997854957,
+                7.608693633,
+                7.665970681
+              ],
+              "baseline_median": 7.935048452,
+              "candidate_median": 7.7295158685
+            },
+            "simulation_wall_s": {
+              "paired_log_ratios": [
+                -0.01342455221980013,
+                -0.027647333598029948,
+                -0.011166846941686915,
+                0.0008587247546707517,
+                0.0030930849566112974,
+                0.0187077877031368
+              ],
+              "baseline_values": [
+                3.650956779,
+                3.613543231,
+                3.60193567,
+                3.640022612,
+                3.480838088,
+                3.472985761
+              ],
+              "candidate_values": [
+                3.602271837,
+                3.515006807,
+                3.56193715,
+                3.643149732,
+                3.491621284,
+                3.538569189
+              ],
+              "baseline_median": 3.6077394505,
+              "candidate_median": 3.5502531695
+            },
+            "cpu_s": {
+              "paired_log_ratios": [
+                -0.02289549277230663,
+                -0.027675665396762996,
+                -0.023408034349515498,
+                0.001472313722789602,
+                -0.0023766840006953635,
+                0.004872939762418046
+              ],
+              "baseline_values": [
+                8.554926,
+                8.421904,
+                8.469674000000001,
+                8.504151,
+                8.110834,
+                8.117782
+              ],
+              "candidate_values": [
+                8.361282,
+                8.192018,
+                8.273718,
+                8.516681,
+                8.09158,
+                8.157435999999999
+              ],
+              "baseline_median": 8.445789000000001,
+              "candidate_median": 8.232868
+            },
+            "wall_s": {
+              "paired_log_ratios": [
+                -0.012020689244098215,
+                -0.025411018882942685,
+                -0.012187291729072819,
+                0.005605665087655052,
+                -0.007565190922993224,
+                0.011133990309307399
+              ],
+              "baseline_values": [
+                4.158436730969697,
+                4.124539479147643,
+                4.112511010840535,
+                4.138904253020883,
+                4.004651588853449,
+                3.985487368889153
+              ],
+              "candidate_values": [
+                4.108748695813119,
+                4.021051168907434,
+                4.06269481824711,
+                4.162170715164393,
+                3.9744699439033866,
+                4.0301096979528666
+              ],
+              "baseline_median": 4.118525244994089,
+              "candidate_median": 4.046402258099988
+            },
+            "peak_rss_bytes": {
+              "paired_log_ratios": [
+                -0.17453342030621077,
+                -0.17096603992452356,
+                -0.15778299971522372,
+                -0.1560049283183549,
+                -0.1484241987318192,
+                -0.15847344696214302
+              ],
+              "baseline_values": [
+                235118592,
+                235855872,
+                233472000,
+                234737664,
+                234414080,
+                239771648
+              ],
+              "candidate_values": [
+                197464064,
+                198791168,
+                199393280,
+                200830976,
+                202080256,
+                204632064
+              ],
+              "baseline_median": 234928128.0,
+              "candidate_median": 200112128.0
+            }
+          },
+          "cpu_per_tick_s": {
+            "baseline": [
+              0.00208860498046875,
+              0.00205612890625,
+              0.0020677915039062503,
+              0.002076208740234375,
+              0.00198018408203125,
+              0.00198188037109375
+            ],
+            "candidate": [
+              0.00204132861328125,
+              0.00200000439453125,
+              0.00201995068359375,
+              0.002079267822265625,
+              0.0019754833984375,
+              0.0019915615234374997
+            ]
+          },
+          "engine_cpu_per_tick_s": {
+            "baseline": [
+              0.0019647027360839846,
+              0.001931377927001953,
+              0.0019431574499511719,
+              0.001954430064941406,
+              0.0018523146254882813,
+              0.0018567624965820312
+            ],
+            "candidate": [
+              0.0019177061872558594,
+              0.0018764593969726562,
+              0.0018977182731933593,
+              0.0019526013078613282,
+              0.0018575912189941405,
+              0.0018715748732910157
+            ]
+          },
+          "provenance": {
+            "pass_sha256": "fd6f9e45115852a795b498052039dd664d72aee4c659bbf120778aea48d2b215",
+            "audit_sha256": "5c819dc3563c350a612a04e32c9e0bf0871a179c66fc242eb5c57ef42101447a",
+            "measurements_sha256": "3970c1bd7f1e5d5aa18e1040eed3590920f2096c9df532c34c495e3f884c5394"
+          }
+        },
+        "1738462951": {
+          "job": "large-mixed-1738462951-telemetry-v2",
+          "output": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/telemetry-replication/runs/large-mixed-1738462951-telemetry-v2",
+          "seed": 1738462951,
+          "start_tick": 0,
+          "end_tick": 4096,
+          "measured_ticks": 4096,
+          "affinity": [
+            0,
+            1,
+            2,
+            16,
+            17,
+            18
+          ],
+          "metrics": {
+            "simulation_cpu_s": {
+              "paired_log_ratios": [
+                -0.028031647377910272,
+                -0.009902285489044902,
+                -0.012923304773002416,
+                0.0440550460545376,
+                0.002273528435826684,
+                -0.0004510244135205795
+              ],
+              "baseline_values": [
+                7.995913126,
+                7.878918041,
+                7.975489282,
+                7.757146259,
+                7.909107447,
+                7.825436299
+              ],
+              "candidate_values": [
+                7.774886847,
+                7.801283758,
+                7.873082744,
+                8.106527185,
+                7.927109484,
+                7.821907632
+              ],
+              "baseline_median": 7.894012744,
+              "candidate_median": 7.847495188
+            },
+            "simulation_wall_s": {
+              "paired_log_ratios": [
+                -0.015100091981786438,
+                -0.003392973001430487,
+                -0.007767002852091664,
+                0.04903651023829145,
+                0.006145530903426426,
+                0.010464254764995877
+              ],
+              "baseline_values": [
+                3.64490967,
+                3.560018833,
+                3.615562728,
+                3.494429455,
+                3.571578775,
+                3.515118366
+              ],
+              "candidate_values": [
+                3.590284658,
+                3.547960254,
+                3.587589417,
+                3.67005492,
+                3.593595606,
+                3.552094587
+              ],
+              "baseline_median": 3.565798804,
+              "candidate_median": 3.5889370375
+            },
+            "cpu_s": {
+              "paired_log_ratios": [
+                -0.03214212210085215,
+                -0.00629703130352247,
+                -0.008337450333495238,
+                0.03871841862782604,
+                0.0009252907161560084,
+                -0.00046907220481781447
+              ],
+              "baseline_values": [
+                8.515682,
+                8.355415,
+                8.451978,
+                8.262858,
+                8.414000999999999,
+                8.326897
+              ],
+              "candidate_values": [
+                8.246322,
+                8.302966,
+                8.381803,
+                8.589057,
+                8.42179,
+                8.322992000000001
+              ],
+              "baseline_median": 8.384708,
+              "candidate_median": 8.3523975
+            },
+            "wall_s": {
+              "paired_log_ratios": [
+                -0.024961348232299473,
+                0.0032280762265399967,
+                0.0011531893299096929,
+                0.03742272188557144,
+                0.002995478695718027,
+                0.009034558568668694
+              ],
+              "baseline_values": [
+                4.164514219854027,
+                4.036697153933346,
+                4.092030649073422,
+                4.000132259912789,
+                4.076503823976964,
+                4.016665689181536
+              ],
+              "candidate_values": [
+                4.0618489920161664,
+                4.049748974852264,
+                4.096752257086337,
+                4.152664379682392,
+                4.088733211625367,
+                4.053118912037462
+              ],
+              "baseline_median": 4.056600488955155,
+              "candidate_median": 4.075291101820767
+            },
+            "peak_rss_bytes": {
+              "paired_log_ratios": [
+                -0.14587832038865162,
+                -0.13754430205165316,
+                -0.15855695274711884,
+                -0.14143448693482497,
+                -0.15274308907573034,
+                -0.1402265037425669
+              ],
+              "baseline_values": [
+                232988672,
+                231727104,
+                236945408,
+                231620608,
+                234569728,
+                232820736
+              ],
+              "candidate_values": [
+                201363456,
+                201949184,
+                202203136,
+                201072640,
+                201342976,
+                202358784
+              ],
+              "baseline_median": 232904704.0,
+              "candidate_median": 201656320.0
+            }
+          },
+          "cpu_per_tick_s": {
+            "baseline": [
+              0.00207902392578125,
+              0.002039896240234375,
+              0.00206347119140625,
+              0.00201729931640625,
+              0.0020541994628906247,
+              0.002032933837890625
+            ],
+            "candidate": [
+              0.00201326220703125,
+              0.00202709130859375,
+              0.002046338623046875,
+              0.002096937744140625,
+              0.00205610107421875,
+              0.0020319804687500003
+            ]
+          },
+          "engine_cpu_per_tick_s": {
+            "baseline": [
+              0.0019521272280273437,
+              0.0019235639748535157,
+              0.0019471409379882812,
+              0.0018938345358886718,
+              0.0019309344353027344,
+              0.0019105069089355468
+            ],
+            "candidate": [
+              0.0018981657341308595,
+              0.0019046102924804688,
+              0.001922139341796875,
+              0.0019791326135253904,
+              0.0019353294638671875,
+              0.00190964541796875
+            ]
+          },
+          "provenance": {
+            "pass_sha256": "410054c69ec0cac58e9bd7453c8909c5538e3f8229f7dd39d259a0f70bfd2d14",
+            "audit_sha256": "767eb910e8533c5600f1ec15597a8f7ffeb9468d0be340c8151c6016314be0d2",
+            "measurements_sha256": "6726757981bd839d3e5974e4c222d7f042b0d609261aeffe5839500fa5598ac6"
+          }
+        }
+      },
+      "windows": {},
+      "census": [],
+      "metrics": {
+        "simulation_cpu_s": {
+          "ratio": 0.9884001136218222,
+          "percent_change": -1.159988637817777,
+          "ci95": [
+            0.9762736983896197,
+            1.0019348324432302
+          ],
+          "percent_ci95": [
+            -2.372630161038025,
+            0.19348324432302277
+          ],
+          "seed_count": 3,
+          "paired_repeats": 18,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "simulation_wall_s": {
+          "ratio": 0.9933897490761195,
+          "percent_change": -0.6610250923880456,
+          "ci95": [
+            0.9794097259844281,
+            1.0085908466009077
+          ],
+          "percent_ci95": [
+            -2.0590274015571897,
+            0.8590846600907698
+          ],
+          "seed_count": 3,
+          "paired_repeats": 18,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "cpu_s": {
+          "ratio": 0.98841724962691,
+          "percent_change": -1.1582750373089978,
+          "ci95": [
+            0.9773054438805249,
+            1.000905092925075
+          ],
+          "percent_ci95": [
+            -2.269455611947513,
+            0.09050929250749018
+          ],
+          "seed_count": 3,
+          "paired_repeats": 18,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "wall_s": {
+          "ratio": 0.9928397873633192,
+          "percent_change": -0.7160212636680763,
+          "ci95": [
+            0.9808987370433733,
+            1.0059878418596035
+          ],
+          "percent_ci95": [
+            -1.910126295662673,
+            0.5987841859603549
+          ],
+          "seed_count": 3,
+          "paired_repeats": 18,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "peak_rss_bytes": {
+          "ratio": 0.8561188792533894,
+          "percent_change": -14.388112074661063,
+          "ci95": [
+            0.8494777509605277,
+            0.8637574111337324
+          ],
+          "percent_ci95": [
+            -15.05222490394723,
+            -13.62425888662676
+          ],
+          "seed_count": 3,
+          "paired_repeats": 18,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        }
+      },
+      "completed_seed_count": 3,
+      "expected_seed_count": 3,
+      "complete": true
+    }
+  },
+  "large_mixed": {
+    "telemetry-v1": {
+      "metrics": {
+        "simulation_cpu_s": {
+          "ratio": 1.014702510336253,
+          "percent_change": 1.4702510336253027,
+          "ci95": [
+            0.99347565796447,
+            1.0422095932917703
+          ],
+          "percent_ci95": [
+            -0.6524342035529984,
+            4.220959329177032
+          ],
+          "seed_count": 3,
+          "paired_repeats": 18,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "simulation_wall_s": {
+          "ratio": 1.0149102390872462,
+          "percent_change": 1.4910239087246202,
+          "ci95": [
+            0.9955153131319884,
+            1.0387547170639342
+          ],
+          "percent_ci95": [
+            -0.44846868680116225,
+            3.8754717063934185
+          ],
+          "seed_count": 3,
+          "paired_repeats": 18,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "cpu_s": {
+          "ratio": 1.012755075066912,
+          "percent_change": 1.2755075066912092,
+          "ci95": [
+            0.9923247923493675,
+            1.0387511055680783
+          ],
+          "percent_ci95": [
+            -0.7675207650632454,
+            3.875110556807826
+          ],
+          "seed_count": 3,
+          "paired_repeats": 18,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "wall_s": {
+          "ratio": 1.0108471403548964,
+          "percent_change": 1.0847140354896423,
+          "ci95": [
+            0.9928573363825008,
+            1.032008369555928
+          ],
+          "percent_ci95": [
+            -0.7142663617499156,
+            3.2008369555927896
+          ],
+          "seed_count": 3,
+          "paired_repeats": 18,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "peak_rss_bytes": {
+          "ratio": 0.8580975264722258,
+          "percent_change": -14.190247352777419,
+          "ci95": [
+            0.8515002634822629,
+            0.8641565997056709
+          ],
+          "percent_ci95": [
+            -14.849973651773707,
+            -13.584340029432907
+          ],
+          "seed_count": 3,
+          "paired_repeats": 18,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        }
+      },
+      "seed_percent_changes": {
+        "164298751": {
+          "cpu_s": 0.6991836576162536,
+          "wall_s": 0.8577011984803429,
+          "peak_rss_bytes": -14.544194750290252
+        },
+        "902381047": {
+          "cpu_s": -0.39481193297982164,
+          "wall_s": -0.4166087112748351,
+          "peak_rss_bytes": -13.968327614733356
+        },
+        "1738462951": {
+          "cpu_s": 3.5631794022921826,
+          "wall_s": 2.8396247370181094,
+          "peak_rss_bytes": -14.057098035399562
+        }
+      },
+      "comparators": "Each factor paired with fresh untouched baseline within its own job, same batch; V1/V2 ratios are not direct paired V2vsV1 observations."
+    },
+    "telemetry-v2": {
+      "metrics": {
+        "simulation_cpu_s": {
+          "ratio": 0.9884001136218222,
+          "percent_change": -1.159988637817777,
+          "ci95": [
+            0.9762736983896197,
+            1.0019348324432302
+          ],
+          "percent_ci95": [
+            -2.372630161038025,
+            0.19348324432302277
+          ],
+          "seed_count": 3,
+          "paired_repeats": 18,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "simulation_wall_s": {
+          "ratio": 0.9933897490761195,
+          "percent_change": -0.6610250923880456,
+          "ci95": [
+            0.9794097259844281,
+            1.0085908466009077
+          ],
+          "percent_ci95": [
+            -2.0590274015571897,
+            0.8590846600907698
+          ],
+          "seed_count": 3,
+          "paired_repeats": 18,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "cpu_s": {
+          "ratio": 0.98841724962691,
+          "percent_change": -1.1582750373089978,
+          "ci95": [
+            0.9773054438805249,
+            1.000905092925075
+          ],
+          "percent_ci95": [
+            -2.269455611947513,
+            0.09050929250749018
+          ],
+          "seed_count": 3,
+          "paired_repeats": 18,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "wall_s": {
+          "ratio": 0.9928397873633192,
+          "percent_change": -0.7160212636680763,
+          "ci95": [
+            0.9808987370433733,
+            1.0059878418596035
+          ],
+          "percent_ci95": [
+            -1.910126295662673,
+            0.5987841859603549
+          ],
+          "seed_count": 3,
+          "paired_repeats": 18,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        },
+        "peak_rss_bytes": {
+          "ratio": 0.8561188792533894,
+          "percent_change": -14.388112074661063,
+          "ci95": [
+            0.8494777509605277,
+            0.8637574111337324
+          ],
+          "percent_ci95": [
+            -15.05222490394723,
+            -13.62425888662676
+          ],
+          "seed_count": 3,
+          "paired_repeats": 18,
+          "bootstrap": "Seed resample then within-seed paired-repeat resample; deterministic RNG7134;4000 draws",
+          "credible_over5percent_regression": false
+        }
+      },
+      "seed_percent_changes": {
+        "164298751": {
+          "cpu_s": -2.1775052025878705,
+          "wall_s": -1.9437867136611553,
+          "peak_rss_bytes": -14.695529444458288
+        },
+        "902381047": {
+          "cpu_s": -1.1600624969731799,
+          "wall_s": -0.671808796359219,
+          "peak_rss_bytes": -14.873418147830597
+        },
+        "1738462951": {
+          "cpu_s": -0.12661921345425986,
+          "wall_s": 0.4823709554478528,
+          "peak_rss_bytes": -13.589755144415205
+        }
+      },
+      "comparators": "Each factor paired with fresh untouched baseline within its own job, same batch; V1/V2 ratios are not direct paired V2vsV1 observations."
+    }
+  },
+  "recommendation": "Adopt telemetryV2 representation/hint refinement, retain adverse and uncertain cells; rollback snapshot ownership V1/V2, keep optional independent census; worker sizing remains leading change. GPU candidates remain separate and pending.",
+  "accepted": false,
+  "recommendation_is_conditional_on_final_source_gates": true,
+  "provenance": {
+    "extension_analysis_sha256": "9f71db6622adbfd8b26f06dcef008307aab110dd3247e2738248d1329cdd731a",
+    "selected_worklist_sha256": "829a84e7bc211b966693fd275d69617b4f80741475463bf2133ff797e91a2be5",
+    "status_sha256": "8331671ab22f196c803a9583d94e8d36b3fd6b2669045d9496d1266757777c9d"
+  },
+  "scope_limits": [
+    "All24 fresh jobs completed with valid source/input/window gates; three mixedseeds\u00d7sixbalancedpairs pervariant, otherlayouts two seeds\u00d7threepairs.",
+    "Strong RSS reduction in all10measured CPUoff layouts; CPU/wall effects vary and wideintervals do not provezero regression.",
+    "No unmatched cohort pooling, no directV2vsV1 timingratio derived from separate baseline-normalized jobs.",
+    "Earlier initialV1 CPU+6.61% interval[+2.62,+10.89] was not reproduced at that magnitude in freshmixed V1; retainboth observations ratherthaneraseold ordeclarepersistent6.6%cost.",
+    "Earlier maturePGGPUon directV2vsV1 CPU+2.015% interval[+.344,+3.693] persistsasqualified adversecell; newinitialCPUoff data doesnot cancelit.",
+    "Descriptive hierarchicalbootstrap4000drawsRNG7134;2or3seeds/fewrepeats/manycomparisons, notglobal95%confidence orallhardware coverage.",
+    "Standalone factors are not finalintegrated-source performance or fullnativewinner proof."
+  ]
+}

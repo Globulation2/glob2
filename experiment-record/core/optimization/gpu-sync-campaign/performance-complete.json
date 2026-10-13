@@ -1,0 +1,8 @@
+{
+  "passed": true,
+  "selected_jobs": 14,
+  "plan_sha256": "0ab7346171ae82e9c3b22685593ffcf4dcf64aed34ebbc3fbc14e0b88bd7be8c",
+  "root_phase": "performance",
+  "diagnostic_only": false,
+  "all_gpu_jobs_recovered_claim": false
+}

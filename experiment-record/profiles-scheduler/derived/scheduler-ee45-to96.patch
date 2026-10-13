@@ -1,0 +1,111 @@
+diff --git a/src/common/ComputeExecutor.h b/src/common/ComputeExecutor.h
+index 9091743a1..54c594a5a 100644
+--- a/src/common/ComputeExecutor.h
++++ b/src/common/ComputeExecutor.h
+@@ -682,7 +682,7 @@ private:
+ 	}
+ 	// Under mutex: the earliest due, then earliest submitted, live batch with a
+ 	// claimable job. Only workers claim, unless there are none: then the owner
+-	// claims the jobs due no later than limit. claimable() has no side effect.
++	// claims the jobs due no later than limit. pick() has no side effect.
+ 	static bool before(const Slot& a, const Slot& b) { return a.due != b.due ? a.due < b.due : a.serial < b.serial; }
+ 	std::size_t group(const Slot& slot, std::size_t index) const
+ 	{
+@@ -718,12 +718,10 @@ private:
+ 		}
+ 		return best;
+ 	}
+-	bool claimable(bool owner, const Slot* limit = nullptr) const { return pick(owner, limit).valid; }
+ 	template<ComputeTelemetryMode Mode>
+-	Claim claim(bool owner, const Slot* limit = nullptr, unsigned thread = 0)
++	Claim take(const Claim& best, bool owner, unsigned thread = 0)
+ 	{
+ 		assert(owner == ownerRunsDeferred());
+-		const auto best = pick(owner, limit);
+ 		if (!best.valid) return best;
+ 		auto& slot = slots[best.slot];
+ 		slot.claimed[best.index] = 1; --slot.unclaimed;
+@@ -732,6 +730,12 @@ private:
+ 		return best;
+ 	}
+ 	template<ComputeTelemetryMode Mode>
++	Claim claim(bool owner, const Slot* limit = nullptr, unsigned thread = 0)
++	{
++		assert(owner == ownerRunsDeferred());
++		return take<Mode>(pick(owner, limit), owner, thread);
++	}
++	template<ComputeTelemetryMode Mode>
+ 	void freeSlot(Slot& slot)
+ 	{
+ 		event<Mode>(ComputeTelemetry::EventKind::Retire, std::size_t(&slot - slots.data()));
+@@ -831,11 +835,14 @@ const auto callbackEnd = Mode == ComputeTelemetryMode::Trace ? diagnosticStart<M
+ 		std::unique_lock<std::mutex> lock(mutex);
+ 		for (;;)
+ 		{
++            Claim selected;
+             ready.wait(lock,
+                        [&]
+                        {
+-                           return stopping || generation != seen || claimable(false) ||
+-                                  cpuPresentationClaimable(slot) || maintenanceClaimable(slot);
++                           selected = {};
++                           if (stopping || generation != seen) return true;
++                           selected = pick(false, nullptr);
++                           return selected.valid || cpuPresentationClaimable(slot) || maintenanceClaimable(slot);
+                        });
+             if (stopping)
+                 return;
+@@ -860,7 +867,9 @@ const auto callbackEnd = Mode == ComputeTelemetryMode::Trace ? diagnosticStart<M
+ 				if (--inFlight == 0) runFinished.notify_all();
+ 				continue;
+ 			}
+-			const auto claimed = claim<Mode>(false, nullptr, unsigned(slot));
++			// Priority branches above continue before consuming this selection;
++			// it is never retained across an unlock or a presentation callback.
++			const auto claimed = take<Mode>(selected, false, unsigned(slot));
+ 			if (!claimed.valid)
+ 			{
+                 if (!cpuPresentationClaimable(slot))
+diff --git a/src/common/ComputeExecutorHarness.cpp b/src/common/ComputeExecutorHarness.cpp
+index b6937bef8..ac451ebd6 100644
+--- a/src/common/ComputeExecutorHarness.cpp
++++ b/src/common/ComputeExecutorHarness.cpp
+@@ -1224,11 +1224,16 @@ TEST_CASE("trace preserves early external resolution and continuation callback o
+     auto batch = executor.submit(std::span(&group, 1), 8, {ComputeProducer::PeriodicGradient, 1, 4});
+     executor.join(batch, {JoinReason::TickDeadline, 4});
+     const auto snapshot = executor.telemetrySnapshot(true);
+-    unsigned starts = 0, ends = 0, completes = 0, suspensions = 0, resolutions = 0, runnable = 0;
++    unsigned starts = 0, ends = 0, completes = 0, suspensions = 0, resolutions = 0, runnable = 0, claims = 0;
+     for (const auto& stream : snapshot.streams) for (std::size_t i=0; i<stream.used; ++i) {
+         const auto& event = stream.storage[i];
+         CHECK(event.producer == ComputeProducer::PeriodicGradient);
+         CHECK(event.serial != 0);
++        if (event.kind == ComputeTelemetry::EventKind::Claim) {
++            ++claims;
++            CHECK(event.thread == 1); CHECK(event.job == 0); CHECK(event.lane == 2);
++            CHECK(event.due == 8); CHECK(event.observationTick == 1); CHECK(event.publicationTick == 4);
++        }
+         if (event.kind == ComputeTelemetry::EventKind::CallbackStart) ++starts;
+         if (event.kind == ComputeTelemetry::EventKind::CallbackEnd) ++ends;
+         if (event.kind == ComputeTelemetry::EventKind::Complete) ++completes;
+@@ -1236,7 +1241,7 @@ TEST_CASE("trace preserves early external resolution and continuation callback o
+         if (event.kind == ComputeTelemetry::EventKind::ExternalResolution) ++resolutions;
+         if (event.kind == ComputeTelemetry::EventKind::Runnable) ++runnable;
+     }
+-    CHECK(starts == 2); CHECK(ends == 2); CHECK(completes == 1);
++    CHECK(claims == 2); CHECK(starts == 2); CHECK(ends == 2); CHECK(completes == 1);
+     CHECK(suspensions == 1); CHECK(resolutions == 1); CHECK(runnable == 1);
+ }
+ }
+diff --git a/src/render/terrain/TerrainMaterialsTest.cpp b/src/render/terrain/TerrainMaterialsTest.cpp
+index 940be9a29..0ceca9d77 100644
+--- a/src/render/terrain/TerrainMaterialsTest.cpp
++++ b/src/render/terrain/TerrainMaterialsTest.cpp
+@@ -1521,6 +1521,7 @@ TEST_CASE("CPU terrain retires coverage when cells leave discovery [display]" *
+     fixture.game.map.setVertexTerrain(11, 11, WATER);
+     ComputeExecutor executor;
+     executor.configure(4);
++    executor.configureTelemetry(ComputeTelemetryMode::Trace);
+     GAGCore::PresentationWorkScope scope(executor);
+     std::array<SoftwareTerrainCache, 3> caches;
+     for (int phase = 0; phase < 3; ++phase)

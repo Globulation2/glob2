@@ -1,0 +1,108 @@
+Cancellation-only recovery prototype: not built, measured or accepted.
+Reference source is untouched2ced60e06. Source paths now live under src/field.
+
+Observed current chain:
+OpenCLGradient.cpp:1221-1230 protects failed transactions with owned slots,
+sets Device.failed and clears readyPlans. terminalProof():660-666 accepts only
+a covering event, successful query and status0. OpenCLTransferProof.h tracks
+unobserved commands after an event and permanently ambiguous enqueue failures.
+OpenCLGradient.cpp:822 checks cancellation before enqueueing a read event;
+after kernels this can leave no event covering the tail. Old positive upload
+events therefore correctly cannot reap the newer commands.
+OpenCLBorrowedLifetime.h:43-57 and RequiredLifetimePool.h:30-41 retain all
+payload/admission until positive proof and final external owner release.
+GradientDeviceService.cpp:194-211 already has one coordinator polling pending
+quarantine every100ms. Existing reapOpenCLRequiredQuarantine():1320 frees proven
+ownership but does not restore sticky Device.failed/readyPlans. initialize():423
+is one-shot, so initializeOpenCL is not an actual recovery operation.
+
+Minimal proposed experiment:
+One atomic typed health: Ready, CancellationSuspended, PermanentFailure.
+Serialize admission and mask publication/recovery under existing failureMutex.
+Cancellation does not poison BackendSession.failed. Permanent failures and
+already-failed sessions are never reset. No new broker/context/generation layer.
+After ordinary cancellation of previously unambiguous accepted commands,
+attempt at most one optional same-in-order-queue trailing marker event and flush.
+Track it through unchanged proof.enqueue; never clear ambiguous state or call
+drained merely for an enqueue. Missing marker/event, enqueue/flush/query errors
+and negative status keep permanent fail-stop. Existing events can prove only
+their covered prefix. No clFinish; background production DeviceService owns
+recovery maintenance. Public synchronous backend calls retain caller responsibility;
+no universal owner-free or bounded driver-call latency claim.
+Only the existing background reaper can restore the compiled mask after ALL
+retained transfers have positive proof, zero active lanes and healthy kernel.
+Canceled GPU outputs remain abandoned; exact CPU fallback owns originals once.
+Budgets remain64slots,64MiB shared host,128MiB perDevice and charged until proof.
+
+Rejected broader alternative:
+Creating new Device/context epochs would need TLS-lane invalidation, old reaper
+ownership and aggregate device budgets; current perDevice128MiB could multiply.
+No such redesign is authorized in this prototype. Unknown/missing/noncovering
+proof remains a real recovery blocker; never route around retained ownership.
+
+Primary specification references:
+https://registry.khronos.org/OpenCL/specs/unified/refpages/man/html/clEnqueueMarkerWithWaitList.html
+Empty wait-list marker covers prior queue commands; queryable event requires
+successful enqueue. OpenCL1.2 symbol can be optional for recovery.
+https://registry.khronos.org/OpenCL/specs/unified/refpages/man/html/clGetEventInfo.html
+Status0 differs from negative abnormal completion; status query is not host
+memory synchronization. This prototype does not accept/read abandoned output.
+Normal successful readback synchronization is isolated in gpu-sync/adapter.patch,
+which is layered identically into this source. recovery-only.patch excludes that
+prerequisite. The reaper never consumes abandoned output and has no new driver wait.
+
+Existing fault inventory:
+TransferProofTest:9 old events/ambiguity; :28 failed drain retains private flags,
+descriptors/upload/readback while CPU originals recover exactly once.
+BorrowedLifetimeTest:37 repeated failure/later proof; :58 external aliases;
+:73 no destruction/admission release for failed proof.
+RequiredLifetimePoolTest:41 independent bounded lanes; :60 payload/credits;
+:86 parent pinned by quarantine; :108 concurrent proof callbacks serialized.
+RequiredControlTest:6 cancellation and monotonic deadline metadata.
+OpenCLGradientTest:596 observed but uncommitted device output; :802 isolated
+query failure retains cost graph through exact CPU fallback and later proof;
+:838 host pressure preserves seeds/readiness. Generic query failure stays hard.
+GradientPipelineHarness:733 exactly-once worker recovery; :849 stop/reconfigure;
+:876 shutdown/restart; :910 singleton coordinator; :934 publication cancellation;
+:997 bounded queue pressure recovery.
+
+New focused tests planned/prepared:
+Atomic typed health/permanent-failure races; active/pending-proof blockers;
+old event+new kernel rejection; covering marker acceptance without ambiguity
+reset; missing/error marker, query/negative status retention; exactly-one CPU
+fallback, last-alias release; isolated real cancellation before read, later
+positive coordinator proof and a fresh field actually committed on GPU.
+
+Finite root-owned qualification after96+68+24 timing and compile checkpoint:
+Release fault/lifetime suites first, genuine device commit required (no skip).
+Independent field oracles at31x17,128x128,256x256 with blocked/weighted costs.
+Game conformance Playground1288Nicowar/Oazis25611Nicowar,2original+1holdoutseed,
+counts3/auto,GPUoff/on,8192initial+8192mature loadedwindows. Exact GCS/world,
+replay/AIT1 and save continuation; diagnostic outputs excluded from timing.
+Only if safe sustained device work returns, paired original/prototype GPUon3
+on bothmaps2seeds3reps+warmup plusGPUoff3negativecontrol. Same6SMTmask perpair.
+Report actual GPU requests/selections/commits/fallback causes/recoveries and
+retained host/device bytes. No speed promise: extra retries can be slower.
+
+Review follow-up: preserve typed shared cost-plane cancellation.
+Plane now preallocates a small RequiredCanceled exception alongside the existing
+fixed generic preparation error; both live inside the charged sizeof(Plane)+1024
+metadata admission. The cancellation catch stores only the typed preallocated
+exception in the promise, evicts the same failed cache slot and rethrows. Every
+same-plane waiter therefore takes cancellation CPU recovery without poisoning
+its session. Generic API/validation errors remain permanent.
+An opt-in GLOB2_TEST_OPENCL_COST_CANCELLATION fault rendezvous counts live
+awaitPlane entrants atomically. Its reader only touches bounded shared metadata;
+never call openCLStatus while producer is parked because lane locks are held.
+The overlap test parks producer costAt after cache publication, waits for a real
+same-identity entrant, cancels producer and releases a promise barrier. Bounded
+rendezvous plus joining cleanup avoids a scheduling-sleep correctness claim.
+Both original fields require exactly one CPU recovery/identical oracle results,
+healthy sessions/readiness, and a fresh same-identity field must really use GPU.
+Existing64/128MiB budgets and slot/lane capacities stay unchanged.
+
+Independent read-only review confirms the overlap rendezvous and promise typing.
+The five-second watchdog bounds rendezvous only, not driver calls or joining a
+hung driver lane. Root must keep an external per-test process timeout; no bounded
+OpenCL API latency claim. cancellationFences counts accepted marker events with
+successful flush, not unsuccessful enqueue attempts or completed/reaped events.

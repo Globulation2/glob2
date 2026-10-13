@@ -1,0 +1,27 @@
+{
+  "source": "96da258e5a6b24a57a8848f2bfa0178031331322",
+  "tree": "63d18b69950651b00e9e40a4d96a14d1a25b62cd",
+  "source_clean": true,
+  "all_three_binaries_unchanged": true,
+  "artifact_sha256": {
+    "execute.py": "71763eb6b4e663436e33eed3eab3d19cd3e73db773e893add0956e1c07ad7fce",
+    "commands.json": "8331924b2dbb37cac2fb988795ba1077ad3b056134b8d1b669e960f2898ab880",
+    "inventory.json": "5a7027fa34c0798926c1062ca76362761f58155f4419092b99e9954a5e20a053",
+    "listing-receipt.json": "81c9512c4a03ef8ab7f846989e7580382dbe3966616de69d5c785adc00186e84",
+    "complete.json": "61674620c460e8af803443496bd774a9638739f99740e09df94ec0f8612624fd",
+    "inherited-152-comparison.json": "863537b547d3af72b8e13e15bd32226d1128c774d037a9f2d52ea769266376a1"
+  },
+  "build_receipt_sha256": "f8ca3618744a1de69b58a568cf94e621726a3b20dad9775f93db4fdcfd43b0b5",
+  "headless": {
+    "unit": "215/215 pass",
+    "engine": "237/238 pass; one exact inherited152 failure"
+  },
+  "display": "2/2 unit +27/27 engine pass under explicit X11/dummy",
+  "terrain_trace_fixture": {
+    "passed": true,
+    "junit_sha256": "9395b301f725e9dec8610ba1967847f3c198d6b273f3c34be5c8c8372637f180",
+    "scope": "Fixture opt-in Trace and successful parallelBatches assertion; intended admitted executor path observed, not timing/speed proof."
+  },
+  "priority_slot_reuse_fixture": "Not compiled in96da; not run and not claimed. Existing presentation/maintenance/lane/traceClaim coverage included.",
+  "games_or_performance_runs": 0
+}

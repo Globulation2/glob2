@@ -1,0 +1,24 @@
+{
+  "command": [
+    "taskset",
+    "-c",
+    "12-14,28-30",
+    "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/baseline/source/build/linux/client/release/src/glob2",
+    "map",
+    "generate",
+    "isles",
+    "--seed",
+    "713",
+    "--width",
+    "512",
+    "--height",
+    "512",
+    "--teams",
+    "4",
+    "--output",
+    "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/maps/large-ni.map",
+    "--report-file",
+    "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/maps/large-ni.json"
+  ],
+  "returncode": 0
+}

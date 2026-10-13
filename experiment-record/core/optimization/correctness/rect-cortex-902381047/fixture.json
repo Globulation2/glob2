@@ -1,0 +1,35 @@
+{
+  "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/artifacts/engine-optimization/correctness/rect-cortex-902381047/fixture/initial.game.gz",
+  "header": {
+    "major": 0,
+    "minor": 154,
+    "teams": 2,
+    "width": 64,
+    "height": 128,
+    "map_offset": 684738,
+    "gzip_sha256": "bae2e000386a08378d005cf81e005f2e288b99cb090be9b5fff6c1cf9765b028"
+  },
+  "start_tick": 0,
+  "start_tick_evidence": "save occurs before first simulation tick; loaded trace checked below",
+  "preparation_trace": {
+    "sha256": "050beaf0ef7faa00c70191bb003f15abe39e7e223d4e3132cfa2bb4741609517",
+    "teams": 2,
+    "players": 2,
+    "count": 1,
+    "first_tick": 0,
+    "last_tick": 0,
+    "flags": 0
+  },
+  "scenario": {
+    "id": "rect-cortex",
+    "generator": "swamp",
+    "width": 64,
+    "height": 128,
+    "ais": [
+      "cortex",
+      "cabino"
+    ],
+    "ticks": 8192
+  },
+  "seed": 902381047
+}

@@ -1,0 +1,14 @@
+{
+  "complete": true,
+  "focused_roles_passed": [
+    "engine",
+    "unit"
+  ],
+  "broader_compatibility_passed": true,
+  "known_four_retained_failures": 4,
+  "known_first_messages_match": true,
+  "build_manifest_sha256": "2df42aebca03f2727c8993cc6e7f70a8113402907004ddfa9e1a430b3bffd1a8",
+  "runner_sha256": "27cce839c200cc32c200df42265970e011bbd52051482c181abbd3979cd48622",
+  "approval_sha256": "18e3f9b61d0f05cb3c4ac4d7f15319690d21ff51def6104fc4d8777e50164f04",
+  "qualification": "No browser/game/multiplatform acceptance implied; known4 remain failures."
+}

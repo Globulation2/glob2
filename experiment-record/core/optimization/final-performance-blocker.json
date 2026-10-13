@@ -1,0 +1,11 @@
+{
+  "recorded_utc": "2026-10-12T09:43:48.122861+00:00",
+  "failed_campaign": "final-combined-performance",
+  "accepted_jobs": 0,
+  "cause": "Candidate memory fell below audit/paired-controller high-water mark; original benchmark conservatively rejected RSS measurements. Four first jobs stopped in warmup.",
+  "raw_evidence_preserved": true,
+  "core_source_unchanged": true,
+  "correctness_complete": true,
+  "repair": "Fresh per-game low-memory execute controller; unchanged native benchmark wait4/timer and strict RSS floor. New adapter/cohort after diagnostic pilot.",
+  "full_natural_launched": false
+}

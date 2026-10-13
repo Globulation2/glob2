@@ -1,0 +1,435 @@
+[
+  {
+    "date": "2026-09-02",
+    "pairs": {}
+  },
+  {
+    "date": "2026-09-05",
+    "pairs": {
+      "ticks_per_second": {
+        "change_percent": -51.11135692620101,
+        "bootstrap95_percent": [
+          -53.50526037754465,
+          -48.80310104186707
+        ]
+      },
+      "cpu_seconds_per_tick": {
+        "change_percent": 103.55931064287405,
+        "bootstrap95_percent": [
+          95.92154195158763,
+          112.17288915723297
+        ]
+      },
+      "wall_seconds": {
+        "change_percent": 148.13241570206506,
+        "bootstrap95_percent": [
+          92.58470336061195,
+          221.21674954243966
+        ]
+      },
+      "peak_rss_kib": {
+        "change_percent": 0.5921394817445913,
+        "bootstrap95_percent": [
+          0.09335350336023285,
+          1.1034492933620084
+        ]
+      }
+    }
+  },
+  {
+    "date": "2026-09-08",
+    "pairs": {
+      "ticks_per_second": {
+        "change_percent": 15.840692448377581,
+        "bootstrap95_percent": [
+          10.190908592721634,
+          21.62979618238954
+        ]
+      },
+      "cpu_seconds_per_tick": {
+        "change_percent": -13.926969825365376,
+        "bootstrap95_percent": [
+          -17.733926342778627,
+          -9.781099780589264
+        ]
+      },
+      "wall_seconds": {
+        "change_percent": -23.32001360578062,
+        "bootstrap95_percent": [
+          -40.100376599664436,
+          -1.1759232471638097
+        ]
+      },
+      "peak_rss_kib": {
+        "change_percent": 32.190349082327565,
+        "bootstrap95_percent": [
+          29.16735053619792,
+          35.28849362288407
+        ]
+      }
+    }
+  },
+  {
+    "date": "2026-09-11",
+    "pairs": {
+      "ticks_per_second": {
+        "change_percent": -47.35416514200163,
+        "bootstrap95_percent": [
+          -50.51640941425931,
+          -43.9454903350229
+        ]
+      },
+      "cpu_seconds_per_tick": {
+        "change_percent": 93.08257373840011,
+        "bootstrap95_percent": [
+          82.44371785894931,
+          104.15211242876478
+        ]
+      },
+      "wall_seconds": {
+        "change_percent": 133.56630826234607,
+        "bootstrap95_percent": [
+          83.86755619231518,
+          191.1879500285231
+        ]
+      },
+      "peak_rss_kib": {
+        "change_percent": 23.197122215573064,
+        "bootstrap95_percent": [
+          19.469243626451153,
+          27.049447502097987
+        ]
+      }
+    }
+  },
+  {
+    "date": "2026-09-14",
+    "pairs": {
+      "ticks_per_second": {
+        "change_percent": 17.524634062333334,
+        "bootstrap95_percent": [
+          10.150763679813384,
+          24.460597902655977
+        ]
+      },
+      "cpu_seconds_per_tick": {
+        "change_percent": -14.81460493656429,
+        "bootstrap95_percent": [
+          -19.25201568107869,
+          -9.544135066535365
+        ]
+      },
+      "wall_seconds": {
+        "change_percent": -29.991472168207444,
+        "bootstrap95_percent": [
+          -37.97101097186118,
+          -19.465317066636704
+        ]
+      },
+      "peak_rss_kib": {
+        "change_percent": 21.98607349676802,
+        "bootstrap95_percent": [
+          18.192829320432434,
+          26.00029270236701
+        ]
+      }
+    }
+  },
+  {
+    "date": "2026-09-17",
+    "pairs": {
+      "ticks_per_second": {
+        "change_percent": 0.26735859955786534,
+        "bootstrap95_percent": [
+          -0.6181613329610713,
+          1.220485732897299
+        ]
+      },
+      "cpu_seconds_per_tick": {
+        "change_percent": -0.27391099758312665,
+        "bootstrap95_percent": [
+          -1.1714073059180168,
+          0.6264064615058406
+        ]
+      },
+      "wall_seconds": {
+        "change_percent": -0.2749462588295004,
+        "bootstrap95_percent": [
+          -1.1343864624663438,
+          0.5868015256567988
+        ]
+      },
+      "peak_rss_kib": {
+        "change_percent": 8.196411331046471,
+        "bootstrap95_percent": [
+          7.835771275464197,
+          8.579767683284164
+        ]
+      }
+    }
+  },
+  {
+    "date": "2026-09-20",
+    "pairs": {
+      "ticks_per_second": {
+        "change_percent": 25.946774116514515,
+        "bootstrap95_percent": [
+          24.58879918219241,
+          27.234341236868723
+        ]
+      },
+      "cpu_seconds_per_tick": {
+        "change_percent": -20.772605295143865,
+        "bootstrap95_percent": [
+          -21.524139326301025,
+          -19.94823440194396
+        ]
+      },
+      "wall_seconds": {
+        "change_percent": -20.944811750589707,
+        "bootstrap95_percent": [
+          -21.656535628371778,
+          -20.150278922249676
+        ]
+      },
+      "peak_rss_kib": {
+        "change_percent": 0.567262439578009,
+        "bootstrap95_percent": [
+          0.21442465812576916,
+          0.9085736176825059
+        ]
+      }
+    }
+  },
+  {
+    "date": "2026-09-23",
+    "pairs": {
+      "ticks_per_second": {
+        "change_percent": 1.2004480191331268,
+        "bootstrap95_percent": [
+          0.18478944371017716,
+          2.3092873932457247
+        ]
+      },
+      "cpu_seconds_per_tick": {
+        "change_percent": -0.9806201204061837,
+        "bootstrap95_percent": [
+          -1.9983186147381582,
+          -0.06574003391162771
+        ]
+      },
+      "wall_seconds": {
+        "change_percent": -0.6884000162186377,
+        "bootstrap95_percent": [
+          -1.5358592109477085,
+          0.05621928019598478
+        ]
+      },
+      "peak_rss_kib": {
+        "change_percent": 0.490667102815201,
+        "bootstrap95_percent": [
+          0.2184608868271859,
+          0.7583227133326552
+        ]
+      }
+    }
+  },
+  {
+    "date": "2026-09-26",
+    "pairs": {
+      "ticks_per_second": {
+        "change_percent": -0.33608116182056724,
+        "bootstrap95_percent": [
+          -0.9787904647037479,
+          0.2807022374175111
+        ]
+      },
+      "cpu_seconds_per_tick": {
+        "change_percent": 0.22940612756454648,
+        "bootstrap95_percent": [
+          -0.38870829981145494,
+          0.8760100124261482
+        ]
+      },
+      "wall_seconds": {
+        "change_percent": 0.07454658568597505,
+        "bootstrap95_percent": [
+          -0.5145989439011872,
+          0.6791729440366873
+        ]
+      },
+      "peak_rss_kib": {
+        "change_percent": 2.8960592435863575,
+        "bootstrap95_percent": [
+          2.6370990263889333,
+          3.1561025400733307
+        ]
+      }
+    }
+  },
+  {
+    "date": "2026-09-29",
+    "pairs": {
+      "ticks_per_second": {
+        "change_percent": 55.70726076145842,
+        "bootstrap95_percent": [
+          45.389773591409,
+          66.50356746367295
+        ]
+      },
+      "cpu_seconds_per_tick": {
+        "change_percent": -10.70983446002256,
+        "bootstrap95_percent": [
+          -16.431669935945834,
+          -4.401072726154456
+        ]
+      },
+      "wall_seconds": {
+        "change_percent": -40.686819169751686,
+        "bootstrap95_percent": [
+          -50.75946342941064,
+          -27.588671239064606
+        ]
+      },
+      "peak_rss_kib": {
+        "change_percent": 36.72693840024517,
+        "bootstrap95_percent": [
+          29.565674018348467,
+          44.26565413538421
+        ]
+      }
+    }
+  },
+  {
+    "date": "2026-10-02",
+    "pairs": {
+      "ticks_per_second": {
+        "change_percent": 0.1915684073351409,
+        "bootstrap95_percent": [
+          -0.6334840440344438,
+          1.017055869755534
+        ]
+      },
+      "cpu_seconds_per_tick": {
+        "change_percent": -0.5930736213116461,
+        "bootstrap95_percent": [
+          -2.322314470953639,
+          1.1730583535478738
+        ]
+      },
+      "wall_seconds": {
+        "change_percent": -0.06843576239954352,
+        "bootstrap95_percent": [
+          -0.9656776769782138,
+          0.8585931477485146
+        ]
+      },
+      "peak_rss_kib": {
+        "change_percent": -5.662767509692457,
+        "bootstrap95_percent": [
+          -5.829632193798146,
+          -5.4908395233849205
+        ]
+      }
+    }
+  },
+  {
+    "date": "2026-10-05",
+    "pairs": {
+      "ticks_per_second": {
+        "change_percent": 5.693492969100711,
+        "bootstrap95_percent": [
+          0.7330912688164954,
+          11.160564698154658
+        ]
+      },
+      "cpu_seconds_per_tick": {
+        "change_percent": 0.03775745298044697,
+        "bootstrap95_percent": [
+          -3.3404125041852493,
+          3.4354352436699895
+        ]
+      },
+      "wall_seconds": {
+        "change_percent": -6.998415474912911,
+        "bootstrap95_percent": [
+          -19.273495023292888,
+          6.12876624760698
+        ]
+      },
+      "peak_rss_kib": {
+        "change_percent": 64.16185591347083,
+        "bootstrap95_percent": [
+          59.35874193519883,
+          68.78588365684949
+        ]
+      }
+    }
+  },
+  {
+    "date": "2026-10-08",
+    "pairs": {
+      "ticks_per_second": {
+        "change_percent": -20.207801535758563,
+        "bootstrap95_percent": [
+          -23.763511552434487,
+          -16.150915664405886
+        ]
+      },
+      "cpu_seconds_per_tick": {
+        "change_percent": 160.47405348110865,
+        "bootstrap95_percent": [
+          149.54940473088502,
+          171.65705947150659
+        ]
+      },
+      "wall_seconds": {
+        "change_percent": 26.25076818043224,
+        "bootstrap95_percent": [
+          6.681864506293144,
+          49.038781616441725
+        ]
+      },
+      "peak_rss_kib": {
+        "change_percent": 44.54708695209646,
+        "bootstrap95_percent": [
+          40.62633817749083,
+          48.434363334320686
+        ]
+      }
+    }
+  },
+  {
+    "date": "2026-10-11",
+    "pairs": {
+      "ticks_per_second": {
+        "change_percent": 0.018909253238108548,
+        "bootstrap95_percent": [
+          -2.7307652196343533,
+          2.480366744238746
+        ]
+      },
+      "cpu_seconds_per_tick": {
+        "change_percent": 0.4587461645688018,
+        "bootstrap95_percent": [
+          -1.7662869503037806,
+          3.097049624415268
+        ]
+      },
+      "wall_seconds": {
+        "change_percent": 4.044093866205256,
+        "bootstrap95_percent": [
+          -11.767249598914793,
+          23.37263892772832
+        ]
+      },
+      "peak_rss_kib": {
+        "change_percent": 61.04033106199789,
+        "bootstrap95_percent": [
+          56.790336202365744,
+          65.53934768599505
+        ]
+      }
+    }
+  }
+]

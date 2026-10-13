@@ -1,0 +1,109 @@
+{
+  "state": "prepared_not_profiled",
+  "cases": [
+    {
+      "id": "callgrind-oazis-mature124000-132192-t3-gpuoff",
+      "binary": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/mature-callgrind/symbolic/glob2",
+      "binary_sha256": "a59b9c80660eefbbe3c6240366cb6e31adcaeee77f283d8ec39d6d7a79c4af05",
+      "argv": [
+        "taskset",
+        "-c",
+        "12,13,14,28,29,30",
+        "/usr/bin/valgrind",
+        "--tool=callgrind",
+        "--instr-atstart=no",
+        "--collect-atstart=yes",
+        "--cache-sim=no",
+        "--branch-sim=no",
+        "--separate-threads=no",
+        "--callgrind-out-file=/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/mature-callgrind/profile/callgrind.%p",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/mature-callgrind/symbolic/glob2",
+        "dev",
+        "random-games",
+        "--runs",
+        "1",
+        "--ticks",
+        "132192",
+        "--map",
+        "Oazis",
+        "--matchup",
+        "nicowar,nicowar,nicowar,nicowar,nicowar,nicowar,nicowar,nicowar,nicowar,nicowar,nicowar",
+        "--compute-threads",
+        "3",
+        "--gpu",
+        "off"
+      ],
+      "cwd": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/snapshots/2026-10-11-9a08b91f4/runtime",
+      "environment": {
+        "GLOB2_TEST_SEED": "1056243202",
+        "GLOB2_TEST_MAX_TICKS": "132192",
+        "GLOB2_USER_DIR": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/mature-callgrind/profile/profile",
+        "GLOB2_USER_DATA_DIR": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/mature-callgrind/profile/profile",
+        "SDL_VIDEODRIVER": "dummy",
+        "SDL_AUDIODRIVER": "dummy",
+        "GLOB2_OPENCL_DEVICE": "0",
+        "GLOB2_ASSET_DIR": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/snapshots/2026-10-11-9a08b91f4/runtime",
+        "GLOB2_INV_MATURE_CALLGRIND": "1"
+      },
+      "remove_inherited_environment": [
+        "GLOB2_ASSET_DIR",
+        "GLOB2_BUILDING_DEPTH",
+        "GLOB2_CHECKSUM_SIDECAR",
+        "GLOB2_GRADIENT_BACKEND",
+        "GLOB2_GRADIENT_DIAGNOSTICS",
+        "GLOB2_GRADIENT_STATS",
+        "GLOB2_INV_FINAL_CHECKSUM",
+        "GLOB2_INV_HEADLESS_TICK_US",
+        "GLOB2_INV_MATURE_CALLGRIND",
+        "GLOB2_INV_OPENCL_FIRST_QUARANTINE",
+        "GLOB2_INV_OPENCL_STATUS",
+        "GLOB2_INV_POOL_SLOTS",
+        "GLOB2_INV_REPLAY_CAPACITY",
+        "GLOB2_INV_REPLAY_RESERVE",
+        "GLOB2_PERF_DISABLE",
+        "GLOB2_REPLAY_PATH",
+        "GLOB2_SIM_THREAD",
+        "GLOB2_TEAM_TIMELINE",
+        "MALLOC_ARENA_MAX"
+      ],
+      "map_file": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/snapshots/2026-10-11-9a08b91f4/runtime/maps/Oazis.map",
+      "map_sha256": "cd80d8c9a72643a95bb0bd3c22deb594aeed125d12cb3294859e7fffbc131448",
+      "expected": {
+        "width": 256,
+        "height": 256,
+        "teams": 11,
+        "controllers": 12,
+        "ticks": 132192,
+        "ended": 0,
+        "winner": -1
+      },
+      "output_directory": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-investigations/mature-callgrind/profile",
+      "qualification": "Aggregate-only labelled8192counterincrement dump. Valgrind instrumentationoff prefix remains diagnosticVEX/threadexecution. Genericrun_callgrind collector/analyzer is insufficient asacceptance: require marker/reference/dump-part verifier and do notoverwriteoldinitialprofile summary.",
+      "timeout_seconds": 3600,
+      "timing_excluded": true,
+      "expected_dump_label": "OAZIS_MATURE_COUNTER_124000_TO_132192",
+      "counted_interval": [
+        124000,
+        132192
+      ],
+      "native_reference_case": "mature-callgrind-oazis132192-original-reference",
+      "actual_map_file": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/engine-history-oazis/snapshots/2026-10-11-9a08b91f4/runtime/maps/Playground.map",
+      "actual_map_sha256": "cd80d8c9a72643a95bb0bd3c22deb594aeed125d12cb3294859e7fffbc131448",
+      "build_manifest_sha256": "48fa90c5f0e6494275f21507e6315eea0adc110c836e01fe505743ccbee415e7",
+      "argv_sha256": "aa7523a299297d92b1529360b7bb053547a7e1dd3228498c97264424ebd31362",
+      "marker_schema": {
+        "start_counter": 124000,
+        "end_counter": 132192,
+        "steps": 8192,
+        "running_on_valgrind": 1,
+        "label": "OAZIS_MATURE_COUNTER_124000_TO_132192"
+      }
+    }
+  ],
+  "metadata_repair": {
+    "utc": "2026-10-12T02:45:42.394708+00:00",
+    "source_binary_unchanged": true,
+    "original_plan_sha256": "e8c4122172cbb7dbdc08f389a34208b3892bd89c5d6aff7948647e77917f887d",
+    "note": "Script-only hardening after one-TU build: actualmapalias hash, existing expectedcapend/winner schema, exactargv/currentbuild binding. No flags/source/binary/control inputs changed; originalplan retained."
+  }
+}

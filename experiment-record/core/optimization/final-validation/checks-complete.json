@@ -1,0 +1,10 @@
+{
+  "complete": true,
+  "build_manifest_sha256": "2df42aebca03f2727c8993cc6e7f70a8113402907004ddfa9e1a430b3bffd1a8",
+  "binary_sha256": "ea5dbd7f5e30c129b0f554796beb8a67ec96041baef4b70c9310df7863faa406",
+  "integration_cases": 25,
+  "diagnostic_children": 130,
+  "baseline_junit_sha256": "ad5140f6f1208b62a7539cc3a66e3babe401a8de681cc0cc27c4c4fa10351f83",
+  "known_baseline_failures": 4,
+  "final_performance_pending": true
+}

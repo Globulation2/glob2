@@ -1,0 +1,14 @@
+{
+  "build/linux/client/release/src/glob2": {
+    "path": "/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2/build/linux/client/release/src/glob2",
+    "sha256": "42de4e7766bf7bdb8f0e1abf7bb6b9da7465bffbee2b4a00b2437e965e0d7f61"
+  },
+  "build/linux/client/release/test/glob2-unit-tests": {
+    "path": "/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2/build/linux/client/release/test/glob2-unit-tests",
+    "sha256": "8577aaf990bfcf01d21fdc59af03bb9737ee027224a13df0e915651638ed800d"
+  },
+  "build/linux/client/release/test/glob2-engine-tests": {
+    "path": "/home/bradley/.codex/worktrees/scheduler-selection-telemetry/glob2/build/linux/client/release/test/glob2-engine-tests",
+    "sha256": "8633defcf13b50da7c7d24bd4f35e9fcc5efcaa423052895eeece82642899dbe"
+  }
+}
