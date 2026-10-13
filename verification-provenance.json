@@ -23,6 +23,9 @@
     "mac-replay-admission.xml": "73e5ca614912f01d277c8ce3f251eafa5221110413eff9e9a08aa7958f2774ab",
     "regression-verification.json": "2ea0ab677db68e6456985caad6378bd719931ea5b82221828a84276c4e57327f",
     "mac-strategy-tests.xml": "117b4b72951dcad37e5b1c44a8bcb895a0bd9ad3a94417bb888b5bfbbea45b48",
-    "source-provenance.json": "44bbeda5f2098505414ebd2e41f7c7055cf17618c0a386a47d8200f13669a1b6"
-  }
+    "source-provenance.json": "44bbeda5f2098505414ebd2e41f7c7055cf17618c0a386a47d8200f13669a1b6",
+    "cross-platform-regression.json": "e7fd9006471353174d52ae8b2344bb23e71168a81af274439c809b3f83fc176b",
+    "mac-regression-evidence.tar.gz": "ef7ddabd1781ea7b772cce2ca548baf2ff19027d6377d4fca01aef6585dc2ad7"
+  },
+  "mac_linux_regression": "All32768compact per-tick checksums match on macOSarm64/Linuxx86-64 with1/4compute participants, isolated corrected consumer; Mac memory cap not applied"
 }
