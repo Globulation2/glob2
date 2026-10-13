@@ -389,22 +389,26 @@ TEST_SUITE("SurfaceCoverage")
                 REQUIRE(SDL_FillSurfaceRect(source.get(), &right, 0xff0000ff));
                 auto backend = makeSoftwareRenderBackend(target.get());
                 const int identity = 0;
-                REQUIRE(backend->blitPixels(&identity, source.get(), 1, {0,0,2,2}, {0,0,2,2}, 255));
+                REQUIRE(backend->blitPixels(&identity, source.get(), 1, {0,0,4,2}, {0,0,4,2}, 255));
                 REQUIRE(backend->blitPixels(&identity, source.get(), 1, right, {2,0,2,2}, 255));
                 CHECK(backend->operations().rasterSnapshotBytes == 32);
                 CHECK(backend->operations().rasterSourceReuses == 1);
                 REQUIRE(SDL_FillSurfaceRect(source.get(), nullptr, 0xff00ff00));
                 REQUIRE(backend->blitPixels(&identity, source.get(), 2, {0,0,2,2}, {4,0,2,2}, 255));
-                CHECK(backend->operations().rasterSourceRetainedBytes == 64);
+                CHECK(backend->operations().rasterSourceRetainedBytes == 48);
                 backend->present();
-                CHECK(backend->operations().rasterSourceRetainedBytes == 32);
+                CHECK(backend->operations().rasterSourceRetainedBytes == 16);
                 const auto read = [&](int x) { Uint32 value; std::memcpy(&value, static_cast<Uint8*>(target->pixels)+x*4, 4); return value; };
                 CHECK(read(0) == 0xffff0000);
                 CHECK(read(2) == 0xff0000ff);
                 CHECK(read(4) == 0xff00ff00);
-                REQUIRE(backend->blitPixels(&identity, source.get(), 2, {2,0,2,2}, {6,0,2,2}, 255));
+                REQUIRE(backend->blitPixels(&identity, source.get(), 2, {1,0,1,1}, {6,0,1,1}, 255));
                 backend->present();
                 CHECK(read(6) == 0xff00ff00);
+                // A crop outside the retained region takes a new immutable copy.
+                REQUIRE(backend->blitPixels(&identity, source.get(), 2, right, {8,0,2,2}, 255));
+                backend->present();
+                CHECK(read(8) == 0xff00ff00);
                 CHECK(backend->operations().rasterSnapshotBytes == 64);
                 CHECK(backend->operations().rasterSourceReuses == 2);
                 backend->forget(&identity);
@@ -572,7 +576,7 @@ TEST_SUITE("SurfaceCoverage")
         CHECK(RenderWorkReservation::available() == available);
     }
 
-    TEST_CASE("large revisioned crops copy only requested pixels without retaining full images")
+    TEST_CASE("large revisioned sources share requested regions without copying offscreen pixels")
     {
         glob2test::ScopedEnvironment mode("GLOB2_RENDER_EXECUTION", "serial");
         const auto available = RenderWorkReservation::available();
@@ -588,8 +592,10 @@ TEST_SUITE("SurfaceCoverage")
                 REQUIRE(backend->blitPixels(&source,source.getSDLSurface(),source.contentRevision(),
                                            crop,{x,0,8,4},255));
             backend->flush();
-            CHECK(backend->operations().rasterSnapshotBytes == 2u*8u*4u*4u);
-            CHECK(backend->operations().rasterSourceReuses == 0);
+            CHECK(backend->operations().rasterSnapshotBytes == 8u*4u*4u);
+            CHECK(backend->operations().rasterSourceReuses == 1);
+            CHECK(backend->operations().rasterSourceRetainedBytes == 8u*4u*4u);
+            backend->forget(&source);
             CHECK(backend->operations().rasterSourceRetainedBytes == 0);
             CHECK(pixel(target,2,2) == std::array<int,3>{31,77,191});
             CHECK(pixel(target,18,2) == std::array<int,3>{31,77,191});

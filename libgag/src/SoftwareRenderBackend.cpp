@@ -143,10 +143,10 @@ class SoftwareRenderBackend final : public RenderBackend
         const auto [targetFirst, targetLast] = range(target);
         const bool aliased = first < targetLast && targetFirst < last;
         if (aliased) { flush(); sourceCache.erase(identity); }
+        // Cache only regions that can survive warm-set trimming. Larger draws
+        // retain the same bounded per-draw regional capture as anonymous views.
         const bool reusable = identity && !aliased && source->pitch > 0 &&
-            // Large cropped images cannot survive warm-set trimming. Keep their
-            // regional captures rather than copying offscreen pixels every frame.
-            std::size_t(source->w) * source->h * 4 <= detail::RasterSourceCache::RetainedBytes;
+            std::size_t(retained.w) * retained.h * 4 <= detail::RasterSourceCache::RetainedBytes;
         const auto cacheIdentity = reusable ? identity : nullptr;
         if (!reusable && std::size_t(retained.w) * retained.h * 4 > detail::RasterSourceCache::MaximumBytes)
             return false;

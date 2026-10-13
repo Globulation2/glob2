@@ -66,8 +66,8 @@ public:
         // A small warm set leaves headroom for the next terrain preparation.
         while (!entries.empty() && bytes() > RetainedBytes) evict();
     }
-    // A stable identity/revision snapshots the whole source for crop reuse.
-    // Null identities capture just the requested region every time. Admission
+    // A stable identity/revision reuses a snapshot covering the requested region.
+    // Capture only needed pixels; null identities always take a fresh snapshot. Admission
     // failure returns no lease: the backend may flush and retry on the owner.
     Lease capture(const void *identity, std::uint64_t revision,
                   SDL_Surface &source, SDL_Rect retained)
@@ -78,7 +78,11 @@ public:
             if (found != entries.end())
             {
                 auto &entry = found->second;
-                if (entry.revision == revision && entry.width == source.w &&
+                const auto &region = entry.snapshot->region;
+                const bool covered = retained.x >= region.x && retained.y >= region.y &&
+                    retained.x + retained.w <= region.x + region.w &&
+                    retained.y + retained.h <= region.y + region.h;
+                if (covered && entry.revision == revision && entry.width == source.w &&
                     entry.height == source.h && entry.pitch == source.pitch &&
                     entry.format == source.format && entry.pixels == source.pixels)
                 {
@@ -88,7 +92,6 @@ public:
                 }
                 entries.erase(found); // Segment leases preserve queued revisions.
             }
-            retained = {0, 0, source.w, source.h};
         }
         const std::size_t needed = std::size_t(retained.w) * retained.h * 4;
         if (needed > MaximumBytes) return {};
