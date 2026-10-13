@@ -105,3 +105,5 @@ Final integrated revision **7be681f05d26093249b0d1ec47a153280274eb37** is valida
 These final checks use development builds (`dev_fast=1`, `-O0 -g1`) and establish functional integration only. They do not establish new timing or PMU results on the later master base. The five measured raster/backend/source/benchmark blobs are unchanged, as recorded in the included latest-source JSON; shared executor/snapshot/statistics integration is covered by the expanded functional cases. The original release performance measurements remain scoped to measured revision 49bddcbed against base 6b95.
 
 Verify updated `SHA256SUMS` and extract `integration.tar.gz` alongside the original evidence archive. Platform limitations and absent human playtest described above still apply.
+
+The final fetch reviewed master `a8a44aad9602aa2dfebc2397831c940a26f56fa7`: its subsequent Nicowar AI route-planning change affects no rendering, shared executor, dependencies, build or CI boundary. `integration-base-review.json` records why no additional integration cycle was required for this unrelated advancement.

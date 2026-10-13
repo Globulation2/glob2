@@ -1,0 +1,6 @@
+{
+  "fetched_master": "a8a44aad9602aa2dfebc2397831c940a26f56fa7",
+  "tested_integration_base": "7556a9ecb",
+  "subsequent_change": "PR1170 unbounded Nicowar dig-out route planning",
+  "review": "AI route/order planning, its tests/docs, simulation revision and golden fixture only. No rendering, shared executor, dependencies, build or CI changes. No additional integration cycle per repository policy for unrelated base advancement."
+}
