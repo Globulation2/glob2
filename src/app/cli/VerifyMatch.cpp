@@ -282,15 +282,16 @@ MatchVerifier::Verdict MatchVerifier::verify(const Turn::MatchRecord& record, co
     result << '}';
 	Headless::writeJson((output / "result.json").string(), result.str());
 	const auto gradient = gradient_kernel::configuration();
-	const auto accelerator = gradient_kernel::acceleratorStatus(gradient.backend);
-	std::ostringstream hostDiagnostics;
-	gradient_kernel::writeGradientDiagnostics(hostDiagnostics, gradient_kernel::gradientDiagnosticSnapshot(gradient.backend));
-	Headless::writeJson((output / "compute.json").string(), json{
-        {"gradient_host_diagnostics", json::parse(hostDiagnostics.str())},
+	json compute{
 	    {"compute_requested_threads", globals.computeThreads ? std::to_string(globals.computeThreads) : "auto"},
 	    {"compute_resolved_threads", resolveComputeThreadCount(globals.computeThreads)},
 	    {"compute_threads", game.map.computeExecutor().threadCount()},
-	    {"compute_workers", game.map.computeExecutor().threadCount() - 1},
+	    {"compute_workers", game.map.computeExecutor().threadCount() - 1}};
+    // Device receipts belong to GPU runs. CPU-only verification keeps its
+    // existing schema and performs no device-status or diagnostic formatting.
+    if (gradient_kernel::isGPU(gradient.backend)) {
+        const auto accelerator = gradient_kernel::acceleratorStatus(gradient.backend);
+        compute.update(json{
 	    {"gradient_backend", gradient_kernel::backendName(gradient.backend)},
 	    {"gradient_algorithm", gradient_kernel::algorithmName(gradient.algorithm)},
 	    {"gradient_device", accelerator.device},
@@ -299,7 +300,15 @@ MatchVerifier::Verdict MatchVerifier::verify(const Turn::MatchRecord& record, co
 	    {"gradient_gpu_fields", accelerator.fields},
 	    {"gradient_dispatches", accelerator.dispatches},
 	    {"gradient_cpu_fallbacks", accelerator.fallbacks},
-	    {"gradient_verified", accelerator.verified}}.dump());
+	    {"gradient_verified", accelerator.verified}});
+        const auto gradientDiagnostics = gradient_kernel::gradientDiagnosticSnapshot(gradient.backend);
+        if (gradientDiagnostics.collected) {
+            std::ostringstream hostDiagnostics;
+            gradient_kernel::writeGradientDiagnostics(hostDiagnostics, gradientDiagnostics);
+            compute["gradient_host_diagnostics"] = json::parse(hostDiagnostics.str());
+        }
+    }
+	Headless::writeJson((output / "compute.json").string(), compute.dump());
 
 	json teams = json::array();
 	for (int t = 0; t < game.mapHeader.getNumberOfTeams(); ++t)

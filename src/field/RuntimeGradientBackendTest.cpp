@@ -722,6 +722,16 @@ TEST_SUITE("RuntimeGradientBackend")
             }
         }
     }
+    TEST_CASE("confirmed proof failures survive evidence exceptions")
+    {
+        using namespace gradient_kernel;
+        CHECK_THROWS_AS(preserveGradientProofFailure([] { throw std::bad_alloc(); }),
+            GradientProofFailure);
+        CHECK_THROWS_AS(preserveGradientProofFailure([] {
+            throw std::runtime_error("injected cost callback failure");
+        }), GradientProofFailure);
+        CHECK_THROWS_AS(preserveGradientProofFailure([] {}), GradientProofFailure);
+    }
 	TEST_CASE("Vulkan fixed-point proof executes independently and rejects corrupted fields and costs")
     {
         using namespace gradient_kernel;
@@ -764,11 +774,19 @@ TEST_SUITE("RuntimeGradientBackend")
                     const auto proof=proveVulkanGradientFixedPoint(seeds,broken,packed,grid,cap);
                     REQUIRE(proof.has_value()); REQUIRE(proof->deviceExecuted);
                     CHECK_FALSE(proof->valid); CHECK(proof->firstInvalid<grid.cells());
-                    if (dimensions==std::pair{7,13} && cap==0 && corrupted==65536u)
+                    if (dimensions==std::pair{7,13} && cap==0 && corrupted==65536u) {
+                        // The device has actually rejected this field. A later
+                        // callback/allocation failure must remain a fatal proof.
+                        CHECK_THROWS_AS(preserveGradientProofFailure([&] {
+                            failGradientControlProof(std::span<const std::uint16_t>(seeds),
+                                grid,cap,[](std::size_t)->EntrySteps { throw std::bad_alloc(); },
+                                *proof,{"test device","test driver","test shader",123});
+                        }),GradientProofFailure);
                         CHECK_THROWS_AS(failGradientControlProof(std::span<const std::uint16_t>(seeds),
                             grid,cap,[&](auto i){return costs[i];},*proof,
                             {vulkanGradientStatus().device,vulkanGradientStatus().driver,
                              vulkanGradientStatus().shaderIdentity,123}),GradientProofFailure);
+                    }
                 }
                 auto invented=output; invented[7]=65535;
                 CHECK_FALSE(exactGradientFixedPoint(std::span<const std::uint16_t>(seeds),

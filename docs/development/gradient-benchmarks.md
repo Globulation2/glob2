@@ -233,10 +233,12 @@ Settings displays backend timing and fallback status during live comparisons.
 
 Set `GLOB2_GRADIENT_DIAGNOSTICS=1` for host attribution runs. Native OpenCL and
 Vulkan expose `gradient_host_diagnostics` in the game result or match's
-`compute.json`. Its nested phases partition thread CPU and elapsed time: snapshot
-capture (shared with other snapshot consumers), preparation, input conversion,
+`compute.json`. Its nested phases partition thread CPU and elapsed time for
+instrumented GPU jobs and adapters: preparation, input conversion,
 allocation, uploads, command recording, submission, convergence checks, waiting,
 readback, validation, output conversion, CPU solving, recovery and retirement.
+Generic snapshot capture is not instrumented; its reserved phase remains empty.
+These diagnostics do not establish a complete CPU-only preparation breakdown.
 Nested scopes subtract their inclusive duration from their parent, including
 scopes belonging to an inner adapter session. Counters distinguish submitted
 work and transferred bytes from device-confirmed execution and committed fields.
@@ -253,20 +255,20 @@ Vulkan submissions count successful queue submissions. `gpu_validation_dispatche
 and `gpu_validated_fields` separately report its independent GPU proof pass;
 `reference_upload_bytes_submitted` identifies independent uploads of immutable
 seed/cost references within total uploaded bytes.
-An experimental offload path omits the CPU fixed-point check only for captured
-immutable inputs on the tested Linux x86_64 RTX 3070 Ti Laptop / 580.178.04 driver
-and exact shader bundle, with shadow verification disabled. Generic callers,
-shadow runs and other combinations keep it. `cpu_fixed_point_checks` and
-`cpu_fixed_point_checks_skipped` distinguish execution from assumed savings.
-This experiment does not qualify resident preparation or broader GPU enablement.
+Vulkan's validation policy may omit the CPU fixed-point check for captured
+immutable inputs only when the exact device, driver and shader identities have
+validator coverage and shadow verification is disabled. Other callers retain the
+CPU check. `cpu_fixed_point_checks` and `cpu_fixed_point_checks_skipped` distinguish
+execution from assumed savings. Passing validator tests does not qualify CPU
+savings, resident preparation or broader GPU enablement.
 `proveVulkanGradientFixedPoint` is a synchronous diagnostic harness, not a solver
 or publication path: tests require its device marker and reject missing results.
 Its generated WGSL is currently unused by WebGPU. `resource_reuses` counts
-retired Vulkan work sets borrowed from the bounded adapter pool. Mapped control reads are
-separate from explicit transfer/readback bytes. Elapsed totals accumulate thread
-scopes; overlapping threads do not form a process critical-path measurement.
-These are API costs, not
-measurements of GPU kernel duration or a separation of driver and application CPU.
+retired Vulkan work sets borrowed from the bounded adapter pool. Mapped control
+reads are separate from explicit transfer/readback bytes. Elapsed totals accumulate
+thread scopes; overlapping threads do not form a process critical-path measurement.
+These are host phase costs. They do not measure GPU kernel duration or separate
+driver CPU from application CPU; native sampling is required for that attribution.
 
 The enable decision travels with admitted jobs. Disabled scopes read no clocks
 and update no counters. `cpu_ns` is null without a usable CPU sample; inspect
@@ -295,14 +297,12 @@ hardware a test failure; otherwise hardware-only cases report their omission.
 Chromium's `gradient-compute.spec.js` checks generated WGSL against independent
 exact fields. Keep real hardware and software-driver coverage distinct.
 
-The `RuntimeGradientBackend` retained Vulkan case replays all three original
-NVIDIA proof inputs from `codex/runtime-gradient-merge-evidence` and two subsequent
-whole-game failures, with both
-algorithms and input roundtrip verification enabled and disabled. The compact
-permanent inputs retain the original proof hashes in
+The `RuntimeGradientBackend` retained Vulkan case replays permanent reduced proof
+inputs with both algorithms and input roundtrip verification enabled and disabled.
+The fixtures retain original proof hashes in
 `test/fixtures/gradients/RetainedVulkanSeeds.h`. Successful dispatch observations,
-GPU commits and independent heap-oracle equality are all required. These isolated
-tests do not resolve intermittent whole-game failures or qualify performance.
+GPU commits and independent heap-oracle equality are all required. Isolated tests
+alone do not establish whole-game correctness or qualify performance.
 `GLOB2_VULKAN_VERIFY_TRANSFERS=1` verifies uploads through GPU copy/readback;
 unset or `0` disables the additional transfers. Use it only in diagnostic runs.
 
@@ -320,6 +320,10 @@ than reconstructing inputs from the current live world.
 The same tool reads `artifacts/gradient-transfer-*.bin`, reporting expected/actual
 word differences separately from field correctness. Transfer evidence retains the
 original seeds, buffer slot, dimensions, cap and device/shader/generation sidecar.
+Control-only `artifacts/gradient-control-vulkan-*.bin` evidence records a confirmed
+GPU validation failure when field readback was unavailable. Analysis identifies
+that missing output explicitly and cannot claim field equality from the control
+record.
 The upload-retirement regression varies seed and cost patterns at 128², 256² and
 512² with a zero propagation cap, isolating input preservation from relaxation.
 
