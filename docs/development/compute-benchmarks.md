@@ -484,6 +484,14 @@ work at the end of the sample, without early publication. Cheap attempt/found/sh
 and surviving-entity counters are exported after timing; correctness additionally
 exports per-tick heavy checksums, orders and final saves outside timing runs.
 
+For a process pinned to a participant-specific CPU mask, set
+`TURRET_PARTICIPANTS=1|2|4|8` to select that participant count. Reserve complete
+physical cores including both SMT siblings, keep original/shadow/cached masks
+identical, and record topology, masks and competing host activity. Affinity alone
+does not exclude other processes; a cooperative reservation needs every benchmark
+to honor the pool. Separate pools still share cache, memory bandwidth and thermal
+limits, so reserved-core measurements are not equivalent to quiet-host qualification.
+
 Use `TURRET_VARIANT=baseline|forecast|preparation|combined` to isolate the research
 optimizations and `TURRET_CAPACITY=4|8` to compare output lengths. The baseline
 retains the previous admission/preparation behavior, using the same indexed kernel.

@@ -226,7 +226,9 @@ TEST_SUITE("TurretEngine")
         constexpr std::array<unsigned,10> seeds{713,1919,7919,104729,15485863,32452843,49979687,67867967,86028121,123456};
         std::printf("variant,%s,capacity,%u,profile,%u\n",variant,capacity,profileCpu);
         std::printf("turret_engine,fixture,participants,repeat,seed,mode,ticks,wall_ns,cpu_ns,attempts,found,shots,units,turrets,captures,index_bytes,list_bytes\n");
+        const unsigned requestedParticipants=std::getenv("TURRET_PARTICIPANTS") ? std::stoul(std::getenv("TURRET_PARTICIPANTS")) : 0;
         for (unsigned participants : {1,2,4,8}) for (unsigned fixture=0;fixture<3;++fixture) {
+            if (requestedParticipants && participants!=requestedParticipants) continue;
             for (unsigned mode=0;mode<3;++mode) (void)run(fixture,713,participants,Mode(mode),false);
             for (unsigned repeat=0;repeat<10;++repeat) for (unsigned ordinal=0;ordinal<3;++ordinal) {
                 const auto mode=Mode((ordinal+repeat)%3); const auto r=run(fixture,seeds[repeat],participants,mode,false);
