@@ -209,7 +209,7 @@ TEST_CASE("MCP/HTTP restrictions bounded bodies restart and disconnect cancellat
 	} context;
 	Protocol protocol(registry, context);
 	auto server = std::make_unique<HttpServer>(protocol, 0);
-	const auto port = server->boundPort();
+	const auto port = static_cast<unsigned short>(server->boundPort());
 	const auto host = "localhost:" + std::to_string(port);
 	auto send = [&](std::string host, std::string origin, std::string body,
 					http::verb method = http::verb::post,
