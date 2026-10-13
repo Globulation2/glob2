@@ -139,6 +139,9 @@ void BuildingGradientSearch::resolveToCost(int cost)
 // Expands one whole cost layer per iteration until done() or the queues drain.
 template <class Done> void BuildingGradientSearch::advance(Done done)
 {
+	// A resume may select a different CPU variant from the previous resume,
+	// but every completed layer in this invocation uses one resolved choice.
+	gradient_kernel::CPUSelectionScope cpuSelection(gradient_kernel::cpuBackend());
 	auto sweep = [&](auto weighted, EntrySteps waterSteps, auto waterAt)
 	{
 		while (pending && !done())

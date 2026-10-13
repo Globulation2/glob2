@@ -8,7 +8,9 @@
 #include "FileFormatVersions.h"
 #include "CellRules.h"
 #include "LegacyTerrainFrames.h"
+#include <algorithm>
 #include <memory>
+#include <stdexcept>
 
 namespace
 {
@@ -122,6 +124,30 @@ TEST_CASE("the rule table numbers uniform rules by terrain and interns mixed one
 	CHECK(table[mud].ground[0].cardinal == gradient_kernel::terrainEntrySteps(combine(MUD, MUD, GRASS, GRASS), 0).cardinal);
 	CHECK(table.movement(0).entries.size() == table.size());
 	CHECK(table.movement(0).profileIds.size() == table.size());
+}
+
+TEST_CASE("compiled CPU seed columns preserve frozen rules when mixed rules grow")
+{
+	glob2test::HeadlessGlobals globals;
+	CellRuleTable table(TerrainRegistry::builtins(), ResourceRegistry::builtins());
+	const auto frozen = table;
+	const auto mixed = table.intern(WATER, GRASS, SAND, WATER);
+	REQUIRE(table.size() == frozen.size() + 1);
+	for (unsigned swim = 0; swim < SWIM_CLASS_COUNT; ++swim)
+	{
+		const auto variant = swimAccessVariant(swim);
+		const auto &live = table.openTerrainSeeds(variant);
+		const auto &previous = frozen.openTerrainSeeds(variant);
+		REQUIRE(live.size() == table.size());
+		REQUIRE(previous.size() == frozen.size());
+		CHECK(std::equal(previous.begin(), previous.end(), live.begin()));
+		for (unsigned rule = 0; rule < table.size(); ++rule)
+			CHECK(live[rule] == (gradient_kernel::terrainAllowsGround(table.properties(rule), swim)
+				? GRADIENT_UNREACHABLE : GRADIENT_FORBIDDEN));
+		CHECK(live[mixed] == (gradient_kernel::terrainAllowsGround(table.properties(mixed), swim)
+			? GRADIENT_UNREACHABLE : GRADIENT_FORBIDDEN));
+	}
+	CHECK_THROWS_AS(table.openTerrainSeeds(CellRuleTable::OpenTerrainClasses.size()), std::out_of_range);
 }
 
 TEST_CASE("mixed cells take the shore habitat and intersect explicit resource lists")

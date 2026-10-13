@@ -199,18 +199,25 @@ inline Backend automaticCPU()
 	return Backend::Scalar;
 }
 inline thread_local std::optional<Backend> cpuOverride;
-inline Backend cpuBackend()
+inline Backend resolvedCPUBackend(Backend b)
 {
-	const auto b = cpuOverride.value_or(backend());
 	return (b == Backend::Scalar || b == Backend::SSE2 || b == Backend::NEON) &&
 				   cpuVariantAvailable(b)
 			   ? b
 			   : automaticCPU();
 }
+// Scoped choices are resolved once at the job boundary. Avoid loading global
+// configuration or probing CPU capabilities again for every completed layer.
+inline Backend cpuBackend()
+{
+	if (cpuOverride)
+		return *cpuOverride;
+	return resolvedCPUBackend(backend());
+}
 struct CPUSelectionScope
 {
 	std::optional<Backend> previous = cpuOverride;
-	explicit CPUSelectionScope(Backend b) { cpuOverride = b; }
+	explicit CPUSelectionScope(Backend b) { cpuOverride = resolvedCPUBackend(b); }
 	// A scope has exactly one restoration owner, even across nested dispatch.
 	CPUSelectionScope(const CPUSelectionScope &) = delete;
 	CPUSelectionScope &operator=(const CPUSelectionScope &) = delete;
