@@ -1,0 +1,28 @@
+[
+  {
+    "capacity": 3,
+    "command": [
+      "taskset",
+      "-c",
+      "8,10,12,14",
+      "/home/bradley/.codex/worktrees/9dc2/glob2/artifacts/turret-targeting/l2-r2-k1/benchmark-binary",
+      "--test-suite=TurretEngine",
+      "--test-case=whole engine cached traces*",
+      "--no-colors=true"
+    ],
+    "exit": 0
+  },
+  {
+    "capacity": 4,
+    "command": [
+      "taskset",
+      "-c",
+      "8,10,12,14",
+      "/home/bradley/.codex/worktrees/9dc2/glob2/artifacts/turret-targeting/l2-r2-k1/benchmark-binary",
+      "--test-suite=TurretEngine",
+      "--test-case=whole engine cached traces*",
+      "--no-colors=true"
+    ],
+    "exit": 0
+  }
+]

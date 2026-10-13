@@ -1,0 +1,26 @@
+{
+  "source": "76cc03a69a9612b245f44b8bce4d322113b132d3",
+  "archive_sha256": "f3330218f7109e81a5d144b586c3f0b908d3568daa3a64dbeb6096b3887dff33",
+  "parts": [
+    {
+      "name": "selected-evidence.tar.gz.part-00",
+      "sha256": "7934743b650880af74e80fce623b03e47ca66f3c30f530019cb2b6feda526860",
+      "bytes": 25165824
+    },
+    {
+      "name": "selected-evidence.tar.gz.part-01",
+      "sha256": "1be13e5659dba20443d9327cdc68d291086c172871e15f3d7ce822514afa3509",
+      "bytes": 25165824
+    },
+    {
+      "name": "selected-evidence.tar.gz.part-02",
+      "sha256": "7f9b38b93a7f82da4efbb88142e024e00f55096773d2de2d55bc336aa78731d3",
+      "bytes": 25165824
+    },
+    {
+      "name": "selected-evidence.tar.gz.part-03",
+      "sha256": "fd55e5c91c3f90efa31800a596091b53c06aaa778e8545548b7c3fcd5ec929f9",
+      "bytes": 18730986
+    }
+  ]
+}

@@ -1,0 +1,1912 @@
+{
+  "L8R1": {
+    "opportunities": 868,
+    "agreement": 758,
+    "missed": 2,
+    "censored": 0,
+    "completed": 866,
+    "p95": 0,
+    "maximum_completed": 0,
+    "agreement_percent": 87.32718894009217,
+    "missed_percent": 0.2304147465437788,
+    "proofs": [
+      {
+        "file": "fortified-49979687-reference.game",
+        "sha256": "00df6e415b8868b1a5e434d70c0e4c1d0ac1a9a65156f137154f29b41013780e",
+        "equal": true
+      },
+      {
+        "file": "fortified-67867967-reference-checksums.csv",
+        "sha256": "2b6ae30de46eb5f6c54aa36a558a3406a9bba21582f39555d42cbd6f980c252d",
+        "equal": true
+      },
+      {
+        "file": "fortified-15485863-reference.game",
+        "sha256": "d046c451185f4a28cda246be760fbd2fd159db5ce28458c8e78fa3de87cf4a13",
+        "equal": true
+      },
+      {
+        "file": "fortified-32452843-reference.game",
+        "sha256": "651ab3006f4a50f6feac8f65e2b754bfaac70394c634ab34485a58417cc31bd6",
+        "equal": true
+      },
+      {
+        "file": "fortified-7919-reference.game",
+        "sha256": "bc56784eb5590d6a9d183e18fb3f89586fb14b30bf56092ed7bc1bfc40286d3c",
+        "equal": true
+      },
+      {
+        "file": "skirmish-86028121-reference.game",
+        "sha256": "312190def6d7a637527313dde8a29333144865333e0f18cff4517d6285d9d927",
+        "equal": true
+      },
+      {
+        "file": "skirmish-104729-reference-orders.csv",
+        "sha256": "73472030dcee8e36cafdf9035cd784e6699469cadde3cfc3ec94934f66958e37",
+        "equal": true
+      },
+      {
+        "file": "skirmish-49979687-reference.game",
+        "sha256": "08bac5dccbdab5fbb146afa4428e23314c2d0b2657e6b7dc480815cc3b8f394b",
+        "equal": true
+      },
+      {
+        "file": "skirmish-1919-reference-checksums.csv",
+        "sha256": "bf2e6ffa1a6cd33ce99d59c185880162dc6c1a526d5aa09331ea3486aa756b7f",
+        "equal": true
+      },
+      {
+        "file": "skirmish-713-reference.game",
+        "sha256": "dded63363c1ff6815b61293cee74dec10410c93e5cd96262da9e9bcf54d65e74",
+        "equal": true
+      },
+      {
+        "file": "skirmish-713-reference-checksums.csv",
+        "sha256": "157cd2a06ed20058af043b00ab39fb399b0eda1ddd5a6d0c4d0b27f9a55e4d15",
+        "equal": true
+      },
+      {
+        "file": "skirmish-32452843-reference.game",
+        "sha256": "3d358b22625591e85da7ec5b4fff1e4f7c6ba51dc1e30649b8a2b2ffa68f1d98",
+        "equal": true
+      },
+      {
+        "file": "fortified-1919-reference-orders.csv",
+        "sha256": "f889c337f64468bd243ff21d6caeb1a36bec2e7cd196ced9b40f456f28298607",
+        "equal": true
+      },
+      {
+        "file": "fortified-32452843-reference-checksums.csv",
+        "sha256": "aebccb7094bebf833ff5cb6321d4c3665cb6253ca0a5f1f6d5690d1d3b5135d7",
+        "equal": true
+      },
+      {
+        "file": "fortified-104729-reference-checksums.csv",
+        "sha256": "eaed1c3fb7b5aa548abaf5e5d3a1f6ad018f7697e19cf6c6aa21ddc424f253cd",
+        "equal": true
+      },
+      {
+        "file": "skirmish-67867967-reference.game",
+        "sha256": "c4f340770d612a0d67f557a4585e8f3aee84fb1ab845e17fc6d0aecead49cb7e",
+        "equal": true
+      },
+      {
+        "file": "skirmish-4201-reference-orders.csv",
+        "sha256": "2844082f0e2bbd9845c392feab54452bfdf1604a52f868378c49a9c1fb9365b8",
+        "equal": true
+      },
+      {
+        "file": "skirmish-15485863-reference.game",
+        "sha256": "6308ee93d989f8063dbd23414e8dd6f88523006fcfd53937dfaabadc95929318",
+        "equal": true
+      },
+      {
+        "file": "skirmish-49979687-reference-checksums.csv",
+        "sha256": "53845babd5b4e025ebe2612535a042333b1314db81ef8bb39d8f34b6035ce8d6",
+        "equal": true
+      },
+      {
+        "file": "skirmish-7919-reference-checksums.csv",
+        "sha256": "1fb99f63a0de84e8f59c7c5db91712a24a07afaa9f53f9aeefad1fb1067c42c5",
+        "equal": true
+      },
+      {
+        "file": "skirmish-32452843-reference-checksums.csv",
+        "sha256": "3ee33040f530ed778289f9e63991dca3055327e78f934fd324f327a8cd2af0e9",
+        "equal": true
+      },
+      {
+        "file": "skirmish-49979687-reference-orders.csv",
+        "sha256": "2c466231edfbc60928918152ea1f1f25da555d0a295b5547e743d0d6a5dfddee",
+        "equal": true
+      },
+      {
+        "file": "fortified-4201-reference.game",
+        "sha256": "c6f1d1e551c2bb918b3c66ac4950a395ed51a9257f98f66c46d1c6821e843332",
+        "equal": true
+      },
+      {
+        "file": "fortified-4201-reference-checksums.csv",
+        "sha256": "a1509e2b71404403c52d85f822855e22b5d3997a4735992f8b3767991efebd52",
+        "equal": true
+      },
+      {
+        "file": "fortified-32452843-reference-orders.csv",
+        "sha256": "33484a6ac0b2158d342f5c5dc8371d3f3774f96bd940f643130bcfa24571421b",
+        "equal": true
+      },
+      {
+        "file": "fortified-713-reference-checksums.csv",
+        "sha256": "fba2dbdce1e267114c56eef2acf9ee88c7d65e248597ec98917cc2cc7f286311",
+        "equal": true
+      },
+      {
+        "file": "fortified-713-reference-orders.csv",
+        "sha256": "daa8dec5f70cf9f46f85d440b8c16b7fed221862ea7f91039361389efaf7b601",
+        "equal": true
+      },
+      {
+        "file": "fortified-86028121-reference.game",
+        "sha256": "77b2002d94e68d4d23a7bf94d96b4c4552a2652501520c7e70f07872a64f99b8",
+        "equal": true
+      },
+      {
+        "file": "fortified-49979687-reference-checksums.csv",
+        "sha256": "87681a624b43eb68663a0cb0f515ac180191c2ed3a04acb62530c0dfbe4261fb",
+        "equal": true
+      },
+      {
+        "file": "fortified-4201-reference-orders.csv",
+        "sha256": "fe2fcdda1c849c3dba1e9ee13433340e23dadcdb562a42a366c9e7c4dba637b8",
+        "equal": true
+      },
+      {
+        "file": "fortified-104729-reference.game",
+        "sha256": "0d7bbfe63f07f601f695de36f63a539adab845f2716b0a03c8409bdc5fa6a30b",
+        "equal": true
+      },
+      {
+        "file": "fortified-1919-reference.game",
+        "sha256": "3a3720b3ff0110a1992aa01f59cdbf142ebd4435b596b6211fa9df5a133bad6d",
+        "equal": true
+      },
+      {
+        "file": "skirmish-15485863-reference-checksums.csv",
+        "sha256": "ca6450529fe3805ee44d673b0f4bad364087736e949c9d48046a5601dfd3f2ed",
+        "equal": true
+      },
+      {
+        "file": "fortified-49979687-reference-orders.csv",
+        "sha256": "2a6d442bdf64fb1c30dd2bc634ff3cfb0b969d4ebf3ad9e8f6b31b1f8389b0de",
+        "equal": true
+      },
+      {
+        "file": "skirmish-104729-reference.game",
+        "sha256": "39ec918dbd63e5627aa2102cc6bbbf65e562398e4bd9268780e65d3af8eb73c6",
+        "equal": true
+      },
+      {
+        "file": "fortified-86028121-reference-checksums.csv",
+        "sha256": "68d07401850d30630f48b092def37002408f4b2c5a575b1a27756e33cf49d2a1",
+        "equal": true
+      },
+      {
+        "file": "skirmish-86028121-reference-orders.csv",
+        "sha256": "513d7a037e2d93777a85a4ac01c8279e3ce4f312bb9314be839acfef2569a177",
+        "equal": true
+      },
+      {
+        "file": "skirmish-67867967-reference-orders.csv",
+        "sha256": "ee42850df63201403ae4296a34df5463c23dfc234d46dc89b8376b8ec2c02f8b",
+        "equal": true
+      },
+      {
+        "file": "skirmish-32452843-reference-orders.csv",
+        "sha256": "a6688c5de050e609c10d27ab4eab8c13010a34f302882f23bb54819e4403e5d5",
+        "equal": true
+      },
+      {
+        "file": "skirmish-1919-reference.game",
+        "sha256": "3876c2f0801e1b33693f6463ed4f5d7498e9f7a1d52b81bb7df1a13395f2e785",
+        "equal": true
+      },
+      {
+        "file": "fortified-67867967-reference-orders.csv",
+        "sha256": "489a377b1a84194a180647960c191d3f1b62177d39603bb504699ac19117ca7d",
+        "equal": true
+      },
+      {
+        "file": "skirmish-1919-reference-orders.csv",
+        "sha256": "7d1e4a006a783da32b4e0020931d8fdeb5ad88de10f43520168f26cb083f3c65",
+        "equal": true
+      },
+      {
+        "file": "skirmish-7919-reference-orders.csv",
+        "sha256": "eb288144424c9974798c15f59ab8ea9c7ea16a294990d1fcb5e1f9aaa6816fe4",
+        "equal": true
+      },
+      {
+        "file": "fortified-7919-reference-orders.csv",
+        "sha256": "38306c2f0b00b88d218eff705c1f0a96e0d3c44b25747f41740ebe41ac008131",
+        "equal": true
+      },
+      {
+        "file": "skirmish-86028121-reference-checksums.csv",
+        "sha256": "ed21076b00315f9a67106c2201ddb546541eb91a984457d6c6b8da507dd4f20e",
+        "equal": true
+      },
+      {
+        "file": "skirmish-104729-reference-checksums.csv",
+        "sha256": "1574c0df0f32d3d6b67c1ba1b38fa83a34dad5d3616036b55a6e030697d37441",
+        "equal": true
+      },
+      {
+        "file": "fortified-7919-reference-checksums.csv",
+        "sha256": "539c0c66f272d646e1d2c5d47fe6fe01be63e94394d38c5affb55896a0f0fdfc",
+        "equal": true
+      },
+      {
+        "file": "fortified-86028121-reference-orders.csv",
+        "sha256": "16feca5e61dec660d3c01e82ffd902e2d697022586b6ac9b8273964bf86cfaca",
+        "equal": true
+      },
+      {
+        "file": "skirmish-15485863-reference-orders.csv",
+        "sha256": "f046ccb3fbcce10a5093f46208b0f36dc3107ab9468fff7c6f9dac402cfc106e",
+        "equal": true
+      },
+      {
+        "file": "skirmish-4201-reference.game",
+        "sha256": "d590596c31835f511cb9c05bf25425cb9a20e3e824816ab343da9d826bdfad60",
+        "equal": true
+      },
+      {
+        "file": "fortified-713-reference.game",
+        "sha256": "9f452248929ff16f2ee1ef0d83eb01e9571e2bcaaa7bb488f6e833aacf68491c",
+        "equal": true
+      },
+      {
+        "file": "fortified-104729-reference-orders.csv",
+        "sha256": "9c16d2769ec2c5875c919033fce7348d7d8b2c4773a822a872630fbec094df7b",
+        "equal": true
+      },
+      {
+        "file": "skirmish-713-reference-orders.csv",
+        "sha256": "01ad504ffea39bb1580e73ffd499e26e24fef8771dc680f3d470cd009b0061ea",
+        "equal": true
+      },
+      {
+        "file": "fortified-15485863-reference-orders.csv",
+        "sha256": "42dd7b4e0f27a7fe72d4b733d84356c87db68a6dcfdb92fa86c95bca027fc3dd",
+        "equal": true
+      },
+      {
+        "file": "fortified-67867967-reference.game",
+        "sha256": "b0cff46f5102f3f617063d7bc7210fa2132ac6411462f9c9e873c912c94107f3",
+        "equal": true
+      },
+      {
+        "file": "skirmish-4201-reference-checksums.csv",
+        "sha256": "20a1151320245f6deff44f5aae4fe631bf42e5ce508766bdef60e8d64980417c",
+        "equal": true
+      },
+      {
+        "file": "fortified-1919-reference-checksums.csv",
+        "sha256": "bc7ee76cede782d34564c319283c749c6028478d1879cd36d40647c2a2318747",
+        "equal": true
+      },
+      {
+        "file": "fortified-15485863-reference-checksums.csv",
+        "sha256": "f316f6659598c19d6a69205eadae078807096d642b933ab09912284a2729cf68",
+        "equal": true
+      },
+      {
+        "file": "skirmish-7919-reference.game",
+        "sha256": "3708ec280fbe1ac2e3749ad3649f086cda45c9edce1c0d58eae561f9f5a541ef",
+        "equal": true
+      },
+      {
+        "file": "skirmish-67867967-reference-checksums.csv",
+        "sha256": "3b88084b83006fcb2d21206f5a4f6fb3234666233b70d0d9b6fc2136100fa5f4",
+        "equal": true
+      }
+    ]
+  },
+  "L2R1": {
+    "opportunities": 868,
+    "agreement": 735,
+    "missed": 13,
+    "censored": 1,
+    "completed": 854,
+    "p95": 0,
+    "maximum_completed": 5,
+    "agreement_percent": 84.6774193548387,
+    "missed_percent": 1.4976958525345623,
+    "proofs": [
+      {
+        "file": "fortified-49979687-reference.game",
+        "sha256": "00df6e415b8868b1a5e434d70c0e4c1d0ac1a9a65156f137154f29b41013780e",
+        "equal": true
+      },
+      {
+        "file": "fortified-67867967-reference-checksums.csv",
+        "sha256": "2b6ae30de46eb5f6c54aa36a558a3406a9bba21582f39555d42cbd6f980c252d",
+        "equal": true
+      },
+      {
+        "file": "fortified-15485863-reference.game",
+        "sha256": "d046c451185f4a28cda246be760fbd2fd159db5ce28458c8e78fa3de87cf4a13",
+        "equal": true
+      },
+      {
+        "file": "fortified-32452843-reference.game",
+        "sha256": "651ab3006f4a50f6feac8f65e2b754bfaac70394c634ab34485a58417cc31bd6",
+        "equal": true
+      },
+      {
+        "file": "fortified-7919-reference.game",
+        "sha256": "bc56784eb5590d6a9d183e18fb3f89586fb14b30bf56092ed7bc1bfc40286d3c",
+        "equal": true
+      },
+      {
+        "file": "skirmish-86028121-reference.game",
+        "sha256": "312190def6d7a637527313dde8a29333144865333e0f18cff4517d6285d9d927",
+        "equal": true
+      },
+      {
+        "file": "skirmish-104729-reference-orders.csv",
+        "sha256": "73472030dcee8e36cafdf9035cd784e6699469cadde3cfc3ec94934f66958e37",
+        "equal": true
+      },
+      {
+        "file": "skirmish-49979687-reference.game",
+        "sha256": "08bac5dccbdab5fbb146afa4428e23314c2d0b2657e6b7dc480815cc3b8f394b",
+        "equal": true
+      },
+      {
+        "file": "skirmish-1919-reference-checksums.csv",
+        "sha256": "bf2e6ffa1a6cd33ce99d59c185880162dc6c1a526d5aa09331ea3486aa756b7f",
+        "equal": true
+      },
+      {
+        "file": "skirmish-713-reference.game",
+        "sha256": "dded63363c1ff6815b61293cee74dec10410c93e5cd96262da9e9bcf54d65e74",
+        "equal": true
+      },
+      {
+        "file": "skirmish-713-reference-checksums.csv",
+        "sha256": "157cd2a06ed20058af043b00ab39fb399b0eda1ddd5a6d0c4d0b27f9a55e4d15",
+        "equal": true
+      },
+      {
+        "file": "skirmish-32452843-reference.game",
+        "sha256": "3d358b22625591e85da7ec5b4fff1e4f7c6ba51dc1e30649b8a2b2ffa68f1d98",
+        "equal": true
+      },
+      {
+        "file": "fortified-1919-reference-orders.csv",
+        "sha256": "f889c337f64468bd243ff21d6caeb1a36bec2e7cd196ced9b40f456f28298607",
+        "equal": true
+      },
+      {
+        "file": "fortified-32452843-reference-checksums.csv",
+        "sha256": "aebccb7094bebf833ff5cb6321d4c3665cb6253ca0a5f1f6d5690d1d3b5135d7",
+        "equal": true
+      },
+      {
+        "file": "fortified-104729-reference-checksums.csv",
+        "sha256": "eaed1c3fb7b5aa548abaf5e5d3a1f6ad018f7697e19cf6c6aa21ddc424f253cd",
+        "equal": true
+      },
+      {
+        "file": "skirmish-67867967-reference.game",
+        "sha256": "c4f340770d612a0d67f557a4585e8f3aee84fb1ab845e17fc6d0aecead49cb7e",
+        "equal": true
+      },
+      {
+        "file": "skirmish-4201-reference-orders.csv",
+        "sha256": "2844082f0e2bbd9845c392feab54452bfdf1604a52f868378c49a9c1fb9365b8",
+        "equal": true
+      },
+      {
+        "file": "skirmish-15485863-reference.game",
+        "sha256": "6308ee93d989f8063dbd23414e8dd6f88523006fcfd53937dfaabadc95929318",
+        "equal": true
+      },
+      {
+        "file": "skirmish-49979687-reference-checksums.csv",
+        "sha256": "53845babd5b4e025ebe2612535a042333b1314db81ef8bb39d8f34b6035ce8d6",
+        "equal": true
+      },
+      {
+        "file": "skirmish-7919-reference-checksums.csv",
+        "sha256": "1fb99f63a0de84e8f59c7c5db91712a24a07afaa9f53f9aeefad1fb1067c42c5",
+        "equal": true
+      },
+      {
+        "file": "skirmish-32452843-reference-checksums.csv",
+        "sha256": "3ee33040f530ed778289f9e63991dca3055327e78f934fd324f327a8cd2af0e9",
+        "equal": true
+      },
+      {
+        "file": "skirmish-49979687-reference-orders.csv",
+        "sha256": "2c466231edfbc60928918152ea1f1f25da555d0a295b5547e743d0d6a5dfddee",
+        "equal": true
+      },
+      {
+        "file": "fortified-4201-reference.game",
+        "sha256": "c6f1d1e551c2bb918b3c66ac4950a395ed51a9257f98f66c46d1c6821e843332",
+        "equal": true
+      },
+      {
+        "file": "fortified-4201-reference-checksums.csv",
+        "sha256": "a1509e2b71404403c52d85f822855e22b5d3997a4735992f8b3767991efebd52",
+        "equal": true
+      },
+      {
+        "file": "fortified-32452843-reference-orders.csv",
+        "sha256": "33484a6ac0b2158d342f5c5dc8371d3f3774f96bd940f643130bcfa24571421b",
+        "equal": true
+      },
+      {
+        "file": "fortified-713-reference-checksums.csv",
+        "sha256": "fba2dbdce1e267114c56eef2acf9ee88c7d65e248597ec98917cc2cc7f286311",
+        "equal": true
+      },
+      {
+        "file": "fortified-713-reference-orders.csv",
+        "sha256": "daa8dec5f70cf9f46f85d440b8c16b7fed221862ea7f91039361389efaf7b601",
+        "equal": true
+      },
+      {
+        "file": "fortified-86028121-reference.game",
+        "sha256": "77b2002d94e68d4d23a7bf94d96b4c4552a2652501520c7e70f07872a64f99b8",
+        "equal": true
+      },
+      {
+        "file": "fortified-49979687-reference-checksums.csv",
+        "sha256": "87681a624b43eb68663a0cb0f515ac180191c2ed3a04acb62530c0dfbe4261fb",
+        "equal": true
+      },
+      {
+        "file": "fortified-4201-reference-orders.csv",
+        "sha256": "fe2fcdda1c849c3dba1e9ee13433340e23dadcdb562a42a366c9e7c4dba637b8",
+        "equal": true
+      },
+      {
+        "file": "fortified-104729-reference.game",
+        "sha256": "0d7bbfe63f07f601f695de36f63a539adab845f2716b0a03c8409bdc5fa6a30b",
+        "equal": true
+      },
+      {
+        "file": "fortified-1919-reference.game",
+        "sha256": "3a3720b3ff0110a1992aa01f59cdbf142ebd4435b596b6211fa9df5a133bad6d",
+        "equal": true
+      },
+      {
+        "file": "skirmish-15485863-reference-checksums.csv",
+        "sha256": "ca6450529fe3805ee44d673b0f4bad364087736e949c9d48046a5601dfd3f2ed",
+        "equal": true
+      },
+      {
+        "file": "fortified-49979687-reference-orders.csv",
+        "sha256": "2a6d442bdf64fb1c30dd2bc634ff3cfb0b969d4ebf3ad9e8f6b31b1f8389b0de",
+        "equal": true
+      },
+      {
+        "file": "skirmish-104729-reference.game",
+        "sha256": "39ec918dbd63e5627aa2102cc6bbbf65e562398e4bd9268780e65d3af8eb73c6",
+        "equal": true
+      },
+      {
+        "file": "fortified-86028121-reference-checksums.csv",
+        "sha256": "68d07401850d30630f48b092def37002408f4b2c5a575b1a27756e33cf49d2a1",
+        "equal": true
+      },
+      {
+        "file": "skirmish-86028121-reference-orders.csv",
+        "sha256": "513d7a037e2d93777a85a4ac01c8279e3ce4f312bb9314be839acfef2569a177",
+        "equal": true
+      },
+      {
+        "file": "skirmish-67867967-reference-orders.csv",
+        "sha256": "ee42850df63201403ae4296a34df5463c23dfc234d46dc89b8376b8ec2c02f8b",
+        "equal": true
+      },
+      {
+        "file": "skirmish-32452843-reference-orders.csv",
+        "sha256": "a6688c5de050e609c10d27ab4eab8c13010a34f302882f23bb54819e4403e5d5",
+        "equal": true
+      },
+      {
+        "file": "skirmish-1919-reference.game",
+        "sha256": "3876c2f0801e1b33693f6463ed4f5d7498e9f7a1d52b81bb7df1a13395f2e785",
+        "equal": true
+      },
+      {
+        "file": "fortified-67867967-reference-orders.csv",
+        "sha256": "489a377b1a84194a180647960c191d3f1b62177d39603bb504699ac19117ca7d",
+        "equal": true
+      },
+      {
+        "file": "skirmish-1919-reference-orders.csv",
+        "sha256": "7d1e4a006a783da32b4e0020931d8fdeb5ad88de10f43520168f26cb083f3c65",
+        "equal": true
+      },
+      {
+        "file": "skirmish-7919-reference-orders.csv",
+        "sha256": "eb288144424c9974798c15f59ab8ea9c7ea16a294990d1fcb5e1f9aaa6816fe4",
+        "equal": true
+      },
+      {
+        "file": "fortified-7919-reference-orders.csv",
+        "sha256": "38306c2f0b00b88d218eff705c1f0a96e0d3c44b25747f41740ebe41ac008131",
+        "equal": true
+      },
+      {
+        "file": "skirmish-86028121-reference-checksums.csv",
+        "sha256": "ed21076b00315f9a67106c2201ddb546541eb91a984457d6c6b8da507dd4f20e",
+        "equal": true
+      },
+      {
+        "file": "skirmish-104729-reference-checksums.csv",
+        "sha256": "1574c0df0f32d3d6b67c1ba1b38fa83a34dad5d3616036b55a6e030697d37441",
+        "equal": true
+      },
+      {
+        "file": "fortified-7919-reference-checksums.csv",
+        "sha256": "539c0c66f272d646e1d2c5d47fe6fe01be63e94394d38c5affb55896a0f0fdfc",
+        "equal": true
+      },
+      {
+        "file": "fortified-86028121-reference-orders.csv",
+        "sha256": "16feca5e61dec660d3c01e82ffd902e2d697022586b6ac9b8273964bf86cfaca",
+        "equal": true
+      },
+      {
+        "file": "skirmish-15485863-reference-orders.csv",
+        "sha256": "f046ccb3fbcce10a5093f46208b0f36dc3107ab9468fff7c6f9dac402cfc106e",
+        "equal": true
+      },
+      {
+        "file": "skirmish-4201-reference.game",
+        "sha256": "d590596c31835f511cb9c05bf25425cb9a20e3e824816ab343da9d826bdfad60",
+        "equal": true
+      },
+      {
+        "file": "fortified-713-reference.game",
+        "sha256": "9f452248929ff16f2ee1ef0d83eb01e9571e2bcaaa7bb488f6e833aacf68491c",
+        "equal": true
+      },
+      {
+        "file": "fortified-104729-reference-orders.csv",
+        "sha256": "9c16d2769ec2c5875c919033fce7348d7d8b2c4773a822a872630fbec094df7b",
+        "equal": true
+      },
+      {
+        "file": "skirmish-713-reference-orders.csv",
+        "sha256": "01ad504ffea39bb1580e73ffd499e26e24fef8771dc680f3d470cd009b0061ea",
+        "equal": true
+      },
+      {
+        "file": "fortified-15485863-reference-orders.csv",
+        "sha256": "42dd7b4e0f27a7fe72d4b733d84356c87db68a6dcfdb92fa86c95bca027fc3dd",
+        "equal": true
+      },
+      {
+        "file": "fortified-67867967-reference.game",
+        "sha256": "b0cff46f5102f3f617063d7bc7210fa2132ac6411462f9c9e873c912c94107f3",
+        "equal": true
+      },
+      {
+        "file": "skirmish-4201-reference-checksums.csv",
+        "sha256": "20a1151320245f6deff44f5aae4fe631bf42e5ce508766bdef60e8d64980417c",
+        "equal": true
+      },
+      {
+        "file": "fortified-1919-reference-checksums.csv",
+        "sha256": "bc7ee76cede782d34564c319283c749c6028478d1879cd36d40647c2a2318747",
+        "equal": true
+      },
+      {
+        "file": "fortified-15485863-reference-checksums.csv",
+        "sha256": "f316f6659598c19d6a69205eadae078807096d642b933ab09912284a2729cf68",
+        "equal": true
+      },
+      {
+        "file": "skirmish-7919-reference.game",
+        "sha256": "3708ec280fbe1ac2e3749ad3649f086cda45c9edce1c0d58eae561f9f5a541ef",
+        "equal": true
+      },
+      {
+        "file": "skirmish-67867967-reference-checksums.csv",
+        "sha256": "3b88084b83006fcb2d21206f5a4f6fb3234666233b70d0d9b6fc2136100fa5f4",
+        "equal": true
+      }
+    ]
+  },
+  "L8R2": {
+    "opportunities": 868,
+    "agreement": 755,
+    "missed": 2,
+    "censored": 0,
+    "completed": 866,
+    "p95": 0,
+    "maximum_completed": 1,
+    "agreement_percent": 86.9815668202765,
+    "missed_percent": 0.2304147465437788,
+    "proofs": [
+      {
+        "file": "fortified-49979687-reference.game",
+        "sha256": "00df6e415b8868b1a5e434d70c0e4c1d0ac1a9a65156f137154f29b41013780e",
+        "equal": true
+      },
+      {
+        "file": "fortified-67867967-reference-checksums.csv",
+        "sha256": "2b6ae30de46eb5f6c54aa36a558a3406a9bba21582f39555d42cbd6f980c252d",
+        "equal": true
+      },
+      {
+        "file": "fortified-15485863-reference.game",
+        "sha256": "d046c451185f4a28cda246be760fbd2fd159db5ce28458c8e78fa3de87cf4a13",
+        "equal": true
+      },
+      {
+        "file": "fortified-32452843-reference.game",
+        "sha256": "651ab3006f4a50f6feac8f65e2b754bfaac70394c634ab34485a58417cc31bd6",
+        "equal": true
+      },
+      {
+        "file": "fortified-7919-reference.game",
+        "sha256": "bc56784eb5590d6a9d183e18fb3f89586fb14b30bf56092ed7bc1bfc40286d3c",
+        "equal": true
+      },
+      {
+        "file": "skirmish-86028121-reference.game",
+        "sha256": "312190def6d7a637527313dde8a29333144865333e0f18cff4517d6285d9d927",
+        "equal": true
+      },
+      {
+        "file": "skirmish-104729-reference-orders.csv",
+        "sha256": "73472030dcee8e36cafdf9035cd784e6699469cadde3cfc3ec94934f66958e37",
+        "equal": true
+      },
+      {
+        "file": "skirmish-49979687-reference.game",
+        "sha256": "08bac5dccbdab5fbb146afa4428e23314c2d0b2657e6b7dc480815cc3b8f394b",
+        "equal": true
+      },
+      {
+        "file": "skirmish-1919-reference-checksums.csv",
+        "sha256": "bf2e6ffa1a6cd33ce99d59c185880162dc6c1a526d5aa09331ea3486aa756b7f",
+        "equal": true
+      },
+      {
+        "file": "skirmish-713-reference.game",
+        "sha256": "dded63363c1ff6815b61293cee74dec10410c93e5cd96262da9e9bcf54d65e74",
+        "equal": true
+      },
+      {
+        "file": "skirmish-713-reference-checksums.csv",
+        "sha256": "157cd2a06ed20058af043b00ab39fb399b0eda1ddd5a6d0c4d0b27f9a55e4d15",
+        "equal": true
+      },
+      {
+        "file": "skirmish-32452843-reference.game",
+        "sha256": "3d358b22625591e85da7ec5b4fff1e4f7c6ba51dc1e30649b8a2b2ffa68f1d98",
+        "equal": true
+      },
+      {
+        "file": "fortified-1919-reference-orders.csv",
+        "sha256": "f889c337f64468bd243ff21d6caeb1a36bec2e7cd196ced9b40f456f28298607",
+        "equal": true
+      },
+      {
+        "file": "fortified-32452843-reference-checksums.csv",
+        "sha256": "aebccb7094bebf833ff5cb6321d4c3665cb6253ca0a5f1f6d5690d1d3b5135d7",
+        "equal": true
+      },
+      {
+        "file": "fortified-104729-reference-checksums.csv",
+        "sha256": "eaed1c3fb7b5aa548abaf5e5d3a1f6ad018f7697e19cf6c6aa21ddc424f253cd",
+        "equal": true
+      },
+      {
+        "file": "skirmish-67867967-reference.game",
+        "sha256": "c4f340770d612a0d67f557a4585e8f3aee84fb1ab845e17fc6d0aecead49cb7e",
+        "equal": true
+      },
+      {
+        "file": "skirmish-4201-reference-orders.csv",
+        "sha256": "2844082f0e2bbd9845c392feab54452bfdf1604a52f868378c49a9c1fb9365b8",
+        "equal": true
+      },
+      {
+        "file": "skirmish-15485863-reference.game",
+        "sha256": "6308ee93d989f8063dbd23414e8dd6f88523006fcfd53937dfaabadc95929318",
+        "equal": true
+      },
+      {
+        "file": "skirmish-49979687-reference-checksums.csv",
+        "sha256": "53845babd5b4e025ebe2612535a042333b1314db81ef8bb39d8f34b6035ce8d6",
+        "equal": true
+      },
+      {
+        "file": "skirmish-7919-reference-checksums.csv",
+        "sha256": "1fb99f63a0de84e8f59c7c5db91712a24a07afaa9f53f9aeefad1fb1067c42c5",
+        "equal": true
+      },
+      {
+        "file": "skirmish-32452843-reference-checksums.csv",
+        "sha256": "3ee33040f530ed778289f9e63991dca3055327e78f934fd324f327a8cd2af0e9",
+        "equal": true
+      },
+      {
+        "file": "skirmish-49979687-reference-orders.csv",
+        "sha256": "2c466231edfbc60928918152ea1f1f25da555d0a295b5547e743d0d6a5dfddee",
+        "equal": true
+      },
+      {
+        "file": "fortified-4201-reference.game",
+        "sha256": "c6f1d1e551c2bb918b3c66ac4950a395ed51a9257f98f66c46d1c6821e843332",
+        "equal": true
+      },
+      {
+        "file": "fortified-4201-reference-checksums.csv",
+        "sha256": "a1509e2b71404403c52d85f822855e22b5d3997a4735992f8b3767991efebd52",
+        "equal": true
+      },
+      {
+        "file": "fortified-32452843-reference-orders.csv",
+        "sha256": "33484a6ac0b2158d342f5c5dc8371d3f3774f96bd940f643130bcfa24571421b",
+        "equal": true
+      },
+      {
+        "file": "fortified-713-reference-checksums.csv",
+        "sha256": "fba2dbdce1e267114c56eef2acf9ee88c7d65e248597ec98917cc2cc7f286311",
+        "equal": true
+      },
+      {
+        "file": "fortified-713-reference-orders.csv",
+        "sha256": "daa8dec5f70cf9f46f85d440b8c16b7fed221862ea7f91039361389efaf7b601",
+        "equal": true
+      },
+      {
+        "file": "fortified-86028121-reference.game",
+        "sha256": "77b2002d94e68d4d23a7bf94d96b4c4552a2652501520c7e70f07872a64f99b8",
+        "equal": true
+      },
+      {
+        "file": "fortified-49979687-reference-checksums.csv",
+        "sha256": "87681a624b43eb68663a0cb0f515ac180191c2ed3a04acb62530c0dfbe4261fb",
+        "equal": true
+      },
+      {
+        "file": "fortified-4201-reference-orders.csv",
+        "sha256": "fe2fcdda1c849c3dba1e9ee13433340e23dadcdb562a42a366c9e7c4dba637b8",
+        "equal": true
+      },
+      {
+        "file": "fortified-104729-reference.game",
+        "sha256": "0d7bbfe63f07f601f695de36f63a539adab845f2716b0a03c8409bdc5fa6a30b",
+        "equal": true
+      },
+      {
+        "file": "fortified-1919-reference.game",
+        "sha256": "3a3720b3ff0110a1992aa01f59cdbf142ebd4435b596b6211fa9df5a133bad6d",
+        "equal": true
+      },
+      {
+        "file": "skirmish-15485863-reference-checksums.csv",
+        "sha256": "ca6450529fe3805ee44d673b0f4bad364087736e949c9d48046a5601dfd3f2ed",
+        "equal": true
+      },
+      {
+        "file": "fortified-49979687-reference-orders.csv",
+        "sha256": "2a6d442bdf64fb1c30dd2bc634ff3cfb0b969d4ebf3ad9e8f6b31b1f8389b0de",
+        "equal": true
+      },
+      {
+        "file": "skirmish-104729-reference.game",
+        "sha256": "39ec918dbd63e5627aa2102cc6bbbf65e562398e4bd9268780e65d3af8eb73c6",
+        "equal": true
+      },
+      {
+        "file": "fortified-86028121-reference-checksums.csv",
+        "sha256": "68d07401850d30630f48b092def37002408f4b2c5a575b1a27756e33cf49d2a1",
+        "equal": true
+      },
+      {
+        "file": "skirmish-86028121-reference-orders.csv",
+        "sha256": "513d7a037e2d93777a85a4ac01c8279e3ce4f312bb9314be839acfef2569a177",
+        "equal": true
+      },
+      {
+        "file": "skirmish-67867967-reference-orders.csv",
+        "sha256": "ee42850df63201403ae4296a34df5463c23dfc234d46dc89b8376b8ec2c02f8b",
+        "equal": true
+      },
+      {
+        "file": "skirmish-32452843-reference-orders.csv",
+        "sha256": "a6688c5de050e609c10d27ab4eab8c13010a34f302882f23bb54819e4403e5d5",
+        "equal": true
+      },
+      {
+        "file": "skirmish-1919-reference.game",
+        "sha256": "3876c2f0801e1b33693f6463ed4f5d7498e9f7a1d52b81bb7df1a13395f2e785",
+        "equal": true
+      },
+      {
+        "file": "fortified-67867967-reference-orders.csv",
+        "sha256": "489a377b1a84194a180647960c191d3f1b62177d39603bb504699ac19117ca7d",
+        "equal": true
+      },
+      {
+        "file": "skirmish-1919-reference-orders.csv",
+        "sha256": "7d1e4a006a783da32b4e0020931d8fdeb5ad88de10f43520168f26cb083f3c65",
+        "equal": true
+      },
+      {
+        "file": "skirmish-7919-reference-orders.csv",
+        "sha256": "eb288144424c9974798c15f59ab8ea9c7ea16a294990d1fcb5e1f9aaa6816fe4",
+        "equal": true
+      },
+      {
+        "file": "fortified-7919-reference-orders.csv",
+        "sha256": "38306c2f0b00b88d218eff705c1f0a96e0d3c44b25747f41740ebe41ac008131",
+        "equal": true
+      },
+      {
+        "file": "skirmish-86028121-reference-checksums.csv",
+        "sha256": "ed21076b00315f9a67106c2201ddb546541eb91a984457d6c6b8da507dd4f20e",
+        "equal": true
+      },
+      {
+        "file": "skirmish-104729-reference-checksums.csv",
+        "sha256": "1574c0df0f32d3d6b67c1ba1b38fa83a34dad5d3616036b55a6e030697d37441",
+        "equal": true
+      },
+      {
+        "file": "fortified-7919-reference-checksums.csv",
+        "sha256": "539c0c66f272d646e1d2c5d47fe6fe01be63e94394d38c5affb55896a0f0fdfc",
+        "equal": true
+      },
+      {
+        "file": "fortified-86028121-reference-orders.csv",
+        "sha256": "16feca5e61dec660d3c01e82ffd902e2d697022586b6ac9b8273964bf86cfaca",
+        "equal": true
+      },
+      {
+        "file": "skirmish-15485863-reference-orders.csv",
+        "sha256": "f046ccb3fbcce10a5093f46208b0f36dc3107ab9468fff7c6f9dac402cfc106e",
+        "equal": true
+      },
+      {
+        "file": "skirmish-4201-reference.game",
+        "sha256": "d590596c31835f511cb9c05bf25425cb9a20e3e824816ab343da9d826bdfad60",
+        "equal": true
+      },
+      {
+        "file": "fortified-713-reference.game",
+        "sha256": "9f452248929ff16f2ee1ef0d83eb01e9571e2bcaaa7bb488f6e833aacf68491c",
+        "equal": true
+      },
+      {
+        "file": "fortified-104729-reference-orders.csv",
+        "sha256": "9c16d2769ec2c5875c919033fce7348d7d8b2c4773a822a872630fbec094df7b",
+        "equal": true
+      },
+      {
+        "file": "skirmish-713-reference-orders.csv",
+        "sha256": "01ad504ffea39bb1580e73ffd499e26e24fef8771dc680f3d470cd009b0061ea",
+        "equal": true
+      },
+      {
+        "file": "fortified-15485863-reference-orders.csv",
+        "sha256": "42dd7b4e0f27a7fe72d4b733d84356c87db68a6dcfdb92fa86c95bca027fc3dd",
+        "equal": true
+      },
+      {
+        "file": "fortified-67867967-reference.game",
+        "sha256": "b0cff46f5102f3f617063d7bc7210fa2132ac6411462f9c9e873c912c94107f3",
+        "equal": true
+      },
+      {
+        "file": "skirmish-4201-reference-checksums.csv",
+        "sha256": "20a1151320245f6deff44f5aae4fe631bf42e5ce508766bdef60e8d64980417c",
+        "equal": true
+      },
+      {
+        "file": "fortified-1919-reference-checksums.csv",
+        "sha256": "bc7ee76cede782d34564c319283c749c6028478d1879cd36d40647c2a2318747",
+        "equal": true
+      },
+      {
+        "file": "fortified-15485863-reference-checksums.csv",
+        "sha256": "f316f6659598c19d6a69205eadae078807096d642b933ab09912284a2729cf68",
+        "equal": true
+      },
+      {
+        "file": "skirmish-7919-reference.game",
+        "sha256": "3708ec280fbe1ac2e3749ad3649f086cda45c9edce1c0d58eae561f9f5a541ef",
+        "equal": true
+      },
+      {
+        "file": "skirmish-67867967-reference-checksums.csv",
+        "sha256": "3b88084b83006fcb2d21206f5a4f6fb3234666233b70d0d9b6fc2136100fa5f4",
+        "equal": true
+      }
+    ]
+  },
+  "L2R2": {
+    "opportunities": 868,
+    "agreement": 734,
+    "missed": 11,
+    "censored": 1,
+    "completed": 856,
+    "p95": 0,
+    "maximum_completed": 9,
+    "agreement_percent": 84.56221198156682,
+    "missed_percent": 1.2672811059907834,
+    "proofs": [
+      {
+        "file": "fortified-49979687-reference.game",
+        "sha256": "00df6e415b8868b1a5e434d70c0e4c1d0ac1a9a65156f137154f29b41013780e",
+        "equal": true
+      },
+      {
+        "file": "fortified-67867967-reference-checksums.csv",
+        "sha256": "2b6ae30de46eb5f6c54aa36a558a3406a9bba21582f39555d42cbd6f980c252d",
+        "equal": true
+      },
+      {
+        "file": "fortified-15485863-reference.game",
+        "sha256": "d046c451185f4a28cda246be760fbd2fd159db5ce28458c8e78fa3de87cf4a13",
+        "equal": true
+      },
+      {
+        "file": "fortified-32452843-reference.game",
+        "sha256": "651ab3006f4a50f6feac8f65e2b754bfaac70394c634ab34485a58417cc31bd6",
+        "equal": true
+      },
+      {
+        "file": "fortified-7919-reference.game",
+        "sha256": "bc56784eb5590d6a9d183e18fb3f89586fb14b30bf56092ed7bc1bfc40286d3c",
+        "equal": true
+      },
+      {
+        "file": "skirmish-86028121-reference.game",
+        "sha256": "312190def6d7a637527313dde8a29333144865333e0f18cff4517d6285d9d927",
+        "equal": true
+      },
+      {
+        "file": "skirmish-104729-reference-orders.csv",
+        "sha256": "73472030dcee8e36cafdf9035cd784e6699469cadde3cfc3ec94934f66958e37",
+        "equal": true
+      },
+      {
+        "file": "skirmish-49979687-reference.game",
+        "sha256": "08bac5dccbdab5fbb146afa4428e23314c2d0b2657e6b7dc480815cc3b8f394b",
+        "equal": true
+      },
+      {
+        "file": "skirmish-1919-reference-checksums.csv",
+        "sha256": "bf2e6ffa1a6cd33ce99d59c185880162dc6c1a526d5aa09331ea3486aa756b7f",
+        "equal": true
+      },
+      {
+        "file": "skirmish-713-reference.game",
+        "sha256": "dded63363c1ff6815b61293cee74dec10410c93e5cd96262da9e9bcf54d65e74",
+        "equal": true
+      },
+      {
+        "file": "skirmish-713-reference-checksums.csv",
+        "sha256": "157cd2a06ed20058af043b00ab39fb399b0eda1ddd5a6d0c4d0b27f9a55e4d15",
+        "equal": true
+      },
+      {
+        "file": "skirmish-32452843-reference.game",
+        "sha256": "3d358b22625591e85da7ec5b4fff1e4f7c6ba51dc1e30649b8a2b2ffa68f1d98",
+        "equal": true
+      },
+      {
+        "file": "fortified-1919-reference-orders.csv",
+        "sha256": "f889c337f64468bd243ff21d6caeb1a36bec2e7cd196ced9b40f456f28298607",
+        "equal": true
+      },
+      {
+        "file": "fortified-32452843-reference-checksums.csv",
+        "sha256": "aebccb7094bebf833ff5cb6321d4c3665cb6253ca0a5f1f6d5690d1d3b5135d7",
+        "equal": true
+      },
+      {
+        "file": "fortified-104729-reference-checksums.csv",
+        "sha256": "eaed1c3fb7b5aa548abaf5e5d3a1f6ad018f7697e19cf6c6aa21ddc424f253cd",
+        "equal": true
+      },
+      {
+        "file": "skirmish-67867967-reference.game",
+        "sha256": "c4f340770d612a0d67f557a4585e8f3aee84fb1ab845e17fc6d0aecead49cb7e",
+        "equal": true
+      },
+      {
+        "file": "skirmish-4201-reference-orders.csv",
+        "sha256": "2844082f0e2bbd9845c392feab54452bfdf1604a52f868378c49a9c1fb9365b8",
+        "equal": true
+      },
+      {
+        "file": "skirmish-15485863-reference.game",
+        "sha256": "6308ee93d989f8063dbd23414e8dd6f88523006fcfd53937dfaabadc95929318",
+        "equal": true
+      },
+      {
+        "file": "skirmish-49979687-reference-checksums.csv",
+        "sha256": "53845babd5b4e025ebe2612535a042333b1314db81ef8bb39d8f34b6035ce8d6",
+        "equal": true
+      },
+      {
+        "file": "skirmish-7919-reference-checksums.csv",
+        "sha256": "1fb99f63a0de84e8f59c7c5db91712a24a07afaa9f53f9aeefad1fb1067c42c5",
+        "equal": true
+      },
+      {
+        "file": "skirmish-32452843-reference-checksums.csv",
+        "sha256": "3ee33040f530ed778289f9e63991dca3055327e78f934fd324f327a8cd2af0e9",
+        "equal": true
+      },
+      {
+        "file": "skirmish-49979687-reference-orders.csv",
+        "sha256": "2c466231edfbc60928918152ea1f1f25da555d0a295b5547e743d0d6a5dfddee",
+        "equal": true
+      },
+      {
+        "file": "fortified-4201-reference.game",
+        "sha256": "c6f1d1e551c2bb918b3c66ac4950a395ed51a9257f98f66c46d1c6821e843332",
+        "equal": true
+      },
+      {
+        "file": "fortified-4201-reference-checksums.csv",
+        "sha256": "a1509e2b71404403c52d85f822855e22b5d3997a4735992f8b3767991efebd52",
+        "equal": true
+      },
+      {
+        "file": "fortified-32452843-reference-orders.csv",
+        "sha256": "33484a6ac0b2158d342f5c5dc8371d3f3774f96bd940f643130bcfa24571421b",
+        "equal": true
+      },
+      {
+        "file": "fortified-713-reference-checksums.csv",
+        "sha256": "fba2dbdce1e267114c56eef2acf9ee88c7d65e248597ec98917cc2cc7f286311",
+        "equal": true
+      },
+      {
+        "file": "fortified-713-reference-orders.csv",
+        "sha256": "daa8dec5f70cf9f46f85d440b8c16b7fed221862ea7f91039361389efaf7b601",
+        "equal": true
+      },
+      {
+        "file": "fortified-86028121-reference.game",
+        "sha256": "77b2002d94e68d4d23a7bf94d96b4c4552a2652501520c7e70f07872a64f99b8",
+        "equal": true
+      },
+      {
+        "file": "fortified-49979687-reference-checksums.csv",
+        "sha256": "87681a624b43eb68663a0cb0f515ac180191c2ed3a04acb62530c0dfbe4261fb",
+        "equal": true
+      },
+      {
+        "file": "fortified-4201-reference-orders.csv",
+        "sha256": "fe2fcdda1c849c3dba1e9ee13433340e23dadcdb562a42a366c9e7c4dba637b8",
+        "equal": true
+      },
+      {
+        "file": "fortified-104729-reference.game",
+        "sha256": "0d7bbfe63f07f601f695de36f63a539adab845f2716b0a03c8409bdc5fa6a30b",
+        "equal": true
+      },
+      {
+        "file": "fortified-1919-reference.game",
+        "sha256": "3a3720b3ff0110a1992aa01f59cdbf142ebd4435b596b6211fa9df5a133bad6d",
+        "equal": true
+      },
+      {
+        "file": "skirmish-15485863-reference-checksums.csv",
+        "sha256": "ca6450529fe3805ee44d673b0f4bad364087736e949c9d48046a5601dfd3f2ed",
+        "equal": true
+      },
+      {
+        "file": "fortified-49979687-reference-orders.csv",
+        "sha256": "2a6d442bdf64fb1c30dd2bc634ff3cfb0b969d4ebf3ad9e8f6b31b1f8389b0de",
+        "equal": true
+      },
+      {
+        "file": "skirmish-104729-reference.game",
+        "sha256": "39ec918dbd63e5627aa2102cc6bbbf65e562398e4bd9268780e65d3af8eb73c6",
+        "equal": true
+      },
+      {
+        "file": "fortified-86028121-reference-checksums.csv",
+        "sha256": "68d07401850d30630f48b092def37002408f4b2c5a575b1a27756e33cf49d2a1",
+        "equal": true
+      },
+      {
+        "file": "skirmish-86028121-reference-orders.csv",
+        "sha256": "513d7a037e2d93777a85a4ac01c8279e3ce4f312bb9314be839acfef2569a177",
+        "equal": true
+      },
+      {
+        "file": "skirmish-67867967-reference-orders.csv",
+        "sha256": "ee42850df63201403ae4296a34df5463c23dfc234d46dc89b8376b8ec2c02f8b",
+        "equal": true
+      },
+      {
+        "file": "skirmish-32452843-reference-orders.csv",
+        "sha256": "a6688c5de050e609c10d27ab4eab8c13010a34f302882f23bb54819e4403e5d5",
+        "equal": true
+      },
+      {
+        "file": "skirmish-1919-reference.game",
+        "sha256": "3876c2f0801e1b33693f6463ed4f5d7498e9f7a1d52b81bb7df1a13395f2e785",
+        "equal": true
+      },
+      {
+        "file": "fortified-67867967-reference-orders.csv",
+        "sha256": "489a377b1a84194a180647960c191d3f1b62177d39603bb504699ac19117ca7d",
+        "equal": true
+      },
+      {
+        "file": "skirmish-1919-reference-orders.csv",
+        "sha256": "7d1e4a006a783da32b4e0020931d8fdeb5ad88de10f43520168f26cb083f3c65",
+        "equal": true
+      },
+      {
+        "file": "skirmish-7919-reference-orders.csv",
+        "sha256": "eb288144424c9974798c15f59ab8ea9c7ea16a294990d1fcb5e1f9aaa6816fe4",
+        "equal": true
+      },
+      {
+        "file": "fortified-7919-reference-orders.csv",
+        "sha256": "38306c2f0b00b88d218eff705c1f0a96e0d3c44b25747f41740ebe41ac008131",
+        "equal": true
+      },
+      {
+        "file": "skirmish-86028121-reference-checksums.csv",
+        "sha256": "ed21076b00315f9a67106c2201ddb546541eb91a984457d6c6b8da507dd4f20e",
+        "equal": true
+      },
+      {
+        "file": "skirmish-104729-reference-checksums.csv",
+        "sha256": "1574c0df0f32d3d6b67c1ba1b38fa83a34dad5d3616036b55a6e030697d37441",
+        "equal": true
+      },
+      {
+        "file": "fortified-7919-reference-checksums.csv",
+        "sha256": "539c0c66f272d646e1d2c5d47fe6fe01be63e94394d38c5affb55896a0f0fdfc",
+        "equal": true
+      },
+      {
+        "file": "fortified-86028121-reference-orders.csv",
+        "sha256": "16feca5e61dec660d3c01e82ffd902e2d697022586b6ac9b8273964bf86cfaca",
+        "equal": true
+      },
+      {
+        "file": "skirmish-15485863-reference-orders.csv",
+        "sha256": "f046ccb3fbcce10a5093f46208b0f36dc3107ab9468fff7c6f9dac402cfc106e",
+        "equal": true
+      },
+      {
+        "file": "skirmish-4201-reference.game",
+        "sha256": "d590596c31835f511cb9c05bf25425cb9a20e3e824816ab343da9d826bdfad60",
+        "equal": true
+      },
+      {
+        "file": "fortified-713-reference.game",
+        "sha256": "9f452248929ff16f2ee1ef0d83eb01e9571e2bcaaa7bb488f6e833aacf68491c",
+        "equal": true
+      },
+      {
+        "file": "fortified-104729-reference-orders.csv",
+        "sha256": "9c16d2769ec2c5875c919033fce7348d7d8b2c4773a822a872630fbec094df7b",
+        "equal": true
+      },
+      {
+        "file": "skirmish-713-reference-orders.csv",
+        "sha256": "01ad504ffea39bb1580e73ffd499e26e24fef8771dc680f3d470cd009b0061ea",
+        "equal": true
+      },
+      {
+        "file": "fortified-15485863-reference-orders.csv",
+        "sha256": "42dd7b4e0f27a7fe72d4b733d84356c87db68a6dcfdb92fa86c95bca027fc3dd",
+        "equal": true
+      },
+      {
+        "file": "fortified-67867967-reference.game",
+        "sha256": "b0cff46f5102f3f617063d7bc7210fa2132ac6411462f9c9e873c912c94107f3",
+        "equal": true
+      },
+      {
+        "file": "skirmish-4201-reference-checksums.csv",
+        "sha256": "20a1151320245f6deff44f5aae4fe631bf42e5ce508766bdef60e8d64980417c",
+        "equal": true
+      },
+      {
+        "file": "fortified-1919-reference-checksums.csv",
+        "sha256": "bc7ee76cede782d34564c319283c749c6028478d1879cd36d40647c2a2318747",
+        "equal": true
+      },
+      {
+        "file": "fortified-15485863-reference-checksums.csv",
+        "sha256": "f316f6659598c19d6a69205eadae078807096d642b933ab09912284a2729cf68",
+        "equal": true
+      },
+      {
+        "file": "skirmish-7919-reference.game",
+        "sha256": "3708ec280fbe1ac2e3749ad3649f086cda45c9edce1c0d58eae561f9f5a541ef",
+        "equal": true
+      },
+      {
+        "file": "skirmish-67867967-reference-checksums.csv",
+        "sha256": "3b88084b83006fcb2d21206f5a4f6fb3234666233b70d0d9b6fc2136100fa5f4",
+        "equal": true
+      }
+    ]
+  },
+  "L3R2": {
+    "opportunities": 868,
+    "agreement": 747,
+    "missed": 5,
+    "censored": 0,
+    "completed": 863,
+    "p95": 0,
+    "maximum_completed": 5,
+    "agreement_percent": 86.05990783410138,
+    "missed_percent": 0.576036866359447,
+    "proofs": [
+      {
+        "file": "fortified-49979687-reference.game",
+        "sha256": "00df6e415b8868b1a5e434d70c0e4c1d0ac1a9a65156f137154f29b41013780e",
+        "equal": true
+      },
+      {
+        "file": "fortified-67867967-reference-checksums.csv",
+        "sha256": "2b6ae30de46eb5f6c54aa36a558a3406a9bba21582f39555d42cbd6f980c252d",
+        "equal": true
+      },
+      {
+        "file": "fortified-15485863-reference.game",
+        "sha256": "d046c451185f4a28cda246be760fbd2fd159db5ce28458c8e78fa3de87cf4a13",
+        "equal": true
+      },
+      {
+        "file": "fortified-32452843-reference.game",
+        "sha256": "651ab3006f4a50f6feac8f65e2b754bfaac70394c634ab34485a58417cc31bd6",
+        "equal": true
+      },
+      {
+        "file": "fortified-7919-reference.game",
+        "sha256": "bc56784eb5590d6a9d183e18fb3f89586fb14b30bf56092ed7bc1bfc40286d3c",
+        "equal": true
+      },
+      {
+        "file": "skirmish-86028121-reference.game",
+        "sha256": "312190def6d7a637527313dde8a29333144865333e0f18cff4517d6285d9d927",
+        "equal": true
+      },
+      {
+        "file": "skirmish-104729-reference-orders.csv",
+        "sha256": "73472030dcee8e36cafdf9035cd784e6699469cadde3cfc3ec94934f66958e37",
+        "equal": true
+      },
+      {
+        "file": "skirmish-49979687-reference.game",
+        "sha256": "08bac5dccbdab5fbb146afa4428e23314c2d0b2657e6b7dc480815cc3b8f394b",
+        "equal": true
+      },
+      {
+        "file": "skirmish-1919-reference-checksums.csv",
+        "sha256": "bf2e6ffa1a6cd33ce99d59c185880162dc6c1a526d5aa09331ea3486aa756b7f",
+        "equal": true
+      },
+      {
+        "file": "skirmish-713-reference.game",
+        "sha256": "dded63363c1ff6815b61293cee74dec10410c93e5cd96262da9e9bcf54d65e74",
+        "equal": true
+      },
+      {
+        "file": "skirmish-713-reference-checksums.csv",
+        "sha256": "157cd2a06ed20058af043b00ab39fb399b0eda1ddd5a6d0c4d0b27f9a55e4d15",
+        "equal": true
+      },
+      {
+        "file": "skirmish-32452843-reference.game",
+        "sha256": "3d358b22625591e85da7ec5b4fff1e4f7c6ba51dc1e30649b8a2b2ffa68f1d98",
+        "equal": true
+      },
+      {
+        "file": "fortified-1919-reference-orders.csv",
+        "sha256": "f889c337f64468bd243ff21d6caeb1a36bec2e7cd196ced9b40f456f28298607",
+        "equal": true
+      },
+      {
+        "file": "fortified-32452843-reference-checksums.csv",
+        "sha256": "aebccb7094bebf833ff5cb6321d4c3665cb6253ca0a5f1f6d5690d1d3b5135d7",
+        "equal": true
+      },
+      {
+        "file": "fortified-104729-reference-checksums.csv",
+        "sha256": "eaed1c3fb7b5aa548abaf5e5d3a1f6ad018f7697e19cf6c6aa21ddc424f253cd",
+        "equal": true
+      },
+      {
+        "file": "skirmish-67867967-reference.game",
+        "sha256": "c4f340770d612a0d67f557a4585e8f3aee84fb1ab845e17fc6d0aecead49cb7e",
+        "equal": true
+      },
+      {
+        "file": "skirmish-4201-reference-orders.csv",
+        "sha256": "2844082f0e2bbd9845c392feab54452bfdf1604a52f868378c49a9c1fb9365b8",
+        "equal": true
+      },
+      {
+        "file": "skirmish-15485863-reference.game",
+        "sha256": "6308ee93d989f8063dbd23414e8dd6f88523006fcfd53937dfaabadc95929318",
+        "equal": true
+      },
+      {
+        "file": "skirmish-49979687-reference-checksums.csv",
+        "sha256": "53845babd5b4e025ebe2612535a042333b1314db81ef8bb39d8f34b6035ce8d6",
+        "equal": true
+      },
+      {
+        "file": "skirmish-7919-reference-checksums.csv",
+        "sha256": "1fb99f63a0de84e8f59c7c5db91712a24a07afaa9f53f9aeefad1fb1067c42c5",
+        "equal": true
+      },
+      {
+        "file": "skirmish-32452843-reference-checksums.csv",
+        "sha256": "3ee33040f530ed778289f9e63991dca3055327e78f934fd324f327a8cd2af0e9",
+        "equal": true
+      },
+      {
+        "file": "skirmish-49979687-reference-orders.csv",
+        "sha256": "2c466231edfbc60928918152ea1f1f25da555d0a295b5547e743d0d6a5dfddee",
+        "equal": true
+      },
+      {
+        "file": "fortified-4201-reference.game",
+        "sha256": "c6f1d1e551c2bb918b3c66ac4950a395ed51a9257f98f66c46d1c6821e843332",
+        "equal": true
+      },
+      {
+        "file": "fortified-4201-reference-checksums.csv",
+        "sha256": "a1509e2b71404403c52d85f822855e22b5d3997a4735992f8b3767991efebd52",
+        "equal": true
+      },
+      {
+        "file": "fortified-32452843-reference-orders.csv",
+        "sha256": "33484a6ac0b2158d342f5c5dc8371d3f3774f96bd940f643130bcfa24571421b",
+        "equal": true
+      },
+      {
+        "file": "fortified-713-reference-checksums.csv",
+        "sha256": "fba2dbdce1e267114c56eef2acf9ee88c7d65e248597ec98917cc2cc7f286311",
+        "equal": true
+      },
+      {
+        "file": "fortified-713-reference-orders.csv",
+        "sha256": "daa8dec5f70cf9f46f85d440b8c16b7fed221862ea7f91039361389efaf7b601",
+        "equal": true
+      },
+      {
+        "file": "fortified-86028121-reference.game",
+        "sha256": "77b2002d94e68d4d23a7bf94d96b4c4552a2652501520c7e70f07872a64f99b8",
+        "equal": true
+      },
+      {
+        "file": "fortified-49979687-reference-checksums.csv",
+        "sha256": "87681a624b43eb68663a0cb0f515ac180191c2ed3a04acb62530c0dfbe4261fb",
+        "equal": true
+      },
+      {
+        "file": "fortified-4201-reference-orders.csv",
+        "sha256": "fe2fcdda1c849c3dba1e9ee13433340e23dadcdb562a42a366c9e7c4dba637b8",
+        "equal": true
+      },
+      {
+        "file": "fortified-104729-reference.game",
+        "sha256": "0d7bbfe63f07f601f695de36f63a539adab845f2716b0a03c8409bdc5fa6a30b",
+        "equal": true
+      },
+      {
+        "file": "fortified-1919-reference.game",
+        "sha256": "3a3720b3ff0110a1992aa01f59cdbf142ebd4435b596b6211fa9df5a133bad6d",
+        "equal": true
+      },
+      {
+        "file": "skirmish-15485863-reference-checksums.csv",
+        "sha256": "ca6450529fe3805ee44d673b0f4bad364087736e949c9d48046a5601dfd3f2ed",
+        "equal": true
+      },
+      {
+        "file": "fortified-49979687-reference-orders.csv",
+        "sha256": "2a6d442bdf64fb1c30dd2bc634ff3cfb0b969d4ebf3ad9e8f6b31b1f8389b0de",
+        "equal": true
+      },
+      {
+        "file": "skirmish-104729-reference.game",
+        "sha256": "39ec918dbd63e5627aa2102cc6bbbf65e562398e4bd9268780e65d3af8eb73c6",
+        "equal": true
+      },
+      {
+        "file": "fortified-86028121-reference-checksums.csv",
+        "sha256": "68d07401850d30630f48b092def37002408f4b2c5a575b1a27756e33cf49d2a1",
+        "equal": true
+      },
+      {
+        "file": "skirmish-86028121-reference-orders.csv",
+        "sha256": "513d7a037e2d93777a85a4ac01c8279e3ce4f312bb9314be839acfef2569a177",
+        "equal": true
+      },
+      {
+        "file": "skirmish-67867967-reference-orders.csv",
+        "sha256": "ee42850df63201403ae4296a34df5463c23dfc234d46dc89b8376b8ec2c02f8b",
+        "equal": true
+      },
+      {
+        "file": "skirmish-32452843-reference-orders.csv",
+        "sha256": "a6688c5de050e609c10d27ab4eab8c13010a34f302882f23bb54819e4403e5d5",
+        "equal": true
+      },
+      {
+        "file": "skirmish-1919-reference.game",
+        "sha256": "3876c2f0801e1b33693f6463ed4f5d7498e9f7a1d52b81bb7df1a13395f2e785",
+        "equal": true
+      },
+      {
+        "file": "fortified-67867967-reference-orders.csv",
+        "sha256": "489a377b1a84194a180647960c191d3f1b62177d39603bb504699ac19117ca7d",
+        "equal": true
+      },
+      {
+        "file": "skirmish-1919-reference-orders.csv",
+        "sha256": "7d1e4a006a783da32b4e0020931d8fdeb5ad88de10f43520168f26cb083f3c65",
+        "equal": true
+      },
+      {
+        "file": "skirmish-7919-reference-orders.csv",
+        "sha256": "eb288144424c9974798c15f59ab8ea9c7ea16a294990d1fcb5e1f9aaa6816fe4",
+        "equal": true
+      },
+      {
+        "file": "fortified-7919-reference-orders.csv",
+        "sha256": "38306c2f0b00b88d218eff705c1f0a96e0d3c44b25747f41740ebe41ac008131",
+        "equal": true
+      },
+      {
+        "file": "skirmish-86028121-reference-checksums.csv",
+        "sha256": "ed21076b00315f9a67106c2201ddb546541eb91a984457d6c6b8da507dd4f20e",
+        "equal": true
+      },
+      {
+        "file": "skirmish-104729-reference-checksums.csv",
+        "sha256": "1574c0df0f32d3d6b67c1ba1b38fa83a34dad5d3616036b55a6e030697d37441",
+        "equal": true
+      },
+      {
+        "file": "fortified-7919-reference-checksums.csv",
+        "sha256": "539c0c66f272d646e1d2c5d47fe6fe01be63e94394d38c5affb55896a0f0fdfc",
+        "equal": true
+      },
+      {
+        "file": "fortified-86028121-reference-orders.csv",
+        "sha256": "16feca5e61dec660d3c01e82ffd902e2d697022586b6ac9b8273964bf86cfaca",
+        "equal": true
+      },
+      {
+        "file": "skirmish-15485863-reference-orders.csv",
+        "sha256": "f046ccb3fbcce10a5093f46208b0f36dc3107ab9468fff7c6f9dac402cfc106e",
+        "equal": true
+      },
+      {
+        "file": "skirmish-4201-reference.game",
+        "sha256": "d590596c31835f511cb9c05bf25425cb9a20e3e824816ab343da9d826bdfad60",
+        "equal": true
+      },
+      {
+        "file": "fortified-713-reference.game",
+        "sha256": "9f452248929ff16f2ee1ef0d83eb01e9571e2bcaaa7bb488f6e833aacf68491c",
+        "equal": true
+      },
+      {
+        "file": "fortified-104729-reference-orders.csv",
+        "sha256": "9c16d2769ec2c5875c919033fce7348d7d8b2c4773a822a872630fbec094df7b",
+        "equal": true
+      },
+      {
+        "file": "skirmish-713-reference-orders.csv",
+        "sha256": "01ad504ffea39bb1580e73ffd499e26e24fef8771dc680f3d470cd009b0061ea",
+        "equal": true
+      },
+      {
+        "file": "fortified-15485863-reference-orders.csv",
+        "sha256": "42dd7b4e0f27a7fe72d4b733d84356c87db68a6dcfdb92fa86c95bca027fc3dd",
+        "equal": true
+      },
+      {
+        "file": "fortified-67867967-reference.game",
+        "sha256": "b0cff46f5102f3f617063d7bc7210fa2132ac6411462f9c9e873c912c94107f3",
+        "equal": true
+      },
+      {
+        "file": "skirmish-4201-reference-checksums.csv",
+        "sha256": "20a1151320245f6deff44f5aae4fe631bf42e5ce508766bdef60e8d64980417c",
+        "equal": true
+      },
+      {
+        "file": "fortified-1919-reference-checksums.csv",
+        "sha256": "bc7ee76cede782d34564c319283c749c6028478d1879cd36d40647c2a2318747",
+        "equal": true
+      },
+      {
+        "file": "fortified-15485863-reference-checksums.csv",
+        "sha256": "f316f6659598c19d6a69205eadae078807096d642b933ab09912284a2729cf68",
+        "equal": true
+      },
+      {
+        "file": "skirmish-7919-reference.game",
+        "sha256": "3708ec280fbe1ac2e3749ad3649f086cda45c9edce1c0d58eae561f9f5a541ef",
+        "equal": true
+      },
+      {
+        "file": "skirmish-67867967-reference-checksums.csv",
+        "sha256": "3b88084b83006fcb2d21206f5a4f6fb3234666233b70d0d9b6fc2136100fa5f4",
+        "equal": true
+      }
+    ]
+  },
+  "L4R2": {
+    "opportunities": 868,
+    "agreement": 753,
+    "missed": 2,
+    "censored": 0,
+    "completed": 866,
+    "p95": 0,
+    "maximum_completed": 5,
+    "agreement_percent": 86.75115207373273,
+    "missed_percent": 0.2304147465437788,
+    "proofs": [
+      {
+        "file": "fortified-49979687-reference.game",
+        "sha256": "00df6e415b8868b1a5e434d70c0e4c1d0ac1a9a65156f137154f29b41013780e",
+        "equal": true
+      },
+      {
+        "file": "fortified-67867967-reference-checksums.csv",
+        "sha256": "2b6ae30de46eb5f6c54aa36a558a3406a9bba21582f39555d42cbd6f980c252d",
+        "equal": true
+      },
+      {
+        "file": "fortified-15485863-reference.game",
+        "sha256": "d046c451185f4a28cda246be760fbd2fd159db5ce28458c8e78fa3de87cf4a13",
+        "equal": true
+      },
+      {
+        "file": "fortified-32452843-reference.game",
+        "sha256": "651ab3006f4a50f6feac8f65e2b754bfaac70394c634ab34485a58417cc31bd6",
+        "equal": true
+      },
+      {
+        "file": "fortified-7919-reference.game",
+        "sha256": "bc56784eb5590d6a9d183e18fb3f89586fb14b30bf56092ed7bc1bfc40286d3c",
+        "equal": true
+      },
+      {
+        "file": "skirmish-86028121-reference.game",
+        "sha256": "312190def6d7a637527313dde8a29333144865333e0f18cff4517d6285d9d927",
+        "equal": true
+      },
+      {
+        "file": "skirmish-104729-reference-orders.csv",
+        "sha256": "73472030dcee8e36cafdf9035cd784e6699469cadde3cfc3ec94934f66958e37",
+        "equal": true
+      },
+      {
+        "file": "skirmish-49979687-reference.game",
+        "sha256": "08bac5dccbdab5fbb146afa4428e23314c2d0b2657e6b7dc480815cc3b8f394b",
+        "equal": true
+      },
+      {
+        "file": "skirmish-1919-reference-checksums.csv",
+        "sha256": "bf2e6ffa1a6cd33ce99d59c185880162dc6c1a526d5aa09331ea3486aa756b7f",
+        "equal": true
+      },
+      {
+        "file": "skirmish-713-reference.game",
+        "sha256": "dded63363c1ff6815b61293cee74dec10410c93e5cd96262da9e9bcf54d65e74",
+        "equal": true
+      },
+      {
+        "file": "skirmish-713-reference-checksums.csv",
+        "sha256": "157cd2a06ed20058af043b00ab39fb399b0eda1ddd5a6d0c4d0b27f9a55e4d15",
+        "equal": true
+      },
+      {
+        "file": "skirmish-32452843-reference.game",
+        "sha256": "3d358b22625591e85da7ec5b4fff1e4f7c6ba51dc1e30649b8a2b2ffa68f1d98",
+        "equal": true
+      },
+      {
+        "file": "fortified-1919-reference-orders.csv",
+        "sha256": "f889c337f64468bd243ff21d6caeb1a36bec2e7cd196ced9b40f456f28298607",
+        "equal": true
+      },
+      {
+        "file": "fortified-32452843-reference-checksums.csv",
+        "sha256": "aebccb7094bebf833ff5cb6321d4c3665cb6253ca0a5f1f6d5690d1d3b5135d7",
+        "equal": true
+      },
+      {
+        "file": "fortified-104729-reference-checksums.csv",
+        "sha256": "eaed1c3fb7b5aa548abaf5e5d3a1f6ad018f7697e19cf6c6aa21ddc424f253cd",
+        "equal": true
+      },
+      {
+        "file": "skirmish-67867967-reference.game",
+        "sha256": "c4f340770d612a0d67f557a4585e8f3aee84fb1ab845e17fc6d0aecead49cb7e",
+        "equal": true
+      },
+      {
+        "file": "skirmish-4201-reference-orders.csv",
+        "sha256": "2844082f0e2bbd9845c392feab54452bfdf1604a52f868378c49a9c1fb9365b8",
+        "equal": true
+      },
+      {
+        "file": "skirmish-15485863-reference.game",
+        "sha256": "6308ee93d989f8063dbd23414e8dd6f88523006fcfd53937dfaabadc95929318",
+        "equal": true
+      },
+      {
+        "file": "skirmish-49979687-reference-checksums.csv",
+        "sha256": "53845babd5b4e025ebe2612535a042333b1314db81ef8bb39d8f34b6035ce8d6",
+        "equal": true
+      },
+      {
+        "file": "skirmish-7919-reference-checksums.csv",
+        "sha256": "1fb99f63a0de84e8f59c7c5db91712a24a07afaa9f53f9aeefad1fb1067c42c5",
+        "equal": true
+      },
+      {
+        "file": "skirmish-32452843-reference-checksums.csv",
+        "sha256": "3ee33040f530ed778289f9e63991dca3055327e78f934fd324f327a8cd2af0e9",
+        "equal": true
+      },
+      {
+        "file": "skirmish-49979687-reference-orders.csv",
+        "sha256": "2c466231edfbc60928918152ea1f1f25da555d0a295b5547e743d0d6a5dfddee",
+        "equal": true
+      },
+      {
+        "file": "fortified-4201-reference.game",
+        "sha256": "c6f1d1e551c2bb918b3c66ac4950a395ed51a9257f98f66c46d1c6821e843332",
+        "equal": true
+      },
+      {
+        "file": "fortified-4201-reference-checksums.csv",
+        "sha256": "a1509e2b71404403c52d85f822855e22b5d3997a4735992f8b3767991efebd52",
+        "equal": true
+      },
+      {
+        "file": "fortified-32452843-reference-orders.csv",
+        "sha256": "33484a6ac0b2158d342f5c5dc8371d3f3774f96bd940f643130bcfa24571421b",
+        "equal": true
+      },
+      {
+        "file": "fortified-713-reference-checksums.csv",
+        "sha256": "fba2dbdce1e267114c56eef2acf9ee88c7d65e248597ec98917cc2cc7f286311",
+        "equal": true
+      },
+      {
+        "file": "fortified-713-reference-orders.csv",
+        "sha256": "daa8dec5f70cf9f46f85d440b8c16b7fed221862ea7f91039361389efaf7b601",
+        "equal": true
+      },
+      {
+        "file": "fortified-86028121-reference.game",
+        "sha256": "77b2002d94e68d4d23a7bf94d96b4c4552a2652501520c7e70f07872a64f99b8",
+        "equal": true
+      },
+      {
+        "file": "fortified-49979687-reference-checksums.csv",
+        "sha256": "87681a624b43eb68663a0cb0f515ac180191c2ed3a04acb62530c0dfbe4261fb",
+        "equal": true
+      },
+      {
+        "file": "fortified-4201-reference-orders.csv",
+        "sha256": "fe2fcdda1c849c3dba1e9ee13433340e23dadcdb562a42a366c9e7c4dba637b8",
+        "equal": true
+      },
+      {
+        "file": "fortified-104729-reference.game",
+        "sha256": "0d7bbfe63f07f601f695de36f63a539adab845f2716b0a03c8409bdc5fa6a30b",
+        "equal": true
+      },
+      {
+        "file": "fortified-1919-reference.game",
+        "sha256": "3a3720b3ff0110a1992aa01f59cdbf142ebd4435b596b6211fa9df5a133bad6d",
+        "equal": true
+      },
+      {
+        "file": "skirmish-15485863-reference-checksums.csv",
+        "sha256": "ca6450529fe3805ee44d673b0f4bad364087736e949c9d48046a5601dfd3f2ed",
+        "equal": true
+      },
+      {
+        "file": "fortified-49979687-reference-orders.csv",
+        "sha256": "2a6d442bdf64fb1c30dd2bc634ff3cfb0b969d4ebf3ad9e8f6b31b1f8389b0de",
+        "equal": true
+      },
+      {
+        "file": "skirmish-104729-reference.game",
+        "sha256": "39ec918dbd63e5627aa2102cc6bbbf65e562398e4bd9268780e65d3af8eb73c6",
+        "equal": true
+      },
+      {
+        "file": "fortified-86028121-reference-checksums.csv",
+        "sha256": "68d07401850d30630f48b092def37002408f4b2c5a575b1a27756e33cf49d2a1",
+        "equal": true
+      },
+      {
+        "file": "skirmish-86028121-reference-orders.csv",
+        "sha256": "513d7a037e2d93777a85a4ac01c8279e3ce4f312bb9314be839acfef2569a177",
+        "equal": true
+      },
+      {
+        "file": "skirmish-67867967-reference-orders.csv",
+        "sha256": "ee42850df63201403ae4296a34df5463c23dfc234d46dc89b8376b8ec2c02f8b",
+        "equal": true
+      },
+      {
+        "file": "skirmish-32452843-reference-orders.csv",
+        "sha256": "a6688c5de050e609c10d27ab4eab8c13010a34f302882f23bb54819e4403e5d5",
+        "equal": true
+      },
+      {
+        "file": "skirmish-1919-reference.game",
+        "sha256": "3876c2f0801e1b33693f6463ed4f5d7498e9f7a1d52b81bb7df1a13395f2e785",
+        "equal": true
+      },
+      {
+        "file": "fortified-67867967-reference-orders.csv",
+        "sha256": "489a377b1a84194a180647960c191d3f1b62177d39603bb504699ac19117ca7d",
+        "equal": true
+      },
+      {
+        "file": "skirmish-1919-reference-orders.csv",
+        "sha256": "7d1e4a006a783da32b4e0020931d8fdeb5ad88de10f43520168f26cb083f3c65",
+        "equal": true
+      },
+      {
+        "file": "skirmish-7919-reference-orders.csv",
+        "sha256": "eb288144424c9974798c15f59ab8ea9c7ea16a294990d1fcb5e1f9aaa6816fe4",
+        "equal": true
+      },
+      {
+        "file": "fortified-7919-reference-orders.csv",
+        "sha256": "38306c2f0b00b88d218eff705c1f0a96e0d3c44b25747f41740ebe41ac008131",
+        "equal": true
+      },
+      {
+        "file": "skirmish-86028121-reference-checksums.csv",
+        "sha256": "ed21076b00315f9a67106c2201ddb546541eb91a984457d6c6b8da507dd4f20e",
+        "equal": true
+      },
+      {
+        "file": "skirmish-104729-reference-checksums.csv",
+        "sha256": "1574c0df0f32d3d6b67c1ba1b38fa83a34dad5d3616036b55a6e030697d37441",
+        "equal": true
+      },
+      {
+        "file": "fortified-7919-reference-checksums.csv",
+        "sha256": "539c0c66f272d646e1d2c5d47fe6fe01be63e94394d38c5affb55896a0f0fdfc",
+        "equal": true
+      },
+      {
+        "file": "fortified-86028121-reference-orders.csv",
+        "sha256": "16feca5e61dec660d3c01e82ffd902e2d697022586b6ac9b8273964bf86cfaca",
+        "equal": true
+      },
+      {
+        "file": "skirmish-15485863-reference-orders.csv",
+        "sha256": "f046ccb3fbcce10a5093f46208b0f36dc3107ab9468fff7c6f9dac402cfc106e",
+        "equal": true
+      },
+      {
+        "file": "skirmish-4201-reference.game",
+        "sha256": "d590596c31835f511cb9c05bf25425cb9a20e3e824816ab343da9d826bdfad60",
+        "equal": true
+      },
+      {
+        "file": "fortified-713-reference.game",
+        "sha256": "9f452248929ff16f2ee1ef0d83eb01e9571e2bcaaa7bb488f6e833aacf68491c",
+        "equal": true
+      },
+      {
+        "file": "fortified-104729-reference-orders.csv",
+        "sha256": "9c16d2769ec2c5875c919033fce7348d7d8b2c4773a822a872630fbec094df7b",
+        "equal": true
+      },
+      {
+        "file": "skirmish-713-reference-orders.csv",
+        "sha256": "01ad504ffea39bb1580e73ffd499e26e24fef8771dc680f3d470cd009b0061ea",
+        "equal": true
+      },
+      {
+        "file": "fortified-15485863-reference-orders.csv",
+        "sha256": "42dd7b4e0f27a7fe72d4b733d84356c87db68a6dcfdb92fa86c95bca027fc3dd",
+        "equal": true
+      },
+      {
+        "file": "fortified-67867967-reference.game",
+        "sha256": "b0cff46f5102f3f617063d7bc7210fa2132ac6411462f9c9e873c912c94107f3",
+        "equal": true
+      },
+      {
+        "file": "skirmish-4201-reference-checksums.csv",
+        "sha256": "20a1151320245f6deff44f5aae4fe631bf42e5ce508766bdef60e8d64980417c",
+        "equal": true
+      },
+      {
+        "file": "fortified-1919-reference-checksums.csv",
+        "sha256": "bc7ee76cede782d34564c319283c749c6028478d1879cd36d40647c2a2318747",
+        "equal": true
+      },
+      {
+        "file": "fortified-15485863-reference-checksums.csv",
+        "sha256": "f316f6659598c19d6a69205eadae078807096d642b933ab09912284a2729cf68",
+        "equal": true
+      },
+      {
+        "file": "skirmish-7919-reference.game",
+        "sha256": "3708ec280fbe1ac2e3749ad3649f086cda45c9edce1c0d58eae561f9f5a541ef",
+        "equal": true
+      },
+      {
+        "file": "skirmish-67867967-reference-checksums.csv",
+        "sha256": "3b88084b83006fcb2d21206f5a4f6fb3234666233b70d0d9b6fc2136100fa5f4",
+        "equal": true
+      }
+    ]
+  },
+  "controls": {
+    "L8R1": {
+      "opportunities": 14,
+      "missed": 0,
+      "p95": 1
+    },
+    "L2R1": {
+      "opportunities": 14,
+      "missed": 0,
+      "p95": 1
+    },
+    "L8R2": {
+      "opportunities": 14,
+      "missed": 0,
+      "p95": 2
+    },
+    "L2R2": {
+      "opportunities": 14,
+      "missed": 0,
+      "p95": 2
+    },
+    "L3R2": {
+      "opportunities": 14,
+      "missed": 0,
+      "p95": 2
+    },
+    "L4R2": {
+      "opportunities": 14,
+      "missed": 0,
+      "p95": 2
+    }
+  }
+}

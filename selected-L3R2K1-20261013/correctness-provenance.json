@@ -1,0 +1,187 @@
+[
+  {
+    "label": "L8R1-stock",
+    "command": [
+      "taskset",
+      "-c",
+      "8,10,12,14",
+      "/home/bradley/.codex/worktrees/9dc2/glob2/build/linux/client/release/dev-linker-auto/test/glob2-engine-tests",
+      "--test-suite=TurretTargeting",
+      "--test-case=Numbi Castor stock combat*",
+      "--no-colors=true"
+    ],
+    "environment": {
+      "TURRET_PIPELINE_ONLY": "1",
+      "TURRET_VARIANT": "combined",
+      "TURRET_CAPACITY": "8",
+      "TURRET_REFRESH": "1",
+      "TURRET_DELAY": "1"
+    },
+    "exit": 0
+  },
+  {
+    "label": "L2R1-stock",
+    "command": [
+      "taskset",
+      "-c",
+      "8,10,12,14",
+      "/home/bradley/.codex/worktrees/9dc2/glob2/build/linux/client/release/dev-linker-auto/test/glob2-engine-tests",
+      "--test-suite=TurretTargeting",
+      "--test-case=Numbi Castor stock combat*",
+      "--no-colors=true"
+    ],
+    "environment": {
+      "TURRET_PIPELINE_ONLY": "1",
+      "TURRET_VARIANT": "combined",
+      "TURRET_CAPACITY": "2",
+      "TURRET_REFRESH": "1",
+      "TURRET_DELAY": "1"
+    },
+    "exit": 0
+  },
+  {
+    "label": "L8R2-stock",
+    "command": [
+      "taskset",
+      "-c",
+      "8,10,12,14",
+      "/home/bradley/.codex/worktrees/9dc2/glob2/build/linux/client/release/dev-linker-auto/test/glob2-engine-tests",
+      "--test-suite=TurretTargeting",
+      "--test-case=Numbi Castor stock combat*",
+      "--no-colors=true"
+    ],
+    "environment": {
+      "TURRET_PIPELINE_ONLY": "1",
+      "TURRET_VARIANT": "combined",
+      "TURRET_CAPACITY": "8",
+      "TURRET_REFRESH": "2",
+      "TURRET_DELAY": "1"
+    },
+    "exit": 0
+  },
+  {
+    "label": "L2R2-stock",
+    "command": [
+      "taskset",
+      "-c",
+      "8,10,12,14",
+      "/home/bradley/.codex/worktrees/9dc2/glob2/build/linux/client/release/dev-linker-auto/test/glob2-engine-tests",
+      "--test-suite=TurretTargeting",
+      "--test-case=Numbi Castor stock combat*",
+      "--no-colors=true"
+    ],
+    "environment": {
+      "TURRET_PIPELINE_ONLY": "1",
+      "TURRET_VARIANT": "combined",
+      "TURRET_CAPACITY": "2",
+      "TURRET_REFRESH": "2",
+      "TURRET_DELAY": "1"
+    },
+    "exit": 0
+  },
+  {
+    "label": "L3R2-stock",
+    "command": [
+      "taskset",
+      "-c",
+      "8,10,12,14",
+      "/home/bradley/.codex/worktrees/9dc2/glob2/build/linux/client/release/dev-linker-auto/test/glob2-engine-tests",
+      "--test-suite=TurretTargeting",
+      "--test-case=Numbi Castor stock combat*",
+      "--no-colors=true"
+    ],
+    "environment": {
+      "TURRET_PIPELINE_ONLY": "1",
+      "TURRET_VARIANT": "combined",
+      "TURRET_CAPACITY": "3",
+      "TURRET_REFRESH": "2",
+      "TURRET_DELAY": "1"
+    },
+    "exit": 0
+  },
+  {
+    "label": "L4R2-stock",
+    "command": [
+      "taskset",
+      "-c",
+      "8,10,12,14",
+      "/home/bradley/.codex/worktrees/9dc2/glob2/build/linux/client/release/dev-linker-auto/test/glob2-engine-tests",
+      "--test-suite=TurretTargeting",
+      "--test-case=Numbi Castor stock combat*",
+      "--no-colors=true"
+    ],
+    "environment": {
+      "TURRET_PIPELINE_ONLY": "1",
+      "TURRET_VARIANT": "combined",
+      "TURRET_CAPACITY": "4",
+      "TURRET_REFRESH": "2",
+      "TURRET_DELAY": "1"
+    },
+    "exit": 0
+  },
+  {
+    "label": "stock-control",
+    "command": [
+      "taskset",
+      "-c",
+      "8,10,12,14",
+      "/home/bradley/.codex/worktrees/9dc2/glob2/build/linux/client/release/dev-linker-auto/test/glob2-engine-tests",
+      "--test-suite=TurretTargeting",
+      "--test-case=stock birth and approaching*",
+      "--no-colors=true"
+    ],
+    "environment": {},
+    "exit": 0
+  },
+  {
+    "label": "candidate-traces",
+    "command": [
+      "taskset",
+      "-c",
+      "8,10,12,14",
+      "/home/bradley/.codex/worktrees/9dc2/glob2/build/linux/client/release/dev-linker-auto/test/glob2-turret-engine-benchmark",
+      "--test-suite=TurretEngine",
+      "--test-case=whole engine cached traces*",
+      "--no-colors=true"
+    ],
+    "environment": {
+      "TURRET_CAPACITY": "2",
+      "TURRET_REFRESH": "2",
+      "TURRET_DELAY": "1"
+    },
+    "exit": 0
+  },
+  {
+    "label": "candidate-continuation",
+    "command": [
+      "taskset",
+      "-c",
+      "8,10,12,14",
+      "/home/bradley/.codex/worktrees/9dc2/glob2/build/linux/client/release/dev-linker-auto/test/glob2-turret-engine-benchmark",
+      "--test-suite=TurretEngine",
+      "--test-case=whole engine save continuation*",
+      "--no-colors=true"
+    ],
+    "environment": {
+      "TURRET_CAPACITY": "2",
+      "TURRET_REFRESH": "2",
+      "TURRET_DELAY": "1"
+    },
+    "exit": 0
+  },
+  {
+    "label": "focused",
+    "command": [
+      "taskset",
+      "-c",
+      "8,10,12,14",
+      "/home/bradley/.codex/worktrees/9dc2/glob2/build/linux/client/release/dev-linker-auto/test/glob2-engine-tests",
+      "--test-suite=TurretTargeting",
+      "--test-case=*",
+      "--no-colors=true",
+      "--test-case-exclude=*benchmark*,*callgrind*,Numbi Castor stock combat*,stock birth and approaching*"
+    ],
+    "environment": {},
+    "exit": 0
+  }
+]

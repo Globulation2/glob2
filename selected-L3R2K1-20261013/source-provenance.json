@@ -1,0 +1,11 @@
+{
+  "base": "7e9d63af602e6f3bf970ddff951fd2d0da0be35b",
+  "master": "277510840054b1416f2defd7d86fe1431dd0ddc0",
+  "sources": {
+    "src/building/TurretEngineBenchmark.cpp": "fb9efec4b063818602643afbbbf61a098d626fa8edaeaa2a9ef1e15b4d83d634",
+    "src/building/TurretTargeting.cpp": "0780fcdb672680ca297c27d866ca1b796a69169bc1eba1447d8872a0e9944b48",
+    "src/building/TurretTargetingPipeline.cpp": "09d6215fb72dcc9df11d6124ddfdc07643698c71d4f33bde6800c6599dd1e9a0",
+    "src/building/TurretTargetingTest.cpp": "fc12906451ba8a9d1664a109d2e7a20a6fea9e74c297675f3cfd2af9b4d174a9",
+    "docs/development/compute-benchmarks.md": "bec5c8ed811faa0205e8e3ef1f6cbb04917dbf9ef936b5f91290fbc35d43d6d7"
+  }
+}
