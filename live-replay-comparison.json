@@ -1,0 +1,62 @@
+[
+  {
+    "case": "ordinary-control-normal",
+    "equal": true,
+    "bytes": {
+      "reference": 717562,
+      "compact": 717562
+    },
+    "sha256": {
+      "reference": "d9cf3ecaa492a959f6ab84ec2287ca46d66effecb0c8cefcb7b1d73ba2506260",
+      "compact": "d9cf3ecaa492a959f6ab84ec2287ca46d66effecb0c8cefcb7b1d73ba2506260"
+    }
+  },
+  {
+    "case": "large-colony-normal",
+    "equal": true,
+    "bytes": {
+      "reference": 1186861,
+      "compact": 1186861
+    },
+    "sha256": {
+      "reference": "f4bbc7d3152f4fa98a5b027b0d36fffb66040a32106ea67a5a308ca59fe68a60",
+      "compact": "f4bbc7d3152f4fa98a5b027b0d36fffb66040a32106ea67a5a308ca59fe68a60"
+    }
+  },
+  {
+    "case": "large-colony-uncapped-render",
+    "equal": true,
+    "bytes": {
+      "reference": 1186861,
+      "compact": 1186861
+    },
+    "sha256": {
+      "reference": "f4bbc7d3152f4fa98a5b027b0d36fffb66040a32106ea67a5a308ca59fe68a60",
+      "compact": "f4bbc7d3152f4fa98a5b027b0d36fffb66040a32106ea67a5a308ca59fe68a60"
+    }
+  },
+  {
+    "case": "large-colony-max-speed",
+    "equal": true,
+    "bytes": {
+      "reference": 1512116,
+      "compact": 1512116
+    },
+    "sha256": {
+      "reference": "06c6fafd7729da146785d13f5a78a8229c4a3ef88d83d545e3560d5f088d989f",
+      "compact": "06c6fafd7729da146785d13f5a78a8229c4a3ef88d83d545e3560d5f088d989f"
+    }
+  },
+  {
+    "case": "cortex-colony-normal",
+    "equal": true,
+    "bytes": {
+      "reference": 1506257,
+      "compact": 1506257
+    },
+    "sha256": {
+      "reference": "6779514674c75aaf81d10391a2a1fe26b312405213de9464bf3eb3806493b3ea",
+      "compact": "6779514674c75aaf81d10391a2a1fe26b312405213de9464bf3eb3806493b3ea"
+    }
+  }
+]

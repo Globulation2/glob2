@@ -1,5 +1,12 @@
 # Compact unit core evidence
 
+[New reserved-core live match comparison](live-report.md) · [Live raw evidence](live-evidence.zip)
+
+Ten paired release repetitions per scenario, with concurrent simulation and software presentation: the normal 1,024-unit colony uses about **1.2% less game CPU** (95% CI 0.75–1.76%). Capture is about **35% cheaper**, with **36% less logical capture payload**. Both variants hold 60 FPS/30 TPS; uncapped FPS and maximum TPS gains are inconclusive. The full-observation Cortex case and ordinary control are reported separately. CPU restoration audits, all paired samples and byte-identical live replay/checksum evidence are included. Linux software/Xvfb coverage does not establish GPU/desktop-display performance.
+
+![Live benefit confidence intervals](live-benefit.png)
+
+
 [New capture-inclusive runtime follow-up](runtime-report.md) · [Runtime raw evidence](runtime-evidence.zip)
 
 Twenty paired GUI repetitions and a separate longer-window replication establish a large-colony capture-inclusive pipeline benefit. The report preserves ordinary/panel limitations and distinguishes this from live-match frame rates.

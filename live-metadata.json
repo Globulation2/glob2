@@ -1,0 +1,41 @@
+{
+  "before": "3a3917757752fe64a2af9c1dc964c074794ebf3e",
+  "after": "5a40f7a9f281cd1aa71c6980573cee3f6f35a36f",
+  "pr_source": "6b0dcacb8a5ad81592197de759252179cee01036",
+  "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.43",
+  "compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+  "cpu": "Architecture:                            x86_64\nCPU op-mode(s):                          32-bit, 64-bit\nAddress sizes:                           43 bits physical, 48 bits virtual\nByte Order:                              Little Endian\nCPU(s):                                  32\nOn-line CPU(s) list:                     0-31\nVendor ID:                               AuthenticAMD\nModel name:                              AMD Ryzen Threadripper 2950X 16-Core Processor\nCPU family:                              23\nModel:                                   8\nThread(s) per core:                      2\nCore(s) per socket:                      16\nSocket(s):                               1\nStepping:                                2\nFrequency boost:                         disabled\nCPU(s) scaling MHz:                      100%\nCPU max MHz:                             4000.0000\nCPU min MHz:                             2200.0000\nBogoMIPS:                                7998.72\nFlags:                                   fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl nonstop_tsc cpuid extd_apicid amd_dcm aperfmperf rapl pni pclmulqdq monitor ssse3 fma cx16 sse4_1 sse4_2 movbe popcnt aes xsave avx f16c rdrand lahf_lm cmp_legacy svm extapic cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw skinit wdt tce topoext perfctr_core perfctr_nb bpext perfctr_llc mwaitx cpb hw_pstate ssbd ibpb vmmcall fsgsbase bmi1 avx2 smep bmi2 rdseed adx smap clflushopt sha_ni xsaveopt xsavec xgetbv1 clzero xsaveerptr arat npt lbrv svm_lock nrip_save tsc_scale vmcb_clean flushbyasid decodeassists pausefilter pfthreshold avic v_vmsave_vmload vgif overflow_recov succor smca sev sev_es\nVirtualization:                          AMD-V\nL1d cache:                               512 KiB (16 instances)\nL1i cache:                               1 MiB (16 instances)\nL2 cache:                                8 MiB (16 instances)\nL3 cache:                                32 MiB (4 instances)\nNUMA node(s):                            1\nNUMA node0 CPU(s):                       0-31\nVulnerability Gather data sampling:      Not affected\nVulnerability Ghostwrite:                Not affected\nVulnerability Indirect target selection: Not affected\nVulnerability Itlb multihit:             Not affected\nVulnerability L1tf:                      Not affected\nVulnerability Mds:                       Not affected\nVulnerability Meltdown:                  Not affected\nVulnerability Mmio stale data:           Not affected\nVulnerability Old microcode:             Not affected\nVulnerability Reg file data sampling:    Not affected\nVulnerability Retbleed:                  Mitigation; untrained return thunk; SMT vulnerable\nVulnerability Spec rstack overflow:      Mitigation; Safe RET\nVulnerability Spec store bypass:         Mitigation; Speculative Store Bypass disabled via prctl\nVulnerability Spectre v1:                Mitigation; usercopy/swapgs barriers and __user pointer sanitization\nVulnerability Spectre v2:                Mitigation; Retpolines; IBPB conditional; STIBP disabled; RSB filling; PBRSB-eIBRS Not affected; BHI Not affected\nVulnerability Srbds:                     Not affected\nVulnerability Tsa:                       Not affected\nVulnerability Tsx async abort:           Not affected\nVulnerability Vmscape:                   Mitigation; IBPB before exit to userspace\n",
+  "governor": "schedutil",
+  "boost": "0",
+  "build": "ordinary SCons release=1 -O3; probe -O3 -g; existing pinned dependencies",
+  "build_archive_note": "Sources extracted from exact Git commits; parent repository Git metadata may report parent SHA. Source archive commits above define actual compiled code.",
+  "base_at_fetch": "277510840054b1416f2defd7d86fe1431dd0ddc0",
+  "affinity": "exclusive cgroup-v2 cores4-7+SMT20-23; all game threads restricted4-7",
+  "binary_sha256": {
+    "reference": "ac84cd2a658e4806d8050db47fb4ff53b47330e601c12f2eb6582966d16f2ace",
+    "compact": "571353f1943dd91e8d6841070503e4a0d929bdd5504cb013a7eca13799085cf1"
+  },
+  "fixtures": {
+    "ordinary-control.game": "546090796c2904a1848e2e439f74b5bc49ab047ca9ad9469033526cba0d907b7",
+    "large-colony.game": "9dd4a52c891da10f15e1238e49173e23cff78fb0c283653c75721e55c25ecf60",
+    "cortex-colony.game": "a36b9991c31aa6d8311dbf4d444ba3cdc9011048e26df19475d999f8316f91dc"
+  },
+  "protocol": "protocol.md",
+  "omissions": [
+    "macOS arm64",
+    "Windows x64",
+    "browser serial/threaded",
+    "GPU/desktop-compositor/hardware-refresh",
+    "multi-team combat",
+    "long-run sustainable-colony qualification",
+    "30-seed gameplay trial"
+  ],
+  "live_command": "python3 test/run_with_benchmark_cpuset.py --audit artifacts/compact-live/cpuset-timing-final.json --cpus 4-7 --reserve-cpus 4-7,20-23 --timeout-seconds 7200 -- xvfb-run -a python3 artifacts/compact-live/run_pairs.py",
+  "pilot_exclusions": "Initial fixture setup retained no-op AI (saveAI=true); identity log caught it in warmup. Entire preliminary timing set excluded. Final fixture reset controller (saveAI=false); both binaries confirm player type11 AI6. No outcome-based changes to timing protocol.",
+  "base_at_final_fetch": "277510840054b1416f2defd7d86fe1431dd0ddc0",
+  "reservation_restored": true,
+  "correctness_ticks": 3317,
+  "live_replays_byte_identical": 5,
+  "final_pr_revision": "0ed8d9ea3377fdf936f1ca2906d2f4d5933ca52c",
+  "final_revision_change": "Documentation only; compiled frozen game sources unchanged."
+}

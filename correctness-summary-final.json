@@ -1,0 +1,67 @@
+[
+  {
+    "case": "cortex-colony-normal",
+    "common_ticks": 541,
+    "range": [
+      1,
+      541
+    ],
+    "mismatches": [],
+    "last_ticks": {
+      "reference": 541,
+      "compact": 541
+    }
+  },
+  {
+    "case": "large-colony-max-speed",
+    "common_ticks": 1153,
+    "range": [
+      1,
+      1153
+    ],
+    "mismatches": [],
+    "last_ticks": {
+      "reference": 1153,
+      "compact": 1153
+    }
+  },
+  {
+    "case": "large-colony-normal",
+    "common_ticks": 541,
+    "range": [
+      1,
+      541
+    ],
+    "mismatches": [],
+    "last_ticks": {
+      "reference": 541,
+      "compact": 541
+    }
+  },
+  {
+    "case": "large-colony-uncapped-render",
+    "common_ticks": 541,
+    "range": [
+      1,
+      541
+    ],
+    "mismatches": [],
+    "last_ticks": {
+      "reference": 541,
+      "compact": 541
+    }
+  },
+  {
+    "case": "ordinary-control-normal",
+    "common_ticks": 541,
+    "range": [
+      1,
+      541
+    ],
+    "mismatches": [],
+    "last_ticks": {
+      "reference": 541,
+      "compact": 541
+    }
+  }
+]
