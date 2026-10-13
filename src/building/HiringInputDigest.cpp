@@ -200,19 +200,7 @@ Uint32 HiringInputDigests::digest(const SimulationSnapshot::Handle &w, Uint64 ro
 						}
 						return s.result();
 					}));
-	// Published planes are ranking inputs. Hashes are calculated alongside
-	// the existing snapshot copy, avoiding checksum-time full-plane scans.
-	// and hash by logical key, independently of publication container ordering.
-	unsigned count = 0;
-	for (unsigned key = 0; key < MapState::PlaneCount; ++key)
-		if (w.resourceFields->find(key))
-			++count;
-	h.add(count);
-	for (unsigned key = 0; key < MapState::PlaneCount; ++key)
-		if (const auto *plane = w.resourceFields->find(key))
-		{
-			h.add(key);
-			h.add(plane->contentChecksum);
-		}
+	// Opportunistic AI-enrolled resource planes are private cache state. The
+	// planner derives resource estimates from the logical components above.
 	return h.result();
 }

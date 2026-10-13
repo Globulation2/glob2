@@ -11,6 +11,41 @@
 
 TEST_SUITE("HiringPlanner")
 {
+	TEST_CASE("local AI resource-plane enrollment cannot hide sources in the observed world")
+	{
+		glob2test::HeadlessGlobals globals;
+		glob2test::HeadlessGame w({.discovered = true, .loadDefaultRace = true});
+		auto *b = w.addBuilding("inn", 8, 8);
+		b->maxUnitWorking = 1;
+		b->materials[WHEAT] = 0;
+		b->updateCallLists();
+		auto *u = w.addUnit(WORKER, 6, 8);
+		u->activity = Unit::ACT_RANDOM;
+		u->medical = Unit::MED_FREE;
+		u->hungriness = 0;
+		REQUIRE(w.game.map.incResourceByIndex(5, 8, WHEAT, 0));
+		auto input = HiringPipeline::bindRoutes(w.game, w.game.captureReadBoundary());
+		auto local = input;
+		auto planes = std::make_shared<SimulationSnapshot::ResourceFields>();
+		auto values = std::make_shared<const std::vector<Uint16>>(
+			w.game.map.getW() * w.game.map.getH(), GRADIENT_UNREACHABLE);
+		planes->add({MapState::planeKey(0, WHEAT, 0, false), 1, values});
+		local.world.resourceFields = planes;
+		HiringPlanner::Cache a, bCache;
+		const auto normal = a.rank(input, 0), enrolled = bCache.rank(local, 0);
+		const auto fetch = [](const auto &output) -> const std::vector<HiringPlanner::Candidate> &
+		{
+			for (const auto &building : output.buildings)
+				for (const auto &job : building.jobs)
+					if (job.key == Hiring::Key{Hiring::Job::Fetch, WHEAT})
+						return job.candidates;
+			throw std::runtime_error("missing fetch list");
+		};
+		REQUIRE(fetch(normal).size() == 1);
+		REQUIRE(fetch(enrolled).size() == fetch(normal).size());
+		CHECK(fetch(enrolled)[0].unit == fetch(normal)[0].unit);
+		CHECK(fetch(enrolled)[0].value == fetch(normal)[0].value);
+	}
 	TEST_CASE("worker demand uses immutable shared funding and staffing facts")
 	{
 		glob2test::HeadlessGlobals globals;
@@ -425,7 +460,7 @@ TEST_SUITE("HiringPlanner")
 				}
 			}
 	}
-	TEST_CASE("fetch permission without suppliers reuses the existing natural plane")
+	TEST_CASE("fetch jobs reuse canonical resource estimates independently of live planes")
 	{
 		glob2test::HeadlessGlobals globals;
 		glob2test::HeadlessGame world({.discovered = true, .loadDefaultRace = true});
@@ -447,10 +482,11 @@ TEST_SUITE("HiringPlanner")
 		CHECK((inn->runtime->fetchesDirectStockMask & (1u << WHEAT)) != 0);
 		HiringPlanner::Cache cache;
 		const auto output = cache.rank(inputs, 0, 8);
-		CHECK(output.metrics.publishedResourceReads > 0);
-		CHECK(output.metrics.privateResourceReads == 0);
-		CHECK(output.metrics.fieldMisses == 0);
-		CHECK(output.metrics.geographyNs == 0);
+		CHECK(output.metrics.privateResourceReads > 0);
+		CHECK(output.metrics.fieldMisses == 1);
+		const auto repeated = cache.rank(inputs, 0, 8);
+		CHECK(repeated.metrics.fieldMisses == 0);
+		CHECK(repeated.metrics.fieldHits > 0);
 		CHECK(world.checksum() == checksum);
 	}
 	TEST_CASE("private fetch fields include suppliers without natural material")
@@ -495,8 +531,8 @@ TEST_SUITE("HiringPlanner")
 						CHECK(list.candidates[0].unit == Game::refOf(worker));
 					}
 		CHECK(found);
-		// Unified market fields are shared only when the consumer does not
-		// exclude itself. The catalog folds redundant direct suppliers into mode 1.
+		// The private estimate is reusable across consumers with identical
+		// supplier rules. Local live-field enrollment cannot change its result.
 		REQUIRE(supply->modes[CHERRY] == 1);
 		CHECK_FALSE(supply->consumerSpecific[CHERRY]);
 		world.game.map.getMaterialGradientSlot(0, CHERRY, worker->swimClass(), false, inn);
@@ -504,8 +540,8 @@ TEST_SUITE("HiringPlanner")
 			.invalidateBoundary(); // Announce this mid-boundary fixture query.
 		auto published = world.game.captureReadBoundary();
 		const auto shared = cache.rank(HiringPipeline::bindRoutes(world.game, published), 0, 8);
-		CHECK(shared.metrics.publishedResourceReads > 0);
-		CHECK(shared.metrics.privateResourceReads == 0);
+		CHECK(shared.metrics.privateResourceReads > 0);
+		CHECK(shared.metrics.fieldHits > 0);
 		CHECK(shared.metrics.fieldMisses == 0);
 	}
 }

@@ -575,12 +575,8 @@ Handle capture(const Game& game,
 			auto values = storage ? storage->resourcePlanes.acquire(storage->allocations) : std::make_shared<std::vector<Uint16>>();
 			if (storage && values->capacity() < planeCells) ++storage->allocations;
 			values->resize(planeCells);
-            Uint32 contentChecksum=2166136261u;
-            for(std::size_t i=0;i<planeCells;++i) {
-                const auto value=(*plane.slot)[i];(*values)[i]=value;
-                contentChecksum=(contentChecksum^value)*16777619u;
-            }
-            fields->add(ResourceField{plane.key, plane.generation, std::move(values),contentChecksum});
+            std::copy_n(*plane.slot,planeCells,values->begin());
+            fields->add(ResourceField{plane.key,plane.generation,std::move(values)});
 		}
 		result->resourceFields = std::move(fields);
 	}

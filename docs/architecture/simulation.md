@@ -577,7 +577,10 @@ Clearing, exploration, defense, ground and flying transport share this contract.
 Building-route expansion and owner reads share the existing per-generation locks.
 Retirement retains the original buffer/search until leases end, without copying
 it. Workers never call live building APIs. Immutable snapshot components and route
-handles are shared by reference, not copied for each team. Private planner caches
+handles are shared by reference, not copied for each team. Resource estimates use
+private fields shared across jobs with identical frozen inputs. Opportunistic
+AI-enrolled resource planes are excluded: their presence and age can differ with
+local network polling and must not change hiring decisions. Private planner caches
 are bounded separately from deterministic pending/published output reservations.
 
 Published lists, fixed rules, last admission state, input identities, output

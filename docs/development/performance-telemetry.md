@@ -67,6 +67,8 @@ Diagnostic exports and saves are separate from throughput timing. Normal engine
 checksums remain enabled in timing runs. Pending-input digests are computed lazily
 on the first checksum or save after admission, using immutable logical snapshot
 values and cached component hashes qualified by private buffer-fill epochs.
+Resource estimates are derived from those logical inputs; local AI-enrolled
+resource planes are excluded from both rankings and pending identities.
 Building-route digests describe frozen seeds and entry costs; checksum reads never
 finish a route search.
 They exclude padding, pointers, cache readiness and incidental generation numbers;

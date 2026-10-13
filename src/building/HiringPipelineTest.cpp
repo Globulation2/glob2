@@ -486,6 +486,19 @@ TEST_SUITE("HiringInputDigest")
 		HiringInputDigests hashes;
 		CHECK(hashes.digest(normal, 0) == hashes.digest(widened, 0));
 	}
+	TEST_CASE("local resource-plane enrollment does not change pending input identity")
+	{
+		glob2test::HeadlessGlobals globals;
+		glob2test::HeadlessGame w({.discovered = true, .loadDefaultRace = true});
+		auto normal = observation(w), local = normal;
+		auto planes = std::make_shared<SimulationSnapshot::ResourceFields>();
+		auto values = std::make_shared<const std::vector<Uint16>>(
+			w.game.map.getW() * w.game.map.getH(), GRADIENT_UNREACHABLE);
+		planes->add({MapState::planeKey(0, WHEAT, 0, false), 1, values});
+		local.resourceFields = planes;
+		HiringInputDigests hashes;
+		CHECK(hashes.digest(normal, 0) == hashes.digest(local, 0));
+	}
 	TEST_CASE("multi-yield stock numbering and unused slots do not change logical input identity")
 	{
 		glob2test::HeadlessGlobals globals;

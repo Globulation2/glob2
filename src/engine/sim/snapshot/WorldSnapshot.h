@@ -124,7 +124,6 @@ struct ResourceField
 	Uint16 key = 0;
 	Uint64 generation = 0;
 	std::shared_ptr<const std::vector<Uint16>> values;
-	Uint32 contentChecksum = 0; // Calculated with the existing capture copy.
 };
 // The live planes at capture, in the map's publication order, with a dense
 // key index so consumers look a plane up without hashing.

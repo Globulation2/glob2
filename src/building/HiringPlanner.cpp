@@ -651,17 +651,10 @@ Output Cache::rank(const Inputs &input, unsigned team, unsigned capacity)
 			}
 			std::array<std::shared_ptr<SharedBuildingGradient>, SWIM_CLASS_COUNT> buildings{};
 			std::array<const std::vector<Uint16> *, SWIM_CLASS_COUNT> resources{};
-			// Plane identity is fixed for this job's immutable inputs. Resolve
-			// it once per movement class, rather than once per candidate.
-			std::array<std::span<const Uint16>, SWIM_CLASS_COUNT> publishedResources{};
-			if (key.job == Job::Fetch)
-			{
-				const auto modes = supply->modes[key.material];
-				if (modes == 0 || (modes == 1 && !supply->consumerSpecific[key.material]))
-					for (int swim = 0; swim < SWIM_CLASS_COUNT; ++swim)
-						publishedResources[swim] =
-							world.resourceGradient(team, key.material, swim, modes == 1);
-			}
+			// AI enrollment depends on local polling/network receipt. Its live
+			// resource planes are not canonical simulation inputs. Resource
+			// estimates instead share private fields keyed by frozen geography,
+			// supplier mode, material and movement class.
 			const auto route = key.job == Job::Delivery || key.job == Job::Fetch
 								   ? BuildingRoute::Footprint
 							   : key.job == Job::Clear ? BuildingRoute::Clearing
@@ -724,19 +717,7 @@ Output Cache::rank(const Inputs &input, unsigned team, unsigned capacity)
 				++output.metrics.availableEvaluations;
 				const int swim = swimClass(u);
 				int distance;
-				int knownResourceDistance = -1;
-				if (key.job == Job::Fetch && !u.performance[FLY])
-				{
-					const auto published = publishedResources[swim];
-					if (!published.empty())
-					{
-						++output.metrics.publishedResourceReads;
-						const auto v = published[world.tileIndex(u.posX, u.posY)];
-						if (v <= GRADIENT_UNREACHABLE)
-							continue;
-						knownResourceDistance = gradientTiles(v);
-					}
-				}
+
 				auto &memo = distances[int(resolvedRoute)];
 				if (memo.empty())
 					memo.assign(Unit::MAX_COUNT, -1);
@@ -837,29 +818,16 @@ Output Cache::rank(const Inputs &input, unsigned team, unsigned capacity)
 					else
 					{
 						int resourceDistance = INT_MAX;
-						if (knownResourceDistance >= 0)
-							resourceDistance = knownResourceDistance;
-						else if (!u.performance[FLY])
+						if (!u.performance[FLY])
 						{
-							const auto modes = supply->modes[key.material];
-							const auto published = publishedResources[swim];
-							if (!published.empty())
-							{
-								++output.metrics.publishedResourceReads;
-								const auto v = published[world.tileIndex(u.posX, u.posY)];
-								if (v > GRADIENT_UNREACHABLE)
-									resourceDistance = gradientTiles(v);
-							}
-							else
-							{
-								++output.metrics.privateResourceReads;
-								if (!resources[swim])
-									resources[swim] = &impl->resource(
-										world, b, key.material, swim, ensureGeography(), modes,
-										supply->consumerSpecific[key.material]);
-								resourceDistance =
-									impl->distance(world, *resources[swim], u.posX, u.posY);
-							}
+							++output.metrics.privateResourceReads;
+							if (!resources[swim])
+								resources[swim] =
+									&impl->resource(world, b, key.material, swim, ensureGeography(),
+													supply->modes[key.material],
+													supply->consumerSpecific[key.material]);
+							resourceDistance =
+								impl->distance(world, *resources[swim], u.posX, u.posY);
 						}
 						else
 						{
