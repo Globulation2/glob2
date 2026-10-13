@@ -73,6 +73,7 @@ template <class Costs>
 [[noreturn]] void failGradientControlProof(std::span<const std::uint16_t> seeds, field::Grid grid,
 										   int limit, Costs costs, GPUFixedPointResult proof,
 										   GradientProofContext context)
+try
 {
 	static std::atomic<std::uint64_t> sequence{0};
 	const auto directory = std::getenv("GLOB2_TEST_ARTIFACTS");
@@ -120,12 +121,21 @@ template <class Costs>
 							   std::to_string(proof.firstInvalid) +
 							   "; subsequent readback unavailable" + evidence);
 }
+catch (const GradientProofFailure &)
+{
+	throw;
+}
+catch (...)
+{
+	throw GradientProofFailure("GPU gradient proof failed; detailed evidence unavailable");
+}
 // Transfer failures precede relaxation. Keep a distinct payload so analysis
 // never mistakes packed costs or control words for a computed gradient field.
 template <class Expected>
 [[noreturn]] void failGradientTransfer(unsigned buffer, std::span<const std::uint16_t> seeds,
 									   std::span<const std::uint32_t> actual, field::Grid grid,
 									   int limit, Expected expected, GradientProofContext context)
+try
 {
 	static std::atomic<std::uint64_t> sequence{0};
 	const auto stamp = std::chrono::steady_clock::now().time_since_epoch().count();
@@ -182,12 +192,21 @@ template <class Expected>
 	throw GradientProofFailure("Vulkan upload roundtrip mismatch in buffer " +
 							   std::to_string(buffer) + detail + evidence);
 }
+catch (const GradientProofFailure &)
+{
+	throw;
+}
+catch (...)
+{
+	throw GradientProofFailure("GPU gradient proof failed; detailed evidence unavailable");
+}
 // Validation failure is evidence of incorrect execution, never normal admission
 // recovery. Keep the 32-bit readback, including values outside field range.
 template <class Value, class Costs>
 [[noreturn]] void failGradientProof(const char *backend, std::span<const std::uint16_t> seeds,
 									std::span<const Value> output, field::Grid grid, int limit,
 									Costs costs, GradientProofContext context = {})
+try
 {
 	static std::atomic<std::uint64_t> sequence{0};
 	const auto stamp = std::chrono::steady_clock::now().time_since_epoch().count();
@@ -239,6 +258,14 @@ template <class Value, class Costs>
 	}
 	throw GradientProofFailure(std::string(backend) + " gradient failed exact fixed-point proof" +
 							   evidence);
+}
+catch (const GradientProofFailure &)
+{
+	throw;
+}
+catch (...)
+{
+	throw GradientProofFailure("GPU gradient proof failed; detailed evidence unavailable");
 }
 // Positive integer edge costs make this fixed point unique. Checking against the
 // original seeds rejects transient/stale readback, including fabricated sources,

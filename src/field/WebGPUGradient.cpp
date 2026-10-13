@@ -232,24 +232,31 @@ bool executeWebGPUGradient(std::span<const BackendRequest> requests, Plan plan)
 										 return EntrySteps{packed & 65535, packed >> 16};
 									 }))
 		{
-			{
-				std::lock_guard lock(service.mutex);
-				service.status.availability = Availability::Failed;
-				service.status.error = "WebGPU gradient failed exact fixed-point proof";
-				readyPlans.fetch_and(~((1u << unsigned(Plan::WebGPUFrozen8)) |
-									   (1u << unsigned(Plan::WebGPUJacobi))));
-			}
-			failGradientProof(
-				plan == Plan::WebGPUFrozen8 ? "webgpu-frozen8" : "webgpu-jacobi",
-				std::span<const std::uint16_t>(request.gradient, n),
-				std::span<const std::uint32_t>(task->output), request.grid, request.limit,
-				[&](std::size_t i)
+			// Once the completed field is proven wrong, even status or evidence
+			// allocation failure is fatal. Recovery must not hide the mismatch.
+			preserveGradientProofFailure(
+				[&]
 				{
-					const auto packed = task->costs[i];
-					return EntrySteps{packed & 65535, packed >> 16};
-				},
-				{service.status.device, service.status.driver, service.status.shaderIdentity,
-				 request.capturedGeneration.value_or(request.session.currentGeneration())});
+					{
+						std::lock_guard lock(service.mutex);
+						service.status.availability = Availability::Failed;
+						service.status.error = "WebGPU gradient failed exact fixed-point proof";
+						readyPlans.fetch_and(~((1u << unsigned(Plan::WebGPUFrozen8)) |
+											   (1u << unsigned(Plan::WebGPUJacobi))));
+					}
+					failGradientProof(
+						plan == Plan::WebGPUFrozen8 ? "webgpu-frozen8" : "webgpu-jacobi",
+						std::span<const std::uint16_t>(request.gradient, n),
+						std::span<const std::uint32_t>(task->output), request.grid, request.limit,
+						[&](std::size_t i)
+						{
+							const auto packed = task->costs[i];
+							return EntrySteps{packed & 65535, packed >> 16};
+						},
+						{service.status.device, service.status.driver,
+						 service.status.shaderIdentity,
+						 request.capturedGeneration.value_or(request.session.currentGeneration())});
+				});
 		}
 		tasks.push_back(std::move(task));
 	}
