@@ -612,7 +612,38 @@ availability do not establish live combat outcomes or complete engineering gates
 Do not add owner rescoring or a fallback spatial search, or widen the four-tick
 budget to make a failed configuration pass.
 
-The opt-in `[callgrind]` benchmark brackets only planning queries with Callgrind
+The `turret producer callgrind regions*` case in `glob2-turret-engine-benchmark`
+profiles the complete measured tick region, including preparation, incremental
+capture, index maintenance, worker planning, publication and firing. Setup,
+warmup, output and teardown remain outside the region. Use one participant for
+repeatable serial instruction attribution, then four to inspect worker execution:
+
+```sh
+TURRET_PROFILE_CASE=1 TURRET_PARTICIPANTS=1 TURRET_CAPACITY=8 \
+valgrind --tool=callgrind --instr-atstart=no --collect-atstart=yes \
+  --callgrind-out-file=artifacts/turret-targeting/producer.callgrind \
+  build/linux/client/release/dev-linker-auto/test/glob2-turret-engine-benchmark \
+  --test-suite=TurretEngine --test-case='turret producer callgrind regions*' \
+  --no-colors=true
+```
+
+`TURRET_PROFILE_CASE=0|1|2` selects empty, combat or ordinary control;
+`TURRET_PROFILE_ORIGINAL=1` profiles the original selector instead of cached
+firing. Collection starts enabled for every thread, while instrumentation starts
+only inside the measured region. Do not use Callgrind elapsed time as native CPU
+or tick cost. The ordinary timing case also accepts `TURRET_REPEAT=0..9` to select
+one of its ten paired seeds, retaining warmup and rotated mode order. This allows
+an external runner to rotate separately built before/after binaries per pair;
+unset it for the usual ten repetitions in one process.
+
+Preparation allocates jobs only for admitted sources and sorts lightweight
+references before constructing them. Unchanged occupancy reuses the immutable
+index itself; entity combat facts remain fresh. Published records are kept in
+identity order in contiguous storage, including accounting for spare capacity
+after removals. These are derived storage choices, not changes to admission,
+deadlines, source validation or shortlist order.
+
+The planner-only opt-in `[callgrind]` benchmark brackets planning queries with Callgrind
 client requests. Capture, chunk maintenance, fixture setup, warmup, assertions and
 output are outside the collected regions. It emits four named dumps: empty range,
 stationary combat, dense custom/wrapped geometry and temporary-chunk reconstruction.

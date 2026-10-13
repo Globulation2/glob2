@@ -72,10 +72,18 @@ struct Pipeline::State
     std::optional<Uint32> admitted;
     Observation indexCache; // Index only; never retains a snapshot or offense.
     std::deque<std::unique_ptr<Generation>> pending;
-    std::map<BuildingRef,Record,IdentityLess> published;
+    // Ordered contiguous records avoid a node allocation and tree walk per
+    // turret. References returned by entries are consumed before publication.
+    std::vector<Record> published;
     Statistics metrics;
     std::size_t reservations=0,publishedBytes=0;
+    static_assert(sizeof(Record)*2<=512);
     State(Game& game,Configuration configuration):executor(game.map.computeExecutor()),rules(configuration) {}
+    auto findPublished(BuildingRef identity) {
+        return std::lower_bound(published.begin(),published.end(),identity,[](const Record& record,BuildingRef key) {
+            return IdentityLess{}(record.source.identity,key);
+        });
+    }
     void complete(Generation& generation) {
         if (!generation.batch.empty()) {
             const auto joinStart=rules.profileCpu ? threadCpuNs() : 0;
@@ -87,7 +95,13 @@ struct Pipeline::State
             generation.observation.reset(); // Completed jobs need no world lease.
         }
     }
-    void account() { metrics.shortlistBytes=reservations+publishedBytes; }
+    std::size_t publishedStorage() const {
+        // recordBytes already reserves 512 bytes per live record for container
+        // storage. Charge any excess retained vector capacity after removals too.
+        const auto storage=published.capacity()*sizeof(Record), covered=published.size()*512;
+        return publishedBytes+(storage>covered ? storage-covered : 0);
+    }
+    void account() { metrics.shortlistBytes=reservations+publishedStorage(); }
 };
 Pipeline::Pipeline(Game& game,Configuration rules):state(std::make_unique<State>(game,rules))
 {
@@ -122,14 +136,26 @@ void Pipeline::admit(const Game& game,const SimulationSnapshot::Handle& captured
     // Boundary-local preparation table. Values are immutable and job-owned;
     // no mutable query cache survives admission.
     std::map<const BuildingUnitInteraction*,std::shared_ptr<const std::vector<int>>> rows;
-    auto generation=std::make_unique<State::Generation>();
-    generation->deadline=Uint64(game.stepCounter)+s.rules.delay;
+    std::unique_ptr<State::Generation> generation;
     for (int team=0;team<game.mapHeader.getNumberOfTeams();++team) if (due(game,team,s.rules)) {
-        auto job=std::make_unique<State::Job>();
-        job->capacity=s.rules.capacity; job->margin=s.rules.margin; job->profile=s.rules.profileCpu;
+        std::vector<const Building*> selected;
         for (const auto* turret:game.teams[team]->turrets) {
             if (turret->buildingState==Building::DEAD || turret->runtime->shootSpeed<256) continue;
             if (s.rules.forecast && !refreshNeeded(turret->shootingCooldownRemaining(),turret->runtime->shootRhythm,s.rules.delay,s.rules.refresh)) { ++s.metrics.skipped; continue; }
+            selected.push_back(turret);
+        }
+        if (selected.empty()) continue;
+        // Sort small references before constructing sources. Cooling teams need
+        // neither a job nor source/damage storage, and the admitted vector grows once.
+        std::sort(selected.begin(),selected.end(),[](const auto* a,const auto* b){return IdentityLess{}(Game::refOf(a),Game::refOf(b));});
+        auto job=std::make_unique<State::Job>();
+        job->capacity=s.rules.capacity; job->margin=s.rules.margin; job->profile=s.rules.profileCpu;
+        job->sources.reserve(selected.size());
+        if (!generation) {
+            generation=std::make_unique<State::Generation>();
+            generation->deadline=Uint64(game.stepCounter)+s.rules.delay;
+        }
+        for (const auto* turret:selected) {
             std::shared_ptr<const std::vector<int>> damage;
             if (s.rules.reusePreparation) {
                 auto [it,inserted]=rows.try_emplace(turret->runtime->interactions);
@@ -142,13 +168,12 @@ void Pipeline::admit(const Game& game,const SimulationSnapshot::Handle& captured
             }
             job->sources.push_back(source(*turret,std::move(damage))); ++s.metrics.sources;
         }
-        std::sort(job->sources.begin(),job->sources.end(),[](const auto& a,const auto& b){return IdentityLess{}(a.identity,b.identity);});
         for (const auto& source:job->sources) generation->reserved+=recordBytes(source,s.rules.capacity);
         if (!job->sources.empty()) generation->jobs.push_back(std::move(job));
     }
     if (s.rules.profileCpu) s.metrics.sourceCpu+=threadCpuNs()-sourceStart;
-    if (generation->jobs.empty()) { if (s.rules.profileCpu) s.metrics.admissionCpu+=threadCpuNs()-admissionStart; s.admitted=game.stepCounter; return; }
-    if (generation->reserved>ShortlistLimit-s.reservations-s.publishedBytes)
+    if (!generation) { if (s.rules.profileCpu) s.metrics.admissionCpu+=threadCpuNs()-admissionStart; s.admitted=game.stepCounter; return; }
+    if (generation->reserved>ShortlistLimit-s.reservations-s.publishedStorage())
         throw std::length_error("Turret shadow shortlist storage bound exceeded");
     const auto start=std::chrono::steady_clock::now();
     generation->observation=std::make_unique<Observation>(observe(game,captured,&s.indexCache,s.rules.reusePreparation,s.rules.profileCpu));
@@ -189,18 +214,20 @@ void Pipeline::publish(Game& game)
         for (auto& job:generation.jobs) for (auto& output:job->output) {
             auto* live=game.resolveBuilding(output.source.identity);
             if (!live || !compatible(output.source,*live)) continue;
-            const auto existing=s.published.find(output.source.identity);
-            if (existing!=s.published.end()) s.publishedBytes-=recordBytes(existing->second.source,existing->second.entries.capacity());
+            const auto existing=s.findPublished(output.source.identity);
+            const bool replacing=existing!=s.published.end() && existing->source.identity==output.source.identity;
+            if (replacing) s.publishedBytes-=recordBytes(existing->source,existing->entries.capacity());
             s.publishedBytes+=recordBytes(output.source,output.entries.capacity());
-            s.published.insert_or_assign(output.source.identity,std::move(output));
+            if (replacing) *existing=std::move(output);
+            else s.published.insert(existing,std::move(output));
         }
         s.reservations-=generation.reserved; s.pending.pop_front(); ++s.metrics.publications; s.account();
     }
-    for (auto it=s.published.begin();it!=s.published.end();) {
-        if (!game.resolveBuilding(it->first)) {
-            s.publishedBytes-=recordBytes(it->second.source,it->second.entries.capacity()); it=s.published.erase(it);
-        } else ++it;
-    }
+    std::erase_if(s.published,[&](const State::Record& record) {
+        if (game.resolveBuilding(record.source.identity)) return false;
+        s.publishedBytes-=recordBytes(record.source,record.entries.capacity());
+        return true;
+    });
     s.metrics.indexBytes=retainedIndexBytes(s.indexCache); s.account();
     if (s.rules.profileCpu) s.metrics.publicationCpu+=threadCpuNs()-publicationStart-(s.metrics.joinCpu-joinBefore);
 }
@@ -208,10 +235,11 @@ void Pipeline::drain() { for (auto& generation:state->pending) state->complete(*
 const std::vector<Entry>& Pipeline::entries(const Building& turret)
 {
     auto& s=*state;
-    const auto it=s.published.find(Game::refOf(&turret));
-    if (it!=s.published.end()) {
-        if (compatible(it->second.source,turret)) return it->second.entries;
-        s.publishedBytes-=recordBytes(it->second.source,it->second.entries.capacity()); s.published.erase(it); s.account();
+    const auto identity=Game::refOf(&turret);
+    const auto it=s.findPublished(identity);
+    if (it!=s.published.end() && it->source.identity==identity) {
+        if (compatible(it->source,turret)) return it->entries;
+        s.publishedBytes-=recordBytes(it->source,it->entries.capacity()); s.published.erase(it); s.account();
     }
     static const std::vector<Entry> empty;
     return empty;

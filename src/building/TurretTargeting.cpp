@@ -31,6 +31,7 @@ struct OccupiedIndex
     Uint64 worldIdentity=0;
     int width=0,height=0;
     Uint32 teams=0;
+    unsigned retainedChunks=0;
     std::vector<Uint64> stamps;
     std::vector<std::shared_ptr<const Chunk>> chunks;
 };
@@ -61,6 +62,14 @@ void fillChunk(OccupiedIndex::Chunk& chunk,const MapState::View& view,std::size_
 std::shared_ptr<const OccupiedIndex> buildIndex(Observation& o,const Observation* previous)
 {
     const auto& w=o.world;
+    const auto old=previous ? previous->index : nullptr;
+    const bool reusable=old && old->worldIdentity==w.worldIdentity && old->width==w.width && old->height==w.height;
+    // Identical occupancy already has an immutable index. Scalar entity facts
+    // are still captured below; no chunk pointers or stamp arrays need rebuilding.
+    if (reusable && old->stamps==w.occupancy->stamps.chunks) {
+        o.sharedChunks=old->retainedChunks;
+        return old;
+    }
     MapState::ChunkGeometry geometry;
     geometry.reset(w.width,w.height,std::countr_zero(unsigned(w.width)),w.width-1);
     const auto estimate=sizeof(OccupiedIndex)+geometry.count()*(sizeof(std::shared_ptr<const OccupiedIndex::Chunk>)+sizeof(Uint64))+128;
@@ -72,11 +81,9 @@ std::shared_ptr<const OccupiedIndex> buildIndex(Observation& o,const Observation
     const auto bytes=sizeof(OccupiedIndex)+pending->chunks.capacity()*sizeof(pending->chunks[0])+pending->stamps.capacity()*sizeof(Uint64)+128;
     auto index=retain(std::move(pending),bytes,o.indexBudget);
     if (!index) return {};
-    const auto old=previous ? previous->index : nullptr;
-    const bool reusable=old && old->worldIdentity==w.worldIdentity && old->width==w.width && old->height==w.height;
     for (std::size_t i=0;i<geometry.count();++i) {
         if (reusable && i<old->stamps.size() && old->chunks[i] && old->stamps[i]==index->stamps[i]) {
-            index->chunks[i]=old->chunks[i]; index->teams|=old->chunks[i]->teams; ++o.sharedChunks; continue;
+            index->chunks[i]=old->chunks[i]; index->teams|=old->chunks[i]->teams; ++index->retainedChunks; ++o.sharedChunks; continue;
         }
         ++o.rebuiltChunks;
         auto chunk=std::make_unique<OccupiedIndex::Chunk>();
@@ -84,6 +91,7 @@ std::shared_ptr<const OccupiedIndex> buildIndex(Observation& o,const Observation
         index->teams|=chunk->teams;
         const auto bytes=sizeof(OccupiedIndex::Chunk)+chunk->cells.capacity()*sizeof(OccupiedIndex::Cell)+128;
         index->chunks[i]=retain(std::move(chunk),bytes,o.indexBudget);
+        if (index->chunks[i]) ++index->retainedChunks;
         // Unretained chunks are rebuilt temporarily by the same indexed traversal.
     }
     return index;
@@ -478,7 +486,12 @@ bool refreshNeeded(int cooldown,unsigned rhythm,unsigned delay,unsigned refresh)
 {
     // At completed boundary t, the next turretStep still uses counter t.
     // The last attempt served by this generation is t+delay+refresh-1.
-    return stepsUntilReady(cooldown,rhythm)<=Uint64(delay)+refresh-1;
+    const Uint64 last=Uint64(delay)+refresh-1;
+    if (cooldown<=0) return true;
+    if (!rhythm) return last==std::numeric_limits<Uint64>::max();
+    // ceil(cooldown / rhythm) <= last without division. The first comparison
+    // also bounds the multiplication for callers passing large intervals.
+    return last>=Uint64(cooldown) || Uint64(cooldown)<=last*rhythm;
 }
 Uint64 stepsUntilReady(int cooldown,unsigned rhythm)
 {

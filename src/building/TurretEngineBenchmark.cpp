@@ -13,6 +13,14 @@
 #include <cstdlib>
 #include <algorithm>
 #include <map>
+#if __has_include(<valgrind/callgrind.h>)
+#include <valgrind/callgrind.h>
+#else
+#define CALLGRIND_START_INSTRUMENTATION ((void)0)
+#define CALLGRIND_STOP_INSTRUMENTATION ((void)0)
+#define CALLGRIND_ZERO_STATS ((void)0)
+#define CALLGRIND_DUMP_STATS_AT(label) ((void)0)
+#endif
 
 namespace
 {
@@ -32,6 +40,7 @@ struct Selection {
 thread_local Selection* selection=nullptr;
 unsigned capacity=8;
 bool forecast=true,reusePreparation=true,profileCpu=false,opportunities=false;
+bool callgrindRegion=false;
 const char* variant="combined";
 void configure() {
     if (const auto* value=std::getenv("TURRET_VARIANT")) variant=value;
@@ -131,6 +140,7 @@ Run run(unsigned fixture,unsigned seed,unsigned participants,Mode mode,bool corr
     Run result; result.targeting.mode=mode; result.targeting.diagnostics=correctness; selection=&result.targeting;
     struct Reset { ~Reset(){selection=nullptr;} } reset;
     TurretTargeting::ScopedAttemptObserver observer(opportunities ? followWindow : nullptr,nullptr);
+    if (callgrindRegion) { CALLGRIND_START_INSTRUMENTATION; CALLGRIND_ZERO_STATS; }
     const auto start=std::chrono::steady_clock::now(); const auto cpu=std::clock();
     const auto firstBoundary=profileCpu ? TurretTargeting::threadCpuNs() : 0;
     world.game.captureReadBoundary(seats,false);
@@ -140,6 +150,10 @@ Run run(unsigned fixture,unsigned seed,unsigned participants,Mode mode,bool corr
     world.game.map.finishGradientPipeline(); world.game.map.finishResourceGrowth();
     result.cpu=Uint64(double(std::clock()-cpu)*1e9/CLOCKS_PER_SEC);
     result.wall=std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now()-start).count();
+    if (callgrindRegion) {
+        CALLGRIND_DUMP_STATS_AT("turret-producer-whole-ticks");
+        CALLGRIND_STOP_INSTRUMENTATION;
+    }
     for (int team=0;team<2;++team) {
         result.shots+=world.game.teams[team]->stats.measurements.shots[GameplayMeasurements::TOWER];
         for (const auto* u:world.game.teams[team]->liveUnits.entries()) if (u && !u->isDead) ++result.units; result.turrets+=world.game.teams[team]->turrets.size();
@@ -206,6 +220,21 @@ Building::TurretTarget turretEngineBenchmarkTarget(const Building& b)
 }
 TEST_SUITE("TurretEngine")
 {
+    TEST_CASE("turret producer callgrind regions [benchmark][callgrind]")
+    {
+        configure();
+        glob2test::HeadlessGlobals globals;
+        const unsigned fixture=std::getenv("TURRET_PROFILE_CASE") ? std::stoul(std::getenv("TURRET_PROFILE_CASE")) : 1;
+        const unsigned participants=std::getenv("TURRET_PARTICIPANTS") ? std::stoul(std::getenv("TURRET_PARTICIPANTS")) : 1;
+        REQUIRE(fixture<3);
+        const auto mode=std::getenv("TURRET_PROFILE_ORIGINAL") ? Original : Cached;
+        (void)run(fixture,713,participants,mode,false);
+        callgrindRegion=true;
+        const auto result=run(fixture,713,participants,mode,false);
+        callgrindRegion=false;
+        std::printf("turret_callgrind,%u,%u,%u,%s,%llu,%llu\n",fixture,participants,capacity,modeName(mode),
+            (unsigned long long)result.shots,(unsigned long long)result.pipeline.sources);
+    }
     TEST_CASE("reference trajectory measures cached opportunities [artifacts]")
     {
         configure(); opportunities=true;
@@ -227,10 +256,12 @@ TEST_SUITE("TurretEngine")
         std::printf("variant,%s,capacity,%u,profile,%u\n",variant,capacity,profileCpu);
         std::printf("turret_engine,fixture,participants,repeat,seed,mode,ticks,wall_ns,cpu_ns,attempts,found,shots,units,turrets,captures,index_bytes,list_bytes\n");
         const unsigned requestedParticipants=std::getenv("TURRET_PARTICIPANTS") ? std::stoul(std::getenv("TURRET_PARTICIPANTS")) : 0;
+        const auto* requestedRepeat=std::getenv("TURRET_REPEAT");
         for (unsigned participants : {1,2,4,8}) for (unsigned fixture=0;fixture<3;++fixture) {
             if (requestedParticipants && participants!=requestedParticipants) continue;
             for (unsigned mode=0;mode<3;++mode) (void)run(fixture,713,participants,Mode(mode),false);
             for (unsigned repeat=0;repeat<10;++repeat) for (unsigned ordinal=0;ordinal<3;++ordinal) {
+                if (requestedRepeat && repeat!=std::stoul(requestedRepeat)) continue;
                 const auto mode=Mode((ordinal+repeat)%3); const auto r=run(fixture,seeds[repeat],participants,mode,false);
                 std::printf("turret_engine,%s,%u,%u,%u,%s,256,%llu,%llu,%u,%u,%llu,%llu,%llu,%llu,%llu,%llu\n",
                     fixture==0 ? "empty100" : fixture==1 ? "combat100" : "ordinary4",participants,repeat,seeds[repeat],modeName(mode),

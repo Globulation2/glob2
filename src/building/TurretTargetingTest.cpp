@@ -897,6 +897,48 @@ TEST_SUITE("TurretTargeting")
             pipeline->drain();
         }
     }
+    TEST_CASE("overlapping publication preserves other sources through upgrade and incarnation changes")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.wDec=7,.hDec=6,.teams=2,.loadDefaultRace=true,.header=true});
+        std::vector<Building*> turrets;
+        for (int n=0;n<16;++n) {
+            auto* turret=world.addBuilding("defencetower",8+(n%8)*12,8+(n/8)*20);
+            REQUIRE(turret); turret->owner->enemies=2; turret->shootingCooldown=0;
+            turret->owner->addToStaticAbilitiesLists(turret);
+            auto* unit=world.addUnit(WARRIOR,turret->posX+3,turret->posY,1);
+            REQUIRE(unit); unit->speed=0;
+            turrets.push_back(turret);
+        }
+        world.game.configureTurretTargetingShadow(4,1,8,1);
+        auto* pipeline=world.game.turretShadow();
+        world.game.captureReadBoundary({},false);
+        auto* changed=turrets[7]; const auto* original=changed->runtime;
+        auto upgraded=*original; ++upgraded.shootingRange; changed->runtime=&upgraded;
+        for (unsigned tick=1;tick<=5;++tick) {
+            world.game.stepCounter=tick;
+            world.game.captureReadBoundary({},false);
+            pipeline->publish(world.game);
+            if (tick==4) {
+                CHECK(pipeline->entries(*changed).empty()); // The old source output is incompatible.
+                for (auto* turret:turrets) if (turret!=changed) CHECK_FALSE(pipeline->entries(*turret).empty());
+            }
+        }
+        for (auto* turret:turrets) CHECK(pipeline->entries(*turret)==plan(*turret,8,1).entries);
+        const auto incarnation=changed->scriptIdentity;
+        changed->scriptIdentity+=100000;
+        CHECK(pipeline->entries(*changed).empty());
+        pipeline->publish(world.game); // Remove the old incarnation in the middle of the table.
+        for (auto* turret:turrets) if (turret!=changed) CHECK(pipeline->entries(*turret)==plan(*turret,8,1).entries);
+        world.game.stepCounter=6;
+        world.game.captureReadBoundary({},false);
+        pipeline->drain();
+        world.game.stepCounter=10;
+        pipeline->publish(world.game);
+        CHECK(pipeline->entries(*changed)==plan(*changed,8,1).entries);
+        CHECK(pipeline->statistics().shortlistBytes<=32u*1024u*1024u);
+        changed->runtime=original; changed->scriptIdentity=incarnation;
+    }
     TEST_CASE("turret admission requires due teams and survives paused repeated boundaries")
     {
         glob2test::HeadlessGlobals globals;
@@ -1182,6 +1224,7 @@ TEST_SUITE("TurretTargeting")
         REQUIRE(first.index);
         CHECK(first.rebuiltChunks==16);
         const auto second=observe(world.game,&first);
+        CHECK(second.index==first.index);
         CHECK(second.rebuiltChunks==0);
         CHECK(second.sharedChunks==16);
         world.addUnit(WARRIOR,2,0,1);
@@ -1192,6 +1235,14 @@ TEST_SUITE("TurretTargeting")
         compare(*turret,third);
         CHECK(plan(source(*turret),first,4).entries.empty());
         CHECK_FALSE(plan(source(*turret),third,4).entries.empty());
+        auto* target=world.game.teams[1]->liveUnits.entries().front();
+        REQUIRE(target);
+        target->hp=1; target->experienceLevel=7;
+        const auto fourth=observe(world.game,&third);
+        CHECK(fourth.index==third.index);
+        CHECK(retainedIndexBytes(fourth)==retainedIndexBytes(third));
+        // Reusing occupancy must still rank against fresh combat facts.
+        compare(*turret,fourth);
     }
     TEST_CASE("consumer rechecks incarnation occupancy alliance movement and cooldown boundaries")
     {
@@ -1241,6 +1292,12 @@ TEST_SUITE("TurretTargeting")
             CHECK(steps==stepsUntilReady(cooldown,rhythm));
         }
         CHECK(stepsUntilReady(1,0)==std::numeric_limits<Uint64>::max());
+        for (int cooldown : {-1,0,1,INT_MAX})
+            for (unsigned rhythm : {0u,1u,128u,std::numeric_limits<unsigned>::max()})
+                for (unsigned delay : {0u,1u,4u,std::numeric_limits<unsigned>::max()})
+                    for (unsigned refresh : {0u,1u,4u,std::numeric_limits<unsigned>::max()})
+                        CHECK(refreshNeeded(cooldown,rhythm,delay,refresh)==
+                            (stepsUntilReady(cooldown,rhythm)<=Uint64(delay)+refresh-1));
         for (unsigned delay : {1,2,4}) for (unsigned refresh : {1,2,4}) {
             if (delay+refresh-1>4) continue;
             for (unsigned rhythm : {1,2,128,1700}) for (int cooldown : {-1,0,1,128,1700,3400,65536}) {
