@@ -22,6 +22,25 @@ class SoftwareFramePresenter
 									AllocateSurface allocate = SDL_CreateSurface);
 	SDL_Surface *begin(bool preserve);
 	bool needsBegin() const { return pending; }
+    SDL_Surface *discard()
+    {
+        // While drawing, retained is the last completed image. Rotate it back
+        // without promoting any pixels written by the abandoned frame.
+        if (valid && !pending)
+        {
+            drawing.swap(retained);
+            pending = true;
+        }
+        else if (!valid)
+        {
+            // There is no completed frame to restore during first-frame failure.
+            // A later partial update starts from a known blank image.
+            SDL_SetSurfaceClipRect(drawing.get(), nullptr);
+            SDL_FillSurfaceRect(drawing.get(), nullptr,
+                                SDL_MapSurfaceRGBA(drawing.get(), 0, 0, 0, 255));
+        }
+        return drawing.get();
+    }
 	SDL_Surface *takeCompleted()
 	{
 		return valid ? (pending ? drawing.release() : retained.release()) : nullptr;

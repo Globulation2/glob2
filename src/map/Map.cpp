@@ -526,6 +526,7 @@ std::vector<std::pair<std::string,Uint64>> Map::gradientExecutionMetrics() const
 {
     const auto device=gradientRuntime->deviceService->metrics();
     const auto opencl=gradient_kernel::openCLStatus();
+    const auto accelerator=gradient_kernel::acceleratorStatus(gradient_kernel::backend());
     const auto& pipeline=gradientRuntime->pipeline;
     return {
         {"gpu_requested_fields",pipeline.gpuRequestedFields()},
@@ -556,18 +557,31 @@ std::vector<std::pair<std::string,Uint64>> Map::gradientExecutionMetrics() const
         {"fallback_reason_backend_decline",device.fallbackReasons[unsigned(gradient_kernel::GradientFallbackReason::BackendDecline)]},
         {"fallback_reason_driver",device.fallbackReasons[unsigned(gradient_kernel::GradientFallbackReason::DriverFailure)]},
         {"fallback_reason_cancellation",device.fallbackReasons[unsigned(gradient_kernel::GradientFallbackReason::Cancellation)]},
-        {"device_dispatches",opencl.dispatches},{"device_observed_fields",opencl.deviceObservedFields},
-        {"device_committed_fields",opencl.committedFields},{"device_cpu_ns",opencl.threadCPUNs},
+        {"device_dispatches",accelerator.dispatches},{"device_observed_fields",device.deviceCompletedFields},
+        {"device_committed_fields",accelerator.fields},{"device_cpu_ns",opencl.threadCPUNs},
         {"accelerator_host_bytes",opencl.hostBytes},{"accelerator_peak_host_bytes",opencl.peakHostBytes},
         {"accelerator_device_bytes",opencl.deviceBytes},{"accelerator_peak_device_bytes",opencl.peakDeviceBytes}
     };
 }
 
+void Map::applyGradientBackendRequest()
+{
+    const auto requested=gradient_kernel::requestedBackendConfiguration();
+    if(requested==gradient_kernel::configuration())return;
+    // Finish privately, preserving the pending queue and original publication ticks.
+    if(game)HiringStudy::drain(*game);
+    finishGradientPipeline();
+    gradient_kernel::applyBackendConfiguration(requested);
+    gradientRuntime->backendSession->failed=false;
+    gradientRuntime->backendSession->configure(compute.threadCount());
+    gradientRuntime->deviceService->configure(compute.threadCount(),requested.backend);
+}
+
 void Map::configureCompute(unsigned threads)
 {
     if(game)HiringStudy::drain(*game);
-	finishGradientPipeline();
-	finishResourceGrowth();
+    finishGradientPipeline({JoinReason::Reconfigure, ComputeTelemetry::NoTick});
+    finishResourceGrowth({JoinReason::Reconfigure, ComputeTelemetry::NoTick});
 	compute.configure(threads);
 	gradientRuntime->pipeline.resizeWorkspaces();
 	gradientRuntime->workspaces.resize(compute.threadCount());

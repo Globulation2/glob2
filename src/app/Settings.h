@@ -10,6 +10,7 @@
 #include <cstdint>
 #include <map>
 #include <optional>
+#include "field/GradientSelection.h"
 #include "IntBuildingType.h"
 class BuildingType;
 class BuildingsTypes;
@@ -98,7 +99,14 @@ public:
 	bool autosaveGames;
 	// Local compute preference. An absent value defaults off with graphics, on headless.
 	std::optional<bool> gpuCompute;
-	bool gpuComputeEnabled(bool headless = false) const { return gpuCompute.value_or(headless); }
+	std::optional<gradient_kernel::Backend> gradientBackend;
+    gradient_kernel::Algorithm gradientAlgorithm=gradient_kernel::Algorithm::Frozen8;
+    bool gradientVerify=false;
+    gradient_kernel::Configuration gradientConfiguration(bool headless=false) const {
+        const auto b=gradientBackend.value_or(gpuCompute.value_or(headless)?gradient_kernel::Backend::OpenCL:gradient_kernel::Backend::CPU);
+        return {b,gradient_kernel::isGPU(b)?gradientAlgorithm:gradient_kernel::Algorithm::Buckets,gradientVerify};
+    }
+    bool gpuComputeEnabled(bool headless = false) const { return gradient_kernel::isGPU(gradientConfiguration(headless).backend); }
 	/// Experimental features to bake into every new game this player starts or
 	/// hosts (Settings > Experiments). Saved as comma-separated keys; a key this
 	/// build no longer knows is dropped on load.
@@ -107,6 +115,9 @@ public:
 	/// higher values progressively reduce delays and then skip rendered frames.
 	int gameSpeed;
     std::string interfacePresentation = "automatic";
+    // Local desktop automation preferences; never part of simulation or saved games.
+    bool mcpEnabled = false;
+    int mcpPort = 27202;
     // Interface theme ids (data/themes) for menus and for matches and the editor.
     std::string menuTheme = "light";
     std::string gameTheme = "dark";
@@ -141,6 +152,7 @@ public:
 		THUMB_LEFT = 1,
 	};
 	int thumbSide;
+	bool thumbSideChosen = false; ///< First-launch hand selection has been saved.
 	/// Resolves the platform default: Google Maps (Android) zooms in on a
 	/// downward drag, Apple Maps and others on an upward drag.
 	bool dragUpZoomsIn(void) const;

@@ -79,34 +79,95 @@ std::uint16_t CellRuleTable::add(const Key &key, bool prepare)
 	for (const auto type : key)
 		if (!terrains_->valid(type)) throw std::invalid_argument("Unknown terrain identity");
 	if (rules_.size() >= Capacity) throw std::length_error("Too many distinct terrain corner combinations");
-	CellRule rule;
-	rule.corners = key;
-	compile(rule);
-	const auto id = std::uint16_t(rules_.size());
+	// Rule compilation also grows habitat permissions and movement indexes.
+	// Publish all parallel tables as one transaction. Only append lengths and
+	// bounded prepared profiles are journaled: copying all existing cell entries
+	// at every intern would make map compilation quadratic. Rollback cannot allocate.
+	struct MovementCheckpoint
+	{
+		std::size_t entries, profiles, ids, steps;
+		unsigned minimum;
+		std::optional<TerrainRegistry::Movement::Prepared> prepared;
+	};
+	std::array<MovementCheckpoint, std::size(gradient_kernel::WATER_STEP)> checkpoints;
 	for (unsigned sw = 0; sw < movement_.size(); ++sw)
 	{
-		auto &m = movement_[sw];
-		const auto cost = rule.ground[sw];
-		m.entries.push_back(cost);
-		unsigned profile = 0;
-		while (profile < m.profiles.size() && (m.profiles[profile].cardinal != cost.cardinal ||
-											   m.profiles[profile].diagonal != cost.diagonal))
-			++profile;
-		if (profile == m.profiles.size())
-		{
-			if (profile == 256) throw std::length_error("Too many terrain movement profiles");
-			m.profiles.push_back(cost);
-			for (auto step : {cost.cardinal, cost.diagonal})
-				if (std::find(m.steps.begin(), m.steps.end(), step) == m.steps.end()) m.steps.push_back(step);
-		}
-		m.profileIds.push_back(static_cast<std::uint8_t>(profile));
-		const auto &p = rule.properties;
-		if (gradient_kernel::terrainAllowsGround(p,sw)) m.minimum = std::min(m.minimum, cost.cardinal);
-		if (prepare) m.prepare();
+		const auto &m = movement_[sw];
+		checkpoints[sw] = {m.entries.size(), m.profiles.size(), m.profileIds.size(), m.steps.size(),
+			m.minimum, prepare ? m.prepared : std::nullopt};
 	}
-	rules_.push_back(std::move(rule));
-	index_.emplace(key, id);
-	return id;
+	const auto originalLists = uniqueLists_.size();
+	const auto originalPermissions = permissions_.size();
+	const auto originalRules = rules_.size();
+	CellRule rule;
+	std::shared_ptr<const std::vector<std::uint64_t>> compiledList;
+	try
+	{
+		rule.corners = key;
+		compile(rule);
+		compiledList = rule.allowedResources;
+		// Reserve both parallel record arrays before appending either. Their logical
+		// lengths must remain identical even when allocation fails. Use geometric
+		// growth; reserving precisely one extra entry on each intern is quadratic.
+		const auto capacity = std::min(Capacity, std::max(std::size_t(8), rules_.size() * 2));
+		if (rules_.capacity() < rules_.size() + 1) rules_.reserve(capacity);
+		if (gradientPreparation_.capacity() < rules_.size() + 1) gradientPreparation_.reserve(capacity);
+		const auto id = std::uint16_t(rules_.size());
+		for (unsigned sw = 0; sw < movement_.size(); ++sw)
+		{
+			auto &m = movement_[sw];
+			const auto cost = rule.ground[sw];
+			m.entries.push_back(cost);
+			unsigned profile = 0;
+			while (profile < m.profiles.size() && (m.profiles[profile].cardinal != cost.cardinal ||
+												   m.profiles[profile].diagonal != cost.diagonal))
+				++profile;
+			if (profile == m.profiles.size())
+			{
+				if (profile == 256) throw std::length_error("Too many terrain movement profiles");
+				m.profiles.push_back(cost);
+				for (auto step : {cost.cardinal, cost.diagonal})
+					if (std::find(m.steps.begin(), m.steps.end(), step) == m.steps.end()) m.steps.push_back(step);
+			}
+			m.profileIds.push_back(static_cast<std::uint8_t>(profile));
+			const auto &p = rule.properties;
+			if (gradient_kernel::terrainAllowsGround(p,sw)) m.minimum = std::min(m.minimum, cost.cardinal);
+			if (prepare) m.prepare();
+		}
+		GradientPreparationRule preparation;
+		for (unsigned sw = 0; sw < rule.ground.size(); ++sw)
+		{
+			if (gradient_kernel::terrainAllowsGround(rule.properties, sw)) preparation.accessibility |= 1u << sw;
+			preparation.costs[sw] = rule.ground[sw].cardinal | (rule.ground[sw].diagonal << 16);
+		}
+		rules_.push_back(std::move(rule));
+		gradientPreparation_.push_back(preparation);
+		index_.emplace(key, id);
+		return id;
+	}
+	catch (...)
+	{
+		for (unsigned sw = 0; sw < movement_.size(); ++sw)
+		{
+			auto &m = movement_[sw];
+			auto &checkpoint = checkpoints[sw];
+			m.entries.resize(checkpoint.entries);
+			m.profiles.resize(checkpoint.profiles);
+			m.profileIds.resize(checkpoint.ids);
+			m.steps.resize(checkpoint.steps);
+			m.minimum = checkpoint.minimum;
+			if (prepare) m.prepared = std::move(checkpoint.prepared);
+		}
+		// compile() inserts at most one whitelist cache entry, as its last step.
+		// Existing entries remain immutable; only a newly inserted owner is erased.
+		if (uniqueLists_.size() != originalLists)
+			for (auto it = uniqueLists_.begin(); it != uniqueLists_.end(); ++it)
+				if (it->second == compiledList) { uniqueLists_.erase(it); break; }
+		permissions_.resize(originalPermissions);
+		rules_.resize(originalRules);
+		gradientPreparation_.resize(originalRules);
+		throw;
+	}
 }
 
 void CellRuleTable::compile(CellRule &rule)

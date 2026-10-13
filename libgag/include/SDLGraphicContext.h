@@ -1,4 +1,3 @@
-#include <functional>
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
@@ -14,6 +13,7 @@
 #include "SpriteRenderAtlas.h"
 #include <AssetLoader.h>
 #include <array>
+#include <functional>
 #include <map>
 #include <utility>
 #include <vector>
@@ -591,14 +591,23 @@ namespace GAGCore
         struct DeviceTargetState { SDL_Rect clip; float scale; bool offscreen, map, ui; };
         std::vector<DeviceTargetState> deviceTargetStates;
         std::map<std::uint64_t, Recording::CaptureTicket> recordingCaptures;
-        std::uint64_t captureFrameIdentity = 0;
-        std::uint64_t screenshotIdentity = UINT64_MAX / 2;
-        std::map<std::uint64_t, std::string> screenshotCaptures;
-        void pollRecordingCaptures();
-        void cancelRecordingCaptures();
-        RenderBackend* renderer = nullptr; // Borrowed active backend; ownership stays in the two unique_ptrs.
-        // Rasterizes transformed passes into the existing software framebuffer.
-        std::unique_ptr<RenderBackend> softwareRasterizer;
+		std::uint64_t captureFrameIdentity = 0;
+		std::uint64_t screenshotIdentity = UINT64_MAX / 2;
+		std::map<std::uint64_t, std::string> screenshotCaptures;
+		struct MemoryCapture
+		{
+			std::uint64_t frameIdentity = 0;
+			std::function<void(std::shared_ptr<SDL_Surface>, std::uint64_t, std::string)> complete;
+		};
+		std::map<std::uint64_t, MemoryCapture> pendingMemoryCaptures, memoryCaptures;
+		std::uint64_t memoryCaptureIdentity = UINT64_MAX / 4;
+		void captureMemoryFrame();
+		void pollCaptures();
+		void cancelCaptures();
+		RenderBackend *renderer =
+			nullptr; // Borrowed active backend; ownership stays in the two unique_ptrs.
+		// Rasterizes transformed passes into the existing software framebuffer.
+		std::unique_ptr<RenderBackend> softwareRasterizer;
         bool softwareTransform=false;
         void beginSoftwareTransform();
         void endSoftwareTransform();
@@ -615,6 +624,10 @@ namespace GAGCore
 		//! Destructor
 		virtual ~GraphicContext(void);
 		
+        // Fences active CPU drawing before borrowing its pixels. Base-class
+        // aliases and already-borrowed pointers still require an owner fence.
+        SDL_Surface *getSDLSurface();
+
 		//! Bounded software pass; borrows pixels and restores facade/backend state on failure.
 		void drawToSurface(SDL_Surface* surface, float scale, const std::function<void()>& draw);
 		unsigned getGLContextGeneration() const { return glContextGeneration; }
@@ -665,6 +678,21 @@ namespace GAGCore
 		int getW() override { return nativeDesktop && desktopLogicalW ? desktopLogicalW : DrawableSurface::getW(); }
 		int getH() override { return nativeDesktop && desktopLogicalH ? desktopLogicalH : DrawableSurface::getH(); }
 		bool isNativeDesktop() const { return nativeDesktop; }
+		// UI-thread interface. Buffers are independently owned and may be encoded on a worker.
+		using CaptureCompletion =
+			std::function<void(std::shared_ptr<SDL_Surface>, std::uint64_t, std::string)>;
+		std::uint64_t requestMemoryCapture(CaptureCompletion complete);
+		void cancelMemoryCapture(std::uint64_t identity);
+		std::uint64_t frameIdentity() const { return captureFrameIdentity; }
+		SDL_Window *getWindow() const { return window; }
+		void outputToWindow(float &x, float &y) const
+		{
+			if (drawableW > 0 && drawableH > 0)
+			{
+				x *= float(windowW) / drawableW;
+				y *= float(windowH) / drawableH;
+			}
+		}
 		int getDrawableW() const { return drawableW; }
 		int getDrawableH() const { return drawableH; }
 		bool setFullscreen(bool fullscreen);
@@ -725,6 +753,7 @@ namespace GAGCore
 		virtual void setClipRect(void);
 		enum class FrameMode { FullRedraw, PreserveContent };
         void beginFrame(FrameMode mode = FrameMode::PreserveContent);
+        void discardFrame() noexcept;
         RenderOperations backendOperations() const;
         SDL_Surface* completedFrame() const;
         virtual void nextFrame(void);

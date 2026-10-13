@@ -389,3 +389,26 @@ speedup even when the seed kernel uses less thread CPU time.
 
 
 See [resource benchmarks](resource-benchmarks.md) for corpus preparation, measurement isolation and growth pipeline comparisons.
+
+## Executor wait diagnostics and tracing
+
+Use `--compute-telemetry waits` to attribute unfinished required batches to AI,
+periodic/building gradients, resource growth, hiring, presentation, other or mixed work.
+Use `trace` for scheduling events. Collection defaults to off; legacy compute timing
+fields are unavailable (`null`) unless the selected mode collects them. Benchmark readers
+must check availability rather than treating null as zero. The gradient pipeline benchmark
+accepts `--compute-telemetry off|waits|trace`, defaulting to off; timing and tracing variants
+must be compared separately. See [the telemetry contract](performance-telemetry.md#optional-compute-executor-diagnostics).
+
+For overhead validation, use release compilation, retained games and paired repetitions
+with an instrumentation-free control built with the same compiler and flags. Include empty
+batches, tiny and substantial callbacks. Rotate execution order and retain every sample,
+wall time, process CPU, memory, tick latency, and lost-event counts. Inspect optimized disabled
+worker/callback specializations for diagnostic clocks, stores, allocations, event writes and
+mode tests. A successful code inspection or fast-development build does not establish that
+disabled overhead is unmeasurable. Report uncertainty and incomplete platform coverage.
+
+Resource-growth benchmark cases accept `GLOB2_COMPUTE_TELEMETRY=off|waits|trace`
+(default off). Their JSON records include the selected mode and use null for
+uncollected pipeline timing. Direct calculation/publication timing remains measured
+by the benchmark's own clock.

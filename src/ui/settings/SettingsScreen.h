@@ -32,7 +32,8 @@ class SettingsScreen : public Glob2UI::Screen
 		Recording,
 		Experiments,
 		CustomAIs,
-		CustomGenerators
+		CustomGenerators,
+        MCPServer
 	};
 	enum class Kind
 	{
@@ -61,6 +62,7 @@ class SettingsScreen : public Glob2UI::Screen
 		int buildingIcon = -1;
 		bool enabled = true, selected = false;
 		std::vector<std::string> choices;
+        std::vector<bool> enabledChoices;
 		std::function<void(int)> change;
 		std::function<void()> action;
 		std::function<Glob2UI::Element(const Glob2UI::Presentation &)> render;
@@ -104,6 +106,7 @@ class SettingsScreen : public Glob2UI::Screen
 	};
 	GAGGUI::ScreenStack* screens = nullptr;
 	Category current = Category::Display;
+    Uint32 gradientStatusAt=0;
 	Modal modal = Modal::None;
 	std::vector<Row> form;
 	int selectedBuilding = -1;
@@ -147,6 +150,8 @@ class SettingsScreen : public Glob2UI::Screen
 	void buildHiveMind();
 	// Settings > Recording (SettingsScreenRecording.cpp): controls, hotkey, FFmpeg status.
 	void buildRecording();
+    void buildMCP();
+    std::string mcpStatus;
 	// Rebuild the Recording tab when session state changes.
 	int recordingState = -1;
 	struct CustomGeneratorState;

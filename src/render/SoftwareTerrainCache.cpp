@@ -1,4 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include <PresentationWork.h>
+#include <chrono>
 #include "SoftwareTerrainCache.h"
 #include "GlobalContainer.h"
 #include "scene/SceneMap.h"
@@ -451,6 +453,69 @@ void buildOpaqueRuns(SoftwareTerrainCache::Chunk &chunk)
 }
 } // namespace
 
+namespace
+{
+struct TerrainCellResult
+{
+    unsigned index;
+    SoftwareTerrainCache::Tile input;
+    std::span<Uint32> pixels;
+    std::optional<TerrainVisual::Compositor::CellMask> mask;
+    const TerrainVisual::Compositor::CellMask *reused = nullptr;
+    bool opaque = false, empty = false, keepMask = false;
+};
+// The first alpha selects one constant predicate: opaque and empty cells need
+// only one scan, while a partially transparent sample rejects both immediately.
+// Keep the scan vectorizable for the common uniform opaque terrain pages.
+template <Uint32 Alpha>
+bool allAlpha(const SDL_Surface &surface, SDL_Rect rect)
+{
+    for (int y = rect.y; y < rect.y + rect.h; ++y)
+    {
+        const auto *row = reinterpret_cast<const Uint32 *>(
+            static_cast<const Uint8 *>(surface.pixels) + y * surface.pitch);
+        if (!std::all_of(row + rect.x, row + rect.x + rect.w,
+                         [](Uint32 pixel) { return pixel >> 24 == Alpha; }))
+            return false;
+    }
+    return true;
+}
+std::pair<bool, bool> classifyAlpha(const SDL_Surface &surface, SDL_Rect rect)
+{
+    const auto *first = reinterpret_cast<const Uint32 *>(
+        static_cast<const Uint8 *>(surface.pixels) + rect.y * surface.pitch) + rect.x;
+    if (*first >> 24 == 255) return {allAlpha<255>(surface, rect), false};
+    if (*first >> 24 == 0) return {false, allAlpha<0>(surface, rect)};
+    return {false, false};
+}
+void buildTerrainJob(std::span<TerrainCellResult> results,
+                     const TerrainVisual::Compositor::CpuMaterials &materials, int samplingScale,
+                     std::size_t cellsPerJob, std::size_t job)
+{
+    TerrainVisual::Compositor::CpuScratch scratch;
+    for (std::size_t k = job * cellsPerJob; k < results.size() && k < (job + 1) * cellsPerJob; ++k)
+    {
+        auto &result = results[k];
+        SDL_Surface output{};
+        output.format = SDL_PIXELFORMAT_ARGB8888;
+        output.w = output.h = 32 * samplingScale;
+        output.pitch = output.w * 4;
+        output.pixels = result.pixels.data();
+        if (result.input.discovered)
+        {
+            if (!result.reused && result.keepMask)
+                result.mask = materials.mask(result.input.recipe, samplingScale);
+            materials.compose(result.input.recipe, &output, samplingScale, scratch,
+                              result.reused ? result.reused
+                              : result.mask ? &*result.mask
+                                            : nullptr);
+        }
+        std::tie(result.opaque, result.empty) =
+            classifyAlpha(output, {0, 0, output.w, output.h});
+    }
+}
+} // namespace
+
 int SoftwareTerrainCache::capturePixelsPerCell(int width, int height)
 {
 	const auto count =
@@ -473,6 +538,131 @@ bool SoftwareTerrainCache::prepare(const SceneMap &map, GAGCore::Sprite &sprite,
 	return prepareAtResolution(map, sprite, left, top, right, bottom, vx, vy, visibleTeams,
 							   wholeMap, time, 0, tiledCapture);
 }
+bool SoftwareTerrainCache::tryBuildCpuPage(Chunk &page,
+                                        const std::array<Tile, ChunkTiles * ChunkTiles> &tiles,
+                                        TerrainVisual::Compositor &compositor, SDL_Surface *target,
+                                        bool wasValid, std::size_t budget)
+{
+    if (downsample != 1 || resolution > 4 ||
+        GAGCore::renderExecution() == GAGCore::RenderExecution::Immediate ||
+        !GAGCore::PresentationWork::current) return false;
+    const auto materialChanged = [&](TerrainVisual::MaterialId id)
+    {
+        const auto old = std::find_if(page.materialRevisions.begin(), page.materialRevisions.end(),
+                                      [id](const auto &revision) { return revision.first == id; });
+        return old == page.materialRevisions.end() ||
+               old->second != compositor.materialRevision(id);
+    };
+    // Keep oversized HD cells and the optimized reduction path
+    // serial. A CPU job covers at most 16K sampled pixels.
+    constexpr std::size_t inFlightLimit = 4u * 1024u * 1024u;
+    const std::size_t cellPixels = std::size_t(32 * resolution) * (32 * resolution);
+    // Select changed cells first: a local edit needs neither snapshots nor
+    // admission space for materials used only by unchanged cells in this page.
+    std::vector<unsigned> changed;
+    changed.reserve(tiles.size());
+    std::vector<TerrainVisual::MaterialId> neededMaterials;
+    for (unsigned i = 0; i < tiles.size(); ++i)
+    {
+        const auto &tile = tiles[i];
+        if (wasValid && page.tiles[i] == tile &&
+            (!tile.discovered || std::none_of(tile.recipe.corners.begin(),
+                                              tile.recipe.corners.end(), materialChanged)))
+            continue;
+        changed.push_back(i);
+        if (tile.discovered)
+            for (auto id : tile.recipe.corners)
+                if (std::find(neededMaterials.begin(), neededMaterials.end(), id) == neededMaterials.end())
+                    neededMaterials.push_back(id);
+    }
+    if (neededMaterials.empty()) return false;
+    const std::size_t materialBytes = compositor.cpuMaterialBytes(neededMaterials);
+    const std::size_t perCell =
+        cellPixels * (4 + sizeof(TerrainVisual::Compositor::CellMask::Sample)) +
+        sizeof(TerrainVisual::Compositor::CellMask) + sizeof(Tile) + 256;
+    const std::size_t allowance = bytes() <= budget ? std::min({inFlightLimit, budget - bytes(), GAGCore::RenderWorkReservation::available()}) : 0;
+    const std::size_t fixed = materialBytes * 2 + perCell * 2;
+    const std::size_t groupCells =
+        allowance > fixed ? std::min(std::size_t(32), (allowance - fixed) / perCell) : 0;
+    const std::size_t reserve = fixed + perCell * groupCells;
+    if (groupCells < 2) return false;
+    GAGCore::RenderWorkReservation workReservation;
+    if (!workReservation.reserve(reserve)) return false;
+    PERF_SCOPE_TIME(TerrainPlanning);
+    std::shared_ptr<const TerrainVisual::Compositor::CpuMaterials> materials;
+    {
+        PERF_SCOPE_TIME(TerrainMaterials);
+        materials = compositor.cpuMaterials(neededMaterials);
+    }
+    cpuMaterialLease = materials;
+    // Planning is owner-only. Masks cannot be evicted or
+    // replaced until the synchronous group finishes.
+    for (std::size_t first = 0; first < changed.size(); first += groupCells)
+    {
+        std::vector<TerrainCellResult> results;
+        const auto count = std::min(groupCells, changed.size() - first);
+        results.reserve(count);
+        // One owner allocation, disjoint worker spans. Storage outlives the
+        // synchronous join and canonical installation of every cell in the group.
+        std::vector<Uint32> pixels(count * cellPixels);
+        for (std::size_t k = first; k < changed.size() && k < first + groupCells; ++k)
+        {
+            const unsigned i = changed[k];
+            TerrainCellResult result{};
+            result.index = i;
+            result.input = tiles[i];
+            result.pixels = std::span(pixels).subspan((k - first) * cellPixels, cellPixels);
+            const auto &recipe = tiles[i].recipe;
+            const auto &held = page.masks[i];
+            if (tiles[i].discovered && held && held->mask.recipe == recipe &&
+                held->mask.scale == resolution)
+                result.reused = &held->mask;
+            result.keepMask = tiles[i].discovered &&
+                              std::any_of(recipe.corners.begin(), recipe.corners.end(),
+                                          [&](auto id) { return id != recipe.corners[0]; }) &&
+                              std::any_of(recipe.corners.begin(), recipe.corners.end(),
+                                          [&](auto id) { return compositor.animated(id); });
+            results.push_back(std::move(result));
+        }
+        const std::size_t cellsPerJob = std::max(std::size_t(1), 16384 / cellPixels);
+        const auto started = std::chrono::steady_clock::now();
+        {
+            PERF_SCOPE_TIME(TerrainBatch);
+            GAGCore::executePresentationJobs(
+                (results.size() + cellsPerJob - 1) / cellsPerJob,
+                [&results, materials, samplingScale = resolution, cellsPerJob](std::size_t job)
+                { buildTerrainJob(results, *materials, samplingScale, cellsPerJob, job); });
+        }
+        ++workMetrics.batches;
+        workMetrics.jobs += (results.size() + cellsPerJob - 1) / cellsPerJob;
+        workMetrics.cells += results.size();
+        workMetrics.batchNs += std::chrono::duration_cast<std::chrono::nanoseconds>(
+                                   std::chrono::steady_clock::now() - started)
+                                   .count();
+        workMetrics.peakReservedBytes = std::max(workMetrics.peakReservedBytes, reserve);
+        // Canonical installation starts only after all jobs
+        // returned. No worker owns drawable or mask accounting.
+        PERF_SCOPE_TIME(TerrainInstall);
+        for (auto &result : results)
+        {
+            const int n = 32 * resolution;
+            const int x = result.index % ChunkTiles, y = result.index / ChunkTiles;
+            for (int row = 0; row < n; ++row)
+                std::memcpy(static_cast<Uint8 *>(target->pixels) + (y * n + row) * target->pitch +
+                                x * n * 4,
+                            result.pixels.data() + row * n, n * 4);
+            auto &held = page.masks[result.index];
+            if (held && !result.reused)
+                held.reset();
+            if (result.mask && releaseMasks(result.mask->bytes()))
+                held = std::make_unique<HeldMask>(std::move(*result.mask), maskTotal);
+            page.opaque[result.index] = result.opaque;
+            page.empty[result.index] = result.empty;
+        }
+    }
+    return true;
+}
+
 bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Sprite &, int left,
 											   int top, int right, int bottom, int vx, int vy,
 											   Uint32 visibleTeams, bool wholeMap, int time,
@@ -481,26 +671,43 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 {
 	if (registry.get() != &map.terrainRegistry() || assets != map.frozenAssetBundle())
 	{
-		chunks.clear(); gpuPages.reset();
+        chunks.clear();
+        gpuPages.reset();
+        cpuMaterialLease.reset();
 		registry = map.frozenTerrainRegistry();
         assets = map.frozenAssetBundle();
 	}
 
+    if (GAGCore::renderExecution() == GAGCore::RenderExecution::Immediate)
+    {
+        cpuMaterialLease.reset();
+    }
 	PERF_SCOPE_TIME(TerrainCache);
 	copies.clear();
 	++frame;
-	if (!enabled) {gpuPages.reset();chunks.clear();return false;}
+    if (!enabled)
+    {
+        gpuPages.reset();
+        chunks.clear();
+        cpuMaterialLease.reset();
+        return false;
+    }
 	paintBounds = {left * 32, top * 32, (right - left + 1) * 32, (bottom - top + 1) * 32};
 	auto &compositor = globalContainer->terrainCompositor(map.frozenAssetBundle());
 	const bool nextGPU = globalContainer->gfx->rendererCapabilities().accelerated;
+    {
+        PERF_SCOPE_TIME(TerrainMaterials);
 	compositor.prepare(nextGPU, time);
+    }
 	const auto plan =
 		viewSamplingPlan(map, left, top, right, bottom, vx, vy,
 						 preferredResolution > 0 ? preferredResolution : compositor.scale(),
 						 tiledCapture, preferredDownsample);
 	if (!plan.viewFits)
 	{
-		chunks.clear(); gpuPages.reset(); // Release cache storage before the caller streams pages.
+        chunks.clear();
+        gpuPages.reset();
+        cpuMaterialLease.reset(); // Release cache storage before the caller streams pages.
 		return false;
 	}
 	const int nextResolution = plan.resolution;
@@ -510,6 +717,7 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 	if (gpu != nextGPU)
 	{
 		chunks.clear();
+        cpuMaterialLease.reset();
 	}
 	resolution = nextResolution;
 	gpu = nextGPU;
@@ -544,7 +752,11 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
     if (bool(gpuPages) != composeOnDevice || (gpuPages &&
         (gpuPageGeneration != generation || gpuPages->registryIdentity() != gfx.renderResources()->instanceIdentity()))) {
         if (gpuPages && (gpuPageGeneration != generation ||
-            gpuPages->registryIdentity() != gfx.renderResources()->instanceIdentity())) chunks.clear();
+                         gpuPages->registryIdentity() != gfx.renderResources()->instanceIdentity()))
+        {
+            chunks.clear();
+            cpuMaterialLease.reset();
+        }
         else {
             // A zoom can change composition admission without invalidating CPU
             // pixels at another density. Retain those bounded cache entries;
@@ -555,6 +767,8 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
         if (composeOnDevice) gpuPages = std::make_shared<GpuTerrainPageCache>(gfx.renderResourceOwner());
         gpuPageGeneration = generation;
     }
+    if (gpuPages)
+        cpuMaterialLease.reset();
     if (gpuPages) gpuPages->begin(gfx.renderTargetContentRevision(),frame,x0,y0,x1,y1,map.getMaskW(),map.getMaskH(),resolution,downsample);
 
 		// Protect the complete requested view before admitting its first page.
@@ -776,7 +990,11 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
                             copies.clear();return false;
                         }
                     }
-                    else for (int y = 0; y < ChunkTiles; ++y)
+                    else if (!tryBuildCpuPage(*entry, tiles, compositor, target, wasValid, budget))
+                    {
+                        ++workMetrics.serialPages;
+                        PERF_SCOPE_TIME(TerrainBatch);
+                        for (int y = 0; y < ChunkTiles; ++y)
 						for (int x = 0; x < ChunkTiles; ++x)
 						{
 							const int i = y * ChunkTiles + x, n = 32 * resolution / downsample;
@@ -849,23 +1067,11 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 							// Opacity runs are consumed only by the software draw path.
 							if (!gpu)
 							{
-								bool opaque = true, empty = true;
-								for (int py = 0; py < n && (opaque || empty); ++py)
-									for (int px = 0; px < n; ++px)
-									{
-										const auto *row = reinterpret_cast<const Uint32 *>(
-											static_cast<const Uint8 *>(target->pixels) +
-											(y * n + py) * target->pitch);
-										const auto alpha = row[x * n + px] >> 24;
-										opaque &= alpha == 255;
-										empty &= alpha == 0;
-										if (!opaque && !empty)
-											break;
-									}
-								entry->opaque[i] = opaque;
-								entry->empty[i] = empty;
+                                std::tie(entry->opaque[i], entry->empty[i]) =
+                                    classifyAlpha(*target, {x * n, y * n, n, n});
 							}
 						}
+                    }
 					if (entry->image && !gpuPages) entry->image->markPixelsChanged();
 					entry->tiles = tiles;
 					entry->materialRevisions.clear();
@@ -898,7 +1104,9 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 	catch (const std::bad_alloc &)
 	{
 		copies.clear();
-		chunks.clear(); gpuPages.reset();
+        chunks.clear();
+        gpuPages.reset();
+        cpuMaterialLease.reset();
 		return false;
 	}
 	return true;
@@ -1040,7 +1248,8 @@ bool SoftwareTerrainCache::releaseMasks(std::size_t needed)
 }
 std::size_t SoftwareTerrainCache::bytes() const
 {
-	std::size_t total = gpuPages ? gpuPages->retainedBytes() : 0;
+    std::size_t total = (gpuPages ? gpuPages->retainedBytes() : 0) +
+                        (cpuMaterialLease ? cpuMaterialLease->bytes : 0);
 	for (const auto &chunk : chunks)
 		total += pageStorage(chunk->scale, gpu && bool(chunk->image), chunk->downsample);
 	return total;

@@ -2,6 +2,9 @@
 
 CLIENT_SOURCES = (
     'field/OpenCLGradient.cpp',
+    'field/GradientAccelerators.cpp',
+    'field/VulkanGradient.cpp',
+    'field/WebGPUGradient.cpp',
     'field/GradientDeviceService.cpp',
     'ai/castor/Control.cpp',
     'ai/castor/GetOrder.cpp',
@@ -262,6 +265,7 @@ CLIENT_SOURCES = (
     'map/preview/LandscapePreviewer.cpp',
     'game/screens/StartQualityScreen.cpp',
     'ui/screens/MainMenuScreen.cpp',
+    'ui/screens/HandPreferenceScreen.cpp',
     'ui/DiscordCommunity.cpp',
     'map/Map.cpp',
     'map/TerrainRegistry.cpp',
@@ -532,6 +536,7 @@ CLIENT_SOURCES = (
     'ui/settings/SettingsScreenKeyboard.cpp',
     'ui/settings/SettingsScreenOnline.cpp',
     'ui/settings/SettingsScreenRecording.cpp',
+    'ui/settings/SettingsScreenMCP.cpp',
     'scripting/sgsl/Lexer.cpp',
     'scripting/sgsl/Parser.cpp',
     'scripting/sgsl/ParserSummon.cpp',
@@ -573,6 +578,7 @@ CLIENT_SOURCES = (
     'team/stats/WinProbability.cpp',
     'game/WinningConditions.cpp',
     'app/Application.cpp',
+    'mcp/UIService.cpp',
     'map/editor/screens/MapEditorScreen.cpp',
     'ui/screens/MessageScreen.cpp',
     'map/editor/screens/EditorLoadScreen.cpp',

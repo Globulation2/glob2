@@ -143,6 +143,24 @@ vetoed. `endExecute(code)` and the
 `ScreenStack` completion callback remain the navigation contract; push child
 screens onto the stack rather than running them inline.
 
+### Buffered input completion
+
+Hosts can inject an additional event batch through `ScreenStack::AdditionalInput`.
+The stack prepares it after ordinary input and viewport changes, runs one screen
+update, and reports the prefix that the consumer actually processed. The completion
+can arrive on a later GUI tick. Enqueuing an event is not a dispatch acknowledgement.
+
+Screens that buffer events must override `defersExecutionInput()` and
+`hasPendingExecutionInput()`, and implement `beginAdditionalInput()` and
+`endAdditionalInput()` to retain the batch's `InputDispatchReceipt`. Resolve its
+`consumed` count only when the event loop consumes that range. Check cancellation
+before processing, erase only the cancelled range, and resolve it with zero;
+suspension, viewport changes and teardown must also resolve outstanding receipts.
+`EventQueue::erase()` preserves text storage for the remaining human events.
+`GameSessionScreen` and `MapEditorScreen` provide the reference implementations.
+The [MCP UI server](mcp-ui-server.md#extension-boundary) uses this boundary for
+ordered input, release cleanup and capture after actual dispatch.
+
 ### Presentation
 
 `Presentation` is resolved once per frame from the graphic context and passed

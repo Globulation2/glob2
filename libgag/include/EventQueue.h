@@ -3,6 +3,7 @@
 #include <SDL3/SDL_events.h>
 #include <deque>
 #include <string>
+#include <stdexcept>
 #include <vector>
 
 namespace GAGCore
@@ -33,6 +34,14 @@ class EventQueue
 		else if (event.type == SDL_EVENT_TEXT_EDITING)
 			event.edit.text = retain(event.edit.text);
 		queued.push_back(event);
+	}
+	// Erasing events does not retire retained strings: other queued text events
+	// may still point into the stable deque until the entire batch is cleared.
+	void erase(std::size_t first, std::size_t count)
+	{
+		if (first > queued.size() || count > queued.size() - first)
+			throw std::out_of_range("EventQueue range outside queued events");
+		queued.erase(queued.begin() + first, queued.begin() + first + count);
 	}
 	void clear()
 	{

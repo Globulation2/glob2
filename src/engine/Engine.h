@@ -6,6 +6,7 @@
 
 #include "Header.h"
 #include <EventQueue.h>
+#include <InputDispatchReceipt.h>
 #include "GameGUI.h"
 #include <atomic>
 #include <functional>
@@ -51,6 +52,7 @@ class Engine
 	int headlessSaveInterval = 0;
 	int previousCustomSpeed = -1;
 	friend class HighResolutionIntegrationHarness;
+	friend class SoftwareRenderBenchmark;
 public:
 	//! Constructor
 	Engine();
@@ -89,7 +91,7 @@ public:
     void cancelInitialization();
     const std::string& getInitializationDiagnostic() const { return initializationDiagnostic; }
     bool takeSettingsRequest() { return gui.takeSettingsRequest(); }
-    void suspendInput() { gui.suspendInput(); }
+    void suspendInput() { cancelInputDispatches(); gui.suspendInput(); }
     void viewportResized(int oldWidth, int oldHeight, int width, int height) { gui.viewportResized(oldWidth, oldHeight, width, height); }
 
 
@@ -170,6 +172,11 @@ public:
     void beginSession(Uint64 now);
     bool stepSession(Uint64 now);
     bool stepSession(Uint64 now, const std::vector<SDL_Event>& events);
+    // Track a range in the next supplied event batch until GameGUI consumes it.
+    // Receipt state is main-thread-only, just like sessionInput and clientStep.
+    void trackInputDispatch(std::shared_ptr<GAGCore::InputDispatchReceipt>, std::size_t first, std::size_t count);
+    void cancelInputDispatches();
+    bool hasPendingClientInput() const { return !sessionInput.events().empty(); }
     // Stop a failed session before control returns to its host.
     void abortSession() noexcept;
     // Display-paced local hosts may draw between simulation ticks. Turn games
@@ -247,7 +254,13 @@ public:
 	/// multiplayer games deliberately do not (docs/features/experimental-features.md).
 	static void applyLocalExperiments(GameHeader &header, const MapHeader &map);
 	
+    // Diagnostic observation only; never an input to pacing or simulation.
+    Uint64 simulationDeadlineLatenessNs() const
+    {
+        return observedSimulationLateness.load(std::memory_order_relaxed);
+    }
 private:
+    std::atomic<Uint64> observedSimulationLateness{0};
     static std::unique_ptr<GAGCore::InputStream> openGameInput(const std::string& filename, MapHeader& map, GameHeader& players);
     GAGCore::CooperativeTask initGameFromStreamTask(MapHeader map, GameHeader players, std::unique_ptr<GAGCore::InputStream> stream, bool saveAI);
     bool stepSessionImpl(Uint64 now, const std::vector<SDL_Event>& events);
@@ -373,6 +386,14 @@ private:
     bool mapSelectionInitialized = false;
     int sessionEndingTarget = 0;
     GAGCore::EventQueue sessionInput;
+    struct TrackedInputDispatch {
+        std::shared_ptr<GAGCore::InputDispatchReceipt> receipt;
+        std::size_t first, count;
+    };
+    std::vector<TrackedInputDispatch> inputDispatches;
+    void pruneCancelledInput();
+    void completeInputDispatches();
+    void dispatchClientInput(const std::vector<SDL_Event>&);
 
 	/// If the GUI requested a clean exit, drain remaining local orders and
 	/// flush the net layer. Returns true if the engine loop should break.

@@ -90,6 +90,8 @@ class SoftwareTerrainCache
 	};
 
   private:
+    bool tryBuildCpuPage(Chunk&, const std::array<Tile, ChunkTiles*ChunkTiles>&,
+        TerrainVisual::Compositor&, SDL_Surface*, bool wasValid, std::size_t budget);
 	bool prepareAtResolution(const SceneMap &, GAGCore::Sprite &, int left, int top, int right,
 							 int bottom, int vx, int vy, Uint32 visibleTeams, bool wholeMap,
 							 int animationTime, int preferredResolution, bool tiledCapture = false,
@@ -98,6 +100,7 @@ class SoftwareTerrainCache
 	// `needed` more bytes fit the mask budget. Returns whether they now fit.
 	bool releaseMasks(std::size_t needed);
 	std::vector<std::unique_ptr<Chunk>> chunks;
+    std::shared_ptr<const TerrainVisual::Compositor::CpuMaterials> cpuMaterialLease;
 	std::shared_ptr<const TerrainRegistry> registry;
     std::shared_ptr<const MapAssetBundle> assets;
 	std::vector<Copy> copies;
@@ -116,6 +119,12 @@ class SoftwareTerrainCache
     std::uint64_t gpuPageGeneration = 0;
 
   public:
+    struct WorkMetrics
+    {
+        std::uint64_t batches = 0, jobs = 0, cells = 0, serialPages = 0, batchNs = 0;
+        std::size_t peakReservedBytes = 0;
+    };
+    WorkMetrics workMetrics;
 	enum class FallbackMode
 	{
 		StreamPages,

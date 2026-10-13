@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include <PresentationWork.h>
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include <GameplayRecording.h>
@@ -303,6 +304,7 @@ void Engine::executeOrdersAndStep(bool readyNow)
 
 void Engine::drawFrame(MainLoopState& st, bool everyFrame, const PresentationFrame* scene)
 {
+    GAGCore::PresentationWorkScope cpuWork(gui.game.map.computeExecutor());
     GAGCore::ApplicationHost::matchFrame(gui.gamePaused);
 	const bool renderedFrame = everyFrame || st.nextGuiStep == 0;
 	if (renderedFrame)
@@ -311,12 +313,25 @@ void Engine::drawFrame(MainLoopState& st, bool everyFrame, const PresentationFra
 		// reading the live simulation's tick or timing from the rendering thread.
 		GAGCore::Recording::recorder().matchFrame(scene ? scene->tick : gui.game.stepCounter,
 				gui.gamePaused || gui.hardPause, scene ? int(scene->tickInterval) : st.speed);
-		gui.drawAll(gui.localTeamNo);
-		{
-			PERF_SCOPE_TIME(Present);
-			globalContainer->gfx->nextFrame();
-		}
-		PerformanceTelemetry::collector().presented();
+        try
+        {
+            gui.drawAll(gui.localTeamNo);
+            PERF_SCOPE_TIME(Present);
+            globalContainer->gfx->nextFrame();
+        }
+        catch (...)
+        {
+            globalContainer->gfx->discardFrame();
+            throw;
+        }
+        auto &perf = PerformanceTelemetry::collector();
+        if (scene && scene->tickTime)
+        {
+            const auto now = SDL_GetTicks();
+            perf.record(PerformanceTelemetry::Id::SceneAge,
+                        (now >= scene->tickTime ? now - scene->tickTime : 0) * 1000000ULL);
+        }
+        perf.presented();
 	}
 
 }
@@ -472,15 +487,76 @@ void Engine::stopSimulationThread()
     gui.consumeClientEvents();
 }
 
-bool Engine::threadedClientFrame(Uint64 now, const std::vector<SDL_Event>& events)
+void Engine::trackInputDispatch(std::shared_ptr<GAGCore::InputDispatchReceipt> receipt,
+								std::size_t first, std::size_t count)
 {
-    if (!runner) throw std::logic_error("Simulation thread not running");
-    publishSessionClock(now);
-    runner->rethrowFailure();
-    for (const auto& event : events) sessionInput.push_back(event);
-    // Selection and hit testing need this world's first immutable view. Preserve
-    // early input until it arrives; never fall back to a previous world's PresentationFrame.
-    if (!runner->sceneReady())
+	inputDispatches.push_back({std::move(receipt), sessionInput.events().size() + first, count});
+}
+void Engine::pruneCancelledInput()
+{
+	for (std::size_t i = 0; i < inputDispatches.size();)
+	{
+		const auto &tracked = inputDispatches[i];
+		if (!tracked.receipt->cancelled || !tracked.receipt->cancelled())
+		{
+			++i;
+			continue;
+		}
+		const auto first = tracked.first, count = tracked.count;
+		sessionInput.erase(first, count);
+		tracked.receipt->consumed = 0;
+		inputDispatches.erase(inputDispatches.begin() + i);
+		for (auto &remaining : inputDispatches)
+			if (remaining.first >= first + count)
+				remaining.first -= count;
+	}
+}
+void Engine::cancelInputDispatches()
+{
+	// Retire in reverse order so offsets remain valid, preserving human events.
+	for (auto i = inputDispatches.rbegin(); i != inputDispatches.rend(); ++i)
+	{
+		// Failure before the next event append can retire a future range too.
+		if (i->first < sessionInput.events().size())
+			sessionInput.erase(i->first,
+							   std::min(i->count, sessionInput.events().size() - i->first));
+		i->receipt->consumed = 0;
+	}
+	inputDispatches.clear();
+}
+void Engine::completeInputDispatches()
+{
+	for (const auto &tracked : inputDispatches)
+		tracked.receipt->consumed = tracked.count;
+	inputDispatches.clear();
+}
+void Engine::dispatchClientInput(const std::vector<SDL_Event> &events)
+{
+	if (inputDispatches.empty())
+	{
+		clientStep(events);
+		return;
+	}
+	for (const auto &event : events)
+		sessionInput.push_back(event);
+	pruneCancelledInput();
+	clientStep(sessionInput.events());
+	completeInputDispatches();
+	sessionInput.clear();
+}
+
+bool Engine::threadedClientFrame(Uint64 now, const std::vector<SDL_Event> &events)
+{
+	if (!runner)
+		throw std::logic_error("Simulation thread not running");
+	publishSessionClock(now);
+	runner->rethrowFailure();
+	for (const auto &event : events)
+		sessionInput.push_back(event);
+	pruneCancelledInput();
+	// Selection and hit testing need this world's first immutable view. Preserve
+	// early input until it arrives; never fall back to a previous world's PresentationFrame.
+	if (!runner->sceneReady())
     {
         const auto* scene=runner->acquireScene();
         if (!scene) return gui.isRunning && !runner->ended();
@@ -489,6 +565,7 @@ bool Engine::threadedClientFrame(Uint64 now, const std::vector<SDL_Event>& event
     if (gui.isRunning)
     {
         clientStep(sessionInput.events());
+        completeInputDispatches();
         sessionInput.clear();
         runner->requestScene(gui.sceneRequest(false));
         absorbSimulationTelemetry();
@@ -774,6 +851,20 @@ void Engine::teardownSession()
     // close. Logical deadlines and queued commands remain game-owned.
     gui.game.drainAI();
 	gui.waitForAutosave();
+    if (std::getenv("GLOB2_TEAM_TIMELINE")) {
+        // Summary snapshots use existing synchronization; trace export requires
+        // a drained lifecycle boundary and never reads a running stream.
+        auto& executor = gui.game.map.computeExecutor();
+        if (executor.telemetryMode() == ComputeTelemetryMode::Trace) {
+            gui.game.map.finishGradientPipeline({JoinReason::Teardown, ComputeTelemetry::NoTick});
+            gui.game.map.finishResourceGrowth({JoinReason::Teardown, ComputeTelemetry::NoTick});
+            executor.cancelPresentationAndWait();
+            executor.joinAll({JoinReason::Teardown, ComputeTelemetry::NoTick});
+        }
+        std::cout << "GLOB2_COMPUTE_SUMMARY ";
+        ComputeTelemetry::writeJson(std::cout, executor.telemetrySnapshot(executor.telemetryMode() == ComputeTelemetryMode::Trace));
+        std::cout << std::endl;
+    }
 
 	if (checksumSidecar)
 	{
@@ -876,7 +967,11 @@ void Engine::reloadTurnInitialState()
 			checksumSidecar.reset();
 	}
 	if (!globalContainer->structuredHeadless || turn)
-		gui.game.map.configureCompute(resolveComputeThreadCount(globalContainer->computeThreads));
+		{
+            gui.game.map.configureCompute(resolveComputeThreadCount(globalContainer->computeThreads));
+            if (gui.game.map.computeExecutor().telemetryMode() != globalContainer->computeTelemetry)
+                gui.game.map.computeExecutor().configureTelemetry(globalContainer->computeTelemetry);
+        }
 	teamEliminatedTick.clear();
 	if (session)
 		session->wasReadyLastTick = true;
@@ -912,7 +1007,11 @@ void Engine::beginSession(Uint64 now)
     if (!net) throw std::logic_error("Engine session requires an initialized game");
     globalContainer->configureGradientBackend();
 	if (!globalContainer->structuredHeadless || turn)
-		gui.game.map.configureCompute(resolveComputeThreadCount(globalContainer->computeThreads));
+		{
+            gui.game.map.configureCompute(resolveComputeThreadCount(globalContainer->computeThreads));
+            if (gui.game.map.computeExecutor().telemetryMode() != globalContainer->computeTelemetry)
+                gui.game.map.computeExecutor().configureTelemetry(globalContainer->computeTelemetry);
+        }
     sessionEndingTarget = globalContainer->automaticEndingSteps;
     MainLoopState st{};
     st.adjustableGameSpeed = gui.canChangeGameSpeed();
@@ -992,6 +1091,7 @@ void Engine::abortSession() noexcept
     }
     if (diagnostics) diagnostics->drain();
     session.reset();
+    cancelInputDispatches();
     sessionInput.clear();
     globalContainer->replayWriter.reset();
     PerformanceTelemetry::collector().reset();
@@ -1005,11 +1105,13 @@ bool Engine::stepSessionImpl(Uint64 now, const std::vector<SDL_Event>& events)
     turnDrawPending = true;
     --st.nextGuiStep;
     for (const auto &event : events) sessionInput.push_back(event);
+    pruneCancelledInput();
     return advanceSession(now, [&] {
         if (!globalContainer->runNoX && st.nextGuiStep == 0) {
             // Touch event timestamps use SDL time, which keeps advancing while
             // the session clock is suspended in the background.
             gui.step(sessionInput.events(), SDL_GetTicks());
+            completeInputDispatches();
             sessionInput.clear();
         }
     }, true);
@@ -1030,7 +1132,7 @@ bool Engine::serialClientFrame(Uint64 now, const std::vector<SDL_Event>& events,
     return guardedSessionStep(*this, [&]() -> bool {
         if (!session) throw std::logic_error("No active engine session");
         const Uint64 started = SDL_GetTicks();
-        clientStep(events);
+        dispatchClientInput(events);
         // Apply speed/pause input before deciding whether a tick is due.
         updateTickSpeedAndDrawCadence(*session, now);
         bool advanced = false;
@@ -1143,9 +1245,16 @@ bool Engine::advanceSession(Uint64 now, const std::function<void()>& clientWork,
         gatherAndAdvanceOrders(st.wasReadyLastTick);
         readyNow = net->tickReady();
         const Uint32 tickBefore = gui.game.stepCounter;
+        const Sint64 elapsed = static_cast<Sint64>(now - st.startTime) * 1000000;
+        const Uint64 lateness =
+            st.speedNs && elapsed > st.needToBeTime ? elapsed - st.needToBeTime : 0;
         executeOrdersAndStep(readyNow);
         if (gui.game.stepCounter != tickBefore)
+        {
+            observedSimulationLateness.store(lateness, std::memory_order_relaxed);
+            perf.record(PerformanceTelemetry::Id::SimulationLateness, lateness);
             gui.recordTick(SDL_GetTicks(), Uint32(st.speed));
+        }
     }
     if (globalContainer->automaticEndingGame && (int)gui.game.stepCounter == sessionEndingTarget) {
         gui.isRunning = false;
@@ -1200,7 +1309,17 @@ bool Engine::advancePendingSave(const std::vector<SDL_Event>& events)
     // before touching that state, and never resume simulation during teardown.
     stopSimulationThread();
     // Save/retry dialogs share the SDL input clock, just like active gameplay.
-    if (gui.savePending()) gui.step(events, SDL_GetTicks());
+    if (inputDispatches.empty()) {
+        if (gui.savePending()) gui.step(events, SDL_GetTicks());
+    } else {
+        for (const auto &event : events) sessionInput.push_back(event);
+        pruneCancelledInput();
+        if (gui.savePending()) {
+            gui.step(sessionInput.events(), SDL_GetTicks());
+            completeInputDispatches();
+        } else cancelInputDispatches();
+        sessionInput.clear();
+    }
     return gui.savePending();
 }
 
@@ -1221,6 +1340,7 @@ std::optional<Engine::PendingLoad> Engine::finishSessionForHost()
 
     if (diagnostics) diagnostics->drain();
     session.reset();
+    cancelInputDispatches();
     sessionInput.clear();
     const auto filename = std::exchange(gui.toLoadGameFileName, {});
     if (gui.exitGlobCompletely || filename.empty()) return std::nullopt;

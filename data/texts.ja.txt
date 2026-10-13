@@ -6010,25 +6010,97 @@ AI 生成ではない
 制限時間に達しました。
 [outcome reason probability]
 勝利確率がしきい値に達しました。
+[Discord community]
+
+[Globulation 2 Discord]
+
+[discord community intro]
+
+[discord opens externally]
+
+[Join Discord]
+
+[Copy link]
+
+[discord opened]
+
+[discord open failed]
+
+[discord link copied]
+
+[settings CPU automatic]
+
+[settings Scalar]
+
+[settings Unavailable]
+
+[settings Initializing]
+
+[settings Gradient backend]
+
+[settings Applies at the next simulation boundary. Unsupported work uses CPU automatic; rendering is independent.]
+
+[settings Gradient algorithm]
+
+[settings All choices compute the same exact field.]
+
+[settings Bucket propagation]
+
+[settings Verify gradient results]
+
+[settings Compare GPU results with scalar CPU before publication. Adds computation and stops the game on a mismatch.]
+
+[settings Gradient computation]
+
+[settings CPU fallback]
+
+[settings GPU fields]
+
+[settings CPU fallbacks]
+
+[settings MCP server]
+
+[settings Enabling the MCP server permits local clients to see and operate the game.]
+
+[settings Enable MCP server]
+
+[settings Port]
+
+[settings Current controller: %0]
+
+[settings Copy endpoint]
+
+[settings Retry listener]
+
+[settings Revoke control]
+
+[settings MCP server unavailable in this application]
+
+[settings Disabled]
+
+[settings Running]
+
+[settings Error: %0]
+
+[settings None]
+
+[settings Starting]
+
+[Which hand holds your phone?]
+
+[hand preference explanation]
+
+[hand silhouettes description]
+
+[hand preference change later]
+
+[hand preference save failed]
+
+[Left hand]
+
+[Right hand]
+
+[discord copy failed]
+
 [Destroy this building?]
 この建物を破壊しますか？
-[Discord community]
-Discord community
-[Globulation 2 Discord]
-Globulation 2 Discord
-[discord community intro]
-Find opponents, ask for help, and share your maps with the Globulation 2 community.
-[discord opens externally]
-Join our Discord server. This opens Discord or your browser.
-[Join Discord]
-Join Discord
-[Copy link]
-Copy link
-[discord opened]
-Discord opened. You can return to the game at any time.
-[discord open failed]
-Could not open Discord. Copy the invitation link and open it in your browser.
-[discord link copied]
-Invitation link copied.
-[discord copy failed]
-Could not copy the link. Select the invitation above to copy it manually.

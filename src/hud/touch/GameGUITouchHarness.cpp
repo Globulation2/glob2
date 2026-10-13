@@ -919,6 +919,7 @@ class GameGUITouchHarness
 				SDL_Event wheel{};
 				wheel.type = SDL_EVENT_MOUSE_WHEEL;
 				wheel.wheel.y = -1;
+                wheel.wheel.mouse_x=x; wheel.wheel.mouse_y=y;
 #if SDL_VERSION_ATLEAST(2,0,18)
 				wheel.wheel.y = -1;
 #endif
@@ -1170,6 +1171,16 @@ class GameGUITouchHarness
 				const size_t count = gui.touch->paletteItems().size();
 				const auto top = gui.touch->paletteItemRect(count - 1);
 				require(top.y < content.y, "Padded rail fixture must overflow");
+                // Queued/remote wheels carry their own pointer. Put the OS cursor
+                // elsewhere to catch consumers that substitute polled mouse state.
+                SDL_WarpMouseInWindow(SDL_GetWindowFromID(gfx->windowID()), 5, 5);
+                SDL_Event wheel{}; wheel.type=SDL_EVENT_MOUSE_WHEEL;
+                wheel.wheel.mouse_x=content.x+content.w/2;
+                wheel.wheel.mouse_y=content.y+content.h/2;
+                wheel.wheel.y=-gui.touch->paletteScrollSign();
+                gui.processEvent(&wheel);
+                require(gui.touch->panelScroll>0, "Wheel must scroll the supplied HUD position, independently of the OS pointer");
+                gui.touch->panelScroll=0; gui.touch->clampScroll();
 				{
 					const double before = gui.touch->panelScroll;
 					finger(SDL_EVENT_FINGER_DOWN, 1, content.x + content.w / 2, content.y + 8 * unit);
@@ -2887,6 +2898,23 @@ class GameGUITouchHarness
 			{
 				building->hp = building->type->hpMax - (repair ? 1 : 0);
 				const auto stateBefore = gui.game.checkSum();
+                glob2test::drawGUI(gui,0);
+                if (gui.touch->usesDial()) {
+                    const auto regions = gui.touch->dialRegions();
+                    const auto construction = std::find_if(regions.begin(), regions.end(),
+                        [](const auto &region) { return region.action.kind == 3; });
+                    require(construction != regions.end() &&
+                        construction->part == GameGUITouch::DialRegion::Segment && construction->ring == 3,
+                        "Repair and upgrade occupy a radial construction lane, never a chip");
+                    require(std::count_if(regions.begin(), regions.end(),
+                        [](const auto &region) { return region.action.kind == 3; }) == 1,
+                        "Construction has exactly one radial target");
+                    // Queue before painting; GPU presentation clears its backbuffer.
+                    gfx->printScreen((std::string("touch-construction-") + (repair ? "repair-" : "upgrade-") +
+                        std::to_string(width) + ".bmp").c_str());
+                    glob2test::drawGUI(gui,0);
+                    gfx->nextFrame();
+                }
 				pressAction(3);
 				require(gui.orderQueue.size() == 1, "Repair/upgrade starts with exactly one order");
 				auto order = std::dynamic_pointer_cast<OrderConstruction>(gui.orderQueue.front());

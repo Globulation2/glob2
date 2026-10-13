@@ -20,6 +20,7 @@
 #include "AIJavaScript.h"
 #include "ComputeThreads.h"
 #include "field/OpenCLGradient.h"
+#include "field/GradientAccelerators.h"
 #include "AIMaximaStrategy.h"
 #include "ai/cortex/CortexTuning.h"
 #include "Game.h"
@@ -301,7 +302,10 @@ struct HeadlessRunner
         for(const auto &directory:many(options,"--data-dir"))globals.fileManager->addDir(directory);
 		globals.runNoX=true;
 		if (options.count("--gpu")) globals.gpuComputeOverride = one(options, "--gpu") == "on";
-		globals.structuredHeadless=true;
+		if(options.count("--gradient-backend"))globals.gradientBackendOverride=*gradient_kernel::parseBackend(one(options,"--gradient-backend"));
+        if(options.count("--gradient-algorithm"))globals.gradientAlgorithmOverride=*gradient_kernel::parseAlgorithm(one(options,"--gradient-algorithm"));
+        if(options.count("--gradient-verify"))globals.gradientVerifyOverride=one(options,"--gradient-verify")=="on";
+        globals.structuredHeadless=true;
 		globals.automaticEndingGame=true;
 		globals.automaticGameGlobalEndConditions=true;
 		globals.automaticEndingSteps=integer(one(options, "--ticks", std::to_string(Cli::DefaultTicks)), 1, std::numeric_limits<int>::max());
@@ -496,6 +500,9 @@ struct HeadlessRunner
 		const unsigned computeThreads = resolveComputeThreadCount(parseComputeThreadCount(requestedSizing));
 		globals.configureGradientBackend();
 		engine.gui.game.map.configureCompute(computeThreads);
+        const auto computeMode = ComputeTelemetry::parseMode(one(options, "--compute-telemetry", "off"));
+        if (engine.gui.game.map.computeExecutor().telemetryMode() != computeMode)
+            engine.gui.game.map.computeExecutor().configureTelemetry(computeMode);
         engine.gui.game.map.setResourceGrowthDelay(integer(
             one(options, "--resource-growth-delay", std::to_string(engine.gui.game.map.resourceGrowthDelay())), 1, 16));
 		const auto pipeline = engine.gui.game.map.gradientPipelineStatus();
@@ -563,10 +570,21 @@ struct HeadlessRunner
 		Game &game=engine.gui.game;
 		const auto pipelineResult = game.map.gradientPipelineStatus();
 		const auto buildingResult = game.map.buildingGradientPipelineStatus();
-		const auto opencl = gradient_kernel::openCLStatus();
+		const auto gradient=gradient_kernel::configuration();
+        const auto accelerator=gradient_kernel::acceleratorStatus(gradient.backend);
         std::sort(tickDurations.begin(),tickDurations.end());
         const auto percentile=[&](unsigned p)->Uint64 {return tickDurations.empty()?0:tickDurations[(tickDurations.size()-1)*p/100];};
 		engine.trackTeamEliminations();
+        game.map.computeExecutor().cancelPresentationAndWait();
+        const auto computeSnapshot = game.map.computeExecutor().telemetrySnapshot(game.map.computeExecutor().telemetryMode() == ComputeTelemetryMode::Trace);
+        const auto measured = [&](auto value, bool available) { return available ? std::to_string(value) : std::string("null"); };
+        const auto joinTotal = [&](ComputeProducer producer) {
+            std::uint64_t value = 0;
+            for (const auto& reason : computeSnapshot.summary.joins[unsigned(producer)]) value += reason.total.totalNs;
+            return measured(value, computeSnapshot.available);
+        };
+        const bool summaryAvailable = computeSnapshot.available;
+        const bool workerAvailable = computeSnapshot.mode == ComputeTelemetryMode::Trace;
 		std::ostringstream result;
 		// A game the win probability model called is reported distinctly from one
 		// the rules actually decided. The two are not the same evidence: analysis
@@ -606,10 +624,10 @@ struct HeadlessRunner
 			<< ",\"growth_maxProposals\":" << game.map.resourceGrowthMetrics().maxProposals
 			<< ",\"growth_maxPending\":" << game.map.resourceGrowthMetrics().maxPending
 			<< ",\"growth_maxProposalBytes\":" << game.map.resourceGrowthMetrics().maxProposalBytes
-			<< ",\"growth_computeNs\":" << game.map.resourceGrowthMetrics().computeNs
-			<< ",\"growth_queueNs\":" << game.map.resourceGrowthMetrics().queueNs
-			<< ",\"growth_waitNs\":" << game.map.resourceGrowthMetrics().waitNs
-			<< ",\"growth_publicationNs\":" << game.map.resourceGrowthMetrics().publicationNs
+			<< ",\"growth_computeNs\":" << measured(game.map.resourceGrowthMetrics().computeNs, workerAvailable)
+			<< ",\"growth_queueNs\":" << measured(game.map.resourceGrowthMetrics().queueNs, workerAvailable)
+			<< ",\"growth_waitNs\":" << joinTotal(ComputeProducer::ResourceGrowth)
+			<< ",\"growth_publicationNs\":" << measured(game.map.resourceGrowthMetrics().publicationNs, summaryAvailable)
 			<< ",\"growth_delay\":" << game.map.resourceGrowthDelay()
             << ",\"tick_p50_ns\":" << percentile(50)
             << ",\"tick_p95_ns\":" << percentile(95)
@@ -621,16 +639,16 @@ struct HeadlessRunner
 			<< ",\"gradient_published\":" << pipelineResult.published
 			<< ",\"gradient_discarded\":" << pipelineResult.discarded
 			<< ",\"gradient_max_pending\":" << pipelineResult.maxPending
-			<< ",\"gradient_wait_ns\":" << pipelineResult.waitNs
-			<< ",\"gradient_preparation_ns\":" << pipelineResult.preparationNs
-			<< ",\"gradient_active_elapsed_ns\":" << pipelineResult.activeElapsedNs
-			<< ",\"compute_active_elapsed_ns\":" << game.map.computeExecutor().activeNs()
+			<< ",\"gradient_wait_ns\":" << joinTotal(ComputeProducer::PeriodicGradient)
+			<< ",\"gradient_preparation_ns\":" << measured(pipelineResult.preparationNs, workerAvailable)
+			<< ",\"gradient_active_elapsed_ns\":" << measured(pipelineResult.activeElapsedNs, workerAvailable)
+			<< ",\"compute_active_elapsed_ns\":" << measured(game.map.computeExecutor().activeNs(), workerAvailable)
 			<< ",\"building_gradient_jobs\":" << buildingResult.jobs
 			<< ",\"building_gradient_published\":" << buildingResult.published
 			<< ",\"building_gradient_discarded\":" << buildingResult.discarded
 			<< ",\"building_gradient_synchronous\":" << buildingResult.synchronous
 			<< ",\"building_gradient_max_pending\":" << buildingResult.maxPending
-			<< ",\"building_gradient_wait_ns\":" << buildingResult.waitNs
+			<< ",\"building_gradient_wait_ns\":" << joinTotal(ComputeProducer::BuildingGradient)
 			<< ",\"building_gradient_pending\":" << buildingResult.pending
 			<< ",\"building_gradient_synchronous_by_reason\":{";
 		for (std::size_t reason = 0; reason < buildingResult.synchronousByReason.size(); ++reason)
@@ -647,27 +665,41 @@ struct HeadlessRunner
 			stats->writeCsv(csv);
 			if (!csv) throw std::runtime_error("cannot write gradient-stats.csv");
 		}
+		result << ",\"compute_telemetry\":";
+        ComputeTelemetry::writeJson(result, computeSnapshot);
 		result
 			<< ",\"compute_threads\":" << game.map.computeExecutor().threadCount()
 			<< ",\"compute_requested_threads\":" << quote(requestedSizing)
 			<< ",\"compute_resolved_threads\":" << computeThreads
-			<< ",\"gpu_requested\":" << globals.gpuComputeEnabled()
-			<< ",\"gpu_device\":" << quote(opencl.device)
-			<< ",\"gpu_error\":" << quote(opencl.error)
+			<< ",\"gradient_backend\":" << quote(gradient_kernel::backendName(gradient.backend))
+            << ",\"gradient_algorithm\":" << quote(gradient_kernel::algorithmName(gradient.algorithm))
+            << ",\"gradient_device\":" << quote(accelerator.device)
+            << ",\"gradient_driver\":" << quote(accelerator.driver)
+            << ",\"gradient_shader\":" << quote(accelerator.shaderIdentity)
+            << ",\"gradient_gpu_fields\":" << accelerator.fields
+            << ",\"gradient_cpu_fallbacks\":" << accelerator.fallbacks
+            << ",\"gradient_verified\":" << accelerator.verified
+            << ",\"gradient_verification_ns\":" << accelerator.verificationNs
+            << ",\"gpu_requested\":" << globals.gpuComputeEnabled()
+			<< ",\"gpu_device\":" << quote(accelerator.device)
+			<< ",\"gpu_error\":" << quote(accelerator.error)
 			<< ",\"compute_workers\":" << game.map.computeExecutor().threadCount() - 1
-			<< ",\"compute_batches\":" << game.map.computeExecutor().metrics().batches
-			<< ",\"compute_jobs\":" << game.map.computeExecutor().metrics().jobs
-			<< ",\"compute_parallel_batches\":" << game.map.computeExecutor().metrics().parallelBatches
-			<< ",\"compute_batch_ns\":" << game.map.computeExecutor().metrics().batchNs
-			<< ",\"compute_wait_ns\":" << game.map.computeExecutor().metrics().waitNs
-			<< ",\"compute_deferred_batches\":" << game.map.computeExecutor().metrics().deferredBatches
-			<< ",\"compute_deferred_jobs\":" << game.map.computeExecutor().metrics().deferredJobs
-			<< ",\"compute_owner_jobs\":" << game.map.computeExecutor().metrics().ownerJobs
-			<< ",\"compute_worker_jobs\":" << game.map.computeExecutor().metrics().workerJobs
-			<< ",\"compute_join_wait_ns\":" << game.map.computeExecutor().metrics().joinWaitNs
+			<< ",\"compute_batches\":" << measured(game.map.computeExecutor().metrics().batches, summaryAvailable)
+			<< ",\"compute_jobs\":" << measured(game.map.computeExecutor().metrics().jobs, summaryAvailable)
+			<< ",\"compute_parallel_batches\":" << measured(game.map.computeExecutor().metrics().parallelBatches, summaryAvailable)
+			<< ",\"compute_batch_ns\":" << measured(game.map.computeExecutor().metrics().batchNs, summaryAvailable)
+			<< ",\"compute_wait_ns\":" << measured(game.map.computeExecutor().metrics().waitNs, summaryAvailable)
+			<< ",\"compute_deferred_batches\":" << measured(game.map.computeExecutor().metrics().deferredBatches, summaryAvailable)
+			<< ",\"compute_deferred_jobs\":" << measured(game.map.computeExecutor().metrics().deferredJobs, summaryAvailable)
+			<< ",\"compute_owner_jobs\":" << measured(game.map.computeExecutor().metrics().ownerJobs, workerAvailable)
+			<< ",\"compute_worker_jobs\":" << measured(game.map.computeExecutor().metrics().workerJobs, workerAvailable)
+			<< ",\"compute_join_wait_ns\":" << measured(game.map.computeExecutor().metrics().joinWaitNs, summaryAvailable)
 			<< ",\"ai_pipeline\":{";
 		bool metricComma=false;
-		for(const auto& [name,value]:game.aiMetrics()) {if(metricComma)result<<',';metricComma=true;result<<quote(name)<<':'<<value;}
+		for(const auto& [name,value]:game.aiMetrics()) {if(metricComma)result<<',';metricComma=true;result<<quote(name)<<':';
+            const bool available = (name == "computation_ns" ? workerAvailable
+                : (name == "deadline_misses" || name == "deadline_wait_ns") ? summaryAvailable : true);
+            result << measured(value, available);}
         result << "},\"benchmark_tick_histogram\":[";
         for(unsigned i=0;i<tickHistogram.size();++i) {
             if(i) result<<',';

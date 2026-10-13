@@ -1,10 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Glob2Test.h"
+#include "ScopedEnvironment.h"
 #include <SDLGraphicContext.h>
 #include <GUIStyle.h>
 #include <Toolkit.h>
 #include <SurfaceRaster.h>
 #include <RenderBackend.h>
+#include <PresentationWork.h>
 namespace GAGCore {std::unique_ptr<RenderBackend> makeSDLSoftwareGeometryBackend(SDL_Surface *);}
 #include <array>
 #include <cstring>
@@ -88,6 +90,32 @@ void compareAlphaMapChunks(GraphicContext &context, float divisor)
 }
 TEST_SUITE("SurfaceCoverage")
 {
+    TEST_CASE("execution modes keep immediate default and legacy override compatibility")
+    {
+        glob2test::ScopedEnvironment restore("GLOB2_RENDER_EXECUTION", "immediate");
+        glob2test::unsetEnv("GLOB2_RENDER_EXECUTION");
+        CHECK(renderExecution() == RenderExecution::Immediate);
+        for (const char *value : {"immediate", "auto"})
+        {
+            glob2test::ScopedEnvironment mode("GLOB2_RENDER_EXECUTION", value);
+            CHECK(renderExecution() == RenderExecution::Immediate);
+        }
+        {
+            glob2test::ScopedEnvironment mode("GLOB2_RENDER_EXECUTION", "serial");
+            CHECK(renderExecution() == RenderExecution::Serial);
+        }
+        {
+            glob2test::ScopedEnvironment mode("GLOB2_RENDER_EXECUTION", "parallel");
+            CHECK(renderExecution() == RenderExecution::Parallel);
+        }
+        {
+            glob2test::ScopedEnvironment mode("GLOB2_RENDER_EXECUTION", "automatic");
+            CHECK_THROWS_WITH_AS(renderExecution(),
+                                 "GLOB2_RENDER_EXECUTION must be immediate, serial or parallel",
+                                 std::invalid_argument);
+        }
+    }
+
 #ifdef HAVE_OPENGL
     TEST_CASE("legacy float alpha chunks preserve original fans and integer centers [display]")
     {
@@ -137,24 +165,35 @@ TEST_SUITE("SurfaceCoverage")
     }
     TEST_CASE("backing pixel fills and blits retain native clipping and queued order")
     {
-        glob2test::ToolkitScope toolkit; Toolkit::initGraphic(96,96,0,"pixel operations");
-        DrawableSurface target(64,48), source(4,4);
-        black(target);
-        source.drawFilledRect(0,0,4,4,Color(0,255,0));
-        auto backend = makeSoftwareRenderBackend(target.getSDLSurface());
-        backend->nativeLogicalSize(32,24);
-        const SDL_Rect bounds{4,4,16,12};
-        backend->transform(.5f,0,0,&bounds);
-        const SDL_FColor blue{0,0,1,1};
-        const SDL_Vertex triangle[] = {{{0,0},blue,{}},{{32,0},blue,{}},{{0,32},blue,{}}};
-        backend->triangles(triangle);
-        REQUIRE(backend->fillPixels({0,0,64,48},{255,0,0,255}));
-        CHECK(pixel(target,12,12)==std::array<int,3>{255,0,0});
-        CHECK(pixel(target,6,6)==std::array<int,3>{0,0,0});
-        backend->triangles(triangle);
-        REQUIRE(backend->blitPixels(source.getSDLSurface(),{0,0,4,4},{0,0,64,48},255));
-        CHECK(pixel(target,12,12)==std::array<int,3>{0,255,0});
-        CHECK(pixel(target,6,6)==std::array<int,3>{0,0,0});
+        for (const char *execution : {"immediate", "serial", "parallel"})
+        {
+            glob2test::ScopedEnvironment mode("GLOB2_RENDER_EXECUTION", execution);
+            INFO("execution " << execution);
+            glob2test::ToolkitScope toolkit; Toolkit::initGraphic(96,96,0,"pixel operations");
+            DrawableSurface target(64,48), source(4,4);
+            black(target);
+            source.drawFilledRect(0,0,4,4,Color(0,255,0));
+            auto backend = makeSoftwareRenderBackend(target.getSDLSurface());
+            backend->nativeLogicalSize(32,24);
+            const SDL_Rect bounds{4,4,16,12};
+            backend->transform(.5f,0,0,&bounds);
+            const SDL_FColor blue{0,0,1,1};
+            const SDL_Vertex triangle[] = {{{0,0},blue,{}},{{32,0},blue,{}},{{0,32},blue,{}}};
+            backend->triangles(triangle);
+            REQUIRE(backend->fillPixels({0,0,64,48},{255,0,0,255}));
+            // DrawableSurface borrows the backend's target without owning its
+            // queue. Fence the owner before observing those pixels directly.
+            backend->flush();
+            CHECK(pixel(target,12,12)==std::array<int,3>{255,0,0});
+            CHECK(pixel(target,6,6)==std::array<int,3>{0,0,0});
+            backend->triangles(triangle);
+            REQUIRE(backend->blitPixels(source.getSDLSurface(),{0,0,4,4},{0,0,64,48},255));
+            backend->flush();
+            CHECK(pixel(target,12,12)==std::array<int,3>{0,255,0});
+            CHECK(pixel(target,6,6)==std::array<int,3>{0,0,0});
+            CHECK((backend->operations().rasterBatches > 0) ==
+                  (std::strcmp(execution, "immediate") != 0));
+        }
     }
 
     TEST_CASE("float and byte alpha grids agree and respect clip rectangles")

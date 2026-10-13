@@ -42,6 +42,9 @@ def createBundle(target, source, env) :
         if not original_uuid or original_uuid != uuid(symbols):
             raise RuntimeError('Release dSYM UUID does not match executable')
         subprocess.run(['strip', '-S', '-x', packaged], check=True)
+    # Dynamic compute dependencies cannot be discovered through Mach-O linkage.
+    from moltenvk import install_macos
+    install_macos(bundleDir, env['BUILDDIR'])
     # Exported image bytes and source notices are the only runtime resources.
     from tools.package_assets import export_assets
     assets = Path(env['BUILDDIR'])/'runtime-assets'

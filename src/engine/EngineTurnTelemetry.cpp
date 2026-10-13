@@ -94,7 +94,11 @@ nlohmann::json Engine::turnNetworkSummary(bool includeSeries) const
 			context.orderValidation.push_back(std::move(v));
 		}
 	}
-	return Turn::clientNetworkSummary(s.telemetry(), context, s.nowMicros(), includeSeries);
+	auto result = Turn::clientNetworkSummary(s.telemetry(), context, s.nowMicros(), includeSeries);
+    std::ostringstream compute;
+    ComputeTelemetry::writeJson(compute, gui.game.map.computeExecutor().telemetrySnapshot());
+    result["compute_telemetry"] = nlohmann::json::parse(compute.str());
+    return result;
 }
 
 void Engine::printTurnTelemetrySession()

@@ -80,7 +80,9 @@
     "Maxima.Continuation/*",
     "RuntimeResources/*",
     "TerrainResources/*",
-    "MapSets/*"
+    "MapSets/*",
+    "SoftwareRenderer/*",
+    "MCP/*"
   ],
   "unit_filters": [
     "*"

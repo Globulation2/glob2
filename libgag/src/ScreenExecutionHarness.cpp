@@ -11,6 +11,7 @@
 #include <GUIBase.h>
 #include <ScreenStack.h>
 #include <InputState.h>
+#include <EventQueue.h>
 #include <ApplicationHost.h>
 #include <CooperativeSlice.h>
 #include <SDLGraphicContext.h>
@@ -371,6 +372,213 @@ TEST_CASE("screen phases; completion; reuse; quit and compatibility host")
         hostCompleted = true;
     });
     require(hostCompleted, "Native host completes exactly once before returning");
+}
+
+TEST_CASE("additional input follows human dispatch and reports an interrupted prefix")
+{
+	GAGCore::DrawableSurface surface(800, 600);
+	struct Ordered : Screen
+	{
+		std::function<void(SDL_Event)> input;
+		int updates = 0;
+		void handleExecutionEvent(SDL_Event event) override { input(event); }
+		void updateExecution(Uint32) override { ++updates; }
+	};
+	ScreenStack stack(surface);
+	auto owned = std::make_unique<Ordered>();
+	auto *root = owned.get();
+	bool geometrySettled = false, prepared = false, completed = false;
+	root->input = [&](SDL_Event event)
+	{
+		if (event.type == SDL_EVENT_USER)
+			geometrySettled = true;
+	};
+	stack.push(std::move(owned));
+	SDL_Event human{};
+	human.type = SDL_EVENT_USER;
+	SDL_Event remote{};
+	remote.type = SDL_EVENT_KEY_DOWN;
+	ScreenStack::AdditionalInput additional;
+	additional.prepare = [&](std::vector<SDL_Event> &events)
+	{
+		require(geometrySettled, "Human events run before additional input is prepared");
+		prepared = true;
+		events.push_back(remote);
+	};
+	additional.complete = [&](std::size_t consumed, std::size_t total)
+	{
+		require(consumed == 1 && total == 1 && root->updates == 1,
+				"Completion follows dispatch and exactly one screen update");
+		completed = true;
+	};
+	stack.frame(0, {human}, false, additional);
+	require(prepared && completed, "An available screen receives additional input");
+
+	int globalActions = 0;
+	root->input = [](SDL_Event) { require(false, "Global input must not reach the screen"); };
+	additional.intercept = [&](const SDL_Event &)
+	{
+		++globalActions;
+		return true;
+	};
+	additional.complete = [&](std::size_t consumed, std::size_t total)
+	{
+		require(consumed == total && root->updates == 2,
+				"Global interception counts as dispatch without adding an update");
+	};
+	stack.frame(20, {}, false, additional);
+	require(globalActions == 1, "Additional input follows application-global shortcuts");
+	additional.intercept = {};
+
+	root->input = [&](SDL_Event) { stack.push(std::make_unique<Ordered>()); };
+	prepared = false;
+	completed = false;
+	stack.frame(40, {human}, false, additional);
+	require(!prepared && !completed, "A human-created child defers additional input admission");
+
+	ScreenStack interrupted(surface);
+	auto receiver = std::make_unique<Ordered>();
+	auto *probe = receiver.get();
+	probe->input = [&](SDL_Event) { interrupted.push(std::make_unique<Ordered>()); };
+	interrupted.push(std::move(receiver));
+	additional.prepare = [&](std::vector<SDL_Event> &events) { events = {remote, remote}; };
+	additional.complete = [&](std::size_t consumed, std::size_t total)
+	{
+		require(consumed == 1 && total == 2 && probe->updates == 0,
+				"A remote-created child reports the dropped tail without updating its parent");
+		completed = true;
+	};
+	interrupted.frame(0, {}, false, additional);
+	require(completed, "Interrupted batches still complete their dispatch callback");
+
+	struct Deferred : Ordered
+	{
+		bool geometryChanged = false, receivedHuman = false;
+		std::shared_ptr<GAGCore::InputDispatchReceipt> receipt;
+		std::size_t extraCount = 0;
+		void beginAdditionalInput(std::shared_ptr<GAGCore::InputDispatchReceipt> value) override
+		{
+			receipt = std::move(value);
+		}
+		void endAdditionalInput(std::size_t count) override { extraCount = count; }
+		bool defersExecutionInput() const override { return true; }
+		void handleExecutionEvent(SDL_Event event) override
+		{
+			if (event.type == SDL_EVENT_USER)
+				receivedHuman = true;
+		}
+		void updateExecution(Uint32) override
+		{
+			++updates;
+			if (receivedHuman)
+				geometryChanged = true;
+			if (receipt)
+			{
+				receipt->consumed = extraCount;
+				receipt.reset();
+			}
+		}
+	};
+	ScreenStack buffered(surface);
+	auto bufferedOwner = std::make_unique<Deferred>();
+	auto *deferred = bufferedOwner.get();
+	buffered.push(std::move(bufferedOwner));
+	prepared = false;
+	additional.prepare = [&](std::vector<SDL_Event> &events)
+	{
+		require(deferred->geometryChanged && deferred->updates == 1,
+				"Deferred human dispatch settles geometry before additional admission");
+		prepared = true;
+		events = {remote};
+	};
+	additional.complete = [&](std::size_t consumed, std::size_t total)
+	{
+		require(consumed == 1 && total == 1 && deferred->updates == 2,
+				"Buffered remote events complete after their sole update");
+	};
+	buffered.frame(0, {human}, false, additional);
+	require(!prepared && deferred->updates == 1,
+			"Buffered screens defer additional input through a human input frame");
+	buffered.frame(40, {}, false, additional);
+	require(prepared, "Buffered screens accept additional input on the following tick");
+}
+
+TEST_CASE("cancelled buffered ranges preserve later human text and defer receipt completion")
+{
+	GAGCore::DrawableSurface surface(800, 600);
+	struct Buffered : Screen
+	{
+		GAGCore::EventQueue input;
+		std::shared_ptr<GAGCore::InputDispatchReceipt> receipt;
+		std::size_t first = 0, count = 0;
+		bool due = false;
+		int updates = 0;
+		std::vector<std::string> consumedText;
+		bool defersExecutionInput() const override { return true; }
+		bool hasPendingExecutionInput() const override { return !input.events().empty(); }
+		void beginAdditionalInput(std::shared_ptr<GAGCore::InputDispatchReceipt> value) override
+		{
+			receipt = std::move(value);
+			first = input.events().size();
+		}
+		void endAdditionalInput(std::size_t n) override { count = n; }
+		void handleExecutionEvent(SDL_Event event) override { input.push_back(event); }
+		void updateExecution(Uint32) override
+		{
+			++updates;
+			if (receipt && receipt->isCancelled())
+			{
+				input.erase(first, count);
+				receipt->consumed = 0;
+				receipt.reset();
+			}
+			if (!due)
+				return;
+			for (const auto &event : input.events())
+				if (event.type == SDL_EVENT_TEXT_INPUT)
+					consumedText.emplace_back(event.text.text);
+			if (receipt)
+			{
+				receipt->consumed = count;
+				receipt.reset();
+			}
+			input.clear();
+		}
+	};
+	ScreenStack screens(surface);
+	auto owner = std::make_unique<Buffered>();
+	auto *buffered = owner.get();
+	screens.push(std::move(owner));
+	bool cancel = false, completed = false;
+	ScreenStack::AdditionalInput additional;
+	additional.prepare = [](std::vector<SDL_Event> &events)
+	{
+		SDL_Event text{};
+		text.type = SDL_EVENT_TEXT_INPUT;
+		text.text.text = "remote";
+		events.push_back(text);
+	};
+	additional.cancellation = [&] { return std::function<bool()>([&] { return cancel; }); };
+	additional.complete = [&](std::size_t consumed, std::size_t total)
+	{
+		require(consumed == 0 && total == 1,
+				"Cancelled range resolves its actual zero-consumed prefix");
+		completed = true;
+	};
+	screens.frame(0, {}, false, additional);
+	require(!completed && buffered->updates == 1,
+			"Enqueueing a buffered event does not complete its receipt");
+	SDL_Event human{};
+	human.type = SDL_EVENT_TEXT_INPUT;
+	human.text.text = "human";
+	cancel = true;
+	screens.frame(40, {human}, false, additional);
+	require(completed && buffered->input.events().size() == 1,
+			"Cancelled remote range is erased while later human events remain");
+	buffered->due = true;
+	screens.frame(80, {}, false);
+	require(buffered->consumedText == std::vector<std::string>{"human"} && buffered->updates == 3,
+			"Later actual dispatch preserves owned human text without adding simulation updates");
 }
 
 TEST_CASE("a top screen with unsaved work can veto window close")

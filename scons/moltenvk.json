@@ -1,0 +1,19 @@
+{
+  "version": "1.4.2",
+  "license": "Apache-2.0",
+  "source": "https://github.com/KhronosGroup/MoltenVK",
+  "platforms": {
+    "macos": {
+      "url": "https://github.com/KhronosGroup/MoltenVK/releases/download/v1.4.2/MoltenVK-macos.tar",
+      "sha256": "f95765a6229cb7b915990a2890ce12ebe36a730b021545d3d52ae69ce4c4024e"
+    },
+    "ios": {
+      "url": "https://github.com/KhronosGroup/MoltenVK/releases/download/v1.4.2/MoltenVK-ios.tar",
+      "sha256": "b5d947b1660e6e9fed40b9cd2387e160aaab9e80b775c0cef7e14059405178c1"
+    },
+    "ios-simulator": {
+      "url": "https://github.com/KhronosGroup/MoltenVK/releases/download/v1.4.2/MoltenVK-all.tar",
+      "sha256": "562a15a29bc358446a56a4091c5f7e08f604184187c1d34f712148b61ef17276"
+    }
+  }
+}

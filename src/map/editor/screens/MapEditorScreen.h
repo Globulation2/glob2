@@ -17,10 +17,14 @@ class MapEditorScreen : public GAGGUI::Screen
 	void suspendExecution() override;
 	void viewportResized(int oldWidth, int oldHeight, int width, int height) override;
 	void handleExecutionEvent(SDL_Event event) override;
+	bool defersExecutionInput() const override { return true; }
+	bool hasPendingExecutionInput() const override { return !input.events().empty(); }
+	void beginAdditionalInput(std::shared_ptr<GAGCore::InputDispatchReceipt>) override;
+	void endAdditionalInput(std::size_t enqueued) override;
 	void drawExecution() override;
 	Uint32 executionDelay(Uint32 now, Uint32) override;
 
-    // Follows the editor's live presentation; ScreenStack re-reads it each frame.
+	// Follows the editor's live presentation; ScreenStack re-reads it each frame.
     bool usesResponsiveViewport() const override;
     std::pair<int,int> minimumViewportSize() const override { return {800,600}; }
     void cancelExecutionInput() override { suspendExecution(); }
@@ -31,6 +35,9 @@ class MapEditorScreen : public GAGGUI::Screen
 	GAGGUI::ScreenStack &screens;
 	std::unique_ptr<MapEdit> editor;
 	GAGCore::EventQueue input;
+	std::shared_ptr<GAGCore::InputDispatchReceipt> inputReceipt;
+	std::size_t receiptFirst = 0, receiptCount = 0;
+	void completeInputReceipt(std::size_t processed);
 	bool started = false;
 	Uint32 lastFrame = 0;
 };

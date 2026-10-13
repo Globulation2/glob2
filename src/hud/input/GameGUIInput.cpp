@@ -131,6 +131,9 @@ void GameGUI::processEvent(SDL_Event *event)
         && inGameMenu != IGM_ALLIANCE && inGameMenu != IGM_OBJECTIVES;
     if ((diagnostic || ownerDialog || hive) && parkForClient([&]{processEvent(event);})) return;
     if (GAGCore::scrollGesture(*event) && !inputState.hasFocus()) return;
+    if (event->type == SDL_EVENT_MOUSE_WHEEL) {
+        mouseX=event->wheel.mouse_x; mouseY=event->wheel.mouse_y;
+    }
     inputState.observe(*event);
     if(hiveCards && !gameMenuScreen && !scrollableText && !inGameMenu && globalContainer->settings.hiveMindEnabled && hiveCards->handle(*event))return;
     if (connectionOverlay && !activeDialog() && !inGameMenu && connectionOverlay->handle(*event)) return;

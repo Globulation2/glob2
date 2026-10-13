@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #pragma once
+#include "ComputeTelemetry.h"
 #include <atomic>
 
 #include <memory>
@@ -55,6 +56,7 @@ public:
 
 	void applyCommand(const Cli::Request &request);
 	bool gpuComputeEnabled() const;
+    gradient_kernel::Configuration gradientConfiguration() const;
 	void configureGradientBackend() const;
     std::optional<GAGCore::RendererBackend> rendererLaunchOverride;
 	void loadClient(void);
@@ -132,7 +134,11 @@ public:
 	// Zero selects the reported logical CPU count (one if unavailable). Structured
 	// --run-game configures its own compute executor instead.
 	unsigned computeThreads = 0;
+    ComputeTelemetryMode computeTelemetry = ComputeTelemetryMode::Off;
 	std::optional<bool> gpuComputeOverride;
+    std::optional<gradient_kernel::Backend> gradientBackendOverride;
+    std::optional<gradient_kernel::Algorithm> gradientAlgorithmOverride;
+    std::optional<bool> gradientVerifyOverride;
 	std::string runNoXGameName;
 	int runNoXCountRuns; //!< The number of runs you want to repeat the no X run
 	bool automaticEndingGame;

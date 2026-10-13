@@ -86,3 +86,67 @@ path is not an untouched-master baseline.
 
 
 See [skin rendering](skin-rendering.md) for production sprite export and skin preview diagnostics.
+
+## CPU presentation batches
+
+Build `software-render-benchmark` and `torus-render-benchmark` with `release=1`.
+Use the same retained save, seed, animation, viewport, warmup and compute budget
+for `GLOB2_RENDER_EXECUTION=immediate`, `serial` and `parallel` in separate processes.
+Both standalone tools apply the launch `--compute-threads auto|N` budget to their
+map executor; keep that budget fixed between modes.
+The former `auto` spelling is a compatibility alias for `immediate`; neither
+spelling dynamically chooses batching or workers.
+`immediate` measures direct serial drawing; `serial` measures packed CPU
+terrain and recorder overhead; `parallel` requests worker execution where bounds
+permit it. Use `GLOB2_RENDER_WORKERS=1` to test the rendering concurrency ceiling
+without changing simulation configuration. Retain an untouched base executable
+and captures too: the diagnostic immediate path shares current kernels and is
+not an independent pixel reference.
+
+The saved-game benchmark reports draw/present p95 and p99, process CPU, terrain
+jobs/cells/reservation, raster tiles/references/source-copy bytes, serial batches,
+fallback operations, summed queue delay/worker activity and owner wait. Summed
+worker activity is elapsed callback time, not process CPU or batch latency.
+Counters exclude warmup; peak retained/reserved bytes cover the entire run.
+Terrain cache counters describe the retained view cache. Streaming uses temporary
+page caches; use executor counters and terrain scopes to observe their CPU jobs.
+Scope records separate material preparation, terrain planning/install, command
+capture, source copying, binning and raster execution. Inclusive scopes must not
+be added together. Counters are owner aggregates; worker callbacks do not use
+shared scope collectors. Reduced terrain remains an explicitly serial fallback.
+
+`PROFILE_MODE=interactive PROFILE_SAVE=/path/to/save.game PROFILE_SECONDS=10
+PROFILE_FPS=60` runs the production threaded session with a fixed display cadence.
+It reports drawing plus presentation p95/p99, missed render deadlines and undrawn
+opportunities (pacing or unavailable scenes),
+displayed-scene age and the last observed simulation deadline lateness at each
+display. The latter distribution is weighted by displayed frames; the
+`simulation.deadline_lateness` scope records actual tick observations. Scene age
+includes drawing/presentation time and uses the captured tick completion time.
+`PROFILE_PAN=1` adds camera motion. Only actual draws admitted by the production
+frame pacer enter the distributions. Interactive observations require telemetry;
+`GLOB2_PERF_DISABLE` is rejected for this mode. Renderer-only timings exclude simulation;
+interactive results include its contention and must be reported separately.
+
+For renderer-only composition diagnostics, `PROFILE_MODE=map PROFILE_WHOLE_MAP=1`
+shows the captured terrain irrespective of discovery; it does not modify the saved
+world. `PROFILE_PAUSED=1` freezes view animation in renderer-only workloads,
+separating warm static caches from animated-page rebuilding. Verify counters show
+admitted jobs before interpreting parallel timings.
+The software recorder serves backing-scale, fractional-transform and offscreen
+backend paths. Ordinary native-size immediate surface drawing retains its existing
+arithmetic and runs serially; `PROFILE_FRACTION=1` exercises the transform path.
+
+Keep warm caches, cold first frames, animated terrain, camera/zoom motion, large
+colonies and translucent overlays separate. CPU fallback and device-composed
+terrain also need separate results. Verify exact capture pixels and unchanged
+simulation checksums before discussing latency. Do not infer smoother gameplay
+from composition throughput alone, or establish thresholds from fast builds.
+The default remains immediate serial drawing. Enabling batching by default or
+adding an automatic selection policy requires representative hardware results.
+
+Executor graphics timings are optional. Set `PROFILE_COMPUTE_TELEMETRY=waits`
+for owner barrier measurements or `trace` for worker queue/execution measurements.
+The default is off; `graphics_executor` fields report `na` when uncollected and
+include `mode` and `worker_available`. Compare instrumented and ordinary rendering
+separately. Other renderer performance scopes remain controlled as before.

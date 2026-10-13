@@ -116,6 +116,8 @@ void Settings::setTextSizePercent(int percent)
 void Settings::load(std::string filename)
 {
     gpuCompute.reset();
+    gradientBackend.reset();gradientAlgorithm=gradient_kernel::Algorithm::Frozen8;gradientVerify=false;
+    thumbSideChosen = false;
     rendererBackend = GAGCore::RendererBackend::Auto;
     targetRenderFps = 60;
 #ifdef __EMSCRIPTEN__
@@ -163,6 +165,9 @@ void Settings::load(std::string filename)
 			if (value->second == "0") gpuCompute = false;
 			else if (value->second == "1") gpuCompute = true;
 		}
+        if(const auto value=parsed.find("gradientBackend");value!=parsed.end())gradientBackend=gradient_kernel::parseBackend(value->second);
+        if(const auto value=parsed.find("gradientAlgorithm");value!=parsed.end())gradientAlgorithm=gradient_kernel::parseAlgorithm(value->second).value_or(gradient_kernel::Algorithm::Frozen8);
+        if(const auto value=parsed.find("gradientVerify");value!=parsed.end())gradientVerify=value->second=="1";
         if (const auto backend = parsed.find("rendererBackend"); backend != parsed.end())
             rendererBackend = GAGCore::parseRendererBackend(backend->second).value_or(GAGCore::RendererBackend::Auto);
         else if (parsed.count("screenFlags"))
@@ -179,6 +184,13 @@ void Settings::load(std::string filename)
                 targetRenderFps = fps;
         }
         READ_PARSED_STRING(interfacePresentation);
+        if (const auto value=parsed.find("mcpEnabled"); value!=parsed.end()) mcpEnabled=value->second=="1";
+        if (const auto value=parsed.find("mcpPort"); value!=parsed.end()) {
+            int port=27202;
+            const auto &text=value->second;
+            const auto result=std::from_chars(text.data(),text.data()+text.size(),port);
+            mcpPort=result.ec==std::errc{} && result.ptr==text.data()+text.size() && port>=1 && port<=65535 ? port : 27202;
+        }
         READ_PARSED_STRING(menuTheme);
         READ_PARSED_STRING(gameTheme);
         interfacePresentation=presentationPreferenceName(parsePresentationPreference(interfacePresentation));
@@ -232,6 +244,11 @@ void Settings::load(std::string filename)
 		READ_PARSED_INT(oneFingerZoomDirection);
 		oneFingerZoomDirection = std::clamp(oneFingerZoomDirection,
 			int(ONE_FINGER_ZOOM_PLATFORM), int(ONE_FINGER_ZOOM_DOWN_IN));
+		// An existing side preference remains an explicit choice on migration.
+		if (const auto chosen = parsed.find("thumbSideChosen"); chosen != parsed.end())
+			thumbSideChosen = chosen->second == "1";
+		else if (const auto side = parsed.find("thumbSide"); side != parsed.end())
+			thumbSideChosen = side->second == "0" || side->second == "1";
 		READ_PARSED_INT(thumbSide);
 		thumbSide = std::clamp(thumbSide, int(THUMB_RIGHT), int(THUMB_LEFT));
 		gameSpeed=std::max(static_cast<int>(GAME_SPEED_MINIMUM),
@@ -346,6 +363,7 @@ bool Settings::save(std::string filename)
         Utilities::streamprintf(stream, "rendererBackend=%s\n", std::string(GAGCore::rendererBackendName(rendererBackend)).c_str());
 		Utilities::streamprintf(stream, "uiScale=%d\n", uiScale);
         Utilities::streamprintf(stream, "interfacePresentation=%s\n", interfacePresentation.c_str());
+        Utilities::streamprintf(stream, "mcpEnabled=%d\nmcpPort=%d\n", int(mcpEnabled), mcpPort);
         Utilities::streamprintf(stream, "menuTheme=%s\n", menuTheme.c_str());
         Utilities::streamprintf(stream, "gameTheme=%s\n", gameTheme.c_str());
 		Utilities::streamprintf(stream, "optionFlags=%d\n", optionFlags & ~LEGACY_LOW_DETAIL);
@@ -378,6 +396,9 @@ bool Settings::save(std::string filename)
 		Utilities::streamprintf(stream, "autosaveGames=%d\n", autosaveGames);
 		if (gpuCompute.has_value())
 			Utilities::streamprintf(stream, "gpuCompute=%d\n", *gpuCompute);
+        if(gradientBackend)Utilities::streamprintf(stream,"gradientBackend=%s\n",gradient_kernel::backendName(*gradientBackend));
+        Utilities::streamprintf(stream,"gradientAlgorithm=%s\n",gradient_kernel::algorithmName(gradientAlgorithm));
+        Utilities::streamprintf(stream,"gradientVerify=%d\n",gradientVerify);
 		Utilities::streamprintf(stream, "experiments=%s\n", experiments.toText().c_str());
 		Utilities::streamprintf(stream, "gameSpeed=%d\n", gameSpeed);
         Utilities::streamprintf(stream,"textSizePercent=%d\n",textSizePercent);
@@ -388,6 +409,7 @@ bool Settings::save(std::string filename)
         Utilities::streamprintf(stream,"mapScrollMomentum=%d\n",mapScrollMomentum);
 		Utilities::streamprintf(stream, "oneFingerZoomDirection=%d\n", oneFingerZoomDirection);
 		Utilities::streamprintf(stream, "thumbSide=%d\n", thumbSide);
+		Utilities::streamprintf(stream, "thumbSideChosen=%d\n", thumbSideChosen);
 
         for(const auto& [key,value]:buildingAssignments)
             Utilities::streamprintf(stream,"buildingAssignment.%s=%d\n",key.c_str(),value);

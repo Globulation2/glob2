@@ -80,8 +80,73 @@ GAGCore::CooperativeSlice fixedSlice()
 
 TEST_SUITE("EngineSession")
 {
+    TEST_CASE("buffered input receipts wait for GUI dispatch and cancel exact ranges [display]")
+	{
+		glob2test::ScopedEnvironment serial("GLOB2_SIM_THREAD", "0");
+		glob2test::HeadlessGlobals globals(
+			{.display = true, .loadStrings = true, .width = 800, .height = 600});
+		REQUIRE(NET_Init());
+		struct NetworkScope
+		{
+			~NetworkScope() { NET_Quit(); }
+		} network;
+		globalContainer->automaticEndingGame = false;
+		globalContainer->settings.gameSpeed = Settings::GAME_SPEED_MAXIMUM;
+		Engine engine;
+		REQUIRE(engine.initCampaign("maps/balanced.map") == Engine::EE_NO_ERROR);
+		engine.beginSession(1000);
+		// An online/fast-forward producer can consume GUI input several ticks later.
+		engine.session->adjustableGameSpeed = true;
+		engine.session->nextGuiStep = 3;
+		SDL_Event motion{};
+		motion.type = SDL_EVENT_MOUSE_MOTION;
+		motion.motion.x = 123;
+		motion.motion.y = 234;
+		auto receipt = std::make_shared<GAGCore::InputDispatchReceipt>();
+		engine.trackInputDispatch(receipt, 0, 1);
+		REQUIRE(engine.stepSession(1000, {motion}));
+		CHECK_FALSE(receipt->consumed.has_value());
+		REQUIRE(engine.stepSession(1040, {}));
+		CHECK_FALSE(receipt->consumed.has_value());
+		REQUIRE(engine.stepSession(1080, {}));
+		REQUIRE(receipt->consumed.has_value());
+		CHECK(*receipt->consumed == 1);
+		CHECK(engine.gui.lastMouseX == 123);
+		CHECK(engine.gui.lastMouseY == 234);
 
-    TEST_CASE("automatic GUI sessions poll asset finalizers on the presentation thread [display]")
+		engine.session->nextGuiStep = 3;
+		bool cancel = false;
+		auto cancelled = std::make_shared<GAGCore::InputDispatchReceipt>();
+		cancelled->cancelled = [&] { return cancel; };
+		std::string remotePayload = "remote é";
+		SDL_Event remoteText{};
+		remoteText.type = SDL_EVENT_TEXT_INPUT;
+		remoteText.text.text = remotePayload.c_str();
+		engine.trackInputDispatch(cancelled, 0, 1);
+		REQUIRE(engine.stepSession(1120, {remoteText}));
+		CHECK_FALSE(cancelled->consumed.has_value());
+		remotePayload.assign("replaced source buffer");
+		REQUIRE(engine.sessionInput.events().size() == 1);
+		CHECK(std::string(engine.sessionInput.events()[0].text.text) == "remote é");
+		cancel = true;
+		std::string humanPayload = "human 世界";
+		SDL_Event humanText{};
+		humanText.type = SDL_EVENT_TEXT_INPUT;
+		humanText.text.text = humanPayload.c_str();
+		REQUIRE(engine.stepSession(1160, {humanText}));
+		REQUIRE(cancelled->consumed.has_value());
+		CHECK(*cancelled->consumed == 0);
+		REQUIRE(engine.sessionInput.events().size() == 1);
+		CHECK(std::string(engine.sessionInput.events()[0].text.text) == humanPayload);
+		humanPayload.assign("changed human source");
+		CHECK(std::string(engine.sessionInput.events()[0].text.text) == "human 世界");
+		REQUIRE(engine.stepSession(1200, {}));
+		CHECK(engine.sessionInput.events().empty());
+		engine.gui.isRunning = false;
+		engine.finishSession();
+	}
+
+	TEST_CASE("automatic GUI sessions poll asset finalizers on the presentation thread [display]")
     {
         for (const char* mode : {"0", "1"})
         {

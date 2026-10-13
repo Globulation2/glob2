@@ -30,6 +30,7 @@ GameSessionScreen::GameSessionScreen(GAGGUI::ScreenStack &stack, std::unique_ptr
 }
 GameSessionScreen::~GameSessionScreen()
 {
+    cancelScreenInputReceipt();
 	if (started && engine)
 		engine->restoreCursor();
 }
@@ -47,7 +48,7 @@ void GameSessionScreen::updateExecution(Uint32 tick)
 		engine->restoreCursor();
 		started = false;
 		finished = true;
-		input.clear();
+		cancelScreenInputReceipt(); input.clear();
 		if (globalContainer->mix)
 			globalContainer->mix->setNextTrack(MusicTrack::Menu, true);
 		stack.push(std::make_unique<MessageScreen>(std::string("Game stopped: ") + failure.what() +
@@ -58,8 +59,62 @@ void GameSessionScreen::updateExecution(Uint32 tick)
 	}
 }
 
+bool GameSessionScreen::hasPendingExecutionInput() const
+{
+    return !input.events().empty() || (engine && engine->hasPendingClientInput());
+}
+void GameSessionScreen::beginAdditionalInput(std::shared_ptr<GAGCore::InputDispatchReceipt> receipt)
+{
+	inputReceipts.push_back({std::move(receipt), input.events().size(), 0});
+}
+void GameSessionScreen::endAdditionalInput(std::size_t enqueued)
+{
+	auto &tracked = inputReceipts.back();
+	tracked.count = enqueued;
+	if (!enqueued)
+	{
+		tracked.receipt->consumed = 0;
+		inputReceipts.pop_back();
+	}
+}
+void GameSessionScreen::pruneCancelledScreenInput()
+{
+	for (std::size_t i = 0; i < inputReceipts.size();)
+	{
+		const auto &tracked = inputReceipts[i];
+		if (!tracked.receipt->isCancelled())
+		{
+			++i;
+			continue;
+		}
+		const auto first = tracked.first, count = tracked.count;
+		input.erase(first, count);
+		tracked.receipt->consumed = 0;
+		inputReceipts.erase(inputReceipts.begin() + i);
+		for (auto &remaining : inputReceipts)
+			if (remaining.first >= first + count)
+				remaining.first -= count;
+	}
+}
+void GameSessionScreen::cancelScreenInputReceipt()
+{
+	for (auto i = inputReceipts.rbegin(); i != inputReceipts.rend(); ++i)
+	{
+		input.erase(i->first, i->count);
+		i->receipt->consumed = 0;
+	}
+	inputReceipts.clear();
+}
+void GameSessionScreen::transferInputReceipt()
+{
+	for (auto &tracked : inputReceipts)
+		engine->trackInputDispatch(std::move(tracked.receipt), tracked.first, tracked.count);
+	inputReceipts.clear();
+}
+
 void GameSessionScreen::updateExecutionImpl(Uint32 tick)
 {
+	pruneCancelledScreenInput();
 	if (!isExecutionRunning() || finished)
 		return;
 #ifdef __EMSCRIPTEN__
@@ -91,8 +146,9 @@ void GameSessionScreen::updateExecutionImpl(Uint32 tick)
 	bool running = false;
 	if (finishingSession)
 	{
+		transferInputReceipt();
 		const bool pending = engine->advancePendingSave(input.events());
-		input.clear();
+		cancelScreenInputReceipt(); input.clear();
 		if (pending) return;
 	}
 	else if (engine->simulationThreaded())
@@ -100,9 +156,10 @@ void GameSessionScreen::updateExecutionImpl(Uint32 tick)
 		// Input and GUI logic every frame, with the simulation parked between ticks;
 		// the simulation thread paces itself.
 		engine->resumeSimulation(clock);
+		transferInputReceipt();
 		try { running = engine->threadedClientFrame(clock, input.events()); }
 		catch (...) { engine->abortSession(); throw; }
-		input.clear();
+		cancelScreenInputReceipt(); input.clear();
 	}
 	else
 	{
@@ -110,9 +167,10 @@ void GameSessionScreen::updateExecutionImpl(Uint32 tick)
         if (!engine->turnLockstep())
         {
             // Local matches service input every display frame and batch due ticks.
+            transferInputReceipt();
             try { running = engine->serialClientFrame(clock, input.events(), BROWSER_TICK_BUDGET_MS); }
             catch (...) { engine->abortSession(); throw; }
-            input.clear();
+            cancelScreenInputReceipt(); input.clear();
         }
         else
 #endif
@@ -123,8 +181,9 @@ void GameSessionScreen::updateExecutionImpl(Uint32 tick)
 				engine->pollTurnSession(clock);
 				return;
 			}
+			transferInputReceipt();
 			running = engine->stepSession(clock, input.events());
-			input.clear();
+			cancelScreenInputReceipt(); input.clear();
 			// Catching up in a turn game: the host calls this once per frame, so one tick per
 			// call caps the replay at the frame rate (in the browser, below real time on slow
 			// devices: the client falls further behind). Run more ticks within a frame
@@ -140,7 +199,7 @@ void GameSessionScreen::updateExecutionImpl(Uint32 tick)
         }
 	}
 	if (running && engine->takeSettingsRequest()) {
-        engine->suspendInput(); input.clear();
+        engine->suspendInput(); cancelScreenInputReceipt(); input.clear();
         stack.push(std::make_unique<SettingsScreen>(&stack));
         return;
     }
@@ -172,7 +231,7 @@ void GameSessionScreen::updateExecutionImpl(Uint32 tick)
 							   engine = static_cast<GameLoadScreen &>(loading).takeEngine();
 							   finished = false;
 							   resetClock = false;
-							   input.clear();
+							   cancelScreenInputReceipt(); input.clear();
 						   }
 						   else
 						   {
@@ -263,9 +322,12 @@ GAGGUI::Screen::ExecutionWait GameSessionScreen::executionWait() const
 
 void GameSessionScreen::viewportResized(int oldWidth, int oldHeight, int width, int height)
 {
-	if (engine)
-		engine->viewportResized(oldWidth, oldHeight, width, height);
-	input.clear();
+    if (engine)
+    {
+        engine->cancelInputDispatches();
+        engine->viewportResized(oldWidth, oldHeight, width, height);
+    }
+	cancelScreenInputReceipt(); input.clear();
 	resetClock = true;
 #ifdef __EMSCRIPTEN__
 	presentationDirty = true;
@@ -281,6 +343,6 @@ void GameSessionScreen::suspendExecution()
 		// serial loop did. updateExecution resumes it.
 		engine->suspendSimulation();
 	}
-	input.clear();
+	cancelScreenInputReceipt(); input.clear();
 	resetClock = true;
 }

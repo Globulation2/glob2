@@ -1,14 +1,16 @@
-#include "CommandLine.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "CommandLine.h"
 // Opt-in loaded-game CPU benchmark. PROFILE_* overrides are local diagnostics.
 #include "GlobalContainer.h"
 #include "GameGUI.h"
 #include "Engine.h"
+#include "ComputeThreads.h"
 #include "Team.h"
 #include "Unit.h"
 #include "Building.h"
 #include "render/SoftwareTerrainCache.h"
 #include <RenderBackend.h>
+#include <PresentationWork.h>
 #include <GameplayRecording.h>
 #include <stdexcept>
 #include <cmath>
@@ -63,8 +65,94 @@ static std::uint64_t cpuClock()
 	return std::uint64_t(cpu() * 1e9);
 #endif
 }
+static void distribution(const char *label, std::vector<double> values)
+{
+    if (values.empty())
+        throw std::runtime_error("Benchmark produced no displayed frames");
+    double total = 0;
+    for (const auto value : values)
+        total += value;
+    std::sort(values.begin(), values.end());
+    printf("%s mean_ms=%.4f median_ms=%.4f p95_ms=%.4f p99_ms=%.4f\n", label, total / values.size(),
+           values[values.size() / 2], values[(values.size() - 1) * 95 / 100],
+           values[(values.size() - 1) * 99 / 100]);
+}
 class SoftwareRenderBenchmark
 {
+static void interactiveBenchmark()
+{
+    if (std::getenv("GLOB2_PERF_DISABLE"))
+        throw std::runtime_error("Interactive frame observations require performance telemetry");
+    const auto *path = std::getenv("PROFILE_SAVE");
+    if (!path || !*path)
+        throw std::runtime_error("PROFILE_SAVE must name a saved game");
+    Engine engine;
+    if (engine.initCustom(path) != Engine::EE_NO_ERROR)
+        throw std::runtime_error("Cannot load interactive fixture");
+    const int fps = std::getenv("PROFILE_FPS") ? std::stoi(std::getenv("PROFILE_FPS")) : 60;
+    const double seconds =
+        std::getenv("PROFILE_SECONDS") ? std::stod(std::getenv("PROFILE_SECONDS")) : 10;
+    if (fps < 1 || fps > 1000 || seconds <= 0 || seconds > 3600)
+        throw std::runtime_error("Invalid interactive benchmark duration or FPS");
+    const Uint64 period = 1000000000ULL / fps;
+    globalContainer->gfx->setTargetRenderFps(fps);
+    engine.beginSession(SDL_GetTicks());
+    if (!engine.startSimulationThread(SDL_GetTicks()))
+        throw std::runtime_error("Interactive benchmark requires a simulation thread");
+    std::vector<double> draw, age, lateness;
+    unsigned missed = 0, opportunities = 0;
+    const auto began = SDL_GetTicksNS();
+    auto due = began;
+    while (SDL_GetTicksNS() - began < seconds * 1e9)
+    {
+        const auto now = SDL_GetTicksNS();
+        if (now < due)
+        {
+            SDL_Delay(Uint32(std::min(Uint64(5), (due - now) / 1000000)));
+            continue;
+        }
+        if (!engine.threadedClientFrame(SDL_GetTicks(), {}))
+            break;
+        ++opportunities;
+        if (std::getenv("PROFILE_PAN"))
+        {
+            engine.gui.camera.originX += .25;
+            engine.gui.viewportX = engine.gui.camera.tileX();
+        }
+        const auto renderedBefore = PerformanceTelemetry::collector().calls[
+            static_cast<unsigned>(PerformanceTelemetry::Id::Render)];
+        const auto start = SDL_GetTicksNS();
+        if (globalContainer->gfx->beginRenderFrame())
+            engine.drawSession();
+        const auto end = SDL_GetTicksNS();
+        // AcquireScene can initially have no published frame. Exclude that
+        // startup opportunity from displayed-frame distributions.
+        const auto &scene = engine.gui.drawnScene();
+        if (PerformanceTelemetry::collector().calls[
+                static_cast<unsigned>(PerformanceTelemetry::Id::Render)] != renderedBefore)
+        {
+            draw.push_back((end - start) / 1e6);
+            const auto displayed = SDL_GetTicks();
+            age.push_back(displayed >= scene.tickTime ? double(displayed - scene.tickTime) : 0);
+            lateness.push_back(engine.simulationDeadlineLatenessNs() / 1e6);
+            missed += end > due + period;
+        }
+        due += period;
+        if (end > due + period)
+            due = end; // No catch-up drawing after a missed frame.
+    }
+    engine.stopSimulationThread();
+    printf("interactive frames=%zu opportunities=%u undrawn_opportunities=%zu "
+           "missed_render_deadlines=%u period_ns=%llu\n", draw.size(), opportunities,
+           opportunities - draw.size(), missed, (unsigned long long)period);
+    distribution("draw_and_present", draw);
+    distribution("displayed_scene_age", age);
+    distribution("last_simulation_deadline_lateness", lateness);
+    PerformanceTelemetry::collector().write(std::cout, "interactive", engine.gui.game.stepCounter,
+                                            true);
+    engine.gui.isRunning = false;
+    engine.finishSession();
+}
   public:
 	static int run(int argc, char **argv)
 	{
@@ -90,8 +178,17 @@ class SoftwareRenderBenchmark
 			SDL_HideWindow(SDL_GetWindowFromID(gfx->windowID()));
 		if (!getenv("PROFILE_RECORD") && gfx->rendererCapabilities().accelerated)
 			throw std::runtime_error("Benchmark requires the software backend (-G)");
+        if (const char *mode = std::getenv("PROFILE_MODE");
+            mode && std::string(mode) == "interactive")
+        {
+            interactiveBenchmark();
+            delete globalContainer;
+            globalContainer = nullptr;
+            return 0;
+        }
 		{
 			GameGUI gui;
+            GAGCore::PresentationWorkScope cpuWork(gui.game.map.computeExecutor());
 			const char *path = getenv("PROFILE_SAVE");
 			if (!path || !*path)
 				throw std::runtime_error("PROFILE_SAVE must name a saved game");
@@ -99,13 +196,17 @@ class SoftwareRenderBenchmark
 				glob2OpenMapOrSaveInputStreamBackend(*Toolkit::getFileManager(), path));
 			if (!gui.load(&stream, true))
 				throw std::runtime_error("Cannot load benchmark save");
+            // Standalone GameGUI loading does not start an Engine session.
+            // Apply the same compute budget before measuring rendering batches.
+            gui.game.map.configureCompute(resolveComputeThreadCount(globalContainer->computeThreads));
+            printf("compute_threads=%zu\n", gui.game.map.computeExecutor().threadCount());
 			auto &terrainCache = gui.view.render.terrainCache(gui.game.map.identity());
 			if (const char *c = getenv("PROFILE_TERRAIN_CACHE"))
 				terrainCache.enabled = atoi(c) != 0;
 			gui.localPlayer = gui.localTeamNo = 0;
 			gui.adjustLocalTeam();
 			gui.adjustInitialViewport();
-			gui.gamePaused = false;
+			gui.gamePaused = getenv("PROFILE_PAUSED") != nullptr;
 			// PROFILE_SELECT=building|flag|unit selects the local team's first such entity,
 			// so captures include the selection panel and the map-view selection markers.
 			if (const char *select = getenv("PROFILE_SELECT"))
@@ -212,6 +313,10 @@ class SoftwareRenderBenchmark
 			Uint64 measuredStart = 0;
 			std::vector<double> draw, present;
 			RenderOperations initialOps{};
+            decltype(terrainCache.workMetrics) initialWork{};
+            if (const char* mode = getenv("PROFILE_COMPUTE_TELEMETRY"))
+                gui.game.map.computeExecutor().configureTelemetry(ComputeTelemetry::parseMode(mode));
+            auto initialGraphics = gui.game.map.computeExecutor().graphicsMetrics();
 			std::uint64_t initialHits = 0, initialRebuilds = 0;
 			double c0 = 0;
 			double freq = SDL_GetPerformanceFrequency();
@@ -223,6 +328,8 @@ class SoftwareRenderBenchmark
 				{
 					c0 = cpu(); measuredStart = SDL_GetPerformanceCounter();
 					initialOps = gfx->backendOperations();
+                    initialWork = terrainCache.workMetrics;
+                    initialGraphics = gui.game.map.computeExecutor().graphicsMetrics();
 					initialHits = terrainCache.cacheHits();
 					initialRebuilds = terrainCache.cacheRebuilds();
 					PerformanceTelemetry::collector().reset();
@@ -243,7 +350,9 @@ class SoftwareRenderBenchmark
 					gfx->beginFrame(GraphicContext::FrameMode::FullRedraw);
 					gfx->setClipRect();
 					Game::drawMap(0, 0, gfx->getW() - 160, gfx->getH(), 0, 0, gui.viewportX,
-									 gui.viewportY, 0, gui.view, Game::DRAW_AREA);
+									 gui.viewportY, 0, gui.view, Game::DRAW_AREA |
+                                         (getenv("PROFILE_WHOLE_MAP") ? Game::DRAW_WHOLE_MAP : 0),
+                                         nullptr, nullptr, gui.gamePaused);
 				}
 				Uint64 b = SDL_GetPerformanceCounter();
 				if (!getenv("PROFILE_NO_PRESENT"))
@@ -278,17 +387,8 @@ class SoftwareRenderBenchmark
 			if (gui.game.checkSum(nullptr, nullptr, nullptr, true) != checksum)
 				throw std::runtime_error("rendering changed simulation checksum");
 			printf("simulation_checksum=%u\n", checksum);
-			auto output = [&](const char *label, std::vector<double> v)
-			{
-				double sum = 0;
-				for (double x : v)
-					sum += x;
-				std::sort(v.begin(), v.end());
-				printf("%s mean_ms=%.4f median_ms=%.4f p95_ms=%.4f\n", label, sum / v.size(),
-					   v[v.size() / 2], v[(v.size() - 1) * 95 / 100]);
-			};
-			output("draw", draw);
-			output("present", present);
+            distribution("draw", draw);
+            distribution("present", present);
 			printf("process_cpu_ms_per_frame=%.4f\n", totalCpu * 1000 / draw.size());
 			fflush(stdout);
 			auto ops = gfx->backendOperations();
@@ -301,6 +401,34 @@ class SoftwareRenderBenchmark
 				   (unsigned long long)(terrainCache.cacheHits() - initialHits),
 				   (unsigned long long)(terrainCache.cacheRebuilds() -
 										initialRebuilds));
+            const auto work = terrainCache.workMetrics;
+            const auto graphics = gui.game.map.computeExecutor().graphicsMetrics();
+            printf("terrain_cpu batches=%llu jobs=%llu cells=%llu serial_pages=%llu "
+                   "batch_ns=%llu peak_reserved_bytes=%zu\n",
+                   (unsigned long long)(work.batches - initialWork.batches), (unsigned long long)(work.jobs - initialWork.jobs),
+                   (unsigned long long)(work.cells - initialWork.cells), (unsigned long long)(work.serialPages - initialWork.serialPages),
+                   (unsigned long long)(work.batchNs - initialWork.batchNs), work.peakReservedBytes);
+            printf("raster_cpu batches=%llu tiles=%llu references=%llu "
+                   "serial_batches=%llu snapshot_bytes=%llu peak_retained_bytes=%llu "
+                   "fallback_operations=%llu\n",
+                   (unsigned long long)(ops.rasterBatches - initialOps.rasterBatches), (unsigned long long)(ops.rasterTiles - initialOps.rasterTiles),
+                   (unsigned long long)(ops.rasterReferences - initialOps.rasterReferences),
+                   (unsigned long long)(ops.rasterSerialBatches - initialOps.rasterSerialBatches),
+                   (unsigned long long)(ops.rasterSnapshotBytes - initialOps.rasterSnapshotBytes),
+                   (unsigned long long)ops.rasterPeakRetainedBytes,
+                   (unsigned long long)(ops.rasterFallbacks - initialOps.rasterFallbacks));
+            const auto computeMode = gui.game.map.computeExecutor().telemetryMode();
+            const bool graphicsAvailable = computeMode == ComputeTelemetryMode::Trace;
+            const auto field = [](std::uint64_t value, bool available) { return available ? std::to_string(value) : std::string("na"); };
+            printf("graphics_executor mode=%s worker_available=%s batches=%s parallel_batches=%s jobs=%s "
+                   "summed_queue_ns=%s summed_active_ns=%s owner_wait_ns=%s\n",
+                   ComputeTelemetry::ModeNames[unsigned(computeMode)].data(), graphicsAvailable ? "true" : "false",
+                   field(graphics.batches-initialGraphics.batches,graphicsAvailable).c_str(),
+                   field(graphics.parallelBatches-initialGraphics.parallelBatches,graphicsAvailable).c_str(),
+                   field(graphics.jobs-initialGraphics.jobs,graphicsAvailable).c_str(),
+                   field(graphics.queueNs-initialGraphics.queueNs,graphicsAvailable).c_str(),
+                   field(graphics.activeNs-initialGraphics.activeNs,graphicsAvailable).c_str(),
+                   field(graphics.waitNs-initialGraphics.waitNs,computeMode!=ComputeTelemetryMode::Off).c_str());
 			PerformanceTelemetry::collector().write(std::cout, "profile", gui.game.stepCounter,
 													false);
 			if (const char *p = getenv("PROFILE_CAPTURE"))
