@@ -1,0 +1,12 @@
+[
+  "GLOB2_SDL3_PREFIX=/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/build/sdl3-ci/prefix python3 tools/dev_build.py --build=build/movement-dev -j12 engine-tests unit-tests",
+  "GLOB2_SDL3_PREFIX=/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/build/sdl3-ci/prefix scons release=1 --build=build/movement-release -j12 build/movement-release/src/glob2 torus-render-benchmark",
+  "python3 test/run_tests.py --build-dir build/movement-dev --binary engine --no-display --quick --filter 'CompactUnitSnapshot/*' --filter 'WorldSnapshot/*' --filter 'MovementPlanning/*' --filter 'GradientPreparation/*' --filter 'SceneExtract/*' --filter 'SoftwareRenderer/*' --filter 'AIRules/Nicowar compact*' -j8 --junit artifacts/compact-unit-state/latest-master-focused.xml --artifacts artifacts/compact-unit-state/latest-master-test-artifacts",
+  "python3 test/run_tests.py --build-dir build/movement-dev --binary engine --no-display --quick --filter 'TerrainMaterials/*' -j8 --junit artifacts/compact-unit-state/latest-master-terrain.xml --artifacts artifacts/compact-unit-state/latest-master-terrain-artifacts",
+  "python3 test/run_tests.py --build-dir build/movement-dev --binary unit --no-display --quick --filter 'SurfaceCoverage/*' --filter 'TerrainMaterials/*' -j8 --junit artifacts/compact-unit-state/latest-master-render-unit.xml --artifacts artifacts/compact-unit-state/latest-master-render-unit-artifacts",
+  "python3 artifacts/compact-unit-state/run_integration_correctness.py",
+  "python3 artifacts/compact-unit-state/run_visual_comparison.py",
+  "python3 -m unittest discover -s test/build_system -p test_ci_policy.py",
+  "python3 tools/check_docs.py",
+  "git diff --check"
+]
