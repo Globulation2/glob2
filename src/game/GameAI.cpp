@@ -17,11 +17,14 @@ SimulationSnapshot::Handle Game::prepareReadBoundary(bool paused,
 													 SimulationSnapshot::CaptureOptions options)
 {
 	const bool statisticsActive = !paused && !anyPlayerWaited;
+	// Hiring observes the completed world before matched orders, even while a
+	// replica waits or is paused. Gating admission on local readiness can let
+	// another replica first observe after orders at the same numbered boundary.
+	if (!hiringPipeline)
+		hiringPipeline = std::make_unique<HiringPipeline>(map.computeExecutor());
+	hiringPipeline->publishDue(stepCounter);
 	if (statisticsActive)
 	{
-		if (!hiringPipeline)
-			hiringPipeline = std::make_unique<HiringPipeline>(map.computeExecutor());
-		hiringPipeline->publishDue(stepCounter);
 		if (statsPipeline && !statsPipeline->matchesWorld(map.identity()))
 			statsPipeline.reset();
 		if (!statsPipeline)
@@ -41,8 +44,7 @@ SimulationSnapshot::Handle Game::prepareReadBoundary(bool paused,
 			world = worldSnapshots.captureBoundary(*this, options);
 		}
 	}
-	if (statisticsActive)
-		hiringPipeline->observe(*this, world);
+	hiringPipeline->observe(*this, world);
 	return world;
 }
 std::vector<std::pair<unsigned, std::shared_ptr<Order>>>

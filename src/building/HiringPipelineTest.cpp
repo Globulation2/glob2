@@ -31,6 +31,32 @@ Building *innWithWorker(glob2test::HeadlessGame &w)
 } // namespace
 TEST_SUITE("HiringPipeline")
 {
+	TEST_CASE("paused and waiting replicas retain the same pre-order hiring observation")
+	{
+		glob2test::HeadlessGlobals globals;
+		Uint32 reference = 0;
+		for (unsigned mode = 0; mode < 3; ++mode)
+		{
+			CAPTURE(mode);
+			glob2test::HeadlessGame w({.discovered = true, .loadDefaultRace = true});
+			auto *b = innWithWorker(w);
+			w.game.anyPlayerWaited = mode == 1;
+			w.game.prepareReadBoundary(mode == 2);
+			const auto initial = w.game.hiringChecksum();
+			REQUIRE(initial != 0);
+			if (mode == 0)
+				reference = initial;
+			else
+				CHECK(initial == reference);
+			// A matched order changes the live world at this same boundary.
+			b->desiredMaxUnitWorking = 3;
+			b->updateCallLists();
+			w.game.snapshotStore().invalidateBoundary();
+			w.game.anyPlayerWaited = false;
+			w.game.prepareReadBoundary(false);
+			CHECK(w.game.hiringChecksum() == initial);
+		}
+	}
 	TEST_CASE("cold route generations publish only at the fixed deadline")
 	{
 		glob2test::HeadlessGlobals globals;

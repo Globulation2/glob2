@@ -555,7 +555,9 @@ contaminate their timing.
 
 `HiringPipeline` belongs to each `Game`. It admits FIFO team jobs from the shared
 completed-tick world snapshot at `t % 4 == teamNumber % 4`, then publishes their
-outputs before team stepping at `t + 4`. Workers derive demand, material
+outputs before team stepping at `t + 4`. Admission occurs once at the read boundary
+before matched orders, including on paused or waiting replicas; local readiness
+cannot choose a different observation for the same tick. Workers derive demand, material
 apportionment, supplier modes, qualifications and integer rankings. The owner
 establishes immutable observations and safe building-route generations, enqueues
 jobs, publishes due results, and validates/commits hires in the existing priority
@@ -582,6 +584,8 @@ private fields shared across jobs with identical frozen inputs. Opportunistic
 AI-enrolled resource planes are excluded: their presence and age can differ with
 local network polling and must not change hiring decisions. Private planner caches
 are bounded separately from deterministic pending/published output reservations.
+Route leases likewise include only jobs and movement classes required by the
+observation; unrelated live queries cannot add slots to pending hiring identity.
 
 Published lists, fixed rules, last admission state, input identities, output
 reservations and completed pending outputs/deadlines are saved in format 159.
