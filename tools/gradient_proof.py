@@ -67,7 +67,31 @@ def analyze_transfer(path):
                                                      actual=actual[word]) for word in wrong[:16]])
 
 
+def analyze_control(path):
+    payload = path.read_bytes()
+    if len(payload) < 28:
+        raise ValueError('truncated validation control header')
+    magic, version, width, height, cap, first_invalid, marker = struct.unpack_from('<7I', payload)
+    cells = width * height
+    if (magic != 0x47504346 or version != 1 or not cells or cap > 65535
+            or marker != 0x56505246 or len(payload) != 28 + cells * 6
+            or (first_invalid != 0xffffffff and first_invalid >= cells)):
+        raise ValueError('invalid validation control proof')
+    seeds = list(struct.unpack_from(f'<{cells}H', payload, 28))
+    packed = struct.unpack_from(f'<{cells}I', payload, 28 + cells * 2)
+    costs = [(value & 65535, value >> 16) for value in packed]
+    invalid = sum(not cardinal or not diagonal for cardinal, diagonal in costs)
+    expected = None if invalid else oracle(width, height, cap, seeds, costs)
+    return dict(fixture=str(path), sha256=hashlib.sha256(payload).hexdigest(),
+                kind='validation_control', width=width, height=height, cap=cap,
+                gpu_first_invalid=first_invalid, actual_field_available=False,
+                invalid_input_costs=invalid, oracle_sha256=None if expected is None else
+                hashlib.sha256(struct.pack(f'<{cells}H', *expected)).hexdigest())
+
+
 def analyze(path):
+    if path.read_bytes()[:4] == struct.pack('<I', 0x47504346):
+        return analyze_control(path)
     if path.read_bytes()[:4] == struct.pack('<I', 0x47545246):
         return analyze_transfer(path)
     width, height, cap, seeds, output, costs = read_proof(path)

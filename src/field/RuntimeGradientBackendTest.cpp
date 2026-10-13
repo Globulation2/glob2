@@ -434,7 +434,10 @@ TEST_SUITE("RuntimeGradientBackend")
 			if (diagnostics) {
 				CHECK(delta(GradientCounter::Dispatches) > 0);
 				CHECK(delta(GradientCounter::Submissions) > delta(GradientCounter::Dispatches));
-				CHECK(delta(GradientCounter::ConvergenceChecks) == delta(GradientCounter::Dispatches));
+				CHECK(delta(GradientCounter::ConvergenceChecks)+delta(GradientCounter::GpuValidationDispatches) == delta(GradientCounter::Dispatches));
+				CHECK(delta(GradientCounter::ReferenceUploadBytes)==grid.cells()*8);
+                CHECK(delta(GradientCounter::GpuValidationDispatches)==1);
+                CHECK(delta(GradientCounter::GpuValidatedFields)==1);
 				CHECK(delta(GradientCounter::UploadBytes) > 0);
 				CHECK(delta(GradientCounter::ReadbackBytes) == grid.cells() * sizeof(std::uint32_t));
 			}
@@ -666,6 +669,84 @@ TEST_SUITE("RuntimeGradientBackend")
 				}
 		}
 	}
+	TEST_CASE("Vulkan fixed-point proof executes independently and rejects corrupted fields and costs")
+    {
+        using namespace gradient_kernel;
+        glob2test::ScopedEnvironment diagnostics("GLOB2_GRADIENT_DIAGNOSTICS","1");
+        if (!initializeVulkanGradient()) {
+            if (std::getenv("GLOB2_REQUIRE_VULKAN")) FAIL(vulkanGradientStatus().error);
+            MESSAGE("Vulkan unavailable: ",vulkanGradientStatus().error); return;
+        }
+        for (const auto dimensions : {std::pair{1,192},std::pair{192,1},std::pair{7,13},
+                std::pair{17,19},std::pair{128,128},std::pair{256,256},std::pair{512,512}}) {
+            const field::Grid grid{dimensions.first,dimensions.second};
+            std::vector<std::uint16_t> seeds(grid.cells(),1);
+            std::vector<EntrySteps> costs(grid.cells());
+            std::vector<std::uint32_t> packed(grid.cells());
+            for (std::size_t i=0; i<grid.cells(); ++i) {
+                costs[i]={unsigned(1+i%37),unsigned(2+i%53)};
+                packed[i]=costs[i].cardinal|(costs[i].diagonal<<16);
+                if (i%11==3) seeds[i]=0;
+                else if (i%19==7) seeds[i]=2;
+            }
+            seeds.front()=65535; seeds.back()=65000;
+            for (const int cap : {0,64,3000}) {
+                const auto reference=oracle(seeds,grid,costs,cap);
+                std::vector<std::uint32_t> output(reference.begin(),reference.end());
+                REQUIRE(exactGradientFixedPoint(std::span<const std::uint16_t>(seeds),
+                    std::span<const std::uint32_t>(output),grid,cap,[&](auto i){return costs[i];}));
+                const auto before=gradientDiagnosticSnapshot(Backend::Vulkan);
+                const auto valid=proveVulkanGradientFixedPoint(seeds,output,packed,grid,cap);
+                REQUIRE(valid.has_value()); REQUIRE(valid->deviceExecuted);
+                CHECK(valid->valid); CHECK(valid->firstInvalid==UINT32_MAX);
+                const auto after=gradientDiagnosticSnapshot(Backend::Vulkan);
+                CHECK(after.counters[unsigned(GradientCounter::GpuValidationDispatches)]-
+                    before.counters[unsigned(GradientCounter::GpuValidationDispatches)]==1);
+                CHECK(after.counters[unsigned(GradientCounter::CommittedFields)]==
+                    before.counters[unsigned(GradientCounter::CommittedFields)]);
+                for (const auto corrupted : {0u,65534u,65536u,UINT32_MAX}) {
+                    auto broken=output; broken.front()=corrupted;
+                    CHECK_FALSE(exactGradientFixedPoint(std::span<const std::uint16_t>(seeds),
+                        std::span<const std::uint32_t>(broken),grid,cap,[&](auto i){return costs[i];}));
+                    const auto proof=proveVulkanGradientFixedPoint(seeds,broken,packed,grid,cap);
+                    REQUIRE(proof.has_value()); REQUIRE(proof->deviceExecuted);
+                    CHECK_FALSE(proof->valid); CHECK(proof->firstInvalid<grid.cells());
+                    if (dimensions==std::pair{7,13} && cap==0 && corrupted==65536u)
+                        CHECK_THROWS_AS(failGradientControlProof(std::span<const std::uint16_t>(seeds),
+                            grid,cap,[&](auto i){return costs[i];},*proof,
+                            {vulkanGradientStatus().device,vulkanGradientStatus().driver,
+                             vulkanGradientStatus().shaderIdentity,123}),GradientProofFailure);
+                }
+                auto invented=output; invented[7]=65535;
+                CHECK_FALSE(exactGradientFixedPoint(std::span<const std::uint16_t>(seeds),
+                    std::span<const std::uint32_t>(invented),grid,cap,[&](auto i){return costs[i];}));
+                const auto fixedPoint=proveVulkanGradientFixedPoint(seeds,invented,packed,grid,cap);
+                REQUIRE(fixedPoint.has_value()); REQUIRE(fixedPoint->deviceExecuted);
+                CHECK_FALSE(fixedPoint->valid); CHECK(fixedPoint->firstInvalid<grid.cells());
+                if (output[1]>seeds[1]) {
+                    auto lowered=output; lowered[1]=seeds[1];
+                    const auto incomplete=proveVulkanGradientFixedPoint(seeds,lowered,packed,grid,cap);
+                    REQUIRE(incomplete.has_value()); REQUIRE(incomplete->deviceExecuted);
+                    CHECK_FALSE(incomplete->valid); CHECK(incomplete->firstInvalid<grid.cells());
+                }
+                auto fabricated=output; fabricated[3]=65535;
+                const auto obstacle=proveVulkanGradientFixedPoint(seeds,fabricated,packed,grid,cap);
+                REQUIRE(obstacle.has_value()); REQUIRE(obstacle->deviceExecuted);
+                CHECK_FALSE(obstacle->valid); CHECK(obstacle->firstInvalid==3);
+                auto actualCosts=packed; actualCosts[3]^=1u;
+                const auto changed=proveVulkanGradientFixedPoint(seeds,output,packed,grid,cap,actualCosts);
+                REQUIRE(changed.has_value()); REQUIRE(changed->deviceExecuted);
+                CHECK_FALSE(changed->valid); CHECK(changed->firstInvalid==3);
+                // A valid field cannot hide corrupted costs at a forbidden cell.
+                CHECK(exactGradientFixedPoint(std::span<const std::uint16_t>(seeds),
+                    std::span<const std::uint32_t>(output),grid,cap,[&](auto i){return costs[i];}));
+                auto brokenSeeds=seeds; brokenSeeds.front()=0;
+                const auto input=proveVulkanGradientFixedPoint(brokenSeeds,output,packed,grid,cap);
+                REQUIRE(input.has_value()); REQUIRE(input->deviceExecuted);
+                CHECK_FALSE(input->valid); CHECK(input->firstInvalid==0);
+            }
+        }
+    }
 	TEST_CASE("Vulkan upload roundtrips retire before staging reuse at cohort sizes")
 	{
 		using namespace gradient_kernel;

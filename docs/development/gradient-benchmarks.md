@@ -249,7 +249,14 @@ The device service batches OpenCL fields, but admits individual Vulkan/WebGPU
 transactions so a later sequential field's decline cannot discard an earlier
 completed field. Direct adapter batch callers still receive an atomic outcome.
 OpenCL submissions count explicit queue flushes; command enqueues are separate.
-Vulkan submissions count successful queue submissions. `resource_reuses` counts
+Vulkan submissions count successful queue submissions. `gpu_validation_dispatches`
+and `gpu_validated_fields` separately report its independent GPU proof pass;
+`reference_upload_bytes_submitted` identifies independent uploads of immutable
+seed/cost references within total uploaded bytes.
+The full CPU fixed-point check remains enabled while that pass is qualified.
+`proveVulkanGradientFixedPoint` is a synchronous diagnostic harness, not a solver
+or publication path: tests require its device marker and reject missing results.
+Its generated WGSL is currently unused by WebGPU. `resource_reuses` counts
 retired Vulkan work sets borrowed from the bounded adapter pool. Mapped control reads are
 separate from explicit transfer/readback bytes. Elapsed totals accumulate thread
 scopes; overlapping threads do not form a process critical-path measurement.

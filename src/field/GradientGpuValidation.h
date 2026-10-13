@@ -3,6 +3,7 @@
 #include "GradientCosts.h"
 #include "Grid.h"
 #include <span>
+#include <optional>
 #include <algorithm>
 #include <filesystem>
 #include <fstream>
@@ -14,6 +15,17 @@
 #include <iomanip>
 namespace gradient_kernel
 {
+// A synchronous diagnostic proof harness. It never solves, recovers or publishes
+// a serving field. A missing result is a decline, not successful validation.
+struct GPUFixedPointResult
+{
+    bool deviceExecuted = false, valid = false;
+    std::uint32_t firstInvalid = UINT32_MAX;
+};
+std::optional<GPUFixedPointResult> proveVulkanGradientFixedPoint(
+    std::span<const std::uint16_t> seeds, std::span<const std::uint32_t> output,
+    std::span<const std::uint32_t> originalCosts, field::Grid grid, int limit,
+    std::span<const std::uint32_t> actualCosts = {});
 class GradientProofFailure : public std::runtime_error
 {
   public:
@@ -25,7 +37,47 @@ struct GradientProofContext
 	std::string driver;
 	std::string shader;
 	std::uint64_t generation = 0;
+    std::optional<std::uint32_t> validationCell = std::nullopt;
 };
+// A confirmed GPU failure stays fatal even if subsequent readback cannot retire.
+// GPCF preserves the observed control proof and original inputs; it deliberately
+// carries no fabricated or unretired output field.
+template<class Costs>
+[[noreturn]] void failGradientControlProof(std::span<const std::uint16_t> seeds,
+    field::Grid grid, int limit, Costs costs, GPUFixedPointResult proof,
+    GradientProofContext context)
+{
+    static std::atomic<std::uint64_t> sequence{0};
+    const auto directory=std::getenv("GLOB2_TEST_ARTIFACTS");
+    const auto stamp=std::chrono::steady_clock::now().time_since_epoch().count();
+    const auto path=std::filesystem::path(directory?directory:"artifacts") /
+        ("gradient-control-vulkan-"+std::to_string(stamp)+"-"+
+            std::to_string(sequence.fetch_add(1))+".bin");
+    std::string evidence;
+    try {
+        std::filesystem::create_directories(path.parent_path());
+        std::ofstream file(path,std::ios::binary);
+        if (seeds.size()!=grid.cells() || !proof.deviceExecuted || proof.valid)
+            throw std::invalid_argument("Invalid failed GPU control evidence");
+        const auto write=[&](std::uint32_t value,unsigned bytes) {
+            for (unsigned i=0;i<bytes;++i) file.put(char((value>>(i*8))&255));
+        };
+        for (const auto word : {0x47504346u,1u,unsigned(grid.width()),unsigned(grid.height()),
+                unsigned(std::min(limit,COST_LIMIT)),proof.firstInvalid,0x56505246u}) write(word,4);
+        for (const auto value:seeds) write(value,2);
+        for (std::size_t i=0;i<seeds.size();++i) {
+            const auto cost=costs(i); write(cost.cardinal|(cost.diagonal<<16),4);
+        }
+        file.flush();
+        evidence=file?"; fixture "+path.string():"; failed to write fixture "+path.string();
+        std::ofstream metadata(path.string()+".txt");
+        metadata << "device " << std::quoted(context.device) << "\ndriver " << std::quoted(context.driver)
+            << "\nshader " << std::quoted(context.shader) << "\ngeneration " << context.generation
+            << "\ngpu_validation_cell " << proof.firstInvalid << "\nfield_readback_available false\n";
+    } catch (const std::exception& error) { evidence="; evidence error: "+std::string(error.what()); }
+    throw GradientProofFailure("Vulkan GPU fixed-point failure at cell "+
+        std::to_string(proof.firstInvalid)+"; subsequent readback unavailable"+evidence);
+}
 // Transfer failures precede relaxation. Keep a distinct payload so analysis
 // never mistakes packed costs or control words for a computed gradient field.
 template <class Expected>
@@ -74,6 +126,8 @@ template <class Expected>
 		std::ofstream metadata(path.string() + ".txt");
 		metadata << "device " << std::quoted(context.device) << "\ndriver " << std::quoted(context.driver)
 			<< "\nshader " << std::quoted(context.shader) << "\ngeneration " << context.generation << '\n';
+        if (context.validationCell)
+            metadata << "gpu_validation_cell " << *context.validationCell << '\n';
 	}
 	catch (const std::exception &error)
 	{
@@ -130,6 +184,8 @@ template <class Value, class Costs>
 		metadata << "backend " << std::quoted(backend) << "\ndevice " << std::quoted(context.device)
 				 << "\ndriver " << std::quoted(context.driver) << "\nshader "
 				 << std::quoted(context.shader) << "\ngeneration " << context.generation << '\n';
+        if (context.validationCell)
+            metadata << "gpu_validation_cell " << *context.validationCell << '\n';
 	}
 	catch (const std::exception &error)
 	{
