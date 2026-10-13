@@ -91,10 +91,12 @@ See [skin rendering](skin-rendering.md) for production sprite export and skin pr
 
 Build `software-render-benchmark` and `torus-render-benchmark` with `release=1`.
 Use the same retained save, seed, animation, viewport, warmup and compute budget
-for `GLOB2_RENDER_EXECUTION=auto`, `serial` and `parallel` in separate processes.
+for `GLOB2_RENDER_EXECUTION=immediate`, `serial` and `parallel` in separate processes.
 Both standalone tools apply the launch `--compute-threads auto|N` budget to their
 map executor; keep that budget fixed between modes.
-`auto` measures the conservative immediate path; `serial` measures packed CPU
+The former `auto` spelling is a compatibility alias for `immediate`; neither
+spelling dynamically chooses batching or workers.
+`immediate` measures direct serial drawing; `serial` measures packed CPU
 terrain and recorder overhead; `parallel` requests worker execution where bounds
 permit it. Use `GLOB2_RENDER_WORKERS=1` to test the rendering concurrency ceiling
 without changing simulation configuration. Retain an untouched base executable
@@ -140,8 +142,8 @@ colonies and translucent overlays separate. CPU fallback and device-composed
 terrain also need separate results. Verify exact capture pixels and unchanged
 simulation checksums before discussing latency. Do not infer smoother gameplay
 from composition throughput alone, or establish thresholds from fast builds.
-The automatic default remains serial until representative hardware results
-justify enabling the bounded paths.
+The default remains immediate serial drawing. Enabling batching by default or
+adding an automatic selection policy requires representative hardware results.
 
 Executor graphics timings are optional. Set `PROFILE_COMPUTE_TELEMETRY=waits`
 for owner barrier measurements or `trace` for worker queue/execution measurements.

@@ -11,20 +11,21 @@ namespace GAGCore
 {
 enum class RenderExecution
 {
-    Serial,
-    Parallel,
-    Auto
+    Serial,    // Batched work on the graphics owner.
+    Parallel,  // The same batches; requests worker execution where eligible.
+    Immediate  // Direct serial drawing and terrain preparation, without batching.
 };
 inline RenderExecution renderExecution()
 {
     const char *mode = std::getenv("GLOB2_RENDER_EXECUTION");
-    if (!mode || !std::strcmp(mode, "auto"))
-        return RenderExecution::Auto;
+    // Keep the original override spelling for existing launch scripts.
+    if (!mode || !std::strcmp(mode, "immediate") || !std::strcmp(mode, "auto"))
+        return RenderExecution::Immediate;
     if (!std::strcmp(mode, "serial"))
         return RenderExecution::Serial;
     if (!std::strcmp(mode, "parallel"))
         return RenderExecution::Parallel;
-    throw std::invalid_argument("GLOB2_RENDER_EXECUTION must be serial, parallel or auto");
+    throw std::invalid_argument("GLOB2_RENDER_EXECUTION must be immediate, serial or parallel");
 }
 inline std::size_t renderConcurrency()
 {

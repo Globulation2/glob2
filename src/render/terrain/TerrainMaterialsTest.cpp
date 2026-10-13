@@ -1443,7 +1443,7 @@ TEST_CASE(
         std::vector<Uint32> expected;
         for (unsigned mode = 0; mode < 3; ++mode)
         {
-            glob2test::ScopedEnvironment execution("GLOB2_RENDER_EXECUTION", mode == 0 ? "auto"
+            glob2test::ScopedEnvironment execution("GLOB2_RENDER_EXECUTION", mode == 0 ? "immediate"
                                                                              : mode == 1
                                                                                  ? "serial"
                                                                                  : "parallel");
@@ -1521,6 +1521,7 @@ TEST_CASE("CPU terrain retires coverage when cells leave discovery [display]" *
     fixture.game.map.setVertexTerrain(11, 11, WATER);
     ComputeExecutor executor;
     executor.configure(4);
+    executor.configureTelemetry(ComputeTelemetryMode::Trace);
     GAGCore::PresentationWorkScope scope(executor);
     std::array<SoftwareTerrainCache, 3> caches;
     for (int phase = 0; phase < 3; ++phase)
@@ -1539,7 +1540,7 @@ TEST_CASE("CPU terrain retires coverage when cells leave discovery [display]" *
         for (unsigned mode = 0; mode < caches.size(); ++mode)
         {
             glob2test::ScopedEnvironment execution("GLOB2_RENDER_EXECUTION",
-                                                   mode == 0 ? "auto" : mode == 1 ? "serial" : "parallel");
+                                                   mode == 0 ? "immediate" : mode == 1 ? "serial" : "parallel");
             const auto previousBatches = caches[mode].workMetrics.batches;
             REQUIRE(caches[mode].prepare(scene, *globals->terrain, 0, 0, 15, 15, 0, 0,
                                         fixture.team->me, phase == 0, 0));
