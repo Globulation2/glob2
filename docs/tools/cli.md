@@ -270,6 +270,7 @@ Platform: all.
 | `--generator-package` | file | Load a custom generator package or directory. Repeatable. |
 | `--building-catalog` | file | Building catalog manifest. |
 | `--compute-threads` | compute; default auto | Shared compute pool; auto uses logical CPU count. |
+| `--compute-telemetry` | off, waits, trace; default off | Compute wait attribution and scheduler tracing. |
 | `--gpu` | on, off | Legacy gradient selection: on=OpenCL, off=CPU automatic; explicit backend takes precedence. |
 | `--gradient-backend` | cpu, scalar, sse2, neon, opencl, vulkan, webgpu | Gradient computation backend. |
 | `--gradient-algorithm` | buckets, frozen8, jacobi | Gradient computation algorithm. |
@@ -337,6 +338,7 @@ Platform: all.
 | `--generator-package` | file | Load a custom generator package or directory. Repeatable. |
 | `--building-catalog` | file | Building catalog manifest. |
 | `--compute-threads` | compute; default auto | Shared compute pool; auto uses logical CPU count. |
+| `--compute-telemetry` | off, waits, trace; default off | Compute wait attribution and scheduler tracing. |
 | `--gpu` | on, off | Legacy gradient selection: on=OpenCL, off=CPU automatic; explicit backend takes precedence. |
 | `--gradient-backend` | cpu, scalar, sse2, neon, opencl, vulkan, webgpu | Gradient computation backend. |
 | `--gradient-algorithm` | buckets, frozen8, jacobi | Gradient computation algorithm. |
@@ -652,6 +654,7 @@ Platform: all.
 | `--data-dir` | directory | Add an asset search directory (in order). Repeatable. |
 | `--generator-package` | file | Load a custom generator package or directory. Repeatable. |
 | `--compute-threads` | compute; default auto | Shared compute pool; auto uses logical CPU count. |
+| `--compute-telemetry` | off, waits, trace; default off | Compute wait attribution and scheduler tracing. |
 | `--gpu` | on, off | Legacy gradient selection: on=OpenCL, off=CPU automatic; explicit backend takes precedence. |
 | `--gradient-backend` | cpu, scalar, sse2, neon, opencl, vulkan, webgpu | Gradient computation backend. |
 | `--gradient-algorithm` | buckets, frozen8, jacobi | Gradient computation algorithm. |
@@ -852,6 +855,7 @@ Platform: all.
 | `--generator-package` | file | Load a custom generator package or directory. Repeatable. |
 | `--building-catalog` | file | Building catalog manifest. |
 | `--compute-threads` | compute; default auto | Shared compute pool; auto uses logical CPU count. |
+| `--compute-telemetry` | off, waits, trace; default off | Compute wait attribution and scheduler tracing. |
 | `--gpu` | on, off | Legacy gradient selection: on=OpenCL, off=CPU automatic; explicit backend takes precedence. |
 | `--gradient-backend` | cpu, scalar, sse2, neon, opencl, vulkan, webgpu | Gradient computation backend. |
 | `--gradient-algorithm` | buckets, frozen8, jacobi | Gradient computation algorithm. |
@@ -920,6 +924,7 @@ Platform: all.
 | `--generator-package` | file | Load a custom generator package or directory. Repeatable. |
 | `--building-catalog` | file | Building catalog manifest. |
 | `--compute-threads` | compute; default auto | Shared compute pool; auto uses logical CPU count. |
+| `--compute-telemetry` | off, waits, trace; default off | Compute wait attribution and scheduler tracing. |
 | `--gpu` | on, off | Legacy gradient selection: on=OpenCL, off=CPU automatic; explicit backend takes precedence. |
 | `--gradient-backend` | cpu, scalar, sse2, neon, opencl, vulkan, webgpu | Gradient computation backend. |
 | `--gradient-algorithm` | buckets, frozen8, jacobi | Gradient computation algorithm. |
@@ -990,6 +995,7 @@ Platform: all.
 | `--generator-package` | file | Load a custom generator package or directory. Repeatable. |
 | `--building-catalog` | file | Building catalog manifest. |
 | `--compute-threads` | compute; default auto | Shared compute pool; auto uses logical CPU count. |
+| `--compute-telemetry` | off, waits, trace; default off | Compute wait attribution and scheduler tracing. |
 | `--gpu` | on, off | Legacy gradient selection: on=OpenCL, off=CPU automatic; explicit backend takes precedence. |
 | `--gradient-backend` | cpu, scalar, sse2, neon, opencl, vulkan, webgpu | Gradient computation backend. |
 | `--gradient-algorithm` | buckets, frozen8, jacobi | Gradient computation algorithm. |
@@ -1323,6 +1329,7 @@ Platform: all.
 | `--generator-package` | file | Load a custom generator package or directory. Repeatable. |
 | `--building-catalog` | file | Building catalog manifest. |
 | `--compute-threads` | compute; default auto | Shared compute pool; auto uses logical CPU count. |
+| `--compute-telemetry` | off, waits, trace; default off | Compute wait attribution and scheduler tracing. |
 | `--gpu` | on, off | Legacy gradient selection: on=OpenCL, off=CPU automatic; explicit backend takes precedence. |
 | `--gradient-backend` | cpu, scalar, sse2, neon, opencl, vulkan, webgpu | Gradient computation backend. |
 | `--gradient-algorithm` | buckets, frozen8, jacobi | Gradient computation algorithm. |
