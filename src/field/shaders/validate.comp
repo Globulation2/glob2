@@ -1,0 +1,36 @@
+#version 450
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Independent final-field proof. Original seeds and costs remain immutable;
+// relaxation never binds them as writable storage.
+layout(local_size_x=128) in;
+layout(set=0,binding=0,std430) readonly buffer Seeds { uint seeds[]; };
+layout(set=0,binding=1,std430) readonly buffer Field { uint values[]; };
+layout(set=0,binding=2,std430) readonly buffer Costs { uint costs[]; };
+layout(set=0,binding=3,std430) buffer Failure { uint failure[]; };
+layout(set=0,binding=4,std430) readonly buffer Params { uint width; uint height; uint cap; uint pitch; };
+layout(set=0,binding=5,std430) readonly buffer OriginalCosts { uint originals[]; };
+void reject(uint i) { atomicOr(failure[0],1u); atomicMin(failure[1],i); }
+void main() {
+ uint i=gl_GlobalInvocationID.x;
+ if(i>=width*height)return;
+ if(i==0u)atomicExchange(failure[2],0x56505246u);
+ uint seed=seeds[i],value=values[i],own=costs[i];
+ if(seed>65535u || value>65535u || value<seed || own!=originals[i]) { reject(i);return; }
+ if(seed==0u) { if(value!=0u)reject(i);return; }
+ if((own&65535u)==0u || (own>>16)==0u) { reject(i);return; }
+ uint x=i%width,y=i/width,best=seed;
+ uint west=x==0u?width-1u:x-1u,east=x+1u==width?0u:x+1u;
+ uint north=y==0u?height-1u:y-1u,south=y+1u==height?0u:y+1u;
+ int threshold=max(2,65535-int(cap));
+ for(int dy=-1;dy<=1;++dy)for(int dx=-1;dx<=1;++dx)if(dx!=0||dy!=0) {
+  uint row=dy<0?north:dy>0?south:y;
+  uint column=dx<0?west:dx>0?east:x;
+  uint k=row*width+column;
+  if(seeds[k]==0u || values[k]<=1u)continue;
+  uint packed=originals[k],edge=dx!=0&&dy!=0?packed>>16:packed&65535u;
+  if(edge==0u) { reject(i);return; }
+  int candidate=int(values[k])-int(edge);
+  if(candidate>=threshold)best=max(best,uint(candidate));
+ }
+ if(value!=best)reject(i);
+}

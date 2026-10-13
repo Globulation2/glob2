@@ -65,6 +65,9 @@ enum class GradientCounter : unsigned
 	CommittedFields,
 	RecoveredFields,
 	ResourceReuses,
+	GpuValidationDispatches,
+	GpuValidatedFields,
+	ReferenceUploadBytes,
 	Count
 };
 inline constexpr std::array<const char *, unsigned(GradientCounter::Count)> gradientCounterNames{
@@ -76,7 +79,8 @@ inline constexpr std::array<const char *, unsigned(GradientCounter::Count)> grad
 	"attempted_fields",       "executed_fields",
 	"converged_fields",       "validated_fields",
 	"committed_fields",       "recovered_fields",
-	"resource_reuses"};
+	"resource_reuses", "gpu_validation_dispatches", "gpu_validated_fields",
+    "reference_upload_bytes_submitted"};
 struct GradientPhaseSample
 {
 	std::uint64_t samples = 0, cpuNs = 0, elapsedNs = 0, cpuValid = 0, cpuInvalid = 0;

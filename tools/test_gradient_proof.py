@@ -53,6 +53,24 @@ class GradientProofTest(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     analyze(path)
 
+    def test_confirmed_validation_failure_does_not_invent_readback(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / 'control.bin'
+            payload = struct.pack('<7I2H2I', 0x47504346, 1, 2, 1, 100, 1, 0x56505246,
+                                  65535, 1, 917514, 917514)
+            path.write_bytes(payload)
+            row = analyze(path)
+            self.assertEqual(row['kind'], 'validation_control')
+            self.assertEqual(row['gpu_first_invalid'], 1)
+            self.assertFalse(row['actual_field_available'])
+            self.assertNotIn('wrong_cells', row)
+            self.assertIsNotNone(row['oracle_sha256'])
+            for malformed in (payload[:27], payload[:-1], payload + b'\0',
+                              payload[:24] + struct.pack('<I', 0) + payload[28:]):
+                path.write_bytes(malformed)
+                with self.assertRaises(ValueError):
+                    analyze(path)
+
 
 if __name__ == '__main__':
     unittest.main()

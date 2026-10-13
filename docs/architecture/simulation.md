@@ -447,13 +447,21 @@ explicit shutdown releases it after retirement. Inputs are overwritten for each
 captured request; serving fields remain separate from this storage.
 The GLSL sources generate pinned SPIR-V and WGSL with integer-only wrapping.
 Vulkan/WebGPU readback also passes an exact positive-cost fixed-point check against
-original seeds before commit. A convergence flag alone cannot publish fabricated
-sources or stale data. A proven fixed-point mismatch stops the run through the
+original seeds before commit. Vulkan additionally runs an independent integer
+validation shader against immutable GPU seed and cost references, then retains
+the full CPU check while the GPU validator is being qualified. Its control buffer
+includes an execution marker, failure flag and first invalid cell. The generated
+WGSL validator is not yet wired into WebGPU; other platforms remain unqualified.
+A convergence flag alone cannot publish fabricated sources or stale data. A proven fixed-point mismatch stops the run through the
 original completion ticket and writes original seeds, costs and the full 32-bit
 readback to `artifacts/gradient-proof-*.bin` (or `GLOB2_TEST_ARTIFACTS`). The binary
 uses little-endian records, with a text sidecar identifying the device, driver,
 shader and job generation. It does not
 count as a committed GPU field or a successful CPU fallback.
+A confirmed GPU validation failure stays fatal even when subsequent readback is
+lost or canceled. That case writes `gradient-control-vulkan-*.bin` (GPCF v1) with
+the confirmed control result and original seeds/costs, and explicitly omits the
+unavailable field. It is not a successful recovery or an inferred readback.
 Vulkan batch commit flags are published only after every member succeeds. A
 completed private field followed by cancellation retains its dispatch observation,
 but reports no GPU commit and leaves all caller seed arrays unchanged.

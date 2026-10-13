@@ -54,21 +54,26 @@ void orderMappedWrites() noexcept
 	X(CreateInstance)                                                                              \
 	X(DestroyInstance)                                                                             \
 	X(EnumerateInstanceExtensionProperties)                                                        \
-	X(EnumeratePhysicalDevices) X(GetPhysicalDeviceProperties)                                     \
-		X(GetPhysicalDeviceQueueFamilyProperties) X(GetPhysicalDeviceMemoryProperties) X(          \
-			EnumerateDeviceExtensionProperties) X(CreateDevice) X(DestroyDevice) X(GetDeviceQueue) \
-			X(CreateBuffer) X(DestroyBuffer) X(GetBufferMemoryRequirements) X(AllocateMemory) X(   \
-				FreeMemory) X(BindBufferMemory) X(MapMemory) X(UnmapMemory)                        \
-				X(CreateDescriptorSetLayout) X(DestroyDescriptorSetLayout) X(CreatePipelineLayout) \
-					X(DestroyPipelineLayout) X(CreateShaderModule) X(DestroyShaderModule) X(       \
-						CreateComputePipelines) X(DestroyPipeline) X(CreateDescriptorPool)         \
-						X(DestroyDescriptorPool) X(AllocateDescriptorSets) X(UpdateDescriptorSets) \
-							X(CreateCommandPool) X(DestroyCommandPool) X(AllocateCommandBuffers)   \
-								X(ResetCommandBuffer) X(BeginCommandBuffer) X(EndCommandBuffer)    \
-									X(CmdBindPipeline) X(CmdBindDescriptorSets) X(CmdDispatch)     \
-										X(CmdPipelineBarrier) X(CmdCopyBuffer) X(CmdFillBuffer)    \
-											X(CreateFence) X(DestroyFence) X(ResetFences)          \
-												X(QueueSubmit) X(WaitForFences) X(GetFenceStatus)
+	X(EnumeratePhysicalDevices)                                                                    \
+	X(GetPhysicalDeviceProperties)                                                                 \
+	X(GetPhysicalDeviceQueueFamilyProperties)                                                      \
+	X(GetPhysicalDeviceMemoryProperties)                                                           \
+	X(EnumerateDeviceExtensionProperties)                                                          \
+	X(CreateDevice)                                                                                \
+	X(DestroyDevice) X(GetDeviceQueue) X(CreateBuffer) X(DestroyBuffer)                            \
+		X(GetBufferMemoryRequirements) X(AllocateMemory) X(FreeMemory) X(BindBufferMemory)         \
+			X(MapMemory) X(UnmapMemory) X(CreateDescriptorSetLayout) X(DestroyDescriptorSetLayout) \
+				X(CreatePipelineLayout) X(DestroyPipelineLayout) X(CreateShaderModule)             \
+					X(DestroyShaderModule) X(CreateComputePipelines) X(DestroyPipeline)            \
+						X(CreateDescriptorPool) X(DestroyDescriptorPool) X(AllocateDescriptorSets) \
+							X(UpdateDescriptorSets) X(CreateCommandPool) X(DestroyCommandPool)     \
+								X(AllocateCommandBuffers) X(ResetCommandBuffer)                    \
+									X(BeginCommandBuffer) X(EndCommandBuffer) X(CmdBindPipeline)   \
+										X(CmdBindDescriptorSets) X(CmdDispatch)                    \
+											X(CmdPipelineBarrier) X(CmdCopyBuffer)                 \
+												X(CmdFillBuffer) X(CreateFence) X(DestroyFence)    \
+													X(ResetFences) X(QueueSubmit) X(WaitForFences) \
+														X(GetFenceStatus)
 enum BufferSlot : unsigned
 {
 	InputA,
@@ -79,6 +84,8 @@ enum BufferSlot : unsigned
 	ActiveA,
 	ActiveB,
 	Transfer,
+	OriginalSeeds,
+	OriginalCosts,
 	BufferCount
 };
 constexpr unsigned otherActive(unsigned active)
@@ -110,7 +117,7 @@ struct Work
 	VkFence fence = VK_NULL_HANDLE;
 	bool submitted = false, reusable = false;
 	std::size_t cellsCapacity = 0, tilesCapacity = 0, hostCharged = 0;
-	std::array<VkDescriptorSet, 2> sets{};
+	std::array<VkDescriptorSet, 4> sets{};
 	explicit Work(Runtime *r) : runtime(r)
 	{
 		constexpr auto bytes = sizeof(Work) + 128;
@@ -141,7 +148,7 @@ struct Runtime
 	VkPhysicalDeviceMemoryProperties memory{};
 	VkDescriptorSetLayout descriptors = VK_NULL_HANDLE;
 	VkPipelineLayout layout = VK_NULL_HANDLE;
-	std::array<VkPipeline, 2> pipelines{};
+	std::array<VkPipeline, 3> pipelines{};
 	unsigned queueFamily = 0;
 	std::vector<std::unique_ptr<Work>> quarantine;
 	// One serial adapter work set. Only successful fence retirement admits reuse.
@@ -349,9 +356,9 @@ struct Runtime
 			pl.setLayoutCount = 1;
 			pl.pSetLayouts = &descriptors;
 			check(CreatePipelineLayout(device, &pl, nullptr, &layout));
-			const std::array<std::span<const std::uint32_t>, 2> binaries{gradient_shaders::frozen8,
-																		 gradient_shaders::jacobi};
-			for (unsigned i = 0; i < 2; ++i)
+			const std::array<std::span<const std::uint32_t>, 3> binaries{
+				gradient_shaders::frozen8, gradient_shaders::jacobi, gradient_shaders::validate};
+			for (unsigned i = 0; i < binaries.size(); ++i)
 			{
 				VkShaderModule module = VK_NULL_HANDLE;
 				VkShaderModuleCreateInfo sm{VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO};
@@ -430,24 +437,21 @@ struct Runtime
 			}
 		}
 	}
-	bool execute(const BackendRequest &request, Plan plan)
+	struct ReturnRetired
 	{
-		GradientPhaseScope phase(GradientPhase::Bookkeeping);
-		const bool frozen = plan == Plan::VulkanFrozen8;
-		const auto cells = request.grid.cells();
-		const auto w = unsigned(request.grid.width()), h = unsigned(request.grid.height()),
-				   pitch = (w + 15) / 16, rows = (h + 15) / 16;
-		const auto tiles = std::size_t(pitch) * rows;
-		if (!cells || cells > properties.limits.maxStorageBufferRange / 4 || cells > UINT32_MAX ||
-			request.limit < 0)
-			return false;
-		if ((frozen && (pitch > properties.limits.maxComputeWorkGroupCount[0] ||
-						rows > properties.limits.maxComputeWorkGroupCount[1])) ||
-			(!frozen && (cells + 127) / 128 > properties.limits.maxComputeWorkGroupCount[0]))
-			return false;
-		if (request.requiredControl && request.requiredControl->shouldCancel(monotonicNs()))
-			return false;
-		phase.setPhase(GradientPhase::Allocation);
+		Runtime &runtime;
+		std::unique_ptr<Work> &work;
+		int exceptions = std::uncaught_exceptions();
+		~ReturnRetired()
+		{
+			if (std::uncaught_exceptions() == exceptions && work && work->reusable &&
+				!work->submitted && runtime.status.availability == Availability::Ready)
+				runtime.idle = std::move(work);
+		}
+	};
+	std::unique_ptr<Work> acquireWork(std::size_t cells, std::size_t tiles)
+	{
+		GradientPhaseScope phase(GradientPhase::Allocation);
 		std::unique_ptr<Work> work;
 		if (idle && idle->cellsCapacity >= cells && idle->tilesCapacity >= tiles)
 		{
@@ -459,21 +463,10 @@ struct Runtime
 			idle.reset();
 			work = std::make_unique<Work>(this);
 		}
-		struct ReturnRetired
-		{
-			Runtime &runtime;
-			std::unique_ptr<Work> &work;
-			int exceptions = std::uncaught_exceptions();
-			~ReturnRetired()
-			{
-				if (std::uncaught_exceptions() == exceptions && work && work->reusable &&
-					!work->submitted && runtime.status.availability == Availability::Ready)
-					runtime.idle = std::move(work);
-			}
-		} returnRetired{*this, work};
 		const std::array<std::size_t, BufferCount> sizes{
-			cells * 4, cells * 4, cells * 4, 4,
-			16,        tiles * 4, tiles * 4, std::max<std::size_t>(cells * 4, 16)};
+			cells * 4, cells * 4, cells * 4, 12,
+			16,        tiles * 4, tiles * 4, std::max<std::size_t>(cells * 4, 16),
+			cells * 4, cells * 4};
 		if (!work->fence)
 		{
 			for (unsigned i = 0; i < BufferCount; ++i)
@@ -499,30 +492,38 @@ struct Runtime
 		if (!work->descriptors)
 		{
 			phase.setPhase(GradientPhase::Allocation);
-			VkDescriptorPoolSize poolSize{VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 14};
+			VkDescriptorPoolSize poolSize{VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 28};
 			VkDescriptorPoolCreateInfo dp{VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO};
-			dp.maxSets = 2;
+			dp.maxSets = 4;
 			dp.poolSizeCount = 1;
 			dp.pPoolSizes = &poolSize;
 			check(CreateDescriptorPool(device, &dp, nullptr, &work->descriptors));
 			countGradientWork(GradientCounter::BindingAllocations);
-			const std::array layouts{descriptors, descriptors};
+			const std::array layouts{descriptors, descriptors, descriptors, descriptors};
 			VkDescriptorSetAllocateInfo da{VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO};
 			da.descriptorPool = work->descriptors;
-			da.descriptorSetCount = 2;
+			da.descriptorSetCount = sets.size();
 			da.pSetLayouts = layouts.data();
 			check(AllocateDescriptorSets(device, &da, sets.data()));
 			countGradientWork(GradientCounter::BindingAllocations, sets.size());
 			phase.setPhase(GradientPhase::Recording);
 			// Each ping-pong orientation owns an immutable descriptor set. No set is
 			// rewritten while retained command buffers reference its bindings.
-			std::array<VkDescriptorBufferInfo, 14> bi{};
-			std::array<VkWriteDescriptorSet, 14> writes{};
-			for (unsigned direction = 0; direction < 2; ++direction)
+			std::array<VkDescriptorBufferInfo, 28> bi{};
+			std::array<VkWriteDescriptorSet, 28> writes{};
+			for (unsigned direction = 0; direction < sets.size(); ++direction)
 			{
-				const std::array<unsigned, 7> indices{
-					direction,           1 - direction,      Costs, Changed, Params,
-					ActiveA + direction, ActiveB - direction};
+				const std::array<unsigned, 7> indices =
+					direction < 2
+						? std::array<unsigned, 7>{direction,
+												  1 - direction,
+												  Costs,
+												  Changed,
+												  Params,
+												  ActiveA + direction,
+												  ActiveB - direction}
+						: std::array<unsigned, 7>{OriginalSeeds, direction - 2, Costs,  Changed,
+												  Params,        OriginalCosts, ActiveA};
 				for (unsigned binding = 0; binding < 7; ++binding)
 				{
 					const auto i = direction * 7 + binding;
@@ -538,6 +539,153 @@ struct Runtime
 			UpdateDescriptorSets(device, writes.size(), writes.data(), 0, nullptr);
 		}
 		work->reusable = true;
+		return work;
+	}
+	bool validateWork(std::unique_ptr<Work> &work, const BackendRequest &request, unsigned current,
+					  GPUFixedPointResult &result)
+	{
+		GradientPhaseScope phase(GradientPhase::Recording);
+		beginCommands(*work);
+		VkMemoryBarrier barrier{VK_STRUCTURE_TYPE_MEMORY_BARRIER};
+		barrier.srcAccessMask = VK_ACCESS_SHADER_READ_BIT | VK_ACCESS_SHADER_WRITE_BIT |
+								VK_ACCESS_TRANSFER_READ_BIT | VK_ACCESS_TRANSFER_WRITE_BIT;
+		barrier.dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+		CmdPipelineBarrier(work->command,
+						   VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT | VK_PIPELINE_STAGE_TRANSFER_BIT,
+						   VK_PIPELINE_STAGE_TRANSFER_BIT, 0, 1, &barrier, 0, nullptr, 0, nullptr);
+		CmdFillBuffer(work->command, work->buffers[Changed].buffer, 0, 4, 0);
+		CmdFillBuffer(work->command, work->buffers[Changed].buffer, 4, 4, UINT32_MAX);
+		CmdFillBuffer(work->command, work->buffers[Changed].buffer, 8, 4, 0);
+		barrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT | VK_ACCESS_SHADER_WRITE_BIT;
+		barrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT | VK_ACCESS_SHADER_WRITE_BIT;
+		CmdPipelineBarrier(
+			work->command, VK_PIPELINE_STAGE_TRANSFER_BIT | VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
+			VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT, 0, 1, &barrier, 0, nullptr, 0, nullptr);
+		CmdBindPipeline(work->command, VK_PIPELINE_BIND_POINT_COMPUTE, pipelines[2]);
+		CmdBindDescriptorSets(work->command, VK_PIPELINE_BIND_POINT_COMPUTE, layout, 0, 1,
+							  &work->sets[current + 2], 0, nullptr);
+		CmdDispatch(work->command, unsigned((request.grid.cells() + 127) / 128), 1, 1);
+		barrier.srcAccessMask = VK_ACCESS_SHADER_WRITE_BIT;
+		barrier.dstAccessMask = VK_ACCESS_HOST_READ_BIT;
+		CmdPipelineBarrier(work->command, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
+						   VK_PIPELINE_STAGE_HOST_BIT, 0, 1, &barrier, 0, nullptr, 0, nullptr);
+		submitCommands(*work);
+		++status.dispatches;
+		countGradientWork(GradientCounter::Dispatches);
+		countGradientWork(GradientCounter::GpuValidationDispatches);
+		phase.setPhase(GradientPhase::Validation);
+		if (!waitSubmission(work, request))
+			return false;
+		std::atomic_thread_fence(std::memory_order_acquire);
+		const auto *words = static_cast<const std::uint32_t *>(work->buffers[Changed].mapped);
+		countGradientWork(GradientCounter::MappedControlBytesRead, 12);
+		result = {words[2] == 0x56505246u, words[0] == 0, words[1]};
+		if (!result.deviceExecuted)
+			throw std::runtime_error("Vulkan fixed-point validator did not confirm execution");
+		if (result.valid)
+			countGradientWork(GradientCounter::GpuValidatedFields);
+		return true;
+	}
+	std::optional<GPUFixedPointResult> proveFixture(std::span<const std::uint16_t> seeds,
+													std::span<const std::uint32_t> output,
+													std::span<const std::uint32_t> originals,
+													field::Grid grid, int limit,
+													std::span<const std::uint32_t> actualCosts)
+	{
+		const auto cells = grid.cells();
+		if (!cells || seeds.size() != cells || output.size() != cells ||
+			originals.size() != cells || (!actualCosts.empty() && actualCosts.size() != cells) ||
+			limit < 0 || cells > properties.limits.maxStorageBufferRange / 4 ||
+			cells > UINT32_MAX ||
+			(cells + 127) / 128 > properties.limits.maxComputeWorkGroupCount[0])
+			return {};
+		GradientPhaseScope phase(GradientPhase::Allocation);
+		const auto pitch = (unsigned(grid.width()) + 15) / 16;
+		auto work = acquireWork(cells, std::size_t(pitch) * ((unsigned(grid.height()) + 15) / 16));
+		ReturnRetired returned{*this, work};
+		BackendSession session;
+		BackendRequest request{const_cast<std::uint16_t *>(seeds.data()),
+							   limit,
+							   grid,
+							   session,
+							   nullptr,
+							   nullptr,
+							   nullptr};
+		request.requiredControl = makeOpenCLRequiredControl();
+		if (!request.requiredControl)
+			return {};
+		request.requiredControl->setDeadlineNs(monotonicNs() + 5000000000ull);
+		auto *staging = static_cast<std::uint32_t *>(work->buffers[Transfer].mapped);
+		const auto upload = [&](unsigned destination, std::size_t bytes)
+		{
+			GradientPhaseScope phase(GradientPhase::Recording);
+			beginCommands(*work);
+			VkMemoryBarrier barrier{VK_STRUCTURE_TYPE_MEMORY_BARRIER};
+			barrier.srcAccessMask = VK_ACCESS_HOST_WRITE_BIT | VK_ACCESS_TRANSFER_WRITE_BIT;
+			barrier.dstAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
+			CmdPipelineBarrier(
+				work->command, VK_PIPELINE_STAGE_HOST_BIT | VK_PIPELINE_STAGE_TRANSFER_BIT,
+				VK_PIPELINE_STAGE_TRANSFER_BIT, 0, 1, &barrier, 0, nullptr, 0, nullptr);
+			VkBufferCopy copy{0, 0, bytes};
+			CmdCopyBuffer(work->command, work->buffers[Transfer].buffer,
+						  work->buffers[destination].buffer, 1, &copy);
+			barrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+			barrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
+			CmdPipelineBarrier(work->command, VK_PIPELINE_STAGE_TRANSFER_BIT,
+							   VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT, 0, 1, &barrier, 0, nullptr, 0,
+							   nullptr);
+			phase.setPhase(GradientPhase::Upload);
+			submitCommands(*work);
+			countGradientWork(GradientCounter::UploadBytes, bytes);
+			if (destination == OriginalSeeds || destination == OriginalCosts)
+				countGradientWork(GradientCounter::ReferenceUploadBytes, bytes);
+			return waitSubmission(work, request);
+		};
+		phase.setPhase(GradientPhase::InputConversion);
+		for (std::size_t i = 0; i < cells; ++i)
+			staging[i] = seeds[i];
+		if (!upload(OriginalSeeds, cells * 4))
+			return {};
+		std::memcpy(staging, output.data(), cells * 4);
+		if (!upload(InputA, cells * 4))
+			return {};
+		std::memcpy(staging, originals.data(), cells * 4);
+		if (!upload(OriginalCosts, cells * 4))
+			return {};
+		std::memcpy(staging, (actualCosts.empty() ? originals : actualCosts).data(), cells * 4);
+		if (!upload(Costs, cells * 4))
+			return {};
+		const std::array<std::uint32_t, 4> params{unsigned(grid.width()), unsigned(grid.height()),
+												  unsigned(std::min(limit, COST_LIMIT)), pitch};
+		std::memcpy(staging, params.data(), sizeof(params));
+		if (!upload(Params, sizeof(params)))
+			return {};
+		GPUFixedPointResult result;
+		if (!validateWork(work, request, InputA, result))
+			return {};
+		return result;
+	}
+	bool execute(const BackendRequest &request, Plan plan)
+	{
+		GradientPhaseScope phase(GradientPhase::Bookkeeping);
+		const bool frozen = plan == Plan::VulkanFrozen8;
+		const auto cells = request.grid.cells();
+		const auto w = unsigned(request.grid.width()), h = unsigned(request.grid.height()),
+				   pitch = (w + 15) / 16, rows = (h + 15) / 16;
+		const auto tiles = std::size_t(pitch) * rows;
+		if (!cells || cells > properties.limits.maxStorageBufferRange / 4 || cells > UINT32_MAX ||
+			request.limit < 0)
+			return false;
+		if ((frozen && (pitch > properties.limits.maxComputeWorkGroupCount[0] ||
+						rows > properties.limits.maxComputeWorkGroupCount[1])) ||
+			(!frozen && (cells + 127) / 128 > properties.limits.maxComputeWorkGroupCount[0]))
+			return false;
+		if (request.requiredControl && request.requiredControl->shouldCancel(monotonicNs()))
+			return false;
+		phase.setPhase(GradientPhase::Allocation);
+		auto work = acquireWork(cells, tiles);
+		ReturnRetired returnRetired{*this, work};
+		const auto &sets = work->sets;
 		phase.setPhase(GradientPhase::InputConversion);
 		const auto upload = monotonicNs();
 		// Only staging/readback is written by the host. Compute inputs and
@@ -560,6 +708,16 @@ struct Runtime
 			VkBufferCopy copy{0, 0, bytes};
 			CmdCopyBuffer(work->command, work->buffers[Transfer].buffer,
 						  work->buffers[destination].buffer, 1, &copy);
+			if (destination == InputA || destination == Costs)
+			{
+				// References come from the captured host input, independently
+				// of mutable solver storage. Never clone a corrupted solver
+				// input into the supposedly immutable proof reference.
+				CmdCopyBuffer(
+					work->command, work->buffers[Transfer].buffer,
+					work->buffers[destination == InputA ? OriginalSeeds : OriginalCosts].buffer, 1,
+					&copy);
+			}
 			if (verifyTransfers)
 			{
 				barrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
@@ -582,7 +740,10 @@ struct Runtime
 							   1, &barrier, 0, nullptr, 0, nullptr);
 			phase.setPhase(GradientPhase::Upload);
 			submitCommands(*work);
-			countGradientWork(GradientCounter::UploadBytes, bytes);
+			const bool reference = destination == InputA || destination == Costs;
+			countGradientWork(GradientCounter::UploadBytes, bytes * (reference ? 2 : 1));
+			if (reference)
+				countGradientWork(GradientCounter::ReferenceUploadBytes, bytes);
 			if (verifyTransfers)
 				countGradientWork(GradientCounter::ReadbackBytes, bytes);
 			if (!waitSubmission(work, request))
@@ -703,44 +864,82 @@ struct Runtime
 			if (!*static_cast<std::uint32_t *>(work->buffers[Changed].mapped))
 			{
 				status.computeNs += monotonicNs() - computeStart;
-				const auto readback = monotonicNs();
-				phase.setPhase(GradientPhase::Recording);
-				beginCommands(*work);
-				barrier.srcAccessMask = VK_ACCESS_SHADER_WRITE_BIT;
-				barrier.dstAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
-				CmdPipelineBarrier(work->command, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
-								   VK_PIPELINE_STAGE_TRANSFER_BIT, 0, 1, &barrier, 0, nullptr, 0,
-								   nullptr);
-				VkBufferCopy copy{0, 0, cells * 4};
-				CmdCopyBuffer(work->command, work->buffers[current].buffer,
-							  work->buffers[Transfer].buffer, 1, &copy);
-				barrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
-				barrier.dstAccessMask = VK_ACCESS_HOST_READ_BIT;
-				CmdPipelineBarrier(work->command, VK_PIPELINE_STAGE_TRANSFER_BIT,
-								   VK_PIPELINE_STAGE_HOST_BIT, 0, 1, &barrier, 0, nullptr, 0,
-								   nullptr);
-				phase.setPhase(GradientPhase::Readback);
-				submitCommands(*work);
-				countGradientWork(GradientCounter::ReadbackBytes, cells * 4);
-				if (!waitSubmission(work, request))
+				GPUFixedPointResult gpuProof;
+				if (!validateWork(work, request, current, gpuProof))
 					return false;
-				std::atomic_thread_fence(std::memory_order_acquire);
-				const auto *out =
-					static_cast<const std::uint32_t *>(work->buffers[Transfer].mapped);
-				countGradientWork(GradientCounter::ConvergedFields);
-				phase.setPhase(GradientPhase::Validation);
-				if (!exactGradientFixedPoint(
-						std::span<const std::uint16_t>(request.gradient, cells),
-						std::span<const std::uint32_t>(out, cells), request.grid, request.limit,
+				const auto failedReadback = [&]() -> void
+				{
+					failGradientControlProof(
+						std::span<const std::uint16_t>(request.gradient, cells), request.grid,
+						request.limit,
 						[&](std::size_t i)
 						{
 							return request.gradient[i] || request.identity.allCells
 									   ? request.costAt(request.context, i)
 									   : LAND_STEPS;
-						}))
+						},
+						gpuProof,
+						{status.device, status.driver, status.shaderIdentity,
+						 request.capturedGeneration.value_or(request.session.currentGeneration())});
+				};
+				const auto readback = monotonicNs();
+				try
+				{
+					phase.setPhase(GradientPhase::Recording);
+					beginCommands(*work);
+					barrier.srcAccessMask = VK_ACCESS_SHADER_WRITE_BIT;
+					barrier.dstAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
+					CmdPipelineBarrier(work->command, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
+									   VK_PIPELINE_STAGE_TRANSFER_BIT, 0, 1, &barrier, 0, nullptr,
+									   0, nullptr);
+					VkBufferCopy copy{0, 0, cells * 4};
+					CmdCopyBuffer(work->command, work->buffers[current].buffer,
+								  work->buffers[Transfer].buffer, 1, &copy);
+					barrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+					barrier.dstAccessMask = VK_ACCESS_HOST_READ_BIT;
+					CmdPipelineBarrier(work->command, VK_PIPELINE_STAGE_TRANSFER_BIT,
+									   VK_PIPELINE_STAGE_HOST_BIT, 0, 1, &barrier, 0, nullptr, 0,
+									   nullptr);
+					phase.setPhase(GradientPhase::Readback);
+					submitCommands(*work);
+					countGradientWork(GradientCounter::ReadbackBytes, cells * 4);
+					if (!waitSubmission(work, request))
+					{
+						if (!gpuProof.valid)
+							failedReadback();
+						return false;
+					}
+				}
+				catch (const GradientProofFailure &)
+				{
+					throw;
+				}
+				catch (...)
+				{
+					if (!gpuProof.valid)
+						failedReadback();
+					throw;
+				}
+				std::atomic_thread_fence(std::memory_order_acquire);
+				const auto *out =
+					static_cast<const std::uint32_t *>(work->buffers[Transfer].mapped);
+				countGradientWork(GradientCounter::ConvergedFields);
+				phase.setPhase(GradientPhase::Validation);
+				const bool cpuProof = exactGradientFixedPoint(
+					std::span<const std::uint16_t>(request.gradient, cells),
+					std::span<const std::uint32_t>(out, cells), request.grid, request.limit,
+					[&](std::size_t i)
+					{
+						return request.gradient[i] || request.identity.allCells
+								   ? request.costAt(request.context, i)
+								   : LAND_STEPS;
+					});
+				if (!gpuProof.valid || !cpuProof)
 				{
 					failGradientProof(
-						frozen ? "vulkan-frozen8" : "vulkan-jacobi",
+						!gpuProof.valid ? "vulkan-validator"
+						: frozen        ? "vulkan-frozen8"
+										: "vulkan-jacobi",
 						std::span<const std::uint16_t>(request.gradient, cells),
 						std::span<const std::uint32_t>(out, cells), request.grid, request.limit,
 						[&](std::size_t i)
@@ -750,7 +949,8 @@ struct Runtime
 									   : LAND_STEPS;
 						},
 						{status.device, status.driver, status.shaderIdentity,
-						 request.capturedGeneration.value_or(request.session.currentGeneration())});
+						 request.capturedGeneration.value_or(request.session.currentGeneration()),
+						 gpuProof.valid ? std::nullopt : std::optional(gpuProof.firstInvalid)});
 				}
 				countGradientWork(GradientCounter::ValidatedFields);
 				phase.setPhase(GradientPhase::OutputConversion);
@@ -895,6 +1095,38 @@ bool initializeVulkanGradient()
 								(1u << unsigned(Plan::VulkanJacobi)),
 							std::memory_order_release);
 	return ready;
+}
+std::optional<GPUFixedPointResult>
+proveVulkanGradientFixedPoint(std::span<const std::uint16_t> seeds,
+							  std::span<const std::uint32_t> output,
+							  std::span<const std::uint32_t> costs, field::Grid grid, int limit,
+							  std::span<const std::uint32_t> actualCosts)
+{
+#if defined(__EMSCRIPTEN__)
+	return {};
+#else
+	const auto *diagnostics = std::getenv("GLOB2_GRADIENT_DIAGNOSTICS");
+	GradientProfileSession profile(Backend::Vulkan,
+								   diagnostics && std::strcmp(diagnostics, "1") == 0);
+	auto &r = runtime();
+	std::lock_guard lock(r.mutex);
+	if (r.device)
+		r.maintain();
+	if (r.status.availability != Availability::Ready || !r.quarantine.empty())
+		return {};
+	try
+	{
+		return r.proveFixture(seeds, output, costs, grid, limit, actualCosts);
+	}
+	catch (const MemoryDecline &)
+	{
+		return {};
+	}
+	catch (const std::bad_alloc &)
+	{
+		return {};
+	}
+#endif
 }
 bool executeVulkanGradient(std::span<const BackendRequest> requests, Plan plan)
 {
