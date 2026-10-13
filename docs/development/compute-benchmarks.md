@@ -101,6 +101,15 @@ Natural fields and non-self-excluding unified market fields reuse the matching
 published snapshot plane. Direct-supplier or self-excluding fields, and absent
 published planes, use a private snapshot field; capture does not create or refresh
 live resource fields. Geography hashing is lazy and runs only for private fields.
+Refreshes include only alive buildings whose maintained desired staffing exceeds
+captured working subscriptions. Fully staffed buildings produce no lists and lease
+no route fields; buildings with zero desired staffing also skip planning. Newly
+understaffed buildings enter their team's next scheduled refresh, with the same
+fixed publication delay and no population fallback. This changes shortlist
+availability: a vacancy arising after capture can wait for the next publication.
+Reference hiring can fill such vacancies before a later snapshot ever observes
+them, so demand-filtered shadow coverage must not be interpreted as live delay.
+Attack strengths are captured only for teams with an active defense recruitment need.
 Candidate selection uses bounded partitioning followed by sorting retained prefixes;
 the resulting canonical lists equal full-sort prefixes. Scheduled runs build only
 the selected pool policy; the full shadow matrix builds both controls.

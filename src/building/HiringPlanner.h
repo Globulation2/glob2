@@ -31,6 +31,7 @@ struct BuildingLists
 // includes route work; seed/propagation timers are nested within it.
 #define HIRING_PLANNER_METRICS(X) \
     X(sharedQueries) X(sharedExpansions) X(sharedWaitNs) X(sharedQueryNs) X(missingBuildingFields) \
+    X(buildingsExamined) X(buildingsNeedingHiring) X(buildingsSkippedNoDemand) \
     X(setupNs) X(geographyNs) X(precheckNs) X(evaluationNs) X(sortOutputNs) \
     X(seedNs) X(propagationNs) X(fieldHits) X(fieldMisses) X(fieldCells) \
     X(terrainChanges) X(buildingOccupancyChanges) X(immobileChanges) X(forbiddenChanges) X(resourceBlockingChanges) \
@@ -80,6 +81,7 @@ public:
     Output rank(const Inputs&, unsigned team, unsigned capacity = 128, Pools pools = Pools::All);
     std::size_t bytes() const;
 };
+bool needsCandidates(const SimulationSnapshot::BuildingView&);
 std::uint64_t configuration(const BuildingStateRecord&);
 bool better(const Candidate&, const Candidate&, Job);
 List shortlist(Key, std::vector<Candidate>, unsigned capacity, Pools = Pools::All);

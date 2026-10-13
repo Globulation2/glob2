@@ -15,7 +15,7 @@ TEST_CASE("snapshot planning retains busy workers and never changes the game")
     glob2test::HeadlessGlobals globals;
     glob2test::HeadlessGame world({.discovered=true,.loadDefaultRace=true});
     auto* inn=world.addBuilding("inn",8,8);
-    REQUIRE(inn);
+    REQUIRE(inn);inn->desiredMaxUnitWorking=2;
     auto* free=world.addUnit(WORKER,12,12);
     auto* busy=world.addUnit(WORKER,13,12);
     REQUIRE(free);REQUIRE(busy);
@@ -49,6 +49,37 @@ TEST_CASE("snapshot planning retains busy workers and never changes the game")
     CHECK_THROWS_AS(cache.rank(inputs,0,0),std::invalid_argument);
     CHECK_THROWS_AS(cache.rank(inputs,0,129),std::invalid_argument);
 }
+TEST_CASE("planning skips zero-demand and staffed buildings and resumes on vacancies")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.discovered=true,.loadDefaultRace=true});
+    auto* inn=world.addBuilding("inn",8,8);auto* worker=world.addUnit(WORKER,12,12);
+    REQUIRE(inn);REQUIRE(worker);worker->carriedMaterial=WHEAT;
+    world.game.map.buildingGradient(inn,worker->swimClass());
+    HiringPlanner::Cache cache;
+    const auto plan=[&] {
+        world.game.snapshotStore().invalidateBoundary(); // Announce these owner-side fixture edits.
+        auto snapshot=world.game.captureReadBoundary({},true,SimulationSnapshot::Simulation);
+        auto inputs=HiringPlanner::capture(world.game,snapshot);
+        auto output=cache.rank(inputs,0,8);
+        return std::pair{std::move(inputs),std::move(output)};
+    };
+    inn->desiredMaxUnitWorking=0;
+    auto [zeroInputs,zero]=plan();
+    CHECK(zeroInputs.routes.empty());CHECK(zeroInputs.supplies.empty());CHECK(zeroInputs.attack.empty());
+    CHECK(zero.buildings.empty());CHECK(zero.candidateVisits==0);CHECK(zero.metrics.buildingsSkippedNoDemand==1);
+    inn->desiredMaxUnitWorking=1;inn->unitsWorking.push_back(worker);
+    auto [staffedInputs,staffed]=plan();
+    CHECK(staffedInputs.routes.empty());CHECK(staffed.buildings.empty());CHECK(staffed.candidateVisits==0);
+    inn->unitsWorking.clear();
+    auto [vacancyInputs,vacancy]=plan();
+    REQUIRE(vacancy.buildings.size()==1);CHECK(vacancy.candidateVisits>0);
+    CHECK_FALSE(vacancyInputs.routes.empty());CHECK(vacancyInputs.attack.empty());
+    CHECK(vacancy.metrics.buildingsNeedingHiring==1);
+    inn->desiredMaxUnitWorking=0;
+    auto [finishedInputs,finished]=plan();
+    CHECK(finished.buildings.empty());CHECK(finished.candidateVisits==0);
+}
 TEST_CASE("shared field survives replacement and proposals preserve owner demand")
 {
     glob2test::HeadlessGlobals globals;
@@ -75,7 +106,7 @@ TEST_CASE("missing building fields never trigger private construction")
 {
     glob2test::HeadlessGlobals globals;
     glob2test::HeadlessGame world({.discovered=true,.loadDefaultRace=true});
-    auto* inn=world.addBuilding("inn",8,8);REQUIRE(inn);
+    auto* inn=world.addBuilding("inn",8,8);REQUIRE(inn);inn->desiredMaxUnitWorking=1;
     auto* unit=world.addUnit(WORKER,12,12);REQUIRE(unit);unit->carriedMaterial=WHEAT;
     auto snapshot=world.game.captureReadBoundary({},true,SimulationSnapshot::Simulation);
     HiringPlanner::Cache cache;
@@ -119,7 +150,7 @@ TEST_CASE("fetch permission without suppliers reuses the existing natural plane"
     glob2test::HeadlessGlobals globals;
     glob2test::HeadlessGame world({.discovered=true,.loadDefaultRace=true});
     auto* inn=world.addBuilding("inn",8,8);auto* worker=world.addUnit(WORKER,12,12);
-    REQUIRE(inn);REQUIRE(worker);
+    REQUIRE(inn);REQUIRE(worker);inn->desiredMaxUnitWorking=1;
     world.game.map.incResourceByIndex(16,16,WHEAT,0);
     const int swim=worker->swimClass();
     world.game.map.buildingGradient(inn,swim);
@@ -147,7 +178,7 @@ TEST_CASE("private fetch fields include suppliers without natural material")
     auto* inn=world.addBuilding("inn",6,6,1);
     auto* market=world.addBuilding("market",24,24);
     auto* worker=world.addUnit(WORKER,20,20,0,1);
-    REQUIRE(inn);REQUIRE(market);REQUIRE(worker);
+    REQUIRE(inn);REQUIRE(market);REQUIRE(worker);inn->desiredMaxUnitWorking=1;
     market->materials[CHERRY]=10;
     for(int swim=0;swim<SWIM_CLASS_COUNT;++swim)world.game.map.buildingGradient(inn,swim);
     worker->activity=Unit::ACT_RANDOM;worker->medical=Unit::MED_FREE;
@@ -215,13 +246,43 @@ TEST_CASE("scheduled pool and owner publish the same immutable outputs at fixed 
         CHECK(owner["published"]==parallel["published"]);
     }
 }
+TEST_CASE("a vacancy after a skipped refresh publishes on the next fixed deadline")
+{
+    glob2test::HeadlessGlobals globals;
+    for(bool parallel:{false,true}) {
+        HiringStudy::configure(false);
+        glob2test::HeadlessGame world({.discovered=true,.loadDefaultRace=true,.header=true});
+        auto* inn=world.addBuilding("inn",8,8);auto* worker=world.addUnit(WORKER,12,12);
+        REQUIRE(inn);REQUIRE(worker);worker->carriedMaterial=WHEAT;
+        inn->desiredMaxUnitWorking=1;inn->unitsWorking.push_back(worker);
+        world.game.map.buildingGradient(inn,worker->swimClass());
+        world.game.map.configureCompute(4);
+        HiringStudy::configureScheduled({.delay=4,.refresh=4,.capacity=8,.parallel=parallel});
+        const auto boundary=[&](unsigned tick) {
+            world.game.stepCounter=tick;
+            world.game.captureReadBoundary({},false);
+            HiringStudy::advance(world.game);
+        };
+        const auto metric=[&](const char* key) {
+            std::ostringstream out;HiringStudy::write(out,false);
+            return nlohmann::json::parse(out.str())["planner_metrics"].value(key,0ull);
+        };
+        boundary(0);inn->unitsWorking.clear();boundary(1);
+        boundary(4);CHECK(metric("buildingsNeedingHiring")==0);
+        boundary(7);CHECK(metric("buildingsNeedingHiring")==0);
+        boundary(8);CHECK(metric("buildingsNeedingHiring")==1);
+        CHECK(metric("rankedCandidates")>0);
+        // Vacancy at boundary 1 reaches publication at 8: seven ticks.
+        HiringStudy::clear(world.game);HiringStudy::configure(false);
+    }
+}
 TEST_CASE("worker failure aborts publication and teardown still drains [slow]")
 {
     glob2test::HeadlessGlobals globals;
     glob2test::GameOptions options;options.wDec=10;options.hDec=10;options.teams=16;
     options.discovered=true;options.loadDefaultRace=true;options.header=true;
     glob2test::HeadlessGame world(options);
-    auto* inn=world.addBuilding("inn",8,8);REQUIRE(inn);
+    auto* inn=world.addBuilding("inn",8,8);REQUIRE(inn);inn->desiredMaxUnitWorking=2;
     auto* land=world.addUnit(WORKER,12,12);auto* swimmer=world.addUnit(WORKER,13,12);REQUIRE(land);REQUIRE(swimmer);
     land->performance[SWIM]=0;swimmer->performance[SWIM]=swimmer->performance[WALK];
     world.game.map.buildingGradient(inn,Map::swimClass(land->performance[WALK],land->performance[SWIM]));

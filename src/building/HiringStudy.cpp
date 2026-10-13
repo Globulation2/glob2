@@ -243,7 +243,7 @@ void observe(const Game& game,const SimulationSnapshot::Handle& world,bool pause
             std::erase_if(work->inputs.supplies,[&](const auto& s){return Building::GIDtoTeam(s.building.gid)!=team;});
             work->inputs.routeBytes=0;for(const auto& route:work->inputs.routes)work->inputs.routeBytes+=route.bytes;
             work->outputBound=sizeof(Output)+work->inputs.routeBytes+work->inputs.supplies.capacity()*sizeof(HiringPlanner::Inputs::Supply);
-            for(const auto& b:world.entities->buildings)if(b.team==team && b.buildingState!=SimulationSnapshot::BuildingView::DEAD) {
+            for(const auto& b:world.entities->buildings)if(b.team==team && HiringPlanner::needsCandidates(b)) {
                 const auto& type=world.catalogs->buildings->at(b.typeNum).resolvedType;
                 unsigned jobs=0;for(unsigned r=0;r<MaterialCount;++r)if(type.maxMaterial[r]>0 || b.wishedMaterials[r]>0)jobs+=2;
                 for(unsigned role=0;role<3;++role)jobs+=type.attractsRole(role);
@@ -293,6 +293,7 @@ void clear(const Game& game)
 void write(std::ostream& out,bool finish)
 {
     Json report={{"schema_version",1},{"mode","authoritative_shadow"},{"coverage_semantics","conservative reference-pass coverage; live qualifications include prior authoritative assignments"},{"agreement_semantics","same worker incarnation for the reference building/job attempt; not full counterfactual job selection"},{"delay_gate_established",false},{"persistent_exclusion_gate_established",false},{"startup_ticks",16},{"gate_coverage",0.95},{"minimum_opportunities",200},{"configurations",Json::array()}};
+    report["planning_policy"]="observed_staffing_demand";
     if(session) {
         if(finish)session->drain();
         // Draining finishes future outputs without publishing them early.

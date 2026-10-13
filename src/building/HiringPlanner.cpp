@@ -190,13 +190,23 @@ std::uint64_t configuration(const BuildingStateRecord& b)
     for(bool selected:b.clearingMaterials)mix(h,selected);
     return h;
 }
+bool needsCandidates(const SimulationSnapshot::BuildingView& b)
+{
+    // Match the owner's maintained staffing demand, without advancing clocks
+    // or recomputing demand through a live building on the worker.
+    return b.buildingState==B::ALIVE && b.desiredMaxUnitWorking>0 &&
+        b.working.count<unsigned(b.desiredMaxUnitWorking);
+}
 Inputs capture(const Game& game,SimulationSnapshot::Handle world)
 {
     if(world.tick!=game.stepCounter) throw std::logic_error("Hiring input boundary mismatch");
     Inputs inputs;inputs.world=std::move(world);
     std::array<unsigned,Team::MAX_COUNT> classes{};
     for(const auto& u:inputs.world.entities->units)if(!u.isDead && !u.performance[FLY])classes[u.team]|=1u<<swimClass(u);
+    std::array<bool,Team::MAX_COUNT> defense{};
     for(const auto& b:inputs.world.entities->buildings) {
+        if(!needsCandidates(b))continue;
+        defense[b.team]|=inputs.world.catalogs->buildings->at(b.typeNum).resolvedType.attractsRole(2);
         auto* live=const_cast<Game&>(game).resolveBuilding(b.identity);
         if(!live)throw std::logic_error("Hiring capture lost building incarnation");
         Inputs::Supply supply; supply.building=b.identity;
@@ -218,6 +228,7 @@ Inputs capture(const Game& game,SimulationSnapshot::Handle world)
         }
     }
     for(const auto& unit:inputs.world.entities->units) {
+        if(!defense[unit.team] || unit.isDead)continue;
         const auto* live=game.resolveUnit(unit.identity);
         if(!live) throw std::logic_error("Hiring capture lost unit incarnation");
         inputs.attack.emplace_back(unit.identity,live->getRealAttackStrength());
@@ -286,7 +297,10 @@ Output Cache::rank(const Inputs& input,unsigned team,unsigned capacity,Pools poo
     output.metrics.setupNs+=elapsed(attackStart);
     for(const auto* building:world.buildingSlots(team))
     {
-        if(!building || building->buildingState==B::DEAD) continue;
+        if(!building)continue;
+        ++output.metrics.buildingsExamined;
+        if(!needsCandidates(*building)){++output.metrics.buildingsSkippedNoDemand;continue;}
+        ++output.metrics.buildingsNeedingHiring;
         const auto& b=*building;const auto& type=world.catalog->at(b.typeNum).resolvedType;
         const auto supply=std::find_if(input.supplies.begin(),input.supplies.end(),[&](const auto& value){return value.building==b.identity;});
         if(supply==input.supplies.end())throw std::logic_error("Hiring input missing supplier modes");
