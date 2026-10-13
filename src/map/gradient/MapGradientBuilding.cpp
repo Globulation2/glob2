@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include <PerformanceTelemetry.h>
+#include "HiringDiagnostics.h"
 #include "Map.h"
 #include "BuildingType.h"
 #include "Game.h"
@@ -9,6 +10,7 @@
 #include "MapInternal.h"
 #include "gradient/GradientRuntime.h"
 #include "BuildingGradientSearch.h"
+#include "SharedBuildingGradient.h"
 #include "BuildingGradientStats.h"
 #include <algorithm>
 #include <array>
@@ -18,7 +20,9 @@
 
 void Map::finishBuildingGradient(Building *building, int swimClass, BuildingRoute route) const
 {
-	if (auto &search = building->globalGradientSearch[building->routeSlot(swimClass, route)]) search->finish();
+	const int slot=building->routeSlot(swimClass,route);
+    auto guard=SharedBuildingGradient::lock(building->sharedGradient[slot]);
+    if (auto &search = building->globalGradientSearch[slot]) search->finish();
 }
 
 // updateGlobalGradient(Building*): the full-map gradient toward a building, a
@@ -27,8 +31,10 @@ void Map::finishBuildingGradient(Building *building, int swimClass, BuildingRout
 void Map::updateGlobalGradient(Building *building, int swimClass, BuildingRoute route)
 {
 	PERF_SCOPE_TIME(BuildingGradient);
+		HiringDiagnostics::Scope diagnostic(HiringDiagnostics::Phase::FieldInitialization);
 	route = building->resolveRoute(route);
 	const int slot = building->routeSlot(swimClass, route);
+    auto guard=SharedBuildingGradient::lock(building->sharedGradient[slot]);
 	const int access = building->routeAccess(swimClass, route);
 	assert(building);
 	assert(building->type);
@@ -48,7 +54,11 @@ void Map::updateGlobalGradient(Building *building, int swimClass, BuildingRoute 
 	gradientRuntime->countSynchronous();
 	if (const auto &previous = building->globalGradientSearch[slot])
 		building->settledCostHint[slot] = Uint16(std::min(previous->requiredCost(), 0xFFFE));
-	// A rebuild replaces the old search and its frozen terrain snapshot.
+	if (building->sharedGradient[slot]) {
+        building->retireSharedGradient(slot);
+        building->globalGradient[slot]=gradient=acquireBuildingGradientBuffer();
+    }
+    // A rebuild replaces the old search and its frozen terrain snapshot.
 	// Keep bucket capacity when possible; a locked field has no pending search.
 	building->dirtyGradient[slot]=false;
 	building->lastGlobalGradientUpdateStepCounter[slot]=game->stepCounter;

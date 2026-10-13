@@ -14,6 +14,7 @@
 #include "Map.h"
 #include "gradient/GradientRuntime.h"
 #include "BuildingGradientSearch.h"
+#include "SharedBuildingGradient.h"
 #include "BuildingGradientStats.h"
 #include "BuildingType.h"
 #include "Game.h"
@@ -145,6 +146,7 @@ void Map::ensureBuildingGradientPipeline()
 		Building* b = buildingGradientDestination(p.team, p.buildingId, p.scriptIdentity);
 		if (!b || b->refreshEpoch[p.slot] != p.epoch || !b->globalGradient[p.slot]) return false;
 		const int slot = p.slot, swim = p.swim;
+        auto guard=SharedBuildingGradient::lock(b->sharedGradient[slot]);
 		if (gradientStats)
 		{
 			// The replaced lifetime ends here, as a synchronous rebuild's would.
@@ -157,7 +159,8 @@ void Map::ensureBuildingGradientPipeline()
 		auto& search = b->globalGradientSearch[slot];
 		// The depth model reads the replaced lifetime; a locked one leaves the older value.
 		if (search) b->settledCostHint[slot] = Uint16(std::min(search->requiredCost(), 0xFFFE));
-		recycleBuildingGradientSearch(std::move(search));
+		b->retireSharedGradient(slot);
+        recycleBuildingGradientSearch(std::move(search));
 		recycleBuildingGradientBuffer(b->globalGradient[slot]);
 		b->globalGradient[slot] = p.data.release();
 		if (!p.locked) search = std::move(p.search);

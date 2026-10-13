@@ -14,6 +14,7 @@
 #include <string>
 #include <vector>
 #include <type_traits>
+#include <limits>
 
 class Game;
 
@@ -24,6 +25,8 @@ namespace SimulationSnapshot
 struct UnitRange { Uint32 offset = 0, count = 0; };
 struct BuildingView : BuildingStateRecord
 {
+	// Raw funding facts omitted from BuildingStateRecord; shared by snapshot readers.
+    Uint32 fundingOffset = std::numeric_limits<Uint32>::max();
 	Uint32 extraProductionOffset=0, extraProductionCount=0;
     std::array<Sint32, 3> constructionOriginRatios{};
 	BuildingRef identity;
@@ -38,7 +41,9 @@ struct UnitView : UnitState
 {
     int realAttackStrength = 0;
 	UnitRef identity;
-	int team = 0;
+	Uint16 team = 0;
+    // Team ids fit 16 bits; modifier shares the former 32-bit team word.
+    Uint16 attackFactor = 10000;
 	BuildingRef attached, target;
 };
 
@@ -48,6 +53,7 @@ struct TeamView
 	int number = 0, prestige = 0, startX = 0, startY = 0;
 	bool alive = false, won = false, lost = false;
 	ColorRecord color;
+    Uint8 supplierPresence = 0; // Raw membership facts: stock=1, direct=2.
 	std::string firstPlayerName;
 	std::string outcomeReasonKey; // Translation key, resolved at the simulation read boundary.
 	int unitConversionGained = 0, unitConversionLost = 0, noMoreBuildingSitesCountdown = 0;

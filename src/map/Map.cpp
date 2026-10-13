@@ -3,6 +3,7 @@
 
 #include <atomic>
 #include "Map.h"
+#include "HiringStudy.h"
 #include "MapAssetBundle.h"
 #include "TerrainLine.h"
 #include <stdexcept>
@@ -568,6 +569,7 @@ void Map::applyGradientBackendRequest()
     const auto requested=gradient_kernel::requestedBackendConfiguration();
     if(requested==gradient_kernel::configuration())return;
     // Finish privately, preserving the pending queue and original publication ticks.
+    if(game)HiringStudy::drain(*game);
     finishGradientPipeline();
     gradient_kernel::applyBackendConfiguration(requested);
     gradientRuntime->backendSession->failed=false;

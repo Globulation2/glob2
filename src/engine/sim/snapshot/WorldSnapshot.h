@@ -87,8 +87,14 @@ static_assert(std::is_trivially_copyable_v<OccupancyCell>);
 static_assert(std::is_trivially_copyable_v<AreaCell>);
 static_assert(std::is_trivially_copyable_v<VisibilityCell>);
 struct ExtraProductionState { Sint32 ratio=0, used=0, constructionOriginRatio=0; };
+struct FundingState
+{
+    std::array<Sint32, MaterialSlotCount> constructionBudget{}, constructionReserved{}, reservedMaterials{};
+};
 struct Entities
 {
+    // Sparse raw funding facts: absent means all zero. Shared, pooled storage.
+    std::vector<FundingState> funding;
     UnitCargoStore unitCargo;
     std::vector<ExtraProductionState> extraProduction;
 	static constexpr Uint32 NoRecord = std::numeric_limits<Uint32>::max();

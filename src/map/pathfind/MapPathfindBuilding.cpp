@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include <PerformanceTelemetry.h>
+#include "HiringDiagnostics.h"
 #include "Map.h"
 #include "BuildingType.h"
 #include "EngineTiming.h"
@@ -10,6 +11,7 @@
 #include "Unit.h"
 #include "MapInternal.h"
 #include "BuildingGradientSearch.h"
+#include "SharedBuildingGradient.h"
 #include "gradient/BuildingGradientStats.h"
 
 
@@ -27,6 +29,7 @@ constexpr Uint32 STUCK_REBUILD_TICKS = 128;
 bool Map::prepareBuildingGradient(Building *building, int swimClass, BuildingRoute route)
 {
 	const int slot = building->routeSlot(swimClass, route);
+    auto guard=SharedBuildingGradient::lock(building->sharedGradient[slot]);
 	assert(building);
 	Uint16 *&gradient=building->globalGradient[slot];
 	Uint32 lastUpdate=building->lastGlobalGradientUpdateStepCounter[slot];
@@ -77,6 +80,7 @@ bool Map::prepareBuildingGradient(Building *building, int swimClass, BuildingRou
 const Uint16 *Map::buildingGradient(Building *building, int swimClass, BuildingRoute route)
 {
 	const int slot = building->routeSlot(swimClass, route);
+    auto guard=SharedBuildingGradient::lock(building->sharedGradient[slot]);
 	if (!prepareBuildingGradient(building, swimClass, route)) return NULL;
 	finishBuildingGradient(building, swimClass, route);
 	return building->globalGradient[slot];
@@ -85,6 +89,7 @@ const Uint16 *Map::buildingGradient(Building *building, int swimClass, BuildingR
 Uint16 Map::buildingGradientValue(Building *building, int swimClass, size_t cell, BuildingRoute route) const
 {
 	const int slot = building->routeSlot(swimClass, route);
+    auto guard=SharedBuildingGradient::lock(building->sharedGradient[slot]);
 	assert(building->globalGradient[slot]);
 	assert(cell < size);
 	if (auto &search = building->globalGradientSearch[slot]) search->resolve(cell);
@@ -95,6 +100,7 @@ bool Map::buildingGradientDirection(EntityRandom& random, Building *building, in
 	int *dx, int *dy, bool strict, BuildingRoute route) const
 {
 	const int slot = building->routeSlot(swimClass, route);
+    auto guard=SharedBuildingGradient::lock(building->sharedGradient[slot]);
 	// Settling this layer also settles all equal/better neighbors the generic
 	// direction picker can select. Keep partial-array access inside this adapter.
 	buildingGradientValue(building, swimClass, coordToIndex(x, y), route);
@@ -105,7 +111,9 @@ bool Map::buildingGradientDirection(EntityRandom& random, Building *building, in
 bool Map::buildingAvailable(Building *building, int swimClass, int x, int y, int *dist, BuildingRoute route)
 {
 	const int slot = building->routeSlot(swimClass, route);
+    auto guard=SharedBuildingGradient::lock(building->sharedGradient[slot]);
 	PERF_SCOPE_TIME(PathBuilding);
+	HiringDiagnostics::add(HiringDiagnostics::Counter::BuildingQueries);
 	if (!prepareBuildingGradient(building, swimClass, route))
 		return false;
 	// The unit's own cell can be an obstacle in this building's field - it may be
@@ -124,7 +132,9 @@ bool Map::buildingAvailable(Building *building, int swimClass, int x, int y, int
 bool Map::pathfindBuilding(EntityRandom& random, Building *building, int swimClass, int x, int y, int *dx, int *dy, BuildingRoute route)
 {
 	const int slot = building->routeSlot(swimClass, route);
+    auto guard=SharedBuildingGradient::lock(building->sharedGradient[slot]);
 	PERF_SCOPE_TIME(PathBuilding);
+	HiringDiagnostics::add(HiringDiagnostics::Counter::BuildingQueries);
 	assert(building);
 	assert(x>=0);
 	assert(y>=0);

@@ -550,3 +550,10 @@ contaminate their timing.
   colony placement; a cell it fails is a "Generation failed" a player would see.
 - A cache or other retained state with no eviction policy needs an explicit bound —
   a count or a byte budget. "It would take an enormous game to reach" is not a bound.
+
+The diagnostic hiring planner leases existing building-route generations. Owner reads
+and proposal expansion share a per-generation mutex; retired generations retain their
+original buffer and search until readers release them. Proposal queries do not alter
+owner refresh-demand history or create missing building fields. This producer remains
+an opt-in measurement path with original hiring authoritative; its leases are not saved
+continuation state.

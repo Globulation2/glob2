@@ -289,7 +289,8 @@ public:
 	static constexpr unsigned NoLane = ~0u;
 	// AI occupies player lanes 0–15; all statistics batches share lane 16.
 	static constexpr unsigned StatisticsLaneBase = 16;
-	static constexpr unsigned Lanes = 32;
+	static constexpr unsigned HiringLaneBase = 32;
+	static constexpr unsigned Lanes = 48;
 	struct Group
 	{
 		std::size_t count = 0;
@@ -313,8 +314,8 @@ public:
 	// so it holds at most horizon + 1 slots: AI decisions (8), periodic
 	// gradients (16), building gradients (8), growth (16) and statistics (8),
 	// plus headroom for tests and teardown. Producers assert their horizons.
-	static constexpr std::size_t AIHorizon = 8, GradientHorizon = 16, BuildingHorizon = 8, GrowthHorizon = 16, StatisticsHorizon = 8;
-	static constexpr std::size_t Slots = (AIHorizon + 1) + (GradientHorizon + 1) + (BuildingHorizon + 1) + (GrowthHorizon + 1) + (StatisticsHorizon + 1) + 13;
+	static constexpr std::size_t AIHorizon = 8, GradientHorizon = 16, BuildingHorizon = 8, GrowthHorizon = 16, StatisticsHorizon = 8, HiringHorizon = 8;
+	static constexpr std::size_t Slots = (AIHorizon + 1) + (GradientHorizon + 1) + (BuildingHorizon + 1) + (GrowthHorizon + 1) + (StatisticsHorizon + 1) + (HiringHorizon + 1) + 13;
 private:
 	using Clock = std::chrono::steady_clock;
 	inline static thread_local ComputeExecutor *active = nullptr;

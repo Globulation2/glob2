@@ -56,6 +56,151 @@ use `--compute-threads auto|N`. The optional area, initialization and hiring com
 paths and their environment selector have also been removed. Structural area
 refreshes and live field initialization retain their serial production order.
 
+The hiring study is separately available through `--telemetry hiring-stats` and
+`--telemetry hiring-shadow` ([measurement contract](performance-telemetry.md#cost-and-sampling)).
+The full matrix uses an owner-executed control. `--hiring-schedule K:R:L:split|combined`
+selects one diagnostic schedule; `--hiring-execution owner|pool` compares the same
+planner on the owner or shared executor. The pool uses separate FIFO team lanes,
+admits at `t % R == team % R`, and joins/publishes before team stepping at `t + K`.
+Old lists remain visible until replacement. Zero delay joins in the capture boundary.
+Draining at teardown, reconfiguration or export finishes pending work without early
+publication. Hiring remains authoritative and this diagnostic continuation is not
+saved match state. `K + R - 1` must stay within eight ticks.
+
+Without `--telemetry hiring-shadow`, a selected schedule measures compute without
+reference-opportunity collection. `hiring-compute.json` records publication digest,
+worker/owner job counts, waits and bounded output/cache reservations. Its
+`planner_metrics` separates setup, geography hashing, prechecks, candidate evaluation
+and sorting/output batches; evaluation includes nested route seeding and propagation.
+Timers report elapsed nanoseconds, not CPU time, and include startup. Counters report
+field hits/misses, cells seeded, evictions, changed geography components, candidate
+counts and published/private resource reads. Metrics cover retained/published outputs;
+future outputs drained without publication are excluded. Use process CPU and a sampling
+profiler alongside these timers, and compare the same planner in owner/pool modes.
+These diagnostics do not enter simulation checksums or the publication digest. Snapshot leases
+end when each job completes. Its maximum pending batches is `K + 1`; admission at
+one boundary shares one batch across its selected teams. The shared executor reserves
+nine additional slots and sixteen lanes for this producer.
+Shadow output retains three ranked controls per job (combined, observed available,
+observed busy) to compare bounded policies; this matrix storage is not a proposed
+live output format. Building distance queries lease the engine's existing field generation at admission.
+A per-generation recursive mutex protects search expansion and owner reads; replacement
+transfers the existing buffer/search to the lease without copying them. Proposal queries
+do not update owner refresh-demand history. Missing building fields yield no suggestion;
+the planner neither creates nor refreshes them. Leases remain usable after building removal.
+`shared_route_owner_wait_ns` and `shared_route_owner_contentions` report owner lock waits;
+planner counters report shared queries, expansions, missing fields and worker waits.
+`sharedQueryNs` times actual expansion only; cached reads use counters, not inner-loop timers.
+Admission accounting includes leased storage at capture and the measured peak storage
+of retired generations (`shared_route_peak_retired_bytes`). Expansion of the engine's
+current field uses its existing workspace; it is not a second planner cache. This
+prototype measures retired workspace growth rather than reserving its full theoretical
+worst case. Accounted peaks above 160 MiB stop the diagnostic study.
+The owner captures the engine's resolved supplier modes (catalog support and actual
+team supplier lists), rather than treating fetch permissions as supplier presence.
+Natural fields and non-self-excluding unified market fields reuse the matching
+published snapshot plane. Direct-supplier or self-excluding fields, and absent
+published planes, use a private snapshot field; capture does not create or refresh
+live resource fields. Geography hashing is lazy and runs only for private fields.
+Refreshes include only alive buildings whose maintained desired staffing exceeds
+captured working subscriptions. Fully staffed buildings produce no lists and lease
+no route fields; buildings with zero desired staffing also skip planning. Newly
+understaffed buildings enter their team's next scheduled refresh, with the same
+fixed publication delay and no population fallback. This changes shortlist
+availability: a vacancy arising after capture can wait for the next publication.
+Reference hiring can fill such vacancies before a later snapshot ever observes
+them, so demand-filtered shadow coverage must not be interpreted as live delay.
+An isolated experiment that replaces those scans must also handle cold building
+fields: shadow capture only leases fields that already exist. Initialize the
+existing lazy field through a point-query path and count that owner work in the
+comparison. `Map::buildingGradient` completes the entire field; using it merely
+to establish a lease turns lazy route preparation into an eager full-map cost.
+Keep reference, shadow and replacement controls separate, and compare actual
+simulation work and economic outcomes alongside timing.
+Attack strength is derived on the worker from observed performance, experience and
+rules, using the frozen area modifier in the normal unit record. The team id
+and modifier share one 32-bit word, so the unit record does not grow. Sparse
+construction funding and reservation facts live in the normal entity component;
+unfunded buildings add only an index in the building record. Account for record
+padding using the tested platform ABI, rather than assuming identical layouts.
+A packed team supplier-presence byte preserves existing membership during
+construction transitions; it is observed, while supplier modes are derived on
+workers. On the worker, material jobs are filtered using outstanding deliveries after existing subscriptions,
+with the same target/multiplier arithmetic as owner hiring. Attraction roles retain
+borrowing alternatives within the building's remaining seats. Team qualification
+and cargo indexes are built lazily once per team refresh. Worker-to-building
+distances are reused within each building/route refresh, including unreachable
+results; per-field lock scopes remain one query. Flying building-distance queries
+share one incremental snapshot-backed air field within a building refresh.
+An optional pure-planner measurement control for ground fetch jobs with an existing
+resource plane uses a bounded heap and the
+exact lower bound `2 * resourceDistance` on the trip score. It is disabled by
+default because maintaining the heaps can cost more than the queries avoided. Scheduled jobs use this same default rather than
+overriding it when constructing planner options. A building-distance
+query is skipped only when that lower bound cannot enter any requested pool,
+including level and identity ties. This preserves the same canonical shortlist
+as exhaustive evaluation; it is not approximate distance ranking.
+Scheduled shortlists default to remaining job vacancies plus two backups, capped
+by `L`. `--hiring-extras 0|2|4` controls backups; `fixed` restores the fixed-L
+measurement control. Capacity is total across split pools, with at least one busy
+slot when capacity is two or greater. `--hiring-availability available` is a
+separate policy control that rejects observed-busy/medical candidates before route
+work and uses the entire capacity for its available-only combined list. The default
+is `all`; do not interpret this control as a live admission or delay guarantee.
+`--hiring-diversity rounds` is an explicit available-only, vacancy-sized control
+for teams where each building has one material with eligible suggestions, no attraction roles, and aggregate vacancies
+plus backups within `L`. The owner captures its priority order; private fair
+rounds choose distinct primary suggestions across buildings, then add backups.
+Workers are not reserved or assigned in the live world. A wider private ranking
+buffer supports this projection; only vacancy-sized lists are published. Other
+job shapes fall back to independent lists and increment `coordinationSkipped`.
+The projection advances through sorted prefixes with pass-local cursors and
+a team-slot membership table; captured snapshots contain one incarnation per
+slot, and published suggestions keep their full incarnation references. These
+changes preserve the previous full-scan projection order. Resource-plane identity
+is looked up once per job/movement class; route locks still cover individual queries.
+This is a policy experiment, not proof of equivalent hires or live delay.
+The `hiring-study --prepare opportunities OUTPUT_DIR` harness compares warmed,
+static real-engine opportunities with rotated repeated planner controls and a
+shared-executor control. `--prepare opportunity-save OUTPUT_DIR` emits the
+open-vacancy input for scheduled determinism checks. For paired planner timing,
+`--prepare planner-benchmark OUTPUT_DIR` runs 128 refreshes per availability
+case, using vacancies plus two backups and distinct primary suggestions. Set
+`GLOB2_HIRING_BENCH_EXECUTION=owner|pool` to compare the identical planner.
+Only the initial reference fill is performed outside timing; external repetition
+and alternating executable order are required for a before/after comparison. Direct fill timings include subscriptions and immediate
+swaps; planner timings exclude commitment and snapshot capture. Its separate
+K4/R4 waiting model freezes positions, stock and medical availability while
+hypothetical hires remain busy. It is not a live gameplay delay measurement.
+These options require `--hiring-schedule`. Neither changes normal hiring.
+Candidate selection uses bounded partitioning followed by sorting retained prefixes;
+the resulting canonical lists equal full-sort prefixes. Scheduled runs build only
+the selected pool policy; the full shadow matrix builds both controls.
+Resource fields otherwise use a private,
+deterministically evicted cache bounded to at most 32 MiB per team and 128 MiB per match. The study rejects an
+accounted cache-plus-output working set exceeding 160 MiB.
+
+Build the `hiring-study` target to prepare deterministic sustainable and contention
+saves with `HiringStudyHarness --prepare sustainable|contention OUTPUT_DIR`.
+The harness checks population throughout its 4,096-tick window.
+`HiringStudyHarness --prepare opportunities OUTPUT_DIR` measures isolated static
+1200-worker/48-building hiring opportunities at several availability fractions.
+Ten rotated repetitions compare a planner refresh with the original complete
+fill pass (including subscription/swaps); setup/reset are untimed. Private fair
+round overlays report how many seats suggestions can cover before conflicts
+exhaust shortlists. This is neither whole-engine timing nor a live economy or
+recruitment-delay measurement. Exact job filtering can eliminate all planner work
+on reference games that immediately fill deficits before completed-tick capture;
+such a no-output run is not useful evidence of live hiring efficiency. Inactive controllers
+provide null orders when continuing these fixtures in the full headless engine.
+`test/benchmark_hiring.py` accepts a workload JSON array with `name`, `save`, and
+absolute `ticks`. Its `verify` mode compares disabled, statistics and shadow modes
+against `--baseline` using traces, replay bytes and final saves. Its `shadow` mode
+collects reference coverage; `timing` uses one process warmup and ten rotated paired
+repetitions by default, without diagnostic exports or saves. Retain its metadata,
+commands, input/executable hashes, raw measurements and host observations under
+`artifacts/`. Timing results alone do not establish a cached-hiring speedup.
+
 Structured `game run` accepts `--ai-order-delay D` for a new match (default 8
 ticks). Delays are simulation rules, separate from local thread configuration.
 A loaded match's configured AI delay cannot be overridden.

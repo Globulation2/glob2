@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <Environment.h>
 #include "Headless.h"
+#include "HiringDiagnostics.h"
+#include "HiringStudy.h"
 #include "ResourceGrowth.h"
 #include <utility>
 #include "scripting/javascript/ScriptCommand.h"
@@ -318,9 +320,37 @@ struct HeadlessRunner
 			if(telemetry=="checksums") setHeadlessEnvironment("GLOB2_CHECKSUM_SIDECAR", "1");
 			else if(telemetry=="team-timeline") setHeadlessEnvironment("GLOB2_TEAM_TIMELINE", "1");
 			else if(telemetry=="maxima") setHeadlessEnvironment("GLOB2_MAXIMA_TELEMETRY", "1");
+			else if(telemetry=="hiring-stats" || telemetry=="hiring-shadow") {}
 			else if(telemetry=="gradient-stats") setHeadlessEnvironment("GLOB2_GRADIENT_STATS", "1");
 			else throw std::invalid_argument("unknown telemetry: " + telemetry);
 		}
+        const char* simThread=std::getenv("GLOB2_SIM_THREAD");
+        if(simThread && std::string(simThread)!="0")
+            for(const auto& telemetry:many(options,"--telemetry"))
+                if(telemetry=="hiring-stats" || telemetry=="hiring-shadow")
+                    throw std::invalid_argument("Hiring diagnostics require the headless simulation owner (unset GLOB2_SIM_THREAD)");
+		HiringDiagnostics::configure(false);
+        HiringStudy::configure(false);
+		for (const auto& telemetry : many(options,"--telemetry"))
+			if(telemetry=="hiring-stats" || telemetry=="hiring-shadow") HiringDiagnostics::configure(true);
+        for (const auto& telemetry : many(options,"--telemetry"))
+            if(telemetry=="hiring-shadow") HiringStudy::configure(true);
+        if((options.count("--hiring-execution") || options.count("--hiring-extras") || options.count("--hiring-availability") || options.count("--hiring-diversity")) && !options.count("--hiring-schedule"))throw std::invalid_argument("Hiring planner controls require --hiring-schedule");
+        if(options.count("--hiring-schedule"))
+        {
+            if(simThread && std::string(simThread)!="0")throw std::invalid_argument("Hiring study requires the headless simulation owner");
+            std::istringstream input(one(options,"--hiring-schedule"));std::vector<std::string> parts;
+            for(std::string part;std::getline(input,part,':');)parts.push_back(part);
+            if(parts.size()!=4 || (parts[3]!="split" && parts[3]!="combined"))throw std::invalid_argument("Expected hiring schedule K:R:L:split|combined");
+            HiringStudy::Schedule schedule;
+            schedule.delay=integer(parts[0],0,8);schedule.refresh=integer(parts[1],1,8);schedule.capacity=integer(parts[2],1,128);
+            const auto extras=one(options,"--hiring-extras","2");schedule.extras=extras=="fixed"?-1:integer(extras,0,4);
+            schedule.availableOnly=one(options,"--hiring-availability","all")=="available";
+            schedule.coordinate=one(options,"--hiring-diversity","independent")=="rounds";
+            schedule.split=parts[3]=="split";schedule.parallel=one(options,"--hiring-execution","pool")=="pool";
+            const auto telemetry=many(options,"--telemetry");schedule.score=std::find(telemetry.begin(),telemetry.end(),"hiring-shadow")!=telemetry.end();
+            HiringStudy::configureScheduled(schedule);
+        }
 		globals.load();
 		Engine engine;
 		engine.headlessOutput=output.string();
@@ -528,10 +558,11 @@ struct HeadlessRunner
 			engine.finishSession();
 			engine.gui.game.map.finishGradientPipeline(); engine.gui.game.map.finishResourceGrowth();
 			if(!measureStart || engine.gui.game.stepCounter<=start) throw std::runtime_error("game ended before benchmark measurement");
+			HiringStudy::drain(engine.gui.game);
 			runCpu=processCpuNs()-measureStart;
 			measuredTicks=engine.gui.game.stepCounter-start;
 		}
-		else { engine.run(); engine.gui.game.map.finishGradientPipeline(); engine.gui.game.map.finishResourceGrowth(); }
+		else { engine.run(); engine.gui.game.map.finishGradientPipeline(); engine.gui.game.map.finishResourceGrowth(); HiringStudy::drain(engine.gui.game); }
 		if (engine.diagnostics) engine.diagnostics->finish();
 		const auto runEnd = std::chrono::steady_clock::now();
 		const auto saveCpuStart=benchmark?processCpuNs():0;
@@ -570,6 +601,9 @@ struct HeadlessRunner
 				if(game.teams[t] && game.teams[t]->winCondition==WCWinProbability)
 					termination="win_probability";
 		}
+        if(options.count("--hiring-schedule")){std::ofstream hiring(output/"hiring-compute.json");HiringStudy::write(hiring);if(!hiring)throw std::runtime_error("cannot write hiring compute study");}
+        for(const auto& telemetry:many(options,"--telemetry")) if(telemetry=="hiring-shadow") { std::ofstream shadow(output/"hiring-shadow.json"); HiringStudy::write(shadow); if(!shadow)throw std::runtime_error("cannot write hiring shadow study"); }
+		if (HiringDiagnostics::enabled()) { std::ofstream hiring(output/"hiring-stats.json"); HiringDiagnostics::write(hiring); if(!hiring) throw std::runtime_error("cannot write hiring statistics"); }
 		result << "{\"schema_version\":1,\"job_type\":\"game\",\"status\":\"completed\",\"ticks\":" << game.stepCounter
 			<< ",\"initialChecksum\":" << initialChecksum
 			<< ",\"finalChecksum\":" << game.checkSum(nullptr, nullptr, nullptr, true)
@@ -831,7 +865,7 @@ int runHeadlessCommand(const Cli::Request &request)
 			GlobalContainer globals("glob2-tournament-catalog");
 			globalContainer=&globals;for(const auto &directory:request.all("--data-dir"))globals.fileManager->addDir(directory);globals.runNoX=true;
 			std::cout << "{\"schema_version\":1,\"save_version\":" << VERSION_MINOR << ",\"protocol_version\":" << NET_PROTOCOL_VERSION
-				<< ",\"building_catalog_hash\":" << quote(globals.buildingsTypes.fingerprint()) << ",\"map_report_version\":2,\"generation_telemetry_version\":1,\"gameplay_telemetry_version\":2,\"ai_telemetry_version\":1,\"performance_telemetry_version\":1,\"commands\":[\"game\",\"generate_map\",\"verify_match\",\"sim_version\",\"compose_buildings\",\"validate_set\"],\"sim_version\":" << Online::currentSimVersion().toJson().dump() << ",\"verify_match_version\":1,\"telemetry\":[\"checksums\",\"team-timeline\",\"maxima\",\"gradient-stats\"],\"ais\":[";
+				<< ",\"building_catalog_hash\":" << quote(globals.buildingsTypes.fingerprint()) << ",\"map_report_version\":2,\"generation_telemetry_version\":1,\"gameplay_telemetry_version\":2,\"ai_telemetry_version\":1,\"performance_telemetry_version\":1,\"commands\":[\"game\",\"generate_map\",\"verify_match\",\"sim_version\",\"compose_buildings\",\"validate_set\"],\"sim_version\":" << Online::currentSimVersion().toJson().dump() << ",\"verify_match_version\":1,\"telemetry\":[\"checksums\",\"team-timeline\",\"maxima\",\"gradient-stats\",\"hiring-stats\",\"hiring-shadow\"],\"ais\":[";
 
 			bool comma=false;
 			for(int ai:AINames::selectionOrder())

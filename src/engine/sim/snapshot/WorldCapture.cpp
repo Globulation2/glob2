@@ -1,3 +1,6 @@
+#include "SharedBuildingGradient.h"
+#include "HiringStudy.h"
+#include "HiringDiagnostics.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "WorldSnapshot.h"
 #include "SnapshotStorage.h"
@@ -143,7 +146,7 @@ Handle capture(const Game& game,
 	auto* rules = rulesOwner ? rulesOwner.get() : &unusedRules;
 	// Map buffers keep their constructed range when reused. Overwrite selected
 	// arrays directly rather than clearing and growing them one cell at a time.
-	entities->relationships.clear(); entities->projects.clear();
+	entities->funding.clear(); entities->relationships.clear(); entities->projects.clear();
     entities->extraProduction.clear();
     if (needs(requirements, Component::Entities)) entities->unitCargo = game.unitCargo;
 	if (needs(requirements, Component::Entities)) {
@@ -322,6 +325,7 @@ Handle capture(const Game& game,
 		}
 		if (needs(requirements, Component::Teams)) {
 		auto& target = teams->values[t]; target.number = t;
+        target.supplierPresence=(!team->stockSuppliers.empty()?1:0)|(!team->directStockSuppliers.empty()?2:0);
 		target.virtualBuildings.clear(); target.swarms.clear();
 		target.prestige = team->prestige; target.alive = team->isAlive;
 		target.startX = team->startPosX; target.startY = team->startPosY;
@@ -365,7 +369,7 @@ Handle capture(const Game& game,
 				slot = Uint32(buildingRecordCount);
 				auto& v = entities->buildings[buildingRecordCount++];
 				std::memcpy(static_cast<BuildingStateRecord*>(&v), static_cast<const BuildingStateRecord*>(b), sizeof(BuildingStateRecord));
-				v.identity = Game::refOf(b); v.team = t;
+				v.identity = Game::refOf(b); v.team = t;v.fundingOffset=Entities::NoRecord;
                 for (unsigned id=0; id<BuiltinUnitCount; ++id) v.constructionOriginRatios[id]=b->originProductionRatio(id);
                 v.extraProductionOffset = Uint32(entities->extraProduction.size());
                 v.extraProductionCount = Uint32(b->extraProductionRatios.size());
@@ -404,6 +408,25 @@ Handle capture(const Game& game,
 	}
 	entities->buildings.resize(buildingRecordCount);
 	entities->units.resize(unitRecordCount);
+
+    if(needs(requirements,Component::Entities)) {
+        static_assert(Team::MAX_COUNT<=std::numeric_limits<Uint16>::max());
+        const bool timed=HiringDiagnostics::enabled();
+        const auto start=timed?std::chrono::steady_clock::now():std::chrono::steady_clock::time_point{};
+        std::uint64_t growths=0;
+        const auto nonzero=[](const auto& values){return std::any_of(values.begin(),values.end(),[](auto value){return value!=0;});};
+        for(auto& v:entities->buildings) {
+            const auto* b=game.resolveBuilding(v.identity);
+            if(!b)throw std::logic_error("snapshot funding lost building");
+            if(nonzero(b->constructionBudget)||nonzero(b->constructionReserved)||nonzero(b->reservedMaterials)) {
+                v.fundingOffset=Uint32(entities->funding.size());
+                growths+=entities->funding.size()==entities->funding.capacity();
+                append(entities->funding,FundingState{b->constructionBudget,b->constructionReserved,b->reservedMaterials});
+            }
+        }
+        const auto ns=timed?std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now()-start).count():0;
+        HiringStudy::recordCapture(ns,entities->funding.size()*sizeof(FundingState)+entities->buildings.size()*sizeof(Uint32)+entities->units.size()*sizeof(Uint16)+game.teamsCount()*sizeof(Uint8),growths,entities->funding.size()*sizeof(FundingState));
+    }
 
     if (auto session=acquire(&Storage::session,Component::Session)) {
         session->editor=game.edit!=nullptr;
@@ -454,6 +477,7 @@ Handle capture(const Game& game,
             if (b->verbose==1 || b->verbose==2) {
                 int swim=b->verbose==1 ? 0 : 1;
                 while (b->verbose==2 && swim<SWIM_CLASS_COUNT-1 && !b->globalGradient[swim]) ++swim;
+                auto guard=SharedBuildingGradient::lock(b->sharedGradient[swim]);
                 if (b->globalGradient[swim]) value.gradient.assign(b->globalGradient[swim],b->globalGradient[swim]+cellCount);
             }
             diagnostics->buildings.push_back(std::move(value));
@@ -623,6 +647,10 @@ void verifyCapture(const Game& game, const Handle& handle)
             const auto* liveBuilding=game.resolveBuilding(building.identity);
             if (!liveBuilding || building.extraProductionCount!=liveBuilding->extraProductionRatios.size())
                 throw std::logic_error("snapshot verification: production storage differs from the game");
+            static const FundingState emptyFunding{};
+            const auto& funding=building.fundingOffset==Entities::NoRecord?emptyFunding:handle.entities->funding.at(building.fundingOffset);
+            if(funding.constructionBudget!=liveBuilding->constructionBudget || funding.constructionReserved!=liveBuilding->constructionReserved || funding.reservedMaterials!=liveBuilding->reservedMaterials)
+                throw std::logic_error("snapshot verification: funding differs from the game");
             for (unsigned id=0;id<BuiltinUnitCount;++id)
                 if (building.constructionOriginRatios[id]!=liveBuilding->originProductionRatio(id))
                     throw std::logic_error("snapshot verification: production origin differs from the game");

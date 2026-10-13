@@ -9,6 +9,12 @@
 
 ## What players see
 
+The cached-hiring study currently provides headless diagnostics only
+(`--telemetry hiring-stats` and `--telemetry hiring-shadow`). It does not register a
+`cached-hiring` match experiment or change recruitment. Advancing to a live experiment
+requires the study gates and the normal simulation, save, replay and network
+compatibility work. See [hiring measurements](../development/performance-telemetry.md#cost-and-sampling).
+
 - **Settings → Experiments** lists one switch per experiment in this build, with
   a line explaining what it changes. Building catalogs can declare additional
   switches with their own stable keys and English labels and help. Translations
