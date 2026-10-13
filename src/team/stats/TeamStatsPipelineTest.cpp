@@ -413,14 +413,23 @@ TEST_SUITE("TeamStatsPipeline")
         CHECK(restored.checkSum(true)==original.checkSum(true));
         CHECK(in.getPosition()==memory->getPosition());
     }
-	TEST_CASE("pause admits no statistics and published observations share the generation")
+	TEST_CASE("pure captures pause and waiting admit no statistics and readers share the generation")
 	{
 		glob2test::HeadlessGlobals globals;
 		glob2test::HeadlessGame w(glob2test::GameOptions{.loadDefaultRace = true});
 		w.addUnit(WORKER, 10, 10);
 		w.game.gameHeader.setTeamStatsDelay(0);
 		const auto before = w.team->stats.checkSum();
+		w.game.captureReadBoundary({.presentation = true});
+		CHECK(w.game.teamStatsMetrics().empty());
 		w.game.prepareReadBoundary(true, {.presentation = true});
+		CHECK(w.game.teamStatsMetrics().empty());
+		w.game.anyPlayerWaited = true;
+		w.game.snapshots().invalidateBoundary();
+		w.game.prepareReadBoundary(false, {.presentation = true});
+		CHECK(w.game.teamStatsMetrics().empty());
+		w.game.anyPlayerWaited = false;
+		w.game.snapshots().invalidateBoundary();
 		CHECK(w.team->stats.checkSum() == before);
 		for (unsigned tick = 0; tick < 32; ++tick)
 		{

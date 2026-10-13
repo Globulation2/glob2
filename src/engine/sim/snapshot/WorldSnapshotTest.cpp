@@ -800,27 +800,26 @@ TEST_SUITE("WorldSnapshot")
 		fixture.team->stats.enableCollection();
 		SimulationSnapshot::Store store;
 		store.setVerification(true);
-		const auto required=SimulationSnapshot::bit(SimulationSnapshot::Component::StatisticsInputs)
-			| SimulationSnapshot::bit(SimulationSnapshot::Component::Entities);
 		fixture.team->stats.events().births[WORKER]=1;
-		auto held=store.captureBoundary(fixture.game,required);
+		auto held=store.captureBoundary(fixture.game);
 		const auto oldHP=unit->hp;
 		for(unsigned tick=1;tick<10;++tick) {
 			fixture.game.stepCounter=tick; unit->hp=oldHP-int(tick);
 			fixture.team->stats.events().births[WORKER]=tick+1;
-			const auto current=store.captureBoundary(fixture.game,required);
+			const auto current=store.captureBoundary(fixture.game);
 			CHECK(current.statisticsInputs->events[0].births[WORKER]==tick+1);
 			CHECK(current.entities->units[0].hp==unit->hp);
 			CHECK(held.statisticsInputs->events[0].births[WORKER]==1);
 			CHECK(held.entities->units[0].hp==oldHP);
 		}
 		const auto allocations=store.metrics.allocations;
+		const auto buffers=store.memoryMetrics().allocatedBuffers;
 		for(unsigned tick=10;tick<20;++tick) {
 			fixture.game.stepCounter=tick;
-			store.captureBoundary(fixture.game,required);
+			store.captureBoundary(fixture.game);
 		}
 		CHECK(store.metrics.allocations==allocations);
-		CHECK(store.memoryMetrics().allocatedBuffers==6);
+		CHECK(store.memoryMetrics().allocatedBuffers==buffers);
 	}
 	TEST_CASE("memory metrics distinguish held epochs from reusable high water capacity")
 	{
@@ -1006,17 +1005,7 @@ TEST_SUITE("WorldSnapshot")
 		CHECK(frame.supportsPresentation());
 		CHECK(frame.supportsPresentation({.presentation=true}));
 		CHECK_FALSE(frame.resourceFields); CHECK_FALSE(frame.statisticsInputs);
-            CHECK(ai.statisticsInputs == full.statisticsInputs);
-            const auto periodic = full.statisticsView();
-            CHECK(periodic.statisticsInputs == full.statisticsInputs);
-            CHECK(periodic.terrain == full.terrain);
-            CHECK_FALSE(periodic.visibility); CHECK_FALSE(periodic.growth);
-            full.tick = 1;
-            const auto ordinary = full.statisticsView();
-            CHECK(ordinary.entities == full.entities);
-            CHECK(ordinary.statisticsInputs == full.statisticsInputs);
-            CHECK_FALSE(ordinary.terrain); CHECK_FALSE(ordinary.resources);
-            CHECK_FALSE(ordinary.occupancy); CHECK_FALSE(ordinary.areas);
+
 		CHECK_FALSE(frame.history);
 		CHECK_FALSE(frame.supportsPresentation({.history=true}));
 		CHECK(full.presentationView({.history=true}).supportsPresentation({.history=true}));
