@@ -77,3 +77,9 @@ Use ordinary wall-clock scopes for parallel comparisons: `PROFILE_CPU_SCOPES=1`
 measures only the calling thread and cannot attribute worker CPU time. Run separate
 `PROFILE_COMPUTE_TELEMETRY=trace` diagnostics to examine executor activity and owner
 waits; keep telemetry configuration identical within each comparison.
+Set `PROFILE_COMPUTE_TRACE=artifacts/renderer/compute.json` with trace telemetry
+to retain per-callback timestamps after the final drawing segment has joined.
+Compare callback duration tails separately from whole-frame timing; fewer jobs
+alone mechanically reduce summed queue time. Interactive benchmarks use their
+external FPS schedule as the sole pacer and retain the ordinary render admission
+boundary, so two independent pacers cannot skip measurement opportunities.

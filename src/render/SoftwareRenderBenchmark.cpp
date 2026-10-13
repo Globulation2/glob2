@@ -21,6 +21,7 @@
 #include <algorithm>
 #include <chrono>
 #include <cstdio>
+#include <fstream>
 #include <cstdlib>
 #include <vector>
 #ifdef WIN32
@@ -95,13 +96,15 @@ static void interactiveBenchmark()
     if (fps < 1 || fps > 1000 || seconds <= 0 || seconds > 3600)
         throw std::runtime_error("Invalid interactive benchmark duration or FPS");
     const Uint64 period = 1000000000ULL / fps;
-    globalContainer->gfx->setTargetRenderFps(fps);
+    // The schedule below is the sole pacing authority for this probe.
+    globalContainer->gfx->setTargetRenderFps(0);
     engine.beginSession(SDL_GetTicks());
     if (!engine.startSimulationThread(SDL_GetTicks()))
         throw std::runtime_error("Interactive benchmark requires a simulation thread");
     std::vector<double> draw, age, lateness;
     unsigned missed = 0, opportunities = 0;
     const auto began = SDL_GetTicksNS();
+    const double cpuBegan = cpu();
     auto due = began;
     while (SDL_GetTicksNS() - began < seconds * 1e9)
     {
@@ -141,10 +144,12 @@ static void interactiveBenchmark()
         if (end > due + period)
             due = end; // No catch-up drawing after a missed frame.
     }
+    const double totalCpu = cpu() - cpuBegan;
     engine.stopSimulationThread();
     printf("interactive frames=%zu opportunities=%u undrawn_opportunities=%zu "
            "missed_render_deadlines=%u period_ns=%llu\n", draw.size(), opportunities,
            opportunities - draw.size(), missed, (unsigned long long)period);
+    printf("process_cpu_ms_per_frame=%.4f\n", totalCpu * 1000 / draw.size());
     distribution("draw_and_present", draw);
     distribution("displayed_scene_age", age);
     distribution("last_simulation_deadline_lateness", lateness);
@@ -434,6 +439,13 @@ static void interactiveBenchmark()
                    field(graphics.queueNs-initialGraphics.queueNs,graphicsAvailable).c_str(),
                    field(graphics.activeNs-initialGraphics.activeNs,graphicsAvailable).c_str(),
                    field(graphics.waitNs-initialGraphics.waitNs,computeMode!=ComputeTelemetryMode::Off).c_str());
+            if (const char *path = std::getenv("PROFILE_COMPUTE_TRACE")) {
+                gfx->getSDLSurface(); // Fence the final segment before observing drained work.
+                std::ofstream output(path);
+                if (!output) throw std::runtime_error("Cannot open compute trace output");
+                ComputeTelemetry::writeJson(output, gui.game.map.computeExecutor().telemetrySnapshot(true));
+                if (!output) throw std::runtime_error("Cannot write compute trace output");
+            }
 			PerformanceTelemetry::collector().write(std::cout, "profile", gui.game.stepCounter,
 													false);
 			if (const char *p = getenv("PROFILE_CAPTURE"))
