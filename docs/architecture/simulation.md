@@ -492,6 +492,13 @@ and writes `gradient-mismatch-*.bin` in the artifact directory with geometry, ca
 family, seeds, expected/actual fields and packed costs. Verification has separate
 CPU timing and should be disabled for performance comparisons. There is no
 automatic policy, calibration or tuning.
+Opt-in native host diagnostics partition CPU and elapsed time into exclusive
+phases and retain the admitted diagnostic decision through recovery. Device
+completion and publication remain separate counters. Missing CPU clocks remain
+unavailable, including in browsers. Result-file snapshots precede teardown;
+complete process CPU measurement must include final drain and exit. See
+[gradient benchmarks](../development/gradient-benchmarks.md) for attribution
+windows and counter semantics.
 `GLOB2_GRADIENT_VERIFY` accepts `1/on/true` and `0/off/false`; explicit CLI choices
 take precedence. Unknown values disable verification. Standalone CPU benchmarks
 force verification off and bucket propagation so inherited game settings cannot

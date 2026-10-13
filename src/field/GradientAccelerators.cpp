@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "GradientAccelerators.h"
+#include "GradientDiagnostics.h"
 #include "OpenCLGradient.h"
 #include <SDL3/SDL_platform_defines.h>
 #include <filesystem>
@@ -147,6 +148,8 @@ void verifyGradientResult(const BackendRequest &request, std::span<const std::ui
 	const auto verificationStart = monotonicNs();
 	const auto b =
 		normalizedConfiguration(request.capturedConfiguration.value_or(configuration())).backend;
+	GradientProfileSession profile(b, request.diagnostics ? *request.diagnostics : gradientProfilingRequested());
+    GradientPhaseScope phase(GradientPhase::ShadowVerification);
 	const auto bytes = original.size_bytes();
 	if (!reserveOpenCLHostBytes(bytes))
 		throw std::runtime_error("Gradient verification host budget exceeded");
