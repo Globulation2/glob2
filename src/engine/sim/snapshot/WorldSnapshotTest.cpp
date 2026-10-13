@@ -963,23 +963,28 @@ TEST_SUITE("WorldSnapshot")
 	TEST_CASE("presentation upgrades refresh entities after each owner boundary change")
 	{
 		glob2test::HeadlessGlobals globals;
-		glob2test::HeadlessGame fixture{glob2test::GameOptions{.wDec=5, .hDec=5, .teams=1, .loadDefaultRace=true}};
-		auto& game = fixture.game;
-		auto* unit = fixture.addUnit(WORKER, 12, 12, 0);
-		REQUIRE(unit);
-		SimulationSnapshot::Store store;
-		const auto before = store.captureBoundary(game);
-		const auto oldHp = unit->hp;
-		--unit->hp;
-		SUBCASE("advancing tick") { ++game.stepCounter; }
-		SUBCASE("paused edit") { store.invalidateBoundary(); }
-		SUBCASE("configuration revision") { game.gameHeader.setAIOrderDelay(1); }
-		SUBCASE("map generation") { game.map.setResourceByIndex(20, 20, WHEAT, 1); }
-		SUBCASE("store reset") { store.reset(); }
-		const auto after = store.captureBoundary(game, {.presentation=true});
-		CHECK(after.entities != before.entities);
-		CHECK(after.entities->units.front().hp == oldHp - 1);
-		CHECK(before.entities->units.front().hp == oldHp);
+		for (unsigned change = 0; change < 5; ++change) {
+			CAPTURE(change);
+			glob2test::HeadlessGame fixture{glob2test::GameOptions{.wDec=5, .hDec=5, .teams=1, .loadDefaultRace=true}};
+			auto& game = fixture.game;
+			auto* unit = fixture.addUnit(WORKER, 12, 12, 0);
+			REQUIRE(unit);
+			SimulationSnapshot::Store store;
+			const auto before = store.captureBoundary(game);
+			const auto oldHp = unit->hp;
+			--unit->hp;
+			switch (change) {
+			case 0: ++game.stepCounter; break;
+			case 1: store.invalidateBoundary(); break;
+			case 2: game.gameHeader.setAIOrderDelay(1); break;
+			case 3: game.map.setResourceByIndex(20, 20, WHEAT, 1); break;
+			case 4: store.reset(); break;
+			}
+			const auto after = store.captureBoundary(game, {.presentation=true});
+			CHECK(after.entities != before.entities);
+			CHECK(after.entities->units.front().hp == oldHp - 1);
+			CHECK(before.entities->units.front().hp == oldHp);
+		}
 	}
 	TEST_CASE("same boundary entity reuse is excluded from copied byte accounting")
 	{
