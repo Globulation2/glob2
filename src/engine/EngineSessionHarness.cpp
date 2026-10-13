@@ -386,9 +386,23 @@ TEST_SUITE("EngineSession")
                 if (engine.runner) REQUIRE(engine.runner->acquireScene());
                 else REQUIRE(engine.serialPresentation->acquire());
             };
+            const auto simulationOnly=[](const SimulationSnapshot::Handle& world) {
+                CHECK_NOTHROW(world.simulationView());
+                REQUIRE(world.entities);
+                REQUIRE(world.resourceFields);
+                REQUIRE(world.statisticsInputs);
+                CHECK_FALSE(world.session);
+                CHECK_FALSE(world.effects);
+                CHECK_FALSE(world.statistics);
+            };
             engine.gui.recordTick(1000,33);
             camera(0);
-            engine.openReadBoundary(true);
+            const auto initial=engine.openReadBoundary(false);
+            simulationOnly(initial);
+            CHECK_FALSE(engine.retainedPresentation);
+            const auto firstFrame=engine.openReadBoundary(true);
+            CHECK(firstFrame.entities==initial.entities);
+            CHECK(firstFrame.supportsPresentation());
             finish();
 
             // A completed camera refresh consumes the client request before the
@@ -410,19 +424,23 @@ TEST_SUITE("EngineSession")
             engine.refreshRetainedPresentation();
             ++game.stepCounter;
             engine.gui.recordTick(1066,33);
-            engine.openReadBoundary(true);
+            const auto busy=engine.openReadBoundary(true);
+            simulationOnly(busy);
             CHECK(engine.retainedPresentation->world.tick==game.stepCounter-1);
             finish();
             camera(3);
             const auto retained=engine.retainedPresentation;
             engine.refreshRetainedPresentation();
             CHECK(engine.retainedPresentation==retained);
-            engine.openReadBoundary(true);
+            const auto admitted=engine.openReadBoundary(true);
+            CHECK(admitted.entities==busy.entities);
+            CHECK(admitted.supportsPresentation());
             REQUIRE(engine.retainedPresentation->world.tick==game.stepCounter);
             CHECK(engine.retainedPresentation->request.tickTime==1066);
             finish();
 
             // Camera-only refreshes remain available while game time is stopped.
+            engine.gui.gamePaused=true;
             const auto captures=game.snapshots().metrics.captures;
             camera(4);
             engine.refreshRetainedPresentation();

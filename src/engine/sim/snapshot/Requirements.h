@@ -3,8 +3,8 @@
 #include <SDL3/SDL_stdinc.h>
 namespace SimulationSnapshot
 {
-// Every boundary contains the complete simulation view. Interactive callers add
-// the ordinary presentation payload; only cold UI/diagnostic data is optional.
+// Every boundary contains the complete simulation view. Admitted presentation
+// and diagnostics add their payloads without changing that simulation view.
 struct CaptureOptions
 {
  bool presentation = false;
