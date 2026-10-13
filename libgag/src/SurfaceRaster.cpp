@@ -8,6 +8,10 @@
 #include <vector>
 #include <memory>
 #include <cstdint>
+#include <limits>
+#if defined(__SSE2__)
+#include <emmintrin.h>
+#endif
 
 namespace GAGCore::SurfaceRaster
 {
@@ -355,9 +359,313 @@ void nativeAlpha(SDL_Surface *target, SDL_Surface *source, SDL_Rect src, SDL_Rec
     SDL_UnlockSurface(source);
 }
 
+// Portable commands carry resolved pixels and modulation. The sum is divided
+// once, rather than rounding source and destination terms independently. All
+// products fit sixteen-bit lanes and the /255 identity is exact for 0..65025.
+Uint32 divide255(Uint32 value) { return (value + 1 + (value >> 8)) >> 8; }
+Uint32 packedDivide255(Uint32 value)
+{
+    return ((value + 0x00010001 + ((value >> 8) & 0x00ff00ff)) >> 8) & 0x00ff00ff;
+}
+Uint32 packChannels(Uint32 r, Uint32 g, Uint32 b, Uint32 a,
+                    const SDL_PixelFormatDetails &format)
+{
+    return (r << format.Rshift) | (g << format.Gshift) | (b << format.Bshift) |
+           (format.Amask ? a << format.Ashift : 0);
+}
+Uint32 portableBlend(Uint32 value, Uint32 original, Uint32 alpha,
+                     const SDL_PixelFormatDetails &format)
+{
+    const Uint32 inverse = 255 - alpha;
+    const Uint32 rb = packedDivide255((value & 0x00ff00ff) * alpha +
+                                      (original & 0x00ff00ff) * inverse);
+    const Uint32 ga = packedDivide255(((value >> 8) & 0x00ff00ff) * alpha +
+                                      ((original >> 8) & 0x00ff00ff) * inverse);
+    const Uint32 outAlpha = alpha + divide255(((original & format.Amask) >> format.Ashift) * inverse);
+    return ((rb | (ga << 8)) & (format.Rmask | format.Gmask | format.Bmask)) |
+           (format.Amask ? outAlpha << format.Ashift : 0);
+}
+// Filtering stays in premultiplied space: invisible RGB cannot bleed into the
+// edge. Coordinates always refer to the whole sprite, independent of the tile.
+void linearCommand(const RasterCommand &command, WritablePixelView target,
+                   int left, int top, int right, int bottom)
+{
+    const auto &src = command.sourceRect;
+    const auto &source = command.source;
+    const auto &dst = command.destinationFloat;
+    if (!std::isfinite(dst.x) || !std::isfinite(dst.y) || !std::isfinite(dst.w) ||
+        !std::isfinite(dst.h) || dst.w <= 0 || dst.h <= 0 || src.x < 0 || src.y < 0 ||
+        std::int64_t(src.x) + src.w > source.width || std::int64_t(src.y) + src.h > source.height)
+        return;
+    const auto &sf = source.format;
+    const auto &tf = target.format;
+    for (int y = top; y < bottom; ++y)
+    {
+        const float v = std::clamp((y - dst.y + .5f) * src.h / dst.h - .5f, 0.f, float(src.h - 1));
+        const int y0 = int(v), y1 = std::min(y0 + 1, src.h - 1);
+        const float fy = v - y0;
+        auto *output = reinterpret_cast<Uint32 *>(target.pixels + std::ptrdiff_t(y) * target.pitch);
+        const auto *row0 = reinterpret_cast<const Uint32 *>(source.pixels + std::ptrdiff_t(src.y + y0) * source.pitch);
+        const auto *row1 = reinterpret_cast<const Uint32 *>(source.pixels + std::ptrdiff_t(src.y + y1) * source.pitch);
+        for (int x = left; x < right; ++x)
+        {
+            const float u = std::clamp((x - dst.x + .5f) * src.w / dst.w - .5f, 0.f, float(src.w - 1));
+            const int x0 = int(u), x1 = std::min(x0 + 1, src.w - 1);
+            const float fx = u - x0;
+            const float weights[]{(1-fx)*(1-fy), fx*(1-fy), (1-fx)*fy, fx*fy};
+            const Uint32 samples[]{row0[src.x+x0], row0[src.x+x1], row1[src.x+x0], row1[src.x+x1]};
+            float a = 0, r = 0, g = 0, b = 0;
+            for (unsigned i = 0; i < 4; ++i)
+            {
+                const float coverage = float(command.opaque || !sf.Amask ? 255 :
+                    (samples[i] & sf.Amask) >> sf.Ashift) * weights[i] / 255.f;
+                a += coverage;
+                r += ((samples[i] & sf.Rmask) >> sf.Rshift) * coverage;
+                g += ((samples[i] & sf.Gmask) >> sf.Gshift) * coverage;
+                b += ((samples[i] & sf.Bmask) >> sf.Bshift) * coverage;
+            }
+            const float fade = command.opacity / 255.f;
+            a *= fade; r *= fade; g *= fade; b *= fade;
+            r *= command.red / 255.f; g *= command.green / 255.f; b *= command.blue / 255.f;
+            const Uint32 original = output[x];
+            const auto channel = [a](float color, Uint32 original)
+            { return Uint32(std::clamp(std::lround(color + original * (1-a)), 0l, 255l)); };
+            output[x] = packChannels(channel(r, (original & tf.Rmask) >> tf.Rshift),
+                channel(g, (original & tf.Gmask) >> tf.Gshift),
+                channel(b, (original & tf.Bmask) >> tf.Bshift),
+                channel(a*255, (original & tf.Amask) >> tf.Ashift), tf);
+        }
+    }
+}
+#if defined(__SSE2__)
+// Four pixels share the scalar rule exactly. Restrict this path to alpha in the
+// high byte and RGB/BGR byte layouts; other packed formats use the same scalar
+// arithmetic below. SSE2 is baseline on x86-64, with no runtime ISA dependency.
+__m128i divide255Words(__m128i value)
+{
+    return _mm_srli_epi16(_mm_add_epi16(_mm_add_epi16(value, _mm_set1_epi16(1)),
+                                       _mm_srli_epi16(value, 8)), 8);
+}
+__m128i blendFour(__m128i source, __m128i destination, Uint8 opacity)
+{
+    const __m128i zero = _mm_setzero_si128();
+    const __m128i fade = _mm_set1_epi16(opacity), full = _mm_set1_epi16(255);
+    const __m128i alphaMask = _mm_set_epi16(-1, 0, 0, 0, -1, 0, 0, 0);
+    const auto pair = [=](__m128i src, __m128i dst)
+    {
+        auto alpha = _mm_shufflelo_epi16(src, _MM_SHUFFLE(3,3,3,3));
+        alpha = _mm_shufflehi_epi16(alpha, _MM_SHUFFLE(3,3,3,3));
+        alpha = divide255Words(_mm_mullo_epi16(alpha, fade));
+        const auto inverse = _mm_sub_epi16(full, alpha);
+        const auto destinationTerm = _mm_mullo_epi16(dst, inverse);
+        const auto rgb = divide255Words(_mm_add_epi16(_mm_mullo_epi16(src, alpha), destinationTerm));
+        const auto outAlpha = _mm_add_epi16(alpha, divide255Words(destinationTerm));
+        return _mm_or_si128(_mm_andnot_si128(alphaMask, rgb), _mm_and_si128(alphaMask, outAlpha));
+    };
+    return _mm_packus_epi16(pair(_mm_unpacklo_epi8(source, zero), _mm_unpacklo_epi8(destination, zero)),
+                            pair(_mm_unpackhi_epi8(source, zero), _mm_unpackhi_epi8(destination, zero)));
+}
+#endif
+std::int64_t nearestOffset(std::int64_t delta, int sourceExtent, int destinationExtent,
+                           RasterCommand::Sampling sampling)
+{
+    if (sampling == RasterCommand::Sampling::SDLNearest)
+    {
+        // SDL's uniform textured quad truncates a 16.16 step before walking
+        // pixel centers. Rational centers differ at exact sample boundaries.
+        const auto step = (std::int64_t(sourceExtent) << 16) / destinationExtent;
+        return (step/2 + delta*step) >> 16;
+    }
+    return (delta*2+1)*sourceExtent/(std::int64_t(destinationExtent)*2);
+}
+void portableCommand(const RasterCommand &command, WritablePixelView target,
+                     int left, int top, int right, int bottom, KernelMode mode)
+{
+    if (!command.opacity) return;
+#if !defined(__SSE2__)
+    (void)mode;
+#endif
+    if (command.kind == RasterCommand::Kind::Fill)
+    {
+#if defined(__SSE2__)
+        const auto &format=target.format;
+        const bool vectorFill=mode==KernelMode::Automatic && format.Amask==0xff000000 &&
+            format.Rbits==8 && format.Gbits==8 && format.Bbits==8 &&
+            (format.Rmask|format.Gmask|format.Bmask)==0x00ffffff;
+        // Fill opacity is separate from the packed color's stored alpha. Reuse
+        // the sprite kernel with fully covered source pixels to blend four at once.
+        const auto pixels=_mm_set1_epi32(command.color|0xff000000);
+#endif
+        for (int y = top; y < bottom; ++y)
+        {
+            auto *output = reinterpret_cast<Uint32 *>(target.pixels + std::ptrdiff_t(y) * target.pitch);
+            if (command.opacity == 255)
+                std::fill(output + left, output + right,
+                          (command.color & (target.format.Rmask | target.format.Gmask | target.format.Bmask)) | target.format.Amask);
+            else
+            {
+                int x=left;
+#if defined(__SSE2__)
+                if (vectorFill)
+                    for (;x<=right-4;x+=4)
+                    {
+                        const auto original=_mm_loadu_si128(reinterpret_cast<const __m128i *>(output+x));
+                        _mm_storeu_si128(reinterpret_cast<__m128i *>(output+x),blendFour(pixels,original,command.opacity));
+                    }
+#endif
+                for (;x<right;++x)
+                    output[x] = portableBlend(command.color, output[x], command.opacity, target.format);
+            }
+        }
+        return;
+    }
+    const auto &src = command.sourceRect;
+    if (src.w <= 0 || src.h <= 0 || !command.source.pixels) return;
+    if (command.sampling == RasterCommand::Sampling::LinearPremultiplied)
+    {
+        linearCommand(command, target, left, top, right, bottom);
+        return;
+    }
+    const auto &dst = command.destination;
+    const auto &source = command.source;
+    const auto &sf = source.format;
+    const auto &tf = target.format;
+    const bool nativeWidth = src.w == dst.w, nativeHeight = src.h == dst.h;
+    const bool unmodulated = command.red == 255 && command.green == 255 && command.blue == 255;
+    const bool sameRGB = sf.Rmask == tf.Rmask && sf.Gmask == tf.Gmask && sf.Bmask == tf.Bmask;
+    const bool copy = command.opaque && command.opacity == 255 && unmodulated &&
+                      sf.format == tf.format;
+    const auto sourceAddress = reinterpret_cast<std::uintptr_t>(source.pixels);
+    const auto targetAddress = reinterpret_cast<std::uintptr_t>(target.pixels);
+    const bool disjoint = source.pitch > 0 && target.pitch > 0 &&
+        (sourceAddress <= targetAddress ? targetAddress-sourceAddress >= std::size_t(source.pitch)*source.height
+                                         : sourceAddress-targetAddress >= std::size_t(target.pitch)*target.height);
+    if (copy && nativeWidth && disjoint)
+    {
+        const auto copyLeft = std::max(std::int64_t(left), std::int64_t(dst.x)-src.x);
+        const auto copyRight = std::min(std::int64_t(right), std::int64_t(dst.x)+source.width-src.x);
+        if (copyRight <= copyLeft) return;
+        for (int y = top; y < bottom; ++y)
+        {
+            const auto sy = std::int64_t(src.y) + (nativeHeight ? std::int64_t(y)-dst.y :
+                nearestOffset(std::int64_t(y)-dst.y, src.h, dst.h, command.sampling));
+            if (sy < 0 || sy >= source.height) continue;
+            const auto sx = std::int64_t(src.x)+copyLeft-dst.x;
+            auto *output = target.pixels + std::ptrdiff_t(y)*target.pitch + copyLeft*4;
+            const auto *input = source.pixels + sy*source.pitch + sx*4;
+            if (copyRight-copyLeft == 32) std::memcpy(output,input,128);
+            else std::memcpy(output,input,std::size_t(copyRight-copyLeft)*4);
+        }
+        return;
+    }
+    if (!nativeWidth && disjoint && right-left > 128)
+    {
+        // Owner execution uses the same bounded sampling scratch as a tile,
+        // without allocating a lookup or submitting another worker job.
+        for (int x = left; x < right;)
+        {
+            const int next = x + std::min(128, right-x);
+            portableCommand(command, target, x, top, next, bottom, mode);
+            x = next;
+        }
+        return;
+    }
+    std::array<std::int64_t, 128> columns;
+    const bool sampledColumns = !nativeWidth && right-left <= int(columns.size());
+    if (sampledColumns)
+        for (int x = left; x < right; ++x)
+            columns[x-left] = std::int64_t(src.x) + nearestOffset(std::int64_t(x)-dst.x, src.w, dst.w, command.sampling);
+#if defined(__SSE2__)
+    const bool vectorCopy = command.opaque && command.opacity == 255 && unmodulated;
+    const bool vectorBlend = disjoint && mode == KernelMode::Automatic && (!command.opaque || vectorCopy) &&
+        sf.Amask == 0xff000000 && tf.Amask == 0xff000000 &&
+        sf.Gmask == 0xff00 && tf.Gmask == 0xff00 &&
+        ((sf.Rmask == 0xff0000 && sf.Bmask == 0xff) || (sf.Rmask == 0xff && sf.Bmask == 0xff0000)) &&
+        ((tf.Rmask == 0xff0000 && tf.Bmask == 0xff) || (tf.Rmask == 0xff && tf.Bmask == 0xff0000));
+#endif
+    for (int y = top; y < bottom; ++y)
+    {
+        const auto sy = std::int64_t(src.y) + (nativeHeight ? std::int64_t(y)-dst.y :
+            nearestOffset(std::int64_t(y)-dst.y, src.h, dst.h, command.sampling));
+        if (sy < 0 || sy >= source.height) continue;
+        const auto *input = reinterpret_cast<const Uint32 *>(source.pixels + sy*source.pitch);
+        auto *output = reinterpret_cast<Uint32 *>(target.pixels + std::ptrdiff_t(y)*target.pitch);
+        int x = left;
+#if defined(__SSE2__)
+        if (vectorBlend)
+            for (; x <= right - 4; x += 4)
+            {
+                const auto sx0 = nativeWidth ? std::int64_t(src.x)+x-dst.x : columns[x-left];
+                const auto sx3 = nativeWidth ? sx0+3 : columns[x-left+3];
+                if (sx0 < 0 || sx3 >= source.width) break;
+                auto pixels = nativeWidth ? _mm_loadu_si128(reinterpret_cast<const __m128i *>(input+sx0)) :
+                    _mm_setr_epi32(input[sx0], input[columns[x-left+1]], input[columns[x-left+2]], input[sx3]);
+                if (!sameRGB)
+                    pixels = _mm_or_si128(_mm_and_si128(pixels, _mm_set1_epi32(0xff00ff00)),
+                        _mm_or_si128(_mm_slli_epi32(_mm_and_si128(pixels, _mm_set1_epi32(0xff)), 16),
+                                     _mm_srli_epi32(_mm_and_si128(pixels, _mm_set1_epi32(0xff0000)), 16)));
+                if (vectorCopy)
+                {
+                    if (!copy) pixels = _mm_or_si128(pixels, _mm_set1_epi32(0xff000000));
+                    _mm_storeu_si128(reinterpret_cast<__m128i *>(output+x), pixels);
+                    continue;
+                }
+                if (!unmodulated)
+                {
+                    const short first = tf.Rshift == 0 ? command.red : command.blue;
+                    const short third = tf.Rshift == 0 ? command.blue : command.red;
+                    const auto modulation = _mm_set_epi16(255, third, command.green, first,
+                                                          255, third, command.green, first);
+                    const auto zero = _mm_setzero_si128();
+                    pixels = _mm_packus_epi16(divide255Words(_mm_mullo_epi16(_mm_unpacklo_epi8(pixels, zero), modulation)),
+                                              divide255Words(_mm_mullo_epi16(_mm_unpackhi_epi8(pixels, zero), modulation)));
+                }
+                const auto previous = _mm_loadu_si128(reinterpret_cast<const __m128i *>(output+x));
+                auto blended = blendFour(pixels, previous, command.opacity);
+                if (command.forceOpaqueAlpha)
+                {
+                    // Tiny nonzero source alpha may vanish after opacity.
+                    const auto alpha = _mm_srli_epi32(pixels, 24);
+                    const auto product = _mm_mullo_epi16(alpha, _mm_set1_epi32(command.opacity));
+                    const auto effective = _mm_srli_epi32(_mm_add_epi32(_mm_add_epi32(product, _mm_set1_epi32(1)),
+                                                                      _mm_srli_epi32(product, 8)), 8);
+                    const auto covered = _mm_andnot_si128(_mm_cmpeq_epi32(effective, _mm_setzero_si128()),
+                                                         _mm_set1_epi32(0xff000000));
+                    blended = _mm_or_si128(blended, covered);
+                }
+                _mm_storeu_si128(reinterpret_cast<__m128i *>(output+x), blended);
+            }
+#endif
+        for (; x < right; ++x)
+        {
+            const auto sx = nativeWidth ? std::int64_t(src.x)+x-dst.x :
+                sampledColumns ? columns[x-left] :
+                std::int64_t(src.x)+nearestOffset(std::int64_t(x)-dst.x, src.w, dst.w, command.sampling);
+            if (sx < 0 || sx >= source.width) continue;
+            const Uint32 sample = input[sx];
+            // Blend NONE retains stored alpha on exact opaque copies. Other
+            // paths resolve alpha separately, including formats without alpha.
+            if (copy) { output[x] = sample; continue; }
+            const Uint32 alpha = divide255((command.opaque || !sf.Amask ? 255 :
+                (sample & sf.Amask) >> sf.Ashift)*command.opacity);
+            if (!alpha) continue;
+            Uint32 value = sample;
+            if (!sameRGB || !unmodulated)
+                value = packChannels(divide255(((sample & sf.Rmask) >> sf.Rshift)*command.red),
+                    divide255(((sample & sf.Gmask) >> sf.Gshift)*command.green),
+                    divide255(((sample & sf.Bmask) >> sf.Bshift)*command.blue), alpha, tf);
+            if (alpha == 255)
+                output[x] = (value & (tf.Rmask | tf.Gmask | tf.Bmask)) | tf.Amask;
+            else
+                output[x] = portableBlend(value, output[x], alpha, tf);
+            if (command.forceOpaqueAlpha) output[x] |= tf.Amask;
+        }
+    }
+}
+
 } // namespace
 
-void executeCommand(const RasterCommand &command, WritablePixelView target, SDL_Rect region)
+void executeCommand(const RasterCommand &command, WritablePixelView target, SDL_Rect region, KernelMode mode)
 {
     // Intersect with widened endpoints; callers resolve coordinates once.
     const auto &dst = command.destination;
@@ -373,6 +681,12 @@ void executeCommand(const RasterCommand &command, WritablePixelView target, SDL_
                                   std::int64_t(region.y) + region.h});
     if (right <= left || bottom <= top || dst.w <= 0 || dst.h <= 0)
         return;
+    if (command.blend == RasterCommand::Blending::Portable ||
+        (command.kind == RasterCommand::Kind::Fill && command.fillBlend == FillBlend::PortableSourceOver))
+    {
+        portableCommand(command, target, int(left), int(top), int(right), int(bottom), mode);
+        return;
+    }
     // Packed sixteen-bit lanes implement exact /255 with independent carries.
     // Triangle-style blending truncates source and destination terms separately.
     const auto lane = [](Uint32 value)
@@ -541,10 +855,10 @@ void executeCommand(const RasterCommand &command, WritablePixelView target, SDL_
     }
 }
 void executeRegion(std::span<const RasterCommand> commands, WritablePixelView target,
-                   SDL_Rect region)
+                   SDL_Rect region, KernelMode mode)
 {
     for (const auto &command : commands)
-        executeCommand(command, target, region);
+        executeCommand(command, target, region, mode);
 }
 
 void blit(SDL_Surface *target, SDL_Surface *source, const SDL_Rect &sourceRect,
@@ -614,29 +928,41 @@ void skinBlitFloat(SDL_Surface *target,SDL_Surface *source,const SDL_Rect &src,S
     if(!target || !source || !opacity || dst.w<=0 || dst.h<=0 || src.w<=0 || src.h<=0)return;
     if(source->format!=SDL_PIXELFORMAT_ARGB8888 || target->format!=SDL_PIXELFORMAT_ARGB8888)
         throw std::invalid_argument("Skin sprites require ARGB8888 surfaces");
-    const int left=int(std::ceil(dst.x-.5f)),top=int(std::ceil(dst.y-.5f));
-    const SDL_Rect bounds{left,top,int(std::ceil(dst.x+dst.w-.5f))-left,int(std::ceil(dst.y+dst.h-.5f))-top};
+    const double leftEdge=std::ceil(dst.x-.5f),topEdge=std::ceil(dst.y-.5f);
+    const double rightEdge=std::ceil(dst.x+dst.w-.5f),bottomEdge=std::ceil(dst.y+dst.h-.5f);
+    for (double edge : {leftEdge,topEdge,rightEdge,bottomEdge})
+        if (!std::isfinite(edge) || edge < std::numeric_limits<int>::min() ||
+            edge > std::numeric_limits<int>::max()) return;
+    if (rightEdge-leftEdge > std::numeric_limits<int>::max() ||
+        bottomEdge-topEdge > std::numeric_limits<int>::max()) return;
+    const int left=int(leftEdge),top=int(topEdge);
+    const SDL_Rect bounds{left,top,int(rightEdge-leftEdge),int(bottomEdge-topEdge)};
     SDL_Rect clip,visible;SDL_GetSurfaceClipRect(target,&clip);
     if(!SDL_GetRectIntersection(&bounds,&clip,&visible))return;
-    if(src.x<0 || src.y<0 || src.x+src.w>source->w || src.y+src.h>source->h)return;
+    if(src.x<0 || src.y<0 || std::int64_t(src.x)+src.w>source->w || std::int64_t(src.y)+src.h>source->h)return;
     check(SDL_LockSurface(source));
     if(!SDL_LockSurface(target)){SDL_UnlockSurface(source);throw std::runtime_error(SDL_GetError());}
-    for(int y=visible.y;y<visible.y+visible.h;++y)for(int x=visible.x;x<visible.x+visible.w;++x) {
-        const float u=std::clamp((x-dst.x+0.5f)*src.w/dst.w-0.5f,0.f,float(src.w-1));
-        const float v=std::clamp((y-dst.y+0.5f)*src.h/dst.h-0.5f,0.f,float(src.h-1));
-        const int x0=int(u),y0=int(v),x1=std::min(x0+1,src.w-1),y1=std::min(y0+1,src.h-1);
-        const float fx=u-x0,fy=v-y0,weights[]{(1-fx)*(1-fy),fx*(1-fy),(1-fx)*fy,fx*fy};
-        const auto pixel=[&](int a,int b){return reinterpret_cast<const Uint32 *>(static_cast<const Uint8 *>(source->pixels)+(src.y+b)*source->pitch)[src.x+a];};
-        const Uint32 samples[]{pixel(x0,y0),pixel(x1,y0),pixel(x0,y1),pixel(x1,y1)};
-        float a=0,r=0,g=0,b=0;
-        for(unsigned i=0;i<4;++i) {
-            const float coverage=float(samples[i]>>24)*weights[i]/255.f;
-            a+=coverage;r+=((samples[i]>>16)&255)*coverage;g+=((samples[i]>>8)&255)*coverage;b+=(samples[i]&255)*coverage;
-        }
-        const float fade=opacity/255.f; a*=fade;r*=fade;g*=fade;b*=fade;
-        auto &out=reinterpret_cast<Uint32 *>(static_cast<Uint8 *>(target->pixels)+y*target->pitch)[x];
-        const auto channel=[&](float color,unsigned original){return Uint32(std::clamp(std::lround(color+original*(1-a)),0l,255l));};
-        out=(channel(a*255,out>>24)<<24)|(channel(r,(out>>16)&255)<<16)|(channel(g,(out>>8)&255)<<8)|channel(b,out&255);
+    RasterCommand command;
+    command.kind = RasterCommand::Kind::Blit;
+    command.source = {static_cast<const Uint8 *>(source->pixels), source->w, source->h,
+                      source->pitch, *SDL_GetPixelFormatDetails(source->format)};
+    command.sourceRect = src;
+    command.destination = bounds;
+    command.destinationFloat = dst;
+    command.clip = clip;
+    command.opacity = opacity;
+    command.blend = RasterCommand::Blending::Portable;
+    command.sampling = RasterCommand::Sampling::LinearPremultiplied;
+    try
+    {
+        executeCommand(command, {static_cast<Uint8 *>(target->pixels), target->w, target->h,
+                       target->pitch, *SDL_GetPixelFormatDetails(target->format)}, visible);
+    }
+    catch (...)
+    {
+        SDL_UnlockSurface(target);
+        SDL_UnlockSurface(source);
+        throw;
     }
     SDL_UnlockSurface(target);SDL_UnlockSurface(source);
 }
@@ -648,7 +974,7 @@ void fill(SDL_Surface *target, SDL_Rect rect, Uint32 color, Uint8 alpha, FillBle
 	SDL_Rect clipped;
 	if (!SDL_GetRectIntersection(&rect, &targetClip, &clipped))
 		return;
-	if (alpha == 255 && blend != FillBlend::Native)
+	if (alpha == 255 && blend != FillBlend::Native && blend != FillBlend::PortableSourceOver)
 	{
 		check(SDL_FillSurfaceRect(target, &clipped, color));
 		return;

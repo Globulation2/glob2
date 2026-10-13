@@ -1567,6 +1567,49 @@ TEST_CASE("graphics adapter restores callback state on failure and never pumps o
     });
 #endif
 }
+TEST_CASE("synchronous graphics cancellation rejects incomplete output after draining" *
+          doctest::test_suite("ComputeExecutor"))
+{
+#ifndef __EMSCRIPTEN__
+    if constexpr (!GAGCore::ThreadSupport::available) return;
+    ComputeExecutor executor;
+    executor.configureTelemetry(ComputeTelemetryMode::Trace);
+    executor.configure(2);
+    std::promise<void> entered, release;
+    auto enteredFuture = entered.get_future();
+    auto released = release.get_future();
+    auto scene = executor.submitPresentation(1, [&](auto)
+    {
+        entered.set_value();
+        // A bounded wait also lets a failed assertion retire the executor.
+        released.wait_for(std::chrono::seconds(5));
+    });
+    REQUIRE(enteredFuture.wait_for(std::chrono::seconds(5)) == std::future_status::ready);
+    std::atomic<unsigned> drawn{0};
+    std::atomic<bool> admitted{false};
+    std::thread reconfigure([&]
+    {
+        const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(5);
+        while (executor.graphicsMetrics().batches == 0 &&
+               std::chrono::steady_clock::now() < deadline)
+            std::this_thread::yield();
+        admitted.store(executor.graphicsMetrics().batches == 1);
+        // The only worker is in scene preparation, so this cancels the pending
+        // raster batch. Its owner must wake before scene preparation is released.
+        executor.configure(1);
+    });
+    CHECK_THROWS_WITH_AS(executor.executePresentationJobs(3, [&](auto) { ++drawn; }),
+                         "Synchronous graphics batch was canceled", std::runtime_error);
+    CHECK(admitted.load());
+    CHECK(drawn.load() == 0);
+    CHECK_FALSE(scene->finished());
+    release.set_value();
+    reconfigure.join();
+    // Cancellation must leave no occupied graphics admission or callback state.
+    executor.executePresentationJobs(2, [&](auto) { ++drawn; });
+    CHECK(drawn.load() == 2);
+#endif
+}
 TEST_CASE("graphics adapter preserves occupied admission and serial finish shares the scene cap" *
           doctest::test_suite("ComputeExecutor"))
 {

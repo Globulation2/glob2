@@ -335,10 +335,14 @@ TEST_SUITE("SurfaceCoverage")
                 draw(*backend);
                 const auto operations = backend->operations();
                 const unsigned tilesPerJob = 16 / perTile;
-                const unsigned expectedJobs = (tileCount + tilesPerJob - 1) / tilesPerJob;
+                // Packing may make smaller jobs to expose useful concurrency.
+                // Its fixed reference ceiling still imposes this lower bound,
+                // and these nondense tiles require no spatial subdivision.
+                const unsigned minimumJobs = (tileCount + tilesPerJob - 1) / tilesPerJob;
                 REQUIRE(dispatcher.counts.size() == before + 1);
-                CHECK(dispatcher.counts.back() == expectedJobs);
-                CHECK(operations.rasterJobs == expectedJobs);
+                CHECK(dispatcher.counts.back() >= minimumJobs);
+                CHECK(dispatcher.counts.back() <= tileCount);
+                CHECK(operations.rasterJobs == dispatcher.counts.back());
                 CHECK(operations.rasterTiles == tileCount);
                 CHECK(operations.rasterReferences == tileCount * perTile);
                 CHECK(operations.rasterSerialBatches == 0);
@@ -348,13 +352,17 @@ TEST_SUITE("SurfaceCoverage")
                                       std::size_t(width) * 4) == 0);
             }
     }
-    TEST_CASE("dense raster tiles retain serial fallback before job packing")
+    TEST_CASE("dense raster tiles dispatch bounded regions instead of serializing the segment")
     {
-        struct NoJobs : PresentationWork
+        struct Jobs : PresentationWork
         {
-            void executePresentationJobs(std::size_t,
-                                         const std::function<void(std::size_t)> &) override
-            { FAIL("dense tiles must not dispatch optional work"); }
+            std::size_t dispatched = 0;
+            void executePresentationJobs(std::size_t count,
+                                         const std::function<void(std::size_t)> &job) override
+            {
+                dispatched += count;
+                for (std::size_t i = count; i > 0; --i) job(i - 1);
+            }
         } dispatcher;
         glob2test::ScopedEnvironment mode("GLOB2_RENDER_EXECUTION", "parallel");
         PresentationWorkScope scope(dispatcher);
@@ -363,10 +371,11 @@ TEST_SUITE("SurfaceCoverage")
         REQUIRE(target);
         auto backend = makeSoftwareRenderBackend(target.get());
         for (int i = 0; i < 17; ++i)
-            REQUIRE(backend->fillPixels({0, 0, 1, 1}, {31, 77, Uint8(i), 255}));
+            REQUIRE(backend->fillPixels({0, 0, 128, 128}, {31, 77, Uint8(i), 255}));
         backend->flush();
-        CHECK(backend->operations().rasterSerialBatches == 1);
-        CHECK(backend->operations().rasterJobs == 0);
+        CHECK(backend->operations().rasterSerialBatches == 0);
+        CHECK(dispatcher.dispatched > 1);
+        CHECK(backend->operations().rasterJobs == dispatcher.dispatched);
         Uint32 pixel = 0;
         std::memcpy(&pixel, target->pixels, 4);
         CHECK(pixel == 0xff1f4d10);
