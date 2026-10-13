@@ -87,15 +87,15 @@ void Game::observeUnpolledAI() {
  for(auto* controller:idle)controller->observe(world);
 }
 
-void Game::configureTurretTargeting(unsigned delay,unsigned refresh,unsigned capacity,unsigned margin,bool forecast,bool reusePreparation,bool profileCpu)
+void Game::configureTurretTargeting(unsigned delay,unsigned refresh,unsigned capacity,unsigned margin,bool profileCpu)
 {
- auto replacement=std::make_unique<TurretTargeting::Pipeline>(*this,TurretTargeting::Configuration{delay,refresh,capacity,margin,forecast,reusePreparation,profileCpu});
+ auto replacement=std::make_unique<TurretTargeting::Pipeline>(*this,TurretTargeting::Configuration{delay,refresh,capacity,margin,profileCpu});
  turretTargetingPipeline=std::move(replacement);
 }
 
 void Game::ensureTurretTargeting() const
 {
- if (!turretTargetingPipeline) turretTargetingPipeline=std::make_unique<TurretTargeting::Pipeline>(const_cast<Game&>(*this),TurretTargeting::Configuration{1,2,3,1});
+ if (!turretTargetingPipeline) turretTargetingPipeline=std::make_unique<TurretTargeting::Pipeline>(const_cast<Game&>(*this),TurretTargeting::Configuration{});
 }
 
 void Game::forgetTurret(BuildingRef identity) { if (turretTargetingPipeline) turretTargetingPipeline->forget(identity); }

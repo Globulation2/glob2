@@ -21,6 +21,13 @@ namespace
 {
 struct IdentityLess { bool operator()(BuildingRef a,BuildingRef b) const { return std::tie(a.gid,a.generation)<std::tie(b.gid,b.generation); } };
 constexpr std::size_t ShortlistLimit=32u*1024u*1024u;
+bool validRules(const Configuration& rules)
+{
+    return !((rules.delay!=1 && rules.delay!=2 && rules.delay!=4)
+        || (rules.refresh!=1 && rules.refresh!=2 && rules.refresh!=4)
+        || rules.delay+rules.refresh-1>4
+        || (rules.capacity!=2 && rules.capacity!=3 && rules.capacity!=4 && rules.capacity!=8 && rules.capacity!=16 && rules.capacity!=32) || rules.margin>2);
+}
 struct SourceSignature {
     BuildingRef identity; Uint32 epoch=0;
     int x=0,y=0,width=0,height=0,range=0,speed=0;
@@ -68,11 +75,6 @@ Uint64 recordDigest(const SourceSignature& source,const std::vector<Entry>& entr
 std::size_t recordBytes(std::size_t capacity) { return 768+capacity*16; }
 
 }
-// The allocation-ablation control grows three entries to a four-entry vector.
-// Reserve its worst output capacity even before workers finish.
-static unsigned outputReservation(const Configuration& rules)
-{ return rules.capacity==3 && !rules.reusePreparation ? 4 : rules.capacity; }
-
 struct Pipeline::State
 {
     struct Record { SourceSignature source; std::vector<Entry> entries; Uint32 observed=0; Uint64 digest=0; };
@@ -93,9 +95,9 @@ struct Pipeline::State
                     // worker happened to finish first. Only its index is needed.
                     if (previous) previous->prepare();
                     if (!observation) throw std::logic_error("Turret index input was released before preparation");
-                    const auto start=std::chrono::steady_clock::now();
+                    const auto start=profile ? std::chrono::steady_clock::now() : std::chrono::steady_clock::time_point{};
                     prepareIndex(*observation,previous ? previous->result : nullptr,profile);
-                    indexNs=std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now()-start).count();
+                    if (profile) indexNs=std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now()-start).count();
                     if (profile) preparedOnOwner=std::this_thread::get_id()==ownerThread;
                     result=observation->index;
                 } catch (...) { error=std::current_exception(); }
@@ -161,10 +163,10 @@ struct Pipeline::State
     void complete(Generation& generation) {
         if (!generation.batch.empty()) {
             const auto joinStart=rules.profileCpu ? threadCpuNs() : 0;
-            const auto start=std::chrono::steady_clock::now();
+            const auto start=rules.profileCpu ? std::chrono::steady_clock::now() : std::chrono::steady_clock::time_point{};
             try { executor.join(generation.batch); } catch (...) { generation.error=std::current_exception(); }
             if (rules.profileCpu) metrics.joinCpu+=threadCpuNs()-joinStart;
-            metrics.waitNs+=std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now()-start).count();
+            if (rules.profileCpu) metrics.waitNs+=std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now()-start).count();
             for (const auto& job:generation.jobs) {
                 metrics.planningCpu+=job->cpu;
                 if (job->ranOnOwner) metrics.ownerPlanningCpu+=job->cpu;
@@ -200,11 +202,7 @@ struct Pipeline::State
 };
 Pipeline::Pipeline(Game& game,Configuration rules):state(std::make_unique<State>(game,rules))
 {
-    if ((rules.delay!=1 && rules.delay!=2 && rules.delay!=4)
-        || (rules.refresh!=1 && rules.refresh!=2 && rules.refresh!=4)
-        || rules.delay+rules.refresh-1>4
-        || (rules.capacity!=2 && rules.capacity!=3 && rules.capacity!=4 && rules.capacity!=8 && rules.capacity!=16 && rules.capacity!=32) || rules.margin>2)
-        throw std::invalid_argument("Invalid turret targeting rules");
+    if (!validRules(rules)) throw std::invalid_argument("Invalid turret targeting rules");
     static_assert(ComputeExecutor::TurretHorizon>=4);
 }
 Pipeline::~Pipeline() { drain(); }
@@ -212,20 +210,10 @@ bool Pipeline::admissionPending(const Game& game,bool paused) const
 {
     return !paused && state->admitted!=game.stepCounter;
 }
-SimulationSnapshot::Requirements Pipeline::pendingRequirements(const Game& game,bool paused) const
-{
-    const auto& s=*state;
-    if (!admissionPending(game,paused)) return 0;
-    for (int team=0;team<game.mapHeader.getNumberOfTeams();++team)
-        if (due(game,team,s.rules)) for (const auto* turret:game.teams[team]->turrets)
-            if (turret->buildingState!=Building::DEAD && turret->runtime->shootSpeed>=256
-                && (!s.rules.forecast || refreshNeeded(turret->shootingCooldownRemaining(),turret->runtime->shootRhythm,s.rules.delay,s.rules.refresh))) return s.rules.reusePreparation ? targetingRequirements : requirements;
-    return 0;
-}
 void Pipeline::admit(const Game& game,const SimulationSnapshot::Handle& captured,bool paused)
 {
     auto& s=*state;
-    if (paused || s.admitted==game.stepCounter) return;
+    if (!admissionPending(game,paused)) return;
     const auto admissionStart=s.rules.profileCpu ? threadCpuNs() : 0;
     const auto sourceStart=admissionStart;
     // Boundary-local preparation table. Values are immutable and job-owned;
@@ -236,7 +224,7 @@ void Pipeline::admit(const Game& game,const SimulationSnapshot::Handle& captured
         std::vector<const Building*> selected;
         for (const auto* turret:game.teams[team]->turrets) {
             if (turret->buildingState==Building::DEAD || turret->runtime->shootSpeed<256) continue;
-            if (s.rules.forecast && !refreshNeeded(turret->shootingCooldownRemaining(),turret->runtime->shootRhythm,s.rules.delay,s.rules.refresh)) { ++s.metrics.skipped; continue; }
+            if (!refreshNeeded(turret->shootingCooldownRemaining(),turret->runtime->shootRhythm,s.rules.delay,s.rules.refresh)) { ++s.metrics.skipped; continue; }
             selected.push_back(turret);
         }
         if (selected.empty()) continue;
@@ -253,23 +241,21 @@ void Pipeline::admit(const Game& game,const SimulationSnapshot::Handle& captured
         }
         for (const auto* turret:selected) {
             std::shared_ptr<const std::vector<int>> damage; Uint64 rowDigest=0;
-            if (s.rules.reusePreparation) {
-                auto [it,inserted]=rows.try_emplace(turret->runtime->interactions);
-                if (inserted) {
-                    auto row=std::make_shared<std::vector<int>>(); row->reserve(turret->runtime->unitCount);
-                    rowDigest=SimulationSnapshot::DigestSeed;
-                    for (unsigned id=0;id<turret->runtime->unitCount;++id) {
-                        const auto value=turret->runtime->damage(id); row->push_back(value);
-                        rowDigest=SimulationSnapshot::digestWord(rowDigest,Uint32(value));
-                    }
-                    it->second={std::move(row),rowDigest};
+            auto [it,inserted]=rows.try_emplace(turret->runtime->interactions);
+            if (inserted) {
+                auto row=std::make_shared<std::vector<int>>(); row->reserve(turret->runtime->unitCount);
+                rowDigest=SimulationSnapshot::DigestSeed;
+                for (unsigned id=0;id<turret->runtime->unitCount;++id) {
+                    const auto value=turret->runtime->damage(id); row->push_back(value);
+                    rowDigest=SimulationSnapshot::digestWord(rowDigest,Uint32(value));
                 }
-                damage=it->second.first; rowDigest=it->second.second;
+                it->second={std::move(row),rowDigest};
             }
+            damage=it->second.first; rowDigest=it->second.second;
             job->sources.push_back(source(*turret,std::move(damage),rowDigest)); ++s.metrics.sources;
         }
-        generation->reserved+=job->sources.size()*recordBytes(outputReservation(s.rules));
-        if (!job->sources.empty()) generation->jobs.push_back(std::move(job));
+        generation->reserved+=job->sources.size()*recordBytes(s.rules.capacity);
+        generation->jobs.push_back(std::move(job));
     }
     if (s.rules.profileCpu) s.metrics.sourceCpu+=threadCpuNs()-sourceStart;
     if (!generation) { if (s.rules.profileCpu) s.metrics.admissionCpu+=threadCpuNs()-admissionStart; s.admitted=game.stepCounter; return; }
@@ -277,8 +263,8 @@ void Pipeline::admit(const Game& game,const SimulationSnapshot::Handle& captured
     // than resolving the entire published table on every simulation tick.
     if (generation->reserved>ShortlistLimit-s.reservations-s.publishedStorage()) { s.reclaimDead(game); s.published.shrink_to_fit(); }
     if (generation->reserved>ShortlistLimit-s.reservations-s.publishedStorage())
-        throw std::length_error("Turret shadow shortlist storage bound exceeded");
-    generation->observation=std::make_unique<Observation>(observe(game,captured,&s.indexCache,s.rules.reusePreparation,s.rules.profileCpu,true));
+        throw std::length_error("Turret shortlist storage bound exceeded");
+    generation->observation=std::make_unique<Observation>(observe(game,captured,&s.indexCache,s.rules.profileCpu,true));
     generation->inputDigest=generation->observation->logicalDigest;
     for (const auto& job:generation->jobs) for (const auto& source:job->sources)
         generation->inputDigest=SimulationSnapshot::digestWord(generation->inputDigest,sourceDigest(signature(source)));
@@ -389,7 +375,8 @@ void Pipeline::save(const Game& game,GAGCore::OutputStream* out)
     out->writeEnterSection("turretTargeting");
     out->writeUint32(s.rules.delay,"delay"); out->writeUint32(s.rules.refresh,"refresh");
     out->writeUint32(s.rules.capacity,"capacity"); out->writeUint32(s.rules.margin,"margin");
-    out->writeUint8(s.rules.forecast,"forecast"); out->writeUint8(s.rules.reusePreparation,"reusePreparation");
+    // Format 159 reserves the original research flags; normal preparation is fixed.
+    out->writeUint8(1,"forecast"); out->writeUint8(1,"reusePreparation");
     out->writeUint8(s.admitted.has_value(),"admitted"); if (s.admitted) out->writeUint32(*s.admitted,"admittedTick");
     const auto record=[&](const State::Record& r) {
         out->writeEnterSection("record");
@@ -429,8 +416,10 @@ bool Pipeline::load(const Game& game,GAGCore::InputStream* in)
         Configuration rules;
         rules.delay=in->readUint32("delay"); rules.refresh=in->readUint32("refresh");
         rules.capacity=in->readUint32("capacity"); rules.margin=in->readUint32("margin");
-        rules.forecast=in->readUint8("forecast"); rules.reusePreparation=in->readUint8("reusePreparation");
-        Pipeline validation(const_cast<Game&>(game),rules); // Same bounded rule validation as admission.
+        const auto forecast=in->readUint8("forecast");
+        const auto preparation=in->readUint8("reusePreparation");
+        if (forecast!=1 || preparation!=1) return false; // Retired research variants are not match rules.
+        if (!validRules(rules)) return false;
         s.rules=rules;
         if (in->readUint8("admitted")) { s.admitted=in->readUint32("admittedTick"); if (*s.admitted>game.stepCounter) return false; }
         std::size_t loaded=256;
@@ -476,7 +465,7 @@ bool Pipeline::load(const Game& game,GAGCore::InputStream* in)
             for (unsigned n=0;n<records;++n) {
                 in->readEnterSection(n); auto r=record(); in->readLeaveSection();
                 if (!job->output.empty() && !IdentityLess{}(job->output.back().source.identity,r.source.identity)) return false;
-                g->reserved+=recordBytes(outputReservation(rules)); job->output.push_back(std::move(r));
+                g->reserved+=recordBytes(rules.capacity); job->output.push_back(std::move(r));
             }
             g->jobs.push_back(std::move(job)); s.reservations+=g->reserved; s.pending.push_back(std::move(g)); in->readLeaveSection();
         }
@@ -488,7 +477,7 @@ Uint32 Pipeline::checkSum(const Game& game) const
 {
     const auto& s=*state; Uint64 hash=SimulationSnapshot::DigestSeed;
     const auto add=[&](Uint64 value){ hash=SimulationSnapshot::digestWord(hash,value); };
-    add(s.rules.delay); add(s.rules.refresh); add(s.rules.capacity); add(s.rules.margin); add(s.rules.forecast); add(s.rules.reusePreparation);
+    add(s.rules.delay); add(s.rules.refresh); add(s.rules.capacity); add(s.rules.margin); add(1); add(1); // Reserved format-159 flags.
     add(s.admitted.has_value()); if (s.admitted) add(*s.admitted);
     add(s.publishedDigest);
     add(s.pending.size());

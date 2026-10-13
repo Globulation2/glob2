@@ -421,9 +421,10 @@ processes, preserve host activity/outliers, and distinguish affinity from a quie
 host. Compare all-worker process CPU, owner thread CPU and elapsed tick time.
 
 The defaults are the selected L3/R2/K1 configuration. Internal research controls
-`TURRET_CAPACITY`, `TURRET_REFRESH`, `TURRET_DELAY` and `TURRET_VARIANT` can isolate
-bounded configurations and preparation/cooldown ablations in the benchmark;
-normal-game settings do not expose a replacement targeting policy.
+`TURRET_CAPACITY`, `TURRET_REFRESH` and `TURRET_DELAY` select bounded
+configurations in the benchmark; preparation and cooldown forecasting always use
+the normal implementation, with no runtime ablation switches.
+Normal-game settings do not expose a replacement targeting policy.
 `TURRET_PROFILE_CPU=1` measures component/thread CPU separately; light
 `TURRET_PROFILE_OWNER=1` measures whole owner-thread CPU without per-shot clocks.
 Rows `turret_cpu`, `turret_owner` and `turret_index` distinguish shared capture,

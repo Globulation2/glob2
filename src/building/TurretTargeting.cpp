@@ -144,7 +144,7 @@ struct Frozen
         return {{Kind::Unit,gid,u.identity.generation},u.posX,u.posY,u.hp,u.typeNum,
             u.speed>0 ? (256-u.delta)/u.speed : INT_MAX,
             observation.world.catalogs->units->runtime(u.typeNum).turretPriority,
-            observation.offense.at(index),u.performance[ATTACK_SPEED],!u.isDead && u.hp>0,u.performance[FLY]!=0};
+            u.realAttackStrength,u.performance[ATTACK_SPEED],!u.isDead && u.hp>0,u.performance[FLY]!=0};
     }
     BuildingFact building(Uint16 gid) const {
         const auto& entities=*observation.world.entities;
@@ -259,7 +259,7 @@ template<class World,class Visit> void traverse(const Source& s,const World& wor
     for (const auto& tile:tiles) visit(tile.x,tile.y,tile.ring,
         s.width==2 && s.height==2 ? ((tile.ring<<5)+32)/(s.speed>>8) : -1,tile.ordinal);
 }
-template<class World> Plan run(const Source& s,const World& world,unsigned capacity,unsigned margin,bool compactOutputs=false)
+template<class World> Plan run(const Source& s,const World& world,unsigned capacity,unsigned margin)
 {
     if (s.width<=0 || s.height<=0 || s.speed<256 || s.range<0 || margin>2 || (capacity && capacity!=2 && capacity!=3 && capacity!=4 && capacity!=8 && capacity!=16 && capacity!=32))
         throw std::invalid_argument("Invalid turret planner configuration");
@@ -341,7 +341,7 @@ template<class World> Plan run(const Source& s,const World& world,unsigned capac
             if (fold && !tileReturned && result.preferred.priority==0) apply(t);
         }
     });
-    if (compactOutputs) result.entries.reserve(capacity ? std::min<std::size_t>(capacity,candidates.size()) : candidates.size());
+    result.entries.reserve(capacity ? std::min<std::size_t>(capacity,candidates.size()) : candidates.size());
     if (result.preferred.found()) result.entries.push_back(result.preferred.entry);
     std::vector<Candidate> top;
     const auto limit=capacity ? capacity-result.entries.size() : candidates.size();
@@ -385,12 +385,11 @@ void prepareIndex(Observation& o,const std::shared_ptr<const OccupiedIndex>& pre
     o.index=buildIndex(o,previous);
     if (profileCpu) o.indexCpu=threadCpuNs()-start;
 }
-Observation observe(const Game& game,const SimulationSnapshot::Handle& captured,const Observation* previous,bool capturedFacts,bool profileCpu,bool deferIndex)
+Observation observe(const Game& game,const SimulationSnapshot::Handle& captured,const Observation* previous,bool profileCpu,bool deferIndex)
 {
     if (captured.tick!=game.stepCounter || captured.worldIdentity!=game.map.identity())
         throw std::invalid_argument("Turret observation is not the completed-world boundary");
     Observation o;
-    o.compactOutputs=capturedFacts;
     o.world=captured.turretView();
     o.blocksProjectiles=game.map.hasProjectileBlockingTerrain();
     o.indexBudget=previous && previous->indexBudget ? previous->indexBudget : std::make_shared<IndexBudget>();
@@ -403,9 +402,7 @@ Observation observe(const Game& game,const SimulationSnapshot::Handle& captured,
     o.logicalDigest=digestWord(o.logicalDigest,o.world.terrain->logical.digest);
     o.logicalDigest=digestWord(o.logicalDigest,o.world.occupancy->logical.digest);
     o.logicalDigest=digestWord(o.logicalDigest,o.world.catalogs->units->checksum());
-    o.offense.reserve(o.world.entities->units.size());
     for (const auto& u:o.world.entities->units) {
-        o.offense.push_back(u.realAttackStrength);
         // Independent entity fingerprints avoid a long owner-thread hash chain.
         // Slot/identity resolution makes compact record order irrelevant.
         Uint64 hash=SimulationSnapshot::DigestSeed^0x554e4954u;
@@ -413,7 +410,7 @@ Observation observe(const Game& game,const SimulationSnapshot::Handle& captured,
         hash=digestWord(hash,Uint32(u.posX)|(Uint64(Uint32(u.posY))<<32));
         hash=digestWord(hash,Uint32(u.hp)|(Uint64(Uint32(u.typeNum))<<32));
         hash=digestWord(hash,Uint32(u.delta)|(Uint64(Uint32(u.speed))<<32));
-        hash=digestWord(hash,Uint32(o.offense.back())|(Uint64(Uint32(u.performance[ATTACK_SPEED]))<<32));
+        hash=digestWord(hash,Uint32(u.realAttackStrength)|(Uint64(Uint32(u.performance[ATTACK_SPEED]))<<32));
         o.logicalDigest^=hash;
     }
     for (const auto& b:o.world.entities->buildings) {
@@ -439,9 +436,9 @@ std::size_t retainedIndexBytes(const Observation& o) { return o.indexBudget ? o.
 Plan plan(const Building& b,unsigned capacity,unsigned margin) { return run(source(b),Live{b},capacity,margin); }
 Plan plan(const Source& s,const Observation& o,unsigned capacity,unsigned margin)
 {
-    if ((o.world.requirements & targetingRequirements)!=targetingRequirements || !o.world.entities || !o.world.catalogs || !o.world.occupancy || !o.world.terrain || !o.world.teams)
+    if ((o.world.requirements & requirements)!=requirements || !o.world.entities || !o.world.catalogs || !o.world.occupancy || !o.world.terrain || !o.world.teams)
         throw std::invalid_argument("Incomplete turret observation");
-    return run(s,Frozen{o,o.world.view()},capacity,margin,o.compactOutputs);
+    return run(s,Frozen{o,o.world.view()},capacity,margin);
 }
 Target firstValid(const Building& b,const std::vector<Entry>& entries,Metrics* metrics)
 {

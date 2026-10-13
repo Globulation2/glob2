@@ -39,14 +39,10 @@ struct Selection {
 };
 thread_local Selection* selection=nullptr;
 unsigned capacity=3,refresh=2,delay=1;
-bool forecast=true,reusePreparation=true,profileCpu=false,opportunities=false;
+bool profileCpu=false,opportunities=false;
 bool profileOwner=false;
 bool callgrindRegion=false;
-const char* variant="combined";
 void configure() {
-    if (const auto* value=std::getenv("TURRET_VARIANT")) variant=value;
-    forecast=std::string(variant)=="forecast" || std::string(variant)=="combined";
-    reusePreparation=std::string(variant)=="preparation" || std::string(variant)=="combined";
     if (const auto* value=std::getenv("TURRET_CAPACITY")) capacity=std::stoul(value);
     if (const auto* value=std::getenv("TURRET_REFRESH")) refresh=std::stoul(value);
     if (const auto* value=std::getenv("TURRET_DELAY")) delay=std::stoul(value);
@@ -111,7 +107,7 @@ void setup(glob2test::HeadlessGame& world,unsigned fixture,unsigned seed,unsigne
         for (auto* b:game.teams[team]->liveBuildings.entries()) if (b) game.teams[team]->addToStaticAbilitiesLists(b);
         game.teams[team]->stats.step(game.teams[team]);
     }
-    game.configureTurretTargeting(delay,refresh,capacity,1,forecast,reusePreparation,profileCpu);
+    game.configureTurretTargeting(delay,refresh,capacity,1,profileCpu);
 }
 void advance(glob2test::HeadlessGame& fixture,Run* evidence)
 {
@@ -265,7 +261,7 @@ TEST_SUITE("TurretEngine")
         configure();
         glob2test::HeadlessGlobals globals;
         constexpr std::array<unsigned,10> seeds{713,1919,7919,104729,15485863,32452843,49979687,67867967,86028121,123456};
-        std::printf("variant,%s,capacity,%u,refresh,%u,delay,%u,profile,%u\n",variant,capacity,refresh,delay,profileCpu);
+        std::printf("capacity,%u,refresh,%u,delay,%u,profile,%u\n",capacity,refresh,delay,profileCpu);
         std::printf("turret_engine,fixture,participants,repeat,seed,mode,ticks,wall_ns,cpu_ns,attempts,found,shots,units,turrets,captures,index_bytes,list_bytes\n");
         const unsigned requestedParticipants=std::getenv("TURRET_PARTICIPANTS") ? std::stoul(std::getenv("TURRET_PARTICIPANTS")) : 0;
         const auto* requestedRepeat=std::getenv("TURRET_REPEAT");

@@ -39,15 +39,14 @@ struct Plan
     std::vector<Entry> entries;
     Metrics metrics;
 };
-// These supplemental facts are captured at the same boundary as world. In
-// particular offense includes glass-cannon and area effects, not raw damage.
+// The snapshot owns combat facts, including effective attack strength after
+// glass-cannon and area modifiers. The index contains only occupancy.
 struct OccupiedIndex;
 struct IndexBudget;
 struct Observation
 {
     SimulationSnapshot::Handle world;
-    std::vector<int> offense;
-    bool blocksProjectiles = false, compactOutputs = false;
+    bool blocksProjectiles = false;
     std::shared_ptr<const OccupiedIndex> index;
     std::shared_ptr<IndexBudget> indexBudget;
     unsigned rebuiltChunks = 0, sharedChunks = 0;
@@ -60,10 +59,9 @@ constexpr SimulationSnapshot::Requirements requirements =
     SimulationSnapshot::bit(SimulationSnapshot::Component::Teams) |
     SimulationSnapshot::bit(SimulationSnapshot::Component::Catalogs);
 // Effects contains render bullet/explosion records, not area attack modifiers.
-// Those modifiers are folded into the boundary-owned offense facts.
-constexpr auto targetingRequirements = requirements & ~SimulationSnapshot::bit(SimulationSnapshot::Component::Effects);
+// Those modifiers are already folded into captured unit attack strength.
 // Owner adapter: borrow the already captured union; never captures world data.
-Observation observe(const Game&, const SimulationSnapshot::Handle&, const Observation* previous = nullptr, bool capturedFacts = false, bool profileCpu = false, bool deferIndex = false);
+Observation observe(const Game&, const SimulationSnapshot::Handle&, const Observation* previous = nullptr, bool profileCpu = false, bool deferIndex = false);
 // Uses only captured occupancy and an immutable earlier index; safe in a job.
 void prepareIndex(Observation&, const std::shared_ptr<const OccupiedIndex>& previous = {}, bool profileCpu = false);
 // Research convenience adapter through the shared Store; not used by jobs.
@@ -117,7 +115,7 @@ Uint64 threadCpuNs();
 namespace TurretTargeting
 {
 // Fixed-boundary producer used by normal-game first-valid firing.
-struct Configuration { unsigned delay=1, refresh=2, capacity=3, margin=1; bool forecast=true, reusePreparation=true, profileCpu=false; };
+struct Configuration { unsigned delay=1, refresh=2, capacity=3, margin=1; bool profileCpu=false; };
 class Pipeline
 {
     struct State;
@@ -136,7 +134,6 @@ public:
     Pipeline(Game&,Configuration);
     ~Pipeline();
     bool admissionPending(const Game&,bool paused) const;
-    SimulationSnapshot::Requirements pendingRequirements(const Game&,bool paused) const;
     void admit(const Game&,const SimulationSnapshot::Handle&,bool paused);
     void publish(Game&);
     void invalidateChangedSources(Game&);
