@@ -1337,6 +1337,8 @@ TEST_SUITE("TeamStatsSave")
         };
         REQUIRE(stats.aiTelemetry.size()==1);
         REQUIRE(stats.aiTelemetry[0]->active);
+        // Admit the initial completed boundary before counting subsequent ticks.
+        world.game.prepareReadBoundary();
         auto restored=roundTrip(world.game);
         CHECK(stats.aiTelemetry.size()==1);
         CHECK_FALSE(stats.aiTelemetry[0]->active);
