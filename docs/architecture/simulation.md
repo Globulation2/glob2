@@ -336,8 +336,9 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   reader demand (its serving search's required cost and `settledCostHint`). It only moves
   search work between worker and owner; `GLOB2_BUILDING_DEPTH=full|table|lazy`
   or an operating point name overrides it for timing.
-- The executor ring holds 65 batches: each deferred producer holds at most its
-  horizon plus one (AI decisions 8, periodic gradients 16, building gradients 8, resource growth 16),
+- The executor ring holds 70 batches: each deferred producer holds at most its
+  horizon plus one (AI decisions 8, periodic gradients 16, building gradients 8, resource growth 16,
+  read-only turret shortlist jobs 4),
   plus headroom. Gradient jobs use no AI controller lane and submit no nested
   deferred work.
   Thread counts change execution only. Review scratch ownership, input lifetimes,

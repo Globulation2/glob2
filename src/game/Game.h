@@ -39,6 +39,7 @@ namespace GAGCore
 }
 using namespace GAGCore;
 namespace SimulationSnapshot { class Store; }
+namespace TurretTargeting { class Pipeline; }
 class GameGUI;
 class SceneMap;
 struct PresentationFrame;
@@ -257,10 +258,14 @@ public:
 	void saveAI(GAGCore::OutputStream* stream);
 	bool loadAI(GAGCore::InputStream* stream);
 	void observeUnpolledAI();
+	// Research producer only: original targeting remains authoritative.
+	void configureTurretTargetingShadow(unsigned delay=1,unsigned refresh=1,unsigned capacity=8,unsigned margin=1);
+	TurretTargeting::Pipeline* turretShadow() const { return turretTargetingShadow.get(); }
 	SimulationSnapshot::Store& snapshotStore() { return worldSnapshots; }
 	std::vector<std::pair<std::string, Uint64>> aiMetrics() const;
 private:
 	mutable SimulationSnapshot::Store worldSnapshots;
+	std::unique_ptr<TurretTargeting::Pipeline> turretTargetingShadow;
 	std::unique_ptr<AIEngine::Pipeline> aiPipeline;
 public:
 

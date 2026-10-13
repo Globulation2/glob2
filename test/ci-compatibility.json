@@ -82,7 +82,8 @@
     "TerrainResources/*",
     "MapSets/*",
     "SoftwareRenderer/*",
-    "MCP/*"
+    "MCP/*",
+    "TurretTargeting/*"
   ],
   "unit_filters": [
     "*"

@@ -105,6 +105,8 @@ CLIENT_SOURCES = (
     'building/Update.cpp',
     'building/Step.cpp',
     'building/TypeSteps.cpp',
+    'building/TurretTargeting.cpp',
+    'building/TurretTargetingPipeline.cpp',
     'building/Misc.cpp',
     'building/Services.cpp',
     'building/AreaEffects.cpp',

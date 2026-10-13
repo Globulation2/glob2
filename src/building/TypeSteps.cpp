@@ -21,6 +21,7 @@
 #include "Utilities.h"
 #include "Order.h"
 #include "Bullet.h"
+#include "TurretTargeting.h"
 
 int Building::selectProductionRecipe() const
 {
@@ -199,6 +200,7 @@ bool Building::tickShootingCooldown()
 void Building::turretStep(Uint32 stepCounter)
 {
 	convertStoneToBullet();
+	TurretTargeting::observeAttempt(*this);
 
 	// compute cooldown
 	if (!tickShootingCooldown())
@@ -210,7 +212,13 @@ void Building::turretStep(Uint32 stepCounter)
 
 	shootingStep = (shootingStep+1) & (SHOOTING_ANIMATION_FRAMES - 1);
 
+#ifdef GLOB2_TURRET_ENGINE_BENCHMARK
+    // Linked only into the dedicated research binary, never the game or tests.
+    extern TurretTarget turretEngineBenchmarkTarget(const Building&);
+    TurretTarget target = turretEngineBenchmarkTarget(*this);
+#else
 	TurretTarget target = findBestTarget();
+#endif
 
 	if (target.found())
 	{

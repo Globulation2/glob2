@@ -283,10 +283,10 @@ public:
 	// A batch occupies a slot from submission until its join. Each deferred
 	// producer submits at most one batch per tick and joins it at its horizon,
 	// so it holds at most horizon + 1 slots: AI decisions (8), periodic
-	// gradients (16), building gradients (8) and growth (16), plus headroom for tests and
+	// gradients (16), building gradients (8), growth (16) and turret jobs (4), plus headroom for tests and
 	// teardown. The producers static_assert their horizons against these.
-	static constexpr std::size_t AIHorizon = 8, GradientHorizon = 16, BuildingHorizon = 8, GrowthHorizon = 16;
-	static constexpr std::size_t Slots = (AIHorizon + 1) + (GradientHorizon + 1) + (BuildingHorizon + 1) + (GrowthHorizon + 1) + 13;
+	static constexpr std::size_t AIHorizon = 8, GradientHorizon = 16, BuildingHorizon = 8, GrowthHorizon = 16, TurretHorizon = 4;
+	static constexpr std::size_t Slots = (AIHorizon + 1) + (GradientHorizon + 1) + (BuildingHorizon + 1) + (GrowthHorizon + 1) + (TurretHorizon + 1) + 13;
 private:
 	using Clock = std::chrono::steady_clock;
 	inline static thread_local ComputeExecutor *active = nullptr;

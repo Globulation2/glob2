@@ -40,6 +40,7 @@
 #include "render/GameAnimations.h"
 #include "render/SoftwareTerrainCache.h"
 #include "ai/engine/AIPipeline.h"
+#include "TurretTargeting.h"
 
 #define BULLET_IMGID 0
 

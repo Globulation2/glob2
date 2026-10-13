@@ -34,6 +34,7 @@
 #include "ReplayWriter.h"
 #include "ReplayReader.h"
 #include "AITelemetry.h"
+#include "TurretTargeting.h"
 
 #define BULLET_IMGID 0
 
@@ -216,7 +217,10 @@ void Game::prestigeSyncStep()
 
 void Game::syncStep(Sint32 localTeam, PreparationCompletion completion)
 {
-	map.preparePendingWorld();
+	if (turretTargetingShadow && (turretTargetingShadow->admissionPending(*this,anyPlayerWaited) || map.pendingWorldRequirements())) {
+		const auto captured=captureReadBoundary({},anyPlayerWaited);
+		map.preparePendingWorld(captured);
+	} else map.preparePendingWorld();
 	applyClientRequests();
 	if (!anyPlayerWaited)
 	{
@@ -231,6 +235,7 @@ void Game::syncStep(Sint32 localTeam, PreparationCompletion completion)
 		if (!map.gradientPipelineEnabled()) map.configureGradientPipeline(2, 8);
 		map.advanceGradientPipeline();
 
+		if (turretTargetingShadow) turretTargetingShadow->publish(*this);
 		areaEffects.beginTick(*this);
 		for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
 			teams[i]->syncStep();
@@ -287,7 +292,15 @@ void Game::syncStep(Sint32 localTeam, PreparationCompletion completion)
 		// Selection stays ordered; only private preparation can join AI decisions.
 		map.stagePeriodicGradientPreparation();
         map.stageResourceGrowth();
-		if (completion == PreparationCompletion::Complete) map.preparePendingWorld();
+		if (completion == PreparationCompletion::Complete) {
+            if (turretTargetingShadow) {
+                std::vector<unsigned> readers;
+                for (unsigned p=0;p<unsigned(gameHeader.getNumberOfPlayers());++p)
+                    if (players[p] && players[p]->ai) readers.push_back(p);
+                map.preparePendingWorld(captureReadBoundary(readers,false));
+            }
+            else map.preparePendingWorld();
+        }
 	}
 }
 
