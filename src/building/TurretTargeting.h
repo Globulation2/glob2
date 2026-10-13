@@ -6,6 +6,7 @@
 #include <vector>
 
 class Building;
+namespace GAGCore { class InputStream; class OutputStream; }
 namespace TurretTargeting
 {
 enum class Kind : Uint8 { None, Building, Unit };
@@ -50,7 +51,7 @@ struct Observation
     std::shared_ptr<const OccupiedIndex> index;
     std::shared_ptr<IndexBudget> indexBudget;
     unsigned rebuiltChunks = 0, sharedChunks = 0;
-    Uint64 indexCpu=0,factsCpu=0;
+    Uint64 indexCpu=0,factsCpu=0,logicalDigest=0;
 };
 constexpr SimulationSnapshot::Requirements requirements =
     SimulationSnapshot::bit(SimulationSnapshot::Component::Occupancy) |
@@ -77,16 +78,19 @@ struct Source
     int buildingDamage = 0;
     std::vector<int> damage;
     std::shared_ptr<const std::vector<int>> sharedDamage;
+    Uint32 epoch=0;
+    Uint64 damageDigest=0;
+    int rhythm=0;
     std::size_t damageCount() const { return sharedDamage ? sharedDamage->size() : damage.size(); }
     int damageAt(unsigned i) const { return sharedDamage ? (*sharedDamage)[i] : damage[i]; }
 };
-Source source(const Building&, std::shared_ptr<const std::vector<int>> damage = {});
+Source source(const Building&, std::shared_ptr<const std::vector<int>> damage = {}, Uint64 damageDigest = 0);
 // Both adapters use the same pure selection/ranking kernel. Neither mutates
 // gameplay or consumes ammunition. capacity=0 requests the uncapped control.
 Plan plan(const Building&, unsigned capacity, unsigned margin = 0);
 Plan plan(const Source&, const Observation&, unsigned capacity, unsigned margin = 0);
-// Shadow first-valid consumer. Starts at zero every time, performs no ranking
-// and creates no hypothetical bullets.
+// Read-only first-valid validation. Starts at zero every time and performs no
+// ranking; the caller creates the normal bullet only after a successful result.
 Target firstValid(const Building&, const std::vector<Entry>&, Metrics* = nullptr);
 // Owner-thread research hook, after ammunition conversion and before cooldown.
 // The observer must only read gameplay state. Nested scopes restore the caller.
@@ -113,8 +117,8 @@ Uint64 threadCpuNs();
 
 namespace TurretTargeting
 {
-// Read-only producer trial. Published entries never replace normal firing.
-struct Configuration { unsigned delay=1, refresh=1, capacity=8, margin=1; bool forecast=true, reusePreparation=true, profileCpu=false; };
+// Fixed-boundary producer used by normal-game first-valid firing.
+struct Configuration { unsigned delay=1, refresh=2, capacity=3, margin=1; bool forecast=true, reusePreparation=true, profileCpu=false; };
 class Pipeline
 {
     struct State;
@@ -136,8 +140,13 @@ public:
     SimulationSnapshot::Requirements pendingRequirements(const Game&,bool paused) const;
     void admit(const Game&,const SimulationSnapshot::Handle&,bool paused);
     void publish(Game&);
+    void invalidateChangedSources(Game&);
+    void forget(BuildingRef);
     // Saving/pausing drains jobs but preserves deadlines and published order.
     void drain();
+    void save(const Game&,GAGCore::OutputStream*);
+    bool load(const Game&,GAGCore::InputStream*);
+    Uint32 checkSum(const Game&) const;
     const std::vector<Entry>& entries(const Building&);
     const Statistics& statistics() const;
     SimulationSnapshot::Handle pendingObservation() const;

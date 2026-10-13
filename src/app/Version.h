@@ -7,7 +7,10 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 154
+#define VERSION_MINOR 155
+#define SAVE_MINIMUM_VERSION_MINOR 155
+// version 155 uses persisted cached turret targeting; earlier saved games are rejected.
+// MINIMUM_VERSION_MINOR remains the map-format floor so existing maps stay usable.
 // version 154 restores mature resource stock oscillation; replay trajectories change.
 // version 153 embeds immutable unit catalogs and composed unit continuation.
 // version 152 gives world operations and legacy stories private streams.

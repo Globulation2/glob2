@@ -22,6 +22,8 @@
 
 namespace glob2test
 {
+    // Isolated weapon fixtures advance observation/publication without stepping units.
+    void prepareTurretTargets(Building&);
 	// Deterministic continuation scheduler: collect each unpaused AI decision,
 	// then apply in player order and advance one tick. Returns type+wire payload
 	// per AI so paired continuations can compare decisions as well as state.

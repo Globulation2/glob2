@@ -6,6 +6,7 @@
 #include "Team.h"
 #include "Unit.h"
 #include "TerrainLine.h"
+#include "sim/snapshot/BufferPool.h"
 #include <algorithm>
 #include <map>
 #include <tuple>
@@ -37,7 +38,11 @@ struct OccupiedIndex
 };
 namespace
 {
-constexpr std::size_t IndexLimit=32u*1024u*1024u;
+// Reserve 1 MiB of the 32 MiB index budget for canonical chunk digests:
+// two components, at most 22 shared buffers, 16 KiB each plus metadata.
+constexpr std::size_t DigestReservation=1024u*1024u;
+static_assert(2*SimulationSnapshot::BufferPool<SimulationSnapshot::Terrain>::Limit*(SimulationSnapshot::LogicalChunks::MaxBytes+128)<=DigestReservation);
+constexpr std::size_t IndexLimit=32u*1024u*1024u-DigestReservation;
 template<class T> std::shared_ptr<T> retain(std::unique_ptr<T> value,std::size_t bytes,const std::shared_ptr<IndexBudget>& budget)
 {
     auto used=budget->bytes.load();
@@ -355,16 +360,22 @@ template<class World> Plan run(const Source& s,const World& world,unsigned capac
 }
 }
 
-Source source(const Building& b,std::shared_ptr<const std::vector<int>> damage)
+Source source(const Building& b,std::shared_ptr<const std::vector<int>> damage,Uint64 damageDigest)
 {
     Source s{Game::refOf(&b),b.posX,b.posY,b.runtime->width,b.runtime->height,
         b.runtime->shootingRange,b.runtime->shootSpeed,
         b.owner->attackableTeams() & ~b.owner->sharedVisionExchange,
         b.owner->attackableTeams(),b.runtime->projectileBuildingDamage,{}};
+    s.epoch=b.targetingEpoch; s.rhythm=b.runtime->shootRhythm;
     s.sharedDamage=std::move(damage);
     if (!s.sharedDamage) {
         s.damage.reserve(b.runtime->unitCount);
         for (unsigned id=0;id<b.runtime->unitCount;++id) s.damage.push_back(b.runtime->damage(id));
+    }
+    s.damageDigest=damageDigest;
+    if (!damageDigest) {
+        s.damageDigest=SimulationSnapshot::DigestSeed;
+        for (unsigned i=0;i<s.damageCount();++i) s.damageDigest=SimulationSnapshot::digestWord(s.damageDigest,Uint32(s.damageAt(i)));
     }
     return s;
 }
@@ -385,6 +396,13 @@ Observation observe(const Game& game,const SimulationSnapshot::Handle& captured,
     o.indexBudget=previous && previous->indexBudget ? previous->indexBudget : std::make_shared<IndexBudget>();
     if (!deferIndex) prepareIndex(o,previous ? previous->index : nullptr,profileCpu);
     const auto factsStart=profileCpu ? threadCpuNs() : 0;
+    using SimulationSnapshot::digestWord;
+    o.logicalDigest=digestWord(SimulationSnapshot::DigestSeed,o.world.width);
+    o.logicalDigest=digestWord(o.logicalDigest,o.world.height);
+    o.logicalDigest=digestWord(o.logicalDigest,o.blocksProjectiles);
+    o.logicalDigest=digestWord(o.logicalDigest,o.world.terrain->logical.digest);
+    o.logicalDigest=digestWord(o.logicalDigest,o.world.occupancy->logical.digest);
+    o.logicalDigest=digestWord(o.logicalDigest,o.world.catalogs->units->checksum());
     o.offense.reserve(o.world.entities->units.size());
     for (const auto& u:o.world.entities->units) {
         if (capturedFacts) {
@@ -400,6 +418,24 @@ Observation observe(const Game& game,const SimulationSnapshot::Handle& captured,
             if (!live) throw std::logic_error("Turret observation boundary changed");
             o.offense.push_back(live->getRealAttackStrength());
         }
+        // Independent entity fingerprints avoid a long owner-thread hash chain.
+        // Slot/identity resolution makes compact record order irrelevant.
+        Uint64 hash=SimulationSnapshot::DigestSeed^0x554e4954u;
+        hash=digestWord(hash,Uint64(u.identity.gid)|(Uint64(u.identity.generation)<<16)|(Uint64(u.performance[FLY]!=0)<<48)|(Uint64(u.isDead!=0)<<49));
+        hash=digestWord(hash,Uint32(u.posX)|(Uint64(Uint32(u.posY))<<32));
+        hash=digestWord(hash,Uint32(u.hp)|(Uint64(Uint32(u.typeNum))<<32));
+        hash=digestWord(hash,Uint32(u.delta)|(Uint64(Uint32(u.speed))<<32));
+        hash=digestWord(hash,Uint32(o.offense.back())|(Uint64(Uint32(u.performance[ATTACK_SPEED]))<<32));
+        o.logicalDigest^=hash;
+    }
+    for (const auto& b:o.world.entities->buildings) {
+        const auto& type=o.world.catalogs->typeDefinitions->at(b.typeNum);
+        Uint64 hash=SimulationSnapshot::DigestSeed^0x4255494cu;
+        hash=digestWord(hash,Uint64(b.identity.gid)|(Uint64(b.identity.generation)<<16));
+        hash=digestWord(hash,Uint32(b.posX)|(Uint64(Uint32(b.posY))<<32));
+        hash=digestWord(hash,Uint32(b.hp)|(Uint64(Uint32(b.buildingState))<<32));
+        hash=digestWord(hash,Uint32(type.width)|(Uint64(Uint32(type.height))<<32));
+        o.logicalDigest^=hash;
     }
     if (profileCpu) o.factsCpu=threadCpuNs()-factsStart;
     return o;
@@ -411,7 +447,7 @@ Observation observe(const Game& game,const Observation* previous)
     game.snapshots().invalidateBoundary();
     return observe(game,game.captureReadBoundary({},true,requirements),previous);
 }
-std::size_t retainedIndexBytes(const Observation& o) { return o.indexBudget ? o.indexBudget->bytes.load() : 0; }
+std::size_t retainedIndexBytes(const Observation& o) { return o.indexBudget ? o.indexBudget->bytes.load()+DigestReservation : 0; }
 Plan plan(const Building& b,unsigned capacity,unsigned margin) { return run(source(b),Live{b},capacity,margin); }
 Plan plan(const Source& s,const Observation& o,unsigned capacity,unsigned margin)
 {

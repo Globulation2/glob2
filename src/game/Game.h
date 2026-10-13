@@ -258,14 +258,16 @@ public:
 	void saveAI(GAGCore::OutputStream* stream);
 	bool loadAI(GAGCore::InputStream* stream);
 	void observeUnpolledAI();
-	// Research producer only: original targeting remains authoritative.
-	void configureTurretTargetingShadow(unsigned delay=1,unsigned refresh=1,unsigned capacity=8,unsigned margin=1,bool forecast=true,bool reusePreparation=true,bool profileCpu=false);
-	TurretTargeting::Pipeline* turretShadow() const { return turretTargetingShadow.get(); }
+	// Normal-game target lists use the selected three-entry, two-tick cadence.
+	void forgetTurret(BuildingRef);
+	void configureTurretTargeting(unsigned delay=1,unsigned refresh=2,unsigned capacity=3,unsigned margin=1,bool forecast=true,bool reusePreparation=true,bool profileCpu=false);
+	TurretTargeting::Pipeline* turretTargeting() const { ensureTurretTargeting(); return turretTargetingPipeline.get(); }
 	SimulationSnapshot::Store& snapshotStore() { return worldSnapshots; }
 	std::vector<std::pair<std::string, Uint64>> aiMetrics() const;
 private:
 	mutable SimulationSnapshot::Store worldSnapshots;
-	std::unique_ptr<TurretTargeting::Pipeline> turretTargetingShadow;
+	mutable std::unique_ptr<TurretTargeting::Pipeline> turretTargetingPipeline;
+    void ensureTurretTargeting() const;
 	std::unique_ptr<AIEngine::Pipeline> aiPipeline;
 public:
 

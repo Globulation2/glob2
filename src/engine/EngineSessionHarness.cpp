@@ -479,26 +479,15 @@ TEST_SUITE("EngineSession")
         CHECK(work->status() == ComputeExecutor::Presentation::Status::Canceled);
     }
 
-    TEST_CASE("a retained version-152 stock replay preserves recorded simulation checksums [save-format]")
+    TEST_CASE("a retained version-152 stock replay is rejected [save-format]")
     {
-        glob2test::HeadlessGlobals globals({.loadStrings=true});
-        REQUIRE(NET_Init());
-        struct NetworkScope {~NetworkScope(){NET_Quit();}} network;
-        globals->automaticEndingGame=false;
-        const auto path=glob2test::inflated("unit-catalog/legacy152-stock.replay.gz");
-        Engine engine; REQUIRE(engine.loadReplayTask(path.string()).run());
-        auto& reader=*globals->replayReader;
-        REQUIRE(reader.formatVersion()==152);
-        REQUIRE(reader.getNumStepsTotal()==128);
-        engine.beginSession(0);
-        for(unsigned tick=0;tick<128;++tick) {
-            reader.setCheckSum(engine.gui.game.checkSum(nullptr,nullptr,nullptr,false,true));
-            REQUIRE(engine.stepSession(tick*40,{}));
-            REQUIRE(reader.isValid());
-            CHECK(engine.gui.game.stepCounter==tick+1);
-        }
-        engine.gui.isRunning=false; engine.finishSession();
-    }
+    glob2test::HeadlessGlobals globals({.loadStrings=true});
+    REQUIRE(NET_Init());
+    struct NetworkScope {~NetworkScope(){NET_Quit();}} network;
+    const auto path=glob2test::inflated("unit-catalog/legacy152-stock.replay.gz");
+    Engine engine;
+    CHECK_FALSE(engine.loadReplayTask(path.string()).run());
+}
 
     TEST_CASE("external replay retains recorded simulation checksums [benchmark][artifacts]")
     {

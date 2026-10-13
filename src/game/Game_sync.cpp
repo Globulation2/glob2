@@ -217,8 +217,9 @@ void Game::prestigeSyncStep()
 
 void Game::syncStep(Sint32 localTeam, PreparationCompletion completion)
 {
+	ensureTurretTargeting();
 	map.applyGradientBackendRequest();
-	if (turretTargetingShadow && (turretTargetingShadow->admissionPending(*this,anyPlayerWaited) || map.pendingWorldRequirements())) {
+	if (turretTargetingPipeline && (turretTargetingPipeline->admissionPending(*this,anyPlayerWaited) || map.pendingWorldRequirements())) {
 		const auto captured=captureReadBoundary({},anyPlayerWaited);
 		map.preparePendingWorld(captured);
 	} else map.preparePendingWorld();
@@ -237,7 +238,7 @@ void Game::syncStep(Sint32 localTeam, PreparationCompletion completion)
 		if (!map.gradientPipelineEnabled()) map.configureGradientPipeline(2, 8);
 		map.advanceGradientPipeline();
 
-		if (turretTargetingShadow) turretTargetingShadow->publish(*this);
+		if (turretTargetingPipeline) turretTargetingPipeline->publish(*this);
 		areaEffects.beginTick(*this);
 		for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
 			teams[i]->syncStep();
@@ -296,7 +297,7 @@ void Game::syncStep(Sint32 localTeam, PreparationCompletion completion)
 		map.stagePeriodicGradientPreparation();
         map.stageResourceGrowth();
 		if (completion == PreparationCompletion::Complete) {
-            if (turretTargetingShadow) {
+            if (turretTargetingPipeline) {
                 std::vector<unsigned> readers;
                 for (unsigned p=0;p<unsigned(gameHeader.getNumberOfPlayers());++p)
                     if (players[p] && players[p]->ai) readers.push_back(p);

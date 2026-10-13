@@ -8,8 +8,9 @@
 SimulationSnapshot::Handle Game::captureReadBoundary(std::span<const unsigned> players, bool paused,
  SimulationSnapshot::Requirements additional) const
 {
+ ensureTurretTargeting();
  auto requirements=additional | map.pendingWorldRequirements()
-  | (turretTargetingShadow ? turretTargetingShadow->pendingRequirements(*this,paused) : 0);
+  | (turretTargetingPipeline ? turretTargetingPipeline->pendingRequirements(*this,paused) : 0);
  if (SimulationSnapshot::needs(additional,SimulationSnapshot::Component::Areas) && gameHeader.hasExperiment(ExperimentId::FarmAreas))
   requirements|=SimulationSnapshot::bit(SimulationSnapshot::Component::Growth);
  if (!paused) for (auto p:players) {
@@ -18,7 +19,7 @@ SimulationSnapshot::Handle Game::captureReadBoundary(std::span<const unsigned> p
    requirements |= this->players[p]->ai->observationRequirements();
  }
  const auto captured=worldSnapshots.captureBoundary(*this,requirements);
- if (turretTargetingShadow) turretTargetingShadow->admit(*this,captured,paused);
+ if (turretTargetingPipeline) turretTargetingPipeline->admit(*this,captured,paused);
  return captured;
 }
 std::vector<std::pair<unsigned,std::shared_ptr<Order>>> Game::prepareAIOrders(std::span<const unsigned> players,
@@ -33,8 +34,8 @@ std::vector<std::pair<unsigned,std::shared_ptr<Order>>> Game::prepareAIOrders(st
 std::shared_ptr<Order> Game::validateAIOrder(std::shared_ptr<Order> order,unsigned player) {return aiPipeline?aiPipeline->validate(*this,std::move(order),player):order;}
 void Game::settleAIOrder(const std::shared_ptr<Order>& order,bool accepted) {if(aiPipeline)aiPipeline->settle(*this,order,accepted);}
 void Game::cancelAI(unsigned player) {if(aiPipeline)aiPipeline->cancel(player);}
-void Game::drainAI() {if(aiPipeline)aiPipeline->drain();if(turretTargetingShadow)turretTargetingShadow->drain();}
-void Game::clearAI() { turretTargetingShadow.reset(); map.finishGradientPipeline({JoinReason::Teardown, ComputeTelemetry::NoTick}); map.finishResourceGrowth({JoinReason::Teardown, ComputeTelemetry::NoTick}); aiPipeline.reset(); worldSnapshots.reset(); }
+void Game::drainAI() {if(aiPipeline)aiPipeline->drain();if(turretTargetingPipeline)turretTargetingPipeline->drain();}
+void Game::clearAI() { if(turretTargetingPipeline)turretTargetingPipeline->drain(); map.finishGradientPipeline({JoinReason::Teardown, ComputeTelemetry::NoTick}); map.finishResourceGrowth({JoinReason::Teardown, ComputeTelemetry::NoTick}); aiPipeline.reset(); worldSnapshots.reset(); }
 void Game::saveAI(GAGCore::OutputStream* stream) {if(!aiPipeline){aiPipeline=std::make_unique<AIEngine::Pipeline>();aiPipeline->prepare(*this,{},true,nullptr,captureReadBoundary({},true));}aiPipeline->save(stream);}
 bool Game::loadAI(GAGCore::InputStream* stream) {auto pipeline=std::make_unique<AIEngine::Pipeline>();if(!pipeline->load(*this,stream))return false;aiPipeline=std::move(pipeline);return true;}
 std::vector<std::pair<std::string,Uint64>> Game::aiMetrics() const {
@@ -78,8 +79,15 @@ void Game::observeUnpolledAI() {
  for(auto* controller:idle)controller->observe(world);
 }
 
-void Game::configureTurretTargetingShadow(unsigned delay,unsigned refresh,unsigned capacity,unsigned margin,bool forecast,bool reusePreparation,bool profileCpu)
+void Game::configureTurretTargeting(unsigned delay,unsigned refresh,unsigned capacity,unsigned margin,bool forecast,bool reusePreparation,bool profileCpu)
 {
  auto replacement=std::make_unique<TurretTargeting::Pipeline>(*this,TurretTargeting::Configuration{delay,refresh,capacity,margin,forecast,reusePreparation,profileCpu});
- turretTargetingShadow=std::move(replacement);
+ turretTargetingPipeline=std::move(replacement);
 }
+
+void Game::ensureTurretTargeting() const
+{
+ if (!turretTargetingPipeline) turretTargetingPipeline=std::make_unique<TurretTargeting::Pipeline>(const_cast<Game&>(*this),TurretTargeting::Configuration{1,2,3,1});
+}
+
+void Game::forgetTurret(BuildingRef identity) { if (turretTargetingPipeline) turretTargetingPipeline->forget(identity); }

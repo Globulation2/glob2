@@ -269,3 +269,6 @@ static constexpr int FILE_FORMAT_VERSION_PRIVATE_RANDOM = 152;
 
 //! Immutable unit catalogs, counted race tables and composable unit state.
 static constexpr int FILE_FORMAT_VERSION_UNIT_CATALOG = 153;
+
+// Cached turret lists, admission state and delayed completed outputs.
+static constexpr int FILE_FORMAT_VERSION_TURRET_TARGETING = 155;

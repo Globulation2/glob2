@@ -16,7 +16,7 @@ TEST_CASE("JavaScript fatal failure tears down a live engine session" *
 	options.loadStrings = true;
 	glob2test::HeadlessGlobals globals(options);
 	Engine engine;
-	auto initial = glob2test::inflated("test/fixtures/javascript/profile1-initial.game.gz");
+	auto initial = glob2test::inflated("test/fixtures/javascript/profile1-initial155.game.gz");
 	REQUIRE(engine.initCustom(initial.string()) == Engine::EE_NO_ERROR);
 	engine.beginSession(0);
 	const auto tick = engine.gui.game.stepCounter;
@@ -48,7 +48,7 @@ TEST_CASE("JavaScript deterministic scenario failure ends the engine session" *
 	glob2test::HeadlessGlobals globals(options);
 	globals->structuredHeadless = true;
 	Engine engine;
-	auto initial = glob2test::inflated("test/fixtures/javascript/profile1-initial.game.gz");
+	auto initial = glob2test::inflated("test/fixtures/javascript/profile1-initial155.game.gz");
 	REQUIRE(engine.initCustom(initial.string()) == Engine::EE_NO_ERROR);
 	auto &script = engine.gui.game.mapscript;
 	script.setMapScript("export function step(c,s){s.bad=true;return [{type:'unknown'}];}");
@@ -78,7 +78,7 @@ TEST_CASE("JavaScript initialization errors reach headless and UI load diagnosti
 	glob2test::GlobalsOptions options;
 	options.loadStrings = true;
 	glob2test::HeadlessGlobals globals(options);
-	const auto initial = glob2test::inflated("test/fixtures/javascript/profile1-initial.game.gz");
+	const auto initial = glob2test::inflated("test/fixtures/javascript/profile1-initial155.game.gz");
 	const auto invalid = glob2test::artifactDir() / "invalid-embedded-ai.game";
 	{
 		GameGUI original;

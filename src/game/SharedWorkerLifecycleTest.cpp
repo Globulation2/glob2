@@ -156,7 +156,7 @@ TEST_CASE("direct completed steps match deferred preparation across worker count
             REQUIRE(deferred.game.map.hasPendingGradientPreparation());
             ReadOnlyPhase phase;
             // Submission belongs to the owner; the deferred seed job is itself read-only work.
-            deferred.game.map.preparePendingGradient();
+            deferred.game.map.preparePendingWorld(deferred.game.captureReadBoundary({},false));
             auto read = [&](size_t) { deferred.game.map.getMaterialGradient(0, MaterialId::Wood, 0); };
             phase.add(1, read);
             phase.run(deferred.game.map.computeExecutor());

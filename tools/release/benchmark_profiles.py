@@ -104,7 +104,7 @@ def benchmark(baseline, candidate, output, baseline_size, candidate_size):
         process_launch=[],
     )
     for scenario in ("profile1", "realistic-profile1"):
-        fixture = FIXTURES / (scenario + "-initial.game.gz")
+        fixture = FIXTURES / (scenario + "-initial155.game.gz")
         checks = {}
         for name, binary in binaries.items():
             directory = output / scenario / "correctness" / name

@@ -342,7 +342,7 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   or an operating point name overrides it for timing.
 - The executor ring holds 70 batches: each deferred producer holds at most its
   horizon plus one (AI decisions 8, periodic gradients 16, building gradients 8, resource growth 16,
-  read-only turret shortlist jobs 4),
+  turret shortlist jobs4),
   plus headroom. Gradient jobs use no AI controller lane and submit no nested
   deferred work.
   Thread counts change execution only. Review scratch ownership, input lifetimes,
@@ -534,3 +534,14 @@ contaminate their timing.
   colony placement; a cell it fails is a "Generation failed" a player would see.
 - A cache or other retained state with no eviction policy needs an explicit bound —
   a count or a byte budget. "It would take an enormous game to reach" is not a bound.
+
+## Turret targeting
+
+Turrets consume ordered three-entry lists refreshed per team every two ticks and
+published one tick after observation. The first currently valid entry fires;
+owner-side ranking and fallback scans are absent. One pure background kernel
+preserves the original preferred target at the head and ranks alternatives.
+Capture joins the shared completed-tick snapshot union and existing compute pool.
+See [targeting lifecycle and measurement](../development/compute-benchmarks.md#cached-turret-targeting)
+for scheduling, memory bounds, checksums and saved continuation. Format155 and
+simulation revision49 deliberately replace earlier save/replay targeting behavior.

@@ -131,12 +131,16 @@ replay and save output, and every existing saved continuation boundary. It does
 not exclude RNG, registry or cache state from those comparisons.
 
 `profile1-256-units.checksums.gz` and
-`realistic-profile1-256-units.checksums.gz` are the format-153 unit-era current
+`realistic-profile1-256-units.checksums.gz` are the historical format-153 unit-era
 complete-trace references. They include resolved unit-catalog identity, assigned
-job purpose and extended cargo state. Native and Python fixture runners select
-these files; updating fixtures preserves all resource-era references and the
-original saves. Complete checks, worker parity, saved continuation boundaries
+job purpose and extended cargo state. These traces remain retained with the original saves. Complete checks, worker parity, saved continuation boundaries
 and the existing narrow MapHeader version/SHA1 adjustments remain unchanged.
 The header-prefix parser bounds every count and byte range through the player
 count. Format 153 adds unit definitions later in GameHeader; it adds no
 MapHeader metadata or player-count offset.
+
+Normal targeting uses the persisted L=3/R=2/K=1 pipeline from format 155,
+SIM_REVISION 49. Current runners select `profile1-initial155.game.gz` and
+`realistic-profile1-initial155.game.gz`, with the corresponding
+`*-256-cached155.checksums.gz` traces. The new initial states preserve the
+released setup, scripts and catalogs; old saved matches are deliberately rejected.

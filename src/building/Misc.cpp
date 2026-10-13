@@ -560,6 +560,7 @@ Uint32 Building::checkSum(std::vector<Uint32> *checkSumsVector, bool legacy152)
 	int cs=0;
 	if (areaFunded || areaFundingType>=0) cs ^= Uint32(areaFundingType+1)*0x9e3779b9u ^ areaFundingTick ^ (Uint32(areaFundingTeam+1)<<24) ^ (areaFunded ? 0x61757261u : 0);
 
+	if (!legacy152) cs^=targetingEpoch*0x9e3779b9u;
 	cs^=typeNum;
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs);// [0]

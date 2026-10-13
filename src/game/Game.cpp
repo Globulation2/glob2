@@ -19,6 +19,7 @@
 
 #include "DatasetWriter.h"
 #include "Game.h"
+#include "TurretTargeting.h"
 #include "BuildingArtwork.h"
 #include "ai/BuildingCapabilities.h"
 #include "GameUtilities.h"
@@ -205,6 +206,7 @@ void Game::configureBuildingCatalog()
 				for (int resource=0; resource<MaterialCount; ++resource) map.dirtyMarketGradientsSlot(team->teamNumber,resource);
 			}
 		}
+    if (turretTargetingPipeline) turretTargetingPipeline->invalidateChangedSources(*this);
 }
 
 
@@ -250,6 +252,7 @@ void Game::init(GameGUI *gui, MapEdit* edit)
 void Game::clearGame()
 {
     unitCargo.clear();
+    turretTargetingPipeline.reset();
 	map.resetGradientPipeline(); // Discard reservations and drain callbacks before team destruction.
 	clearAI(); // Join all controller work before deleting teams or players.
     map.computeExecutor().cancelPresentationAndWait();
