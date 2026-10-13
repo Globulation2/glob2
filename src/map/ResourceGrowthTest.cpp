@@ -585,59 +585,16 @@ TEST_CASE("text save layout probes are relative and preserve section state" * do
     input.readLeaveSection(3);
 }
 
-TEST_CASE("both format 144 and 145 lineages and compact growth saves retain continuation [save-format]" * doctest::test_suite("ResourceGrowth"))
+TEST_CASE("historical growth save layouts below the current floor are rejected [save-format]" * doctest::test_suite("ResourceGrowth"))
 {
-    glob2test::GlobalsOptions options;
-    options.loadStrings = true;
-    glob2test::HeadlessGlobals globals(options);
-    for (const auto name : {"growth144.game.gz", "growth145.game.gz", "growth146.game.gz", "growth148.game.gz", "vertex148.game.gz", "artwork144.game.gz", "empty-artwork144.game.gz", "building145.game.gz", "empty-building145.game.gz"})
-    {
+    glob2test::HeadlessGlobals globals;
+    for (const char* name : {"growth144.game.gz", "growth145.game.gz", "growth146.game.gz", "growth148.game.gz", "vertex148.game.gz", "artwork144.game.gz", "empty-artwork144.game.gz", "building145.game.gz", "empty-building145.game.gz"}) {
         CAPTURE(name);
-        glob2test::HeadlessGame original({.loadDefaultRace = true, .header = true});
-        GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(glob2test::readFile(
-            glob2test::inflated(std::string("resources/growth-save-layout/") + name))));
-        REQUIRE(original.game.load(&input));
-        const bool growth = std::string_view(name).starts_with("growth");
-        CHECK((original.game.map.gradientRuntime->growth.count() != 0) == growth);
-        CHECK(original.game.map.frozenAssetBundle()->isEmpty() == (std::string_view(name) != "artwork144.game.gz"));
-        CHECK(bool(original.game.gameHeader.getBuildingArtwork()) == (std::string_view(name) == "building145.game.gz"));
-        const auto artwork = original.game.gameHeader.getBuildingArtwork() ? original.game.gameHeader.getBuildingArtwork()->bytes() : std::string{};
-        const auto pending = original.game.map.gradientRuntime->growth.count();
-        auto *bytes = new GAGCore::MemoryStreamBackend;
-        GAGCore::BinaryOutputStream output(bytes);
-        original.game.save(&output, false, "layout continuation");
-        output.flush();
-        CHECK(original.game.map.gradientRuntime->growth.count() == pending);
-        glob2test::HeadlessGame restored({.loadDefaultRace = true, .header = true});
-        GAGCore::BinaryInputStream saved(new GAGCore::MemoryStreamBackend(bytes->takeContents()));
-        REQUIRE(restored.game.load(&saved));
-        CHECK(restored.game.map.gradientRuntime->growth.count() == pending);
-        CHECK((restored.game.gameHeader.getBuildingArtwork() ? restored.game.gameHeader.getBuildingArtwork()->bytes() : std::string{}) == artwork);
-        CHECK(restored.game.map.frozenAssetBundle()->serialize() == original.game.map.frozenAssetBundle()->serialize());
-        const auto components=[](Game& game) {
-            std::vector<Uint32> state,buildings,units;
-            game.checkSum(&state,&buildings,&units,true);
-            // Normalize only the saved header version through its current
-            // writer. Keep every other header field and all current unit,
-            // building, catalog and pending-work checksum components.
-            auto* bytes=new GAGCore::MemoryStreamBackend;
-            GAGCore::BinaryOutputStream output(bytes); game.mapHeader.save(&output);
-            GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(*bytes));
-            input.seekFromStart(0);
-            MapHeader canonical; REQUIRE(canonical.load(&input));
-            state.front()=canonical.checkSum();
-            return std::tuple(std::move(state),std::move(buildings),std::move(units));
-        };
-        original.game.map.configureCompute(1);
-        original.game.map.setResourceGrowthDelay(8);
-        restored.game.map.configureCompute(4);
-        restored.game.map.setResourceGrowthDelay(8);
-        for (unsigned tick = 0; tick < 24; ++tick)
-        {
-            CHECK(components(original.game)==components(restored.game));
-            original.step();
-            restored.step();
-        }
+        const auto bytes = glob2test::readFile(glob2test::inflated(std::string("resources/growth-save-layout/") + name));
+        GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
+        input.seekFromStart(0);
+        GameGUI original;
+        CHECK_FALSE(original.game.load(&input));
     }
 }
 
@@ -818,20 +775,16 @@ TEST_CASE("finishing the last deferred tick computes without publishing early" *
     CHECK(map.gradientRuntime->growth.count() == 1);
 }
 
-TEST_CASE("engine preflight opens both historical growth and released vertex saves" * doctest::test_suite("ResourceGrowth"))
+TEST_CASE("historical growth payloads are rejected after header preflight" * doctest::test_suite("ResourceGrowth"))
 {
-    glob2test::GlobalsOptions options; options.loadStrings=true;
-    glob2test::HeadlessGlobals globals(options);
-    for (const char *name : {"growth146.game.gz","growth148.game.gz","vertex148.game.gz"}) {
-        CAPTURE(std::string(name));
+    glob2test::HeadlessGlobals globals({.loadStrings=true});
+    for (const char* name : {"growth146.game.gz", "growth148.game.gz", "vertex148.game.gz"}) {
+        CAPTURE(name);
         Engine engine;
         const auto path=glob2test::inflated(std::string("resources/growth-save-layout/")+name);
-        // These simulation fixtures omit the optional GameGUI tail. Exercise the
-        // production header preflight, then load the complete simulation payload.
         MapHeader header; GameHeader players;
         auto input=engine.openGameInput(path.string(),header,players);
         REQUIRE(input != nullptr);
-        REQUIRE(engine.gui.game.load(input.get()));
-        CHECK(engine.gui.game.map.resourceGrowthDelay()==8);
+        CHECK_FALSE(engine.gui.game.load(input.get()));
     }
 }

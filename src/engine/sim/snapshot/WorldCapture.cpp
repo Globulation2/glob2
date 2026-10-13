@@ -232,6 +232,30 @@ Handle capture(const Game& game,
 		if (length) std::memcpy(destination.data() + start, source.data() + start, length * sizeof(Element));
 		if (storage) storage->bytesCopied += length * sizeof(Element);
 	};
+    const auto logicalView=game.map.cellView();
+    // Only changed chunks need new protocol fingerprints. Local stamps select
+    // the work but are never mixed into the canonical digest.
+    const auto logicalChunks = [&](auto& component, const auto& live, bool resized, auto cellWord) {
+        auto& logical=component.logical;
+        const bool retained=live.chunks.size()<=LogicalChunks::MaxBytes/sizeof(Uint64);
+        const bool all=!retained || resized || component.stamps.worldIdentity!=identity
+            || component.stamps.width!=geometry.width || component.stamps.height!=geometry.height
+            || logical.values.size()!=live.chunks.size() || component.stamps.chunks.size()!=live.chunks.size();
+        if (all) {
+            if (retained) { logical.values.reserve(live.chunks.size()); logical.values.assign(live.chunks.size(),0); }
+            else std::vector<Uint64>().swap(logical.values);
+            logical.digest=0;
+        }
+        for (std::size_t chunk=0;chunk<live.chunks.size();++chunk) {
+            if (!all && component.stamps.chunks[chunk]==live.chunks[chunk]) continue;
+            Uint64 hash=digestWord(DigestSeed,chunk);
+            geometry.forEachRow(chunk,[&](std::size_t start,std::size_t length) {
+                for (std::size_t i=start;i<start+length;++i) hash=digestWord(hash,cellWord(i));
+            });
+            if (retained) { logical.digest^=logical.values[chunk]^hash; logical.values[chunk]=hash; }
+            else logical.digest^=hash;
+        }
+    };
 	const auto refresh = [&](ChunkStamps& stamps, const MapState::ChangeTracker& live, bool resized, auto copyRange) {
 		const bool everything = resized || stamps.worldIdentity != identity || stamps.width != geometry.width
 			|| stamps.height != geometry.height || stamps.chunks.size() != live.chunks.size();
@@ -269,6 +293,8 @@ Handle capture(const Game& game,
 		// table marks every terrain chunk changed, so no stale index survives.
 		const auto source = game.map.cellRuleState();
 		const bool resized = prepare(terrain->cellRules, source.size());
+        logicalChunks(*terrain,game.map.changes(MapState::TrackedArray::Terrain),resized,
+            [&](std::size_t i){ return Uint64(logicalView.terrainProperties(i).projectileBlocks); });
 		refresh(terrain->stamps, game.map.changes(MapState::TrackedArray::Terrain), resized,
 			[&](std::size_t start, std::size_t length) { copyCells(terrain->cellRules, source, start, length); });
 	}
@@ -290,6 +316,8 @@ Handle capture(const Game& game,
 	{
 		const auto source = game.map.occupancyState();
 		const bool resized = prepare(occupancy->cells, source.size());
+        logicalChunks(*occupancy,game.map.changes(MapState::TrackedArray::Occupancy),resized,
+            [&](std::size_t i){ const auto& c=source[i]; return Uint64(c.groundUnit)|(Uint64(c.airUnit)<<16)|(Uint64(c.building)<<32); });
 		refresh(occupancy->stamps, game.map.changes(MapState::TrackedArray::Occupancy), resized,
 			[&](std::size_t start, std::size_t length) { copyCells(occupancy->cells, source, start, length); });
 	}

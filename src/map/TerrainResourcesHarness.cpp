@@ -1072,7 +1072,7 @@ TEST_CASE("embedded resource save starts with an invalid installed catalog" * do
     CHECK_THROWS(ResourceRegistry::builtins());
     // Old files carry numeric IDs only. Their adapter must be frozen too, not
     // fall back to the missing or invalid default catalog at process startup.
-    const auto legacyBytes=glob2test::readFile(glob2test::inflated("javascript/profile1-initial.game.gz"));
+    const auto legacyBytes=glob2test::readFile(glob2test::inflated("javascript/profile1-initial159.game.gz"));
     GAGCore::BinaryInputStream oldInput(new GAGCore::MemoryStreamBackend(legacyBytes.data(),legacyBytes.size()));
     oldInput.seekFromStart(0);
     GameGUI oldGame(false);
@@ -1339,7 +1339,7 @@ TEST_CASE("frozen seeded resource compositions preserve invariants and exact sim
     glob2test::expectGolden("resources/seeded-compositions-units.trace",trace.str());
 }
 
-TEST_CASE("legacy resource saves ignore reordered modified installed defaults in a fresh process" * doctest::test_suite("RuntimeResources"))
+TEST_CASE("frozen resource saves ignore reordered modified installed defaults in a fresh process" * doctest::test_suite("RuntimeResources"))
 {
     using Json=nlohmann::json;
     auto installed=Json::parse(ResourceRegistry::loadFile((glob2test::sourceRoot()/"data/resources/registry.json").string())->serialize());
@@ -1355,7 +1355,7 @@ TEST_CASE("legacy resource saves ignore reordered modified installed defaults in
     const auto defaults=ResourceRegistry::builtins();
     REQUIRE(defaults->properties(*defaults->find("trees")).growthRate==0);
     REQUIRE(resourceIndex(*defaults->find("trees"))==0);
-    const auto bytes=glob2test::readFile(glob2test::inflated("javascript/profile1-initial.game.gz"));
+    const auto bytes=glob2test::readFile(glob2test::inflated("javascript/profile1-initial159.game.gz"));
     GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
     input.seekFromStart(0);
     GameGUI restored(false);
@@ -1409,129 +1409,22 @@ TEST_CASE("custom ground and air obstruction independently govern routes across 
 }
 
 
-TEST_CASE("released terrain-seed format 138 retains legacy resource and material continuation" * doctest::test_suite("RuntimeResources"))
+TEST_CASE("the obsolete resources/terrain-seed138.game.gz save is rejected [save-format]" * doctest::test_suite("RuntimeResources"))
 {
     glob2test::HeadlessGlobals globals;
-    const auto manifest = nlohmann::json::parse(glob2test::readFile(
-        glob2test::sourceRoot()/"test/fixtures/resources/terrain-seed138.game.manifest.json"));
     const auto bytes = glob2test::readFile(glob2test::inflated("resources/terrain-seed138.game.gz"));
-    // Undo the documented, sole format138 addition to compare the same authentic
-    // format137 checkpoint. Never reinterpret an unpublished resource138 draft.
-    auto legacyBytes = bytes;
-    const size_t seedOffset = manifest["terrain_seed_offset"].get<size_t>();
-    const size_t minorOffset = manifest["header_minor_offset"].get<size_t>();
-    REQUIRE(seedOffset + 4 <= legacyBytes.size());
-    REQUIRE(minorOffset + 4 <= legacyBytes.size());
-    legacyBytes.erase(seedOffset, 4);
-    legacyBytes[minorOffset + 3] = 137;
     GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(), bytes.size()));
-    GAGCore::BinaryInputStream legacyInput(new GAGCore::MemoryStreamBackend(legacyBytes.data(), legacyBytes.size()));
-    // The copying MemoryStreamBackend constructor writes the bytes, leaving its
-    // cursor at the end. Rewind both complete game streams before loading.
     input.seekFromStart(0);
-    legacyInput.seekFromStart(0);
-    GameGUI restored(false), legacy(false);
-    REQUIRE(restored.game.load(&input));
-    REQUIRE(legacy.game.load(&legacyInput));
-    auto &map = restored.game.map;
-    CHECK(map.terrainSeed() == manifest["terrain_seed"].get<Uint32>());
-    CHECK(legacy.game.map.terrainSeed() == 0);
-    REQUIRE(map.resourceRegistry().size() == 8);
-    CHECK(map.resourceRegistry().digest() == ResourceRegistry::legacy()->digest());
-    CHECK(restored.game.stepCounter == 8192);
-    unsigned deposits = 0, pendingHarvests = 0;
-    for (size_t i = 0; i < size_t(map.w)*map.h; ++i)
-    {
-        CHECK(map.materialStocksAt(i) == legacy.game.map.materialStocksAt(i));
-        deposits += map.getResource(i).type != NO_RES_TYPE;
-        for (unsigned material = 8; material < MaterialCount; ++material)
-            CHECK(map.materialAmountAtSlot(i, material) == 0);
-    }
-    REQUIRE(deposits > 0);
-    for (int t = 0; t < restored.game.mapHeader.getNumberOfTeams(); ++t)
-    {
-        for (unsigned u = 0; u < Unit::MAX_COUNT; ++u)
-            if (const auto *unit = restored.game.teams[t]->myUnits[u])
-            {
-                const auto *oldUnit = legacy.game.teams[t]->myUnits[u];
-                REQUIRE(oldUnit != nullptr);
-                CHECK(unit->movement == oldUnit->movement);
-                CHECK(unit->destinationPurpose == oldUnit->destinationPurpose);
-                CHECK(unit->carriedMaterial == oldUnit->carriedMaterial);
-                pendingHarvests += unit->movement == Unit::MOV_HARVESTING;
-            }
-        for (unsigned b = 0; b < Building::MAX_COUNT; ++b)
-            if (const auto *building = restored.game.teams[t]->myBuildings[b])
-            {
-                const auto *oldBuilding = legacy.game.teams[t]->myBuildings[b];
-                REQUIRE(oldBuilding != nullptr);
-                for (unsigned material = 0; material < MaterialCount; ++material)
-                {
-                    CHECK(building->material(material) == oldBuilding->material(material));
-                    if (material >= 8) CHECK(building->material(material) == 0);
-                }
-            }
-    }
-    REQUIRE(pendingHarvests > 0);
-    REQUIRE(restored.game.mapHeader.getVersionMinor() == 138);
-    REQUIRE(legacy.game.mapHeader.getVersionMinor() == 137);
-    // MapHeader equality deliberately excludes file versions. Verify all other
-    // header metadata before normalizing that non-simulation checksum input.
-    REQUIRE(restored.game.mapHeader == legacy.game.mapHeader);
-    restored.game.mapHeader = legacy.game.mapHeader;
-    // Full checksums include cached routing and pending unit state; terrain seed
-    // is presentation-only and must not change continued simulation.
-    for (unsigned tick = 0; tick < 32; ++tick)
-    {
-        CHECK(restored.game.checkSum(nullptr,nullptr,nullptr,true) == legacy.game.checkSum(nullptr,nullptr,nullptr,true));
-        { auto random = restored.game.bindRandom(); restored.game.syncStep(0); }
-        { auto random = legacy.game.bindRandom(); legacy.game.syncStep(0); }
-    }
-    CHECK(restored.game.checkSum(nullptr,nullptr,nullptr,true) == legacy.game.checkSum(nullptr,nullptr,nullptr,true));
+    GameGUI restored;
+    CHECK_FALSE(restored.game.load(&input));
 }
 
-TEST_CASE("released observation format 139 imports legacy stocks and preserves current save continuation" * doctest::test_suite("RuntimeResources"))
+TEST_CASE("the obsolete resources/observation139.game.gz save is rejected [save-format]" * doctest::test_suite("RuntimeResources"))
 {
     glob2test::HeadlessGlobals globals;
-    const auto bytes=glob2test::readFile(glob2test::inflated("resources/observation139.game.gz"));
-    const auto manifest=nlohmann::json::parse(glob2test::readFile(
-        glob2test::sourceRoot()/"test/fixtures/resources/observation139.game.manifest.json"));
-    REQUIRE(Online::Sha256::hex(bytes)==manifest["decompressed_sha256"].get<std::string>());
-    GAGCore::BinaryInputStream legacyInput(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
-    legacyInput.seekFromStart(0);
-    GameGUI original(false),restored(false);
-    REQUIRE(original.game.load(&legacyInput));
-    REQUIRE(original.game.mapHeader.getVersionMinor()==139);
-    REQUIRE(original.game.stepCounter==8193);
-    CHECK(original.game.map.resourceRegistry().digest()==ResourceRegistry::legacy()->digest());
-    REQUIRE(original.game.map.resourceRegistry().size()==8);
-    unsigned pendingHarvests=0;
-    for(int team=0;team<original.game.mapHeader.getNumberOfTeams();++team)
-    {
-        for(unsigned u=0;u<Unit::MAX_COUNT;++u)
-            if(const auto* unit=original.game.teams[team]->myUnits[u])
-                pendingHarvests+=unit->movement==Unit::MOV_HARVESTING;
-        for(unsigned b=0;b<Building::MAX_COUNT;++b)
-            if(const auto* building=original.game.teams[team]->myBuildings[b])
-                for(unsigned material=8;material<MaterialCount;++material)
-                    CHECK(building->material(material)==0);
-    }
-    REQUIRE(pendingHarvests>0);
-    auto* memory=new GAGCore::MemoryStreamBackend;
-    GAGCore::BinaryOutputStream output(memory);
-    original.game.save(&output,false,original.game.mapHeader.getMapName()); output.flush();
-    auto* copy=new GAGCore::MemoryStreamBackend(*memory); copy->seekFromStart(0);
-    GAGCore::BinaryInputStream currentInput(copy);
-    REQUIRE(restored.game.load(&currentInput));
-    REQUIRE(restored.game.mapHeader.getVersionMinor()==VERSION_MINOR);
-    // File-format versions contribute to checksums but are not simulation state.
-    // Verify the remaining header metadata before normalizing only that boundary.
-    REQUIRE(original.game.mapHeader==restored.game.mapHeader);
-    original.game.mapHeader=restored.game.mapHeader;
-    for(unsigned tick=0;tick<32;++tick)
-    {
-        CHECK(original.game.checkSum(nullptr,nullptr,nullptr,true)==restored.game.checkSum(nullptr,nullptr,nullptr,true));
-        original.game.syncStep(0); restored.game.syncStep(0);
-    }
-    CHECK(original.game.checkSum(nullptr,nullptr,nullptr,true)==restored.game.checkSum(nullptr,nullptr,nullptr,true));
+    const auto bytes = glob2test::readFile(glob2test::inflated("resources/observation139.game.gz"));
+    GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(), bytes.size()));
+    input.seekFromStart(0);
+    GameGUI restored;
+    CHECK_FALSE(restored.game.load(&input));
 }

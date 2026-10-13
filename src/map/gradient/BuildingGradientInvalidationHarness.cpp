@@ -1218,69 +1218,15 @@ TEST_SUITE("BuildingGradientInvalidation")
 		glob2test::HeadlessGlobals globals;
 		scheduledEmptyPipelineFollowsHeaderDelay();
 	}
-    TEST_CASE("retained format126 access flags restore walking and swimming locks into the footprint route and survive current saves [save-format]")
+    TEST_CASE("the obsolete team-limit/pre-v127-maxima.game.gz save is rejected [save-format]")
     {
-        glob2test::HeadlessGlobals globals;
-        const auto original=glob2test::readFile(glob2test::inflated("team-limit/pre-v127-maxima.game.gz"));
-        GameGUI observed;
-        LegacyAccessOffsetReader tracker(original);
-        REQUIRE(observed.game.load(&tracker));
-        REQUIRE(observed.game.mapHeader.getVersionMinor()==126);
-        REQUIRE(tracker.flags.size()==8); // Four real swarms, two old access rows each.
-        for(const auto& flag:tracker.flags) {
-            REQUIRE(flag.offset<original.size());
-            REQUIRE(flag.swim>=0); REQUIRE(flag.swim<2);
-            const auto* building=observed.game.teams[flag.team]->myBuildings[flag.building];
-            REQUIRE(building!=nullptr);
-            REQUIRE(std::string(building->type->type)=="swarm");
-            REQUIRE(building->resolveRoute(BuildingRoute::Automatic)==BuildingRoute::Footprint);
-        }
-        const auto load=[](Game& game,const std::string& bytes) {
-            GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
-            input.seekFromStart(0); return game.load(&input);
-        };
-        const auto save=[](Game& game) {
-            auto* memory=new GAGCore::MemoryStreamBackend;
-            GAGCore::BinaryOutputStream output(memory);
-            game.save(&output,false,"legacy access continuation"); return memory->takeContents();
-        };
-        const auto state=[](Game& game) {
-            std::vector<Uint32> fields,buildings,units;
-            game.checkSum(&fields,&buildings,&units,true);
-            return std::make_tuple(fields,buildings,units);
-        };
-        for(unsigned pattern=0;pattern<4;++pattern) {
-            auto patched=original;
-            for(const auto& flag:tracker.flags) patched[flag.offset]=char((pattern>>flag.swim)&1u);
-            GameGUI legacy;
-            REQUIRE(load(legacy.game,patched));
-            for(const auto& flag:tracker.flags) {
-                const auto* building=legacy.game.teams[flag.team]->myBuildings[flag.building];
-                // Concrete row zero is independent of the Automatic sentinel's
-                // numeric value. Other routes and the new water-only row remain clear.
-                for(int index=0;index<BUILDING_ACCESS_COUNT;++index)
-                    REQUIRE(building->isLocked(index)==(index<2 && bool((pattern>>index)&1u)));
-            }
-            GameGUI current,repeated;
-            REQUIRE(load(current.game,save(legacy.game)));
-            REQUIRE(current.game.mapHeader.getVersionMinor()==VERSION_MINOR);
-            REQUIRE(saveRuntime(current.game.map)==saveRuntime(legacy.game.map));
-            for(const auto& flag:tracker.flags) {
-                const auto* a=legacy.game.teams[flag.team]->myBuildings[flag.building];
-                const auto* b=current.game.teams[flag.team]->myBuildings[flag.building];
-                for(int index=0;index<BUILDING_ACCESS_COUNT;++index) REQUIRE(a->isLocked(index)==b->isLocked(index));
-            }
-            REQUIRE(load(repeated.game,save(current.game)));
-            current.game.setWaitingOnMask(0); repeated.game.setWaitingOnMask(0);
-            REQUIRE(state(current.game)==state(repeated.game));
-            for(int tick=0;tick<16;++tick) {
-                current.game.syncStep(0); repeated.game.syncStep(0);
-                REQUIRE(state(current.game)==state(repeated.game));
-                REQUIRE(current.game.syncRandom==repeated.game.syncRandom);
-                REQUIRE(saveRuntime(current.game.map)==saveRuntime(repeated.game.map));
-            }
-        }
-    }
+    glob2test::HeadlessGlobals globals;
+    const auto bytes = glob2test::readFile(glob2test::inflated("team-limit/pre-v127-maxima.game.gz"));
+    GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(), bytes.size()));
+    input.seekFromStart(0);
+    GameGUI restored;
+    CHECK_FALSE(restored.game.load(&input));
+}
 
     TEST_CASE("released water-only footprint diagnostics export the locked water-only access row")
     {

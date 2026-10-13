@@ -497,19 +497,15 @@ TEST_SUITE("EngineSession")
         CHECK(work->status() == ComputeExecutor::Presentation::Status::Canceled);
     }
 
-    TEST_CASE("retained version-152 replay is rejected by the delayed-statistics replay floor [save-format]")
+    TEST_CASE("a retained version-152 stock replay is rejected [save-format]")
     {
-        static_assert(REPLAY_MINIMUM_VERSION_MINOR > 152);
-        glob2test::HeadlessGlobals globals({.loadStrings=true});
-        REQUIRE(NET_Init());
-        struct NetworkScope {~NetworkScope(){NET_Quit();}} network;
-        globals->automaticEndingGame=false;
-        const auto path=glob2test::inflated("unit-catalog/legacy152-stock.replay.gz");
-        Engine engine;
-        CHECK_FALSE(engine.loadReplayTask(path.string()).run());
-        // Saved state from this era remains readable; replay acceptance follows
-        // the new simulation timing and has its own, deliberately newer floor.
-    }
+    glob2test::HeadlessGlobals globals({.loadStrings=true});
+    REQUIRE(NET_Init());
+    struct NetworkScope {~NetworkScope(){NET_Quit();}} network;
+    const auto path=glob2test::inflated("unit-catalog/legacy152-stock.replay.gz");
+    Engine engine;
+    CHECK_FALSE(engine.loadReplayTask(path.string()).run());
+}
 
     TEST_CASE("external replay retains recorded simulation checksums [benchmark][artifacts]")
     {

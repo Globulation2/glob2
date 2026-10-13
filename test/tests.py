@@ -58,6 +58,7 @@ ENGINE_TESTS = [
     '#src/building/BuildingCatalogFixtureHarness.cpp',
     '#src/building/BuildingCatalogBenchmark.cpp',
     '#src/building/AreaEffectsTest.cpp',
+    ('#src/building/TurretTargetingTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/building/AreaEffectsBenchmark.cpp',
     ('#src/map/ResourceGrowthBenchmark.cpp', dict(cxxflags=['-fno-access-control'])),
     ('#src/map/ResourceGrowthFixtures.cpp', dict(cxxflags=['-fno-access-control'])),
@@ -601,3 +602,6 @@ def scripting_entries():
 def source_path(source):
     """Repository-relative path of a registry entry."""
     return source[1:] if source.startswith('#') else 'test/' + source
+
+# Dedicated whole-engine turret experiment; production objects are otherwise reused.
+TURRET_ENGINE_BENCHMARK = ('#src/building/TurretEngineBenchmark.cpp', dict(cxxflags=['-fno-access-control']))

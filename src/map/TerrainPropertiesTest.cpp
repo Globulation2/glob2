@@ -665,68 +665,15 @@ TEST_SUITE("TerrainRuntime")
 			CHECK(world.game.checkSum() == resumed.game.checkSum());
 		}
 	}
-	TEST_CASE("format-137 saves with custom terrain load with remapped IDs and resave at the current format")
+	TEST_CASE("the obsolete terrain-catalogue/custom-registry-137.game.gz save is rejected [save-format]")
 	{
-		glob2test::HeadlessGlobals globals;
-		// Written by an origin/master build (TERRAIN_COUNT 7) with two runtime
-		// definitions painted at IDs 7 and 8 beside classic ice, trail, sand and water.
-		auto open = []
-		{
-			return globalContainer->fileManager->openInflatingInputStreamBackend(
-				"test/fixtures/terrain-catalogue/custom-registry-137.game.gz");
-		};
-		auto verify = [](const Game &game)
-		{
-			const auto &map = game.map;
-			REQUIRE(map.terrainRegistry().size() == TERRAIN_COUNT + 2);
-			const auto bog = map.terrainRegistry().find("fixture:bog");
-			const auto mud = map.terrainRegistry().find("fixture:mud");
-			REQUIRE(bog);
-			REQUIRE(mud);
-			CHECK(*bog == TerrainType(TERRAIN_COUNT));
-			CHECK(*mud == TerrainType(TERRAIN_COUNT + 1));
-			CHECK(map.terrainRegistry().appearance(*bog) == WATER);
-			CHECK(map.terrainRegistry().appearance(*mud) == SAND);
-			CHECK(map.terrainProperties(*bog).swimmable);
-			CHECK(map.terrainProperties(*bog).groundSpeedQ8 == 128);
-			CHECK(map.terrainProperties(*mud).groundSpeedQ8 == 192);
-			CHECK_FALSE(map.terrainProperties(*mud).buildable);
-			CHECK(map.terrainTypeAt(4, 4) == *bog);
-			CHECK(map.terrainTypeAt(5, 4) == *bog);
-			CHECK(map.terrainTypeAt(6, 6) == *mud);
-			CHECK(map.terrainTypeAt(10, 10) == ICE);
-			CHECK(map.terrainTypeAt(12, 10) == TRAIL);
-			CHECK(map.terrainTypeAt(14, 14) == SAND);
-			CHECK(map.terrainTypeAt(16, 14) == WATER);
-			CHECK(map.terrainTypeAt(0, 0) == GRASS);
-		};
-		GameGUI loaded;
-		{
-			auto *backend = open();
-			REQUIRE(backend);
-			GAGCore::BinaryInputStream input(backend);
-			REQUIRE(loaded.game.load(&input));
-		}
-		verify(loaded.game);
-		const auto digest = loaded.game.map.terrainRegistry().digest();
-		CHECK_FALSE(digest.empty());
-
-		auto *resaved = new GAGCore::MemoryStreamBackend;
-		GAGCore::BinaryOutputStream output(resaved);
-		loaded.game.save(&output, false, "custom-registry-138");
-		output.flush();
-		GameGUI reloaded;
-		{
-			GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(
-				std::string(resaved->getBuffer(), resaved->getPosition())));
-			REQUIRE(reloaded.game.load(&input));
-		}
-		verify(reloaded.game);
-		CHECK(reloaded.game.map.terrainRegistry().digest() == digest);
-		CHECK(reloaded.game.map.checkSum(true) == loaded.game.map.checkSum(true));
-		// Current files number their custom definitions from the current built-ins.
-		CHECK(nlohmann::json::parse(reloaded.game.map.terrainRegistry().serialize())["terrains"][0]["id"] == TERRAIN_COUNT);
-	}
+    glob2test::HeadlessGlobals globals;
+    const auto bytes = glob2test::readFile(glob2test::inflated("terrain-catalogue/custom-registry-137.game.gz"));
+    GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(), bytes.size()));
+    input.seekFromStart(0);
+    GameGUI restored;
+    CHECK_FALSE(restored.game.load(&input));
+}
 	TEST_CASE("painted catalogue terrain survives save and reload with its checksum")
 	{
 		glob2test::HeadlessGlobals globals;

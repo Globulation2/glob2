@@ -127,35 +127,6 @@ and selects the dummy drivers when the environment does not, so
 `build/darwin/client/release/test/glob2-unit-tests -ts=MapQuery` never touches
 `~/.glob2`. Doctest's own options apply: `-ltc`, `-tc=`, `-ts=`, `-s`, `-r=junit`.
 
-The `WorldSnapshot` case `paired entity storage workload [benchmark]` emits
-`ENTITY_BENCH` JSON for authoritative copy traffic, populated entity payload,
-retained snapshot capacity, live object sizes, and separate capture, inventory,
-owner simulation, and scene preparation timings. Use a release build for runtime
-comparisons. `GLOB2_ENTITY_SCENARIO` selects one fixture (0–5),
-`GLOB2_ENTITY_SHARED=1` selects catalog-backed team inventory; private inventory
-is the default. Inventory phases report separate keys, and layout diagnostics
-include actual allocation alignment and usable sizes.
-
-Component timing intervals do not drain asynchronous workers. Work submitted by
-owner steps can cross phase boundaries, so these timings explain individual costs
-but cannot establish total CPU savings. Use whole-match and advancing-frame runs
-with worker drains at both measurement boundaries for inclusive process CPU;
-do not add independently measured phases together.
-
-`GLOB2_ENTITY_LEASES` controls retained handles (1–21, within the component pool horizon), and
-`GLOB2_ENTITY_BENCH_CONFIG` names a JSON file mapping scenario numbers to operation
-counts (`capture`, `inventory_read`, `inventory_update`, `owner`, `consumer`).
-Counts must match across compared binaries. Capture normally supplies the previous
-handle so unchanged components are reused; `GLOB2_ENTITY_FRESH=1` measures fresh
-capture separately. `GLOB2_ENTITY_EVIDENCE_DIR` saves canonical states and final
-checksums. Synthetic fixtures disable hunger and resource growth; qualify ordinary
-advancing matches separately. Optional Valgrind headers enable Callgrind phase markers. For Cachegrind,
-`GLOB2_ENTITY_PROFILE_PHASE` selects one reported phase (for example
-`private_inventory_read` or `shared_capture`) when instrumentation starts disabled.
-Valgrind is not required for normal builds or execution. CPU-time metrics are
-`null` when unavailable; Windows and browser wall clocks are not reported as CPU
-time.
-
 ## Writing a test
 
 Include `Glob2Test.h` (unit tests) or `EngineFixtures.h` (engine tests) and use

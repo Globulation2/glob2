@@ -367,6 +367,7 @@ bool Game::executeMoveFlag(const OrderMoveFlag& omf, int localPlayer)
 			map.setBuilding(omf.x, omf.y, b->type->width, b->type->height, b->gid);
 			b->owner->dirtyGlobalGradient();
 		}
+		if (b->posX!=omf.x || b->posY!=omf.y) if (++b->targetingEpoch==0) b->targetingEpoch=1;
 		b->posX=omf.x;
 		b->posY=omf.y;
 		areaEffects.changed(b->gid);

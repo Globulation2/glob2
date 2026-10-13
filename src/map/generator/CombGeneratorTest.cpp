@@ -251,6 +251,7 @@ void firing(const std::filesystem::path &output, bool buildingTarget)
 		tower->turretStep(tick);
 	require(tower->bullets == 0, "unfed tower cannot shoot");
 	tower->setMaterial(STONE, 1);
+	glob2test::prepareTurretTargets(*tower);
 	tower->turretStep(256);
 	require(tower->material(STONE) == 0 &&
 				tower->bullets == tower->type->multiplierStoneToBullets - 1,

@@ -217,75 +217,15 @@ TEST_SUITE("MatchSetup")
         CHECK_THROWS_AS(MatchSetup::fromJson(document),MatchSetupError);
     }
 
-    TEST_CASE("legacy turn setup validates recovered body catalogs before accepting the session [save-format]")
+    TEST_CASE("the obsolete team-stats/version88.game.gz save is rejected [save-format]")
     {
-        glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.loadStrings=true});
-        globals->structuredHeadless=true;
-        // The retained fixture contains only Game state. A real saved client
-        // additionally writes this legacy GUI tail, even when match loading
-        // discards its local viewport and preferences.
-        const auto gameOnly=glob2test::inflated("entering-explorer/reproducer.game.gz");
-        auto* tail=new GAGCore::MemoryStreamBackend;
-        GAGCore::BinaryOutputStream guiTail(tail);
-        guiTail.writeUint32(0xffffffffu,"chatMask");
-        for(const auto* field:{"localPlayer","localTeamNo","viewportX","viewportY"})guiTail.writeSint32(0,field);
-        guiTail.writeUint32(0,"hiddenGUIElements");
-        guiTail.writeUint32(0,"buildingsChoiceMask"); guiTail.writeUint32(0,"flagsChoiceMask");
-        guiTail.writeUint32(0,"size"); // empty legacy default-assignment map
-        guiTail.flush();
-        const auto path=(glob2test::artifactDir()/"legacy88-complete.game").string();
-        {std::ofstream output(path,std::ios::binary); output<<glob2test::readFile(gameOnly)<<tail->takeContents();}
-
-        FILE* file=std::fopen(path.c_str(),"rb"); REQUIRE(file);
-        GAGCore::BinaryInputStream input(new GAGCore::FileStreamBackend(file));
-        GameGUI fixture; REQUIRE(fixture.game.load(&input));
-        const auto recovered=fixture.game.gameHeader.getUnitCatalog();
-        REQUIRE(fixture.game.mapHeader.getVersionMinor()<FILE_FORMAT_VERSION_UNIT_CATALOG);
-        MatchSetup prototype; prototype.simVersion=currentSimVersion(); prototype.seed=77;
-        prototype.map.kind=MapSource::Kind::Upload; prototype.map.format=MapSource::Format::Save;
-        prototype.map.hash=sha256Hex(glob2test::readFile(path));
-        prototype.teams={{0,0}}; SetupSeat seat; seat.seat=0; seat.team=0; seat.name="Legacy client";
-        prototype.seats.push_back(seat);
-        auto mismatch=UnitCatalog::fromJson(R"({"schemaVersion":1,"units":[{"key":"worker","behaviors":{"foodCapacity":90000}}]})");
-        GameHeader placeholder=fixture.game.gameHeader;
-        placeholder.setUnitCatalog(UnitCatalog::legacyMigration());
-        placeholder.setNumberOfPlayers(1);
-        placeholder.getBasePlayer(0)=BasePlayer(0,"Legacy client",0,BasePlayer::P_LOCAL);
-        const auto inferred=MatchSetup::fromGameHeader(placeholder,fixture.game.mapHeader,prototype.map,prototype.simVersion);
-        CHECK(inferred.unitCatalogSnapshot.empty());
-        CHECK(inferred.unitCatalogHash.empty());
-        // A current resave embeds this exact catalog, so its identity must be
-        // transmitted even when its bytes equal the historical placeholder.
-        const auto current=MatchSetup::fromGameHeader(placeholder,mapWithTeams(1),prototype.map,prototype.simVersion);
-        CHECK(current.unitCatalogSnapshot==UnitCatalog::legacyMigration()->serialize());
-        CHECK(current.unitCatalogHash==UnitCatalog::legacyMigration()->digest());
-        for (int mode=0;mode<5;++mode) {
-            CAPTURE(mode);
-            auto setup=prototype;
-            if (mode) {
-                const auto catalog=mode==1?recovered:mode==2?mismatch:mode==3?UnitCatalog::availableDefaults():UnitCatalog::legacyMigration();
-                setup.unitCatalogSnapshot=catalog->serialize(); setup.unitCatalogHash=catalog->digest();
-            }
-            setup.validateSemantics();
-            Engine engine; Engine::TurnMatchStart start;
-            start.setup=setup; start.mapFile=path; start.localSeat=0;
-            start.transport=std::make_shared<turntest::ScriptedTransport>();
-            const bool loaded=engine.initTurnMatchTask(std::move(start)).run();
-            if (mode<=1 || mode==4) {
-                REQUIRE_MESSAGE(loaded,engine.getInitializationDiagnostic());
-                auto* team=engine.gameTeam(0); REQUIRE(team);
-                CHECK(team->game->gameHeader.getUnitCatalog()->digest()==recovered->digest());
-                REQUIRE(team->myUnits[0]);
-                CHECK(team->myUnits[0]->hp==0);
-                CHECK(team->myUnits[0]->performance[HP]==0);
-                CHECK(team->map->getAirUnit(7,8)==team->myUnits[0]->gid);
-                REQUIRE(engine.turnSession());
-            } else {
-                CHECK_FALSE(loaded); CHECK_FALSE(engine.turnSession());
-                CHECK(engine.getInitializationDiagnostic().find("unit catalog does not match")!=std::string::npos);
-            }
-        }
-    }
+    glob2test::HeadlessGlobals globals;
+    const auto bytes = glob2test::readFile(glob2test::inflated("team-stats/version88.game.gz"));
+    GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(), bytes.size()));
+    input.seekFromStart(0);
+    GameGUI restored;
+    CHECK_FALSE(restored.game.load(&input));
+}
 
     TEST_CASE("current files bind embedded migration catalogs as explicit authority [save-format]")
     {

@@ -320,7 +320,7 @@ TEST_SUITE("EntityRandomLifecycle")
         }
     }
 
-    TEST_CASE("format 150 area state survives one-time RNG migration and continuation [save-format][artifacts]")
+    TEST_CASE("format 150 text area saves are rejected [save-format][artifacts]")
     {
         glob2test::HeadlessGlobals globals;
         glob2test::HeadlessGame world({.header=true, .seed=731});
@@ -387,41 +387,8 @@ TEST_SUITE("EntityRandomLifecycle")
                       "versionMinor = 150");
         std::ofstream(glob2test::artifactDir() / "format-150.game.txt", std::ios::binary) << bytes;
         glob2test::HeadlessGame migrated({.header=true});
-        REQUIRE(load(migrated.game, bytes, true));
-        auto* u = migrated.game.teams[0]->myUnits[Unit::GIDtoID(unit->gid)];
-        auto* b = migrated.game.teams[0]->myBuildings[Building::GIDtoID(building->gid)];
-        REQUIRE(u); REQUIRE(b);
-        CHECK(u->areaServiceRemainders == unit->areaServiceRemainders);
-        CHECK(u->areaLastPulseTick == unit->areaLastPulseTick);
-        CHECK(b->areaFunded == building->areaFunded);
-        CHECK(b->areaFundingType == building->areaFundingType);
-        CHECK(b->areaFundingTeam == building->areaFundingTeam);
-        CHECK(b->areaFundingTick == building->areaFundingTick);
-        EntityRandom expectedUnit, expectedBuilding;
-        expectedUnit.initialize(731, EntityRandom::Kind::Unit, u->gid, u->scriptIdentity);
-        expectedBuilding.initialize(731, EntityRandom::Kind::Building, b->gid, b->scriptIdentity);
-        CHECK(u->entityRandom == expectedUnit);
-        CHECK(b->entityRandom == expectedBuilding);
-        auto components = [](Game& game) {
-            std::vector<Uint32> state, buildings, units;
-            game.checkSum(&state, &buildings, &units, true);
-            // The loaded header retains 150 while the resave writes the current format. Its
-            // format checksum differs intentionally; authoritative state must not.
-            state.erase(state.begin());
-            state.insert(state.end(), buildings.begin(), buildings.end());
-            state.insert(state.end(), units.begin(), units.end());
-            return state;
-        };
-        for (bool text : {false, true}) {
-            glob2test::HeadlessGame restored({.header=true});
-            REQUIRE(load(restored.game, save(migrated.game, text), text));
-            CHECK(components(restored.game) == components(migrated.game));
-            for (int tick = 0; tick < 64; ++tick) {
-                migrated.step(); restored.step();
-                CHECK(components(restored.game) == components(migrated.game));
-            }
-        }
-    }
+        CHECK_FALSE(load(migrated.game, bytes, true));
+}
 
     TEST_CASE("truncated binary RNG state and even increments are rejected")
     {

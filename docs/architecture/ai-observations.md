@@ -178,8 +178,8 @@ share one restored allocation after their initialization identity and contents m
 Save barriers finish outstanding computation without delivering future orders
 early. Format 143 retains the match delay, completed pending command bytes and
 deadlines, request sequences, execution feedback, controller RNG and private
-continuation state. Older supported saves load with delay 0 and an empty engine
-order queue; the save compatibility floor remains 58. Lifecycle changes cancel
+continuation state. Before format 159, legacy saves loaded with delay0 and an empty engine
+order queue. Current saved matches require159; map compatibility remains58. Lifecycle changes cancel
 requests by controller generation. Verify delay 0 and 8, rejection and identity
 reuse, serial/threaded execution, and save/load with outstanding work. A snapshot
 migration alone does not establish identical AI trajectories or performance;

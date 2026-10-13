@@ -113,10 +113,18 @@ older pending exact smoothing. Worker continuation is seeded from the last
 completed pending frame, or published measurements when the queue is empty.
 Resaving stores complete frames; no historical snapshots are required.
 
+Format 159 persists cached turret targeting lists and delayed outputs. The saved-match
+floor deliberately advances to 159; format 160 advances the replay floor to 160.
+Existing maps retain floor 58.
+Text statistics saves isolate pending teams, sampling phases and coverage anchors
+in indexed sections so distinct records survive loading. Binary section markers
+carry no bytes. See [turret targeting](../development/compute-benchmarks.md#cached-turret-targeting)
+for its snapshot, checksum and continuation boundaries.
+
 ## Entity storage and serialized values
 
 Entity field compaction does not change explicit stream encodings, field order,
-checksum order or the save compatibility floor. Unit loaders read
+checksum order or the inherited save compatibility floor. Unit loaders read
 narrowed fields into full-width temporaries, apply existing validation and legacy
 migrations, and only then convert to their in-memory storage. In particular,
 invalid values such as 256 must not wrap into valid byte enums or training levels.
@@ -136,7 +144,7 @@ signed continuation debt; accumulation and division occur before converting the
 remainder. Canonical-save comparisons must use baseline-generated resaves, since
 existing historical migrations can already normalize an input file.
 
-Cached unit performance deliberately changes continuation in format 159. Each
+Cached unit performance deliberately changes continuation in format 160. Each
 ability remains a signed 32-bit serialized value in the original field order,
 while the live cache clamps to 0–65535. Format 153 and newer retain their existing
 0–1000000 validation and applicable nonzero-HP validation before clamping; invalid
@@ -146,11 +154,12 @@ performance applies its rule division before the final cap; loading retains the
 saved cache rather than recomputing it from the catalog. Actual HP, hunger, speed,
 movement surplus, experience and timers retain their wide continuation values.
 
-Private building stock deliberately changes continuation in format 159: every
+Private building stock deliberately changes continuation in format 160: every
 loaded slot is clamped to 0–255 before byte storage. Historical negative stock
 normalizes to zero. Pre-catalog repair credits retain their wide migration before
 actual stock is selected. Serialized stock remains fifteen signed 32-bit values
-in its original order, and the save compatibility floor stays 58.
+in its original order. The saved-game floor remains 159, inherited from persisted
+turret targeting; the map floor stays 58.
 
 Only buildings whose private stock was normalized reconcile commitments made
 unaffordable by the cap. Affordable service visits survive; unfunded visits exit
@@ -164,5 +173,5 @@ Runtime additions saturate private stock without wrapping. Deliveries accept onl
 available headroom and account for actual acceptance or residual cargo; consumption
 settles existing reservations. Team stock keeps signed 32-bit storage. The stock
 and cached-performance policies change simulation revision and replay/network
-acceptance; earlier saves
+acceptance; format 159 saves
 remain readable, while earlier replay trajectories are not promised.

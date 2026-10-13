@@ -1056,8 +1056,10 @@ bool TeamStats::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 			coverageBuildings.reserve(buildings);
 			for (Uint32 i = 0; i < buildings; ++i)
 			{
-				CoverageBuilding b{stream->readSint32("coverageX"),stream->readSint32("coverageY"),
+				if (versionMinor>=159) stream->readEnterSection(i);
+                CoverageBuilding b{stream->readSint32("coverageX"),stream->readSint32("coverageY"),
 					stream->readSint32("coverageW"),stream->readSint32("coverageH")};
+                if (versionMinor>=159) stream->readLeaveSection();
 				if (b.width <= 0 || b.height <= 0 || b.width > 32 || b.height > 32 ||
 					b.x < -(1 << 20) || b.x > (1 << 20) ||
 					b.y < -(1 << 20) || b.y > (1 << 20))
@@ -1202,12 +1204,15 @@ void TeamStats::save(GAGCore::OutputStream *stream)
 	stream->writeUint32(coverageBuildingTick, "coverageBuildingTick");
 	stream->writeUint32(coverageBuildingGeneration, "coverageBuildingGeneration");
 	stream->writeUint32(coverageBuildings.size(), "coverageBuildingCount");
-	for (const auto &b : coverageBuildings)
+	for (unsigned i=0;i<coverageBuildings.size();++i)
 	{
+        stream->writeEnterSection(i);
+        const auto& b=coverageBuildings[i];
 		stream->writeSint32(b.x, "coverageX");
 		stream->writeSint32(b.y, "coverageY");
 		stream->writeSint32(b.width, "coverageW");
 		stream->writeSint32(b.height, "coverageH");
+        stream->writeLeaveSection();
 	}
 	stream->writeUint32(labourCoverageStartTick, "labourCoverageStartTick");
 
@@ -1957,12 +1962,15 @@ void TeamStats::saveSample(GAGCore::OutputStream *stream, const TeamStatsSample 
     if (sample.aggregate) stream->writeUint8(sample.finalized, "finalized");
 	sampleFields(stream, sample);
 	stream->writeUint32(sample.coverage.size(), "coverage");
-	for (const auto &b : sample.coverage)
+	for (unsigned i=0;i<sample.coverage.size();++i)
 	{
+        stream->writeEnterSection(i);
+        const auto& b=sample.coverage[i];
 		stream->writeSint32(b.x, "x");
 		stream->writeSint32(b.y, "y");
 		stream->writeSint32(b.width, "width");
 		stream->writeSint32(b.height, "height");
+        stream->writeLeaveSection();
 	}
 }
 TeamStatsSample TeamStats::loadSample(GAGCore::InputStream *stream, int versionMinor)
@@ -1986,8 +1994,10 @@ TeamStatsSample TeamStats::loadSample(GAGCore::InputStream *stream, int versionM
 		throw std::runtime_error("Invalid pending statistics coverage");
 	for (unsigned i = 0; i < count; ++i)
 	{
-		CoverageBuilding b{stream->readSint32("x"), stream->readSint32("y"),
+		if (versionMinor>=159) stream->readEnterSection(i);
+        CoverageBuilding b{stream->readSint32("x"), stream->readSint32("y"),
 						   stream->readSint32("width"), stream->readSint32("height")};
+        if (versionMinor>=159) stream->readLeaveSection();
 		if (b.width <= 0 || b.height <= 0 || b.width > 32 || b.height > 32 || b.x < -(1 << 20) ||
 			b.x > (1 << 20) || b.y < -(1 << 20) || b.y > (1 << 20))
 			throw std::runtime_error("Invalid statistics footprint");
@@ -2031,7 +2041,7 @@ Uint32 TeamStats::checkSum() const
 	measurementFields(&stream, events());
 	stream.writeUint32(coverageBuildingTick, "coverageTick");
 	stream.writeUint32(coverageBuildingGeneration, "coverageGeneration");
-	for (const auto &b : coverageBuildings)
+	for (const auto& b:coverageBuildings)
 	{
 		stream.writeSint32(b.x, "x");
 		stream.writeSint32(b.y, "y");

@@ -148,26 +148,14 @@ TEST_CASE("disabled fruit deliveries have a stable per-tick trace and save conti
 	glob2test::expectGolden("markets-v2/disabled-checksums.txt", marketTrace(false));
 }
 
-TEST_CASE("legacy workers already travelling to markets continue after migration [golden][save-format]")
+TEST_CASE("the obsolete markets-v2/legacy-133-market.bin save is rejected [save-format]")
 {
-	glob2test::HeadlessGlobals globals;
-	glob2test::HeadlessGame world({.header=true});
-	REQUIRE(load(world.game,glob2test::readFile(glob2test::fixture("markets-v2/legacy-133-market.bin")),false));
-	world.team=world.game.teams[0];
-	#if VERSION_MINOR >= 135
-	CHECK_FALSE(world.game.gameHeader.hasExperiment(ExperimentId::MarketsV2));
-	#endif
-	CHECK(world.team->myUnits[0]->ownExchangeBuilding!=nullptr);
-	std::ostringstream trace;
-	for (int tick=750;tick<1000;++tick)
-	{
-		for (int i=0;i<6;++i) { world.team->myUnits[i]->hungry=Unit::HUNGRY_MAX; world.team->myUnits[i]->medical=Unit::MED_FREE; }
-		world.step();
-		Uint32 hash=2166136261u;
-		for (Uint32 value : historicalGoldenState(world.game)) hash=(hash^value)*16777619u;
-		trace << "0 " << tick+1 << ' ' << std::hex << hash << std::dec << '\n';
-	}
-	glob2test::expectGolden("markets-v2/legacy-133-checksums.txt",trace.str());
+    glob2test::HeadlessGlobals globals;
+    const auto bytes = glob2test::readFile(glob2test::inflated("markets-v2/legacy-133-market.bin"));
+    GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(), bytes.size()));
+    input.seekFromStart(0);
+    GameGUI restored;
+    CHECK_FALSE(restored.game.load(&input));
 }
 #if VERSION_MINOR >= 135
 TEST_CASE("enabled supply networks repeat deterministically with save continuation [golden][save-format][artifacts]")

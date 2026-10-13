@@ -513,8 +513,8 @@ TEST_SUITE("UnitCatalog")
                 GameHeader restored;
                 const auto load = [&](auto &input)
                 {
-                    return players ? restored.load(&input, FILE_FORMAT_VERSION_UNIT_CATALOG)
-                                   : restored.loadWithoutPlayerInfo(&input, FILE_FORMAT_VERSION_UNIT_CATALOG);
+                    return players ? restored.load(&input, VERSION_MINOR)
+                                   : restored.loadWithoutPlayerInfo(&input, VERSION_MINOR);
                 };
                 if (text)
                 {
