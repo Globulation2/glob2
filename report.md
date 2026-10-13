@@ -63,3 +63,7 @@ Final source: `523bac7c7874dd0e6c4b9667d7428342a5444bcd`; master base: `27751084
 Latest-master focused engine check: 122 pass / 0 failures / 2 skips; terrain check: 21 pass / 0 failures / 15 display skips; SurfaceCoverage unit check: 15 cases pass / 3 display skips. These supplement the broader inventories and baseline failure reproductions described above. Final canonical results are in `final-correctness/comparison.json`; build logs and source metadata are included.
 
 Byte-identical archive entries are deduplicated. `manifest.json` maps every logical output path to its stored `archive_member`, byte count and SHA-256, preserving all variant comparisons without storing repeated identical checksum files.
+
+## Subsequent runtime evidence
+
+The original Torus timing prepared its Scene once, so its drawing results do not include fresh capture. A [separate capture-inclusive follow-up](runtime-report.md) now establishes supported large-colony pipeline benefit, with a static reuse attribution control, longer engine runs and targeted panel replication. Original measurements and limitations above remain intact.

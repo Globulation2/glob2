@@ -1,0 +1,304 @@
+{
+  "plain": {
+    "pairs": 20,
+    "difference_in_differences_us": 36.249999999999986,
+    "ci95_us": [
+      25.130000000000003,
+      46.615125
+    ],
+    "mean_capture_counter_saving_us": 44.224426953125,
+    "samples": [
+      {
+        "repeat": 0,
+        "before_fresh_minus_reuse_us": 75.40000000000002,
+        "after_fresh_minus_reuse_us": 14.69999999999999,
+        "difference_us": 60.70000000000003,
+        "capture_counter_saving_us": 47.3604794921875
+      },
+      {
+        "repeat": 1,
+        "before_fresh_minus_reuse_us": 44.300000000000004,
+        "after_fresh_minus_reuse_us": 28.39999999999998,
+        "difference_us": 15.900000000000023,
+        "capture_counter_saving_us": 42.1740078125
+      },
+      {
+        "repeat": 2,
+        "before_fresh_minus_reuse_us": 43.499999999999986,
+        "after_fresh_minus_reuse_us": -0.09999999999998899,
+        "difference_us": 43.59999999999997,
+        "capture_counter_saving_us": 35.717275390625
+      },
+      {
+        "repeat": 3,
+        "before_fresh_minus_reuse_us": 73.99999999999996,
+        "after_fresh_minus_reuse_us": 50.80000000000001,
+        "difference_us": 23.199999999999946,
+        "capture_counter_saving_us": 45.0516201171875
+      },
+      {
+        "repeat": 4,
+        "before_fresh_minus_reuse_us": 112.49999999999999,
+        "after_fresh_minus_reuse_us": 49.69999999999997,
+        "difference_us": 62.80000000000002,
+        "capture_counter_saving_us": 45.04283203125
+      },
+      {
+        "repeat": 5,
+        "before_fresh_minus_reuse_us": 73.59999999999994,
+        "after_fresh_minus_reuse_us": 23.40000000000003,
+        "difference_us": 50.1999999999999,
+        "capture_counter_saving_us": 47.6411630859375
+      },
+      {
+        "repeat": 6,
+        "before_fresh_minus_reuse_us": 54.79999999999996,
+        "after_fresh_minus_reuse_us": 23.2,
+        "difference_us": 31.599999999999962,
+        "capture_counter_saving_us": 43.708412109375
+      },
+      {
+        "repeat": 7,
+        "before_fresh_minus_reuse_us": 85.29999999999998,
+        "after_fresh_minus_reuse_us": 31.100000000000016,
+        "difference_us": 54.19999999999997,
+        "capture_counter_saving_us": 45.5115849609375
+      },
+      {
+        "repeat": 8,
+        "before_fresh_minus_reuse_us": 79.99999999999996,
+        "after_fresh_minus_reuse_us": 38.500000000000036,
+        "difference_us": 41.49999999999992,
+        "capture_counter_saving_us": 45.281337890625
+      },
+      {
+        "repeat": 9,
+        "before_fresh_minus_reuse_us": 123.4,
+        "after_fresh_minus_reuse_us": 41.09999999999997,
+        "difference_us": 82.30000000000004,
+        "capture_counter_saving_us": 46.7973037109375
+      },
+      {
+        "repeat": 10,
+        "before_fresh_minus_reuse_us": 54.49999999999999,
+        "after_fresh_minus_reuse_us": 78.69999999999999,
+        "difference_us": -24.199999999999996,
+        "capture_counter_saving_us": 42.5852021484375
+      },
+      {
+        "repeat": 11,
+        "before_fresh_minus_reuse_us": 81.90000000000003,
+        "after_fresh_minus_reuse_us": 49.59999999999998,
+        "difference_us": 32.300000000000054,
+        "capture_counter_saving_us": 44.8759814453125
+      },
+      {
+        "repeat": 12,
+        "before_fresh_minus_reuse_us": 68.19999999999999,
+        "after_fresh_minus_reuse_us": 10.200000000000042,
+        "difference_us": 57.99999999999994,
+        "capture_counter_saving_us": 42.2545244140625
+      },
+      {
+        "repeat": 13,
+        "before_fresh_minus_reuse_us": 79.10000000000001,
+        "after_fresh_minus_reuse_us": 47.30000000000001,
+        "difference_us": 31.799999999999997,
+        "capture_counter_saving_us": 43.919544921875
+      },
+      {
+        "repeat": 14,
+        "before_fresh_minus_reuse_us": 82.79999999999998,
+        "after_fresh_minus_reuse_us": 61.70000000000003,
+        "difference_us": 21.09999999999995,
+        "capture_counter_saving_us": 43.725291015625
+      },
+      {
+        "repeat": 15,
+        "before_fresh_minus_reuse_us": 102.89999999999999,
+        "after_fresh_minus_reuse_us": 49.80000000000001,
+        "difference_us": 53.09999999999998,
+        "capture_counter_saving_us": 47.49946484375
+      },
+      {
+        "repeat": 16,
+        "before_fresh_minus_reuse_us": 83.39999999999998,
+        "after_fresh_minus_reuse_us": 39.000000000000036,
+        "difference_us": 44.39999999999994,
+        "capture_counter_saving_us": 46.134306640625
+      },
+      {
+        "repeat": 17,
+        "before_fresh_minus_reuse_us": 75.70000000000005,
+        "after_fresh_minus_reuse_us": 37.099999999999966,
+        "difference_us": 38.60000000000008,
+        "capture_counter_saving_us": 46.495677734375
+      },
+      {
+        "repeat": 18,
+        "before_fresh_minus_reuse_us": 36.60000000000002,
+        "after_fresh_minus_reuse_us": 22.199999999999996,
+        "difference_us": 14.400000000000027,
+        "capture_counter_saving_us": 40.586013671875
+      },
+      {
+        "repeat": 19,
+        "before_fresh_minus_reuse_us": 25.300000000000043,
+        "after_fresh_minus_reuse_us": 35.8,
+        "difference_us": -10.499999999999954,
+        "capture_counter_saving_us": 42.126515625
+      }
+    ]
+  },
+  "panels": {
+    "pairs": 20,
+    "difference_in_differences_us": 38.94,
+    "ci95_us": [
+      27.31987499999999,
+      51.25999999999999
+    ],
+    "mean_capture_counter_saving_us": 34.0611498046875,
+    "samples": [
+      {
+        "repeat": 0,
+        "before_fresh_minus_reuse_us": 81.89999999999998,
+        "after_fresh_minus_reuse_us": 50.99999999999999,
+        "difference_us": 30.899999999999984,
+        "capture_counter_saving_us": 29.1058359375
+      },
+      {
+        "repeat": 1,
+        "before_fresh_minus_reuse_us": 51.9,
+        "after_fresh_minus_reuse_us": 39.60000000000002,
+        "difference_us": 12.299999999999976,
+        "capture_counter_saving_us": 30.470056640625
+      },
+      {
+        "repeat": 2,
+        "before_fresh_minus_reuse_us": 74.19999999999999,
+        "after_fresh_minus_reuse_us": 42.09999999999997,
+        "difference_us": 32.100000000000016,
+        "capture_counter_saving_us": 29.3837451171875
+      },
+      {
+        "repeat": 3,
+        "before_fresh_minus_reuse_us": 75.40000000000002,
+        "after_fresh_minus_reuse_us": 53.80000000000001,
+        "difference_us": 21.60000000000001,
+        "capture_counter_saving_us": 33.2325068359375
+      },
+      {
+        "repeat": 4,
+        "before_fresh_minus_reuse_us": 79.29999999999998,
+        "after_fresh_minus_reuse_us": 45.30000000000006,
+        "difference_us": 33.99999999999992,
+        "capture_counter_saving_us": 34.914708984375
+      },
+      {
+        "repeat": 5,
+        "before_fresh_minus_reuse_us": 77.90000000000002,
+        "after_fresh_minus_reuse_us": 42.29999999999995,
+        "difference_us": 35.60000000000007,
+        "capture_counter_saving_us": 31.9554697265625
+      },
+      {
+        "repeat": 6,
+        "before_fresh_minus_reuse_us": 93.3,
+        "after_fresh_minus_reuse_us": 47.70000000000002,
+        "difference_us": 45.59999999999998,
+        "capture_counter_saving_us": 35.867197265625
+      },
+      {
+        "repeat": 7,
+        "before_fresh_minus_reuse_us": 83.50000000000001,
+        "after_fresh_minus_reuse_us": 50.30000000000001,
+        "difference_us": 33.2,
+        "capture_counter_saving_us": 33.7371455078125
+      },
+      {
+        "repeat": 8,
+        "before_fresh_minus_reuse_us": 93.40000000000003,
+        "after_fresh_minus_reuse_us": 42.10000000000002,
+        "difference_us": 51.30000000000001,
+        "capture_counter_saving_us": 34.0237841796875
+      },
+      {
+        "repeat": 9,
+        "before_fresh_minus_reuse_us": 134.29999999999993,
+        "after_fresh_minus_reuse_us": 23.399999999999977,
+        "difference_us": 110.89999999999995,
+        "capture_counter_saving_us": 37.730935546875
+      },
+      {
+        "repeat": 10,
+        "before_fresh_minus_reuse_us": 94.20000000000006,
+        "after_fresh_minus_reuse_us": 57.60000000000004,
+        "difference_us": 36.60000000000002,
+        "capture_counter_saving_us": 32.9048984375
+      },
+      {
+        "repeat": 11,
+        "before_fresh_minus_reuse_us": 44.499999999999986,
+        "after_fresh_minus_reuse_us": 12.6,
+        "difference_us": 31.899999999999984,
+        "capture_counter_saving_us": 31.6618955078125
+      },
+      {
+        "repeat": 12,
+        "before_fresh_minus_reuse_us": 96.99999999999997,
+        "after_fresh_minus_reuse_us": 37.20000000000001,
+        "difference_us": 59.79999999999996,
+        "capture_counter_saving_us": 38.349337890625
+      },
+      {
+        "repeat": 13,
+        "before_fresh_minus_reuse_us": 91.59999999999997,
+        "after_fresh_minus_reuse_us": 18.39999999999997,
+        "difference_us": 73.19999999999999,
+        "capture_counter_saving_us": 37.7657626953125
+      },
+      {
+        "repeat": 14,
+        "before_fresh_minus_reuse_us": 50.4,
+        "after_fresh_minus_reuse_us": 70.5,
+        "difference_us": -20.1,
+        "capture_counter_saving_us": 33.7922998046875
+      },
+      {
+        "repeat": 15,
+        "before_fresh_minus_reuse_us": 71.80000000000003,
+        "after_fresh_minus_reuse_us": 57.99999999999999,
+        "difference_us": 13.800000000000033,
+        "capture_counter_saving_us": 33.672326171875
+      },
+      {
+        "repeat": 16,
+        "before_fresh_minus_reuse_us": 94.3,
+        "after_fresh_minus_reuse_us": 7.699999999999985,
+        "difference_us": 86.60000000000001,
+        "capture_counter_saving_us": 39.2475927734375
+      },
+      {
+        "repeat": 17,
+        "before_fresh_minus_reuse_us": 78.49999999999996,
+        "after_fresh_minus_reuse_us": 59.09999999999999,
+        "difference_us": 19.39999999999997,
+        "capture_counter_saving_us": 33.74250390625
+      },
+      {
+        "repeat": 18,
+        "before_fresh_minus_reuse_us": 85.79999999999998,
+        "after_fresh_minus_reuse_us": 50.999999999999936,
+        "difference_us": 34.80000000000005,
+        "capture_counter_saving_us": 34.885841796875
+      },
+      {
+        "repeat": 19,
+        "before_fresh_minus_reuse_us": 84.89999999999998,
+        "after_fresh_minus_reuse_us": 49.59999999999998,
+        "difference_us": 35.3,
+        "capture_counter_saving_us": 34.7791513671875
+      }
+    ]
+  }
+}

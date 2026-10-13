@@ -1,0 +1,671 @@
+{
+  "render": {
+    "frame_ms": {
+      "large-colony/ai": {
+        "pairs": 20,
+        "before_mean": 0.5249249999999999,
+        "after_mean": 0.4842999999999999,
+        "ratio": 0.922470400923759,
+        "reduction_pct": 7.752959907624102,
+        "ci95_reduction_pct": [
+          6.724864467345637,
+          8.831106783921005
+        ],
+        "ci_family_reduction_pct": [
+          6.286500149045882,
+          9.32907964171793
+        ]
+      },
+      "large-colony/movement": {
+        "pairs": 20,
+        "before_mean": 0.5126899999999999,
+        "after_mean": 0.48438499999999995,
+        "ratio": 0.9451042269457457,
+        "reduction_pct": 5.48957730542543,
+        "ci95_reduction_pct": [
+          3.9404144084818182,
+          6.987290595535967
+        ],
+        "ci_family_reduction_pct": [
+          3.22407552423688,
+          7.605731740105293
+        ]
+      },
+      "large-colony/panels": {
+        "pairs": 20,
+        "before_mean": 0.532945,
+        "after_mean": 0.50326,
+        "ratio": 0.9442111295028945,
+        "reduction_pct": 5.578887049710546,
+        "ci95_reduction_pct": [
+          3.9164713460298928,
+          7.270928159257739
+        ],
+        "ci_family_reduction_pct": [
+          3.1951453074053004,
+          8.076136666135392
+        ]
+      },
+      "large-colony/plain": {
+        "pairs": 20,
+        "before_mean": 0.5141899999999999,
+        "after_mean": 0.4785749999999999,
+        "ratio": 0.9307993370466823,
+        "reduction_pct": 6.920066295331773,
+        "ci95_reduction_pct": [
+          5.5520510827465674,
+          8.252454203270144
+        ],
+        "ci_family_reduction_pct": [
+          4.905843542271738,
+          8.833671342125339
+        ]
+      },
+      "large-colony/reuse": {
+        "pairs": 20,
+        "before_mean": 0.44133000000000006,
+        "after_mean": 0.441965,
+        "ratio": 1.0017426490415293,
+        "reduction_pct": -0.17426490415293205,
+        "ci95_reduction_pct": [
+          -1.8249064029137951,
+          1.4398119216236682
+        ],
+        "ci_family_reduction_pct": [
+          -2.6151183566275327,
+          2.2020448097496037
+        ]
+      },
+      "large-colony/reuse-panels": {
+        "pairs": 20,
+        "before_mean": 0.45104,
+        "after_mean": 0.460295,
+        "ratio": 1.0211513989791872,
+        "reduction_pct": -2.1151398979187164,
+        "ci95_reduction_pct": [
+          -4.190167199247119,
+          -0.17588709698463934
+        ],
+        "ci_family_reduction_pct": [
+          -5.2363481215588425,
+          0.6958015643014237
+        ]
+      },
+      "ordinary-control/panels": {
+        "pairs": 20,
+        "before_mean": 0.430795,
+        "after_mean": 0.439485,
+        "ratio": 1.0204262772645147,
+        "reduction_pct": -2.0426277264514736,
+        "ci95_reduction_pct": [
+          -3.7457648256770337,
+          -0.4498183451663307
+        ],
+        "ci_family_reduction_pct": [
+          -4.523742210224535,
+          0.22638286161017485
+        ]
+      },
+      "ordinary-control/plain": {
+        "pairs": 20,
+        "before_mean": 0.41485500000000003,
+        "after_mean": 0.42383,
+        "ratio": 1.0215912609503697,
+        "reduction_pct": -2.1591260950369673,
+        "ci95_reduction_pct": [
+          -4.684147844603959,
+          0.4110176197611781
+        ],
+        "ci_family_reduction_pct": [
+          -5.798192695001947,
+          1.6215735951516153
+        ]
+      }
+    },
+    "cpu_ms": {
+      "large-colony/ai": {
+        "pairs": 20,
+        "before_mean": 0.54511,
+        "after_mean": 0.5035649999999999,
+        "ratio": 0.9236442525958944,
+        "reduction_pct": 7.635574740410556,
+        "ci95_reduction_pct": [
+          6.615371839471152,
+          8.70964026668366
+        ],
+        "ci_family_reduction_pct": [
+          6.163209719664109,
+          9.203035054490327
+        ]
+      },
+      "large-colony/movement": {
+        "pairs": 20,
+        "before_mean": 0.532435,
+        "after_mean": 0.5034449999999999,
+        "ratio": 0.9458709333768354,
+        "reduction_pct": 5.4129066623164634,
+        "ci95_reduction_pct": [
+          3.8814824919513935,
+          6.881592347433651
+        ],
+        "ci_family_reduction_pct": [
+          3.165537134480634,
+          7.5154371732189755
+        ]
+      },
+      "large-colony/panels": {
+        "pairs": 20,
+        "before_mean": 0.553555,
+        "after_mean": 0.5230699999999999,
+        "ratio": 0.9448352658152477,
+        "reduction_pct": 5.516473418475232,
+        "ci95_reduction_pct": [
+          3.8392837150582504,
+          7.233197906852917
+        ],
+        "ci_family_reduction_pct": [
+          3.0818012072447276,
+          8.047142424242903
+        ]
+      },
+      "large-colony/plain": {
+        "pairs": 20,
+        "before_mean": 0.533965,
+        "after_mean": 0.497415,
+        "ratio": 0.9316047650103166,
+        "reduction_pct": 6.839523498968337,
+        "ci95_reduction_pct": [
+          5.473311470519626,
+          8.183838938991816
+        ],
+        "ci_family_reduction_pct": [
+          4.862542447542351,
+          8.782649204544724
+        ]
+      },
+      "large-colony/reuse": {
+        "pairs": 20,
+        "before_mean": 0.45897499999999997,
+        "after_mean": 0.4596299999999999,
+        "ratio": 1.0017038291327829,
+        "reduction_pct": -0.17038291327828858,
+        "ci95_reduction_pct": [
+          -1.7909853200795078,
+          1.4232577656733025
+        ],
+        "ci_family_reduction_pct": [
+          -2.5715847043910944,
+          2.1391798834670794
+        ]
+      },
+      "large-colony/reuse-panels": {
+        "pairs": 20,
+        "before_mean": 0.46898999999999996,
+        "after_mean": 0.47871500000000006,
+        "ratio": 1.0213513598586483,
+        "reduction_pct": -2.1351359858648333,
+        "ci95_reduction_pct": [
+          -4.16293237658405,
+          -0.22746505441315623
+        ],
+        "ci_family_reduction_pct": [
+          -5.143993859591389,
+          0.6664076662528329
+        ]
+      },
+      "ordinary-control/panels": {
+        "pairs": 20,
+        "before_mean": 0.4484800000000001,
+        "after_mean": 0.45763,
+        "ratio": 1.0206678264950257,
+        "reduction_pct": -2.0667826495025743,
+        "ci95_reduction_pct": [
+          -3.736061607683494,
+          -0.49131792782408645
+        ],
+        "ci_family_reduction_pct": [
+          -4.496693494023218,
+          0.14886433903885665
+        ]
+      },
+      "ordinary-control/plain": {
+        "pairs": 20,
+        "before_mean": 0.43212,
+        "after_mean": 0.44110499999999997,
+        "ratio": 1.020756630489911,
+        "reduction_pct": -2.0756630489910943,
+        "ci95_reduction_pct": [
+          -4.600922923368778,
+          0.48260045688930386
+        ],
+        "ci_family_reduction_pct": [
+          -5.71433480446053,
+          1.657139923522899
+        ]
+      }
+    },
+    "capture_ns_per_frame": {
+      "large-colony/ai": {
+        "pairs": 20,
+        "before_mean": 78296.89057617188,
+        "after_mean": 42858.83251953125,
+        "ratio": 0.5469968688274313,
+        "reduction_pct": 45.30031311725688,
+        "ci95_reduction_pct": [
+          44.480280013996534,
+          46.13172198047205
+        ],
+        "ci_family_reduction_pct": [
+          44.13004354593285,
+          46.502380131660956
+        ]
+      },
+      "large-colony/movement": {
+        "pairs": 20,
+        "before_mean": 76498.78686523438,
+        "after_mean": 33437.71484375,
+        "ratio": 0.43611298857687375,
+        "reduction_pct": 56.38870114231263,
+        "ci95_reduction_pct": [
+          55.04101335152662,
+          57.501132220541166
+        ],
+        "ci_family_reduction_pct": [
+          54.30144807708397,
+          57.922609719769746
+        ]
+      },
+      "large-colony/panels": {
+        "pairs": 20,
+        "before_mean": 77670.95092773438,
+        "after_mean": 43609.80112304688,
+        "ratio": 0.5611230384767674,
+        "reduction_pct": 43.887696152323265,
+        "ci95_reduction_pct": [
+          42.67339522608135,
+          45.18028824628792
+        ],
+        "ci_family_reduction_pct": [
+          42.18272949205946,
+          45.79457278723801
+        ]
+      },
+      "large-colony/plain": {
+        "pairs": 20,
+        "before_mean": 76634.78422851562,
+        "after_mean": 32410.357275390626,
+        "ratio": 0.4226182070207383,
+        "reduction_pct": 57.73817929792617,
+        "ci95_reduction_pct": [
+          56.5881230453354,
+          58.62813394715503
+        ],
+        "ci_family_reduction_pct": [
+          55.98384893383515,
+          58.96838097771676
+        ]
+      },
+      "large-colony/reuse": {
+        "pairs": 20,
+        "before_mean": 0.0,
+        "after_mean": 0.0,
+        "ratio": null,
+        "reduction_pct": null,
+        "ci95_reduction_pct": null
+      },
+      "large-colony/reuse-panels": {
+        "pairs": 20,
+        "before_mean": 0.0,
+        "after_mean": 0.0,
+        "ratio": null,
+        "reduction_pct": null,
+        "ci95_reduction_pct": null
+      },
+      "ordinary-control/panels": {
+        "pairs": 20,
+        "before_mean": 6763.44921875,
+        "after_mean": 6081.45673828125,
+        "ratio": 0.8994592047630684,
+        "reduction_pct": 10.05407952369316,
+        "ci95_reduction_pct": [
+          8.441676674063691,
+          11.540440844956112
+        ],
+        "ci_family_reduction_pct": [
+          7.675814538622894,
+          12.201169624502262
+        ]
+      },
+      "ordinary-control/plain": {
+        "pairs": 20,
+        "before_mean": 6607.132763671875,
+        "after_mean": 5407.776220703125,
+        "ratio": 0.818962054055645,
+        "reduction_pct": 18.103794594435495,
+        "ci95_reduction_pct": [
+          16.18872682891822,
+          20.013431639592593
+        ],
+        "ci_family_reduction_pct": [
+          15.323438720483896,
+          20.914986978609416
+        ]
+      }
+    },
+    "prepare_ns_per_frame": {
+      "large-colony/ai": {
+        "pairs": 20,
+        "before_mean": 88243.6345703125,
+        "after_mean": 52761.973046875,
+        "ratio": 0.5975804532622909,
+        "reduction_pct": 40.241954673770906,
+        "ci95_reduction_pct": [
+          39.42758361507954,
+          41.075821695916304
+        ],
+        "ci_family_reduction_pct": [
+          39.09242111617481,
+          41.46454215685047
+        ]
+      },
+      "large-colony/movement": {
+        "pairs": 20,
+        "before_mean": 86257.5583984375,
+        "after_mean": 43398.15766601563,
+        "ratio": 0.5024861476264467,
+        "reduction_pct": 49.75138523735533,
+        "ci95_reduction_pct": [
+          48.52016590546132,
+          50.81659786202759
+        ],
+        "ci_family_reduction_pct": [
+          47.88378357608944,
+          51.21458552618006
+        ]
+      },
+      "large-colony/panels": {
+        "pairs": 20,
+        "before_mean": 87389.20493164062,
+        "after_mean": 53569.35971679688,
+        "ratio": 0.612711625054404,
+        "reduction_pct": 38.7288374945596,
+        "ci95_reduction_pct": [
+          37.524211545048644,
+          40.00973085396187
+        ],
+        "ci_family_reduction_pct": [
+          37.01593826653424,
+          40.64772051069042
+        ]
+      },
+      "large-colony/plain": {
+        "pairs": 20,
+        "before_mean": 85944.8591796875,
+        "after_mean": 41805.29497070312,
+        "ratio": 0.48625535275073944,
+        "reduction_pct": 51.374464724926064,
+        "ci95_reduction_pct": [
+          50.295472404745375,
+          52.2670283953671
+        ],
+        "ci_family_reduction_pct": [
+          49.72312364999084,
+          52.62379214731108
+        ]
+      },
+      "large-colony/reuse": {
+        "pairs": 20,
+        "before_mean": 9264.523046875,
+        "after_mean": 8718.667626953125,
+        "ratio": 0.9413135958414568,
+        "reduction_pct": 5.868640415854321,
+        "ci95_reduction_pct": [
+          4.4069735477147765,
+          7.422772094011654
+        ],
+        "ci_family_reduction_pct": [
+          3.7872811077347412,
+          8.142474576530512
+        ]
+      },
+      "large-colony/reuse-panels": {
+        "pairs": 20,
+        "before_mean": 9639.42685546875,
+        "after_mean": 9365.6078125,
+        "ratio": 0.9721954432048924,
+        "reduction_pct": 2.7804556795107627,
+        "ci95_reduction_pct": [
+          0.9017454540759084,
+          4.756920861348702
+        ],
+        "ci_family_reduction_pct": [
+          0.08706898307883071,
+          5.701544734523267
+        ]
+      },
+      "ordinary-control/panels": {
+        "pairs": 20,
+        "before_mean": 12544.348388671875,
+        "after_mean": 12538.23603515625,
+        "ratio": 0.9998006011417097,
+        "reduction_pct": 0.019939885829034498,
+        "ci95_reduction_pct": [
+          -1.5915469963745599,
+          1.5140771577109469
+        ],
+        "ci_family_reduction_pct": [
+          -2.366281408941018,
+          2.1144701022282164
+        ]
+      },
+      "ordinary-control/plain": {
+        "pairs": 20,
+        "before_mean": 12024.43291015625,
+        "after_mean": 11402.255419921876,
+        "ratio": 0.948208450930757,
+        "reduction_pct": 5.1791549069243,
+        "ci95_reduction_pct": [
+          2.9137244757486025,
+          7.420535624120328
+        ],
+        "ci_family_reduction_pct": [
+          1.8054991172431811,
+          8.404417761142335
+        ]
+      }
+    }
+  },
+  "engine": {
+    "wall_ns": {
+      "large-colony/reference": {
+        "pairs": 10,
+        "before_mean": 6135256267.8,
+        "after_mean": 5931718526.2,
+        "ratio": 0.9661518082447554,
+        "reduction_pct": 3.384819175524456,
+        "ci95_reduction_pct": [
+          -0.2417017149277445,
+          6.972985502322371
+        ],
+        "ci_family_reduction_pct": [
+          -1.8664889418993358,
+          8.448891560486826
+        ]
+      },
+      "large-colony/shadow": {
+        "pairs": 10,
+        "before_mean": 13579634114.6,
+        "after_mean": 13087704784.3,
+        "ratio": 0.9636824572924148,
+        "reduction_pct": 3.631754270758525,
+        "ci95_reduction_pct": [
+          2.388962182668619,
+          4.980544027396816
+        ],
+        "ci_family_reduction_pct": [
+          1.9812415479678935,
+          5.619223899463021
+        ]
+      },
+      "ordinary-control/reference": {
+        "pairs": 10,
+        "before_mean": 33681044.1,
+        "after_mean": 33501923.7,
+        "ratio": 0.9946755822184097,
+        "reduction_pct": 0.5324417781590318,
+        "ci95_reduction_pct": [
+          -3.022626335598111,
+          4.612932368712674
+        ],
+        "ci_family_reduction_pct": [
+          -4.438043248315182,
+          6.828203568840974
+        ]
+      },
+      "ordinary-control/shadow": {
+        "pairs": 10,
+        "before_mean": 557197717.2,
+        "after_mean": 566936360.7,
+        "ratio": 1.0182690201834212,
+        "reduction_pct": -1.8269020183421247,
+        "ci95_reduction_pct": [
+          -6.095444308736142,
+          1.5600376436149976
+        ],
+        "ci_family_reduction_pct": [
+          -8.576152961930482,
+          2.6878766451207348
+        ]
+      }
+    },
+    "cpu_ns": {
+      "large-colony/reference": {
+        "pairs": 10,
+        "before_mean": 6089136708.5,
+        "after_mean": 5891017685.3,
+        "ratio": 0.9667921996321583,
+        "reduction_pct": 3.3207800367841656,
+        "ci95_reduction_pct": [
+          -0.39124543802879774,
+          6.943612949708244
+        ],
+        "ci_family_reduction_pct": [
+          -1.9981177671217099,
+          8.478469726170413
+        ]
+      },
+      "large-colony/shadow": {
+        "pairs": 10,
+        "before_mean": 14319581202.3,
+        "after_mean": 13756737580.8,
+        "ratio": 0.9605630094936611,
+        "reduction_pct": 3.9436990506338865,
+        "ci95_reduction_pct": [
+          2.563179797893167,
+          5.470267880672819
+        ],
+        "ci_family_reduction_pct": [
+          2.0678566555303424,
+          6.228191394158422
+        ]
+      },
+      "ordinary-control/reference": {
+        "pairs": 10,
+        "before_mean": 72505536.4,
+        "after_mean": 72276453.3,
+        "ratio": 0.996070105829168,
+        "reduction_pct": 0.39298941708320045,
+        "ci95_reduction_pct": [
+          -3.4887000414974167,
+          4.532686530751306
+        ],
+        "ci_family_reduction_pct": [
+          -5.120167184112723,
+          6.548197715778182
+        ]
+      },
+      "ordinary-control/shadow": {
+        "pairs": 10,
+        "before_mean": 576781330.0,
+        "after_mean": 584565262.8,
+        "ratio": 1.0144173573053592,
+        "reduction_pct": -1.4417357305359202,
+        "ci95_reduction_pct": [
+          -5.695432176932336,
+          1.9143144669928391
+        ],
+        "ci_family_reduction_pct": [
+          -7.981524007804031,
+          2.9853173474295835
+        ]
+      }
+    },
+    "tick_p50_ns": {
+      "large-colony/reference": {
+        "pairs": 10,
+        "before_mean": 16677490.2,
+        "after_mean": 16136473.3,
+        "ratio": 0.9672862216731511,
+        "reduction_pct": 3.2713778326848852,
+        "ci95_reduction_pct": [
+          -1.7997759915441502,
+          8.112721725142046
+        ],
+        "ci_family_reduction_pct": [
+          -4.06226135677874,
+          10.142900041047165
+        ]
+      },
+      "large-colony/shadow": {
+        "pairs": 10,
+        "before_mean": 20180746.3,
+        "after_mean": 18746778.0,
+        "ratio": 0.92780844113636,
+        "reduction_pct": 7.219155886364003,
+        "ci95_reduction_pct": [
+          4.443035734668877,
+          10.146182576784824
+        ],
+        "ci_family_reduction_pct": [
+          3.4419411761796526,
+          11.3765167777525
+        ]
+      },
+      "ordinary-control/reference": {
+        "pairs": 10,
+        "before_mean": 58566.3,
+        "after_mean": 59252.3,
+        "ratio": 1.0123078920326882,
+        "reduction_pct": -1.2307892032688228,
+        "ci95_reduction_pct": [
+          -5.78289689473841,
+          3.8609232262140525
+        ],
+        "ci_family_reduction_pct": [
+          -7.68023935751303,
+          6.427377535266809
+        ]
+      },
+      "ordinary-control/shadow": {
+        "pairs": 10,
+        "before_mean": 194437.3,
+        "after_mean": 185608.6,
+        "ratio": 0.9549683389801836,
+        "reduction_pct": 4.503166101981638,
+        "ci95_reduction_pct": [
+          1.7355254184872604,
+          7.993025525538389
+        ],
+        "ci_family_reduction_pct": [
+          1.0560008106649366,
+          9.789950408312775
+        ]
+      }
+    }
+  },
+  "method": {
+    "bootstrap_resamples": 50000,
+    "seed": 713,
+    "summary": "paired geometric mean of run means; 95% pointwise percentile bootstrap; no multiple-comparison/global benefit claim"
+  }
+}

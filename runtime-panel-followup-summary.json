@@ -1,0 +1,126 @@
+{
+  "frame_ms": {
+    "large-colony/panels": {
+      "pairs": 10,
+      "before_mean": 0.5354099999999999,
+      "after_mean": 0.50568,
+      "ratio": 0.9443573938879959,
+      "reduction_pct": 5.564260611200411,
+      "ci95_reduction_pct": [
+        3.9503050908339943,
+        7.44668920584447
+      ],
+      "ci_family_reduction_pct": [
+        3.2435157366304646,
+        8.43357117458896
+      ]
+    },
+    "large-colony/plain": {
+      "pairs": 10,
+      "before_mean": 0.52517,
+      "after_mean": 0.48080000000000006,
+      "ratio": 0.9155458424404707,
+      "reduction_pct": 8.445415755952935,
+      "ci95_reduction_pct": [
+        6.6272057591744815,
+        10.302685641278654
+      ],
+      "ci_family_reduction_pct": [
+        5.78844463794963,
+        11.171469765655607
+      ]
+    },
+    "large-colony/reuse-panels": {
+      "pairs": 10,
+      "before_mean": 0.45241,
+      "after_mean": 0.45465,
+      "ratio": 1.004798575142804,
+      "reduction_pct": -0.4798575142803907,
+      "ci95_reduction_pct": [
+        -2.2902316556653535,
+        2.025220270491912
+      ],
+      "ci_family_reduction_pct": [
+        -2.8209636074152167,
+        3.3261984319827076
+      ]
+    },
+    "ordinary-control/panels": {
+      "pairs": 10,
+      "before_mean": 0.43044000000000004,
+      "after_mean": 0.43365,
+      "ratio": 1.0073242394758049,
+      "reduction_pct": -0.732423947580485,
+      "ci95_reduction_pct": [
+        -3.343988915129281,
+        2.208369899363427
+      ],
+      "ci_family_reduction_pct": [
+        -4.362735694648956,
+        3.712427171569055
+      ]
+    }
+  },
+  "cpu_ms": {
+    "large-colony/panels": {
+      "pairs": 10,
+      "before_mean": 0.55583,
+      "after_mean": 0.5253300000000001,
+      "ratio": 0.9450158374857585,
+      "reduction_pct": 5.498416251424154,
+      "ci95_reduction_pct": [
+        3.886171907403957,
+        7.359692657126137
+      ],
+      "ci_family_reduction_pct": [
+        3.1708923438551917,
+        8.31230194411785
+      ]
+    },
+    "large-colony/plain": {
+      "pairs": 10,
+      "before_mean": 0.5451900000000001,
+      "after_mean": 0.49964000000000003,
+      "ratio": 0.9164849833766234,
+      "reduction_pct": 8.351501662337657,
+      "ci95_reduction_pct": [
+        6.572097290801626,
+        10.15252199341038
+      ],
+      "ci_family_reduction_pct": [
+        5.74151424058833,
+        10.965456940621044
+      ]
+    },
+    "large-colony/reuse-panels": {
+      "pairs": 10,
+      "before_mean": 0.47049,
+      "after_mean": 0.47269000000000005,
+      "ratio": 1.004533868017139,
+      "reduction_pct": -0.45338680171389534,
+      "ci95_reduction_pct": [
+        -2.267062332717029,
+        2.0305863921644796
+      ],
+      "ci_family_reduction_pct": [
+        -2.8070348090149633,
+        3.2774987994067417
+      ]
+    },
+    "ordinary-control/panels": {
+      "pairs": 10,
+      "before_mean": 0.44796,
+      "after_mean": 0.45135000000000003,
+      "ratio": 1.0074354032324258,
+      "reduction_pct": -0.7435403232425752,
+      "ci95_reduction_pct": [
+        -3.283670301291264,
+        2.1701877069407516
+      ],
+      "ci_family_reduction_pct": [
+        -4.316213984066897,
+        3.6748449885647294
+      ]
+    }
+  }
+}
