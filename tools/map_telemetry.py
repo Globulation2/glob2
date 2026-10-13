@@ -8,8 +8,10 @@ attempts, never repeated events. Missing measurements are absent, not zero.
 """
 if __package__:
     from .build_paths import native_binary
+    from .map_generation_study import PROFILES, resource_request, native_resource_options, validate_resource_report
 else:
     from build_paths import native_binary
+    from map_generation_study import PROFILES, resource_request, native_resource_options, validate_resource_report
 import argparse
 from concurrent.futures import ThreadPoolExecutor
 import json
@@ -38,16 +40,27 @@ def read_report(path):
     return report
 
 
-def attempt(binary, generator, seed, settings, directory, timeout):
+def attempt(binary, generator, seed, settings, directory, timeout, *, execution_profile=None,
+            memory_planning_budget_bytes=None):
+    request = resource_request(execution_profile, memory_planning_budget_bytes)
+    resource_options = native_resource_options(binary, 'map generate', request, timeout)
+    return _attempt(binary, generator, seed, settings, directory, timeout, request, resource_options)
+
+
+def _attempt(binary, generator, seed, settings, directory, timeout, request, resource_options):
     directory.mkdir()
     report_path = directory / 'report.json'
     manifest = {'generator': generator, 'seed': seed, 'requested_parameters': settings,
                 'report': 'report.json', 'status': 'running', 'returncode': None}
+    if request is not None:
+        manifest['execution_resources'] = {'requested': request,
+            'scope': 'owner-only map policy; planning memory is not an RSS limit'}
     with tempfile.TemporaryDirectory(prefix='glob2-map-telemetry-') as profile:
         command = [str(binary), 'map', 'generate', generator, '--data-dir', str(ROOT),
                    '--seed', str(seed), '--report-file', str(report_path)]
         for key, value in settings.items():
             command += ['--set', key + '=' + value]
+        command += resource_options
         manifest['command'] = command
         write_json(directory / 'manifest.json', manifest)
         env = dict(os.environ, GLOB2_USER_DIR=profile)
@@ -66,6 +79,8 @@ def attempt(binary, generator, seed, settings, directory, timeout):
         manifest['seconds'] = time.monotonic() - started
     try:
         report = read_report(report_path)
+        if request is not None:
+            manifest['execution_resources']['resolved'] = validate_resource_report(report, request)
         generation = report['generation']
         manifest['report_type'] = report['report_type']
         manifest['outcome'] = generation.get('outcome')
@@ -153,6 +168,9 @@ def main(argv=None):
     collect.add_argument('--jobs', type=int, default=3)
     collect.add_argument('--timeout', type=float, default=60)
     collect.add_argument('--binary', type=Path, default=native_binary())
+    collect.add_argument('--execution-profile', choices=PROFILES, default=None)
+    collect.add_argument('--memory-planning-budget-bytes', type=int, default=None,
+                         help='Optional soft planning budget; not an RSS limit')
     summary = commands.add_parser('summarize')
     summary.add_argument('out', type=Path)
     args = parser.parse_args(argv)
@@ -174,16 +192,22 @@ def main(argv=None):
         if not separator or not key or not value or key == 'seed' or key in settings:
             parser.error('Each --set needs a unique key=value; set seeds with --seed-start')
         settings[key] = value
+    binary = args.binary.resolve()
+    request = resource_request(args.execution_profile, args.memory_planning_budget_bytes)
+    resource_options = native_resource_options(binary, 'map generate', request, args.timeout)
     out = args.out.resolve()
     out.mkdir(parents=True, exist_ok=False)
-    binary = args.binary.resolve()
-    write_json(out / 'run.json', {'generators': generators, 'seed_start': args.seed_start,
+    run_manifest = {'generators': generators, 'seed_start': args.seed_start,
         'count': args.count, 'parameters': settings, 'binary': str(binary),
-        'jobs': args.jobs, 'timeout': args.timeout})
+        'jobs': args.jobs, 'timeout': args.timeout}
+    if request is not None:
+        run_manifest['execution_resource_request'] = request
+    write_json(out / 'run.json', run_manifest)
     tasks = [(g, s) for g in generators for s in range(args.seed_start, args.seed_start + args.count)]
     def run(item):
         index, (generator, seed) = item
-        return attempt(binary, generator, seed, settings, out / f'attempt-{index:06d}', args.timeout)
+        return _attempt(binary, generator, seed, settings, out / f'attempt-{index:06d}', args.timeout,
+                        request, resource_options)
     with ThreadPoolExecutor(max_workers=args.jobs) as pool:
         results = list(pool.map(run, enumerate(tasks)))
     summarize(out)

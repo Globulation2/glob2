@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """Dependency-free collector tests: python3 test/test_map_telemetry.py."""
 import json
+import subprocess
 from pathlib import Path
 import sys
 import tempfile
@@ -95,6 +96,74 @@ class TelemetryTests(unittest.TestCase):
             groups = telemetry.summarize(out)['groups']
             self.assertEqual(len(groups), 4)
             self.assertEqual(sum(g['incomplete_telemetry_attempts'] for g in groups), 3)
+
+
+class TelemetryResourceTests(unittest.TestCase):
+    @staticmethod
+    def description():
+        return {'schema_version': 1, 'cli_version': 2,
+                'execution_profiles': {'policy_version': 1, 'resource_plan_schema_version': 1,
+                                       'profiles': list(telemetry.PROFILES)},
+                'commands': [{'path': 'map generate', 'available': True,
+                              'options': [{'name': '--execution-profile'}, {'name': '--memory-budget-bytes'}]}]}
+
+    @staticmethod
+    def plan():
+        return {'schema_version': 1, 'policy_version': 1,
+                'requested_execution_profile': 'eco', 'selected_execution_profile': 'eco',
+                'profile_source': 'explicit_profile', 'profile_tuning_pending': True,
+                'resource_sources': {'planning_memory_budget_bytes': 'explicit_override'},
+                'original_request': {'resource_overrides': {'planning_memory_budget_bytes': 8192}},
+                'resolved_resources': {'compute_participants': 1, 'compute_participants_include_owner': True,
+                                       'planning_memory_budget_bytes': 8192}}
+
+    def native(self, command, **kwargs):
+        if command[1] == 'help':
+            return subprocess.CompletedProcess(command, 0, json.dumps(self.description()), '')
+        self.assertEqual(command[command.index('--execution-profile')+1], 'eco')
+        self.assertEqual(command[command.index('--memory-budget-bytes')+1], '8192')
+        self.assertNotIn('--compute-threads', command)
+        seed = int(command[command.index('--seed')+1])
+        report = {'schema_version': 2, 'report_type': 'map', 'execution_resources': self.plan(),
+                  'generation': {'generator': command[3], 'seed': seed,
+                                 'outcome': {'success': True}}}
+        Path(command[command.index('--report-file')+1]).write_text(json.dumps(report))
+        return subprocess.CompletedProcess(command, 0)
+
+    def test_collect_probes_once_and_retains_each_requested_resolved_plan(self):
+        with tempfile.TemporaryDirectory() as temp:
+            out = Path(temp)/'collection'
+            with patch.object(telemetry.subprocess, 'run', side_effect=self.native) as run:
+                self.assertEqual(telemetry.main(['collect', '--generators', 'canals', '--count', '2',
+                    '--jobs', '1', '--out', str(out), '--execution-profile', 'eco',
+                    '--memory-planning-budget-bytes', '8192']), 0)
+            self.assertEqual(run.call_count, 3)  # One discovery plus two generation requests.
+            self.assertEqual(json.loads((out/'run.json').read_text())['execution_resource_request'],
+                             {'execution_profile': 'eco', 'memory_planning_budget_bytes': 8192})
+            for p in out.glob('attempt-*/manifest.json'):
+                record = json.loads(p.read_text())
+                self.assertEqual(record['status'], 'ok')
+                self.assertEqual(record['execution_resources']['resolved'], self.plan())
+
+    def test_unsupported_explicit_contract_never_creates_or_launches_attempt(self):
+        with tempfile.TemporaryDirectory() as temp:
+            directory = Path(temp)/'attempt'
+            with patch.object(telemetry.subprocess, 'run', return_value=subprocess.CompletedProcess(
+                    [], 0, json.dumps({'schema_version': 1, 'cli_version': 2, 'commands': []}), '')) as run:
+                with self.assertRaises(ValueError):
+                    telemetry.attempt('glob2', 'canals', 1, {}, directory, 1, execution_profile='eco')
+            self.assertEqual(run.call_count, 1)
+            self.assertFalse(directory.exists())
+
+    def test_bad_native_receipt_is_report_failure_not_success(self):
+        with tempfile.TemporaryDirectory() as temp:
+            with patch.object(telemetry.subprocess, 'run', side_effect=self.native), \
+                 patch.object(self, 'plan', return_value={}):
+                record = telemetry.attempt('glob2', 'canals', 1, {}, Path(temp)/'attempt', 1,
+                                           execution_profile='eco', memory_planning_budget_bytes=8192)
+            self.assertEqual(record['status'], 'report_failure')
+            self.assertIn('resource plan', record['report_error'])
+            self.assertNotIn('resolved', record['execution_resources'])
 
 
 if __name__ == '__main__':

@@ -164,6 +164,15 @@ void writeJsonReport(const std::string &path, const std::string &report)
 	std::cout << "Map report: " << path << "\n";
 }
 
+std::string withResourcePlan(std::string report, const GlobalContainer &globals)
+{
+	const auto closing = report.find_last_of('}');
+	if (closing == std::string::npos)
+		throw std::runtime_error("Cannot append resource plan to map report");
+	report.insert(closing, ",\"execution_resources\":" + globals.resourcePlanJson().dump());
+	return report;
+}
+
 bool endsWithGz(const std::string &path)
 {
 	static const std::string suffix = ".gz";
@@ -634,7 +643,7 @@ int runMapCommand(const Cli::Request &cli)
 			if (!result)
 			{
 				if (!json.empty())
-					writeJsonReport(json, describeGenerationFailure(request, result));
+					writeJsonReport(json, withResourcePlan(describeGenerationFailure(request, result), globals));
 				throw std::invalid_argument(result.diagnostic());
 			}
 			std::cout << result.diagnostic() << "\n";
@@ -696,12 +705,7 @@ int runMapCommand(const Cli::Request &cli)
 										  : describeMap(game, generate ? &request : nullptr,
 														generate ? &result : nullptr);
 		if (!report.empty())
-		{
-			const auto closing = report.find_last_of('}');
-			if (closing == std::string::npos)
-				throw std::runtime_error("Cannot append resource plan to map report");
-			report.insert(closing, ",\"execution_resources\":" + globals.resourcePlanJson().dump());
-		}
+			report = withResourcePlan(std::move(report), globals);
 		if (importing && !report.empty())
 		{
 			const auto closing = report.find_last_of('}');

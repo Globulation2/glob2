@@ -12,6 +12,78 @@ import subprocess
 import tempfile
 import time
 from pathlib import Path
+if __package__:
+    from .tournaments.resources import PROFILES, classify_cli_capability
+    from .tournaments.cli import positive_integer
+else:
+    from tournaments.resources import PROFILES, classify_cli_capability
+    from tournaments.cli import positive_integer
+
+
+def resource_request(execution_profile=None, memory_planning_budget_bytes=None):
+    """Optional owner-only map intent; omission preserves older native calls."""
+    if execution_profile is not None and (type(execution_profile) is not str or execution_profile not in PROFILES):
+        raise ValueError('Invalid execution profile')
+    if memory_planning_budget_bytes is not None:
+        memory_planning_budget_bytes = positive_integer(memory_planning_budget_bytes)
+    if execution_profile is None and memory_planning_budget_bytes is None:
+        return None
+    return {'execution_profile': execution_profile,
+            'memory_planning_budget_bytes': memory_planning_budget_bytes}
+
+
+def native_resource_options(binary, command, request, timeout):
+    """Probe only explicit requests; unsupported map options never disappear."""
+    if request is None:
+        return []
+    result = subprocess.run([str(binary), 'help', '--format', 'json'], capture_output=True,
+                            text=True, timeout=timeout, check=True)
+    description = json.loads(result.stdout)
+    if classify_cli_capability(description) != 'execution_profiles_v1':
+        raise ValueError('Binary does not advertise the execution resource contract')
+    commands = [c for c in description['commands'] if isinstance(c, dict)
+                and c.get('path') == command and c.get('available') is True]
+    if len(commands) != 1:
+        raise ValueError('Binary does not advertise ' + command)
+    names = {o.get('name') for o in commands[0].get('options', []) if isinstance(o, dict)}
+    flags = []
+    for key, flag in [('execution_profile', '--execution-profile'),
+                      ('memory_planning_budget_bytes', '--memory-budget-bytes')]:
+        if request[key] is not None:
+            if flag not in names:
+                raise ValueError('Binary does not advertise ' + command + ' ' + flag)
+            flags += [flag, str(request[key])]
+    return flags
+
+
+def validate_resource_report(report, request):
+    """Validate requested map provenance, without claiming RSS or tier tuning."""
+    plan = report.get('execution_resources')
+    if request is None:
+        return plan  # Preserve legacy reports with no resource contract.
+    if not isinstance(plan, dict) or type(plan.get('schema_version')) is not int or \
+            plan['schema_version'] != 1 or type(plan.get('policy_version')) is not int or plan['policy_version'] != 1:
+        raise ValueError('Missing or unsupported map execution resource plan')
+    resources = plan.get('resolved_resources')
+    if not isinstance(resources, dict):
+        raise ValueError('Missing map resolved resources')
+    if type(resources.get('compute_participants')) is not int or resources['compute_participants'] != 1 or \
+            resources.get('compute_participants_include_owner') is not True:
+        raise ValueError('Map resource plan must retain its one owner participant')
+    profile = request['execution_profile']
+    if profile is not None and (plan.get('requested_execution_profile') != profile or
+            plan.get('selected_execution_profile') != profile or plan.get('profile_source') != 'explicit_profile'):
+        raise ValueError('Map execution profile differs from explicit request')
+    memory = request['memory_planning_budget_bytes']
+    if memory is not None and (type(resources.get('planning_memory_budget_bytes')) is not int or
+                              resources['planning_memory_budget_bytes'] != memory):
+        raise ValueError('Map planning memory differs from explicit request')
+    if memory is not None:
+        original_memory = plan.get('original_request', {}).get('resource_overrides', {}).get('planning_memory_budget_bytes')
+        if plan.get('resource_sources', {}).get('planning_memory_budget_bytes') != 'explicit_override' or \
+                type(original_memory) is not int or original_memory != memory:
+            raise ValueError('Map planning memory lacks explicit request provenance')
+    return plan
 
 
 def load_catalog(binary, timeout=60, generator_packages=()):
@@ -36,7 +108,8 @@ def dimension_exponent(tiles):
     return tiles.bit_length() - 1
 
 
-def generate_map(binary, method, seed, width, height, teams, settings=None, timeout=120, generator_packages=()):
+def generate_map(binary, method, seed, width, height, teams, settings=None, timeout=120, generator_packages=(), *,
+                 execution_profile=None, memory_planning_budget_bytes=None):
     """Return category (completed/refused/execution_error), detail, timing and native JSON.
 
     This is a single seed, without lobby candidate selection. Dimensions are tile counts;
@@ -49,12 +122,18 @@ def generate_map(binary, method, seed, width, height, teams, settings=None, time
     params.update(settings or {})
     if timeout <= 0:
         raise ValueError('Timeout must be positive')
+    request = resource_request(execution_profile, memory_planning_budget_bytes)
+    resource_options = native_resource_options(binary, 'map study', request, timeout)
     started = time.monotonic()
     row = dict(category='execution_error', detail='', returncode=None, native=None)
+    if request is not None:
+        row['execution_resources'] = {'requested': request,
+            'scope': 'owner-only map policy; planning memory is not an RSS limit'}
     with tempfile.TemporaryDirectory(prefix='glob2-map-study-') as directory:
         command = [str(binary), 'map', 'study', str(method),
                    '--seed', str(seed), '--output-dir', directory]
         command += [v for p in generator_packages for v in ['--generator-package',str(p)]]
+        command += resource_options
         for key, value in params.items():
             command += ['--set', f'{key}={value}']
         try:
@@ -64,6 +143,8 @@ def generate_map(binary, method, seed, width, height, teams, settings=None, time
             if native.get('schema_version') != 1:
                 raise ValueError('Unsupported native result schema')
             row['native'] = native
+            if request is not None:
+                row['execution_resources']['resolved'] = validate_resource_report(native, request)
             status = native.get('status')
             if status == 'completed' and result.returncode == 0:
                 report = native.get('map_report')

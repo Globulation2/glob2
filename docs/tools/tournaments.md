@@ -88,8 +88,8 @@ game profile and compatibility arguments select `efficient-throughput` and
 `require_profile`. Non-game calls such as `generate_map` retain their existing
 native defaults when these arguments are omitted; explicit CPU IDs, participant
 counts, planning memory budgets, profiles or compatibility modes are rejected
-before bundling or launch. Resource-plan provenance for direct map and scene
-tool adapters remains pending; this helper does not promise their allocation.
+before bundling or launch. This helper does not promise allocation for non-game
+jobs. Direct scene-tool resource provenance remains pending.
 Likewise, `local.execute_jobs` rejects explicit allocation budgets if any job
 lacks an execution contract, including mixed batches of new and legacy jobs.
 Legacy batches without explicit allocations retain their existing behavior.
@@ -634,6 +634,22 @@ for complete commands, host configuration, dimensional units and statistical lim
 Native `map generate NAME --report-file FILE` uses tile dimensions; the structured
 `map study GENERATOR --output-dir DIR` interface uses exponent dimensions as documented
 above. Both use the same production report serializer.
+
+The direct Python `tools.map_generation_study.generate_map` helper accepts
+optional `execution_profile` and `memory_planning_budget_bytes` keywords.
+The `tools/map_telemetry.py collect` command exposes the same intent through
+`--execution-profile` and `--memory-planning-budget-bytes`. Explicit requests
+probe the binary's advertised options before generation, reject unsupported
+binaries, and retain the requested and native resolved plan in each row or
+attempt manifest. Generation-service refusal reports also include the setup
+resource plan; argument errors before setup may have diagnostics only.
+
+Omitting both arguments retains the existing command and legacy-report behavior.
+These map operations remain owner-only: profiles do not parallelize generation
+or allocate a tournament CPU share. The memory amount is a soft planning value,
+not an RSS cap or cache action, and calibrated profile tuning remains pending.
+The durable tournament `generate_map` job adapter keeps its existing non-game
+allocation restrictions; these direct-tool options do not change that contract.
 
 ## Ending decided games early
 

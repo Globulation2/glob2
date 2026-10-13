@@ -104,5 +104,114 @@ class StudyTests(unittest.TestCase):
         self.assertEqual(study.dimension_exponent(512), 9)
 
 
+class ResourceContractTests(unittest.TestCase):
+    @staticmethod
+    def description(command='map study'):
+        return {'schema_version': 1, 'cli_version': 2,
+                'execution_profiles': {'policy_version': 1, 'resource_plan_schema_version': 1,
+                                       'profiles': list(study.PROFILES)},
+                'commands': [{'path': command, 'available': True,
+                              'options': [{'name': '--execution-profile'}, {'name': '--memory-budget-bytes'}]}]}
+
+    @staticmethod
+    def plan(profile='eco', memory=8192):
+        return {'schema_version': 1, 'policy_version': 1,
+                'requested_execution_profile': profile, 'selected_execution_profile': profile,
+                'profile_source': 'explicit_profile', 'profile_tuning_pending': True,
+                'resource_sources': {'planning_memory_budget_bytes': 'explicit_override'},
+                'original_request': {'resource_overrides': {'planning_memory_budget_bytes': memory}},
+                'resolved_resources': {'compute_participants': 1, 'compute_participants_include_owner': True,
+                                       'planning_memory_budget_bytes': memory}}
+
+    def test_omitted_request_does_not_probe_or_change_flags(self):
+        with patch.object(study.subprocess, 'run') as run:
+            self.assertIsNone(study.resource_request())
+            self.assertEqual(study.native_resource_options('glob2', 'map study', None, 1), [])
+            self.assertIsNone(study.validate_resource_report({}, None))
+            run.assert_not_called()
+
+    def test_all_explicit_intents_and_memory_only_keep_owner_policy(self):
+        for profile in study.PROFILES:
+            request = study.resource_request(profile, 8192)
+            with patch.object(study.subprocess, 'run', return_value=subprocess.CompletedProcess(
+                    [], 0, json.dumps(self.description()), '')):
+                self.assertEqual(study.native_resource_options('glob2', 'map study', request, 1),
+                                 ['--execution-profile', profile, '--memory-budget-bytes', '8192'])
+            self.assertEqual(study.validate_resource_report({'execution_resources': self.plan(profile)}, request),
+                             self.plan(profile))
+        request = study.resource_request(memory_planning_budget_bytes=1)
+        self.assertEqual(study.validate_resource_report({'execution_resources': self.plan('balanced', 1)}, request),
+                         self.plan('balanced', 1))
+
+    def test_invalid_request_rejected_before_any_probe(self):
+        with patch.object(study.subprocess, 'run') as run:
+            for memory in [0, -1, True, 1.5, 'not-bytes', 2**63]:
+                with self.subTest(memory=memory), self.assertRaises(ValueError):
+                    study.generate_map('glob2', 60, 12, 128, 512, 6,
+                                       memory_planning_budget_bytes=memory)
+            with self.assertRaises(ValueError):
+                study.generate_map('glob2', 60, 12, 128, 512, 6, execution_profile='tiny')
+            run.assert_not_called()
+
+    def test_unsupported_binary_rejected_before_generation(self):
+        for change in [lambda d: d.pop('execution_profiles'),
+                       lambda d: d['commands'].clear(),
+                       lambda d: d['commands'][0]['options'].clear()]:
+            description = self.description(); change(description)
+            with patch.object(study.subprocess, 'run', return_value=subprocess.CompletedProcess(
+                    [], 0, json.dumps(description), '')) as run, self.assertRaises(ValueError):
+                study.generate_map('glob2', 60, 12, 128, 512, 6, execution_profile='eco')
+            self.assertEqual(run.call_count, 1)
+            self.assertEqual(run.call_args.args[0], ['glob2', 'help', '--format', 'json'])
+
+    def test_mismatched_or_missing_native_resource_receipts_reject(self):
+        request = study.resource_request('eco', 8192)
+        for change in [lambda p: p.update(schema_version=True),
+                       lambda p: p.update(profile_source='context_default'),
+                       lambda p: p.update(selected_execution_profile='auto'),
+                       lambda p: p['resolved_resources'].update(compute_participants=2),
+                       lambda p: p['resolved_resources'].update(compute_participants=True),
+                       lambda p: p['resolved_resources'].update(planning_memory_budget_bytes=8191),
+                       lambda p: p['resource_sources'].update(planning_memory_budget_bytes='validated_default')]:
+            plan = self.plan(); change(plan)
+            with self.subTest(plan=plan), self.assertRaises(ValueError):
+                study.validate_resource_report({'execution_resources': plan}, request)
+        with self.assertRaises(ValueError): study.validate_resource_report({}, request)
+
+    def test_explicit_generation_refusal_retains_requested_resolved_receipt(self):
+        def native(command, **kwargs):
+            if command[1] == 'help':
+                return subprocess.CompletedProcess(command, 0, json.dumps(self.description()), '')
+            self.assertIn('--execution-profile', command)
+            self.assertEqual(command[command.index('--execution-profile') + 1], 'eco')
+            self.assertEqual(command[command.index('--memory-budget-bytes') + 1], '8192')
+            self.assertNotIn('--compute-threads', command)
+            directory = Path(command[command.index('--output-dir') + 1])
+            (directory/'result.json').write_text(json.dumps({'schema_version': 1, 'status': 'generation_failed',
+                'diagnostic': 'layout refused', 'execution_resources': self.plan()}))
+            return subprocess.CompletedProcess(command, 4, '', '')
+        with patch.object(study.subprocess, 'run', side_effect=native) as run:
+            result = study.generate_map('glob2', 60, 12, 128, 512, 6,
+                                        execution_profile='eco', memory_planning_budget_bytes=8192)
+        self.assertEqual(run.call_count, 2)
+        self.assertEqual(result['category'], 'refused')
+        self.assertEqual(result['execution_resources']['resolved'], self.plan())
+
+    def test_unvalidated_native_plan_keeps_request_and_native_error(self):
+        def native(command, **kwargs):
+            if command[1] == 'help':
+                return subprocess.CompletedProcess(command, 0, json.dumps(self.description()), '')
+            directory = Path(command[command.index('--output-dir')+1])
+            (directory/'result.json').write_text(json.dumps({'schema_version': 1,
+                'status': 'invalid_request', 'diagnostic': 'preflight refusal'}))
+            return subprocess.CompletedProcess(command, 2, '', '')
+        with patch.object(study.subprocess, 'run', side_effect=native):
+            result = study.generate_map('glob2', 60, 12, 128, 512, 6, execution_profile='eco')
+        self.assertEqual(result['category'], 'execution_error')
+        self.assertEqual(result['native']['status'], 'invalid_request')
+        self.assertEqual(result['execution_resources']['requested']['execution_profile'], 'eco')
+        self.assertNotIn('resolved', result['execution_resources'])
+
+
 if __name__ == '__main__':
     unittest.main()
