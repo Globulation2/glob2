@@ -725,6 +725,18 @@ TEST_SUITE("RuntimeGradientBackend")
     TEST_CASE("confirmed proof failures survive evidence exceptions")
     {
         using namespace gradient_kernel;
+        const std::vector<std::uint16_t> seeds{65535,1};
+        const std::vector<std::uint32_t> output{65535,65536};
+        const auto failedCosts=[](std::size_t)->EntrySteps { throw 42; };
+        // Nonstandard exceptions bypass the writers' best-effort I/O catch.
+        // The public helper must still preserve the already-proven mismatch.
+        CHECK_THROWS_AS(failGradientProof("test",std::span<const std::uint16_t>(seeds),
+            std::span<const std::uint32_t>(output),{2,1},70,failedCosts),GradientProofFailure);
+        CHECK_THROWS_AS(failGradientControlProof(std::span<const std::uint16_t>(seeds),
+            {2,1},70,failedCosts,{true,false,1},{}),GradientProofFailure);
+        CHECK_THROWS_AS(failGradientTransfer(2,std::span<const std::uint16_t>(seeds),
+            std::span<const std::uint32_t>(output),{2,1},70,
+            [](std::size_t)->std::uint32_t {throw 42;},{}),GradientProofFailure);
         CHECK_THROWS_AS(preserveGradientProofFailure([] { throw std::bad_alloc(); }),
             GradientProofFailure);
         CHECK_THROWS_AS(preserveGradientProofFailure([] {
