@@ -1,0 +1,152 @@
+{
+  "source": "348f087b31ad20df0b4c5d5ef7ae40a1b46d8986",
+  "base": "7907c17b6519f5ff77b56f0163c1a9d1393c7d21",
+  "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
+  "compiler": "g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+  "release_flags": "dev_fast=0 release=1 retain_symbols=1 client_profile=full -O3 -g; no PCH/unity/-pg",
+  "native_device": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+  "driver": "580.178.04",
+  "qualification": false,
+  "unit_cases": 156,
+  "unit_assertions": 705074,
+  "engine_cases": 30,
+  "match_runs": 9,
+  "gpu_commits": 3890,
+  "matching_golden_traces": true,
+  "continuations": 12,
+  "continuation_checksums_identical": true,
+  "continuation_save_bytes_identical": true,
+  "solver_experiment": {
+    "pairs": 8,
+    "mode": "gpu",
+    "fixtures": {
+      "river-128-early-8": {
+        "before_mean": 581546.0510253906,
+        "after_mean": 328960.2355957031,
+        "savings_pct": 43.43350195299658,
+        "paired_95_ci_pct": [
+          30.90049979021945,
+          55.9665041157737
+        ],
+        "median_elapsed_change_pct": -61.62279509170578,
+        "before_gpu_fields": 9,
+        "after_gpu_fields": 366
+      },
+      "river-128-middle-8": {
+        "before_mean": 865280.7006835938,
+        "after_mean": 373827.6672363281,
+        "savings_pct": 56.796948442165096,
+        "paired_95_ci_pct": [
+          49.2800040950172,
+          64.313892789313
+        ],
+        "median_elapsed_change_pct": -73.53474233245304,
+        "before_gpu_fields": 2,
+        "after_gpu_fields": 110
+      },
+      "river-128-late-8": {
+        "before_mean": 1091151.7028808594,
+        "after_mean": 475827.2399902344,
+        "savings_pct": 56.39220112712513,
+        "paired_95_ci_pct": [
+          53.21567700186121,
+          59.568725252389044
+        ],
+        "median_elapsed_change_pct": -67.31928598213106,
+        "before_gpu_fields": 1,
+        "after_gpu_fields": 3064
+      },
+      "river-256-early-8": {
+        "before_mean": 1456533.1420898438,
+        "after_mean": 757479.0649414062,
+        "savings_pct": 47.99438179246851,
+        "paired_95_ci_pct": [
+          46.13009583021554,
+          49.85866775472149
+        ],
+        "median_elapsed_change_pct": -64.6145404686084,
+        "before_gpu_fields": 258,
+        "after_gpu_fields": 1405
+      },
+      "river-256-middle-8": {
+        "before_mean": 1472635.7421875,
+        "after_mean": 904544.2504882812,
+        "savings_pct": 38.57651117820606,
+        "paired_95_ci_pct": [
+          34.891780408064434,
+          42.26124194834769
+        ],
+        "median_elapsed_change_pct": -48.815769904354354,
+        "before_gpu_fields": 528,
+        "after_gpu_fields": 4622
+      },
+      "river-256-late-8": {
+        "before_mean": 1915783.1726074219,
+        "after_mean": 957106.93359375,
+        "savings_pct": 50.040957281657974,
+        "paired_95_ci_pct": [
+          48.77035885223064,
+          51.31155571108531
+        ],
+        "median_elapsed_change_pct": -65.34188894744213,
+        "before_gpu_fields": 217,
+        "after_gpu_fields": 1679
+      },
+      "river-512-early-8": {
+        "before_mean": 3748100.5249023438,
+        "after_mean": 3058487.1215820312,
+        "savings_pct": 18.399010345067527,
+        "paired_95_ci_pct": [
+          15.786580482378824,
+          21.01144020775623
+        ],
+        "median_elapsed_change_pct": -29.107238159991777,
+        "before_gpu_fields": 498,
+        "after_gpu_fields": 3675
+      },
+      "river-512-middle-8": {
+        "before_mean": 4451196.685791016,
+        "after_mean": 3464254.0893554688,
+        "savings_pct": 22.172522719250694,
+        "paired_95_ci_pct": [
+          20.20588261177027,
+          24.13916282673112
+        ],
+        "median_elapsed_change_pct": -29.61606600078519,
+        "before_gpu_fields": 1052,
+        "after_gpu_fields": 4195
+      },
+      "river-512-late-8": {
+        "before_mean": 4461188.018798828,
+        "after_mean": 3761108.4899902344,
+        "savings_pct": 15.692670334864966,
+        "paired_95_ci_pct": [
+          14.365129876036358,
+          17.020210793693572
+        ],
+        "median_elapsed_change_pct": -21.196212856067987,
+        "before_gpu_fields": 1107,
+        "after_gpu_fields": 4178
+      }
+    },
+    "qualification": false,
+    "cpu_per_tick": {
+      "before_mean": 2227046.193440755,
+      "after_mean": 1564621.6769748263,
+      "savings_pct": 29.744534191385238,
+      "paired_95_ci_pct": [
+        29.284179198439677,
+        30.204889184330796
+      ]
+    },
+    "window_cpu_per_tick": {
+      "before_mean": 2206662.3642190597,
+      "after_mean": 1457638.7244814918,
+      "savings_pct": 33.94373565629957,
+      "paired_95_ci_pct": [
+        33.348580887071364,
+        34.53889042552778
+      ]
+    }
+  }
+}
