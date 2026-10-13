@@ -187,13 +187,13 @@ TEST_CASE("MCP/HTTP restrictions bounded bodies restart and disconnect cancellat
 	{
 		std::atomic<bool> hold{false};
 		std::atomic<bool> cancelledFailure{false};
-		std::atomic<std::shared_ptr<Request>> last;
+		std::shared_ptr<Request> last;
 		std::shared_ptr<Request> submit(const std::string &name, Json args,
 										std::string client) override
 		{
 			auto r = Context::submit(name, args, client);
 			if (hold)
-				last.store(r);
+				std::atomic_store(&last, r);
 			else
 			{
 				Result result;
@@ -312,10 +312,10 @@ TEST_CASE("MCP/HTTP restrictions bounded bodies restart and disconnect cancellat
 		request.prepare_payload();
 		http::write(socket, request);
 		const auto until = Clock::now() + std::chrono::seconds(2);
-		while (!context.last.load() && Clock::now() < until)
+		while (!std::atomic_load(&context.last) && Clock::now() < until)
 			std::this_thread::sleep_for(std::chrono::milliseconds(1));
-		REQUIRE(context.last.load());
-		auto held = context.last.load();
+		REQUIRE(std::atomic_load(&context.last));
+		auto held = std::atomic_load(&context.last);
 		if (shutdown)
 		{
 			server.reset();
@@ -329,7 +329,7 @@ TEST_CASE("MCP/HTTP restrictions bounded bodies restart and disconnect cancellat
 		std::this_thread::sleep_for(std::chrono::milliseconds(1));
 	CHECK(cancelled->cancelled);
 	CHECK_THROWS_AS(HttpServer(protocol, port), boost::system::system_error);
-	context.last.store(nullptr);
+	std::atomic_store(&context.last, std::shared_ptr<Request>{});
 	(void)pending(true);
 }
 TEST_CASE("MCP/leases input dispatch cancellation viewport and capture [network]")
