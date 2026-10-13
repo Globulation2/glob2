@@ -1,0 +1,38 @@
+{
+  "world.checksums": {
+    "identical": true,
+    "sha256": {
+      "baseline-1/world.checksums": "aabbedf57caded3b9113beee79d6911b37c211959efabedeca895ebcf14f267f",
+      "candidate-1/world.checksums": "aabbedf57caded3b9113beee79d6911b37c211959efabedeca895ebcf14f267f",
+      "baseline-4/world.checksums": "aabbedf57caded3b9113beee79d6911b37c211959efabedeca895ebcf14f267f",
+      "candidate-4/world.checksums": "aabbedf57caded3b9113beee79d6911b37c211959efabedeca895ebcf14f267f"
+    }
+  },
+  "game.replay.checksums": {
+    "identical": true,
+    "sha256": {
+      "baseline-1/game.replay.checksums": "8b86df7d93bc26a6becba52e794fd0ee4534b6648b18688b4df4776eef5b1b10",
+      "candidate-1/game.replay.checksums": "8b86df7d93bc26a6becba52e794fd0ee4534b6648b18688b4df4776eef5b1b10",
+      "baseline-4/game.replay.checksums": "8b86df7d93bc26a6becba52e794fd0ee4534b6648b18688b4df4776eef5b1b10",
+      "candidate-4/game.replay.checksums": "8b86df7d93bc26a6becba52e794fd0ee4534b6648b18688b4df4776eef5b1b10"
+    }
+  },
+  "game.replay": {
+    "identical": true,
+    "sha256": {
+      "baseline-1/game.replay": "2dbba32e82ca33f98d9a4fca4fd20f9e8a3e60f2ef95f3bfef8e102777c3c784",
+      "candidate-1/game.replay": "2dbba32e82ca33f98d9a4fca4fd20f9e8a3e60f2ef95f3bfef8e102777c3c784",
+      "baseline-4/game.replay": "2dbba32e82ca33f98d9a4fca4fd20f9e8a3e60f2ef95f3bfef8e102777c3c784",
+      "candidate-4/game.replay": "2dbba32e82ca33f98d9a4fca4fd20f9e8a3e60f2ef95f3bfef8e102777c3c784"
+    }
+  },
+  "final.game.gz": {
+    "identical": true,
+    "sha256": {
+      "baseline-1/final.game.gz": "6e6765a7baa17c1780171400ff73d36d607a5c1d43f2c729b79b2a2018f84928",
+      "candidate-1/final.game.gz": "6e6765a7baa17c1780171400ff73d36d607a5c1d43f2c729b79b2a2018f84928",
+      "baseline-4/final.game.gz": "6e6765a7baa17c1780171400ff73d36d607a5c1d43f2c729b79b2a2018f84928",
+      "candidate-4/final.game.gz": "6e6765a7baa17c1780171400ff73d36d607a5c1d43f2c729b79b2a2018f84928"
+    }
+  }
+}

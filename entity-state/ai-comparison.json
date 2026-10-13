@@ -1,0 +1,504 @@
+{
+  "binaries": {
+    "baseline": {
+      "path": "/home/bradley/.codex/worktrees/5889/glob2/artifacts/state-compaction/source/build/linux/client/release/dev-linker-auto/src/glob2",
+      "sha256": "4be9ece13e55db8bff60cc95788dddf708daf159621abc5f19fd1818e6e3e73c"
+    },
+    "candidate": {
+      "path": "/home/bradley/.codex/worktrees/5889/glob2/build/linux/client/release/dev-linker-auto/src/glob2",
+      "sha256": "1555109a95bc19a9335c59d1b97539fee9b5365d2e2dcbf91ffbdbb23e084bcc"
+    }
+  },
+  "interleave_seconds": 0,
+  "warmup_ticks": 128,
+  "measured_ticks": 512,
+  "limit_percent": 2.0,
+  "fixtures": [
+    {
+      "save": "/home/bradley/.codex/worktrees/5889/glob2/test/fixtures/ai-random-streams/numbi-castor-v121.game.gz",
+      "sha256": "5c80f02ec6b37b2b8b49e181366949bd1f0812039a53fbbe9f755f1e32659307",
+      "initial_tick": 0,
+      "pairs": [
+        {
+          "baseline": {
+            "benchmark_setup_cpu_ns": 344687528,
+            "benchmark_run_cpu_ns": 310574072,
+            "benchmark_save_cpu_ns": 103109557,
+            "checksum": "e44ba4af",
+            "saved_sha256": "c980bf80d494f3baa9b863f0cc8758e45477b6c6af9758227c51af4afea59fb6",
+            "command": [
+              "/home/bradley/.codex/worktrees/5889/glob2/artifacts/state-compaction/source/build/linux/client/release/dev-linker-auto/src/glob2",
+              "game",
+              "run",
+              "--load-game",
+              "/home/bradley/.codex/worktrees/5889/glob2/test/fixtures/ai-random-streams/numbi-castor-v121.game.gz",
+              "--ticks",
+              "640",
+              "--benchmark-warmup",
+              "128",
+              "--save",
+              "final",
+              "--output-dir",
+              "/home/bradley/.codex/worktrees/5889/glob2/artifacts/state-compaction/ai-match-paired/fixture-0-pair-0-baseline"
+            ]
+          },
+          "candidate": {
+            "benchmark_setup_cpu_ns": 254249824,
+            "benchmark_run_cpu_ns": 283805720,
+            "benchmark_save_cpu_ns": 100860438,
+            "checksum": "e44ba4af",
+            "saved_sha256": "c980bf80d494f3baa9b863f0cc8758e45477b6c6af9758227c51af4afea59fb6",
+            "command": [
+              "/home/bradley/.codex/worktrees/5889/glob2/build/linux/client/release/dev-linker-auto/src/glob2",
+              "game",
+              "run",
+              "--load-game",
+              "/home/bradley/.codex/worktrees/5889/glob2/test/fixtures/ai-random-streams/numbi-castor-v121.game.gz",
+              "--ticks",
+              "640",
+              "--benchmark-warmup",
+              "128",
+              "--save",
+              "final",
+              "--output-dir",
+              "/home/bradley/.codex/worktrees/5889/glob2/artifacts/state-compaction/ai-match-paired/fixture-0-pair-0-candidate"
+            ]
+          }
+        },
+        {
+          "candidate": {
+            "benchmark_setup_cpu_ns": 250652290,
+            "benchmark_run_cpu_ns": 283730218,
+            "benchmark_save_cpu_ns": 112934575,
+            "checksum": "e44ba4af",
+            "saved_sha256": "c980bf80d494f3baa9b863f0cc8758e45477b6c6af9758227c51af4afea59fb6",
+            "command": [
+              "/home/bradley/.codex/worktrees/5889/glob2/build/linux/client/release/dev-linker-auto/src/glob2",
+              "game",
+              "run",
+              "--load-game",
+              "/home/bradley/.codex/worktrees/5889/glob2/test/fixtures/ai-random-streams/numbi-castor-v121.game.gz",
+              "--ticks",
+              "640",
+              "--benchmark-warmup",
+              "128",
+              "--save",
+              "final",
+              "--output-dir",
+              "/home/bradley/.codex/worktrees/5889/glob2/artifacts/state-compaction/ai-match-paired/fixture-0-pair-1-candidate"
+            ]
+          },
+          "baseline": {
+            "benchmark_setup_cpu_ns": 246389718,
+            "benchmark_run_cpu_ns": 279651840,
+            "benchmark_save_cpu_ns": 106135126,
+            "checksum": "e44ba4af",
+            "saved_sha256": "c980bf80d494f3baa9b863f0cc8758e45477b6c6af9758227c51af4afea59fb6",
+            "command": [
+              "/home/bradley/.codex/worktrees/5889/glob2/artifacts/state-compaction/source/build/linux/client/release/dev-linker-auto/src/glob2",
+              "game",
+              "run",
+              "--load-game",
+              "/home/bradley/.codex/worktrees/5889/glob2/test/fixtures/ai-random-streams/numbi-castor-v121.game.gz",
+              "--ticks",
+              "640",
+              "--benchmark-warmup",
+              "128",
+              "--save",
+              "final",
+              "--output-dir",
+              "/home/bradley/.codex/worktrees/5889/glob2/artifacts/state-compaction/ai-match-paired/fixture-0-pair-1-baseline"
+            ]
+          }
+        },
+        {
+          "baseline": {
+            "benchmark_setup_cpu_ns": 252415067,
+            "benchmark_run_cpu_ns": 281759036,
+            "benchmark_save_cpu_ns": 103804345,
+            "checksum": "e44ba4af",
+            "saved_sha256": "c980bf80d494f3baa9b863f0cc8758e45477b6c6af9758227c51af4afea59fb6",
+            "command": [
+              "/home/bradley/.codex/worktrees/5889/glob2/artifacts/state-compaction/source/build/linux/client/release/dev-linker-auto/src/glob2",
+              "game",
+              "run",
+              "--load-game",
+              "/home/bradley/.codex/worktrees/5889/glob2/test/fixtures/ai-random-streams/numbi-castor-v121.game.gz",
+              "--ticks",
+              "640",
+              "--benchmark-warmup",
+              "128",
+              "--save",
+              "final",
+              "--output-dir",
+              "/home/bradley/.codex/worktrees/5889/glob2/artifacts/state-compaction/ai-match-paired/fixture-0-pair-2-baseline"
+            ]
+          },
+          "candidate": {
+            "benchmark_setup_cpu_ns": 262136671,
+            "benchmark_run_cpu_ns": 281129110,
+            "benchmark_save_cpu_ns": 99459341,
+            "checksum": "e44ba4af",
+            "saved_sha256": "c980bf80d494f3baa9b863f0cc8758e45477b6c6af9758227c51af4afea59fb6",
+            "command": [
+              "/home/bradley/.codex/worktrees/5889/glob2/build/linux/client/release/dev-linker-auto/src/glob2",
+              "game",
+              "run",
+              "--load-game",
+              "/home/bradley/.codex/worktrees/5889/glob2/test/fixtures/ai-random-streams/numbi-castor-v121.game.gz",
+              "--ticks",
+              "640",
+              "--benchmark-warmup",
+              "128",
+              "--save",
+              "final",
+              "--output-dir",
+              "/home/bradley/.codex/worktrees/5889/glob2/artifacts/state-compaction/ai-match-paired/fixture-0-pair-2-candidate"
+            ]
+          }
+        },
+        {
+          "candidate": {
+            "benchmark_setup_cpu_ns": 251671026,
+            "benchmark_run_cpu_ns": 293141454,
+            "benchmark_save_cpu_ns": 102779408,
+            "checksum": "e44ba4af",
+            "saved_sha256": "c980bf80d494f3baa9b863f0cc8758e45477b6c6af9758227c51af4afea59fb6",
+            "command": [
+              "/home/bradley/.codex/worktrees/5889/glob2/build/linux/client/release/dev-linker-auto/src/glob2",
+              "game",
+              "run",
+              "--load-game",
+              "/home/bradley/.codex/worktrees/5889/glob2/test/fixtures/ai-random-streams/numbi-castor-v121.game.gz",
+              "--ticks",
+              "640",
+              "--benchmark-warmup",
+              "128",
+              "--save",
+              "final",
+              "--output-dir",
+              "/home/bradley/.codex/worktrees/5889/glob2/artifacts/state-compaction/ai-match-paired/fixture-0-pair-3-candidate"
+            ]
+          },
+          "baseline": {
+            "benchmark_setup_cpu_ns": 254410168,
+            "benchmark_run_cpu_ns": 314124985,
+            "benchmark_save_cpu_ns": 104408481,
+            "checksum": "e44ba4af",
+            "saved_sha256": "c980bf80d494f3baa9b863f0cc8758e45477b6c6af9758227c51af4afea59fb6",
+            "command": [
+              "/home/bradley/.codex/worktrees/5889/glob2/artifacts/state-compaction/source/build/linux/client/release/dev-linker-auto/src/glob2",
+              "game",
+              "run",
+              "--load-game",
+              "/home/bradley/.codex/worktrees/5889/glob2/test/fixtures/ai-random-streams/numbi-castor-v121.game.gz",
+              "--ticks",
+              "640",
+              "--benchmark-warmup",
+              "128",
+              "--save",
+              "final",
+              "--output-dir",
+              "/home/bradley/.codex/worktrees/5889/glob2/artifacts/state-compaction/ai-match-paired/fixture-0-pair-3-baseline"
+            ]
+          }
+        },
+        {
+          "baseline": {
+            "benchmark_setup_cpu_ns": 254177062,
+            "benchmark_run_cpu_ns": 316265472,
+            "benchmark_save_cpu_ns": 104226235,
+            "checksum": "e44ba4af",
+            "saved_sha256": "c980bf80d494f3baa9b863f0cc8758e45477b6c6af9758227c51af4afea59fb6",
+            "command": [
+              "/home/bradley/.codex/worktrees/5889/glob2/artifacts/state-compaction/source/build/linux/client/release/dev-linker-auto/src/glob2",
+              "game",
+              "run",
+              "--load-game",
+              "/home/bradley/.codex/worktrees/5889/glob2/test/fixtures/ai-random-streams/numbi-castor-v121.game.gz",
+              "--ticks",
+              "640",
+              "--benchmark-warmup",
+              "128",
+              "--save",
+              "final",
+              "--output-dir",
+              "/home/bradley/.codex/worktrees/5889/glob2/artifacts/state-compaction/ai-match-paired/fixture-0-pair-4-baseline"
+            ]
+          },
+          "candidate": {
+            "benchmark_setup_cpu_ns": 257957051,
+            "benchmark_run_cpu_ns": 308070866,
+            "benchmark_save_cpu_ns": 108563109,
+            "checksum": "e44ba4af",
+            "saved_sha256": "c980bf80d494f3baa9b863f0cc8758e45477b6c6af9758227c51af4afea59fb6",
+            "command": [
+              "/home/bradley/.codex/worktrees/5889/glob2/build/linux/client/release/dev-linker-auto/src/glob2",
+              "game",
+              "run",
+              "--load-game",
+              "/home/bradley/.codex/worktrees/5889/glob2/test/fixtures/ai-random-streams/numbi-castor-v121.game.gz",
+              "--ticks",
+              "640",
+              "--benchmark-warmup",
+              "128",
+              "--save",
+              "final",
+              "--output-dir",
+              "/home/bradley/.codex/worktrees/5889/glob2/artifacts/state-compaction/ai-match-paired/fixture-0-pair-4-candidate"
+            ]
+          }
+        },
+        {
+          "candidate": {
+            "benchmark_setup_cpu_ns": 258037133,
+            "benchmark_run_cpu_ns": 302821908,
+            "benchmark_save_cpu_ns": 102617145,
+            "checksum": "e44ba4af",
+            "saved_sha256": "c980bf80d494f3baa9b863f0cc8758e45477b6c6af9758227c51af4afea59fb6",
+            "command": [
+              "/home/bradley/.codex/worktrees/5889/glob2/build/linux/client/release/dev-linker-auto/src/glob2",
+              "game",
+              "run",
+              "--load-game",
+              "/home/bradley/.codex/worktrees/5889/glob2/test/fixtures/ai-random-streams/numbi-castor-v121.game.gz",
+              "--ticks",
+              "640",
+              "--benchmark-warmup",
+              "128",
+              "--save",
+              "final",
+              "--output-dir",
+              "/home/bradley/.codex/worktrees/5889/glob2/artifacts/state-compaction/ai-match-paired/fixture-0-pair-5-candidate"
+            ]
+          },
+          "baseline": {
+            "benchmark_setup_cpu_ns": 257173511,
+            "benchmark_run_cpu_ns": 300646592,
+            "benchmark_save_cpu_ns": 106855885,
+            "checksum": "e44ba4af",
+            "saved_sha256": "c980bf80d494f3baa9b863f0cc8758e45477b6c6af9758227c51af4afea59fb6",
+            "command": [
+              "/home/bradley/.codex/worktrees/5889/glob2/artifacts/state-compaction/source/build/linux/client/release/dev-linker-auto/src/glob2",
+              "game",
+              "run",
+              "--load-game",
+              "/home/bradley/.codex/worktrees/5889/glob2/test/fixtures/ai-random-streams/numbi-castor-v121.game.gz",
+              "--ticks",
+              "640",
+              "--benchmark-warmup",
+              "128",
+              "--save",
+              "final",
+              "--output-dir",
+              "/home/bradley/.codex/worktrees/5889/glob2/artifacts/state-compaction/ai-match-paired/fixture-0-pair-5-baseline"
+            ]
+          }
+        },
+        {
+          "baseline": {
+            "benchmark_setup_cpu_ns": 259525292,
+            "benchmark_run_cpu_ns": 300149850,
+            "benchmark_save_cpu_ns": 103955849,
+            "checksum": "e44ba4af",
+            "saved_sha256": "c980bf80d494f3baa9b863f0cc8758e45477b6c6af9758227c51af4afea59fb6",
+            "command": [
+              "/home/bradley/.codex/worktrees/5889/glob2/artifacts/state-compaction/source/build/linux/client/release/dev-linker-auto/src/glob2",
+              "game",
+              "run",
+              "--load-game",
+              "/home/bradley/.codex/worktrees/5889/glob2/test/fixtures/ai-random-streams/numbi-castor-v121.game.gz",
+              "--ticks",
+              "640",
+              "--benchmark-warmup",
+              "128",
+              "--save",
+              "final",
+              "--output-dir",
+              "/home/bradley/.codex/worktrees/5889/glob2/artifacts/state-compaction/ai-match-paired/fixture-0-pair-6-baseline"
+            ]
+          },
+          "candidate": {
+            "benchmark_setup_cpu_ns": 252374505,
+            "benchmark_run_cpu_ns": 304627606,
+            "benchmark_save_cpu_ns": 101405611,
+            "checksum": "e44ba4af",
+            "saved_sha256": "c980bf80d494f3baa9b863f0cc8758e45477b6c6af9758227c51af4afea59fb6",
+            "command": [
+              "/home/bradley/.codex/worktrees/5889/glob2/build/linux/client/release/dev-linker-auto/src/glob2",
+              "game",
+              "run",
+              "--load-game",
+              "/home/bradley/.codex/worktrees/5889/glob2/test/fixtures/ai-random-streams/numbi-castor-v121.game.gz",
+              "--ticks",
+              "640",
+              "--benchmark-warmup",
+              "128",
+              "--save",
+              "final",
+              "--output-dir",
+              "/home/bradley/.codex/worktrees/5889/glob2/artifacts/state-compaction/ai-match-paired/fixture-0-pair-6-candidate"
+            ]
+          }
+        },
+        {
+          "candidate": {
+            "benchmark_setup_cpu_ns": 268426506,
+            "benchmark_run_cpu_ns": 293000801,
+            "benchmark_save_cpu_ns": 103622470,
+            "checksum": "e44ba4af",
+            "saved_sha256": "c980bf80d494f3baa9b863f0cc8758e45477b6c6af9758227c51af4afea59fb6",
+            "command": [
+              "/home/bradley/.codex/worktrees/5889/glob2/build/linux/client/release/dev-linker-auto/src/glob2",
+              "game",
+              "run",
+              "--load-game",
+              "/home/bradley/.codex/worktrees/5889/glob2/test/fixtures/ai-random-streams/numbi-castor-v121.game.gz",
+              "--ticks",
+              "640",
+              "--benchmark-warmup",
+              "128",
+              "--save",
+              "final",
+              "--output-dir",
+              "/home/bradley/.codex/worktrees/5889/glob2/artifacts/state-compaction/ai-match-paired/fixture-0-pair-7-candidate"
+            ]
+          },
+          "baseline": {
+            "benchmark_setup_cpu_ns": 258761312,
+            "benchmark_run_cpu_ns": 321418687,
+            "benchmark_save_cpu_ns": 105812617,
+            "checksum": "e44ba4af",
+            "saved_sha256": "c980bf80d494f3baa9b863f0cc8758e45477b6c6af9758227c51af4afea59fb6",
+            "command": [
+              "/home/bradley/.codex/worktrees/5889/glob2/artifacts/state-compaction/source/build/linux/client/release/dev-linker-auto/src/glob2",
+              "game",
+              "run",
+              "--load-game",
+              "/home/bradley/.codex/worktrees/5889/glob2/test/fixtures/ai-random-streams/numbi-castor-v121.game.gz",
+              "--ticks",
+              "640",
+              "--benchmark-warmup",
+              "128",
+              "--save",
+              "final",
+              "--output-dir",
+              "/home/bradley/.codex/worktrees/5889/glob2/artifacts/state-compaction/ai-match-paired/fixture-0-pair-7-baseline"
+            ]
+          }
+        },
+        {
+          "baseline": {
+            "benchmark_setup_cpu_ns": 293598436,
+            "benchmark_run_cpu_ns": 348904278,
+            "benchmark_save_cpu_ns": 102420029,
+            "checksum": "e44ba4af",
+            "saved_sha256": "c980bf80d494f3baa9b863f0cc8758e45477b6c6af9758227c51af4afea59fb6",
+            "command": [
+              "/home/bradley/.codex/worktrees/5889/glob2/artifacts/state-compaction/source/build/linux/client/release/dev-linker-auto/src/glob2",
+              "game",
+              "run",
+              "--load-game",
+              "/home/bradley/.codex/worktrees/5889/glob2/test/fixtures/ai-random-streams/numbi-castor-v121.game.gz",
+              "--ticks",
+              "640",
+              "--benchmark-warmup",
+              "128",
+              "--save",
+              "final",
+              "--output-dir",
+              "/home/bradley/.codex/worktrees/5889/glob2/artifacts/state-compaction/ai-match-paired/fixture-0-pair-8-baseline"
+            ]
+          },
+          "candidate": {
+            "benchmark_setup_cpu_ns": 266043513,
+            "benchmark_run_cpu_ns": 318253213,
+            "benchmark_save_cpu_ns": 104367010,
+            "checksum": "e44ba4af",
+            "saved_sha256": "c980bf80d494f3baa9b863f0cc8758e45477b6c6af9758227c51af4afea59fb6",
+            "command": [
+              "/home/bradley/.codex/worktrees/5889/glob2/build/linux/client/release/dev-linker-auto/src/glob2",
+              "game",
+              "run",
+              "--load-game",
+              "/home/bradley/.codex/worktrees/5889/glob2/test/fixtures/ai-random-streams/numbi-castor-v121.game.gz",
+              "--ticks",
+              "640",
+              "--benchmark-warmup",
+              "128",
+              "--save",
+              "final",
+              "--output-dir",
+              "/home/bradley/.codex/worktrees/5889/glob2/artifacts/state-compaction/ai-match-paired/fixture-0-pair-8-candidate"
+            ]
+          }
+        },
+        {
+          "candidate": {
+            "benchmark_setup_cpu_ns": 279024624,
+            "benchmark_run_cpu_ns": 366301566,
+            "benchmark_save_cpu_ns": 118512001,
+            "checksum": "e44ba4af",
+            "saved_sha256": "c980bf80d494f3baa9b863f0cc8758e45477b6c6af9758227c51af4afea59fb6",
+            "command": [
+              "/home/bradley/.codex/worktrees/5889/glob2/build/linux/client/release/dev-linker-auto/src/glob2",
+              "game",
+              "run",
+              "--load-game",
+              "/home/bradley/.codex/worktrees/5889/glob2/test/fixtures/ai-random-streams/numbi-castor-v121.game.gz",
+              "--ticks",
+              "640",
+              "--benchmark-warmup",
+              "128",
+              "--save",
+              "final",
+              "--output-dir",
+              "/home/bradley/.codex/worktrees/5889/glob2/artifacts/state-compaction/ai-match-paired/fixture-0-pair-9-candidate"
+            ]
+          },
+          "baseline": {
+            "benchmark_setup_cpu_ns": 251286136,
+            "benchmark_run_cpu_ns": 317187246,
+            "benchmark_save_cpu_ns": 106903276,
+            "checksum": "e44ba4af",
+            "saved_sha256": "c980bf80d494f3baa9b863f0cc8758e45477b6c6af9758227c51af4afea59fb6",
+            "command": [
+              "/home/bradley/.codex/worktrees/5889/glob2/artifacts/state-compaction/source/build/linux/client/release/dev-linker-auto/src/glob2",
+              "game",
+              "run",
+              "--load-game",
+              "/home/bradley/.codex/worktrees/5889/glob2/test/fixtures/ai-random-streams/numbi-castor-v121.game.gz",
+              "--ticks",
+              "640",
+              "--benchmark-warmup",
+              "128",
+              "--save",
+              "final",
+              "--output-dir",
+              "/home/bradley/.codex/worktrees/5889/glob2/artifacts/state-compaction/ai-match-paired/fixture-0-pair-9-baseline"
+            ]
+          }
+        }
+      ],
+      "cpu": {
+        "benchmark_setup_cpu_ns": {
+          "paired_change_percent": -2.2464078337387408,
+          "upper_95_percent": 2.6512248100694906,
+          "pairs": 10
+        },
+        "benchmark_run_cpu_ns": {
+          "paired_change_percent": -1.8998930482628278,
+          "upper_95_percent": 1.9187575546664726,
+          "pairs": 10
+        },
+        "benchmark_save_cpu_ns": {
+          "paired_change_percent": 0.5818455092525096,
+          "upper_95_percent": 3.1093874918760886,
+          "pairs": 10
+        }
+      },
+      "passed": false
+    }
+  ],
+  "passed": false
+}
