@@ -1,0 +1,27 @@
+{
+  "source_revision": "dda12cd3be7d7e21296da109a996a99921c78f71",
+  "baseline_production_revision": "2cfb2cdbed2b25fda0e7efd091075b4df6c060f2",
+  "benchmark_only_revision": "a9f16cde0316e3b155a51f9bb6c605ed367ba6cd",
+  "integrated_base": "26715e41b177da04f068f01ca436abad5c1f95d2",
+  "fetched_master": "277510840054b1416f2defd7d86fe1431dd0ddc0",
+  "compiler": "Apple clang21.0.0 clang-2100.3.34.2 arm64 macOS; ordinary dev_fast=0 release=1 no PCH/unity",
+  "build_command_file": "final-build-command.json in quota-validation archive (same arguments used for final build)",
+  "test_link_command_file": "test-link-command.json in quota-validation archive; final link log retained",
+  "callgrind": "Linux arm64 Docker Ubuntu22.04 GCC11.4 Valgrind3.18.1 -O3 -g retain_symbols=1 recording=0 linker=auto; profile-only hooks isolated from workspace; build memory retry logged locally",
+  "timing_scope": "128 planner refreshes per availability case, one process warmup per control/binary and ten external alternating pairs; 396 whole-engine runs (9 workloads,enabled/disabled,before/after,warmup+tenpairs),44 planner processes; all outliers retained",
+  "verification": "156 focused cases pass,36 ordinary baseline/optimized/diagnostics runs identical,12 nonempty controlled runs identical and match pre-optimization digests/artifacts across participants1,2,4,8",
+  "archive_sha256": "e9ce7dcb82fd9573b88078b2177b65414dcd32d8ab249d80de68c61d80c964a2",
+  "archive_bytes": 14822076,
+  "executable_sha256": {
+    "baseline-benchmark": "02e7562608c72f0241e637ee8fb5fcaf00ad5391cd1ed5fd3c5139c73854b357",
+    "after-benchmark": "d3047edebb24fc75c90ebeacf82c54cadb98f7ebcfaee196a7fa4bc27e45d281",
+    "baseline-glob2": "ed3581168e7a00e8efd04f53d6e8d787b7cb54491d4bc359f261915a8f2f69db",
+    "after-glob2": "a2fdf6eba44b05bef20e9b525532174c09ff23857db5021b9d6bde8409990877"
+  },
+  "profile_executable_sha256": {
+    "baseline-profile-harness": "133ff7ac476a78569bb298b14ef623d15f949cff90aa434c8e90e510ff365f08",
+    "after-profile-harness": "b47d445e72bcac72a144fda1fb2b64a31a2243e6df2e38903fcf1553792cb629",
+    "first-stage-profile-harness": "d0c8d38477b8120554dc7210e3a18aca4a3f0f4814cfd9609dd24df5c479dc78"
+  },
+  "archive_omissions": "Executables retained locally with hashes and reproducible source/build links. Detailed replay field dumps omitted except one controlled example; all world.checksums,replays,saves and comparison hashes retained. Original fixtures available in earlier evidence archive or repo; exact input hashes recorded in verification metadata. Shortlist-only initial profiling probe is excluded from complete-rank instruction comparisons."
+}

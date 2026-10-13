@@ -75,3 +75,27 @@ planner refreshes; the separate direct fill control includes subscriptions and
 swaps. Five-tick modeled p95 waits are frozen opportunity-model evidence, not
 live gameplay evidence. Retained reference trajectories can have empty outputs
 because authoritative hiring fills observed demand before capture.
+
+## Final Callgrind optimization delta
+
+Implementation `dda12cd3be7d7e21296da109a996a99921c78f71`, versus
+pre-optimization production planner `2cfb2cdbe`. Benchmark-only helper
+`a9f16cde0` is identical in both executables. `planner-final-findings.json`
+contains ten alternating paired release samples per control, confidence intervals,
+all nine enabled/disabled whole-engine workloads and Linux arm64 instruction totals.
+`planner-final-provenance.json` records source, executable and archive hashes.
+`planner-final-tests.xml` records the 156 passing focused cases.
+`planner-final-evidence.tar.gz` contains raw samples (including warmups/outliers),
+exact commands, all per-tick world checksums, replay bytes, final saves, controlled
+input, verification comparisons, Callgrind raw profiles, source and self annotations,
+and profiling scripts. Verify extracted files using `planner-final-manifest.json`.
+Executables remain local with published hashes; build/source links are retained.
+Large detailed replay field dumps are omitted except one controlled example.
+
+Complete warmed-rank profiles exclude one warm rank per team. The initial
+shortlist-only probe is not used in complete-rank comparisons. Inclusive Callgrind
+annotations have recursive/context artifacts; only self instruction counts and
+raw total counts support attribution. The final native timing binaries have no
+profiling hooks. The profiling container and all builds/tests were stopped before
+timing. Planner CPU/elapsed reductions do not establish a live match speedup:
+original hiring still runs, and completed-boundary demand can already be filled.
