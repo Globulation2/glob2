@@ -1605,7 +1605,8 @@ TEST_SUITE("UnitCustomization")
         }
         inn->updateCallLists();
         for (int tick=0;tick<32;++tick) world.game.syncStep(0);
-        for (int id:{35,275,1023}) CHECK(world.team->stats.getLatestStat()->numberUnitPerType[id]==1);
+        // The first aggregate is still pending at its fixed publication deadline.
+        for (int id:{35,275,1023}) CHECK(world.team->stats.getLatestStat()->numberUnitPerType[id]==0);
         auto* storage=new GAGCore::MemoryStreamBackend; GAGCore::BinaryOutputStream output(storage);
         world.game.save(&output,false,"high unit identity continuation");
         const std::string bytes(storage->getBuffer(),storage->getPosition());
@@ -1619,9 +1620,13 @@ TEST_SUITE("UnitCustomization")
             auto* unit=resumed.game.teams[0]->myUnits[Unit::GIDtoID(gid)]; REQUIRE(unit);
             CHECK(unit->typeNum>31); CHECK(unit->jobPurpose==UnitJobPurpose::Transport);
             CHECK(unit->carriedPacketCount()==2); CHECK(unit->hasCarriedMaterial(STONE));
-            CHECK(resumed.game.teams[0]->stats.getLatestStat()->numberUnitPerType[unit->typeNum]==1);
+            CHECK(resumed.game.teams[0]->stats.getLatestStat()->numberUnitPerType[unit->typeNum]==0);
         }
         for (int tick=0;tick<96;++tick) { resumed.game.syncStep(0); CHECK(trace(resumed.game)==expected[tick]); }
+        for (int id:{35,275,1023}) {
+            CHECK(world.team->stats.getLatestStat()->numberUnitPerType[id]==1);
+            CHECK(resumed.game.teams[0]->stats.getLatestStat()->numberUnitPerType[id]==1);
+        }
         CHECK(inn->materials[WHEAT]>0);
         auto& stats=world.team->stats;
         const auto* maxima=&stats.samplingMaxima.isFree[3];
