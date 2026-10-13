@@ -366,6 +366,16 @@ static void interactiveBenchmark()
             if (const char* mode = getenv("PROFILE_COMPUTE_TELEMETRY"))
                 gui.game.map.computeExecutor().configureTelemetry(ComputeTelemetry::parseMode(mode));
             auto initialGraphics = gui.game.map.computeExecutor().graphicsMetrics();
+			if (std::string(mode) == "gui")
+			{
+				// This probe holds simulation state fixed. Seed its stalled rate so
+				// differing run durations cannot change the HUD from "-" to "0.0".
+				const Uint32 now = Uint32(SDL_GetTicks());
+				gui.tickRate = {};
+				gui.tickRate.sample(now - TickRateMeter::UPDATE_MS, 0, 0);
+				gui.tickRate.sample(now, 0, 0);
+				printf("fixed_hud_tick_rate=0.0\n");
+			}
 			std::uint64_t initialHits = 0, initialRebuilds = 0;
 			double c0 = 0;
 			double freq = SDL_GetPerformanceFrequency();

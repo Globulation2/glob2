@@ -93,6 +93,9 @@ viewport; `PROFILE_MODE=map` starts at map origin zero. Keep that distinction id
 between revisions. Earlier harnesses could clamp a requested half-scale GUI view to
 1.0 before scene extraction; their scenario labels do not establish the actual zoom.
 Always retain the `CAMERA` and `READY` lines with comparison evidence.
+Fixed-state GUI runs seed the simulation-rate meter at zero before drawing, keeping
+its label at `0.0`; otherwise elapsed wall time can change it from `-` during a run.
+The live simulation probe retains the production meter.
 
 On POSIX builds, `PROFILE_BOUNDARY_STOP=1` prints and flushes
 `PROFILE_BOUNDARY phase=begin` after warmup, then stops the benchmark with `SIGSTOP`.
